@@ -1,149 +1,530 @@
-Return-Path: <linux-kernel+bounces-11715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C62F81EA6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 23:54:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2F4981EA6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 23:58:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E02E6281D95
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:54:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E44E1F21913
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:58:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C061C5CB5;
-	Tue, 26 Dec 2023 22:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C7E5687;
+	Tue, 26 Dec 2023 22:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nZSPrHQx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03BA55681
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 22:54:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35fd42a187bso33017535ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 14:54:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703631267; x=1704236067;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=w/49tPwndT0MjBlfvIRwPEDmfil03+0jhTGku1dMJu0=;
-        b=QthM0sGs9RliD0LLu6moRjpaSuEmMw5PzXSdzmFX2FddUyjEagXdz6AW1yBAMvCSsL
-         hF4w7/qOSvnNvzN7tF14AzpwFzwBfJZRXpTaeMGP81ZdInglKbt1Ybcxg8Dg/fdWpAMK
-         vCHvqkJ9y5RmutH+yj+ndY/z0w1zWJnGhWueZpcntyuGt1lWitogflvDaOW4+ks0OyOo
-         JIpUREH1fJ7eMrWAsTTyuzDEnnskutS3t4Lq0pYMizDI3Hv5StXEurAMjF3UfSA9yTAa
-         qrVd6kqQQmHqk6ZSr0h/BGGUD+combrIyJdRYeNQ9CBXCnW9X1ZMYv2uVB88uPpvrsqO
-         SDAQ==
-X-Gm-Message-State: AOJu0YyqmQBkM7PpiYY0nDwWGumDyByE+iAnN7ZRGnsN9v0b4Rv39ujo
-	+8rYGK5a3ZuauANNu8OYbKKcfSPvb9nfI/ZVAMZ2Eh+NPQXl
-X-Google-Smtp-Source: AGHT+IGzMJDzPanOQOpl7sFEgQNjDsGW0Cw+M0op3qzqY2mdozbtaxFyL3a8jndaXZrXzuUcGqJF9bFr+uYer7YKzZvnh6BXYc9/
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 871E6F4E0;
+	Tue, 26 Dec 2023 22:58:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BQMpvFi015277;
+	Tue, 26 Dec 2023 22:57:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=EC9GG/d3VhKi5zBly4dEMV4dBCnylliZgybv1p8LOfk=; b=nZ
+	SPrHQxcI/+FSjC7CtOY0s0Y7Z1IxbAsaL8Nv80s1KQNSzwefwEKiIBPCCLpOz6qR
+	FEDxG/Ye+4PUGJE9dZHwdS2VY57namR9ZaJnbADrxXcjMg/W5TnTiNN8GwXgAkwm
+	OGrLdiPimUA2TZzZJ7CSOgXz2yrdSJpZhEwmbxmyJdUVGmPMTNwew854x5TVqmvE
+	GEFiK7SXKDprh0sFTpmRgxHeJpWIpQyaYbaTphAvAXI2poux+CTRG0nJj0OBphlq
+	3/SNMzv/2nkoxW1i7j1+WFpezAxpq78MaPJVn7va3zIWgpJtllNepS61b3tDTR2E
+	dSqDevBFrMuAg+Rfie4g==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v80kfrtbr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Dec 2023 22:57:02 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BQMv1wO006879
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Dec 2023 22:57:01 GMT
+Received: from [10.110.123.205] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 26 Dec
+ 2023 14:56:59 -0800
+Message-ID: <342bf5a0-8454-4fd6-be45-462f1e31e606@quicinc.com>
+Date: Tue, 26 Dec 2023 14:56:58 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a6c:b0:360:134:535e with SMTP id
- w12-20020a056e021a6c00b003600134535emr627956ilv.1.1703631267141; Tue, 26 Dec
- 2023 14:54:27 -0800 (PST)
-Date: Tue, 26 Dec 2023 14:54:27 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000081a088060d7190cb@google.com>
-Subject: [syzbot] [bluetooth?] WARNING in l2cap_do_send (2)
-From: syzbot <syzbot+d6cd076b385aefcb6b16@syzkaller.appspotmail.com>
-To: johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    fbafc3e621c3 Merge tag 'for_linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15557616e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e1e118a9228c45d7
-dashboard link: https://syzkaller.appspot.com/bug?extid=d6cd076b385aefcb6b16
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14125c81e80000
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-fbafc3e6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d7e8a358761e/vmlinux-fbafc3e6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/dd1f54334d87/bzImage-fbafc3e6.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d6cd076b385aefcb6b16@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 2 PID: 6232 at kernel/workqueue.c:1722 __queue_work+0xdc6/0x11d0 kernel/workqueue.c:1721
-Modules linked in:
-CPU: 2 PID: 6232 Comm: syz-executor.2 Not tainted 6.7.0-rc7-syzkaller-00003-gfbafc3e621c3 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:__queue_work+0xdc6/0x11d0 kernel/workqueue.c:1721
-Code: 07 83 c0 03 38 d0 7c 09 84 d2 74 05 e8 a3 92 87 00 8b 5b 2c 31 ff 83 e3 20 89 de e8 e4 a6 31 00 85 db 75 56 e8 6b ab 31 00 90 <0f> 0b 90 e9 ac f8 ff ff e8 5d ab 31 00 90 0f 0b 90 e9 5b f8 ff ff
-RSP: 0018:ffffc90003bf7748 EFLAGS: 00010093
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff8154b90c
-RDX: ffff88801bf21280 RSI: ffffffff8154b915 RDI: 0000000000000005
-RBP: 0000000000000200 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff88803fe4cdf0
-R13: 0000000000000000 R14: ffff8880374f3000 R15: ffff8880374f3000
-FS:  000055555556e480(0000) GS:ffff88806b800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000400 CR3: 000000001d1ad000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- queue_work_on+0xed/0x110 kernel/workqueue.c:1831
- l2cap_do_send+0x318/0x470 net/bluetooth/l2cap_core.c:1015
- l2cap_chan_send+0xb7d/0x2ae0 net/bluetooth/l2cap_core.c:2726
- l2cap_sock_sendmsg+0x218/0x2e0 net/bluetooth/l2cap_sock.c:1154
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0xd5/0x180 net/socket.c:745
- ____sys_sendmsg+0x2ac/0x940 net/socket.c:2584
- ___sys_sendmsg+0x135/0x1d0 net/socket.c:2638
- __sys_sendmmsg+0x1a1/0x450 net/socket.c:2724
- __do_sys_sendmmsg net/socket.c:2753 [inline]
- __se_sys_sendmmsg net/socket.c:2750 [inline]
- __x64_sys_sendmmsg+0x9c/0x100 net/socket.c:2750
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fa77e47cce9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc101fb238 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 00007fa77e59bf80 RCX: 00007fa77e47cce9
-RDX: 0000000000000735 RSI: 0000000020000b80 RDI: 0000000000000004
-RBP: 00007fa77e4c947a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000024044840 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000bf7 R14: 00007fa77e59bf80 R15: 00007fa77e59bf80
- </TASK>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/4] drm/panel: Add driver for BOE TH101MB31IG002-28A
+ panel
+Content-Language: en-US
+To: Manuel Traut <manut@mecka.net>,
+        Neil Armstrong
+	<neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard
+	<mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Sandy Huang <hjc@rock-chips.com>, Mark Yao
+	<markyao0591@gmail.com>,
+        Diederik de Haas <didi.debian@cknow.org>,
+        Segfault
+	<awarnecke002@hotmail.com>,
+        Arnaud Ferraris <aferraris@debian.org>, Danct12
+	<danct12@riseup.net>
+CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-rockchip@lists.infradead.org>
+References: <20231223-pinetab2-v2-0-ec1856d0030e@mecka.net>
+ <20231223-pinetab2-v2-2-ec1856d0030e@mecka.net>
+From: Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <20231223-pinetab2-v2-2-ec1856d0030e@mecka.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: TumLrRfuEae19PVbY2IC7D6l1nIji7Kn
+X-Proofpoint-GUID: TumLrRfuEae19PVbY2IC7D6l1nIji7Kn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ mlxlogscore=999 malwarescore=0 clxscore=1011 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312260175
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On 12/23/2023 7:20 AM, Manuel Traut wrote:
+> From: Alexander Warnecke <awarnecke002@hotmail.com>
+> 
+> The BOE TH101MB31IG002-28A panel is a WXGA panel.
+> It is used in Pine64 Pinetab2 and PinetabV.
+> 
+> Signed-off-by: Alexander Warnecke <awarnecke002@hotmail.com>
+> Signed-off-by: Manuel Traut <manut@mecka.net>
+> ---
+>   drivers/gpu/drm/panel/Kconfig                      |  11 +
+>   drivers/gpu/drm/panel/Makefile                     |   1 +
+>   .../gpu/drm/panel/panel-boe-th101mb31ig002-28a.c   | 348 +++++++++++++++++++++
+>   3 files changed, 360 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> index 99e14dc212ec..927ddd10e688 100644
+> --- a/drivers/gpu/drm/panel/Kconfig
+> +++ b/drivers/gpu/drm/panel/Kconfig
+> @@ -67,6 +67,17 @@ config DRM_PANEL_BOE_HIMAX8279D
+>   	  24 bit RGB per pixel. It provides a MIPI DSI interface to
+>   	  the host and has a built-in LED backlight.
+>   
+> +config DRM_PANEL_BOE_TH101MB31UIG002_28A
+> +	tristate "Boe TH101MB31UIG002-28A panel"
+> +	depends on OF
+> +	depends on DRM_MIPI_DSI
+> +	depends on BACKLIGHT_CLASS_DEVICE
+> +	help
+> +	  Say Y here if you want to enable support for Boe
+> +	  TH101MB31UIG002-28A TFT-LCD modules. The panel has a 800x1280
+> +	  resolution and uses 24 bit RGB per pixel. It provides a MIPI DSI
+> +	  interface to the host and has a built-in LED backlight.
+> +
+>   config DRM_PANEL_BOE_TV101WUM_NL6
+>   	tristate "BOE TV101WUM and AUO KD101N80 45NA 1200x1920 panel"
+>   	depends on OF
+> diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+> index d10c3de51c6d..dd6e1ac9d0a2 100644
+> --- a/drivers/gpu/drm/panel/Makefile
+> +++ b/drivers/gpu/drm/panel/Makefile
+> @@ -5,6 +5,7 @@ obj-$(CONFIG_DRM_PANEL_ASUS_Z00T_TM5P5_NT35596) += panel-asus-z00t-tm5p5-n35596.
+>   obj-$(CONFIG_DRM_PANEL_AUO_A030JTN01) += panel-auo-a030jtn01.o
+>   obj-$(CONFIG_DRM_PANEL_BOE_BF060Y8M_AJ0) += panel-boe-bf060y8m-aj0.o
+>   obj-$(CONFIG_DRM_PANEL_BOE_HIMAX8279D) += panel-boe-himax8279d.o
+> +obj-$(CONFIG_DRM_PANEL_BOE_TH101MB31UIG002_28A) += panel-boe-th101mb31ig002-28a.o
+>   obj-$(CONFIG_DRM_PANEL_BOE_TV101WUM_NL6) += panel-boe-tv101wum-nl6.o
+>   obj-$(CONFIG_DRM_PANEL_DSI_CM) += panel-dsi-cm.o
+>   obj-$(CONFIG_DRM_PANEL_LVDS) += panel-lvds.o
+> diff --git a/drivers/gpu/drm/panel/panel-boe-th101mb31ig002-28a.c b/drivers/gpu/drm/panel/panel-boe-th101mb31ig002-28a.c
+> new file mode 100644
+> index 000000000000..ffe4047b7434
+> --- /dev/null
+> +++ b/drivers/gpu/drm/panel/panel-boe-th101mb31ig002-28a.c
+> @@ -0,0 +1,348 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2023 Alexander Warnecke <awarnecke002@hotmail.com>
+> + * Copyright (c) 2023 Manuel Traut <manut@mecka.net>
+> + * Copyright (c) 2023 Dang Huynh <danct12@riseup.net>
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +#include <drm/drm_connector.h>
+> +#include <drm/drm_mipi_dsi.h>
+> +#include <drm/drm_modes.h>
+> +#include <drm/drm_panel.h>
+> +
+> +struct boe_th101mb31ig002 {
+> +	struct drm_panel panel;
+> +	bool enabled;
+> +	bool prepared;
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Hi Manuel,
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Sorry, I responded to the v1 instead of the latest version. Carrying my 
+comment over to here:
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+If I remember correctly, commit d2aacaf07395bd798373cbec6af05fff4147aff3 
+should have introduced prepared/enabled do the drm_panel struct.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+Thanks,
 
-If you want to undo deduplication, reply with:
-#syz undup
+Jessica Zhang
+
+> +
+> +	struct mipi_dsi_device *dsi;
+> +
+> +	struct regulator *power;
+> +	struct gpio_desc *enable;
+> +	struct gpio_desc *reset;
+> +
+> +	enum drm_panel_orientation orientation;
+> +};
+> +
+> +static void boe_th101mb31ig002_reset(struct boe_th101mb31ig002 *ctx)
+> +{
+> +	gpiod_direction_output(ctx->reset, 0);
+> +	usleep_range(10, 100);
+> +	gpiod_direction_output(ctx->reset, 1);
+> +	usleep_range(10, 100);
+> +	gpiod_direction_output(ctx->reset, 0);
+> +	usleep_range(5000, 6000);
+> +}
+> +
+> +static int boe_th101mb31ig002_enable(struct drm_panel *panel)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = container_of(panel,
+> +						      struct boe_th101mb31ig002,
+> +						      panel);
+> +	struct mipi_dsi_device *dsi = ctx->dsi;
+> +	struct device *dev = &dsi->dev;
+> +	int ret;
+> +
+> +	if (ctx->enabled)
+> +		return 0;
+> +
+> +	mipi_dsi_dcs_write_seq(dsi, 0xE0, 0xAB, 0xBA);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xE1, 0xBA, 0xAB);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB1, 0x10, 0x01, 0x47, 0xFF);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB2, 0x0C, 0x14, 0x04, 0x50, 0x50, 0x14);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB3, 0x56, 0x53, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB4, 0x33, 0x30, 0x04);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB6, 0xB0, 0x00, 0x00, 0x10, 0x00, 0x10,
+> +				    0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB8, 0x05, 0x12, 0x29, 0x49, 0x48, 0x00,
+> +				    0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB9, 0x7C, 0x65, 0x55, 0x49, 0x46, 0x36,
+> +				    0x3B, 0x24, 0x3D, 0x3C, 0x3D, 0x5C, 0x4C,
+> +				    0x55, 0x47, 0x46, 0x39, 0x26, 0x06, 0x7C,
+> +				    0x65, 0x55, 0x49, 0x46, 0x36, 0x3B, 0x24,
+> +				    0x3D, 0x3C, 0x3D, 0x5C, 0x4C, 0x55, 0x47,
+> +				    0x46, 0x39, 0x26, 0x06);
+> +	mipi_dsi_dcs_write_seq(dsi, 0x00, 0xFF, 0x87, 0x12, 0x34, 0x44, 0x44,
+> +				    0x44, 0x44, 0x98, 0x04, 0x98, 0x04, 0x0F,
+> +				    0x00, 0x00, 0xC1);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xC1, 0x54, 0x94, 0x02, 0x85, 0x9F, 0x00,
+> +				    0x7F, 0x00, 0x54, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xC2, 0x17, 0x09, 0x08, 0x89, 0x08, 0x11,
+> +				    0x22, 0x20, 0x44, 0xFF, 0x18, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xC3, 0x86, 0x46, 0x05, 0x05, 0x1C, 0x1C,
+> +				    0x1D, 0x1D, 0x02, 0x1F, 0x1F, 0x1E, 0x1E,
+> +				    0x0F, 0x0F, 0x0D, 0x0D, 0x13, 0x13, 0x11,
+> +				    0x11, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xC4, 0x07, 0x07, 0x04, 0x04, 0x1C, 0x1C,
+> +				    0x1D, 0x1D, 0x02, 0x1F, 0x1F, 0x1E, 0x1E,
+> +				    0x0E, 0x0E, 0x0C, 0x0C, 0x12, 0x12, 0x10,
+> +				    0x10, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xC6, 0x2A, 0x2A);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xC8, 0x21, 0x00, 0x31, 0x42, 0x34, 0x16);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xCA, 0xCB, 0x43);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xCD, 0x0E, 0x4B, 0x4B, 0x20, 0x19, 0x6B,
+> +				    0x06, 0xB3);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xD2, 0xE3, 0x2B, 0x38, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xD4, 0x00, 0x01, 0x00, 0x0E, 0x04, 0x44,
+> +				    0x08, 0x10, 0x00, 0x00, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xE6, 0x80, 0x01, 0xFF, 0xFF, 0xFF, 0xFF,
+> +				    0xFF, 0xFF);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xF0, 0x12, 0x03, 0x20, 0x00, 0xFF);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xF3, 0x00);
+> +
+> +	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to exit sleep mode: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	msleep(120);
+> +
+> +	ret = mipi_dsi_dcs_set_display_on(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to set panel on: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ctx->enabled = true;
+> +
+> +	return 0;
+> +}
+> +
+> +static int boe_th101mb31ig002_disable(struct drm_panel *panel)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = container_of(panel,
+> +						      struct boe_th101mb31ig002,
+> +						      panel);
+> +	struct mipi_dsi_device *dsi = ctx->dsi;
+> +	struct device *dev = &dsi->dev;
+> +	int ret;
+> +
+> +	if (!ctx->enabled)
+> +		return 0;
+> +
+> +	ret = mipi_dsi_dcs_set_display_off(dsi);
+> +	if (ret < 0)
+> +		dev_err(dev, "Failed to set panel off: %d\n", ret);
+> +
+> +	msleep(120);
+> +
+> +	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
+> +	if (ret < 0)
+> +		dev_err(dev, "Failed to enter sleep mode: %d\n", ret);
+> +
+> +	ctx->enabled = false;
+> +
+> +	return 0;
+> +}
+> +
+> +static int boe_th101mb31ig002_unprepare(struct drm_panel *panel)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = container_of(panel,
+> +						      struct boe_th101mb31ig002,
+> +						      panel);
+> +
+> +	if (!ctx->prepared)
+> +		return 0;
+> +
+> +	gpiod_set_value_cansleep(ctx->reset, 1);
+> +	gpiod_set_value_cansleep(ctx->enable, 0);
+> +	regulator_disable(ctx->power);
+> +
+> +	ctx->prepared = false;
+> +
+> +	return 0;
+> +}
+> +
+> +static int boe_th101mb31ig002_prepare(struct drm_panel *panel)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = container_of(panel,
+> +						      struct boe_th101mb31ig002,
+> +						      panel);
+> +	struct device *dev = &ctx->dsi->dev;
+> +	int ret;
+> +
+> +	if (ctx->prepared)
+> +		return 0;
+> +
+> +	ret = regulator_enable(ctx->power);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to enable power supply: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	gpiod_set_value_cansleep(ctx->enable, 1);
+> +	msleep(50);
+> +	boe_th101mb31ig002_reset(ctx);
+> +	boe_th101mb31ig002_enable(panel);
+> +
+> +	ctx->prepared = true;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct drm_display_mode boe_th101mb31ig002_default_mode = {
+> +	.clock		= 73500,
+> +	.hdisplay	= 800,
+> +	.hsync_start	= 800 + 64,
+> +	.hsync_end	= 800 + 64 + 16,
+> +	.htotal		= 800 + 64 + 16 + 64,
+> +	.vdisplay	= 1280,
+> +	.vsync_start	= 1280 + 2,
+> +	.vsync_end	= 1280 + 2 + 4,
+> +	.vtotal		= 1280 + 2 + 4 + 12,
+> +	.width_mm	= 135,
+> +	.height_mm	= 216,
+> +	.type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
+> +};
+> +
+> +static int boe_th101mb31ig002_get_modes(struct drm_panel *panel,
+> +					struct drm_connector *connector)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = container_of(panel,
+> +						      struct boe_th101mb31ig002,
+> +						      panel);
+> +	struct drm_display_mode *mode;
+> +
+> +	mode = drm_mode_duplicate(connector->dev,
+> +				  &boe_th101mb31ig002_default_mode);
+> +	if (!mode) {
+> +		dev_err(panel->dev, "Failed to add mode %ux%u@%u\n",
+> +			boe_th101mb31ig002_default_mode.hdisplay,
+> +			boe_th101mb31ig002_default_mode.vdisplay,
+> +			drm_mode_vrefresh(&boe_th101mb31ig002_default_mode));
+> +		return -ENOMEM;
+> +	}
+> +
+> +	drm_mode_set_name(mode);
+> +
+> +	connector->display_info.bpc = 8;
+> +	connector->display_info.width_mm = mode->width_mm;
+> +	connector->display_info.height_mm = mode->height_mm;
+> +
+> +	/*
+> +	 * TODO: Remove once all drm drivers call
+> +	 * drm_connector_set_orientation_from_panel()
+> +	 */
+> +	drm_connector_set_panel_orientation(connector, ctx->orientation);
+> +
+> +	drm_mode_probed_add(connector, mode);
+> +
+> +	return 1;
+> +}
+> +
+> +static enum drm_panel_orientation
+> +boe_th101mb31ig002_get_orientation(struct drm_panel *panel)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = container_of(panel,
+> +						      struct boe_th101mb31ig002,
+> +						      panel);
+> +
+> +	return ctx->orientation;
+> +}
+> +
+> +static const struct drm_panel_funcs boe_th101mb31ig002_funcs = {
+> +	.prepare = boe_th101mb31ig002_prepare,
+> +	.unprepare = boe_th101mb31ig002_unprepare,
+> +	.enable = boe_th101mb31ig002_enable,
+> +	.disable = boe_th101mb31ig002_disable,
+> +	.get_modes = boe_th101mb31ig002_get_modes,
+> +	.get_orientation = boe_th101mb31ig002_get_orientation,
+> +};
+> +
+> +static int boe_th101mb31ig002_dsi_probe(struct mipi_dsi_device *dsi)
+> +{
+> +	struct boe_th101mb31ig002 *ctx;
+> +	int ret;
+> +
+> +	ctx = devm_kzalloc(&dsi->dev, sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx)
+> +		return -ENOMEM;
+> +
+> +	ctx->enabled = false;
+> +	ctx->prepared = false;
+> +
+> +	mipi_dsi_set_drvdata(dsi, ctx);
+> +	ctx->dsi = dsi;
+> +
+> +	dsi->lanes = 4;
+> +	dsi->format = MIPI_DSI_FMT_RGB888;
+> +	dsi->mode_flags = MIPI_DSI_MODE_VIDEO_BURST |
+> +			  MIPI_DSI_MODE_NO_EOT_PACKET |
+> +			  MIPI_DSI_MODE_LPM;
+> +
+> +	ctx->power = devm_regulator_get(&dsi->dev, "power");
+> +	if (IS_ERR(ctx->power))
+> +		return dev_err_probe(&dsi->dev, PTR_ERR(ctx->power),
+> +				     "Failed to get power regulator\n");
+> +
+> +	ctx->enable = devm_gpiod_get(&dsi->dev, "enable", GPIOD_OUT_LOW);
+> +	if (IS_ERR(ctx->enable))
+> +		return dev_err_probe(&dsi->dev, PTR_ERR(ctx->enable),
+> +				     "Failed to get enable GPIO\n");
+> +
+> +	ctx->reset = devm_gpiod_get(&dsi->dev, "reset", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(ctx->reset))
+> +		return dev_err_probe(&dsi->dev, PTR_ERR(ctx->reset),
+> +				     "Failed to get reset GPIO\n");
+> +
+> +	ret = of_drm_get_panel_orientation(dsi->dev.of_node,
+> +					   &ctx->orientation);
+> +	if (ret)
+> +		return dev_err_probe(&dsi->dev, ret,
+> +				     "Failed to get orientation\n");
+> +
+> +	drm_panel_init(&ctx->panel, &dsi->dev, &boe_th101mb31ig002_funcs,
+> +		       DRM_MODE_CONNECTOR_DSI);
+> +
+> +	ret = drm_panel_of_backlight(&ctx->panel);
+> +	if (ret)
+> +		return ret;
+> +
+> +	drm_panel_add(&ctx->panel);
+> +
+> +	ret = mipi_dsi_attach(dsi);
+> +	if (ret < 0) {
+> +		dev_err_probe(&dsi->dev, ret,
+> +			      "Failed to attach panel to DSI host\n");
+> +		drm_panel_remove(&ctx->panel);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void boe_th101mb31ig002_dsi_remove(struct mipi_dsi_device *dsi)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = mipi_dsi_get_drvdata(dsi);
+> +
+> +	mipi_dsi_detach(dsi);
+> +	drm_panel_remove(&ctx->panel);
+> +}
+> +
+> +static const struct of_device_id boe_th101mb31ig002_of_match[] = {
+> +	{ .compatible = "boe,th101mb31ig002-28a", },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, boe_th101mb31ig002_of_match);
+> +
+> +static struct mipi_dsi_driver boe_th101mb31ig002_driver = {
+> +	.driver = {
+> +		.name = "boe-th101mb31ig002-28a",
+> +		.of_match_table = boe_th101mb31ig002_of_match,
+> +	},
+> +	.probe = boe_th101mb31ig002_dsi_probe,
+> +	.remove = boe_th101mb31ig002_dsi_remove,
+> +};
+> +module_mipi_dsi_driver(boe_th101mb31ig002_driver);
+> +
+> +MODULE_AUTHOR("Alexander Warnecke <awarnecke002@hotmail.com>");
+> +MODULE_DESCRIPTION("BOE TH101MB31IG002-28A MIPI-DSI LCD panel");
+> +MODULE_LICENSE("GPL");
+> 
+> -- 
+> 2.43.0
+> 
 
