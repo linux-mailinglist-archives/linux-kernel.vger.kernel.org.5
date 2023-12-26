@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-11269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B32D81E3E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:42:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5C2281E3E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:42:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C80A8283639
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:41:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34675282EB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:42:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0188A45014;
-	Tue, 26 Dec 2023 00:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C112946444;
+	Tue, 26 Dec 2023 00:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JiKURgs4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oGmT/e8M"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 455A044C6A;
-	Tue, 26 Dec 2023 00:25:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87A01C433C8;
-	Tue, 26 Dec 2023 00:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 118DD46420;
+	Tue, 26 Dec 2023 00:25:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 464D8C433C8;
+	Tue, 26 Dec 2023 00:25:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550332;
-	bh=rztRrvEd9NemaZKAEHw5h4Cvk1cS6cfrQjuK5r2wy+c=;
+	s=k20201202; t=1703550336;
+	bh=AQAKHcwMoVZDDNyVuMRYIUdwwzMaNURX+67A622xNxI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JiKURgs4Y5gS+EQyvXxX1o2Dd2lypZeebtRMCC4t/EJun4P87R2c/gKDsazD6twDG
-	 P6aqFMk9mi+KaKkxS6l4xsQVthUuFkDgehMkCgC7//x0pFQ1AJTVaNYTDceUgzppcF
-	 C1QniY0b03hf+fac8yMjWgwAAY305wieC9JwDvde7JKuG6kkAEPGfQxqN2eWN8luOE
-	 u6yt6XXnuKBW5BDg7Y0s+1qgAQduiXnUn0Oz3AOkA5O7lxxidMxEhs9fqf/jfmspB3
-	 VaoL2Ef6dW188iT2b3PAL3Ntd5Zq90l7W40l3EOISSMnfUKG0isR5vDowU4pjD0NiJ
-	 ka8s0R21UsBLA==
+	b=oGmT/e8MyUCcXAhaOSyP3izoEFpDFYsbWVqDr5a/4mkKeqcBIu5tmwOdTrNAJr3bX
+	 /UFKf6NF7qPmp0MH6G0HJHO8tAUq2Y8bXlVURzPMfB8zT3qSGg9AmPpEIGsUvoxAK1
+	 N613D2C/ypunj85m9+GZSYRDEsNkfcuG1Cah5rgUvoPk1mGFwncQG2Hbvp4VYwOyXv
+	 1Bw/MfkGsJl7T3Lwups2Keg6aW8dd58IywszBdCh3WyiYG458vfPG47yOE2EOUu+1H
+	 HSfQruSE11SUk7UOWo2NSVtZNwIenLjc9jeHne3ZqIBDMptGzAutMYBN4HNhcNdO1T
+	 QT8gHfVTxl/ag==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Shang Ye <yesh25@mail2.sysu.edu.cn>,
-	gurevitch <mail@gurevit.ch>,
-	Egor Ignatov <egori@altlinux.org>,
-	Anton Zhilyaev <anton@cpp.in>,
+Cc: Esther Shimanovich <eshimanovich@chromium.org>,
 	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	rrangel@chromium.org,
+	wse@tuxedocomputers.com,
+	hdegoede@redhat.com,
+	jdenose@chromium.org,
+	mkorpershoek@baylibre.com,
+	szfabian@bluemarch.art,
 	linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 2/9] Input: atkbd - skip ATKBD_CMD_GETID in translated mode
-Date: Mon, 25 Dec 2023 19:24:46 -0500
-Message-ID: <20231226002526.6605-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 3/9] Input: i8042 - add nomux quirk for Acer P459-G2-M
+Date: Mon, 25 Dec 2023 19:24:47 -0500
+Message-ID: <20231226002526.6605-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231226002526.6605-1-sashal@kernel.org>
 References: <20231226002526.6605-1-sashal@kernel.org>
@@ -61,124 +61,43 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.205
 Content-Transfer-Encoding: 8bit
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Esther Shimanovich <eshimanovich@chromium.org>
 
-[ Upstream commit 936e4d49ecbc8c404790504386e1422b599dec39 ]
+[ Upstream commit 335fe00319e030d481a54d5e0e68d50c5e672c0e ]
 
-There have been multiple reports of keyboard issues on recent laptop models
-which can be worked around by setting i8042.dumbkbd, with the downside
-being this breaks the capslock LED.
+After the laptop lid is opened, and the device resumes from S3 deep
+sleep, if the user presses a keyboard key while the screen is still black,
+the mouse and keyboard become unusable.
 
-It seems that these issues are caused by recent laptops getting confused by
-ATKBD_CMD_GETID. Rather then adding and endless growing list of quirks for
-this, just skip ATKBD_CMD_GETID alltogether on laptops in translated mode.
+Enabling this quirk prevents this behavior from occurring.
 
-The main goal of sending ATKBD_CMD_GETID is to skip binding to ps/2
-mice/touchpads and those are never used in translated mode.
-
-Examples of laptop models which benefit from skipping ATKBD_CMD_GETID:
-
-* "HP Laptop 15s-fq2xxx", "HP laptop 15s-fq4xxx" and "HP Laptop 15-dy2xxx"
-  models the kbd stops working for the first 2 - 5 minutes after boot
-  (waiting for EC watchdog reset?)
-
-* On "HP Spectre x360 13-aw2xxx" atkbd fails to probe the keyboard
-
-* At least 9 different Lenovo models have issues with ATKBD_CMD_GETID, see:
-  https://github.com/yescallop/atkbd-nogetid
-
-This has been tested on:
-
-1. A MSI B550M PRO-VDH WIFI desktop, where the i8042 controller is not
-   in translated mode when no keyboard is plugged in and with a ps/2 kbd
-   a "AT Translated Set 2 keyboard" /dev/input/event# node shows up
-
-2. A Lenovo ThinkPad X1 Yoga gen 8 (always has a translated set 2 keyboard)
-
-Reported-by: Shang Ye <yesh25@mail2.sysu.edu.cn>
-Closes: https://lore.kernel.org/linux-input/886D6167733841AE+20231017135318.11142-1-yesh25@mail2.sysu.edu.cn/
-Closes: https://github.com/yescallop/atkbd-nogetid
-Reported-by: gurevitch <mail@gurevit.ch>
-Closes: https://lore.kernel.org/linux-input/2iAJTwqZV6lQs26cTb38RNYqxvsink6SRmrZ5h0cBUSuf9NT0tZTsf9fEAbbto2maavHJEOP8GA1evlKa6xjKOsaskDhtJWxjcnrgPigzVo=@gurevit.ch/
-Reported-by: Egor Ignatov <egori@altlinux.org>
-Closes: https://lore.kernel.org/all/20210609073333.8425-1-egori@altlinux.org/
-Reported-by: Anton Zhilyaev <anton@cpp.in>
-Closes: https://lore.kernel.org/linux-input/20210201160336.16008-1-anton@cpp.in/
-Closes: https://bugzilla.redhat.com/show_bug.cgi?id=2086156
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20231115174625.7462-1-hdegoede@redhat.com
+Signed-off-by: Esther Shimanovich <eshimanovich@chromium.org>
+Link: https://lore.kernel.org/r/20231130195615.v2.1.Ibe78a9df97ecd18dc227a5cff67d3029631d9c11@changeid
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/keyboard/atkbd.c | 46 +++++++++++++++++++++++++++++++---
- 1 file changed, 42 insertions(+), 4 deletions(-)
+ drivers/input/serio/i8042-acpipnpio.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/input/keyboard/atkbd.c b/drivers/input/keyboard/atkbd.c
-index edc613efc158c..90dd3caa4612c 100644
---- a/drivers/input/keyboard/atkbd.c
-+++ b/drivers/input/keyboard/atkbd.c
-@@ -756,6 +756,44 @@ static void atkbd_deactivate(struct atkbd *atkbd)
- 			ps2dev->serio->phys);
- }
- 
-+#ifdef CONFIG_X86
-+static bool atkbd_is_portable_device(void)
-+{
-+	static const char * const chassis_types[] = {
-+		"8",	/* Portable */
-+		"9",	/* Laptop */
-+		"10",	/* Notebook */
-+		"14",	/* Sub-Notebook */
-+		"31",	/* Convertible */
-+		"32",	/* Detachable */
-+	};
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(chassis_types); i++)
-+		if (dmi_match(DMI_CHASSIS_TYPE, chassis_types[i]))
-+			return true;
-+
-+	return false;
-+}
-+
-+/*
-+ * On many modern laptops ATKBD_CMD_GETID may cause problems, on these laptops
-+ * the controller is always in translated mode. In this mode mice/touchpads will
-+ * not work. So in this case simply assume a keyboard is connected to avoid
-+ * confusing some laptop keyboards.
-+ *
-+ * Skipping ATKBD_CMD_GETID ends up using a fake keyboard id. Using a fake id is
-+ * ok in translated mode, only atkbd_select_set() checks atkbd->id and in
-+ * translated mode that is a no-op.
-+ */
-+static bool atkbd_skip_getid(struct atkbd *atkbd)
-+{
-+	return atkbd->translated && atkbd_is_portable_device();
-+}
-+#else
-+static inline bool atkbd_skip_getid(struct atkbd *atkbd) { return false; }
-+#endif
-+
- /*
-  * atkbd_probe() probes for an AT keyboard on a serio port.
-  */
-@@ -785,12 +823,12 @@ static int atkbd_probe(struct atkbd *atkbd)
-  */
- 
- 	param[0] = param[1] = 0xa5;	/* initialize with invalid values */
--	if (ps2_command(ps2dev, param, ATKBD_CMD_GETID)) {
-+	if (atkbd_skip_getid(atkbd) || ps2_command(ps2dev, param, ATKBD_CMD_GETID)) {
- 
- /*
-- * If the get ID command failed, we check if we can at least set the LEDs on
-- * the keyboard. This should work on every keyboard out there. It also turns
-- * the LEDs off, which we want anyway.
-+ * If the get ID command was skipped or failed, we check if we can at least set
-+ * the LEDs on the keyboard. This should work on every keyboard out there.
-+ * It also turns the LEDs off, which we want anyway.
-  */
- 		param[0] = 0;
- 		if (ps2_command(ps2dev, param, ATKBD_CMD_SETLEDS))
+diff --git a/drivers/input/serio/i8042-acpipnpio.h b/drivers/input/serio/i8042-acpipnpio.h
+index 09528c0a8a34e..124ab98ea43a4 100644
+--- a/drivers/input/serio/i8042-acpipnpio.h
++++ b/drivers/input/serio/i8042-acpipnpio.h
+@@ -351,6 +351,14 @@ static const struct dmi_system_id i8042_dmi_quirk_table[] __initconst = {
+ 		},
+ 		.driver_data = (void *)(SERIO_QUIRK_DRITEK)
+ 	},
++	{
++		/* Acer TravelMate P459-G2-M */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "TravelMate P459-G2-M"),
++		},
++		.driver_data = (void *)(SERIO_QUIRK_NOMUX)
++	},
+ 	{
+ 		/* Amoi M636/A737 */
+ 		.matches = {
 -- 
 2.43.0
 
