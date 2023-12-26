@@ -1,116 +1,96 @@
-Return-Path: <linux-kernel+bounces-11697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5251B81EA2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:24:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDCF481EA2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:36:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 416A3B22152
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 21:24:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD7471C22079
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 21:36:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54AE0523D;
-	Tue, 26 Dec 2023 21:24:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 390DB523E;
+	Tue, 26 Dec 2023 21:36:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XYX4HMBI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CGbWAaOX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45E6E4C6F
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 21:24:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5ce034f873fso2795035a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 13:24:03 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E3255224
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 21:36:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-35d82fb7e86so15299625ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 13:36:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703625843; x=1704230643; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gXj6atQGa3CCXZ7MV893XWtrEK6g8JaSv1wnUBmQOBc=;
-        b=XYX4HMBIhTDnMqnh0o66NqB9OjhMSzTfnLmrJUlhhCy4fzKQZDABT0oiNeTGNZoHdC
-         ZkRp6hhsygXhKRE8+A3ZrwYkszIqiuBTJXszb0ACAcBTZBC4tPBUt7bpO0cwj/KCSpv7
-         QWE1Z0Zdm6w4TNw3Z7ZDI+7PgsUAilmMPfVpsOFRDSsEUH7vuoLCsyC87QOf0Xc/oisa
-         8OQYWOuzUYDsdYgWXzqybaxgUAA6mhvIgYXeI049owy3PdDpasG9Bnaz19/LuCsIQNRW
-         25C4sBDgzfwD9bRQLf/SUeOfVIwN/oXQxIivXl5oSWuiCP1bK6XB8HhdfdsQbYXL4elu
-         +MiA==
+        d=gmail.com; s=20230601; t=1703626564; x=1704231364; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ECOmvaeUorv1py7vq0hkE8T1yjRXAE2xTX+cDTjGIXg=;
+        b=CGbWAaOX/LZOryc9Lt8CFhTIxtf03S+ahotOSPucTcj3lDpc7UGr7IJBGXTcCl+uiC
+         P2Go+IY3Qb6YoCSalgk3aLj7aHCZOBU/wN7pdk8HNrmu2O2LZQvfhYpHGl3uHL0w/1NH
+         StaRxmTh3890FSReqixOpzV/NQ86V+fEVIBRcPan4y1GmbOfj9pG2sWtiZZIhmOX1KG2
+         +SENnwgjUuvx+V23i62ovZz0TNNF1xZR7fwQbUAFNmftHKlA/ZvRr9oOQnfvKxlctPju
+         jvhcejw7Mp/1R2QIhuMyrf/1fZOzjJCvXqMQL3DbDNpYM2ZHBQYBwHoIitqvZ4N5rL5a
+         uBzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703625843; x=1704230643;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gXj6atQGa3CCXZ7MV893XWtrEK6g8JaSv1wnUBmQOBc=;
-        b=JWlLQfX2qjMbRrgxJo1K3UKmn0up6hnmbWeNjRBl0AGKqaYupEjNq1csUfEZC2ZiC1
-         8yBKnNvDysmVTnR6dOoCfr1er44qAznZq688OYAM8YeZXSYwZQX31ih3Aubfmq/qMj7w
-         ASAyHo4sLlpN6G/hoHwyooTKenXX5XhLOaIcMi2HEiBms1a8ReaK6kcnUbX9WYcbE7RB
-         DsBCJSjXrSrG16RJgITlMhO61KeR7iq/hpoizY5MIba/1tA4uuHMCO8FQxUZJ8RXYfct
-         70vWf6+9amRQSXS0dv5h/R5xcR3Lwp1qk5HqIN/qoeqkAAiwa7/1TYhZsY+G88yd2VwO
-         riuA==
-X-Gm-Message-State: AOJu0YwZRspKY/9RLtg1sCK4wIFOIAYExXdvppylEpnS+TtPyMYI8hsh
-	lNuWu7hf5xgySrer6zLi9rP/mQjj7sw/YxuQXOc=
-X-Google-Smtp-Source: AGHT+IGBCxn5ae9LfInMHUxvtWkVHyvBSOr4MiUqi0DzSWtBhk/a3C6l4mIoBZGNBdE4zEhBW+c1kg9Z/F7o
-X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
- (user=tanzirh job=sendgmr) by 2002:a65:64c4:0:b0:5ca:44c0:4a5 with SMTP id
- t4-20020a6564c4000000b005ca44c004a5mr66269pgv.4.1703625842439; Tue, 26 Dec
- 2023 13:24:02 -0800 (PST)
-Date: Tue, 26 Dec 2023 21:23:55 +0000
+        d=1e100.net; s=20230601; t=1703626564; x=1704231364;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ECOmvaeUorv1py7vq0hkE8T1yjRXAE2xTX+cDTjGIXg=;
+        b=mU5G1OVA2SEiJ+f0JUPmR7uqxxWW+9NKW7EZviMiAAN4f58/7a7CYC5WX7AftanJ93
+         gXkTZyMTybByQ1eNT3aHk4jUjj/kahTMY/qtIUfTPCqM1kbHxQjiQCkps6NMKgdDMIAS
+         ggCVkLuKvRXwzV8oZqrrCmdG4XGg04TP8iMywAW6ieP14b0eqjIOQmR8LNZ980re+BLZ
+         a7fNdRN42XY/zkI8YUaUXOl/JjB9rMQhjpSrcFnmOiXKRsv4RYhn17KrVtgglmFjZOY5
+         ZVrQ4eqFWrJ9bxwJAQlLfxZ2OOSj1vHhHYDKh5Bi/oOzUq5GYH7QnRvXYNssc3+Vn3nO
+         n94w==
+X-Gm-Message-State: AOJu0YwsHSluvCuLACQL8kmbJzj7o5/9EkmKGMfDoIgaosa5v/Ir6gp5
+	iHlE8TAEoh9ET88BcWgsh6w=
+X-Google-Smtp-Source: AGHT+IGkacSWHePokd6l49s1MPk9CQ9SGmZgBidJWW/DBejHjqY5FdTV7bNQj7QMUKM64BQp2opeBg==
+X-Received: by 2002:a05:6e02:2490:b0:35f:e8c5:2d0b with SMTP id bt16-20020a056e02249000b0035fe8c52d0bmr8342978ilb.40.1703626564252;
+        Tue, 26 Dec 2023 13:36:04 -0800 (PST)
+Received: from localhost ([121.174.67.130])
+        by smtp.gmail.com with ESMTPSA id jv11-20020a170903058b00b001d08bbcf78bsm10563474plb.74.2023.12.26.13.36.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Dec 2023 13:36:03 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 27 Dec 2023 06:36:01 +0900
+From: Tejun Heo <tj@kernel.org>
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Naohiro.Aota@wdc.com,
+	kernel-team@meta.com
+Subject: Re: [PATCH 01/10] workqueue: Move pwq->max_active to wq->max_active
+Message-ID: <ZYtHQc6pahtAUiJ8@mtj.duckdns.org>
+References: <20231220072529.1036099-1-tj@kernel.org>
+ <20231220072529.1036099-2-tj@kernel.org>
+ <CAJhGHyB-8hU7W9HV1ctD67Q9d9o+tmhesYqtBcMEmO1+taF=cw@mail.gmail.com>
+ <ZYsyHZg6tMAtMp4Q@mtj.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAGpEi2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDIyMz3bLUoqRiXWMDCwMDM2PDFOM0QyWg2oKi1LTMCrA50bG1tQCUXI6 LVwAAAA==
-X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1703625841; l=853;
- i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
- bh=It8Le0eVbcjK1msrpkzQZ4fWEk4P7H+dOJKoReyil1U=; b=SrIMkp54bIj88ln2kxZ9sU0wHEdOeIrfTs84FnqQgcoNG7jkAr/RkSjv/ARlLBNI5DPufPm7p
- hhXOMa9NKajCQ81gFqLAfzg88hnE9eagm7lyq+nshD0ropGP7QNIoXC
-X-Mailer: b4 0.12.4
-Message-ID: <20231226-verbs-v1-1-3a2cecf11afd@google.com>
-Subject: [PATCH] xprtrdma: removed unnecessary headers from verbs.c
-From: Tanzir Hasan <tanzirh@google.com>
-To: Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, 
-	Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
-	Tom Talpey <tom@talpey.com>, Trond Myklebust <trond.myklebust@hammerspace.com>, 
-	Anna Schumaker <anna@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: linux-nfs@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Nick Desaulniers <nnn@google.com>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Tanzir Hasan <tanzirh@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYsyHZg6tMAtMp4Q@mtj.duckdns.org>
 
-asm-generic/barrier.h and asm/bitops.h are already brought into the
-header and the file can still be built with their removal.
+On Wed, Dec 27, 2023 at 05:05:49AM +0900, Tejun Heo wrote:
+> Is that a problem tho? There's no execution order guarantee except for
+> ordered workqueues which is not affected by this. In a later change, we
+> switch to list of pending pwqs instead of work items and the issue ordering
+> is lost anyway. This isn't a significant departure from previous behaviors
+> either given that there has never been ordering across pwq boundaries.
 
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Tanzir Hasan <tanzirh@google.com>
----
- net/sunrpc/xprtrdma/verbs.c | 3 ---
- 1 file changed, 3 deletions(-)
+Thought more about it and I was wrong. This introduces reordering within pwq
+which is new and can break ordered workqueues. Will fix.
 
-diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
-index 28c0771c4e8c..5436560dda85 100644
---- a/net/sunrpc/xprtrdma/verbs.c
-+++ b/net/sunrpc/xprtrdma/verbs.c
-@@ -55,9 +55,6 @@
- #include <linux/sunrpc/svc_rdma.h>
- #include <linux/log2.h>
- 
--#include <asm-generic/barrier.h>
--#include <asm/bitops.h>
--
- #include <rdma/ib_cm.h>
- 
- #include "xprt_rdma.h"
+Thanks.
 
----
-base-commit: fbafc3e621c3f4ded43720fdb1d6ce1728ec664e
-change-id: 20231226-verbs-30800631d3f1
-
-Best regards,
 -- 
-Tanzir Hasan <tanzirh@google.com>
-
+tejun
 
