@@ -1,149 +1,94 @@
-Return-Path: <linux-kernel+bounces-11567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CF6481E842
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:59:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 466EA81E845
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:03:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35F58283181
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:59:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC76E1F23B2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:03:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 823E94F88A;
-	Tue, 26 Dec 2023 15:59:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 837604F5F3;
+	Tue, 26 Dec 2023 16:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ncXIt3XI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83C24F5ED
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 15:59:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35fe9fa7f4fso31231875ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 07:59:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703606359; x=1704211159;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xKqABHvkxI9tRyf7K59TFrJ0M3NEAQM3qHeXYjfCyOc=;
-        b=RCFpO7IziR7r+HzQO5uGnbydW5gAZMkHfXVraikOMhKpkf3ayhxbyJfWESVJVLTd1o
-         XZ064EaxZ9XJcG1uB01S+h9l4vVwPTBQHOJifOgqBbnY972FA6rRpnSbx2cfgHaY6P/B
-         8V8uVHmy1z2BItbvrs7iTRTtspUyIReUrPop2nVvTVXvpDH9+fJJYUndJddZ9tWACDk2
-         hgflLTpSjvkrPZrYobnLZcOUypDhkByfQKVXQ9pKZom9bhWVv4EBNAGPAchUs6ApdNqq
-         O4ITwgHPZOpw8aW8azcK69F5vx1apFLua3Emc/d2OL6LGhi4mdZNlp2NBqLm5ErNGZMM
-         6kwg==
-X-Gm-Message-State: AOJu0YzJAdErV0+crREcWjpeuiaaK58I87dn+wCiGy7B8SHvR3gxjPlv
-	cT9WC4PRGjFMANF7FCQlUR78EzVpXPio55R0OK+6KJJDHKqL
-X-Google-Smtp-Source: AGHT+IFYdVQOgeJNL01WZvVJm0kp2LoIHqrruHZ5LRJl9WCkA4ny8esb0VoDSz0n2XB3QJvEym4hfLsGwi2X00TF6f4CH5+AXXiL
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D028E4F5E1;
+	Tue, 26 Dec 2023 16:03:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F53DC433C7;
+	Tue, 26 Dec 2023 16:03:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703606599;
+	bh=HoMZELXlpdrL9WlBHJaV2qiDNG7+Xz4JRKFkWqdFkSI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ncXIt3XIXY4R4KruJCH+i8KZg/B7XkHMO5qc+jqpDUJemaanQ2e8XgtaNhXg8wdDw
+	 0jrS8O6VHsRCmzRyGP0kmOLlfbrawUYiPBPltRZIFOS+yxCz+j0AeRlDyHju/nh7re
+	 +DFpS7zpVWhHYjfJJcOudT4pnBEwMt/Q3hCTvdrJgVnzo+hPfQaoSUv2fWiuXUnpXt
+	 KLiRs/qWzV4KN7q7EfXKQv9NUoCoIhuF27MGtwhGn4AKSRCHYyxBaChKN0xpNsuFyv
+	 M0suIoDBcWRDDYQGmT1J9kR1BCJdqzi5UjTTJeJrRfBTZNkTYavtYiw0g2k9iA+egv
+	 zjkbl0uwPrLkg==
+Date: Tue, 26 Dec 2023 16:03:11 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+ linux-iio@vger.kernel.org
+Subject: Re: [PATCH] iio: linux/iio.h: fix Excess kernel-doc description
+ warning
+Message-ID: <20231226160311.3db9ff73@jic23-huawei>
+In-Reply-To: <20231223050556.13948-1-rdunlap@infradead.org>
+References: <20231223050556.13948-1-rdunlap@infradead.org>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c28:b0:35f:d4dc:1b1d with SMTP id
- m8-20020a056e021c2800b0035fd4dc1b1dmr774874ilh.1.1703606359070; Tue, 26 Dec
- 2023 07:59:19 -0800 (PST)
-Date: Tue, 26 Dec 2023 07:59:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dea025060d6bc3bc@google.com>
-Subject: [syzbot] [bpf?] KMSAN: uninit-value in ___bpf_prog_run (4)
-From: syzbot <syzbot+853242d9c9917165d791@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, sdf@google.com, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On Fri, 22 Dec 2023 21:05:56 -0800
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-syzbot found the following issue on:
+> Remove the @of_xlate: lines to prevent the kernel-doc warning:
+> 
+> include/linux/iio/iio.h:534: warning: Excess struct member 'of_xlate' description in 'iio_info'
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: linux-iio@vger.kernel.org
+Applied.
 
-HEAD commit:    55cb5f43689d Merge tag 'trace-v6.7-rc6' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1275e59ee80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4a65fa9f077ead01
-dashboard link: https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Thanks,
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Jonathan
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ab88d88fa1d1/disk-55cb5f43.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/587fd1186192/vmlinux-55cb5f43.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c7bbb5741191/bzImage-55cb5f43.xz
+> ---
+>  include/linux/iio/iio.h |    6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff -- a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+> --- a/include/linux/iio/iio.h
+> +++ b/include/linux/iio/iio.h
+> @@ -434,13 +434,7 @@ struct iio_trigger; /* forward declarati
+>   * @update_scan_mode:	function to configure device and scan buffer when
+>   *			channels have changed
+>   * @debugfs_reg_access:	function to read or write register value of device
+> - * @of_xlate:		function pointer to obtain channel specifier index.
+> - *			When #iio-cells is greater than '0', the driver could
+> - *			provide a custom of_xlate function that reads the
+> - *			*args* and returns the appropriate index in registered
+> - *			IIO channels array.
+>   * @fwnode_xlate:	fwnode based function pointer to obtain channel specifier index.
+> - *			Functionally the same as @of_xlate.
+>   * @hwfifo_set_watermark: function pointer to set the current hardware
+>   *			fifo watermark level; see hwfifo_* entries in
+>   *			Documentation/ABI/testing/sysfs-bus-iio for details on
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+853242d9c9917165d791@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in ___bpf_prog_run+0x8a26/0xdb80 kernel/bpf/core.c:2037
- ___bpf_prog_run+0x8a26/0xdb80 kernel/bpf/core.c:2037
- __bpf_prog_run512+0xb5/0xe0 kernel/bpf/core.c:2203
- bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run include/linux/filter.h:658 [inline]
- bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
- bpf_prog_test_run_skb+0x14e5/0x1f20 net/bpf/test_run.c:1045
- bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4040
- __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5401
- __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
- __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5485
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Uninit was stored to memory at:
- ___bpf_prog_run+0x8567/0xdb80
- __bpf_prog_run512+0xb5/0xe0 kernel/bpf/core.c:2203
- bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run include/linux/filter.h:658 [inline]
- bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
- bpf_prog_test_run_skb+0x14e5/0x1f20 net/bpf/test_run.c:1045
- bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4040
- __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5401
- __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
- __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5485
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Local variable stack created at:
- __bpf_prog_run512+0x45/0xe0 kernel/bpf/core.c:2203
- bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run include/linux/filter.h:658 [inline]
- bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
-
-CPU: 1 PID: 13775 Comm: syz-executor.3 Not tainted 6.7.0-rc6-syzkaller-00022-g55cb5f43689d #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
