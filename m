@@ -1,268 +1,189 @@
-Return-Path: <linux-kernel+bounces-11390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BDCC81E584
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 07:34:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74C2F81E588
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 07:38:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1C181F22469
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:34:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07981B20EB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:38:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE964C3D6;
-	Tue, 26 Dec 2023 06:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E2D4C3D6;
+	Tue, 26 Dec 2023 06:37:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="kbZuLVhK"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PyVxD4Mv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9D274C62B
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 06:34:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231226063431epoutp03a7f14e6553ebc29f347bb6e7a514fa2f~kTiMg5BSt1047610476epoutp03s
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 06:34:31 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231226063431epoutp03a7f14e6553ebc29f347bb6e7a514fa2f~kTiMg5BSt1047610476epoutp03s
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1703572471;
-	bh=QTB84M50WFYIDe/+9MiAYey4svYfPT1DbPQhlDkmeEg=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-	b=kbZuLVhKqJwYE/hpR5vnjGHPphn4VbfDxaEsQKATm7D8KKFDh34UWA/9rQ4Cht1AT
-	 ochOcunOOALMlw55dzxNmYJYCa9XW1ER6WSHCAbo1VBnNo+y8HFXbCQF5Qtwvb4saP
-	 wRkjBS/cSpEeF893Ii14p0bYbBEgl9VJJiJnakoc=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-	20231226063431epcas5p2a1d9081c0516f4d5e4d0375bc170e60b~kTiL28fQj2204722047epcas5p20;
-	Tue, 26 Dec 2023 06:34:31 +0000 (GMT)
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.181]) by
-	epsnrtp3.localdomain (Postfix) with ESMTP id 4SzlP13BZBz4x9Pp; Tue, 26 Dec
-	2023 06:34:29 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-	epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	A8.F1.19369.5F37A856; Tue, 26 Dec 2023 15:34:29 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-	20231226062756epcas5p22bc39bd25d403a9bed16c220f82c4a83~kTccWazlP0679806798epcas5p21;
-	Tue, 26 Dec 2023 06:27:56 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20231226062756epsmtrp1bf1ad9b6da87585b49f8d077f6cdf6ff~kTccVuCsa1947119471epsmtrp10;
-	Tue, 26 Dec 2023 06:27:56 +0000 (GMT)
-X-AuditID: b6c32a50-9e1ff70000004ba9-de-658a73f55bd7
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-	A8.C7.18939.C627A856; Tue, 26 Dec 2023 15:27:56 +0900 (KST)
-Received: from FDSFTE308 (unknown [107.122.81.79]) by epsmtip2.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20231226062754epsmtip29f5e872132462de8780110b3955da104~kTcasjk3e0864408644epsmtip2g;
-	Tue, 26 Dec 2023 06:27:54 +0000 (GMT)
-From: "Aakarsh Jain" <aakarsh.jain@samsung.com>
-To: "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>, "'Marek
- Szyprowski'" <m.szyprowski@samsung.com>, "'Andrzej Hajda'"
-	<andrzej.hajda@intel.com>, "'Mauro Carvalho Chehab'" <mchehab@kernel.org>
-Cc: <linux-fsd@tesla.coma>, <linux-samsung-soc@vger.kernel.org>, "'Smitha T
- Murthy'" <smithatmurthy@gmail.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20231224-n-s5p-mfc-const-v1-9-a3b246470fe4@linaro.org>
-Subject: RE: [PATCH 09/15] media: s5p-mfc: constify s5p_mfc_fmt structures
-Date: Tue, 26 Dec 2023 11:57:53 +0530
-Message-ID: <15d401da37c4$a9dece80$fd9c6b80$@samsung.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A20B4C3BD;
+	Tue, 26 Dec 2023 06:37:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703572669; x=1735108669;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=h30QkdJua341y7XU9tstsZbr98bg+tMNTsxTHbHpPMU=;
+  b=PyVxD4MvK1vLJ4TzNR7qu7qlVeECYvN9Hs4PoGI9/mRoawKiKWSMxI4d
+   SIdL0tTmrdhCVYNes5RNSCyGqklESwYEj8dGhx4ugdgQoyE15AHDYhu23
+   CWSBujCMmZrXgAVL6IcO3+BqvQXTPl6+nAMB9jtVxJN8ZnlyWwyjADZtx
+   SdaGGdo8wUDFgGIAM1sx/Alksc8AhPnHYPBZznDZN0bct12/JI5VNYAU6
+   cWcTAzISkd8XQM+s7DmjgMg7UOKqrrW2i14nSAZgIK7kjZKjwnkdnNNIU
+   KRdHN54kB/2qNXeTjTcw441IDrSxGhAOxcbTR5u+syyHYhQu9EVT9vsJo
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="3409955"
+X-IronPort-AV: E=Sophos;i="6.04,304,1695711600"; 
+   d="scan'208";a="3409955"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 22:37:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="806813703"
+X-IronPort-AV: E=Sophos;i="6.04,304,1695711600"; 
+   d="scan'208";a="806813703"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 25 Dec 2023 22:37:46 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rI14R-000E8r-2M;
+	Tue, 26 Dec 2023 06:37:43 +0000
+Date: Tue, 26 Dec 2023 14:36:57 +0800
+From: kernel test robot <lkp@intel.com>
+To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+	christophe.jaillet@wanadoo.fr, andriy.shevchenko@linux.intel.com,
+	David.Laight@aculab.com, ddiss@suse.de
+Cc: oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH 2/3] kstrtox: add unit tests for memparse_safe()
+Message-ID: <202312261423.zqIlU2hn-lkp@intel.com>
+References: <56ea15d8b430f4fe3f8e55509ad0bc72b1d9356f.1703324146.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKOGlHY6WxiJqLoSx78067AznjgmAGjTMXtAfUJOwGvNpHr8A==
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBJsWRmVeSWpSXmKPExsWy7bCmlu7X4q5Ug7dPhC3uL/7MYrH39VZ2
-	i02Pr7FaLJsdZHF51xw2i54NW1ktZpzfx2Sx9shddotlm/4wWbQ0LmF14PLYOesuu8fiPS+Z
-	PDat6mTzuHNtD5vH5iX1Hn1bVjF6/H39is3j8ya5AI6obJuM1MSU1CKF1Lzk/JTMvHRbJe/g
-	eOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoBOVFMoSc0qBQgGJxcVK+nY2RfmlJakKGfnF
-	JbZKqQUpOQUmBXrFibnFpXnpenmpJVaGBgZGpkCFCdkZG884FezRqPh78Tx7A+N6pS5GTg4J
-	AROJpjMzGLsYuTiEBPYwSsw7dZEVJCEk8IlRYm6bC0QCyP74vIcdpqNx01wmiMRORomObZOY
-	IZznjBIP/i8Ea2cT0Je4f6qHFSQhInCOUWJb/xSwFmaBm4wSx97MZAap4hRwkfiz6iRYh7CA
-	l8TD3xfYuhg5OFgEVCV23wwGCfMKWErM+zmBFcIWlDg58wkLiM0soC2xbOFrZoiTFCR+Pl0G
-	ViMi4CSxcMltJogacYmjP3vArpMQOMAhcWLKYqgfXCT6Tt5jhLCFJV4d3wIVl5J42d8GZSdL
-	PF70EmpBjsT6PVNYIGx7iQNX5rCA3MksoCmxfpc+RFhWYuqpdVB7+SR6fz9hgojzSuyYB2Or
-	Scy584MVwpaROLx6KeMERqVZSF6bheS1WUhemIWwbQEjyypGqdSC4tz01GTTAkPdvNRyeIwn
-	5+duYgQnYa2AHYyrN/zVO8TIxMF4iFGCg1lJhFdWsSNViDclsbIqtSg/vqg0J7X4EKMpMLwn
-	MkuJJucD80BeSbyhiaWBiZmZmYmlsZmhkjjv69a5KUIC6YklqdmpqQWpRTB9TBycUg1MPmlp
-	S/VqXGduTNg1tfCkjcUOdfunFgqb9y73qy0WPLKCK/4+D8fbsxOEn97MebTMOc3t2r1Tl80P
-	Vif93Nq2VlpGUKb1dkmjQ+p7NeF0pde6b7XuNPIavr9YvifFfM1eP5VNwb8OyIe0ZUWHnDth
-	su8Yu8GhcMFNMxxed73X6jv1uos7wvgJV4K92uzy5ijt2c/uTD3f/f7C329THI5vb7Kb7183
-	/9xa3vN7uvvm3vt9b1avxr/7Rgt3KRjdfPapX0L16VVxN46iR4dW7QytmbClXDS4KONS2mE7
-	pjbtXG5+dTfOTf1pWS2HCu6YsYvt2CrQZaas4HPDR15Xvvhy8g/BBDutyT7yd29VzpitxFKc
-	kWioxVxUnAgANnw1BUsEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsWy7bCSvG5OUVeqwfN2KYv7iz+zWOx9vZXd
-	YtPja6wWy2YHWVzeNYfNomfDVlaLGef3MVmsPXKX3WLZpj9MFi2NS1gduDx2zrrL7rF4z0sm
-	j02rOtk87lzbw+axeUm9R9+WVYwef1+/YvP4vEkugCOKyyYlNSezLLVI3y6BK+P6qe1MBZ/U
-	Ktat38/cwPhSoYuRk0NCwESicdNcpi5GLg4hge2MEhPWzGOESMhI/G87xg5hC0us/PecHaLo
-	KaPEyyOT2EASbAL6EvdP9bCCJEQELjBKbNmzgA3EYRa4zyjRtWk71NyzQM6i/WCzOAVcJP6s
-	OskKYgsLeEk8/H0BqIODg0VAVWL3zWCQMK+ApcS8nxNYIWxBiZMzn7CA2MwC2hK9D1sZYexl
-	C18zQ5ynIPHz6TKwehEBJ4mFS24zQdSISxz92cM8gVF4FpJRs5CMmoVk1CwkLQsYWVYxiqYW
-	FOem5yYXGOoVJ+YWl+al6yXn525iBMegVtAOxmXr/+odYmTiYDzEKMHBrCTCK6vYkSrEm5JY
-	WZValB9fVJqTWnyIUZqDRUmcVzmnM0VIID2xJDU7NbUgtQgmy8TBKdXAtLo2tqbGc0rlx9b4
-	x19ke9IXPQm6M/F76vYvzh/O9Llc69RflCX97e3hvc5zp+1uPPrgqCzv36gVdy/2dVhcX7NO
-	7+3HWS9XF57p3ZCXvOa4e1XbbMYV/6PWbQ/Jla+NsLpv1GS5zCTPRLTunkGO0x/t2LSC81oP
-	n0pOueLxxbPqg3l0zffbxzfNXsJV5DzXb+cKwSZ7npcfHiUr1XT49JkZHjs8eZKys+HmoFli
-	X9rjL21jOly55Nwky06l3+eW7VCwNft9cRLzC8FjpjK14fzi0XdV1hXebo16yq9wanK+ifbm
-	p5eD5/8K0tNceXBdMPu9QzOn7y9RNLzHae8eekZ26ta/xeufHLr36yx7wwslluKMREMt5qLi
-	RADyq//SMAMAAA==
-X-CMS-MailID: 20231226062756epcas5p22bc39bd25d403a9bed16c220f82c4a83
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231224154446epcas5p2b08000b76b8a94063b164a55e5e8a999
-References: <20231224-n-s5p-mfc-const-v1-0-a3b246470fe4@linaro.org>
-	<CGME20231224154446epcas5p2b08000b76b8a94063b164a55e5e8a999@epcas5p2.samsung.com>
-	<20231224-n-s5p-mfc-const-v1-9-a3b246470fe4@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56ea15d8b430f4fe3f8e55509ad0bc72b1d9356f.1703324146.git.wqu@suse.com>
 
+Hi Qu,
 
+kernel test robot noticed the following build warnings:
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
-> Sent: 24 December 2023 21:14
-> To: Marek Szyprowski <m.szyprowski=40samsung.com>; Andrzej Hajda
-> <andrzej.hajda=40intel.com>; Mauro Carvalho Chehab
-> <mchehab=40kernel.org>
-> Cc: Aakarsh Jain <aakarsh.jain=40samsung.com>; linux-fsd=40tesla.coma; li=
-nux-
-> samsung-soc=40vger.kernel.org; Smitha T Murthy
-> <smithatmurthy=40gmail.com>; linux-arm-kernel=40lists.infradead.org; linu=
-x-
-> media=40vger.kernel.org; linux-kernel=40vger.kernel.org; Krzysztof Kozlow=
-ski
-> <krzysztof.kozlowski=40linaro.org>
-> Subject: =5BPATCH 09/15=5D media: s5p-mfc: constify s5p_mfc_fmt structure=
-s
->=20
-> Static =22s5p_mfc_fmt=22 structures are not modified by the driver, so th=
-ey can
-> be made const for code safety.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
-> ---
->  drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h =7C 4 ++--
->  drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c    =7C 6 +++---
->  drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c    =7C 8 ++++----
->  3 files changed, 9 insertions(+), 9 deletions(-)
->=20
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
-> b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
-> index fa556f27fa06..e9283020070e 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
-> =40=40 -633,8 +633,8 =40=40 struct s5p_mfc_ctx =7B
->  	unsigned int int_err;
->  	wait_queue_head_t queue;
->=20
-> -	struct s5p_mfc_fmt *src_fmt;
-> -	struct s5p_mfc_fmt *dst_fmt;
-> +	const struct s5p_mfc_fmt *src_fmt;
-> +	const struct s5p_mfc_fmt *dst_fmt;
->=20
->  	struct vb2_queue vq_src;
->  	struct vb2_queue vq_dst;
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
-> b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
-> index 4dbe8792ac3d..2f664c7e9e4c 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
-> =40=40 -27,7 +27,7 =40=40
->  =23include =22s5p_mfc_opr.h=22
->  =23include =22s5p_mfc_pm.h=22
->=20
-> -static struct s5p_mfc_fmt formats=5B=5D =3D =7B
-> +static const struct s5p_mfc_fmt formats=5B=5D =3D =7B
->  	=7B
->  		.fourcc		=3D V4L2_PIX_FMT_NV12MT_16X16,
->  		.codec_mode	=3D S5P_MFC_CODEC_NONE,
-> =40=40 -163,7 +163,7 =40=40 static struct s5p_mfc_fmt formats=5B=5D =3D =
-=7B  =23define
-> NUM_FORMATS ARRAY_SIZE(formats)
->=20
->  /* Find selected format description */
-> -static struct s5p_mfc_fmt *find_format(struct v4l2_format *f, unsigned i=
-nt
-> t)
-> +static const struct s5p_mfc_fmt *find_format(struct v4l2_format *f,
-> +unsigned int t)
->  =7B
->  	unsigned int i;
->=20
-> =40=40 -387,7 +387,7 =40=40 static int vidioc_g_fmt(struct file *file, vo=
-id *priv,
-> struct v4l2_format *f)  static int vidioc_try_fmt(struct file *file, void=
- *priv,
-> struct v4l2_format *f)  =7B
->  	struct s5p_mfc_dev *dev =3D video_drvdata(file);
-> -	struct s5p_mfc_fmt *fmt;
-> +	const struct s5p_mfc_fmt *fmt;
->=20
->  	mfc_debug(2, =22Type is %d=5Cn=22, f->type);
->  	if (f->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) =7B diff --git
-> a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
-> b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
-> index 4b4c129c09e7..d6a4b9c701eb 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
-> =40=40 -30,7 +30,7 =40=40
->  =23define DEF_SRC_FMT_ENC	V4L2_PIX_FMT_NV12M
->  =23define DEF_DST_FMT_ENC	V4L2_PIX_FMT_H264
->=20
-> -static struct s5p_mfc_fmt formats=5B=5D =3D =7B
-> +static const struct s5p_mfc_fmt formats=5B=5D =3D =7B
->  	=7B
->  		.fourcc		=3D V4L2_PIX_FMT_NV12MT_16X16,
->  		.codec_mode	=3D S5P_MFC_CODEC_NONE,
-> =40=40 -97,7 +97,7 =40=40 static struct s5p_mfc_fmt formats=5B=5D =3D =7B=
-  =7D;
->=20
->  =23define NUM_FORMATS ARRAY_SIZE(formats) -static struct s5p_mfc_fmt
-> *find_format(struct v4l2_format *f, unsigned int t)
-> +static const struct s5p_mfc_fmt *find_format(struct v4l2_format *f,
-> +unsigned int t)
->  =7B
->  	unsigned int i;
->=20
-> =40=40 -1394,7 +1394,7 =40=40 static int vidioc_g_fmt(struct file *file, =
-void *priv,
-> struct v4l2_format *f)  static int vidioc_try_fmt(struct file *file, void=
- *priv,
-> struct v4l2_format *f)  =7B
->  	struct s5p_mfc_dev *dev =3D video_drvdata(file);
-> -	struct s5p_mfc_fmt *fmt;
-> +	const struct s5p_mfc_fmt *fmt;
->  	struct v4l2_pix_format_mplane *pix_fmt_mp =3D &f->fmt.pix_mp;
->=20
->  	if (f->type =3D=3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) =7B =40=40 -
-> 2355,7 +2355,7 =40=40 static const struct v4l2_ioctl_ops s5p_mfc_enc_ioct=
-l_ops
-> =3D =7B
->  	.vidioc_unsubscribe_event =3D v4l2_event_unsubscribe,  =7D;
->=20
-> -static int check_vb_with_fmt(struct s5p_mfc_fmt *fmt, struct vb2_buffer
-> *vb)
-> +static int check_vb_with_fmt(const struct s5p_mfc_fmt *fmt, struct
-> +vb2_buffer *vb)
->  =7B
->  	int i;
->=20
->=20
-> --
-> 2.34.1
+[auto build test WARNING on kdave/for-next]
+[also build test WARNING on akpm-mm/mm-everything linus/master v6.7-rc7 next-20231222]
+[cannot apply to akpm-mm/mm-nonmm-unstable]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Reviewed-by: Aakarsh Jain <aakarsh.jain=40samsung.com>
+url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/kstrtox-introduce-a-safer-version-of-memparse/20231225-151921
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/56ea15d8b430f4fe3f8e55509ad0bc72b1d9356f.1703324146.git.wqu%40suse.com
+patch subject: [PATCH 2/3] kstrtox: add unit tests for memparse_safe()
+config: m68k-randconfig-r133-20231226 (https://download.01.org/0day-ci/archive/20231226/202312261423.zqIlU2hn-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231226/202312261423.zqIlU2hn-lkp@intel.com/reproduce)
 
-Thanks=21
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312261423.zqIlU2hn-lkp@intel.com/
 
+sparse warnings: (new ones prefixed by >>)
+>> lib/test-kstrtox.c:339:40: sparse: sparse: cast truncates bits from constant value (efefefef7a7a7a7a becomes 7a7a7a7a)
+   lib/test-kstrtox.c:351:39: sparse: sparse: cast truncates bits from constant value (efefefef7a7a7a7a becomes 7a7a7a7a)
+
+vim +339 lib/test-kstrtox.c
+
+   275	
+   276	/* Want to include "E" suffix for full coverage. */
+   277	#define MEMPARSE_TEST_SUFFIX	(MEMPARSE_SUFFIX_K | MEMPARSE_SUFFIX_M |\
+   278					 MEMPARSE_SUFFIX_G | MEMPARSE_SUFFIX_T |\
+   279					 MEMPARSE_SUFFIX_P | MEMPARSE_SUFFIX_E)
+   280	
+   281	static void __init test_memparse_safe_fail(void)
+   282	{
+   283		struct memparse_test_fail {
+   284			const char *str;
+   285			/* Expected error number, either -EINVAL or -ERANGE. */
+   286			unsigned int expected_ret;
+   287		};
+   288		static const struct memparse_test_fail tests[] __initconst = {
+   289			/* No valid string can be found at all. */
+   290			{"", -EINVAL},
+   291			{"\n", -EINVAL},
+   292			{"\n0", -EINVAL},
+   293			{"+", -EINVAL},
+   294			{"-", -EINVAL},
+   295	
+   296			/*
+   297			 * No support for any leading "+-" chars, even followed by a valid
+   298			 * number.
+   299			 */
+   300			{"-0", -EINVAL},
+   301			{"+0", -EINVAL},
+   302			{"-1", -EINVAL},
+   303			{"+1", -EINVAL},
+   304	
+   305			/* Stray suffix would also be rejected. */
+   306			{"K", -EINVAL},
+   307			{"P", -EINVAL},
+   308	
+   309			/* Overflow in the string itself*/
+   310			{"18446744073709551616", -ERANGE},
+   311			{"02000000000000000000000", -ERANGE},
+   312			{"0x10000000000000000",	-ERANGE},
+   313	
+   314			/*
+   315			 * Good string but would overflow with suffix.
+   316			 *
+   317			 * Note, for "E" suffix, one should not use with hex, or "0x1E"
+   318			 * would be treated as 0x1e (30 in decimal), not 0x1 and "E" suffix.
+   319			 * Another reason "E" suffix is cursed.
+   320			 */
+   321			{"16E", -ERANGE},
+   322			{"020E", -ERANGE},
+   323			{"16384P", -ERANGE},
+   324			{"040000P", -ERANGE},
+   325			{"16777216T", -ERANGE},
+   326			{"0100000000T", -ERANGE},
+   327			{"17179869184G", -ERANGE},
+   328			{"0200000000000G", -ERANGE},
+   329			{"17592186044416M", -ERANGE},
+   330			{"0400000000000000M", -ERANGE},
+   331			{"18014398509481984K", -ERANGE},
+   332			{"01000000000000000000K", -ERANGE},
+   333		};
+   334		unsigned int i;
+   335	
+   336		for_each_test(i, tests) {
+   337			const struct memparse_test_fail *t = &tests[i];
+   338			unsigned long long tmp = ULL_PATTERN;
+ > 339			char *retptr = (char *)ULL_PATTERN;
+   340			int ret;
+   341	
+   342			ret = memparse_safe(t->str, MEMPARSE_TEST_SUFFIX, &tmp, &retptr);
+   343			if (ret != t->expected_ret) {
+   344				WARN(1, "str '%s', expected ret %d got %d\n", t->str,
+   345				     t->expected_ret, ret);
+   346				continue;
+   347			}
+   348			if (tmp != ULL_PATTERN)
+   349				WARN(1, "str '%s' failed as expected, but result got modified",
+   350				     t->str);
+   351			if (retptr != (char *)ULL_PATTERN)
+   352				WARN(1, "str '%s' failed as expected, but pointer got modified",
+   353				     t->str);
+   354		}
+   355	}
+   356	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
