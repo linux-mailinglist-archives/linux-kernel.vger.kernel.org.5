@@ -1,115 +1,113 @@
-Return-Path: <linux-kernel+bounces-11678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6821C81E9DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 21:08:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 648B981E9DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 21:12:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DC9FB2148E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:08:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 190691F22A2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F15564C80;
-	Tue, 26 Dec 2023 20:08:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2639A442A;
+	Tue, 26 Dec 2023 20:12:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="oAnD7QSq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="abyX8BZR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A270F23A8;
-	Tue, 26 Dec 2023 20:08:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703621295; x=1704226095; i=markus.elfring@web.de;
-	bh=Qxkpdv8Qkq7jvs02pZx5pg9wtvajRnmTTkS9S609hRY=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=oAnD7QSqNbRJ4I8z3LJyvZ6S0Oj9GiR6kiseN5OKvZiLGdVlKFg8weWgeZpFBu5Y
-	 8KidLKMKxKJtsu8v5vE7olre7V+pdOIDdyvx6GbiqHwuglLMlCM5OjPzoVZtLOqtM
-	 25TGKBdi+lnXBZeYFhuoGx6lCRcbFj0fjQZI5n9t3LzL6AYaOqkjAckyiyrugJCzR
-	 wxGl3QZYWDl3up9uG6mFuegfs3IqOw8jB1nB7B7pVY/jxFy3FmbnabTR6XIDyh2T6
-	 iBcto0SecHQ2kdMiI4VeblOVo4XaEg0tpVLvH+EvNyXy15kg3g4duHndpMWe/OvyY
-	 4ZvD61lLPMIcYPE2gQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MXXRF-1rl7fE0BHr-00Z51x; Tue, 26
- Dec 2023 21:08:15 +0100
-Message-ID: <9365c845-baa1-44d1-add9-ec8ca4d365eb@web.de>
-Date: Tue, 26 Dec 2023 21:08:12 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CAD23A8
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 20:12:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-35fff22678eso3972985ab.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 12:12:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703621563; x=1704226363; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wJwIYEsVQViKfIj+EecPznBxiNi/eUaLQ/D4NQhs5lo=;
+        b=abyX8BZR2waicXr1AWAE0qjnFIc0lUKXX5eC3v08xZaQMHJi3SxUCkUkmWxwD4U1a/
+         6yzbci6oLg6V0aRxzrvNrtDqF2plxxXQhtuPMG6r2hiEzHhfI7RyFOnmS51yKvXEj4Jt
+         sotnFeeH//GSRe2fu/bFPMPfcUerliZpVsHgPC4heNyd1dxCtw0ubaDLj5Pdce9L6+Ra
+         ONhtKexFaYTF6AomohYeO8hsnuIgEHeiK3ribVAtYTux5JJ3fr5nHfmg/txHQn/9HQWg
+         URqo/aeC0lej5OlJls2YbSXt/45pSaxwM5bPOB+xsjVlsXDhliwI4sjfUSB6SDgNtTts
+         UstQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703621563; x=1704226363;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wJwIYEsVQViKfIj+EecPznBxiNi/eUaLQ/D4NQhs5lo=;
+        b=hIjxHfKJuIYYY6zHmdts8Xjs3m+70Tjkefk5SRN6fs4SJ3HgIsBiX5B0l7++TfE/Iv
+         hEhG17MV+xTpOcxGuHvQzzS9mIOCOn4aCXlawkZuYCEzzfGXa11CVM9l1NHR2eE8A9WS
+         V+40GumdaQQb7wV2I2QR+FFbxO70Qk7Ybj0HVI8Nazl3kj/+zRRV0rhj7EJKFWcwGnaI
+         CV8CMq1SUAoVh6gKoaDJscu5BH/UsAQg0l4EsggxkjjkOJJ8LVqtQEbh3AvgD/FGZUTn
+         3Tq99XoG1GixE6fZ1CTm6aSG9dvMaM3M14Uy2kXOlXlOg16CnBN4v0NtA/JfnIw2JM/w
+         sDpg==
+X-Gm-Message-State: AOJu0Yx6Wy+QuYu0BMRdccv63nWrG3tBSpl6zD4UbPKmmHe+EoFW8Nne
+	YDS6lePYIaKGGCuE/nkwuPs=
+X-Google-Smtp-Source: AGHT+IGscuyC7yFXNjB+qpge9YXspd1U6Eti9QSJahYkFu74iBUE9OTYCdyFKyG2+QI24lndGxYajg==
+X-Received: by 2002:a05:6e02:5:b0:360:d9c:8777 with SMTP id bb5-20020a056e02000500b003600d9c8777mr2130339ilb.8.1703621563154;
+        Tue, 26 Dec 2023 12:12:43 -0800 (PST)
+Received: from localhost ([121.174.67.130])
+        by smtp.gmail.com with ESMTPSA id jg13-20020a17090326cd00b001d398876f5esm10500002plb.121.2023.12.26.12.12.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Dec 2023 12:12:42 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 27 Dec 2023 05:12:40 +0900
+From: Tejun Heo <tj@kernel.org>
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Naohiro.Aota@wdc.com,
+	kernel-team@meta.com
+Subject: Re: [PATCH 08/10] workqueue: Introduce struct wq_node_nr_active
+Message-ID: <ZYszuHEX6Pb-K4Au@mtj.duckdns.org>
+References: <20231220072529.1036099-1-tj@kernel.org>
+ <20231220072529.1036099-9-tj@kernel.org>
+ <CAJhGHyC_9JemZdv4Gp4XG7BqLc72bS1uM8xv9vpQtSsyhefZvQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-input@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Oliver Graute <oliver.graute@kococonnector.com>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- ye xingchen <ye.xingchen@zte.com.cn>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] Input: usbtouchscreen - Return directly after a failed
- kmalloc() in nexio_init()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pT5nFzusZbp8RV1rQhzaJrru2NdpxfZ9+vejlMSgbSCpEsu87nx
- IRRVzt3RH6KQhyJ1kJ/nPPRlHlFTT2Ta++KXEYWIy9T9uRBtERBq0zA++AEWbFrsgMKqMXY
- EiipTmC4elOyjytjgmsBRJaQyc1sNI4N41uplGtQ9hN65xP1k2qJ2+YVfMXlGF8SKXGPmFH
- BQqHmoA1bxqY8NmZptKQA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:REcKCG5gRbU=;3355Tq7aOrddSDMIBKH/phTHWM8
- w2HnWo9jfx+qPr0x1aeUuxKt3vBE4nuyjFhTm7DGFMSYYDTVCcC/5EotGZxQAW9GR1CAc1IZH
- MDbcAckohOjpcdbJqbbWa+Zkj7tryNEmm601cH7n7VVYlt2NbNVJRF8Lhg5uua+NPD3sbAZkS
- 2Srar7F0E08sfQbgz2nMrd3tiBlDbO49yLqMA74tBKGGP8LGuAVfIstqD7dKJp3F0WdT+GNKi
- B+wLOh8z6MhRNULBepKEk3a7R8Z0YrZ1aaC20IHqBxcqDJhWXm2178gqMKImDikUFPJGsfZSe
- VC1pyJ8H/CcF5iR796GX4ipoCoRoPq30it8TcAury72diFN7abWqBPYqbTwZL8A+GcyrcLOvj
- +GoE4YBCbcARZ3PIXH1VleuFpgSmnGFeqW4Vf6795eedOvBaKz6aF8A6p6NRedxslCO8//Q/p
- iPi83I+2BrqxvOa9SWkZ0XBlTVqJGh/duc7u6LLy+CAmCns6/LAFmeVUPWPa70saxsMTTqFW3
- /VYEM8WgclxSYnfK4jqlDhgty1iNPmZUTPG+AhhrAODN3LZMLUNy6L7jDk5HNZPnqKxN0d4ri
- a1VGZKgTG3CMVgbUCaed1j3GuNflKq6mco5Mayg2agV2h3w8y9rMs9W0kGjMRI4TyTwheEai6
- 8is+EAtrGuNkthwaVhI9Gl3VnIeW0NE1DmwhYQamHz+92JQxGMzk+/+VxetE+JgVc0lDx0FjP
- 3VF+D4TMhGxdomHHreaa+U4d5gM7qyeQxIsUlzshxFJp/dowsWVjglPSlUfHCewmie1qvPWeC
- hS/1nZd190r2oawVw/WpCgsGyuePuPOuVo3xlQXxQA17C7+YepouHQKgR4OQ2Fl9MMev4YJdb
- l6rAxovFhlpAxsV7ftU+tvwL9zbyn3RYZGj4tRiMvvZRbldkb3jVpvie/8YKiBGmCuz8oUcGY
- gkPO0Q==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJhGHyC_9JemZdv4Gp4XG7BqLc72bS1uM8xv9vpQtSsyhefZvQ@mail.gmail.com>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Tue, 26 Dec 2023 21:00:25 +0100
+On Tue, Dec 26, 2023 at 05:14:18PM +0800, Lai Jiangshan wrote:
+> On Wed, Dec 20, 2023 at 3:26 PM Tejun Heo <tj@kernel.org> wrote:
+> 
+> > @@ -1498,12 +1539,21 @@ static bool pwq_tryinc_nr_active(struct pool_workqueue *pwq)
+> >  {
+> >         struct workqueue_struct *wq = pwq->wq;
+> >         struct worker_pool *pool = pwq->pool;
+> > -       bool obtained;
+> > +       struct wq_node_nr_active *nna = wq_node_nr_active(wq, pool->node);
+> > +       bool obtained = false;
+> >
+> >         lockdep_assert_held(&pool->lock);
+> >
+> > -       obtained = pwq->nr_active < wq->max_active;
+> > +       if (!nna) {
+> > +               /* per-cpu workqueue, pwq->nr_active is sufficient */
+> > +               obtained = pwq->nr_active < wq->max_active;
+> > +               goto out;
+> > +       }
+> 
+> For unbound workqueue, it is not checked against wq->max_active anymore
+> and it is increased unconditionally.  Is it by design?
 
-The kfree() function was called in one case by
-the nexio_init() function during error handling
-even if the passed variable contained a null pointer.
-This issue was detected by using the Coccinelle software.
+Ah, I made a mistake while splitting the patches. This gets added by a later
+patch but this step should have an explicit check against wq->max_active.
+Lemme add a check for the unbound path.
 
-Thus return directly after a call of the function =E2=80=9Ckmalloc=E2=80=
-=9D failed
-at the beginning.
+Thanks.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/input/touchscreen/usbtouchscreen.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/input/touchscreen/usbtouchscreen.c b/drivers/input/to=
-uchscreen/usbtouchscreen.c
-index 60354ebc7242..1873c7918a78 100644
-=2D-- a/drivers/input/touchscreen/usbtouchscreen.c
-+++ b/drivers/input/touchscreen/usbtouchscreen.c
-@@ -977,7 +977,7 @@ static int nexio_init(struct usbtouch_usb *usbtouch)
-
- 	buf =3D kmalloc(NEXIO_BUFSIZE, GFP_NOIO);
- 	if (!buf)
--		goto out_buf;
-+		return ret;
-
- 	/* two empty reads */
- 	for (i =3D 0; i < 2; i++) {
-=2D-
-2.43.0
-
+-- 
+tejun
 
