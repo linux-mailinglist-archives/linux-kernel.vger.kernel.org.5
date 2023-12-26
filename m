@@ -1,50 +1,49 @@
-Return-Path: <linux-kernel+bounces-11582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E621C81E87D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:39:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6E1081E883
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:49:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 247CF1C21F61
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:39:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A3091F21AD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1302C4F61E;
-	Tue, 26 Dec 2023 16:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5BDB4F887;
+	Tue, 26 Dec 2023 16:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H8s4Q5pW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bjTIIcxg"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9254F1FC;
-	Tue, 26 Dec 2023 16:39:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA9F6C433C7;
-	Tue, 26 Dec 2023 16:39:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B9C64F612;
+	Tue, 26 Dec 2023 16:49:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4722FC433C8;
+	Tue, 26 Dec 2023 16:49:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703608757;
-	bh=U/AR4wLwQTf7eqiS5GFn3+8pIrRcRjP/AN+Er7aV3o0=;
+	s=k20201202; t=1703609367;
+	bh=AY4SBbe9wQAPj8fiGXaTO0vwoGHZ0Hp5cbz7yRNOd2c=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=H8s4Q5pW3psSYDICWfeN1fZWPVyH4bX2AebJtDedBOEcPnvLcfosu4Ps9rKB3oZ5r
-	 fP4GY3LZzPNR2nF6zkV6YnBCdiA/MEWNzvtH1EGcjT7oNshOxloGPazSZTyxNaR1GM
-	 VpnSlOnl7xY2gQtIMPFz3aiNnLpwikRDsqm/iFDFWd6G88WLaGKyuGpU7jykp0MRlp
-	 KP7ILevApKpMQhC6wGoxavLyKTIVXAd55KCgFXMcKQmSCIPoA5BLgsLSoYXWztmqgp
-	 U2Ju5kV6fQwVwHg82Gq+eZ8eicvpOViLeDfpGcQ05I7GJ3GJPFHHj9WBKb+unDF/i2
-	 yAG5bsyXuMNAw==
-Date: Tue, 26 Dec 2023 16:39:11 +0000
+	b=bjTIIcxgg1Gf5CmsGBwmTqKsxtnnMEMYZyWDtyekTvXc8307J0nu1MzRIdl7EGOXy
+	 WipoHANZcSsPGX9VdHTU9tcTuYcU5zZnk3cJKoXf09S3Vb3VEgR7Sxkei0WKr1nKCS
+	 gLSEi8SwcqV/NoAJYhbJisjtYSj/zDYrP0FY7qUN0d4E06nVszoBx0MLzQz02bjjip
+	 X1Vm8i8kvFwB02HCYZpBprK+lHZbmID07Z2w1uSsxYVZpRruw3mr7wPFkjqnzyQBE5
+	 YhJATQHT3/yGTSIAWJSINw9oboJJfJ877XsLqXhjoQk/cNTpaMFrvqmLByFV5o+IVg
+	 bld/CeYSO/2jw==
+Date: Tue, 26 Dec 2023 16:49:22 +0000
 From: Jonathan Cameron <jic23@kernel.org>
 To: Petre Rodan <petre.rodan@subdimension.ro>
 Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, Andreas Klinger
  <ak@it-klinger.de>, Lars-Peter Clausen <lars@metafoo.de>, Andy Shevchenko
  <andriy.shevchenko@linux.intel.com>, Angel Iglesias
  <ang.iglesiasg@gmail.com>, Matti Vaittinen <mazziesaccount@gmail.com>
-Subject: Re: [PATCH v2 06/10] iio: pressure: mprls0025pa.c remove dangerous
- defaults
-Message-ID: <20231226163911.35a4dba2@jic23-huawei>
-In-Reply-To: <20231224143500.10940-7-petre.rodan@subdimension.ro>
+Subject: Re: [PATCH v2 08/10] iio: pressure: mprls0025pa.c refactor
+Message-ID: <20231226164922.6d7132c1@jic23-huawei>
+In-Reply-To: <20231224143500.10940-9-petre.rodan@subdimension.ro>
 References: <20231224143500.10940-1-petre.rodan@subdimension.ro>
-	<20231224143500.10940-7-petre.rodan@subdimension.ro>
+	<20231224143500.10940-9-petre.rodan@subdimension.ro>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -55,66 +54,222 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Sun, 24 Dec 2023 16:34:51 +0200
+On Sun, 24 Dec 2023 16:34:53 +0200
 Petre Rodan <petre.rodan@subdimension.ro> wrote:
 
-> This driver supports 32*3 combinations of fixed ranges and transfer
-> functions, plus custom ranges.
+> Refactor driver by splitting the code into core and i2c.
 > 
-> So statistically a user has more than 99% chance that the provided
-> default configuration will generate invalid pressure readings if the
-> bindings are not initialized and the driver is instantiated via sysfs.
-
-I guess 99% is strong enough that it's unlikely we will break anyone so
-fair enough to drop this attempt to guess the values.
-
-> 
-> The current patch removes this loophole making sure the driver loads
-> only if the dt has been initialized.
-
-Drop the reference to DT. It's correctly using generic firmware accessors
-so should work fine with ACPI PRP0001 for example as well as DT.
-
-Usually we just refer to the need for firmware properties.
-There are lots of places they could be coming from.
-
+> Seemingly redundant read/write function parameters are required for
+> compatibility with the SPI driver.
 > 
 > Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
 > Signed-off-by: Andreas Klinger <ak@it-klinger.de>
-> ---
->  drivers/iio/pressure/mprls0025pa.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
-> 
+
+A few minor comments inline.
+
+Thanks,
+
+Jonathan
+
+
 > diff --git a/drivers/iio/pressure/mprls0025pa.c b/drivers/iio/pressure/mprls0025pa.c
-> index 233cc1dc38ad..63c46592956f 100644
+> index e14cdee7989f..cb5d6c0cca7e 100644
 > --- a/drivers/iio/pressure/mprls0025pa.c
 > +++ b/drivers/iio/pressure/mprls0025pa.c
-> @@ -375,11 +375,8 @@ static int mpr_probe(struct i2c_client *client)
->  				"honeywell,transfer-function %d invalid\n",
->  								data->function);
->  	} else {
+...
 
-I'd prefer the condition flipped even though patch will be more noisy.
+> -static int mpr_probe(struct i2c_client *client)
+> +int mpr_common_probe(struct device *dev, const struct mpr_ops *ops, int irq)
+>  {
+>  	int ret;
+>  	struct mpr_data *data;
+>  	struct iio_dev *indio_dev;
+> -	struct device *dev = &client->dev;
+>  	s64 scale, offset;
+>  	u32 func;
+> 
+> -	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_READ_BYTE))
+> -		return dev_err_probe(dev, -EOPNOTSUPP,
+> -					"I2C functionality not supported\n");
+> -
+>  	indio_dev = devm_iio_device_alloc(dev, sizeof(*data));
+>  	if (!indio_dev)
+> -		return dev_err_probe(dev, -ENOMEM, "couldn't get iio_dev\n");
+> +		return -ENOMEM;
+> 
+>  	data = iio_priv(indio_dev);
+> -	data->client = client;
+> -	data->irq = client->irq;
+> +	data->dev = dev;
+> +	data->ops = ops;
+> +	data->irq = irq;
+> 
+>  	mutex_init(&data->lock);
+>  	init_completion(&data->completion);
+> @@ -350,32 +284,36 @@ static int mpr_probe(struct i2c_client *client)
+>  		return dev_err_probe(dev, ret,
+>  				"can't get and enable vdd supply\n");
+> 
+> -	if (dev_fwnode(dev)) {
 
-	if (!dev_fwnode(dev))
-		return dev_err_probe()...
+So you now rely on device_property_read_u32() failing I guess to cover this
+which is fine.  However do that in the earlier patch instead of burying that
+change in here.
 
-	...
+Should make it easier to tell what changed here as well.
 
-As end result will be more readable.
 
-> -		/* when loaded as i2c device we need to use default values */
-> -		dev_notice(dev, "firmware node not found; using defaults\n");
-> -		data->pmin = 0;
-> -		data->pmax = 172369; /* 25 psi */
-> -		data->function = MPR_FUNCTION_A;
+> -		ret = device_property_read_u32(dev, "honeywell,pmin-pascal",
+> +	ret = data->ops->init(data->dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = device_property_read_u32(dev,
+> +				       "honeywell,transfer-function", &func);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret,
+> +			     "honeywell,transfer-function could not be read\n");
+> +	data->function = func - 1;
+> +	if (data->function > MPR_FUNCTION_C)
 > +		return dev_err_probe(dev, -EINVAL,
-> +				  "driver needs to be initialized in the dt\n");
->  	}
+> +				     "honeywell,transfer-function %d invalid\n",
+> +				     data->function);
+> +
+> +	ret = device_property_read_u32(dev, "honeywell,pmin-pascal",
+>  					       &data->pmin);
+> -		if (ret)
+> -			return dev_err_probe(dev, ret,
+> +	if (ret)
+> +		return dev_err_probe(dev, ret,
+>  				   "honeywell,pmin-pascal could not be read\n");
+> 
+> -		ret = device_property_read_u32(dev, "honeywell,pmax-pascal",
+> -					       &data->pmax);
+> -		if (ret)
+> -			return dev_err_probe(dev, ret,
+> +	ret = device_property_read_u32(dev, "honeywell,pmax-pascal",
+> +				       &data->pmax);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret,
+>  				   "honeywell,pmax-pascal could not be read\n");
+> -		ret = device_property_read_u32(dev,
+> -				"honeywell,transfer-function", &func);
+> -		if (ret)
+> -			return dev_err_probe(dev, ret,
+> -				"honeywell,transfer-function could not be read\n");
+> -		data->function = func - 1;
+> -		if (data->function > MPR_FUNCTION_C)
+> -			return dev_err_probe(dev, -EINVAL,
+> -				"honeywell,transfer-function %d invalid\n",
+> -								data->function);
+> -	} else {
+> +
+> +	if (data->pmin >= data->pmax)
+>  		return dev_err_probe(dev, -EINVAL,
+> -				  "driver needs to be initialized in the dt\n");
+> -	}
+> +				     "pressure limits are invalid\n");
 > 
 >  	data->outmin = mpr_func_spec[data->function].output_min;
-> --
-> 2.41.0
+>  	data->outmax = mpr_func_spec[data->function].output_max;
+> @@ -394,7 +332,7 @@ static int mpr_probe(struct i2c_client *client)
 > 
+>  	if (data->irq > 0) {
+>  		ret = devm_request_irq(dev, data->irq, mpr_eoc_handler,
+> -				IRQF_TRIGGER_RISING, client->name, data);
+> +				      IRQF_TRIGGER_RISING, dev_name(dev), data);
+
+Even though you'll change it again here, would have been nice to have
+the alignment fixed in the earlier patch then the code update here.
+
+>  		if (ret)
+>  			return dev_err_probe(dev, ret,
+>  					  "request irq %d failed\n", data->irq);
+> @@ -421,29 +359,8 @@ static int mpr_probe(struct i2c_client *client)
+> 
+>  	return 0;
+>  }
+
+
+...
+
+
+> diff --git a/drivers/iio/pressure/mprls0025pa_i2c.c b/drivers/iio/pressure/mprls0025pa_i2c.c
+> new file mode 100644
+> index 000000000000..89d6a206192b
+> --- /dev/null
+> +++ b/drivers/iio/pressure/mprls0025pa_i2c.c
+> @@ -0,0 +1,98 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * MPRLS0025PA - Honeywell MicroPressure pressure sensor series driver
+> + *
+> + * Copyright (c) Andreas Klinger <ak@it-klinger.de>
+> + *
+> + * Data sheet:
+> + *  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/micropressure-mpr-series/documents/sps-siot-mpr-series-datasheet-32332628-ciid-172626.pdf
+> + */
+> +
+> +#include <linux/errno.h>
+> +#include <linux/i2c.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/module.h>
+> +
+> +#include <linux/iio/iio.h>
+
+Why include this?  Can't see an IIO specific stuff in here.
+
+
+> +
+> +#include "mprls0025pa.h"
+> +
+> +static int mpr_i2c_init(struct device *unused)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int mpr_i2c_read(struct mpr_data *data, const u8 unused, const u8 cnt)
+> +{
+> +	int ret;
+> +	struct i2c_client *client = to_i2c_client(data->dev);
+> +
+> +	if (cnt > MPR_MEASUREMENT_RD_SIZE)
+> +		return -EOVERFLOW;
+> +
+> +	memset(data->buffer, 0, MPR_MEASUREMENT_RD_SIZE);
+> +	ret = i2c_master_recv(client, data->buffer, cnt);
+> +	if (ret != cnt) {
+> +		return -EIO;
+As below.
+
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int mpr_i2c_write(struct mpr_data *data, const u8 cmd, const u8 unused)
+> +{
+> +	int ret;
+> +	struct i2c_client *client = to_i2c_client(data->dev);
+> +	u8 wdata[MPR_PKT_SYNC_LEN];
+> +
+> +	memset(wdata, 0, sizeof(wdata));
+> +	wdata[0] = cmd;
+> +
+> +	ret = i2c_master_send(client, wdata, MPR_PKT_SYNC_LEN);
+> +	if (ret != MPR_PKT_SYNC_LEN) {
+
+No {} as per Coding Style docs for single statement blocks like this.
+
+Ideally we tend to handle ret < 0 separately from ret != MPR_PKT_SYNC_LEN
+as then we don't eat a possible more useful error code.
+
+
+
+> +		return -EIO;
+> +	}
+> +
+> +	return 0;
+> +}
 
 
