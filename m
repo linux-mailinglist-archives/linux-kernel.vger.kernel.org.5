@@ -1,47 +1,50 @@
-Return-Path: <linux-kernel+bounces-11280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5ED581E3FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:45:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E0CB81E402
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:45:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39B671F20FA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:45:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B34A1C20C39
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:45:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F8A5DF00;
-	Tue, 26 Dec 2023 00:26:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D5A5DF12;
+	Tue, 26 Dec 2023 00:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bsq1G0M1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IyFSy4bs"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9520A5D8F4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FDBD5DF06;
+	Tue, 26 Dec 2023 00:26:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 919A9C433C9;
 	Tue, 26 Dec 2023 00:26:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 608DBC433C7;
-	Tue, 26 Dec 2023 00:26:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550381;
-	bh=l1ZGCzegb8q1Eycnu3c8u1xiEov4Q4BmErjk1cmFIOY=;
+	s=k20201202; t=1703550383;
+	bh=pUI+BkAkFtp05WdgjDZvtYYBdmXmtT6NR+Yefnz7D/M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Bsq1G0M1lt5o4MPo6gSY/YgWn2uhbDiyaz9KzpQhFHS7hSWNNnW8M3+S96lXzhVaj
-	 XyTraepwhieadL3F+jVbotdHWVLYO4YyETgffoudhvdvpzLZf7ozOsGcwFHd+uH3BN
-	 yoUaJLRlr5haENyeiRhWNnpCvJyIOdmryJpEfMr9mS2uaRZ3RgRBt+4ThqE7nGIh7S
-	 EslFXRMTr6RMyWS39VYiHPeY8bXuiJAJdy7IDc4HVNldCGVgAPZPm7fzwl8WZ4R7z6
-	 MnhHsoNpahQ36m0fZ8YkuV/SE7tP7dFEjFLcpAcd819at97Owr+ZPW9pYUMWF4sF7c
-	 zPPTmdSFEpPmg==
+	b=IyFSy4bsR5KMbDGcaXsHrj3ylnttErmXvQsinPO8csQmcpeBJOkXQbbTCv/Zq3Bc7
+	 rkgRHE21Pn+eGGREhULdpHqfuVab8O1zGY6TlpfUR50+y8Aa7MiyBqVdSa9VXYSekQ
+	 vCLDO+NJXRvEWResG8o/LNy7SZER+1X+o/0JzslrWuXQU51PGAY71F6cx+7Zn1W+HZ
+	 sOfc3/hcG7iwBY/4Y4pUmNgSSJtolsxv1bn3qV6nkGVTZ9V8Gk9f9erNTHx3eq6U7Q
+	 sxQ+2Dxwm3HdS0klUva/u5GhbhdhB0FcM605RLsJuyy+Iy1Wwt6bRT6BurDXgUs1KG
+	 7DE7OUrTG0AEQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+Cc: Vineeth Vijayan <vneethv@linux.ibm.com>,
+	Peter Oberparleiter <oberpar@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 4/8] Input: amimouse - convert to platform remove callback returning void
-Date: Mon, 25 Dec 2023 19:25:47 -0500
-Message-ID: <20231226002608.7089-4-sashal@kernel.org>
+	hca@linux.ibm.com,
+	gor@linux.ibm.com,
+	linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 5/8] s390/scm: fix virtual vs physical address confusion
+Date: Mon, 25 Dec 2023 19:25:48 -0500
+Message-ID: <20231226002608.7089-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231226002608.7089-1-sashal@kernel.org>
 References: <20231226002608.7089-1-sashal@kernel.org>
@@ -51,60 +54,62 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.265
 Content-Transfer-Encoding: 8bit
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Vineeth Vijayan <vneethv@linux.ibm.com>
 
-[ Upstream commit 42b8ff47720258d1f6a4412e780a480c139773a0 ]
+[ Upstream commit b1a6a1a77f0666a5a6dc0893ab6ec8fcae46f24c ]
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
+Fix virtual vs physical address confusion (which currently are the same).
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-.remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
-
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Link: https://lore.kernel.org/r/20231201133747.1099286-2-u.kleine-koenig@pengutronix.de
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+Acked-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/mouse/amimouse.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/s390/block/scm_blk.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/input/mouse/amimouse.c b/drivers/input/mouse/amimouse.c
-index a50e503548323..cda0c3ff5a288 100644
---- a/drivers/input/mouse/amimouse.c
-+++ b/drivers/input/mouse/amimouse.c
-@@ -125,16 +125,15 @@ static int __init amimouse_probe(struct platform_device *pdev)
- 	return 0;
- }
+diff --git a/drivers/s390/block/scm_blk.c b/drivers/s390/block/scm_blk.c
+index e01889394c841..d3133023a5574 100644
+--- a/drivers/s390/block/scm_blk.c
++++ b/drivers/s390/block/scm_blk.c
+@@ -18,6 +18,7 @@
+ #include <linux/genhd.h>
+ #include <linux/slab.h>
+ #include <linux/list.h>
++#include <linux/io.h>
+ #include <asm/eadm.h>
+ #include "scm_blk.h"
  
--static int __exit amimouse_remove(struct platform_device *pdev)
-+static void __exit amimouse_remove(struct platform_device *pdev)
- {
- 	struct input_dev *dev = platform_get_drvdata(pdev);
+@@ -131,7 +132,7 @@ static void scm_request_done(struct scm_request *scmrq)
  
- 	input_unregister_device(dev);
--	return 0;
- }
+ 	for (i = 0; i < nr_requests_per_io && scmrq->request[i]; i++) {
+ 		msb = &scmrq->aob->msb[i];
+-		aidaw = msb->data_addr;
++		aidaw = (u64)phys_to_virt(msb->data_addr);
  
- static struct platform_driver amimouse_driver = {
--	.remove = __exit_p(amimouse_remove),
-+	.remove_new = __exit_p(amimouse_remove),
- 	.driver   = {
- 		.name	= "amiga-mouse",
- 	},
+ 		if ((msb->flags & MSB_FLAG_IDA) && aidaw &&
+ 		    IS_ALIGNED(aidaw, PAGE_SIZE))
+@@ -196,12 +197,12 @@ static int scm_request_prepare(struct scm_request *scmrq)
+ 	msb->scm_addr = scmdev->address + ((u64) blk_rq_pos(req) << 9);
+ 	msb->oc = (rq_data_dir(req) == READ) ? MSB_OC_READ : MSB_OC_WRITE;
+ 	msb->flags |= MSB_FLAG_IDA;
+-	msb->data_addr = (u64) aidaw;
++	msb->data_addr = (u64)virt_to_phys(aidaw);
+ 
+ 	rq_for_each_segment(bv, req, iter) {
+ 		WARN_ON(bv.bv_offset);
+ 		msb->blk_count += bv.bv_len >> 12;
+-		aidaw->data_addr = (u64) page_address(bv.bv_page);
++		aidaw->data_addr = virt_to_phys(page_address(bv.bv_page));
+ 		aidaw++;
+ 	}
+ 
 -- 
 2.43.0
 
