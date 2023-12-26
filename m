@@ -1,61 +1,70 @@
-Return-Path: <linux-kernel+bounces-11379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D86181E558
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:56:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C84BA81E562
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:59:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24B2B281EF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:56:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22E1FB211E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:59:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1684BA90;
-	Tue, 26 Dec 2023 05:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B1264BA80;
+	Tue, 26 Dec 2023 05:59:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GDdulIet"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BpNWEsBX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A79D4B5C1
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 05:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703570207; x=1735106207;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=1HHODoJLDGgClCZEYNcjY0OHgtEKrG3SAXnDAkTiUiI=;
-  b=GDdulIetfK7WDcuaNT6PIgiSlTmQrFXJbssTlAPzblPeflssjsterXFr
-   qa7oz7UuZOC17HXTVyXwS/J4z9p3UGmbYNJaY0j2pCc6MdoOBKBS/WekP
-   szbnQH58448w0YaeaezPPZla+G4f7bpjwokN7HXjOnCt9RMve+u37uNZg
-   kQSlS6Xv3ui8ZTU/qnLCDu+C438cgildtBKrWqUHy98nOkNWkmGeI9WvN
-   qluyWSEj+jZ5H9Z+vUCVkABDnkKZXWKckasU2Yvr4/98pinV0RILXY9ZW
-   Mtg5xTH8ETgBNlfX0P1wX3FJ6+aJ+sOuWIQuuzcIVHVP2SHcTbkV0IKey
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="3407623"
-X-IronPort-AV: E=Sophos;i="6.04,304,1695711600"; 
-   d="scan'208";a="3407623"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 21:56:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,304,1695711600"; 
-   d="scan'208";a="19578555"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 25 Dec 2023 21:56:45 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rI0Qk-000E7M-2s;
-	Tue, 26 Dec 2023 05:56:42 +0000
-Date: Tue, 26 Dec 2023 13:56:23 +0800
-From: kernel test robot <lkp@intel.com>
-To: Dragan Cvetic <dragan.cvetic@xilinx.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Derek Kiernan <derek.kiernan@xilinx.com>
-Subject: drivers/misc/xilinx_sdfec.c:92:57: warning: '%d' directive output
- may be truncated writing between 1 and 10 bytes into a region of size 6
-Message-ID: <202312261345.5icSobz6-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CDF94BAAF
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 05:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-58dd3528497so2453578eaf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 21:59:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703570379; x=1704175179; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RYU5XBHw7RO5kr9ESuLQkgv8rIFLgju8O+JeKWuCuic=;
+        b=BpNWEsBXX+Jbt2IS7r5HqNOBJdCZCJrV7aTitpjwXg9Wq2Jkj9VhJBYVRaqGdI5yrh
+         WgtlGueqyZzfqttw82UhQSsSIGf8CB3nntybAdsKm87+Y4cdgssSOSqR5xFmraFpRWWB
+         lxWwyinMcnIVeifmpBoqO9TBcUgewCW4Q87wRpEGbw1bzwVgZ1qklN0Zh7jP5FR9tsIE
+         tGAzeXZhLV5/wfIRkTp9razxUaHje+Oytxl1ZSnl1QcQYKSnQUTQWk/bjkiL3wB9nDC7
+         fLPjkuIBpMrDpXWn9tuk5H/XZXUCB9QLMcYYUGhOREgfpKlQD3U4nsMBvTKEX+2OUiEy
+         AtnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703570379; x=1704175179;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RYU5XBHw7RO5kr9ESuLQkgv8rIFLgju8O+JeKWuCuic=;
+        b=PzjlqVjgyU+0/3YvJF+kevCdnJUV5qOpBn/qZs+Wln2ZJaDvj5nyH7zWZCHP0RawEX
+         uQ7IJ2TDncfMU2w+AjbwW/sX+BHQCZHiTqils+kwe8oQjzkJAuVw7TPQ+CR7pzOQzFmZ
+         r29CUwYg6vAq3+/U1eI9I/A0IDcMQV1BWthKs+oECdgCeGBZndgZ0tu1TwNpG0mlvyhg
+         ebDDYaoQxEnjLcyyeBgNtpecTaJCOl2lqB9+UrEajYOqVSHDhu7iW7ZtEb4vhKXhqsTZ
+         Fr7OwS3IeSJmnE1hvWuK9MrVotHGcxoa0eGAcDHEVnB3p+A1hQCNkO729MxBNwC2S80I
+         sL/Q==
+X-Gm-Message-State: AOJu0YyJLO+D2k7wmm43QSLnEIQFhrQAQ+/4KWK6m5PrbZeB0bj6/emv
+	o8CS/mnklyCAT5EtQK6j44sa2GkBAtXjkA==
+X-Google-Smtp-Source: AGHT+IHu5AN3U6iQc8bla5r9958cIygPCgNt7i6q1mT/HntRr6jX+TxIxuLIpaqJqfqE1l7qOA+VZQ==
+X-Received: by 2002:a05:6808:2226:b0:3b9:df4a:978b with SMTP id bd38-20020a056808222600b003b9df4a978bmr7675727oib.82.1703570379414;
+        Mon, 25 Dec 2023 21:59:39 -0800 (PST)
+Received: from localhost ([122.172.86.168])
+        by smtp.gmail.com with ESMTPSA id qc12-20020a17090b288c00b0028b6f522fedsm13518526pjb.43.2023.12.25.21.59.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Dec 2023 21:59:38 -0800 (PST)
+Date: Tue, 26 Dec 2023 11:29:36 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc: vireshk@kernel.org, nm@ti.com, sboyd@kernel.org, ulf.hansson@linaro.org,
+	stephan.gerhold@kernkonzept.com, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] OPP: Fix _set_required_opps when opp is NULL
+Message-ID: <20231226055936.pzyt4xjzlfhfqb4y@vireshk-i7>
+References: <20231223023421.3818297-1-bryan.odonoghue@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,95 +73,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20231223023421.3818297-1-bryan.odonoghue@linaro.org>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   fbafc3e621c3f4ded43720fdb1d6ce1728ec664e
-commit: 76d83e1c32334a793e50de6f955c2eefcc60bb8e misc: xilinx-sdfec: add core driver
-date:   4 years, 6 months ago
-config: sparc64-randconfig-r025-20230806 (https://download.01.org/0day-ci/archive/20231226/202312261345.5icSobz6-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20231226/202312261345.5icSobz6-lkp@intel.com/reproduce)
+On 23-12-23, 02:34, Bryan O'Donoghue wrote:
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index c022d548067d7..182e07ab6baf3 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -1083,7 +1083,11 @@ static int _set_required_opps(struct device *dev, struct opp_table *opp_table,
+>  
+>  	while (index != target) {
+>  		if (devs[index]) {
+> -			ret = dev_pm_opp_set_opp(devs[index], opp->required_opps[index]);
+> +			if (opp)
+> +				ret = dev_pm_opp_set_opp(devs[index], opp->required_opps[index]);
+> +			else
+> +				ret = dev_pm_domain_set_performance_state(devs[index], 0);
+> +
+>  			if (ret)
+>  				return ret;
+>  		}
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312261345.5icSobz6-lkp@intel.com/
+Sorry about that, my mistake. Can you test below instead please ?
 
-All warnings (new ones prefixed by >>):
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index c022d548067d..c4d695e0e5fd 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -1061,6 +1061,7 @@ static int _set_required_opps(struct device *dev, struct opp_table *opp_table,
+                              struct dev_pm_opp *opp, bool up)
+ {
+        struct device **devs = opp_table->required_devs;
++       struct dev_pm_opp *required_opp;
+        int index, target, delta, ret;
 
-   drivers/misc/xilinx_sdfec.c: In function 'xsdfec_probe':
->> drivers/misc/xilinx_sdfec.c:92:57: warning: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 6 [-Wformat-truncation=]
-      92 |         snprintf(xsdfec->dev_name, DEV_NAME_LEN, "xsdfec%d", xsdfec->dev_id);
-         |                                                         ^~
-   drivers/misc/xilinx_sdfec.c:92:50: note: directive argument in the range [0, 2147483647]
-      92 |         snprintf(xsdfec->dev_name, DEV_NAME_LEN, "xsdfec%d", xsdfec->dev_id);
-         |                                                  ^~~~~~~~~~
-   drivers/misc/xilinx_sdfec.c:92:9: note: 'snprintf' output between 8 and 17 bytes into a destination of size 12
-      92 |         snprintf(xsdfec->dev_name, DEV_NAME_LEN, "xsdfec%d", xsdfec->dev_id);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        if (!devs)
+@@ -1083,7 +1084,9 @@ static int _set_required_opps(struct device *dev, struct opp_table *opp_table,
 
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for COMPAT_BINFMT_ELF
-   Depends on [n]: COMPAT [=y] && BINFMT_ELF [=n]
-   Selected by [y]:
-   - COMPAT [=y] && SPARC64 [=y]
-
-
-vim +92 drivers/misc/xilinx_sdfec.c
-
-    59	
-    60	static int xsdfec_probe(struct platform_device *pdev)
-    61	{
-    62		struct xsdfec_dev *xsdfec;
-    63		struct device *dev;
-    64		struct resource *res;
-    65		int err;
-    66	
-    67		xsdfec = devm_kzalloc(&pdev->dev, sizeof(*xsdfec), GFP_KERNEL);
-    68		if (!xsdfec)
-    69			return -ENOMEM;
-    70	
-    71		xsdfec->dev = &pdev->dev;
-    72		spin_lock_init(&xsdfec->error_data_lock);
-    73	
-    74		dev = xsdfec->dev;
-    75		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-    76		xsdfec->regs = devm_ioremap_resource(dev, res);
-    77		if (IS_ERR(xsdfec->regs)) {
-    78			err = PTR_ERR(xsdfec->regs);
-    79			return err;
-    80		}
-    81	
-    82		/* Save driver private data */
-    83		platform_set_drvdata(pdev, xsdfec);
-    84	
-    85		mutex_lock(&dev_idr_lock);
-    86		err = idr_alloc(&dev_idr, xsdfec->dev_name, 0, 0, GFP_KERNEL);
-    87		mutex_unlock(&dev_idr_lock);
-    88		if (err < 0)
-    89			goto err_xsddev_idr;
-    90		xsdfec->dev_id = err;
-    91	
-  > 92		snprintf(xsdfec->dev_name, DEV_NAME_LEN, "xsdfec%d", xsdfec->dev_id);
-    93		xsdfec->miscdev.minor = MISC_DYNAMIC_MINOR;
-    94		xsdfec->miscdev.name = xsdfec->dev_name;
-    95		xsdfec->miscdev.fops = &xsdfec_fops;
-    96		xsdfec->miscdev.parent = dev;
-    97		err = misc_register(&xsdfec->miscdev);
-    98		if (err) {
-    99			dev_err(dev, "error:%d. Unable to register device", err);
-   100			return err;
-   101		}
-   102		return 0;
-   103	
-   104	err_xsddev_idr:
-   105		xsdfec_idr_remove(xsdfec);
-   106	
-   107		return err;
-   108	}
-   109	
+        while (index != target) {
+                if (devs[index]) {
+-                       ret = dev_pm_opp_set_opp(devs[index], opp->required_opps[index]);
++                       required_opp = opp ? opp->required_opps[index] : NULL;
++
++                       ret = dev_pm_opp_set_opp(devs[index], required_opp);
+                        if (ret)
+                                return ret;
+                }
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+viresh
 
