@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-11201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CAD281E325
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:22:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E362C81E327
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:23:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 155A02826A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:22:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 692E52826E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:23:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C471D69F;
-	Tue, 26 Dec 2023 00:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C17F27473;
+	Tue, 26 Dec 2023 00:20:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rmj/Njo0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kJvfTL4z"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF6412B88;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4A8D1EB25;
+	Tue, 26 Dec 2023 00:20:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EF61C433CB;
 	Tue, 26 Dec 2023 00:20:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59ABBC433CA;
-	Tue, 26 Dec 2023 00:20:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550044;
-	bh=0a43TKMlt0s7STIrUAP1Uw+bes7XaSooWjnfNN9gFD4=;
+	s=k20201202; t=1703550046;
+	bh=66474NnbQpXbOGTsVlEmdFJME+FcWJLgFSILAVCIY2M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Rmj/Njo0ZB/G20WJSbkUCPXb4eqHT9GSrDg45R6xWFGITU3gSPYGYq6xelpskx5iX
-	 vxLntghuKmYCy+S731znjMN4UE6+74Uujc4ntloswrZTS+GH5YcCrjkPV5XtvR2tZi
-	 09izuSD9pWbxNqvT5yCrp0eq78Cb65qu3w0pth55pMn82BBjOuyk1KCZkV3PfPjdF2
-	 /CjD/eYyxGwZriqa9RuWYtrmE13/4bvk7xXlwWZz45YJZhP3BSfN9CAAtHFrRz/JdO
-	 epyZ8Ooaqll8MQQkBO0x9BqeyGJ1hTRwJLf/W5RSL43AJ/wGio0JZ5RBHdEQZt+7ba
-	 YdDRSnS3owr5w==
+	b=kJvfTL4zx1vmoZpe6BAe9QWa9DJP6IJWJU0grYURTmCOm6TmTXb3v6+H8uK0d3LDQ
+	 +CEP4MUzv+r5HeeyihXYjJCxifu3IphDsUM6/TRdJxdInYBw3CEaZ0tEn/c2FTdyXh
+	 eNuovKR6nw4G5Qw505tjvC0xCuWdNWW/dogkPZY768CbOBq8Mat7IoR7T/ycRRXFZS
+	 /41xTNu/CRnyLlgh5Aeq57oeTaDtMh0USyeP0RuDMMjRUtc6I16oFeer72/Yvj2nxg
+	 Izkud/69V/DLbUan9BJFh3U8O/tmUa7qW5DvSGQiQx883QNQgjV8TpToc4BLmHjs2k
+	 6xA6FT0TDbFiw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -48,9 +48,9 @@ Cc: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>,
 	alsa-devel@alsa-project.org,
 	patches@opensource.cirrus.com,
 	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 08/39] ASoC: cs35l45: Use modern pm_ops
-Date: Mon, 25 Dec 2023 19:18:58 -0500
-Message-ID: <20231226002021.4776-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 09/39] ASoC: cs35l45: Prevent IRQ handling when suspending/resuming
+Date: Mon, 25 Dec 2023 19:18:59 -0500
+Message-ID: <20231226002021.4776-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231226002021.4776-1-sashal@kernel.org>
 References: <20231226002021.4776-1-sashal@kernel.org>
@@ -67,90 +67,81 @@ Content-Transfer-Encoding: 8bit
 
 From: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
 
-[ Upstream commit 12e102b1bd22ee00361559d57a5876445bcb2407 ]
+[ Upstream commit c3c8b088949b9ccb88da2f84d3c3cc06580a6a43 ]
 
-Make use of the recently introduced EXPORT_GPL_DEV_PM_OPS() macro, to
-conditionally export the runtime/system PM functions.
-
-Replace the old SET_{RUNTIME,SYSTEM_SLEEP,NOIRQ_SYSTEM_SLEEP}_PM_OPS()
-helpers with their modern alternatives and get rid of the now
-unnecessary '__maybe_unused' annotations on all PM functions.
-
-Additionally, use the pm_ptr() macro to fix the following errors when
-building with CONFIG_PM disabled:
+Use the SYSTEM_SLEEP_PM_OPS handlers to prevent handling an IRQ
+when the system is in the middle of suspending or resuming.
 
 Signed-off-by: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
 Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20231206160318.1255034-2-rriveram@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20231206160318.1255034-3-rriveram@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs35l45-i2c.c | 2 +-
- sound/soc/codecs/cs35l45-spi.c | 2 +-
- sound/soc/codecs/cs35l45.c     | 9 ++++-----
- 3 files changed, 6 insertions(+), 7 deletions(-)
+ sound/soc/codecs/cs35l45.c | 43 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-diff --git a/sound/soc/codecs/cs35l45-i2c.c b/sound/soc/codecs/cs35l45-i2c.c
-index 77e0f8750f375..bc2af1ed0fe9b 100644
---- a/sound/soc/codecs/cs35l45-i2c.c
-+++ b/sound/soc/codecs/cs35l45-i2c.c
-@@ -62,7 +62,7 @@ static struct i2c_driver cs35l45_i2c_driver = {
- 	.driver = {
- 		.name		= "cs35l45",
- 		.of_match_table = cs35l45_of_match,
--		.pm		= &cs35l45_pm_ops,
-+		.pm		= pm_ptr(&cs35l45_pm_ops),
- 	},
- 	.id_table	= cs35l45_id_i2c,
- 	.probe		= cs35l45_i2c_probe,
-diff --git a/sound/soc/codecs/cs35l45-spi.c b/sound/soc/codecs/cs35l45-spi.c
-index 5efb77530cc33..39e203a5f060c 100644
---- a/sound/soc/codecs/cs35l45-spi.c
-+++ b/sound/soc/codecs/cs35l45-spi.c
-@@ -64,7 +64,7 @@ static struct spi_driver cs35l45_spi_driver = {
- 	.driver = {
- 		.name		= "cs35l45",
- 		.of_match_table = cs35l45_of_match,
--		.pm		= &cs35l45_pm_ops,
-+		.pm		= pm_ptr(&cs35l45_pm_ops),
- 	},
- 	.id_table	= cs35l45_id_spi,
- 	.probe		= cs35l45_spi_probe,
 diff --git a/sound/soc/codecs/cs35l45.c b/sound/soc/codecs/cs35l45.c
-index be4f4229576c4..b1d0f2c8f2cad 100644
+index b1d0f2c8f2cad..310747b7689d3 100644
 --- a/sound/soc/codecs/cs35l45.c
 +++ b/sound/soc/codecs/cs35l45.c
-@@ -810,7 +810,7 @@ static int cs35l45_exit_hibernate(struct cs35l45_private *cs35l45)
- 	return -ETIMEDOUT;
+@@ -854,6 +854,46 @@ static int cs35l45_runtime_resume(struct device *dev)
+ 	return ret;
  }
  
--static int __maybe_unused cs35l45_runtime_suspend(struct device *dev)
-+static int cs35l45_runtime_suspend(struct device *dev)
++static int cs35l45_sys_suspend(struct device *dev)
++{
++	struct cs35l45_private *cs35l45 = dev_get_drvdata(dev);
++
++	dev_dbg(cs35l45->dev, "System suspend, disabling IRQ\n");
++	disable_irq(cs35l45->irq);
++
++	return 0;
++}
++
++static int cs35l45_sys_suspend_noirq(struct device *dev)
++{
++	struct cs35l45_private *cs35l45 = dev_get_drvdata(dev);
++
++	dev_dbg(cs35l45->dev, "Late system suspend, reenabling IRQ\n");
++	enable_irq(cs35l45->irq);
++
++	return 0;
++}
++
++static int cs35l45_sys_resume_noirq(struct device *dev)
++{
++	struct cs35l45_private *cs35l45 = dev_get_drvdata(dev);
++
++	dev_dbg(cs35l45->dev, "Early system resume, disabling IRQ\n");
++	disable_irq(cs35l45->irq);
++
++	return 0;
++}
++
++static int cs35l45_sys_resume(struct device *dev)
++{
++	struct cs35l45_private *cs35l45 = dev_get_drvdata(dev);
++
++	dev_dbg(cs35l45->dev, "System resume, reenabling IRQ\n");
++	enable_irq(cs35l45->irq);
++
++	return 0;
++}
++
+ static int cs35l45_apply_property_config(struct cs35l45_private *cs35l45)
  {
- 	struct cs35l45_private *cs35l45 = dev_get_drvdata(dev);
+ 	struct device_node *node = cs35l45->dev->of_node;
+@@ -1291,6 +1331,9 @@ EXPORT_SYMBOL_NS_GPL(cs35l45_remove, SND_SOC_CS35L45);
  
-@@ -827,7 +827,7 @@ static int __maybe_unused cs35l45_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int __maybe_unused cs35l45_runtime_resume(struct device *dev)
-+static int cs35l45_runtime_resume(struct device *dev)
- {
- 	struct cs35l45_private *cs35l45 = dev_get_drvdata(dev);
- 	int ret;
-@@ -1289,10 +1289,9 @@ void cs35l45_remove(struct cs35l45_private *cs35l45)
- }
- EXPORT_SYMBOL_NS_GPL(cs35l45_remove, SND_SOC_CS35L45);
- 
--const struct dev_pm_ops cs35l45_pm_ops = {
--	SET_RUNTIME_PM_OPS(cs35l45_runtime_suspend, cs35l45_runtime_resume, NULL)
-+EXPORT_GPL_DEV_PM_OPS(cs35l45_pm_ops) = {
-+	RUNTIME_PM_OPS(cs35l45_runtime_suspend, cs35l45_runtime_resume, NULL)
+ EXPORT_GPL_DEV_PM_OPS(cs35l45_pm_ops) = {
+ 	RUNTIME_PM_OPS(cs35l45_runtime_suspend, cs35l45_runtime_resume, NULL)
++
++	SYSTEM_SLEEP_PM_OPS(cs35l45_sys_suspend, cs35l45_sys_resume)
++	NOIRQ_SYSTEM_SLEEP_PM_OPS(cs35l45_sys_suspend_noirq, cs35l45_sys_resume_noirq)
  };
--EXPORT_SYMBOL_NS_GPL(cs35l45_pm_ops, SND_SOC_CS35L45);
  
  MODULE_DESCRIPTION("ASoC CS35L45 driver");
- MODULE_AUTHOR("James Schulman, Cirrus Logic Inc, <james.schulman@cirrus.com>");
 -- 
 2.43.0
 
