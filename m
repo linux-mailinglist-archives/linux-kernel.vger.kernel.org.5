@@ -1,337 +1,130 @@
-Return-Path: <linux-kernel+bounces-11625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE5FB81E920
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:09:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3453281E924
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:09:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2317E2822D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:09:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CD8BB20C51
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:09:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B78FED8;
-	Tue, 26 Dec 2023 19:08:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45C2C136F;
+	Tue, 26 Dec 2023 19:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bBAANCqy"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="w6g8HZHE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB21643
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 19:08:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7ba737ee9b5so362725439f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 11:08:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703617736; x=1704222536; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WEwFqu7N4pNQgqlZY6e4yXz3XTwyP/U0e2i9AKk6T1I=;
-        b=bBAANCqyiyc3z/MQmtCuXMUAufGJ1pW+VusDvnP4GcsP3ylQoutgmVfUk1HIxXmGvB
-         krY4OTp1APdOdFD5B77/ly+NqyA44+77hFNXW/rjB/+4hOBYmM8+n99ilp/j341QVpb5
-         82QFbf1osAX1hnvtaUUXuFtgl/YHjhRxDs+Ju7BrrAXymb91bzDWxsR+E8V9P7yqLVqC
-         UUNXxKsIOy9Zqs88Iwt5R/PCyAavy9aI8QF3/ZLt6+qGxxFcwHenRStc2EXFg/wVcvgA
-         OfvJtwROwSX5ZShB3re5VLUSW6K6VnApd0AMqhHHVKji4DOf9eI/KyudXKx2D6KPoGyl
-         skFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703617736; x=1704222536;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WEwFqu7N4pNQgqlZY6e4yXz3XTwyP/U0e2i9AKk6T1I=;
-        b=hY9gp45C3JgQlap5VWDW15EkLAF3ZnCGdeG2+E9jwZgo9IZxsrMNhzYSjPKvMTrvp0
-         TAoTYXGiP+LMhMv0+Re49Z55xMLCgM4vCehbpL5Q3y54jCRYe6F4ifUgCLfO6mBpAboQ
-         PRsqKre1OaQcoSss4lyUP0tD2ktRQYpwbW3DLjmC/zyeVtYE5XmvM2ITgIIiRF5Eo+yT
-         eiDhqOKEeLoQg1o3eow6+/gpzsfvYb1AfUKhWuw6MwyF0bSUEOoyoe0aUCSSwa2rGkyT
-         6oeSh2ggG3hSJozSfvjd+kHMOQWkwdmJ4RyWdbi4ewqk6ntuLDreLpLeNzl7eJ7G3rSo
-         h4jw==
-X-Gm-Message-State: AOJu0YxMk3MO+9xAo1Wsi1Uryui03wOyGCVBJVWOXOhgvl8tF2T2W4Ft
-	bFnPeDN0BAqWsKs95I7lEOuhZXLifEqB/3vYnhI=
-X-Google-Smtp-Source: AGHT+IEc2tnxi8AhY9xmeAfznon68lgbaeDPJEoJiZpZsZIqajrzVe4QRk2p2BLDNGb+8Ux0fooWoFhMyMKkfmdtDcU=
-X-Received: by 2002:a05:6602:4995:b0:7b7:846e:564b with SMTP id
- eg21-20020a056602499500b007b7846e564bmr12094964iob.26.1703617735752; Tue, 26
- Dec 2023 11:08:55 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98141845;
+	Tue, 26 Dec 2023 19:09:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703617762; x=1704222562; i=markus.elfring@web.de;
+	bh=e+tBrgtJfsdqXLShYcAxcZWtl8ArgkpUQb9HNhch+6M=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=w6g8HZHEkpbryK5BLDOeQWt+/lpBqoGxbDnbb6dN2GVLEfRNnSHi9bdFdPHFbkCa
+	 QhWK+kIgXhjLVN6WqKbTGFrLpPIRDp9BybrEMyeb0i6/3kZsyKlNwHG/j/slAIhPQ
+	 oOEJml/hef9AR9qqJv0XjqjwoPu9WUqQvIKObyp8VlnXT/LZL/TjwVkUyvgAtVer5
+	 1yIUpVS/PO54spPLEyzKhqLauqEHGrCy4sjZSSwOx2tfgKDmL3Pr5Vx95ZbnzZ+rv
+	 UnSzlSkjQt1fszmBObyacSzmqC0KiYFyHE3yN1Nui7flNR4QA1MVr5c37DwACObqn
+	 1lGohnSUrYvql7oRlw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MQ8Wg-1reI1y1bJg-00MCdT; Tue, 26
+ Dec 2023 20:09:22 +0100
+Message-ID: <6d97cafb-ad7c-41c1-9f20-41024bb18515@web.de>
+Date: Tue, 26 Dec 2023 20:09:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213-zswap-dstmem-v4-0-f228b059dd89@bytedance.com> <20231213-zswap-dstmem-v4-6-f228b059dd89@bytedance.com>
-In-Reply-To: <20231213-zswap-dstmem-v4-6-f228b059dd89@bytedance.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 26 Dec 2023 11:08:44 -0800
-Message-ID: <CAKEwX=NzGF5K=6jbUO87hG3VE2Ou+h5zF6wRy-tuJV-ar1+xzQ@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] mm/zswap: change per-cpu mutex and buffer to per-acomp_ctx
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Seth Jennings <sjenning@redhat.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Vitaly Wool <vitaly.wool@konsulko.com>, 
-	Chris Li <chriscli@google.com>, Yosry Ahmed <yosryahmed@google.com>, 
-	Dan Streetman <ddstreet@ieee.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	Chris Li <chrisl@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+To: linux-hyperv@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Dexuan Cui <decui@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] Drivers: hv: vmbus: One function call less in
+ create_gpadl_header() after error detection
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:wPOvhj5sZIFHtakgOhvLyjOxfuTw717tJTZVuzvrrqw47k7mvWx
+ CyzpwGDn4gaBT1CJjpK9GVIIMWi/S+S+fIkUTwBRp1cLMH3aCcOGz/YfYnvNQb+99MMh8oI
+ tB8wP2yHdAK21v+JUtEchHHOWMoILWeamZmQXeqoP4qlu2NabSKEM484Z3soOjX+jFhTJ4C
+ aeh2fY1OkfpLpgsLxcGMg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:+GuqX/7+844=;mKtO/t28dF5Noz7+PWV5uyi6UzL
+ 7/31I3cEvXRYkQWA+hVKFQmOeWLyICCOmKCGX5QtKx+VQzGz5J+xCACsIPokktvmKoVBaUNOl
+ xNZkdW643wiWYJnR4le5+YS25/scz34z2OIsXOdVCh2qons627KD1GqYZ3UcvHSZWavrvPYOc
+ GrsvfGdSMZaoolsz3DLBivmTL5uaL2KCwkEbR+qHp7CTuvrP1Tdfr+I59JELsF7xpusF++GQ7
+ IIEuf0UQDPAGvxV48JJ6ZOvpuBOTe2Lk7sbu8Y6BeD7XNxyU9pFSpLdqEoxfSmeYKakeKgBIJ
+ mLkEkLA/hHZOtmywAxIOyCmJ6sMSNjh1DuLqQl14FHXGTs3ShtVGMk+eIaXOXgjhbGFS2bYfE
+ wDaQKwDlzYRvw5b6b5oz1tIMVV6eYS/R3Zxjjng3IB/05hx0w8n8Y38G56pzoMi3Ol1ccfCVj
+ 7aV89aa0n6Wgq1vb2YT4QGcnFQQEY579fhcceHzZF+xl+vRGVYMWtqOUnJydIope45l1hcTjx
+ Y6PKyXeU5EcnjGjqpvhSi5dr5l27OA7BYIN4/Lh0uJ6sTd5S+n923nrCs2vnVKmsoGSzMCEXb
+ 5ShpvJ9SNR8aYqW6E+hyPLSCD6qxZAtgbxrjR2umD4489dOR3+hsr57JNZMIqhqzNZ8/FdDiz
+ Nludh6j1qcdUdb/4EnZAt36PhVW46UAD+5SkcfvbDYGl1CJIUkW/U7GDQd9qs5485X7xqbTm3
+ DAdMQaJIES6dm3aBZtoKAtKF7LaKKj8n72SiZYMGgyhZtpZLAS0UsAO5DEslJ7mkpPy8ot9n4
+ APzpn7lW5qWto/xov4OzKsFlsKOGypiVfz6kco8PRYqkkKsU/OjiQZ4HvOpGkOY2frbVDvkjw
+ o7Pk8FS2Wocgqn8Im/UH49p0ICEv9pS6MxMBvLzErm/elfZjIzVD7ItR0pQzksE3Dio8aWDJ9
+ x2Lvmw==
 
-On Tue, Dec 26, 2023 at 7:55=E2=80=AFAM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> First of all, we need to rename acomp_ctx->dstmem field to buffer,
-> since we are now using for purposes other than compression.
->
-> Then we change per-cpu mutex and buffer to per-acomp_ctx, since
-> them belong to the acomp_ctx and are necessary parts when used
-> in the compress/decompress contexts.
->
-> So we can remove the old per-cpu mutex and dstmem.
->
-> Acked-by: Chris Li <chrisl@kernel.org> (Google)
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Tue, 26 Dec 2023 20:00:24 +0100
 
-Fairly straightforward, and actually delete some code :) LGTM.
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+The kfree() function was called in two cases by
+the create_gpadl_header() function during error handling
+even if the passed variable contained a null pointer.
+This issue was detected by using the Coccinelle software.
 
-> ---
->  include/linux/cpuhotplug.h |  1 -
->  mm/zswap.c                 | 98 +++++++++++++---------------------------=
-------
->  2 files changed, 28 insertions(+), 71 deletions(-)
->
-> diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-> index efc0c0b07efb..c3e06e21766a 100644
-> --- a/include/linux/cpuhotplug.h
-> +++ b/include/linux/cpuhotplug.h
-> @@ -124,7 +124,6 @@ enum cpuhp_state {
->         CPUHP_ARM_BL_PREPARE,
->         CPUHP_TRACE_RB_PREPARE,
->         CPUHP_MM_ZS_PREPARE,
-> -       CPUHP_MM_ZSWP_MEM_PREPARE,
->         CPUHP_MM_ZSWP_POOL_PREPARE,
->         CPUHP_KVM_PPC_BOOK3S_PREPARE,
->         CPUHP_ZCOMP_PREPARE,
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 40ee9f109f98..8014509736ad 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -166,8 +166,8 @@ struct crypto_acomp_ctx {
->         struct crypto_acomp *acomp;
->         struct acomp_req *req;
->         struct crypto_wait wait;
-> -       u8 *dstmem;
-> -       struct mutex *mutex;
-> +       u8 *buffer;
-> +       struct mutex mutex;
->  };
->
->  /*
-> @@ -694,63 +694,26 @@ static void zswap_alloc_shrinker(struct zswap_pool =
-*pool)
->  /*********************************
->  * per-cpu code
->  **********************************/
-> -static DEFINE_PER_CPU(u8 *, zswap_dstmem);
-> -/*
-> - * If users dynamically change the zpool type and compressor at runtime,=
- i.e.
-> - * zswap is running, zswap can have more than one zpool on one cpu, but =
-they
-> - * are sharing dtsmem. So we need this mutex to be per-cpu.
-> - */
-> -static DEFINE_PER_CPU(struct mutex *, zswap_mutex);
-> -
-> -static int zswap_dstmem_prepare(unsigned int cpu)
-> -{
-> -       struct mutex *mutex;
-> -       u8 *dst;
-> -
-> -       dst =3D kmalloc_node(PAGE_SIZE, GFP_KERNEL, cpu_to_node(cpu));
-> -       if (!dst)
-> -               return -ENOMEM;
-> -
-> -       mutex =3D kmalloc_node(sizeof(*mutex), GFP_KERNEL, cpu_to_node(cp=
-u));
-> -       if (!mutex) {
-> -               kfree(dst);
-> -               return -ENOMEM;
-> -       }
-> -
-> -       mutex_init(mutex);
-> -       per_cpu(zswap_dstmem, cpu) =3D dst;
-> -       per_cpu(zswap_mutex, cpu) =3D mutex;
-> -       return 0;
-> -}
-> -
-> -static int zswap_dstmem_dead(unsigned int cpu)
-> -{
-> -       struct mutex *mutex;
-> -       u8 *dst;
-> -
-> -       mutex =3D per_cpu(zswap_mutex, cpu);
-> -       kfree(mutex);
-> -       per_cpu(zswap_mutex, cpu) =3D NULL;
-> -
-> -       dst =3D per_cpu(zswap_dstmem, cpu);
-> -       kfree(dst);
-> -       per_cpu(zswap_dstmem, cpu) =3D NULL;
-> -
-> -       return 0;
-> -}
-> -
->  static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *n=
-ode)
->  {
->         struct zswap_pool *pool =3D hlist_entry(node, struct zswap_pool, =
-node);
->         struct crypto_acomp_ctx *acomp_ctx =3D per_cpu_ptr(pool->acomp_ct=
-x, cpu);
->         struct crypto_acomp *acomp;
->         struct acomp_req *req;
-> +       int ret;
-> +
-> +       mutex_init(&acomp_ctx->mutex);
-> +
-> +       acomp_ctx->buffer =3D kmalloc_node(PAGE_SIZE, GFP_KERNEL, cpu_to_=
-node(cpu));
-> +       if (!acomp_ctx->buffer)
-> +               return -ENOMEM;
->
->         acomp =3D crypto_alloc_acomp_node(pool->tfm_name, 0, 0, cpu_to_no=
-de(cpu));
->         if (IS_ERR(acomp)) {
->                 pr_err("could not alloc crypto acomp %s : %ld\n",
->                                 pool->tfm_name, PTR_ERR(acomp));
-> -               return PTR_ERR(acomp);
-> +               ret =3D PTR_ERR(acomp);
-> +               goto acomp_fail;
->         }
->         acomp_ctx->acomp =3D acomp;
->
-> @@ -758,8 +721,8 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, s=
-truct hlist_node *node)
->         if (!req) {
->                 pr_err("could not alloc crypto acomp_request %s\n",
->                        pool->tfm_name);
-> -               crypto_free_acomp(acomp_ctx->acomp);
-> -               return -ENOMEM;
-> +               ret =3D -ENOMEM;
-> +               goto req_fail;
->         }
->         acomp_ctx->req =3D req;
->
-> @@ -772,10 +735,13 @@ static int zswap_cpu_comp_prepare(unsigned int cpu,=
- struct hlist_node *node)
->         acomp_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,
->                                    crypto_req_done, &acomp_ctx->wait);
->
-> -       acomp_ctx->mutex =3D per_cpu(zswap_mutex, cpu);
-> -       acomp_ctx->dstmem =3D per_cpu(zswap_dstmem, cpu);
-> -
->         return 0;
-> +
-> +req_fail:
-> +       crypto_free_acomp(acomp_ctx->acomp);
-> +acomp_fail:
-> +       kfree(acomp_ctx->buffer);
-> +       return ret;
->  }
->
->  static int zswap_cpu_comp_dead(unsigned int cpu, struct hlist_node *node=
-)
-> @@ -788,6 +754,7 @@ static int zswap_cpu_comp_dead(unsigned int cpu, stru=
-ct hlist_node *node)
->                         acomp_request_free(acomp_ctx->req);
->                 if (!IS_ERR_OR_NULL(acomp_ctx->acomp))
->                         crypto_free_acomp(acomp_ctx->acomp);
-> +               kfree(acomp_ctx->buffer);
->         }
->
->         return 0;
-> @@ -1400,12 +1367,12 @@ static void __zswap_load(struct zswap_entry *entr=
-y, struct page *page)
->         u8 *src;
->
->         acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
-> -       mutex_lock(acomp_ctx->mutex);
-> +       mutex_lock(&acomp_ctx->mutex);
->
->         src =3D zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
->         if (!zpool_can_sleep_mapped(zpool)) {
-> -               memcpy(acomp_ctx->dstmem, src, entry->length);
-> -               src =3D acomp_ctx->dstmem;
-> +               memcpy(acomp_ctx->buffer, src, entry->length);
-> +               src =3D acomp_ctx->buffer;
->                 zpool_unmap_handle(zpool, entry->handle);
->         }
->
-> @@ -1415,7 +1382,7 @@ static void __zswap_load(struct zswap_entry *entry,=
- struct page *page)
->         acomp_request_set_params(acomp_ctx->req, &input, &output, entry->=
-length, PAGE_SIZE);
->         BUG_ON(crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req), &=
-acomp_ctx->wait));
->         BUG_ON(acomp_ctx->req->dlen !=3D PAGE_SIZE);
-> -       mutex_unlock(acomp_ctx->mutex);
-> +       mutex_unlock(&acomp_ctx->mutex);
->
->         if (zpool_can_sleep_mapped(zpool))
->                 zpool_unmap_handle(zpool, entry->handle);
-> @@ -1636,9 +1603,9 @@ bool zswap_store(struct folio *folio)
->         /* compress */
->         acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
->
-> -       mutex_lock(acomp_ctx->mutex);
-> +       mutex_lock(&acomp_ctx->mutex);
->
-> -       dst =3D acomp_ctx->dstmem;
-> +       dst =3D acomp_ctx->buffer;
->         sg_init_table(&input, 1);
->         sg_set_page(&input, page, PAGE_SIZE, 0);
->
-> @@ -1681,7 +1648,7 @@ bool zswap_store(struct folio *folio)
->         buf =3D zpool_map_handle(zpool, handle, ZPOOL_MM_WO);
->         memcpy(buf, dst, dlen);
->         zpool_unmap_handle(zpool, handle);
-> -       mutex_unlock(acomp_ctx->mutex);
-> +       mutex_unlock(&acomp_ctx->mutex);
->
->         /* populate entry */
->         entry->swpentry =3D swp_entry(type, offset);
-> @@ -1724,7 +1691,7 @@ bool zswap_store(struct folio *folio)
->         return true;
->
->  put_dstmem:
-> -       mutex_unlock(acomp_ctx->mutex);
-> +       mutex_unlock(&acomp_ctx->mutex);
->  put_pool:
->         zswap_pool_put(entry->pool);
->  freepage:
-> @@ -1899,13 +1866,6 @@ static int zswap_setup(void)
->                 goto cache_fail;
->         }
->
-> -       ret =3D cpuhp_setup_state(CPUHP_MM_ZSWP_MEM_PREPARE, "mm/zswap:pr=
-epare",
-> -                               zswap_dstmem_prepare, zswap_dstmem_dead);
-> -       if (ret) {
-> -               pr_err("dstmem alloc failed\n");
-> -               goto dstmem_fail;
-> -       }
-> -
->         ret =3D cpuhp_setup_state_multi(CPUHP_MM_ZSWP_POOL_PREPARE,
->                                       "mm/zswap_pool:prepare",
->                                       zswap_cpu_comp_prepare,
-> @@ -1937,8 +1897,6 @@ static int zswap_setup(void)
->         if (pool)
->                 zswap_pool_destroy(pool);
->  hp_fail:
-> -       cpuhp_remove_state(CPUHP_MM_ZSWP_MEM_PREPARE);
-> -dstmem_fail:
->         kmem_cache_destroy(zswap_entry_cache);
->  cache_fail:
->         /* if built-in, we aren't unloaded on failure; don't allow use */
->
-> --
-> b4 0.10.1
+Thus use another label.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/hv/channel.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
+index 56f7e06c673e..4d1bbda895d8 100644
+=2D-- a/drivers/hv/channel.c
++++ b/drivers/hv/channel.c
+@@ -336,7 +336,7 @@ static int create_gpadl_header(enum hv_gpadl_type type=
+, void *kbuffer,
+ 			  sizeof(struct gpa_range) + pfncount * sizeof(u64);
+ 		msgheader =3D  kzalloc(msgsize, GFP_KERNEL);
+ 		if (!msgheader)
+-			goto nomem;
++			goto free_body;
+
+ 		INIT_LIST_HEAD(&msgheader->submsglist);
+ 		msgheader->msgsize =3D msgsize;
+@@ -417,7 +417,7 @@ static int create_gpadl_header(enum hv_gpadl_type type=
+, void *kbuffer,
+ 			  sizeof(struct gpa_range) + pagecount * sizeof(u64);
+ 		msgheader =3D kzalloc(msgsize, GFP_KERNEL);
+ 		if (msgheader =3D=3D NULL)
+-			goto nomem;
++			goto free_body;
+
+ 		INIT_LIST_HEAD(&msgheader->submsglist);
+ 		msgheader->msgsize =3D msgsize;
+@@ -439,6 +439,7 @@ static int create_gpadl_header(enum hv_gpadl_type type=
+, void *kbuffer,
+ 	return 0;
+ nomem:
+ 	kfree(msgheader);
++free_body:
+ 	kfree(msgbody);
+ 	return -ENOMEM;
+ }
+=2D-
+2.43.0
+
 
