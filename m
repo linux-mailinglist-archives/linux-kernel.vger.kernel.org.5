@@ -1,129 +1,106 @@
-Return-Path: <linux-kernel+bounces-11599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 449D581E8C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 18:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 719FE81E8CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 18:58:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE5891F21CB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:58:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 278391F21B52
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F99D51009;
-	Tue, 26 Dec 2023 17:58:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="Rx/Z4nHR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6812F5024A;
+	Tue, 26 Dec 2023 17:58:19 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C00454F8BB
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 17:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4277e7146abso42941791cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:58:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1703613482; x=1704218282; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eYH7udRxVOWUuYR1uviT4nzog+O468I+tsZ16QY52lY=;
-        b=Rx/Z4nHRY1rSniKB7ojzBTzchlS2er2VU2zu6k5/FnO7NMhFsGCtuVNSYt48bBzIUK
-         ij4DxspKTtvkJw2rpHMDZyOEonUoz5HeKb+hWX2utOvlr/xPxySA9cMQuIWIHDI13TuF
-         bJqKEtiWP+VYYe4QdfnU8x30DHGrT/bxxwCa726sfWqYWXPxhtRIz/VATzKaxTXXpEuQ
-         +20EeOcvHa6zPq5v/gWGKcf/gLTxOpnnVj3IoUH8Gx8ADZqJugSDmg2CxzCe5gAnNGVD
-         WKUlXr0g3eBOh9Z39Ati6EXzd69lD5HtiDdcW7l17KFZ7iZnn/iQ/pq3AzHVqUmNbJxp
-         7dYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703613482; x=1704218282;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eYH7udRxVOWUuYR1uviT4nzog+O468I+tsZ16QY52lY=;
-        b=hXqhjLXoWhEPEQhAk17faD98Glv4SqsE2GesKRJVBWwepD9sECyrU10YzHAGkedxkO
-         UtFbxUMvWX5lLxChYE7Y84y9cUMomeptRgoBVii3LRNOOyR5lgdWEYKO7AWFnTa5Klk0
-         N6GXXEsY052OyN7xI1RT4YPrtTzhvdEvhx0R+/KABn6994zDJ1t9hGXxISoLhvCCCtwI
-         die4Qfzu0iGgssA5JWySGW6HBUSbvXHFmCCAgd1V+5Y2BeQSHPJjGDP4FIDNbrRnCjO/
-         ZzE9Q+gDzd1k8UgSSGnoecnk/b6dBIjw9Mo5g57uwxl4Bha7yeDnl0JIzg6NV10B9oLv
-         3YCw==
-X-Gm-Message-State: AOJu0Yy+ILeZQoEgFU6HDjF4k7F1vnXd+k4WTDAges5anxW5WaWUgAjX
-	Mc20ADu1HZ+RGIXXnPsXEglYMFvadOWUc8VgwVDUd2L2n+6c/Q==
-X-Google-Smtp-Source: AGHT+IF1mJ8zM3mxpNM9KsLehfwPoH0iCOIzFR/lBXLAAhZkeLDmK9jCB4DCOG5yTSpoP8aUapffGpK3Rjo+EEYkWKw=
-X-Received: by 2002:ac8:5915:0:b0:427:9fad:896a with SMTP id
- 21-20020ac85915000000b004279fad896amr10235427qty.56.1703613481775; Tue, 26
- Dec 2023 09:58:01 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0940D4F8BC;
+	Tue, 26 Dec 2023 17:58:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA420C433C8;
+	Tue, 26 Dec 2023 17:58:17 +0000 (UTC)
+Date: Tue, 26 Dec 2023 12:59:02 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH] ring-buffer: Fix wake ups when buffer_percent is set to 100
+Message-ID: <20231226125902.4a057f1d@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231130201504.2322355-1-pasha.tatashin@soleen.com>
- <20231130201504.2322355-2-pasha.tatashin@soleen.com> <776e17af-ae25-16a0-f443-66f3972b00c0@google.com>
- <CA+CK2bA8iJ_w8CSx2Ed=d2cVSujrC0-TpO7U9j+Ow-gfk1nyfQ@mail.gmail.com>
- <1fd66377-030c-2e48-e658-4669bbf037e9@google.com> <ZYinEGCdl8mZjmXi@casper.infradead.org>
-In-Reply-To: <ZYinEGCdl8mZjmXi@casper.infradead.org>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Tue, 26 Dec 2023 12:57:25 -0500
-Message-ID: <CA+CK2bDWRN__FBw1N9j9RD3EE+0pca89ASKROA6tK_CGH17gNw@mail.gmail.com>
-Subject: Re: [PATCH v2 01/10] iommu/vt-d: add wrapper functions for page allocations
-To: Matthew Wilcox <willy@infradead.org>
-Cc: David Rientjes <rientjes@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	alim.akhtar@samsung.com, alyssa@rosenzweig.io, asahi@lists.linux.dev, 
-	baolu.lu@linux.intel.com, bhelgaas@google.com, cgroups@vger.kernel.org, 
-	corbet@lwn.net, david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org, 
-	heiko@sntech.de, iommu@lists.linux.dev, jernej.skrabec@gmail.com, 
-	jonathanh@nvidia.com, joro@8bytes.org, krzysztof.kozlowski@linaro.org, 
-	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	lizefan.x@bytedance.com, marcan@marcan.st, mhiramat@kernel.org, 
-	m.szyprowski@samsung.com, paulmck@kernel.org, rdunlap@infradead.org, 
-	robin.murphy@arm.com, samuel@sholland.org, suravee.suthikulpanit@amd.com, 
-	sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org, 
-	tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, will@kernel.org, 
-	yu-cheng.yu@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Sun, Dec 24, 2023 at 4:48=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Sun, Dec 24, 2023 at 01:30:50PM -0800, David Rientjes wrote:
-> > > > s/pages/page/ here and later in this file.
-> > >
-> > > In this file, where there a page with an "order", I reference it with
-> > > "pages", when no order (i.e. order =3D 0), I reference it with "page"
-> > >
-> > > I.e.: __iommu_alloc_page vs. __iommu_alloc_pages
-> > >
-> >
-> > Eh, the struct page points to a (potentially compound) page, not a set =
-or
-> > list of pages.  I won't bikeshed on it, but "struct page *pages" never
-> > makes sense unless it's **pages or *pages[] :)
->
-> I'd suggest that 'pages' also makes sense when _not_ using __GFP_COMP,
-> as we do in fact allocate an array of pages in that case.
->
-> That said, we shouldn't encourage the use of non-compound allocations.
-> It would also be good for someone to define a memdesc for iommu memory
-> like we have already for slab.  We'll need it eventually, and it'll work
-> out better if someone who understands iommus (ie not me) does it.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-I was thinking of adding an IOMMU page table memdesc, at least by
-starting with Intel implementation.
+The tracefs file "buffer_percent" is to allow user space to set a
+water-mark on how much of the tracing ring buffer needs to be filled in
+order to wake up a blocked reader.
 
-- For efficient freeing on page-unmap we need a counter.
-- We might also need a per-page page table locking (aka PTL type
-lock), if the current approach I am proposing is not scalable enough.
-- Access to debugfs (I am studying this now).
+ 0 - is to wait until any data is in the buffer
+ 1 - is to wait for 1% of the sub buffers to be filled
+ 50 - would be half of the sub buffers are filled with data
+ 100 - is not to wake the waiter until the ring buffer is completely full
 
-However, iommu memdesc would really make sense, once all the various
-page table management IOMMU implementations are unified.
+Unfortunately the test for being full was:
 
-Pasha
+	dirty = ring_buffer_nr_dirty_pages(buffer, cpu);
+	return (dirty * 100) > (full * nr_pages);
+
+Where "full" is the value for "buffer_percent".
+
+There is two issues with the above when full == 100.
+
+1. dirty * 100 > 100 * nr_pages will never be true
+   That is, the above is basically saying that if the user sets
+   buffer_percent to 100, more pages need to be dirty than exist in the
+   ring buffer!
+
+2. The page that the writer is on is never considered dirty, as dirty
+   pages are only those that are full. When the writer goes to a new
+   sub-buffer, it clears the contents of that sub-buffer.
+
+That is, even if the check was ">=" it would still not be equal as the
+most pages that can be considered "dirty" is nr_pages - 1.
+
+To fix this, add one to dirty and use ">=" in the compare.
+
+Cc: stable@vger.kernel.org
+Fixes: 03329f9939781 ("tracing: Add tracefs file buffer_percentage")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/ring_buffer.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 83eab547f1d1..32c0dd2fd1c3 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -881,9 +881,14 @@ static __always_inline bool full_hit(struct trace_buffer *buffer, int cpu, int f
+ 	if (!nr_pages || !full)
+ 		return true;
+ 
+-	dirty = ring_buffer_nr_dirty_pages(buffer, cpu);
++	/*
++	 * Add one as dirty will never equal nr_pages, as the sub-buffer
++	 * that the writer is on is not counted as dirty.
++	 * This is needed if "buffer_percent" is set to 100.
++	 */
++	dirty = ring_buffer_nr_dirty_pages(buffer, cpu) + 1;
+ 
+-	return (dirty * 100) > (full * nr_pages);
++	return (dirty * 100) >= (full * nr_pages);
+ }
+ 
+ /*
+-- 
+2.42.0
+
 
