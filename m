@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-11454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2BAB81E695
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D6C081E69A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:45:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE2CC2819CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:45:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBBB3282FDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CFBB4E624;
-	Tue, 26 Dec 2023 09:43:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 593E84F1E3;
+	Tue, 26 Dec 2023 09:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tf7Jdrzn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CJ/u/Yoc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED0C4EB33
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:43:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A8D34F1E4
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703583817;
+	t=1703583823;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=P/WuOHRAYvaP7I2DX531nPKJwXne70nh/3fxHOzzGiA=;
-	b=tf7JdrznhaN4E6fQRw7ouq2L5O1nTsVhLkIdmtYaog/D+ujk1eSf8Yh6ICqpQHF0XMgnb9
-	PQsUw4eNCwwYPljUcEoKFOO9agWl7mcJcPyE2T9o93FpNSmps2dHudxLttkkVicp5ozUex
-	qDVv1SLocvaHp8pCfURxIYvLEdRyi5I=
+	bh=HGLhO5Ou1/1sy5iMfPRnAioEor7eJGTaCFhyISDdmuA=;
+	b=CJ/u/YocoRH87w7XAkDO5W7pMkoLV+bxFqEqGej2CADiGdDvhuGaCluJSIZzOOQCC52gzn
+	7feu7abBgBDpuImPkJDQt6a66b9Bz0rG94Dvp2yrniFyOPY/eJuk421VZxyfk4s4bduhIu
+	lEneILhFX9q2md3kWR83Uwn01fLesEo=
 From: George Guo <dongtai.guo@linux.dev>
 To: horms@kernel.org,
 	pablo@netfilter.org,
@@ -47,9 +47,9 @@ Cc: netfilter-devel@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	George Guo <guodongtai@kylinos.cn>
-Subject: [PATCH 05/14] netfilter: cleanup struct nft_set_ops
-Date: Tue, 26 Dec 2023 17:42:46 +0800
-Message-Id: <20231226094255.77911-5-dongtai.guo@linux.dev>
+Subject: [PATCH 06/14] netfilter: cleanup struct nft_set
+Date: Tue, 26 Dec 2023 17:42:47 +0800
+Message-Id: <20231226094255.77911-6-dongtai.guo@linux.dev>
 In-Reply-To: <20231226094255.77911-1-dongtai.guo@linux.dev>
 References: <20231226094255.77911-1-dongtai.guo@linux.dev>
 Precedence: bulk
@@ -63,32 +63,36 @@ X-Migadu-Flow: FLOW_OUT
 
 From: George Guo <guodongtai@kylinos.cn>
 
-Add comments for commit, abort, estimate and gc_init in struct
-nft_set_ops.
+Add comments for pending_update, num_exprs, exprs and catchall_list
+in struct nft_set.
 
 Signed-off-by: George Guo <guodongtai@kylinos.cn>
 ---
- include/net/netfilter/nf_tables.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/net/netfilter/nf_tables.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index a8243cf32e29..1e24db91a37e 100644
+index 1e24db91a37e..91a1cb6fadf1 100644
 --- a/include/net/netfilter/nf_tables.h
 +++ b/include/net/netfilter/nf_tables.h
-@@ -424,9 +424,13 @@ struct nft_set_ext;
-  *	@remove: remove element from set
-  *	@walk: iterate over all set elements
-  *	@get: get set elements
-+ *	@commit: commit set elements
-+ *	@abort: abort set elements
-  *	@privsize: function to return size of set private data
-+ *	@estimate: estimate the required memory size and the lookup complexity class
-  *	@init: initialize private data of new set instance
-  *	@destroy: destroy private data of set instance
-+ *	@gc_init: initialize garbage collection
-  *	@elemsize: element private size
-  *
-  *	Operations lookup, update and delete have simpler interfaces, are faster
+@@ -546,13 +546,16 @@ struct nft_set_elem_expr {
+  *	@policy: set parameterization (see enum nft_set_policies)
+  *	@udlen: user data length
+  *	@udata: user data
+- *	@expr: stateful expression
++ *	@pending_update: list of pending update set element
+  * 	@ops: set ops
+  * 	@flags: set flags
+  *	@dead: set will be freed, never cleared
+  *	@genmask: generation mask
+  * 	@klen: key length
+  * 	@dlen: data length
++ *	@num_exprs: numbers of exprs
++ *	@exprs: stateful expression
++ *	@catchall_list: list of catch-all set element
+  * 	@data: private set data
+  */
+ struct nft_set {
 -- 
 2.39.2
 
