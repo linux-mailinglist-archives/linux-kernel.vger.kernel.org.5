@@ -1,162 +1,358 @@
-Return-Path: <linux-kernel+bounces-11331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9C4281E4AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 04:08:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 099AC81E4B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 04:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A9B7282C38
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 03:08:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FA461F22572
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 03:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6637B107B2;
-	Tue, 26 Dec 2023 03:08:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0978310A04;
+	Tue, 26 Dec 2023 03:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IQKwbJYM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bUIqIvv5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f68.google.com (mail-pj1-f68.google.com [209.85.216.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A1F310793
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 03:07:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703560078; x=1735096078;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4sOfdLjctTbsDq9TJboZiHNGXoyeVfXJBH3M0tpQ1L0=;
-  b=IQKwbJYMMMo4EjVbMalAATs3G2Jeck2P0EfuPQHIi0L+mjndPZDOGdKF
-   0WlKpSEMb+DHihoGhHHCG4xOqaWtRp9J8k/lL5uhfayJBzLP21OeiAe45
-   CakXgUmuSIfaDvUcu4pMtq895jhVIfPBVdIgZYEiuVdfr7Kb2nZSz6fBq
-   Z4G1kFYQn/sDdFCPKO/tTt074DPdvdjpzoLLHVTJwvNGTS00/p+6FqKWX
-   oLv2ni4HNqHZZWnBBU0jZKFe/9MjllLULAidN1ObvozhJkVd87yDQentG
-   L43wyo45Jje8ir9zKqSh4EYOfuXq/n1zhUExQnnuVbvz6lvJd138CZ119
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="3399530"
-X-IronPort-AV: E=Sophos;i="6.04,304,1695711600"; 
-   d="scan'208";a="3399530"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 19:07:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="848323553"
-X-IronPort-AV: E=Sophos;i="6.04,304,1695711600"; 
-   d="scan'208";a="848323553"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Dec 2023 19:07:55 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rHxnM-000Dwb-2T;
-	Tue, 26 Dec 2023 03:07:52 +0000
-Date: Tue, 26 Dec 2023 11:07:51 +0800
-From: kernel test robot <lkp@intel.com>
-To: =?iso-8859-1?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Jiri Kosina <jkosina@suse.cz>
-Subject: drivers/hid/hid-magicmouse.c:146: warning: Function parameter or
- member 'battery_timer' not described in 'magicmouse_sc'
-Message-ID: <202312261056.AmFPDIL5-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C2B107A2;
+	Tue, 26 Dec 2023 03:20:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f68.google.com with SMTP id 98e67ed59e1d1-28c179bf45cso2017352a91.1;
+        Mon, 25 Dec 2023 19:20:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703560824; x=1704165624; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/YQDNpHRUTDgWIg5rNQu7vQTv9wa4oPQdE9W9rMQEhs=;
+        b=bUIqIvv5CkM4VbmGKtJhC2WxGgwo+CXKKjjdl5DOOF/mVmbxIsPK+8UJfUwRtel9sT
+         gFQF+3zzCmazKq/h4EIRa6HOa0ymLp1g76yygWcXTaBjU9H2QHk/3ZXm1uOBjaD71I7n
+         6mCxiO5Dn2SQ8Jh65VT3/+Vn3LxU6X0krBv0CfOR6Tyw0zHQ2cw9eTazGIBufG5Vo7k5
+         B8A+x0fOQjPYo1opib+RiR9TTCQmCwdl+dO6poraiUQjBtse2WbLa1kASws2Q6CoZi6A
+         Bg1aJG2DYInJY7CpHQUAUc0+RfmJyzb6k646Rc6Xs6d2Y2Ls2IgCXjP1XBA74L4FJRLv
+         m93g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703560824; x=1704165624;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/YQDNpHRUTDgWIg5rNQu7vQTv9wa4oPQdE9W9rMQEhs=;
+        b=drgWdWD2et8MW56rqHUxjH4bZfM7FENEFXZOlHCGL5/N1zISbrODbfcYiEIqBxXyYI
+         lcolGlqQyY4y0IR8rXYTk7o4VWsElD1HRd7C5eqpwDHsDBymYOxWCssK7vuSth7qDgfQ
+         V1nzdUIPv2mE1FG6hlkbCOaPfhHTNZ4qFsT5cgqKd4Cf2lZ6HlE2Z7dh0fuSUQY4+7jL
+         boeFnScIM9kh9aXUjH2j4bWwvsIp6iX1sVMZ/K9oG0/bU3C6pG+pgR5jWGq0FtufJMC5
+         tP+f8rhJ+iprmBoxwnQk3XwVoPTaBEfQdq/NTLaaJ1Y3LgqtnKmvSbvlMnwI81Rq5KxV
+         tY4w==
+X-Gm-Message-State: AOJu0YyXDcjMSr7xlYT0eckTSvwL2OyPTAMvLoXU0GqdnC70wurCbxpa
+	ch4z8a/FZDNvLAjzFcI3fS+azZ2+f+K0hYb20OGXXhOVojKqwUHA
+X-Google-Smtp-Source: AGHT+IHf+nTGxCDn+wyqCtVeGroIyvkCY43yp0Je0U18u93Fn4hhP8mDh8r3Oj0C7nI9/Q1mPtCB31fzIxcgpwkenh8=
+X-Received: by 2002:a17:902:f68b:b0:1d4:39d5:8edc with SMTP id
+ l11-20020a170902f68b00b001d439d58edcmr5993360plg.41.1703560823969; Mon, 25
+ Dec 2023 19:20:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20231222112746.9720-1-kaiwei.liu@unisoc.com> <6e0a104a-1f99-4686-ba76-99ef631b0d25@linux.alibaba.com>
+In-Reply-To: <6e0a104a-1f99-4686-ba76-99ef631b0d25@linux.alibaba.com>
+From: liu kaiwei <liukaiwei086@gmail.com>
+Date: Tue, 26 Dec 2023 11:20:13 +0800
+Message-ID: <CAOgAA6H9KnOr+U-uWZsy2Ljo9-ncrRWaoyrJG79ZbH8ahUhQfA@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] dmaengine: sprd: optimize two stage transfer function
+To: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: Kaiwei Liu <kaiwei.liu@unisoc.com>, Vinod Koul <vkoul@kernel.org>, 
+	Orson Zhai <orsonzhai@gmail.com>, Chunyan Zhang <zhang.lyra@gmail.com>, dmaengine@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Wenming Wu <wenming.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   fbafc3e621c3f4ded43720fdb1d6ce1728ec664e
-commit: 0b91b4e4dae63cd43871fc2012370b86ee588f91 HID: magicmouse: Report battery level over USB
-date:   2 years, 1 month ago
-config: x86_64-randconfig-x066-20230529 (https://download.01.org/0day-ci/archive/20231226/202312261056.AmFPDIL5-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231226/202312261056.AmFPDIL5-lkp@intel.com/reproduce)
+On Mon, Dec 25, 2023 at 3:05=E2=80=AFPM Baolin Wang
+<baolin.wang@linux.alibaba.com> wrote:
+>
+>
+>
+> On 12/22/2023 7:27 PM, Kaiwei Liu wrote:
+> > From: "kaiwei.liu" <kaiwei.liu@unisoc.com>
+> >
+> > For SPRD DMA, it provides a function that one channel can start
+> > the second channel after completing the transmission, which we
+> > call two stage transfer mode. You can choose which channel can
+> > generate interrupt when finished. It can support up to two sets
+> > of such patterns.
+> > When configuring registers for two stage transfer mode, we need
+> > to set the mask bit to ensure that the setting are accurate. And
+> > we should clear the two stage transfer configuration when release
+> > DMA channel.
+> > The two stage transfer function is mainly used by SPRD audio, and
+> > now audio also requires that the data need to be accessed on the
+> > device side. So here use the src_port_window_size and dst_port_win-
+> > dow_size in the struct of dma_slave_config.
+> >
+> > Signed-off-by: kaiwei.liu <kaiwei.liu@unisoc.com>
+>
+> It seems you ignored my previous comments[1], please make sure they are
+> addressed firstly.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312261056.AmFPDIL5-lkp@intel.com/
+Hi, the patch we sended before has been updated and I will explain the ques=
+tion
+base on this latest one.
+>
+> [1]
+> https://lore.kernel.org/all/522e9d29-fab2-5bb0-c2d3-9cf908007000@linux.al=
+ibaba.com/
+>
+> > ---
+> > Change in V2
+> > -change because [PATCH 1/2]
+> > ---
+> >   drivers/dma/sprd-dma.c | 116 ++++++++++++++++++++++++----------------=
+-
+> >   1 file changed, 69 insertions(+), 47 deletions(-)
+> >
+> > diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
+> > index cb48731d70b2..e9e113142fd2 100644
+> > --- a/drivers/dma/sprd-dma.c
+> > +++ b/drivers/dma/sprd-dma.c
+> > @@ -68,6 +68,7 @@
+> >   #define SPRD_DMA_GLB_TRANS_DONE_TRG BIT(18)
+> >   #define SPRD_DMA_GLB_BLOCK_DONE_TRG BIT(17)
+> >   #define SPRD_DMA_GLB_FRAG_DONE_TRG  BIT(16)
+> > +#define SPRD_DMA_GLB_TRG_MASK                GENMASK(19, 16)
+> >   #define SPRD_DMA_GLB_TRG_OFFSET             16
+> >   #define SPRD_DMA_GLB_DEST_CHN_MASK  GENMASK(13, 8)
+> >   #define SPRD_DMA_GLB_DEST_CHN_OFFSET        8
+> > @@ -155,6 +156,13 @@
+> >
+> >   #define SPRD_DMA_SOFTWARE_UID               0
+> >
+> > +#define SPRD_DMA_SRC_CHN0_INT                9
+> > +#define SPRD_DMA_SRC_CHN1_INT                10
+> > +#define SPRD_DMA_DST_CHN0_INT                11
+> > +#define SPRD_DMA_DST_CHN1_INT                12
+> > +#define SPRD_DMA_2STAGE_SET          1
+> > +#define SPRD_DMA_2STAGE_CLEAR                0
+> > +
+> >   /* dma data width values */
+> >   enum sprd_dma_datawidth {
+> >       SPRD_DMA_DATAWIDTH_1_BYTE,
+> > @@ -431,53 +439,57 @@ static enum sprd_dma_req_mode sprd_dma_get_req_ty=
+pe(struct sprd_dma_chn *schan)
+> >       return (frag_reg >> SPRD_DMA_REQ_MODE_OFFSET) & SPRD_DMA_REQ_MODE=
+_MASK;
+> >   }
+> >
+> > -static int sprd_dma_set_2stage_config(struct sprd_dma_chn *schan)
+> > +static void sprd_dma_2stage_write(struct sprd_dma_chn *schan,
+> > +                               u32 config_type, u32 grp_offset)
 
-All warnings (new ones prefixed by >>):
+> Why change the function name? 'config_type' should be boolean.
 
-   drivers/hid/hid-magicmouse.c:146: warning: Function parameter or member 'hdev' not described in 'magicmouse_sc'
-   drivers/hid/hid-magicmouse.c:146: warning: Function parameter or member 'work' not described in 'magicmouse_sc'
->> drivers/hid/hid-magicmouse.c:146: warning: Function parameter or member 'battery_timer' not described in 'magicmouse_sc'
+To clear the dma config when free dma channel after finished transmission, =
+we
+add a clear 2stage config interface. And to simplify code, we combine
+two interfaces
+into one, and use config_type to judge whether set or clear.
 
+> >   {
+> >       struct sprd_dma_dev *sdev =3D to_sprd_dma_dev(&schan->vc.chan);
+> > -     u32 val, chn =3D schan->chn_num + 1;
+> > -
+> > -     switch (schan->chn_mode) {
+> > -     case SPRD_DMA_SRC_CHN0:
+> > -             val =3D chn & SPRD_DMA_GLB_SRC_CHN_MASK;
+> > -             val |=3D BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFF=
+SET;
+> > -             val |=3D SPRD_DMA_GLB_2STAGE_EN;
+> > -             if (schan->int_type !=3D SPRD_DMA_NO_INT)
+> > -                     val |=3D SPRD_DMA_GLB_SRC_INT;
+> > -
+> > -             sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1, val, =
+val);
+> > -             break;
+> > -
+> > -     case SPRD_DMA_SRC_CHN1:
+> > -             val =3D chn & SPRD_DMA_GLB_SRC_CHN_MASK;
+> > -             val |=3D BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFF=
+SET;
+> > -             val |=3D SPRD_DMA_GLB_2STAGE_EN;
+> > -             if (schan->int_type !=3D SPRD_DMA_NO_INT)
+> > -                     val |=3D SPRD_DMA_GLB_SRC_INT;
+> > -
+> > -             sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2, val, =
+val);
+> > -             break;
+> > -
+> > -     case SPRD_DMA_DST_CHN0:
+> > -             val =3D (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
+> > -                     SPRD_DMA_GLB_DEST_CHN_MASK;
+> > -             val |=3D SPRD_DMA_GLB_2STAGE_EN;
+> > -             if (schan->int_type !=3D SPRD_DMA_NO_INT)
+> > -                     val |=3D SPRD_DMA_GLB_DEST_INT;
+> > -
+> > -             sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1, val, =
+val);
+> > -             break;
+> > -
+> > -     case SPRD_DMA_DST_CHN1:
+> > -             val =3D (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
+> > -                     SPRD_DMA_GLB_DEST_CHN_MASK;
+> > -             val |=3D SPRD_DMA_GLB_2STAGE_EN;
+> > -             if (schan->int_type !=3D SPRD_DMA_NO_INT)
+> > -                     val |=3D SPRD_DMA_GLB_DEST_INT;
+> > -
+> > -             sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2, val, =
+val);
+> > -             break;
+> > +     u32 mask_val;
+> > +     u32 chn =3D schan->chn_num + 1;
+> > +     u32 val =3D 0;
+> > +
+> > +     if (config_type =3D=3D SPRD_DMA_2STAGE_SET) {
+> > +             if (schan->chn_mode =3D=3D SPRD_DMA_SRC_CHN0 ||
+> > +                 schan->chn_mode =3D=3D SPRD_DMA_SRC_CHN1) {
+> > +                     val =3D chn & SPRD_DMA_GLB_SRC_CHN_MASK;
+> > +                     val |=3D BIT(schan->trg_mode - 1) << SPRD_DMA_GLB=
+_TRG_OFFSET;
+> > +                     val |=3D SPRD_DMA_GLB_2STAGE_EN;
+> > +                     if (schan->int_type & SPRD_DMA_SRC_CHN0_INT ||
+> > +                         schan->int_type & SPRD_DMA_SRC_CHN1_INT)
 
-vim +146 drivers/hid/hid-magicmouse.c
+> can you explain why change the interrupt validation? ignore other
+interrupt type?
 
-4f6fdf08681cecd Chase Douglas 2011-08-05   89  
-4f6fdf08681cecd Chase Douglas 2011-08-05   90  #define TRACKPAD_DIMENSION_X (float)13000
-4f6fdf08681cecd Chase Douglas 2011-08-05   91  #define TRACKPAD_MIN_X -2909
-4f6fdf08681cecd Chase Douglas 2011-08-05   92  #define TRACKPAD_MAX_X 3167
-4f6fdf08681cecd Chase Douglas 2011-08-05   93  #define TRACKPAD_RES_X \
-4f6fdf08681cecd Chase Douglas 2011-08-05   94  	((TRACKPAD_MAX_X - TRACKPAD_MIN_X) / (TRACKPAD_DIMENSION_X / 100))
-4f6fdf08681cecd Chase Douglas 2011-08-05   95  #define TRACKPAD_DIMENSION_Y (float)11000
-4f6fdf08681cecd Chase Douglas 2011-08-05   96  #define TRACKPAD_MIN_Y -2456
-4f6fdf08681cecd Chase Douglas 2011-08-05   97  #define TRACKPAD_MAX_Y 2565
-4f6fdf08681cecd Chase Douglas 2011-08-05   98  #define TRACKPAD_RES_Y \
-4f6fdf08681cecd Chase Douglas 2011-08-05   99  	((TRACKPAD_MAX_Y - TRACKPAD_MIN_Y) / (TRACKPAD_DIMENSION_Y / 100))
-4f6fdf08681cecd Chase Douglas 2011-08-05  100  
-9d7b18668956c41 Sean O'Brien  2018-10-02  101  #define TRACKPAD2_DIMENSION_X (float)16000
-9d7b18668956c41 Sean O'Brien  2018-10-02  102  #define TRACKPAD2_MIN_X -3678
-9d7b18668956c41 Sean O'Brien  2018-10-02  103  #define TRACKPAD2_MAX_X 3934
-9d7b18668956c41 Sean O'Brien  2018-10-02  104  #define TRACKPAD2_RES_X \
-9d7b18668956c41 Sean O'Brien  2018-10-02  105  	((TRACKPAD2_MAX_X - TRACKPAD2_MIN_X) / (TRACKPAD2_DIMENSION_X / 100))
-9d7b18668956c41 Sean O'Brien  2018-10-02  106  #define TRACKPAD2_DIMENSION_Y (float)11490
-9d7b18668956c41 Sean O'Brien  2018-10-02  107  #define TRACKPAD2_MIN_Y -2478
-9d7b18668956c41 Sean O'Brien  2018-10-02  108  #define TRACKPAD2_MAX_Y 2587
-9d7b18668956c41 Sean O'Brien  2018-10-02  109  #define TRACKPAD2_RES_Y \
-9d7b18668956c41 Sean O'Brien  2018-10-02  110  	((TRACKPAD2_MAX_Y - TRACKPAD2_MIN_Y) / (TRACKPAD2_DIMENSION_Y / 100))
-9d7b18668956c41 Sean O'Brien  2018-10-02  111  
-128537cea464d91 Michael Poole 2010-02-06  112  /**
-128537cea464d91 Michael Poole 2010-02-06  113   * struct magicmouse_sc - Tracks Magic Mouse-specific data.
-128537cea464d91 Michael Poole 2010-02-06  114   * @input: Input device through which we report events.
-128537cea464d91 Michael Poole 2010-02-06  115   * @quirks: Currently unused.
-128537cea464d91 Michael Poole 2010-02-06  116   * @ntouches: Number of touches in most recent touch report.
-128537cea464d91 Michael Poole 2010-02-06  117   * @scroll_accel: Number of consecutive scroll motions.
-128537cea464d91 Michael Poole 2010-02-06  118   * @scroll_jiffies: Time of last scroll motion.
-128537cea464d91 Michael Poole 2010-02-06  119   * @touches: Most recent data for a touch, indexed by tracking ID.
-128537cea464d91 Michael Poole 2010-02-06  120   * @tracking_ids: Mapping of current touch input data to @touches.
-128537cea464d91 Michael Poole 2010-02-06  121   */
-128537cea464d91 Michael Poole 2010-02-06  122  struct magicmouse_sc {
-128537cea464d91 Michael Poole 2010-02-06  123  	struct input_dev *input;
-128537cea464d91 Michael Poole 2010-02-06  124  	unsigned long quirks;
-128537cea464d91 Michael Poole 2010-02-06  125  
-128537cea464d91 Michael Poole 2010-02-06  126  	int ntouches;
-128537cea464d91 Michael Poole 2010-02-06  127  	int scroll_accel;
-128537cea464d91 Michael Poole 2010-02-06  128  	unsigned long scroll_jiffies;
-128537cea464d91 Michael Poole 2010-02-06  129  
-128537cea464d91 Michael Poole 2010-02-06  130  	struct {
-128537cea464d91 Michael Poole 2010-02-06  131  		short x;
-128537cea464d91 Michael Poole 2010-02-06  132  		short y;
-c04266889b59116 Chase Douglas 2010-06-20  133  		short scroll_x;
-128537cea464d91 Michael Poole 2010-02-06  134  		short scroll_y;
-d4b9f10a0eb64c6 José Expósito 2021-07-07  135  		short scroll_x_hr;
-d4b9f10a0eb64c6 José Expósito 2021-07-07  136  		short scroll_y_hr;
-128537cea464d91 Michael Poole 2010-02-06  137  		u8 size;
-9d60648c607a2bf José Expósito 2021-07-07  138  		bool scroll_x_active;
-9d60648c607a2bf José Expósito 2021-07-07  139  		bool scroll_y_active;
-128537cea464d91 Michael Poole 2010-02-06  140  	} touches[16];
-128537cea464d91 Michael Poole 2010-02-06  141  	int tracking_ids[16];
-c0dc5582812dfaf John Chen     2021-03-30  142  
-c0dc5582812dfaf John Chen     2021-03-30  143  	struct hid_device *hdev;
-c0dc5582812dfaf John Chen     2021-03-30  144  	struct delayed_work work;
-0b91b4e4dae63cd José Expósito 2021-11-18  145  	struct timer_list battery_timer;
-128537cea464d91 Michael Poole 2010-02-06 @146  };
-128537cea464d91 Michael Poole 2010-02-06  147  
+Because if we were to use those interrupt type except SPRD_DMA_NO_INT befor=
+e,
+the result is the same: an interrupt will be triggered after the
+completion of 2stage
+transmission. Now we can choose whether to trigger the interrupt in
+the first or second
+stage randomly and the previous interrupt type is no longer applicable.
 
-:::::: The code at line 146 was first introduced by commit
-:::::: 128537cea464d919febeaea2000e256749f317eb HID: add a device driver for the Apple Magic Mouse.
+> How to ensure backward compatibility with previous SPRD DMA IP?
 
-:::::: TO: Michael Poole <mdpoole@troilus.org>
-:::::: CC: Jiri Kosina <jkosina@suse.cz>
+This DMA driver no longer supports the previous SPRD DMA IP and all SPRD DM=
+A IP
+using this driver currently support these features.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> > +                             val |=3D SPRD_DMA_GLB_SRC_INT;
+> > +                     mask_val =3D SPRD_DMA_GLB_SRC_INT | SPRD_DMA_GLB_=
+TRG_MASK |
+> > +                                SPRD_DMA_GLB_SRC_CHN_MASK;
+> > +             } else {
+> > +                     val =3D (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
+> > +                            SPRD_DMA_GLB_DEST_CHN_MASK;
+> > +                     val |=3D SPRD_DMA_GLB_2STAGE_EN;
+> > +                     if (schan->int_type & SPRD_DMA_DST_CHN0_INT ||
+> > +                         schan->int_type & SPRD_DMA_DST_CHN1_INT)
+> > +                             val |=3D SPRD_DMA_GLB_DEST_INT;
+> > +                     mask_val =3D SPRD_DMA_GLB_DEST_INT | SPRD_DMA_GLB=
+_DEST_CHN_MASK;
+> > +             }
+> > +     } else {
+> > +             if (schan->chn_mode =3D=3D SPRD_DMA_SRC_CHN0 ||
+> > +                 schan->chn_mode =3D=3D SPRD_DMA_SRC_CHN1)
+> > +                     mask_val =3D SPRD_DMA_GLB_SRC_INT | SPRD_DMA_GLB_=
+TRG_MASK |
+> > +                                SPRD_DMA_GLB_2STAGE_EN | SPRD_DMA_GLB_=
+SRC_CHN_MASK;
+> > +             else
+> > +                     mask_val =3D SPRD_DMA_GLB_DEST_INT | SPRD_DMA_GLB=
+_2STAGE_EN |
+> > +                                SPRD_DMA_GLB_DEST_CHN_MASK;
+> > +     }
+> > +     sprd_dma_glb_update(sdev, grp_offset, mask_val, val);
+> > +}
+> >
+> > -     default:
+> > +static int sprd_dma_2stage_config(struct sprd_dma_chn *schan, u32 conf=
+ig_type)
+> > +{
+> > +     struct sprd_dma_dev *sdev =3D to_sprd_dma_dev(&schan->vc.chan);
+> > +
+> > +     if (schan->chn_mode =3D=3D SPRD_DMA_SRC_CHN0 ||
+> > +         schan->chn_mode =3D=3D SPRD_DMA_DST_CHN0)
+> > +             sprd_dma_2stage_write(schan, config_type, SPRD_DMA_GLB_2S=
+TAGE_GRP1);
+> > +     else if (schan->chn_mode =3D=3D SPRD_DMA_SRC_CHN1 ||
+> > +              schan->chn_mode =3D=3D SPRD_DMA_DST_CHN1)
+> > +             sprd_dma_2stage_write(schan, config_type, SPRD_DMA_GLB_2S=
+TAGE_GRP2);
+> > +     else {
+> >               dev_err(sdev->dma_dev.dev, "invalid channel mode setting =
+%d\n",
+> >                       schan->chn_mode);
+> >               return -EINVAL;
+> > @@ -545,7 +557,7 @@ static void sprd_dma_start(struct sprd_dma_chn *sch=
+an)
+> >        * Set 2-stage configuration if the channel starts one 2-stage
+> >        * transfer.
+> >        */
+> > -     if (schan->chn_mode && sprd_dma_set_2stage_config(schan))
+> > +     if (schan->chn_mode && sprd_dma_2stage_config(schan, SPRD_DMA_2ST=
+AGE_SET))
+> >               return;
+> >
+> >       /*
+> > @@ -569,6 +581,12 @@ static void sprd_dma_stop(struct sprd_dma_chn *sch=
+an)
+> >       sprd_dma_set_pending(schan, false);
+> >       sprd_dma_unset_uid(schan);
+> >       sprd_dma_clear_int(schan);
+> > +     /*
+> > +      * If 2-stage transfer is used, the configuration must be clear
+> > +      * when release DMA channel.
+> > +      */
+> > +     if (schan->chn_mode)
+> > +             sprd_dma_2stage_config(schan, SPRD_DMA_2STAGE_CLEAR);
+> >       schan->cur_desc =3D NULL;
+> >   }
+> >
+> > @@ -757,7 +775,9 @@ static int sprd_dma_fill_desc(struct dma_chan *chan=
+,
+> >       phys_addr_t llist_ptr;
+> >
+> >       if (dir =3D=3D DMA_MEM_TO_DEV) {
+> > -             src_step =3D sprd_dma_get_step(slave_cfg->src_addr_width)=
+;
+> > +             src_step =3D slave_cfg->src_port_window_size ?
+> > +                        slave_cfg->src_port_window_size :
+> > +                        sprd_dma_get_step(slave_cfg->src_addr_width);
+
+> Please also explain why.
+
+In general, the src_step is equal to the src_addr_width. As the usage
+scenarios become
+more complex, for some scenarios the data is discontinuous, with a
+port window size
+interval between each group of data. When dma finished current data
+transmission,
+the src_step should be set to the port window size to transfer the
+next group of data
+correctly. The same goes for dst_step.
+
+> >               if (src_step < 0) {
+> >                       dev_err(sdev->dma_dev.dev, "invalid source step\n=
+");
+> >                       return src_step;
+> > @@ -773,7 +793,9 @@ static int sprd_dma_fill_desc(struct dma_chan *chan=
+,
+> >               else
+> >                       dst_step =3D SPRD_DMA_NONE_STEP;
+> >       } else {
+> > -             dst_step =3D sprd_dma_get_step(slave_cfg->dst_addr_width)=
+;
+> > +             dst_step =3D slave_cfg->dst_port_window_size ?
+> > +                        slave_cfg->dst_port_window_size :
+> > +                        sprd_dma_get_step(slave_cfg->dst_addr_width);
+> >               if (dst_step < 0) {
+> >                       dev_err(sdev->dma_dev.dev, "invalid destination s=
+tep\n");
+> >                       return dst_step;
 
