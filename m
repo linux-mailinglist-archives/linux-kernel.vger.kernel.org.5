@@ -1,57 +1,50 @@
-Return-Path: <linux-kernel+bounces-11247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08C9D81E3A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:34:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5DCA81E3A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:35:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4A3A1F21F3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:34:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70A1AB21F90
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:34:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5285789D;
-	Tue, 26 Dec 2023 00:23:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A861B5811C;
+	Tue, 26 Dec 2023 00:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DnobXJ1a"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UruK2fyZ"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A273328C9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F9858102;
+	Tue, 26 Dec 2023 00:23:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B067C433C7;
 	Tue, 26 Dec 2023 00:23:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E274C433C8;
-	Tue, 26 Dec 2023 00:23:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550220;
-	bh=7UjBDG3xVblL57gzTAC0xcXBmMOm+YHqeIBtyeY0KGc=;
+	s=k20201202; t=1703550222;
+	bh=b4DDAmGv18Y0v7dNLBafuHTTJE18Ii6KicK0PHMLmq0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DnobXJ1a/Q+H+ZDF1VLIiarl3VdxMm4FbFk06nq2SU2YC3O2SO92qmk0us+Z0Vi6j
-	 r4EGGm+XV2E+QhyOeM3nNPwI489F06PILjWl4NIK2enLMWAfQR6yfpAPFEs/dkqACc
-	 YTyqXp/cXO0D6AT8WA/HWcBDhy1v7t9a6pgMw7mExP8SokOICA6tmhRKgPY4SHRUdZ
-	 ODZGC10FE9gpgw/1YSI1KiGaF0z8sDS2ROgYkJ2z3wTEuskTMiLyCm6DW6mKe2RnAH
-	 U7thFS48FUJjWotiANeLDgIYnkg0h/IP2ZD/Cqsn3UtJyRSL99oQ01kdjzcp05eiL+
-	 4G6+1QMTss+Rg==
+	b=UruK2fyZZWrujbUP+XBWr2iuNzMtDX1WugQLfnrHGXvKJRLN/WU9wFY7tE5T7RQPc
+	 WzPln4jK4mT6apU7eqlJfVhahJGmyvJoi4Ug1hRcZxFnICF9AY7RRT4Ahto0xwwgXx
+	 lSPjiFegRnwf9Tste+UzK6f2RyPYkKIRARTPPo2Jw1TzMTmej3g4M87q93VNvgeJHG
+	 3q5JamIHxagIUUy2ALx9W1bvBBaR1x4jnIa16AFQEgXgRTYQ63BUIJaYFqTyyoCjN1
+	 dRAmu+SKf34z9CrhGrH0zBdWs9jTrTD4c7OFVx/nxKkKFyCWKZHoQO/gbKBtXooQ+k
+	 fL+AKpSrqRn4A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Mike Snitzer <snitzer@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	perex@perex.cz,
-	tiwai@suse.com,
-	kailang@realtek.com,
-	luke@ljones.dev,
-	andy.chi@canonical.com,
-	shenghao-ding@ti.com,
-	ruinairas1992@gmail.com,
-	l.guzenko@web.de,
-	yangyuchi66@gmail.com,
-	vitalyr@opensource.cirrus.com,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 15/24] ALSA: hda/realtek: Add quirks for ASUS Zenbook 2022 Models
-Date: Mon, 25 Dec 2023 19:22:08 -0500
-Message-ID: <20231226002255.5730-15-sashal@kernel.org>
+	agk@redhat.com,
+	mpatocka@redhat.com,
+	dm-devel@lists.linux.dev,
+	song@kernel.org,
+	linux-raid@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 16/24] dm audit: fix Kconfig so DM_AUDIT depends on BLK_DEV_DM
+Date: Mon, 25 Dec 2023 19:22:09 -0500
+Message-ID: <20231226002255.5730-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231226002255.5730-1-sashal@kernel.org>
 References: <20231226002255.5730-1-sashal@kernel.org>
@@ -66,49 +59,28 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.69
 Content-Transfer-Encoding: 8bit
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+From: Mike Snitzer <snitzer@kernel.org>
 
-[ Upstream commit 51d976079976c800ef19ed1b542602fcf63f0edb ]
+[ Upstream commit 6849302fdff126997765d16df355b73231f130d4 ]
 
-These models use 2xCS35L41amps with HDA using SPI and I2C.
-Models use internal and external boost.
-All models require DSD support to be added inside
-cs35l41_hda_property.c
-
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20231218151221.388745-6-sbinding@opensource.cirrus.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Mike Snitzer <snitzer@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/md/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a7c361e0daebe..9342f89d4003a 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9766,17 +9766,20 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1d1f, "ASUS ROG Strix G17 2023 (G713PV)", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x1043, 0x1d42, "ASUS Zephyrus G14 2022", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
-+	SND_PCI_QUIRK(0x1043, 0x1da2, "ASUS UP6502ZA/ZD", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x1e02, "ASUS UX3402ZA", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x16a3, "ASUS UX3402VA", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602ZM", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA502),
--	SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM3402", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM6702RA/RC", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x1043, 0x1e51, "ASUS Zephyrus M15", ALC294_FIXUP_ASUS_GU502_PINS),
- 	SND_PCI_QUIRK(0x1043, 0x1e5e, "ASUS ROG Strix G513", ALC294_FIXUP_ASUS_G513_PINS),
- 	SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA401),
-+	SND_PCI_QUIRK(0x1043, 0x1ee2, "ASUS UM3402", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x1043, 0x1c52, "ASUS Zephyrus G15 2022", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1f12, "ASUS UM5302", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602ZM", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x1f92, "ASUS ROG Flow X16", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE", ALC256_FIXUP_ASUS_AIO_GPIO2),
- 	SND_PCI_QUIRK(0x1043, 0x3a20, "ASUS G614JZR", ALC245_FIXUP_CS35L41_SPI_2),
+diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+index 662d219c39bf4..db0e97020256e 100644
+--- a/drivers/md/Kconfig
++++ b/drivers/md/Kconfig
+@@ -650,6 +650,7 @@ config DM_ZONED
+ 
+ config DM_AUDIT
+ 	bool "DM audit events"
++	depends on BLK_DEV_DM
+ 	depends on AUDIT
+ 	help
+ 	  Generate audit events for device-mapper.
 -- 
 2.43.0
 
