@@ -1,51 +1,50 @@
-Return-Path: <linux-kernel+bounces-11276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A4CD81E3F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:44:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1153D81E3F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:44:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE5BA282A99
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:44:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D110B21FEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:44:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381AF5CD3E;
-	Tue, 26 Dec 2023 00:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF6F47A5C;
+	Tue, 26 Dec 2023 00:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PeAiRcsr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LiLPg63C"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DDEF5CD28;
-	Tue, 26 Dec 2023 00:25:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 004DAC433C8;
-	Tue, 26 Dec 2023 00:25:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4E22586;
+	Tue, 26 Dec 2023 00:26:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F24CC433C8;
+	Tue, 26 Dec 2023 00:26:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550351;
-	bh=INCFmxnzVcno2G0uByDm+uObuNwYrETLxoR9bzDGLNo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PeAiRcsr7+OFUB3bI0RYOrXVW12Fggv0W8yQWEIh1ZLhvHKYIQ5vOd//CfIZozrFk
-	 bGbfPIEUNChJs6HTzuLWKRObC9gr/NPnF1HEO9EOKkparI101tcOaxUxHj8b4kWqz/
-	 rctgC5BErU5QKBxHRq5JjgDkI+6XOTk9WbQRMvI9YetJSeAGUdG0++XSK+10SORszn
-	 uPhMLGWl7imMf2eWOAyBwpg2OlCqLzkwdlRlaNC52Y0ZbzXKcjPcWqiuu+Rn48mcPd
-	 FxTmOIJ5zmGB7xJuwfnhg3GELyLlZq5jvk8/rnP9WB9okCSHWrOuwycIoTJAj4sCAM
-	 MOBTYRbcQJEXQ==
+	s=k20201202; t=1703550371;
+	bh=TeQaQnsO6915RwwJY/9Q2qFh7xzsResAP29MHypNO9U=;
+	h=From:To:Cc:Subject:Date:From;
+	b=LiLPg63CDwLFxDCXOQEPyamjv6imGsjLOjxO1iALygoBIvYidoqB3jJCABu/0QD3i
+	 MxSXC5teN0EzaDdQZvW9glE8hArMfcZicQY8ScN/bxOim48SHcmsihb+3ewiXLVhld
+	 yO09AOozRlzEB1r7H8Nsya/tqrd8+rxST+eMaRUcCDPUf9MOqqiOeL1JB4TdSxaEUJ
+	 VFCXEzp3IZapMkiF78lQmeSwvvBPwbnvTyC8IgV8MxizbxS5i0pkq1AyBpWrudBMqk
+	 o5jbPcvQbWRR2nbCArPXRGuGzc4f9WefRtMkSnosJ9cRQmUDkqwGbUI8wF2v7WuikM
+	 dS+4iuMcbABPg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Zhenghan Wang <wzhmmmmm@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 9/9] ida: Fix crash in ida_free when the bitmap is empty
-Date: Mon, 25 Dec 2023 19:24:53 -0500
-Message-ID: <20231226002526.6605-9-sashal@kernel.org>
+	robh@kernel.org,
+	Steen.Hegelund@microchip.com,
+	dlemoal@kernel.org
+Subject: [PATCH AUTOSEL 5.4 1/8] reset: hisilicon: hi6220: fix Wvoid-pointer-to-enum-cast warning
+Date: Mon, 25 Dec 2023 19:25:44 -0500
+Message-ID: <20231226002608.7089-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231226002526.6605-1-sashal@kernel.org>
-References: <20231226002526.6605-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,100 +53,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.205
+X-stable-base: Linux 5.4.265
 Content-Transfer-Encoding: 8bit
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-[ Upstream commit af73483f4e8b6f5c68c9aa63257bdd929a9c194a ]
+[ Upstream commit b5ec294472794ed9ecba0cb4b8208372842e7e0d ]
 
-The IDA usually detects double-frees, but that detection failed to
-consider the case when there are no nearby IDs allocated and so we have a
-NULL bitmap rather than simply having a clear bit.  Add some tests to the
-test-suite to be sure we don't inadvertently reintroduce this problem.
-Unfortunately they're quite noisy so include a message to disregard
-the warnings.
+'type' is an enum, thus cast of pointer on 64-bit compile test with W=1
+causes:
 
-Reported-by: Zhenghan Wang <wzhmmmmm@gmail.com>
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+  hi6220_reset.c:166:9: error: cast to smaller integer type 'enum hi6220_reset_ctrl_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Link: https://lore.kernel.org/r/20230810091300.70197-1-krzysztof.kozlowski@linaro.org
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/idr.c      |  2 +-
- lib/test_ida.c | 40 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 41 insertions(+), 1 deletion(-)
+ drivers/reset/hisilicon/hi6220_reset.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/idr.c b/lib/idr.c
-index 13f2758c23773..da36054c3ca02 100644
---- a/lib/idr.c
-+++ b/lib/idr.c
-@@ -508,7 +508,7 @@ void ida_free(struct ida *ida, unsigned int id)
- 			goto delete;
- 		xas_store(&xas, xa_mk_value(v));
- 	} else {
--		if (!test_bit(bit, bitmap->bitmap))
-+		if (!bitmap || !test_bit(bit, bitmap->bitmap))
- 			goto err;
- 		__clear_bit(bit, bitmap->bitmap);
- 		xas_set_mark(&xas, XA_FREE_MARK);
-diff --git a/lib/test_ida.c b/lib/test_ida.c
-index b068806259615..55105baa19da9 100644
---- a/lib/test_ida.c
-+++ b/lib/test_ida.c
-@@ -150,6 +150,45 @@ static void ida_check_conv(struct ida *ida)
- 	IDA_BUG_ON(ida, !ida_is_empty(ida));
- }
+diff --git a/drivers/reset/hisilicon/hi6220_reset.c b/drivers/reset/hisilicon/hi6220_reset.c
+index 24e6d420b26b7..84e761f454b63 100644
+--- a/drivers/reset/hisilicon/hi6220_reset.c
++++ b/drivers/reset/hisilicon/hi6220_reset.c
+@@ -104,7 +104,7 @@ static int hi6220_reset_probe(struct platform_device *pdev)
+ 	if (!data)
+ 		return -ENOMEM;
  
-+/*
-+ * Check various situations where we attempt to free an ID we don't own.
-+ */
-+static void ida_check_bad_free(struct ida *ida)
-+{
-+	unsigned long i;
-+
-+	printk("vvv Ignore \"not allocated\" warnings\n");
-+	/* IDA is empty; all of these will fail */
-+	ida_free(ida, 0);
-+	for (i = 0; i < 31; i++)
-+		ida_free(ida, 1 << i);
-+
-+	/* IDA contains a single value entry */
-+	IDA_BUG_ON(ida, ida_alloc_min(ida, 3, GFP_KERNEL) != 3);
-+	ida_free(ida, 0);
-+	for (i = 0; i < 31; i++)
-+		ida_free(ida, 1 << i);
-+
-+	/* IDA contains a single bitmap */
-+	IDA_BUG_ON(ida, ida_alloc_min(ida, 1023, GFP_KERNEL) != 1023);
-+	ida_free(ida, 0);
-+	for (i = 0; i < 31; i++)
-+		ida_free(ida, 1 << i);
-+
-+	/* IDA contains a tree */
-+	IDA_BUG_ON(ida, ida_alloc_min(ida, (1 << 20) - 1, GFP_KERNEL) != (1 << 20) - 1);
-+	ida_free(ida, 0);
-+	for (i = 0; i < 31; i++)
-+		ida_free(ida, 1 << i);
-+	printk("^^^ \"not allocated\" warnings over\n");
-+
-+	ida_free(ida, 3);
-+	ida_free(ida, 1023);
-+	ida_free(ida, (1 << 20) - 1);
-+
-+	IDA_BUG_ON(ida, !ida_is_empty(ida));
-+}
-+
- static DEFINE_IDA(ida);
+-	type = (enum hi6220_reset_ctrl_type)of_device_get_match_data(dev);
++	type = (uintptr_t)of_device_get_match_data(dev);
  
- static int ida_checks(void)
-@@ -162,6 +201,7 @@ static int ida_checks(void)
- 	ida_check_leaf(&ida, 1024 * 64);
- 	ida_check_max(&ida);
- 	ida_check_conv(&ida);
-+	ida_check_bad_free(&ida);
- 
- 	printk("IDA: %u of %u tests passed\n", tests_passed, tests_run);
- 	return (tests_run != tests_passed) ? 0 : -EINVAL;
+ 	regmap = syscon_node_to_regmap(np);
+ 	if (IS_ERR(regmap)) {
 -- 
 2.43.0
 
