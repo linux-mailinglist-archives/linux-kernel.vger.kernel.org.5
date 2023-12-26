@@ -1,51 +1,48 @@
-Return-Path: <linux-kernel+bounces-11275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECEA781E3F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:43:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A4CD81E3F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:44:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89CB21F223FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:43:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE5BA282A99
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:44:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF865CD17;
-	Tue, 26 Dec 2023 00:25:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381AF5CD3E;
+	Tue, 26 Dec 2023 00:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o6fu21Ed"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PeAiRcsr"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E405CD04;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DDEF5CD28;
+	Tue, 26 Dec 2023 00:25:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 004DAC433C8;
 	Tue, 26 Dec 2023 00:25:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D477C433C9;
-	Tue, 26 Dec 2023 00:25:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550349;
-	bh=wEme5zOXjNS4jm4i7jwulhr8cvuV5k7DomlCN/6/p40=;
+	s=k20201202; t=1703550351;
+	bh=INCFmxnzVcno2G0uByDm+uObuNwYrETLxoR9bzDGLNo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=o6fu21Ed6WHxPVKs1TCS+3nY2bRYLthl93sXCfvfP6cKEEad2WpzuQjHGsaYuxyRb
-	 nGSCMau1t4363ICT1L6Ded0fCkT/LidlefRai4Ldfxbhqf/cT++vNEygOOsHCSOxIr
-	 TOZLucKcU486uLNKTCu2T+RRNKHZrfXqtncW2m1cxoXurvTL+sGHYfrdVVzjT8crph
-	 qhXIKAtIYBEe+iZJxXV58NmoL2ndW5yt4WvrhxpZAQAxs+1QMk14HKZ/CEvtJHkDIR
-	 8OO6Ojy6qilwiJGS0M764RrqBTWNJEFZ02uo3rBddd48wfmyxieFDHl1TICDXVrEY3
-	 CXDPxkCsS1ftQ==
+	b=PeAiRcsr7+OFUB3bI0RYOrXVW12Fggv0W8yQWEIh1ZLhvHKYIQ5vOd//CfIZozrFk
+	 bGbfPIEUNChJs6HTzuLWKRObC9gr/NPnF1HEO9EOKkparI101tcOaxUxHj8b4kWqz/
+	 rctgC5BErU5QKBxHRq5JjgDkI+6XOTk9WbQRMvI9YetJSeAGUdG0++XSK+10SORszn
+	 uPhMLGWl7imMf2eWOAyBwpg2OlCqLzkwdlRlaNC52Y0ZbzXKcjPcWqiuu+Rn48mcPd
+	 FxTmOIJ5zmGB7xJuwfnhg3GELyLlZq5jvk8/rnP9WB9okCSHWrOuwycIoTJAj4sCAM
+	 MOBTYRbcQJEXQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jensen Huang <jensenhuang@friendlyarm.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Wolfram Sang <wsa@kernel.org>,
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Zhenghan Wang <wzhmmmmm@gmail.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-i2c@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 8/9] i2c: rk3x: fix potential spinlock recursion on poll
-Date: Mon, 25 Dec 2023 19:24:52 -0500
-Message-ID: <20231226002526.6605-8-sashal@kernel.org>
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 9/9] ida: Fix crash in ida_free when the bitmap is empty
+Date: Mon, 25 Dec 2023 19:24:53 -0500
+Message-ID: <20231226002526.6605-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231226002526.6605-1-sashal@kernel.org>
 References: <20231226002526.6605-1-sashal@kernel.org>
@@ -60,82 +57,97 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.205
 Content-Transfer-Encoding: 8bit
 
-From: Jensen Huang <jensenhuang@friendlyarm.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-[ Upstream commit 19cde9c92b8d3b7ee555d0da3bcb0232d3a784f4 ]
+[ Upstream commit af73483f4e8b6f5c68c9aa63257bdd929a9c194a ]
 
-Possible deadlock scenario (on reboot):
-rk3x_i2c_xfer_common(polling)
-    -> rk3x_i2c_wait_xfer_poll()
-        -> rk3x_i2c_irq(0, i2c);
-            --> spin_lock(&i2c->lock);
-            ...
-        <rk3x i2c interrupt>
-        -> rk3x_i2c_irq(0, i2c);
-            --> spin_lock(&i2c->lock); (deadlock here)
+The IDA usually detects double-frees, but that detection failed to
+consider the case when there are no nearby IDs allocated and so we have a
+NULL bitmap rather than simply having a clear bit.  Add some tests to the
+test-suite to be sure we don't inadvertently reintroduce this problem.
+Unfortunately they're quite noisy so include a message to disregard
+the warnings.
 
-Store the IRQ number and disable/enable it around the polling transfer.
-This patch has been tested on NanoPC-T4.
-
-Signed-off-by: Jensen Huang <jensenhuang@friendlyarm.com>
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Reported-by: Zhenghan Wang <wzhmmmmm@gmail.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-rk3x.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ lib/idr.c      |  2 +-
+ lib/test_ida.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
-index 13c14eb175e94..6abcf975a2db9 100644
---- a/drivers/i2c/busses/i2c-rk3x.c
-+++ b/drivers/i2c/busses/i2c-rk3x.c
-@@ -178,6 +178,7 @@ struct rk3x_i2c_soc_data {
-  * @clk: function clk for rk3399 or function & Bus clks for others
-  * @pclk: Bus clk for rk3399
-  * @clk_rate_nb: i2c clk rate change notify
-+ * @irq: irq number
-  * @t: I2C known timing information
-  * @lock: spinlock for the i2c bus
-  * @wait: the waitqueue to wait for i2c transfer
-@@ -200,6 +201,7 @@ struct rk3x_i2c {
- 	struct clk *clk;
- 	struct clk *pclk;
- 	struct notifier_block clk_rate_nb;
-+	int irq;
+diff --git a/lib/idr.c b/lib/idr.c
+index 13f2758c23773..da36054c3ca02 100644
+--- a/lib/idr.c
++++ b/lib/idr.c
+@@ -508,7 +508,7 @@ void ida_free(struct ida *ida, unsigned int id)
+ 			goto delete;
+ 		xas_store(&xas, xa_mk_value(v));
+ 	} else {
+-		if (!test_bit(bit, bitmap->bitmap))
++		if (!bitmap || !test_bit(bit, bitmap->bitmap))
+ 			goto err;
+ 		__clear_bit(bit, bitmap->bitmap);
+ 		xas_set_mark(&xas, XA_FREE_MARK);
+diff --git a/lib/test_ida.c b/lib/test_ida.c
+index b068806259615..55105baa19da9 100644
+--- a/lib/test_ida.c
++++ b/lib/test_ida.c
+@@ -150,6 +150,45 @@ static void ida_check_conv(struct ida *ida)
+ 	IDA_BUG_ON(ida, !ida_is_empty(ida));
+ }
  
- 	/* Settings */
- 	struct i2c_timings t;
-@@ -1087,13 +1089,18 @@ static int rk3x_i2c_xfer_common(struct i2c_adapter *adap,
- 
- 		spin_unlock_irqrestore(&i2c->lock, flags);
- 
--		rk3x_i2c_start(i2c);
--
- 		if (!polling) {
-+			rk3x_i2c_start(i2c);
++/*
++ * Check various situations where we attempt to free an ID we don't own.
++ */
++static void ida_check_bad_free(struct ida *ida)
++{
++	unsigned long i;
 +
- 			timeout = wait_event_timeout(i2c->wait, !i2c->busy,
- 						     msecs_to_jiffies(WAIT_TIMEOUT));
- 		} else {
-+			disable_irq(i2c->irq);
-+			rk3x_i2c_start(i2c);
++	printk("vvv Ignore \"not allocated\" warnings\n");
++	/* IDA is empty; all of these will fail */
++	ida_free(ida, 0);
++	for (i = 0; i < 31; i++)
++		ida_free(ida, 1 << i);
 +
- 			timeout = rk3x_i2c_wait_xfer_poll(i2c);
++	/* IDA contains a single value entry */
++	IDA_BUG_ON(ida, ida_alloc_min(ida, 3, GFP_KERNEL) != 3);
++	ida_free(ida, 0);
++	for (i = 0; i < 31; i++)
++		ida_free(ida, 1 << i);
 +
-+			enable_irq(i2c->irq);
- 		}
- 
- 		spin_lock_irqsave(&i2c->lock, flags);
-@@ -1301,6 +1308,8 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	i2c->irq = irq;
++	/* IDA contains a single bitmap */
++	IDA_BUG_ON(ida, ida_alloc_min(ida, 1023, GFP_KERNEL) != 1023);
++	ida_free(ida, 0);
++	for (i = 0; i < 31; i++)
++		ida_free(ida, 1 << i);
 +
- 	platform_set_drvdata(pdev, i2c);
++	/* IDA contains a tree */
++	IDA_BUG_ON(ida, ida_alloc_min(ida, (1 << 20) - 1, GFP_KERNEL) != (1 << 20) - 1);
++	ida_free(ida, 0);
++	for (i = 0; i < 31; i++)
++		ida_free(ida, 1 << i);
++	printk("^^^ \"not allocated\" warnings over\n");
++
++	ida_free(ida, 3);
++	ida_free(ida, 1023);
++	ida_free(ida, (1 << 20) - 1);
++
++	IDA_BUG_ON(ida, !ida_is_empty(ida));
++}
++
+ static DEFINE_IDA(ida);
  
- 	if (i2c->soc_data->calc_timings == rk3x_i2c_v0_calc_timings) {
+ static int ida_checks(void)
+@@ -162,6 +201,7 @@ static int ida_checks(void)
+ 	ida_check_leaf(&ida, 1024 * 64);
+ 	ida_check_max(&ida);
+ 	ida_check_conv(&ida);
++	ida_check_bad_free(&ida);
+ 
+ 	printk("IDA: %u of %u tests passed\n", tests_passed, tests_run);
+ 	return (tests_run != tests_passed) ? 0 : -EINVAL;
 -- 
 2.43.0
 
