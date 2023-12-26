@@ -1,112 +1,141 @@
-Return-Path: <linux-kernel+bounces-11592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1240881E8AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 18:15:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 946FE81E8B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 18:27:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B659A1F2272B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:15:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 244E61F21E41
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:27:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E624FF74;
-	Tue, 26 Dec 2023 17:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71B4C4F8A7;
+	Tue, 26 Dec 2023 17:27:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="XG8NXn4F"
+	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="NANZXvQs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A813A4F896
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 17:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B574F880
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 17:27:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-427a2fd7b87so32004511cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:15:13 -0800 (PST)
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4277e7146abso42815991cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:27:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1703610912; x=1704215712; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=znBescOeGDyEd/eBwZlWM7zCSH3WtYT9hTuxQY/0ciQ=;
-        b=XG8NXn4Fr+o6AFgkb7X5OPcfBqq+fpn7iaghciF2mBPh/76Z2Gl1GjtDqFoZCjWXCq
-         25dZxF+i90zFauBaUQNVn/qUPfAvXqJCdbrGfCheQf51Je/x8+jLj6NnWT8TPEV3dVSZ
-         u5LjEdKRw1h9nyn8cTp+m6kJOPOpbX3qqRN4NMpixyXeXeHoOfa/SrvpalKAo97CSmqt
-         H9HhBbupSM09x9RC8oDJEl0tkapBhgK4he/2p4f67NS3gUCmLiLqKkIlMDdtydWoaPAy
-         Qj6N0Mfr5QSSwMaMkZ9oUzjT6UXbGvupaByjQMg5+QHcGFUUXGRHUXX1MnPXAX/J3elA
-         fADw==
+        d=soleen.com; s=google; t=1703611624; x=1704216424; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qF6xW1bdeiaI+KNkFjHq71eA86SN7AHEznnIaUPRnMI=;
+        b=NANZXvQs76I4zfIEF/R/Gv4JxV+OmPnaFxBTbtf4hRuJ57nKFXpVMmMBLf+3/lri1U
+         M2leRqU+B9ICxcaFWlc0oClARdpEr9Y4NDGxzMnB313EoyHQ4BOaqAFqr6jGh9tFO0Qf
+         3agpfcgIl1y5J834dQO0w7OdSAdMnOO+1BW+1DN1XExLnQ1786VaCa2Tgh80/Db6gqvO
+         w9bayRvvJuRDQI+C5UVnIOnFxmRtz8nASIMFQzB/zRCYbFw8K7+J8MGGxnlPsrr8dffS
+         rxyXRZ8V0joY2TsPfOWzW4UaPtxAeRNmWj0J/9j6wwEepwtRserDEnny+tibIuV3G7IN
+         /4MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703610912; x=1704215712;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=znBescOeGDyEd/eBwZlWM7zCSH3WtYT9hTuxQY/0ciQ=;
-        b=wUKU7eVMC0FKeZWUI5BSTa1d2v0NvmS0IF4d0Up+ca0TRncq1Lpz/3/m2QotDRW1wH
-         1DgynBF0F391ALhEvr2WPYYGzHxQrZAxgwnWHL5+zFdK1nNAs6rSVmF+MfS/LASsAhfm
-         h0mIZXMWdxaYANRLM4+QDY+0OFeRMKxxVCx05GFXVCoU8B2psMicLapjrzGPZR9tS8V2
-         UctjclYVO3dRqn1OIHquc3HFVvdHbHBW71Qq5olcgxsAG1BwxuLosByi6PgLKDSXI6en
-         djoYvyuc6hmFerMXJXyVG2Cndloo6SbsvIj4SyiTJdUiQduDus1r7P7pzuUgsMk6LioD
-         fFwg==
-X-Gm-Message-State: AOJu0YwZl83NvPl1RDu40BmwokWHwsNxLw3qjYOtSBazYU/shi7bgP2P
-	VMRklrt0UZU3MovOh10vp6Bm4Co3I4ybjJvJOOUMOruRKcWEvQ==
-X-Google-Smtp-Source: AGHT+IHyQ5pm+vKsp8dlt+xdHnTW6C3uPhOZpDSwoY++VClJ/nDwEbMxRN02tbeUhgBwD4pSJVi4TOSqszJhqwYmmj4=
-X-Received: by 2002:ac8:5bc2:0:b0:425:a28f:ddd8 with SMTP id
- b2-20020ac85bc2000000b00425a28fddd8mr8563250qtb.137.1703610912560; Tue, 26
- Dec 2023 09:15:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703611624; x=1704216424;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qF6xW1bdeiaI+KNkFjHq71eA86SN7AHEznnIaUPRnMI=;
+        b=PrWFvZEI8EnLnvRwCE/avO4oPvu25H9iAjRYcC5UZbqIbzED1Ukoiit3Jzp4ZD5g26
+         qc3LtGq7n5F6N5NjKa/5as0xklz8R3+q0iQTEgGfwpmKKPMVDzfrgJEeA0KaQhJNcYuq
+         0iKc9XcKgdxMdpVi+34FEaicmQ7s7UpDrJNQ692ahyQ4LOmg6ExcEO4ac0MHG4WA5kr+
+         zera9eFtzODe+9eVcffUndDoDgcQLMyjd3DAEgOCNLFrmFK28xLXg9TJGu5yHijqYn09
+         zTlauqGRqwlv74Fdf33B30qhwE/vT/CAdpsCH/r8CxMvlDcWQoDy3SfUYtkRKJWXhT/K
+         VNGw==
+X-Gm-Message-State: AOJu0Ywr5rbh+nx3aeO8Egbjdn1aghHSmUJMGv6+cNhHIm5wFxxhlKts
+	iWPumG2tQecMLEH9p9PsOzDDizEbkgahk1Nktn45cUJr1WPwBA==
+X-Google-Smtp-Source: AGHT+IH6JuPA8UpnDuV4pxNWx2qfVnI+AAQgcgG4cJ+LVKws3skpVkqpE1GlHsFAzqe0zp/iS42nIMznuVlXnxn82Uk=
+X-Received: by 2002:a05:622a:11d1:b0:427:a316:a26a with SMTP id
+ n17-20020a05622a11d100b00427a316a26amr11771992qtk.69.1703611624440; Tue, 26
+ Dec 2023 09:27:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231130201504.2322355-1-pasha.tatashin@soleen.com>
- <20231130201504.2322355-2-pasha.tatashin@soleen.com> <776e17af-ae25-16a0-f443-66f3972b00c0@google.com>
- <CA+CK2bA8iJ_w8CSx2Ed=d2cVSujrC0-TpO7U9j+Ow-gfk1nyfQ@mail.gmail.com> <0ba8e579-2b6f-4e9f-a38c-097694f14d3c@intel.com>
-In-Reply-To: <0ba8e579-2b6f-4e9f-a38c-097694f14d3c@intel.com>
+References: <20231211154644.4103495-1-pasha.tatashin@soleen.com>
+ <3d415ab4-e8c7-7e72-0379-952370612bdd@google.com> <CA+CK2bA2vZp3e+HHfB-sdLsPUYghMxvKcWURktDtNjwPL79Csw@mail.gmail.com>
+ <b1049bfa-68c4-e237-30a9-1514a378c7f1@google.com>
+In-Reply-To: <b1049bfa-68c4-e237-30a9-1514a378c7f1@google.com>
 From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Tue, 26 Dec 2023 12:14:35 -0500
-Message-ID: <CA+CK2bBGHv3f2AM999C5zoo018yzFdQpygUaPn0AVoJ7cX+Sbg@mail.gmail.com>
-Subject: Re: [PATCH v2 01/10] iommu/vt-d: add wrapper functions for page allocations
-To: "Liu, Jingqi" <jingqi.liu@intel.com>
-Cc: David Rientjes <rientjes@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	alim.akhtar@samsung.com, alyssa@rosenzweig.io, asahi@lists.linux.dev, 
-	baolu.lu@linux.intel.com, bhelgaas@google.com, cgroups@vger.kernel.org, 
-	corbet@lwn.net, david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org, 
-	heiko@sntech.de, iommu@lists.linux.dev, jernej.skrabec@gmail.com, 
-	jonathanh@nvidia.com, joro@8bytes.org, krzysztof.kozlowski@linaro.org, 
-	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	lizefan.x@bytedance.com, marcan@marcan.st, mhiramat@kernel.org, 
-	m.szyprowski@samsung.com, paulmck@kernel.org, rdunlap@infradead.org, 
-	robin.murphy@arm.com, samuel@sholland.org, suravee.suthikulpanit@amd.com, 
-	sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org, 
-	tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, will@kernel.org, 
-	yu-cheng.yu@intel.com
+Date: Tue, 26 Dec 2023 12:26:27 -0500
+Message-ID: <CA+CK2bBxbvO-osm5XKk4VkaXYgfZXkDAtfayaYJ-vXo=QFqGPA@mail.gmail.com>
+Subject: Re: [PATCH] vmstat: don't auto expand the sysfs files
+To: David Rientjes <rientjes@google.com>
+Cc: gregkh@linuxfoundation.org, rafael@kernel.org, akpm@linux-foundation.org, 
+	surenb@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	souravpanda@google.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> >> Document the locking requirements for this?
-> >
-> > Thank you for the review. I will add info about locking requirements,
-> > in fact they are very relaxed.
-> >
-> > These pages are added to the list by unmaps or remaps operation in
-> > Intel IOMMU implementation. These calls assume that whoever is doing
-> > those operations has exclusive access to the VA range in the page
-> > table of that operation. The pages in this freelist only belong to the
-> > former page-tables from the IOVA range for those operations.
+On Sun, Dec 24, 2023 at 4:26=E2=80=AFPM David Rientjes <rientjes@google.com=
+> wrote:
 >
-> These pages maybe be accessed concurrently by thread contexts other than
-> the IOMMU driver (such as debugfs).
+> On Thu, 14 Dec 2023, Pasha Tatashin wrote:
+>
+> > > > Whenever a new fields are added one of the following: node_stat_ite=
+m
+> > > > numa_stat_item zone_stat_item, the /sys/devices/system/node/nodeX/v=
+mstat
+> > > > files are auto expanded.
+> > > >
+> > > > This is a problem, as sysfs files should be only one value per file=
+.
+> > >
+> > > Does this patch address the one-value-per-file issue?  (I think that =
+ship
+> > > has sailed for vmstat.)
+> >
+> > That ship has sailed for vmstat, this patch addresses what was asked
+> > by GregKH: not to add new values to vmstat, as not to make the
+> > existing problem even worse. The sysfs file system has a one page
+> > limit per file. The developers will decide how to export the new items
+> > added to node_stat, numa_stat, zone_stat individually. Each new item
+> > can be exported in its own files, and must have its own documentation
+> > about interface stability, value meaning, and expectations when the
+> > stat file is absent.
+> >
+>
+> As of at least 6.5, /proc/vmstat is a strict superset of the per-node
+> vmstat.  Why is that a problem?
 
-Good point regarding debugfs. While, it does not change any locking
-assumptions, for this series. It might change some design decisions
-that we need to make when freeing pages on unmaps (a separate RFC
-series that I sent). I will have to study how debugfs affect refcnt
-and mapcount, and whether we could use per-page page table locking if
-needed.
+The intent of this series is to stop auto expanding
+/sys/devices/system/node/nodeX/vmstat as sysfs should only be one
+value per file, and the task is not to make things worse. /proc/vmstat
+is mostly ok, however we might not need to auto expand it as well, to
+avoid situations where removing a field becomes a problem, and we have
+to keep it in the file forever, like what we do with nr_unstable.
 
-Thanks,
+> There's great benefit to being able to use the sample implementations to
+> parse either /proc/vmstat *or* the per-node vmstat and without needing to
+> read the per-node vmstat plus some new set of sysfs files that are
+> one-value-per-file.  The per-node vmstat will always be multiple values,
+> in fact it's a key value pair.
+
+Yes, but that file is already large, and soon can overflow a page
+size, instead of converting it to a binary format, let's add new items
+as one item per-file.
+
+> I have to think that doing anything else for vmstat is just adding
+> complexity (like this patch) and actually making it *harder* on userspace
+> to read the data it needs.
+>
+> Yes, the per-node vmstat likely shouldn't be in sysfs at all but it
+> appears to have been added there 13+ years ago because it was a convenien=
+t
+> place to add a per-node variant.  That's not ideal, but owell.
+
+It is up-to GregKH who requested this change. Greg, specifically
+requested not to add new fields into per-node vmstat, and we are
+adding new fields with per-page metadata series, and IOMMU accounting
+series as these files are auto-expanded without this series.
+
 Pasha
 
