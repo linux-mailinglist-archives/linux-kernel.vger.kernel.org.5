@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-11254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C9B81E3B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:36:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD1A981E3BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:37:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1AC21F21379
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:36:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BF69B22635
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:37:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7767835F0D;
-	Tue, 26 Dec 2023 00:23:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190AD59B5E;
+	Tue, 26 Dec 2023 00:23:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="erQugn+T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hNZrKYys"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BF35916C;
-	Tue, 26 Dec 2023 00:23:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0A0DC433B6;
-	Tue, 26 Dec 2023 00:23:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6495059B46;
+	Tue, 26 Dec 2023 00:23:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 214A9C433C8;
+	Tue, 26 Dec 2023 00:23:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550236;
-	bh=S3WABjvm4trviiu3emPkc/9hxdtUAqhIyZWTzOX8BH8=;
+	s=k20201202; t=1703550237;
+	bh=Bmr2KJSHLE3jYu92u4jB4H3npK88ZS0ZQcmhtihwVRo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=erQugn+TT6M/UKb4mDsUbV7FLlRl7Lo21KrsLYV2WLgen6Um9oXnXf95FYAbCE3p/
-	 PfWpf+ycCGLR8xIYsbFFXgvIi8aCNyKzw/pgp2vcgEg/Pb0uutsGVdAqGIpquGsK4t
-	 YmPn4OiqsppUzKqd0QUk7a8dtCn6yahO2GR1Gb3UWn64xg+svE4vjOZe/uBEweZnjq
-	 6hFbXMxpvYE6dS77u8fQQUuEp7/QYSiW7P3Cl9G40FiSVayVORCZ1p/S48bdIqGqEi
-	 KnkXGCw9WMQTR6al9lZ2msFKT0IacVzkECJtHlYC/adeFjyfSdAQ2qtYgKYNjn1HQY
-	 7x0gXxAqwujeA==
+	b=hNZrKYysIqTrKfxIFBdrP08yHASZFfdmSr71CQMztQWZmqZkKyIw+ou1b8KOWhGr0
+	 npsQO9Znf5nKoUybvXzNBUXRyYZydM6IwkYTdXoxKBk9L2V8rz8szxdey3uEdKGnlu
+	 fEGLHStk+fqqSaNcA+tsIu0I16S4axhVuR9McgMyC1RoDDqMStIKBEkIES2Hxr7Fka
+	 lwHORjiXhadwVrpseOTff8LsKi70S4dPbN1vQ7PaJq7c1gvIBnllXE4ANqjMEq8mY9
+	 r7PCD552fPl2ReBM68wb1wllw4G71b/XACmkhpJoVw6jRRjxcpZcodB5kKQzUjHUG/
+	 zjsqt/VuX9i1Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -39,9 +39,9 @@ Cc: Patrick Rudolph <patrick.rudolph@9elements.com>,
 	Linus Walleij <linus.walleij@linaro.org>,
 	Sasha Levin <sashal@kernel.org>,
 	linux-gpio@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 22/24] pinctrl: cy8c95x0: Fix regression
-Date: Mon, 25 Dec 2023 19:22:15 -0500
-Message-ID: <20231226002255.5730-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 23/24] pinctrl: cy8c95x0: Fix get_pincfg
+Date: Mon, 25 Dec 2023 19:22:16 -0500
+Message-ID: <20231226002255.5730-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231226002255.5730-1-sashal@kernel.org>
 References: <20231226002255.5730-1-sashal@kernel.org>
@@ -58,59 +58,32 @@ Content-Transfer-Encoding: 8bit
 
 From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-[ Upstream commit 04dfca968cf7349773126340991b68a83378aca2 ]
+[ Upstream commit 94c71705cc49092cef60ece13a28680809096fd4 ]
 
-Commit 1fa3df901f2c ("pinctrl: cy8c95x0: Remove custom ->set_config()")
-removed support for PIN_CONFIG_INPUT_ENABLE and
-PIN_CONFIG_OUTPUT.
-
-Add the following options to restore functionality:
-- PIN_CONFIG_INPUT_ENABLE
-- PIN_CONFIG_OUTPUT_ENABLE
+Invert the register value for PIN_CONFIG_OUTPUT_ENABLE to return
+the opposite of PIN_CONFIG_INPUT_ENABLE.
 
 Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-Link: https://lore.kernel.org/r/20231219125120.4028862-2-patrick.rudolph@9elements.com
+Link: https://lore.kernel.org/r/20231219125120.4028862-3-patrick.rudolph@9elements.com
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/pinctrl-cy8c95x0.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/pinctrl/pinctrl-cy8c95x0.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/drivers/pinctrl/pinctrl-cy8c95x0.c b/drivers/pinctrl/pinctrl-cy8c95x0.c
-index 99c3fe4ca518e..501b7c181df00 100644
+index 501b7c181df00..2a6158a052a31 100644
 --- a/drivers/pinctrl/pinctrl-cy8c95x0.c
 +++ b/drivers/pinctrl/pinctrl-cy8c95x0.c
-@@ -304,6 +304,9 @@ static const char * const cy8c95x0_groups[] = {
- 	"gp77",
- };
+@@ -752,6 +752,8 @@ static int cy8c95x0_gpio_get_pincfg(struct cy8c95x0_pinctrl *chip,
+ 	ret = regmap_read(chip->regmap, reg, &reg_val);
+ 	if (reg_val & bit)
+ 		arg = 1;
++	if (param == PIN_CONFIG_OUTPUT_ENABLE)
++		arg = !arg;
  
-+static int cy8c95x0_pinmux_direction(struct cy8c95x0_pinctrl *chip,
-+				     unsigned int pin, bool input);
-+
- static inline u8 cypress_get_port(struct cy8c95x0_pinctrl *chip, unsigned int pin)
- {
- 	/* Account for GPORT2 which only has 4 bits */
-@@ -764,6 +767,7 @@ static int cy8c95x0_gpio_set_pincfg(struct cy8c95x0_pinctrl *chip,
- 	u8 port = cypress_get_port(chip, off);
- 	u8 bit = cypress_get_pin_mask(chip, off);
- 	unsigned long param = pinconf_to_config_param(config);
-+	unsigned long arg = pinconf_to_config_argument(config);
- 	unsigned int reg;
- 	int ret;
- 
-@@ -802,6 +806,12 @@ static int cy8c95x0_gpio_set_pincfg(struct cy8c95x0_pinctrl *chip,
- 	case PIN_CONFIG_MODE_PWM:
- 		reg = CY8C95X0_PWMSEL;
- 		break;
-+	case PIN_CONFIG_OUTPUT_ENABLE:
-+		ret = cy8c95x0_pinmux_direction(chip, off, !arg);
-+		goto out;
-+	case PIN_CONFIG_INPUT_ENABLE:
-+		ret = cy8c95x0_pinmux_direction(chip, off, arg);
-+		goto out;
- 	default:
- 		ret = -ENOTSUPP;
- 		goto out;
+ 	*config = pinconf_to_config_packed(param, (u16)arg);
+ out:
 -- 
 2.43.0
 
