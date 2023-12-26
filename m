@@ -1,97 +1,78 @@
-Return-Path: <linux-kernel+bounces-11584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33B0281E885
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:50:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D52281E887
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3B5C28147A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:50:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FA651C20949
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1FD34F883;
-	Tue, 26 Dec 2023 16:50:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5994F889;
+	Tue, 26 Dec 2023 16:51:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="5gGxoLAA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CQJxk12Y"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7F74F885;
-	Tue, 26 Dec 2023 16:50:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=PvHe/a/YIlDPbdV9IQijzEnnceejPuf4FbyuqmV0tac=; b=5gGxoLAACjK/8qVzAl1USxjjLg
-	lmSrQP35WDsJBenObM+sC/o8Ss7o+qutgAC/EkuD/sQ+dmDSXlRiccUjTItTyUgpgT/Buu80JaWmT
-	V7eCAqlgSVd/QnlNxO+56lPPSGIHRZtJaMXOUWoDHse8VxZM5/5mx76DuL6MBAdE2aMo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rIAcu-003mcG-Hk; Tue, 26 Dec 2023 17:49:56 +0100
-Date: Tue, 26 Dec 2023 17:49:56 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: Jagan Teki <jagan@amarulasolutions.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	"Andrew F. Davis" <afd@ti.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	linux-kernel <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-	Michael Nazzareno Trimarchi <michael@amarulasolutions.com>,
-	Ioana Ciornei <ioana.ciornei@nxp.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	Fabio Estevam <festevam@gmail.com>
-Subject: Re: PHY issue with SJA1105Q/DP84849I Design
-Message-ID: <5ec0c324-b07a-4001-b495-f34bfdd8ffe0@lunn.ch>
-References: <CAMty3ZCn+yGr2MG3WYg+i4DsZWk5b-xEw0SDvNbeGzs6pMwjfQ@mail.gmail.com>
- <20231222145100.sfcuux7ayxtxgogo@skbuf>
- <CAMty3ZBZNugYmKMjDdZnY0kFMeEb86uzSg2XL9Tn6Yb4t-TXKQ@mail.gmail.com>
- <20231226153055.4yihsmu6kiak6hkf@skbuf>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B0784F61A;
+	Tue, 26 Dec 2023 16:51:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26DEFC433C7;
+	Tue, 26 Dec 2023 16:51:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703609503;
+	bh=WXuVzw/i2VPRJ5769EW7k1lg5vCW0bPilNIGTNQMMqs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CQJxk12YM2r1TyiGjD7kbUqZbrompeUme7z+LQZ0c7ShIfmP8GYKv6XE0xm1HNSbd
+	 3ZpCa9+y4NowPCsA3xDgeRWH/J6jivjdrR96wOj32rDXWElVWY7yr5/Y5BSvXVsmE9
+	 EHfMG0RGQEX/9jJSEifwUiISogRqPOifmwN5nhy9s803NNxMRDR8c69XQGHReMkr3l
+	 LIEsXDQnONtCCn9NXPNqtCU5hoi5ICfFRFp/HmPZiQGKyCuNyd54d+PsYgDRnRc826
+	 2H7pKa0gNHJd0cWFujIZYutswc8pnOIK0nlxYaILRtT1gStLjNJijPLFXuNTwuATCs
+	 MKMDeGKZp/1xQ==
+Date: Tue, 26 Dec 2023 16:51:39 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Petre Rodan <petre.rodan@subdimension.ro>
+Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, Andreas Klinger
+ <ak@it-klinger.de>, Lars-Peter Clausen <lars@metafoo.de>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Angel Iglesias
+ <ang.iglesiasg@gmail.com>, Matti Vaittinen <mazziesaccount@gmail.com>
+Subject: Re: [PATCH v2 10/10] iio: pressure: mprls0025pa.c add SPI driver
+Message-ID: <20231226165139.78dc2dc5@jic23-huawei>
+In-Reply-To: <20231224143500.10940-11-petre.rodan@subdimension.ro>
+References: <20231224143500.10940-1-petre.rodan@subdimension.ro>
+	<20231224143500.10940-11-petre.rodan@subdimension.ro>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231226153055.4yihsmu6kiak6hkf@skbuf>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-> Ok. The WARN_ON() is saying that the DSA user port's phy_start() found
-> the attached PHY already in the RUNNING state. As if there was already
-> someone else driving it.
+On Sun, 24 Dec 2023 16:34:55 +0200
+Petre Rodan <petre.rodan@subdimension.ro> wrote:
+
+> Add SPI component of the driver.
 > 
-> That "someone else" seems to be the FEC driver from the log above, which
-> for some reason has connected to the DP83849I by itself, and phylink/phylib
-> hasn't denied the second attempt to connect to the same PHY for some
-> reason.
+> Tested with mprls0015pa0000sa in spi mode on BeagleBone Black on
+> slightly patched 6.7.0-rc6 mainline.
 > 
-> If you look at fec_enet_mii_probe(), I see it has 2 code paths, one for
-> when fep->phy_node (defined as the "phy-handle" reference) is non-NULL,
-> and one for when it is NULL. What you're missing is a fixed-link
-> specifier in the device tree for FEC, otherwise it tries to call
-> phy_connect() to some random MDIO address on the bus and that breaks
-> things in some way which I don't understand.
-
-At has an open coded phy_find_first(), or something similar. The FEC
-is a bit of a mess in this respect, but it is hard to fix because of
-backwards compatibility.
-
-> The code which should have prevented this from happening is in
-> phy_attach_direct():
+> Tested with mprls0025pa in i2c mode on BeagleBone Black with togreg
+> branch on
+> git://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git
+> (tag: iio-for-6.8a)
 > 
-> 	if (phydev->attached_dev) {
-> 		dev_err(&dev->dev, "PHY already attached\n");
-> 		err = -EBUSY;
-> 		goto error;
-> 	}
+> Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+> Tested-by: Andreas Klinger <ak@it-klinger.de>
+This and previous patch look fine to me.
 
-Yes, that is odd.
+Thanks,
 
-     Andrew
+Jonathan
+
 
