@@ -1,238 +1,109 @@
-Return-Path: <linux-kernel+bounces-11554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9007381E826
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B17BB81E82B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:55:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F5601C2140B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:52:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E31EA1C21388
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:55:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C5A4F5E1;
-	Tue, 26 Dec 2023 15:52:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rUUa26yc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5A384F881;
+	Tue, 26 Dec 2023 15:54:51 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D2E4F207;
-	Tue, 26 Dec 2023 15:52:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62EFDC433C7;
-	Tue, 26 Dec 2023 15:52:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703605930;
-	bh=jzVP4Y4JhZWGkkFHmLQvr5y6pdDNLeWEKoXU+39nmKE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=rUUa26ycei86jgk4JYf9+fzt63DO9IASM8HD11qwPTDtEI5PPbEUGQI/+6jDgNNLn
-	 92rGDw5BpS24yJLn0LKDozuhRJyVmeLNLQne+bvfQpP/KzN2OakDUYKdTv4H729iZR
-	 C1q8J2JFgCi1x6SpEPnrTT6BlXsSg2dxp/QWNbw6BW8Xy0SN5ufIdZQhJh6fD/ouE4
-	 /UpgBO63hpY7PveeLlSOuaDffn60gFlAq0/iKMka2qA/ShRTmtCHrnmgcQf8NfAAwi
-	 7X17/PjspuptqQvbECK+TAOmGtwWWHzGaECJvFZj03YaPctI2QQWu8i63TOyN5fMoT
-	 fIDOFLI7QlfpA==
-Date: Tue, 26 Dec 2023 15:51:57 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Justin Stitt <justinstitt@google.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Stephen Boyd
- <swboyd@chromium.org>, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v4] iio: sx9324: avoid copying property strings
-Message-ID: <20231226155157.6f49b6f9@jic23-huawei>
-In-Reply-To: <20231219-strncpy-drivers-iio-proximity-sx9324-c-v4-1-d49ed29ee952@google.com>
-References: <20231219-strncpy-drivers-iio-proximity-sx9324-c-v4-1-d49ed29ee952@google.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1ECF4F612
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 15:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Subject: [PATCH v4 0/6] mm/zswap: dstmem reuse optimizations and cleanups
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-b4-tracking: H4sIAB/3imUC/33NywrCMBAF0F8pWRvJq4+48j/ExTQZbcC2ktRILf13B5eiXQ33wj2zsIQxYGKHYm
+ ERc0hhHCiYXcFcB8MVefCUmRJKSyU1f6Un3LlPU489941qLmWltdCe0aSFhLyNMLiORsPjdqOyC2ka
+ 4/x5kSWd0x8tSy54Y6uawMp6YY7tPKEnDfdu7NmZsKy2AEWAByi9BTQS6l+A3gI0AQbBCdtagw6/gX Vd31Uw7PQzAQAA
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <zhouchengming@bytedance.com>
+Date: Tue, 26 Dec 2023 15:54:07 +0000
+Message-Id: <20231213-zswap-dstmem-v4-0-f228b059dd89@bytedance.com>
+To: Andrew Morton <akpm@linux-foundation.org>, Seth Jennings <sjenning@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Vitaly Wool <vitaly.wool@konsulko.com>, Nhat Pham <nphamcs@gmail.com>, Chris Li <chriscli@google.com>,
+ Yosry Ahmed <yosryahmed@google.com>, Dan Streetman <ddstreet@ieee.org>
+Cc: linux-kernel@vger.kernel.org, Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org,
+ Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, Chris Li <chrisl@kernel.org>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703606082; l=2468;
+ i=zhouchengming@bytedance.com; s=20231204; h=from:subject:message-id;
+ bh=YQTxvUwsZzqyH52o9J1hnYzVus+yan/sec/bpXl9qAA=;
+ b=vtscZKZGioQki3CX7H/cGeD1VGNfoxL3URCIQMIxd7QzKGd3qrywLLvUUXdtpdCeOU9lmh3Ng
+ d+07cNETScAA7d8uf9HF1edMEzA2Rk8z++NIbW4xC6ZQstVMAFOSu1Q
+X-Developer-Key: i=zhouchengming@bytedance.com; a=ed25519;
+ pk=xFTmRtMG3vELGJBUiml7OYNdM393WOMv0iWWeQEVVdA=
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 19 Dec 2023 21:34:15 +0000
-Justin Stitt <justinstitt@google.com> wrote:
+Hi everyone,
 
-> We're doing some needless string copies when trying to assign the proper
-> `prop` string. We can make `prop` a const char* and simply assign to
-> string literals.
-> 
-> For the case where a format string is used, let's extract the parsing
-> logic out into sx9324_parse_phase_prop(). We no longer need to create
-> copies or allocate new memory.
-> 
-> sx9324_parse_phase_prop() will simply return the default def value if it
-> fails.
-> 
-> This also cleans up some deprecated strncpy() uses [1].
-> 
-> Furthermore, let's clean up this code further by removing some unused
-> defines:
-> |  #define SX9324_PIN_DEF "semtech,ph0-pin"
-> |  #define SX9324_RESOLUTION_DEF "semtech,ph01-resolution"
-> |  #define SX9324_PROXRAW_DEF "semtech,ph01-proxraw-strength"
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-This clashes with a patch from Andy Shevchenko 
-iio: proximity: sx9324: Switch to device_property_match_property_string()
-https://lore.kernel.org/all/20230808162800.61651-7-andriy.shevchenko@linux.intel.com/
+Changes in v4:
+- Collect Reviewed-by and Acked-by tags.
+- Fold in the comment fix in zswap_writeback_entry() from Yosry Ahmed.
+- Add patch to change per-cpu mutex and dstmem to per-acomp_ctx.
+- Just rename crypto_acomp_ctx->dstmem field to buffer.
+- Link to v3: https://lore.kernel.org/r/20231213-zswap-dstmem-v3-0-4eac09b94ece@bytedance.com
 
-Would you mind rebasing on top of that (it should be in linux-next
-or my togreg branch of iio.git).
+Changes in v3:
+- Collect Reviewed-by tag.
+- Drop the __zswap_store() refactoring part.
+- Link to v2: https://lore.kernel.org/r/20231213-zswap-dstmem-v2-0-daa5d9ae41a7@bytedance.com
 
-Might be easier to rebase on rc1 once it's available in about 3.5 weeks time.
+Changes in v2:
+- Add more changelog and test data about changing dstmem to one page.
+- Reorder patches to put dstmem reusing and __zswap_load() refactoring
+  together, still refactor after dstmem reusing since we don't want
+  to handle __zswap_load() failure due to memory allocation failure
+  in zswap_writeback_entry().
+- Append a patch to directly use percpu mutex and buffer in load/store
+  and refactor out __zswap_store() to simplify zswap_store().
+- Link to v1: https://lore.kernel.org/r/20231213-zswap-dstmem-v1-0-896763369d04@bytedance.com
 
-Jonathan
+This series is split from [1] to only include zswap dstmem reuse
+optimizations and cleanups, the other part of rbtree breakdown will
+be deferred to retest after the rbtree converted to xarray.
 
-> ---
-> Changes in v4:
-> - use u8 return type (thanks Stephen)
-> - remove unused defines (thanks Stephen et al.)
-> - tweaks to sx9324_parse_phase_prop related to defaults (thanks Stephen)
-> - Link to v3: https://lore.kernel.org/r/20231212-strncpy-drivers-iio-proximity-sx9324-c-v3-1-b8ae12fc8a5d@google.com
-> 
-> Changes in v3:
-> - extract logic into sx9324_parse_phase_prop() and use string literals
->   (thanks Stephen)
-> - rebase onto mainline bee0e7762ad2c602
-> - Link to v2: https://lore.kernel.org/r/20231026-strncpy-drivers-iio-proximity-sx9324-c-v2-1-cee6e5db700c@google.com
-> 
-> Changes in v2:
-> - make prop a const char* and do simple assignments (thanks Jonathan)
-> - rebase onto 3a568e3a961ba330
-> - Link to v1: https://lore.kernel.org/r/20230921-strncpy-drivers-iio-proximity-sx9324-c-v1-1-4e8d28fd1e7c@google.com
-> ---
-> ---
->  drivers/iio/proximity/sx9324.c | 70 ++++++++++++++++++++++++------------------
->  1 file changed, 40 insertions(+), 30 deletions(-)
-> 
-> diff --git a/drivers/iio/proximity/sx9324.c b/drivers/iio/proximity/sx9324.c
-> index 438f9c9aba6e..3daad7167c63 100644
-> --- a/drivers/iio/proximity/sx9324.c
-> +++ b/drivers/iio/proximity/sx9324.c
-> @@ -873,6 +873,29 @@ static int sx9324_init_compensation(struct iio_dev *indio_dev)
->  					20000, 2000000);
->  }
->  
-> +static u8 sx9324_parse_phase_prop(struct device *dev,
-> +				  struct sx_common_reg_default *reg_def,
-> +				  const char *prop)
-> +{
-> +	unsigned int pin_defs[SX9324_NUM_PINS];
-> +	int count, ret, pin;
-> +	u32 raw = 0;
-> +
-> +	count = device_property_count_u32(dev, prop);
-> +	if (count != ARRAY_SIZE(pin_defs))
-> +		return reg_def->def;
-> +	ret = device_property_read_u32_array(dev, prop, pin_defs,
-> +					     ARRAY_SIZE(pin_defs));
-> +	if (ret)
-> +		return reg_def->def;
-> +
-> +	for (pin = 0; pin < SX9324_NUM_PINS; pin++)
-> +		raw |= (pin_defs[pin] << (2 * pin)) &
-> +		       SX9324_REG_AFE_PH0_PIN_MASK(pin);
-> +
-> +	return raw;
-> +}
-> +
->  static const struct sx_common_reg_default *
->  sx9324_get_default_reg(struct device *dev, int idx,
->  		       struct sx_common_reg_default *reg_def)
-> @@ -881,38 +904,29 @@ sx9324_get_default_reg(struct device *dev, int idx,
->  		"highest" };
->  	static const char * const sx9324_csidle[] = { "hi-z", "hi-z", "gnd",
->  		"vdd" };
-> -#define SX9324_PIN_DEF "semtech,ph0-pin"
-> -#define SX9324_RESOLUTION_DEF "semtech,ph01-resolution"
-> -#define SX9324_PROXRAW_DEF "semtech,ph01-proxraw-strength"
-> -	unsigned int pin_defs[SX9324_NUM_PINS];
-> -	char prop[] = SX9324_PROXRAW_DEF;
->  	u32 start = 0, raw = 0, pos = 0;
-> -	int ret, count, ph, pin;
-> -	const char *res;
-> +	const char *prop, *res;
-> +	int ret;
->  
->  	memcpy(reg_def, &sx9324_default_regs[idx], sizeof(*reg_def));
->  
->  	sx_common_get_raw_register_config(dev, reg_def);
->  	switch (reg_def->reg) {
->  	case SX9324_REG_AFE_PH0:
-> +		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
-> +						       "semtech,ph0-pin");
-> +		break;
->  	case SX9324_REG_AFE_PH1:
-> +		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
-> +						       "semtech,ph1-pin");
-> +		break;
->  	case SX9324_REG_AFE_PH2:
-> +		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
-> +						       "semtech,ph2-pin");
-> +		break;
->  	case SX9324_REG_AFE_PH3:
-> -		ph = reg_def->reg - SX9324_REG_AFE_PH0;
-> -		snprintf(prop, ARRAY_SIZE(prop), "semtech,ph%d-pin", ph);
-> -
-> -		count = device_property_count_u32(dev, prop);
-> -		if (count != ARRAY_SIZE(pin_defs))
-> -			break;
-> -		ret = device_property_read_u32_array(dev, prop, pin_defs,
-> -						     ARRAY_SIZE(pin_defs));
-> -		if (ret)
-> -			break;
-> -
-> -		for (pin = 0; pin < SX9324_NUM_PINS; pin++)
-> -			raw |= (pin_defs[pin] << (2 * pin)) &
-> -			       SX9324_REG_AFE_PH0_PIN_MASK(pin);
-> -		reg_def->def = raw;
-> +		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
-> +						       "semtech,ph3-pin");
->  		break;
->  	case SX9324_REG_AFE_CTRL0:
->  		ret = device_property_read_string(dev,
-> @@ -937,11 +951,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
->  	case SX9324_REG_AFE_CTRL4:
->  	case SX9324_REG_AFE_CTRL7:
->  		if (reg_def->reg == SX9324_REG_AFE_CTRL4)
-> -			strncpy(prop, "semtech,ph01-resolution",
-> -				ARRAY_SIZE(prop));
-> +			prop = "semtech,ph01-resolution";
->  		else
-> -			strncpy(prop, "semtech,ph23-resolution",
-> -				ARRAY_SIZE(prop));
-> +			prop = "semtech,ph23-resolution";
->  
->  		ret = device_property_read_u32(dev, prop, &raw);
->  		if (ret)
-> @@ -1012,11 +1024,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
->  	case SX9324_REG_PROX_CTRL0:
->  	case SX9324_REG_PROX_CTRL1:
->  		if (reg_def->reg == SX9324_REG_PROX_CTRL0)
-> -			strncpy(prop, "semtech,ph01-proxraw-strength",
-> -				ARRAY_SIZE(prop));
-> +			prop = "semtech,ph01-proxraw-strength";
->  		else
-> -			strncpy(prop, "semtech,ph23-proxraw-strength",
-> -				ARRAY_SIZE(prop));
-> +			prop = "semtech,ph23-proxraw-strength";
->  		ret = device_property_read_u32(dev, prop, &raw);
->  		if (ret)
->  			break;
-> 
-> ---
-> base-commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-> change-id: 20230921-strncpy-drivers-iio-proximity-sx9324-c-8c3437676039
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
+And the problem this series tries to optimize is that zswap_load()
+and zswap_writeback_entry() have to malloc a temporary memory to
+support !zpool_can_sleep_mapped(). We can avoid it by reusing the
+percpu crypto_acomp_ctx->dstmem, which is also used by zswap_store()
+and protected by the same percpu crypto_acomp_ctx->mutex.
 
+[1] https://lore.kernel.org/all/20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com/
+
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+Chengming Zhou (6):
+      mm/zswap: change dstmem size to one page
+      mm/zswap: reuse dstmem when decompress
+      mm/zswap: refactor out __zswap_load()
+      mm/zswap: cleanup zswap_load()
+      mm/zswap: cleanup zswap_writeback_entry()
+      mm/zswap: change per-cpu mutex and buffer to per-acomp_ctx
+
+ include/linux/cpuhotplug.h |   1 -
+ mm/zswap.c                 | 246 +++++++++++++--------------------------------
+ 2 files changed, 71 insertions(+), 176 deletions(-)
+---
+base-commit: 1f242c1964cf9b8d663a2fd72159b296205a8126
+change-id: 20231213-zswap-dstmem-d828f563303d
+
+Best regards,
+-- 
+Chengming Zhou <zhouchengming@bytedance.com>
 
