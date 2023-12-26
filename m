@@ -1,130 +1,242 @@
-Return-Path: <linux-kernel+bounces-11626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3453281E924
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:09:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 441E481E92E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:17:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CD8BB20C51
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:09:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D79562828D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45C2C136F;
-	Tue, 26 Dec 2023 19:09:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F2801852;
+	Tue, 26 Dec 2023 19:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="w6g8HZHE"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LLQdKftO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.12])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98141845;
-	Tue, 26 Dec 2023 19:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703617762; x=1704222562; i=markus.elfring@web.de;
-	bh=e+tBrgtJfsdqXLShYcAxcZWtl8ArgkpUQb9HNhch+6M=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=w6g8HZHEkpbryK5BLDOeQWt+/lpBqoGxbDnbb6dN2GVLEfRNnSHi9bdFdPHFbkCa
-	 QhWK+kIgXhjLVN6WqKbTGFrLpPIRDp9BybrEMyeb0i6/3kZsyKlNwHG/j/slAIhPQ
-	 oOEJml/hef9AR9qqJv0XjqjwoPu9WUqQvIKObyp8VlnXT/LZL/TjwVkUyvgAtVer5
-	 1yIUpVS/PO54spPLEyzKhqLauqEHGrCy4sjZSSwOx2tfgKDmL3Pr5Vx95ZbnzZ+rv
-	 UnSzlSkjQt1fszmBObyacSzmqC0KiYFyHE3yN1Nui7flNR4QA1MVr5c37DwACObqn
-	 1lGohnSUrYvql7oRlw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MQ8Wg-1reI1y1bJg-00MCdT; Tue, 26
- Dec 2023 20:09:22 +0100
-Message-ID: <6d97cafb-ad7c-41c1-9f20-41024bb18515@web.de>
-Date: Tue, 26 Dec 2023 20:09:19 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D9B917F8
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 19:17:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703618252;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IdK0f/0c2zILkHBv6UT22HiRXjmxzbBvzXxtAPGfC4Y=;
+	b=LLQdKftOEMzOTrhnzdIxi/DP37vNXi+A+ffql3hZcvO0/PdWE1wTyjmZcsleBwmXcC20qt
+	9nYzctwcmZebrDjtAs+Lnk/jFebRYPptnW7Z0cWqg64DtmHFYXb8z8Atgat80mE0wpLPCW
+	bHcd//rS0Fv0tdqHl9cOM08PYH9H0Ew=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-528-FZGXB0SdPvqQSFR39E-cXA-1; Tue, 26 Dec 2023 14:17:31 -0500
+X-MC-Unique: FZGXB0SdPvqQSFR39E-cXA-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-427a1de4fe5so85521631cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 11:17:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703618251; x=1704223051;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IdK0f/0c2zILkHBv6UT22HiRXjmxzbBvzXxtAPGfC4Y=;
+        b=RvQDre4TIMR9PGsMIl7ORiM98LILV0GF8goaYrwqtWPof6E9C62UseAN7Mntx+Kh4F
+         k2nMId4ZrLPmXd8zxSdm5uZhsfTpQuH3mIRxQi4l4wixSSMX0uE5HQsM7GZTdVtr/s7R
+         EiYKM8HoECIhF6QUV086UKYnA1wlkPnOiDkbf2/Bu041q2hqxfoiPSNfIx1lARtoKAGg
+         mihvc+Pz67FvCTcbAWp9ujyIU0s0f9i0C202iQqx0b/Cw6adeEH53a56KR3zaEHGXjx6
+         YC+nZaYGHiss3O0JHPZckW41ZtwyebQDrnn3wNc4QbfAbhuiawdlyMPGwsHMSfe3TY4v
+         jSAA==
+X-Gm-Message-State: AOJu0YywXviuYXNbFpDYuD90j0UyzsFew3l3wtgpF+654y3mVx5jakdH
+	aYSpwqCUI0j68jgmLNpKhW7y0POv8DRiWeLXrT6G2wYB8JkMEi4xQ1ls3rqxJD+EBjDptCXacrr
+	hhLpiX0EttjRFMIBwF88uwE3cPEK/Ankwy5vnKuQbCkW+AmTCtVXCP2Qs
+X-Received: by 2002:a05:622a:1208:b0:427:96be:c4e with SMTP id y8-20020a05622a120800b0042796be0c4emr11564727qtx.66.1703618250932;
+        Tue, 26 Dec 2023 11:17:30 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF1eLOcp+E0yHa8VriPMM/d17V5DFXgjeZMlmedQhw8c1Be94njKTay/7N0fFvPLqfEvqTfpb42Dh35qfEwkPQ=
+X-Received: by 2002:a05:622a:1208:b0:427:96be:c4e with SMTP id
+ y8-20020a05622a120800b0042796be0c4emr11564704qtx.66.1703618250614; Tue, 26
+ Dec 2023 11:17:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-hyperv@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Dexuan Cui <decui@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
- "K. Y. Srinivasan" <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] Drivers: hv: vmbus: One function call less in
- create_gpadl_header() after error detection
-Content-Type: text/plain; charset=UTF-8
+References: <20231222074605.452452-1-leobras@redhat.com> <20231222074605.452452-3-leobras@redhat.com>
+ <CAJF2gTQNE7OQiAbkvVNzo9PCV=Xr8KQD0_=s-G56QMZJiZnjvA@mail.gmail.com>
+ <ZYXDdlF1CFNpDdiV@LeoBras> <CABgGipWmidzhf3PqyK9FWQCmKAuS9H31XECTL5XYjSL5m1Es4g@mail.gmail.com>
+In-Reply-To: <CABgGipWmidzhf3PqyK9FWQCmKAuS9H31XECTL5XYjSL5m1Es4g@mail.gmail.com>
+From: Leonardo Bras Soares Passos <leobras@redhat.com>
+Date: Tue, 26 Dec 2023 16:17:19 -0300
+Message-ID: <CAJ6HWG5ooodxwi0HE7GVu4ffVETYPdTQJBzvsMcC6MJ6x1Ja_w@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/4] riscv: add compile-time test into is_compat_task()
+To: Andy Chiu <andy.chiu@sifive.com>
+Cc: Guo Ren <guoren@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>, 
+	Oleg Nesterov <oleg@redhat.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Greg Ungerer <gerg@kernel.org>, Vincent Chen <vincent.chen@sifive.com>, 
+	Xiao Wang <xiao.w.wang@intel.com>, Charlie Jenkins <charlie@rivosinc.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Kemeng Shi <shikemeng@huaweicloud.com>, David Hildenbrand <david@redhat.com>, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Qinglin Pan <panqinglin2020@iscas.ac.cn>, 
+	Greentime Hu <greentime.hu@sifive.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
+	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wPOvhj5sZIFHtakgOhvLyjOxfuTw717tJTZVuzvrrqw47k7mvWx
- CyzpwGDn4gaBT1CJjpK9GVIIMWi/S+S+fIkUTwBRp1cLMH3aCcOGz/YfYnvNQb+99MMh8oI
- tB8wP2yHdAK21v+JUtEchHHOWMoILWeamZmQXeqoP4qlu2NabSKEM484Z3soOjX+jFhTJ4C
- aeh2fY1OkfpLpgsLxcGMg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:+GuqX/7+844=;mKtO/t28dF5Noz7+PWV5uyi6UzL
- 7/31I3cEvXRYkQWA+hVKFQmOeWLyICCOmKCGX5QtKx+VQzGz5J+xCACsIPokktvmKoVBaUNOl
- xNZkdW643wiWYJnR4le5+YS25/scz34z2OIsXOdVCh2qons627KD1GqYZ3UcvHSZWavrvPYOc
- GrsvfGdSMZaoolsz3DLBivmTL5uaL2KCwkEbR+qHp7CTuvrP1Tdfr+I59JELsF7xpusF++GQ7
- IIEuf0UQDPAGvxV48JJ6ZOvpuBOTe2Lk7sbu8Y6BeD7XNxyU9pFSpLdqEoxfSmeYKakeKgBIJ
- mLkEkLA/hHZOtmywAxIOyCmJ6sMSNjh1DuLqQl14FHXGTs3ShtVGMk+eIaXOXgjhbGFS2bYfE
- wDaQKwDlzYRvw5b6b5oz1tIMVV6eYS/R3Zxjjng3IB/05hx0w8n8Y38G56pzoMi3Ol1ccfCVj
- 7aV89aa0n6Wgq1vb2YT4QGcnFQQEY579fhcceHzZF+xl+vRGVYMWtqOUnJydIope45l1hcTjx
- Y6PKyXeU5EcnjGjqpvhSi5dr5l27OA7BYIN4/Lh0uJ6sTd5S+n923nrCs2vnVKmsoGSzMCEXb
- 5ShpvJ9SNR8aYqW6E+hyPLSCD6qxZAtgbxrjR2umD4489dOR3+hsr57JNZMIqhqzNZ8/FdDiz
- Nludh6j1qcdUdb/4EnZAt36PhVW46UAD+5SkcfvbDYGl1CJIUkW/U7GDQd9qs5485X7xqbTm3
- DAdMQaJIES6dm3aBZtoKAtKF7LaKKj8n72SiZYMGgyhZtpZLAS0UsAO5DEslJ7mkpPy8ot9n4
- APzpn7lW5qWto/xov4OzKsFlsKOGypiVfz6kco8PRYqkkKsU/OjiQZ4HvOpGkOY2frbVDvkjw
- o7Pk8FS2Wocgqn8Im/UH49p0ICEv9pS6MxMBvLzErm/elfZjIzVD7ItR0pQzksE3Dio8aWDJ9
- x2Lvmw==
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Tue, 26 Dec 2023 20:00:24 +0100
+On Sat, Dec 23, 2023 at 1:15=E2=80=AFAM Andy Chiu <andy.chiu@sifive.com> wr=
+ote:
+>
+> On Sat, Dec 23, 2023 at 1:12=E2=80=AFAM Leonardo Bras <leobras@redhat.com=
+> wrote:
+> >
+> > On Fri, Dec 22, 2023 at 05:35:20PM +0800, Guo Ren wrote:
+> > > On Fri, Dec 22, 2023 at 5:02=E2=80=AFPM Leonardo Bras <leobras@redhat=
+.com> wrote:
+> > > >
+> > > > Currently several places will test for CONFIG_COMPAT before testing
+> > > > is_compat_task(), probably in order to avoid a run-time test into t=
+he task
+> > > > structure.
+> > > >
+> > > > Since is_compat_task() is an inlined function, it would be helpful =
+to add a
+> > > > compile-time test of CONFIG_COMPAT, making sure it always returns z=
+ero when
+> > > > the option is not enabled during the kernel build.
+> > > >
+> > > > With this, the compiler is able to understand in build-time that
+> > > > is_compat_task() will always return 0, and optimize-out some of the=
+ extra
+> > > > code introduced by the option.
+> > > >
+> > > > This will also allow removing a lot #ifdefs that were introduced, a=
+nd make
+> > > > the code more clean.
+> > > >
+> > > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > > > ---
+> > > >  arch/riscv/include/asm/compat.h    | 3 +++
+> > > >  arch/riscv/include/asm/elf.h       | 4 ----
+> > > >  arch/riscv/include/asm/pgtable.h   | 6 ------
+> > > >  arch/riscv/include/asm/processor.h | 4 ++--
+> > > >  4 files changed, 5 insertions(+), 12 deletions(-)
+> > > >
+> > > > diff --git a/arch/riscv/include/asm/compat.h b/arch/riscv/include/a=
+sm/compat.h
+> > > > index 2ac955b51148f..91517b51b8e27 100644
+> > > > --- a/arch/riscv/include/asm/compat.h
+> > > > +++ b/arch/riscv/include/asm/compat.h
+> > > > @@ -14,6 +14,9 @@
+> > > >
+> > > >  static inline int is_compat_task(void)
+> > > >  {
+> > > > +       if (!IS_ENABLED(CONFIG_COMPAT))
+> > > > +               return 0;
+> > > > +
+> > > >         return test_thread_flag(TIF_32BIT);
+> > > >  }
+> > > >
+> > > > diff --git a/arch/riscv/include/asm/elf.h b/arch/riscv/include/asm/=
+elf.h
+> > > > index 59a08367fddd7..2e88257cafaea 100644
+> > > > --- a/arch/riscv/include/asm/elf.h
+> > > > +++ b/arch/riscv/include/asm/elf.h
+> > > > @@ -53,13 +53,9 @@ extern bool compat_elf_check_arch(Elf32_Ehdr *hd=
+r);
+> > > >  #define ELF_ET_DYN_BASE                ((DEFAULT_MAP_WINDOW / 3) *=
+ 2)
+> > > >
+> > > >  #ifdef CONFIG_64BIT
+> > > > -#ifdef CONFIG_COMPAT
+> > > >  #define STACK_RND_MASK         (is_compat_task() ? \
+> > > >                                  0x7ff >> (PAGE_SHIFT - 12) : \
+> > > >                                  0x3ffff >> (PAGE_SHIFT - 12))
+> > > > -#else
+> > > > -#define STACK_RND_MASK         (0x3ffff >> (PAGE_SHIFT - 12))
+> > > > -#endif
+> > > >  #endif
+> > > >
+> > > >  /*
+> > > > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/=
+asm/pgtable.h
+> > > > index 1d472b31e0cfe..ea5b269be223a 100644
+> > > > --- a/arch/riscv/include/asm/pgtable.h
+> > > > +++ b/arch/riscv/include/asm/pgtable.h
+> > > > @@ -127,16 +127,10 @@
+> > > >  #define VA_USER_SV48 (UL(1) << (VA_BITS_SV48 - 1))
+> > > >  #define VA_USER_SV57 (UL(1) << (VA_BITS_SV57 - 1))
+> > > >
+> > > > -#ifdef CONFIG_COMPAT
+> > > >  #define MMAP_VA_BITS_64 ((VA_BITS >=3D VA_BITS_SV48) ? VA_BITS_SV4=
+8 : VA_BITS)
+> > > >  #define MMAP_MIN_VA_BITS_64 (VA_BITS_SV39)
+> > > >  #define MMAP_VA_BITS (is_compat_task() ? VA_BITS_SV32 : MMAP_VA_BI=
+TS_64)
+> > > >  #define MMAP_MIN_VA_BITS (is_compat_task() ? VA_BITS_SV32 : MMAP_M=
+IN_VA_BITS_64)
+> > > > -#else
+> > > > -#define MMAP_VA_BITS ((VA_BITS >=3D VA_BITS_SV48) ? VA_BITS_SV48 :=
+ VA_BITS)
+> > > > -#define MMAP_MIN_VA_BITS (VA_BITS_SV39)
+> > > > -#endif /* CONFIG_COMPAT */
+> > > > -
+> > > >  #else
+> > > >  #include <asm/pgtable-32.h>
+> > > >  #endif /* CONFIG_64BIT */
+> > > > diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/includ=
+e/asm/processor.h
+> > > > index f19f861cda549..ed32e53e55999 100644
+> > > > --- a/arch/riscv/include/asm/processor.h
+> > > > +++ b/arch/riscv/include/asm/processor.h
+> > > > @@ -22,7 +22,7 @@
+> > > >  ({                                                             \
+> > > >         unsigned long mmap_end;                                 \
+> > > >         typeof(addr) _addr =3D (addr);                            \
+> > > > -       if ((_addr) =3D=3D 0 || (IS_ENABLED(CONFIG_COMPAT) && is_co=
+mpat_task())) \
+> > > > +       if ((_addr) =3D=3D 0 || is_compat_task())                  =
+ \
+> > > >                 mmap_end =3D STACK_TOP_MAX;                       \
+> > > >         else if ((_addr) >=3D VA_USER_SV57)                       \
+> > > >                 mmap_end =3D STACK_TOP_MAX;                       \
+> > > > @@ -39,7 +39,7 @@
+> > > >         typeof(addr) _addr =3D (addr);                            \
+> > > >         typeof(base) _base =3D (base);                            \
+> > > >         unsigned long rnd_gap =3D DEFAULT_MAP_WINDOW - (_base);   \
+> > > > -       if ((_addr) =3D=3D 0 || (IS_ENABLED(CONFIG_COMPAT) && is_co=
+mpat_task())) \
+> > > > +       if ((_addr) =3D=3D 0 || is_compat_task())                  =
+ \
+> > > >                 mmap_base =3D (_base);                            \
+> > > >         else if (((_addr) >=3D VA_USER_SV57) && (VA_BITS >=3D VA_BI=
+TS_SV57)) \
+> > > >                 mmap_base =3D VA_USER_SV57 - rnd_gap;             \
+> > > > --
+> > > > 2.43.0
+> > > >
+> > > Reviewed-by: Guo Ren <guoren@kernel.org>
+> >
+> > Thanks!
+> > Leo
+> >
+> > >
+> > > --
+> > > Best Regards
+> > >  Guo Ren
+> > >
+> >
+>
+> Reviewed-by: Andy Chiu <andy.chiu@sifive.com>
+>
 
-The kfree() function was called in two cases by
-the create_gpadl_header() function during error handling
-even if the passed variable contained a null pointer.
-This issue was detected by using the Coccinelle software.
-
-Thus use another label.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/hv/channel.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
-index 56f7e06c673e..4d1bbda895d8 100644
-=2D-- a/drivers/hv/channel.c
-+++ b/drivers/hv/channel.c
-@@ -336,7 +336,7 @@ static int create_gpadl_header(enum hv_gpadl_type type=
-, void *kbuffer,
- 			  sizeof(struct gpa_range) + pfncount * sizeof(u64);
- 		msgheader =3D  kzalloc(msgsize, GFP_KERNEL);
- 		if (!msgheader)
--			goto nomem;
-+			goto free_body;
-
- 		INIT_LIST_HEAD(&msgheader->submsglist);
- 		msgheader->msgsize =3D msgsize;
-@@ -417,7 +417,7 @@ static int create_gpadl_header(enum hv_gpadl_type type=
-, void *kbuffer,
- 			  sizeof(struct gpa_range) + pagecount * sizeof(u64);
- 		msgheader =3D kzalloc(msgsize, GFP_KERNEL);
- 		if (msgheader =3D=3D NULL)
--			goto nomem;
-+			goto free_body;
-
- 		INIT_LIST_HEAD(&msgheader->submsglist);
- 		msgheader->msgsize =3D msgsize;
-@@ -439,6 +439,7 @@ static int create_gpadl_header(enum hv_gpadl_type type=
-, void *kbuffer,
- 	return 0;
- nomem:
- 	kfree(msgheader);
-+free_body:
- 	kfree(msgbody);
- 	return -ENOMEM;
- }
-=2D-
-2.43.0
+Thanks Andy!
 
 
