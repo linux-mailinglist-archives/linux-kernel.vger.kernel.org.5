@@ -1,196 +1,140 @@
-Return-Path: <linux-kernel+bounces-11410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C73B881E5E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:24:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBF8B81E5E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:24:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 424551F223A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 08:24:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7605B21C8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 08:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BA1F4CB43;
-	Tue, 26 Dec 2023 08:23:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03D564CB42;
+	Tue, 26 Dec 2023 08:24:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QVc5/mzz"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EiS7oCgl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CDBE4CB39
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 08:23:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5cdbc4334edso1366901a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 00:23:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A1114CB26
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 08:24:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d5aef534eso1734465e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 00:24:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703579033; x=1704183833; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aLehRK77nhRqWHOhFH4iOgyb8YlvIlkQFgSTelSqOnM=;
-        b=QVc5/mzztJ/5ibKfUyPpI0MS72eq63pT2STAOSe+KQSrdFowH4rj2j0CNn8D+K7/gY
-         IlpUc+JkELReffaXcuhSGFVMXLT3EnHFP/IMi9fup2ABVWIofMjQQ5LbO5kACp/zKipd
-         9RyrKfEwRW4Wvup3vAl4XBeaoNgz0E58ftWNY=
+        d=linaro.org; s=google; t=1703579082; x=1704183882; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E99Z3zKtzxhsKYnKxnP5BTPaha+ea8ivpNf+0g9T/ow=;
+        b=EiS7oCgl1JEhO2XNK/Ub8Am9yET+DaIxXpT1+xBXl9aWRM9BZtUxod4rKQsFq4pUC9
+         V1gwEy2OvC4VDdMJI9nQ0QI90RJmMl44gv7kbST0SENemUHgTcps41QEtAoszj5aq/18
+         eZTKp9h7Yk5+DzgVD8mJ32UDq0yu6CxbYi9/mPbF5YTXLl0YEZjokaOnuSobopLAkpPX
+         39rHgnZPv9JYJdyhUDdbXlqsI/rwTaebHxBTS83G2xHnej5zNRKBK7JLdG/gSw3bnret
+         +Cd6LM9wn9X7k76rn+3tY5tyOf1nJDd65EMR3A76mXPZvKbaw/7tZjfnbOlebaxlLuB/
+         1aGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703579033; x=1704183833;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aLehRK77nhRqWHOhFH4iOgyb8YlvIlkQFgSTelSqOnM=;
-        b=B/utHwGGOHfd9rmzk7fXVxwX5LgWKcHh7P8M94pacIy37WBvEpv9DBRAJubP7CmNxF
-         vs5XzT+wM0rhxYbi9AuahuKkOZBKWrS/MGHWbfIoAxuGJ+rsjxzFuOBKiT5ys8KhGR88
-         MbVgLB+/Ip1j06ZnJq8hlBLQTjWWXpk1WuYyXAUgphuXFftFHkkqE0JKUrBDrTbUzNTK
-         LHBMS/wCS8pbNYD+hu6KvpyCAcy9NBocDT+qDd6JhtnQaBrNYW38YLFzKdXDNSaJCVCg
-         079sEugKmz6yrC95DCjshUH61nFVezzYXBS1i9Xj8HQBaBeeuNwe6Dn+WoxGMBHtie+e
-         HxRQ==
-X-Gm-Message-State: AOJu0YyIfYfek0jQhvCysHkrBqYLLhCQVGYwIOK20OTOeE+/CffgDuKz
-	Y61g/oSEStzh0yDhZ6kRPmlui59pF3v6
-X-Google-Smtp-Source: AGHT+IG9doc507EpbIBeWdi8nniPXy2PH/GHhwLjp9Hs7CRC0/nXyDxCBsdM1zFB1N14bMygNEsNjQ==
-X-Received: by 2002:a05:6a21:8185:b0:18b:480:a0f3 with SMTP id pd5-20020a056a21818500b0018b0480a0f3mr2755854pzb.4.1703579032752;
-        Tue, 26 Dec 2023 00:23:52 -0800 (PST)
-Received: from chromium.org (112.157.221.35.bc.googleusercontent.com. [35.221.157.112])
-        by smtp.gmail.com with ESMTPSA id t18-20020a170902e85200b001d3be09f374sm9327431plg.275.2023.12.26.00.23.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Dec 2023 00:23:52 -0800 (PST)
-Date: Tue, 26 Dec 2023 08:23:49 +0000
-From: Tomasz Figa <tfiga@chromium.org>
-To: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc: hverkuil@xs4all.nl, mchehab@kernel.org, linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-	kernel@collabora.com
-Subject: Re: [PATCH v5 1/3] videobuf2: core: Rename min_buffers_needed field
- to vb2_queue
-Message-ID: <20231226082349.x5ebvmt5dpanrm4k@chromium.org>
-References: <20231211133251.150999-1-benjamin.gaignard@collabora.com>
- <20231211133251.150999-2-benjamin.gaignard@collabora.com>
+        d=1e100.net; s=20230601; t=1703579082; x=1704183882;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E99Z3zKtzxhsKYnKxnP5BTPaha+ea8ivpNf+0g9T/ow=;
+        b=uY4CdmfKrKnUv9LEwd/IzuT8CdUfOYMpcWI3sz/pQ8jNCFGaZqq7zRyWc3jN96xEc5
+         tSHC3x5Q70uwdHuQz0/bN3DHdw2jlNQCgageYyyTG8JUCLwm1L68fLHxDde/CVPluLLf
+         p6jPu/iXs2kALxQdI1uwh0yIMBojX+3rtlANGa3THXDlpxlPujcLc1TGEdlv92pkYCUK
+         7mTG0hB1xpi/qVfQLVtG+bHr+503dP10yY2Fu4SfRmb31jFBE77ltmJJd0h+dK9AiQRy
+         qp+xZmqby0j16DVARiL2fTtwbejwmqiBfstZTjh8aTNBLbrMqlOHiUqlQ35VpTeTkPxA
+         f77Q==
+X-Gm-Message-State: AOJu0YzyEc9Tz9OG6lmRs2Bq0LlRz6Tw7BaRWlpPO9sMSVa+FqsJSrb7
+	UUdYkhCwMSu3ycZ6K2o8D36witiKyETtN5U/1Zao9p6hzM0=
+X-Google-Smtp-Source: AGHT+IGvsNPDVStXoPkLJmAZzbVGB3NgD29AlkoTcgiFJNJ3bw/gTAOYb/ZTipDqE0qPIHSe/E90sw==
+X-Received: by 2002:a05:600c:1615:b0:40b:4476:cd31 with SMTP id m21-20020a05600c161500b0040b4476cd31mr3685863wmn.13.1703579082195;
+        Tue, 26 Dec 2023 00:24:42 -0800 (PST)
+Received: from [192.168.134.175] ([77.132.56.139])
+        by smtp.gmail.com with ESMTPSA id h7-20020a05600c350700b0040d2e37c06dsm19719282wmq.20.2023.12.26.00.24.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Dec 2023 00:24:41 -0800 (PST)
+Message-ID: <e7a5aae4-f3f6-449f-8877-16bfcc880b57@linaro.org>
+Date: Tue, 26 Dec 2023 09:24:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211133251.150999-2-benjamin.gaignard@collabora.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mips: fix r3k_cache_init build regression
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>,
+ "kernelci . org bot" <bot@kernelci.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Zi Yan <ziy@nvidia.com>,
+ Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231214205506.310402-1-arnd@kernel.org>
+From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+In-Reply-To: <20231214205506.310402-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Benjamin,
+Hi Arnd,
 
-On Mon, Dec 11, 2023 at 02:32:49PM +0100, Benjamin Gaignard wrote:
-> Rename min_buffers_needed into min_queued_buffers and update
-> the documentation about it.
+On 14/12/23 21:54, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
+> My earlier patch removed __weak function declarations that used to
+> be turned into wild branches by the linker, instead causing
+> a link failure when the called functions are unavailable:
+> 
+> mips-linux-ld: arch/mips/mm/cache.o: in function `cpu_cache_init':
+> cache.c:(.text+0x670): undefined reference to `r3k_cache_init'
+> 
+> The __weak method seems suboptimal, so rather than putting that
+> back, make the function calls conditional on the Kconfig symbol
+> that controls the compilation.
+> 
+> Reported-by: kernelci.org bot <bot@kernelci.org>
+> Fixes: 66445677f01e ("mips: move cache declarations into header")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> My broken patch is currently in linux-mm, so the fix should
+> be applied on top.
+> ---
+>   arch/mips/mm/cache.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+> index e5d19f4a38ba..b7ce73fba998 100644
+> --- a/arch/mips/mm/cache.c
+> +++ b/arch/mips/mm/cache.c
+> @@ -205,14 +205,14 @@ static inline void setup_protection_map(void)
+>   
+>   void cpu_cache_init(void)
+>   {
+> -	if (cpu_has_3k_cache) {
+> +	if (IS_ENABLED(CONFIG_CPU_R3000) && cpu_has_3k_cache) {
+>   		r3k_cache_init();
+>   	}
+> -	if (cpu_has_4k_cache) {
+> +	if (IS_ENABLED(CONFIG_CPU_R4K_CACHE_TLB) && cpu_has_4k_cache) {
 
-Sorry for being late to the party. I think this is generally a good idea,
-thanks for doing this! Just one comment inline.
+Shouldn't we also check for CONFIG_CPU_SB1 enabled?
+(See commit 641e97f31887 "Replace SB1 cachecode with standard
+R4000 class cache code.")
 
-[snip]
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index 40d89f29fa33..8912dff5bde3 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> @@ -865,7 +865,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->  	/*
->  	 * Make sure the requested values and current defaults are sane.
->  	 */
-> -	num_buffers = max_t(unsigned int, *count, q->min_buffers_needed);
-> +	num_buffers = max_t(unsigned int, *count, q->min_queued_buffers + 1);
+With that:
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
-Where does this + 1 come from here?
-Agreed with Hans that this change deserves its own patch with a proper
-explanation in its description.
+>   		r4k_cache_init();
+>   	}
+>   
+> -	if (cpu_has_octeon_cache) {
+> +	if (IS_ENABLED(CONFIG_CPU_CAVIUM_OCTEON) && cpu_has_octeon_cache) {
+>   		octeon_cache_init();
+>   	}
+>   
 
->  	num_buffers = min_t(unsigned int, num_buffers, q->max_num_buffers);
->  	memset(q->alloc_devs, 0, sizeof(q->alloc_devs));
->  	/*
-> @@ -917,7 +917,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->  	 * There is no point in continuing if we can't allocate the minimum
->  	 * number of buffers needed by this vb2_queue.
->  	 */
-> -	if (allocated_buffers < q->min_buffers_needed)
-> +	if (allocated_buffers < q->min_queued_buffers)
->  		ret = -ENOMEM;
->  
->  	/*
-> @@ -1653,7 +1653,7 @@ EXPORT_SYMBOL_GPL(vb2_core_prepare_buf);
->   * @q:		videobuf2 queue
->   *
->   * Attempt to start streaming. When this function is called there must be
-> - * at least q->min_buffers_needed buffers queued up (i.e. the minimum
-> + * at least q->min_queued_buffers queued up (i.e. the minimum
->   * number of buffers required for the DMA engine to function). If the
->   * @start_streaming op fails it is supposed to return all the driver-owned
->   * buffers back to vb2 in state QUEUED. Check if that happened and if
-> @@ -1846,7 +1846,7 @@ int vb2_core_qbuf(struct vb2_queue *q, struct vb2_buffer *vb, void *pb,
->  	 * then we can finally call start_streaming().
->  	 */
->  	if (q->streaming && !q->start_streaming_called &&
-> -	    q->queued_count >= q->min_buffers_needed) {
-> +	    q->queued_count >= q->min_queued_buffers) {
->  		ret = vb2_start_streaming(q);
->  		if (ret) {
->  			/*
-> @@ -2210,9 +2210,9 @@ int vb2_core_streamon(struct vb2_queue *q, unsigned int type)
->  		return -EINVAL;
->  	}
->  
-> -	if (q_num_bufs < q->min_buffers_needed) {
-> -		dprintk(q, 1, "need at least %u allocated buffers\n",
-> -				q->min_buffers_needed);
-> +	if (q_num_bufs < q->min_queued_buffers) {
-> +		dprintk(q, 1, "need at least %u queued buffers\n",
-
-Note that the value being checked here is the number of allocated buffers,
-not queued buffers. So basically we're enforcing here that at the time
-STREAMON is called, there is enough buffers allocated to queue the minimum
-number of buffers to start streaming, but then later down we're not
-actually enforcing that they are queued - if not, the queue start_streaming
-operation is deferred until enough buffers are queued.
-
-The question is: Do we really want this to be an error? Or should we just
-be consistent with the allocated-but-not-queued case and let the
-application allocate more buffers later using CREATE_BUFS?
-(Another question: How does an application know how many buffers to
-allocate for STREAMON to work?)
-
-That said, this doesn't really affect the correctness of the patch itself.
-Just some additional oddity in the current implementation that we could
-simplify in the future.
-
-> +			q->min_queued_buffers);
->  		return -EINVAL;
->  	}
->  
-[snip]
-> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
-> index 5557d78b6f20..f9a00b6c3c46 100644
-> --- a/include/media/videobuf2-core.h
-> +++ b/include/media/videobuf2-core.h
-> @@ -546,10 +546,13 @@ struct vb2_buf_ops {
->   * @gfp_flags:	additional gfp flags used when allocating the buffers.
->   *		Typically this is 0, but it may be e.g. %GFP_DMA or %__GFP_DMA32
->   *		to force the buffer allocation to a specific memory zone.
-> - * @min_buffers_needed: the minimum number of buffers needed before
-> + * @min_queued_buffers: the minimum number of queued buffers needed before
->   *		@start_streaming can be called. Used when a DMA engine
->   *		cannot be started unless at least this number of buffers
->   *		have been queued into the driver.
-> + *		VIDIOC_REQBUFS will ensure at least @min_queued_buffers + 1
-> + *		buffers will be allocated. Note that VIDIOC_CREATE_BUFS will not
-> + *		modify the requested buffer count.
-
-Same here, this + 1 needs a proper explanation.
-Also, I don't like this API inconsistency where REQBUFS guarantees the
-right number of buffers, but CREATE_BUFS doesn't. In fact, would an
-application have a way to know how many buffers to allocate if it simply
-wants to use CREATE_BUFS?
-
-(It's generally related to the oddity that I pointed out above. Maybe we
-should let the allocation code only handle allocation constraints and not
-care about STREAMON constraints?)
-
-[snip]
-
-Best regards,
-Tomasz
 
