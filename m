@@ -1,22 +1,22 @@
-Return-Path: <linux-kernel+bounces-11519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 085F281E79B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 14:28:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F41E81E79C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 14:28:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 624032830DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 13:28:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40F4C1C20C72
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 13:28:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73BC84EB4C;
-	Tue, 26 Dec 2023 13:28:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470254F1E4;
+	Tue, 26 Dec 2023 13:28:26 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C644EB25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1CAE4EB42
 	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 13:28:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -24,26 +24,26 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rI7Td-0006yB-Ok; Tue, 26 Dec 2023 14:28:09 +0100
+	id 1rI7Td-0006yC-Mh; Tue, 26 Dec 2023 14:28:09 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rI7Tb-001ePq-CM; Tue, 26 Dec 2023 14:28:08 +0100
+	id 1rI7Tb-001ePt-Ig; Tue, 26 Dec 2023 14:28:08 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rI7Tc-001FXA-1G;
+	id 1rI7Tc-001FXE-1u;
 	Tue, 26 Dec 2023 14:28:08 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Dov Murik <dovmurik@linux.ibm.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Dan Williams <dan.j.williams@intel.com>
+To: "Borislav Petkov (AMD)" <bp@alien8.de>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Dionna Glaze <dionnaglaze@google.com>
 Cc: kernel@pengutronix.de,
-	Gerd Hoffmann <kraxel@redhat.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] virt: efi_secret: Convert to platform remove callback returning void
-Date: Tue, 26 Dec 2023 14:28:02 +0100
-Message-ID:  <4a97c8e6996c9c95244715310b57ce5af6ccb1ad.1703596577.git.u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 2/2] virt: sev-guest: Convert to platform remove callback returning void
+Date: Tue, 26 Dec 2023 14:28:03 +0100
+Message-ID:  <52826a50250304ab0af14c594009f7b901c2cd31.1703596577.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1703596577.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1703596577.git.u.kleine-koenig@pengutronix.de>
@@ -54,7 +54,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1623; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=HZawbBGN4ZeoKoNwMa9p/anf72qdPDLDyflq3XBOU2g=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlitTiF7Q6LPTBILQzLPFujFV4KCr1bTgHzw6NW OwjGqfEtpaJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZYrU4gAKCRCPgPtYfRL+ TkBkCACeaJNlG6+8zgivZjAdP0unbo7IwQwQBaiq7ypeRCwzJCDAqGQwyMju5tlx3ArltRsdnqH ZRU1TbnKe14zmg09+lFYV3ix30OhcDomGQvKoVwstNquuHPOkiRZA+8rtGXQzMxtWz8Fz706qqm 8utEqC6IgubmAlTwkETt9DpBgVc+a7dUD1YkS4s8fl04qIJICkNACClyT58nsruiNOdfvQxEpyt 1ANnl1yiWrSVeLMgAcfxISqwosqYib2fhYqG/poy6UmM928lcu5cup2b/rS959RvgmLdMeecgJH S8IJ70jrNPuEXdncItYBFgvHKb+33dZ8/Sgp0t//wPAfZQQm
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2006; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=Z9aT60piXZDenK8RXiwhRNc00a89v5TJn3r6r5ZOBSU=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlitTkkryV046r2EvM0Kp5YL+HNUQO3TXiGbD9l 2tRsZojeIGJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZYrU5AAKCRCPgPtYfRL+ Tm/uB/wJ+agFq/MhyVjquWnf9zywJi0+vLwwlpPo4h3nxK4oSCRQot7xQzCoKguDi69/UYxgyf2 3PIsn/U3cVNsgs0pmekTtY5A4L2XcGSQiNwKlOIrk5iYTe6JgLfMJY4oCU5MAgEY6gD6VjierdC FHuodU43E7FImEql3jDMCL2BS1MXGJ0dv+JsZJf1It/3p3IoUwhIyS3EWqn4+yL4vW+ll0MkNly 3m/bAYVsl/yzSpnZ2HDkMbity8fpz5D1scLZUsRUZW+wlE7ysbmUCiTEAJOafoumoCAh68sWU5L MQeZzUNk1NNaMMH3LhWg+h10lWzTRw8msJMmjamY3O0Yqzt3
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -77,31 +77,39 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/virt/coco/efi_secret/efi_secret.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/virt/coco/sev-guest/sev-guest.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/virt/coco/efi_secret/efi_secret.c b/drivers/virt/coco/efi_secret/efi_secret.c
-index e700a5ef7043..cd29e66b1543 100644
---- a/drivers/virt/coco/efi_secret/efi_secret.c
-+++ b/drivers/virt/coco/efi_secret/efi_secret.c
-@@ -326,16 +326,15 @@ static int efi_secret_probe(struct platform_device *dev)
+diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
+index bc564adcf499..87f241825bc3 100644
+--- a/drivers/virt/coco/sev-guest/sev-guest.c
++++ b/drivers/virt/coco/sev-guest/sev-guest.c
+@@ -994,7 +994,7 @@ static int __init sev_guest_probe(struct platform_device *pdev)
  	return ret;
  }
  
--static int efi_secret_remove(struct platform_device *dev)
-+static void efi_secret_remove(struct platform_device *dev)
+-static int __exit sev_guest_remove(struct platform_device *pdev)
++static void __exit sev_guest_remove(struct platform_device *pdev)
  {
- 	efi_secret_securityfs_teardown(dev);
- 	efi_secret_unmap_area();
+ 	struct snp_guest_dev *snp_dev = platform_get_drvdata(pdev);
+ 
+@@ -1003,8 +1003,6 @@ static int __exit sev_guest_remove(struct platform_device *pdev)
+ 	free_shared_pages(snp_dev->request, sizeof(struct snp_guest_msg));
+ 	deinit_crypto(snp_dev->crypto);
+ 	misc_deregister(&snp_dev->misc);
+-
 -	return 0;
  }
  
- static struct platform_driver efi_secret_driver = {
- 	.probe = efi_secret_probe,
--	.remove = efi_secret_remove,
-+	.remove_new = efi_secret_remove,
- 	.driver = {
- 		.name = "efi_secret",
+ /*
+@@ -1013,7 +1011,7 @@ static int __exit sev_guest_remove(struct platform_device *pdev)
+  * with the SEV-SNP support, it is named "sev-guest".
+  */
+ static struct platform_driver sev_guest_driver = {
+-	.remove		= __exit_p(sev_guest_remove),
++	.remove_new	= __exit_p(sev_guest_remove),
+ 	.driver		= {
+ 		.name = "sev-guest",
  	},
 -- 
 2.43.0
