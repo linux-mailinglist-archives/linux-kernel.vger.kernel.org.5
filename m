@@ -1,419 +1,216 @@
-Return-Path: <linux-kernel+bounces-11545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CC6D81E7FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:24:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BE2A81E7FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:28:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9562B220C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:24:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67902B21AAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241974F209;
-	Tue, 26 Dec 2023 15:24:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q4e5se8z"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F06C4F20A;
+	Tue, 26 Dec 2023 15:28:22 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C3EE4F5E6;
-	Tue, 26 Dec 2023 15:24:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD4CDC433C7;
-	Tue, 26 Dec 2023 15:24:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703604264;
-	bh=BGAak0KFhacfUDu3YPkyyOsPKNSVj6u+WkKnuYyn9uI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Q4e5se8zKQsEYs9Oy6dXIRwQh3eXfea26L/FuAYUARdRv4wfWfvVxbhRkmGmmEjf6
-	 G3QgltEbQin85vVOi8GNbc1x7o0XcgaThjGRCrr5Alyd7aRowxDb9Fnl7QX/5gmmHf
-	 os4NKVxHKEPPya4NfVwzJxKN/1iaL6Iew/lUse7JMft3JjMpSW1+0W/oWCqOqNE9Uz
-	 rmvhJRL8mWyftDevY6R10mV0I2X5JpdFG04aIn/tlakHqZqOGM4FYb7lcy9F2tTqJ/
-	 zeFWbd4tW/ta3f1LjNtJHJW2XwwwnFF03npuwUeelusS9fqZAU2Gi7+bvQldQQPFXi
-	 +J59+KgsGQEWw==
-Date: Wed, 27 Dec 2023 00:24:20 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Masami Hiramatsu (Google) <mhiramat@kernel.org>, Steven Rostedt
- <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
- Florent Revest <revest@chromium.org>, linux-trace-kernel@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven Schnelle
- <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Arnaldo
- Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
- <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v5 06/34] function_graph: Allow multiple users to attach
- to function graph
-Message-Id: <20231227002420.40ec3c815df0c5fdab8d458c@kernel.org>
-In-Reply-To: <20231220004540.0af568c69ecaf9170430a383@kernel.org>
-References: <170290509018.220107.1347127510564358608.stgit@devnote2>
-	<170290516454.220107.14775763404510245361.stgit@devnote2>
-	<ZYGZWWqwtSP82Sja@krava>
-	<20231220004540.0af568c69ecaf9170430a383@kernel.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB554EB35
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 15:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7ba9fee55d4so522707439f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 07:28:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703604499; x=1704209299;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7pAn0BFZph+5Rj0b0QLg8WiGaWGsuSYeAKIPJ2kKAdI=;
+        b=Vy+tKSP2t7GOm77LFG626RQNhHrwwE1Pl+OKNZycWoComZZ0sJONr6ILgnxT8Ab2TO
+         x3xkZz/RFiYJm+hUtTn40YraBjAV6DqRHZZkuNDZERNOZDNE5wq1TbJgRDRk3XEAoL4W
+         ioIBDHJsVmhEpiEZRROGm+YeCcW/3vjeCHTl/XiAjYfUuNneWmT1qxEUqhfjBgwrm4F/
+         RX088BGjjbBYGFUkkPs8BJ9h/8aMBhVi4vk6HyDgsLFED3BoHZq083J1aKch7DKYNApA
+         3FZomGlKxAgqYDrDAvPT3OZak6iHBhOdxEwjeQIWJx5JRagIp0FVG3iOEWNO4tzDy0fX
+         19Lg==
+X-Gm-Message-State: AOJu0YxncOH+G0oE5eiSE8LxeiUbr3t5MG3WeqmYFy2SO2MD35OAzU8m
+	eLISuiZfvO8dkIUDfLOyyhuYFXdOy2NwYgwZodFW2XAuTOK/
+X-Google-Smtp-Source: AGHT+IH4q7OAZUXBqXguzRyaZLmuPPxjcRofsCk0Zyz8LyN1S4PlW6j5tcIVnhsJBK9kYVIoclt3PWhtVI9E0xug5jbL5wJx//hn
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:154e:b0:35f:f683:f769 with SMTP id
+ j14-20020a056e02154e00b0035ff683f769mr682360ilu.5.1703604499709; Tue, 26 Dec
+ 2023 07:28:19 -0800 (PST)
+Date: Tue, 26 Dec 2023 07:28:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000b05cd060d6b5511@google.com>
+Subject: [syzbot] [crypto?] general protection fault in scatterwalk_copychunks (5)
+From: syzbot <syzbot+3eff5e51bf1db122a16e@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, chrisl@kernel.org, davem@davemloft.net, 
+	herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, nphamcs@gmail.com, 
+	syzkaller-bugs@googlegroups.com, yosryahmed@google.com, 
+	zhouchengming@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+Hello,
 
-On Wed, 20 Dec 2023 00:45:40 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+syzbot found the following issue on:
 
-> OK, I think we need a "rsrv_ret_stack" index. Basically new one will do;
-> 
-> (1) increment rsrv_ret_stack
-> (2) write a reserve type entry
-> (3) set curr_ret_stack = rsrv_ret_stack
-> 
-> And before those,
-> 
-> (0) if rsrv_ret_stack != curr_ret_stack, write a reserve type entry at
->     rsrv_ret_stack for the previous frame (which offset can be read
->     from curr_ret_stack)
-> 
-> Than it will never be broken.
-> (of course when decrement curr_ret_stack, rsrv_ret_stack is also decremented)
-> 
+HEAD commit:    39676dfe5233 Add linux-next specific files for 20231222
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=172080a1e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f3761490b734dc96
+dashboard link: https://syzkaller.appspot.com/bug?extid=3eff5e51bf1db122a16e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=178f6e26e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c399e9e80000
 
-So here is an additional patch for this issue. I'll make v6 with this.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/360542c2ca67/disk-39676dfe.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/900dfb21ca8a/vmlinux-39676dfe.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c94a2a3ea0e0/bzImage-39676dfe.xz
 
-Thanks,
+The issue was bisected to:
 
-From 4da1ec7b679052a131ecdeebd2e1a9db767c5c24 Mon Sep 17 00:00:00 2001
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Date: Wed, 27 Dec 2023 00:09:09 +0900
-Subject: [PATCH] function_graph: Improve push operation for several interrupts
+commit 7bc134496bbbaacb0d4423b819da4eca850a839d
+Author: Chengming Zhou <zhouchengming@bytedance.com>
+Date:   Mon Dec 18 11:50:31 2023 +0000
 
-Improve push and data reserve operation on the shadow stack for
-several sequencial interrupts.
+    mm/zswap: change dstmem size to one page
 
-To push a ret_stack or data entry on the shadow stack, we need to
-prepare an index (offset) entry before updating the stack pointer
-(curr_ret_stack) so that unwinder from interrupts can find the
-next return address from the shadow stack. Currently we do write index,
-update the curr_ret_stack, and rewrite it again. But that is not enough
-for the case if two interrupts happens and the first one breaks it.
-For example,
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15f60c36e80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17f60c36e80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f60c36e80000
 
- 1. write reserved index entry at ret_stack[new_index - 1] and ret addr.
- 2. interrupt comes.
-    2.1. push new index and ret addr on ret_stack.
-    2.2. pop it. (corrupt entries on new_index - 1)
- 3. return from interrupt.
- 4. update curr_ret_stack = new_index
- 5. interrupt comes again.
-    5.1. unwind <------ may not work.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3eff5e51bf1db122a16e@syzkaller.appspotmail.com
+Fixes: 7bc134496bbb ("mm/zswap: change dstmem size to one page")
 
-To avoid this issue, this introduces a new rsrv_ret_stack stack
-reservation pointer and a new push code (slow path) to commit
-previous reserved code forcibly.
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 0 PID: 5065 Comm: syz-executor140 Not tainted 6.7.0-rc6-next-20231222-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+RIP: 0010:scatterwalk_start include/crypto/scatterwalk.h:63 [inline]
+RIP: 0010:scatterwalk_pagedone include/crypto/scatterwalk.h:83 [inline]
+RIP: 0010:scatterwalk_pagedone include/crypto/scatterwalk.h:72 [inline]
+RIP: 0010:scatterwalk_copychunks+0x3e0/0x560 crypto/scatterwalk.c:50
+Code: f0 48 c1 e8 03 80 3c 08 00 0f 85 81 01 00 00 49 8d 44 24 08 4d 89 26 48 bf 00 00 00 00 00 fc ff df 48 89 44 24 10 48 c1 e8 03 <0f> b6 04 38 84 c0 74 08 3c 03 0f 8e 47 01 00 00 48 8b 44 24 08 41
+RSP: 0018:ffffc90003a8ecf0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 0000000000000000 RCX: dffffc0000000000
+RDX: ffff88802785d940 RSI: ffffffff8465df74 RDI: dffffc0000000000
+RBP: 0000000000001000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000002 R11: 82d8bd1b6060f805 R12: 0000000000000000
+R13: 0000000000000014 R14: ffffc90003a8ed88 R15: 0000000000001000
+FS:  00005555565c5380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000d5e538 CR3: 0000000079f3a000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ scatterwalk_map_and_copy+0x151/0x1d0 crypto/scatterwalk.c:67
+ scomp_acomp_comp_decomp+0x3a3/0x780 crypto/scompress.c:149
+ crypto_acomp_compress include/crypto/acompress.h:302 [inline]
+ zswap_store+0x98b/0x2430 mm/zswap.c:1666
+ swap_writepage+0x8e/0x220 mm/page_io.c:198
+ pageout+0x399/0x9e0 mm/vmscan.c:656
+ shrink_folio_list+0x2f47/0x3ea0 mm/vmscan.c:1319
+ reclaim_folio_list+0xe4/0x3a0 mm/vmscan.c:2104
+ reclaim_pages+0x483/0x6a0 mm/vmscan.c:2140
+ madvise_cold_or_pageout_pte_range+0x129e/0x1f70 mm/madvise.c:526
+ walk_pmd_range mm/pagewalk.c:143 [inline]
+ walk_pud_range mm/pagewalk.c:221 [inline]
+ walk_p4d_range mm/pagewalk.c:256 [inline]
+ walk_pgd_range+0xa48/0x1870 mm/pagewalk.c:293
+ __walk_page_range+0x630/0x770 mm/pagewalk.c:395
+ walk_page_range+0x626/0xa80 mm/pagewalk.c:521
+ madvise_pageout_page_range mm/madvise.c:585 [inline]
+ madvise_pageout+0x32c/0x820 mm/madvise.c:612
+ madvise_vma_behavior+0x1cc/0x1b50 mm/madvise.c:1031
+ madvise_walk_vmas+0x1cf/0x2c0 mm/madvise.c:1260
+ do_madvise+0x333/0x660 mm/madvise.c:1440
+ __do_sys_madvise mm/madvise.c:1453 [inline]
+ __se_sys_madvise mm/madvise.c:1451 [inline]
+ __x64_sys_madvise+0xa9/0x110 mm/madvise.c:1451
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x62/0x6a
+RIP: 0033:0x7f15a5e14b69
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffde7b4a5c8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f15a5e14b69
+RDX: 0000000000000015 RSI: 0000000000c00304 RDI: 0000000020000000
+RBP: 0000000000000000 R08: 00005555565c6610 R09: 00005555565c6610
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffde7b4a808 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:scatterwalk_start include/crypto/scatterwalk.h:63 [inline]
+RIP: 0010:scatterwalk_pagedone include/crypto/scatterwalk.h:83 [inline]
+RIP: 0010:scatterwalk_pagedone include/crypto/scatterwalk.h:72 [inline]
+RIP: 0010:scatterwalk_copychunks+0x3e0/0x560 crypto/scatterwalk.c:50
+Code: f0 48 c1 e8 03 80 3c 08 00 0f 85 81 01 00 00 49 8d 44 24 08 4d 89 26 48 bf 00 00 00 00 00 fc ff df 48 89 44 24 10 48 c1 e8 03 <0f> b6 04 38 84 c0 74 08 3c 03 0f 8e 47 01 00 00 48 8b 44 24 08 41
+RSP: 0018:ffffc90003a8ecf0 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 0000000000000000 RCX: dffffc0000000000
+RDX: ffff88802785d940 RSI: ffffffff8465df74 RDI: dffffc0000000000
+RBP: 0000000000001000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000002 R11: 82d8bd1b6060f805 R12: 0000000000000000
+R13: 0000000000000014 R14: ffffc90003a8ed88 R15: 0000000000001000
+FS:  00005555565c5380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000d5e538 CR3: 0000000079f3a000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	f0 48 c1 e8 03       	lock shr $0x3,%rax
+   5:	80 3c 08 00          	cmpb   $0x0,(%rax,%rcx,1)
+   9:	0f 85 81 01 00 00    	jne    0x190
+   f:	49 8d 44 24 08       	lea    0x8(%r12),%rax
+  14:	4d 89 26             	mov    %r12,(%r14)
+  17:	48 bf 00 00 00 00 00 	movabs $0xdffffc0000000000,%rdi
+  1e:	fc ff df
+  21:	48 89 44 24 10       	mov    %rax,0x10(%rsp)
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	0f b6 04 38          	movzbl (%rax,%rdi,1),%eax <-- trapping instruction
+  2e:	84 c0                	test   %al,%al
+  30:	74 08                	je     0x3a
+  32:	3c 03                	cmp    $0x3,%al
+  34:	0f 8e 47 01 00 00    	jle    0x181
+  3a:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
+  3f:	41                   	rex.B
 
- 0. update rsrv_ret_stack = new_index.
- 1. write reserved index entry at ret_stack[new_index - 1] and ret addr.
- 2. interrupt comes.
-    2.0. if rsrv_ret_stack != curr_ret_stack, add reserved index
-        entry on ret_stack[rsrv_ret_stack - 1] to point the previous
-	ret_stack pointed by ret_stack[curr_ret_stack - 1]. and
-	update curr_ret_stack = rsrv_ret_stack.
-    2.1. push new index and ret addr on ret_stack.
-    2.2. pop it. (corrupt entries on new_index - 1)
- 3. return from interrupt.
- 4. update curr_ret_stack = new_index
- 5. interrupt comes again.
-    5.1. unwind works, because curr_ret_stack points the previously
-        saved ret_stack.
-    5.2. this can do push/pop operations too.
-6. return from interrupt.
-7. rewrite reserved index entry at ret_stack[new_index] again.
 
-This maybe a bit heavier but safer.
-
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- include/linux/sched.h |   1 +
- kernel/trace/fgraph.c | 133 ++++++++++++++++++++++++++++++------------
- 2 files changed, 97 insertions(+), 37 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 4dab30f00211..fda551e1aade 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1387,6 +1387,7 @@ struct task_struct {
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
- 	/* Index of current stored address in ret_stack: */
- 	int				curr_ret_stack;
-+	int				rsrv_ret_stack;
- 	int				curr_ret_depth;
- 
- 	/* Stack of return addresses for return function tracing: */
-diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index 47f389834b50..bf7a6eebff75 100644
---- a/kernel/trace/fgraph.c
-+++ b/kernel/trace/fgraph.c
-@@ -298,31 +298,47 @@ void *fgraph_reserve_data(int idx, int size_bytes)
- 	unsigned long val;
- 	void *data;
- 	int curr_ret_stack = current->curr_ret_stack;
-+	int rsrv_ret_stack = current->rsrv_ret_stack;
- 	int data_size;
- 
- 	if (size_bytes > FGRAPH_MAX_DATA_SIZE)
- 		return NULL;
- 
-+	/*
-+	 * Since this API is used after pushing ret_stack, curr_ret_stack
-+	 * should be synchronized with rsrv_ret_stack.
-+	 */
-+	if (WARN_ON_ONCE(curr_ret_stack != rsrv_ret_stack))
-+		return NULL;
-+
- 	/* Convert to number of longs + data word */
- 	data_size = DIV_ROUND_UP(size_bytes, sizeof(long));
- 
- 	val = get_fgraph_entry(current, curr_ret_stack - 1);
- 	data = &current->ret_stack[curr_ret_stack];
- 
--	curr_ret_stack += data_size + 1;
--	if (unlikely(curr_ret_stack >= SHADOW_STACK_MAX_INDEX))
-+	rsrv_ret_stack += data_size + 1;
-+	if (unlikely(rsrv_ret_stack >= SHADOW_STACK_MAX_INDEX))
- 		return NULL;
- 
- 	val = make_fgraph_data(idx, data_size, __get_index(val) + data_size + 1);
- 
--	/* Set the last word to be reserved */
--	current->ret_stack[curr_ret_stack - 1] = val;
--
--	/* Make sure interrupts see this */
-+	/* Extend the reserved-ret_stack at first */
-+	current->rsrv_ret_stack = rsrv_ret_stack;
-+	/* And sync with interrupts, to see the new rsrv_ret_stack */
-+	barrier();
-+	/*
-+	 * The same reason as the push, this entry must be here before updating
-+	 * the curr_ret_stack. But any interrupt comes before updating
-+	 * curr_ret_stack, it may commit it with different reserve entry.
-+	 * Thus we need to write the data entry after update the curr_ret_stack
-+	 * again. And these operations must be ordered.
-+	 */
-+	current->ret_stack[rsrv_ret_stack - 1] = val;
- 	barrier();
--	current->curr_ret_stack = curr_ret_stack;
--	/* Again sync with interrupts, and reset reserve */
--	current->ret_stack[curr_ret_stack - 1] = val;
-+	current->curr_ret_stack = rsrv_ret_stack;
-+	barrier();
-+	current->ret_stack[rsrv_ret_stack - 1] = val;
- 
- 	return data;
- }
-@@ -403,7 +419,16 @@ get_ret_stack(struct task_struct *t, int offset, int *index)
- 		return NULL;
- 
- 	idx = get_ret_stack_index(t, --offset);
--	if (WARN_ON_ONCE(idx <= 0 || idx > offset))
-+	/*
-+	 * This can happen if an interrupt comes just before the first push
-+	 * increments the curr_ret_stack, and that interrupt pushes another
-+	 * entry. In that case, the frist push is forcibly committed with a
-+	 * reserved entry which points -1 stack index.
-+	 */
-+	if (unlikely(idx > offset))
-+		return NULL;
-+
-+	if (WARN_ON_ONCE(idx <= 0))
- 		return NULL;
- 
- 	offset -= idx;
-@@ -473,7 +498,7 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
- 	struct ftrace_ret_stack *ret_stack;
- 	unsigned long long calltime;
- 	unsigned long val;
--	int index;
-+	int index, rindex;
- 
- 	if (unlikely(ftrace_graph_is_dead()))
- 		return -EBUSY;
-@@ -481,17 +506,37 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
- 	if (!current->ret_stack)
- 		return -EBUSY;
- 
--	/*
--	 * At first, check whether the previous fgraph callback is pushed by
--	 * the fgraph on the same function entry.
--	 * But if @func is the self tail-call function, we also need to ensure
--	 * the ret_stack is not for the previous call by checking whether the
--	 * bit of @fgraph_idx is set or not.
--	 */
--	ret_stack = get_ret_stack(current, current->curr_ret_stack, &index);
--	if (ret_stack && ret_stack->func == func &&
--	    !is_fgraph_index_set(current, index + FGRAPH_RET_INDEX, fgraph_idx))
--		return index + FGRAPH_RET_INDEX;
-+	index = READ_ONCE(current->curr_ret_stack);
-+	rindex = READ_ONCE(current->rsrv_ret_stack);
-+	if (unlikely(index != rindex)) {
-+		/*
-+		 * This interrupts during pushing operation. Commit previous
-+		 * push temporarily with reserved entry.
-+		 */
-+		if (unlikely(index <= 0))
-+			/* This will make ret_stack[index - 1] points -1 */
-+			val = rindex - index;
-+		else
-+			val = get_ret_stack_index(current, index - 1) +
-+			      rindex - index;
-+		current->ret_stack[rindex - 1] = val;
-+		/* Forcibly commit it */
-+		current->curr_ret_stack = index = rindex;
-+	} else {
-+		/*
-+		 * At first, check whether the previous fgraph callback is pushed by
-+		 * the fgraph on the same function entry.
-+		 * But if @func is the self tail-call function, we also need to ensure
-+		 * the ret_stack is not for the previous call by checking whether the
-+		 * bit of @fgraph_idx is set or not.
-+		 */
-+		ret_stack = get_ret_stack(current, index, &index);
-+		if (ret_stack && ret_stack->func == func &&
-+		    !is_fgraph_index_set(current, index + FGRAPH_RET_INDEX, fgraph_idx))
-+			return index + FGRAPH_RET_INDEX;
-+		/* Since get_ret_stack() writes 'index', so recover it. */
-+		index = rindex;
-+	}
- 
- 	val = (FGRAPH_TYPE_RESERVED << FGRAPH_TYPE_SHIFT) | FGRAPH_RET_INDEX;
- 
-@@ -511,38 +556,45 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
- 
- 	calltime = trace_clock_local();
- 
--	index = READ_ONCE(current->curr_ret_stack);
- 	ret_stack = RET_STACK(current, index);
- 	index += FGRAPH_RET_INDEX;
- 
--	/* ret offset = FGRAPH_RET_INDEX ; type = reserved */
-+	/*
-+	 * At first, reserve the ret_stack. Beyond this point, any interrupt
-+	 * will only overwrite ret_stack[index] by a reserved entry which points
-+	 * the previous ret_stack or -1.
-+	 */
-+	current->rsrv_ret_stack = index + 1;
-+	/* And ensure that the following happens after reserved */
-+	barrier();
-+
- 	current->ret_stack[index] = val;
- 	ret_stack->ret = ret;
- 	/*
- 	 * The unwinders expect curr_ret_stack to point to either zero
--	 * or an index where to find the next ret_stack. Even though the
--	 * ret stack might be bogus, we want to write the ret and the
--	 * index to find the ret_stack before we increment the stack point.
--	 * If an interrupt comes in now before we increment the curr_ret_stack
--	 * it may blow away what we wrote. But that's fine, because the
--	 * index will still be correct (even though the 'ret' won't be).
--	 * What we worry about is the index being correct after we increment
--	 * the curr_ret_stack and before we update that index, as if an
--	 * interrupt comes in and does an unwind stack dump, it will need
--	 * at least a correct index!
-+	 * or an index where to find the next ret_stack which has actual ret
-+	 * address. Thus we want to write the ret and the index to find the
-+	 * ret_stack before we increment the curr_ret_stack.
- 	 */
- 	barrier();
- 	current->curr_ret_stack = index + 1;
- 	/*
-+	 * There are two possibilities here.
-+	 * - More than one interrupts push/pop their entry between update
-+	 *   rsrv_ret_stack and curr_ret_stack. In this case, curr_ret_stack
-+	 *   is already equal to the rsrv_ret_stack and
-+	 *   current->ret_stack[index] is overwritten by reserved entry which
-+	 *   points the previous ret_stack. But ret_stack->ret is not.
-+	 * - Or, no interrupts push/pop. So current->ret_stack[index] keeps
-+	 *   its value.
- 	 * This next barrier is to ensure that an interrupt coming in
--	 * will not corrupt what we are about to write.
-+	 * will not overwrite what we are about to write anymore.
- 	 */
- 	barrier();
- 
--	/* Still keep it reserved even if an interrupt came in */
-+	/* Rewrite the entry again in case it was overwritten. */
- 	current->ret_stack[index] = val;
- 
--	ret_stack->ret = ret;
- 	ret_stack->func = func;
- 	ret_stack->calltime = calltime;
- #ifdef HAVE_FUNCTION_GRAPH_FP_TEST
-@@ -636,6 +688,7 @@ int function_graph_enter_regs(unsigned long ret, unsigned long func,
- 	return 0;
-  out_ret:
- 	current->curr_ret_stack -= FGRAPH_RET_INDEX + 1;
-+	current->rsrv_ret_stack = current->curr_ret_stack;
-  out:
- 	current->curr_ret_depth--;
- 	return -EBUSY;
-@@ -680,6 +733,7 @@ int function_graph_enter_ops(unsigned long ret, unsigned long func,
- 
- 	if (type == FGRAPH_TYPE_RESERVED) {
- 		current->curr_ret_stack -= FGRAPH_RET_INDEX + 1;
-+		current->rsrv_ret_stack = current->curr_ret_stack;
- 		current->curr_ret_depth--;
- 	}
- 	return -EBUSY;
-@@ -840,6 +894,7 @@ static unsigned long __ftrace_return_to_handler(struct ftrace_regs *fregs,
- 	 */
- 	barrier();
- 	current->curr_ret_stack = index - FGRAPH_RET_INDEX;
-+	current->rsrv_ret_stack = current->curr_ret_stack;
- 
- 	current->curr_ret_depth--;
- 	return ret;
-@@ -1031,6 +1086,7 @@ static int alloc_retstack_tasklist(unsigned long **ret_stack_list)
- 			atomic_set(&t->trace_overrun, 0);
- 			ret_stack_init_task_vars(ret_stack_list[start]);
- 			t->curr_ret_stack = 0;
-+			t->rsrv_ret_stack = 0;
- 			t->curr_ret_depth = -1;
- 			/* Make sure the tasks see the 0 first: */
- 			smp_wmb();
-@@ -1093,6 +1149,7 @@ graph_init_task(struct task_struct *t, unsigned long *ret_stack)
- 	ret_stack_init_task_vars(ret_stack);
- 	t->ftrace_timestamp = 0;
- 	t->curr_ret_stack = 0;
-+	t->rsrv_ret_stack = 0;
- 	t->curr_ret_depth = -1;
- 	/* make curr_ret_stack visible before we add the ret_stack */
- 	smp_wmb();
-@@ -1106,6 +1163,7 @@ graph_init_task(struct task_struct *t, unsigned long *ret_stack)
- void ftrace_graph_init_idle_task(struct task_struct *t, int cpu)
- {
- 	t->curr_ret_stack = 0;
-+	t->rsrv_ret_stack = 0;
- 	t->curr_ret_depth = -1;
- 	/*
- 	 * The idle task has no parent, it either has its own
-@@ -1134,6 +1192,7 @@ void ftrace_graph_init_task(struct task_struct *t)
- 	/* Make sure we do not use the parent ret_stack */
- 	t->ret_stack = NULL;
- 	t->curr_ret_stack = 0;
-+	t->rsrv_ret_stack = 0;
- 	t->curr_ret_depth = -1;
- 
- 	if (ftrace_graph_active) {
--- 
-2.43.0.472.g3155946c3a-goog
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
