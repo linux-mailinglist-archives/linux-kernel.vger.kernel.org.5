@@ -1,52 +1,47 @@
-Return-Path: <linux-kernel+bounces-11259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48B5481E3C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:38:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3CCC81E3C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:38:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD341B2208F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:38:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CC752816FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895AE59E47;
-	Tue, 26 Dec 2023 00:24:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75ABD5A0E8;
+	Tue, 26 Dec 2023 00:24:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iOguaI0i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vBTDUQqX"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D739943148;
-	Tue, 26 Dec 2023 00:24:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AC64C433C8;
-	Tue, 26 Dec 2023 00:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C133859E59;
+	Tue, 26 Dec 2023 00:24:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4946C433C7;
+	Tue, 26 Dec 2023 00:24:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550270;
-	bh=gSJQyrVbBc6K3ZRMOaU2+TNngIDFr48OVucpQl8TlEs=;
+	s=k20201202; t=1703550273;
+	bh=l1ZGCzegb8q1Eycnu3c8u1xiEov4Q4BmErjk1cmFIOY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iOguaI0iEh9i1cxQNWlIw1qkDDwCxmRHn7x4GufVymFUtZ7X9NjEWljVJU3UKO7LV
-	 knqxnAOx4s0pM4hJ+truuLWd9sKGNARmhy/tauZI3VGVwK+VhaVncJNDXHUTBqCGEh
-	 l+JcUuRK14eBYnuGaEXtn1TGL4QlIdLxfJnmQo2DB7j40iOyFI5dIW4rnT5902SLlo
-	 +j/ox4moHqzl5PAOa8JdM/e7cgSG2nBdXjhxEmnZVRMFV2Xq8LUjMryZ8N5N0J4ZN0
-	 MQej8QxcBb8FLD1LqXfrclF70gpctcAWN6DF8mAUY3XtJO2bltKnsIM9qhNnKUxtBW
-	 pTfFNv6iJKOXw==
+	b=vBTDUQqXkbf7Khr5Abc7MkEPbmeV0lOQrwuglkDnz+nwvldg6vPIo00E6OGcyjR9e
+	 +ZdoJ6WEGzUoG1a0t1U/X6Ac2TfezdL0a1IgIQlx1oMLDcY1+1HbNzcTYzv4eOFYHc
+	 zixeK1FSAOG4AXq7rXhZyc4wQ3ifxbGackMj1h+otneouO1GooNn72FTiGLWoFwZXZ
+	 lB9nqpnoU+S2LDitKT8/bti9W5m06+Yc8+0XRjbytcn1zll0zPa9kHip7klLRglqVr
+	 mJQZkNWUDVefulJxR5xGt9DtPszzJJnwUm3qQ29FxNGkc6scruXyRJx92ztZjb9Uzj
+	 o/BrNd/EtjQBA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Esther Shimanovich <eshimanovich@chromium.org>,
+Cc: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
 	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	wse@tuxedocomputers.com,
-	hdegoede@redhat.com,
-	jdenose@chromium.org,
-	mkorpershoek@baylibre.com,
-	szfabian@bluemarch.art,
 	linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 03/11] Input: i8042 - add nomux quirk for Acer P459-G2-M
-Date: Mon, 25 Dec 2023 19:23:52 -0500
-Message-ID: <20231226002420.6303-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 04/11] Input: amimouse - convert to platform remove callback returning void
+Date: Mon, 25 Dec 2023 19:23:53 -0500
+Message-ID: <20231226002420.6303-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231226002420.6303-1-sashal@kernel.org>
 References: <20231226002420.6303-1-sashal@kernel.org>
@@ -56,48 +51,60 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.145
 Content-Transfer-Encoding: 8bit
 
-From: Esther Shimanovich <eshimanovich@chromium.org>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 335fe00319e030d481a54d5e0e68d50c5e672c0e ]
+[ Upstream commit 42b8ff47720258d1f6a4412e780a480c139773a0 ]
 
-After the laptop lid is opened, and the device resumes from S3 deep
-sleep, if the user presses a keyboard key while the screen is still black,
-the mouse and keyboard become unusable.
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
 
-Enabling this quirk prevents this behavior from occurring.
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+.remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
 
-Signed-off-by: Esther Shimanovich <eshimanovich@chromium.org>
-Link: https://lore.kernel.org/r/20231130195615.v2.1.Ibe78a9df97ecd18dc227a5cff67d3029631d9c11@changeid
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Link: https://lore.kernel.org/r/20231201133747.1099286-2-u.kleine-koenig@pengutronix.de
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-acpipnpio.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/input/mouse/amimouse.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/input/serio/i8042-acpipnpio.h b/drivers/input/serio/i8042-acpipnpio.h
-index 3db87ee0b70c7..6af38f53154bd 100644
---- a/drivers/input/serio/i8042-acpipnpio.h
-+++ b/drivers/input/serio/i8042-acpipnpio.h
-@@ -351,6 +351,14 @@ static const struct dmi_system_id i8042_dmi_quirk_table[] __initconst = {
- 		},
- 		.driver_data = (void *)(SERIO_QUIRK_DRITEK)
+diff --git a/drivers/input/mouse/amimouse.c b/drivers/input/mouse/amimouse.c
+index a50e503548323..cda0c3ff5a288 100644
+--- a/drivers/input/mouse/amimouse.c
++++ b/drivers/input/mouse/amimouse.c
+@@ -125,16 +125,15 @@ static int __init amimouse_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int __exit amimouse_remove(struct platform_device *pdev)
++static void __exit amimouse_remove(struct platform_device *pdev)
+ {
+ 	struct input_dev *dev = platform_get_drvdata(pdev);
+ 
+ 	input_unregister_device(dev);
+-	return 0;
+ }
+ 
+ static struct platform_driver amimouse_driver = {
+-	.remove = __exit_p(amimouse_remove),
++	.remove_new = __exit_p(amimouse_remove),
+ 	.driver   = {
+ 		.name	= "amiga-mouse",
  	},
-+	{
-+		/* Acer TravelMate P459-G2-M */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "TravelMate P459-G2-M"),
-+		},
-+		.driver_data = (void *)(SERIO_QUIRK_NOMUX)
-+	},
- 	{
- 		/* Amoi M636/A737 */
- 		.matches = {
 -- 
 2.43.0
 
