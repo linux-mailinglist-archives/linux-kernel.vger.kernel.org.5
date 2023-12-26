@@ -1,181 +1,268 @@
-Return-Path: <linux-kernel+bounces-11388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18F8781E57E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 07:27:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BDCC81E584
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 07:34:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A35FB1F224DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:27:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1C181F22469
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:34:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC094C3B3;
-	Tue, 26 Dec 2023 06:26:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE964C3D6;
+	Tue, 26 Dec 2023 06:34:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="kbZuLVhK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.cecloud.com (unknown [1.203.97.240])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4FD14C3A0
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 06:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cestc.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cestc.cn
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.cecloud.com (Postfix) with ESMTP id B60E1900113;
-	Tue, 26 Dec 2023 14:26:43 +0800 (CST)
-X-MAIL-GRAY:0
-X-MAIL-DELIVERY:1
-X-ANTISPAM-LEVEL:2
-X-ABS-CHECKED:0
-Received: from localhost.localdomain (unknown [111.48.69.247])
-	by smtp.cecloud.com (postfix) whith ESMTP id P9454T281469132009840S1703572002760720_;
-	Tue, 26 Dec 2023 14:26:43 +0800 (CST)
-X-IP-DOMAINF:1
-X-RL-SENDER:zhangyanjun@cestc.cn
-X-SENDER:zhangyanjun@cestc.cn
-X-LOGIN-NAME:zhangyanjun@cestc.cn
-X-FST-TO:kbusch@kernel.org
-X-RCPT-COUNT:7
-X-LOCAL-RCPT-COUNT:1
-X-MUTI-DOMAIN-COUNT:0
-X-SENDER-IP:111.48.69.247
-X-ATTACHMENT-NUM:0
-X-UNIQUE-TAG:<8338b95bdc23b83f9c35ebc57a578131>
-X-System-Flag:0
-From: zhangyanjun@cestc.cn
-To: kbusch@kernel.org,
-	axboe@kernel.dk,
-	hch@lst.de,
-	sagi@grimberg.me
-Cc: linux-nvme@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	zhangyanjun@cestc.cn
-Subject: Re: [RFC] nvme-tcp: fix a possible double-free after failed to send request
-Date: Tue, 26 Dec 2023 14:26:40 +0800
-Message-Id: <20231226062640.1121456-1-zhangyanjun@cestc.cn>
-X-Mailer: git-send-email 2.31.1
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9D274C62B
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 06:34:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231226063431epoutp03a7f14e6553ebc29f347bb6e7a514fa2f~kTiMg5BSt1047610476epoutp03s
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 06:34:31 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231226063431epoutp03a7f14e6553ebc29f347bb6e7a514fa2f~kTiMg5BSt1047610476epoutp03s
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1703572471;
+	bh=QTB84M50WFYIDe/+9MiAYey4svYfPT1DbPQhlDkmeEg=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+	b=kbZuLVhKqJwYE/hpR5vnjGHPphn4VbfDxaEsQKATm7D8KKFDh34UWA/9rQ4Cht1AT
+	 ochOcunOOALMlw55dzxNmYJYCa9XW1ER6WSHCAbo1VBnNo+y8HFXbCQF5Qtwvb4saP
+	 wRkjBS/cSpEeF893Ii14p0bYbBEgl9VJJiJnakoc=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+	20231226063431epcas5p2a1d9081c0516f4d5e4d0375bc170e60b~kTiL28fQj2204722047epcas5p20;
+	Tue, 26 Dec 2023 06:34:31 +0000 (GMT)
+Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.181]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4SzlP13BZBz4x9Pp; Tue, 26 Dec
+	2023 06:34:29 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+	epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	A8.F1.19369.5F37A856; Tue, 26 Dec 2023 15:34:29 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+	20231226062756epcas5p22bc39bd25d403a9bed16c220f82c4a83~kTccWazlP0679806798epcas5p21;
+	Tue, 26 Dec 2023 06:27:56 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20231226062756epsmtrp1bf1ad9b6da87585b49f8d077f6cdf6ff~kTccVuCsa1947119471epsmtrp10;
+	Tue, 26 Dec 2023 06:27:56 +0000 (GMT)
+X-AuditID: b6c32a50-9e1ff70000004ba9-de-658a73f55bd7
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	A8.C7.18939.C627A856; Tue, 26 Dec 2023 15:27:56 +0900 (KST)
+Received: from FDSFTE308 (unknown [107.122.81.79]) by epsmtip2.samsung.com
+	(KnoxPortal) with ESMTPA id
+	20231226062754epsmtip29f5e872132462de8780110b3955da104~kTcasjk3e0864408644epsmtip2g;
+	Tue, 26 Dec 2023 06:27:54 +0000 (GMT)
+From: "Aakarsh Jain" <aakarsh.jain@samsung.com>
+To: "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>, "'Marek
+ Szyprowski'" <m.szyprowski@samsung.com>, "'Andrzej Hajda'"
+	<andrzej.hajda@intel.com>, "'Mauro Carvalho Chehab'" <mchehab@kernel.org>
+Cc: <linux-fsd@tesla.coma>, <linux-samsung-soc@vger.kernel.org>, "'Smitha T
+ Murthy'" <smithatmurthy@gmail.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <20231224-n-s5p-mfc-const-v1-9-a3b246470fe4@linaro.org>
+Subject: RE: [PATCH 09/15] media: s5p-mfc: constify s5p_mfc_fmt structures
+Date: Tue, 26 Dec 2023 11:57:53 +0530
+Message-ID: <15d401da37c4$a9dece80$fd9c6b80$@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-From: Yanjun Zhang <zhangyanjun@cestc.cn>
-
-Thanks for your reply and attention!
-
->> In storage clusters constructed by nvme-tcp driver, we have encountered
->> the following crash on the host kernel severval times.
->>
->> [248514.030873] nvme nvme1: failed to send request -13
->> [248514.035916] ------------[ cut here ]------------
->> [248514.035918] kernel BUG at mm/slub.c:379!
->> [248514.037647] invalid opcode: 0000 [#1] SMP NOPTI
->> [248514.039416] CPU: 0 PID: 9 Comm: kworker/0:1H Kdump: loaded Tainted: G S 5.15.67-6.cl9.x86_64 #1
->> [248514.041376] Hardware name: CECLOUD CeaStor 16114/BC13MBSBC, BIOS 1.37 02/24/2023
->> [248514.043433] Workqueue: nvme_tcp_wq nvme_tcp_io_work [nvme_tcp]
->> [248514.045576] RIP: 0010:__slab_free+0x16a/0x320
->> [248514.047751] Code: 24 20 e8 69 28 78 00 44 8b 44 24 0c 4c 8b 54 24 10 44 0f b6 5c 24 1b 0f b6 74 24 1c 48 89 04 24 4c 8b 4c 24 20 e9 28 ff ff ff <0f> 0b 41 f7 46 08 00 0d 21 00 75 a0 4d 85 ed 75 9b 80 4c 24 5b 80
->> [248514.052500] RSP: 0018:ff51b1a6c0273bf0 EFLAGS: 00010246
->> [248514.054798] RAX: ff2378e68268b800 RBX: 0000000080080004 RCX: ff2378e68268b000
->> [248514.057038] RDX: ff2378e68268b000 RSI: ffca59110c09a200 RDI: ff2378a480034d00
->> [248514.059245] RBP: ff51b1a6c0273c90 R08: 0000000000000001 R09: ffffffffc0901a0a
->> [248514.061386] R10: ff2378e68268b000 R11: ffffffff86e06000 R12: ffca59110c09a200
->> [248514.063423] R13: ff2378e68268b000 R14: ff2378a480034d00 R15: 0000000000000078
->> [248514.065428] FS: 0000000000000000(0000) GS:ff2378d32fe00000(0000) knlGS:0000000000000000
->> [248514.067456] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [248514.069531] CR2: 00007f4759e1c800 CR3: 0000001b5e5a6005 CR4: 0000000000771ef0
->> [248514.071706] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> [248514.073916] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> [248514.076130] PKRU: 55555554
->> [248514.078392] Call Trace:
->> [248514.080640] <TASK>
->> [248514.082898] ? sk_stream_alloc_skb+0x66/0x2e0
->> [248514.085231] ? tcp_skb_entail+0x11d/0x130
->> [248514.087595] ? tcp_build_frag+0xf0/0x390
->> [248514.089980] ? nvme_complete_rq+0x1a/0x1f0 [nvme_core]
->> [248514.092433] kfree+0x215/0x240
->> [248514.094918] nvme_complete_rq+0x1a/0x1f0 [nvme_core]
->> [248514.097469] nvme_tcp_recv_pdu+0x534/0x570 [nvme_tcp]
->> [248514.100070] nvme_tcp_recv_skb+0x4f/0x23e [nvme_tcp]
->> [248514.102699] ? nvme_tcp_recv_pdu+0x570/0x570 [nvme_tcp]
->> [248514.105317] tcp_read_sock+0xa0/0x270
->> [248514.107958] nvme_tcp_try_recv+0x65/0xa0 [nvme_tcp]
->> [248514.110666] ? nvme_tcp_try_send+0x16b/0x200 [nvme_tcp]
->> [248514.113431] nvme_tcp_io_work+0x4d/0xa0 [nvme_tcp]
->> [248514.116247] process_one_work+0x1e8/0x390
->> [248514.119085] worker_thread+0x53/0x3d0
->> [248514.121980] ? process_one_work+0x390/0x390
->> [248514.124887] kthread+0x124/0x150
->> [248514.127835] ? set_kthread_struct+0x50/0x50
->> [248514.130836] ret_from_fork+0x1f/0x30
->> [248514.133841] </TASK>
->>
->> By analyzing the vmcore, we know the direct cause is that the slab object
->> request->special_vec was freed twicely. According to the error message
->> "nvme nvme1: failed to send request -13" and nvme_tcp_request->state =
->> NVME_TCP_SEND_DATA, the pdu has been send by nvme_tcp_try_send_cmd_pdu.
->
-> So what exactly failed to send? incapsule date? Or h2cdata?
->
-According to the nvme_tcp_request->state is NVME_TCP_SEND_DATA currently, I think 
-it shoule be incapsule data failed to send after the cmd pdu has been send.
-
->> And the nvme_tcp_fail_request would execute nvme_complete_rq after failed
->> to send data.
->
-> That is correct.
->
->> Then the nvme_tcp_recv_pdu may receive the responding pdu
->
-> Which PDU was that? Isn't the controller expecting request data?
->
-The received pdu type is nvme_tcp_rsp. It should not reveive the data matched with 
-the above request that has been completed because of failing to send data or take 
-some extra actions for this request? The sent pdu with matched request is nvme_tcp_cmd.
-
-crash> nvme_tcp_request.pdu ff2378b7cee425d0
-  pdu = 0xff2378dfe9c5f9d0,
-crash> nvme_tcp_hdr.type 0xff2378dfe9c5f9d0
-  type = 4 '\004',
-
->> and the nvme_tcp_process_nvme_cqe would complete the request again. To
->> avoid this slab object double-free issuse, we try to make the following
->> code modifications, can you give some suggestions, thanks!
->>
->> Signed-off-by: Yanjun Zhang <zhangyanjun@cestc.cn>
->> ---
->> drivers/nvme/host/tcp.c | 3 +++
->> 1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
->> index 08805f027..84f724558 100644
->> --- a/drivers/nvme/host/tcp.c
->> +++ b/drivers/nvme/host/tcp.c
->> @@ -581,6 +581,9 @@ static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
->> return -EINVAL;
->> }
->>
->> + if (!blk_mq_request_started(rq))
->> + return 0;
->
-> First, I want to understand if this is a spurious completion, meaning is
-> this suggesting a protection against a misbehaving controller? Or there
-> was actually something that the host got wrong?
->
-What can we identify is the nvme_ctrl->state = NVME_CTRL_LIVE from vmcore, and there is no other 
-error with nvme ctrl before the message "nvme nvme1: failed to send request -13".
-It looks like always doing well, suddenly an error occurred, but we can not find why it failed?
-
-[237163.158966] systemd-journald[379035]: /var/log/journal/a888731b91ba4a55bf056a48723bbc51/system.journal: Journal header limits reached or header out-of-date, rotating.
-[248514.030873] nvme nvme1: failed to send request -13
-
-> Because this sort of check does not belong in the tcp driver.
-
-Or should we add check by comparing nvme_request status with NVME_SC_HOST_PATH_ERROR?
-NVME_SC_HOST_PATH_ERROR is set by nvme_tcp_fail_request, but I am not sure if this 
-check has other impact? 
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKOGlHY6WxiJqLoSx78067AznjgmAGjTMXtAfUJOwGvNpHr8A==
+Content-Language: en-in
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBJsWRmVeSWpSXmKPExsWy7bCmlu7X4q5Ug7dPhC3uL/7MYrH39VZ2
+	i02Pr7FaLJsdZHF51xw2i54NW1ktZpzfx2Sx9shddotlm/4wWbQ0LmF14PLYOesuu8fiPS+Z
+	PDat6mTzuHNtD5vH5iX1Hn1bVjF6/H39is3j8ya5AI6obJuM1MSU1CKF1Lzk/JTMvHRbJe/g
+	eOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoBOVFMoSc0qBQgGJxcVK+nY2RfmlJakKGfnF
+	JbZKqQUpOQUmBXrFibnFpXnpenmpJVaGBgZGpkCFCdkZG884FezRqPh78Tx7A+N6pS5GTg4J
+	AROJpjMzGLsYuTiEBPYwSsw7dZEVJCEk8IlRYm6bC0QCyP74vIcdpqNx01wmiMRORomObZOY
+	IZznjBIP/i8Ea2cT0Je4f6qHFSQhInCOUWJb/xSwFmaBm4wSx97MZAap4hRwkfiz6iRYh7CA
+	l8TD3xfYuhg5OFgEVCV23wwGCfMKWErM+zmBFcIWlDg58wkLiM0soC2xbOFrZoiTFCR+Pl0G
+	ViMi4CSxcMltJogacYmjP3vArpMQOMAhcWLKYqgfXCT6Tt5jhLCFJV4d3wIVl5J42d8GZSdL
+	PF70EmpBjsT6PVNYIGx7iQNX5rCA3MksoCmxfpc+RFhWYuqpdVB7+SR6fz9hgojzSuyYB2Or
+	Scy584MVwpaROLx6KeMERqVZSF6bheS1WUhemIWwbQEjyypGqdSC4tz01GTTAkPdvNRyeIwn
+	5+duYgQnYa2AHYyrN/zVO8TIxMF4iFGCg1lJhFdWsSNViDclsbIqtSg/vqg0J7X4EKMpMLwn
+	MkuJJucD80BeSbyhiaWBiZmZmYmlsZmhkjjv69a5KUIC6YklqdmpqQWpRTB9TBycUg1MPmlp
+	S/VqXGduTNg1tfCkjcUOdfunFgqb9y73qy0WPLKCK/4+D8fbsxOEn97MebTMOc3t2r1Tl80P
+	Vif93Nq2VlpGUKb1dkmjQ+p7NeF0pde6b7XuNPIavr9YvifFfM1eP5VNwb8OyIe0ZUWHnDth
+	su8Yu8GhcMFNMxxed73X6jv1uos7wvgJV4K92uzy5ijt2c/uTD3f/f7C329THI5vb7Kb7183
+	/9xa3vN7uvvm3vt9b1avxr/7Rgt3KRjdfPapX0L16VVxN46iR4dW7QytmbClXDS4KONS2mE7
+	pjbtXG5+dTfOTf1pWS2HCu6YsYvt2CrQZaas4HPDR15Xvvhy8g/BBDutyT7yd29VzpitxFKc
+	kWioxVxUnAgANnw1BUsEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsWy7bCSvG5OUVeqwfN2KYv7iz+zWOx9vZXd
+	YtPja6wWy2YHWVzeNYfNomfDVlaLGef3MVmsPXKX3WLZpj9MFi2NS1gduDx2zrrL7rF4z0sm
+	j02rOtk87lzbw+axeUm9R9+WVYwef1+/YvP4vEkugCOKyyYlNSezLLVI3y6BK+P6qe1MBZ/U
+	Ktat38/cwPhSoYuRk0NCwESicdNcpi5GLg4hge2MEhPWzGOESMhI/G87xg5hC0us/PecHaLo
+	KaPEyyOT2EASbAL6EvdP9bCCJEQELjBKbNmzgA3EYRa4zyjRtWk71NyzQM6i/WCzOAVcJP6s
+	OskKYgsLeEk8/H0BqIODg0VAVWL3zWCQMK+ApcS8nxNYIWxBiZMzn7CA2MwC2hK9D1sZYexl
+	C18zQ5ynIPHz6TKwehEBJ4mFS24zQdSISxz92cM8gVF4FpJRs5CMmoVk1CwkLQsYWVYxiqYW
+	FOem5yYXGOoVJ+YWl+al6yXn525iBMegVtAOxmXr/+odYmTiYDzEKMHBrCTCK6vYkSrEm5JY
+	WZValB9fVJqTWnyIUZqDRUmcVzmnM0VIID2xJDU7NbUgtQgmy8TBKdXAtLo2tqbGc0rlx9b4
+	x19ke9IXPQm6M/F76vYvzh/O9Llc69RflCX97e3hvc5zp+1uPPrgqCzv36gVdy/2dVhcX7NO
+	7+3HWS9XF57p3ZCXvOa4e1XbbMYV/6PWbQ/Jla+NsLpv1GS5zCTPRLTunkGO0x/t2LSC81oP
+	n0pOueLxxbPqg3l0zffbxzfNXsJV5DzXb+cKwSZ7npcfHiUr1XT49JkZHjs8eZKys+HmoFli
+	X9rjL21jOly55Nwky06l3+eW7VCwNft9cRLzC8FjpjK14fzi0XdV1hXebo16yq9wanK+ifbm
+	p5eD5/8K0tNceXBdMPu9QzOn7y9RNLzHae8eekZ26ta/xeufHLr36yx7wwslluKMREMt5qLi
+	RADyq//SMAMAAA==
+X-CMS-MailID: 20231226062756epcas5p22bc39bd25d403a9bed16c220f82c4a83
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231224154446epcas5p2b08000b76b8a94063b164a55e5e8a999
+References: <20231224-n-s5p-mfc-const-v1-0-a3b246470fe4@linaro.org>
+	<CGME20231224154446epcas5p2b08000b76b8a94063b164a55e5e8a999@epcas5p2.samsung.com>
+	<20231224-n-s5p-mfc-const-v1-9-a3b246470fe4@linaro.org>
 
 
+
+> -----Original Message-----
+> From: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
+> Sent: 24 December 2023 21:14
+> To: Marek Szyprowski <m.szyprowski=40samsung.com>; Andrzej Hajda
+> <andrzej.hajda=40intel.com>; Mauro Carvalho Chehab
+> <mchehab=40kernel.org>
+> Cc: Aakarsh Jain <aakarsh.jain=40samsung.com>; linux-fsd=40tesla.coma; li=
+nux-
+> samsung-soc=40vger.kernel.org; Smitha T Murthy
+> <smithatmurthy=40gmail.com>; linux-arm-kernel=40lists.infradead.org; linu=
+x-
+> media=40vger.kernel.org; linux-kernel=40vger.kernel.org; Krzysztof Kozlow=
+ski
+> <krzysztof.kozlowski=40linaro.org>
+> Subject: =5BPATCH 09/15=5D media: s5p-mfc: constify s5p_mfc_fmt structure=
+s
+>=20
+> Static =22s5p_mfc_fmt=22 structures are not modified by the driver, so th=
+ey can
+> be made const for code safety.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
+> ---
+>  drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h =7C 4 ++--
+>  drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c    =7C 6 +++---
+>  drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c    =7C 8 ++++----
+>  3 files changed, 9 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
+> b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
+> index fa556f27fa06..e9283020070e 100644
+> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
+> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
+> =40=40 -633,8 +633,8 =40=40 struct s5p_mfc_ctx =7B
+>  	unsigned int int_err;
+>  	wait_queue_head_t queue;
+>=20
+> -	struct s5p_mfc_fmt *src_fmt;
+> -	struct s5p_mfc_fmt *dst_fmt;
+> +	const struct s5p_mfc_fmt *src_fmt;
+> +	const struct s5p_mfc_fmt *dst_fmt;
+>=20
+>  	struct vb2_queue vq_src;
+>  	struct vb2_queue vq_dst;
+> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
+> b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
+> index 4dbe8792ac3d..2f664c7e9e4c 100644
+> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
+> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
+> =40=40 -27,7 +27,7 =40=40
+>  =23include =22s5p_mfc_opr.h=22
+>  =23include =22s5p_mfc_pm.h=22
+>=20
+> -static struct s5p_mfc_fmt formats=5B=5D =3D =7B
+> +static const struct s5p_mfc_fmt formats=5B=5D =3D =7B
+>  	=7B
+>  		.fourcc		=3D V4L2_PIX_FMT_NV12MT_16X16,
+>  		.codec_mode	=3D S5P_MFC_CODEC_NONE,
+> =40=40 -163,7 +163,7 =40=40 static struct s5p_mfc_fmt formats=5B=5D =3D =
+=7B  =23define
+> NUM_FORMATS ARRAY_SIZE(formats)
+>=20
+>  /* Find selected format description */
+> -static struct s5p_mfc_fmt *find_format(struct v4l2_format *f, unsigned i=
+nt
+> t)
+> +static const struct s5p_mfc_fmt *find_format(struct v4l2_format *f,
+> +unsigned int t)
+>  =7B
+>  	unsigned int i;
+>=20
+> =40=40 -387,7 +387,7 =40=40 static int vidioc_g_fmt(struct file *file, vo=
+id *priv,
+> struct v4l2_format *f)  static int vidioc_try_fmt(struct file *file, void=
+ *priv,
+> struct v4l2_format *f)  =7B
+>  	struct s5p_mfc_dev *dev =3D video_drvdata(file);
+> -	struct s5p_mfc_fmt *fmt;
+> +	const struct s5p_mfc_fmt *fmt;
+>=20
+>  	mfc_debug(2, =22Type is %d=5Cn=22, f->type);
+>  	if (f->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) =7B diff --git
+> a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
+> b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
+> index 4b4c129c09e7..d6a4b9c701eb 100644
+> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
+> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
+> =40=40 -30,7 +30,7 =40=40
+>  =23define DEF_SRC_FMT_ENC	V4L2_PIX_FMT_NV12M
+>  =23define DEF_DST_FMT_ENC	V4L2_PIX_FMT_H264
+>=20
+> -static struct s5p_mfc_fmt formats=5B=5D =3D =7B
+> +static const struct s5p_mfc_fmt formats=5B=5D =3D =7B
+>  	=7B
+>  		.fourcc		=3D V4L2_PIX_FMT_NV12MT_16X16,
+>  		.codec_mode	=3D S5P_MFC_CODEC_NONE,
+> =40=40 -97,7 +97,7 =40=40 static struct s5p_mfc_fmt formats=5B=5D =3D =7B=
+  =7D;
+>=20
+>  =23define NUM_FORMATS ARRAY_SIZE(formats) -static struct s5p_mfc_fmt
+> *find_format(struct v4l2_format *f, unsigned int t)
+> +static const struct s5p_mfc_fmt *find_format(struct v4l2_format *f,
+> +unsigned int t)
+>  =7B
+>  	unsigned int i;
+>=20
+> =40=40 -1394,7 +1394,7 =40=40 static int vidioc_g_fmt(struct file *file, =
+void *priv,
+> struct v4l2_format *f)  static int vidioc_try_fmt(struct file *file, void=
+ *priv,
+> struct v4l2_format *f)  =7B
+>  	struct s5p_mfc_dev *dev =3D video_drvdata(file);
+> -	struct s5p_mfc_fmt *fmt;
+> +	const struct s5p_mfc_fmt *fmt;
+>  	struct v4l2_pix_format_mplane *pix_fmt_mp =3D &f->fmt.pix_mp;
+>=20
+>  	if (f->type =3D=3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) =7B =40=40 -
+> 2355,7 +2355,7 =40=40 static const struct v4l2_ioctl_ops s5p_mfc_enc_ioct=
+l_ops
+> =3D =7B
+>  	.vidioc_unsubscribe_event =3D v4l2_event_unsubscribe,  =7D;
+>=20
+> -static int check_vb_with_fmt(struct s5p_mfc_fmt *fmt, struct vb2_buffer
+> *vb)
+> +static int check_vb_with_fmt(const struct s5p_mfc_fmt *fmt, struct
+> +vb2_buffer *vb)
+>  =7B
+>  	int i;
+>=20
+>=20
+> --
+> 2.34.1
+
+Reviewed-by: Aakarsh Jain <aakarsh.jain=40samsung.com>
+
+Thanks=21
 
 
