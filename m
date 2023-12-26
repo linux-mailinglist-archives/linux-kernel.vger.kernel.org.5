@@ -1,51 +1,50 @@
-Return-Path: <linux-kernel+bounces-11249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7D5C81E3A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB9D281E3AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:35:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40341B21D53
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:35:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5796DB21D13
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:35:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480695822A;
-	Tue, 26 Dec 2023 00:23:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D77D339AC;
+	Tue, 26 Dec 2023 00:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eBgm14/S"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h5OtWNz4"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91AE858133;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D718558132;
+	Tue, 26 Dec 2023 00:23:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD47EC433CA;
 	Tue, 26 Dec 2023 00:23:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 054C9C433CA;
-	Tue, 26 Dec 2023 00:23:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550224;
-	bh=vWWQ/06/whYjLJPzmO983aSmC1U1YHdTkrppvtZTT3M=;
+	s=k20201202; t=1703550225;
+	bh=nkxnA4C83oN9prUJryj5u6mE48qIMDs9ePu4jYxMODk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eBgm14/Sl7yv9CqtmotJsxTcNbUU8Ls0huxV7QzOwEvawuzWcXJfeteTDfAdEocYL
-	 2wpaMLCCr9TRb4ZLUqs/yMzy98D6UC70lEKWWA38hIZw5RfEfKT4JZbAxbtp7Q4JE9
-	 OsoOCd0QYGrO8bewEt1yAgiWZmSfIQxnEpqIGJAbjlZcEL46CDYP3XvVcTQQEPuKPQ
-	 teeezlZUNccKPoYec3utBi1qbrGMIbYoMMo/AL+Tn6vW1wFCyG9INkIWAD0ICQyz/r
-	 JZJ9IPw2gMEWtq3jA6trLxtuXJfAK0tyHFxDmBHJ5Tn/DB+bzQDNjrk60LSuuJ7H76
-	 bE1AtYt5eoEAw==
+	b=h5OtWNz4R/Z9XaUJ5qUk9hO4zH9O4E7/MUW7O52dp3PlHdq2hB8pZqSH0hE0SlxeJ
+	 apCeS/c4y+iwuH7Gdsw12C9wl+vLWE+Dh+YLnK+7o1PmnDvHzXbFsO+O0eLi7QRxQf
+	 ZAWmUK+4K70BeHsfyIsByLsmjbQjuHj7hCqOyw/QNsMdQUQmgf1s2W8nPP+aqsuufD
+	 jFuC1leE3WVQIZfBz9ryw7gpZuwmUrnQDSNHbYMU78FURrV2YwtwPDtPCInHfWWOmF
+	 gvIxI44Vgh31NmcMP197fN3Q2nfqUBGH3HeVP1Oh4hUwlXjAYFETdGZfte2uViCF34
+	 W3zfYuBKZEczQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Sam Lantinga <slouken@libsdl.org>,
-	Jiri Kosina <jkosina@suse.com>,
+Cc: Paulo Alcantara <pc@manguebit.com>,
+	j51569436@gmail.com,
+	Steve French <stfrench@microsoft.com>,
 	Sasha Levin <sashal@kernel.org>,
-	djogorchock@gmail.com,
-	jikos@kernel.org,
-	benjamin.tissoires@redhat.com,
-	linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 17/24] HID: nintendo: Prevent divide-by-zero on code
-Date: Mon, 25 Dec 2023 19:22:10 -0500
-Message-ID: <20231226002255.5730-17-sashal@kernel.org>
+	sfrench@samba.org,
+	linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org
+Subject: [PATCH AUTOSEL 6.1 18/24] smb: client: fix potential OOB in smb2_dump_detail()
+Date: Mon, 25 Dec 2023 19:22:11 -0500
+Message-ID: <20231226002255.5730-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231226002255.5730-1-sashal@kernel.org>
 References: <20231226002255.5730-1-sashal@kernel.org>
@@ -60,100 +59,91 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.69
 Content-Transfer-Encoding: 8bit
 
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+From: Paulo Alcantara <pc@manguebit.com>
 
-[ Upstream commit 6eb04ca8c52e3f8c8ea7102ade81d642eee87f4a ]
+[ Upstream commit 567320c46a60a3c39b69aa1df802d753817a3f86 ]
 
-It was reported [0] that adding a generic joycon to the system caused
-a kernel crash on Steam Deck, with the below panic spew:
+Validate SMB message with ->check_message() before calling
+->calc_smb_size().
 
-divide error: 0000 [#1] PREEMPT SMP NOPTI
-[...]
-Hardware name: Valve Jupiter/Jupiter, BIOS F7A0119 10/24/2023
-RIP: 0010:nintendo_hid_event+0x340/0xcc1 [hid_nintendo]
-[...]
-Call Trace:
- [...]
- ? exc_divide_error+0x38/0x50
- ? nintendo_hid_event+0x340/0xcc1 [hid_nintendo]
- ? asm_exc_divide_error+0x1a/0x20
- ? nintendo_hid_event+0x307/0xcc1 [hid_nintendo]
- hid_input_report+0x143/0x160
- hidp_session_run+0x1ce/0x700 [hidp]
+This fixes CVE-2023-6610.
 
-Since it's a divide-by-0 error, by tracking the code for potential
-denominator issues, we've spotted 2 places in which this could happen;
-so let's guard against the possibility and log in the kernel if the
-condition happens. This is specially useful since some data that
-fills some denominators are read from the joycon HW in some cases,
-increasing the potential for flaws.
-
-[0] https://github.com/ValveSoftware/SteamOS/issues/1070
-
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
-Tested-by: Sam Lantinga <slouken@libsdl.org>
-Signed-off-by: Jiri Kosina <jkosina@suse.com>
+Reported-by: j51569436@gmail.com
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218219
+Cc; stable@vger.kernel.org
+Signed-off-by: Paulo Alcantara <pc@manguebit.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-nintendo.c | 27 ++++++++++++++++++++-------
- 1 file changed, 20 insertions(+), 7 deletions(-)
+ fs/smb/client/smb2misc.c | 30 +++++++++++++++---------------
+ fs/smb/client/smb2ops.c  |  6 ++++--
+ 2 files changed, 19 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/hid/hid-nintendo.c b/drivers/hid/hid-nintendo.c
-index 907c9b574e3b3..df07e3ae0ffb4 100644
---- a/drivers/hid/hid-nintendo.c
-+++ b/drivers/hid/hid-nintendo.c
-@@ -859,14 +859,27 @@ static int joycon_request_calibration(struct joycon_ctlr *ctlr)
-  */
- static void joycon_calc_imu_cal_divisors(struct joycon_ctlr *ctlr)
- {
--	int i;
-+	int i, divz = 0;
- 
- 	for (i = 0; i < 3; i++) {
- 		ctlr->imu_cal_accel_divisor[i] = ctlr->accel_cal.scale[i] -
- 						ctlr->accel_cal.offset[i];
- 		ctlr->imu_cal_gyro_divisor[i] = ctlr->gyro_cal.scale[i] -
- 						ctlr->gyro_cal.offset[i];
-+
-+		if (ctlr->imu_cal_accel_divisor[i] == 0) {
-+			ctlr->imu_cal_accel_divisor[i] = 1;
-+			divz++;
-+		}
-+
-+		if (ctlr->imu_cal_gyro_divisor[i] == 0) {
-+			ctlr->imu_cal_gyro_divisor[i] = 1;
-+			divz++;
-+		}
+diff --git a/fs/smb/client/smb2misc.c b/fs/smb/client/smb2misc.c
+index 88942b1fb4318..08ad74f51964f 100644
+--- a/fs/smb/client/smb2misc.c
++++ b/fs/smb/client/smb2misc.c
+@@ -173,6 +173,21 @@ smb2_check_message(char *buf, unsigned int len, struct TCP_Server_Info *server)
  	}
+ 
+ 	mid = le64_to_cpu(shdr->MessageId);
++	if (check_smb2_hdr(shdr, mid))
++		return 1;
 +
-+	if (divz)
-+		hid_warn(ctlr->hdev, "inaccurate IMU divisors (%d)\n", divz);
++	if (shdr->StructureSize != SMB2_HEADER_STRUCTURE_SIZE) {
++		cifs_dbg(VFS, "Invalid structure size %u\n",
++			 le16_to_cpu(shdr->StructureSize));
++		return 1;
++	}
++
++	command = le16_to_cpu(shdr->Command);
++	if (command >= NUMBER_OF_SMB2_COMMANDS) {
++		cifs_dbg(VFS, "Invalid SMB2 command %d\n", command);
++		return 1;
++	}
++
+ 	if (len < pdu_size) {
+ 		if ((len >= hdr_size)
+ 		    && (shdr->Status != 0)) {
+@@ -193,21 +208,6 @@ smb2_check_message(char *buf, unsigned int len, struct TCP_Server_Info *server)
+ 		return 1;
+ 	}
+ 
+-	if (check_smb2_hdr(shdr, mid))
+-		return 1;
+-
+-	if (shdr->StructureSize != SMB2_HEADER_STRUCTURE_SIZE) {
+-		cifs_dbg(VFS, "Invalid structure size %u\n",
+-			 le16_to_cpu(shdr->StructureSize));
+-		return 1;
+-	}
+-
+-	command = le16_to_cpu(shdr->Command);
+-	if (command >= NUMBER_OF_SMB2_COMMANDS) {
+-		cifs_dbg(VFS, "Invalid SMB2 command %d\n", command);
+-		return 1;
+-	}
+-
+ 	if (smb2_rsp_struct_sizes[command] != pdu->StructureSize2) {
+ 		if (command != SMB2_OPLOCK_BREAK_HE && (shdr->Status == 0 ||
+ 		    pdu->StructureSize2 != SMB2_ERROR_STRUCTURE_SIZE2_LE)) {
+diff --git a/fs/smb/client/smb2ops.c b/fs/smb/client/smb2ops.c
+index 1b3489a2f0db7..a9f84664a7a83 100644
+--- a/fs/smb/client/smb2ops.c
++++ b/fs/smb/client/smb2ops.c
+@@ -398,8 +398,10 @@ smb2_dump_detail(void *buf, struct TCP_Server_Info *server)
+ 	cifs_server_dbg(VFS, "Cmd: %d Err: 0x%x Flags: 0x%x Mid: %llu Pid: %d\n",
+ 		 shdr->Command, shdr->Status, shdr->Flags, shdr->MessageId,
+ 		 shdr->Id.SyncId.ProcessId);
+-	cifs_server_dbg(VFS, "smb buf %p len %u\n", buf,
+-		 server->ops->calc_smb_size(buf));
++	if (!server->ops->check_message(buf, server->total_read, server)) {
++		cifs_server_dbg(VFS, "smb buf %p len %u\n", buf,
++				server->ops->calc_smb_size(buf));
++	}
+ #endif
  }
  
- static const s16 DFLT_ACCEL_OFFSET /*= 0*/;
-@@ -1095,16 +1108,16 @@ static void joycon_parse_imu_report(struct joycon_ctlr *ctlr,
- 		    JC_IMU_SAMPLES_PER_DELTA_AVG) {
- 			ctlr->imu_avg_delta_ms = ctlr->imu_delta_samples_sum /
- 						 ctlr->imu_delta_samples_count;
--			/* don't ever want divide by zero shenanigans */
--			if (ctlr->imu_avg_delta_ms == 0) {
--				ctlr->imu_avg_delta_ms = 1;
--				hid_warn(ctlr->hdev,
--					 "calculated avg imu delta of 0\n");
--			}
- 			ctlr->imu_delta_samples_count = 0;
- 			ctlr->imu_delta_samples_sum = 0;
- 		}
- 
-+		/* don't ever want divide by zero shenanigans */
-+		if (ctlr->imu_avg_delta_ms == 0) {
-+			ctlr->imu_avg_delta_ms = 1;
-+			hid_warn(ctlr->hdev, "calculated avg imu delta of 0\n");
-+		}
-+
- 		/* useful for debugging IMU sample rate */
- 		hid_dbg(ctlr->hdev,
- 			"imu_report: ms=%u last_ms=%u delta=%u avg_delta=%u\n",
 -- 
 2.43.0
 
