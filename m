@@ -1,48 +1,53 @@
-Return-Path: <linux-kernel+bounces-11206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5458F81E332
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:24:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9A7481E335
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:24:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68BB81C213BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:24:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB20EB20C0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:24:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD47842AB7;
-	Tue, 26 Dec 2023 00:20:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5F344368;
+	Tue, 26 Dec 2023 00:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U6ZTP91b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l08BFTo2"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29C7941C63;
-	Tue, 26 Dec 2023 00:20:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7951C433C8;
-	Tue, 26 Dec 2023 00:20:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E933D44364;
+	Tue, 26 Dec 2023 00:20:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29513C433C8;
+	Tue, 26 Dec 2023 00:20:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550055;
-	bh=qnBv+MA5+OSvfMweucRioK2vOvMaXE+NW2x5Nw5qGZo=;
+	s=k20201202; t=1703550059;
+	bh=zF4otZIt+lMUKIFWNrITLIV7/l+UmEx2S5/AymxJq1M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=U6ZTP91bMB4pDNTuiR0MTaJoQ/ulQiRdFkE39gpumZqrpCeiPp1WuBFfVoix3S8uF
-	 8uGkzNWHU+7poILA8ULyTJBEzgXiFe4alEjgNgo/Q3AkM+Aa3qA2aWF7eR+DPyWpHg
-	 /4Z8MKtP5gJDgC7cBTjhEbY2y4+qtVu+upeqDlJiw/FHGakTJL8Or2mvw7RkPDaFMG
-	 JVa4+NutOcnNZQm1DWKgP4NXcOZLsXXgOx1uZqi0pVW5LIIOHCiFRP9eUYTIBWHzn7
-	 X5Bnocf/yalDsPnAzsOxzA9sUp1rNz+auV93TW/oPWqi4eCGlg8OaAe6sQGO4gCzeI
-	 N4Kk783AfN32g==
+	b=l08BFTo2vnJ1VwaVcbAYhfG4i/dDZUUNqr7f9m1P5p/6qDuYMbGX4kQPtQT7NddYL
+	 AbsmWaZhcb5isyprhOqRavtAc4YT+c3Nw5/W0TCm6tRCNo7A4QNb+jBFVL/093aP4m
+	 xY8gK72trYG7lPcQqPHKc+XMM978ucWlQjHoOZxcLkZOxqd8jT95TnoXh62CA/cD26
+	 5xdJG21hpSpA5r4nWUJezRR0RvV717tJ3lkTzJJz/LtDw6bGUDszW54XxFv6YcDHke
+	 +vit+IZk10W4JfbqvN1w+KYCyUy3Hx9xhzvP+xnT+wkkBIkOlGrd+H9WTsUUGsfN20
+	 qRjOR96HCZcOA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Vineet Gupta <vgupta@kernel.org>,
-	kernel test robot <lkp@intel.com>,
-	Dan Carpenter <error27@gmail.com>,
+Cc: Avraham Stern <avraham.stern@intel.com>,
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+	Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-snps-arc@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 13/39] ARC: fix smatch warning
-Date: Mon, 25 Dec 2023 19:19:03 -0500
-Message-ID: <20231226002021.4776-13-sashal@kernel.org>
+	gregory.greenman@intel.com,
+	kvalo@kernel.org,
+	benjamin.berg@intel.com,
+	ansuelsmth@gmail.com,
+	pagadala.yesu.anjaneyulu@intel.com,
+	linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 14/39] wifi: iwlwifi: pcie: avoid a NULL pointer dereference
+Date: Mon, 25 Dec 2023 19:19:04 -0500
+Message-ID: <20231226002021.4776-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231226002021.4776-1-sashal@kernel.org>
 References: <20231226002021.4776-1-sashal@kernel.org>
@@ -57,41 +62,37 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.8
 Content-Transfer-Encoding: 8bit
 
-From: Vineet Gupta <vgupta@kernel.org>
+From: Avraham Stern <avraham.stern@intel.com>
 
-[ Upstream commit 4eb69d00fe967699b9d93f7e74a990fe813e8d2b ]
+[ Upstream commit ce038edfce43fb345f8dfdca0f7b17f535896701 ]
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <error27@gmail.com>
-Closes: https://lore.kernel.org/r/202311280906.VAIwEAfT-lkp@intel.com/
-Signed-off-by: Vineet Gupta <vgupta@kernel.org>
+It possible that while the rx rb is being handled, the transport has
+been stopped and re-started. In this case the tx queue pointer is not
+yet initialized, which will lead to a NULL pointer dereference.
+Fix it.
+
+Signed-off-by: Avraham Stern <avraham.stern@intel.com>
+Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
+Link: https://msgid.link/20231207044813.cd0898cafd89.I0b84daae753ba9612092bf383f5c6f761446e964@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/kernel/setup.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/pcie/rx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arc/kernel/setup.c b/arch/arc/kernel/setup.c
-index 4dcf8589b708a..d08a5092c2b4d 100644
---- a/arch/arc/kernel/setup.c
-+++ b/arch/arc/kernel/setup.c
-@@ -153,7 +153,7 @@ static int arcv2_mumbojumbo(int c, struct cpuinfo_arc *info, char *buf, int len)
- {
- 	int n = 0;
- #ifdef CONFIG_ISA_ARCV2
--	const char *release, *cpu_nm, *isa_nm = "ARCv2";
-+	const char *release = "", *cpu_nm = "HS38", *isa_nm = "ARCv2";
- 	int dual_issue = 0, dual_enb = 0, mpy_opt, present;
- 	int bpu_full, bpu_cache, bpu_pred, bpu_ret_stk;
- 	char mpy_nm[16], lpb_nm[32];
-@@ -172,8 +172,6 @@ static int arcv2_mumbojumbo(int c, struct cpuinfo_arc *info, char *buf, int len)
- 	 * releases only update it.
- 	 */
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
+index 4614acee9f7ba..586e1f860c169 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
+@@ -1385,7 +1385,7 @@ static void iwl_pcie_rx_handle_rb(struct iwl_trans *trans,
+ 		 * if it is true then one of the handlers took the page.
+ 		 */
  
--	cpu_nm = "HS38";
--
- 	if (info->arcver > 0x50 && info->arcver <= 0x53) {
- 		release = arc_hs_rel[info->arcver - 0x51].str;
- 	} else {
+-		if (reclaim) {
++		if (reclaim && txq) {
+ 			u16 sequence = le16_to_cpu(pkt->hdr.sequence);
+ 			int index = SEQ_TO_INDEX(sequence);
+ 			int cmd_index = iwl_txq_get_cmd_index(txq, index);
 -- 
 2.43.0
 
