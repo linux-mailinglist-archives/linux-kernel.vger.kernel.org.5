@@ -1,137 +1,165 @@
-Return-Path: <linux-kernel+bounces-11414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AD9081E5F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:35:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9FC381E5F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:39:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAC41282EAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 08:35:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73DC71F224E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 08:39:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB1264CDF0;
-	Tue, 26 Dec 2023 08:35:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZreBZp4n"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E3E4CDE5;
+	Tue, 26 Dec 2023 08:39:26 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8468D224CE;
-	Tue, 26 Dec 2023 08:35:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BQ67c6u018268;
-	Tue, 26 Dec 2023 08:34:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=loTYWzO9V2la
-	V51pZPGKA3Tqqx72zGLxFo0XGcH+SFY=; b=ZreBZp4na0b3ooxc63SYfGxKfgAt
-	YusPVjOT++23bo12c0kD2LbAMcMjTLXQF7tl78L65Q8lnfESK0+t2al3JZnu3GKg
-	hD0wHqjV7x30L9Q+GIlQvbzSkkSafbzCEqAZRs9p7NX74U8PbV0I+kirXEUrYXaI
-	lA2whaTMPkJRYg0vB2EY0kkuNBSmktaNQ+XLWz7oOySGo+mu/HxXjnhZfpsHix7r
-	8Nk8Ui7sdV64Ck0onjAzqYqAsoKVWikNRSa5NsxGyV5VhOq/447NwsLoV6ApML3V
-	1NasdzSDPNq4sX/CiOUutB9ZvLtJRXn3ZdmxorVtfphZNUMTF5gGv7B2DA==
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v7s95rb7r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Dec 2023 08:34:38 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3BQ8YYUP017003;
-	Tue, 26 Dec 2023 08:34:34 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3v5rmkmhje-1;
-	Tue, 26 Dec 2023 08:34:34 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BQ8YXTe016996;
-	Tue, 26 Dec 2023 08:34:34 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-snehshah-hyd.qualcomm.com [10.147.246.35])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3BQ8YXFX016995;
-	Tue, 26 Dec 2023 08:34:33 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2319345)
-	id 0C21D5299C3; Tue, 26 Dec 2023 14:04:33 +0530 (+0530)
-From: Sneh Shah <quic_snehshah@quicinc.com>
-To: Vinod Koul <vkoul@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Sneh Shah <quic_snehshah@quicinc.com>, kernel@quicinc.com,
-        Andrew Halaney <ahalaney@redhat.com>
-Subject: [PATCH net v2] net: stmmac: Fix ethool link settings ops for integrated PCS
-Date: Tue, 26 Dec 2023 14:04:32 +0530
-Message-Id: <20231226083432.24920-1-quic_snehshah@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Fa070FFpTpNBAynbl0Tru0yvGrIJ8Idl
-X-Proofpoint-GUID: Fa070FFpTpNBAynbl0Tru0yvGrIJ8Idl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 phishscore=0 priorityscore=1501 bulkscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 mlxscore=0 spamscore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312260061
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4388925778;
+	Tue, 26 Dec 2023 08:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [192.168.0.6] (ip5f5af7f4.dynamic.kabel-deutschland.de [95.90.247.244])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id F2B0461E5FE01;
+	Tue, 26 Dec 2023 09:38:53 +0100 (CET)
+Message-ID: <e9586bad-0101-415e-ba34-390fd34bf252@molgen.mpg.de>
+Date: Tue, 26 Dec 2023 09:38:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Bluetooth: btrtl: Add the support for
+ RTL8852BT/RTL8852BE-VT
+To: Max Chou <max.chou@realtek.com>
+Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+ linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alex_lu@realsil.com.cn, hildawu@realtek.com, karenhsu@realtek.com
+References: <20231226015713.13673-1-max.chou@realtek.com>
+Content-Language: en-US
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20231226015713.13673-1-max.chou@realtek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Currently get/set_link_ksettings ethtool ops are dependent on PCS.
-When  PCS is integrated, it will not have separate link config.
-Bypass configuring and checking PCS for integrated PCS.
+Dear Max,
 
-Fixes: ("aa571b6275fb net: stmmac: add new switch to struct plat_stmmacenet_data")
-Tested-by: Andrew Halaney <ahalaney@redhat.com> # sa8775p-ride
-Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
----
-v2 changelog:
-- Added tested by tag.
-- Added Fixes tag.
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-index f628411ae4ae..e3ba4cd47b8d 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-@@ -311,8 +311,9 @@ static int stmmac_ethtool_get_link_ksettings(struct net_device *dev,
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
- 
--	if (priv->hw->pcs & STMMAC_PCS_RGMII ||
--	    priv->hw->pcs & STMMAC_PCS_SGMII) {
-+	if (!(priv->plat->flags & STMMAC_FLAG_HAS_INTEGRATED_PCS) &&
-+	    (priv->hw->pcs & STMMAC_PCS_RGMII ||
-+	     priv->hw->pcs & STMMAC_PCS_SGMII)) {
- 		struct rgmii_adv adv;
- 		u32 supported, advertising, lp_advertising;
- 
-@@ -397,8 +398,9 @@ stmmac_ethtool_set_link_ksettings(struct net_device *dev,
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
- 
--	if (priv->hw->pcs & STMMAC_PCS_RGMII ||
--	    priv->hw->pcs & STMMAC_PCS_SGMII) {
-+	if (!(priv->plat->flags & STMMAC_FLAG_HAS_INTEGRATED_PCS) &&
-+	    (priv->hw->pcs & STMMAC_PCS_RGMII ||
-+	     priv->hw->pcs & STMMAC_PCS_SGMII)) {
- 		/* Only support ANE */
- 		if (cmd->base.autoneg != AUTONEG_ENABLE)
- 			return -EINVAL;
--- 
-2.17.1
+Thank you for your patch.
 
+Am 26.12.23 um 02:57 schrieb max.chou@realtek.com:
+> From: Max Chou <max.chou@realtek.com>
+> 
+> Add the support for RTL8852BT/RTL8852BE-VT BT controller on USB interface.
+
+It’d be great if you stated, how it differs from the existing devices. 
+Judging from your diff, only the ids need to be added.
+
+> The necessary firmware will be submitted to linux-firmware project.
+> 
+> The device info from /sys/kernel/debug/usb/devices as below.
+> 
+> T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  8 Spd=12   MxCh= 0
+> D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=0bda ProdID=8520 Rev= 0.00
+> S:  Manufacturer=Realtek
+> S:  Product=Bluetooth Radio
+> S:  SerialNumber=00e04c000001
+> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=500mA
+> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> 
+> Signed-off-by: Max Chou <max.chou@realtek.com>
+> ---
+>   drivers/bluetooth/btrtl.c | 14 ++++++++++++++
+>   1 file changed, 14 insertions(+)
+> 
+> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+> index 277d039ecbb4..cc50de69e8dc 100644
+> --- a/drivers/bluetooth/btrtl.c
+> +++ b/drivers/bluetooth/btrtl.c
+> @@ -69,6 +69,7 @@ enum btrtl_chip_id {
+>   	CHIP_ID_8852B = 20,
+>   	CHIP_ID_8852C = 25,
+>   	CHIP_ID_8851B = 36,
+> +	CHIP_ID_8852BT = 47,
+>   };
+>   
+>   struct id_table {
+> @@ -307,6 +308,15 @@ static const struct id_table ic_id_table[] = {
+>   	  .fw_name  = "rtl_bt/rtl8851bu_fw",
+>   	  .cfg_name = "rtl_bt/rtl8851bu_config",
+>   	  .hw_info  = "rtl8851bu" },
+> +
+> +	/* 8852BT/8852BE-VT */
+> +	{ IC_INFO(RTL_ROM_LMP_8852A, 0x87, 0xc, HCI_USB),
+> +	  .config_needed = false,
+> +	  .has_rom_version = true,
+> +	  .has_msft_ext = true,
+> +	  .fw_name  = "rtl_bt/rtl8852btu_fw",
+> +	  .cfg_name = "rtl_bt/rtl8852btu_config",
+> +	  .hw_info  = "rtl8852btu" },
+>   	};
+>   
+>   static const struct id_table *btrtl_match_ic(u16 lmp_subver, u16 hci_rev,
+> @@ -645,6 +655,7 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
+>   		{ RTL_ROM_LMP_8852A, 20 },	/* 8852B */
+>   		{ RTL_ROM_LMP_8852A, 25 },	/* 8852C */
+>   		{ RTL_ROM_LMP_8851B, 36 },	/* 8851B */
+> +		{ RTL_ROM_LMP_8852A, 47 },	/* 8852BT */
+>   	};
+>   
+>   	if (btrtl_dev->fw_len <= 8)
+> @@ -1275,6 +1286,7 @@ void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_info *btrtl_dev)
+>   	case CHIP_ID_8852B:
+>   	case CHIP_ID_8852C:
+>   	case CHIP_ID_8851B:
+> +	case CHIP_ID_8852BT:
+>   		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
+>   		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
+>   
+> @@ -1505,6 +1517,8 @@ MODULE_FIRMWARE("rtl_bt/rtl8852bs_fw.bin");
+>   MODULE_FIRMWARE("rtl_bt/rtl8852bs_config.bin");
+>   MODULE_FIRMWARE("rtl_bt/rtl8852bu_fw.bin");
+>   MODULE_FIRMWARE("rtl_bt/rtl8852bu_config.bin");
+> +MODULE_FIRMWARE("rtl_bt/rtl8852btu_fw.bin");
+> +MODULE_FIRMWARE("rtl_bt/rtl8852btu_config.bin");
+
+Should btu be ordered before bu?
+
+>   MODULE_FIRMWARE("rtl_bt/rtl8852cu_fw.bin");
+>   MODULE_FIRMWARE("rtl_bt/rtl8852cu_fw_v2.bin");
+>   MODULE_FIRMWARE("rtl_bt/rtl8852cu_config.bin");
+
+
+Kind regards,
+
+Paul
 
