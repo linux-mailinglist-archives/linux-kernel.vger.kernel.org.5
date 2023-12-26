@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-11453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19D7781E692
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:44:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2BAB81E695
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:45:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1CC2B21FA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:44:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE2CC2819CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:45:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6074E631;
-	Tue, 26 Dec 2023 09:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CFBB4E624;
+	Tue, 26 Dec 2023 09:43:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bn3Ta8PK"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tf7Jdrzn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E083D4E621
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:43:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED0C4EB33
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703583810;
+	t=1703583817;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EwZQLx2dP6eCcL8bAS0PoU4Q4fVzMb/S1zk9b9IjiLU=;
-	b=bn3Ta8PKwrV7zwu4K1uWwNhYe1/cdQ+l1iqiPLL0NPYWnZHgcBuVZ62MnGVEaBxHZCQK7k
-	ZL8t5ciSb5ucRuTbSX9N3QhMCMWC7nieem57zNf30/Yf3GXJxz6WIbyzXTa1wGdXt37jpP
-	MqY7MT0ZvVHuYmcMfYSNgxOPk64T/Rc=
+	bh=P/WuOHRAYvaP7I2DX531nPKJwXne70nh/3fxHOzzGiA=;
+	b=tf7JdrznhaN4E6fQRw7ouq2L5O1nTsVhLkIdmtYaog/D+ujk1eSf8Yh6ICqpQHF0XMgnb9
+	PQsUw4eNCwwYPljUcEoKFOO9agWl7mcJcPyE2T9o93FpNSmps2dHudxLttkkVicp5ozUex
+	qDVv1SLocvaHp8pCfURxIYvLEdRyi5I=
 From: George Guo <dongtai.guo@linux.dev>
 To: horms@kernel.org,
 	pablo@netfilter.org,
@@ -47,9 +47,9 @@ Cc: netfilter-devel@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	George Guo <guodongtai@kylinos.cn>
-Subject: [PATCH 04/14] netfilter: cleanup struct nft_set_iter
-Date: Tue, 26 Dec 2023 17:42:45 +0800
-Message-Id: <20231226094255.77911-4-dongtai.guo@linux.dev>
+Subject: [PATCH 05/14] netfilter: cleanup struct nft_set_ops
+Date: Tue, 26 Dec 2023 17:42:46 +0800
+Message-Id: <20231226094255.77911-5-dongtai.guo@linux.dev>
 In-Reply-To: <20231226094255.77911-1-dongtai.guo@linux.dev>
 References: <20231226094255.77911-1-dongtai.guo@linux.dev>
 Precedence: bulk
@@ -63,30 +63,32 @@ X-Migadu-Flow: FLOW_OUT
 
 From: George Guo <guodongtai@kylinos.cn>
 
-Add comments for timeout in struct nft_set_iter, and flags is not a
-member of struct nft_set_iter, remove the comment for it.
+Add comments for commit, abort, estimate and gc_init in struct
+nft_set_ops.
 
 Signed-off-by: George Guo <guodongtai@kylinos.cn>
 ---
- include/net/netfilter/nf_tables.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/net/netfilter/nf_tables.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index adabddc4b0b9..a8243cf32e29 100644
+index a8243cf32e29..1e24db91a37e 100644
 --- a/include/net/netfilter/nf_tables.h
 +++ b/include/net/netfilter/nf_tables.h
-@@ -327,10 +327,10 @@ struct nft_set_iter {
-  *	@dtype: data type
-  *	@dlen: data length
-  *	@objtype: object type
-- *	@flags: flags
-  *	@size: number of set elements
-  *	@policy: set policy
-  *	@gc_int: garbage collector interval
-+ *	@timeout: element timeout
-  *	@field_len: length of each field in concatenation, bytes
-  *	@field_count: number of concatenated fields in element
-  *	@expr: set must support for expressions
+@@ -424,9 +424,13 @@ struct nft_set_ext;
+  *	@remove: remove element from set
+  *	@walk: iterate over all set elements
+  *	@get: get set elements
++ *	@commit: commit set elements
++ *	@abort: abort set elements
+  *	@privsize: function to return size of set private data
++ *	@estimate: estimate the required memory size and the lookup complexity class
+  *	@init: initialize private data of new set instance
+  *	@destroy: destroy private data of set instance
++ *	@gc_init: initialize garbage collection
+  *	@elemsize: element private size
+  *
+  *	Operations lookup, update and delete have simpler interfaces, are faster
 -- 
 2.39.2
 
