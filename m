@@ -1,100 +1,84 @@
-Return-Path: <linux-kernel+bounces-11397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8315A81E59C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 08:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 671CD81E595
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 08:20:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4F5B1C21CC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 07:22:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97B451C21CBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 07:20:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06B74C61C;
-	Tue, 26 Dec 2023 07:22:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEED14C610;
+	Tue, 26 Dec 2023 07:20:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="eT1wPAVg"
+	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="NUbaH8WP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out203-205-251-59.mail.qq.com (out203-205-251-59.mail.qq.com [203.205.251.59])
+Received: from mail-m6035.netease.com (mail-m6035.netease.com [210.79.60.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDCC4C3DD;
-	Tue, 26 Dec 2023 07:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1703575342; bh=wDSHVDigzFATqQyESr8XDuZAlMa8xKB4R2CE0qELoo8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=eT1wPAVgM7R5seU2RlNax8gpAO/H214MJdWDJaSjyxhr6Zi0L7ZSVlqj7zA3YS8XS
-	 cnMy82iJFSqMVyji6QtixjgCznzvWImqWES92XPXM5r5KXMqY62K1oAIgu3X8tO4o+
-	 zqt5i4dstg3lLW2kTOng+5O8W8NcyagM59mU4z2U=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id 40902CF1; Tue, 26 Dec 2023 15:16:09 +0800
-X-QQ-mid: xmsmtpt1703574969tmhlgnqaf
-Message-ID: <tencent_9EA7E746DE92DBC66049A62EDF6ED64CA706@qq.com>
-X-QQ-XMAILINFO: NKv2G1wnhDBnH0jOC261k90JCg//lbwJX/8/EDGnYlBvstu5hGpamjVET6kJWy
-	 YW5lVulxZv+VlJDUOaIWt0vtQ0hEigHgtdmkpfQtwYEW1KPWIjI1fMfL/b92ooqSSUFn+lKlq7Pq
-	 QZBizuEI7mVZoD9OeIFNGmHy9YBbUGGDtG6Xoyb+QIyUDnI3XoUr5o6nxRi2qeNoD+82nFRwguLZ
-	 zX4/XvBOLnBCLMqGYqm1PJw9g+a5DXWdP7M91MlPchL0kQQN1erk3mgtVfVdQVfEymLPZ9AS5Uwc
-	 YbZw8WwVNwFz8jWZmGTKDX/19h/YHydNvR+zC2h0TSOA5v9N0RlnBCkvZyMFr/YtLflAqIGVeOkr
-	 OFIkJJYnmtFNYTAohCLpanizs5eKxfgAespSyyXnDRuHGG4SlHV7wjNINj68bms+C+H3SFg1gMdb
-	 +ufIdQ3M3mTOjF1WNV/eM91Y5FPYv1ux0kYr8WRQQkpYT4QaF8bCbCEeg+olmHxsX38a+bl++jkB
-	 SuCTtAYD+FSvXRNxxpewFybcHKqGRKc6+9A5cZbWrFR16GUYj8kwCsMxA03S9JfFlHQZl0EBcRRI
-	 S2gsc1XkBWggP77AEnT4pSu8ArckIb21038GuUDgJarLPkjNIPVYxeghf0hhnt9xTNcu/PXDjJ57
-	 biYCuQDLOkfkEW7TchZfkp5YDG575tNDOA0GSva1HhH2KC+6885PN9iWsKJxUpzTKVFerwy5nHhS
-	 VEaBFZVbv0PAZZ5oQJ7t3cmJuzFlVTvhBt4YjnSxUaRzPiBqzMXddqz0HfRCSWxOP/avvVysRlys
-	 u13k6K8r6CgzOyakd3qa5yc25x6uGK4LgBSVubvArCSsyjccZz/1FgZIDwH/0CeudB8EeM7it9Ub
-	 eWKpvZ35t25FPank5bt54nP9meduanQhdWahGHpg8jR1jYUtYCQUQKDlwxFtMIdnrW6iYlXIrZ
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+b3b14fb9f8a14c5d0267@syzkaller.appspotmail.com
-Cc: akpm@linux-foundation.org,
-	axboe@kernel.dk,
-	bvanassche@acm.org,
-	linux-fsdevel@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A384C3C4;
+	Tue, 26 Dec 2023 07:20:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
+DKIM-Signature: a=rsa-sha256;
+	b=NUbaH8WPk7Gp/LNITR7TS7RPV6Zq7I7EWqJlbmY7yyofcqBSrLKaMG5A6uvIA40dLawouKfgAavs8GqJ3VYqXH6Cm7IrzkxkYw1mOLbkisX8cXVn8cCEqPzg8z5Y5htrBdQm/30sMN+ISjZJ+bTObheCAjPr+oYP5/A6QkOe6f0=;
+	s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
+	bh=gywcpbvFq4giP2vj7hMAbUeXdCN7KyEFaon8oL7guFQ=;
+	h=date:mime-version:subject:message-id:from;
+Received: from localhost.localdomain (unknown [58.22.7.114])
+	by mail-m12773.qiye.163.com (Hmail) with ESMTPA id 1AFC32C0564;
+	Tue, 26 Dec 2023 15:20:02 +0800 (CST)
+From: William Wu <william.wu@rock-chips.com>
+To: hminas@synopsys.com,
+	gregkh@linuxfoundation.org
+Cc: linux-usb@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	reiserfs-devel@vger.kernel.org,
-	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yi.zhang@huawei.com
-Subject: [PATCH] reiserfs: fix uninit-value in comp_keys
-Date: Tue, 26 Dec 2023 15:16:09 +0800
-X-OQ-MSGID: <20231226071608.1262673-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <000000000000434c71060d5b6808@google.com>
-References: <000000000000434c71060d5b6808@google.com>
+	william.wu@rock-chips.com,
+	frank.wang@rock-chips.com,
+	jianwei.zheng@rock-chips.com,
+	yangbin@rock-chips.com
+Subject: [PATCH] usb: dwc2: Disable clock gating feature on Rockchip SoCs
+Date: Tue, 26 Dec 2023 15:19:59 +0800
+Message-Id: <1703575199-23638-1-git-send-email-william.wu@rock-chips.com>
+X-Mailer: git-send-email 2.0.0
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGUJPSFZIGk9JQ0wdTB8dSk1VEwETFh
+	oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQk
+	tLWQY+
+X-HM-Tid: 0a8ca4fea9f1b249kuuu1afc32c0564
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OT46Pzo*KDw2KxURMRQXTiI8
+	MT1PFB1VSlVKTEtITkxOSUtISklLVTMWGhIXVQwSFxcSGhZVDA47CRQYEFYYExILCFUYFBZFWVdZ
+	EgtZQVlOQ1VJSVVMVUpKT1lXWQgBWUFKTUtDNwY+
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-The cpu_key was not initialized in reiserfs_delete_solid_item(), which triggered
-this issue.
+The DWC2 IP on the Rockchip SoCs doesn't support clock gating.
+When a clock gating is enabled, system hangs.
 
-Reported-and-tested-by: syzbot+b3b14fb9f8a14c5d0267@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Signed-off-by: William Wu <william.wu@rock-chips.com>
 ---
- fs/reiserfs/stree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/dwc2/params.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/reiserfs/stree.c b/fs/reiserfs/stree.c
-index 2138ee7d271d..5faf702f8d15 100644
---- a/fs/reiserfs/stree.c
-+++ b/fs/reiserfs/stree.c
-@@ -1407,7 +1407,7 @@ void reiserfs_delete_solid_item(struct reiserfs_transaction_handle *th,
- 	INITIALIZE_PATH(path);
- 	int item_len = 0;
- 	int tb_init = 0;
--	struct cpu_key cpu_key;
-+	struct cpu_key cpu_key = {};
- 	int retval;
- 	int quota_cut_bytes = 0;
+diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
+index fb03162..eb677c3 100644
+--- a/drivers/usb/dwc2/params.c
++++ b/drivers/usb/dwc2/params.c
+@@ -130,6 +130,7 @@ static void dwc2_set_rk_params(struct dwc2_hsotg *hsotg)
+ 	p->lpm_clock_gating = false;
+ 	p->besl = false;
+ 	p->hird_threshold_en = false;
++	p->no_clock_gating = true;
+ }
  
+ static void dwc2_set_ltq_params(struct dwc2_hsotg *hsotg)
 -- 
-2.43.0
+2.0.0
 
 
