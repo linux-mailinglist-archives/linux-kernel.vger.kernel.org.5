@@ -1,50 +1,48 @@
-Return-Path: <linux-kernel+bounces-11272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8701C81E3E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:43:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DD2181E3EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:43:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14D48280F0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:42:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FB0A1C21ADD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:43:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6B8C5C8E3;
-	Tue, 26 Dec 2023 00:25:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD3B46420;
+	Tue, 26 Dec 2023 00:25:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RE7xuwVU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OvInPDCf"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C77446420;
-	Tue, 26 Dec 2023 00:25:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 738B5C433C9;
-	Tue, 26 Dec 2023 00:25:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3FD5C8E7;
+	Tue, 26 Dec 2023 00:25:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71FA0C433C8;
+	Tue, 26 Dec 2023 00:25:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550341;
-	bh=8iIbIF7h7TBS+p/2yypaxqrpDeJoh+tiqXNhYIA/jVY=;
+	s=k20201202; t=1703550344;
+	bh=Qw/zUVr/JlRP+cCWuqxOqK3mUnRIy0h9A+b9hqfhgUQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RE7xuwVUWPlj36VXHYJ8jlHsIjmExQn7ssyFxC6WGT0XPBwZN4YaE+OVam8juoPgZ
-	 yJKSZpYu2POoYsRFhZ0OIxhpCOJ816KEOH6HbiiiKFnRQpLMQ0D5R1uNs8cmLCk3cr
-	 TmOQsJ8AuDbKFZkcS/dkC58JpmG5jjBrPjpSqiDA0RNCpFsN9QlZtFQlTcEGxlIunz
-	 YE/JlMpE7Zi6/qcbOrPvKHIc2fXB8wGSVxcZynxT7tXtI7Zxb4LAwoKv3srOBZKPn+
-	 +FEK3oDK0o07jvtbGUGw1/LQUUr8+pzPzaBv3friq4zPM9Zeap25KlqrEhV9Plfije
-	 iFSetmVRuzfvQ==
+	b=OvInPDCfpsdog9m2/qQTpfdA/FQ5dmGIkVf4iQ9dwfamp5ApHh58KDN3e8JhGaZtW
+	 HOynaimMMNjqgLUHWlEz3OnmBD+Iakf3LgTsQ70vZQCJUck6yIV5SWh3fKbpoHV1wE
+	 m+J/1Ikrcei8RC9W5X++BR1Ml/PEWrtCVUif4IJieI/+DP4bzoQf0MwpTkM6PH7Ir7
+	 CPOsBlk7BIm6wOMd2JWGBH0hQCrlIO9Sk4EgKgYKyhBxNl9DT+0XSrFjVzIWUgkOKo
+	 lxh9vJGDy1jlgycBxQpxLE6sV9Sm1/6La9nG5sq/mBUAROlTF3ixhgaScuFFyXHkbr
+	 acWjW9ejm44Iw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Vineeth Vijayan <vneethv@linux.ibm.com>,
-	Peter Oberparleiter <oberpar@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
+Cc: Vineet Gupta <vgupta@kernel.org>,
+	kernel test robot <lkp@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	hca@linux.ibm.com,
-	gor@linux.ibm.com,
-	linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 5/9] s390/scm: fix virtual vs physical address confusion
-Date: Mon, 25 Dec 2023 19:24:49 -0500
-Message-ID: <20231226002526.6605-5-sashal@kernel.org>
+	arnd@arndb.de,
+	linux-snps-arc@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 6/9] ARC: fix spare error
+Date: Mon, 25 Dec 2023 19:24:50 -0500
+Message-ID: <20231226002526.6605-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231226002526.6605-1-sashal@kernel.org>
 References: <20231226002526.6605-1-sashal@kernel.org>
@@ -59,57 +57,46 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.205
 Content-Transfer-Encoding: 8bit
 
-From: Vineeth Vijayan <vneethv@linux.ibm.com>
+From: Vineet Gupta <vgupta@kernel.org>
 
-[ Upstream commit b1a6a1a77f0666a5a6dc0893ab6ec8fcae46f24c ]
+[ Upstream commit aca02d933f63ba8bc84258bf35f9ffaf6b664336 ]
 
-Fix virtual vs physical address confusion (which currently are the same).
-
-Signed-off-by: Vineeth Vijayan <vneethv@linux.ibm.com>
-Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
-Acked-by: Alexander Gordeev <agordeev@linux.ibm.com>
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202312082320.VDN5A9hb-lkp@intel.com/
+Signed-off-by: Vineet Gupta <vgupta@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/block/scm_blk.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/arc/kernel/signal.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/s390/block/scm_blk.c b/drivers/s390/block/scm_blk.c
-index a4f6f2e62b1dc..b5b36217b15eb 100644
---- a/drivers/s390/block/scm_blk.c
-+++ b/drivers/s390/block/scm_blk.c
-@@ -18,6 +18,7 @@
- #include <linux/genhd.h>
- #include <linux/slab.h>
- #include <linux/list.h>
-+#include <linux/io.h>
- #include <asm/eadm.h>
- #include "scm_blk.h"
+diff --git a/arch/arc/kernel/signal.c b/arch/arc/kernel/signal.c
+index 4868bdebf586d..c43d323bcb593 100644
+--- a/arch/arc/kernel/signal.c
++++ b/arch/arc/kernel/signal.c
+@@ -61,7 +61,7 @@ struct rt_sigframe {
+ 	unsigned int sigret_magic;
+ };
  
-@@ -131,7 +132,7 @@ static void scm_request_done(struct scm_request *scmrq)
+-static int save_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
++static int save_arcv2_regs(struct sigcontext __user *mctx, struct pt_regs *regs)
+ {
+ 	int err = 0;
+ #ifndef CONFIG_ISA_ARCOMPACT
+@@ -74,12 +74,12 @@ static int save_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
+ #else
+ 	v2abi.r58 = v2abi.r59 = 0;
+ #endif
+-	err = __copy_to_user(&mctx->v2abi, &v2abi, sizeof(v2abi));
++	err = __copy_to_user(&mctx->v2abi, (void const *)&v2abi, sizeof(v2abi));
+ #endif
+ 	return err;
+ }
  
- 	for (i = 0; i < nr_requests_per_io && scmrq->request[i]; i++) {
- 		msb = &scmrq->aob->msb[i];
--		aidaw = msb->data_addr;
-+		aidaw = (u64)phys_to_virt(msb->data_addr);
- 
- 		if ((msb->flags & MSB_FLAG_IDA) && aidaw &&
- 		    IS_ALIGNED(aidaw, PAGE_SIZE))
-@@ -196,12 +197,12 @@ static int scm_request_prepare(struct scm_request *scmrq)
- 	msb->scm_addr = scmdev->address + ((u64) blk_rq_pos(req) << 9);
- 	msb->oc = (rq_data_dir(req) == READ) ? MSB_OC_READ : MSB_OC_WRITE;
- 	msb->flags |= MSB_FLAG_IDA;
--	msb->data_addr = (u64) aidaw;
-+	msb->data_addr = (u64)virt_to_phys(aidaw);
- 
- 	rq_for_each_segment(bv, req, iter) {
- 		WARN_ON(bv.bv_offset);
- 		msb->blk_count += bv.bv_len >> 12;
--		aidaw->data_addr = (u64) page_address(bv.bv_page);
-+		aidaw->data_addr = virt_to_phys(page_address(bv.bv_page));
- 		aidaw++;
- 	}
- 
+-static int restore_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
++static int restore_arcv2_regs(struct sigcontext __user *mctx, struct pt_regs *regs)
+ {
+ 	int err = 0;
+ #ifndef CONFIG_ISA_ARCOMPACT
 -- 
 2.43.0
 
