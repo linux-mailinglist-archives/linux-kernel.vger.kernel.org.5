@@ -1,234 +1,158 @@
-Return-Path: <linux-kernel+bounces-11378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6851881E556
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:49:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D86181E558
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:56:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EE2428101E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:49:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24B2B281EF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:56:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E684C3C7;
-	Tue, 26 Dec 2023 05:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1684BA90;
+	Tue, 26 Dec 2023 05:56:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="Dod7ILPh"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GDdulIet"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE5F4C602
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 05:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231226054927epoutp04a951fee0b54f6f3eed23d5bb8714cd07~kS62KlDrY0289802898epoutp04T
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 05:49:27 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231226054927epoutp04a951fee0b54f6f3eed23d5bb8714cd07~kS62KlDrY0289802898epoutp04T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1703569767;
-	bh=PjCrB9sJG92TMahmGFHOSLjyHXg8ofkCAJr5VA8kks8=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-	b=Dod7ILPhaSZHiR7+A4bj1Uvz4Dn9qHeWzZ3hvSisdtdGkgu49KRMl0Kh9OBMZrUGv
-	 7kgEiCAmHU45EFwlh46WsxdAaehB12NM7RV4agr496/lZ7YCmxX78d+Vu21n83fwWd
-	 G4IWELL+isv9I5slUyWSBzoSPT2MT9rWl91dPBPo=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-	20231226054927epcas5p3fd20bc768b6c740c5ed833d4fed3e948~kS61iWhv61922019220epcas5p34;
-	Tue, 26 Dec 2023 05:49:27 +0000 (GMT)
-Received: from epsmges5p3new.samsung.com (unknown [182.195.38.179]) by
-	epsnrtp3.localdomain (Postfix) with ESMTP id 4SzkP12rm5z4x9Q8; Tue, 26 Dec
-	2023 05:49:25 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-	epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	20.12.09672.5696A856; Tue, 26 Dec 2023 14:49:25 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-	20231226054502epcas5p4175bb019139535ed4216678c69604532~kS2-RJboZ0351103511epcas5p4A;
-	Tue, 26 Dec 2023 05:45:02 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20231226054502epsmtrp1ce3b5d78ebea8c831b1a48e31141862e~kS2-P3Fwp2782527825epsmtrp12;
-	Tue, 26 Dec 2023 05:45:02 +0000 (GMT)
-X-AuditID: b6c32a4b-39fff700000025c8-a1-658a6965cd1f
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	8D.30.08817.E586A856; Tue, 26 Dec 2023 14:45:02 +0900 (KST)
-Received: from FDSFTE308 (unknown [107.122.81.79]) by epsmtip1.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20231226054501epsmtip11d27d5185af80e3fa54671c7e7dad912~kS29uuR8N1689016890epsmtip1g;
-	Tue, 26 Dec 2023 05:45:00 +0000 (GMT)
-From: "Aakarsh Jain" <aakarsh.jain@samsung.com>
-To: "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>, "'Marek
- Szyprowski'" <m.szyprowski@samsung.com>, "'Andrzej Hajda'"
-	<andrzej.hajda@intel.com>, "'Mauro Carvalho Chehab'" <mchehab@kernel.org>
-Cc: <linux-fsd@tesla.coma>, <linux-samsung-soc@vger.kernel.org>, "'Smitha T
- Murthy'" <smithatmurthy@gmail.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20231224-n-s5p-mfc-const-v1-6-a3b246470fe4@linaro.org>
-Subject: RE: [PATCH 06/15] media: s5p-mfc: constify s5p_mfc_variant
- structures
-Date: Tue, 26 Dec 2023 11:14:59 +0530
-Message-ID: <15d201da37be$abae6d20$030b4760$@samsung.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A79D4B5C1
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 05:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703570207; x=1735106207;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=1HHODoJLDGgClCZEYNcjY0OHgtEKrG3SAXnDAkTiUiI=;
+  b=GDdulIetfK7WDcuaNT6PIgiSlTmQrFXJbssTlAPzblPeflssjsterXFr
+   qa7oz7UuZOC17HXTVyXwS/J4z9p3UGmbYNJaY0j2pCc6MdoOBKBS/WekP
+   szbnQH58448w0YaeaezPPZla+G4f7bpjwokN7HXjOnCt9RMve+u37uNZg
+   kQSlS6Xv3ui8ZTU/qnLCDu+C438cgildtBKrWqUHy98nOkNWkmGeI9WvN
+   qluyWSEj+jZ5H9Z+vUCVkABDnkKZXWKckasU2Yvr4/98pinV0RILXY9ZW
+   Mtg5xTH8ETgBNlfX0P1wX3FJ6+aJ+sOuWIQuuzcIVHVP2SHcTbkV0IKey
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="3407623"
+X-IronPort-AV: E=Sophos;i="6.04,304,1695711600"; 
+   d="scan'208";a="3407623"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 21:56:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,304,1695711600"; 
+   d="scan'208";a="19578555"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 25 Dec 2023 21:56:45 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rI0Qk-000E7M-2s;
+	Tue, 26 Dec 2023 05:56:42 +0000
+Date: Tue, 26 Dec 2023 13:56:23 +0800
+From: kernel test robot <lkp@intel.com>
+To: Dragan Cvetic <dragan.cvetic@xilinx.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Derek Kiernan <derek.kiernan@xilinx.com>
+Subject: drivers/misc/xilinx_sdfec.c:92:57: warning: '%d' directive output
+ may be truncated writing between 1 and 10 bytes into a region of size 6
+Message-ID: <202312261345.5icSobz6-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKOGlHY6WxiJqLoSx78067AznjgmAG+IMttAZIPrQOvOMcZAA==
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBJsWRmVeSWpSXmKPExsWy7bCmlm5qZleqwaErIhb3F39msdj7eiu7
-	xabH11gtls0Osri8aw6bRc+GrawWM87vY7JYe+Quu8WyTX+YLFoal7A6cHnsnHWX3WPxnpdM
-	HptWdbJ53Lm2h81j85J6j74tqxg9/r5+xebxeZNcAEdUtk1GamJKapFCal5yfkpmXrqtkndw
-	vHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO0IlKCmWJOaVAoYDE4mIlfTubovzSklSFjPzi
-	Elul1IKUnAKTAr3ixNzi0rx0vbzUEitDAwMjU6DChOyMz1PNC1pkK74damVsYHwu3sXIySEh
-	YCLxo+MPUxcjF4eQwG5GiRObrzNCOJ8YJTp33YDKfGOUOH5wHQtMy7Mlu9lBbCGBvYwSi1bz
-	QxQ9Z5RYvWEPWIJNQF/i/qkeVpCEiMA5Rolt/VPARjEL3GSUOPZmJjNIFaeAi8Tncz1sILaw
-	QIDEvzefwFawCKhKdE19xQpi8wpYSqz71M8CYQtKnJz5BMxmFpCX2P52DjPESQoSP58uA6sX
-	EXCS+Lj0OztEjbjE0Z89zCCLJQSOcEiseT6XDaLBRaJ3axM7hC0s8er4FihbSuJlfxuUnSzx
-	eNFLqAU5Euv3TIH6317iwJU5QDYH0AJNifW79CHCshJTT61jgtjLJ9H7+wkTRJxXYsc8GFtN
-	Ys6dH6wQtozE4dVLGScwKs1C8tosJK/NQvLCLIRtCxhZVjFKphYU56anFpsWGOellsNjPDk/
-	dxMjOAlree9gfPTgg94hRiYOxkOMEhzMSiK8soodqUK8KYmVValF+fFFpTmpxYcYTYHhPZFZ
-	SjQ5H5gH8kriDU0sDUzMzMxMLI3NDJXEeV+3zk0REkhPLEnNTk0tSC2C6WPi4JRqYLq7Plib
-	javKZuWiqPrM5V0cjV8v/W/jyIpV4uIxs5LX/zTrPF/aWnGjrcbCBk7xUXz3o1USf4W3ubrc
-	kJUOuNLTuc++9toKpgcvT/CceXqp5lbZtah72VFnFjXMf3S1Xv0rS1v1/8LWW7YbdsiLbH57
-	pH5f0ESdhrJzZ3w5KoqPBXHeF4jVu/b81YdZ75K6fEpNBT3j5S/Pnyv7b/3VtLWrf/AzfFg3
-	NYL5Td8xlVwObqWk3a61KZmON89lzl6fJRd2q9KXe6JAyqw9ejnzPzccLDs87XHjwyMT/RuN
-	nBJ33Tp9PClnSu55pz/lbX0sovms2i/OPd5WNFnwXM5+drPtV5f8tk4Jq0w3UHqxTomlOCPR
-	UIu5qDgRACYYzTtLBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIIsWRmVeSWpSXmKPExsWy7bCSnG5cRleqwZy5Shb3F39msdj7eiu7
-	xabH11gtls0Osri8aw6bRc+GrawWM87vY7JYe+Quu8WyTX+YLFoal7A6cHnsnHWX3WPxnpdM
-	HptWdbJ53Lm2h81j85J6j74tqxg9/r5+xebxeZNcAEcUl01Kak5mWWqRvl0CV8bnqeYFLbIV
-	3w61MjYwPhfvYuTkkBAwkXi2ZDd7FyMXh5DAbkaJL8+OMEIkZCT+tx1jh7CFJVb+ew5V9JRR
-	4vq+bWwgCTYBfYn7p3pYQRIiAhcYJbbsWcAG4jAL3GeU6Nq0nQmi5SyjxOsZh5lAWjgFXCQ+
-	n+sBaxcW8JOY39PDAmKzCKhKdE19xQpi8wpYSqz71M8CYQtKnJz5BMxmFtCW6H3Yyghhy0ts
-	fzuHGeI+BYmfT5eB9YoIOEl8XPqdHaJGXOLozx7mCYzCs5CMmoVk1Cwko2YhaVnAyLKKUTK1
-	oDg3PbfYsMAoL7Vcrzgxt7g0L10vOT93EyM4FrW0djDuWfVB7xAjEwfjIUYJDmYlEV5ZxY5U
-	Id6UxMqq1KL8+KLSnNTiQ4zSHCxK4rzfXvemCAmkJ5akZqemFqQWwWSZODilGpjmZ1YvcTob
-	z7R//tqm+0+OHxTOZN6p6GyqaJP39Zi+ovSTtDVLN9fYifXX6kmY1l70P53RdENr9Ve3JxKJ
-	cTvtz8RmhTUYn7C4n3vDe4tuj93HXcXL1J8cTQkt737hcG32u0uFp5jCzrDdtA5cHKLyszc4
-	p+fjav/sxJ0edvL1WTZLVdf++v7U/EVr2d1HoZ63jMP3XX9tucc0Q0q0uS/lPoupxt9TB+P3
-	sXtKf5l0Kui6mI7jm7Dv1Q8yikP8Z7P7Sv4x2Cj8XXuKuebhNa+O7fsdnq+7+OyGjxd8TasZ
-	dlyf11/czqmjHKoc8ftsOD+v3Xwfyd+8D1dNyvnk12uweSv71q8Zj7yz7y0pklBiKc5INNRi
-	LipOBADfPUQ1NAMAAA==
-X-CMS-MailID: 20231226054502epcas5p4175bb019139535ed4216678c69604532
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231224154442epcas5p229ceb7d1000dd0949b89cded46d73bb7
-References: <20231224-n-s5p-mfc-const-v1-0-a3b246470fe4@linaro.org>
-	<CGME20231224154442epcas5p229ceb7d1000dd0949b89cded46d73bb7@epcas5p2.samsung.com>
-	<20231224-n-s5p-mfc-const-v1-6-a3b246470fe4@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   fbafc3e621c3f4ded43720fdb1d6ce1728ec664e
+commit: 76d83e1c32334a793e50de6f955c2eefcc60bb8e misc: xilinx-sdfec: add core driver
+date:   4 years, 6 months ago
+config: sparc64-randconfig-r025-20230806 (https://download.01.org/0day-ci/archive/20231226/202312261345.5icSobz6-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20231226/202312261345.5icSobz6-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312261345.5icSobz6-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/misc/xilinx_sdfec.c: In function 'xsdfec_probe':
+>> drivers/misc/xilinx_sdfec.c:92:57: warning: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 6 [-Wformat-truncation=]
+      92 |         snprintf(xsdfec->dev_name, DEV_NAME_LEN, "xsdfec%d", xsdfec->dev_id);
+         |                                                         ^~
+   drivers/misc/xilinx_sdfec.c:92:50: note: directive argument in the range [0, 2147483647]
+      92 |         snprintf(xsdfec->dev_name, DEV_NAME_LEN, "xsdfec%d", xsdfec->dev_id);
+         |                                                  ^~~~~~~~~~
+   drivers/misc/xilinx_sdfec.c:92:9: note: 'snprintf' output between 8 and 17 bytes into a destination of size 12
+      92 |         snprintf(xsdfec->dev_name, DEV_NAME_LEN, "xsdfec%d", xsdfec->dev_id);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for COMPAT_BINFMT_ELF
+   Depends on [n]: COMPAT [=y] && BINFMT_ELF [=n]
+   Selected by [y]:
+   - COMPAT [=y] && SPARC64 [=y]
 
 
+vim +92 drivers/misc/xilinx_sdfec.c
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Sent: 24 December 2023 21:14
-> To: Marek Szyprowski <m.szyprowski@samsung.com>; Andrzej Hajda
-> <andrzej.hajda@intel.com>; Mauro Carvalho Chehab
-> <mchehab@kernel.org>
-> Cc: Aakarsh Jain <aakarsh.jain@samsung.com>; linux-fsd@tesla.coma; linux-
-> samsung-soc@vger.kernel.org; Smitha T Murthy
-> <smithatmurthy@gmail.com>; linux-arm-kernel@lists.infradead.org; linux-
-> media@vger.kernel.org; linux-kernel@vger.kernel.org; Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org>
-> Subject: [PATCH 06/15] media: s5p-mfc: constify s5p_mfc_variant structures
-> 
-> Static "s5p_mfc_variant" structures are not modified by the driver, so they
-> can be made const for code safety.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
-> b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
-> index 6af7b812c5df..5d10c1cb8b92 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
-> @@ -1529,7 +1529,7 @@ static const struct s5p_mfc_buf_size buf_size_v5 =
-> {
->  	.priv	= &mfc_buf_size_v5,
->  };
-> 
-> -static struct s5p_mfc_variant mfc_drvdata_v5 = {
-> +static const struct s5p_mfc_variant mfc_drvdata_v5 = {
->  	.version	= MFC_VERSION,
->  	.version_bit	= MFC_V5_BIT,
->  	.port_num	= MFC_NUM_PORTS,
-> @@ -1554,7 +1554,7 @@ static const struct s5p_mfc_buf_size buf_size_v6 =
-> {
->  	.priv	= &mfc_buf_size_v6,
->  };
-> 
-> -static struct s5p_mfc_variant mfc_drvdata_v6 = {
-> +static const struct s5p_mfc_variant mfc_drvdata_v6 = {
->  	.version	= MFC_VERSION_V6,
->  	.version_bit	= MFC_V6_BIT,
->  	.port_num	= MFC_NUM_PORTS_V6,
-> @@ -1583,7 +1583,7 @@ static const struct s5p_mfc_buf_size buf_size_v7 =
-> {
->  	.priv	= &mfc_buf_size_v7,
->  };
-> 
-> -static struct s5p_mfc_variant mfc_drvdata_v7 = {
-> +static const struct s5p_mfc_variant mfc_drvdata_v7 = {
->  	.version	= MFC_VERSION_V7,
->  	.version_bit	= MFC_V7_BIT,
->  	.port_num	= MFC_NUM_PORTS_V7,
-> @@ -1593,7 +1593,7 @@ static struct s5p_mfc_variant mfc_drvdata_v7 = {
->  	.num_clocks	= 1,
->  };
-> 
-> -static struct s5p_mfc_variant mfc_drvdata_v7_3250 = {
-> +static const struct s5p_mfc_variant mfc_drvdata_v7_3250 = {
->  	.version        = MFC_VERSION_V7,
->  	.version_bit    = MFC_V7_BIT,
->  	.port_num       = MFC_NUM_PORTS_V7,
-> @@ -1617,7 +1617,7 @@ static const struct s5p_mfc_buf_size buf_size_v8 =
-> {
->  	.priv	= &mfc_buf_size_v8,
->  };
-> 
-> -static struct s5p_mfc_variant mfc_drvdata_v8 = {
-> +static const struct s5p_mfc_variant mfc_drvdata_v8 = {
->  	.version	= MFC_VERSION_V8,
->  	.version_bit	= MFC_V8_BIT,
->  	.port_num	= MFC_NUM_PORTS_V8,
-> @@ -1627,7 +1627,7 @@ static struct s5p_mfc_variant mfc_drvdata_v8 = {
->  	.num_clocks	= 1,
->  };
-> 
-> -static struct s5p_mfc_variant mfc_drvdata_v8_5433 = {
-> +static const struct s5p_mfc_variant mfc_drvdata_v8_5433 = {
->  	.version	= MFC_VERSION_V8,
->  	.version_bit	= MFC_V8_BIT,
->  	.port_num	= MFC_NUM_PORTS_V8,
-> @@ -1652,7 +1652,7 @@ static const struct s5p_mfc_buf_size buf_size_v10
-> = {
->  	.priv   = &mfc_buf_size_v10,
->  };
-> 
-> -static struct s5p_mfc_variant mfc_drvdata_v10 = {
-> +static const struct s5p_mfc_variant mfc_drvdata_v10 = {
->  	.version        = MFC_VERSION_V10,
->  	.version_bit    = MFC_V10_BIT,
->  	.port_num       = MFC_NUM_PORTS_V10,
-> 
-> --
-> 2.34.1
+    59	
+    60	static int xsdfec_probe(struct platform_device *pdev)
+    61	{
+    62		struct xsdfec_dev *xsdfec;
+    63		struct device *dev;
+    64		struct resource *res;
+    65		int err;
+    66	
+    67		xsdfec = devm_kzalloc(&pdev->dev, sizeof(*xsdfec), GFP_KERNEL);
+    68		if (!xsdfec)
+    69			return -ENOMEM;
+    70	
+    71		xsdfec->dev = &pdev->dev;
+    72		spin_lock_init(&xsdfec->error_data_lock);
+    73	
+    74		dev = xsdfec->dev;
+    75		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+    76		xsdfec->regs = devm_ioremap_resource(dev, res);
+    77		if (IS_ERR(xsdfec->regs)) {
+    78			err = PTR_ERR(xsdfec->regs);
+    79			return err;
+    80		}
+    81	
+    82		/* Save driver private data */
+    83		platform_set_drvdata(pdev, xsdfec);
+    84	
+    85		mutex_lock(&dev_idr_lock);
+    86		err = idr_alloc(&dev_idr, xsdfec->dev_name, 0, 0, GFP_KERNEL);
+    87		mutex_unlock(&dev_idr_lock);
+    88		if (err < 0)
+    89			goto err_xsddev_idr;
+    90		xsdfec->dev_id = err;
+    91	
+  > 92		snprintf(xsdfec->dev_name, DEV_NAME_LEN, "xsdfec%d", xsdfec->dev_id);
+    93		xsdfec->miscdev.minor = MISC_DYNAMIC_MINOR;
+    94		xsdfec->miscdev.name = xsdfec->dev_name;
+    95		xsdfec->miscdev.fops = &xsdfec_fops;
+    96		xsdfec->miscdev.parent = dev;
+    97		err = misc_register(&xsdfec->miscdev);
+    98		if (err) {
+    99			dev_err(dev, "error:%d. Unable to register device", err);
+   100			return err;
+   101		}
+   102		return 0;
+   103	
+   104	err_xsddev_idr:
+   105		xsdfec_idr_remove(xsdfec);
+   106	
+   107		return err;
+   108	}
+   109	
 
-Reviewed-by: Aakarsh Jain <aakarsh.jain@samsung.com>
-
-Thanks!
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
