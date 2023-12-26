@@ -1,192 +1,373 @@
-Return-Path: <linux-kernel+bounces-11711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0962B81EA61
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 23:45:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9BDE81EA63
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 23:51:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72AFCB221F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:45:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5968A1F218A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:51:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B3195C9C;
-	Tue, 26 Dec 2023 22:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 109185394;
+	Tue, 26 Dec 2023 22:51:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KsKHNPqD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50FEA5240
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 22:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7b7018c9476so414577939f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 14:45:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703630725; x=1704235525;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nke+NuDTG3SF317vq2MpQrzWpq09bUxj2nkltl846bc=;
-        b=olSlONT2b9iyQ3BgMCHgO4baCcLHRghvo6DVfMW4fVg+pbvfJab6bsvqNrItQFQ52T
-         rJmnFp0/HvJIbIM/3QjWGD1mJtYDd9nEhAHhDyUbx5aL/Ok4d3j9LAl6/cB8nYKtP8S2
-         YEiy7chQpBDIZ8NoDOVmapn/t5DKx6eMzfVVEvIv4RdgKigtTi4bfufDHY1qEVeyF5WA
-         aerhuLJ9AWdnjQhyS5gJrcQkqEVos8ujv4x8p/hvWz3W/giSntdUJ6v8bZ0pVfjGPuzJ
-         NCWaOYDOzO6uo7sqhqiFt+Ij6hcAUdYmLAedv6cPWivBIc9EaQmE7fpiDFElHKpj5ctQ
-         P/vA==
-X-Gm-Message-State: AOJu0YxhWr/+NQwiEkXmo/T4VzOZ/NkDe3Kw/W+1POR2WTAvB/+bapE4
-	9WlQgpy9NcrqC7kduS5i+gG4e7DnspX7A0bWTMbUKiOJeiLS
-X-Google-Smtp-Source: AGHT+IHuDTZsqnd8xy0l8/SU3PH28hBPLvDTkA5IVQOxEtIABO7SSMUTpcBWlotQB4YReZyDtGyEUuqdGt3j7sQXcPROD490VNu+
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD6E5257
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 22:51:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1703631091;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=KAcZVWUdwxMgEguWO/ipgfFw4d2BOub4xvB7dxmq+gU=;
+	b=KsKHNPqDeqoEeAJoRpQZG4yWXxJWmQq2+AcxQm+Busl0tPEWJWU4/fqxWpQGGxTvf7k1vq
+	Szj8Tq6B+qN48kKlRbItk5DzB2dvWd++Mi863otmoP2s1LGT3V5Ep+WP0vnfQSNHeDW92e
+	DRyIKyGgCs+z/VAHI+ViGjP8HSLLhhw=
+From: andrey.konovalov@linux.dev
+To: Marco Elver <elver@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	kasan-dev@googlegroups.com,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Andrey Konovalov <andreyknvl@google.com>
+Subject: [PATCH mm] kasan: stop leaking stack trace handles
+Date: Tue, 26 Dec 2023 23:51:21 +0100
+Message-Id: <20231226225121.235865-1-andrey.konovalov@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1be1:b0:35f:e864:f6f with SMTP id
- y1-20020a056e021be100b0035fe8640f6fmr1084863ilv.0.1703630725497; Tue, 26 Dec
- 2023 14:45:25 -0800 (PST)
-Date: Tue, 26 Dec 2023 14:45:25 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000038cf2f060d7170a9@google.com>
-Subject: [syzbot] [ntfs3?] KASAN: slab-out-of-bounds Read in ntfs_listxattr (2)
-From: syzbot <syzbot+65e940cfb8f99a97aca7@syzkaller.appspotmail.com>
-To: almaz.alexandrovich@paragon-software.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, ntfs3@lists.linux.dev, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+From: Andrey Konovalov <andreyknvl@google.com>
 
-syzbot found the following issue on:
+Commit 773688a6cb24 ("kasan: use stack_depot_put for Generic mode") added
+support for stack trace eviction for Generic KASAN.
 
-HEAD commit:    aafe7ad77b91 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=15412f76e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=23ce86eb3d78ef4d
-dashboard link: https://syzkaller.appspot.com/bug?extid=65e940cfb8f99a97aca7
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10627f76e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1400171ae80000
+However, that commit didn't evict stack traces when the object is not put
+into quarantine. As a result, some stack traces are never evicted from
+the stack depot.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/23845238c49b/disk-aafe7ad7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1144b0f74104/vmlinux-aafe7ad7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6db20df213a2/Image-aafe7ad7.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/4f0ec668b8cf/mount_0.gz
+In addition, with the "kasan: save mempool stack traces" series, the
+free stack traces for mempool objects are also not properly evicted from
+the stack depot.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+65e940cfb8f99a97aca7@syzkaller.appspotmail.com
+Fix both issues by:
 
-ntfs3: loop0: Different NTFS sector size (4096) and media sector size (512).
-ntfs3: loop0: Failed to initialize $Extend/$Reparse.
-ntfs3: loop0: Mark volume as dirty due to NTFS errors
-==================================================================
-BUG: KASAN: slab-out-of-bounds in ntfs_list_ea fs/ntfs3/xattr.c:232 [inline]
-BUG: KASAN: slab-out-of-bounds in ntfs_listxattr+0x354/0x50c fs/ntfs3/xattr.c:733
-Read of size 48 at addr ffff0000d0125c30 by task syz-executor346/6095
+1. Evicting all stack traces when an object if freed if it was not put
+   into quarantine;
 
-CPU: 1 PID: 6095 Comm: syz-executor346 Not tainted 6.7.0-rc6-syzkaller-gaafe7ad77b91 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:291
- show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:298
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x174/0x514 mm/kasan/report.c:475
- kasan_report+0xd8/0x138 mm/kasan/report.c:588
- kasan_check_range+0x254/0x294 mm/kasan/generic.c:187
- __asan_memcpy+0x3c/0x84 mm/kasan/shadow.c:105
- ntfs_list_ea fs/ntfs3/xattr.c:232 [inline]
- ntfs_listxattr+0x354/0x50c fs/ntfs3/xattr.c:733
- vfs_listxattr fs/xattr.c:494 [inline]
- listxattr+0x108/0x368 fs/xattr.c:841
- path_listxattr fs/xattr.c:865 [inline]
- __do_sys_llistxattr fs/xattr.c:883 [inline]
- __se_sys_llistxattr fs/xattr.c:880 [inline]
- __arm64_sys_llistxattr+0x13c/0x21c fs/xattr.c:880
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+2. Always evicting an existing free stack trace when a new one is saved.
 
-Allocated by task 6095:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
- kasan_save_alloc_info+0x24/0x30 mm/kasan/generic.c:511
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xac/0xc4 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1007 [inline]
- __kmalloc+0xcc/0x1b8 mm/slab_common.c:1020
- kmalloc include/linux/slab.h:604 [inline]
- ntfs_read_ea+0x3c0/0x808 fs/ntfs3/xattr.c:118
- ntfs_list_ea fs/ntfs3/xattr.c:204 [inline]
- ntfs_listxattr+0x14c/0x50c fs/ntfs3/xattr.c:733
- vfs_listxattr fs/xattr.c:494 [inline]
- listxattr+0x108/0x368 fs/xattr.c:841
- path_listxattr fs/xattr.c:865 [inline]
- __do_sys_llistxattr fs/xattr.c:883 [inline]
- __se_sys_llistxattr fs/xattr.c:880 [inline]
- __arm64_sys_llistxattr+0x13c/0x21c fs/xattr.c:880
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+Also do a few related clean-ups:
 
-The buggy address belongs to the object at ffff0000d0125c00
- which belongs to the cache kmalloc-64 of size 64
-The buggy address is located 48 bytes inside of
- allocated 60-byte region [ffff0000d0125c00, ffff0000d0125c3c)
+- Do not zero out free track when initializing/invalidating free meta:
+  set a value in shadow memory instead;
 
-The buggy address belongs to the physical page:
-page:000000003d4f3554 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x110125
-ksm flags: 0x5ffc00000000800(slab|node=0|zone=2|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 05ffc00000000800 ffff0000c0001640 fffffc0003376b40 dead000000000003
-raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
+- Rename KASAN_SLAB_FREETRACK to KASAN_SLAB_FREE_META;
 
-Memory state around the buggy address:
- ffff0000d0125b00: 00 00 00 00 00 00 02 fc fc fc fc fc fc fc fc fc
- ffff0000d0125b80: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
->ffff0000d0125c00: 00 00 00 00 00 00 00 04 fc fc fc fc fc fc fc fc
-                                        ^
- ffff0000d0125c80: 00 00 00 00 00 00 04 fc fc fc fc fc fc fc fc fc
- ffff0000d0125d00: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
-==================================================================
+- Drop the kasan_init_cache_meta function as it's not used by KASAN;
 
+- Add comments for the kasan_alloc_meta and kasan_free_meta structs.
+
+Fixes: 773688a6cb24 ("kasan: use stack_depot_put for Generic mode")
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Andrew, please put this as a separate patch on top of all KASAN patches
+in mm.
+---
+ mm/kasan/common.c         | 27 +++++++++++++++---
+ mm/kasan/generic.c        | 60 +++++++++++++++++++++++++++++++++------
+ mm/kasan/kasan.h          | 25 ++++++++++++----
+ mm/kasan/quarantine.c     | 20 +------------
+ mm/kasan/report_generic.c |  6 ++--
+ 5 files changed, 97 insertions(+), 41 deletions(-)
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index a486e9b1ac68..223af53d4338 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -255,14 +255,33 @@ static inline bool poison_slab_object(struct kmem_cache *cache, void *object,
+ bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+ 				unsigned long ip, bool init)
+ {
+-	bool buggy_object;
+-
+ 	if (is_kfence_address(object))
+ 		return false;
+ 
+-	buggy_object = poison_slab_object(cache, object, ip, init);
++	/*
++	 * If the object is buggy, do not let slab put the object onto the
++	 * freelist. The object will thus never be allocated again and its
++	 * metadata will never get released.
++	 */
++	if (poison_slab_object(cache, object, ip, init))
++		return true;
++
++	/*
++	 * If the object is put into quarantine, do not let slab put the object
++	 * onto the freelist for now. The object's metadata is kept until the
++	 * object gets evicted from quarantine.
++	 */
++	if (kasan_quarantine_put(cache, object))
++		return true;
++
++	/*
++	 * If the object is not put into quarantine, it will likely be quickly
++	 * reallocated. Thus, release its metadata now.
++	 */
++	kasan_release_object_meta(cache, object);
+ 
+-	return buggy_object ? true : kasan_quarantine_put(cache, object);
++	/* Let slab put the object onto the freelist. */
++	return false;
+ }
+ 
+ static inline bool check_page_allocation(void *ptr, unsigned long ip)
+diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+index 0e77c43c559e..fc22ea1af775 100644
+--- a/mm/kasan/generic.c
++++ b/mm/kasan/generic.c
+@@ -480,10 +480,10 @@ struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
+ void kasan_init_object_meta(struct kmem_cache *cache, const void *object)
+ {
+ 	struct kasan_alloc_meta *alloc_meta;
+-	struct kasan_free_meta *free_meta;
+ 
+ 	alloc_meta = kasan_get_alloc_meta(cache, object);
+ 	if (alloc_meta) {
++		/* Zero out alloc meta to mark it as invalid. */
+ 		__memset(alloc_meta, 0, sizeof(*alloc_meta));
+ 
+ 		/*
+@@ -495,9 +495,50 @@ void kasan_init_object_meta(struct kmem_cache *cache, const void *object)
+ 		raw_spin_lock_init(&alloc_meta->aux_lock);
+ 		kasan_enable_current();
+ 	}
++
++	/*
++	 * Explicitly marking free meta as invalid is not required: the shadow
++	 * value for the first 8 bytes of a newly allocated object is not
++	 * KASAN_SLAB_FREE_META.
++	 */
++}
++
++void release_alloc_meta(struct kasan_alloc_meta *meta)
++{
++	/* Evict the stack traces from stack depot. */
++	stack_depot_put(meta->alloc_track.stack);
++	stack_depot_put(meta->aux_stack[0]);
++	stack_depot_put(meta->aux_stack[1]);
++
++	/* Zero out alloc meta to mark it as invalid. */
++	__memset(meta, 0, sizeof(*meta));
++}
++
++void release_free_meta(const void *object, struct kasan_free_meta *meta)
++{
++	/* Check if free meta is valid. */
++	if (*(u8 *)kasan_mem_to_shadow(object) != KASAN_SLAB_FREE_META)
++		return;
++
++	/* Evict the stack trace from the stack depot. */
++	stack_depot_put(meta->free_track.stack);
++
++	/* Mark free meta as invalid. */
++	*(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREE;
++}
++
++void kasan_release_object_meta(struct kmem_cache *cache, const void *object)
++{
++	struct kasan_alloc_meta *alloc_meta;
++	struct kasan_free_meta *free_meta;
++
++	alloc_meta = kasan_get_alloc_meta(cache, object);
++	if (alloc_meta)
++		release_alloc_meta(alloc_meta);
++
+ 	free_meta = kasan_get_free_meta(cache, object);
+ 	if (free_meta)
+-		__memset(free_meta, 0, sizeof(*free_meta));
++		release_free_meta(object, free_meta);
+ }
+ 
+ size_t kasan_metadata_size(struct kmem_cache *cache, bool in_object)
+@@ -573,11 +614,8 @@ void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
+ 	if (!alloc_meta)
+ 		return;
+ 
+-	/* Evict previous stack traces (might exist for krealloc). */
+-	stack_depot_put(alloc_meta->alloc_track.stack);
+-	stack_depot_put(alloc_meta->aux_stack[0]);
+-	stack_depot_put(alloc_meta->aux_stack[1]);
+-	__memset(alloc_meta, 0, sizeof(*alloc_meta));
++	/* Evict previous stack traces (might exist for krealloc or mempool). */
++	release_alloc_meta(alloc_meta);
+ 
+ 	kasan_save_track(&alloc_meta->alloc_track, flags);
+ }
+@@ -590,7 +628,11 @@ void kasan_save_free_info(struct kmem_cache *cache, void *object)
+ 	if (!free_meta)
+ 		return;
+ 
++	/* Evict previous stack trace (might exist for mempool). */
++	release_free_meta(object, free_meta);
++
+ 	kasan_save_track(&free_meta->free_track, 0);
+-	/* The object was freed and has free track set. */
+-	*(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREETRACK;
++
++	/* Mark free meta as valid. */
++	*(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREE_META;
+ }
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 814e89523c64..645ae04539c9 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -156,7 +156,7 @@ static inline bool kasan_requires_meta(void)
+ 
+ #ifdef CONFIG_KASAN_GENERIC
+ 
+-#define KASAN_SLAB_FREETRACK	0xFA  /* freed slab object with free track */
++#define KASAN_SLAB_FREE_META	0xFA  /* freed slab object with free meta */
+ #define KASAN_GLOBAL_REDZONE	0xF9  /* redzone for global variable */
+ 
+ /* Stack redzone shadow values. Compiler ABI, do not change. */
+@@ -253,6 +253,15 @@ struct kasan_global {
+ 
+ #ifdef CONFIG_KASAN_GENERIC
+ 
++/*
++ * Alloc meta contains the allocation-related information about a slab object.
++ * Alloc meta is saved when an object is allocated and is kept until either the
++ * object returns to the slab freelist (leaves quarantine for quarantined
++ * objects or gets freed for the non-quarantined ones) or reallocated via
++ * krealloc or through a mempool.
++ * Alloc meta is stored inside of the object's redzone.
++ * Alloc meta is considered valid whenever it contains non-zero data.
++ */
+ struct kasan_alloc_meta {
+ 	struct kasan_track alloc_track;
+ 	/* Free track is stored in kasan_free_meta. */
+@@ -278,8 +287,12 @@ struct qlist_node {
+ #define KASAN_NO_FREE_META INT_MAX
+ 
+ /*
+- * Free meta is only used by Generic mode while the object is in quarantine.
+- * After that, slab allocator stores the freelist pointer in the object.
++ * Free meta contains the freeing-related information about a slab object.
++ * Free meta is only kept for quarantined objects and for mempool objects until
++ * the object gets allocated again.
++ * Free meta is stored within the object's memory.
++ * Free meta is considered valid whenever the value of the shadow byte that
++ * corresponds to the first 8 bytes of the object is KASAN_SLAB_FREE_META.
+  */
+ struct kasan_free_meta {
+ 	struct qlist_node quarantine_link;
+@@ -380,15 +393,15 @@ void kasan_report_invalid_free(void *object, unsigned long ip, enum kasan_report
+ struct slab *kasan_addr_to_slab(const void *addr);
+ 
+ #ifdef CONFIG_KASAN_GENERIC
+-void kasan_init_cache_meta(struct kmem_cache *cache, unsigned int *size);
+-void kasan_init_object_meta(struct kmem_cache *cache, const void *object);
+ struct kasan_alloc_meta *kasan_get_alloc_meta(struct kmem_cache *cache,
+ 						const void *object);
+ struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
+ 						const void *object);
++void kasan_init_object_meta(struct kmem_cache *cache, const void *object);
++void kasan_release_object_meta(struct kmem_cache *cache, const void *object);
+ #else
+-static inline void kasan_init_cache_meta(struct kmem_cache *cache, unsigned int *size) { }
+ static inline void kasan_init_object_meta(struct kmem_cache *cache, const void *object) { }
++static inline void kasan_release_object_meta(struct kmem_cache *cache, const void *object) { }
+ #endif
+ 
+ depot_stack_handle_t kasan_save_stack(gfp_t flags, depot_flags_t depot_flags);
+diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
+index 782e045da911..8afa77bc5d3b 100644
+--- a/mm/kasan/quarantine.c
++++ b/mm/kasan/quarantine.c
+@@ -143,22 +143,10 @@ static void *qlink_to_object(struct qlist_node *qlink, struct kmem_cache *cache)
+ static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
+ {
+ 	void *object = qlink_to_object(qlink, cache);
+-	struct kasan_alloc_meta *alloc_meta = kasan_get_alloc_meta(cache, object);
+ 	struct kasan_free_meta *free_meta = kasan_get_free_meta(cache, object);
+ 	unsigned long flags;
+ 
+-	if (alloc_meta) {
+-		stack_depot_put(alloc_meta->alloc_track.stack);
+-		stack_depot_put(alloc_meta->aux_stack[0]);
+-		stack_depot_put(alloc_meta->aux_stack[1]);
+-		__memset(alloc_meta, 0, sizeof(*alloc_meta));
+-	}
+-
+-	if (free_meta &&
+-	    *(u8 *)kasan_mem_to_shadow(object) == KASAN_SLAB_FREETRACK) {
+-		stack_depot_put(free_meta->free_track.stack);
+-		__memset(&free_meta->free_track, 0, sizeof(free_meta->free_track));
+-	}
++	kasan_release_object_meta(cache, object);
+ 
+ 	/*
+ 	 * If init_on_free is enabled and KASAN's free metadata is stored in
+@@ -170,12 +158,6 @@ static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
+ 	    cache->kasan_info.free_meta_offset == 0)
+ 		memzero_explicit(free_meta, sizeof(*free_meta));
+ 
+-	/*
+-	 * As the object now gets freed from the quarantine,
+-	 * take note that its free track is no longer exists.
+-	 */
+-	*(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREE;
+-
+ 	if (IS_ENABLED(CONFIG_SLAB))
+ 		local_irq_save(flags);
+ 
+diff --git a/mm/kasan/report_generic.c b/mm/kasan/report_generic.c
+index 99cbcd73cff7..f5b8e37b3805 100644
+--- a/mm/kasan/report_generic.c
++++ b/mm/kasan/report_generic.c
+@@ -110,7 +110,7 @@ static const char *get_shadow_bug_type(struct kasan_report_info *info)
+ 		bug_type = "use-after-free";
+ 		break;
+ 	case KASAN_SLAB_FREE:
+-	case KASAN_SLAB_FREETRACK:
++	case KASAN_SLAB_FREE_META:
+ 		bug_type = "slab-use-after-free";
+ 		break;
+ 	case KASAN_ALLOCA_LEFT:
+@@ -173,8 +173,8 @@ void kasan_complete_mode_report_info(struct kasan_report_info *info)
+ 		memcpy(&info->alloc_track, &alloc_meta->alloc_track,
+ 		       sizeof(info->alloc_track));
+ 
+-	if (*(u8 *)kasan_mem_to_shadow(info->object) == KASAN_SLAB_FREETRACK) {
+-		/* Free meta must be present with KASAN_SLAB_FREETRACK. */
++	if (*(u8 *)kasan_mem_to_shadow(info->object) == KASAN_SLAB_FREE_META) {
++		/* Free meta must be present with KASAN_SLAB_FREE_META. */
+ 		free_meta = kasan_get_free_meta(info->cache, info->object);
+ 		memcpy(&info->free_track, &free_meta->free_track,
+ 		       sizeof(info->free_track));
+-- 
+2.25.1
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
