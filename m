@@ -1,122 +1,185 @@
-Return-Path: <linux-kernel+bounces-11489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11488-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6814F81E720
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 12:37:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12AF281E71F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 12:35:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDF23282D22
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 11:37:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED97F1C21D08
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 11:34:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9F924E1D1;
-	Tue, 26 Dec 2023 11:36:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C571B4E1D3;
+	Tue, 26 Dec 2023 11:34:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="YjXj42CU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [195.130.137.80])
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB874E1C6
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 11:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-	by riemann.telenet-ops.be (Postfix) with ESMTPS id 4Szszj2lrmz4x94y
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 12:31:29 +0100 (CET)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:9b4b:afc4:afcc:abac])
-	by andre.telenet-ops.be with bizsmtp
-	id SzXL2B0092KswmB01zXLCU; Tue, 26 Dec 2023 12:31:22 +0100
-Received: from geert (helo=localhost)
-	by ramsan.of.borg with local-esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rI5ea-00DRWR-Fl;
-	Tue, 26 Dec 2023 12:31:20 +0100
-Date: Tue, 26 Dec 2023 12:31:20 +0100 (CET)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Jie Wang <jie.wang@intel.com>
-cc: herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org, 
-    qat-linux@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] crypto: qat - add support for 420xx devices
-In-Reply-To: <20231215100147.1703641-6-jie.wang@intel.com>
-Message-ID: <c6662ee1-9c2a-49fb-917f-2a3586f636b4@linux-m68k.org>
-References: <20231215100147.1703641-1-jie.wang@intel.com> <20231215100147.1703641-6-jie.wang@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77FCD4E1C9
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 11:34:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1703590480;
+	bh=IjVldST9wmzuoDkc/uKjDTattvtdRDpSrjV+wFQaAqk=;
+	h=From:Date:Subject:To:Cc:From;
+	b=YjXj42CU7AqY6+JqV96Avn2c/wZTiJv+xwQyQMA8X/k8EsPgMsXPufzGWYltxS/VG
+	 qgEddtuin0uFw+evNtw/PjGi8bJKVrIE6EXEZe/i6y59/Z5lHlcXpensyQz8vUF82H
+	 BFQ76elUq8vuEy85lRwYtihCIS4k1WbvXdcszQjw=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Tue, 26 Dec 2023 12:34:38 +0100
+Subject: [PATCH v2] scripts: check-sysctl-docs: adapt to new API
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-447575269-1703590280=:3203928"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20231226-sysctl-check-v2-1-2d4f50b30d34@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAE26imUC/3XMQQ6CMBCF4auQWVvTjoDgynsYFqQd7URTTKeih
+ PTuVvYu/5e8bwWhyCRwqlaINLPwFErgrgLrx3Ajxa40oMaDQdRKFrHpoawne1ddp7FtjOvrxkG
+ 5PCNd+bNxl6G0Z0lTXDZ9Nr/1DzQbZVSN2pKrx7Z3x/ObWESsf/l9oARDzvkLnt5s3a0AAAA=
+To: Luis Chamberlain <mcgrof@kernel.org>, 
+ Joel Granados <j.granados@samsung.com>
+Cc: linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703590479; l=4093;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=IjVldST9wmzuoDkc/uKjDTattvtdRDpSrjV+wFQaAqk=;
+ b=X6yO+bhslli+/1O/kJu+ygceT5rJuVd4SiNTOUoL2C1Npi6eudaDZNFo2tjZtFuv99q4gicRQ
+ DglDOwTGYbuCo0cJMZHM282Fm6AvY1gc5KQp9XE4hYGknIEXkn8WHqT
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+The script expects the old sysctl_register_paths() API which was removed
+some time ago. Adapt it to work with the new
+sysctl_register()/sysctl_register_sz()/sysctl_register_init() APIs.
 
---8323329-447575269-1703590280=:3203928
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 8BIT
+In its reference invocation the script won't be able to parse the tables
+from ipc/ipc_sysctl.c as they are using dynamically built tables which
+are to complex to parse.
 
- 	Hi Jie,
+Note that the script is already prepared for a potential constification
+of the ctl_table structs.
 
-On Fri, 15 Dec 2023, Jie Wang wrote:
-> Add support for 420xx devices by including a new device driver that
-> supports such devices, updates to the firmware loader and capabilities.
->
-> Compared to 4xxx devices, 420xx devices have more acceleration engines
-> (16 service engines and 1 admin) and support the wireless cipher
-> algorithms ZUC and Snow 3G.
->
-> Signed-off-by: Jie Wang <jie.wang@intel.com>
-> Co-developed-by: Dong Xie <dong.xie@intel.com>
-> Signed-off-by: Dong Xie <dong.xie@intel.com>
-> Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+Changes in v2:
+- Remove unused global variable "paths"
+- Remove docs for deleted variables "children" and "paths"
+- Link to v1: https://lore.kernel.org/r/20231220-sysctl-check-v1-1-420ced4a69d7@weissschuh.net
+---
+ scripts/check-sysctl-docs | 45 ++++++++++++---------------------------------
+ 1 file changed, 12 insertions(+), 33 deletions(-)
 
-Thanks for your patch, which is now commit fcf60f4bcf54952c ("crypto:
-qat - add support for 420xx devices") in crypto/master
+diff --git a/scripts/check-sysctl-docs b/scripts/check-sysctl-docs
+index 4f163e0bf6a4..739afd766708 100755
+--- a/scripts/check-sysctl-docs
++++ b/scripts/check-sysctl-docs
+@@ -8,7 +8,7 @@
+ # Example invocation:
+ #	scripts/check-sysctl-docs -vtable="kernel" \
+ #		Documentation/admin-guide/sysctl/kernel.rst \
+-#		$(git grep -l register_sysctl_)
++#		$(git grep -l register_sysctl)
+ #
+ # Specify -vdebug=1 to see debugging information
+ 
+@@ -20,14 +20,10 @@ BEGIN {
+ }
+ 
+ # The following globals are used:
+-# children: maps ctl_table names and procnames to child ctl_table names
+ # documented: maps documented entries (each key is an entry)
+ # entries: maps ctl_table names and procnames to counts (so
+ #          enumerating the subkeys for a given ctl_table lists its
+ #          procnames)
+-# files: maps procnames to source file names
+-# paths: maps ctl_path names to paths
+-# curpath: the name of the current ctl_path struct
+ # curtable: the name of the current ctl_table struct
+ # curentry: the name of the current proc entry (procname when parsing
+ #           a ctl_table, constructed path when parsing a ctl_path)
+@@ -94,44 +90,23 @@ FNR == NR {
+ 
+ # Stage 2: process each file and find all sysctl tables
+ BEGINFILE {
+-    delete children
+     delete entries
+-    delete paths
+-    curpath = ""
+     curtable = ""
+     curentry = ""
+     if (debug) print "Processing file " FILENAME
+ }
+ 
+-/^static struct ctl_path/ {
+-    match($0, /static struct ctl_path ([^][]+)/, tables)
+-    curpath = tables[1]
+-    if (debug) print "Processing path " curpath
+-}
+-
+-/^static struct ctl_table/ {
+-    match($0, /static struct ctl_table ([^][]+)/, tables)
+-    curtable = tables[1]
++/^static( const)? struct ctl_table/ {
++    match($0, /static( const)? struct ctl_table ([^][]+)/, tables)
++    curtable = tables[2]
+     if (debug) print "Processing table " curtable
+ }
+ 
+ /^};$/ {
+-    curpath = ""
+     curtable = ""
+     curentry = ""
+ }
+ 
+-curpath && /\.procname[\t ]*=[\t ]*".+"/ {
+-    match($0, /.procname[\t ]*=[\t ]*"([^"]+)"/, names)
+-    if (curentry) {
+-	curentry = curentry "/" names[1]
+-    } else {
+-	curentry = names[1]
+-    }
+-    if (debug) print "Setting path " curpath " to " curentry
+-    paths[curpath] = curentry
+-}
+-
+ curtable && /\.procname[\t ]*=[\t ]*".+"/ {
+     match($0, /.procname[\t ]*=[\t ]*"([^"]+)"/, names)
+     curentry = names[1]
+@@ -140,10 +115,14 @@ curtable && /\.procname[\t ]*=[\t ]*".+"/ {
+     file[curentry] = FILENAME
+ }
+ 
+-/\.child[\t ]*=/ {
+-    child = trimpunct($NF)
+-    if (debug) print "Linking child " child " to table " curtable " entry " curentry
+-    children[curtable][curentry] = child
++/register_sysctl.*/ {
++    match($0, /register_sysctl(|_init|_sz)\("([^"]+)" *, *([^,)]+)/, tables)
++    if (debug) print "Registering table " tables[3] " at " tables[2]
++    if (tables[2] == table) {
++        for (entry in entries[tables[3]]) {
++            printentry(entry)
++        }
++    }
+ }
+ 
+ END {
 
-> --- a/drivers/crypto/intel/qat/Kconfig
-> +++ b/drivers/crypto/intel/qat/Kconfig
-> @@ -59,6 +59,17 @@ config CRYPTO_DEV_QAT_4XXX
-> 	  To compile this as a module, choose M here: the module
-> 	  will be called qat_4xxx.
->
-> +config CRYPTO_DEV_QAT_420XX
-> +	tristate "Support for Intel(R) QAT_420XX"
-> +	depends on PCI && (!CPU_BIG_ENDIAN || COMPILE_TEST)
+---
+base-commit: de2ee5e9405e12600c81e39837362800cee433a2
+change-id: 20231220-sysctl-check-8802651d945d
 
-These dependencies suggest that the QAT_420XX device can be present and
-used on any little-endian system that supports PCIe (arm64, MIPS,
-PowerPC, RISC-V, ...).
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
 
-However, [1] says QAT is only present on intel Atom� C5000, P5300, and
-P5700 processors, implying the dependency should rather be
-
-     depends on PCI && (X86_64 || COMPILE_TEST)
-
-Which one is correct?
-
-[1] https://www.intel.com/content/www/us/en/architecture-and-technology/intel-quick-assist-technology-overview.html
-
-> +	select CRYPTO_DEV_QAT
-> +	help
-> +	  Support for Intel(R) QuickAssist Technology QAT_420xx
-> +	  for accelerating crypto and compression workloads.
-> +
-> +	  To compile this as a module, choose M here: the module
-> +	  will be called qat_420xx.
-> +
-> config CRYPTO_DEV_QAT_DH895xCCVF
-> 	tristate "Support for Intel(R) DH895xCC Virtual Function"
-> 	depends on PCI && (!CPU_BIG_ENDIAN || COMPILE_TEST)
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
---8323329-447575269-1703590280=:3203928--
 
