@@ -1,114 +1,135 @@
-Return-Path: <linux-kernel+bounces-11590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E6FD81E8A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 18:09:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF92F81E8A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 18:14:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 262C61F21BF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:09:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68D7D28284E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9B54F896;
-	Tue, 26 Dec 2023 17:09:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3404E4F897;
+	Tue, 26 Dec 2023 17:14:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RbYhe3yu"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V1L8cCFv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5744F885
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 17:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbcd9f4396eso5348452276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:09:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703610567; x=1704215367; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Akd6RKlfKGQOIPRZpIDuO79/YYYSE6zhnL/JmbvL390=;
-        b=RbYhe3yuFFVjYCDkoZBLzHI6XbbYonR8MZopzWSwxAfU0hGZ1bG7tmvaA0bKlRUUOq
-         5AMsll2kWe+tddxuP3Cz3SpgTQAks1XYTlHYFSAkBq0Pj/zB5oRfWpqeLv+HlZukFSZl
-         yOUMKRKBKd0PX4l+O0aRDHRKn/Wpku3cdRt6UTh+vcnMwEfQwA/qIski68veERO1IDuS
-         v8lfM2eO+7tLBAtniBcvm4XvWteIPhGqnvNOB//DvNMFdxGlnsjOh14OVWMqmtbeLOv/
-         daK857XkQtbsMxpO4g+onJ9P0IcZTQTQ4SkQUKLcmAEWzknwMkDjo3a2JWDzXcq3lgQ5
-         GBQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703610567; x=1704215367;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Akd6RKlfKGQOIPRZpIDuO79/YYYSE6zhnL/JmbvL390=;
-        b=lJUKKTPVEaK/WLzYx9ajAcqehlw0pn8BKOa+UU+Agiwzt10TULmNDJZ+AEH+iIoepq
-         TO4uoBnnom4BUJffdDfDphcDGqTdZ0Yy4yYKEsAKOZ9CuZu0tAIfbUwGJ5pXJ4m9WRcF
-         qJ/i9SGU8YmwCgz64dNrsOEITCyI5DgYDw6vOV6xb+8aitKWSbrmpHRvNPErbiV+MJOu
-         VbLa1+xbArRDpur0IpjSmdoKsuQtak23KNVQL32V4/HTt0G/vKHr6Mnv1GS+jEMnn1/L
-         TEK7ZQTTSbVGTUlSQTS7yge04MEZQ6obVupWiWI2k7QONGXI4YXITXbQ2XLPiH31GAyB
-         TPmA==
-X-Gm-Message-State: AOJu0Yywv8F+EwyT2VVx4VlQQDNyWa5RKGstDnYNDC6cfDsHoV+jPD3Q
-	CGBzp4ZYZsi7/9O5WEIV3iT90kb1ROo0HlTU1Bc=
-X-Google-Smtp-Source: AGHT+IEkqwyUw5LE2pPuSVWdD9Ll8bjRJ1AiBxVJse8CYRnhUFTQJDKFIr+3DFypxTRbwCySdqtTAuj16CB3
-X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
- (user=tanzirh job=sendgmr) by 2002:a05:6902:1364:b0:dbc:1b7c:3467 with SMTP
- id bt4-20020a056902136400b00dbc1b7c3467mr2836861ybb.4.1703610567371; Tue, 26
- Dec 2023 09:09:27 -0800 (PST)
-Date: Tue, 26 Dec 2023 17:09:23 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4A34F885
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 17:14:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703610842; x=1735146842;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ltBBpaQ6/D3R3CSyabnBf+3+RsQgWDr8d72X9RThQb0=;
+  b=V1L8cCFvgaBMW+9dv6CiMWvDcEXfvvDxzlVxv2ggo7zGR8nAzSRo9Lou
+   arPEfmck3GmldmgV3iPmavWAr8JdR4Q4RQ1HhfuJx7WVwa+DMdrES/8bO
+   LqDwd5GgeHaU92ad7xdByI8tPIEPg7ceLZFCGLIUrRsrH/qn+Gd01jLHA
+   fWsH0ysjo1ZzLi9tP4uQMQsTH92QqTydjkSJ5EMcstEuen09/ZgPwJLSj
+   TS8mdWJEM9y1yAd4x20Lm1GkfknmhEPAGr5ytOKNx8Gi3L7jKtcygmuOa
+   ZI17mP8Ic2FsZX+s2xqG5jF/4kk5tAE8nWmICKlxft46M2mAqOOCAAeKh
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="393519810"
+X-IronPort-AV: E=Sophos;i="6.04,306,1695711600"; 
+   d="scan'208";a="393519810"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2023 09:14:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="951277016"
+X-IronPort-AV: E=Sophos;i="6.04,306,1695711600"; 
+   d="scan'208";a="951277016"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 26 Dec 2023 09:14:00 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rIB09-000EgH-2R;
+	Tue, 26 Dec 2023 17:13:57 +0000
+Date: Wed, 27 Dec 2023 01:13:41 +0800
+From: kernel test robot <lkp@intel.com>
+To: Youling Tang <youling.tang@outlook.com>, Baoquan He <bhe@redhat.com>
+Cc: oe-kbuild-all@lists.linux.dev, Huacai Chen <chenhuacai@loongson.cn>,
+	linux-kernel@vger.kernel.org, Youling Tang <tangyouling@kylinos.cn>
+Subject: Re: [PATCH] kdump: Remove redundant DEFAULT_CRASH_KERNEL_LOW_SIZE
+Message-ID: <202312270133.8w4Wrh4h-lkp@intel.com>
+References: <MW4PR84MB3145D3EB871BBD59AA71C0FC8198A@MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAMIIi2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDI0ML3aTMvJTUorRi3URzU4tUQzOjVIOkRCWg8oKi1LTMCrBR0bG1tQA 4k033WgAAAA==
-X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1703610566; l=967;
- i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
- bh=zmGZX06tlXxioKf/BCyW6Up5k041hhvwaK7ZwpJbzrI=; b=vZUDK6X/6tZGD7CNgO/zUwDV2syFM/ib/Sj0Ja3eESj8Ux4jpiM/ov5IuGYvT3qOEKwEQy0pk
- 6n14iurK7XkDUBY27DVA33K3ooj/H//4RBi7ytBuVGIS7YUJa9dL5gh
-X-Mailer: b4 0.12.4
-Message-ID: <20231226-binderfs-v1-1-66829e92b523@google.com>
-Subject: [PATCH] android: removed asm-generic/errno-base.h
-From: Tanzir Hasan <tanzirh@google.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"=?utf-8?q?Arve_Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Christian Brauner <brauner@kernel.org>, 
-	Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>
-Cc: linux-kernel@vger.kernel.org, Nick Desaulniers <nnn@google.com>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Tanzir Hasan <tanzirh@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW4PR84MB3145D3EB871BBD59AA71C0FC8198A@MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM>
 
-asm-generic/errno-base.h can be replaced by linux/errno.h and the file
-will still build correctly. It is an asm-generic file which should be
-avoided if possible.
+Hi Youling,
 
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Tanzir Hasan <tanzirh@google.com>
----
- drivers/android/binderfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+kernel test robot noticed the following build errors:
 
-diff --git a/drivers/android/binderfs.c b/drivers/android/binderfs.c
-index 1224ab7aa070..d04ff6029480 100644
---- a/drivers/android/binderfs.c
-+++ b/drivers/android/binderfs.c
-@@ -29,7 +29,7 @@
- #include <linux/uaccess.h>
- #include <linux/user_namespace.h>
- #include <linux/xarray.h>
--#include <uapi/asm-generic/errno-base.h>
-+#include <linux/errno.h>
- #include <uapi/linux/android/binder.h>
- #include <uapi/linux/android/binderfs.h>
- 
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.7-rc7 next-20231222]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
----
-base-commit: 606d9c29e71fbf52fcfd3fcc3ad92e444c8e1d47
-change-id: 20231218-binderfs-a758e162e0ba
+url:    https://github.com/intel-lab-lkp/linux/commits/Youling-Tang/kdump-Remove-redundant-DEFAULT_CRASH_KERNEL_LOW_SIZE/20231226-193215
+base:   linus/master
+patch link:    https://lore.kernel.org/r/MW4PR84MB3145D3EB871BBD59AA71C0FC8198A%40MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM
+patch subject: [PATCH] kdump: Remove redundant DEFAULT_CRASH_KERNEL_LOW_SIZE
+config: i386-buildonly-randconfig-002-20231226 (https://download.01.org/0day-ci/archive/20231227/202312270133.8w4Wrh4h-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231227/202312270133.8w4Wrh4h-lkp@intel.com/reproduce)
 
-Best regards,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312270133.8w4Wrh4h-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   arch/x86/kernel/setup.c: In function 'arch_reserve_crashkernel':
+>> arch/x86/kernel/setup.c:479:8: error: implicit declaration of function 'parse_crashkernel' [-Werror=implicit-function-declaration]
+     479 |  ret = parse_crashkernel(cmdline, memblock_phys_mem_size(),
+         |        ^~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/parse_crashkernel +479 arch/x86/kernel/setup.c
+
+a0a0becd2da0ba Yinghai Lu     2008-07-03  468  
+9c08a2a139fe83 Baoquan He     2023-09-14  469  static void __init arch_reserve_crashkernel(void)
+ccb4defa71744f Yinghai Lu     2008-06-25  470  {
+9c08a2a139fe83 Baoquan He     2023-09-14  471  	unsigned long long crash_base, crash_size, low_size = 0;
+9c08a2a139fe83 Baoquan He     2023-09-14  472  	char *cmdline = boot_command_line;
+55a20ee7804ab6 Yinghai Lu     2013-04-15  473  	bool high = false;
+ccb4defa71744f Yinghai Lu     2008-06-25  474  	int ret;
+ccb4defa71744f Yinghai Lu     2008-06-25  475  
+4ece09be9913a8 Jisheng Zhang  2022-03-23  476  	if (!IS_ENABLED(CONFIG_KEXEC_CORE))
+4ece09be9913a8 Jisheng Zhang  2022-03-23  477  		return;
+4ece09be9913a8 Jisheng Zhang  2022-03-23  478  
+9c08a2a139fe83 Baoquan He     2023-09-14 @479  	ret = parse_crashkernel(cmdline, memblock_phys_mem_size(),
+9c08a2a139fe83 Baoquan He     2023-09-14  480  				&crash_size, &crash_base,
+9c08a2a139fe83 Baoquan He     2023-09-14  481  				&low_size, &high);
+9c08a2a139fe83 Baoquan He     2023-09-14  482  	if (ret)
+32105f7fd8faa7 Bernhard Walle 2008-06-26  483  		return;
+32105f7fd8faa7 Bernhard Walle 2008-06-26  484  
+3db3eb285259ac Petr Tesarik   2018-04-25  485  	if (xen_pv_domain()) {
+3db3eb285259ac Petr Tesarik   2018-04-25  486  		pr_info("Ignoring crashkernel for a Xen PV domain\n");
+3db3eb285259ac Petr Tesarik   2018-04-25  487  		return;
+3db3eb285259ac Petr Tesarik   2018-04-25  488  	}
+3db3eb285259ac Petr Tesarik   2018-04-25  489  
+9c08a2a139fe83 Baoquan He     2023-09-14  490  	reserve_crashkernel_generic(cmdline, crash_size, crash_base,
+9c08a2a139fe83 Baoquan He     2023-09-14  491  				    low_size, high);
+ccb4defa71744f Yinghai Lu     2008-06-25  492  }
+ccb4defa71744f Yinghai Lu     2008-06-25  493  
+
 -- 
-Tanzir Hasan <tanzirh@google.com>
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
