@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-11648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47D9481E967
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:27:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A17C81E969
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:27:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03384280FAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:27:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EEE01C21E26
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:27:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD991A70F;
-	Tue, 26 Dec 2023 19:22:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 314AC1D534;
+	Tue, 26 Dec 2023 19:22:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fCnWs/2R"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hNDoIHpw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4572718EDA
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 19:22:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25834199CB
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 19:22:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7b7fe0ae57bso282940339f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 11:22:20 -0800 (PST)
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7bb0af58166so2864239f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 11:22:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703618539; x=1704223339; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1703618540; x=1704223340; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WGEOA7VnVi81L2sEgap1qKk2oI4GW7FWt/PKKqipwFA=;
-        b=fCnWs/2RPcwyS4r+8mm40SUREOvOYuS/hgHs9WpcYGgE4tILMBxqFZOHCUfFGmgH6e
-         w5qyDxkpcAaDNhixYqLnFqBdEVug3YZaAgU+FS4j+ckG0UZqSJR7L9F42PnvQzlyLdk9
-         E2iSsyTZxGk+YyqkX/vaCWu0U3VPmwz/r4hLs=
+        bh=X62kSUMdAd2TsFVgmakpOFBG3rZ/IiZ8YTHPEgONzYQ=;
+        b=hNDoIHpwFE5bZVAbjzQfmsTmFtUMZrVxHmdYD8J6ZIRE/HSu63C+OGq+pNIuci8MIg
+         uI4VGzx/OpA7RffB2fNi4aA2fxhFA/jeAX2BmSLa6v9NMVxhEKuYyn8EcqhKdGwE6eqk
+         prbRv1TFM1k/PB7IxzLoGLKKyCUMm7Jk/4uGc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703618539; x=1704223339;
+        d=1e100.net; s=20230601; t=1703618540; x=1704223340;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WGEOA7VnVi81L2sEgap1qKk2oI4GW7FWt/PKKqipwFA=;
-        b=wwxbMHWX0+Z6IujyVBBS+QlGwClEo9XjOQcvDSDL5AeKy/JCGBYSj/j+bjZO3nLTJ5
-         61rA59qutvB9DRgzlF1QY/oGTJOJekYLHDJf+03rOT99Fd6DnDVAZGd/jhlfkxgSi3lM
-         qIpDc77UgWYWxvtZu/8w4e01SSVn1uJMkVIP+VOAOZitQJcgoaLzkBvQiLr6CakleiLU
-         9sHSnhredBapwLLioyKFMJm+fMU+zoQfUJOj8BT8ZDi9265xHo0Q/lScyk1PdVMpEQ+U
-         Fb8S1deIu0pnzDPPSS8zVkVRAKvusk7GhX+GIWBT1r8KXroJQcBBgbFdcC/AdoroovjG
-         HK3g==
-X-Gm-Message-State: AOJu0Yy0wDgjw8eRlN0uBLU4Wyegg4JFc0CQXX2Twx2d1pUWcSdy1PmF
-	Ke2fcrA9OydO4aNowJxfkC62SPvpBqDbq1cTu/3AgW5ecM+l
-X-Google-Smtp-Source: AGHT+IGwo5chhqjsS60uLPxsZz7Aue5NMBmLwETHgxYW043SgR4k4mm2O7+bTWAEs3KDxRW8UynYJQ==
-X-Received: by 2002:a05:6602:1492:b0:7ba:9707:67ad with SMTP id a18-20020a056602149200b007ba970767admr14464146iow.28.1703618539365;
-        Tue, 26 Dec 2023 11:22:19 -0800 (PST)
+        bh=X62kSUMdAd2TsFVgmakpOFBG3rZ/IiZ8YTHPEgONzYQ=;
+        b=c2uv0mFLh0tKNR7UbuPNtQqpK2YjAWLmy/ITXRO6OZSqJ88WbmBm5M26XGKQ7Ht4Uu
+         paswjcd33bsbM7M42OKJh6Yo0ABqiAT50MuCXSeXjX4SIphGHtxAj00Z/kwO7R+6shrv
+         A+UkkOVxA8Z/mkBq5TykVJjHGwkP1iu4nKhqXII8XszvVz56gV0ccs2GiGy4lzT+YFwM
+         +I66LMMhvMGYGhRKpzgY2vg8RxOBkaYf9ifB6ABNEqDlWfnLT2j7Bx6a6/hS26fgj1fJ
+         33hiHC8Lk3qk/cJDtn2BNPlivIEFfUIdTeNxLfdTqVka6O74pNdFUJEaol4Ov4d1atHR
+         4W6w==
+X-Gm-Message-State: AOJu0Yy0ppWtlqXtuPMQf+Id//zNvh9JNO+9qgD/mGm1+t4t5I9cMyPn
+	APGSFFs3A9b5VGnbMWIbmh7yuH+SAepfpp9eeeNj5dO0ABnW
+X-Google-Smtp-Source: AGHT+IFcEJNCoiiMo8Qg++YCcAfKZRPQPBres6GJ9EPuoiGHGo0ZyDEn4ctqFj/q1mAJJoPuqiqTBg==
+X-Received: by 2002:a05:6602:1b86:b0:7ba:bd87:5404 with SMTP id dq6-20020a0566021b8600b007babd875404mr3390061iob.14.1703618540260;
+        Tue, 26 Dec 2023 11:22:20 -0800 (PST)
 Received: from markhas1.lan (71-218-50-136.hlrn.qwest.net. [71.218.50.136])
-        by smtp.gmail.com with ESMTPSA id gw3-20020a0566381ee300b0046b692e719esm3207609jab.150.2023.12.26.11.22.18
+        by smtp.gmail.com with ESMTPSA id gw3-20020a0566381ee300b0046b692e719esm3207609jab.150.2023.12.26.11.22.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Dec 2023 11:22:19 -0800 (PST)
+        Tue, 26 Dec 2023 11:22:20 -0800 (PST)
 From: Mark Hasemeyer <markhas@chromium.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
@@ -65,12 +65,20 @@ Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Raul Rangel <rrangel@chromium.org>,
 	Tzung-Bi Shih <tzungbi@kernel.org>,
 	Mark Hasemeyer <markhas@chromium.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Daniel Scally <djrscally@gmail.com>,
 	Frank Rowand <frowand.list@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Len Brown <lenb@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
 	Rob Herring <robh+dt@kernel.org>,
-	devicetree@vger.kernel.org
-Subject: [PATCH v3 20/24] of: irq: Remove extern from function declarations
-Date: Tue, 26 Dec 2023 12:21:24 -0700
-Message-ID: <20231226122113.v3.20.I319e781c11e6352eb5b6c408dc20bd54a720edbf@changeid>
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	devicetree@vger.kernel.org,
+	linux-acpi@vger.kernel.org
+Subject: [PATCH v3 21/24] device property: Modify fwnode irq_get() to use resource
+Date: Tue, 26 Dec 2023 12:21:25 -0700
+Message-ID: <20231226122113.v3.21.I38ac58ab04985a404ed6551eb5813fa7841ef410@changeid>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20231226192149.1830592-1-markhas@chromium.org>
 References: <20231226192149.1830592-1-markhas@chromium.org>
@@ -82,77 +90,185 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The extern keyword is implicit for function declarations.
-Remove it where possible and adjust the line wrapping accordingly.
+The underlying ACPI and OF subsystems provide their own APIs which
+provide IRQ information as a struct resource. This allows callers to get
+more information about the IRQ by looking at the resource flags. For
+example, whether or not an IRQ is wake capable.
+
+Suggested-by: Andy Shevchenko <andriy.shevchenko@intel.com>
 
 Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
 ---
 
-(no changes since v2)
+Changes in v3:
+-Add Suggested-by tag
+-Initialize struct resource to 0 on stack
+-EXPORT_SYMBOL()->EXPORT_SYMBOL_GPL()
+-Remove extra space in commit message
+-Reformat fwnode_irq_get_resource() declaration
 
 Changes in v2:
 -New patch
 
- include/linux/of_irq.h | 35 +++++++++++++++++------------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
+ drivers/acpi/property.c  | 11 +++++------
+ drivers/base/property.c  | 24 +++++++++++++++++++++---
+ drivers/of/property.c    |  8 ++++----
+ include/linux/fwnode.h   |  8 +++++---
+ include/linux/property.h |  2 ++
+ 5 files changed, 37 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/of_irq.h b/include/linux/of_irq.h
-index 0d73b2ca92d31..a130dcbc4bb45 100644
---- a/include/linux/of_irq.h
-+++ b/include/linux/of_irq.h
-@@ -32,27 +32,26 @@ static inline int of_irq_parse_oldworld(const struct device_node *device, int in
+diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
+index a6ead5204046b..891fff5a16797 100644
+--- a/drivers/acpi/property.c
++++ b/drivers/acpi/property.c
+@@ -1627,17 +1627,16 @@ static int acpi_fwnode_graph_parse_endpoint(const struct fwnode_handle *fwnode,
+ 	return 0;
  }
- #endif /* CONFIG_PPC32 && CONFIG_PPC_PMAC */
  
--extern int of_irq_parse_raw(const __be32 *addr, struct of_phandle_args *out_irq);
--extern unsigned int irq_create_of_mapping(struct of_phandle_args *irq_data);
-+int of_irq_parse_raw(const __be32 *addr, struct of_phandle_args *out_irq);
-+unsigned int irq_create_of_mapping(struct of_phandle_args *irq_data);
+-static int acpi_fwnode_irq_get(const struct fwnode_handle *fwnode,
+-			       unsigned int index)
++static int acpi_fwnode_irq_get_resource(const struct fwnode_handle *fwnode, unsigned int index,
++					struct resource *r)
+ {
+-	struct resource res;
+ 	int ret;
  
- #ifdef CONFIG_OF_IRQ
--extern void of_irq_init(const struct of_device_id *matches);
--extern int of_irq_parse_one(struct device_node *device, int index,
--			  struct of_phandle_args *out_irq);
--extern int of_irq_count(struct device_node *dev);
--extern int of_irq_get(struct device_node *dev, int index);
--extern int of_irq_get_byname(struct device_node *dev, const char *name);
--extern int of_irq_to_resource(struct device_node *dev, int index, struct resource *r);
--extern int of_irq_to_resource_table(struct device_node *dev,
--		struct resource *res, int nr_irqs);
--extern struct device_node *of_irq_find_parent(struct device_node *child);
--extern struct irq_domain *of_msi_get_domain(struct device *dev,
-+void of_irq_init(const struct of_device_id *matches);
-+int of_irq_parse_one(struct device_node *device, int index,
-+		    struct of_phandle_args *out_irq);
-+int of_irq_count(struct device_node *dev);
-+int of_irq_get(struct device_node *dev, int index);
-+int of_irq_get_byname(struct device_node *dev, const char *name);
-+int of_irq_to_resource(struct device_node *dev, int index, struct resource *r);
-+int of_irq_to_resource_table(struct device_node *dev, struct resource *res,
-+			    int nr_irqs);
-+struct device_node *of_irq_find_parent(struct device_node *child);
-+struct irq_domain *of_msi_get_domain(struct device *dev,
- 					    struct device_node *np,
- 					    enum irq_domain_bus_token token);
--extern struct irq_domain *of_msi_map_get_device_domain(struct device *dev,
--							u32 id,
--							u32 bus_token);
--extern void of_msi_configure(struct device *dev, struct device_node *np);
-+struct irq_domain *of_msi_map_get_device_domain(struct device *dev, u32 id,
-+					       u32 bus_token);
-+void of_msi_configure(struct device *dev, struct device_node *np);
- u32 of_msi_map_id(struct device *dev, struct device_node *msi_np, u32 id_in);
- #else
- static inline void of_irq_init(const struct of_device_id *matches)
-@@ -117,7 +116,7 @@ static inline u32 of_msi_map_id(struct device *dev,
-  * implements it differently.  However, the prototype is the same for all,
-  * so declare it here regardless of the CONFIG_OF_IRQ setting.
+-	ret = acpi_irq_get(ACPI_HANDLE_FWNODE(fwnode), index, &res);
++	ret = acpi_irq_get(ACPI_HANDLE_FWNODE(fwnode), index, r);
+ 	if (ret)
+ 		return ret;
+ 
+-	return res.start;
++	return r->start;
+ }
+ 
+ #define DECLARE_ACPI_FWNODE_OPS(ops) \
+@@ -1664,7 +1663,7 @@ static int acpi_fwnode_irq_get(const struct fwnode_handle *fwnode,
+ 			acpi_graph_get_remote_endpoint,			\
+ 		.graph_get_port_parent = acpi_fwnode_get_parent,	\
+ 		.graph_parse_endpoint = acpi_fwnode_graph_parse_endpoint, \
+-		.irq_get = acpi_fwnode_irq_get,				\
++		.irq_get_resource = acpi_fwnode_irq_get_resource,	\
+ 	};								\
+ 	EXPORT_SYMBOL_GPL(ops)
+ 
+diff --git a/drivers/base/property.c b/drivers/base/property.c
+index a1b01ab420528..441899171d19d 100644
+--- a/drivers/base/property.c
++++ b/drivers/base/property.c
+@@ -1047,23 +1047,41 @@ void __iomem *fwnode_iomap(struct fwnode_handle *fwnode, int index)
+ EXPORT_SYMBOL(fwnode_iomap);
+ 
+ /**
+- * fwnode_irq_get - Get IRQ directly from a fwnode
++ * fwnode_irq_get_resource - Get IRQ directly from a fwnode and populate
++ *			     the resource struct
+  * @fwnode:	Pointer to the firmware node
+  * @index:	Zero-based index of the IRQ
++ * @r:		Pointer to resource to populate with IRQ information.
+  *
+  * Return: Linux IRQ number on success. Negative errno on failure.
   */
--extern unsigned int irq_of_parse_and_map(struct device_node *node, int index);
-+unsigned int irq_of_parse_and_map(struct device_node *node, int index);
+-int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index)
++int fwnode_irq_get_resource(const struct fwnode_handle *fwnode, unsigned int index,
++			    struct resource *r)
+ {
+ 	int ret;
  
- #else /* !CONFIG_OF && !CONFIG_SPARC */
- static inline unsigned int irq_of_parse_and_map(struct device_node *dev,
+-	ret = fwnode_call_int_op(fwnode, irq_get, index);
++	ret = fwnode_call_int_op(fwnode, irq_get_resource, index, r);
+ 	/* We treat mapping errors as invalid case */
+ 	if (ret == 0)
+ 		return -EINVAL;
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(fwnode_irq_get_resource);
++
++/**
++ * fwnode_irq_get - Get IRQ directly from a fwnode
++ * @fwnode:	Pointer to the firmware node
++ * @index:	Zero-based index of the IRQ
++ *
++ * Return: Linux IRQ number on success. Negative errno on failure.
++ */
++int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index)
++{
++	struct resource r = {};
++
++	return fwnode_irq_get_resource(fwnode, index, &r);
++}
+ EXPORT_SYMBOL(fwnode_irq_get);
+ 
+ /**
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index afdaefbd03f61..864ea5fa5702b 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -1425,10 +1425,10 @@ static void __iomem *of_fwnode_iomap(struct fwnode_handle *fwnode, int index)
+ #endif
+ }
+ 
+-static int of_fwnode_irq_get(const struct fwnode_handle *fwnode,
+-			     unsigned int index)
++static int of_fwnode_irq_get_resource(const struct fwnode_handle *fwnode,
++				      unsigned int index, struct resource *r)
+ {
+-	return of_irq_get(to_of_node(fwnode), index);
++	return of_irq_to_resource(to_of_node(fwnode), index, r);
+ }
+ 
+ static int of_fwnode_add_links(struct fwnode_handle *fwnode)
+@@ -1469,7 +1469,7 @@ const struct fwnode_operations of_fwnode_ops = {
+ 	.graph_get_port_parent = of_fwnode_graph_get_port_parent,
+ 	.graph_parse_endpoint = of_fwnode_graph_parse_endpoint,
+ 	.iomap = of_fwnode_iomap,
+-	.irq_get = of_fwnode_irq_get,
++	.irq_get_resource = of_fwnode_irq_get_resource,
+ 	.add_links = of_fwnode_add_links,
+ };
+ EXPORT_SYMBOL_GPL(of_fwnode_ops);
+diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+index 2a72f55d26eb8..716ed863acde0 100644
+--- a/include/linux/fwnode.h
++++ b/include/linux/fwnode.h
+@@ -9,10 +9,11 @@
+ #ifndef _LINUX_FWNODE_H_
+ #define _LINUX_FWNODE_H_
+ 
+-#include <linux/types.h>
+-#include <linux/list.h>
+ #include <linux/bits.h>
+ #include <linux/err.h>
++#include <linux/ioport.h>
++#include <linux/list.h>
++#include <linux/types.h>
+ 
+ struct fwnode_operations;
+ struct device;
+@@ -164,7 +165,8 @@ struct fwnode_operations {
+ 	int (*graph_parse_endpoint)(const struct fwnode_handle *fwnode,
+ 				    struct fwnode_endpoint *endpoint);
+ 	void __iomem *(*iomap)(struct fwnode_handle *fwnode, int index);
+-	int (*irq_get)(const struct fwnode_handle *fwnode, unsigned int index);
++	int (*irq_get_resource)(const struct fwnode_handle *fwnode,
++				unsigned int index, struct resource *r);
+ 	int (*add_links)(struct fwnode_handle *fwnode);
+ };
+ 
+diff --git a/include/linux/property.h b/include/linux/property.h
+index e6516d0b7d52a..685ba72a8ce9e 100644
+--- a/include/linux/property.h
++++ b/include/linux/property.h
+@@ -190,6 +190,8 @@ struct fwnode_handle *fwnode_handle_get(struct fwnode_handle *fwnode);
+ void fwnode_handle_put(struct fwnode_handle *fwnode);
+ 
+ int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index);
++int fwnode_irq_get_resource(const struct fwnode_handle *fwnode,
++			    unsigned int index, struct resource *r);
+ int fwnode_irq_get_byname(const struct fwnode_handle *fwnode, const char *name);
+ 
+ unsigned int device_get_child_node_count(const struct device *dev);
 -- 
 2.43.0.472.g3155946c3a-goog
 
