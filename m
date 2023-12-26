@@ -1,77 +1,162 @@
-Return-Path: <linux-kernel+bounces-11317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BA1081E47F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 03:07:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 540C981E481
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 03:11:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B919B21B4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 02:07:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C8A71C21B2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 02:11:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18CB71859;
-	Tue, 26 Dec 2023 02:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60023EA4;
+	Tue, 26 Dec 2023 02:11:19 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688A51847
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 02:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35f766cf0f6so37045915ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 18:07:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703556424; x=1704161224;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N51vKuzDsrBBMlIRIygPrtQr3QXeDCsXCvdazkWkxzI=;
-        b=mdMNlQ+9rCJ3aeibAXoOpq4wBWBsQ9DCENMeRWmpXsAA+yB6sEb7ZEFXiQ13T6o4W1
-         DNe99Yrm+fuHDhW2q8W1GbFLRwm2qnAYOQ6G7uOJtXfMPqxemROt/scWsfTMIUAMQa0Z
-         Idd1YQ9ykxJs0g3sgd5LzPJwLzPhMwp5kSjPw5rbnveayHppIktf0b9m99DgyQFnMW7i
-         Rz9yAivXVBSNdIk0LX4EKNWIiFacW1qCVmOwu/hGMPwrjRxu4oUiywVcQ/sVeusZwJnS
-         vvauKGd2QVHrtPtiznnQrOhX+M8LQU2JkZ8cnOZlswAdydC0HPQOlZB/BKARz0lzRUQa
-         loQA==
-X-Gm-Message-State: AOJu0YwPyPQsWkmAxNLrZVoGoswMh+L7qqH6pxdFy/7DOX1fOe93UxSp
-	nC10BEkzIgQ3bsm4AYHwwahQ28fA+v/iZVJG0lJhB+hb4ggy
-X-Google-Smtp-Source: AGHT+IHeMI4UBorhlSOLVjWJhbfzvNS8ao7KCFhrJx3HqSDYuhx0qkEMe47OENauYR7mw1GZ6kTKx4d4ooMf1sYkkqgwlnWkOeek
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FCD9A29;
+	Tue, 26 Dec 2023 02:11:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 3BQ2ASig019667;
+	Tue, 26 Dec 2023 10:10:28 +0800 (+08)
+	(envelope-from Dongliang.Cui@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SzdNx1CHrz2Q6fVS;
+	Tue, 26 Dec 2023 10:04:01 +0800 (CST)
+Received: from tj10388pcu.spreadtrum.com (10.5.32.11) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Tue, 26 Dec 2023 10:10:25 +0800
+From: Dongliang Cui <dongliang.cui@unisoc.com>
+To: Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu
+	<mhiramat@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>
+CC: Dongliang Cui <cuidongliang390@gmail.com>,
+        Hongyu Jin
+	<hongyu.jin@unisoc.com>
+Subject: [PATCH] block: Add ioprio to block_rq tracepoint
+Date: Tue, 26 Dec 2023 10:09:10 +0800
+Message-ID: <1703556550-2858-1-git-send-email-dongliang.cui@unisoc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b4c:b0:360:290:902d with SMTP id
- f12-20020a056e020b4c00b003600290902dmr343200ilu.3.1703556424579; Mon, 25 Dec
- 2023 18:07:04 -0800 (PST)
-Date: Mon, 25 Dec 2023 18:07:04 -0800
-In-Reply-To: <tencent_58740777F766DE3C91376296D4363A4A8A09@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008ac281060d60230d@google.com>
-Subject: Re: [syzbot] [reiserfs?] KASAN: slab-out-of-bounds Read in
- search_by_key (2)
-From: syzbot <syzbot+b3b14fb9f8a14c5d0267@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL:SHSQR01.spreadtrum.com 3BQ2ASig019667
 
-Hello,
+Sometimes we need to track the processing order of
+requests with ioprio set, especially when using
+mq-deadline. So the ioprio of request can be useful
+information.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Signed-off-by: Dongliang Cui <dongliang.cui@unisoc.com>
+---
+ include/trace/events/block.h | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-Reported-and-tested-by: syzbot+b3b14fb9f8a14c5d0267@syzkaller.appspotmail.com
+diff --git a/include/trace/events/block.h b/include/trace/events/block.h
+index 0e128ad..e84ff93 100644
+--- a/include/trace/events/block.h
++++ b/include/trace/events/block.h
+@@ -82,6 +82,7 @@
+ 		__field(  dev_t,	dev			)
+ 		__field(  sector_t,	sector			)
+ 		__field(  unsigned int,	nr_sector		)
++		__field(  unsigned int, ioprio			)
+ 		__array(  char,		rwbs,	RWBS_LEN	)
+ 		__dynamic_array( char,	cmd,	1		)
+ 	),
+@@ -90,16 +91,17 @@
+ 		__entry->dev	   = rq->q->disk ? disk_devt(rq->q->disk) : 0;
+ 		__entry->sector    = blk_rq_trace_sector(rq);
+ 		__entry->nr_sector = blk_rq_trace_nr_sectors(rq);
++		__entry->ioprio    = rq->ioprio;
+ 
+ 		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
+ 		__get_str(cmd)[0] = '\0';
+ 	),
+ 
+-	TP_printk("%d,%d %s (%s) %llu + %u [%d]",
++	TP_printk("%d,%d %s (%s) %llu + %u 0x%x [%d]",
+ 		  MAJOR(__entry->dev), MINOR(__entry->dev),
+ 		  __entry->rwbs, __get_str(cmd),
+ 		  (unsigned long long)__entry->sector,
+-		  __entry->nr_sector, 0)
++		  __entry->nr_sector, __entry->ioprio, 0)
+ );
+ 
+ DECLARE_EVENT_CLASS(block_rq_completion,
+@@ -112,6 +114,7 @@
+ 		__field(  dev_t,	dev			)
+ 		__field(  sector_t,	sector			)
+ 		__field(  unsigned int,	nr_sector		)
++		__field(  unsigned int, ioprio			)
+ 		__field(  int	,	error			)
+ 		__array(  char,		rwbs,	RWBS_LEN	)
+ 		__dynamic_array( char,	cmd,	1		)
+@@ -121,17 +124,19 @@
+ 		__entry->dev	   = rq->q->disk ? disk_devt(rq->q->disk) : 0;
+ 		__entry->sector    = blk_rq_pos(rq);
+ 		__entry->nr_sector = nr_bytes >> 9;
++		__entry->ioprio    = rq->ioprio;
+ 		__entry->error     = blk_status_to_errno(error);
+ 
+ 		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
+ 		__get_str(cmd)[0] = '\0';
+ 	),
+ 
+-	TP_printk("%d,%d %s (%s) %llu + %u [%d]",
++	TP_printk("%d,%d %s (%s) %llu + %u 0x%x [%d]",
+ 		  MAJOR(__entry->dev), MINOR(__entry->dev),
+ 		  __entry->rwbs, __get_str(cmd),
+ 		  (unsigned long long)__entry->sector,
+-		  __entry->nr_sector, __entry->error)
++		  __entry->nr_sector, __entry->ioprio,
++		  __entry->error)
+ );
+ 
+ /**
+@@ -180,6 +185,7 @@
+ 		__field(  sector_t,	sector			)
+ 		__field(  unsigned int,	nr_sector		)
+ 		__field(  unsigned int,	bytes			)
++		__field(  unsigned int, ioprio			)
+ 		__array(  char,		rwbs,	RWBS_LEN	)
+ 		__array(  char,         comm,   TASK_COMM_LEN   )
+ 		__dynamic_array( char,	cmd,	1		)
+@@ -190,17 +196,19 @@
+ 		__entry->sector    = blk_rq_trace_sector(rq);
+ 		__entry->nr_sector = blk_rq_trace_nr_sectors(rq);
+ 		__entry->bytes     = blk_rq_bytes(rq);
++		__entry->ioprio    = rq->ioprio;
+ 
+ 		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
+ 		__get_str(cmd)[0] = '\0';
+ 		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
+ 	),
+ 
+-	TP_printk("%d,%d %s %u (%s) %llu + %u [%s]",
++	TP_printk("%d,%d %s %u (%s) %llu + %u 0x%x [%s]",
+ 		  MAJOR(__entry->dev), MINOR(__entry->dev),
+ 		  __entry->rwbs, __entry->bytes, __get_str(cmd),
+ 		  (unsigned long long)__entry->sector,
+-		  __entry->nr_sector, __entry->comm)
++		  __entry->nr_sector, __entry->ioprio,
++		  __entry->comm)
+ );
+ 
+ /**
+-- 
+1.9.1
 
-Tested on:
-
-commit:         861deac3 Linux 6.7-rc7
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=125a5231e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7078a6b901aa3
-dashboard link: https://syzkaller.appspot.com/bug?extid=b3b14fb9f8a14c5d0267
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=147f47e9e80000
-
-Note: testing is done by a robot and is best-effort only.
 
