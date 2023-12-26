@@ -1,59 +1,52 @@
-Return-Path: <linux-kernel+bounces-11209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5598681E33A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:24:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A26E81E33D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:25:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC6A9B220C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:24:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCD15B21BAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:25:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CAB44C73;
-	Tue, 26 Dec 2023 00:21:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE07544C96;
+	Tue, 26 Dec 2023 00:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VR79X7Sc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D4/JkUAJ"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53B5F1C33;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 143C61FB3;
+	Tue, 26 Dec 2023 00:21:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CF1CC433CA;
 	Tue, 26 Dec 2023 00:21:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F387C433C7;
-	Tue, 26 Dec 2023 00:21:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550067;
-	bh=0xOMQas6XvgFz5Pu+/mdxzBJqDkk6y+uLtpB4kKVZmI=;
+	s=k20201202; t=1703550068;
+	bh=4Xo4SfAr1zYLkWGxWNFDUUfdfI5dg9HyRqOMSkSSL4U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VR79X7ScQwRNDOnyOVOei1YWh2FfNw3n5hK/+6llG8ZymzcIxUTQtoHtch1bo7Y/n
-	 kQP1rjRIctUDGBUm9dHwlJnFs5TRD68GWwMWEKD15nwBP9hkaFTE7QTELu7n1lneuX
-	 3PlQtQC+iH/UZWf/aI4RTBJcG3gYMNcCttSe/F4BTyKvw8hTtpDCFicroFJi88N2Up
-	 ktl1qOufAUhWEcUbeQN4JdkYcCPJDcMV1wCn6BaeReFlqslkzk7hJRmHiu3iat327g
-	 X6ZyKkiHUAnenlu3QKwWZlrZwuicFRZN1v886yHRwtcoY16F+CEy/GizuV5PqihElE
-	 G1CobvT8QZACw==
+	b=D4/JkUAJYc5UEfzKx0qTsUHGEyFfYgJ+icY3T926Tv1jyun6nRhbxpF5G0q+AxUPj
+	 aypZ3997SDpILBLyyq1eREwdS5i9FX04JJkjYJn1a/Ng8QyQEdVljIkzg+Un+HGdeL
+	 P57qt7xsN4P3L83IWuGFow2zZUTdPEVYPDCqj+jPDLbqgwTDuaCN0bnBtd9dl1zJ2/
+	 jAKc4ciDx31zRBiUcDLflsjHF8CATEtQI2uUCijWSFvc8mFMCF6jZuW2n+LLdpuACh
+	 R/rfxCe6eAwdhJwKrvjrTWXlYZgZyaqAt6Vz8wxc1S5rO5Q2LRIy3pFgfeoJ3828zG
+	 cXHg+8a+8MExw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Ira Weiny <ira.weiny@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Dave Jiang <dave.jiang@intel.com>,
+Cc: Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	andriy.shevchenko@linux.intel.com,
-	petr.tesarik.ext@huawei.com,
-	rafael@kernel.org,
-	hdegoede@redhat.com,
-	james@equiv.tech,
+	perex@perex.cz,
+	tiwai@suse.com,
 	broonie@kernel.org,
-	james.clark@arm.com,
-	masahiroy@kernel.org
-Subject: [PATCH AUTOSEL 6.6 16/39] driver core: Add a guard() definition for the device_lock()
-Date: Mon, 25 Dec 2023 19:19:06 -0500
-Message-ID: <20231226002021.4776-16-sashal@kernel.org>
+	shuah@kernel.org,
+	linux-sound@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 17/39] kselftest: alsa: fixed a print formatting warning
+Date: Mon, 25 Dec 2023 19:19:07 -0500
+Message-ID: <20231226002021.4776-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231226002021.4776-1-sashal@kernel.org>
 References: <20231226002021.4776-1-sashal@kernel.org>
@@ -68,46 +61,35 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.8
 Content-Transfer-Encoding: 8bit
 
-From: Dan Williams <dan.j.williams@intel.com>
+From: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
 
-[ Upstream commit 134c6eaa6087d78c0e289931ca15ae7a5007670d ]
+[ Upstream commit 13d605e32e4cfdedcecdf3d98d21710ffe887708 ]
 
-At present there are ~200 usages of device_lock() in the kernel. Some of
-those usages lead to "goto unlock;" patterns which have proven to be
-error prone. Define a "device" guard() definition to allow for those to
-be cleaned up and prevent new ones from appearing.
+A statement used %d print formatter where %s should have
+been used. The same has been fixed in this commit.
 
-Link: http://lore.kernel.org/r/657897453dda8_269bd29492@dwillia2-mobl3.amr.corp.intel.com.notmuch
-Link: http://lore.kernel.org/r/6577b0c2a02df_a04c5294bb@dwillia2-xfh.jf.intel.com.notmuch
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Vishal Verma <vishal.l.verma@intel.com>
-Link: https://lore.kernel.org/r/170250854466.1522182.17555361077409628655.stgit@dwillia2-xfh.jf.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+Link: 5aaf9efffc57 ("kselftest: alsa: Add simplistic test for ALSA mixer controls kselftest")
+Link: https://lore.kernel.org/r/20231217080019.1063476-1-ghanshyam1898@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/device.h | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/testing/selftests/alsa/mixer-test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 56d93a1ffb7b6..99496a0a5ddb3 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -1007,6 +1007,8 @@ static inline void device_unlock(struct device *dev)
- 	mutex_unlock(&dev->mutex);
- }
- 
-+DEFINE_GUARD(device, struct device *, device_lock(_T), device_unlock(_T))
-+
- static inline void device_lock_assert(struct device *dev)
- {
- 	lockdep_assert_held(&dev->mutex);
+diff --git a/tools/testing/selftests/alsa/mixer-test.c b/tools/testing/selftests/alsa/mixer-test.c
+index 21e482b23f502..23df154fcdd77 100644
+--- a/tools/testing/selftests/alsa/mixer-test.c
++++ b/tools/testing/selftests/alsa/mixer-test.c
+@@ -138,7 +138,7 @@ static void find_controls(void)
+ 			err = snd_ctl_elem_info(card_data->handle,
+ 						ctl_data->info);
+ 			if (err < 0) {
+-				ksft_print_msg("%s getting info for %d\n",
++				ksft_print_msg("%s getting info for %s\n",
+ 					       snd_strerror(err),
+ 					       ctl_data->name);
+ 			}
 -- 
 2.43.0
 
