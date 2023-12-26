@@ -1,117 +1,96 @@
-Return-Path: <linux-kernel+bounces-11619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1758981E90D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:28:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A19681E911
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:35:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABF5D2835A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 18:28:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF684B218EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 18:35:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 045B2537EB;
-	Tue, 26 Dec 2023 18:28:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D49186A;
+	Tue, 26 Dec 2023 18:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="aGliPHUd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G5NyIHGj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D79524C9
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 18:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4277c62426fso40269751cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 10:28:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E5F1849;
+	Tue, 26 Dec 2023 18:35:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bbbd4d2b4aso362296b6e.0;
+        Tue, 26 Dec 2023 10:35:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1703615310; x=1704220110; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iVG9ArmoQ15xyAc+yxUrO+uyL/lDfCQ7yjtpIzOf96k=;
-        b=aGliPHUdB8U3RJNTI1zp45s5PMXpIevTm/lbl5/gLJusHvGDGsCDVDpf9TKlOd2Gz6
-         ValHQ/7PxpfsKmdzBLftziFHip6OW5+9n3CBvIWYb5P00zXPxK3HxUfUpusw98sMpgvW
-         P4FGFt3O56aTSLILIAqmw0JytiS9xyVgfmkxzwHZMSQBWOwqCerd0/FR2detewgOSABH
-         vcdfSamfZCFQLLRqwKiux0BFT6GCADcFGAJaTHtWk9E4ZtIK01X3VKlqDT8y2HhEZLfs
-         G3VS97kQb4yP1zMoo/bFAFBQ80wb13sEu0ZafokNKPhuo92Koyxa5UipTwSOUoJ0FLc8
-         tiBg==
+        d=gmail.com; s=20230601; t=1703615702; x=1704220502; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fe6llAStBJM+lU1hroIelESFyF/1TQequyrsL42KNrk=;
+        b=G5NyIHGjETXwZyzvsx8xzfb914AemZ/U30SAgfoR/CbTrPO/Gm0/kNuMWCjKZAfePZ
+         QgDb21UKBm3V3jsnQB1vKk15JyGCkhGlkLgcZ2CPNR1ViYJangMLBO6xmbowFoz4nIAx
+         IgWZ8GF3X2FmPTPhPmJYs+4IJ7kkr15RWs6KyMlAJx3+FuPMABS1BJcG44Xc7SfUMKhA
+         mrxzHbuFXRURi7Cr2RXxelt03uVU3sHMhCqy92bah/hxtjEcYVx9jv+Y7RjYXUCUZByE
+         HVoP+QQRFEx25u6aLbAgrvjMEbHAdD5VEb7pMDW/7k3UDPjpeKGgvHpRt18VikzzBAgg
+         q7Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703615310; x=1704220110;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iVG9ArmoQ15xyAc+yxUrO+uyL/lDfCQ7yjtpIzOf96k=;
-        b=tth+mpcPcZP/pbfXpFkpoMQOKKHNt4elP6n3BHE/i8xLawjzwD01ypuDmdT5p9jXh3
-         MWKATWo8WlS7hhmUtRF/DXNFOTz5pQlWBU/XZeUnCrFEUI5O/WI2wNOVKx9ngjISmeTZ
-         kdKoHLnkBHoe+mDgEuffX3168VJzS3nlIZKIqrlZgQtwgaDJa6T7lHLqH+ysp35EwiZD
-         1G8yVeeve5HABwWfTJH6BgNvzRp6/z/565vl5kCXRu+YOzrNWsdpbwKdBXEKcsZSNnsx
-         AkZtWdLpXhBPw5O+1QkbWPnExh5flPj4eUXG8ncIH7i3mVwfUIICzCfoWXTGpsoTsoM5
-         FDUg==
-X-Gm-Message-State: AOJu0YziEbHLqfbDj+DriFr5J5pOBjt13FBtf5l/JAltL0JVid8Woiag
-	MhAJ87v5M0nsV473wDhz4naaHgx05d5v9Q==
-X-Google-Smtp-Source: AGHT+IH95QHCHc+3GftDlCRw6iuKFmHCYQ8XAfaQiziiu2P452x5R8wFRpdo00E2wU0m4vpqb5AUoA==
-X-Received: by 2002:a05:622a:1817:b0:427:8376:a2f with SMTP id t23-20020a05622a181700b0042783760a2fmr9360806qtc.99.1703615310169;
-        Tue, 26 Dec 2023 10:28:30 -0800 (PST)
-Received: from soleen.c.googlers.com.com (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id cf23-20020a05622a401700b004276963b28asm6274675qtb.15.2023.12.26.10.28.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Dec 2023 10:28:29 -0800 (PST)
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-To: akpm@linux-foundation.org,
-	linux-mm@kvack.org,
-	pasha.tatashin@soleen.com,
-	mst@redhat.com,
-	jasowang@redhat.com,
-	kvm@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	rientjes@google.com
-Subject: [PATCH v2] vhost-vdpa: account iommu allocations
-Date: Tue, 26 Dec 2023 18:28:27 +0000
-Message-ID: <20231226182827.294158-1-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+        d=1e100.net; s=20230601; t=1703615702; x=1704220502;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fe6llAStBJM+lU1hroIelESFyF/1TQequyrsL42KNrk=;
+        b=Fs6z7VcZm2ki2YPFv8AMAxcQHI53iKyvPAyi06gS0VyY+J6D7b5Oy0LcSolrAKQNsl
+         4/Nnr0qcITxnmbWWYJdw8014wWQIAfEPsPtdWdxzJa1kesHcV2T8mBZTWM6tqF3j/gHQ
+         y7KVwhtfvCAcM3FfU8UZQbbZMHjQnmX5vSb4sSWajA8XygtpbMXXad5FT0L/E5ka0vUI
+         gQNgjWyCoEwcAqDsbshaBDRK8mAzGkwG/EwQeulPIdHjUpvx4fk6UOSORoVOsJPECzY0
+         s/E8pgj8dfE5nbm9K0w8fJ+3sT3Jffw81F/rc167Bad5BMQkHxD35w3zqaj8Vh08oZ3N
+         4KjQ==
+X-Gm-Message-State: AOJu0YzP0Q0LE1lPPpHFaL2tXp2W4vgUmUv/UgTKKB2Zzdgpzf8ll2cI
+	1X2e1YL897n24DyY7Z3+bGP3kNUE9bVvgxuslGI=
+X-Google-Smtp-Source: AGHT+IEjC5hlnqkV+nRSxayldzoAFGJrlA6lBfARIWvwxPwaD84cZV1GvejDnPIofYh+Rr5Ud+s4fNSr/8mt7Vdxbw4=
+X-Received: by 2002:a05:6808:3309:b0:3bb:ac46:8c6 with SMTP id
+ ca9-20020a056808330900b003bbac4608c6mr2952343oib.18.1703615701822; Tue, 26
+ Dec 2023 10:35:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231226-libstringheader-v6-0-80aa08c7652c@google.com> <20231226-libstringheader-v6-2-80aa08c7652c@google.com>
+In-Reply-To: <20231226-libstringheader-v6-2-80aa08c7652c@google.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Tue, 26 Dec 2023 20:34:25 +0200
+Message-ID: <CAHp75VfXWev7Z-tHRPAuWzaLj7ogiECW2arFc4CdcxUE87Ld0A@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] lib/string: shrink lib/string.i via IWYU
+To: Tanzir Hasan <tanzirh@google.com>
+Cc: Kees Cook <keescook@chromium.org>, Nick Desaulniers <nnn@google.com>, 
+	Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Greg KH <gregkh@linuxfoundation.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-iommu allocations should be accounted in order to allow admins to
-monitor and limit the amount of iommu memory.
+On Tue, Dec 26, 2023 at 8:00=E2=80=AFPM Tanzir Hasan <tanzirh@google.com> w=
+rote:
+>
+> This diff uses an open source tool include-what-you-use (IWYU) to modify
+> the include list, changing indirect includes to direct includes. IWYU is
+> implemented using the IWYUScripts github repository which is a tool that
+> is currently undergoing development. These changes seek to improve build
+> times.
+>
+> This change to lib/string.c resulted in a preprocessed size of
+> lib/string.i from 26371 lines to 5321 lines (-80%) for the x86
+> defconfig.
 
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/vhost/vdpa.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Why did you ignore my tag?
 
-Changelog:
 
-v1:
-This patch is spinned of from the series:
-https://lore.kernel.org/all/20231128204938.1453583-1-pasha.tatashin@soleen.com
-
-v2:
-- Synced with v6.7-rc7
-- Added Acked-by Michael S. Tsirkin.
-
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index da7ec77cdaff..a51c69c078d9 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -968,7 +968,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v, struct vhost_iotlb *iotlb,
- 			r = ops->set_map(vdpa, asid, iotlb);
- 	} else {
- 		r = iommu_map(v->domain, iova, pa, size,
--			      perm_to_iommu_flags(perm), GFP_KERNEL);
-+			      perm_to_iommu_flags(perm),
-+			      GFP_KERNEL_ACCOUNT);
- 	}
- 	if (r) {
- 		vhost_iotlb_del_range(iotlb, iova, iova + size - 1);
--- 
-2.43.0.472.g3155946c3a-goog
-
+--
+With Best Regards,
+Andy Shevchenko
 
