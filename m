@@ -1,65 +1,64 @@
-Return-Path: <linux-kernel+bounces-11622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03ABD81E916
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:58:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28F3B81E91B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:02:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF3DC1C20E9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 18:58:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52CF61C21017
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:02:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F69A110B;
-	Tue, 26 Dec 2023 18:57:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D5D1104;
+	Tue, 26 Dec 2023 19:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NLu8+aD+"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yTaMjA8L"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EB3A65F
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 18:57:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C77A110A
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 19:01:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a2335397e64so515091166b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 10:57:56 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a271a28aeb4so65498466b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 11:01:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703617074; x=1704221874; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=s+/xKpbe3rzbFxxV0m/bQ08D9ul9ygtDd5aVd+JFc3o=;
-        b=NLu8+aD+F1zeeFv3MUMyiB1jtogN8mTs3syjSSKmjgHtIfrnpEB0sy8jhnEqvO2aT8
-         6tif6JOTiEHC02JaeYu91k0uClxIpo/c2UHUawGXF/3YRT/SE8hIIUq4bC/npWm7ZUnd
-         uhHx6byzy7eEL1rJtKBChlT5GoxXO17mJ4keT7jwJXPIIVdXkLGV/rR7cLBTSQQxTjdc
-         DpqSofghuIiXND8Wp+5FYwzCOyTnCsOgLKYEwnr41hHkvcL3uLCJHxi7r6trfJK2mpis
-         JNjOCcZYv9dp0Y55GqZB3dpJQ6gDXyo9A0VH2bAnaeSB26xA49819U5pE0X1wKIzfM6k
-         xiiQ==
+        d=linaro.org; s=google; t=1703617316; x=1704222116; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mv/k4E8tNQsDocRbC/Q62jxBeX63xNG+uOzrvraohns=;
+        b=yTaMjA8LGiEBhymAIHJMQruV7Zl3nKkMA2AButKZnyt0FRWJKMYYgYSDgIJ7NROaH9
+         36M2iEUXIdX7I1Q+GT5qTxGHbFkCiZ2sMjiK1vEEiZX/ECAxgzyDV8OMRzX4Z3l1NWa7
+         Cbfnq9YZn0KhjAGO97aqJvykOmO0r/DYQFHO13BuR+GWDZXDH9vwDqfeJj1DvjOh9l23
+         mw4hFgrRd4+5v2cLcLwEWz94F83MdjYY8ha/dD3Ieb1wVayx5COK03rt8k+c0I6MFyGT
+         EJPhWw+8hyGCNJsGjIxKCD2xlXcfR4yrGe/zhafEOzHD2RPYlH2fqQO5taMvUXOikAP/
+         Ln8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703617074; x=1704221874;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s+/xKpbe3rzbFxxV0m/bQ08D9ul9ygtDd5aVd+JFc3o=;
-        b=etc77QE5gaBZsBtuhnYWCqlaczR2KusO9T+3rVjsSezpMGLnHUObbTdmt+DbAQG7N2
-         Z2MJzqYX3hf5FvPfV0eGrF7Q4zXG7UvE73eiur3br+uagwExtwb6504TP40AthZ0ZLyt
-         14K1X4xcoyMbk+bJ/57rIvoE6r8ikcfQnRMlVpJv6rmHBNVtafplpDbdqZFzMd0821qF
-         DEWa6AjEhQh7PkM63GqTuv84ay15j4heVsivgJuj7sHSHPjUi5qzqei0+CXt+gQ6UreT
-         TYAaDvHIK2kb7FgQPrSTP0WqnXM1dLmVWAycXEvx0z5r834t7lPeBq9amGvoO7JZJ4S/
-         Rh9A==
-X-Gm-Message-State: AOJu0Yz66z3QW/rJV12RW1JQtQT+uxwlBmf1F8UYQY/OwsYsbsqzICzx
-	/2WXj5kYiavSoNmp49CZ3ERbIIfBw66HGg==
-X-Google-Smtp-Source: AGHT+IGNJYb0T708InJ4PjZrixWklUHXmGWgfTn7jVAtSplE9YTtZ2LY0ArrLZ59TkOcdp6LfEEE7A==
-X-Received: by 2002:a17:906:10c4:b0:a23:2d6c:249d with SMTP id v4-20020a17090610c400b00a232d6c249dmr3113788ejv.90.1703617074413;
-        Tue, 26 Dec 2023 10:57:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703617316; x=1704222116;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mv/k4E8tNQsDocRbC/Q62jxBeX63xNG+uOzrvraohns=;
+        b=DraBwadxStkLx3YedaWquR4bqOgmphdVBPg0HcM1qpm8BmrT2PBpu0hMizQsXckJkm
+         8nDX33dD3tDFE41/rRY4T0bDTB2KIq+n/sjN5Zd3MP3zxQcaC/Eciun8S/5XD9O4o+F0
+         EjK8f9a8BJlXY4rFVRVx7mGYP6fZhvHB4MrUj8VnKnsBB1SV7w3S8XdrB48cRqYDbnfB
+         lFF9DgxPw1CoTvAYeIACZcMXy8+AK0K8Q/m8BGOfL8h1eO9m1lrhbTwRHFiqnljCvcqq
+         NvX5/Cd3tP7g9KISJo5BEUeVJwJzACuH4nH4deXh7nkfQCAxTdJWFypW4U7AGKAA+9Vu
+         w2fg==
+X-Gm-Message-State: AOJu0YzR5LCXvOBHmN5ZiQKVT1C+BfkQis+HvJao7EUjbRNUDmNTmDOG
+	P1syKHf+Jb3fsSfiBeujlhsIqgxN4ZvPBQ==
+X-Google-Smtp-Source: AGHT+IHsHiD6Zn3OsjK2DGYYWjTYRSHvI51xN7TxWZ3bS/xX57kGlz8kaVDKsTPlumPpdg/oqCnyfQ==
+X-Received: by 2002:a17:906:150:b0:a19:a19b:78a8 with SMTP id 16-20020a170906015000b00a19a19b78a8mr4096990ejh.107.1703617315124;
+        Tue, 26 Dec 2023 11:01:55 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id gh33-20020a1709073c2100b00a26b3f29f3dsm4747759ejc.43.2023.12.26.10.57.53
+        by smtp.gmail.com with ESMTPSA id p18-20020a170906b21200b00a26f69ca8d0sm1759085ejz.71.2023.12.26.11.01.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Dec 2023 10:57:53 -0800 (PST)
-Message-ID: <d22b9050-647a-4551-8a4d-b45e9b7700b2@linaro.org>
-Date: Tue, 26 Dec 2023 19:57:52 +0100
+        Tue, 26 Dec 2023 11:01:54 -0800 (PST)
+Message-ID: <0233cf48-93cb-4f19-ad1d-e3e1835c1fef@linaro.org>
+Date: Tue, 26 Dec 2023 20:01:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,19 +66,22 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: clock: Fix spelling mistake in
- 'tesla,fsd-clock.yaml'
-To: Varada Pavani <v.pavani@samsung.com>, mturquette@baylibre.com,
- sboyd@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com
-Cc: linux-samsung-soc@vger.kernel.org, alim.akhtar@samsung.com,
- aswani.reddy@samsung.com, pankaj.dubey@samsung.com
-References: <CGME20231219115856epcas5p371abeb4264f60309e597b90954e6d58c@epcas5p3.samsung.com>
- <20231219115834.65720-1-v.pavani@samsung.com>
- <cb9a6bd4-6c99-4409-9cc7-73b600eb8fce@linaro.org>
- <003d01da381c$908906f0$b19b14d0$@samsung.com>
+Subject: Re: [PATCH v6 15/16] dt-bindings: imx6q-pcie: Add iMX95 pcie endpoint
+ compatible string
 Content-Language: en-US
+To: Frank Li <Frank.li@nxp.com>
+Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
+ festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com,
+ imx@lists.linux.dev, kernel@pengutronix.de,
+ krzysztof.kozlowski+dt@linaro.org, kw@linux.com, l.stach@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+ linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+ lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org, robh@kernel.org,
+ s.hauer@pengutronix.de, shawnguo@kernel.org
+References: <20231224183242.1675372-1-Frank.Li@nxp.com>
+ <20231224183242.1675372-16-Frank.Li@nxp.com>
+ <6a61f325-a58b-4aa6-9a0a-7a3086f63829@linaro.org>
+ <ZYr7Y+mJea6fChjS@lizhi-Precision-Tower-5810>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -125,19 +127,50 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <003d01da381c$908906f0$b19b14d0$@samsung.com>
+In-Reply-To: <ZYr7Y+mJea6fChjS@lizhi-Precision-Tower-5810>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 26/12/2023 17:57, Varada Pavani wrote:
+On 26/12/2023 17:12, Frank Li wrote:
+> On Mon, Dec 25, 2023 at 08:16:17PM +0100, Krzysztof Kozlowski wrote:
+>> On 24/12/2023 19:32, Frank Li wrote:
+>>> Add i.MX95 PCIe "fsl,imx95-pcie-ep" compatible string.
+>>> Add reg-name: "atu", "dbi2", "dma" and "app".
+>>> Reuse PCI linux,pci-domain as controller id at endpoint.
+>>>
+>>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+>>> ---
+>>>
+>>
+>> ...
+>>
+>>> +# reuse PCI linux,pci-domain as controller id at Endpoint
+>>> +  - if:
+>>> +      properties:
+>>> +        compatible:
+>>> +          enum:
+>>> +            - fsl,imx95-pcie-ep
+>>> +    then:
+>>> +      properties:
+>>> +        linux,pci-domain: true
+>>
+>> Same comment: why do you need? Don't ignore my feedback. You responded
+>> you will fix it, but it is still here...
 > 
-> Are there any other typos in that file or in other Samsung clock bindings?
+> DTB_CHECK report error after I remove it. linux,pci-domain is only define
+> in pci, not pci-ep.
+
+Ah, thank you, indeed.
+
 > 
-> I couldn’t find any other typos in current file and also in other Samsung clock bindings.
+> So I add comments about this. linux,pci-domain was resued ad controller id.
 
-OK, that's fine. I will take it after the merge window.
-
-You need to fix your email program, so it will properly mark quotes.
+However maybe there is reason why it is not for endpoints. The
+description is saying it is valid only for host bridge, so maybe it
+should not be used for endpoint case?
+> 
+> If include pci.yaml, there are too much other properties was involved, but
+> not used by pci-ep.
 
 Best regards,
 Krzysztof
