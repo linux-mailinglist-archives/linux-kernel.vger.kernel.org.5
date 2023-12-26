@@ -1,36 +1,36 @@
-Return-Path: <linux-kernel+bounces-11358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A98BB81E519
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:40:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB78581E515
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:39:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36B6B1F225F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:40:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 820BC280FCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:39:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 268C84C3C1;
-	Tue, 26 Dec 2023 05:39:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228A94B5C4;
+	Tue, 26 Dec 2023 05:39:24 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 605A44C3A6;
-	Tue, 26 Dec 2023 05:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56464B14C;
+	Tue, 26 Dec 2023 05:39:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-	by ex01.ufhost.com (Postfix) with ESMTP id 7370924E28F;
-	Tue, 26 Dec 2023 13:39:09 +0800 (CST)
-Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 26 Dec
- 2023 13:39:09 +0800
+	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+	by ex01.ufhost.com (Postfix) with ESMTP id 50DBD24E28B;
+	Tue, 26 Dec 2023 13:39:16 +0800 (CST)
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 26 Dec
+ 2023 13:39:16 +0800
 Received: from jsia-virtual-machine.localdomain (202.188.176.82) by
  EXMBX066.cuchost.com (172.16.6.66) with Microsoft SMTP Server (TLS) id
- 15.0.1497.42; Tue, 26 Dec 2023 13:39:03 +0800
+ 15.0.1497.42; Tue, 26 Dec 2023 13:39:10 +0800
 From: Sia Jee Heng <jeeheng.sia@starfivetech.com>
 To: <kernel@esmil.dk>, <conor@kernel.org>, <robh+dt@kernel.org>,
 	<krzysztof.kozlowski+dt@linaro.org>, <paul.walmsley@sifive.com>,
@@ -41,9 +41,9 @@ To: <kernel@esmil.dk>, <conor@kernel.org>, <robh+dt@kernel.org>,
 CC: <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
 	<jeeheng.sia@starfivetech.com>, <leyfoon.tan@starfivetech.com>
-Subject: [RFC 01/16] reset: starfive: Rename file name "jh71x0" to "common"
-Date: Tue, 26 Dec 2023 13:38:33 +0800
-Message-ID: <20231226053848.25089-2-jeeheng.sia@starfivetech.com>
+Subject: [RFC 02/16] reset: starfive: Convert the word "jh71x0" to "starfive"
+Date: Tue, 26 Dec 2023 13:38:34 +0800
+Message-ID: <20231226053848.25089-3-jeeheng.sia@starfivetech.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231226053848.25089-1-jeeheng.sia@starfivetech.com>
 References: <20231226053848.25089-1-jeeheng.sia@starfivetech.com>
@@ -59,184 +59,259 @@ X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX066.cuchost.com
 X-YovoleRuleAgent: yovoleflag
 Content-Transfer-Encoding: quoted-printable
 
-StarFive JH8100 shares a similar clock and reset design with JH7110.
-To facilitate the reuse of the file and its functionalities, files
-containing the "jh71x0" naming convention are renamed to use the
-"common" wording.
+Function names that consist of the 'jh71x0' naming convention are
+renamed to use the 'starfive' wording.
 
 Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
 Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
 Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 ---
- drivers/clk/starfive/clk-starfive-jh7110-sys.c              | 2 +-
- drivers/reset/starfive/Kconfig                              | 6 +++---
- drivers/reset/starfive/Makefile                             | 2 +-
- .../{reset-starfive-jh71x0.c =3D> reset-starfive-common.c}    | 4 ++--
- .../{reset-starfive-jh71x0.h =3D> reset-starfive-common.h}    | 6 +++---
- drivers/reset/starfive/reset-starfive-jh7100.c              | 2 +-
- drivers/reset/starfive/reset-starfive-jh7110.c              | 4 ++--
- .../{reset-starfive-jh71x0.h =3D> reset-starfive-common.h}    | 4 ++--
- 8 files changed, 15 insertions(+), 15 deletions(-)
- rename drivers/reset/starfive/{reset-starfive-jh71x0.c =3D> reset-starfi=
-ve-common.c} (97%)
- rename drivers/reset/starfive/{reset-starfive-jh71x0.h =3D> reset-starfi=
-ve-common.h} (75%)
- rename include/soc/starfive/{reset-starfive-jh71x0.h =3D> reset-starfive=
--common.h} (81%)
+ .../clk/starfive/clk-starfive-jh7110-sys.c    |  4 +-
+ .../reset/starfive/reset-starfive-common.c    | 64 +++++++++----------
+ .../reset/starfive/reset-starfive-common.h    |  8 +--
+ .../reset/starfive/reset-starfive-jh7100.c    |  2 +-
+ .../reset/starfive/reset-starfive-jh7110.c    |  4 +-
+ include/soc/starfive/reset-starfive-common.h  |  6 +-
+ 6 files changed, 44 insertions(+), 44 deletions(-)
 
 diff --git a/drivers/clk/starfive/clk-starfive-jh7110-sys.c b/drivers/clk=
 /starfive/clk-starfive-jh7110-sys.c
-index 3884eff9fe93..6e45c580c9ba 100644
+index 6e45c580c9ba..e63353c70209 100644
 --- a/drivers/clk/starfive/clk-starfive-jh7110-sys.c
 +++ b/drivers/clk/starfive/clk-starfive-jh7110-sys.c
-@@ -14,7 +14,7 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
+@@ -345,7 +345,7 @@ static void jh7110_reset_unregister_adev(void *_adev)
+ static void jh7110_reset_adev_release(struct device *dev)
+ {
+ 	struct auxiliary_device *adev =3D to_auxiliary_dev(dev);
+-	struct jh71x0_reset_adev *rdev =3D to_jh71x0_reset_adev(adev);
++	struct starfive_reset_adev *rdev =3D to_starfive_reset_adev(adev);
 =20
--#include <soc/starfive/reset-starfive-jh71x0.h>
-+#include <soc/starfive/reset-starfive-common.h>
+ 	kfree(rdev);
+ }
+@@ -354,7 +354,7 @@ int jh7110_reset_controller_register(struct jh71x0_cl=
+k_priv *priv,
+ 				     const char *adev_name,
+ 				     u32 adev_id)
+ {
+-	struct jh71x0_reset_adev *rdev;
++	struct starfive_reset_adev *rdev;
+ 	struct auxiliary_device *adev;
+ 	int ret;
 =20
- #include <dt-bindings/clock/starfive,jh7110-crg.h>
-=20
-diff --git a/drivers/reset/starfive/Kconfig b/drivers/reset/starfive/Kcon=
-fig
-index d832339f61bc..29fbcf1a7d83 100644
---- a/drivers/reset/starfive/Kconfig
-+++ b/drivers/reset/starfive/Kconfig
-@@ -1,12 +1,12 @@
- # SPDX-License-Identifier: GPL-2.0-only
-=20
--config RESET_STARFIVE_JH71X0
-+config RESET_STARFIVE_COMMON
- 	bool
-=20
- config RESET_STARFIVE_JH7100
- 	bool "StarFive JH7100 Reset Driver"
- 	depends on ARCH_STARFIVE || COMPILE_TEST
--	select RESET_STARFIVE_JH71X0
-+	select RESET_STARFIVE_COMMON
- 	default ARCH_STARFIVE
- 	help
- 	  This enables the reset controller driver for the StarFive JH7100 SoC.
-@@ -15,7 +15,7 @@ config RESET_STARFIVE_JH7110
- 	bool "StarFive JH7110 Reset Driver"
- 	depends on CLK_STARFIVE_JH7110_SYS
- 	select AUXILIARY_BUS
--	select RESET_STARFIVE_JH71X0
-+	select RESET_STARFIVE_COMMON
- 	default ARCH_STARFIVE
- 	help
- 	  This enables the reset controller driver for the StarFive JH7110 SoC.
-diff --git a/drivers/reset/starfive/Makefile b/drivers/reset/starfive/Mak=
-efile
-index 7a44b66fb9d5..582e4c160bd4 100644
---- a/drivers/reset/starfive/Makefile
-+++ b/drivers/reset/starfive/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--obj-$(CONFIG_RESET_STARFIVE_JH71X0)		+=3D reset-starfive-jh71x0.o
-+obj-$(CONFIG_RESET_STARFIVE_COMMON)		+=3D reset-starfive-common.o
-=20
- obj-$(CONFIG_RESET_STARFIVE_JH7100)		+=3D reset-starfive-jh7100.o
- obj-$(CONFIG_RESET_STARFIVE_JH7110)		+=3D reset-starfive-jh7110.o
-diff --git a/drivers/reset/starfive/reset-starfive-jh71x0.c b/drivers/res=
+diff --git a/drivers/reset/starfive/reset-starfive-common.c b/drivers/res=
 et/starfive/reset-starfive-common.c
-similarity index 97%
-rename from drivers/reset/starfive/reset-starfive-jh71x0.c
-rename to drivers/reset/starfive/reset-starfive-common.c
-index 55bbbd2de52c..dab454e46bbf 100644
---- a/drivers/reset/starfive/reset-starfive-jh71x0.c
+index dab454e46bbf..8d8dec9e5d7a 100644
+--- a/drivers/reset/starfive/reset-starfive-common.c
 +++ b/drivers/reset/starfive/reset-starfive-common.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * Reset driver for the StarFive JH71X0 SoCs
-+ * Reset driver for the StarFive SoCs
-  *
-  * Copyright (C) 2021 Emil Renner Berthing <kernel@esmil.dk>
-  */
-@@ -12,7 +12,7 @@
- #include <linux/reset-controller.h>
- #include <linux/spinlock.h>
+@@ -14,7 +14,7 @@
 =20
--#include "reset-starfive-jh71x0.h"
-+#include "reset-starfive-common.h"
+ #include "reset-starfive-common.h"
 =20
- struct jh71x0_reset {
+-struct jh71x0_reset {
++struct starfive_reset {
  	struct reset_controller_dev rcdev;
-diff --git a/drivers/reset/starfive/reset-starfive-jh71x0.h b/drivers/res=
-et/starfive/reset-starfive-common.h
-similarity index 75%
-rename from drivers/reset/starfive/reset-starfive-jh71x0.h
-rename to drivers/reset/starfive/reset-starfive-common.h
-index db7d39a87f87..266acc4b2caf 100644
---- a/drivers/reset/starfive/reset-starfive-jh71x0.h
-+++ b/drivers/reset/starfive/reset-starfive-common.h
-@@ -3,12 +3,12 @@
-  * Copyright (C) 2021 Emil Renner Berthing <kernel@esmil.dk>
-  */
+ 	/* protect registers against concurrent read-modify-write */
+ 	spinlock_t lock;
+@@ -23,16 +23,16 @@ struct jh71x0_reset {
+ 	const u32 *asserted;
+ };
 =20
--#ifndef __RESET_STARFIVE_JH71X0_H
--#define __RESET_STARFIVE_JH71X0_H
-+#ifndef __RESET_STARFIVE_COMMON_H
-+#define __RESET_STARFIVE_COMMON_H
+-static inline struct jh71x0_reset *
+-jh71x0_reset_from(struct reset_controller_dev *rcdev)
++static inline struct starfive_reset *
++starfive_reset_from(struct reset_controller_dev *rcdev)
+ {
+-	return container_of(rcdev, struct jh71x0_reset, rcdev);
++	return container_of(rcdev, struct starfive_reset, rcdev);
+ }
 =20
- int reset_starfive_jh71x0_register(struct device *dev, struct device_nod=
+-static int jh71x0_reset_update(struct reset_controller_dev *rcdev,
+-			       unsigned long id, bool assert)
++static int starfive_reset_update(struct reset_controller_dev *rcdev,
++				 unsigned long id, bool assert)
+ {
+-	struct jh71x0_reset *data =3D jh71x0_reset_from(rcdev);
++	struct starfive_reset *data =3D starfive_reset_from(rcdev);
+ 	unsigned long offset =3D id / 32;
+ 	u32 mask =3D BIT(id % 32);
+ 	void __iomem *reg_assert =3D data->assert + offset * sizeof(u32);
+@@ -61,34 +61,34 @@ static int jh71x0_reset_update(struct reset_controlle=
+r_dev *rcdev,
+ 	return ret;
+ }
+=20
+-static int jh71x0_reset_assert(struct reset_controller_dev *rcdev,
+-			       unsigned long id)
++static int starfive_reset_assert(struct reset_controller_dev *rcdev,
++				 unsigned long id)
+ {
+-	return jh71x0_reset_update(rcdev, id, true);
++	return starfive_reset_update(rcdev, id, true);
+ }
+=20
+-static int jh71x0_reset_deassert(struct reset_controller_dev *rcdev,
+-				 unsigned long id)
++static int starfive_reset_deassert(struct reset_controller_dev *rcdev,
++				   unsigned long id)
+ {
+-	return jh71x0_reset_update(rcdev, id, false);
++	return starfive_reset_update(rcdev, id, false);
+ }
+=20
+-static int jh71x0_reset_reset(struct reset_controller_dev *rcdev,
+-			      unsigned long id)
++static int starfive_reset_reset(struct reset_controller_dev *rcdev,
++				unsigned long id)
+ {
+ 	int ret;
+=20
+-	ret =3D jh71x0_reset_assert(rcdev, id);
++	ret =3D starfive_reset_assert(rcdev, id);
+ 	if (ret)
+ 		return ret;
+=20
+-	return jh71x0_reset_deassert(rcdev, id);
++	return starfive_reset_deassert(rcdev, id);
+ }
+=20
+-static int jh71x0_reset_status(struct reset_controller_dev *rcdev,
+-			       unsigned long id)
++static int starfive_reset_status(struct reset_controller_dev *rcdev,
++				 unsigned long id)
+ {
+-	struct jh71x0_reset *data =3D jh71x0_reset_from(rcdev);
++	struct starfive_reset *data =3D starfive_reset_from(rcdev);
+ 	unsigned long offset =3D id / 32;
+ 	u32 mask =3D BIT(id % 32);
+ 	void __iomem *reg_status =3D data->status + offset * sizeof(u32);
+@@ -97,25 +97,25 @@ static int jh71x0_reset_status(struct reset_controlle=
+r_dev *rcdev,
+ 	return !((value ^ data->asserted[offset]) & mask);
+ }
+=20
+-static const struct reset_control_ops jh71x0_reset_ops =3D {
+-	.assert		=3D jh71x0_reset_assert,
+-	.deassert	=3D jh71x0_reset_deassert,
+-	.reset		=3D jh71x0_reset_reset,
+-	.status		=3D jh71x0_reset_status,
++static const struct reset_control_ops starfive_reset_ops =3D {
++	.assert		=3D starfive_reset_assert,
++	.deassert	=3D starfive_reset_deassert,
++	.reset		=3D starfive_reset_reset,
++	.status		=3D starfive_reset_status,
+ };
+=20
+-int reset_starfive_jh71x0_register(struct device *dev, struct device_nod=
 e *of_node,
- 				   void __iomem *assert, void __iomem *status,
- 				   const u32 *asserted, unsigned int nr_resets,
- 				   struct module *owner);
+-				   void __iomem *assert, void __iomem *status,
+-				   const u32 *asserted, unsigned int nr_resets,
+-				   struct module *owner)
++int reset_starfive_register(struct device *dev, struct device_node *of_n=
+ode,
++			    void __iomem *assert, void __iomem *status,
++			    const u32 *asserted, unsigned int nr_resets,
++			    struct module *owner)
+ {
+-	struct jh71x0_reset *data;
++	struct starfive_reset *data;
 =20
--#endif /* __RESET_STARFIVE_JH71X0_H */
-+#endif /* __RESET_STARFIVE_COMMON_H */
+ 	data =3D devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+ 	if (!data)
+ 		return -ENOMEM;
+=20
+-	data->rcdev.ops =3D &jh71x0_reset_ops;
++	data->rcdev.ops =3D &starfive_reset_ops;
+ 	data->rcdev.owner =3D owner;
+ 	data->rcdev.nr_resets =3D nr_resets;
+ 	data->rcdev.dev =3D dev;
+@@ -128,4 +128,4 @@ int reset_starfive_jh71x0_register(struct device *dev=
+, struct device_node *of_no
+=20
+ 	return devm_reset_controller_register(dev, &data->rcdev);
+ }
+-EXPORT_SYMBOL_GPL(reset_starfive_jh71x0_register);
++EXPORT_SYMBOL_GPL(reset_starfive_register);
+diff --git a/drivers/reset/starfive/reset-starfive-common.h b/drivers/res=
+et/starfive/reset-starfive-common.h
+index 266acc4b2caf..83461b22ee55 100644
+--- a/drivers/reset/starfive/reset-starfive-common.h
++++ b/drivers/reset/starfive/reset-starfive-common.h
+@@ -6,9 +6,9 @@
+ #ifndef __RESET_STARFIVE_COMMON_H
+ #define __RESET_STARFIVE_COMMON_H
+=20
+-int reset_starfive_jh71x0_register(struct device *dev, struct device_nod=
+e *of_node,
+-				   void __iomem *assert, void __iomem *status,
+-				   const u32 *asserted, unsigned int nr_resets,
+-				   struct module *owner);
++int reset_starfive_register(struct device *dev, struct device_node *of_n=
+ode,
++			    void __iomem *assert, void __iomem *status,
++			    const u32 *asserted, unsigned int nr_resets,
++			    struct module *owner);
+=20
+ #endif /* __RESET_STARFIVE_COMMON_H */
 diff --git a/drivers/reset/starfive/reset-starfive-jh7100.c b/drivers/res=
 et/starfive/reset-starfive-jh7100.c
-index 2a56f7fd4ba7..546dea2e5811 100644
+index 546dea2e5811..122ac6c3893b 100644
 --- a/drivers/reset/starfive/reset-starfive-jh7100.c
 +++ b/drivers/reset/starfive/reset-starfive-jh7100.c
-@@ -8,7 +8,7 @@
- #include <linux/mod_devicetable.h>
- #include <linux/platform_device.h>
+@@ -51,7 +51,7 @@ static int __init jh7100_reset_probe(struct platform_de=
+vice *pdev)
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
 =20
--#include "reset-starfive-jh71x0.h"
-+#include "reset-starfive-common.h"
-=20
- #include <dt-bindings/reset/starfive-jh7100.h>
-=20
+-	return reset_starfive_jh71x0_register(&pdev->dev, pdev->dev.of_node,
++	return reset_starfive_register(&pdev->dev, pdev->dev.of_node,
+ 					      base + JH7100_RESET_ASSERT0,
+ 					      base + JH7100_RESET_STATUS0,
+ 					      jh7100_reset_asserted,
 diff --git a/drivers/reset/starfive/reset-starfive-jh7110.c b/drivers/res=
 et/starfive/reset-starfive-jh7110.c
-index 29a43f0f2ad6..87dba01491ae 100644
+index 87dba01491ae..c4dd21761e53 100644
 --- a/drivers/reset/starfive/reset-starfive-jh7110.c
 +++ b/drivers/reset/starfive/reset-starfive-jh7110.c
-@@ -7,9 +7,9 @@
+@@ -53,13 +53,13 @@ static int jh7110_reset_probe(struct auxiliary_device=
+ *adev,
+ 			      const struct auxiliary_device_id *id)
+ {
+ 	struct jh7110_reset_info *info =3D (struct jh7110_reset_info *)(id->dri=
+ver_data);
+-	struct jh71x0_reset_adev *rdev =3D to_jh71x0_reset_adev(adev);
++	struct starfive_reset_adev *rdev =3D to_starfive_reset_adev(adev);
+ 	void __iomem *base =3D rdev->base;
 =20
- #include <linux/auxiliary_bus.h>
+ 	if (!info || !base)
+ 		return -ENODEV;
 =20
--#include <soc/starfive/reset-starfive-jh71x0.h>
-+#include <soc/starfive/reset-starfive-common.h>
-=20
--#include "reset-starfive-jh71x0.h"
-+#include "reset-starfive-common.h"
-=20
- #include <dt-bindings/reset/starfive,jh7110-crg.h>
-=20
-diff --git a/include/soc/starfive/reset-starfive-jh71x0.h b/include/soc/s=
+-	return reset_starfive_jh71x0_register(&adev->dev, adev->dev.parent->of_=
+node,
++	return reset_starfive_register(&adev->dev, adev->dev.parent->of_node,
+ 					      base + info->assert_offset,
+ 					      base + info->status_offset,
+ 					      NULL,
+diff --git a/include/soc/starfive/reset-starfive-common.h b/include/soc/s=
 tarfive/reset-starfive-common.h
-similarity index 81%
-rename from include/soc/starfive/reset-starfive-jh71x0.h
-rename to include/soc/starfive/reset-starfive-common.h
-index 47b486ececc5..56d8f413cf18 100644
---- a/include/soc/starfive/reset-starfive-jh71x0.h
+index 56d8f413cf18..16df46a074bc 100644
+--- a/include/soc/starfive/reset-starfive-common.h
 +++ b/include/soc/starfive/reset-starfive-common.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __SOC_STARFIVE_RESET_JH71X0_H
--#define __SOC_STARFIVE_RESET_JH71X0_H
-+#ifndef __SOC_STARFIVE_RESET_COMMON_H
-+#define __SOC_STARFIVE_RESET_COMMON_H
-=20
- #include <linux/auxiliary_bus.h>
+@@ -6,12 +6,12 @@
  #include <linux/compiler_types.h>
+ #include <linux/container_of.h>
+=20
+-struct jh71x0_reset_adev {
++struct starfive_reset_adev {
+ 	void __iomem *base;
+ 	struct auxiliary_device adev;
+ };
+=20
+-#define to_jh71x0_reset_adev(_adev) \
+-	container_of((_adev), struct jh71x0_reset_adev, adev)
++#define to_starfive_reset_adev(_adev) \
++	container_of((_adev), struct starfive_reset_adev, adev)
+=20
+ #endif
 --=20
 2.34.1
 
