@@ -1,118 +1,140 @@
-Return-Path: <linux-kernel+bounces-11426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 088DF81E61B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:02:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F2D981E615
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:00:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0C22282FB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:02:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDC20282F03
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67DC54CE19;
-	Tue, 26 Dec 2023 09:02:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244154CE09;
+	Tue, 26 Dec 2023 09:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b="smS/NLG+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6C84CB58;
-	Tue, 26 Dec 2023 09:01:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from alexious$zju.edu.cn ( [124.90.106.3] ) by
- ajax-webmail-mail-app3 (Coremail) ; Tue, 26 Dec 2023 17:01:05 +0800
- (GMT+08:00)
-Date: Tue, 26 Dec 2023 17:01:05 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: alexious@zju.edu.cn
-To: "Chuck Lever" <chuck.lever@oracle.com>
-Cc: "Trond Myklebust" <trond.myklebust@hammerspace.com>, 
-	"Anna Schumaker" <anna@kernel.org>, 
-	"Jeff Layton" <jlayton@kernel.org>, "Neil Brown" <neilb@suse.de>, 
-	"Olga Kornievskaia" <kolga@netapp.com>, 
-	"Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>, 
-	"David S. Miller" <davem@davemloft.net>, 
-	"Eric Dumazet" <edumazet@google.com>, 
-	"Jakub Kicinski" <kuba@kernel.org>, 
-	"Paolo Abeni" <pabeni@redhat.com>, "Simo Sorce" <simo@redhat.com>, 
-	"Steve Dickson" <steved@redhat.com>, 
-	"Kevin Coffman" <kwc@citi.umich.edu>, linux-nfs@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] SUNRPC: fix a memleak in gss_import_v2_context
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.2-cmXT5 build
- 20230825(e13b6a3b) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <ZYhivG2MxmtePvo3@tissot.1015granger.net>
-References: <20231224082035.3538560-1-alexious@zju.edu.cn>
- <ZYhivG2MxmtePvo3@tissot.1015granger.net>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57294CB50
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=smartx.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6d9bf6f24f3so98663b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 01:00:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=smartx-com.20230601.gappssmtp.com; s=20230601; t=1703581219; x=1704186019; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ciIW1eEWiX3+BIMc+04M65OlmBRBFOwzSxY74rwr6UI=;
+        b=smS/NLG+6bn00x5WgPNHxfF8B0d+ThtCgqLGTwW9z9xaqyM+smbh2H20g67KuN4FwS
+         DyCzJEndMfL2E2hKVj+PtI81KkLG4d6NBdXWmW0IbvbSk2bBKO0jdf8uAIJ2yJcLVkcw
+         3kaMvGhlGe4IcPG0QZon7YpZRZNmshniMSeX/lfEnZKxglfUe8ehn1SYIEI91LGsFHRW
+         gr3b6fP/ioU0CdyXAqgFCmnBvckoSZcDsJJeDjlLwIwdwtW8nMYP/DmGf9V1CoAU4aCo
+         SGIgTovSLn4K9/lbHrVRNkL4fm/U+nx4tH7l/GK/Oe81ge5hlpQ/SzTrMqd91XwAlPqR
+         3tag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703581219; x=1704186019;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ciIW1eEWiX3+BIMc+04M65OlmBRBFOwzSxY74rwr6UI=;
+        b=wdsIY4x/VfnxmzMhLbB0bEWhGZYK7pS+BOYbp5GBWfB8F/dSEQ464Syihdx6zwNxyT
+         QUCXCX+ucdF11BUgJlCxhzP8x73mLP/1w8swCoxiOYBNqnc68uuBJa9m59fOIGfi8Hjw
+         V8VXTjISVpg3nA1AHQjvYxnxT5ugRf7zRVfQ1CyxZEmJKoNu3x1uwWPXolw1EZNANblS
+         jRUmj+VGbERjVYC7+YQDZPL6vHZBOu4auLOajAglcK1nUGpiq+umcGjtv8d3MBdT/a/m
+         UiaksllDYisk1eJuX4xH03kgcN5hl/OkobjLaWJCHvqPsMvlYQrjDH9IntDPTFijI0kj
+         JaQw==
+X-Gm-Message-State: AOJu0YyAkvyzroKrU4NzzpXh5jBytY9JCmzXs85PQr3LsE9MinSy3Q9L
+	n3HWwe526fLGbCvWbPjTOGa50254qyqh2A==
+X-Google-Smtp-Source: AGHT+IFo+TlFAxPGIaMC6ckFkREHygYopoFgva5SosFYSHy9AdgjsN5p/YSOefLrWKS6+ubequg+uQ==
+X-Received: by 2002:a05:6a20:2714:b0:195:3520:632c with SMTP id u20-20020a056a20271400b001953520632cmr1638097pze.15.1703581218306;
+        Tue, 26 Dec 2023 01:00:18 -0800 (PST)
+Received: from smtpclient.apple ([8.210.91.195])
+        by smtp.gmail.com with ESMTPSA id jh19-20020a170903329300b001d05fb4cf3csm9567645plb.62.2023.12.26.01.00.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 Dec 2023 01:00:17 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Message-ID: <45874bb1.58022.18ca55b2eab.Coremail.alexious@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:cC_KCgBnb3NSloplDFl9AQ--.44789W
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/1tbiAgIBAGWJUhg7uQAAsl
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.100.2.1.4\))
+Subject: Re: [PATCH] virtio_blk: set the default scheduler to none
+From: Li Feng <fengli@smartx.com>
+In-Reply-To: <20231225092010-mutt-send-email-mst@kernel.org>
+Date: Tue, 26 Dec 2023 17:01:40 +0800
+Cc: Jens Axboe <axboe@kernel.dk>,
+ Jason Wang <jasowang@redhat.com>,
+ Paolo Bonzini <pbonzini@redhat.com>,
+ Stefan Hajnoczi <stefanha@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ "open list:VIRTIO BLOCK AND SCSI DRIVERS" <virtualization@lists.linux.dev>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <AB23804D-FF38-47B8-ADC6-C0A19B7083CC@smartx.com>
+References: <20231207043118.118158-1-fengli@smartx.com>
+ <20231225092010-mutt-send-email-mst@kernel.org>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+X-Mailer: Apple Mail (2.3774.100.2.1.4)
 
-PiBPbiBTdW4sIERlYyAyNCwgMjAyMyBhdCAwNDoyMDozM1BNICswODAwLCBaaGlwZW5nIEx1IHdy
-b3RlOgo+ID4gVGhlIGN0eC0+bWVjaF91c2VkLmRhdGEgYWxsb2NhdGVkIGJ5IGttZW1kdXAgaXMg
-bm90IGZyZWVkIGluIG5laXRoZXIKPiA+IGdzc19pbXBvcnRfdjJfY29udGV4dCBub3IgaXQgb25s
-eSBjYWxsZXIgcmFkZW9uX2RyaXZlcl9vcGVuX2ttcy4KPiA+IFRodXMsIHRoaXMgcGF0Y2ggcmVm
-b3JtIHRoZSBsYXN0IGNhbGwgb2YgZ3NzX2ltcG9ydF92Ml9jb250ZXh0IHRvIHRoZQo+ID4gZ3Nz
-X2tyYjVfaW1wb3J0X2N0eF92MiwgcHJldmVudGluZyB0aGUgbWVtbGVhayB3aGlsZSBrZWVwcGlu
-ZyB0aGUgcmV0dXJuCj4gPiBmb3JtYXRpb24uCj4gPiAKPiA+IEZpeGVzOiA0N2Q4NDgwNzc2Mjkg
-KCJnc3Nfa3JiNTogaGFuZGxlIG5ldyBjb250ZXh0IGZvcm1hdCBmcm9tIGdzc2QiKQo+ID4gU2ln
-bmVkLW9mZi1ieTogWmhpcGVuZyBMdSA8YWxleGlvdXNAemp1LmVkdS5jbj4KPiA+IC0tLQo+ID4g
-IG5ldC9zdW5ycGMvYXV0aF9nc3MvZ3NzX2tyYjVfbWVjaC5jIHwgOSArKysrKysrKy0KPiA+ICAx
-IGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4gPiAKPiA+IGRp
-ZmYgLS1naXQgYS9uZXQvc3VucnBjL2F1dGhfZ3NzL2dzc19rcmI1X21lY2guYyBiL25ldC9zdW5y
-cGMvYXV0aF9nc3MvZ3NzX2tyYjVfbWVjaC5jCj4gPiBpbmRleCBlMzFjZmRmN2VhZGMuLjFlNTRi
-ZDYzZTNmMCAxMDA2NDQKPiA+IC0tLSBhL25ldC9zdW5ycGMvYXV0aF9nc3MvZ3NzX2tyYjVfbWVj
-aC5jCj4gPiArKysgYi9uZXQvc3VucnBjL2F1dGhfZ3NzL2dzc19rcmI1X21lY2guYwo+ID4gQEAg
-LTM5OCw2ICszOTgsNyBAQCBnc3NfaW1wb3J0X3YyX2NvbnRleHQoY29uc3Qgdm9pZCAqcCwgY29u
-c3Qgdm9pZCAqZW5kLCBzdHJ1Y3Qga3JiNV9jdHggKmN0eCwKPiA+ICAJdTY0IHNlcV9zZW5kNjQ7
-Cj4gPiAgCWludCBrZXlsZW47Cj4gPiAgCXUzMiB0aW1lMzI7Cj4gPiArCWludCByZXQ7Cj4gPiAg
-Cj4gPiAgCXAgPSBzaW1wbGVfZ2V0X2J5dGVzKHAsIGVuZCwgJmN0eC0+ZmxhZ3MsIHNpemVvZihj
-dHgtPmZsYWdzKSk7Cj4gPiAgCWlmIChJU19FUlIocCkpCj4gPiBAQCAtNDUwLDggKzQ1MSwxNCBA
-QCBnc3NfaW1wb3J0X3YyX2NvbnRleHQoY29uc3Qgdm9pZCAqcCwgY29uc3Qgdm9pZCAqZW5kLCBz
-dHJ1Y3Qga3JiNV9jdHggKmN0eCwKPiA+ICAJfQo+ID4gIAljdHgtPm1lY2hfdXNlZC5sZW4gPSBn
-c3Nfa2VyYmVyb3NfbWVjaC5nbV9vaWQubGVuOwo+ID4gIAo+ID4gLQlyZXR1cm4gZ3NzX2tyYjVf
-aW1wb3J0X2N0eF92MihjdHgsIGdmcF9tYXNrKTsKPiA+ICsJcmV0ID0gZ3NzX2tyYjVfaW1wb3J0
-X2N0eF92MihjdHgsIGdmcF9tYXNrKTsKPiA+ICsJaWYgKHJldCkgewo+ID4gKwkJcCA9IEVSUl9Q
-VFIocmV0KTsKPiA+ICsJCWdvdG8gb3V0X2ZyZWU7Cj4gPiArCX07Cj4gPiAgCj4gPiArb3V0X2Zy
-ZWU6Cj4gPiArCWtmcmVlKGN0eC0+bWVjaF91c2VkLmRhdGEpOwo+IAo+IElmIHRoZSBjYWxsZXIn
-cyBlcnJvciBmbG93IGRvZXMgbm90IGludm9rZQo+IGdzc19rcmI1X2RlbGV0ZV9zZWNfY29udGV4
-dCgpLCB0aGVuIEkgd291bGQgZXhwZWN0IG1vcmUgdGhhbiBqdXN0Cj4gbWVjaF91c2VkLmRhdGEg
-d291bGQgYmUgbGVha2VkLiBXaGF0IGlmLCBpbnN0ZWFkLCB5b3UgY2hhbmdlZAo+IGdzc19rcmI1
-X2ltcG9ydF9zZWNfY29udGV4dCgpIGxpa2UgdGhpcyAodW50ZXN0ZWQpOgo+IAo+IDQ3MSAgICAg
-ICAgIHJldCA9IGdzc19pbXBvcnRfdjJfY29udGV4dChwLCBlbmQsIGN0eCwgZ2ZwX21hc2spOwo+
-IDQ3MiAgICAgICAgIG1lbXplcm9fZXhwbGljaXQoJmN0eC0+S3Nlc3MsIHNpemVvZihjdHgtPktz
-ZXNzKSk7Cj4gNDczICAgICAgICAgaWYgKHJldCkgeyAgICAgIAo+ICAgIC0gICAgICAgICAgICAg
-ICAga2ZyZWUoY3R4KTsgICAgICAgICAgICAgICAgICAgICAgCj4gICAgKyAgICAgICAgICAgICAg
-ICBnc3Nfa3JiNV9kZWxldGVfc2VjX2NvbnRleHQoY3R4KTsKPiA0NzUgICAgICAgICAgICAgICAg
-IHJldHVybiByZXQ7Cj4gNDc2ICAgICAgICAgfSAgICAKPiAKPiBPYnZpb3VzbHkgeW91IHdvdWxk
-IG5lZWQgdG8gYWRkIGEgZm9yd2FyZCBkZWNsYXJhdGlvbiBvZgo+IGdzc19rcmI1X2ltcG9ydF9z
-ZWNfY29udGV4dCgpIHRvIG1ha2UgdGhpcyBjb21waWxlLiBUaGUgcXVlc3Rpb24KPiBpcyB3aGV0
-aGVyIGdzc19rcmI1X2RlbGV0ZV9zZWNfY29udGV4dCgpIHdpbGwgZGVhbCB3aXRoIGEgcGFydGlh
-bGx5LQo+IGluaXRpYWxpemVkIEBjdHguCgpTaW5jZSB0aGUgY3R4IGlzIGFsbG9jYXRlZCBqdXN0
-IGluIGdzc19rcmI1X2ltcG9ydF9zZWNfY29udGV4dCwgCnRvZ2V0aGVyIHdpdGggdGhhdCBhbGwg
-b2YgZ3NzX2tyYjVfaW1wb3J0X3NlY19jb250ZXh0LCBnc3NfaW1wb3J0X3YyX2NvbnRleHQod2l0
-aCB0aGlzIHBhdGNoKQphbmQgZ3NzX2tyYjVfaW1wb3J0X2N0eF92MiBhcmUgYWxsb2NhdGlvbi1m
-cmVlIGJhbGFuY2VkLiBJdCBzZWVtcyB0aGF0IHdlIGRvbid0IG5lZWQgdG8gCnJlbGVhc2UgYW55
-dGhpbmcgZWxzZSBieSBpbnZva2luZyBnc3Nfa3JiNV9kZWxldGVfc2VjX2NvbnRleHQuCgpJZiBJ
-IG1pc3Mgc29tZXRoaW5nIGxlYWtlZCwgcGxlYXNlIGxldCBtZSBrbm93LgoKCj4gCj4gSG93IGRp
-ZCB5b3UgZmluZCB0aGlzIGxlYWssIGFuZCB3aGF0IGtpbmQgb2YgdGVzdGluZyB3YXMgZG9uZSB0
-bwo+IGNvbmZpcm0gdGhlIGZpeCBpcyBzYWZlPwoKSSBmb3VuZCB0aGlzIG1lbWxlYWsgYnkgc3Rh
-dGljIGFuYWx5c2lzLiAKVGhlIHNhZmV0eSBpc3N1ZSBjYW4ndCBiZSBzb2x2ZWQgYnkgYXV0b21h
-dGljIHRvb2xzIGFzIGZhciBhcyBJIGtub3cuClNvIEkgY2hlY2sgcGF0Y2hlcyBtYW51ZWxseSBi
-ZWZvcmUgc2VuZGluZyBwYXRjaGVzLgoKPiA+ICBvdXRfZXJyOgo+ID4gIAlyZXR1cm4gUFRSX0VS
-UihwKTsKPiA+ICB9Cj4gPiAtLSAKPiA+IDIuMzQuMQo+ID4gCj4gCj4gLS0gCj4gQ2h1Y2sgTGV2
-ZXIK
+Hi MST and paolo,
+
+mq-deadline is good for slow media, and none is good for high-speed =
+media.=20
+It depends on how the community views this issue. When virtio-blk adopts
+multi-queue,it automatically changes from deadline to none, which is not
+uniform here.
+
+I don't have ideas right now to answer Christoph/Paolo's question.
+
+Thanks,
+Li
+
+> On Dec 25, 2023, at 22:20, Michael S. Tsirkin <mst@redhat.com> wrote:
+>=20
+> On Thu, Dec 07, 2023 at 12:31:05PM +0800, Li Feng wrote:
+>> virtio-blk is generally used in cloud computing scenarios, where the
+>> performance of virtual disks is very important. The mq-deadline =
+scheduler
+>> has a big performance drop compared to none with single queue. In my =
+tests,
+>> mq-deadline 4k readread iops were 270k compared to 450k for none. So =
+here
+>> the default scheduler of virtio-blk is set to "none".
+>>=20
+>> Signed-off-by: Li Feng <fengli@smartx.com>
+>=20
+> I dropped this for now, pls try to address comments by Christoph/Paolo
+> if it's still needed
+>=20
+>> ---
+>> drivers/block/virtio_blk.c | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>=20
+>> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+>> index d53d6aa8ee69..5183ec8e00be 100644
+>> --- a/drivers/block/virtio_blk.c
+>> +++ b/drivers/block/virtio_blk.c
+>> @@ -1367,7 +1367,7 @@ static int virtblk_probe(struct virtio_device =
+*vdev)
+>> 	vblk->tag_set.ops =3D &virtio_mq_ops;
+>> 	vblk->tag_set.queue_depth =3D queue_depth;
+>> 	vblk->tag_set.numa_node =3D NUMA_NO_NODE;
+>> -	vblk->tag_set.flags =3D BLK_MQ_F_SHOULD_MERGE;
+>> +	vblk->tag_set.flags =3D BLK_MQ_F_SHOULD_MERGE | =
+BLK_MQ_F_NO_SCHED_BY_DEFAULT;
+>> 	vblk->tag_set.cmd_size =3D
+>> 		sizeof(struct virtblk_req) +
+>> 		sizeof(struct scatterlist) * VIRTIO_BLK_INLINE_SG_CNT;
+>> --=20
+>> 2.42.0
+>=20
+
 
