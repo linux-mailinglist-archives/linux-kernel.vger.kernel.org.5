@@ -1,190 +1,141 @@
-Return-Path: <linux-kernel+bounces-11510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7936081E777
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 13:50:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65EDE81E77A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 13:52:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36730282A16
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 12:50:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ADF21C21E76
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 12:52:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4544EB37;
-	Tue, 26 Dec 2023 12:50:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ABF64EB33;
+	Tue, 26 Dec 2023 12:51:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=o2.pl header.i=@o2.pl header.b="b0FJyeS9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bn9w1i8n"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.148])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB8D4E631
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 12:49:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=o2.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=o2.pl
-Received: (wp-smtpd smtp.tlen.pl 8832 invoked from network); 26 Dec 2023 13:43:16 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
-          t=1703594596; bh=p3a/CmiIGmTbIqlEI01R2R9B6ytZl+y74tl8q7fDC1A=;
-          h=From:To:Cc:Subject;
-          b=b0FJyeS9pVHKwnmHz6ayOg4dqU80VvmeyhEnrv78HucxkjUq7z3nZepMXlF7cPmXL
-           wZQ4SU++GAwKBWlKDpkhdZ1502euO7G3r5gk96nOnJehKyhUWfYgZdbzpWnsMkSHaf
-           zHIGT2fujQWEG6l3kmwTaHUB+huuRE3LY4qj2EA4=
-Received: from aafb137.neoplus.adsl.tpnet.pl (HELO localhost.localdomain) (mat.jonczyk@o2.pl@[83.4.131.137])
-          (envelope-sender <mat.jonczyk@o2.pl>)
-          by smtp.tlen.pl (WP-SMTPD) with SMTP
-          for <linux-pci@vger.kernel.org>; 26 Dec 2023 13:43:16 +0100
-From: =?UTF-8?q?Mateusz=20Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-To: linux-pci@vger.kernel.org,
-	linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-i2c@vger.kernel.org
-Cc: =?UTF-8?q?Mateusz=20Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Borislav Petkov <bp@suse.de>,
-	Jean Delvare <jdelvare@suse.de>
-Subject: [PATCH v4] acpi,pci: warn about duplicate IRQ routing entries returned from _PRT
-Date: Tue, 26 Dec 2023 13:42:54 +0100
-Message-Id: <20231226124254.66102-1-mat.jonczyk@o2.pl>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D9E4E631;
+	Tue, 26 Dec 2023 12:51:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d099d316a8so4136750b3a.0;
+        Tue, 26 Dec 2023 04:51:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703595109; x=1704199909; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8I6eOdWU4tKnR7IavMXk04RzDq/PuX82Y4y0SpAzUkk=;
+        b=Bn9w1i8nqDndcNqdMAJihuW4TqwDCcsfk7QyAVW5/o7XZaZpuF0bj35f7XyxbVJQK9
+         MLBM1IklObu2iZn1iw/0ltt7MgojcQ9ru68BiEeJBcH8BikCoDl2Y3teODLcilTra4bu
+         wIljksUbqzV0ZFvw4Sls4pyW40SaYptl7CyDzZ2jLgkpe3Ny8nCwmpMap2CMGSntWBuW
+         q1KVhqUiXWNrwwLFnKlJZN72QO+sChAd1+a2ShvSW352rGo/CgGxbzqN5zaRH5yrXdj3
+         G1LO5g1QsB2ZOVZ/bp0Ihx+DaxZy4OF5qAc7mHhI23mdRWDP2sw2ZmJD85v9gi5KZqBU
+         Srxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703595109; x=1704199909;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8I6eOdWU4tKnR7IavMXk04RzDq/PuX82Y4y0SpAzUkk=;
+        b=LxadtMwHfnFMVPuS8UTEUwyL1/sFMeN6Zy+2TIhXiYWFC31tYxEovn9yuNQ3C9Umuo
+         7igqCw6pOQ7q8KobeFMtoWPHrDvRi1RNO4aplLkYFUKggfXJZK3DWp+YSkbu023JjkQR
+         6q0i1UzoXrMdu0kKGY62/n4ItQuWUKinBG7xkz0bpNWansaM4L4Vvl8mVPaQygkUsKE+
+         dBMg2aBsRWjxWT8/2vtDkPrzilVvGkmjqsB+0bxH75HnVSZWSpfNI/bxNt03VoRTq+S3
+         qu/vyafMHXkfSeScXVmX4dnGk6rWu6iTHGkIIImeBwy2pBnljmnJJYu8RT9HroTRZYng
+         cf1g==
+X-Gm-Message-State: AOJu0YxyuAom01anorV5nIjbIAbWRyga6lQTMWqfnqty6TW0+6/1NIIi
+	7eRDvog77Y8qhE3YMmTMu4I=
+X-Google-Smtp-Source: AGHT+IEm6DwiwwbjMok5Hg2b2sDi1RmVsgcgt7KlVA48YtMdjivpc6UnEOvWham0wYyY5EgxS7Kf2g==
+X-Received: by 2002:a05:6a20:324b:b0:190:35f4:c515 with SMTP id hm11-20020a056a20324b00b0019035f4c515mr7495561pzc.12.1703595109295;
+        Tue, 26 Dec 2023 04:51:49 -0800 (PST)
+Received: from Laptop-X1 ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id fb35-20020a056a002da300b006d9bff075cfsm2726177pfb.33.2023.12.26.04.51.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Dec 2023 04:51:48 -0800 (PST)
+Date: Tue, 26 Dec 2023 20:51:43 +0800
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: Yujie Liu <yujie.liu@intel.com>
+Cc: netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+	David Ahern <dsahern@kernel.org>, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lkp@intel.com,
+	kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH net-next] selftests/net: change the shebang of
+ unicast_extensions.sh to bash
+Message-ID: <ZYrMX5GTjxCzGeK-@Laptop-X1>
+References: <20231225072109.3835503-1-yujie.liu@intel.com>
+ <ZYl37fnxGGop7VCs@Laptop-X1>
+ <ZYqSJk9rMxGxLx8s@yujie-X299>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: 2bf909a71691b5886bff2a8b5697113c
-X-WP-AV: skaner antywirusowy Poczty o2
-X-WP-SPAM: NO 000000A [8XME]                               
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYqSJk9rMxGxLx8s@yujie-X299>
 
-On some platforms, the ACPI _PRT function returns duplicate interrupt
-routing entries. Linux uses the first matching entry, but sometimes the
-second matching entry contains the correct interrupt vector.
+On Tue, Dec 26, 2023 at 04:43:18PM +0800, Yujie Liu wrote:
+> Hi Hangbin,
+> 
+> On Mon, Dec 25, 2023 at 08:39:09PM +0800, Hangbin Liu wrote:
+> > On Mon, Dec 25, 2023 at 03:21:09PM +0800, Yujie Liu wrote:
+> > > The patch set [1] added a general lib.sh in net selftests, and converted
+> > > several test scripts to source the lib.sh.
+> > 
+> > Oh, I didn't know dash doesn't support "source". Thanks for the fix.
+> > Would you please also help fix the pmtu.sh, which has the same issue?
+> 
+> It looks like pmtu.sh was not converted in patch set [1], so it doesn't
+> have "source lib.sh" yet. The cover letter of [1] mentions that the
+> whole process of conversion will be split into several parts. Not sure
+> if pmtu.sh will be converted in the subsequent parts soon? If so, would
+> you like to change the shebang of pmtu.sh when converting it later, or
+> change it together in this patch? Thanks.
 
-As a debugging aid, print a warning to dmesg if duplicate interrupt
-routing entries are present. This way, we could check how many models
-are affected.
+The pmtu.sh update is in this patch set.
+https://lore.kernel.org/all/20231219094856.1740079-1-liuhangbin@gmail.com/
 
-This happens on a Dell Latitude E6500 laptop with the i2c-i801 Intel
-SMBus controller. This controller is nonfunctional unless its interrupt
-usage is disabled (using the "disable_features=0x10" module parameter).
+It would be good to fix these 2 tests together.
 
-After investigation, it turned out that the driver was using an
-incorrect interrupt vector: in lspci output for this device there was:
-        Interrupt: pin B routed to IRQ 19
-but after running i2cdetect (without using any i2c-i801 module
-parameters) the following was logged to dmesg:
+> 
+> BTW, in addition to pmtu.sh, I noticed that there are several other
+> scripts in net selftests which have "/bin/sh" shebang:
 
-        [...]
-        i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
-        i801_smbus 0000:00:1f.3: Transaction timeout
-        i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
-        i801_smbus 0000:00:1f.3: Transaction timeout
-        irq 17: nobody cared (try booting with the "irqpoll" option)
+Yes, but the other tests don't use "source".
 
-Existence of duplicate entries in a table returned by the _PRT method
-was confirmed by disassembling the ACPI DSDT table.
+> 
+> linux/tools/testing/selftests/net$ grep -rF '#!/bin/sh'
+> openvswitch/openvswitch.sh:#!/bin/sh
+> in_netns.sh:#!/bin/sh
+> netdevice.sh:#!/bin/sh
+> test_bpf.sh:#!/bin/sh
+> test_blackhole_dev.sh:#!/bin/sh
+> vlan_hw_filter.sh:#!/bin/sh
+> run_netsocktests:#!/bin/sh
+> pmtu.sh:#!/bin/sh
+> bareudp.sh:#!/bin/sh
+> l2_tos_ttl_inherit.sh:#!/bin/sh
+> veth.sh:#!/bin/sh
+> ipv6_flowlabel.sh:#!/bin/sh
+> unicast_extensions.sh:#!/bin/sh
+> reuseport_addr_any.sh:#!/bin/sh
+> run_afpackettests:#!/bin/sh
+> ip_local_port_range.sh:#!/bin/sh
+> amt.sh:#!/bin/sh
+> udpgso.sh:#!/bin/sh
+> ip_defrag.sh:#!/bin/sh
+> rps_default_mask.sh:#!/bin/sh
+> 
+> > BTW, you can change the "source ./lib.sh" to "source lib.sh" to consistent
+> > with other tests.
+> 
+> Sure, will respin a v2 with this change added.
 
-Windows XP is using IRQ3 (as reported by HWiNFO32 and in the Device
-Manager), which is neither of the two vectors returned by _PRT.
-As HWiNFO32 decoded contents of the SPD EEPROMs, the i2c-i801 device is
-working under Windows. It appears that Windows has reconfigured the
-chipset independently to use another interrupt vector for the device.
-This is possible, according to the chipset datasheet [1], page 436 for
-example (PIRQ[n]_ROUT—PIRQ[A,B,C,D] Routing Control Register).
-
-[1] https://www.intel.com/content/dam/doc/datasheet/io-controller-hub-9-datasheet.pdf
-
-Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Len Brown <lenb@kernel.org>
-Cc: Borislav Petkov <bp@suse.de>
-Cc: Jean Delvare <jdelvare@suse.de>
-Previously-reviewed-by: Jean Delvare <jdelvare@suse.de>
-Previously-tested-by: Jean Delvare <jdelvare@suse.de>
-
----
-Hello,
-
-I'm resurrecting an older patch that was discussed back in January:
-
-https://lore.kernel.org/lkml/20230121153314.6109-1-mat.jonczyk@o2.pl/T/#u
-
-To consider: should we print a warning or an error in case of duplicate
-entries? This may not be serious enough to disturb the user with an
-error message at boot.
-
-I'm also looking into modifying the i2c-i801 driver to disable its usage
-of interrupts if one did not fire.
-
-v2: - add a newline at the end of the kernel log message,
-    - replace: "if (match == NULL)" -> "if (!match)"
-    - patch description tweaks.
-v3: - fix C style issues pointed by Jean Delvare,
-    - switch severity from warning to error.
-v3 RESEND: retested on top of v6.2-rc4
-v4: - rebase and retest on top of v6.7-rc7
-    - switch severity back to warning,
-    - change pr_err() to dev_warn() and simplify the code,
-    - modify patch description (describe Windows behaviour etc.)
----
- drivers/acpi/pci_irq.c | 25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/acpi/pci_irq.c b/drivers/acpi/pci_irq.c
-index ff30ceca2203..1fcf72e335b0 100644
---- a/drivers/acpi/pci_irq.c
-+++ b/drivers/acpi/pci_irq.c
-@@ -203,6 +203,8 @@ static int acpi_pci_irq_find_prt_entry(struct pci_dev *dev,
- 	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
- 	struct acpi_pci_routing_table *entry;
- 	acpi_handle handle = NULL;
-+	struct acpi_prt_entry *match = NULL;
-+	const char *match_int_source = NULL;
- 
- 	if (dev->bus->bridge)
- 		handle = ACPI_HANDLE(dev->bus->bridge);
-@@ -219,13 +221,30 @@ static int acpi_pci_irq_find_prt_entry(struct pci_dev *dev,
- 
- 	entry = buffer.pointer;
- 	while (entry && (entry->length > 0)) {
--		if (!acpi_pci_irq_check_entry(handle, dev, pin,
--						 entry, entry_ptr))
--			break;
-+		struct acpi_prt_entry *curr;
-+
-+		if (!acpi_pci_irq_check_entry(handle, dev, pin, entry, &curr)) {
-+			if (!match) {
-+				match = curr;
-+				match_int_source = entry->source;
-+			} else {
-+				dev_warn(&dev->dev, FW_BUG
-+				       "ACPI _PRT returned duplicate IRQ routing entries for INT%c: %s[%d] and %s[%d]\n",
-+				       pin_name(curr->pin),
-+				       match_int_source, match->index,
-+				       entry->source, curr->index);
-+				/* We use the first matching entry nonetheless,
-+				 * for compatibility with older kernels.
-+				 */
-+			}
-+		}
-+
- 		entry = (struct acpi_pci_routing_table *)
- 		    ((unsigned long)entry + entry->length);
- 	}
- 
-+	*entry_ptr = match;
-+
- 	kfree(buffer.pointer);
- 	return 0;
- }
-
-base-commit: 861deac3b092f37b2c5e6871732f3e11486f7082
--- 
-2.25.1
-
+Thanks
+Hangbin
 
