@@ -1,162 +1,277 @@
-Return-Path: <linux-kernel+bounces-11542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75F3781E7E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:04:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9BCC81E7EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:09:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C7921C21DF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:04:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 553E91F229B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:09:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 847404F207;
-	Tue, 26 Dec 2023 15:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD9B34F1EB;
+	Tue, 26 Dec 2023 15:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MnnfRdyU"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iupV3ZoV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C454CB4D;
-	Tue, 26 Dec 2023 15:04:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BQEunsf009063;
-	Tue, 26 Dec 2023 15:04:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=TOu5l67OHZpaaNzV5lQq5MTBuTMA/WAQA8Frk7a1TQU=; b=Mn
-	nfRdyUx0N9m6Y7Ciitz0CwNMJe+eddanL61N7Fnr803KjIhLYlZFElkQjjqKHR6E
-	VZvLA0zxZ9UCCm2I6JKZSpVc1MyM90I3xmlFMz3ocNVkkl2aajG9cLJ0WD6WYiZE
-	uGtyzoD1J5/P2u26o+Db1fNnTUc5BWc49Rv1I/X2JktzhrgSneDY5wickc+fWGOY
-	yqEoenqVfvrAqkClFJ3fpeaEfj6yTdVhIHvaSZ4XYHirbUZjcQRDyERqOz8Wxh/S
-	kWqmL1kSimTnmG2mv7y67RJ3Y8OHtPmqaaPBVrNiMyPCUQ8lShsQLAjz8eJQDUuO
-	kx0OGPJNg+OYNx8GIr/Q==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v80kfr2rj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Dec 2023 15:04:00 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BQF3xBO030523
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Dec 2023 15:03:59 GMT
-Received: from [10.216.22.80] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 26 Dec
- 2023 07:03:53 -0800
-Message-ID: <a284c13d-b55a-467d-8756-c41b0f913df3@quicinc.com>
-Date: Tue, 26 Dec 2023 20:33:49 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3904CB4D
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 15:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703603387; x=1735139387;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=pHSU8MVo6p1xyF3f0c//8aO9HHhpPsw0Hxab4DhSaD0=;
+  b=iupV3ZoVdTd42qI0z1xBFqVC73fz3CDvCzNUwdM6yS+oYbEFpqVZvEdk
+   YefevgXZxA1XieCxotHFS5YSgZHYSRZMMb+c94y9FCq5KYfyIWiINJdqU
+   9XDZlybBU8G1pRLk+0flB12AtXAwha5AV9LuslcCo7B2/4cw3TjbP7tju
+   Zj+6uUDCO9g6xNMNSSOrb9HWt1SdKrbj/Til1liHJTD9E4+ObLFTbNGa7
+   eWwzOnY7pwvilQJ7YeqVZDEaSMexHgOsOATce6GixF2tQ8U3i3sLXDszd
+   5cdLFAHU1sxLxJjSMcui2w/hvErD17oZlK5ctJ6aKpuI5OYBNNIwebY7c
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="375848606"
+X-IronPort-AV: E=Sophos;i="6.04,306,1695711600"; 
+   d="scan'208";a="375848606"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2023 07:09:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="727768230"
+X-IronPort-AV: E=Sophos;i="6.04,306,1695711600"; 
+   d="scan'208";a="727768230"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 26 Dec 2023 07:09:44 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rI93t-000EYH-15;
+	Tue, 26 Dec 2023 15:09:41 +0000
+Date: Tue, 26 Dec 2023 23:09:29 +0800
+From: kernel test robot <lkp@intel.com>
+To: Marco Elver <elver@google.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Andrey Konovalov <andreyknvl@gmail.com>
+Subject: drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type
+ in argument 1 (different address spaces)
+Message-ID: <202312262344.c7Ep2cj3-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/2] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
- binding
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        Wesley Cheng
-	<quic_wcheng@quicinc.com>,
-        Johan Hovold <johan@kernel.org>,
-        Bjorn Andersson
-	<quic_bjorande@quicinc.com>
-CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Thinh Nguyen
-	<Thinh.Nguyen@synopsys.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, Andy Gross <agross@kernel.org>
-References: <20231222063648.11193-1-quic_kriskura@quicinc.com>
- <20231222063648.11193-2-quic_kriskura@quicinc.com>
- <e6419898-0d77-4286-a04b-7240eb90d8df@linaro.org>
- <268f9f54-8b2a-42bb-9a5d-10bd930cb282@quicinc.com>
- <55c478c7-abcc-4487-b81c-479df47d5666@linaro.org>
- <67c7c84c-c631-468e-ae67-1c31d41a605b@quicinc.com>
- <efdf2923-4669-409f-b5c4-d5b95009309f@linaro.org>
-Content-Language: en-US
-From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <efdf2923-4669-409f-b5c4-d5b95009309f@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: kymk9fiVJgoZRPm7WR5bS12xF5mUxhap
-X-Proofpoint-GUID: kymk9fiVJgoZRPm7WR5bS12xF5mUxhap
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- mlxlogscore=573 malwarescore=0 clxscore=1015 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312260114
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   fbafc3e621c3f4ded43720fdb1d6ce1728ec664e
+commit: 4ec4190be4cf9cc3e0ccaf5f155a5f9066d18950 kasan, x86: don't rename memintrinsics in uninstrumented files
+date:   10 months ago
+config: x86_64-randconfig-122-20231101 (https://download.01.org/0day-ci/archive/20231226/202312262344.c7Ep2cj3-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231226/202312262344.c7Ep2cj3-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312262344.c7Ep2cj3-lkp@intel.com/
 
-On 12/26/2023 5:52 PM, Krzysztof Kozlowski wrote:
+sparse warnings: (new ones prefixed by >>)
+   drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+   drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
+   drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+   drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
+>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *p @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void *p
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const *q @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *q
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
+   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
+   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
+   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *p @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void *p
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const *q @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *q
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
+--
+   drivers/acpi/apei/erst.c:272:13: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *src @@     got void [noderef] __iomem * @@
+   drivers/acpi/apei/erst.c:272:13: sparse:     expected void *src
+   drivers/acpi/apei/erst.c:272:13: sparse:     got void [noderef] __iomem *
+   drivers/acpi/apei/erst.c:275:13: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *dst @@     got void [noderef] __iomem * @@
+   drivers/acpi/apei/erst.c:275:13: sparse:     expected void *dst
+   drivers/acpi/apei/erst.c:275:13: sparse:     got void [noderef] __iomem *
+   drivers/acpi/apei/erst.c:277:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *src @@
+   drivers/acpi/apei/erst.c:277:25: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/acpi/apei/erst.c:277:25: sparse:     got void *src
+   drivers/acpi/apei/erst.c:283:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *src @@
+   drivers/acpi/apei/erst.c:283:17: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/acpi/apei/erst.c:283:17: sparse:     got void *src
+   drivers/acpi/apei/erst.c:284:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *dst @@
+   drivers/acpi/apei/erst.c:284:17: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/acpi/apei/erst.c:284:17: sparse:     got void *dst
+   drivers/acpi/apei/erst.c:792:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *static [toplevel] vaddr @@
+   drivers/acpi/apei/erst.c:792:9: sparse:     expected void const *
+   drivers/acpi/apei/erst.c:792:9: sparse:     got void [noderef] __iomem *static [toplevel] vaddr
+   drivers/acpi/apei/erst.c:792:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *static [toplevel] vaddr @@
+   drivers/acpi/apei/erst.c:792:9: sparse:     expected void const *
+   drivers/acpi/apei/erst.c:792:9: sparse:     got void [noderef] __iomem *static [toplevel] vaddr
+>> drivers/acpi/apei/erst.c:792:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *p @@     got void [noderef] __iomem *static [toplevel] vaddr @@
+   drivers/acpi/apei/erst.c:792:9: sparse:     expected void *p
+   drivers/acpi/apei/erst.c:792:9: sparse:     got void [noderef] __iomem *static [toplevel] vaddr
+   drivers/acpi/apei/erst.c:793:20: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cper_record_header *rcd_erange @@     got void [noderef] __iomem *static [toplevel] vaddr @@
+   drivers/acpi/apei/erst.c:793:20: sparse:     expected struct cper_record_header *rcd_erange
+   drivers/acpi/apei/erst.c:793:20: sparse:     got void [noderef] __iomem *static [toplevel] vaddr
+   drivers/acpi/apei/erst.c:830:17: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cper_record_header *rcd_tmp @@     got void [noderef] __iomem * @@
+   drivers/acpi/apei/erst.c:830:17: sparse:     expected struct cper_record_header *rcd_tmp
+   drivers/acpi/apei/erst.c:830:17: sparse:     got void [noderef] __iomem *
+--
+   kernel/fork.c:1110:19: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct [noderef] __rcu *owner @@     got struct task_struct *p @@
+   kernel/fork.c:1110:19: sparse:     expected struct task_struct [noderef] __rcu *owner
+   kernel/fork.c:1110:19: sparse:     got struct task_struct *p
+   kernel/fork.c:1334:24: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct file [noderef] __rcu *__ret @@     got struct file *new_exe_file @@
+   kernel/fork.c:1334:24: sparse:     expected struct file [noderef] __rcu *__ret
+   kernel/fork.c:1334:24: sparse:     got struct file *new_exe_file
+   kernel/fork.c:1334:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file *[assigned] old_exe_file @@     got struct file [noderef] __rcu *[assigned] __ret @@
+   kernel/fork.c:1334:22: sparse:     expected struct file *[assigned] old_exe_file
+   kernel/fork.c:1334:22: sparse:     got struct file [noderef] __rcu *[assigned] __ret
+   kernel/fork.c:1662:38: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
+   kernel/fork.c:1662:38: sparse:     expected struct refcount_struct [usertype] *r
+   kernel/fork.c:1662:38: sparse:     got struct refcount_struct [noderef] __rcu *
+   kernel/fork.c:1671:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:1671:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:1671:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:1672:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct k_sigaction [noderef] __rcu * @@
+   kernel/fork.c:1672:9: sparse:     expected void const *
+   kernel/fork.c:1672:9: sparse:     got struct k_sigaction [noderef] __rcu *
+   kernel/fork.c:1672:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct k_sigaction [noderef] __rcu * @@
+   kernel/fork.c:1672:9: sparse:     expected void const *
+   kernel/fork.c:1672:9: sparse:     got struct k_sigaction [noderef] __rcu *
+>> kernel/fork.c:1672:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const *q @@     got struct k_sigaction [noderef] __rcu * @@
+   kernel/fork.c:1672:9: sparse:     expected void const *q
+   kernel/fork.c:1672:9: sparse:     got struct k_sigaction [noderef] __rcu *
+   kernel/fork.c:1673:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:1673:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:1673:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:1767:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct qspinlock *lock @@     got struct qspinlock [noderef] __rcu * @@
+   kernel/fork.c:1767:9: sparse:     expected struct qspinlock *lock
+   kernel/fork.c:1767:9: sparse:     got struct qspinlock [noderef] __rcu *
+   kernel/fork.c:2090:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2090:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2090:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2094:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2094:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2094:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2414:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct [noderef] __rcu *real_parent @@     got struct task_struct * @@
+   kernel/fork.c:2414:32: sparse:     expected struct task_struct [noderef] __rcu *real_parent
+   kernel/fork.c:2414:32: sparse:     got struct task_struct *
+   kernel/fork.c:2423:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2423:27: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2423:27: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2472:54: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct list_head *head @@     got struct list_head [noderef] __rcu * @@
+   kernel/fork.c:2472:54: sparse:     expected struct list_head *head
+   kernel/fork.c:2472:54: sparse:     got struct list_head [noderef] __rcu *
+   kernel/fork.c:2494:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2494:29: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2494:29: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2515:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2515:29: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2515:29: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2542:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sighand_struct *sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/fork.c:2542:28: sparse:     expected struct sighand_struct *sighand
+   kernel/fork.c:2542:28: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   kernel/fork.c:2571:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2571:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2571:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2573:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2573:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2573:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:3011:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *[assigned] parent @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/fork.c:3011:24: sparse:     expected struct task_struct *[assigned] parent
+   kernel/fork.c:3011:24: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/fork.c:3096:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct const [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
+   kernel/fork.c:3096:43: sparse:     expected struct refcount_struct const [usertype] *r
+   kernel/fork.c:3096:43: sparse:     got struct refcount_struct [noderef] __rcu *
+   kernel/fork.c:2135:22: sparse: sparse: dereference of noderef expression
+   kernel/fork.c: note: in included file (through include/uapi/asm-generic/bpf_perf_event.h, arch/x86/include/generated/uapi/asm/bpf_perf_event.h, ...):
+   include/linux/ptrace.h:210:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *new_parent @@     got struct task_struct [noderef] __rcu *parent @@
+   include/linux/ptrace.h:210:45: sparse:     expected struct task_struct *new_parent
+   include/linux/ptrace.h:210:45: sparse:     got struct task_struct [noderef] __rcu *parent
+   include/linux/ptrace.h:210:62: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected struct cred const *ptracer_cred @@     got struct cred const [noderef] __rcu *ptracer_cred @@
+   include/linux/ptrace.h:210:62: sparse:     expected struct cred const *ptracer_cred
+   include/linux/ptrace.h:210:62: sparse:     got struct cred const [noderef] __rcu *ptracer_cred
+   kernel/fork.c:2470:59: sparse: sparse: dereference of noderef expression
+   kernel/fork.c:2471:59: sparse: sparse: dereference of noderef expression
+   kernel/fork.c:1102:23: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/fork.c:1102:23: sparse:    struct task_struct [noderef] __rcu *
+   kernel/fork.c:1102:23: sparse:    struct task_struct *
 
->>>
->>> This does not answer why, you sc8280xp and x1e80100 not get one optional
->>> interrupt. I asked "why" you are doing this change. Why do you need it?
->>> What is the rationale?
->>>
->>> Then I grunted about unmanageable commit, because all my troubles to
->>> review it are the effect of it: it is very difficult to read. It is also
->>> difficult for you, because you keep making here mistakes. So if you
->>> cannot write this commit properly and I cannot review it, then it is way
->>> over-complicated, don't you think? But this is still second problem
->>> here, don't ignore the fist - "why?"
->>
->> HI Krzysztof,
->>
->>    Thanks for the review.
->>    To answer the question,
->>
->> "why ?" : The interrupts have been mis-interpreted on many platforms or
->> many interrupts are missing.
-> 
-> I asked about these two specific platforms. Please explain these
-> changes. Above is so generic that tells me nothing.
-> 
+vim +496 drivers/video/fbdev/hgafb.c
 
-Is the question, "Why do x1e80100 and sc8280 don't have hs_phy_irq ?"
-If so, I checked the SC8280 HW specifics and I see one small error. The 
-name was printed wrong. I got it from another source. Will move sc8280 
-to list having 5 interrupts. As per x1e80100, I wasn't able to get my 
-hands on the hw specifics and I followed the following link by Abel Vesa:
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  482  
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  483  static void hgafb_copyarea(struct fb_info *info, const struct fb_copyarea *area)
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  484  {
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  485  	u_int rows, y1, y2;
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  486  	u8 __iomem *src;
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  487  	u8 __iomem *dest;
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  488  
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  489  	if (area->dy <= area->sy) {
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  490  		y1 = area->sy;
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  491  		y2 = area->dy;
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  492  
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  493  		for (rows = area->height; rows--; ) {
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  494  			src = rowaddr(info, y1) + (area->sx >> 3);
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  495  			dest = rowaddr(info, y2) + (area->dx >> 3);
+529ed806d4540d drivers/video/hgafb.c Brent Cook     2010-12-31 @496  			memmove(dest, src, (area->width >> 3));
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  497  			y1++;
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  498  			y2++;
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  499  		}
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  500  	} else {
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  501  		y1 = area->sy + area->height - 1;
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  502  		y2 = area->dy + area->height - 1;
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  503  
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  504  		for (rows = area->height; rows--;) {
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  505  			src = rowaddr(info, y1) + (area->sx >> 3);
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  506  			dest = rowaddr(info, y2) + (area->dx >> 3);
+529ed806d4540d drivers/video/hgafb.c Brent Cook     2010-12-31  507  			memmove(dest, src, (area->width >> 3));
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  508  			y1--;
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  509  			y2--;
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  510  		}
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  511  	}
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  512  }
+^1da177e4c3f41 drivers/video/hgafb.c Linus Torvalds 2005-04-16  513  
 
-https://lore.kernel.org/r/20231214-x1e80100-usb-v1-1-c22be5c0109e@linaro.org
+:::::: The code at line 496 was first introduced by commit
+:::::: 529ed806d4540d23ca2f68b28c3715d1566fc3ac video: Fix the HGA framebuffer driver
 
-As per the above patch, x1e80100 had only 4 interrupts.
-For ipq5332, it has no hs_phy_irq and so I kept it under this section.
+:::::: TO: Brent Cook <busterb@gmail.com>
+:::::: CC: Paul Mundt <lethal@linux-sh.org>
 
->>
->> Now, if I am adding the missing interrupts, I need to segregate targets
->> also into respective buckets in the same patch and that is what making
->> this patch a little complicated. Is it possible / acceptable to split
->> this into two patches if this is the case. Can you help with suggestions
->> from your end ? Or may be I am understanding your question wrong ? 😅
-> 
-> Split the patch into manageable chunks.
-> 
-
-I will try to split it up, but not sure if it is a good idea. I say so 
-because all permutations should be added in single patch and I can't 
-split that.
-
-Regards,
-Krishna,
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
