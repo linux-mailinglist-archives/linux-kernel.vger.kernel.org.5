@@ -1,255 +1,260 @@
-Return-Path: <linux-kernel+bounces-11480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2449A81E6F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 11:49:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48B9A81E703
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 11:56:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4C5B282F8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:49:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60BFB1C21EDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D7F4E1B6;
-	Tue, 26 Dec 2023 10:48:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83154E1B6;
+	Tue, 26 Dec 2023 10:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="CA+5lbTd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UyNboUkH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC024E1B2
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 10:48:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-466f4be526bso326644137.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 02:48:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703587735; x=1704192535; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Qv4TX+Q3LNkRer/VYBfFYjaPXdCM6iONKvmb/cRKfE=;
-        b=CA+5lbTd7gSbWN1HwTL+RUNJf94maqMoLHXJBhe6kxiUfmTqIK8FnXmD1jQa6esGVM
-         t41NHo+53hRG8rsF8j6n7FONhNutRA1zh1UchjQVTmRx47q0zsJ8Z9f3XYSgfcctP6pY
-         Ff8nKsIilWT3QjiwuIuVF0FKGXs2XKQuufKDo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703587735; x=1704192535;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6Qv4TX+Q3LNkRer/VYBfFYjaPXdCM6iONKvmb/cRKfE=;
-        b=raQmghJMKGyVza/Z2NnfRybR3klm9H5TYnGZIwqkpNfnkASh1xUzesxYp5Xh+z3cSC
-         oUu1byFQ20mG8heYnqMRbVxIbqWI82T0LLTHalV1/BaXXB7keds9bhHjngNLvqG2VPj+
-         9PrP54O4hPXcnadva0Kw+0/n2eiB/gWBecfoLzyIAVvS+ZeXDjITGLh+6sxuvJm/1j7x
-         GlUWSGtJnYrufHBl6wgJFc9NglHlluyqAP/UrKlHrlZLb2bNLyUlPpRQfjKXMzK5kz2o
-         OjYSt0ACmER3dILgJiHQkOBM53C8YI8YlT6a8SaxfS3/6vza5va+Jcd6wYmDixKznJOp
-         CjVw==
-X-Gm-Message-State: AOJu0YxzhUeSxVxrAHC92mIb28guyQpKXuFId2eH8rAaiDwXH/I7UsH6
-	dhDmu9xo7fG20X28vJlTgRZsmpz+tb1Lc9IUljZJk3gjog==
-X-Google-Smtp-Source: AGHT+IFVrsh1lu32Opq9cP2n8VIF4fcOyMdsnfdKILtqoNzDrlie0JR4WTtIRNeS1c50PeytjVdkag==
-X-Received: by 2002:a05:6102:2c19:b0:467:2212:a43a with SMTP id ie25-20020a0561022c1900b004672212a43amr28662vsb.7.1703587735235;
-        Tue, 26 Dec 2023 02:48:55 -0800 (PST)
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
-        by smtp.gmail.com with ESMTPSA id d30-20020a056102149e00b00466f1e72594sm402814vsv.14.2023.12.26.02.48.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Dec 2023 02:48:54 -0800 (PST)
-Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-466fa42a2afso290664137.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 02:48:54 -0800 (PST)
-X-Received: by 2002:a05:6122:4089:b0:4b6:cdd2:b553 with SMTP id
- cb9-20020a056122408900b004b6cdd2b553mr1074016vkb.13.1703587734078; Tue, 26
- Dec 2023 02:48:54 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F11224E1A5
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 10:56:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E373C433CB
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 10:56:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703588202;
+	bh=7yAih3GoOhZJptIFU6wbb/T3rDQVto1u3wtn6V99Q58=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=UyNboUkHZ3yp9xrDbz26+3eqXg7xEPDTtbnO8//0pDVKSe9ALYoaLvSXxwPJidaka
+	 KwCK4cbQGkPzbt7e6SZlfSwv4to5uaBvFA3nsQY67sdf1uBcrJpU9s1Ed29mqIzAzh
+	 wJxN/4wnI2mt45YRCHCCQ1UYtE4PXJSkecD0kFSQdFKrJ1Zn7+a5IDC7dRnt74LZJa
+	 TlsN1KAJ5ZWZyxCaCl/pGMo8/WDrrPdkkplgIVOpS9C6UfKm1uIIN3SZgDEWq+TDMh
+	 l35CIiSBVx8my3MP6YTAaCZI3cO0vc7qz6XYhL4nzVUw9uGO48pfTo03W5/6WB4TV0
+	 SgWRp+RWCHqoA==
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33674f60184so4436042f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 02:56:42 -0800 (PST)
+X-Gm-Message-State: AOJu0Yxf1wAtcNwhceWGLiXoMcNlP6cFDogtgE9YD/Y6TwV2udN8B8vi
+	LUb2Fju0YDpgAdp5eVwto/iYHlc07dkdnQIaVHc=
+X-Google-Smtp-Source: AGHT+IHbqb3vaam+q4gKQoE0NvNshSmdiO+YiLKGmFfOA2Ah2IFBS74FiRRzitBz3c94Q+t3Z6zHJDT4hl2RRHLRNbY=
+X-Received: by 2002:a05:600c:198a:b0:40d:5358:8d77 with SMTP id
+ t10-20020a05600c198a00b0040d53588d77mr1900602wmq.80.1703588200833; Tue, 26
+ Dec 2023 02:56:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220135722.192080-1-angelogioacchino.delregno@collabora.com> <20231220135722.192080-3-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231220135722.192080-3-angelogioacchino.delregno@collabora.com>
-From: Fei Shao <fshao@chromium.org>
-Date: Tue, 26 Dec 2023 18:48:18 +0800
-X-Gmail-Original-Message-ID: <CAC=S1nhNfyEWKaJZjb_G-pXpxSpXvNQd2EMJUzWWwxmC+TzSaA@mail.gmail.com>
-Message-ID: <CAC=S1nhNfyEWKaJZjb_G-pXpxSpXvNQd2EMJUzWWwxmC+TzSaA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] drm/mediatek: dsi: Cleanup functions mtk_dsi_ps_control{_vact}()
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: chunkuang.hu@kernel.org, p.zabel@pengutronix.de, airlied@gmail.com, 
-	daniel@ffwll.ch, matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org, 
-	linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <MW4PR84MB3145311E8DE893E89119FAFA8199A@MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM>
+In-Reply-To: <MW4PR84MB3145311E8DE893E89119FAFA8199A@MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Tue, 26 Dec 2023 18:56:28 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6Qka0yNMRwtk5aFOqBQchU__myZgH4EzNnKBwur86oDg@mail.gmail.com>
+Message-ID: <CAAhV-H6Qka0yNMRwtk5aFOqBQchU__myZgH4EzNnKBwur86oDg@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: use generic interface to support crashkernel=X,[high,low]
+To: Youling Tang <youling.tang@outlook.com>
+Cc: WANG Xuerui <kernel@xen0n.name>, Baoquan He <bhe@redhat.com>, loongarch@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, Youling Tang <tangyouling@kylinos.cn>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Angelo,
+Hi, Youling,
 
-On Wed, Dec 20, 2023 at 9:57=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
+On Mon, Dec 25, 2023 at 10:18=E2=80=AFPM Youling Tang <youling.tang@outlook=
+.com> wrote:
 >
-> Function mtk_dsi_ps_control() is a subset of mtk_dsi_ps_control_vact():
-> merge the two in one mtk_dsi_ps_control() function by adding one
-> function parameter `config_vact` which, when true, writes the VACT
-> related registers.
+> From: Youling Tang <tangyouling@kylinos.cn>
 >
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
-abora.com>
+> LoongArch already supports two crashkernel regions in kexec-tools, so we
+> can directly use the common interface to support crashkernel=3DX,[hign,lo=
+w].
+>
+> With the help of newly changed function parse_crashkernel() and generic
+> reserve_crashkernel_generic(), crashkernel reservation can be simplified
+> by steps:
+It is better to refer the commits introduce those changes.
+
+>
+> 1) Add a new header file <asm/crash_core.h>, and define CRASH_ALIGN,
+>    CRASH_ADDR_LOW_MAX, CRASH_ADDR_HIGH_MAX and
+>    DEFAULT_CRASH_KERNEL_LOW_SIZE in <asm/crash_core.h>;
+>
+> 2) Add arch_reserve_crashkernel() to call parse_crashkernel() and
+>    reserve_crashkernel_generic();
+>
+> 3) Add ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION Kconfig in
+>    arch/loongarch/Kconfig.
+>
+> One can reserve the crash kernel from high memory above DMA zone range
+> by explicitly passing "crashkernel=3DX,high"; or reserve a memory range
+> below 4G with "crashkernel=3DX,low". Besides, there are few rules need
+> to take notice:
+>
+> 1) "crashkernel=3DX,[high,low]" will be ignored if "crashkernel=3Dsize"
+>    is specified.
+> 2) "crashkernel=3DX,low" is valid only when "crashkernel=3DX,high" is pas=
+sed
+>    and there is enough memory to be allocated under 4G.
+> 3) When allocating crashkernel above 4G and no "crashkernel=3DX,low" is
+>    specified, a 128M low memory will be allocated automatically for
+>    swiotlb bounce buffer.
+> See Documentation/admin-guide/kernel-parameters.txt for more information.
+>
+> Following test cases have been performed as expected:
+It is better to group them into "Recommended use cases", "Valid use
+cases (not recommended)" and "Invalid use cases".
+
+> 1) crashkernel=3D256M                          //low=3D256M
+> 2) crashkernel=3D1G                            //low=3D1G
+> 3) crashkernel=3D4G                            //high=3D4G, low=3D128M(de=
+fault)
+> 4) crashkernel=3D4G crashkernel=3D256M,high      //high=3D4G, low=3D128M(=
+default), high is ignored
+> 5) crashkernel=3D4G crashkernel=3D256M,low       //high=3D4G, low=3D128M(=
+default), low is ignored
+> 6) crashkernel=3D4G,high                       //high=3D4G, low=3D128M(de=
+fault)
+> 7) crashkernel=3D256M,low                      //low=3D0M, invalid
+> 8) crashkernel=3D4G,high crashkernel=3D256M,low  //high=3D4G, low=3D256M
+> 9) crashkernel=3D4G,high crashkernel=3D4G,low    //high=3D0M, low=3D0M, i=
+nvalid
+> 10) crashkernel=3D512M@2560M                   //low=3D512M
+> 11) crashkernel=3D1G,high crashkernel=3D0M,low   //high=3D1G, low=3D0M
+>
+> Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
 > ---
->  drivers/gpu/drm/mediatek/mtk_dsi.c | 76 +++++++++---------------------
->  1 file changed, 23 insertions(+), 53 deletions(-)
+>  arch/loongarch/Kconfig                  |  3 ++
+>  arch/loongarch/include/asm/crash_core.h | 11 ++++++
+>  arch/loongarch/kernel/setup.c           | 48 +++++++------------------
+>  3 files changed, 27 insertions(+), 35 deletions(-)
+>  create mode 100644 arch/loongarch/include/asm/crash_core.h
 >
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
-k/mtk_dsi.c
-> index 23d2c5be8dbb..b618e2e31022 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-> @@ -352,40 +352,6 @@ static void mtk_dsi_set_vm_cmd(struct mtk_dsi *dsi)
->         mtk_dsi_mask(dsi, DSI_VM_CMD_CON, TS_VFP_EN, TS_VFP_EN);
+> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+> index ee123820a476..02060b2ac3f2 100644
+> --- a/arch/loongarch/Kconfig
+> +++ b/arch/loongarch/Kconfig
+> @@ -575,6 +575,9 @@ config ARCH_SELECTS_CRASH_DUMP
+>         depends on CRASH_DUMP
+>         select RELOCATABLE
+>
+> +config ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
+> +       def_bool CRASH_CORE
+> +
+>  config RELOCATABLE
+>         bool "Relocatable kernel"
+>         help
+> diff --git a/arch/loongarch/include/asm/crash_core.h b/arch/loongarch/inc=
+lude/asm/crash_core.h
+> new file mode 100644
+> index 000000000000..1f7040d8ed0f
+> --- /dev/null
+> +++ b/arch/loongarch/include/asm/crash_core.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +#ifndef _LOONGARCH_CRASH_CORE_H
+> +#define _LOONGARCH_CRASH_CORE_H
+> +
+> +#define CRASH_ALIGN                    SZ_2M
+> +
+> +#define CRASH_ADDR_LOW_MAX             SZ_4G
+> +#define CRASH_ADDR_HIGH_MAX            memblock_end_of_DRAM()
+> +
+> +extern phys_addr_t memblock_end_of_DRAM(void);
+> +#endif
+> diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.=
+c
+> index d183a745fb85..2a69a36419da 100644
+> --- a/arch/loongarch/kernel/setup.c
+> +++ b/arch/loongarch/kernel/setup.c
+> @@ -252,38 +252,25 @@ static void __init arch_reserve_vmcore(void)
+>  #endif
 >  }
 >
-> -static void mtk_dsi_ps_control_vact(struct mtk_dsi *dsi)
-> -{
-> -       struct videomode *vm =3D &dsi->vm;
-> -       u32 dsi_buf_bpp, ps_wc;
-> -       u32 ps_bpp_mode;
+> -/* 2MB alignment for crash kernel regions */
+> -#define CRASH_ALIGN    SZ_2M
+> -#define CRASH_ADDR_MAX SZ_4G
 > -
-> -       if (dsi->format =3D=3D MIPI_DSI_FMT_RGB565)
-> -               dsi_buf_bpp =3D 2;
-> -       else
-> -               dsi_buf_bpp =3D 3;
-> -
-> -       ps_wc =3D vm->hactive * dsi_buf_bpp;
-> -       ps_bpp_mode =3D ps_wc;
-> -
-> -       switch (dsi->format) {
-> -       case MIPI_DSI_FMT_RGB888:
-> -               ps_bpp_mode |=3D PACKED_PS_24BIT_RGB888;
-> -               break;
-> -       case MIPI_DSI_FMT_RGB666:
-> -               ps_bpp_mode |=3D PACKED_PS_18BIT_RGB666;
-> -               break;
-> -       case MIPI_DSI_FMT_RGB666_PACKED:
-> -               ps_bpp_mode |=3D LOOSELY_PS_18BIT_RGB666;
-> -               break;
-> -       case MIPI_DSI_FMT_RGB565:
-> -               ps_bpp_mode |=3D PACKED_PS_16BIT_RGB565;
-> -               break;
+> -static void __init arch_parse_crashkernel(void)
+> +static void __init arch_reserve_crashkernel(void)
+>  {
+> -#ifdef CONFIG_KEXEC
+> -       int ret;
+> -       unsigned long long total_mem;
+> +       unsigned long long low_size =3D 0;
+>         unsigned long long crash_base, crash_size;
+> +       char *cmdline =3D boot_command_line;
+> +       bool high =3D false;
+> +       int ret;
+>
+> -       total_mem =3D memblock_phys_mem_size();
+> -       ret =3D parse_crashkernel(boot_command_line, total_mem,
+> -                               &crash_size, &crash_base,
+> -                               NULL, NULL);
+> -       if (ret < 0 || crash_size <=3D 0)
+> +       if (!IS_ENABLED(CONFIG_KEXEC_CORE))
+>                 return;
+>
+> -       if (crash_base <=3D 0) {
+> -               crash_base =3D memblock_phys_alloc_range(crash_size, CRAS=
+H_ALIGN, CRASH_ALIGN, CRASH_ADDR_MAX);
+> -               if (!crash_base) {
+> -                       pr_warn("crashkernel reservation failed - No suit=
+able area found.\n");
+> -                       return;
+> -               }
+> -       } else if (!memblock_phys_alloc_range(crash_size, CRASH_ALIGN, cr=
+ash_base, crash_base + crash_size)) {
+> -               pr_warn("Invalid memory region reserved for crash kernel\=
+n");
+> +       ret =3D parse_crashkernel(cmdline, memblock_phys_mem_size(),
+> +                               &crash_size, &crash_base,
+> +                               &low_size, &high);
+This line can be merged with its above line.
+
+> +       if (ret)
+>                 return;
 > -       }
-> -
-> -       writel(vm->vactive, dsi->regs + DSI_VACT_NL);
-> -       writel(ps_bpp_mode, dsi->regs + DSI_PSCTRL);
-> -       writel(ps_wc, dsi->regs + DSI_HSTX_CKL_WC);
-> -}
-> -
->  static void mtk_dsi_rxtx_control(struct mtk_dsi *dsi)
->  {
->         u32 tmp_reg;
-> @@ -417,36 +383,40 @@ static void mtk_dsi_rxtx_control(struct mtk_dsi *ds=
-i)
->         writel(tmp_reg, dsi->regs + DSI_TXRX_CTRL);
+>
+> -       crashk_res.start =3D crash_base;
+> -       crashk_res.end   =3D crash_base + crash_size - 1;
+> -#endif
+> +       reserve_crashkernel_generic(cmdline, crash_size, crash_base,
+> +                                   low_size, high);
+They can be in one line.
+
+Huacai
 >  }
 >
-> -static void mtk_dsi_ps_control(struct mtk_dsi *dsi)
-> +static void mtk_dsi_ps_control(struct mtk_dsi *dsi, bool config_vact)
+>  static void __init fdt_setup(void)
+> @@ -357,7 +344,7 @@ static void __init bootcmdline_init(char **cmdline_p)
+>  void __init platform_init(void)
 >  {
-> -       u32 dsi_tmp_buf_bpp;
-> -       u32 tmp_reg;
-> +       struct videomode *vm =3D &dsi->vm;
-> +       u32 dsi_buf_bpp, ps_wc;
-> +       u32 ps_bpp_mode;
-> +
-> +       if (dsi->format =3D=3D MIPI_DSI_FMT_RGB565)
-> +               dsi_buf_bpp =3D 2;
-> +       else
-> +               dsi_buf_bpp =3D 3;
-
-The same is also in mtk_dsi_config_vdo_timing(). Given this is a
-cleanup series, I think it'd be a good chance to add another patch
-and integrate those usages. Just a thought.  :)
+>         arch_reserve_vmcore();
+> -       arch_parse_crashkernel();
+> +       arch_reserve_crashkernel();
 >
-> +
-> +       ps_wc =3D vm->hactive * dsi_buf_bpp;
-
-I noticed the "& DSI_PS_WC" part was dropped (but perhaps with awareness?).
-
-While the outcome seems to always fall within the range of
-DSI_PS_WC so we should be fine in practice, I think it doesn't hurt to
-keep the value masked to save readers some time to check if this would
-ever be possible to overflow and write undesired bits down the line.
-WDYT?
-
-Regardless of that, I didn't find obvious issue in this patch, so
-
-Reviewed-by: Fei Shao <fshao@chromium.org>
-
-Regards,
-Fei
-
-
-
-
->
-> +       ps_bpp_mode =3D ps_wc;
->
->         switch (dsi->format) {
->         case MIPI_DSI_FMT_RGB888:
-> -               tmp_reg =3D PACKED_PS_24BIT_RGB888;
-> -               dsi_tmp_buf_bpp =3D 3;
-> +               ps_bpp_mode |=3D PACKED_PS_24BIT_RGB888;
->                 break;
->         case MIPI_DSI_FMT_RGB666:
-> -               tmp_reg =3D LOOSELY_PS_18BIT_RGB666;
-> -               dsi_tmp_buf_bpp =3D 3;
-> +               ps_bpp_mode |=3D PACKED_PS_18BIT_RGB666;
->                 break;
->         case MIPI_DSI_FMT_RGB666_PACKED:
-> -               tmp_reg =3D PACKED_PS_18BIT_RGB666;
-> -               dsi_tmp_buf_bpp =3D 3;
-> +               ps_bpp_mode |=3D LOOSELY_PS_18BIT_RGB666;
->                 break;
->         case MIPI_DSI_FMT_RGB565:
-> -               tmp_reg =3D PACKED_PS_16BIT_RGB565;
-> -               dsi_tmp_buf_bpp =3D 2;
-> -               break;
-> -       default:
->
-> -               tmp_reg =3D PACKED_PS_24BIT_RGB888;
-> -               dsi_tmp_buf_bpp =3D 3;
-> +               ps_bpp_mode |=3D PACKED_PS_16BIT_RGB565;
->                 break;
+>  #ifdef CONFIG_ACPI_TABLE_UPGRADE
+>         acpi_table_upgrade();
+> @@ -467,15 +454,6 @@ static void __init resource_init(void)
+>                 request_resource(res, &data_resource);
+>                 request_resource(res, &bss_resource);
 >         }
->
-> -       tmp_reg +=3D dsi->vm.hactive * dsi_tmp_buf_bpp & DSI_PS_WC;
->
-> -       writel(tmp_reg, dsi->regs + DSI_PSCTRL);
-> +       if (config_vact) {
-> +               writel(vm->vactive, dsi->regs + DSI_VACT_NL);
-> +               writel(ps_wc, dsi->regs + DSI_HSTX_CKL_WC);
-> +       }
-> +       writel(ps_bpp_mode, dsi->regs + DSI_PSCTRL);
+> -
+> -#ifdef CONFIG_KEXEC
+> -       if (crashk_res.start < crashk_res.end) {
+> -               insert_resource(&iomem_resource, &crashk_res);
+> -               pr_info("Reserving %ldMB of memory at %ldMB for crashkern=
+el\n",
+> -                       (unsigned long)((crashk_res.end - crashk_res.star=
+t + 1) >> 20),
+> -                       (unsigned long)(crashk_res.start  >> 20));
+> -       }
+> -#endif
 >  }
 >
->  static void mtk_dsi_config_vdo_timing(struct mtk_dsi *dsi)
-> @@ -522,7 +492,7 @@ static void mtk_dsi_config_vdo_timing(struct mtk_dsi =
-*dsi)
->         writel(horizontal_backporch_byte, dsi->regs + DSI_HBP_WC);
->         writel(horizontal_frontporch_byte, dsi->regs + DSI_HFP_WC);
->
-> -       mtk_dsi_ps_control(dsi);
-> +       mtk_dsi_ps_control(dsi, false);
->  }
->
->  static void mtk_dsi_start(struct mtk_dsi *dsi)
-> @@ -667,7 +637,7 @@ static int mtk_dsi_poweron(struct mtk_dsi *dsi)
->         mtk_dsi_reset_engine(dsi);
->         mtk_dsi_phy_timconfig(dsi);
->
-> -       mtk_dsi_ps_control_vact(dsi);
-> +       mtk_dsi_ps_control(dsi, true);
->         mtk_dsi_set_vm_cmd(dsi);
->         mtk_dsi_config_vdo_timing(dsi);
->         mtk_dsi_set_interrupt_enable(dsi);
+>  static int __init add_legacy_isa_io(struct fwnode_handle *fwnode,
 > --
-> 2.43.0
->
+> 2.40.0
 >
 
