@@ -1,113 +1,128 @@
-Return-Path: <linux-kernel+bounces-11565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A54381E83E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CF6481E842
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:59:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE231283104
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:59:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35F58283181
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:59:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 399884F605;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 823E94F88A;
 	Tue, 26 Dec 2023 15:59:21 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 737664EB5E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83C24F5ED
 	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 15:59:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35fcbbd1dbaso59298035ab.0
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35fe9fa7f4fso31231875ab.2
         for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 07:59:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703606358; x=1704211158;
+        d=1e100.net; s=20230601; t=1703606359; x=1704211159;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+XAHfzCY2l4/t5LyLZa95F6bjsF+rh1JT6QeBJ4CZyQ=;
-        b=Krd8CdS+KYjojHIlQAkVgx0J6kvyGQv0+59x+r2iVjhY6CEoRKSPWyWP8nNTMBfefQ
-         HT8hFepDokWeudUbh2Ge2imnXvyajObOO2nXqL4YfdY02eEvYuJCqsxB2gAFzTyV4vOZ
-         hjthM5MFLNRhsXS+QiDZgApUXBs5BoiFeMg/x+GovQovPHyIx3FatP/+AYKy5SLapgQs
-         V9PVkGSKmT7JOUdkKjvWzXY0rbW+qSFjpVCRhaYiuxOullyaYXBFUefa/yua8DnJtrVU
-         nXU6VIEnieyuEaROQxpP5aNvs5QEDUaC2wUOWpuEL8i3z8tkQT/JdKEfLhGLYFzot7IY
-         ASNQ==
-X-Gm-Message-State: AOJu0YzXwFZfy5YstvVKqkc+JLatP4SH9fMwKGT4CW6EZ94LxNJqux0O
-	WpZz/MXfAkqB+URK7B1Ocuz4uEpnPRGRZgc0PbIqQ9q/D8HP
-X-Google-Smtp-Source: AGHT+IEtumes5QgYFtPVtRktd3AiKw9U4mnm5yC+ORzoy9/rTFylOSEDWtwqYC6KJ9GiAYGjc2kFZVfEGZieciISIxGojetOWLiU
+        bh=xKqABHvkxI9tRyf7K59TFrJ0M3NEAQM3qHeXYjfCyOc=;
+        b=RCFpO7IziR7r+HzQO5uGnbydW5gAZMkHfXVraikOMhKpkf3ayhxbyJfWESVJVLTd1o
+         XZ064EaxZ9XJcG1uB01S+h9l4vVwPTBQHOJifOgqBbnY972FA6rRpnSbx2cfgHaY6P/B
+         8V8uVHmy1z2BItbvrs7iTRTtspUyIReUrPop2nVvTVXvpDH9+fJJYUndJddZ9tWACDk2
+         hgflLTpSjvkrPZrYobnLZcOUypDhkByfQKVXQ9pKZom9bhWVv4EBNAGPAchUs6ApdNqq
+         O4ITwgHPZOpw8aW8azcK69F5vx1apFLua3Emc/d2OL6LGhi4mdZNlp2NBqLm5ErNGZMM
+         6kwg==
+X-Gm-Message-State: AOJu0YzJAdErV0+crREcWjpeuiaaK58I87dn+wCiGy7B8SHvR3gxjPlv
+	cT9WC4PRGjFMANF7FCQlUR78EzVpXPio55R0OK+6KJJDHKqL
+X-Google-Smtp-Source: AGHT+IFYdVQOgeJNL01WZvVJm0kp2LoIHqrruHZ5LRJl9WCkA4ny8esb0VoDSz0n2XB3QJvEym4hfLsGwi2X00TF6f4CH5+AXXiL
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b48:b0:360:ba:613d with SMTP id
- f8-20020a056e020b4800b0036000ba613dmr527989ilu.3.1703606358551; Tue, 26 Dec
- 2023 07:59:18 -0800 (PST)
-Date: Tue, 26 Dec 2023 07:59:18 -0800
+X-Received: by 2002:a05:6e02:1c28:b0:35f:d4dc:1b1d with SMTP id
+ m8-20020a056e021c2800b0035fd4dc1b1dmr774874ilh.1.1703606359070; Tue, 26 Dec
+ 2023 07:59:19 -0800 (PST)
+Date: Tue, 26 Dec 2023 07:59:19 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d6b55e060d6bc390@google.com>
-Subject: [syzbot] [kernel?] KMSAN: uninit-value in profile_hits (3)
-From: syzbot <syzbot+b1a83ab2a9eb9321fbdd@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, ebiederm@xmission.com, glider@google.com, 
-	linux-kernel@vger.kernel.org, paskripkin@gmail.com, 
-	penguin-kernel@I-love.SAKURA.ne.jp, rostedt@goodmis.org, 
-	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Message-ID: <000000000000dea025060d6bc3bc@google.com>
+Subject: [syzbot] [bpf?] KMSAN: uninit-value in ___bpf_prog_run (4)
+From: syzbot <syzbot+853242d9c9917165d791@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
+	martin.lau@linux.dev, sdf@google.com, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    1978a14f70af x86: kmsan: enable KMSAN builds for x86
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=13b7a95b700000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d830111cc3be873
-dashboard link: https://syzkaller.appspot.com/bug?extid=b1a83ab2a9eb9321fbdd
-compiler:       clang version 14.0.0 (/usr/local/google/src/llvm-git-monorepo 2b554920f11c8b763cd9ed9003f4e19b919b8e1f), GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14b5476b700000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=142c9237700000
+HEAD commit:    55cb5f43689d Merge tag 'trace-v6.7-rc6' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1275e59ee80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4a65fa9f077ead01
+dashboard link: https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ab88d88fa1d1/disk-55cb5f43.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/587fd1186192/vmlinux-55cb5f43.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c7bbb5741191/bzImage-55cb5f43.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b1a83ab2a9eb9321fbdd@syzkaller.appspotmail.com
+Reported-by: syzbot+853242d9c9917165d791@syzkaller.appspotmail.com
 
 =====================================================
-BUG: KMSAN: uninit-value in do_profile_hits kernel/profile.c:236 [inline]
-BUG: KMSAN: uninit-value in profile_hits+0xaf2/0x1260 kernel/profile.c:326
- do_profile_hits kernel/profile.c:236 [inline]
- profile_hits+0xaf2/0x1260 kernel/profile.c:326
- profile_hit include/linux/profile.h:58 [inline]
- profile_tick+0x241/0x250 kernel/profile.c:336
- tick_sched_handle kernel/time/tick-sched.c:227 [inline]
- tick_sched_timer+0x4bd/0x610 kernel/time/tick-sched.c:1428
- __run_hrtimer+0x49f/0xc50 kernel/time/hrtimer.c:1685
- __hrtimer_run_queues kernel/time/hrtimer.c:1749 [inline]
- hrtimer_interrupt+0x7f7/0x2100 kernel/time/hrtimer.c:1811
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
- __sysvec_apic_timer_interrupt+0x178/0x5e0 arch/x86/kernel/apic/apic.c:1103
- sysvec_apic_timer_interrupt+0x9d/0xc0 arch/x86/kernel/apic/apic.c:1097
- asm_sysvec_apic_timer_interrupt+0x12/0x20
- __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:160 [inline]
- _raw_spin_unlock_irq+0x36/0x60 kernel/locking/spinlock.c:202
- spin_unlock_irq include/linux/spinlock.h:399 [inline]
- __set_current_blocked+0xb0c/0xb90 kernel/signal.c:3051
- sigprocmask kernel/signal.c:3085 [inline]
- __do_sys_rt_sigprocmask kernel/signal.c:3162 [inline]
- __se_sys_rt_sigprocmask+0x438/0x5b0 kernel/signal.c:3145
- __x64_sys_rt_sigprocmask+0x11e/0x170 kernel/signal.c:3145
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x54/0xd0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+BUG: KMSAN: uninit-value in ___bpf_prog_run+0x8a26/0xdb80 kernel/bpf/core.c:2037
+ ___bpf_prog_run+0x8a26/0xdb80 kernel/bpf/core.c:2037
+ __bpf_prog_run512+0xb5/0xe0 kernel/bpf/core.c:2203
+ bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
+ bpf_prog_test_run_skb+0x14e5/0x1f20 net/bpf/test_run.c:1045
+ bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4040
+ __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5401
+ __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
+ __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5485
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-Local variable iter.i created at:
- new_sync_read fs/read_write.c:393 [inline]
- vfs_read+0xb8a/0x1980 fs/read_write.c:481
- ksys_read+0x28b/0x510 fs/read_write.c:619
+Uninit was stored to memory at:
+ ___bpf_prog_run+0x8567/0xdb80
+ __bpf_prog_run512+0xb5/0xe0 kernel/bpf/core.c:2203
+ bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
+ bpf_prog_test_run_skb+0x14e5/0x1f20 net/bpf/test_run.c:1045
+ bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4040
+ __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5401
+ __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
+ __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5485
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-CPU: 1 PID: 3474 Comm: sshd Not tainted 5.17.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Local variable stack created at:
+ __bpf_prog_run512+0x45/0xe0 kernel/bpf/core.c:2203
+ bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
+
+CPU: 1 PID: 13775 Comm: syz-executor.3 Not tainted 6.7.0-rc6-syzkaller-00022-g55cb5f43689d #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
 =====================================================
 
 
@@ -121,10 +136,6 @@ https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
 If the report is already addressed, let syzbot know by replying with:
 #syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
 If you want to overwrite report's subsystems, reply with:
 #syz set subsystems: new-subsystem
