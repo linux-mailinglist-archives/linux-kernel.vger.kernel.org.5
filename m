@@ -1,106 +1,139 @@
-Return-Path: <linux-kernel+bounces-11617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E06681E8FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:24:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FBDD81E908
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:25:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BD1B1C21FFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 18:24:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 364A61F22BDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 18:25:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1648524D8;
-	Tue, 26 Dec 2023 18:24:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01A4854278;
+	Tue, 26 Dec 2023 18:24:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="c1r+qaqy"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="sXGNVCyp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC861524C4
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 18:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-4277e7146abso43076581cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 10:24:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1703615053; x=1704219853; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nbpck61YwtlHFMw5U/Lo3wdHWoHYEKh8KkvQ9gudgQY=;
-        b=c1r+qaqyurG/qhmvIiqVHdz1oSnR58y8/ep/p9Whu9jRw5+k3eJhNB22Xs/8oj4pG/
-         2OBDehnEbI10I8U2bEqaL7JnryezxoBHQ00DcmtN1tv37Pg+ISiq87adHFdQMGsExiHj
-         ll8zFQduifkGaucAKFnhTUm7sWcNwVoAQmc3Ro0Av7Thc1RvbicelFo9odVvzwK+ZNnh
-         OPtsqe+hervrLOpVdfQM3I6EqtLpJchFDggTMQPxbdaBhtpWUsowxbx7T2kq1vCLuMIV
-         bIdidLSjvvq4TNof5HF/rT7tg8Sb3VfvQsvsMixLYLjRs3ubPqfaG38T6MP7R/RkjEmb
-         jftw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703615053; x=1704219853;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nbpck61YwtlHFMw5U/Lo3wdHWoHYEKh8KkvQ9gudgQY=;
-        b=vYjddjPzzT9gNPLMtfP7iozSvqHbCEpCnbsDqwIp3DYwPRVjf+u7z/jvNJ38eIfq/H
-         DbGRhphSb4uEWU4fQMw94aSZMKnYivtGKEMleUFx/hED57TlQl2FfhDaybIOonIxWQ+X
-         A847xCBwsL3aDiFDUHhsurDQJKjmhs/Lg3dcxYk4mUj/2R0wSNaYQnLx/zBr0ZgzeYXv
-         QU5s8L7w9IGIAsHj+HVk/Pwjvr6DFGr9Sn+WBHeKJcPyCsAqI20Fv8488s1nBJ+RuNT6
-         hS0bzGSxRqwwFAnxxRRzWd1T77ghkju21AbFmnTsb1WsWsgBz3nJ2ahfSZO9bRKn+KEG
-         vSDw==
-X-Gm-Message-State: AOJu0Yyr5naqurtZqx8UN6SEEJDSSUoACvJOyXGcCx4dwaes2ZQP6LXV
-	Yn2JCOai0cejcCr2FtxNItbBfxFe7m+SyGeqiL5WlNqddc8k6Q==
-X-Google-Smtp-Source: AGHT+IFWmjNlQw3TJVBvqU22wp4AVqBkS4XAMC4VqHZ635t1MVhw4Y6RPWn1r1oeRtxRwF8xQLfAKRRH1Aun3pHsf+k=
-X-Received: by 2002:a05:622a:307:b0:427:7c4f:9d1a with SMTP id
- q7-20020a05622a030700b004277c4f9d1amr12102912qtw.31.1703615053674; Tue, 26
- Dec 2023 10:24:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0410453E39;
+	Tue, 26 Dec 2023 18:24:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703615055; x=1704219855; i=markus.elfring@web.de;
+	bh=f/Jl+Efb4DezWv7JjmB2u06F6X9iJ9wWuCDtqZqFeRI=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=sXGNVCypFGIAsK2RhOYeKeJcBXK67emWhsnUVXWiS516ZyuRkp7swYAV0uPfTp/s
+	 rf4/PxzykXj5No3yhYFHysooCljMX1Yc7znaiaz4B0eAgQGlK7rj38hdFkIiuy56J
+	 bmKQCEPGLwIO4O+mSGRvEaCkSvwqoLa3xO3uTI5l0VlB/glh8EFeN13xluHtoTXxy
+	 w0BsIZ/+mkgffR2WBfCDQA076d+IgxOtivut6fSRkSwrnCXSyZj59Ff5aoctIPUyd
+	 KMKrodkijx2nsde3PY5Kd9a2nEIEJ/zPTRCJZKpv45nmV4z4tZai4TPMTD38Gw4P+
+	 Wbu/RU5+TVUEZBtUjg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1Mvslx-1r151E32WN-00sV6f; Tue, 26
+ Dec 2023 19:24:15 +0100
+Message-ID: <3203eb44-6e69-4bda-b585-426408cb75ee@web.de>
+Date: Tue, 26 Dec 2023 19:24:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
- <20231128204938.1453583-16-pasha.tatashin@soleen.com> <20231225110930-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20231225110930-mutt-send-email-mst@kernel.org>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Tue, 26 Dec 2023 13:23:37 -0500
-Message-ID: <CA+CK2bCTVqgW2uuSi7WqwGKkd7GT+QoSad2zkNun74wVV_J0Yw@mail.gmail.com>
-Subject: Re: [PATCH 15/16] vhost-vdpa: account iommu allocations
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: akpm@linux-foundation.org, alex.williamson@redhat.com, 
-	alim.akhtar@samsung.com, alyssa@rosenzweig.io, asahi@lists.linux.dev, 
-	baolu.lu@linux.intel.com, bhelgaas@google.com, cgroups@vger.kernel.org, 
-	corbet@lwn.net, david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org, 
-	heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com, 
-	jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com, joro@8bytes.org, 
-	kevin.tian@intel.com, krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
-	mhiramat@kernel.org, m.szyprowski@samsung.com, netdev@vger.kernel.org, 
-	paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com, 
-	samuel@sholland.org, suravee.suthikulpanit@amd.com, sven@svenpeter.dev, 
-	thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com, 
-	vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org, 
-	will@kernel.org, yu-cheng.yu@intel.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+To: bpf@vger.kernel.org, linux-input@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ David Vernet <void@manifault.com>, Jiri Kosina <jikos@kernel.org>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] HID: bpf: One function call less in
+ call_hid_bpf_rdesc_fixup() after error detection
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:K8fF/UijAIywnS52YDqNMULxk3+NZg9vn/tgRlNElb24o0WwTPy
+ VrprFxvBxar+Yk/bUyDiW3oFnHnY3d9QkFy4oTSTjHa+DVPlGrkiLHcX29RQV/JRckCY7tG
+ tURb2Nx0wHr7uGfDz3PyL+uKqEFOyNqfdV4m/IyWF0bu/qPDYbW3StSulfsTU4PtarOzrSZ
+ thlRopo4UMn+BP4/reC6Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ACMj+myOfk8=;jpf3JzHWCKMdYEDE/lVe892U+x4
+ +ohp9E/66yrl6WArelsmeCzCtQLU5fI+nQz7+zbw8Rh7E4VS27xlSmLkUV5qOh2xnr6qIfy4Q
+ 3dy+CqcHiggMWvfaECy2Z6m3vxQ9Bm0Mc5dyCpzFmkQzVujDTRaSu7DIVbCNe21prKltoKpXb
+ tdocUzGGyrxAtCz8mFjQL3ZDccW8JMS8bw4ZkghMy4kpgCn2GkN2sjxSiwBbHV6nX0zRsZ0op
+ QbnDeY5zK23XqNZovTNe+OHJudY1lRWl6kHVDBtaUM3xAOHHLd7O1v98JfVSfXaYXJzgG4/pK
+ BDshva6Z4zkX+TQxn8Ft4yehcRikfPJ0NhDQW5K3HkxykkW6o09ES8fdGs/nKA5WNdgQalVG1
+ rFtwmh18kyx720dpBmhBcKqdu71ptDhEPPfdOk8mLJhlvxOvVVBH1vMBqBdDcjUY6s8J7o0Nd
+ RLXVJ+bKBzm35jVdHDvLMzCUAbVJRYz6kURg7LnIPXfyXsnwUOtujb+yPPbb+1oRa4KloCizJ
+ XFX0IGTJn2hIoSJOUnw0XGX7Ztpt0femIsvtemDdevZ0cAmIX3BvW2m3tjUX0g3TqmdILQQ2u
+ YFg6ecDBEb0LpRy+SY5iaXrE7GKrO41zkVDwI32FG0l5Q5yR6Y/ey/onqVUyjNDdR5kERT1jf
+ kt5JmgkuFbGtQt61GghABhN220XPNDtW6WjNRsoRYaqWDYcXoeim83XjKVapCm2gRt9Xyjzdn
+ KBngG0gisHHl3IVS6KTFtGXXJ+lAUGsqERTaHsanM0N5Ue0UWO3obSXYryiqe+6wUB0VTX+IU
+ t6FCx2S7nGCeseWuES59HYJybPKMQJEJVuSreQn2CvV9mIHPrQTyiORK4uLp+U/UWU0aTahmB
+ Lhv7kA4oulJjI6g0RQA0wVC0fEzAksp+9AltVkfGI0P/MnG5P8tWuMIuVCJn7swQbV4NwKM3R
+ h08qWA==
 
-On Mon, Dec 25, 2023 at 11:09=E2=80=AFAM Michael S. Tsirkin <mst@redhat.com=
-> wrote:
->
-> On Tue, Nov 28, 2023 at 08:49:37PM +0000, Pasha Tatashin wrote:
-> > iommu allocations should be accounted in order to allow admins to
-> > monitor and limit the amount of iommu memory.
-> >
-> > Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
->
->
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Tue, 26 Dec 2023 19:13:25 +0100
 
-Thank you,
-Pasha
+The kfree() function was called in one case by the
+call_hid_bpf_rdesc_fixup() function during error handling
+even if the passed data structure member contained a null pointer.
+This issue was detected by using the Coccinelle software.
+
+Thus adjust jump targets.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/hid/bpf/hid_bpf_dispatch.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf_=
+dispatch.c
+index d9ef45fcaeab..c84fe55be5ed 100644
+=2D-- a/drivers/hid/bpf/hid_bpf_dispatch.c
++++ b/drivers/hid/bpf/hid_bpf_dispatch.c
+@@ -118,17 +118,17 @@ u8 *call_hid_bpf_rdesc_fixup(struct hid_device *hdev=
+, u8 *rdesc, unsigned int *s
+
+ 	ctx_kern.data =3D kzalloc(ctx_kern.ctx.allocated_size, GFP_KERNEL);
+ 	if (!ctx_kern.data)
+-		goto ignore_bpf;
++		goto dup_mem;
+
+ 	memcpy(ctx_kern.data, rdesc, min_t(unsigned int, *size, HID_MAX_DESCRIPT=
+OR_SIZE));
+
+ 	ret =3D hid_bpf_prog_run(hdev, HID_BPF_PROG_TYPE_RDESC_FIXUP, &ctx_kern)=
+;
+ 	if (ret < 0)
+-		goto ignore_bpf;
++		goto free_data;
+
+ 	if (ret) {
+ 		if (ret > ctx_kern.ctx.allocated_size)
+-			goto ignore_bpf;
++			goto free_data;
+
+ 		*size =3D ret;
+ 	}
+@@ -137,8 +137,9 @@ u8 *call_hid_bpf_rdesc_fixup(struct hid_device *hdev, =
+u8 *rdesc, unsigned int *s
+
+ 	return rdesc;
+
+- ignore_bpf:
++free_data:
+ 	kfree(ctx_kern.data);
++dup_mem:
+ 	return kmemdup(rdesc, *size, GFP_KERNEL);
+ }
+ EXPORT_SYMBOL_GPL(call_hid_bpf_rdesc_fixup);
+=2D-
+2.43.0
+
 
