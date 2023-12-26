@@ -1,200 +1,131 @@
-Return-Path: <linux-kernel+bounces-11674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90B7781E9D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 21:06:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FBC081E9D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 21:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94AA7B22488
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:06:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31D371F22A6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:07:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A7A18C3B;
-	Tue, 26 Dec 2023 20:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6326C4C89;
+	Tue, 26 Dec 2023 20:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="fLxzjMjZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XW6b6OMZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7784E125A4
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 20:02:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-781045f1d23so451250385a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 12:02:18 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5442C4C6D
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 20:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d4751dcb56so2036875ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 12:05:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1703620937; x=1704225737; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BtxKf3FqZi0ydpudkf0bXoEdqlC2cPc9JiSI0VbRHzc=;
-        b=fLxzjMjZ3/6dZYApf1ia3Jhf82a3OiMW/a+ahz6Xz62kehsdgHIGgC+cyMVAqq0UCA
-         +vYFAm5WwArj/olKPcIuFmYIcVmvY2ZjbOKgaWnD8veSHpWE8qmahh14KxHfhsrWsKVN
-         BAh/Pla/3UJXzAkVQgJGzdO465M5D3yKn6BaZFzFUsWIgCJniBKvv/PRa4wWTRe09KmX
-         EvJEZ5dGienG3L0q1slgkC3rTHDlK2NyQXZ0WOS9S++oenlpScohOK+Uck9e6z8k+mnL
-         7AuyV3TjJz1dYv5v/5gcSFOywEd9QxKpvmAHMDalps0LCoEMxRkrdtxB/kQMm3jrNkZi
-         VC4Q==
+        d=gmail.com; s=20230601; t=1703621151; x=1704225951; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aambpf80hLN6U6ZAK3OoXRau7bcqwxmaExyUmVSQbBs=;
+        b=XW6b6OMZFLMPGnbXWFTzXMQcJpzqo6sks2JRkHnrkuWv/xXR00YaVZeFMrSUkQ6TEN
+         rYvz5i7skowfniU03h78kyNb86aKfLuPtTvi6APTO23ajHJo+pd23zHnXge14EIkUiPr
+         Sk4LLyPybeSrkrc/gxSwihViVC7V98kOikbyqQegTOQFgvAr9aon8wSOEQvDEGAfSX7c
+         TM7ZtVa6Ffx5oEXDecJPCMBDUmUi97RLMEAaZZF1k1CFiVAbAll8y9xMbA9mvGTYtY44
+         4sP8IhzXEqqL3J7PakvdqFEzbWbmL9GBRkcvEGykf1MPyVkc9P4rQHJ9/p4s2c1vwnte
+         2D8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703620937; x=1704225737;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BtxKf3FqZi0ydpudkf0bXoEdqlC2cPc9JiSI0VbRHzc=;
-        b=P0OnQ1WWfPW3ol8q50exagnomUNMD2nGSoXBPfeDs1IgJHeWtrS9rpYL/ByXY5AVzB
-         rosu1qu5gaVt4y9Mj1t5pDoU0qe5cqgsfLKIwuaDrAUuSUnWds3b3YPItDebbPsWOHnQ
-         v61OajqDEo4+PjWXPD/I+dxG4jK6w08sS6taagps1mKb+8s+nbADxZ4fteEmFHRNcaNt
-         6o9wwXgX7s9ik3D4ZL7YxCx950locvYvQ5OpmktxVVzlcJcnH5aj0uebzRl9hzoeJM6c
-         2kttz4sWWoUtv1pkre4KL9QiAtvEm2eC++TDBSsPw4XO8XBbzV95Xj0OONPi/SadQTdj
-         tKUg==
-X-Gm-Message-State: AOJu0YxgGXGHCFGzUiOzaHifxvo7GCXsvWdqOppOuGkIZOn0caHcPivJ
-	VRuWn8UoX1M8pQ1CImg1gL0s06nRYMfEEA==
-X-Google-Smtp-Source: AGHT+IF6SHRllSaxJq4UXQlu+eJlDbGhCpDAe3qqJtRfc6g3mN6rB4PyhEEN8AN1FQVjUmVdCTe1Ag==
-X-Received: by 2002:a0c:e90e:0:b0:67f:d69e:9c45 with SMTP id a14-20020a0ce90e000000b0067fd69e9c45mr6794763qvo.11.1703620937325;
-        Tue, 26 Dec 2023 12:02:17 -0800 (PST)
-Received: from soleen.c.googlers.com.com (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id t5-20020a0cf985000000b0067f696f412esm4894539qvn.112.2023.12.26.12.02.16
+        d=1e100.net; s=20230601; t=1703621151; x=1704225951;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aambpf80hLN6U6ZAK3OoXRau7bcqwxmaExyUmVSQbBs=;
+        b=bXDGWSG1CEBfi5X2wLuu+7W6FmLB7vCBAT/ZjQ4oiNfbtGrSGmNs0gNcbzzJoc96ow
+         u4oK8QCEkMZdInYXvpiVIll3HgCnZX6bUssALwwjRo+SsnEY6S8v1X8GySgIbBKqzLdT
+         aXyZ77fToaRzlTVWBzWl8PlVLb7JU6lJPJ+auMX7m13VO+yu6d1+5442t5NU3k/IJaJZ
+         QKk1znwLvHDm7bP6jsLMma3pU9G/fZ4M6IGoXZRPCC7pDYy/J5s6zINFMAqbwsvsAM/Y
+         2OnMWBeboutLZqumpbU3RtmHHsT2ATYq0+J26BP0V/V/fhpieC06f/pCXZNfyhSioXPV
+         1nww==
+X-Gm-Message-State: AOJu0YztCcrHrBGvt9b3KbfV/b0OduiWWBaK2gqdpq7rPxkLWmSk3NOr
+	/7fzXgqFwpu4xE9mK8vdC6M=
+X-Google-Smtp-Source: AGHT+IFfBBhneh8TEjLgoywROWAmQJEYM04sn7+T39UIpzdim2rUiWz76hrb3ir73ECq2mpecmoogg==
+X-Received: by 2002:a17:903:22c9:b0:1d4:4a0f:a6b0 with SMTP id y9-20020a17090322c900b001d44a0fa6b0mr1456841plg.16.1703621151399;
+        Tue, 26 Dec 2023 12:05:51 -0800 (PST)
+Received: from localhost ([121.174.67.130])
+        by smtp.gmail.com with ESMTPSA id z16-20020a170903019000b001d0b6caddbasm10327405plg.291.2023.12.26.12.05.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Dec 2023 12:02:17 -0800 (PST)
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-To: akpm@linux-foundation.org,
-	alim.akhtar@samsung.com,
-	alyssa@rosenzweig.io,
-	asahi@lists.linux.dev,
-	baolu.lu@linux.intel.com,
-	bhelgaas@google.com,
-	cgroups@vger.kernel.org,
-	corbet@lwn.net,
-	david@redhat.com,
-	dwmw2@infradead.org,
-	hannes@cmpxchg.org,
-	heiko@sntech.de,
-	iommu@lists.linux.dev,
-	jernej.skrabec@gmail.com,
-	jonathanh@nvidia.com,
-	joro@8bytes.org,
-	krzysztof.kozlowski@linaro.org,
-	linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org,
-	lizefan.x@bytedance.com,
-	marcan@marcan.st,
-	mhiramat@kernel.org,
-	m.szyprowski@samsung.com,
-	pasha.tatashin@soleen.com,
-	paulmck@kernel.org,
-	rdunlap@infradead.org,
-	robin.murphy@arm.com,
-	samuel@sholland.org,
-	suravee.suthikulpanit@amd.com,
-	sven@svenpeter.dev,
-	thierry.reding@gmail.com,
-	tj@kernel.org,
-	tomas.mudrunka@gmail.com,
-	vdumpa@nvidia.com,
-	wens@csie.org,
-	will@kernel.org,
-	yu-cheng.yu@intel.com,
-	rientjes@google.com
-Subject: [PATCH v3 10/10] iommu: account IOMMU allocated memory
-Date: Tue, 26 Dec 2023 20:02:05 +0000
-Message-ID: <20231226200205.562565-11-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-In-Reply-To: <20231226200205.562565-1-pasha.tatashin@soleen.com>
-References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
+        Tue, 26 Dec 2023 12:05:51 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 27 Dec 2023 05:05:49 +0900
+From: Tejun Heo <tj@kernel.org>
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Naohiro.Aota@wdc.com,
+	kernel-team@meta.com
+Subject: Re: [PATCH 01/10] workqueue: Move pwq->max_active to wq->max_active
+Message-ID: <ZYsyHZg6tMAtMp4Q@mtj.duckdns.org>
+References: <20231220072529.1036099-1-tj@kernel.org>
+ <20231220072529.1036099-2-tj@kernel.org>
+ <CAJhGHyB-8hU7W9HV1ctD67Q9d9o+tmhesYqtBcMEmO1+taF=cw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJhGHyB-8hU7W9HV1ctD67Q9d9o+tmhesYqtBcMEmO1+taF=cw@mail.gmail.com>
 
-In order to be able to limit the amount of memory that is allocated
-by IOMMU subsystem, the memory must be accounted.
+Hello,
 
-Account IOMMU as part of the secondary pagetables as it was discussed
-at LPC.
+On Tue, Dec 26, 2023 at 05:13:40PM +0800, Lai Jiangshan wrote:
+> On Wed, Dec 20, 2023 at 3:25 PM Tejun Heo <tj@kernel.org> wrote:
+> 
+> > +static void wq_adjust_max_active(struct workqueue_struct *wq)
+> > +{
+> > +       struct pool_workqueue *pwq;
+> > +
+> > +       lockdep_assert_held(&wq->mutex);
+> > +
+> > +       if ((wq->flags & WQ_FREEZABLE) && workqueue_freezing) {
+> > +               wq->max_active = 0;
+> > +               return;
+> > +       }
+> > +
+> > +       if (wq->max_active == wq->saved_max_active)
+> > +               return;
+> > +
+> > +       wq->max_active = wq->saved_max_active;
+> > +
+> 
+> If a work item gets queued now, it will get scheduled earlier than a
+> previous queued one which is still in the inactive list.
 
-The value of SecPageTables now contains mmeory allocation by IOMMU
-and KVM.
+Is that a problem tho? There's no execution order guarantee except for
+ordered workqueues which is not affected by this. In a later change, we
+switch to list of pending pwqs instead of work items and the issue ordering
+is lost anyway. This isn't a significant departure from previous behaviors
+either given that there has never been ordering across pwq boundaries.
 
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 2 +-
- Documentation/filesystems/proc.rst      | 4 ++--
- drivers/iommu/iommu-pages.h             | 2 ++
- include/linux/mmzone.h                  | 2 +-
- 4 files changed, 6 insertions(+), 4 deletions(-)
+> To solve it, I recommend adding wq->queue_max_active which will be
+> updated after the following code and used only when queue_work().
+> But it requires round-robin through PWQs the second time after
+> wq->queue_max_active is updated to catch the new inactivated items.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 3f85254f3cef..e004e05a7cde 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1418,7 +1418,7 @@ PAGE_SIZE multiple when read back.
- 	  sec_pagetables
- 		Amount of memory allocated for secondary page tables,
- 		this currently includes KVM mmu allocations on x86
--		and arm64.
-+		and arm64 and IOMMU page tables.
- 
- 	  percpu (npn)
- 		Amount of memory used for storing per-cpu kernel
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 49ef12df631b..86f137a9b66b 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -1110,8 +1110,8 @@ KernelStack
- PageTables
-               Memory consumed by userspace page tables
- SecPageTables
--              Memory consumed by secondary page tables, this currently
--              currently includes KVM mmu allocations on x86 and arm64.
-+              Memory consumed by secondary page tables, this currently includes
-+              KVM mmu and IOMMU allocations on x86 and arm64.
- NFS_Unstable
-               Always zero. Previous counted pages which had been written to
-               the server, but has not been committed to stable storage.
-diff --git a/drivers/iommu/iommu-pages.h b/drivers/iommu/iommu-pages.h
-index 4e70cdf7acac..b4289d577e2c 100644
---- a/drivers/iommu/iommu-pages.h
-+++ b/drivers/iommu/iommu-pages.h
-@@ -27,6 +27,7 @@ static inline void __iommu_alloc_account(struct page *page, int order)
- 	const long pgcnt = 1l << order;
- 
- 	mod_node_page_state(page_pgdat(page), NR_IOMMU_PAGES, pgcnt);
-+	mod_lruvec_page_state(page, NR_SECONDARY_PAGETABLE, pgcnt);
- }
- 
- /**
-@@ -39,6 +40,7 @@ static inline void __iommu_free_account(struct page *page, int order)
- 	const long pgcnt = 1l << order;
- 
- 	mod_node_page_state(page_pgdat(page), NR_IOMMU_PAGES, -pgcnt);
-+	mod_lruvec_page_state(page, NR_SECONDARY_PAGETABLE, -pgcnt);
- }
- 
- /**
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index f0b54c752e22..da68f9977206 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -199,7 +199,7 @@ enum node_stat_item {
- 	NR_KERNEL_SCS_KB,	/* measured in KiB */
- #endif
- 	NR_PAGETABLE,		/* used for pagetables */
--	NR_SECONDARY_PAGETABLE, /* secondary pagetables, e.g. KVM pagetables */
-+	NR_SECONDARY_PAGETABLE, /* secondary pagetables, KVM & IOMMU */
- #ifdef CONFIG_IOMMU_SUPPORT
- 	NR_IOMMU_PAGES,		/* # of pages allocated by IOMMU */
- #endif
+I'm reluctant to add complications for this given that it's not a real
+problem to begin with and the operation is pretty cold.
+
+> Or just keep pwq->max_active and will be
+> updated after activating inactivated items and used only when queue_work().
+
+This probably is simpler but would make things more complicated. I'm not
+sure it's worth it.
+
+Thanks.
+
 -- 
-2.43.0.472.g3155946c3a-goog
-
+tejun
 
