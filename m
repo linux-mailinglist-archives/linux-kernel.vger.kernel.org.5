@@ -1,127 +1,150 @@
-Return-Path: <linux-kernel+bounces-11540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C06C081E7DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:41:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FA8081E7E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:52:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2435C283049
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 14:41:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BE641F229C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 14:52:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074984E630;
-	Tue, 26 Dec 2023 14:41:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 696434CB55;
+	Tue, 26 Dec 2023 14:52:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YCaIFXxr"
+	dkim=pass (1024-bit key) header.d=toradex.com header.i=@toradex.com header.b="kp2VM6dT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from de-smtp-delivery-113.mimecast.com (de-smtp-delivery-113.mimecast.com [194.104.111.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D641DFDB;
-	Tue, 26 Dec 2023 14:41:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E029FC433C9;
-	Tue, 26 Dec 2023 14:41:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703601678;
-	bh=99Ww84La77nNm0zpCCzrDa5+kHxswmTCeN2+XPiGBnc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YCaIFXxrkI12vk+6omNA+lt3oBR3+FX4Crnh0s3qLXNFnmJe/haiBpEhfbBbmsSEK
-	 b+HMNETya1Ys3bHp5MwPCt1nChCEaOSNPkQ+wEDX/+x3Azkd+UJ5JuBgJsJQhpRbQ5
-	 Lp0jkMwJV5kzkiC/5MKI9SNRLfCgL+DDqjPVrM2Yqe6nsbOap+JVjEyqCunCWaa08G
-	 icJwG9dIO/k64K5tz7AK7q8CCQoE2s9+jF+FXF0sX9M7OplOHBpv8gfLND3ZwQtrVX
-	 25hidQz2DC4sMEp+unhSiEJ0Wsc2rtmWDQ30ALdcVJi0/HeUeX2ahc4h5P8o/raIXK
-	 CZltgYrSiTQKg==
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5553f768149so146522a12.3;
-        Tue, 26 Dec 2023 06:41:18 -0800 (PST)
-X-Gm-Message-State: AOJu0YyEXYnT9RHY/Z1r6apfRNqL0OcKVYNsf2dakNR0ZFAX9P+6RtB2
-	HxSeAjvFPjFhjwV6xFA114tn94rKBRMCbKIhIAY=
-X-Google-Smtp-Source: AGHT+IEtl8+Lf10lZk7z0nJU4OIJkSw8ChVKPP/jEKIjSh/fpwGcpSGFzhw+qsAdQKWW7QIVBuc3B38p/g7ydh1iS24=
-X-Received: by 2002:a17:906:1083:b0:a23:6cb4:e627 with SMTP id
- u3-20020a170906108300b00a236cb4e627mr3211287eju.96.1703601677285; Tue, 26 Dec
- 2023 06:41:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A7721E487
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 14:52:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=toradex.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toradex.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com; s=toradex-com;
+	t=1703602326;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fEwnb5GWZbaZYbfYH2w/r+iK71DOGeg/leGNBmQMe+E=;
+	b=kp2VM6dTxXq4eLCk/jsjq/h3TZNhT0HNucKfEQp/oRHgeiUQztg8YdjKCGkXQ7MKb6Xnrg
+	a9kfwfVT8QY2lYCNdLBXiH0KevXPaiLV+qBhPTg3f7UfPM4uwivrZ3jSHn2Vw8hDWDqCUS
+	AZt3pQew1BGAO4Z9SnsxSxcYe0XBruA=
+Received: from CHE01-GV0-obe.outbound.protection.outlook.com
+ (mail-gv0che01lp2040.outbound.protection.outlook.com [104.47.22.40]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ de-mta-56-tvUb0xWYOx29mbo4m6VVJQ-1; Tue, 26 Dec 2023 15:50:57 +0100
+X-MC-Unique: tvUb0xWYOx29mbo4m6VVJQ-1
+Received: from ZR0P278MB0460.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:34::12)
+ by GVAP278MB0072.CHEP278.PROD.OUTLOOK.COM (2603:10a6:710:21::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.27; Tue, 26 Dec
+ 2023 14:50:55 +0000
+Received: from ZR0P278MB0460.CHEP278.PROD.OUTLOOK.COM
+ ([fe80::9595:bbdb:420b:24bf]) by ZR0P278MB0460.CHEP278.PROD.OUTLOOK.COM
+ ([fe80::9595:bbdb:420b:24bf%5]) with mapi id 15.20.7113.027; Tue, 26 Dec 2023
+ 14:50:55 +0000
+From: =?utf-8?B?Sm/Do28gUGF1bG8gU2lsdmEgR29uw6dhbHZlcw==?=
+	<joao.goncalves@toradex.com>
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"peterhuewe@gmx.de" <peterhuewe@gmx.de>, "jarkko@kernel.org"
+	<jarkko@kernel.org>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>
+CC: "l.sanfilippo@kunbus.com" <l.sanfilippo@kunbus.com>,
+	"Alexander.Steffen@infineon.com" <Alexander.Steffen@infineon.com>
+Subject: TPM interrupt patch on LTS
+Thread-Topic: TPM interrupt patch on LTS
+Thread-Index: AQHaOArtCvLrSbJPrU+UZ7KChHuRew==
+Date: Tue, 26 Dec 2023 14:50:55 +0000
+Message-ID: <4fc16271420c578cdafea70e005a2b4381c555d3.camel@toradex.com>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: ZR0P278MB0460:EE_|GVAP278MB0072:EE_
+x-ms-office365-filtering-correlation-id: 56f1b8e0-433f-4a61-460c-08dc0622104e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: rgBp+2r9RNe7oh22I8tGodKpXoIhMl6ngYBiVH0mk4Kjkhy21uDpdBgH6e6YkxoX73oS9tabfH9F9AQUyl4Juo7Z/bXre5my+wpVthQuNvPG2wi5RZPG4+LWnCsLqexxznKq+sivAYqCEbAEN6A8rHks9xDllvt+ytEZhRmUG1v4Nju2YIo1KqpXWL5yrt+h3X0jDcQPTjMs/JtOc77ZRdmMfF4UTLXX52sWer8TmnizVWcsZuxU/QOV8WR+h51CP/jEp9RlQnKfnr4/sgNR1JAvtD4qYwTRLX+amnjbWl828D1DQ6dvns43PkQlgd+WlM7p09nwhiXWSWXDQX4SDSvHyvWlJ1A8+qb5QSA/KTvIxKT3/39XIUGcYc9ayEGsiegSEbNiyQjF/aERBnOl5DQOiueYjYMuCOJAW2n1MmXfW4j4D/XbRv3HeS/Bhu4WjmPiiSgbpnLT59N1VO7bhd5QMXZNsV0j2QZmt6XbVb2Vbcz3xABJbaEWaZ8VDCrHMAYG93ZDBir4uzNxkjtmZZjedGbBsK7oo0qKIrEgxepJ9O7RHsK1i/IF/yvprBJmxCiqYpWl0o6mQPh2CApeGhQbnyA4i7/PS/qEUKWHL7M=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZR0P278MB0460.CHEP278.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(136003)(376002)(39840400004)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(2906002)(66476007)(66556008)(64756008)(66946007)(76116006)(66446008)(5660300002)(4744005)(4326008)(8676002)(8936002)(316002)(54906003)(110136005)(41300700001)(91956017)(38070700009)(85182001)(85202003)(36756003)(478600001)(6486002)(71200400001)(6506007)(2616005)(26005)(966005)(6512007)(86362001)(122000001)(38100700002)(83380400001);DIR:OUT;SFP:1102
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?K2FVU2NleE5vQzVsMFU0NzVSbGszUVZhdTU4RDB2cmpnOGpKeTFCVEVyMlBS?=
+ =?utf-8?B?bXFjTTQxN3BBNkxWSHlDL0NWRWVaa1hzeXMyeDJkWWN4OFRDSTJzemJtUHZq?=
+ =?utf-8?B?N0Z3VUw0WDl1aUZadlc4TkNLR0ViTVJTK2dmRUljUStDTXFwZ0FlZU9XZ0RK?=
+ =?utf-8?B?NzBZQ3Q4RkttN09mZkFEQ3Jic2p4empBdnh4YUNLb3ZOSkgxVXM3YkViRWpw?=
+ =?utf-8?B?czQyQk9aNFoyVFJLdVNMYk9iVGc0emVYelIwbFhySWlnYlVJdGRyZjd3WWgr?=
+ =?utf-8?B?VVA3dVBNcXFqV0hRTS84ejZVUm5seHlIYWxMODBTSGU4ZzN4WEZMYTFnTnhy?=
+ =?utf-8?B?RkFFQnlwT2dUOTdneUpGTlVmdVFZVDZuK3ErRHFUZFRmNVlwZWoxajREZXZr?=
+ =?utf-8?B?YXJTK0dldjlENjZ3SFppRWp5VlF2SUptbk5yVU9keExSbjBCS1JZaU9zQ1Ex?=
+ =?utf-8?B?NmtXVzNnd1YvQk1FU2tBK1VCOVFJWmxaQ2FYMjY5a245cnd0dTBicGdDZHB3?=
+ =?utf-8?B?bE44RXE5ZWd2QmFrUi8yYW9uWjBsNE1IWHV0TXA3aXR6RE9zbjBlYjJWNEVQ?=
+ =?utf-8?B?aWQ1ZjA3MVhPNm1JVDFpS1o3czAxdk1sVkdRMHpsTm01Z1dYNkVacm1zcXVa?=
+ =?utf-8?B?b3FZU2xKNUJsSFlkZzNYTEtBTjF6NkJGZ2I5TXo4ZTk2bnE1b0VFc2ErV29M?=
+ =?utf-8?B?dE94c0F3ZkdtR2tOekN5RGdwWFdkMGFSU2x1MWl1UktwQzZ5QjNPY2hDMkZS?=
+ =?utf-8?B?bGszVVRwWlh6enBtVk5nZmZlSjZZQ3ZVMS9FVEo2R3VNWUZEWENVSy9RU1pW?=
+ =?utf-8?B?NWpGbFJXa0V3Y1pYKzBaWVdlallnYXVSZnJDdkxYdUlWcW5GeWZ4QkYxUnVK?=
+ =?utf-8?B?aXBPMUVhcHZMaGxmTWMxbSs0N04zRjJsckxUU1FSWldqdnhrM2VLMlJKeTBy?=
+ =?utf-8?B?Mlk4N3pUYW1LOUZCbnlPY1Zmbnp3WUQvamhVNk5DUFI1bVpGcFJFUkpScUgz?=
+ =?utf-8?B?MmVkWmVtTVR3cW9oU3FrZThJdGFpQis0UFA0N2lBaHA3N2NxRmQ2TW5ZOVE3?=
+ =?utf-8?B?THBVNWpka0U1bzQ4WlN0Ujk2OEtUa2lueGhUdW01YnFlazhDRm44UXdoaEtk?=
+ =?utf-8?B?K2JzaTZ0N1F6bGR1TjJEQ051Tk5ReGw0UUpSOU00VGJxbHRHWUM5bS9ZVUEz?=
+ =?utf-8?B?ZExHTVN1bGZUcGxTU2xXR2owdlkvSTlTeEdqTUhWQXFWUWQwSWNLY3pLTUEy?=
+ =?utf-8?B?QW5ObHdadlRTb2RiZUN5L1dwSzE4S01TL1BsU1hxUkpLelJ4bjNQclpCUDBU?=
+ =?utf-8?B?U1hmYTkvd0R0QUxHNDI5ODRWQVZYSHgxZms1NWRYY29XUTNVSEl1eDlLZVpQ?=
+ =?utf-8?B?MkZpRFlwYm1SenJOKzB3aFdlWnByN3JoRTBOZGp1R3A5Sis1SGNWeXVKaUlY?=
+ =?utf-8?B?UEw4Nk4rcTNQQWF0bXA2YUdsbzdIWURwbW9Yc0lhUWp1SElpMEhsbitQd3RL?=
+ =?utf-8?B?UHQrTGFVUmpqOUNjcmhYb28wS3lHSlk3aTB3UUhIaGpoT1Q5THk0eHRGZTQr?=
+ =?utf-8?B?ZVNmZHdsWXErTkFWTm5mS2xMcnhuNHpxNUZpN2pzOFVpTXF1OTlxTm13cXNT?=
+ =?utf-8?B?QWF4a1FSSG81R3l2U0ZTb2hPZ1FsUWhEaFZiU24zV1U4NFZsSXBoK2RRZWJK?=
+ =?utf-8?B?d0wvMUJsckVOMHlocUdtUG02U3YxNTFvN0NyQVQ0dmJ3bE84eUNIcjN3N2xB?=
+ =?utf-8?B?VDFmVmtCMFoyUEE4dEtXTk1pUHFSa2NiVy80ZmVrOEtDTnFBdGtkNnBsbUpv?=
+ =?utf-8?B?ZmtiYkFmbjZwL2s1cmdyQmlMUE14L2ZSeXJIU1VNdEQ3dkJIYkVzUE1La3ZT?=
+ =?utf-8?B?YWw3NzBUeU1oTVdYVlpOb3JLSS9vd2hRM21PUHZnWExxaytCU050ZTZSdk5Z?=
+ =?utf-8?B?T3JIeHVIUWNXRXhtUGRZOGJvaHdwWnJVUW1XT09pUnlKUG8wQW1PNWlib2tP?=
+ =?utf-8?B?N2Z2alFDV2UxMzJKYmw1dFRJbWJuUWRGRkhqQ1o5Z3RGM0E5MG1BZ2VsQ2Ns?=
+ =?utf-8?B?dmdyRTlUYTBLdEl3TFJ1NTFpSmJ6eFcwanRHdmFKQzhmWFp2bURqdDJyZ0FR?=
+ =?utf-8?B?QmlITXlsMEtWakNRbnd1R2tCb2NnL0FwTzZJa2p3OFA2QStsby9jaGdyZWhL?=
+ =?utf-8?B?OFE9PQ==?=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231225090730.6074-1-yangtiezhu@loongson.cn> <CAAhV-H4J6qRcC-nwJfVzoQYhOPKAMZmq=3xWuDpgdLrw4A2SPg@mail.gmail.com>
- <e9f3c6c3-69f6-621c-92a2-9786f09fe3d6@loongson.cn>
-In-Reply-To: <e9f3c6c3-69f6-621c-92a2-9786f09fe3d6@loongson.cn>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Tue, 26 Dec 2023 22:41:05 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H42nquHpBav_9Ys6AYCynX4WJ7geSATqE9NOC_if3HjSw@mail.gmail.com>
-Message-ID: <CAAhV-H42nquHpBav_9Ys6AYCynX4WJ7geSATqE9NOC_if3HjSw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Add BPF JIT for LOONGARCH entry
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Hengqi Chen <hengqi.chen@gmail.com>, loongarch@lists.linux.dev, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: toradex.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: ZR0P278MB0460.CHEP278.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56f1b8e0-433f-4a61-460c-08dc0622104e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Dec 2023 14:50:55.1815
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d9995866-0d9b-4251-8315-093f062abab4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nYJY5wQ5iTXTwymMZXM78nAaguxJ3q7XXqpEpC24O62VWCQiu8jgrtWlkQLGaJUTFxxEkJeiBfYnf50m+4L5f/n/P3gnVWj1qoywnMDzraY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVAP278MB0072
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: toradex.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-ID: <A80A0B585546E04A8AB181D178CA6E04@CHEP278.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 
-On Tue, Dec 26, 2023 at 6:15=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.cn=
-> wrote:
->
->
->
-> On 12/26/2023 12:05 PM, Huacai Chen wrote:
-> > Also list the loongarch maillist? See the "KERNEL VIRTUAL MACHINE FOR
-> > MIPS (KVM/mips)" entry.
->
-> I think it is not necessary, it is duplicate.
->
-> Because this file is used for get_maintainer.pl, and arch/loongarch/net/
-> is a subdirectory of arch/loongarch, so when execute the command
->
->    ./scripts/get_maintainer.pl -f arch/loongarch/net/
->
-> the outputs will include both bpf@ and loongarch@ maillists automatically=
-.
-OK, then I queued it for loongarch-next.
+SGVsbG8sIA0KDQpXZSBhcmUgaW50ZWdyYXRpbmcgYSBTUEkgVFBNIGZyb20gSW5maW5lb24gd2l0
+aCA2LjEvNS4xNSBMVFMga2VybmVscyBmb3IgYW4gDQplbWJlZGRlZCBwbGF0Zm9ybSBhbmQgaXQg
+aXMgZ2l2aW5nIGFuIGVycm9yIG1lc3NhZ2UgdGhhdCBpbnRlcnJ1cHRzIGFyZSBub3Qgd29ya2lu
+Zy4gDQpUaGVyZSBpcyBhIGNvcnJlY3Rpb24gZnJvbSBbMV0gYWxyZWFkeSBvbiB1cHN0cmVhbSBi
+dXQgdGhlIHBhdGNoIHRoYXQgbWFrZXMgDQppbnRlcnJ1cHRzIHdvcmssIGNvbW1pdCBlNjQ0YjJm
+NDk4ZDIgKCJ0cG0sIHRwbV90aXM6IEVuYWJsZSBpbnRlcnJ1cHQgdGVzdCIpLCB3YXMgDQpub3Qg
+YmFja3BvcnRlZCB0byBMVFMuIFRoaXMgc2VlbXMgdG8gYmUgdGhlIG9ubHkgcGF0Y2ggdGhhdCB3
+YXMgbm8gYmFja3BvcnRlZCANCmZyb20gWzFdLiBJIHJlYWQgc29tZSBkaXNjdXNzaW9uIG9uIGxr
+bWwgYWJvdXQgVFBNIGludGVycnVwdHMgcHJvYmxlbXMgYnV0IGRpZCANCm5vdCBnZXQgaWYgaXQg
+aXMgcmVsYXRlZCBvciB0aGUgcmVhc29uIGZvciBub3QgYmFja3BvcnRpbmcgdGhlIHBhdGNoLiAN
+Cg0KRG8geW91IGtub3cgdGhlIHJlYXNvbiB0aGlzIHNpbmdsZSBwYXRjaCB3YXMgbm90IGJhY2tw
+b3J0ZWQ/ICANCg0KWzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMjExMjQxMzU1
+MzguMzEwMjAtMS1MaW5vU2FuZmlsaXBwb0BnbXguZGUvDQoNClRoYW5rcyENCg0KUmVnYXJkcywN
+CkpvYW8gUGF1bG8gR29uY2FsdmVzDQo=
 
-Huacai
-
->
-> Thanks,
-> Tiezhu
->
-> > Huacai
-> >
-> > On Mon, Dec 25, 2023 at 5:08=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongso=
-n.cn> wrote:
-> >>
-> >> After commit 5dc615520c4d ("LoongArch: Add BPF JIT support"),
-> >> there is no BPF JIT for LOONGARCH entry, in order to maintain
-> >> the current code and the new features timely, just add it.
-> >>
-> >> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> >> ---
-> >>  MAINTAINERS | 7 +++++++
-> >>  1 file changed, 7 insertions(+)
-> >>
-> >> diff --git a/MAINTAINERS b/MAINTAINERS
-> >> index 7cef2d2ef8d7..3ba07b212d38 100644
-> >> --- a/MAINTAINERS
-> >> +++ b/MAINTAINERS
-> >> @@ -3651,6 +3651,13 @@ L:       bpf@vger.kernel.org
-> >>  S:     Supported
-> >>  F:     arch/arm64/net/
-> >>
-> >> +BPF JIT for LOONGARCH
-> >> +M:     Tiezhu Yang <yangtiezhu@loongson.cn>
-> >> +R:     Hengqi Chen <hengqi.chen@gmail.com>
-> >> +L:     bpf@vger.kernel.org
-> >> +S:     Maintained
-> >> +F:     arch/loongarch/net/
-> >> +
-> >>  BPF JIT for MIPS (32-BIT AND 64-BIT)
-> >>  M:     Johan Almbladh <johan.almbladh@anyfinetworks.com>
-> >>  M:     Paul Burton <paulburton@kernel.org>
-> >> --
-> >> 2.42.0
-> >>
-> >>
->
->
 
