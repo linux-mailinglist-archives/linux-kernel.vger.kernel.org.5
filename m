@@ -1,65 +1,64 @@
-Return-Path: <linux-kernel+bounces-11431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9360B81E629
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:06:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C753781E631
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:09:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C07831C21D2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:06:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DF3DB2164F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:09:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10984CE12;
-	Tue, 26 Dec 2023 09:06:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 968CA4CE0B;
+	Tue, 26 Dec 2023 09:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="a5+fac/o"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="poWV9COy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 586F14CE01
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 520324CE09
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:09:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40d5ae89c72so2264395e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 01:06:18 -0800 (PST)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55537c5389dso103602a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 01:09:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703581576; x=1704186376; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mw+VgX6rqCZAGRRzrtKww64vKWB9C04MKuOvSYYGa4s=;
-        b=a5+fac/oClxmGVsmJ5r8B9sHsuk00ee4As8tIjjNalHMsHUMLNoTbI1jLQplmOo24G
-         SbJazcBFbyvKTHDHkzWu8MFwbHH4g2QgWXDza59ESEtWRnfwkwIF46rv/eCC3Wcm1PCm
-         f9QV9hhc94djp5coPJbZIhT10ZfRE1z1e8/y5hl7fw07mH4pV2k0oOEjUMl+tqyWkZkL
-         DCoWs6XEP+gt/POp9u+scrJAqMn06GzWonfTmDFcDagdTxt02bthvr03MXWx4ipU7SVb
-         JS9+w91S5sQj/tweHwOOkAA0vbNUJARRJaJihMOS/wXIbZYQTTxPs6S8BBukD73+0AAQ
-         jQ+A==
+        d=linaro.org; s=google; t=1703581780; x=1704186580; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GyGRdRAu3dYMIwXl5IOePSjFp1rpAKZJa6fsJR5Bbcs=;
+        b=poWV9COyffT1AGQcSiZw0Cf4mU9WzMn8vJtBQCmP765e9VOzOYsezG5jkpfjn8Ce1V
+         C+vHwATr8b1GlawG6SbMNKr9E5FEOKJk/QLSJK/Yav5z+t3ast6gRl/2mQtH31VcESmO
+         uYwMDyL5iv5jfm2c13yiSqz5V0F71KZWnIqZYLRSIf5MUgAmoT4CaLip/BKjmSyYHyq7
+         Ekl31n8trA+ZHl3e4zufG4fiwNVEDL//BNA0kbYwSWLgswH1L7y+XUv7D/GofIbtlTl5
+         yjBBciYO0re5tK8Q/xEIjAZ6HSATsI9GcslHh544HY6w8vWpUBDfnhZSRugsT7ybvWVH
+         iNmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703581576; x=1704186376;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mw+VgX6rqCZAGRRzrtKww64vKWB9C04MKuOvSYYGa4s=;
-        b=W1oqCEASZkONA1HKOgWyMipfX//RtkZq7s4VsvB3PNaQoFLxZ2+8hBNFGl2b2LB3yM
-         /GbJEePWu0cwXWttcTeIgFT8Nfl2FbN0JmEbabVEu3Mrm7Lnbp+kDUQ2mEqL3lCESP0o
-         Oq/bryKwAf11k84UZcbcvSw40do1E3U0t7mmy4O51P+Jya/2kRkVHoIlRDFsZ3Udc2QR
-         qkyiHamRVL6o0gMY2SytCgky40D+jCjYQV7JVfu9+zuLnedC06Wi7vt9t+Jwe0SbHTMH
-         kwbxJszmqlhLyGtK/4U66ICuNK+OyUFHLVVH74u4HrRGB/7bFggVKsZIfFVCZCxgzNuD
-         QoQw==
-X-Gm-Message-State: AOJu0Yyld1RvJ6NGNNyIG4v5FA6WZYH7O8OzPxmig1WFr8Zbdbl9Iq+B
-	HdQ2PjLYczIwIEKyQF+z7UTm4yL/8l4wtQ==
-X-Google-Smtp-Source: AGHT+IFYTSaAFvffZs8LIxajWYHYBvNoCA77G/7VNQcMc8466nMeN1w41mjxWXA79h/+fER61egMuw==
-X-Received: by 2002:a05:600c:5248:b0:40d:5ab6:4697 with SMTP id fc8-20020a05600c524800b0040d5ab64697mr203623wmb.267.1703581576323;
-        Tue, 26 Dec 2023 01:06:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703581780; x=1704186580;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GyGRdRAu3dYMIwXl5IOePSjFp1rpAKZJa6fsJR5Bbcs=;
+        b=E51jFEgK9uFcW/fQRsQrBn93neagoBKLZJAGIxKnzaSLKWCX1mSFk4OoVA7OsorCWn
+         KgCzk1Frl7yGRt91U6AJ9vL37IOfq6dKsya+S7Xib+Olp2khUsGM77G6Fd9GD7kw+8UB
+         KsnxEYgum6Z6BxhmrvRUNpj9xjW2TmnX2CIjb/4SyPhNMtW69SqJd1QqbU0Jj//TfF+J
+         KYEnLvC9Qhg6/l6xBWTwqzmlF12riKU5nQ6MfdIynCwMCyOLoYO6VpZrMDVEoJH7/TTr
+         DmJv75HLf8HXC/BHsN6TohGYFqTF+VB4qwkEnPM1jrxKpJuNav+pVqzyUmErnXPjAilJ
+         2eMw==
+X-Gm-Message-State: AOJu0YyXgm1Ge4MXIrchD0gD5AikFazdWAkzRo09ceuYVpPmqmNpWjSv
+	IZ1kaEw/MgD3AV9DIAzHhsXDiNB5AErbCtX0r77uRpbsARg=
+X-Google-Smtp-Source: AGHT+IG/TqOmZcQ7vgdkc3GalsLUY6iEK/4DwNOywvsw5IpkUi17mp35v/fjSr56ZGpFtYb/j+SNsQ==
+X-Received: by 2002:a17:907:593:b0:a23:2db0:b341 with SMTP id vw19-20020a170907059300b00a232db0b341mr2501500ejb.132.1703581780545;
+        Tue, 26 Dec 2023 01:09:40 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id l3-20020a170907914300b00a23640f7f23sm5539636ejs.47.2023.12.26.01.06.15
+        by smtp.gmail.com with ESMTPSA id u23-20020a170906109700b00a26af5717e9sm4679353eju.42.2023.12.26.01.09.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Dec 2023 01:06:15 -0800 (PST)
-Message-ID: <cdb2cfb6-8385-4f4d-b49b-b04d19d4bdc0@linaro.org>
-Date: Tue, 26 Dec 2023 10:06:14 +0100
+        Tue, 26 Dec 2023 01:09:40 -0800 (PST)
+Message-ID: <b415e6d7-d69f-4fc8-8b4f-13e942859ead@linaro.org>
+Date: Tue, 26 Dec 2023 10:09:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,21 +66,17 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/15] media: s5p-mfc: drop static device variable in
- s5p_mfc_pm.c
-To: Aakarsh Jain <aakarsh.jain@samsung.com>,
- 'Marek Szyprowski' <m.szyprowski@samsung.com>,
- 'Andrzej Hajda' <andrzej.hajda@intel.com>,
- 'Mauro Carvalho Chehab' <mchehab@kernel.org>
-Cc: linux-fsd@tesla.coma, linux-samsung-soc@vger.kernel.org,
- 'Smitha T Murthy' <smithatmurthy@gmail.com>,
- linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231224-n-s5p-mfc-const-v1-0-a3b246470fe4@linaro.org>
- <CGME20231224154454epcas5p311d2b74fb1809bb555a442d1bce82edb@epcas5p3.samsung.com>
- <20231224-n-s5p-mfc-const-v1-15-a3b246470fe4@linaro.org>
- <15d301da37c3$cff325e0$6fd971a0$@samsung.com>
+Subject: Re: [v2 1/2] dt-bindings: HID: i2c-hid: elan: Introduce bindings for
+ Ilitek ili2901
 Content-Language: en-US
+To: xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>,
+ linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, jikos@kernel.org,
+ benjamin.tissoires@redhat.com, dianders@chromium.org
+References: <20231226023737.25618-1-xiazhengqiao@huaqin.corp-partner.google.com>
+ <20231226023737.25618-2-xiazhengqiao@huaqin.corp-partner.google.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -127,29 +122,39 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <15d301da37c3$cff325e0$6fd971a0$@samsung.com>
+In-Reply-To: <20231226023737.25618-2-xiazhengqiao@huaqin.corp-partner.google.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 26/12/2023 07:21, Aakarsh Jain wrote:
->> -int s5p_mfc_clock_on(void);
->> -void s5p_mfc_clock_off(void);
->> -int s5p_mfc_power_on(void);
->> -int s5p_mfc_power_off(void);
->> +int s5p_mfc_clock_on(struct s5p_mfc_dev *dev); void
->> +s5p_mfc_clock_off(struct s5p_mfc_dev *dev); int
->> s5p_mfc_power_on(struct
->> +s5p_mfc_dev *dev); int s5p_mfc_power_off(struct s5p_mfc_dev *dev);
->>
->>  #endif /* S5P_MFC_PM_H_ */
->>
->> --
->> 2.34.1
-> 
-> Reviewed-by: Aakarsh Jain <aakarsh.jain@samsung.com>
+On 26/12/2023 03:37, xiazhengqiao wrote:
+> Because ilitek, ili2901 needs to use reset to pull down the time for 10ms,
+> so we need to control the reset, use this drive control.
 
-Pleasy kindly trim the replies from unnecessary context.  It makes it
-much easier to find new content.
+I don't see relation between commit msg and the patch itself. Perhaps
+you wanted to say you document new device which is different than elan one?
+
+
+Please use standard email subjects, so with the PATCH keyword in the
+title. `git format-patch` helps here to create proper versioned patches.
+Another useful tool is b4. Skipping the PATCH keyword makes filtering of
+emails more difficult thus making the review process less convenient.
+
+A nit, subject: drop second/last, redundant "bindings for". The
+"dt-bindings" prefix is already stating that these are bindings.
+
+> 
+> Signed-off-by: xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
+
+Your name still does not look like in other reply.
+
+> ---
+>  Documentation/devicetree/bindings/input/elan,ekth6915.yaml | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+
+
+What supplies does the device have? Not the driver, the device as
+written in datasheet?
 
 Best regards,
 Krzysztof
