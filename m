@@ -1,170 +1,266 @@
-Return-Path: <linux-kernel+bounces-11569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3654881E84D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:12:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D1CE81E851
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:14:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9E691F21D30
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:12:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 533A3282F5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:14:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120FE4F603;
-	Tue, 26 Dec 2023 16:12:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F014F605;
+	Tue, 26 Dec 2023 16:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="rYUkC2HT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="epxO4hWz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2079.outbound.protection.outlook.com [40.107.7.79])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 045C44F5E1;
-	Tue, 26 Dec 2023 16:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iT1ePGNyqdhcr1FFGDbLgM8Q659S24wvVRzv6+4B3RFoFBkqvX7Nv9ISCr96JkDDhlTFq+1mkwv5MlFpq1ATbWryTRqanAJBv4r5khH0F9wo3+T3Oje9CNCLtiDH2nbYACYKahkN57gaFq8OaMytyA9iQnogO3qFob819PA9Vr/VFT39M+pNRJgAKYYuU67yXnS6BShwAFc6JrwNBtVDpLvCEghL2CvCk080JPKGLoBfvcS0iQ0MegcRowwgk8eRSdbAYdzM6tBZ57778R0DosDYbLzf40SkikVVWv/TLuHIGBwe/XjyCZzLARtJJUb+1LIyufxxm7nvi2CtyXy7cw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8JJZbkEBJhEPRp6OoCkLCg/n1Q94qbuIJy+v1E4dKOc=;
- b=g7iBYy+j0IDS6sxf2gXqAGLFjSNnuCClGn2LCcoBVKob79LhlgJNkojBpztWoD8qac3urmR15ahypX0bK47bPC7RbB2Yk+lTtrjqGJnxHWR/LryRM0eFjgZWadpjN5PKaO7abO2JOodfVXbWlLCHYYiiHxZxkhxf9ivf/sFT23CaWQHx4h2YjFki34zFYjN+FXIzWIJu4qzJrCXM3OuOPaymxgZJmuURdc5sKPiBmJEvZ7iHgt1JVQFzOIRGAR+GgmmM9g1lNZJRWYIfpSTrdOqyydjQfFtoQOq9qApkwirhNU9VCKVCAkfbqEKmv1WI9sZXKk3Uhn/ibKdmA8nhqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8JJZbkEBJhEPRp6OoCkLCg/n1Q94qbuIJy+v1E4dKOc=;
- b=rYUkC2HTBjjTKhEAJetQNFk5RcBj3I/tmNh6ngst9FmfAnthrvO+B9va7QXIFVp+woe3Pl73gVh1qOq2YBHVvbmWxFpj/XM1f/E+mtMsNS+trPB3xV5WctmmldwU9RdGZ1dgcYbh2F7AZiw26aYzZRvDo0kSQkNi0Kic4oZllFw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by PR3PR04MB7210.eurprd04.prod.outlook.com (2603:10a6:102:8f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.27; Tue, 26 Dec
- 2023 16:12:31 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40%7]) with mapi id 15.20.7113.027; Tue, 26 Dec 2023
- 16:12:30 +0000
-Date: Tue, 26 Dec 2023 11:12:19 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
-	festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com,
-	imx@lists.linux.dev, kernel@pengutronix.de,
-	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
-	l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-	linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, lpieralisi@kernel.org,
-	manivannan.sadhasivam@linaro.org, robh@kernel.org,
-	s.hauer@pengutronix.de, shawnguo@kernel.org
-Subject: Re: [PATCH v6 15/16] dt-bindings: imx6q-pcie: Add iMX95 pcie
- endpoint compatible string
-Message-ID: <ZYr7Y+mJea6fChjS@lizhi-Precision-Tower-5810>
-References: <20231224183242.1675372-1-Frank.Li@nxp.com>
- <20231224183242.1675372-16-Frank.Li@nxp.com>
- <6a61f325-a58b-4aa6-9a0a-7a3086f63829@linaro.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6a61f325-a58b-4aa6-9a0a-7a3086f63829@linaro.org>
-X-ClientProxiedBy: SJ0PR03CA0082.namprd03.prod.outlook.com
- (2603:10b6:a03:331::27) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B784F5E3;
+	Tue, 26 Dec 2023 16:14:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A8F3C433C8;
+	Tue, 26 Dec 2023 16:14:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703607263;
+	bh=X17uhTrvUB4QI3u0hbcYr4MU2xf6/bp+rJzgV0J90LI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=epxO4hWzji58L5LQDUuSA9/qCgSbnWFNEqV2gMT8eeVzg9uzDWdv3oEg+YmGzbLgA
+	 UY3oNsiwNGXk8nsFKxr8v3Z07+bYs+sSBRhZKqazF9yHn/3vQpOyyS7b3990zZ1AhE
+	 Rn5l0EW3BZ7BU1UQc8Qesyl0+2KTNAJJ3YbSIaXqi34anwYZ5CHNfht7n2EGlY0VYd
+	 lKfa3DB9L9DDF2sNap4XDL26UlzMZhYKzZMAPTZ3DeNGl0Zrl009jyn7sfTaUKv4js
+	 6aNilQdolre7XMUHHNoiDel+jVtkWBpwtPDsbQ2wA1bRS+p+4d/vtXuvZH0VSVl/wO
+	 xPPis0p6qFkAQ==
+Date: Tue, 26 Dec 2023 16:14:14 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Christian Eggers <ceggers@arri.de>, Lars-Peter Clausen
+ <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] io: light: as73211: add support for as7331
+Message-ID: <20231226161414.47d5171e@jic23-huawei>
+In-Reply-To: <20231220-as7331-v1-2-745b73c27703@gmail.com>
+References: <20231220-as7331-v1-0-745b73c27703@gmail.com>
+	<20231220-as7331-v1-2-745b73c27703@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PR3PR04MB7210:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1308dec1-02bc-4e98-fb94-08dc062d75de
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	WtxBghQQ+yEWAVCA8NsbrVgkqJS5Ql/lNYDe5lZkOrZ9kDx4GkYX2VpZ+YDlDvIXbbAYJsO37TD3VbM6kwuZDtWX00j95Vf0l3PLbybfDsYIBKuj8C9yJNAnPZNAzJlZRuf5P7cbTJZhQQIVVdd4qhUzxtjzMEc9ZoiB3WiNu1BcMtNEKPUXD7jc6D2Pfr1o3v++eoMVy9wMuwN0CBcozMmi1Bn85NIh6d4l+S7rPUhykyPsGNa4cmCxvT/hfJMnSSQvgVNmfgYr61AUL9kbwbdy1x1kVr+YNJt97FHLhHeZVLe9BkI0SXmD4HNyRaex/zdgTarAY+SezUbXGPWCfi1CQMUDl86PUfF49D76ohm1uXn2WA9DyaXRdDTvuXaj5ct6EBLTtQWgembshE+K115dp+nFgsDz1OcjagLY/xx3oVsKt3iycrnAzrSp/gk1VUzMR562NDNlq+cm1iflsHIDy8OkXCUaft8Vlryg+sqb+EKJdInMKEm2irC7qOffDPjrRzx/EjhH57RfG4XjIyhYuY+aHyd+Xiy0xtVe7jWtf4gHp1s33xMYlymBZg8k4o60dLaJe81W1pP7kB6CUzRx5VVhAvcTPg83ijvjqkOhLW4ESFouAKmtDaCqM92oXbILPFrpnL9ZNvFpeR11tR/7d/6S0xuK3obtT+4j7CE=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(396003)(346002)(136003)(39860400002)(376002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(5660300002)(7416002)(4744005)(2906002)(478600001)(26005)(53546011)(52116002)(6486002)(38100700002)(41300700001)(86362001)(38350700005)(33716001)(316002)(66476007)(66556008)(66946007)(6916009)(9686003)(6512007)(6506007)(8936002)(8676002)(4326008)(6666004)(32563001)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?oJofG+n/YuZBfbLWM8dghRGCYBn2JeX8Hh8e5UbIIL01JIrjog1Q99JodYNL?=
- =?us-ascii?Q?kB50RsR+VJNXrQZFCDgKRKN3eF1DVNCuwYgczMaU7GLtngM6fUPNhQ4L1jl/?=
- =?us-ascii?Q?+SiEmpxz61OiCrSB+SwD9c5v2K26IAg81rnUQYPRcp27rCKVZzv6hpG3lPOY?=
- =?us-ascii?Q?szY0K//9prn89Qo3Y3HL6+SMygZCOFbe+GJnJLws5zrAzaGY0yCPDAtDfdo2?=
- =?us-ascii?Q?XXYVkz6ZW3JSXwJ3b7YekadSHlQlbVe3+runw+xp7B4Zwi9IZ9quCAYgg4lv?=
- =?us-ascii?Q?9VYXFVPYTT/lf1qLazUJGn0Dsz8ua3lJJ9Pm0bnLDBCfNrjSk53HbxLUcEYd?=
- =?us-ascii?Q?3mlb7Ab2bqc229Cj5Z+8rubmG+xa5KqsMKnqYs2KHPKmro9N7rJYIzGPE600?=
- =?us-ascii?Q?hq+j3yZ0Gnr7AHxIKI5RR/rcqEJlJtNktHgj3RwUs8lHX9eWBFclFgwaJK/k?=
- =?us-ascii?Q?dqZMiJtvS/+SKM9KTM80v8S+Yx+8S/HHPC6Se34/QJU/+pz+jNiX0xSKJ88H?=
- =?us-ascii?Q?UbAByr0QW2PPuvBH5e4tU4l+L+9gFGdz/fgKzbDXhPUnkGX9VBHt8uvI2fLn?=
- =?us-ascii?Q?NCR0OR6/KN8EE07GKm6prMs94KDhiIPkuywju2OkIn+tgH1De9iDhQXReA4e?=
- =?us-ascii?Q?kAQ0EDZZbPheIWTPCFEq5Y/kg7Fw2NHxrUWeKtSyh1tdI6wdENFGbJvch9K9?=
- =?us-ascii?Q?A+nZ5rnr1d0O/a9ho7LYlT8dm4w4VvHOPvaOFSbDhrUFYHsgvjQpQjEJeKrj?=
- =?us-ascii?Q?rao/zMOfSTdo6z++f15mnHkFOR1yjyoZhSo8e2RS0x+Vy0ImG8hV4x3Pmwi3?=
- =?us-ascii?Q?H/ZfjSgkKGaJAXKaoJOclgxvOqvIy5hibZeVwYLsBHm3CCOyzCBOewlGT9UD?=
- =?us-ascii?Q?cdbfP+rI+7fgTPzlrKACm7UM48n7X7xayfDhrworDL4KiJ3XwzagTfRWqHaY?=
- =?us-ascii?Q?tAtS2psVE/7WJKx9NA6H5+sFrp4koSIsw4KrOFEdBYKsIIiWFdussNNzyBrO?=
- =?us-ascii?Q?CBG/DorX8U03lCyo7ji32j43JDeOpckhFQ1w8Dlvqe38ngXkPmuHghTD0kzx?=
- =?us-ascii?Q?mUyhaf1rNoZ3GY1SZi6iKIUKTWqi+KgwvdHru3AO8qNF5ZRi/Ps1LBVB1SGY?=
- =?us-ascii?Q?Jjh265M299uc4QfHnuqiSv0uFpbRpQXgGn7ON1/zoE2LB4q+4wZe1pumY0TO?=
- =?us-ascii?Q?k1jmLzc3kGcx22yguPiTcp8L5vt8SBiR6+g74HxWRQTDlcGnxcMJJkW9wSXD?=
- =?us-ascii?Q?wmlzTPjNWh0GnGMsjkNzoi7QCCIUg3nK8puJCSYQ9vpK+0cgB6RGOITwKXlb?=
- =?us-ascii?Q?WphDS/1CSlXTlqaqAedd17uyqoRyootBgLjJbKWN+hgNJL5CxZ6imvyirHPU?=
- =?us-ascii?Q?KLXTYEg+NzFCN2xxWFN4NHLtneSgBJ1z4fcn6sM4G9E8wjxfKk75i2fZ4yLD?=
- =?us-ascii?Q?YvnKyxVR0ic2RKi/F21o17FyT8afhortznKYkU+8iZtd0thHdj/vVIVL6umy?=
- =?us-ascii?Q?vKFG0k9ukgY+UYscUPzSrZbrbshrM9kT5GouvnehGDA7rxIftmHxW8ryOglG?=
- =?us-ascii?Q?SC+9C//NWEvq/z0oe8P8Ii3t2Q21wFmcuwnbRamr?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1308dec1-02bc-4e98-fb94-08dc062d75de
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Dec 2023 16:12:30.6825
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Er8J02ANy6GzEtYSLpsvkb3lOu4tE7eW/v0p7DxtvDxGHKep52vxZuZ5wDG3lJVh2OY+toaCTS/9trAr6U312g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7210
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Dec 25, 2023 at 08:16:17PM +0100, Krzysztof Kozlowski wrote:
-> On 24/12/2023 19:32, Frank Li wrote:
-> > Add i.MX95 PCIe "fsl,imx95-pcie-ep" compatible string.
-> > Add reg-name: "atu", "dbi2", "dma" and "app".
-> > Reuse PCI linux,pci-domain as controller id at endpoint.
-> > 
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> > 
+On Sat, 23 Dec 2023 11:46:14 +0100
+Javier Carrasco <javier.carrasco.cruz@gmail.com> wrote:
+
+> The AMS AS7331 is a UV light sensor with three channels: UVA, UVB and
+> UVC (also known as deep UV and referenced as DUV in the iio core).
+> Its internal structure and forming blocks are practically identical to
+> the ones the AS73211 contains: API, internal DAC, I2C interface and
+> registers, measurement modes, number of channels and pinout.
 > 
-> ...
+> The only difference between them is the photodiodes used to acquire
+> light, which means that only some modifications are required to add
+> support for the AS7331 in the existing driver.
 > 
-> > +# reuse PCI linux,pci-domain as controller id at Endpoint
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          enum:
-> > +            - fsl,imx95-pcie-ep
-> > +    then:
-> > +      properties:
-> > +        linux,pci-domain: true
+> The temperature channel is identical for both devices and only the
+> channel modifiers of the IIO_INTENSITY channels need to account for the
+> device type.
 > 
-> Same comment: why do you need? Don't ignore my feedback. You responded
-> you will fix it, but it is still here...
+> The scale values have been obtained from the chapter "7.5 Transfer
+> Function" of the official datasheet[1] for the configuration chosen as
+> basis (Nclk = 1024 and GAIN = 1). Those values keep the units from the
+> datasheet (nW/cm^2) because no additional upscaling is required to work
+> with integers as opposed to the scale values for the AS73211. Actually
+> if the same upscaling is used, their values will not fit in 4-byte
+> integers without affecting its sign.
+> 
+> Instead, the AS7331-specific function to retrieve the intensity scales
+> returns decimal values as listed in the datasheet for every
+> combination of GAIN and Nclk, keeping the unit as nW/cm^2.
+> To achieve that, a fractional value is returned.
+> The AS73211 scales use nW/m^2 units to work with integers that fit in
+> a 4-byte integer, and in that case there is no need to modify the value
+> type.
 
-DTB_CHECK report error after I remove it. linux,pci-domain is only define
-in pci, not pci-ep.
-
-So I add comments about this. linux,pci-domain was resued ad controller id.
-
-If include pci.yaml, there are too much other properties was involved, but
-not used by pci-ep.
-
-Frank
+No need, but in general it's a nice to have if it works well with
+IIO_VAL_FRACTIONAL because in kernel users (there aren't really any
+for light sensors) can handle the maths better if they need to apply
+other scalings etc.
 
 > 
-> Best regards,
-> Krzysztof
+> Add a new device-specific data structure to account for the device
+> differences: channel types and scale of LSB per channel.
+A may not be worth doing it in this case, but usual approach to refactoring
+a driver to allow support of additional devices is to do it in two steps.
+1) Refactor with no new support - so should be no operational changes.
+2) Add the new device support.
+
+
 > 
+> [1] https://ams.com/documents/20143/9106314/AS7331_DS001047_4-00.pdf
+> 
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+...
+
+> diff --git a/drivers/iio/light/as73211.c b/drivers/iio/light/as73211.c
+> index ec97a3a46839..d53a0ae5255a 100644
+> --- a/drivers/iio/light/as73211.c
+> +++ b/drivers/iio/light/as73211.c
+...
+
+>  
+> +static const struct iio_chan_spec as7331_channels[] = {
+> +	{
+> +		.type = IIO_TEMP,
+> +		.info_mask_separate =
+> +			BIT(IIO_CHAN_INFO_RAW) |
+> +			BIT(IIO_CHAN_INFO_OFFSET) |
+> +			BIT(IIO_CHAN_INFO_SCALE),
+> +		.address = AS73211_OUT_TEMP,
+> +		.scan_index = AS73211_SCAN_INDEX_TEMP,
+> +		.scan_type = {
+> +			.sign = 'u',
+> +			.realbits = 16,
+> +			.storagebits = 16,
+> +			.endianness = IIO_LE,
+> +		}
+> +	},
+> +	AS73211_COLOR_CHANNEL(LIGHT_UVA, AS73211_SCAN_INDEX_X, AS73211_OUT_MRES1),
+> +	AS73211_COLOR_CHANNEL(LIGHT_UVB, AS73211_SCAN_INDEX_Y, AS73211_OUT_MRES2),
+> +	AS73211_COLOR_CHANNEL(LIGHT_DUV, AS73211_SCAN_INDEX_Z, AS73211_OUT_MRES3),
+> +	IIO_CHAN_SOFT_TIMESTAMP(AS73211_SCAN_INDEX_TS),
+> +};
+> +
+>  static unsigned int as73211_integration_time_1024cyc(struct as73211_data *data)
+>  {
+>  	/*
+> @@ -316,6 +361,50 @@ static int as73211_req_data(struct as73211_data *data)
+>  	return 0;
+>  }
+>  
+> +static int as73211_intensity_scale(struct as73211_data *data, int chan, int *val, int *val2)
+> +{
+> +	unsigned int scale;
+> +
+> +	switch (chan) {
+> +	case IIO_MOD_X:
+> +		scale = AS73211_SCALE_X;
+> +		break;
+> +	case IIO_MOD_Y:
+> +		scale = AS73211_SCALE_Y;
+> +		break;
+> +	case IIO_MOD_Z:
+> +		scale = AS73211_SCALE_Z;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	scale /= as73211_gain(data);
+> +	scale /= as73211_integration_time_1024cyc(data);
+> +	*val = scale;
+> +
+> +	return IIO_VAL_INT;
+
+Obviously it's really a question about the original code but why not
+use IIO_VAL_FRACTIONAL here as well as below? Superficially looks
+like it should work in a similar fashion.
+
+If not, perhaps a comment here somewhere?
+
+> +}
+> +
+> +static int as7331_intensity_scale(struct as73211_data *data, int chan, int *val, int *val2)
+> +{
+> +	switch (chan) {
+> +	case IIO_MOD_LIGHT_UVA:
+> +		*val = AS7331_SCALE_UVA;
+> +		break;
+> +	case IIO_MOD_LIGHT_UVB:
+> +		*val = AS7331_SCALE_UVB;
+> +		break;
+> +	case IIO_MOD_LIGHT_DUV:
+> +		*val = AS7331_SCALE_UVC;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	*val2 = as73211_gain(data) * as73211_integration_time_1024cyc(data);
+> +
+> +	return IIO_VAL_FRACTIONAL;
+> +}
+> +
+>  static int as73211_read_raw(struct iio_dev *indio_dev, struct iio_chan_spec const *chan,
+>  			     int *val, int *val2, long mask)
+>  {
+> @@ -355,30 +444,12 @@ static int as73211_read_raw(struct iio_dev *indio_dev, struct iio_chan_spec cons
+>  			*val2 = AS73211_SCALE_TEMP_MICRO;
+>  			return IIO_VAL_INT_PLUS_MICRO;
+>  
+> -		case IIO_INTENSITY: {
+> -			unsigned int scale;
+> -
+> -			switch (chan->channel2) {
+> -			case IIO_MOD_X:
+> -				scale = AS73211_SCALE_X;
+> -				break;
+> -			case IIO_MOD_Y:
+> -				scale = AS73211_SCALE_Y;
+> -				break;
+> -			case IIO_MOD_Z:
+> -				scale = AS73211_SCALE_Z;
+> -				break;
+> -			default:
+> -				return -EINVAL;
+> -			}
+> -			scale /= as73211_gain(data);
+> -			scale /= as73211_integration_time_1024cyc(data);
+> -			*val = scale;
+> -			return IIO_VAL_INT;
+> +		case IIO_INTENSITY:
+> +			return data->spec_dev->intensity_scale(data, chan->channel2, val, val2);
+Where it doesn't hurt readability, I'd prefer we stayed as close to 80 chars or below
+as reasonably possible.  So here wrap so val, val2); is on the next line.
+
+>  
+>  		default:
+>  			return -EINVAL;
+> -		}}
+> +		}
+>  
+>  	case IIO_CHAN_INFO_SAMP_FREQ:
+>  		/* f_samp is configured in CREG3 in powers of 2 (x 1.024 MHz) */
+> @@ -676,13 +747,20 @@ static int as73211_probe(struct i2c_client *client)
+>  	i2c_set_clientdata(client, indio_dev);
+>  	data->client = client;
+>  
+> +	if (dev_fwnode(dev))
+> +		data->spec_dev = device_get_match_data(dev);
+> +	else
+> +		data->spec_dev = i2c_get_match_data(client);
+
+Take a look at how i2c_get_match_data() is defined...
+https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-core-base.c#L117
+and in particular what it calls first..
+
+> +	if (!data->spec_dev)
+> +		return -EINVAL;
+> +
+>  	mutex_init(&data->mutex);
+>  	init_completion(&data->completion);
+>  
+>  	indio_dev->info = &as73211_info;
+>  	indio_dev->name = AS73211_DRV_NAME;
+> -	indio_dev->channels = as73211_channels;
+> -	indio_dev->num_channels = ARRAY_SIZE(as73211_channels);
+> +	indio_dev->channels = data->spec_dev->channel;
+> +	indio_dev->num_channels = data->spec_dev->num_channels;
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  
+
 
