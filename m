@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-11623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28F3B81E91B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:02:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70CE481E91F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:04:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52CF61C21017
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:02:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25EDB2827DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D5D1104;
-	Tue, 26 Dec 2023 19:01:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7426F15A8;
+	Tue, 26 Dec 2023 19:04:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yTaMjA8L"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dBuG2mJ+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C77A110A
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 19:01:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 538E4641
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 19:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a271a28aeb4so65498466b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 11:01:57 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55333eb0312so3674176a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 11:04:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703617316; x=1704222116; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703617463; x=1704222263; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=mv/k4E8tNQsDocRbC/Q62jxBeX63xNG+uOzrvraohns=;
-        b=yTaMjA8LGiEBhymAIHJMQruV7Zl3nKkMA2AButKZnyt0FRWJKMYYgYSDgIJ7NROaH9
-         36M2iEUXIdX7I1Q+GT5qTxGHbFkCiZ2sMjiK1vEEiZX/ECAxgzyDV8OMRzX4Z3l1NWa7
-         Cbfnq9YZn0KhjAGO97aqJvykOmO0r/DYQFHO13BuR+GWDZXDH9vwDqfeJj1DvjOh9l23
-         mw4hFgrRd4+5v2cLcLwEWz94F83MdjYY8ha/dD3Ieb1wVayx5COK03rt8k+c0I6MFyGT
-         EJPhWw+8hyGCNJsGjIxKCD2xlXcfR4yrGe/zhafEOzHD2RPYlH2fqQO5taMvUXOikAP/
-         Ln8g==
+        bh=Pk+r4tOk9Utk4zpbAnzqVIBfSoTL4eX0tw0EhpddlwA=;
+        b=dBuG2mJ+PEl0gjqdnBM2xktGZsytzK38y8OEBV/Fi1gr4vbsoWJ1T+8/P2jCorPFk8
+         Ck9btR/sylAtr/iBd8jMW2xEilCg7pWntFf061POqPntXM0uZ5uGvQCYW/UGM8Ub3NO7
+         KxC7cKQAJ1eSbazPudvpS6wft/tELrxA/IJzsmXIEjoT2F+VDJVSlcXa27MkGLnh5qmU
+         F0Rc85ITL39TCjtH8OUx4vfDX8eJOfL4Dr3PmgJLREObKlgTuhpiHnCdDU//1cGxdqYM
+         PygJwU3OwOEW5fSF0FLbVcg3GWnLQzvTUanprb3z1O4VfppucHIse4yeJZtPDmQ8s3Mm
+         0cPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703617316; x=1704222116;
+        d=1e100.net; s=20230601; t=1703617463; x=1704222263;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mv/k4E8tNQsDocRbC/Q62jxBeX63xNG+uOzrvraohns=;
-        b=DraBwadxStkLx3YedaWquR4bqOgmphdVBPg0HcM1qpm8BmrT2PBpu0hMizQsXckJkm
-         8nDX33dD3tDFE41/rRY4T0bDTB2KIq+n/sjN5Zd3MP3zxQcaC/Eciun8S/5XD9O4o+F0
-         EjK8f9a8BJlXY4rFVRVx7mGYP6fZhvHB4MrUj8VnKnsBB1SV7w3S8XdrB48cRqYDbnfB
-         lFF9DgxPw1CoTvAYeIACZcMXy8+AK0K8Q/m8BGOfL8h1eO9m1lrhbTwRHFiqnljCvcqq
-         NvX5/Cd3tP7g9KISJo5BEUeVJwJzACuH4nH4deXh7nkfQCAxTdJWFypW4U7AGKAA+9Vu
-         w2fg==
-X-Gm-Message-State: AOJu0YzR5LCXvOBHmN5ZiQKVT1C+BfkQis+HvJao7EUjbRNUDmNTmDOG
-	P1syKHf+Jb3fsSfiBeujlhsIqgxN4ZvPBQ==
-X-Google-Smtp-Source: AGHT+IHsHiD6Zn3OsjK2DGYYWjTYRSHvI51xN7TxWZ3bS/xX57kGlz8kaVDKsTPlumPpdg/oqCnyfQ==
-X-Received: by 2002:a17:906:150:b0:a19:a19b:78a8 with SMTP id 16-20020a170906015000b00a19a19b78a8mr4096990ejh.107.1703617315124;
-        Tue, 26 Dec 2023 11:01:55 -0800 (PST)
+        bh=Pk+r4tOk9Utk4zpbAnzqVIBfSoTL4eX0tw0EhpddlwA=;
+        b=Zpl8vTESZTWjj2FMBpWVn5AcIKgKUCAtjcyxE6wxIB5CSuNXII3E1zd7Eoct48ptn5
+         QPvVnBngiiSB27z2Fs7SZFSy18tbZrodzFNOWIAon9vCKji4BVd7kL6R00AdjMrWGHSx
+         idC27dL+2sHKOTGRfKWrvtDd9yjHGx/SIqyW4K9CB7L4TrQRmzhC3RBjPh4dLWkYt2nw
+         WH95bNasm7QJcAK/85VoFQhVPV3IlwuxrO2GqPEm7Br8BYj7sHZyVyTVGZUtxC5+g/an
+         5SSFKKvG8GYf8yYE959aU7uhozB94oyQKWfeZQqVR5Sc8bZfI7Nsv1lbVTCcTUrDwtWJ
+         8R4Q==
+X-Gm-Message-State: AOJu0YwXmHiZ7/0aLtf3vCsCiZQjghi3juH2OBYCXtxgmlG14fducoZM
+	w3MPVwBZAc7CtmFA+Mc1qsiTMbBt3t+b/A==
+X-Google-Smtp-Source: AGHT+IHxALmimNzh9LzxySmeyAVWIr2jD1jUTZe7j1y/IYCJSzT3Z8y463JHXgOEv7mylV629mgNQA==
+X-Received: by 2002:a50:d69d:0:b0:553:a410:c8a3 with SMTP id r29-20020a50d69d000000b00553a410c8a3mr5027895edi.62.1703617463656;
+        Tue, 26 Dec 2023 11:04:23 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id p18-20020a170906b21200b00a26f69ca8d0sm1759085ejz.71.2023.12.26.11.01.53
+        by smtp.gmail.com with ESMTPSA id i15-20020a05640200cf00b0055404e08589sm7668581edu.85.2023.12.26.11.04.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Dec 2023 11:01:54 -0800 (PST)
-Message-ID: <0233cf48-93cb-4f19-ad1d-e3e1835c1fef@linaro.org>
-Date: Tue, 26 Dec 2023 20:01:53 +0100
+        Tue, 26 Dec 2023 11:04:23 -0800 (PST)
+Message-ID: <1f8fdd47-0c48-4ccd-9352-41c830ec9240@linaro.org>
+Date: Tue, 26 Dec 2023 20:04:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,22 +66,28 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 15/16] dt-bindings: imx6q-pcie: Add iMX95 pcie endpoint
- compatible string
+Subject: Re: [PATCH v5 1/2] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
+ binding
 Content-Language: en-US
-To: Frank Li <Frank.li@nxp.com>
-Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
- festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com,
- imx@lists.linux.dev, kernel@pengutronix.de,
- krzysztof.kozlowski+dt@linaro.org, kw@linux.com, l.stach@pengutronix.de,
- linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
- linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
- lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org, robh@kernel.org,
- s.hauer@pengutronix.de, shawnguo@kernel.org
-References: <20231224183242.1675372-1-Frank.Li@nxp.com>
- <20231224183242.1675372-16-Frank.Li@nxp.com>
- <6a61f325-a58b-4aa6-9a0a-7a3086f63829@linaro.org>
- <ZYr7Y+mJea6fChjS@lizhi-Precision-Tower-5810>
+To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Wesley Cheng <quic_wcheng@quicinc.com>, Johan Hovold <johan@kernel.org>,
+ Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Conor Dooley <conor+dt@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ Thinh Nguyen <Thinh.Nguyen@synopsys.com>, quic_ppratap@quicinc.com,
+ quic_jackp@quicinc.com, Andy Gross <agross@kernel.org>
+References: <20231222063648.11193-1-quic_kriskura@quicinc.com>
+ <20231222063648.11193-2-quic_kriskura@quicinc.com>
+ <e6419898-0d77-4286-a04b-7240eb90d8df@linaro.org>
+ <268f9f54-8b2a-42bb-9a5d-10bd930cb282@quicinc.com>
+ <55c478c7-abcc-4487-b81c-479df47d5666@linaro.org>
+ <67c7c84c-c631-468e-ae67-1c31d41a605b@quicinc.com>
+ <efdf2923-4669-409f-b5c4-d5b95009309f@linaro.org>
+ <a284c13d-b55a-467d-8756-c41b0f913df3@quicinc.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -127,51 +133,71 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZYr7Y+mJea6fChjS@lizhi-Precision-Tower-5810>
+In-Reply-To: <a284c13d-b55a-467d-8756-c41b0f913df3@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 26/12/2023 17:12, Frank Li wrote:
-> On Mon, Dec 25, 2023 at 08:16:17PM +0100, Krzysztof Kozlowski wrote:
->> On 24/12/2023 19:32, Frank Li wrote:
->>> Add i.MX95 PCIe "fsl,imx95-pcie-ep" compatible string.
->>> Add reg-name: "atu", "dbi2", "dma" and "app".
->>> Reuse PCI linux,pci-domain as controller id at endpoint.
+On 26/12/2023 16:03, Krishna Kurapati PSSNV wrote:
+> 
+> 
+> On 12/26/2023 5:52 PM, Krzysztof Kozlowski wrote:
+> 
+>>>>
+>>>> This does not answer why, you sc8280xp and x1e80100 not get one optional
+>>>> interrupt. I asked "why" you are doing this change. Why do you need it?
+>>>> What is the rationale?
+>>>>
+>>>> Then I grunted about unmanageable commit, because all my troubles to
+>>>> review it are the effect of it: it is very difficult to read. It is also
+>>>> difficult for you, because you keep making here mistakes. So if you
+>>>> cannot write this commit properly and I cannot review it, then it is way
+>>>> over-complicated, don't you think? But this is still second problem
+>>>> here, don't ignore the fist - "why?"
 >>>
->>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
->>> ---
+>>> HI Krzysztof,
 >>>
+>>>    Thanks for the review.
+>>>    To answer the question,
+>>>
+>>> "why ?" : The interrupts have been mis-interpreted on many platforms or
+>>> many interrupts are missing.
 >>
->> ...
+>> I asked about these two specific platforms. Please explain these
+>> changes. Above is so generic that tells me nothing.
 >>
->>> +# reuse PCI linux,pci-domain as controller id at Endpoint
->>> +  - if:
->>> +      properties:
->>> +        compatible:
->>> +          enum:
->>> +            - fsl,imx95-pcie-ep
->>> +    then:
->>> +      properties:
->>> +        linux,pci-domain: true
+> 
+> Is the question, "Why do x1e80100 and sc8280 don't have hs_phy_irq ?"
+
+ No, not entirely, the question was why these have flexible number of
+IRQs (last one optional)?
+
+
+> If so, I checked the SC8280 HW specifics and I see one small error. The 
+> name was printed wrong. I got it from another source. Will move sc8280 
+> to list having 5 interrupts. As per x1e80100, I wasn't able to get my 
+> hands on the hw specifics and I followed the following link by Abel Vesa:
+> 
+> https://lore.kernel.org/r/20231214-x1e80100-usb-v1-1-c22be5c0109e@linaro.org
+> 
+> As per the above patch, x1e80100 had only 4 interrupts.
+
+Hm, ok, you say "4" but your patch says "minItems: 3". 3 != 4.
+
+> For ipq5332, it has no hs_phy_irq and so I kept it under this section.
+> 
+>>>
+>>> Now, if I am adding the missing interrupts, I need to segregate targets
+>>> also into respective buckets in the same patch and that is what making
+>>> this patch a little complicated. Is it possible / acceptable to split
+>>> this into two patches if this is the case. Can you help with suggestions
+>>> from your end ? Or may be I am understanding your question wrong ? 😅
 >>
->> Same comment: why do you need? Don't ignore my feedback. You responded
->> you will fix it, but it is still here...
+>> Split the patch into manageable chunks.
+>>
 > 
-> DTB_CHECK report error after I remove it. linux,pci-domain is only define
-> in pci, not pci-ep.
-
-Ah, thank you, indeed.
-
-> 
-> So I add comments about this. linux,pci-domain was resued ad controller id.
-
-However maybe there is reason why it is not for endpoints. The
-description is saying it is valid only for host bridge, so maybe it
-should not be used for endpoint case?
-> 
-> If include pci.yaml, there are too much other properties was involved, but
-> not used by pci-ep.
-
+> I will try to split it up, but not sure if it is a good idea. I say so 
+> because all permutations should be added in single patch and I can't 
+> split that.
 Best regards,
 Krzysztof
 
