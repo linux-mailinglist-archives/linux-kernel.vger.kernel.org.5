@@ -1,130 +1,171 @@
-Return-Path: <linux-kernel+bounces-11564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0918581E83B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:58:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB45E81E841
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:59:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F5A01F233C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:58:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F16FB21597
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:59:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DD684F5F2;
-	Tue, 26 Dec 2023 15:58:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="FCGmIfEi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC324F883;
+	Tue, 26 Dec 2023 15:59:21 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [217.72.192.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888E94F210;
-	Tue, 26 Dec 2023 15:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703606290; x=1704211090; i=markus.elfring@web.de;
-	bh=UsBoPuZPdqnwWrn8IhaxnLaYVK5pnPZrOKNApu8djQA=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=FCGmIfEiJPrC8OBQ9kHS5k/aWkC20OdHyG9Je0vmrj+6/Vtue12cVYPQSJYrewj6
-	 uSNOaUtB31vmAU7i7pAcLxAWh9zSGBlhGsb+zeG4pZfmPbLkz8xLM79VdVZHU6Dfp
-	 sVKvk3m56IRfESXcjbXjfwJ0hzQkwsl6Gnly8ZMT8hperGSwgyJnaHrtkvaZYjer0
-	 tuyBYiiyrXxYi1lhE0UZ0a+VVCKycuUXJ2FnWEdVBMW+U2RxFe5FAsiFNGG0HOtSt
-	 wOne3iDLl7oZd07khpKMvqJ2+rciTejn+J1SsuhW2mX445ElbY/pwHn02y05Eed10
-	 QWfPPra8AeYbAnwjpw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1N3Gga-1r8ZQh3d5e-0109x3; Tue, 26
- Dec 2023 16:58:09 +0100
-Message-ID: <85f8004e-f0c9-42d9-8c59-30f1b4e0b89e@web.de>
-Date: Tue, 26 Dec 2023 16:58:09 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0FF4F5EB
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 15:59:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7b71b4b179aso289518439f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 07:59:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703606359; x=1704211159;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8vsIUG0DSqSbyGFh91iIrmWYYRdoWbKG7UR2q9Kt4xE=;
+        b=TPseBCn3PQj+Hbkmvzi5WFEFTE1putNy2kpOExTEL0AVDJ9LEiMx//wxZkKpGQ7H0V
+         FW4SFWhMUeuvgI57/2zf0A+3qt/SEcd8xNx9p6W0wf4GpN7s4sfSDqCIdXPrhILIir29
+         PQUNHwpXxey+OhRuFNBOH+t3lkx68CxEmW9qEb1xC6Wig2r/aYAjfqK/MnlLmwL7uRRm
+         km/uvVe/u5IFRwVe5DQu4jGi1xWdRHRlXzQ+4qOPyT6BVo4iQodUHzirdmIUncXnfdFU
+         LR8Dr7Yj1RCfL6iwEi7x6hwQT1I0LpbyUwcwMw/uon8m+HdGFaF5j6GVqVUZg0McS178
+         ocxQ==
+X-Gm-Message-State: AOJu0YyNUW1Fi47RnBX4kjPuabRRsquVlEFU3pyt3t0Eanab9uVelvh2
+	5b0Qmg9rH14jDzE7A5X7oqOWVOrGI+i8+j3JMfK/ne5tqzZp
+X-Google-Smtp-Source: AGHT+IGR/NI/D/x4HKxH8gstdJaDlHeF2nIUa2DWUqyGcEk4BfF4oIDSMTlL9QuzhyPvIEUR/UOf4NE53k6Gef7A3LXAGdgg1viz
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH 2/2] drm/sched: Return an error code only as a constant in
- drm_sched_init()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-To: dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
- Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
- Luben Tuikov <ltuikov89@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-References: <12b3e9cb-3241-40cc-b7a4-43c45b9eedc9@web.de>
-In-Reply-To: <12b3e9cb-3241-40cc-b7a4-43c45b9eedc9@web.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vj7nPubO/RtGZEW4DXmzQkH71f56f8vMzM5kuMez9/zuKsQ8EX4
- K02qYH4QSrdZS5YpEBjlzkaAL8PHX2R8OGLpKOdxwqXU02rFIWtgKSrsHhrIWCbWmX5OxWn
- zRinZwnnZ6PBinF6bxElAAgsaEk/jv7J5lcKGn+WjsPW8LsILG3Yu+opM3fcTVDUfPJCnI3
- r+eYb9cvQ5i04R94niE3A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YyuitqbQW/U=;Kfwc98S8YFQzqqgDFSOv1ipPVfx
- 2jb0vX4kV9xuSkxnHnDHhvmHuvwvJ5Uv7nPMH4SYE5edYIjosRAf2y+/a5Kdv5qbidquv8Mh6
- PCzTF2ONHNSh7jZTmpgAnsPfRhtv4YYZ1rVZzcrFr/HnMG43TUvVVFPeEeiHZ8v6h0N4hLoN3
- d5otP0tsJLWZmhQl5cNqoDp/0aAWU20oD1o8+xalenJhh7qbsKbbDFgtCKicoF4NLGRmQ88lf
- 8Bb6SpyXpd0kN5he+3YO+YEnO8UV3dmz8VWv5SVQphn60jNLIDJS1u6iROic5GptURJyvRpw1
- VPKPbIdyArJvp+Q4jlUOzLIwnTZBJILQjlBP9xalU03XP0CKJxsRMZQRMd3Aq+v9zisDPCjDc
- FisV9VDss6bicviXTra0J+moNy5WO5iMOcd3s/fXcwThXknjb0GomztuZGZbDZFy4zf0Twyon
- 5G3cQoCzKuOWeDJuR3Xt5329nYpb1xRDzUsJnJTQprtevTQJ/acvrcmshldKQ5dcHqM06gpEF
- 0j+hXqe4rvheMpLOa+LWg6b2Q1vXQSZrm7GZ/BHN44FIvGC4V+SnkdkC8r8H0e9ER58oYb89Y
- s5dtUdavEcP1qCM0+63IqmHokE+SZBK6GQeOA7d/vj0Kg+ks929O2q7gpTIwp6gf1PkDoRF/r
- 6Uor71voT+hNFQxF0RM2cMoNdu1u7Lp7imGzH7gaELzR3OGgjLx/xlpGC6EtMfTTEjKTrvPxf
- jorq+JCoOsYUG4Pt2X0uKyZvpzwCkKGLfd+Vuov5ZCd9SliTNF4NrjznvJrx+48nFlJbZYHkL
- CKKMU7o0i/JrKkvOdj4Y3y0AbT30FKXTbw6wOOP3VHs2hj5nhDb1QQefAMPByNqQ7LNddJVqt
- 2tZTB70AfK7EbM645fu8ExaSby1N6q8m/xAAEQK7eMp2cpljuKL6IbAk2TqNJdC1ZcQ2e+DcR
- cUsKFw==
+X-Received: by 2002:a05:6638:4919:b0:46d:6d36:d86f with SMTP id
+ cx25-20020a056638491900b0046d6d36d86fmr12144jab.3.1703606358828; Tue, 26 Dec
+ 2023 07:59:18 -0800 (PST)
+Date: Tue, 26 Dec 2023 07:59:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000daec33060d6bc380@google.com>
+Subject: [syzbot] [ntfs?] KMSAN: uninit-value in post_read_mst_fixup (2)
+From: syzbot <syzbot+82248056430fd49210e9@syzkaller.appspotmail.com>
+To: anton@tuxera.com, linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Tue, 26 Dec 2023 16:37:37 +0100
+Hello,
 
-Return an error code without storing it in an intermediate variable.
+syzbot found the following issue on:
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/gpu/drm/scheduler/sched_main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+HEAD commit:    55cb5f43689d Merge tag 'trace-v6.7-rc6' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=107247e1e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4a65fa9f077ead01
+dashboard link: https://syzkaller.appspot.com/bug?extid=82248056430fd49210e9
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/sche=
-duler/sched_main.c
-index b99d4e9ff109..1abbcdf38430 100644
-=2D-- a/drivers/gpu/drm/scheduler/sched_main.c
-+++ b/drivers/gpu/drm/scheduler/sched_main.c
-@@ -1249,7 +1249,7 @@ int drm_sched_init(struct drm_gpu_scheduler *sched,
- 		   long timeout, struct workqueue_struct *timeout_wq,
- 		   atomic_t *score, const char *name, struct device *dev)
- {
--	int i, ret;
-+	int i;
+Unfortunately, I don't have any reproducer for this issue yet.
 
- 	sched->ops =3D ops;
- 	sched->credit_limit =3D credit_limit;
-@@ -1285,7 +1285,7 @@ int drm_sched_init(struct drm_gpu_scheduler *sched,
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ab88d88fa1d1/disk-55cb5f43.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/587fd1186192/vmlinux-55cb5f43.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c7bbb5741191/bzImage-55cb5f43.xz
 
- 		sched->own_submit_wq =3D true;
- 	}
--	ret =3D -ENOMEM;
-+
- 	sched->sched_rq =3D kmalloc_array(num_rqs, sizeof(*sched->sched_rq),
- 					GFP_KERNEL | __GFP_ZERO);
- 	if (!sched->sched_rq)
-@@ -1321,7 +1321,7 @@ int drm_sched_init(struct drm_gpu_scheduler *sched,
- 	if (sched->own_submit_wq)
- 		destroy_workqueue(sched->submit_wq);
- 	drm_err(sched, "%s: Failed to setup GPU scheduler--out of memory\n", __f=
-unc__);
--	return ret;
-+	return -ENOMEM;
- }
- EXPORT_SYMBOL(drm_sched_init);
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+82248056430fd49210e9@syzkaller.appspotmail.com
 
-=2D-
-2.43.0
+syz-executor.1: attempt to access beyond end of device
+loop1: rw=0, sector=2040, nr_sectors = 8 limit=190
+ntfs: (device loop1): ntfs_end_buffer_async_read(): Buffer I/O error, logical block 0xff.
+=====================================================
+BUG: KMSAN: uninit-value in post_read_mst_fixup+0xab8/0xb70 fs/ntfs/mst.c:39
+ post_read_mst_fixup+0xab8/0xb70 fs/ntfs/mst.c:39
+ ntfs_end_buffer_async_read+0xbb8/0x1a70 fs/ntfs/aops.c:133
+ end_bio_bh_io_sync+0x130/0x1d0 fs/buffer.c:2775
+ bio_endio+0xb17/0xb70 block/bio.c:1603
+ submit_bio_noacct+0x230/0x2840 block/blk-core.c:816
+ submit_bio+0x171/0x1c0 block/blk-core.c:842
+ submit_bh_wbc+0x7de/0x850 fs/buffer.c:2821
+ submit_bh+0x26/0x30 fs/buffer.c:2826
+ ntfs_read_block fs/ntfs/aops.c:339 [inline]
+ ntfs_read_folio+0x364b/0x3930 fs/ntfs/aops.c:430
+ filemap_read_folio+0xce/0x370 mm/filemap.c:2323
+ do_read_cache_folio+0x3b4/0x11e0 mm/filemap.c:3691
+ do_read_cache_page mm/filemap.c:3757 [inline]
+ read_cache_page+0x63/0x1c0 mm/filemap.c:3766
+ read_mapping_page include/linux/pagemap.h:871 [inline]
+ ntfs_map_page fs/ntfs/aops.h:75 [inline]
+ check_mft_mirror fs/ntfs/super.c:1117 [inline]
+ load_system_files+0x985/0x97b0 fs/ntfs/super.c:1780
+ ntfs_fill_super+0x307e/0x45d0 fs/ntfs/super.c:2900
+ mount_bdev+0x3d7/0x560 fs/super.c:1650
+ ntfs_mount+0x4d/0x60 fs/ntfs/super.c:3057
+ legacy_get_tree+0x110/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa5/0x520 fs/super.c:1771
+ do_new_mount+0x68d/0x1550 fs/namespace.c:3337
+ path_mount+0x73d/0x1f20 fs/namespace.c:3664
+ do_mount fs/namespace.c:3677 [inline]
+ __do_sys_mount fs/namespace.c:3886 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3863
+ __x64_sys_mount+0xe4/0x140 fs/namespace.c:3863
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
+Uninit was created at:
+ __alloc_pages+0x9a4/0xe00 mm/page_alloc.c:4591
+ alloc_pages_mpol+0x62b/0x9d0 mm/mempolicy.c:2133
+ alloc_pages mm/mempolicy.c:2204 [inline]
+ folio_alloc+0x1da/0x380 mm/mempolicy.c:2211
+ filemap_alloc_folio+0xa5/0x430 mm/filemap.c:974
+ do_read_cache_folio+0x163/0x11e0 mm/filemap.c:3655
+ do_read_cache_page mm/filemap.c:3757 [inline]
+ read_cache_page+0x63/0x1c0 mm/filemap.c:3766
+ read_mapping_page include/linux/pagemap.h:871 [inline]
+ ntfs_map_page fs/ntfs/aops.h:75 [inline]
+ check_mft_mirror fs/ntfs/super.c:1117 [inline]
+ load_system_files+0x985/0x97b0 fs/ntfs/super.c:1780
+ ntfs_fill_super+0x307e/0x45d0 fs/ntfs/super.c:2900
+ mount_bdev+0x3d7/0x560 fs/super.c:1650
+ ntfs_mount+0x4d/0x60 fs/ntfs/super.c:3057
+ legacy_get_tree+0x110/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa5/0x520 fs/super.c:1771
+ do_new_mount+0x68d/0x1550 fs/namespace.c:3337
+ path_mount+0x73d/0x1f20 fs/namespace.c:3664
+ do_mount fs/namespace.c:3677 [inline]
+ __do_sys_mount fs/namespace.c:3886 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3863
+ __x64_sys_mount+0xe4/0x140 fs/namespace.c:3863
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+CPU: 0 PID: 6133 Comm: syz-executor.1 Not tainted 6.7.0-rc6-syzkaller-00022-g55cb5f43689d #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
