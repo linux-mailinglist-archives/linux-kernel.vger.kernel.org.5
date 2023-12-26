@@ -1,273 +1,219 @@
-Return-Path: <linux-kernel+bounces-11355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3918981E50F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:38:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A284581E516
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:39:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6634282BAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:38:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E5D0B21C9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE9254B5B4;
-	Tue, 26 Dec 2023 05:37:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pru6ZLVa"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 200634B5C3;
+	Tue, 26 Dec 2023 05:39:24 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBDDE4B12B;
-	Tue, 26 Dec 2023 05:37:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BQ52MXB007526;
-	Tue, 26 Dec 2023 05:37:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=NKISodyv7L5WQ1e9xudYOVUIOYOCl7Cp0/KhkGuHHS8=; b=pr
-	u6ZLVavTzmKyaV3kyujmzSWFe8SBjP1OtEJ6YEljZ9QgMg/aGxrjc7sdf6jHq1kB
-	FdfO8wiEQTvDgqofsqh+wuO0AFCPBN/JF6N9Dn9HCzqCbD/KppwebVhozdRFbvF0
-	FALo2O6Nca3uZHWbeD4TFADqcHnhlx3ruCHUC5ipSzsxWArj5oxyXljuMBOReNI4
-	Qu3H14hYNBKCyagPQLsUmJ55gdM1n6onvTW36Pb4SteQz6gbrKnltyoKYSwoGtLe
-	8oIH0rZqoWPuglRpLNXLFz/wgAS3EhGvkcZL32xij9XVM9xe4+F+QWqEqyr5sLSU
-	HkU+9TW8iHUNUu9h1tgw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v7baq956r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Dec 2023 05:37:41 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BQ5beH9026647
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Dec 2023 05:37:40 GMT
-Received: from [10.216.59.142] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 25 Dec
- 2023 21:37:35 -0800
-Message-ID: <268f9f54-8b2a-42bb-9a5d-10bd930cb282@quicinc.com>
-Date: Tue, 26 Dec 2023 11:07:31 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8C44B12C;
+	Tue, 26 Dec 2023 05:39:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+	by ex01.ufhost.com (Postfix) with ESMTP id D0D2F24E269;
+	Tue, 26 Dec 2023 13:39:02 +0800 (CST)
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 26 Dec
+ 2023 13:39:02 +0800
+Received: from jsia-virtual-machine.localdomain (202.188.176.82) by
+ EXMBX066.cuchost.com (172.16.6.66) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.42; Tue, 26 Dec 2023 13:38:56 +0800
+From: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+To: <kernel@esmil.dk>, <conor@kernel.org>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <paul.walmsley@sifive.com>,
+	<palmer@dabbelt.com>, <aou@eecs.berkeley.edu>, <mturquette@baylibre.com>,
+	<sboyd@kernel.org>, <p.zabel@pengutronix.de>,
+	<emil.renner.berthing@canonical.com>, <hal.feng@starfivetech.com>,
+	<xingyu.wu@starfivetech.com>
+CC: <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+	<jeeheng.sia@starfivetech.com>, <leyfoon.tan@starfivetech.com>
+Subject: [RFC 00/16] Basic clock and reset support for StarFive JH8100 RISC-V SoC
+Date: Tue, 26 Dec 2023 13:38:32 +0800
+Message-ID: <20231226053848.25089-1-jeeheng.sia@starfivetech.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/2] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
- binding
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Bjorn
- Andersson" <bjorn.andersson@linaro.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        "Johan
- Hovold" <johan@kernel.org>
-CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Thinh Nguyen
-	<Thinh.Nguyen@synopsys.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, Andy Gross <agross@kernel.org>
-References: <20231222063648.11193-1-quic_kriskura@quicinc.com>
- <20231222063648.11193-2-quic_kriskura@quicinc.com>
- <e6419898-0d77-4286-a04b-7240eb90d8df@linaro.org>
-Content-Language: en-US
-From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <e6419898-0d77-4286-a04b-7240eb90d8df@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Prfdge6fS4ZNsx5Sg5ZKn9v0bAu56B6q
-X-Proofpoint-GUID: Prfdge6fS4ZNsx5Sg5ZKn9v0bAu56B6q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 adultscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0
- suspectscore=0 bulkscore=0 impostorscore=0 mlxlogscore=511 spamscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312260040
+Content-Type: text/plain
+X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX066.cuchost.com
+ (172.16.6.66)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: quoted-printable
 
+This patch series enabled basic clock & reset support for StarFive
+JH8100 SoC.
 
+This patch series depends on the Initial device tree support for
+StarFive JH8100 SoC patch series which can be found at [1].
 
-On 12/25/2023 6:35 PM, Krzysztof Kozlowski wrote:
-> On 22/12/2023 07:36, Krishna Kurapati wrote:
->> The high speed related interrupts present on QC targets are as follows:
->>
-> 
-> 
->>   
->>     interrupt-names:
->> -    minItems: 1
->> -    maxItems: 4
->> +    minItems: 2
->> +    maxItems: 5
->>   
->>     qcom,select-utmi-as-pipe-clk:
->>       description:
->> @@ -361,60 +378,21 @@ allOf:
->>           compatible:
->>             contains:
->>               enum:
->> -              - qcom,ipq4019-dwc3
-> 
-> Why do you remove it, without adding it somewhere else. Nothing in the
-> commit msg explains it.
-> 
+As it is recommended to refrain from merging fundamental patches like
+Device Tree, Clock & Reset, and PINCTRL tested on FPGA/Emulator, into the
+RISC-V Mainline, this patch series has been renamed to "RFC" patches. Yet=
+,
+thanks to the reviewers who have reviewed the patches at [2]. The changes
+are captured below.
 
-Apologies, Will check and add it back.
+StarFive JH8100 shares a similar clock and reset design with JH7110.
+To facilitate the reuse of the file and its functionalities, files
+containing the 'jh71x0' naming convention are renamed to use the
+'common' wording. Internal functions that contain the 'jh71x0'
+naming convention are renamed to use 'starfive.' This is accomplished
+through patches 1, 2, 3, and 4.
 
->> +              - qcom,ipq5018-dwc3
->>                 - qcom,ipq6018-dwc3
->> -              - qcom,ipq8064-dwc3
->>                 - qcom,ipq8074-dwc3
->> -              - qcom,msm8994-dwc3
->> -              - qcom,qcs404-dwc3
->> -              - qcom,sc7180-dwc3
->> -              - qcom,sdm670-dwc3
->> -              - qcom,sdm845-dwc3
->> -              - qcom,sdx55-dwc3
->> -              - qcom,sdx65-dwc3
->> -              - qcom,sdx75-dwc3
->> -              - qcom,sm4250-dwc3
->> -              - qcom,sm6350-dwc3
->> -              - qcom,sm8150-dwc3
->> -              - qcom,sm8250-dwc3
->> -              - qcom,sm8350-dwc3
->> -              - qcom,sm8450-dwc3
->> -              - qcom,sm8550-dwc3
->> -              - qcom,sm8650-dwc3
->> -    then:
->> -      properties:
->> -        interrupts:
->> -          items:
->> -            - description: The interrupt that is asserted
->> -                when a wakeup event is received on USB2 bus.
->> -            - description: The interrupt that is asserted
->> -                when a wakeup event is received on USB3 bus.
->> -            - description: Wakeup event on DM line.
->> -            - description: Wakeup event on DP line.
->> -        interrupt-names:
->> -          items:
->> -            - const: hs_phy_irq
->> -            - const: ss_phy_irq
->> -            - const: dm_hs_phy_irq
->> -            - const: dp_hs_phy_irq
->> -
->> -  - if:
->> -      properties:
->> -        compatible:
->> -          contains:
->> -            enum:
->>                 - qcom,msm8953-dwc3
->> -              - qcom,msm8996-dwc3
->>                 - qcom,msm8998-dwc3
->> -              - qcom,sm6115-dwc3
->> -              - qcom,sm6125-dwc3
->> +              - qcom,qcm2290-dwc3
->>       then:
->>         properties:
->>           interrupts:
->> -          maxItems: 2
->> +          minItems: 2
->> +          maxItems: 3
->>           interrupt-names:
->>             items:
->> -            - const: hs_phy_irq
->> +            - const: pwr_event
->> +            - const: qusb2_phy
->>               - const: ss_phy_irq
->>   
->>     - if:
->> @@ -422,37 +400,21 @@ allOf:
->>           compatible:
->>             contains:
->>               enum:
->> -              - qcom,ipq5018-dwc3
->> -              - qcom,ipq5332-dwc3
->> +              - qcom,msm8996-dwc3
->> +              - qcom,qcs404-dwc3
->>                 - qcom,sdm660-dwc3
->> -    then:
->> -      properties:
->> -        interrupts:
->> -          minItems: 1
->> -          maxItems: 2
->> -        interrupt-names:
->> -          minItems: 1
->> -          items:
->> -            - const: hs_phy_irq
->> -            - const: ss_phy_irq
->> -
->> -  - if:
->> -      properties:
->> -        compatible:
->> -          contains:
->> -            enum:
->> -              - qcom,sc7280-dwc3
->> +              - qcom,sm6115-dwc3
->> +              - qcom,sm6125-dwc3
->>       then:
->>         properties:
->>           interrupts:
->>             minItems: 3
->>             maxItems: 4
->>           interrupt-names:
->> -          minItems: 3
->>             items:
->> +            - const: pwr_event
->>               - const: hs_phy_irq
->> -            - const: dp_hs_phy_irq
->> -            - const: dm_hs_phy_irq
->> +            - const: qusb2_phy
-> 
-> Why qusb2_phy is after hs_phy_irq? In the earlier if:then: it is the
-> second one.
-> 
+Patch 5 adds documentation to describe System (SYSCRG) Clock & Reset
+binding.
+Patch 6 adds SYSCRG clock driver.
 
-In v3 as well, the hs_phy_irq is before qusb2_phy interrupt:
-https://lore.kernel.org/all/20231211121124.4194-2-quic_kriskura@quicinc.com/
+patch 7 adds documentation to describe North-West (NWCRG) Clock & Reset
+binding.
+Patch 8 adds NWCRG clock driver.
 
-> 
->>               - const: ss_phy_irq
->>   
->>     - if:
->> @@ -460,11 +422,13 @@ allOf:
->>           compatible:
->>             contains:
->>               enum:
->> +              - qcom,ipq5332-dwc3
->>                 - qcom,sc8280xp-dwc3
->>                 - qcom,x1e80100-dwc3
->>       then:
->>         properties:
->>           interrupts:
->> +          minItems: 3
-> 
-> Hm, why? This commit is unmanageable. Your commit msg is already huge
-> but still does not explain this. Are you sure you are fixing only one
-> logical thing per patch? Does not look like.
-> 
+patch 9 adds documentation to describe North-East (NECRG) Clock & Reset
+binding.
+Patch 10 adds NECRG clock driver.
 
-This is reordering the targets based on interrupts they have. I put it 
-in one commit because splitting this into multiple patches breaks one 
-thing or other. Also once I am defining permutations, I have to group 
-targets into these combinations in the same patch. I know this is a big 
-commit but it solves the interrupt cleanup and defines a way for future 
-targets.
+patch 11 adds documentation to describe South-West (SWCRG) Clock & Reset
+binding.
+Patch 12 adds SWCRG clock driver.
 
-Regards,
-Krishna,
+patch 13 adds documentation to describe Always-On (AON) Clock & Reset
+binding.
+Patch 14 adds AON clock driver.
+
+Patch 15 adds support for the auxiliary reset driver.
+
+Patch 16 adds clocks and reset nodes to the JH8100 device tree.
+
+Changes since [2]:
+- Renamed the patch series to "RFC" patches.
+- Added the "Reviewed-by" tag from Emil for patches 1, 2 3 & 4.
+- Removed clk_ prefixes.
+- Used 4 spaces for example indentation in dt-binding documentation.
+- Used the same license in dt-binding.
+- Moved number of clocks from binding to source file.
+- Moved number of resets from binding ro source file.
+- Removed the subfolder for new clock files.
+- Followed the JH71xx files naming convention.
+- Followed the JH71xx clock naming conventions.
+- Followed the JH71xx resets naming conventions.
+- Moved the PLL fixed clock from the source file to Device Tree.
+- Dropped clk.dtsi and moved the clocks node to SoC.dtsi.
+
+[1] https://lore.kernel.org/lkml/20231201121410.95298-1-jeeheng.sia@starf=
+ivetech.com/
+[2] https://lore.kernel.org/lkml/20231206115000.295825-1-jeeheng.sia@star=
+fivetech.com/
+
+Sia Jee Heng (16):
+  reset: starfive: Rename file name "jh71x0" to "common"
+  reset: starfive: Convert the word "jh71x0" to "starfive"
+  clk: starfive: Rename file name "jh71x0" to "common"
+  clk: starfive: Convert the word "jh71x0" to "starfive"
+  dt-bindings: clock: Add StarFive JH8100 System clock and reset
+    generator
+  clk: starfive: Add JH8100 System clock generator driver
+  dt-bindings: clock: Add StarFive JH8100 North-West clock and reset
+    generator
+  clk: starfive: Add JH8100 North-West clock generator driver
+  dt-bindings: clock: Add StarFive JH8100 North-East clock and reset
+    generator
+  clk: starfive: Add JH8100 North-East clock generator driver
+  dt-bindings: clock: Add StarFive JH8100 South-West clock and reset
+    generator
+  clk: starfive: Add JH8100 South-West clock generator driver
+  dt-bindings: clock: Add StarFive JH8100 Always-On clock and reset
+    generator
+  clk: starfive: Add JH8100 Always-On clock generator driver
+  reset: starfive: Add StarFive JH8100 reset driver
+  riscv: dts: starfive: jh8100: Add clocks and resets nodes
+
+ .../clock/starfive,jh8100-aoncrg.yaml         |  74 +++
+ .../bindings/clock/starfive,jh8100-necrg.yaml | 153 +++++
+ .../bindings/clock/starfive,jh8100-nwcrg.yaml | 119 ++++
+ .../bindings/clock/starfive,jh8100-swcrg.yaml |  64 +++
+ .../clock/starfive,jh8100-syscrg.yaml         |  77 +++
+ MAINTAINERS                                   |  15 +
+ arch/riscv/boot/dts/starfive/jh8100.dtsi      | 313 +++++++++++
+ drivers/clk/starfive/Kconfig                  |  45 +-
+ drivers/clk/starfive/Makefile                 |   8 +-
+ drivers/clk/starfive/clk-starfive-common.c    | 327 +++++++++++
+ drivers/clk/starfive/clk-starfive-common.h    | 130 +++++
+ .../clk/starfive/clk-starfive-jh7100-audio.c  | 127 ++---
+ drivers/clk/starfive/clk-starfive-jh7100.c    | 503 ++++++++---------
+ .../clk/starfive/clk-starfive-jh7110-aon.c    |  62 +--
+ .../clk/starfive/clk-starfive-jh7110-isp.c    |  72 +--
+ .../clk/starfive/clk-starfive-jh7110-stg.c    |  94 ++--
+ .../clk/starfive/clk-starfive-jh7110-sys.c    | 523 +++++++++---------
+ .../clk/starfive/clk-starfive-jh7110-vout.c   |  74 +--
+ drivers/clk/starfive/clk-starfive-jh7110.h    |   4 +-
+ drivers/clk/starfive/clk-starfive-jh71x0.c    | 327 -----------
+ drivers/clk/starfive/clk-starfive-jh71x0.h    | 123 ----
+ .../clk/starfive/clk-starfive-jh8100-aon.c    | 256 +++++++++
+ drivers/clk/starfive/clk-starfive-jh8100-ne.c | 499 +++++++++++++++++
+ drivers/clk/starfive/clk-starfive-jh8100-nw.c | 237 ++++++++
+ drivers/clk/starfive/clk-starfive-jh8100-sw.c | 134 +++++
+ .../clk/starfive/clk-starfive-jh8100-sys.c    | 415 ++++++++++++++
+ drivers/clk/starfive/clk-starfive-jh8100.h    |  11 +
+ drivers/reset/starfive/Kconfig                |  14 +-
+ drivers/reset/starfive/Makefile               |   4 +-
+ ...rfive-jh71x0.c =3D> reset-starfive-common.c} |  68 +--
+ .../reset/starfive/reset-starfive-common.h    |  14 +
+ .../reset/starfive/reset-starfive-jh7100.c    |   4 +-
+ .../reset/starfive/reset-starfive-jh7110.c    |   8 +-
+ .../reset/starfive/reset-starfive-jh71x0.h    |  14 -
+ .../reset/starfive/reset-starfive-jh8100.c    | 108 ++++
+ .../dt-bindings/clock/starfive,jh8100-crg.h   | 421 ++++++++++++++
+ .../dt-bindings/reset/starfive,jh8100-crg.h   | 118 ++++
+ ...rfive-jh71x0.h =3D> reset-starfive-common.h} |  10 +-
+ 38 files changed, 4327 insertions(+), 1242 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh81=
+00-aoncrg.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh81=
+00-necrg.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh81=
+00-nwcrg.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh81=
+00-swcrg.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh81=
+00-syscrg.yaml
+ create mode 100644 drivers/clk/starfive/clk-starfive-common.c
+ create mode 100644 drivers/clk/starfive/clk-starfive-common.h
+ delete mode 100644 drivers/clk/starfive/clk-starfive-jh71x0.c
+ delete mode 100644 drivers/clk/starfive/clk-starfive-jh71x0.h
+ create mode 100644 drivers/clk/starfive/clk-starfive-jh8100-aon.c
+ create mode 100644 drivers/clk/starfive/clk-starfive-jh8100-ne.c
+ create mode 100644 drivers/clk/starfive/clk-starfive-jh8100-nw.c
+ create mode 100644 drivers/clk/starfive/clk-starfive-jh8100-sw.c
+ create mode 100644 drivers/clk/starfive/clk-starfive-jh8100-sys.c
+ create mode 100644 drivers/clk/starfive/clk-starfive-jh8100.h
+ rename drivers/reset/starfive/{reset-starfive-jh71x0.c =3D> reset-starfi=
+ve-common.c} (55%)
+ create mode 100644 drivers/reset/starfive/reset-starfive-common.h
+ delete mode 100644 drivers/reset/starfive/reset-starfive-jh71x0.h
+ create mode 100644 drivers/reset/starfive/reset-starfive-jh8100.c
+ create mode 100644 include/dt-bindings/clock/starfive,jh8100-crg.h
+ create mode 100644 include/dt-bindings/reset/starfive,jh8100-crg.h
+ rename include/soc/starfive/{reset-starfive-jh71x0.h =3D> reset-starfive=
+-common.h} (50%)
+
+--=20
+2.34.1
+
 
