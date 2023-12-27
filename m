@@ -1,194 +1,286 @@
-Return-Path: <linux-kernel+bounces-11812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3192B81EBF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 04:59:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EE3881EBF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 04:59:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E73A2835EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 03:59:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A2961C22246
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 03:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C67E95251;
-	Wed, 27 Dec 2023 03:59:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RATYnzM8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8546C3C3C;
+	Wed, 27 Dec 2023 03:59:06 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F13243C24
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 03:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703649545; x=1735185545;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3QqcW5GZlKbgkMMujG/NbpfadY6DxeD381BQIfAdEck=;
-  b=RATYnzM8Ve+heaY8bP8ceWVRZrS0G223UfP65y1SsZHQHtgXCyHlrnHl
-   hNGPgS/pW7U9b1K7keZRMcCU/9oaN1JBRoTKDARvATtJ34IRWI6kSnoQ5
-   ZrtYnA1qR0fgngSlY0uu0EzBGogDrXY+foVfdkiHcuGDQ/J0aa2KgoQOv
-   eo/qEndZyff+NaQB+AGkOm65DhXgAvuH6BpyihV4kQynH2YA0Dt7Pv/so
-   yDNaR+JG963+nRfXtznplfk40+991xFYm4oEwnnrFS0oq2bZC1GMDssya
-   cQhHqtzTgu0ZMiV6P6qcMUTkizmh+Cqh+ENl31WroKEC7+mpmGN3NExG3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="427575940"
-X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
-   d="scan'208";a="427575940"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2023 19:59:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="771326296"
-X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
-   d="scan'208";a="771326296"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 26 Dec 2023 19:59:03 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rIL4N-000F3J-2h;
-	Wed, 27 Dec 2023 03:59:00 +0000
-Date: Wed, 27 Dec 2023 11:58:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	"Rafael J. Wysocki" <rjw@rjwysocki.net>,
-	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: kernel/power/snapshot.c:982: warning: Function parameter or member
- 'start_pfn' not described in 'register_nosave_region'
-Message-ID: <202312271114.jpz92bN9-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E2B3C16
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 03:59:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
+X-ASG-Debug-ID: 1703649534-1eb14e0c7f05670001-xx1T2L
+Received: from ZXSHMBX3.zhaoxin.com (ZXSHMBX3.zhaoxin.com [10.28.252.165]) by mx2.zhaoxin.com with ESMTP id ol8BZVWtAkBcDxpH (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Wed, 27 Dec 2023 11:58:54 +0800 (CST)
+X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
+Received: from ZXBJMBX02.zhaoxin.com (10.29.252.6) by ZXSHMBX3.zhaoxin.com
+ (10.28.252.165) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 27 Dec
+ 2023 11:58:54 +0800
+Received: from xin.lan (10.32.64.1) by ZXBJMBX02.zhaoxin.com (10.29.252.6)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 27 Dec
+ 2023 11:58:51 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
+From: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.6
+To: <olivia@selenic.com>, <herbert@gondor.apana.org.au>,
+	<jiajie.ho@starfivetech.com>, <conor.dooley@microchip.com>,
+	<martin@kaiser.cx>, <mmyangfl@gmail.com>, <jenny.zhang@starfivetech.com>,
+	<robh@kernel.org>, <l.stelmach@samsung.com>, <ardb@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>
+CC: <CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>, <YunShen@zhaoxin.com>,
+	<LeoLiu@zhaoxin.com>, LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+Subject: [PATCH v5] hwrng: add Zhaoxin rng driver base on rep_xstore instruction
+Date: Wed, 27 Dec 2023 11:58:51 +0800
+X-ASG-Orig-Subj: [PATCH v5] hwrng: add Zhaoxin rng driver base on rep_xstore instruction
+Message-ID: <20231227035851.818569-1-LeoLiu-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231107070900.496827-1-LeoLiu-oc@zhaoxin.com>
+References: <20231107070900.496827-1-LeoLiu-oc@zhaoxin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ ZXBJMBX02.zhaoxin.com (10.29.252.6)
+X-Barracuda-Connect: ZXSHMBX3.zhaoxin.com[10.28.252.165]
+X-Barracuda-Start-Time: 1703649534
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 6453
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.118617
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   fbafc3e621c3f4ded43720fdb1d6ce1728ec664e
-commit: 33569ef3c754a82010f266b7b938a66a3ccf90a4 PM: hibernate: Remove register_nosave_region_late()
-date:   1 year, 11 months ago
-config: x86_64-randconfig-x066-20230529 (https://download.01.org/0day-ci/archive/20231227/202312271114.jpz92bN9-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231227/202312271114.jpz92bN9-lkp@intel.com/reproduce)
+From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312271114.jpz92bN9-lkp@intel.com/
+Add support for Zhaoxin hardware random number generator.
+This driver base on rep_xstore instruction and uses the same
+X86_FEATURE_XSTORE as via-rng driver. Therefore, modify the x86_cpu_id
+array in the via-rng driver, so that the corresponding driver can be
+correctly loader on respective platforms.
 
-All warnings (new ones prefixed by >>):
+v1 -> v2:
+1. Fix assembler code errors
+2. Remove redundant CPU model check codes
 
-   kernel/power/snapshot.c:330: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Data types related to memory bitmaps.
-   kernel/power/snapshot.c:438: warning: Function parameter or member 'gfp_mask' not described in 'alloc_rtree_node'
-   kernel/power/snapshot.c:438: warning: Function parameter or member 'safe_needed' not described in 'alloc_rtree_node'
-   kernel/power/snapshot.c:438: warning: Function parameter or member 'ca' not described in 'alloc_rtree_node'
-   kernel/power/snapshot.c:438: warning: Function parameter or member 'list' not described in 'alloc_rtree_node'
-   kernel/power/snapshot.c:463: warning: Function parameter or member 'zone' not described in 'add_rtree_block'
-   kernel/power/snapshot.c:463: warning: Function parameter or member 'gfp_mask' not described in 'add_rtree_block'
-   kernel/power/snapshot.c:463: warning: Function parameter or member 'safe_needed' not described in 'add_rtree_block'
-   kernel/power/snapshot.c:463: warning: Function parameter or member 'ca' not described in 'add_rtree_block'
-   kernel/power/snapshot.c:536: warning: Function parameter or member 'gfp_mask' not described in 'create_zone_bm_rtree'
-   kernel/power/snapshot.c:536: warning: Function parameter or member 'safe_needed' not described in 'create_zone_bm_rtree'
-   kernel/power/snapshot.c:536: warning: Function parameter or member 'ca' not described in 'create_zone_bm_rtree'
-   kernel/power/snapshot.c:536: warning: Function parameter or member 'start' not described in 'create_zone_bm_rtree'
-   kernel/power/snapshot.c:536: warning: Function parameter or member 'end' not described in 'create_zone_bm_rtree'
-   kernel/power/snapshot.c:571: warning: Function parameter or member 'zone' not described in 'free_zone_bm_rtree'
-   kernel/power/snapshot.c:571: warning: Function parameter or member 'clear_nosave_free' not described in 'free_zone_bm_rtree'
-   kernel/power/snapshot.c:678: warning: Function parameter or member 'bm' not described in 'memory_bm_create'
-   kernel/power/snapshot.c:678: warning: Function parameter or member 'gfp_mask' not described in 'memory_bm_create'
-   kernel/power/snapshot.c:678: warning: Function parameter or member 'safe_needed' not described in 'memory_bm_create'
-   kernel/power/snapshot.c:720: warning: Function parameter or member 'clear_nosave_free' not described in 'memory_bm_free'
-   kernel/power/snapshot.c:742: warning: Function parameter or member 'bm' not described in 'memory_bm_find_bit'
-   kernel/power/snapshot.c:742: warning: Function parameter or member 'pfn' not described in 'memory_bm_find_bit'
-   kernel/power/snapshot.c:742: warning: Function parameter or member 'addr' not described in 'memory_bm_find_bit'
-   kernel/power/snapshot.c:742: warning: Function parameter or member 'bit_nr' not described in 'memory_bm_find_bit'
-   kernel/power/snapshot.c:916: warning: expecting prototype for memory_bm_rtree_next_pfn(). Prototype was for memory_bm_next_pfn() instead
->> kernel/power/snapshot.c:982: warning: Function parameter or member 'start_pfn' not described in 'register_nosave_region'
->> kernel/power/snapshot.c:982: warning: Function parameter or member 'end_pfn' not described in 'register_nosave_region'
-   kernel/power/snapshot.c:1254: warning: Function parameter or member 'zone' not described in 'saveable_highmem_page'
-   kernel/power/snapshot.c:1254: warning: Function parameter or member 'pfn' not described in 'saveable_highmem_page'
-   kernel/power/snapshot.c:1318: warning: Function parameter or member 'zone' not described in 'saveable_page'
-   kernel/power/snapshot.c:1318: warning: Function parameter or member 'pfn' not described in 'saveable_page'
-   kernel/power/snapshot.c:1389: warning: Function parameter or member 'dst' not described in 'safe_copy_page'
-   kernel/power/snapshot.c:1389: warning: Function parameter or member 's_page' not described in 'safe_copy_page'
-   kernel/power/snapshot.c:1602: warning: Function parameter or member 'x' not described in '__fraction'
-   kernel/power/snapshot.c:1602: warning: Function parameter or member 'multiplier' not described in '__fraction'
-   kernel/power/snapshot.c:1602: warning: Function parameter or member 'base' not described in '__fraction'
-   kernel/power/snapshot.c:1893: warning: Function parameter or member 'nr_highmem' not described in 'count_pages_for_highmem'
-   kernel/power/snapshot.c:1911: warning: Function parameter or member 'nr_pages' not described in 'enough_free_mem'
-   kernel/power/snapshot.c:1911: warning: Function parameter or member 'nr_highmem' not described in 'enough_free_mem'
-   kernel/power/snapshot.c:1934: warning: Function parameter or member 'safe_needed' not described in 'get_highmem_buffer'
-   kernel/power/snapshot.c:1947: warning: Function parameter or member 'bm' not described in 'alloc_highmem_pages'
-   kernel/power/snapshot.c:1947: warning: Function parameter or member 'nr_highmem' not described in 'alloc_highmem_pages'
-   kernel/power/snapshot.c:1947: warning: expecting prototype for alloc_highmem_image_pages(). Prototype was for alloc_highmem_pages() instead
-   kernel/power/snapshot.c:1982: warning: Function parameter or member 'copy_bm' not described in 'swsusp_alloc'
-   kernel/power/snapshot.c:1982: warning: Function parameter or member 'nr_pages' not described in 'swsusp_alloc'
-   kernel/power/snapshot.c:1982: warning: Function parameter or member 'nr_highmem' not described in 'swsusp_alloc'
-   kernel/power/snapshot.c:2195: warning: Function parameter or member 'bm' not described in 'mark_unsafe_pages'
-   kernel/power/snapshot.c:2230: warning: Function parameter or member 'info' not described in 'load_header'
-   kernel/power/snapshot.c:2230: warning: expecting prototype for load header(). Prototype was for load_header() instead
-   kernel/power/snapshot.c:2384: warning: Function parameter or member 'page' not described in 'get_highmem_page_buffer'
-   kernel/power/snapshot.c:2384: warning: Function parameter or member 'ca' not described in 'get_highmem_page_buffer'
-   kernel/power/snapshot.c:2569: warning: Function parameter or member 'bm' not described in 'get_buffer'
-   kernel/power/snapshot.c:2569: warning: Function parameter or member 'ca' not described in 'get_buffer'
-   kernel/power/snapshot.c:2693: warning: Function parameter or member 'handle' not described in 'snapshot_write_finalize'
+v2 -> v3:
+1. Optimize code details based on the kernel style
 
+v3 -> v4:
+1. Fix a typographical error
 
-vim +982 kernel/power/snapshot.c
+v4 -> v5:
+1. Modified the definition and declaration of the x86_cpu_id table
 
-307c5971c972ef Rafael J. Wysocki  2016-06-29   974  
-74dfd666de861c Rafael J. Wysocki  2007-05-06   975  /**
-ef96f639ea6634 Rafael J. Wysocki  2016-07-06   976   * register_nosave_region - Register a region of unsaveable memory.
-ef96f639ea6634 Rafael J. Wysocki  2016-07-06   977   *
-ef96f639ea6634 Rafael J. Wysocki  2016-07-06   978   * Register a range of page frames the contents of which should not be saved
-ef96f639ea6634 Rafael J. Wysocki  2016-07-06   979   * during hibernation (to be used in the early initialization code).
-74dfd666de861c Rafael J. Wysocki  2007-05-06   980   */
-33569ef3c754a8 Amadeusz Sławiński 2022-01-19   981  void __init register_nosave_region(unsigned long start_pfn, unsigned long end_pfn)
-74dfd666de861c Rafael J. Wysocki  2007-05-06  @982  {
-74dfd666de861c Rafael J. Wysocki  2007-05-06   983  	struct nosave_region *region;
-74dfd666de861c Rafael J. Wysocki  2007-05-06   984  
-74dfd666de861c Rafael J. Wysocki  2007-05-06   985  	if (start_pfn >= end_pfn)
-74dfd666de861c Rafael J. Wysocki  2007-05-06   986  		return;
-74dfd666de861c Rafael J. Wysocki  2007-05-06   987  
-74dfd666de861c Rafael J. Wysocki  2007-05-06   988  	if (!list_empty(&nosave_regions)) {
-74dfd666de861c Rafael J. Wysocki  2007-05-06   989  		/* Try to extend the previous region (they should be sorted) */
-74dfd666de861c Rafael J. Wysocki  2007-05-06   990  		region = list_entry(nosave_regions.prev,
-74dfd666de861c Rafael J. Wysocki  2007-05-06   991  					struct nosave_region, list);
-74dfd666de861c Rafael J. Wysocki  2007-05-06   992  		if (region->end_pfn == start_pfn) {
-74dfd666de861c Rafael J. Wysocki  2007-05-06   993  			region->end_pfn = end_pfn;
-74dfd666de861c Rafael J. Wysocki  2007-05-06   994  			goto Report;
-74dfd666de861c Rafael J. Wysocki  2007-05-06   995  		}
-74dfd666de861c Rafael J. Wysocki  2007-05-06   996  	}
-74dfd666de861c Rafael J. Wysocki  2007-05-06   997  	/* This allocation cannot fail */
-7e1c4e27928e5f Mike Rapoport      2018-10-30   998  	region = memblock_alloc(sizeof(struct nosave_region),
-7e1c4e27928e5f Mike Rapoport      2018-10-30   999  				SMP_CACHE_BYTES);
-8a7f97b902f4fb Mike Rapoport      2019-03-11  1000  	if (!region)
-8a7f97b902f4fb Mike Rapoport      2019-03-11  1001  		panic("%s: Failed to allocate %zu bytes\n", __func__,
-8a7f97b902f4fb Mike Rapoport      2019-03-11  1002  		      sizeof(struct nosave_region));
-74dfd666de861c Rafael J. Wysocki  2007-05-06  1003  	region->start_pfn = start_pfn;
-74dfd666de861c Rafael J. Wysocki  2007-05-06  1004  	region->end_pfn = end_pfn;
-74dfd666de861c Rafael J. Wysocki  2007-05-06  1005  	list_add_tail(&region->list, &nosave_regions);
-74dfd666de861c Rafael J. Wysocki  2007-05-06  1006   Report:
-64ec72a1ece37d Joe Perches        2017-09-27  1007  	pr_info("Registered nosave memory: [mem %#010llx-%#010llx]\n",
-cd38ca854de15b Bjorn Helgaas      2013-06-03  1008  		(unsigned long long) start_pfn << PAGE_SHIFT,
-cd38ca854de15b Bjorn Helgaas      2013-06-03  1009  		((unsigned long long) end_pfn << PAGE_SHIFT) - 1);
-74dfd666de861c Rafael J. Wysocki  2007-05-06  1010  }
-74dfd666de861c Rafael J. Wysocki  2007-05-06  1011  
+Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+---
+ drivers/char/hw_random/Kconfig       | 12 ++++
+ drivers/char/hw_random/Makefile      |  1 +
+ drivers/char/hw_random/via-rng.c     | 10 +--
+ drivers/char/hw_random/zhaoxin-rng.c | 93 ++++++++++++++++++++++++++++
+ 4 files changed, 111 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/char/hw_random/zhaoxin-rng.c
 
-:::::: The code at line 982 was first introduced by commit
-:::::: 74dfd666de861c97d47bdbd892f6d21b801d0247 swsusp: do not use page flags
-
-:::::: TO: Rafael J. Wysocki <rjw@sisk.pl>
-:::::: CC: Linus Torvalds <torvalds@woody.linux-foundation.org>
-
+diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+index 442c40efb200..3c1c4fa1203c 100644
+--- a/drivers/char/hw_random/Kconfig
++++ b/drivers/char/hw_random/Kconfig
+@@ -152,6 +152,18 @@ config HW_RANDOM_VIA
+ 
+ 	  If unsure, say Y.
+ 
++config HW_RANDOM_ZHAOXIN
++	tristate "Zhaoxin HW Random Number Generator support"
++	depends on X86
++	help
++	  This driver provides kernel-side support for the Random Number
++	  Generator hardware found on Zhaoxin based motherboards.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called zhaoxin-rng.
++
++	  If unsure, say Y.
++
+ config HW_RANDOM_IXP4XX
+ 	tristate "Intel IXP4xx NPU HW Pseudo-Random Number Generator support"
+ 	depends on ARCH_IXP4XX || COMPILE_TEST
+diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
+index 32549a1186dc..ef5b3ae0794d 100644
+--- a/drivers/char/hw_random/Makefile
++++ b/drivers/char/hw_random/Makefile
+@@ -14,6 +14,7 @@ obj-$(CONFIG_HW_RANDOM_GEODE) += geode-rng.o
+ obj-$(CONFIG_HW_RANDOM_N2RNG) += n2-rng.o
+ n2-rng-y := n2-drv.o n2-asm.o
+ obj-$(CONFIG_HW_RANDOM_VIA) += via-rng.o
++obj-$(CONFIG_HW_RANDOM_ZHAOXIN) += zhaoxin-rng.o
+ obj-$(CONFIG_HW_RANDOM_EXYNOS) += exynos-trng.o
+ obj-$(CONFIG_HW_RANDOM_IXP4XX) += ixp4xx-rng.o
+ obj-$(CONFIG_HW_RANDOM_OMAP) += omap-rng.o
+diff --git a/drivers/char/hw_random/via-rng.c b/drivers/char/hw_random/via-rng.c
+index a9a0a3b09c8b..4288e1114fc9 100644
+--- a/drivers/char/hw_random/via-rng.c
++++ b/drivers/char/hw_random/via-rng.c
+@@ -35,7 +35,7 @@
+ #include <asm/cpufeature.h>
+ #include <asm/fpu/api.h>
+ 
+-
++static struct x86_cpu_id via_rng_cpu_id[];
+ 
+ 
+ enum {
+@@ -135,7 +135,7 @@ static int via_rng_init(struct hwrng *rng)
+ 	 * is always enabled if CPUID rng_en is set.  There is no
+ 	 * RNG configuration like it used to be the case in this
+ 	 * register */
+-	if (((c->x86 == 6) && (c->x86_model >= 0x0f))  || (c->x86 > 6)){
++	if ((c->x86 == 6) && (c->x86_model >= 0x0f)) {
+ 		if (!boot_cpu_has(X86_FEATURE_XSTORE_EN)) {
+ 			pr_err(PFX "can't enable hardware RNG "
+ 				"if XSTORE is not enabled\n");
+@@ -196,7 +196,7 @@ static int __init via_rng_mod_init(void)
+ {
+ 	int err;
+ 
+-	if (!boot_cpu_has(X86_FEATURE_XSTORE))
++	if (!x86_match_cpu(via_rng_cpu_id))
+ 		return -ENODEV;
+ 
+ 	pr_info("VIA RNG detected\n");
+@@ -217,8 +217,8 @@ static void __exit via_rng_mod_exit(void)
+ }
+ module_exit(via_rng_mod_exit);
+ 
+-static struct x86_cpu_id __maybe_unused via_rng_cpu_id[] = {
+-	X86_MATCH_FEATURE(X86_FEATURE_XSTORE, NULL),
++static struct x86_cpu_id via_rng_cpu_id[] = {
++	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 6, X86_FEATURE_XSTORE, NULL),
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(x86cpu, via_rng_cpu_id);
+diff --git a/drivers/char/hw_random/zhaoxin-rng.c b/drivers/char/hw_random/zhaoxin-rng.c
+new file mode 100644
+index 000000000000..5b4586c6dc8a
+--- /dev/null
++++ b/drivers/char/hw_random/zhaoxin-rng.c
+@@ -0,0 +1,93 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * RNG driver for Zhaoxin RNGs
++ *
++ * Copyright 2023 (c) Zhaoxin Semiconductor Co., Ltd
++ */
++
++#include <asm/cpu_device_id.h>
++#include <asm/fpu/api.h>
++#include <crypto/padlock.h>
++#include <linux/cpufeature.h>
++#include <linux/delay.h>
++#include <linux/hw_random.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++
++enum {
++	ZHAOXIN_RNG_CHUNK_8		= 0x00, /* 64 rand bits, 64 stored bits */
++	ZHAOXIN_RNG_CHUNK_4		= 0x01, /* 32 rand bits, 32 stored bits */
++	ZHAOXIN_RNG_CHUNK_2		= 0x02, /* 16 rand bits, 32 stored bits */
++	ZHAOXIN_RNG_CHUNK_1		= 0x03, /*  8 rand bits, 32 stored bits */
++	ZHAOXIN_RNG_MAX_SIZE	= (128 * 1024),
++};
++
++static int zhaoxin_rng_init(struct hwrng *rng)
++{
++	if (!boot_cpu_has(X86_FEATURE_XSTORE_EN)) {
++		pr_err(PFX "can't enable hardware RNG if XSTORE is not enabled\n");
++		return -ENODEV;
++	}
++
++	return 0;
++}
++
++static inline int rep_xstore(size_t size, size_t factor, void *result)
++{
++	asm(".byte 0xf3, 0x0f, 0xa7, 0xc0"
++		: "=m"(*(size_t *)result), "+c"(size), "+d"(factor), "+D"(result));
++
++	return 0;
++}
++
++static int zhaoxin_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
++{
++	if (max > ZHAOXIN_RNG_MAX_SIZE)
++		max = ZHAOXIN_RNG_MAX_SIZE;
++
++	rep_xstore(max, ZHAOXIN_RNG_CHUNK_1, data);
++
++	return max;
++}
++
++static struct hwrng zhaoxin_rng = {
++	.name = "zhaoxin",
++	.init = zhaoxin_rng_init,
++	.read = zhaoxin_rng_read,
++};
++
++static struct x86_cpu_id zhaoxin_rng_cpu_ids[] = {
++	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 6, X86_FEATURE_XSTORE, NULL),
++	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 7, X86_FEATURE_XSTORE, NULL),
++	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 7, X86_FEATURE_XSTORE, NULL),
++	{}
++};
++MODULE_DEVICE_TABLE(x86cpu, zhaoxin_rng_cpu_ids);
++
++static int __init zhaoxin_rng_mod_init(void)
++{
++	int err;
++
++	if (!x86_match_cpu(zhaoxin_rng_cpu_ids))
++		return -ENODEV;
++
++	pr_info("Zhaoxin RNG detected\n");
++
++	err = hwrng_register(&zhaoxin_rng);
++	if (err)
++		pr_err(PFX "RNG registering failed (%d)\n", err);
++
++	return err;
++}
++module_init(zhaoxin_rng_mod_init);
++
++static void __exit zhaoxin_rng_mod_exit(void)
++{
++	hwrng_unregister(&zhaoxin_rng);
++}
++module_exit(zhaoxin_rng_mod_exit);
++
++MODULE_DESCRIPTION("H/W RNG driver for Zhaoxin CPUs");
++MODULE_AUTHOR("YunShen@zhaoxin.com");
++MODULE_LICENSE("GPL");
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
