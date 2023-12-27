@@ -1,150 +1,126 @@
-Return-Path: <linux-kernel+bounces-12298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57A4A81F27C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 23:29:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8041481F28E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 23:39:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C304F1F2316C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 22:29:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CDCF2822AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 22:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95C3E49896;
-	Wed, 27 Dec 2023 22:28:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B30C49891;
+	Wed, 27 Dec 2023 22:39:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="avgTaL6L"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WLilDUA4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590484988C
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 22:28:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703716135; x=1735252135;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=uLvKxjmPAQNCDQWSKf+PXALi8yQg+Zp/bXNKwKOpNE4=;
-  b=avgTaL6LgrfYq76ybT8bFtorhTN0/LgbOpU00OEtCjAIh3vOztsYlnwj
-   aF/xjRjtjbCjx+TSAimSxWVqHquMNVZ1Z96E0KBmsSf3jXIM/0bw11hi2
-   dyf7uRfUKIqyvIcTX0Ahz1t0Ww56UOlu6bI4rvFnqI0+D8jPoxmx1E3ID
-   fYfJuXUSDLyhjYik16O2yfSi+2Bq1fwC6e+BjRJuRiVB8fl/7JJZhcN7K
-   Q43E1RET95ONx02UFOJZ1z+UOMpdLhuVyGUgJHasGElOuOqC9d9Ei9PTH
-   jrcmxOQafdaElhjdHPmaEOrV0V+UoUKDB3u9cRm6Zt42tPrCd3goq62wr
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="3335458"
-X-IronPort-AV: E=Sophos;i="6.04,310,1695711600"; 
-   d="scan'208";a="3335458"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 14:28:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="778340767"
-X-IronPort-AV: E=Sophos;i="6.04,310,1695711600"; 
-   d="scan'208";a="778340767"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 27 Dec 2023 14:28:50 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rIcOO-000FnF-1P;
-	Wed, 27 Dec 2023 22:28:48 +0000
-Date: Thu, 28 Dec 2023 06:28:32 +0800
-From: kernel test robot <lkp@intel.com>
-To: andrey.konovalov@linux.dev, Marco Elver <elver@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH mm] kasan: stop leaking stack trace handles
-Message-ID: <202312280603.WqS3sWfa-lkp@intel.com>
-References: <20231226225121.235865-1-andrey.konovalov@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5691245940
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 22:39:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-28be8ebaacaso4448328a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 14:39:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703716753; x=1704321553; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PcqsBAd/aFOjWDJdLqM/yms60boSgfpp/VS6qzV9PX8=;
+        b=WLilDUA4brpIZazN8NnJkOD7uO8DiPqxJoLZAuuH4TG5uwxhDX7Oc5MGsDFuIDN/xC
+         RHi2kJJG1oMH4jp/lmMHjzKSdFU9OwFexnGwW1jvh/btWWHU+O9m+XQkcDh4mhUQEZDi
+         v1qtMh2hO1OVVHeQlmQl8uRf3dOCFuKNDuDHHq8xUPRHmsvcFmEcMYgiVkl566044NaY
+         AN23wDs+ZK6bJCVR1tNWB8cKn2LJo+8KhYLsL36L4HqPT+zuR6wdwSKU0SQPwG5e5ZTP
+         jfPv/bGZ0LMor0Le5iT29nW1D8PO8+4X/qnqYEItDg1DmYhXcdpSl1qQQZVpZqQX1FyZ
+         ovbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703716753; x=1704321553;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PcqsBAd/aFOjWDJdLqM/yms60boSgfpp/VS6qzV9PX8=;
+        b=uywW7CoZt7Dp9NB8rUeAsvM5CQ4VFK2pnb7+yKvXzmq06aBzgVqJV8q+jVcmZdJmWX
+         lQTqTtflSsPAITx9jhe66PO1AxeYwKMhdnEvcl9GO0+hVkr4uDO5ydzWCJysMxFOsc7D
+         VT1VEH8Cn6+jgM5oTpN2q0JxUinVP0joGHxYUnZGqz2++IxyBQAfA7EASmcb72KRm613
+         xbnahqOViNoWsKDNuUYzlXm4A86j9i7Npc6Q/rSYZ4ML0uYGWzHOJ4B96xH35uiTd1/I
+         Pzu1rjqCUKxTvJ3rt8ZafSpzKmJjb7otGZmvap85K6NMmLK1GPb8qeXgUyY16EcXkkpz
+         hiWQ==
+X-Gm-Message-State: AOJu0Yx/Ckai8X6HQNAdXlpoy5iBEaakM+F0JuNwC9PTRCSvgFh264oK
+	pFIYUAa8p/1lRwFetv8/W+2Ywr1g2OIy5vUe6jc=
+X-Google-Smtp-Source: AGHT+IHBHOGTrFIM9xCHIaq04x3tQS/EO8nl5egEGsteat/TRJqgpNhJK04Rl5qcJHAWaGS15jFEgNEwp7Q1
+X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
+ (user=tanzirh job=sendgmr) by 2002:a17:90b:4f91:b0:28b:90a2:ab48 with SMTP id
+ qe17-20020a17090b4f9100b0028b90a2ab48mr1648895pjb.2.1703716753557; Wed, 27
+ Dec 2023 14:39:13 -0800 (PST)
+Date: Wed, 27 Dec 2023 22:38:41 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231226225121.235865-1-andrey.konovalov@linux.dev>
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAHCnjGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDIyNz3eLK4uTEnBxjI12jZLMUM6O0VFPDZEsloPqCotS0zAqwWdGxtbU AYk/4zFsAAAA=
+X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703716752; l=1368;
+ i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
+ bh=HxKAmyTm/nk4+hwwhAFyn0XNoEbL4C9Ytf+CzB6ACzw=; b=zL8OW9jzRbFKTK5svkJAI83NDNAOi35xukG1rOC9sc4NnhwfxQcGcAARagC35FmVdegDqe2hm
+ wew2kbQYd1mCeHe3q7DCpveGs2USaWyqJmk2Br7IUF/6KrICHgZSPJi
+X-Mailer: b4 0.12.4
+Message-ID: <20231227-syscall32-v1-1-9621140d33bd@google.com>
+Subject: [PATCH] x86/syscalls: shrink entry/syscall_32.i via IWYU
+From: Tanzir Hasan <tanzirh@google.com>
+To: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>
+Cc: linux-kernel@vger.kernel.org, Nick Desaulniers <nnn@google.com>, 
+	Tanzir Hasan <tanzirh@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-Hi,
+This diff uses an open source tool include-what-you-use (IWYU) to modify
+the include list, changing indirect includes to direct includes. IWYU is
+implemented using the IWYUScripts github repository which is a tool that
+is currently undergoing development. These changes seek to improve build
+times.
 
-kernel test robot noticed the following build warnings:
+This change to entry/syscall_32.c resulted in a preprocessed size of
+entry/syscall_32.i from 64002 lines to 47986 lines (-25%) for the x86
+defconfig.
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[cannot apply to linus/master v6.7-rc7 next-20231222]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+---
+ arch/x86/entry/syscall_32.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/andrey-konovalov-linux-dev/kasan-stop-leaking-stack-trace-handles/20231227-065314
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231226225121.235865-1-andrey.konovalov%40linux.dev
-patch subject: [PATCH mm] kasan: stop leaking stack trace handles
-config: arm-randconfig-002-20231227 (https://download.01.org/0day-ci/archive/20231228/202312280603.WqS3sWfa-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231228/202312280603.WqS3sWfa-lkp@intel.com/reproduce)
+diff --git a/arch/x86/entry/syscall_32.c b/arch/x86/entry/syscall_32.c
+index 8cfc9bc73e7f..66db11fe8a1c 100644
+--- a/arch/x86/entry/syscall_32.c
++++ b/arch/x86/entry/syscall_32.c
+@@ -4,7 +4,7 @@
+ #include <linux/linkage.h>
+ #include <linux/sys.h>
+ #include <linux/cache.h>
+-#include <linux/syscalls.h>
++#include <linux/ptrace.h>
+ #include <asm/syscall.h>
+ 
+ #ifdef CONFIG_IA32_EMULATION
+@@ -16,6 +16,7 @@
+ #define __SYSCALL(nr, sym) extern long __ia32_##sym(const struct pt_regs *);
+ 
+ #include <asm/syscalls_32.h>
++
+ #undef __SYSCALL
+ 
+ #define __SYSCALL(nr, sym) __ia32_##sym,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312280603.WqS3sWfa-lkp@intel.com/
+---
+base-commit: fbafc3e621c3f4ded43720fdb1d6ce1728ec664e
+change-id: 20231227-syscall32-2c6d62fe51c9
 
-All warnings (new ones prefixed by >>):
-
->> mm/kasan/generic.c:506:6: warning: no previous prototype for function 'release_alloc_meta' [-Wmissing-prototypes]
-     506 | void release_alloc_meta(struct kasan_alloc_meta *meta)
-         |      ^
-   mm/kasan/generic.c:506:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     506 | void release_alloc_meta(struct kasan_alloc_meta *meta)
-         | ^
-         | static 
->> mm/kasan/generic.c:517:6: warning: no previous prototype for function 'release_free_meta' [-Wmissing-prototypes]
-     517 | void release_free_meta(const void *object, struct kasan_free_meta *meta)
-         |      ^
-   mm/kasan/generic.c:517:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     517 | void release_free_meta(const void *object, struct kasan_free_meta *meta)
-         | ^
-         | static 
-   2 warnings generated.
-
-
-vim +/release_alloc_meta +506 mm/kasan/generic.c
-
-   505	
- > 506	void release_alloc_meta(struct kasan_alloc_meta *meta)
-   507	{
-   508		/* Evict the stack traces from stack depot. */
-   509		stack_depot_put(meta->alloc_track.stack);
-   510		stack_depot_put(meta->aux_stack[0]);
-   511		stack_depot_put(meta->aux_stack[1]);
-   512	
-   513		/* Zero out alloc meta to mark it as invalid. */
-   514		__memset(meta, 0, sizeof(*meta));
-   515	}
-   516	
- > 517	void release_free_meta(const void *object, struct kasan_free_meta *meta)
-   518	{
-   519		/* Check if free meta is valid. */
-   520		if (*(u8 *)kasan_mem_to_shadow(object) != KASAN_SLAB_FREE_META)
-   521			return;
-   522	
-   523		/* Evict the stack trace from the stack depot. */
-   524		stack_depot_put(meta->free_track.stack);
-   525	
-   526		/* Mark free meta as invalid. */
-   527		*(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREE;
-   528	}
-   529	
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Tanzir Hasan <tanzirh@google.com>
+
 
