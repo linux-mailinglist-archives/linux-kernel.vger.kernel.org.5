@@ -1,79 +1,75 @@
-Return-Path: <linux-kernel+bounces-11931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67DCE81EDB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:21:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BBEC81EDEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:53:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A5891C2166F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 09:21:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0DDA1F21687
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 09:53:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C1F92E638;
-	Wed, 27 Dec 2023 09:20:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDCA62C865;
+	Wed, 27 Dec 2023 09:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="geNpBe3a"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LLf524rZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 457382DF65;
-	Wed, 27 Dec 2023 09:20:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33666fb9318so4840605f8f.2;
-        Wed, 27 Dec 2023 01:20:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703668803; x=1704273603; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SK3beSWkL1WdKpoVMiSUuExdWouQ1FOB/P9yoXlJNOA=;
-        b=geNpBe3aTn72lfEyVWXcjgdMF/dEyPcqeAfmA2RynctaDBWx/GQ7daq7HsYKYk8+v+
-         tH/JQIWL2h/CILGq1xRGRKv1mmoR4D/ghwQITMjOXvMleXZleXUeChLOUWqnIuHn0ilZ
-         GV+KEw2lshBnx4nPqU1DkjKDuwY8wzwbGAWJw26wTaJLHqAvToRhCcfMDyz2fc4IB05J
-         WobItAzQFkmfg6+zfkq7IKvQGy3ljJxXV9HhqkjIHkfhQhY+023qQaAIuMliqNH1HyyJ
-         GA/NPfOxbMRhHmxeuc02qIxvFK0/KbjhhSoLm5O1S/paeg3bIih3og9p0/TOcNGK1TvU
-         Thng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703668803; x=1704273603;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SK3beSWkL1WdKpoVMiSUuExdWouQ1FOB/P9yoXlJNOA=;
-        b=uH1XbxE2Du2JFKMNu6h73wjmBuzvOm0BG0tbiiyD/qqGbV2tI6VaYmTqdgqDp/zSwK
-         CA4bUpp2s/QjZ5dygUIDBpqBA/wu+KJVvAqsBkL6oOlo0itivWxmSYTfCx/s5OoXB2KP
-         gvrZ4AUKDRcHzp4gNrVlvjzBinG3JLVH7V/GXsmVNSNr6JgRs1he7jiC4cb4QX09liE2
-         BaydVbEGdrYc3e8cQUwPKbG7FWIGKx90oetOweOWinzwYjy7Oz6egPTbKZv8tI1QeEf0
-         4dq0Ky+Uy/WVzuUuYzYOS0dlMHRHHvD/B9fjbxuzDFTzt8MkHs11yQHB26lc9Ayhcocx
-         lbFw==
-X-Gm-Message-State: AOJu0YwmZXqcv15fL+S4fSs7+nVzGaxSveH0IvJ9JrsgCe73IWGaj4i/
-	4hA6XTd3IoMVyCiZKc9HokzY2ndyBfg=
-X-Google-Smtp-Source: AGHT+IH0AB+sxgAGAE+tVfjVCst8e4xv4yDG02IhR8CPL1Zd+3nCm+mGZBakZahIoWxE2tDzHOU9IA==
-X-Received: by 2002:a05:600c:4e92:b0:40d:53c4:9eec with SMTP id f18-20020a05600c4e9200b0040d53c49eecmr2608669wmq.73.1703668803461;
-        Wed, 27 Dec 2023 01:20:03 -0800 (PST)
-Received: from localhost.localdomain (host-95-250-248-68.retail.telecomitalia.it. [95.250.248.68])
-        by smtp.googlemail.com with ESMTPSA id i2-20020a05600c354200b0040d5ac00dc6sm4539749wmq.8.2023.12.27.01.20.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Dec 2023 01:20:03 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH 3/3] net: phy: at803x: make read_status more generic
-Date: Wed, 27 Dec 2023 10:19:46 +0100
-Message-Id: <20231227091946.12937-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231227091946.12937-1-ansuelsmth@gmail.com>
-References: <20231227091946.12937-1-ansuelsmth@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A81DF24B3C;
+	Wed, 27 Dec 2023 09:53:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BR58nNn005175;
+	Wed, 27 Dec 2023 09:20:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=D09pakx
+	kZpoqnCMSsypMnglMTzE0YMh/zDhiL5mB7yU=; b=LLf524rZwGEJddjSWodgg7E
+	bFS9dNgRSDs0nrtgJyYCPA9qnKo0aJPulbu6p5rt7/BQaOLVXU67dTGasYahB3EO
+	0PiOsL3U59SeK9rQBttvpIZb4ktafxdctZppXgP7ZcuznsTWyDMlfUYWZR3GHIBR
+	LThknJngxXZjsG988+rFP+41xEHm2WKA7GnLgav3nvTBfcaPpyM3LCH/09wFZqDz
+	WAnhe6Dbl7vG3yh5K1ekGh5KzfnhI2Y6niSV44yz8+cLDsCAJWbk9MiRqm0nwqy0
+	SXOyxfWafRT37kJi7ncsjib08i3XmBf6Z24ZAYDUe0a1ogsqjeu1ezIjZdFv1rg=
+	=
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v7s8uasav-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Dec 2023 09:20:09 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BR9K9co023039
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Dec 2023 09:20:09 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 27 Dec 2023 01:20:03 -0800
+From: Krishna Kurapati <quic_kriskura@quicinc.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, "Andy
+ Gross" <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Thinh
+ Nguyen" <Thinh.Nguyen@synopsys.com>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Conor
+ Dooley <conor+dt@kernel.org>, Johan Hovold <johan@kernel.org>
+CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
+        Krishna Kurapati
+	<quic_kriskura@quicinc.com>
+Subject: [PATCH v6 0/2] Refine USB interrupt vectors on Qualcomm platforms
+Date: Wed, 27 Dec 2023 14:49:49 +0530
+Message-ID: <20231227091951.685-1-quic_kriskura@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,65 +77,97 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: mdgU9MN1Rh3ag35lvyRV0M_rNhqZF2aS
+X-Proofpoint-ORIG-GUID: mdgU9MN1Rh3ag35lvyRV0M_rNhqZF2aS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 mlxlogscore=793 impostorscore=0 adultscore=0
+ clxscore=1015 mlxscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0
+ suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312270068
 
-Make read_status more generic in preparation on moving it to shared
-library as other PHY Family Driver will have the exact same
-implementation.
+Qualcomm targets define the following interrupts for usb wakeup:
+{dp/dm}_hs_phy_irq, hs_phy_irq, pwr_event, ss_phy_irq.
 
-The only specific part was a check for AR8031/33 if 1000basex was used.
-The check is moved to a dedicated function specific for those PHYs.
+But QUSB2 Phy based targets have another interrupt which gets triggered
+in response to J/K states on dp/dm pads. Its functionality is replaced
+by dp/dm interrupts on Femto/m31/eusb2 phy based targets for wakeup
+purposes. Exceptions are some targets like SDM845/SDM670/SM6350 where
+dp/dm irq's are used although they are qusb2 phy targets.
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- drivers/net/phy/at803x.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+Currently in QUSB2 Phy based DT's, te qusb2_phy interrupt is named and
+used as "hs_phy_irq" when in fact it is a different interrupt (used by
+HW validation folks for debug purposes and not used on any downstream
+target qusb/non-qusb).
 
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index a2f5d608b59e..2408001683cf 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -1087,13 +1087,9 @@ static int at803x_read_specific_status(struct phy_device *phydev,
- 
- static int at803x_read_status(struct phy_device *phydev)
- {
--	struct at803x_priv *priv = phydev->priv;
- 	struct at803x_ss_mask ss_mask = { 0 };
- 	int err, old_link = phydev->link;
- 
--	if (priv->is_1000basex)
--		return genphy_c37_read_status(phydev);
--
- 	/* Update the link, but return if there was an error */
- 	err = genphy_update_link(phydev);
- 	if (err)
-@@ -1685,6 +1681,17 @@ static int at8031_config_intr(struct phy_device *phydev)
- 	return at803x_config_intr(phydev);
- }
- 
-+/* AR8031 and AR8033 share the same read status logic */
-+static int at8031_read_status(struct phy_device *phydev)
-+{
-+	struct at803x_priv *priv = phydev->priv;
-+
-+	if (priv->is_1000basex)
-+		return genphy_c37_read_status(phydev);
-+
-+	return at803x_read_status(phydev);
-+}
-+
- /* AR8031 and AR8035 share the same cable test get status reg */
- static int at8031_cable_test_get_status(struct phy_device *phydev,
- 					bool *finished)
-@@ -2569,7 +2576,7 @@ static struct phy_driver at803x_driver[] = {
- 	.read_page		= at803x_read_page,
- 	.write_page		= at803x_write_page,
- 	.get_features		= at803x_get_features,
--	.read_status		= at803x_read_status,
-+	.read_status		= at8031_read_status,
- 	.config_intr		= at8031_config_intr,
- 	.handle_interrupt	= at803x_handle_interrupt,
- 	.get_tunable		= at803x_get_tunable,
+On some non-QUSB2 targets (like sm8450/sm8550), the pwr_event IRQ was
+named as hs_phy_irq and actual pwr_event_irq was skipped.
+
+This series tries to address the discrepancies in the interrupt numbering
+adding the missing interrupts and correcting the existing ones.
+
+This series has been compared with downstream counter part and hw specifics
+to ensure the numbering is right. Since there is not functionality change
+the code has been only compile tested.
+
+Changes in v6:
+Removed QCM2290/SM6375 from v5 as these are additional targets added to schema
+without informing in commit text in v5. Will add it back later. For now only
+the targets present in original schema for usb interrupts where re-ordered.
+Removed min items for ipq5332/x1e80100 targets as they definitely have 4 irq's.
+Moved SC8280XP to cluster where 5 irq's are present (dp/dp/hs/ss/pwr_event).
+Also, moved qusb_phy before hs_phy in cluster-2 in v6.
+
+Changes in v5:
+Fixed commit header on v4-1 bindings patch.
+Provide lore link instead of patchwork link for v3.
+
+Changes in v4:
+Udpated commit text indicating why pwr_event interrupt was added as the first
+one and fixed some typos present in v3.
+While at it, rebase on top of latest linux-next fixing merge conflicts.
+
+Changes in v3:
+Separated out the DT changes and pushed only bindings and driver update.
+Modified order of irq descriptions to match them with permutations defined.
+Fixed nitpicks mentioned by reviewers in v2.
+
+Changes in v2:
+Removed additional compatibles added for different targets in v1.
+Specified permuations of interrupts possible for QC targets and regrouped
+interrupts for most of the DT's.
+
+Link to v5:
+https://lore.kernel.org/all/20231222063648.11193-1-quic_kriskura@quicinc.com/
+
+Link to v4:
+https://lore.kernel.org/all/20231222062720.10128-1-quic_kriskura@quicinc.com/
+
+Link to v3:
+https://lore.kernel.org/all/20231211121124.4194-1-quic_kriskura@quicinc.com/
+
+Link to v2:
+https://lore.kernel.org/all/20231204100950.28712-1-quic_kriskura@quicinc.com/
+
+Link to v1: (providing patchwork link since threading was broken in v1)
+https://patchwork.kernel.org/project/linux-arm-msm/cover/20231122191259.3021-1-quic_kriskura@quicinc.com/
+
+Krishna Kurapati (2):
+  dt-bindings: usb: dwc3: Clean up hs_phy_irq in binding
+  usb: dwc3: qcom: Rename hs_phy_irq to qusb2_phy_irq
+
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    | 141 ++++++++----------
+ drivers/usb/dwc3/dwc3-qcom.c                  |  22 +--
+ 2 files changed, 72 insertions(+), 91 deletions(-)
+
 -- 
-2.40.1
+2.42.0
 
 
