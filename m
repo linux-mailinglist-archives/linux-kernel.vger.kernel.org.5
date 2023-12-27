@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-12118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14A7181F045
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 70AA581F04D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:24:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5BC3282680
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:24:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24A822834FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00CEA4643F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9613346534;
 	Wed, 27 Dec 2023 16:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="P+g8MeCj"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Yu3OdHms"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91EAD46420;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91ED546423;
 	Wed, 27 Dec 2023 16:24:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id F184DFF812;
-	Wed, 27 Dec 2023 16:24:03 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B92F8FF818;
+	Wed, 27 Dec 2023 16:24:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1703694244;
+	t=1703694245;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ez0pbpdiJcFmloOhz2QpvcxjF2T6EB87V9C6wGzmJm8=;
-	b=P+g8MeCjZsDHxr7svBYTlxSZqen7NafmP862OWo5RRPSzTBYzEBLZS9oQ9JObibdf8UkC0
-	we1v1j7ntez0pf+D7eSL5v69jeRIIdMtAkuKDy7KyDjDm8PC67mqiVHPsQf5M6vj+iwz6a
-	TWqLlFHlNaTIJh1p8hhmMStB0TB/f3FWfM/B5IBUOGDMN9gNcBy4GHsnQPOUjHTtq+q7Fo
-	0BxlST2Vc4Oetq/LHBh5aqVeOJVQ+pTLSjSAhTjzykk+UggoL69G4JfjfJMufDKgPVjtLH
-	onp4wW6eP3gCyUMEnv9dIIAMaknqVhrT+Ue5XQ0UAtlZXqKENTlx93S71zipWA==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EahqvnStRRVipLqhn/F0qXIeXfJFNYdic1Xxuhhtipc=;
+	b=Yu3OdHmse8FpisGMhKxns09j2kfXp25tcuzPVQn31fjn6nrPOKdEn724cM0E6MCh9WRP1Q
+	QBETOK5rH+cmQB7pGknfnvywIjH3JwCQ3ojtaDpSJ+uAmp0igGI0WnL4fWKE2qo0X3EGL7
+	JQaRkwdVNn0sAQDl+XEjPduarUyY4p2bWR9IAkchdb+VgZAuk2EnZH9H/Ts3kXgZFsBlBf
+	hd1E+ehe7KtI6tv2N3UlsIrKuvBp1K8cBQ3d6CVzHVK09R+19cek6a/BpJ4r9iIdDjzU63
+	T6JX6SanReH7ZkAiI1pWHF8UYGWIu+jtEkXEQr8eCmf6uzf04UIiU/jG9vRkgg==
 From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: [PATCH v2 0/6] Add support for Mobileye EyeQ5 clock controller
-Date: Wed, 27 Dec 2023 17:23:50 +0100
-Message-Id: <20231227-mbly-clk-v2-0-a05db63c380f@bootlin.com>
+Date: Wed, 27 Dec 2023 17:23:51 +0100
+Subject: [PATCH v2 1/6] clk: fixed-factor: add optional accuracy support
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,10 +47,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAJZPjGUC/3WOSw6CMBBAr0K6tqbT8imuvIdhQctUGoGalhAJ4
- e4WXBiNLmbxJvNeZiEBvcVATslCPE42WDdE4IeE6LYerkhtE5lwxgXEob3qZqq7G5WFxkzzFAy
- TJJ7fPRr72FOXKnJrw+j8vJcn2LavCAj2jkxAGZW5MgBl0YDAs3Ju7Oxw1K7fqn8UJZBlTa5Kh
- fVPhYP8UtI0/psCk4blH0q1rusTffPRAAgBAAA=
+Message-Id: <20231227-mbly-clk-v2-1-a05db63c380f@bootlin.com>
+References: <20231227-mbly-clk-v2-0-a05db63c380f@bootlin.com>
+In-Reply-To: <20231227-mbly-clk-v2-0-a05db63c380f@bootlin.com>
 To: Gregory CLEMENT <gregory.clement@bootlin.com>, 
  Michael Turquette <mturquette@baylibre.com>, 
  Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
@@ -66,101 +65,151 @@ Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
 X-Mailer: b4 0.12.4
 X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hi,
-
-We replace fixed clocks as declared in the initial platform support
-series [1] by read-only clocks exposed by the clock driver implemented
-here. Write-ability is supported by the hardware but not implemented,
-it could be added later-on if the need appears.
-
-We expose ten PLLs that derive directly from the main crystal. Also, a
-divider clock is exposed as a child clock of one of the PLLs.
-
-The platform devicetree has many more clock nodes but those are
-fixed-factors that are not hardware controllable; we therefore do not
-deal with them.
-
-This is V2. Full changelog below. Major changes are:
-
- - Switch to a platform driver.
- - Switch to declaring PLLs as fixed-factor.
- - Point to the parent clk using the fw_name field in clk_parent_data.
- - The above two points means we add support in fixed-factor to (1) allow
-   fixed accuracy rather than parent accuracy and (2) add new register
-   prototypes to point to the parent clk using fw_name.
-
-[1]: https://lore.kernel.org/lkml/20231212163459.1923041-1-gregory.clement@bootlin.com/
-
-Have a nice day,
-Théo Lebrun
+Fixed factor clock reports the parent clock accuracy. Add flags and acc fields
+to `struct clk_fixed_factor` to support setting a fixed accuracy. The default
+if no flag is set is not changed: use the parent clock accuracy.
 
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
-Changes in v2:
-- Drop [PATCH 1/5] that was taken by Stephen for clk-next.
-- Add accuracy support to fixed-factor that is enabled with a flag.
-  Register prototypes were added to exploit this feature.
-- Add fw_name support to fixed-factor. This allows pointing to parent
-  clocks using the value in `clock-names` in the DT. Register
-  prototypes were added for that.
-- Bindings were modified to be less dumb: a binding was added for OLB
-  and the clock-controller is a child property of it. Removed the
-  possibility of pointing to OLB using a phandle. $nodename is the
-  generic `clock-controller` and not custom `clocks`. Fix dt-bindings
-  examples.
-- Fix commit message for the driver patch. Add details, remove useless
-  fluff.
-- Squash both driver commits together.
-- Declare a platform_driver instead of using CLK_OF_DECLARE_DRIVER. This
-  also means using `dev_*` for logging, removing `pr_fmt`. We add a
-  pointer to device in the private structure.
-- Use fixed-factor instead of fixed-rate for PLLs. We don't grab a
-  reference to the parent clk, instead using newly added fixed-factor
-  register prototypes and fwname.
-- NULL is not an error when registering PLLs anymore.
-- Now checking the return value of of_clk_add_hw_provider for errors.
-- Fix includes.
-- Remove defensive conditional at start of eq5c_pll_parse_registers.
-- Rename clk_hw_to_ospi_priv to clk_to_priv to avoid confusion: it is
-  not part of the clk_hw_* family of symbols.
-- Fix negative returns in eq5c_ospi_div_set_rate. It was a typo
-  highlighted by Stephen Boyd.
-- Declare eq5c_ospi_div_ops as static.
-- In devicetree, move the OLB node prior to the UARTs, as platform
-  device probe scheduling is dependent on devicetree ordering. This is
-  required to declare the driver as a platform driver, else it
-  CLK_OF_DECLARE_DRIVER is required.
-- In device, create a core0-timer-clk fixed clock to feed to the GIC
-  timer. It requires a clock earlier than platform bus type init.
-- Link to v1: https://lore.kernel.org/r/20231218-mbly-clk-v1-0-44ce54108f06@bootlin.com
+ drivers/clk/clk-fixed-factor.c | 28 +++++++++++++++++++++-------
+ include/linux/clk-provider.h   | 12 +++++++++++-
+ 2 files changed, 32 insertions(+), 8 deletions(-)
 
----
-Théo Lebrun (6):
-      clk: fixed-factor: add optional accuracy support
-      clk: fixed-factor: add fwname-based constructor functions
-      dt-bindings: soc: mobileye: add EyeQ5 OLB system controller
-      dt-bindings: clock: mobileye,eyeq5-clk: add bindings
-      clk: eyeq5: add platform driver
-      MIPS: mobileye: eyeq5: use OLB clocks controller
+diff --git a/drivers/clk/clk-fixed-factor.c b/drivers/clk/clk-fixed-factor.c
+index b3e66202b942..bc2644a9bd7d 100644
+--- a/drivers/clk/clk-fixed-factor.c
++++ b/drivers/clk/clk-fixed-factor.c
+@@ -57,10 +57,22 @@ static int clk_factor_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	return 0;
+ }
+ 
++static unsigned long clk_factor_recalc_accuracy(struct clk_hw *hw,
++						unsigned long parent_accuracy)
++{
++	struct clk_fixed_factor *fix = to_clk_fixed_factor(hw);
++
++	if (fix->flags & CLK_FIXED_FACTOR_FIXED_ACCURACY)
++		return fix->acc;
++
++	return parent_accuracy;
++}
++
+ const struct clk_ops clk_fixed_factor_ops = {
+ 	.round_rate = clk_factor_round_rate,
+ 	.set_rate = clk_factor_set_rate,
+ 	.recalc_rate = clk_factor_recalc_rate,
++	.recalc_accuracy = clk_factor_recalc_accuracy,
+ };
+ EXPORT_SYMBOL_GPL(clk_fixed_factor_ops);
+ 
+@@ -81,7 +93,7 @@ __clk_hw_register_fixed_factor(struct device *dev, struct device_node *np,
+ 		const char *name, const char *parent_name,
+ 		const struct clk_hw *parent_hw, int index,
+ 		unsigned long flags, unsigned int mult, unsigned int div,
+-		bool devm)
++		unsigned long acc, unsigned int fixflags, bool devm)
+ {
+ 	struct clk_fixed_factor *fix;
+ 	struct clk_init_data init = { };
+@@ -105,6 +117,8 @@ __clk_hw_register_fixed_factor(struct device *dev, struct device_node *np,
+ 	fix->mult = mult;
+ 	fix->div = div;
+ 	fix->hw.init = &init;
++	fix->acc = acc;
++	fix->flags = fixflags;
+ 
+ 	init.name = name;
+ 	init.ops = &clk_fixed_factor_ops;
+@@ -152,7 +166,7 @@ struct clk_hw *devm_clk_hw_register_fixed_factor_index(struct device *dev,
+ 		unsigned int mult, unsigned int div)
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, NULL, NULL, index,
+-					      flags, mult, div, true);
++					      flags, mult, div, 0, 0, true);
+ }
+ EXPORT_SYMBOL_GPL(devm_clk_hw_register_fixed_factor_index);
+ 
+@@ -174,7 +188,7 @@ struct clk_hw *devm_clk_hw_register_fixed_factor_parent_hw(struct device *dev,
+ 		unsigned long flags, unsigned int mult, unsigned int div)
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, NULL, parent_hw,
+-					      -1, flags, mult, div, true);
++					      -1, flags, mult, div, 0, 0, true);
+ }
+ EXPORT_SYMBOL_GPL(devm_clk_hw_register_fixed_factor_parent_hw);
+ 
+@@ -184,7 +198,7 @@ struct clk_hw *clk_hw_register_fixed_factor_parent_hw(struct device *dev,
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, NULL,
+ 					      parent_hw, -1, flags, mult, div,
+-					      false);
++					      0, 0, false);
+ }
+ EXPORT_SYMBOL_GPL(clk_hw_register_fixed_factor_parent_hw);
+ 
+@@ -193,7 +207,7 @@ struct clk_hw *clk_hw_register_fixed_factor(struct device *dev,
+ 		unsigned int mult, unsigned int div)
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, parent_name, NULL, -1,
+-					      flags, mult, div, false);
++					      flags, mult, div, 0, 0, false);
+ }
+ EXPORT_SYMBOL_GPL(clk_hw_register_fixed_factor);
+ 
+@@ -240,7 +254,7 @@ struct clk_hw *devm_clk_hw_register_fixed_factor(struct device *dev,
+ 		unsigned int mult, unsigned int div)
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, parent_name, NULL, -1,
+-			flags, mult, div, true);
++			flags, mult, div, 0, 0, true);
+ }
+ EXPORT_SYMBOL_GPL(devm_clk_hw_register_fixed_factor);
+ 
+@@ -267,7 +281,7 @@ static struct clk_hw *_of_fixed_factor_clk_setup(struct device_node *node)
+ 	of_property_read_string(node, "clock-output-names", &clk_name);
+ 
+ 	hw = __clk_hw_register_fixed_factor(NULL, node, clk_name, NULL, NULL, 0,
+-					    0, mult, div, false);
++					    0, mult, div, 0, 0, false);
+ 	if (IS_ERR(hw)) {
+ 		/*
+ 		 * Clear OF_POPULATED flag so that clock registration can be
+diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
+index 1293c38ddb7f..7ddc952c8c67 100644
+--- a/include/linux/clk-provider.h
++++ b/include/linux/clk-provider.h
+@@ -1084,18 +1084,28 @@ void of_fixed_factor_clk_setup(struct device_node *node);
+  * @hw:		handle between common and hardware-specific interfaces
+  * @mult:	multiplier
+  * @div:	divider
++ * @acc:	fixed accuracy in ppb
++ * @flags:	behavior modifying flags
+  *
+  * Clock with a fixed multiplier and divider. The output frequency is the
+  * parent clock rate divided by div and multiplied by mult.
+- * Implements .recalc_rate, .set_rate and .round_rate
++ * Implements .recalc_rate, .set_rate, .round_rate and .recalc_accuracy
++ *
++ * Flags:
++ * * CLK_FIXED_FACTOR_FIXED_ACCURACY - Use the value in @acc instead of the
++ *                                     parent clk accuracy.
+  */
+ 
+ struct clk_fixed_factor {
+ 	struct clk_hw	hw;
+ 	unsigned int	mult;
+ 	unsigned int	div;
++	unsigned long	acc;
++	unsigned int	flags;
+ };
+ 
++#define CLK_FIXED_FACTOR_FIXED_ACCURACY	BIT(0)
++
+ #define to_clk_fixed_factor(_hw) container_of(_hw, struct clk_fixed_factor, hw)
+ 
+ extern const struct clk_ops clk_fixed_factor_ops;
 
- .../bindings/clock/mobileye,eyeq5-clk.yaml         |  50 +++
- .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  |  48 +++
- MAINTAINERS                                        |   4 +
- .../{eyeq5-fixed-clocks.dtsi => eyeq5-clocks.dtsi} |  54 ++--
- arch/mips/boot/dts/mobileye/eyeq5.dtsi             |  23 +-
- drivers/clk/Kconfig                                |  11 +
- drivers/clk/Makefile                               |   1 +
- drivers/clk/clk-eyeq5.c                            | 348 +++++++++++++++++++++
- drivers/clk/clk-fixed-factor.c                     |  94 +++++-
- include/dt-bindings/clock/mobileye,eyeq5-clk.h     |  22 ++
- include/linux/clk-provider.h                       |  26 +-
- 11 files changed, 621 insertions(+), 60 deletions(-)
----
-base-commit: daf471f1ce94536da77948fac81d5c85ae12dbfa
-change-id: 20231023-mbly-clk-87ce5c241f08
-
-Best regards,
 -- 
-Théo Lebrun <theo.lebrun@bootlin.com>
+2.43.0
 
 
