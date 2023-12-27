@@ -1,109 +1,114 @@
-Return-Path: <linux-kernel+bounces-12272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 220C481F231
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 22:21:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D941581F233
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 22:23:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82F0F283D7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:21:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 743101F23023
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:23:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B2EC481C0;
-	Wed, 27 Dec 2023 21:21:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF68F481BE;
+	Wed, 27 Dec 2023 21:23:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LLxrhLs2"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="lFZ9Bdtz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A885945945;
-	Wed, 27 Dec 2023 21:21:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=HCosurRW6yUv7qxc0Aw6J2XZAhZw5XHFPIkEQJBxiBA=; b=LLxrhLs2Od+xYkbwxREDMUjrEl
-	lJafovGRc3uINC/tv8CpNM01fWSnC8Jko3VfrgBHinBVFihxHhmj3nMPpP4BO5fpIRhnarLiItNHP
-	/IT+eOreTmub39N1/oc2Ec6vN0blQRpL/2ROXX91e3N7ef77Wi3U1AU7QzGiPHAKzwvTQ4x7+euh6
-	Wf21bkT9SzouS0jT2Pgj309S4ZtaXTraAOlviTL4sCGL69mValcSJglXeXQNWIghGm8/uDzdZgo/H
-	yS97LOo4Jn+9sCRGFsXjsPYXvkvB8HYoEbyepQccMkxnXXJx9I5liBvQFywKE4F1rypY/bq9ecpTO
-	xN6/LZFw==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIbKt-00FWn3-27;
-	Wed, 27 Dec 2023 21:21:07 +0000
-Message-ID: <dc2d7189-70f2-49e2-ba78-ef2d15211e9b@infradead.org>
-Date: Wed, 27 Dec 2023 13:21:05 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42D33481AD;
+	Wed, 27 Dec 2023 21:23:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6691CC433C8;
+	Wed, 27 Dec 2023 21:23:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1703712192;
+	bh=vZu8FSzIX7UcEH212Eu6LNhd6xH4C5oYya52gCy+xVs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lFZ9BdtzGo42rCUgHCykvfhdymFe2PhbaiOqqbus8bEaL5rBt6DaaGhII9vG1DEof
+	 GvlX6Kgoy6wCELqUajcE3D66+d2oBX+n+iHX/qJ0eRpg2C4MaHS84KmopPgO5CKbis
+	 LwxaDIHCKI0I9xrj/5/4Dm3rxwOfGQOYQnGSwYa4=
+Date: Wed, 27 Dec 2023 13:23:11 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: kernel test robot <lkp@intel.com>
+Cc: andrey.konovalov@linux.dev, Marco Elver <elver@google.com>,
+ oe-kbuild-all@lists.linux.dev, Linux Memory Management List
+ <linux-mm@kvack.org>, Andrey Konovalov <andreyknvl@gmail.com>, Alexander
+ Potapenko <glider@google.com>, Dmitry Vyukov <dvyukov@google.com>, Andrey
+ Ryabinin <ryabinin.a.a@gmail.com>, kasan-dev@googlegroups.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH mm] kasan: stop leaking stack trace handles
+Message-Id: <20231227132311.557c302e92bdc9ffb88b42d5@linux-foundation.org>
+In-Reply-To: <202312280213.6j147JJb-lkp@intel.com>
+References: <20231226225121.235865-1-andrey.konovalov@linux.dev>
+	<202312280213.6j147JJb-lkp@intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/7] resource: Use typedef for alignf callback
-Content-Language: en-US
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
- Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Rob Herring
- <robh@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Igor Mammedov <imammedo@redhat.com>, Lukas Wunner <lukas@wunner.de>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- "Rafael J . Wysocki" <rafael@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20231222122901.49538-1-ilpo.jarvinen@linux.intel.com>
- <20231222122901.49538-5-ilpo.jarvinen@linux.intel.com>
- <ZYWPaGc4rjymcm75@smile.fi.intel.com>
- <8161e59d-2122-562c-dcc7-f772ddbcbdf@linux.intel.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <8161e59d-2122-562c-dcc7-f772ddbcbdf@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Thu, 28 Dec 2023 02:19:51 +0800 kernel test robot <lkp@intel.com> wrote:
 
-
-On 12/27/23 07:54, Ilpo Järvinen wrote:
-> On Fri, 22 Dec 2023, Andy Shevchenko wrote:
+> Hi,
 > 
->>> +/**
->>> + * resource_alignf - Resource alignment callback
->>> + * @data:	Private data used by the callback
->>> + * @res:	Resource candidate range (an empty resource slot)
->>> + * @size:	The minimum size of the empty slot
->>> + * @align:	Alignment from the constraints
->>> + *
->>> + * Callback allows calculating resource placement and alignment beyond min,
->>> + * max, and align fields in the struct resource_constraint.
->>> + *
->>> + * Return: Start address for the resource.
->>> + */
->>> +typedef resource_size_t (*resource_alignf)(void *data,
->>> +					   const struct resource *res,
->>> +					   resource_size_t size,
->>> +					   resource_size_t align);
->>
->> Never saw typedef kernel-doc before, so hopefully this will be rendered
->> just fine.
+> kernel test robot noticed the following build warnings:
 > 
-> This was a good point. It seems that one has to prefix the name with 
-> typedef like this:
-
-That's correct.
+> [auto build test WARNING on akpm-mm/mm-everything]
+> [cannot apply to linus/master v6.7-rc7 next-20231222]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
 > 
-> /**
->  * typedef resource_alignf - Resource alignment callback
+> url:    https://github.com/intel-lab-lkp/linux/commits/andrey-konovalov-linux-dev/kasan-stop-leaking-stack-trace-handles/20231227-065314
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+> patch link:    https://lore.kernel.org/r/20231226225121.235865-1-andrey.konovalov%40linux.dev
+> patch subject: [PATCH mm] kasan: stop leaking stack trace handles
+> config: x86_64-randconfig-123-20231227 (https://download.01.org/0day-ci/archive/20231228/202312280213.6j147JJb-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231228/202312280213.6j147JJb-lkp@intel.com/reproduce)
 > 
-> ...otherwise scripts/kernel-doc attempts to parse it as a function 
-> kerneldoc.
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202312280213.6j147JJb-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> mm/kasan/generic.c:506:6: warning: no previous prototype for 'release_alloc_meta' [-Wmissing-prototypes]
+>      506 | void release_alloc_meta(struct kasan_alloc_meta *meta)
+>          |      ^~~~~~~~~~~~~~~~~~
+> >> mm/kasan/generic.c:517:6: warning: no previous prototype for 'release_free_meta' [-Wmissing-prototypes]
+>      517 | void release_free_meta(const void *object, struct kasan_free_meta *meta)
+>          |      ^~~~~~~~~~~~~~~~~
 
-ack.
+Thanks, I added this fix:
 
-Thanks.
+--- a/mm/kasan/generic.c~kasan-stop-leaking-stack-trace-handles-fix
++++ a/mm/kasan/generic.c
+@@ -503,7 +503,7 @@ void kasan_init_object_meta(struct kmem_
+ 	 */
+ }
+ 
+-void release_alloc_meta(struct kasan_alloc_meta *meta)
++static void release_alloc_meta(struct kasan_alloc_meta *meta)
+ {
+ 	/* Evict the stack traces from stack depot. */
+ 	stack_depot_put(meta->alloc_track.stack);
+@@ -514,7 +514,7 @@ void release_alloc_meta(struct kasan_all
+ 	__memset(meta, 0, sizeof(*meta));
+ }
+ 
+-void release_free_meta(const void *object, struct kasan_free_meta *meta)
++static void release_free_meta(const void *object, struct kasan_free_meta *meta)
+ {
+ 	/* Check if free meta is valid. */
+ 	if (*(u8 *)kasan_mem_to_shadow(object) != KASAN_SLAB_FREE_META)
+_
 
--- 
-#Randy
 
