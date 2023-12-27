@@ -1,129 +1,104 @@
-Return-Path: <linux-kernel+bounces-11737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D007681EB04
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 01:45:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C386881EB06
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 01:47:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D73F1F22A75
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 00:45:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E969B1C21171
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 00:47:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988241876;
-	Wed, 27 Dec 2023 00:45:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF0282109;
+	Wed, 27 Dec 2023 00:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="KGsmrGBM"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D+Ip32ZQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10327A32
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 00:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1703637915;
-	bh=6tfB8NVprQLkYBXdgGgiZqGVbBwkRH8ck3CiALnCtRo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=KGsmrGBMs0xb0zD4RZcDYgTaKETlxUVGI2hcw6B2HccFigRsdsdHZHH+jE0ggdvc7
-	 9C6qUZRuTFGpoAsOXzs+jGu3T6ZtpBtVToQqMak54CanOLxZ0zKK7m4Q4qWKl3wGbN
-	 f74EBEy5rAs3u1P0WN4ja9HsOaiRMONVYGCgR2GK5Xc7RKIYqejtmO/Y7M2NbTbo05
-	 OExf0OrsecOdiSvP4ijHxxCH4gsVvL8Agwf2iRkFFVXDuzZ2+fN74T/7IitWi/w0oB
-	 /1pHcXMpXFLQuPPh1eF1syLq8cpd8S2rTRTX7Oi7TEeADEoivTthKupLPyjY5Edevh
-	 k+7vCEdo524bg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5651F20E3
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 00:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703638016;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KHfYsdkqhGpgTtAjWcLobs1JbxYurYRnCXUAjSNGEuY=;
+	b=D+Ip32ZQmI0kNJqgJk0PGtv5hqnosJD/7wZIIF95iayiqqhoHM14g2CDf9ebQnjrk9Z+S/
+	o7/8pDufsMUT2Qjo19DX9u32Euoz/5qQOEKPeL8UYWfylVxs60gasMQRaSs/Dcv+xl02JM
+	ud157IphIgSimCNZep1Pr5zA1ow1bAY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-413-mlKy2b4tPo6OebJPeRHa4A-1; Tue,
+ 26 Dec 2023 19:46:51 -0500
+X-MC-Unique: mlKy2b4tPo6OebJPeRHa4A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T0CbZ5lZBz4wc3;
-	Wed, 27 Dec 2023 11:45:14 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
-Cc: mahesh@linux.ibm.com, oohall@gmail.com, npiggin@gmail.com,
- christophe.leroy@csgroup.eu, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arch: powerpc: kernel: fixed some typos
-In-Reply-To: <CAG-Bmoejy6t-EHv96OTnGhvo-P82fhw5pSUM-LqLfh7Hgh5Qew@mail.gmail.com>
-References: <20231215115857.575697-1-ghanshyam1898@gmail.com>
- <87il4rlrw2.fsf@mail.lhotse>
- <CAG-Bmoejy6t-EHv96OTnGhvo-P82fhw5pSUM-LqLfh7Hgh5Qew@mail.gmail.com>
-Date: Wed, 27 Dec 2023 11:45:13 +1100
-Message-ID: <8734volbhi.fsf@mail.lhotse>
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6E40638143A5;
+	Wed, 27 Dec 2023 00:46:51 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.16])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4A49B3C31;
+	Wed, 27 Dec 2023 00:46:50 +0000 (UTC)
+Date: Wed, 27 Dec 2023 08:46:46 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Youling Tang <youling.tang@outlook.com>, akpm@linux-foundation.org
+Cc: Huacai Chen <chenhuacai@loongson.cn>, linux-kernel@vger.kernel.org,
+	Youling Tang <tangyouling@kylinos.cn>
+Subject: Re: [PATCH v2] kdump: Remove redundant DEFAULT_CRASH_KERNEL_LOW_SIZE
+Message-ID: <ZYtz9hyniU3Llqa0@MiWiFi-R3L-srv>
+References: <MW4PR84MB3145459ADC7EB38BBB36955B8198A@MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW4PR84MB3145459ADC7EB38BBB36955B8198A@MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-Ghanshyam Agrawal <ghanshyam1898@gmail.com> writes:
-> On Thu, Dec 21, 2023 at 4:55=E2=80=AFPM Michael Ellerman <mpe@ellerman.id=
-.au> wrote:
->>
->> Ghanshyam Agrawal <ghanshyam1898@gmail.com> writes:
->> > Fixed some typos
->> >
->> > Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
->> > ---
->> >  arch/powerpc/kernel/eeh_pe.c | 6 +++---
->> >  1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> Please also fix the case in arch/powerpc/include/asm/eeh.h
->>
->> The subject should use the correct prefix. You can see what it should be
->> using:
->>
->> $ git log --oneline arch/powerpc/kernel/eeh_pe.c
->>
->> Please give the patch a better subject, not "some typos", tell me what
->> misspelling you're fixing. Same comment for the commit description.
->>
->> > diff --git a/arch/powerpc/kernel/eeh_pe.c b/arch/powerpc/kernel/eeh_pe=
-.c
->> > index e0ce81279624..8e0c1a8b8641 100644
->> > --- a/arch/powerpc/kernel/eeh_pe.c
->> > +++ b/arch/powerpc/kernel/eeh_pe.c
->> > @@ -24,10 +24,10 @@ static int eeh_pe_aux_size =3D 0;
->> >  static LIST_HEAD(eeh_phb_pe);
->> >
->> >  /**
->> > - * eeh_set_pe_aux_size - Set PE auxillary data size
->> > - * @size: PE auxillary data size
->> > + * eeh_set_pe_aux_size - Set PE auxiliary data size
->> > + * @size: PE auxiliary data size
->>
->> While you're changing it you could also mention what the units of the
->> size are.
->>
->> >   *
->> > - * Set PE auxillary data size
->> > + * Set PE auxiliary data size
->>
->> This should gain a full stop at the end of the sentence.
->>
->> >   */
->> >  void eeh_set_pe_aux_size(int size)
->> >  {
->> > --
->> > 2.25.1
->
-> Hi Michael,
->
-> Thank you very much for your suggestions. I will implement them
-> and send a v2 patch.
->
-> You mentioned I need to specify the units of "PE auxiliary data size".
-> Is the unit BYTES? Sorry for the silly question, I am only beginning
-> to contribute to the linux kernel.
+On 12/27/23 at 07:46am, Youling Tang wrote:
+> From: Youling Tang <tangyouling@kylinos.cn>
+> 
+> Remove duplicate definitions, no functional changes.
+> 
+> Reported-by: Huacai Chen <chenhuacai@loongson.cn>
+> Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
+> ---
+>  include/linux/crash_core.h | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
+> index 5126a4fecb44..9eaeaafe0cad 100644
+> --- a/include/linux/crash_core.h
+> +++ b/include/linux/crash_core.h
+> @@ -87,12 +87,6 @@ Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
+>  			  void *data, size_t data_len);
+>  void final_note(Elf_Word *buf);
+>  
+> -#ifdef CONFIG_ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
+> -#ifndef DEFAULT_CRASH_KERNEL_LOW_SIZE
+> -#define DEFAULT_CRASH_KERNEL_LOW_SIZE  (128UL << 20)
+> -#endif
+> -#endif
 
-That's OK. Yes it's bytes.
+Good catch, thx.
 
-If you look for where eeh_pe_aux_size is used, it's added to some other
-values and then eventually passed to kzalloc(), which takes a size in
-bytes. So you can infer that it is also in units of bytes.
+Acked-by: Baoquan He <bhe@redhat.com>
 
-cheers
+> -
+>  int __init parse_crashkernel(char *cmdline, unsigned long long system_ram,
+>  		unsigned long long *crash_size, unsigned long long *crash_base,
+>  		unsigned long long *low_size, bool *high);
+> -- 
+> 2.40.0
+> 
+
 
