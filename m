@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-11877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C79681ECCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 08:09:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3BFC81ECDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 08:18:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 208D61F22DD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:09:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4ADD3B21816
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:18:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F273953B9;
-	Wed, 27 Dec 2023 07:09:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6926153B9;
+	Wed, 27 Dec 2023 07:18:27 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C22B6118;
-	Wed, 27 Dec 2023 07:09:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8AxG+mjzYtljvMEAA--.23631S3;
-	Wed, 27 Dec 2023 15:09:23 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bxrr6izYtlJHYMAA--.37462S2;
-	Wed, 27 Dec 2023 15:09:22 +0800 (CST)
-From: Bibo Mao <maobibo@loongson.cn>
-To: Huacai Chen <chenhuacai@kernel.org>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>
-Cc: WANG Xuerui <kernel@xen0n.name>,
-	loongarch@lists.linux.dev,
+Received: from mail-m12746.qiye.163.com (mail-m12746.qiye.163.com [115.236.127.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7823E5392;
+	Wed, 27 Dec 2023 07:18:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=senarytech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=senarytech.com
+Received: from book-ThinkStation-P328.. (unknown [61.183.143.78])
+	by mail-m12756.qiye.163.com (Hmail) with ESMTPA id 01270DC0610;
+	Wed, 27 Dec 2023 15:10:23 +0800 (CST)
+From: bo liu <bo.liu@senarytech.com>
+To: perex@perex.cz,
+	tiwai@suse.com
+Cc: linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Subject: [PATCH] LoongArch: KVM: Add hypercall instruction emulation support
-Date: Wed, 27 Dec 2023 15:09:22 +0800
-Message-Id: <20231227070922.1411467-1-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+	bo liu <bo.liu@senarytech.com>
+Subject: [PATCH 3/3] Fix headset auto detect fail in cx8070 and SN6140
+Date: Wed, 27 Dec 2023 15:10:08 +0800
+Message-Id: <20231227071008.13665-3-bo.liu@senarytech.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231227071008.13665-1-bo.liu@senarytech.com>
+References: <20231227071008.13665-1-bo.liu@senarytech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -42,118 +42,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Bxrr6izYtlJHYMAA--.37462S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxXryDXFyxtFWkCFWktr4xAFc_yoW5Zr1DpF
-	93Cr1kGr48GryfCFy3twn8Wr13Ars7K342gFW2k3y5AF12qF1Fyr4kKryDZFy5Ja1rXF1S
-	gFWftw1Y9F4UtagCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
-	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
-	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
-	kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jUsqXUUUUU=
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDTB1DVk1LHxlKGUMYGU9CTlUTARMWGhIXJBQOD1
+	lXWRgSC1lBWU1KVUpDSFVKT0hVTENZV1kWGg8SFR0UWUFZT0tIVUpNT0lMTlVKS0tVSkJLS1kG
+X-HM-Tid: 0a8caa1c33b6b223kuuu01270dc0610
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OTY6Ayo*Njw5KwkIODoqHE4S
+	EykKCwNVSlVKTEtITU1KS0lPQkxCVTMWGhIXVRkUVRcSDjsIHhUaCQIPHhgTVRgUFkVZV1kSC1lB
+	WU1KVUpDSFVKT0hVTENZV1kIAVlBSUNOSTcG
 
-On LoongArch system, hypercall instruction is supported when system
-runs on VM mode. This patch adds dummy function for hypercall
-instruction emulation, rather than inject EXCCODE_INE invalid
-instruction exception to VM.
+CX8070 and SN6140 will get wrong headset type when use OMTP headset,
+then the headset mic will not work.
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+Signed-off-by: bo liu <bo.liu@senarytech.com>
 ---
- arch/loongarch/include/asm/Kbuild      |  1 -
- arch/loongarch/include/asm/kvm_para.h  | 26 ++++++++++++++++++++++++++
- arch/loongarch/include/uapi/asm/Kbuild |  2 --
- arch/loongarch/kvm/exit.c              | 10 ++++++++++
- 4 files changed, 36 insertions(+), 3 deletions(-)
- create mode 100644 arch/loongarch/include/asm/kvm_para.h
- delete mode 100644 arch/loongarch/include/uapi/asm/Kbuild
+ sound/pci/hda/patch_conexant.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/arch/loongarch/include/asm/Kbuild b/arch/loongarch/include/asm/Kbuild
-index 93783fa24f6e..22991a6f0e2b 100644
---- a/arch/loongarch/include/asm/Kbuild
-+++ b/arch/loongarch/include/asm/Kbuild
-@@ -23,4 +23,3 @@ generic-y += poll.h
- generic-y += param.h
- generic-y += posix_types.h
- generic-y += resource.h
--generic-y += kvm_para.h
-diff --git a/arch/loongarch/include/asm/kvm_para.h b/arch/loongarch/include/asm/kvm_para.h
-new file mode 100644
-index 000000000000..9425d3b7e486
---- /dev/null
-+++ b/arch/loongarch/include/asm/kvm_para.h
-@@ -0,0 +1,26 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_LOONGARCH_KVM_PARA_H
-+#define _ASM_LOONGARCH_KVM_PARA_H
-+
-+/*
-+ * LoongArch hypcall return code
-+ */
-+#define KVM_HC_STATUS_SUCCESS		0
-+#define KVM_HC_INVALID_CODE		-1UL
-+#define KVM_HC_INVALID_PARAMETER	-2UL
-+
-+static inline unsigned int kvm_arch_para_features(void)
-+{
-+	return 0;
-+}
-+
-+static inline unsigned int kvm_arch_para_hints(void)
-+{
-+	return 0;
-+}
-+
-+static inline bool kvm_check_and_clear_guest_paused(void)
-+{
-+	return false;
-+}
-+#endif /* _ASM_LOONGARCH_KVM_PARA_H */
-diff --git a/arch/loongarch/include/uapi/asm/Kbuild b/arch/loongarch/include/uapi/asm/Kbuild
-deleted file mode 100644
-index 4aa680ca2e5f..000000000000
---- a/arch/loongarch/include/uapi/asm/Kbuild
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--generic-y += kvm_para.h
-diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
-index ce8de3fa472c..f453a3e40cab 100644
---- a/arch/loongarch/kvm/exit.c
-+++ b/arch/loongarch/kvm/exit.c
-@@ -659,6 +659,15 @@ static int kvm_handle_fpu_disabled(struct kvm_vcpu *vcpu)
- 	return RESUME_GUEST;
- }
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 9ebc0709a202..86e7241b4961 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -184,7 +184,7 @@ static int cx_auto_init(struct hda_codec *codec)
+ 		snd_hda_codec_write(codec, 0x1c, 0, 0x4f0, 0x0eb);
+ 		/* fix reboot headset recognize fail issue */
+ 		mic_persent = snd_hda_codec_read(codec, 0x19, 0, 0xf09, 0x0);
+-		if (mic_persent&0x80000000) 
++		if (mic_persent&0x80000000)
+ 			snd_hda_codec_write(codec, 0x19, 0, 0x707, 0x24);
+ 		else
+ 			snd_hda_codec_write(codec, 0x19, 0, 0x707, 0x20);
+@@ -212,7 +212,7 @@ static void cx_auto_free(struct hda_codec *codec)
+ static int headset_present_flag;
+ static void cx_jack_unsol_event(struct hda_codec *codec, unsigned int res)
+ {
+-	unsigned int val, phone_present, mic_persent,phone_tag, mic_tag;
++	unsigned int val, phone_present, mic_persent, phone_tag, mic_tag;
+ 	unsigned int count=0;
  
-+static int kvm_handle_hypcall(struct kvm_vcpu *vcpu)
-+{
-+	update_pc(&vcpu->arch);
-+
-+	/* Treat it as noop intruction, only set return value */
-+	vcpu->arch.gprs[LOONGARCH_GPR_A0] = KVM_HC_INVALID_CODE;
-+	return RESUME_GUEST;
-+}
-+
- /*
-  * LoongArch KVM callback handling for unimplemented guest exiting
-  */
-@@ -688,6 +697,7 @@ static exit_handle_fn kvm_fault_tables[EXCCODE_INT_START] = {
- 	[EXCCODE_TLBM]			= kvm_handle_write_fault,
- 	[EXCCODE_FPDIS]			= kvm_handle_fpu_disabled,
- 	[EXCCODE_GSPR]			= kvm_handle_gspr,
-+	[EXCCODE_HVC]			= kvm_handle_hypcall,
- };
- 
- int kvm_handle_fault(struct kvm_vcpu *vcpu, int fault)
+ 	switch (codec->core.vendor_id) {
+@@ -236,13 +236,11 @@ static void cx_jack_unsol_event(struct hda_codec *codec, unsigned int res)
+ 				if ((phone_present&0x80000000) && (mic_persent&0x80000000)) {
+ 					/* wait headset detect done */
+ 					do {
++						msleep(20);
+ 						val = snd_hda_codec_read(codec, 0x1c,
+ 									0, 0xca0, 0x0);
+-						if (val&0x080)
+-							break;
+-						msleep(20);
+ 						count += 1;
+-					} while (count > 3);
++					} while ((count > 3) || (val&0x080));
+ 					val = snd_hda_codec_read(codec, 0x1c, 0, 0xcb0, 0x0);
+ 					if (val&0x800) {
+ 						codec_dbg(codec, "headset plugin, type is CTIA\n");
 -- 
-2.39.3
+2.34.1
 
 
