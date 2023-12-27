@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-11888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0AB881ECFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 08:35:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5E781ECFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 08:37:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76E221F21089
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:35:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCBCB28363F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 837865680;
-	Wed, 27 Dec 2023 07:35:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A533D5691;
+	Wed, 27 Dec 2023 07:37:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RbnvaZ+u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uz27OA9T"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FDE363C6;
-	Wed, 27 Dec 2023 07:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B655666;
+	Wed, 27 Dec 2023 07:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-593f7a1afd7so3016073eaf.0;
-        Tue, 26 Dec 2023 23:35:45 -0800 (PST)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5942259ca62so3098821eaf.3;
+        Tue, 26 Dec 2023 23:37:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703662544; x=1704267344; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703662635; x=1704267435; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j0n+qAEBPiyG9ZBXxmkMErIapOslfZzRv1igP74DPiE=;
-        b=RbnvaZ+uDCkvzRLYDXBCV6rzxHF+bZU9+Pb+eGgUz6ATQmktFKPOGm7IQsNkQh8pae
-         dxuWsWEdkKvvT2xkD8luldApLt1ttgeWkzEl5cJNjgxPRnZACa6F6R0R+SZzuCaWgbrG
-         +JQFJlGGf2vXCnd6aThEfR7xVtzS1IfmXi1Os7NoAUVbrvJejO0KMR6X8Li0STILU/uV
-         9OJ0+nlmitDCkaVcIBH/ecVD/E5kcN3MrvWmG7HWvgCaGCcx9hs/Sjut/VQjrs5NJ8/7
-         iUDHUq6oq+pncnwQ8PTdNyF8gR7OcWhjKScq250K9ZhGgLv23FJrUZFJEw9aLJ3Iobi3
-         YS3A==
+        bh=kklWMCPiCjz55uM2MffAqdRZNJANsABPXaQBeXkYorE=;
+        b=Uz27OA9TWh9AEHpXuH+AGu3Zux1QCa+WBInF3E1iZh57re8a+FPx0c+pf2EJ5VHo57
+         xFSSveKBokBcn3iRYhFG4BZ47BP4+8//x+n1qRKSDtLZuCJY0DYGibSeT7xco9/S/m5y
+         Bhr27j2+2WlXjB3RLoqee6FJrj9lMGa7dtV79gUtyQzQH/1EiYy0RM4zdplfr3UZ+Vxy
+         HcebWjXK1hlhil8nnNnwljJfMOM6XZKq0Sw4lSFdO4lV5pyDiLyHKUWrulRnUUovnCZH
+         Fm7OQPf9xWns50pDjIjY5dC9QYU7xZtqxpO8Bqj7J4dXnFn839LdscdA8TU/iLEar6A+
+         DW6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703662544; x=1704267344;
+        d=1e100.net; s=20230601; t=1703662635; x=1704267435;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=j0n+qAEBPiyG9ZBXxmkMErIapOslfZzRv1igP74DPiE=;
-        b=tY7HC9zpQXgDnpRHunPLmD39cJgzRax5u8briubGWwZWWlk/emRFag233+8O/X2E2b
-         ijV5RQXmxG8cb44FzP/DF254X9OTxJXDScSWVVyZrOtiic7KFKVgt4bnJCIDtnTmYHEB
-         4mYWE/RyFKJ8MqATwv+W/HsbwtzHRe4v5fHCYhJVORa87RX/dd+R/Hp0THpYt5Ly+10u
-         zBZr3+CRoIruNl4i3M+iiyTGbf3lzEdMwiKsh6pqX3e/ffH6Y+Uye5z7B9/p7kOKpIaF
-         fIquPZNvLGBV6Q/YXFgKWz1l3h1Jk4oC1kjGUcSrNKCb7n336jt9O27kZ9xY8+9kfGXA
-         kQ8Q==
-X-Gm-Message-State: AOJu0Yw/Q2AMx78cRYpqjF0aHqAQagUqU4m2NmBRhkQtUoyrtmdq3C2i
-	IeuzIHU9ERuFpxYF780OKOxo2fcR0pu6hmJhrO4=
-X-Google-Smtp-Source: AGHT+IHj++fl1vcrKCff850uqq3+Lb4lfsMoerWerufL1puzucnTWFJkNfZsxOYXEnF9gb+Vcp0BeKy/2Ky0YCkjwsM=
-X-Received: by 2002:a05:6820:229b:b0:591:cabb:dd91 with SMTP id
- ck27-20020a056820229b00b00591cabbdd91mr4931528oob.13.1703662544255; Tue, 26
- Dec 2023 23:35:44 -0800 (PST)
+        bh=kklWMCPiCjz55uM2MffAqdRZNJANsABPXaQBeXkYorE=;
+        b=w1eQQ/W5k1Jc7j6t2hDBwIMCo5wiYcnLuIJFmUKVQKCOGDLz1LA/DatGlYsOcDTSGf
+         VeRvFtu3sF62mB2PiLpN/6qScVBfnP5lvIqLJnPE/0WZEFkFbkcg7/FQJPChnvIrp/Ib
+         TZE/F4zB9/RfpkQa6FLzxVMAu7XdrrWc/QYyS/DJbvKZ1+ExV4AMWnxyIzMRz/0K7ZHU
+         T9sSOX0n8HWIfbdsUJQ4NuG+BTQnnroYsjBpva0cZDN4V5LRPdASixxundI2ZC4wnPP7
+         Um5gTxP+kzmcd/SHFqUJUgTrQpAcnXkIf0VlHqUncTObBZ9Af1582ViLTPxa4nFjfDdz
+         DbUw==
+X-Gm-Message-State: AOJu0Ywf1zuqYK7VzQCCtr0hWWogOUSqWVQmcLq8JxlJ5vnu2ji2mxom
+	UsFUACZ8Vh25irqLmewPHlruOC9SGGHas5qW44E=
+X-Google-Smtp-Source: AGHT+IH3xbafbVk7YiN7HdyJAcdsTr6vQBR8C+tF6OYHJPrQpKQSfVnhyixiQQ8Kw/mtVlc5RkuFqyM0UCVt/M7Na+4=
+X-Received: by 2002:a4a:58d1:0:b0:594:51f9:bbf2 with SMTP id
+ f200-20020a4a58d1000000b0059451f9bbf2mr3488707oob.19.1703662634765; Tue, 26
+ Dec 2023 23:37:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,11 +61,11 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20231226100431.331616-1-qiujingbao.dlmu@gmail.com>
- <20231226100431.331616-2-qiujingbao.dlmu@gmail.com> <8f5e5cc7-9795-4e17-8bb9-73448e960c3d@linaro.org>
-In-Reply-To: <8f5e5cc7-9795-4e17-8bb9-73448e960c3d@linaro.org>
+ <20231226100431.331616-2-qiujingbao.dlmu@gmail.com> <86481a49-40ec-487f-8cec-6f2f64cf0f12@linaro.org>
+In-Reply-To: <86481a49-40ec-487f-8cec-6f2f64cf0f12@linaro.org>
 From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-Date: Wed, 27 Dec 2023 15:35:33 +0800
-Message-ID: <CAJRtX8R=K6R0o-43cHfL2iKizEJYH+fGFtVj7tWFBuFN1cSsig@mail.gmail.com>
+Date: Wed, 27 Dec 2023 15:37:03 +0800
+Message-ID: <CAJRtX8SN62_7FsALpjPSAKtfVQPBnEmrxZiCDwSuqcevEedEAQ@mail.gmail.com>
 Subject: Re: [PATCH v3 1/4] dt-bindings: mfd: sophgo: add MFD subsys support
  for Sophgo CV1800 series SoC
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
@@ -78,106 +78,25 @@ Cc: a.zummo@towertech.it, alexandre.belloni@bootlin.com, robh+dt@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 26, 2023 at 8:18=E2=80=AFPM Krzysztof Kozlowski
+On Tue, Dec 26, 2023 at 8:21=E2=80=AFPM Krzysztof Kozlowski
 <krzysztof.kozlowski@linaro.org> wrote:
 >
 > On 26/12/2023 11:04, Jingbao Qiu wrote:
-> > Add devicetree binding for Sophgo CV1800 SoC MFD subsys.
->
-> Subject and commit msg: there is no such hardware as "MFD subsys". Is
-> this a PMIC? Does not look like. You must describe here hardware, not
-> Linux subsystem.
->
-
-I don't think this is a PMIC device. the RTC restart and 8051
-configure register share one
-common range address, and the address have other function that power manage=
-ment.
-the datasheet link:
-Link: https://github.com/milkv-duo/duo-files/blob/main/duo/datasheet/CV1800=
-B-CV1801B-Preliminary-Datasheet-full-en.pdf
-chapter: 3.9 RTC 3.12 8051 subsystem
-
-> >
-> > Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-> > ---
->
-> Please mention the dependency here.
-
-Thanks,I will fix it.
-
->
-> >  .../bindings/mfd/sophgo,cv1800-subsys.yaml    | 51 +++++++++++++++++++
-> >  1 file changed, 51 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mfd/sophgo,cv1800=
--subsys.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/mfd/sophgo,cv1800-subsys=
-.yaml b/Documentation/devicetree/bindings/mfd/sophgo,cv1800-subsys.yaml
-> > new file mode 100644
-> > index 000000000000..c2a071c8a2de
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mfd/sophgo,cv1800-subsys.yaml
-> > @@ -0,0 +1,51 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mfd/sophgo,cv1800-subsys.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > > +
-> > +title: Sophgo CV1800 SoC subsys controller
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    #include <dt-bindings/clock/sophgo,cv1800.h>
 > > +
-> > +maintainers:
-> > +  - Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-> > +
-> > +description:
-> > +  The Sophgo CV1800 SoC subsys controller contains many functions
+> > +    syscon@5025000 {
 >
-> What is "subsys"? Why is it in MFD directory? SoC components like
-> system-controllers do not go to MFD.
-
-This device has multiple different functions, because they have 8051 subsys=
-tem,
-so I named him "subsys". I will carefully consider and rename it.
-
->
-> > +  for example, RTC and restart. In addition, CV1800 has an 8051
-> > +  subsystem, which is configured through registers at this controller.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - const: sophgo,cv1800b-subsys
-> > +      - const: syscon
-> > +      - const: simple-mfd
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  rtc:
-> > +    $ref: /schemas/rtc/sophgo,cv1800-rtc.yaml#
->
-> Your patchset is not bisectable. What's more, you have dependency
-> between patches, so bindings cannot go via separate trees: mfd and rtc.
-> You need to make this *EXPLICIT* in the cover letter or patch changelog.
-
-ok,I will fix it.
-
->
-> I do not see any resources in MFD block, so why having it as separate
-> node? What other devices you did not describe here? You mentioned
-> restart and 8051, so where are they? Which driver implements them?
+> This example and DTS suggest this is system-controller, so use that
+> name. Assuming this is system-controller, because I am still not sure.
 >
 
-I'am sorry for that other drivers have not been implemented yet. I
-will implement it
-after rtc. They have the same address range, so I use mfd to describe them.
+Thanks,I will carefully consider how to name him.
 
->
 > Best regards,
 > Krzysztof
 >
-
-Best regards,
-Jingbao Qiu
 
