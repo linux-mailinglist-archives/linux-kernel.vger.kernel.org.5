@@ -1,105 +1,106 @@
-Return-Path: <linux-kernel+bounces-12069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C1C081EF9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:54:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4764081EF9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:56:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E576B2836B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:54:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82BA2B21C52
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF67745958;
-	Wed, 27 Dec 2023 14:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7D614594F;
+	Wed, 27 Dec 2023 14:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="nVn39BKX"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="EahBy56N"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4755E45948
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 14:54:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79F74503C
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 14:56:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7ccfbdd77f6so429073241.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 06:54:40 -0800 (PST)
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7cc705bbb2eso804882241.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 06:56:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703688880; x=1704293680; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703688984; x=1704293784; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Xj9nMPZ/rmfT4qFV6S0ETvePHpuGlIZuLsYwJ7FOOC4=;
-        b=nVn39BKX04zw62wzHQG4zBtSrp3XD/3zHKnZBPWbIXkl0pyQne/FhgU3jCe8XURsw4
-         MNDzJ96uwc9zwg67MvjTnnTfcWzbriH2oUC9Rcz5P46ou+td3j2FyZY7fHpiGKztXm4G
-         RMI3eBtt8h5dBhDGmDMihNNrjM0cbaECHz1z24lnieUBj9us2MiNOmlNV/QcWXXNzpOp
-         IjLvtOKNo4FLYdZf+I2AqggX0/3heKz9iqMZtItxVZKZEhmi8/MMmXzYE3PR9lizlrzt
-         /QIrHMqHzksMyj+i8cwzvzjLh/aat64d+xguQ/sJUsBrDVUsIWEoybpus4EHnufIVto2
-         6pNA==
+        bh=6YEoCHZ5YbHKWMDCfzuh616S+odKG8LJIvRgl7M4Mpc=;
+        b=EahBy56NXWYpZ1ckmIzoG/o1jdXD5OdHTium85oQX3Tnzwd7Wc7QobNdCR6sQrMjp3
+         Dfi3+ruxxG4bXevWLn3GtzlV18HSPyR9yQFRxf3pvrpCmurI4ZN0aJy31ag2pFaCo3RN
+         f24gypzaFyZ2QKTUcaO+62fyhmRafv3hPxXjy3hKoTz83D44VAqYHceBVzW38I5/TmY8
+         jqWX+J+sjpFt19lhBbugH4bjfQ2lKgI9nAMPTNbLzHN/t5Zqd5k/KquINk6jYuJLiYkn
+         DMy7NqGFIy4Iys7Ar9TZhXgPv+fnO9/j90rY/A3jFcumRLK+6qbgy9oIP3CaOmTOzNVa
+         5rng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703688880; x=1704293680;
+        d=1e100.net; s=20230601; t=1703688984; x=1704293784;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xj9nMPZ/rmfT4qFV6S0ETvePHpuGlIZuLsYwJ7FOOC4=;
-        b=AxUL/8qCuYQ+0Ut5MX2QAp8yXNjVDTaxO23dx8Deo8/fzdVQwRuDaCxlkMzCEawiC+
-         4z7r23+4tYD4UmpG/0Q+E/D+YzuGLdkUhuElC1RR8dzVPVkEtWlTIaj9h9IZ9WiiAH2p
-         99hzQuY3dETc7nSyn7E3+tEtCFvYH3cOHZoFC3O+kEUOfT9cBOw3sOrSuUhfrJ6Ek+M/
-         r0zwnF6W/E3Ir7z4XU7H91+SnsrBzP9XQ5R0rRUsHJO5fMjeD0LE7R9BDjV1jehUbQqH
-         SjSC/fRdhjqc/f/baUMzs5I92vmTX/ixis9V21Yud/Paq8hVTEg4+G7LKhIPxlr26UHY
-         NWLQ==
-X-Gm-Message-State: AOJu0Yz1/HZrXmOvUmdOeGhbt6xAYBaQlFVtZeH5FOiM7myMLpA8+f9D
-	83KZR2f/GJnh/Uv5ALEhpou2NkITBWK4u4pgvH+9WqdU6c2lpQ==
-X-Google-Smtp-Source: AGHT+IGGh4kulY46eFRo4mhwu8hUsN2eKEl2yrpyzTgjAzLhxK7E/zmhT6AaWb6pG7m2DIyyQZRgjpJ2s6keDua20HM=
-X-Received: by 2002:a05:6122:2028:b0:4b7:177a:25e4 with SMTP id
- l40-20020a056122202800b004b7177a25e4mr2949904vkd.9.1703688880030; Wed, 27 Dec
- 2023 06:54:40 -0800 (PST)
+        bh=6YEoCHZ5YbHKWMDCfzuh616S+odKG8LJIvRgl7M4Mpc=;
+        b=JEv+QqbHqGeyfpJ5G9kHr+bPbDjIS0E4ilFfU4UBxdSq9wvESe6S9A4i7uUZwzcHbD
+         OAXE3FMTvD0zdPsTsginw63knuY0xfy5SodDchHYWvCYSZGX9cxhfh7A675XoHq2EmEN
+         gC3sF7STeqSOGPsopZ6eOq+PJtun9pYMq+0T4n3HbldjVVOi+RcjPKopkdLLCLVsAKSg
+         odtdpJ9G/7IWtMFZSyV6rs1hkfylu76NUC72exQl+s1dQ4L2tsK8l9bSRJ6gsPbxPXZP
+         UI6UzMviCJuNLNi6kK3mn4TGAONNo+nYXXuGTElVSjAkOr0ATA7ZoVZarL9Cyd9gdZwc
+         aasw==
+X-Gm-Message-State: AOJu0Yw3IxBlFe5wudzGc3vfPtnVDJskKYB2SmoOXV5yFyNpCVK8qTMY
+	pUSPQxIUalrTVf/6mGsmg9n4H6LVp5CXAZ14ZUIIx1OsgLZeIf5nn5eETjc2
+X-Google-Smtp-Source: AGHT+IFcz+rDLLCzdlPqjZpbjdOKE4CieGG5btiUUNEuOnKlegsq5d8mCATauLXsrQPtHp3uNqfvzOwLyHtHfCLV1lE=
+X-Received: by 2002:a05:6102:3581:b0:467:2fec:4ef0 with SMTP id
+ h1-20020a056102358100b004672fec4ef0mr652257vsu.24.1703688984649; Wed, 27 Dec
+ 2023 06:56:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231222140017.2887224-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231222140017.2887224-1-andriy.shevchenko@linux.intel.com>
+References: <20231222141117.2887788-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231222141117.2887788-1-andriy.shevchenko@linux.intel.com>
 From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 27 Dec 2023 15:54:29 +0100
-Message-ID: <CAMRc=MdzuPkW15iRQLx8q-zKRM6aV1f2dT+uDDWg5GZ746OCNQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpio: Step down as a reviewer
+Date: Wed, 27 Dec 2023 15:56:14 +0100
+Message-ID: <CAMRc=McE=GSu1QLEmsUC08uxXZJ1YSeHYfQTsSQr2oyoWbRfHQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] gpio: tangier: Add missing file to the MAINTAINERS
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 22, 2023 at 3:00=E2=80=AFPM Andy Shevchenko
+On Fri, Dec 22, 2023 at 3:11=E2=80=AFPM Andy Shevchenko
 <andriy.shevchenko@linux.intel.com> wrote:
 >
-> Too many things are going on, and reviewing GPIO related code
-> seems not the best I can do, hence step down as a reviewer of
-> the GPIO subsystem.
+> When gpio-tangier was split the new born headers had been missed
+> in the MAINTAINERS. Add it there.
 >
+> Fixes: d2c19e89e03c ("gpio: tangier: Introduce Intel Tangier GPIO driver"=
+)
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  MAINTAINERS | 1 -
->  1 file changed, 1 deletion(-)
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
 >
 > diff --git a/MAINTAINERS b/MAINTAINERS
-> index d1af56dc3113..8b686a9fa068 100644
+> index 2e0e74681511..da022945e184 100644
 > --- a/MAINTAINERS
 > +++ b/MAINTAINERS
-> @@ -9110,7 +9110,6 @@ K:        (devm_)?gpio_regmap_(un)?register
->  GPIO SUBSYSTEM
->  M:     Linus Walleij <linus.walleij@linaro.org>
->  M:     Bartosz Golaszewski <brgl@bgdev.pl>
-> -R:     Andy Shevchenko <andy@kernel.org>
->  L:     linux-gpio@vger.kernel.org
->  S:     Maintained
->  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git
+> @@ -10750,6 +10750,7 @@ F:      drivers/gpio/gpio-pch.c
+>  F:     drivers/gpio/gpio-sch.c
+>  F:     drivers/gpio/gpio-sodaville.c
+>  F:     drivers/gpio/gpio-tangier.c
+> +F:     drivers/gpio/gpio-tangier.h
+>
+>  INTEL GVT-g DRIVERS (Intel GPU Virtualization)
+>  M:     Zhenyu Wang <zhenyuw@linux.intel.com>
 > --
 > 2.43.0.rc1.1.gbec44491f096
 >
 
-Reluctantly applied. :(
+Applied, thanks!
 
 Bart
 
