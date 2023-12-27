@@ -1,181 +1,367 @@
-Return-Path: <linux-kernel+bounces-11867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3640E81ECA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:38:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CE1781ECB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:44:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A1981C2231B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:38:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D968C28371D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:44:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA115255;
-	Wed, 27 Dec 2023 06:38:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0AB5397;
+	Wed, 27 Dec 2023 06:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="eeOHlLsf"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K/dL7NOt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBD175228
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 06:38:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6d099d316a8so4645796b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 22:38:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1703659111; x=1704263911; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=W0KmYt6leKPGTS8gsdFNq3/xtqnx97svAIcF690BCi4=;
-        b=eeOHlLsfeukSqfUfqXnTDHUJ026M0o+F3kc5XjSosGiEZ4xoaWoZfM+27zgzRIK0SR
-         KgAM8NaYJM9V3jXSrivNhTQ2jHrOJImiYBS8CtkqpLNx5a1sQ/Oc9qZmLx5FKQWnEoN8
-         ex9WSaqnYT0kJr/Qzky9x9bHUKbnZNXIhhEb5KMM43PHq4BBH+VA+H/ygWe4+K4t+9Pr
-         cZy0SUF6f8f8KDpXEAlA3y1Pn4rHu12Qn7wbHRrtQt+lnbfta1SMlu8yaeXMejfsdNK7
-         s94ecvjHSn8K+ClPIBbSY0lyR+bw4Jpae38Fjs/SiSnZX3jVlsia0JpvPZtHFTwoRArt
-         dAYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703659111; x=1704263911;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W0KmYt6leKPGTS8gsdFNq3/xtqnx97svAIcF690BCi4=;
-        b=uZF7mRgAUHz0y6OWsXluYhKwsb+MmFUnL7CGdqz9ZGQDtuVZSN7pXFr6bDgX/Tuo9Y
-         6b2T8NNUFq/snE3nAx6ci7ApAzmpQJfep6UZHJ2WQvNGhZFaZSh4J+R0CzgeqO+AT5Ot
-         t6sZhFDj2w/tXhLd7nNQ+78W8vc8cEAO3BJ0qXIdgQd/y2jb+M4LrtxCB5F1pzbkiTkz
-         z/7F/TFCa31+b/DRFUjBZpA02SNEmq4X1BGr8MNCeGI8qOdgaYBwFHKRQuOSQkx4oDQs
-         RVqrLEXfCXHoe9Xhx6i/xlJNqewaU8xgtaQVeLC4fWpEwnwoW6E57IyQaZ+EbPk2M0eQ
-         qLLw==
-X-Gm-Message-State: AOJu0Yymj2Mv6G64N7P3pOfkfC/Q4lpnqcPN7TiRisextbeZNCMW0Fbp
-	qkA6JKnx01mQzQO1jhlBOwTLBuIszG13mw==
-X-Google-Smtp-Source: AGHT+IEMacNb4e7c2rVDbyCMMkCfOGpmFuEeBtxkp/nShuPR1YHD3gsEeJjCsuU9R+d3/MZWcDHEIQ==
-X-Received: by 2002:a05:6a00:6a04:b0:6d9:9277:b702 with SMTP id hy4-20020a056a006a0400b006d99277b702mr7200446pfb.1.1703659111130;
-        Tue, 26 Dec 2023 22:38:31 -0800 (PST)
-Received: from [10.254.10.159] ([139.177.225.237])
-        by smtp.gmail.com with ESMTPSA id n12-20020a056a0007cc00b006d9aaf468c1sm6342026pfu.203.2023.12.26.22.38.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Dec 2023 22:38:30 -0800 (PST)
-Message-ID: <5aff3bcf-ef36-45b3-8ac0-a4b19697419c@bytedance.com>
-Date: Wed, 27 Dec 2023 14:38:24 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 976735228;
+	Wed, 27 Dec 2023 06:44:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703659462; x=1735195462;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=VeQzlZbz/ixCeVbIgAPwCnOiwp06eabmtszK1CsD/84=;
+  b=K/dL7NOtT+3DCeC9wrs3xFKyBY8GMdB5THHFPUruhYMszp0YSnxYBuuS
+   ptNGd/CsNX1t2ugiBgkLopEMfFfZwg/E8cqN/TP0De4KQCjEKqOGGsS3L
+   BMIII+Xqc1F2pAZWREIn3kZr9oMT1WGoY4nCKF9xmtY+RbufWGVsr9bE3
+   bDJQULb30R9DUZdRxhrEe8JdwdyM2GVjP0XqF8aWF0td/DqUKyEKIR8YW
+   7mYhqrn7wCtVUVdiejeMp+Qsqhp2l2AcmEUM1KWY0Dw7Ih59+Zg9rmmuf
+   hKNF+qxtMVApXwe7unoMx5L501wYqkkuYpyyD+aKjlG5qFbsxr3Qj43Vq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="386842488"
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="386842488"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2023 22:44:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="771356130"
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="771356130"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2023 22:44:14 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gourry.memverge@gmail.com>
+Cc: linux-mm@kvack.org,  linux-doc@vger.kernel.org,
+  linux-fsdevel@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-api@vger.kernel.org,  x86@kernel.org,  akpm@linux-foundation.org,
+  arnd@arndb.de,  tglx@linutronix.de,  luto@kernel.org,  mingo@redhat.com,
+  bp@alien8.de,  dave.hansen@linux.intel.com,  hpa@zytor.com,
+  mhocko@kernel.org,  tj@kernel.org,  gregory.price@memverge.com,
+  corbet@lwn.net,  rakie.kim@sk.com,  hyeongtak.ji@sk.com,
+  honggyu.kim@sk.com,  vtavarespetr@micron.com,  peterz@infradead.org,
+  jgroves@micron.com,  ravis.opensrc@micron.com,  sthanneeru@micron.com,
+  emirakhur@micron.com,  Hasan.Maruf@amd.com,  seungjun.ha@samsung.com
+Subject: Re: [PATCH v5 01/11] mm/mempolicy: implement the sysfs-based
+ weighted_interleave interface
+In-Reply-To: <20231223181101.1954-2-gregory.price@memverge.com> (Gregory
+	Price's message of "Sat, 23 Dec 2023 13:10:51 -0500")
+References: <20231223181101.1954-1-gregory.price@memverge.com>
+	<20231223181101.1954-2-gregory.price@memverge.com>
+Date: Wed, 27 Dec 2023 14:42:15 +0800
+Message-ID: <877cl0f8oo.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [crypto?] general protection fault in
- scatterwalk_copychunks (5)
-Content-Language: en-US
-To: Barry Song <21cnbao@gmail.com>
-Cc: Nhat Pham <nphamcs@gmail.com>, Chris Li <chrisl@kernel.org>,
- syzbot <syzbot+3eff5e51bf1db122a16e@syzkaller.appspotmail.com>,
- akpm@linux-foundation.org, davem@davemloft.net, herbert@gondor.apana.org.au,
- linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com, yosryahmed@google.com
-References: <0000000000000b05cd060d6b5511@google.com>
- <CAKEwX=OmWYivf7dg_izW8pn5s5q15+nx-vRMsV47T_qG=dep_Q@mail.gmail.com>
- <CAF8kJuPLEXEXG+4esR6MbRa3iirTrJ7-w3YCorB9iD=gnQ+G3A@mail.gmail.com>
- <CAKEwX=PaFmreqmNrisatSN1=k2kRiYgDksgDze-t=GBD=0iJDg@mail.gmail.com>
- <CAF8kJuPF5ACu8o1P7GqEQRb6p8QShyTVNuzrrY557g+SsddzWA@mail.gmail.com>
- <CAKEwX=NHdr9=hUBiZhnLZyRPsp=JwN3Vkwud2XEn3=pNurYGpQ@mail.gmail.com>
- <f27efd2e-ac65-4f6a-b1b5-c9fb0753d871@bytedance.com>
- <CAGsJ_4x31mT8TXt4c7ejJoDW1yJhyNqDmJmLZrf2LxMt7Zwg2A@mail.gmail.com>
-From: Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <CAGsJ_4x31mT8TXt4c7ejJoDW1yJhyNqDmJmLZrf2LxMt7Zwg2A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2023/12/27 14:25, Barry Song wrote:
-> On Wed, Dec 27, 2023 at 4:51 PM Chengming Zhou
-> <zhouchengming@bytedance.com> wrote:
->>
->> On 2023/12/27 08:23, Nhat Pham wrote:
->>> On Tue, Dec 26, 2023 at 3:30 PM Chris Li <chrisl@kernel.org> wrote:
->>>>
->>>> Again, sorry I was looking at the decompression side rather than the
->>>> compression side. The compression side does not even offer a safe
->>>> version of the compression function.
->>>> That seems to be dangerous. It seems for now we should make the zswap
->>>> roll back to 2 page buffer until we have a safe way to do compression
->>>> without overwriting the output buffers.
->>>
->>> Unfortunately, I think this is the way - at least until we rework the
->>> crypto/compression API (if that's even possible?).
->>> I still think the 2 page buffer is dumb, but it is what it is :(
->>
->> Hi,
->>
->> I think it's a bug in `scomp_acomp_comp_decomp()`, which doesn't use
->> the caller passed "src" and "dst" scatterlist. Instead, it uses its own
->> per-cpu "scomp_scratch", which have 128KB src and dst.
->>
->> When compression done, it uses the output req->dlen to copy scomp_scratch->dst
->> to our dstmem, which has only one page now, so this problem happened.
->>
->> I still don't know why the alg->compress(src, slen, dst, &dlen) doesn't
->> check the dlen? It seems an obvious bug, right?
->>
->> As for this problem in `scomp_acomp_comp_decomp()`, this patch below
->> should fix it. I will set up a few tests to check later.
->>
->> Thanks!
->>
->> diff --git a/crypto/scompress.c b/crypto/scompress.c
->> index 442a82c9de7d..e654a120ae5a 100644
->> --- a/crypto/scompress.c
->> +++ b/crypto/scompress.c
->> @@ -117,6 +117,7 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
->>         struct crypto_scomp *scomp = *tfm_ctx;
->>         void **ctx = acomp_request_ctx(req);
->>         struct scomp_scratch *scratch;
->> +       unsigned int dlen;
->>         int ret;
->>
->>         if (!req->src || !req->slen || req->slen > SCOMP_SCRATCH_SIZE)
->> @@ -128,6 +129,8 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
->>         if (!req->dlen || req->dlen > SCOMP_SCRATCH_SIZE)
->>                 req->dlen = SCOMP_SCRATCH_SIZE;
->>
->> +       dlen = req->dlen;
->> +
->>         scratch = raw_cpu_ptr(&scomp_scratch);
->>         spin_lock(&scratch->lock);
->>
->> @@ -145,6 +148,9 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
->>                                 ret = -ENOMEM;
->>                                 goto out;
->>                         }
->> +               } else if (req->dlen > dlen) {
->> +                       ret = -ENOMEM;
->> +                       goto out;
->>                 }
-> 
-> This can't fix the problem as crypto_scomp_compress() has written overflow data.
+Gregory Price <gourry.memverge@gmail.com> writes:
 
-No, crypto_scomp_compress() writes to its own scomp_scratch->dst memory, then copy
-to our dstmem.
+> From: Rakie Kim <rakie.kim@sk.com>
+>
+> This patch provides a way to set interleave weight information under
+> sysfs at /sys/kernel/mm/mempolicy/weighted_interleave/nodeN
+>
+> The sysfs structure is designed as follows.
+>
+>   $ tree /sys/kernel/mm/mempolicy/
+>   /sys/kernel/mm/mempolicy/ [1]
+>   =E2=94=94=E2=94=80=E2=94=80 weighted_interleave [2]
+>       =E2=94=9C=E2=94=80=E2=94=80 node0 [3]
+>       =E2=94=94=E2=94=80=E2=94=80 node1
+>
+> Each file above can be explained as follows.
+>
+> [1] mm/mempolicy: configuration interface for mempolicy subsystem
+>
+> [2] weighted_interleave/: config interface for weighted interleave policy
+>
+> [3] weighted_interleave/nodeN: weight for nodeN
+>
+> If sysfs is disabled in the config, the global interleave weights
+> will default to "1" for all nodes.
+>
+> Signed-off-by: Rakie Kim <rakie.kim@sk.com>
+> Signed-off-by: Honggyu Kim <honggyu.kim@sk.com>
+> Co-developed-by: Gregory Price <gregory.price@memverge.com>
+> Signed-off-by: Gregory Price <gregory.price@memverge.com>
+> Co-developed-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+> Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+> ---
+>  .../ABI/testing/sysfs-kernel-mm-mempolicy     |   4 +
+>  ...fs-kernel-mm-mempolicy-weighted-interleave |  22 +++
+>  mm/mempolicy.c                                | 156 ++++++++++++++++++
+>  3 files changed, 182 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-mempolicy
+>  create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-mempolicy-w=
+eighted-interleave
+>
+> diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-mempolicy b/Docume=
+ntation/ABI/testing/sysfs-kernel-mm-mempolicy
+> new file mode 100644
+> index 000000000000..2dcf24f4384a
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-kernel-mm-mempolicy
+> @@ -0,0 +1,4 @@
+> +What:		/sys/kernel/mm/mempolicy/
+> +Date:		December 2023
+> +Contact:	Linux memory management mailing list <linux-mm@kvack.org>
+> +Description:	Interface for Mempolicy
+> diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-mempolicy-weighted=
+-interleave b/Documentation/ABI/testing/sysfs-kernel-mm-mempolicy-weighted-=
+interleave
+> new file mode 100644
+> index 000000000000..aa27fdf08c19
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-kernel-mm-mempolicy-weighted-interl=
+eave
+> @@ -0,0 +1,22 @@
+> +What:		/sys/kernel/mm/mempolicy/weighted_interleave/
+> +Date:		December 2023
+> +Contact:	Linux memory management mailing list <linux-mm@kvack.org>
+> +Description:	Configuration Interface for the Weighted Interleave policy
+> +
+> +What:		/sys/kernel/mm/mempolicy/weighted_interleave/nodeN
+> +Date:		December 2023
+> +Contact:	Linux memory management mailing list <linux-mm@kvack.org>
+> +Description:	Weight configuration interface for nodeN
+> +
+> +		The interleave weight for a memory node (N). These weights are
+> +		utilized by processes which have set their mempolicy to
+> +		MPOL_WEIGHTED_INTERLEAVE and have opted into global weights by
+> +		omitting a task-local weight array.
+> +
+> +		These weights only affect new allocations, and changes at runtime
+> +		will not cause migrations on already allocated pages.
+> +
+> +		Writing an empty string resets the weight value to 1.
 
-> 
-> BTW, in many cases, hardware-accelerators drivers/crypto can do compression and
-> decompression by off-loading CPU;
-> we won't have a chance to let hardware check the dst buffer size. so
-> giving the dst buffer
-> with enough length to the hardware's dma engine is the right way. I
-> mean, we shouldn't
-> change dst from 2pages to 1page.
+I still think that it's a good idea to provide some better default
+weight value with HMAT or CDAT if available.  So, better not to make "1"
+as part of ABI?
 
-But how do we know 2 pages is enough for any compression algorithm?
+> +
+> +		Minimum weight: 1
 
-Thanks.
+Can weight be "0"?  Do we need a way to specify that a node don't want
+to participate weighted interleave?
 
-> 
->>                 scatterwalk_map_and_copy(scratch->dst, req->dst, 0, req->dlen,
->>                                          1);
-> 
-> 
-> Thanks
-> Barry
+> +		Maximum weight: 255
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 10a590ee1c89..0e77633b07a5 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -131,6 +131,8 @@ static struct mempolicy default_policy =3D {
+>=20=20
+>  static struct mempolicy preferred_node_policy[MAX_NUMNODES];
+>=20=20
+> +static char iw_table[MAX_NUMNODES];
+> +
+
+It's kind of obscure whether "char" is "signed" or "unsigned".  Given
+the max weight is 255 above, it's better to use "u8"?
+
+And, we may need a way to specify whether the weight has been overridden
+by the user.  A special value (such as 255) can be used for that.  If
+so, the maximum weight should be 254 instead of 255.  As a user space
+interface, is it better to use 100 as the maximum value?
+
+>  /**
+>   * numa_nearest_node - Find nearest node by state
+>   * @node: Node id to start the search
+> @@ -3067,3 +3069,157 @@ void mpol_to_str(char *buffer, int maxlen, struct=
+ mempolicy *pol)
+>  		p +=3D scnprintf(p, buffer + maxlen - p, ":%*pbl",
+>  			       nodemask_pr_args(&nodes));
+>  }
+> +
+> +#ifdef CONFIG_SYSFS
+> +struct iw_node_attr {
+> +	struct kobj_attribute kobj_attr;
+> +	int nid;
+> +};
+> +
+> +static ssize_t node_show(struct kobject *kobj, struct kobj_attribute *at=
+tr,
+> +			 char *buf)
+> +{
+> +	struct iw_node_attr *node_attr;
+> +
+> +	node_attr =3D container_of(attr, struct iw_node_attr, kobj_attr);
+> +	return sysfs_emit(buf, "%d\n", iw_table[node_attr->nid]);
+> +}
+> +
+> +static ssize_t node_store(struct kobject *kobj, struct kobj_attribute *a=
+ttr,
+> +			  const char *buf, size_t count)
+> +{
+> +	struct iw_node_attr *node_attr;
+> +	unsigned char weight =3D 0;
+> +
+> +	node_attr =3D container_of(attr, struct iw_node_attr, kobj_attr);
+> +	/* If no input, set default weight to 1 */
+> +	if (count =3D=3D 0 || sysfs_streq(buf, ""))
+> +		weight =3D 1;
+> +	else if (kstrtou8(buf, 0, &weight) || !weight)
+> +		return -EINVAL;
+> +
+> +	iw_table[node_attr->nid] =3D weight;
+
+kstrtou8(), "unsigned char weight", "char iw_table[]" isn't completely
+consistent.  It's better to make them consistent?
+
+> +	return count;
+> +}
+> +
+> +static struct iw_node_attr *node_attrs[MAX_NUMNODES];
+> +
+> +static void sysfs_wi_node_release(struct iw_node_attr *node_attr,
+> +				  struct kobject *parent)
+> +{
+> +	if (!node_attr)
+> +		return;
+> +	sysfs_remove_file(parent, &node_attr->kobj_attr.attr);
+> +	kfree(node_attr->kobj_attr.attr.name);
+> +	kfree(node_attr);
+> +}
+> +
+> +static void sysfs_mempolicy_release(struct kobject *mempolicy_kobj)
+> +{
+> +	int i;
+> +
+> +	for (i =3D 0; i < MAX_NUMNODES; i++)
+> +		sysfs_wi_node_release(node_attrs[i], mempolicy_kobj);
+
+IIUC, if this is called in error path (such as, in
+add_weighted_interleave_group()), some node_attrs[] element may be
+"NULL"?
+
+> +	kobject_put(mempolicy_kobj);
+> +}
+> +
+> +static const struct kobj_type mempolicy_ktype =3D {
+> +	.sysfs_ops =3D &kobj_sysfs_ops,
+> +	.release =3D sysfs_mempolicy_release,
+> +};
+> +
+> +static int add_weight_node(int nid, struct kobject *wi_kobj)
+> +{
+> +	struct iw_node_attr *node_attr;
+> +	char *name;
+> +
+> +	node_attr =3D kzalloc(sizeof(*node_attr), GFP_KERNEL);
+> +	if (!node_attr)
+> +		return -ENOMEM;
+> +
+> +	name =3D kasprintf(GFP_KERNEL, "node%d", nid);
+> +	if (!name) {
+> +		kfree(node_attr);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	sysfs_attr_init(&node_attr->kobj_attr.attr);
+> +	node_attr->kobj_attr.attr.name =3D name;
+> +	node_attr->kobj_attr.attr.mode =3D 0644;
+> +	node_attr->kobj_attr.show =3D node_show;
+> +	node_attr->kobj_attr.store =3D node_store;
+> +	node_attr->nid =3D nid;
+> +
+> +	if (sysfs_create_file(wi_kobj, &node_attr->kobj_attr.attr)) {
+> +		kfree(node_attr->kobj_attr.attr.name);
+> +		kfree(node_attr);
+> +		pr_err("failed to add attribute to weighted_interleave\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	node_attrs[nid] =3D node_attr;
+> +	return 0;
+> +}
+> +
+> +static int add_weighted_interleave_group(struct kobject *root_kobj)
+> +{
+> +	struct kobject *wi_kobj;
+> +	int nid, err;
+> +
+> +	wi_kobj =3D kzalloc(sizeof(struct kobject), GFP_KERNEL);
+> +	if (!wi_kobj)
+> +		return -ENOMEM;
+> +
+> +	err =3D kobject_init_and_add(wi_kobj, &mempolicy_ktype, root_kobj,
+> +				   "weighted_interleave");
+> +	if (err) {
+> +		kfree(wi_kobj);
+> +		return err;
+> +	}
+> +
+> +	memset(node_attrs, 0, sizeof(node_attrs));
+> +	for_each_node_state(nid, N_POSSIBLE) {
+> +		err =3D add_weight_node(nid, wi_kobj);
+> +		if (err) {
+> +			pr_err("failed to add sysfs [node%d]\n", nid);
+> +			break;
+> +		}
+> +	}
+> +	if (err)
+> +		kobject_put(wi_kobj);
+> +	return 0;
+> +}
+> +
+> +static int __init mempolicy_sysfs_init(void)
+> +{
+> +	int err;
+> +	struct kobject *root_kobj;
+> +
+> +	memset(&iw_table, 1, sizeof(iw_table));
+> +
+> +	root_kobj =3D kobject_create_and_add("mempolicy", mm_kobj);
+> +	if (!root_kobj) {
+> +		pr_err("failed to add mempolicy kobject to the system\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	err =3D add_weighted_interleave_group(root_kobj);
+> +
+> +	if (err)
+> +		kobject_put(root_kobj);
+> +	return err;
+> +
+> +}
+> +#else
+> +static int __init mempolicy_sysfs_init(void)
+> +{
+> +	/*
+> +	 * if sysfs is not enabled MPOL_WEIGHTED_INTERLEAVE defaults to
+> +	 * MPOL_INTERLEAVE behavior, but is still defined separately to
+> +	 * allow task-local weighted interleave to operate as intended.
+> +	 */
+> +	memset(&iw_table, 1, sizeof(iw_table));
+> +	return 0;
+> +}
+> +#endif /* CONFIG_SYSFS */
+> +late_initcall(mempolicy_sysfs_init);
+
+--
+Best Regards,
+Huang, Ying
 
