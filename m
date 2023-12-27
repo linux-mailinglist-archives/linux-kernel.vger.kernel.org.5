@@ -1,95 +1,209 @@
-Return-Path: <linux-kernel+bounces-12055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA41B81EF81
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:43:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7641781EF83
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:44:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82FAE1F2207A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:43:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D40C4B21DE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:44:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE3F04594B;
-	Wed, 27 Dec 2023 14:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66CC44503F;
+	Wed, 27 Dec 2023 14:44:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="fImLcrjO"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nlZK7D6u"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE934502C;
-	Wed, 27 Dec 2023 14:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703688187; x=1704292987; i=markus.elfring@web.de;
-	bh=qJhNb+kflSF1W8E0uefEQKaq7Lmn3gr9mOpVQlydGAM=;
-	h=X-UI-Sender-Class:Date:To:From:Subject:Cc;
-	b=fImLcrjOQv1M2gBUJ9+AmQ7HgWVkmqfCT+qA2E0bzmefyQ1fc0RDrY6btGR6wAmj
-	 XQDgLCeEAbUZ0XjZ3yrMtCWIxn8grVwBpOzEs+OZwzVcycVJV5pwjC247+913WwlR
-	 GjW9CNOvKox5pkXuyOP7QloxefEqcNj0GiNaiRwrAoigKZVfEwTWnY/vjPrru0hs1
-	 WZF29NqLX2V+D6dnH4ADubzW9BhoVDErIaZpZZ7SB5rVy3Dlt6AFB9Q7HFSKViH1v
-	 4jN4TlQwZgSEbblJkRnwHfL8XnDNzylPZ1bXseUINk99OmoGgvb/DcT4GNYvfzWS3
-	 UezFww1+5QauPMe2fA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MSIJA-1rgk433024-00T993; Wed, 27
- Dec 2023 15:43:07 +0100
-Message-ID: <74183091-4c8d-4c92-b3f9-cebaacb41efd@web.de>
-Date: Wed, 27 Dec 2023 15:43:06 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2A7D45033;
+	Wed, 27 Dec 2023 14:44:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703688272; x=1735224272;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=yPPa9rWFM7AX3DTCZjkogOx1t3QAH9aY65kGtm1CcnQ=;
+  b=nlZK7D6u/7eEzENB1sGwbGoo8K+iwMmKI73yt6fcaAbMsWdqS50FDsOg
+   kZKvkYFAUQcqhibctLDFbf5cPaMOMplZU5ePXrCdN9x6Dcnh1gAM3GQCe
+   4CESm80Vzzfnll7dhSO58uNDUaRcqtiSoDJJumO5mjus4EuAJmLY4I/Kq
+   xSnw9b7umf3IcxDP/HRgL56t5r0v5t8d6BD7DMz4b2EmttAUWPDbVQANz
+   WYqvaZUF4Jwkex9q8mjEKI0enrQFAKmbbjkVSd45473n+vwHMlVuxPNdg
+   5B+ILlVU+SOoWzL5Ll7MCBtclNIWxRLxswYxYbG2VNkPvIhlSY1kQs+3z
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="3738473"
+X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
+   d="scan'208";a="3738473"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 06:44:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="951514233"
+X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
+   d="scan'208";a="951514233"
+Received: from hrmarapi-mobl1.ger.corp.intel.com ([10.249.35.233])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 06:44:27 -0800
+Date: Wed, 27 Dec 2023 16:44:21 +0200 (EET)
+From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, 
+    Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, 
+    Rob Herring <robh@kernel.org>, 
+    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>, 
+    Igor Mammedov <imammedo@redhat.com>, Lukas Wunner <lukas@wunner.de>, 
+    Mika Westerberg <mika.westerberg@linux.intel.com>, 
+    "Rafael J . Wysocki" <rafael@kernel.org>, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 7/7] PCI: Relax bridge window tail sizing rules
+In-Reply-To: <ZYWTyQpVXGFqCLZa@smile.fi.intel.com>
+Message-ID: <87751a41-2d80-71c1-502b-5286cfd613fa@linux.intel.com>
+References: <20231222122901.49538-1-ilpo.jarvinen@linux.intel.com> <20231222122901.49538-8-ilpo.jarvinen@linux.intel.com> <ZYWTyQpVXGFqCLZa@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH 0/3] mtd: ssfdc: Adjustments for ssfdcr_add_mtd()
-Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:HyvYsn29WwCEI9xxdv9RQGBTPB/DqqDr8z3qCvI7bVdjZ4jHkC3
- G/wKAnFyAhII39qmEr7wJVgY8mbhx2o8NQUlZg9VZTJ+8K/W7J1cjSj15ih7EUUP8/Ef9Bw
- EJ5lrihMreoB6jRMk86Qwdu4o5BtYc4+6Rbdb79usx+U3HWsK1bKfI2khRJh/NB0dezmFc1
- SunLP6mSJ4DVppCx803NA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:1fr8eEQ0tJU=;pBK/5erE819ePtx/PcpEJfmbBdC
- 200Muo8GOIF0KMNeeBy/acJwSq4RAVKjmjqpewB5sjoLYfJ1mGaBiZfd7xHIrLKCrii8bve9z
- GQjPWrJzv5mAKEqkiq5E1w8G7K+GTF3224TeasdccPY7Op9SGXYa3wHIF2DRWPHrtjux6p5eI
- D8OUupxkvGkA7cJKTiBJyLvYy+gAfT5f7uALSKJPDeaISaAPP1YSf5dlC/k9/uZBKmeCaV58j
- hh0dlhV3SwyNlNVdFQM6oO3Nzq6+w0uIH2rbAJbEidGIzRsnHjZVXieMCGWuEZo3qW7Wv1DLB
- tFVG29Ch422AIH8ar4RdY3k0MdHuY8f7CgVY+YV18h+4O5iCqkqZolIB/zImNtbUuk93I7r/Z
- DxPUKEocaCFK3yzQ5ytc8gmua8vD6bkgccjrNEXTI4UUlhEHQ8YV82F0WZh+WnFdX+x0RrleA
- MZOUonFJnmXsVY6dLcz80YCMKB4mKkPqUCaxtxEODQjgyhLnNv/zEbsqWGHE0dzmvmfXEjXzh
- /LUd3+ngayatFTYSfrzp9vXZ+gvpnFZyRJQ1YSS7kC8lTAJFkXh3qGcYlexO24FfSb4arFyKA
- gPJKpJW29MA4uWygLgjZnXL1EbVpTtrpFo2+TfjvoLD90uKF8o89DZDTZlTPU14+L+uE6R+Fv
- T756oa1ZqbIBUtlB6wmpYBDb028VvNGjWxzjMiu2KZMKYhS50rnllD79BnPiJK6BmpYDDffTm
- dKrhlOAwjdKImggd5MDPQAgAl+L5HdDy+dI0IZ7fkJPMeMftMK9ReJFnlw8hGPiB2MPYyS9Pl
- adWtq6/Pedqu65yG7Soll2sVODuh0HyPR+MIu/u2+vUroJv8cNGi0g4vja8KI6uNaxZpAGd8h
- f7NG7z7DFxmzgV+XsCasXFSdVTeft9xP1Zw7xVdI7mNbTwixjpeUcWDT+SRE0JBzzkW3BPpw9
- +HKOPw==
+Content-Type: multipart/mixed; boundary="8323329-935243227-1703688270=:2838"
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 27 Dec 2023 15:38:42 +0100
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-A few update suggestions were taken into account
-from static source code analysis.
+--8323329-935243227-1703688270=:2838
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8BIT
 
-Markus Elfring (3):
-  One function call less after error detection
-  Fix indentation
-  Improve a size determination
+On Fri, 22 Dec 2023, Andy Shevchenko wrote:
 
- drivers/mtd/ssfdc.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+> On Fri, Dec 22, 2023 at 02:29:01PM +0200, Ilpo Järvinen wrote:
+> > During remove & rescan cycle, PCI subsystem will recalculate and adjust
+> > the bridge window sizing that was initially done by "BIOS". The size
+> > calculation is based on the required alignment of the largest resource
+> > among the downstream resources as per pbus_size_mem() (unimportant or
+> > zero parameters marked with "..."):
+> > 
+> > 	min_align = calculate_mem_align(aligns, max_order);
+> > 	size0 = calculate_memsize(size, ..., min_align);
+> > 
+> > and then in calculate_memsize():
+> > 	size = ALIGN(max(size, ...) + ..., align);
+> > 
+> > If the original bridge window sizing tried to conserve space, this will
+> > lead to massive increase of the required bridge window size when the
+> > downstream has a large disparity in BAR sizes. E.g., with 16MiB and
+> > 16GiB BARs this results in 32GiB bridge window size even if 16MiB BAR
+> > does not require gigabytes of space to fit.
+> > 
+> > When doing remove & rescan for a bus that contains such a PCI device, a
+> > larger bridge window is suddenly required on rescan but when there is a
+> > bridge window upstream that is already assigned based on the original
+> > size, it cannot be enlarged to the new requirement. This causes the
+> > allocation of the bridge window to fail (0x600000000 > 0x400ffffff):
+> > 
+> > pci 0000:02:01.0: PCI bridge to [bus 03]
+> > pci 0000:02:01.0:   bridge window [mem 0x40400000-0x405fffff]
+> > pci 0000:02:01.0:   bridge window [mem 0x6000000000-0x6400ffffff 64bit pref]
+> > pci 0000:01:00.0: PCI bridge to [bus 02-04]
+> > pci 0000:01:00.0:   bridge window [mem 0x40400000-0x406fffff]
+> > pci 0000:01:00.0:   bridge window [mem 0x6000000000-0x6400ffffff 64bit pref]
+> > ...
+> > pci_bus 0000:03: busn_res: [bus 03] is released
+> > pci 0000:03:00.0: reg 0x10: [mem 0x6400000000-0x6400ffffff 64bit pref]
+> > pci 0000:03:00.0: reg 0x18: [mem 0x6000000000-0x63ffffffff 64bit pref]
+> > pci 0000:03:00.0: reg 0x30: [mem 0x40400000-0x405fffff pref]
+> > pci 0000:02:01.0: PCI bridge to [bus 03]
+> > pci 0000:02:01.0:   bridge window [mem 0x40400000-0x405fffff]
+> > pci 0000:02:01.0:   bridge window [mem 0x6000000000-0x6400ffffff 64bit pref]
+> > pci 0000:02:01.0: BAR 9: no space for [mem size 0x600000000 64bit pref]
+> > pci 0000:02:01.0: BAR 9: failed to assign [mem size 0x600000000 64bit pref]
+> > pci 0000:02:01.0: BAR 8: assigned [mem 0x40400000-0x405fffff]
+> > pci 0000:03:00.0: BAR 2: no space for [mem size 0x400000000 64bit pref]
+> > pci 0000:03:00.0: BAR 2: failed to assign [mem size 0x400000000 64bit pref]
+> > pci 0000:03:00.0: BAR 0: no space for [mem size 0x01000000 64bit pref]
+> > pci 0000:03:00.0: BAR 0: failed to assign [mem size 0x01000000 64bit pref]
+> > pci 0000:03:00.0: BAR 6: assigned [mem 0x40400000-0x405fffff pref]
+> > pci 0000:02:01.0: PCI bridge to [bus 03]
+> > pci 0000:02:01.0:   bridge window [mem 0x40400000-0x405fffff]
+> > 
+> > This is a major surprise for users who are suddenly left with a PCIe
+> > device that was working fine with the original bridge window sizing.
+> > 
+> > Even if the already assigned bridge window could be enlarged by
+> > reallocation in some cases (something the current code does not attempt
+> > to do), it is not possible in general case and the large amount of
+> > wasted space at the tail of the bridge window may lead to other
+> > resource exhaustion problems on Root Complex level (think of multiple
+> > PCIe cards with VFs and BAR size disparity in a single system).
+> > 
+> > PCI specifications only expect natural alignment for BARs (PCI Express
+> > Base Specification, rev. 6.1 sect. 7.5.1.2.1) and minimum of 1MiB
+> > alignment for the bridge window (PCI Express Base Specification,
+> > rev 6.1 sect. 7.5.1.3). The current bridge window tail alignment rule
+> > was introduced in the commit 5d0a8965aea9 ("[PATCH] 2.5.14: New PCI
+> > allocation code (alpha, arm, parisc) [2/2]") that only states:
+> > "pbus_size_mem: core stuff; tested with randomly generated sets of
+> > resources". It does not explain the motivation for the extra tail space
+> > allocated that is not truly needed by the downstream resources. As
+> > such, it is far from clear if it ever has been required by any HW.
+> > 
+> > To prevent PCIe cards with BAR size disparity from becoming unusable
+> > after remove & rescan cycle, attempt to do a truly minimal allocation
+> > for memory resources if needed. First check if the normally calculated
+> > bridge window will not fit into an already assigned upstream resource.
+> > In such case, try with relaxed bridge window tail sizing rules instead
+> > where no extra tail space is requested beyond what the downstream
+> > resources require. Only enforce the alignment requirement of the bridge
+> > window itself (normally 1MiB).
+> > 
+> > With this patch, the resources are successfully allocated:
+> > 
+> > pci 0000:02:01.0: PCI bridge to [bus 03]
+> > pci 0000:02:01.0:   bridge window [mem 0x40400000-0x405fffff]
+> > pci 0000:02:01.0:   bridge window [mem 0x6000000000-0x6400ffffff 64bit pref]
+> > pci 0000:02:01.0: bridge window [mem 0x6000000000-0x6400ffffff 64bit pref] to [bus 03] requires relaxed alignment rules
+> > pci 0000:02:01.0: BAR 9: assigned [mem 0x6000000000-0x6400ffffff 64bit pref]
+> > pci 0000:02:01.0: BAR 8: assigned [mem 0x40400000-0x405fffff]
+> > pci 0000:03:00.0: BAR 2: assigned [mem 0x6000000000-0x63ffffffff 64bit pref]
+> > pci 0000:03:00.0: BAR 0: assigned [mem 0x6400000000-0x6400ffffff 64bit pref]
+> > pci 0000:03:00.0: BAR 6: assigned [mem 0x40400000-0x405fffff pref]
+> > pci 0000:02:01.0: PCI bridge to [bus 03]
+> > pci 0000:02:01.0:   bridge window [mem 0x40400000-0x405fffff]
+> > pci 0000:02:01.0:   bridge window [mem 0x6000000000-0x6400ffffff 64bit pref]
+> > 
+> > This patch draws inspiration from the initial investigations and work
+> > by Mika Westerberg.
 
-=2D-
-2.43.0
+> > +			if (!r || r == &ioport_resource || r == &iomem_resource)
+> > +				continue;
+> 
+> > +			if (!r->parent || (r->flags & mask) != type)
+> 
+> Thinking more about these checks, r->parent should be NULL for the root
+> resources, hence this check basically covers the second part of the above.
+>
+> But like you said it's a material for a separate investigation.
 
+This new argument, however, is more convincing than the one you presented 
+earlier. It is indeed true that even if we'd somehow end up into one of 
+those root resources, its ->parent should be NULL (which differentiates 
+this code from the other function which doesn't have similar ->parent 
+check).
+
+Also, the code has evolved to stop at the Root Port so it's another thing 
+which should prevent even reaching that far.
+
+> > +	    pbus_upstream_assigned_limit(bus, mask | IORESOURCE_PREFETCH, type,
+> > +					 size0, add_align)) {
+> 
+> One line?
+
+I don't think so, 101 chars.
+
+-- 
+ i.
+
+--8323329-935243227-1703688270=:2838--
 
