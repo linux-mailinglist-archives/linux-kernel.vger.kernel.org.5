@@ -1,101 +1,100 @@
-Return-Path: <linux-kernel+bounces-11963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A095E81EE42
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:35:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B9B481EE46
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55E3F1F21CD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:35:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DBDF1C2184B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D37044378;
-	Wed, 27 Dec 2023 10:35:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CSe30+oL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292C844373;
+	Wed, 27 Dec 2023 10:42:23 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFFAB43179;
-	Wed, 27 Dec 2023 10:35:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E423C433C7;
-	Wed, 27 Dec 2023 10:35:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703673322;
-	bh=CLApfWGlPigge9o3aRXGuWQYw9nh9nmKCHBY6z1XJXE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CSe30+oLZFgsf5gy58cS+JuPIOHfXK1FNnKMt8yZaGgjyuk1PJaruqVAPuT3cUTnn
-	 fcCur28tApDHwHXYCdB73W5b7gnOhQ4YfpZRgY4zPKuQQ3LdBc7+WkIm+5vGnNI3Q8
-	 e5iMyqRUifybvINZxNWHvqPgxyIzcDZxA/YEFSNrTojSFkBAFTamNI4REEFr3Vm6kX
-	 ITE+Gl7/mWKxYeWQ6JtuDZCS+t/QACbimdEYj8/CPoJAVaZmVBPtmg9UBASc/reVGi
-	 Q1XcQhi/Sul+fOVTqtu8ogNOswgfPdwFrEqYGNjnFGo+Kqwi2gQli9ziRdw5DauMtY
-	 QL1oFm7C+aS7w==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rIRFs-0002tg-2p;
-	Wed, 27 Dec 2023 11:35:16 +0100
-Date: Wed, 27 Dec 2023 11:35:16 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Felix Zhang <mrman@mrman314.tech>
-Cc: linux-bluetooth@vger.kernel.org, stable@vger.kernel.org,
-	marcan@marcan.st, bagasdotme@gmail.com, sven@svenpeter.dev,
-	alyssa@rosenzweig.io, marcel@holtmann.org, johan.hedberg@gmail.com,
-	luiz.dentz@gmail.com, orlandoch.dev@gmail.com, kekrby@gmail.com,
-	admin@kodeit.net, j@jannau.net, gargaditya08@live.com,
-	asahi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] Bluetooth: Fix Bluetooth for BCM4377 on T2 Intel
- MacBooks
-Message-ID: <ZYv95BOowY38NesX@hovoldconsulting.com>
-References: <aaa107865f4cbd61f8f9006fd3e7ac43b5d1bdad.camel@mrman314.tech>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F229844362
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 10:42:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-50-QI0vpALcOICqpEAYQ6T2Mw-1; Wed, 27 Dec 2023 10:42:11 +0000
+X-MC-Unique: QI0vpALcOICqpEAYQ6T2Mw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 27 Dec
+ 2023 10:41:53 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Wed, 27 Dec 2023 10:41:53 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Jisheng Zhang' <jszhang@kernel.org>, Paul Walmsley
+	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+	<aou@eecs.berkeley.edu>
+CC: "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Eric Biggers
+	<ebiggers@kernel.org>, Conor Dooley <conor.dooley@microchip.com>, "Qingfang
+ DENG" <dqfext@gmail.com>, Charlie Jenkins <charlie@rivosinc.com>
+Subject: RE: [PATCH v4 1/2] riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
+Thread-Topic: [PATCH v4 1/2] riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
+Thread-Index: AQHaNu5/tgkH4SyC6kWXjxrDsB1U3bC88TvA
+Date: Wed, 27 Dec 2023 10:41:53 +0000
+Message-ID: <b289d77481724391ad75c585b82506d7@AcuMS.aculab.com>
+References: <20231225044207.3821-1-jszhang@kernel.org>
+ <20231225044207.3821-2-jszhang@kernel.org>
+In-Reply-To: <20231225044207.3821-2-jszhang@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aaa107865f4cbd61f8f9006fd3e7ac43b5d1bdad.camel@mrman314.tech>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 25, 2023 at 03:21:04PM -0500, Felix Zhang wrote:
-> Starting v6.5, Bluetooth does not work at all on my T2
-> MacBookAir9,1 with the BCM4377 chip.  When I boot up the computer,
-> go into bluetoothctl, and then try to run commands like scan on,
-> show, list, it returns "No default controller available."  I have
-> tried reloading the kernel module, in which the log outputs
-> "{Added,Removed} hci0 (unconfigured)."  With this patch, I
-> am able to use Bluetooth as normal without any errors regarding
-> hci0 being unconfigured.  However, an issue is still present
-> where sometimes hci_bcm4377 will have to be reloaded in order to
-> get bluetooth to work.  I believe this was still present before
-> the previously mentioned commit.
-> 
-> I would also like to thank Kerem Karabay <kekrby@gmail.com> for
-> assisting me with this patch.
-> 
-> Fixes: 6945795bc81a ("Bluetooth: fix use-bdaddr-property quirk")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Felix Zhang <mrman@mrman314.tech>
-> ---
-> v4:
-> * Adjust the format to pass the CI (again).
-> * Shorten description
+From: Jisheng Zhang
+> Sent: 25 December 2023 04:42
+>=20
+> Some riscv implementations such as T-HEAD's C906, C908, C910 and C920
+> support efficient unaligned access, for performance reason we want
+> to enable HAVE_EFFICIENT_UNALIGNED_ACCESS on these platforms. To
+> avoid performance regressions on other non efficient unaligned access
+> platforms, HAVE_EFFICIENT_UNALIGNED_ACCESS can't be globally selected.
 
-As explained here:
+How efficient are these EFFICIENT_UNALIGNED_ACCESS ?
 
-	https://lore.kernel.org/all/ZYv8tp3fMiAqK8OI@hovoldconsulting.com/
+For single word accesses it doesn't matter much (since they don't fault).
+But for memcpy() (and similar) if they are slightly slow (eg the same
+as two aligned accesses) it is likely still worth doing misaligned
+transfers for both ends and aligned transfers for the middle.
 
-I don't this is necessarily the right fix. The BD_ADDR quirk property
-should not be set unconditionally but it is still needed for devices
-that lack storage for a unique device address.
+For example, on modern x86 it really isn't worth worrying about
+misaligned transfers of 64bit registers.
+AFAICT accesses within a cacheline just use byte enables - so are zero
+cost. Accesses that cross cache line boundaries do get split - but the
+out-of-order execute, store-buffer and the ability to do two reads in
+each clock cycle make the overall cost only just measurable.
 
-So the following fix is needed either way and is probably all that is
-needed here:
+Not sure how the various RISC-V cpu compare though.
+You might get an extra clock delay a lot more often.
+So, while mostly you 'don't care' about the alignment, there may
+still be a few places where it does matter.
 
-	https://lore.kernel.org/lkml/20231227101003.10534-1-johan+linaro@kernel.org/
+=09David
 
-Johan
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
+
 
