@@ -1,109 +1,84 @@
-Return-Path: <linux-kernel+bounces-11758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECFF281EB43
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 02:22:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64A0A81EB45
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 02:23:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03D5D1C22160
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 01:22:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06128B221FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 01:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD311FD9;
-	Wed, 27 Dec 2023 01:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FB428FA;
+	Wed, 27 Dec 2023 01:23:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="xNkGEoU8"
+	dkim=pass (2048-bit key) header.d=cs.ucla.edu header.i=@cs.ucla.edu header.b="QuRx2MiE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mail.cs.ucla.edu (mail.cs.ucla.edu [131.179.128.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E77D61C3E;
-	Wed, 27 Dec 2023 01:22:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=SuZFcoL6i0kMdM6kD/totFTlC3QefOClRnBM4XrBqqI=; b=xNkGEoU8W2YOPy99YSbSwfTb2X
-	9TVDUtwsIvSZFHkSIErhjTrIyzaO8yvHnT/vmaQsfQO6ZP70iWmZ+UHO0HJ8LARfQ/2ewkB8g4x4A
-	eDH2pNJTDmpSftzLOXuqeuxMCEFRd82lU/AzSCNF9kJjJjVItMZVyP05pMw9YIDnARTjDsULCgsJP
-	4N8sJ7+RFRlakKrvUObPc4MAsa1SkZxQvsc/MQ/i04RlF0UW0cFlyJeefmT/YHMXpdf1H+wi65s1Z
-	cSNRbWFVWH/mJTWchgOe6cz5pyAAevJwxWscvdR33zEM7591nLfBOrqcMryHgbf6tTR1bVVwOfUOA
-	NKyX1H4g==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIId9-00DlNz-19;
-	Wed, 27 Dec 2023 01:22:43 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887D92563
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 01:22:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.ucla.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cs.ucla.edu
+Received: from localhost (localhost [127.0.0.1])
+	by mail.cs.ucla.edu (Postfix) with ESMTP id B86BE3C011BD7
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 17:22:57 -0800 (PST)
+Received: from mail.cs.ucla.edu ([127.0.0.1])
+	by localhost (mail.cs.ucla.edu [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id jxnYNEoBAdFu for <linux-kernel@vger.kernel.org>;
+	Tue, 26 Dec 2023 17:22:57 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.cs.ucla.edu (Postfix) with ESMTP id 301343C011BD8
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 17:22:57 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.cs.ucla.edu 301343C011BD8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cs.ucla.edu;
+	s=9D0B346E-2AEB-11ED-9476-E14B719DCE6C; t=1703640177;
+	bh=FsbHtOvJgwS/hOaAhmUeU44rd6JB5JF9YpIG2bBxBuk=;
+	h=Date:From:To:Message-ID:MIME-Version;
+	b=QuRx2MiEu6QedgLW/X6B54SuzzqaJ6FD9bu/OnLXlTtVww6SnQbxF0HFHzbJYl6uh
+	 RzyRzLVUoOPNmn/4+DSXh+EK+8jCLlpyvZNpxkVP+cHOjxEkmydcGp3XHbz3dd08ze
+	 zgVTghiGatRh1i1AXwxAz8niXqwThAqLWdGZvyneyzYIEczxQPhvvFwKRBHyAG4pvV
+	 /DYBH7TPxQMufeBrgQd6cB4xtKRXVQ69Q/uVoHaQqf4Ax5hRjPxULOVn6mCgmCqOsI
+	 AlnoK29GEXEPvRLTDn7kfwpFC9FSF7e0f397A4btjAdGSRZALL3Ai95WunrlBaNNjB
+	 186TIofEDW0IQ==
+X-Virus-Scanned: amavisd-new at mail.cs.ucla.edu
+Received: from mail.cs.ucla.edu ([127.0.0.1])
+	by localhost (mail.cs.ucla.edu [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id lECc4gykTIZC for <linux-kernel@vger.kernel.org>;
+	Tue, 26 Dec 2023 17:22:57 -0800 (PST)
+Received: from mail.cs.ucla.edu (mail.cs.ucla.edu [131.179.128.66])
+	by mail.cs.ucla.edu (Postfix) with ESMTP id 1BAC43C011BD7
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 17:22:57 -0800 (PST)
+Date: Tue, 26 Dec 2023 17:22:57 -0800 (PST)
+From: Sam Kumar <samkumar@cs.ucla.edu>
 To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Bibo Mao <maobibo@loongson.cn>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	WANG Xuerui <kernel@xen0n.name>,
-	kvm@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH v2] LoongArch: KVM: add returns to SIMD stubs
-Date: Tue, 26 Dec 2023 17:22:40 -0800
-Message-ID: <20231227012240.6545-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+Message-ID: <326262860.30503812.1703640177089.JavaMail.zimbra@cs.ucla.edu>
+Subject: Tracking Page Faults in Another Process
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: Zimbra 9.0.0_GA_4546 (ZimbraWebClient - FF120 (Linux)/9.0.0_GA_4546)
+Thread-Index: wU/rUzj5ozItGbuOsWuMTb6gUHUa/g==
+Thread-Topic: Tracking Page Faults in Another Process
 
-The stubs for kvm_own/lsx()/kvm_own_lasx() when CONFIG_CPU_HAS_LSX or
-CONFIG_CPU_HAS_LASX is not defined should have a return value since they
-return an int, so add "return -EINVAL;" to the stubs.
-Fixes the build error:
+Hello, 
+I'm writing a performance enhancement tool as a user program for Linux. I wanted to ask about possible ways to achieve this given existing Linux APIs. I also wanted to ask about ideas I have for extending the kernel to implement this---if there's appetite for them, then someone (perhaps myself) may contribute a patch implementing them. 
 
-In file included from ../arch/loongarch/include/asm/kvm_csr.h:12,
-                 from ../arch/loongarch/kvm/interrupt.c:8:
-../arch/loongarch/include/asm/kvm_vcpu.h: In function 'kvm_own_lasx':
-../arch/loongarch/include/asm/kvm_vcpu.h:73:39: error: no return statement in function returning non-void [-Werror=return-type]
-   73 | static inline int kvm_own_lasx(struct kvm_vcpu *vcpu) { }
+I am using userfaultfd to track page faults in the target process. I need to "mark" a page in another process, so that any future read or write to that page will result in a page fault captured by userfaultfd. userfaultfd provides a "write-protect" mode, but it only tracks writes to a page; I want to also track reads . So I'm wondering whether userfaultfd could be extended to also support a "read-write-protect" mode that allows for marking pages as both read-protected and write-protected, and detects subsequent page faults on those pages for both reads and writes? If there is any ongoing effort to implement this I would be curious to know; otherwise, if the community thinks it's a good idea, then someone (perhaps myself) may contribute a patch for this. 
 
-Fixes: 118e10cd893d ("LoongArch: KVM: Add LASX (256bit SIMD) support")
-Fixes: db1ecca22edf ("LoongArch: KVM: Add LSX (128bit SIMD) support")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Bibo Mao <maobibo@loongson.cn>
-Cc: Tianrui Zhao <zhaotianrui@loongson.cn>
-Cc: Huacai Chen <chenhuacai@loongson.cn>
-Cc: WANG Xuerui <kernel@xen0n.name>
-Cc: kvm@vger.kernel.org
-Cc: loongarch@lists.linux.dev
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
----
-v2: also update kvm_own_lsx() as requested by Huacai
+An alternative I looked into, to force a future page fault on a page, is process_madvise. Unfortunately, MADV_PAGEOUT doesn't work on pages that are mapped multiple times (see https://elixir.bootlin.com/linux/v6.3.8/source/mm/madvise.c#L479). The MADV_DONTNEED option would work for at least part of my use case, but unfortunately it is not supported with process_madvise (see https://patchwork.kernel.org/project/linux-mm/cover/20210926161259.238054-1-namit@vmware.com/).
 
- arch/loongarch/include/asm/kvm_vcpu.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+If there's appetite for extending the kernel with a read-write-protect mode for userfaultfd, or with support for process_madvise(MADV_DONTNEED), then perhaps I can contribute this. Alternatively, if such extensions are unnecessary because the kernel provides another way of achieving this functionality, then I would love to know! 
 
-diff -- a/arch/loongarch/include/asm/kvm_vcpu.h b/arch/loongarch/include/asm/kvm_vcpu.h
---- a/arch/loongarch/include/asm/kvm_vcpu.h
-+++ b/arch/loongarch/include/asm/kvm_vcpu.h
-@@ -60,7 +60,7 @@ int kvm_own_lsx(struct kvm_vcpu *vcpu);
- void kvm_save_lsx(struct loongarch_fpu *fpu);
- void kvm_restore_lsx(struct loongarch_fpu *fpu);
- #else
--static inline int kvm_own_lsx(struct kvm_vcpu *vcpu) { }
-+static inline int kvm_own_lsx(struct kvm_vcpu *vcpu) { return -EINVAL; }
- static inline void kvm_save_lsx(struct loongarch_fpu *fpu) { }
- static inline void kvm_restore_lsx(struct loongarch_fpu *fpu) { }
- #endif
-@@ -70,7 +70,7 @@ int kvm_own_lasx(struct kvm_vcpu *vcpu);
- void kvm_save_lasx(struct loongarch_fpu *fpu);
- void kvm_restore_lasx(struct loongarch_fpu *fpu);
- #else
--static inline int kvm_own_lasx(struct kvm_vcpu *vcpu) { }
-+static inline int kvm_own_lasx(struct kvm_vcpu *vcpu) { return -EINVAL; }
- static inline void kvm_save_lasx(struct loongarch_fpu *fpu) { }
- static inline void kvm_restore_lasx(struct loongarch_fpu *fpu) { }
- #endif
+(If you reply, please cc me at samkumar@cs.ucla.edu.) 
+
+Thanks, 
+Sam Kumar
 
