@@ -1,145 +1,131 @@
-Return-Path: <linux-kernel+bounces-12255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ADC981F202
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:57:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5BB581F204
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:58:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3718E283D4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:57:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60B03283E19
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB60C47F70;
-	Wed, 27 Dec 2023 20:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 982F8481AB;
+	Wed, 27 Dec 2023 20:58:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="PMcAMj5E"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="eFv5YW7b"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2058.outbound.protection.outlook.com [40.107.92.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D2147F71
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 20:56:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=T9a73hus1Dyt1ckaAcynhQopcAWbiRvmR8oL3fiJS6I=;
-  b=PMcAMj5EA4xBOTYKXT8VtULXIPqHckG6O8o1IkjCUQpxPF119mP7SLmJ
-   WNUx5DQxsM/fyRcVgvazyI2fHYlGGIwUufoy5+qJpbAAwPzEHaIbK6Tip
-   MBROdBl38k13HcKfF2w3F9gh2yd/sxfI44TI6OS8x0Jci4NOXWU9k5Ciz
-   w=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.04,310,1695679200"; 
-   d="scan'208";a="144161046"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 21:56:47 +0100
-Date: Wed, 27 Dec 2023 21:56:46 +0100 (CET)
-From: Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To: Ben Skeggs <bskeggs@redhat.com>, Lyude Paul <lyude@redhat.com>
-cc: linux-kernel@vger.kernel.org, oe-kbuild-all@lists.linux.dev
-Subject: drivers/gpu/drm/nouveau/nvkm/engine/fifo/chan.c:258:2-8: preceding
- lock on line 251 (fwd)
-Message-ID: <alpine.DEB.2.22.394.2312272155490.3107@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209BB47F71;
+	Wed, 27 Dec 2023 20:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q1iuGMQhDmqNplVv3qQhxLxil8+fiO/JvnUEGHudV57I47pTjVryLrV8XF3uaVOqkdiWKeebyA6x45V/aryGkvwqfGQEr4BakO5JyGDFskmk5n52o1WX/CIO+um7k2LIeN5C4jBGm4eQnwGVZ1QDdTOtq1HShiVmW2sDuEEzRNk2p/P0PZymP8R3ebddN49iGiGVFHdUIs/o96mJ2fCOUrbbEoVxtTpeSMsbPC6QJx41fZ5eaXEK16bVzct3dpicbFxxp7PKuJfnrKez3h7zcmjHdRdWEaBeFCaiuydHXDEXHwa/FXOj+HhAk+GNLeQMCfPRiV5K6zTeXlDxaTmpfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lWfHZhRNNoK050z3FabuK22xbGjyx5w/opmiAJflg50=;
+ b=j6pN1Krv1k6ZBCMVN4MVcgnRPzeLqkAXp4dzlv8L4nELFxi4pMewT/AfOFw+KR7dgdUsC3BZqNcxyf37vfz6i1fgKpZhaWzoJgsVBiW4tikon9BJmGA6xZs+NEsF7GGCFaJp4mV5DZYsx9xXCzYfALxH4CNl8/eSHWb/Yl0Ft5F6oAA5Pa/e5JyKzzYCkLqf2queEOje3uEHhUQHBjBXJNgW26vOkkqaX2ZezGvOhQKoYlPpa0s7cfSr2vkGPG7IijrbKRVpo4YglK5wvqwkwqFfEtkcu3RhgaOFyJH3aICzRSOtbK+GuSVGU48ynga503PiU+Y5Ts9gR4rhW0JcVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lWfHZhRNNoK050z3FabuK22xbGjyx5w/opmiAJflg50=;
+ b=eFv5YW7bD5bEsuzYeJ1su43ZUuNk0HP6A8dgk3pm1iVwvfLJNUDEfxFwhJHSoU/aFaMWITtdkH4TlrmMedH41V/R9WshJ7AMZn+xKlPVgEhR8BUrkBIceRrvW1OFTB9bGaMwyxCWW+nBFBvDL4wTB6Z8kYRMz9CXkxdbSjnegrT/a+5e8ibD/FSYnoFUkxgJxyhPEiRxH8kU4ds9K8MFjGniGdjwc1iF6UMzwEwN0CZczGs/i57oaS24EGB8GD4fPfoLaxmTwq69oMWRODITzI9xyYtIrq/uUAsWY5Z+QsQSi/fX6xv5ztG0Xt8SmrE9gIbBUlqbXeFoBRnZtHsGqg==
+Received: from BL0PR02CA0136.namprd02.prod.outlook.com (2603:10b6:208:35::41)
+ by LV3PR12MB9354.namprd12.prod.outlook.com (2603:10b6:408:211::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.27; Wed, 27 Dec
+ 2023 20:58:37 +0000
+Received: from BL6PEPF0001AB52.namprd02.prod.outlook.com
+ (2603:10b6:208:35:cafe::dd) by BL0PR02CA0136.outlook.office365.com
+ (2603:10b6:208:35::41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.20 via Frontend
+ Transport; Wed, 27 Dec 2023 20:58:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ BL6PEPF0001AB52.mail.protection.outlook.com (10.167.241.4) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7135.14 via Frontend Transport; Wed, 27 Dec 2023 20:58:36 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 27 Dec
+ 2023 12:58:17 -0800
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 27 Dec
+ 2023 12:58:16 -0800
+Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.6)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Wed, 27 Dec 2023 12:58:14 -0800
+Date: Wed, 27 Dec 2023 12:58:12 -0800
+From: Nicolin Chen <nicolinc@nvidia.com>
+To: Yi Liu <yi.l.liu@intel.com>
+CC: <joro@8bytes.org>, <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+	<kevin.tian@intel.com>, <robin.murphy@arm.com>, <baolu.lu@linux.intel.com>,
+	<cohuck@redhat.com>, <eric.auger@redhat.com>, <kvm@vger.kernel.org>,
+	<mjrosato@linux.ibm.com>, <chao.p.peng@linux.intel.com>,
+	<yi.y.sun@linux.intel.com>, <peterx@redhat.com>, <jasowang@redhat.com>,
+	<shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
+	<suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>,
+	<xin.zeng@intel.com>, <yan.y.zhao@intel.com>, <j.granados@samsung.com>
+Subject: Re: [PATCH v8 00/10] Add iommufd nesting (part 2/2)
+Message-ID: <ZYyP5OXxsIjIzhKt@Asurada-Nvidia>
+References: <20231227161354.67701-1-yi.l.liu@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231227161354.67701-1-yi.l.liu@intel.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB52:EE_|LV3PR12MB9354:EE_
+X-MS-Office365-Filtering-Correlation-Id: c434ebd3-9b35-4967-8ff0-08dc071e9876
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	iSAjYm/AbOB7Or5C8oEk7/aw9hzJ9i6zfuZ/zeUotzfTpzCZMTiL4ugTNPF96nJ189xtmh4iXwC6/e/RsLpIzdJma9MYo0yw693WklK1uMNkaGcsdgyVqdNpTXGKu5y+k6I7Hk9c0qJtl+Mv0IH0ppv3/1ghfzCcUI1q7KUNeZvWRd/SbK/9kedVSkCXX+Ilo9kp5ER01QVpys3N9csgbYbE6LYqgZqRwWZs3iRZ0Fh1OEEDZWWwrv+0tzU2kX5mFY/Plgm+ecU1j3wV9tgAnza0wLnUxdz1iT684EOJKCS7HPWjMDNbmTK6U+NyY5cQSatvEc/9c5uN8sjWHCTc9UXRDiODDtuL71dEKP8B6RiMQYfVLk9XCsho+er9W77pKeSUmrvMwocMWwfJcMWvkT5GpGjNJapxCvp+iCl7844GNjDIo+EIcd0xL2+zkDnllJs6kZIGRanYNONAgHoLM1hCNye1G/YM+W++P10nsUX50KRWjjIF3olRhPEFG4raJD19YxgQCgB6nNUvfG6vDfC6z27poNwixua8Yt23CMmPCMbDCIh+/stBuj3KF99WA9CKODjSSkost4SskSyJkVMo9Mbc+XP+8SFCoWf8Ggf3e8fRqsv/1LvsgMClbR8LjpxrF8fgZR872gMSDp9od7dv3IwmN4nCOBl6rpk9yJx2isrz+VP+IvViGdv9tMo8N4X0rNP+b9751YfzVy3U0E9dhMD7ytVghyI0enqtYSBUL9g23/K4Fjm/lfqhxOLlkNNimg+K9zvuXO3Z2IngOh4WChP09OgXvoCptYzNLTw=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(136003)(39860400002)(396003)(230922051799003)(1800799012)(82310400011)(186009)(64100799003)(451199024)(46966006)(36840700001)(40470700004)(40480700001)(9686003)(83380400001)(36860700001)(966005)(33716001)(356005)(7636003)(336012)(70206006)(70586007)(316002)(6916009)(82740400003)(54906003)(86362001)(478600001)(47076005)(40460700003)(55016003)(426003)(8936002)(26005)(8676002)(4326008)(558084003)(7416002)(2906002)(5660300002)(41300700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2023 20:58:36.6213
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c434ebd3-9b35-4967-8ff0-08dc071e9876
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB52.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9354
 
-Hello,
+On Wed, Dec 27, 2023 at 08:13:44AM -0800, Yi Liu wrote:
+ 
+> [2] https://github.com/yiliu1765/iommufd/tree/iommufd_nesting
 
-There is no bug here, but it could be nice to refer to the lock in the
-same way at all call sites (see line 258.
+This branch is still pointing to v7's iommufd_nesting-12212023-yi.
+Likely you should update it to v8's iommufd_nesting-12272023-yi :)
 
-julia
-
----------- Forwarded message ----------
-Date: Wed, 27 Dec 2023 22:34:45 +0800
-From: kernel test robot <lkp@intel.com>
-To: oe-kbuild@lists.linux.dev
-Cc: lkp@intel.com, Julia Lawall <julia.lawall@inria.fr>
-Subject: drivers/gpu/drm/nouveau/nvkm/engine/fifo/chan.c:258:2-8: preceding lock
-     on line 251
-
-BCC: lkp@intel.com
-CC: oe-kbuild-all@lists.linux.dev
-CC: linux-kernel@vger.kernel.org
-TO: Ben Skeggs <bskeggs@redhat.com>
-CC: Lyude Paul <lyude@redhat.com>
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   fbafc3e621c3f4ded43720fdb1d6ce1728ec664e
-commit: f48dd2936138882d7755cbbc5d9984015c75980c drm/nouveau/fifo: add new engine context tracking
-date:   1 year, 2 months ago
-:::::: branch date: 2 days ago
-:::::: commit date: 1 year, 2 months ago
-config: loongarch-randconfig-r062-20231222 (https://download.01.org/0day-ci/archive/20231227/202312272217.k0uoS8R5-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Julia Lawall <julia.lawall@inria.fr>
-| Closes: https://lore.kernel.org/r/202312272217.k0uoS8R5-lkp@intel.com/
-
-cocci warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/nouveau/nvkm/engine/fifo/chan.c:258:2-8: preceding lock on line 251
-
-vim +258 drivers/gpu/drm/nouveau/nvkm/engine/fifo/chan.c
-
-f48dd293613888 Ben Skeggs 2022-06-01  240
-f48dd293613888 Ben Skeggs 2022-06-01  241  int
-f48dd293613888 Ben Skeggs 2022-06-01  242  nvkm_chan_cctx_get(struct nvkm_chan *chan, struct nvkm_engn *engn, struct nvkm_cctx **pcctx,
-f48dd293613888 Ben Skeggs 2022-06-01  243  		   struct nvkm_client *client)
-f48dd293613888 Ben Skeggs 2022-06-01  244  {
-f48dd293613888 Ben Skeggs 2022-06-01  245  	struct nvkm_cgrp *cgrp = chan->cgrp;
-f48dd293613888 Ben Skeggs 2022-06-01  246  	struct nvkm_vctx *vctx;
-f48dd293613888 Ben Skeggs 2022-06-01  247  	struct nvkm_cctx *cctx;
-f48dd293613888 Ben Skeggs 2022-06-01  248  	int ret;
-f48dd293613888 Ben Skeggs 2022-06-01  249
-f48dd293613888 Ben Skeggs 2022-06-01  250  	/* Look for an existing channel context for this engine+VEID. */
-f48dd293613888 Ben Skeggs 2022-06-01 @251  	mutex_lock(&cgrp->mutex);
-f48dd293613888 Ben Skeggs 2022-06-01  252  	cctx = nvkm_list_find(cctx, &chan->cctxs, head,
-f48dd293613888 Ben Skeggs 2022-06-01  253  			      cctx->vctx->ectx->engn == engn && cctx->vctx->vmm == chan->vmm);
-f48dd293613888 Ben Skeggs 2022-06-01  254  	if (cctx) {
-f48dd293613888 Ben Skeggs 2022-06-01  255  		refcount_inc(&cctx->refs);
-f48dd293613888 Ben Skeggs 2022-06-01  256  		*pcctx = cctx;
-f48dd293613888 Ben Skeggs 2022-06-01  257  		mutex_unlock(&chan->cgrp->mutex);
-f48dd293613888 Ben Skeggs 2022-06-01 @258  		return 0;
-f48dd293613888 Ben Skeggs 2022-06-01  259  	}
-f48dd293613888 Ben Skeggs 2022-06-01  260
-f48dd293613888 Ben Skeggs 2022-06-01  261  	/* Nope - create a fresh one.  But, sub-context first. */
-f48dd293613888 Ben Skeggs 2022-06-01  262  	ret = nvkm_cgrp_vctx_get(cgrp, engn, chan, &vctx, client);
-f48dd293613888 Ben Skeggs 2022-06-01  263  	if (ret) {
-f48dd293613888 Ben Skeggs 2022-06-01  264  		CHAN_ERROR(chan, "vctx %d[%s]: %d", engn->id, engn->engine->subdev.name, ret);
-f48dd293613888 Ben Skeggs 2022-06-01  265  		goto done;
-f48dd293613888 Ben Skeggs 2022-06-01  266  	}
-f48dd293613888 Ben Skeggs 2022-06-01  267
-f48dd293613888 Ben Skeggs 2022-06-01  268  	/* Now, create the channel context - to track engine binding. */
-f48dd293613888 Ben Skeggs 2022-06-01  269  	CHAN_TRACE(chan, "ctor cctx %d[%s]", engn->id, engn->engine->subdev.name);
-f48dd293613888 Ben Skeggs 2022-06-01  270  	if (!(cctx = *pcctx = kzalloc(sizeof(*cctx), GFP_KERNEL))) {
-f48dd293613888 Ben Skeggs 2022-06-01  271  		nvkm_cgrp_vctx_put(cgrp, &vctx);
-f48dd293613888 Ben Skeggs 2022-06-01  272  		ret = -ENOMEM;
-f48dd293613888 Ben Skeggs 2022-06-01  273  		goto done;
-f48dd293613888 Ben Skeggs 2022-06-01  274  	}
-f48dd293613888 Ben Skeggs 2022-06-01  275
-f48dd293613888 Ben Skeggs 2022-06-01  276  	cctx->vctx = vctx;
-f48dd293613888 Ben Skeggs 2022-06-01  277  	refcount_set(&cctx->refs, 1);
-f48dd293613888 Ben Skeggs 2022-06-01  278  	refcount_set(&cctx->uses, 0);
-f48dd293613888 Ben Skeggs 2022-06-01  279  	list_add_tail(&cctx->head, &chan->cctxs);
-f48dd293613888 Ben Skeggs 2022-06-01  280  done:
-f48dd293613888 Ben Skeggs 2022-06-01  281  	mutex_unlock(&cgrp->mutex);
-f48dd293613888 Ben Skeggs 2022-06-01  282  	return ret;
-f48dd293613888 Ben Skeggs 2022-06-01  283  }
-f48dd293613888 Ben Skeggs 2022-06-01  284
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks
+Nic
 
