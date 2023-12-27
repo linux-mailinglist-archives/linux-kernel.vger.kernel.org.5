@@ -1,105 +1,112 @@
-Return-Path: <linux-kernel+bounces-12032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB97181EF1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:10:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C3C581EF1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:12:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 558AEB20DB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 13:10:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0122B1F22D42
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 13:12:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D8245023;
-	Wed, 27 Dec 2023 13:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5864744C90;
+	Wed, 27 Dec 2023 13:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fY+uziUA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uizpsKnv"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C41A446C6;
-	Wed, 27 Dec 2023 13:10:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7A0F4C433C7;
-	Wed, 27 Dec 2023 13:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F91446B3;
+	Wed, 27 Dec 2023 13:11:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8576C433C7;
+	Wed, 27 Dec 2023 13:11:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703682625;
-	bh=/jsWEPfzeo0DxCOUj3q2rwi1CbPQUhzjHOz5xIFG8uY=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=fY+uziUA8JOkaA3P+LSDCmuJMy4n5M6CSiVFeQ+2ojamq24ltnqdg8+T/u9hGug2n
-	 snhuNv/hVbA6w8tbeAjbcklbptVdwuZWkgnwm+4zkrWRvTXSuVMhiKmnv8vIYgywtd
-	 wNQ6LCJRJP4d1ZRsJH+gPfvxj3TNuBfQXgwIlaHp12B318o9a5Zbubv6l9fc6gJdGD
-	 OeDdRMZcmJ0E/ZkBmgf/vx6u0SfE86R3NJ7Gm0xm2+jBQMvpKpajFujVXSyQc4hc87
-	 d4p1KxRSyCj4f1peOZH4UPfTq5IATm6D3GCEK4G3R9nyR9TOXMc3lV+Tk/bvW4fH6M
-	 NKj3d332WxRfQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 65DD6E333D9;
-	Wed, 27 Dec 2023 13:10:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1703682713;
+	bh=BQ+I77CwuE08Ql7Mc3SjL10xeGTHrjHTtpJSRVbFe4U=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=uizpsKnve1YO07Fcubg9jv+P486oSPwJnY5wkW1UV20ysjluTSr0kkRqXSirVM1Pe
+	 aPzR8O6qmpJtvFYkRna7JbeArbYaPR1as+aSf8EZmojxAkTQIEV3xiexi4QmL4gLjg
+	 1gb8/dapdsfUtnDLSMVmVnnnH/D1qm6udjnPtR51ApqLYHuCq1FpuFKiJ1P/Xm3PE6
+	 lIV30SKqnHjfOrpD6LO9Lu985CS7lMzSnb1VpWgyaV7glQJCK+8lL7cKe2/Dx8rQM6
+	 X0bT72tTPU4CkrKmHpLX6K9ZNw9FUzxDlLBlzTA++Li/1J9QqoSXEKTgbx9nx5h7qO
+	 AHMKSE9COJ6CQ==
+Date: Wed, 27 Dec 2023 07:11:51 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>
+Cc: bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
+	will@kernel.org, robin.murphy@arm.com, lukas@wunner.de,
+	linux-pci@vger.kernel.org, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v8 4/5] iommu/vt-d: don't issue device-TLB invalidate
+ request when device is disconnected
+Message-ID: <20231227131151.GA1499234@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v9 0/9] Add MACsec support for TJA11XX C45 PHYs
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170368262541.3726.479057551410543516.git-patchwork-notify@kernel.org>
-Date: Wed, 27 Dec 2023 13:10:25 +0000
-References: <20231219145333.240323-1-radu-nicolae.pirea@oss.nxp.com>
-In-Reply-To: <20231219145333.240323-1-radu-nicolae.pirea@oss.nxp.com>
-To: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
-Cc: sd@queasysnail.net, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, andrew@lunn.ch, hkallweit1@gmail.com,
- linux@armlinux.org.uk, richardcochran@gmail.com,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- sebastian.tobuschat@oss.nxp.com, andrei.botila@oss.nxp.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231227025923.536148-5-haifeng.zhao@linux.intel.com>
 
-Hello:
+I suggest using "ATS Invalidate Request" in the subject as well.
+Otherwise we have to figure out whether "device-TLB invalidate
+request" is the same as "ATS Invalidate Request".
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+If they are the same, just use the same words.
 
-On Tue, 19 Dec 2023 16:53:24 +0200 you wrote:
-> This is the MACsec support for TJA11XX PHYs. The MACsec block encrypts
-> the ethernet frames on the fly and has no buffering. This operation will
-> grow the frames by 32 bytes. If the frames are sent back to back, the
-> MACsec block will not have enough room to insert the SecTAG and the ICV
-> and the frames will be dropped.
+On Tue, Dec 26, 2023 at 09:59:22PM -0500, Ethan Zhao wrote:
+> Except those aggressive hotplug cases - surprise remove a hotplug device
+> while its safe removal is requested and handled in process by:
 > 
-> To mitigate this, the PHY can parse a specific ethertype with some
-> padding bytes and replace them with the SecTAG and ICV. These padding
-> bytes might be dummy or might contain information about TX SC that must
-> be used to encrypt the frame.
+> 1. pull it out directly.
+> 2. turn off its power.
+> 3. bring the link down.
+> 4. just died there that moment.
 > 
-> [...]
+> etc, in a word, 'gone' or 'disconnected'.
+> 
+> Mostly are regular normal safe removal and surprise removal unplug.
+> these hot unplug handling process could be optimized for fix the ATS
+> invalidation hang issue by calling pci_dev_is_disconnected() in function
+> devtlb_invalidation_with_pasid() to check target device state to avoid
+> sending meaningless ATS invalidation request to iommu when device is gone.
+> (see IMPLEMENTATION NOTE in PCIe spec r6.1 section 10.3.1)
 
-Here is the summary with links:
-  - [net-next,v9,1/9] net: rename dsa_realloc_skb to skb_ensure_writable_head_tail
-    https://git.kernel.org/netdev/net-next/c/90abde49ea85
-  - [net-next,v9,2/9] net: macsec: use skb_ensure_writable_head_tail to expand the skb
-    https://git.kernel.org/netdev/net-next/c/b34ab3527b96
-  - [net-next,v9,3/9] net: macsec: move sci_to_cpu to macsec header
-    https://git.kernel.org/netdev/net-next/c/b1c036e835b6
-  - [net-next,v9,4/9] net: macsec: documentation for macsec_context and macsec_ops
-    https://git.kernel.org/netdev/net-next/c/eb97b9bd38f9
-  - [net-next,v9,5/9] net: macsec: revert the MAC address if mdo_upd_secy fails
-    https://git.kernel.org/netdev/net-next/c/25a00d0cd691
-  - [net-next,v9,6/9] net: macsec: introduce mdo_insert_tx_tag
-    https://git.kernel.org/netdev/net-next/c/a73d8779d61a
-  - [net-next,v9,7/9] net: phy: nxp-c45-tja11xx: add MACsec support
-    https://git.kernel.org/netdev/net-next/c/a868b486cb88
-  - [net-next,v9,8/9] net: phy: nxp-c45-tja11xx: add MACsec statistics
-    https://git.kernel.org/netdev/net-next/c/31a99fc06b0b
-  - [net-next,v9,9/9] net: phy: nxp-c45-tja11xx: implement mdo_insert_tx_tag
-    https://git.kernel.org/netdev/net-next/c/dc1a00380aa6
+Suggest "ATS Invalidate Request", capitalized exactly that way so we
+know it's a specific name of something defined in the PCIe spec.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> For safe removal, device wouldn't be removed untill the whole software
+> handling process is done, it wouldn't trigger the hard lock up issue
+> caused by too long ATS invalidation timeout wait. in safe removal path,
 
+Ditto.
 
+Capitalize "In the safe removal ..." since it starts a new sentence.
+
+> device state isn't set to pci_channel_io_perm_failure in
+> pciehp_unconfigure_device() by checking 'presence' parameter, calling
+> pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will return
+> false there, wouldn't break the function.
+> 
+> For surprise removal, device state is set to pci_channel_io_perm_failure in
+> pciehp_unconfigure_device(), means device is already gone (disconnected)
+> call pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will
+> return true to break the function not to send ATS invalidation request to
+
+Ditto.
+
+> the disconnected device blindly, thus avoid the further long time waiting
+> triggers the hard lockup.
+> 
+> safe removal & surprise removal
+> 
+> pciehp_ist()
+>    pciehp_handle_presence_or_link_change()
+>      pciehp_disable_slot()
+>        remove_board()
+>          pciehp_unconfigure_device(presence)
 
