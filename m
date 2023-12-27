@@ -1,164 +1,160 @@
-Return-Path: <linux-kernel+bounces-12233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB91D81F1B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADFD181F1B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:53:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6504F283CEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 19:53:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 686F1283CB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 19:53:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9E247F60;
-	Wed, 27 Dec 2023 19:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="cCxQQR7A"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B32547F54;
+	Wed, 27 Dec 2023 19:53:40 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 566E647F46;
-	Wed, 27 Dec 2023 19:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BRIHbjw029653;
-	Wed, 27 Dec 2023 19:52:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=ml9Y5Mp7YdpzZxYWY9a5OHUJel0QH3chfwN4pcEKVZ4=;
- b=cCxQQR7Adipzvo04b1hbj1njHzFvhA5mi8CuFR0zgHwEy60S8BstbBs+Tnb6crzQLEmM
- mVsUvf4VRP4qI4BnbGBn4lFGkCl+i8fV5/fZZecq4acHSc2flrOtn8XCLKsmq60hghIU
- 2reVJWW797st4vtRiq+PbgpCY9rjoHiCVhyWxHVaju8NowHdjGx1Zc4pKbGcdzCQA0Yd
- GnictM5Q8Lkn2MUPEIU+zjzvWu+DUXfP8D63blBdEUW2R4VYb961PupqxEdAgy1rw/X1
- TuZapMkjPr5k6PwF4TU5NyQdVrYAWWo9EDysa9HS17uu+PIp3cBidBHFo8nZC6K5WMJF uw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v8k4s0ftm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Dec 2023 19:52:46 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BRJjY6o031310;
-	Wed, 27 Dec 2023 19:52:45 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v8k4s0ft5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Dec 2023 19:52:45 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BRIbSL5017169;
-	Wed, 27 Dec 2023 19:52:44 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3v6c3k3p7t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Dec 2023 19:52:44 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BRJqhnl30474594
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 27 Dec 2023 19:52:43 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 78AA058050;
-	Wed, 27 Dec 2023 19:52:43 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 24D6958045;
-	Wed, 27 Dec 2023 19:52:41 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.140.144])
-	by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 27 Dec 2023 19:52:41 +0000 (GMT)
-Message-ID: <3bcc924ed59ecdc5fda5ab8aceeed9450a54c829.camel@linux.ibm.com>
-Subject: Re: [PATCH v8 19/24] ima: Move to LSM infrastructure
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Casey Schaufler <casey@schaufler-ca.com>,
-        Roberto Sassu
- <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, chuck.lever@oracle.com,
-        jlayton@kernel.org, neilb@suse.de, kolga@netapp.com,
-        Dai.Ngo@oracle.com, tom@talpey.com, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org, shuah@kernel.org, mic@digikod.net
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Roberto Sassu
-	 <roberto.sassu@huawei.com>
-Date: Wed, 27 Dec 2023 14:52:40 -0500
-In-Reply-To: <42fcd014-733b-41b2-9c7b-658533cd01a3@schaufler-ca.com>
-References: <20231214170834.3324559-1-roberto.sassu@huaweicloud.com>
-	 <20231214170834.3324559-20-roberto.sassu@huaweicloud.com>
-	 <c6c2d413f340d858e43aa3837abdf80cb8be9d84.camel@linux.ibm.com>
-	 <42fcd014-733b-41b2-9c7b-658533cd01a3@schaufler-ca.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7F047A51;
+	Wed, 27 Dec 2023 19:53:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6dc003289c9so128173a34.0;
+        Wed, 27 Dec 2023 11:53:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703706817; x=1704311617;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PzGvqkA+7vSK4S2dZ8/CmTeqqUn7cIuH50aZn1M+9vQ=;
+        b=aA5QtZOpz8PS2QEnyTd+HBvKv7QToIxNN92ylzF/V2eU4y2Ly46TuXI4/bLP3oyskX
+         stoMzM0ZYyoyZEGHxafk61Pz7gn7W9kgDgEJ3OxkbA1ah0VUfuI/hYXXPjK7pUFiKHAu
+         cx99ZKNKBY1gg4nOpfMx9WxNaeRpVb8qMXE/Wtt6op9GjlL5b76mIl1JuLPxkK3VcqQu
+         wzxEEXUAjrYF3KfobWpYVUEVeDvK0vGlnsvecFjR2SF6VMla9WZTYlVGUHgf8783LbKE
+         nO2LJ3x22L9nlHHHCQ3v4dkypEl4de+SiugL8kCiIkupNO32ih/KXuFgonxL5FVL3ohq
+         cA+A==
+X-Gm-Message-State: AOJu0Yx8k1RKyuEvhxAUR0k/flG4JBzaNLQCI4YlvfugoZCihlANIPte
+	fUsdm7ClQglIp4KBot9RMogqXWr6OoR3WnEsChU=
+X-Google-Smtp-Source: AGHT+IG/Ky3kwmKNdjmAEoxafNE3axXWpyvvl8+rX7EE+bMJtEIGTrxSpSorul7oLAG7YnBfwX14zB5hV3aO1laoJ0g=
+X-Received: by 2002:a4a:dc96:0:b0:594:ad62:bab9 with SMTP id
+ g22-20020a4adc96000000b00594ad62bab9mr5536266oou.1.1703706817350; Wed, 27 Dec
+ 2023 11:53:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: XBClGj1OPCFWocoUzsTfrNGAaQ8RZ3_H
-X-Proofpoint-GUID: _q93-Q7mH-WcyRhsNjOS9QLpRu8jibHP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-27_12,2023-12-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- spamscore=0 bulkscore=0 lowpriorityscore=0 mlxlogscore=792 mlxscore=0
- impostorscore=0 malwarescore=0 priorityscore=1501 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312270146
+MIME-Version: 1.0
+References: <20231219092539.3655172-1-daniel.lezcano@linaro.org>
+ <20231219092539.3655172-2-daniel.lezcano@linaro.org> <CAJZ5v0gPHwJ+02hYbp5dRx1r69BdLWr_QDKautu-RXy1MEC5LQ@mail.gmail.com>
+ <60ecab8e-7b96-469e-9bae-25c51514e6e8@linaro.org>
+In-Reply-To: <60ecab8e-7b96-469e-9bae-25c51514e6e8@linaro.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 27 Dec 2023 20:53:25 +0100
+Message-ID: <CAJZ5v0hKH7tYDur4mG8QF0GfgL+jFfW_bBc3QesUS68OQb_PMA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] thermal/debugfs: Add thermal debugfs information
+ for mitigation episodes
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, rjw@rjwysocki.net, lukasz.luba@arm.com, 
+	rui.zhang@intel.com, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2023-12-26 at 12:14 -0800, Casey Schaufler wrote:
-> On 12/26/2023 10:14 AM, Mimi Zohar wrote:
-> > On Thu, 2023-12-14 at 18:08 +0100, Roberto Sassu wrote:
-> >> From: Roberto Sassu <roberto.sassu@huawei.com>
-> >>
-> >> Move hardcoded IMA function calls (not appraisal-specific functions) from
-> >> various places in the kernel to the LSM infrastructure, by introducing a
-> >> new LSM named 'ima' (at the end of the LSM list and always enabled like
-> >> 'integrity').
-> >>
-> >> Having IMA before EVM in the Makefile is sufficient to preserve the
-> >> relative order of the new 'ima' LSM in respect to the upcoming 'evm' LSM,
-> >> and thus the order of IMA and EVM function calls as when they were
-> >> hardcoded.
-> >>
-> >> Make moved functions as static (except ima_post_key_create_or_update(),
-> >> which is not in ima_main.c), and register them as implementation of the
-> >> respective hooks in the new function init_ima_lsm().
-> >>
-> >> A slight difference is that IMA and EVM functions registered for the
-> >> inode_post_setattr, inode_post_removexattr, path_post_mknod,
-> >> inode_post_create_tmpfile, inode_post_set_acl and inode_post_remove_acl
-> >> won't be executed for private inodes. Since those inodes are supposed to be
-> >> fs-internal, they should not be of interest of IMA or EVM. The S_PRIVATE
-> >> flag is used for anonymous inodes, hugetlbfs, reiserfs xattrs, XFS scrub
-> >> and kernel-internal tmpfs files.
-> >>
-> >> Conditionally register ima_post_path_mknod() if CONFIG_SECURITY_PATH is
-> >> enabled, otherwise the path_post_mknod hook won't be available.
-> > Up to this point, enabling CONFIG_SECURITY_PATH was not required.  By
-> > making it conditional on CONFIG_SECURITY_PATH, anyone enabling IMA will
-> > also need to enable CONFIG_SECURITY_PATH.  Without it, new files will
-> > not be tagged as a "new" file.
+Hi Daniel,
+
+On Sat, Dec 23, 2023 at 12:41=E2=80=AFPM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+>
+> Hi Rafael,
+>
+> On 21/12/2023 20:26, Rafael J. Wysocki wrote:
+>
+> [ ... ]
+>
+>
+> >> +/**
+> >> + * struct tz_events - Store all events related to a mitigation episod=
+e
+> >> + *
+> >> + * The tz_events structure describes a mitigation episode.
 > >
-> > Casey, Paul, how common is it today not to enable CONFIG_SECURITY_PATH?
-> > Will enabling it just for IMA be a problem?
-> 
-> Landlock, AppArmor and TOMOYO require it. Fedora enables Landlock and Ubuntu
-> enables AppArmor. I expect that, except for "minimal" distributions, you
-> won't get any push back. If a distribution is striving for minimal, it's not
-> going to use IMA.
-> 
-> It makes me wonder if eliminating CONFIG_SECURITY_PATH might not be a
-> rational alternative.
+> > So why not call it tz_mitigation?
+>
+> A mitigation episode =3D N x tz_events
+>
+> eg.
+> trip A =3D passive cooling - cpufreq cluster0
+> trip B =3D passive cooling - cpufreq cluster0 + cluster1
+> trip C =3D active cooling + fan
+>
+> temperature trip A < trip B < trip C
+>
+> The mitigation episode, as defined, begins at trip A, and we can have
+> multiple events (eg. trip B crossed several times, trip C, then trip B
+> again etc ...).
 
-Embedded systems were the first to use IMA for file signature
-verification, not distros.               Could they have enabled
-SELinux, lockdown, and IMA?
+I understand this, but I thought that tz_events represented the entire epis=
+ode.
 
-Mimi
+> [ ... ]
+>
+> >> +       if (dfs->tz.trip_index < 0) {
+> >> +               tze =3D thermal_debugfs_tz_event_alloc(tz, now);
+> >> +               if (!tze)
+> >> +                       return;
+> >> +
+> >> +               list_add(&tze->node, &dfs->tz.tz_events);
+> >> +       }
+> >> +
+> >> +       dfs->tz.trip_index++;
+> >> +       dfs->tz.trips_crossed[dfs->tz.trip_index] =3D trip_id;
+> >
+> > So trip_index is an index into trips_crossed[] and the value is the ID
+> > of the trip passed by thermal_debug_tz_trip_up() IIUC, so the trip IDs
+> > in trips_crossed[] are always sorted by the trip temperature, in the
+> > ascending order.
+> >
+> > It would be good to write this down somewhere in a comment.
+> >
+> > And what if trip temperatures change during a mitigation episode such
+> > that the order by the trip temperature changes?
+>
+> Changing a trip point temperature during a mitigation is a general
+> question about the thermal framework.
+>
+> How the governors will behave with such a change on the fly while they
+> are in action?
+>
+> IMO, we should prevent to change a trip point temperature when this one
+> is crossed and has a cooling device bound to it.
 
+Well, it's not that simple.
+
+There are legitimate cases in which this can happen on purpose.  For
+example, the ACPI spec does not provide a way to get a trip hysteresis
+from the platform firmware and instead it recommends the firmware to
+update the trip temperature every time it is crossed on the way up in
+order to implement hysteresis.
+
+> >> +
+> >> +       tze =3D list_first_entry(&dfs->tz.tz_events, struct tz_events,=
+ node);
+> >> +       tze->trip_stats[trip_id].timestamp =3D now;
+> >> +       tze->trip_stats[trip_id].max =3D max(tze->trip_stats[trip_id].=
+max, temperature);
+> >> +       tze->trip_stats[trip_id].min =3D min(tze->trip_stats[trip_id].=
+min, temperature);
+> >> +       tze->trip_stats[trip_id].avg =3D tze->trip_stats[trip_id].avg =
++
+> >> +               (temperature - tze->trip_stats[trip_id].avg) /
+> >> +               tze->trip_stats[trip_id].count;
+> >> +
+> >> +       mutex_unlock(&dfs->lock);
+> >> +}
+>
+>
+>
+> --
 
