@@ -1,146 +1,211 @@
-Return-Path: <linux-kernel+bounces-11943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC02F81EDFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:05:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E292B81EE05
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:06:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 241A71F21C6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:05:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F74FB22021
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:06:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E122C878;
-	Wed, 27 Dec 2023 10:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB28F2D043;
+	Wed, 27 Dec 2023 10:06:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="i0yqvxdi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TusbJhgm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D136A2C688;
-	Wed, 27 Dec 2023 10:04:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703671494; x=1704276294; i=markus.elfring@web.de;
-	bh=xHDdrd92yyItWY6iNqPqDxvi3VGdAbzM/GdBjxnBIjU=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=i0yqvxdibEe/ej4aoOGhrJ+jRkN1c/4v7nVEuREJzalFp5jep2qKiJb9N8EutEY7
-	 jWLfSSEM0Fk3F0tu2FXYK+vH/P3q8U831CsjHNIHkepOKsGspQp/x30qYHjHRZDjw
-	 x9zOqgYs8BQd8jB2AgRYajo1aPr6Qlx6mwAcxD65Vgu1+wtoXsM/Idvv+4P0ZvJKu
-	 hFLV7n2Wthsgo1dWHb6PxpZMkOIBJODEeV6WOXwMzukKLr3LvNn6VQ6MkrcA8eCBj
-	 gUqerzoYx2ff56ezZjXb7PwinNy8EXOQeCpQek1sscOdzAshyax8cCCy/g6jTHF8j
-	 BhhZXSzU62GAeqh44Q==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1M59jC-1rJWi20DFk-001LeM; Wed, 27
- Dec 2023 11:04:54 +0100
-Message-ID: <3d16ddfe-f10a-4188-a9c6-e92655c0b01a@web.de>
-Date: Wed, 27 Dec 2023 11:04:53 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C5E28DAF;
+	Wed, 27 Dec 2023 10:06:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d3ef33e68dso33293125ad.1;
+        Wed, 27 Dec 2023 02:06:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703671562; x=1704276362; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XEw1e9XOhK8loeWvp+2JpD1B3sTf7+dz1HWvX7OkY0o=;
+        b=TusbJhgmL3rsF8Dn/hAeEHUdawnTVOcdCznm6j6pEGaTkQColvKFRNHMr2mLOTaLkm
+         wxwf3x4FCmCQCiikx98M4V8v7a6nHGu8at7t2RipEcWNfRuAO8D6hgYeMgPnSjz2Yaw0
+         k0N+8ZziCqW0L0q6HNhwBilwk1PG2BXnjuSiiX1gZeFZoq0k7zmhiqQVc/TCidB4nMkR
+         Yq9V9xvr03Ilo7W0IR5wGYR/z8O4oWf7dSTbpE07/DNrlD8o2kDPj7dd2qt2UQXDZiL2
+         Pr2c1GVOyr+srqi6MbvQOWfDE2knXi4NtmXfWqW7QIZORTzn3KVVivRRwZgjiH/FSNEe
+         +OOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703671562; x=1704276362;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XEw1e9XOhK8loeWvp+2JpD1B3sTf7+dz1HWvX7OkY0o=;
+        b=Xvn0lv3q7cZDal2C8rb6LXdjpKhCvGrQ8nLpNUx53DL4fBEq989uuyjEVpl1CI/B4T
+         gzZUxTluSVKSr1jo5exkN8QUPtC5qakw49I4xIa8IunlWZxumDAC9SW2eFYQI1wbS+Zb
+         IbLc+ROtbjaF67oeJTAL+mWK9/8hlFQMZFXCyF39e0d7ntlr3LJBrqH1eCsOA7yOVLqM
+         0iNuMEUTVCzrFkk+RqIlx2TOJbi92ccm8ZLdrw+EX4TgqJyNeT9A/BPQIyatYNvXrHNy
+         05UZigGXf/YO/kHJhL4mvsP2ou1WTvYnE2kbLkdl5gcH6/3wjdM8dRHISeR82pt0UUyU
+         Fr4A==
+X-Gm-Message-State: AOJu0YwoegYC1iqhkjPico+bFVfenHRv1jSz9pN7fV19zRo9IXONOzrI
+	FrAhFCsYpPmDU0zo4m/z0Hg=
+X-Google-Smtp-Source: AGHT+IE0A23XYDmcU01t8+uFS8Gp29gePwIgov5tuUl0DPEmBiz4Ke/Z418pTWmSQ1nONlmsPn7+Xw==
+X-Received: by 2002:a17:903:2988:b0:1d4:1044:87d4 with SMTP id lm8-20020a170903298800b001d4104487d4mr14263741plb.19.1703671562158;
+        Wed, 27 Dec 2023 02:06:02 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902cec500b001d07ebef623sm11577837plg.69.2023.12.27.02.06.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Dec 2023 02:06:01 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id E15C51221DDFD; Wed, 27 Dec 2023 17:05:57 +0700 (WIB)
+Date: Wed, 27 Dec 2023 17:05:56 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>, akpm@linux-foundation.org,
+	alim.akhtar@samsung.com, alyssa@rosenzweig.io,
+	asahi@lists.linux.dev, baolu.lu@linux.intel.com,
+	bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
+	david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
+	heiko@sntech.de, iommu@lists.linux.dev, jernej.skrabec@gmail.com,
+	jonathanh@nvidia.com, joro@8bytes.org,
+	krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
+	marcan@marcan.st, mhiramat@kernel.org, m.szyprowski@samsung.com,
+	paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
+	samuel@sholland.org, suravee.suthikulpanit@amd.com,
+	sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
+	tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org,
+	will@kernel.org, yu-cheng.yu@intel.com, rientjes@google.com
+Cc: Josh Don <joshdon@google.com>, YouHong Li <liyouhong@kylinos.cn>
+Subject: Re: [PATCH v3 00/10] IOMMU memory observability
+Message-ID: <ZYv3BIeEgY8LnH7U@archie.me>
+References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH 1/2] scsi: message: fusion: Improve data processing in
- mptsas_find_phyinfo_by_phys_disk_num()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-To: linux-scsi@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
- kernel-janitors@vger.kernel.org, Sathya Prakash
- <sathya.prakash@broadcom.com>, Sreekanth Reddy
- <sreekanth.reddy@broadcom.com>,
- Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-References: <c8b0d40c-2f48-46fa-8311-258985e9eee3@web.de>
-In-Reply-To: <c8b0d40c-2f48-46fa-8311-258985e9eee3@web.de>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vZmYjWY6Cm0pkfHC"
+Content-Disposition: inline
+In-Reply-To: <20231226200205.562565-1-pasha.tatashin@soleen.com>
+
+
+--vZmYjWY6Cm0pkfHC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BXTXEcL23YW2+L4v3sU1O+CqZc9VLmoulmh0iGtLNO9bLfdJ2Py
- qEWNjvHmkGprxRLQJFq38Tl2jiUPQ2Yflt8EDKQOgoBsVCqGoFoEmEK0hxdNS1FgzAUaNji
- 5Dc7sKFUWHs3BqAPNJ72IqbzZbCVecbHkDAdnag9IVBBLDg04WWMFyka/2jb4iXJeC0xrd6
- ZbmBv/W860kVn6g5bl7gg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:aqVwaolc6BE=;EIRN57N0btRcuRJ3W4C5usXyncP
- stxFd72pw0T5isIca5Thm+fqD9O8fOUsGKshK/83BZBiR9e07lir80XRa78D/u/wGvJocyQr8
- WvKhzEjt+ndqNGXLYTLGg4GtBX1PvdrVUkFjQ2dgfmpEj4N/Waad/yrZh4sfkUDfChErWyi0t
- M4Ci/lOY5fYbRyUj7rrd1nJvrrmFad4m5eUaFupyuPy4qUlNjiAEovVJW/l0l0CvpshGRjWaV
- r5EFHh9jRIAt+P2yKEDflAAFkLSqDbKKCbnZ+xlCUf3pe2GfRtVxFH/p1uIY90LCaZbLMoBPK
- /67jghay0/WfqfSZyOpZEibZuz7oSRTSuMmXmS36Klv+aRhepaE1GIIA3/Duzmk2ZCJbLTFkE
- 0j7Il9O0OHuXMEUjn1Sm3/apTXBeN+SHvif33yA7w3fHm+rIDpsfuwNVHrGQwbiKTQU9C/V7M
- WTtue0Sn0dNO9NWLhGIG6rIGzUeBJq5iargl8JE6+4RUJEEtWOPAW4bGEJfC+VhSqa2/ebglw
- rheV4n/Hdphy/r72r5NyzjMa/GZJAex+QZNnr/2GMmEbiGhlv9v/LVvm7b/SsEKjd+zyrN5dk
- KuNWKzKSV9OrMbTai5sYf+2aerR7w5G4DcQ6/ZfjP9Ij12F4Mg3K/wkYU5be+ZcVIL9EXzNr4
- p8zW5b8BdJ8DFqiySuhLttyX7TJFQOtFiUUZJVePRb8MLlAXbKpug2uRVa0w6TiqaCwnGOq6g
- CNim5BeYCRDPbm4mlil5MiicZsh+g5yaAJy3zTl7c/VXHStiGsP9hYyvw36ny4SwLLpxjHFgZ
- Jzka5W3eFkdZVGcJ+T1iEGUVAWAS1l9DFEKAfCltopP29NAY7YkR1g1+3CUqHpkRFLOwyL3o1
- wOwgv7bLW0S+ls2Oy486bROCWlzKL4cuR/M7fV2U0wRnqbwypJiF4ShRrI7J22UbpLY5THMSO
- aexB4TtOW3FeZmGDRBMRbq9utgs=
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 27 Dec 2023 10:23:09 +0100
+On Tue, Dec 26, 2023 at 08:01:55PM +0000, Pasha Tatashin wrote:
+> ----------------------------------------------------------------------
+> Changelog
+> ----------------------------------------------------------------------
+> v3:
+> - Sync with v6.7-rc7
+> - Addressed comments from David Rientjes: s/pages/page/, added unlikely()=
+ into
+>   the branches, expanded comment for iommu_free_pages_list().
+> - Added Acked-bys: David Rientjes
+>=20
+> v2:
+> - Added Reviewed-by Janne Grunau
+> - Sync with 6.7.0-rc3, 3b47bc037bd44f142ac09848e8d3ecccc726be99
+> - Separated form the series patches:
+> vhost-vdpa: account iommu allocations
+> https://lore.kernel.org/all/20231130200447.2319543-1-pasha.tatashin@solee=
+n.com
+> vfio: account iommu allocations
+> https://lore.kernel.org/all/20231130200900.2320829-1-pasha.tatashin@solee=
+n.com
+> as suggested by Jason Gunthorpe
+> - Fixed SPARC build issue detected by kernel test robot
+> - Drop the following patches as they do account iommu page tables:
+> iommu/dma: use page allocation function provided by iommu-pages.h
+> iommu/fsl: use page allocation function provided by iommu-pages.h
+> iommu/iommufd: use page allocation function provided by iommu-pages.h
+> as suggested by Robin Murphy. These patches are not related to IOMMU
+> page tables. We might need to do a separate work to support DMA
+> observability.
+> - Remove support iommu/io-pgtable-arm-v7s as the 2nd level pages are
+> under a page size, thanks Robin Murphy for pointing this out.
+>=20
+> ----------------------------------------------------------------------
+> Description
+> ----------------------------------------------------------------------
+> IOMMU subsystem may contain state that is in gigabytes. Majority of that
+> state is iommu page tables. Yet, there is currently, no way to observe
+> how much memory is actually used by the iommu subsystem.
+>=20
+> This patch series solves this problem by adding both observability to
+> all pages that are allocated by IOMMU, and also accountability, so
+> admins can limit the amount if via cgroups.
+>=20
+> The system-wide observability is using /proc/meminfo:
+> SecPageTables:    438176 kB
+>=20
+> Contains IOMMU and KVM memory.
+>=20
+> Per-node observability:
+> /sys/devices/system/node/nodeN/meminfo
+> Node N SecPageTables:    422204 kB
+>=20
+> Contains IOMMU and KVM memory memory in the given NUMA node.
+>=20
+> Per-node IOMMU only observability:
+> /sys/devices/system/node/nodeN/vmstat
+> nr_iommu_pages 105555
+>=20
+> Contains number of pages IOMMU allocated in the given node.
+>=20
+> Accountability: using sec_pagetables cgroup-v2 memory.stat entry.
+>=20
+> With the change, iova_stress[1] stops as limit is reached:
+>=20
+> # ./iova_stress
+> iova space:     0T      free memory:   497G
+> iova space:     1T      free memory:   495G
+> iova space:     2T      free memory:   493G
+> iova space:     3T      free memory:   491G
+>=20
+> stops as limit is reached.
+>=20
+> This series encorporates suggestions that came from the discussion
+> at LPC [2].
+> ----------------------------------------------------------------------
+> [1] https://github.com/soleen/iova_stress
+> [2] https://lpc.events/event/17/contributions/1466
+> ----------------------------------------------------------------------
+> Previous versions
+> v1: https://lore.kernel.org/all/20231128204938.1453583-1-pasha.tatashin@s=
+oleen.com
+> v2: https://lore.kernel.org/linux-mm/20231130201504.2322355-1-pasha.tatas=
+hin@soleen.com
+> ----------------------------------------------------------------------
+>=20
 
-The kfree() function was called in one case by the
-mptsas_find_phyinfo_by_phys_disk_num() function during error handling
-even if the passed variable contained a null pointer.
-This issue was detected by using the Coccinelle software.
+First of all, Merry Christmas and Happy New Year for all!
 
-1. Thus use another label.
+And for this series, no observable regressions when booting the kernel with
+the series applied.
 
-2. Delete an initialisation for the variable =E2=80=9Cphys_disk=E2=80=9D
-   which became unnecessary with this refactoring.
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/message/fusion/mptsas.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+--=20
+An old man doll... just what I always wanted! - Clara
 
-diff --git a/drivers/message/fusion/mptsas.c b/drivers/message/fusion/mpts=
-as.c
-index 300f8e955a53..452635a50c4c 100644
-=2D-- a/drivers/message/fusion/mptsas.c
-+++ b/drivers/message/fusion/mptsas.c
-@@ -4171,7 +4171,7 @@ mptsas_find_phyinfo_by_phys_disk_num(MPT_ADAPTER *io=
-c, u8 phys_disk_num,
- {
- 	struct mptsas_phyinfo *phy_info =3D NULL;
- 	struct mptsas_portinfo *port_info;
--	RaidPhysDiskPage1_t *phys_disk =3D NULL;
-+	RaidPhysDiskPage1_t *phys_disk;
- 	int num_paths;
- 	u64 sas_address =3D 0;
- 	int i;
-@@ -4182,11 +4182,13 @@ mptsas_find_phyinfo_by_phys_disk_num(MPT_ADAPTER *=
-ioc, u8 phys_disk_num,
- 	/* dual port support */
- 	num_paths =3D mpt_raid_phys_disk_get_num_paths(ioc, phys_disk_num);
- 	if (!num_paths)
--		goto out;
-+		goto lock_mutex;
-+
- 	phys_disk =3D kzalloc(offsetof(RaidPhysDiskPage1_t, Path) +
- 	   (num_paths * sizeof(RAID_PHYS_DISK1_PATH)), GFP_KERNEL);
- 	if (!phys_disk)
--		goto out;
-+		goto lock_mutex;
-+
- 	mpt_raid_phys_disk_pg1(ioc, phys_disk_num, phys_disk);
- 	for (i =3D 0; i < num_paths; i++) {
- 		if ((phys_disk->Path[i].Flags & 1) !=3D 0)
-@@ -4211,6 +4213,7 @@ mptsas_find_phyinfo_by_phys_disk_num(MPT_ADAPTER *io=
-c, u8 phys_disk_num,
- 	 * Extra code to handle RAID0 case, where the sas_address is not updated
- 	 * in phys_disk_page_1 when hotswapped
- 	 */
-+lock_mutex:
- 	mutex_lock(&ioc->sas_topology_mutex);
- 	list_for_each_entry(port_info, &ioc->sas_topology, list) {
- 		for (i =3D 0; i < port_info->num_phys && !phy_info; i++) {
-=2D-
-2.43.0
+--vZmYjWY6Cm0pkfHC
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZYv2+wAKCRD2uYlJVVFO
+oxMfAP91UU+PRqp8ppjQagfbN7pLlLypEHbSPkqxzjMbovw1xQD7B3ptIVhk9yfz
+/Uw9Lm3b2HtnyDuZ0vJwXjXM2mBM/AA=
+=vPeL
+-----END PGP SIGNATURE-----
+
+--vZmYjWY6Cm0pkfHC--
 
