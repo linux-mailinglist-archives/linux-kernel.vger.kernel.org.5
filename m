@@ -1,110 +1,212 @@
-Return-Path: <linux-kernel+bounces-12302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60A8D81F2E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 00:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 77FAB81F2EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 00:06:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2F541F231AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 23:04:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA7F91F22118
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 23:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0000E498A2;
-	Wed, 27 Dec 2023 23:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE8284989D;
+	Wed, 27 Dec 2023 23:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="X6lQ9rRb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gmX64N9R"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3344F49890;
-	Wed, 27 Dec 2023 23:03:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 769D0C433C8;
-	Wed, 27 Dec 2023 23:03:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1703718235;
-	bh=LMCnPQNEAm1eJkpB/BPhB/Kmv2yP8E0Iiks2kfeTjaM=;
-	h=Date:From:To:Cc:Subject:From;
-	b=X6lQ9rRbmqoaDCHd556ftK8Cd5/WiccS63GCldlTvAuiEs7Y728adWRv4h3acxxyp
-	 RDLdWfccakM/tG0ilH+w5cSkx5iDvZJ4LLr5/118MkwsxxnybrdkSA9d8CsA5piGqv
-	 jKFZZwYOYAEBcyFoLwOF3RHpmgLGh68DdRzLrl7I=
-Date: Wed, 27 Dec 2023 15:03:54 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: mm-commits@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL] hotfixes for 6.7
-Message-Id: <20231227150354.9437b5c792000b8eb22758e9@linux-foundation.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26F931DFF3
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 23:06:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EE1EC433C7;
+	Wed, 27 Dec 2023 23:06:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703718383;
+	bh=U52u8+3MgI51eCYNOsZVZquc2Ob18O3RKpyOMOcjrJk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gmX64N9ROcorH1GhEAIEnblSXxG+bfDQJz9OgXTx77uJlwczEXu1Z7XeshOdp2dy8
+	 J+sN1Dr77+LIIpxpUBmLXVMZuvOoOaIkMlI6x6H7uP261QrXxQe2AS6OE2ktveblmQ
+	 0dpNHimLHAEBIwNknMSTh3QheEmoWEbHpyF01dFXKMDbZHidf9I1yaA7bFXF9nP05C
+	 zlLIsGjQsBVClEi3L3i5qtPFsJPgbtpEZ97w8M2uGLMH6bMxxrChAFMOVt/QiP9olT
+	 CmEG1RjF/C66oUb8tWNWi00hyn2+O+lzGUy06cT8IL51c4NU5DXq00VfLDqMFRcqSb
+	 /6cDvO5w9JUJA==
+Date: Wed, 27 Dec 2023 15:06:21 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Chao Yu <chao@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] f2fs: introduce FAULT_INCONSISTENCE
+Message-ID: <ZYyt7dNmPw0aMa5l@google.com>
+References: <20231225144335.2548-1-chao@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231225144335.2548-1-chao@kernel.org>
 
+On 12/25, Chao Yu wrote:
+> We will encounter below inconsistent status when FAULT_BLKADDR type
+> fault injection is on.
+> 
+> Info: checkpoint state = d6 :  nat_bits crc fsck compacted_summary orphan_inodes sudden-power-off
+> [ASSERT] (fsck_chk_inode_blk:1254)  --> ino: 0x1c100 has i_blocks: 000000c0, but has 191 blocks
+> [FIX] (fsck_chk_inode_blk:1260)  --> [0x1c100] i_blocks=0x000000c0 -> 0xbf
+> [FIX] (fsck_chk_inode_blk:1269)  --> [0x1c100] i_compr_blocks=0x00000026 -> 0x27
+> [ASSERT] (fsck_chk_inode_blk:1254)  --> ino: 0x1cadb has i_blocks: 0000002f, but has 46 blocks
+> [FIX] (fsck_chk_inode_blk:1260)  --> [0x1cadb] i_blocks=0x0000002f -> 0x2e
+> [FIX] (fsck_chk_inode_blk:1269)  --> [0x1cadb] i_compr_blocks=0x00000011 -> 0x12
+> [ASSERT] (fsck_chk_inode_blk:1254)  --> ino: 0x1c62c has i_blocks: 00000002, but has 1 blocks
+> [FIX] (fsck_chk_inode_blk:1260)  --> [0x1c62c] i_blocks=0x00000002 -> 0x1
+> 
+> After we inject fault into f2fs_is_valid_blkaddr() during truncation,
+> a) it missed to increase @nr_free or @valid_blocks
+> b) it can cause in blkaddr leak in truncated dnode
+> Which may cause inconsistent status.
+> 
+> This patch separates FAULT_INCONSISTENCE from FAULT_BLKADDR, so that
 
-Linus, please merge this batch of hotfixes, thanks.
+Could you please rename FAULT_INCONSISTENCE to give exactly what it tries
+to break?
 
-
-The following changes since commit 4376807bf2d5371c3e00080c972be568c3f8a7d1:
-
-  mm/mglru: reclaim offlined memcgs harder (2023-12-12 17:20:20 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2023-12-27-15-00
-
-for you to fetch changes up to 1803d0c5ee1a3bbee23db2336e21add067824f02:
-
-  mailmap: add an old address for Naoya Horiguchi (2023-12-20 13:46:20 -0800)
-
-----------------------------------------------------------------
-11 hotfixes.  7 are cc:stable and the other 4 address post-6.6 issues or
-are not considered backporting material.
-
-----------------------------------------------------------------
-Arnd Bergmann (2):
-      kexec: fix KEXEC_FILE dependencies
-      kexec: select CRYPTO from KEXEC_FILE instead of depending on it
-
-Baokun Li (1):
-      mm/filemap: avoid buffered read/write race to read inconsistent data
-
-Charan Teja Kalla (1):
-      mm: migrate high-order folios in swap cache correctly
-
-Matthew Wilcox (Oracle) (4):
-      mm/memory-failure: pass the folio and the page to collect_procs()
-      mm/memory-failure: check the mapcount of the precise page
-      mm/memory-failure: cast index to loff_t before shifting it
-      mailmap: add an old address for Naoya Horiguchi
-
-Muhammad Usama Anjum (1):
-      selftests: secretmem: floor the memory size to the multiple of page_size
-
-Nico Pache (1):
-      kunit: kasan_test: disable fortify string checker on kmalloc_oob_memset
-
-Sidhartha Kumar (1):
-      maple_tree: do not preallocate nodes for slot stores
-
- .mailmap                                  |  1 +
- arch/powerpc/Kconfig                      |  4 ++--
- arch/riscv/Kconfig                        |  4 +---
- arch/s390/Kconfig                         |  4 ++--
- arch/x86/Kconfig                          |  4 ++--
- kernel/Kconfig.kexec                      |  2 ++
- lib/maple_tree.c                          | 11 +++++++++++
- mm/filemap.c                              |  9 +++++++++
- mm/kasan/kasan_test.c                     | 20 +++++++++++++++----
- mm/memory-failure.c                       | 33 +++++++++++++++----------------
- mm/migrate.c                              |  9 ++++++++-
- tools/testing/radix-tree/maple.c          |  2 +-
- tools/testing/selftests/mm/memfd_secret.c |  3 +++
- 13 files changed, 74 insertions(+), 32 deletions(-)
-
+> we can:
+> a) use FAULT_INCONSISTENCE in f2fs_truncate_data_blocks_range() to
+> simulate inconsistent issue independently,
+> b) FAULT_BLKADDR fault will not cause any inconsistent status, we can
+> just use it to check error path handling in kernel side.
+> 
+> Signed-off-by: Chao Yu <chao@kernel.org>
+> ---
+> v2:
+> - make __f2fs_is_valid_blkaddr() void.
+>  Documentation/ABI/testing/sysfs-fs-f2fs |  1 +
+>  Documentation/filesystems/f2fs.rst      |  1 +
+>  fs/f2fs/checkpoint.c                    | 19 +++++++++++++++----
+>  fs/f2fs/f2fs.h                          |  3 +++
+>  fs/f2fs/file.c                          |  8 ++++++--
+>  fs/f2fs/super.c                         |  1 +
+>  6 files changed, 27 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+> index 4f1d4e636d67..649aabac16c2 100644
+> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+> @@ -708,6 +708,7 @@ Description:	Support configuring fault injection type, should be
+>  		FAULT_DQUOT_INIT         0x000010000
+>  		FAULT_LOCK_OP            0x000020000
+>  		FAULT_BLKADDR            0x000040000
+> +		FAULT_INCONSISTENCE      0x000080000
+>  		===================      ===========
+>  
+>  What:		/sys/fs/f2fs/<disk>/discard_io_aware_gran
+> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+> index d32c6209685d..5616fb8ae207 100644
+> --- a/Documentation/filesystems/f2fs.rst
+> +++ b/Documentation/filesystems/f2fs.rst
+> @@ -206,6 +206,7 @@ fault_type=%d		 Support configuring fault injection type, should be
+>  			 FAULT_DQUOT_INIT	  0x000010000
+>  			 FAULT_LOCK_OP		  0x000020000
+>  			 FAULT_BLKADDR		  0x000040000
+> +			 FAULT_INCONSISTENCE	  0x000080000
+>  			 ===================	  ===========
+>  mode=%s			 Control block allocation mode which supports "adaptive"
+>  			 and "lfs". In "lfs" mode, there should be no random
+> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+> index b0597a539fc5..84546f529cf0 100644
+> --- a/fs/f2fs/checkpoint.c
+> +++ b/fs/f2fs/checkpoint.c
+> @@ -170,12 +170,9 @@ static bool __is_bitmap_valid(struct f2fs_sb_info *sbi, block_t blkaddr,
+>  	return exist;
+>  }
+>  
+> -bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+> +static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+>  					block_t blkaddr, int type)
+>  {
+> -	if (time_to_inject(sbi, FAULT_BLKADDR))
+> -		return false;
+> -
+>  	switch (type) {
+>  	case META_NAT:
+>  		break;
+> @@ -230,6 +227,20 @@ bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+>  	return true;
+>  }
+>  
+> +bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+> +					block_t blkaddr, int type)
+> +{
+> +	if (time_to_inject(sbi, FAULT_BLKADDR))
+> +		return false;
+> +	return __f2fs_is_valid_blkaddr(sbi, blkaddr, type);
+> +}
+> +
+> +bool f2fs_is_valid_blkaddr_raw(struct f2fs_sb_info *sbi,
+> +					block_t blkaddr, int type)
+> +{
+> +	return __f2fs_is_valid_blkaddr(sbi, blkaddr, type);
+> +}
+> +
+>  /*
+>   * Readahead CP/NAT/SIT/SSA/POR pages
+>   */
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 34b20700b5ec..3985296e64cb 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -61,6 +61,7 @@ enum {
+>  	FAULT_DQUOT_INIT,
+>  	FAULT_LOCK_OP,
+>  	FAULT_BLKADDR,
+> +	FAULT_INCONSISTENCE,
+>  	FAULT_MAX,
+>  };
+>  
+> @@ -3767,6 +3768,8 @@ struct page *f2fs_get_meta_page_retry(struct f2fs_sb_info *sbi, pgoff_t index);
+>  struct page *f2fs_get_tmp_page(struct f2fs_sb_info *sbi, pgoff_t index);
+>  bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+>  					block_t blkaddr, int type);
+> +bool f2fs_is_valid_blkaddr_raw(struct f2fs_sb_info *sbi,
+> +					block_t blkaddr, int type);
+>  int f2fs_ra_meta_pages(struct f2fs_sb_info *sbi, block_t start, int nrpages,
+>  			int type, bool sync);
+>  void f2fs_ra_meta_pages_cond(struct f2fs_sb_info *sbi, pgoff_t index,
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 9f4e21b5916c..b5149f1f2a20 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -590,9 +590,13 @@ void f2fs_truncate_data_blocks_range(struct dnode_of_data *dn, int count)
+>  		f2fs_set_data_blkaddr(dn, NULL_ADDR);
+>  
+>  		if (__is_valid_data_blkaddr(blkaddr)) {
+> -			if (!f2fs_is_valid_blkaddr(sbi, blkaddr,
+> -					DATA_GENERIC_ENHANCE))
+> +			if (time_to_inject(sbi, FAULT_INCONSISTENCE))
+> +				continue;
+> +			if (!f2fs_is_valid_blkaddr_raw(sbi, blkaddr,
+> +						DATA_GENERIC_ENHANCE)) {
+> +				f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+>  				continue;
+> +			}
+>  			if (compressed_cluster)
+>  				valid_blocks++;
+>  		}
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 206d03c82d96..9a5c5e06f766 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -62,6 +62,7 @@ const char *f2fs_fault_name[FAULT_MAX] = {
+>  	[FAULT_DQUOT_INIT]	= "dquot initialize",
+>  	[FAULT_LOCK_OP]		= "lock_op",
+>  	[FAULT_BLKADDR]		= "invalid blkaddr",
+> +	[FAULT_INCONSISTENCE]	= "inconsistence",
+>  };
+>  
+>  void f2fs_build_fault_attr(struct f2fs_sb_info *sbi, unsigned int rate,
+> -- 
+> 2.40.1
 
