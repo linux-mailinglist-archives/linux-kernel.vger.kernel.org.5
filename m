@@ -1,148 +1,112 @@
-Return-Path: <linux-kernel+bounces-12164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3B1C81F0CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:17:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7734E81F0D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:18:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B053D282B37
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:17:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8A3A1C22431
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:18:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D12F846455;
-	Wed, 27 Dec 2023 17:17:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4415F46458;
+	Wed, 27 Dec 2023 17:18:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FJcskC8o"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="PWyawNPC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6AF46524;
-	Wed, 27 Dec 2023 17:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703697433; x=1735233433;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2K3uY8b+MqHzdwOGeEWgpRZaazlE1adyV7pu9tW3Sx8=;
-  b=FJcskC8otDJ/Tn6ogbDHMnX6EgNqfUyyIeOUjGtqSItsz3xxEjViNZLX
-   CfYFkjaklQ9GGFrO77muR/WyfP+RVSrOKdE3Gnk8OAr9LrxdF4WHn5QJe
-   /jMGKysrGAckOqU3JRGKep52cGvP1xerp/IwBkZY2oVbiKhLsTRwXqt6B
-   l2SGOv/xJKqjjuVrWCQ0Dwd1SOO7KrYjuszCIwYAYWWMJmPVeOMhBmO9x
-   OfGqBGr/W6LEn4U+kTnc7ON5MOla1i+f5WQA/r/RK395JqDNjBbDKhl5H
-   o+Q9Ch/T4EtzELP2AeiutYHOyPQTxtULof2zDYZaWq1TItWilEuF7oTwH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="376610460"
-X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="376610460"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:17:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="896957026"
-X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="896957026"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:17:08 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rIXWj-00000009TNK-0vG1;
-	Wed, 27 Dec 2023 19:17:05 +0200
-Date: Wed, 27 Dec 2023 19:17:04 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Raul Rangel <rrangel@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Wolfram Sang <wsa@kernel.org>, linux-acpi@vger.kernel.org,
-	linux-i2c@vger.kernel.org
-Subject: Re: [PATCH v3 03/24] i2c: acpi: Modify i2c_acpi_get_irq() to use
- resource
-Message-ID: <ZYxcEGz4yCJj0O5H@smile.fi.intel.com>
-References: <20231226192149.1830592-1-markhas@chromium.org>
- <20231226122113.v3.3.Ib65096357993ff602e7dd0000dd59a36571c48d8@changeid>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A16046420;
+	Wed, 27 Dec 2023 17:18:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703697488; x=1704302288; i=markus.elfring@web.de;
+	bh=dwFepwTmoz1K5UBHElv534KOXOgEY3BfjF5zKd4bVyg=;
+	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
+	 In-Reply-To;
+	b=PWyawNPC21xNRABWg/UjEGrcxM8lY6DWQkdkc0YOqXNNk7ndtp8CHqNT/7AxnVRs
+	 vY+eRPVcxm08w4WnQ3bBq4Wvs9+iwu6tdrZYbDOVStXMkirOUxmwz0n2zu21Ejyno
+	 5/60gSbl1KZe2Cv/yaFTKVXF/wa/OxoP9q7ZAuzIkPHwot098Mu3CfTTb2sRYiAG9
+	 hyNp7SoUx4yj7gMO5tg05TXIWLN94jmPLxgMyHjk7168ZAPcSR7wcBdfuJ2kvLeCf
+	 rvnkC2a57MzRgp4ISBg/lM2vSQQclUkQrZ0P8I+Pi21faj1OsSHo/VPFCMb+zraYi
+	 yxo+EzVjzJwZs29JCA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1M6pYY-1rKA6Y2S34-008fhK; Wed, 27
+ Dec 2023 18:18:08 +0100
+Message-ID: <40059711-eec1-4e52-9ef8-1ebf066aa11d@web.de>
+Date: Wed, 27 Dec 2023 18:18:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231226122113.v3.3.Ib65096357993ff602e7dd0000dd59a36571c48d8@changeid>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH 2/2] nvmet-fc: Improve a size determination in
+ nvmet_fc_alloc_ls_iodlist()
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+To: linux-nvme@lists.infradead.org, kernel-janitors@vger.kernel.org,
+ Chaitanya Kulkarni <kch@nvidia.com>, Christoph Hellwig <hch@lst.de>,
+ James Smart <james.smart@broadcom.com>, Sagi Grimberg <sagi@grimberg.me>
+Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+References: <6b821c46-7248-4882-aa6b-0279803f4235@web.de>
+In-Reply-To: <6b821c46-7248-4882-aa6b-0279803f4235@web.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:aUG30CfZLJU1YbJxvTKb5BgY2Fh5dGqh4jBoV4TVF1WoxvGbQjt
+ ilLMXEtVceGDKtnCW5fqr736P+8WTFRJy9I7KmsiKE7AgAYPUKdMgIY4139MmtTwdukN344
+ dudh+1cIBRZFvAT7dqOyQnoZXRPp2ICnsqlRjvBBSrde7naIRdQl3CI18QcrlvLVXU74kM4
+ 5np5ozRi0Ux0rqBYokQyg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:CBX/uooqcM8=;WzKz1uEE85xPvuxjzgRPPWoEw79
+ UuoBnLCA0bmw0gB2lANhPNXrTNr2RH3SG6ZX8uoL5tH391fp59GcwkPeqNJazkSfyD/6/tfAY
+ U73rwP7hripkGjTGQcq98S6VJwDPqbsPESGUZgIJry43L5hU0Q/LPROkClR53dB2+cA3ZgXDO
+ RiUr1Jid4uziu62aB5hC/q3s5aOYgA6AmBOn0/wLlJC+uQ2UC8StnX6zg6gs6GAWhjv3/LKaU
+ Qf63cav4DChBGg3H5Ztv+hA9LbjZW+pmihnX3qf4HVlUCNJTtKIpIvBUac/yGNMlPjOhkIaKA
+ Kb8VofK+gu4CQxPCLTAz68Kb1IIoAiJ5VLkpYSmduqBzklUeiATSxq1/GPaZSY6pY6RTNT6/z
+ ksbzKDhyQBLX3G1yidETNZUlrWi1nDzJTQ2uDO9w65JU4dSYLsQTJaRnLX8uIrCVAjM0WK+kn
+ icIQ9nt0p04ZhmOVSOISfkbZdSm6uewvnKyl2giEK9FVMtiknOREbJ9q41GrljudrUCT0rWx6
+ oqLvrCv3hpkbSXOXcuJHC52OsOZWE41honvBEGq5NU3xJNWOIEkO2nEgzuUB4Xp4CMBjipRN7
+ Z+HVQSJLapvTnkDL98YFQZ0SZGS3OX2OAdsuP85T5rA0gt0sgmVmk/4mtcm34orsWzbGlEMM9
+ 5uMjGjhb4nT7HzRYguPMoJfldS5gFPac2DEYhUQVzh0Y1ZAE1OGa2CdGlfYeWC4d9wSauLwgU
+ e5wcU2vd4c+UWnpadtpobvpwr3Cg5zir4YYgD36U73I92qcJHp23inQgTeIOSCCg3cn4YaYCQ
+ uR3xstgt9WcEW6mALEy5S7r9UvyOnmKN4S6g1gapasa+FQPk1IZuCWLI3GHak2HrqTC6EFYDV
+ 3UH/tMKfO3eof5CqwS0bOBgEFnqdxywNjTZg3v6EQ0cJavRq+Qg72y+TV+EIXaqpsCyTGUoMD
+ 8VZcGQ==
 
-On Tue, Dec 26, 2023 at 12:21:07PM -0700, Mark Hasemeyer wrote:
-> The i2c_acpi_irq_context structure provides redundant information that
-> can be provided with struct resource.
-> 
-> Refactor i2c_acpi_get_irq() to use struct resource instead of struct
-> i2c_acpi_irq_context.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 27 Dec 2023 18:03:10 +0100
 
-...
+Replace the specification of a data structure by a pointer dereference
+as the parameter for the operator "sizeof" to make the corresponding size
+determination a bit safer according to the Linux coding style convention.
 
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> 
-> Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/nvme/target/fc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-No blank line.
+diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
+index 856a68404f32..ada257b3c681 100644
+=2D-- a/drivers/nvme/target/fc.c
++++ b/drivers/nvme/target/fc.c
+@@ -537,8 +537,7 @@ nvmet_fc_alloc_ls_iodlist(struct nvmet_fc_tgtport *tgt=
+port)
+ 	struct nvmet_fc_ls_iod *iod;
+ 	int i;
 
-...
+-	iod =3D kcalloc(NVMET_LS_CTX_COUNT, sizeof(struct nvmet_fc_ls_iod),
+-			GFP_KERNEL);
++	iod =3D kcalloc(NVMET_LS_CTX_COUNT, sizeof(*iod), GFP_KERNEL);
+ 	if (!iod)
+ 		return -ENOMEM;
 
->  	ret = acpi_dev_get_resources(adev, &resource_list,
-> -				     i2c_acpi_add_irq_resource, &irq_ctx);
-> +				     i2c_acpi_add_irq_resource, r);
->  	if (ret < 0)
->  		return ret;
->  
->  	acpi_dev_free_resource_list(&resource_list);
->  
-> -	if (irq_ctx.irq == -ENOENT) {
-> -		ret = acpi_dev_get_gpio_irq_resource(adev, NULL, 0, &irqres);
-> -		if (ret)
-> -			return ret;
-> -		irq_ctx.irq = irqres.start;
-> -		irq_ctx.wake_capable = irqres.flags & IORESOURCE_IRQ_WAKECAPABLE;
-> -	}
-> -
-> -	if (irq_ctx.irq < 0)
-> -		return irq_ctx.irq;
-> +	if (!r->flags)
-> +		ret = acpi_dev_get_gpio_irq_resource(adev, NULL, 0, r);
->  
-> -	if (wake_capable)
-> -		*wake_capable = irq_ctx.wake_capable;
-> +	if (!r->flags)
-> +		return ret;
->  
-> -	return irq_ctx.irq;
-> +	return r->start;
-
-Wondering if we can refactor above as
-
-	if (r->flags)
-		return r->start;
-
-	ret = acpi_dev_get_gpio_irq_resource(adev, NULL, 0, r);
-	if (ret)
-		return ret;
-
-	return r->start;
-
-Note also the 'if (ret)' check, the check for flags to return ret seems
-counter intuitive and possible prone to errors in the future.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+=2D-
+2.43.0
 
 
