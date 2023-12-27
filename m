@@ -1,163 +1,115 @@
-Return-Path: <linux-kernel+bounces-12007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2B2D81EECB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 13:31:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 000C481EED9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 13:34:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39B39B21805
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 12:31:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93F461F21FF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 12:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7612844C6C;
-	Wed, 27 Dec 2023 12:31:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C37C45014;
+	Wed, 27 Dec 2023 12:34:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="g44Hx1CB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACAC42B9BF
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 12:31:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-35ff5a2f9c0so34807575ab.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 04:31:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703680285; x=1704285085;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NEQ4OJoMAkL68WzsnkzhcssQVG8oHv67sa72RlVtyng=;
-        b=eMIdH2WX59nnztEWlHhIbiPtBvJ+elBQGUM/UOyrWkILS+Fvn0nVeit4CP8WJmIp6k
-         S2u+MiHFM5atr3hKb97zBI8CREZYFLSdFaogDuVr4z7x5P7ebFI80p7383dD1FXv2kwR
-         yDBzWY6UzzKsuzL7xj5eIdDH++f3AeQzTwB+2Fk1srALpIBiu1DZrcpYn+Q2PngN0b4g
-         gQonhvZEPK+6qU9dXK0WbJD2yl1bmPAJI+kDTturdJcbUbNicSOiGbYuJhgWpQGa4xb6
-         8h1LtzSIe9/faCwAQKHWqbY08Z9nOk0fZ4Zkj2zXimvKEhAAEaSvS1O/DYNsKZvOZLSS
-         obag==
-X-Gm-Message-State: AOJu0YyEnGsnFbanrJnOaubIS9huVfPyH04ya8DtCWMd9oDY6332obDl
-	/7ApvXInPnDouaShwGBlQfYrpyavKd6ZcQFq+EHrl8rbD/9i
-X-Google-Smtp-Source: AGHT+IG3QcHBucRp6fJ0eMJKQWSeRMf7Bo6Sb6k7FZV9SWOJsaaMs8xbYRczBh+K/d8ZgOc76cldXvVaDQDjxLvM5q6dr3IUFmTZ
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37D0145010;
+	Wed, 27 Dec 2023 12:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mx0b-0016f401.pphosted.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BR1MwRC012857;
+	Wed, 27 Dec 2023 04:33:09 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=GqSpaTDd
+	FI7PPA6Yp+oHf0fLdjW5o73u2ceBRUXehKY=; b=g44Hx1CBPyx3XcBnow0OGszx
+	rGnH8x5UJiJbNJf3qt/qjL6t6/8QYhOWa+qZ3KAdyVvBTOh0kIj63FF5EG6y7PLy
+	FneONNNjmMUBCrK+voco7ZyMieALvnReMXWtai/IhY9ZwBkBmkrA2pGyqiImQj6m
+	pPVDayHsNSHxWZ4IacrD02L7jKTYxKLKY9WcNFvvMHXSG9QVmnzcIJRrQ791LQs8
+	slNhcTpwvu4Gc+cx750whAuS4Khs92XAHeBWjnvvcisgHBvdTyQDpGZTP9FITX4x
+	14euFRDPtpYeNzu1nMb0e1U39ZZ0ucyqZnafrU+dT27YTASKRScLEv389I1S2A==
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3v5yxp0a58-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Wed, 27 Dec 2023 04:33:09 -0800 (PST)
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 27 Dec
+ 2023 04:33:06 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Wed, 27 Dec 2023 04:33:06 -0800
+Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
+	by maili.marvell.com (Postfix) with ESMTP id BDEDF5B6936;
+	Wed, 27 Dec 2023 04:33:00 -0800 (PST)
+From: Elad Nachman <enachman@marvell.com>
+To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <andrew@lunn.ch>, <gregory.clement@bootlin.com>,
+        <sebastian.hesselbarth@gmail.com>, <huziji@marvell.com>,
+        <ulf.hansson@linaro.org>, <catalin.marinas@arm.com>, <will@kernel.org>,
+        <adrian.hunter@intel.com>, <thunder.leizhen@huawei.com>,
+        <bhe@redhat.com>, <akpm@linux-foundation.org>, <yajun.deng@linux.dev>,
+        <chris.zjh@huawei.com>, <linux-mmc@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC: <enachman@marvell.com>, <cyuval@marvell.com>
+Subject: [PATCH 0/4] mmc: xenon: add AC5 support
+Date: Wed, 27 Dec 2023 14:32:53 +0200
+Message-ID: <20231227123257.1170590-1-enachman@marvell.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d0c:b0:35f:c8aa:b526 with SMTP id
- i12-20020a056e021d0c00b0035fc8aab526mr1144470ila.2.1703680284955; Wed, 27 Dec
- 2023 04:31:24 -0800 (PST)
-Date: Wed, 27 Dec 2023 04:31:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000321c24060d7cfa1c@google.com>
-Subject: [syzbot] [erofs?] KMSAN: uninit-value in z_erofs_lz4_decompress (2)
-From: syzbot <syzbot+6c746eea496f34b3161d@syzkaller.appspotmail.com>
-To: chao@kernel.org, huyue2@coolpad.com, jefflexu@linux.alibaba.com, 
-	linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	xiang@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: eLx3MVwVY76bvTaJo5RxoZPo9Xn3foGL
+X-Proofpoint-GUID: eLx3MVwVY76bvTaJo5RxoZPo9Xn3foGL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
 
-Hello,
+From: Elad Nachman <enachman@marvell.com>
 
-syzbot found the following issue on:
+This patch series adds support for the Marvell AC5/X/IM series of SOCs.
+The main hurdles in supporting these SOCs are the following limitations:
+1. DDR starts at offset 0x2_0000_0000
+2. mmc controller has only 31-bit path on the crossbar to the DDR.
 
-HEAD commit:    fbafc3e621c3 Merge tag 'for_linus' of git://git.kernel.org..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=11b0a595e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7078a6b901aa3
-dashboard link: https://syzkaller.appspot.com/bug?extid=6c746eea496f34b3161d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=169fac19e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14aafc81e80000
+Point number one is solved by the first patch, which targets the
+arm64 subsystem, by taking into account the DDR start address when
+calculating the DMA and DMA32 zones.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1520f7b6daa4/disk-fbafc3e6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8b490af009d5/vmlinux-fbafc3e6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/202ca200f4a4/bzImage-fbafc3e6.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/fcf70b38bafb/mount_0.gz
+This yields the correct split between DMA, DMA32 and NORMAL zones
+according to the device tree CPU address limitations.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6c746eea496f34b3161d@syzkaller.appspotmail.com
+Point number two is solved in the mmc xenon driver by detecting the memory
+size, and when it is more than 2GB, disable ADMA and 64-bit DMA, which
+effectively enables SDMA with a bounce buffer.
+DMA mask is then set manually to 34 bit to account for the DDR starting
+at offset 0x2_0000_0000 .
 
-loop0: detected capacity change from 0 to 16
-erofs: (device loop0): mounted with root inode @ nid 36.
-erofs: (device loop0): z_erofs_lz4_decompress_mem: failed to decompress -12 in[46, 4050] out[917]
-=====================================================
-BUG: KMSAN: uninit-value in hex_dump_to_buffer+0xae9/0x10f0 lib/hexdump.c:194
- hex_dump_to_buffer+0xae9/0x10f0 lib/hexdump.c:194
- print_hex_dump+0x13d/0x3e0 lib/hexdump.c:276
- z_erofs_lz4_decompress_mem fs/erofs/decompressor.c:252 [inline]
- z_erofs_lz4_decompress+0x257e/0x2a70 fs/erofs/decompressor.c:311
- z_erofs_decompress_pcluster fs/erofs/zdata.c:1290 [inline]
- z_erofs_decompress_queue+0x338c/0x6460 fs/erofs/zdata.c:1372
- z_erofs_runqueue+0x36cd/0x3830
- z_erofs_read_folio+0x435/0x810 fs/erofs/zdata.c:1843
- filemap_read_folio+0xce/0x370 mm/filemap.c:2323
- do_read_cache_folio+0x3b4/0x11e0 mm/filemap.c:3691
- read_cache_folio+0x60/0x80 mm/filemap.c:3723
- erofs_bread+0x286/0x6f0 fs/erofs/data.c:46
- erofs_find_target_block fs/erofs/namei.c:103 [inline]
- erofs_namei+0x2fe/0x1790 fs/erofs/namei.c:177
- erofs_lookup+0x100/0x3c0 fs/erofs/namei.c:206
- lookup_one_qstr_excl+0x233/0x520 fs/namei.c:1609
- filename_create+0x2fc/0x6d0 fs/namei.c:3876
- do_mkdirat+0x69/0x800 fs/namei.c:4121
- __do_sys_mkdirat fs/namei.c:4144 [inline]
- __se_sys_mkdirat fs/namei.c:4142 [inline]
- __x64_sys_mkdirat+0xc8/0x120 fs/namei.c:4142
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Elad Nachman (4):
+  arm64: mm: Fix SOCs with DDR starting above zero
+  dt-bindings: mmc: add Marvell ac5
+  arm64: dts: ac5: add mmc node and clock
+  mmc: xenon: Add ac5 support via bounce buffer
 
-Uninit was created at:
- __alloc_pages+0x9a4/0xe00 mm/page_alloc.c:4591
- alloc_pages_mpol+0x62b/0x9d0 mm/mempolicy.c:2133
- alloc_pages mm/mempolicy.c:2204 [inline]
- folio_alloc+0x1da/0x380 mm/mempolicy.c:2211
- filemap_alloc_folio+0xa5/0x430 mm/filemap.c:974
- do_read_cache_folio+0x163/0x11e0 mm/filemap.c:3655
- read_cache_folio+0x60/0x80 mm/filemap.c:3723
- erofs_bread+0x286/0x6f0 fs/erofs/data.c:46
- erofs_find_target_block fs/erofs/namei.c:103 [inline]
- erofs_namei+0x2fe/0x1790 fs/erofs/namei.c:177
- erofs_lookup+0x100/0x3c0 fs/erofs/namei.c:206
- lookup_one_qstr_excl+0x233/0x520 fs/namei.c:1609
- filename_create+0x2fc/0x6d0 fs/namei.c:3876
- do_mkdirat+0x69/0x800 fs/namei.c:4121
- __do_sys_mkdirat fs/namei.c:4144 [inline]
- __se_sys_mkdirat fs/namei.c:4142 [inline]
- __x64_sys_mkdirat+0xc8/0x120 fs/namei.c:4142
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+ .../bindings/mmc/marvell,xenon-sdhci.yaml     |  3 ++
+ arch/arm64/boot/dts/marvell/ac5-98dx25xx.dtsi | 33 ++++++++++++++++++-
+ arch/arm64/mm/init.c                          | 20 ++++++++---
+ drivers/mmc/host/sdhci-xenon.c                | 33 ++++++++++++++++++-
+ drivers/mmc/host/sdhci-xenon.h                |  3 +-
+ 5 files changed, 84 insertions(+), 8 deletions(-)
 
-CPU: 1 PID: 5006 Comm: syz-executor342 Not tainted 6.7.0-rc7-syzkaller-00003-gfbafc3e621c3 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-=====================================================
+-- 
+2.25.1
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
