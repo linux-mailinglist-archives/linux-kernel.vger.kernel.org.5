@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-11918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3AC981ED8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:04:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 466CE81ED8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:04:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8109E1F22B73
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 09:04:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0287628344A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 09:04:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18B332E3F8;
-	Wed, 27 Dec 2023 09:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 963DD2E63B;
+	Wed, 27 Dec 2023 09:03:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CSKj3xPo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P8GhsFJr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BE22DF65;
-	Wed, 27 Dec 2023 09:03:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8F02E407;
+	Wed, 27 Dec 2023 09:03:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3369ccb539aso3152890f8f.3;
-        Wed, 27 Dec 2023 01:03:12 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40d3352b525so58334585e9.1;
+        Wed, 27 Dec 2023 01:03:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703667791; x=1704272591; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703667793; x=1704272593; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RraVKdn/3CtUzdc/GUkx4wIWX/WntChO7vtqlU3szKo=;
-        b=CSKj3xPoe0b81auFzX5J5r8+gHDtSQ8bTLHyuTSByN5ubgk4ShJnW0WabScu/PWsoO
-         GIk3e8M6h8tqtSwzHT5DkMWLqb7v9GuGAluLL5l2PNxuaGDmeqil1mJ00JKwRJCbBIGZ
-         OR+5SXX+NRoES0dpjTKeUehHdrMTAKHvC0KK3Qq9DOnbVTEwuSaA+J1Ftj14XiW80b0A
-         tgCb1bz++/sdlFb5Av23VYzsyDTElaOP8wFcaHZWfW7iQYlSe5cxgfGVjgM9aWlHNTFT
-         4TIkzUJaThEh2f1ZQ8ZdX3FbltMnUH6fdmgyxiNiYguE0XU6YkyCOHcrHXnELhBBZp/C
-         sdwQ==
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o6LKt+ontTXHu1XtoIYFtpLE+AnFf2w4c9A2s2xTblA=;
+        b=P8GhsFJrg3KnxF4TjqMeADZtTChnf7D2qUx3FcRlb8LUoChinSsCvo6z9YgvytqehG
+         o9J+VdoZolrFowD12HKlXPtTmcal7ojQyddltcjA9aCCly89L6MFwEpB3AKHfMQVAf6g
+         FhZhnqM22ST4sExTdILcRQZbY2qrhkVqqfHcIhZrYM3a+7oApKRlFVFwzPHQsSxb1tK4
+         GRV6SFTQm3LClZY/lXQxl1drETccUUKeeNEzGrKag0r5oFqVlmtpE66KV8EAHH62ssvS
+         1fP43K8us0069y0MT24ARFqMG1QZdI8Q4zRwhrOeNuGJxMkVBFz9N18YUinxnX0cXVFp
+         22kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703667791; x=1704272591;
+        d=1e100.net; s=20230601; t=1703667793; x=1704272593;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RraVKdn/3CtUzdc/GUkx4wIWX/WntChO7vtqlU3szKo=;
-        b=Utekqe3RvOZRy4FiOZ021MFtCa8PqQavCkRm0r6I0K9mFt0Ss1697CKj59sVA6UR3R
-         bFsxF3EIHuf083Bb0oinvkQxTndhtqyHqqthoOj0h5bwTOzBqIu4+3uCqVMhDeHD+ntr
-         FpK8w1r95gF9jjtfzmvQPCaoPJ8Pmx1WCw/krOCeJh4MSTENJbAPRoyhLQ7Isy/cLTa6
-         lK+0v3GcXlB1/rzakB2ZWO00GW+XpSctFmV4PoBUwHA3L18KbYZacMIDa4sRG8fTF3Wq
-         s/Fi9iK6GhjzuEMVJ3UAUoqSJgEe0RtcVutl3eboY0nct1teXH0jom81X5rItjWXxfkL
-         auug==
-X-Gm-Message-State: AOJu0Yxgtqs1jrnvd57Y/+0b+O8ZeUJ0kYDUCyby5lHURF8bzwkTNA4Z
-	UsNg0pmlma1uzwoUzIgQb48=
-X-Google-Smtp-Source: AGHT+IHzsOs4p8HP8d1yYaPv2Nuxy0oYAJxlZLFgEmeJWBl/k5eA1TsyrGHT0l7hkmB3olgSIFB2wA==
-X-Received: by 2002:a05:6000:1042:b0:336:73d6:b42b with SMTP id c2-20020a056000104200b0033673d6b42bmr4549978wrx.117.1703667791035;
-        Wed, 27 Dec 2023 01:03:11 -0800 (PST)
+        bh=o6LKt+ontTXHu1XtoIYFtpLE+AnFf2w4c9A2s2xTblA=;
+        b=wEao2nRqwouaWTEN+B1+UcA6uSMVe1qek6aNAsoZcMy/2euAEoNsEj2LTdiLqGwNXD
+         eaEMqSDvcl4mXBTjwIiecJ7TFMApmG15ZsSWDFCewejVRN9tHL+I8+Xh85O1mpwVtBfS
+         pFTwm8rGEEhan24FytOqck0STQ5kVND8qfUN/wci6/4C7GZuyYL+OVRyYJoZCDuK2Jy8
+         i4YNAl6dV/QsCm/BMCrIe9wt39bA3e6K1OWg5FLU/CNiuJ+SWcSTOffJC4yiysvt8biF
+         +g4k69iKlqIQCzfKYBTtiIWQWc6APjCI9Md0OyxdCrCm9QEmgEu76gDhSMvAoW9tpTRb
+         KQ0g==
+X-Gm-Message-State: AOJu0Yz1yyUA6fGVDv+1oBQSvrQUMOBUXVAqVwOOM05pvDlE/azQgOoQ
+	0j9GdxwMa2GhGTTL4iAso7o=
+X-Google-Smtp-Source: AGHT+IG8mHhNfgK90bB/CfsGqDGPIVH5z9muWmeD4Vnd+0RauHcX1m+CzQx0/hAokpmViinA+RwFjA==
+X-Received: by 2002:a05:600c:3c90:b0:40c:2d78:c766 with SMTP id bg16-20020a05600c3c9000b0040c2d78c766mr4563795wmb.134.1703667793645;
+        Wed, 27 Dec 2023 01:03:13 -0800 (PST)
 Received: from localhost.localdomain (host-95-250-248-68.retail.telecomitalia.it. [95.250.248.68])
-        by smtp.googlemail.com with ESMTPSA id c9-20020a056000104900b003368849129dsm13616525wrx.15.2023.12.27.01.03.08
+        by smtp.googlemail.com with ESMTPSA id c9-20020a056000104900b003368849129dsm13616525wrx.15.2023.12.27.01.03.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Dec 2023 01:03:10 -0800 (PST)
+        Wed, 27 Dec 2023 01:03:13 -0800 (PST)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: Pavel Machek <pavel@ucw.cz>,
 	Lee Jones <lee@kernel.org>,
@@ -85,9 +85,10 @@ To: Pavel Machek <pavel@ucw.cz>,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	netdev@vger.kernel.org
-Subject: [net-next PATCH v5 3/5] net: phy: add support for PHY LEDs polarity modes
-Date: Wed, 27 Dec 2023 10:02:29 +0100
-Message-Id: <20231227090231.4246-4-ansuelsmth@gmail.com>
+Cc: Rob Herring <robh@kernel.org>
+Subject: [net-next PATCH v5 4/5] dt-bindings: net: Document QCA808x PHYs
+Date: Wed, 27 Dec 2023 10:02:30 +0100
+Message-Id: <20231227090231.4246-5-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231227090231.4246-1-ansuelsmth@gmail.com>
 References: <20231227090231.4246-1-ansuelsmth@gmail.com>
@@ -99,106 +100,87 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add support for PHY LEDs polarity modes. Some PHY require LED to be set
-to active low to be turned ON. Adds support for this by declaring
-active-low property in DT.
-
-PHY driver needs to declare .led_polarity_set() to configure LED
-polarity modes. Function will pass the index with the LED index and a
-bitmap with all the required modes to set.
-
-Current supported modes are:
-- active-low with the flag PHY_LED_ACTIVE_LOW. LED is set to active-low
-  to turn it ON.
-- inactive-high-impedance with the flag PHY_LED_INACTIVE_HIGH_IMPEDANCE.
-  LED is set to high impedance to turn it OFF.
+Add Documentation for QCA808x PHYs for the additional LED configuration
+for this PHY.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
-Changes v5:
-- Rework to LED modes bitmap
 Changes v4:
-- Drop for global active-low
-- Rework to polarity option (for marvell10g series support)
+- Add Reviewed-by tag
 Changes v3:
+- Use compatible instead of select
 - Out of RFC
 Changes v2:
-- Add this patch
+- Fix License warning from checkpatch
+- Drop redundant Description phrase
+- Improve commit tile
+- Drop special property (generalized)
 
- drivers/net/phy/phy_device.c | 12 ++++++++++++
- include/linux/phy.h          | 22 ++++++++++++++++++++++
- 2 files changed, 34 insertions(+)
+ .../devicetree/bindings/net/qca,qca808x.yaml  | 54 +++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/qca,qca808x.yaml
 
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index 3611ea64875e..b99c7579d9c4 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -3097,6 +3097,7 @@ static int of_phy_led(struct phy_device *phydev,
- 	struct device *dev = &phydev->mdio.dev;
- 	struct led_init_data init_data = {};
- 	struct led_classdev *cdev;
-+	unsigned long modes = 0;
- 	struct phy_led *phyled;
- 	u32 index;
- 	int err;
-@@ -3114,6 +3115,17 @@ static int of_phy_led(struct phy_device *phydev,
- 	if (index > U8_MAX)
- 		return -EINVAL;
- 
-+	if (phydev->drv->led_polarity_set) {
-+		if (of_property_read_bool(led, "active-low"))
-+			set_bit(PHY_LED_ACTIVE_LOW, &modes);
-+		if (of_property_read_bool(led, "inactive-high-impedance"))
-+			set_bit(PHY_LED_INACTIVE_HIGH_IMPEDANCE, &modes);
+diff --git a/Documentation/devicetree/bindings/net/qca,qca808x.yaml b/Documentation/devicetree/bindings/net/qca,qca808x.yaml
+new file mode 100644
+index 000000000000..e2552655902a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/qca,qca808x.yaml
+@@ -0,0 +1,54 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/qca,qca808x.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+		err = phydev->drv->led_polarity_set(phydev, index, modes);
-+		if (err)
-+			return err;
-+	}
++title: Qualcomm Atheros QCA808X PHY
 +
- 	phyled->index = index;
- 	if (phydev->drv->led_brightness_set)
- 		cdev->brightness_set_blocking = phy_led_set_brightness;
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index e9e85d347587..5ac54f9eee82 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -853,6 +853,15 @@ struct phy_plca_status {
- 	bool pst;
- };
- 
-+/* Modes for PHY LED configuration */
-+enum phy_led_modes {
-+	PHY_LED_ACTIVE_LOW = 0,
-+	PHY_LED_INACTIVE_HIGH_IMPEDANCE = 1,
++maintainers:
++  - Christian Marangi <ansuelsmth@gmail.com>
 +
-+	/* keep it last */
-+	__PHY_LED_MODES_NUM,
-+};
++description:
++  QCA808X PHYs can have up to 3 LEDs attached.
++  All 3 LEDs are disabled by default.
++  2 LEDs have dedicated pins with the 3rd LED having the
++  double function of Interrupt LEDs/GPIO or additional LED.
 +
- /**
-  * struct phy_led: An LED driven by the PHY
-  *
-@@ -1146,6 +1155,19 @@ struct phy_driver {
- 	int (*led_hw_control_get)(struct phy_device *dev, u8 index,
- 				  unsigned long *rules);
- 
-+	/**
-+	 * @led_polarity_set: Set the LED polarity if active low
-+	 * @dev: PHY device which has the LED
-+	 * @index: Which LED of the PHY device or -1
-+	 * @modes: bitmap of LED polarity modes
-+	 *
-+	 * Configure LED with all the required polarity modes in @modes
-+	 * to make it correctly turn ON or OFF.
-+	 *
-+	 * Returns 0, or an error code.
-+	 */
-+	int (*led_polarity_set)(struct phy_device *dev, int index,
-+				unsigned long modes);
- };
- #define to_phy_driver(d) container_of(to_mdio_common_driver(d),		\
- 				      struct phy_driver, mdiodrv)
++  By default this special PIN is set to LED function.
++
++allOf:
++  - $ref: ethernet-phy.yaml#
++
++properties:
++  compatible:
++    enum:
++      - ethernet-phy-id004d.d101
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/leds/common.h>
++
++    mdio {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        ethernet-phy@0 {
++            compatible = "ethernet-phy-id004d.d101";
++            reg = <0>;
++
++            leds {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                led@0 {
++                    reg = <0>;
++                    color = <LED_COLOR_ID_GREEN>;
++                    function = LED_FUNCTION_WAN;
++                    default-state = "keep";
++                };
++            };
++        };
++    };
 -- 
 2.40.1
 
