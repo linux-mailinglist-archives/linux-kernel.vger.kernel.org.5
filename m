@@ -1,284 +1,107 @@
-Return-Path: <linux-kernel+bounces-11910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0777D81ED67
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 09:46:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFCEA81ED6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 09:50:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABD65282C6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 08:46:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DB891C21715
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 08:50:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE8C63A8;
-	Wed, 27 Dec 2023 08:46:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A4263C6;
+	Wed, 27 Dec 2023 08:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HRtbWRsn"
+	dkim=pass (2048-bit key) header.d=huaqin-corp-partner-google-com.20230601.gappssmtp.com header.i=@huaqin-corp-partner-google-com.20230601.gappssmtp.com header.b="l+JbFlnh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B613D69
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 08:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703666788; x=1735202788;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=aKYdAofQSdY6ZCQ6FKTD1+CS027C9wqNRrVL1BMR1kA=;
-  b=HRtbWRsneu43CbvATXFADo6Ee6h9p/IHQmlOO+Sp7SwvQbdBMsDKyBni
-   PXxeHpK97B3FybpKTSF137Ug9sJ62ucjPdtYQ1ZSpmeYQ5Sp+ugZfdOdX
-   3MEEvx16X6GrU03YCrsz/LZsi3uA8/whVTgJowKal6NuNp8PaiFt97cxG
-   93jdiW9UAXDTY0J8Oh0VQLjXAVqTfEGvQk9sEz1DETgn2W8by9Ai4c36H
-   tnPLUy3wUNoctWMDlbJ6gBGFtyIdz14a87v9kv3lkT3pawKS+npJHuvWg
-   Jwp4M6I27RYgQys2ZZ0GTW3jo30c80zXSXYqdW75ugOyvYA8m0Na2rghE
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="9976359"
-X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
-   d="scan'208";a="9976359"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 00:46:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="868816509"
-X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
-   d="scan'208";a="868816509"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 27 Dec 2023 00:46:24 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rIPYU-000FEj-0p;
-	Wed, 27 Dec 2023 08:46:22 +0000
-Date: Wed, 27 Dec 2023 16:46:07 +0800
-From: kernel test robot <lkp@intel.com>
-To: Luming Yu <luming.yu@shingroup.cn>, linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
-	christophe.leroy@csgroup.eu
-Cc: oe-kbuild-all@lists.linux.dev, luming.yu@gmail.com,
-	ke.zhao@shingroup.cn, dawei.li@shingroup.cn,
-	shenghui.qu@shingroup.cn, Luming Yu <luming.yu@shingroup.cn>
-Subject: Re: [PATCH 1/1] powerpc/powernv: fix up kernel compile issues
-Message-ID: <202312271646.LeEziRMt-lkp@intel.com>
-References: <1655B2CD28DA1F77+20231225025824.830-1-luming.yu@shingroup.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 786F25671
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 08:50:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=huaqin.corp-partner.google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaqin.corp-partner.google.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-594bea92494so633529eaf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 00:50:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=huaqin-corp-partner-google-com.20230601.gappssmtp.com; s=20230601; t=1703667026; x=1704271826; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l29Vl8Dt8C/GDHCSU2oPfWsYSaEWlVwYc5ssoVYbD70=;
+        b=l+JbFlnh7S8tXlSs1umDn6ZFyTyPjhxFg2cOwcEf4gm8I+Ljq98utbFIzeAWWEVYEe
+         T0jE7vquEUaPlSXl+i8PT88L2+/dCg9jC3B7XIs48ImPhiqRw16IZkTy/GGPzUOg4gx9
+         EZGzoKvrg5GRs4UKoZU799jgNN4stEOUYZeiqfrTaRK1bnMUCRmH6OKOnxqc7Lwxy+Dq
+         WZ021VWb+5jvm6PBg1e5L8VJnrs89lntKLVXW9D4GiqgeFvY3eVaJp06T+OR7Edg+7VW
+         YgOBu5pbjdAevWF9xCRmnpd29DBVg2sorweNs1CePf1EaHj5ylIBvtF0zI+j0rz85tlB
+         vgGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703667026; x=1704271826;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l29Vl8Dt8C/GDHCSU2oPfWsYSaEWlVwYc5ssoVYbD70=;
+        b=Zr5RpaCGlVwmkC+aoFgFd32yxoaVC4Hu8GEb2zKYCvsM6McJ0KqlrwKFGmj3fBwIyD
+         bZjpjo5gvCYwXM9HSaQndRPCnHOWvCHMEXaV6EBZ/wxSDvcG4bXM1vAFe+Rb1NzF6tfW
+         rkuz8iMMCFcq9LgyVwRAddydRMjulIa7EHDJOaGy/+MHP7p3AfFbuuYX/Wj3VCLu9Bzh
+         pgtMHH+HZiedhSIwE8p8vMME7kDuqVFSYjTWsUhDagHQ+2BEt6sQCn30RyMASVo6NxeA
+         QkIlx5VitvI0J6FWA2yiM2SMRrsTuf8+Uf46Eq1b9s/JPnaNTfCpMPm7KORdWSoJt2vb
+         JIlQ==
+X-Gm-Message-State: AOJu0Yzei7pj3GMluO1RpvljZ/pSSegAZYIh1rx6g2I7pkXUFOpqEDHW
+	BhFwPdKW+7/+91UvRTgc0uOj7PlBKFTIfA==
+X-Google-Smtp-Source: AGHT+IFcFGcr0Bv3LQAW7dd06uC6OWCWaINEihuHeK4fHl01S1TNHj6WqigqhinDZ+IUgD5l+SzgZw==
+X-Received: by 2002:a05:6358:109:b0:173:b09:630 with SMTP id f9-20020a056358010900b001730b090630mr5665968rwa.34.1703667026384;
+        Wed, 27 Dec 2023 00:50:26 -0800 (PST)
+Received: from ubuntu.huaqin.com ([116.66.212.162])
+        by smtp.gmail.com with ESMTPSA id c26-20020aa781da000000b006d9d39354bcsm3157505pfn.74.2023.12.27.00.50.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Dec 2023 00:50:26 -0800 (PST)
+From: Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
+To: linux-input@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: dmitry.torokhov@gmail.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	jikos@kernel.org,
+	benjamin.tissoires@redhat.com,
+	linus.walleij@linaro.org,
+	dianders@chromium.org,
+	xiazhengqiao@huaqin.corp-partner.google.com
+Subject: [PATCH v3 0/2] HID: i2c-hid: elan: Add ili2901 timing
+Date: Wed, 27 Dec 2023 16:50:11 +0800
+Message-Id: <20231227085013.1317-1-xiazhengqiao@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1655B2CD28DA1F77+20231225025824.830-1-luming.yu@shingroup.cn>
 
-Hi Luming,
+ILI2901 requires reset to pull down time greater than 10ms,
+so the configuration post_power_delay_ms is 10, and the chipset
+initial time is required to be greater than 100ms,
+so the post_gpio_reset_on_delay_ms is set to 100.
 
-kernel test robot noticed the following build errors:
+Change in v3:
+- PATCH 1/2: Modify title and commit
+- PATCH 2/2: No change
+- Link to v2: https://lore.kernel.org/all/20231226023737.25618-2-xiazhengqiao@huaqin.corp-partner.google.com/
 
-[auto build test ERROR on powerpc/next]
-[also build test ERROR on powerpc/fixes linus/master v6.7-rc7 next-20231222]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Change in v2:
+- PATCH 1/2: Modify compatible properties values
+- PATCH 2/2: No change
+- Link to v1: https://lore.kernel.org/all/20231225092843.5993-3-xiazhengqiao@huaqin.corp-partner.google.com/
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Luming-Yu/powerpc-powernv-fix-up-kernel-compile-issues/20231225-153228
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
-patch link:    https://lore.kernel.org/r/1655B2CD28DA1F77%2B20231225025824.830-1-luming.yu%40shingroup.cn
-patch subject: [PATCH 1/1] powerpc/powernv: fix up kernel compile issues
-config: powerpc-powernv_defconfig (https://download.01.org/0day-ci/archive/20231227/202312271646.LeEziRMt-lkp@intel.com/config)
-compiler: powerpc64le-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231227/202312271646.LeEziRMt-lkp@intel.com/reproduce)
+xiazhengqiao (2):
+  dt-bindings: HID: i2c-hid: elan: Introduce Ilitek ili2901
+  HID: i2c-hid: elan: Add ili2901 timing
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312271646.LeEziRMt-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   arch/powerpc/platforms/powernv/vas.c: In function 'init_vas_instance':
->> arch/powerpc/platforms/powernv/vas.c:138:21: error: implicit declaration of function 'cpu_to_chip_id' [-Werror=implicit-function-declaration]
-     138 |                 if (cpu_to_chip_id(cpu) == of_get_ibm_chip_id(dn))
-         |                     ^~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
---
-   In file included from arch/powerpc/platforms/powernv/vas-window.c:20:
->> arch/powerpc/platforms/powernv/vas.h:428:8: error: unknown type name 'irqreturn_t'
-     428 | extern irqreturn_t vas_fault_thread_fn(int irq, void *data);
-         |        ^~~~~~~~~~~
-   arch/powerpc/platforms/powernv/vas.h:429:8: error: unknown type name 'irqreturn_t'
-     429 | extern irqreturn_t vas_fault_handler(int irq, void *dev_id);
-         |        ^~~~~~~~~~~
---
-   In file included from arch/powerpc/platforms/powernv/vas-fault.c:18:
->> arch/powerpc/platforms/powernv/vas.h:428:8: error: unknown type name 'irqreturn_t'
-     428 | extern irqreturn_t vas_fault_thread_fn(int irq, void *data);
-         |        ^~~~~~~~~~~
-   arch/powerpc/platforms/powernv/vas.h:429:8: error: unknown type name 'irqreturn_t'
-     429 | extern irqreturn_t vas_fault_handler(int irq, void *dev_id);
-         |        ^~~~~~~~~~~
->> arch/powerpc/platforms/powernv/vas-fault.c:66:1: error: unknown type name 'irqreturn_t'
-      66 | irqreturn_t vas_fault_thread_fn(int irq, void *data)
-         | ^~~~~~~~~~~
-   arch/powerpc/platforms/powernv/vas-fault.c: In function 'vas_fault_thread_fn':
->> arch/powerpc/platforms/powernv/vas-fault.c:111:32: error: 'IRQ_HANDLED' undeclared (first use in this function); did you mean 'IRQS_ENABLED'?
-     111 |                         return IRQ_HANDLED;
-         |                                ^~~~~~~~~~~
-         |                                IRQS_ENABLED
-   arch/powerpc/platforms/powernv/vas-fault.c:111:32: note: each undeclared identifier is reported only once for each function it appears in
-   arch/powerpc/platforms/powernv/vas-fault.c: At top level:
-   arch/powerpc/platforms/powernv/vas-fault.c:169:1: error: unknown type name 'irqreturn_t'
-     169 | irqreturn_t vas_fault_handler(int irq, void *dev_id)
-         | ^~~~~~~~~~~
-   arch/powerpc/platforms/powernv/vas-fault.c: In function 'vas_fault_handler':
-   arch/powerpc/platforms/powernv/vas-fault.c:172:9: error: unknown type name 'irqreturn_t'
-     172 |         irqreturn_t ret = IRQ_WAKE_THREAD;
-         |         ^~~~~~~~~~~
->> arch/powerpc/platforms/powernv/vas-fault.c:172:27: error: 'IRQ_WAKE_THREAD' undeclared (first use in this function); did you mean 'RUSAGE_THREAD'?
-     172 |         irqreturn_t ret = IRQ_WAKE_THREAD;
-         |                           ^~~~~~~~~~~~~~~
-         |                           RUSAGE_THREAD
-   arch/powerpc/platforms/powernv/vas-fault.c:186:23: error: 'IRQ_HANDLED' undeclared (first use in this function); did you mean 'IRQS_ENABLED'?
-     186 |                 ret = IRQ_HANDLED;
-         |                       ^~~~~~~~~~~
-         |                       IRQS_ENABLED
---
-   drivers/crypto/nx/nx-common-powernv.c: In function 'nx_open_percpu_txwins':
->> drivers/crypto/nx/nx-common-powernv.c:718:27: error: implicit declaration of function 'cpu_to_chip_id' [-Werror=implicit-function-declaration]
-     718 |                 chip_id = cpu_to_chip_id(i);
-         |                           ^~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/cpu_to_chip_id +138 arch/powerpc/platforms/powernv/vas.c
-
-0d17de03ce6a7a Haren Myneni        2020-04-15   49  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   50  static int init_vas_instance(struct platform_device *pdev)
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   51  {
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   52  	struct device_node *dn = pdev->dev.of_node;
-c20e1e299d936c Haren Myneni        2020-04-15   53  	struct vas_instance *vinst;
-c20e1e299d936c Haren Myneni        2020-04-15   54  	struct xive_irq_data *xd;
-c20e1e299d936c Haren Myneni        2020-04-15   55  	uint32_t chipid, hwirq;
-c20e1e299d936c Haren Myneni        2020-04-15   56  	struct resource *res;
-c20e1e299d936c Haren Myneni        2020-04-15   57  	int rc, cpu, vasid;
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   58  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   59  	rc = of_property_read_u32(dn, "ibm,vas-id", &vasid);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   60  	if (rc) {
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   61  		pr_err("No ibm,vas-id property for %s?\n", pdev->name);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   62  		return -ENODEV;
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   63  	}
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   64  
-c20e1e299d936c Haren Myneni        2020-04-15   65  	rc = of_property_read_u32(dn, "ibm,chip-id", &chipid);
-c20e1e299d936c Haren Myneni        2020-04-15   66  	if (rc) {
-c20e1e299d936c Haren Myneni        2020-04-15   67  		pr_err("No ibm,chip-id property for %s?\n", pdev->name);
-c20e1e299d936c Haren Myneni        2020-04-15   68  		return -ENODEV;
-c20e1e299d936c Haren Myneni        2020-04-15   69  	}
-c20e1e299d936c Haren Myneni        2020-04-15   70  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   71  	if (pdev->num_resources != 4) {
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   72  		pr_err("Unexpected DT configuration for [%s, %d]\n",
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   73  				pdev->name, vasid);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   74  		return -ENODEV;
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   75  	}
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   76  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   77  	vinst = kzalloc(sizeof(*vinst), GFP_KERNEL);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   78  	if (!vinst)
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   79  		return -ENOMEM;
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   80  
-9dd31b11370380 Cédric Le Goater    2020-12-12   81  	vinst->name = kasprintf(GFP_KERNEL, "vas-%d", vasid);
-9dd31b11370380 Cédric Le Goater    2020-12-12   82  	if (!vinst->name) {
-9dd31b11370380 Cédric Le Goater    2020-12-12   83  		kfree(vinst);
-9dd31b11370380 Cédric Le Goater    2020-12-12   84  		return -ENOMEM;
-9dd31b11370380 Cédric Le Goater    2020-12-12   85  	}
-9dd31b11370380 Cédric Le Goater    2020-12-12   86  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   87  	INIT_LIST_HEAD(&vinst->node);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   88  	ida_init(&vinst->ida);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   89  	mutex_init(&vinst->mutex);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   90  	vinst->vas_id = vasid;
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   91  	vinst->pdev = pdev;
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   92  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   93  	res = &pdev->resource[0];
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   94  	vinst->hvwc_bar_start = res->start;
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   95  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   96  	res = &pdev->resource[1];
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   97  	vinst->uwc_bar_start = res->start;
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   98  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28   99  	res = &pdev->resource[2];
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  100  	vinst->paste_base_addr = res->start;
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  101  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  102  	res = &pdev->resource[3];
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  103  	if (res->end > 62) {
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  104  		pr_err("Bad 'paste_win_id_shift' in DT, %llx\n", res->end);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  105  		goto free_vinst;
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  106  	}
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  107  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  108  	vinst->paste_win_id_shift = 63 - res->end;
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  109  
-c20e1e299d936c Haren Myneni        2020-04-15  110  	hwirq = xive_native_alloc_irq_on_chip(chipid);
-c20e1e299d936c Haren Myneni        2020-04-15  111  	if (!hwirq) {
-c20e1e299d936c Haren Myneni        2020-04-15  112  		pr_err("Inst%d: Unable to allocate global irq for chip %d\n",
-c20e1e299d936c Haren Myneni        2020-04-15  113  				vinst->vas_id, chipid);
-c20e1e299d936c Haren Myneni        2020-04-15  114  		return -ENOENT;
-c20e1e299d936c Haren Myneni        2020-04-15  115  	}
-c20e1e299d936c Haren Myneni        2020-04-15  116  
-c20e1e299d936c Haren Myneni        2020-04-15  117  	vinst->virq = irq_create_mapping(NULL, hwirq);
-c20e1e299d936c Haren Myneni        2020-04-15  118  	if (!vinst->virq) {
-c20e1e299d936c Haren Myneni        2020-04-15  119  		pr_err("Inst%d: Unable to map global irq %d\n",
-c20e1e299d936c Haren Myneni        2020-04-15  120  				vinst->vas_id, hwirq);
-c20e1e299d936c Haren Myneni        2020-04-15  121  		return -EINVAL;
-c20e1e299d936c Haren Myneni        2020-04-15  122  	}
-c20e1e299d936c Haren Myneni        2020-04-15  123  
-c20e1e299d936c Haren Myneni        2020-04-15  124  	xd = irq_get_handler_data(vinst->virq);
-c20e1e299d936c Haren Myneni        2020-04-15  125  	if (!xd) {
-c20e1e299d936c Haren Myneni        2020-04-15  126  		pr_err("Inst%d: Invalid virq %d\n",
-c20e1e299d936c Haren Myneni        2020-04-15  127  				vinst->vas_id, vinst->virq);
-c20e1e299d936c Haren Myneni        2020-04-15  128  		return -EINVAL;
-c20e1e299d936c Haren Myneni        2020-04-15  129  	}
-c20e1e299d936c Haren Myneni        2020-04-15  130  
-c20e1e299d936c Haren Myneni        2020-04-15  131  	vinst->irq_port = xd->trig_page;
-c20e1e299d936c Haren Myneni        2020-04-15  132  	pr_devel("Initialized instance [%s, %d] paste_base 0x%llx paste_win_id_shift 0x%llx IRQ %d Port 0x%llx\n",
-c20e1e299d936c Haren Myneni        2020-04-15  133  			pdev->name, vasid, vinst->paste_base_addr,
-c20e1e299d936c Haren Myneni        2020-04-15  134  			vinst->paste_win_id_shift, vinst->virq,
-c20e1e299d936c Haren Myneni        2020-04-15  135  			vinst->irq_port);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  136  
-ca03258b6b338b Sukadev Bhattiprolu 2017-11-07  137  	for_each_possible_cpu(cpu) {
-ca03258b6b338b Sukadev Bhattiprolu 2017-11-07 @138  		if (cpu_to_chip_id(cpu) == of_get_ibm_chip_id(dn))
-ca03258b6b338b Sukadev Bhattiprolu 2017-11-07  139  			per_cpu(cpu_vas_id, cpu) = vasid;
-ca03258b6b338b Sukadev Bhattiprolu 2017-11-07  140  	}
-ca03258b6b338b Sukadev Bhattiprolu 2017-11-07  141  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  142  	mutex_lock(&vas_mutex);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  143  	list_add(&vinst->node, &vas_instances);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  144  	mutex_unlock(&vas_mutex);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  145  
-9774628acf8640 Haren Myneni        2020-04-15  146  	spin_lock_init(&vinst->fault_lock);
-0d17de03ce6a7a Haren Myneni        2020-04-15  147  	/*
-0d17de03ce6a7a Haren Myneni        2020-04-15  148  	 * IRQ and fault handling setup is needed only for user space
-0d17de03ce6a7a Haren Myneni        2020-04-15  149  	 * send windows.
-0d17de03ce6a7a Haren Myneni        2020-04-15  150  	 */
-0d17de03ce6a7a Haren Myneni        2020-04-15  151  	if (vinst->virq) {
-0d17de03ce6a7a Haren Myneni        2020-04-15  152  		rc = vas_irq_fault_window_setup(vinst);
-0d17de03ce6a7a Haren Myneni        2020-04-15  153  		/*
-0d17de03ce6a7a Haren Myneni        2020-04-15  154  		 * Fault window is used only for user space send windows.
-0d17de03ce6a7a Haren Myneni        2020-04-15  155  		 * So if vinst->virq is NULL, tx_win_open returns -ENODEV
-0d17de03ce6a7a Haren Myneni        2020-04-15  156  		 * for user space.
-0d17de03ce6a7a Haren Myneni        2020-04-15  157  		 */
-0d17de03ce6a7a Haren Myneni        2020-04-15  158  		if (rc)
-0d17de03ce6a7a Haren Myneni        2020-04-15  159  			vinst->virq = 0;
-0d17de03ce6a7a Haren Myneni        2020-04-15  160  	}
-0d17de03ce6a7a Haren Myneni        2020-04-15  161  
-ece4e51291485b Sukadev Bhattiprolu 2017-11-07  162  	vas_instance_init_dbgdir(vinst);
-ece4e51291485b Sukadev Bhattiprolu 2017-11-07  163  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  164  	dev_set_drvdata(&pdev->dev, vinst);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  165  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  166  	return 0;
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  167  
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  168  free_vinst:
-9dd31b11370380 Cédric Le Goater    2020-12-12  169  	kfree(vinst->name);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  170  	kfree(vinst);
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  171  	return -ENODEV;
-4dea2d1a927c61 Sukadev Bhattiprolu 2017-08-28  172  
+ .../devicetree/bindings/input/elan,ekth6915.yaml          | 5 +++--
+ drivers/hid/i2c-hid/i2c-hid-of-elan.c                     | 8 ++++++++
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.17.1
+
 
