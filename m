@@ -1,121 +1,132 @@
-Return-Path: <linux-kernel+bounces-11840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9901A81EC60
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:01:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5094A81EC67
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:03:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BDCAB2241D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:01:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEF101F22B46
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 699A25CAF;
-	Wed, 27 Dec 2023 06:01:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45BA539C;
+	Wed, 27 Dec 2023 06:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O/9CkDd3"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="NcxIVVNS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9EEB5668;
-	Wed, 27 Dec 2023 06:01:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B540C433C8;
-	Wed, 27 Dec 2023 06:01:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703656894;
-	bh=5KBS7cLdGjQyWWqEupSKUW/EksX2rpKqU4TmWGn4AL4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O/9CkDd3zpRtEelhXVPS7yeOeqe7ioRjQsvu8tHaXIafDTtj/XiyFTyO6SsASc4pC
-	 RrRt23qsHLH6gkt1TAEnRqUA05Ij0r92RkWDBZKrAuzI6LBonyfvWCDdq/AyYm73Lo
-	 oTVEw05K+UilQCsjDsQ59FEoCiCGsPRzuwlTmT6k725SAQcIPAcJeJvA+H/yHEz1al
-	 6jCxzNCXqoStAN+sBW/rd/VMu4Mj3FlhK7/bt/pp6QKPa2eeJxLTMMnnUMm5C1SZTK
-	 uEK43Nt77ZRchGrFWmCr8Ht0VMyz5YzFZaCgQKebc9qyhoNjFtTkPSEtX+gYRBam1z
-	 VlFp08TXRcKUQ==
-Date: Wed, 27 Dec 2023 11:31:21 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Andrew Halaney <ahalaney@redhat.com>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Yaniv Gardi <ygardi@codeaurora.org>,
-	Dov Levenglick <dovl@codeaurora.org>,
-	Hannes Reinecke <hare@suse.de>,
-	Subhash Jadavani <subhashj@codeaurora.org>,
-	Gilad Broner <gbroner@codeaurora.org>,
-	Venkat Gopalakrishnan <venkatg@codeaurora.org>,
-	Janek Kotas <jank@cadence.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Avri Altman <avri.altman@wdc.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Anjana Hari <quic_ahari@quicinc.com>,
-	Dolev Raviv <draviv@codeaurora.org>,
-	Can Guo <quic_cang@quicinc.com>, Will Deacon <will@kernel.org>,
-	linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 04/11] scsi: ufs: qcom: Perform read back after
- writing unipro mode'
-Message-ID: <20231227060121.GB2814@thinkpad>
-References: <20231221-ufs-reset-ensure-effect-before-delay-v2-0-75af2a9bae51@redhat.com>
- <20231221-ufs-reset-ensure-effect-before-delay-v2-4-75af2a9bae51@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC02363AA;
+	Wed, 27 Dec 2023 06:03:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: a24991aca47d11ee9e680517dc993faa-20231227
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=NGljdjksTJl7cSSu9XYy7FO8kYtRZge6sNRdb6feXL4=;
+	b=NcxIVVNS0IdJpB5IsuQktbnvfJasN0mYmtFKHPu1rBiCeDvV3SiZytfUSH5h1xgy9sEI/DdeJPzUSwFLoqeYDjmGLqSiV383PR+fR6aXS6HSJEANYRpZIGDXQsCdGu7Z1ZH+3EU7/i3F4f3o/kLEht5lz+X2d0SIUsg1WelQyIg=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:59444eab-01a9-4c50-a5d2-b27ae2a07c76,IP:0,U
+	RL:0,TC:0,Content:0,EDM:-30,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-30
+X-CID-META: VersionHash:5d391d7,CLOUDID:e2489d8d-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:2,IP:nil,UR
+	L:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:N
+	O,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: a24991aca47d11ee9e680517dc993faa-20231227
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
+	(envelope-from <chunfeng.yun@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 171561098; Wed, 27 Dec 2023 14:03:19 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 27 Dec 2023 14:03:17 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 27 Dec 2023 14:03:17 +0800
+From: Chunfeng Yun <chunfeng.yun@mediatek.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>
+CC: Chunfeng Yun <chunfeng.yun@mediatek.com>, Conor Dooley
+	<conor+dt@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, "Mathias
+ Nyman" <mathias.nyman@intel.com>, <linux-usb@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Eddie Hung
+	<eddie.hung@mediatek.com>, Macpaul Lin <macpaul.lin@mediatek.com>
+Subject: [PATCH v4 1/3] dt-bindings: usb: mtk-xhci: add a property for Gen1 isoc-in transfer issue
+Date: Wed, 27 Dec 2023 14:03:14 +0800
+Message-ID: <20231227060316.8539-1-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231221-ufs-reset-ensure-effect-before-delay-v2-4-75af2a9bae51@redhat.com>
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--6.698500-8.000000
+X-TMASE-MatchedRID: G4NbPPbBCbo28LK855iUisp9Bgr5ONKhXxT5cg8K/td+YesuCgkiXKLs
+	GdYIe0oEWB8Rur00SOpx/Hv6BudnAqB/4ZSHyd2lsyNb+yeIRApRnscLnNAC7BjQD3m2MCf7FWo
+	Asts4LpWPqQJ9fQR1ziV2YP+J+E56aACC67qZQKpsG7r4Qh7N3DNzwULQwTBPVzOmd/bB9b6uoc
+	zUog5jKJR0/TJZAy/xoJY+2TrDFLUdpD3DKTh+QJ4CIKY/Hg3AGdQnQSTrKGPEQdG7H66TyH4gK
+	q42LRYkmKjeD7ZgQXRJ1fYQaQSqLhehi1q7el9sGHUWvrwT/1d+3BndfXUhXQ==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--6.698500-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 9363BDB1CBB7952FF72435AEDE0989D1A860F3E2E01C0BACAFCA187C3CADDD0C2000:8
+X-MTK: N
 
-On Thu, Dec 21, 2023 at 12:25:21PM -0600, Andrew Halaney wrote:
-> Currently, the QUNIPRO_SEL bit is written to and then an mb() is used to
-> ensure that completes before continuing.
-> 
-> mb() ensure that the write completes, but completion doesn't mean that
-> it isn't stored in a buffer somewhere. The recommendation for
-> ensuring this bit has taken effect on the device is to perform a read
-> back to force it to make it all the way to the device. This is
-> documented in device-io.rst and a talk by Will Deacon on this can
-> be seen over here:
-> 
->     https://youtu.be/i6DayghhA8Q?si=MiyxB5cKJXSaoc01&t=1678
-> 
-> Let's do that to ensure the bit hits the device. Because the mb()'s
-> purpose wasn't to add extra ordering (on top of the ordering guaranteed
-> by writel()/readl()), it can safely be removed.
-> 
-> Fixes: f06fcc7155dc ("scsi: ufs-qcom: add QUniPro hardware support and power optimizations")
-> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-> ---
->  drivers/ufs/host/ufs-qcom.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index 6df2ab3b6f23..ab1ff7432d11 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -280,7 +280,7 @@ static void ufs_qcom_select_unipro_mode(struct ufs_qcom_host *host)
->  		ufshcd_rmwl(host->hba, QUNIPRO_G4_SEL, 0, REG_UFS_CFG0);
->  
->  	/* make sure above configuration is applied before we return */
-> -	mb();
-> +	ufshcd_readl(host->hba, REG_UFS_CFG1);
+For Gen1 isoc-in endpoint on controller before about SSUSB IPM v1.6.0, it
+still send out unexpected ACK after receiving a short packet in burst
+transfer, this will cause an exception on connected device, specially for
+a 4k camera.
+Add a quirk property "rx-fifo-depth" to work around this hardware issue,
+prefer to use 3k bytes;
+The side-effect is that may cause performance drop about 10%, including
+bulk transfer.
 
-Same comment as patch 03/11.
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+---
+v4: change rx-fifo size in bytes
+v3: add fifo depth unit, change the value range from 0-3 to 1-4
+v2: change 'mediatek,rxfifo-depth' to 'rx-fifo-depth'
+---
+ .../devicetree/bindings/usb/mediatek,mtk-xhci.yaml    | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-- Mani
-
->  }
->  
->  /*
-> 
-> -- 
-> 2.43.0
-> 
-
+diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+index e9644e333d78..9f621f2209df 100644
+--- a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
++++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+@@ -124,6 +124,17 @@ properties:
+       defined in the xHCI spec on MTK's controller.
+     default: 5000
+ 
++  rx-fifo-depth:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      It is a quirk used to work around Gen1 isoc-in endpoint transfer issue
++      that still send out unexpected ACK after device finish the burst transfer
++      with a short packet and cause an exception, specially on a 4K camera
++      device, it happens on controller before about IPM v1.6.0; the side-effect
++      is that may cause performance drop about 10%, include bulk transfer,
++      prefer to use 3k here. The size is in bytes.
++    enum: [1024, 2048, 3072, 4096]
++
+   # the following properties are only used for case 1
+   wakeup-source:
+     description: enable USB remote wakeup, see power/wakeup-source.txt
 -- 
-மணிவண்ணன் சதாசிவம்
+2.18.0
+
 
