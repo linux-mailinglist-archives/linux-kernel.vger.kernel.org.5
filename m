@@ -1,41 +1,41 @@
-Return-Path: <linux-kernel+bounces-11824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBBA481EC23
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 05:45:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DC3181EC25
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 05:45:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEAC11C215F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 04:45:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0246B22487
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 04:45:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1782D63CD;
-	Wed, 27 Dec 2023 04:44:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E728D6FCF;
+	Wed, 27 Dec 2023 04:44:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="NFJbNk5h"
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="V/fDrH2i"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3729863D6;
-	Wed, 27 Dec 2023 04:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347806FBB;
+	Wed, 27 Dec 2023 04:44:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 515561C0002;
-	Wed, 27 Dec 2023 04:44:14 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0DB2C1C0003;
+	Wed, 27 Dec 2023 04:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1703652258;
+	t=1703652263;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=J+ex37yFdAPrDz0ymYAcjESW8NARVuInLRjbup1ig0M=;
-	b=NFJbNk5hnjCKEh/ud3uNd4am+vy94EZtX0f5LdkhfxGL5aZrcG3WGWfN/RupHmaK0SNxsS
-	xtbXItQrV8V8KYlsve4fh/3HG+gscJiHS22seVViA+vjhnLiTtGcsoRBBE5ohbDap53fSC
-	hMpXv2v4WFScCOJmVxUuzzh3LiOCIDfhx3hfQaMZrgN7Uxb5aF28rgwBXeFqPyKN3KJsQr
-	5Cjugmp2lV2p/jUoH8yqTR14dBzvCxUyhjqOqBPq0YOr1MW2jiw1KGtuScWnvWMJ9Pug/8
-	jRa8iqDp0+O8G5B32YHrzYEEN3C+IMl/P7Mj9GvKH6L9NgTDXuxSXxpGE8LLxA==
+	bh=WfepgJ+5VGun3NQSb2IbwDYCOaF7C2dAvMgwMkGGlWA=;
+	b=V/fDrH2iuylFWTdTg09rJ7ZzfilAQy2/LEVWjzM61UgEiM7ESgAJcn4HX91JaYXyZr19NQ
+	/w53+57UQObJsiGBLRVAjWIKhDoj90rgEF7U30b1WlAxZwqlYF5HcMLv4JUZxZ0EjqhwGr
+	JFehGf7A3586FeaflLx/skr/+2xPVzJRbuthx2nBv+9+4WduVjxLSPA4MdVyGGQwzivgzM
+	vgo4v8u9YUY/MiXehk6yRf+YdfZhpV39pQKv2OS9XSORVzZgHV8U6/KSgMg1D7+ecSufwE
+	fQm8WxSZw+8j8/0yJ4k3vWqvXCT4LW0Rs4ElVqmo4SIrpXbgPG+ZIiiREYfSuA==
 From: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
 To: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
 	Daniel Golle <daniel@makrotopia.org>,
@@ -60,9 +60,9 @@ Cc: Frank Wunderlich <frank-w@public-files.de>,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next v2 3/7] net: dsa: mt7530: store port 5 SGMII capability of MT7531
-Date: Wed, 27 Dec 2023 07:43:43 +0300
-Message-Id: <20231227044347.107291-4-arinc.unal@arinc9.com>
+Subject: [PATCH net-next v2 4/7] net: dsa: mt7530: improve comments regarding port 5 and 6
+Date: Wed, 27 Dec 2023 07:43:44 +0300
+Message-Id: <20231227044347.107291-5-arinc.unal@arinc9.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231227044347.107291-1-arinc.unal@arinc9.com>
 References: <20231227044347.107291-1-arinc.unal@arinc9.com>
@@ -76,227 +76,130 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: arinc.unal@arinc9.com
 
-Introduce the p5_sgmii field to store the information for whether port 5
-has got SGMII or not. Instead of reading the MT7531_TOP_SIG_SR register
-multiple times, the register will be read once and the value will be
-stored on the p5_sgmii field. This saves unnecessary reads of the
-register.
+There's no logic to numerically order the CPU ports. State the port number
+and its capability of being used as a CPU port instead.
 
-Move the comment about MT7531AE and MT7531BE to mt7531_setup(), where the
-switch is identified.
+Remove the irrelevant PHY muxing information from
+mt7530_mac_port_get_caps(). Explain the supported MII modes instead.
 
-Get rid of mt7531_dual_sgmii_supported() now that priv->p5_sgmii stores the
-information. Address the code where mt7531_dual_sgmii_supported() is used.
+Remove the out of place PHY muxing information from
+mt753x_phylink_mac_config(). The function is for MT7530, MT7531, and the
+switch on the MT7988 SoC but there's no PHY muxing on MT7531 or the switch
+on the MT7988 SoC.
 
-Get rid of mt7531_is_rgmii_port() which just prints the opposite of
-priv->p5_sgmii.
-
-Instead of calling mt7531_pll_setup() then returning, do not call it if
-port 5 is SGMII.
-
-Remove P5_INTF_SEL_GMAC5_SGMII. The p5_interface_select enum is supposed to
-represent the mode that port 5 is being used in, not the hardware
-information of port 5. Set p5_intf_sel to P5_INTF_SEL_GMAC5 instead, if
-port 5 is not dsa_is_unused_port().
+These comments were gradually introduced with the commits below.
+ca366d6c889b ("net: dsa: mt7530: Convert to PHYLINK API")
+38f790a80560 ("net: dsa: mt7530: Add support for port 5")
+88bdef8be9f6 ("net: dsa: mt7530: Extend device data ready for adding a new
+hardware")
+c288575f7810 ("net: dsa: mt7530: Add the support of MT7531 switch")
 
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 Acked-by: Daniel Golle <daniel@makrotopia.org>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 ---
- drivers/net/dsa/mt7530-mdio.c |  7 ++---
- drivers/net/dsa/mt7530.c      | 48 ++++++++++++-----------------------
- drivers/net/dsa/mt7530.h      |  6 +++--
- 3 files changed, 22 insertions(+), 39 deletions(-)
+ drivers/net/dsa/mt7530.c | 32 ++++++++++++++++++++++----------
+ 1 file changed, 22 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/dsa/mt7530-mdio.c b/drivers/net/dsa/mt7530-mdio.c
-index 088533663b83..fa3ee85a99c1 100644
---- a/drivers/net/dsa/mt7530-mdio.c
-+++ b/drivers/net/dsa/mt7530-mdio.c
-@@ -81,17 +81,14 @@ static const struct regmap_bus mt7530_regmap_bus = {
- };
- 
- static int
--mt7531_create_sgmii(struct mt7530_priv *priv, bool dual_sgmii)
-+mt7531_create_sgmii(struct mt7530_priv *priv)
- {
- 	struct regmap_config *mt7531_pcs_config[2] = {};
- 	struct phylink_pcs *pcs;
- 	struct regmap *regmap;
- 	int i, ret = 0;
- 
--	/* MT7531AE has two SGMII units for port 5 and port 6
--	 * MT7531BE has only one SGMII unit for port 6
--	 */
--	for (i = dual_sgmii ? 0 : 1; i < 2; i++) {
-+	for (i = priv->p5_sgmii ? 0 : 1; i < 2; i++) {
- 		mt7531_pcs_config[i] = devm_kzalloc(priv->dev,
- 						    sizeof(struct regmap_config),
- 						    GFP_KERNEL);
 diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 436d5c311be0..ab9b291c7a5f 100644
+index ab9b291c7a5f..558784f830c2 100644
 --- a/drivers/net/dsa/mt7530.c
 +++ b/drivers/net/dsa/mt7530.c
-@@ -487,15 +487,6 @@ mt7530_pad_clk_setup(struct dsa_switch *ds, phy_interface_t interface)
- 	return 0;
- }
- 
--static bool mt7531_dual_sgmii_supported(struct mt7530_priv *priv)
--{
--	u32 val;
--
--	val = mt7530_read(priv, MT7531_TOP_SIG_SR);
--
--	return (val & PAD_DUAL_SGMII_EN) != 0;
--}
--
- static int
- mt7531_pad_setup(struct dsa_switch *ds, phy_interface_t interface)
- {
-@@ -510,9 +501,6 @@ mt7531_pll_setup(struct mt7530_priv *priv)
- 	u32 xtal;
- 	u32 val;
- 
--	if (mt7531_dual_sgmii_supported(priv))
--		return;
--
- 	val = mt7530_read(priv, MT7531_CREV);
- 	top_sig = mt7530_read(priv, MT7531_TOP_SIG_SR);
- 	hwstrap = mt7530_read(priv, MT7531_HWTRAP);
-@@ -920,8 +908,6 @@ static const char *p5_intf_modes(unsigned int p5_interface)
- 		return "PHY P4";
- 	case P5_INTF_SEL_GMAC5:
- 		return "GMAC5";
--	case P5_INTF_SEL_GMAC5_SGMII:
--		return "GMAC5_SGMII";
- 	default:
- 		return "unknown";
- 	}
-@@ -2470,6 +2456,12 @@ mt7531_setup(struct dsa_switch *ds)
- 		return -ENODEV;
- 	}
- 
-+	/* MT7531AE has got two SGMII units. One for port 5, one for port 6.
-+	 * MT7531BE has got only one SGMII unit which is for port 6.
-+	 */
-+	val = mt7530_read(priv, MT7531_TOP_SIG_SR);
-+	priv->p5_sgmii = !!(val & PAD_DUAL_SGMII_EN);
-+
- 	/* all MACs must be forced link-down before sw reset */
- 	for (i = 0; i < MT7530_NUM_PORTS; i++)
- 		mt7530_write(priv, MT7530_PMCR_P(i), MT7531_FORCE_LNK);
-@@ -2479,21 +2471,18 @@ mt7531_setup(struct dsa_switch *ds)
- 		     SYS_CTRL_PHY_RST | SYS_CTRL_SW_RST |
- 		     SYS_CTRL_REG_RST);
- 
--	mt7531_pll_setup(priv);
--
--	if (mt7531_dual_sgmii_supported(priv)) {
--		priv->p5_intf_sel = P5_INTF_SEL_GMAC5_SGMII;
--
-+	if (!priv->p5_sgmii) {
-+		mt7531_pll_setup(priv);
-+	} else {
- 		/* Let ds->user_mii_bus be able to access external phy. */
- 		mt7530_rmw(priv, MT7531_GPIO_MODE1, MT7531_GPIO11_RG_RXD2_MASK,
- 			   MT7531_EXT_P_MDC_11);
- 		mt7530_rmw(priv, MT7531_GPIO_MODE1, MT7531_GPIO12_RG_RXD3_MASK,
- 			   MT7531_EXT_P_MDIO_12);
--	} else {
--		priv->p5_intf_sel = P5_INTF_SEL_GMAC5;
- 	}
--	dev_dbg(ds->dev, "P5 support %s interface\n",
--		p5_intf_modes(priv->p5_intf_sel));
-+
-+	if (!dsa_is_unused_port(ds, 5))
-+		priv->p5_intf_sel = P5_INTF_SEL_GMAC5;
- 
- 	mt7530_rmw(priv, MT7531_GPIO_MODE0, MT7531_GPIO0_MASK,
- 		   MT7531_GPIO0_INTERRUPT);
-@@ -2553,11 +2542,6 @@ static void mt7530_mac_port_get_caps(struct dsa_switch *ds, int port,
- 	}
- }
- 
--static bool mt7531_is_rgmii_port(struct mt7530_priv *priv, u32 port)
--{
--	return (port == 5) && (priv->p5_intf_sel != P5_INTF_SEL_GMAC5_SGMII);
--}
--
- static void mt7531_mac_port_get_caps(struct dsa_switch *ds, int port,
+@@ -2520,12 +2520,16 @@ static void mt7530_mac_port_get_caps(struct dsa_switch *ds, int port,
  				     struct phylink_config *config)
  {
-@@ -2570,7 +2554,7 @@ static void mt7531_mac_port_get_caps(struct dsa_switch *ds, int port,
+ 	switch (port) {
+-	case 0 ... 4: /* Internal phy */
++	/* Internal PHY */
++	case 0 ... 4:
+ 		__set_bit(PHY_INTERFACE_MODE_GMII,
+ 			  config->supported_interfaces);
  		break;
  
- 	case 5: /* 2nd cpu port supports either rgmii or sgmii/8023z */
--		if (mt7531_is_rgmii_port(priv, port)) {
-+		if (!priv->p5_sgmii) {
+-	case 5: /* 2nd cpu port with phy of port 0 or 4 / external phy */
++	/* Port 5 which can be used as a CPU port supports rgmii with delays,
++	 * mii, and gmii.
++	 */
++	case 5:
+ 		phy_interface_set_rgmii(config->supported_interfaces);
+ 		__set_bit(PHY_INTERFACE_MODE_MII,
+ 			  config->supported_interfaces);
+@@ -2533,7 +2537,8 @@ static void mt7530_mac_port_get_caps(struct dsa_switch *ds, int port,
+ 			  config->supported_interfaces);
+ 		break;
+ 
+-	case 6: /* 1st cpu port */
++	/* Port 6 which can be used as a CPU port supports rgmii and trgmii. */
++	case 6:
+ 		__set_bit(PHY_INTERFACE_MODE_RGMII,
+ 			  config->supported_interfaces);
+ 		__set_bit(PHY_INTERFACE_MODE_TRGMII,
+@@ -2548,19 +2553,24 @@ static void mt7531_mac_port_get_caps(struct dsa_switch *ds, int port,
+ 	struct mt7530_priv *priv = ds->priv;
+ 
+ 	switch (port) {
+-	case 0 ... 4: /* Internal phy */
++	/* Internal PHY */
++	case 0 ... 4:
+ 		__set_bit(PHY_INTERFACE_MODE_GMII,
+ 			  config->supported_interfaces);
+ 		break;
+ 
+-	case 5: /* 2nd cpu port supports either rgmii or sgmii/8023z */
++	/* Port 5 which can be used as a CPU port supports rgmii with delays on
++	 * MT7531BE, sgmii/802.3z on MT7531AE.
++	 */
++	case 5:
+ 		if (!priv->p5_sgmii) {
  			phy_interface_set_rgmii(config->supported_interfaces);
  			break;
  		}
-@@ -2637,7 +2621,7 @@ static int mt7531_rgmii_setup(struct mt7530_priv *priv, u32 port,
- {
- 	u32 val;
+ 		fallthrough;
  
--	if (!mt7531_is_rgmii_port(priv, port)) {
-+	if (priv->p5_sgmii) {
- 		dev_err(priv->dev, "RGMII mode is not available for port %d\n",
- 			port);
- 		return -EINVAL;
-@@ -2881,7 +2865,7 @@ mt7531_cpu_port_config(struct dsa_switch *ds, int port)
+-	case 6: /* 1st cpu port supports sgmii/8023z only */
++	/* Port 6 which can be used as a CPU port supports sgmii/802.3z. */
++	case 6:
+ 		__set_bit(PHY_INTERFACE_MODE_SGMII,
+ 			  config->supported_interfaces);
+ 		__set_bit(PHY_INTERFACE_MODE_1000BASEX,
+@@ -2579,11 +2589,13 @@ static void mt7988_mac_port_get_caps(struct dsa_switch *ds, int port,
+ 	phy_interface_zero(config->supported_interfaces);
  
  	switch (port) {
- 	case 5:
--		if (mt7531_is_rgmii_port(priv, port))
-+		if (!priv->p5_sgmii)
- 			interface = PHY_INTERFACE_MODE_RGMII;
- 		else
- 			interface = PHY_INTERFACE_MODE_2500BASEX;
-@@ -3033,7 +3017,7 @@ mt753x_setup(struct dsa_switch *ds)
- 		mt7530_free_irq_common(priv);
+-	case 0 ... 4: /* Internal phy */
++	/* Internal PHY */
++	case 0 ... 4:
+ 		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
+ 			  config->supported_interfaces);
+ 		break;
  
- 	if (priv->create_sgmii) {
--		ret = priv->create_sgmii(priv, mt7531_dual_sgmii_supported(priv));
-+		ret = priv->create_sgmii(priv);
- 		if (ret && priv->irq)
- 			mt7530_free_irq(priv);
- 	}
-diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-index 9cbf18efa416..80060cc740d2 100644
---- a/drivers/net/dsa/mt7530.h
-+++ b/drivers/net/dsa/mt7530.h
-@@ -687,7 +687,6 @@ enum p5_interface_select {
- 	P5_INTF_SEL_PHY_P0,
- 	P5_INTF_SEL_PHY_P4,
- 	P5_INTF_SEL_GMAC5,
--	P5_INTF_SEL_GMAC5_SGMII,
- };
++	/* Port 6 which can be used as a CPU port is an internal 10G port. */
+ 	case 6:
+ 		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
+ 			  config->supported_interfaces);
+@@ -2747,12 +2759,12 @@ mt753x_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+ 	u32 mcr_cur, mcr_new;
  
- struct mt7530_priv;
-@@ -756,6 +755,8 @@ struct mt753x_info {
-  *			registers
-  * @p6_interface	Holding the current port 6 interface
-  * @p5_intf_sel:	Holding the current port 5 interface select
-+ * @p5_sgmii:		Flag for distinguishing if port 5 of the MT7531 switch
-+ *			has got SGMII
-  * @irq:		IRQ number of the switch
-  * @irq_domain:		IRQ domain of the switch irq_chip
-  * @irq_enable:		IRQ enable bits, synced to SYS_INT_EN
-@@ -777,6 +778,7 @@ struct mt7530_priv {
- 	phy_interface_t		p6_interface;
- 	phy_interface_t		p5_interface;
- 	enum p5_interface_select p5_intf_sel;
-+	bool			p5_sgmii;
- 	u8			mirror_rx;
- 	u8			mirror_tx;
- 	struct mt7530_port	ports[MT7530_NUM_PORTS];
-@@ -786,7 +788,7 @@ struct mt7530_priv {
- 	int irq;
- 	struct irq_domain *irq_domain;
- 	u32 irq_enable;
--	int (*create_sgmii)(struct mt7530_priv *priv, bool dual_sgmii);
-+	int (*create_sgmii)(struct mt7530_priv *priv);
- 	u8 active_cpu_ports;
- };
+ 	switch (port) {
+-	case 0 ... 4: /* Internal phy */
++	case 0 ... 4:
+ 		if (state->interface != PHY_INTERFACE_MODE_GMII &&
+ 		    state->interface != PHY_INTERFACE_MODE_INTERNAL)
+ 			goto unsupported;
+ 		break;
+-	case 5: /* 2nd cpu port with phy of port 0 or 4 / external phy */
++	case 5:
+ 		if (priv->p5_interface == state->interface)
+ 			break;
+ 
+@@ -2762,7 +2774,7 @@ mt753x_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+ 		if (priv->p5_intf_sel != P5_DISABLED)
+ 			priv->p5_interface = state->interface;
+ 		break;
+-	case 6: /* 1st cpu port */
++	case 6:
+ 		if (priv->p6_interface == state->interface)
+ 			break;
  
 -- 
 2.40.1
