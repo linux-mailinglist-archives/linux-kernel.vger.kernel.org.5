@@ -1,100 +1,172 @@
-Return-Path: <linux-kernel+bounces-11964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B9B481EE46
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:42:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 606AF81EE48
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:43:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DBDF1C2184B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:42:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DE3E28384F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292C844373;
-	Wed, 27 Dec 2023 10:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 992F044373;
+	Wed, 27 Dec 2023 10:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="W299B+Dj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F229844362
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 10:42:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-50-QI0vpALcOICqpEAYQ6T2Mw-1; Wed, 27 Dec 2023 10:42:11 +0000
-X-MC-Unique: QI0vpALcOICqpEAYQ6T2Mw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 27 Dec
- 2023 10:41:53 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 27 Dec 2023 10:41:53 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Jisheng Zhang' <jszhang@kernel.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>
-CC: "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Eric Biggers
-	<ebiggers@kernel.org>, Conor Dooley <conor.dooley@microchip.com>, "Qingfang
- DENG" <dqfext@gmail.com>, Charlie Jenkins <charlie@rivosinc.com>
-Subject: RE: [PATCH v4 1/2] riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
-Thread-Topic: [PATCH v4 1/2] riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
-Thread-Index: AQHaNu5/tgkH4SyC6kWXjxrDsB1U3bC88TvA
-Date: Wed, 27 Dec 2023 10:41:53 +0000
-Message-ID: <b289d77481724391ad75c585b82506d7@AcuMS.aculab.com>
-References: <20231225044207.3821-1-jszhang@kernel.org>
- <20231225044207.3821-2-jszhang@kernel.org>
-In-Reply-To: <20231225044207.3821-2-jszhang@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80E0444362
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 10:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6d9c2db82b0so352189b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 02:43:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1703673810; x=1704278610; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yQyauLZpBuVyKcsRSZOIv2oS+kk+ZdFH+9BKEUlZjBY=;
+        b=W299B+DjU2xAnSgAQATMm8aDaG5I+61pHBx660sIJjq0xnAPJDJkwpe3MY3Ji1lbAm
+         lfxqwakc/FCNZL9/u2HIPIXSmoOdY0ubNRI82iXLcezXj1Km6l9T8g2dpjKkwY+sA5Ct
+         LwugKwgX6HgGSYbYxCTR15umV5xODdOGQsIAY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703673810; x=1704278610;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yQyauLZpBuVyKcsRSZOIv2oS+kk+ZdFH+9BKEUlZjBY=;
+        b=tnDYdBJVlpQVTckL6bVA66J5oJHAznQ8of/FVvsgLEpsy38KII8wp/mfj/6vu24rdV
+         02cYscqmBkP0m1QUKZAQbIBk4uBsIW67eEgazhu7Fwj6juMZnY3rBYsJZbkbLfXSyXva
+         i5rB3Tlz/SKajiugdi3ej9Lkz4XSdLzjYYg9eOxAKegYBOXzX9w/koPjDIh/ojtT7QUo
+         PouHOKDxNMM7PGb+7M5tljqvJa64Oqreq3ehn1TfpPVWp8pYPeFxxS9Y3hArQfXWiBrR
+         MQ/w2NpgJPYVf4yYh4voLC95O6xL64yABKMIL0VWvnPMPA3BcoYmkksOG5XkITEzVuXU
+         k4Uw==
+X-Gm-Message-State: AOJu0YxqXlOFBk9PVj1lfww73bv2AKS6tu/5qv0s5kKm5RtXcjIasDjO
+	fwN4zpTP1hZvvapX35vh46jhLlL1RSeE0blGd8Ckwj8qSQ==
+X-Google-Smtp-Source: AGHT+IGL05LvH/t32LDNIF/kC/4NeTQ036oBgMVdj8N46a0EgWRcxP6whWsvaqZNRtuVyS/anTFn0g==
+X-Received: by 2002:a05:6a00:d6d:b0:6d9:a87c:4a3a with SMTP id n45-20020a056a000d6d00b006d9a87c4a3amr1559084pfv.68.1703673809766;
+        Wed, 27 Dec 2023 02:43:29 -0800 (PST)
+Received: from treapking.tpe.corp.google.com ([2401:fa00:1:10:18d2:7869:e8b9:f4e4])
+        by smtp.gmail.com with ESMTPSA id q7-20020a056a0002a700b006cb6119f516sm6128004pfs.163.2023.12.27.02.43.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Dec 2023 02:43:29 -0800 (PST)
+From: Pin-yen Lin <treapking@chromium.org>
+To: Douglas Anderson <dianders@chromium.org>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	Sean Paul <seanpaul@chromium.org>,
+	Pin-yen Lin <treapking@chromium.org>
+Subject: [PATCH] drm/bridge: parade-ps8640: Ensure bridge is suspended in .post_disable()
+Date: Wed, 27 Dec 2023 18:42:53 +0800
+Message-ID: <20231227104324.2457378-1-treapking@chromium.org>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-From: Jisheng Zhang
-> Sent: 25 December 2023 04:42
->=20
-> Some riscv implementations such as T-HEAD's C906, C908, C910 and C920
-> support efficient unaligned access, for performance reason we want
-> to enable HAVE_EFFICIENT_UNALIGNED_ACCESS on these platforms. To
-> avoid performance regressions on other non efficient unaligned access
-> platforms, HAVE_EFFICIENT_UNALIGNED_ACCESS can't be globally selected.
+Disable the autosuspend of runtime PM and use completion to make sure
+ps8640_suspend() is called in ps8640_atomic_post_disable().
 
-How efficient are these EFFICIENT_UNALIGNED_ACCESS ?
+The ps8640 bridge seems to expect everything to be power cycled at the
+disable process, but sometimes ps8640_aux_transfer() holds the runtime
+PM reference and prevents the bridge from suspend.
 
-For single word accesses it doesn't matter much (since they don't fault).
-But for memcpy() (and similar) if they are slightly slow (eg the same
-as two aligned accesses) it is likely still worth doing misaligned
-transfers for both ends and aligned transfers for the middle.
+Instead of force powering off the bridge and taking the risk of breaking
+the AUX communication, disable the autosuspend and wait for
+ps8640_suspend() being called here, and re-enable the autosuspend
+afterwards.  With this approach, the bridge should be suspended after
+the current ps8640_aux_transfer() completes.
 
-For example, on modern x86 it really isn't worth worrying about
-misaligned transfers of 64bit registers.
-AFAICT accesses within a cacheline just use byte enables - so are zero
-cost. Accesses that cross cache line boundaries do get split - but the
-out-of-order execute, store-buffer and the ability to do two reads in
-each clock cycle make the overall cost only just measurable.
+Fixes: 826cff3f7ebb ("drm/bridge: parade-ps8640: Enable runtime power management")
+Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+---
 
-Not sure how the various RISC-V cpu compare though.
-You might get an extra clock delay a lot more often.
-So, while mostly you 'don't care' about the alignment, there may
-still be a few places where it does matter.
+ drivers/gpu/drm/bridge/parade-ps8640.c | 33 +++++++++++++++++++++++++-
+ 1 file changed, 32 insertions(+), 1 deletion(-)
 
-=09David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+index 8161b1a1a4b1..f8ea486a76fd 100644
+--- a/drivers/gpu/drm/bridge/parade-ps8640.c
++++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+@@ -107,6 +107,7 @@ struct ps8640 {
+ 	struct device_link *link;
+ 	bool pre_enabled;
+ 	bool need_post_hpd_delay;
++	struct completion suspend_completion;
+ };
+ 
+ static const struct regmap_config ps8640_regmap_config[] = {
+@@ -417,6 +418,8 @@ static int __maybe_unused ps8640_suspend(struct device *dev)
+ 	if (ret < 0)
+ 		dev_err(dev, "cannot disable regulators %d\n", ret);
+ 
++	complete_all(&ps_bridge->suspend_completion);
++
+ 	return ret;
+ }
+ 
+@@ -465,11 +468,37 @@ static void ps8640_atomic_post_disable(struct drm_bridge *bridge,
+ 				       struct drm_bridge_state *old_bridge_state)
+ {
+ 	struct ps8640 *ps_bridge = bridge_to_ps8640(bridge);
++	struct device *dev = &ps_bridge->page[PAGE0_DP_CNTL]->dev;
+ 
+ 	ps_bridge->pre_enabled = false;
+ 
+ 	ps8640_bridge_vdo_control(ps_bridge, DISABLE);
+-	pm_runtime_put_sync_suspend(&ps_bridge->page[PAGE0_DP_CNTL]->dev);
++
++	/*
++	 * The ps8640 bridge seems to expect everything to be power cycled at
++	 * the disable process, but sometimes ps8640_aux_transfer() holds the
++	 * runtime PM reference and prevents the bridge from suspend.
++	 * Instead of force powering off the bridge and taking the risk of
++	 * breaking the AUX communication, disable the autosuspend and wait for
++	 * ps8640_suspend() being called here, and re-enable the autosuspend
++	 * afterwards.  With this approach, the bridge should be suspended after
++	 * the current ps8640_aux_transfer() completes.
++	 */
++	reinit_completion(&ps_bridge->suspend_completion);
++	pm_runtime_dont_use_autosuspend(dev);
++	pm_runtime_put_sync_suspend(dev);
++
++	/*
++	 * Mostly the suspend completes under 10 ms, but sometimes it could
++	 * take 708 ms to complete.  Set the timeout to 2000 ms here to be
++	 * extra safe.
++	 */
++	if (!wait_for_completion_timeout(&ps_bridge->suspend_completion,
++					 msecs_to_jiffies(2000))) {
++		dev_warn(dev, "Failed to wait for the suspend completion\n");
++	}
++
++	pm_runtime_use_autosuspend(dev);
+ }
+ 
+ static int ps8640_bridge_attach(struct drm_bridge *bridge,
+@@ -693,6 +722,8 @@ static int ps8640_probe(struct i2c_client *client)
+ 	if (ret)
+ 		return ret;
+ 
++	init_completion(&ps_bridge->suspend_completion);
++
+ 	ret = devm_of_dp_aux_populate_bus(&ps_bridge->aux, ps8640_bridge_link_panel);
+ 
+ 	/*
+-- 
+2.43.0.472.g3155946c3a-goog
 
 
