@@ -1,68 +1,70 @@
-Return-Path: <linux-kernel+bounces-12044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A77281EF5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:12:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 521E881EF5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:12:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECD931F21E06
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:12:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EEFE283198
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:12:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86C2C45967;
-	Wed, 27 Dec 2023 14:12:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 647A145BE4;
+	Wed, 27 Dec 2023 14:12:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iGE7P2j3"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pYDT9L3e"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 889C445955
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 14:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA3D45964
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 14:12:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kinseyho.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5eba564eb3fso39187227b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 06:12:21 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e9de9795dfso80037157b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 06:12:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703686340; x=1704291140; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/tv2A+JHXhlf9Bg7FPGETCJC0ghqPw0lJWeTtYvu2G8=;
-        b=iGE7P2j3QEWL476lcKt3dZdsySUef7uJX12fq+LkrFPL1ISmncgzS2GkMIMM/I/u30
-         HRWZHbv5qIEpVGALKLOGBIWqmQlHDRoMqZJfuXbe0bLXCGhEFFscfIAszDti9GNx9mFD
-         GmNZCzp7wjvbGVhUAVoOT8Aci4DpfqsAbYNFGz2BFoC7cXCKfW7Kbi2f8TtmG6YhprrB
-         TX4cSudYl8SlkstS/ninuxu+1yQWZlrnJ2MI7xnA7QX03Y6hdCYxT6lES3cBBwdoI8OT
-         EB/f2uayFN0QLiUVMRni0dPShf/vJlXcxHdiYtq0lY1QCEYY7P1QsXMwU+0tqYoaGhAj
-         V0eA==
+        d=google.com; s=20230601; t=1703686342; x=1704291142; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vxNY2VrPCY3idyTMpJR/1ttR0VD4PODSyqOS/F6YoNY=;
+        b=pYDT9L3egtaAW9QVwLXGv03P80FZ2ysXWZm7wOwS6F+/LqqNiGA8gEYN30kFmHvXpt
+         KDuFcoInc99nV2BT0BPR4Fpjk1dqxKthORvld1/XdBkPKTkXWguZaooSCEidBDk2hS2n
+         H0SBffFPFBhGGfxYloKLfeXIfYRhgPeWD77GswRI1XbHxPA3GmwlTuyCzW9ivbl+sWqW
+         OHA6IHlj8CBYrW1vMvXRsjmlDHHjw83ZEa4jHmt/hboIsl2E9ckRpiFj6gde95MvChZm
+         v1x+03xBNIGpwqJcTgR8LoKcD6Kh/I0nMK/Dcbt5B2WZewRPbRP1hqanZtCHgBDMg7GO
+         BY4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703686340; x=1704291140;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/tv2A+JHXhlf9Bg7FPGETCJC0ghqPw0lJWeTtYvu2G8=;
-        b=N3KIdOC+1Axqizrd5YxMiafFa4IkkfqB1NVyil86MfHFss946BDseWyfaE1mXH4SCS
-         bskXGPffyA1qppEAHqGuY83Eu1MjI5JylP4qmFdXx+ZYvD7ut49awiqBBvRoXaYUihfa
-         XC9O8fWQUzopfq1Ub8qLqgyymfau+LI/BZn+4Y6FUU6lN/YfXsNv49JplcPlpeokOT8Q
-         ejPtvMt4mxvmOT0jQpexWBASNjywn1vSXYWLudn1ctLndrF6vl2TMZVgjkTlkUW6aQ8u
-         BAhmyeGcSyZcwXNpwPa3vlmP/0EDBxknDQTbk4sNEx0td5N1kaz9iWmCLgTzKWnkqiks
-         9/fQ==
-X-Gm-Message-State: AOJu0YxdLFIbOI33+ck6asbSrHLHvA39eXnjzHqZ5vd7cTIdKjZCFH/M
-	BtlbUz+NXSKk2mFvUkYBd5ZEU0ZFom0f26E5fD+P
-X-Google-Smtp-Source: AGHT+IHwVa/QDufw4XZePu+mq/xQNqTfQ8hKtMC9gzbof2NYIPLJNIfN8vnkn0KrZ756JvG0eTeD8lTdTGxjaw==
+        d=1e100.net; s=20230601; t=1703686342; x=1704291142;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vxNY2VrPCY3idyTMpJR/1ttR0VD4PODSyqOS/F6YoNY=;
+        b=QWPLqf4juEyqitirqGuNY9AViq7vO5OfwlSVQM6cqaswT8LIZY3fv3nYk3EiI7RPgK
+         FZ2Xpb1EVQ1dsV1dddHt85xOM/P9gNdftdUkhlJUS7w4X+Ron54GHShQf8zonxEOI6D8
+         sh/FngTHp6XJdvyYD7xFcUKDpRIy6VzoRNrlP/Mu/X1fqjTX4h2kDJLWA1mGVHqVeMJo
+         g7Cr8Jm6ZDcelaI9/3UuYqQ31JltKK9ybOwThLISXErTwHN3uEAjOKfSHv2goX+ECE+/
+         see1n+il2+cAMPyaWpGdBzCZxip9DEC9QHkjuodHb/PVQz/4WcGDj985p4Hri/+IZ4HR
+         YpLA==
+X-Gm-Message-State: AOJu0YwD8mSe1JQg87qyNyHpffpG1+fVUjKJAPqy7SzsRs2NPgMK/3MK
+	tA+JmnI56Usr8xpwd4ug1YMuHo5jMmWOinrcg9Yn
+X-Google-Smtp-Source: AGHT+IE8RZKKQ6O+mMRizNvr6qVSWpnv3WsoTuWDou54DQMqnSDnrrx19+W2dXLZBRg+Aq6wz1/HHo13u5Bc1A==
 X-Received: from kinseyct.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:46b])
- (user=kinseyho job=sendgmr) by 2002:a05:6902:1369:b0:db5:4692:3ab7 with SMTP
- id bt9-20020a056902136900b00db546923ab7mr3370911ybb.8.1703686340534; Wed, 27
- Dec 2023 06:12:20 -0800 (PST)
-Date: Wed, 27 Dec 2023 14:12:00 +0000
+ (user=kinseyho job=sendgmr) by 2002:a25:8201:0:b0:db5:4a39:feb8 with SMTP id
+ q1-20020a258201000000b00db54a39feb8mr3392529ybk.8.1703686342353; Wed, 27 Dec
+ 2023 06:12:22 -0800 (PST)
+Date: Wed, 27 Dec 2023 14:12:01 +0000
+In-Reply-To: <20231227141205.2200125-1-kinseyho@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20231227141205.2200125-1-kinseyho@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231227141205.2200125-1-kinseyho@google.com>
-Subject: [PATCH mm-unstable v4 0/5] mm/mglru: Kconfig cleanup
+Message-ID: <20231227141205.2200125-2-kinseyho@google.com>
+Subject: [PATCH mm-unstable v4 1/5] mm/mglru: add CONFIG_ARCH_HAS_HW_PTE_YOUNG
 From: Kinsey Ho <kinseyho@google.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
@@ -70,45 +72,98 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
 	"Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>, Kinsey Ho <kinseyho@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-This series is the result of the following discussion:
-https://lore.kernel.org/47066176-bd93-55dd-c2fa-002299d9e034@linux.ibm.com/
+Some architectures are able to set the accessed bit in PTEs when PTEs
+are used as part of linear address translations.
 
-It mainly avoids building the code that walks page tables on CPUs that
-use it, i.e., those don't support hardware accessed bit. Specifically,
-it introduces a new Kconfig to guard some of functions added by
-commit bd74fdaea146 ("mm: multi-gen LRU: support page table walks")
-on CPUs like POWER9, on which the series was tested.
+Add CONFIG_ARCH_HAS_HW_PTE_YOUNG for such architectures to be able to
+override arch_has_hw_pte_young().
+
+Signed-off-by: Kinsey Ho <kinseyho@google.com>
+Co-developed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Tested-by: Donet Tom <donettom@linux.vnet.ibm.com>
+Acked-by: Yu Zhao <yuzhao@google.com>
 ---
-v4: fix kernel build bot error by adding dummy pmd_dirty()
+ arch/Kconfig                   | 8 ++++++++
+ arch/arm64/Kconfig             | 1 +
+ arch/x86/Kconfig               | 1 +
+ arch/x86/include/asm/pgtable.h | 6 ------
+ include/linux/pgtable.h        | 2 +-
+ 5 files changed, 11 insertions(+), 7 deletions(-)
 
-v3: https://lore.kernel.org/20231220040037.883811-1-kinseyho@google.com/
-
-
-Kinsey Ho (5):
-  mm/mglru: add CONFIG_ARCH_HAS_HW_PTE_YOUNG
-  mm/mglru: add CONFIG_LRU_GEN_WALKS_MMU
-  mm/mglru: remove CONFIG_MEMCG
-  mm/mglru: add dummy pmd_dirty()
-  mm/mglru: remove CONFIG_TRANSPARENT_HUGEPAGE
-
- arch/Kconfig                         |   8 +
- arch/arm64/Kconfig                   |   1 +
- arch/loongarch/include/asm/pgtable.h |   1 +
- arch/mips/include/asm/pgtable.h      |   1 +
- arch/riscv/include/asm/pgtable.h     |   1 +
- arch/s390/include/asm/pgtable.h      |   1 +
- arch/sparc/include/asm/pgtable_64.h  |   1 +
- arch/x86/Kconfig                     |   1 +
- arch/x86/include/asm/pgtable.h       |   7 +-
- include/linux/memcontrol.h           |   2 +-
- include/linux/mm_types.h             |  16 +-
- include/linux/mmzone.h               |  28 +--
- include/linux/pgtable.h              |   9 +-
- kernel/fork.c                        |   2 +-
- mm/Kconfig                           |   4 +
- mm/vmscan.c                          | 271 ++++++++++++++-------------
- 16 files changed, 187 insertions(+), 167 deletions(-)
-
+diff --git a/arch/Kconfig b/arch/Kconfig
+index f4b210ab0612..8c8901f80586 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -1470,6 +1470,14 @@ config DYNAMIC_SIGFRAME
+ config HAVE_ARCH_NODE_DEV_GROUP
+ 	bool
+ 
++config ARCH_HAS_HW_PTE_YOUNG
++	bool
++	help
++	  Architectures that select this option are capable of setting the
++	  accessed bit in PTE entries when using them as part of linear address
++	  translations. Architectures that require runtime check should select
++	  this option and override arch_has_hw_pte_young().
++
+ config ARCH_HAS_NONLEAF_PMD_YOUNG
+ 	bool
+ 	help
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 7b071a00425d..12d611f3da5d 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -36,6 +36,7 @@ config ARM64
+ 	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+ 	select ARCH_HAS_PTE_DEVMAP
+ 	select ARCH_HAS_PTE_SPECIAL
++	select ARCH_HAS_HW_PTE_YOUNG
+ 	select ARCH_HAS_SETUP_DMA_OPS
+ 	select ARCH_HAS_SET_DIRECT_MAP
+ 	select ARCH_HAS_SET_MEMORY
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 1566748f16c4..04941a1ffc0a 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -88,6 +88,7 @@ config X86
+ 	select ARCH_HAS_PMEM_API		if X86_64
+ 	select ARCH_HAS_PTE_DEVMAP		if X86_64
+ 	select ARCH_HAS_PTE_SPECIAL
++	select ARCH_HAS_HW_PTE_YOUNG
+ 	select ARCH_HAS_NONLEAF_PMD_YOUNG	if PGTABLE_LEVELS > 2
+ 	select ARCH_HAS_UACCESS_FLUSHCACHE	if X86_64
+ 	select ARCH_HAS_COPY_MC			if X86_64
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 57bab91bbf50..08b5cb22d9a6 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -1679,12 +1679,6 @@ static inline bool arch_has_pfn_modify_check(void)
+ 	return boot_cpu_has_bug(X86_BUG_L1TF);
+ }
+ 
+-#define arch_has_hw_pte_young arch_has_hw_pte_young
+-static inline bool arch_has_hw_pte_young(void)
+-{
+-	return true;
+-}
+-
+ #define arch_check_zapped_pte arch_check_zapped_pte
+ void arch_check_zapped_pte(struct vm_area_struct *vma, pte_t pte);
+ 
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index af7639c3b0a3..9ecc20fa6269 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -375,7 +375,7 @@ static inline bool arch_has_hw_nonleaf_pmd_young(void)
+  */
+ static inline bool arch_has_hw_pte_young(void)
+ {
+-	return false;
++	return IS_ENABLED(CONFIG_ARCH_HAS_HW_PTE_YOUNG);
+ }
+ #endif
+ 
 -- 
 2.43.0.472.g3155946c3a-goog
 
