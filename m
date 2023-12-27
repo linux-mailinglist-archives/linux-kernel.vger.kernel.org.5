@@ -1,133 +1,249 @@
-Return-Path: <linux-kernel+bounces-12308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F22A481F303
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 00:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44F3781F30A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 00:35:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FF1A1C21281
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 23:31:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5095E1C2266F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 23:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A31498B3;
-	Wed, 27 Dec 2023 23:31:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4EC3498B1;
+	Wed, 27 Dec 2023 23:35:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HOXV1GnW"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="N/lB4t3D"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1CA8495C1;
-	Wed, 27 Dec 2023 23:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703719903; x=1735255903;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=sx4ii87qo8dLRfnk777qZjzpLyvbTgoLski5VtRe4j8=;
-  b=HOXV1GnWtLbd49YI8XoreJM3Ycncflawp8Ha/cO0GedA4A9ZDges5Umq
-   i8CVI6d94/Klp4zuLcD4vQjcG/cbQz23w2lTRAQDvWhfQyV9sY0YBVMxY
-   PFonKt+SIlghImP9LSC3YCe3gcWMU1LnrcjteAUFZV7olRgkwmcmkMrZm
-   x4GNwkYTj2hH02GR2lyXFK1uo/Byz8XTCtxp208wtFzQQORnFRl9LQ3/k
-   snGoonlgsV3gts05jUsc8tCHyHCGpxG8C2T3tT9+pFIdJPXGckiu8VqzI
-   og5HBVAIrAI+gQmrXZXUAMhXy5AiBfJoMmtf5nu0OKAuMHfYWGSj8+PM4
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="3576035"
-X-IronPort-AV: E=Sophos;i="6.04,310,1695711600"; 
-   d="scan'208";a="3576035"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 15:31:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,310,1695711600"; 
-   d="scan'208";a="20079157"
-Received: from meijunzh-mobl.ccr.corp.intel.com (HELO [10.249.169.31]) ([10.249.169.31])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 15:31:39 -0800
-Message-ID: <64c77298-dd3e-4102-a9d3-0433708d33ac@linux.intel.com>
-Date: Thu, 28 Dec 2023 07:31:35 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C40F8498A2
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 23:35:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=P/2xlLk/rkxOjS/FUbmY9OBM2TAcAbIfDH0oLalnqbs=; b=N/lB4t3DzWifLOissbAn3MCKby
+	ZhVTvZwh7sualHCiikumlSmpzF8ly91xU+pQQf96wvcviLFKE2O+d8yo//VoPG0sRbzaUFTuOj0V8
+	f6wwox0teBA0BpHTzWDznzZXoOScevnj2RwfWMqaRsIw4FMJmuc8czWVcnWVbjaaa2u16iy3WxRvV
+	cz4pzG/U2q4xtznJRpB8GLlN5L94+tq29CFYqLRMH6p3BYq8Hc/9D0uTivjjANI6VJGICnSdsU1/p
+	rJUMIUb+Q5Y0sEG7T+q9izY9Oian6JJi77g5ZWfjsHb3T46+qY1kAjY2XuTNfFRW6IHqwUZEum2Pa
+	54x2LuMQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rIdQC-00Bm9I-1P;
+	Wed, 27 Dec 2023 23:34:44 +0000
+Date: Wed, 27 Dec 2023 23:34:44 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Tanzir Hasan <tanzirh@google.com>
+Cc: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+	Nick Desaulniers <nnn@google.com>
+Subject: Re: [PATCH] x86/syscalls: shrink entry/syscall_32.i via IWYU
+Message-ID: <20231227233444.GH1674809@ZenIV>
+References: <20231227-syscall32-v1-1-9621140d33bd@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v8 4/5] iommu/vt-d: don't issue device-TLB invalidate
- request when device is disconnected
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
- will@kernel.org, robin.murphy@arm.com, lukas@wunner.de,
- linux-pci@vger.kernel.org, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20231227131151.GA1499234@bhelgaas>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <20231227131151.GA1499234@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231227-syscall32-v1-1-9621140d33bd@google.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-
-On 12/27/2023 9:11 PM, Bjorn Helgaas wrote:
-> I suggest using "ATS Invalidate Request" in the subject as well.
-> Otherwise we have to figure out whether "device-TLB invalidate
-> request" is the same as "ATS Invalidate Request".
+On Wed, Dec 27, 2023 at 10:38:41PM +0000, Tanzir Hasan wrote:
+> This diff uses an open source tool include-what-you-use (IWYU) to modify
+> the include list, changing indirect includes to direct includes. IWYU is
+> implemented using the IWYUScripts github repository which is a tool that
+> is currently undergoing development. These changes seek to improve build
+> times.
+> 
+> This change to entry/syscall_32.c resulted in a preprocessed size of
+> entry/syscall_32.i from 64002 lines to 47986 lines (-25%) for the x86
+> defconfig.
 >
-> If they are the same, just use the same words.
->
-> On Tue, Dec 26, 2023 at 09:59:22PM -0500, Ethan Zhao wrote:
->> Except those aggressive hotplug cases - surprise remove a hotplug device
->> while its safe removal is requested and handled in process by:
->>
->> 1. pull it out directly.
->> 2. turn off its power.
->> 3. bring the link down.
->> 4. just died there that moment.
->>
->> etc, in a word, 'gone' or 'disconnected'.
->>
->> Mostly are regular normal safe removal and surprise removal unplug.
->> these hot unplug handling process could be optimized for fix the ATS
->> invalidation hang issue by calling pci_dev_is_disconnected() in function
->> devtlb_invalidation_with_pasid() to check target device state to avoid
->> sending meaningless ATS invalidation request to iommu when device is gone.
->> (see IMPLEMENTATION NOTE in PCIe spec r6.1 section 10.3.1)
-> Suggest "ATS Invalidate Request", capitalized exactly that way so we
-> know it's a specific name of something defined in the PCIe spec.
->
->> For safe removal, device wouldn't be removed untill the whole software
->> handling process is done, it wouldn't trigger the hard lock up issue
->> caused by too long ATS invalidation timeout wait. in safe removal path,
-> Ditto.
->
-> Capitalize "In the safe removal ..." since it starts a new sentence.
->
->> device state isn't set to pci_channel_io_perm_failure in
->> pciehp_unconfigure_device() by checking 'presence' parameter, calling
->> pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will return
->> false there, wouldn't break the function.
->>
->> For surprise removal, device state is set to pci_channel_io_perm_failure in
->> pciehp_unconfigure_device(), means device is already gone (disconnected)
->> call pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will
->> return true to break the function not to send ATS invalidation request to
-> Ditto.
+> Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+> ---
+>  arch/x86/entry/syscall_32.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/entry/syscall_32.c b/arch/x86/entry/syscall_32.c
+> index 8cfc9bc73e7f..66db11fe8a1c 100644
+> --- a/arch/x86/entry/syscall_32.c
+> +++ b/arch/x86/entry/syscall_32.c
+> @@ -4,7 +4,7 @@
+>  #include <linux/linkage.h>
+>  #include <linux/sys.h>
+>  #include <linux/cache.h>
+> -#include <linux/syscalls.h>
+> +#include <linux/ptrace.h>
+>  #include <asm/syscall.h>
 
-Okay.
+Really?  What do we need linux/ptrace.h for?  Because if it's
+struct pt_regs for the generated externs, we might as well have
+just said
+struct pt_regs;
+and that would be it.
 
+<digs around a bit>
 
-Thanks,
+As the matter of fact, all you need out of those includes is this:
 
-Ethan
+struct pt_regs;
+typedef long (*sys_call_ptr_t)(const struct pt_regs *);
+extern const sys_call_ptr_t sys_call_table[];
+#if defined(CONFIG_X86_32)
+#define ia32_sys_call_table sys_call_table
+#else
+/*
+ * These may not exist, but still put the prototypes in so we
+ * can use IS_ENABLED().
+ */
+extern const sys_call_ptr_t ia32_sys_call_table[];
+extern const sys_call_ptr_t x32_sys_call_table[];
+#endif
 
->> the disconnected device blindly, thus avoid the further long time waiting
->> triggers the hard lockup.
->>
->> safe removal & surprise removal
->>
->> pciehp_ist()
->>     pciehp_handle_presence_or_link_change()
->>       pciehp_disable_slot()
->>         remove_board()
->>           pciehp_unconfigure_device(presence)
+That's _it_.  The same goes for syscall_64.c and syscall_x32.c.
+Oh, and lose the __visible/asmlinkage junk in there - none of that
+stuff is used from asm these days.  See the patch below -
+Untested But Should Work(tm):
+
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index d813160b14d8..5c470806dd08 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -36,6 +36,8 @@
+ #include <asm/syscall.h>
+ #include <asm/irq_stack.h>
+ 
++#include "syscall.h"
++
+ #ifdef CONFIG_X86_64
+ 
+ static __always_inline bool do_syscall_x64(struct pt_regs *regs, int nr)
+diff --git a/arch/x86/entry/syscall.h b/arch/x86/entry/syscall.h
+new file mode 100644
+index 000000000000..7c52df000ae0
+--- /dev/null
++++ b/arch/x86/entry/syscall.h
+@@ -0,0 +1,13 @@
++struct pt_regs;
++typedef long (*sys_call_ptr_t)(const struct pt_regs *);
++extern const sys_call_ptr_t sys_call_table[];
++#if defined(CONFIG_X86_32)
++#define ia32_sys_call_table sys_call_table
++#else
++/*
++ * These may not exist, but still put the prototypes in so we
++ * can use IS_ENABLED().
++ */
++extern const sys_call_ptr_t ia32_sys_call_table[];
++extern const sys_call_ptr_t x32_sys_call_table[];
++#endif
+diff --git a/arch/x86/entry/syscall_32.c b/arch/x86/entry/syscall_32.c
+index 8cfc9bc73e7f..a24a8922692f 100644
+--- a/arch/x86/entry/syscall_32.c
++++ b/arch/x86/entry/syscall_32.c
+@@ -1,11 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* System call table for i386. */
+ 
+-#include <linux/linkage.h>
+-#include <linux/sys.h>
+-#include <linux/cache.h>
+-#include <linux/syscalls.h>
+-#include <asm/syscall.h>
++#include "syscall.h"
+ 
+ #ifdef CONFIG_IA32_EMULATION
+ #define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, compat)
+@@ -20,6 +16,6 @@
+ 
+ #define __SYSCALL(nr, sym) __ia32_##sym,
+ 
+-__visible const sys_call_ptr_t ia32_sys_call_table[] = {
++const sys_call_ptr_t ia32_sys_call_table[] = {
+ #include <asm/syscalls_32.h>
+ };
+diff --git a/arch/x86/entry/syscall_64.c b/arch/x86/entry/syscall_64.c
+index be120eec1fc9..81bde061037b 100644
+--- a/arch/x86/entry/syscall_64.c
++++ b/arch/x86/entry/syscall_64.c
+@@ -1,11 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* System call table for x86-64. */
+ 
+-#include <linux/linkage.h>
+-#include <linux/sys.h>
+-#include <linux/cache.h>
+-#include <linux/syscalls.h>
+-#include <asm/syscall.h>
++#include "syscall.h"
+ 
+ #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs *);
+ #include <asm/syscalls_64.h>
+@@ -13,6 +9,6 @@
+ 
+ #define __SYSCALL(nr, sym) __x64_##sym,
+ 
+-asmlinkage const sys_call_ptr_t sys_call_table[] = {
++const sys_call_ptr_t sys_call_table[] = {
+ #include <asm/syscalls_64.h>
+ };
+diff --git a/arch/x86/entry/syscall_x32.c b/arch/x86/entry/syscall_x32.c
+index bdd0e03a1265..7b5170a99b9a 100644
+--- a/arch/x86/entry/syscall_x32.c
++++ b/arch/x86/entry/syscall_x32.c
+@@ -1,11 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* System call table for x32 ABI. */
+ 
+-#include <linux/linkage.h>
+-#include <linux/sys.h>
+-#include <linux/cache.h>
+-#include <linux/syscalls.h>
+-#include <asm/syscall.h>
++#include "syscall.h"
+ 
+ #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs *);
+ #include <asm/syscalls_x32.h>
+@@ -13,6 +9,6 @@
+ 
+ #define __SYSCALL(nr, sym) __x64_##sym,
+ 
+-asmlinkage const sys_call_ptr_t x32_sys_call_table[] = {
++const sys_call_ptr_t x32_sys_call_table[] = {
+ #include <asm/syscalls_x32.h>
+ };
+diff --git a/arch/x86/include/asm/syscall.h b/arch/x86/include/asm/syscall.h
+index f44e2f9ab65d..f301919b9187 100644
+--- a/arch/x86/include/asm/syscall.h
++++ b/arch/x86/include/asm/syscall.h
+@@ -16,20 +16,6 @@
+ #include <asm/thread_info.h>	/* for TS_COMPAT */
+ #include <asm/unistd.h>
+ 
+-typedef long (*sys_call_ptr_t)(const struct pt_regs *);
+-extern const sys_call_ptr_t sys_call_table[];
+-
+-#if defined(CONFIG_X86_32)
+-#define ia32_sys_call_table sys_call_table
+-#else
+-/*
+- * These may not exist, but still put the prototypes in so we
+- * can use IS_ENABLED().
+- */
+-extern const sys_call_ptr_t ia32_sys_call_table[];
+-extern const sys_call_ptr_t x32_sys_call_table[];
+-#endif
+-
+ /*
+  * Only the low 32 bits of orig_ax are meaningful, so we return int.
+  * This importantly ignores the high bits on 64-bit, so comparisons
 
