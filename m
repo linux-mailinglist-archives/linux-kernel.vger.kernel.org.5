@@ -1,67 +1,89 @@
-Return-Path: <linux-kernel+bounces-12257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDF1D81F206
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:59:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C7E081F20F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 22:01:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B1381C225FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:59:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19B59283025
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B1E2481AB;
-	Wed, 27 Dec 2023 20:58:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="MjY/HB9f"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07ACE481B4;
+	Wed, 27 Dec 2023 21:01:26 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC5E481A4
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 20:58:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 661C2C433C8;
-	Wed, 27 Dec 2023 20:58:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1703710734;
-	bh=nVIXdXTdlWdkqE/2/J9dc3xAOUa+ZEXhxjCS1ovFzRU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=MjY/HB9fglm3RR9yjFHrErDDhjl2mpNchHTuMZPLSRlKBY802XFzhXarLC0b589ez
-	 cNjeuOJlejNZ+h2vXKbu1g4+gz0NxqaJxehHi5ln0zPn7PF5Xuqb4KWxcTW3Omf1tu
-	 Z6UvQ41VMPxOfmtoM7MwEpeAZr/hEWbWIg/CvOFM=
-Date: Wed, 27 Dec 2023 12:58:53 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Barry Song <21cnbao@gmail.com>, Seth Jennings <sjenning@redhat.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Vitaly Wool
- <vitaly.wool@konsulko.com>, Nhat Pham <nphamcs@gmail.com>, Chris Li
- <chriscli@google.com>, Yosry Ahmed <yosryahmed@google.com>, Dan Streetman
- <ddstreet@ieee.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Chris Li <chrisl@kernel.org>
-Subject: Re: [PATCH v4 1/6] mm/zswap: change dstmem size to one page
-Message-Id: <20231227125853.2dd07cd61f8a8df95042677c@linux-foundation.org>
-In-Reply-To: <af0a03d5-e536-41b7-9ab8-c5985794b7db@bytedance.com>
-References: <20231213-zswap-dstmem-v4-0-f228b059dd89@bytedance.com>
-	<20231213-zswap-dstmem-v4-1-f228b059dd89@bytedance.com>
-	<CAGsJ_4wuTZcGurby9h4PU2DwFaiEKB4bxuycaeyz3bPw3jSX3A@mail.gmail.com>
-	<af0a03d5-e536-41b7-9ab8-c5985794b7db@bytedance.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE6347F78
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 21:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7b7fef9ef2aso709191339f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 13:01:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703710883; x=1704315683;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E5bXcrdTRGBHTnAVKY/8JHx3T14Y1r2rGbAf1hLUoWo=;
+        b=Rr62OXaaoo3tmQ+lOYlbeRspk8LCaKDtP3vSWaKaru6rSD8sAtC9H1pw1YoTd4/1Ki
+         DwFFsWcCFehd1+ez1ifwQWyyVqhdhXPkx83zS3xye0vo+s1UcWxB2mfZYMPEgSv80HqK
+         s7wKYAzpK385mgJO/x8BlqAuWmpedH8ysfmXjKEat6Mv0Ek7DS4SZ65CvDkfWivtIhS4
+         IkarD8Jn9PPj99/WfB+frQMqs0D5j0L0+HxmJceM3T+h4AjJENh8TX3HxxcWJQnz+VQ+
+         UwFy4/ssGspMrFqi6QZ+HPZDhBhf3/0T6bYeU0y2ztFDDEGMGZpZyx6d+q+jQBw7Y2dY
+         xX3w==
+X-Gm-Message-State: AOJu0Yw3wmZRXenavH8D+vbBB9MzxbClu4CGDUXx7UJYQ/giwRRNr1Vv
+	D8OyzCtp8OxkMuiSinnLXvBJHDldXn2Vrcr8KjfTWNckgjaW
+X-Google-Smtp-Source: AGHT+IGnuWUirDlyOnKmghKiuaZPrq34UK7VI4CDnhIfIyRHy0gabEH5uqwieqEK5OQ2EAA6W9ePduabMy+5EVFKwdSLcfW2rIeN
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+X-Received: by 2002:a6b:e017:0:b0:7ba:e2f0:30b3 with SMTP id
+ z23-20020a6be017000000b007bae2f030b3mr180487iog.2.1703710883609; Wed, 27 Dec
+ 2023 13:01:23 -0800 (PST)
+Date: Wed, 27 Dec 2023 13:01:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000484c7060d841aa6@google.com>
+Subject: [syzbot] Monthly hams report (Dec 2023)
+From: syzbot <syzbot+list5955df82872bfdd5c1e1@syzkaller.appspotmail.com>
+To: linux-hams@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 27 Dec 2023 14:11:06 +0800 Chengming Zhou <zhouchengming@bytedance.com> wrote:
+Hello hams maintainers/developers,
 
-> > i remember there was an over-compression case,  that means the compressed
-> > data can be bigger than the source data. the similar thing is also done in zram
-> > drivers/block/zram/zcomp.c
-> 
-> Right, there is a buffer overflow report[1] that I just +to you.
+This is a 31-day syzbot report for the hams subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/hams
 
-What does "[1]" refer to?  Is there a bug report about this series?
+During the period, 0 new issues were detected and 1 were fixed.
+In total, 3 issues are still open and 32 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 92      Yes   memory leak in nr_rx_frame (2)
+                  https://syzkaller.appspot.com/bug?extid=0145ea560de205bc09f0
+<2> 26      No    general protection fault in rose_transmit_link (3)
+                  https://syzkaller.appspot.com/bug?extid=677921bcd8c3a67a3df3
+<3> 9       Yes   memory leak in nr_create (3)
+                  https://syzkaller.appspot.com/bug?extid=d327a1f3b12e1e206c16
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
