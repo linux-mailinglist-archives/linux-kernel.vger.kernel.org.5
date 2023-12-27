@@ -1,120 +1,224 @@
-Return-Path: <linux-kernel+bounces-12043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6AF381EF5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:12:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48AFF81EF72
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:33:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAB721C218AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:12:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3137282867
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C2C345031;
-	Wed, 27 Dec 2023 14:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4443D45948;
+	Wed, 27 Dec 2023 14:33:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E3bye23i"
+	dkim=pass (2048-bit key) header.d=aisec.fraunhofer.de header.i=@aisec.fraunhofer.de header.b="3n8cvVCQ";
+	dkim=pass (1024-bit key) header.d=fraunhofer.onmicrosoft.com header.i=@fraunhofer.onmicrosoft.com header.b="E61M9tH5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+Received: from mail-edgeka24.fraunhofer.de (mail-edgeka24.fraunhofer.de [153.96.1.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B092A45019;
-	Wed, 27 Dec 2023 14:12:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703686332; x=1735222332;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C65F2F50A;
+	Wed, 27 Dec 2023 14:33:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aisec.fraunhofer.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aisec.fraunhofer.de
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=aisec.fraunhofer.de; i=@aisec.fraunhofer.de;
+  q=dns/txt; s=emailbd1; t=1703687584; x=1735223584;
   h=message-id:date:subject:to:cc:references:from:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=3aWlH9BrampTn6m9BH/0cvHno5FP7cXWPS6JYfOY6nc=;
-  b=E3bye23i2hXxPTIDH1tkaAKr82YxHaCiNw8xm+dHRU3szTo7yIAWycW7
-   XLPlaEYzBmkJnY/LbJuo3YJTHQSR7zndrFyWMKmGgLWX09KyHWoswDq4t
-   mhsYeAdr0bMCl4Kz1XosxEQ3h/Iz+yFCE8iXZbPzDxQVRpeTO+fi5Uixh
-   ebGgo+o7nibKpxSfske4SD1qZOaTGDRl1R7DVTycqm1Ze61uuOma208fE
-   yE6r3KpiTrTZoatwyTMIQR6etwa/cfxi4pO47M+2C7fr9R61vH+tsgrh9
-   78MzJgNJWX41EkhzHF3Qkh2rDmevaLf5+HEfKmMKpQDCTtL11J641mjB2
+  bh=dd5T/L0bySNq+sxi6/HV4sMQ/LCMAZCEzETSpLLDlRs=;
+  b=3n8cvVCQJxZ8b9+waj4LT++mhPWMdzY/JYxXoMIl66Ic3oIv/moKAwaw
+   3fVeClhyuzc7mQw+hUpFQbzndKSj3dWMF1xG/SRAQJzqB38tOLSEmZOhe
+   Yci9oI+oMjXvHPyHsy0RMVAdSpGaw4XrNNox1xQuRquR+lh7UVvYIZldc
+   Va79V0CNBqBchsMuwhpScdNf/P5D/VbNtP32lv4yPDdZBv/SOmoyGPp9N
+   IxneZXRY5JqJbMwN5fuaPVPbGXJOfRrIZusdIAlQb7AGjSiCmLIz041ME
+   WppsfLtPLxVxkpyZP7FUDXlA6LezDX2Uc1zuqQ33wdhbG2CVoLmG4Wn/5
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="395336961"
-X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="395336961"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 06:12:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="868866956"
-X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="868866956"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Dec 2023 06:12:11 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 27 Dec 2023 06:12:11 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 27 Dec 2023 06:12:11 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+X-CSE-ConnectionGUID: rzDvsChWS8K43BmV5yTDLA==
+X-CSE-MsgGUID: NVNu+d3HRHOuHZa5N0Vo8g==
+Authentication-Results: mail-edgeka24.fraunhofer.de; dkim=pass (signature verified) header.i=@fraunhofer.onmicrosoft.com
+X-IPAS-Result: =?us-ascii?q?A2H9BADpM4xl/xmnZsBaHQEBAQEJARIBBQUBQIFPgjmCW?=
+ =?us-ascii?q?4RTkTYtA4ETmxgqglEDVg8BAQEBAQEBAQEHAQFEBAEBAwSEfwKHNyc4EwECA?=
+ =?us-ascii?q?QMBAQEBAwIDAQEBAQEBAQEGAQEGAQEBAQEBBgcCgRmFLz0Ng3mBHgEBAQEBA?=
+ =?us-ascii?q?QEBAQEBAR0CNVMBAQEBAgEjBAsBDQEBNwEPCxgCAiYCAjElBgENBQIBAYJ8g?=
+ =?us-ascii?q?iwDDiOtUHp/M4EBggoBAQawIxiBIYEfCQkBgRAug2eENAGFZ4Q7gk+BFScLA?=
+ =?us-ascii?q?4EGgTc4PoRYg0aCaINmhTYHMoIcg0+RVlsiBUFwGwMHA38PKwcEMBsHBgkUG?=
+ =?us-ascii?q?BUjBlAEKCEJExJAgV+BUgqBAT8PDhGCPiICBzY2GUiCWBUMNEp1ECoEFBeBD?=
+ =?us-ascii?q?gRqGxIeNxEQFw0DCHQdAhEjPAMFAwQzChINCyEFVgNCBkkLAwIaBQMDBIEwB?=
+ =?us-ascii?q?Q0aAhAaBgwnAwMSSQIQFAM7AwMGAwoxAzBVRAxPA2wfGBoJPAsEDBoCGx4NJ?=
+ =?us-ascii?q?yMCLEIDEQUQAhYDJBYENBEJCygDLAY7AhIMBgYJXSYHDwkEJQMIBAMrKQMjd?=
+ =?us-ascii?q?BEDBAoDFAcLB1IDGSsdQAIBC209NQkLG0QCJ6UzEVANBT0+CQuBcGcRkwaDI?=
+ =?us-ascii?q?QGvGgeCNIFgoRgGDwQvlzSSWod1kFgZB6JTM4UXAgQCBAUCDgiBeoF/Mz5Pg?=
+ =?us-ascii?q?mdSGQ+OIAwWFoNAj3p1OwIHAQoBAQMJgjmILwEB?=
+IronPort-PHdr: A9a23:7aMBAh8SRIi9JP9uWXO9ngc9DxPPxp3qa1dGopNykalHN7+j9s6/Y
+ h+X7qB3gVvATYjXrOhJj+PGvqyzPA5I7cOPqnkfdpxLWRIfz8IQmg0rGsmeDkPnavXtan9yB
+ 5FZWVto9G28KxIQFtz3elvSpXO/93sVHBD+PhByPeP7BsvZiMHksoL6+8j9eQJN1ha0fb4gF
+ wi8rwjaqpszjJB5I6k8jzrl8FBPffhbw38tGUOLkkTZx+KduaBu6T9RvPRzx4tlauDXb684R
+ LpXAXEdPmY56dfCmTLDQACMtR5+Gm8WxxRkMwzOvRfeTrPvoArTjvJn1Bi2LcvISpYoXzqA3
+ YREYUXZggdZKgIG/GqC2akSxKgOjUz4gk1j49PYZqGuD/tRLvLwVtwaSDsfZph9FDQbAt+8d
+ pNVNLEBNuxyn4Wiun8xtwD5GQTvHci0zwBsmnnv2v0GzOMaCBvp0jUkHfBUgnrwq9L0JuA/b
+ 8277o767yXiNLB84hCj6YXGSB56vvzXZqlvT9vb1hB+EQPH0w26jrb7GgiS3+MJuHaWydN9d
+ cuCqykq+zAygGHy1J0jltHVj4Q823nc/jpAn4NlcI7wWAt6e9miCJxKq2SAOpBrRt93W2hzo
+ 3VSItwuvJe6eG0HxJsqxBeFN7qJaYGV5BLkWuuLZzt11zppe7O60g676lPoivb9Wc+9zEtQo
+ 2Jbn8PNuHEA212b6sWORvZnuEb08TiV3h3V6uZKLFpykqzeKpU7xaU3mIZVukPGdhI=
+X-Talos-CUID: 9a23:smgfKGP+AoJqf+5DQjtL6lU/Gv8eIl6Bl13VHRKpNUpNYejA
+X-Talos-MUID: 9a23:HoWF2gngDve8pFQF6l8KdnpECuF1oKj1KHottogmicDZE3ROPGeS2WE=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.04,309,1695679200"; 
+   d="scan'208";a="6047915"
+Received: from mail-mtadd25.fraunhofer.de ([192.102.167.25])
+  by mail-edgeka24.fraunhofer.de with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 15:31:50 +0100
+X-CSE-ConnectionGUID: lghvpeHATjqHzeaVdU9ZRg==
+X-CSE-MsgGUID: JmXXnyLySJWzgDWLOt1LIA==
+IronPort-SDR: 658c3554_lS+RWJnPvZiJpBNIlIQWVtrN080/S2+BiOMz64MJZncWAUO
+ 9GOAsvVR2KS9sUXsku7WLCrpyL4u70WBdszfU8g==
+X-IPAS-Result: =?us-ascii?q?A0B9BgBWNIxl/3+zYZlaHAEBAQEBAQcBARIBAQQEAQFAC?=
+ =?us-ascii?q?RyBKoFnUgc+gQ+BB4RSg00BAYUthkUBgXQtAzgBWptCglEDVg8BAwEBAQEBB?=
+ =?us-ascii?q?wEBRAQBAYUGAoc0Aic4EwECAQECAQEBAQMCAwEBAQEBAQEBBgEBBQEBAQIBA?=
+ =?us-ascii?q?QYFgQoThWwNhkUBAQEBAgESEQQLAQ0BARQjAQ8LGAICJgICMQceBgENBQIBA?=
+ =?us-ascii?q?R6CXoIsAw4jAgEBoWEBgUACiih6fzOBAYIKAQEGBASwGxiBIYEfCQkBgRAug?=
+ =?us-ascii?q?2eENAGFZ4Q7gk+BFScLA4EGgTc4PogegmiDZoU2BzKCHINPkVZbIgVBcBsDB?=
+ =?us-ascii?q?wN/DysHBDAbBwYJFBgVIwZQBCghCRMSQIFfgVIKgQE/Dw4Rgj4iAgc2NhlIg?=
+ =?us-ascii?q?lgVDDRKdRAqBBQXgQ4EahsSHjcREBcNAwh0HQIRIzwDBQMEMwoSDQshBVYDQ?=
+ =?us-ascii?q?gZJCwMCGgUDAwSBMAUNGgIQGgYMJwMDEkkCEBQDOwMDBgMKMQMwVUQMTwNsH?=
+ =?us-ascii?q?xYCGgk8CwQMGgIbHg0nIwIsQgMRBRACFgMkFgQ0EQkLKAMsBjsCEgwGBgldJ?=
+ =?us-ascii?q?gcPCQQlAwgEAyspAyN0EQMECgMUBwsHUgMZKx1AAgELbT01CQsbRAInpTMRU?=
+ =?us-ascii?q?A0FPT4JC4FwZxGTBoMhAa8aB4I0gWChGAYPBC+XNJJah3WQWBkHolMzhRcCB?=
+ =?us-ascii?q?AIEBQIOAQEGgXolgVkzPk+CZ08DGQ+OIAwWFoNAj3pCMzsCBwEKAQEDCYI5i?=
+ =?us-ascii?q?C4BAQ?=
+IronPort-PHdr: A9a23:y6NpyBRHGRTyACNINeiudRlc3tpsovKeAWYlg6HP9ppQJ/3wt523J
+ lfWoO5thQWUA9aT4Kdehu7fo63sHnYN5Z+RvXxRFf4EW0oLk8wLmQwnDsOfT0r9Kf/hdSshG
+ 8peElRi+iLzKh1OFcLzbEHVuCf34yQbBxP/MgR4PKHyHIvThN6wzOe859jYZAAb4Vj1YeZcN
+ hKz/ynYqsREupZoKKs61knsr2BTcutbgEJEd3mUmQrx4Nv1wI97/nZ1mtcMsvBNS777eKJqf
+ fl9N3ELI2s17cvkuFz4QA2D62E1fk4WnxFLUG2npBv6C5ndgi/x5+xZyA2EL+zfdaguVQWO/
+ 6FVTzn0jiklBR0W2TvmgOwukZ5krBn09Hkdi4SBTd/MEatiXv7Re/MhfmtuDpd8fCNBD9LiV
+ 9UjTPJbPbpYtpGnnAAOphGUNQXzGcfQ0CQPmnK1xIZh1tsFDQff21wcANU1qW77ouzxNoVIY
+ +6Ry67J33LuUd5Y+xDPypjpKVMLmtbSXL9+S8SK1kR0LBjasESattW0OTOXi7wnlFKFytFnX
+ OWrgHAqjThsghGC5oAh2riKpNtI2ArL6X1lyYAcNPSgQ1FCPtv0RcgYp2SbLYxwWsQ4XyRyt
+ T0nzqFToZegZ3tiIPUPwhfeb7mCb4Gkzki+EuiLKCp+hHVrdaj5ixvhuUSjy+ipTsCvyx4Kt
+ StKlNDQq2oAnwLe8MmJS/Zxvw+h1D+D2hqV67RsL1o9iKzbLJAs2Pg3kJ8Sul7EBSj4hAP9i
+ 6r+Sw==
+IronPort-Data: A9a23:jc15/qqwG/NIrqjPZX+D3yE08p1eBmJXbhIvgKrLsJaIsI4StFCzt
+ garIBnXOPvcYzb9edwgYN7goRgP7MSHyoRlG1Zs/Hg0RXtHpOPIVI+TRqvS04x+DSFjoGZPt
+ Zh2hgzodZhsJpPkjk7wdOCn9T8ljf3gqoPUUIbsIjp2SRJvVBAvgBdin/9RqoNziLBVOSvU0
+ T/Ji5OZYAPNNwJcaDpOsPvZ8kw355wehRtB1rAATaAT1LPhvyRNZH4vDfnZB2f1RIBSAtm7S
+ 47rpF1u1jqEl/uFIorNfofTKiXmcJaLVeS9oiY+t5yZv/R3jndaPpDXlBYrQRw/Zz2hx7idw
+ TjW3HC6YV9B0qbkwIzxX/TEes1zFfUuxVPJHZSwmcicz1PeflvF//d3LFM7NLMUx7dFO24bo
+ JT0KBhVBvyCr/mz3Kr9R/lnhoItNsD2OoMYtHx6iz3UZRokacmeGOObupkBg2Z235oRdRrdT
+ 5JxhT5HaRXLYxRCPhEIBZMlh8+hh2LyeHtWsluIo6ow7WXJigB8uFToGIOEJoHQH5wOzy50o
+ Erk+lTJBAA+Jee99iiK3k2IofOWuQLSDdd6+LqQs6QCbEeo7nQaFRk+TVKmpby8jUmkVpRUL
+ El80iA0pLU0+VaDTdTnWRC85nmesXY0Ut5dA+A7rhqRw7DT/QGYGm8aZjFEYd0i8sQxQFQC3
+ 1uEj9rvCTF1mLiUSXuZ97yFq3W5Pi19BWYZeQcHQBED7t2lp5s85jrDR9BiHaqdj9r6FDjqy
+ Tea6i4zm907hMgHzaS61VPKmTShot7OVAFdzgDeRH6k6EV9bZONY42u9Eid4fteRK6CSV+Ol
+ HsJgc6T6KYJF57lvD2NW80DFvei4PPtGD/bgVgpEZA66z2n9nivVY9V6TB6YkxuN64seifyY
+ UncuStS6YVVMX/sarV4C6qqB8oCwq/nGtDoEPvTa7JmYpF2cBKA1C5pYkGU0ibml01EuaM4P
+ YySWcWhF3AXDeJg1jXeb/4A3Lk3xyYWxHjUW5n/whK7l7GZYRa9V7YfN3OcY+Y48uWAoQPI4
+ 5BYLcTM1hY3eOj/YS3Q6qYIP10QIHQ6Q5Drw+Rec++ZfVFnHEkuDvbQxfUqfIkNt79YjOjF1
+ nG0XktJzhz0gnivAQ+SZFh9Z771G5Vyt3Q2OWorJ1nA83wiZ5u/qaQSbZ06eZE5++F5i/15V
+ f8If4OHGPsnYjDG/SkNKJfmoIF8eRCDmw2DJWymbSI5cpomQBbGkvfgfw3y5GwVAyGqr8ois
+ vil0Q/GRZcrWQtvFoDVZeipwlf3umIS8N+eRGORf4IWKRqpqdc7bnWr0bkpJocHbxvZzyac1
+ wGYDA1eqeSlT5IJzeQlTJus9u+BO+VkF1dcH27V4KzwMi/f/2G5xpRHXvrOdjfYPF4YMo37D
+ QmM56CtbK80jxxRvpBiEr1m66s76pG97/VZ1wloVjGDJViiFroqcDHM0Nhtp5994OZTmTK3f
+ UaTpfhcG7GCY/3+HHAreQEKU+Wk1NMvoAf008gbGkvA2XJIzOK1ankKZxioow5BHYRxK7Igk
+ LsAutZJygmRiSgKE9ehjwJU/lSqKk0RDqAss79DCorrlDgu9EBmZKbYKy7p4aOgb8dHHVkqL
+ wS12ovDpeV47WjTf0UjEUPi2bJmuq0PnxRR3Xk+J1itsfjUtM8dhRF+32w+cVVI809hzel2B
+ FlOC2R0Aqe/pxFTm8lJWjGXKTFrXRG21BT49AoUqTf/UUKta23qKV89M8ar+GQy0TpVXhpfz
+ YGi5FfVaxTYV+Cv4XJqQm9gkeLpcvJp/A6bmMyHIdWML6NnXRXb2J2RdUg6gDq5J/guhX/3h
+ /hgp8dxTqzZCRQ+gYMGD6ui6LBBbyzceUJjR6l68bIrDFPsXmi4+QKzJnCbfuJPIP338nGEN
+ fF+G/IXVzmD0HehkzNKI48NPL5+o9Ax7vUgZL7ABDALopmfnBVTobPS8SnPu2s5cepLjPQ7C
+ IPdSG+FGDaigXBVxmz/l+hfG2+CedJfThbN7OO01+QoFpw4r+Bnd38p4Ia0p3m4NAhG/Qqem
+ QH+O5/t0O1pzLpzk7vWEqlsAxu+LfXxXr+q9D+fnstvb9SVF+vzrCIQ90faOjpJMYsrW9hYk
+ aqHtPj11hjnuJc0S2XopImTJZJW5MmdXPtlDeyvFSN0xRC9Yc7L5wcP30uaKpYTydNU2ZSBd
+ juCMcC1cYYYZsdZyHhrcBNhKhc6CZnsT6LetCi4/uWtCB8c7FT9F+mZ10TVNENVSixZHKfFK
+ F7Qm+2v7dVmvohzFEc6J/V5MaRZfn7ne4UbLuPUixfJL1OVkmuju6TjnyUO8TvkKGeJO+ek7
+ IPnRirRTgWTuqbJx4sA64dZ4xkaI1B6pewCb3MtxcN/pGG/Pl4nMNYyDJQiIbNXmxzUy5vXS
+ mzsbmwjKCOlRhVCU0z2z+rCVzelJN4lG4nGNB1w2G3McAawJoeLIIU5xxda+30sJwfSlrC2G
+ +8R6ljbH0aXwKgwYc0x+/bio+Ns5s2C90Iy4UqnzvDDWUcPM44rik5kMhFGDxHcMsf3k07OG
+ 2g5aEZETGy/Sm/zCcxQQGFUKj5IoALQyygUUgnXzOb9o4m7yMhy+M/7Mcz30ZwBa50uD5wKT
+ nXVWWCMwj633lo+hKgXgO8q0JREUa+zIsuHLaHdHFxY2+n672k8JMoNkBYeVMxoqkYVD1rZk
+ SLq+HQkQliMLEdKwrCN1AEV4NRLX2kRCy3SxhvKzdMcfcfVE/CCE/Ry8D/GFA==
+IronPort-HdrOrdr: A9a23:IBIzNK4QLW7LjkFMxwPXwLjXdLJyesId70hD6qkfc3Bom6Cj/f
+ xG9c5zvXTJYV0qN03I9+rsBJW9
+X-Talos-CUID: 9a23:xSl2Pm0g4V1wB3ePKibo97xfHs8lbGXQ7F7sIVaYG2tgdrGoGG2q9/Yx
+X-Talos-MUID: =?us-ascii?q?9a23=3Ax79WQQ0+WN20MyoamkV33PZ/4jUjwaGeOEYctYQ?=
+ =?us-ascii?q?9mfaWOgBPHxCB1RCWa9py?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.04,309,1695679200"; 
+   d="scan'208";a="194522139"
+Received: from 153-97-179-127.vm.c.fraunhofer.de (HELO smtp.exch.fraunhofer.de) ([153.97.179.127])
+  by mail-mtaDD25.fraunhofer.de with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 15:31:47 +0100
+Received: from XCH-HYBRID-04.ads.fraunhofer.de (10.225.9.46) by
+ XCH-HYBRID-04.ads.fraunhofer.de (10.225.9.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 27 Dec 2023 06:12:11 -0800
+ 15.2.1258.28; Wed, 27 Dec 2023 15:31:47 +0100
+Received: from DEU01-BE0-obe.outbound.protection.outlook.com (104.47.7.169) by
+ XCH-HYBRID-04.ads.fraunhofer.de (10.225.9.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28 via Frontend Transport; Wed, 27 Dec 2023 15:31:47 +0100
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NreQD4Ky5lwD0hMiE9CEnokAJy2LrfuGavUqgcpr82wM/LYTJ533K4uZxSMBUwQbCHKJEb/rUabjczDoZl7GQrKGj1OQc/7O2bm0p0m3pA3EJS6hYms4iG0RnPvijqoFSAgjxMOWajRvaN/amQNrALcQaIK0IyplHvdi7YDKKITjED3deG7YGR7bT8RyERM832Lbp8EFXIliqO0w1ZAQ/M7AN7x7Dt2w+a8yA/DUTUqol8DTabqEE/qjyVDfrEl2+WUL5PeRtUZkYal0/4fjsF1vv2Lk8XtCo0dox4ayz8O9MT5bvKnEOsLDwEaIkmI+5PaPcbUVDy3JqGYFRyWGMQ==
+ b=K+vHdhG7z5svMJT/rk4yWmcbt8MXPGjX+8fe5/4H834q59tH+OFMmS/+Ol7llrB2ZoQMSCWS0ROkOZ01e9PXLLDLwKhCjer1BfJpotWGNe9z0t6QuEcaP0wtkmj/SVvNVTauCJdOqSeN8jLTp5tX4L41dldjFn8SOTyliQMbE9LzjyC7PRbud8yOufK3f8GchQujt5zP5fswsqycxjewamRn1SGkrG2r82qyycfdOfyGfOsa1cD0yi/Hxf7kxmki1UE2iTvCSGDqcecNMSJCmMHrcY7KFsN2Hb5hO9A+wm6OL3VsQ/j9bWcXJ1JgOvDeU7An1gD+sLXAYGQk0JssAw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W8rCjPu91rpoVq5R/6dDYUvVkxBnae/RwytXzJ5/SAk=;
- b=QgujPZaniY8/FE1fZBL1xmYw1k5FbMVCHYouf/RkTp3e9Srdx26S3RxPRZJEYLQJoldo9nTwN5Rzdsujr1s/AfJarPMyVoaXWyoA+edxEH/YQWZA46cFHjYJinfrXMAejIoQSuMqHwZixyOfivgXskDcXKaoW01D6zU86iEMZhLDV43T3AL5sY9TVYHuib24njkIN5y0sHy42w/1PixxSBnf4l9wse7X4EUvRMu02UQXYNyBCmyGjUywgUk0otTsc8KrL+Sp7m7xat3YaSknUakv/1UGU8jOl29enIuocd0ycjzyt+JeG+vpqtCXDIPDZs20/K9UhTtLS3VU2PXGfw==
+ bh=fDXlc9nLxLvzIAPprdYDxnVoNtnfJZKGA2YbH6uTWdc=;
+ b=XB42GZlOAg5JcN6z+aUECwuLpH7XIcNbKsX9+Bbme9KffwA1mu8r+SDMeHa2xV6uRpeCliMs8Gt5NUFC6onRVThVmWsckyB5FD0/mrOmS2ivZHtZc/zj7+3b2jy6SvHhzwuYi/6XpvWZKEvcq3vYxqHYLqzDvgmBeebOtkLTDON9PkK/QDFk8Xyhwra4k+LQMZtxWVVggKejEalU05qFQ0GsulbiGyB3aLKVsl5nS3Wa4/EHaomnzvT9G7zJYbCpv+XRO7YzIq0vAeS2U9X3pITZFRKG4wUH+V2IHI5iQzqRWKr/dptJ/3Nh+5xX2tU300YQ4d3d9SiCRpNjsmyPCw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by DM4PR11MB6239.namprd11.prod.outlook.com (2603:10b6:8:a7::20) with
+ smtp.mailfrom=aisec.fraunhofer.de; dmarc=pass action=none
+ header.from=aisec.fraunhofer.de; dkim=pass header.d=aisec.fraunhofer.de;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fraunhofer.onmicrosoft.com; s=selector2-fraunhofer-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fDXlc9nLxLvzIAPprdYDxnVoNtnfJZKGA2YbH6uTWdc=;
+ b=E61M9tH5dnHSSiG89ECghe96P6D+p2h4hqp2S3hcbBXd7uLWrs/te+qC3mWLtnqo8TwoSqrGfQljJ2ZfLooiz/EVEfJOZJxI3+BSO6iefRf3we3SswVybw19nhj50BORvMSoaolcveNQuHAEH/e8Y+J15z2gt0tanAyApcwQ7m8=
+Received: from BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:50::14)
+ by FR3P281MB2909.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:4e::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.27; Wed, 27 Dec
- 2023 14:12:09 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d%5]) with mapi id 15.20.7113.027; Wed, 27 Dec 2023
- 14:12:09 +0000
-Message-ID: <f76965db-5283-46cf-9654-eb80a248bf55@intel.com>
-Date: Wed, 27 Dec 2023 22:14:56 +0800
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.19; Wed, 27 Dec
+ 2023 14:31:46 +0000
+Received: from BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::d273:9b9b:dadf:e573]) by BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::d273:9b9b:dadf:e573%3]) with mapi id 15.20.7135.019; Wed, 27 Dec 2023
+ 14:31:46 +0000
+Message-ID: <f38ceaaf-916a-4e44-9312-344ed1b4c9c4@aisec.fraunhofer.de>
+Date: Wed, 27 Dec 2023 15:31:43 +0100
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 9/9] iommu/vt-d: Add iotlb flush for nested domain
+Subject: Re: [RFC PATCH v3 3/3] devguard: added device guard for mknod in
+ non-initial userns
 Content-Language: en-US
-To: "Duan, Zhenzhong" <zhenzhong.duan@intel.com>, "joro@8bytes.org"
-	<joro@8bytes.org>, "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-	"jgg@nvidia.com" <jgg@nvidia.com>, "Tian, Kevin" <kevin.tian@intel.com>,
-	"robin.murphy@arm.com" <robin.murphy@arm.com>, "baolu.lu@linux.intel.com"
-	<baolu.lu@linux.intel.com>
-CC: "cohuck@redhat.com" <cohuck@redhat.com>, "eric.auger@redhat.com"
-	<eric.auger@redhat.com>, "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "mjrosato@linux.ibm.com"
-	<mjrosato@linux.ibm.com>, "chao.p.peng@linux.intel.com"
-	<chao.p.peng@linux.intel.com>, "yi.y.sun@linux.intel.com"
-	<yi.y.sun@linux.intel.com>, "peterx@redhat.com" <peterx@redhat.com>,
-	"jasowang@redhat.com" <jasowang@redhat.com>,
-	"shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
-	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"joao.m.martins@oracle.com" <joao.m.martins@oracle.com>, "Zeng, Xin"
-	<xin.zeng@intel.com>, "Zhao, Yan Y" <yan.y.zhao@intel.com>,
-	"j.granados@samsung.com" <j.granados@samsung.com>
-References: <20231221153948.119007-1-yi.l.liu@intel.com>
- <20231221153948.119007-10-yi.l.liu@intel.com>
- <SJ0PR11MB6744F3EC34CA79A67548336D929FA@SJ0PR11MB6744.namprd11.prod.outlook.com>
-From: Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <SJ0PR11MB6744F3EC34CA79A67548336D929FA@SJ0PR11MB6744.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0052.apcprd02.prod.outlook.com
- (2603:1096:4:1f5::20) To DS0PR11MB7529.namprd11.prod.outlook.com
- (2603:10b6:8:141::20)
+To: Paul Moore <paul@paul-moore.com>, Christian Brauner <brauner@kernel.org>
+CC: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Alexander Mikhalitsyn
+	<alexander@mihalicyn.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+	<yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
+	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Quentin Monnet
+	<quentin@isovalent.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Miklos
+ Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, "Serge E.
+ Hallyn" <serge@hallyn.com>, bpf <bpf@vger.kernel.org>, LKML
+	<linux-kernel@vger.kernel.org>, Linux-Fsdevel
+	<linux-fsdevel@vger.kernel.org>, LSM List
+	<linux-security-module@vger.kernel.org>, <gyroidos@aisec.fraunhofer.de>
+References: <20231213143813.6818-1-michael.weiss@aisec.fraunhofer.de>
+ <20231213143813.6818-4-michael.weiss@aisec.fraunhofer.de>
+ <20231215-golfanlage-beirren-f304f9dafaca@brauner>
+ <61b39199-022d-4fd8-a7bf-158ee37b3c08@aisec.fraunhofer.de>
+ <20231215-kubikmeter-aufsagen-62bf8d4e3d75@brauner>
+ <CAADnVQKeUmV88OfQOfiX04HjKbXq7Wfcv+N3O=5kdL4vic6qrw@mail.gmail.com>
+ <20231216-vorrecht-anrief-b096fa50b3f7@brauner>
+ <CAADnVQK7MDUZTUxcqCH=unrrGExCjaagfJFqFPhVSLUisJVk_Q@mail.gmail.com>
+ <20231218-chipsatz-abfangen-d62626dfb9e2@brauner>
+ <CAHC9VhSZDMWJ_kh+RaB6dsPLQjkrjDY4bVkqsFDG3JtjinT_bQ@mail.gmail.com>
+From: =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+In-Reply-To: <CAHC9VhSZDMWJ_kh+RaB6dsPLQjkrjDY4bVkqsFDG3JtjinT_bQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR4P281CA0385.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f7::10) To BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:50::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -122,237 +226,329 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|DM4PR11MB6239:EE_
-X-MS-Office365-Filtering-Correlation-Id: 982529cb-bd36-4f5d-0488-08dc06e5d011
+X-MS-TrafficTypeDiagnostic: BEZP281MB2791:EE_|FR3P281MB2909:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2fdb614b-7105-44ef-bcdd-08dc06e88da6
+X-LD-Processed: f930300c-c97d-4019-be03-add650a171c4,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pC6FVNsZgENzTCFaLgpSJrjKHWfgWTRnvAJV+g7WgQBBMCmYUGJjznoy7DKEhh7s6kVNuBg4XsobxNfV6Q51ok0S8LhVoiZwWENMSHrJcJfBmmFWURxjSqq24du+vXHdxlRFoJi7mVAikiW1nBFdV2Q6lnk1d749n8Ba3ZhJCsGhZEeQwViox4LFUc8ZR+JsrNyvmvjGDqMyzJeeB0pEiygZdaj3QLexQPmkutKpcGeyzIsLWHk83xBtPKHCkID8QeNreGobVs9muGYnJSEglG7+b1odDhgi60XU6XwKRsIlsL7e7cUSm+sd/79haZFE0xQP2sK9ABdMdBS/ddsvWe4jlDMdjbNk6N4i4wWX1wR6IN66uLCAmfBA4OTZHfeXnqphCJFjabwFVykorkyRsyf6CiFo6xrM37tQOvNImvUfy/m0OKrLg28IFop+qFyWIvIreKM/YVK9meFXTR0Ib6kFmtmngM1NY/g2apEoLZiMwPGdBdNhw4EhkzMtIw/Wh7SReb133SRrMIEgA7N0a6K/+pMakCstxbSxwWOZz4Q/DMAxjEmtKYTBLr27STXoCUUcjziY9BuBYpmvMJt5DmYkp07KzuzaYVpDrlKYYas9vaoAiJSz79IphaPYwgPML1zv1otx+ipjg113EJA4NQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(346002)(396003)(39860400002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(2906002)(31686004)(66556008)(66476007)(66946007)(5660300002)(7416002)(4326008)(8676002)(8936002)(316002)(54906003)(110136005)(41300700001)(53546011)(478600001)(2616005)(36756003)(6486002)(6666004)(6512007)(6506007)(26005)(86362001)(31696002)(83380400001)(38100700002)(82960400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: /SFkE1kAw1wJyvCXrNkV6RZmBTU5HI9kt2bxfC/Pre4wSzPHmSZLmxpizW/necVInmF5M53MKY6Gg2EMbVPaYqPqXBE3enjf81y4HgV/AwuSXpqHMxdvekYmxxt1zjcmeftHBbeCGSlwkUT0Onkz05CId0w/ZoRJTrVLOpegmNsf+if6bsXbkaePlBiw1Fiq+4uuCq4l/Cxe+Mqo/ZBvJnY8saZPJfXR9h7Bxs2mla0c/wzKMzAr9iAmc3ufWyygP8AFFfEzbYHcjMDoh1gpsArj8xbBCWiEmDkAe9joDjTGsy3NpKV0lt9Kwp5ZXrzYEYEd3MAc+3ujkjq/KNy90UZAn79ofwabULr8Akt/T/8IVVmCzRv1vg6Qw0BwK7dtsEKf0dyBsmna6i7bIuuPjjWhoRglUHezzgxsqLBivCl1hihs+Up+n7TLf2F1om/FsjRwLcxVVDwS+d+lBFDoJBnCn8H7+4yKzAOQ9gAcpMnwyMXFf+gdddsytPMZv2LvORAXTkHi/WrWA8ilnsLEpbqkD/lZViRsllBtwef5na4kCx2x+VVdKTTHw0nNEJhm88q3rxEoUpSU52fFBq+aVk6wQqUnC95f0hzdxeR+y+lTFLzdqhxTMkZLl676agvkepPzNK/IKHWRg8ebtEQMkS6Qcea6PY9WwL4TKQY+CC2DosotYoKBZNU5CvuDyGHYr55el37x89Er6pPMcY6rnQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(366004)(136003)(39860400002)(376002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(478600001)(6666004)(82960400001)(2616005)(6506007)(6512007)(53546011)(110136005)(31696002)(86362001)(66556008)(66476007)(66946007)(54906003)(316002)(41300700001)(6486002)(31686004)(8936002)(8676002)(83380400001)(38100700002)(2906002)(4326008)(107886003)(7416002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UUliVlp0NUkyMmp5dnJ1QThBRGFrM1pxY2VobGVPZmg1bFlJUXJ0alZvdkhT?=
- =?utf-8?B?NlAxdFdVUzUvNFhUeTllaXYyVWI3ejVXTTgrTkRRN2pIaS9DR3ZSOUFzVEl3?=
- =?utf-8?B?dzNXdzV1eGJ6d3MxVGhHSG5KVitLeVpBaXAwbWpDajFYNnlPQTFSNldmWGli?=
- =?utf-8?B?ZFV1VlRjayt0U0lzM1Y2cFFrY1dVdW5VU1RsSVdOVVBTV1pFeUQxRnRLSVlr?=
- =?utf-8?B?dGphc09UbUVSSnh6VTZQTWY4RkNkU0kyVld2a2FxTHNkKzFnY0dFejhnNzIy?=
- =?utf-8?B?Z01HM3hXRFVWcEZzUTkyU3lSYzF4REJxOGJlZWZLbG93T3dKTm5jejJyandh?=
- =?utf-8?B?TkI4a3c0eTRFODVvWTlBQUM1b0ZDMUZ3b0lQemdMZndFck8yTDZDUVN2Qndn?=
- =?utf-8?B?dnlsQUN1MzlEWXMxUG9HYy9hQnlEN1d6VVJtazRBa0VPWDR0MU4vOER4Z1do?=
- =?utf-8?B?ODJESGlNRERBQWFNb0VBY2FWUHphT1NhdHNmRS8yeGN3dlB2QVpvaGg5OUM1?=
- =?utf-8?B?a2pzb3dSMW55eHRuTWcya3J6WXBIdEx6K0czRlFpU0dvNjZJbkMveHlKcURw?=
- =?utf-8?B?dUd2NXprY3VBMVFJRlRPZzNMdmdyQWcvZ3Vzd3RQb0gwWk5LQUJMSFNjb1NR?=
- =?utf-8?B?eDRldk9IbDZ1NThPZkxrSXhqMzM2NEJ3ZnpkZjBLTm0vVlFod1F6ZkpBRS9F?=
- =?utf-8?B?WWNnc2ZyeS94RHlQclRDYlp5WkZCQTg3cUJ1d3Y2c0NlRUFOdXRUeXVYNUw2?=
- =?utf-8?B?QU1RbVEwb2lBQjRVZStBSS9zSHljdDAwaHBlM0lQTVpWZzE2dW5lc052cGNX?=
- =?utf-8?B?N0pzQ281Rll2VEUzUE4vdmhQb2IvREJZd3NiSjhqc0h4MHplV053SVZuZTBU?=
- =?utf-8?B?VDZIeTBTcUlMVXVmQ25ldWRDMFhUaEg3NGZLUUJ3SGVmNVpXMURlU05QUHhx?=
- =?utf-8?B?VHNaNmpWTjI2aHpEeEhmR3J5WngvMjBTNGtTV3M4ay8rWjllWm0rc0dFenlV?=
- =?utf-8?B?OU9yeXZnTFFOVU9ab0lVcGpXbCtnOGl1eVpWRWZYempxa1BEd3BQWWd3THE2?=
- =?utf-8?B?WDNTVmFMV0tqUXZROFNwUk1BMzJtMStUcFNFbXNnekpBMGwweld2bXBsSWEr?=
- =?utf-8?B?djVuZ3Q1VEV3dDZhN1VacUxMaVdHZUNHcksybjRUL044WnIrcWxGS2hFMnZs?=
- =?utf-8?B?djZ2Njg5SERXS3dIYWxSQk45RzN3QVhScVNYSmJNVmlpOGpFUXJjNnY0cmNi?=
- =?utf-8?B?UjlqUlg1WWE3dlBObnc5MVVSWERIdXhvcC95dUY0bG0zSjM1bHR6WjM1WWtY?=
- =?utf-8?B?ZHZIRnd2SmhUWnBzOEM3emxqTXZaaktHUFNvcHVsN1UyaEV4SFc5ZWZrcFhS?=
- =?utf-8?B?OTd4TG05K0VPcWZ0S2dJRWY1N25xWThiaDhwaXFnWVVyVnNOTDd1MlF3dWdq?=
- =?utf-8?B?SE1OOFRXdzZDenZYNGpDL1pKSmZQN2g2UjZrWmpTaVkxT3ZaZVpTUFJnVktQ?=
- =?utf-8?B?ZTNJeUpWQlJvMWpvWDlsakJZbGlSMndablc1Vmd3dXhDNElzcU5rSXdkZXpT?=
- =?utf-8?B?RENhQWhDdU0zQ2lIOVdnTFA0WGYyWFh3TGlRMlNxVFdJamQ1NnRTd1Qxc2pK?=
- =?utf-8?B?dk00eGw0cnA5d2x0TC9RK3hiQXZWc2ZPM2NMRUNCNHF2UEFBT1ZTMDJlcmFZ?=
- =?utf-8?B?OU9FWlBwMk9OTGJpRGVTa3ROeFlnS2xqSDAreXBxRmJtNUVTSFptSkJ5YzlC?=
- =?utf-8?B?ZkRMZUUwUFNVSXovNG5kSmxSS0VaRm5sK3lxZkgwcEF0WGh2Qzd5K2ZKc1Bm?=
- =?utf-8?B?NVhkcjhiL0RoRUtzbDFjK1JkQWV4M1ppWEE3R2NtekFSNTdXV3p0VVUwTlJ3?=
- =?utf-8?B?UUZ4aXExSndUNHZOYUxxZ1FKMHBYS1FiMFE0dWt0YTJRczJ5aWJ5d0V4SjRO?=
- =?utf-8?B?ZzJRQTF1REJmSWdaYTI4eWZRZWVFdHhaR0xzQ25wSFhKdWdNcllUbStJc1NM?=
- =?utf-8?B?cUhFdy9SU3I0UFU4YWtZSTI2T3RzNlM5eFRDLzRTUlliQXVsV3ZUYkdweFBH?=
- =?utf-8?B?V2V2emVaK2orcTloMVdrTFU3cnpLZkJJN1I0dVpCQlVnTGRzQUZ5Qm5hMWxn?=
- =?utf-8?Q?2KN+Wt5CuULZZjD9RXp5on9KO?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 982529cb-bd36-4f5d-0488-08dc06e5d011
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TkRCbW1Ua3l2M0VVNWE2SE9rOW5TVlhYcVlvVEZsMVQvUzRZcmdWR1lPOUtO?=
+ =?utf-8?B?WHVGbVBXT20yYVNUanBQS2Jqc1pmMlVjMjhlU29aRTFUc1B6dW8vRkNUTUNj?=
+ =?utf-8?B?NEdUa25KUVhnRUVGWjhHZ0FvZXVrVi9lRmFCZ3VBTHM4OW0zMjhnbml1Ui85?=
+ =?utf-8?B?ZlJPN1docS96eW0yVzNrOVJXZE9zVEc5Z3VBZkxVbWg2RzNzaXIxRXBEYzgz?=
+ =?utf-8?B?WU5CK3pKZm5pKzU0UWlHdjZyekJZQ2F4bWF1SnErMGtjNzQvN1ZpZ1lNamtO?=
+ =?utf-8?B?aHVLNVV1cFQvOVBWMm1EWDdYUGo5T0w3QTN5bi9jODV3b0FTWnlmYmMxOWJI?=
+ =?utf-8?B?dVQzSUdWWUVPTDNoTUV6eVdpVlhFOHZ1RlMwYmJDRzE1T2tzaTdhTUlHdXJ5?=
+ =?utf-8?B?YWlvQ2hrbm5zRlFpQitUdDB2SFp6NmlyUjkvTUpVc2kvbG9UZDNJRGdNYU1B?=
+ =?utf-8?B?TlFmTkQ4SE9QNE9VQkF1R21ER1dnazFsTnVUMWg1UmVBclNNT09WcWw4YndV?=
+ =?utf-8?B?aFp1WS8wUE9lMXNPbDVDbGtGRVcrUzNTM1prS2lEaFBiVHRGb0JtUXppc3Rk?=
+ =?utf-8?B?cGRFQTBudC9GaUdzdnl0OG40djZwYkorVnBRNVVNazQxcmdvZ2hyays0Y0NV?=
+ =?utf-8?B?V2pVRi96TkVKNFVmS3paeXFEUHFzWmtZeWF0ZDRSMUtLSUxFRXRuWjVCQkU3?=
+ =?utf-8?B?bFNWY01NbE93em9vQUNvWGtMZUYybnU1SkV1d1dkWm1mbSsxbGFxNkM2K0d0?=
+ =?utf-8?B?eXYreDVyWjdpd0R0WlBqMjh4TThUbU95cGl1WTliNlYra2hnUGF4WHNMYWht?=
+ =?utf-8?B?bGtxRXhmU2FMcVJVVmJ6VVRZay9VcE1ZbUxRanh4Y2dzOENjUUNQRnpha25H?=
+ =?utf-8?B?cVlMWHpwVWNCTmhPSHlCbXhkcnhmbzRFSUF0bk4wcnV6a1djRzloVnhibWRH?=
+ =?utf-8?B?emoyT0wyeU5qdFNyTjlCUyt2U3hjTGM1WmJ5TktJcE5yOWlCY0wrWFZNemRj?=
+ =?utf-8?B?aDZEalJ1L0Q3bThDZU9qV01yemYxOU1WMmdQb2IwWGZVdDlkaC9sZ1VNM25P?=
+ =?utf-8?B?eXNyNXJYb3RnZWs3MVZkRGhHRGZ2R2d1anF1RHNZQ2VlZ05kUEFUM05ZZnpO?=
+ =?utf-8?B?ZkErMFNhWm4wV1ZETS9mK0tPQkRvYzVhZ21BTUZnV2JhWU93N2F1NTlYR3J2?=
+ =?utf-8?B?c0ttUTc5Nnh5NzFnM3FtT29HUVJmbS9rZjNBZmg4VVNmZnZaaVZEcks1ZkJG?=
+ =?utf-8?B?cTVsSDU0ZlovS3gxR0VBY3I2b2xvS2NKN3NnZVBrUVJ1T1JONkVOeUZsYjlI?=
+ =?utf-8?B?RTA3Ulg3NnV4aldvKzB2V3ZuaTU4cENtMkRCVURRSXV5dUQrK0FYaUpBOEhT?=
+ =?utf-8?B?NFM1SHpjbzVMUE81U0ZpdWJjNGNGaUkrMkZRRmI5TzlVdHBUbzRrK0cxb2dZ?=
+ =?utf-8?B?TStzL3ZLN0RaQ0NVUFBaR0xnSjhRcndxS1RrUFllcVdvM2lGVURRcHJRWXBB?=
+ =?utf-8?B?aGRESW02aGhtMGt3UG83MlBEaWRUSTlJNFZZZFZkNEhYUVZsNU02TDZ6ekc0?=
+ =?utf-8?B?cTFValJ1NzV2d1doMEJVTGJzZnQ4SkVPc0tONUYrUFo1NTkwWjZCek1NMENw?=
+ =?utf-8?B?NjMxWmc2VTNKdU54Y2tNV2xmVENTc0RlVUt5Mmg3UFNLUytneE02Nkk2cmRY?=
+ =?utf-8?B?aVYvZm9pdmhqSStoMnhWMVdDbWVYWnlSL2NrNmw3RndiNVVOQVB1UWNlWjhv?=
+ =?utf-8?B?VmxmcHJXRFBzeXpEWk9DRVRFV3lTR21qTU5sTWJJYXlnc1lhTU1CZHdJN1hk?=
+ =?utf-8?B?Slo1UzJoSVJhaVc5NFR2ZXF3eHNTU3hFaUtRZDY5bU5zTjFEMk5ZQzFueU55?=
+ =?utf-8?B?SjQ0TDFwcFZBd0h3b3Y4SlZBeVMyd3hxdlZ0eTNielNSYWRlcDJHamQ4YUl3?=
+ =?utf-8?B?VFRjWVFCU0FtOC9iK0Z5TFphaGowK0RlVENYYnZEUWlyQWM4aXBFUmplaDN2?=
+ =?utf-8?B?bWluT3FQTnM3UndXQ3M5VXljL0lPbjNEWXdGdEhhUmFsbVhaSWJDd2dHQUtW?=
+ =?utf-8?B?Um9DZWdObG5nQW1IeUY5MzNOdGZvVXhjZXN0b290TXh1MEV4WnZoNDVpcG9S?=
+ =?utf-8?B?clpSaE04enRtKzVXY25uMzBRcGc5Z3VHOEFkWDhLc2tGYWtJL3JCMDNCSkRO?=
+ =?utf-8?B?cWszcmMrRWNSLyt2bnI5Q0laY0l1VG82amJwZUdsN2hXMURXbUZMaHBuZFpW?=
+ =?utf-8?Q?HWUp6JjNrb1+6hR5yxwXtShyAZvZ9B7wFLa47/1r5E=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2fdb614b-7105-44ef-bcdd-08dc06e88da6
+X-MS-Exchange-CrossTenant-AuthSource: BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2023 14:12:09.1523
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2023 14:31:46.0232
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: f930300c-c97d-4019-be03-add650a171c4
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DsewuCh2FdZ9XGReKePcMXRGYjsYHHp2Du3gzA6rYaUig5abuKGKk0VHSm4xVfgRUIieVaiZhHh3PMZHwR7YMA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6239
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0RYF4M1cfgyuMpNQh1j9NsbtDK3JNXQ+lhPKqEu/hF/JSzJ+7cQRXCj8Ih5XrkXP0MacRFWPgQykP5Ix+X26J/flAawrFb4Dz1kelFoGLsYoohj7jEWCoQVfyVSfqxQT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: FR3P281MB2909
+X-OriginatorOrg: aisec.fraunhofer.de
 
-On 2023/12/27 17:27, Duan, Zhenzhong wrote:
-> 
-> 
->> -----Original Message-----
->> From: Liu, Yi L <yi.l.liu@intel.com>
->> Subject: [PATCH v7 9/9] iommu/vt-d: Add iotlb flush for nested domain
+On 23.12.23 00:39, Paul Moore wrote:
+> On Mon, Dec 18, 2023 at 7:30 AM Christian Brauner <brauner@kernel.org> wrote:
+>> I'm not generally opposed to kfuncs ofc but here it just seems a bit
+>> pointless. What we want is to keep SB_I_{NODEV,MANAGED_DEVICES} confined
+>> to alloc_super(). The only central place it's raised where we control
+>> all locking and logic. So it doesn't even have to appear in any
+>> security_*() hooks.
 >>
->> From: Lu Baolu <baolu.lu@linux.intel.com>
+>> diff --git a/security/security.c b/security/security.c
+>> index 088a79c35c26..bf440d15615d 100644
+>> --- a/security/security.c
+>> +++ b/security/security.c
+>> @@ -1221,6 +1221,33 @@ int security_sb_alloc(struct super_block *sb)
+>>         return rc;
+>>  }
 >>
->> This implements the .cache_invalidate_user() callback to support iotlb
->> flush for nested domain.
->>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> Co-developed-by: Yi Liu <yi.l.liu@intel.com>
->> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
->> ---
->> drivers/iommu/intel/nested.c | 116
->> +++++++++++++++++++++++++++++++++++
->> 1 file changed, 116 insertions(+)
->>
->> diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
->> index b5a5563ab32c..c665e2647045 100644
->> --- a/drivers/iommu/intel/nested.c
->> +++ b/drivers/iommu/intel/nested.c
->> @@ -73,9 +73,125 @@ static void intel_nested_domain_free(struct
->> iommu_domain *domain)
->> 	kfree(to_dmar_domain(domain));
->> }
->>
->> +static void nested_flush_pasid_iotlb(struct intel_iommu *iommu,
->> +				     struct dmar_domain *domain, u64 addr,
->> +				     unsigned long npages, bool ih)
+>> +/*
+>> + * security_sb_device_access() - Let LSMs handle device access
+>> + * @sb: filesystem superblock
+>> + *
+>> + * Let an LSM take over device access management for this superblock.
+>> + *
+>> + * Return: Returns 1 if LSMs handle device access, 0 if none does and -ERRNO on
+>> + *         failure.
+>> + */
+>> +int security_sb_device_access(struct super_block *sb)
 >> +{
->> +	u16 did = domain_id_iommu(domain, iommu);
->> +	unsigned long flags;
+>> +       int thisrc;
+>> +       int rc = LSM_RET_DEFAULT(sb_device_access);
+>> +       struct security_hook_list *hp;
 >> +
->> +	spin_lock_irqsave(&domain->lock, flags);
->> +	if (!list_empty(&domain->devices))
->> +		qi_flush_piotlb(iommu, did, IOMMU_NO_PASID, addr,
->> +				npages, ih, NULL);
+>> +       hlist_for_each_entry(hp, &security_hook_heads.sb_device_access, list) {
+>> +               thisrc = hp->hook.sb_device_access(sb);
+>> +               if (thisrc < 0)
+>> +                       return thisrc;
+>> +               /* At least one LSM claimed device access management. */
+>> +               if (thisrc == 1)
+>> +                       rc = 1;
+>> +       }
+>> +
+>> +       return rc;
+>> +}
 > 
-> Is it optimal to check if domain attached to iommu before trigger flush?
-> Or the check is redundant if intel_nested_flush_cache() is the only call site.
+> I worry that this hook, and the way it is plumbed into alloc_super()
+> below, brings us back to the problem of authoritative LSM hooks which
+> is something I can't support at this point in time.  The same can be
+> said for a LSM directly flipping bits in the superblock struct.
+> 
+> The LSM should not grant any additional privilege, either directly in
+> the LSM code, or indirectly via the caller; the LSM should only
+> restrict operations which would have otherwise been allowed.
+> 
+> The LSM should also refrain from modifying any kernel data structures
+> that do not belong directly to the LSM.  A LSM caller may modify
+> kernel data structures that it owns based on the result of the LSM
+> hook, so long as those modifications do not grant additional privilege
+> as described above.
 
-I think it is possible that userspace issue an invalidation on a hwpt which
-does not have any device attached.. Though this is something stupid. So
-checking if any device attached before flushing still makes sense.
+Hi Paul, what would you think about if we do it as shown in the
+patch below (untested)?
 
-> Thanks
-> Zhenzhong
+I have adapted Christians patch slightly in a way that we do let
+all LSMs agree on if device access management should be done or not.
+Similar to the security_task_prctl() hook.
+
+The new default behavior in alloc_super() is that the
+SB_I_MANANGED_DEVICES flag is set if no error is returned by the
+security hook, otherwise the old semantic which raises SB_I_NODEV
+is used if an LSM does not agree on device management for the
+superblock.
+
+So a LSM can only be used to restrict access to the superblock
+but not to do more privileged operations, since the
+MANAGED_DEVICES would be allowed by default.
+
+The LSM default value is set to -EOPNOSUPP to decide if an LSM has
+implemented the hook inside of fs/super.c for backward compatibility.
+
 > 
->> +	spin_unlock_irqrestore(&domain->lock, flags);
->> +}
->> +
->> +static void nested_flush_dev_iotlb(struct dmar_domain *domain, u64 addr,
->> +				   unsigned mask, u32 *fault)
->> +{
->> +	struct device_domain_info *info;
->> +	unsigned long flags;
->> +	u16 sid, qdep;
->> +
->> +	spin_lock_irqsave(&domain->lock, flags);
->> +	list_for_each_entry(info, &domain->devices, link) {
->> +		if (!info->ats_enabled)
->> +			continue;
->> +		sid = info->bus << 8 | info->devfn;
->> +		qdep = info->ats_qdep;
->> +		qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
->> +				   qdep, addr, mask, fault);
->> +		quirk_extra_dev_tlb_flush(info, addr, mask,
->> +					  IOMMU_NO_PASID, qdep);
->> +	}
->> +	spin_unlock_irqrestore(&domain->lock, flags);
->> +}
->> +
->> +static void intel_nested_flush_cache(struct dmar_domain *domain, u64
->> addr,
->> +				     unsigned long npages, u32 *error)
->> +{
->> +	struct iommu_domain_info *info;
->> +	unsigned long i;
->> +	unsigned mask;
->> +	u32 fault = 0;
->> +
->> +	if (npages == U64_MAX)
->> +		mask = 64 - VTD_PAGE_SHIFT;
->> +	else
->> +		mask = ilog2(__roundup_pow_of_two(npages));
->> +
->> +	xa_for_each(&domain->iommu_array, i, info) {
->> +		nested_flush_pasid_iotlb(info->iommu, domain, addr,
->> npages, 0);
->> +
->> +		if (domain->has_iotlb_device)
->> +			continue;
->> +
->> +		nested_flush_dev_iotlb(domain, addr, mask, &fault);
->> +		if (fault & (DMA_FSTS_ITE | DMA_FSTS_ICE))
->> +			break;
->> +	}
->> +
->> +	if (fault & DMA_FSTS_ICE)
->> +		*error |= IOMMU_HWPT_INVALIDATE_VTD_S1_ICE;
->> +	if (fault & DMA_FSTS_ITE)
->> +		*error |= IOMMU_HWPT_INVALIDATE_VTD_S1_ITE;
->> +}
->> +
->> +static int intel_nested_cache_invalidate_user(struct iommu_domain
->> *domain,
->> +					      struct iommu_user_data_array
->> *array)
->> +{
->> +	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
->> +	struct iommu_hwpt_vtd_s1_invalidate inv_entry;
->> +	u32 processed = 0;
->> +	int ret = 0;
->> +	u32 index;
->> +
->> +	if (array->type != IOMMU_HWPT_INVALIDATE_DATA_VTD_S1) {
->> +		ret = -EINVAL;
->> +		goto out;
->> +	}
->> +
->> +	for (index = 0; index < array->entry_num; index++) {
->> +		ret = iommu_copy_struct_from_user_array(&inv_entry,
->> array,
->> +
->> 	IOMMU_HWPT_INVALIDATE_DATA_VTD_S1,
->> +							index, inv_error);
->> +		if (ret)
->> +			break;
->> +
->> +		if (inv_entry.flags & ~IOMMU_VTD_INV_FLAGS_LEAF) {
->> +			ret = -EOPNOTSUPP;
->> +			break;
->> +		}
->> +
->> +		if (!IS_ALIGNED(inv_entry.addr, VTD_PAGE_SIZE) ||
->> +		    ((inv_entry.npages == U64_MAX) && inv_entry.addr)) {
->> +			ret = -EINVAL;
->> +			break;
->> +		}
->> +
->> +		inv_entry.inv_error = 0;
->> +		intel_nested_flush_cache(dmar_domain, inv_entry.addr,
->> +					 inv_entry.npages,
->> &inv_entry.inv_error);
->> +
->> +		ret = iommu_respond_struct_to_user_array(array, index,
->> +							 (void *)&inv_entry,
->> +							 sizeof(inv_entry));
->> +		if (ret)
->> +			break;
->> +
->> +		processed++;
->> +	}
->> +
->> +out:
->> +	array->entry_num = processed;
->> +	return ret;
->> +}
->> +
->> static const struct iommu_domain_ops intel_nested_domain_ops = {
->> 	.attach_dev		= intel_nested_attach_dev,
->> 	.free			= intel_nested_domain_free,
->> +	.cache_invalidate_user	= intel_nested_cache_invalidate_user,
->> };
+>> diff --git a/fs/super.c b/fs/super.c
+>> index 076392396e72..2295c0f76e56 100644
+>> --- a/fs/super.c
+>> +++ b/fs/super.c
+>> @@ -325,7 +325,7 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
+>>  {
+>>         struct super_block *s = kzalloc(sizeof(struct super_block),  GFP_USER);
+>>         static const struct super_operations default_op;
+>> -       int i;
+>> +       int err, i;
 >>
->> struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain
->> *parent,
->> --
->> 2.34.1
+>>         if (!s)
+>>                 return NULL;
+>> @@ -362,8 +362,16 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
+>>         }
+>>         s->s_bdi = &noop_backing_dev_info;
+>>         s->s_flags = flags;
+>> -       if (s->s_user_ns != &init_user_ns)
+>> +
+>> +       err = security_sb_device_access(s);
+>> +       if (err < 0)
+>> +               goto fail;
+>> +
+>> +       if (err)
+>> +               s->s_iflags |= SB_I_MANAGED_DEVICES;
+>> +       else if (s->s_user_ns != &init_user_ns)
+>>                 s->s_iflags |= SB_I_NODEV;
+>> +
+>>         INIT_HLIST_NODE(&s->s_instances);
+>>         INIT_HLIST_BL_HEAD(&s->s_roots);
+>>         mutex_init(&s->s_sync_lock);
 > 
+---
+ fs/namespace.c                | 11 +++++++----
+ fs/super.c                    | 12 ++++++++++--
+ include/linux/fs.h            |  1 +
+ include/linux/lsm_hook_defs.h |  1 +
+ include/linux/security.h      |  6 ++++++
+ security/security.c           | 26 ++++++++++++++++++++++++++
+ 6 files changed, 51 insertions(+), 6 deletions(-)
 
+diff --git a/fs/namespace.c b/fs/namespace.c
+index fbf0e596fcd3..e87cc0320091 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -4887,7 +4887,6 @@ static bool mnt_already_visible(struct mnt_namespace *ns,
+ 
+ static bool mount_too_revealing(const struct super_block *sb, int *new_mnt_flags)
+ {
+-	const unsigned long required_iflags = SB_I_NOEXEC | SB_I_NODEV;
+ 	struct mnt_namespace *ns = current->nsproxy->mnt_ns;
+ 	unsigned long s_iflags;
+ 
+@@ -4899,9 +4898,13 @@ static bool mount_too_revealing(const struct super_block *sb, int *new_mnt_flags
+ 	if (!(s_iflags & SB_I_USERNS_VISIBLE))
+ 		return false;
+ 
+-	if ((s_iflags & required_iflags) != required_iflags) {
+-		WARN_ONCE(1, "Expected s_iflags to contain 0x%lx\n",
+-			  required_iflags);
++	if (!(s_iflags & SB_I_NOEXEC)) {
++		WARN_ONCE(1, "Expected s_iflags to contain SB_I_NOEXEC\n");
++		return true;
++	}
++
++	if (!(s_iflags & (SB_I_NODEV | SB_I_MANAGED_DEVICES))) {
++		WARN_ONCE(1, "Expected s_iflags to contain device access mask\n");
+ 		return true;
+ 	}
+ 
+diff --git a/fs/super.c b/fs/super.c
+index 076392396e72..6510168d51ce 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -325,7 +325,7 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
+ {
+ 	struct super_block *s = kzalloc(sizeof(struct super_block),  GFP_USER);
+ 	static const struct super_operations default_op;
+-	int i;
++	int i, err;
+ 
+ 	if (!s)
+ 		return NULL;
+@@ -362,8 +362,16 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
+ 	}
+ 	s->s_bdi = &noop_backing_dev_info;
+ 	s->s_flags = flags;
+-	if (s->s_user_ns != &init_user_ns)
++
++	err = security_sb_device_access(s);
++	if (err < 0 && err != -EOPNOTSUPP)
++		goto fail;
++
++	if (err && s->s_user_ns != &init_user_ns)
+ 		s->s_iflags |= SB_I_NODEV;
++	else
++		s->s_iflags |= SB_I_MANAGED_DEVICES;
++
+ 	INIT_HLIST_NODE(&s->s_instances);
+ 	INIT_HLIST_BL_HEAD(&s->s_roots);
+ 	mutex_init(&s->s_sync_lock);
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 98b7a7a8c42e..6ca0fe922478 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1164,6 +1164,7 @@ extern int send_sigurg(struct fown_struct *fown);
+ #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
+ #define SB_I_IMA_UNVERIFIABLE_SIGNATURE	0x00000020
+ #define SB_I_UNTRUSTED_MOUNTER		0x00000040
++#define SB_I_MANAGED_DEVICES		0x00000080
+ 
+ #define SB_I_SKIP_SYNC	0x00000100	/* Skip superblock at global sync */
+ #define SB_I_PERSB_BDI	0x00000200	/* has a per-sb bdi */
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index ff217a5ce552..1dc13b7e9a4a 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -60,6 +60,7 @@ LSM_HOOK(int, 0, fs_context_dup, struct fs_context *fc,
+ LSM_HOOK(int, -ENOPARAM, fs_context_parse_param, struct fs_context *fc,
+ 	 struct fs_parameter *param)
+ LSM_HOOK(int, 0, sb_alloc_security, struct super_block *sb)
++LSM_HOOK(int, -EOPNOTSUPP, sb_device_access, struct super_block *sb)
+ LSM_HOOK(void, LSM_RET_VOID, sb_delete, struct super_block *sb)
+ LSM_HOOK(void, LSM_RET_VOID, sb_free_security, struct super_block *sb)
+ LSM_HOOK(void, LSM_RET_VOID, sb_free_mnt_opts, void *mnt_opts)
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 1d1df326c881..79f2b201c7bd 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -298,6 +298,7 @@ int security_fs_context_submount(struct fs_context *fc, struct super_block *refe
+ int security_fs_context_dup(struct fs_context *fc, struct fs_context *src_fc);
+ int security_fs_context_parse_param(struct fs_context *fc, struct fs_parameter *param);
+ int security_sb_alloc(struct super_block *sb);
++int security_sb_device_access(struct super_block *sb);
+ void security_sb_delete(struct super_block *sb);
+ void security_sb_free(struct super_block *sb);
+ void security_free_mnt_opts(void **mnt_opts);
+@@ -652,6 +653,11 @@ static inline int security_sb_alloc(struct super_block *sb)
+ 	return 0;
+ }
+ 
++static inline int security_sb_device_access(struct super_block *sb)
++{
++	return -EOPNOTSUPP;
++}
++
+ static inline void security_sb_delete(struct super_block *sb)
+ { }
+ 
+diff --git a/security/security.c b/security/security.c
+index dcb3e7014f9b..054ee19edef0 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -1221,6 +1221,32 @@ int security_sb_alloc(struct super_block *sb)
+ 	return rc;
+ }
+ 
++/*
++ * security_sb_device_access() - handle device access on this sb
++ * @sb: filesystem superblock
++ *
++ * Let LSMs decide if device access management is allowed for this superblock.
++ *
++ * Return: Returns 0 if LSMs handle device access, -EOPNOTSUPP if none does and
++ * 	   -ERRNO on any other failure.
++ */
++int security_sb_device_access(struct super_block *sb)
++{
++	int thisrc;
++	int rc = LSM_RET_DEFAULT(sb_device_access);
++	struct security_hook_list *hp;
++
++	hlist_for_each_entry(hp, &security_hook_heads.sb_device_access, list) {
++		thisrc = hp->hook.sb_device_access(sb);
++		if (thisrc != LSM_RET_DEFAULT(sb_device_access)) {
++			rc = thisrc;
++			if (thisrc != 0)
++				break;
++		}
++	}
++	return rc;
++}
++
+ /**
+  * security_sb_delete() - Release super_block LSM associated objects
+  * @sb: filesystem superblock
 -- 
-Regards,
-Yi Liu
 
