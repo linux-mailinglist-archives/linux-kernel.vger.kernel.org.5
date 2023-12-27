@@ -1,83 +1,99 @@
-Return-Path: <linux-kernel+bounces-12275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6B6081F238
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 22:35:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14C8081F23B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 22:40:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0266C1C2254A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:35:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A79B91F21CE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64AEF481CD;
-	Wed, 27 Dec 2023 21:35:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B563B47F6A;
+	Wed, 27 Dec 2023 21:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RK8j3mz6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C58A9481A5
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 21:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35fe9fa7f4fso44420155ab.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 13:35:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703712906; x=1704317706;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pbQTOD/Ltd9C2PJIubwu4JdPZB/ZwoLzMfKrTF30tQM=;
-        b=CQekWbadh6c0/r10LOGvoTRh6vbHn7hatEQ7iqrEQNBalVIfbeQ1p52doTDB1Q4emU
-         u/DsNvJUjW+doSnbsTzb52PXJiw1P4Y2bdj1DLOY/tuHgr0Gu4+4Tv1SX+sLIWOFcAcf
-         LlXtoFwixr2WAiJBcaFs5jR8hFIIGHF5JwIYPBeqFeRq3tiQ3FIPvGr5Ti9luHC+KvgV
-         cnkaYGcf9czivrkb+V5my4/Dw6Zf9IzZiRDAtqe3tdzPIz4ydxnEJKabL92X4CWziIm2
-         rvU21bf/gP3C/khEBtHBM1CDZMCGOdbUryIrxwb7xGE3sgb4CmqF8VIeHv3uVR9Yku3a
-         Uh6Q==
-X-Gm-Message-State: AOJu0YxThLJNOvi/cBVzeM/L5S0xCc8o5PSsvgmvQVTv+lq3a6es/aoy
-	vDvNUtUDBTpq6qwEo+S3DTX5a8LgGrcyaPe4WA/PvbA0TNeD
-X-Google-Smtp-Source: AGHT+IESHqvKiy/A8nyx+QaDLdqzH3R119TI4RChAvP2HWtKKFejDSNQtJ99zWFHavl5JUAy63E8bzvuHwUfhDOcGBA24lRJ6556
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B7F63AF;
+	Wed, 27 Dec 2023 21:40:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=s1T79JusxVoyBT+vwk9LUpjehjg9hFZ+7ISsR89v6CE=; b=RK8j3mz6+CwLQms9nAD6ExIUoh
+	d48NsJqPQQeVfhHK8JYyydqeLJulP0FkJpXFcn4e8JqPa+p8eJXQuXVG1/5SPYmi2rPhLsa84loqR
+	qY1dX0tZmJWYEhJbc2foct+qv3EKNOnUMQQa4kEF3BYCvVWMqMr1SOoxpPYQqsILc48cVfLDDk3p8
+	fnNu2giYBQvLRf8yjkMOERsvgTI4w2OIcP2lOKAhuY2EqYs0NFGOEXRIVIysCI5qkSMyFbemVTvLd
+	IUK3a7T2eOOOJu/DNygc4S66K5sjcdn67FrmHKenQmQnS2iOo/UUdqq1QGHwaQk5EBod5FGHwZSie
+	imiilOYw==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rIbdB-00FY8Y-15;
+	Wed, 27 Dec 2023 21:40:03 +0000
+Message-ID: <d752d157-659b-4d05-90a9-ebbf19c07068@infradead.org>
+Date: Wed, 27 Dec 2023 13:40:01 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c28:b0:35f:d4dc:1b1d with SMTP id
- m8-20020a056e021c2800b0035fd4dc1b1dmr1007441ilh.1.1703712905942; Wed, 27 Dec
- 2023 13:35:05 -0800 (PST)
-Date: Wed, 27 Dec 2023 13:35:05 -0800
-In-Reply-To: <00000000000046566805e997132d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008edf40060d8492e2@google.com>
-Subject: Re: [syzbot] [jfs?] UBSAN: array-index-out-of-bounds in xtInsert
-From: syzbot <syzbot+55a7541cfd25df68109e@syzkaller.appspotmail.com>
-To: brauner@kernel.org, dave.kleikamp@oracle.com, ghandatmanas@gmail.com, 
-	jfs-discussion@lists.sourceforge.net, jlayton@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	liushixin2@huawei.com, mirimmad17@gmail.com, mushi.shar@gmail.com, 
-	nogikh@google.com, osmtendev@gmail.com, shaggy@kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] counter: linux/counter.h: fix Excess kernel-doc
+ description warning
+Content-Language: en-US
+To: William Breathitt Gray <william.gray@linaro.org>
+Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+References: <20231223050511.13849-1-rdunlap@infradead.org>
+ <ZYw2SkkEzSW2C2gN@ubuntu-server-vm-macos>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <ZYw2SkkEzSW2C2gN@ubuntu-server-vm-macos>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-syzbot suspects this issue was fixed by commit:
 
-commit a779ed754e52d582b8c0e17959df063108bd0656
-Author: Dave Kleikamp <dave.kleikamp@oracle.com>
-Date:   Thu Oct 5 14:16:14 2023 +0000
 
-    jfs: define xtree root and page independently
+On 12/27/23 06:35, William Breathitt Gray wrote:
+> On Fri, Dec 22, 2023 at 09:05:11PM -0800, Randy Dunlap wrote:
+>> Remove the @priv: line to prevent the kernel-doc warning:
+>>
+>> include/linux/counter.h:400: warning: Excess struct member 'priv' description in 'counter_device'
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: William Breathitt Gray <william.gray@linaro.org>
+>> Cc: linux-iio@vger.kernel.org
+>> ---
+>>  include/linux/counter.h |    1 -
+>>  1 file changed, 1 deletion(-)
+>>
+>> diff -- a/include/linux/counter.h b/include/linux/counter.h
+>> --- a/include/linux/counter.h
+>> +++ b/include/linux/counter.h
+>> @@ -359,7 +359,6 @@ struct counter_ops {
+>>   * @num_counts:		number of Counts specified in @counts
+>>   * @ext:		optional array of Counter device extensions
+>>   * @num_ext:		number of Counter device extensions specified in @ext
+>> - * @priv:		optional private data supplied by driver
+>>   * @dev:		internal device structure
+>>   * @chrdev:		internal character device structure
+>>   * @events_list:	list of current watching Counter events
+> 
+> Hi Randy,
+> 
+> Would you provide a Fixes tag for the commit that removed the 'priv'
+> member so we can track when this warning appeared? You can respond with
+> it to this thread and I'll add it in when I merge your patch.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=104e23c9e80000
-start commit:   830b3c68c1fb Linux 6.1
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1b610daf3807bd5c
-dashboard link: https://syzkaller.appspot.com/bug?extid=55a7541cfd25df68109e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175d3e57880000
+Fixes: f2ee4759fb70 ("counter: remove old and now unused registration API")
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Thank you.
 
-#syz fix: jfs: define xtree root and page independently
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- 
+#Randy
 
