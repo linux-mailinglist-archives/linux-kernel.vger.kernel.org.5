@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-12269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE24081F221
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 22:05:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06FCA81F21D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 22:04:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CC771F23187
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:05:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A5E91C226A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:04:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FCA64B148;
-	Wed, 27 Dec 2023 21:03:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED98649F75;
+	Wed, 27 Dec 2023 21:03:04 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E33D49F8D
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 21:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0021481A8
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 21:03:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rIb3L-0000sJ-2D; Wed, 27 Dec 2023 22:02:59 +0100
+	id 1rIb3L-0000sW-8N; Wed, 27 Dec 2023 22:02:59 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rIb3J-001wFB-HN; Wed, 27 Dec 2023 22:02:58 +0100
+	id 1rIb3J-001wFF-OL; Wed, 27 Dec 2023 22:02:58 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rIb3K-001ZVk-1k;
+	id 1rIb3K-001ZVo-2S;
 	Wed, 27 Dec 2023 22:02:58 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
 	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
 	kernel@pengutronix.de
-Subject: [PATCH 08/12] mailbox: qcom-ipcc: Convert to platform remove callback returning void
-Date: Wed, 27 Dec 2023 22:02:36 +0100
-Message-ID:  <515f199e83af8a6295d38f0127be230bbbd6098b.1703710628.git.u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 09/12] mailbox: stm32-ipcc: Convert to platform remove callback returning void
+Date: Wed, 27 Dec 2023 22:02:37 +0100
+Message-ID:  <3189b81c29e185e76e87a150051e5e73047b76ea.1703710628.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1703710628.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1703710628.git.u.kleine-koenig@pengutronix.de>
@@ -55,7 +55,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1791; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=dQ7xAWwAr+m6oeIQoY8ovO5/17i2OHqeN97W+/12Du4=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBljJDufzD2oU8+z6pomHH+G4A8o2UtNr9z9PhPb vptCsZeZieJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZYyQ7gAKCRCPgPtYfRL+ Tq7pB/9Dmb/jKMl6/r477Ic9N1qIMXfrf4k1YWh8kVn7VLU0tzEVL5PeORJkHj5yqzysrPTJyTf G88OGmEFNY5XtxMN/p4IpCnkixdN0ZR1EWm6uCQhsLhJwwwsuGsJodiXkfDT6fSjIedCH7nDyAE dZcXeVoWOjztd+8ps5A3NYZkXGg7gAQP40tblN6PIIwMocxKsGLNhKtt71tsf61wu9SMTUMmgwl QwyWpfrV1MOUrtwmwW+DHBh2a6TvxNX7iWVBRYnzFIpdGj/OqHJURKPOdMYNXifhfstSrbWcQCI r78rzCbFkV3luWKwxJVYlsYlLH64Q9wlWKDEUgllPAHT4bMn
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1799; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=3bDUjGjP7wzxKyoJxgukH0hU9Cj6FBrYyYL2xQFaSUY=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBljJDvHB8PRK2f+cN/dTeaPhGdhFq1chpZPlaNJ Nus1qGLwfuJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZYyQ7wAKCRCPgPtYfRL+ TnzaCACaIsH1woq68S42H2f/RVHXYiWQHTDmhEhk9nRfPyPMnH/LTY8QR4960J3vS3E4YlzpXD4 e8Fb9Pdn1otwdBaCiCKQ+jFxD5fN3gs8DxO1augzsYhBFFAbiOSlc9dTXbVwVSuISPIxv2eoz5S NBKQsfEydrR5UQymLJYcXo8qJSBg9XGyLpacTXFoTAx1ip1ShhIXCruPrt6bD3uWj3E7NQW8Fre oqDT36vI+j2waULDBWz24J47yHOTscUVw6D5s07bXWglA8P7CAsV/OSDSI94I0AVfnQLBr0rkzi /l1jNsQFzbe93BCZEb8sEpXrBKcYUp6KjT19THwhl5UaysP0
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -78,38 +78,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/mailbox/qcom-ipcc.c | 6 ++----
+ drivers/mailbox/stm32-ipcc.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mailbox/qcom-ipcc.c b/drivers/mailbox/qcom-ipcc.c
-index f597a1bd5684..d537cc9c4d4b 100644
---- a/drivers/mailbox/qcom-ipcc.c
-+++ b/drivers/mailbox/qcom-ipcc.c
-@@ -326,14 +326,12 @@ static int qcom_ipcc_probe(struct platform_device *pdev)
+diff --git a/drivers/mailbox/stm32-ipcc.c b/drivers/mailbox/stm32-ipcc.c
+index 4ad3653f3866..1442f275782b 100644
+--- a/drivers/mailbox/stm32-ipcc.c
++++ b/drivers/mailbox/stm32-ipcc.c
+@@ -331,7 +331,7 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
  	return ret;
  }
  
--static int qcom_ipcc_remove(struct platform_device *pdev)
-+static void qcom_ipcc_remove(struct platform_device *pdev)
+-static int stm32_ipcc_remove(struct platform_device *pdev)
++static void stm32_ipcc_remove(struct platform_device *pdev)
  {
- 	struct qcom_ipcc *ipcc = platform_get_drvdata(pdev);
+ 	struct device *dev = &pdev->dev;
  
- 	disable_irq_wake(ipcc->irq);
- 	irq_domain_remove(ipcc->irq_domain);
+@@ -339,8 +339,6 @@ static int stm32_ipcc_remove(struct platform_device *pdev)
+ 		dev_pm_clear_wake_irq(&pdev->dev);
+ 
+ 	device_set_wakeup_capable(dev, false);
 -
 -	return 0;
  }
  
- static const struct of_device_id qcom_ipcc_of_match[] = {
-@@ -348,7 +346,7 @@ static const struct dev_pm_ops qcom_ipcc_dev_pm_ops = {
+ #ifdef CONFIG_PM_SLEEP
+@@ -381,7 +379,7 @@ static struct platform_driver stm32_ipcc_driver = {
+ 		.of_match_table = stm32_ipcc_of_match,
+ 	},
+ 	.probe		= stm32_ipcc_probe,
+-	.remove		= stm32_ipcc_remove,
++	.remove_new	= stm32_ipcc_remove,
+ };
  
- static struct platform_driver qcom_ipcc_driver = {
- 	.probe = qcom_ipcc_probe,
--	.remove = qcom_ipcc_remove,
-+	.remove_new = qcom_ipcc_remove,
- 	.driver = {
- 		.name = "qcom-ipcc",
- 		.of_match_table = qcom_ipcc_of_match,
+ module_platform_driver(stm32_ipcc_driver);
 -- 
 2.43.0
 
