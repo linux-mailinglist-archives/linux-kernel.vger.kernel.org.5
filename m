@@ -1,127 +1,108 @@
-Return-Path: <linux-kernel+bounces-12223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8B7181F188
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 32CC081F18B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:09:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38423B226E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 19:08:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA65DB2183A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 19:09:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D035846B85;
-	Wed, 27 Dec 2023 19:08:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC7CC4776F;
+	Wed, 27 Dec 2023 19:09:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F5TSRvAA"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bZKxzJtr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F96046B87;
-	Wed, 27 Dec 2023 19:08:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4118FC433C7;
-	Wed, 27 Dec 2023 19:08:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703704095;
-	bh=ATu15DdJu3KphR7LFYKeEXCMXYokrV8F6bk6Aa0fZc4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=F5TSRvAADaGRV2HGx2D8sugO90Z38C23ezQdcbj1FEmLF7yydZRoQ7gLUjrUxqJXS
-	 YlMF0p4wMPtmIXqNH3X52dm5iFwSujhlJ0qk6m6/UFaeax70WR+jE2CJq4XioV28fT
-	 HTWpu9uvSn/bZMt1tn2YKYqmV2jHOCyh96lm/qfaEZwRFsfTkHqnpta//0R+3eJrJT
-	 v7mZqkGHrgCW0rov70FInyDP90P3Yn/S5dPWJ+531cfLshH4RdInaEKHfqqUxqUdXo
-	 e74d5UuX9nTFcm8ZrltAKVoBrXYubi1XgzT7IZvQfYConmO1R9m1hcXTO3Z1/1uOvO
-	 41IlJFs3gH6ow==
-Date: Wed, 27 Dec 2023 13:08:13 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Minda Chen <minda.chen@starfivetech.com>
-Cc: Conor Dooley <conor@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Daire McNamara <daire.mcnamara@microchip.com>,
-	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Mason Huo <mason.huo@starfivetech.com>,
-	Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-	Kevin Xie <kevin.xie@starfivetech.com>
-Subject: Re: [PATCH v13 19/21] PCI: Add PCIE_RESET_CONFIG_DEVICE_WAIT_MS
- waiting time value
-Message-ID: <20231227190813.GA1508471@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBA3C46B88
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 19:09:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5e745891a69so41897767b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 11:09:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1703704171; x=1704308971; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qpVnpJ3HNKYUH8rCvM4ORfSgTVpxbE0LVqXKt4MxqHI=;
+        b=bZKxzJtraZRf8W0aLeIxkAhrE1yBK1mlZ6lyxNbBRMQ2jqbPZ3tO9t7aWsXNZ1KQ1V
+         2VW682vAvXvrJMS9eto9p62JYi6CO/iVkSA1BXF1OvBnwch4SASGfi2oAFXSIMt7L3ry
+         HfvGmE1rxW6ugkvXE0+jNJylMKjyQVzg20f5w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703704171; x=1704308971;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qpVnpJ3HNKYUH8rCvM4ORfSgTVpxbE0LVqXKt4MxqHI=;
+        b=hPx8aAIAbTaHHbdt091fuCwIPaRNNWF2iHh6Vdde8Y6BeEdyOEx2QoCGKyrKsEJl6s
+         +zGihOx9ys+s+FMpXWFuwRDjsw+fv4M6LkJc/hHw59SsynDaT/dUYKo7RXkdCPgHxgk7
+         0O4Pxv5/LY40Rl/NP6p2AnPuS8hQ5C5Ed+YPRuCJVqm/iefSB6RR1cgdLAzDGbJ+IdtW
+         Q3LklTlX+Pra4b8drPO4Nc3exfuUL5PMvvkoE48T2F0AQO1DSwCfrZzCNGuuxdlHmTgo
+         ENNN9HS7+HzusNc2C9/o6tjDGKwRE0RpMnx3r7sgt4TopopoD/dme+npRkVGrGe4vfOk
+         /UXQ==
+X-Gm-Message-State: AOJu0Yzk/rBW9fJ0H/ILP4F9y2aVqi6gzPC278FXwFmg1UVnfe2VqBZm
+	z8SLGhTEoponniiXG1ws+JVg72PPmHZ1XZagcCCJlJtJhu7v
+X-Google-Smtp-Source: AGHT+IGlFw9UNPB1dmm/olk7+22ViwCbjSSFDnD2ZfUBYa15s3f3lFEPDK25bDg1fgThWm1hx47FabuTsv+tR68Ua3w=
+X-Received: by 2002:a0d:d811:0:b0:5e4:da23:14b9 with SMTP id
+ a17-20020a0dd811000000b005e4da2314b9mr4637533ywe.50.1703704170861; Wed, 27
+ Dec 2023 11:09:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214072839.2367-20-minda.chen@starfivetech.com>
+References: <20231226192149.1830592-1-markhas@chromium.org>
+ <20231226122113.v3.21.I38ac58ab04985a404ed6551eb5813fa7841ef410@changeid> <ZYxdwrJw7_JudQXB@smile.fi.intel.com>
+In-Reply-To: <ZYxdwrJw7_JudQXB@smile.fi.intel.com>
+From: Mark Hasemeyer <markhas@chromium.org>
+Date: Wed, 27 Dec 2023 12:09:19 -0700
+Message-ID: <CANg-bXBwWXaJWv9gMtjYvRBnOaP3E8U1nh5-ScWOoyRayzn7Zw@mail.gmail.com>
+Subject: Re: [PATCH v3 21/24] device property: Modify fwnode irq_get() to use resource
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring <robh@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Sudeep Holla <sudeep.holla@arm.com>, 
+	Raul Rangel <rrangel@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
+	Daniel Scally <djrscally@gmail.com>, Frank Rowand <frowand.list@gmail.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, Len Brown <lenb@kernel.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, devicetree@vger.kernel.org, 
+	linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Dec 14, 2023 at 03:28:37PM +0800, Minda Chen wrote:
-> From: Kevin Xie <kevin.xie@starfivetech.com>
-> 
-> Add the PCIE_RESET_CONFIG_DEVICE_WAIT_MS macro to define the minimum
-> waiting time between exit from a conventional reset and sending the
-> first configuration request to the device.
-> 
-> As described in PCI base specification r6.0, section 6.6.1 <Conventional
-> Reset>, there are two different use cases of the value:
-> 
->    - "With a Downstream Port that does not support Link speeds greater
->      than 5.0 GT/s, software must wait a minimum of 100 ms following exit
->      from a Conventional Reset before sending a Configuration Request to
->      the device immediately below that Port."
-> 
->    - "With a Downstream Port that supports Link speeds greater than
->      5.0 GT/s, software must wait a minimum of 100 ms after Link training
->      completes before sending a Configuration Request to the device
->      immediately below that Port."
-> 
-> Signed-off-by: Kevin Xie <kevin.xie@starfivetech.com>
-> Reviewed-by: Mason Huo <mason.huo@starfivetech.com>
+> A side note: in all files where you use ioport.h check if you actually included it.
+>
+> ...
+>
+> > -#include <linux/types.h>
+> > -#include <linux/list.h>
+> >  #include <linux/bits.h>
+> >  #include <linux/err.h>
+> > +#include <linux/ioport.h>
+> > +#include <linux/list.h>
+> > +#include <linux/types.h>
+>
+> Fine, but no. This file is still not using the iopoll.h.
+> See the forward declarations below? It should be there.
+>
+> >  struct fwnode_operations;
+> >  struct device;
+>
+> ...
+>
+> > --- a/include/linux/property.h
+> > +++ b/include/linux/property.h
+>
+> Same comment(s) here.
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-
-> ---
->  drivers/pci/pci.h | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 5ecbcf041179..06f1f1eb878c 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -22,6 +22,22 @@
->   */
->  #define PCIE_PME_TO_L2_TIMEOUT_US	10000
->  
-> +/*
-> + * As described in PCI base specification r6.0, section 6.6.1 <Conventional
-> + * Reset>, there are two different use cases of the value:
-> + *
-> + * - "With a Downstream Port that does not support Link speeds greater
-> + *    than 5.0 GT/s, software must wait a minimum of 100 ms following exit
-> + *    from a Conventional Reset before sending a Configuration Request to
-> + *    the device immediately below that Port."
-> + *
-> + * - "With a Downstream Port that supports Link speeds greater than
-> + *    5.0 GT/s, software must wait a minimum of 100 ms after Link training
-> + *    completes before sending a Configuration Request to the device
-> + *    immediately below that Port."
-> + */
-> +#define PCIE_RESET_CONFIG_DEVICE_WAIT_MS	100
-> +
->  extern const unsigned char pcie_link_speed[];
->  extern bool pci_early_dump;
->  
-> -- 
-> 2.17.1
-> 
+I don't fully follow. Are you suggesting adding an explicit 'struct
+resource' declaration as opposed to including ioport.h? If so, why? To
+reduce scope?
 
