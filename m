@@ -1,202 +1,148 @@
-Return-Path: <linux-kernel+bounces-12017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 974FC81EEE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 13:38:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75BE581EEEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 13:38:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E3B61F22D5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 12:38:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A784B1C22613
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 12:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E47A344C80;
-	Wed, 27 Dec 2023 12:38:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644CB44C8C;
+	Wed, 27 Dec 2023 12:38:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oR3Zu7tI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s3xdYdjN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91711446D2
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 12:38:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-336788cb261so4678235f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 04:38:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703680705; x=1704285505; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=K49GFbJ7QYX/aYXf6WBwayoQ+7LGUrfHPfuMV1wfcM8=;
-        b=oR3Zu7tIRl7Vrvbp9vVfkJItESCIkjgW+bo+/EHyfjXRtxwnVEighhIxS0UqsRWztg
-         e/ei0pz13MGh3F4hrX4Ubx4HDFXNDv993CLVRqS39pwvsNMLqaByg4DLHsUCP6+xVGj5
-         DpecqNpgkNVKBvXH6rQXPSxFIEXfkyGcXnpw3MZzoa2cWn/tR6ladUlrlOSUDsPSXYZ6
-         RA55S700OIoQx4HXN8sK6gP87A/gAJwAI8fy4vSRGqq8Qs54XdAd1fGdpc5oUuLxO1Ww
-         NvC/FG2r+DgJ0cjuuafcnQSaDovXqc3zZ34vkf1p4+TkUFOGaPjGFYdG0A9rdpEpMmIG
-         mJmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703680705; x=1704285505;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K49GFbJ7QYX/aYXf6WBwayoQ+7LGUrfHPfuMV1wfcM8=;
-        b=tDDySFtTyT4eVU3hOEv50It1tvtW4KWTAvNhw6aYTWKGawF2pt0Zhc47WzMUkYHUg6
-         d2oeckYB07YXs8wFqE8C/hHSNhCrmvwU3nafvBItCZTb/tFtHDV98v28554ut9HaBvVW
-         WbhqviF4NIDUMn3ku9zqI+VSuY+AsVbX/19NgntF3ElwZap1jnCWhLVWTDXM4uksvkeB
-         wP54cwLkNVG6vbpqWuHPIeflrIcHqiKJ571+iSCgfAoJV4nlkIVCrPEWV/9QhPaGcR7P
-         +Qr7NqP9v8j+BQrEw8cfar2DuwYIQ90POXahnHSPVo1WEhXoW28O8hDb9uLCO0en6Mwb
-         6Q8A==
-X-Gm-Message-State: AOJu0YwOxOeI1Fm2x2lFfkLwH9UWtSo31+iCKYczCK/s5QI8fS7Yc0y/
-	4fEwfOiGa7ZuPCz2+Rpgxk8nlJEACJWvsw==
-X-Google-Smtp-Source: AGHT+IEk8Z5vNZSE+UxA5iIfvuAuQqH01ijY55xsdhRWuCAzSey3tpD2HL7T5Js0WDnprd1CJaMF2w==
-X-Received: by 2002:a5d:5744:0:b0:333:5230:ad12 with SMTP id q4-20020a5d5744000000b003335230ad12mr5438335wrw.72.1703680704864;
-        Wed, 27 Dec 2023 04:38:24 -0800 (PST)
-Received: from [192.168.0.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id q28-20020adfab1c000000b0033690139ea5sm12410133wrc.44.2023.12.27.04.38.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Dec 2023 04:38:23 -0800 (PST)
-Message-ID: <425a228e-b2d3-4b19-9bcb-6ee1a90cd2ef@linaro.org>
-Date: Wed, 27 Dec 2023 12:38:21 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA63444C79;
+	Wed, 27 Dec 2023 12:38:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13075C433C9;
+	Wed, 27 Dec 2023 12:38:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703680709;
+	bh=X7R6F9hT6XYOO3BGfeWVV1thc/132FVHa6UnzJbO8Fg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=s3xdYdjN0JOula1WTh6A2iY780fPuc5IgTrHuxBP2YtCgzASY8pVu5cCIY7V7869q
+	 TE0fEUoZX+CYtqtqwXCsY8OYqXoe843PQhGtjEdymRcJLFja1/UF0z70P+ObGRMhcy
+	 q5mHqo9TWriOWFO8r/kE4PTdfsTl5/UVNn9H+iJe8JO4oJipqon4Kv1/oyimY/7o8v
+	 0TzD2/pQGXH+KeQR/7JBNOzi9SHvR2xPoYCM7SvufLJ2jw0s74kX+eqxEsTqPiypj3
+	 zZySoByBOlV7buyytNoiODdK6mDu0ZQbrUqD0ZaH5FVMY98tGXBo8VMIUahi8uB1fA
+	 uCC4SF5HSoqYg==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] tracing: Fix possible memory leak in ftrace_regsiter_direct()
+Date: Wed, 27 Dec 2023 21:38:25 +0900
+Message-Id: <170368070504.42064.8960569647118388081.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/13] dt-bindings: clock: google,gs101-clock: add PERIC0
- clock management unit
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Peter Griffin <peter.griffin@linaro.org>
-Cc: sboyd@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
- alim.akhtar@samsung.com, gregkh@linuxfoundation.org, jirislaby@kernel.org,
- catalin.marinas@arm.com, will@kernel.org, s.nawrocki@samsung.com,
- tomasz.figa@gmail.com, cw00.choi@samsung.com, arnd@arndb.de,
- semen.protsenko@linaro.org, andre.draszik@linaro.org, saravanak@google.com,
- willmcvicker@google.com, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
- =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
- <20231214105243.3707730-3-tudor.ambarus@linaro.org>
- <20231220150726.GA223267-robh@kernel.org>
- <173b06ab-2518-49ee-a67f-85256bc5b6a7@linaro.org>
-Content-Language: en-US
-In-Reply-To: <173b06ab-2518-49ee-a67f-85256bc5b6a7@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Hi, Rob,
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-On 12/21/23 07:20, Tudor Ambarus wrote:
-> 
-> 
-> On 12/20/23 15:07, Rob Herring wrote:
->> On Thu, Dec 14, 2023 at 10:52:32AM +0000, Tudor Ambarus wrote:
->>> Add dt-schema documentation for the Connectivity Peripheral 0 (PERIC0)
->>> clock management unit.
->>>
->>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->>> ---
->>>  .../bindings/clock/google,gs101-clock.yaml    | 25 +++++-
->>>  include/dt-bindings/clock/google,gs101.h      | 86 +++++++++++++++++++
->>>  2 files changed, 109 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
->>> index 3eebc03a309b..ba54c13c55bc 100644
->>> --- a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
->>> +++ b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
->>> @@ -30,14 +30,15 @@ properties:
->>>        - google,gs101-cmu-top
->>>        - google,gs101-cmu-apm
->>>        - google,gs101-cmu-misc
->>> +      - google,gs101-cmu-peric0
->>>  
->>>    clocks:
->>>      minItems: 1
->>> -    maxItems: 2
->>> +    maxItems: 3
->>>  
->>>    clock-names:
->>>      minItems: 1
->>> -    maxItems: 2
->>> +    maxItems: 3
->>>  
->>>    "#clock-cells":
->>>      const: 1
->>> @@ -88,6 +89,26 @@ allOf:
->>>              - const: dout_cmu_misc_bus
->>>              - const: dout_cmu_misc_sss
->>>  
->>> +  - if:
->>> +      properties:
->>> +        compatible:
->>> +          contains:
->>> +            const: google,gs101-cmu-peric0
->>> +
->>> +    then:
->>> +      properties:
->>> +        clocks:
->>> +          items:
->>> +            - description: External reference clock (24.576 MHz)
->>> +            - description: Connectivity Peripheral 0 bus clock (from CMU_TOP)
->>> +            - description: Connectivity Peripheral 0 IP clock (from CMU_TOP)
->>> +
->>> +        clock-names:
->>> +          items:
->>> +            - const: oscclk
->>> +            - const: dout_cmu_peric0_bus
->>> +            - const: dout_cmu_peric0_ip
->>
->> 'bus' and 'ip' are sufficient because naming is local to the module. The 
->> same is true on 'dout_cmu_misc_bus'. As that has not made a release, 
->> please fix all of them.
->>
-> 
-> Ok, will fix them shortly. Thanks, Rob!
+If ftrace_register_direct() called with a large number of target
+functions (e.g. 65), the free_hash can be updated twice or more
+in the ftrace_add_rec_direct() without freeing the previous hash
+memory. Thus this can cause a memory leak.
 
-I tried your suggestion at
-https://lore.kernel.org/linux-arm-kernel/c6cc6e74-6c3d-439b-8dc1-bc50a88a3d8f@linaro.org/
+Fix this issue by expanding the direct_hash at once before
+adding the new entries.
 
-and we noticed that we'd have to update the clock driver as well.
-These CMUs set the DT clock-name of the parent clock in the driver in
-struct samsung_cmu_info::clk_name[]. The driver then tries to enable the
-parent clock based on the clock-name in exynos_arm64_register_cmu().
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Fixes: f64dd4627ec6 ("ftrace: Add multi direct register/unregister interface")
+Cc: stable@vger.kernel.org
+---
+ kernel/trace/ftrace.c |   49 +++++++++++++++++++++++++++++++------------------
+ 1 file changed, 31 insertions(+), 18 deletions(-)
 
-In order to enable the parent clock of the CMU the following would be
-needed in the driver:
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 8de8bec5f366..9269c2c3e595 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -2555,28 +2555,33 @@ unsigned long ftrace_find_rec_direct(unsigned long ip)
+ 	return entry->direct;
+ }
+ 
+-static struct ftrace_func_entry*
+-ftrace_add_rec_direct(unsigned long ip, unsigned long addr,
+-		      struct ftrace_hash **free_hash)
++static struct ftrace_hash *ftrace_expand_direct(int inc_count)
+ {
+-	struct ftrace_func_entry *entry;
++	struct ftrace_hash *new_hash, *free_hash;
++	int size = ftrace_hash_empty(direct_functions) ? 0 :
++		direct_functions->count + inc_count;
+ 
+-	if (ftrace_hash_empty(direct_functions) ||
+-	    direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
+-		struct ftrace_hash *new_hash;
+-		int size = ftrace_hash_empty(direct_functions) ? 0 :
+-			direct_functions->count + 1;
++	if (!ftrace_hash_empty(direct_functions) &&
++	    size <= 2 * (1 << direct_functions->size_bits))
++		return NULL;
+ 
+-		if (size < 32)
+-			size = 32;
++	if (size < 32)
++		size = 32;
+ 
+-		new_hash = dup_hash(direct_functions, size);
+-		if (!new_hash)
+-			return NULL;
++	new_hash = dup_hash(direct_functions, size);
++	if (!new_hash)
++		return ERR_PTR(-ENOMEM);
+ 
+-		*free_hash = direct_functions;
+-		direct_functions = new_hash;
+-	}
++	free_hash = direct_functions;
++	direct_functions = new_hash;
++
++	return free_hash;
++}
++
++static struct ftrace_func_entry*
++ftrace_add_rec_direct(unsigned long ip, unsigned long addr)
++{
++	struct ftrace_func_entry *entry;
+ 
+ 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+ 	if (!entry)
+@@ -5436,11 +5441,19 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+ 		}
+ 	}
+ 
++	/* ... and prepare the insertion */
++	free_hash = ftrace_expand_direct(hash->count);
++	if (IS_ERR(free_hash)) {
++		err = PTR_ERR(free_hash);
++		free_hash = NULL;
++		goto out_unlock;
++	}
++
+ 	/* ... and insert them to direct_functions hash. */
+ 	err = -ENOMEM;
+ 	for (i = 0; i < size; i++) {
+ 		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+-			new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
++			new = ftrace_add_rec_direct(entry->ip, addr);
+ 			if (!new)
+ 				goto out_remove;
+ 			entry->direct = addr;
 
-diff --git a/drivers/clk/samsung/clk-gs101.c
-b/drivers/clk/samsung/clk-gs101.c
-index 68a27b78b00b..e91836ea3a98 100644
---- a/drivers/clk/samsung/clk-gs101.c
-+++ b/drivers/clk/samsung/clk-gs101.c
-@@ -2476,7 +2476,7 @@ static const struct samsung_cmu_info misc_cmu_info
-__initconst = {
-        .nr_clk_ids             = CLKS_NR_MISC,
-        .clk_regs               = misc_clk_regs,
-        .nr_clk_regs            = ARRAY_SIZE(misc_clk_regs),
--       .clk_name               = "dout_cmu_misc_bus",
-+       .clk_name               = "bus",
- };
-
-I think I lean towards keeping the name as it was because it's clearer
-what are the clock dependencies in the driver. "dout_cmu_misc_bus" is
-the clock name used when defining the clock:
-DIV(CLK_DOUT_CMU_MISC_BUS, "dout_cmu_misc_bus", "gout_cmu_misc_bus",
-    CLK_CON_DIV_CLKCMU_MISC_BUS, 0, 4),
-The other exynos clock drivers are using too the driver's clock names
-for the clock-names device tree property. For consistency I'd keep it
-the same.
-
-If you have a stronger opinion than mine, please tell and I'll happily
-update the driver.
-
-Thanks,
-ta
 
