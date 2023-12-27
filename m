@@ -1,153 +1,249 @@
-Return-Path: <linux-kernel+bounces-12138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C60E281F071
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:30:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2CEC81F074
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:32:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83F0128202B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:30:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92C441F21633
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207102576B;
-	Wed, 27 Dec 2023 16:30:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77C142D787;
+	Wed, 27 Dec 2023 16:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BKKblfMm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lcjkANPK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F011DFC9;
-	Wed, 27 Dec 2023 16:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 126EA60002;
-	Wed, 27 Dec 2023 16:30:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1703694622;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QessdMBPnjzb5s9ZGKryHBBqE6qV0TJfrHNj00DkgTQ=;
-	b=BKKblfMmPg+v0sWG14C1m4ICUEmMvk1dxZBPc5ojdko88JICk8J3zB63p5dwB91DiFaLsr
-	F9ABXAtMFzEBYUjCYK8TqsGJUZKQX3PlLFvt0JA1ZwLR/frDs1uG+ULI4k87CXw60qHo6O
-	AP4DYO7nQJWKO2BgBH6M6hqi2GihRCrwRP4dR8NSNhRlyiuIhb5Z0MUlGgZGcpGcVlh6Ph
-	vjytMHkeY07DX+pobSOiM7Z3N7iooOh2bQZ634jXjX8nzzOEiiu7W8GCKU52rRkFNDnKL6
-	qqB83x0lI+JDeBK3rtQjCTKcVQvbuvjyJD2UIs/C/ueWdZM9Ae5ZTauBD4UGGA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6421E50B;
+	Wed, 27 Dec 2023 16:32:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27BEEC433C7;
+	Wed, 27 Dec 2023 16:32:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703694726;
+	bh=qHvz5PL3DyDEfU+agFYX2QOF0tgzoXWZYQyMsGW40TU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lcjkANPKjExwr803GzRvl1JFa34rtgCRR1O6vN32Xs0xwwZ+KriSey1zZDQvO2ZRz
+	 1sINaVMrj6NFi2oziIcG85CHdEis6o13Hjf4F9wJGr0AomWH+QoicIJZbZPkhsMj8j
+	 E3gyv2DCCF/CTnyg8mIpttCF91pTnXQ2Eo2bXBJ/umzGPnk+wJLpXafzrb891BzDLz
+	 oqCX1s2mFdo18yY1obKZLH1dqqlctgX+RWC8Hk/1qktPXEmKlLggKt1t/D38pca72q
+	 /smMH4j3jhpkkcFBSFjV6LVmRX7fESsfugWIPwSU957gTkYgjMGWpjugIw/GGhJrnt
+	 fWp7u40P9Jq6g==
+Date: Wed, 27 Dec 2023 17:31:59 +0100
+From: Lorenzo Pieralisi <lpieralisi@kernel.org>
+To: Minda Chen <minda.chen@starfivetech.com>
+Cc: Conor Dooley <conor@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Mason Huo <mason.huo@starfivetech.com>,
+	Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+	Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v13 14/21] PCI: microchip: Add get_events() callback and
+ add PLDA get_event()
+Message-ID: <ZYxRf8d0+gSoqeRs@lpieralisi>
+References: <20231214072839.2367-1-minda.chen@starfivetech.com>
+ <20231214072839.2367-15-minda.chen@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 27 Dec 2023 17:30:20 +0100
-Message-Id: <CXZ9C7Y8QT0D.38ZNTXUY0HWUW@bootlin.com>
-To: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, "Stephen Boyd"
- <sboyd@kernel.org>, "Conor Dooley" <conor+dt@kernel.org>, "Gregory CLEMENT"
- <gregory.clement@bootlin.com>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Michael Turquette"
- <mturquette@baylibre.com>, "Rob Herring" <robh+dt@kernel.org>, "Thomas
- Bogendoerfer" <tsbogend@alpha.franken.de>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH 3/5] clk: eyeq5: add controller
-Cc: "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
- <linux-mips@vger.kernel.org>, <linux-clk@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Thomas
- Petazzoni" <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-X-Mailer: aerc 0.15.2
-References: <20231218-mbly-clk-v1-0-44ce54108f06@bootlin.com>
- <20231218-mbly-clk-v1-3-44ce54108f06@bootlin.com>
- <a8f740c7a8c1222d4a42bad588c75e87.sboyd@kernel.org>
- <CXUTPV1ZOSID.323RSEP4BL2AT@bootlin.com>
-In-Reply-To: <CXUTPV1ZOSID.323RSEP4BL2AT@bootlin.com>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214072839.2367-15-minda.chen@starfivetech.com>
 
-Hello,
+On Thu, Dec 14, 2023 at 03:28:32PM +0800, Minda Chen wrote:
+> PolarFire implements its own PCIe interrupts, additional to the regular
+> PCIe interrupts, due to lack of an MSI controller, so the interrupt to
+> event number mapping is different to the PLDA local interrupts,
 
-On Fri Dec 22, 2023 at 12:25 PM CET, Th=C3=A9o Lebrun wrote:
-> Hello,
->
-> I've seen all your comments, thanks for that. I have a follow up about
-> one:
->
-> On Wed Dec 20, 2023 at 12:09 AM CET, Stephen Boyd wrote:
-> > Quoting Th=C3=A9o Lebrun (2023-12-18 09:14:18)
-> > > Add the Mobileye EyeQ5 clock controller driver. See the header commen=
-t
-> > > for more information on how it works.
-> >
-> > "See the header" is like saying "Read the code" which is pretty obvious=
-.
-> > Remove this sentence and tell us why only the PLLs are supported at the
-> > moment or something like that.
-> >
-> > > This driver is specific to this
-> > > platform; it might grow to add later support of other platforms from
-> > > Mobileye.
-> > >=20
-> > > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> > > ---
-> > >  MAINTAINERS             |   1 +
-> > >  drivers/clk/Kconfig     |  11 +++
-> > >  drivers/clk/Makefile    |   1 +
-> > >  drivers/clk/clk-eyeq5.c | 211 ++++++++++++++++++++++++++++++++++++++=
-++++++++++
-> > >  4 files changed, 224 insertions(+)
-> > >=20
->
-> [...]
->
-> > > diff --git a/drivers/clk/clk-eyeq5.c b/drivers/clk/clk-eyeq5.c
-> > > new file mode 100644
-> > > index 000000000000..74bcb8cec5c1
-> > > --- /dev/null
-> > > +++ b/drivers/clk/clk-eyeq5.c
->
-> [...]
->
-> > > +       of_clk_add_hw_provider(np, of_clk_hw_onecell_get, data);
-> > > +}
-> > > +
-> > > +CLK_OF_DECLARE_DRIVER(eq5c, "mobileye,eyeq5-clk", eq5c_init);
-> >
-> > Please use a platform driver.
->
-> I've been trying to do that but I had a stall at boot. I initially
-> associated it with the UART driver acquiring a clock too early but
-> instead it is the CPU timer clocksource driver that consumes one of our
-> clock way earlier than any platform driver initialisation.
->
-> The clocksource driver we are talking about is this one for reference:
-> https://elixir.bootlin.com/linux/v6.6.8/source/drivers/clocksource/mips-g=
-ic-timer.c
->
-> Its usage of TIMER_OF_DECLARE means it gets probed by timer_probe ->
-> plat_time_init -> time_init -> start_kernel. This is way before any
-> initcalls. Our prior use of CLK_OF_DECLARE_DRIVER meant that we got
-> probed by of_clk_init -> plat_time_init.
->
-> I'm guessing we are not the first one in this situation; any advice on
-> how to deal with it?
+I am sorry I don't understand what you mean here.
 
-I went ahead with a V2, feeling it would be more productive to come up
-with something and gather comments on concrete stuff. There were many
-other things to address anyway.
+"its own PCIe interrupts" ?
 
-I've addressed this point by declaring a dummy fixed-clock in the
-devicetree that gets fed to the GIC timer. It is pretty much the same
-thing as using `clock-frequency` which this specific clocksource uses
-if `of_clk_get(node, 0)` fails. With the sent approach we have the
-timer appear in the clock tree as a consumer.
+"regular PCIe interrupts" ?
 
-Regards,
+"PLDA local interrupts" ?
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Can you spell out what those are referring to please ?
+
+Thanks,
+Lorenzo
+
+> necessitating a custom get_events() implementation.
+> 
+> plda_get_events() adds interrupt register to PLDA local event num mapping
+> codes except DMA engine interrupt events. The DMA engine interrupt events
+> are implemented by vendors.
+> 
+> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+>  .../pci/controller/plda/pcie-microchip-host.c | 35 ++++++++++++++++++-
+>  drivers/pci/controller/plda/pcie-plda.h       | 33 +++++++++++++++++
+>  2 files changed, 67 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
+> index 00250781b11c..fd0d92c3d03f 100644
+> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
+> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+> @@ -627,6 +627,26 @@ static u32 mc_get_events(struct plda_pcie_rp *port)
+>  	return events;
+>  }
+>  
+> +static u32 plda_get_events(struct plda_pcie_rp *port)
+> +{
+> +	u32 events, val, origin;
+> +
+> +	origin = readl_relaxed(port->bridge_addr + ISTATUS_LOCAL);
+> +
+> +	/* Error events and doorbell events */
+> +	events = (origin & ERROR_AND_DOORBELL_MASK) >> A_ATR_EVT_POST_ERR_SHIFT;
+> +
+> +	/* INTx events */
+> +	if (origin & PM_MSI_INT_INTX_MASK)
+> +		events |= BIT(EVENT_PM_MSI_INT_INTX);
+> +
+> +	/* MSI event and sys events */
+> +	val = (origin & SYS_AND_MSI_MASK) >> PM_MSI_INT_MSI_SHIFT;
+> +	events |= val << EVENT_PM_MSI_INT_MSI;
+> +
+> +	return events;
+> +}
+> +
+>  static irqreturn_t mc_event_handler(int irq, void *dev_id)
+>  {
+>  	struct plda_pcie_rp *port = dev_id;
+> @@ -657,7 +677,7 @@ static void plda_handle_event(struct irq_desc *desc)
+>  
+>  	chained_irq_enter(chip, desc);
+>  
+> -	events = mc_get_events(port);
+> +	events = port->event_ops->get_events(port);
+>  
+>  	for_each_set_bit(bit, &events, port->num_events)
+>  		generic_handle_domain_irq(port->event_domain, bit);
+> @@ -751,6 +771,10 @@ static struct irq_chip mc_event_irq_chip = {
+>  	.irq_unmask = mc_unmask_event_irq,
+>  };
+>  
+> +static const struct plda_event_ops plda_event_ops = {
+> +	.get_events = plda_get_events,
+> +};
+> +
+>  static int plda_pcie_event_map(struct irq_domain *domain, unsigned int irq,
+>  			       irq_hw_number_t hwirq)
+>  {
+> @@ -816,6 +840,10 @@ static int mc_request_event_irq(struct plda_pcie_rp *plda, int event_irq,
+>  				0, event_cause[event].sym, plda);
+>  }
+>  
+> +static const struct plda_event_ops mc_event_ops = {
+> +	.get_events = mc_get_events,
+> +};
+> +
+>  static const struct plda_event mc_event = {
+>  	.request_event_irq = mc_request_event_irq,
+>  	.intx_event        = EVENT_LOCAL_PM_MSI_INT_INTX,
+> @@ -932,6 +960,9 @@ static int plda_init_interrupts(struct platform_device *pdev,
+>  	int i, intx_irq, msi_irq, event_irq;
+>  	int ret;
+>  
+> +	if (!port->event_ops)
+> +		port->event_ops = &plda_event_ops;
+> +
+>  	ret = plda_pcie_init_irq_domains(port);
+>  	if (ret) {
+>  		dev_err(dev, "failed creating IRQ domains\n");
+> @@ -1008,6 +1039,8 @@ static int mc_platform_init(struct pci_config_window *cfg)
+>  	if (ret)
+>  		return ret;
+>  
+> +	port->plda.event_ops = &mc_event_ops;
+> +
+>  	/* Address translation is up; safe to enable interrupts */
+>  	ret = plda_init_interrupts(pdev, &port->plda, &mc_event);
+>  	if (ret)
+> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
+> index fba7343f9a96..dd8bc2750bfc 100644
+> --- a/drivers/pci/controller/plda/pcie-plda.h
+> +++ b/drivers/pci/controller/plda/pcie-plda.h
+> @@ -40,6 +40,7 @@
+>  #define  P_ATR_EVT_DISCARD_ERR_SHIFT		22
+>  #define  P_ATR_EVT_DOORBELL_MASK		0x00000000u
+>  #define  P_ATR_EVT_DOORBELL_SHIFT		23
+> +#define  ERROR_AND_DOORBELL_MASK		GENMASK(23, 16)
+>  #define  PM_MSI_INT_INTA_MASK			0x01000000u
+>  #define  PM_MSI_INT_INTA_SHIFT			24
+>  #define  PM_MSI_INT_INTB_MASK			0x02000000u
+> @@ -58,6 +59,7 @@
+>  #define  PM_MSI_INT_EVENTS_SHIFT		30
+>  #define  PM_MSI_INT_SYS_ERR_MASK		0x80000000u
+>  #define  PM_MSI_INT_SYS_ERR_SHIFT		31
+> +#define  SYS_AND_MSI_MASK			GENMASK(31, 28)
+>  #define  NUM_LOCAL_EVENTS			15
+>  #define ISTATUS_LOCAL				0x184
+>  #define IMASK_HOST				0x188
+> @@ -102,6 +104,36 @@
+>  #define EVENT_PM_MSI_INT_SYS_ERR		12
+>  #define NUM_PLDA_EVENTS				13
+>  
+> +/*
+> + * PLDA local interrupt register
+> + *
+> + * 31         27     23              15           7          0
+> + * +--+--+--+-+------+-+-+-+-+-+-+-+-+-----------+-----------+
+> + * |12|11|10|9| intx |7|6|5|4|3|2|1|0| DMA error | DMA end   |
+> + * +--+--+--+-+------+-+-+-+-+-+-+-+-+-----------+-----------+
+> + * 0:  AXI post error
+> + * 1:  AXI fetch error
+> + * 2:  AXI discard error
+> + * 3:  AXI doorbell
+> + * 4:  PCIe post error
+> + * 5:  PCIe fetch error
+> + * 6:  PCIe discard error
+> + * 7:  PCIe doorbell
+> + * 8:  4 INTx interruts
+> + * 9:  MSI interrupt
+> + * 10: AER event
+> + * 11: PM/LTR/Hotplug
+> + * 12: System error
+> + * DMA error : reserved for vendor implement
+> + * DMA end : reserved for vendor implement
+> + */
+> +
+> +struct plda_pcie_rp;
+> +
+> +struct plda_event_ops {
+> +	u32 (*get_events)(struct plda_pcie_rp *pcie);
+> +};
+> +
+>  struct plda_msi {
+>  	struct mutex lock;		/* Protect used bitmap */
+>  	struct irq_domain *msi_domain;
+> @@ -117,6 +149,7 @@ struct plda_pcie_rp {
+>  	struct irq_domain *event_domain;
+>  	raw_spinlock_t lock;
+>  	struct plda_msi msi;
+> +	const struct plda_event_ops *event_ops;
+>  	void __iomem *bridge_addr;
+>  	int num_events;
+>  };
+> -- 
+> 2.17.1
+> 
 
