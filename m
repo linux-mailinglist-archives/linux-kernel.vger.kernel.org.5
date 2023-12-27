@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-12062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DF0181EF90
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 08D8981EF91
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:50:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 987B51C21180
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:50:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFA411C20BA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC13C45C0C;
-	Wed, 27 Dec 2023 14:49:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 653AF46445;
+	Wed, 27 Dec 2023 14:49:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QmO4K4Ao"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WF771chD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8B945BF1
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 14:49:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91DB4643A
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 14:49:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-28c0df4b42eso2407449a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 06:49:50 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d427518d52so23302385ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 06:49:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703688590; x=1704293390; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703688594; x=1704293394; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LKo1wBDCqtIzP+GSKPuy7WewEJssgRVowRe//gyJUC0=;
-        b=QmO4K4AoZMSeXOxYB1i8sOoWnDzdIQIICbyHdtJfuec/Zqvm2DvOSZDQ55pAkT5k/D
-         7PFtr9TV7sN9dqRFxzq2Oj/sltQ5uRbe4qiQpGTdxrQeVPssJw2KG4TMCXV5yepKRpr6
-         K+aQ7UOf7GzK+HOAHhpX7THuWHKXyQlh00TjqqFKrjYjtwQuAmRqkR1KJwvpalBDxNeG
-         c5Wi4RIUP6wX6150fcZeY7q8oLI4kC0i8m/4yhjcbZne9MUZJgPCe2RbNQRRDO98DkAh
-         DAnXwoimUF3bfpdPb3HAZvbHnMk0iqmIVZa6x4ozPY9j/X6mty21HJuzfzHckWmytiBK
-         EuHQ==
+        bh=OEkOlw6eKaiG2LU3fXepVKKsRgGZTje8n42JsBJJYDI=;
+        b=WF771chDp+6AOt7o9/GeMsCo77s+GKRaYP6fpNgXyn/03IgZzPaYYN9lsxdpDsxoZE
+         yTT7YaYZbGfHbyEwQTxdH8DIFQHwEXMR5AH+CPfTpxH/Dri/fUaBYZ6kbOziGgVkhWZP
+         tGYe1rIdhdpLJRdHDXGjJpigK1GttrVFWcdoBy9aNnRFMjoUTA64ff54AiAkQeHVl/57
+         HRPcy1Xg2fSGBGOpODQ3trJ7ZH1IwPOlZ8mUuc+v5MmSJmvYYMcqLu904VMdSNBOsh5U
+         BymMMvZPPTNGC9tQkWB6ZwWk8T/ErPf5gH6SAz9FWY9C3eMp2Xbv2lnVqLqKcH8coIrF
+         UBkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703688590; x=1704293390;
+        d=1e100.net; s=20230601; t=1703688594; x=1704293394;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LKo1wBDCqtIzP+GSKPuy7WewEJssgRVowRe//gyJUC0=;
-        b=nyqHqUwCFf+2dFEfmBNe+ElODDVJNgBFFVVt9qJyKEjjH0EPAEDbvlwFZYXAdCvkup
-         w3o1Kf88xwNgAYc6tb7hlacgf33uOzGq/IfTt6hqYhovk7CuZqcHZyS4CQVRtI7ndA+z
-         eSh2vr5L4Mtsus0/V7mLk/OHW1ZS4OF6N0t05dZrduzTT3pTsL6LRGIyjl53XfkPRlgG
-         SFZc4c579mm4yD7ndATecxXurSd1QNc3dp+Yiipo/AsK0AX7eCxrChPggHOpFl0lfelG
-         j0O0l9Ty1AThKFt6iIWkavJawef4EaW54NMQYskc8jcMiPyGtdexQnsg8zzDdgFENoK6
-         NGgA==
-X-Gm-Message-State: AOJu0YzWc9r3vAZN0czlygkU8aisde/seKm/VG8IL2eaRJxwf6kWU14m
-	MgTBNP59gIH1BBT+9kVEJFQ2eHkRP7I=
-X-Google-Smtp-Source: AGHT+IHeXSarFXe61pBQRVue6pVDu42IhdPayF6IIWlrCZTUR9pCiNTUAeUbWMdYixrsUEA1B/uLsQ==
-X-Received: by 2002:a17:90a:b006:b0:28c:4527:ef9a with SMTP id x6-20020a17090ab00600b0028c4527ef9amr6353789pjq.40.1703688589589;
-        Wed, 27 Dec 2023 06:49:49 -0800 (PST)
+        bh=OEkOlw6eKaiG2LU3fXepVKKsRgGZTje8n42JsBJJYDI=;
+        b=H54VYtQ+Utq7RaSPFVae2pIRW4r9qOIDqsBZC9U7ZGbDuuPuumxe8AM5y0g6cdVVDm
+         6lU80f3ocxU93J/DVqcS6gW4zCYcZLCKIDz1CUsK7/xbtaxIB7nkLsOWfWjy/ae8y5Ar
+         L4S60xn7MLiszrpcn7exZJP28Sx2P1xfXoOfIgVLGHIvG22MRM7a1vw9vsKQH6lKTHXQ
+         MAC7oeRc19y+Z2qxwcz9GNdoGHbOppuhuL+x71HLesXyZDteafrY7qA2LkFqcRH8oqjP
+         W/jCaPVbCxDqPBHOHCJRuRxzE0iGztH/ootfD4ZbU5ml+SyJd8vL5t3mH2L5N3d/tqHe
+         5+LA==
+X-Gm-Message-State: AOJu0Yyw9wute9xtu5AOAwfhOOtDjJFWEyuHl+3WBY/nOJP2qiZlNoq5
+	nsMFghOfnqHG1HqQHMJcoxBBrN6N+5g=
+X-Google-Smtp-Source: AGHT+IHMdNlH0PkgFshshrYxah0QlCi/NG+epxLHJDp5aHBWD29Rbgf5ZWxnqwfgsrJ9xAlWetXsSg==
+X-Received: by 2002:a17:902:6846:b0:1d4:81bc:a2c2 with SMTP id f6-20020a170902684600b001d481bca2c2mr1093014pln.2.1703688593655;
+        Wed, 27 Dec 2023 06:49:53 -0800 (PST)
 Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id li16-20020a17090b48d000b0028bf0b91f6bsm12423701pjb.21.2023.12.27.06.49.48
+        by smtp.gmail.com with ESMTPSA id ix9-20020a170902f80900b001cff026df52sm12148249plb.221.2023.12.27.06.49.52
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Dec 2023 06:49:49 -0800 (PST)
+        Wed, 27 Dec 2023 06:49:53 -0800 (PST)
 From: Lai Jiangshan <jiangshanlai@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: Tejun Heo <tj@kernel.org>,
 	Naohiro.Aota@wdc.com,
 	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: [PATCH 2/7] workqueue: Share the same PWQ for the CPUs of a pod
-Date: Wed, 27 Dec 2023 22:51:38 +0800
-Message-Id: <20231227145143.2399-3-jiangshanlai@gmail.com>
+Subject: [PATCH 3/7] workqueue: Add pwq_calculate_max_active()
+Date: Wed, 27 Dec 2023 22:51:39 +0800
+Message-Id: <20231227145143.2399-4-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20231227145143.2399-1-jiangshanlai@gmail.com>
 References: <20231227145143.2399-1-jiangshanlai@gmail.com>
@@ -79,174 +79,88 @@ Content-Transfer-Encoding: 8bit
 
 From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 
-PWQs with the same attrs shared the same pool. So just share the same
-PWQ for all the CPUs of a pod instead of duplicating them.
+Abstract the code of calculating max_active from pwq_adjust_max_active()
+into pwq_calculate_max_active() to make the logic clearer.
 
 Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 ---
- kernel/workqueue.c | 78 +++++++++++++++++++++++-----------------------
- 1 file changed, 39 insertions(+), 39 deletions(-)
+ kernel/workqueue.c | 44 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 27 insertions(+), 17 deletions(-)
 
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index e734625fc8ce..1f52685498f1 100644
+index 1f52685498f1..3347ba3a734f 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
-@@ -4360,15 +4360,29 @@ apply_wqattrs_prepare(struct workqueue_struct *wq,
- 		goto out_free;
- 
- 	for_each_possible_cpu(cpu) {
-+		struct pool_workqueue *pwq;
-+		int tcpu;
-+
-+		if (ctx->pwq_tbl[cpu])
-+			continue;
- 		wq_calc_pod_cpumask(new_attrs, cpu, -1);
- 		if (cpumask_equal(new_attrs->cpumask, new_attrs->__pod_cpumask)) {
- 			ctx->dfl_pwq->refcnt++;
- 			ctx->pwq_tbl[cpu] = ctx->dfl_pwq;
- 			continue;
- 		}
--		ctx->pwq_tbl[cpu] = alloc_unbound_pwq(wq, new_attrs);
--		if (!ctx->pwq_tbl[cpu])
-+		pwq = alloc_unbound_pwq(wq, new_attrs);
-+		if (!pwq)
- 			goto out_free;
-+		/*
-+		 * Reinitialize pwq->refcnt and prepare the new pwd for
-+		 * all the CPU of the pod.
-+		 */
-+		pwq->refcnt = 0;
-+		for_each_cpu(tcpu, new_attrs->__pod_cpumask) {
-+			pwq->refcnt++;
-+			ctx->pwq_tbl[tcpu] = pwq;
-+		}
+@@ -4136,6 +4136,25 @@ static void pwq_release_workfn(struct kthread_work *work)
  	}
- 
- 	/* save the user configured attrs and sanitize it. */
-@@ -4483,15 +4497,13 @@ int apply_workqueue_attrs(struct workqueue_struct *wq,
- /**
-  * wq_update_pod - update pod affinity of a wq for CPU hot[un]plug
-  * @wq: the target workqueue
-- * @cpu: the CPU to update pool association for
-- * @hotplug_cpu: the CPU coming up or going down
-+ * @cpu: the CPU coming up or going down
-  * @online: whether @cpu is coming up or going down
-  *
-  * This function is to be called from %CPU_DOWN_PREPARE, %CPU_ONLINE and
-  * %CPU_DOWN_FAILED.  @cpu is being hot[un]plugged, update pod affinity of
-  * @wq accordingly.
-  *
-- *
-  * If pod affinity can't be adjusted due to memory allocation failure, it falls
-  * back to @wq->dfl_pwq which may not be optimal but is always correct.
-  *
-@@ -4502,11 +4514,11 @@ int apply_workqueue_attrs(struct workqueue_struct *wq,
-  * CPU_DOWN. If a workqueue user wants strict affinity, it's the user's
-  * responsibility to flush the work item from CPU_DOWN_PREPARE.
-  */
--static void wq_update_pod(struct workqueue_struct *wq, int cpu,
--			  int hotplug_cpu, bool online)
-+static void wq_update_pod(struct workqueue_struct *wq, int cpu, bool online)
- {
--	int off_cpu = online ? -1 : hotplug_cpu;
--	struct pool_workqueue *old_pwq = NULL, *pwq;
-+	int off_cpu = online ? -1 : cpu;
-+	int tcpu;
-+	struct pool_workqueue *pwq;
- 	struct workqueue_attrs *target_attrs;
- 
- 	lockdep_assert_held(&wq_pool_mutex);
-@@ -4541,20 +4553,24 @@ static void wq_update_pod(struct workqueue_struct *wq, int cpu,
- 		goto use_dfl_pwq;
- 	}
- 
--	/* Install the new pwq. */
-+	/* Install the new pwq for all the cpus of the pod */
- 	mutex_lock(&wq->mutex);
--	old_pwq = install_unbound_pwq(wq, cpu, pwq);
--	goto out_unlock;
-+	/* reinitialize pwq->refcnt before installing */
-+	pwq->refcnt = 0;
-+	for_each_cpu(tcpu, target_attrs->__pod_cpumask)
-+		pwq->refcnt++;
-+	for_each_cpu(tcpu, target_attrs->__pod_cpumask)
-+		put_pwq_unlocked(install_unbound_pwq(wq, tcpu, pwq));
-+	mutex_unlock(&wq->mutex);
-+	return;
- 
- use_dfl_pwq:
- 	mutex_lock(&wq->mutex);
- 	raw_spin_lock_irq(&wq->dfl_pwq->pool->lock);
- 	get_pwq(wq->dfl_pwq);
- 	raw_spin_unlock_irq(&wq->dfl_pwq->pool->lock);
--	old_pwq = install_unbound_pwq(wq, cpu, wq->dfl_pwq);
--out_unlock:
-+	put_pwq_unlocked(install_unbound_pwq(wq, cpu, wq->dfl_pwq));
- 	mutex_unlock(&wq->mutex);
--	put_pwq_unlocked(old_pwq);
  }
  
- static int alloc_and_link_pwqs(struct workqueue_struct *wq)
-@@ -5563,15 +5579,8 @@ int workqueue_online_cpu(unsigned int cpu)
++/**
++ * pwq_calculate_max_active - Determine max_active to use
++ * @pwq: pool_workqueue of interest
++ *
++ * Determine the max_active @pwq should use.
++ */
++static int pwq_calculate_max_active(struct pool_workqueue *pwq)
++{
++	/*
++	 * During [un]freezing, the caller is responsible for ensuring
++	 * that pwq_adjust_max_active() is called at least once after
++	 * @workqueue_freezing is updated and visible.
++	 */
++	if ((pwq->wq->flags & WQ_FREEZABLE) && workqueue_freezing)
++		return 0;
++
++	return pwq->wq->saved_max_active;
++}
++
+ /**
+  * pwq_adjust_max_active - update a pwq's max_active to the current setting
+  * @pwq: target pool_workqueue
+@@ -4147,35 +4166,26 @@ static void pwq_release_workfn(struct kthread_work *work)
+ static void pwq_adjust_max_active(struct pool_workqueue *pwq)
+ {
+ 	struct workqueue_struct *wq = pwq->wq;
+-	bool freezable = wq->flags & WQ_FREEZABLE;
++	int max_active = pwq_calculate_max_active(pwq);
+ 	unsigned long flags;
  
- 	/* update pod affinity of unbound workqueues */
- 	list_for_each_entry(wq, &workqueues, list) {
--		struct workqueue_attrs *attrs = wq->unbound_attrs;
--
--		if (attrs) {
--			const struct wq_pod_type *pt = wqattrs_pod_type(attrs);
--			int tcpu;
--
--			for_each_cpu(tcpu, pt->pod_cpus[pt->cpu_pod[cpu]])
--				wq_update_pod(wq, tcpu, cpu, true);
--		}
-+		if (wq->unbound_attrs)
-+			wq_update_pod(wq, cpu, true);
- 	}
+ 	/* for @wq->saved_max_active */
+ 	lockdep_assert_held(&wq->mutex);
  
- 	mutex_unlock(&wq_pool_mutex);
-@@ -5591,15 +5600,8 @@ int workqueue_offline_cpu(unsigned int cpu)
- 	/* update pod affinity of unbound workqueues */
- 	mutex_lock(&wq_pool_mutex);
- 	list_for_each_entry(wq, &workqueues, list) {
--		struct workqueue_attrs *attrs = wq->unbound_attrs;
--
--		if (attrs) {
--			const struct wq_pod_type *pt = wqattrs_pod_type(attrs);
--			int tcpu;
--
--			for_each_cpu(tcpu, pt->pod_cpus[pt->cpu_pod[cpu]])
--				wq_update_pod(wq, tcpu, cpu, false);
--		}
-+		if (wq->unbound_attrs)
-+			wq_update_pod(wq, cpu, false);
- 	}
- 	mutex_unlock(&wq_pool_mutex);
+-	/* fast exit for non-freezable wqs */
+-	if (!freezable && pwq->max_active == wq->saved_max_active)
++	/* fast exit if unchanged */
++	if (pwq->max_active == max_active)
+ 		return;
  
-@@ -5891,9 +5893,8 @@ static int wq_affn_dfl_set(const char *val, const struct kernel_param *kp)
- 	wq_affn_dfl = affn;
+ 	/* this function can be called during early boot w/ irq disabled */
+ 	raw_spin_lock_irqsave(&pwq->pool->lock, flags);
  
- 	list_for_each_entry(wq, &workqueues, list) {
--		for_each_online_cpu(cpu) {
--			wq_update_pod(wq, cpu, cpu, true);
--		}
-+		for_each_online_cpu(cpu)
-+			wq_update_pod(wq, cpu, true);
- 	}
+-	/*
+-	 * During [un]freezing, the caller is responsible for ensuring that
+-	 * this function is called at least once after @workqueue_freezing
+-	 * is updated and visible.
+-	 */
+-	if (!freezable || !workqueue_freezing) {
+-		pwq->max_active = wq->saved_max_active;
++	pwq->max_active = max_active;
  
- 	mutex_unlock(&wq_pool_mutex);
-@@ -6803,9 +6804,8 @@ void __init workqueue_init_topology(void)
- 	 * combinations to apply per-pod sharing.
- 	 */
- 	list_for_each_entry(wq, &workqueues, list) {
--		for_each_online_cpu(cpu) {
--			wq_update_pod(wq, cpu, cpu, true);
--		}
-+		for_each_online_cpu(cpu)
-+			wq_update_pod(wq, cpu, true);
- 	}
+-		while (!list_empty(&pwq->inactive_works) &&
+-		       pwq->nr_active < pwq->max_active)
+-			pwq_activate_first_inactive(pwq);
++	while (!list_empty(&pwq->inactive_works) &&
++	       pwq->nr_active < pwq->max_active)
++		pwq_activate_first_inactive(pwq);
  
- 	mutex_unlock(&wq_pool_mutex);
+-		kick_pool(pwq->pool);
+-	} else {
+-		pwq->max_active = 0;
+-	}
++	kick_pool(pwq->pool);
+ 
+ 	raw_spin_unlock_irqrestore(&pwq->pool->lock, flags);
+ }
 -- 
 2.19.1.6.gb485710b
 
