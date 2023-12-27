@@ -1,65 +1,64 @@
-Return-Path: <linux-kernel+bounces-11989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9146981EE91
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 12:37:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B10881EE94
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 12:40:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2018A1F21F7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:37:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51484B223FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D99FF446B5;
-	Wed, 27 Dec 2023 11:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007A1446B2;
+	Wed, 27 Dec 2023 11:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SvndbFS5"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RUq7OYyi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0FBF446AB
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 11:37:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43D11D685
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 11:40:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40d5b159497so11339685e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 03:37:31 -0800 (PST)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-336c5b5c163so1010127f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 03:40:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703677050; x=1704281850; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=jcOW+AFqIyNvNdQOJxdhKC0jjbTPJNVhLLukhdEfuhA=;
-        b=SvndbFS5rwU9bp8iplw58NS6D+/Lb1OxpZcwiqx4fWR7F9hJ1B5SyfMuHTCFvVBaW1
-         y/eiz3nONaVUaEhFeiJVUFRxpJVWdNXdfI/w5oQpyt6REVaBhgJE5bKnIncYkMqXRji0
-         zVwMPwmptBy3cWL0VrwvLYN4gGSTntHY8U+nuhBmX0nQD0luc50MOS8MuFl3872gWUU0
-         h6ddZWImjb/M+AZiLnuCN8OgathQ11zPz6MNy9beABqQ3v9ttjDJ2qhw5etnT+95jjfU
-         fvxdzJhocWyf1TpfbTGRDd9s4+yBQNzHrvBk0IVQIJkZZHIDzzW3n6jb1LYItRuUiML1
-         rWmA==
+        d=linaro.org; s=google; t=1703677234; x=1704282034; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k8xitBfBDCof+qqntwU7d8AoHD0pzomEDNXPXqbpXvY=;
+        b=RUq7OYyid3LOvPxccQcs85ycAWMU3MI7vjsX34EzqJOsKfxAIW2PIiBQIfpeglJB9j
+         imEI/zKi6dcys2oYBxoLrVCRre4fE3mUZ4CiZpYpOG8Uq2ggKItt9nBBU8lICBBlCQs1
+         3leLbOUjEjbVUoJaKfTpK6glMNlox8CYJJjAUKaoHNGt9fYexY9LREBAaSu1/twKNnr8
+         4lYe7nyX3FOyE1JguRC9N8doaMPGVC4Em9tc2spGrRrS59B03wedTxwABQPX+5Oubr3D
+         jsZwhL233xHxk2GFmya4vZzGKuaGxXnzS4DZ2n3dt3ChHZESApar6m/DO81i/YbS2yXB
+         1x4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703677050; x=1704281850;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jcOW+AFqIyNvNdQOJxdhKC0jjbTPJNVhLLukhdEfuhA=;
-        b=HABbWTI8ExIuqY64kbm3F3tSLg80uj82jXs9LHgEbRNHJnN+yICson4S66T2JTEqYk
-         kVaIqmXa8IZmpAx/ByqCSWwM/sbPqKfYppxbbj6G2Suoah+AHRXi3qzq0StqZab0raW5
-         /jmP7KMZ/09AE5n/GpsKLV5hoW/+aGH3oqlAuRVaBpH5DDd1H7pzMoW2ChsK0t+OSCgQ
-         wQwaqh++mTSoG4a8qDLHFT8t5JdYrJaFNFQOHr+198PHoqPwFwmh5SzUWs/JcqIedgGF
-         ABKKIBg+rrXRQyLZG9xmHxTPdvpbf/sfjDxYWGhgl3dpnSayJwxXAP4V0i0b7vpgAuBS
-         s30Q==
-X-Gm-Message-State: AOJu0YwgikyPXKia5ffGQsK1GoXDjSkcAQuNh01WK+Z0OLZikk7ciWeA
-	X60Wh1uyYs2xb4YHLg9eN71V7tcKLkyCIA==
-X-Google-Smtp-Source: AGHT+IH3wYyAlP267UA9CdPKFfCrSAro1wv0AkPT3JBnDOtz8TfLJFcXnW2GR66RbBsbBelpxgRCEQ==
-X-Received: by 2002:a7b:c8d4:0:b0:40c:2c3f:57e3 with SMTP id f20-20020a7bc8d4000000b0040c2c3f57e3mr99547wml.28.1703677049939;
-        Wed, 27 Dec 2023 03:37:29 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703677234; x=1704282034;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k8xitBfBDCof+qqntwU7d8AoHD0pzomEDNXPXqbpXvY=;
+        b=LQpz83285b7q8HLtyy8OlYtqRznUwUBvujJGyW1QAq4A2lxcZhVewAO1CH67b0aYaC
+         LW3T35YTxlX1ehbQabdZtazhIim+aZTAyqAiwZxUaL/BUJSCNYwPh0z+lygk0cqenHgI
+         Uor0apG0VGLVAFl9Sae1U3+e8zt6yFTIVVuBMEa/630H/HGkqv1lIa2kWHHf1r7IoeKT
+         4dWB4MXY+J9p//Y2jlx+ffX/eIm2tzo7F2AiYOL8VewlvqFrpxLfEtYzN4fSgAKKeEnB
+         y5kiBmx9HfjnSyJ4gCYfuEfHq3LUgj/SO8Rl6TKS4epYjGLJD+wza+GLaiw051JlPiku
+         zJyA==
+X-Gm-Message-State: AOJu0YwfRYz9cKAwyyo7LYY55Qncmz/itET8x8Z22EnN+G64eWQMVg6D
+	Sqy4JbhHSSa6npFFZC1viJ56o0lrqW114A==
+X-Google-Smtp-Source: AGHT+IEA7bn2xEOrnHgvTjmO+M25nJu1oZXTYL0Vd9uaDJ3mdO29yjBGrEOxufxgaVsp9OBmYaqlqg==
+X-Received: by 2002:a05:6000:1151:b0:336:7758:957e with SMTP id d17-20020a056000115100b003367758957emr4608345wrx.25.1703677234073;
+        Wed, 27 Dec 2023 03:40:34 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id g3-20020a05600c310300b0040c6b2c8fa9sm31545620wmo.41.2023.12.27.03.37.27
+        by smtp.gmail.com with ESMTPSA id b7-20020a5d45c7000000b00336c6b77584sm5652687wrs.91.2023.12.27.03.40.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Dec 2023 03:37:29 -0800 (PST)
-Message-ID: <8cadec0b-8bf4-409d-b56e-28c8bae5f567@linaro.org>
-Date: Wed, 27 Dec 2023 12:37:26 +0100
+        Wed, 27 Dec 2023 03:40:33 -0800 (PST)
+Message-ID: <88719b92-1d69-4571-9323-a844ffc90d7e@linaro.org>
+Date: Wed, 27 Dec 2023 12:40:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,20 +66,19 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] dt-bindings: mfd: sophgo: add MFD subsys support
- for Sophgo CV1800 series SoC
-To: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-Cc: a.zummo@towertech.it, alexandre.belloni@bootlin.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor@kernel.org, conor+dt@kernel.org,
- chao.wei@sophgo.com, unicorn_wang@outlook.com, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, linux-rtc@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, dlan@gentoo.org,
- inochiama@outlook.com
-References: <20231226100431.331616-1-qiujingbao.dlmu@gmail.com>
- <20231226100431.331616-2-qiujingbao.dlmu@gmail.com>
- <8f5e5cc7-9795-4e17-8bb9-73448e960c3d@linaro.org>
- <CAJRtX8R=K6R0o-43cHfL2iKizEJYH+fGFtVj7tWFBuFN1cSsig@mail.gmail.com>
+Subject: Re: [PATCH 2/2] clk: samsung: Fix typo error and extra space
 Content-Language: en-US
+To: Varada Pavani <v.pavani@samsung.com>, mturquette@baylibre.com,
+ sboyd@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com
+Cc: linux-samsung-soc@vger.kernel.org, alim.akhtar@samsung.com,
+ aswani.reddy@samsung.com, pankaj.dubey@samsung.com
+References: <20231219115834.65720-1-v.pavani@samsung.com>
+ <CGME20231219115858epcas5p469e925738bcb93ee88842fdea0f9d3f0@epcas5p4.samsung.com>
+ <20231219115834.65720-2-v.pavani@samsung.com>
+ <58ded02d-a5d2-40e2-b575-dc520a7553cf@linaro.org>
+ <003e01da381d$ae1b4240$0a51c6c0$@samsung.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -126,25 +124,35 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAJRtX8R=K6R0o-43cHfL2iKizEJYH+fGFtVj7tWFBuFN1cSsig@mail.gmail.com>
+In-Reply-To: <003e01da381d$ae1b4240$0a51c6c0$@samsung.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 27/12/2023 08:35, Jingbao Qiu wrote:
->>
->> I do not see any resources in MFD block, so why having it as separate
->> node? What other devices you did not describe here? You mentioned
->> restart and 8051, so where are they? Which driver implements them?
->>
+On 26/12/2023 18:05, Varada Pavani wrote:
+>> hardware
+>> - * registers to acheive a fast co-oridinated rate change for all the 
+>> CPU domain
+>> + * registers to achieve a fast co-oridinated rate change for all the 
+>> + CPU domain
+>>   * clocks.
+>>   *
+>>   * On a rate change request for the CPU clock, the rate change is 
+>> propagated @@ -181,7 +181,7 @@ static int exynos_cpuclk_pre_rate_change(struct clk_notifier_data *ndata,
+>>  	 * If the old parent clock speed is less than the clock speed of
+>>  	 * the alternate parent, then it should be ensured that at no point
+>>  	 * the armclk speed is more than the old_prate until the dividers are
+>> -	 * set.  Also workaround the issue of the dividers being set to lower
+>> +	 * set. Also workaround the issue of the dividers being set to lower
 > 
-> I'am sorry for that other drivers have not been implemented yet. I
-> will implement it
-> after rtc. They have the same address range, so I use mfd to describe them.
+> Why? The double-space is correct.
+> 
+> Okay, I couldn’t see any double space at the end of the statement apart from this line and below one. So updated to have uniformity.
 
-Bindings should be complete even if your driver is not ready. After
-looking at such device node, I say you do not need that rtc child. If
-you sent complete bindings, then of course discussion would be
-different, but...
+Wait, there are only two statements here, so where do you expect double
+space? There is no "one space at the end of the statement".
+
+Your quoting is still not correct. Which part of above is quote of my
+message, which yours?
 
 Best regards,
 Krzysztof
