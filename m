@@ -1,160 +1,123 @@
-Return-Path: <linux-kernel+bounces-12234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADFD181F1B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:53:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF38D81F1BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 686F1283CB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 19:53:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CFCC1C2257A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:02:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B32547F54;
-	Wed, 27 Dec 2023 19:53:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E027947F57;
+	Wed, 27 Dec 2023 20:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dAwEygAu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7F047A51;
-	Wed, 27 Dec 2023 19:53:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C88B747A57;
+	Wed, 27 Dec 2023 20:02:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6dc003289c9so128173a34.0;
-        Wed, 27 Dec 2023 11:53:38 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d4a222818so21858235e9.0;
+        Wed, 27 Dec 2023 12:02:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703707341; x=1704312141; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=F/knE1RdGvxQU+ZfFNTNGYvbGggyDmP5kq99ZSddVPc=;
+        b=dAwEygAu//qGGg1PtSr1rdYP/JW5IFE/fw/Jq03EGjH2nz99lXKQmRYKsjCLOBZUz6
+         vr9iRAW3+rGVWzGBD0ubJQnoJniRe5PKr3R31p9iNbEIuh6kr5pZmaZAFTuA232Zxr3q
+         bQOBGK2etx4WPqN+jCZpAylnZS7Mt93OWJ+hiIok5ukLPGVPm5iNfCV9XlQyH96FI9lK
+         PO3m0M0lGkf3J1GTuM+nNrDS8CZtn0/N2ZexMbqBH1+H7qdtFffV9mMSC8TTMSYv35/y
+         8c5Y6NEmFVEuuNUFfT8BIVyMkRCP8BsoylKTR2yW8L4GxQ14fccdUIN4wIm+ZsNgvDyU
+         cs4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703706817; x=1704311617;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PzGvqkA+7vSK4S2dZ8/CmTeqqUn7cIuH50aZn1M+9vQ=;
-        b=aA5QtZOpz8PS2QEnyTd+HBvKv7QToIxNN92ylzF/V2eU4y2Ly46TuXI4/bLP3oyskX
-         stoMzM0ZYyoyZEGHxafk61Pz7gn7W9kgDgEJ3OxkbA1ah0VUfuI/hYXXPjK7pUFiKHAu
-         cx99ZKNKBY1gg4nOpfMx9WxNaeRpVb8qMXE/Wtt6op9GjlL5b76mIl1JuLPxkK3VcqQu
-         wzxEEXUAjrYF3KfobWpYVUEVeDvK0vGlnsvecFjR2SF6VMla9WZTYlVGUHgf8783LbKE
-         nO2LJ3x22L9nlHHHCQ3v4dkypEl4de+SiugL8kCiIkupNO32ih/KXuFgonxL5FVL3ohq
-         cA+A==
-X-Gm-Message-State: AOJu0Yx8k1RKyuEvhxAUR0k/flG4JBzaNLQCI4YlvfugoZCihlANIPte
-	fUsdm7ClQglIp4KBot9RMogqXWr6OoR3WnEsChU=
-X-Google-Smtp-Source: AGHT+IG/Ky3kwmKNdjmAEoxafNE3axXWpyvvl8+rX7EE+bMJtEIGTrxSpSorul7oLAG7YnBfwX14zB5hV3aO1laoJ0g=
-X-Received: by 2002:a4a:dc96:0:b0:594:ad62:bab9 with SMTP id
- g22-20020a4adc96000000b00594ad62bab9mr5536266oou.1.1703706817350; Wed, 27 Dec
- 2023 11:53:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703707341; x=1704312141;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F/knE1RdGvxQU+ZfFNTNGYvbGggyDmP5kq99ZSddVPc=;
+        b=kjEY3qUEhsp2Z1t1bqYQEGdpz+bFDRgBb4aKUO3dgOmpSqB4O307eHisioMM4WZ5sZ
+         gHH0EUyMfQm/oyaWkKL/wNnjkp9GcB2SrMbFcFWNtqvk+XRCtInlPcn0YB/v0kniofu1
+         LhL6DmNB7wqF+wNiz8iH+mXKsYmpwQJMWMdfQQOshUm2c1HF/pZL7UXJ8hTOaKzNjA06
+         7RiLnZRNC+Uh0yMdJNLJGSLnSHok2yuhqIyQf0N3oGfTBCmBgBkLcP1lzGLnKtQCGqef
+         gyB4Qikmf3ASgqNyjHfLi3E3Qw7Fs+owH2RatgBXtbfyGo2v4flVux0Z2tOZ46KY9DZU
+         RylA==
+X-Gm-Message-State: AOJu0YyHmie19YiOwBj6+bC6HqLDFBe7oXZy230Qo8eLJIIX64/KIFRs
+	AitGx7cuEZPXOMMA3dpQvVY=
+X-Google-Smtp-Source: AGHT+IG11a2jEJ56aVZt743+Urcm+oZvsgxk0OjEW0YCylo3AApnPF7ZuFFcQ/IqgS9k8gVkMvV36A==
+X-Received: by 2002:a05:600c:4503:b0:40d:3eb8:580f with SMTP id t3-20020a05600c450300b0040d3eb8580fmr4726111wmo.14.1703707340716;
+        Wed, 27 Dec 2023 12:02:20 -0800 (PST)
+Received: from skbuf ([188.25.254.72])
+        by smtp.gmail.com with ESMTPSA id m19-20020a05600c4f5300b0040d5b849f38sm5739904wmq.0.2023.12.27.12.02.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Dec 2023 12:02:20 -0800 (PST)
+Date: Wed, 27 Dec 2023 22:02:17 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	David Bauer <mail@david-bauer.net>, mithat.guner@xeront.com,
+	erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next] net: dsa: mt7530: register OF node for internal
+ MDIO bus
+Message-ID: <20231227200217.kdltxpmhvlp6z4cd@skbuf>
+References: <20231220173539.59071-1-arinc.unal@arinc9.com>
+ <20231220173539.59071-1-arinc.unal@arinc9.com>
+ <20231221151607.ujobhh4aet4obxdz@skbuf>
+ <6600c6b1-2230-4963-940c-8b95a01750fd@arinc9.com>
+ <20231227191154.6jkqdlqdxciidpfw@skbuf>
+ <bdbe24b2-30f6-48fa-b6eb-a1ae3afe9076@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231219092539.3655172-1-daniel.lezcano@linaro.org>
- <20231219092539.3655172-2-daniel.lezcano@linaro.org> <CAJZ5v0gPHwJ+02hYbp5dRx1r69BdLWr_QDKautu-RXy1MEC5LQ@mail.gmail.com>
- <60ecab8e-7b96-469e-9bae-25c51514e6e8@linaro.org>
-In-Reply-To: <60ecab8e-7b96-469e-9bae-25c51514e6e8@linaro.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 27 Dec 2023 20:53:25 +0100
-Message-ID: <CAJZ5v0hKH7tYDur4mG8QF0GfgL+jFfW_bBc3QesUS68OQb_PMA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] thermal/debugfs: Add thermal debugfs information
- for mitigation episodes
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, rjw@rjwysocki.net, lukasz.luba@arm.com, 
-	rui.zhang@intel.com, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bdbe24b2-30f6-48fa-b6eb-a1ae3afe9076@arinc9.com>
 
-Hi Daniel,
+On Wed, Dec 27, 2023 at 10:51:08PM +0300, Arınç ÜNAL wrote:
+> I didn't realise ds->user_mii_bus is also used to store irq mapping for
+> each PHY.
 
-On Sat, Dec 23, 2023 at 12:41=E2=80=AFPM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
->
-> Hi Rafael,
->
-> On 21/12/2023 20:26, Rafael J. Wysocki wrote:
->
-> [ ... ]
->
->
-> >> +/**
-> >> + * struct tz_events - Store all events related to a mitigation episod=
-e
-> >> + *
-> >> + * The tz_events structure describes a mitigation episode.
-> >
-> > So why not call it tz_mitigation?
->
-> A mitigation episode =3D N x tz_events
->
-> eg.
-> trip A =3D passive cooling - cpufreq cluster0
-> trip B =3D passive cooling - cpufreq cluster0 + cluster1
-> trip C =3D active cooling + fan
->
-> temperature trip A < trip B < trip C
->
-> The mitigation episode, as defined, begins at trip A, and we can have
-> multiple events (eg. trip B crossed several times, trip C, then trip B
-> again etc ...).
+It needs to, if the MDIO bus does not have an OF description through
+which PHYs can have an 'interrupts' property. But if there is an OF
+description for the MDIO bus and the PHYs, I think it is strange to
+expect PHYs to have interrupts if they aren't described in OF.
 
-I understand this, but I thought that tz_events represented the entire epis=
-ode.
+> Should we agree that user_mii_bus is needed for all cases or make
+> another way to store the irq mappings?
 
-> [ ... ]
->
-> >> +       if (dfs->tz.trip_index < 0) {
-> >> +               tze =3D thermal_debugfs_tz_event_alloc(tz, now);
-> >> +               if (!tze)
-> >> +                       return;
-> >> +
-> >> +               list_add(&tze->node, &dfs->tz.tz_events);
-> >> +       }
-> >> +
-> >> +       dfs->tz.trip_index++;
-> >> +       dfs->tz.trips_crossed[dfs->tz.trip_index] =3D trip_id;
-> >
-> > So trip_index is an index into trips_crossed[] and the value is the ID
-> > of the trip passed by thermal_debug_tz_trip_up() IIUC, so the trip IDs
-> > in trips_crossed[] are always sorted by the trip temperature, in the
-> > ascending order.
-> >
-> > It would be good to write this down somewhere in a comment.
-> >
-> > And what if trip temperatures change during a mitigation episode such
-> > that the order by the trip temperature changes?
->
-> Changing a trip point temperature during a mitigation is a general
-> question about the thermal framework.
->
-> How the governors will behave with such a change on the fly while they
-> are in action?
->
-> IMO, we should prevent to change a trip point temperature when this one
-> is crossed and has a cooling device bound to it.
+I looked at the upstream device trees:
+- users of arch/mips/boot/dts/ralink/mt7621.dtsi
+- arch/arm/boot/dts/mediatek/mt7623n-bananapi-bpi-r2.dts
+- arch/arm/boot/dts/mediatek/mt7623n-rfb-emmc.dts
+- arch/arm/boot/dts/mediatek/mt7623a.dtsi
+- arch/arm64/boot/dts/rockchip/rk3568-bpi-r2-pro.dts
+- arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts
+- arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
+- arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
 
-Well, it's not that simple.
-
-There are legitimate cases in which this can happen on purpose.  For
-example, the ACPI spec does not provide a way to get a trip hysteresis
-from the platform firmware and instead it recommends the firmware to
-update the trip temperature every time it is crossed on the way up in
-order to implement hysteresis.
-
-> >> +
-> >> +       tze =3D list_first_entry(&dfs->tz.tz_events, struct tz_events,=
- node);
-> >> +       tze->trip_stats[trip_id].timestamp =3D now;
-> >> +       tze->trip_stats[trip_id].max =3D max(tze->trip_stats[trip_id].=
-max, temperature);
-> >> +       tze->trip_stats[trip_id].min =3D min(tze->trip_stats[trip_id].=
-min, temperature);
-> >> +       tze->trip_stats[trip_id].avg =3D tze->trip_stats[trip_id].avg =
-+
-> >> +               (temperature - tze->trip_stats[trip_id].avg) /
-> >> +               tze->trip_stats[trip_id].count;
-> >> +
-> >> +       mutex_unlock(&dfs->lock);
-> >> +}
->
->
->
-> --
+and without exception, none of these have the MDIO bus described in OF.
+I'm not sure about other device trees. But it may well be that the
+situation where "MDIO buses present in OF need an IRQ mapping for their
+PHYs" does not need to be handled.
 
