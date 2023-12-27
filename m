@@ -1,65 +1,64 @@
-Return-Path: <linux-kernel+bounces-11971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5F9181EE59
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:56:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5B8381EE5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:56:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DBBA1F21738
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:56:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47DCB1F22D94
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:56:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417E144381;
-	Wed, 27 Dec 2023 10:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B6F44387;
+	Wed, 27 Dec 2023 10:56:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rV5daALz"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="X4UdEYh0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E027244375
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 10:55:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D071944376
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 10:56:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3369339f638so3920782f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 02:55:56 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40d5a9cb423so12895655e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 02:56:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703674555; x=1704279355; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=dq4Wg3sInsGjJll2pSpnEqdTyZFZWvCkPmk8fOtnaZs=;
-        b=rV5daALzWYMsfVbnNqN0lVnx4uc30WSbSHtcuMnVV/BTJyMSrwcs0Hh9Nfko7/7OUa
-         763IoRm65NsQOxoYcSX0dxcfPVpkq7rdDxLv5btPZCzokTox9HOSfPD4RgrYMc1nBr5B
-         NurQclYmYrrgl6NkWNDSnsfX22geX3hMh1fq3TxjPpaDFPx7/fryDgdYlbJndhfGwbGz
-         X0+oGldC17iSNEGH8IhqJ8cMV25RLzq2VDRdHWtoAqqq2jagJBgr4PkzpjRaUOGbRVgM
-         7yqyjJdrJZUlBZBM2a573AVxFhORmBHzFiN2EXAKEGVYwY7BpHlocvzmPwppYFJT4/Lj
-         9hIw==
+        d=linaro.org; s=google; t=1703674587; x=1704279387; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LHce773lKvSW3d9PoMjyn58aiNhGgezLeBwW4a6Orpw=;
+        b=X4UdEYh0EcwHkjpcvcramlZh/emuYEimRUigpdNU1vuL5iXKQfSXcChGs1mk42xz6n
+         ECuGuChm0l8ivTwCIkQ8bAqT2mGBE+QZiVsWXLt1S7jl/ntZNBLfUbQCc3LUvcz5oxVm
+         6psW8gF7MfWvF+8XudzJZd6ETIhkxp3AeCtxLeUmj0vFvzaZJz2EyX6vfW2CzzG2IuP5
+         +iurSHCOU4SkLXafaE2bk7wqqQJmQxodfWAsMFNujqK48I31XjC+/b0ChLHm8zT3WTAu
+         1Gieaq4RCcF/BLP/16MvYMOH0TeWU41NkKRrDRyAKYQGdKoGhh8KE+VKlIUmy5NkdCY5
+         4njw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703674555; x=1704279355;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dq4Wg3sInsGjJll2pSpnEqdTyZFZWvCkPmk8fOtnaZs=;
-        b=Lh4loV68a/1dV3AfpjbXk98J7vpQcW2cwxBAZELSc81WB2PXF7gpweTV7LS5vmV7NX
-         sijz/iu4o+Z51eJHGmW3mSdTaCI3McLoZNzx9KObKv+ZFX4UeP2yzAfuTqp+4Ziam4sS
-         TYGSMOkKAR7PR43XUVh/wANzB2BS+kVJB0kywDmX1xYLAagFhrDrE5CmJvnRbzx0DpyY
-         qJGhqfEzOSKC6VA3Mzbe3I3j+R97aOnhOgXeQj9jDHiOGeCd1J1Hfrk7k7FSWvPdGsYy
-         jOhIbIrY8lrzBnH8rmYwh6VGOAIaENvtLEa3QRZsiRIWm+gVqR0xPCNqf+4kx7TJSPRo
-         uePQ==
-X-Gm-Message-State: AOJu0YyjGg9ZONem8NvyJj5Zj/EQEvV9J7TFJ9zbhURG7E6LmyRHpBFc
-	lnPVgm0EGikgDEw4qqbVtLYwKkb2xk53pQ==
-X-Google-Smtp-Source: AGHT+IHMF2zqQo/m2lnVkVM+wA+VT1QUSuBSmdtliPtCQ8W14LS4KK9dtmUwlK+HPE63opIP34XHTQ==
-X-Received: by 2002:a5d:6ac1:0:b0:336:746a:541a with SMTP id u1-20020a5d6ac1000000b00336746a541amr3417825wrw.87.1703674555046;
-        Wed, 27 Dec 2023 02:55:55 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703674587; x=1704279387;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LHce773lKvSW3d9PoMjyn58aiNhGgezLeBwW4a6Orpw=;
+        b=YEoUiipylguCouvK2sOd4LDqNrz3S5V2LORs5u1KT9zFlOHDmpfcHyUSuctDoabITD
+         S2zOiONyxez4imzHAWMgxIn3ATQNlCrapCfWufoGsRfj+famwsT9XhpHrCQeq6TsldXN
+         0VmexCaBU4E6HUcTA+qnX3t/grTJQDOVI52/5kYHF/tpV9ZhMP97GW1qc5CpYMT2VcpP
+         DVZXFA/yuU0X0k8e5biWO7MGx/GGpo0Hc/OX+8WUYtrsW7CPNZ+F3yYKpLQzEoCqRlD/
+         ObVBt7SncZ13ko+r5XMqxB0CudoOEEooKNQw5sMfwBHazZEoSkTcdN0C2QAvB6GHudC0
+         Mxpg==
+X-Gm-Message-State: AOJu0YykaztAt/jMTv91ZIFx43z+UcSj0UBgZozvIAPu4wHlpADd5Y+W
+	tbMAK/o2sIA5PtUTnUNJaSqr6794K5HA9Q==
+X-Google-Smtp-Source: AGHT+IE7PicW5CioiSRUJ2OW2wTwvR1bf06wN1vCmIc/JHED8Aw6ec5lsIUpR70J43IQWMjIfNXpsA==
+X-Received: by 2002:a1c:7c18:0:b0:40d:5c0d:1e3f with SMTP id x24-20020a1c7c18000000b0040d5c0d1e3fmr1054482wmc.84.1703674587066;
+        Wed, 27 Dec 2023 02:56:27 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id s12-20020adfeccc000000b0033687672e48sm14141173wro.75.2023.12.27.02.55.53
+        by smtp.gmail.com with ESMTPSA id s12-20020adfeccc000000b0033687672e48sm14141173wro.75.2023.12.27.02.56.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Dec 2023 02:55:54 -0800 (PST)
-Message-ID: <2bfda4d9-73a7-46cd-b1f9-271242e60d7b@linaro.org>
-Date: Wed, 27 Dec 2023 11:55:52 +0100
+        Wed, 27 Dec 2023 02:56:26 -0800 (PST)
+Message-ID: <ffc11f9c-6643-4e46-8bb2-8918e1179f72@linaro.org>
+Date: Wed, 27 Dec 2023 11:56:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,12 +68,11 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [EXTERNAL] Re: [PATCH v2 1/5] ASoC: dt-bindings: remove tas2563
  from yaml
-To: "Ding, Shenghao" <shenghao-ding@ti.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "broonie@kernel.org" <broonie@kernel.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>, "Lu, Kevin" <kevin-lu@ti.com>,
- "Xu, Baojun" <baojun.xu@ti.com>,
+Content-Language: en-US
+To: "Ding, Shenghao" <shenghao-ding@ti.com>
+Cc: "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
+ "Lu, Kevin" <kevin-lu@ti.com>, "Xu, Baojun" <baojun.xu@ti.com>,
  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz"
  <perex@perex.cz>,
@@ -85,12 +83,12 @@ Cc: "broonie@kernel.org" <broonie@kernel.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
  "soyer@irl.hu" <soyer@irl.hu>, "tiwai@suse.de" <tiwai@suse.de>,
- "Gupta, Peeyush" <peeyush@ti.com>, "Navada Kanyana, Mukund" <navada@ti.com>
+ "Gupta, Peeyush" <peeyush@ti.com>, "Navada Kanyana, Mukund" <navada@ti.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>
 References: <20231221101346.429-1-shenghao-ding@ti.com>
- <ZYReyHQxMAe-DKq4@smile.fi.intel.com>
- <2eeb19a0-5851-4684-836c-36ec53db6900@linaro.org>
- <d6e28ecdb1e3458f9e8626a77483c6ab@ti.com>
-Content-Language: en-US
+ <7362295b-4a01-4574-8d96-d10f405eaea0@linaro.org>
+ <8285d102645b43f6b46b15c99321105a@ti.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -136,20 +134,20 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <d6e28ecdb1e3458f9e8626a77483c6ab@ti.com>
+In-Reply-To: <8285d102645b43f6b46b15c99321105a@ti.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 27/12/2023 08:04, Ding, Shenghao wrote:
+On 27/12/2023 08:07, Ding, Shenghao wrote:
 > 
 > 
 >> -----Original Message-----
 >> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Sent: Friday, December 22, 2023 1:32 AM
->> To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>; Ding, Shenghao
->> <shenghao-ding@ti.com>
->> Cc: broonie@kernel.org; conor+dt@kernel.org; robh+dt@kernel.org; Lu,
->> Kevin <kevin-lu@ti.com>; Xu, Baojun <baojun.xu@ti.com>;
+>> Sent: Friday, December 22, 2023 1:31 AM
+>> To: Ding, Shenghao <shenghao-ding@ti.com>; broonie@kernel.org;
+>> conor+dt@kernel.org
+>> Cc: robh+dt@kernel.org; andriy.shevchenko@linux.intel.com; Lu, Kevin
+>> <kevin-lu@ti.com>; Xu, Baojun <baojun.xu@ti.com>;
 >> devicetree@vger.kernel.org; lgirdwood@gmail.com; perex@perex.cz; pierre-
 >> louis.bossart@linux.intel.com; 13916275206@139.com; linux-
 >> sound@vger.kernel.org; linux-kernel@vger.kernel.org;
@@ -158,19 +156,18 @@ On 27/12/2023 08:04, Ding, Shenghao wrote:
 >> Subject: [EXTERNAL] Re: [PATCH v2 1/5] ASoC: dt-bindings: remove tas2563
 >> from yaml
 >>
->> On 21/12/2023 16:50, Andy Shevchenko wrote:
->>> On Thu, Dec 21, 2023 at 06:13:41PM +0800, Shenghao Ding wrote:
->>>> Remove tas2563 from tas2562, it will be supported in tas2781 to
->>>> better support dsp mode.
->>>
->>> DSP
->>>
->>> Shouldn't this patch go after the actual change happen?
+>> On 21/12/2023 11:13, Shenghao Ding wrote:
+>>> Remove tas2563 from tas2562, it will be supported in tas2781 to better
+>>> support dsp mode.
 >>
->> I would squash both, so device documentation does not disappear.
-> I do not fully understand "squash both", do you mean still to keep ti,tas2563 in tas2562.yaml?
+>> Please provide rationale in terms of bindings and hardware, not in terms of
+>> driver. Or at least not only. For example "supported in tas2781" does not fit
+>> hardware part, so you sure must be talking about drivers thus why driver
+>> change would affect bindings?
+> This patch mainly change the binding, not the driver code. Tas2563 is unbound 
+> to tas2562 driver, and bound to tas2781 driver.
 
-I meant to squash both binding patches (git help rebase).
+Then why do you reference driver "tas2781" here?
 
 Best regards,
 Krzysztof
