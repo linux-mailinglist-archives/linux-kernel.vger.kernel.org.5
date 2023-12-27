@@ -1,61 +1,71 @@
-Return-Path: <linux-kernel+bounces-12097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79DDA81EFF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:02:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01F6C81EFFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:02:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC1871C21946
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:01:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98617B2164E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:02:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B255D45BF6;
-	Wed, 27 Dec 2023 16:01:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1411946452;
+	Wed, 27 Dec 2023 16:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RDUSz3x7"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="foh7IH6s"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0B5145957;
-	Wed, 27 Dec 2023 16:01:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E58BDC433C8;
-	Wed, 27 Dec 2023 16:01:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703692906;
-	bh=7a+WYRcymZpVJwO2xqRNQ9oKeNvlyPKazAZWNEeClp4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RDUSz3x7DMcbqrF+oP0YkyMUhLwNJJxE/Dz4TDUif8Y+lpEMUwb5QUzgGDUjLbwYH
-	 ER3L2Dp84YwnNioNSnTedOYugjwvxlvbhqFjyKvpIvUfrA6qZWaF/5VmFL1mlxUMzz
-	 i5aRWIbwA4UQZLqe+eVhkHh9QwOSousYdOvFejTqFva3AdeT7TyGDYnHAS6XmfXawK
-	 7wF+PujrT784ySN0YF+40/zR5yAftS5ZJYZLtnkot3wW/UipZILEw88Ka2YQV86flL
-	 BLRVuP+nZd37/cT+wdAN4SElBwPp09z2XTol3qjgweuz4oVfhBhRR961NRT/glKFQw
-	 1qb76U0TsIzCA==
-Date: Wed, 27 Dec 2023 17:01:38 +0100
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: Minda Chen <minda.chen@starfivetech.com>
-Cc: Conor Dooley <conor@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Daire McNamara <daire.mcnamara@microchip.com>,
-	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Mason Huo <mason.huo@starfivetech.com>,
-	Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-	Kevin Xie <kevin.xie@starfivetech.com>
-Subject: Re: [PATCH v13 12/21] PCI: microchip: Add request_event_irq()
- callback function
-Message-ID: <ZYxKYhVycTOfbDTI@lpieralisi>
-References: <20231214072839.2367-1-minda.chen@starfivetech.com>
- <20231214072839.2367-13-minda.chen@starfivetech.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ECF245C06;
+	Wed, 27 Dec 2023 16:01:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703692909; x=1735228909;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qIi6/FGG1XhIsYOH+tdaJ+Cr8i/oTUD6GGfo2SnNl+w=;
+  b=foh7IH6sUAdPK/7HQUTa+ZATl0wbkaH0hNlnLWM/mrHpnUOt6y8gzDcI
+   Zvc2ZkfrjbdoTVzLSYy1ULKMpTZXwU6UqD77GCdCDa3ZRJEA9mvZoWrgK
+   2WeM28kqsVQIkJmq7iagS9g+yJ9frFFvqD3Q5zCWmjaxXizomr3BDjaRL
+   Y6a6+RLHVGzGKiW0ltbS4J3ADbIsFf7wtlubDDOo8V19Whaz/fbFHO7Cd
+   f4g37rLKVPiL18jMyG8fzS0o6K+iL63YCMnzvovtLQzqLVLnue8JAklkG
+   p8pXqV8uk55BAQUp2JgZjzK0kL4Km+tIrW1AkmihYULMfjUWb6PgwtUv4
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="3745327"
+X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
+   d="scan'208";a="3745327"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 08:01:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="951530427"
+X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
+   d="scan'208";a="951530427"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 08:01:43 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1rIWLk-00000009SPM-3mSN;
+	Wed, 27 Dec 2023 18:01:40 +0200
+Date: Wed, 27 Dec 2023 18:01:40 +0200
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Mark Hasemeyer <markhas@chromium.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, chrome-platform@lists.linux.dev,
+	cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
+	linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-mediatek@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 00/22] Improve IRQ wake capability reporting and
+ update the cros_ec driver to use it
+Message-ID: <ZYxKZD4IMJH_QjQW@smile.fi.intel.com>
+References: <20231220235459.2965548-1-markhas@chromium.org>
+ <ZYRAuY1LGdD8_u5K@smile.fi.intel.com>
+ <CANg-bXDw+bYNTu-HFaNAPb4e+_oKt2ExR6PehWR_==vpboKGaw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,128 +74,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231214072839.2367-13-minda.chen@starfivetech.com>
+In-Reply-To: <CANg-bXDw+bYNTu-HFaNAPb4e+_oKt2ExR6PehWR_==vpboKGaw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Dec 14, 2023 at 03:28:30PM +0800, Minda Chen wrote:
-> PolarFire implements specific PCIe interrupts except PLDA local interrupt.
-
-Please explain to me what you want to say here.
-
-> For lack of MSI controller, these interrupts have to be added to global
-> event field. PolarFire PCIe driver also register additional interrupt
-> symbol name.
-
-And here.
-
-> PolarFire PCIe contain total 28 interrupts event while PLDA contain 13
-> local interrupts event, interrupt to event num mapping is different.
-
-It "is different" in different platforms ? Is that correct ?
-
-> So add a callback function to support different IRQ register function.
-> Also Add PLDA default handler function, which will be moved to pcie-
-> plda-host.c in moving codes patch.
-
-As I said before, a patch is a single self-contained change, don't
-refer to other patches, they may or may not be merged or even exist
-by the time this one hits mainline.
-
-Lorenzo
-
-> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
->  .../pci/controller/plda/pcie-microchip-host.c | 31 ++++++++++++++++---
->  drivers/pci/controller/plda/pcie-plda.h       |  5 +++
->  2 files changed, 32 insertions(+), 4 deletions(-)
+On Fri, Dec 22, 2023 at 03:30:43PM -0700, Mark Hasemeyer wrote:
+> > Just wondering if you used --histogram diff algo when preparing patches.
 > 
-> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-> index 7b3f4f74745d..624e4e2e97d3 100644
-> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
-> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
-> @@ -643,6 +643,11 @@ static irqreturn_t mc_event_handler(int irq, void *dev_id)
->  	return IRQ_HANDLED;
->  }
->  
-> +static irqreturn_t plda_event_handler(int irq, void *dev_id)
-> +{
-> +	return IRQ_HANDLED;
-> +}
-> +
->  static void plda_handle_event(struct irq_desc *desc)
->  {
->  	struct plda_pcie_rp *port = irq_desc_get_handler_data(desc);
-> @@ -804,6 +809,17 @@ static int mc_pcie_init_clks(struct device *dev)
->  	return 0;
->  }
->  
-> +static int mc_request_event_irq(struct plda_pcie_rp *plda, int event_irq,
-> +				int event)
-> +{
-> +	return devm_request_irq(plda->dev, event_irq, mc_event_handler,
-> +				0, event_cause[event].sym, plda);
-> +}
-> +
-> +static const struct plda_event mc_event = {
-> +	.request_event_irq = mc_request_event_irq,
-> +};
-> +
->  static int plda_pcie_init_irq_domains(struct plda_pcie_rp *port)
->  {
->  	struct device *dev = port->dev;
-> @@ -905,7 +921,9 @@ static void mc_disable_interrupts(struct mc_pcie *port)
->  	writel_relaxed(GENMASK(31, 0), bridge_base_addr + ISTATUS_HOST);
->  }
->  
-> -static int plda_init_interrupts(struct platform_device *pdev, struct plda_pcie_rp *port)
-> +static int plda_init_interrupts(struct platform_device *pdev,
-> +				struct plda_pcie_rp *port,
-> +				const struct plda_event *event)
->  {
->  	struct device *dev = &pdev->dev;
->  	int irq;
-> @@ -929,8 +947,13 @@ static int plda_init_interrupts(struct platform_device *pdev, struct plda_pcie_r
->  			return -ENXIO;
->  		}
->  
-> -		ret = devm_request_irq(dev, event_irq, mc_event_handler,
-> -				       0, event_cause[i].sym, port);
-> +		if (event->request_event_irq)
-> +			ret = event->request_event_irq(port, event_irq, i);
-> +		else
-> +			ret = devm_request_irq(dev, event_irq,
-> +					       plda_event_handler,
-> +					       0, NULL, port);
-> +
->  		if (ret) {
->  			dev_err(dev, "failed to request IRQ %d\n", event_irq);
->  			return ret;
-> @@ -984,7 +1007,7 @@ static int mc_platform_init(struct pci_config_window *cfg)
->  		return ret;
->  
->  	/* Address translation is up; safe to enable interrupts */
-> -	ret = plda_init_interrupts(pdev, &port->plda);
-> +	ret = plda_init_interrupts(pdev, &port->plda, &mc_event);
->  	if (ret)
->  		return ret;
->  
-> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-> index e3d35cef9894..28ed1374e1de 100644
-> --- a/drivers/pci/controller/plda/pcie-plda.h
-> +++ b/drivers/pci/controller/plda/pcie-plda.h
-> @@ -121,6 +121,11 @@ struct plda_pcie_rp {
->  	int num_events;
->  };
->  
-> +struct plda_event {
-> +	int (*request_event_irq)(struct plda_pcie_rp *pcie,
-> +				 int event_irq, int event);
-> +};
-> +
->  void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
->  			    phys_addr_t axi_addr, phys_addr_t pci_addr,
->  			    size_t size);
-> -- 
-> 2.17.1
-> 
+> Not knowingly. I use patman which uses 'git format-patch' under the
+> covers with some added options:
+> https://github.com/siemens/u-boot/blob/master/tools/patman/gitutil.py#L308
+
+Add a configuration into your ~/.gitconfig (or local for the project),
+it really makes the difference.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
