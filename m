@@ -1,106 +1,135 @@
-Return-Path: <linux-kernel+bounces-12070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4764081EF9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:56:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80C5481EF9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:57:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82BA2B21C52
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:56:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37C17283288
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 14:57:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7D614594F;
-	Wed, 27 Dec 2023 14:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7713045956;
+	Wed, 27 Dec 2023 14:57:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="EahBy56N"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="vEkv4lgU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
+Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com [209.85.217.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79F74503C
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 14:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C51245947
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 14:57:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7cc705bbb2eso804882241.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 06:56:25 -0800 (PST)
+Received: by mail-vs1-f46.google.com with SMTP id ada2fe7eead31-466ed49e160so321512137.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 06:57:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703688984; x=1704293784; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703689055; x=1704293855; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6YEoCHZ5YbHKWMDCfzuh616S+odKG8LJIvRgl7M4Mpc=;
-        b=EahBy56NXWYpZ1ckmIzoG/o1jdXD5OdHTium85oQX3Tnzwd7Wc7QobNdCR6sQrMjp3
-         Dfi3+ruxxG4bXevWLn3GtzlV18HSPyR9yQFRxf3pvrpCmurI4ZN0aJy31ag2pFaCo3RN
-         f24gypzaFyZ2QKTUcaO+62fyhmRafv3hPxXjy3hKoTz83D44VAqYHceBVzW38I5/TmY8
-         jqWX+J+sjpFt19lhBbugH4bjfQ2lKgI9nAMPTNbLzHN/t5Zqd5k/KquINk6jYuJLiYkn
-         DMy7NqGFIy4Iys7Ar9TZhXgPv+fnO9/j90rY/A3jFcumRLK+6qbgy9oIP3CaOmTOzNVa
-         5rng==
+        bh=UPwYlFzLXOEgIDvGNQAPkxljqrw9tzBnxiCJwbRyHFo=;
+        b=vEkv4lgUaktmyCqFyvY039A+/AmSP3FMFJosfh3mW80aHldmLCKmeC6sLHO3PvfaSN
+         +cx7zogUf54EZbruI/bQ2DVZKTnEQSpDweyUI9w1HJJlaBWNbU5W2DaXDuEGhWUa1VGe
+         TSdgRRkL0g2JMFHU0yyZBfAp0ivLPLcN3lo5zrv2UjjrNmhrlUdhjRDPJdXkmu11YC8l
+         rjyYPeCfYbtkXp1NRH8rGQ47+A41twttGvH1tJzcwrJtbXAa2BAn2z3rTV/Csk7tKUpt
+         ANC1P7ODaZLRJ4mN/eDplq6N5in4DMJhENJZEkz0KWBZGhUPZpLeukHgeuESofKOBHAt
+         1FOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703688984; x=1704293784;
+        d=1e100.net; s=20230601; t=1703689055; x=1704293855;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6YEoCHZ5YbHKWMDCfzuh616S+odKG8LJIvRgl7M4Mpc=;
-        b=JEv+QqbHqGeyfpJ5G9kHr+bPbDjIS0E4ilFfU4UBxdSq9wvESe6S9A4i7uUZwzcHbD
-         OAXE3FMTvD0zdPsTsginw63knuY0xfy5SodDchHYWvCYSZGX9cxhfh7A675XoHq2EmEN
-         gC3sF7STeqSOGPsopZ6eOq+PJtun9pYMq+0T4n3HbldjVVOi+RcjPKopkdLLCLVsAKSg
-         odtdpJ9G/7IWtMFZSyV6rs1hkfylu76NUC72exQl+s1dQ4L2tsK8l9bSRJ6gsPbxPXZP
-         UI6UzMviCJuNLNi6kK3mn4TGAONNo+nYXXuGTElVSjAkOr0ATA7ZoVZarL9Cyd9gdZwc
-         aasw==
-X-Gm-Message-State: AOJu0Yw3IxBlFe5wudzGc3vfPtnVDJskKYB2SmoOXV5yFyNpCVK8qTMY
-	pUSPQxIUalrTVf/6mGsmg9n4H6LVp5CXAZ14ZUIIx1OsgLZeIf5nn5eETjc2
-X-Google-Smtp-Source: AGHT+IFcz+rDLLCzdlPqjZpbjdOKE4CieGG5btiUUNEuOnKlegsq5d8mCATauLXsrQPtHp3uNqfvzOwLyHtHfCLV1lE=
-X-Received: by 2002:a05:6102:3581:b0:467:2fec:4ef0 with SMTP id
- h1-20020a056102358100b004672fec4ef0mr652257vsu.24.1703688984649; Wed, 27 Dec
- 2023 06:56:24 -0800 (PST)
+        bh=UPwYlFzLXOEgIDvGNQAPkxljqrw9tzBnxiCJwbRyHFo=;
+        b=mm7HRuBYoH4OiV0YYz43qKiKpjqzLyGt1dhem0z22Ip+xiW2m0dFMKqgxgqWc81vS2
+         UpTvM1wNAuVevTG72D8g3hTbe2R3+qS/D7KmOcuqV9OAvCa9SevzjDK0QYKvYXBq762R
+         SD9ZOfAgzbXhvq84T5NfNluwvkOG2JqXR4dHveFpoC7z0DihD3eXWe6pHA5f0nOrLb7P
+         L9ghOwqDQVdT+p9AUdMWX8AQ5MX+zwsycl9Lj7aEf0/zKS3DH5KoHP/55lIdTltxMN76
+         EvrAzPugVr7gRXRvVto20XKTxgrpjs7eWzGkdG1BEwrgr36e28iGjf0GUbry4K6rIY4G
+         pznw==
+X-Gm-Message-State: AOJu0YxpJolXCdDKYR+WOqoNoch3Gqp4raLLabnz7n7MdWNoZudgDmUl
+	ZUmoEE2vG2YJ8tlpKdEmW4/N/12NDFYNpcVwDRnuRqrSJNn+UQ==
+X-Google-Smtp-Source: AGHT+IGcRfZbZ6GD/38RMunGjOMWkfj1gorgKGXgkV+wAuDKpd+R1WQpSXou73Y/dgxrfpAKHRnVE4G6hvCVi989afc=
+X-Received: by 2002:a67:e685:0:b0:467:7a5:c475 with SMTP id
+ hv5-20020a67e685000000b0046707a5c475mr2313638vsb.35.1703689055526; Wed, 27
+ Dec 2023 06:57:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231222141117.2887788-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231222141117.2887788-1-andriy.shevchenko@linux.intel.com>
+References: <20231221185702.24685-1-brgl@bgdev.pl>
+In-Reply-To: <20231221185702.24685-1-brgl@bgdev.pl>
 From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 27 Dec 2023 15:56:14 +0100
-Message-ID: <CAMRc=McE=GSu1QLEmsUC08uxXZJ1YSeHYfQTsSQr2oyoWbRfHQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpio: tangier: Add missing file to the MAINTAINERS
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 27 Dec 2023 15:57:24 +0100
+Message-ID: <CAMRc=Mfu9tQNTYETtdmXyGtB1Gox7s_AcBwETVinZwR=LWdTLQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: tps65219: don't use CONFIG_DEBUG_GPIO
+To: Tony Lindgren <tony@atomide.com>, Linus Walleij <linus.walleij@linaro.org>, 
+	Andy Shevchenko <andy@kernel.org>
+Cc: linux-omap@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 22, 2023 at 3:11=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Thu, Dec 21, 2023 at 7:57=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 >
-> When gpio-tangier was split the new born headers had been missed
-> in the MAINTAINERS. Add it there.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 >
-> Fixes: d2c19e89e03c ("gpio: tangier: Introduce Intel Tangier GPIO driver"=
-)
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> CONFIG_DEBUG_GPIO should only be used to enable debug log messages and
+> for core GPIOLIB debugging. Don't use it to control the execution of
+> potentially buggy code. Just put it under an always-false #if.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/gpio/gpio-tps65219.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
 >
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 2e0e74681511..da022945e184 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -10750,6 +10750,7 @@ F:      drivers/gpio/gpio-pch.c
->  F:     drivers/gpio/gpio-sch.c
->  F:     drivers/gpio/gpio-sodaville.c
->  F:     drivers/gpio/gpio-tangier.c
-> +F:     drivers/gpio/gpio-tangier.h
+> diff --git a/drivers/gpio/gpio-tps65219.c b/drivers/gpio/gpio-tps65219.c
+> index 7b38aa360112..cd1f17041f8c 100644
+> --- a/drivers/gpio/gpio-tps65219.c
+> +++ b/drivers/gpio/gpio-tps65219.c
+> @@ -96,16 +96,16 @@ static int tps65219_gpio_change_direction(struct gpio=
+_chip *gc, unsigned int off
+>          * Below can be used for test purpose only.
+>          */
 >
->  INTEL GVT-g DRIVERS (Intel GPU Virtualization)
->  M:     Zhenyu Wang <zhenyuw@linux.intel.com>
+> -       if (IS_ENABLED(CONFIG_DEBUG_GPIO)) {
+> -               int ret =3D regmap_update_bits(gpio->tps->regmap, TPS6521=
+9_REG_MFP_1_CONFIG,
+> -                                            TPS65219_GPIO0_DIR_MASK, dir=
+ection);
+> -               if (ret) {
+> -                       dev_err(dev,
+> -                               "GPIO DEBUG enabled: Fail to change direc=
+tion to %u for GPIO%d.\n",
+> -                               direction, offset);
+> -                       return ret;
+> -               }
+> +#if 0
+> +       int ret =3D regmap_update_bits(gpio->tps->regmap, TPS65219_REG_MF=
+P_1_CONFIG,
+> +                                    TPS65219_GPIO0_DIR_MASK, direction);
+> +       if (ret) {
+> +               dev_err(dev,
+> +                       "GPIO DEBUG enabled: Fail to change direction to =
+%u for GPIO%d.\n",
+> +                       direction, offset);
+> +               return ret;
+>         }
+> +#endif
+>
+>         dev_err(dev,
+>                 "GPIO%d direction set by NVM, change to %u failed, not al=
+lowed by specification\n",
 > --
-> 2.43.0.rc1.1.gbec44491f096
+> 2.40.1
 >
 
-Applied, thanks!
+Patch applied.
 
 Bart
 
