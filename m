@@ -1,151 +1,224 @@
-Return-Path: <linux-kernel+bounces-11809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0127381EBF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 04:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C9C981EBF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 04:58:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2551E1C2129E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 03:51:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D92F1C22189
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 03:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4BAB3C3F;
-	Wed, 27 Dec 2023 03:51:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D96543C24;
+	Wed, 27 Dec 2023 03:58:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="hU2dmQ93"
+	dkim=pass (2048-bit key) header.d=icenowy.me header.i=uwu@icenowy.me header.b="TIEzljUC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sender4-op-o10.zoho.com (sender4-op-o10.zoho.com [136.143.188.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED183C0D
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 03:51:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6dbff975a2aso469696a34.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 19:51:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1703649098; x=1704253898; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=reORFa1TwZDZzjEgWJpjbpsKpL4fAljPjBgD+hVKVJk=;
-        b=hU2dmQ93D3n7mAwObNfHNnvbE/HkzuW26DA4hFruXO4F+l4sztz1hiWV1YVaUwXSRT
-         a86AjqZsqxDnp0vHTxW6N3i6NmN4PCSlgO1eOp48C0urxd4wUHbdXPiZe2AByUF743LG
-         0RsoOxAFaRKjN0AVBSdfjV+l2o7kmVq71ec+h2oMaxZF+Rg01TW+USNi5aDSKsv6PwFY
-         8eOQag1AnxXyJFVQAHZxfik1eVhd0qsDNWZWZuRl7hAMvd4LJxw4nIleG1Y9aa2KkXoz
-         WOSnOc/bPaSeznjdIL1Lhv+MMcRl2Lv9utwQW/2BSHlXbA2ybD20hs7vWCczBNIH0F9l
-         lbhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703649098; x=1704253898;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=reORFa1TwZDZzjEgWJpjbpsKpL4fAljPjBgD+hVKVJk=;
-        b=KAS2urzQorbj5ySZl46SQAgwsoz29sCCjW2nv7V7Bm5tKXGRC4UpCi4IATIoU45GC0
-         nMr6GDKS4ffE1fC45uInXYt1AVoCJiSVZO3htlvzyF0hY0xkhqEiT56qJg2DbTNuhAe1
-         zUd/ithb7MIDLY1c6HjgTpMb+HDvG3dss3jfNNnyyZAFQ1e7i1Zmu1GVrvL15DkzZS7K
-         KUOV5Fus1vLv8wtpJRsBsBqOylJBoI19j6Z+cmGxjJ4Pw7KOJbiuwtM6emyzH0xeZSAT
-         kLx0zSBLngmpa9ydue5MW2UzBURc2hfq3Vdbm3LU07ACfy3jSm5KnI8rz4cRKbYF/2hN
-         t7fA==
-X-Gm-Message-State: AOJu0YyPpcc053/ULgAbwP2LMDYWB81NpRxNLXb1CLnOLFztXl/8y7yG
-	GaJnWe2hqTMjKncMup6P8MQXVNlWaGSMuA==
-X-Google-Smtp-Source: AGHT+IHsOaVjT3F8LcJBDltNKHVmej/2YzvoPIbersq8N/MJhN80Uw+LY6nNoHDtNvYGn9+jHBdOcg==
-X-Received: by 2002:a05:6808:120e:b0:3ba:a85:42b2 with SMTP id a14-20020a056808120e00b003ba0a8542b2mr11245601oil.58.1703649098602;
-        Tue, 26 Dec 2023 19:51:38 -0800 (PST)
-Received: from [10.254.10.159] ([139.177.225.237])
-        by smtp.gmail.com with ESMTPSA id b15-20020aa78ecf000000b006d9a7a48bbesm6304822pfr.116.2023.12.26.19.51.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Dec 2023 19:51:38 -0800 (PST)
-Message-ID: <f27efd2e-ac65-4f6a-b1b5-c9fb0753d871@bytedance.com>
-Date: Wed, 27 Dec 2023 11:51:32 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93875290B;
+	Wed, 27 Dec 2023 03:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=icenowy.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icenowy.me
+ARC-Seal: i=1; a=rsa-sha256; t=1703649446; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=ci+N34DZ/1jEYg/YaTh1Eju9R2R0ILw6v8amLrTBwPkYhKO1dT0NHYL/tn7Ah4jRNW17627qYYYTRcUzIFM/jVDBbLwwgjbv8ivgaLERkeWgZKyiEafZ6aUzirheDdEYESRagsVgigsMKoZJGphbwyJsr2cBl1DJt+4Qqq2bYRM=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1703649446; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=PDs/5RyQrkv8/uvBnzQ1A3NQ3kJYbwWBLDAWvp3dC/g=; 
+	b=LrkgA3sU1xiV7M3lI1Up+vd42ynvNWHNhE4s4yVw84ICVq3+issXa1nYZmJPhmzlIj7WdoEc+Ma6VS4s0Q9I3MoZyJusIgny4AKGvjxXV94f8tq8NbjB63shOjJlpTuJsbGNWKjxWHLx6zujZCMApKbeMJ7bBqe014ZdU7f9D1Y=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=icenowy.me;
+	spf=pass  smtp.mailfrom=uwu@icenowy.me;
+	dmarc=pass header.from=<uwu@icenowy.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1703649446;
+	s=zmail2; d=icenowy.me; i=uwu@icenowy.me;
+	h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
+	bh=PDs/5RyQrkv8/uvBnzQ1A3NQ3kJYbwWBLDAWvp3dC/g=;
+	b=TIEzljUCMSZFCXIRUzbbLkkGvEQThEuyOy5WvEjPHPZ9AIslNARA6SDTyNz+2B4u
+	gMdeLyfsZ23226ihMGECXJ0KArV0G85ZeDPWGHHzXsetMCxo/RrkFVPa0NhAh/VoIoy
+	2flbuVZQQQxqUslAKC8jxJskifGKJHpBgskwvYaFoppODCw8vfSLQsXmugDm7DZe9TS
+	wy6WsmdaIfO8APQ9qV4oKH845/0WmYoK2pCQWJgPxDHC5adABo7/yDvxiaYXb9ZxBkU
+	b+zbHU3PO5bXf3iPFi6x0jdzgPu5vC8VNkLmPXAQznA34Qj5pp1QfBocznBR+SAx++y
+	eDzVxShNgg==
+Received: from edelgard.fodlan.icenowy.me (120.85.97.19 [120.85.97.19]) by mx.zohomail.com
+	with SMTPS id 1703649444779355.6452133422597; Tue, 26 Dec 2023 19:57:24 -0800 (PST)
+Message-ID: <94bdac9b7347893cfa787b3f8c95215d4b7b4c12.camel@icenowy.me>
+Subject: Re: [v3 4/6] drm/vs: Add KMS crtc&plane
+From: Icenowy Zheng <uwu@icenowy.me>
+To: Keith Zhao <keith.zhao@starfivetech.com>, "devicetree@vger.kernel.org"
+	 <devicetree@vger.kernel.org>, "dri-devel@lists.freedesktop.org"
+	 <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org"
+	 <linux-kernel@vger.kernel.org>, "linux-riscv@lists.infradead.org"
+	 <linux-riscv@lists.infradead.org>
+Cc: "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>, 
+ "suijingfeng@loongson.cn" <suijingfeng@loongson.cn>, "tzimmermann@suse.de"
+ <tzimmermann@suse.de>,  "paul.walmsley@sifive.com"
+ <paul.walmsley@sifive.com>, "mripard@kernel.org" <mripard@kernel.org>, 
+ Xingyu Wu <xingyu.wu@starfivetech.com>, Jack Zhu
+ <jack.zhu@starfivetech.com>, "palmer@dabbelt.com" <palmer@dabbelt.com>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ William Qiu <william.qiu@starfivetech.com>,  Shengyang Chen
+ <shengyang.chen@starfivetech.com>, Changhuang Liang
+ <changhuang.liang@starfivetech.com>
+Date: Wed, 27 Dec 2023 11:57:17 +0800
+In-Reply-To: <580e13ab-a73e-4ce7-999a-8a8685faf2dd@starfivetech.com>
+References: <20231204123315.28456-1-keith.zhao@starfivetech.com>
+	 <20231204123315.28456-5-keith.zhao@starfivetech.com>
+	 <7acd5af8fd4c5bf6ee0614f72cf6cb6751c89dc3.camel@icenowy.me>
+	 <580e13ab-a73e-4ce7-999a-8a8685faf2dd@starfivetech.com>
+Organization: Anthon Open-Source Community
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [crypto?] general protection fault in
- scatterwalk_copychunks (5)
-Content-Language: en-US
-To: Nhat Pham <nphamcs@gmail.com>, Chris Li <chrisl@kernel.org>,
- 21cnbao@gmail.com
-Cc: syzbot <syzbot+3eff5e51bf1db122a16e@syzkaller.appspotmail.com>,
- akpm@linux-foundation.org, davem@davemloft.net, herbert@gondor.apana.org.au,
- linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com, yosryahmed@google.com
-References: <0000000000000b05cd060d6b5511@google.com>
- <CAKEwX=OmWYivf7dg_izW8pn5s5q15+nx-vRMsV47T_qG=dep_Q@mail.gmail.com>
- <CAF8kJuPLEXEXG+4esR6MbRa3iirTrJ7-w3YCorB9iD=gnQ+G3A@mail.gmail.com>
- <CAKEwX=PaFmreqmNrisatSN1=k2kRiYgDksgDze-t=GBD=0iJDg@mail.gmail.com>
- <CAF8kJuPF5ACu8o1P7GqEQRb6p8QShyTVNuzrrY557g+SsddzWA@mail.gmail.com>
- <CAKEwX=NHdr9=hUBiZhnLZyRPsp=JwN3Vkwud2XEn3=pNurYGpQ@mail.gmail.com>
-From: Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <CAKEwX=NHdr9=hUBiZhnLZyRPsp=JwN3Vkwud2XEn3=pNurYGpQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 
-On 2023/12/27 08:23, Nhat Pham wrote:
-> On Tue, Dec 26, 2023 at 3:30 PM Chris Li <chrisl@kernel.org> wrote:
->>
->> Again, sorry I was looking at the decompression side rather than the
->> compression side. The compression side does not even offer a safe
->> version of the compression function.
->> That seems to be dangerous. It seems for now we should make the zswap
->> roll back to 2 page buffer until we have a safe way to do compression
->> without overwriting the output buffers.
-> 
-> Unfortunately, I think this is the way - at least until we rework the
-> crypto/compression API (if that's even possible?).
-> I still think the 2 page buffer is dumb, but it is what it is :(
+=E5=9C=A8 2023-12-07=E6=98=9F=E6=9C=9F=E5=9B=9B=E7=9A=84 19:31 +0800=EF=BC=
+=8CKeith Zhao=E5=86=99=E9=81=93=EF=BC=9A
+>=20
+>=20
+> On 2023/12/7 16:41, Icenowy Zheng wrote:
+> > =E5=9C=A8 2023-12-04=E6=98=9F=E6=9C=9F=E4=B8=80=E7=9A=84 20:33 +0800=EF=
+=BC=8CKeith Zhao=E5=86=99=E9=81=93=EF=BC=9A
+> > *snip*
+> >=20
+> > > +static void update_cursor_plane(struct vs_dc *dc, struct
+> > > vs_plane
+> > > *plane,
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct drm_plane *drm_plane,
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct drm_atomic_state
+> > > *drm_state)
+> > > +{
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct drm_plane_state *st=
+ate =3D
+> > > drm_atomic_get_new_plane_state(drm_state,
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0
+> > > =C2=A0=C2=A0=C2=A0=C2=A0
+> > > =C2=A0 drm_plane);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct vs_plane_state *pla=
+ne_state =3D
+> > > to_vs_plane_state(state);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct drm_framebuffer *dr=
+m_fb =3D state->fb;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct dc_hw_cursor cursor=
+;
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0cursor.address =3D plane_s=
+tate->dma_addr[0];
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0cursor.x =3D state->crtc_x=
+;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0cursor.y =3D state->crtc_y=
+;
+> >=20
+> > From my experiments on poking with registers on T-Head TH1520 (also
+> > uses DC8200 display controller and a similar driver), the DC8200
+> > hardware have a different definition of cursor position X and Y
+> > with
+> > the CRTC plane state.
+> >=20
+> > For CRTC plane state, hot_x and hot_y are only provided as
+> > reference,
+> > and the cursor should be displayed with its (0,0) drawn to (crtc_x,
+> > crtc_y) ([XY]_crtc are values specified in CRTC state, the right
+> > part
+> > of the assignments here), when the cursor is moved to (0,0) but the
+> > hot
+> > point is not (0,0), it could be negative.
+> >=20
+> > However, for DC8200 registers definition, cursor XY position could
+> > not
+> > be negative -- the cursor will disappear then; because in its
+> > definition, the cursor XY position should be where the cursor is
+> > pointing to, instead of its (0,0). DC8200 will draw (0,0) of the
+> > cursor
+> > to (x - hot_x, y - hot_y). So to met the expectation of the KMS
+> > plane
+> > settings, the DC8200 position should be set to (crtc_x + hot_x,
+> > crtc_y
+> > + hot_y) instead. Thus these two lines of code should be:
+> >=20
+> > ```
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cursor.x =3D state->crtc_x +=
+ drm_fb->hot_x;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cursor.y =3D state->crtc_y +=
+ drm_fb->hot_y;
+> > ```
 
-Hi,
+Well I realized that this change is not correct too: when moving the
+mouse cursor with the screen rotated, the mouse cursor will disappear
+at some screen border.
 
-I think it's a bug in `scomp_acomp_comp_decomp()`, which doesn't use
-the caller passed "src" and "dst" scatterlist. Instead, it uses its own
-per-cpu "scomp_scratch", which have 128KB src and dst.
+My current idea is:
 
-When compression done, it uses the output req->dlen to copy scomp_scratch->dst
-to our dstmem, which has only one page now, so this problem happened.
+As the CRTC hot point is just a reference, we can just ignore it, and
+use the HW hot point to implement negative cursor position.
 
-I still don't know why the alg->compress(src, slen, dst, &dlen) doesn't
-check the dlen? It seems an obvious bug, right?
+The patch is like the follow:
 
-As for this problem in `scomp_acomp_comp_decomp()`, this patch below
-should fix it. I will set up a few tests to check later.
+-    cursor.x =3D state->crtc_x;
+-    cursor.y =3D state->crtc_y;
+-    cursor.hot_x =3D drm_fb->hot_x;
+-    cursor.hot_y =3D drm_fb->hot_y;
++    if (state->crtc_x > 0) {
++        cursor.x =3D state->crtc_x;
++        cursor.hot_x =3D 0;
++    } else {
++        cursor.hot_x =3D -state->crtc_x;
++        cursor.x =3D 0;
++    }
++    if (state->crtc_y > 0) {
++        cursor.y =3D state->crtc_y;
++        cursor.hot_y =3D 0;
++    } else {
++        cursor.hot_y =3D -state->crtc_y;
++        cursor.y =3D 0;
++    }
 
-Thanks!
+drm_fb could just be removed in this function then because it's no
+longer needed (it's used to get the cursor's hot point, which we
+ignored now).
 
-diff --git a/crypto/scompress.c b/crypto/scompress.c
-index 442a82c9de7d..e654a120ae5a 100644
---- a/crypto/scompress.c
-+++ b/crypto/scompress.c
-@@ -117,6 +117,7 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
-        struct crypto_scomp *scomp = *tfm_ctx;
-        void **ctx = acomp_request_ctx(req);
-        struct scomp_scratch *scratch;
-+       unsigned int dlen;
-        int ret;
+> >=20
+> >=20
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0cursor.hot_x =3D drm_fb->h=
+ot_x;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0cursor.hot_y =3D drm_fb->h=
+ot_y;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0cursor.display_id =3D to_v=
+s_display_id(dc, state->crtc);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0update_cursor_size(state, =
+&cursor);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0cursor.enable =3D true;
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dc_hw_update_cursor(&dc->h=
+w, cursor.display_id, &cursor);
+> > > +}
+> > *snip
+> hello Icenowy:
+> you are deep understanding on dc8200.
+> by the way of practice
+> I tested this change on the debian desktop, is there a way to compare
+> the cursor behavior change?
+> Thanks
+>=20
+>=20
+>=20
 
-        if (!req->src || !req->slen || req->slen > SCOMP_SCRATCH_SIZE)
-@@ -128,6 +129,8 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
-        if (!req->dlen || req->dlen > SCOMP_SCRATCH_SIZE)
-                req->dlen = SCOMP_SCRATCH_SIZE;
-
-+       dlen = req->dlen;
-+
-        scratch = raw_cpu_ptr(&scomp_scratch);
-        spin_lock(&scratch->lock);
-
-@@ -145,6 +148,9 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
-                                ret = -ENOMEM;
-                                goto out;
-                        }
-+               } else if (req->dlen > dlen) {
-+                       ret = -ENOMEM;
-+                       goto out;
-                }
-                scatterwalk_map_and_copy(scratch->dst, req->dst, 0, req->dlen,
-                                         1);
 
