@@ -1,108 +1,89 @@
-Return-Path: <linux-kernel+bounces-11838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A102581EC5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2914E81EC4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:44:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C82FB1C22188
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 05:55:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 293961C21542
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 05:44:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D48E5228;
-	Wed, 27 Dec 2023 05:55:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="JM3GTG/0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEEBA4C9F;
+	Wed, 27 Dec 2023 05:43:52 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 374903FFE;
-	Wed, 27 Dec 2023 05:55:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-	s=42; h=Message-ID:Cc:To:From:Date;
-	bh=+XsM5hFWkLW09YUNHSAectqYCug7xGgUZWGLicrUKlY=; b=JM3GTG/0eQBIzPfhgWTwaXHfbN
-	2sx42F0Jm+PSFApMU+9Jozj+j3zGynmtiJCBqwpEDjBwb4f7tFN2+4OyFX83AJzuqPGbi5jPhLE7J
-	VousxCHLbVYvaRACIAjnRSdaq7k90vm5tUgZNRjH3LexUmGs+NTg7Fk3BS0Tq1+N3YRr++Rqh6s2u
-	a6diP7Eir7v+j97jXbgep5NGNa49e7BgQW+IZbH78eohdxeCVGJhSKUa3iOCxYbNwG9X29Gr0tEBO
-	DwRdd2kEOIypASTamwwBYK8u/8PIGLPCSTJFndxs69V81RBjAtirUqT5sDQ78gIx8Wja/rgCwY2zJ
-	VfcuFnHzSuyR3Bk+IFxRfVrylMzUNmh7dM/tk4YjPZK1O2qvEgYNzGkEDv1aeetzCO2k422QljucD
-	2LiPDFgF2lYvFO85gW3FP8uM6tqbBxKX7bJH1uZyDmYLRQL6UyFmCOUl3ZKuRDeuW+6aBH/5R1XtU
-	6uNN6lWx75MUiI69JzbPGhGG;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
-	(Exim)
-	id 1rIMcv-005MKc-2k;
-	Wed, 27 Dec 2023 05:38:46 +0000
-Date: Wed, 27 Dec 2023 16:38:32 +1100
-From: David Disseldorp <ddiss@samba.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, Andrew Morton
- <akpm@linux-foundation.org>, Christophe JAILLET
- <christophe.jaillet@wanadoo.fr>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, David Laight
- <David.Laight@ACULAB.COM>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] lib/strtox: introduce kstrtoull_suffix() helper
-Message-ID: <20231227163832.51e305f7@echidna>
-In-Reply-To: <97b85612-16ab-4099-9a8e-426df510d7db@gmx.com>
-References: <cover.1703030510.git.wqu@suse.com>
-	<e042f40ea5cf7fa8251713d5bb7a485f42c5615b.1703030510.git.wqu@suse.com>
-	<20231220163856.274f84a3@echidna>
-	<97b85612-16ab-4099-9a8e-426df510d7db@gmx.com>
+Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9223FE1;
+	Wed, 27 Dec 2023 05:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from localhost.localdomain (unknown [10.190.69.69])
+	by mail-app2 (Coremail) with SMTP id by_KCgAXHU17uYtlmtEJAQ--.7437S4;
+	Wed, 27 Dec 2023 13:43:30 +0800 (CST)
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+To: dinghao.liu@zju.edu.cn
+Cc: Saurav Kashyap <skashyap@marvell.com>,
+	Javed Hasan <jhasan@marvell.com>,
+	GR-QLogic-Storage-Upstream@marvell.com,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"Dupuis, Chad" <chad.dupuis@cavium.com>,
+	Manish Rangankar <manish.rangankar@cavium.com>,
+	Nilesh Javali <nilesh.javali@cavium.com>,
+	linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: qedf: fix a memleak in qedf_alloc_global_queues
+Date: Wed, 27 Dec 2023 13:42:55 +0800
+Message-Id: <20231227054255.28583-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:by_KCgAXHU17uYtlmtEJAQ--.7437S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7JF1fZr1fuw13AFW3tr4xWFg_yoW3Zrb_Ga
+	yjq3y2yr4kCrsYvr1Utr9rAFZYvrs3u3W8CF4FqF1SvFWrX3Z3GFWqvr15XrWFk3y2yF1U
+	Aa1DXr1Fyw18ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbsAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+	wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+	vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+	87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+	8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+	Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+	xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+	c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
+	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+	67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+	x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
+	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+	UI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgwPBmWCupcTBwAZsA
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Sat, 23 Dec 2023 20:27:30 +1030, Qu Wenruo wrote:
+When qedf_alloc_bdq() fails, qedf->global_queues should
+be freed to prevent potential memleak. It's the same for
+the following error handling paths.
 
-> On 2023/12/20 16:08, David Disseldorp wrote:
-...
-> >> +#define KSTRTOULL_SUFFIX_DEFAULT (SUFFIX_K | SUFFIX_M | SUFFIX_G | SUFFIX_T | SUFFIX_P)  
-> >
-> > I think it'd be clearer if you dropped this default and had callers
-> > explicitly provide the desired suffix mask.  
-> 
-> Well, that would be long, and would be even longer as the newer naming
-> would be MEMPARSE_SUFFIX_*, to be more explicit on what the suffix is for...
-> 
-> And I really want callers to choose a saner default suffix, thus here
-> comes the default one.
-> 
-> In fact, in my next version, I also found that there are some memparse()
-> call sites benefits from the newer suffixes (although won't for the "E"
-> one).
-> The example is the call site setup_elfcorehdr(). Where the comment only
-> mentions KMG, but since memparse() silently added "PE" suffixes, maybe
-> on some mainframes we saved some time for one or two lucky admins.
+Fixes: 61d8658b4a43 ("scsi: qedf: Add QLogic FastLinQ offload FCoE driver framework.")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/scsi/qedf/qedf_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I think it's a sane default, my concern is that _DEFAULT says nothing
-about supported units from the caller's perspective. Perhaps
-MEMPARSE_SUFFIX_KMGTP or MEMPARSE_UNITS_KMGTP would be clearer.
+diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
+index a58353b7b4e8..2261efcf2dbb 100644
+--- a/drivers/scsi/qedf/qedf_main.c
++++ b/drivers/scsi/qedf/qedf_main.c
+@@ -3155,6 +3155,7 @@ static int qedf_alloc_global_queues(struct qedf_ctx *qedf)
+ 
+ mem_alloc_failure:
+ 	qedf_free_global_queues(qedf);
++	kfree(qedf->global_queues);
+ 	return status;
+ }
+ 
+-- 
+2.17.1
 
-...
-> > With the above changes made, feel free to add
-> > Reviewed-by: David Disseldorp <ddiss@suse.de>  
-> 
-> Thanks for the review, but I'm afraid the newer version would be another
-> beast.
-> 
-> All the ommitted comments would be addressed a in new series.
-> >
-> > I'll leave the review of patch 2/2 up to others, as I'm still a little
-> > worried about sysfs trailing whitespace regressions.  
-> 
-> That won't be a problem anymore, the new series would keep the old
-> @retptr behavior, thus for btrfs part it won't be changed at all.
-
-Sounds good. Will follow up there.
-
-Cheers, David
 
