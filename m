@@ -1,227 +1,224 @@
-Return-Path: <linux-kernel+bounces-12144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1541981F084
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:40:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C03A181F08A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:43:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E96C61C219C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:40:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D09F21C21A37
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:43:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C12C41C66;
-	Wed, 27 Dec 2023 16:40:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA60445BFE;
+	Wed, 27 Dec 2023 16:43:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XHIUEj2o"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="BGbChzux"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 678102574D
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 16:40:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DF4C240009;
-	Wed, 27 Dec 2023 16:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1703695226;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=WV2Dkh4X6V9DETcF8K3WF1QMiYnpkJSaG2LYRTpmYig=;
-	b=XHIUEj2ofv8PqSFwvq9hnXalcBEcZEYyJnwS8hG+vB9cbdwLcB8/uEYHxxxRTZAITpxOK0
-	TkpQAN/U+eY/6mQTBTar/OO+bOGS53u3mHpugJl2fIfKOP+IFiX1Rjo+U8Rzt4Cs+HMeGe
-	USFcCDSEmtkvOQ5enbywBFS02zQ7UMEcPD42jKfR1ZhpqS25ElLISZFu6gj/FBiw1RdZHy
-	/qN5W8WGaQt0lH/h+PZ2LejSfTI5EXjmsPN2VgYH6j+OS9uuFMIvqktyW8UGzKHRVhS9wW
-	d0o+l/i0j9ghAzi6bZP7N8S91KqulpbVFDp/TgeQytIGls26IgPXGVfQS5GTvA==
-Date: Wed, 27 Dec 2023 17:40:23 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra
- <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael
- Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL] mtd: Changes for v6.8
-Message-ID: <20231227174023.346ec9fb@xps-13>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69F9645027
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 16:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40d5a41143fso13722985e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 08:43:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1703695390; x=1704300190; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nU1LPSKQvQZeKoG0f27ctpqIaEdPLUkSOVGQqNPhF6Q=;
+        b=BGbChzux8T70BNTQ0eMcnlkz0CihaU5v/GKynP1Pfx0nsR8RDeT6Dlwn9H1entx0zH
+         q81E2ptHMvimo3DeLilAD6H90gUFpAQrl1Re9hkrZ7YShCZRK6XNjXTvfSX9F0exvWqh
+         2j7s+NYxw6EZWDM3dWvB9sp0rc/A53qY4to7c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703695390; x=1704300190;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=nU1LPSKQvQZeKoG0f27ctpqIaEdPLUkSOVGQqNPhF6Q=;
+        b=w9EvjjJpZ/B1ZM1ve5OOYKXnSSXDzZODYgsvsavOIRMsf+tBt+QdAxWwt0F8ASa3b4
+         9QmHrVQXetnX0lWwGo4ORw0E0ye2YcYQrzMEnJX2RCrI909SgjEX4pJHdGeUK2VnCQxs
+         PtvqPi6WAvIxwjUaP1nUhSjpXKy2gAoWhv+SQGPQ9QC8KJoG3zBEp6bmODaulUAcbSJn
+         5GOs8die1gxxy3innSUJHNygGjCUrc6MJ3NBlOqCbKa8hzUcUpOVZhj2vvBb+zgcysKc
+         9GJe+XNiMfpCss7j2dQJmI5n8jV6H0qoHPqmsZcJWOtrxZS29RAnq87NeGctcswP/hkC
+         jy5Q==
+X-Gm-Message-State: AOJu0Yx6DVbCBsyCf8L8mKGKSVufn/i4RLmoIpK7wHiMD3httgU/8/5E
+	cnG5DZvIma4S9h6iPvIV5ZqlWdS9/6nT
+X-Google-Smtp-Source: AGHT+IH7SjV05GkoHHUSIXFIW2ldqzJHboy0M791eF6fkag5ucgzDYqo4tOINLZQPtVoL0czdi1aoA==
+X-Received: by 2002:a05:600c:3c85:b0:40d:62f7:55e8 with SMTP id bg5-20020a05600c3c8500b0040d62f755e8mr15076wmb.45.1703695390597;
+        Wed, 27 Dec 2023 08:43:10 -0800 (PST)
+Received: from [192.168.159.133] ([37.175.109.191])
+        by smtp.gmail.com with ESMTPSA id f12-20020a05600c154c00b0040d18ffbeeasm24789211wmg.31.2023.12.27.08.43.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Dec 2023 08:43:09 -0800 (PST)
+Message-ID: <cf5303ee-6474-4212-b8a9-f1e99ef98ab7@broadcom.com>
+Date: Wed, 27 Dec 2023 17:43:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 07/11] firmware: raspberrypi: Convert to platform remove
+ callback returning void
+To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Kieran Bingham <kieran.bingham@ideasonboard.com>,
+ Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>
+Cc: kernel@pengutronix.de,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>,
+ linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <cover.1703693980.git.u.kleine-koenig@pengutronix.de>
+ <5df31ef3c069f45634631c9c639bbb60ab1d4798.1703693980.git.u.kleine-koenig@pengutronix.de>
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ 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
+In-Reply-To: <5df31ef3c069f45634631c9c639bbb60ab1d4798.1703693980.git.u.kleine-koenig@pengutronix.de>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="00000000000094efbe060d807ed7"
 
-Hello Linus,
+--00000000000094efbe060d807ed7
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-A bit in advance, here is the MTD PR for the opening merge
-window for v6.8-rc1.
 
-Thanks,
-Miqu=C3=A8l
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+On 12/27/2023 5:26 PM, Uwe Kleine-König wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
+> 
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new(), which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
+> 
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-are available in the Git repository at:
+--00000000000094efbe060d807ed7
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-=
-6.8
-
-for you to fetch changes up to 98d4fda8f2d4bc3fb97958d2ef4c90e161a628f2:
-
-  Merge tag 'nand/for-6.8' into mtd/next (2023-12-22 12:45:52 +0100)
-
-----------------------------------------------------------------
-* MTD
-
-Apart from preventing the mtdblk to run on top of ftl or ubiblk (which
-may cause security issues and has no meaning anyway), there are a few
-misc fixes.
-
-* Raw NAND
-
-Two meaningful changes this time. The conversion of the brcmnand driver
-to the ->exec_op() API, this series brought additional changes to the
-core in order to help controller drivers to handle themselves the WP pin
-during destructive operations when relevant.
-
-There is also a series bringing important fixes to the sequential read
-feature.
-
-As always, there is as well a whole bunch of miscellaneous W=3D1 fixes,
-together with a few runtime fixes (double free, timeout value, OOB
-layout, missing register initialization) and the usual load of remove
-callbacks turned into void (which led to switch the txx9ndfmc driver to
-use module_platform_driver()).
-
-* SPI NOR
-
-SPI NOR comes with die erase support for multi die flashes, with new
-octal protocols (1-1-8 and 1-8-8) parsed from SFDP and with an updated
-documentation about what the contributors shall consider when proposing
-flash additions or updates.
-
-Michael Walle stepped out from the reviewer role to maintainer.
-
-----------------------------------------------------------------
-Arseniy Krasnov (2):
-      mtd: rawnand: meson: initialize clock register
-      mtd: rawnand: meson: handle OOB buffer according OOB layout
-
-Boris Brezillon (1):
-      mtd: rawnand: Add destructive operation
-
-David Regan (3):
-      mtd: rawnand: NAND controller write protect
-      mtd: rawnand: brcmnand: pass host struct to bcmnand_ctrl_poll_status
-      mtd: rawnand: brcmnand: exec_op implementation
-
-Dinghao Liu (1):
-      mtd: rawnand: diskonchip: fix a potential double free in doc_probe
-
-Fabio Estevam (1):
-      mtd: spi-nor: micron-st: Add support for mt25qu01g
-
-JaimeLiao (2):
-      mtd: spi-nor: sysfs: hide the flash name if not set
-      mtd: spi-nor: sfdp: get the 1-1-8 and 1-8-8 protocol from SFDP
-
-Michael Walle (2):
-      MAINTAINERS: spi-nor: add myself as maintainer
-      MAINTAINERS: change my mail to the kernel.org one
-
-Miquel Raynal (11):
-      mtd: rawnand: pl353: Fix kernel doc
-      mtd: rawnand: rockchip: Rename a structure
-      mtd: rawnand: rockchip: Add missing title to a kernel doc comment
-      mtd: ssfdc: Remove an unused variable
-      mtd: maps: vmu-flash: Fix the (mtd core) switch to ref counters
-      mtd: rawnand: Prevent crossing LUN boundaries during sequential reads
-      mtd: rawnand: Fix core interference with sequential reads
-      mtd: rawnand: Prevent sequential reads with on-die ECC engines
-      mtd: rawnand: Clarify conditions to enable continuous reads
-      Merge tag 'spi-nor/for-6.8' into mtd/next
-      Merge tag 'nand/for-6.8' into mtd/next
-
-Randy Dunlap (1):
-      mtd: rawnand: s3c2410: fix Excess struct member description kernel-do=
-c warnings
-
-Ronald Monthero (1):
-      mtd: rawnand: Increment IFC_TIMEOUT_MSECS for nand controller response
-
-Stefan Wahren (1):
-      dt-bindings: mtd: partitions: u-boot: Fix typo
-
-Tudor Ambarus (10):
-      mtd: spi-nor: use kernel sized types instead of c99 types
-      docs: mtd: spi-nor: add sections about flash additions and testing
-      docs: mtd: spi-nor: drop obsolete info
-      mtd: spi-nor: add erase die (chip) capability
-      mtd: spi-nor: spansion: enable die erase for multi die flashes
-      mtd: spi-nor: micron-st: enable die erase for multi die flashes
-      mtd: spi-nor: remove NO_CHIP_ERASE flag
-      mtd: spi-nor: print flash ID instead of name
-      mtd: spi-nor: mark the flash name as obsolete
-      mtd: spi-nor: drop superfluous debug prints
-
-Uwe Kleine-K=C3=B6nig (4):
-      mtd: rawnand: brcmnand: Convert to platform remove callback returning=
- void
-      mtd: rawnand: txx9ndfmc: Switch to module_platform_driver()
-      mtd: rawnand: txx9ndfmc: Drop if block with always false condition
-      mtd: rawnand: txx9ndfmc: Convert to platform remove callback returnin=
-g void
-
-ZhaoLong Wang (1):
-      mtd: Fix gluebi NULL pointer dereference caused by ftl notifier
-
- Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor      |   3 +
- Documentation/devicetree/bindings/mtd/partitions/u-boot.yaml |   2 +-
- Documentation/driver-api/mtd/spi-nor.rst                     | 262 +++++++=
-++++++++++++++++++++++++++++++++++++++++++++++----------------
- MAINTAINERS                                                  |   8 +--
- drivers/mtd/maps/vmu-flash.c                                 |   2 +-
- drivers/mtd/mtd_blkdevs.c                                    |   4 +-
- drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c                |   2 +-
- drivers/mtd/nand/raw/brcmnand/bcm6368_nand.c                 |   2 +-
- drivers/mtd/nand/raw/brcmnand/bcma_nand.c                    |   2 +-
- drivers/mtd/nand/raw/brcmnand/brcmnand.c                     | 408 +++++++=
-+++++++++++++++++++++++++++++++++++++++------------------------------------=
--------------------------
- drivers/mtd/nand/raw/brcmnand/brcmnand.h                     |   2 +-
- drivers/mtd/nand/raw/brcmnand/brcmstb_nand.c                 |   2 +-
- drivers/mtd/nand/raw/brcmnand/iproc_nand.c                   |   2 +-
- drivers/mtd/nand/raw/diskonchip.c                            |  10 +--
- drivers/mtd/nand/raw/fsl_ifc_nand.c                          |   2 +-
- drivers/mtd/nand/raw/meson_nand.c                            |   8 ++-
- drivers/mtd/nand/raw/nand_base.c                             |  99 +++++++=
-++++++++++++++-----
- drivers/mtd/nand/raw/pl35x-nand-controller.c                 |   2 +-
- drivers/mtd/nand/raw/rockchip-nand-controller.c              |   7 +-
- drivers/mtd/nand/raw/s3c2410.c                               |   2 -
- drivers/mtd/nand/raw/txx9ndfmc.c                             |  13 ++--
- drivers/mtd/spi-nor/atmel.c                                  |  16 ++---
- drivers/mtd/spi-nor/core.c                                   | 170 +++++++=
-++++++++++++++++++--------------------
- drivers/mtd/spi-nor/core.h                                   |  24 +++----
- drivers/mtd/spi-nor/debugfs.c                                |   2 +-
- drivers/mtd/spi-nor/micron-st.c                              |  59 +++++++=
-+++++++--
- drivers/mtd/spi-nor/sfdp.c                                   |  29 ++++++++
- drivers/mtd/spi-nor/sfdp.h                                   |   7 ++
- drivers/mtd/spi-nor/spansion.c                               |   4 +-
- drivers/mtd/spi-nor/sst.c                                    |   6 +-
- drivers/mtd/spi-nor/swp.c                                    |  25 ++++---
- drivers/mtd/spi-nor/sysfs.c                                  |   2 +
- drivers/mtd/ssfdc.c                                          |   1 -
- include/linux/mtd/rawnand.h                                  |  15 ++++
- 34 files changed, 740 insertions(+), 464 deletions(-)
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINthGRxRD/Uq9Ccv
+I4KXMWYCvryJHdH0fjpodzK332iBMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMTIyNzE2NDMxMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDSWL//dKRpBxNom2Wca0rAzP0thFfPaMB3
+pLtsVdk4uiSqlG3du3Bd+zsDwfbk+wluM1L7/FONC0k8zTwwNNScvxJSIQ4GJcbGOMFQpJVJNdbp
+sRFtjwCVjHOiMTFRoz3VOV+Wv/t+7auNHlN5g6GuKV3b8i3D9JgrZgFMW37ZdIdEtBoTdrvJv2Vw
+R1XLMYtBvJoOBB9ibjv8l7a67RojRUnPJQE3fg4FYS8DTuJg5FkucW24yvrS1G0ICmrqkZI1qhjS
+IL/TdpHulSHdhpL0amNtjuHk+hZPKtK+AAehsU62s0QXcZJqEOIYuKFPjA+Yor6b7V7CT0pWyMFY
+/I6U
+--00000000000094efbe060d807ed7--
 
