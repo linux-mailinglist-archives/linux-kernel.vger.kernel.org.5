@@ -1,123 +1,189 @@
-Return-Path: <linux-kernel+bounces-11847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED1D781EC76
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:11:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFC2781EC77
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:11:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26E5EB2245C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:11:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67142283676
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B9055397;
-	Wed, 27 Dec 2023 06:11:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09D4D6131;
+	Wed, 27 Dec 2023 06:11:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b6PJY+kT"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="BG62qPNp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2E0C5228;
-	Wed, 27 Dec 2023 06:11:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4B17C433C8;
-	Wed, 27 Dec 2023 06:10:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703657465;
-	bh=EbTles2opVDGaZKfZKJxC69A0Tm4AO/LxxDWp87Mq48=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=b6PJY+kT9ne/f1z8+DNBLcNGWxhJKg+EEixZFdmLotdeQ/w5GPlD42S+G09b6ARjG
-	 hNcSTY5gUBMG2fF7Pofl4Q2nnKd2FkB/8gES0e8HuFefxgv++jO+uyH83uQ6IXSeoY
-	 3jIi1QLmvDAA+9a63SecS7XrRWNezIU3LV9wLZCOVLEVek11NVb0PhNYbltc9dK9Za
-	 3Q+3Rr9sN+P2iRKpcJEqlmdZ1z3i5zwd5c+luawc/Jv7XERftd0lKmHoejlwyBKrHC
-	 +g2hZ4hwHb5xVCSt5Intd6/2NR7tU9m2saczP4qmoVZNXnpZD3K3/RbzyKfe3knhC/
-	 Jjx9kMpevf/8w==
-Date: Wed, 27 Dec 2023 11:40:53 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Andrew Halaney <ahalaney@redhat.com>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Yaniv Gardi <ygardi@codeaurora.org>,
-	Dov Levenglick <dovl@codeaurora.org>,
-	Hannes Reinecke <hare@suse.de>,
-	Subhash Jadavani <subhashj@codeaurora.org>,
-	Gilad Broner <gbroner@codeaurora.org>,
-	Venkat Gopalakrishnan <venkatg@codeaurora.org>,
-	Janek Kotas <jank@cadence.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Avri Altman <avri.altman@wdc.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Anjana Hari <quic_ahari@quicinc.com>,
-	Dolev Raviv <draviv@codeaurora.org>,
-	Can Guo <quic_cang@quicinc.com>, Will Deacon <will@kernel.org>,
-	linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 07/11] scsi: ufs: core: Perform read back after
- writing UTP_TASK_REQ_LIST_BASE_H
-Message-ID: <20231227061053.GE2814@thinkpad>
-References: <20231221-ufs-reset-ensure-effect-before-delay-v2-0-75af2a9bae51@redhat.com>
- <20231221-ufs-reset-ensure-effect-before-delay-v2-7-75af2a9bae51@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67C8D5CB5
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 06:11:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5ce0656a7bdso213169a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 22:11:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1703657473; x=1704262273; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hk2kRuZJzsTncYz8diW0amRVuQLlRcJy88VPv7kReGA=;
+        b=BG62qPNpG+znh4rwLdgWLOpoOfGvQGuTjf7OzOx0RZUA2WKGrDFMZuSzVbXGPwJ/VO
+         X3SIc/U4ADdPLy5s6Ggle4d9UPwVXG+niCfFphD4OX6U4m6xA1qLGB4agyUsp2YyNayb
+         7pgCuyqpR+71IeNyvhWgO4MJ+fF5oSbDokJ7cC17APFHnMLP1qvzl/HO86+k7V9OQJZT
+         95yGQ25h8nQ2x0zlB9DmH5nBiyKWYESPNwjoqN7S8hyWHaYX9dD39u4IA8/cfVLcBltx
+         y2Y3i6CqxVq5wJ9OdIpEy8jhnUtJPUjZDYsohuj1DkmUC14+fgw/jnVhYiVSSph/5V1M
+         5DSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703657473; x=1704262273;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hk2kRuZJzsTncYz8diW0amRVuQLlRcJy88VPv7kReGA=;
+        b=kSdu1/p+haoYnAavddfJg2fc94KO9RHjwGzGPUAaPKsX/ErpZY3jYUXjkd7c64AtVj
+         Nq3ca2FT4cQpxUlGML7gyhKXwuYTH00EtnpWS4l4Jei5uftcFA9csfrWm0pWh2x0auRb
+         zxjOJHidCO1P1LSnayED6AMaavtrtnvvx2WPHfzlsNWHFiaWcd5cMeeyI3/u3H4tBpgH
+         nwOd66RmfR+cO+R7p6JNVXTiFd57xtxbVXUtcFFWYCsV8F7r7zzmKsLt+JafXv760XqX
+         K/TLHTlGJKGpfgJzG3ZckyJUkVK8rRQBRupOuWubkeMruhrvd9WFolLTgd8MMaUWXQKU
+         pNTA==
+X-Gm-Message-State: AOJu0YwX3cVbIhRLLfar/i3DSNocJ4Adh5EGh6GtUT2bRR0BNeyANb97
+	p0IvCP1BMB75vzd8mMLuRFwdmP/K+tttHQ==
+X-Google-Smtp-Source: AGHT+IHZXpcj4F9r6j1E5ik6jZqZGkQ5M2E2bBGhP0Kx7ayOTSqytnoB9YneLu1KPzzmM4XwYwyf/w==
+X-Received: by 2002:a05:6a21:a5a8:b0:195:e20b:f02c with SMTP id gd40-20020a056a21a5a800b00195e20bf02cmr835139pzc.98.1703657473489;
+        Tue, 26 Dec 2023 22:11:13 -0800 (PST)
+Received: from [10.254.10.159] ([139.177.225.237])
+        by smtp.gmail.com with ESMTPSA id jb2-20020a170903258200b001d0c5037ed3sm11155478plb.46.2023.12.26.22.11.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Dec 2023 22:11:13 -0800 (PST)
+Message-ID: <af0a03d5-e536-41b7-9ab8-c5985794b7db@bytedance.com>
+Date: Wed, 27 Dec 2023 14:11:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/6] mm/zswap: change dstmem size to one page
+Content-Language: en-US
+To: Barry Song <21cnbao@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Seth Jennings <sjenning@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Vitaly Wool <vitaly.wool@konsulko.com>, Nhat Pham <nphamcs@gmail.com>,
+ Chris Li <chriscli@google.com>, Yosry Ahmed <yosryahmed@google.com>,
+ Dan Streetman <ddstreet@ieee.org>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, Chris Li <chrisl@kernel.org>
+References: <20231213-zswap-dstmem-v4-0-f228b059dd89@bytedance.com>
+ <20231213-zswap-dstmem-v4-1-f228b059dd89@bytedance.com>
+ <CAGsJ_4wuTZcGurby9h4PU2DwFaiEKB4bxuycaeyz3bPw3jSX3A@mail.gmail.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <CAGsJ_4wuTZcGurby9h4PU2DwFaiEKB4bxuycaeyz3bPw3jSX3A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231221-ufs-reset-ensure-effect-before-delay-v2-7-75af2a9bae51@redhat.com>
 
-On Thu, Dec 21, 2023 at 12:25:24PM -0600, Andrew Halaney wrote:
-> Currently, the UTP_TASK_REQ_LIST_BASE_L/UTP_TASK_REQ_LIST_BASE_H regs
-> are written to and then completed with an mb().
+On 2023/12/27 09:07, Barry Song wrote:
+> On Wed, Dec 27, 2023 at 4:55 AM Chengming Zhou
+> <zhouchengming@bytedance.com> wrote:
+>>
+>> Change the dstmem size from 2 * PAGE_SIZE to only one page since
+>> we only need at most one page when compress, and the "dlen" is also
+>> PAGE_SIZE in acomp_request_set_params(). If the output size > PAGE_SIZE
+>> we don't wanna store the output in zswap anyway.
+>>
+>> So change it to one page, and delete the stale comment.
+>>
+>> There is no any history about the reason why we needed 2 pages, it has
+>> been 2 * PAGE_SIZE since the time zswap was first merged.
 > 
-> mb() ensure that the write completes, but completion doesn't mean that
-> it isn't stored in a buffer somewhere. The recommendation for
-> ensuring these bits have taken effect on the device is to perform a read
-> back to force it to make it all the way to the device. This is
-> documented in device-io.rst and a talk by Will Deacon on this can
-> be seen over here:
-> 
->     https://youtu.be/i6DayghhA8Q?si=MiyxB5cKJXSaoc01&t=1678
-> 
-> Let's do that to ensure the bits hit the device. Because the mb()'s
-> purpose wasn't to add extra ordering (on top of the ordering guaranteed
-> by writel()/readl()), it can safely be removed.
-> 
-> Fixes: 88441a8d355d ("scsi: ufs: core: Add hibernation callbacks")
-> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> i remember there was an over-compression case,  that means the compressed
+> data can be bigger than the source data. the similar thing is also done in zram
+> drivers/block/zram/zcomp.c
 
-This also I'm not sure whether we can safely remove readback. So,
+Right, there is a buffer overflow report[1] that I just +to you.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+I think over-compression is all right, but buffer overflow is not acceptable,
+so we should fix any buffer overflow problem IMHO. Anyway, 2 pages maybe
+overflowed too, just with smaller probability, right?
 
-- Mani
+Thanks.
 
-> ---
->  drivers/ufs/core/ufshcd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-> index d1e33328ff3f..7bfb556e5b8e 100644
-> --- a/drivers/ufs/core/ufshcd.c
-> +++ b/drivers/ufs/core/ufshcd.c
-> @@ -10351,7 +10351,7 @@ int ufshcd_system_restore(struct device *dev)
->  	 * are updated with the latest queue addresses. Only after
->  	 * updating these addresses, we can queue the new commands.
->  	 */
-> -	mb();
-> +	ufshcd_readl(hba, REG_UTP_TASK_REQ_LIST_BASE_H);
->  
->  	/* Resuming from hibernate, assume that link was OFF */
->  	ufshcd_set_link_off(hba);
+> int zcomp_compress(struct zcomp_strm *zstrm,
+>                 const void *src, unsigned int *dst_len)
+> {
+>         /*
+>          * Our dst memory (zstrm->buffer) is always `2 * PAGE_SIZE' sized
+>          * because sometimes we can endup having a bigger compressed data
+>          * due to various reasons: for example compression algorithms tend
+>          * to add some padding to the compressed buffer. Speaking of padding,
+>          * comp algorithm `842' pads the compressed length to multiple of 8
+>          * and returns -ENOSP when the dst memory is not big enough, which
+>          * is not something that ZRAM wants to see. We can handle the
+>          * `compressed_size > PAGE_SIZE' case easily in ZRAM, but when we
+>          * receive -ERRNO from the compressing backend we can't help it
+>          * anymore. To make `842' happy we need to tell the exact size of
+>          * the dst buffer, zram_drv will take care of the fact that
+>          * compressed buffer is too big.
+>          */
+>         *dst_len = PAGE_SIZE * 2;
 > 
-> -- 
-> 2.43.0
+>         return crypto_comp_compress(zstrm->tfm,
+>                         src, PAGE_SIZE,
+>                         zstrm->buffer, dst_len);
+> }
 > 
-
--- 
-மணிவண்ணன் சதாசிவம்
+> 
+>>
+>> According to Yosry and Nhat, one potential reason is that we used to
+>> store a zswap header containing the swap entry in the compressed page
+>> for writeback purposes, but we don't do that anymore.
+>>
+>> This patch works good in kernel build testing even when the input data
+>> doesn't compress at all (i.e. dlen == PAGE_SIZE), which we can see
+>> from the bpftrace tool:
+>>
+>> bpftrace -e 'k:zpool_malloc {@[(uint32)arg1==4096]=count()}'
+>> @[1]: 2
+>> @[0]: 12011430
+>>
+>> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+>> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+>> Acked-by: Chris Li <chrisl@kernel.org> (Google)
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+>> ---
+>>  mm/zswap.c | 5 ++---
+>>  1 file changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/zswap.c b/mm/zswap.c
+>> index 7ee54a3d8281..976f278aa507 100644
+>> --- a/mm/zswap.c
+>> +++ b/mm/zswap.c
+>> @@ -707,7 +707,7 @@ static int zswap_dstmem_prepare(unsigned int cpu)
+>>         struct mutex *mutex;
+>>         u8 *dst;
+>>
+>> -       dst = kmalloc_node(PAGE_SIZE * 2, GFP_KERNEL, cpu_to_node(cpu));
+>> +       dst = kmalloc_node(PAGE_SIZE, GFP_KERNEL, cpu_to_node(cpu));
+>>         if (!dst)
+>>                 return -ENOMEM;
+>>
+>> @@ -1662,8 +1662,7 @@ bool zswap_store(struct folio *folio)
+>>         sg_init_table(&input, 1);
+>>         sg_set_page(&input, page, PAGE_SIZE, 0);
+>>
+>> -       /* zswap_dstmem is of size (PAGE_SIZE * 2). Reflect same in sg_list */
+>> -       sg_init_one(&output, dst, PAGE_SIZE * 2);
+>> +       sg_init_one(&output, dst, PAGE_SIZE);
+>>         acomp_request_set_params(acomp_ctx->req, &input, &output, PAGE_SIZE, dlen);
+>>         /*
+>>          * it maybe looks a little bit silly that we send an asynchronous request,
+>>
+>> --
+>> b4 0.10.1
+>>
+> 
+> Thanks
+> Barry
 
