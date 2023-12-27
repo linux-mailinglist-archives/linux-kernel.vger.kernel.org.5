@@ -1,41 +1,41 @@
-Return-Path: <linux-kernel+bounces-11827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 872B981EC29
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 05:46:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B1DC81EC2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 05:46:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42768283697
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 04:46:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CB221C2030E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 04:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E97848839;
-	Wed, 27 Dec 2023 04:44:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4FA7D2E8;
+	Wed, 27 Dec 2023 04:44:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="O+NbHwlQ"
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="ES/9BjMk"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC29D26B;
-	Wed, 27 Dec 2023 04:44:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BDF0EAFD;
+	Wed, 27 Dec 2023 04:44:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 62E1D1C0006;
-	Wed, 27 Dec 2023 04:44:28 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0DEED1C0007;
+	Wed, 27 Dec 2023 04:44:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1703652272;
+	t=1703652278;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Yq8FPR2LuMZyALJszWpCeHHckLAPDv/7+vYZcgFAtMY=;
-	b=O+NbHwlQGumS7TsEOQr9BI9W/qAdYrT25uhKxHnbDp/6iBiFPtfRnlV/0F6b1nbfwhTWoT
-	u2vYueKcYpUpw5Pr39+fRIlu4PyumjW/2rRanqAFAqojNwUfDFT1L1ll4wneNf83ZtLcsn
-	736eO/i5HT/mjys/KN8ZHI4LtHXm99iy6woUe/odmouV4neBPhbcp+UEB6e8p8n/ZquCqQ
-	nO9++Mx8uADhqjY7UIKNJUfzVCxpWxckEZw1E9FRpE4bcmMOWVRpjHyO0LIjPcK6REUjof
-	EJmTqMesQ05kZdaNsk05SoOeiQER89KrSOAhZhjeqoQLs8Md98z6maOdzCnx6g==
+	bh=YCZIbkTLfmiSszqRUWdE3uv72vBPQhPeE1uqn8XXA8k=;
+	b=ES/9BjMkXaCK3b66k00HkJeL+EOUGYJISv3f6Gom5VwI/njRkTwfwxfzNZVBwXM6ZtJ/hN
+	irPbSiSwIfVJumUkk0UtinwO04rq8ZUWhG1jd2lBYX0xNzzsz8Eu22Zia6wS0EbqmtFpct
+	AmEV9VPvFBvVdVxrD5VsjXy7XRMHQ/MbS4uA8msq7zglmY0ic4qCHYmaQhSzAVTlYQVAsm
+	8Gn1thUlWJATffyIJOC5ibSAG3PqK4LSp8UZHOr1nJdM3PioYdM+dJZVE8fxesTZMQLDh9
+	4QNSQTsr+QkwQXYn+Cs8U+mg2q1Mnc9YD63pDO7L+AVhTzdd1Qeodud3zuEWSw==
 From: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
 To: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
 	Daniel Golle <daniel@makrotopia.org>,
@@ -60,9 +60,9 @@ Cc: Frank Wunderlich <frank-w@public-files.de>,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next v2 6/7] net: dsa: mt7530: do not set priv->p5_interface on mt7530_setup_port5()
-Date: Wed, 27 Dec 2023 07:43:46 +0300
-Message-Id: <20231227044347.107291-7-arinc.unal@arinc9.com>
+Subject: [PATCH net-next v2 7/7] net: dsa: mt7530: do not run mt7530_setup_port5() if port 5 is disabled
+Date: Wed, 27 Dec 2023 07:43:47 +0300
+Message-Id: <20231227044347.107291-8-arinc.unal@arinc9.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231227044347.107291-1-arinc.unal@arinc9.com>
 References: <20231227044347.107291-1-arinc.unal@arinc9.com>
@@ -76,29 +76,59 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: arinc.unal@arinc9.com
 
-priv->p5_interface and priv->p6_interface are for use on the MT7531 switch.
-They prevent the CPU ports of MT7531 to be configured again. They are
-useless for MT7530. Therefore, remove setting priv->p5_interface for
-MT7530.
+There's no need to run all the code on mt7530_setup_port5() if port 5 is
+disabled. The only case for calling mt7530_setup_port5() from
+mt7530_setup() is when PHY muxing is enabled. That is because port 5 is not
+defined as a port on the devicetree, therefore, it cannot be controlled by
+phylink.
+
+Because of this, run mt7530_setup_port5() if priv->p5_intf_sel is
+P5_INTF_SEL_PHY_P0 or P5_INTF_SEL_PHY_P4. Remove the P5_DISABLED case from
+mt7530_setup_port5().
+
+Stop initialising the interface variable as the remaining cases will always
+call mt7530_setup_port5() with it initialised.
 
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 ---
- drivers/net/dsa/mt7530.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/dsa/mt7530.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index bf6c59ecc489..07c5f1c6d036 100644
+index 07c5f1c6d036..0c3b2b75f106 100644
 --- a/drivers/net/dsa/mt7530.c
 +++ b/drivers/net/dsa/mt7530.c
-@@ -978,8 +978,6 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
- 	dev_dbg(ds->dev, "Setup P5, HWTRAP=0x%x, intf_sel=%s, phy-mode=%s\n",
- 		val, p5_intf_modes(priv->p5_intf_sel), phy_modes(interface));
- 
--	priv->p5_interface = interface;
+@@ -942,9 +942,6 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
+ 		/* MT7530_P5_MODE_GMAC: P5 -> External phy or 2nd GMAC */
+ 		val &= ~MHWTRAP_P5_DIS;
+ 		break;
+-	case P5_DISABLED:
+-		interface = PHY_INTERFACE_MODE_NA;
+-		break;
+ 	default:
+ 		dev_err(ds->dev, "Unsupported p5_intf_sel %d\n",
+ 			priv->p5_intf_sel);
+@@ -2313,8 +2310,6 @@ mt7530_setup(struct dsa_switch *ds)
+ 		 * Set priv->p5_intf_sel to the appropriate value if PHY muxing
+ 		 * is detected.
+ 		 */
+-		interface = PHY_INTERFACE_MODE_NA;
 -
- unlock_exit:
- 	mutex_unlock(&priv->reg_mutex);
- }
+ 		for_each_child_of_node(dn, mac_np) {
+ 			if (!of_device_is_compatible(mac_np,
+ 						     "mediatek,eth-mac"))
+@@ -2346,7 +2341,9 @@ mt7530_setup(struct dsa_switch *ds)
+ 			break;
+ 		}
+ 
+-		mt7530_setup_port5(ds, interface);
++		if (priv->p5_intf_sel == P5_INTF_SEL_PHY_P0 ||
++		    priv->p5_intf_sel == P5_INTF_SEL_PHY_P4)
++			mt7530_setup_port5(ds, interface);
+ 	}
+ 
+ #ifdef CONFIG_GPIOLIB
 -- 
 2.40.1
 
