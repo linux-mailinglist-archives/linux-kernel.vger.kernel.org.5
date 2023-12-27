@@ -1,162 +1,288 @@
-Return-Path: <linux-kernel+bounces-12175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B41D481F0EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:35:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E13281F0F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:38:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBE1D1C219B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:35:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2605D2842E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4635C4652B;
-	Wed, 27 Dec 2023 17:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B60AB4653A;
+	Wed, 27 Dec 2023 17:38:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ChGeEBvx"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="eA2cr2Zy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45D8A46522
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 17:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703698507; x=1735234507;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xgw6Rx1xyiu9/c4fqxAyWEIp8q2MXXE0eNzx2fpq55Q=;
-  b=ChGeEBvxgrXzqyiRzZLFCTmhek0sRxg4jmILlzEWaJAxBBj9gXpeI8yi
-   apgHwfXuFSS38Ds89j1HldS3BMAlCr8J5IRT6bP+4c6XJVvCRT1skNSFi
-   Pt2EFvA+Ps/k7Ajs5bvd8t8zWEVj4ukRUZCvR6M/y/RDBtqPiWfJ30xBm
-   BMbmFeLBisYWgrYhulG06/kdQs9gSl14UBsY+xEHJftRV695mW/y8ki3m
-   C8VP7vbvFAIiNV7Gqklz1/y9ias5wJZREa6jXGAFW8lbFR6mspW5ZQYIu
-   dhh3QXxSOsfEwQ+vJ7fh0F2AhO7UceRrwdDYcIUeSJZz+0IVLfPRbPjL2
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="399256031"
-X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="399256031"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:35:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="921884517"
-X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="921884517"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:35:02 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rIXo3-00000009Tbk-0hcN;
-	Wed, 27 Dec 2023 19:34:59 +0200
-Date: Wed, 27 Dec 2023 19:34:58 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Raul Rangel <rrangel@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Benson Leung <bleung@chromium.org>,
-	Bhanu Prakash Maiya <bhanumaiya@chromium.org>,
-	Chen-Yu Tsai <wenst@chromium.org>,
-	Guenter Roeck <groeck@chromium.org>, Lee Jones <lee@kernel.org>,
-	Prashant Malani <pmalani@chromium.org>,
-	Rob Barnes <robbarnes@google.com>,
-	Stephen Boyd <swboyd@chromium.org>, chrome-platform@lists.linux.dev
-Subject: Re: [PATCH v3 24/24] platform/chrome: cros_ec: Use PM subsystem to
- manage wakeirq
-Message-ID: <ZYxgQn8L7ENkc0AJ@smile.fi.intel.com>
-References: <20231226192149.1830592-1-markhas@chromium.org>
- <20231226122113.v3.24.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0009546521
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 17:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-2043e721daaso3459006fac.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 09:38:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1703698695; x=1704303495; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CHAcfAA5kCZ72wDWLqq2p9bQpejC40VxPRIOvgfyeMs=;
+        b=eA2cr2ZyXe5LHdAmNEtnv1Bfmn8yhCxX93sKXgC4CGp1y/w0bPfFXQxbHxDA+U9hA0
+         pgNazFFiDRYZLY7smC5a9m+Uh6y1bY2coQBf7AjSO6BB29wqmfeL5fiIJUAoex94DndH
+         JOyLjIn3V7snD6LXg8Jx4mzvCumVu5BwQNvqObZtYfNY8HtZxp50E/c1OcCkRl0dfi6f
+         rFwAFLjcaGKqgbIQY5IAjSgNJh2KdxK24ECR0gWK11s/RHGXKFUz8eK9VNwvHshyT+Jm
+         LuYSr96jSFU3G9ByxlW6ltYOCUHPwOpmF6c2uH6qTwYUhn85RfSRd8iOf52iwwaOiUNQ
+         VC6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703698695; x=1704303495;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CHAcfAA5kCZ72wDWLqq2p9bQpejC40VxPRIOvgfyeMs=;
+        b=Se2QUgd+q7JyCb13u8P3UgeMCpv+nIgN8stklb1uODUyD1H5ZlgqmgH6FcD4HIS9V8
+         gua4fsYjJyXPxjJUOgk9Ww3+QfHUGGc2pfTaTg0EYNw+HIW6D3derD3Ef9bGDJeY1E0I
+         DYFcoK/agET+GMxnBuYAQtJU06Ks0c2Aw6Fb/tEqnmfDk2pIJ0Zm0wbEVWByzsoqOmem
+         617kdHV/YbruhKzfk4btUAE6gcetDQ1EQ2JTloJ3FCo9YVVxYFAedz84yyxv0lXAb/gz
+         xwNMQLDRLgyXVRutwCw+gkYUJlAWAqrYQu5hLamXXFYNSGFIW2kIdl3b4jFUHr/M8xhf
+         E0Mg==
+X-Gm-Message-State: AOJu0YzZbDWrIy2LEAhL+cUyqN29LAtFdLMpAZBlOxKzBweI7loxCfyq
+	sicZzFE0gIvIfezIIXbzWL129T8YZWaHBA==
+X-Google-Smtp-Source: AGHT+IHXbRKBQ4pVrbi/7+ChYKSFsG4xbhEERn+M2EAYDEDVluAPiDM1F9z/fux5NMol0w1e64YX/Q==
+X-Received: by 2002:a05:6870:56a4:b0:204:5026:c9f5 with SMTP id p36-20020a05687056a400b002045026c9f5mr9652182oao.91.1703698694794;
+        Wed, 27 Dec 2023 09:38:14 -0800 (PST)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id rl15-20020a056871650f00b002049c207104sm1337173oab.27.2023.12.27.09.38.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Dec 2023 09:38:14 -0800 (PST)
+From: Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v14 0/5] riscv: Add fine-tuned checksum functions
+Date: Wed, 27 Dec 2023 09:37:59 -0800
+Message-Id: <20231227-optimize_checksum-v14-0-ddfd48016566@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231226122113.v3.24.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPdgjGUC/23S3U7EIBAF4FcxvbaGGX4GvPI9jDHAUJeY3W7at
+ VE3++7SjXEbM5dMwgcczrmby1TL3D3enbupLHWu46EtwNzfdXkXD2+lr9wGHSrUyivTj8dT3df
+ v8pp3Jb/PH/ueExiL3seM0LV9x6kM9fOKPr+09a7Op3H6up6xwDr91dAJ2gK96oMmqyA1FuPTV
+ Jdxrof8kMd9t4IL3pCgrIRgQ3JmZz0nMjoJiN4iJCF6RaxC1oYDkxYQs0EAJMQ0hChnjBxKUwT
+ EbhEp4cWuNwk2eYxIloqAuC0iZuIaAia6PDjIDryA0BYJEkINUS4TK2a27ATE/yGgUAzWN2Qoi
+ UABA3oWkLBBtBhsaEiJCnxxISEGAQF1U9pZYtvac/pogrdEKQUnMrBhQHwRrK2l1pJgzVC0A4m
+ 51RYQUGTW3hoI0aTo2DkpXtAbBpXIrM2NpK2hAjny/6++XC4/UJYLgvoDAAA=
+To: Charlie Jenkins <charlie@rivosinc.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, 
+ Samuel Holland <samuel.holland@sifive.com>, 
+ David Laight <David.Laight@aculab.com>, Xiao Wang <xiao.w.wang@intel.com>, 
+ Evan Green <evan@rivosinc.com>, Guo Ren <guoren@kernel.org>, 
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-arch@vger.kernel.org
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, 
+ Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>, 
+ David Laight <david.laight@aculab.com>, 
+ Conor Dooley <conor.dooley@microchip.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703698692; l=7496;
+ i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
+ bh=b/rJTPKIAQMg3PGom1efR6P9TUmCxlht2gJ8987pQ/s=;
+ b=P/b7zFdJEa22N7c2od7nrphYg79jZnTRSVC0iRmQhnFWXaJRa7hcqy0Asu/i/nyg95qHZ1lHl
+ s+u3OLSiRi1DBj1Z03XEOuHdySNKXW0rkrUMyAaUe756dFXvv24QG+S
+X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
+ pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-On Tue, Dec 26, 2023 at 12:21:28PM -0700, Mark Hasemeyer wrote:
-> The cros ec driver is manually managing the wake IRQ by calling
-> enable_irq_wake()/disable_irq_wake() during suspend/resume.
-> 
-> Modify the driver to use the power management subsystem to manage the
-> wakeirq.
-> 
-> Rather than assuming that the IRQ is wake capable, use the underlying
-> firmware/device tree to determine whether or not to enable it as a wake
-> source. Some Chromebooks rely solely on the ec_sync pin to wake the AP
-> but do not specify the interrupt as wake capable in the ACPI _CRS. For
-> LPC/ACPI based systems a DMI quirk is introduced listing boards whose
-> firmware should not be trusted to provide correct wake capable values.
-> For device tree base systems, it is not an issue as the relevant device
-> tree entries have been updated and DTS is built from source for each
-> ChromeOS update.
+Each architecture generally implements fine-tuned checksum functions to
+leverage the instruction set. This patch adds the main checksum
+functions that are used in networking. Tested on QEMU, this series
+allows the CHECKSUM_KUNIT tests to complete an average of 50.9% faster.
 
-...
+This patch takes heavy use of the Zbb extension using alternatives
+patching.
 
->  	acpi_status status;
->  	struct cros_ec_device *ec_dev;
-> +	struct resource irqres;
+To test this patch, enable the configs for KUNIT, then CHECKSUM_KUNIT.
 
-	struct resource irqres = {};
+I have attempted to make these functions as optimal as possible, but I
+have not ran anything on actual riscv hardware. My performance testing
+has been limited to inspecting the assembly, running the algorithms on
+x86 hardware, and running in QEMU.
 
-?
+ip_fast_csum is a relatively small function so even though it is
+possible to read 64 bits at a time on compatible hardware, the
+bottleneck becomes the clean up and setup code so loading 32 bits at a
+time is actually faster.
 
->  	u8 buf[2] = {};
->  	int irq, ret;
+Relies on https://lore.kernel.org/lkml/20230920193801.3035093-1-evan@rivosinc.com/
 
-...
+---
+    
+The algorithm proposed to replace the default csum_fold can be seen to
+compute the same result by running all 2^32 possible inputs.
+    
+static inline unsigned int ror32(unsigned int word, unsigned int shift)
+{
+	return (word >> (shift & 31)) | (word << ((-shift) & 31));
+}
 
-> -	irq = platform_get_irq_optional(pdev, 0);
-> -	if (irq > 0)
-> +	irq = platform_get_irq_resource_optional(pdev, 0, &irqres);
-> +	if (irq > 0) {
->  		ec_dev->irq = irq;
-> -	else if (irq != -ENXIO) {
-> +		if (should_force_irq_wake_capable())
-> +			ec_dev->irq_wake = true;
-> +		else
-> +			ec_dev->irq_wake = irqres.flags & IORESOURCE_IRQ_WAKECAPABLE;
-> +	} else if (irq != -ENXIO) {
->  		dev_err(dev, "couldn't retrieve IRQ number (%d)\n", irq);
->  		return irq;
->  	}
+unsigned short csum_fold(unsigned int csum)
+{
+	unsigned int sum = csum;
+	sum = (sum & 0xffff) + (sum >> 16);
+	sum = (sum & 0xffff) + (sum >> 16);
+	return ~sum;
+}
 
-Still I do not like ambiguity behind irq > 0 vs. irqres.start.
+unsigned short csum_fold_arc(unsigned int csum)
+{
+	return ((~csum - ror32(csum, 16)) >> 16);
+}
 
-For this, and if needed others, return plain error.
-Seems I gave the tag for the previous patch, consider
-that tag conditional (it seems I missed this).
+int main()
+{
+	unsigned int start = 0x0;
+	do {
+		if (csum_fold(start) != csum_fold_arc(start)) {
+			printf("Not the same %u\n", start);
+			return -1;
+		}
+		start += 1;
+	} while(start != 0x0);
+	printf("The same\n");
+	return 0;
+}
 
-...
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Arnd Bergmann <arnd@arndb.de>
+To: Charlie Jenkins <charlie@rivosinc.com>
+To: Palmer Dabbelt <palmer@dabbelt.com>
+To: Conor Dooley <conor@kernel.org>
+To: Samuel Holland <samuel.holland@sifive.com>
+To: David Laight <David.Laight@aculab.com>
+To: Xiao Wang <xiao.w.wang@intel.com>
+To: Evan Green <evan@rivosinc.com>
+To: Guo Ren <guoren@kernel.org> 
+To: linux-riscv@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+To: linux-arch@vger.kernel.org
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 
->  	u16 proto_version;
->  	void *priv;
->  	int irq;
-> +	bool irq_wake;
->  	u8 *din;
->  	u8 *dout;
->  	int din_size;
->  	int dout_size;
-> -	bool wake_enabled;
->  	bool suspended;
->  	int (*cmd_xfer)(struct cros_ec_device *ec,
->  			struct cros_ec_command *msg);
+---
+Changes in v14:
+- Update misaligned static branch when CPUs are hotplugged (Guo)
+- Leave off Evan's reviewed-by on patch 2 since it was completely
+  re-written
+- Link to v13: https://lore.kernel.org/r/20231220-optimize_checksum-v13-0-a73547e1cad8@rivosinc.com
 
-Have you run pahole on this (before and after)?
+Changes in v13:
+- Move cast from patch 4 to patch 3
+- Link to v12: https://lore.kernel.org/r/20231212-optimize_checksum-v12-0-419a4ba6d666@rivosinc.com
 
+Changes in v12:
+- Rebase onto 6.7-rc5
+- Add performance stats in the cover letter
+- Link to v11: https://lore.kernel.org/r/20231117-optimize_checksum-v11-0-7d9d954fe361@rivosinc.com
+
+Changes in v11:
+- Extensive modifications to comply to sparse
+- Organize include statements (Xiao)
+- Add csum_ipv6_magic to commit message (Xiao)
+- Remove extraneous len statement (Xiao)
+- Add kasan_check_read call (Xiao)
+- Improve comment field checksum.h (Xiao)
+- Consolidate "buff" and "len" into one parameter "end" (Xiao)
+- Link to v10: https://lore.kernel.org/r/20231101-optimize_checksum-v10-0-a498577bb969@rivosinc.com
+
+Changes in v10:
+- Move tests that were riscv-specific to be arch agnostic (Arnd)
+- Link to v9: https://lore.kernel.org/r/20231031-optimize_checksum-v9-0-ea018e69b229@rivosinc.com
+
+Changes in v9:
+- Use ror64 (Xiao)
+- Move do_csum and csum_ipv6_magic headers to patch 4 (Xiao)
+- Remove word "IP" from checksum headers (Xiao)
+- Swap to using ifndef CONFIG_32BIT instead of ifdef CONFIG_64BIT (Xiao)
+- Run no alignment code when buff is aligned (Xiao)
+- Consolidate two do_csum implementations overlap into do_csum_common
+- Link to v8: https://lore.kernel.org/r/20231027-optimize_checksum-v8-0-feb7101d128d@rivosinc.com
+
+Changes in v8:
+- Speedups of 12% without Zbb and 21% with Zbb when cpu supports fast
+  misaligned accesses for do_csum
+- Various formatting updates
+- Patch now relies on https://lore.kernel.org/lkml/20230920193801.3035093-1-evan@rivosinc.com/
+- Link to v7: https://lore.kernel.org/r/20230919-optimize_checksum-v7-0-06c7d0ddd5d6@rivosinc.com
+
+Changes in v7:
+- Included linux/bitops.h in asm-generic/checksum.h to use ror (Conor)
+- Optimized loop in do_csum (David)
+- Used ror instead of shifting (David)
+- Unfortunately had to reintroduce ifdefs because gcc is not smart
+  enough to not throw warnings on code that will never execute
+- Use ifdef instead of IS_ENABLED on __LITTLE_ENDIAN because IS_ENABLED
+  does not work on that
+- Only optimize for zbb when alternatives is enabled in do_csum
+- Link to v6: https://lore.kernel.org/r/20230915-optimize_checksum-v6-0-14a6cf61c618@rivosinc.com
+
+Changes in v6:
+- Fix accuracy of commit message for csum_fold
+- Fix indentation
+- Link to v5: https://lore.kernel.org/r/20230914-optimize_checksum-v5-0-c95b82a2757e@rivosinc.com
+
+Changes in v5:
+- Drop vector patches
+- Check ZBB enabled before doing any ZBB code (Conor)
+- Check endianness in IS_ENABLED
+- Revert to the simpler non-tree based version of ipv6_csum_magic since
+  David pointed out that the tree based version is not better.
+- Link to v4: https://lore.kernel.org/r/20230911-optimize_checksum-v4-0-77cc2ad9e9d7@rivosinc.com
+
+Changes in v4:
+- Suggestion by David Laight to use an improved checksum used in
+  arch/arc.
+- Eliminates zero-extension on rv32, but not on rv64.
+- Reduces data dependency which should improve execution speed on
+  rv32 and rv64
+- Still passes CHECKSUM_KUNIT and RISCV_CHECKSUM_KUNIT on rv32 and
+  rv64 with and without zbb.
+- Link to v3: https://lore.kernel.org/r/20230907-optimize_checksum-v3-0-c502d34d9d73@rivosinc.com
+
+Changes in v3:
+- Use riscv_has_extension_likely and has_vector where possible (Conor)
+- Reduce ifdefs by using IS_ENABLED where possible (Conor)
+- Use kernel_vector_begin in the vector code (Samuel)
+- Link to v2: https://lore.kernel.org/r/20230905-optimize_checksum-v2-0-ccd658db743b@rivosinc.com
+
+Changes in v2:
+- After more benchmarking, rework functions to improve performance.
+- Remove tests that overlapped with the already existing checksum
+  tests and make tests more extensive.
+- Use alternatives to activate code with Zbb and vector extensions
+- Link to v1: https://lore.kernel.org/r/20230826-optimize_checksum-v1-0-937501b4522a@rivosinc.com
+
+---
+Charlie Jenkins (5):
+      asm-generic: Improve csum_fold
+      riscv: Add static key for misaligned accesses
+      riscv: Add checksum header
+      riscv: Add checksum library
+      kunit: Add tests for csum_ipv6_magic and ip_fast_csum
+
+ arch/riscv/include/asm/checksum.h   |  93 ++++++++++
+ arch/riscv/include/asm/cpufeature.h |   2 +
+ arch/riscv/kernel/cpufeature.c      |  89 +++++++++-
+ arch/riscv/lib/Makefile             |   1 +
+ arch/riscv/lib/csum.c               | 326 ++++++++++++++++++++++++++++++++++++
+ include/asm-generic/checksum.h      |   6 +-
+ lib/checksum_kunit.c                | 284 ++++++++++++++++++++++++++++++-
+ 7 files changed, 793 insertions(+), 8 deletions(-)
+---
+base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
+change-id: 20230804-optimize_checksum-db145288ac21
 -- 
-With Best Regards,
-Andy Shevchenko
-
+- Charlie
 
 
