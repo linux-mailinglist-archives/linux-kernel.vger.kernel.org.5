@@ -1,139 +1,121 @@
-Return-Path: <linux-kernel+bounces-11835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66FE981EC50
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:47:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9469781EC57
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:52:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A3061C215F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 05:47:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBCB5B21BEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 05:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B815238;
-	Wed, 27 Dec 2023 05:47:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB4C46B8;
+	Wed, 27 Dec 2023 05:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PDSHgRlG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gXxYV0A/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7016B4403;
-	Wed, 27 Dec 2023 05:47:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 780BDC433C8;
-	Wed, 27 Dec 2023 05:47:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703656067;
-	bh=HmpjSaYrmUUsg9E2xroGEt/cOrPn7cVKnOx0gLYZpSU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PDSHgRlGhvQ5EJ8TvsFa7lgIbVlMlVn/INxni06BVCcRvBbJFZAfQPP8DxLOVU2Iw
-	 z2JGKDdYtQc8hSk/Pn7Ma9bjubSXUwevcK7sfUg5GwTZTUkWPXDor9U2lrh9zx+JHv
-	 6rK1B6rnhYaGbA/uGGeRT919GevcHwCLPVHPgbodua7V4foksZxwGYYCo7Tg5FeO0i
-	 ZqRya950f4RXRb/oPepio2Fke8tsGjPk/9GFGl74aecqz81Y9w10PEeSx4RaxP3MbM
-	 jWZG4N2AiDvkvC/J7eBkyiNAUjgZr0vu/Vo954DLFeEpcwHNx25tMt1bc4jpMiGpdG
-	 Lig9eDHfbZohw==
-Date: Wed, 27 Dec 2023 11:17:34 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Andrew Halaney <ahalaney@redhat.com>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Yaniv Gardi <ygardi@codeaurora.org>,
-	Dov Levenglick <dovl@codeaurora.org>,
-	Hannes Reinecke <hare@suse.de>,
-	Subhash Jadavani <subhashj@codeaurora.org>,
-	Gilad Broner <gbroner@codeaurora.org>,
-	Venkat Gopalakrishnan <venkatg@codeaurora.org>,
-	Janek Kotas <jank@cadence.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Avri Altman <avri.altman@wdc.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Anjana Hari <quic_ahari@quicinc.com>,
-	Dolev Raviv <draviv@codeaurora.org>,
-	Can Guo <quic_cang@quicinc.com>, Will Deacon <will@kernel.org>,
-	linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 03/11] scsi: ufs: qcom: Perform read back after
- writing testbus config
-Message-ID: <20231227054734.GA2814@thinkpad>
-References: <20231221-ufs-reset-ensure-effect-before-delay-v2-0-75af2a9bae51@redhat.com>
- <20231221-ufs-reset-ensure-effect-before-delay-v2-3-75af2a9bae51@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 075814405
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 05:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-28c17b6f91bso767361a91.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 21:52:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703656349; x=1704261149; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xsm5Ju4rKSSyd/yy5bB4YOrfNpuRcRC6WiB2aAOy3+k=;
+        b=gXxYV0A/PU+KP1pca6RwUJGKyXD0qSBXJRPwyQWipjSJ0cvTJlb5UkjknHdtUeNY7Q
+         jnd1B9tuIdX/HvDM2hEPWE3hg3LsF4sWJLupb+VSxGvUWLZP5etfH9iHyXjNKoCPf6or
+         fJPaUoDtRWDtr7xwGTC3TQFfx4X8kKHBt8RhuYXoq15NjQpFRRL50SIm+lVaByHvPLzh
+         2VanEePu6uLmV3dfgGCBXMzAA03VAAwDO60fr+CKLBRp+INWB1acDb2hKTqDCG56p2qx
+         ggDrhR63ZlXKo+DvqBZxCJDrYeWCjwQ1BK2h2RorQxVmPpvSyG6RnMAOBJMW9XB1BCbz
+         +6Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703656349; x=1704261149;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xsm5Ju4rKSSyd/yy5bB4YOrfNpuRcRC6WiB2aAOy3+k=;
+        b=vbMHR5OaRsWSYb1KE3cJLtXRBH+DiZ0wTejlrjfPKedqCwuQZuoP2iOp7ZDLnyXIwC
+         YuMxW6/qXR/CeG+6yH5vn8hMfUnKwQAzFvR5sYDYvtjI5NBIC8h/FONzUUAe+H+Miq/7
+         xMKwhWYqg2SKnX+6Ea3BotDBbp8l8baSjm84nfWQ9vJriyhmKaIWJiWGCBV5VJFahiF4
+         /mDXZtqsf9oxxREL9n94YQvg9M0HO/L3+PN3IKDtr2MS5ODpatDZHIY+TIkFtFqSnHIO
+         xP+rH93y1i+8Lut9FDnZ6r5lSv8NFUVQWKKMpl82QMqoKoss7PNWnOY20P4UzDA0NOXi
+         vRBw==
+X-Gm-Message-State: AOJu0YwFwIrXkmazXjAUb9quxBdeg2b8dmMJK9+kIWySybJByN6eMlT2
+	gZrs8dWT35AIKZRRegIIOoM=
+X-Google-Smtp-Source: AGHT+IExDYQd4jUOqkatAsAW34ElSyA+4kT9esf58JKswXuRFYVF514ypvVLQK7Ao04wa/jziw4ymg==
+X-Received: by 2002:a17:90b:3c2:b0:28c:374f:8028 with SMTP id go2-20020a17090b03c200b0028c374f8028mr1108023pjb.27.1703656349153;
+        Tue, 26 Dec 2023 21:52:29 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id e15-20020a170902ed8f00b001cfed5524easm11020411plj.288.2023.12.26.21.52.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Dec 2023 21:52:28 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id D253811564AAC; Wed, 27 Dec 2023 12:52:23 +0700 (WIB)
+Date: Wed, 27 Dec 2023 12:52:23 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Marcelo Mendes <marcelomspessoto@gmail.com>
+Cc: harry.wentland@amd.com, sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
+	Linux AMDGPU <amd-gfx@lists.freedesktop.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Removing duplicate copyright text
+Message-ID: <ZYu7l9LiCJWdw0CB@archie.me>
+References: <20231226235741.4376-1-marcelomspessoto@gmail.com>
+ <ZYuMRZU85plJiVWO@archie.me>
+ <CAB4W1t5GsDUEUT6m_qHeEBC=gnQxyebY8W0n5uF1GGAh5yLgtw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="7Tqr7xErRV4RDN7U"
+Content-Disposition: inline
+In-Reply-To: <CAB4W1t5GsDUEUT6m_qHeEBC=gnQxyebY8W0n5uF1GGAh5yLgtw@mail.gmail.com>
+
+
+--7Tqr7xErRV4RDN7U
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231221-ufs-reset-ensure-effect-before-delay-v2-3-75af2a9bae51@redhat.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 21, 2023 at 12:25:20PM -0600, Andrew Halaney wrote:
-> Currently, the testbus configuration is written and completed with an
-> mb().
-> 
-> mb() ensure that the write completes, but completion doesn't mean
-> that it isn't stored in a buffer somewhere. The recommendation for
-> ensuring this bit has taken effect on the device is to perform a read
-> back to force it to make it all the way to the device. This is
-> documented in device-io.rst and a talk by Will Deacon on this can
-> be seen over here:
-> 
->     https://youtu.be/i6DayghhA8Q?si=MiyxB5cKJXSaoc01&t=1678
-> 
-> Let's do that to ensure the bit hits the device. Because the mb()'s
-> purpose wasn't to add extra ordering (on top of the ordering guaranteed
-> by writel()/readl()), it can safely be removed.
-> 
-> Fixes: 9c46b8676271 ("scsi: ufs-qcom: dump additional testbus registers")
-> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-> ---
->  drivers/ufs/host/ufs-qcom.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index 4c15c8a1d058..6df2ab3b6f23 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -1332,6 +1332,9 @@ static void ufs_qcom_enable_test_bus(struct ufs_qcom_host *host)
->  	ufshcd_rmwl(host->hba, UFS_REG_TEST_BUS_EN,
->  			UFS_REG_TEST_BUS_EN, REG_UFS_CFG1);
->  	ufshcd_rmwl(host->hba, TEST_BUS_EN, TEST_BUS_EN, REG_UFS_CFG1);
-> +
-> +	/* dummy read to ensure this has been enabled prior to returning */
-> +	ufshcd_readl(host->hba, REG_UFS_CFG1);
+On Tue, Dec 26, 2023 at 11:49:09PM -0300, Marcelo Mendes wrote:
+> Hello Bagas,
+>=20
+> I'm sorry for that. I will send another mail of this patch with your
+> recommendations.
+>=20
 
-In this case, I do not see the necessity to do a read back itself since there is
-no delay afterwards nor any dependent operation in an altogether different
-domain.
+Please don't top-post; reply inline with appropriate context instead.
+And don't send HTML emails as mailing lists don't like such.
 
-So removing the mb() should be sufficient.
+When sending v2 (aka rerolling), mark it as such when generating patches
+by passing `-v 2` to git-format-patch(1). And don't be rushed to send
+the reroll; wait at least a day to allow reviewers to review before
+reroll. If there are any comments from them, you should address them too.
 
-- Mani
+See you in v2!
 
->  }
->  
->  static void ufs_qcom_get_default_testbus_cfg(struct ufs_qcom_host *host)
-> @@ -1429,11 +1432,6 @@ int ufs_qcom_testbus_config(struct ufs_qcom_host *host)
->  		    (u32)host->testbus.select_minor << offset,
->  		    reg);
->  	ufs_qcom_enable_test_bus(host);
-> -	/*
-> -	 * Make sure the test bus configuration is
-> -	 * committed before returning.
-> -	 */
-> -	mb();
->  
->  	return 0;
->  }
-> 
-> -- 
-> 2.43.0
-> 
+--=20
+An old man doll... just what I always wanted! - Clara
 
--- 
-மணிவண்ணன் சதாசிவம்
+--7Tqr7xErRV4RDN7U
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZYu7kwAKCRD2uYlJVVFO
+o1UCAP9TiBj/fIiGJmgCvf+j92xuF8SnsZYURkswkTmiEAwilwEAkWigOnNnWcZC
+aI05d64L0t/EMQKRKyZBMxZeDa5aRAU=
+=OzmJ
+-----END PGP SIGNATURE-----
+
+--7Tqr7xErRV4RDN7U--
 
