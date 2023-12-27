@@ -1,107 +1,82 @@
-Return-Path: <linux-kernel+bounces-12185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7DF281F108
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:41:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC99A81F10B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:45:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7723D1F2148E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:41:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76324281ACF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A204653C;
-	Wed, 27 Dec 2023 17:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g0ojs7z1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 972454653D;
+	Wed, 27 Dec 2023 17:45:04 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 318A946522;
-	Wed, 27 Dec 2023 17:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703698892; x=1735234892;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=A1VfCaddzy2SDlg+XO8w3Lq94MaVqkU//Wetdj4bhzc=;
-  b=g0ojs7z1CBfFmJaMN071RkpghFZhuxb3gETKLkelAhsvLv55P3YIUmVe
-   J5MH/J/2SBAM7DcxHXSQqOwa9f47hO4mqMqX0lNaG7A8x7Le/0wZhYYn0
-   UWrI44BdWzni5XfLujD2d8X1ixcZlyg5ehxG3WnQUN86Qyu5tRUD/TL6z
-   KFkX9zDrxefR+SU+xGdIXyD+JJ9Vv8kEnCFaKH6RuWfnBeUbcA2tHzMq8
-   teryGbUABxhErZ8foHx6gTnU+y9YYhngWDUXMzW+F/pXejqQem9yqXQJA
-   b1beQknCKVcXuADXVOwBwOvC9pPvFE5vcq22nsw3OONXzc5lWbFY7uZ3S
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="381440462"
-X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="381440462"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:41:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="812585943"
-X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="812585943"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:41:25 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rIXuE-00000009Tgl-06dW;
-	Wed, 27 Dec 2023 19:41:22 +0200
-Date: Wed, 27 Dec 2023 19:41:21 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Shenghao Ding <shenghao-ding@ti.com>
-Cc: broonie@kernel.org, conor+dt@kernel.org, krzysztof.kozlowski@linaro.org,
-	robh+dt@kernel.org, kevin-lu@ti.com, baojun.xu@ti.com,
-	devicetree@vger.kernel.org, lgirdwood@gmail.com, perex@perex.cz,
-	pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-	liam.r.girdwood@intel.com, soyer@irl.hu, tiwai@suse.de,
-	peeyush@ti.com, navada@ti.com
-Subject: Re: [PATCH v3 3/5] ASoC: tas2781: Add tas2563 into header file for
- DSP mode
-Message-ID: <ZYxhwW97kFu1pp6p@smile.fi.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C8746524;
+	Wed, 27 Dec 2023 17:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6dbca8c6eeeso1109332a34.1;
+        Wed, 27 Dec 2023 09:45:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703699102; x=1704303902;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IijGyDJlNdIFWsVBwI/OZtAC73/0ucV8TiF4nNbafsQ=;
+        b=N2FQakHUnSzgkmI4UylhwnWI0grw/x5uddZG+Ie9Md6qgAhabr5ytiboTFjafwGBEL
+         hyXpw5PaSHBsjrCvJhXsoZhQaVmI1w8EWBtt/xQp3BjModg/fsERmNCzUxM9s9htlU5m
+         xBKx8Io/ENa6ZYiLIXCb3zD4cUZE+UK8AnuU+m/B0S7FiIXEaRW/r+udt0okMUcRFXjy
+         I8mBYUHEod/vtEi7pLXaQtMrE6UoWy0zY+VUAuVUilVBv7lpLjKZrKvT2ohtCBao4wFN
+         pXj3eiCt/JOIfY7ZW+t2WHCg1l1GssZ6SGrYQjYCiAYHuXx5z+w+/YkXWC4dJ5RnuIrx
+         ckjA==
+X-Gm-Message-State: AOJu0YxkMDc5cavLkp9LuJ1LUyyAYqe0s0l7XWkMh0yxWKIqUdAEsoj/
+	5ONY9Q9C1TJ2qVdqQw11OWGT2gPj8HdIiNHxI+c=
+X-Google-Smtp-Source: AGHT+IHb5kyfPFFrbWmVJ2RKCSVFIpUezeFpLAGOrixJNax43QJUV3Usr6dq4uaUlo3cci21w+6ciLzJkHZTV9jT6mU=
+X-Received: by 2002:a05:6820:358:b0:593:fbd5:10aa with SMTP id
+ m24-20020a056820035800b00593fbd510aamr12501632ooe.1.1703699102027; Wed, 27
+ Dec 2023 09:45:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <CGME20231227084252epcas2p3b063f7852f81f82cd0a31afd7f404db4@epcas2p3.samsung.com>
+ <ZYvjiqX6EsL15moe@perf> <2023122701-mortify-deed-4e66@gregkh>
+In-Reply-To: <2023122701-mortify-deed-4e66@gregkh>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 27 Dec 2023 18:44:51 +0100
+Message-ID: <CAJZ5v0hGd0LzaBkiPYV3D7fnTm9aVOn6eT84q-_r1Rr-1Vupow@mail.gmail.com>
+Subject: Re: [BUG] mutex deadlock of dpm_resume() in low memory situation
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Youngmin Nam <youngmin.nam@samsung.com>, rafael@kernel.org, len.brown@intel.com, 
+	pavel@ucw.cz, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	d7271.choe@samsung.com, janghyuck.kim@samsung.com, hyesoo.yu@samsung.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Dec 27, 2023 at 5:08=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
+> wrote:
+>
+> On Wed, Dec 27, 2023 at 05:42:50PM +0900, Youngmin Nam wrote:
+> > Could you look into this issue ?
+>
+> Can you submit a patch that resolves the issue for you, as you have a
+> way to actually test this out?  That would be the quickest way to get it
+> resolved, and to help confirm that this is even an issue at all.
 
-On Mon, Dec 25, 2023 at 01:39:29PM +0800, Shenghao Ding wrote:
-> Move tas2563 from tas2562 header file to tas2781 header file, because
-> tas2563 only work in bypass-DSP mode with tas2562 driver. In oder to
-> enable DSP mode for tas2563, it has been moved to tas2781 driver. As to
-> the hardware part, such as register setting and DSP firmware, all these
-> are stored in the binary firmware. What tas2781 drivder dooes is to parse
-> the firmware and download them to the tas2781 or tas2563, then power on
-> tas2781 or tas2563. So, tas2781 driver can be resued as tas2563 driver。
-> Only attention will be paid to downloading corresponding firmware.
+This is a real problem, unfortunately, and the fix would require some
+infra changes AFAICS.
 
->  enum audio_device {
->  	TAS2781	= 0,
-> +	TAS2563
->  };
+To address it, we would need a variant of async_schedule_node_domain()
+that would bail out on low memory instead of attempting to run the
+stuff synchronously which is harmful (not just for the deadlock
+reason) in the suspend-resume paths.
 
-Please, make it ordered, it doesn't seem to be an ABI.
-
-enum audio_device {
-	TAS2563,
-	TAS2781,
-};
-
-Yes, and leave comma as the last entry is _not_ a terminator.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+I'll try to cut a test patch shortly.
 
