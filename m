@@ -1,82 +1,142 @@
-Return-Path: <linux-kernel+bounces-12186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC99A81F10B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:45:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D833081F110
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:47:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76324281ACF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:45:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9516F281653
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 972454653D;
-	Wed, 27 Dec 2023 17:45:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790564653D;
+	Wed, 27 Dec 2023 17:47:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="GGlNg/gz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C8746524;
-	Wed, 27 Dec 2023 17:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6dbca8c6eeeso1109332a34.1;
-        Wed, 27 Dec 2023 09:45:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3A34652F
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 17:47:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-427e55a172bso9209431cf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 09:47:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1703699259; x=1704304059; darn=vger.kernel.org;
+        h=content-disposition:mime-version:subject:cc:to:from:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JCZ69uSbcTjkg8dgoQT15Hv1NXMMjojf76ZK+8F+h+A=;
+        b=GGlNg/gzkY8fU2RQA4hMvY1Y3O09ip2hlt0mXTYyn06FyOTZSbBGmE0wU3pYl6RLS/
+         Buaaemp1DqNPBLegGvd9aQDVItfRZJRwiFQwilTzh/HsB+tFCWj27xNCyIHDK7VD2HGE
+         ZwrFofNIaehL9H+xTDTYkCLNsFiEZP0gejGGg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703699102; x=1704303902;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IijGyDJlNdIFWsVBwI/OZtAC73/0ucV8TiF4nNbafsQ=;
-        b=N2FQakHUnSzgkmI4UylhwnWI0grw/x5uddZG+Ie9Md6qgAhabr5ytiboTFjafwGBEL
-         hyXpw5PaSHBsjrCvJhXsoZhQaVmI1w8EWBtt/xQp3BjModg/fsERmNCzUxM9s9htlU5m
-         xBKx8Io/ENa6ZYiLIXCb3zD4cUZE+UK8AnuU+m/B0S7FiIXEaRW/r+udt0okMUcRFXjy
-         I8mBYUHEod/vtEi7pLXaQtMrE6UoWy0zY+VUAuVUilVBv7lpLjKZrKvT2ohtCBao4wFN
-         pXj3eiCt/JOIfY7ZW+t2WHCg1l1GssZ6SGrYQjYCiAYHuXx5z+w+/YkXWC4dJ5RnuIrx
-         ckjA==
-X-Gm-Message-State: AOJu0YxkMDc5cavLkp9LuJ1LUyyAYqe0s0l7XWkMh0yxWKIqUdAEsoj/
-	5ONY9Q9C1TJ2qVdqQw11OWGT2gPj8HdIiNHxI+c=
-X-Google-Smtp-Source: AGHT+IHb5kyfPFFrbWmVJ2RKCSVFIpUezeFpLAGOrixJNax43QJUV3Usr6dq4uaUlo3cci21w+6ciLzJkHZTV9jT6mU=
-X-Received: by 2002:a05:6820:358:b0:593:fbd5:10aa with SMTP id
- m24-20020a056820035800b00593fbd510aamr12501632ooe.1.1703699102027; Wed, 27
- Dec 2023 09:45:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703699259; x=1704304059;
+        h=content-disposition:mime-version:subject:cc:to:from:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JCZ69uSbcTjkg8dgoQT15Hv1NXMMjojf76ZK+8F+h+A=;
+        b=fuPeVXkaM8LJSOMz5Shzym+m4P8Ab8rhHMIGfpZBWoLPSTx3zejploAEs+YnVpUdMj
+         do/q7VdZRCh7n7muPg1U4FadfHzZPwrEG2HLGbIUvtIIZypID8cx+Pbrqc9gRDL1u1U5
+         ibcSFJx0OonL6+iKK9GynwOBLSD3vPwJ3PGjPoO7uCb5fnir5gDkBpCCh1JEm+TSS06Y
+         0+sUeYZpN2dU/u7ETFYmFJQEQ4Hc3t5nBXsKOYeMyGM1nhB6Kx5Hgo8WuaJPBnEC8WcX
+         v4O9gVBZvc6e2MK89OVaOIF3dIlV+5j4MFKJnMS4cz90G/cGZcdJDKGR54qn1IF2OBvo
+         0mwQ==
+X-Gm-Message-State: AOJu0Yxq2TW/Jgv8PB1cGqjIx7QRIUvCxHJsNIfWCSNOzErJ8psZ+sE/
+	mhv/4R0J6vq4exsWLrBNS8Xddec64lvETAASunxlgUrHB1I=
+X-Google-Smtp-Source: AGHT+IHcoGzBbcSYGqh6UKthu6pqug96DjBDJYTB+W7U5OTX9o2FKVNAx3Rrej3aC7rZ3VDfJksI0Q==
+X-Received: by 2002:a05:622a:590:b0:427:8fcf:52c3 with SMTP id c16-20020a05622a059000b004278fcf52c3mr14161093qtb.86.1703699258974;
+        Wed, 27 Dec 2023 09:47:38 -0800 (PST)
+Received: from localhost (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id fc17-20020a05622a489100b00427d0be9ca3sm3855689qtb.80.2023.12.27.09.47.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Dec 2023 09:47:38 -0800 (PST)
+Message-ID: <658c633a.050a0220.d8198.83e8@mx.google.com>
+X-Google-Original-Message-ID: <20231227174738.GA1119@JoelBox.>
+Date: Wed, 27 Dec 2023 12:47:38 -0500
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To: linux-kernel@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.iitr10@gmail.com>, rcu@vger.kernel.org
+Subject: [PATCH v3] srcu: Improve comments about acceleration leak
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CGME20231227084252epcas2p3b063f7852f81f82cd0a31afd7f404db4@epcas2p3.samsung.com>
- <ZYvjiqX6EsL15moe@perf> <2023122701-mortify-deed-4e66@gregkh>
-In-Reply-To: <2023122701-mortify-deed-4e66@gregkh>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 27 Dec 2023 18:44:51 +0100
-Message-ID: <CAJZ5v0hGd0LzaBkiPYV3D7fnTm9aVOn6eT84q-_r1Rr-1Vupow@mail.gmail.com>
-Subject: Re: [BUG] mutex deadlock of dpm_resume() in low memory situation
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Youngmin Nam <youngmin.nam@samsung.com>, rafael@kernel.org, len.brown@intel.com, 
-	pavel@ucw.cz, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	d7271.choe@samsung.com, janghyuck.kim@samsung.com, hyesoo.yu@samsung.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 
-On Wed, Dec 27, 2023 at 5:08=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
->
-> On Wed, Dec 27, 2023 at 05:42:50PM +0900, Youngmin Nam wrote:
-> > Could you look into this issue ?
->
-> Can you submit a patch that resolves the issue for you, as you have a
-> way to actually test this out?  That would be the quickest way to get it
-> resolved, and to help confirm that this is even an issue at all.
+The comments added in commit 1ef990c4b36b ("srcu: No need to
+advance/accelerate if no callback enqueued") are a bit confusing.
+The comments are describing a scenario for code that was moved and is
+no longer the way it was (snapshot after advancing). Improve the code
+comments to reflect this and also document why acceleration can never
+fail.
 
-This is a real problem, unfortunately, and the fix would require some
-infra changes AFAICS.
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+v1->v2: Fix typo in change log.
+v2->v3: Improvement to acceleration comment.
 
-To address it, we would need a variant of async_schedule_node_domain()
-that would bail out on low memory instead of attempting to run the
-stuff synchronously which is harmful (not just for the deadlock
-reason) in the suspend-resume paths.
+ kernel/rcu/srcutree.c | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
-I'll try to cut a test patch shortly.
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 0351a4e83529..051e149490d1 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1234,11 +1234,20 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+ 	if (rhp)
+ 		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+ 	/*
+-	 * The snapshot for acceleration must be taken _before_ the read of the
+-	 * current gp sequence used for advancing, otherwise advancing may fail
+-	 * and acceleration may then fail too.
++	 * It's crucial to capture the snapshot 's' for acceleration before
++	 * reading the current gp_seq that is used for advancing. This is
++	 * essential because if the acceleration snapshot is taken after a
++	 * failed advancement attempt, there's a risk that a grace period may
++	 * conclude and a new one may start in the interim. If the snapshot is
++	 * captured after this sequence of events, the acceleration snapshot 's'
++	 * could be excessively advanced, leading to acceleration failure.
++	 * In such a scenario, an 'acceleration leak' can occur, where new
++	 * callbacks become indefinitely stuck in the RCU_NEXT_TAIL segment.
++	 * Also note that encountering advancing failures is a normal
++	 * occurrence when the grace period for RCU_WAIT_TAIL is in progress.
+ 	 *
+-	 * This could happen if:
++	 * To see this, consider the following events which occur if
++	 * rcu_seq_snap() were to be called after advance:
+ 	 *
+ 	 *  1) The RCU_WAIT_TAIL segment has callbacks (gp_num = X + 4) and the
+ 	 *     RCU_NEXT_READY_TAIL also has callbacks (gp_num = X + 8).
+@@ -1264,6 +1273,13 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+ 	if (rhp) {
+ 		rcu_segcblist_advance(&sdp->srcu_cblist,
+ 				      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
++		/*
++		 * Acceleration can never fail because the base current gp_seq
++		 * used for acceleration is <= the value of gp_seq used for
++		 * advancing. This means that RCU_NEXT_TAIL segment will
++		 * always be able to be emptied by the acceleration into the
++		 * RCU_NEXT_READY_TAIL or RCU_WAIT_TAIL segments.
++		 */
+ 		WARN_ON_ONCE(!rcu_segcblist_accelerate(&sdp->srcu_cblist, s));
+ 	}
+ 	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
+-- 
+2.43.0.472.g3155946c3a-goog
+
 
