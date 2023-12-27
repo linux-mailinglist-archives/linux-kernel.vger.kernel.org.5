@@ -1,118 +1,153 @@
-Return-Path: <linux-kernel+bounces-12173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B1A081F0EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:30:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5471881F0ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:34:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBF7E282AAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:30:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B21351F22FF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:34:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFE746528;
-	Wed, 27 Dec 2023 17:30:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32A1A4652F;
+	Wed, 27 Dec 2023 17:34:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ShnHw3GT"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="AtIwFBfy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8DE46459
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 17:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703698247; x=1735234247;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Wy1NLuZqdOXqhCmFW7iRCfp2r7W8SPwyReyYcr2ms80=;
-  b=ShnHw3GTZ0YksRj4uRquwwyLlntG31nJmbQ9PUaTjIpI/ialQGGDwH94
-   iwMmMqy1cx56zW5ND7G/rf7b8Q4WDB3VSLEp5QVGyP0aPPclrb22cPJ3v
-   R/ZLQIn+MyeEa5D7nzkkRvmHfkC6JDphRKqc40N18df296nAez+YIleRK
-   U41wqrEz9dmS3IzIxJPET2UNLRAeclrzvUEbRytqtvxVQqiFfeeQHHhaG
-   Tw9BPEaODy/qYmwrs47HUQachexZuScJ9QYlpuVx60YqG+tThShAvENvg
-   AUP0HHu4s98NiJMf19Soo4EPe/1gKu6hOr+5nqhTM8FpGRlkLe9e9yOmQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="393618408"
-X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="393618408"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:30:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="1109690141"
-X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="1109690141"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:30:26 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rIXjb-00000009TYB-0ZHy;
-	Wed, 27 Dec 2023 19:30:23 +0200
-Date: Wed, 27 Dec 2023 19:30:22 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Raul Rangel <rrangel@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>, David Gow <davidgow@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Mark Brown <broonie@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Takashi Iwai <tiwai@suse.de>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v3 23/24] platform: Modify platform_get_irq_optional() to
- use resource
-Message-ID: <ZYxfLjCzjnocKaTo@smile.fi.intel.com>
-References: <20231226192149.1830592-1-markhas@chromium.org>
- <20231226122113.v3.23.Ife9ebad2bbfbab3a05e90040f344d750aa0aac7e@changeid>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C74A46521
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 17:34:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5e75005bd0cso48638337b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 09:34:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1703698449; x=1704303249; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IysQ2MBjWZmGcQMU+hbJajsPx5O73ApG75Uxt6wnIcw=;
+        b=AtIwFBfy2BTdyoXp6Bqs+Zdba1w7bFrDbh4RdV7l6y/n/zq3H+uf3hfftFpnhMhC+o
+         oqj17Z3KNxBsqf3GfSRttK3HsvOUhMCiNlZzzvyIvqW1azRxxYgfF9YwcWw8h9RKUTqG
+         nz4R7nMvwYgO7Q93ObNZyLn1oV4B7w2rMG9YuEljIWeWye/Z4irgVwl6GPO539mZT8Zj
+         jteNZJRiSdvIuUARcaNFue/XtIcGrW3+LBi3jzBzjaUSXeANtkhG2bYKg16HNn4X3YID
+         hTh27KV8aqdkYjThJ41JxEB16Y3ZNBqseCPUoPfOJAxaDGTIMr/uBTbyN04+tCpyV06D
+         VcNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703698449; x=1704303249;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IysQ2MBjWZmGcQMU+hbJajsPx5O73ApG75Uxt6wnIcw=;
+        b=OEpYUWqU0W12TwoRcYFOFhlnXABXEpb5Osn3Fx5cqsSE6i0CXBjCAHXR2rnlcmAN35
+         rcZtB+DRgaTyVB0XqtDlnCEhdMYGKWrJznYxYNwEbwVO9rcR8WbiUCBi+4u7Zg5wsGCY
+         Lo8UPIXULs43pU21p93XBIqCFEksX7osO5XJZ7PW8HYMjQhETXUw477Jj8ZSF0pUmFKI
+         ibNfZDuFCizhybRLezaSEMYR3YXvkTo2yNZ4XdWxyutsTmmzHfUDUqxwegDGzZhEjCMS
+         M9tp0awWWzrOxFjjcpHL0v8Kcl7HCrTk/yIOLlVUXzWI6NU/RYrRPI5uYSTA37d0N+uw
+         qmFA==
+X-Gm-Message-State: AOJu0YzJetUGqZr5tp8RxKmz6hsy5pjDCJT94PnhTYaF2LfdgdsRJd0Q
+	MvPoG1gXOZielMaZMQXFQvMP1SRKHz25/nbPhhvLEKnd0+E4
+X-Google-Smtp-Source: AGHT+IGppupe9O9CWsASpOZ2IytM7UdTc/lbiLp6dvILqyh0v8BaMHzLIIfpOTslFO6fCe6sc0vuOseqzKtLegQc7rc=
+X-Received: by 2002:a05:690c:470d:b0:5ea:1eb8:24aa with SMTP id
+ gz13-20020a05690c470d00b005ea1eb824aamr4775756ywb.69.1703698449069; Wed, 27
+ Dec 2023 09:34:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231226122113.v3.23.Ife9ebad2bbfbab3a05e90040f344d750aa0aac7e@changeid>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231224165413.831486-1-linma@zju.edu.cn> <CAM0EoMm8F3UE3N-PBZmJHQpYYjiV23JKf6jGsvzzWs0PBd+AWQ@mail.gmail.com>
+ <6aab36aa.56337.18ca3c6af7a.Coremail.linma@zju.edu.cn> <CAM0EoMmBp6SWDGhPkusnx0jh4y=1k9ggS+5UpV+0MtEccDgyXw@mail.gmail.com>
+In-Reply-To: <CAM0EoMmBp6SWDGhPkusnx0jh4y=1k9ggS+5UpV+0MtEccDgyXw@mail.gmail.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Wed, 27 Dec 2023 12:33:57 -0500
+Message-ID: <CAM0EoMm5ruiBfJC1C+Jvz=vuKz03e_KOS_jgbS7ETkSfV-SKDA@mail.gmail.com>
+Subject: Re: [PATCH net v1] net/sched: cls_api: complement tcf_tfilter_dump_policy
+To: Lin Ma <linma@zju.edu.cn>
+Cc: xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 26, 2023 at 12:21:27PM -0700, Mark Hasemeyer wrote:
-> Unify handling of ACPI, GPIO, devictree, and platform resource
-> interrupts in platform_get_irq_optional(). Each of these subsystems
-> provide their own APIs which provide IRQ information as a struct
-> resource. This simplifies the logic of the function and allows callers
-> to get more information about the IRQ by looking at the resource flags.
-> For example, whether or not an IRQ is wake capable.
+On Wed, Dec 27, 2023 at 12:02=E2=80=AFPM Jamal Hadi Salim <jhs@mojatatu.com=
+> wrote:
+>
+> On Mon, Dec 25, 2023 at 8:39=E2=80=AFPM Lin Ma <linma@zju.edu.cn> wrote:
+> >
+> > Hello Jamal,
+> >
+> > >
+> > > Can you clarify what "heap data leak" you are referring to?
+> > > As much as i can see any reference to NLA_TCA_CHAIN is checked for
+> > > presence before being put to use. So far that reason I  dont see how
+> > > this patch qualifies as "net". It looks like an enhancement to me
+> > > which should target net-next, unless i am missing something obvious.
+> > >
+> >
+> > Sure, thanks for your reply, (and merry Christmas :D).
+> > I didn't mention the detail as I consider the commit message in
+> > `5e2424708da7` could make a point. In short, the code
+> >
+> > ```
+> > if (tca[TCA_CHAIN] && nla_get_u32(tca[TCA_CHAIN])
+> > ```
+> >
+> > only checks if the attribute TCA_CHAIN exists but never checks about
+> > the attribute length because that attribute is parsed by the function
+> > nlmsg_parse_deprecated which will parse an attribute even not described
+> > in the given policy (here, the tcf_tfilter_dump_policy).
+> >
+> > Moreover, the netlink message is allocated via netlink_alloc_large_skb
+> > (see net/netlink/af_netlink.c) that does not clear out the heap buffer.
+> > Hence a malicious user could send a malicious TCA_CHAIN attribute here
+> > without putting any payload and the above `nla_get_u32` could dereferen=
+ce
+> > a dirty data that is sprayed by the user.
+> >
+> > Other place gets TCA_CHAIN with provide policy rtm_tca_policy that has =
+a
+> > description.
+> >
+> > ```
+> > [TCA_CHAIN]             =3D { .type =3D NLA_U32 },
+> > ```
+> >
+> > and this patch aims to do so.
+> >
+> > Unfortunately, I have not opened the exploit for CVE-2023-3773
+> > (https://access.redhat.com/security/cve/cve-2023-3773) yet but the idea
+> > is similar and you can take it as an example.
+> >
+>
+> Sorry, still trying to follow your reasoning that this is a "net issue":
+> As you point out, the skb will have enough space to carry the 32 bit
+> value. Worst case is we read garbage. And the dump, using this garbage
+> chain index,  will not find the chain or will find some unintended
+> chain. Am i missing something?
+>
+> Can you send me a repro (privately) that actually causes the "heap
+> data leak" if you have one?
+>
 
-...
+To clarify what triggered me is your tie of this as an exploit and
+quoting CVEs. Maybe not so much net vs net-next.
 
-> -	struct resource *r;
-	...
-> +	struct resource *platform_res = platform_get_resource(dev, IORESOURCE_IRQ, num);
+cheers,
+jamal
 
-This is quite unusual (as far as cleanup.h is not used and there is no place
-for it here).
-
-> +
-
-Unneeded blank line after fixing the above.
-
-> +	if (platform_res && platform_res->flags & IORESOURCE_BITS) {
->  		struct irq_data *irqd;
-
-Otherwise LGTM,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> cheers,
+> jamal
+>
+>
+> > > cheers,
+> > > jamal
+> > >
+> >
+> > Regards
+> > Lin
 
