@@ -1,171 +1,161 @@
-Return-Path: <linux-kernel+bounces-12227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55EAB81F199
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:22:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0F2681F19E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:36:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D8F828252B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 19:22:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 315F8B21A50
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 19:36:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0A4247F48;
-	Wed, 27 Dec 2023 19:22:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9FEE47783;
+	Wed, 27 Dec 2023 19:36:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bVtsB3an"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WKqzoTRn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A1E46B85;
-	Wed, 27 Dec 2023 19:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BRFrDWu015987;
-	Wed, 27 Dec 2023 19:21:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=18f/gr/PZcXdeMM5kpAIhPR02z3c/KDZi/eOcuzIIpQ=;
- b=bVtsB3annBIu4X6srNn88R2Vl4YR8tkm/MkIDQOt+CJnjUudlHDyvvtuYUnkqLxa6Y4K
- VrtdgWWkDpNwGFkQ/DdUqkL/EbmNwifBK+8TkMaPTUvSGhAG2bkMa7iUk74lWbLfeNo1
- Rbu9Rf1wPuB8Ves/aRY+oPoa2u54fwch5e5cOpn1MFlXn1mZg90QPfsvH2pzC6MR/IIv
- 9Ob8WYFq2s8cORaUzVWSo9Np2P8zq2IVmRPXmt2HfvLVXfFg5CF/G0O9V00Y5FAF7omV
- +rV4EUw/YFbCa7pFwWLpD1aR0GueZPwEIAyb30YHEX0qAXiYSaOhW0dxN+tSsQL+1Q8U tQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v8pxvkj0g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Dec 2023 19:21:24 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BRJDXvQ032429;
-	Wed, 27 Dec 2023 19:21:23 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v8pxvkj07-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Dec 2023 19:21:23 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BRGAZE4008402;
-	Wed, 27 Dec 2023 19:21:22 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3v69vsv4r7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Dec 2023 19:21:22 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BRJLLSj61866258
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 27 Dec 2023 19:21:21 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1AC475805D;
-	Wed, 27 Dec 2023 19:21:21 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A90C758052;
-	Wed, 27 Dec 2023 19:21:19 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.140.144])
-	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 27 Dec 2023 19:21:19 +0000 (GMT)
-Message-ID: <96f82924cd2fda95f0c89341215e128419bf77fd.camel@linux.ibm.com>
-Subject: Re: [PATCH v8 23/24] ima: Make it independent from 'integrity' LSM
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Roberto Sassu
-	 <roberto.sassu@huawei.com>
-Date: Wed, 27 Dec 2023 14:21:18 -0500
-In-Reply-To: <ff8e6341-1ff0-4163-b5c7-236a0e8bdc7c@huaweicloud.com>
-References: <20231214170834.3324559-1-roberto.sassu@huaweicloud.com>
-	 <20231214170834.3324559-24-roberto.sassu@huaweicloud.com>
-	 <5aa5986266c3a3f834114a835378455cbbff7b64.camel@linux.ibm.com>
-	 <ff8e6341-1ff0-4163-b5c7-236a0e8bdc7c@huaweicloud.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E514844C94
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 19:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbdb14f811cso6498458276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 11:36:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703705770; x=1704310570; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=x/ThKy08dAX7RrEKVD7KhsQu3ictNFmWXD3vtZ7e4Tg=;
+        b=WKqzoTRnckjS414vpORgulBMvNowrjOvm7jNxMY96Kz1b0144JHw/3ihSHH9VdT+NM
+         Ua9xbcEZvHcYygnMeLiwtG9VKcKyjEqNettbXeLAkA0hHCQWUkNK0f2u8lohY54wReLP
+         sIe4SxHN0D+HZXIEsTJZtL6Ia2AHsQ0Ogk8hYdkuZnUfAcv54cPRI9ghohKzgMIqzWhS
+         h6P1nBhnjYE2IuA+X+s87Pxde84F867Gs6dbCifnDxvXgddvH5cXrTqXKlyMBsbLyzh8
+         pYXD7TUa7pEF9OGPHRqiNMXyN42xKUgx17G+HAHr4kjx46nuKKpUPFYWCCNQicqBAH0P
+         AVdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703705770; x=1704310570;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=x/ThKy08dAX7RrEKVD7KhsQu3ictNFmWXD3vtZ7e4Tg=;
+        b=TmmHcbmZTcFvzILZ/QgkMnBanNStcGEPIE+i9b6HCvhUD2nDTQ4icbj+qVtP6RQRTY
+         XqmeLKEGGZWor731damgnw+POFP4n0wblIxNNv+IE2aJJbH50wvYFtOGs/JgL5+w8bjl
+         JyZVizg4FygE3oe1QTkSqzverdkOtxvW4KHP2X4hMkKkUntGuTV+oK9ZMrgJS0NKso1O
+         gg0lfSAvuY2FVqw5+VZVMRNH6ndQrKkhWy/BekmfKpU0jQPvbGcmoIFZ6A3LWNbb4PL3
+         4bfjuXDuqqaymxmJNJA8E+x1nVJ36EwpIIia282pPfGVmsdQainiWrxZdRd3dJG7u+S3
+         1HtA==
+X-Gm-Message-State: AOJu0YzClFGpGr+rZ3tTNvq+OJY5f/KGShHyW70OSj5dE2D4hWFYzWn9
+	yMbfiphyCr4m8unYSxtNctrDyABo16AEOj+yg0k=
+X-Google-Smtp-Source: AGHT+IEnR5iCTlWA9t9gJQznTmXxFYuyouA6WQsNSewS+Yi7VXzqygHc/8mxfOHC/KHZwphEam/fb6SB0ptK
+X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
+ (user=tanzirh job=sendgmr) by 2002:a05:6902:1366:b0:db5:41e9:aa1c with SMTP
+ id bt6-20020a056902136600b00db541e9aa1cmr3672945ybb.11.1703705769840; Wed, 27
+ Dec 2023 11:36:09 -0800 (PST)
+Date: Wed, 27 Dec 2023 19:36:06 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ZuI2XL95XsmBzpGslmSc2WJbPjAOR3zJ
-X-Proofpoint-ORIG-GUID: 96PxLxuOz0BBu8l6Y97vO_NKje96XAZy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-27_12,2023-12-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- priorityscore=1501 suspectscore=0 spamscore=0 bulkscore=0 mlxscore=0
- impostorscore=0 mlxlogscore=932 malwarescore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312270142
+X-B4-Tracking: v=1; b=H4sIAKV8jGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDIyMz3bKyxCLdNMu0NAMDI8PUZAszJaDSgqLUtMwKsDHRsbW1ADPxVEd WAAAA
+X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703705768; l=2394;
+ i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
+ bh=YYOS+rg4MrrHOITm+EcUL4mypN0hMEPdxC8NbfelIpQ=; b=DiawcQGLgjpTFfTk9TNt560wSfiOIuKafQrpSwZnJDDrCbjM6ID4yqX9ji3LYZPkj+EidFO4B
+ SToX4Jb65DlC0tKhWY0JgYIZyAximZIXJVWm0R4iz/Zr6bL5mybcEe5
+X-Mailer: b4 0.12.4
+Message-ID: <20231227-vvar-v1-1-d2396e789179@google.com>
+Subject: [PATCH] x86/vdso: shrink vdso/vma.i via IWYU
+From: Tanzir Hasan <tanzirh@google.com>
+To: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>
+Cc: linux-kernel@vger.kernel.org, Nick Desaulniers <nnn@google.com>, 
+	Tanzir Hasan <tanzirh@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-On Wed, 2023-12-27 at 17:39 +0100, Roberto Sassu wrote:
-> On 12/27/2023 2:22 PM, Mimi Zohar wrote:
-> > On Thu, 2023-12-14 at 18:08 +0100, Roberto Sassu wrote:
-> >> From: Roberto Sassu <roberto.sassu@huawei.com>
-> >>
-> >> Make the 'ima' LSM independent from the 'integrity' LSM by introducing IMA
-> >> own integrity metadata (ima_iint_cache structure, with IMA-specific fields
-> >> from the integrity_iint_cache structure), and by managing it directly from
-> >> the 'ima' LSM.
-> >>
-> >> Move the remaining IMA-specific flags to security/integrity/ima/ima.h,
-> >> since they are now unnecessary in the common integrity layer.
-> >>
-> >> Replace integrity_iint_cache with ima_iint_cache in various places
-> >> of the IMA code.
-> >>
-> >> Then, reserve space in the security blob for the entire ima_iint_cache
-> >> structure, so that it is available for all inodes having the security blob
-> >> allocated (those for which security_inode_alloc() was called).  Adjust the
-> >> IMA code accordingly, call ima_iint_inode() to retrieve the ima_iint_cache
-> >> structure. Keep the non-NULL checks since there can be inodes without
-> >> security blob.
-> > 
-> > Previously the 'iint' memory was only allocated for regular files in
-> > policy and were tagged S_IMA.  This patch totally changes when and how
-> > memory is being allocated.  Does it make sense to allocate memory at
-> > security_inode_alloc()?  Is this change really necessary for making IMA
-> > a full fledged LSM?
-> 
-> Good question. I think it wouldn't be necessary, we can reuse the same 
-> approach as in the patch 'integrity: Switch from rbtree to LSM-managed 
-> blob for integrity_iint_cache'.
+This diff uses an open source tool include-what-you-use (IWYU) to modify
+the include list, changing indirect includes to direct includes. IWYU is
+implemented using the IWYUScripts github repository which is a tool that
+is currently undergoing development. These changes seek to improve build
+times.
 
-Going forward with the v8 proposed solution would require some real
-memory usage analysis for different types of policies.
+This change to vdso/vma.c resulted in a preprocessed size of
+lib/string.i from 66348 lines to 54596 lines (-19%) for the x86
+defconfig.
 
-To me the "integrity: Switch from rbtree to LSM-managed blob for
-integrity_iint_cache" makes a lot more sense.   Looking back at the
-original thread, your reasons back then for not directly allocating the
-integrity_iint_cache are still valid for the ima_iint_cache structure.
+Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+---
+ arch/x86/entry/vdso/vma.c | 28 ++++++++++++++++------------
+ 1 file changed, 16 insertions(+), 12 deletions(-)
 
-Mimi
+diff --git a/arch/x86/entry/vdso/vma.c b/arch/x86/entry/vdso/vma.c
+index 7645730dc228..fa601437b2c5 100644
+--- a/arch/x86/entry/vdso/vma.c
++++ b/arch/x86/entry/vdso/vma.c
+@@ -4,27 +4,32 @@
+  *
+  * This contains most of the x86 vDSO kernel-side code.
+  */
+-#include <linux/mm.h>
++#include <linux/bug.h>
++#include <linux/build_bug.h>
++#include <linux/compiler.h>
++#include <linux/elf.h>
++#include <linux/errno.h>
+ #include <linux/err.h>
+-#include <linux/sched.h>
+-#include <linux/sched/task_stack.h>
+-#include <linux/slab.h>
+ #include <linux/init.h>
+-#include <linux/random.h>
+-#include <linux/elf.h>
+-#include <linux/cpu.h>
++#include <linux/kstrtox.h>
++#include <linux/mm.h>
++#include <linux/mm_types.h>
++#include <linux/mmap_lock.h>
+ #include <linux/ptrace.h>
++#include <linux/random.h>
++#include <linux/sched.h>
++#include <linux/sched/task_stack.h>
++#include <linux/stddef.h>
++#include <linux/thread_info.h>
+ #include <linux/time_namespace.h>
++#include <linux/types.h>
+ 
+ #include <asm/pvclock.h>
+ #include <asm/vgtod.h>
+-#include <asm/proto.h>
+ #include <asm/vdso.h>
+ #include <asm/vvar.h>
+-#include <asm/tlb.h>
+ #include <asm/page.h>
+-#include <asm/desc.h>
+-#include <asm/cpufeature.h>
++#include <asm/mmu.h>
+ #include <clocksource/hyperv_timer.h>
+ 
+ #undef _ASM_X86_VVAR_H
+@@ -57,7 +62,6 @@ int __init init_vdso_image(const struct vdso_image *image)
+ }
+ 
+ static const struct vm_special_mapping vvar_mapping;
+-struct linux_binprm;
+ 
+ static vm_fault_t vdso_fault(const struct vm_special_mapping *sm,
+ 		      struct vm_area_struct *vma, struct vm_fault *vmf)
 
-> > 
-> >>
-> >> Don't include the inode pointer as field in the ima_iint_cache structure,
-> >> since the association with the inode is clear. Since the inode field is
-> >> missing in ima_iint_cache, pass the extra inode parameter to
-> >> ima_get_verity_digest().
-> >>
-> >> Finally, register ima_inode_alloc_security/ima_inode_free_security() to
-> >> initialize/deinitialize the new ima_iint_cache structure (before this task
-> >> was done by iint_init_always() and iint_free()). Also, duplicate
-> >> iint_lockdep_annotate() for the ima_iint_cache structure, and name it
-> >> ima_iint_lockdep_annotate().
-> >>
-> >> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> 
+---
+base-commit: fbafc3e621c3f4ded43720fdb1d6ce1728ec664e
+change-id: 20231226-vvar-f9ff0021ec86
 
+Best regards,
+-- 
+Tanzir Hasan <tanzirh@google.com>
 
 
