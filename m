@@ -1,43 +1,64 @@
-Return-Path: <linux-kernel+bounces-11998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 085DB81EEAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 12:51:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C14D81EEB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 12:54:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B3441F22E82
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:51:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32FC3282860
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:54:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93FE5446CA;
-	Wed, 27 Dec 2023 11:51:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55361446C7;
+	Wed, 27 Dec 2023 11:54:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="poj/qxU7"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oMgwFwVS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596BD446AB;
-	Wed, 27 Dec 2023 11:51:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703677852; x=1704282652; i=markus.elfring@web.de;
-	bh=/Cj1QNl5NB+eMaP0OCGwd5CQPitw8BtjolyhftxjSoQ=;
-	h=X-UI-Sender-Class:Date:To:From:Subject:Cc;
-	b=poj/qxU7lKy2V5VOfd/iOjzwemtIUc6lMQkG7cxdd8TR5HDw8jS+uRxdc6u1BwSk
-	 uLuqTQJlRKtFbRAQ1eHzxunBa5U4OJKVOFjCoz5T5aKF0s1C0740bFmHz8tjFm1BT
-	 rvXPZUROLFMYCEleq2zfz0qFRQ0SNg4BojJh2o/ASAUwNTqn6JGUocQUYydig2Ueh
-	 lykxq8HKrfKp6fCZO44g6ZBp927NEVhuQDPK9lMZrG4wm3/l6Ek1apGrClPUnW3hK
-	 SaZzVIc2Rvf47Y4EI8podxSJtbtujAjPTngUbA8VUWsC42DfJ3PVGhaPOC5cOQIK5
-	 ScNznhHkUy39K89CUw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M8T7E-1rMsHM16bA-004rUu; Wed, 27
- Dec 2023 12:50:52 +0100
-Message-ID: <2aa6bd31-f3d8-41ac-abf1-9ec7cf7e064b@web.de>
-Date: Wed, 27 Dec 2023 12:50:50 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34FB544C62
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 11:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33674f60184so5257476f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 03:54:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703678086; x=1704282886; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0rYgu3SiCaq7hrmRY3ZPE+6M1nIV7bD+FPdYLtShoxI=;
+        b=oMgwFwVS3KRWfiSHUWID6yrD72UYZpzCJ9RuLzP/UQrH8nzZpJCWYONXjDsXDwUmD1
+         FgQURwQOLlRvSup2pbVDIT3MI894pGqS7ikz/219rJJTwmwBDTZZbnZGO3/Q4hrSLtBG
+         3aM4Pnny6f3m2aOTIgxxX2RxYRN2tMv8PEYM3F5EU6PWSL52C5JLphxB6NdNhyMtdBX4
+         8FdSSubehAmezSOPo7ZCveeJCFy53wI4QU+fajrq8ijtezuxilOZ8bd8PLJymOmBQP+K
+         Fu2UDRyIh03CKwHRwHbztMrdPOBvzXK0FpWCb7uTO6zAauxfYuaRIcnte5EBDcAKhXEe
+         8TUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703678086; x=1704282886;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0rYgu3SiCaq7hrmRY3ZPE+6M1nIV7bD+FPdYLtShoxI=;
+        b=U2TgPZ4RPzOivV7hqQ0CmNl7V3TepxzY2Qqijo1UrWkIboX+sLDoLT7y/2d6mO2yMJ
+         hIKhIRPo8t8tNIndjWUV1/fh7N6jcCbOAc1HiURaPNrhcQ7LF2ADyK3Aqb+/PGcWbWdR
+         DfiUcu/5yIHscQz5FIeH7LGTKYd4bMm9lnuCBfFV82a1dvuXO0t9ad7lh4ettddLACg/
+         uNVa+V2nLggiKz5PAKj3Wx0lRb/1W1DJNqml/xpHuKXM2fXs+8H7nxCXeoWo/2MPQ/ko
+         FCwXJYHLJwWgViDohszsVjujJJ2bbEEFhT6gDZ7M5duhG0eHzbVRrDMH0p8Aj3xVpngy
+         pb6g==
+X-Gm-Message-State: AOJu0YwhQdxE8CPk4R1QOkJwDQYKFNhM95vkqiKpCokuR2zV/zYpH+aE
+	CYUB6UPY3n4HtZd/ARnH/d00lETGnscs9T4fDKDlVGSU+EUfCg==
+X-Google-Smtp-Source: AGHT+IH/Bpfq72ECZXvYrId5FlyOJCSkpTv+QOa20SLu2UmL8/xYOljLme5HaCb9mFL14YEnyF5Ngg==
+X-Received: by 2002:a5d:4c8d:0:b0:336:5dfb:201f with SMTP id z13-20020a5d4c8d000000b003365dfb201fmr4955982wrs.34.1703678086535;
+        Wed, 27 Dec 2023 03:54:46 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id a15-20020adfed0f000000b00336673a4153sm14617023wro.80.2023.12.27.03.54.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Dec 2023 03:54:46 -0800 (PST)
+Message-ID: <103c1d8c-314a-457e-884d-6ad67fe65e62@linaro.org>
+Date: Wed, 27 Dec 2023 12:54:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -45,84 +66,93 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: linux-mmc@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Paolo Abeni <pabeni@redhat.com>, Ulf Hansson <ulf.hansson@linaro.org>,
- Yang Yingliang <yangyingliang@huawei.com>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] mmc: mmc_spi: Adjust error handling in mmc_spi_probe()
-Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+Subject: Re: [PATCH v3 07/24] ARM: dts: samsung: exynos5420: Enable
+ cros-ec-spi as wake source
+Content-Language: en-US
+To: Mark Hasemeyer <markhas@chromium.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Rob Herring <robh@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Sudeep Holla <sudeep.holla@arm.com>,
+ Andy Shevchenko <andriy.shevchenko@intel.com>,
+ Raul Rangel <rrangel@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>,
+ Alim Akhtar <alim.akhtar@samsung.com>, Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+References: <20231226192149.1830592-1-markhas@chromium.org>
+ <20231226122113.v3.7.I06b059021de1bf6103e60a73211f078f2af75d17@changeid>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231226122113.v3.7.I06b059021de1bf6103e60a73211f078f2af75d17@changeid>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pbZP15ZayWiTe57ZMmiJyPG5siAZDUFivZl7Yc9Hcm6ffgH4sSi
- LzmIkWD3lD33goLIHpB665CkPrARlm42eRACDqs8N2PJEZrbepcu90O4eXAndjg1LkN6MVM
- 6tGIcAuKBVpe5Vcij3eoHScl3N/fR2htBRlnwIw9miS8sw9fctUvMK4WihBFQ4JcVZu7m6M
- xwejJlh9gqcLdsKEk3ezw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:DtX1kDKmJww=;gYjek4ZqSnhlJtks+e1Rgqp1BJQ
- tr5MT6zvEkGs7wpAwfW3i/+PJ3c0yNlR1SNLyo1M06sPHDQu+wCHJyVWOXDxbw2IT1jNgg5BX
- DkFG42fQxy+oTbKZ7wwtTmezBbXPE/c1t9xp+/G/Llrb8L9umgnyyje2RDKZf+s3jUIHLcfH6
- tLpr3Wq/IJNVKuPdFehRzkhZxsRoBJAvH4d5JoBbrfx2KyplMkf1IbUxZgG7Ok18G7IYLl5ub
- KCPd4QbeuGhHUsJfk4EXIvXjQ2Tm+cMatfkKM5s/Wlo2rHZt4GnDJaV3g0e5MRkY8q6z8kAYC
- GEbmTjq2l9l5DMRqgr91ap1QFdEyhfSCdgaRbGqYQAIpNlVfzHzih+rSA6Qx1qqkF4ZrVtyAf
- h0ste/FuXKFwZX2whkH+i4KypH2JNKKrEetx1+IeYcSVyvi4PcLxZ+3W+LaF+UGdKIG9rzxU2
- j5Sy9VnjzwUFGJWyJOwskP42q/dcELf2V6YyAVaLcceBHyxrP9l0z9cICNfI134P1R0Q/EQwx
- GHp+T9R2i45wWOGQvI15n7TrbanbyPv788SAvGpXO/4eG6YLujnqXJy+NErvpbLmX8uw+PXAv
- fb/A6G4kw3xNlKs923+N6fbtQutrRsL4ZSByqW77+iP5BzRxGbe1TeJ5VHEW34/tNqXWdwH33
- lZBI2XG3bE2jY5ww38aGeA83CyBBVIVF3VklvhWETjBS5L3fdArYvQqV7ApH6/GUCkY/KRPfr
- nkSISBfTWMA6RjOvCVz0SfvPOsWlQdqu/zAn+CLeDa2x7kWB1O+wVLPdt9cPKG1N9hjhLqppa
- TynzatMFJBfxempMysBb4I4TnqCwb8I6dHv8X7Z/XD/FweRhsqTp6uHqYnB1Ldvo63CogGFq8
- qYo2xdbzKjOBixQJKu+u7wOrxmDOjkkKqlWtxh+0ZibueZKX0RF+xvx6691Y3NDIby1sEP0Ej
- XALPWw==
+Content-Transfer-Encoding: 7bit
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 27 Dec 2023 12:23:20 +0100
+On 26/12/2023 20:21, Mark Hasemeyer wrote:
+> The cros_ec driver currently assumes that cros-ec-spi compatible device
+> nodes are a wakeup-source even though the wakeup-source property is not
+> defined.
+> 
+> Some Chromebooks use a separate wake pin, while others overload the
+> interrupt for wake and IO. With the current assumption, spurious wakes
+> can occur on systems that use a separate wake pin. It is planned to
+> update the driver to no longer assume that the EC interrupt pin should
+> be enabled for wake.
+> 
+> Add the wakeup-source property to all cros-ec-spi compatible device
+> nodes to signify to the driver that they should still be a valid wakeup
+> source.
+> 
+> -Commit-changes: 3
 
-The kfree() function was called in one case by
-the mmc_spi_probe() function during error handling
-even if the passed variable contained a null pointer.
-This issue was detected by using the Coccinelle software.
+This looks like changelog, although a bit confusing. If it is changelog,
+then please keep it under ---.
 
-* Thus return directly after a call of the function =E2=80=9Ckmalloc=E2=80=
-=9D failed
-  at the beginning.
+I can fix it while applying, but this will be after the merge window.
 
-* Move an error code assignment into an if branch.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/mmc/host/mmc_spi.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
-index b0cccef4cfbf..6e7d8e1e6f38 100644
-=2D-- a/drivers/mmc/host/mmc_spi.c
-+++ b/drivers/mmc/host/mmc_spi.c
-@@ -1349,15 +1349,17 @@ static int mmc_spi_probe(struct spi_device *spi)
- 	 * NOTE if many systems use more than one MMC-over-SPI connector
- 	 * it'd save some memory to share this.  That's evidently rare.
- 	 */
--	status =3D -ENOMEM;
- 	ones =3D kmalloc(MMC_SPI_BLOCKSIZE, GFP_KERNEL);
- 	if (!ones)
--		goto nomem;
-+		return -ENOMEM;
-+
- 	memset(ones, 0xff, MMC_SPI_BLOCKSIZE);
-
- 	mmc =3D mmc_alloc_host(sizeof(*host), &spi->dev);
--	if (!mmc)
-+	if (!mmc) {
-+		status =3D -ENOMEM;
- 		goto nomem;
-+	}
-
- 	mmc->ops =3D &mmc_spi_ops;
- 	mmc->max_blk_size =3D MMC_SPI_BLOCKSIZE;
-=2D-
-2.43.0
+Best regards,
+Krzysztof
 
 
