@@ -1,120 +1,163 @@
-Return-Path: <linux-kernel+bounces-11883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FB9F81ECE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 08:25:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E17BC81ECF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 08:27:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A937B22245
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:25:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97FE428365C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:27:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F10975690;
-	Wed, 27 Dec 2023 07:25:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 964C55680;
+	Wed, 27 Dec 2023 07:27:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b="wRBQpcU0"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="RvLmYDC+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E73A453A2
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 07:25:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=smartx.com
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-2046b2cd2d3so2505642fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 23:25:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20230601.gappssmtp.com; s=20230601; t=1703661912; x=1704266712; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rlmtxuw1kYY8GVgYzzd0HTJPJ+7vbZfSEFgBhzg17jo=;
-        b=wRBQpcU0PGijYSCaNwDtVMPCzw3JcETdxCACgD4JFmu0DT7NLB2Ouy88f9V6iVzosv
-         F7EuxBx3+soKY/1nx3/i5WMYiBE0i5W53qHCqvUNKUrdRJnyN92Y0t3vJTsKWrpwEhNr
-         61/xTqLt4y+UwN5drBkoDqHIG4yDPS1LV0qwdzpXpzFCtMvQ9C431XPkmo3CFysUmOkf
-         uUAU3yJI2o2LxXk7NvUoiCxhLJmvc5yVbhvUAa7gOW1IGq4KdpZ2bV8hk5SyBUaeD513
-         0iGBpmEMhu3vzIokJJZen0A8fkXApN8U8UkVgQ2g9YAICcuZ0PprD3r5mRld8VC64ChY
-         XJgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703661912; x=1704266712;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rlmtxuw1kYY8GVgYzzd0HTJPJ+7vbZfSEFgBhzg17jo=;
-        b=TOkvhqcSzhyUx0Xfi+vDe9TzuIxerlafqEv3e5GCm0Ze3qDlxjSeo0rg2nCm9Tub3m
-         x1nTIJvVRAo+zrg4He/fAwo8FDnBEhTERCBkZCMReZDCeEBOzp5zJqowyk/WOs2sQVFK
-         UatsGnfAEJxNlES3iHW8f4GmX9ePgP09zXb+Ji97+LAgdlthnL1sL7HZYzZOuQtnDVaP
-         HdvDA/BY1uXezobNVDyTugLuxOJF7BuSAxgl8FCZV8mp9RjFhW9zI+//sLolut0HpJjM
-         u0PwewtjXnVuIo3TxY3cTLl2pLkuRnuv97yL64ApA9h2h197nTGi5faqHqklIx8xnPKB
-         guNQ==
-X-Gm-Message-State: AOJu0YyFBT1iPkXRU1iTNICQ5TbSN6MJckFCidnTg1VyP5cFYix+gGZv
-	3t0NYmUCb8D+M8xtDFKTEsvpvSU/ikskqg==
-X-Google-Smtp-Source: AGHT+IF7znp/AwmYDdxA7jyqY9qzWPLuT8fC912Ygsnhfb3tdSVxmeAabe4WmnIQOm1u2EUdKy1faA==
-X-Received: by 2002:a05:6870:219e:b0:203:27f8:b5e6 with SMTP id l30-20020a056870219e00b0020327f8b5e6mr10860036oae.117.1703661911136;
-        Tue, 26 Dec 2023 23:25:11 -0800 (PST)
-Received: from smtpclient.apple ([8.210.91.195])
-        by smtp.gmail.com with ESMTPSA id g33-20020a635221000000b0058ee60f8e4dsm10657162pgb.34.2023.12.26.23.25.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Dec 2023 23:25:10 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90FCF5666
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 07:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 8658A20B3CC1; Tue, 26 Dec 2023 23:27:17 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8658A20B3CC1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1703662037;
+	bh=/qpujY2lUiYVg2duSeKiUzXj4dwXb1QCj4qV8j4itDQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=RvLmYDC+232pQ7wk9b8AvBJtsZTCZuIz5mlf7aJgmNT1gr3T12+jRiRPUj56HtV5A
+	 5sUZUVwnUW3vuVL/mCkkZG9lBYPCrVnUJsnn4I7pmwtuQJcovzfNHrw+IgYU5YBg1F
+	 lyCzcivyna5hFfZtgow6+TIM5ddhXBApmhdovjLc=
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: linux-kernel@vger.kernel.org,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.dev>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org,
+	Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: [PATCH] drm: Check output polling initialized before disabling
+Date: Tue, 26 Dec 2023 23:27:15 -0800
+Message-Id: <1703662035-1373-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.100.2.1.4\))
-Subject: Re: [PATCH] virtio_blk: set the default scheduler to none
-From: Li Feng <fengli@smartx.com>
-In-Reply-To: <20231226103743-mutt-send-email-mst@kernel.org>
-Date: Wed, 27 Dec 2023 15:26:30 +0800
-Cc: Jens Axboe <axboe@kernel.dk>,
- Jason Wang <jasowang@redhat.com>,
- Paolo Bonzini <pbonzini@redhat.com>,
- Stefan Hajnoczi <stefanha@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- "open list:VIRTIO BLOCK AND SCSI DRIVERS" <virtualization@lists.linux.dev>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2E148FC5-F9A9-4A86-99F1-8D0B93412181@smartx.com>
-References: <20231207043118.118158-1-fengli@smartx.com>
- <20231225092010-mutt-send-email-mst@kernel.org>
- <AB23804D-FF38-47B8-ADC6-C0A19B7083CC@smartx.com>
- <20231226103743-mutt-send-email-mst@kernel.org>
-To: "Michael S. Tsirkin" <mst@redhat.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-X-Mailer: Apple Mail (2.3774.100.2.1.4)
 
+In drm_mode_config_helper_suspend() check if output polling
+support is initialized before enabling/disabling polling.
+For drivers like hyperv-drm, that do not initialize connector
+polling, if suspend is called without this check, it leads to
+suspend failure with following stack
 
+[  770.719392] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+[  770.720592] printk: Suspending console(s) (use no_console_suspend to debug)
+[  770.948823] ------------[ cut here ]------------
+[  770.948824] WARNING: CPU: 1 PID: 17197 at kernel/workqueue.c:3162 __flush_work.isra.0+0x212/0x230
+[  770.948831] Modules linked in: rfkill nft_counter xt_conntrack xt_owner udf nft_compat crc_itu_t nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set nf_tables nfnetlink vfat fat mlx5_ib ib_uverbs ib_core mlx5_core intel_rapl_msr intel_rapl_common kvm_amd ccp mlxfw kvm psample hyperv_drm tls drm_shmem_helper drm_kms_helper irqbypass pcspkr syscopyarea sysfillrect sysimgblt hv_balloon hv_utils joydev drm fuse xfs libcrc32c pci_hyperv pci_hyperv_intf sr_mod sd_mod cdrom t10_pi sg hv_storvsc scsi_transport_fc hv_netvsc serio_raw hyperv_keyboard hid_hyperv crct10dif_pclmul crc32_pclmul crc32c_intel hv_vmbus ghash_clmulni_intel dm_mirror dm_region_hash dm_log dm_mod
+[  770.948863] CPU: 1 PID: 17197 Comm: systemd-sleep Not tainted 5.14.0-362.2.1.el9_3.x86_64 #1
+[  770.948865] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.1 05/09/2022
+[  770.948866] RIP: 0010:__flush_work.isra.0+0x212/0x230
+[  770.948869] Code: 8b 4d 00 4c 8b 45 08 89 ca 48 c1 e9 04 83 e2 08 83 e1 0f 83 ca 02 89 c8 48 0f ba 6d 00 03 e9 25 ff ff ff 0f 0b e9 4e ff ff ff <0f> 0b 45 31 ed e9 44 ff ff ff e8 8f 89 b2 00 66 66 2e 0f 1f 84 00
+[  770.948870] RSP: 0018:ffffaf4ac213fb10 EFLAGS: 00010246
+[  770.948871] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff8c992857
+[  770.948872] RDX: 0000000000000001 RSI: 0000000000000001 RDI: ffff9aad82b00330
+[  770.948873] RBP: ffff9aad82b00330 R08: 0000000000000000 R09: ffff9aad87ee3d10
+[  770.948874] R10: 0000000000000200 R11: 0000000000000000 R12: ffff9aad82b00330
+[  770.948874] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+[  770.948875] FS:  00007ff1b2f6bb40(0000) GS:ffff9aaf37d00000(0000) knlGS:0000000000000000
+[  770.948878] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  770.948878] CR2: 0000555f345cb666 CR3: 00000001462dc005 CR4: 0000000000370ee0
+[  770.948879] Call Trace:
+[  770.948880]  <TASK>
+[  770.948881]  ? show_trace_log_lvl+0x1c4/0x2df
+[  770.948884]  ? show_trace_log_lvl+0x1c4/0x2df
+[  770.948886]  ? __cancel_work_timer+0x103/0x190
+[  770.948887]  ? __flush_work.isra.0+0x212/0x230
+[  770.948889]  ? __warn+0x81/0x110
+[  770.948891]  ? __flush_work.isra.0+0x212/0x230
+[  770.948892]  ? report_bug+0x10a/0x140
+[  770.948895]  ? handle_bug+0x3c/0x70
+[  770.948898]  ? exc_invalid_op+0x14/0x70
+[  770.948899]  ? asm_exc_invalid_op+0x16/0x20
+[  770.948903]  ? __flush_work.isra.0+0x212/0x230
+[  770.948905]  __cancel_work_timer+0x103/0x190
+[  770.948907]  ? _raw_spin_unlock_irqrestore+0xa/0x30
+[  770.948910]  drm_kms_helper_poll_disable+0x1e/0x40 [drm_kms_helper]
+[  770.948923]  drm_mode_config_helper_suspend+0x1c/0x80 [drm_kms_helper]
+[  770.948933]  ? __pfx_vmbus_suspend+0x10/0x10 [hv_vmbus]
+[  770.948942]  hyperv_vmbus_suspend+0x17/0x40 [hyperv_drm]
+[  770.948944]  ? __pfx_vmbus_suspend+0x10/0x10 [hv_vmbus]
+[  770.948951]  dpm_run_callback+0x4c/0x140
+[  770.948954]  __device_suspend_noirq+0x74/0x220
+[  770.948956]  dpm_noirq_suspend_devices+0x148/0x2a0
+[  770.948958]  dpm_suspend_end+0x54/0xe0
+[  770.948960]  create_image+0x14/0x290
+[  770.948963]  hibernation_snapshot+0xd6/0x200
+[  770.948964]  hibernate.cold+0x8b/0x1fb
+[  770.948967]  state_store+0xcd/0xd0
+[  770.948969]  kernfs_fop_write_iter+0x124/0x1b0
+[  770.948973]  new_sync_write+0xff/0x190
+[  770.948976]  vfs_write+0x1ef/0x280
+[  770.948978]  ksys_write+0x5f/0xe0
+[  770.948979]  do_syscall_64+0x5c/0x90
+[  770.948981]  ? syscall_exit_work+0x103/0x130
+[  770.948983]  ? syscall_exit_to_user_mode+0x12/0x30
+[  770.948985]  ? do_syscall_64+0x69/0x90
+[  770.948986]  ? do_syscall_64+0x69/0x90
+[  770.948987]  ? do_user_addr_fault+0x1d6/0x6a0
+[  770.948989]  ? do_syscall_64+0x69/0x90
+[  770.948990]  ? exc_page_fault+0x62/0x150
+[  770.948992]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+[  770.948995] RIP: 0033:0x7ff1b293eba7
+[  770.949010] Code: 0b 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+[  770.949011] RSP: 002b:00007ffde3912128 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+[  770.949012] RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007ff1b293eba7
+[  770.949013] RDX: 0000000000000005 RSI: 00007ffde3912210 RDI: 0000000000000004
+[  770.949014] RBP: 00007ffde3912210 R08: 000055d7dd4c9510 R09: 00007ff1b29b14e0
+[  770.949014] R10: 00007ff1b29b13e0 R11: 0000000000000246 R12: 0000000000000005
+[  770.949015] R13: 000055d7dd4c53e0 R14: 0000000000000005 R15: 00007ff1b29f69e0
+[  770.949016]  </TASK>
+[  770.949017] ---[ end trace e6fa0618bfa2f31d ]---
 
-> On Dec 26, 2023, at 23:38, Michael S. Tsirkin <mst@redhat.com> wrote:
->=20
-> On Tue, Dec 26, 2023 at 05:01:40PM +0800, Li Feng wrote:
->> I don't have ideas right now to answer Christoph/Paolo's question.
->=20
-> Paolo did some testing on this thread and posted some concerns.
-> Do you disagree with his analysis?
+Built-on: Rhel9, Ubuntu22
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+---
+ drivers/gpu/drm/drm_modeset_helper.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Paolo gave a very detailed data analysis. Indeed, in some low queue =
-depth
-scenarios, the data dropped somewhat. However, I suspect that it may be=20=
-
-caused by other problems (such as test fluctuations) rather than the =
-benefits=20
-brought by deadline.=20
-
-BTW, I think 128 queue depth test is a very important and common =
-performance
-test item for storage devices.
-
-Thanks,
-Li
-
->=20
-> --=20
-> MST
->=20
+diff --git a/drivers/gpu/drm/drm_modeset_helper.c b/drivers/gpu/drm/drm_modeset_helper.c
+index f858dfedf2cf..ac8ce709e3c1 100644
+--- a/drivers/gpu/drm/drm_modeset_helper.c
++++ b/drivers/gpu/drm/drm_modeset_helper.c
+@@ -194,12 +194,17 @@ int drm_mode_config_helper_suspend(struct drm_device *dev)
+ 	if (!dev)
+ 		return 0;
+ 
+-	drm_kms_helper_poll_disable(dev);
++	if (dev->mode_config.poll_enabled)
++		drm_kms_helper_poll_disable(dev);
++
+ 	drm_fb_helper_set_suspend_unlocked(dev->fb_helper, 1);
+ 	state = drm_atomic_helper_suspend(dev);
+ 	if (IS_ERR(state)) {
+ 		drm_fb_helper_set_suspend_unlocked(dev->fb_helper, 0);
+-		drm_kms_helper_poll_enable(dev);
++
++		if (dev->mode_config.poll_enabled)
++			drm_kms_helper_poll_enable(dev);
++
+ 		return PTR_ERR(state);
+ 	}
+ 
+-- 
+2.34.1
 
 
