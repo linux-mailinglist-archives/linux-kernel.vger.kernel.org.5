@@ -1,65 +1,65 @@
-Return-Path: <linux-kernel+bounces-12285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0557F81F256
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 23:17:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D35B81F259
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 23:18:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B55E8283EB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 22:17:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE14C283EE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 22:17:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 544D8481D9;
-	Wed, 27 Dec 2023 22:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 664D2487B2;
+	Wed, 27 Dec 2023 22:17:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lFD0vFg/"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="A5335x0G"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D33B481BF
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 22:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45261481C0
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 22:17:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5552579335fso1809650a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 14:17:35 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-554dbe1857dso2964047a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 14:17:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703715454; x=1704320254; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PNu/Hibw+A4NmOwrD/KUQB5a8JfK056fiWwU3utcXx4=;
-        b=lFD0vFg/pkMF3icjz4TOo1KofM0J8sh+qbzvB48cEe2JTxrHhUjpWyJf9+grFzXfQZ
-         yHSauMST/pRHVkCn48Td+2iJ6UTUIXJV79CvwAujjE1y+XowETLJZG6KNCQSnYTILiAs
-         O4J00xsrjwkKnRP6LMjG7H+D8ne6mMHrqxkwXkHMgjY0p5QL5bEkvv4NvxzxvP0XX62T
-         0Wkyr423xUht1PNExPpsBJ6nmvwVj20cC3lsGXZrtWf8QQgsMveyfe4kWeicyhTNDteA
-         xt12rhCmAaV2L6C8VsR0xGtu1sLjqbLkE+HQHNBy+mrZruVbPLCyfoue26cAwNsy9x64
-         /bJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703715454; x=1704320254;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1703715456; x=1704320256; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=PNu/Hibw+A4NmOwrD/KUQB5a8JfK056fiWwU3utcXx4=;
-        b=pxVJXfEpe3hoHMjTQpkkiIrw23pmzzQGzNpq/8AJ+uZ0ljytmqPzyvC8snInVrDzL5
-         a2knZZk+pmUtPmECo+UVUGQPJ4vCdL0QorfCqO+2dAHZ/GZuxdKgvd3CKR5PiUw4Ggz3
-         1bFHQSPWdzZ+B3J9NHUDT8fJZEU9HkXBsLBlS+/ZfsedTlQJ5LFk/87wYVZ163nt08dD
-         r+Z/HPMoCWlAM6SlaZz4GsJcQKmo8bklfHvnLgWU4VzPlxieohkb5dMDjTgFytG62Ic9
-         fUoFKC89S27WpVeepwjQWzjiweFcorhvHP5caH4t79I/Vz8jwTfGB6USlYEOAvOc2Tcd
-         3Oaw==
-X-Gm-Message-State: AOJu0Yx1sZgx5vrXUC1IuAwEmPtpZVZXwdz0cxpqW69rIlTRFZtDzAHc
-	BJ9Z+Q8XgZPw2Vq1eZ0/NNwWlWXLsVlhmw==
-X-Google-Smtp-Source: AGHT+IEhrJKQaqxQcDxDiFWu1GsD+/kBAspq1WlaGaHdfvd24+0hx/rKrrCeYR5Mu5B8GmS3/0zhjw==
-X-Received: by 2002:a17:906:c143:b0:a26:a51e:4313 with SMTP id dp3-20020a170906c14300b00a26a51e4313mr4713907ejc.99.1703715454453;
-        Wed, 27 Dec 2023 14:17:34 -0800 (PST)
+        bh=gK+Z+cJ3q8PnVX9vvxAmwYo7P5nCQEAASDVIG/h3FtI=;
+        b=A5335x0GpX/qFf1RFyxvzOR+PyrltkD6t2s15lZXqFnYmvTH4o1Ql8LvlFYynTpGbb
+         WbXGkIhS+ooJApPZfKI6TB5MuMQtQ+CZnXgnVFkw8mZW2FU+P3kUS9DhiiGT4oVrVBXF
+         B2lPd8+/CVyHMKAhsXoFtNRgH/M0iMHdB66fJzsyFrUyQ4ngzXwTFawCb+ADasL7EBZR
+         c9m+pq0yJPBkNavajT/8I6JYzXK1dszS6CsN+S8vcylq6zBxmpookvwBfkvqjIeKwZPT
+         TaxwSfQZjyo7tGCTU5rHK1SoezqnJCQs+MpA3/OxS/Uexz9tvjgVAGhCWyp7zP571vuC
+         RkyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703715456; x=1704320256;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gK+Z+cJ3q8PnVX9vvxAmwYo7P5nCQEAASDVIG/h3FtI=;
+        b=PTEXb1S2IgZZx5K0Qz2SMGQxmYGSC9mOcaA0JhfU9WYgRt8BPF6YcBd07e2FhwU0dQ
+         bxzMXXGUFa6eBB/R2WAvst+7DRy2/A3qYAFYQprODHkRzkHSNYjHECbWhTdy+suH5WxE
+         SQXzUqyQ31an5Seqz3R0lABVnGmZtIzGBj/Rb6YReePBKydqFk4rZ/FcrAFQv9upEO9y
+         lS0PBRMphSIC4iW10aCNEQpJJgUd1JZf+xiMizOs6KWa1Sm/yxCEP0FY2stpGfTENs0F
+         jYV/ajflFT/SKGSvQ/KCq889jYosedt4vwJVyECC/QNNp6U2lHiZ3iqL0JZJTtdWnS/0
+         8UAQ==
+X-Gm-Message-State: AOJu0YwFtCHbs+6Y8ja9/NsUncwosVl15R7/dZBrqpqMRLLuQJFJTsUC
+	HX9gcJ/6l36yfcyCvWvQGgCJyre3IwyYtA==
+X-Google-Smtp-Source: AGHT+IEmGdAlzrAbtuChQoDwBsNDjEF9H0lhNM+GWDDSf4l/AEqFQDlgBOJqJA7RA0Rcl9c75JAhPw==
+X-Received: by 2002:a17:907:710e:b0:a27:59fa:51de with SMTP id zr14-20020a170907710e00b00a2759fa51demr376464ejb.0.1703715456417;
+        Wed, 27 Dec 2023 14:17:36 -0800 (PST)
 Received: from [10.167.154.1] (178235179028.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.28])
-        by smtp.gmail.com with ESMTPSA id ka12-20020a170907920c00b00a26ac57b951sm6245712ejb.23.2023.12.27.14.17.32
+        by smtp.gmail.com with ESMTPSA id ka12-20020a170907920c00b00a26ac57b951sm6245712ejb.23.2023.12.27.14.17.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Dec 2023 14:17:34 -0800 (PST)
+        Wed, 27 Dec 2023 14:17:36 -0800 (PST)
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Subject: [PATCH 0/4] Qualcomm PCIe RC shutdown & reinit
-Date: Wed, 27 Dec 2023 23:17:18 +0100
-Message-Id: <20231227-topic-8280_pcie-v1-0-095491baf9e4@linaro.org>
+Date: Wed, 27 Dec 2023 23:17:19 +0100
+Subject: [PATCH 1/4] PCI: qcom: Reshuffle reset logic in 2_7_0 .init
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,9 +68,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAG6ijGUC/x2N0QrCMAwAf2Xk2UATH6z+ioh0MXWB0ZVWRRj79
- 4U93sFxK3Rtph1uwwpNf9ZtKQ50GkCmVN6K9nIGDnwm5gt+lmqCkWN4VjHFSCQhXzkLCXg1pq4
- 4tlRk8q5859llbZrtf2zuj23bAXignCN2AAAA
+Message-Id: <20231227-topic-8280_pcie-v1-1-095491baf9e4@linaro.org>
+References: <20231227-topic-8280_pcie-v1-0-095491baf9e4@linaro.org>
+In-Reply-To: <20231227-topic-8280_pcie-v1-0-095491baf9e4@linaro.org>
 To: Manivannan Sadhasivam <mani@kernel.org>, 
  Bjorn Andersson <andersson@kernel.org>, 
  Lorenzo Pieralisi <lpieralisi@kernel.org>, 
@@ -81,37 +81,86 @@ To: Manivannan Sadhasivam <mani@kernel.org>,
  Andrew Murray <amurray@thegoodpenguin.co.uk>, Vinod Koul <vkoul@kernel.org>
 Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
  linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Bjorn Andersson <quic_bjorande@quicinc.com>
+ linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1703715452; l=746;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703715452; l=2311;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=02WWBUP4VI09LIYAqAaCWpT1VF+UeeRG3z0iQXnSq4k=;
- b=tBfut8NqDlYh7+Da2duoRNkj1XPLP1jm5yMzMTw+TWzl8uPNTQYxVXDF6QkJR88VepC4fiinP
- FcW8LeGpAUUDXcAbpR/Hs0fpWQ7x0hA/NJhGnlGeU/E0+Wyj1NIp0Im
+ bh=Y85jS3ioUk1DQv8qH2gvXdl3T2x3NSOAYdPJTx3pyQM=;
+ b=hoXqb4uT3vpTCXfQv6VngPZNtLPyrOIl3j8S1277XzoP0A9AZ2jiqAbd2P3bhkGsgoYh1p5+k
+ 5ue8mA0U803CdHHnSBa93k4XkY3BdR9CeA7LBCBucFfkLjuLg/uUtYK
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-This series implements shutdown & reinitialization of the PCIe RC on
-system suspend. Tested on 8280-crd.
+At least on SC8280XP, if the PCIe reset is asserted, the corresponding
+AUX_CLK will be stuck at 'off'.
 
+Assert the reset (which may end up being a NOP if it was previously
+asserted) and de-assert it back *before* turning on the clocks to avoid
+such cases.
+
+In addition to that, in case the clock bulk enable fails, assert the
+RC reset back, as the hardware is in an unknown state at best.
+
+Fixes: ed8cc3b1fc84 ("PCI: qcom: Add support for SDM845 PCIe controller")
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
-Konrad Dybcio (4):
-      PCI: qcom: Reshuffle reset logic in 2_7_0 .init
-      PCI: qcom: Cache last icc bandwidth
-      PCI: qcom: Read back PARF_LTSSM register
-      PCI: qcom: Implement RC shutdown/power up
+ drivers/pci/controller/dwc/pcie-qcom.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
- drivers/pci/controller/dwc/Kconfig     |   1 +
- drivers/pci/controller/dwc/pcie-qcom.c | 159 ++++++++++++++++++++++++---------
- 2 files changed, 120 insertions(+), 40 deletions(-)
----
-base-commit: 39676dfe52331dba909c617f213fdb21015c8d10
-change-id: 20231227-topic-8280_pcie-811c0f92fc1c
+diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+index 11c80555d975..1c5ab8c4ff39 100644
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -900,27 +900,27 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
+ 		return ret;
+ 	}
+ 
+-	ret = clk_bulk_prepare_enable(res->num_clks, res->clks);
+-	if (ret < 0)
+-		goto err_disable_regulators;
+-
++	/* Assert the reset to hold the RC in a known state */
+ 	ret = reset_control_assert(res->rst);
+ 	if (ret) {
+ 		dev_err(dev, "reset assert failed (%d)\n", ret);
+-		goto err_disable_clocks;
++		goto err_disable_regulators;
+ 	}
+-
+ 	usleep_range(1000, 1500);
+ 
++	/* GCC_PCIE_n_AUX_CLK won't come up if the reset is asserted */
+ 	ret = reset_control_deassert(res->rst);
+ 	if (ret) {
+ 		dev_err(dev, "reset deassert failed (%d)\n", ret);
+-		goto err_disable_clocks;
++		goto err_disable_regulators;
+ 	}
+-
+ 	/* Wait for reset to complete, required on SM8450 */
+ 	usleep_range(1000, 1500);
+ 
++	ret = clk_bulk_prepare_enable(res->num_clks, res->clks);
++	if (ret < 0)
++		goto err_assert_reset;
++
+ 	/* configure PCIe to RC mode */
+ 	writel(DEVICE_TYPE_RC, pcie->parf + PARF_DEVICE_TYPE);
+ 
+@@ -951,8 +951,9 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
+ 	writel(val, pcie->parf + PARF_AXI_MSTR_WR_ADDR_HALT_V2);
+ 
+ 	return 0;
+-err_disable_clocks:
+-	clk_bulk_disable_unprepare(res->num_clks, res->clks);
++
++err_assert_reset:
++	reset_control_assert(res->rst);
+ err_disable_regulators:
+ 	regulator_bulk_disable(ARRAY_SIZE(res->supplies), res->supplies);
+ 
 
-Best regards,
 -- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
+2.43.0
 
 
