@@ -1,170 +1,453 @@
-Return-Path: <linux-kernel+bounces-12253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3ACA81F1FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:51:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF36F81F201
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:54:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FB641F230CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:51:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E8301C20A60
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BADE47F78;
-	Wed, 27 Dec 2023 20:51:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79633481A3;
+	Wed, 27 Dec 2023 20:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=NETORG5796793.onmicrosoft.com header.i=@NETORG5796793.onmicrosoft.com header.b="VysMLFp1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2082.outbound.protection.outlook.com [40.107.102.82])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557ED481A4
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 20:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3601c1b80d3so9881015ab.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 12:51:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703710278; x=1704315078;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6RH1fku3ryMWl5b9TQPsta4gwjT0JdL0o1tj9ksa+sc=;
-        b=XGtGJjUCASxFTnOKvcApdwDO5LnFWNWiL2LIBkxjGKcy/GWvlsY+w0KeT8To0JkJIT
-         Istunx5Zl1yEeueZb0NU/uP4ClgD2gK07CMApmolAn9TPZpWPVxcGstJdlUXl5n0kE6V
-         EiVeetkAcdrUdcehlkP52EiEEFa1wc5eiPhBNRy+eSl/bO5gHFiKDtKUyPMas+0iuARy
-         Bx0zEeQotPOU8V8NPz5Yvz9cZ2alMm6LQ8ouYJFwuVwQB39TP0mVfkKkvpp/jwx4kSFR
-         2S5Z11EPaG7ch7Ktpu4gU6t6CWSxCQyLFkkg2cvk0ioOp4hco5rKW09nijnhhl7ECD7J
-         CrIw==
-X-Gm-Message-State: AOJu0YwYMMKfvo85c23ICnGs6YP5O0gRn33nmeCcH5EOPkfQJdjkDhlZ
-	OqdYtoZr+OLlZS0BYxZcxdCE5KVYfo9wMJ2gqvW79JZ2XvJI
-X-Google-Smtp-Source: AGHT+IGEybVICjOUX9vJrIn3vsaTDFrBGnGLBuGyYO3KpsmGmcX5pyhDob4xgjJ+ckmag9X3Q7pKJU3Y6cDN0rvpfuWwemWyUZn5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6857D481A4;
+	Wed, 27 Dec 2023 20:53:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=labundy.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=labundy.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JoSwVOmHNwTH1B8tBFn4yMPq0DiS0k01WkJDnA+bW9X6FmoJ1jtfYrKGXMzclI/bvC3nEm4ngcvSFIfBMh6vFrlHKJa2Cf+jFdp0PY8mEh2s8B7IjZZEarpRlZFQ8D9zZ33o38Tb6TGjGjVYsNet0qJSzw1WP9uO+SV42srTnciZftO8kxRk5klpiU4tNrmGfJfLJPhTDWTJeWAHW4H3aRZY8x0BrEPkIJZHpNJGzCW6xB8yO9UQXbnIrR/A2BB+ClBTU8qNkPrLyGk4D/fKdzpwWyyO6QMbwLbcX1JegNaXTuvD8MtyKibpHxSpEcnoHAa9HsqLkfVY4KNIQsn/lw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Itz+W7Yok0o6vZuofEM8ukXyJ78BNo5WEwXHZCmDN64=;
+ b=LGBV0kZvBPxiHDA4HzOAtWKHXEV920cxepR2WVar6KQGdx5jtiecHAw2xhvK2mPP3gsbmhxa9doHCg6a445NOpCmauU/xI15njlrg3WVwSvCMDpOV2hNGEl0wmEUXjA54gHRWEbDH8LQ8ol811+Id4uiGIGHzwoGSceXmduVwPDhr41eZm5NA2tWpnMcObyZZLTm0NORGzWgcXh0eV2gqOA+CBVDpqM4v4G2xwZgU+v995WD9GcW8jBKDDOXN1vLYiuuoqpx5wNZ6D3yG2JH4WVuXdoH18x7/8ub1uuweuyQTkPOJpmBWx3TSRNEl+JvVpXdNTHhOAte5ajKi7aUvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=labundy.com; dmarc=pass action=none header.from=labundy.com;
+ dkim=pass header.d=labundy.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=NETORG5796793.onmicrosoft.com; s=selector1-NETORG5796793-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Itz+W7Yok0o6vZuofEM8ukXyJ78BNo5WEwXHZCmDN64=;
+ b=VysMLFp1LKmsDQPniGNSveEQqhMPPpFc8kC9PkzN7dvmjJzZNx5JaqtXo/BNw66XXjSfti11ZXtatuzpcY+qNWMQoGuUxa6LZQ4j/xdLWzMu/wTdFQvraSgQVquYV7VZE70z7gX73l6n6FU1F3U5y+wMEeyYdtj4PUh8WS+1PQY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=labundy.com;
+Received: from SN4PR0801MB3774.namprd08.prod.outlook.com
+ (2603:10b6:803:43::21) by CO1PR08MB7256.namprd08.prod.outlook.com
+ (2603:10b6:303:f2::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.20; Wed, 27 Dec
+ 2023 20:53:49 +0000
+Received: from SN4PR0801MB3774.namprd08.prod.outlook.com
+ ([fe80::36f2:78d1:ad7d:66da]) by SN4PR0801MB3774.namprd08.prod.outlook.com
+ ([fe80::36f2:78d1:ad7d:66da%4]) with mapi id 15.20.7159.006; Wed, 27 Dec 2023
+ 20:53:49 +0000
+Date: Wed, 27 Dec 2023 14:53:43 -0600
+From: Jeff LaBundy <jeff@labundy.com>
+To: Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Henrik Rydberg <rydberg@bitmath.org>,
+	Bastian Hecht <hechtb@gmail.com>,
+	Michael Riesch <michael.riesch@wolfvision.net>,
+	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 2/4] dt-bindings: touchscreen: add overlay-touchscreen
+ and overlay-buttons properties
+Message-ID: <ZYyO1/kKGL3C9QAF@nixie71>
+References: <20230510-feature-ts_virtobj_patch-v5-0-ff6b5c4db693@wolfvision.net>
+ <20230510-feature-ts_virtobj_patch-v5-2-ff6b5c4db693@wolfvision.net>
+ <ZTp72LUXxr+Z9gn8@nixie71>
+ <487555fa-72ad-4d1a-ac68-51826f56f1cd@wolfvision.net>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <487555fa-72ad-4d1a-ac68-51826f56f1cd@wolfvision.net>
+X-ClientProxiedBy: SA0PR11CA0210.namprd11.prod.outlook.com
+ (2603:10b6:806:1bc::35) To SN4PR0801MB3774.namprd08.prod.outlook.com
+ (2603:10b6:803:43::21)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c548:0:b0:35f:f01e:bb18 with SMTP id
- a8-20020a92c548000000b0035ff01ebb18mr1252426ilj.6.1703710278611; Wed, 27 Dec
- 2023 12:51:18 -0800 (PST)
-Date: Wed, 27 Dec 2023 12:51:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f4faa2060d83f582@google.com>
-Subject: [syzbot] [dri?] WARNING in drm_prime_destroy_file_private (2)
-From: syzbot <syzbot+59dcc2e7283a6f5f5ba1@syzkaller.appspotmail.com>
-To: airlied@gmail.com, akinobu.mita@gmail.com, akpm@linux-foundation.org, 
-	christian.koenig@amd.com, daniel@ffwll.ch, dri-devel@lists.freedesktop.org, 
-	jgg@nvidia.com, linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org, 
-	linux-media@vger.kernel.org, maarten.lankhorst@linux.intel.com, 
-	mripard@kernel.org, sumit.semwal@linaro.org, syzkaller-bugs@googlegroups.com, 
-	tzimmermann@suse.de, zhengqi.arch@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN4PR0801MB3774:EE_|CO1PR08MB7256:EE_
+X-MS-Office365-Filtering-Correlation-Id: 469588da-23f0-473f-cfea-08dc071ded16
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	/97aaVQvIP94oU4wgUGowgC8e4YQWo0BCq4f9ZPWb23hPTmWrc6EbYQmmUasdBsnO9/LtRaqXfJmLHnXFlomU7rJ3e+FdP8i8nffpBTpHTXgAsNVNhyG5XZr7xvgASfED3CGgOD8i4+0dq3SoYwVHfRMqT8bz9TyN56nDkwOMIFI450AN7aa4RM0RilHCKEVTMxF4ppdiOxn4dRz5x+2nfaJhzIFGUMTu5BT8cDEiPwkyigmttk/Yn3GxPrL9eQdo3UrqpfOTnfOAIUNxtUYa7k6H41rPKleOT7HQo2JnDTzVuNkLwqJZEfiix8X+uI3cl2KzrYsMkcTNeA7TDWsMW+mcy60SrSJEIh0rFzHnyfYBXZN32+N+jjhMCeCpVHcvXJigabPZoymA1Y0xHii6VcfBdmxRE5s+cjaPygJODji0eeL2Wal1EvOohTrxL2Aq0AXQDtgB9cuHDlk+pCu4Rg3sDU9Z70u1rZnXq4SbIqvINsb70Rsnqjg4DuAcSlKejiG5WdIMnQfyoYEP6vMTEsZyRCrfHikv2RwQd8ljgwDz2ufXsncJ5N5ycYrY4wi
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0801MB3774.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(396003)(366004)(346002)(376002)(39830400003)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(9686003)(6512007)(26005)(33716001)(66946007)(8676002)(4326008)(6916009)(66556008)(316002)(54906003)(66476007)(83380400001)(478600001)(6666004)(6506007)(53546011)(38100700002)(86362001)(8936002)(6486002)(5660300002)(7416002)(2906002)(30864003)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ODNYZ1BVSC9QQ1JLOERzMXh5V1RtOUVwaXNFS1E4dE5OT05pWlhrdkplMU5N?=
+ =?utf-8?B?ZXVyTEsrMmYxaFE0Q1VPeTVRRU1ZaHk0NG9uTXhvYm1hMU1XM0lwUHBoV2xG?=
+ =?utf-8?B?cnlONFFueC9lYUVEMnBQTWdXbWF0M2Vpa21jM05LZUNrSk1rS3ZySzR1N2Zv?=
+ =?utf-8?B?TTRMOTFQYWZwUjZVTTV4SUFkUU85SlJoaUMrSWRadjgreE1MbVJJZ0F5VW45?=
+ =?utf-8?B?Z2pCckgyRXFiK3NyYm1UODRTL3Jsd2YrRTU5TG1IRzBDd3paS2pwamVvZkVG?=
+ =?utf-8?B?L2xGaENGQnJXTHowRzFOZ1Q1Q2w2NU4xZEMrMDFrckd2NkYzblU3STN6VGcv?=
+ =?utf-8?B?VTZURDRqNEJXTkdZNHA2NU5uUmR4dXN1bkthbUVwMGd5bFRyNFJIWlhqdHVh?=
+ =?utf-8?B?ZVlRUUhVZUExM291SHBYZHhUVXRpalhpanJNVnJDVFpBckdDTWwrYUxQVkox?=
+ =?utf-8?B?N1Q3VkxDbExtQ3k5OWNmMjFsNE9tVUZjTk4rcGJqdlRHK2ZhaHZRUEdOV3hZ?=
+ =?utf-8?B?aUN3NnZUNkc5cldDR0k1NTE5UGhlcWN4R241NnJvRGZGbFFNTDN6U3I3Vjhk?=
+ =?utf-8?B?MEV0alNPeVJjbFZwWlhLeS80NVZraGtDR21pZ09QdmZCMnJpa2k1ZC8zY3N5?=
+ =?utf-8?B?M2MrY3BEelhiNzZUVXpsbm9rT3R4VGNyUDFIWGdwVkJ6ZitFK3F6VnREdkY2?=
+ =?utf-8?B?OGpPdmpJdjJ6aERtejUyaGkzM3U2UVNYcTg3eHJ6dXhXc3ZNSUVvTVNFY0Y4?=
+ =?utf-8?B?Ym1XSFd5ZWRUYjlQUDFuVVB5M0RmaXg0VjZkaGUvc2lQc3MyMkJUdTVyMGxD?=
+ =?utf-8?B?Z09wZmVxS0htSUxHdFNyS01nWHprSHBzZ09YWWxqMGxmaHBQczlPeWVoaWZR?=
+ =?utf-8?B?aFNhSlg4NTFGcDQ1RHRCSGJtN0VpL3BRUFp6Tmc2TDNrQnZ1ejd3VmNqcTM4?=
+ =?utf-8?B?SlRDY1l1elFOenFMTGovT2g2S0FGY2xVVVcwSGRJSGNZRDFJa1ppSHRSTStn?=
+ =?utf-8?B?ekZXZFdxMGdpWldPa0JMZHU1a0ZUTDUyMDlzQ1paWThrRDk4eU82OTU3K0pw?=
+ =?utf-8?B?d09kdzJJd1pKYVhhaVFpZU44MU9vTnd3dXpLN3FpRnBrUGJGUWdIeWdxR3BC?=
+ =?utf-8?B?KzRDT3pIM2dCM3lucGVzVUhxRCtBT0FZd0dvelY4dW5BR2lOdlloQjJZalJK?=
+ =?utf-8?B?WjlXcDI3dW1Ua3RRK0JJWEV5MmZWMlJwZnFCOUZUb1QzNkppSkVXeGp5WTZt?=
+ =?utf-8?B?QytYR3h0SnluTHpjZUVyNlN6OW8yc2l5Szh3dldybEtKVkcvVjl3TnR2ZE4v?=
+ =?utf-8?B?R01Lc0FVRXpPeTdyNzc1eU9WeTBPbWRYaUJRNTRJOE5NWjRycUR3MDlTM24v?=
+ =?utf-8?B?QXpaUG5BVk80N3RsSnE4RkZMTHRiWlNOazhxaVBtekNheE9Eamk2TFRqUUxX?=
+ =?utf-8?B?Qy9DeHVtQ1VOUlNwUEZFUXpoeHJ2WWZ5LzJ5U1h6Snhoa0FQd1JnLy9xQmk3?=
+ =?utf-8?B?S2dZTTNwRlY0Q2kvdExjbEtDVkdoSHlZd29SQkoyV2pUanl2aEFLQUFlSHQy?=
+ =?utf-8?B?V1dZbFFNVGNlRkdmQUlMSU13SWJhdmFNak5rTVFFeWVSQnBJR1A5K01nUDh0?=
+ =?utf-8?B?YnN5aEZnY2pCNlgvdno5ZW04THdkT3dmVWlMWENFMjlVcG9iRWFGNXdvZlFN?=
+ =?utf-8?B?cnlTUUx3RTM2ekZBcXNGR3VhVS9vVzl4NzN3bUMxNVQ5VndtdkV4NjcvaUFh?=
+ =?utf-8?B?elJWSmR3UEdMVFZkVlJFMGhCZDEyWnh6cTQwSmdvaUZTVzBDek90VzFacm01?=
+ =?utf-8?B?cFpIUWpvNzRtMSswVmdzL3VNYjBjUXZCTGl1K0FLVDV1aXl1VjdCM3JKYTVh?=
+ =?utf-8?B?LzhuZWJOcXhWcS9UVWkzendmS2xzUFl6eFVlVmVGZlRHSlZmTEw2WVYxajFR?=
+ =?utf-8?B?TXQxa2swVDAvU1A0NmxibnRndjF0RndjbW1nVnlmU3gvTFp2RStBamdtaHhm?=
+ =?utf-8?B?dmpYMHUxVVlpRThLOUthbjJwM0xFREhhWlFKeE5NN24waEFpOVZDUGp5NFU2?=
+ =?utf-8?B?eG9VM3IxclI4cSs2dzIybjNzRnZpdktINFBlekd3UUllRmJtcWROS1RYeHpl?=
+ =?utf-8?Q?QDfzvUpVGBkCNvcDg6UejZUer?=
+X-OriginatorOrg: labundy.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 469588da-23f0-473f-cfea-08dc071ded16
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0801MB3774.namprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2023 20:53:49.5304
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 00b69d09-acab-4585-aca7-8fb7c6323e6f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xzU0tP2UbtyihW0qA0i/J9fvvCh9TfpH5WjDWbyiZ5I3NPWs5+ZTZKozH8RCnxYH3MoJ4R81N4nX7Nt70itXQQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR08MB7256
 
-Hello,
+Hi Javier,
 
-syzbot found the following issue on:
+I am so sorry for the delayed response.
 
-HEAD commit:    5254c0cbc92d Merge tag 'block-6.7-2023-12-22' of git://git..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=10cc6995e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=314e9ad033a7d3a7
-dashboard link: https://syzkaller.appspot.com/bug?extid=59dcc2e7283a6f5f5ba1
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e35809e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=155d5fd6e80000
+On Thu, Nov 23, 2023 at 08:48:56PM +0100, Javier Carrasco wrote:
+> Hi Jeff,
+> 
+> On 26.10.23 16:46, Jeff LaBundy wrote:
+> > Hi Javier,
+> > 
+> > Thank you for continuing to drive this high-quality work.
+> > 
+> > On Tue, Oct 17, 2023 at 01:00:08PM +0200, Javier Carrasco wrote:
+> >> The overlay-touchscreen object defines an area within the touchscreen
+> >> where touch events are reported and their coordinates get converted to
+> >> the overlay origin. This object avoids getting events from areas that
+> >> are physically hidden by overlay frames.
+> >>
+> >> For touchscreens where overlay buttons on the touchscreen surface are
+> >> provided, the overlay-buttons object contains a node for every button
+> >> and the key event that should be reported when pressed.
+> >>
+> >> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+> >> ---
+> >>  .../bindings/input/touchscreen/touchscreen.yaml    | 143 +++++++++++++++++++++
+> >>  1 file changed, 143 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml b/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
+> >> index 431c13335c40..5c58eb79ee9a 100644
+> >> --- a/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
+> >> +++ b/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
+> >> @@ -87,6 +87,129 @@ properties:
+> >>    touchscreen-y-plate-ohms:
+> >>      description: Resistance of the Y-plate in Ohms
+> >>  
+> >> +  overlay-touchscreen:
+> >> +    description: Clipped touchscreen area
+> >> +
+> >> +      This object can be used to describe a frame that restricts the area
+> >> +      within touch events are reported, ignoring the events that occur outside
+> >> +      this area. This is of special interest if the touchscreen is shipped
+> >> +      with a physical overlay on top of it with a frame that hides some part
+> >> +      of the original touchscreen area.
+> >> +
+> >> +      The x-origin and y-origin properties of this object define the offset of
+> >> +      a new origin from where the touchscreen events are referenced.
+> >> +      This offset is applied to the events accordingly. The x-size and y-size
+> >> +      properties define the size of the overlay-touchscreen (effective area).
+> >> +
+> >> +      The following example shows the new touchscreen area and the new origin
+> >> +      (0',0') for the touch events generated by the device.
+> >> +
+> >> +                   Touchscreen (full area)
+> >> +         ┌────────────────────────────────────────┐
+> >> +         │    ┌───────────────────────────────┐   │
+> >> +         │    │                               │   │
+> >> +         │    ├ y-size                        │   │
+> >> +         │    │                               │   │
+> >> +         │    │      overlay-touchscreen      │   │
+> >> +         │    │                               │   │
+> >> +         │    │                               │   │
+> >> +         │    │            x-size             │   │
+> >> +         │   ┌└──────────────┴────────────────┘   │
+> >> +         │(0',0')                                 │
+> >> +        ┌└────────────────────────────────────────┘
+> >> +      (0,0)
+> >> +
+> >> +     where (0',0') = (0+x-origin,0+y-origin)
+> >> +
+> >> +    type: object
+> >> +    $ref: '#/$defs/overlay-node'
+> >> +    unevaluatedProperties: false
+> >> +
+> >> +    required:
+> >> +      - x-origin
+> >> +      - y-origin
+> >> +      - x-size
+> >> +      - y-size
+> >> +
+> >> +  overlay-buttons:
+> >> +    description: list of nodes defining the buttons on the touchscreen
+> >> +
+> >> +      This object can be used to describe buttons on the touchscreen area,
+> >> +      reporting the touch events on their surface as key events instead of
+> >> +      the original touch events.
+> >> +
+> >> +      This is of special interest if the touchscreen is shipped with a
+> >> +      physical overlay on top of it where a number of buttons with some
+> >> +      predefined functionality are printed. In that case a specific behavior
+> >> +      is expected from those buttons instead of raw touch events.
+> >> +
+> >> +      The overlay-buttons properties define a per-button area as well as an
+> >> +      origin relative to the real touchscreen origin. Touch events within the
+> >> +      button area are reported as the key event defined in the linux,code
+> >> +      property. Given that the key events do not provide coordinates, the
+> >> +      button origin is only used to place the button area on the touchscreen
+> >> +      surface. Any event outside the overlay-buttons object is reported as a
+> >> +      touch event with no coordinate transformation.
+> >> +
+> >> +      The following example shows a touchscreen with a single button on it
+> >> +
+> >> +              Touchscreen (full area)
+> >> +        ┌───────────────────────────────────┐
+> >> +        │                                   │
+> >> +        │                                   │
+> >> +        │   ┌─────────┐                     │
+> >> +        │   │button 0 │                     │
+> >> +        │   │KEY_POWER│                     │
+> >> +        │   └─────────┘                     │
+> >> +        │                                   │
+> >> +        │                                   │
+> >> +       ┌└───────────────────────────────────┘
+> >> +     (0,0)
+> >> +
+> >> +      The overlay-buttons object can  be combined with the overlay-touchscreen
+> >> +      object as shown in the following example. In that case only the events
+> >> +      within the overlay-touchscreen object are reported as touch events.
+> >> +
+> >> +                  Touchscreen (full area)
+> >> +        ┌─────────┬──────────────────────────────┐
+> >> +        │         │                              │
+> >> +        │         │    ┌───────────────────────┐ │
+> >> +        │ button 0│    │                       │ │
+> >> +        │KEY_POWER│    │                       │ │
+> >> +        │         │    │                       │ │
+> >> +        ├─────────┤    │  overlay-touchscreen  │ │
+> >> +        │         │    │                       │ │
+> >> +        │         │    │                       │ │
+> >> +        │ button 1│    │                       │ │
+> >> +        │ KEY_INFO│   ┌└───────────────────────┘ │
+> >> +        │         │(0',0')                       │
+> >> +       ┌└─────────┴──────────────────────────────┘
+> >> +     (0,0)
+> >> +
+> >> +    type: object
+> > 
+> > I am still confused why the buttons need to live under an 'overlay-buttons'
+> > parent node, which seems like an imaginary boundary. In my view, the touch
+> > surface comprises the following types of rectangular areas:
+> > 
+> > 1. A touchscreen, wherein granular coordinates and pressure are reported.
+> > 2. A momentary button, wherein pressure is quantized into a binary value
+> >    (press or release), and coordinates are ignored.
+> > 
+> > Any contact that falls outside of (1) and (2) is presumed to be part of a
+> > border or matting, and is hence ignored.
+> > 
+> > Areas (1) and (2) exist in the same "plane", so why can they not reside
+> > under the same parent node? The following seems much more representative
+> > of the actual hardware we intend to describe in the device tree:
+> > 
+> > 	touchscreen {
+> > 		compatible = "...";
+> > 		reg = <...>;
+> > 
+> > 		/* raw coordinates reported here */
+> > 		touch-area-1 {
+> > 			x-origin = <...>;
+> > 			y-origin = <...>;
+> > 			x-size = <...>;
+> > 			y-size = <...>;
+> > 		};
+> > 
+> > 		/* a button */
+> > 		touch-area-2a {
+> > 			x-origin = <...>;
+> > 			y-origin = <...>;
+> > 			x-size = <...>;
+> > 			y-size = <...>;
+> > 			linux,code = <KEY_POWER>;
+> > 		};
+> > 
+> > 		/* another button */
+> > 		touch-area-2b {
+> > 			x-origin = <...>;
+> > 			y-origin = <...>;
+> > 			x-size = <...>;
+> > 			y-size = <...>;
+> > 			linux,code = <KEY_INFO>;
+> > 		};
+> > 	};
+> > 
+> Now that I am working on the approach you suggested, I see that some
+> things can get slightly more complicated. I still think that it is worth
+> a try, but I would like to discuss a couple of points.
+> 
+> The node parsing is not that simple anymore because the touch-area nodes
+> are only surrounded by the touchscreen node. Theoretically they could be
+> even be defined with other properties in between. The current approach
+> only needs to find the overlay-buttons parent and iterate over all the
+> inner nodes(simply by calling device_get_named_child_node() and
+> fwnode_for_each_child_node() the parsing is achieved in two lines +
+> error checking). So maybe even if we opt for the single-object approach,
+> an overlay node to group all the touch-areas could simplify the parsing.
+> Or did you have a different approach in mind? Your example would turn
+> into this one:
+> 
+> 	touchscreen {
+> 		compatible = "...";
+> 		reg = <...>;
+> 
+> 		touch-overlay {
+> 			/* raw coordinates reported here */
+> 			touch-area-1 {
+> 				x-origin = <...>;
+> 				y-origin = <...>;
+> 				x-size = <...>;
+> 				y-size = <...>;
+> 			};
+> 
+> 			/* a button */
+> 			touch-area-2a {
+> 				x-origin = <...>;
+> 				y-origin = <...>;
+> 				x-size = <...>;
+> 				y-size = <...>;
+> 				linux,code = <KEY_POWER>;
+> 			};
+> 
+> 			/* another button */
+> 			touch-area-2b {
+> 				x-origin = <...>;
+> 				y-origin = <...>;
+> 				x-size = <...>;
+> 				y-size = <...>;
+> 				linux,code = <KEY_INFO>;
+> 			};
+> 		};
+> 	};
+> In my opinion it looks cleaner as well because you are defining a
+> physical object: the overlay.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ebe09a5995ee/disk-5254c0cb.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/02178d7f5f98/vmlinux-5254c0cb.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/12307f47d87c/bzImage-5254c0cb.xz
+I like this idea. My original example assumes one would include any node
+that contains some magic substring (e.g. "touch") in the node name, but
+thinking about this more, that may be a bit presumptive. It seems safer
+to wrap all of the children in one newly introduced node as you have done
+here.
 
-The issue was bisected to:
+> 
+> > With this method, the driver merely stores a list head. The parsing code
+> > then walks the client device node; for each touch* child encountered, it
+> > allocates memory for a structure of five members, and adds it to the list.
+> > 
+> The button objects do not only store the keycode, but also the slot and
+> if they are pressed or not. I could allocate memory for these members as
+> well, but maybe an additional struct with the button-specific members
+> set to NULL for the touch areas with keycode = KEY_RESERVED would make
+> sense. I don't know if that's adding too much overhead for two members
+> though.
 
-commit ea4452de2ae987342fadbdd2c044034e6480daad
-Author: Qi Zheng <zhengqi.arch@bytedance.com>
-Date:   Fri Nov 18 10:00:11 2022 +0000
+It's still not clear to me why your code is responsible for storing button
+state; that's the job of the input subsystem. Your code is only responsible
+for reporting instantaneous state after you are told something interesting
+happened (e.g. interrupt). The input core is responsible for determining
+whether the most recently reported state is different than the last.
 
-    mm: fix unexpected changes to {failslab|fail_page_alloc}.attr
+> 
+> > The event handling code then simply iterates through the list and checks
+> > if the coordinates reported by the hardware fall within each rectangle. If
+> > so, and the keycode in the list element is equal to KEY_RESERVED (zero),
+> > we assume the rectangle is of type (1); the coordinates are passed to
+> > touchscreen_report_pos() and the pressure is reported as well.
+> 
+> There is another case to consider that might make the iteration less
+> optimal, but I don't think it will be critical.
+> 
+> A button could be defined inside an overlay-touchscreen (no keycode)
+> area. Given that the other way round (a touchscreen inside a button)
+> does not make much sense, the buttons have a higher priority.
+> 
+> Let's take your example: imagine that your third area
+> is a button inside the first one. We have to iterate through the whole
+> list until we are sure we checked if there are buttons in the given
+> position, but keeping in mind that the first object already has the
+> right coordinates to handle the touch event. Your approach even allows
+> for multiple no-key areas and we do not know if there are buttons when
+> we iterate (there could be none).
+> Therefore some iterations could be unnecessary, but this is probably an
+> edge case that would cost at most a couple of extra iterations compared
+> to a two-list approach.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13027f76e80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10827f76e80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17027f76e80000
+I think we need to model the overlay as having only two dimensions, with
+nothing "on top of" or "inside" anything else. For this case of a button
+inside a touch surface, with the latter making a square doughnut shape of
+sorts, the 'touch-overlay' node would have five children: two tall
+rectangles (left and right), two shorter rectanges (above and below the
+button), and then finally a button in the center.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+59dcc2e7283a6f5f5ba1@syzkaller.appspotmail.com
-Fixes: ea4452de2ae9 ("mm: fix unexpected changes to {failslab|fail_page_alloc}.attr")
+Stated another way, the 'touch-overlay' node shall support an infinite
+number of infinitesimally small rectangles which comprise the entire touch
+surface. It shall be possible for a contact to be in zero rectangles, but
+impossible for any contact to be in more than one rectangle. I appreciate
+that the devil is in the details, but here we are defining the interface,
+independent of the implementation.
 
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007efe98069194
-R13: 00007efe97fd2210 R14: 0000000000000002 R15: 6972642f7665642f
- </TASK>
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5107 at drivers/gpu/drm/drm_prime.c:227 drm_prime_destroy_file_private+0x43/0x60 drivers/gpu/drm/drm_prime.c:227
-Modules linked in:
-CPU: 0 PID: 5107 Comm: syz-executor227 Not tainted 6.7.0-rc6-syzkaller-00248-g5254c0cbc92d #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-RIP: 0010:drm_prime_destroy_file_private+0x43/0x60 drivers/gpu/drm/drm_prime.c:227
-Code: 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 21 48 8b 83 90 00 00 00 48 85 c0 75 06 5b e9 13 f1 93 fc e8 0e f1 93 fc 90 <0f> 0b 90 5b e9 04 f1 93 fc e8 3f 9b ea fc eb d8 66 66 2e 0f 1f 84
-RSP: 0018:ffffc90003bdf9e0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888019f28378 RCX: ffffc90003bdf9b0
-RDX: ffff888018ff9dc0 RSI: ffffffff84f380c2 RDI: ffff888019f28408
-RBP: ffff888019f28000 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff8f193a57 R11: 0000000000000000 R12: ffff88814829a000
-R13: ffff888019f282a8 R14: ffff88814829a068 R15: ffff88814829a0a0
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007efe98050410 CR3: 000000006d1ff000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- drm_file_free.part.0+0x738/0xb90 drivers/gpu/drm/drm_file.c:290
- drm_file_free drivers/gpu/drm/drm_file.c:247 [inline]
- drm_close_helper.isra.0+0x180/0x1f0 drivers/gpu/drm/drm_file.c:307
- drm_release+0x22a/0x4f0 drivers/gpu/drm/drm_file.c:494
- __fput+0x270/0xb70 fs/file_table.c:394
- task_work_run+0x14d/0x240 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa8a/0x2ad0 kernel/exit.c:869
- do_group_exit+0xd4/0x2a0 kernel/exit.c:1018
- get_signal+0x23b5/0x2790 kernel/signal.c:2904
- arch_do_signal_or_restart+0x90/0x7f0 arch/x86/kernel/signal.c:309
- exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
- exit_to_user_mode_prepare+0x121/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1e/0x60 kernel/entry/common.c:296
- do_syscall_64+0x4d/0x110 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7efe98014769
-Code: Unable to access opcode bytes at 0x7efe9801473f.
-RSP: 002b:00007efe97fd2208 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 00007efe9809c408 RCX: 00007efe98014769
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007efe9809c408
-RBP: 00007efe9809c400 R08: 0000000000003131 R09: 0000000000003131
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007efe98069194
-R13: 00007efe97fd2210 R14: 0000000000000002 R15: 6972642f7665642f
- </TASK>
+> 
+> I will keep on working on the next version with a single list while we
+> clarify these points, so maybe we can save an iteration.
 
+I see there is a v6 now; I'll take a look at that next. Thanks again for
+the productive discussion!
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > Kind regards,
+> > Jeff LaBundy
+> 
+> Best regards,
+> Javier Carrasco
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Kind regards,
+Jeff LaBundy
 
