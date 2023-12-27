@@ -1,166 +1,186 @@
-Return-Path: <linux-kernel+bounces-11960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A8A581EE38
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:30:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E44F781EE3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:33:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4A091F21D25
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:30:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14C081C2182E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5840E10952;
-	Wed, 27 Dec 2023 10:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0FE444362;
+	Wed, 27 Dec 2023 10:33:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UsMirJGK"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="StNOX7ir"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F3519458;
-	Wed, 27 Dec 2023 10:30:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12B84C433C8;
-	Wed, 27 Dec 2023 10:30:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703673021;
-	bh=hRApFlhb/sxbWDx8I+HyotwyIw8GdewkTN3/MMfXZYE=;
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9425F3527E
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 10:33:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+	id 1AAAF20ACE45; Wed, 27 Dec 2023 02:33:17 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1AAAF20ACE45
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1703673197;
+	bh=rhta6OTcxm/C8G8aN3PzA3WRmHZVCVAC8GPPqF2VtbM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UsMirJGKgWeJr8vW83fc+EhEoV1ap1tB34O2P3joMCzCnFvLjc4y3xMky21CNam3E
-	 PWskdI/i2PCsoW5QhgJZNafgUvftiHV7uOH9NKSx+w/y0DvipKfOeQqC0e3Qpki0Jh
-	 iTpWt5zPg0zZFczYbdVtLfy1kFxIxEkHIkka9tT/y3Yzn39d+GyNCplB8bL+8yrjLl
-	 gUvhfqBtRR9nJCLEHLtNJqizw9yWHTA+Dt/3W6VyyQiIh33buFx3ZlTbw0KGeI6Acd
-	 4nKCr00NW/C4vDAkSnVpL1tx/OungSZ/jzAIZJCPhqEOII2vOQczyfGnbMxLxpfnBu
-	 7ZHDiXBI80eKg==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rIRB0-0002sD-0I;
-	Wed, 27 Dec 2023 11:30:14 +0100
-Date: Wed, 27 Dec 2023 11:30:14 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Paul Menzel <pmenzel@molgen.mpg.de>, Felix Zhang <mrman@mrman314.tech>
-Cc: linux-bluetooth@vger.kernel.org, stable@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>, marcan@marcan.st,
-	bagasdotme@gmail.com, sven@svenpeter.dev, alyssa@rosenzweig.io,
-	marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-	orlandoch.dev@gmail.com, kekrby@gmail.com, admin@kodeit.net,
-	j@jannau.net, gargaditya08@live.com, asahi@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] Bluetooth: Fix Bluetooth for BCM4377 on T2 Intel
- MacBooks
-Message-ID: <ZYv8tp3fMiAqK8OI@hovoldconsulting.com>
-References: <77419ffacc5b4875e920e038332575a2a5bff29f.camel@mrman314.tech>
- <b0d94116-1fa0-4c1f-8a3e-2919fd75b635@molgen.mpg.de>
+	b=StNOX7ireyxckzQYnApNhOyLTaxgkg+zAaQyG4RKrAIjysqHKC0oUy9iwbPkJD2HP
+	 xLSjfZsmiW4teICvPna4GuplGirzIc/0mMdilsWoY3JnUSP50/RVYpep3NIDJTqeVo
+	 rUDMcYZM95vcPE2OKhX95orAfjVqP/ZvMsjsIxHU=
+Date: Wed, 27 Dec 2023 02:33:17 -0800
+From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: linux-kernel@vger.kernel.org,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.dev>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH] drm: Check output polling initialized before disabling
+Message-ID: <20231227103317.GA25288@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1703662035-1373-1-git-send-email-shradhagupta@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b0d94116-1fa0-4c1f-8a3e-2919fd75b635@molgen.mpg.de>
+In-Reply-To: <1703662035-1373-1-git-send-email-shradhagupta@linux.microsoft.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Mon, Dec 25, 2023 at 09:26:05PM +0100, Paul Menzel wrote:
-
-> Thank you very much for the patch. I am adding Johan to Cc field.
-
-Thanks for the report. Guess I could use a break from the proverbial
-eggnog.
-
-> Am 25.12.23 um 21:01 schrieb Felix Zhang:
-> > Starting v6.5, Bluetooth does not work at all on my T2 MacBookAir9,1
-> > 
-> > with the BCM4377 chip.  When I boot up the computer, go into
+On Tue, Dec 26, 2023 at 11:27:15PM -0800, Shradha Gupta wrote:
+> In drm_mode_config_helper_suspend() check if output polling
+> support is initialized before enabling/disabling polling.
+> For drivers like hyperv-drm, that do not initialize connector
+> polling, if suspend is called without this check, it leads to
+> suspend failure with following stack
 > 
-> Somehow a blank line snug in above.
+> [  770.719392] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+> [  770.720592] printk: Suspending console(s) (use no_console_suspend to debug)
+> [  770.948823] ------------[ cut here ]------------
+> [  770.948824] WARNING: CPU: 1 PID: 17197 at kernel/workqueue.c:3162 __flush_work.isra.0+0x212/0x230
+> [  770.948831] Modules linked in: rfkill nft_counter xt_conntrack xt_owner udf nft_compat crc_itu_t nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set nf_tables nfnetlink vfat fat mlx5_ib ib_uverbs ib_core mlx5_core intel_rapl_msr intel_rapl_common kvm_amd ccp mlxfw kvm psample hyperv_drm tls drm_shmem_helper drm_kms_helper irqbypass pcspkr syscopyarea sysfillrect sysimgblt hv_balloon hv_utils joydev drm fuse xfs libcrc32c pci_hyperv pci_hyperv_intf sr_mod sd_mod cdrom t10_pi sg hv_storvsc scsi_transport_fc hv_netvsc serio_raw hyperv_keyboard hid_hyperv crct10dif_pclmul crc32_pclmul crc32c_intel hv_vmbus ghash_clmulni_intel dm_mirror dm_region_hash dm_log dm_mod
+> [  770.948863] CPU: 1 PID: 17197 Comm: systemd-sleep Not tainted 5.14.0-362.2.1.el9_3.x86_64 #1
+> [  770.948865] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.1 05/09/2022
+> [  770.948866] RIP: 0010:__flush_work.isra.0+0x212/0x230
+> [  770.948869] Code: 8b 4d 00 4c 8b 45 08 89 ca 48 c1 e9 04 83 e2 08 83 e1 0f 83 ca 02 89 c8 48 0f ba 6d 00 03 e9 25 ff ff ff 0f 0b e9 4e ff ff ff <0f> 0b 45 31 ed e9 44 ff ff ff e8 8f 89 b2 00 66 66 2e 0f 1f 84 00
+> [  770.948870] RSP: 0018:ffffaf4ac213fb10 EFLAGS: 00010246
+> [  770.948871] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff8c992857
+> [  770.948872] RDX: 0000000000000001 RSI: 0000000000000001 RDI: ffff9aad82b00330
+> [  770.948873] RBP: ffff9aad82b00330 R08: 0000000000000000 R09: ffff9aad87ee3d10
+> [  770.948874] R10: 0000000000000200 R11: 0000000000000000 R12: ffff9aad82b00330
+> [  770.948874] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+> [  770.948875] FS:  00007ff1b2f6bb40(0000) GS:ffff9aaf37d00000(0000) knlGS:0000000000000000
+> [  770.948878] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  770.948878] CR2: 0000555f345cb666 CR3: 00000001462dc005 CR4: 0000000000370ee0
+> [  770.948879] Call Trace:
+> [  770.948880]  <TASK>
+> [  770.948881]  ? show_trace_log_lvl+0x1c4/0x2df
+> [  770.948884]  ? show_trace_log_lvl+0x1c4/0x2df
+> [  770.948886]  ? __cancel_work_timer+0x103/0x190
+> [  770.948887]  ? __flush_work.isra.0+0x212/0x230
+> [  770.948889]  ? __warn+0x81/0x110
+> [  770.948891]  ? __flush_work.isra.0+0x212/0x230
+> [  770.948892]  ? report_bug+0x10a/0x140
+> [  770.948895]  ? handle_bug+0x3c/0x70
+> [  770.948898]  ? exc_invalid_op+0x14/0x70
+> [  770.948899]  ? asm_exc_invalid_op+0x16/0x20
+> [  770.948903]  ? __flush_work.isra.0+0x212/0x230
+> [  770.948905]  __cancel_work_timer+0x103/0x190
+> [  770.948907]  ? _raw_spin_unlock_irqrestore+0xa/0x30
+> [  770.948910]  drm_kms_helper_poll_disable+0x1e/0x40 [drm_kms_helper]
+> [  770.948923]  drm_mode_config_helper_suspend+0x1c/0x80 [drm_kms_helper]
+> [  770.948933]  ? __pfx_vmbus_suspend+0x10/0x10 [hv_vmbus]
+> [  770.948942]  hyperv_vmbus_suspend+0x17/0x40 [hyperv_drm]
+> [  770.948944]  ? __pfx_vmbus_suspend+0x10/0x10 [hv_vmbus]
+> [  770.948951]  dpm_run_callback+0x4c/0x140
+> [  770.948954]  __device_suspend_noirq+0x74/0x220
+> [  770.948956]  dpm_noirq_suspend_devices+0x148/0x2a0
+> [  770.948958]  dpm_suspend_end+0x54/0xe0
+> [  770.948960]  create_image+0x14/0x290
+> [  770.948963]  hibernation_snapshot+0xd6/0x200
+> [  770.948964]  hibernate.cold+0x8b/0x1fb
+> [  770.948967]  state_store+0xcd/0xd0
+> [  770.948969]  kernfs_fop_write_iter+0x124/0x1b0
+> [  770.948973]  new_sync_write+0xff/0x190
+> [  770.948976]  vfs_write+0x1ef/0x280
+> [  770.948978]  ksys_write+0x5f/0xe0
+> [  770.948979]  do_syscall_64+0x5c/0x90
+> [  770.948981]  ? syscall_exit_work+0x103/0x130
+> [  770.948983]  ? syscall_exit_to_user_mode+0x12/0x30
+> [  770.948985]  ? do_syscall_64+0x69/0x90
+> [  770.948986]  ? do_syscall_64+0x69/0x90
+> [  770.948987]  ? do_user_addr_fault+0x1d6/0x6a0
+> [  770.948989]  ? do_syscall_64+0x69/0x90
+> [  770.948990]  ? exc_page_fault+0x62/0x150
+> [  770.948992]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> [  770.948995] RIP: 0033:0x7ff1b293eba7
+> [  770.949010] Code: 0b 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+> [  770.949011] RSP: 002b:00007ffde3912128 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> [  770.949012] RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007ff1b293eba7
+> [  770.949013] RDX: 0000000000000005 RSI: 00007ffde3912210 RDI: 0000000000000004
+> [  770.949014] RBP: 00007ffde3912210 R08: 000055d7dd4c9510 R09: 00007ff1b29b14e0
+> [  770.949014] R10: 00007ff1b29b13e0 R11: 0000000000000246 R12: 0000000000000005
+> [  770.949015] R13: 000055d7dd4c53e0 R14: 0000000000000005 R15: 00007ff1b29f69e0
+> [  770.949016]  </TASK>
+> [  770.949017] ---[ end trace e6fa0618bfa2f31d ]---
 > 
-> > bluetoothctl, and then try to run commands like scan on, show, list,
-> > it returns "No default controller available."  I have tried reloading
-> > the
+> Built-on: Rhel9, Ubuntu22
+> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> ---
+>  drivers/gpu/drm/drm_modeset_helper.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 > 
-> It’d be great if you reflowed for 75 characters per line (also below).
-> 
-> > kernel module, in which the log outputs "{Added,Removed} hci0
-> > (unconfigured)."  With this patch, I am able to use Bluetooth as
-> > normal
-> > without any errors regarding hci0 being unconfigured.  However, an
-> > issue is still present where sometimes hci_bcm4377 will have to be
-> > reloaded in order to get bluetooth to work.  I believe this was still
-> > present before the previously mentioned commit.
-> > 
-> > Due to the bit HCI_QUIRK_USE_BDADDR_PROPERTY being always set in
-> > drivers/bluetooth/hci_bcm4377.c (line 2371), the chip would be left
-> > unconfigured on kernels compiled after commit 6945795bc81a
-> > ("Bluetooth:
-> > fix use-bdaddr-property quirk") due to a change in its logic.  On the
-> > M1 Macs, the device would be configured in the devicetree.  However,
-> > that is not the case on T2 Macs.  Because the bluetooth adapter is
-> > left
-> > unconfigured, it is not usable in the operating system.  In order to
-> > circumvent this issue, a flag is added to prevent the bit from being
-> > set on the BCM4377, while setting it on the other devices.
+> diff --git a/drivers/gpu/drm/drm_modeset_helper.c b/drivers/gpu/drm/drm_modeset_helper.c
+> index f858dfedf2cf..ac8ce709e3c1 100644
+> --- a/drivers/gpu/drm/drm_modeset_helper.c
+> +++ b/drivers/gpu/drm/drm_modeset_helper.c
+> @@ -194,12 +194,17 @@ int drm_mode_config_helper_suspend(struct drm_device *dev)
+>  	if (!dev)
+>  		return 0;
+>  
+> -	drm_kms_helper_poll_disable(dev);
+> +	if (dev->mode_config.poll_enabled)
+> +		drm_kms_helper_poll_disable(dev);
+> +
+>  	drm_fb_helper_set_suspend_unlocked(dev->fb_helper, 1);
+>  	state = drm_atomic_helper_suspend(dev);
+>  	if (IS_ERR(state)) {
+>  		drm_fb_helper_set_suspend_unlocked(dev->fb_helper, 0);
+> -		drm_kms_helper_poll_enable(dev);
+> +
+> +		if (dev->mode_config.poll_enabled)
+> +			drm_kms_helper_poll_enable(dev);
 
-The commit you tracked this down to restored the original semantics for
-HCI_QUIRK_USE_BDADDR_PROPERTY, which means that it should only be set
-for devices with an invalid address.
+This can be avoided as drm_kms_helper_poll_enable already check for
+dev->mode_config.poll_enabled.
+Further I was thinking may be we can add a similar check in
+drm_kms_helper_poll_disable but, there is already a function
+drm_kms_helper_poll_fini which does something similar. May be worth
+using it instead of drm_kms_helper_poll_disable ?
 
-The Broadcom BCM4377 driver has so far been setting this flag
-unconditionally which now potentially results in also valid addresses
-being marked as invalid.
+Moreover I see the below comments in description of
+drm_kms_helper_poll_disable. Apparently which is not true. Possibly
+Daniel or other DRM maintainers can share their opinion on this
+comment if it can be taken out.
+"
+ * Drivers can call this helper from their device suspend implementation. It is
+ * not an error to call this even when output polling isn't enabled or already
+ * disabled. 
+"
 
-I've just sent a patch that makes sure to only mark invalid addresses as
-invalid:
+- Saurabh
 
-	https://lore.kernel.org/lkml/20231227101003.10534-1-johan+linaro@kernel.org/
-
-Note however that the flag still needs to be set in case your device
-lacks storage for a unique device address so you cannot simply drop it
-for some device classes as you do below (unless you are certain that
-these devices will always have a valid address).
-
-Devices without a valid address starts in an unconfigured state and
-cannot be used until userspace has provided an address (e.g. using
-btmgmt):
-
-	btmgmt --index 0 public-addr 00:11:22:33:44:55
-
-> > Fixes: 6945795bc81a ("Bluetooth: fix use-bdaddr-property quirk")
-> > Signed-off-by: Felix Zhang <mrman@mrman314.tech>
-
-> > @@ -2368,7 +2369,8 @@ static int bcm4377_probe(struct pci_dev *pdev,
-> > const struct pci_device_id *id)
-> >   	hdev->set_bdaddr = bcm4377_hci_set_bdaddr;
-> >   	hdev->setup = bcm4377_hci_setup;
-> >   
-> > -	set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
-> > +	if (bcm4377->hw->use_bdaddr_property)
-> > +		set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
-> >   	if (bcm4377->hw->broken_mws_transport_config)
-> >   		set_bit(HCI_QUIRK_BROKEN_MWS_TRANSPORT_CONFIG, &hdev-
-> >> quirks);
-> >   	if (bcm4377->hw->broken_ext_scan)
-> > @@ -2465,6 +2467,7 @@ static const struct bcm4377_hw
-> > bcm4377_hw_variants[] = {
-> >   		.has_bar0_core2_window2 = true,
-> >   		.broken_mws_transport_config = true,
-> >   		.broken_le_coded = true,
-> > +		.use_bdaddr_property = true,
-> >   		.send_calibration = bcm4378_send_calibration,
-> >   		.send_ptb = bcm4378_send_ptb,
-> >   	},
-> > @@ -2479,6 +2482,7 @@ static const struct bcm4377_hw
-> > bcm4377_hw_variants[] = {
-> >   		.clear_pciecfg_subsystem_ctrl_bit19 = true,
-> >   		.broken_mws_transport_config = true,
-> >   		.broken_le_coded = true,
-> > +		.use_bdaddr_property = true,
-> >   		.send_calibration = bcm4387_send_calibration,
-> >   		.send_ptb = bcm4378_send_ptb,
-> >   	},
-
-Back to the eggnog.
-
-Johan
+> +
+>  		return PTR_ERR(state);
+>  	}
+>  
+> -- 
+> 2.34.1
 
