@@ -1,175 +1,96 @@
-Return-Path: <linux-kernel+bounces-11743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C69F81EB0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 02:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 887A781EB0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 02:07:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 322DF1C20A8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 01:05:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C8DC1C21F54
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 01:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15AE61C3E;
-	Wed, 27 Dec 2023 01:04:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6128F1FBE;
+	Wed, 27 Dec 2023 01:07:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Afuu6wVW"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ZrtQ+M1w"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645D81845
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 01:04:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F16A6C433C8;
-	Wed, 27 Dec 2023 01:04:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703639092;
-	bh=Yaq8MVAV2pEvBgI5YB3Fdymm0zCj071d01eFoMGANNA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Afuu6wVWCPR9h+jQq1UrLqjUKFxQS2sZET6g9LalUfIurewPqVgqrKdrCndAiC6AW
-	 S8/VN4NbEJNOimzrww/7mLgUzxeDcBmNPWL/r+DDih9aclMN7pJa9IAsczKv+lvcro
-	 8U8PHbctviBjuXEvv4m5ki+IzcnA9Me9UmYxerY7SzhxR9M/FhsFGhfJFuuD2BXPic
-	 EfesFxl3sjPziwyFX6OV80S7GwT3e4FiduJf+vUJmmIabODs8m58zwvB3vEbnwLbkr
-	 cFF5N1finq1FlqpE/9OuKK1tEOcICQbaDAAaXueqoVKloPCBnvm3LP5LmXQjvnSj/Y
-	 ZnoLGPF/4E4Dw==
-Message-ID: <35f160e2-a9e4-4f76-af32-de00dce05fa1@kernel.org>
-Date: Wed, 27 Dec 2023 09:04:48 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5CCE1845;
+	Wed, 27 Dec 2023 01:07:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=1YmUkz0VIfT+7ufOGukztD/52zdqDSYrXiOaVrLHV08=; b=ZrtQ+M1ws99czu8wJvhoVSUG+y
+	9/qAAl/X9QyGzNofhUAr6sNsisAS4ViJHdkZZr4WZtSdGzGhLESU4RciRnEP6p982JW382Vl/8gPO
+	wO9jen+eno0k/Pz7XDNf4mrKViYj06MP+J8X6k3/DfNyRV0B8GqlsbHPD6dxF0HKgVtFRXuSXb3ub
+	MtTc5earlL2Rj90YP/DExgqVyHbB9N0ueHcn+KHK6hhL7WAg1fm2MertnO0IJlMgoO8GAl33nUE/i
+	42dGVFEeEc3SAyMxzcjdP/+IPLcjO8LQGL2UY/OI4f9UdymzKjVLhLgFDUeG7AOKewAl6jWljyIwo
+	Qo1bCGxg==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rIINt-00Djt8-1X;
+	Wed, 27 Dec 2023 01:06:57 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Bibo Mao <maobibo@loongson.cn>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	WANG Xuerui <kernel@xen0n.name>,
+	kvm@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH] LoongArch: KVM: add a return kvm_own_lasx() stub
+Date: Tue, 26 Dec 2023 17:06:56 -0800
+Message-ID: <20231227010656.29211-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] f2fs: compress: fix to guarantee persisting
- compressed blocks by CP
-Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-References: <20231220135934.3471407-1-chao@kernel.org>
- <ZYs_S0VLFFnV1g-3@google.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <ZYs_S0VLFFnV1g-3@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2023/12/27 5:02, Jaegeuk Kim wrote:
-> On 12/20, Chao Yu wrote:
->> If data block in compressed cluster is not persisted with metadata
->> during checkpoint, after SPOR, the data may be corrupted, let's
->> guarantee to write compressed page by checkpoint.
->>
->> Fixes: 4c8ff7095bef ("f2fs: support data compression")
->> Signed-off-by: Chao Yu <chao@kernel.org>
->> ---
->>   fs/f2fs/compress.c |  3 ++-
->>   fs/f2fs/data.c     | 12 +++++++++---
->>   fs/f2fs/f2fs.h     |  3 ++-
->>   3 files changed, 13 insertions(+), 5 deletions(-)
->>
->> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->> index 5b076329e9bf..1122db8cc0b0 100644
->> --- a/fs/f2fs/compress.c
->> +++ b/fs/f2fs/compress.c
->> @@ -1442,6 +1442,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
->>   	struct f2fs_sb_info *sbi = bio->bi_private;
->>   	struct compress_io_ctx *cic =
->>   			(struct compress_io_ctx *)page_private(page);
->> +	enum count_type type = WB_DATA_TYPE(page);
->>   	int i;
->>   
->>   	if (unlikely(bio->bi_status))
->> @@ -1449,7 +1450,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
->>   
->>   	f2fs_compress_free_page(page);
->>   
->> -	dec_page_count(sbi, F2FS_WB_DATA);
->> +	dec_page_count(sbi, type);
->>   
->>   	if (atomic_dec_return(&cic->pending_pages))
->>   		return;
->> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->> index d28c97282e68..6c72a6e86ba8 100644
->> --- a/fs/f2fs/data.c
->> +++ b/fs/f2fs/data.c
->> @@ -48,7 +48,7 @@ void f2fs_destroy_bioset(void)
->>   	bioset_exit(&f2fs_bioset);
->>   }
->>   
->> -static bool __is_cp_guaranteed(struct page *page)
->> +bool f2fs_is_cp_guaranteed(struct page *page)
->>   {
->>   	struct address_space *mapping = page->mapping;
->>   	struct inode *inode;
->> @@ -66,7 +66,7 @@ static bool __is_cp_guaranteed(struct page *page)
->>   		return true;
->>   
->>   	if (f2fs_is_compressed_page(page))
->> -		return false;
->> +		return true;
->>   	if ((S_ISREG(inode->i_mode) && IS_NOQUOTA(inode)) ||
->>   			page_private_gcing(page))
->>   		return true;
->> @@ -1007,6 +1007,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>   	enum page_type btype = PAGE_TYPE_OF_BIO(fio->type);
->>   	struct f2fs_bio_info *io = sbi->write_io[btype] + fio->temp;
->>   	struct page *bio_page;
->> +	enum count_type type;
->>   
->>   	f2fs_bug_on(sbi, is_read_io(fio->op));
->>   
->> @@ -1046,7 +1047,12 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>   	/* set submitted = true as a return value */
->>   	fio->submitted = 1;
->>   
->> -	inc_page_count(sbi, WB_DATA_TYPE(bio_page));
->> +	type = WB_DATA_TYPE(bio_page);
->> +	/* override count type if page is compressed one */
->> +	if (fio->compressed_page)
->> +		type = WB_DATA_TYPE(fio->compressed_page);
-> 
-> Doesn't bio_page already point fio->compressed_page?
+The stub for kvm_own_lasx() when CONFIG_CPU_HAS_LASX is not defined
+should have a return value since it returns an int, so add
+"return -EINVAL;" to the stub. Fixes the build error:
 
-Please check below codes, bio_page will point to fio->encrypted_page if
-both software encryption feature and compression feature are on, for this
-case, we still need to account F2FS_WB_CP_DATA.
+In file included from ../arch/loongarch/include/asm/kvm_csr.h:12,
+                 from ../arch/loongarch/kvm/interrupt.c:8:
+../arch/loongarch/include/asm/kvm_vcpu.h: In function 'kvm_own_lasx':
+../arch/loongarch/include/asm/kvm_vcpu.h:73:39: error: no return statement in function returning non-void [-Werror=return-type]
+   73 | static inline int kvm_own_lasx(struct kvm_vcpu *vcpu) { }
 
-	if (fio->encrypted_page)
-		bio_page = fio->encrypted_page;
-	else if (fio->compressed_page)
-		bio_page = fio->compressed_page;
-	else
-		bio_page = fio->page;
+Fixes: 118e10cd893d ("LoongArch: KVM: Add LASX (256bit SIMD) support")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Bibo Mao <maobibo@loongson.cn>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>
+Cc: Huacai Chen <chenhuacai@loongson.cn>
+Cc: WANG Xuerui <kernel@xen0n.name>
+Cc: kvm@vger.kernel.org
+Cc: loongarch@lists.linux.dev
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/loongarch/include/asm/kvm_vcpu.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-
-> 
->> +
->> +	inc_page_count(sbi, type);
->>   
->>   	if (io->bio &&
->>   	    (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
->> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->> index 76e9a8682e38..bcb3940ab5ba 100644
->> --- a/fs/f2fs/f2fs.h
->> +++ b/fs/f2fs/f2fs.h
->> @@ -1092,7 +1092,7 @@ struct f2fs_sm_info {
->>    * f2fs monitors the number of several block types such as on-writeback,
->>    * dirty dentry blocks, dirty node blocks, and dirty meta blocks.
->>    */
->> -#define WB_DATA_TYPE(p)	(__is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
->> +#define WB_DATA_TYPE(p)	(f2fs_is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
->>   enum count_type {
->>   	F2FS_DIRTY_DENTS,
->>   	F2FS_DIRTY_DATA,
->> @@ -3824,6 +3824,7 @@ void f2fs_init_ckpt_req_control(struct f2fs_sb_info *sbi);
->>    */
->>   int __init f2fs_init_bioset(void);
->>   void f2fs_destroy_bioset(void);
->> +bool f2fs_is_cp_guaranteed(struct page *page);
->>   int f2fs_init_bio_entry_cache(void);
->>   void f2fs_destroy_bio_entry_cache(void);
->>   void f2fs_submit_read_bio(struct f2fs_sb_info *sbi, struct bio *bio,
->> -- 
->> 2.40.1
+diff -- a/arch/loongarch/include/asm/kvm_vcpu.h b/arch/loongarch/include/asm/kvm_vcpu.h
+--- a/arch/loongarch/include/asm/kvm_vcpu.h
++++ b/arch/loongarch/include/asm/kvm_vcpu.h
+@@ -70,7 +70,7 @@ int kvm_own_lasx(struct kvm_vcpu *vcpu);
+ void kvm_save_lasx(struct loongarch_fpu *fpu);
+ void kvm_restore_lasx(struct loongarch_fpu *fpu);
+ #else
+-static inline int kvm_own_lasx(struct kvm_vcpu *vcpu) { }
++static inline int kvm_own_lasx(struct kvm_vcpu *vcpu) { return -EINVAL; }
+ static inline void kvm_save_lasx(struct loongarch_fpu *fpu) { }
+ static inline void kvm_restore_lasx(struct loongarch_fpu *fpu) { }
+ #endif
 
