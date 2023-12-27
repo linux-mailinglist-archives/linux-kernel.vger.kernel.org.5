@@ -1,183 +1,112 @@
-Return-Path: <linux-kernel+bounces-11866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E31D81ECA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:35:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70CA881EC94
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:28:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0965D2836F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:35:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A29D41C222E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:28:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D9FA538D;
-	Wed, 27 Dec 2023 06:34:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7EB538B;
+	Wed, 27 Dec 2023 06:28:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="fy65utrA";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="hzzG6cK/";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="fy65utrA";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="hzzG6cK/"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kxc8sU71"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9EF5228;
-	Wed, 27 Dec 2023 06:34:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 186D721F0A;
-	Wed, 27 Dec 2023 06:27:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1703658455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FakuDnvNk9/YjmcoZ/WVOYeU7HnKDgkIl+6IPRziswE=;
-	b=fy65utrANAhoHW1PKl99U1yOzgRDKnt8FQbQ09zIHtO9y4vy9ktIWn3cEHe8O+Q2WJPPPJ
-	bLGSPzBRNK000hGl+D1vpaxgdJmy9iB93fCr3fI3PF9OsbQZieMr6cFDg0ogS0Pc8xO+Fa
-	v6P6o8p0yLYWIYzqeyAa4I9YCG320AA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1703658455;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FakuDnvNk9/YjmcoZ/WVOYeU7HnKDgkIl+6IPRziswE=;
-	b=hzzG6cK/ky4Ian2nbOoLikiSrP5+sHLGkaIG8VBjFIxiq7uuRS+vb32BJwWx+/ue4E7j0/
-	pUR+m7dVzc1nr1Aw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1703658455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FakuDnvNk9/YjmcoZ/WVOYeU7HnKDgkIl+6IPRziswE=;
-	b=fy65utrANAhoHW1PKl99U1yOzgRDKnt8FQbQ09zIHtO9y4vy9ktIWn3cEHe8O+Q2WJPPPJ
-	bLGSPzBRNK000hGl+D1vpaxgdJmy9iB93fCr3fI3PF9OsbQZieMr6cFDg0ogS0Pc8xO+Fa
-	v6P6o8p0yLYWIYzqeyAa4I9YCG320AA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1703658455;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FakuDnvNk9/YjmcoZ/WVOYeU7HnKDgkIl+6IPRziswE=;
-	b=hzzG6cK/ky4Ian2nbOoLikiSrP5+sHLGkaIG8VBjFIxiq7uuRS+vb32BJwWx+/ue4E7j0/
-	pUR+m7dVzc1nr1Aw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5E67113902;
-	Wed, 27 Dec 2023 06:27:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id iZciOtLDi2WOIAAAn2gu4w
-	(envelope-from <ddiss@suse.de>); Wed, 27 Dec 2023 06:27:30 +0000
-Date: Wed, 27 Dec 2023 17:27:09 +1100
-From: David Disseldorp <ddiss@suse.de>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
- andriy.shevchenko@linux.intel.com, David.Laight@ACULAB.COM
-Subject: Re: [PATCH 3/3] btrfs: migrate to the newer memparse_safe() helper
-Message-ID: <20231227172709.4402bc6c@echidna>
-In-Reply-To: <6dfa53ded887caa2269c1beeaedcff086342339a.1703324146.git.wqu@suse.com>
-References: <cover.1703324146.git.wqu@suse.com>
-	<6dfa53ded887caa2269c1beeaedcff086342339a.1703324146.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 078075666;
+	Wed, 27 Dec 2023 06:28:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703658481; x=1735194481;
+  h=from:to:cc:subject:date:message-id;
+  bh=suBVpZrIX+26A1y1ne4PDB74bdL7C3LwazkehHNtqYs=;
+  b=kxc8sU71AVh2l8de40/YCvbZf3UzME2g04h9aNGVtcxlCzqCkdV5aIP+
+   l//1Y6jbP+muy6pgyP4SB53rhSQ7/3sZZAzcvQ3XA4SHkO6SZDhrKGUFd
+   Vx8YQJeYmNFGBOJq9MS3x9jS9Ns8QuJlOQLZhcGOz/xnRKSYEudUUc7Px
+   UGhonHARNhjczyu/HXfcluQtSLvYvdtzLaQ9YLk2GcBQ6d8b3sHNzMapa
+   coxrMfiZZ6a5Tvi5aPo4COrzAxX4sIbRR0tpKQkhOl+Gaj0kf4bFehbg8
+   OXbObHsRTEXdfB3cKzySrUhgz71hlcaYcO3XME3VohJN23/DzOURZGdOR
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="427584069"
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="427584069"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2023 22:28:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="1025316079"
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="1025316079"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmsmga006.fm.intel.com with ESMTP; 26 Dec 2023 22:27:59 -0800
+From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc: Chen Yu <yu.c.chen@intel.com>,
+	Len Brown <len.brown@intel.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+	Zhang Rui <rui.zhang@intel.com>,
+	Zhao Liu <zhao1.liu@intel.com>,
+	stable@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Subject: [PATCH 0/4] thermal: intel: hfi: Fix memory corruption on resume from hibernation
+Date: Tue, 26 Dec 2023 22:29:36 -0800
+Message-Id: <20231227062940.10780-1-ricardo.neri-calderon@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,linux-foundation.org,wanadoo.fr,linux.intel.com,ACULAB.COM];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
 
-On Sat, 23 Dec 2023 20:28:07 +1030, Qu Wenruo wrote:
+Hi,
 
-> The new helper has better error report and correct overflow detection,
-> furthermore the old @retptr behavior is also kept, thus there should be
-> no behavior change.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/ioctl.c |  8 ++++++--
->  fs/btrfs/super.c |  8 ++++++++
->  fs/btrfs/sysfs.c | 14 +++++++++++---
->  3 files changed, 25 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 4e50b62db2a8..8bfd4b4ccf02 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -1175,8 +1175,12 @@ static noinline int btrfs_ioctl_resize(struct file *file,
->  			mod = 1;
->  			sizestr++;
->  		}
-> -		new_size = memparse(sizestr, &retptr);
-> -		if (*retptr != '\0' || new_size == 0) {
-> +
-> +		ret = memparse_safe(sizestr, MEMPARSE_SUFFIXES_DEFAULT,
-> +				    &new_size, &retptr);
-> +		if (ret < 0)
-> +			goto out_finish;
-> +		if (*retptr != '\0') {
+Memory corruption may occur if the location of the HFI memory buffer is not
+restored when resuming from hibernation or suspend-to-memory.
 
-Was dropping the -EINVAL return for new_size=0 intentional?
+During a normal boot, the kernel allocates a memory buffer and gives it to
+the hardware for reporting updates in the HFI table. The same allocation
+process is done by a restore kernel when resuming from suspend or
+hibernation.
 
->  			ret = -EINVAL;
->  			goto out_finish;
->  		}
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 3a677b808f0f..2bb6ea525e89 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -400,6 +400,14 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
->  		ctx->thread_pool_size = result.uint_32;
->  		break;
->  	case Opt_max_inline:
-> +		int ret;
-> +
-> +		ret = memparse_safe(param->string, MEMPARSE_SUFFIXES_DEFAULT,
-> +				    &ctx->max_inline, NULL);
-> +		if (ret < 0) {
-> +			btrfs_err(NULL, "invalid string \"%s\"", param->string);
-> +			return ret;
-> +		}
->  		ctx->max_inline = memparse(param->string, NULL);
+The location of the memory that the restore kernel allocates may differ
+from that allocated by the image kernel. To prevent memory corruption (the
+hardware keeps using the memory buffer from the restore kernel), it is
+necessary to disable HFI before transferring control to the image kernel.
+Once running, the image kernel must restore the location of the HFI memory
+and enable HFI.
 
-Looks like you overlooked removal of the old memparse() call above.
+The patchset addresses the described bug on systems with one or more HFI
+instances (i.e., packages) using CPU hotplug callbacks and a suspend
+notifier.
 
-Cheers, David
+I tested this patchset on Meteor Lake and Sapphire Rapids. The systems
+completed 3500 (in two separate tests of 1500 and 2000 repeats) and
+1000 hibernate-resume cycles, respectively. I tested it using Rafael's
+testing branch as on 20th December 2023.
+
+Thanks and BR,
+Ricardo
+
+Ricardo Neri (4):
+  thermal: intel: hfi: Refactor enabling code into helper functions
+  thermal: intel: hfi: Enable an HFI instance from its first online CPU
+  thermal: intel: hfi: Disable an HFI instance when all its CPUs go
+    offline
+  thermal: intel: hfi: Add a suspend notifier
+
+ drivers/thermal/intel/intel_hfi.c | 142 ++++++++++++++++++++++++------
+ 1 file changed, 116 insertions(+), 26 deletions(-)
+
+-- 
+2.25.1
+
 
