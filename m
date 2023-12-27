@@ -1,215 +1,177 @@
-Return-Path: <linux-kernel+bounces-11949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 739C381EE15
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:11:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27EDA81EE18
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 11:12:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00B501F21EFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:11:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 526361C2175C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:12:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9B02C684;
-	Wed, 27 Dec 2023 10:11:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B47AC2D039;
+	Wed, 27 Dec 2023 10:12:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="MtVjc219"
+	dkim=pass (2048-bit key) header.d=svenpeter.dev header.i=@svenpeter.dev header.b="aQ3WQS3n";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tu2//lgY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A12A82C6A2
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 10:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3364c9ff8e1so3389424f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 02:11:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1703671860; x=1704276660; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dha98cN4hU5+uMmPYYuzZJ8jEloyK7XIGhXo3p3U63s=;
-        b=MtVjc219LiAlI5G+Q/otQdQ2U+DF+QCZHTZjVTYTWlb6u5gdfRhLTetipE0a+fBffN
-         kWToJQuMnT2dVM+bdmF6Mhlmd/aS9YsxFDXNOjT9wRCq51NaQit1FuaRX80PBv/0QUA+
-         LRg15X5ZqaJ+s503OQBIn26hFlZmBncpWEy0IYXPds0BAt6EOtP8/0x59Z5/9MqvMrEZ
-         vEJEXOnYZwS/H6kJH1TKEH1CVCzDWMsQzxVWg5yMolst5R7IH6+6hFkpDi+MUCVf+fwS
-         eccEJ6eHQpWgCm49uqG7Z3MCAqVsBjD1mVbiz2utyJfVnlsY03cBo5aoGjzZTNvii4SQ
-         UVYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703671860; x=1704276660;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dha98cN4hU5+uMmPYYuzZJ8jEloyK7XIGhXo3p3U63s=;
-        b=fF9KuQoMfO7v5KgKGptAaSzKIUOSyAaf66GmPXOuNv+gveGh3kfNYoPjC9cBy+G1i9
-         7kW+ZzlLrz/XLOVnl1qsHFocC51mzRcmxtBzFhtr1ZpmTlegaJf6dToJrrUDejM4ewTF
-         2nNhRyZUJ8Wb+BfvJkl4IbQVIhxhAAGqe9enpNy3AiyW4kVP1hDdAADQ43uacPfoQKLF
-         CUEiVfq3hFDJvyyQLPS+R6l9Wr0TLP5Xbd8ssezgy4uRlmo5eLqOB7TgA2wp63CsYG+u
-         U3F23NmkWni2rkFWPN+VpTwHctOb7VVnJd/5X5RHickeCf4joMd0vpT/Ks5m7NSnlKuJ
-         vZlA==
-X-Gm-Message-State: AOJu0YyhRRMNBPX/g/jXh/hdTJh8n2PzUpxs1dKkctyL18+/BGNPLWSI
-	1VRZMDFEm4SQNpoEdutBEjImRSTM7WwkeDinButZt3JmW48=
-X-Google-Smtp-Source: AGHT+IEkpDzCiZN53tEvFcVnsDqahBNhR0O/quhlOrBOasAmMVa28HrmBCeq+5Z4QN30IsXMEuI31Q==
-X-Received: by 2002:a05:600c:198f:b0:40d:5f64:748b with SMTP id t15-20020a05600c198f00b0040d5f64748bmr215086wmq.61.1703671859588;
-        Wed, 27 Dec 2023 02:10:59 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.140])
-        by smtp.gmail.com with ESMTPSA id fa18-20020a05600c519200b0040d5a39b694sm5092058wmb.48.2023.12.27.02.10.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Dec 2023 02:10:59 -0800 (PST)
-Message-ID: <d5448a91-a4d8-444d-9f96-083049b1e33e@tuxon.dev>
-Date: Wed, 27 Dec 2023 12:10:57 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8604C2C6AA;
+	Wed, 27 Dec 2023 10:11:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=svenpeter.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=svenpeter.dev
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id 4CC8A3200A4A;
+	Wed, 27 Dec 2023 05:11:55 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 27 Dec 2023 05:11:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
+	 t=1703671914; x=1703758314; bh=XVSXiOw8grD64P8JYTC8B1bQFxnox8Fw
+	eiXoeYvGRWo=; b=aQ3WQS3nScvCyZJBUuz9FJUBwHbe9Okn2bE66AuaNsNnlhTu
+	oNOuweRdHp04NRkCWyueGpErNtlvRmT1gr3nP58qacKdlfEfFA6RciJan+v4cev/
+	b1EWNvI837pgWEK2rZ1r6WQl72WBx14c/l3MFc511FCnZezTFod51gh5XJf/zApy
+	xvXevV+4CLSOYmlbHqRmQUQiJ/0/fuvEtB9vwquFjNUoAbrTLqdv7aJegO4O3y74
+	zT8zxQYSswmi64tLj69sNU7Byy7fn2uTO8mCKc30gop51/N5njfQdRlFDWrrlSE1
+	a+z8FoCrSfBGiqEszttNFqCIcSJCsyMwSEhUfg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1703671914; x=
+	1703758314; bh=XVSXiOw8grD64P8JYTC8B1bQFxnox8FweiXoeYvGRWo=; b=t
+	u2//lgYOWLPF43Gr0eVJXt76PK3wETXY5YxvQaAk4SjYc/jEtDZ9hR4fD1zSDVEx
+	DA6vXviNc03VEQz8r1qwGvykn7x84l1d+TsAZo8ccplHe1CmcyNAZM6jkz9l+KiB
+	jiavxJD205AD0q8HPaEnTrxuDrD1MkWGU/kqhZeWhgIV+WkCdN1qur6+O/ho4FNq
+	wM+w993L5CBFxPe4D894es8OPB98efhv2jfgMgo+bx4+E1apL0IIOiQo3G1xGN2x
+	nUDwer2YN/3Zuy/Z2dJsbTXI4Yh7T1zFTOQoDbbsDWF9OCCXX0fHbQYGmjY6gCce
+	Vwyr97ZQ/JazgF/DgkFrw==
+X-ME-Sender: <xms:afiLZSg-dCtDWvc97WA4baEz7FRPfhut_f7PYEUVZmPknjlWOJPmHQ>
+    <xme:afiLZTCDLDW8O8Unz8ICXMdTsLgeUQWZ6K-wUYkVWEFfKgs1QOVuIChEuXvH-m3c4
+    X_kv8Uo5nZ8AM0gHaQ>
+X-ME-Received: <xmr:afiLZaFTcSmI_GZSAb4M6gY3ZMq16ahpSMQKaOc5If82st750hH0bbJq72J2nm7J84eb_4CDz44AtzNN_sh0aqyV0Wr4EKRLbRQ1NmshMyGKwwqduvq57Dsirtaf>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddvledgudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpegtgfgguffhjgevfffkfhfvofesth
+    hqmhdthhdtjeenucfhrhhomhepufhvvghnucfrvghtvghruceoshhvvghnsehsvhgvnhhp
+    vghtvghrrdguvghvqeenucggtffrrghtthgvrhhnpeevueeghfejkeehkeefieejudetje
+    ehgfehfeejtdevleekkeejgfevfeffieefleenucevlhhushhtvghrufhiiigvpedtnecu
+    rfgrrhgrmhepmhgrihhlfhhrohhmpehsvhgvnhesshhvvghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:afiLZbStsnEF58oB0TqNmzwqB-UYQfudwJzAok1jU0inn4JxBo2rtg>
+    <xmx:afiLZfxxV2fhu38vNpMytzMhwkUO-9BHUCcWWPknEYcreuBRy4IU1Q>
+    <xmx:afiLZZ6M2q3g8AEu3JSetgPWIIU97gHRxBeh9uqvNZh0Z-UWGb7SKw>
+    <xmx:aviLZUJJQf70cKA1rhy-D9Qfq9t7D-pB2OJ_CwtgzeB5FiW_dY06zg>
+Feedback-ID: i51094778:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 27 Dec 2023 05:11:53 -0500 (EST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 1/1] net: ravb: Wait for operation mode to be
- applied
-To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com,
- mitsuhiro.kimura.kc@renesas.com
-Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231222113552.2049088-1-claudiu.beznea.uj@bp.renesas.com>
- <20231222113552.2049088-2-claudiu.beznea.uj@bp.renesas.com>
- <98efc508-c431-2509-5799-96decc124136@omp.ru>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-Content-Language: en-US
-In-Reply-To: <98efc508-c431-2509-5799-96decc124136@omp.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v4] Bluetooth: Fix Bluetooth for BCM4377 on T2 Intel MacBooks
+From: Sven Peter <sven@svenpeter.dev>
+In-Reply-To: <aaa107865f4cbd61f8f9006fd3e7ac43b5d1bdad.camel@mrman314.tech>
+Cc: linux-bluetooth@vger.kernel.org, stable@vger.kernel.org,
+ marcan@marcan.st, bagasdotme@gmail.com, alyssa@rosenzweig.io,
+ marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+ orlandoch.dev@gmail.com, kekrby@gmail.com, admin@kodeit.net, j@jannau.net,
+ gargaditya08@live.com, asahi@lists.linux.dev, linux-kernel@vger.kernel.org
+Date: Wed, 27 Dec 2023 11:11:41 +0100
+Message-Id: <1AA36F4A-DF73-4876-9848-48997ABAF443@svenpeter.dev>
+References: <aaa107865f4cbd61f8f9006fd3e7ac43b5d1bdad.camel@mrman314.tech>
+To: Felix Zhang <mrman@mrman314.tech>
+X-Mailer: iPhone Mail (21B101)
+
+Hi,
 
 
+> On 25. Dec 2023, at 21:21, Felix Zhang <mrman@mrman314.tech> wrote:
+> =EF=BB=BFStarting v6.5, Bluetooth does not work at all on my T2
+> MacBookAir9,1 with the BCM4377 chip.  When I boot up the computer,
+> go into bluetoothctl, and then try to run commands like scan on,
+> show, list, it returns "No default controller available."  I have
+> tried reloading the kernel module, in which the log outputs
+> "{Added,Removed} hci0 (unconfigured)."  With this patch, I
+> am able to use Bluetooth as normal without any errors regarding
+> hci0 being unconfigured.  However, an issue is still present
+> where sometimes hci_bcm4377 will have to be reloaded in order to
+> get bluetooth to work.  I believe this was still present before
+> the previously mentioned commit.
+> I would also like to thank Kerem Karabay <kekrby@gmail.com> for
+> assisting me with this patch.
+>=20
+> Fixes: 6945795bc81a ("Bluetooth: fix use-bdaddr-property quirk")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Felix Zhang <mrman@mrman314.tech>
+> ---
 
-On 23.12.2023 21:39, Sergey Shtylyov wrote:
-> On 12/22/23 2:35 PM, Claudiu wrote:
-> 
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> CSR.OPS bits specify the current operating mode and (according to
->> documentation) they are updated by HW when the operating mode change
->> request is processed. To comply with this check CSR.OPS before proceeding.
->>
->> Commit introduces ravb_set_opmode() that does all the necessities for
->> setting the operating mode (set DMA.CCC and wait for CSR.OPS) and call it
->> where needed. This should comply with all the HW manuals requirements as
->> different manual variants specify that different modes need to be checked
->> in CSR.OPS when setting DMA.CCC.
->>
->> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->> ---
->>  drivers/net/ethernet/renesas/ravb_main.c | 52 ++++++++++++++----------
->>  1 file changed, 31 insertions(+), 21 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->> index 664eda4b5a11..ae99d035a3b6 100644
->> --- a/drivers/net/ethernet/renesas/ravb_main.c
->> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->> @@ -66,14 +66,15 @@ int ravb_wait(struct net_device *ndev, enum ravb_reg reg, u32 mask, u32 value)
->>  	return -ETIMEDOUT;
->>  }
->>  
->> -static int ravb_config(struct net_device *ndev)
->> +static int ravb_set_opmode(struct net_device *ndev, u32 opmode)
-> 
->    Since you pass the complete CCC register value below, you should
-> rather call the function ravb_set_ccc() and call the parameter opmode
-> ccc.
+Thanks a lot for debugging and fixing this! The diff looks good to me.
 
-This will be confusing. E.g., if renaming it ravb_set_ccc() one would
-expect to set any fields of CCC though this function but this is not true
-as ravb_modify() in this function masks only CCC_OPC. The call of:
-
-error = ravb_set_opmode(ndev, CCC_OPC_CONFIG | CCC_GAC | CCC_CSEL_HPB);
-
-bellow is just to comply with datasheet requirements, previous code and at
-the same time re-use this function.
-
-> 
->>  {
->> +	u32 csr_opmode = 1UL << opmode;
-> 
->    Please use the correct expression, 1U << (ccc & CCC_OPC) instead.
-
-Ok, good point.
+Reviewed-by: Sven Peter <sven@svenpeter.dev>
 
 
-> And I'd suggest calling the variable csr_ops or just ops.
+Best,
 
-ok
+Sven
 
-> 
->>  	int error;
->>  
->> -	/* Set config mode */
->> -	ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_CONFIG);
->> -	/* Check if the operating mode is changed to the config mode */
->> -	error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_CONFIG);
->> +	/* Set operating mode */
->> +	ravb_modify(ndev, CCC, CCC_OPC, opmode);
->> +	/* Check if the operating mode is changed to the requested one */
->> +	error = ravb_wait(ndev, CSR, CSR_OPS, csr_opmode);
->>  	if (error)
->>  		netdev_err(ndev, "failed to switch device to config mode\n");
-> 
->    s/config/requested/? Or just print out that mode...
-> 
-> [...]
->> @@ -2560,21 +2559,23 @@ static int ravb_set_gti(struct net_device *ndev)
->>  	return 0;
->>  }
->>  
->> -static void ravb_set_config_mode(struct net_device *ndev)
->> +static int ravb_set_config_mode(struct net_device *ndev)
->>  {
->>  	struct ravb_private *priv = netdev_priv(ndev);
->>  	const struct ravb_hw_info *info = priv->info;
->> +	int error;
->>  
->>  	if (info->gptp) {
->> -		ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_CONFIG);
->> +		error = ravb_set_opmode(ndev, CCC_OPC_CONFIG);
-> 
->    Don't we need to return on error here?
+> v4:
+> * Adjust the format to pass the CI (again).
+> * Shorten description
+> ---
+>  drivers/bluetooth/hci_bcm4377.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/bluetooth/hci_bcm4377.c
+> b/drivers/bluetooth/hci_bcm4377.c
+> index a61757835695..5c6fef1aa0f6 100644
+> --- a/drivers/bluetooth/hci_bcm4377.c
+> +++ b/drivers/bluetooth/hci_bcm4377.c
+> @@ -513,6 +513,7 @@ struct bcm4377_hw {
+>      unsigned long broken_ext_scan : 1;
+>      unsigned long broken_mws_transport_config : 1;
+>      unsigned long broken_le_coded : 1;
+> +    unsigned long use_bdaddr_property : 1;
+> =20
+>      int (*send_calibration)(struct bcm4377_data *bcm4377);
+>      int (*send_ptb)(struct bcm4377_data *bcm4377,
+> @@ -2368,5 +2369,6 @@ static int bcm4377_probe(struct pci_dev *pdev,
+> const struct pci_device_id *id)
+>      hdev->set_bdaddr =3D bcm4377_hci_set_bdaddr;
+>      hdev->setup =3D bcm4377_hci_setup;
+> =20
+> -    set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
+> +    if (bcm4377->hw->use_bdaddr_property)
+> +        set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
+>      if (bcm4377->hw->broken_mws_transport_config)
+> @@ -2465,6 +2467,7 @@ static const struct bcm4377_hw
+> bcm4377_hw_variants[] =3D {
+>          .has_bar0_core2_window2 =3D true,
+>          .broken_mws_transport_config =3D true,
+>          .broken_le_coded =3D true,
+> +        .use_bdaddr_property =3D true,
+>          .send_calibration =3D bcm4378_send_calibration,
+>          .send_ptb =3D bcm4378_send_ptb,
+>      },
+> @@ -2479,6 +2482,7 @@ static const struct bcm4377_hw
+> bcm4377_hw_variants[] =3D {
+>          .clear_pciecfg_subsystem_ctrl_bit19 =3D true,
+>          .broken_mws_transport_config =3D true,
+>          .broken_le_coded =3D true,
+> +        .use_bdaddr_property =3D true,
+>          .send_calibration =3D bcm4387_send_calibration,
+>          .send_ptb =3D bcm4378_send_ptb,
+>      },
+> --=20
+> 2.43.0
 
-I kept it like this to have a single exit point from function. But probably
-setting CSEL when OPC setup failed may lead to failures. I'll adjust it,
-thanks.
-
-> 
->>  		/* Set CSEL value */
->>  		ravb_modify(ndev, CCC, CCC_CSEL, CCC_CSEL_HPB);
->>  	} else if (info->ccc_gac) {
->> -		ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_CONFIG |
->> -			    CCC_GAC | CCC_CSEL_HPB);
->> +		error = ravb_set_opmode(ndev, CCC_OPC_CONFIG | CCC_GAC | CCC_CSEL_HPB);
-> 
->    See, you pass more than just CCC.OPC value here -- need to mask it out
-> above...
-
-Agree.
-
-> 
-> [...]
->> @@ -2917,8 +2921,9 @@ static void ravb_remove(struct platform_device *pdev)
->>  	dma_free_coherent(ndev->dev.parent, priv->desc_bat_size, priv->desc_bat,
->>  			  priv->desc_bat_dma);
->>  
->> -	/* Set reset mode */
->> -	ravb_write(ndev, CCC_OPC_RESET, CCC);
->> +	error = ravb_set_opmode(ndev, CCC_OPC_RESET);
->> +	if (error)
->> +		netdev_err(ndev, "Failed to reset ndev\n");
-> 
->    ravb_set_opmode() will have complained already at this point...
-> 
-> [...]
-> 
-> MBR, Sergey
 
