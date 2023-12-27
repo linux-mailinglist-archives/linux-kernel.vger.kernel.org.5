@@ -1,238 +1,150 @@
-Return-Path: <linux-kernel+bounces-12115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B679481F035
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:18:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A2D481F039
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:18:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAD541C21993
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:18:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CBEC1C219E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F5E745C13;
-	Wed, 27 Dec 2023 16:14:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="THCJ0Oqu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B340345C0B;
+	Wed, 27 Dec 2023 16:18:01 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16540495DE;
-	Wed, 27 Dec 2023 16:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703693652; x=1735229652;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=n7TK3hOHBZCHKUUtwN8CSWmxd8FxVEH9nRA4PZnV3dY=;
-  b=THCJ0OquEigJrN2T+GPy9Wx2bYXRBY00zlBj3xLDQS3G90dB+PPjpifZ
-   6DGoZfBAv2w9qQPE/hFflkI7NZ53qtGzlzS2glSiM8RD4xZ+VAY3K92Dg
-   2NiLfRxkaNqnr17WanhTA/bPgiXyeQBCWjrOXXMQd2blNJbVJz7PzBf17
-   SOTgHoOKYXQQhUorectPfXOaUneeZ7nVRKmeZLumyLdSmGDRu2/yyoNvW
-   TbLRffTOou5MnH7GNFHPEnTqPdipvdpqfhqj0Wlkras4GRxuPuVJ/hcVk
-   oHuRCnPYlz1FsbkxjuC7auXM3mxZ1Tyep6izoUwa3ixO7MaNjZvNNu4R6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="396186320"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F042346420;
+	Wed, 27 Dec 2023 16:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="399246276"
 X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="396186320"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 08:14:11 -0800
+   d="scan'208";a="399246276"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 08:17:55 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="781775232"
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="1109673536"
 X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="781775232"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by fmsmga007.fm.intel.com with ESMTP; 27 Dec 2023 08:14:10 -0800
-From: Yi Liu <yi.l.liu@intel.com>
-To: joro@8bytes.org,
-	alex.williamson@redhat.com,
-	jgg@nvidia.com,
-	kevin.tian@intel.com,
-	robin.murphy@arm.com,
-	baolu.lu@linux.intel.com
-Cc: cohuck@redhat.com,
-	eric.auger@redhat.com,
-	nicolinc@nvidia.com,
-	kvm@vger.kernel.org,
-	mjrosato@linux.ibm.com,
-	chao.p.peng@linux.intel.com,
-	yi.l.liu@intel.com,
-	yi.y.sun@linux.intel.com,
-	peterx@redhat.com,
-	jasowang@redhat.com,
-	shameerali.kolothum.thodi@huawei.com,
-	lulu@redhat.com,
-	suravee.suthikulpanit@amd.com,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	zhenzhong.duan@intel.com,
-	joao.m.martins@oracle.com,
-	xin.zeng@intel.com,
-	yan.y.zhao@intel.com,
-	j.granados@samsung.com
-Subject: [PATCH v8 10/10] iommu/vt-d: Add iotlb flush for nested domain
-Date: Wed, 27 Dec 2023 08:13:54 -0800
-Message-Id: <20231227161354.67701-11-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231227161354.67701-1-yi.l.liu@intel.com>
-References: <20231227161354.67701-1-yi.l.liu@intel.com>
+   d="scan'208";a="1109673536"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 08:17:52 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy@kernel.org>)
+	id 1rIWbN-00000009Sb9-3quq;
+	Wed, 27 Dec 2023 18:17:49 +0200
+Date: Wed, 27 Dec 2023 18:17:49 +0200
+From: Andy Shevchenko <andy@kernel.org>
+To: =?utf-8?B?VFlfQ2hhbmdb5by15a2Q6YC4XQ==?= <tychang@realtek.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 2/2] Add GPIO support for Realtek DHC(Digital Home
+ Center) RTD SoCs.
+Message-ID: <ZYxOLXiV6IQQ7IlD@smile.fi.intel.com>
+References: <20231222075812.6540-1-tychang@realtek.com>
+ <20231222075812.6540-3-tychang@realtek.com>
+ <ZYWLdG9kxm2ql0uf@smile.fi.intel.com>
+ <63983de33ce2415abb8b5b745db58911@realtek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <63983de33ce2415abb8b5b745db58911@realtek.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+On Tue, Dec 26, 2023 at 07:34:37AM +0000, TY_Chang[張子逸] wrote:
+> >On Fri, Dec 22, 2023 at 03:58:12PM +0800, Tzuyi Chang wrote:
 
-This implements the .cache_invalidate_user() callback to support iotlb
-flush for nested domain.
+...
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Co-developed-by: Yi Liu <yi.l.liu@intel.com>
-Signed-off-by: Yi Liu <yi.l.liu@intel.com>
----
- drivers/iommu/intel/nested.c | 118 +++++++++++++++++++++++++++++++++++
- 1 file changed, 118 insertions(+)
+> >> +static int rtd_gpio_gpa_offset(struct rtd_gpio *data, unsigned int
+> >> +offset) {
+> >> +     return data->info->gpa_offset[offset / 31]; }
+> >> +
+> >> +static int rtd_gpio_gpda_offset(struct rtd_gpio *data, unsigned int
+> >> +offset) {
+> >> +     return data->info->gpda_offset[offset / 31]; }
+> >
+> >The / 31 so-o-o counter intuitive, please add a comment in each case to explain
+> >why [it's not 32 or other power-of-2].
+> >
+> 
+> In our hardware design, the bit 0 of the gpda and gpa status registers does not correspond to a GPIO.
+> If bit 0 is set to 1, the other bit can be set to 1 by writing 1.
+> If bit 0 is set to 0, the other bit can be clear to 0 by writing 1.
+> 
+> Therefore, each status register only contains the status of 31 GPIOs. I will add the comment for this.
 
-diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
-index b5a5563ab32c..cc9887a68318 100644
---- a/drivers/iommu/intel/nested.c
-+++ b/drivers/iommu/intel/nested.c
-@@ -73,9 +73,127 @@ static void intel_nested_domain_free(struct iommu_domain *domain)
- 	kfree(to_dmar_domain(domain));
- }
- 
-+static void nested_flush_pasid_iotlb(struct intel_iommu *iommu,
-+				     struct dmar_domain *domain, u64 addr,
-+				     unsigned long npages, bool ih)
-+{
-+	u16 did = domain_id_iommu(domain, iommu);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&domain->lock, flags);
-+	if (!list_empty(&domain->devices))
-+		qi_flush_piotlb(iommu, did, IOMMU_NO_PASID, addr,
-+				npages, ih, NULL);
-+	spin_unlock_irqrestore(&domain->lock, flags);
-+}
-+
-+static void nested_flush_dev_iotlb(struct dmar_domain *domain, u64 addr,
-+				   unsigned mask, u32 *fault)
-+{
-+	struct device_domain_info *info;
-+	unsigned long flags;
-+	u16 sid, qdep;
-+
-+	spin_lock_irqsave(&domain->lock, flags);
-+	list_for_each_entry(info, &domain->devices, link) {
-+		if (!info->ats_enabled)
-+			continue;
-+		sid = info->bus << 8 | info->devfn;
-+		qdep = info->ats_qdep;
-+		qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
-+				   qdep, addr, mask, fault);
-+		quirk_extra_dev_tlb_flush(info, addr, mask,
-+					  IOMMU_NO_PASID, qdep);
-+	}
-+	spin_unlock_irqrestore(&domain->lock, flags);
-+}
-+
-+static void intel_nested_flush_cache(struct dmar_domain *domain, u64 addr,
-+				     unsigned long npages, bool ih, u32 *error)
-+{
-+	struct iommu_domain_info *info;
-+	unsigned long i;
-+	unsigned mask;
-+	u32 fault;
-+
-+	xa_for_each(&domain->iommu_array, i, info)
-+		nested_flush_pasid_iotlb(info->iommu, domain, addr, npages, ih);
-+
-+	if (!domain->has_iotlb_device)
-+		return;
-+
-+	if (npages == U64_MAX)
-+		mask = 64 - VTD_PAGE_SHIFT;
-+	else
-+		mask = ilog2(__roundup_pow_of_two(npages));
-+
-+	nested_flush_dev_iotlb(domain, addr, mask, &fault);
-+
-+	/*
-+	 * Invalidation queue error (i.e. IQE) will not be reported to user
-+	 * as it's caused only by driver internal bug.
-+	 */
-+	if (fault & DMA_FSTS_ICE)
-+		*error |= IOMMU_HWPT_INVALIDATE_VTD_S1_ICE;
-+	if (fault & DMA_FSTS_ITE)
-+		*error |= IOMMU_HWPT_INVALIDATE_VTD_S1_ITE;
-+}
-+
-+static int intel_nested_cache_invalidate_user(struct iommu_domain *domain,
-+					      struct iommu_user_data_array *array)
-+{
-+	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
-+	struct iommu_hwpt_vtd_s1_invalidate inv_entry;
-+	u32 processed = 0;
-+	int ret = 0;
-+	u32 index;
-+
-+	if (array->type != IOMMU_HWPT_INVALIDATE_DATA_VTD_S1) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	for (index = 0; index < array->entry_num; index++) {
-+		ret = iommu_copy_struct_from_user_array(&inv_entry, array,
-+							IOMMU_HWPT_INVALIDATE_DATA_VTD_S1,
-+							index, hw_error);
-+		if (ret)
-+			break;
-+
-+		if (inv_entry.flags & ~IOMMU_VTD_INV_FLAGS_LEAF) {
-+			ret = -EOPNOTSUPP;
-+			break;
-+		}
-+
-+		if (!IS_ALIGNED(inv_entry.addr, VTD_PAGE_SIZE) ||
-+		    ((inv_entry.npages == U64_MAX) && inv_entry.addr)) {
-+			ret = -EINVAL;
-+			break;
-+		}
-+
-+		intel_nested_flush_cache(dmar_domain, inv_entry.addr,
-+					 inv_entry.npages,
-+					 inv_entry.flags & IOMMU_VTD_INV_FLAGS_LEAF,
-+					 &inv_entry.hw_error);
-+
-+		ret = iommu_respond_struct_to_user_array(array, index,
-+							 (void *)&inv_entry,
-+							 sizeof(inv_entry));
-+		if (ret)
-+			break;
-+
-+		processed++;
-+	}
-+
-+out:
-+	array->entry_num = processed;
-+	return ret;
-+}
-+
- static const struct iommu_domain_ops intel_nested_domain_ops = {
- 	.attach_dev		= intel_nested_attach_dev,
- 	.free			= intel_nested_domain_free,
-+	.cache_invalidate_user	= intel_nested_cache_invalidate_user,
- };
- 
- struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain *parent,
+Yes, please add in all places, while it's a dup, it helps understanding
+the point without looking around for a while.
+
+...
+
+> >> +     for (i = 0; i < data->info->num_gpios; i += 31) {
+> >
+> >Same, add explanation why 31.
+> >
+> >Note, I actually prefer to see use of valid_mask instead of this weirdness.
+> >Then you will need to comment only once and use 32 (almost?) everywhere.
+> >
+> 
+> The reason remains consistent with the previous explanation. Each status
+> register exclusively holds the status of 31 GPIOs.
+
+As per above, add a comment.
+
+> >> +             reg_offset = get_reg_offset(data, i);
+> >> +
+> >> +             status = readl_relaxed(data->irq_base + reg_offset) >> 1;
+> >> +             writel_relaxed(status << 1, data->irq_base +
+> >> + reg_offset);
+> >> +
+> >> +             for_each_set_bit(j, &status, 31) {
+> >> +                     hwirq = i + j;
+> >
+> >Nice, but you can do better
+> >
+> >                /* Bit 0 is special... bla-bla-bla... */
+> >                status = readl_relaxed(data->irq_base + reg_offset);
+> >                status &= ~BIT(0);
+> >                writel_relaxed(status, data->irq_base + reg_offset);
+> >
+> >                for_each_set_bit(j, &status, 32) {
+> >                        hwirq = i + j - 1;
+> >
+> 
+> Given that each status register accommodates the status of only 31 GPIOs, I
+> think utilizing the upper format and including explanatory comments would be
+> appropriate. It can indicate the status registers only contains 31 GPIOs.
+> Please correct me if my understanding is incorrect.
+
+The above is just a code hack to help bitops to optimise. 32 is power-of-2
+which might be treated better by the compiler and hence produce better code.
+
+Yet, it's an interrupt handler where we want to have the ops as shorter as
+possible, so even micro-optimizations are good to have here (I don't insist
+to follow the same idea elsewhere).
+
+> >> +                     }
+> >> +             }
+> >> +     }
+
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
 
