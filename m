@@ -1,219 +1,150 @@
-Return-Path: <linux-kernel+bounces-12241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E986781F1DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:30:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54B4A81F1E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:31:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A28AC283CFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:30:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF2D5B2262A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:31:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6EA47F6B;
-	Wed, 27 Dec 2023 20:30:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BACFF47F73;
+	Wed, 27 Dec 2023 20:31:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="UNjV79qz"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Ux55rSSB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.14])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FCE31E4A9;
-	Wed, 27 Dec 2023 20:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703709024; x=1704313824; i=markus.elfring@web.de;
-	bh=3e+8QRChfVb09sDrJsxnoK5ykgPCKLhPa32lTc9es10=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=UNjV79qzogBTjGdqiZ0euZ44SodPIeei0/XLX0Uud4zFijZfCY5yucJ+LbI80PUH
-	 rGOPpBg/A3VVNhdFt9K35o0M6mEfgBYaDwYcQOYuNkB7Mfr8SjVbJW8QUCSEDwazz
-	 SbqmhpS8ewiNFJIUks3NKq07AgswEIQbqZgCmXMliH0SamBrf/Kfp3N4l+FMLDfnq
-	 JX9kMMfFXYznH5uA+IKCj9ykB9828njTqISukYtuHX83g0ijTfGMll4yjFH8glk9p
-	 Va/gULPrawy1UojlIzACPCojz8njo9vaVAJZXs1Gg1teaaSTwWigdeDCtSTbDbzO7
-	 9VUmFseiYn2RofPVMw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1N30dV-1r6izN0e1F-012z0o; Wed, 27
- Dec 2023 21:30:24 +0100
-Message-ID: <d0a481c0-89ea-48ad-add7-5871d12bf804@web.de>
-Date: Wed, 27 Dec 2023 21:30:22 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9797547F46;
+	Wed, 27 Dec 2023 20:31:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BRJnLEd022675;
+	Wed, 27 Dec 2023 20:30:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=a1sJzYXIn5ibvV7VtwX9y
+	AMbTpRigZoE9NWn6S+5Wd4=; b=Ux55rSSBDVeY8QKlrDNvqhgE6mfGjFfXebFqJ
+	E4YNVdWkL6rUPGoZCwAv0m6c1DUq0sVjtXzNreZdfY7IePYPRw8DL4pA49xITpRm
+	lM8y4O3fkTZvJcJIiO1cKUWlPMWZYk5cFI4VenuY+mdyndvNM0t43w3rTJahqLXL
+	ZCpT1Eyav+XoSVunzaVRkUlttVIXIRPzDwCFWDALSz+23Wat9Mexb/wtGs5GB4GH
+	7Ml9VslchF2o9pa6l/L9ck7qiggaELI4UANlNx7QJ1vIyiaRrrh63FD0yYOG6i09
+	X69s7sRyn30soXebVI+x8Pm+rvzggs4PiCYgLfsH31RYr4DRA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v8hbg938e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Dec 2023 20:30:50 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BRKUoRh020263
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Dec 2023 20:30:50 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 27 Dec 2023 12:30:49 -0800
+Date: Wed, 27 Dec 2023 12:30:48 -0800
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Ulf Hansson
+	<ulf.hansson@linaro.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        "Catalin
+ Marinas" <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 1/8] dt-bindings: clock: qcom: Allow VDD_GFX supply to
+ GX
+Message-ID: <20231227203048.GB1315173@hu-bjorande-lv.qualcomm.com>
+References: <20231220-sa8295p-gpu-v2-0-4763246b72c0@quicinc.com>
+ <20231220-sa8295p-gpu-v2-1-4763246b72c0@quicinc.com>
+ <26617c83-31b3-4ad9-8a61-0b8271fad41f@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: devicetree@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh+dt@kernel.org>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] of: Less function calls in of_parse_phandle_with_args_map()
- after error detection
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:m86qlpsvLCmHOR8Ift9YFMKmHZVSvX/D0xpjcbjNaEeqpznf/d6
- 9U2eFisQAIkQG7GeWkq4ivCFJHbJjn+ZcdZs6Ld8eK+7U5xky4sKkdZqpWpvbIBys8uqD/A
- zddn1awvMFLS8+l1Df2TFBVNacgotB82B0r8jt/v48vox1p9FMFLi+0MO2ujZfLlVK2yTCo
- K24Bk2UBs/qd+p+CSBl9Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:mG3OEyBhpRI=;GnZ/IxrdZ5m9z3sapBfs9ly6BZn
- M3bs8oW/TjOX5EUE+m1up9BDXMxGO94lCYCy/+ypnROpvH7Xqp51mtk16PDRx8aH8WF7D/woj
- dd8GUK4IHZAYPEb7eBTAk2SQQr5jeuHrypTnGz1n177v+zGh/1W6GMAg8aW9DHEYp/0UFtDP+
- 1xsOzXT2roKxnvpkd3WKji6F1Rv+Yz6F74Ob30l+IQ7wCWzrF4ULRPZAOESPHyG0Ngh8G+Rh/
- H5JjdqkUqf6NqD4qzJoxXX3WySIxBxKOe/lrjRUr7kvz2G9gGk/36aME8sJtkmoAS0HuGnGJe
- vZQaYQZZ/wThhEFEJjhCG4ACyF2Eni6XzVkHLXIUfXucaO0C9Zi++0fPUH+egG+KrufbdYrXL
- qI4huzrXPBAikr96mo77lafuJoTUvV2SgqWws7/s5zVmd/Y2YQaGi1fnhxFEp0TmwKKcIKCuf
- BWJZdhBql1X8InSBXHtEo4oZxQhul7kPAYvJn5529QIySxIIyYonCeeB2oOIudD4ACPsoKar1
- LkAAGTKSJcF45nhmkPaPV4DdNuDg9CKXStCT1BPN7cFA5srnr7/JHPhsCyCBWwsGkM202SN9P
- MC8c7Vof634auMROJBAFWVB19au1gTi7ORCVbD98vGXKBGWC+uq2MLsaOLKRkfeoqIMVzDINf
- hKGoFKd1NkMZFnaqMZtf64d/OBX+sORAGW3xDN3gLDfUUzbrtLDcn828ItvEoA4tjzbN0p5jM
- PGnI+OAcLadhQ84tuUlQBSqfJJytqvVKXAqCWHijwcfNR9QYCmv6XAvHAU7TKOmo3zedZaZwD
- dD3sZEth7G9LKPbiCfXNzngq+T28WQ+QG1PDd2QLh3p4wL8XJi1eDKxsaZ007uw/koqCye/C9
- 2/TsVdEAVWgBXn0BJQCKLtTKX5lCmsPaZKpf6BgSsMEj6HoJ+jsH/2tyLqirWFRkr1mS3cw0m
- 5QLLkHMDvCSrXBjfPkR2RADMppw=
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <26617c83-31b3-4ad9-8a61-0b8271fad41f@linaro.org>
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 98FPQG18Sqptx1Veng75-suqw_ecH733
+X-Proofpoint-GUID: 98FPQG18Sqptx1Veng75-suqw_ecH733
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
+ mlxscore=0 suspectscore=0 spamscore=0 phishscore=0 adultscore=0
+ impostorscore=0 priorityscore=1501 malwarescore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312270151
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 27 Dec 2023 21:21:41 +0100
+On Fri, Dec 22, 2023 at 09:12:04AM +0100, Krzysztof Kozlowski wrote:
+> On 22/12/2023 05:39, Bjorn Andersson wrote:
+> > In some designs the SoC's VDD_GFX pads are supplied by an external
+> > regulator, rather than a power-domain. Allow this to be described in the
+> > GPU clock controller binding.
+> > 
+> > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> > ---
+> >  Documentation/devicetree/bindings/clock/qcom,gpucc.yaml | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/clock/qcom,gpucc.yaml b/Documentation/devicetree/bindings/clock/qcom,gpucc.yaml
+> > index f369fa34e00c..c0dd24c9dcb3 100644
+> > --- a/Documentation/devicetree/bindings/clock/qcom,gpucc.yaml
+> > +++ b/Documentation/devicetree/bindings/clock/qcom,gpucc.yaml
+> > @@ -53,6 +53,9 @@ properties:
+> >    power-domains:
+> >      maxItems: 1
+> >  
+> > +  vdd-gfx-supply:
+> > +    description: Regulator supply for the VDD_GFX pads
+> > +
+> >    '#clock-cells':
+> >      const: 1
+> >  
+> > @@ -74,6 +77,19 @@ required:
+> >    - '#reset-cells'
+> >    - '#power-domain-cells'
+> >  
+> > +# Allow either power-domains or vdd-gfx-supply, not both
+> > +oneOf:
+> > +  - required:
+> > +      - power-domains
+> > +  - required:
+> > +      - vdd-gfx-supply
+> 
+> This should be enough, assuming one of them is actually required. The
+> code. See also:
+> https://elixir.bootlin.com/linux/v5.17-rc2/source/Documentation/devicetree/bindings/reserved-memory/reserved-memory.yaml#L91
+> 
 
-The kfree() function was called in up to four cases by
-the of_parse_phandle_with_args_map() function during error handling
-even if the passed variable contained a null pointer.
-This issue was detected by using the Coccinelle software.
+Yes, that would be the correct binding. But the majority of our
+DeviceTree source does not specify a power-domain for their gpucc.
 
-* Adjust jump targets.
+While this should be corrected, it seem reasonable to leave this
+optional for now.
 
-* Delete three initialisations which became unnecessary
-  with this refactoring.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/of/base.c | 39 +++++++++++++++++++++------------------
- 1 file changed, 21 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/of/base.c b/drivers/of/base.c
-index 8d93cb6ea9cd..b0723d017912 100644
-=2D-- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -1341,8 +1341,7 @@ int of_parse_phandle_with_args_map(const struct devi=
-ce_node *np,
- 				   const char *stem_name,
- 				   int index, struct of_phandle_args *out_args)
- {
--	char *cells_name, *map_name =3D NULL, *mask_name =3D NULL;
--	char *pass_name =3D NULL;
-+	char *cells_name, *map_name, *mask_name, *pass_name;
- 	struct device_node *cur, *new =3D NULL;
- 	const __be32 *map, *mask, *pass;
- 	static const __be32 dummy_mask[] =3D { [0 ... MAX_PHANDLE_ARGS] =3D ~0 }=
-;
-@@ -1362,26 +1361,26 @@ int of_parse_phandle_with_args_map(const struct de=
-vice_node *np,
- 	ret =3D -ENOMEM;
- 	map_name =3D kasprintf(GFP_KERNEL, "%s-map", stem_name);
- 	if (!map_name)
--		goto free;
-+		goto free_cells_name;
-
- 	mask_name =3D kasprintf(GFP_KERNEL, "%s-map-mask", stem_name);
- 	if (!mask_name)
--		goto free;
-+		goto free_map_name;
-
- 	pass_name =3D kasprintf(GFP_KERNEL, "%s-map-pass-thru", stem_name);
- 	if (!pass_name)
--		goto free;
-+		goto free_mask_name;
-
- 	ret =3D __of_parse_phandle_with_args(np, list_name, cells_name, -1, inde=
-x,
- 					   out_args);
- 	if (ret)
--		goto free;
-+		goto free_pass_name;
-
- 	/* Get the #<list>-cells property */
- 	cur =3D out_args->np;
- 	ret =3D of_property_read_u32(cur, cells_name, &list_size);
- 	if (ret < 0)
--		goto put;
-+		goto put_cur_node;
-
- 	/* Precalculate the match array - this simplifies match loop */
- 	for (i =3D 0; i < list_size; i++)
-@@ -1393,7 +1392,7 @@ int of_parse_phandle_with_args_map(const struct devi=
-ce_node *np,
- 		map =3D of_get_property(cur, map_name, &map_len);
- 		if (!map) {
- 			ret =3D 0;
--			goto free;
-+			goto free_pass_name;
- 		}
- 		map_len /=3D sizeof(u32);
-
-@@ -1416,27 +1415,28 @@ int of_parse_phandle_with_args_map(const struct de=
-vice_node *np,
-
- 			/* Check if not found */
- 			if (!new)
--				goto put;
-+				goto put_cur_node;
-
- 			if (!of_device_is_available(new))
- 				match =3D 0;
-
- 			ret =3D of_property_read_u32(new, cells_name, &new_size);
- 			if (ret)
--				goto put;
-+				goto put_new_node;
-
- 			/* Check for malformed properties */
- 			if (WARN_ON(new_size > MAX_PHANDLE_ARGS))
--				goto put;
-+				goto put_new_node;
-+
- 			if (map_len < new_size)
--				goto put;
-+				goto put_new_node;
-
- 			/* Move forward by new node's #<list>-cells amount */
- 			map +=3D new_size;
- 			map_len -=3D new_size;
- 		}
- 		if (!match)
--			goto put;
-+			goto put_new_node;
-
- 		/* Get the <list>-map-pass-thru property (optional) */
- 		pass =3D of_get_property(cur, pass_name, NULL);
-@@ -1465,15 +1465,18 @@ int of_parse_phandle_with_args_map(const struct de=
-vice_node *np,
- 		of_node_put(cur);
- 		cur =3D new;
- 	}
--put:
--	of_node_put(cur);
-+put_new_node:
- 	of_node_put(new);
--free:
-+put_cur_node:
-+	of_node_put(cur);
-+free_pass_name:
-+	kfree(pass_name);
-+free_mask_name:
- 	kfree(mask_name);
-+free_map_name:
- 	kfree(map_name);
-+free_cells_name:
- 	kfree(cells_name);
--	kfree(pass_name);
--
- 	return ret;
- }
- EXPORT_SYMBOL(of_parse_phandle_with_args_map);
-=2D-
-2.43.0
-
+Regards,
+Bjorn
 
