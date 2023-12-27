@@ -1,68 +1,76 @@
-Return-Path: <linux-kernel+bounces-12216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF5B81F172
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 19:42:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E99181F175
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 19:58:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14E6A1C210A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:42:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 187841F2308C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:58:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6429744C61;
-	Wed, 27 Dec 2023 18:42:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Odl1enjz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 061374655B;
+	Wed, 27 Dec 2023 18:58:32 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 422BB1E52F
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 18:42:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D7FAC433C7;
-	Wed, 27 Dec 2023 18:42:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1703702565;
-	bh=Itb1htvmWYpO4t/GAfB1X1BEGP2JCKRav8Pymo8NuEI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Odl1enjzu74MzygvCIiuGdQhGuwBJGYIrfEtU38Js+pJaoZgqZtkgAzxnt8KMGu1Z
-	 HnIBfcbwruRGCu4fnHHGpQUY7F610YMk2gcSRgtmGCxsz2CP9vBZFtS/g54K0EOiqb
-	 vXLQMw500IYoKRuQK2K0rtEuQiKxOdMtZzsO8p2I=
-Date: Wed, 27 Dec 2023 10:42:44 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: David Rientjes <rientjes@google.com>
-Cc: Pasha Tatashin <pasha.tatashin@soleen.com>, Linus Torvalds
- <torvalds@linux-foundation.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, rafael@kernel.org, surenb@google.com,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, souravpanda@google.com
-Subject: Re: Sysfs one-value-per-file (was Re: [PATCH] vmstat: don't auto
- expand the sysfs files)
-Message-Id: <20231227104244.824b0977ae6d4bb6b37f6f79@linux-foundation.org>
-In-Reply-To: <13e5fbd4-d84d-faba-47f1-d0024d2c572d@google.com>
-References: <20231211154644.4103495-1-pasha.tatashin@soleen.com>
-	<3d415ab4-e8c7-7e72-0379-952370612bdd@google.com>
-	<CA+CK2bA2vZp3e+HHfB-sdLsPUYghMxvKcWURktDtNjwPL79Csw@mail.gmail.com>
-	<b1049bfa-68c4-e237-30a9-1514a378c7f1@google.com>
-	<CA+CK2bBxbvO-osm5XKk4VkaXYgfZXkDAtfayaYJ-vXo=QFqGPA@mail.gmail.com>
-	<13e5fbd4-d84d-faba-47f1-d0024d2c572d@google.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A81A20306;
+	Wed, 27 Dec 2023 18:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 67a3122417753e74; Wed, 27 Dec 2023 19:58:27 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 9C90D668E12;
+	Wed, 27 Dec 2023 19:58:26 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Youngmin Nam <youngmin.nam@samsung.com>, Greg KH <gregkh@linuxfoundation.org>
+Cc: rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, d7271.choe@samsung.com, janghyuck.kim@samsung.com, hyesoo.yu@samsung.com
+Subject: Re: [BUG] mutex deadlock of dpm_resume() in low memory situation
+Date: Wed, 27 Dec 2023 19:58:26 +0100
+Message-ID: <5755916.DvuYhMxLoT@kreacher>
+In-Reply-To: <5754861.DvuYhMxLoT@kreacher>
+References: <CGME20231227084252epcas2p3b063f7852f81f82cd0a31afd7f404db4@epcas2p3.samsung.com> <2023122701-mortify-deed-4e66@gregkh> <5754861.DvuYhMxLoT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvddvledguddvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopedutddprhgtphhtthhopeihohhunhhgmhhinhdrnhgrmhesshgrmhhsuhhnghdrtghomhdprhgtphhtthhopehgrhgvghhkhheslhhinhhugihfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhgvnhdrsghrohifnhesihhnthgvlhdrtghomhdprhgtphhtthhopehprghvvghlsehutgifrdgt
+ iidprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=10 Fuz1=10 Fuz2=10
 
-On Tue, 26 Dec 2023 16:53:31 -0800 (PST) David Rientjes <rientjes@google.com> wrote:
+On Wednesday, December 27, 2023 7:39:20 PM CET Rafael J. Wysocki wrote:
+> On Wednesday, December 27, 2023 5:08:40 PM CET Greg KH wrote:
+> > On Wed, Dec 27, 2023 at 05:42:50PM +0900, Youngmin Nam wrote:
+> > > Could you look into this issue ?
+> > 
+> > Can you submit a patch that resolves the issue for you, as you have a
+> > way to actually test this out?  That would be the quickest way to get it
+> > resolved, and to help confirm that this is even an issue at all.
+> 
+> Something like the appended patch should be sufficient to address this AFAICS.
+> 
+> I haven't tested it yet (will do so shortly), so all of the usual disclaimers
+> apply.
+> 
+> I think that it can be split into 2 patches, but for easier testing here
+> it goes in one piece.
 
-> But for existing files and conventions, I think we should settle it as 
-> "keep doing what you've been doing for 13+ years" and don't force this 
-> argument every time a kernel developer wants to just add one more stat.
+Well, please scratch this, it will not handle "async" devices properly.
 
-Absolutely.  Let's do what makes most sense.  For new things, one value
-per file.  For stats which logically group with other existing stats,
-do whatever the existing other stats are currently doing.
+
+
 
