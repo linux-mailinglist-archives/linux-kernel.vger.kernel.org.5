@@ -1,139 +1,135 @@
-Return-Path: <linux-kernel+bounces-11894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7547581ED0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 08:56:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B556E81ED11
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 08:58:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2D761C22389
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:56:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A25228374F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:58:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4862363BA;
-	Wed, 27 Dec 2023 07:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C8D6118;
+	Wed, 27 Dec 2023 07:58:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="TyLfAH/1"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tRMdmhv7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.avm.de (mail.avm.de [212.42.244.120])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D6663A8;
-	Wed, 27 Dec 2023 07:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
-Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
-	by mail.avm.de (Postfix) with ESMTPS;
-	Wed, 27 Dec 2023 08:56:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-	t=1703663788; bh=ppkGT7Kj6s6j36J8+e94V+BhFS+R0X9zZwQMqkNg3nY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TyLfAH/12eQ2NLq7EICcuFtwgxKxR+Bs58wX8oBD2NUwPjAfP6r9WYYkWYUpHnmOe
-	 Oui9wb4RZrE7pkJqGLacGXWRLWWhG7Fj9QuLQgTSDAqnavCspNnJln4eJwd68xyWND
-	 hrzGpVC/19tWFjSRHANpLFO6fuojNVT/7g4syANc=
-Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
-	by mail-auth.avm.de (Postfix) with ESMTPA id BB7E2803E7;
-	Wed, 27 Dec 2023 08:56:33 +0100 (CET)
-Received: by buildd.core.avm.de (Postfix, from userid 1000)
-	id B5F0018297D; Wed, 27 Dec 2023 08:56:33 +0100 (CET)
-Date: Wed, 27 Dec 2023 08:56:33 +0100
-From: Nicolas Schier <n.schier@avm.de>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/6] kbuild: deb-pkg: squash
- scripts/package/deb-build-option to debian/rules
-Message-ID: <ZYvYsR_pOK3h3DZz@buildd.core.avm.de>
-Mail-Followup-To: Masahiro Yamada <masahiroy@kernel.org>,
-	linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F9D3566F
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 07:58:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d4006b2566so19825125ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 23:58:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703663910; x=1704268710; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8t7/AbGXjepf/LwJRFQy50BWlpGsnwthyjQJC5TMKQs=;
+        b=tRMdmhv7c7kCX988h07V7Lc+tmGIYENi+emPbPU6pUB9sTs/N/b7qLpnp67dXhqgJY
+         qOjvJacEYzLMwZQHGDA8ZsNQH/kIEGznIg6iyjjbozP7UzgA6GLP/znA5C/pSvHsWuo6
+         io16DKaBchv4a8hxXAvSVBFUt3Boz9bjFQGyUXvQVRmSC0dkbOjGZsPKOmFMEfoYkrKq
+         Bs6wwyy5W2VnU7q+N2wjNxe9zmZdBy/mRPZC6hoZSoBHNVKgFw88W7l6itvIPOA2LkXY
+         WMTNx4p/aj/NfbuEBPzYaOXsM9x3q03xW0PRCyXTiGj/YsAXUkZQKZDrsXacDsm78C8h
+         1bvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703663910; x=1704268710;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8t7/AbGXjepf/LwJRFQy50BWlpGsnwthyjQJC5TMKQs=;
+        b=ByD4yfQXgnLvYSo7mC/Z9T5qXhDIWcg5cuAPgoU5jNdwrUcnN2pmc17scqcdNdI0Ft
+         4zJ1VVhy+RQMRmaaXBw/LXgNTc5xtharzWFw14Z79m/A5rrPn9ybBhF/wpLzDdSzI8HJ
+         HinrN856FJ1KBW+oSg02yHtDCWT/OrB4hqJd52Dy458wpf9OPEOwrB5eN1CIEFZjzqmU
+         vpjVj/I59usAIttb4Pv5ZnDK0sVbiYyiGrVje0S76Pg+xrfYl6uISrg15TeaP6Ey/ihS
+         OZTGu0EpAJAZgdRxNTnGbLsSDtnN3deTyXq5d51YkXWxMdsghVpdZs0CejOqgyy7ff7m
+         Vvqg==
+X-Gm-Message-State: AOJu0YygKXbeiWjI/PNTfBDMZZn0skEgwj5b4vx5QJgGSaEoxSGixIbv
+	/beY5MmHY3rJ2AsCQYRdzoVcGtDnntKgZA==
+X-Google-Smtp-Source: AGHT+IH75JcNEW1rZ0DW+fJLF9UJq172z0WlP+a3B0raXcxKnbLFDoaqgaYeRiicq3lmS+i8XVdP9A==
+X-Received: by 2002:a17:903:22d2:b0:1d0:c345:c1d7 with SMTP id y18-20020a17090322d200b001d0c345c1d7mr3822513plg.77.1703663910512;
+        Tue, 26 Dec 2023 23:58:30 -0800 (PST)
+Received: from localhost ([122.172.86.168])
+        by smtp.gmail.com with ESMTPSA id jj2-20020a170903048200b001d40ca98b9esm10772936plb.65.2023.12.26.23.58.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Dec 2023 23:58:29 -0800 (PST)
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Viresh Kumar <vireshk@kernel.org>,
+	Nishanth Menon <nm@ti.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>,
+	linux-pm@vger.kernel.org,
+	Vincent Guittot <vincent.guittot@linaro.org>,
 	linux-kernel@vger.kernel.org
-References: <20231226135243.1393780-1-masahiroy@kernel.org>
- <20231226135243.1393780-2-masahiroy@kernel.org>
+Subject: [PATCH] OPP: The level field is always of unsigned int type
+Date: Wed, 27 Dec 2023 13:28:24 +0530
+Message-Id: <ba367479c7ad0b870461024cd5ae7a1ea6e1e3db.1703663882.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231226135243.1393780-2-masahiroy@kernel.org>
-Organization: AVM GmbH
-X-purgate-ID: 149429::1703663788-A6FEBDFE-25EC0C3B/0/0
-X-purgate-type: clean
-X-purgate-size: 2407
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 26, 2023 at 10:52:39PM +0900, Masahiro Yamada wrote:
-> The binary-arch target needs to use the same CROSS_COMPILE as used in
-> build-arch; otherwise, 'make run-command' may attempt to resync the
-> .config file.
-> 
-> Squash scripts/package/deb-build-option into debian/rules, as it is a
-> small amount of code.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+By mistake, dev_pm_opp_find_level_floor() used the level parameter as
+unsigned long instead of unsigned int. Fix it.
 
-Reviewed-by: Nicolas Schier <n.schier@avm.de>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/opp/core.c     | 9 +++++++--
+ include/linux/pm_opp.h | 4 ++--
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index c022d548067d..49b429984bdb 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -842,9 +842,14 @@ EXPORT_SYMBOL_GPL(dev_pm_opp_find_level_ceil);
+  * use.
+  */
+ struct dev_pm_opp *dev_pm_opp_find_level_floor(struct device *dev,
+-					       unsigned long *level)
++					       unsigned int *level)
+ {
+-	return _find_key_floor(dev, level, 0, true, _read_level, NULL);
++	unsigned long temp = *level;
++	struct dev_pm_opp *opp;
++
++	opp = _find_key_floor(dev, &temp, 0, true, _read_level, NULL);
++	*level = temp;
++	return opp;
+ }
+ EXPORT_SYMBOL_GPL(dev_pm_opp_find_level_floor);
+ 
+diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+index 81dff7facdc9..74768c47d790 100644
+--- a/include/linux/pm_opp.h
++++ b/include/linux/pm_opp.h
+@@ -163,7 +163,7 @@ struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
+ 					      unsigned int *level);
+ 
+ struct dev_pm_opp *dev_pm_opp_find_level_floor(struct device *dev,
+-					       unsigned long *level);
++					       unsigned int *level);
+ 
+ struct dev_pm_opp *dev_pm_opp_find_bw_ceil(struct device *dev,
+ 					   unsigned int *bw, int index);
+@@ -330,7 +330,7 @@ static inline struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
+ }
+ 
+ static inline struct dev_pm_opp *dev_pm_opp_find_level_floor(struct device *dev,
+-							     unsigned long *level)
++							     unsigned int *level)
+ {
+ 	return ERR_PTR(-EOPNOTSUPP);
+ }
+-- 
+2.31.1.272.g89b43f80a514
 
-> 
->  scripts/package/deb-build-option | 14 --------------
->  scripts/package/debian/rules     |  5 +++--
->  2 files changed, 3 insertions(+), 16 deletions(-)
->  delete mode 100755 scripts/package/deb-build-option
-> 
-> diff --git a/scripts/package/deb-build-option b/scripts/package/deb-build-option
-> deleted file mode 100755
-> index 7950eff01781..000000000000
-> --- a/scripts/package/deb-build-option
-> +++ /dev/null
-> @@ -1,14 +0,0 @@
-> -#!/bin/sh
-> -# SPDX-License-Identifier: GPL-2.0-only
-> -
-> -# Set up CROSS_COMPILE if not defined yet
-> -if [ "${CROSS_COMPILE+set}" != "set" -a "${DEB_HOST_ARCH}" != "${DEB_BUILD_ARCH}" ]; then
-> -	echo CROSS_COMPILE=${DEB_HOST_GNU_TYPE}-
-> -fi
-> -
-> -version=$(dpkg-parsechangelog -S Version)
-> -debian_revision="${version##*-}"
-> -
-> -if [ "${version}" != "${debian_revision}" ]; then
-> -	echo KBUILD_BUILD_VERSION=${debian_revision}
-> -fi
-> diff --git a/scripts/package/debian/rules b/scripts/package/debian/rules
-> index 26bc6239e200..529b71b55efa 100755
-> --- a/scripts/package/debian/rules
-> +++ b/scripts/package/debian/rules
-> @@ -10,7 +10,9 @@ ifneq (,$(filter-out parallel=1,$(filter parallel=%,$(DEB_BUILD_OPTIONS))))
->      MAKEFLAGS += -j$(NUMJOBS)
->  endif
->  
-> -make-opts = ARCH=$(ARCH) KERNELRELEASE=$(KERNELRELEASE)
-> +revision = $(lastword $(subst -, ,$(shell dpkg-parsechangelog -S Version)))
-> +CROSS_COMPILE ?= $(filter-out $(DEB_BUILD_GNU_TYPE)-, $(DEB_HOST_GNU_TYPE)-)
-> +make-opts = ARCH=$(ARCH) KERNELRELEASE=$(KERNELRELEASE) KBUILD_BUILD_VERSION=$(revision) $(addprefix CROSS_COMPILE=,$(CROSS_COMPILE))
->  
->  .PHONY: binary binary-indep binary-arch
->  binary: binary-arch binary-indep
-> @@ -24,7 +26,6 @@ build: build-arch build-indep
->  build-indep:
->  build-arch:
->  	$(MAKE) -f $(srctree)/Makefile $(make-opts) \
-> -	$(shell $(srctree)/scripts/package/deb-build-option) \
->  	olddefconfig all
->  
->  .PHONY: clean
-> -- 
-> 2.40.1
-> 
 
