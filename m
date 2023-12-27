@@ -1,99 +1,107 @@
-Return-Path: <linux-kernel+bounces-12184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 438F581F106
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D7DF281F108
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:41:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6BD91F230F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:40:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7723D1F2148E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:41:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B158646540;
-	Wed, 27 Dec 2023 17:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A204653C;
+	Wed, 27 Dec 2023 17:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ialvzlAj"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g0ojs7z1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88FA346529
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 17:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 318A946522;
+	Wed, 27 Dec 2023 17:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703698848; x=1735234848;
+  t=1703698892; x=1735234892;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=4QCvqb/DyCWRJ65wrTNfN4lRFG+d66oV+D8MH++z4YY=;
-  b=ialvzlAjRGXIuvnpe35lTYbbt+0vGgukIUpgPixT9YdL2I4vC1pSpnTW
-   KH+IihMTYbZVm26uOlbcW8mzkjlUGJiBPcWmDgcOvIenYYBRQD3SADlN8
-   XF34nedWna881Egc5jcj1uv2rAjd6Rl4ndMcH4ckMW6dUEC7hhUn6UwnU
-   PbkB3Biyye1RSIl7HPX15Irf3MRp8wr2nNdOhhvAYSkPoYT07JdOtF7lT
-   wNLWpI/qQWKuJKoEda8sYpm/dTOTkYTfyFIuj9UALH3Vj7lOHOgT4SZDr
-   EpwFLoWcnSjXWpjULctA0YLmd5FVCKHrb43mAnezZ2kOLU0n1LE9iDv+o
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="399256616"
+  bh=A1VfCaddzy2SDlg+XO8w3Lq94MaVqkU//Wetdj4bhzc=;
+  b=g0ojs7z1CBfFmJaMN071RkpghFZhuxb3gETKLkelAhsvLv55P3YIUmVe
+   J5MH/J/2SBAM7DcxHXSQqOwa9f47hO4mqMqX0lNaG7A8x7Le/0wZhYYn0
+   UWrI44BdWzni5XfLujD2d8X1ixcZlyg5ehxG3WnQUN86Qyu5tRUD/TL6z
+   KFkX9zDrxefR+SU+xGdIXyD+JJ9Vv8kEnCFaKH6RuWfnBeUbcA2tHzMq8
+   teryGbUABxhErZ8foHx6gTnU+y9YYhngWDUXMzW+F/pXejqQem9yqXQJA
+   b1beQknCKVcXuADXVOwBwOvC9pPvFE5vcq22nsw3OONXzc5lWbFY7uZ3S
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="381440462"
 X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="399256616"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:40:48 -0800
+   d="scan'208";a="381440462"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:41:31 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="921885365"
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="812585943"
 X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
-   d="scan'208";a="921885365"
+   d="scan'208";a="812585943"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:40:44 -0800
+  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:41:25 -0800
 Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rIXtY-00000009TgB-43dz;
-	Wed, 27 Dec 2023 19:40:40 +0200
-Date: Wed, 27 Dec 2023 19:40:40 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Nikita Shubin <nikita.shubin@maquefel.me>
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>, Joel Stanley <joel@jms.id.au>,
-	Walker Chen <walker.chen@starfivetech.com>,
-	Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-	Huisong Li <lihuisong@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
-	Wei Xu <xuwei5@hisilicon.com>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-	Hal Feng <hal.feng@starfivetech.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 08/40] soc: Add SoC driver for Cirrus ep93xx
-Message-ID: <ZYxhmDlShZG23u-Y@smile.fi.intel.com>
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rIXuE-00000009Tgl-06dW;
+	Wed, 27 Dec 2023 19:41:22 +0200
+Date: Wed, 27 Dec 2023 19:41:21 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Shenghao Ding <shenghao-ding@ti.com>
+Cc: broonie@kernel.org, conor+dt@kernel.org, krzysztof.kozlowski@linaro.org,
+	robh+dt@kernel.org, kevin-lu@ti.com, baojun.xu@ti.com,
+	devicetree@vger.kernel.org, lgirdwood@gmail.com, perex@perex.cz,
+	pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+	liam.r.girdwood@intel.com, soyer@irl.hu, tiwai@suse.de,
+	peeyush@ti.com, navada@ti.com
+Subject: Re: [PATCH v3 3/5] ASoC: tas2781: Add tas2563 into header file for
+ DSP mode
+Message-ID: <ZYxhwW97kFu1pp6p@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
 
-On Sat, Dec 23, 2023 at 01:06:04PM +0300, Nikita Shubin wrote:
-> On Wed, 2023-12-13 at 20:37 +0200, Andy Shevchenko wrote:
-> > On Tue, Dec 12, 2023 at 11:20:25AM +0300, Nikita Shubin wrote:
+On Mon, Dec 25, 2023 at 01:39:29PM +0800, Shenghao Ding wrote:
+> Move tas2563 from tas2562 header file to tas2781 header file, because
+> tas2563 only work in bypass-DSP mode with tas2562 driver. In oder to
+> enable DSP mode for tas2563, it has been moved to tas2781 driver. As to
+> the hardware part, such as register setting and DSP firmware, all these
+> are stored in the binary firmware. What tas2781 drivder dooes is to parse
+> the firmware and download them to the tas2781 or tas2563, then power on
+> tas2781 or tas2563. So, tas2781 driver can be resued as tas2563 driverã€‚
+> Only attention will be paid to downloading corresponding firmware.
 
-...
+>  enum audio_device {
+>  	TAS2781	= 0,
+> +	TAS2563
+>  };
 
-> > > +       dev_info(dev, "EP93xx SoC revision %s\n", attrs->revision);
-> > 
-> > Hmm... Is this message anyhow useful?
-> 
-> Can we keep it please ? It makes us happy when we see it in logs for
-> historical reasons - it's been there since 2.4.
+Please, make it ordered, it doesn't seem to be an ABI.
 
-Maybe it's good to add in the comment area / cover letter why this is useful.
+enum audio_device {
+	TAS2563,
+	TAS2781,
+};
+
+Yes, and leave comma as the last entry is _not_ a terminator.
 
 -- 
 With Best Regards,
 Andy Shevchenko
+
 
 
