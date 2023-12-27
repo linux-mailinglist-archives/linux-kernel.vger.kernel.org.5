@@ -1,92 +1,80 @@
-Return-Path: <linux-kernel+bounces-11926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D52281EDAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:18:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 954D081EDAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 10:18:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE93E2826BA
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7E1F1C20E2C
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 09:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2840B28E3F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27BAD28E34;
 	Wed, 27 Dec 2023 09:18:29 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64B87199AF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78EEE19BA7
 	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 09:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7b7facde6f7so594702639f.1
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7b7fb5b059aso732649039f.2
         for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 01:18:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1703668706; x=1704273506;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=AlwDskA2iMpMQVUSwQ/WnNn62Sn2F2OBeZ/jPc+/pVk=;
-        b=gtyKErMWFVAVZch0K3vL1Dua45vbh0miqiwkpUldU0DgAUmZVdGBrhOPgv/k27KA87
-         R5K0WpEr5lCZEfyRS2Q3Klxq3LP1C32NB4OR2tiSv8o4GVaVLm50NR838PChq+Ok165X
-         5iUaTSkjH0c6YozmnILcQh+KiBRZOCKhn4t0YV+848dcuKd+LJx2bIdnMMAdHgQ+jKQY
-         oLLLwkesCokl+o0LbruUkN3y6zDKprNsb5jv9oIGAwfx2sg+IJ86ihdn4+hJF9fDaFCp
-         8lYV1xJetuI+NJLed0Pu8oa90hRoKHIa7oStZCXMY2PUu1iBxXGIo9Ry8tv168qTggX0
-         e6Fg==
-X-Gm-Message-State: AOJu0YxbjcS5n3euz2NHnX1CGIjLE8M7q4zrFEO9B6pRT7DXeotRz9PL
-	gzbomQKpan9oI5iWWQ9sGPafOizDnvxap4oI87usPLsMtEws/3k=
-X-Google-Smtp-Source: AGHT+IFAdDOzYNIj0dLVpmIr+xe9CCVI9dZ1GdUvIxlEHRSBA6dBZvB8P0qOpv/wGNN+XMIDkryDHJUCXw2IWxF3hUczc4xr9nZM
+        bh=P92PRpFs43lMfLroNZcs/O9zoCnn8cVd+GQQi2rMJj8=;
+        b=WU5PQ2xaiKlSXqOiQc81b500ecJ3XUwqGmmVFpMTU2KNhK+CgWweBvMAK7/bs6bb4y
+         vu6Bl2URKQnAaSNGatsIjQgTQh0ft9DDQTrPGAuqMbzsKjj2idem6dCC58I42obn+JBp
+         +LadsX5Ow857HiJehQGb9//OsfYPlDHSW0v4jb/JxIJq/8Q1hghsrpYDKzv9H6/F3R4F
+         +wSevSUeBmG37zsnqcENG3wtXexmkfg86UOpQchNvLClpNaM+p3s9xCdoq4P14w5TBxG
+         AUxdsv21YvbdPPEiWJ0aR2lo6aXQkR8AnnC8HLaVly1bllM6wqLqX0OJNvVIndr6lk2W
+         ydwQ==
+X-Gm-Message-State: AOJu0Yxoy/KtE9WTA8Rq4uCwHh3t4wsH5eVfGz41zC0RC4oxoOtsewBV
+	/+1QM8bsi1oz4DsLUH7o0xbQccPRtiHtJ+I2i7T01Hl8f359/s0=
+X-Google-Smtp-Source: AGHT+IERWvZmHmQ+4E00GP96i5z51eWR2fAgJfii09uXe+M7KhjqhyTISPOUNv5AypNN0mies4d/UgHH7IRk5rRDYa+iIjoT+qrp
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d13:b0:35f:f01e:bb25 with SMTP id
- i19-20020a056e021d1300b0035ff01ebb25mr786160ila.6.1703668706535; Wed, 27 Dec
+X-Received: by 2002:a05:6e02:174c:b0:35f:bea3:c041 with SMTP id
+ y12-20020a056e02174c00b0035fbea3c041mr1537712ill.4.1703668706759; Wed, 27 Dec
  2023 01:18:26 -0800 (PST)
 Date: Wed, 27 Dec 2023 01:18:26 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000117048060d7a4879@google.com>
-Subject: [syzbot] Monthly net report (Dec 2023)
-From: syzbot <syzbot+lista2146b62862a7fa40918@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000014de01060d7a484b@google.com>
+Subject: [syzbot] Monthly trace report (Dec 2023)
+From: syzbot <syzbot+list6c5ee133fd7951cf4004@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	mhiramat@kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-Hello net maintainers/developers,
+Hello trace maintainers/developers,
 
-This is a 31-day syzbot report for the net subsystem.
+This is a 31-day syzbot report for the trace subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/net
+https://syzkaller.appspot.com/upstream/s/trace
 
-During the period, 11 new issues were detected and 4 were fixed.
-In total, 73 issues are still open and 1360 have been fixed so far.
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 8 issues are still open and 29 have been fixed so far.
 
 Some of the still happening issues:
 
-Ref  Crashes Repro Title
-<1>  15039   Yes   KMSAN: uninit-value in aes_encrypt (4)
-                   https://syzkaller.appspot.com/bug?extid=828dfc12440b4f6f305d
-<2>  3912    Yes   KMSAN: uninit-value in eth_type_trans (2)
-                   https://syzkaller.appspot.com/bug?extid=0901d0cc75c3d716a3a3
-<3>  932     Yes   possible deadlock in __dev_queue_xmit (3)
-                   https://syzkaller.appspot.com/bug?extid=3b165dac15094065651e
-<4>  863     Yes   INFO: task hung in switchdev_deferred_process_work (2)
-                   https://syzkaller.appspot.com/bug?extid=8ecc009e206a956ab317
-<5>  691     Yes   INFO: task hung in rfkill_global_led_trigger_worker (2)
-                   https://syzkaller.appspot.com/bug?extid=2e39bc6569d281acbcfb
-<6>  600     Yes   INFO: task hung in rtnetlink_rcv_msg
-                   https://syzkaller.appspot.com/bug?extid=8218a8a0ff60c19b8eae
-<7>  411     Yes   WARNING in kcm_write_msgs
-                   https://syzkaller.appspot.com/bug?extid=52624bdfbf2746d37d70
-<8>  378     Yes   INFO: rcu detected stall in corrupted (4)
-                   https://syzkaller.appspot.com/bug?extid=aa7d098bd6fa788fae8e
-<9>  263     Yes   INFO: rcu detected stall in tc_modify_qdisc
-                   https://syzkaller.appspot.com/bug?extid=9f78d5c664a8c33f4cce
-<10> 254     Yes   BUG: corrupted list in p9_fd_cancelled (2)
-                   https://syzkaller.appspot.com/bug?extid=1d26c4ed77bc6c5ed5e6
+Ref Crashes Repro Title
+<1> 8166    Yes   possible deadlock in task_fork_fair
+                  https://syzkaller.appspot.com/bug?extid=1a93ee5d329e97cfbaff
+<2> 114     Yes   WARNING in format_decode (3)
+                  https://syzkaller.appspot.com/bug?extid=e2c932aec5c8a6e1d31c
+<3> 26      Yes   WARNING in blk_register_tracepoints
+                  https://syzkaller.appspot.com/bug?extid=c54ded83396afee31eb1
+<4> 7       Yes   INFO: task hung in blk_trace_ioctl (4)
+                  https://syzkaller.appspot.com/bug?extid=ed812ed461471ab17a0c
 
 ---
 This report is generated by a bot. It may contain errors.
