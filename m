@@ -1,163 +1,95 @@
-Return-Path: <linux-kernel+bounces-11764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AEEB81EB56
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 02:41:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0613A81EB62
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 02:59:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CC3A1C20B94
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 01:41:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8230CB21EAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 01:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A6928EB;
-	Wed, 27 Dec 2023 01:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RoLpmPGG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A880A20E3;
+	Wed, 27 Dec 2023 01:59:22 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2612563
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 01:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BR1S0lK026006;
-	Wed, 27 Dec 2023 01:41:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=6rCjNYpmvzw+zFgIJoVmB9pAnWLGDKEmkbIEn4WF5cY=; b=Ro
-	LpmPGG1jrRmfUybNsPFlUWwYb26gY4r2PQvKl8nO18Tjz82ZfDzzPBBEpprt2wP6
-	Nv2CxpkZUz0u4w6kve8w5WSFKPrvbJSJ8Nt4gtEICF19HJkCCQttsMy2Zl++U0hB
-	vYwscyOvC6eueP/ZJhly75P0D7mJOrqZK+th65xzJDkbOig1UX/mfrHUfpYg1pBd
-	CLFyTGouwpqgpU313lv6TdH3kx2tCIRO7UJB53u4TJo8nOi3lb+raYKiM2pLWStc
-	tU+fNSS3LNKUXk1z0SoWOsYfCtAHgjRaFypYEM1nCHJEN7YWE7NFoKeNDSZoim80
-	8yIl0Q5+O6rhnCRK2CDQ==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v7gd9aqc2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Dec 2023 01:41:34 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BR1fXDe006012
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Dec 2023 01:41:33 GMT
-Received: from [10.239.132.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 26 Dec
- 2023 17:41:31 -0800
-Message-ID: <6e762e8e-b031-4e37-97c1-56390c9b8076@quicinc.com>
-Date: Wed, 27 Dec 2023 09:41:29 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C87BF290A;
+	Wed, 27 Dec 2023 01:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 736372425c134f35a7e7d7a0bf2b187f-20231227
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:a9f54529-18db-4295-8c11-d437e02624db,IP:15,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:0
+X-CID-INFO: VERSION:1.1.35,REQID:a9f54529-18db-4295-8c11-d437e02624db,IP:15,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:0
+X-CID-META: VersionHash:5d391d7,CLOUDID:88c59a8d-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:231227095903XK28CY75,BulkQuantity:0,Recheck:0,SF:17|19|44|66|24|102,
+	TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+	,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: 736372425c134f35a7e7d7a0bf2b187f-20231227
+Received: from node4.com.cn [(39.156.73.12)] by mailgw
+	(envelope-from <liyouhong@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 140538751; Wed, 27 Dec 2023 09:59:02 +0800
+Received: from node4.com.cn (localhost [127.0.0.1])
+	by node4.com.cn (NSMail) with SMTP id C900216001CD7;
+	Wed, 27 Dec 2023 09:59:01 +0800 (CST)
+X-ns-mid: postfix-658B84E5-69383545
+Received: from localhost.localdomain (unknown [172.20.185.164])
+	by node4.com.cn (NSMail) with ESMTPA id 6BD7116001CD7;
+	Wed, 27 Dec 2023 01:58:59 +0000 (UTC)
+From: YouHong Li <liyouhong@kylinos.cn>
+To: paulus@samba.org
+Cc: linux-ppp@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	davem@davemloft.net,
+	liyouhong <liyouhong@kylinos.cn>,
+	k2ci <kernel-bot@kylinos.cn>,
+	Simon Horman <horms@kernel.org>
+Subject: [PATCH v2] drivers/net/ppp/ppp_async.c: Fix spelling typo in comment
+Date: Wed, 27 Dec 2023 09:58:31 +0800
+Message-Id: <20231227015831.289077-1-liyouhong@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] kernel: Introduce a write lock/unlock wrapper for
- tasklist_lock
-Content-Language: en-US
-To: Hillf Danton <hdanton@sina.com>, Matthew Wilcox <willy@infradead.org>
-CC: "Eric W. Biederman" <ebiederm@xmission.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20231213101745.4526-1-quic_aiquny@quicinc.com>
- <ZXnaNSrtaWbS2ivU@casper.infradead.org>
- <20231226104652.1491-1-hdanton@sina.com>
-From: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
-In-Reply-To: <20231226104652.1491-1-hdanton@sina.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 80UPHpaJI7CGgHzwb1QAGMjS_T7xff0X
-X-Proofpoint-GUID: 80UPHpaJI7CGgHzwb1QAGMjS_T7xff0X
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 adultscore=0 priorityscore=1501 clxscore=1011
- bulkscore=0 phishscore=0 mlxscore=0 mlxlogscore=452 malwarescore=0
- impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2311290000 definitions=main-2312270011
+Content-Transfer-Encoding: quoted-printable
 
+From: liyouhong <liyouhong@kylinos.cn>
 
+Fix spelling typo in comment
 
-On 12/26/2023 6:46 PM, Hillf Danton wrote:
-> On Wed, 13 Dec 2023 12:27:05 -0600 Eric W. Biederman <ebiederm@xmission.com>
->> Matthew Wilcox <willy@infradead.org> writes:
->>> On Wed, Dec 13, 2023 at 06:17:45PM +0800, Maria Yu wrote:
->>>> +static inline void write_lock_tasklist_lock(void)
->>>> +{
->>>> +	while (1) {
->>>> +		local_irq_disable();
->>>> +		if (write_trylock(&tasklist_lock))
->>>> +			break;
->>>> +		local_irq_enable();
->>>> +		cpu_relax();
->>>
->>> This is a bad implementation though.  You don't set the _QW_WAITING flag
->>> so readers don't know that there's a pending writer.  Also, I've seen
->>> cpu_relax() pessimise CPU behaviour; putting it into a low-power mode
->>> that takes a while to wake up from.
->>>
->>> I think the right way to fix this is to pass a boolean flag to
->>> queued_write_lock_slowpath() to let it know whether it can re-enable
->>> interrupts while checking whether _QW_WAITING is set.
-> 
-> 	lock(&lock->wait_lock)
-> 	enable irq
-> 	int
-> 	lock(&lock->wait_lock)
-> 
-> You are adding chance for recursive locking.
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: liyouhong <liyouhong@kylinos.cn>
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-Thx for the comments for discuss of the deadlock possibility. While I 
-think deadlock can be differentiate with below 2 scenarios:
-1. queued_write_lock_slowpath being triggered in interrupt context.
-   tasklist_lock don't have write_lock_irq(save) in interrupt context.
-   while for common rw lock, maybe write_lock_irq(save) usage in 
-interrupt context is a possible.
-   so may introduce a state when lock->wait_lock is released and left 
-the _QW_WAITING flag.
-Welcome others to suggest on designs and comments.
+diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
+index b287bb811875..cb55b2d95eff 100644
+--- a/drivers/net/ppp/ppp_async.c
++++ b/drivers/net/ppp/ppp_async.c
+@@ -547,7 +547,7 @@ ppp_async_encode(struct asyncppp *ap)
+ 	proto =3D get_unaligned_be16(data);
+=20
+ 	/*
+-	 * LCP packets with code values between 1 (configure-reqest)
++	 * LCP packets with code values between 1 (configure-request)
+ 	 * and 7 (code-reject) must be sent as though no options
+ 	 * had been negotiated.
+ 	 */
+--=20
+2.34.1
 
-2.queued_read_lock_slowpath can be triggered in interrupt context. And 
-it already have the handle to avoid possible deadlock.
-In the queued_read_lock_slowpath, there is check whether current context 
-is in interrupt or not, and get the lock directly of only write lock 
-waiting.
-
-Pls reference[1]:
-	/*
-	 * Readers come here when they cannot get the lock without waiting
-	 */
-	if (unlikely(in_interrupt())) {
-		/*
-		 * Readers in interrupt context will get the lock immediately
-		 * if the writer is just waiting (not holding the lock yet),
-		 * so spin with ACQUIRE semantics until the lock is available
-		 * without waiting in the queue.
-		 */
-		atomic_cond_read_acquire(&lock->cnts, !(VAL & _QW_LOCKED));
-		return;
-	}
-
-[1]: 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/locking/qrwlock.c
->>
->> Yes.  It seems to make sense to distinguish between write_lock_irq and
->> write_lock_irqsave and fix this for all of write_lock_irq.
->>
->> Either that or someone can put in the work to start making the
->> tasklist_lock go away.
->>
->> Eric
-
--- 
-Thx and BRs,
-Aiqun(Maria) Yu
 
