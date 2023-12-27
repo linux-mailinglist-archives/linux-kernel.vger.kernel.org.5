@@ -1,265 +1,152 @@
-Return-Path: <linux-kernel+bounces-11730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A482A81EAE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 01:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D2DC81EAEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 01:20:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7FF81C220A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 00:16:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74B4F1C21EA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 00:20:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64AC380B;
-	Wed, 27 Dec 2023 00:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4FC81FBF;
+	Wed, 27 Dec 2023 00:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="luAKczoW"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="N341jRBp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14F723A6;
-	Wed, 27 Dec 2023 00:15:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00909C433C8;
-	Wed, 27 Dec 2023 00:15:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703636150;
-	bh=GElhOP5S6nKROUOHTf3ELUO3ZW6l0S/29OFPIsyN3S8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=luAKczoWx4T4Qys+2Oc2xRfIhVlHqLwsNuyw+WW9VVyCwtjleZT3vM/XNIh65LKa1
-	 JhyB1JToiH3NKgubccu8wVw90crrIf2X7t0TVFo1Ae5jHxSXfsd9RJrnOwDyobPgkF
-	 Lku4Y4UFW4NuJKwH8yPKqf09TvWTkKvrlNBB6fbzZ7aevagqoHLUF+e9jJuEPuLiB0
-	 Gjr40AEUxo+bA6qOQUIlfY/J8Bz85othgDabe6+NliiQkKVq/lk+ELX9nuuhzDi7UI
-	 Np4V/5rslt7WuVTBPD2EfcT/RqcBfe+zZ4gSd82DoDNUqHjarQASwwHxXcluhY70sd
-	 bJE8MesiYAGpQ==
-Date: Tue, 26 Dec 2023 18:15:48 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Esther Shimanovich <eshimanovich@chromium.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-Message-ID: <20231227001548.GA1484371@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD915622;
+	Wed, 27 Dec 2023 00:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BQNuTAw017245;
+	Wed, 27 Dec 2023 00:20:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=C0F31algdVe500mgfgdoCt4pGhDTR1ZynXl8Vor97Co=; b=N3
+	41jRBpZw1Gukq/QZ0mh2PL5OOwrHNWSZjDU9nqRMiGSdQvqW8Rcc8V9u+SFSNqbu
+	jTZVpSCpilzkfkI48HDyTfopX0dWYYPdgnX6AmvSNpklzY/rnjowOk61e25+bdCZ
+	iXGLf7cMiW9zHOWmH0O2q1TWHydWnW12OokIrMLjP0uJvt9dqCGDZ8rwhUrwIT4H
+	FaWDB8PzYBbWUUJswFmNi9fVYSkScGuE+cxpoTla2PYxST4gz6zJrI8lF4eANfYG
+	wE+TRPEZOzDMF2C9CFc3h/ohAuKCcK2YHSgihnEDxVsZZs2ZvIfykwPRmyctq8dr
+	VYaVehy8SvKCUvzIrfQg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v7c9jk1rc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Dec 2023 00:20:06 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BR0K5WI032355
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Dec 2023 00:20:05 GMT
+Received: from [10.110.65.236] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 26 Dec
+ 2023 16:20:04 -0800
+Message-ID: <3e017f77-87dd-78e1-321d-90c3e57a68d9@quicinc.com>
+Date: Tue, 26 Dec 2023 16:20:03 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221-thunderbolt-pci-patch-4-v4-1-2e136e57c9bc@chromium.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH V1] net: qrtr: ns: Ignore ENODEV failures in ns
+To: Simon Horman <horms@kernel.org>, Sarannya S <quic_sarannya@quicinc.com>
+CC: <quic_bjorande@quicinc.com>, <andersson@kernel.org>,
+        <mathieu.poirier@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "open list:NETWORKING
+ [GENERAL]" <netdev@vger.kernel.org>
+References: <1703153211-3717-1-git-send-email-quic_sarannya@quicinc.com>
+ <20231223135333.GA201037@kernel.org>
+Content-Language: en-US
+From: Chris Lew <quic_clew@quicinc.com>
+In-Reply-To: <20231223135333.GA201037@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: hzpCbIT1obMCBG01wK-6u7g99AjD_AAU
+X-Proofpoint-ORIG-GUID: hzpCbIT1obMCBG01wK-6u7g99AjD_AAU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 bulkscore=0 spamscore=0 adultscore=0 phishscore=0
+ suspectscore=0 mlxscore=0 mlxlogscore=960 lowpriorityscore=0 clxscore=1011
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312270000
 
-On Thu, Dec 21, 2023 at 03:53:42PM -0500, Esther Shimanovich wrote:
-> On Lenovo X1 Carbon Gen 7/8 devices, when a platform enables a policy to
-> distrust removable PCI devices, the build-in USB-C ports stop working at
-> all.
-> This happens because these X1 Carbon models have a unique feature; a
-> Thunderbolt controller that is discrete from the SoC. The software sees
-> this controller, and incorrectly assumes it is a removable PCI device,
-> even though it is fixed to the computer and is wired to the computer's
-> own USB-C ports.
+
+
+On 12/23/2023 5:56 AM, Simon Horman wrote:
+> [Dropped bjorn.andersson@kernel.org, as the correct address seems
+>   to be andersson@kernel.org, which is already in the CC list.
+>   kernel.org rejected sending this email without that update.]
 > 
-> Relabel all the components of the JHL6540 controller as DEVICE_FIXED,
-> and where applicable, external_facing.
+> On Thu, Dec 21, 2023 at 03:36:50PM +0530, Sarannya S wrote:
+>> From: Chris Lew <quic_clew@quicinc.com>
+>>
+>> Ignore the ENODEV failures returned by kernel_sendmsg(). These errors
+>> indicate that either the local port has been closed or the remote has
+>> gone down. Neither of these scenarios are fatal and will eventually be
+>> handled through packets that are later queued on the control port.
+>>
+>> Signed-off-by: Chris Lew <quic_clew@quicinc.com>
+>> Signed-off-by: Sarannya Sasikumar <quic_sarannya@quicinc.com>
+>> ---
+>>   net/qrtr/ns.c | 11 +++++++----
+>>   1 file changed, 7 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/net/qrtr/ns.c b/net/qrtr/ns.c
+>> index abb0c70..8234339 100644
+>> --- a/net/qrtr/ns.c
+>> +++ b/net/qrtr/ns.c
+>> @@ -157,7 +157,7 @@ static int service_announce_del(struct sockaddr_qrtr *dest,
+>>   	msg.msg_namelen = sizeof(*dest);
+>>   
+>>   	ret = kernel_sendmsg(qrtr_ns.sock, &msg, &iv, 1, sizeof(pkt));
+>> -	if (ret < 0)
+>> +	if (ret < 0 && ret != -ENODEV)
+>>   		pr_err("failed to announce del service\n");
+>>   
+>>   	return ret;
 > 
-> Ensure that the security policy to distrust external PCI devices works
-> as intended, and that the device's USB-C ports are able to enumerate
-> even when the policy is enabled.
-
-Thanks for all your work here.
-
-This is going to be a maintenance problem.  We typically use quirks to
-work around hardware defects, e.g., a device that advertises a feature
-that doesn't work per spec.
-
-But I don't see where the defect is here.  And I doubt that this is
-really a unique situation.  So it's likely that this will happen on
-other systems, and we don't want to have to add quirks every time
-another one shows up.
-
-If this is a firmware defect, e.g., if this platform is using
-"ExternalFacingPort" incorrectly, we can add a quirk to work around
-that, too.  But I'm not sure that's the case.
-
-> Signed-off-by: Esther Shimanovich <eshimanovich@chromium.org>
-> ---
-> Changes in v4:
-> - replaced a dmi check in the rootport quirk with a subsystem vendor and
->   device check.
-> - Link to v3: https://lore.kernel.org/r/20231220-thunderbolt-pci-patch-4-v3-1-056fd1717d06@chromium.org
+> Hi,
 > 
-> Changes in v3:
-> - removed redundant dmi check, as the subsystem vendor check is
->   sufficient
-> - switched to PCI_VENDOR_ID_LENOVO instead of hex code
-> - Link to v2: https://lore.kernel.org/r/20231219-thunderbolt-pci-patch-4-v2-1-ec2d7af45a9b@chromium.org
+> The caller of service_announce_del() ignores it's return value.
+> So the only action on error is the pr_err() call above, and so
+> with this patch -ENODEV is indeed ignored.
 > 
-> Changes in v2:
-> - nothing new, v1 was just a test run to see if the ASCII diagram would
->   be rendered properly in mutt and k-9
-> - for folks using gmail, make sure to select "show original" on the top
->   right, as otherwise the diagram will be garbled by the standard
->   non-monospace font
-> - Link to v1: https://lore.kernel.org/r/20231219-thunderbolt-pci-patch-4-v1-1-4e8e3773f0a9@chromium.org
-> ---
->  drivers/pci/quirks.c | 112 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 112 insertions(+)
+> However, I wonder if it would make things clearer to the reader (me?)
+> if the return type of service_announce_del was updated void. Because
+> as things stand -ENODEV may be returned, which implies something might
+> handle that, even though it doe not.
 > 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index ea476252280a..34e43323ff14 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -3873,6 +3873,118 @@ DECLARE_PCI_FIXUP_SUSPEND_LATE(PCI_VENDOR_ID_INTEL,
->  			       quirk_apple_poweroff_thunderbolt);
->  #endif
->  
-> +/*
-> + * On most ThinkPad Carbon 7/8s, JHL6540 Thunderbolt 3 bridges are set
-> + * incorrectly as DEVICE_REMOVABLE despite being built into the device.
-> + * This is the side effect of a unique hardware configuration.
-> + *
-> + * Normally, Thunderbolt functionality is integrated to the SoC and
-> + * its root ports.
-> + *
-> + *                          Most devices:
-> + *                    root port --> USB-C port
-> + *
-> + * But X1 Carbon Gen 7/8 uses Whiskey Lake and Comet Lake SoC, which
-> + * don't come with Thunderbolt functionality. Therefore, a discrete
-> + * Thunderbolt Host PCI controller was added between the root port and
-> + * the USB-C port.
-> + *
-> + *                        Thinkpad Carbon 7/8s
-> + *                 (w/ Whiskey Lake and Comet Lake SoC):
-> + *                root port -->  JHL6540   --> USB-C port
-> + *
-> + * Because the root port is labeled by FW as "ExternalFacingPort", as
-> + * required by the DMAR ACPI spec, the JHL6540 chip is inaccurately
-
-Can you include a citation (spec name, revision, section) for this
-DMAR requirement?
-
-> + * labeled as DEVICE_REMOVABLE by the kernel pci driver.
-> + * Therefore, the built-in USB-C ports do not enumerate when policies
-> + * forbidding external pci devices are enforced.
-> + *
-> + * This fix relabels the pci components in the built-in JHL6540 chip as
-> + * DEVICE_FIXED, ensuring that the built-in USB-C ports always enumerate
-> + * properly as intended.
-> + *
-> + * This fix also labels the external facing components of the JHL6540 as
-> + * external_facing, so that the pci attach policy works as intended.
-> + *
-> + * The ASCII diagram below describes the pci layout of the JHL6540 chip.
-> + *
-> + *                         Root Port
-> + *                 [8086:02b4] or [8086:9db4]
-> + *                             |
-> + *                        JHL6540 Chip
-> + *     __________________________________________________
-> + *    |                      Bridge                      |
-> + *    |        PCI ID ->  [8086:15d3]                    |
-> + *    |         DEVFN ->      (00)                       |
-> + *    |       _________________|__________________       |
-> + *    |      |           |            |           |      |
-> + *    |    Bridge     Bridge        Bridge      Bridge   |
-> + *    | [8086:15d3] [8086:15d3]  [8086:15d3] [8086:15d3] |
-> + *    |    (00)        (08)         (10)        (20)     |
-> + *    |      |           |            |           |      |
-> + *    |     NHI          |     USB Controller     |      |
-> + *    | [8086:15d2]      |       [8086:15d4]      |      |
-> + *    |    (00)          |          (00)          |      |
-> + *    |      |___________|            |___________|      |
-> + *    |____________|________________________|____________|
-> + *                 |                        |
-> + *             USB-C Port               USB-C Port
-> + *
-> + *
-> + * Based on what a JHL6549 pci component's pci id, subsystem device id
-> + * and devfn are, we can infer if it is fixed and if it faces a usb port;
-> + * which would mean it is external facing.
-> + * This quirk uses these values to identify the pci components and set the
-> + * properties accordingly.
-
-Random nits: Capitalize spec terms like "PCI", "USB", "Root Port",
-etc., consistently in English text.  Rewrap to fill 78 columns or so.
-Add blank lines between paragraphs.  This applies to the commit log
-(which should be wrapped to 75 to allow for "git log" indent) as well
-as comments.
-
-But honestly, I hope we can figure out a solution that doesn't require
-a big comment like this.  Checking for random device IDs to deduce the
-topology is not the way PCI is supposed to work.  PCI is designed to
-be enumerable, so software can learn what it needs to know by
-interrogating the hardware directly.
-
-For cases where that's impossible, ACPI is supposed to fill the gaps,
-e.g., with "ExternalFacingPort".  If this patch covers over a gap that
-firmware doesn't handle yet, maybe we need to add some new firmware
-interface.  If that's the case, we can add quirks for platforms that
-don't have the new interface.  But we at least need a plan that
-doesn't require quirks indefinitely.
-
-> + */
-> +static void carbon_X1_fixup_relabel_alpine_ridge(struct pci_dev *dev)
-> +{
-> +	/* Is this JHL6540 PCI component embedded in a Lenovo device? */
-> +	if (dev->subsystem_vendor != PCI_VENDOR_ID_LENOVO)
-> +		return;
-> +
-> +	/* Is this JHL6540 PCI component embedded in an X1 Carbon Gen 7/8? */
-> +	if (dev->subsystem_device != 0x22be && // Gen 8
-> +	    dev->subsystem_device != 0x2292) { // Gen 7
-> +		return;
-> +	}
-> +
-> +	dev_set_removable(&dev->dev, DEVICE_FIXED);
-> +
-> +	/* Not all 0x15d3 components are external facing */
-> +	if (dev->device == 0x15d3 &&
-> +	    dev->devfn != 0x08 &&
-> +	    dev->devfn != 0x20) {
-> +		return;
-> +	}
-> +
-> +	dev->external_facing = true;
-> +}
-> +
-> +/*
-> + * We also need to relabel the root port as a consequence of changing
-> + * the JHL6540's PCIE hierarchy.
-> + */
-> +static void carbon_X1_fixup_rootport_not_removable(struct pci_dev *dev)
-> +{
-> +	/* Is this JHL6540 PCI component embedded in a Lenovo device? */
-> +	if (dev->subsystem_vendor != PCI_VENDOR_ID_LENOVO)
-> +		return;
-> +
-> +	/* Is this JHL6540 PCI component embedded in an X1 Carbon Gen 7/8? */
-> +	if (dev->subsystem_device != 0x22be && // Gen 8
-> +	    dev->subsystem_device != 0x2292) { // Gen 7
-> +		return;
-> +	}
-> +
-> +	dev->external_facing = false;
-> +}
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d3, carbon_X1_fixup_relabel_alpine_ridge);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d2, carbon_X1_fixup_relabel_alpine_ridge);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d4, carbon_X1_fixup_relabel_alpine_ridge);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x02b4, carbon_X1_fixup_rootport_not_removable);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x9db4, carbon_X1_fixup_rootport_not_removable);
-> +
->  /*
->   * Following are device-specific reset methods which can be used to
->   * reset a single function if other methods (e.g. FLR, PM D0->D3) are
+> The above notwithstanding, this change looks good to me.
 > 
-> ---
-> base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-> change-id: 20231219-thunderbolt-pci-patch-4-ede71cb833c4
+> Reviewed-by: Simon Horman <horms@kernel.org>
 > 
-> Best regards,
-> -- 
-> Esther Shimanovich <eshimanovich@chromium.org>
-> 
+> ...
+
+Hi Simon, thanks for the review and suggestion. We weren't sure whether 
+we should change the function prototype on these patches on the chance 
+that there will be something that listens and handles this in the 
+future. I think it's a good idea to change it to void and we can change 
+it back if there is such a usecase in the future.
 
