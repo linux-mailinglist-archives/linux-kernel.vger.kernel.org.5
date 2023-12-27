@@ -1,180 +1,213 @@
-Return-Path: <linux-kernel+bounces-11863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F07181ECA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:31:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF07F81ECA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:32:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C078E1C2235B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:31:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46BCCB223DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 06:32:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDEDD538D;
-	Wed, 27 Dec 2023 06:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A30A6130;
+	Wed, 27 Dec 2023 06:32:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lQrvPlfW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jxJnt7zJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C07F5228;
-	Wed, 27 Dec 2023 06:30:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A7B6C433C7;
-	Wed, 27 Dec 2023 06:30:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703658651;
-	bh=axysAKGKpEKkYuBldpcX4OwH/06/63fo7fdgfaaiYJ0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lQrvPlfW/CtT5sS+oEY90/+eqaqBHhGEYLemgV/ZKcGWOjusFD97MO+09SIWOnKOo
-	 tgdwO0+xBuD+X0dYrbW6kvvEQEhlc0DVt6JjrD0/kvARe7Y8Mrrf/+u9BVG0a+La/x
-	 cH+jGCFdHEUUmGkBLXqJnnIgQ6s6UUPUwFt1OlXQ5xDRRVBaMikZYb8g4qIgT961Yq
-	 aRWvXiarXxNcIb6V5ltQlMEMLt/vUTDfwTsqCLphFrWBouu+dJQSdsph1/N30ZLJ+6
-	 ZzOwWPTdVVI2sUyluEm8Gmpqsql8oEVBD2lu3ZTDIrLQaL5CdVxaBoGB7QZDb/fJoI
-	 RSoEakRp8wKjA==
-Date: Wed, 27 Dec 2023 12:00:38 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Chanwoo Lee <cw9316.lee@samsung.com>
-Cc: alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-	jejb@linux.ibm.com, martin.petersen@oracle.com,
-	peter.wang@mediatek.com, chu.stanley@gmail.com,
-	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-	stanley.chu@mediatek.com, quic_cang@quicinc.com,
-	quic_asutoshd@quicinc.com, powen.kao@mediatek.com,
-	quic_nguyenb@quicinc.com, yang.lee@linux.alibaba.com,
-	beanhuo@micron.com, Arthur.Simchaev@wdc.com, ebiggers@google.com,
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, grant.jung@samsung.com,
-	jt77.jang@samsung.com, dh0421.hwang@samsung.com,
-	sh043.lee@samsung.com
-Subject: Re: [PATCH v2] ufs: mcq: Adding a function for MCQ enable
-Message-ID: <20231227063038.GJ2814@thinkpad>
-References: <CGME20231221065637epcas1p203dcd5cfb1d4a3964fff9543a041d78d@epcas1p2.samsung.com>
- <20231221065608.9899-1-cw9316.lee@samsung.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 072AE6105
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 06:32:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7ccd94bd00aso464085241.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 22:32:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703658754; x=1704263554; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DQpBmQb9ZKGVvTt+Da2dXb1ErxO/idvu8KhLAqdvHs4=;
+        b=jxJnt7zJhoM4pBP0l6tue8UV502K8Eg2XHjt8Q/fPTtJ41AvjHM9QzszQ9vL0d5pHS
+         ZKSWMFyX30ea/lw8fEmwE/T+iIl2qWqs82Z9HEIVGM0kbgZfi3FCg4gGrOyBaAfzxDdQ
+         RUEHqtrKy9LbIjWkKp0EwevhlUi4SJiIEmKrWHTXVbbPSgneWy1+3z57y7whalRt0h6Q
+         woGstnbp1yya9ZgpUSBOzwR1U8ddSNWyAupJ9RzjJ2msISesCRKKT00Kl2RZFiBCmsU3
+         jFtJrz4KQpeqIKeOxfH0pwB4TQeBhQW0u6Y0QHbHEWPgBRGy/sxYN3RleQe+MDsksNS4
+         XSTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703658754; x=1704263554;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DQpBmQb9ZKGVvTt+Da2dXb1ErxO/idvu8KhLAqdvHs4=;
+        b=XU6eJEJhV4h/lgXSVxsAERR0dAEPpFfWFIHo4EQKa18h7WpkLRl2bT+SyndsCRQuBX
+         rA8TB1XciU/dfQEmI68PRgyf+4SagXnONCoYCjbxQailwZCzYYnDFfUxmyTWeumh5MN/
+         yK9K7A3ivZWSqgMGH2jTtv9QhJbY/Ew8963wmnbPfuF8LXvJ030C67DdbMzt+1sA51uv
+         ryRCepohCzWkUZauIKXdI19S8rX0JVhXWjexlU2cgB1ozoFRoRLcLqmDYwW52aD6Q7sL
+         BcnT7LQ8Z8VBihMH8WFxpVOsSH9gGFKvE0JjKzZcvw97eI9C0+CQcbMhmTpmrD2vupFY
+         nHCw==
+X-Gm-Message-State: AOJu0Yx89YpQFaDBqJp1jcVWvwQg8y3eUVOdMEs5hD0yRs0QvT9CaGqk
+	cdyOcVlBMo/MZWt8y9m16H2bMuH8jUoG4T+SGpg=
+X-Google-Smtp-Source: AGHT+IGAqeHImSOZ0T3Y92vVzDH1Ch+3oencaCeBlIf2Q1ydOIIMCwEm1BUPQ00EUCXEkbUqzmrDGfftwJ/xknh8o5s=
+X-Received: by 2002:a05:6102:3f05:b0:467:33b2:231c with SMTP id
+ k5-20020a0561023f0500b0046733b2231cmr104286vsv.21.1703658753720; Tue, 26 Dec
+ 2023 22:32:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231221065608.9899-1-cw9316.lee@samsung.com>
+References: <20231213-zswap-dstmem-v4-0-f228b059dd89@bytedance.com>
+ <20231213-zswap-dstmem-v4-1-f228b059dd89@bytedance.com> <CAGsJ_4wuTZcGurby9h4PU2DwFaiEKB4bxuycaeyz3bPw3jSX3A@mail.gmail.com>
+ <af0a03d5-e536-41b7-9ab8-c5985794b7db@bytedance.com>
+In-Reply-To: <af0a03d5-e536-41b7-9ab8-c5985794b7db@bytedance.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Wed, 27 Dec 2023 19:32:22 +1300
+Message-ID: <CAGsJ_4zMGEEUXswFs0VePye5wzvSt94JkrTvypHAV4G2v1XOkA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/6] mm/zswap: change dstmem size to one page
+To: Chengming Zhou <zhouchengming@bytedance.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Seth Jennings <sjenning@redhat.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Vitaly Wool <vitaly.wool@konsulko.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Chris Li <chriscli@google.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, Dan Streetman <ddstreet@ieee.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, Chris Li <chrisl@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 21, 2023 at 03:56:08PM +0900, Chanwoo Lee wrote:
-> From: ChanWoo Lee <cw9316.lee@samsung.com>
-> 
-> The REG_UFS_MEM_CFG register is too general(broad)
-> and it is difficult to know the meaning only with a value of 0x1.
-> So far, comments were required.
-> 
-> Therefore, I have added new functions and defines
-> to improve code readability/reusability.
-> 
-> Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
+On Wed, Dec 27, 2023 at 7:11=E2=80=AFPM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
+>
+> On 2023/12/27 09:07, Barry Song wrote:
+> > On Wed, Dec 27, 2023 at 4:55=E2=80=AFAM Chengming Zhou
+> > <zhouchengming@bytedance.com> wrote:
+> >>
+> >> Change the dstmem size from 2 * PAGE_SIZE to only one page since
+> >> we only need at most one page when compress, and the "dlen" is also
+> >> PAGE_SIZE in acomp_request_set_params(). If the output size > PAGE_SIZ=
+E
+> >> we don't wanna store the output in zswap anyway.
+> >>
+> >> So change it to one page, and delete the stale comment.
+> >>
+> >> There is no any history about the reason why we needed 2 pages, it has
+> >> been 2 * PAGE_SIZE since the time zswap was first merged.
+> >
+> > i remember there was an over-compression case,  that means the compress=
+ed
+> > data can be bigger than the source data. the similar thing is also done=
+ in zram
+> > drivers/block/zram/zcomp.c
+>
+> Right, there is a buffer overflow report[1] that I just +to you.
+>
+> I think over-compression is all right, but buffer overflow is not accepta=
+ble,
+> so we should fix any buffer overflow problem IMHO. Anyway, 2 pages maybe
+> overflowed too, just with smaller probability, right?
 
-I would reword the subject and description as below:
+practically, the typical page size is 4KB or above, so we have never seen 2
+pages can be overflowed. We may have a chance to let CPU-based
+compression code to return earlier before overflowing though it is still
+very tough.
+but for accelerators-based compression in drivers/crypto, the only choice i=
+s
+giving its dma engine a buffer whose length is enough - 2*PAGE_SIZE.
 
-```
-ufs: mcq: Add definition for REG_UFS_MEM_CFG register
+so i don't think this patch is correct.
 
-Instead of hardcoding the register field, add the proper definition. While
-at it, let's also use ufshcd_rmwl() to simplify updating this register.
-```
+>
+> Thanks.
+>
+> >
+> > int zcomp_compress(struct zcomp_strm *zstrm,
+> >                 const void *src, unsigned int *dst_len)
+> > {
+> >         /*
+> >          * Our dst memory (zstrm->buffer) is always `2 * PAGE_SIZE' siz=
+ed
+> >          * because sometimes we can endup having a bigger compressed da=
+ta
+> >          * due to various reasons: for example compression algorithms t=
+end
+> >          * to add some padding to the compressed buffer. Speaking of pa=
+dding,
+> >          * comp algorithm `842' pads the compressed length to multiple =
+of 8
+> >          * and returns -ENOSP when the dst memory is not big enough, wh=
+ich
+> >          * is not something that ZRAM wants to see. We can handle the
+> >          * `compressed_size > PAGE_SIZE' case easily in ZRAM, but when =
+we
+> >          * receive -ERRNO from the compressing backend we can't help it
+> >          * anymore. To make `842' happy we need to tell the exact size =
+of
+> >          * the dst buffer, zram_drv will take care of the fact that
+> >          * compressed buffer is too big.
+> >          */
+> >         *dst_len =3D PAGE_SIZE * 2;
+> >
+> >         return crypto_comp_compress(zstrm->tfm,
+> >                         src, PAGE_SIZE,
+> >                         zstrm->buffer, dst_len);
+> > }
+> >
+> >
+> >>
+> >> According to Yosry and Nhat, one potential reason is that we used to
+> >> store a zswap header containing the swap entry in the compressed page
+> >> for writeback purposes, but we don't do that anymore.
+> >>
+> >> This patch works good in kernel build testing even when the input data
+> >> doesn't compress at all (i.e. dlen =3D=3D PAGE_SIZE), which we can see
+> >> from the bpftrace tool:
+> >>
+> >> bpftrace -e 'k:zpool_malloc {@[(uint32)arg1=3D=3D4096]=3Dcount()}'
+> >> @[1]: 2
+> >> @[0]: 12011430
+> >>
+> >> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+> >> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+> >> Acked-by: Chris Li <chrisl@kernel.org> (Google)
+> >> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> >> ---
+> >>  mm/zswap.c | 5 ++---
+> >>  1 file changed, 2 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/mm/zswap.c b/mm/zswap.c
+> >> index 7ee54a3d8281..976f278aa507 100644
+> >> --- a/mm/zswap.c
+> >> +++ b/mm/zswap.c
+> >> @@ -707,7 +707,7 @@ static int zswap_dstmem_prepare(unsigned int cpu)
+> >>         struct mutex *mutex;
+> >>         u8 *dst;
+> >>
+> >> -       dst =3D kmalloc_node(PAGE_SIZE * 2, GFP_KERNEL, cpu_to_node(cp=
+u));
+> >> +       dst =3D kmalloc_node(PAGE_SIZE, GFP_KERNEL, cpu_to_node(cpu));
+> >>         if (!dst)
+> >>                 return -ENOMEM;
+> >>
+> >> @@ -1662,8 +1662,7 @@ bool zswap_store(struct folio *folio)
+> >>         sg_init_table(&input, 1);
+> >>         sg_set_page(&input, page, PAGE_SIZE, 0);
+> >>
+> >> -       /* zswap_dstmem is of size (PAGE_SIZE * 2). Reflect same in sg=
+_list */
+> >> -       sg_init_one(&output, dst, PAGE_SIZE * 2);
+> >> +       sg_init_one(&output, dst, PAGE_SIZE);
+> >>         acomp_request_set_params(acomp_ctx->req, &input, &output, PAGE=
+_SIZE, dlen);
+> >>         /*
+> >>          * it maybe looks a little bit silly that we send an asynchron=
+ous request,
+> >>
+> >> --
+> >> b4 0.10.1
+> >>
 
-- Mani
-> 
-> * v1->v2:
->    1) Excluding ESI_ENABLE
->    2) Replace with ufshcd_rmwl, BIT()
->    3) Separating hba->mcq_enabled
-> ---
->  drivers/ufs/core/ufs-mcq.c      | 6 ++++++
->  drivers/ufs/core/ufshcd.c       | 4 +---
->  drivers/ufs/host/ufs-mediatek.c | 4 +---
->  include/ufs/ufshcd.h            | 1 +
->  include/ufs/ufshci.h            | 3 +++
->  5 files changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/ufs/core/ufs-mcq.c b/drivers/ufs/core/ufs-mcq.c
-> index 0787456c2b89..edc752e55878 100644
-> --- a/drivers/ufs/core/ufs-mcq.c
-> +++ b/drivers/ufs/core/ufs-mcq.c
-> @@ -399,6 +399,12 @@ void ufshcd_mcq_enable_esi(struct ufs_hba *hba)
->  }
->  EXPORT_SYMBOL_GPL(ufshcd_mcq_enable_esi);
->  
-> +void ufshcd_mcq_enable(struct ufs_hba *hba)
-> +{
-> +	ufshcd_rmwl(hba, MCQ_MODE_SELECT, MCQ_MODE_SELECT, REG_UFS_MEM_CFG);
-> +}
-> +EXPORT_SYMBOL_GPL(ufshcd_mcq_enable);
-> +
->  void ufshcd_mcq_config_esi(struct ufs_hba *hba, struct msi_msg *msg)
->  {
->  	ufshcd_writel(hba, msg->address_lo, REG_UFS_ESILBA);
-> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-> index ae9936fc6ffb..30df6f6a72c6 100644
-> --- a/drivers/ufs/core/ufshcd.c
-> +++ b/drivers/ufs/core/ufshcd.c
-> @@ -8723,9 +8723,7 @@ static void ufshcd_config_mcq(struct ufs_hba *hba)
->  	hba->host->can_queue = hba->nutrs - UFSHCD_NUM_RESERVED;
->  	hba->reserved_slot = hba->nutrs - UFSHCD_NUM_RESERVED;
->  
-> -	/* Select MCQ mode */
-> -	ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | 0x1,
-> -		      REG_UFS_MEM_CFG);
-> +	ufshcd_mcq_enable(hba);
->  	hba->mcq_enabled = true;
->  
->  	dev_info(hba->dev, "MCQ configured, nr_queues=%d, io_queues=%d, read_queue=%d, poll_queues=%d, queue_depth=%d\n",
-> diff --git a/drivers/ufs/host/ufs-mediatek.c b/drivers/ufs/host/ufs-mediatek.c
-> index fc61790d289b..1048add66419 100644
-> --- a/drivers/ufs/host/ufs-mediatek.c
-> +++ b/drivers/ufs/host/ufs-mediatek.c
-> @@ -1219,9 +1219,7 @@ static int ufs_mtk_link_set_hpm(struct ufs_hba *hba)
->  		ufs_mtk_config_mcq(hba, false);
->  		ufshcd_mcq_make_queues_operational(hba);
->  		ufshcd_mcq_config_mac(hba, hba->nutrs);
-> -		/* Enable MCQ mode */
-> -		ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | 0x1,
-> -			      REG_UFS_MEM_CFG);
-> +		ufshcd_mcq_enable(hba);
->  	}
->  
->  	if (err)
-> diff --git a/include/ufs/ufshcd.h b/include/ufs/ufshcd.h
-> index d862c8ddce03..a96c45fa4b4b 100644
-> --- a/include/ufs/ufshcd.h
-> +++ b/include/ufs/ufshcd.h
-> @@ -1257,6 +1257,7 @@ unsigned long ufshcd_mcq_poll_cqe_lock(struct ufs_hba *hba,
->  					 struct ufs_hw_queue *hwq);
->  void ufshcd_mcq_make_queues_operational(struct ufs_hba *hba);
->  void ufshcd_mcq_enable_esi(struct ufs_hba *hba);
-> +void ufshcd_mcq_enable(struct ufs_hba *hba);
->  void ufshcd_mcq_config_esi(struct ufs_hba *hba, struct msi_msg *msg);
->  
->  int ufshcd_opp_config_clks(struct device *dev, struct opp_table *opp_table,
-> diff --git a/include/ufs/ufshci.h b/include/ufs/ufshci.h
-> index d5accacae6bc..2a6989a70671 100644
-> --- a/include/ufs/ufshci.h
-> +++ b/include/ufs/ufshci.h
-> @@ -282,6 +282,9 @@ enum {
->  /* UTMRLRSR - UTP Task Management Request Run-Stop Register 80h */
->  #define UTP_TASK_REQ_LIST_RUN_STOP_BIT		0x1
->  
-> +/* REG_UFS_MEM_CFG - Global Config Registers 300h */
-> +#define MCQ_MODE_SELECT 	BIT(0)
-> +
->  /* CQISy - CQ y Interrupt Status Register  */
->  #define UFSHCD_MCQ_CQIS_TAIL_ENT_PUSH_STS	0x1
->  
-> -- 
-> 2.29.0
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+Thanks
+Barry
 
