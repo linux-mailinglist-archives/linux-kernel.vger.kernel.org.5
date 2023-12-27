@@ -1,153 +1,236 @@
-Return-Path: <linux-kernel+bounces-12077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9128981EFB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:12:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C4BC81EFA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:10:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0066D1F222DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:12:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7185C1C2185A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 15:10:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762FD45C0A;
-	Wed, 27 Dec 2023 15:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9036E4595D;
+	Wed, 27 Dec 2023 15:09:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tkos.co.il header.i=@tkos.co.il header.b="NxNyJc+I"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FWO1M44Q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.tkos.co.il (mail.tkos.co.il [84.110.109.230])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB5A4594F;
-	Wed, 27 Dec 2023 15:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tkos.co.il
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tkos.co.il
-Received: from tarshish.tkos.co.il (unknown [10.0.8.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mail.tkos.co.il (Postfix) with ESMTPS id 83D11440F4F;
-	Wed, 27 Dec 2023 17:02:44 +0200 (IST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tkos.co.il;
-	s=default; t=1703689364;
-	bh=z/R1KgqdKS7NyxMFjGVmdIDGKoIBS1QfbhFNrs3Fnbs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NxNyJc+IY8RZrFmWwyP1yFuErwO6dUxa893heT/GsEdHBoJSid19eX8xWM4HFb1vh
-	 Tb1WRVA0fGMIvU7ofAVvI8euZs3sZyT3MJao8Svo6d0Ey4smRJZkOUB3lc3Usiy9Ec
-	 9h/aOPBmjcxWrfCbFHxxe2SzF8IIuwFbEoAxy7qX0HeeH6bArOLQNjEFdSS15LEhjG
-	 6JvO61GhQB8nCCrYzuYHnsOE0XzMmzmQ+cOjLbto2inSFTfw9F53XOhBM1LMGmx7oa
-	 UioelDo5PlbEIUGcplg4IFzjWB/YoP6iaQIjYrI/ay6trFf02fqvkv5k4f56mKm4hW
-	 PiOD+SINQYQ6A==
-From: Baruch Siach <baruch@tkos.co.il>
-To: Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Cc: Baruch Siach <baruch@tkos.co.il>,
-	Robin Murphy <robin.murphy@arm.com>,
-	iommu@lists.linux.dev,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Petr=20Tesa=C5=99=C3=ADk?= <petr@tesarici.cz>,
-	Ramon Fried <ramon@neureality.ai>
-Subject: [PATCH RFC 4/4] arm64: mm: take DMA zone offset into account
-Date: Wed, 27 Dec 2023 17:04:28 +0200
-Message-ID: <c6dbd432196c4ba5f390845db14b1a422cc77d4c.1703683642.git.baruch@tkos.co.il>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1703683642.git.baruch@tkos.co.il>
-References: <cover.1703683642.git.baruch@tkos.co.il>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FDE345947;
+	Wed, 27 Dec 2023 15:09:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dbdacafe012so3540802276.1;
+        Wed, 27 Dec 2023 07:09:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703689792; x=1704294592; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DGTGbIzmVo6wjApUgMAJsks6j6e1/ihs+OGZr6ChxnU=;
+        b=FWO1M44QqO+LH7tB/PXvtUurftTRscY+ZQCdg2EErUCc1a3GgXN4v2JgkgGY16+B0q
+         NEOKyiMiEFKRK/VU6+aGAQs7cS1u8tDVFS89CPrHXvPQfxuVVYPrhzTO8YiI76MmfMiT
+         BmjJtxVzt4YTSa697poiEQgDfOZ/zAlLFCOG0BEo8flcpAfMZbS+CUrqOmUivzW77lwj
+         yUibByVyyR8lzZdTspq2Far9lajEjINSanGbOpyFIzw5rccxhtlC/KDmzMROqyTNBJZ/
+         9IB/kAR0eVxqAle6wlEUlIJZ6yr8U90raVmf8n1gMEV1O9ZbM/Z9bh0vkmXOyywU87LW
+         80fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703689792; x=1704294592;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DGTGbIzmVo6wjApUgMAJsks6j6e1/ihs+OGZr6ChxnU=;
+        b=Wk7VHyZ76FLXV1AFAZQU70vKvDUeg3jeYTrYZi5e8o8p4nbDigOtAG4zdhemmfdGsO
+         J+F2kbV265iM4pAX+pf+AdrIRk/ZiKdUU+oA310DCfaGzD2Di1QSKspIbu41oZJ2fC7+
+         4hou7ZJ3hcIyVoS4wGsTnu5EGiQAfwr84pLkoPI/3FPJmy7j+fXuz5tRl7i9Omk51p2a
+         HaNKd58msWZsLUoBIlZkZgWzI4PdJztnj0gfWi2vPATdVEsNsteS2lCTTYsLeLesF7qc
+         INTA0PZfCX1d2AFFhsGTnEI64+lBmKXVv98Vgo6cI1ZSWQXxCAOOMUnYlJR+VhZpiZq8
+         gZLQ==
+X-Gm-Message-State: AOJu0Yw3v5Kphn9V+HSrm8RLWqM76DDT7GMx6aea4NWaUe6iL4WXOgNn
+	rosEMr4UsWcwh4csKBk2fZ3SI60OfZrJ/lp4YiWTaFwsHMnFBg==
+X-Google-Smtp-Source: AGHT+IGpXWEkLPhICxfrADQ+Q7PUiH7sPMpD/11YbCXuHney2wCefry49tYlTt2lHR/9+rJAhxLEMJZsApwNW5BRFIc=
+X-Received: by 2002:a25:9387:0:b0:dbd:933:d904 with SMTP id
+ a7-20020a259387000000b00dbd0933d904mr3644045ybm.107.1703689791986; Wed, 27
+ Dec 2023 07:09:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231127153901.6399-1-maimon.sagi@gmail.com> <87wmtfmjec.ffs@tglx>
+In-Reply-To: <87wmtfmjec.ffs@tglx>
+From: Sagi Maimon <maimon.sagi@gmail.com>
+Date: Wed, 27 Dec 2023 17:09:40 +0200
+Message-ID: <CAMuE1bGmWW--zwnkRaHE_j19DogAkUgeYKM=8Cs9EX_Fv7FoYQ@mail.gmail.com>
+Subject: Re: [PATCH v2] posix-timers: add multi_clock_gettime system call
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: richardcochran@gmail.com, reibax@gmail.com, davem@davemloft.net, 
+	rrameshbabu@nvidia.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	maheshb@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Commit 791ab8b2e3db ("arm64: Ignore any DMA offsets in the
-max_zone_phys() calculation") made DMA/DMA32 zones span the entire RAM
-when RAM starts above 32-bits. This breaks hardware with DMA area that
-start above 32-bits. But the commit log says that "we haven't noticed
-any such hardware". It turns out that such hardware does exist.
-
-One such platform has RAM starting at 32GB with an internal bus that has
-the following DMA limits:
-
-  #address-cells = <2>;
-  #size-cells = <2>;
-  dma-ranges = <0x00 0xc0000000 0x08 0x00000000 0x00 0x40000000>;
-
-Devices under this bus can see 1GB of DMA range between 3GB-4GB in each
-device address space. This range is mapped to CPU memory at 32GB-33GB.
-With current code DMA allocations for devices under this bus are not
-limited to DMA area, leading to run-time allocation failure.
-
-Modify 'zone_dma_bits' calculation (via dt_zone_dma_bits) to only cover
-the actual DMA area starting at 'zone_dma_off'. Use the newly introduced
-'min' parameter of of_dma_get_cpu_limits() to set 'zone_dma_off'.
-
-DMA32 zone is useless in this configuration, so make its limit the same
-as the DMA zone when the lower DMA limit is higher than 32-bits.
-
-The result is DMA zone that properly reflects the hardware constraints
-as follows:
-
-[    0.000000] Zone ranges:
-[    0.000000]   DMA      [mem 0x0000000800000000-0x000000083fffffff]
-[    0.000000]   DMA32    empty
-[    0.000000]   Normal   [mem 0x0000000840000000-0x0000000bffffffff]
-
-Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
----
- arch/arm64/mm/init.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
-
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index d6c723ae6fb0..4a8fd8394ce6 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -118,10 +118,11 @@ static void __init arch_reserve_crashkernel(void)
-  * limit. If DRAM starts above 32-bit, expand the zone to the maximum
-  * available memory, otherwise cap it at 32-bit.
-  */
--static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
-+static phys_addr_t __init max_zone_phys(unsigned int zone_bits,
-+		phys_addr_t zone_off)
- {
- 	phys_addr_t zone_mask = DMA_BIT_MASK(zone_bits);
--	phys_addr_t phys_start = memblock_start_of_DRAM();
-+	phys_addr_t phys_start = memblock_start_of_DRAM() - zone_off;
- 
- 	if (phys_start > U32_MAX)
- 		zone_mask = PHYS_ADDR_MAX;
-@@ -137,14 +138,19 @@ static void __init zone_sizes_init(void)
- 	unsigned int __maybe_unused acpi_zone_dma_bits;
- 	unsigned int __maybe_unused dt_zone_dma_bits;
- 	phys_addr_t __maybe_unused max_cpu_address;
--	phys_addr_t __maybe_unused dma32_phys_limit = max_zone_phys(32);
-+	phys_addr_t __maybe_unused min_cpu_address;
-+	phys_addr_t __maybe_unused dma32_phys_limit = max_zone_phys(32, 0);
- 
- #ifdef CONFIG_ZONE_DMA
- 	acpi_zone_dma_bits = fls64(acpi_iort_dma_get_max_cpu_address());
--	of_dma_get_cpu_limits(NULL, &max_cpu_address, NULL);
--	dt_zone_dma_bits = fls64(max_cpu_address);
-+	of_dma_get_cpu_limits(NULL, &max_cpu_address, &min_cpu_address);
-+	dt_zone_dma_bits = fls64(max_cpu_address - min_cpu_address);
- 	zone_dma_bits = min3(32U, dt_zone_dma_bits, acpi_zone_dma_bits);
--	arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
-+	zone_dma_off = min_cpu_address;
-+	arm64_dma_phys_limit = max_zone_phys(zone_dma_bits, zone_dma_off)
-+		+ zone_dma_off;
-+	if (zone_dma_off > U32_MAX)
-+		dma32_phys_limit = arm64_dma_phys_limit;
- 	max_zone_pfns[ZONE_DMA] = PFN_DOWN(arm64_dma_phys_limit);
- #endif
- #ifdef CONFIG_ZONE_DMA32
--- 
-2.43.0
-
+On Fri, Dec 15, 2023 at 8:05=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
+> wrote:
+>
+Hi Thomas
+Thanks for your notes.
+> On Mon, Nov 27 2023 at 17:39, Sagi Maimon wrote:
+> >  Some user space applications need to read some clocks.
+> >  Each read requires moving from user space to kernel space.
+> >  This asymmetry causes the measured offset to have a significant
+> >  error.
+>
+> I can't figure out what you want to tell me here. Where is an asymmetry?
+>
+You are right the comment is not clear enough.
+Some user space applications need to read some clocks.
+Each read requires moving from user space to kernel space.
+The syscall overhead causes unpredictable delay between N clocks reads
+Removing this delay causes better synchronization between N clocks.
+> >  Introduce a new system call multi_clock_gettime, which can be used to =
+measure
+> >  the offset between multiple clocks, from variety of types: PHC, virtua=
+l PHC
+> >  and various system clocks (CLOCK_REALTIME, CLOCK_MONOTONIC, etc).
+> >  The offset includes the total time that the driver needs to read the c=
+lock
+> >  timestamp.
+>
+> What for? You still fail to explain the problem this is trying to solve.
+>
+Explanation above
+> > --- a/include/linux/posix-timers.h
+> > +++ b/include/linux/posix-timers.h
+> > @@ -260,4 +260,28 @@ void set_process_cpu_timer(struct task_struct *tas=
+k, unsigned int clock_idx,
+> >  int update_rlimit_cpu(struct task_struct *task, unsigned long rlim_new=
+);
+> >
+> >  void posixtimer_rearm(struct kernel_siginfo *info);
+> > +
+> > +#define MULTI_PTP_MAX_CLOCKS 12 /* Max number of clocks */
+> > +#define MULTI_PTP_MAX_SAMPLES 10 /* Max allowed offset measurement sam=
+ples. */
+> > +
+> > +struct __ptp_multi_clock_get {
+> > +     unsigned int n_clocks; /* Desired number of clocks. */
+> > +     unsigned int n_samples; /* Desired number of measurements per clo=
+ck. */
+> > +     const clockid_t clkid_arr[MULTI_PTP_MAX_CLOCKS]; /* list of clock=
+ IDs */
+> > +     /*
+> > +      * Array of list of n_clocks clocks time samples n_samples times.
+> > +      */
+> > +     struct  __kernel_timespec ts[MULTI_PTP_MAX_SAMPLES][MULTI_PTP_MAX=
+_CLOCKS];
+> > +};
+> > +
+> > +struct __ptp_multi_clock_get32 {
+> > +     unsigned int n_clocks; /* Desired number of clocks. */
+> > +     unsigned int n_samples; /* Desired number of measurements per clo=
+ck. */
+> > +     const clockid_t clkid_arr[MULTI_PTP_MAX_CLOCKS]; /* list of clock=
+ IDs */
+> > +     /*
+> > +      * Array of list of n_clocks clocks time samples n_samples times.
+> > +      */
+> > +     struct  old_timespec32
+> >  ts[MULTI_PTP_MAX_SAMPLES][MULTI_PTP_MAX_CLOCKS];
+>
+> Seriously now. We are not adding new syscalls which take compat
+> timespecs. Any user space application which wants to use a new syscall
+> which takes a timespec needs to use the Y2038 safe variant.
+>
+you are right - will be fixed on patch V3
+> Aside of that you define a data structure for a syscall in a kernel only
+> header. How is user space supposed to know the struct?
+>
+you are right - will be fixed on patch V3
+> >
+> > +SYSCALL_DEFINE1(multi_clock_gettime, struct __ptp_multi_clock_get __us=
+er *, ptp_multi_clk_get)
+> > +{
+> > +     const struct k_clock *kc;
+> > +     struct timespec64 kernel_tp;
+> > +     struct __ptp_multi_clock_get multi_clk_get;
+> > +     int error;
+> > +     unsigned int i, j;
+>
+> https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#variab=
+le-declarations
+>
+you are right - will be fixed on patch V3
+> > +
+> > +     if (copy_from_user(&multi_clk_get, ptp_multi_clk_get, sizeof(mult=
+i_clk_get)))
+> > +             return -EFAULT;
+> > +
+> > +     if (multi_clk_get.n_samples > MULTI_PTP_MAX_SAMPLES)
+> > +             return -EINVAL;
+> > +     if (multi_clk_get.n_clocks > MULTI_PTP_MAX_CLOCKS)
+> > +             return -EINVAL;
+> > +
+> > +     for (j =3D 0; j < multi_clk_get.n_samples; j++) {
+> > +             for (i =3D 0; i < multi_clk_get.n_clocks; i++) {
+> > +                     kc =3D clockid_to_kclock(multi_clk_get.clkid_arr[=
+i]);
+> > +                     if (!kc)
+> > +                             return -EINVAL;
+> > +                     error =3D kc->clock_get_timespec(multi_clk_get.cl=
+kid_arr[i], &kernel_tp);
+> > +                     if (!error && put_timespec64(&kernel_tp, (struct =
+__kernel_timespec __user *)
+> > +                                                  &ptp_multi_clk_get->=
+ts[j][i]))
+> > +                             error =3D -EFAULT;
+>
+> So this reads a clock from a specific clock id and stores the timestamp
+> in that user space array.
+>
+> And how is this solving any of the claims you make in the changelog:
+>
+>     >  Introduce a new system call multi_clock_gettime, which can be used=
+ to measure
+>     >  the offset between multiple clocks, from variety of types: PHC, vi=
+rtual PHC
+>     >  and various system clocks (CLOCK_REALTIME, CLOCK_MONOTONIC, etc).
+>     >  The offset includes the total time that the driver needs to read t=
+he clock
+>     >  timestamp.
+>
+> That whole thing is not really different from N consecutive syscalls as
+> it does not provide and guarantee vs. the gaps between the readouts.
+>
+> The common case might be closer to what you try to measure, as it avoids
+> the syscall overhead (which is marginal) but other than that it's
+> subject to be interrupted and preempted. So the worst case gaps between
+> the indiviual clock reads is unspecified.
+>
+> IOW, this is nothing else than wishful thinking and does not solve any re=
+al
+> world problem at all.
+>
+preemption or interruption delays will still occur, but at least we
+are removing the syscall overhead.
+Plus the preemption issue can be reduced by using 99 RT priority while
+calling this system call.
+We have conducted an experiment that proved that the system call
+overhead is not marginal at all.
+A process with NICE 0 priority reading PHC twice and measuring the
+time delay between two reads 1000 times.
+The first is done by two consecutive calls to clock_gettime system
+call and the other with
+one call to multi_clock_gettime system call.
+In the system with multi_clock_gettime system call, the delay of 990
+calls was under 100 ns.
+In the system with clock_gettime system call the delay of 580 calls
+were under 100 ns
+72 between 100-500ns 322 between 500-1000ns and some over 1000-5000ns.
+> Thanks,
+>
+>         tglx
 
