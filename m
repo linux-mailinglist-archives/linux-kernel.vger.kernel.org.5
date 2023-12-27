@@ -1,142 +1,196 @@
-Return-Path: <linux-kernel+bounces-12187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D833081F110
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:47:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5355381F113
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:55:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9516F281653
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:47:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 767131C21345
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790564653D;
-	Wed, 27 Dec 2023 17:47:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9377246546;
+	Wed, 27 Dec 2023 17:54:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="GGlNg/gz"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ahc/3FN0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3A34652F
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 17:47:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-427e55a172bso9209431cf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 09:47:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1703699259; x=1704304059; darn=vger.kernel.org;
-        h=content-disposition:mime-version:subject:cc:to:from:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JCZ69uSbcTjkg8dgoQT15Hv1NXMMjojf76ZK+8F+h+A=;
-        b=GGlNg/gzkY8fU2RQA4hMvY1Y3O09ip2hlt0mXTYyn06FyOTZSbBGmE0wU3pYl6RLS/
-         Buaaemp1DqNPBLegGvd9aQDVItfRZJRwiFQwilTzh/HsB+tFCWj27xNCyIHDK7VD2HGE
-         ZwrFofNIaehL9H+xTDTYkCLNsFiEZP0gejGGg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703699259; x=1704304059;
-        h=content-disposition:mime-version:subject:cc:to:from:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JCZ69uSbcTjkg8dgoQT15Hv1NXMMjojf76ZK+8F+h+A=;
-        b=fuPeVXkaM8LJSOMz5Shzym+m4P8Ab8rhHMIGfpZBWoLPSTx3zejploAEs+YnVpUdMj
-         do/q7VdZRCh7n7muPg1U4FadfHzZPwrEG2HLGbIUvtIIZypID8cx+Pbrqc9gRDL1u1U5
-         ibcSFJx0OonL6+iKK9GynwOBLSD3vPwJ3PGjPoO7uCb5fnir5gDkBpCCh1JEm+TSS06Y
-         0+sUeYZpN2dU/u7ETFYmFJQEQ4Hc3t5nBXsKOYeMyGM1nhB6Kx5Hgo8WuaJPBnEC8WcX
-         v4O9gVBZvc6e2MK89OVaOIF3dIlV+5j4MFKJnMS4cz90G/cGZcdJDKGR54qn1IF2OBvo
-         0mwQ==
-X-Gm-Message-State: AOJu0Yxq2TW/Jgv8PB1cGqjIx7QRIUvCxHJsNIfWCSNOzErJ8psZ+sE/
-	mhv/4R0J6vq4exsWLrBNS8Xddec64lvETAASunxlgUrHB1I=
-X-Google-Smtp-Source: AGHT+IHcoGzBbcSYGqh6UKthu6pqug96DjBDJYTB+W7U5OTX9o2FKVNAx3Rrej3aC7rZ3VDfJksI0Q==
-X-Received: by 2002:a05:622a:590:b0:427:8fcf:52c3 with SMTP id c16-20020a05622a059000b004278fcf52c3mr14161093qtb.86.1703699258974;
-        Wed, 27 Dec 2023 09:47:38 -0800 (PST)
-Received: from localhost (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id fc17-20020a05622a489100b00427d0be9ca3sm3855689qtb.80.2023.12.27.09.47.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Dec 2023 09:47:38 -0800 (PST)
-Message-ID: <658c633a.050a0220.d8198.83e8@mx.google.com>
-X-Google-Original-Message-ID: <20231227174738.GA1119@JoelBox.>
-Date: Wed, 27 Dec 2023 12:47:38 -0500
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To: linux-kernel@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.iitr10@gmail.com>, rcu@vger.kernel.org
-Subject: [PATCH v3] srcu: Improve comments about acceleration leak
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C3964652F;
+	Wed, 27 Dec 2023 17:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703699694; x=1735235694;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=qGKXtFsChQYCagOtXjofLYdxyM+wVxVkpzKYGvNba64=;
+  b=Ahc/3FN09LLf/g5ZO/MeB8zo9DTLo80M5zz0WGl5bvvuJa/wrSRKkoIw
+   83gNQrAkwbTr1rypW7RRqhiwABpDGFa0DW2llfxn06wldYXeuHQD5DCgp
+   U999SRzMl7MeLH2GkBBFV2MtN01xZnP0AyCwzmtb1OxCqdhpdFJoZjcXT
+   P9E+k3jNuJCAJKQgKdS6uOta8O7evwrXLrkFXDXAP79sIGdsAMaYVAhqG
+   tvXrOLDFsBjmv6tmik7d5TVwWIZNKA5sQmas2iy3fmTj0UammL0ku00TZ
+   AfsYKuexJM6TOoZbxxX/hwY40p4O6YZbxE0pSw6NTDOKnMsZ9pey3LVZU
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="386896518"
+X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
+   d="scan'208";a="386896518"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:54:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="844215085"
+X-IronPort-AV: E=Sophos;i="6.04,309,1695711600"; 
+   d="scan'208";a="844215085"
+Received: from hrmarapi-mobl1.ger.corp.intel.com ([10.249.35.233])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 09:54:51 -0800
+Date: Wed, 27 Dec 2023 19:54:49 +0200 (EET)
+From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: "David E. Box" <david.e.box@linux.intel.com>
+cc: Hans de Goede <hdegoede@redhat.com>, rajvi.jingar@linux.intel.com, 
+    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/8] platform/x86/intel/pmc: Allow reenabling LTRs
+In-Reply-To: <20231223032548.1680738-5-david.e.box@linux.intel.com>
+Message-ID: <e83492f-8c94-b43b-6fdc-aed6ea6251@linux.intel.com>
+References: <20231223032548.1680738-1-david.e.box@linux.intel.com> <20231223032548.1680738-5-david.e.box@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Content-Type: text/plain; charset=US-ASCII
 
-The comments added in commit 1ef990c4b36b ("srcu: No need to
-advance/accelerate if no callback enqueued") are a bit confusing.
-The comments are describing a scenario for code that was moved and is
-no longer the way it was (snapshot after advancing). Improve the code
-comments to reflect this and also document why acceleration can never
-fail.
+On Fri, 22 Dec 2023, David E. Box wrote:
 
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
-v1->v2: Fix typo in change log.
-v2->v3: Improvement to acceleration comment.
+> Commit 804951203aa5 ("platform/x86:intel/pmc: Combine core_init() and
+> core_configure()") caused a network performance regression due to the GBE
+> LTR ignore that it added during probe. The fix will move the ignore to
+> occur at suspend-time (so as to not affect suspend power). This will
+> require the ability to enable the LTR again on resume. Modify
+> pmc_core_send_ltr_ignore() to allow enabling an LTR.
+> 
+> Fixes: 804951203aa5 ("platform/x86:intel/pmc: Combine core_init() and core_configure()")
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>  drivers/platform/x86/intel/pmc/adl.c  | 2 +-
+>  drivers/platform/x86/intel/pmc/cnp.c  | 2 +-
+>  drivers/platform/x86/intel/pmc/core.c | 9 ++++++---
+>  drivers/platform/x86/intel/pmc/core.h | 3 ++-
+>  drivers/platform/x86/intel/pmc/mtl.c  | 2 +-
+>  drivers/platform/x86/intel/pmc/tgl.c  | 2 +-
+>  6 files changed, 12 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/pmc/adl.c b/drivers/platform/x86/intel/pmc/adl.c
+> index 882f2d5d8937..fbe0678f766c 100644
+> --- a/drivers/platform/x86/intel/pmc/adl.c
+> +++ b/drivers/platform/x86/intel/pmc/adl.c
+> @@ -327,7 +327,7 @@ int adl_core_init(struct pmc_dev *pmcdev)
+>  	 * when a cable is attached. Tell the PMC to ignore it.
+>  	 */
+>  	dev_dbg(&pmcdev->pdev->dev, "ignoring GBE LTR\n");
+> -	pmc_core_send_ltr_ignore(pmcdev, 3);
+> +	pmc_core_send_ltr_ignore(pmcdev, 3, 1);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/platform/x86/intel/pmc/cnp.c b/drivers/platform/x86/intel/pmc/cnp.c
+> index 59298f184d0e..80f73242f9dd 100644
+> --- a/drivers/platform/x86/intel/pmc/cnp.c
+> +++ b/drivers/platform/x86/intel/pmc/cnp.c
+> @@ -220,7 +220,7 @@ int cnp_core_init(struct pmc_dev *pmcdev)
+>  	 * when a cable is attached. Tell the PMC to ignore it.
+>  	 */
+>  	dev_dbg(&pmcdev->pdev->dev, "ignoring GBE LTR\n");
+> -	pmc_core_send_ltr_ignore(pmcdev, 3);
+> +	pmc_core_send_ltr_ignore(pmcdev, 3, 1);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/platform/x86/intel/pmc/core.c b/drivers/platform/x86/intel/pmc/core.c
+> index 31905003bb05..aa44c6612af9 100644
+> --- a/drivers/platform/x86/intel/pmc/core.c
+> +++ b/drivers/platform/x86/intel/pmc/core.c
+> @@ -476,7 +476,7 @@ static int pmc_core_pll_show(struct seq_file *s, void *unused)
+>  }
+>  DEFINE_SHOW_ATTRIBUTE(pmc_core_pll);
+>  
+> -int pmc_core_send_ltr_ignore(struct pmc_dev *pmcdev, u32 value)
+> +int pmc_core_send_ltr_ignore(struct pmc_dev *pmcdev, u32 value, int ignore)
 
- kernel/rcu/srcutree.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+Nothing seems to need int for anything and it's used like a bool. So 
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 0351a4e83529..051e149490d1 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1234,11 +1234,20 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- 	if (rhp)
- 		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
- 	/*
--	 * The snapshot for acceleration must be taken _before_ the read of the
--	 * current gp sequence used for advancing, otherwise advancing may fail
--	 * and acceleration may then fail too.
-+	 * It's crucial to capture the snapshot 's' for acceleration before
-+	 * reading the current gp_seq that is used for advancing. This is
-+	 * essential because if the acceleration snapshot is taken after a
-+	 * failed advancement attempt, there's a risk that a grace period may
-+	 * conclude and a new one may start in the interim. If the snapshot is
-+	 * captured after this sequence of events, the acceleration snapshot 's'
-+	 * could be excessively advanced, leading to acceleration failure.
-+	 * In such a scenario, an 'acceleration leak' can occur, where new
-+	 * callbacks become indefinitely stuck in the RCU_NEXT_TAIL segment.
-+	 * Also note that encountering advancing failures is a normal
-+	 * occurrence when the grace period for RCU_WAIT_TAIL is in progress.
- 	 *
--	 * This could happen if:
-+	 * To see this, consider the following events which occur if
-+	 * rcu_seq_snap() were to be called after advance:
- 	 *
- 	 *  1) The RCU_WAIT_TAIL segment has callbacks (gp_num = X + 4) and the
- 	 *     RCU_NEXT_READY_TAIL also has callbacks (gp_num = X + 8).
-@@ -1264,6 +1273,13 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- 	if (rhp) {
- 		rcu_segcblist_advance(&sdp->srcu_cblist,
- 				      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
-+		/*
-+		 * Acceleration can never fail because the base current gp_seq
-+		 * used for acceleration is <= the value of gp_seq used for
-+		 * advancing. This means that RCU_NEXT_TAIL segment will
-+		 * always be able to be emptied by the acceleration into the
-+		 * RCU_NEXT_READY_TAIL or RCU_WAIT_TAIL segments.
-+		 */
- 		WARN_ON_ONCE(!rcu_segcblist_accelerate(&sdp->srcu_cblist, s));
- 	}
- 	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
+>  {
+>  	struct pmc *pmc;
+>  	const struct pmc_reg_map *map;
+> @@ -514,7 +514,10 @@ int pmc_core_send_ltr_ignore(struct pmc_dev *pmcdev, u32 value)
+>  	mutex_lock(&pmcdev->lock);
+>  
+>  	reg = pmc_core_reg_read(pmc, map->ltr_ignore_offset);
+> -	reg |= BIT(ltr_index);
+> +	if (ignore)
+> +		reg |= BIT(ltr_index);
+> +	else
+> +		reg &= ~BIT(ltr_index);
+>  	pmc_core_reg_write(pmc, map->ltr_ignore_offset, reg);
+>  
+>  	mutex_unlock(&pmcdev->lock);
+> @@ -537,7 +540,7 @@ static ssize_t pmc_core_ltr_ignore_write(struct file *file,
+>  	if (err)
+>  		return err;
+>  
+> -	err = pmc_core_send_ltr_ignore(pmcdev, value);
+> +	err = pmc_core_send_ltr_ignore(pmcdev, value, 1);
+>  
+>  	return err == 0 ? count : err;
+>  }
+> diff --git a/drivers/platform/x86/intel/pmc/core.h b/drivers/platform/x86/intel/pmc/core.h
+> index ce9b9efc9790..90f2dbc4df72 100644
+> --- a/drivers/platform/x86/intel/pmc/core.h
+> +++ b/drivers/platform/x86/intel/pmc/core.h
+> @@ -567,7 +567,8 @@ extern const struct pmc_reg_map arl_pchs_reg_map;
+>  
+>  extern void pmc_core_get_tgl_lpm_reqs(struct platform_device *pdev);
+>  extern int pmc_core_ssram_get_lpm_reqs(struct pmc_dev *pmcdev);
+> -extern int pmc_core_send_ltr_ignore(struct pmc_dev *pmcdev, u32 value);
+> +extern int
+> +pmc_core_send_ltr_ignore(struct pmc_dev *pmcdev, u32 value, int ignore);
+
+extern is unnecessary.
+
+>  int pmc_core_resume_common(struct pmc_dev *pmcdev);
+>  int get_primary_reg_base(struct pmc *pmc);
+> diff --git a/drivers/platform/x86/intel/pmc/mtl.c b/drivers/platform/x86/intel/pmc/mtl.c
+> index e75431325dda..ef78d14fc27f 100644
+> --- a/drivers/platform/x86/intel/pmc/mtl.c
+> +++ b/drivers/platform/x86/intel/pmc/mtl.c
+> @@ -1023,7 +1023,7 @@ int mtl_core_init(struct pmc_dev *pmcdev)
+>  	 * when a cable is attached. Tell the PMC to ignore it.
+>  	 */
+>  	dev_dbg(&pmcdev->pdev->dev, "ignoring GBE LTR\n");
+> -	pmc_core_send_ltr_ignore(pmcdev, 3);
+> +	pmc_core_send_ltr_ignore(pmcdev, 3, 1);
+>  
+>  	if (ssram_init)
+>  		return pmc_core_ssram_get_lpm_reqs(pmcdev);
+> diff --git a/drivers/platform/x86/intel/pmc/tgl.c b/drivers/platform/x86/intel/pmc/tgl.c
+> index 91fd725951e5..8213961975fc 100644
+> --- a/drivers/platform/x86/intel/pmc/tgl.c
+> +++ b/drivers/platform/x86/intel/pmc/tgl.c
+> @@ -315,7 +315,7 @@ int tgl_core_generic_init(struct pmc_dev *pmcdev, int pch_tp)
+>  	 * when a cable is attached. Tell the PMC to ignore it.
+>  	 */
+>  	dev_dbg(&pmcdev->pdev->dev, "ignoring GBE LTR\n");
+> -	pmc_core_send_ltr_ignore(pmcdev, 3);
+> +	pmc_core_send_ltr_ignore(pmcdev, 3, 1);
+>  
+>  	return 0;
+>  }
+> 
+
 -- 
-2.43.0.472.g3155946c3a-goog
+ i.
 
 
