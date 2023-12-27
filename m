@@ -1,48 +1,49 @@
-Return-Path: <linux-kernel+bounces-12125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97A7681F05E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:27:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A76481F067
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:28:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA6C11C20E1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:27:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABA561C219A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 16:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28014644A;
-	Wed, 27 Dec 2023 16:26:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16D0A481DB;
+	Wed, 27 Dec 2023 16:26:58 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D024643A
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 16:26:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F954777B
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 16:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rIWjz-00059n-UU; Wed, 27 Dec 2023 17:26:43 +0100
+	id 1rIWjz-00059o-7m; Wed, 27 Dec 2023 17:26:43 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rIWjw-001tZN-S1; Wed, 27 Dec 2023 17:26:41 +0100
+	id 1rIWjx-001tZQ-34; Wed, 27 Dec 2023 17:26:42 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rIWjx-001Wml-2q;
-	Wed, 27 Dec 2023 17:26:41 +0100
+	id 1rIWjy-001Wmp-0L;
+	Wed, 27 Dec 2023 17:26:42 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Sudeep Holla <sudeep.holla@arm.com>
+To: Tzung-Bi Shih <tzungbi@kernel.org>
 Cc: kernel@pengutronix.de,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	linux-arm-kernel@lists.infradead.org,
+	Brian Norris <briannorris@chromium.org>,
+	Julius Werner <jwerner@chromium.org>,
+	chrome-platform@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 02/11] firmware: arm_scpi: Convert to platform remove callback returning void
-Date: Wed, 27 Dec 2023 17:26:26 +0100
-Message-ID:  <e7b4bc389949c3613a358bd8e57d70d7acd5552b.1703693980.git.u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 03/11] firmware: coreboot_table: Convert to platform remove callback returning void
+Date: Wed, 27 Dec 2023 17:26:27 +0100
+Message-ID:  <d323e4f24bfab3ac1480933deb51e7c5cb025b09.1703693980.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1703693980.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1703693980.git.u.kleine-koenig@pengutronix.de>
@@ -53,7 +54,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1768; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=FF/nyDTSJyTf9/tBea2/MLsCLR8e7FBGnIR1tjwpPwI=; b=owGbwMvMwMXY3/A7olbonx/jabUkhtSeABNWkSWxW+K3Zy7f/dCWS2W3brhfZqL89Gt5ajz3n 5/l2prWyWjMwsDIxSArpshi37gm06pKLrJz7b/LMINYmUCmMHBxCsBEHnGz/48sWTf7KcOmybfe 6BUIBmfaXZRuiGbcW2vINcnP0l/77oLDb7z+TfNinhh9aNmrp32nlbf9CS1b9eLnjSLtPh8jq6K pW+LaUxP5XGsnOU9eumqKqafE/PQnXK7ZmfvmBFapsng1TrmyoCdjDfuziWci8u+uLjzX4PwqsV wnQ85VxDLp5Y76eSvOezcF5ifFVPF1ap7pqJu0+pLRhy0Rx28rK2fJWk6o/v1y1iLuO9XcChqfT px/lipww4XdyNNbwadtHtvdEmmPnVL39vK0WKUlWCVWlK18tq0j+cUcnqCTKY1WtrO+3mFt4yyW iu0PVPBe9DBh39LfF8NqRdtUuDUXTluk2cBntu/aDtlbAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1801; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=KkJyKFS1tf/Q7uVpfdVoCv0nkB+vzLTFnmTd3unQUCU=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBljFA137qRFmgFH2CW2v85lYu8zAPejn58AHqK2 y66+PpOHTKJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZYxQNQAKCRCPgPtYfRL+ TqVtB/48BvW7i2SaSdpDvOEONys5ylT5SBQ0NFtzPMFYUto6wdGN1kkOlGP/CeHhN4+hi0wKzpY aei8fq67PrCMzLM+Z/QsZ95Su0qZnirumRVS5R1ub5V1tt/vzKZMiYDbsz0UAMg6tL4XgGTBhDV urNBX6t1EoZ0Ged/KE/7W1wI2GElYzzIgZ7ZEs6ecrhEH27d0gNxIfePA+hbyIL1P0gY7Xpe0GB GOVrnpTqwE7HXXXOQKWoZUbhrsd24TQYUx1D1aOf/BNFPd1LrPRYIe+NGAby2749jgXqPrx34jN BRHOGnBtxPJntg/feNHo2HmP9cjZInR7u39XBs5Y14wZs0EM
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -76,40 +77,34 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/firmware/arm_scpi.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/firmware/google/coreboot_table.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/firmware/arm_scpi.c b/drivers/firmware/arm_scpi.c
-index 3f123f592cb4..94a6b4e667de 100644
---- a/drivers/firmware/arm_scpi.c
-+++ b/drivers/firmware/arm_scpi.c
-@@ -863,7 +863,7 @@ static void scpi_free_channels(void *data)
- 		mbox_free_channel(info->channels[i].chan);
+diff --git a/drivers/firmware/google/coreboot_table.c b/drivers/firmware/google/coreboot_table.c
+index 33ae94745aef..2a4469bf1b81 100644
+--- a/drivers/firmware/google/coreboot_table.c
++++ b/drivers/firmware/google/coreboot_table.c
+@@ -176,10 +176,9 @@ static int __cb_dev_unregister(struct device *dev, void *dummy)
+ 	return 0;
  }
  
--static int scpi_remove(struct platform_device *pdev)
-+static void scpi_remove(struct platform_device *pdev)
+-static int coreboot_table_remove(struct platform_device *pdev)
++static void coreboot_table_remove(struct platform_device *pdev)
  {
- 	int i;
- 	struct scpi_drvinfo *info = platform_get_drvdata(pdev);
-@@ -874,8 +874,6 @@ static int scpi_remove(struct platform_device *pdev)
- 		kfree(info->dvfs[i]->opps);
- 		kfree(info->dvfs[i]);
- 	}
--
+ 	bus_for_each_dev(&coreboot_bus_type, NULL, NULL, __cb_dev_unregister);
 -	return 0;
  }
  
- #define MAX_SCPI_XFERS		10
-@@ -1048,7 +1046,7 @@ static struct platform_driver scpi_driver = {
- 		.dev_groups = versions_groups,
- 	},
- 	.probe = scpi_probe,
--	.remove = scpi_remove,
-+	.remove_new = scpi_remove,
- };
- module_platform_driver(scpi_driver);
+ #ifdef CONFIG_ACPI
+@@ -201,7 +200,7 @@ MODULE_DEVICE_TABLE(of, coreboot_of_match);
  
+ static struct platform_driver coreboot_table_driver = {
+ 	.probe = coreboot_table_probe,
+-	.remove = coreboot_table_remove,
++	.remove_new = coreboot_table_remove,
+ 	.driver = {
+ 		.name = "coreboot_table",
+ 		.acpi_match_table = ACPI_PTR(cros_coreboot_acpi_match),
 -- 
 2.43.0
 
