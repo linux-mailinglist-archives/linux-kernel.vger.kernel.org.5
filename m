@@ -1,76 +1,58 @@
-Return-Path: <linux-kernel+bounces-12189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7FF581F114
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 839C781F11A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 19:04:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2763E1F21EBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 17:57:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21D051F22B39
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:04:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F3CD4653A;
-	Wed, 27 Dec 2023 17:57:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7090E46B81;
+	Wed, 27 Dec 2023 18:04:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="RkJA4PFc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZhpGayBt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80EAF46538
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 17:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6d9b13fe9e9so2226365b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 09:57:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1703699862; x=1704304662; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qFdk5z5GkjX88rNpaFiaLGBWYiEnPzJT6afZDm+eY4c=;
-        b=RkJA4PFc1fPlGPeup903dlfZcEiqEV+5E8gOOr9f9qcjFlAKUY+qRYmxi3blePvH3I
-         RCUu0tFNhy69ZsAqYE67ZQ1WzqZOEa/e+XYdra1c2naVAj/t6goggAn/oE2mgTIwQpI5
-         EkIdqqQEIr8+lxSmsXhopAq/+WtZY4iMI9son/X2VbgcfukVvKsDJy928hfWEa3CTib+
-         dMRJGNtuB8gUXUPPt/HSm5wduE+c8bcKykqlOKSk7UbnhjwV0C8LhhFRoF1pF/gTeW1M
-         bQ6Ly5wfVZVW9lUI3Ysbzjs+PjvL1MQ8lUVfxEKwVPcrFq7fqd7CByBAPrUUmR/TIZZs
-         u7qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703699862; x=1704304662;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qFdk5z5GkjX88rNpaFiaLGBWYiEnPzJT6afZDm+eY4c=;
-        b=FGl6Fa5qPEKX30bn6aUKabvJvOovoG+Vb1G4f4MRIAwmjazCyJY+SUA0kLCHJxcLi3
-         /tqlSG0E/nhOiZfdWhP2LSSXYhB6TbYa78ifAurlHf0uMkZbcKBAIiAWX+nUA437upK/
-         x80UXiQR0qFnB6SysnDN8mHZtPsZmCAl4t7Gdm9zIIXGm8JNRXnFSTIr6dd/lyIP1eAi
-         r/nDi5z3DxFwuJxv5MOiv7qTqPI0SKT4oE7bB2nlt1GHmqG5NfhB9V2Him5OPoS2Jm1H
-         Adc4YitgXAywqrGqiuiQPEB2WwTCP+KrzH+CWVlLnz3OcK0k5LZDp39xdcUIgdOu5tsY
-         wB8w==
-X-Gm-Message-State: AOJu0YzMwBrc7Kdd4CRqScFvWLXyuzxEO/ltPW1DgsqsolHoExnZDgqE
-	96pB2een7o8Km7+ReVwgCat6RhkgqC6FkQ==
-X-Google-Smtp-Source: AGHT+IG3LdGjYzMPRmS6MMdVEdOJ+KYoJn8AAAezZGQEdrEgTXTmxvLQ77RqjlA7YgUPq4uTh+mQCQ==
-X-Received: by 2002:a05:6a20:4da6:b0:18c:64b7:b217 with SMTP id gj38-20020a056a204da600b0018c64b7b217mr9235433pzb.22.1703699861863;
-        Wed, 27 Dec 2023 09:57:41 -0800 (PST)
-Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id u5-20020a056a00098500b006d9bf35dd1fsm5198094pfg.142.2023.12.27.09.57.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Dec 2023 09:57:41 -0800 (PST)
-From: Samuel Holland <samuel.holland@sifive.com>
-To: linux-riscv@lists.infradead.org
-Cc: Samuel Holland <samuel.holland@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Conor Dooley <conor@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: riscv: cpus: Clarify mmu-type interpretation
-Date: Wed, 27 Dec 2023 09:57:38 -0800
-Message-ID: <20231227175739.1453782-1-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.42.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A115346522;
+	Wed, 27 Dec 2023 18:04:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10EF6C433C8;
+	Wed, 27 Dec 2023 18:04:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703700274;
+	bh=Z5Xx4Awhm2yDAU7eR4KCbbH90zyc67q6J3SQ9KIFSvE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ZhpGayBt8lKxIXkCy85p6bKIupO7GjLDohiqZns/nqowkDm6XfGlaj50PGSgHvQOq
+	 JhklV8O3Gk9WP227ddow0eJBwVcggrz/iZBd2aYKn6MR3VaDf1+0xdDaqZ1Qp14+KW
+	 HrRaDj6JxnnNvmDe1ysZckUpI24H3qqo4UKVq1+UocGe3mTGIa0wiWiflwuhxY3Gkk
+	 xkr3KaY9NGiBFpR5xrWkih/GDFh1u3JhZj6id/6nEZ+ZAZ2YMoxA1OihjvSnTQZCky
+	 junga5yF5xEDplOuDZArTheqGozslPGnfZ+0Aq7mezsAfU6TGgt7EG4CSryARtcjWc
+	 lmWRFG+B+wJZA==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan+linaro@kernel.org>)
+	id 1rIYGb-0001fI-1l;
+	Wed, 27 Dec 2023 19:04:29 +0100
+From: Johan Hovold <johan+linaro@kernel.org>
+To: Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: Bjorn Andersson <quic_bjorande@quicinc.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-bluetooth@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>,
+	stable@vger.kernel.org,
+	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
+	Matthias Kaehlcke <mka@chromium.org>
+Subject: [PATCH] Bluetooth: qca: fix device-address endianness
+Date: Wed, 27 Dec 2023 19:03:06 +0100
+Message-ID: <20231227180306.6319-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,40 +61,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The current description implies that only a single address translation
-mode is available to the operating system. However, some implementations
-support multiple address translation modes, and the operating system is
-free to choose between them.
+The WCN6855 firmware on the Lenovo ThinkPad X13s expects the Bluetooth
+device address in MSB order when setting it using the
+EDL_WRITE_BD_ADDR_OPCODE command.
 
-Per the RISC-V privileged specification, Sv48 implementations must also
-implement Sv39, and likewise Sv57 implies support for Sv48. This means
-it is possible to describe all supported address translation modes using
-a single value, by naming the largest supported mode. This appears to
-have been the intended usage of the property, so note it explicitly.
+Presumably, this is the case for all non-ROME devices which all use the
+EDL_WRITE_BD_ADDR_OPCODE command for this (unlike the ROME devices which
+use a different command and expect the address in LSB order).
 
-Fixes: 4fd669a8c487 ("dt-bindings: riscv: convert cpu binding to json-schema")
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+Reverse the little-endian address before setting it to make sure that
+the address can be configured using tools like btmgmt or using the
+'local-bd-address' devicetree property.
+
+Note that this can potentially break systems with boot firmware which
+has started relying on the broken behaviour and is incorrectly passing
+the address via devicetree in MSB order.
+
+Fixes: 5c0a1001c8be ("Bluetooth: hci_qca: Add helper to set device address")
+Cc: stable@vger.kernel.org      # 5.1
+Cc: Balakrishna Godavarthi <quic_bgodavar@quicinc.com>
+Cc: Matthias Kaehlcke <mka@chromium.org>
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
 
- Documentation/devicetree/bindings/riscv/cpus.yaml | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi Qualcomm people,
 
-diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
-index f392e367d673..f166c729c482 100644
---- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-+++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-@@ -62,8 +62,8 @@ properties:
+Could you please verify with your documentation that all non-ROME
+devices expect the address provided in the EDL_WRITE_BD_ADDR_OPCODE
+command in MSB order?
+
+I assume this is not something that anyone would change between firmware
+revisions, but if that turns out to be the case, we'd need to reverse
+the address based on firmware revision or similar.
+
+Johan
+
+
+ drivers/bluetooth/btqca.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+index fdb0fae88d1c..29035daf21bc 100644
+--- a/drivers/bluetooth/btqca.c
++++ b/drivers/bluetooth/btqca.c
+@@ -826,11 +826,15 @@ EXPORT_SYMBOL_GPL(qca_uart_setup);
  
-   mmu-type:
-     description:
--      Identifies the MMU address translation mode used on this
--      hart.  These values originate from the RISC-V Privileged
-+      Identifies the largest MMU address translation mode supported by
-+      this hart.  These values originate from the RISC-V Privileged
-       Specification document, available from
-       https://riscv.org/specifications/
-     $ref: /schemas/types.yaml#/definitions/string
+ int qca_set_bdaddr(struct hci_dev *hdev, const bdaddr_t *bdaddr)
+ {
++	bdaddr_t bdaddr_swapped;
+ 	struct sk_buff *skb;
+ 	int err;
+ 
+-	skb = __hci_cmd_sync_ev(hdev, EDL_WRITE_BD_ADDR_OPCODE, 6, bdaddr,
+-				HCI_EV_VENDOR, HCI_INIT_TIMEOUT);
++	baswap(&bdaddr_swapped, bdaddr);
++
++	skb = __hci_cmd_sync_ev(hdev, EDL_WRITE_BD_ADDR_OPCODE, 6,
++				&bdaddr_swapped, HCI_EV_VENDOR,
++				HCI_INIT_TIMEOUT);
+ 	if (IS_ERR(skb)) {
+ 		err = PTR_ERR(skb);
+ 		bt_dev_err(hdev, "QCA Change address cmd failed (%d)", err);
 -- 
-2.42.0
+2.41.0
 
 
