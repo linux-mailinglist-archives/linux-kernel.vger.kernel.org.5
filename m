@@ -1,123 +1,156 @@
-Return-Path: <linux-kernel+bounces-12235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF38D81F1BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:02:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D73CB81F1CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 21:20:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CFCC1C2257A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:02:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 071921C225EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 20:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E027947F57;
-	Wed, 27 Dec 2023 20:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D9647F55;
+	Wed, 27 Dec 2023 20:20:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dAwEygAu"
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="eVRtI3eY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from sonic302-28.consmr.mail.ne1.yahoo.com (sonic302-28.consmr.mail.ne1.yahoo.com [66.163.186.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C88B747A57;
-	Wed, 27 Dec 2023 20:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d4a222818so21858235e9.0;
-        Wed, 27 Dec 2023 12:02:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703707341; x=1704312141; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=F/knE1RdGvxQU+ZfFNTNGYvbGggyDmP5kq99ZSddVPc=;
-        b=dAwEygAu//qGGg1PtSr1rdYP/JW5IFE/fw/Jq03EGjH2nz99lXKQmRYKsjCLOBZUz6
-         vr9iRAW3+rGVWzGBD0ubJQnoJniRe5PKr3R31p9iNbEIuh6kr5pZmaZAFTuA232Zxr3q
-         bQOBGK2etx4WPqN+jCZpAylnZS7Mt93OWJ+hiIok5ukLPGVPm5iNfCV9XlQyH96FI9lK
-         PO3m0M0lGkf3J1GTuM+nNrDS8CZtn0/N2ZexMbqBH1+H7qdtFffV9mMSC8TTMSYv35/y
-         8c5Y6NEmFVEuuNUFfT8BIVyMkRCP8BsoylKTR2yW8L4GxQ14fccdUIN4wIm+ZsNgvDyU
-         cs4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703707341; x=1704312141;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F/knE1RdGvxQU+ZfFNTNGYvbGggyDmP5kq99ZSddVPc=;
-        b=kjEY3qUEhsp2Z1t1bqYQEGdpz+bFDRgBb4aKUO3dgOmpSqB4O307eHisioMM4WZ5sZ
-         gHH0EUyMfQm/oyaWkKL/wNnjkp9GcB2SrMbFcFWNtqvk+XRCtInlPcn0YB/v0kniofu1
-         LhL6DmNB7wqF+wNiz8iH+mXKsYmpwQJMWMdfQQOshUm2c1HF/pZL7UXJ8hTOaKzNjA06
-         7RiLnZRNC+Uh0yMdJNLJGSLnSHok2yuhqIyQf0N3oGfTBCmBgBkLcP1lzGLnKtQCGqef
-         gyB4Qikmf3ASgqNyjHfLi3E3Qw7Fs+owH2RatgBXtbfyGo2v4flVux0Z2tOZ46KY9DZU
-         RylA==
-X-Gm-Message-State: AOJu0YyHmie19YiOwBj6+bC6HqLDFBe7oXZy230Qo8eLJIIX64/KIFRs
-	AitGx7cuEZPXOMMA3dpQvVY=
-X-Google-Smtp-Source: AGHT+IG11a2jEJ56aVZt743+Urcm+oZvsgxk0OjEW0YCylo3AApnPF7ZuFFcQ/IqgS9k8gVkMvV36A==
-X-Received: by 2002:a05:600c:4503:b0:40d:3eb8:580f with SMTP id t3-20020a05600c450300b0040d3eb8580fmr4726111wmo.14.1703707340716;
-        Wed, 27 Dec 2023 12:02:20 -0800 (PST)
-Received: from skbuf ([188.25.254.72])
-        by smtp.gmail.com with ESMTPSA id m19-20020a05600c4f5300b0040d5b849f38sm5739904wmq.0.2023.12.27.12.02.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Dec 2023 12:02:20 -0800 (PST)
-Date: Wed, 27 Dec 2023 22:02:17 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc: Daniel Golle <daniel@makrotopia.org>,
-	Landen Chao <Landen.Chao@mediatek.com>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	David Bauer <mail@david-bauer.net>, mithat.guner@xeront.com,
-	erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next] net: dsa: mt7530: register OF node for internal
- MDIO bus
-Message-ID: <20231227200217.kdltxpmhvlp6z4cd@skbuf>
-References: <20231220173539.59071-1-arinc.unal@arinc9.com>
- <20231220173539.59071-1-arinc.unal@arinc9.com>
- <20231221151607.ujobhh4aet4obxdz@skbuf>
- <6600c6b1-2230-4963-940c-8b95a01750fd@arinc9.com>
- <20231227191154.6jkqdlqdxciidpfw@skbuf>
- <bdbe24b2-30f6-48fa-b6eb-a1ae3afe9076@arinc9.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D325347F54
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 20:20:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1703708411; bh=QeQB/luos8iTHtvu7slYFci+x7sNWDy25TvvSl1IpjQ=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=eVRtI3eYsVuWJIFv4qV1FPVdvzkpxg2gaBIHHizd6KWLuOxWTlhpR0V/CekUEV6V2NazRf6DlbnayERM/YBGjxpCMruIewjJnLUkT+qsqelpsV73ZxoC+z9Qz4wB03n9AAt5DZ6NhZvOiyEDj3Hd43FJ2ZtRfbMwaS/IV6JwChxZLCLWorH7uBlZZp2TV+YPgam09M3PLy/recnVNRtzFE/4GwBJfRtS8BH3vlZ87H9goG2UaavC0Z3SLrcdj4GLgbfEE7oypWN9QWodQTwpqEHS0r4eEAjj47A98xs5tKP4VTUMQoy9gmeqbBQO3RtGJfSX/rTWxs93jqrwno6U8g==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1703708411; bh=y7MitWxjXS0rdAixK1MI7RL720PRAOERok9cz8h1G+H=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=QfpWk3eUNDx0rmPnB1zsOxECCckjhIUy8O7ADcKL7eakK1rjmERl/b8DFBj7H1BR5+dKd4tUkB0CbK0Eg5Id+K4CSNpCBUoLLYrursCMhTK9jPYJ2GZPESC3XRfk9s/eK9yoKcS+axD5GwMfIepn1xE0OnwX5Vqx5/LCxIfGDMpVoAsad8J+iKpO9YjzYf9CxHiR7V8pXKsOpsy4xIAkl4PWgKzMPqaNxCKXfi8pExaQb2V1DNB1OHdSzVsdH4zKgRNAH2iSNFsGG7D5LS1gFddXnws1IzHy1QpMX5qgDsu0qer3OAppJ5/s8HcsHlX2jgqj9u6TCabYxZM4WEHCNQ==
+X-YMail-OSG: kvXxldoVM1nfcPSbpFC9tRcnDK.uvat_WN7fvXIQ8Egc_vy3AhambR9kKOUTJJK
+ OYzwTr6AUHXBnJb7Yi8e2GWqnhkyoAAXEayygeazgjS.8QXgfGrp0zj8xE8hICveR2pzZzR5GjQd
+ d_iinKK4Y7.Y3plAlH0M1Fq2PH.uS1XKHBGgcojtaTDWENlgGm0SU7lKXlm2.NCCuMDtN4VMNfVf
+ 6oirfdzDfKf1BZqqD5WZlDLVB18nfJ_YneAzC8Cva6pEop2uYAgiqhRM_mtudEfPCM31X.bJYMxG
+ rwbmbR7QJzyfPR4eIBSGlfCfsGZqSNWZTQvs6hmmnrECOFAta_YT8aDd94s.7g.Gjhm0tqmcXQH4
+ 7PQdZiGP.c7rJFXuhOFXhX9BRiJRKF3HMu8j1oNny23cGu8ZxKQLamkiiDUE1BH.293dhUtyIj1L
+ 0MsoQ4drrfEwpym0M2oJ0N4xDulmA1OnMSLofOOELXxN8wQ2bzcdbPC2hRveTYMMJKcO9KQYcKdE
+ S_p7rHSptJNv8T6xC6Ao_cCBXk2XjQdhQp9ValcmMbIah5zoBYMc5byVYlhblYdjZ3SGTE9gKrJe
+ lq7XKvjb3fgZLyXZ_9j9NqQWlRgidoFqpuzwyQamgDa0PYGxNbzaoQg8xoGN7OH19t988Wjx9RsQ
+ 7CPz.D8J7a6m5Aymr_WNVmvMeHo4EsB0UNWlETLPL.dfUqGLgK23pb7a4QDs19yFSu3REq6tM79R
+ 7lJb_egimT8Y5OPEizFv1abHlVc0__ypMJtxDt9zKTAdofrpOWxM6MorfDYBc6s_CSmYZfVFBI_2
+ xlvYfcjOj88Qft.BbId2Fjx3uvZ9owneGvUPOyFzutX1SMQNs8EtktMkbufjekxCteLGc_woUkJT
+ AF0cxRSDSivxo_DlrpAy42.aN6oYV3xRKlzDvFsR9v6YerFuAK.6pZv3wi1RM5rpNOJrVWT.ADv5
+ u2w4KWLuLwI2bTJDOyDOJW1mIK8DqeWd61pOsuWK2iH7PtDARrikF2dQ1JvlV5PkMEGmOiB.RKgs
+ erJb.XSAewpFiIGvpgxLhTeA9_WX57BwoXBgQuTz1Q3HR8XCrfqhwGKBXEkb.HTsIAr_DlyXHyhM
+ K97D9UTSlTmkPR_kWilmzpuKbame24fCUtBNujy4s8X62mDO58rOrwgKVxzobfVcIEK1oZPp8xoj
+ FMnozpfEonWJA0Xo1.Qubxs46wie4vswMqpeJ.WBwCsssenzj7VggBp6QhYvBIJ0GZJ9L0c4_U.d
+ 2oqjxBMPMjEOZf1t5M0gWnoGpNHxYGSxfoLHLWsfnBuyI1LSgZnT7d7_TYUPMYQ.iqIhYnb4FWOY
+ 3URFrw.7zi8myVYVg4s1CtTx4Mv0nV8ykfcFzv.kqYFRkCqX9akY79vpuBl4WxfNu4F9GPp2Xuhn
+ hQ9_FuUAere3OwgniMeOo8cUf9lj.w0BoOeQ8_lKPvDJ9uOLyeGekiP6WWtH2D4h3OdpPgPC7_cL
+ TSnoTumqh8vZ90nUCjnirt7T.Qfk7D.oDn8DBuzjp8y40Y7PpC_AhIgzyxJTZOyg61kYpNaXwxCx
+ yaOqk_uX_VjZYZohmmfTl.WkI0DkBwSH8s7h00C1haWd5NhyYpAZilesD_5GZD6FY5CeDvRZ2duO
+ FW.L1zfsA3trQpbd73KuEBklH1JefuR9YRdvvyRN8eqXzDUROfkxZs3.5pfV5NZcpi7R3n0b4DIT
+ YuzMO0k.YV6v9Ys3fzQ.IOAfzL9lvJ_.6KSyffzTCBPVQ8_A3VHz3ASD79I3bNDoEclCqr63yRZZ
+ FCC76KXwkrY7PeWsyQ2cZ4T5YjRMezIywxGPy5j4yBwXmYcUGItJs_TdVxEQ4NGJRrSqkz5aPemM
+ u6BklRUFrxCBEn6nJIW0VB3pBcTCarEVzWBkxOQZgGZsc6peMm.qDoCx1OL2qMMTNwkTZTTTM9bj
+ qCMQGvPL6s7XVcpEcD9C6PuMUInZ6S_fIhMl4bNITAkRaARemHgOGV5uh1M_ucgtbuNkjnJoJQ9Y
+ a1JlDpBmXi420guL5fvoyFDClNScIcjAW8TkBY9oPlVGfu.Pq8khfOUFkSr1qFBaCgRZzATJrmcE
+ k5zW4ycg5F4.WZbBpt735hBtbmSuallWcfn45TkfnwEXB4mIvgtTFlM94f9dhVB8NdqehWF1koSg
+ Jtly92ARfdVPpaLxeRsNRSgnYzob3jWXUZ9_NMmVl9R0FKiefMQBoqJvYihgPBNgrxzoEjxMDeF9
+ eni15FR1YV8Rg2rpJseSSILRrhhkMTdG4Tl_sLGreKtwjZ20id7zbaK4szHeQv0mFWeWB
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: f6d3f408-3d68-4663-aa3e-251ad529d9ef
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Wed, 27 Dec 2023 20:20:11 +0000
+Received: by hermes--production-gq1-6949d6d8f9-bvfr7 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 5923925b0f3382c245bc6a332ebdcb60;
+          Wed, 27 Dec 2023 20:20:06 +0000 (UTC)
+Message-ID: <94f41f09-e5d6-49c4-958e-6965ee161388@schaufler-ca.com>
+Date: Wed, 27 Dec 2023 12:20:04 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bdbe24b2-30f6-48fa-b6eb-a1ae3afe9076@arinc9.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 19/24] ima: Move to LSM infrastructure
+Content-Language: en-US
+To: Mimi Zohar <zohar@linux.ibm.com>,
+ Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
+ brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+ neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+ paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+ dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
+ stephen.smalley.work@gmail.com, eparis@parisplace.org, shuah@kernel.org,
+ mic@digikod.net
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+ linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+ selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Roberto Sassu <roberto.sassu@huawei.com>,
+ Casey Schaufler <casey@schaufler-ca.com>
+References: <20231214170834.3324559-1-roberto.sassu@huaweicloud.com>
+ <20231214170834.3324559-20-roberto.sassu@huaweicloud.com>
+ <c6c2d413f340d858e43aa3837abdf80cb8be9d84.camel@linux.ibm.com>
+ <42fcd014-733b-41b2-9c7b-658533cd01a3@schaufler-ca.com>
+ <3bcc924ed59ecdc5fda5ab8aceeed9450a54c829.camel@linux.ibm.com>
+From: Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <3bcc924ed59ecdc5fda5ab8aceeed9450a54c829.camel@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21952 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-On Wed, Dec 27, 2023 at 10:51:08PM +0300, Arınç ÜNAL wrote:
-> I didn't realise ds->user_mii_bus is also used to store irq mapping for
-> each PHY.
+On 12/27/2023 11:52 AM, Mimi Zohar wrote:
+> On Tue, 2023-12-26 at 12:14 -0800, Casey Schaufler wrote:
+>> On 12/26/2023 10:14 AM, Mimi Zohar wrote:
+>>> On Thu, 2023-12-14 at 18:08 +0100, Roberto Sassu wrote:
+>>>> From: Roberto Sassu <roberto.sassu@huawei.com>
+>>>>
+>>>> Move hardcoded IMA function calls (not appraisal-specific functions) from
+>>>> various places in the kernel to the LSM infrastructure, by introducing a
+>>>> new LSM named 'ima' (at the end of the LSM list and always enabled like
+>>>> 'integrity').
+>>>>
+>>>> Having IMA before EVM in the Makefile is sufficient to preserve the
+>>>> relative order of the new 'ima' LSM in respect to the upcoming 'evm' LSM,
+>>>> and thus the order of IMA and EVM function calls as when they were
+>>>> hardcoded.
+>>>>
+>>>> Make moved functions as static (except ima_post_key_create_or_update(),
+>>>> which is not in ima_main.c), and register them as implementation of the
+>>>> respective hooks in the new function init_ima_lsm().
+>>>>
+>>>> A slight difference is that IMA and EVM functions registered for the
+>>>> inode_post_setattr, inode_post_removexattr, path_post_mknod,
+>>>> inode_post_create_tmpfile, inode_post_set_acl and inode_post_remove_acl
+>>>> won't be executed for private inodes. Since those inodes are supposed to be
+>>>> fs-internal, they should not be of interest of IMA or EVM. The S_PRIVATE
+>>>> flag is used for anonymous inodes, hugetlbfs, reiserfs xattrs, XFS scrub
+>>>> and kernel-internal tmpfs files.
+>>>>
+>>>> Conditionally register ima_post_path_mknod() if CONFIG_SECURITY_PATH is
+>>>> enabled, otherwise the path_post_mknod hook won't be available.
+>>> Up to this point, enabling CONFIG_SECURITY_PATH was not required.  By
+>>> making it conditional on CONFIG_SECURITY_PATH, anyone enabling IMA will
+>>> also need to enable CONFIG_SECURITY_PATH.  Without it, new files will
+>>> not be tagged as a "new" file.
+>>>
+>>> Casey, Paul, how common is it today not to enable CONFIG_SECURITY_PATH?
+>>> Will enabling it just for IMA be a problem?
+>> Landlock, AppArmor and TOMOYO require it. Fedora enables Landlock and Ubuntu
+>> enables AppArmor. I expect that, except for "minimal" distributions, you
+>> won't get any push back. If a distribution is striving for minimal, it's not
+>> going to use IMA.
+>>
+>> It makes me wonder if eliminating CONFIG_SECURITY_PATH might not be a
+>> rational alternative.
+> Embedded systems were the first to use IMA for file signature
+> verification, not distros.               Could they have enabled
+> SELinux, lockdown, and IMA?
 
-It needs to, if the MDIO bus does not have an OF description through
-which PHYs can have an 'interrupts' property. But if there is an OF
-description for the MDIO bus and the PHYs, I think it is strange to
-expect PHYs to have interrupts if they aren't described in OF.
+Yes, they could have. I know some have used Smack and some SELinux.
+That's not really relevant, as neither of those use path hooks. My
+thought is that CONFIG_SECURITY_PATH adds more aggravation than value,
+but I can't quote numbers on either. I don't see a problem with IMA
+using path hooks. I also wouldn't see harm in moving the hook(s) you
+need for IMA out from that configuration option and into the general
+set. With the current rate of new hook additions I can't see moving
+an existing hook as a problem.
 
-> Should we agree that user_mii_bus is needed for all cases or make
-> another way to store the irq mappings?
-
-I looked at the upstream device trees:
-- users of arch/mips/boot/dts/ralink/mt7621.dtsi
-- arch/arm/boot/dts/mediatek/mt7623n-bananapi-bpi-r2.dts
-- arch/arm/boot/dts/mediatek/mt7623n-rfb-emmc.dts
-- arch/arm/boot/dts/mediatek/mt7623a.dtsi
-- arch/arm64/boot/dts/rockchip/rk3568-bpi-r2-pro.dts
-- arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts
-- arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
-- arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
-
-and without exception, none of these have the MDIO bus described in OF.
-I'm not sure about other device trees. But it may well be that the
-situation where "MDIO buses present in OF need an IRQ mapping for their
-PHYs" does not need to be handled.
 
