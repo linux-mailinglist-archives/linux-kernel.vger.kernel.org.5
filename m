@@ -1,58 +1,50 @@
-Return-Path: <linux-kernel+bounces-11726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C95381EAD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 00:56:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4579A81EAD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 01:01:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE8841C2143B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 23:56:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00A702833AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 00:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C040FF4E4;
-	Tue, 26 Dec 2023 23:56:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48ACD2F5B;
+	Wed, 27 Dec 2023 00:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WDqRFliW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nSiZLD5Q"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103555C9C;
-	Tue, 26 Dec 2023 23:56:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 152A4C433C7;
-	Tue, 26 Dec 2023 23:56:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9176D5384;
+	Wed, 27 Dec 2023 00:01:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D34E4C433C7;
+	Wed, 27 Dec 2023 00:01:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703634964;
-	bh=eeVVPhs698tzJMKPnsN0mOMee+NQ/JOkzljbDzyuvrk=;
+	s=k20201202; t=1703635286;
+	bh=QD6esAQC2zUHMhdcnID2iNc0cTpprT0pIKR+PaI0cRI=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=WDqRFliWt4+s1yPPXM6G//iGI15rQXGWKOoUX9AIRwNDaC0lerFygACxFF/fWG8UX
-	 7377qOSvMf1ojfixahrgoBVMCNh2axBW9diJLgSXOmFFD44/BywBakydLB+MWjHgL5
-	 mcyWv1sr9WIsGT3uxSd9hmIqw+qcct4UCnQBwBpYpTrN+pQXdRFE4E1CzvrFtBDQ5c
-	 z1GO4icvo2Y4Wo28r/5iCAASXkZWh7Oo2fCFahN5CR2C6yyLdMqVIzajysf6kA6N+s
-	 YjJ5KSiJlV6v4FEXtbo4KrkqAc2CI01/jvlM3wy0hUDYJjlpfDTvLEKMKDsU+FlOMr
-	 U1H3Z20ISE+RA==
-Date: Tue, 26 Dec 2023 17:56:02 -0600
+	b=nSiZLD5QD83Yy6uWll+7uVy99sjqNnEuLgMgpABkq6i3uMWNPE3XB3QOikJFnc/fh
+	 9RuiSoI1eCn2DvOWLvslq20tdKiwOvJ45MO8ydwM6FRAM3krPe6ZQAHwPPFz5AUo3m
+	 6kMOCWM0HYuYNqTCewW/7Ue41tgh6SjCPRw9Eyu4GcJ3TsxYZgozV4PvpJcjhb3ROz
+	 TS89+/k8ZuYRr2lWCrcYT/G3kPvn5r55BGnAFievDz7kvA/LHE30rZa/oPpMQSECy0
+	 PPzrb+8XBEXGFzYCxkSMx1hNEt7WmWnjjtsex4+HjzxxjLQAny7ZzkbjKkR6t4Zsva
+	 mW1OYKrmCLBdQ==
+Date: Tue, 26 Dec 2023 18:01:24 -0600
 From: Bjorn Helgaas <helgaas@kernel.org>
-To: Sunil V L <sunilvl@ventanamicro.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-	linux-pci@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-	Albert Ou <aou@eecs.berkeley.edu>, Haibo Xu <haibo1.xu@intel.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Anup Patel <anup@brainfault.org>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Will Deacon <will@kernel.org>, Len Brown <lenb@kernel.org>
-Subject: Re: [RFC PATCH v3 03/17] PCI: Make pci_create_root_bus() declare its
- reliance on MSI domains
-Message-ID: <20231226235602.GA1483795@bhelgaas>
+To: Mathias Krause <minipli@grsecurity.net>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Arend van Spriel <arend.vanspriel@broadcom.com>,
+	Franky Lin <franky.lin@broadcom.com>,
+	Hante Meuleman <hante.meuleman@broadcom.com>,
+	Kalle Valo <kvalo@kernel.org>, linux-pci@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+	SHA-cyfmac-dev-list@infineon.com,
+	brcm80211-dev-list.pdl@broadcom.com
+Subject: Re: [PATCH] PCI: Remove unused 'node' member from struct pci_driver
+Message-ID: <20231227000124.GA1484252@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,22 +53,64 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231219174526.2235150-4-sunilvl@ventanamicro.com>
+In-Reply-To: <20231220133505.8798-1-minipli@grsecurity.net>
 
-On Tue, Dec 19, 2023 at 11:15:12PM +0530, Sunil V L wrote:
-> Similar to [1], declare this dependency for PCI probe in ACPI based
-> flow.
-
-It would be better to refer to this as 9ec37efb8783 ("PCI/MSI: Make
-pci_host_common_probe() declare its reliance on MSI domains") instead
-of a link to the mailing list archives.
-
-The git SHA1 is part of the git repo, and git can tell us where that
-SHA1 is included.  The lore URL is external and doesn't say anything
-about what happened to the patch.
-
-> This is required especially for RISC-V platforms where MSI controller
-> can be absent.
+On Wed, Dec 20, 2023 at 02:35:05PM +0100, Mathias Krause wrote:
+> Remove the unused 'node' member. It got replaced by device_driver
+> chaining more than 20 years ago in commit 4b4a837f2b57 ("PCI: start to
+> use common fields of struct device_driver more...") of the history.git
+> tree.
 > 
-> [1] - https://lore.kernel.org/all/20210330151145.997953-12-maz@kernel.org/
+> Signed-off-by: Mathias Krause <minipli@grsecurity.net>
+
+Applied with Kalle's ack to pci/misc for v6.8, thanks!
+
+> ---
+> There is only one "user" that makes use of the 'node' member, which is
+> the brcm80211 driver. However, its "use" is clearly wrong (a list head
+> cannot be initialized this way) and, obviously, not needed.
+> 
+> If netdev folks instead want to split this off into a separate commit, I
+> can do that. However, I don't expect any cross-tree conflicts regarding
+> this change.
+> 
+>  drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c | 1 -
+>  include/linux/pci.h                                     | 2 --
+>  2 files changed, 3 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+> index 80220685f5e4..d7fb88bb6ae1 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+> @@ -2707,7 +2707,6 @@ MODULE_DEVICE_TABLE(pci, brcmf_pcie_devid_table);
+>  
+>  
+>  static struct pci_driver brcmf_pciedrvr = {
+> -	.node = {},
+>  	.name = KBUILD_MODNAME,
+>  	.id_table = brcmf_pcie_devid_table,
+>  	.probe = brcmf_pcie_probe,
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index dea043bc1e38..835a937fd233 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -885,7 +885,6 @@ struct module;
+>  
+>  /**
+>   * struct pci_driver - PCI driver structure
+> - * @node:	List of driver structures.
+>   * @name:	Driver name.
+>   * @id_table:	Pointer to table of device IDs the driver is
+>   *		interested in.  Most drivers should export this
+> @@ -940,7 +939,6 @@ struct module;
+>   *		own I/O address space.
+>   */
+>  struct pci_driver {
+> -	struct list_head	node;
+>  	const char		*name;
+>  	const struct pci_device_id *id_table;	/* Must be non-NULL for probe to be called */
+>  	int  (*probe)(struct pci_dev *dev, const struct pci_device_id *id);	/* New device inserted */
+> -- 
+> 2.39.2
+> 
 
