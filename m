@@ -1,110 +1,96 @@
-Return-Path: <linux-kernel+bounces-11892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1025B81ED08
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 08:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9276781ED0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 08:55:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 938C91F21C22
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:55:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2726A1F22DC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 07:55:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82CF56118;
-	Wed, 27 Dec 2023 07:55:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 502F95691;
+	Wed, 27 Dec 2023 07:55:50 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.avm.de (mail.avm.de [212.42.244.119])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A48C566F;
-	Wed, 27 Dec 2023 07:55:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=fjasle.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
-Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
-	by mail.avm.de (Postfix) with ESMTPS;
-	Wed, 27 Dec 2023 08:55:12 +0100 (CET)
-Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
-	by mail-auth.avm.de (Postfix) with ESMTPA id 6755A80453;
-	Wed, 27 Dec 2023 08:55:12 +0100 (CET)
-Received: by buildd.core.avm.de (Postfix, from userid 1000)
-	id 5B8EF18131F; Wed, 27 Dec 2023 08:55:12 +0100 (CET)
-Date: Wed, 27 Dec 2023 08:55:12 +0100
-From: Nicolas Schier <nicolas@fjasle.eu>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] kbuild: deb-pkg: factor out common Make options in
- debian/rules
-Message-ID: <ZYvYYBgAVmO0uj8V@buildd.core.avm.de>
-Mail-Followup-To: Masahiro Yamada <masahiroy@kernel.org>,
-	linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	linux-kernel@vger.kernel.org
-References: <20231226135243.1393780-1-masahiroy@kernel.org>
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84BE763AB;
+	Wed, 27 Dec 2023 07:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8AxG+l82ItlU_YEAA--.23667S3;
+	Wed, 27 Dec 2023 15:55:40 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxt+Z42ItlT4AMAA--.44482S3;
+	Wed, 27 Dec 2023 15:55:37 +0800 (CST)
+Subject: Re: [PATCH v3 0/2] selftests/vDSO: Fix errors on LoongArch
+To: Shuah Khan <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>
+References: <20231213012300.5640-1-yangtiezhu@loongson.cn>
+Cc: linux-kselftest@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <d73d107d-9e04-4250-f467-f6ff7eb92103@loongson.cn>
+Date: Wed, 27 Dec 2023 15:55:36 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231226135243.1393780-1-masahiroy@kernel.org>
-Organization: AVM GmbH
-X-purgate-ID: 149429::1703663712-956FB5FF-50D739FB/0/0
-X-purgate-type: clean
-X-purgate-size: 1491
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
+In-Reply-To: <20231213012300.5640-1-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:AQAAf8Dxt+Z42ItlT4AMAA--.44482S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrtr13AF1kZF18Gr1fZw17twc_yoWftrb_uF
+	W8ua4kGrZ7uFZ8AF4Fqw1rZry3JF4Iyr4xWryj9w47Jr9rArZ8GF4FkF48uFySgrWayr9r
+	JF4DCa9avr1qqosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUbfAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y
+	6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+	1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
+	JVW8JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+	vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IY
+	x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
+	xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
+	wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8hiSPUUUUU==
 
-On Tue, Dec 26, 2023 at 10:52:38PM +0900, Masahiro Yamada wrote:
-> This avoid code duplication between binary-arch and built-arch.
++ Andrew Morton <akpm@linux-foundation.org>
++ Mark Brown <broonie@kernel.org>
 
-avoids ?
+On 12/13/2023 09:22 AM, Tiezhu Yang wrote:
+> v3: Rebase on the next branch of linux-kselftest.git,
+>     modify the patch title and update the commit message
+>
+> v2: Rebase on 6.5-rc1 and update the commit message
+>
+> Tiezhu Yang (2):
+>   selftests/vDSO: Fix building errors on LoongArch
+>   selftests/vDSO: Fix runtime errors on LoongArch
+>
+>  tools/testing/selftests/vDSO/vdso_config.h    |  6 ++++-
+>  .../testing/selftests/vDSO/vdso_test_getcpu.c | 16 +++++-------
+>  .../selftests/vDSO/vdso_test_gettimeofday.c   | 26 +++++--------------
+>  3 files changed, 18 insertions(+), 30 deletions(-)
+>
 
-Reviewed-by: Nicolas Schier <n.schier@avm.de>
+Hi Shuah, Andrew and Mark,
 
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  scripts/package/debian/rules | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/scripts/package/debian/rules b/scripts/package/debian/rules
-> index 3dafa9496c63..26bc6239e200 100755
-> --- a/scripts/package/debian/rules
-> +++ b/scripts/package/debian/rules
-> @@ -10,20 +10,20 @@ ifneq (,$(filter-out parallel=1,$(filter parallel=%,$(DEB_BUILD_OPTIONS))))
->      MAKEFLAGS += -j$(NUMJOBS)
->  endif
->  
-> +make-opts = ARCH=$(ARCH) KERNELRELEASE=$(KERNELRELEASE)
-> +
->  .PHONY: binary binary-indep binary-arch
->  binary: binary-arch binary-indep
->  binary-indep: build-indep
->  binary-arch: build-arch
-> -	$(MAKE) -f $(srctree)/Makefile ARCH=$(ARCH) \
-> -	KERNELRELEASE=$(KERNELRELEASE) \
-> +	$(MAKE) -f $(srctree)/Makefile $(make-opts) \
->  	run-command KBUILD_RUN_COMMAND=+$(srctree)/scripts/package/builddeb
->  
->  .PHONY: build build-indep build-arch
->  build: build-arch build-indep
->  build-indep:
->  build-arch:
-> -	$(MAKE) -f $(srctree)/Makefile ARCH=$(ARCH) \
-> -	KERNELRELEASE=$(KERNELRELEASE) \
-> +	$(MAKE) -f $(srctree)/Makefile $(make-opts) \
->  	$(shell $(srctree)/scripts/package/deb-build-option) \
->  	olddefconfig all
->  
-> -- 
-> 2.40.1
-> 
+The patches still seem to apply cleanly.
+Could you please review and merge them for the upcoming merge window?
+
+https://lore.kernel.org/lkml/20231213012300.5640-1-yangtiezhu@loongson.cn/
+
+Thanks,
+Tiezhu
+
 
