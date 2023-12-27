@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-11749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06ED481EB21
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 02:08:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 020E681EB26
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 02:09:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8697628348A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 01:08:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99D8DB22188
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 01:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6179F2100;
-	Wed, 27 Dec 2023 01:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078A52563;
+	Wed, 27 Dec 2023 01:08:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cQm4mRJc"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="q5jKE4Zl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3667E522C
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 01:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 028191FB5
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 01:08:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e7af5f618so1554763e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 17:08:12 -0800 (PST)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-554f2aededdso1457483a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 17:08:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703639290; x=1704244090; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703639325; x=1704244125; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xLIIIOxORRrKfbuCa+3Cp86Hg+MV0ACaRoPmyHBbMzY=;
-        b=cQm4mRJcgwy3T+qGXyl+3wUw5+TAi29Z61Yjtjc9KYOklkasOkkY1ukJ7o5kyz0rSd
-         EjFguXqBGdLztlTGefEfnxz9sVzLhvApJP0Mmh8jJhTua0YJ0a5XSJydRM3ZCVRjKjLq
-         xLmhVf67K1bNQCN1z5TBNtvCtSmI5/HuEWNqdZUkYXqUjP2+LvhZi41XxciVV7e5rfNs
-         Ztk/ThpJu593WlRIeAWstNySdXdB4uZCKW0M760Frzuhx3jEoh/0hTPxRnOu18VX6Ret
-         JYidUhLKr6K8YFPRJ6M+73fPm34MzOozAUbi2ofrJwtK9xLpdRa0ofNopYqlhgVZzQZ1
-         3Unw==
+        bh=WW9HYx9j/x4ss/Xoh0AagUmpiviqWROUvVZzg+XtJcM=;
+        b=q5jKE4Zl3Sv47GoLX1ijfhm/VUCFcnhBRFd8VgyIPyfxFF5V9D5M0K1eSx/zdiA2La
+         dI958V7OJoqKnWoiWIfOyVR2TwqQ8aNFmD+qlJ4/ltSVZgMviglXFYH9GKNa3DgEMOb0
+         fLxdMxHWPRdMDwaHyRCViYOZZvtWVW+5YZGCPMe0tkJwJvfPEJfRN422O/kXozrJjPKk
+         vF1tjz1+tAJuTP3SmcKDgrAZymv2TZ+WI3hd8ryM6vtZasOjyw6hNqTXhzngIXd5I/SD
+         V3MKnX34srtBIbSYk1gPk7YJ4YRtWQKZq74Wep7pQO8AgiL5BPTfGQa2SknxGKPIZiRm
+         wexg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703639290; x=1704244090;
+        d=1e100.net; s=20230601; t=1703639325; x=1704244125;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xLIIIOxORRrKfbuCa+3Cp86Hg+MV0ACaRoPmyHBbMzY=;
-        b=i+4Mz8rG8jp0EG7C+IXfRNcEp607afAaLoVO4KY1GQHeJKzUzIN2lRhT1d5poWX/nj
-         Lgei7Yw9y+J3C+jmWzru8A8cf/SQUD+/6vom9OL22B8CdkLEpD1i2ocBlplA6zufMRoq
-         ABuRQwO74/X0iMzeVnTwgzzuXyqiS4ZCgqBh3Yj8yEPNuy5zEtH8YVGTcermHztGeAQ8
-         dmzMTGs8JwxrhZci1Ag2DBUl9NfoFKAiOgllYlry0r5yPiOEofo5XUgUuxFFbwBn+pMO
-         wePKfzXT7jfBrdG0IMjXhlaE93uHKYR57W54IFSEPpaphsi2QHKnAAQAoy3TrYOKyR7b
-         QtEg==
-X-Gm-Message-State: AOJu0Yw1vKcZ73+hCHB5lw1AFLMuL70P9PdqgscV9QTBri32I61sQCT0
-	9y6Y+pKpLJk9geMwg3CghB8yq0T3eNwUXw==
-X-Google-Smtp-Source: AGHT+IHvhxwxYOxzSqQnx9Op71D3IbH50+/zCRHj67oByKXaf8PRxO70kiVP3IWk/4Huyh7cUciXvA==
-X-Received: by 2002:a05:6512:36ce:b0:50e:6984:6237 with SMTP id e14-20020a05651236ce00b0050e69846237mr2541919lfs.26.1703639290096;
-        Tue, 26 Dec 2023 17:08:10 -0800 (PST)
+        bh=WW9HYx9j/x4ss/Xoh0AagUmpiviqWROUvVZzg+XtJcM=;
+        b=guJ26hzKvAIqZDLgttqbM3Th4lxPNHYHPMkSFwGByJ8sBOjpsvVsEHWw2FyHtUIIif
+         pcHGyi5AZcmTj7yVYEOMzuBmv97PlKrwkH9u+PGYZb/wQOmainfVLE8l5WDbzOY+n2Iy
+         NRYcUOL/EJQgCijyb2uJhrSzPOrQePtCo2lnmDOlX+IWw+EidaYjIummeyP7aOxCofBN
+         CVbI1c6mw5SDIVvClGtcAIkpO4VL6OL8pNU8NxXPFyeV+GmrzYQj4/kCwnhEsn/0/SOc
+         l1V0GV9L5UqlFUpTftontAOX0TgZHXvRCMmOkW24KKTQrR+wEG/3xXn8aRrpa8/ZXlyD
+         32TQ==
+X-Gm-Message-State: AOJu0Yz2dcjGrrusbnGU0sgC/iB96HgFyy+cNt9C2cKEwi8rYkhG2pvQ
+	RwIc4usKP8SzjfUxgq269hj8LpAa/8wBUA==
+X-Google-Smtp-Source: AGHT+IFMh9s/4u5QWAzEcZBzBdigcM8CuFsPVxhHwQbB5U+yW7MywTpJ7bNqMbbly25Js36Bq5/BNA==
+X-Received: by 2002:a05:6402:4410:b0:54a:f8e9:a9a8 with SMTP id y16-20020a056402441000b0054af8e9a9a8mr6190668eda.20.1703639325331;
+        Tue, 26 Dec 2023 17:08:45 -0800 (PST)
 Received: from [192.168.199.125] (178235179028.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.28])
-        by smtp.gmail.com with ESMTPSA id ck8-20020a0564021c0800b0055515b40464sm1599865edb.81.2023.12.26.17.08.08
+        by smtp.gmail.com with ESMTPSA id ck8-20020a0564021c0800b0055515b40464sm1599865edb.81.2023.12.26.17.08.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Dec 2023 17:08:09 -0800 (PST)
-Message-ID: <0ea71183-1bfc-41b7-8141-eb01e027bbb9@linaro.org>
-Date: Wed, 27 Dec 2023 02:08:08 +0100
+        Tue, 26 Dec 2023 17:08:45 -0800 (PST)
+Message-ID: <9a11ba2f-d7bc-4860-9987-58f56fad76da@linaro.org>
+Date: Wed, 27 Dec 2023 02:08:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,7 +66,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/8] soc: qcom: rpmhpd: Drop SA8540P gfx.lvl
+Subject: Re: [PATCH v2 6/8] arm64: dts: qcom: sa8295p-adp: add max20411
 Content-Language: en-US
 To: Bjorn Andersson <quic_bjorande@quicinc.com>,
  Bjorn Andersson <andersson@kernel.org>,
@@ -79,10 +79,9 @@ To: Bjorn Andersson <quic_bjorande@quicinc.com>,
  Will Deacon <will@kernel.org>
 Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+ linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 References: <20231220-sa8295p-gpu-v2-0-4763246b72c0@quicinc.com>
- <20231220-sa8295p-gpu-v2-4-4763246b72c0@quicinc.com>
+ <20231220-sa8295p-gpu-v2-6-4763246b72c0@quicinc.com>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -119,20 +118,34 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231220-sa8295p-gpu-v2-4-4763246b72c0@quicinc.com>
+In-Reply-To: <20231220-sa8295p-gpu-v2-6-4763246b72c0@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 22.12.2023 05:39, Bjorn Andersson wrote:
-> On SA8295P and SA8540P gfx.lvl is not provdied by rpmh, but rather is
-> handled by an external regulator (max20411). Drop gfx.lvl from the list
-> of power-domains exposed on this platform.
+> From: Bjorn Andersson <andersson@kernel.org>
 > 
-> Fixes: f68f1cb3437d ("soc: qcom: rpmhpd: add sc8280xp & sa8540p rpmh power-domains")
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> The SA8295P ADP has a MAX20411 LDO regulator on I2C 12, supplying the
+> VDD_GFX pads. Enable the bus and add the maxim,max20411 device on the
+> bus.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+>  &tlmm {
+>  	pcie2a_default: pcie2a-default-state {
+>  		clkreq-n-pins {
+> @@ -728,4 +760,12 @@ wake-n-pins {
+>  			bias-pull-up;
+>  		};
+>  	};
+> +
+> +	qup1_i2c4_state: qup1-i2c4-state {
+> +		pins = "gpio0", "gpio1";
+> +		function = "qup12";
+> +
+> +		drive-strength = <2>;
+unnecessary newline
 
 Konrad
 
