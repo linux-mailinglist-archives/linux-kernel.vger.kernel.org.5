@@ -1,187 +1,168 @@
-Return-Path: <linux-kernel+bounces-12013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E70D81EEDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 13:34:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C183F81EEF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 13:39:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E681B219D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 12:34:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BCD11F22E24
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 12:39:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4282C45020;
-	Wed, 27 Dec 2023 12:34:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B2E34502C;
+	Wed, 27 Dec 2023 12:39:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="WckRmBnm"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="r7pQchoj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C9D4500E;
-	Wed, 27 Dec 2023 12:34:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mx0b-0016f401.pphosted.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BQMrU8r004230;
-	Wed, 27 Dec 2023 04:33:31 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	pfpt0220; bh=QtaJSWsEJTNUz9p29xBwXZsSB1Org89UHEZ7k9tdeeE=; b=Wck
-	RmBnmm9trjIRFfHfGmHVnOipQv7yXf7SoSQmZRFgoGhAkVLhxn6q3/iITU0MCv/n
-	OcqZzj25XOoiN+jMoorl344NuZ2PdoHJKeKybLvlcptbOI2KIOtexkma+P8oZH0f
-	4iGEaIhhe1/DN8f+GJVgdcEud6k7wA7RG4xETIwW4BrVpiqTfYV7hmE98s7tGgEE
-	99Rr49bghYfQvc91qd+eZj9VQNBEx8JiGGZ0BZ6xBHazqBsMfWSqmNfwTjrnKJL0
-	zB0ovA48cOsTxSTlglgoPCIqgkCnMNn7EquwvGjJhfA/9FGQhV5/+yJCFdkLrlO6
-	0Idbj2+se7sw7rnAchQ==
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3v5yxp0a62-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-	Wed, 27 Dec 2023 04:33:31 -0800 (PST)
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 27 Dec
- 2023 04:33:29 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Wed, 27 Dec 2023 04:33:29 -0800
-Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
-	by maili.marvell.com (Postfix) with ESMTP id 27EC95B6936;
-	Wed, 27 Dec 2023 04:33:22 -0800 (PST)
-From: Elad Nachman <enachman@marvell.com>
-To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andrew@lunn.ch>, <gregory.clement@bootlin.com>,
-        <sebastian.hesselbarth@gmail.com>, <huziji@marvell.com>,
-        <ulf.hansson@linaro.org>, <catalin.marinas@arm.com>, <will@kernel.org>,
-        <adrian.hunter@intel.com>, <thunder.leizhen@huawei.com>,
-        <bhe@redhat.com>, <akpm@linux-foundation.org>, <yajun.deng@linux.dev>,
-        <chris.zjh@huawei.com>, <linux-mmc@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC: <enachman@marvell.com>, <cyuval@marvell.com>
-Subject: [PATCH 4/4] mmc: xenon: Add ac5 support via bounce buffer
-Date: Wed, 27 Dec 2023 14:32:57 +0200
-Message-ID: <20231227123257.1170590-5-enachman@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231227123257.1170590-1-enachman@marvell.com>
-References: <20231227123257.1170590-1-enachman@marvell.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CBEF44C84;
+	Wed, 27 Dec 2023 12:38:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1703680732;
+	bh=ENMqB+GT1yQvxRmlz3ucoCgKOSrPmqH+OYpt0j0UxRs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=r7pQchoju1ee2cF4Rzet87ddM5lLfb2Cirtd1jT/A1vDs3qeg0+vqTziKHdFhHBiu
+	 fbivtrS+zIi3LNmw3rvJONlwXXj/DM2SMmsIUvYzCRYUuX6Y6Z7qy6u8FTTXbdGIzr
+	 vPkX2RI5rzu2PTf5RjB/UA5FYVFXKifZF8mJVmjThZpuYG083Jj/9bhQbIKMoJXHGI
+	 IvKirkUbQIqUFu6qxt9820xuO9MDP8n2P0akC1ZjGH+RN+NI6QGxte50kR6zFvQIuI
+	 Tk6cKGroY+/S3bTFR0Jul+l9y9cTTFWdSd7of352yUYC7maKmrT5EjKWe0K7jpfi6G
+	 RZ6G+CUl4MIMA==
+Received: from localhost.localdomain (zone.collabora.co.uk [167.235.23.81])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 93CB537813EA;
+	Wed, 27 Dec 2023 12:38:46 +0000 (UTC)
+From: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>
+To: Shuah Khan <shuah@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Bjorn Helgaas <bhelgaas@google.com>
+Cc: kernelci@lists.linux.dev,
+	kernel@collabora.com,
+	Tim Bird <Tim.Bird@sony.com>,
+	linux-pci@vger.kernel.org,
+	David Gow <davidgow@google.com>,
+	linux-kselftest@vger.kernel.org,
+	Rob Herring <robh+dt@kernel.org>,
+	Doug Anderson <dianders@chromium.org>,
+	linux-usb@vger.kernel.org,
+	Saravana Kannan <saravanak@google.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	devicetree@vger.kernel.org,
+	=?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v3 0/3] Add test to verify probe of devices from discoverable busses
+Date: Wed, 27 Dec 2023 09:34:59 -0300
+Message-ID: <20231227123643.52348-1-nfraprado@collabora.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: aBy5T6LeTda5mzPy40wZXafzn84gvjX4
-X-Proofpoint-GUID: aBy5T6LeTda5mzPy40wZXafzn84gvjX4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
 
-From: Elad Nachman <enachman@marvell.com>
 
-AC5/X/IM SOCs has a variant of the Xenon eMMC controller,
-in which only 31-bit of addressing pass from the controller
-on the AXI bus.
-Since we cannot guarantee that only buffers from the first 2GB
-of memory will reach the driver, the driver is configured for
-SDMA mode, without 64-bit mode, overriding the DMA mask to 34-bit
-to support the DDR memory mapping, which starts at offset 8GB.
+Hi,
 
-Signed-off-by: Elad Nachman <enachman@marvell.com>
----
- drivers/mmc/host/sdhci-xenon.c | 33 ++++++++++++++++++++++++++++++++-
- drivers/mmc/host/sdhci-xenon.h |  3 ++-
- 2 files changed, 34 insertions(+), 2 deletions(-)
+for this v3 I changed the approach for identifying devices in a stable
+way from the match fields back to the hardware topology (used in v1).
+The match fields were proposed as a way to avoid the possible issue of
+PCI topology being reconfigured, but that wasn't observed on any real
+system so far. However using match fields does allow for a real issue if
+an external device similar to an internal one is connected to the
+system, which results in a change of the match count and therefore a
+test failure. So using the HW topology was chosen as the most reliable
+approach.
 
-diff --git a/drivers/mmc/host/sdhci-xenon.c b/drivers/mmc/host/sdhci-xenon.c
-index 25ba7aecc3be..4d6df1815da1 100644
---- a/drivers/mmc/host/sdhci-xenon.c
-+++ b/drivers/mmc/host/sdhci-xenon.c
-@@ -18,6 +18,8 @@
- #include <linux/of.h>
- #include <linux/pm.h>
- #include <linux/pm_runtime.h>
-+#include <linux/mm.h>
-+#include <linux/dma-mapping.h>
- 
- #include "sdhci-pltfm.h"
- #include "sdhci-xenon.h"
-@@ -422,6 +424,7 @@ static int xenon_probe_params(struct platform_device *pdev)
- 	struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
- 	u32 sdhc_id, nr_sdhc;
- 	u32 tuning_count;
-+	struct sysinfo si;
- 
- 	/* Disable HS200 on Armada AP806 */
- 	if (priv->hw_version == XENON_AP806)
-@@ -450,6 +453,23 @@ static int xenon_probe_params(struct platform_device *pdev)
- 	}
- 	priv->tuning_count = tuning_count;
- 
-+	/*
-+	 * AC5/X/IM HW has only 31-bits passed in the crossbar switch.
-+	 * If we have more than 2GB of memory, this means we might pass
-+	 * memory pointers which are above 2GB and which cannot be properly
-+	 * represented. In this case, disable ADMA, 64-bit DMA and allow only SDMA.
-+	 * This effectively will enable bounce buffer quirk in the
-+	 * generic SDHCI driver, which will make sure DMA is only done
-+	 * from supported memory regions:
-+	 */
-+	if (priv->hw_version == XENON_AC5) {
-+		si_meminfo(&si);
-+		if (si.totalram * si.mem_unit > SZ_2G) {
-+			host->quirks |= SDHCI_QUIRK_BROKEN_ADMA;
-+			host->quirks2 |= SDHCI_QUIRK2_BROKEN_64_BIT_DMA;
-+		}
-+	}
-+
- 	return xenon_phy_parse_params(dev, host);
- }
- 
-@@ -562,7 +582,17 @@ static int xenon_probe(struct platform_device *pdev)
- 		goto remove_sdhc;
- 
- 	pm_runtime_put_autosuspend(&pdev->dev);
--
-+	/*
-+	 * If we previously detected AC5 with over 2GB of memory,
-+	 * then we disable ADMA and 64-bit DMA.
-+	 * This means generic SDHCI driver has set the DMA mask to
-+	 * 32-bit. Since DDR starts at 0x2_0000_0000, we must use
-+	 * 34-bit DMA mask to access this DDR memory:
-+	 */
-+	if (priv->hw_version == XENON_AC5) {
-+		if (host->quirks2 & SDHCI_QUIRK2_BROKEN_64_BIT_DMA)
-+			dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(34));
-+	}
- 	return 0;
- 
- remove_sdhc:
-@@ -680,6 +710,7 @@ static const struct of_device_id sdhci_xenon_dt_ids[] = {
- 	{ .compatible = "marvell,armada-ap807-sdhci", .data = (void *)XENON_AP807},
- 	{ .compatible = "marvell,armada-cp110-sdhci", .data =  (void *)XENON_CP110},
- 	{ .compatible = "marvell,armada-3700-sdhci", .data =  (void *)XENON_A3700},
-+	{ .compatible = "marvell,ac5-sdhci",	     .data =  (void *)XENON_AC5},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, sdhci_xenon_dt_ids);
-diff --git a/drivers/mmc/host/sdhci-xenon.h b/drivers/mmc/host/sdhci-xenon.h
-index 3e9c6c908a79..0460d97aad26 100644
---- a/drivers/mmc/host/sdhci-xenon.h
-+++ b/drivers/mmc/host/sdhci-xenon.h
-@@ -57,7 +57,8 @@ enum xenon_variant {
- 	XENON_A3700,
- 	XENON_AP806,
- 	XENON_AP807,
--	XENON_CP110
-+	XENON_CP110,
-+	XENON_AC5
- };
- 
- struct xenon_priv {
+The per-platform device description file now uses YAML following a
+suggestion from Chris Obbard, and the test script was re-written in
+python to handle the new YAML format.
+
+A second sample board file is also now included for an x86 platform,
+which contains an USB controller behind a PCI controller, which wasn't
+possible to describe in v1.
+
+Thanks,
+Nícolas
+
+v2: https://lore.kernel.org/all/20231127233558.868365-1-nfraprado@collabora.com
+v1: https://lore.kernel.org/all/20231024211818.365844-1-nfraprado@collabora.com
+
+Original cover letter:
+
+This is part of an effort to improve detection of regressions impacting
+device probe on all platforms. The recently merged DT kselftest [3]
+detects probe issues for all devices described statically in the DT.
+That leaves out devices discovered at run-time from discoverable busses.
+
+This is where this test comes in. All of the devices that are connected
+through discoverable busses (ie USB and PCI), and which are internal and
+therefore always present, can be described in a per-platform file so
+they can be checked for. The test will check that the device has been
+instantiated and bound to a driver.
+
+Patch 1 introduces the test. Patch 2 and 3 add the device definitions
+for the google,spherion machine (Acer Chromebook 514) and XPS 13 as
+examples.
+
+This is the output from the test running on Spherion:
+
+TAP version 13
+Using board file: boards/google,spherion.yaml
+1..8
+ok 1 /usb2-controller@11200000/1.4.1/camera.device
+ok 2 /usb2-controller@11200000/1.4.1/camera.0.driver
+ok 3 /usb2-controller@11200000/1.4.1/camera.1.driver
+ok 4 /usb2-controller@11200000/1.4.2/bluetooth.device
+ok 5 /usb2-controller@11200000/1.4.2/bluetooth.0.driver
+ok 6 /usb2-controller@11200000/1.4.2/bluetooth.1.driver
+ok 7 /pci-controller@11230000/0.0/0.0/wifi.device
+ok 8 /pci-controller@11230000/0.0/0.0/wifi.driver
+Totals: pass:8 fail:0 xfail:0 xpass:0 skip:0 error:0
+
+[3] https://lore.kernel.org/all/20230828211424.2964562-1-nfraprado@collabora.com/
+
+Changes in v3:
+- Reverted approach of encoding stable device reference in test file
+from device match fields (from modalias) back to HW topology (from v1)
+- Changed board file description to YAML
+- Rewrote test script in python to handle YAML and support x86 platforms
+
+Changes in v2:
+- Changed approach of encoding stable device reference in test file from
+HW topology to device match fields (the ones from modalias)
+- Better documented test format
+
+Nícolas F. R. A. Prado (3):
+  kselftest: Add test to verify probe of devices from discoverable
+    busses
+  kselftest: devices: Add sample board file for google,spherion
+  kselftest: devices: Add sample board file for XPS 13 9300
+
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/devices/Makefile      |   4 +
+ .../devices/boards/Dell Inc.,XPS 13 9300.yaml |  40 +++
+ .../devices/boards/google,spherion.yaml       |  50 +++
+ tools/testing/selftests/devices/ksft.py       |  90 +++++
+ .../devices/test_discoverable_devices.py      | 318 ++++++++++++++++++
+ 6 files changed, 503 insertions(+)
+ create mode 100644 tools/testing/selftests/devices/Makefile
+ create mode 100644 tools/testing/selftests/devices/boards/Dell Inc.,XPS 13 9300.yaml
+ create mode 100644 tools/testing/selftests/devices/boards/google,spherion.yaml
+ create mode 100644 tools/testing/selftests/devices/ksft.py
+ create mode 100755 tools/testing/selftests/devices/test_discoverable_devices.py
+
 -- 
-2.25.1
+2.43.0
 
 
