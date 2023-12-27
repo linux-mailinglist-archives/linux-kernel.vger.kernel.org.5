@@ -1,265 +1,451 @@
-Return-Path: <linux-kernel+bounces-12212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0250F81F165
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 19:32:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D767B81F16A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 19:33:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD546286339
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:32:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 072361C22623
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 18:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE4A4C3C3;
-	Wed, 27 Dec 2023 18:29:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692491E4AF;
+	Wed, 27 Dec 2023 18:33:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="dik2c5+l"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iAV6pBi+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2044.outbound.protection.outlook.com [40.107.104.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7915C4CB52;
-	Wed, 27 Dec 2023 18:29:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h5tahfWqbujAFfY9r4pxAesioXDpe6bS+NDprALCZ6TSnQ89oG/d0WImnd0egeDcfMti53WPRzj/l/797FG9g7yWmYbYv8pzZqNg1yWYMMD9NJAXAIwR7tKYz4ZyTV4auW+Bu+R+aJbQrtVt6bv+JtZ83P36Qu4Vgmo5jC/GpiSYudlALvlEnNyCOlfN2L28PEC2RvUjm0Nt0bjzwtNqth87uD04gOoByTeX7cl6e2pITET0w2jn6NHYzMniTeOuPJZvuArGmnQPuvcDrpQf7wHPfAfGwgYkefbLS8gZHNufEHcN5kJlwZtcctH4+hFY78hHZoGwBfkFoPGHBf2QKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q8vo+UQ9KtGvOP++Or5qDRIkrFEKvxts5Qo6V24QQ9o=;
- b=lyPxgh9XgJ8yP5T9FNNh5l8kHcTTJj1/VNF2OK/m1k/k83RVAONBxthvlCSZb4Vi/UY7OHgfufD9ILuqmzvWWi2M13wVxYX0WHy0PMzmcIbHijmdpmFDFgkh6M6y5Vi6WpbMUFw8y3ekSGafwfWYm0KWD4x6j+N8/Xv1K1t56RpSimzpA8Up/l0OFHUD8kQTZt3GFQ0gt5wjGI0oIWygH/CCS2WBcsRtpz0KSkW+MGpggDVth3CyXomgsmNy8XEMKasDfydXRyKAIf/njgqW5GbX81TwqxdF+BmoMFoQTmkd4Calw0TOnI8Xh8N73FyN2RM0TgnYacVc9Yrr3cIMTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q8vo+UQ9KtGvOP++Or5qDRIkrFEKvxts5Qo6V24QQ9o=;
- b=dik2c5+lvc7D/sNIx/LbnKs5mJxhTZv7QGyAVZrPHVx2AcNaai5u9EIqokWqBBppiGPxs9w/GuSnsulp9HQIBIWhQ5X8Th3T0naT+pDRh4V1tupPLPt0enja+mFOKkvafHfxECCJ6LWOpFJMxo/qodIw5sjI5ltfwWpqeGWcvLo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by PAXPR04MB8271.eurprd04.prod.outlook.com (2603:10a6:102:1ca::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.27; Wed, 27 Dec
- 2023 18:29:15 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40%7]) with mapi id 15.20.7113.027; Wed, 27 Dec 2023
- 18:29:14 +0000
-From: Frank Li <Frank.Li@nxp.com>
-To: krzysztof.kozlowski@linaro.org
-Cc: Frank.Li@nxp.com,
-	bhelgaas@google.com,
-	conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	festevam@gmail.com,
-	helgaas@kernel.org,
-	hongxing.zhu@nxp.com,
-	imx@lists.linux.dev,
-	kernel@pengutronix.de,
-	krzysztof.kozlowski+dt@linaro.org,
-	kw@linux.com,
-	l.stach@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org,
-	linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org,
-	manivannan.sadhasivam@linaro.org,
-	robh@kernel.org,
-	s.hauer@pengutronix.de,
-	shawnguo@kernel.org
-Subject: [PATCH v7 16/16] PCI: imx6: Add iMX95 Endpoint (EP) function support
-Date: Wed, 27 Dec 2023 13:27:27 -0500
-Message-Id: <20231227182727.1747435-17-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231227182727.1747435-1-Frank.Li@nxp.com>
-References: <20231227182727.1747435-1-Frank.Li@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SJ2PR07CA0018.namprd07.prod.outlook.com
- (2603:10b6:a03:505::22) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D90001E51A;
+	Wed, 27 Dec 2023 18:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50e5a9bcec9so6582064e87.3;
+        Wed, 27 Dec 2023 10:33:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703701994; x=1704306794; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YcB4NJ++6ivEoEqudtqQR5JbTA38RP1iyGIjkEFmlyM=;
+        b=iAV6pBi+wVeuZ2NWZise38KVvU/xNgxHDcmwG29VjloNZjyR3MMDIfHT3mx2t9PT7k
+         PGysuxF/ndTDSlcfXV2UNfaX/YTz5KRWMsjWuMIu2h6ba4D1/mY8VUknzL/0XXjmoQNu
+         o7h8jBYlsoLSy63lKsLOXIkFB3L4yPTvVBdiUeMb2VuolZOw76N7nds4LkEJPY1hD9gi
+         uwCkhz8joze/t57LJEJiDhsY6pNWsdImkWCTAvDrB51gH9l0prE0iHNDNHBZ2l9S7sJK
+         Nx0G/6fkBTNmi2KSDsFqr5T+hlz2OzvJ1idBQ8rQmwcNUulwOrkvHuW+9Oa5lTotN85D
+         Ed3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703701994; x=1704306794;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YcB4NJ++6ivEoEqudtqQR5JbTA38RP1iyGIjkEFmlyM=;
+        b=PVxCHIllfQURpaqufdmMTDJkayFvQVsukU82T6b9btM7zPPZ30sArsQEaazCxbOJR4
+         SBK5Vvr5X0FSDl3qKnmQDRSS5mJdb2MSeTjn5RYFMUassbi0jKkrQxKF7Uaf4ZcxhZhv
+         MBZFVr0Nth/EXtSLCBSXUh9+8D8Ygn710jAyn831shAzn9EMCjoMMyxc9hseNP8CjZTW
+         2KVJ9x7izvqWo72CPjaryLAZc0LCQlHNlM9ZfUSKv6muNoQzcL8btu+jn8LgAXlngx7D
+         E9ULd9/7slUJNBzSIuZxAAtszOgCzWcHaNa7f/N96J3YITqH6CA3n6NDsdBGQYoJ7Tne
+         yxVA==
+X-Gm-Message-State: AOJu0Yzla2Fke1E7nZfofcDr1FRmjmqaTzlR3h00vY6TFUYbdOJEzPCY
+	KIxEH+D6bF8lnji2IhTc/0qNnZ/b4vo=
+X-Google-Smtp-Source: AGHT+IFSNsBKPUr/NhV+zV1c306HqKssI4Rth1kOS8IiF405rbm7OZgCXi2lAoe7ncNyy2RtxZX9bA==
+X-Received: by 2002:ac2:5eda:0:b0:50e:7b04:7bc9 with SMTP id d26-20020ac25eda000000b0050e7b047bc9mr1864156lfq.23.1703701993432;
+        Wed, 27 Dec 2023 10:33:13 -0800 (PST)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id h15-20020a17090791cf00b00a1db76f99c8sm6816319ejz.93.2023.12.27.10.33.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Dec 2023 10:33:12 -0800 (PST)
+Message-ID: <cf46c685-bf4b-63b5-0373-dd0ba70e9700@gmail.com>
+Date: Wed, 27 Dec 2023 19:33:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PAXPR04MB8271:EE_
-X-MS-Office365-Filtering-Correlation-Id: 90c2cc65-335d-421b-fc67-08dc0709ba49
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	vCt3+gXVP18Qy50gV9C9icewQCdaLpjt7Cie4XYDQKAKqsGCac8YCkzuujJb2ZxjR+Be8E853oIkGIaXQsm+2ZJochgSuMhG8/ySnf+emYpwvbtB1+s+1Poy8R4I6ItR6KPexwHMJehJ6TV146dPWj3xC1MXGVIZEJGA0QPDNX8bW/i1GxJ4xO34x3Huk7zgUugWBz08HG7mGmyWaq9HnURwQ0OdBKk/T9fnHlggBIHcJ6Xd8u4NTsRAr9oFULOtciCvJRaSiN12xBmRF4onHrLOLbnM8k/VOk3Y4/g8jPJQ4oRaIf30djd4aBaOxv5yoQWN3pqXee1sf/a6qnwiClni4Lny+nTqZDH9RJekjk4+jODpD8EHrK879MBnEx+81lNglnP2wfdRUHmajopKLqfuhwXxND0MKmMfBQRIs0qjdOiJh3g4c2+hIQWWUdiYOKwbW6taxsQFHGQf0HahkF6eqFBoQWFZbicBozG5COoily7qs+Ysj8JrnIUI2TXl8mvGeLFEMAdx5KSp5BIPGVfUOQqh4HWklCCXZfoIFeGpCDbfEtGyCSKIEOnrqqXwztkOxaZF7tgJDVRwM1nFZWm05v3AMYSKK6dUpcT0W9uWNhfhCIf939jUvx2R6OvR
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(396003)(136003)(346002)(376002)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(36756003)(52116002)(6666004)(6512007)(6916009)(6506007)(6486002)(66946007)(66556008)(66476007)(86362001)(38350700005)(26005)(38100700002)(1076003)(41300700001)(2616005)(2906002)(5660300002)(7416002)(478600001)(4326008)(316002)(8676002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?BGDhlxISj9Qg/Mi2OHKaySCVE+5YTKOjxQlH3g6Z83YoeqzUTxAdtrFiwjqW?=
- =?us-ascii?Q?hzYfhf9Jati2A7vU+h65ccqzeXE094qVsdrOr5trHyU6fV9w79BDN29b8rx6?=
- =?us-ascii?Q?29sL3WYKpGkAbjYc+rpd0olV+5NEI1UhTxBJrzbf4XlmsGxK92rsqJ2pgLfM?=
- =?us-ascii?Q?FIgz24p7RhjrNQTJ/v/0JekNOFU4ejJ2Av0ZlqUOX4H3tpJrmWxjgmchDiP7?=
- =?us-ascii?Q?htNq43O81ywO6F8JsMq5rM6gynEedGgsgRF5LMyIZ9XqTrlMMtGaMAUHorcW?=
- =?us-ascii?Q?FkNEEma6Z07ZuQwdNEZlsXWL4IxlEBbmfvOU6KW9ynd+el8LI+4hxwfcLlDF?=
- =?us-ascii?Q?gQ/ChWNV1tdC6AthvhquRLrJgp0QsoWiSKB7dLku5eS/0gChJI32/JT5Ph/Q?=
- =?us-ascii?Q?l4OuGwEQZ3lcI0qt1516r5W5q/6C09TpfCmE/ciOqEbuy7KkRK9kubXyigeu?=
- =?us-ascii?Q?cNxO/AZwR2RQx0LbA1YCuJTl+dIUs8dpGDByT7Aeu78Xvk/bVJVlNkBcoMif?=
- =?us-ascii?Q?WXlqVMKnYiabRPPzGM6a384nYaN/n0/aCtG9aig0GkiPu7fFxr2uZxvSxShx?=
- =?us-ascii?Q?mZbyzbT6ZKeycFkUnw8K/JmWEg4wi6xHhgMtzJAtuEYGTW8eLfbr/cdaMq0G?=
- =?us-ascii?Q?haHW8CD7ViuMcrdeRE0SLNCmxF+IOXFeUyFi5r4B1+jZUk8g9h9kCMXwX0Rr?=
- =?us-ascii?Q?dVDMqZ3visPqbjXBDaFbCGUiJyv3CLdf9P/UjU22PbwHnar1g/HXvXV70vn0?=
- =?us-ascii?Q?9t6F+QHLVSRS+t83BShhJIJZIilYd5708HzB6iw5F1xYmUWIHNFAFiMTuPuV?=
- =?us-ascii?Q?JXaTKUpmHye1xYV1yQtu+pSA/9Udcb/6j5WKOOBkrd8DehKBhGseo/3+5IQ5?=
- =?us-ascii?Q?fmm1l+Sgj0pYJ6C0updBU2lvByotCgiGHkZwzDlAPeBwFaQ/SaWTsWmLXIDf?=
- =?us-ascii?Q?jbR4wiomjiUWyKHQwlJN7SDWkoI7og2Acf+xrDviXHaL6LCoYEp9r49mreJX?=
- =?us-ascii?Q?6+k7c4hJJj8/e/Dp/JkUYWlcxSZHunvvDFUIfGHTquHfH5zkW+YpOKcFJHyW?=
- =?us-ascii?Q?75B+9qV1A1qVGYtKhyRCOrcShmoQGZPswq8FsOwpJnkSzKFtPvyzptQcvlgK?=
- =?us-ascii?Q?okXmufQ+m3NMIyfZjbMfOzX2N3gw2nIJr8YZK6X/f/Cx4gLcuomC2BSoLvHG?=
- =?us-ascii?Q?x+yW65XYXd8R4chFmfp8ayGQmc1cEqCEp7r3ysOUbthXAn+aEBtUOcwFnOgH?=
- =?us-ascii?Q?Er00z+s8wiKQkmp9mAHdbo+/8oUyXHFQmCDpYJ7zjUJkaEV56LVVYenh0uRg?=
- =?us-ascii?Q?qm6EGUkArM1/8hBAYZXSKea6P4tvuNBjkb3ry6q+0MnwvERYmS8IvC39Z362?=
- =?us-ascii?Q?RGAxEHZ/gJMP0lPH/pA/D/0J1X7UBo3cPAVlVi0bD3V5nJA4kufO2iIJw0Vj?=
- =?us-ascii?Q?9npw1kbDVWw+Uq4FWiuZ4TaChaASghvsvVSyZoTl5kwCgYJMHTfLtmErqX1+?=
- =?us-ascii?Q?wARO/is/6y6G4z0ZNcKYswUEUPuVKhBZxghWAoAacIdiJJqLDIcFAynBL++R?=
- =?us-ascii?Q?AOqwuOptmiAhjJM7Wvw=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90c2cc65-335d-421b-fc67-08dc0709ba49
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2023 18:29:14.2933
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nBzqDje0MZ7S9t+ou6A/REfesmugsM5eLq7YJntk1dFAd5uuZJbb/MsX0r5Vi5GsGeFUzyFoF20l/pBX8YxDng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8271
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+From: Johan Jonker <jbx6244@gmail.com>
+Subject: [PATCH v3 1/2] ARM: dts: rockchip: add gpio-ranges property to gpio
+ nodes
+To: heiko@sntech.de
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, kever.yang@rock-chips.com, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add iMX95 EP function support and add 64bit address support. Internal bus
-bridge for PCI support 64bit dma address in iMX95. So set call
-dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64)).
+Add a gpio-ranges property to Rockchip gpio nodes similar to
+rk356x/rk3588 to be independent from aliases and probe order.
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Reviewed-by: Kever Yang <kever.yang@rock-chips.com>
 ---
 
-Notes:
-    Change from v3 to v4
-    - change align to 4k for imx95
-    Change from v1 to v3
-    - new patches at v3
+Changed V3:
+  reword
+  rebase to new Rockchip directory
+  remove unknown properties
+---
+ arch/arm/boot/dts/rockchip/rk3036.dtsi  | 3 +++
+ arch/arm/boot/dts/rockchip/rk3066a.dtsi | 6 ++++++
+ arch/arm/boot/dts/rockchip/rk3128.dtsi  | 4 ++++
+ arch/arm/boot/dts/rockchip/rk3188.dtsi  | 4 ++++
+ arch/arm/boot/dts/rockchip/rk322x.dtsi  | 4 ++++
+ arch/arm/boot/dts/rockchip/rk3288.dtsi  | 9 +++++++++
+ arch/arm/boot/dts/rockchip/rv1108.dtsi  | 4 ++++
+ arch/arm/boot/dts/rockchip/rv1126.dtsi  | 5 +++++
+ 8 files changed, 39 insertions(+)
 
- drivers/pci/controller/dwc/pci-imx6.c | 45 +++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+diff --git a/arch/arm/boot/dts/rockchip/rk3036.dtsi b/arch/arm/boot/dts/rockchip/rk3036.dtsi
+index 2b00109bea6a..6e5028b6dbfa 100644
+--- a/arch/arm/boot/dts/rockchip/rk3036.dtsi
++++ b/arch/arm/boot/dts/rockchip/rk3036.dtsi
+@@ -593,6 +593,7 @@ gpio0: gpio@2007c000 {
+ 			clocks = <&cru PCLK_GPIO0>;
 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 6a58fd63a9dd2..00ec59867c17b 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -75,6 +75,7 @@ enum imx6_pcie_variants {
- 	IMX8MQ_EP,
- 	IMX8MM_EP,
- 	IMX8MP_EP,
-+	IMX95_EP,
- };
- 
- #define IMX6_PCIE_FLAG_IMX6_PHY			BIT(0)
-@@ -84,6 +85,7 @@ enum imx6_pcie_variants {
- #define IMX6_PCIE_FLAG_HAS_APP_RESET		BIT(4)
- #define IMX6_PCIE_FLAG_HAS_PHY_RESET		BIT(5)
- #define IMX6_PCIE_FLAG_HAS_SERDES		BIT(6)
-+#define IMX6_PCIE_FLAG_SUPPORT_64BIT		BIT(7)
- 
- #define imx6_check_flag(pci, val)     (pci->drvdata->flags & val)
- 
-@@ -620,6 +622,7 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
- 		break;
- 	case IMX7D:
- 	case IMX95:
-+	case IMX95_EP:
- 		break;
- 	case IMX8MM:
- 	case IMX8MM_EP:
-@@ -1063,6 +1066,23 @@ static const struct pci_epc_features imx8m_pcie_epc_features = {
- 	.align = SZ_64K,
- };
- 
-+/*
-+ * BAR#	| Default BAR enable	| Default BAR Type	| Default BAR Size	| BAR Sizing Scheme
-+ * ================================================================================================
-+ * BAR0	| Enable		| 64-bit		| 1 MB			| Programmable Size
-+ * BAR1	| Disable		| 32-bit		| 64 KB			| Fixed Size
-+ *	| (BAR0 is 64-bit)	| if BAR0 is 32-bit	|			| As Bar0 is 64bit
-+ * BAR2	| Enable		| 32-bit		| 1 MB			| Programmable Size
-+ * BAR3	| Enable		| 32-bit		| 64 KB			| Programmable Size
-+ * BAR4	| Enable		| 32-bit		| 1M			| Programmable Size
-+ * BAR5	| Enable		| 32-bit		| 64 KB			| Programmable Size
-+ */
-+static const struct pci_epc_features imx95_pcie_epc_features = {
-+	.msi_capable = true,
-+	.bar_fixed_size[1] = SZ_64K,
-+	.align = SZ_4K,
-+};
-+
- static const struct pci_epc_features*
- imx6_pcie_ep_get_features(struct dw_pcie_ep *ep)
- {
-@@ -1105,6 +1125,14 @@ static int imx6_add_pcie_ep(struct imx6_pcie *imx6_pcie,
- 
- 	pci->dbi_base2 = pci->dbi_base + pcie_dbi2_offset;
- 
-+	/*
-+	 * db2 information should fetch from dtb file. dw_pcie_ep_init() can get dbi_base2 from
-+	 * "dbi2" if pci->dbi_base2 is NULL. All code related pcie_dbi2_offset should be removed
-+	 * after all dts added "dbi2" reg.
-+	 */
-+	if (imx6_pcie->drvdata->variant == IMX95_EP)
-+		pci->dbi_base2 = NULL;
-+
- 	ret = dw_pcie_ep_init(ep);
- 	if (ret) {
- 		dev_err(dev, "failed to initialize endpoint\n");
-@@ -1355,6 +1383,9 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 					     "unable to find iomuxc registers\n");
- 	}
- 
-+	if (imx6_check_flag(imx6_pcie, IMX6_PCIE_FLAG_SUPPORT_64BIT))
-+		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
-+
- 	/* Grab PCIe PHY Tx Settings */
- 	if (of_property_read_u32(node, "fsl,tx-deemph-gen1",
- 				 &imx6_pcie->tx_deemph_gen1))
-@@ -1557,6 +1588,19 @@ static const struct imx6_pcie_drvdata drvdata[] = {
- 		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
- 		.epc_features = &imx8m_pcie_epc_features,
- 	},
-+	[IMX95_EP] = {
-+		.variant = IMX95_EP,
-+		.flags = IMX6_PCIE_FLAG_HAS_SERDES |
-+			 IMX6_PCIE_FLAG_SUPPORT_64BIT,
-+		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_aux"},
-+		.ltssm_off = IMX95_PE0_GEN_CTRL_3,
-+		.ltssm_mask = IMX95_PCIE_LTSSM_EN,
-+		.mode_off[0]  = IMX95_PE0_GEN_CTRL_1,
-+		.mode_mask[0] = IMX95_PCIE_DEVICE_TYPE,
-+		.init_phy = imx95_pcie_init_phy,
-+		.epc_features = &imx95_pcie_epc_features,
-+		.mode = DW_PCIE_EP_TYPE,
-+	},
- };
- 
- static const struct of_device_id imx6_pcie_of_match[] = {
-@@ -1571,6 +1615,7 @@ static const struct of_device_id imx6_pcie_of_match[] = {
- 	{ .compatible = "fsl,imx8mq-pcie-ep", .data = &drvdata[IMX8MQ_EP], },
- 	{ .compatible = "fsl,imx8mm-pcie-ep", .data = &drvdata[IMX8MM_EP], },
- 	{ .compatible = "fsl,imx8mp-pcie-ep", .data = &drvdata[IMX8MP_EP], },
-+	{ .compatible = "fsl,imx95-pcie-ep", .data = &drvdata[IMX95_EP], },
- 	{},
- };
- 
--- 
-2.34.1
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 0 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -606,6 +607,7 @@ gpio1: gpio@20080000 {
+ 			clocks = <&cru PCLK_GPIO1>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 32 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -619,6 +621,7 @@ gpio2: gpio@20084000 {
+ 			clocks = <&cru PCLK_GPIO2>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 64 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+diff --git a/arch/arm/boot/dts/rockchip/rk3066a.dtsi b/arch/arm/boot/dts/rockchip/rk3066a.dtsi
+index 30139f21de64..a4962b6b3f4c 100644
+--- a/arch/arm/boot/dts/rockchip/rk3066a.dtsi
++++ b/arch/arm/boot/dts/rockchip/rk3066a.dtsi
+@@ -285,6 +285,7 @@ gpio0: gpio@20034000 {
+ 			clocks = <&cru PCLK_GPIO0>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 0 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -298,6 +299,7 @@ gpio1: gpio@2003c000 {
+ 			clocks = <&cru PCLK_GPIO1>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 32 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -311,6 +313,7 @@ gpio2: gpio@2003e000 {
+ 			clocks = <&cru PCLK_GPIO2>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 64 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -324,6 +327,7 @@ gpio3: gpio@20080000 {
+ 			clocks = <&cru PCLK_GPIO3>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 96 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -337,6 +341,7 @@ gpio4: gpio@20084000 {
+ 			clocks = <&cru PCLK_GPIO4>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 128 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -350,6 +355,7 @@ gpio6: gpio@2000a000 {
+ 			clocks = <&cru PCLK_GPIO6>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 192 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+diff --git a/arch/arm/boot/dts/rockchip/rk3128.dtsi b/arch/arm/boot/dts/rockchip/rk3128.dtsi
+index e2264c40b924..d66fcf12032e 100644
+--- a/arch/arm/boot/dts/rockchip/rk3128.dtsi
++++ b/arch/arm/boot/dts/rockchip/rk3128.dtsi
+@@ -712,6 +712,7 @@ gpio0: gpio@2007c000 {
+ 			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&cru PCLK_GPIO0>;
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 0 32>;
+ 			#gpio-cells = <2>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -723,6 +724,7 @@ gpio1: gpio@20080000 {
+ 			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&cru PCLK_GPIO1>;
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 32 32>;
+ 			#gpio-cells = <2>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -734,6 +736,7 @@ gpio2: gpio@20084000 {
+ 			interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&cru PCLK_GPIO2>;
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 64 32>;
+ 			#gpio-cells = <2>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -745,6 +748,7 @@ gpio3: gpio@20088000 {
+ 			interrupts = <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&cru PCLK_GPIO3>;
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 96 32>;
+ 			#gpio-cells = <2>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+diff --git a/arch/arm/boot/dts/rockchip/rk3188.dtsi b/arch/arm/boot/dts/rockchip/rk3188.dtsi
+index 44b54af0bbf9..6677e4a10e5d 100644
+--- a/arch/arm/boot/dts/rockchip/rk3188.dtsi
++++ b/arch/arm/boot/dts/rockchip/rk3188.dtsi
+@@ -231,6 +231,7 @@ gpio0: gpio@2000a000 {
+ 			clocks = <&cru PCLK_GPIO0>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 0 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -244,6 +245,7 @@ gpio1: gpio@2003c000 {
+ 			clocks = <&cru PCLK_GPIO1>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 32 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -257,6 +259,7 @@ gpio2: gpio@2003e000 {
+ 			clocks = <&cru PCLK_GPIO2>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 64 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -270,6 +273,7 @@ gpio3: gpio@20080000 {
+ 			clocks = <&cru PCLK_GPIO3>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 96 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+diff --git a/arch/arm/boot/dts/rockchip/rk322x.dtsi b/arch/arm/boot/dts/rockchip/rk322x.dtsi
+index 831561fc1814..0d4f9957b99b 100644
+--- a/arch/arm/boot/dts/rockchip/rk322x.dtsi
++++ b/arch/arm/boot/dts/rockchip/rk322x.dtsi
+@@ -959,6 +959,7 @@ gpio0: gpio@11110000 {
+ 			clocks = <&cru PCLK_GPIO0>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 0 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -972,6 +973,7 @@ gpio1: gpio@11120000 {
+ 			clocks = <&cru PCLK_GPIO1>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 32 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -985,6 +987,7 @@ gpio2: gpio@11130000 {
+ 			clocks = <&cru PCLK_GPIO2>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 64 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -998,6 +1001,7 @@ gpio3: gpio@11140000 {
+ 			clocks = <&cru PCLK_GPIO3>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 96 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+diff --git a/arch/arm/boot/dts/rockchip/rk3288.dtsi b/arch/arm/boot/dts/rockchip/rk3288.dtsi
+index ead343dc3df1..c5550aae4ed8 100644
+--- a/arch/arm/boot/dts/rockchip/rk3288.dtsi
++++ b/arch/arm/boot/dts/rockchip/rk3288.dtsi
+@@ -1461,6 +1461,7 @@ gpio0: gpio@ff750000 {
+ 			clocks = <&cru PCLK_GPIO0>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 0 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -1474,6 +1475,7 @@ gpio1: gpio@ff780000 {
+ 			clocks = <&cru PCLK_GPIO1>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 32 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -1487,6 +1489,7 @@ gpio2: gpio@ff790000 {
+ 			clocks = <&cru PCLK_GPIO2>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 64 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -1500,6 +1503,7 @@ gpio3: gpio@ff7a0000 {
+ 			clocks = <&cru PCLK_GPIO3>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 96 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -1513,6 +1517,7 @@ gpio4: gpio@ff7b0000 {
+ 			clocks = <&cru PCLK_GPIO4>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 128 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -1526,6 +1531,7 @@ gpio5: gpio@ff7c0000 {
+ 			clocks = <&cru PCLK_GPIO5>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 160 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -1539,6 +1545,7 @@ gpio6: gpio@ff7d0000 {
+ 			clocks = <&cru PCLK_GPIO6>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 192 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -1552,6 +1559,7 @@ gpio7: gpio@ff7e0000 {
+ 			clocks = <&cru PCLK_GPIO7>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 224 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -1565,6 +1573,7 @@ gpio8: gpio@ff7f0000 {
+ 			clocks = <&cru PCLK_GPIO8>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 256 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+diff --git a/arch/arm/boot/dts/rockchip/rv1108.dtsi b/arch/arm/boot/dts/rockchip/rv1108.dtsi
+index abf3006f0a84..d12b97ee7588 100644
+--- a/arch/arm/boot/dts/rockchip/rv1108.dtsi
++++ b/arch/arm/boot/dts/rockchip/rv1108.dtsi
+@@ -602,6 +602,7 @@ gpio0: gpio@20030000 {
+ 			clocks = <&cru PCLK_GPIO0_PMU>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 0 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -615,6 +616,7 @@ gpio1: gpio@10310000 {
+ 			clocks = <&cru PCLK_GPIO1>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 32 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -628,6 +630,7 @@ gpio2: gpio@10320000 {
+ 			clocks = <&cru PCLK_GPIO2>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 64 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+@@ -641,6 +644,7 @@ gpio3: gpio@10330000 {
+ 			clocks = <&cru PCLK_GPIO3>;
+
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 96 32>;
+ 			#gpio-cells = <2>;
+
+ 			interrupt-controller;
+diff --git a/arch/arm/boot/dts/rockchip/rv1126.dtsi b/arch/arm/boot/dts/rockchip/rv1126.dtsi
+index bb603cae13df..71d091af6395 100644
+--- a/arch/arm/boot/dts/rockchip/rv1126.dtsi
++++ b/arch/arm/boot/dts/rockchip/rv1126.dtsi
+@@ -569,6 +569,7 @@ gpio0: gpio@ff460000 {
+ 			interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&pmucru PCLK_GPIO0>, <&pmucru DBCLK_GPIO0>;
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 0 32>;
+ 			#gpio-cells = <2>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -580,6 +581,7 @@ gpio1: gpio@ff620000 {
+ 			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&cru PCLK_GPIO1>, <&cru DBCLK_GPIO1>;
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 32 32>;
+ 			#gpio-cells = <2>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -591,6 +593,7 @@ gpio2: gpio@ff630000 {
+ 			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&cru PCLK_GPIO2>, <&cru DBCLK_GPIO2>;
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 64 32>;
+ 			#gpio-cells = <2>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -602,6 +605,7 @@ gpio3: gpio@ff640000 {
+ 			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&cru PCLK_GPIO3>, <&cru DBCLK_GPIO3>;
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 96 32>;
+ 			#gpio-cells = <2>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -613,6 +617,7 @@ gpio4: gpio@ff650000 {
+ 			interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&cru PCLK_GPIO4>, <&cru DBCLK_GPIO4>;
+ 			gpio-controller;
++			gpio-ranges = <&pinctrl 0 128 32>;
+ 			#gpio-cells = <2>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+--
+2.39.2
 
 
