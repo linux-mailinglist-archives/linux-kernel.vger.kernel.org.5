@@ -1,64 +1,43 @@
-Return-Path: <linux-kernel+bounces-12497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A452481F5A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:50:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCC3C81F5BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:57:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C3B61F22681
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 07:50:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8235D1F21C2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 07:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E6515393;
-	Thu, 28 Dec 2023 07:49:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 595626129;
+	Thu, 28 Dec 2023 07:56:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ir6VXvSj"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ptxRr5i8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E4F63AD
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:49:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3366e78d872so5420457f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 23:49:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703749789; x=1704354589; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DPH9AYxPTCLROk2PqQ2BSAenaIiGgIq9psooBBXVlnA=;
-        b=Ir6VXvSj6Q2YmuuXfEtr7zhoYnTM/agKZmxicD+QkP7KPa076YuFKZpobYgDjHYecU
-         AqpSd/sZR88FI/TSbbvW3pwknSH3VTrCahBpLFDkzpJlIU0I7/6rzBPBajt7zcZRUVPf
-         NTVovPo1THNtz2Nm87IXC4I3C4MJNP0/EfS+Vm5AJC8YdDIHsyr35aG76EYF8AfdBgdt
-         KrZWCCZIVWfTnsKaXQmjdkLpdvqZmackD3hjdvVxct+jxWRa6n811ADMusJJHRKV38hI
-         8vWhLyL9+PcejwJkG/zlK4UxsFREBTYMvBtwHyGpqf8yHQAuFPZoV2rJ8M0FNNxU4NZ4
-         arfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703749789; x=1704354589;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DPH9AYxPTCLROk2PqQ2BSAenaIiGgIq9psooBBXVlnA=;
-        b=IEMaSw7IgR5utn2DNV1Hh4MblQSL4ZRtyUcWjTBSx7s5/hPReztZYa/oBp3zwQblah
-         IVTmFCtYzON8EUvRjs2OoOs//euGTwiHYI5qr0gSCqDlapSLLRIfNKGSCo/cluO71+ea
-         HCIde461z4MEKCT8I7+Lm4YkvRhTDXJA0tWapZPUppT8mibaY+vNo+GClIzaW7uIKZNe
-         2laOtzPf1PaxMQILaMUN9Iz8svknIY4UIE3zmBQNAvw6Qyp/UtVlJGH4owgLtO7t7uQR
-         uAVwnrmfLk4qdpExJ8bDa8nnkWk3do+WFd5LvNVcbN3CoAEy7VPGk6kCpDjkyYPOWOPd
-         yDzw==
-X-Gm-Message-State: AOJu0YxeBiU0wUysaqfA/wArrsOCge6zNlE4ukySy1741H2Cq6Sdoh96
-	qbry37NR1VuHFXSSk5Az7kgWIeLRPsw+pA==
-X-Google-Smtp-Source: AGHT+IHuuf6SKbSYGy72wo6zNB6tHC+YGDelclJWtS6iyk2u5tfkq2RRgqJShnKZ27R45rO7VF6WWQ==
-X-Received: by 2002:a05:600c:4b1b:b0:40d:27e9:b5ca with SMTP id i27-20020a05600c4b1b00b0040d27e9b5camr2529125wmp.365.1703749789063;
-        Wed, 27 Dec 2023 23:49:49 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id n2-20020a05600c3b8200b0040d5ab35657sm7908475wms.4.2023.12.27.23.49.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Dec 2023 23:49:48 -0800 (PST)
-Message-ID: <68b64171-6548-44b0-b5c9-8a5343b57828@linaro.org>
-Date: Thu, 28 Dec 2023 07:49:46 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BCA55666;
+	Thu, 28 Dec 2023 07:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703750200; x=1704355000; i=markus.elfring@web.de;
+	bh=q8LQkX8WL0q3ovc2/HmVfjQfSvCey/AWBJG2oLVNE7I=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=ptxRr5i80CUS53R4ILu8PrPgbo46hMHfZ/sA+iaCGr9Su33ztPyQ+z4Dpn/WzIRY
+	 kvhyiQXULXMpUnKZKXr1uFq4o0eGvRip4Wd8YCuzgFL77mswS4WhsOipzIeFU2CRt
+	 2O1FWjCpO+zHzQDVvU7hrM213LBWbR858Rc/QdDas0nM0s5k47DJ5341VaCc2qHH3
+	 tVtnskOnfrwIwEagqXZXQhGPN5PYw7c52k7jna+GFpQeZ2Hr2kxd6LajbzQ65k4/y
+	 QYqh9AT8JwqGXiDoLas5rQT1IaE3pu/LbJMXmpFQbouxxTk4wapUxttHt5FoL8LdA
+	 Gs88uK2PSl4qc+2OpA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MGQGF-1rSMgn2cqT-00GzyC; Thu, 28
+ Dec 2023 08:56:40 +0100
+Message-ID: <5db36d2b-afe0-4027-b22e-ded163a409be@web.de>
+Date: Thu, 28 Dec 2023 08:56:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,149 +45,107 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/13] dt-bindings: clock: google,gs101-clock: add PERIC0
- clock management unit
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Peter Griffin <peter.griffin@linaro.org>
-Cc: sboyd@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
- alim.akhtar@samsung.com, gregkh@linuxfoundation.org, jirislaby@kernel.org,
- catalin.marinas@arm.com, will@kernel.org, s.nawrocki@samsung.com,
- tomasz.figa@gmail.com, cw00.choi@samsung.com, arnd@arndb.de,
- semen.protsenko@linaro.org, andre.draszik@linaro.org, saravanak@google.com,
- willmcvicker@google.com, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
- <20231214105243.3707730-3-tudor.ambarus@linaro.org>
- <20231220150726.GA223267-robh@kernel.org>
- <173b06ab-2518-49ee-a67f-85256bc5b6a7@linaro.org>
- <425a228e-b2d3-4b19-9bcb-6ee1a90cd2ef@linaro.org>
- <7b39f962-8040-48b0-8580-abf5970bfad0@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <7b39f962-8040-48b0-8580-abf5970bfad0@linaro.org>
+To: chrome-platform@lists.linux.dev, kernel-janitors@vger.kernel.org,
+ Benson Leung <bleung@chromium.org>, =?UTF-8?B?R8O8bnRlciBSw7Zjaw==?=
+ <groeck@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] platform/chrome: cros_ec_i2c: Less function calls in
+ cros_ec_cmd_xfer_i2c() after error detection
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:i3MXYHdK2HPaWLop5uSkw24RVPcYPI6DyUco+noAgA7fgxbj0ZP
+ vPWTFh4o8cLcjZkOlDl7OmmTnwkkAhL8Oey3a5GSdD9nuEccMJFBXp7RG53Jp1m66mr8LTU
+ yvyYJda07b4I0Ooj+ZBt2OtGDK/rN6lNCPteRh2x2AgErC6u3VhSmCsJUDkm0UUhgB87wqq
+ /vzHvHZOqrtbQT9HhNZcw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:mA7BOUGQ7iA=;EGuXqaI3Y1WHScJysMcyY4dztiV
+ 1x9BrZAZgJ7f6W9OqI4alz5YS4wk9bqfDCL4AEgml+vEplXy9NFNLxmrKpjc6+p9DOfwEHT5S
+ 2o7X9SaPf1neB5JX9DdOLGoNS4BnOhb1MSRm2PBLAexz4yoVgYK8HoLO7ROxYVorxGJMfXUid
+ v8H5JCSE5tNBGNeWiRryZ6zlxCvLdnmdG0VxMyf7j7pUkaGJXbADDeJRgXLAp84OnFldTnGzC
+ 7EMMAlVk8rdm4DnunYDQ23uUe7F9MybNtE713N9YoilRrb+Wvg2P3+VRMjpFyDwlkvGzJ0R8C
+ FNUl8fGTGtPvxnK/buJWtPLgTmUVfz8DItiffW7PA8ucqNVeuMEL9fRFeWF9IeJwPxvduDKLg
+ 6uPSPEQNei74EkzSSuJgnkYieTXAUy5yfQVejOFroYvIxydj/6p4727nF56IRL9njZzzqusoH
+ jmNfzbt/hHePXqhee/K9RezM6RMtyG6sdQKtl/NOHefIYSZ4pX+TrqpXlCURn+kYufyEmO6r9
+ aa+IvagxEyiYZu7NJN6m8lsPvyfyIlX0IZt5DJfUjFZ4HAwyFKup3boHZpUupuoq8WXSxAZ2p
+ gh5uMz5QjUkrkeERkGLenAR7PlOaYkVguGIKaJTd7ncCTHVYlS5jCt0uxMlC9vhJhyvah+CYM
+ HwJ12PZ5sQ/1avh1wEiKQc3FyDpGAa0SLLBGyXM4tZxGwHxcgrgPwrwTFczThCEkFIZ+iHTJQ
+ Mlc+e8oKQ1Ksk1lGAO7J9XzQvB52hu4tI+GLVbFtkq+YdXVF4KgJKE44HrU17vpUYQedDV2o0
+ mzLw4Tr+IvLUWMB3uSfm0yQ+AfQos4lKzw7UT/ogqlHfLZeKbuWA+FZ49IN1AZxJDxtAguY+7
+ 4cKz9/X1WqLE3WqZAUYYoxSV71xoHjkJNX2L2J9VpMoQ6E444P7/wG5txNlIk5RU+9BEFDfSt
+ HeaAetIoK2IJnjLXL7OcrTxzRIY=
 
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 28 Dec 2023 08:36:49 +0100
 
+The kfree() function was called in up to two cases by
+the cros_ec_cmd_xfer_i2c() function during error handling
+even if the passed variable contained a null pointer.
+This issue was detected by using the Coccinelle software.
 
-On 12/28/23 07:30, Krzysztof Kozlowski wrote:
-> On 27/12/2023 13:38, Tudor Ambarus wrote:
->> Hi, Rob,
->>
->> On 12/21/23 07:20, Tudor Ambarus wrote:
->>>
->>>
->>> On 12/20/23 15:07, Rob Herring wrote:
->>>> On Thu, Dec 14, 2023 at 10:52:32AM +0000, Tudor Ambarus wrote:
->>>>> Add dt-schema documentation for the Connectivity Peripheral 0 (PERIC0)
->>>>> clock management unit.
->>>>>
->>>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->>>>> ---
->>>>>  .../bindings/clock/google,gs101-clock.yaml    | 25 +++++-
->>>>>  include/dt-bindings/clock/google,gs101.h      | 86 +++++++++++++++++++
->>>>>  2 files changed, 109 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
->>>>> index 3eebc03a309b..ba54c13c55bc 100644
->>>>> --- a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
->>>>> +++ b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
->>>>> @@ -30,14 +30,15 @@ properties:
->>>>>        - google,gs101-cmu-top
->>>>>        - google,gs101-cmu-apm
->>>>>        - google,gs101-cmu-misc
->>>>> +      - google,gs101-cmu-peric0
->>>>>  
->>>>>    clocks:
->>>>>      minItems: 1
->>>>> -    maxItems: 2
->>>>> +    maxItems: 3
->>>>>  
->>>>>    clock-names:
->>>>>      minItems: 1
->>>>> -    maxItems: 2
->>>>> +    maxItems: 3
->>>>>  
->>>>>    "#clock-cells":
->>>>>      const: 1
->>>>> @@ -88,6 +89,26 @@ allOf:
->>>>>              - const: dout_cmu_misc_bus
->>>>>              - const: dout_cmu_misc_sss
->>>>>  
->>>>> +  - if:
->>>>> +      properties:
->>>>> +        compatible:
->>>>> +          contains:
->>>>> +            const: google,gs101-cmu-peric0
->>>>> +
->>>>> +    then:
->>>>> +      properties:
->>>>> +        clocks:
->>>>> +          items:
->>>>> +            - description: External reference clock (24.576 MHz)
->>>>> +            - description: Connectivity Peripheral 0 bus clock (from CMU_TOP)
->>>>> +            - description: Connectivity Peripheral 0 IP clock (from CMU_TOP)
->>>>> +
->>>>> +        clock-names:
->>>>> +          items:
->>>>> +            - const: oscclk
->>>>> +            - const: dout_cmu_peric0_bus
->>>>> +            - const: dout_cmu_peric0_ip
->>>>
->>>> 'bus' and 'ip' are sufficient because naming is local to the module. The 
->>>> same is true on 'dout_cmu_misc_bus'. As that has not made a release, 
->>>> please fix all of them.
->>>>
->>>
->>> Ok, will fix them shortly. Thanks, Rob!
->>
->> I tried your suggestion at
->> https://lore.kernel.org/linux-arm-kernel/c6cc6e74-6c3d-439b-8dc1-bc50a88a3d8f@linaro.org/
->>
->> and we noticed that we'd have to update the clock driver as well.
->> These CMUs set the DT clock-name of the parent clock in the driver in
->> struct samsung_cmu_info::clk_name[]. The driver then tries to enable the
->> parent clock based on the clock-name in exynos_arm64_register_cmu().
->>
->> In order to enable the parent clock of the CMU the following would be
->> needed in the driver:
->>
->> diff --git a/drivers/clk/samsung/clk-gs101.c
->> b/drivers/clk/samsung/clk-gs101.c
->> index 68a27b78b00b..e91836ea3a98 100644
->> --- a/drivers/clk/samsung/clk-gs101.c
->> +++ b/drivers/clk/samsung/clk-gs101.c
->> @@ -2476,7 +2476,7 @@ static const struct samsung_cmu_info misc_cmu_info
->> __initconst = {
->>         .nr_clk_ids             = CLKS_NR_MISC,
->>         .clk_regs               = misc_clk_regs,
->>         .nr_clk_regs            = ARRAY_SIZE(misc_clk_regs),
->> -       .clk_name               = "dout_cmu_misc_bus",
->> +       .clk_name               = "bus",
-> 
-> Yes, obviously, the names are used...
-> 
-> The entire point was that a week ago Rob said:
-> "As that has not made a release,  please fix all of them."
-> but if you keep waiting, like 8 days for this simple patch, his
-> statement is not true anymore.
-> 
+* Adjust jump targets.
 
-I saw the problem at the end of Thursday, reported it, and after that I
-entered vacation.
+* Delete two initialisations which became unnecessary
+  with this refactoring.
 
-> The only point was to send a fix *the next day*, so I would apply it and
-> send further. You kind of solved that problem by waiting entire week for
-> a simple driver and DTS change.
-> 
-Why can't we queue the name fix as a patch for v6.8-rc1? Of course if
-you consider that the change is worth it. As I said, I lean towards not
-changing it.
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/platform/chrome/cros_ec_i2c.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-Thanks,
-ta
+diff --git a/drivers/platform/chrome/cros_ec_i2c.c b/drivers/platform/chro=
+me/cros_ec_i2c.c
+index e29c51cbfd71..2a6ec623e352 100644
+=2D-- a/drivers/platform/chrome/cros_ec_i2c.c
++++ b/drivers/platform/chrome/cros_ec_i2c.c
+@@ -193,8 +193,7 @@ static int cros_ec_cmd_xfer_i2c(struct cros_ec_device =
+*ec_dev,
+ 	int i;
+ 	int len;
+ 	int packet_len;
+-	u8 *out_buf =3D NULL;
+-	u8 *in_buf =3D NULL;
++	u8 *in_buf, *out_buf;
+ 	u8 sum;
+ 	struct i2c_msg i2c_msg[2];
+
+@@ -210,7 +209,8 @@ static int cros_ec_cmd_xfer_i2c(struct cros_ec_device =
+*ec_dev,
+ 	packet_len =3D msg->insize + 3;
+ 	in_buf =3D kzalloc(packet_len, GFP_KERNEL);
+ 	if (!in_buf)
+-		goto done;
++		goto check_command;
++
+ 	i2c_msg[1].len =3D packet_len;
+ 	i2c_msg[1].buf =3D (char *)in_buf;
+
+@@ -221,7 +221,8 @@ static int cros_ec_cmd_xfer_i2c(struct cros_ec_device =
+*ec_dev,
+ 	packet_len =3D msg->outsize + 4;
+ 	out_buf =3D kzalloc(packet_len, GFP_KERNEL);
+ 	if (!out_buf)
+-		goto done;
++		goto free_in_buf;
++
+ 	i2c_msg[0].len =3D packet_len;
+ 	i2c_msg[0].buf =3D (char *)out_buf;
+
+@@ -278,8 +279,10 @@ static int cros_ec_cmd_xfer_i2c(struct cros_ec_device=
+ *ec_dev,
+
+ 	ret =3D len;
+ done:
+-	kfree(in_buf);
+ 	kfree(out_buf);
++free_in_buf:
++	kfree(in_buf);
++check_command:
+ 	if (msg->command =3D=3D EC_CMD_REBOOT_EC)
+ 		msleep(EC_REBOOT_DELAY_MS);
+
+=2D-
+2.43.0
+
 
