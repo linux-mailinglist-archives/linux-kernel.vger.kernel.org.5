@@ -1,235 +1,376 @@
-Return-Path: <linux-kernel+bounces-12516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AD3781F5FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:32:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 699A381F601
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:37:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EE631C22731
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:32:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E8871C22858
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:37:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0849A63AD;
-	Thu, 28 Dec 2023 08:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C31163AB;
+	Thu, 28 Dec 2023 08:37:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cXvZ/F47"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rfe7G5ey"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2749363AB;
-	Thu, 28 Dec 2023 08:32:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703752345; x=1735288345;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=UlOIK0NzjoP4QwOxv3OG6ASDRYXZpSKU83IxWYl6Zhg=;
-  b=cXvZ/F47w/KZvYc+JLJeZiH238MkJYx6Bxy+KfGYGmWM66dZrn7LuF77
-   xnsm7Hcm5cXlWMS3EI2yzMgjoXJhV0bbZaRM0EbD5h3X9badOhR+rl+h5
-   Pz+am8Y5mZ4MCoWXwI8gsfUg0D+EdGQLIUjEt+WECh3LCyA++A93eCR2f
-   IaCfabcfvJAazq0AdwJh2yB1cXDtskleBez/TQ8Yn3FCzMQHVTDF76Cqp
-   fIMknZFlszWcaTdCaJcn/hBfajfx/fxx5dNjCeiXCgFaB8+NAe0uCMRQ9
-   92LgqKjP4JNy47g5Tm8PVFkQqVfotKlCjyMLITrKNhtICittFaRCCDOeQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="427699012"
-X-IronPort-AV: E=Sophos;i="6.04,311,1695711600"; 
-   d="scan'208";a="427699012"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 00:32:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="781983235"
-X-IronPort-AV: E=Sophos;i="6.04,311,1695711600"; 
-   d="scan'208";a="781983235"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Dec 2023 00:32:23 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 28 Dec 2023 00:32:23 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 28 Dec 2023 00:32:23 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 28 Dec 2023 00:32:23 -0800
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 28 Dec 2023 00:32:22 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hQfHFQM+XTbdIjbUsWl2ovxine7jUMwnUOJWqYJllLE42OVYkS8ZH+kNFyaQIkGmv1holOlHOGgdaKovLxxRlvRk8x5jlbbBR7FXgS71QAFo9ZEaky7ggql9duGBOax92ub49QNKZHkr73BsmqCoPdBNSoaRG0S+a1Uo3JaJzo6dk3O+MjwamF/GnBFXquhiGMDEiH/kZ+MNPSDyWYA7slArvzf0D69LUJv4vUvctjECveMSqqtGD9BG245Z8lIcR2Bdt6WMbTOsiMhXw4SZ9NUa8zrpw1cYMuF6ro6VtOK1r1bp6KPP61Uc9mR7jS7SkRkmKejoxx/z/HgWWPAdFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=v2xwaxtn2RbEAEAPp1PZnWjjNVlF3szNYXx8Zr0JZhA=;
- b=gxkjj1stLfPR0+7NSngUzInJQcmS5+JbMLf3mrPYb2Rndl4k31Z3Otug4cbbYBDZtXCU8zD9i3NM8IK1dcDMHKntMDJHNPilK7KVAFQUnpA9RJlxdkW/hGsJ87N/GHBtqOZ4FocXoNDtceWL1rhg2vicdbOG5hIcAq1YamIca3tOSIPMWTamtOf0ucP4KmuZfdjPa9zU2pfS20rhecCK0kwfzO1p4+2gDz8YL7g+u0HLU8ap5KCeNnQvIaE2cFYeTmOJeUlr1Z5NSqga1HNItOnJVZtPNOFLFv4XN1yF9JkIxx0y6P2l58H3+R+QVvIqCNYQPicvpJyZwzyYNyJiVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by CH0PR11MB5474.namprd11.prod.outlook.com (2603:10b6:610:d5::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.20; Thu, 28 Dec
- 2023 08:32:20 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d%5]) with mapi id 15.20.7113.027; Thu, 28 Dec 2023
- 08:32:20 +0000
-Message-ID: <9be98837-b656-49e5-8ae6-d70ad2c073b4@intel.com>
-Date: Thu, 28 Dec 2023 16:35:13 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 09/10] iommufd: Add data structure for Intel VT-d
- stage-1 cache invalidation
-Content-Language: en-US
-To: "Tian, Kevin" <kevin.tian@intel.com>, "joro@8bytes.org" <joro@8bytes.org>,
-	"alex.williamson@redhat.com" <alex.williamson@redhat.com>, "jgg@nvidia.com"
-	<jgg@nvidia.com>, "robin.murphy@arm.com" <robin.murphy@arm.com>,
-	"baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
-CC: "cohuck@redhat.com" <cohuck@redhat.com>, "eric.auger@redhat.com"
-	<eric.auger@redhat.com>, "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "mjrosato@linux.ibm.com"
-	<mjrosato@linux.ibm.com>, "chao.p.peng@linux.intel.com"
-	<chao.p.peng@linux.intel.com>, "yi.y.sun@linux.intel.com"
-	<yi.y.sun@linux.intel.com>, "peterx@redhat.com" <peterx@redhat.com>,
-	"jasowang@redhat.com" <jasowang@redhat.com>,
-	"shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
-	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
- Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
-	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
-	<yan.y.zhao@intel.com>, "j.granados@samsung.com" <j.granados@samsung.com>
-References: <20231227161354.67701-1-yi.l.liu@intel.com>
- <20231227161354.67701-10-yi.l.liu@intel.com>
- <BN9PR11MB5276A53786CD3AF7F170E8B98C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
-From: Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <BN9PR11MB5276A53786CD3AF7F170E8B98C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR01CA0030.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::15) To DS0PR11MB7529.namprd11.prod.outlook.com
- (2603:10b6:8:141::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C062A5687
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 08:37:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c4480939-2596-5800-3070-25576c69d871@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1703752631;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bRFNzvntEOnWka4g7V2PQ0cq/lnTbxV0R+1OLRY1Y/M=;
+	b=rfe7G5eyI0jFAP8VRieoxC6WfLh/UmkpuJiMz0msTEtnYI5UTnwvCqPQPOsbHolpebPcC2
+	dXZlw24fFGFa7FDlbImVXgiOVcoBOElJpYBZfpk2fCMsIZ70LFxC8aDIzYwmllLHJkDsT1
+	lBYkUeQ+iPDEJV4VLkOESZlmxFBsXyA=
+Date: Thu, 28 Dec 2023 16:37:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|CH0PR11MB5474:EE_
-X-MS-Office365-Filtering-Correlation-Id: e06d89d4-0310-4b9e-8fb0-08dc077f8217
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kWniMSuxL3S2zDJx7/d+0O43FOy0wI0XvyGEXBKCQJSSK1ZQUE0q0CMh/RCbh76tjUUjJ9ify8UXIBCbCWzPgKikqDgsCDCvcZmHIGGYQdfN3x6aSGyWTNvd/nJNQRPTaUCBbusGvMJ9FgrhZc1b7GbUamRcQRd9EsZxPYZYLSPN0ykPAcHeLUeORySSp2nAo0ogFreRZLZGDwsWdL0sdJKLSdj3FXOjE77e70qsR0UWzrtA5uTRFCjwfPpR1eA1dXFptRUaJj+offWpm31QpSo7KFlYIKtD8JihtAv5CsP2SxQVhAiCYnkcgxuZ38LW0SX3GgwEZYzbdqL+I5nTaUHrOYGgm86gP0OQ3KJ/ONYvG+6T3yZE/ugaOcpAR80ZiSRaUhqBTCVTqse3c8Hmogiy0e0BUEk6kOklUsHZU0u/90Sgb1Ex6wdL31iR7z1i3gMVh0ZanFgGSMNceF5fS2nNqOb863LpsiXIIL/f0WHWu/zFlRJG3iD7GMvQsYMV1T60WS2aw4kayjCAMRu5jInza631Y3H1syFpuHw8JBgTkPg+J6wrfyP7nFA7+XvJL4eFgFj+No50UaenU8Z4dLDqC0Gb0qMXDGzUBm1v6w0E4jvMwc61vCHoOWqUA1bCvHacVyTUi+amECdPeJMyVw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(39860400002)(396003)(366004)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(31686004)(6512007)(6486002)(86362001)(4326008)(66556008)(66476007)(66946007)(53546011)(7416002)(82960400001)(6666004)(36756003)(2616005)(6506007)(41300700001)(316002)(2906002)(54906003)(31696002)(110136005)(478600001)(83380400001)(5660300002)(26005)(8676002)(8936002)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U3F0dFB6TXJPWlNBclROeGZyemRsWHlOTlJmV1B6QU0venNMcHpLVTIxb3h0?=
- =?utf-8?B?TllSVGhJKytoM21uWWZJN3dNcVh6TjJZanBQWEk3Z0xoaUdEOVlKNGN4OFhq?=
- =?utf-8?B?cG12YXpIeTRtK21ROXFabWJ4bGRGSTdnZkhGZVlPdElHZzd2MGx5MkFhN2dU?=
- =?utf-8?B?aGgrTzNxSDBtMDNSQUVyWEM1RERCYVY3azRMQ01mbEc2bFhxWXA3ajVkRWw0?=
- =?utf-8?B?aERzQitDWFg5UU5xeWphZ1haeWFhdlNtNmo5c0RDMWdJMENDWmRGYXFzc09n?=
- =?utf-8?B?MnFpTkl5ZzgrRm1XRjl5MVFMVDBpT2FHd0pOZHB3Tm93SXFnemlBY0JnWlRM?=
- =?utf-8?B?TUVlNU5jRENqY2VwUk4zdDFhWmQxMkJGTFliN0NaenFxOERqVmhSZmtLZk1s?=
- =?utf-8?B?eGlnK2NOUmZLQWQ1bUZQUGNEb2FiWHJDRDlUbzdkSThuMFRrMG5HdDNHZkcz?=
- =?utf-8?B?ZWd0Yi9uWmorYVJQMXg1djR4bytvRnZtSS91azhWeVVMS0wvYzdCdFN6ekZS?=
- =?utf-8?B?U3pVMUIxZFJJWit6TkZpNHRsY2kwSlJaNlVjeDdmcEhWMkVMWVdEL3hoZFk1?=
- =?utf-8?B?NnVPdFBaelh3bkEwTnVWcUpMeUFVbjVjNXlFTnhBaTE5Yko3N2JsSzV6eFdz?=
- =?utf-8?B?c2E1emdzbjJrS2J3QndMZTlYOUJRMzJWeTJmcHhSYzB5c2ZBcWorbW9jRmY5?=
- =?utf-8?B?dnlLbDJWRGpiWWd3QTBJcVYvSE1XL1RTeE9YQlpyaVg4MXA5eG9KZXNJOFZr?=
- =?utf-8?B?NnJmN3IySGN6cGVoNGVZVjBKYUhyL0k0M0FkQjZVYVJkRWl5cTMrem13dVUz?=
- =?utf-8?B?dFBvVS9WNlI2S0pqbyt4czhuVGszdWs5N0w3dDRrVEd2bWVpa1ZLL2dodklH?=
- =?utf-8?B?cUFzYlRKMU9SSGxMeC9WY2xxamh4NHo0TjJDRmgyZUhBS21NcHVkbkZWREY5?=
- =?utf-8?B?OUpQTWxYNVBZOFlOUXlWMWtYWUJDNWdUWEhxemowMGNxcHgyMmluVkNtMGlY?=
- =?utf-8?B?MEl5R3dQNk5jQ3BMMXhPQXcyc2VRYWR6b0tCM1VkNVZoTnp6bFBhV0NnN3ZV?=
- =?utf-8?B?Tmx4M09HZmZ5bU0wR2pGdEppTUk3UUdyMjJZNGtTR3Q2S3VoYjNaZzN4MmlZ?=
- =?utf-8?B?WWtoaGRWSlo4bWFtaUFHckZuVGNQS3RJdGJHL3pMWC9VajJUcTlXR1hrS0Fv?=
- =?utf-8?B?VWk1QVYyNGc1a2JlQmRXZ0dDQjVZUHB1aE5aZDBqbWFiamY0dS8zV0xvczNK?=
- =?utf-8?B?Skw3dkJwL1VyTUd5UjJ0c3BORWhCV005UjJ3YlpEeEVURGpjanpwd081ZU84?=
- =?utf-8?B?QW5zSHdVN2VRaEtCMGc4akNZMUo1S3hMaWRERHp0RXpRcVBXQ09vTmI1anN6?=
- =?utf-8?B?dHhrZjlpZ3FZNzExdW1mUlI3aEdyeTByOCtyQU9FWFJNSGI5a2VTZ2N4N050?=
- =?utf-8?B?eTBnWWJIRWc1RUsyTjRoYmYwalNYY1RWYVNJZnJoVlA4czlHNFBNVGdleTNN?=
- =?utf-8?B?dERqeGkzdzVFV2JpdVEzWFQ0ZUNLU3hHcVBFcy80NVoxSWx1b3o4VVpNeFUy?=
- =?utf-8?B?dlJhU0ZMVHVLUmh6b3hwT2pGZzRLRHNLSDhLNHRxMDFRK3l6R3VjaFZyNG53?=
- =?utf-8?B?NTdmYmxaVG5oSVJvNERQWkpHWHZZKytPMFFieDlMMWhWdWt1SERwc2M3MGtr?=
- =?utf-8?B?S2g1Ykx5TlZJWFdudURTOTVrK1lxUmlaVnkwM21WbWxEV1JlcEFUODYvNk4r?=
- =?utf-8?B?NWFFaW9SMGs4eDdGOXJqRjlBS3BiRFVkZXZPbW9FSHVnRlFLa1pFUGtubThu?=
- =?utf-8?B?YjVQNTB3dGIzK2NVMTYyWW5SSTl0Nm04aWg1R1F0ZjFlaktKV2FlbWtvdS9W?=
- =?utf-8?B?Qmpud0VZbGxhS1BXYkFqZExmNnY5N3lHRlFNK3BUNUlERERLRENxN2wrd0dz?=
- =?utf-8?B?SDJsMzhML3ZiNVBGaWZJOTlWZEpmNnV3TmtyZGd0OEszZlZCb01Pd204UnF3?=
- =?utf-8?B?SFZOd0xvYU1nTGRQTk5Kb1o1Qlg4TFlCejRTdVoydEtscmVmOXdpMEtlbEJF?=
- =?utf-8?B?UWxvMS9ONVBzeTR3bXdhMGNhaG9ScGErcGh5VDJCb1FaQUdGeEhSZUhFVG5z?=
- =?utf-8?Q?nyxJGW7048i+aP1b7MaN4ZHnn?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e06d89d4-0310-4b9e-8fb0-08dc077f8217
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Dec 2023 08:32:20.7964
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jQhk7LB6w+fwPKe74flYHL/0CqAGQO04hSs7RSW5qQp3m+HX+mjoUiq6XAHeLTcnhG2JF7UjA9I7v8E7EXPuJg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5474
-X-OriginatorOrg: intel.com
+Subject: Re: [PATCH net-next] net: phy: Cleanup struct mdio_driver_common
+Content-Language: en-US
+To: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Cc: andrew@lunn.ch, olteanv@gmail.com, hkallweit1@gmail.com,
+ linux@armlinux.org.uk, rmk+kernel@armlinux.org.uk, kabel@kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-phy@lists.infradead.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com
+References: <20231228072350.1294425-1-yajun.deng@linux.dev>
+ <95b7ee65-5661-6529-07d3-ce13968a3c25@intel.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <95b7ee65-5661-6529-07d3-ce13968a3c25@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2023/12/28 14:38, Tian, Kevin wrote:
->> From: Tian, Kevin
->> Sent: Thursday, December 28, 2023 2:38 PM
+
+On 2023/12/28 16:24, Przemek Kitszel wrote:
+> On 12/28/23 08:23, Yajun Deng wrote:
+>> The struct mdio_driver_common is a wrapper for driver-model structure,
+>> it contains device_driver and flags. There are only struct phy_driver
+>> and mdio_driver that use it. The flags is used to distinguish between
+>> struct phy_driver and mdio_driver.
 >>
->>> From: Liu, Yi L <yi.l.liu@intel.com>
->>> Sent: Thursday, December 28, 2023 12:14 AM
->>> +/**
->>> + * struct iommu_hwpt_vtd_s1_invalidate - Intel VT-d cache invalidation
->>> + *                                       (IOMMU_HWPT_INVALIDATE_DATA_VTD_S1)
->>> + * @addr: The start address of the range to be invalidated. It needs to
->>> + *        be 4KB aligned.
->>> + * @npages: Number of contiguous 4K pages to be invalidated.
->>> + * @flags: Combination of enum iommu_hwpt_vtd_s1_invalidate_flags
->>> + * @hw_error: One of enum iommu_hwpt_vtd_s1_invalidate_error
->>> + *
->>> + * The Intel VT-d specific invalidation data for user-managed stage-1 cache
->>> + * invalidation in nested translation. Userspace uses this structure to
->>> + * tell the impacted cache scope after modifying the stage-1 page table.
->>> + *
->>> + * Invalidating all the caches related to the page table by setting @addr
->>> + * to be 0 and @npages to be U64_MAX.
->>> + *
->>> + * The device TLB will be invalidated automatically if ATS is enabled.
->>> + *
->>> + * The @hw_error is meaningful when the entry is handled by the kernel.
->>> + * Check the entry_num output of IOMMU_HWPT_INVALIDATE ioctl to
->>> know the
->>> + * handled entries. @hw_error only covers the errors detected by
->> hardware.
->>> + * The software detected errors would go through the normal ioctl errno.
->>> + */
+>> We can test that if probe of device_driver is equal to phy_probe. This
+>> way, the struct mdio_driver_common is no longer needed, and struct
+>> phy_driver and usb_mdio_driver will be consistent with other driver
+>> structs.
 >>
->> * An entry is considered 'handled' after it passes the audit and submitted
->> * to the IOMMU by the underlying driver. Check the @entry_num output of
->> * struct iommu_hwpt_invalidate for the number of handled entries. A
->> 'handled'
->> * request may still fail in hardware for various reasons, e.g. due to timeout
->> * on waiting for device response upon a device TLB invalidation request. In
->> * such case the hardware error info is reported in the @hw_error field of the
->> * handled entry.
-> 
-> with that:
-> 
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+>> Cleanup struct mdio_driver_common and introduce is_phy_driver(). Use
+>> is_phy_driver() test that if the driver is a phy or not.
+>>
+>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+>> ---
+>>   drivers/net/dsa/b53/b53_mdio.c          |  2 +-
+>>   drivers/net/dsa/dsa_loop.c              |  2 +-
+>>   drivers/net/dsa/lan9303_mdio.c          |  2 +-
+>>   drivers/net/dsa/microchip/ksz8863_smi.c |  2 +-
+>>   drivers/net/dsa/mt7530-mdio.c           |  2 +-
+>>   drivers/net/dsa/mv88e6060.c             |  2 +-
+>>   drivers/net/dsa/mv88e6xxx/chip.c        |  2 +-
+>>   drivers/net/dsa/qca/ar9331.c            |  2 +-
+>>   drivers/net/dsa/qca/qca8k-8xxx.c        |  2 +-
+>>   drivers/net/dsa/realtek/realtek-mdio.c  |  2 +-
+>>   drivers/net/dsa/xrs700x/xrs700x_mdio.c  |  2 +-
+>>   drivers/net/phy/mdio_bus.c              |  2 +-
+>>   drivers/net/phy/mdio_device.c           | 21 +++++++--------
+>>   drivers/net/phy/phy_device.c            | 35 ++++++++++++++-----------
+>>   drivers/net/phy/xilinx_gmii2rgmii.c     |  2 +-
+>>   drivers/phy/broadcom/phy-bcm-ns-usb3.c  |  8 +++---
+>>   drivers/phy/broadcom/phy-bcm-ns2-pcie.c |  8 +++---
+>>   include/linux/mdio.h                    | 16 ++---------
+>>   include/linux/phy.h                     |  9 +++----
+>>   19 files changed, 54 insertions(+), 69 deletions(-)
+>>
+>
+> some nitpicks from me,
+> otherwise looks fine:
+> Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+>
+> BTW, please send v2 after winter break:
+> https://patchwork.hopto.org/net-next.html
+>
 
-yep.
+Ok, thanks.
 
--- 
-Regards,
-Yi Liu
+>
+>> diff --git a/drivers/net/dsa/b53/b53_mdio.c 
+>> b/drivers/net/dsa/b53/b53_mdio.c
+>> index 897e5e8b3d69..1ececa4d44e4 100644
+>> --- a/drivers/net/dsa/b53/b53_mdio.c
+>> +++ b/drivers/net/dsa/b53/b53_mdio.c
+>> @@ -392,7 +392,7 @@ static struct mdio_driver b53_mdio_driver = {
+>>       .probe    = b53_mdio_probe,
+>>       .remove    = b53_mdio_remove,
+>>       .shutdown = b53_mdio_shutdown,
+>> -    .mdiodrv.driver = {
+>> +    .driver = {
+>>           .name = "bcm53xx",
+>>           .of_match_table = b53_of_match,
+>>       },
+>> diff --git a/drivers/net/dsa/dsa_loop.c b/drivers/net/dsa/dsa_loop.c
+>> index c70ed67cc188..3f885878be3a 100644
+>> --- a/drivers/net/dsa/dsa_loop.c
+>> +++ b/drivers/net/dsa/dsa_loop.c
+>> @@ -375,7 +375,7 @@ static void dsa_loop_drv_shutdown(struct 
+>> mdio_device *mdiodev)
+>>   }
+>>     static struct mdio_driver dsa_loop_drv = {
+>> -    .mdiodrv.driver    = {
+>> +    .driver    = {
+>>           .name    = "dsa-loop",
+>>       },
+>>       .probe    = dsa_loop_drv_probe,
+>> diff --git a/drivers/net/dsa/lan9303_mdio.c 
+>> b/drivers/net/dsa/lan9303_mdio.c
+>> index 167a86f39f27..7cb7e2b1478a 100644
+>> --- a/drivers/net/dsa/lan9303_mdio.c
+>> +++ b/drivers/net/dsa/lan9303_mdio.c
+>> @@ -162,7 +162,7 @@ static const struct of_device_id 
+>> lan9303_mdio_of_match[] = {
+>>   MODULE_DEVICE_TABLE(of, lan9303_mdio_of_match);
+>>     static struct mdio_driver lan9303_mdio_driver = {
+>> -    .mdiodrv.driver = {
+>> +    .driver = {
+>>           .name = "LAN9303_MDIO",
+>>           .of_match_table = lan9303_mdio_of_match,
+>>       },
+>> diff --git a/drivers/net/dsa/microchip/ksz8863_smi.c 
+>> b/drivers/net/dsa/microchip/ksz8863_smi.c
+>> index 5711a59e2ac9..c788cadd7595 100644
+>> --- a/drivers/net/dsa/microchip/ksz8863_smi.c
+>> +++ b/drivers/net/dsa/microchip/ksz8863_smi.c
+>> @@ -213,7 +213,7 @@ static struct mdio_driver ksz8863_driver = {
+>>       .probe    = ksz8863_smi_probe,
+>>       .remove    = ksz8863_smi_remove,
+>>       .shutdown = ksz8863_smi_shutdown,
+>> -    .mdiodrv.driver = {
+>> +    .driver = {
+>>           .name    = "ksz8863-switch",
+>>           .of_match_table = ksz8863_dt_ids,
+>>       },
+>> diff --git a/drivers/net/dsa/mt7530-mdio.c 
+>> b/drivers/net/dsa/mt7530-mdio.c
+>> index 088533663b83..7315654a6757 100644
+>> --- a/drivers/net/dsa/mt7530-mdio.c
+>> +++ b/drivers/net/dsa/mt7530-mdio.c
+>> @@ -258,7 +258,7 @@ static struct mdio_driver mt7530_mdio_driver = {
+>>       .probe  = mt7530_probe,
+>>       .remove = mt7530_remove,
+>>       .shutdown = mt7530_shutdown,
+>> -    .mdiodrv.driver = {
+>> +    .driver = {
+>>           .name = "mt7530-mdio",
+>>           .of_match_table = mt7530_of_match,
+>>       },
+>> diff --git a/drivers/net/dsa/mv88e6060.c b/drivers/net/dsa/mv88e6060.c
+>> index 294312b58e4f..5925f23e7ab3 100644
+>> --- a/drivers/net/dsa/mv88e6060.c
+>> +++ b/drivers/net/dsa/mv88e6060.c
+>> @@ -367,7 +367,7 @@ static struct mdio_driver mv88e6060_driver = {
+>>       .probe    = mv88e6060_probe,
+>>       .remove = mv88e6060_remove,
+>>       .shutdown = mv88e6060_shutdown,
+>> -    .mdiodrv.driver = {
+>> +    .driver = {
+>>           .name = "mv88e6060",
+>>           .of_match_table = mv88e6060_of_match,
+>>       },
+>> diff --git a/drivers/net/dsa/mv88e6xxx/chip.c 
+>> b/drivers/net/dsa/mv88e6xxx/chip.c
+>> index 383b3c4d6f59..4f24699264d1 100644
+>> --- a/drivers/net/dsa/mv88e6xxx/chip.c
+>> +++ b/drivers/net/dsa/mv88e6xxx/chip.c
+>> @@ -7258,7 +7258,7 @@ static struct mdio_driver mv88e6xxx_driver = {
+>>       .probe    = mv88e6xxx_probe,
+>>       .remove = mv88e6xxx_remove,
+>>       .shutdown = mv88e6xxx_shutdown,
+>> -    .mdiodrv.driver = {
+>> +    .driver = {
+>>           .name = "mv88e6085",
+>>           .of_match_table = mv88e6xxx_of_match,
+>>           .pm = &mv88e6xxx_pm_ops,
+>> diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
+>> index 8d9d271ac3af..da392d60c9e7 100644
+>> --- a/drivers/net/dsa/qca/ar9331.c
+>> +++ b/drivers/net/dsa/qca/ar9331.c
+>> @@ -1122,7 +1122,7 @@ static struct mdio_driver ar9331_sw_mdio_driver 
+>> = {
+>>       .probe = ar9331_sw_probe,
+>>       .remove = ar9331_sw_remove,
+>>       .shutdown = ar9331_sw_shutdown,
+>> -    .mdiodrv.driver = {
+>> +    .driver = {
+>>           .name = AR9331_SW_NAME,
+>>           .of_match_table = ar9331_sw_of_match,
+>>       },
+>> diff --git a/drivers/net/dsa/qca/qca8k-8xxx.c 
+>> b/drivers/net/dsa/qca/qca8k-8xxx.c
+>> index ec57d9d52072..fe396397f405 100644
+>> --- a/drivers/net/dsa/qca/qca8k-8xxx.c
+>> +++ b/drivers/net/dsa/qca/qca8k-8xxx.c
+>> @@ -2187,7 +2187,7 @@ static struct mdio_driver qca8kmdio_driver = {
+>>       .probe  = qca8k_sw_probe,
+>>       .remove = qca8k_sw_remove,
+>>       .shutdown = qca8k_sw_shutdown,
+>> -    .mdiodrv.driver = {
+>> +    .driver = {
+>>           .name = "qca8k",
+>>           .of_match_table = qca8k_of_match,
+>>           .pm = &qca8k_pm_ops,
+>> diff --git a/drivers/net/dsa/realtek/realtek-mdio.c 
+>> b/drivers/net/dsa/realtek/realtek-mdio.c
+>> index 292e6d087e8b..8e6a951b391c 100644
+>> --- a/drivers/net/dsa/realtek/realtek-mdio.c
+>> +++ b/drivers/net/dsa/realtek/realtek-mdio.c
+>> @@ -274,7 +274,7 @@ static const struct of_device_id 
+>> realtek_mdio_of_match[] = {
+>>   MODULE_DEVICE_TABLE(of, realtek_mdio_of_match);
+>>     static struct mdio_driver realtek_mdio_driver = {
+>> -    .mdiodrv.driver = {
+>> +    .driver = {
+>>           .name = "realtek-mdio",
+>>           .of_match_table = realtek_mdio_of_match,
+>>       },
+>> diff --git a/drivers/net/dsa/xrs700x/xrs700x_mdio.c 
+>> b/drivers/net/dsa/xrs700x/xrs700x_mdio.c
+>> index 5f7d344b5d73..1a76d9d49f13 100644
+>> --- a/drivers/net/dsa/xrs700x/xrs700x_mdio.c
+>> +++ b/drivers/net/dsa/xrs700x/xrs700x_mdio.c
+>> @@ -164,7 +164,7 @@ static const struct of_device_id __maybe_unused 
+>> xrs700x_mdio_dt_ids[] = {
+>>   MODULE_DEVICE_TABLE(of, xrs700x_mdio_dt_ids);
+>>     static struct mdio_driver xrs700x_mdio_driver = {
+>> -    .mdiodrv.driver = {
+>> +    .driver = {
+>>           .name    = "xrs700x-mdio",
+>>           .of_match_table = of_match_ptr(xrs700x_mdio_dt_ids),
+>>       },
+>> diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+>> index 6cf73c15635b..a1092c641d14 100644
+>> --- a/drivers/net/phy/mdio_bus.c
+>> +++ b/drivers/net/phy/mdio_bus.c
+>> @@ -1342,7 +1342,7 @@ static int mdio_bus_match(struct device *dev, 
+>> struct device_driver *drv)
+>>       struct mdio_device *mdio = to_mdio_device(dev);
+>>         /* Both the driver and device must type-match */
+>> -    if (!(mdiodrv->mdiodrv.flags & MDIO_DEVICE_IS_PHY) !=
+>> +    if (!(is_phy_driver(&mdiodrv->driver)) !=
+>>           !(mdio->flags & MDIO_DEVICE_FLAG_PHY))
+>
+> you could remove one pair of parens, and even change condition to:
+>   if (is_phy_driver(&mdiodrv->driver) == !(mdio->flags &
+>       MDIO_DEVICE_FLAG_PHY))
+>
+>
+>>           return 0;
+>>   diff --git a/drivers/net/phy/mdio_device.c 
+>> b/drivers/net/phy/mdio_device.c
+>> index 73f6539b9e50..16232e7a1255 100644
+>> --- a/drivers/net/phy/mdio_device.c
+>> +++ b/drivers/net/phy/mdio_device.c
+>> @@ -40,7 +40,7 @@ int mdio_device_bus_match(struct device *dev, 
+>> struct device_driver *drv)
+>>       struct mdio_device *mdiodev = to_mdio_device(dev);
+>>       struct mdio_driver *mdiodrv = to_mdio_driver(drv);
+>>   -    if (mdiodrv->mdiodrv.flags & MDIO_DEVICE_IS_PHY)
+>> +    if (is_phy_driver(&mdiodrv->driver))
+>>           return 0;
+>>         return strcmp(mdiodev->modalias, drv->name) == 0;
+>> @@ -203,20 +203,19 @@ static void mdio_shutdown(struct device *dev)
+>>    */
+>>   int mdio_driver_register(struct mdio_driver *drv)
+>>   {
+>> -    struct mdio_driver_common *mdiodrv = &drv->mdiodrv;
+>>       int retval;
+>>   -    pr_debug("%s: %s\n", __func__, mdiodrv->driver.name);
+>> +    pr_debug("%s: %s\n", __func__, drv->driver.name);
+>>   -    mdiodrv->driver.bus = &mdio_bus_type;
+>> -    mdiodrv->driver.probe = mdio_probe;
+>> -    mdiodrv->driver.remove = mdio_remove;
+>> -    mdiodrv->driver.shutdown = mdio_shutdown;
+>> +    drv->driver.bus = &mdio_bus_type;
+>> +    drv->driver.probe = mdio_probe;
+>> +    drv->driver.remove = mdio_remove;
+>> +    drv->driver.shutdown = mdio_shutdown;
+>>   -    retval = driver_register(&mdiodrv->driver);
+>> +    retval = driver_register(&drv->driver);
+>>       if (retval) {
+>>           pr_err("%s: Error %d in registering driver\n",
+>> -               mdiodrv->driver.name, retval);
+>> +               drv->driver.name, retval);
+>>             return retval;
+>>       }
+>> @@ -227,8 +226,6 @@ EXPORT_SYMBOL(mdio_driver_register);
+>>     void mdio_driver_unregister(struct mdio_driver *drv)
+>>   {
+>> -    struct mdio_driver_common *mdiodrv = &drv->mdiodrv;
+>> -
+>> -    driver_unregister(&mdiodrv->driver);
+>> +    driver_unregister(&drv->driver);
+>>   }
+>>   EXPORT_SYMBOL(mdio_driver_unregister);
+>> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+>> index 3611ea64875e..55494a345bd4 100644
+>> --- a/drivers/net/phy/phy_device.c
+>> +++ b/drivers/net/phy/phy_device.c
+>> @@ -529,7 +529,7 @@ static int phy_bus_match(struct device *dev, 
+>> struct device_driver *drv)
+>>       const int num_ids = ARRAY_SIZE(phydev->c45_ids.device_ids);
+>>       int i;
+>>   -    if (!(phydrv->mdiodrv.flags & MDIO_DEVICE_IS_PHY))
+>> +    if (!(is_phy_driver(&phydrv->driver)))
+>
+> here parens are redundant too
+>
+>>           return 0;
+>>         if (phydrv->match_phy_device)
+>> @@ -1456,9 +1456,9 @@ int phy_attach_direct(struct net_device *dev, 
+>> struct phy_device *phydev,
+>>        */
+>>       if (!d->driver) {
+>>           if (phydev->is_c45)
+>> -            d->driver = &genphy_c45_driver.mdiodrv.driver;
+>> +            d->driver = &genphy_c45_driver.driver;
+>>           else
+>> -            d->driver = &genphy_driver.mdiodrv.driver;
+>> +            d->driver = &genphy_driver.driver;
+>>             using_genphy = true;
+>>       }
+>> @@ -1638,14 +1638,14 @@ static bool phy_driver_is_genphy_kind(struct 
+>> phy_device *phydev,
+>>   bool phy_driver_is_genphy(struct phy_device *phydev)
+>>   {
+>>       return phy_driver_is_genphy_kind(phydev,
+>> -                     &genphy_driver.mdiodrv.driver);
+>> +                     &genphy_driver.driver);
+>>   }
+>>   EXPORT_SYMBOL_GPL(phy_driver_is_genphy);
+>>     bool phy_driver_is_genphy_10g(struct phy_device *phydev)
+>>   {
+>>       return phy_driver_is_genphy_kind(phydev,
+>> -                     &genphy_c45_driver.mdiodrv.driver);
+>> +                     &genphy_c45_driver.driver);
+>
+> now it fits into one line (same for phy_driver_is_genphy())
+>
+>>   }
+>>   EXPORT_SYMBOL_GPL(phy_driver_is_genphy_10g);
+>
+> [snip]
+>
 
