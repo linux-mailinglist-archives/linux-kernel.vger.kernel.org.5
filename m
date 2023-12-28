@@ -1,86 +1,205 @@
-Return-Path: <linux-kernel+bounces-12871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4734381FB79
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 23:12:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4A2D81FB98
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 23:40:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F146F1F24501
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 22:12:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43277B23ACE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 22:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5F810A10;
-	Thu, 28 Dec 2023 22:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB6010A09;
+	Thu, 28 Dec 2023 22:40:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KHXXKQZp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796F610A00
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 22:12:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36007df1516so31860935ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 14:12:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703801545; x=1704406345;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m3YQZhWhujBROv0sS7CdL2R5DgVZfb0HKg8qJgmKT1E=;
-        b=KwXvSFKRWtltpgt67zNsLBnmWCGg1xcaX5PSUEsw5EXapqFUZHrmufrHXKA9pupC2w
-         SC+A6K3yXs0MyeT9YClCRAjI4clD2k3gYLDdwW3t0oI7nnUoMN0wENCSk88InOiClSkB
-         RaZtjmG9iIvztYVSwnwcWDmNtr+6kCDl86S5iAYXD3ZFIjDQcBFsiXC0NOePpTD1J92E
-         DmdM0p4wrl3168IfgxiMjg1o1pJde31wUIFeY1K2CVz1qz0HF4JeHocIc7A5dukny57a
-         h2QR/u642Y9zdSVVHG8je7u7X7RnjmGuKGB0k35GPZJNIjGepITKIlX6Sk/pcgLcA45t
-         5x0A==
-X-Gm-Message-State: AOJu0Yxf0PFChDQl868pmRvqyGYHdyWK0s1fgmYTaIp21f8BZp9YOkqM
-	7UXcfB+SWI0FIb9lJ7HUED0JrXOHjjVSo4yXHjB1T66PkXBOIiE=
-X-Google-Smtp-Source: AGHT+IEmZ+p8UfGnxal9iCf9P+sjKjvWosPhYr2b4O41Jg06zmUaO6mD1puRUTyohFTmfvBoTDZ5XpE3t2JO7nu5RPZx4lpbumDf
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9EB107BC;
+	Thu, 28 Dec 2023 22:39:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=kQ+uKuyxhmcjSMG7LN+mZVJSxMAB8MaVFuhiW7JiPfc=; b=KHXXKQZpOt9etWodUQCdGaQE2b
+	9KJWxMzCTUUh3sxe3Y75CnkuzFp+l8AW3f2sSmKRCwanS720bp2Un6aHnAfX/z9/JtIRsMh/ypcC5
+	HGPs9M3qxsME+51W0rachnSOIb1ljosSCeax34cSZhyDvMN9xXfGsgmfoJ07Tp04fdpCh7WOs94G3
+	lDJy6Gv/cJRx890dse2nws3lBy7fN4fiz2GxWU+PvZ9Z1byTi2FrmfL2YqA9W/iWUnz91UC/s61J2
+	rSp8EQVu0uwUogN9IGCIUxZNxIetjAEg0lVuPElVdTrxavbxOqCYBBf5UhihqmCqxUVyPc7jTGZDF
+	27uLB1Mg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rIyjT-005dpL-R0; Thu, 28 Dec 2023 22:20:03 +0000
+Date: Thu, 28 Dec 2023 22:20:03 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Maria Yu <quic_aiquny@quicinc.com>, kernel@quicinc.com,
+	quic_pkondeti@quicinc.com, keescook@chromium.or,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, oleg@redhat.com,
+	dhowells@redhat.com, jarkko@kernel.org, paul@paul-moore.com,
+	jmorris@namei.org, serge@hallyn.com, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] kernel: Introduce a write lock/unlock wrapper for
+ tasklist_lock
+Message-ID: <ZY30k7OCtxrdR9oP@casper.infradead.org>
+References: <20231213101745.4526-1-quic_aiquny@quicinc.com>
+ <ZXnaNSrtaWbS2ivU@casper.infradead.org>
+ <87o7eu7ybq.fsf@email.froward.int.ebiederm.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d84:b0:35f:db4b:69dd with SMTP id
- h4-20020a056e021d8400b0035fdb4b69ddmr1326862ila.0.1703801545594; Thu, 28 Dec
- 2023 14:12:25 -0800 (PST)
-Date: Thu, 28 Dec 2023 14:12:25 -0800
-In-Reply-To: <000000000000321c24060d7cfa1c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e49f66060d993519@google.com>
-Subject: Re: [syzbot] Re: [syzbot] [erofs?] KMSAN: uninit-value in
- z_erofs_lz4_decompress (2)
-From: syzbot <syzbot+6c746eea496f34b3161d@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o7eu7ybq.fsf@email.froward.int.ebiederm.org>
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On Wed, Dec 13, 2023 at 12:27:05PM -0600, Eric W. Biederman wrote:
+> Matthew Wilcox <willy@infradead.org> writes:
+> > I think the right way to fix this is to pass a boolean flag to
+> > queued_write_lock_slowpath() to let it know whether it can re-enable
+> > interrupts while checking whether _QW_WAITING is set.
+> 
+> Yes.  It seems to make sense to distinguish between write_lock_irq and
+> write_lock_irqsave and fix this for all of write_lock_irq.
 
-***
+I wasn't planning on doing anything here, but Hillf kind of pushed me into
+it.  I think it needs to be something like this.  Compile tested only.
+If it ends up getting used,
 
-Subject: Re: [syzbot] [erofs?] KMSAN: uninit-value in z_erofs_lz4_decompress (2)
-Author: eadavis@qq.com
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-please test uninit-value in z_erofs_lz4_decompress (2)
-
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fbafc3e621c3
-
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index 021be5feb1bc..f4cc77e3255f 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -250,7 +250,8 @@ static int z_erofs_lz4_decompress_mem(struct z_erofs_lz4_decompress_ctx *ctx,
- 		print_hex_dump(KERN_DEBUG, "[ in]: ", DUMP_PREFIX_OFFSET,
- 			       16, 1, src + inputmargin, rq->inputsize, true);
- 		print_hex_dump(KERN_DEBUG, "[out]: ", DUMP_PREFIX_OFFSET,
--			       16, 1, out, rq->outputsize, true);
-+			       16, 1, out, ret < 0 ? (ret + rq->inputsize) : 
-+			       rq->outputsize, true);
+diff --git a/include/asm-generic/qrwlock.h b/include/asm-generic/qrwlock.h
+index 75b8f4601b28..1152e080c719 100644
+--- a/include/asm-generic/qrwlock.h
++++ b/include/asm-generic/qrwlock.h
+@@ -33,8 +33,8 @@
+ /*
+  * External function declarations
+  */
+-extern void queued_read_lock_slowpath(struct qrwlock *lock);
+-extern void queued_write_lock_slowpath(struct qrwlock *lock);
++void queued_read_lock_slowpath(struct qrwlock *lock);
++void queued_write_lock_slowpath(struct qrwlock *lock, bool irq);
  
- 		if (ret >= 0)
- 			memset(out + ret, 0, rq->outputsize - ret);
-
+ /**
+  * queued_read_trylock - try to acquire read lock of a queued rwlock
+@@ -98,7 +98,21 @@ static inline void queued_write_lock(struct qrwlock *lock)
+ 	if (likely(atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED)))
+ 		return;
+ 
+-	queued_write_lock_slowpath(lock);
++	queued_write_lock_slowpath(lock, false);
++}
++
++/**
++ * queued_write_lock_irq - acquire write lock of a queued rwlock
++ * @lock : Pointer to queued rwlock structure
++ */
++static inline void queued_write_lock_irq(struct qrwlock *lock)
++{
++	int cnts = 0;
++	/* Optimize for the unfair lock case where the fair flag is 0. */
++	if (likely(atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED)))
++		return;
++
++	queued_write_lock_slowpath(lock, true);
+ }
+ 
+ /**
+@@ -138,6 +152,7 @@ static inline int queued_rwlock_is_contended(struct qrwlock *lock)
+  */
+ #define arch_read_lock(l)		queued_read_lock(l)
+ #define arch_write_lock(l)		queued_write_lock(l)
++#define arch_write_lock_irq(l)		queued_write_lock_irq(l)
+ #define arch_read_trylock(l)		queued_read_trylock(l)
+ #define arch_write_trylock(l)		queued_write_trylock(l)
+ #define arch_read_unlock(l)		queued_read_unlock(l)
+diff --git a/include/linux/rwlock.h b/include/linux/rwlock.h
+index c0ef596f340b..897010b6ba0a 100644
+--- a/include/linux/rwlock.h
++++ b/include/linux/rwlock.h
+@@ -33,6 +33,7 @@ do {								\
+  extern int do_raw_read_trylock(rwlock_t *lock);
+  extern void do_raw_read_unlock(rwlock_t *lock) __releases(lock);
+  extern void do_raw_write_lock(rwlock_t *lock) __acquires(lock);
++ extern void do_raw_write_lock_irq(rwlock_t *lock) __acquires(lock);
+  extern int do_raw_write_trylock(rwlock_t *lock);
+  extern void do_raw_write_unlock(rwlock_t *lock) __releases(lock);
+ #else
+@@ -40,6 +41,7 @@ do {								\
+ # define do_raw_read_trylock(rwlock)	arch_read_trylock(&(rwlock)->raw_lock)
+ # define do_raw_read_unlock(rwlock)	do {arch_read_unlock(&(rwlock)->raw_lock); __release(lock); } while (0)
+ # define do_raw_write_lock(rwlock)	do {__acquire(lock); arch_write_lock(&(rwlock)->raw_lock); } while (0)
++# define do_raw_write_lock_irq(rwlock)	do {__acquire(lock); arch_write_lock_irq(&(rwlock)->raw_lock); } while (0)
+ # define do_raw_write_trylock(rwlock)	arch_write_trylock(&(rwlock)->raw_lock)
+ # define do_raw_write_unlock(rwlock)	do {arch_write_unlock(&(rwlock)->raw_lock); __release(lock); } while (0)
+ #endif
+diff --git a/include/linux/rwlock_api_smp.h b/include/linux/rwlock_api_smp.h
+index dceb0a59b692..6257976dfb72 100644
+--- a/include/linux/rwlock_api_smp.h
++++ b/include/linux/rwlock_api_smp.h
+@@ -193,7 +193,7 @@ static inline void __raw_write_lock_irq(rwlock_t *lock)
+ 	local_irq_disable();
+ 	preempt_disable();
+ 	rwlock_acquire(&lock->dep_map, 0, 0, _RET_IP_);
+-	LOCK_CONTENDED(lock, do_raw_write_trylock, do_raw_write_lock);
++	LOCK_CONTENDED(lock, do_raw_write_trylock, do_raw_write_lock_irq);
+ }
+ 
+ static inline void __raw_write_lock_bh(rwlock_t *lock)
+diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
+index d2ef312a8611..6c644a71b01d 100644
+--- a/kernel/locking/qrwlock.c
++++ b/kernel/locking/qrwlock.c
+@@ -61,9 +61,10 @@ EXPORT_SYMBOL(queued_read_lock_slowpath);
+ 
+ /**
+  * queued_write_lock_slowpath - acquire write lock of a queued rwlock
+- * @lock : Pointer to queued rwlock structure
++ * @lock: Pointer to queued rwlock structure
++ * @irq: True if we can enable interrupts while spinning
+  */
+-void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock)
++void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock, bool irq)
+ {
+ 	int cnts;
+ 
+@@ -82,7 +83,11 @@ void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock)
+ 
+ 	/* When no more readers or writers, set the locked flag */
+ 	do {
++		if (irq)
++			local_irq_enable();
+ 		cnts = atomic_cond_read_relaxed(&lock->cnts, VAL == _QW_WAITING);
++		if (irq)
++			local_irq_disable();
+ 	} while (!atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED));
+ unlock:
+ 	arch_spin_unlock(&lock->wait_lock);
+diff --git a/kernel/locking/spinlock_debug.c b/kernel/locking/spinlock_debug.c
+index 87b03d2e41db..bf94551d7435 100644
+--- a/kernel/locking/spinlock_debug.c
++++ b/kernel/locking/spinlock_debug.c
+@@ -212,6 +212,13 @@ void do_raw_write_lock(rwlock_t *lock)
+ 	debug_write_lock_after(lock);
+ }
+ 
++void do_raw_write_lock_irq(rwlock_t *lock)
++{
++	debug_write_lock_before(lock);
++	arch_write_lock_irq(&lock->raw_lock);
++	debug_write_lock_after(lock);
++}
++
+ int do_raw_write_trylock(rwlock_t *lock)
+ {
+ 	int ret = arch_write_trylock(&lock->raw_lock);
 
