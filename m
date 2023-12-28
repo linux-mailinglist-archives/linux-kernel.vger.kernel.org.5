@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-12752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23BFB81F9A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:28:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D59E81F9AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:29:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDABF1F21396
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:28:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48B622853CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0624E575;
-	Thu, 28 Dec 2023 15:28:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A2DEAFE;
+	Thu, 28 Dec 2023 15:29:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r5qXoWg7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IkhVO1si"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAC45F4E3;
-	Thu, 28 Dec 2023 15:28:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18021C433C8;
-	Thu, 28 Dec 2023 15:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9064FE54E;
+	Thu, 28 Dec 2023 15:29:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CA67C433C7;
+	Thu, 28 Dec 2023 15:29:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703777286;
-	bh=JKOcjvbYfHkJvn1sfMd5XKOIPk2AMe7CQiUb/va/zxg=;
+	s=k20201202; t=1703777385;
+	bh=kGqaPiWe87W+qKQNuAZXfmZ46EmuGzB7sckchD9aWJk=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=r5qXoWg7nLTtYiEnYHdKzq+NutZ211En0VUB1nGeCaJ5Dx7tptofG8LO3CxA9ANyd
-	 VWfQwjpzsUgEz+BtZN4n8rr5Civpc72+/z1oblWzqJYoMyJfFnfzPC3RvCLY9bczvD
-	 AufWE3785jXuHT1U7eEi9QtCVzcr/C2DScNPCF1YgjQNANoJev56MVXBFZuPpUtxIU
-	 qXIs35lceWr+CedKjJQSJ/iMkFuRIAO/I/msAv3+kUL/QKgyEhd7NNL+rZ0oTl7ejI
-	 WASe8MiGlg7Pal1k+I0N+4/sLw7chp8TCMAj9k8pfBWVZLmTNpTcUssGxTwzJS64qI
-	 XoYaargd8wZ8Q==
-Message-ID: <49f1ebee-c2c6-426a-8b85-69d8f5b65c65@kernel.org>
-Date: Thu, 28 Dec 2023 16:28:02 +0100
+	b=IkhVO1si84o49z+Z7may5z0QqOod2xI559smAPq8dRAwZhmRoiz4JCt9KmfBYbc/I
+	 ku78kDR43P5rlwQ4Y8tAqXzHZODqmnwOEDotY4I2FEr3JBGCmg39xhpJJHRjnhdJ72
+	 8aK/S+RSaI2q3aPUYKihGHOaXV0bRlAbdpD4tiPfUDwsIBQ/upjal6ajLx7Uc4mvIa
+	 xZjFj/QvziZAuOutOBD2GV7sWkBFfgjnQ4xdq9sX1gzXImIgQsTe/YFiwV7yF8oHUY
+	 VF88N6987Iwks3oEZ1SCmrC5Sw9prmuQOSLMTiF7YOZvLwH/nyM4U4h3iTlfFQlMnG
+	 NzN8pK+gqApUg==
+Message-ID: <f02f1a6d-88fe-463b-b3a0-4feb5a6f8c85@kernel.org>
+Date: Thu, 28 Dec 2023 16:29:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,8 +41,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V8 2/3] pinctrl: Add support pin control for UP board
- CPLD/FPGA
+Subject: Re: [PATCH V8 3/3] leds: Add support for UP board CPLD onboard LEDS
 Content-Language: en-US
 To: "larry.lai" <larry.lai@yunjingtech.com>, lee@kernel.org,
  andriy.shevchenko@linux.intel.com, linus.walleij@linaro.org, pavel@ucw.cz
@@ -50,7 +49,7 @@ Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
  linux-leds@vger.kernel.org, GaryWang@aaeon.com.tw, musa.lin@yunjingtech.com,
  jack.chang@yunjingtech.com, noah.hung@yunjingtech.com
 References: <20231228151544.14408-1-larry.lai@yunjingtech.com>
- <20231228151544.14408-3-larry.lai@yunjingtech.com>
+ <20231228151544.14408-4-larry.lai@yunjingtech.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -95,23 +94,40 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231228151544.14408-3-larry.lai@yunjingtech.com>
+In-Reply-To: <20231228151544.14408-4-larry.lai@yunjingtech.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 28/12/2023 16:15, larry.lai wrote:
-> The UP Squared board <http://www.upboard.com> implements certain
-> features (pin control) through an on-board FPGA.
+> The UP boards come with a few FPGA-controlled onboard LEDs:
+> * UP Board: yellow, green, red
+> * UP Squared: blue, yellow, green, red
 > 
 
 ...
 
-> +module_platform_driver_probe(upboard_pinctrl_driver, upboard_pinctrl_probe);
+> +
+> +static int upboard_led_probe(struct platform_device *pdev)
+> +{
+> +	struct upboard_fpga * const cpld = dev_get_drvdata(pdev->dev.parent);
+> +	struct reg_field fldconf = {
+> +		.reg = UPFPGA_REG_FUNC_EN0,
+> +	};
+> +	struct upboard_led_data * const pdata = pdev->dev.platform_data;
+
+Your const does not make sense. Please read C standard how qualifiers
+are applied.
+
+...
+
+> +module_platform_driver_probe(upboard_led_driver, upboard_led_probe);
 > +
 > +MODULE_AUTHOR("Gary Wang <garywang@aaeon.com.tw>");
-> +MODULE_DESCRIPTION("UP Board HAT pin controller driver");
+> +MODULE_DESCRIPTION("UP Board LED driver");
 > +MODULE_LICENSE("GPL v2");
-> +MODULE_ALIAS("platform:upboard-pinctrl");
+> +MODULE_ALIAS("platform:upboard-led");
+
+Nothing improved here.
 
 This is a friendly reminder during the review process.
 
@@ -121,6 +137,7 @@ just forgot to apply it. Please go back to the previous discussion and
 either implement all requested changes or keep discussing them.
 
 Thank you.
+
 
 Best regards,
 Krzysztof
