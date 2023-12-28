@@ -1,85 +1,112 @@
-Return-Path: <linux-kernel+bounces-12682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D033E81F8D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:29:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 573CE81F8CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:21:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 655731F242C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:29:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB19E1F2161E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:21:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1EF6847B;
-	Thu, 28 Dec 2023 13:29:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65AFC8494;
+	Thu, 28 Dec 2023 13:21:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="vpWvnQ+d"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WWeg/q28"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5098F8470
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 13:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1703770160; bh=qpDeNZlSNBNw0kYgLVhEIbH+jxBdEEkgHnOnDAufrI0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=vpWvnQ+deNbvH2LJLWokUZtv9WTPux7bus7e8u9auxdnSqlzj6mNfCGqrEEYkZbNr
-	 qBSpjBnIGli6goB33ubeAswMJYShu1PXwH7+jIWUUaqZggoMTlxZvO6Liv+2IyPtt1
-	 6SvmUk01rioi476se7i+MjI/IRd0HlcD3L288iH0=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
-	id 54113495; Thu, 28 Dec 2023 21:21:01 +0800
-X-QQ-mid: xmsmtpt1703769661t2ruuvpk9
-Message-ID: <tencent_73B236904A1C74EF77D367E43C4D36669709@qq.com>
-X-QQ-XMAILINFO: OGZxhFXqN7PJO9fwN0NmcXHaWDhqqaAgULV5AL1QebzvFBAzIUm/EJEVqcwbxI
-	 weMzkg6J0kWsgjX6FKR6J4xTF7OObWZImnVOCtANjyfdCVO6tmMWVoOg+ZQSAdUm+fhSWYSvQ4nM
-	 xhkPgiLSCJJmoWrcx4Mg5vM3nMHl0bYIsTVeku2196M0dSeanTOBm2OtRAc988lxmcQCoEB+elKt
-	 OiN4YR8L9OQBwwiQ+jkOLCmutuke3VtV/Aa1t6c33sQjcnJtP9daTROEdd53C0h1F0Iu9OoIrcRZ
-	 Mo6xrx7tfhm6QJCXDadessSlaUHQ47ORyPJ9woaZpCqZD+5228Lj1m1HGkS5ZULuteCf6SrtRiPS
-	 OLStCdBHG84guuGBNt/Epz7sv+GxRj/1QtCT2jyalQk/0T9+JOLB+CexSWIOY72EUbBty9UyvYtB
-	 Qh+J2YykZJrxTMlWvuah0HTDMxlJRSqiBk41zev0FTqFdQDsYDv7pIEr1UYJLMXpQVj/yiM6gYoJ
-	 t/+qt4XujkaYM88+ubDLLfoxC4WeJxq+q72+RJ9xljtj30eebnjv58ZMjp2g+kVMAL7Qa7FaYNvl
-	 ekM0mtyIsyCGLhO0yIxMmua2NgLRKL4aRItJ2FUgc7jdDCLE2FUgExg2VKGFaCqZIfEydR6c5zNn
-	 c0SuKRczAXdY2mtRwcEwVmucpnf+IJoeqcxlRlAZCk7H2cohUUOC1S6CbV4MMQOK8cOZWsfyi7mF
-	 q4InoJt6K//mfqatr9CjGJ6HmaX+K2nAdQ0KLHRBVpaVLj9hyoZDSlBKB+W1PwC81H6fM4t9XoTM
-	 1trW2v8ZwCZEtr6wCJdrtvW1vja9JV1NH/YvT1mBbXJMIXQiDUnBvUW9aOq9c2GwkhYBKbg5QM5I
-	 gM5M2ZbALuxdLsqD/bsU5RK/8/uvKkQ5lvV9RbYJzhCv0Zb4fmyayi3biON7J2oA==
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+55ad87f38795d6787521@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [hfs?] KMSAN: uninit-value in __hfsplus_ext_cache_extent
-Date: Thu, 28 Dec 2023 21:21:01 +0800
-X-OQ-MSGID: <20231228132100.29990-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000002cf943060d8f4e3c@google.com>
-References: <0000000000002cf943060d8f4e3c@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A0378468;
+	Thu, 28 Dec 2023 13:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+	bh=5WFJOinis3qnBF0y2Gbqc3b1zDBHhNI054O6/NG5o8I=; b=WWeg/q287JzG0bdYrkhQdR09yn
+	Z0iuMEGKu/O9WN2ICtTBHHPGgFWTMNYBLrKVBLJdchoHbsr51+emugvuNopT4oKVe7gFl1sPzJtrb
+	Qakz2NOKvDg1Uyl5WGmnzB3x3A8Ez6f1/qN+qG1IXHUa4Gj/lZGqj4vAEbHzXb4+C4QpwLxV4IUS0
+	mDr6anCHvAccaZd8XOg4VfrzbDeB1Nx6r9CKIDOVFmG0wxIhT7wQF1jOVdT0+jyOTRlk1NE8b5V2u
+	9lJf/DCDx8gFxd4erglO/6RGV41VziwT0uh6xXDc5deXge+QN0te14tpd1t3nxGQ+YwZDCqmKgY8c
+	R6aA1z4Q==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rIqK1-00GvJg-1y;
+	Thu, 28 Dec 2023 13:21:13 +0000
+Date: Thu, 28 Dec 2023 05:21:13 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc: Kees Cook <keescook@chromium.org>,
+	Joel Granados <j.granados@samsung.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH] sysctl: treewide: constify ctl_table_root::permissions
+Message-ID: <ZY12SeFBVb46iUg5@bombadil.infradead.org>
+References: <20231226-sysctl-const-permissions-v1-1-5cd3c91f6299@weissschuh.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231226-sysctl-const-permissions-v1-1-5cd3c91f6299@weissschuh.net>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-please test uninit-value in __hfsplus_ext_cache_extent
+On Tue, Dec 26, 2023 at 01:08:48PM +0100, Thomas Weiﬂschuh wrote:
+> The permissions callback is not supposed to modify the ctl_table.
+> Enforce this expectation via the typesystem.
+> 
+> The patch was created with the following coccinelle script:
+> 
+>   virtual patch
+>   virtual context
+>   virtual report
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fbafc3e621c3
+Nit:
 
-diff --git a/fs/hfsplus/bfind.c b/fs/hfsplus/bfind.c
-index ca2ba8c9f82e..9d4ffff6d42e 100644
---- a/fs/hfsplus/bfind.c
-+++ b/fs/hfsplus/bfind.c
-@@ -23,6 +23,7 @@ int hfs_find_init(struct hfs_btree *tree, struct hfs_find_data *fd)
- 		return -ENOMEM;
- 	fd->search_key = ptr;
- 	fd->key = ptr + tree->max_key_len + 2;
-+	fd->key->ext.fork_type = 0;
- 	hfs_dbg(BNODE_REFS, "find_init: %d (%p)\n",
- 		tree->cnid, __builtin_return_address(0));
- 	switch (tree->cnid) {
+The virtual stuff is not needed really, specially if you are not
+creating rules which depend on them, they are used mostly if you
+want to use coccicheck, but you could just simplify things further,
+by removing them, it is implied we are expected to just run coccinelle
+manually against the linux kernel tree.
 
+So the above 3 virtual lines can be removed.
+
+>   @@
+>   identifier func, head, ctl;
+>   @@
+> 
+>   int func(
+>     struct ctl_table_header *head,
+>   - struct ctl_table *ctl)
+>   + const struct ctl_table *ctl)
+>   { ... }
+> 
+> (insert_entry() from fs/proc/proc_sysctl.c is a false-positive)
+> 
+> This change also is a step to put "struct ctl_table" into .rodata
+> throughout the kernel.
+> 
+> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+> ---
+> The patch is meant to be merged via the sysctl tree.
+> 
+> This change was originally part of the sysctl-const series [0].
+> To slim down that series and reduce the message load on other
+> maintainers to a minimumble, submit this patch on its own.
+> 
+> [0] https://lore.kernel.org/lkml/20231204-const-sysctl-v2-2-7a5060b11447@weissschuh.net/
+
+It does that since the diff stat is small build tests suffice to ensure
+in this case that no users exist which do modify the tables.
+
+  Luis
 
