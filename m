@@ -1,109 +1,112 @@
-Return-Path: <linux-kernel+bounces-12709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 720B081F92C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:37:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6113481F934
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:47:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA3D4B2384E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:37:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 648B91C21A6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A530DC8EA;
-	Thu, 28 Dec 2023 14:37:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="Eb6bljNs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 748B2CA7A;
+	Thu, 28 Dec 2023 14:47:02 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98E3CC8F1
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 14:37:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-427e83601c4so10203361cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 06:37:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1703774244; x=1704379044; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VU21beHWoGJM/Oi2NFAV2MrwGlZZbvr3br6yMg4QftQ=;
-        b=Eb6bljNs2u44uqRtI3F141CcYYeJZC3I7ik1RRd01ohigNe0el8ZFd7Cnff6P4p5FO
-         aZAK6iTT9No1CYD8uJVofrbZE0hzm2tvFCR4F5VzJqv+AAV4p8dX7L9h4BpcNOXTe1/7
-         tpFSx98985TYua2Vzxoz4ao2I/2RsU0xL1A1Td4tHxbb4ylKrN7eXDL5mYKP+Tthw+Br
-         d9KV9wJqK0aPta7Mn4fLNoJ8+B6MOdlZNgDY2zK7EBeCCQtP5N5vWkeLWnyHYvENIiAq
-         f4PnXZt0fAiMifTf0Nfiecxl9T0/Og7/UUnXkTJVM7sUy4KojKg3/+Kt+V8Q9Bx952Wa
-         rECA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703774244; x=1704379044;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VU21beHWoGJM/Oi2NFAV2MrwGlZZbvr3br6yMg4QftQ=;
-        b=Zmxb35+xxslcPrInWLSvOt7MEgYXjJwAM3dve+FbYNJTMczTh8dwfniBf9ZiJ6dKK7
-         BiojkcNZGmf/4fgjSdboypDB/W3Yt66Lvt8CPdiv862ZZkWtEjZ50VP85R8hVYkuTemJ
-         b8gx5WcDozmLd+CYy0TClm22Fge47i4hwFKIUnryaFDtfypQ8RUwvNNRe0XLbZNPoKp7
-         xD5Kz1U6CzZrJ4VI3v2nT0Eig8wJvklZ6tP2rOz9hJm5FyJUBjsHO1786QWV+5fAU1FO
-         W/pcALlp3OIEeis1T9m/fQSDY51r/OJA49UkevM33u3chOsdz65LrBjL6zCXIjo1wTBr
-         L61A==
-X-Gm-Message-State: AOJu0Yw+ByXkQ6Zi+WFUpq32Bgmg1Thae8r1Ym+mico4sKF8E0brRle0
-	LfN/YHj7MpLJfUv7l/Qg6R5sXiH2DQbQAqN6SF/39dq4smQKzQ==
-X-Google-Smtp-Source: AGHT+IG/UmSKlDQRlBa0+Is4JntOVZHhkiYS93o0FbAPPReWbU+HuVGCau4VX0GkprQKsQRXjMZhGZwl3l+vLHMY8rQ=
-X-Received: by 2002:ac8:7f54:0:b0:41e:a62b:3d18 with SMTP id
- g20-20020ac87f54000000b0041ea62b3d18mr11492563qtk.59.1703774244502; Thu, 28
- Dec 2023 06:37:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14646C8C2;
+	Thu, 28 Dec 2023 14:47:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9CA2C433C7;
+	Thu, 28 Dec 2023 14:47:00 +0000 (UTC)
+Date: Thu, 28 Dec 2023 09:46:57 -0500
+From: William Breathitt Gray <william.gray@linaro.org>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH] counter: linux/counter.h: fix Excess kernel-doc
+ description warning
+Message-ID: <ZY2KYemBCrl7YwrP@ishi>
+References: <20231223050511.13849-1-rdunlap@infradead.org>
+ <ZYw2SkkEzSW2C2gN@ubuntu-server-vm-macos>
+ <d752d157-659b-4d05-90a9-ebbf19c07068@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231226200205.562565-1-pasha.tatashin@soleen.com> <ZYv3BIeEgY8LnH7U@archie.me>
-In-Reply-To: <ZYv3BIeEgY8LnH7U@archie.me>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Thu, 28 Dec 2023 09:36:48 -0500
-Message-ID: <CA+CK2bCSB46sZUrx+jsCCtGb-DFUuU9wvCaTamYtKnDAaG9eVA@mail.gmail.com>
-Subject: Re: [PATCH v3 00/10] IOMMU memory observability
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
-	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
-	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
-	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
-	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
-	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
-	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
-	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
-	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
-	will@kernel.org, yu-cheng.yu@intel.com, rientjes@google.com, 
-	Josh Don <joshdon@google.com>, YouHong Li <liyouhong@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Cv3hjeTS7H5THrLU"
+Content-Disposition: inline
+In-Reply-To: <d752d157-659b-4d05-90a9-ebbf19c07068@infradead.org>
 
-> > This series encorporates suggestions that came from the discussion
-> > at LPC [2].
-> > ----------------------------------------------------------------------
-> > [1] https://github.com/soleen/iova_stress
-> > [2] https://lpc.events/event/17/contributions/1466
-> > ----------------------------------------------------------------------
-> > Previous versions
-> > v1: https://lore.kernel.org/all/20231128204938.1453583-1-pasha.tatashin@soleen.com
-> > v2: https://lore.kernel.org/linux-mm/20231130201504.2322355-1-pasha.tatashin@soleen.com
-> > ----------------------------------------------------------------------
-> >
->
-> First of all, Merry Christmas and Happy New Year for all!
->
-> And for this series, no observable regressions when booting the kernel with
-> the series applied.
->
-> Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-Thank you for testing.
+--Cv3hjeTS7H5THrLU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Pasha
+On Wed, Dec 27, 2023 at 01:40:01PM -0800, Randy Dunlap wrote:
+>=20
+>=20
+> On 12/27/23 06:35, William Breathitt Gray wrote:
+> > On Fri, Dec 22, 2023 at 09:05:11PM -0800, Randy Dunlap wrote:
+> >> Remove the @priv: line to prevent the kernel-doc warning:
+> >>
+> >> include/linux/counter.h:400: warning: Excess struct member 'priv' desc=
+ription in 'counter_device'
+> >>
+> >> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> >> Cc: William Breathitt Gray <william.gray@linaro.org>
+> >> Cc: linux-iio@vger.kernel.org
+> >> ---
+> >>  include/linux/counter.h |    1 -
+> >>  1 file changed, 1 deletion(-)
+> >>
+> >> diff -- a/include/linux/counter.h b/include/linux/counter.h
+> >> --- a/include/linux/counter.h
+> >> +++ b/include/linux/counter.h
+> >> @@ -359,7 +359,6 @@ struct counter_ops {
+> >>   * @num_counts:		number of Counts specified in @counts
+> >>   * @ext:		optional array of Counter device extensions
+> >>   * @num_ext:		number of Counter device extensions specified in @ext
+> >> - * @priv:		optional private data supplied by driver
+> >>   * @dev:		internal device structure
+> >>   * @chrdev:		internal character device structure
+> >>   * @events_list:	list of current watching Counter events
+> >=20
+> > Hi Randy,
+> >=20
+> > Would you provide a Fixes tag for the commit that removed the 'priv'
+> > member so we can track when this warning appeared? You can respond with
+> > it to this thread and I'll add it in when I merge your patch.
+>=20
+> Fixes: f2ee4759fb70 ("counter: remove old and now unused registration API=
+")
+>=20
+> Thank you.
+>=20
+> --=20
+> #Randy
+
+Applied, thanks!
+
+[1/1] counter: linux/counter.h: fix Excess kernel-doc description warning
+      commit: 49ca40f8d6ceb76bff83713f79215d8e6252f045
+
+William Breathitt Gray
+
+--Cv3hjeTS7H5THrLU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZY2KYQAKCRC1SFbKvhIj
+K8I3AP4mGbr+wtyRDo1GphV/Mqi26l7KwWRm5pnhhSCdo19tTQEAtJ8TKXYmZ4a8
+erikOulmMaHyp3q5WHk9hw9MJmKWlQ0=
+=kQuO
+-----END PGP SIGNATURE-----
+
+--Cv3hjeTS7H5THrLU--
 
