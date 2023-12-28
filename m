@@ -1,70 +1,104 @@
-Return-Path: <linux-kernel+bounces-12675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B7C681F8C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8566681F8C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:19:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DF72B23838
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:18:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 256EEB237BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0C8C8474;
-	Thu, 28 Dec 2023 13:18:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C94C28475;
+	Thu, 28 Dec 2023 13:19:06 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D178465;
-	Thu, 28 Dec 2023 13:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout1.hostsharing.net (Postfix) with ESMTPS id A42FD3000D5B0;
-	Thu, 28 Dec 2023 14:18:02 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 964802913A9; Thu, 28 Dec 2023 14:18:02 +0100 (CET)
-Date: Thu, 28 Dec 2023 14:18:02 +0100
-From: Lukas Wunner <lukas@wunner.de>
-To: Steven Haigh <netwiz@crc.id.au>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	f.ebner@proxmox.com
-Subject: Re: Qemu KVM thread spins at 100% CPU usage on scsi hot-unplug
- (kernel 6.6.8 guest)
-Message-ID: <20231228131802.GA21994@wunner.de>
-References: <3a7656ab-df4c-4d57-8866-661beffcddd7@crc.id.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21BA18464;
+	Thu, 28 Dec 2023 13:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6dbd87b706aso1104928a34.0;
+        Thu, 28 Dec 2023 05:19:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703769544; x=1704374344;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wQv2RIGJtc8YAdnoO1f20QZUdNA/cAou6jd52Lqn6S0=;
+        b=NxIKpD+FY8twuQdK/JkArGJ2BVcSo54HH3F+gYRlor6IOlHG1DxSkaAvaHwwTb00eS
+         vmxBfIv989bd6dmVbT4KQkrjwdKhg5TvRXVKd/XOw0xTqYmqFN1mB5jWtxbbdMaEGt/k
+         MbEHKLd5Yn5OqdWZEIZvow0z/iCPRuHOM2pj0QeG4Q3Xscy7noM9l68v4V0dv+52OfmV
+         BMYMl2A8vL6xkHVcVq/X+VDJ3cS1FSZJoVEwopxjhpXg94TKPAoLhzhpkvgsExGHUnG8
+         8CFef2OlxvJwM3JFFVVZo+XuFwzwKvLaNgA0lPwvdc+qj5HLG+aAVguRtcCXVpK8HXto
+         YfDA==
+X-Gm-Message-State: AOJu0Yzt7hJcLC0miAqZSXPFyttdktoVo09XgVF14PI4Dk/EBh/qVzCb
+	zXrDfFChFGtnUTiyEGopjaoFzx+NJQ5mdrkNQNo=
+X-Google-Smtp-Source: AGHT+IH6v1Lorb0OKgIClSO5t5j5iEDzKApi54kYgEDifp/BGJIs4gcjnjlQSe8cPOyv/D6GpWc1QD0fkow5Tr93JnE=
+X-Received: by 2002:a05:6820:2e01:b0:594:35b4:8a with SMTP id
+ ec1-20020a0568202e0100b0059435b4008amr13751279oob.0.1703769544039; Thu, 28
+ Dec 2023 05:19:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3a7656ab-df4c-4d57-8866-661beffcddd7@crc.id.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <2330034.ElGaqSPkdT@kreacher>
+In-Reply-To: <2330034.ElGaqSPkdT@kreacher>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 28 Dec 2023 14:18:52 +0100
+Message-ID: <CAJZ5v0i=SOyxRF4vV-WZJ-dRD8PZiyFLC7h+trtuhQ_eKLF0jw@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] ACPI: OSL/EC: Use spin locks without disabling interrupts
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Linux ACPI <linux-acpi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Zhang Rui <rui.zhang@intel.com>, 
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, 
+	Michal Wilczynski <michal.wilczynski@intel.com>, Hans de Goede <hdegoede@redhat.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Mario Limonciello <mario.limonciello@amd.com>, Daniel Drake <drake@endlessm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 28, 2023 at 01:03:10PM +1100, Steven Haigh wrote:
-> At some point in kernel 6.6.x, SCSI hotplug in qemu VMs broke. This was
-> mostly fixed in the following commit to release 6.6.8:
-> 	commit 5cc8d88a1b94b900fd74abda744c29ff5845430b
-> 	Author: Bjorn Helgaas <bhelgaas@google.com>
-> 	Date:   Thu Dec 14 09:08:56 2023 -0600
-> 	Revert "PCI: acpiphp: Reassign resources on bridge if necessary"
-> 
-> After this commit, the SCSI block device is hotplugged correctly, and a device node as /dev/sdX appears within the qemu VM.
-> 
-> New problem:
-> 
-> When the same SCSI block device is hot-unplugged, the QEMU KVM process will
-> spin at 100% CPU usage. The guest shows no CPU being used via top, but the
-> host will continue to spin in the KVM thread until the VM is rebooted.
+On Fri, Dec 15, 2023 at 12:34=E2=80=AFPM Rafael J. Wysocki <rjw@rjwysocki.n=
+et> wrote:
+>
+> Hi Everyone,
+>
+> After
+>
+> https://patchwork.kernel.org/project/linux-acpi/patch/5745568.DvuYhMxLoT@=
+kreacher/
+>
+> the SCI interrupt handler is threaded, so ACPICA spin locks can be used w=
+ithout
+> disabling interrupts, because they cannot be acquired from a hardirq hand=
+ler
+> running on the same CPU as any code already holding the spin lock.  This =
+patch
+> [1/3] removes disabling interrupts from acpi_os_acquire_lock() and update=
+s
+> acpi_os_release_lock() accordingly.
+>
+> Patch [2/2] uses the observation that if acpi_handle_interrupt() can run
+> in a threaded interrupt handler in the GPE case, it can also run in a thr=
+eaded
+> interrupt handler in the dedicated IRQ case, so it makes the EC driver us=
+e a
+> threaded handler for the dedicated EC interrupt.
+>
+> Patch [3/3], in analogy with patch [1/3], uses the observation that after=
+ patch
+> [2/2] all of the EC code runs in thread context, so it need not disable
+> interrupts on the local CPU before acquiring a spin lock, so the EC drive=
+r is
+> updated to operate its spin lock without disabling interrupts.
 
-Find out the PID of the qemu process on the host, then cat /proc/$PID/stack
-to see where the CPU time is spent.
+I don't see any objections to these patches, so queuing them up for 6.8.
+
+Thanks!
 
