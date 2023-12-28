@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-12477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13A7981F557
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:16:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35D9281F55C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:16:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEA6028209A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 07:16:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6A0A28202A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 07:16:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67DD34439;
-	Thu, 28 Dec 2023 07:16:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588F74409;
+	Thu, 28 Dec 2023 07:16:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="n2npNoTR"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yKdLkohe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A153C15
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:15:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479F06129
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:16:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33674f60184so5901351f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 23:15:57 -0800 (PST)
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3369339f638so4542685f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 23:16:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703747756; x=1704352556; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703747801; x=1704352601; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=UE3CtzwEYjiiDjjuwC/4cHaubGNcYke/lrkbEvzcTLo=;
-        b=n2npNoTR5KkGovgpOe6ZM5ka6KOmB+MHkVfBIhjHOCibeOBT6UlCzvxJ0upYAlKobL
-         7gJfQnLqmOs2nLSuhCtrBXpyV4QXHVoQBOFzHdVCD6j1TtIVXdQo3oRo35To61gjD7zo
-         Fl1GaZsAtwYGzoOfHg79VV781DUkjaUSXLd3vEbyiJ2Kizm0lIihymq1eSbIORh3FjDV
-         xHEJRwI39p1P0fQN2TPGMMqlOkL9ZISJQtcTXVkuFz7elXncGnUPJrRbbbcbq5P8D6BJ
-         EfIsB5LEnD69D1t2yKe5bRFW2A8CI7U7zV5CBlvpkhhaLWz1a/XwgVXV4jR77tboP7cZ
-         N+mQ==
+        bh=orLiv5p/GP4OAaXmfCYxNFR6jNGFihlPdUIlFwdvxns=;
+        b=yKdLkoheIE/aB66mZC2VX4Mr+h2EomFrVRAKbiyyb6c6K8bdrThvaAzMJ+VXN8WpHD
+         WVdJcyCiSPXDWjsHCqN5uMo9vQNB+7ZVbyw8soewwX13gPvRGnJkSC9kJkfyB6xGojve
+         aAWUwscwLCJKE9Ca/0Vbs/NQOWH3Rcouh4YApL0hAnPV8RG7VN1fQKGk0vZadqJuM/z+
+         6qt8K4CojgWYqG6ReL0qz4BhSiQcZzncKt3SvlQAW7+5OprfMxRZyT1gl/ypBIup1nj8
+         g2RAGu91rxJzAQNBdJyRdsxBJwlPyrvxUd7BX9kRtL9tRuMOU0gs3FSICcJPxtVlJ+cd
+         3zcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703747756; x=1704352556;
+        d=1e100.net; s=20230601; t=1703747801; x=1704352601;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UE3CtzwEYjiiDjjuwC/4cHaubGNcYke/lrkbEvzcTLo=;
-        b=e56Y/Z4h4Z+2GPjlFbWYEa67EoUi48+V1wTsLMtyn8VK/tGb3oRak+LVZAd+/bUNB3
-         8znhsJvezevCW6uOi5Cwv9LliX9mJgYK4P9W3Dcx1crxADrK0Wj8KgKUNgGNMfl4BxIA
-         QeZC/yiRg07amujdydHkPyxodNwxsGNqM3X5dYN4eBu9dZrtLEqf9xYg7hOQEsMZV34m
-         mQ77SLbh+FFikM7cAWPJKsLbpNH+rPujIXLqRUHqphoWCTy5+NDZu91xhNKoMTzzGOZB
-         be1YrLrbsGuQAJV1nkukFhZTfj8MuLwHTVq6TYgVB4WNObPVcwigkpDi1WDXzuLmB4F6
-         EN2g==
-X-Gm-Message-State: AOJu0YzLg5pCd7f3/QwyYn3pAWMLjOvgd93irFuN7jIdrgpfaCPrvK6s
-	1qww8j7bMWsD3HP6k21rtwNSKLLk6aQy9g==
-X-Google-Smtp-Source: AGHT+IFvLHE/21ErOFohKyEhBIDnVIemNMk9SXRyefJkQMwz1h5y8H5tlBVKvJ/WW3GTeJxk7JRahA==
-X-Received: by 2002:adf:cd0f:0:b0:336:78db:52ca with SMTP id w15-20020adfcd0f000000b0033678db52camr5164105wrm.115.1703747756413;
-        Wed, 27 Dec 2023 23:15:56 -0800 (PST)
+        bh=orLiv5p/GP4OAaXmfCYxNFR6jNGFihlPdUIlFwdvxns=;
+        b=ExcUyq6YIM4FEXS/DHKCBC7mvp2nefqXy+w9HjjjDX2qeF5Yg96KnyzOGRtJrXghFj
+         PSlJr5aPHaoLPh/cuG59IFf8sEDhr+MJmPG2SvVdPtkUHCPcAHd+lIQU+2rQxiStNKe0
+         qAX0hrIS65sS1iUUXeUZQuXT9ZCtc1FIViIDuB770Bvh/9VybO4jClg2/g7m52C67M9G
+         2opkedRZqXEtjkxIT0XwodruebnGhkKAtqs6w4tHluH1aJyN8WOMoRJDgiuoU/Ecvbmo
+         P6+j8UE0dUwiPX+SICxdRpkIEVGHGxgvpqMwlfGjM2zrZSlWCwl2Q32aCloIzzTLwHFe
+         aWVA==
+X-Gm-Message-State: AOJu0YwUR/PQ7BDPGprzL/BeIY4chFn4E8zjNlFnrkeWQLzxQfBzjINM
+	5lkW3HsJ8vK8j3zi8Db6kzGwGZ1zxW+t/A==
+X-Google-Smtp-Source: AGHT+IG51SY4mFp3XgR0z+HX/BxyM70kr1E3wOWnevi5Bp+5jYF2DW1sfNCRnuMt1Swatz1cPqafLg==
+X-Received: by 2002:adf:f3cf:0:b0:336:5bf4:9904 with SMTP id g15-20020adff3cf000000b003365bf49904mr3661914wrp.142.1703747801637;
+        Wed, 27 Dec 2023 23:16:41 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id b3-20020a5d5503000000b00336b8461a5esm10405114wrv.88.2023.12.27.23.15.54
+        by smtp.gmail.com with ESMTPSA id b3-20020a5d5503000000b00336b8461a5esm10405114wrv.88.2023.12.27.23.16.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Dec 2023 23:15:55 -0800 (PST)
-Message-ID: <9711f1cf-c496-4c60-804e-78bef5c60430@linaro.org>
-Date: Thu, 28 Dec 2023 08:15:54 +0100
+        Wed, 27 Dec 2023 23:16:41 -0800 (PST)
+Message-ID: <ccc8081b-d7cb-44c2-b579-6e4a97a2168d@linaro.org>
+Date: Thu, 28 Dec 2023 08:16:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,8 +66,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: rtq6056: add support for the
- whole RTQ6056 family
+Subject: Re: [PATCH 0/2] RTQ6056: Add compatible for the same chip family
 Content-Language: en-US
 To: cy_huang@richtek.com, Jonathan Cameron <jic23@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -77,7 +76,6 @@ Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
  linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
 References: <cover.1703734994.git.cy_huang@richtek.com>
- <4a318b480a606c59e834feda01745e33d7e803a3.1703734994.git.cy_huang@richtek.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -123,30 +121,17 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <4a318b480a606c59e834feda01745e33d7e803a3.1703734994.git.cy_huang@richtek.com>
+In-Reply-To: <cover.1703734994.git.cy_huang@richtek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 28/12/2023 04:51, cy_huang@richtek.com wrote:
 > From: ChiYuan Huang <cy_huang@richtek.com>
 > 
-> Add compatible support for RTQ6053 and RTQ6059.
-> 
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> *** Resend for the '--thread' config in 'git format-patch'.
 
-Why do you resend the same patches after two days ignoring the feedback?
-No versioning, no changelog?
-
-NAK.
-
-This is a friendly reminder during the review process.
-
-It seems my or other reviewer's previous comments were not fully
-addressed. Maybe the feedback got lost between the quotes, maybe you
-just forgot to apply it. Please go back to the previous discussion and
-either implement all requested changes or keep discussing them.
-
-Thank you.
+Resending the same after you receive feedback means you entirely bypass
+that feedback. Don't do this. Ever.
 
 Best regards,
 Krzysztof
