@@ -1,46 +1,78 @@
-Return-Path: <linux-kernel+bounces-12366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4034981F3B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:42:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7907E81F3BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:42:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 640011C21583
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:42:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BA8A283EA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D9325253;
-	Thu, 28 Dec 2023 01:40:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D10117E1;
+	Thu, 28 Dec 2023 01:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="TyU0wwBE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC2646BF
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:40:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4T0rkk3gcSz29gby;
-	Thu, 28 Dec 2023 09:38:38 +0800 (CST)
-Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id BACD01A0192;
-	Thu, 28 Dec 2023 09:39:43 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by kwepemm000013.china.huawei.com
- (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Dec
- 2023 09:38:16 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <david.oberhollenzer@sigma-star.at>, <richard@nod.at>,
-	<miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
-	<Tudor.Ambarus@linaro.org>
-CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH RFC 17/17] Documentation: ubifs: Add ubifs repair whitepaper
-Date: Thu, 28 Dec 2023 09:41:12 +0800
-Message-ID: <20231228014112.2836317-18-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20231228014112.2836317-1-chengzhihao1@huawei.com>
-References: <20231228014112.2836317-1-chengzhihao1@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B2B610EF
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:42:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d9f94b9186so1002829b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 17:42:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1703727742; x=1704332542; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LKYKCC0iAyjtmcl9i3gxZmi/p+HZhZfirGb7twXi050=;
+        b=TyU0wwBEJk10kuzvLRKAnyS/3SvkcZORHlzRCbc5fwcKB6QmEeNMdNQn3j8lsh5aBH
+         6xunCqHitRqAJP/UPZI5ZmG1fEjxmRVygq9Ur76fdQugnUXlSPfqPfLdb9aZUExVWV3J
+         3kSAwrJK9AU8zVAns6HcJymsFI+rYEtOYWtMWgB2RMzQqcV+10tuc5AVWtpmMjwoPuBd
+         shB22BF2X6Ti0z5MdjifyZZsKlqtE8Ld/JxrKUXun94Auq4Pm/2zBoxDeeDOxN1SZ1aU
+         1uLS+Mv73RsrB44zYWH9BcrgPiet4v+ewXvJZCw3HY+ktHY2A3DO6MfNXKMld3vAJZ90
+         0AIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703727742; x=1704332542;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LKYKCC0iAyjtmcl9i3gxZmi/p+HZhZfirGb7twXi050=;
+        b=SbeaH+alpIHd99XIj5elsQuauY6TBwY+sqktkesInhBBmxbcNRBMRI4KKmvRNC3dhK
+         o7g7Mq9Wz0CUO0HZvG86Wy0y3NQxyk5Oih2l7U/GCxorFsy7pITqlV08FAaHrKS2Fj1Y
+         Sr1qIO1m+OQGblpgQ3Z86J2/toCWNvliLdC04xNvjBte/xGZYBXtNFHEa9SA/qGTM+iE
+         834Q9Le5A84Dbzv4cdYZDX7Li+fSiv+jtps3Cn8JVIJwNa3+9dFmXa3Q/EnSSuUrAGPn
+         5Bd4cwiUiMvrcRklaEnlpn7yOp/7fzerQ5WcU+WHbmw5MDKjKrM0YWKpaUTJDpWVGdiR
+         rE4Q==
+X-Gm-Message-State: AOJu0Yy/+aA2RIgDP+vy/xtSfq3Rj3b81k6R4ryQqDscPVlWLGSGrJyA
+	/RDUikdTbpA94Kn4RZRxaesIy0/Ox1Tw9Q==
+X-Google-Smtp-Source: AGHT+IHZ0/JideaaZYntOkNOqAPh5V/QL/d8QFy5AdTRppdgJDCkExfUqVkpEa+jpNl3GOmHDV7Ddw==
+X-Received: by 2002:a05:6a00:1d05:b0:6d9:bfb8:e37c with SMTP id a5-20020a056a001d0500b006d9bfb8e37cmr6112797pfx.41.1703727742547;
+        Wed, 27 Dec 2023 17:42:22 -0800 (PST)
+Received: from sw06.internal.sifive.com ([4.53.31.132])
+        by smtp.gmail.com with ESMTPSA id g24-20020aa78758000000b006d49ed3effasm7335440pfo.63.2023.12.27.17.42.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Dec 2023 17:42:22 -0800 (PST)
+From: Samuel Holland <samuel.holland@sifive.com>
+To: linux-arm-kernel@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org,
+	x86@kernel.org,
+	linux-riscv@lists.infradead.org,
+	Christoph Hellwig <hch@lst.de>
+Cc: loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org,
+	linux-arch@vger.kernel.org,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org
+Subject: [PATCH v2 00/14] Unified cross-architecture kernel-mode FPU API
+Date: Wed, 27 Dec 2023 17:41:50 -0800
+Message-ID: <20231228014220.3562640-1-samuel.holland@sifive.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,325 +80,108 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm000013.china.huawei.com (7.193.23.81)
 
-Add documentation for UBIFS repair.
-Add 'ubifs' dir under 'Documentation/filesystems/', and move all docs
-related to UBIFS into 'Documentation/filesystems/ubifs'.
+This series unifies the kernel-mode FPU API across several architectures
+by wrapping the existing functions (where needed) in consistently-named
+functions placed in a consistent header location, with mostly the same
+semantics: they can be called from preemptible or non-preemptible task
+context, and are not assumed to be reentrant. Architectures are also
+expected to provide CFLAGS adjustments for compiling FPU-dependent code.
+For the moment, SIMD/vector units are out of scope for this common API.
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- Documentation/filesystems/index.rst           |   3 +-
- .../authentication.rst}                       |   0
- Documentation/filesystems/ubifs/index.rst     |  11 +
- .../filesystems/{ubifs.rst => ubifs/main.rst} |   0
- Documentation/filesystems/ubifs/repair.rst    | 235 ++++++++++++++++++
- MAINTAINERS                                   |   5 +-
- 6 files changed, 250 insertions(+), 4 deletions(-)
- rename Documentation/filesystems/{ubifs-authentication.rst => ubifs/authentication.rst} (100%)
- create mode 100644 Documentation/filesystems/ubifs/index.rst
- rename Documentation/filesystems/{ubifs.rst => ubifs/main.rst} (100%)
- create mode 100644 Documentation/filesystems/ubifs/repair.rst
+This allows us to remove the ifdeffery and duplicated Makefile logic at
+each FPU user. It then implements the common API on RISC-V, and converts
+a couple of users to the new API: the AMDGPU DRM driver, and the FPU
+self test.
 
-diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-index 09cade7eaefc..7a7e3c0a5289 100644
---- a/Documentation/filesystems/index.rst
-+++ b/Documentation/filesystems/index.rst
-@@ -116,8 +116,7 @@ Documentation for filesystem implementations.
-    sysfs
-    sysv-fs
-    tmpfs
--   ubifs
--   ubifs-authentication
-+   ubifs/index
-    udf
-    virtiofs
-    vfat
-diff --git a/Documentation/filesystems/ubifs-authentication.rst b/Documentation/filesystems/ubifs/authentication.rst
-similarity index 100%
-rename from Documentation/filesystems/ubifs-authentication.rst
-rename to Documentation/filesystems/ubifs/authentication.rst
-diff --git a/Documentation/filesystems/ubifs/index.rst b/Documentation/filesystems/ubifs/index.rst
-new file mode 100644
-index 000000000000..fba59a916e89
---- /dev/null
-+++ b/Documentation/filesystems/ubifs/index.rst
-@@ -0,0 +1,11 @@
-+===============
-+UBI File System
-+===============
-+
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   main
-+   repair
-+   authentication
-diff --git a/Documentation/filesystems/ubifs.rst b/Documentation/filesystems/ubifs/main.rst
-similarity index 100%
-rename from Documentation/filesystems/ubifs.rst
-rename to Documentation/filesystems/ubifs/main.rst
-diff --git a/Documentation/filesystems/ubifs/repair.rst b/Documentation/filesystems/ubifs/repair.rst
-new file mode 100644
-index 000000000000..212fa886b1a1
---- /dev/null
-+++ b/Documentation/filesystems/ubifs/repair.rst
-@@ -0,0 +1,235 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. UBIFS Repairing
-+.. sigma star gmbh
-+.. 2023
-+
-+====================
-+UBIFS Repair Support
-+====================
-+
-+Introduction
-+============
-+
-+UBIFS repair provides a way to fix inconsistent UBIFS image(which is corrupted
-+by hardware exceptions or UBIFS realization bugs) and makes filesystem become
-+consistent, just like fsck tools(eg. fsck.ext4, fsck.f2fs, fsck.fat, etc.) do.
-+
-+Why do we need UBIFS repair?
-+============================
-+
-+The inconsistent UBIFS image is produced by mainly two aspects:
-+
-+- *Hardware exceptions*: Some of them are ecc uncorrectable errors(eg. [1]_
-+  [2]_), some of them are caused by intermittent writing protection(unstable
-+  voltage).
-+- *UBIFS realization bugs*: Some of them are known bugs which are fixable (eg.
-+  [3]_ [4]_ [5]_ [6]_ [7]_ [8]_ [9]_ [10]_ [11]_ [12]_, etc.), some of them are
-+  unknown bugs(eg. [13]_), some of them are hard to fix(eg. [14]_).
-+
-+Once the UBIFS image becomes inconsistent, userspace applications won't work
-+properly, as we all know, UBIFS is mainly applied in embedded system, which
-+could affect many domains(eg. communications, IoT, family network, etc.). The
-+only way to rescue device is formating UBI device and mkfs, which will lost all
-+userdata, and it could be intolerable for some important situations.
-+
-+So, a filesystem repair tool is urgent for UBIFS, even it has been born for 15
-+years, and it's not too late to do it for there will be more embedded devices in
-+the future IOT world.
-+
-+Implementation
-+==============
-+
-+Design
-+------
-+
-+The direct idea of fixing an UBIFS image may be similar to mounting process:
-+
-+- Step 1: Read superblock.
-+- Step 2: Read master node.
-+- Step 3: Replay journal.
-+- Step 4: Traverse TNC, check and drop bad znodes, scan files according to TNC.
-+- Step 5: ...
-+
-+.. [LINK_1] This method has 3 disadvantages, and point 2 and 3 are unsolvable:
-+
-+- 1. It depends on too many areas, for example master, log. Repair will be
-+  failed if each one of these areas becomes corrupted.
-+- 2. The amount of files can be recovered is decided by the degree of corruption
-+  in TNC. All files will be lost if the max level znode is corrupted.
-+- 3. If we do step 3 before step 4 and TNC is corrupted, step 3 could be failed
-+  while updating TNC, which makes repair failed. If we do step 4 before step 3
-+  and gc occurred in last mounting, empty('0xFF') area could be scanned based on
-+  TNC, the node corresponding to bad TNC branch could be a good one because the
-+  empty area has been gced and journal replaying is not performed (TNC could be
-+  updated after replaying jouranl); Or the node corresponding to bad TNC branch
-+  could be a bad one, because hardware exceptions happened. So it is hard to
-+  decide the order between journal replaying and TNC traversing. Similar order
-+  problem exists between journal replaying and LPT traversing too.
-+
-+To sum up, UBIFS repair should depend on less meta areas and recover as much
-+repairable data as possible.
-+
-+Since UBIFS assign sqnum for each node, it makes possible to distinguish new and
-+old verions for same file, so the main idea is scanning all nodes and then
-+rebuild TNC and recalculate space statistics informaion.
-+
-+Repair process
-+--------------
-+
-+There are 13 steps for reparing an UBIFS image:
-+
-+- Step 1: Read superblock.
-+- Step 2: Scan nodes(inode node/dentry node/data node/truncation node) from
-+  all LEBs, corrupted nodes(eg. incorrect crc, bad inode size, bad dentry name
-+  length, etc.) are dropped during scanning. Valid inode nodes(nlink > 0) and
-+  dentry nodes(inum != 0) are put into two valid trees separately, also, deleted
-+  inode nodes (nlink is 0) and deleted dentry nodes(inum is 0) are put into two
-+  deleted trees separately. Other nodes are put into corresponding file. The
-+  final recovered file(xattr is treated as a file) is organized as:
-+
-+::
-+
-+         (rbtree, inum indexed)
-+              /      \
-+            file1   file2
-+            /   \
-+          file3 file4
-+
-+        file {
-+          inode node // each file has 1 inode node
-+          dentry (sub rb_tree, sqnum indexed) // '/' has no dentries, otherwise
-+                                              // at least 1 dentry is required.
-+          trun node // the newest one truncation node
-+          data (sub rb_tree, block number indexed) // Each file may have 0
-+                                                   // many data nodes
-+        }
-+
-+- Step 3: Traverse nodes from deleted trees, remove inode nodes and dentry nodes
-+  with smaller sqnum from valid trees. valid_inos - del_inos = *left_inos*,
-+  valid_dents - del_dents = *left_dents*.
-+
-+.. [LINK_2] This step handles deleting case, for example, file A is deleted,
-+   deleted inode node and deleted dentry node are written, if we ignore the
-+   deleted nodes, file A can be recovered after repairing because undeleted
-+   inode node and undeleted dentry node can be scanned. There's an exception,
-+   if deleted inode node and deleted dentry node are reclaimed(by gc) after
-+   deletion, file A is recovered.
-+
-+- Step 4: Traverse *left_inos* and *left_dents*, insert inode node and dentry
-+  nodes into corresponding files.
-+  Each file corresponds to a real file or xattr, it contains 1 inode node, multi
-+  dentry nodes, multi data nodes, 1 newest truncation node(if exists).
-+- Step 5: Drop invalid files. For example, nonconsistent file type between inode
-+  node and dentry nodes, file has no dentry nodes(excepts '/'), encrypted file
-+  has no xattr information, etc.
-+- Step 6: Extract reachable directory entries tree. Make sure that all files can
-+  be searched from '/', unreachable file is deleted.
-+- Step 7: Correct the file information. Traverse all files and calculate
-+  information (nlink, size, xattr_cnt, etc.) for each file just like
-+  check_leaf() does, correct inode node based on calculated information.
-+- Step 8: Record used LEBs. Traverse all files'(including effective nodes on
-+  deleted trees in step 2) position, after this step UBIFS repair knows which
-+  LEB is empty.
-+- Step 9: Re-write data. Read data from LEB and write back data, make sure that
-+  all LEB is ended with empty data(0xFF). It will prevent failed gc scanning in
-+  next mounting.
-+- Step 10: Build TNC. Construct TNC according to all files' nodes, just like
-+  mkfs does, then write TNC on flash.
-+- Step 11: Build LPT. Construct LPT according to all nodes' position, just like
-+  mkfs does, then write TNC on flash.
-+- Step 12: Clean up log area and orphan area. Recovery process is finished, log
-+  area and orphan area can be erased.
-+- Step 13: Write master node. Since all meta areas are ready, master node can
-+  be updated.
-+
-+Evaluation
-+==========
-+
-+Based on the implementation of ubifs repair, there are following advantages and
-+limitations.
-+
-+Advantages
-+----------
-+
-+- 1. Power-cut during repairing is tolerant, UBIFS repair always do full
-+  scanning and final valid nodes won't be erased from flash, so UBIFS repair
-+  can always rebuild filesystem based on scanning nodes even it is breaked by
-+  power-cut.
-+- 2. The UBIFS image can be fixed as long as the super block is not corrupted.
-+  If there exists no valid nodes on flash, UBIFS repair will create a new '/'
-+  just like create_default_filesystem() does.
-+- 3. Encrypted UBIFS image is supported, because dentry name and data content of
-+  file are not necessary for UBIFS repair process.
-+
-+Limitations
-+-----------
-+
-+- 1. Deleted files could be recovered [LINK_2]_. Similar problem exists on data
-+  nodes, for example, 8K-size file A(dn0, dn1) is truncated as 0, 4K data(dn2)
-+  is then written from offset 4K in file A. The dn0 and dn2 is recovered after
-+  repairing, but only dn2 is expected to be recovered. UBIFS repair cannot solve
-+  it, because the real existence information of nodes depends on TNC, but TNC
-+  should not be depended for UBIFS repair, see [LINK_1]_.
-+- 2. All valid nodes are loaded in memory, if there are too many files, it could
-+  trigger OOM while repairing. Similar problem exists in dbg_check_filesystem().
-+- 3. Authenticated UBIFS image is not supported for now, it can be supported by
-+  extending new fields in repair interface(used to passing authentication
-+  information) and implementing parsing authenticated nodes.
-+
-+How to use?
-+===========
-+
-+UBIFS repair is suggested to be invoked when UBIFS image becomes inconsistent,
-+for example:
-+
-+- UBIFS image cannot be mounted caused by corrupted data(eg. bad crc, bad lpt,
-+  bad tnc, bad master node, bad log area, etc.) or inconsistent meta data(eg.
-+  inode size is smaller than data length, lost dentry node, lost inode node,
-+  wrong nlink, etc.).
-+- Errors occurr in file accessing/reading, and error messages are related to
-+  inconsistent meta data.
-+- UBIFS becomes readonly caused by inconsistent meta data(eg. assertion failure
-+  on metadata checking).
-+- Other problems related to inconsistent UBIFS image.
-+
-+Invoke UBIFS repair by: echo ``UBIFS_DEV`` > /sys/kernel/debug/ubifs/repair_fs,
-+``UBIFS_DEV`` could be:
-+
-+- ubiX_Y: X means UBI device number and Y means UBI volume number.
-+  For example: echo "ubi0_0" > /sys/kernel/debug/ubifs/repair_fs
-+- /dev/ubiX_Y: X means UBI device number and Y means UBI volume number.
-+  For example: echo "/dev/ubi0_0" > /sys/kernel/debug/ubifs/repair_fs
-+- ubiX:NAME: X means UBI device number and NAME means UBI volume name.
-+  For example: echo "ubi0:userdata" > /sys/kernel/debug/ubifs/repair_fs
-+
-+References
-+==========
-+
-+.. [1] https://lore.kernel.org/linux-mtd/1582293853-136727-1-git-send-email-chengzhihao1@huawei.com/
-+
-+.. [2] https://lore.kernel.org/linux-mtd/CAMxq0fNSWrUFMmmTs8Ri9gFOvS+KQJvZN3-_KuiqXi9bbmCB0Q@mail.gmail.com/
-+
-+.. [3] https://lore.kernel.org/linux-mtd/20211227032246.2886878-6-chengzhihao1@huawei.com/
-+
-+.. [4] https://lore.kernel.org/linux-mtd/1638777819.2925845.1695222544742.JavaMail.zimbra@robart.cc/T/#u
-+
-+.. [5] https://lore.kernel.org/linux-mtd/20190515203113.19398-1-richard@nod.at/
-+
-+.. [6] https://lore.kernel.org/linux-mtd/20190404223438.29408-1-richard@nod.at/
-+
-+.. [7] https://lore.kernel.org/linux-mtd/20210316085214.25024-1-guochun.mao@mediatek.com/
-+
-+.. [8] https://lore.kernel.org/linux-mtd/20180611225228.28931-1-richard@nod.at/
-+
-+.. [9] https://lore.kernel.org/linux-mtd/20180611214109.14424-1-richard@nod.at/
-+
-+.. [10] https://lore.kernel.org/linux-mtd/1476823591-6137-1-git-send-email-richard@nod.at/
-+
-+.. [11] https://lore.kernel.org/linux-mtd/1474495050-13529-1-git-send-email-pascal.eberhard@gmail.com/
-+
-+.. [12] https://lore.kernel.org/linux-mtd/1342340237-29656-1-git-send-email-dedekind1@gmail.com/
-+
-+.. [13] https://linux-mtd.infradead.narkive.com/bfcHzD0j/ubi-ubifs-corruptions-during-random-power-cuts
-+
-+.. [14] https://bugzilla.kernel.org/show_bug.cgi?id=218309
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7cef2d2ef8d7..6703dfb10369 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22161,8 +22161,9 @@ W:	http://www.linux-mtd.infradead.org/doc/ubifs.html
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git next
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git fixes
- F:	Documentation/ABI/testing/sysfs-fs-ubifs
--F:	Documentation/filesystems/ubifs-authentication.rst
--F:	Documentation/filesystems/ubifs.rst
-+F:	Documentation/filesystems/ubifs/authentication.rst
-+F:	Documentation/filesystems/ubifs/main.rst
-+F:	Documentation/filesystems/ubifs/repair.rst
- F:	fs/ubifs/
- 
- UBLK USERSPACE BLOCK DRIVER
+The underlying goal of this series is to allow using newer AMD GPUs
+(e.g. Navi) on RISC-V boards such as SiFive's HiFive Unmatched. Those
+GPUs need CONFIG_DRM_AMD_DC_FP to initialize, which requires kernel-mode
+FPU support.
+
+Previous versions:
+v1: https://lore.kernel.org/linux-kernel/20231208055501.2916202-1-samuel.holland@sifive.com/
+v0: https://lore.kernel.org/linux-kernel/20231122030621.3759313-1-samuel.holland@sifive.com/
+
+Changes in v2:
+ - Add documentation explaining the built-time and runtime APIs
+ - Add a linux/fpu.h header for generic isolation enforcement
+ - Remove file name from header comment
+ - Clean up arch/arm64/lib/Makefile, like for arch/arm
+ - Remove RISC-V architecture-specific preprocessor check
+ - Split altivec removal to a separate patch
+ - Use linux/fpu.h instead of asm/fpu.h in consumers
+ - Declare test_fpu() in a header
+
+Michael Ellerman (1):
+  drm/amd/display: Only use hard-float, not altivec on powerpc
+
+Samuel Holland (13):
+  arch: Add ARCH_HAS_KERNEL_FPU_SUPPORT
+  ARM: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
+  ARM: crypto: Use CC_FLAGS_FPU for NEON CFLAGS
+  arm64: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
+  arm64: crypto: Use CC_FLAGS_FPU for NEON CFLAGS
+  lib/raid6: Use CC_FLAGS_FPU for NEON CFLAGS
+  LoongArch: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
+  powerpc: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
+  x86: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
+  riscv: Add support for kernel-mode FPU
+  drm/amd/display: Use ARCH_HAS_KERNEL_FPU_SUPPORT
+  selftests/fpu: Move FP code to a separate translation unit
+  selftests/fpu: Allow building on other architectures
+
+ Documentation/core-api/floating-point.rst     | 78 +++++++++++++++++++
+ Documentation/core-api/index.rst              |  1 +
+ Makefile                                      |  5 ++
+ arch/Kconfig                                  |  6 ++
+ arch/arm/Kconfig                              |  1 +
+ arch/arm/Makefile                             |  7 ++
+ arch/arm/include/asm/fpu.h                    | 15 ++++
+ arch/arm/lib/Makefile                         |  3 +-
+ arch/arm64/Kconfig                            |  1 +
+ arch/arm64/Makefile                           |  9 ++-
+ arch/arm64/include/asm/fpu.h                  | 15 ++++
+ arch/arm64/lib/Makefile                       |  6 +-
+ arch/loongarch/Kconfig                        |  1 +
+ arch/loongarch/Makefile                       |  5 +-
+ arch/loongarch/include/asm/fpu.h              |  1 +
+ arch/powerpc/Kconfig                          |  1 +
+ arch/powerpc/Makefile                         |  5 +-
+ arch/powerpc/include/asm/fpu.h                | 28 +++++++
+ arch/riscv/Kconfig                            |  1 +
+ arch/riscv/Makefile                           |  3 +
+ arch/riscv/include/asm/fpu.h                  | 16 ++++
+ arch/riscv/kernel/Makefile                    |  1 +
+ arch/riscv/kernel/kernel_mode_fpu.c           | 28 +++++++
+ arch/x86/Kconfig                              |  1 +
+ arch/x86/Makefile                             | 20 +++++
+ arch/x86/include/asm/fpu.h                    | 13 ++++
+ drivers/gpu/drm/amd/display/Kconfig           |  2 +-
+ .../gpu/drm/amd/display/amdgpu_dm/dc_fpu.c    | 35 +--------
+ drivers/gpu/drm/amd/display/dc/dml/Makefile   | 36 +--------
+ drivers/gpu/drm/amd/display/dc/dml2/Makefile  | 36 +--------
+ include/linux/fpu.h                           | 12 +++
+ lib/Kconfig.debug                             |  2 +-
+ lib/Makefile                                  | 26 +------
+ lib/raid6/Makefile                            | 31 ++------
+ lib/test_fpu.h                                |  8 ++
+ lib/{test_fpu.c => test_fpu_glue.c}           | 37 ++-------
+ lib/test_fpu_impl.c                           | 37 +++++++++
+ 37 files changed, 343 insertions(+), 190 deletions(-)
+ create mode 100644 Documentation/core-api/floating-point.rst
+ create mode 100644 arch/arm/include/asm/fpu.h
+ create mode 100644 arch/arm64/include/asm/fpu.h
+ create mode 100644 arch/powerpc/include/asm/fpu.h
+ create mode 100644 arch/riscv/include/asm/fpu.h
+ create mode 100644 arch/riscv/kernel/kernel_mode_fpu.c
+ create mode 100644 arch/x86/include/asm/fpu.h
+ create mode 100644 include/linux/fpu.h
+ create mode 100644 lib/test_fpu.h
+ rename lib/{test_fpu.c => test_fpu_glue.c} (71%)
+ create mode 100644 lib/test_fpu_impl.c
+
 -- 
-2.31.1
+2.42.0
 
 
