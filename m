@@ -1,221 +1,157 @@
-Return-Path: <linux-kernel+bounces-12631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 216CA81F801
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:58:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E2381F803
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:03:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CBEAB20D57
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 11:58:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97BA8284FA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:03:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37DE3747D;
-	Thu, 28 Dec 2023 11:58:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0764B7475;
+	Thu, 28 Dec 2023 12:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="nJx0smHF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01olkn2107.outbound.protection.outlook.com [40.92.66.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6382A7462;
-	Thu, 28 Dec 2023 11:58:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-	by ex01.ufhost.com (Postfix) with ESMTP id 41A0624E257;
-	Thu, 28 Dec 2023 19:58:32 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Dec
- 2023 19:58:32 +0800
-Received: from [192.168.125.85] (183.27.97.107) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Dec
- 2023 19:58:31 +0800
-Message-ID: <987e4153-236a-4bc6-9db6-f9ad58846267@starfivetech.com>
-Date: Thu, 28 Dec 2023 19:58:30 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F2F06FD6;
+	Thu, 28 Dec 2023 12:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ifAhGxu4VYVMH31FXxT4U1M8kIr4967wcSGtvj0x1CfOIr6RmSMk7tx4EN/gX/9mrmdXXj/ZLj32M2cUOhx2gKKxa618NVm6i8r09UHLg+Jy4aksQjaPy2ohPClIShCJ1bZQRLcnhnZxudnYxbN+9qHhweCBbgx0ayg+BZBADs4mEmJ178oaQu/5i1gIGZvJNgr3/SxC682SWPo/0wU6mYFgGZLDxKagvQVHhAamSkvC/hioC226HX/EGH1NYZdIFQS/EORrDQq5QCmbC8iJYFbcNucEJ94BP9q9GIgPZ7G8PQyWVtJNSwOhNsIuxPgdLO+VWX7TH+gLa+9sUJOMOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tQoKt9CoIBfbklrWmpRJC3fivC82Dm9M/D6YlDRoPiY=;
+ b=JdRfBtV4nhTICAqG5RT1IxWmDWtTarB3m8pZqHwL6tAAeyPCBSfyHK3f2Sbwyt9Foqn0VQJ8KjNGlnP2SURgyt+tnVTVi8/hI/yafUs4T6lJaFjp6lQ1SZgyn9sPupB9b7m/Iu8WJsJ0yyhXlpPtPYDKFgK+k0gRZQAD59pXpK4dejWMf4GV/taWj97J4Kca1XLzGy1vwgDRUqgCo+Je6OJKH7b9/f5JmBu8mHthLLx/SQmICFMltZX1iOafTU+/IvUw53M1n2mDBuvmNzES5RBbKnJ0hih8wA53MZpuRBUoo7UiB71A0X2DoJlwiPQBKIkTsYUERFjno/ZRD/RKkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tQoKt9CoIBfbklrWmpRJC3fivC82Dm9M/D6YlDRoPiY=;
+ b=nJx0smHFr5bpDwrAmCMpGe3tfOBMH+9+OK8ufAE6UKIkC2cjjAAnSJWzy/XmuYQa58t/8HU9avRjlMcDuXvZxgis4MqP0v4gjZkSyOLQCMAftIjZuftL0AU6ktxT9+0PrMh+nyenh2I4H0LjmzcOtgpxLGLVYfOCUJn/IFwjbfAsk5sRyg5yeo/xPzVwAVfAT9zLo4n4TVZPKRqPXaDFsPS5diutNk2pOIu8alIJi0RriomCWQr7IlQBB9Rgy8w4v/oOkXWMcwZ6IS0bWWWv5Sa0lMaUZkecJxNccfmyY6ienfTEZoch1TuT5ibHLqWbC4w5GlbzFPsJof/zgf0F2w==
+Received: from AS8PR02MB10217.eurprd02.prod.outlook.com
+ (2603:10a6:20b:63e::17) by AS2PR02MB8949.eurprd02.prod.outlook.com
+ (2603:10a6:20b:5e5::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.28; Thu, 28 Dec
+ 2023 12:03:21 +0000
+Received: from AS8PR02MB10217.eurprd02.prod.outlook.com
+ ([fe80::2b9c:230f:3297:57e8]) by AS8PR02MB10217.eurprd02.prod.outlook.com
+ ([fe80::2b9c:230f:3297:57e8%7]) with mapi id 15.20.7135.019; Thu, 28 Dec 2023
+ 12:03:21 +0000
+From: David Binderman <dcb314@hotmail.com>
+To: Bagas Sanjaya <bagasdotme@gmail.com>, "sfrench@samba.org"
+	<sfrench@samba.org>, "pc@manguebit.com" <pc@manguebit.com>,
+	"lsahlber@redhat.com" <lsahlber@redhat.com>, "sprasad@microsoft.com"
+	<sprasad@microsoft.com>, "tom@talpey.com" <tom@talpey.com>,
+	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+	"samba-technical@lists.samba.org" <samba-technical@lists.samba.org>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject:
+ =?Windows-1252?Q?Re:_fs/smb/client/sess.c:462:20:_warning:_duplicated_=91?=
+ =?Windows-1252?Q?if=92_condition?=
+Thread-Topic:
+ =?Windows-1252?Q?fs/smb/client/sess.c:462:20:_warning:_duplicated_=91if?=
+ =?Windows-1252?Q?=92_condition?=
+Thread-Index: AQHaOYFrCCXlZ38mvkmOuPmXNZXsLbC+lZgAgAABi2Q=
+Date: Thu, 28 Dec 2023 12:03:21 +0000
+Message-ID:
+ <AS8PR02MB102175EE04EAB5CAB6E459BEF9C9EA@AS8PR02MB10217.eurprd02.prod.outlook.com>
+References:
+ <AS8PR02MB1021708E77D868F8AE5EFD8859C9EA@AS8PR02MB10217.eurprd02.prod.outlook.com>
+ <ZY1hcE5E3Mizv2il@archie.me>
+In-Reply-To: <ZY1hcE5E3Mizv2il@archie.me>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+x-ms-exchange-messagesentrepresentingtype: 1
+x-tmn: [uvvdClGaHx6ZPGH8LMT02Eoj+lqj97YJ]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AS8PR02MB10217:EE_|AS2PR02MB8949:EE_
+x-ms-office365-filtering-correlation-id: e0a1ba68-ce17-4a5d-592f-08dc079cfcc5
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ +pXoZjTy+8MLtVuOohnUuAG/d+BY4yJ2zReslutUjipyXD1XfSKHtSOtP2qNh1QLXkzOtknkjK3KEEu3w1WLc/ikmbOVx5DzZ+zeDj7m9sCQTBwAMJKf5q0Ynd4QDLH3p5HcvI+HglK5aHRC7qFPT907UlL0cZPcSu/iFowrw/8lpiDPP0fWEHOpAMgMHhOoqKQhgmhoPtqGGueVk7A/TRBm+kInmk7VFl5Bnze6WZveXyCKSteq+qice4htnf2hGKtDQHVxIqiWSpV0VKZv7FJPewlVYrMxdZs/EZtDgWArwbvaq/XNhw0lVAmSviRo39YI0u6+72Sqr5Lqyfegcy5eg7NS7P6Gf5Vgvn1537nbx93tZl5YC2bLx8L8O5NaW/NVhpJkyyZj9imZQ4/3VrJAr5/FmztfFt0YESJdcGTaR6wEHatb5EonA1m2YJ7gM31qGNYfK9kFYDgWsRb/TEJXS/4wMuWlw8Pg+QuNCMGyv8CEks5wjIwzLoLdg/WlcMFOjdOvYyVAxWLZuUO97BXq5OobtfVe8c7zvwF4ncgjV7DCDNBrROBVwomULDW6
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?Windows-1252?Q?DL5ZFIJyZnFaHG17Eo75DyjLOIo0jzlW0Ee3In8WJb8kHwzn9kBBDzpl?=
+ =?Windows-1252?Q?Zgy5o8eUci6KdydmjKEY+722LCh+4RJj1sDimwFs5Sz2NZmUGIKHDROx?=
+ =?Windows-1252?Q?FmXe4IYQG0990JeTextHEVvhqEpREsNXhKwTcwSlQEcyUClkXYklZk+x?=
+ =?Windows-1252?Q?CIvEyTm02wcQyTGa9I7QB8uLzKa5fc4bUvvF25UHG1wqZjDnSBwlwaPt?=
+ =?Windows-1252?Q?ksGbHLjV0s8EfXYfqVOAgs3x9kMA4z4bKzSelBaO5HncJL1P8+ZzUunl?=
+ =?Windows-1252?Q?JtMxMQqa9/0WxtTnSPMVlYJKfLSAOel3Do7uy7sBDlGZlgErP32xgM7q?=
+ =?Windows-1252?Q?Gr5thiAz4QhXnWzcsdjh9lGb7OAWaVf/Ly6HltakfqQOtXvAFIRLwu2g?=
+ =?Windows-1252?Q?8qvkJGJcw7ZDC4Ct721pSxG3AgqAMV2sOXFmC+UHw2BuC35+sol8+rle?=
+ =?Windows-1252?Q?U1b8mfDc9op7bq6eLVM0H0xMd6I22A0UM37L+Y1IoBAS+NC6UDKdyDHX?=
+ =?Windows-1252?Q?7Q+US7vuem8elS8NoTZ9rDkdopICMEgCFRBi4B4EojyFysnvN4kTfNDm?=
+ =?Windows-1252?Q?eNdUK1iDS2t2lwqZZQpmD+JCwFms7K5hteIXqjFKFQC75nHKyNefRVdh?=
+ =?Windows-1252?Q?15xLiH1G7b4QnA85zRg0XehhZ8iTPgyOBnhuKuzF4pNdRlkeNoFFIn41?=
+ =?Windows-1252?Q?xWlfC7L7ihjIQRAygRswpmAgNVaa6umAzVSW4wxkFyiiBviTLjA3fhsQ?=
+ =?Windows-1252?Q?FYr0T1VBAd/YlQd+2/mzl5h2EpXxJHrmv+NbzzstCms9LmyH9clY9wWf?=
+ =?Windows-1252?Q?xStSbFv5AEwkGfQYLTd0WDnXTxBfR3bIv3ckr8AxFcWDG2En1+suQhMf?=
+ =?Windows-1252?Q?325/KOlleV5SiFJ+ZffXx7iZqIk0xEvo8JjV6n62IfSA4RPEHwG21wfe?=
+ =?Windows-1252?Q?0EYjkHolrwEGdXKYd00m4UkqeQTznDAPpiLRtoQP6pzjYJXbmvHgJENe?=
+ =?Windows-1252?Q?wL/NeKRfUr0tuMeAyP6HlJAk11S8bVoIkExbd6iURROnrq/zgMp8m29B?=
+ =?Windows-1252?Q?VlDH14FRQHmBjYwk9+cH6jsPP8S9S/qNV36XruAricplQoQwmGMpaQmc?=
+ =?Windows-1252?Q?HZ/1i8t9f+yuUkId51uoDIgTpnY3tpHeXvCpxrZGFz/EHNJYds+UVGHi?=
+ =?Windows-1252?Q?0ojOlt1LkJ9dxmgDSaCpIzKSCQZPtOm3mDQacSOdL+q2fDY8g8JCapgc?=
+ =?Windows-1252?Q?iTekPeW6WM8GMOuG0EKP2uMzEmn2dQHZtnY+3rYC?=
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 12/21] PCI: microchip: Add request_event_irq()
- callback function
-Content-Language: en-US
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-CC: Conor Dooley <conor@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?=
-	<kw@linux.com>, Rob Herring <robh+dt@kernel.org>, Bjorn Helgaas
-	<bhelgaas@google.com>, Daire McNamara <daire.mcnamara@microchip.com>, "Emil
- Renner Berthing" <emil.renner.berthing@canonical.com>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-	<linux-pci@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
-	"Palmer Dabbelt" <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-	"Philipp Zabel" <p.zabel@pengutronix.de>, Mason Huo
-	<mason.huo@starfivetech.com>, Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-	Kevin Xie <kevin.xie@starfivetech.com>
-References: <20231214072839.2367-1-minda.chen@starfivetech.com>
- <20231214072839.2367-13-minda.chen@starfivetech.com>
- <ZYxKYhVycTOfbDTI@lpieralisi>
-From: Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <ZYxKYhVycTOfbDTI@lpieralisi>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-bcc80.templateTenant
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB10217.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0a1ba68-ce17-4a5d-592f-08dc079cfcc5
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Dec 2023 12:03:21.6472
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR02MB8949
 
-
-
-On 2023/12/28 0:01, Lorenzo Pieralisi wrote:
-> On Thu, Dec 14, 2023 at 03:28:30PM +0800, Minda Chen wrote:
->> PolarFire implements specific PCIe interrupts except PLDA local interrupt.
-> 
-> Please explain to me what you want to say here.
-> >> For lack of MSI controller, these interrupts have to be added to global
->> event field. PolarFire PCIe driver also register additional interrupt
->> symbol name.
-> 
-> And here.
-> 
-The sentence mean architecture should have an advance interrupt 
-controller can support MSI interrupt and these new added interrupts should
-be added to MSI interrupt. (Like ARM GIC high level version)
-
-Maybe this commit message should be deleted. The commit message should claim
-why add request_event_irq() callback function.
-
-Add this callback function is for vendor register the interrupt handler and
-the name of new added PCIe interrupts. 
-
-"new added PCIe interrupts" is mean microchip new added interrupt.
-#define EVENT_PCIE_L2_EXIT                      0
-#define EVENT_PCIE_HOTRST_EXIT                  1
-#define EVENT_PCIE_DLUP_EXIT                    2
-#define EVENT_SEC_TX_RAM_SEC_ERR                3
-#define EVENT_SEC_RX_RAM_SEC_ERR                4
-#define EVENT_SEC_PCIE2AXI_RAM_SEC_ERR          5
-#define EVENT_SEC_AXI2PCIE_RAM_SEC_ERR          6
-#define EVENT_DED_TX_RAM_DED_ERR                7
-#define EVENT_DED_RX_RAM_DED_ERR                8
-#define EVENT_DED_PCIE2AXI_RAM_DED_ERR          9
-#define EVENT_DED_AXI2PCIE_RAM_DED_ERR          10
-
-
->> PolarFire PCIe contain total 28 interrupts event while PLDA contain 13
->> local interrupts event, interrupt to event num mapping is different.
-> 
-> It "is different" in different platforms ? Is that correct ?
-> 
-yes
->> So add a callback function to support different IRQ register function.
->> Also Add PLDA default handler function, which will be moved to pcie-
->> plda-host.c in moving codes patch.
-> 
-> As I said before, a patch is a single self-contained change, don't
-> refer to other patches, they may or may not be merged or even exist
-> by the time this one hits mainline.
-> 
-> Lorenzo
-> 
-OK. I will delete the "which will be moved to pcie-plda-host.c in 
-moving codes patch" and change the commit message.
-
->> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
->> Acked-by: Conor Dooley <conor.dooley@microchip.com>
->> ---
->>  .../pci/controller/plda/pcie-microchip-host.c | 31 ++++++++++++++++---
->>  drivers/pci/controller/plda/pcie-plda.h       |  5 +++
->>  2 files changed, 32 insertions(+), 4 deletions(-)
->> 
->> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
->> index 7b3f4f74745d..624e4e2e97d3 100644
->> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
->> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
->> @@ -643,6 +643,11 @@ static irqreturn_t mc_event_handler(int irq, void *dev_id)
->>  	return IRQ_HANDLED;
->>  }
->>  
->> +static irqreturn_t plda_event_handler(int irq, void *dev_id)
->> +{
->> +	return IRQ_HANDLED;
->> +}
->> +
->>  static void plda_handle_event(struct irq_desc *desc)
->>  {
->>  	struct plda_pcie_rp *port = irq_desc_get_handler_data(desc);
->> @@ -804,6 +809,17 @@ static int mc_pcie_init_clks(struct device *dev)
->>  	return 0;
->>  }
->>  
->> +static int mc_request_event_irq(struct plda_pcie_rp *plda, int event_irq,
->> +				int event)
->> +{
->> +	return devm_request_irq(plda->dev, event_irq, mc_event_handler,
->> +				0, event_cause[event].sym, plda);
->> +}
->> +
->> +static const struct plda_event mc_event = {
->> +	.request_event_irq = mc_request_event_irq,
->> +};
->> +
->>  static int plda_pcie_init_irq_domains(struct plda_pcie_rp *port)
->>  {
->>  	struct device *dev = port->dev;
->> @@ -905,7 +921,9 @@ static void mc_disable_interrupts(struct mc_pcie *port)
->>  	writel_relaxed(GENMASK(31, 0), bridge_base_addr + ISTATUS_HOST);
->>  }
->>  
->> -static int plda_init_interrupts(struct platform_device *pdev, struct plda_pcie_rp *port)
->> +static int plda_init_interrupts(struct platform_device *pdev,
->> +				struct plda_pcie_rp *port,
->> +				const struct plda_event *event)
->>  {
->>  	struct device *dev = &pdev->dev;
->>  	int irq;
->> @@ -929,8 +947,13 @@ static int plda_init_interrupts(struct platform_device *pdev, struct plda_pcie_r
->>  			return -ENXIO;
->>  		}
->>  
->> -		ret = devm_request_irq(dev, event_irq, mc_event_handler,
->> -				       0, event_cause[i].sym, port);
->> +		if (event->request_event_irq)
->> +			ret = event->request_event_irq(port, event_irq, i);
->> +		else
->> +			ret = devm_request_irq(dev, event_irq,
->> +					       plda_event_handler,
->> +					       0, NULL, port);
->> +
->>  		if (ret) {
->>  			dev_err(dev, "failed to request IRQ %d\n", event_irq);
->>  			return ret;
->> @@ -984,7 +1007,7 @@ static int mc_platform_init(struct pci_config_window *cfg)
->>  		return ret;
->>  
->>  	/* Address translation is up; safe to enable interrupts */
->> -	ret = plda_init_interrupts(pdev, &port->plda);
->> +	ret = plda_init_interrupts(pdev, &port->plda, &mc_event);
->>  	if (ret)
->>  		return ret;
->>  
->> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
->> index e3d35cef9894..28ed1374e1de 100644
->> --- a/drivers/pci/controller/plda/pcie-plda.h
->> +++ b/drivers/pci/controller/plda/pcie-plda.h
->> @@ -121,6 +121,11 @@ struct plda_pcie_rp {
->>  	int num_events;
->>  };
->>  
->> +struct plda_event {
->> +	int (*request_event_irq)(struct plda_pcie_rp *pcie,
->> +				 int event_irq, int event);
->> +};
->> +
->>  void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
->>  			    phys_addr_t axi_addr, phys_addr_t pci_addr,
->>  			    size_t size);
->> -- 
->> 2.17.1
->> 
+Hello there,=0A=
+=0A=
+>What warnings? =0A=
+=0A=
+The warning mentioned in the title.=0A=
+=0A=
+>And what gcc version? =0A=
+=0A=
+Probably most versions.=0A=
+=0A=
+You will probably have to switch on gcc compiler flag -Wduplicated-cond=0A=
+in any random released version of gcc to see what I see.=0A=
+=0A=
+=0A=
+Regards=0A=
+=0A=
+David Binderman=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+Confused...=0A=
+=0A=
+=0A=
+=0A=
+--=0A=
+=0A=
+An old man doll... just what I always wanted! - Clara=
 
