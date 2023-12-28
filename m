@@ -1,175 +1,113 @@
-Return-Path: <linux-kernel+bounces-12700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0934281F915
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AC5381F918
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:31:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3BBB1F22DA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:30:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 403C31F23463
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:31:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2128832;
-	Thu, 28 Dec 2023 14:30:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AA1BCA67;
+	Thu, 28 Dec 2023 14:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="dv8rhXUf"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Pqc9NNBE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B05C8D2
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 14:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a2345aaeb05so663767466b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 06:29:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1703773797; x=1704378597; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IfOkw9nEcZxbA1rEGXnw7Xr3Fbv2QGCNa/sv3AZ14y4=;
-        b=dv8rhXUfeIIde9MZGjI6hLX+c81tekNQVvOna8wokRJYaskThEmkjZYVcF/8UpVNCA
-         WJvzBrDudVuXUJLvRRMGFNAs8WtmxyuyueFvSJhJ+dH9MnSewQju440m90hKwZZAa0om
-         EgT6qlyZDvDCdWti/BMZksKdrs6NyWCgFer1tHKrgEWph9k43KGI3aLlLZfAAfwFXLF8
-         U0azGfF+09/drjuMrS8jDXlqVMLvS8kAeywrbt/EGcJEWcGLD8zE0rJLTgyqAqUjK6Ww
-         Kuy+6x16nf1MtO3T0xaQvNIvZ2+6MXejx7NpdRdH260DejMtu4KIswRtwt6++COxddGn
-         rZ4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703773797; x=1704378597;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=IfOkw9nEcZxbA1rEGXnw7Xr3Fbv2QGCNa/sv3AZ14y4=;
-        b=VDjrg5S2e05KFKHMZF1CIC6D8esfp5ourW638Q5/eFevf5DDW1SH2zAsVo9/Hr/QKG
-         s4IdD57bgrqNEbYiV3kswk+nOT5kiWCh1s00TsaJHaN485ST5imiSdwdfVBCc64cCEv5
-         uBZD6WsgbHacOVNAuAjY+wQPpodedfzujYa1z/g0qzMDrrpE4g0FgXR1GQ1YbWegPncn
-         PICh9ZbAEbmjcfoooQXjf+bhBnTaz4wlQ+UQNX+A5v0E5V5ip+4sUc4L+YAZ58KuJMoO
-         pQLRtRG0MBR3arb37hQg4aqzT4DdCcHSeYmRiGM47mT6Kx4f5ya3hsfuVkJ1GcWXpN28
-         N1xA==
-X-Gm-Message-State: AOJu0YwsfVn44+pgDxw6nBLY5/tP2od9PwIe4pfv0vke/GT7kkK0Q+Qx
-	Xo7LQUdtXDcbUWhoJu5r93S+V4gzKKToXQ==
-X-Google-Smtp-Source: AGHT+IEwzibakp4+9ZXJZVidzN9ogA4Ep77wRAfVlvNC3XZ4Cuo92tm68q7JErfyuMvnMmslNephwA==
-X-Received: by 2002:a17:906:7810:b0:a12:78b5:3d81 with SMTP id u16-20020a170906781000b00a1278b53d81mr4527886ejm.1.1703773797149;
-        Thu, 28 Dec 2023 06:29:57 -0800 (PST)
-Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id r25-20020a170906281900b00a1f7c502736sm7523221ejc.164.2023.12.28.06.29.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Dec 2023 06:29:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84D0AC8D2
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 14:31:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703773884; x=1735309884;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=4YoiP5cx+oOE35Y5TkJFbWoAf3NNxqHps5Ad7oCP678=;
+  b=Pqc9NNBEcnN+OlinCW5FtxesjCnmiWIW2PyvFU+okRyULeuYoFWocDKZ
+   xYkGiZP62j0s6O/rs9U7fzvy95l9jmZ0A7lmN5MKhU7El/nNB4inmQXJi
+   K632pJwt2Lk+zL6XJVqXPVzwxn2c8pQiTocPKdlRFqHh7WipR4hRrvGXY
+   +gIg/ZS7Ps7OuGofFiGVR94JD9/QcUniLT1o3qeqceXKwghuvwPkdlVqd
+   4YQ0Lrp2Hc1MweHX4bIg6iRE+cXFJwwTvJWeis9E28vJvb3LazIuRYCHZ
+   a9A7P3JiJfMDS8BnItPbJ6MeNu56n96qJPzEKQKG8bYXXb1Nu2Q0/ijxm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="427722222"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="427722222"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 06:31:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="728328070"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="728328070"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 28 Dec 2023 06:31:22 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rIrPs-000GXB-0A;
+	Thu, 28 Dec 2023 14:31:20 +0000
+Date: Thu, 28 Dec 2023 22:30:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: Aswath Govindraju <a-govindraju@ti.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Vinod Koul <vkoul@kernel.org>
+Subject: drivers/mux/adg792a.c:134:34: warning: 'adg792a_of_match' defined
+ but not used
+Message-ID: <202312282250.c3GseJPc-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 28 Dec 2023 15:29:56 +0100
-Message-Id: <CY01EKQVWE36.B9X5TDXAREPF@fairphone.com>
-Cc: <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
- <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
- <davem@davemloft.net>, <devicetree@vger.kernel.org>,
- <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
- <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
- <robh+dt@kernel.org>, <vkoul@kernel.org>,
- <cros-qcom-dts-watchers@chromium.org>
-Subject: Re: [PATCH V3 2/2] arm64: dts: qcom: sc7280: add QCrypto nodes
-From: "Luca Weiss" <luca.weiss@fairphone.com>
-To: "Om Prakash Singh" <quic_omprsing@quicinc.com>
-X-Mailer: aerc 0.15.2
-References: <20231214103600.2613988-1-quic_omprsing@quicinc.com>
- <20231214103600.2613988-3-quic_omprsing@quicinc.com>
-In-Reply-To: <20231214103600.2613988-3-quic_omprsing@quicinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu Dec 14, 2023 at 11:36 AM CET, Om Prakash Singh wrote:
-> Add the QCE and Crypto BAM DMA nodes.
->
-> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
-> ---
->
-> Changes in V3:
->   - V2 patch was sent without actual modification. Resending the patch wi=
-th modified file.
->
-> Changes in V2:
->   - Update DT node sequence as per register ascending order.
->   - Fix DT node properties as per convention.
->
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/q=
-com/sc7280.dtsi
-> index 66f1eb83cca7..b819724c1255 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -2233,6 +2233,28 @@ pcie1_phy: phy@1c0e000 {
->  			status =3D "disabled";
->  		};
-> =20
-> +		cryptobam: dma-controller@1dc4000 {
-> +			compatible =3D "qcom,bam-v1.7.4", "qcom,bam-v1.7.0";
-> +			reg =3D <0x0 0x01dc4000 0x0 0x28000>;
-> +			interrupts =3D <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
-> +			#dma-cells =3D <1>;
-> +			iommus =3D <&apps_smmu 0x4e4 0x0011>,
-> +				 <&apps_smmu 0x4e6 0x0011>;
-> +			qcom,ee =3D <0>;
-> +			qcom,controlled-remotely;
-> +		};
+Hi Aswath,
 
-Hi,
+FYI, the error/warning still remains.
 
-Unfortunately I seem to have boot failure / device crash with cryptobam
-enabled on my qcm6490-fairphone-fp5. Are you aware of any firmware
-differences that could cause this with QCM6490 LA firmware?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f5837722ffecbbedf1b1dbab072a063565f0dad1
+commit: e4d4371253029528c02bfb43a46c252e1c3d035f phy: phy-can-transceiver: Add support for setting mux
+date:   1 year, 9 months ago
+config: x86_64-randconfig-c022-20230306 (https://download.01.org/0day-ci/archive/20231228/202312282250.c3GseJPc-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231228/202312282250.c3GseJPc-lkp@intel.com/reproduce)
 
-Looking at downstream msm-5.4 dmesg I do see this BAM being used so it
-should generally be accessible from Linux.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312282250.c3GseJPc-lkp@intel.com/
 
-[    5.217214] qce 1de0000.qcedev: Adding to iommu group 18
-[    5.223741] QCE50: __qce_get_device_tree_data: CE operating frequency is=
- not defined, setting to default 100MHZ
-[    5.234986] qce 1de0000.qcedev: QTI Crypto 5.6.0 device found @0x1de0000
-[    5.242981] sps_register_bam_device: sps:BAM 0x0000000001dc4000 is regis=
-tered
-[    5.251124] sps_bam_enable: sps:BAM 0x0000000001dc4000 (va:0x000000001db=
-63156) enabled: ver:0x27, number of pipes:16
-[    5.262783] QCE50: qce_sps_init:  QTI MSM CE-BAM at 0x0000000001dc4000 i=
-rq 9
-[    5.271820] qce 1de0000.qcedev:qcom_cedev_ns_cb: Adding to iommu group 1=
-9
-[    5.281083] qce 1de0000.qcedev:qcom_cedev_s_cb: Adding to iommu group 20
-[    5.289376] qcrypto 1de0000.qcrypto: Adding to iommu group 21
-[    5.296326] QCE50: __qce_get_device_tree_data: CE operating frequency is=
- not defined, setting to default 100MHZ
-[    5.307675] qcrypto 1de0000.qcrypto: QTI Crypto 5.6.0 device found @0x1d=
-e0000
-[    5.315867] QCE50: qce_sps_init:  QTI MSM CE-BAM at 0x0000000001dc4000 i=
-rq 9
+All warnings (new ones prefixed by >>):
 
-Any idea?
+>> drivers/mux/adg792a.c:134:34: warning: 'adg792a_of_match' defined but not used [-Wunused-const-variable=]
+     134 | static const struct of_device_id adg792a_of_match[] = {
+         |                                  ^~~~~~~~~~~~~~~~
 
-Regards
-Luca
 
-> +
-> +		crypto: crypto@1dfa000 {
-> +			compatible =3D "qcom,sc7280-qce", "qcom,sm8150-qce", "qcom,qce";
-> +			reg =3D <0x0 0x01dfa000 0x0 0x6000>;
-> +			dmas =3D <&cryptobam 4>, <&cryptobam 5>;
-> +			dma-names =3D "rx", "tx";
-> +			iommus =3D <&apps_smmu 0x4e4 0x0011>,
-> +				 <&apps_smmu 0x4e4 0x0011>;
-> +			interconnects =3D <&aggre2_noc MASTER_CRYPTO 0 &mc_virt SLAVE_EBI1 0>=
-;
-> +			interconnect-names =3D "memory";
-> +		};
-> +
->  		ipa: ipa@1e40000 {
->  			compatible =3D "qcom,sc7280-ipa";
-> =20
+vim +/adg792a_of_match +134 drivers/mux/adg792a.c
 
+afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  133  
+afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14 @134  static const struct of_device_id adg792a_of_match[] = {
+afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  135  	{ .compatible = "adi,adg792a", },
+afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  136  	{ .compatible = "adi,adg792g", },
+afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  137  	{ }
+afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  138  };
+afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  139  MODULE_DEVICE_TABLE(of, adg792a_of_match);
+afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  140  
+
+:::::: The code at line 134 was first introduced by commit
+:::::: afda08c4caa9489511557def51e322a5f2142a2f mux: adg792a: add mux controller driver for ADG792A/G
+
+:::::: TO: Peter Rosin <peda@axentia.se>
+:::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
