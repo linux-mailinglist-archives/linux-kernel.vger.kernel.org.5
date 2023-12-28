@@ -1,115 +1,318 @@
-Return-Path: <linux-kernel+bounces-12504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A21B81F5CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:02:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E7AC81F5D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:03:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45EA01C21CB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:02:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6428F1C21CF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:03:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAEC25235;
-	Thu, 28 Dec 2023 08:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4423063B6;
+	Thu, 28 Dec 2023 08:03:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SknIFCUj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PN9Fb0EP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com [209.85.217.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B44044409
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 08:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40d5097150fso197025e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 00:02:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED5D63AA
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 08:03:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-466eb1aeb6eso454529137.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 00:03:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703750550; x=1704355350; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703750624; x=1704355424; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1eB61PJ6bXuOFc4kAwo732pceo1OINco0DG5E/GPGo0=;
-        b=SknIFCUjfuYWoiXQTrMrepV/aaR0GecE3Xb9wYQXW/6ggHzsCtww1ShjGXR7JHKGAe
-         JTL7QWq5dcjq6u0u4YM8DzsfGdIM1JxfmKoFRbFsq7sBw9JOqLvowifBDCjHa4qs2Cmt
-         IRG9RFbcfJ4t1o34d9Z1ZZBXmSc9MkYQtxjC0JyyxoZ0WbqOw5fouKUCYiwSk+Jb2Erp
-         83/YmMp6PFiMTfUOffiIUONajT4Aa7vEHUUe1+2UEdlBy9z4pc5jA2z9Q69yFMbUsfAK
-         wkcUwjcmQ69ogxKh6fs/vyhYFmZWRwsFjTx3vCi32txkS7F0FFOAm6kbQpFOfSD9Y5AI
-         PK6w==
+        bh=XjXAZeUaucKd08zzDumuok+Gk2xPGmpSlnUev39Qs0s=;
+        b=PN9Fb0EPGLf4+o8LWQ77/SJMZMOAGJbmLgG4/nuyzW4VIe4M0Q+DWSXLAMDpw3aSis
+         QroVPCGU/yaFPudeSKuCikYcsQEozvWnQXNUSg6vf5RE70mfStocshODUuXoAmg91yR9
+         EkY834NBLC2QMwRg/rpO6Lvs/L7SPQ0eGy3sjjUssa6ksiCzhan2E7ct2nfnhL9SGyLt
+         je37Uq2+QDnsFT8+sef5J/11QK+7+I7DHrQW3puCQwC3eyZCVS6p1efrqBy8uOK+3AA4
+         96+R+641Y9IXpvYsH4I669+AOGLDVnIz8j4OSPtSobwBNX7A7AUHhg0JGW0RsY9U/nWM
+         qvBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703750550; x=1704355350;
+        d=1e100.net; s=20230601; t=1703750624; x=1704355424;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1eB61PJ6bXuOFc4kAwo732pceo1OINco0DG5E/GPGo0=;
-        b=S3S5EHFztdIftGw+UyiLvd1MRIC7IT9O+u3yJr/BC3EJPDH9GNMu5J2eMqWe1KeFlV
-         2J3Zi3KLi21JLXMV1HGhZ2ilAMct1WFqUZNizidB9EytRKvWOs1r7WGwQfZQKnjLUc7E
-         YAX90OsC9ch3iq6rL8VNUx5cGkV9ja+EHLLqTlCWMAObOrooJoVxtmPssUx31xcJXxHc
-         kSOkA98YFPRWicL/UZXfW1JyrG5Hh95kUZ3Himb/hF+0+ypqWlXma8LcsRnJ5RVvGMUR
-         tSkdf66ORbHK9yOeiyq1FYm+qbtdhaTA7cPPUcsKFa/9q1Pu1ImLmarRvL8FFDNw+KMF
-         YgKQ==
-X-Gm-Message-State: AOJu0YxGwhQBafZIVvl3UgU2jBV7gGG5Iet6MoGq1uX6uZRdeP8V0zNB
-	JQwpGCJZC7hq/QgMEhFhaXbNHKYEPgkMDuSCrTKNDrsto6I4
-X-Google-Smtp-Source: AGHT+IFQHW+Q/Yt6QyxXEHRjzz2VaaoY833C1iYaqV5n3v5D+8xiTWxjXWzG8tMdhUTve9fmyAGq1ZODhJiCWlOdRAQ=
-X-Received: by 2002:a05:600c:450e:b0:40d:2bc7:e9b with SMTP id
- t14-20020a05600c450e00b0040d2bc70e9bmr689916wmo.4.1703750549687; Thu, 28 Dec
- 2023 00:02:29 -0800 (PST)
+        bh=XjXAZeUaucKd08zzDumuok+Gk2xPGmpSlnUev39Qs0s=;
+        b=amue3gj86cBvceCF2tEU7ohUrVr7YwOmk1IHqN0sriEh8LacRigH36XAcDOCFc8fgs
+         s2QYVu6xMIPD4WJvvWS7AipveplOwOtvup5p5+9Hs79FoV+iVSk2iMxhOru6LhxgzqjM
+         dqRh1Fa8JlQJKy1V/x1KhzAIaes/VYvfdK3F4Wyj6EOmw7Y5u/+698j1FFuyGZ4bnq2i
+         SLh7PQ2Sy8MuEK4qk6hpYrwRDaFhNtB+Hi2ZxMmLLfJjcVklQcFE1CMC/GccH1NyveOz
+         m2+qeounSplqAOLyeYeGnFAzooDmIFm1PmlafG+3ZgaAiebCtS/J9OqHtzqBVqn9lx12
+         +Gmg==
+X-Gm-Message-State: AOJu0Yz1Ar04JYUkNL1BKWoOCd57JYzXGIAQ/mcfqEPbUt/2jO11Klmc
+	85jkocAVzPfc7TT/ugXHAH6a/EIqAACpLaZGWlg=
+X-Google-Smtp-Source: AGHT+IGGnZsxqnyFkcltWEg6Y/SusHGjiDMVj7cocgcrz5Qt0o8mJAga3inBbGneJt1BPO/nDo4HaHF5TCf8Zen0gEI=
+X-Received: by 2002:a05:6102:c16:b0:466:a76b:c4b5 with SMTP id
+ x22-20020a0561020c1600b00466a76bc4b5mr4059987vss.44.1703750623742; Thu, 28
+ Dec 2023 00:03:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228073055.4046430-1-shakeelb@google.com>
-In-Reply-To: <20231228073055.4046430-1-shakeelb@google.com>
-From: Yu Zhao <yuzhao@google.com>
-Date: Thu, 28 Dec 2023 01:01:51 -0700
-Message-ID: <CAOUHufZFZgT70mcnCV8tpLpxhF5D1aNYe0nLAVJs_fDX0EMH5A@mail.gmail.com>
-Subject: Re: [PATCH] mm: ratelimit stat flush from workingset shrinker
-To: Shakeel Butt <shakeelb@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosryahmed@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20231213-zswap-dstmem-v4-0-f228b059dd89@bytedance.com>
+ <20231213-zswap-dstmem-v4-2-f228b059dd89@bytedance.com> <CAGsJ_4yUCQrGKQD-oxSAhyvJ+fY_KXUoiVBXE_i0jDAhWiNGzA@mail.gmail.com>
+ <c33d2811-7a61-40cc-a93e-9416bf9bbbf0@bytedance.com>
+In-Reply-To: <c33d2811-7a61-40cc-a93e-9416bf9bbbf0@bytedance.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Thu, 28 Dec 2023 21:03:32 +1300
+Message-ID: <CAGsJ_4xHJzfjCsWqOdEs_=DTExJueO3gsVg4y_sNtr3U8BEuRg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/6] mm/zswap: reuse dstmem when decompress
+To: Chengming Zhou <zhouchengming@bytedance.com>, Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Seth Jennings <sjenning@redhat.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Vitaly Wool <vitaly.wool@konsulko.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Chris Li <chriscli@google.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, Dan Streetman <ddstreet@ieee.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, Chris Li <chrisl@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 28, 2023 at 12:31=E2=80=AFAM Shakeel Butt <shakeelb@google.com>=
- wrote:
+On Wed, Dec 27, 2023 at 7:32=E2=80=AFPM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
 >
-> One of our internal workload regressed on newer upstream kernel
+> On 2023/12/27 09:24, Barry Song wrote:
+> > On Wed, Dec 27, 2023 at 4:56=E2=80=AFAM Chengming Zhou
+> > <zhouchengming@bytedance.com> wrote:
+> >>
+> >> In the !zpool_can_sleep_mapped() case such as zsmalloc, we need to fir=
+st
+> >> copy the entry->handle memory to a temporary memory, which is allocate=
+d
+> >> using kmalloc.
+> >>
+> >> Obviously we can reuse the per-compressor dstmem to avoid allocating
+> >> every time, since it's percpu-compressor and protected in percpu mutex=
+.
+> >
+> > what is the benefit of this since we are actually increasing lock conte=
+ntion
+> > by reusing this buffer between multiple compression and decompression
+> > threads?
+>
+> This mutex is already reused in all compress/decompress paths even before
+> the reuse optimization. I think the best way maybe to use separate crypto=
+_acomp
+> for compression and decompression.
+>
+> Do you think the lock contention will be increased because we now put zpo=
+ol_map_handle()
+> and memcpy() in the lock section? Actually, we can move zpool_map_handle(=
+) before
+> the lock section if needed, but that memcpy() should be protected in lock=
+ section.
+>
+> >
+> > this mainly affects zsmalloc which can't sleep? do we have performance
+> > data?
+>
+> Right, last time when test I remembered there is very minor performance d=
+ifference.
+> The main benefit here is to simply the code much and delete one failure c=
+ase.
 
-Not really internal -- it's Postgres 14 + sysbench OLTP.
+ok.
 
-> and on
-> further investigation, it seems like the cause is the always synchronous
-> rstat flush in the count_shadow_nodes() added by the commit f82e6bf9bb9b
-> ("mm: memcg: use rstat for non-hierarchical stats"). On further
-> inspection it seems like we don't really need accurate stats in this
-> function as it was already approximating the amount of appropriate
-> shadow entried to keep for maintaining the refault information. Since
-> there is already 2 sec periodic rstat flush, we don't need exact stats
-> here. Let's ratelimit the rstat flush in this code path.
->
-> Fixes: f82e6bf9bb9b ("mm: memcg: use rstat for non-hierarchical stats")
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> ---
->  mm/workingset.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/workingset.c b/mm/workingset.c
-> index 2a2a34234df9..226012974328 100644
-> --- a/mm/workingset.c
-> +++ b/mm/workingset.c
-> @@ -680,7 +680,7 @@ static unsigned long count_shadow_nodes(struct shrink=
-er *shrinker,
->                 struct lruvec *lruvec;
->                 int i;
->
-> -               mem_cgroup_flush_stats(sc->memcg);
-> +               mem_cgroup_flush_stats_ratelimited(sc->memcg);
->                 lruvec =3D mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid=
-));
->                 for (pages =3D 0, i =3D 0; i < NR_LRU_LISTS; i++)
->                         pages +=3D lruvec_page_state_local(lruvec,
+For the majority of hardware, people are using CPU-based
+compression/decompression,
+there is no chance they will sleep. Thus, all
+compression/decompression can be done
+in a zpool_map section, there is *NO* need to copy at all! Only for
+those hardware which
+can provide a HW-accelerator to offload CPU, crypto will actually wait
+for completion by
 
-LGTM.
+static inline int crypto_wait_req(int err, struct crypto_wait *wait)
+{
+        switch (err) {
+        case -EINPROGRESS:
+        case -EBUSY:
+                wait_for_completion(&wait->completion);
+                reinit_completion(&wait->completion);
+                err =3D wait->err;
+                break;
+        }
+
+        return err;
+}
+
+for CPU-based alg, we have completed the compr/decompr within
+crypto_acomp_decompress()
+synchronously. they won't return EINPROGRESS, EBUSY.
+
+The problem is that crypto_acomp won't expose this information to its
+users. if it does,
+we can use this info, we will totally avoid the code of copying
+zsmalloc's data to a tmp
+buffer for the most majority users of zswap.
+
+But I am not sure if we can find a way to convince Herbert(+To)  :-)
+
+>
+> >
+> > and it seems this patch is also negatively affecting z3fold and zbud.c
+> > which actually don't need to allocate a tmp buffer.
+> >
+>
+> As for z3fold and zbud, the influence should be much less since the only =
+difference
+> here is zpool_map_handle() moved in lock section, which could be moved ou=
+t if needed
+> as noted above. And also no evident performance regression in the testing=
+.
+>
+> Thanks.
+>
+> >>
+> >> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+> >> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+> >> Acked-by: Chris Li <chrisl@kernel.org> (Google)
+> >> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> >> ---
+> >>  mm/zswap.c | 44 ++++++++++++--------------------------------
+> >>  1 file changed, 12 insertions(+), 32 deletions(-)
+> >>
+> >> diff --git a/mm/zswap.c b/mm/zswap.c
+> >> index 976f278aa507..6b872744e962 100644
+> >> --- a/mm/zswap.c
+> >> +++ b/mm/zswap.c
+> >> @@ -1417,19 +1417,13 @@ static int zswap_writeback_entry(struct zswap_=
+entry *entry,
+> >>         struct crypto_acomp_ctx *acomp_ctx;
+> >>         struct zpool *pool =3D zswap_find_zpool(entry);
+> >>         bool page_was_allocated;
+> >> -       u8 *src, *tmp =3D NULL;
+> >> +       u8 *src;
+> >>         unsigned int dlen;
+> >>         int ret;
+> >>         struct writeback_control wbc =3D {
+> >>                 .sync_mode =3D WB_SYNC_NONE,
+> >>         };
+> >>
+> >> -       if (!zpool_can_sleep_mapped(pool)) {
+> >> -               tmp =3D kmalloc(PAGE_SIZE, GFP_KERNEL);
+> >> -               if (!tmp)
+> >> -                       return -ENOMEM;
+> >> -       }
+> >> -
+> >>         /* try to allocate swap cache page */
+> >>         mpol =3D get_task_policy(current);
+> >>         page =3D __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
+> >> @@ -1465,15 +1459,15 @@ static int zswap_writeback_entry(struct zswap_=
+entry *entry,
+> >>         /* decompress */
+> >>         acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
+> >>         dlen =3D PAGE_SIZE;
+> >> +       mutex_lock(acomp_ctx->mutex);
+> >>
+> >>         src =3D zpool_map_handle(pool, entry->handle, ZPOOL_MM_RO);
+> >>         if (!zpool_can_sleep_mapped(pool)) {
+> >> -               memcpy(tmp, src, entry->length);
+> >> -               src =3D tmp;
+> >> +               memcpy(acomp_ctx->dstmem, src, entry->length);
+> >> +               src =3D acomp_ctx->dstmem;
+> >>                 zpool_unmap_handle(pool, entry->handle);
+> >>         }
+> >>
+> >> -       mutex_lock(acomp_ctx->mutex);
+> >>         sg_init_one(&input, src, entry->length);
+> >>         sg_init_table(&output, 1);
+> >>         sg_set_page(&output, page, PAGE_SIZE, 0);
+> >> @@ -1482,9 +1476,7 @@ static int zswap_writeback_entry(struct zswap_en=
+try *entry,
+> >>         dlen =3D acomp_ctx->req->dlen;
+> >>         mutex_unlock(acomp_ctx->mutex);
+> >>
+> >> -       if (!zpool_can_sleep_mapped(pool))
+> >> -               kfree(tmp);
+> >> -       else
+> >> +       if (zpool_can_sleep_mapped(pool))
+> >>                 zpool_unmap_handle(pool, entry->handle);
+> >>
+> >>         BUG_ON(ret);
+> >> @@ -1508,9 +1500,6 @@ static int zswap_writeback_entry(struct zswap_en=
+try *entry,
+> >>         return ret;
+> >>
+> >>  fail:
+> >> -       if (!zpool_can_sleep_mapped(pool))
+> >> -               kfree(tmp);
+> >> -
+> >>         /*
+> >>          * If we get here because the page is already in swapcache, a
+> >>          * load may be happening concurrently. It is safe and okay to
+> >> @@ -1771,7 +1760,7 @@ bool zswap_load(struct folio *folio)
+> >>         struct zswap_entry *entry;
+> >>         struct scatterlist input, output;
+> >>         struct crypto_acomp_ctx *acomp_ctx;
+> >> -       u8 *src, *dst, *tmp;
+> >> +       u8 *src, *dst;
+> >>         struct zpool *zpool;
+> >>         unsigned int dlen;
+> >>         bool ret;
+> >> @@ -1796,26 +1785,19 @@ bool zswap_load(struct folio *folio)
+> >>         }
+> >>
+> >>         zpool =3D zswap_find_zpool(entry);
+> >> -       if (!zpool_can_sleep_mapped(zpool)) {
+> >> -               tmp =3D kmalloc(entry->length, GFP_KERNEL);
+> >> -               if (!tmp) {
+> >> -                       ret =3D false;
+> >> -                       goto freeentry;
+> >> -               }
+> >> -       }
+> >>
+> >>         /* decompress */
+> >>         dlen =3D PAGE_SIZE;
+> >> -       src =3D zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
+> >> +       acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
+> >> +       mutex_lock(acomp_ctx->mutex);
+> >>
+> >> +       src =3D zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
+> >>         if (!zpool_can_sleep_mapped(zpool)) {
+> >> -               memcpy(tmp, src, entry->length);
+> >> -               src =3D tmp;
+> >> +               memcpy(acomp_ctx->dstmem, src, entry->length);
+> >> +               src =3D acomp_ctx->dstmem;
+> >>                 zpool_unmap_handle(zpool, entry->handle);
+> >>         }
+> >>
+> >> -       acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
+> >> -       mutex_lock(acomp_ctx->mutex);
+> >>         sg_init_one(&input, src, entry->length);
+> >>         sg_init_table(&output, 1);
+> >>         sg_set_page(&output, page, PAGE_SIZE, 0);
+> >> @@ -1826,15 +1808,13 @@ bool zswap_load(struct folio *folio)
+> >>
+> >>         if (zpool_can_sleep_mapped(zpool))
+> >>                 zpool_unmap_handle(zpool, entry->handle);
+> >> -       else
+> >> -               kfree(tmp);
+> >>
+> >>         ret =3D true;
+> >>  stats:
+> >>         count_vm_event(ZSWPIN);
+> >>         if (entry->objcg)
+> >>                 count_objcg_event(entry->objcg, ZSWPIN);
+> >> -freeentry:
+> >> +
+> >>         spin_lock(&tree->lock);
+> >>         if (ret && zswap_exclusive_loads_enabled) {
+> >>                 zswap_invalidate_entry(tree, entry);
+> >>
+> >> --
+> >> b4 0.10.1
+> >>
+
+Thanks
+Barry
 
