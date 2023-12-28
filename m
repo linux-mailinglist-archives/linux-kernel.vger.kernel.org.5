@@ -1,96 +1,66 @@
-Return-Path: <linux-kernel+bounces-12660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 907F381F898
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1498481F899
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:03:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D1B4287F08
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:02:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C50A028865F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:03:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6929F134A4;
-	Thu, 28 Dec 2023 12:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06338466;
+	Thu, 28 Dec 2023 12:59:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tsm6+4s/"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NcCKsvfT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62C2111A6
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:58:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40d5bc68bb7so18882965e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 04:58:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703768303; x=1704373103; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T/YL/2OiXBxCX/gD6IApJPmq9GlVQJZGnRfROzab14c=;
-        b=tsm6+4s/hz3xpEd26lt/8M4X3EVCQ0CHQE77inkpa1ZvGyHUzzxMhzn8GEOsCLVQaZ
-         xClfMrKKs9Tobv4xSDbVXSoESRqv33+54OZK7cmlp1L/s4UyFO/zW7iWYlWc9kJpZblG
-         Sk/9n1jsDFkDHeP725dBrh5bQmQ7yxm607qS2efQmAVLXP/Z74PuhkN2Ua+35zyCZSMT
-         I0YvFM4QY90xKQPkFbYS4q3+HgczMl99IjQyHSWWfpL3gMHDw33JueHNZy8rIHoxrqj4
-         O+1lp5PB08sEuaSSmAoGQzNqEJ6nnLC4Kto0iVJ2UyQ5G1Njphr/ToJk0915JQe5ThVr
-         hMMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703768303; x=1704373103;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T/YL/2OiXBxCX/gD6IApJPmq9GlVQJZGnRfROzab14c=;
-        b=EF0a4cLRdUtpoEyIbrTLEJJYG6ApiMb1Gx4x2nnboujzls2hkktOSckkhS7aSWLFKj
-         EfwUZKs3mcXrPnH74HgmYfMz4+v0wnNN8qcvYPXuOhZh8+9ZTIdiTWVTN3/j8ue4yWdu
-         7Q3ybFX21jtU9diS+0daQzNW9eZ7htl31U8DIoXgxJTcRrLRWioKEhwfdjJ37aKsR/M4
-         Kp8np3IZ9/DJY1jH80T0FH69HGi76+KquNVK3rzjUkbYohZ+JaTbbvXducT71guxLVLd
-         AD2R6+2ifpZaYeif/ax3g9tMrD/R5OJ2tZdR5oD2afEhntrUGjVh+JZt1BJ4mZWfkWkI
-         YhaQ==
-X-Gm-Message-State: AOJu0YwLhBD8fF9ZTZ6DnZawl6NFhP00oeZhhKe+a53Lvw7Sf2K+J8Ia
-	HpZfSz3ydOiF+lqtHbdcYzuacbJJsB1Eow==
-X-Google-Smtp-Source: AGHT+IFFojsXoPb7K03oLgZ6jOvlLwBUwXu6zQoSVyiXDmyrmZ5YE9jkYffXSKkyFMwlzu2dsPNUsQ==
-X-Received: by 2002:a05:600c:4ca5:b0:40d:39cb:6af6 with SMTP id g37-20020a05600c4ca500b0040d39cb6af6mr5506215wmp.28.1703768302945;
-        Thu, 28 Dec 2023 04:58:22 -0800 (PST)
-Received: from ta2.c.googlers.com.com (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
-        by smtp.gmail.com with ESMTPSA id h9-20020a05600c350900b0040d5aca25f1sm8615807wmq.17.2023.12.28.04.58.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Dec 2023 04:58:22 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: peter.griffin@linaro.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	conor+dt@kernel.org,
-	andi.shyti@kernel.org,
-	alim.akhtar@samsung.com,
-	gregkh@linuxfoundation.org,
-	jirislaby@kernel.org,
-	s.nawrocki@samsung.com,
-	tomasz.figa@gmail.com,
-	cw00.choi@samsung.com,
-	arnd@arndb.de,
-	semen.protsenko@linaro.org
-Cc: andre.draszik@linaro.org,
-	saravanak@google.com,
-	willmcvicker@google.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C53679CB
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:58:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703768340; x=1735304340;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+eXzxuR0pHiDls2fQHe9OlVg3qaFTNYjViRLmdU/tM0=;
+  b=NcCKsvfTBI5PElsSE/oVssckKKe5l3gvXjGqhCeH4N7+wX0RmdnVS+7C
+   U7Bs4BcoYHTvyRXWqfTSFPmK54NBhhlRN+RaDPNhjqP7R+8IdDnrMCCX/
+   11LH0K/nW6O0QWZWQAvY8/jDG6s8t7Jd6s28h82c/hVdVQ7myMDO4S5S0
+   nHZ4cWkaYhKhlotieWet90mLYiHP/sdnvg8msKUBs9nsmSiVGVarPZalQ
+   x1pHAKGtkN1mkf/S1uVyCNpi0OMZsrSsvxwjJPHJrBY892EOiXIPKNxau
+   CA5PIWJ6xJxLJ2WWm7oOwZqQOLJqnY52MmB1bN8sm+NR0v2xOXX1JeFYu
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="386978786"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="386978786"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 04:58:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="812788717"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="812788717"
+Received: from fjohanne-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.35.92])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 04:58:54 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+	id BEA4210A536; Thu, 28 Dec 2023 15:58:51 +0300 (+03)
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>
+Cc: Isaku Yamahata <isaku.yamahata@intel.com>,
+	x86@kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-i2c@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	kernel-team@android.com,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v2 12/12] arm64: dts: exynos: gs101: enable eeprom on gs101-oriole
-Date: Thu, 28 Dec 2023 12:58:05 +0000
-Message-ID: <20231228125805.661725-13-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-In-Reply-To: <20231228125805.661725-1-tudor.ambarus@linaro.org>
-References: <20231228125805.661725-1-tudor.ambarus@linaro.org>
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Juergen Gross <jgross@suse.com>
+Subject: [PATCH] x86/pat: Simplifying the PAT programming protocol
+Date: Thu, 28 Dec 2023 15:58:47 +0300
+Message-ID: <20231228125847.12842-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -99,55 +69,86 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Enable the eeprom found on the battery connector.
+The programming protocol for the PAT MSR follows the MTRR programming
+protocol. However, this protocol is cumbersome and requires disabling
+caching (CR0.CD=1), which is not possible on some platforms.
 
-The selection of the USI protocol is done in the board dts file because
-the USI CONFIG register comes with a 0x0 reset value, meaning that USI8
-does not have a default protocol (I2C, SPI, UART) at reset.
+Specifically, a TDX guest is not allowed to set CR0.CD. It triggers
+a #VE exception.
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Turned out the requirement to follow the MTRR programming protocol for
+PAT programming is unnecessarily strict. The new Intel Software
+Developer Manual[1] (December 2023) relaxes this requirement. Please
+refer to the section titled "Programming the PAT" for more information.
+
+The AMD documentation does not link PAT programming to MTRR.
+
+The kernel only needs to flush the TLB after updating the PAT MSR. The
+set_memory code already takes care of flushing the TLB and cache when
+changing the memory type of a page.
+
+[1] http://www.intel.com/sdm
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Juergen Gross <jgross@suse.com>
 ---
-v2:
-- move cells and pinctrls properties to dtsi
-- collect Sam's R-b
+ arch/x86/kernel/cpu/cacheinfo.c | 7 ++++---
+ arch/x86/mm/pat/memtype.c       | 9 +++------
+ 2 files changed, 7 insertions(+), 9 deletions(-)
 
- arch/arm64/boot/dts/exynos/google/gs101-oriole.dts | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
-index 4a71f752200d..cb4d17339b6b 100644
---- a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
-+++ b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
-@@ -63,6 +63,15 @@ &ext_200m {
- 	clock-frequency = <200000000>;
- };
+diff --git a/arch/x86/kernel/cpu/cacheinfo.c b/arch/x86/kernel/cpu/cacheinfo.c
+index c131c412db89..78afad50a7c0 100644
+--- a/arch/x86/kernel/cpu/cacheinfo.c
++++ b/arch/x86/kernel/cpu/cacheinfo.c
+@@ -1118,15 +1118,16 @@ static void cache_cpu_init(void)
+ 	unsigned long flags;
  
-+&hsi2c_8 {
-+	status = "okay";
-+
-+	eeprom: eeprom@50 {
-+		compatible = "atmel,24c08";
-+		reg = <0x50>;
-+	};
-+};
-+
- &pinctrl_far_alive {
- 	key_voldown: key-voldown-pins {
- 		samsung,pins = "gpa7-3";
-@@ -99,6 +108,11 @@ &usi_uart {
- 	status = "okay";
- };
+ 	local_irq_save(flags);
+-	cache_disable();
  
-+&usi8 {
-+	samsung,mode = <USI_V2_I2C>;
-+	status = "okay";
-+};
+-	if (memory_caching_control & CACHE_MTRR)
++	if (memory_caching_control & CACHE_MTRR) {
++		cache_disable();
+ 		mtrr_generic_set_state();
++		cache_enable();
++	}
+ 
+ 	if (memory_caching_control & CACHE_PAT)
+ 		pat_cpu_init();
+ 
+-	cache_enable();
+ 	local_irq_restore(flags);
+ }
+ 
+diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
+index de10800cd4dd..7cac1b56c5e7 100644
+--- a/arch/x86/mm/pat/memtype.c
++++ b/arch/x86/mm/pat/memtype.c
+@@ -240,6 +240,8 @@ void pat_cpu_init(void)
+ 	}
+ 
+ 	wrmsrl(MSR_IA32_CR_PAT, pat_msr_val);
 +
- &watchdog_cl0 {
- 	timeout-sec = <30>;
- 	status = "okay";
++	__flush_tlb_all();
+ }
+ 
+ /**
+@@ -296,13 +298,8 @@ void __init pat_bp_init(void)
+ 	/*
+ 	 * Xen PV doesn't allow to set PAT MSR, but all cache modes are
+ 	 * supported.
+-	 * When running as TDX guest setting the PAT MSR won't work either
+-	 * due to the requirement to set CR0.CD when doing so. Rely on
+-	 * firmware to have set the PAT MSR correctly.
+ 	 */
+-	if (pat_disabled ||
+-	    cpu_feature_enabled(X86_FEATURE_XENPV) ||
+-	    cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
++	if (pat_disabled || cpu_feature_enabled(X86_FEATURE_XENPV)) {
+ 		init_cache_modes(pat_msr_val);
+ 		return;
+ 	}
 -- 
-2.43.0.472.g3155946c3a-goog
+2.41.0
 
 
