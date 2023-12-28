@@ -1,113 +1,170 @@
-Return-Path: <linux-kernel+bounces-12826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DFDD81FA89
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 19:47:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 158E981FA94
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:07:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 572E61C222B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 18:47:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7E631F241D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 19:07:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E52A101C1;
-	Thu, 28 Dec 2023 18:47:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lvtsuGk2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22815101DE;
+	Thu, 28 Dec 2023 19:07:47 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43638EAC4
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 18:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703789236; x=1735325236;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=6vD9G4noEHBS85fJSwSIP573blhxTenZXBqESuTRQoY=;
-  b=lvtsuGk2+yse0S0gkyRraSyYBL5pHG6pbc64rp+MDfhYtBt++OyA9sKf
-   MEH67Yq8lo0TAf5cY/xDHopQXhjmu9RqmY98z/GkUhKvwlTENYcqnBSuy
-   TkWyN4goiYeCRiKk0DAqRnuvNaWfKTOQxRQ9q9v0942Vegekl5RbPvJlA
-   igzQ8Kq/8d9lK0J9qCv2SnzLytEdg2WzfNWQXgiQ2mc6X7YtONYozgWHh
-   1lF4ttpx8HPbR/E/FISjcaazd6Xa/x2ndb3+KRqpRFeH+i95Aljmj3Umo
-   AHfpfapduvsCtlOs1h1uM3m9M8foubrAwVJJac1WQRL2O7znOb4LzXSmK
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="3411735"
-X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
-   d="scan'208";a="3411735"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 10:47:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="807501891"
-X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
-   d="scan'208";a="807501891"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 28 Dec 2023 10:47:10 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rIvPQ-000GkH-0m;
-	Thu, 28 Dec 2023 18:47:08 +0000
-Date: Fri, 29 Dec 2023 02:46:30 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: drivers/mux/adg792a.c:134:34: warning: 'adg792a_of_match' defined
- but not used
-Message-ID: <202312290237.ChqMrE6k-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49FE58479;
+	Thu, 28 Dec 2023 19:07:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (178.176.76.176) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 28 Dec
+ 2023 22:07:31 +0300
+Subject: Re: [PATCH net v2 1/1] net: ravb: Wait for operation mode to be
+ applied
+To: claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
+	<mitsuhiro.kimura.kc@renesas.com>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20231222113552.2049088-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231222113552.2049088-2-claudiu.beznea.uj@bp.renesas.com>
+ <98efc508-c431-2509-5799-96decc124136@omp.ru>
+ <d5448a91-a4d8-444d-9f96-083049b1e33e@tuxon.dev>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <9ebf96fb-c07a-8269-e5cd-0e71110941dd@omp.ru>
+Date: Thu, 28 Dec 2023 22:07:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <d5448a91-a4d8-444d-9f96-083049b1e33e@tuxon.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/28/2023 18:48:23
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182418 [Dec 28 2023]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.76.176 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info:
+	127.0.0.199:7.1.2;178.176.76.176:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.76.176
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/28/2023 18:54:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/28/2023 3:49:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-Hi Andy,
+On 12/27/23 1:10 PM, claudiu beznea wrote:
 
-First bad commit (maybe != root cause):
+[...]
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f5837722ffecbbedf1b1dbab072a063565f0dad1
-commit: 879a52379704e479237d0b97822fd9302fed0675 iio: multiplexer: Make use of device properties
-date:   1 year, 9 months ago
-config: x86_64-randconfig-016-20230827 (https://download.01.org/0day-ci/archive/20231229/202312290237.ChqMrE6k-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231229/202312290237.ChqMrE6k-lkp@intel.com/reproduce)
+>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>
+>>> CSR.OPS bits specify the current operating mode and (according to
+>>> documentation) they are updated by HW when the operating mode change
+>>> request is processed. To comply with this check CSR.OPS before proceeding.
+>>>
+>>> Commit introduces ravb_set_opmode() that does all the necessities for
+>>> setting the operating mode (set DMA.CCC and wait for CSR.OPS) and call it
+>>> where needed. This should comply with all the HW manuals requirements as
+>>> different manual variants specify that different modes need to be checked
+>>> in CSR.OPS when setting DMA.CCC.
+>>>
+>>> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>> ---
+>>>  drivers/net/ethernet/renesas/ravb_main.c | 52 ++++++++++++++----------
+>>>  1 file changed, 31 insertions(+), 21 deletions(-)
+>>>
+>>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>>> index 664eda4b5a11..ae99d035a3b6 100644
+>>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>>> @@ -66,14 +66,15 @@ int ravb_wait(struct net_device *ndev, enum ravb_reg reg, u32 mask, u32 value)
+>>>  	return -ETIMEDOUT;
+>>>  }
+>>>  
+>>> -static int ravb_config(struct net_device *ndev)
+>>> +static int ravb_set_opmode(struct net_device *ndev, u32 opmode)
+>>
+>>    Since you pass the complete CCC register value below, you should
+>> rather call the function ravb_set_ccc() and call the parameter opmode
+>> ccc.
+> 
+> This will be confusing. E.g., if renaming it ravb_set_ccc() one would
+> expect to set any fields of CCC though this function but this is not true
+> as ravb_modify() in this function masks only CCC_OPC. The call of:
+> 
+> error = ravb_set_opmode(ndev, CCC_OPC_CONFIG | CCC_GAC | CCC_CSEL_HPB);
+> 
+> bellow is just to comply with datasheet requirements, previous code and at
+> the same time re-use this function.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312290237.ChqMrE6k-lkp@intel.com/
+   How about the following then (ugly... but does the job):
 
-All warnings (new ones prefixed by >>):
+	/* Set operating mode */
+	if (opmode & ~CCC_OPC)
+		ravb_write(ndev, opmode, CCC);
+	else
+		ravb_modify(ndev, CCC, CCC_OPC, opmode);
 
->> drivers/mux/adg792a.c:134:34: warning: 'adg792a_of_match' defined but not used [-Wunused-const-variable=]
-     134 | static const struct of_device_id adg792a_of_match[] = {
-         |                                  ^~~~~~~~~~~~~~~~
+   Either that or just don't use ravb_set_opmode() when writing the whole
+32-bit value below...
 
+[...]
 
-vim +/adg792a_of_match +134 drivers/mux/adg792a.c
+>>> @@ -2560,21 +2559,23 @@ static int ravb_set_gti(struct net_device *ndev)
+[...]
+>>
+>>>  		/* Set CSEL value */
+>>>  		ravb_modify(ndev, CCC, CCC_CSEL, CCC_CSEL_HPB);
+>>>  	} else if (info->ccc_gac) {
+>>> -		ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_CONFIG |
+>>> -			    CCC_GAC | CCC_CSEL_HPB);
+>>> +		error = ravb_set_opmode(ndev, CCC_OPC_CONFIG | CCC_GAC | CCC_CSEL_HPB);
 
-afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  133  
-afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14 @134  static const struct of_device_id adg792a_of_match[] = {
-afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  135  	{ .compatible = "adi,adg792a", },
-afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  136  	{ .compatible = "adi,adg792g", },
-afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  137  	{ }
-afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  138  };
-afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  139  MODULE_DEVICE_TABLE(of, adg792a_of_match);
-afda08c4caa948 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  140  
+   ... like this?
 
-:::::: The code at line 134 was first introduced by commit
-:::::: afda08c4caa9489511557def51e322a5f2142a2f mux: adg792a: add mux controller driver for ADG792A/G
+		ravb_write(ndev, CCC_OPC_CONFIG | CCC_GAC | CCC_CSEL_HPB, CCC);
+		error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_CONFIG);
 
-:::::: TO: Peter Rosin <peda@axentia.se>
-:::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[...]
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+MBR, Sergey
 
