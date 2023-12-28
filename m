@@ -1,151 +1,263 @@
-Return-Path: <linux-kernel+bounces-12686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E1C181F8E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:37:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72A6981F8E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:40:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9E222849BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:37:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21E96B21715
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:40:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7438D8829;
-	Thu, 28 Dec 2023 13:37:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A97F2882D;
+	Thu, 28 Dec 2023 13:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="MHGc5m9w"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="G53u6rLb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2050.outbound.protection.outlook.com [40.107.243.50])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE235D2F5;
-	Thu, 28 Dec 2023 13:37:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZwBOjP0yobdQsS5d9ajFVJ4a0BPUE3mjJn1uBfCDC9bFak2VvpZXchDCM+LuNryTVXmtrUq5iUywB7WZdD7i6lvi3y6/nPQgNlrvgLDAk2eeooIQM/QfEh9Pk0Jv9wAJ+7TbxqxiHlzdoBVIo2Epur8hG9rDZaPFIUlRWrHeK0jqJh9Hc5ncbJbA1ryLiKZs7C2C54YweeNsqiQ1oMMZ4Bbq99ezHvwRY7SXUvXGv4c3T1PzR1nJgcxLGyanoLVELIlxiHydtHDA7YdbHZVOdQQtIzrR3jWtWVVdHvAwsgYE5MAMIBPY+9xNU6h19jF9JFQVAOerd//+a7FfHtQEVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pptrrlQlpKq2fsVvyUWwbEwlfbNqjTTS/Z7aGNget4c=;
- b=F3hwWhHA2f8YaeCtIrq360woG3r4Q/ay/XpVxTRl1cB83Z71C0sUb1JmCn0ucDgiyw+JjXETRQ/Ed3p5FJtM/mbYcWPKwDOGuMm2k1uqqfYiGopIzWhclDHiYabGcjSqXQ95PyrOZwJ86WfqPOBzigN/fWxz/voNQuqMYfz932444qWcvmFHMQgO/Lmrgw+pcWaV6Mk8vq721DMh6kEw/gjlURWp5VOkTuDf5HJ88gMlEJB+nQqfCLt0ANpH8Jzr8kVB/H13cKNBrie7yISm8sm/MSjwiPgf78kxVAM9KMldKOWyG73oGijrFOZZ2BFJB73dTffsTHDurrAwMgbiTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pptrrlQlpKq2fsVvyUWwbEwlfbNqjTTS/Z7aGNget4c=;
- b=MHGc5m9wz1s+8eixGLSX4/KKY1zA/6muqwGC0elqyR9QUQMwk7WFgRkIKGT9WufSNVySFpOVsJDxbVAzFMkxw+WoDvuuErjfC9xOY9Ko3L7W9VZhdpoT1vxXPHv6y6xi+dHjONDTzJ6XFO/VGkVZU8O0xGP6BhTHN1F4sls4iZo2x6hHk726qUtyRVAOK/A26RNn/zmiuJ4U0DVU8zrkvPugKVvPJNfts638SA7yep2x/hFVqi56vc+1Wwe7BXD8GXkx1EmCDy3y1N2hN2tKLW0MrLQS7JIflw0e8HzxNgxfqFGHmCCEGkmqBM+qLFlqD1CzlEVkLVAG/yiHrZ+ZLg==
-Received: from CH2PR12MB3895.namprd12.prod.outlook.com (2603:10b6:610:2a::13)
- by CH3PR12MB8484.namprd12.prod.outlook.com (2603:10b6:610:158::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.20; Thu, 28 Dec
- 2023 13:37:21 +0000
-Received: from CH2PR12MB3895.namprd12.prod.outlook.com
- ([fe80::7cf:41d8:783:8fb8]) by CH2PR12MB3895.namprd12.prod.outlook.com
- ([fe80::7cf:41d8:783:8fb8%7]) with mapi id 15.20.7113.028; Thu, 28 Dec 2023
- 13:37:21 +0000
-From: Asmaa Mnebhi <asmaa@nvidia.com>
-To: Florian Fainelli <f.fainelli@gmail.com>, "davem@davemloft.net"
-	<davem@davemloft.net>, "marek.mojik@nic.cz" <marek.mojik@nic.cz>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC: David Thompson <davthompson@nvidia.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 1/1] net: phy: micrel: Add workaround for incomplete
- autonegotiation
-Thread-Topic: [PATCH v2 1/1] net: phy: micrel: Add workaround for incomplete
- autonegotiation
-Thread-Index: AQHaORrPcVnOjvvSoUWtGDvnSlK8Z7C+YcOAgABRUsA=
-Date: Thu, 28 Dec 2023 13:37:21 +0000
-Message-ID:
- <CH2PR12MB38952DAF6D1BD4CE6831EED1D79EA@CH2PR12MB3895.namprd12.prod.outlook.com>
-References: <20231227231657.15152-1-asmaa@nvidia.com>
- <0cdb0461-ece3-4bfb-b058-9bf75c1f6fd3@gmail.com>
-In-Reply-To: <0cdb0461-ece3-4bfb-b058-9bf75c1f6fd3@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CH2PR12MB3895:EE_|CH3PR12MB8484:EE_
-x-ms-office365-filtering-correlation-id: 2a5d51a1-da0c-4e62-a64e-08dc07aa1e3f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 8ooHriWkQQD+ER3L7ST0/4vMLapUUI7jX7mISyY7zP5h7N+w9oSDgUHdn4N9zu9mvMxozz5J6KFDgcoSxnEWFyAWAW7zKAuBRqR6eL+rlxGuZImKRMWNAly1x2TrsHOiLeAfLCqd3lurO4JO2yZ4POL2Ep2bGtfum/4f9fkN48k6DVEAv5UK77VlslH4uhyJePg6diR07mBFwMS7bowzxG6yaDNBgEWS4zHalwqPhNa7ooFW0HQ+vIyXmAI2ZlYTrgXkv/MVzpX4Nw5HWJJtwV4x3fV1a9Q8EKYlQRXFPRrVnW9HKo9jPsfbN44SDloLPQ/14G7v0G9raQiNG36N3Jg4CwF1YNioehYge8JB4OrYi5yhFlgzcGvrNmF0J2bXlcGjReVYYAZw2jCuRF8/GtIZfwziw0H8Kk+5ECAD6eSv+WZwI/0pYy7tGHy1TVr6X7GtdPIMzLL4XMCQz/MWkpOcEF2ZuDAZEJVLHVe5VfgrPMbhFqXgsmetnS9AQidWzWLbkTiEA9JufrFoFL6pNvT/Q+v4hq+oJdFl8iU91gGa4Cy6s6Ed4xtZJuFQ7gSkLyxmDs+P6ml0a4TH4G5M271LhpM8C9xr1LJ2NJqdhxN1N5+nHtEUgzq7HbGz/lyP
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB3895.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(376002)(39860400002)(136003)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(66446008)(66556008)(76116006)(66946007)(66476007)(5660300002)(55016003)(2906002)(52536014)(4744005)(4326008)(8676002)(8936002)(316002)(110136005)(54906003)(64756008)(71200400001)(38070700009)(53546011)(9686003)(7696005)(478600001)(33656002)(6506007)(26005)(122000001)(86362001)(41300700001)(38100700002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?dVlBd2s0TmNpTGNtQ00wVTlCSlFTWEdnUXBHaVltYU9PaVZCbWV2MnRuTGJ2?=
- =?utf-8?B?S3c5cVE4eG1QVnBKZFBUQ0Y0UmVjR3N6eFVRRU9SVnJUV0wwU0xNWTllMzdZ?=
- =?utf-8?B?b0lZdlAxUWsxbW11MWx2OVlPWkxMd016dHR0aHlLeVYxTjZxUmU3cEJkb00r?=
- =?utf-8?B?WjQ1YSt5NnJ1RGZuSk0xNTlrTCtvR3JDczFXMi81T0ZYSGlNTnc4cXFVSnBh?=
- =?utf-8?B?WDFVei9pZHFGdWVITkhIYzFQV3Z2emx1b2w0U21JdE9nSjlwU0JRd0xCMlVy?=
- =?utf-8?B?M21Yc1JVa0FHSWlFaVZzVWtiazBPWHFBSVMvVHN4WTlITnhMelZJWlZKSE5Q?=
- =?utf-8?B?d3VzUndMd3MxZjhGM1N6ZTlNTVRpbnJ5NjMvWTdIUjVReEMzNjhCR2drOWVK?=
- =?utf-8?B?UXZRakRBSWI0MVZuQXRsdFlZVEY1d0p4VzhQVElCdDNsclZPQXpLRmRtdlpG?=
- =?utf-8?B?M05jNGlhZEJQbUVxUlhadGVOam5xS0hOVnBWOXBKK0J5NGo2MVdOeGRZSW5Y?=
- =?utf-8?B?MTJEeUZxemtJQWtwbHdCeGpnWXpRcUxMSmt0WVZpUXpvOW5nekdtdUtzQlpB?=
- =?utf-8?B?L01ZSUZHRjZ6ZXU3cXVwdFBpT2lKazEzKzdSbHFVRnNQSldnUG5HaUJGR1JB?=
- =?utf-8?B?dVlsMlRRK0J0TlZ6RC9sV3hid0g0cWVjMEZQb2IvK2pQTEFtemRCbFlkS2ha?=
- =?utf-8?B?RG9yVWNSR3RTMlI0anluMFdaWURhSldMT1ZFRiswSzAvaFg2R1VWZks5L3U5?=
- =?utf-8?B?UmhKOWd1cngrOWo0SHdBNjJyQmdVVEYyS3F6K2FpaWt4QjIzd0tvczN3ajFE?=
- =?utf-8?B?UXU1bWI4VXBERTJib1FnMDRDTWpURm8rOGdXcGE5NVIrSi9FVDkzTDExWkF0?=
- =?utf-8?B?REQwRk9FejhNVXVjc0hsajlPaWpNczU0Uks1aU42UE5hWTVocVRHOUhTNmpt?=
- =?utf-8?B?bm1BOVVUTStDc2RTVEUzZldleThGNlJmZ2VrRXFOWXQrYUE5ZXlOdm0ySXBl?=
- =?utf-8?B?c21RR2N5Y1dCMHRlekpSaC8yK3BDMyttMmFZZ0UwU0VSOCtjYi9uZys5ZWJ5?=
- =?utf-8?B?d1JLbzJPM2Nyb2JtWmtlWGZjQkZhNXBUTE56b1JEeHRlT1BBd3lucHRjNHJn?=
- =?utf-8?B?RmhlODVoa2d6N25jUEhsZ0laY2E5eXl1Sk9TWlQxRWljVUlXOXAxT2piYzBX?=
- =?utf-8?B?NUdjN1JKOHIvc295Y2NyampieHk4MTRqWnRZS3BMdkVmYlE4dXYzUGJBU1lq?=
- =?utf-8?B?cHBuRVV1TE82Y3loWGl6b3o1NFBDNUdna0JMYTByTExHV1lQMHU3dG1QSnUw?=
- =?utf-8?B?czJHcTZLbVZpY04vREkxeWw0VGh1NjhBOG1henhIbmJhUENBYTNCTjJtcmJU?=
- =?utf-8?B?a3JYWkU3bkI3dndLV1JuRjFSbGZSb3RNc25JeFQ2K0ZHTnBMZ1oxQkN0YytQ?=
- =?utf-8?B?ZC9teHk5R1BDM01uMEMvckpnVU5jVnkwSmZaM2ZYM1phbUYvQ2pQNmt5SXJw?=
- =?utf-8?B?SXBlMzFMTkFQL1pUSEdMcUdmcHY2QUVWazQ0U0hoRVI5Yklra08wUndVR2Jp?=
- =?utf-8?B?OG1DYjhja0lmZW4zNE9YdzRneFBpb3ppT1liTkFuSEZlVVRkaHMvblZzM2h3?=
- =?utf-8?B?T1ZKTUcrc0gyUWpMZGRnQWtoZ1FTU1ZvWDdvZXM1Wk5QaWc3TFdJT0wweGo1?=
- =?utf-8?B?MVZqcXBVVGNyVytZbVk1c2Z1MGJmam9tYXpJZjQrWGVIQk1Yd0lLQkx0dWdT?=
- =?utf-8?B?YVhBcUY4RnNmUkxTWVZYYWdmbWxKdnZMT3hjTkI4c0xDbEdPWkFtZkRHTFh1?=
- =?utf-8?B?Sk1vUk1wT05yTlFMS3pWeS9nSytSTThUZXNlZmhxVUM4TDFqSmp5RUVNU3RQ?=
- =?utf-8?B?VmtuVE5BS2FLRUJnZFJKWUNUbUR6c2tZT2EzN09MQmFqSlNXN3RDRXRhZHhI?=
- =?utf-8?B?UTUrdHlETGVrWWZoTkoxZE1Nb2dOVXIyMDF4NXFPM0Q3WGlJSVcwSGZvTjRk?=
- =?utf-8?B?b0p5TFowOWNSSTkzV2RqWlM1YlJ1U29sbXZEVnFzWGxtTFRTbUdpSnRqbWRC?=
- =?utf-8?B?Vk9UZmJIdW93YmpIcWRNWE45SlI1WHFON3RtYlNIK3dBOXdTRUJUaXM5djR6?=
- =?utf-8?Q?yGEk=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2958485;
+	Thu, 28 Dec 2023 13:39:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703770793; x=1735306793;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ltV2lJDE6WrxookYgS+cbxyiTqqf0QkLiWeAgrxo4rQ=;
+  b=G53u6rLbcQrnBnViffauUuOrFXyNVbWsvZVRtTJuQhCwgtBoKhVBImXh
+   kV3N1lTUTJNwxICBDvO2oQcBlRNfHDFejYKG+LxqN1Wl3HJxQ7bRqo4jx
+   7zpvSvyiZvEvX47+kbC0LE56aOeY528gRE8JVhj6Pl+t7g37Jshp8A/ow
+   9LN7tXYPNxah2Rqc1yNTPFZH/LLRpQaq/GtRit9AGLNJovf/VoaBa6eX/
+   XS7s5TkoTFrR6hd5yIx8qCOAOW28loMY06iyWIExcHOlCBZHXMhmZwP93
+   fSIQGy/h9/0a3me2ApIOsFGjLZjVJeNvnYzWv5NFK2yuBGs8XooYghQTn
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="3849162"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="3849162"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 05:39:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="771723862"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="771723862"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 28 Dec 2023 05:39:50 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+	id 55BEE4B7; Thu, 28 Dec 2023 15:39:49 +0200 (EET)
+Date: Thu, 28 Dec 2023 15:39:49 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Esther Shimanovich <eshimanovich@chromium.org>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
+Message-ID: <20231228133949.GG2543524@black.fi.intel.com>
+References: <20231221-thunderbolt-pci-patch-4-v4-1-2e136e57c9bc@chromium.org>
+ <20231228132517.GA12586@wunner.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB3895.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a5d51a1-da0c-4e62-a64e-08dc07aa1e3f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Dec 2023 13:37:21.2459
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Rjbf9Q+Epf7hPF9Cd5pN1f+ByZ41DCAEu3U0MfKOvh9D+K4QvoTTnZeLb47l9WDoPfTC5AMV6fVjs30L+5A0Hg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8484
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231228132517.GA12586@wunner.de>
 
-ID4gT24gMTIvMjgvMjAyMyAxMjoxNiBBTSwgQXNtYWEgTW5lYmhpIHdyb3RlOg0KPiA+IFZlcnkg
-cmFyZWx5LCB0aGUgS1NaOTAzMSBmYWlscyB0byBjb21wbGV0ZSBhdXRvbmVnb3RpYXRpb24gYWx0
-aG91Z2ggaXQNCj4gPiB3YXMgaW5pdGlhdGVkIHZpYSBwaHlfc3RhcnQoKS4gQXMgYSByZXN1bHQs
-IHRoZSBsaW5rIHN0YXlzIGRvd24uDQo+ID4gUmVzdGFydGluZyBhdXRvbmVnb3RpYXRpb24gd2hl
-biBpbiB0aGlzIHN0YXRlIHNvbHZlcyB0aGUgaXNzdWUuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5
-OiBBc21hYSBNbmViaGkgPGFzbWFhQG52aWRpYS5jb20+DQo+IA0KPiBJcyB0aGVyZSBhIE1pY3Jl
-bCBlcnJhdGEgYXNzb2NpYXRlZCB3aXRoIHRoaXMgd29yayBhcm91bmQgdGhhdCBjb3VsZCBiZQ0K
-PiByZWZlcmVuY2VkIGhlcmU/DQoNCkhpIEZsb3JpYW4sDQoNCk5vIHRoZXJlIGlzbuKAmXQuIFRo
-aXMgaXMgYmFzZWQgb24gb2JzZXJ2YXRpb25zIGFuZCBjb21wYXJpc29uIHdpdGggdGhlIGJlaGF2
-aW9yIGFuZCB0ZXN0aW5nIG9mIG90aGVyIFBIWXMuIEZvciBleGFtcGxlLCB3ZSBkb27igJl0IHNl
-ZSB0aGlzIGlzc3VlIHdpdGggdGhlIFZpdGVzc2UgUEhZLg0KDQpUaGFua3MuDQpBc21hYQ0K
+Thanks Lukas for including me.
+
+On Thu, Dec 28, 2023 at 02:25:17PM +0100, Lukas Wunner wrote:
+> [adding Mika and Mario to the list of recipients, original patch is here:
+> https://lore.kernel.org/all/20231221-thunderbolt-pci-patch-4-v4-1-2e136e57c9bc@chromium.org/
+> a lot of folks are on vacation, replies might not be sent before Jan 8;
+> full quote without further comments below]
+> 
+> On Thu, Dec 21, 2023 at 03:53:42PM -0500, Esther Shimanovich wrote:
+> > On Lenovo X1 Carbon Gen 7/8 devices, when a platform enables a policy to
+> > distrust removable PCI devices, the build-in USB-C ports stop working at
+> > all.
+> > This happens because these X1 Carbon models have a unique feature; a
+> > Thunderbolt controller that is discrete from the SoC. The software sees
+> > this controller, and incorrectly assumes it is a removable PCI device,
+> > even though it is fixed to the computer and is wired to the computer's
+> > own USB-C ports.
+
+Yes, the ExternalFacingPort applies to root ports so that includes
+everything below that.
+
+> > Relabel all the components of the JHL6540 controller as DEVICE_FIXED,
+> > and where applicable, external_facing.
+> > 
+> > Ensure that the security policy to distrust external PCI devices works
+> > as intended, and that the device's USB-C ports are able to enumerate
+> > even when the policy is enabled.
+
+This has been working just fine so far and as far as I can tell there is
+no such "policy" in place in the mainline kernel.
+
+> > 
+> > Signed-off-by: Esther Shimanovich <eshimanovich@chromium.org>
+> > ---
+> > Changes in v4:
+> > - replaced a dmi check in the rootport quirk with a subsystem vendor and
+> >   device check.
+> > - Link to v3: https://lore.kernel.org/r/20231220-thunderbolt-pci-patch-4-v3-1-056fd1717d06@chromium.org
+> > 
+> > Changes in v3:
+> > - removed redundant dmi check, as the subsystem vendor check is
+> >   sufficient
+> > - switched to PCI_VENDOR_ID_LENOVO instead of hex code
+> > - Link to v2: https://lore.kernel.org/r/20231219-thunderbolt-pci-patch-4-v2-1-ec2d7af45a9b@chromium.org
+> > 
+> > Changes in v2:
+> > - nothing new, v1 was just a test run to see if the ASCII diagram would
+> >   be rendered properly in mutt and k-9
+> > - for folks using gmail, make sure to select "show original" on the top
+> >   right, as otherwise the diagram will be garbled by the standard
+> >   non-monospace font
+> > - Link to v1: https://lore.kernel.org/r/20231219-thunderbolt-pci-patch-4-v1-1-4e8e3773f0a9@chromium.org
+> > ---
+> >  drivers/pci/quirks.c | 112 +++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 112 insertions(+)
+> > 
+> > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> > index ea476252280a..34e43323ff14 100644
+> > --- a/drivers/pci/quirks.c
+> > +++ b/drivers/pci/quirks.c
+> > @@ -3873,6 +3873,118 @@ DECLARE_PCI_FIXUP_SUSPEND_LATE(PCI_VENDOR_ID_INTEL,
+> >  			       quirk_apple_poweroff_thunderbolt);
+> >  #endif
+> >  
+> > +/*
+> > + * On most ThinkPad Carbon 7/8s, JHL6540 Thunderbolt 3 bridges are set
+> > + * incorrectly as DEVICE_REMOVABLE despite being built into the device.
+> > + * This is the side effect of a unique hardware configuration.
+
+There is really nothing "unique" here. It's exactly as specified by
+this:
+
+https://learn.microsoft.com/en-us/windows-hardware/drivers/pci/dsd-for-pcie-root-ports#identifying-externally-exposed-pcie-root-ports
+
+and being used in many many system already out there and those have been
+working just fine.
+
+> > + *
+> > + * Normally, Thunderbolt functionality is integrated to the SoC and
+> > + * its root ports.
+> > + *
+> > + *                          Most devices:
+> > + *                    root port --> USB-C port
+> > + *
+> > + * But X1 Carbon Gen 7/8 uses Whiskey Lake and Comet Lake SoC, which
+> > + * don't come with Thunderbolt functionality. Therefore, a discrete
+> > + * Thunderbolt Host PCI controller was added between the root port and
+> > + * the USB-C port.
+> > + *
+> > + *                        Thinkpad Carbon 7/8s
+> > + *                 (w/ Whiskey Lake and Comet Lake SoC):
+> > + *                root port -->  JHL6540   --> USB-C port
+> > + *
+> > + * Because the root port is labeled by FW as "ExternalFacingPort", as
+> > + * required by the DMAR ACPI spec, the JHL6540 chip is inaccurately
+> > + * labeled as DEVICE_REMOVABLE by the kernel pci driver.
+> > + * Therefore, the built-in USB-C ports do not enumerate when policies
+> > + * forbidding external pci devices are enforced.
+> > + *
+> > + * This fix relabels the pci components in the built-in JHL6540 chip as
+> > + * DEVICE_FIXED, ensuring that the built-in USB-C ports always enumerate
+> > + * properly as intended.
+> > + *
+> > + * This fix also labels the external facing components of the JHL6540 as
+> > + * external_facing, so that the pci attach policy works as intended.
+> > + *
+> > + * The ASCII diagram below describes the pci layout of the JHL6540 chip.
+> > + *
+> > + *                         Root Port
+> > + *                 [8086:02b4] or [8086:9db4]
+> > + *                             |
+> > + *                        JHL6540 Chip
+> > + *     __________________________________________________
+> > + *    |                      Bridge                      |
+> > + *    |        PCI ID ->  [8086:15d3]                    |
+> > + *    |         DEVFN ->      (00)                       |
+> > + *    |       _________________|__________________       |
+> > + *    |      |           |            |           |      |
+> > + *    |    Bridge     Bridge        Bridge      Bridge   |
+> > + *    | [8086:15d3] [8086:15d3]  [8086:15d3] [8086:15d3] |
+> > + *    |    (00)        (08)         (10)        (20)     |
+> > + *    |      |           |            |           |      |
+> > + *    |     NHI          |     USB Controller     |      |
+> > + *    | [8086:15d2]      |       [8086:15d4]      |      |
+> > + *    |    (00)          |          (00)          |      |
+> > + *    |      |___________|            |___________|      |
+> > + *    |____________|________________________|____________|
+> > + *                 |                        |
+> > + *             USB-C Port               USB-C Port
+> > + *
+> > + *
+> > + * Based on what a JHL6549 pci component's pci id, subsystem device id
+> > + * and devfn are, we can infer if it is fixed and if it faces a usb port;
+> > + * which would mean it is external facing.
+> > + * This quirk uses these values to identify the pci components and set the
+> > + * properties accordingly.
+> > + */
+> > +static void carbon_X1_fixup_relabel_alpine_ridge(struct pci_dev *dev)
+> > +{
+> > +	/* Is this JHL6540 PCI component embedded in a Lenovo device? */
+> > +	if (dev->subsystem_vendor != PCI_VENDOR_ID_LENOVO)
+> > +		return;
+> > +
+> > +	/* Is this JHL6540 PCI component embedded in an X1 Carbon Gen 7/8? */
+> > +	if (dev->subsystem_device != 0x22be && // Gen 8
+> > +	    dev->subsystem_device != 0x2292) { // Gen 7
+> > +		return;
+> > +	}
+> > +
+> > +	dev_set_removable(&dev->dev, DEVICE_FIXED);
+> > +
+> > +	/* Not all 0x15d3 components are external facing */
+> > +	if (dev->device == 0x15d3 &&
+> > +	    dev->devfn != 0x08 &&
+> > +	    dev->devfn != 0x20) {
+> > +		return;
+> > +	}
+> > +
+> > +	dev->external_facing = true;
+> > +}
+> > +
+> > +/*
+> > + * We also need to relabel the root port as a consequence of changing
+> > + * the JHL6540's PCIE hierarchy.
+> > + */
+> > +static void carbon_X1_fixup_rootport_not_removable(struct pci_dev *dev)
+> > +{
+> > +	/* Is this JHL6540 PCI component embedded in a Lenovo device? */
+> > +	if (dev->subsystem_vendor != PCI_VENDOR_ID_LENOVO)
+> > +		return;
+> > +
+> > +	/* Is this JHL6540 PCI component embedded in an X1 Carbon Gen 7/8? */
+> > +	if (dev->subsystem_device != 0x22be && // Gen 8
+> > +	    dev->subsystem_device != 0x2292) { // Gen 7
+> > +		return;
+> > +	}
+> > +
+> > +	dev->external_facing = false;
+> > +}
+> > +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d3, carbon_X1_fixup_relabel_alpine_ridge);
+> > +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d2, carbon_X1_fixup_relabel_alpine_ridge);
+> > +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d4, carbon_X1_fixup_relabel_alpine_ridge);
+> > +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x02b4, carbon_X1_fixup_rootport_not_removable);
+> > +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x9db4, carbon_X1_fixup_rootport_not_removable);
+
+This is not scalable at all. You would need to include lots of systems
+here. And there should be no issue at all anyways.
+
+Can you elaborate what the issue is and which mainline kernel you are
+using to reproduce this?
 
