@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-12697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD1BB81F900
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:10:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F98A81F905
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 277DF1F2276F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:10:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF5F3285428
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:17:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEEB1C8E2;
-	Thu, 28 Dec 2023 14:10:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E471C8EA;
+	Thu, 28 Dec 2023 14:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Katy/l3d"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kScjNj8+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762178826;
-	Thu, 28 Dec 2023 14:10:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE9E4C8C3;
+	Thu, 28 Dec 2023 14:17:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e49a0b5caso6751899e87.0;
-        Thu, 28 Dec 2023 06:10:01 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a23566e91d5so695927266b.0;
+        Thu, 28 Dec 2023 06:17:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703772599; x=1704377399; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703773030; x=1704377830; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=c1QLjL/t9dV5lzMG8MOwQMq25dYxUQYtyICViUBElqU=;
-        b=Katy/l3dvjT/PUHC6AJgtqupaV9OPc06Gs0+ZoscqZOZASn02m3V25+fuB+SdJYlu6
-         2txyPNAg7pTLp0sKYeaOdk4srCw4M3cbezWg0J3yCqEV5h/CpnfCod4oLlCtOVKG/O7k
-         B25SsUDkLDJoZ+wr/mlKphqHEXaaZVLX5kxdCwawln6Q2byYCh+Gn1Oqh/QAjhG6/Kzz
-         k7hwwk2K2akZDq4xYbMm+cC/R8rS7A0lV+vkpnIXlnXxAVKMMYqoqRQ5lOHyPg+wjdRo
-         aZ+cUVAoz9cHEx1Mbgxs/qE9R4VQo0BamPSGCJrZC35/EFYuHp/NH4je0364fIdECEE8
-         XLOA==
+        bh=q9TWc0QsnvHfcGGIcrM2gkh4OZ1mQ1/Sz/XukIWBlW4=;
+        b=kScjNj8+VolsoGzuodF90hrFmqPzm9iOoubydqYuQRgbdbp9RR8MoUZwjviUeru7Lm
+         rVyq2fFQFpgMCOqpxpJb/AS5C3M4ZSxu8bPSrQ8zPiQDPm+zgK6mNxf17sJ3GmUXmTGU
+         PK68on+HFC0JANC4hb4fdyaQm4UbD5/7yq0mFP9YG4/GekhqfczATLqfeeN4AEcQ87Ev
+         Z7UI7Sn9ebALmkxGV22MnSSZAcH5KiXMB7wUC1VhnzH5Fg3rnnY5iP6f5cIQO5TyX/fG
+         2q2uKbgx5a0DC2f1cSxEVvmMAu/oDgfUUWDC5UJCBDpvQbuYHWCJjUvkIM8iSRqzChDv
+         9F6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703772599; x=1704377399;
+        d=1e100.net; s=20230601; t=1703773030; x=1704377830;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c1QLjL/t9dV5lzMG8MOwQMq25dYxUQYtyICViUBElqU=;
-        b=MqKGSvElAJBHElw43aPoLiQTCo4mSYifHJKp2HbPfxfe21nCpfQGzacFqtnUQcJzfA
-         r9Y1ZdeoliALPHPwZxPQJb9UsnU3oRPzRGyyQ6uemJzFiqf9PtpHw2KWC3Pf0NVfa6IZ
-         /nAiCxH5O10yDyO1ACOk7nBHzfH74xWUJzUVvZqzpGF1t0DzkT5G34trXyGUAKRokvEe
-         qrJOEjWGJIPcvU1ueqwii1xJswpWSzekdfVDHJN/stOjVt7Sy5j3WCUIEh1welGmxoOS
-         mPhwaTcrCBsNdeMZudBEwDaY05p5KEWh2lmFoQfYmHO6mpm7OGzCMZU1dVzGAtrNj4tZ
-         tyXw==
-X-Gm-Message-State: AOJu0YyF9M3IA6qda6ME6Sssydfy64nQjJMu6rlgWaZ0qgSprUxjpPw7
-	F+OdQZCFI87HAnUa2DsEUac=
-X-Google-Smtp-Source: AGHT+IEeVZDSTI4Sv/udWx44ul868ezI9P22d/R8+w0tgBIx8Z2Nz9DzLiiPH9JRUPTtPYUP2Ke4FQ==
-X-Received: by 2002:a05:6512:128b:b0:50e:7f88:e124 with SMTP id u11-20020a056512128b00b0050e7f88e124mr2632826lfs.63.1703772599108;
-        Thu, 28 Dec 2023 06:09:59 -0800 (PST)
+        bh=q9TWc0QsnvHfcGGIcrM2gkh4OZ1mQ1/Sz/XukIWBlW4=;
+        b=fMM876bbPAlBWenhLftzNIULixkWyUlf0vt2YOuQ1xfpLsKW1FqDhpE7KyX9OA/oey
+         QUzb8LJMf/xNRqYZw+dULmOacoBkdbu2AzloeSl7yV9UhtmZhrM0VDydkd88ufhhV7jb
+         aPcW4OhOSzs0Ai8MGxb7TVTIJpCCD1n2+xxi2Fa7W2biFDc4MZCkHqkjvhPq3MQzhRcM
+         V1O8k82AOVAhs9C0EsoSXkCDWajUbS7iv0fL1yZMS69LVaRk+k6U4uCuwCHqFYxEx0wJ
+         kKylge3nXS7BBKx5M0VKLhV4Ro6cgPHfgMnspPpjzi5jgFOgPmfVoHdGSsdTZKYdd4xs
+         Ae3Q==
+X-Gm-Message-State: AOJu0YxfsLyJoII4TF+gN8GYNuIbbGwcSgL4as/dS5igDo1A9mWKCFbw
+	9qUYws2LymbnBNHoq/48SwA=
+X-Google-Smtp-Source: AGHT+IHLGsuNiI8uBS5fHnHLhNvmxwuvjcdAObtMuWv0hfCKLMICdbJu8Xj1NI88jvFNjly1bxMkMg==
+X-Received: by 2002:a17:906:6d15:b0:a26:fcf3:cf98 with SMTP id m21-20020a1709066d1500b00a26fcf3cf98mr1657221ejr.28.1703773029634;
+        Thu, 28 Dec 2023 06:17:09 -0800 (PST)
 Received: from ?IPV6:2a01:c22:7631:d500:84f:c992:adf1:8a6d? (dynamic-2a01-0c22-7631-d500-084f-c992-adf1-8a6d.c22.pool.telefonica.de. [2a01:c22:7631:d500:84f:c992:adf1:8a6d])
-        by smtp.googlemail.com with ESMTPSA id vl23-20020a17090730d700b00a26f91a30e1sm3224776ejb.91.2023.12.28.06.09.58
+        by smtp.googlemail.com with ESMTPSA id fv34-20020a17090750a200b00a26ee889b3bsm3805603ejc.158.2023.12.28.06.17.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Dec 2023 06:09:58 -0800 (PST)
-Message-ID: <2f1e9892-261d-4b5f-9fdd-b0f852e90ea6@gmail.com>
-Date: Thu, 28 Dec 2023 15:09:57 +0100
+        Thu, 28 Dec 2023 06:17:09 -0800 (PST)
+Message-ID: <4a9ae956-993b-4377-8ebe-ac655683c536@gmail.com>
+Date: Thu, 28 Dec 2023 15:17:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,15 +69,10 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2 1/1] net: phy: micrel: Add workaround for incomplete
  autonegotiation
 Content-Language: en-US
-To: Asmaa Mnebhi <asmaa@nvidia.com>, Florian Fainelli <f.fainelli@gmail.com>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "marek.mojik@nic.cz" <marek.mojik@nic.cz>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc: David Thompson <davthompson@nvidia.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Asmaa Mnebhi <asmaa@nvidia.com>, davem@davemloft.net, marek.mojik@nic.cz,
+ netdev@vger.kernel.org
+Cc: davthompson@nvidia.com, linux-kernel@vger.kernel.org
 References: <20231227231657.15152-1-asmaa@nvidia.com>
- <0cdb0461-ece3-4bfb-b058-9bf75c1f6fd3@gmail.com>
- <CH2PR12MB38952DAF6D1BD4CE6831EED1D79EA@CH2PR12MB3895.namprd12.prod.outlook.com>
 From: Heiner Kallweit <hkallweit1@gmail.com>
 Autocrypt: addr=hkallweit1@gmail.com; keydata=
  xsFNBF/0ZFUBEAC0eZyktSE7ZNO1SFXL6cQ4i4g6Ah3mOUIXSB4pCY5kQ6OLKHh0FlOD5/5/
@@ -122,33 +117,68 @@ Autocrypt: addr=hkallweit1@gmail.com; keydata=
  H/0Z53okMykVs3a8tECPHIxnre2UxKdTbCEkjkR4V6JyplTS47oWMw3zyI7zkaadfzVFBxk2
  lo/Tny+FX1Azea3Ce7oOnRUEZtWSsUidtIjmL8YUQFZYm+JUIgfRmSpMFq8JP4VH43GXpB/S
  OCrl+/xujzvoUBFV/cHKjEQYBxo+MaiQa1U54ykM2W4DnHb1UiEf5xDkFd4=
-In-Reply-To: <CH2PR12MB38952DAF6D1BD4CE6831EED1D79EA@CH2PR12MB3895.namprd12.prod.outlook.com>
+In-Reply-To: <20231227231657.15152-1-asmaa@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 28.12.2023 14:37, Asmaa Mnebhi wrote:
->  > On 12/28/2023 12:16 AM, Asmaa Mnebhi wrote:
->>> Very rarely, the KSZ9031 fails to complete autonegotiation although it
->>> was initiated via phy_start(). As a result, the link stays down.
->>> Restarting autonegotiation when in this state solves the issue.
->>>
->>> Signed-off-by: Asmaa Mnebhi <asmaa@nvidia.com>
->>
->> Is there a Micrel errata associated with this work around that could be
->> referenced here?
+On 28.12.2023 00:16, Asmaa Mnebhi wrote:
+> Very rarely, the KSZ9031 fails to complete autonegotiation although it was
+> initiated via phy_start(). As a result, the link stays down. Restarting
+> autonegotiation when in this state solves the issue.
 > 
-> Hi Florian,
-> 
-> No there isn’t. This is based on observations and comparison with the behavior and testing of other PHYs. For example, we don’t see this issue with the Vitesse PHY.
-> 
-The Microchip KSZ9031 errata documentation lists few link-related errata.
-May any of these be relevant in your case? If not, please check with Microchip.
-KSZ9031 isn't new, and most likely we would have seen such reports before,
-if there's an actual issue.
-I'd like to avoid that we add code to work around an issue that is specific
-to your setup.
+The patch isn't addressed to all relevant maintainers. Please use the
+get_maintainers script.
 
-> Thanks.
-> Asmaa
+You should use the net/net-next annotation to make clear whether this should
+be treated as a fix (in this case add a Fixes tag) or net-next material.
+
+> Signed-off-by: Asmaa Mnebhi <asmaa@nvidia.com>
+> ---
+> v1->v2:
+> - Use msleep() instead of mdelay()
+> 
+>  drivers/net/phy/micrel.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+> index 08e3915001c3..9952a073413f 100644
+> --- a/drivers/net/phy/micrel.c
+> +++ b/drivers/net/phy/micrel.c
+> @@ -1475,6 +1475,7 @@ static int ksz9031_get_features(struct phy_device *phydev)
+>  
+>  static int ksz9031_read_status(struct phy_device *phydev)
+>  {
+> +	u8 timeout = 10;
+>  	int err;
+>  	int regval;
+>  
+> @@ -1494,6 +1495,22 @@ static int ksz9031_read_status(struct phy_device *phydev)
+>  		return genphy_config_aneg(phydev);
+>  	}
+>  
+> +	/* KSZ9031's autonegotiation takes normally 4-5 seconds to complete.
+> +	 * Occasionally it fails to complete autonegotiation. The workaround is
+> +	 * to restart it.
+> +	 */
+> +        if (phydev->autoneg == AUTONEG_ENABLE) {
+> +		while (timeout) {
+> +			if (phy_aneg_done(phydev))
+> +				break;
+> +			msleep(1000);
+> +			timeout--;
+
+It's not too nice to do this synchronously. Even in the non-problem case this
+will block the phylib state machine for seconds. Better find a way to do it
+asynchronously.
+
+> +		};
+> +
+> +		if (timeout == 0)
+> +			phy_restart_aneg(phydev);
+> +	}
+> +
+>  	return 0;
+>  }
+>  
 
 
