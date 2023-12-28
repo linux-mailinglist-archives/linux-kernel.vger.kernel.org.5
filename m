@@ -1,65 +1,64 @@
-Return-Path: <linux-kernel+bounces-12473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FFFA81F54A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D85F81F54D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF326B21B69
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 07:07:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93490B210A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 07:09:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB0843D8E;
-	Thu, 28 Dec 2023 07:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC45440A;
+	Thu, 28 Dec 2023 07:09:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rEuqxTxj"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Fd2+Sdve"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2FDF5232
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06953C0E
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:09:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cca5d81826so61731051fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 23:06:49 -0800 (PST)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40d604b4b30so4893935e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 23:09:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703747208; x=1704352008; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=WDd8I3l5mFQMqtE5PG31vdOlIyeG691Nn8RHWjODeYI=;
-        b=rEuqxTxjVvgXq4/TZBF1ReJXqU8QRBD8zb/1L2e3JMrl80d0TH5hN2vvRHdjbMv4YE
-         vVsT5N8PXF0sa+9QpaTTV7vHitdVyyKeOWoH8A5IGqa17l9WqdIgakmtQyMyjX4WwsKr
-         tdRYoKRrckMzrMa6iehUQgxhUG+Vc8M9DHfyxJ9MMYa9m5xc4UxGxdv+LDAUBkjLgMs/
-         SJ8/pAouOwYYMlg04vUqX3iUwJXvNHZeJtdFZ2Kqu4INe7PayV9jzDEImb08Yhg8BWio
-         4J7FaCnLu8reqzaxFFNOEIFUh0lMjkWeUcOhnWQCQytujO3GBYuZm13IVVQe/1q1MOl8
-         7Gog==
+        d=linaro.org; s=google; t=1703747377; x=1704352177; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B5CoDrsJT4WQxjKaOLj/1Lwxi6E5LUOR3r0lk7wg4FY=;
+        b=Fd2+SdveVSxsqh/SvTb1g3SSeltmA23rfHYQ0Zx2XXAWBitBkawX/YMvMxHlPjll6f
+         +z7LUPVsZihmQFveW5Mp3TLmhPyi171ZLMb7gqHOmm8wIeWew5YEmVVls1c9XfRpnxgg
+         ki+DEWv+BtCqCpoJaPw4ejNI61eESbz0EhF8js96LwJ9m3VeJYiH/7vRRfEbeFxgSsjO
+         X1EAh2xBN3vA7PxWcPLV7zamzwvMLW1MacJHw45QDP+Qw0hVNUda+cocqf5dbL77f2QM
+         WY7zg7HtTfMIY7J85fXoy/7u7N9V4/glDW/YNKSRyC0R9EEDd5IBsShMakfdf0wJ7qSs
+         /OVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703747208; x=1704352008;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WDd8I3l5mFQMqtE5PG31vdOlIyeG691Nn8RHWjODeYI=;
-        b=akhDkXG7uBeDQV2nlCrt0H851WA/b38YvRtkSEPD4JeTaTdSn3QYQMh44cUvYR7xHr
-         6A7vPp30wCMORPpMBC7sKD69ASrfG141/+tK7K2cuqPKEQYgWcrrsIpQxH5w/rXlRoWi
-         q+DUh+s88+qMLf8hfDFHlmcKMuc/a92H4YlSg70SxvZiv0afIDAdWvfPbV2Uy841W4y9
-         Y5m3QZSVVVUbV70tfQF2zslTnKRPNxTWRPizpfpInBknSksoQ7C9IGhvADkMr9FmULdG
-         rROhDikqtnLkxhISW3J6b3l/oROfeJJQKEacpl2X38X4QJnJqSBgneclhWGEpK8rj+Bf
-         3a+Q==
-X-Gm-Message-State: AOJu0YzhLQ7UpiuZRdtdL4d5aYoBc748PjGiNQ/aSt5LN3EGis9fd/BU
-	ValOfLd+lnBmft4LqgAmj0PsW6vgCl/Fg4YeHIvkLZk5TMg=
-X-Google-Smtp-Source: AGHT+IGXElGXL6AOCSkut4ky6PcE8vVTRaS+VMTWy1hFB+vs6iLLrK7/TFjcLXF7v0m6fhLhGpzAmw==
-X-Received: by 2002:a2e:be0f:0:b0:2cc:7dda:5fde with SMTP id z15-20020a2ebe0f000000b002cc7dda5fdemr5288783ljq.84.1703747207717;
-        Wed, 27 Dec 2023 23:06:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703747377; x=1704352177;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B5CoDrsJT4WQxjKaOLj/1Lwxi6E5LUOR3r0lk7wg4FY=;
+        b=susL96rg1Ginu1OpPPyWuAkXu0HPJtFZKdJKagaWhGSF1+VjojVryFFab9vFIozzLq
+         PnTisLdOcVPFDM7Y1iXkVV+7Z8ACEB7az6E1N9WyXOiCRTvsJSMtZS+5sWXBxzFUM0B/
+         1a/pta4VKrI95fL24fbKBbz0Iwd+EkmHWtJZ68O2dnkagvvxumoNHlMknSQF0oXmKY/2
+         FSwc4GtZVZs1csqBp9sGN5dC88SYp1f+m6bRaGw/8GdNwhOyNG9XcGkRHsEocsFEM1S+
+         NBZuSnr5P3b2rjKpwp6gw35Va08/XliTVlKTBiPWxA2ET6ixV84QV798WJMgSg6Zkswv
+         v+EA==
+X-Gm-Message-State: AOJu0Yx8CkvPRkDjgFXFDggR5BW1rDE6owphEshtXAEleFeNar5e5Tkz
+	AgQpVKwBvmmXulqhA4CweQqO207NhvnqZA==
+X-Google-Smtp-Source: AGHT+IHKDq0wnzlsL1DgFGFQyMRD+KKB24a73tPdpWIi5Y9GM3Q0dQgyXMbFTQq6Q5UNTvLqKVSuYw==
+X-Received: by 2002:a05:600c:4705:b0:40b:5e4a:2348 with SMTP id v5-20020a05600c470500b0040b5e4a2348mr4811417wmo.74.1703747376998;
+        Wed, 27 Dec 2023 23:09:36 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id o3-20020a5d4083000000b0033674e10462sm16320576wrp.113.2023.12.27.23.06.46
+        by smtp.gmail.com with ESMTPSA id r20-20020a05600c459400b0040c3dcc36e6sm26334107wmo.47.2023.12.27.23.09.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Dec 2023 23:06:47 -0800 (PST)
-Message-ID: <2ba69228-f916-4c63-8b51-b9f4695a7d58@linaro.org>
-Date: Thu, 28 Dec 2023 08:06:45 +0100
+        Wed, 27 Dec 2023 23:09:36 -0800 (PST)
+Message-ID: <e1036e63-1914-4412-8c55-40ae206d56d0@linaro.org>
+Date: Thu, 28 Dec 2023 08:09:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,16 +66,23 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] pinctrl: samsung: constify iomem pointers
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Tomasz Figa <tomasz.figa@gmail.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Alim Akhtar <alim.akhtar@samsung.com>, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231223191902.22857-1-krzysztof.kozlowski@linaro.org>
- <CACRpkdYLXEA3D-_22jsios5-CdpC5CLxFbTUA-Z=dqTHmtH9XQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: rtq6056: add support for the
+ whole RTQ6056 family
 Content-Language: en-US
+To: ChiYuan Huang <cy_huang@richtek.com>
+Cc: Jonathan Cameron <jic23@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Rob Herring <robh+dt@kernel.org>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <1703562468-29052-1-git-send-email-cy_huang@richtek.com>
+ <1703562468-29052-2-git-send-email-cy_huang@richtek.com>
+ <9715ed9d-7edf-430c-808c-00e7748bc59a@linaro.org>
+ <20231226111921.GA22684@linuxcarl2.richtek.com>
+ <0f1f0991-9ad9-4216-afc8-8340eddb1ad9@linaro.org>
+ <20231228031929.GA32046@linuxcarl2.richtek.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -122,24 +128,73 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CACRpkdYLXEA3D-_22jsios5-CdpC5CLxFbTUA-Z=dqTHmtH9XQ@mail.gmail.com>
+In-Reply-To: <20231228031929.GA32046@linuxcarl2.richtek.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 28/12/2023 01:23, Linus Walleij wrote:
-> On Sat, Dec 23, 2023 at 8:19 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
-> 
->> Constify few pointers to iomem, where the destination memory is not
->> modified, for code safety and readability.
+On 28/12/2023 04:19, ChiYuan Huang wrote:
+> On Tue, Dec 26, 2023 at 01:12:50PM +0100, Krzysztof Kozlowski wrote:
+>> On 26/12/2023 12:19, ChiYuan Huang wrote:
+>>> On Tue, Dec 26, 2023 at 10:18:47AM +0100, Krzysztof Kozlowski wrote:
+>>>> On 26/12/2023 04:47, cy_huang@richtek.com wrote:
+>>>>> From: ChiYuan Huang <cy_huang@richtek.com>
+>>>>>
+>>>>> Add compatible support for RTQ6053 and RTQ6059.
+>>>>>
+>>>>> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+>>>>> ---
+>>>>>  .../devicetree/bindings/iio/adc/richtek,rtq6056.yaml         | 5 ++++-
+>>>>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/iio/adc/richtek,rtq6056.yaml b/Documentation/devicetree/bindings/iio/adc/richtek,rtq6056.yaml
+>>>>> index 88e008629ea8..d1e1f36d1972 100644
+>>>>> --- a/Documentation/devicetree/bindings/iio/adc/richtek,rtq6056.yaml
+>>>>> +++ b/Documentation/devicetree/bindings/iio/adc/richtek,rtq6056.yaml
+>>>>> @@ -25,7 +25,10 @@ description: |
+>>>>>  
+>>>>>  properties:
+>>>>>    compatible:
+>>>>> -    const: richtek,rtq6056
+>>>>> +    enum:
+>>>>> +      - richtek,rtq6053
+>>>>> +      - richtek,rtq6056
+>>>>
+>>>> Aren't these devices compatible? Your driver change says they are, so
+>>>> express compatibility with list here (and oneOf).
+>>>>
+>>> Thanks, I try to take other binding as the reference. One more question.
+>>> If rtq6053 is compatible with rtq6056, there's only chip package type difference.
+>>> Do I need to seperate it into a dedicated enum element?
+>>> Or just put it into one item and said this part number is compatible with rtq6056? 
 >>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> Is this something I should just apply directly at this point?
+>> See example-schema. You need enum and items, both in oneOf:.
+>>
+> After reading the 'example-schema', I Still cannot understand what the special case items
+> means.
 
-Yes, please take it.
+What is "special case items"?
+
+> 
+> But in my case, is the below change correct?
+> [Diff]
+> properties:
+>    compatible:
+> -    enum:
+> -      - richtek,rtq6053
+> -      - richtek,rtq6056
+> -      - richtek,rtq6059
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - richtek,rtq6053
+> +              - richtek,rtq6056
+> +              - richtek,rtq6059
+
+This changes nothing, you still have just one item. The example-schema
+has exactly that case, so why you are coding it differently?
+
+Anyway, test your DTS with the fallback, you will see that above does
+not work.
 
 Best regards,
 Krzysztof
