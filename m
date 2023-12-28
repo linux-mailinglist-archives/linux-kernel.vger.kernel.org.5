@@ -1,147 +1,163 @@
-Return-Path: <linux-kernel+bounces-12830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8064881FA9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:19:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 935BE81FAA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:24:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F49A2857F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 19:19:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53C8CB22440
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 19:24:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D70210781;
-	Thu, 28 Dec 2023 19:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41AB10780;
+	Thu, 28 Dec 2023 19:24:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mnrDdC8g"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="HG39Iu9w"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1382710780
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 19:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7bae735875bso175880839f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 11:19:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27CE101E1
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 19:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6dbbc637df7so4090057a34.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 11:24:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703791159; x=1704395959; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=080/sJq+DXpSucnyvaclU4jb4q4w+Y7ix8T697dEhcw=;
-        b=mnrDdC8g6h1E75GkMC6KcDcNlYqvbuf6mLe2rSLJwv4XHDt6UCE5a2yWchh8FA6zZM
-         GKvR12s7NcVbebv8ZfYCSL/+s8vxAc5ialBsDY5MuI+VvZTszhgn0a6GEZXmT1efx+MF
-         ASPGn+5+v//PrplE6wYMKXx1UqLjgxwUICl5rMuwhJGZvLmGPl8jHPAkJheVgJhA3878
-         Ns4/Ekhv5NeRxo6spVFdk004BqsqqIFAUfe0nYREaUQWhx8QZNVRjMxlkvpsz4G8l3fg
-         mW9jO+++EM0j/051ToGEN29UjsbWq4DzOrscYMy+bfmn/CSyG9GgnzNmbRiO4vg/HEgf
-         CBWQ==
+        d=broadcom.com; s=google; t=1703791475; x=1704396275; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4eXRhqd1yBwc+Z6yATNh3shIkHH9Y9LTIopAG5eguMQ=;
+        b=HG39Iu9wfJNJlG2EJFaiDDObdlNvScqp/sTLNdfakOy9kPod5vH0PA/vsjd+q0YE09
+         uAjuLhu9MRIBYMD1xbvPx818ZGYZ0Yc4sKE1S1FCch8ZwmG07r70LVbhj+5yLxRTj0tK
+         CcqbdUrS/BUdH/3T0tatxj0ZwoOG3ANvXafEw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703791159; x=1704395959;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=080/sJq+DXpSucnyvaclU4jb4q4w+Y7ix8T697dEhcw=;
-        b=ipqE76eSjO4z07A6JABX+pfDcm37PfgfrQShz7glgW7E7U3sPjqoYdKvxuRwuvCtcS
-         xv2Un6Xa2SLpdr9bDB8502MMrquvzCt4MRQgaTpyQIuy+K9SyV7dLVT5WcOchyD6ltih
-         bzOrzHUprOaQTZ93gy33C0NLcB622YzlmYSnyKQDleWoTyBaQWQVJq2D4PsDEYYdMY69
-         VZKISxo58saviyVLjySFmUUnC504/rDd3ZLVfFV9Uyy3k1Eqx5LJ8eIRwyYxnKOyDGBV
-         tSG9ZXPMZlF+C1RJhdGeHBUhsPCHLnZCZ2UoA+TleH6l7lHpLoiJUL97QIOua7yk+ike
-         EcHw==
-X-Gm-Message-State: AOJu0Yxu4btSuV1dODTCT/TgPC0FTFTHJgaWyN2KNN/L6KN2+1FkLl2W
-	ucfaYktSnKUrTMA/33EMYiixVQfyGhoYi3Q/xns=
-X-Google-Smtp-Source: AGHT+IFyAf2HTDyyj4dJ70PQ/2P4yldM9x/VQzzb4CezsMCfI3+rseByYUrifgNHr6/ErhxPHvlGkpI4zmQh1Hfwsc8=
-X-Received: by 2002:a6b:e00c:0:b0:7b7:bc01:3723 with SMTP id
- z12-20020a6be00c000000b007b7bc013723mr15373843iog.20.1703791159123; Thu, 28
- Dec 2023 11:19:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703791475; x=1704396275;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4eXRhqd1yBwc+Z6yATNh3shIkHH9Y9LTIopAG5eguMQ=;
+        b=WWleu1Hm7ttvMOKtS1EHuP1YhmeJCyu+gspSNIVasREm/OFqJbbl/WGM6EvuOqpQnf
+         XZ0JXWbKe2rUd+rlk0+sTl3R+FgWBMcvruiZ6DCEabimM6TTISUUlbidHMgqSX2wquLF
+         blUpslY3u1osIBdvqR8/ChDF6Uvr2bH9h2Ynol76ohARpYMzKhNcyU7qcwpHUbYBsTjq
+         OxrF+i08o128ztTKrV3/8O0CqtFUJrOuy/abcd5wwN9nU2VUl23rPLZEVeuuecYiSos4
+         /mrrTqzUeqxMX2vK8SVvSdp8AuVHniYk8Td9yLAZYfXR8qQVttXfJQ74ldx+qJOi7Bko
+         ivlw==
+X-Gm-Message-State: AOJu0YzBhUHTZcfxETvcEOe/jjpbFEfHm9uvHIq/qdYFH7dSOT7VWeWS
+	0kd63ED2CZND3LIH8doEvInTZo2io3u9WsjZR9CE+oo/xGphFe2+vwVrhgxNe19LKiCcEPWbA1K
+	t8cEyDLRMopDNChvOgNlucQeIYdD2v05U7GLLq6bDSv5zrCMWBfz/vsUqmWnaZL1HKvHL1zA4X6
+	AvOg1jGnUQZ9GQ2UZ1ziWLXGs=
+X-Google-Smtp-Source: AGHT+IGbLBUPIfQHiKai+8RHWPNYuqXRw43QCHnGQB70v03pdYwtq9pCK3CZzd+u6yZat7Ii/tgXpQ==
+X-Received: by 2002:a05:6870:1490:b0:1fb:75b:131e with SMTP id k16-20020a056870149000b001fb075b131emr13111421oab.112.1703791475661;
+        Thu, 28 Dec 2023 11:24:35 -0800 (PST)
+Received: from amakhalov-build-vm.eng.vmware.com ([128.177.82.146])
+        by smtp.gmail.com with ESMTPSA id k16-20020aa79990000000b006d9aa04574csm9522987pfh.52.2023.12.28.11.24.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Dec 2023 11:24:35 -0800 (PST)
+From: Alexey Makhalov <alexey.makhalov@broadcom.com>
+To: linux-kernel@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	bp@alien8.de,
+	hpa@zytor.com,
+	dave.hansen@linux.intel.com,
+	mingo@redhat.com,
+	tglx@linutronix.de
+Cc: x86@kernel.org,
+	netdev@vger.kernel.org,
+	richardcochran@gmail.com,
+	linux-input@vger.kernel.org,
+	dmitry.torokhov@gmail.com,
+	zackr@vmware.com,
+	linux-graphics-maintainer@vmware.com,
+	pv-drivers@vmware.com,
+	namit@vmware.com,
+	timothym@vmware.com,
+	akaher@vmware.com,
+	jsipek@vmware.com,
+	dri-devel@lists.freedesktop.org,
+	daniel@ffwll.ch,
+	airlied@gmail.com,
+	tzimmermann@suse.de,
+	mripard@kernel.org,
+	maarten.lankhorst@linux.intel.com,
+	horms@kernel.org,
+	kirill.shutemov@linux.intel.com
+Subject: [PATCH v4 0/6] VMware hypercalls enhancements
+Date: Thu, 28 Dec 2023 11:24:15 -0800
+Message-Id: <20231228192421.29894-1-alexey.makhalov@broadcom.com>
+X-Mailer: git-send-email 2.39.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228061802.25280-1-v-songbaohua@oppo.com>
-In-Reply-To: <20231228061802.25280-1-v-songbaohua@oppo.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Thu, 28 Dec 2023 11:19:08 -0800
-Message-ID: <CAKEwX=Njnwzf-TRTOp_L0wvzGnH+kQb8HJ9x_b6vt+FncOhgWw@mail.gmail.com>
-Subject: Re: [PATCH] mm: zsmalloc: return -ENOSPC rather than -EINVAL in
- zs_malloc while size is too large
-To: Barry Song <21cnbao@gmail.com>
-Cc: minchan@kernel.org, senozhatsky@chromium.org, akpm@linux-foundation.org, 
-	linux-mm@kvack.org, ddstreet@ieee.org, sjenning@redhat.com, 
-	vitaly.wool@konsulko.com, linux-kernel@vger.kernel.org, chriscli@google.com, 
-	chrisl@kernel.org, hannes@cmpxchg.org, yosryahmed@google.com, 
-	zhouchengming@bytedance.com, Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 27, 2023 at 10:18=E2=80=AFPM Barry Song <21cnbao@gmail.com> wro=
-te:
->
-> This is the case the "compressed" data is larger than the original data,
-> it is better to return -ENOSPC which can help zswap record a poor compr
-> rather than an invalid request. Then we get more friendly counting for
-> reject_compress_poor in debugfs.
->
->  bool zswap_store(struct folio *folio)
->  {
->         ...
->         ret =3D zpool_malloc(zpool, dlen, gfp, &handle);
->         if (ret =3D=3D -ENOSPC) {
->                 zswap_reject_compress_poor++;
->                 goto put_dstmem;
->         }
->         if (ret) {
->                 zswap_reject_alloc_fail++;
->                 goto put_dstmem;
->         }
->         ...
->  }
->
-> Also, zbud_alloc() and z3fold_alloc() are returning ENOSPC in the same
-> case, eg
->  static int z3fold_alloc(struct z3fold_pool *pool, size_t size, gfp_t gfp=
-,
->                         unsigned long *handle)
->  {
->         ...
->         if (!size || (gfp & __GFP_HIGHMEM))
->                 return -EINVAL;
->
->         if (size > PAGE_SIZE)
->                 return -ENOSPC;
->         ...
->  }
->
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> ---
->  mm/zsmalloc.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-> index b1c0dad7f4cf..c937635e0ad1 100644
-> --- a/mm/zsmalloc.c
-> +++ b/mm/zsmalloc.c
-> @@ -1364,9 +1364,12 @@ unsigned long zs_malloc(struct zs_pool *pool, size=
-_t size, gfp_t gfp)
->         int newfg;
->         struct zspage *zspage;
->
-> -       if (unlikely(!size || size > ZS_MAX_ALLOC_SIZE))
-> +       if (unlikely(!size))
->                 return (unsigned long)ERR_PTR(-EINVAL);
->
-> +       if (unlikely(size > ZS_MAX_ALLOC_SIZE))
-> +               return (unsigned long)ERR_PTR(-ENOSPC);
-> +
->         handle =3D cache_alloc_handle(pool, gfp);
->         if (!handle)
->                 return (unsigned long)ERR_PTR(-ENOMEM);
-> --
-> 2.34.1
->
+VMware hypercalls invocations were all spread out across the kernel
+implementing same ABI as in-place asm-inline. With encrypted memory
+and confidential computing it became harder to maintain every changes
+in these hypercall implementations.
 
-LGTM.
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+Intention of this patchset is to introduce arch independent VMware
+hypercall API layer other subsystems such as device drivers can call
+to, while hiding architecture specific implementation behind.
+
+Second patch introduces the vmware_hypercall low and high bandwidth
+families of functions, with little enhancements there.
+Sixth patch adds tdx hypercall support
+
+arm64 implementation of vmware_hypercalls is in drivers/gpu/drm/
+vmwgfx/vmwgfx_msg_arm64.h and going to be moved to arch/arm64 with
+a separate patchset with the introduction of VMware Linux guest
+support for arm64.
+
+No functional changes in drivers/input/mouse/vmmouse.c and
+drivers/ptp/ptp_vmw.c
+
+v3->v4 changes: (no functional changes in patches 1-5)
+  [patch 2]:
+- Added the comment with VMware hypercall ABI description.
+  [patch 6]:
+- vmware_tdx_hypercall_args remove in6/out6 arguments as excessive.
+- vmware_tdx_hypercall return ULONG_MAX on error to mimic bad hypercall
+  command error from the hypervisor.
+- Replaced pr_warn by pr_warn_once as pointed by Kirill Shutemov.
+- Fixed the warning reported by Intel's kernel test robot.
+- Added the comment describing VMware TDX hypercall ABI.
+
+v2->v3 changes: (no functional changes in patches 1-5)
+- Improved commit message in patches 1, 2 and 5 as was suggested by
+  Borislav Petkov.
+- To address Dave Hansen's concern, patch 6 was reorganized to avoid
+  exporting bare __tdx_hypercall and to make exported vmware_tdx_hypercall
+  VMWare guest specific.
+
+v1->v2 changes (no functional changes):
+- Improved commit message in patches 2 and 5.
+- Added Reviewed-by for all patches.
+- Added Ack from Dmitry Torokhov in patch 4. No fixes regarding reported
+  by Simon Horman gcc error in this patch.
+
+Alexey Makhalov (6):
+  x86/vmware: Move common macros to vmware.h
+  x86/vmware: Introduce VMware hypercall API
+  ptp/vmware: Use VMware hypercall API
+  input/vmmouse: Use VMware hypercall API
+  drm/vmwgfx: Use VMware hypercall API
+  x86/vmware: Add TDX hypercall support
+
+ arch/x86/include/asm/vmware.h             | 364 ++++++++++++++++++++--
+ arch/x86/kernel/cpu/vmware.c              | 116 +++----
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg.c       | 173 ++++------
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg_arm64.h | 197 ++++++++----
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg_x86.h   | 185 -----------
+ drivers/input/mouse/vmmouse.c             |  76 ++---
+ drivers/ptp/ptp_vmw.c                     |  12 +-
+ 7 files changed, 598 insertions(+), 525 deletions(-)
+
+-- 
+2.39.0
+
 
