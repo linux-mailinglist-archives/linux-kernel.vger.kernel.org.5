@@ -1,131 +1,109 @@
-Return-Path: <linux-kernel+bounces-12703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3860E81F91A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:32:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 720B081F92C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:37:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E97D2284EF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:32:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA3D4B2384E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:37:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6995DF4FA;
-	Thu, 28 Dec 2023 14:32:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A530DC8EA;
+	Thu, 28 Dec 2023 14:37:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="Eb6bljNs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD41BE56D
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 14:32:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35ff7c81f4aso39752615ab.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 06:32:04 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98E3CC8F1
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 14:37:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-427e83601c4so10203361cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 06:37:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google; t=1703774244; x=1704379044; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=VU21beHWoGJM/Oi2NFAV2MrwGlZZbvr3br6yMg4QftQ=;
+        b=Eb6bljNs2u44uqRtI3F141CcYYeJZC3I7ik1RRd01ohigNe0el8ZFd7Cnff6P4p5FO
+         aZAK6iTT9No1CYD8uJVofrbZE0hzm2tvFCR4F5VzJqv+AAV4p8dX7L9h4BpcNOXTe1/7
+         tpFSx98985TYua2Vzxoz4ao2I/2RsU0xL1A1Td4tHxbb4ylKrN7eXDL5mYKP+Tthw+Br
+         d9KV9wJqK0aPta7Mn4fLNoJ8+B6MOdlZNgDY2zK7EBeCCQtP5N5vWkeLWnyHYvENIiAq
+         f4PnXZt0fAiMifTf0Nfiecxl9T0/Og7/UUnXkTJVM7sUy4KojKg3/+Kt+V8Q9Bx952Wa
+         rECA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703773924; x=1704378724;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3y+mx3ZbG/VWu7Syp53uyO6K/G7sLGcvq9q1dwWggrQ=;
-        b=oXt7Rpc/7vc66ebMzY2yfNWQVt2AmwyHYQg/ST18wKL03/ajx3qdad0/ugVeUd3PDI
-         6eLZ8FalSuSC/NkC4OybZwppFqOwh8a0NtgQ0GJqCrwLMRVPIja4xythOaXVR3fPkxwu
-         dF1Hcxe/50AbmVpN/9WurXPJ9+SPPh3ZlgTzd3JCvkwTCgHZyjEtXVPlXH6HsG6g/qPe
-         cHRABFdVSARPZFIY70eSy4XSvm3E/a+is3seoVMcOJjIGGFJLjuZac7qgy0lL9G3HQUD
-         0Fs2gXjOf7//J9Ofy3goXihcz1Xi+BA3boY/teSoIRrZhKAb/5Key54fkPlqCJLdeCzx
-         apEw==
-X-Gm-Message-State: AOJu0YxPYfUxwqxFge5qd7XtCcmGP8hO8fu32bsr3TOlMgWoKo0RJOwF
-	uGyflI8/G9X1xxCZj+MOcn60OI5lL5Ml2oneqOUQoRLQ+S/g
-X-Google-Smtp-Source: AGHT+IF7OfdjhSgYW/Gwwr44ZQs1Hfeh8f28otmwwoAlvVz9SRzd+G7ddgmbd8GKoQ106h8RAyfY0CPbM3ajxgLY81eAfSO6dlEj
+        d=1e100.net; s=20230601; t=1703774244; x=1704379044;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VU21beHWoGJM/Oi2NFAV2MrwGlZZbvr3br6yMg4QftQ=;
+        b=Zmxb35+xxslcPrInWLSvOt7MEgYXjJwAM3dve+FbYNJTMczTh8dwfniBf9ZiJ6dKK7
+         BiojkcNZGmf/4fgjSdboypDB/W3Yt66Lvt8CPdiv862ZZkWtEjZ50VP85R8hVYkuTemJ
+         b8gx5WcDozmLd+CYy0TClm22Fge47i4hwFKIUnryaFDtfypQ8RUwvNNRe0XLbZNPoKp7
+         xD5Kz1U6CzZrJ4VI3v2nT0Eig8wJvklZ6tP2rOz9hJm5FyJUBjsHO1786QWV+5fAU1FO
+         W/pcALlp3OIEeis1T9m/fQSDY51r/OJA49UkevM33u3chOsdz65LrBjL6zCXIjo1wTBr
+         L61A==
+X-Gm-Message-State: AOJu0Yw+ByXkQ6Zi+WFUpq32Bgmg1Thae8r1Ym+mico4sKF8E0brRle0
+	LfN/YHj7MpLJfUv7l/Qg6R5sXiH2DQbQAqN6SF/39dq4smQKzQ==
+X-Google-Smtp-Source: AGHT+IG/UmSKlDQRlBa0+Is4JntOVZHhkiYS93o0FbAPPReWbU+HuVGCau4VX0GkprQKsQRXjMZhGZwl3l+vLHMY8rQ=
+X-Received: by 2002:ac8:7f54:0:b0:41e:a62b:3d18 with SMTP id
+ g20-20020ac87f54000000b0041ea62b3d18mr11492563qtk.59.1703774244502; Thu, 28
+ Dec 2023 06:37:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a07:b0:35f:eb20:3599 with SMTP id
- s7-20020a056e021a0700b0035feb203599mr956226ild.2.1703773923904; Thu, 28 Dec
- 2023 06:32:03 -0800 (PST)
-Date: Thu, 28 Dec 2023 06:32:03 -0800
-In-Reply-To: <tencent_5E3C1D3628961837D24ACA7447769967B009@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000831818060d92c78d@google.com>
-Subject: Re: [syzbot] [erofs?] KMSAN: uninit-value in z_erofs_lz4_decompress (2)
-From: syzbot <syzbot+6c746eea496f34b3161d@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <20231226200205.562565-1-pasha.tatashin@soleen.com> <ZYv3BIeEgY8LnH7U@archie.me>
+In-Reply-To: <ZYv3BIeEgY8LnH7U@archie.me>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Thu, 28 Dec 2023 09:36:48 -0500
+Message-ID: <CA+CK2bCSB46sZUrx+jsCCtGb-DFUuU9wvCaTamYtKnDAaG9eVA@mail.gmail.com>
+Subject: Re: [PATCH v3 00/10] IOMMU memory observability
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
+	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
+	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
+	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
+	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
+	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
+	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
+	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
+	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
+	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
+	will@kernel.org, yu-cheng.yu@intel.com, rientjes@google.com, 
+	Josh Don <joshdon@google.com>, YouHong Li <liyouhong@kylinos.cn>
 Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+> > This series encorporates suggestions that came from the discussion
+> > at LPC [2].
+> > ----------------------------------------------------------------------
+> > [1] https://github.com/soleen/iova_stress
+> > [2] https://lpc.events/event/17/contributions/1466
+> > ----------------------------------------------------------------------
+> > Previous versions
+> > v1: https://lore.kernel.org/all/20231128204938.1453583-1-pasha.tatashin@soleen.com
+> > v2: https://lore.kernel.org/linux-mm/20231130201504.2322355-1-pasha.tatashin@soleen.com
+> > ----------------------------------------------------------------------
+> >
+>
+> First of all, Merry Christmas and Happy New Year for all!
+>
+> And for this series, no observable regressions when booting the kernel with
+> the series applied.
+>
+> Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KMSAN: uninit-value in z_erofs_lz4_decompress
+Thank you for testing.
 
-loop0: detected capacity change from 0 to 16
-erofs: (device loop0): mounted with root inode @ nid 36.
-erofs: (device loop0): z_erofs_lz4_decompress_mem: failed to decompress -12 in[46, 4050] out[917]
-=====================================================
-BUG: KMSAN: uninit-value in hex_dump_to_buffer+0xae9/0x10f0 lib/hexdump.c:194
- hex_dump_to_buffer+0xae9/0x10f0 lib/hexdump.c:194
- print_hex_dump+0x13d/0x3e0 lib/hexdump.c:276
- z_erofs_lz4_decompress_mem fs/erofs/decompressor.c:252 [inline]
- z_erofs_lz4_decompress+0x2624/0x2b30 fs/erofs/decompressor.c:311
- z_erofs_decompress_pcluster fs/erofs/zdata.c:1290 [inline]
- z_erofs_decompress_queue+0x338c/0x6460 fs/erofs/zdata.c:1372
- z_erofs_runqueue+0x36cd/0x3830
- z_erofs_read_folio+0x435/0x810 fs/erofs/zdata.c:1843
- filemap_read_folio+0xce/0x370 mm/filemap.c:2323
- do_read_cache_folio+0x3b4/0x11e0 mm/filemap.c:3691
- read_cache_folio+0x60/0x80 mm/filemap.c:3723
- erofs_bread+0x286/0x6f0 fs/erofs/data.c:46
- erofs_find_target_block fs/erofs/namei.c:103 [inline]
- erofs_namei+0x2fe/0x1790 fs/erofs/namei.c:177
- erofs_lookup+0x100/0x3c0 fs/erofs/namei.c:206
- lookup_one_qstr_excl+0x233/0x520 fs/namei.c:1609
- filename_create+0x2fc/0x6d0 fs/namei.c:3876
- do_mkdirat+0x69/0x800 fs/namei.c:4121
- __do_sys_mkdirat fs/namei.c:4144 [inline]
- __se_sys_mkdirat fs/namei.c:4142 [inline]
- __x64_sys_mkdirat+0xc8/0x120 fs/namei.c:4142
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Uninit was created at:
- __alloc_pages+0x9a4/0xe00 mm/page_alloc.c:4591
- alloc_pages_mpol+0x62b/0x9d0 mm/mempolicy.c:2133
- alloc_pages mm/mempolicy.c:2204 [inline]
- folio_alloc+0x1da/0x380 mm/mempolicy.c:2211
- filemap_alloc_folio+0xa5/0x430 mm/filemap.c:974
- do_read_cache_folio+0x163/0x11e0 mm/filemap.c:3655
- read_cache_folio+0x60/0x80 mm/filemap.c:3723
- erofs_bread+0x286/0x6f0 fs/erofs/data.c:46
- erofs_find_target_block fs/erofs/namei.c:103 [inline]
- erofs_namei+0x2fe/0x1790 fs/erofs/namei.c:177
- erofs_lookup+0x100/0x3c0 fs/erofs/namei.c:206
- lookup_one_qstr_excl+0x233/0x520 fs/namei.c:1609
- filename_create+0x2fc/0x6d0 fs/namei.c:3876
- do_mkdirat+0x69/0x800 fs/namei.c:4121
- __do_sys_mkdirat fs/namei.c:4144 [inline]
- __se_sys_mkdirat fs/namei.c:4142 [inline]
- __x64_sys_mkdirat+0xc8/0x120 fs/namei.c:4142
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-CPU: 0 PID: 5477 Comm: syz-executor.0 Not tainted 6.7.0-rc7-syzkaller-00003-gfbafc3e621c3-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-=====================================================
-
-
-Tested on:
-
-commit:         fbafc3e6 Merge tag 'for_linus' of git://git.kernel.org..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=14751455e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7078a6b901aa3
-dashboard link: https://syzkaller.appspot.com/bug?extid=6c746eea496f34b3161d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=128ea2a1e80000
-
+Pasha
 
