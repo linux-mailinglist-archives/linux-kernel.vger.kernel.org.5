@@ -1,196 +1,100 @@
-Return-Path: <linux-kernel+bounces-12808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3E3881FA46
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 18:16:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B392181FA4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 18:20:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B9571C21201
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 17:16:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 605A91F22816
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 17:20:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163E2F9CD;
-	Thu, 28 Dec 2023 17:16:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C8BFC11;
+	Thu, 28 Dec 2023 17:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="AYdZSgZd"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="f0EZc7ey"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from mout.web.de (mout.web.de [217.72.192.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A8C101C6;
-	Thu, 28 Dec 2023 17:16:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id AB06F40E00CB;
-	Thu, 28 Dec 2023 17:16:41 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id JZC2WfEArAqo; Thu, 28 Dec 2023 17:16:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1703783798; bh=dsap5p+SmiLZ81gmU91jhtmpljCaxwick/4WWHQpoZQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AYdZSgZdz7DxzCX8CY8Vbq4R9HZyRbZO7/KHdoQsnOBGyKCR66Jt7mZwruNJC8E8r
-	 rvWWRRM20vxqQiQHbtBiPcTJFMpZf4ru0I8sGepXRvBi13y+AiLnPYn+QVVkUwiBnq
-	 eBmrbm6a7TZ0XwcM+fgpjLXNhZ4N6xW9yWBQhd35ZdaRZCrgGMU9lykV8JaAsaWjHX
-	 SBqHLslNeEspw0np7Eg+cYz2uuiXLk4nkhgQqcV+HtwuPRVcpugmzQqffC1P0nkc/f
-	 FoMrkgmlCWwfJqHsoYBnP0TrcfEMbmuR7gUnX1ayZCFMv5jfG5/AXEzGisYQYan0+l
-	 rvY8MZ+tveQYC8hLBCi6e6Kl+QRr4VbP2uGNVRVhzNwaCt8tvnqfN45kSvs4wdjbCQ
-	 a0fx7EMNAyTclE7BzzEcNcl1Gp6R7ln/1IVNxXdxcgDBS0uxaMEVKu4qjPUlXv7mT0
-	 F4UE6u0KpcxcrtTYa3hRBDPVUdnAU40mMzV+seIht0qY/OGKvvn9NqDtgr5fxyZnkb
-	 th+qKXaF0q8eVWIE371CFkwBq1hbFx3iJK64elb8ycHSn+VIrUOd40TZdlKXFa4V8b
-	 l7M2eUlglvodnXdMzPgnwUEfD60ZrbDlBeYZBiNXWc6OKRxBJDQwfF8H7ghMwlGYEP
-	 VNcdYJ//kwIMV6XyODvFHSJU=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AD9A140E01A9;
-	Thu, 28 Dec 2023 17:16:30 +0000 (UTC)
-Date: Thu, 28 Dec 2023 18:16:25 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-	avadhut.naik@amd.com, tony.luck@intel.com, john.allen@amd.com,
-	william.roche@oracle.com, muralidhara.mk@amd.com
-Subject: Re: [PATCH v4 1/3] RAS: Introduce AMD Address Translation Library
-Message-ID: <20231228171625.GAZY2taVm+C0rM7x1M@fat_crate.local>
-References: <20231218190406.27479-1-yazen.ghannam@amd.com>
- <20231218190406.27479-2-yazen.ghannam@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D8BF9C1;
+	Thu, 28 Dec 2023 17:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703784019; x=1704388819; i=markus.elfring@web.de;
+	bh=2urlG1UjR0tpfga8xw3ZUqweTdSjOyd7FFrGW2jHX2E=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=f0EZc7ey/rLunFcUa42I4aR3muIIkSVjuiMqNwVsXvmiU6AxoP7U+/WbcWmW0QrI
+	 jXZkiMN7p86fKocVjFdOtbKELEVdSKWRwi9c8eOrrAK+Yxdc1Zkt5ft0pUu7c4peY
+	 I9+g60qDNNsGlL35j9eGnQGVlZd4HcAKTTAx48Z4QryIgj+T4gXtpdlK8y+F3hqSN
+	 3XaWKrZAxT+xb5PLBIvRua74ntWH0yD1w8AMjsMbQL6ykEdJcl2wmMsyhje7GEq7b
+	 sDvVFkoFBwncXMecakCJ5mE5s7NgaOT/JcOu84YZYP8cXyxDGMBQNZeVyJn5T7iM0
+	 kQrWbYDookH3mA+XjA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1M1rTG-1rGh8F25rk-002kEy; Thu, 28
+ Dec 2023 18:20:19 +0100
+Message-ID: <48a127e8-ca4f-4fc4-81b7-226080fba720@web.de>
+Date: Thu, 28 Dec 2023 18:20:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231218190406.27479-2-yazen.ghannam@amd.com>
+User-Agent: Mozilla Thunderbird
+To: linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Dick Kennedy <dick.kennedy@broadcom.com>,
+ James Smart <james.smart@broadcom.com>,
+ "James E. J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH 0/4] scsi: lpfc: Adjustments for two function implementations
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:kebKLcoex0ts5glfrT77uO30AG88524gwKOMZf4pxKc6ph+Ca57
+ dKMI3Hy+UxsnCyEJxEQxLO7Xp7j4vRTEweev46aqhB+eZZdv//cE2Mx1Mt+CC18FwhzvBAx
+ uBVSzes3ipZBOFiSn528PH/5M0Lm8QZhcZHhaSb28vehKKFBw77/Kdj3ntP/i4PnGuyLVl/
+ X13BWMRJxOEsstoW8tDmQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:hsI3YWB7Y8U=;TPdEReWVwAhlIoIJUBGOhRvNyAg
+ LCPjC0omoSe7xKbla2Wq7NJ/xWJQ42BIcPBWYwGuzSQ0nzkQXpvOV0kitOwgCU/W80h3FS829
+ AjHSmVXMR15gPD65vjTMwwQUQoesKtWKxGg+opdwyoYkUtqXLsruPWY+efWIWKc2UGiNQYQtg
+ ZqFJ+IA3zQ1tEG7mVlX5QYtrNKOq8AhzYPOtnqWw3bCg3aRRJoI5lp9Q7okGWd8sqENiT9VIo
+ uRVIZx4usUo33/8rp+OLbh5IbR0HqVxQ9s+00GSRSuGIBKzn49SgHmA4a9dCU/sKNae1bwal8
+ bBj01+RgCL/mL/JyrOrfCQb6y0witgT/G25dGLMKHgtyel5r7ZnKwKTpN9SYq5h7t54TpxS5t
+ z1TmbiiEL/sZd1rOFiawzz2+vcznqM+yjwWLiZJRi4dmBJgTUPbiXdeA0hXe8v3x9W4GJgs0Y
+ uCIaLXPNjMRrw9SSZRSp546VKzvs0AzT1upb3UaUiP5VBV1wj3Zp82zNbsBIwMzWmstyjuI2N
+ qzmOMRobX0U/sTqTEBgd1h/64u1j72WFfXTeZWRA3IZWn2CrFRhVhh8fjdIOwGYHz74hdz0hx
+ YZt/e5mex75KYWzaJpNmjQTpyX7fanoztyZmztAKgTfKH3lBMhc00WtTBF3CPjjHpyyj4vFpN
+ WujU7B+rSyEznTc0CS9bncQI7GCHR1KQaxwNw10l7x108RG8ayTvikt9f1aZtjMlmBPPpOypG
+ dl+EmYIx7bhHmaPAKDzMBLKosCQWdGq/MvIRZ/dXoAwz5Po9rmbHiCXC2KulQbyVgiTQRb6b+
+ KeJjqKfNQXIEqvFq2BXpTNFP7FRdpe+MZdGB3L9ZNG85A7muUtsTqcpnQTlrA1rx9UUhqVeta
+ 6PUq/HMJL0gFtsrgJA22E0niL1F1711IHbyNy04/9SQ4WTcQULJ1La6N5jNhMny0h5OJwXxAq
+ 6uq/MZ4M5pqIC+Ulm1GbdjASAl8=
 
-On Mon, Dec 18, 2023 at 01:04:04PM -0600, Yazen Ghannam wrote:
-> diff --git a/drivers/ras/amd/atl/dehash.c b/drivers/ras/amd/atl/dehash.c
-> new file mode 100644
-> index 000000000000..51721094dd06
-> --- /dev/null
-> +++ b/drivers/ras/amd/atl/dehash.c
-> @@ -0,0 +1,416 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * AMD Address Translation Library
-> + *
-> + * dehash.c : Functions to account for hashing bits
-> + *
-> + * Copyright (c) 2023, Advanced Micro Devices, Inc.
-> + * All Rights Reserved.
-> + *
-> + * Author: Yazen Ghannam <Yazen.Ghannam@amd.com>
-> + */
-> +
-> +#include "internal.h"
-> +
-> +static inline bool valid_map_bits(struct addr_ctx *ctx, u8 bit1, u8 bit2,
-> +				  u8 num_intlv_dies, u8 num_intlv_sockets)
-> +{
-> +	if (!(ctx->map.intlv_bit_pos == bit1 || ctx->map.intlv_bit_pos == bit2)) {
-> +		pr_debug("Invalid interleave bit: %u", ctx->map.intlv_bit_pos);
-> +		return false;
-> +	}
-> +
-> +	if (ctx->map.num_intlv_dies > num_intlv_dies) {
-> +		pr_debug("Invalid number of interleave dies: %u", ctx->map.num_intlv_dies);
-> +		return false;
-> +	}
-> +
-> +	if (ctx->map.num_intlv_sockets > num_intlv_sockets) {
-> +		pr_debug("Invalid number of interleave sockets: %u", ctx->map.num_intlv_sockets);
-> +		return false;
-> +	}
-> +
-> +	return true;
-> +}
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 28 Dec 2023 18:12:34 +0100
 
-Ontop:
+A few update suggestions were taken into account
+from static source code analysis.
 
-diff --git a/drivers/ras/amd/atl/dehash.c b/drivers/ras/amd/atl/dehash.c
-index 51721094dd06..6f414926e6fe 100644
---- a/drivers/ras/amd/atl/dehash.c
-+++ b/drivers/ras/amd/atl/dehash.c
-@@ -12,7 +12,14 @@
- 
- #include "internal.h"
- 
--static inline bool valid_map_bits(struct addr_ctx *ctx, u8 bit1, u8 bit2,
-+/*
-+ * Verify the interleave bits are correct in the different interleaving
-+ * settings.
-+ *
-+ * If @num_intlv_dies and/or @num_intlv_sockets are 1, it means the
-+ * respective interleaving is disabled.
-+ */
-+static inline bool map_bits_valid(struct addr_ctx *ctx, u8 bit1, u8 bit2,
- 				  u8 num_intlv_dies, u8 num_intlv_sockets)
- {
- 	if (!(ctx->map.intlv_bit_pos == bit1 || ctx->map.intlv_bit_pos == bit2)) {
-@@ -37,11 +44,7 @@ static int df2_dehash_addr(struct addr_ctx *ctx)
- {
- 	u8 hashed_bit, intlv_bit, intlv_bit_pos;
- 
--	/*
--	 * Assert that interleave bit is 8 or 9 and that die and socket
--	 * interleaving are disabled.
--	 */
--	if (!valid_map_bits(ctx, 8, 9, 1, 1))
-+	if (!map_bits_valid(ctx, 8, 9, 1, 1))
- 		return -EINVAL;
- 
- 	intlv_bit_pos = ctx->map.intlv_bit_pos;
-@@ -64,11 +67,7 @@ static int df3_dehash_addr(struct addr_ctx *ctx)
- 	bool hash_ctl_64k, hash_ctl_2M, hash_ctl_1G;
- 	u8 hashed_bit, intlv_bit, intlv_bit_pos;
- 
--	/*
--	 * Assert that interleave bit is 8 or 9 and that die and socket
--	 * interleaving are disabled.
--	 */
--	if (!valid_map_bits(ctx, 8, 9, 1, 1))
-+	if (!map_bits_valid(ctx, 8, 9, 1, 1))
- 		return -EINVAL;
- 
- 	hash_ctl_64k = FIELD_GET(DF3_HASH_CTL_64K, ctx->map.ctl);
-@@ -172,11 +171,7 @@ static int df4_dehash_addr(struct addr_ctx *ctx)
- 	bool hash_ctl_64k, hash_ctl_2M, hash_ctl_1G;
- 	u8 hashed_bit, intlv_bit;
- 
--	/*
--	 * Assert that interleave bit is 8, die interleaving is disabled,
--	 * and no more than 2 sockets are interleaved.
--	 */
--	if (!valid_map_bits(ctx, 8, 8, 1, 2))
-+	if (!map_bits_valid(ctx, 8, 8, 1, 2))
- 		return -EINVAL;
- 
- 	hash_ctl_64k = FIELD_GET(DF4_HASH_CTL_64K, ctx->map.ctl);
-@@ -252,11 +247,7 @@ static int df4p5_dehash_addr(struct addr_ctx *ctx)
- 	u8 hashed_bit, intlv_bit;
- 	u64 rehash_vector;
- 
--	/*
--	 * Assert that interleave bit is 8, die interleaving is disabled,
--	 * and no more than 2 sockets are interleaved.
--	 */
--	if (!valid_map_bits(ctx, 8, 8, 1, 2))
-+	if (!map_bits_valid(ctx, 8, 8, 1, 2))
- 		return -EINVAL;
- 
- 	hash_ctl_64k = FIELD_GET(DF4_HASH_CTL_64K, ctx->map.ctl);
+Markus Elfring (4):
+  Improve exception handling in lpfc_rcv_plogi()
+  Return directly after a failed kzalloc() in lpfc_sli_read_link_ste()
+  Delete an unnecessary return statement in lpfc_sli_read_link_ste()
+  Delete an unnecessary variable initialisation in lpfc_sli_read_link_ste(=
+)
 
--- 
-Regards/Gruss,
-    Boris.
+ drivers/scsi/lpfc/lpfc_nportdisc.c | 18 +++++++-----------
+ drivers/scsi/lpfc/lpfc_sli.c       |  5 ++---
+ 2 files changed, 9 insertions(+), 14 deletions(-)
 
-https://people.kernel.org/tglx/notes-about-netiquette
+=2D-
+2.43.0
+
 
