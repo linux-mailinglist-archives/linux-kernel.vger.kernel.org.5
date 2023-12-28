@@ -1,305 +1,187 @@
-Return-Path: <linux-kernel+bounces-12683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 795B281F8DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:35:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0586281F8DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:36:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F9FD284AAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:35:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 338741C22482
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:36:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF6F58826;
-	Thu, 28 Dec 2023 13:35:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80E14882D;
+	Thu, 28 Dec 2023 13:36:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ab5DN8jH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jPXC8vsA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2E78474;
-	Thu, 28 Dec 2023 13:35:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703770538; x=1735306538;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+8EUuAN95Jif28E+5ZXUvh0ktnZHhSppCSOc7zYHT1w=;
-  b=Ab5DN8jHZKU2OBOpcVizhRLU26QDKWFGtnaCn2tttv/BOJFBo6D3UyAg
-   xRiEN/7PDyaAkkuhsMVWDsXt+v31QalR7PJ/YfD3wzci1hXso23D8Ftnr
-   Xnz/lhnb/42GAhR3Mf+1CoX6o4CRyO0kfXiWwoYFbYnmSYPXA3bwc6asv
-   UHKajyqp9EkIaD3oEh+mR6qIJ52m1sVLCeKK/ua8Nh0fZ0Udu7Dpyq9Z3
-   H8y/CdZ27P3nv0sz2Wpv2fOZZQpc8hhxWRrEsxah3w4GK3dzKJih0PSEd
-   nG+jiQQGcRlaf4sAJSw5vjR74YIeQJmAPrrGNfxOSsX2CJlxr+/YkQXzU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="460867537"
-X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
-   d="scan'208";a="460867537"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 05:35:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="778538196"
-X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
-   d="scan'208";a="778538196"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.249.169.62]) ([10.249.169.62])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 05:35:35 -0800
-Message-ID: <d884fe7f-1198-476f-810d-c2153df2e897@linux.intel.com>
-Date: Thu, 28 Dec 2023 21:35:32 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA0A8485;
+	Thu, 28 Dec 2023 13:36:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3977C433C7;
+	Thu, 28 Dec 2023 13:36:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703770567;
+	bh=bFpxYHW+l52Yon/qnLqsK7by+x6JrUkDWpOTaKXGCuQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jPXC8vsA4C2uEmnk6veULjxQjJ5cBGEFMRtQM3NaK5BnN9GzktRORK+VB0UMuZWJA
+	 ruk1McP+5Zjei1gfrZv7E0/cBH6M+C5+EYMv4jxP3NEiKkVWxAb7AyF0eTjZyPmS3L
+	 YXh5PmNJV2CA7VFA14KitatLEhlJ7yTTel1v0ICnYPbcfFKtiQJIwthOwy1svDaLTo
+	 L053ziUbt703sWy4MZbHl5ErQk6Vvun6VF9F1SJQMD91zIZTh4vfcLdoRuKbqTaLIE
+	 XJ+WhHTL4Qa0M598ffFH7gIP1AeUMOUPy5MYbye3EpdHYbDJwzx/JI7Uyxs+xV+EPy
+	 wNsA48b/r7BNA==
+Date: Thu, 28 Dec 2023 13:36:02 +0000
+From: Conor Dooley <conor@kernel.org>
+To: AnnanLiu <annan.liu.xdu@outlook.com>
+Cc: chao.wei@sophgo.com, unicorn_wang@outlook.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: dts: sophgo: add timer dt node for CV1800
+Message-ID: <20231228-distill-heave-ebda9ee53576@spud>
+References: <DM6PR20MB23167E08FCA546D6C1899CB1AB9EA@DM6PR20MB2316.namprd20.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v9 2/5] iommu/vt-d: break out ATS Invalidation if
- target device is gone
-To: "Tian, Kevin" <kevin.tian@intel.com>,
- "bhelgaas@google.com" <bhelgaas@google.com>,
- "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "will@kernel.org" <will@kernel.org>,
- "robin.murphy@arm.com" <robin.murphy@arm.com>,
- "lukas@wunner.de" <lukas@wunner.de>
-Cc: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231228001646.587653-1-haifeng.zhao@linux.intel.com>
- <20231228001646.587653-3-haifeng.zhao@linux.intel.com>
- <BN9PR11MB5276D70FD60FD1E0733B35AE8C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276D70FD60FD1E0733B35AE8C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="PedUr4prEc/4tkOE"
+Content-Disposition: inline
+In-Reply-To: <DM6PR20MB23167E08FCA546D6C1899CB1AB9EA@DM6PR20MB2316.namprd20.prod.outlook.com>
 
 
-On 12/28/2023 4:30 PM, Tian, Kevin wrote:
->> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
->> Sent: Thursday, December 28, 2023 8:17 AM
->>
->> For those endpoint devices connect to system via hotplug capable ports,
->> users could request a warm reset to the device by flapping device's link
->> through setting the slot's link control register, as pciehp_ist() DLLSC
->> interrupt sequence response, pciehp will unload the device driver and
->> then power it off. thus cause an IOMMU device-TLB invalidation (Intel
->> VT-d spec, or ATS Invalidation in PCIe spec r6.1) request for device to
->> be sent and a long time completion/timeout waiting in interrupt context.
-> is above describing the behavior of safe removal or surprise removal?
->
->> That would cause following continuous hard lockup warning and system
->> hang
->>
->> [ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down
->> [ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not present
->> [ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144
->> [ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded
->> Tainted: G S
->>           OE    kernel version xxxx
->> [ 4223.822623] Hardware name: vendorname xxxx 666-106,
->> BIOS 01.01.02.03.01 05/15/2023
->> [ 4223.822623] RIP: 0010:qi_submit_sync+0x2c0/0x490
->> [ 4223.822624] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48
->> 8b
->>   57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 1
->> 0 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
->> [ 4223.822624] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
->> [ 4223.822625] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX:
->> 0000000000000005
->> [ 4223.822625] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI:
->> ffff9f38401a8340
->> [ 4223.822625] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09:
->> 0000000000000000
->> [ 4223.822626] R10: 0000000000000010 R11: 0000000000000018 R12:
->> ffff9f384005e200
->> [ 4223.822626] R13: 0000000000000004 R14: 0000000000000046 R15:
->> 0000000000000004
->> [ 4223.822626] FS:  0000000000000000(0000) GS:ffffa237ae400000(0000)
->> knlGS:0000000000000000
->> [ 4223.822627] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [ 4223.822627] CR2: 00007ffe86515d80 CR3: 000002fd3000a001 CR4:
->> 0000000000770ee0
->> [ 4223.822627] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
->> 0000000000000000
->> [ 4223.822628] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7:
->> 0000000000000400
->> [ 4223.822628] PKRU: 55555554
->> [ 4223.822628] Call Trace:
->> [ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
->> [ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
->> [ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
->> [ 4223.822629]  intel_iommu_release_device+0x1f/0x30
->> [ 4223.822629]  iommu_release_device+0x33/0x60
->> [ 4223.822629]  iommu_bus_notifier+0x7f/0x90
->> [ 4223.822630]  blocking_notifier_call_chain+0x60/0x90
->> [ 4223.822630]  device_del+0x2e5/0x420
->> [ 4223.822630]  pci_remove_bus_device+0x70/0x110
->> [ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130
->> [ 4223.822631]  pciehp_disable_slot+0x6b/0x100
->> [ 4223.822631]  pciehp_handle_presence_or_link_change+0xd8/0x320
->> [ 4223.822631]  pciehp_ist+0x176/0x180
->> [ 4223.822631]  ? irq_finalize_oneshot.part.50+0x110/0x110
->> [ 4223.822632]  irq_thread_fn+0x19/0x50
->> [ 4223.822632]  irq_thread+0x104/0x190
->> [ 4223.822632]  ? irq_forced_thread_fn+0x90/0x90
->> [ 4223.822632]  ? irq_thread_check_affinity+0xe0/0xe0
->> [ 4223.822633]  kthread+0x114/0x130
->> [ 4223.822633]  ? __kthread_cancel_work+0x40/0x40
->> [ 4223.822633]  ret_from_fork+0x1f/0x30
->> [ 4223.822633] Kernel panic - not syncing: Hard LOCKUP
->> [ 4223.822634] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded
->> Tainted: G S
->>           OE     kernel version xxxx
->> [ 4223.822634] Hardware name: vendorname xxxx 666-106,
->> BIOS 01.01.02.03.01 05/15/2023
->> [ 4223.822634] Call Trace:
->> [ 4223.822634]  <NMI>
->> [ 4223.822635]  dump_stack+0x6d/0x88
->> [ 4223.822635]  panic+0x101/0x2d0
->> [ 4223.822635]  ? ret_from_fork+0x11/0x30
->> [ 4223.822635]  nmi_panic.cold.14+0xc/0xc
->> [ 4223.822636]  watchdog_overflow_callback.cold.8+0x6d/0x81
->> [ 4223.822636]  __perf_event_overflow+0x4f/0xf0
->> [ 4223.822636]  handle_pmi_common+0x1ef/0x290
->> [ 4223.822636]  ? __set_pte_vaddr+0x28/0x40
->> [ 4223.822637]  ? flush_tlb_one_kernel+0xa/0x20
->> [ 4223.822637]  ? __native_set_fixmap+0x24/0x30
->> [ 4223.822637]  ? ghes_copy_tofrom_phys+0x70/0x100
->> [ 4223.822637]  ? __ghes_peek_estatus.isra.16+0x49/0xa0
->> [ 4223.822637]  intel_pmu_handle_irq+0xba/0x2b0
->> [ 4223.822638]  perf_event_nmi_handler+0x24/0x40
->> [ 4223.822638]  nmi_handle+0x4d/0xf0
->> [ 4223.822638]  default_do_nmi+0x49/0x100
->> [ 4223.822638]  exc_nmi+0x134/0x180
->> [ 4223.822639]  end_repeat_nmi+0x16/0x67
->> [ 4223.822639] RIP: 0010:qi_submit_sync+0x2c0/0x490
->> [ 4223.822639] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48
->> 8b
->>   57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6
->> 10
->>   74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
->> [ 4223.822640] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
->> [ 4223.822640] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX:
->> 0000000000000005
->> [ 4223.822640] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI:
->> ffff9f38401a8340
->> [ 4223.822641] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09:
->> 0000000000000000
->> [ 4223.822641] R10: 0000000000000010 R11: 0000000000000018 R12:
->> ffff9f384005e200
->> [ 4223.822641] R13: 0000000000000004 R14: 0000000000000046 R15:
->> 0000000000000004
->> [ 4223.822641]  ? qi_submit_sync+0x2c0/0x490
->> [ 4223.822642]  ? qi_submit_sync+0x2c0/0x490
->> [ 4223.822642]  </NMI>
->> [ 4223.822642]  qi_flush_dev_iotlb+0xb1/0xd0
->> [ 4223.822642]  __dmar_remove_one_dev_info+0x224/0x250
->> [ 4223.822643]  dmar_remove_one_dev_info+0x3e/0x50
->> [ 4223.822643]  intel_iommu_release_device+0x1f/0x30
->> [ 4223.822643]  iommu_release_device+0x33/0x60
->> [ 4223.822643]  iommu_bus_notifier+0x7f/0x90
->> [ 4223.822644]  blocking_notifier_call_chain+0x60/0x90
->> [ 4223.822644]  device_del+0x2e5/0x420
->> [ 4223.822644]  pci_remove_bus_device+0x70/0x110
->> [ 4223.822644]  pciehp_unconfigure_device+0x7c/0x130
->> [ 4223.822644]  pciehp_disable_slot+0x6b/0x100
->> [ 4223.822645]  pciehp_handle_presence_or_link_change+0xd8/0x320
->> [ 4223.822645]  pciehp_ist+0x176/0x180
->> [ 4223.822645]  ? irq_finalize_oneshot.part.50+0x110/0x110
->> [ 4223.822645]  irq_thread_fn+0x19/0x50
->> [ 4223.822646]  irq_thread+0x104/0x190
->> [ 4223.822646]  ? irq_forced_thread_fn+0x90/0x90
->> [ 4223.822646]  ? irq_thread_check_affinity+0xe0/0xe0
->> [ 4223.822646]  kthread+0x114/0x130
->> [ 4223.822647]  ? __kthread_cancel_work+0x40/0x40
->> [ 4223.822647]  ret_from_fork+0x1f/0x30
->> [ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 (relocation
->> range: 0xffffffff80000000-0xffffffffbfffffff)
->>
->> Furthermore even an in-process safe removal unplugged device could be
->> surprise removed anytime, thus need to check the ATS Invalidation target
-> I don't understand what this sentence is trying to say. what is "in-process
-> safe removal unplugged device"? Are following words about safe removal
-> or surprise removal?
+--PedUr4prEc/4tkOE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Surprise removal for hotplug device could happen anytime, even the
+On Thu, Dec 28, 2023 at 09:06:54PM +0800, AnnanLiu wrote:
+> Add the timer device tree node to CV1800 SoC.
 
-user pressed attention button to tell the OS he requested a "safe removal"
+> This patch depends on the clk driver and reset driver.
+> Clk driver link:
+> https://lore.kernel.org/all/IA1PR20MB49539CDAD9A268CBF6CA184BBB9FA@IA1PR2=
+0MB4953.namprd20.prod.outlook.com/
+> Reset driver link:
+> https://lore.kernel.org/all/20231113005503.2423-1-jszhang@kernel.org/
 
-and OS blink the led to say "OS is handling the safe removal", the user
+FYI, this stuff should be under the --- line.
 
-could pull out the device (surprise removal) that moment and not wait
+If there's nothing else wrong with this commit, I can fix this while
+applying.
 
-the blinking led to turn off and tells him OS completed the handling.
+Cheers,
+Conor.
 
+>=20
+> Signed-off-by: AnnanLiu <annan.liu.xdu@outlook.com>
+> ---
+>  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 72 +++++++++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+>=20
+> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dt=
+s/sophgo/cv1800b.dtsi
+> index aec6401a467b..34a1647cc51b 100644
+> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> @@ -113,6 +113,78 @@ plic: interrupt-controller@70000000 {
+>  			riscv,ndev =3D <101>;
+>  		};
+> =20
+> +		timer0: timer@030a0000 {
+> +			compatible =3D "snps,dw-apb-timer";
+> +			reg =3D <0x030a0000 0x14>;
+> +			interrupts =3D <79 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&osc>;
+> +			resets =3D <&rst RST_TIMER0>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		timer1: timer@030a0014 {
+> +			compatible =3D "snps,dw-apb-timer";
+> +			reg =3D <0x030a0014 0x14>;
+> +			interrupts =3D <80 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&osc>;
+> +			resets =3D <&rst RST_TIMER1>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		timer2: timer@030a0028 {
+> +			compatible =3D "snps,dw-apb-timer";
+> +			reg =3D <0x030a0028 0x14>;
+> +			interrupts =3D <81 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&osc>;
+> +			resets =3D <&rst RST_TIMER2>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		timer3: timer@030a003c {
+> +			compatible =3D "snps,dw-apb-timer";
+> +			reg =3D <0x030a003c 0x14>;
+> +			interrupts =3D <82 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&osc>;
+> +			resets =3D <&rst RST_TIMER3>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		timer4: timer@030a0050 {
+> +			compatible =3D "snps,dw-apb-timer";
+> +			reg =3D <0x030a0050 0x14>;
+> +			interrupts =3D <83 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&osc>;
+> +			resets =3D <&rst RST_TIMER4>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		timer5: timer@30a0064 {
+> +			compatible =3D "snps,dw-apb-timer";
+> +			reg =3D <0x030a0064 0x14>;
+> +			interrupts =3D <84 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&osc>;
+> +			resets =3D <&rst RST_TIMER5>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		timer6: timer@030a0078 {
+> +			compatible =3D "snps,dw-apb-timer";
+> +			reg =3D <0x030a0078 0x14>;
+> +			interrupts =3D <85 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&osc>;
+> +			resets =3D <&rst RST_TIMER6>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		timer7: timer@030a008c {
+> +			compatible =3D "snps,dw-apb-timer";
+> +			reg =3D <0x030a008c 0x14>;
+> +			interrupts =3D <86 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&osc>;
+> +			resets =3D <&rst RST_TIMER7>;
+> +			status =3D "disabled";
+> +		};
+> +
+>  		clint: timer@74000000 {
+>  			compatible =3D "sophgo,cv1800b-clint", "thead,c900-clint";
+>  			reg =3D <0x74000000 0x10000>;
+> --=20
+> 2.34.1
+>=20
 
-Thanks,
+--PedUr4prEc/4tkOE
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Ethan
+-----BEGIN PGP SIGNATURE-----
 
->> device state to see if it is gone, and don't wait for the completion/
->> timeout blindly, thus avoid the up to 1min+50% (see Implementation Note
->> in PCIe spec r6.1 sec 10.3.1) waiting and cause hard lockup or system
->> hang.
->>
->> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
->> ---
->>   drivers/iommu/intel/dmar.c | 12 ++++++++++++
->>   1 file changed, 12 insertions(+)
->>
->> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
->> index 23cb80d62a9a..76903a8bf963 100644
->> --- a/drivers/iommu/intel/dmar.c
->> +++ b/drivers/iommu/intel/dmar.c
->> @@ -1347,6 +1347,7 @@ int qi_submit_sync(struct intel_iommu *iommu,
->> struct qi_desc *desc,
->>   		   unsigned int count, unsigned long options)
->>   {
->>   	struct q_inval *qi = iommu->qi;
->> +	struct pci_dev *pdev = NULL;
->>   	s64 devtlb_start_ktime = 0;
->>   	s64 iotlb_start_ktime = 0;
->>   	s64 iec_start_ktime = 0;
->> @@ -1360,6 +1361,9 @@ int qi_submit_sync(struct intel_iommu *iommu,
->> struct qi_desc *desc,
->>   	if (!qi)
->>   		return 0;
->>
->> +	if (iommu->flush_target_dev && dev_is_pci(iommu-
->>> flush_target_dev))
->> +		pdev = to_pci_dev(iommu->flush_target_dev);
->> +
->>   	type = desc->qw0 & GENMASK_ULL(3, 0);
->>
->>   	if ((type == QI_IOTLB_TYPE || type == QI_EIOTLB_TYPE) &&
->> @@ -1423,6 +1427,14 @@ int qi_submit_sync(struct intel_iommu *iommu,
->> struct qi_desc *desc,
->>   	writel(qi->free_head << shift, iommu->reg + DMAR_IQT_REG);
->>
->>   	while (qi->desc_status[wait_index] != QI_DONE) {
->> +		/*
->> +		 * if the device-TLB invalidation target device is gone, don't
->> +		 * wait anymore, it might take up to 1min+50%, causes
->> system
->> +		 * hang. (see Implementation Note in PCIe spec r6.1 sec
->> 10.3.1)
->> +		 */
->> +		if ((type == QI_DIOTLB_TYPE || type == QI_DEIOTLB_TYPE)
->> && pdev)
->> +			if (!pci_device_is_present(pdev))
->> +				break;
-> I'm not sure it's the right thing to do. Such check should be put in the
-> caller which has the device pointer and can already know it's absent
-> to not call those cache invalidation helpers.
->
->>   		/*
->>   		 * We will leave the interrupts disabled, to prevent interrupt
->>   		 * context to queue another cmd while a cmd is already
->> submitted
->> --
->> 2.31.1
->>
->
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZY15vgAKCRB4tDGHoIJi
+0mo0AQCGttIjbdlNdLMJ5uVxoE+C9lVMfy8EQmXeaQrdch+F9QEAzVg8Yq6JN7Qd
+0qJbqKr0Sqd+51fwghslIbPvgoKSYgo=
+=45y3
+-----END PGP SIGNATURE-----
+
+--PedUr4prEc/4tkOE--
 
