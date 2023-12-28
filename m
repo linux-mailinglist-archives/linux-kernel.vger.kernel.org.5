@@ -1,115 +1,180 @@
-Return-Path: <linux-kernel+bounces-12636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E970881F829
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC53881F82A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:16:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F89AB2393E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:16:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BA62B23919
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:16:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E2A748E;
-	Thu, 28 Dec 2023 12:16:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B37779D7;
+	Thu, 28 Dec 2023 12:16:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TCKkpmkr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792BF7475
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:16:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7ba97338185so683069339f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 04:16:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2F079C1
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:16:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2ccc7d7e399so27122141fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 04:16:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703765791; x=1704370591; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Jy4IP1Kl2AB2GKEPjxgNpR4MZbSsWb2iMit5XkzF8Ao=;
+        b=TCKkpmkroFTvZjwtAZAQS6jfDF+7K2LZ6cg6JceKSJtJF4acQnfRoJ5pafATM8jdZS
+         PGgCsfp5aANONDQSYmMWL23Ly9T4zmbLxmrmc5C81gR+3krppPgIKPbdJhb2znLIuNHv
+         FYiV/N7gwKSVSavbz6ZzYzkTN9Qawf93GgfI2F5Oo1jR+NdAhjKD0xCDyOnpyLiTWBdc
+         y4bdZVFEu4KNzWfKUMNW0Bw1oRc5lfksmaVBE+qXehGHl4fsasxuFMhVaqnPobvqOxGR
+         /XJYDMYG68uVsXoSvQb0s6DXzIVT2bwfccnvCmI/KyvgwwiZGHwyh1glqpcsRg8XVCbC
+         TQPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703765764; x=1704370564;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1703765791; x=1704370591;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3VZC80qSvzTvlsJvxObYrSm4hc/kYH9lvK/RiDJkXdE=;
-        b=ifIpUnyUvJm5HtLMJNGSv7EBIoWIn08ICyz6Jz2/y4wkj8L3MvHAfTcw8bWuDl96hg
-         +tgIZ4aPPCs7bbf8gYl8POMwBN1APTrLr1YJuENuCP6E0p4e2OxdvzDdRjihZIYnH6Ip
-         Opu0llW0x/cme0XWQE/gL4P9BrygRVy/JSP07NZ5cw6X9SyoC5LWowOpZ2fkqr5BNcDk
-         pvdG/wsRzBiNglUh/gnK5gh9eU7wMz8T76DhdDqvw3z9i8czo7bsKb4nUqf8KZxjMlOB
-         39TsifVFIzarQxBniGqwmNpzjwBhaDs55aaFv9j0tvoHOx+Tc8imNaAcgkFMA9CH9ldN
-         ZbGg==
-X-Gm-Message-State: AOJu0Yx13uch1bEtcg8/DNbxYpuUKNAQInBzRa3+hHHh6tSGE0ifCSS7
-	NS/GyTEh1GUvzsaQlb5WzbYIWD6O+9ujfMzh3x4Tmydat+be
-X-Google-Smtp-Source: AGHT+IGO/2Z9ILExU/3ON0ZaqIpesHk4V6VMPjjooG5HcXey5M+u1wJbYK3FJl/KfPfHzp3KcZMPDjb4bPxbipPRxznYP/g1NEhl
+        bh=Jy4IP1Kl2AB2GKEPjxgNpR4MZbSsWb2iMit5XkzF8Ao=;
+        b=LKGDrZzCsyTWlfzlLUxeBO2odK6h4BH7O68kNP7pV8pNS+ii5sUDVURqfcTxBxodQO
+         XeZOTWRptad+pE0jLp/jvrQ/psBsyUGuV3cw+4fveqJqEsisLPg6u5YfEOf3CnQG0l5L
+         syPCeOCrfGYkc2IrS80ryilV1TbkVNLsszTI577FvYtyKaEJbUwzd6hlIaYuzfkA+jtd
+         KOeWNZmzfe8+HjeepNWadTuU7leHb/Fp4wJvZ1Db0eblaPyVD0b8lFSwX8Xja78mPPfs
+         8Em3zQ5otSj4Ev1YJxZYlQdrPqwYBdxuS1VxLdDW4xKL4BevAseMm3ma/bJ6XZtpw30h
+         xiiQ==
+X-Gm-Message-State: AOJu0YyT9mTApCYzP0a4FTCbglm+/dfHQyq+OpgaJn2YoU2NGylBevQ/
+	/dkxUrKK3Tq+UhuK3DaPbPgUk2S5e7Z3b51W4TIy88DIiIY=
+X-Google-Smtp-Source: AGHT+IEzNnJxO9r5hkXRQO0iXze5pkEqQtXtFoux8xSIl8tKr4p2lrhCrIWVk0HGbp10NVjz6LVl8A==
+X-Received: by 2002:a05:6512:696:b0:50e:7e29:b0e9 with SMTP id t22-20020a056512069600b0050e7e29b0e9mr2616586lfe.73.1703765790949;
+        Thu, 28 Dec 2023 04:16:30 -0800 (PST)
+Received: from [192.168.199.125] (178235179028.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.28])
+        by smtp.gmail.com with ESMTPSA id mf6-20020a1709071a4600b00a26aa8f3372sm6798159ejc.27.2023.12.28.04.16.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Dec 2023 04:16:30 -0800 (PST)
+Message-ID: <376d3040-b9ed-4574-90d7-fb864d694e3c@linaro.org>
+Date: Thu, 28 Dec 2023 13:16:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:c80e:0:b0:7b7:fd68:d35b with SMTP id
- y14-20020a5ec80e000000b007b7fd68d35bmr129604iol.0.1703765764703; Thu, 28 Dec
- 2023 04:16:04 -0800 (PST)
-Date: Thu, 28 Dec 2023 04:16:04 -0800
-In-Reply-To: <20231228115625.1757-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002f8b56060d90e121@google.com>
-Subject: Re: [syzbot] [dri?] WARNING in drm_prime_destroy_file_private (2)
-From: syzbot <syzbot+59dcc2e7283a6f5f5ba1@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] firmware/psci: Set
+ pm_set_resume/suspend_via_firmware() on qcom
+Content-Language: en-US
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Bjorn Andersson <andersson@kernel.org>
+References: <20231227-topic-psci_fw_sus-v1-0-6910add70bf3@linaro.org>
+ <20231227-topic-psci_fw_sus-v1-2-6910add70bf3@linaro.org>
+ <20231228102801.fzaubcjq5thfwgxg@bogus>
+ <f34dd5de-9e56-4c58-b9bf-2356b41d17b1@linaro.org>
+ <20231228115053.zlypgc5uxxvghi4a@bogus>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231228115053.zlypgc5uxxvghi4a@bogus>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 28.12.2023 12:50, Sudeep Holla wrote:
+> On Thu, Dec 28, 2023 at 12:47:51PM +0100, Konrad Dybcio wrote:
+>> On 28.12.2023 11:28, Sudeep Holla wrote:
+>>> On Wed, Dec 27, 2023 at 11:15:31PM +0100, Konrad Dybcio wrote:
+>>>> Most Qualcomm platforms implementing PSCI (ab)use CPU_SUSPEND for
+>>>> entering various stages of suspend, across the SoC. These range from a
+>>>> simple WFI to a full-fledged power collapse of the entire chip
+>>>> (mostly, anyway).
+>>>>
+>>>> Some device drivers are curious to know whether "the firmware" (which is
+>>>> often assumed to be ACPI) takes care of suspending or resuming the
+>>>> platform. Set the flag that reports this behavior on the aforementioned
+>>>> chips.
+>>>>
+>>>> Some newer Qualcomm chips ship with firmware that actually advertises
+>>>> PSCI SYSTEM_SUSPEND, so the compatible list should only grow slightly.
+>>>>
+>>>
+>>> NACK, just use suspend-to-idle if SYSTEM_SUSPEND is not advertised. It is
+>>> designed for such platforms especially on x86/ACPI which don't advertise
+>>> Sx states. I see no reason why that doesn't work on ARM platforms as well.
+>>
+>> Not sure if I got the message through well, but the bottom line is, on
+>> Qualcomm platforms the "idle" states aren't actually just "idle" (read:
+>> they're not like S0ix). All but the most shallow ones shut down quite a
+>> chunk of the entire SoC, with the lowest ones being essentially S3 with
+>> power being cut off from the entire chip, except for the memory rail.
+>>
+> 
+> No I understood that and S2I is exactly what you need.
+> Have you checked if S2I already works as intended on these platforms ?
+Yes, simple CPU idling works OOTB and the SoC power collapse only works
+given the developer doesn't cut corners when bringing up the platform
+(read: works on some of the ones we support, trying hard to expand that
+group!)
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in drm_prime_destroy_file_private
+> What extra do you achieve with this hack by advertising fake S2R ?
+Uh.. unless I misunderstood something, I'm not advertising s2ram..
+Quite the opposite, I'm making sure only s2idle is allowed.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5524 at drivers/gpu/drm/drm_prime.c:227 drm_prime_destroy_file_private+0x43/0x60 drivers/gpu/drm/drm_prime.c:227
-Modules linked in:
-CPU: 0 PID: 5524 Comm: syz-executor.0 Not tainted 6.7.0-rc7-syzkaller-00016-gf5837722ffec-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-RIP: 0010:drm_prime_destroy_file_private+0x43/0x60 drivers/gpu/drm/drm_prime.c:227
-Code: 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 21 48 8b 83 90 00 00 00 48 85 c0 75 06 5b e9 63 ee 93 fc e8 5e ee 93 fc 90 <0f> 0b 90 5b e9 54 ee 93 fc e8 8f 98 ea fc eb d8 66 66 2e 0f 1f 84
-RSP: 0018:ffffc900056efd90 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff8880774dc378 RCX: ffffffff8a70d235
-RDX: ffff88801d6dd940 RSI: ffffffff84f38372 RDI: ffff8880774dc408
-RBP: ffff8880774dc000 R08: 0000000000000007 R09: 0000000000000002
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff88801ca98000
-R13: ffff8880774dc2a8 R14: ffff88801ca98068 R15: ffff88801ca980a0
-FS:  00005555562e1480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555cfd62e950 CR3: 0000000020039000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- drm_file_free.part.0+0x743/0xba0 drivers/gpu/drm/drm_file.c:291
- drm_file_free drivers/gpu/drm/drm_file.c:247 [inline]
- drm_close_helper.isra.0+0x180/0x1f0 drivers/gpu/drm/drm_file.c:308
- drm_release+0x22a/0x4f0 drivers/gpu/drm/drm_file.c:495
- __fput+0x270/0xb70 fs/file_table.c:394
- __fput_sync+0x47/0x50 fs/file_table.c:475
- __do_sys_close fs/open.c:1587 [inline]
- __se_sys_close fs/open.c:1572 [inline]
- __x64_sys_close+0x87/0xf0 fs/open.c:1572
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fb53da7bbda
-Code: 48 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c 24 0c e8 03 7f 02 00 8b 7c 24 0c 89 c2 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 36 89 d7 89 44 24 0c e8 63 7f 02 00 8b 44 24
-RSP: 002b:00007ffe292dcd60 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007fb53da7bbda
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 00007fb53db9d980 R08: 0000001b2e960000 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000014229
-R13: ffffffffffffffff R14: 00007fb53d600000 R15: 0000000000013ee8
- </TASK>
+Admittedly, my mistake, I managed to misname the function which I
+didn't spot before wrapping this patch up for sending..
 
+> S2I will have less latency compared to S2R and the mem_sleep will be
+> automatically set to S2I if S2R is not supported, so no userspace impact
+> as well.
+Yes, everything that differs them is abstracted in TZ or through the
+power management coprocessor.
 
-Tested on:
+> 
+> So please let us know what this change provide extra over S2I ? Until
+> then my NACK still stands.
+The main point here is to advertise pm_resume/suspend_via_firmware,
+which represents that Qualcomm does a lot of not-very-obvious power
+wire plumbing within their PSCI impl.
 
-commit:         f5837722 Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=173b1a7ee80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c7bcb8f62f1e2c3e
-dashboard link: https://syzkaller.appspot.com/bug?extid=59dcc2e7283a6f5f5ba1
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17f84d09e80000
-
+Konrad
 
