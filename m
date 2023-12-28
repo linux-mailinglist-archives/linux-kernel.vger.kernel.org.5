@@ -1,59 +1,47 @@
-Return-Path: <linux-kernel+bounces-12528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25EB281F62C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:00:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2BEE81F617
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:52:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFED5281615
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:59:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76B011F226F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:52:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED8666FDE;
-	Thu, 28 Dec 2023 08:59:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TKBsmvO8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1204463AD;
+	Thu, 28 Dec 2023 08:52:05 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E2E6FCB;
-	Thu, 28 Dec 2023 08:59:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5389DC433CC;
-	Thu, 28 Dec 2023 08:59:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703753970;
-	bh=4x9t1f04s06EEvjvtQ7yC2/ljPKJqNDBrcj2L/hT3Js=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TKBsmvO8700bopUsWROGXLmoCWFXsTW+dDVnNGSxOkaL/USi53RKl8TdsixW0+meq
-	 ZCWxQdbp33ikg/G9ezCtq7NkctrZnj90/OzQ0n9iUxG+YKDW4DQ0nPcXFY42wiBv+r
-	 997dRhgKccetlwPkyjqAZY+f5mx70kEYFtXj+CoiB8mr5EJbZvQA7ejpm/TS62Kx8Z
-	 MVCzbTzHlBLytfAxGrORGDpTnrYATlbt8PPwaCWGIg2WfXt/VlliMYXrTExd8VnHSR
-	 LxHkWdaNYJGBiXawHPjLTvQ6a2cSRLkXc9Y/wtpnv3MN3QHCLVBpveSUN4P0ShLMkB
-	 BBgaja1UR4WBA==
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Will Deacon <will@kernel.org>,
-	"Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Nick Piggin <npiggin@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arch@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: [PATCH 2/2] riscv: tlb: avoid tlb flushing if fullmm == 1
-Date: Thu, 28 Dec 2023 16:46:42 +0800
-Message-Id: <20231228084642.1765-3-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20231228084642.1765-1-jszhang@kernel.org>
-References: <20231228084642.1765-1-jszhang@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762572F45
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 08:52:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 3BS8ogVp005935;
+	Thu, 28 Dec 2023 16:50:42 +0800 (+08)
+	(envelope-from Chunyan.Zhang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4T129l5QqDz2QJG93;
+	Thu, 28 Dec 2023 16:44:11 +0800 (CST)
+Received: from ubt.spreadtrum.com (10.0.73.88) by BJMBX02.spreadtrum.com
+ (10.0.64.8) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Thu, 28 Dec
+ 2023 16:50:40 +0800
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+To: Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        <arm@kernel.org>, <soc@kernel.org>
+CC: <linux-arm-kernel@lists.infradead.org>,
+        Chunyan Zhang
+	<chunyan.zhang@unisoc.com>,
+        <linux-kernel@vger.kernel.org>, Chunyan Zhang
+	<zhang.lyra@gmail.com>
+Subject: [GIT PULL] ARM: sprd: DTS and bindings for v6.8-rc1
+Date: Thu, 28 Dec 2023 16:49:58 +0800
+Message-ID: <20231228084958.1439115-1-chunyan.zhang@unisoc.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,45 +49,48 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL:SHSQR01.spreadtrum.com 3BS8ogVp005935
 
-The mmu_gather code sets fullmm=1 when tearing down the entire address
-space for an mm_struct on exit or execve. So if the underlying platform
-supports ASID, the tlb flushing can be avoided because the ASID
-allocator will never re-allocate a dirty ASID.
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
-Use the performance of Process creation in unixbench on T-HEAD TH1520
-platform is improved by about 4%.
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/include/asm/tlb.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+are available in the Git repository at:
 
-diff --git a/arch/riscv/include/asm/tlb.h b/arch/riscv/include/asm/tlb.h
-index 1eb5682b2af6..35f3c214332e 100644
---- a/arch/riscv/include/asm/tlb.h
-+++ b/arch/riscv/include/asm/tlb.h
-@@ -12,10 +12,19 @@ static void tlb_flush(struct mmu_gather *tlb);
- 
- #define tlb_flush tlb_flush
- #include <asm-generic/tlb.h>
-+#include <asm/mmu_context.h>
- 
- static inline void tlb_flush(struct mmu_gather *tlb)
- {
- #ifdef CONFIG_MMU
-+	/*
-+	 * If ASID is supported, the ASID allocator will either invalidate the
-+	 * ASID or mark it as used. So we can avoid TLB invalidation when
-+	 * pulling down a full mm.
-+	 */
-+	if (static_branch_likely(&use_asid_allocator) && tlb->fullmm)
-+		return;
-+
- 	if (tlb->fullmm || tlb->need_flush_all)
- 		flush_tlb_mm(tlb->mm);
- 	else
--- 
-2.40.0
+  https://github.com/lyrazhang/linux.git tags/sprd-dt-6.8-rc1
 
+for you to fetch changes up to 1cff7243334f851b7dddf450abdaa6223a7a28e3:
+
+  arm64: dts: sprd: Change UMS512 idle-state nodename to match bindings (2023-12-28 16:10:39 +0800)
+
+----------------------------------------------------------------
+ARM: sprd: DTS and bindings for v6.8-rc1
+
+Unisoc ARM64 DTS and bindings changes are:
+- Fixed a few dtb_check warnings
+- Add bindings for a new SoC - UMS9620
+- Fixed an issue on UMS512
+
+----------------------------------------------------------------
+Chunyan Zhang (5):
+      dt-bindings: arm: Add compatible strings for Unisoc's UMS9620
+      arm64: dts: sprd: Add support for Unisoc's UMS9620
+      arm64: dts: sprd: Removed unused clock references from etm nodes
+      arm64: dts: sprd: Add clock reference for pll2 on UMS512
+      arm64: dts: sprd: Change UMS512 idle-state nodename to match bindings
+
+Cixi Geng (1):
+      arm64: dts: sprd: fix the cpu node for UMS512
+
+ .../devicetree/bindings/arm/sprd/sprd.yaml         |   5 +
+ arch/arm64/boot/dts/sprd/Makefile                  |   3 +-
+ arch/arm64/boot/dts/sprd/ums512.dtsi               |  39 ++--
+ arch/arm64/boot/dts/sprd/ums9620-2h10.dts          |  38 ++++
+ arch/arm64/boot/dts/sprd/ums9620.dtsi              | 245 +++++++++++++++++++++
+ 5 files changed, 310 insertions(+), 20 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/sprd/ums9620-2h10.dts
+ create mode 100644 arch/arm64/boot/dts/sprd/ums9620.dtsi
 
