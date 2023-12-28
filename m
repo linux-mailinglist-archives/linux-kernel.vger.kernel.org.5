@@ -1,131 +1,151 @@
-Return-Path: <linux-kernel+bounces-12762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 731BA81F9BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:34:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9C7B81F9B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:33:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27EE81F2443B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:34:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28AD21C21E43
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:33:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F5FF4FA;
-	Thu, 28 Dec 2023 15:34:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17074F9D3;
+	Thu, 28 Dec 2023 15:33:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iidfHTAN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ipbAH/Wr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E45D3F4E7
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 15:34:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-554dbe1857dso3741255a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:34:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703777651; x=1704382451; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=75j1Tuw2sMYHrBdwhMsY/vjsJuT8QMsKkqQlgA1wbFg=;
-        b=iidfHTANKMHgrrvevNM5tzAq/QUTr5+RmTa/GH8Kqz+/utP08gsjCr86h2Z8WfAH5/
-         G4WhFgvWBi9CZV227q5MmBabf0v1kQkHBLdhQblEkhf6MwA07gdsQWS0nJSNAeu5AHGo
-         sWrWsskc4BzjhaUAjbnZm2e/HszExdHtvdFEJ/l0mJGWhr4Qs71tr547qjfVoN0FhEzp
-         27zM46vAQfVjxpnzaWZRRsLF+oFZhqoYSCOGFsXoUobKVuN0b8cW9ByYfpkkqwUeOBy8
-         +YHxTRhDQVSr26co81fBOKlEN411yK331JI/dNsggd9hRyZmx2YhokEJLjbeh8/O8pfu
-         h8aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703777651; x=1704382451;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=75j1Tuw2sMYHrBdwhMsY/vjsJuT8QMsKkqQlgA1wbFg=;
-        b=tJlDzzPG9UghnStr37g224K0A1rXHS5cp50N7PIEJMEOiYXN9wfPAkJYF1Xz3zf2Xn
-         ITYQdqskSE4/D8szM4AKcE9kqhnIdnsIWEIZnoii9dTc2FOp2Bvjyt48IZbEjU3dvlHU
-         NoUv3o3eiRbkr/nnovgfescQC7LhQ1T/HgcJZb3XUH8DjP62czvWYNkeTGbZBtHRe0Au
-         COLitay8OqYC9MPnrc99oxEkvA6UILd/C/RDR+MzdceJLYR58YQGikhH4dEJMuD9r/IV
-         lL/wPF4VJJpCCyFdrsyQz4mbtMuMrpbnHPmrrKYUd3uJrmd48KjBX+ZCmFQn/4DdEgd4
-         6Hxw==
-X-Gm-Message-State: AOJu0YzIMiWvlGUWrrvV+m17sN83R5Unn7oUqYfjdiFZHRUMhONVmZXX
-	SMizU3zVEYvoFJppHlXXngPki1zmRtA99iSckghCiM8itJme
-X-Google-Smtp-Source: AGHT+IEVdgeTgEcIj//cXTspyGF7Se6NK2vltYXoZjZd9YUDK9xPQVKpC7XTmsxWy7ooa1IF1ltop0GyQm2+l6XbOMA=
-X-Received: by 2002:a17:906:fb01:b0:a23:6143:61b5 with SMTP id
- lz1-20020a170906fb0100b00a23614361b5mr6356178ejb.129.1703777650946; Thu, 28
- Dec 2023 07:34:10 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D648F9C5
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 15:33:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9075C433C8;
+	Thu, 28 Dec 2023 15:33:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703777622;
+	bh=5yDsdWwaOqkj18xvk96SZBr48BQYi9xMppuyMIAULmU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ipbAH/Wrp+ob6Xz/zB6i7pWjWD21xpgwi8d2rw2pVIqCBvEHGuX4I8jd+DJs0lhKG
+	 h2BBoxE8exC0WvB1G47rLd1XRlQ0YFDzg7Do22yyNTMQ7S9bsXy8UCTTPKZe+f2zmC
+	 0qmK9RaswodQXcH8JIraTOjvkOkhnDSM8UishL/tahB1aKFDWu8P2U2vxqqRP9XYJs
+	 OXE46j+jQDiLFoZ3KxrEF/TP9wU73NL2vZW/RsrfDfs4V23kbES0utEbpLxQ7m0eig
+	 qO/xhxNmiPib6F1CFcxs2wAwaPt7SLC4H6Hi19Hl+mW+s2ZvKbFvaHJLFC/WivTuS8
+	 BYL6quMrgPTfw==
+Message-ID: <19a1340f-0a0d-40a0-9d00-0faf171480f2@kernel.org>
+Date: Thu, 28 Dec 2023 23:33:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221-async-free-v1-1-94b277992cb0@kernel.org>
-In-Reply-To: <20231221-async-free-v1-1-94b277992cb0@kernel.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 28 Dec 2023 07:33:34 -0800
-Message-ID: <CAJD7tkY6XF_rhnAzqhZ-mo8yw-W4hOjxFsbvH04oqVr0u8mOzQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: swap: async free swap slot cache entries
-To: Chris Li <chrisl@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, =?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, 
-	=?UTF-8?B?WXUgWmhhb++/vA==?= <yuzhao@google.com>, 
-	Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
-	=?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
-	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/6] f2fs: fix to restrict condition of compress inode
+ conversion
+Content-Language: en-US
+To: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20231210113547.3412782-1-chao@kernel.org>
+ <20231210113547.3412782-5-chao@kernel.org> <ZXeJKCNrxcit0eTC@google.com>
+ <5884e300-5384-4a49-9f8d-8cced50f4e6d@kernel.org>
+ <ZXjc_I6__dijbwvN@google.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <ZXjc_I6__dijbwvN@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Dec 21, 2023 at 10:25=E2=80=AFPM Chris Li <chrisl@kernel.org> wrote=
-:
->
-> We discovered that 1% swap page fault is 100us+ while 50% of
-> the swap fault is under 20us.
->
-> Further investigation show that a large portion of the time
-> spent in the free_swap_slots() function for the long tail case.
->
-> The percpu cache of swap slots is freed in a batch of 64 entries
-> inside free_swap_slots(). These cache entries are accumulated
-> from previous page faults, which may not be related to the current
-> process.
->
-> Doing the batch free in the page fault handler causes longer
-> tail latencies and penalizes the current process.
->
-> Move free_swap_slots() outside of the swapin page fault handler into an
-> async work queue to avoid such long tail latencies.
->
-> Testing:
->
-> Chun-Tse did some benchmark in chromebook, showing that
-> zram_wait_metrics improve about 15% with 80% and 95% confidence.
->
-> I recently ran some experiments on about 1000 Google production
-> machines. It shows swapin latency drops in the long tail
-> 100us - 500us bucket dramatically.
->
-> platform        (100-500us)             (0-100us)
-> A               1.12% -> 0.36%          98.47% -> 99.22%
-> B               0.65% -> 0.15%          98.96% -> 99.46%
-> C               0.61% -> 0.23%          98.96% -> 99.38%
+On 2023/12/13 6:21, Jaegeuk Kim wrote:
+> On 12/12, Chao Yu wrote:
+>> On 2023/12/12 6:11, Jaegeuk Kim wrote:
+>>> On 12/10, Chao Yu wrote:
+>>>> This patch adds i_size check during compress inode conversion in order
+>>>> to avoid .page_mkwrite races w/ conversion.
+>>>
+>>> Which race condition do you see?
+>>
+>> Something like:
+>>
+>> - f2fs_setflags_common
+>>   - check S_ISREG && F2FS_HAS_BLOCKS
+>> 					- mkwrite
+>> 					 - f2fs_get_block_locked
+>> 					  : update metadata in old inode's disk layout
+> 
+> Don't we need to prevent setting this for mmapped file?
 
-I recall you mentioning that mem_cgroup_uncharge_swap() is the most
-expensive part of the batched freeing. If that's the case, I am
-curious what happens if we move that call outside of the batching
-(i.e. once the swap entry is no longer used and will be returned to
-the cache). This should amortize the cost of memcg uncharging and
-reduce the tail fault latency without extra work. Arguably, it could
-increase the average fault latency, but not necessarily in a
-significant way.
+Oh, we have used i_sem lock to prevent such race case, however
+we missed f2fs_disable_compressed_file():
 
-Ying pointed out something similar if I understand correctly (and
-other operations that can be moved).
+- f2fs_disable_compressed_file
+  - check inode_has_data
+						- f2fs_file_mmap
+						- mkwrite
+						 - f2fs_get_block_locked
+						 : update metadata in compressed
+						   inode's disk layout
+  - fi->i_flags &= ~F2FS_COMPR_FL
+  - clear_inode_flag(inode, FI_COMPRESSED_FILE);
 
-Also, if we choose to follow this route, I think there we should flush
-the async worker in drain_slots_cache_cpu(), right?
+Thanks,
+
+> 
+>>   - set_compress_context
+>>
+>> Thanks,
+>>
+>>>
+>>>>
+>>>> Fixes: 4c8ff7095bef ("f2fs: support data compression")
+>>>> Signed-off-by: Chao Yu <chao@kernel.org>
+>>>> ---
+>>>>    fs/f2fs/f2fs.h | 8 +++++++-
+>>>>    fs/f2fs/file.c | 5 ++---
+>>>>    2 files changed, 9 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>>> index 65294e3b0bef..c9b8a1953913 100644
+>>>> --- a/fs/f2fs/f2fs.h
+>>>> +++ b/fs/f2fs/f2fs.h
+>>>> @@ -4397,13 +4397,19 @@ static inline int set_compress_context(struct inode *inode)
+>>>>    #endif
+>>>>    }
+>>>> +static inline bool inode_has_data(struct inode *inode)
+>>>> +{
+>>>> +	return (S_ISREG(inode->i_mode) &&
+>>>> +		(F2FS_HAS_BLOCKS(inode) || i_size_read(inode)));
+>>>> +}
+>>>> +
+>>>>    static inline bool f2fs_disable_compressed_file(struct inode *inode)
+>>>>    {
+>>>>    	struct f2fs_inode_info *fi = F2FS_I(inode);
+>>>>    	if (!f2fs_compressed_file(inode))
+>>>>    		return true;
+>>>> -	if (S_ISREG(inode->i_mode) && F2FS_HAS_BLOCKS(inode))
+>>>> +	if (inode_has_data(inode))
+>>>>    		return false;
+>>>>    	fi->i_flags &= ~F2FS_COMPR_FL;
+>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>>>> index 1a3c29a9a6a0..8af4b29c3e1a 100644
+>>>> --- a/fs/f2fs/file.c
+>>>> +++ b/fs/f2fs/file.c
+>>>> @@ -1922,8 +1922,7 @@ static int f2fs_setflags_common(struct inode *inode, u32 iflags, u32 mask)
+>>>>    			f2fs_down_write(&F2FS_I(inode)->i_sem);
+>>>>    			if (!f2fs_may_compress(inode) ||
+>>>> -					(S_ISREG(inode->i_mode) &&
+>>>> -					F2FS_HAS_BLOCKS(inode))) {
+>>>> +					inode_has_data(inode)) {
+>>>>    				f2fs_up_write(&F2FS_I(inode)->i_sem);
+>>>>    				return -EINVAL;
+>>>>    			}
+>>>> @@ -3996,7 +3995,7 @@ static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+>>>>    		goto out;
+>>>>    	}
+>>>> -	if (F2FS_HAS_BLOCKS(inode)) {
+>>>> +	if (inode_has_data(inode)) {
+>>>>    		ret = -EFBIG;
+>>>>    		goto out;
+>>>>    	}
+>>>> -- 
+>>>> 2.40.1
 
