@@ -1,137 +1,88 @@
-Return-Path: <linux-kernel+bounces-12599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E15CE81F76D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:00:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90FBB81F76F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:00:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 821621F21D48
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 11:00:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 473301F22A17
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 11:00:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 453116FCF;
-	Thu, 28 Dec 2023 10:57:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9725749A;
+	Thu, 28 Dec 2023 10:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fZBk20e2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xb4SnXhh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D6C6FC3
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 10:57:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d4751dcb56so8580055ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 02:57:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703761049; x=1704365849; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=snYrry9zLuh+jWtvPEimeAzwraocI1J6hz5mOunhcYM=;
-        b=fZBk20e2nKa6rWmA3/7Vyt2SxtfIPDgl3TUA1cd59pOkHyTP76UsPINd8B1+G0a6AL
-         iOHNGlpn6BFUEW9bJicVY+jYW2nwF6t2iug+gACEN6siVT38tTO0/dJujeH2sTqtVO+G
-         29zOkTPee3CwuJvQv0TWP+2DL7s+gYuDP+p6A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703761049; x=1704365849;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=snYrry9zLuh+jWtvPEimeAzwraocI1J6hz5mOunhcYM=;
-        b=Eax8g+2b7fE43Uxhu8SbhY9tkBv5Rk+W+XQwVTkWknB3seYxdsi8z3wEvy5fUkJ5EW
-         uJjdeY8vKcTNFknRGrksbzTLETUb8l160JCmE4Qyvb20P/uZAozLKpuyjSixJeJR4ycw
-         g2p4ucmKzTy66GxoeB8hcjYx0cm56zVdRhdyOM3iRi63XGb5HWmbDV9L8N1GugXqqSDC
-         0tacOy3LB0Yj8rMzTmOSB2cqrMtGHT3n3OMqscKRsIWqB76IbANUiUaY7YhdMl57K8Rk
-         lKga4oKHr7bxfwHX1S0hMp+pyybghJudlanUxJCjbYWJVCpp8Lq2N1V2i0m9jtbq5OKo
-         xgzg==
-X-Gm-Message-State: AOJu0YzHegITmThw0P+CLW+gNMTT1LG3ktU39y32hyECz0qGc1H08Lie
-	/PdEQyyf2BkFf/nx8M6QnaVnlBKELnFr
-X-Google-Smtp-Source: AGHT+IFYsn9RDhTGSpo0c14KN3+HIjTHoXc3vMmiykGJJrVm4NBUKlRdW2Q19ABY3KG4K+gPwIsavg==
-X-Received: by 2002:a17:902:b58b:b0:1d3:442e:f0a2 with SMTP id a11-20020a170902b58b00b001d3442ef0a2mr5009163pls.139.1703761049479;
-        Thu, 28 Dec 2023 02:57:29 -0800 (PST)
-Received: from yuanhsinte-p1g4.corp.google.com ([2401:fa00:1:14:497f:b57b:3927:7371])
-        by smtp.gmail.com with ESMTPSA id d14-20020a170902aa8e00b001bf52834696sm13542193plr.207.2023.12.28.02.57.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Dec 2023 02:57:29 -0800 (PST)
-From: Hsin-Te Yuan <yuanhsinte@chromium.org>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Hsin-Te Yuan <yuanhsinte@chromium.org>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E6916FDD;
+	Thu, 28 Dec 2023 10:57:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2DADC433C9;
+	Thu, 28 Dec 2023 10:57:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703761056;
+	bh=8qaikp+moDcLUiCs4iR4gAs9ViYc3UIWQ8URTTbi/0c=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Xb4SnXhhub20zuAvJSj8WObTIPU/FmjMbsZjgx1mj89rX9LUCiyjw2Y151hW/7xho
+	 Ghysn7t3BjjSKBFvPwE/+UDSUWe7mcT3C/WQY/KqR5OXygdNfcyH2/aGJUOSPtxlgn
+	 2n+5H75pUaxVh4ZviGRR464HxlbTPxzoLBmUS4p+q7ov7YL0jnZi9fyq1s4adxLJ32
+	 akd9B6L/nxU4SU7uC5qZP+MEt5FqzWLtAmqI35NF0yGxuoTegp8jjvVn3b7/Gdm5ta
+	 luhuidTHcMuzobBl/7318hganQlzBw4NTHCDX0pF7bENxHVkfVojSzYeKA86oYd09k
+	 msWTkN4oUvoUQ==
+From: Christian Brauner <brauner@kernel.org>
+To: syzbot+b3b14fb9f8a14c5d0267@syzkaller.appspotmail.com,
+	Edward Adam Davis <eadavis@qq.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	akpm@linux-foundation.org,
+	axboe@kernel.dk,
+	bvanassche@acm.org,
+	linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH RESEND v2] arm64: dts: mt8195-cherry-tomato: change watchdog reset boot flow
-Date: Thu, 28 Dec 2023 18:57:01 +0800
-Message-ID: <20231228105717.719624-1-yuanhsinte@chromium.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+	reiserfs-devel@vger.kernel.org,
+	song@kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	yi.zhang@huawei.com
+Subject: Re: [PATCH] reiserfs: fix uninit-value in comp_keys
+Date: Thu, 28 Dec 2023 11:57:23 +0100
+Message-ID: <20231228-blitzen-unbelastet-0ce4748dbe28@brauner>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <tencent_9EA7E746DE92DBC66049A62EDF6ED64CA706@qq.com>
+References: <000000000000434c71060d5b6808@google.com> <tencent_9EA7E746DE92DBC66049A62EDF6ED64CA706@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=920; i=brauner@kernel.org; h=from:subject:message-id; bh=8qaikp+moDcLUiCs4iR4gAs9ViYc3UIWQ8URTTbi/0c=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaT2hkyqSwwOihO9JtryRvem2lv3yxsD0xnZVv9uneuj1 fE39LJVRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwERK/BkZpm8ref/2fgbbwysX n6W0zH2wNSnYzjH8F++kc398Tb/wPGVkWHlMttr5+qEexz/7ju5YkPHr16bo8hOMulX7cicvY1/ SxwAA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-The external output reset signal was originally disabled and sent from
-firmware. However, an unfixed bug in the firmware on tomato prevents
-the signal from being sent, causing the device to fail to boot. To fix
-this, enable external output reset signal to allow the device to reboot
-normally.
+On Tue, 26 Dec 2023 15:16:09 +0800, Edward Adam Davis wrote:
+> The cpu_key was not initialized in reiserfs_delete_solid_item(), which triggered
+> this issue.
+> 
+> 
 
-Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
----
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-Changes in v2:
-- Limit the effect only on tomato.
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
----
- arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts | 4 ++++
- 3 files changed, 12 insertions(+)
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
-index 2d5e8f371b6d..a82d716f10d4 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
-@@ -23,3 +23,7 @@ &sound {
- &ts_10 {
- 	status = "okay";
- };
-+
-+&watchdog {
-+	/delete-property/ mediatek,disable-extrst;
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
-index 2586c32ce6e6..2fe20e0dad83 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
-@@ -43,3 +43,7 @@ &sound {
- &ts_10 {
- 	status = "okay";
- };
-+
-+&watchdog {
-+	/delete-property/ mediatek,disable-extrst;
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
-index f54f9477b99d..dd294ca98194 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
-@@ -44,3 +44,7 @@ &sound {
- &ts_10 {
- 	status = "okay";
- };
-+
-+&watchdog {
-+	/delete-property/ mediatek,disable-extrst;
-+};
--- 
-2.43.0.472.g3155946c3a-goog
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
 
+[1/1] reiserfs: fix uninit-value in comp_keys
+      https://git.kernel.org/vfs/vfs/c/dd8f87f21dc3
 
