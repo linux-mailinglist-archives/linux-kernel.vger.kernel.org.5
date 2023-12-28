@@ -1,71 +1,111 @@
-Return-Path: <linux-kernel+bounces-12634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0BE181F807
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:07:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0197281F820
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:11:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F338D1C23652
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:07:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 971AE1F24383
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:11:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D573746C;
-	Thu, 28 Dec 2023 12:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CBA87490;
+	Thu, 28 Dec 2023 12:10:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WlnJ6fLM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail115-80.sinamail.sina.com.cn (mail115-80.sinamail.sina.com.cn [218.30.115.80])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380756FDA
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:06:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([116.24.9.182])
-	by sina.com (10.75.12.45) with ESMTP
-	id 658D64D700001E46; Thu, 28 Dec 2023 20:06:49 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 0445831457300
-X-SMAIL-UIID: D10D2FB298F246B3B241E561B6BD50E0-20231228-200650-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+15c3ba3f7ca8ced0914d@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [net?] INFO: rcu detected stall in fq_pie_timer (2)
-Date: Thu, 28 Dec 2023 20:06:39 +0800
-Message-Id: <20231228120639.1817-1-hdanton@sina.com>
-In-Reply-To: <000000000000a3123d060d7e22bd@google.com>
-References: <000000000000a3123d060d7e22bd@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710057466;
+	Thu, 28 Dec 2023 12:10:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D71F2C433C8;
+	Thu, 28 Dec 2023 12:10:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703765457;
+	bh=gC2BNbPpsT8NBQuqVA/gwgYEvuw7NsOU5Nw1q+1sLtA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WlnJ6fLMKC+M7L6MuT6FYUKuSqH0fbr+u0SBvsa5rWauRKMtFMt+w3ATQHP5Hk0Cg
+	 3SqcW5A33OeLeWbQ8hlH7oGJDwtIxne9C38wNjQmS3LkhAIty37+cuP20OsCnu3BcD
+	 yfSDBZOmOxHE88e39ei8kJpahk9eZSYM7uaHVLu8U8DDPfMhiwmCXS30sbyk/i8b3M
+	 yOtcGxoJIcGw+ozu4Pn/kItozA886UP1hosPmApYc3cgqDIVx0ZKEZaLFVI2go5A9e
+	 +8jL60BTu5EetftSMfXNg/KtyzxMdQXDZDvK6CrUujHyi2hMONioowCDYv6V0lK9SY
+	 +Qz6jVjvsvwkw==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan@kernel.org>)
+	id 1rIpDv-00046r-1D;
+	Thu, 28 Dec 2023 13:10:52 +0100
+Date: Thu, 28 Dec 2023 13:10:51 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Sven Peter <sven@svenpeter.dev>
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>, Felix Zhang <mrman@mrman314.tech>,
+	linux-bluetooth@vger.kernel.org, stable@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Hector Martin <marcan@marcan.st>,
+	Bagas Sanjaya <bagasdotme@gmail.com>,
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Orlando Chamberlain <orlandoch.dev@gmail.com>, kekrby@gmail.com,
+	admin@kodeit.net, Janne Grunau <j@jannau.net>,
+	Aditya Garg <gargaditya08@live.com>, asahi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] Bluetooth: Fix Bluetooth for BCM4377 on T2 Intel
+ MacBooks
+Message-ID: <ZY1ly_uB8huYl5jO@hovoldconsulting.com>
+References: <AB87C916-9CF9-4B8C-AFF5-74CA4151C4FC@svenpeter.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <AB87C916-9CF9-4B8C-AFF5-74CA4151C4FC@svenpeter.dev>
 
-On Wed, 27 Dec 2023 05:54:18 -0800
-> HEAD commit:    7c5e046bdcb2 Merge tag 'net-6.7-rc7' of git://git.kernel.o..
-> git tree:       net
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1127e71ae80000
+On Thu, Dec 28, 2023 at 10:46:57AM +0100, Sven Peter wrote:
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+> > On Dec 27, 2023, at 11:30, Johan Hovold <johan@kernel.org> wrote:
 
---- x/net/sched/sch_fq_pie.c
-+++ y/net/sched/sch_fq_pie.c
-@@ -401,7 +401,7 @@ static void fq_pie_timer(struct timer_li
- 		next = tupdate;
- 	}
- 	if (tupdate)
--		mod_timer(&q->adapt_timer, jiffies + next);
-+		mod_timer(&q->adapt_timer, jiffies + max(2, next));
- 	spin_unlock(root_lock);
- 	rcu_read_unlock();
- }
---
+> > The commit you tracked this down to restored the original semantics for
+> > HCI_QUIRK_USE_BDADDR_PROPERTY, which means that it should only be set
+> > for devices with an invalid address.
+> > 
+> > The Broadcom BCM4377 driver has so far been setting this flag
+> > unconditionally which now potentially results in also valid addresses
+> > being marked as invalid.
+> > 
+> > I've just sent a patch that makes sure to only mark invalid addresses as
+> > invalid:
+> > 
+> > https://lore.kernel.org/lkml/20231227101003.10534-1-johan+linaro@kernel.org/
+> > 
+> > Note however that the flag still needs to be set in case your device
+> > lacks storage for a unique device address so you cannot simply drop it
+> > for some device classes as you do below (unless you are certain that
+> > these devices will always have a valid address).
+
+> We do know that though.
+> 
+> BCM4377 is present on Apple’s x86 Macs and always has internal storage
+> for the address. If the board comes up without an address there’s nothing
+> much we can do because the address isn’t provided by ACPI or anything
+> else and setting the invalid address quirk for that situation seems appropriate.
+> 
+> BCM4378/4387 is present on Apple’s ARM Macs and never has internal storage.
+> The address is always provided by our bootloader in the device tree.
+> These should always unconditionally set HCI_QUIRK_USE_BDADDR_PROPERTY
+> just like this patch does.
+
+Ok, good, then this patch and the one I posted are mostly equivalent
+assuming that the BCM4378/4387 return an invalid address during setup.
+
+This patch may be preferred as it does not need to rely on such
+assumptions, though.
+
+Johan
 
