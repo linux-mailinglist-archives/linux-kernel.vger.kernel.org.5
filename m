@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-12848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C24C81FB20
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 21:11:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA17281FB21
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 21:11:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6704A1C2360F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:11:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A3861F229AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:11:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42FBE11C9D;
-	Thu, 28 Dec 2023 20:09:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEBF4125AE;
+	Thu, 28 Dec 2023 20:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UzeQM+vF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BOtHbzZT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A7DC11705
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 20:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0F4611C86
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 20:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7b7d55d7717so293128539f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:09:49 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5e7bb1e0db8so51508527b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:09:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703794188; x=1704398988; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703794190; x=1704398990; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HfZWh6S86hfLbf3ALuySh4PKa92mkoOaYgRP6tzCQaQ=;
-        b=UzeQM+vFVJ1Z33zQAvAHTAHjxGTHwLNIeQX066HcWxc6uwdbYCagg+E8AEPY1hGbpJ
-         /kBzDFdin6YQbFBPIU6J7Zi8XwzZJkYaZK2IBG48MKqhJOC6FVwuJwMoJpkTfPhRzmCu
-         dsUh80Fg0dhuYsSZGOjlRBbUqkhgm4GQg2hzPHBVW79L+xXq2N6srNINPwgr2DyHcyrD
-         tBteBTkeQuvMdrWiZPiNIm/k3WHOEzCz3LuXz0bPj+89T/TpuJQOW69IGtemCht+KNxD
-         va/rA+EQtXBE3dq/GVxsCBsAsSflH4jYmZJH94jo4dUFco1WyLgg5Zwze2LYmcxTfpb2
-         j12w==
+        bh=9TlZbwiWH1Vw1yns1kCBHb/nB4XyLWx4ePYr3lVNDe0=;
+        b=BOtHbzZTOSKvn1C1KCqBDEpwzb1/GE9PqC7WuXzGgkBujhtePTR4z/0t5WSfYeXe7L
+         dRB4nCEaSBgK7wKWDLgNttfAc7gOggJJu9F1DVwwC8Q4MPebygThcNJ86H3LkudI2iwZ
+         kqfMdHbX5O7vuQtRMLL8t0NcaH4zMN8+pICWWPKIKM9JQ7CGIgUnmxH0Dsiu6SAuC3hI
+         ffzrhr2PvZQnRNoKxU3Fal/aW7uFrYpjaQIzeacqHD1pdVv1LshLCvYwvXOo7l890UqM
+         DP4f7nLpoYu1zzZaLQmnREtg1x3sapE9wTzItXrnTJP+SJ6BCI81sBvFkqh0F7PaB4HB
+         e1Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703794188; x=1704398988;
+        d=1e100.net; s=20230601; t=1703794190; x=1704398990;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HfZWh6S86hfLbf3ALuySh4PKa92mkoOaYgRP6tzCQaQ=;
-        b=ZRYcMNfht/Nbvno9lIxDTh/rWIeZNR929kuUvgJf/OrDJARxoMr4bwViRVe57Io2QN
-         Ctv89QW79lp1e/8thfAWO+xmzNm1AjugBXj2IrbMxMd6Wi832Nn4i9qy4fz96F1Ju0qs
-         nap2M5cK65zy2Qn56tUhGHr/bsluXmbNkhfGkWExJTQy4fxhQ2643qO+gZy0/ZCASUEK
-         co55vlYxyFERy/Bj/nHXvdNASv4d1CKwYm0vRN7dZJbW/7td3DMbGPPdWdCMeVj1Qi+Y
-         rl+2O0rgh/KkVbdojGrGiLtl3Hwv1P9SDDYK+DA7s1hVyfRdbbvodI2rS28b3gWm3s5b
-         lVWg==
-X-Gm-Message-State: AOJu0YwKJLyjW3Uzevt2O+ywB5300brwQqyYGm4pKvVNW6tjbtnm8VdF
-	ZMvqmgkVtv/N8JTXKnIbtr0=
-X-Google-Smtp-Source: AGHT+IG9Lqqh2T5AlaAupitak9SDKW67lW/8ZquP3N4mohdxhGbx0NttQfb1TF3K5GkIEQUNGQzi2w==
-X-Received: by 2002:a05:6e02:1785:b0:35f:e9a7:372a with SMTP id y5-20020a056e02178500b0035fe9a7372amr11090768ilu.47.1703794188311;
-        Thu, 28 Dec 2023 12:09:48 -0800 (PST)
+        bh=9TlZbwiWH1Vw1yns1kCBHb/nB4XyLWx4ePYr3lVNDe0=;
+        b=hj+RXtgtt5Hyit1j48wINCHRHWDKHPT3WhHXvs5Vem9/m7Q71oN/36KcMnmfHBWU63
+         OS/6doNNYTzToyeHQFFWBS1BBVf9+kuTbQnUrNBhIM+kZrCMDm6Lf1IvPk2gSsfLVG1T
+         rXItX3U6kgvBbKAI5qvrdW3W6adAVGKn8ncpmOvArXi2CH9EomQ681Bakk+j+BixPgRy
+         q5K5d7CNIn/P57FNRFS/QzMqVydHjSoCCGIq9BTITRLnxPAA+kHFmQHiJpEXFcZ0rscU
+         bCtNlQG6ywmTlpLz8ad8RLPDV0fwv6NwKaHXRulYYGsxZL9VEjHx2HPVqJgcUL7xMoJy
+         CqfQ==
+X-Gm-Message-State: AOJu0Yy+DJnED5NBlIgnklYweZT9ZAbK9R0adit1VuI9uNy8nyyFGO9H
+	GZZTgJ0zi1ZZG39ESNcd9Ps=
+X-Google-Smtp-Source: AGHT+IEWxqyGLbrIXb7NZcPO9H8pmvjZvPfzBkTcaALqI3LX+W+Usl3clXueRADT8bD6BbAx++kEcg==
+X-Received: by 2002:a81:4522:0:b0:5eb:1edf:ae28 with SMTP id s34-20020a814522000000b005eb1edfae28mr5483139ywa.57.1703794189674;
+        Thu, 28 Dec 2023 12:09:49 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:967c:a333:ae09:3f60])
-        by smtp.gmail.com with ESMTPSA id gz17-20020a05690c471100b005e93604a567sm7604354ywb.52.2023.12.28.12.09.47
+        by smtp.gmail.com with ESMTPSA id w126-20020a817b84000000b005e79f80959bsm7812882ywc.112.2023.12.28.12.09.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Dec 2023 12:09:47 -0800 (PST)
+        Thu, 28 Dec 2023 12:09:49 -0800 (PST)
 From: Yury Norov <yury.norov@gmail.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
@@ -65,9 +65,9 @@ To: Andrew Morton <akpm@linux-foundation.org>,
 Cc: Yury Norov <yury.norov@gmail.com>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH 7/9] cpumask: define cleanup function for cpumasks
-Date: Thu, 28 Dec 2023 12:09:34 -0800
-Message-Id: <20231228200936.2475595-8-yury.norov@gmail.com>
+Subject: [PATCH 8/9] lib/group_cpus: rework group_cpus_evenly()
+Date: Thu, 28 Dec 2023 12:09:35 -0800
+Message-Id: <20231228200936.2475595-9-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231228200936.2475595-1-yury.norov@gmail.com>
 References: <20231228200936.2475595-1-yury.norov@gmail.com>
@@ -79,34 +79,129 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now we can simplify a code that allocates cpumasks for local needs.
+Leverage cleanup machinery and drop most of housekeeping code.
+Particularly, drop unneeded and erroneously initialized with -ENOMEM
+variable ret.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- include/linux/cpumask.h | 3 +++
- 1 file changed, 3 insertions(+)
+ lib/group_cpus.c | 79 +++++++++++++++---------------------------------
+ 1 file changed, 25 insertions(+), 54 deletions(-)
 
-diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index 73ff2e0ef090..f85515ebcf42 100644
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -7,6 +7,7 @@
-  * set of CPUs in a system, one bit position per CPU number.  In general,
-  * only nr_cpu_ids (<= NR_CPUS) bits are valid.
-  */
-+#include <linux/cleanup.h>
- #include <linux/kernel.h>
- #include <linux/threads.h>
- #include <linux/bitmap.h>
-@@ -988,6 +989,8 @@ static inline bool cpumask_available(cpumask_var_t mask)
+diff --git a/lib/group_cpus.c b/lib/group_cpus.c
+index b8c0c3ae2bbd..b9ab32e00a79 100644
+--- a/lib/group_cpus.c
++++ b/lib/group_cpus.c
+@@ -76,6 +76,8 @@ static void free_node_to_cpumask(cpumask_var_t *masks)
+ 	kfree(masks);
  }
- #endif /* CONFIG_CPUMASK_OFFSTACK */
  
-+DEFINE_FREE(free_cpumask_var, struct cpumask *, if (_T) free_cpumask_var(_T));
++DEFINE_FREE(free_node_to_cpumask, cpumask_var_t *, if (_T) free_node_to_cpumask(_T));
 +
- /* It's common to want to use cpu_all_mask in struct member initializers,
-  * so it has to refer to an address rather than a pointer. */
- extern const DECLARE_BITMAP(cpu_all_bits, NR_CPUS);
+ static void build_node_to_cpumask(cpumask_var_t *masks)
+ {
+ 	int cpu;
+@@ -345,26 +347,16 @@ static int __group_cpus_evenly(unsigned int startgrp, unsigned int numgrps,
+  */
+ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+ {
+-	unsigned int curgrp = 0, nr_present = 0, nr_others = 0;
+-	cpumask_var_t *node_to_cpumask;
+-	cpumask_var_t nmsk, npresmsk;
+-	int ret = -ENOMEM;
+-	struct cpumask *masks = NULL;
+-
+-	if (!alloc_cpumask_var(&nmsk, GFP_KERNEL))
++	cpumask_var_t *node_to_cpumask __free(free_node_to_cpumask) = alloc_node_to_cpumask();
++	struct cpumask *masks __free(kfree) = kcalloc(numgrps, sizeof(*masks), GFP_KERNEL);
++	cpumask_var_t npresmsk __free(free_cpumask_var);
++	cpumask_var_t nmsk __free(free_cpumask_var);
++	unsigned int curgrp, nr_present, nr_others;
++
++	if (!masks || !node_to_cpumask || !alloc_cpumask_var(&nmsk, GFP_KERNEL)
++			|| !alloc_cpumask_var(&npresmsk, GFP_KERNEL))
+ 		return NULL;
+ 
+-	if (!alloc_cpumask_var(&npresmsk, GFP_KERNEL))
+-		goto fail_nmsk;
+-
+-	node_to_cpumask = alloc_node_to_cpumask();
+-	if (!node_to_cpumask)
+-		goto fail_npresmsk;
+-
+-	masks = kcalloc(numgrps, sizeof(*masks), GFP_KERNEL);
+-	if (!masks)
+-		goto fail_node_to_cpumask;
+-
+ 	build_node_to_cpumask(node_to_cpumask);
+ 
+ 	/*
+@@ -382,11 +374,15 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+ 	cpumask_copy(npresmsk, data_race(cpu_present_mask));
+ 
+ 	/* grouping present CPUs first */
+-	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+-				  npresmsk, nmsk, masks);
+-	if (ret < 0)
+-		goto fail_build_affinity;
+-	nr_present = ret;
++	nr_present = __group_cpus_evenly(0, numgrps, node_to_cpumask, npresmsk, nmsk, masks);
++	if (nr_present < 0)
++		return NULL;
++
++	/* If npresmsk is empty */
++	if (!cpumask_andnot(npresmsk, cpu_possible_mask, npresmsk))
++		return_ptr(masks);
++
++	curgrp = nr_present < numgrps ? nr_present : 0;
+ 
+ 	/*
+ 	 * Allocate non present CPUs starting from the next group to be
+@@ -394,38 +390,13 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+ 	 * group space, assign the non present CPUs to the already
+ 	 * allocated out groups.
+ 	 */
+-	if (nr_present >= numgrps)
+-		curgrp = 0;
+-	else
+-		curgrp = nr_present;
+-
+-	if (cpumask_andnot(npresmsk, cpu_possible_mask, npresmsk))
+-		/* If npresmsk is not empty */
+-		ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+-					  npresmsk, nmsk, masks);
+-	else
+-		ret = 0;
+-
+-	if (ret >= 0)
+-		nr_others = ret;
+-
+- fail_build_affinity:
+-	if (ret >= 0)
+-		WARN_ON(nr_present + nr_others < numgrps);
+-
+- fail_node_to_cpumask:
+-	free_node_to_cpumask(node_to_cpumask);
+-
+- fail_npresmsk:
+-	free_cpumask_var(npresmsk);
+-
+- fail_nmsk:
+-	free_cpumask_var(nmsk);
+-	if (ret < 0) {
+-		kfree(masks);
++	nr_others = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
++					npresmsk, nmsk, masks);
++	if (nr_others < 0)
+ 		return NULL;
+-	}
+-	return masks;
++
++	WARN_ON(nr_present + nr_others < numgrps);
++	return_ptr(masks);
+ }
+ #else /* CONFIG_SMP */
+ struct cpumask *group_cpus_evenly(unsigned int numgrps)
 -- 
 2.40.1
 
