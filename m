@@ -1,114 +1,175 @@
-Return-Path: <linux-kernel+bounces-12699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE46981F90D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:22:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0934281F915
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:30:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA1362858C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:22:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3BBB1F22DA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:30:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F333DD517;
-	Thu, 28 Dec 2023 14:22:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2128832;
+	Thu, 28 Dec 2023 14:30:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sSaYratf"
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="dv8rhXUf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D60A0883A
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 14:22:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40d5a41143fso21507775e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 06:22:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B05C8D2
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 14:29:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a2345aaeb05so663767466b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 06:29:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703773344; x=1704378144; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ycTyKuCg6AYWdYK86Pju7Unfy3xZlo2FyoLEvMCq1QE=;
-        b=sSaYratfK3H+gPyaUwhoz4Sxrvw8NFmdUnnAVEHDr/LQkt4Sb2QEjzsiAWyGaTLW/9
-         uEaXn3FU27QpaWKsd6DKM77pGGimB33Kbq449FQL83mA/HKGylBoFKw8kQAQinmANygQ
-         pp8gf+3rOZlEVPL+3Ntpns34cR7iKxBQ61+tkXxIAxrt1S6db0fUaVUIKIK/PWj3iFuz
-         SaW+SEpA9YzTOUOPAehQlbtKy97y4RteTwY+MAxaiWLALkPWZb7VtlFyEyJvaQzxE919
-         EXUjA2UAGhe9p8Zq2chXrmn91ZCSJma4ar8w5p9YD9VmmBpMtUYxG7QGz4Dqce/G9W7Z
-         VRCA==
+        d=fairphone.com; s=fair; t=1703773797; x=1704378597; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IfOkw9nEcZxbA1rEGXnw7Xr3Fbv2QGCNa/sv3AZ14y4=;
+        b=dv8rhXUfeIIde9MZGjI6hLX+c81tekNQVvOna8wokRJYaskThEmkjZYVcF/8UpVNCA
+         WJvzBrDudVuXUJLvRRMGFNAs8WtmxyuyueFvSJhJ+dH9MnSewQju440m90hKwZZAa0om
+         EgT6qlyZDvDCdWti/BMZksKdrs6NyWCgFer1tHKrgEWph9k43KGI3aLlLZfAAfwFXLF8
+         U0azGfF+09/drjuMrS8jDXlqVMLvS8kAeywrbt/EGcJEWcGLD8zE0rJLTgyqAqUjK6Ww
+         Kuy+6x16nf1MtO3T0xaQvNIvZ2+6MXejx7NpdRdH260DejMtu4KIswRtwt6++COxddGn
+         rZ4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703773344; x=1704378144;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ycTyKuCg6AYWdYK86Pju7Unfy3xZlo2FyoLEvMCq1QE=;
-        b=N+IxYUO8ff3ptnc5kuG9+FIIWKDyjuiSio+1nUgWwlEvN/oDDOVsPP5GeMAUUd9XtK
-         6NJRBOHCbj2B62dT1JwaYX/45LXsXNZIO6VIx+rZ138jT4Hjo1wf2q8QSqlTDWeS0er/
-         RyF82TPtCuV5sS0Nx3rDHTSM/Dz8r6TzUFXpvXXp3NCF+oKhMZIHzRKTuavWZimAI5nG
-         qQ831FHW6VNCn7qpq+luGm9OZBYyQC1kQ6xhlBZf9GeSrJUE/iPuXOARZSl2cB5f/hbV
-         u3p6ERR3+7xMFuzgT+1xfFQB4c3wmYKPzZrXpcaiyQ1N+OPArXZ/MylTWr/CiYS59Sua
-         UOUQ==
-X-Gm-Message-State: AOJu0Yw5e9FTqn6w5JyVtMpIkWHq46cQ4+MC+iAj7QilkciC44KUSGvS
-	ENQT17/ckrqwD4rzskLVO+2/jfCkhsBkPw==
-X-Google-Smtp-Source: AGHT+IF7Y+vb4J0pHbvv95oe1mN5Y8Zu/nZlOrbGCyTdcvIPgWbzLoCwmU0azPl/MDHggoogLpoBVw==
-X-Received: by 2002:a05:600c:4594:b0:40d:5ca1:80bc with SMTP id r20-20020a05600c459400b0040d5ca180bcmr1792499wmo.107.1703773344106;
-        Thu, 28 Dec 2023 06:22:24 -0800 (PST)
-Received: from salami.lan ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id v17-20020a05600c471100b0040d5fcaefcesm5028325wmo.19.2023.12.28.06.22.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Dec 2023 06:22:23 -0800 (PST)
-Message-ID: <5a961a6992d7661e6c7589496438cad7b68d4f5a.camel@linaro.org>
-Subject: Re: [PATCH v2 10/12] arm64: dts: exynos: gs101: update USI UART to
- use peric0 clocks
-From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org, 
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- mturquette@baylibre.com,  sboyd@kernel.org, conor+dt@kernel.org,
- andi.shyti@kernel.org,  alim.akhtar@samsung.com,
- gregkh@linuxfoundation.org, jirislaby@kernel.org,  s.nawrocki@samsung.com,
- tomasz.figa@gmail.com, cw00.choi@samsung.com,  arnd@arndb.de,
- semen.protsenko@linaro.org
-Cc: saravanak@google.com, willmcvicker@google.com, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-serial@vger.kernel.org, kernel-team@android.com
-Date: Thu, 28 Dec 2023 14:22:22 +0000
-In-Reply-To: <20231228125805.661725-11-tudor.ambarus@linaro.org>
-References: <20231228125805.661725-1-tudor.ambarus@linaro.org>
-	 <20231228125805.661725-11-tudor.ambarus@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2-1 
+        d=1e100.net; s=20230601; t=1703773797; x=1704378597;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=IfOkw9nEcZxbA1rEGXnw7Xr3Fbv2QGCNa/sv3AZ14y4=;
+        b=VDjrg5S2e05KFKHMZF1CIC6D8esfp5ourW638Q5/eFevf5DDW1SH2zAsVo9/Hr/QKG
+         s4IdD57bgrqNEbYiV3kswk+nOT5kiWCh1s00TsaJHaN485ST5imiSdwdfVBCc64cCEv5
+         uBZD6WsgbHacOVNAuAjY+wQPpodedfzujYa1z/g0qzMDrrpE4g0FgXR1GQ1YbWegPncn
+         PICh9ZbAEbmjcfoooQXjf+bhBnTaz4wlQ+UQNX+A5v0E5V5ip+4sUc4L+YAZ58KuJMoO
+         pQLRtRG0MBR3arb37hQg4aqzT4DdCcHSeYmRiGM47mT6Kx4f5ya3hsfuVkJ1GcWXpN28
+         N1xA==
+X-Gm-Message-State: AOJu0YwsfVn44+pgDxw6nBLY5/tP2od9PwIe4pfv0vke/GT7kkK0Q+Qx
+	Xo7LQUdtXDcbUWhoJu5r93S+V4gzKKToXQ==
+X-Google-Smtp-Source: AGHT+IEwzibakp4+9ZXJZVidzN9ogA4Ep77wRAfVlvNC3XZ4Cuo92tm68q7JErfyuMvnMmslNephwA==
+X-Received: by 2002:a17:906:7810:b0:a12:78b5:3d81 with SMTP id u16-20020a170906781000b00a1278b53d81mr4527886ejm.1.1703773797149;
+        Thu, 28 Dec 2023 06:29:57 -0800 (PST)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id r25-20020a170906281900b00a1f7c502736sm7523221ejc.164.2023.12.28.06.29.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Dec 2023 06:29:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 28 Dec 2023 15:29:56 +0100
+Message-Id: <CY01EKQVWE36.B9X5TDXAREPF@fairphone.com>
+Cc: <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
+ <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
+ <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+ <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
+ <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
+ <robh+dt@kernel.org>, <vkoul@kernel.org>,
+ <cros-qcom-dts-watchers@chromium.org>
+Subject: Re: [PATCH V3 2/2] arm64: dts: qcom: sc7280: add QCrypto nodes
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: "Om Prakash Singh" <quic_omprsing@quicinc.com>
+X-Mailer: aerc 0.15.2
+References: <20231214103600.2613988-1-quic_omprsing@quicinc.com>
+ <20231214103600.2613988-3-quic_omprsing@quicinc.com>
+In-Reply-To: <20231214103600.2613988-3-quic_omprsing@quicinc.com>
 
-Hi Tudor,
+On Thu Dec 14, 2023 at 11:36 AM CET, Om Prakash Singh wrote:
+> Add the QCE and Crypto BAM DMA nodes.
+>
+> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+> ---
+>
+> Changes in V3:
+>   - V2 patch was sent without actual modification. Resending the patch wi=
+th modified file.
+>
+> Changes in V2:
+>   - Update DT node sequence as per register ascending order.
+>   - Fix DT node properties as per convention.
+>
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/q=
+com/sc7280.dtsi
+> index 66f1eb83cca7..b819724c1255 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -2233,6 +2233,28 @@ pcie1_phy: phy@1c0e000 {
+>  			status =3D "disabled";
+>  		};
+> =20
+> +		cryptobam: dma-controller@1dc4000 {
+> +			compatible =3D "qcom,bam-v1.7.4", "qcom,bam-v1.7.0";
+> +			reg =3D <0x0 0x01dc4000 0x0 0x28000>;
+> +			interrupts =3D <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
+> +			#dma-cells =3D <1>;
+> +			iommus =3D <&apps_smmu 0x4e4 0x0011>,
+> +				 <&apps_smmu 0x4e6 0x0011>;
+> +			qcom,ee =3D <0>;
+> +			qcom,controlled-remotely;
+> +		};
 
-On Thu, 2023-12-28 at 12:58 +0000, Tudor Ambarus wrote:
->=20
-> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/bo=
-ot/dts/exynos/google/gs101.dtsi
-> [...]
-> @@ -380,7 +373,8 @@ serial_0: serial@10a00000 {
-> =C2=A0				reg =3D <0x10a00000 0xc0>;
-> =C2=A0				interrupts =3D <GIC_SPI 634
-> =C2=A0					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 IRQ_TYPE_LEVEL_HIGH 0>;
-> -				clocks =3D <&dummy_clk 0>, <&dummy_clk 0>;
-> +				clocks =3D <&cmu_peric0 CLK_GOUT_PERIC0_CLK_PERIC0_USI0_UART_CLK>,
-> +					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_IPCLK_0>;
+Hi,
 
-I suspect these two should be the other way around, given the clock-names b=
-elow?
+Unfortunately I seem to have boot failure / device crash with cryptobam
+enabled on my qcm6490-fairphone-fp5. Are you aware of any firmware
+differences that could cause this with QCM6490 LA firmware?
 
-> =C2=A0				clock-names =3D "uart", "clk_uart_baud0";
-> =C2=A0				samsung,uart-fifosize =3D <256>;
-> =C2=A0				status =3D "disabled";
+Looking at downstream msm-5.4 dmesg I do see this BAM being used so it
+should generally be accessible from Linux.
 
-Cheers,
-A.
+[    5.217214] qce 1de0000.qcedev: Adding to iommu group 18
+[    5.223741] QCE50: __qce_get_device_tree_data: CE operating frequency is=
+ not defined, setting to default 100MHZ
+[    5.234986] qce 1de0000.qcedev: QTI Crypto 5.6.0 device found @0x1de0000
+[    5.242981] sps_register_bam_device: sps:BAM 0x0000000001dc4000 is regis=
+tered
+[    5.251124] sps_bam_enable: sps:BAM 0x0000000001dc4000 (va:0x000000001db=
+63156) enabled: ver:0x27, number of pipes:16
+[    5.262783] QCE50: qce_sps_init:  QTI MSM CE-BAM at 0x0000000001dc4000 i=
+rq 9
+[    5.271820] qce 1de0000.qcedev:qcom_cedev_ns_cb: Adding to iommu group 1=
+9
+[    5.281083] qce 1de0000.qcedev:qcom_cedev_s_cb: Adding to iommu group 20
+[    5.289376] qcrypto 1de0000.qcrypto: Adding to iommu group 21
+[    5.296326] QCE50: __qce_get_device_tree_data: CE operating frequency is=
+ not defined, setting to default 100MHZ
+[    5.307675] qcrypto 1de0000.qcrypto: QTI Crypto 5.6.0 device found @0x1d=
+e0000
+[    5.315867] QCE50: qce_sps_init:  QTI MSM CE-BAM at 0x0000000001dc4000 i=
+rq 9
+
+Any idea?
+
+Regards
+Luca
+
+> +
+> +		crypto: crypto@1dfa000 {
+> +			compatible =3D "qcom,sc7280-qce", "qcom,sm8150-qce", "qcom,qce";
+> +			reg =3D <0x0 0x01dfa000 0x0 0x6000>;
+> +			dmas =3D <&cryptobam 4>, <&cryptobam 5>;
+> +			dma-names =3D "rx", "tx";
+> +			iommus =3D <&apps_smmu 0x4e4 0x0011>,
+> +				 <&apps_smmu 0x4e4 0x0011>;
+> +			interconnects =3D <&aggre2_noc MASTER_CRYPTO 0 &mc_virt SLAVE_EBI1 0>=
+;
+> +			interconnect-names =3D "memory";
+> +		};
+> +
+>  		ipa: ipa@1e40000 {
+>  			compatible =3D "qcom,sc7280-ipa";
+> =20
+
 
