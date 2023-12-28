@@ -1,141 +1,86 @@
-Return-Path: <linux-kernel+bounces-12695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79A2181F8F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:04:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB90A81F8FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:08:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 201E01F2274F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:04:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07C941C217F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 139FF882E;
-	Thu, 28 Dec 2023 14:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bYVPu0Jw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 198A38838;
+	Thu, 28 Dec 2023 14:08:51 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1DFF882D
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 14:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-32f8441dfb5so5754135f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 06:04:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703772244; x=1704377044; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mPkijzavdvdOdoaGEBSsLLFk6woqLrK/9VsOdIqUCa0=;
-        b=bYVPu0JwyCEQ+me/1C7wRVmxl2Ma6aE6AlWCUAOg3kh8/FWxXmuPV66h7p0po2LyZK
-         VnMX2PIpPGA/DdrpV695/VA8VlbtVxl9eapzkjIXXKy16LyT/FevK+Yj3gvipaDWRnwK
-         ZY1U61V/xGdk8e29PMq6kTnqWatdp2P3ACZCwF9TEjW8pCXooIYglS7vPKHu4wplgYqr
-         igkmpvf/RvVi/Hx9ipQbn8yMz5uANOjIdB0U5+OIhDP7DruacoRYlTAyfdtbhdLtRcF2
-         8ySppcwDh7jYkTTThqd6EiffaNRJUJHqvvHnHjqXzrMZHmrKAtZysinWQ9QQdKl1p82T
-         ZxvA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 667948820
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 14:08:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35fc915c090so43685095ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 06:08:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703772244; x=1704377044;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mPkijzavdvdOdoaGEBSsLLFk6woqLrK/9VsOdIqUCa0=;
-        b=dlgUdRorO8owg3GZHXGKO+OEZH1ZpTEhyQWvUhxe7fkvOWBvF/KZpBxo6i899G7i9h
-         DdjenhdBWg+xdlDpsSFvTZOsvrQFHCmyIEvQCR0rLIiBtTfZVRpH085q+EoS0GOfhaUD
-         5NM+rbe66+p2olxeTiNS9aDdmNjL7m6YTCX4yEyextIK4DaaF/qs/rOImfY5ogmSYlid
-         DIcZXlye6c/dT/dJXkeicZmoVmGenTe+1YRSRKU8POIMQQW+xeXlzjq93GzVibzbf596
-         yzoNL7AiNaifYdVv1tPi8SKD19RkVqFhBMUDFV42Ncf7VTtBUCwOZ4uF+Qp04NHs1L+a
-         pS7A==
-X-Gm-Message-State: AOJu0YzHHFQk/4b5JxkRKjjoVc8Xfb46WUJjtbupgeobmD9+O5xKdrSq
-	crzMUXCWMhE9dm5gWqjESBk6BKpzAZop9g==
-X-Google-Smtp-Source: AGHT+IFx1n2uI1NoW+671gtu5x3u/GIM0bqgW0pdaDovQohcs0pKIX6FlwCJutRZLl+Zt/eK41hdWw==
-X-Received: by 2002:a5d:5984:0:b0:336:e161:8d with SMTP id n4-20020a5d5984000000b00336e161008dmr2745905wri.78.1703772244272;
-        Thu, 28 Dec 2023 06:04:04 -0800 (PST)
-Received: from salami.lan ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id l4-20020a5d6744000000b00336710ddea0sm17155630wrw.59.2023.12.28.06.04.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Dec 2023 06:04:03 -0800 (PST)
-Message-ID: <a40b5d0dc3e151fede14aa00bcb853d1eeb8824b.camel@linaro.org>
-Subject: Re: [PATCH v2 11/12] arm64: dts: exynos: gs101: define USI8 with
- I2C configuration
-From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org, 
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- mturquette@baylibre.com,  sboyd@kernel.org, conor+dt@kernel.org,
- andi.shyti@kernel.org,  alim.akhtar@samsung.com,
- gregkh@linuxfoundation.org, jirislaby@kernel.org,  s.nawrocki@samsung.com,
- tomasz.figa@gmail.com, cw00.choi@samsung.com,  arnd@arndb.de,
- semen.protsenko@linaro.org
-Cc: saravanak@google.com, willmcvicker@google.com, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-serial@vger.kernel.org, kernel-team@android.com
-Date: Thu, 28 Dec 2023 14:04:02 +0000
-In-Reply-To: <20231228125805.661725-12-tudor.ambarus@linaro.org>
-References: <20231228125805.661725-1-tudor.ambarus@linaro.org>
-	 <20231228125805.661725-12-tudor.ambarus@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2-1 
+        d=1e100.net; s=20230601; t=1703772528; x=1704377328;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y1kypE1u8XyY4qPEIFPOxS4GpifqD08FK9VLBC2P33o=;
+        b=eprsN51lLnfXAMPcO6cW2TLVIZiOZOz3Bt69Svq/pTXFwpiHvAGEBurkJHko/WEojI
+         ZYRLh4cDQmI1ZCSLpgp0l1A62ONP5nVqNVBjxGQw/p6lxso5nAzp4/PxEKfVsIUlzU2H
+         MJdplrcqTgMqCi71f0WT2MBPdbWGyL2AtECa2EgCoXq2YaCePG/Zyg6iHBCKctvime8E
+         rBwfUX27EGbqd1ZT8cD1aM7BtKniwUp+BYfWEeI6aLgFkioknUk/i3HGmbu8LBC3AwDL
+         7dz50sk1bvTfCFrdxSBnWzL5FBB67S0mrUGiIQuIMDpDa+/IpX9tgnIY0GXflmC1MM4+
+         tHyw==
+X-Gm-Message-State: AOJu0YybU9JDRjF/PYrby5pjrEH0LvwApNnjXZTGoeCNzjKztZXLNo8T
+	ZnKVn/1cZHASlwGwW3IH6nGgMB6lOocGQJkjNp5o9IW24/Hy5m0=
+X-Google-Smtp-Source: AGHT+IFPPnUQj+5aFVJATfuTKskSFhjnh3od8L7wN4IxkZr4lvYmR/Z9q7bvQPaujgdHIuB1ojVY7xxNpfT/FTOery99DsWlv4i+
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:1be1:b0:35f:e864:f6f with SMTP id
+ y1-20020a056e021be100b0035fe8640f6fmr1528242ilv.0.1703772528597; Thu, 28 Dec
+ 2023 06:08:48 -0800 (PST)
+Date: Thu, 28 Dec 2023 06:08:48 -0800
+In-Reply-To: <000000000000321c24060d7cfa1c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005860a2060d9274da@google.com>
+Subject: Re: [syzbot] Re: [syzbot] [erofs?] KMSAN: uninit-value in
+ z_erofs_lz4_decompress (2)
+From: syzbot <syzbot+6c746eea496f34b3161d@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Tudor,
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-On Thu, 2023-12-28 at 12:58 +0000, Tudor Ambarus wrote:
-> [...]
->=20
-> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/bo=
-ot/dts/exynos/google/gs101.dtsi
-> index 0e5b1b490b0b..c6ae33016992 100644
-> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> @@ -354,6 +354,35 @@ pinctrl_peric0: pinctrl@10840000 {
-> =C2=A0			interrupts =3D <GIC_SPI 625 IRQ_TYPE_LEVEL_HIGH 0>;
-> =C2=A0		};
-> =C2=A0
-> +		usi8: usi@109700c0 {
-> +			compatible =3D "google,gs101-usi",
-> +				=C2=A0=C2=A0=C2=A0=C2=A0 "samsung,exynos850-usi";
-> +			reg =3D <0x109700c0 0x20>;
-> +			ranges;
-> +			#address-cells =3D <1>;
-> +			#size-cells =3D <1>;
-> +			clocks =3D <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_7>,
-> +				 <&cmu_peric0 CLK_GOUT_PERIC0_CLK_PERIC0_USI8_USI_CLK>;
-> +			clock-names =3D "pclk", "ipclk";
+***
 
-Given the clock-names, shouldn't the clock indices be the other way around?=
- Also see below.
+Subject: Re: [syzbot] [erofs?] KMSAN: uninit-value in z_erofs_lz4_decompress (2)
+Author: eadavis@qq.com
 
-> +			samsung,sysreg =3D <&sysreg_peric0 0x101c>;
-> +			status =3D "disabled";
-> +
-> +			hsi2c_8: i2c@10970000 {
-> +				compatible =3D "google,gs101-hsi2c",
-> +					=C2=A0=C2=A0=C2=A0=C2=A0 "samsung,exynosautov9-hsi2c";
-> +				reg =3D <0x10970000 0xc0>;
-> +				interrupts =3D <GIC_SPI 642 IRQ_TYPE_LEVEL_HIGH 0>;
-> +				#address-cells =3D <1>;
-> +				#size-cells =3D <0>;
-> +				pinctrl-names =3D "default";
-> +				pinctrl-0 =3D <&hsi2c8_bus>;
-> +				clocks =3D <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_7>,
-> +					 <&cmu_peric0 CLK_GOUT_PERIC0_CLK_PERIC0_USI8_USI_CLK>;
-> +				clock-names =3D "hsi2c", "hsi2c_pclk";
+please test uninit-value in z_erofs_lz4_decompress (2)
 
-Here, pclk =3D=3D CLK_GOUT_PERIC0_CLK_PERIC0_USI8_USI_CLK (which is correct=
-, I believe), whereas
-above pclk =3D=3D CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_7
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fbafc3e621c3
 
-Cheers,
-A.
+diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+index 021be5feb1bc..c0983c3db77f 100644
+--- a/fs/erofs/decompressor.c
++++ b/fs/erofs/decompressor.c
+@@ -250,7 +250,8 @@ static int z_erofs_lz4_decompress_mem(struct z_erofs_lz4_decompress_ctx *ctx,
+ 		print_hex_dump(KERN_DEBUG, "[ in]: ", DUMP_PREFIX_OFFSET,
+ 			       16, 1, src + inputmargin, rq->inputsize, true);
+ 		print_hex_dump(KERN_DEBUG, "[out]: ", DUMP_PREFIX_OFFSET,
+-			       16, 1, out, rq->outputsize, true);
++			       16, 1, out, ret < 0 ? min_t(unsigned int, 
++				       rq->outputsize, rq->inputsize) : rq->outputsize, true);
+ 
+ 		if (ret >= 0)
+ 			memset(out + ret, 0, rq->outputsize - ret);
 
 
