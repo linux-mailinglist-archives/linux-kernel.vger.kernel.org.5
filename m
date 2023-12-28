@@ -1,31 +1,31 @@
-Return-Path: <linux-kernel+bounces-12339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1672081F39A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:34:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C0DF81F39B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:34:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A3DC1C212E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:34:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39FC7B22733
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:34:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 964A22568;
-	Thu, 28 Dec 2023 01:33:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C965687;
+	Thu, 28 Dec 2023 01:33:47 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D067E10E4
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:33:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1192710F2
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:33:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T0rXQ6MYxz1FFnD;
-	Thu, 28 Dec 2023 09:29:42 +0800 (CST)
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T0rXR3vnZz1FGHJ;
+	Thu, 28 Dec 2023 09:29:43 +0800 (CST)
 Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id C994B1A0173;
-	Thu, 28 Dec 2023 09:33:34 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 764441A0172;
+	Thu, 28 Dec 2023 09:33:35 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by kwepemm000013.china.huawei.com
  (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Dec
@@ -35,9 +35,9 @@ To: <david.oberhollenzer@sigma-star.at>, <richard@nod.at>,
 	<miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
 	<Tudor.Ambarus@linaro.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils 03/11] tests: ubifs_repair: Add cycle mount+repair test
-Date: Thu, 28 Dec 2023 09:36:31 +0800
-Message-ID: <20231228013639.2827205-4-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils 04/11] tests: ubifs_repair: Add powercut+repair+mount test
+Date: Thu, 28 Dec 2023 09:36:32 +0800
+Message-ID: <20231228013639.2827205-5-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20231228013639.2827205-1-chengzhihao1@huawei.com>
 References: <20231228013639.2827205-1-chengzhihao1@huawei.com>
@@ -52,232 +52,198 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm000013.china.huawei.com (7.193.23.81)
 
-Do fsstress and repair ubifs image, make sure all files(and their data)
-are not lost after repairing. This testcase mainly checks whether
-ubifs_repair could corrupt filesystem content in common case.
+Inject powercut while doing fsstress on mounted UBIFS for kinds of
+flashes (eg. nand, nor).
+This testcase mainly makes sure that ubifs_repair can make UBIFS image
+be consistent on different flashes (eg. nand, nor). Because the
+min_io_size of nor flash is 1, the UBIFS image on nor flash will be
+different from nand flash after doing powercut, so we need make sure
+ubifs_repair can handle these two types of flash.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
  .gitignore                                         |   1 +
  configure.ac                                       |   3 +-
  tests/ubifs_repair-tests/Makemodule.am             |   3 +-
- .../tests/cycle_mount_repair_check.sh.in           | 177 +++++++++++++++++++++
- 4 files changed, 182 insertions(+), 2 deletions(-)
- create mode 100755 tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh.in
+ .../tests/powercut_repair_mount.sh.in              | 138 +++++++++++++++++++++
+ 4 files changed, 143 insertions(+), 2 deletions(-)
+ create mode 100755 tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in
 
 diff --git a/.gitignore b/.gitignore
-index 7613349..1a5fe7e 100644
+index 1a5fe7e..d47282c 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -114,6 +114,7 @@ tests/ubi-tests/runubitests.sh
- tests/ubi-tests/ubi-stress-test.sh
+@@ -115,6 +115,7 @@ tests/ubi-tests/ubi-stress-test.sh
  tests/ubifs_repair-tests/lib/common.sh
  tests/ubifs_repair-tests/tests/authentication_refuse.sh
-+tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
+ tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
++tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
  
  #
  # Files generated by autotools
 diff --git a/configure.ac b/configure.ac
-index a42a55d..73a3853 100644
+index 73a3853..349e4ad 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -356,6 +356,7 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
- 	tests/ubi-tests/runubitests.sh
+@@ -357,6 +357,7 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
  	tests/ubi-tests/ubi-stress-test.sh
  	tests/ubifs_repair-tests/lib/common.sh
--	tests/ubifs_repair-tests/tests/authentication_refuse.sh])
-+	tests/ubifs_repair-tests/tests/authentication_refuse.sh
-+	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh])
+ 	tests/ubifs_repair-tests/tests/authentication_refuse.sh
+-	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh])
++	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
++	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh])
  
  AC_OUTPUT([Makefile])
 diff --git a/tests/ubifs_repair-tests/Makemodule.am b/tests/ubifs_repair-tests/Makemodule.am
-index c0a6ea1..c2556f5 100644
+index c2556f5..92f288a 100644
 --- a/tests/ubifs_repair-tests/Makemodule.am
 +++ b/tests/ubifs_repair-tests/Makemodule.am
-@@ -1,3 +1,4 @@
+@@ -1,4 +1,5 @@
  test_SCRIPTS += \
  	tests/ubifs_repair-tests/lib/common.sh \
--	tests/ubifs_repair-tests/tests/authentication_refuse.sh
-+	tests/ubifs_repair-tests/tests/authentication_refuse.sh \
-+	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
-diff --git a/tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh.in b/tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh.in
+ 	tests/ubifs_repair-tests/tests/authentication_refuse.sh \
+-	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
++	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh \
++	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
+diff --git a/tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in b/tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in
 new file mode 100755
-index 0000000..1f5db3f
+index 0000000..a5c7da6
 --- /dev/null
-+++ b/tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh.in
-@@ -0,0 +1,177 @@
++++ b/tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in
+@@ -0,0 +1,138 @@
 +#!/bin/sh
 +# Copyright (c), 2023-2024, Huawei Technologies Co, Ltd.
 +# Author: Zhihao Cheng <chengzhihao1@huawei.com>
 +#
 +# Test Description:
-+# Do many cycles of mount/fsstress/umount/repair/mount, check whether filesystem
-+# content before repairing and after repairing are consistent.
-+# Running time: 16h
++# For many kinds of flash, do following things
++#  1. mount UBIFS
++#  2. fsstress & powercut & unmount
++#  3. repair ubifs
++#  4. check UBIFS mounting result
++# Running time: 1h
 +
 +TESTBINDIR=@TESTBINDIR@
 +source $TESTBINDIR/common.sh
 +
-+# No need to test on large size flash, it will take very long time iterating
-+# all files in large filesystem.
-+ID="0xec,0xa1,0x00,0x15" # 128M 128KB 2KB 512-sub-page
-+
 +function run_test()
 +{
-+	mode=$1
-+	encryption=$2
-+	modprobe nandsim id_bytes=$ID
-+	mtdnum="$(find_mtd_device "$nandsim_patt")"
-+	flash_eraseall /dev/mtd$mtdnum
++	local simulator="$1";
++	local size="$2";
++	local peb_size="$3";
++	local page_size="$4";
++	local encryption=$5;
 +
-+	dmesg -c > /dev/null
++	echo "======================================================================"
++	printf "%s" "$simulator: ${size}MiB PEB size ${peb_size}KiB"
++	if [ "$simulator" = "nandsim" ]; then
++		printf " %s" "page size ${page_size}KiB"
++	fi
++	printf " $encryption\n"
 +
-+	modprobe ubi mtd="$mtdnum,2048,0,0,1" fm_autoconvert || fatal "modprobe ubi fail"
-+	ubimkvol -N vol_test -m -n 0 /dev/ubi$UBI_NUM || fatal "mkvol fail"
-+	modprobe ubifs || fatal "modprobe ubifs fail"
-+
-+	echo "Do cycle mount+umount+repair+check_fs_content test ($encryption,$mode)"
-+
-+	if [[ "$encryption" == "encrypted" ]]; then
-+		encryption_gen_key
++	if [ "$simulator" = "nandsim" ]; then
++		$TESTBINDIR/load_nandsim.sh "$size" "$peb_size" "$page_size" || echo "cannot load nandsim";
++		mtdnum="$(find_mtd_device "$nandsim_patt")"
++	elif [ "$simulator" = "mtdram" ]; then
++		load_mtdram "$size" "$peb_size" || echo "cannot load mtdram"
++		mtdnum="$(find_mtd_device "$mtdram_patt")"
++	else
++		fatal "$simulator is not supported"
 +	fi
 +
-+	round=0
-+	while [[ $round -lt 20 ]]
++	flash_eraseall /dev/mtd$mtdnum
++	modprobe ubi mtd="$mtdnum,$page_size,0,0,1" fm_autoconvert || fatal "modprobe ubi fail"
++	ubimkvol -N vol_test -m -n 0 /dev/ubi$UBI_NUM || fatal "mkvol fail"
++	modprobe ubifs || fatal "modprobe ubifs fail"
++	mount_ubifs $DEV $MNT || fatal "mount ubifs fail"
++	if [[ "$encryption" == "encrypted" ]]; then
++		encryption_gen_key
++		encryption_set_key $MNT
++	fi
++
++	fsstress -d $MNT -l0 -p4 -n10000 &
++	sleep $((RANDOM % 120))
++	powercut
++
++	ps -e | grep -w fsstress > /dev/null 2>&1
++	while [ $? -eq 0 ]
 +	do
-+		echo "---------------------- ROUND $round ----------------------"
-+		let round=$round+1
-+
-+		mount_ubifs $DEV $MNT || fatal "mount ubifs fail"
-+		if [[ "$encryption" == "encrypted" ]]; then
-+			encryption_set_key $MNT
-+		fi
-+
-+		per=`df -Th | grep ubifs | awk '{print $6}'`;
-+		if [[ ${per%?} -gt 95 ]]; then
-+			# Used > 95%
-+			echo "Clean files"
-+			rm -rf $MNT/*
-+			check_err_msg
-+		fi
-+
-+		# Truncation and writing ops cannot coexist, because ubifs_repair could recover truncated data nodes which leads different md5 results before repairing and after repairing. For example:
-+		# 1. write(file, 8K)
-+		# 2. truncate(file, 0) # data block 0,1 are truncated
-+		# 3. lseek(file, 4K)
-+		# 4. write(file, 4K)   # data block 1' is created
-+		# 5. truncate(file, 8000) # data block 1'' is modified
-+		# It is expected that only data block 1'' is found after repairing, but ubifs_repair will try best to recover all nodes(ubifs_repair cannot utilize TNC information), so data block 0 and data block 1'' are found.
-+		if [[ "$mode" == "notruncate" ]]
-+		then
-+			fsstress -d $MNT -l0 -p4 -n10000 -f truncate=0 &
-+		elif [[ "$mode" == "nowrite" ]]
-+		then
-+			fsstress -d $MNT -l0 -p4 -n10000 -f dwrite=0 -f awrite=0 -f write=0 -f writev=0 -f mwrite=0 -f uring_write=0 -f copyrange=0 -f deduperange=0 -f clonerange=0 -f splice=0 &
-+		else
-+			fsstress -d $MNT -l0 -p4 -n10000 &
-+		fi
-+
-+		sleep $((RANDOM % 30))
-+
++		killall -9 fsstress > /dev/null 2>&1
++		sleep 1
 +		ps -e | grep -w fsstress > /dev/null 2>&1
-+		while [ $? -eq 0 ]
-+		do
-+			killall -9 fsstress > /dev/null 2>&1
-+			sleep 1
-+			ps -e | grep -w fsstress > /dev/null 2>&1
-+		done
-+
-+		check_err_msg # Make sure new operations are okay after repairing UBIFS
-+		sync
-+
-+		# Record filesystem information
-+		rm -f $TMP_FILE 2>/dev/null
-+		if [[ "$mode" == "all" ]]
-+		then
-+			read_dir $MNT "nomd5sum"
-+		else
-+			read_dir $MNT "md5sum"
-+		fi
-+
-+		while true
-+		do
-+			res=`mount | grep "$MNT"`
-+			if [[ "$res" == "" ]]
-+			then
-+				break;
-+			fi
-+			umount $MNT
-+			sleep 0.1
-+		done
-+
-+		echo 'format "UBIFS DBG repair" +pflmt' > /sys/kernel/debug/dynamic_debug/control
-+		echo "$DEV" > /sys/kernel/debug/ubifs/repair_fs
-+		res=$?
-+		if [[ $res != 0 ]]
-+		then
-+			fatal "repair fail $res"
-+		fi
-+
-+		# There are no powercut or corruption, error messages won't appear in UBIFS repairing
-+		check_err_msg
-+
-+		check_memleak
-+
-+		enable_chkfs
-+
-+		mount_ubifs $DEV $MNT
-+		res=$?
-+		if [[ $res != 0 ]]
-+		then
-+			fatal "mount fail $res"
-+		fi
-+
-+		if [[ "$encryption" == "encrypted" ]]; then
-+			encryption_set_key $MNT
-+		fi
-+
-+		du -sh $MNT > /dev/null  # Make sure all files are accessible
-+		ret=$?
-+		if [[ $ret != 0 ]]; then
-+			fatal "Cannot access all files"
-+		fi
-+		check_err_msg
-+
-+		# Check filesystem information
-+		if [[ "$mode" == "all" ]]
-+		then
-+			parse_dir "nomd5sum"
-+		else
-+			parse_dir "md5sum"
-+		fi
-+		rm -f $TMP_FILE 2>/dev/null
-+
-+		umount $MNT
-+		res=$?
-+		if [[ $res != 0 ]]
-+		then
-+			fatal "unmount fail $res"
-+		fi
-+
-+		check_err_msg
-+
-+		disable_chkfs
 +	done
++
++	while true
++	do
++		res=`mount | grep "$MNT"`
++		if [[ "$res" == "" ]]
++		then
++			break;
++		fi
++		umount $MNT
++		sleep 0.1
++	done
++
++	echo 'format "UBIFS DBG repair" +pflmt' > /sys/kernel/debug/dynamic_debug/control
++	echo "$DEV" > /sys/kernel/debug/ubifs/repair_fs
++	res=$?
++	if [[ $res != 0 ]]
++	then
++		fatal "repair fail $res"
++	fi
++
++	check_memleak
++
++	dmesg -c > /dev/null # powercut and repairing could reproduce error messages
++
++	enable_chkfs
++
++	mount_ubifs $DEV $MNT
++	res=$?
++	if [[ $res != 0 ]]
++	then
++		fatal "mount fail $res"
++	fi
++
++	if [[ "$encryption" == "encrypted" ]]; then
++		encryption_set_key $MNT
++	fi
++
++	du -sh $MNT > /dev/null  # Make sure all files are accessible
++	ret=$?
++	if [[ $ret != 0 ]]; then
++		fatal "Cannot access all files"
++	fi
++	check_err_msg
++
++	umount $MNT
++	res=$?
++	if [[ $res != 0 ]]
++	then
++		fatal "unmount fail $res"
++	fi
++
++	check_err_msg
 +
 +	modprobe -r ubifs
 +	modprobe -r ubi
-+	modprobe -r nandsim
++	modprobe -r $simulator
++
++	echo "----------------------------------------------------------------------"
 +}
 +
 +check_fsstress
 +start_t=$(date +%s)
-+for encryption in "encrypted" "noencrypted"; do
-+	# This situation is ignored, fsstress (comes from https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git) could invoke open(O_TRUNC), however there is no 'O_TRUNC' passed into open syscall after looking through the code, so we just skip this case for now.
-+	#run_test "notruncate" $encryption
-+
-+	run_test "nowrite" $encryption
-+	run_test "all" $encryption
++echo "Do powercut+repair+mount test in kinds of flashes"
++for simulator in "mtdram" "nandsim"; do
++	for encryption in "encrypted" "noencrypted"; do
++		run_test "$simulator" "16" "16" "512" $encryption
++		run_test "$simulator" "64" "16" "512" $encryption
++		run_test "$simulator" "128" "64" "2048" $encryption
++		run_test "$simulator" "256" "128" "2048" $encryption
++		run_test "$simulator" "512" "128" "2048" $encryption
++		run_test "$simulator" "1024" "512" "2048" $encryption
++	done
 +done
 +end_t=$(date +%s)
 +time_cost=$(( end_t - start_t ))
