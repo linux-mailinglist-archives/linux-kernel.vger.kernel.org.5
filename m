@@ -1,79 +1,87 @@
-Return-Path: <linux-kernel+bounces-12679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF24681F8CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:23:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8395981F8D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:23:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BED8285B5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:23:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A04E1F2435D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7EB0849C;
-	Thu, 28 Dec 2023 13:23:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hxvOFu0r"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 445FB8468;
+	Thu, 28 Dec 2023 13:23:20 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219968465;
-	Thu, 28 Dec 2023 13:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97947D2FC;
+	Thu, 28 Dec 2023 13:23:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-	bh=SKnhnxQ3SKksZObvbGWia/kMA4sV8PCdLCik9kiibwc=; b=hxvOFu0rb3hufv/+M4NNENJZEp
-	IXHxqrpv/kghs1Fzqtv08DpFbNljJcInJl1mGDA6avysjr1SrNNv9Vwsv4TUicL3JQikdSSpXHH9Y
-	upyFLNrDcoETSRKokwRvqHSY3/WLm1n5b1grLP6UvoMzqzgGylLvp0UNWtRRURltk/OnPnUE52zU3
-	svyFeOhX3CVlI7F/K5p9HdzSqpMw5RLBv6OtIei/N9Vya/QMf3CPmFEjrIESseAX4lKnuXUcex90X
-	q025HzhYg6QV8WqQJ8m1rGaHT+cXOITAGt1vSdfr4Pl/I3JIiP3eLiX16mS1gu4rn+sxtJvk+umfP
-	+EDb5eVg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIqLg-00Gvfy-09;
-	Thu, 28 Dec 2023 13:22:56 +0000
-Date: Thu, 28 Dec 2023 05:22:56 -0800
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc: Kees Cook <keescook@chromium.org>,
-	Joel Granados <j.granados@samsung.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH] sysctl: treewide: constify ctl_table_root::set_ownership
-Message-ID: <ZY12sLZYlQ09zU6D@bombadil.infradead.org>
-References: <20231226-sysctl-const-ownership-v1-1-d78fdd744ba1@weissschuh.net>
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6dbd87b706aso1105654a34.0;
+        Thu, 28 Dec 2023 05:23:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703769797; x=1704374597;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QeFP6suxl7EtcK3JyaW9i7TB53KdnNxv2gyZPlwRh+A=;
+        b=pxhe1cy4tkXiQOW+dVsmW5xv5XkyzYOQVAI4K0eyTeNV611YyTlyFas6LXco4dMj6M
+         efcIucbYGYMY7M7R7bieKtAXdA0/nzB3ziAfnDti4BidXyEgFoy4oqlf7icIOWUdu7c/
+         K+HhEnbYc92HFu0NTXd3K4pQJrSYCPyJNKm0vETIM/cwMV+QWNY8LlDDQQPLqs5xsw3i
+         LAypSst9178CXLrB3skr7rvHJxOc+GaCWE+PN/QL5SMLnMohLLVDnyQviGnF3njpYXXm
+         Y4OEVCUyJX3D6WUAg0YD3BpQmR476WfxGIZ/asoVnIGCXuholPlc2hUrHvExgTxM2UXl
+         3tsg==
+X-Gm-Message-State: AOJu0YwJiXzpuQWmitbhrjEP8NaAm8FacPcIz/VJualwFtHMDCFcskPA
+	PHNxVaD8MJGKrHFMJodcBgS4Map6JVvhBnDkPXW58U8s
+X-Google-Smtp-Source: AGHT+IH1B6v2PjfGwNghxpykoryjy3gBaJ41XOQ9spluBAAwXJ9HNHrJD08hiRmGkKFa87NboRKTrPKHmWf/zm/YNXw=
+X-Received: by 2002:a05:6820:2e01:b0:594:35b4:8a with SMTP id
+ ec1-20020a0568202e0100b0059435b4008amr13760579oob.0.1703769797435; Thu, 28
+ Dec 2023 05:23:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231226-sysctl-const-ownership-v1-1-d78fdd744ba1@weissschuh.net>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <5751163.DvuYhMxLoT@kreacher>
+In-Reply-To: <5751163.DvuYhMxLoT@kreacher>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 28 Dec 2023 14:23:06 +0100
+Message-ID: <CAJZ5v0gyQ5O-QJEcRJq6pU+Ey6QLiK76SG4hAcQDR_4EPOtX6w@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] thermal: core: Fix issues related to thermal zone resume
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
+	Zhang Rui <rui.zhang@intel.com>, LKML <linux-kernel@vger.kernel.org>, 
+	Lukasz Luba <lukasz.luba@arm.com>, Bo Ye <bo.ye@mediatek.com>, 
+	Radu Solea <radusolea@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 26, 2023 at 01:32:42PM +0100, Thomas Weißschuh wrote:
-> The set_ownership callback is not supposed to modify the ctl_table.
-> Enforce this expectation via the typesystem.
-> 
-> The patch was created with the following coccinelle script:
-> 
->   virtual patch
->   virtual context
->   virtual report
+On Mon, Dec 18, 2023 at 8:28=E2=80=AFPM Rafael J. Wysocki <rjw@rjwysocki.ne=
+t> wrote:
+>
+> Hi Everyone,
+>
+> This patch series fixes some issues related to the suspend and resume of
+> thermal zones during system-wide transitions.
+>
+> Patch [1/3] addresses some existing synchronization issues.
+>
+> Patch [2/3] is a preliminary change for the last patch.
+>
+> Patch [3/3] rearranges the thermal zone resume code to resume thermal
+> zones asynchronously using the existing thermal zone polling support.
+>
+> Please refer to the individual patch changelogs for details.
 
-If you remove this virtual stuff and mention how we verify manually
-through the build how users do not exits which rely on modifying the the
-table I thinkt these two patches are ready, thanks for doing this in
-Coccinelle it helps me review this faster!
+These are fixes, so it would be good to get them into 6.8.
 
-  Luis
+Since I don't see any objections to them, I'm adding them to the
+bleeding-edge branch and will move them to linux-next next week.
+
+Thanks!
 
