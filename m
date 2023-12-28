@@ -1,145 +1,237 @@
-Return-Path: <linux-kernel+bounces-12754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D59E81F9AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:29:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBD4A81F9B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:32:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48B622853CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:29:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A8551C212B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A2DEAFE;
-	Thu, 28 Dec 2023 15:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 885AAF50E;
+	Thu, 28 Dec 2023 15:31:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IkhVO1si"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="cnZYnqL7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9064FE54E;
-	Thu, 28 Dec 2023 15:29:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CA67C433C7;
-	Thu, 28 Dec 2023 15:29:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703777385;
-	bh=kGqaPiWe87W+qKQNuAZXfmZ46EmuGzB7sckchD9aWJk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=IkhVO1si84o49z+Z7may5z0QqOod2xI559smAPq8dRAwZhmRoiz4JCt9KmfBYbc/I
-	 ku78kDR43P5rlwQ4Y8tAqXzHZODqmnwOEDotY4I2FEr3JBGCmg39xhpJJHRjnhdJ72
-	 8aK/S+RSaI2q3aPUYKihGHOaXV0bRlAbdpD4tiPfUDwsIBQ/upjal6ajLx7Uc4mvIa
-	 xZjFj/QvziZAuOutOBD2GV7sWkBFfgjnQ4xdq9sX1gzXImIgQsTe/YFiwV7yF8oHUY
-	 VF88N6987Iwks3oEZ1SCmrC5Sw9prmuQOSLMTiF7YOZvLwH/nyM4U4h3iTlfFQlMnG
-	 NzN8pK+gqApUg==
-Message-ID: <f02f1a6d-88fe-463b-b3a0-4feb5a6f8c85@kernel.org>
-Date: Thu, 28 Dec 2023 16:29:40 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6264DF4E9;
+	Thu, 28 Dec 2023 15:31:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BSFUaXv103330;
+	Thu, 28 Dec 2023 09:30:36 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1703777436;
+	bh=hbQn/7htqu5ze6cnODQAltMYX+xCyXIFHCSDxaMTPfc=;
+	h=From:To:CC:Subject:Date;
+	b=cnZYnqL75ELnqaZJVCm+YD6gR4gNeBHKUqNlfqeJ9Pava7VAPj9PNnFsRvrI3jTUI
+	 JvmHsbvUyq4A68P/tl1LLDhI89MoVNGwpJ+GGaEkCfqrsvqw0dTf3Mh+05EDsHhMtF
+	 9gY682Ptu3mEdTOkYhzILMuWqzVqit8n6PJ5C+Uc=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BSFUaBq038470
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 28 Dec 2023 09:30:36 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 28
+ Dec 2023 09:30:35 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 28 Dec 2023 09:30:35 -0600
+Received: from LT5CG31242FY.dhcp.ti.com ([10.250.161.188])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BSFUSKm116497;
+	Thu, 28 Dec 2023 09:30:29 -0600
+From: Shenghao Ding <shenghao-ding@ti.com>
+To: <broonie@kernel.org>, <conor+dt@kernel.org>,
+        <krzysztof.kozlowski@linaro.org>
+CC: <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
+        <kevin-lu@ti.com>, <baojun.xu@ti.com>, <devicetree@vger.kernel.org>,
+        <lgirdwood@gmail.com>, <perex@perex.cz>,
+        <pierre-louis.bossart@linux.intel.com>, <13916275206@139.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liam.r.girdwood@intel.com>, <soyer@irl.hu>, <tiwai@suse.de>,
+        <peeyush@ti.com>, <navada@ti.com>,
+        Shenghao Ding <shenghao-ding@ti.com>
+Subject: [PATCH v4 1/4] ASoC: dt-bindings: move tas2563 from tas2562.yaml to tas2781.yaml
+Date: Thu, 28 Dec 2023 23:30:20 +0800
+Message-ID: <20231228153024.1659-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V8 3/3] leds: Add support for UP board CPLD onboard LEDS
-Content-Language: en-US
-To: "larry.lai" <larry.lai@yunjingtech.com>, lee@kernel.org,
- andriy.shevchenko@linux.intel.com, linus.walleij@linaro.org, pavel@ucw.cz
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-leds@vger.kernel.org, GaryWang@aaeon.com.tw, musa.lin@yunjingtech.com,
- jack.chang@yunjingtech.com, noah.hung@yunjingtech.com
-References: <20231228151544.14408-1-larry.lai@yunjingtech.com>
- <20231228151544.14408-4-larry.lai@yunjingtech.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20231228151544.14408-4-larry.lai@yunjingtech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 28/12/2023 16:15, larry.lai wrote:
-> The UP boards come with a few FPGA-controlled onboard LEDs:
-> * UP Board: yellow, green, red
-> * UP Squared: blue, yellow, green, red
-> 
+Move tas2563 from tas2562.yaml to tas2781.yaml to unbind tas2563 from
+tas2562 driver code and bind it to tas2781 driver code, because tas2563
+only work in bypass-DSP mode with tas2562 driver. In order to enable DSP
+mode for tas2563, it has been moved to tas2781 driver. As to the hardware
+part, such as register setting and DSP firmware, all these are stored in
+the binary firmware. What tas2781 drivder dooes is to parse the firmware
+and download it to the chip, then power on the chip. So, tas2781 driver
+can be resued as tas2563 driver. Only attention will be paid to
+downloading corresponding firmware.
 
-...
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-> +
-> +static int upboard_led_probe(struct platform_device *pdev)
-> +{
-> +	struct upboard_fpga * const cpld = dev_get_drvdata(pdev->dev.parent);
-> +	struct reg_field fldconf = {
-> +		.reg = UPFPGA_REG_FUNC_EN0,
-> +	};
-> +	struct upboard_led_data * const pdata = pdev->dev.platform_data;
+---
+Change in v4:
+ - remove tas2563, which will be move to tas2781 driver.
+ - Add more comments on why to move tas2563 to tas2781 driver.
+ - Provide rationale in terms of bindings and hardware, not in terms of driver.
+   Or at least not only.
+ - Reorder chip, tas2563 is first, tas2781 is second.
+ - Add datasheet linkings.
+ - squash both tas2562 and tas2781 binding patches.
+ - Put allOf: to the end of the file, after required: block.
+---
+ .../devicetree/bindings/sound/tas2562.yaml    |  2 -
+ .../devicetree/bindings/sound/ti,tas2781.yaml | 85 ++++++++++++++-----
+ 2 files changed, 64 insertions(+), 23 deletions(-)
 
-Your const does not make sense. Please read C standard how qualifiers
-are applied.
-
-...
-
-> +module_platform_driver_probe(upboard_led_driver, upboard_led_probe);
-> +
-> +MODULE_AUTHOR("Gary Wang <garywang@aaeon.com.tw>");
-> +MODULE_DESCRIPTION("UP Board LED driver");
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_ALIAS("platform:upboard-led");
-
-Nothing improved here.
-
-This is a friendly reminder during the review process.
-
-It seems my or other reviewer's previous comments were not fully
-addressed. Maybe the feedback got lost between the quotes, maybe you
-just forgot to apply it. Please go back to the previous discussion and
-either implement all requested changes or keep discussing them.
-
-Thank you.
-
-
-Best regards,
-Krzysztof
+diff --git a/Documentation/devicetree/bindings/sound/tas2562.yaml b/Documentation/devicetree/bindings/sound/tas2562.yaml
+index f01c0dde0cf7..d28c102c0ce7 100644
+--- a/Documentation/devicetree/bindings/sound/tas2562.yaml
++++ b/Documentation/devicetree/bindings/sound/tas2562.yaml
+@@ -18,7 +18,6 @@ description: |
+ 
+   Specifications about the audio amplifier can be found at:
+     https://www.ti.com/lit/gpn/tas2562
+-    https://www.ti.com/lit/gpn/tas2563
+     https://www.ti.com/lit/gpn/tas2564
+     https://www.ti.com/lit/gpn/tas2110
+ 
+@@ -29,7 +28,6 @@ properties:
+   compatible:
+     enum:
+       - ti,tas2562
+-      - ti,tas2563
+       - ti,tas2564
+       - ti,tas2110
+ 
+diff --git a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+index a69e6c223308..78d89008c36f 100644
+--- a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
++++ b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+@@ -5,36 +5,41 @@
+ $id: http://devicetree.org/schemas/sound/ti,tas2781.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Texas Instruments TAS2781 SmartAMP
++title: Texas Instruments TAS2563/TAS2781 SmartAMP
+ 
+ maintainers:
+   - Shenghao Ding <shenghao-ding@ti.com>
+ 
+-description:
+-  The TAS2781 is a mono, digital input Class-D audio amplifier
+-  optimized for efficiently driving high peak power into small
+-  loudspeakers. An integrated on-chip DSP supports Texas Instruments
+-  Smart Amp speaker protection algorithm. The integrated speaker
+-  voltage and current sense provides for real time
++description: |
++  The TAS2563/TAS2781 is a mono, digital input Class-D audio
++  amplifier optimized for efficiently driving high peak power into
++  small loudspeakers. An integrated on-chip DSP supports Texas
++  Instruments Smart Amp speaker protection algorithm. The
++  integrated speaker voltage and current sense provides for real time
+   monitoring of loudspeaker behavior.
+ 
+-allOf:
+-  - $ref: dai-common.yaml#
++  Specifications about the audio amplifier can be found at:
++    https://www.ti.com/lit/gpn/tas2563
++    https://www.ti.com/lit/gpn/tas2781
+ 
+ properties:
+   compatible:
+-    enum:
+-      - ti,tas2781
+-
+-  reg:
+-    description:
+-      I2C address, in multiple tas2781s case, all the i2c address
+-      aggregate as one Audio Device to support multiple audio slots.
+-    maxItems: 8
+-    minItems: 1
+-    items:
+-      minimum: 0x38
+-      maximum: 0x3f
++    description: |
++      ti,tas2563: 6.1-W Boosted Class-D Audio Amplifier With Integrated
++      DSP and IV Sense, 16/20/24/32bit stereo I2S or multichannel TDM.
++
++      ti,tas2781: 24-V Class-D Amplifier with Real Time Integrated Speaker
++      Protection and Audio Processing, 16/20/24/32bit stereo I2S or
++      multichannel TDM.
++    oneOf:
++      - items:
++          - enum:
++              - ti,tas2563
++          - const: ti,tas2781
++      - enum:
++          - ti,tas2781
++
++  reg: true
+ 
+   reset-gpios:
+     maxItems: 1
+@@ -49,6 +54,44 @@ required:
+   - compatible
+   - reg
+ 
++allOf:
++  - $ref: dai-common.yaml#
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - ti,tas2563
++    then:
++      properties:
++        reg:
++          description:
++            I2C address, in multiple-AMP case, all the i2c address
++            aggregate as one Audio Device to support multiple audio slots.
++          maxItems: 4
++          minItems: 1
++          items:
++            minimum: 0x4c
++            maximum: 0x4f
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - ti,tas2781
++    then:
++      properties:
++        reg:
++          description:
++            I2C address, in multiple-AMP case, all the i2c address
++            aggregate as one Audio Device to support multiple audio slots.
++          maxItems: 8
++          minItems: 1
++          items:
++            minimum: 0x38
++            maximum: 0x3f
++
+ additionalProperties: false
+ 
+ examples:
+-- 
+2.34.1
 
 
