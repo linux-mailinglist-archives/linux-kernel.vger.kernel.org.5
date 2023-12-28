@@ -1,111 +1,176 @@
-Return-Path: <linux-kernel+bounces-12667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8986081F8A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:09:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E1AE81F8A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:10:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46754285B0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:09:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D245A1F242E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:10:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60E1E8494;
-	Thu, 28 Dec 2023 13:08:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1540F79EE;
+	Thu, 28 Dec 2023 13:10:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="mmNpu6/s"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ecqsIWj3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A09C79EA
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 13:08:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7ba737ee9b5so437800239f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 05:08:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1703768922; x=1704373722; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2sTRWP1BfjExUpMIHeRBHU/LlMOrJyrRhsp9tBe90/E=;
-        b=mmNpu6/sh5mNnMPUJZ1XwXdcro5XxB72crgiVr3LUIZLi6nPq9H2CiJRGNGHlRUxX1
-         eOWnefhJrBx8Wmk9UfcZN1lOA/9rIW1t5SA52hxIrJY90sUbcgfDIbjPnim9jmOvEuST
-         zC/9mLokek5GMzLqOnl/k8wZHP6K1fCA098AmmpI1F7olXcrQnvqxDVM1W2k7N4xBOIT
-         EZ9pjS6wNb+QeoGUTkkLYbuRkHA6uCOtLGyQCJVG23vHaD21eoUOE3D7VwnNHCGODXEg
-         Actx4aDcmbLuMZte3PfYfRpKN8AoDUkPb6XO4HX2hwf9QWUhJvbbkr0+GuK+RP0HCAGC
-         OjRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703768922; x=1704373722;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2sTRWP1BfjExUpMIHeRBHU/LlMOrJyrRhsp9tBe90/E=;
-        b=R7l+0wzJbyrtF/gBJyPCVwMBin+2XZH9DGQur2I/CCYtTLPoFodkXyQzhsXyEf2dsE
-         MX+L11ZbgFozandKUNTKwlSnFBeRbhlx4GHvhC9vXLjCu9g0FyKA60ocoUduuyQlWR0d
-         hrkYrjYmGZm9VkaxFENN73utEyCBcZrXg+ZjHQlhlWowXAXdmHa5rK73+6NZFfI9hBg7
-         u4QBxrf0mvpruzAAGLmcfTYN7qOJMPmpLGSh/hFEO7f5qkAGbLgGGv0RvaDasB2eSrZ3
-         4x9VOAUbocJ+OKQPxWb2poVMaEQdoJBF3NrAoOiWrEpNAuRQLFz+9VCRagqJkBQMC9pq
-         6ajg==
-X-Gm-Message-State: AOJu0Yws170MwOwifJHcHXksdf1nMh7rItBoVduQc/sNBsykNmt9Ov1Z
-	g1gRVIDeNtVbaohSxb9yFDkmCPV9TOe3NA==
-X-Google-Smtp-Source: AGHT+IE3SK3cpPclMD7nMM9tzXVA5ulc46KRGcSGLUzMVQbJhiwmZQrdF/fDTxX9t0ugT/7ZCuqrPQ==
-X-Received: by 2002:a6b:4e07:0:b0:7ba:9355:921e with SMTP id c7-20020a6b4e07000000b007ba9355921emr14536420iob.37.1703768922600;
-        Thu, 28 Dec 2023 05:08:42 -0800 (PST)
-Received: from sunil-laptop ([2409:4071:d8c:48a3:7c9f:2b6f:993e:1716])
-        by smtp.gmail.com with ESMTPSA id ca5-20020a0566381c0500b0046d79f147bdsm907069jab.179.2023.12.28.05.08.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Dec 2023 05:08:42 -0800 (PST)
-Date: Thu, 28 Dec 2023 18:38:28 +0530
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-	linux-pci@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-	Albert Ou <aou@eecs.berkeley.edu>, Haibo Xu <haibo1.xu@intel.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Anup Patel <anup@brainfault.org>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Will Deacon <will@kernel.org>, Len Brown <lenb@kernel.org>
-Subject: Re: [RFC PATCH v3 03/17] PCI: Make pci_create_root_bus() declare its
- reliance on MSI domains
-Message-ID: <ZY1zTMnYnjy7bn4A@sunil-laptop>
-References: <20231219174526.2235150-4-sunilvl@ventanamicro.com>
- <20231226235602.GA1483795@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DDB979C6;
+	Thu, 28 Dec 2023 13:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703769014; x=1735305014;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+h48D15/TNyIh+MOL0pe6S5/Owyp+lm7qG0IVc8QWuw=;
+  b=ecqsIWj3/SlvYxiJdvQQ+jMFkjwvrob97Z5f24GKDHLN0Y2E1TNbOXSI
+   tbB65H+6Rkjit3obz2CpR0EnuzqlrDGNFcphJcfCPmdDgp3nYoR6kTjFX
+   uWmFBp4KvhdXtWl+cKBXgau33ZmA3OLzJ6TcBjaF8qhqKoUFjx2sRdQzf
+   kQ9a6lT1Wa8OoNNP5wb176u2L5S8/g63yMr7TgGQDC7AO1DKNXsJj5MVz
+   e/t/iGFWmqYpaEShk3h7HxXRrMA72H2SwrGEnNA4TGCV3a6v6lEG1dFR2
+   1UIchmJ2zJ8hATbMFiSJfTl28CdvHk6/PiYNcB5tnPHLmtpvCUeW3CN3T
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="376701617"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="376701617"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 05:10:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="848946415"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="848946415"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.249.169.62]) ([10.249.169.62])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 05:10:10 -0800
+Message-ID: <bb3a8a4c-6dad-4347-9076-0f28d1e23de3@linux.intel.com>
+Date: Thu, 28 Dec 2023 21:10:08 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231226235602.GA1483795@bhelgaas>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v9 5/5] iommu/vt-d: don't loop for timeout ATS
+ Invalidation request forever
+To: "Tian, Kevin" <kevin.tian@intel.com>,
+ "bhelgaas@google.com" <bhelgaas@google.com>,
+ "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "will@kernel.org" <will@kernel.org>,
+ "robin.murphy@arm.com" <robin.murphy@arm.com>,
+ "lukas@wunner.de" <lukas@wunner.de>
+Cc: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231228001646.587653-1-haifeng.zhao@linux.intel.com>
+ <20231228001646.587653-6-haifeng.zhao@linux.intel.com>
+ <BN9PR11MB527651C1A108721CFF057BCF8C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <BN9PR11MB527651C1A108721CFF057BCF8C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Dec 26, 2023 at 05:56:02PM -0600, Bjorn Helgaas wrote:
-> On Tue, Dec 19, 2023 at 11:15:12PM +0530, Sunil V L wrote:
-> > Similar to [1], declare this dependency for PCI probe in ACPI based
-> > flow.
-> 
-> It would be better to refer to this as 9ec37efb8783 ("PCI/MSI: Make
-> pci_host_common_probe() declare its reliance on MSI domains") instead
-> of a link to the mailing list archives.
-> 
-> The git SHA1 is part of the git repo, and git can tell us where that
-> SHA1 is included.  The lore URL is external and doesn't say anything
-> about what happened to the patch.
-> 
-Yes!. Let me update in next version. Thanks!
 
-> > This is required especially for RISC-V platforms where MSI controller
-> > can be absent.
-> > 
-> > [1] - https://lore.kernel.org/all/20210330151145.997953-12-maz@kernel.org/
+On 12/28/2023 4:38 PM, Tian, Kevin wrote:
+>> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+>> Sent: Thursday, December 28, 2023 8:17 AM
+>>
+>> When the ATS Invalidation request timeout happens, the qi_submit_sync()
+>> will restart and loop for the invalidation request forever till it is
+>> done, it will block another Invalidation thread such as the fq_timer
+>> to issue invalidation request, cause the system lockup as following
+>>
+>> [exception RIP: native_queued_spin_lock_slowpath+92]
+>>
+>> RIP: ffffffffa9d1025c RSP: ffffb202f268cdc8 RFLAGS: 00000002
+>>
+>> RAX: 0000000000000101 RBX: ffffffffab36c2a0 RCX: 0000000000000000
+>>
+>> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffab36c2a0
+>>
+>> RBP: ffffffffab36c2a0 R8: 0000000000000001 R9: 0000000000000000
+>>
+>> R10: 0000000000000010 R11: 0000000000000018 R12: 0000000000000000
+>>
+>> R13: 0000000000000004 R14: ffff9e10d71b1c88 R15: ffff9e10d71b1980
+>>
+>> ORIG_RAX: ffffffffffffffff CS: 0010 SS: 0018
+>>
+>> #12 [ffffb202f268cdc8] native_queued_spin_lock_slowpath at
+>> ffffffffa9d1025c
+>>
+>> #13 [ffffb202f268cdc8] do_raw_spin_lock at ffffffffa9d121f1
+>>
+>> #14 [ffffb202f268cdd8] _raw_spin_lock_irqsave at ffffffffaa51795b
+>>
+>> #15 [ffffb202f268cdf8] iommu_flush_dev_iotlb at ffffffffaa20df48
+>>
+>> #16 [ffffb202f268ce28] iommu_flush_iova at ffffffffaa20e182
+>>
+>> #17 [ffffb202f268ce60] iova_domain_flush at ffffffffaa220e27
+>>
+>> #18 [ffffb202f268ce70] fq_flush_timeout at ffffffffaa221c9d
+>>
+>> #19 [ffffb202f268cea8] call_timer_fn at ffffffffa9d46661
+>>
+>> #20 [ffffb202f268cf08] run_timer_softirq at ffffffffa9d47933
+>>
+>> #21 [ffffb202f268cf98] __softirqentry_text_start at ffffffffaa8000e0
+>>
+>> #22 [ffffb202f268cff0] asm_call_sysvec_on_stack at ffffffffaa60114f
+>> --- ---
+>> (the left part of exception see the hotplug case of ATS capable device)
+>>
+>> If one endpoint device just no response to the ATS Invalidation request,
+>> but is not gone, it will bring down the whole system, to avoid such
+>> case, don't try the timeout ATS Invalidation request forever.
+>>
+>> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+>> ---
+>>   drivers/iommu/intel/dmar.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+>> index 76903a8bf963..206ab0b7294f 100644
+>> --- a/drivers/iommu/intel/dmar.c
+>> +++ b/drivers/iommu/intel/dmar.c
+>> @@ -1457,7 +1457,7 @@ int qi_submit_sync(struct intel_iommu *iommu,
+>> struct qi_desc *desc,
+>>   	reclaim_free_desc(qi);
+>>   	raw_spin_unlock_irqrestore(&qi->q_lock, flags);
+>>
+>> -	if (rc == -EAGAIN)
+>> +	if (rc == -EAGAIN && type !=QI_DIOTLB_TYPE && type !=
+>> QI_DEIOTLB_TYPE)
+>>   		goto restart;
+>>
+> this change is moot.
+>
+> -EAGAIN is set only when hardware detects a ATS invalidation completion
+> timeout in qi_check_fault(). so above just essentially kills the restart logic.
+
+This change is intended to break the restar login when device-TLB
+
+invalidation timeout happens, we don't know how long the ITE took
+
+if the device is just no reponse.
+
+>
+> I'd wait for the maintainer of this driver to comment. this part doesn't
+> look good but there might be some history reason so carefulness must
+> be paid.
+
+I would like to know the reason a hole is left here to hang the driver
+
+forever.
+
+Thanks,
+
+Ethan
+
 
