@@ -1,537 +1,174 @@
-Return-Path: <linux-kernel+bounces-12483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0073381F578
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:25:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5654D81F575
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:24:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58CE72839F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 07:25:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3D561F22694
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 07:24:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B6B4439;
-	Thu, 28 Dec 2023 07:25:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB7E4411;
+	Thu, 28 Dec 2023 07:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZiDB7k0G"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="E82J3kpI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717EE5232
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:25:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703748312;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=z5ScjGG+fLfzi4OChhexexLuOSRGIaTN7NsEav5gzyQ=;
-	b=ZiDB7k0G3Bzo3Yr9CaAjKs4eVuxTUOG4YsjWKhk92n3t9XnTnH6THpFKEVR1cMoV+avgpF
-	wFeCHTxlfDyXrL2chmp+xG5tX9XevvCgFe4dAKHL3k26ry/7H8qz5hHwatp6Mq9IfDtJ0V
-	D7KxjpvU7jtNrHZX1PqKqK6nvdHa758=
-From: Yajun Deng <yajun.deng@linux.dev>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: andrew@lunn.ch,
-	olteanv@gmail.com,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk,
-	rmk+kernel@armlinux.org.uk,
-	kabel@kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-phy@lists.infradead.org,
-	Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH net-next] net: phy: Cleanup struct mdio_driver_common
-Date: Thu, 28 Dec 2023 15:23:50 +0800
-Message-Id: <20231228072350.1294425-1-yajun.deng@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C1763C5
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40d5ac76667so14575315e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 23:24:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703748258; x=1704353058; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Z7B182PMMQMyQXZ3ADPFDiUGvNqOfz+ErrBjWZrqqc8=;
+        b=E82J3kpId7XhIRjPBUNeBRPQdmBBHEUSXtlZAlPKLSoWUK9XkRLSzs0cla9VU6osyv
+         gzQyc2ewFUW/m91yRJ4BHjjR29KWOieSMbtn4xRO/3UjrFNijwmcvC/l/Xvv516w+wH5
+         jLHs3V5NvZ3FEYuyLrnftvippbZxnrnGpquWzTz1IM6upPAOrL3fmMW3dCS/QjHrAk2t
+         5LJ90Gi4ymm7lpINdvsuLfN2r3/P68QS1lb6BxKPSeYkivtmQ2ODISECWBmwolp84VEe
+         RRYkjkMUNgc2gzCV1x4jdlBawZqGbwqYzSoCJGq8v4NHStRhTlyZ/JrhIxvvaW1HmxWc
+         cmYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703748258; x=1704353058;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z7B182PMMQMyQXZ3ADPFDiUGvNqOfz+ErrBjWZrqqc8=;
+        b=Qmdsnu0CobGYIbFKKno/n/p9d41DAQzgWgCOlVetRTe/h0VG+2+TsoWvbG12BgMCgr
+         tF3+z55s4t9/eYYFy5EMjySpvtfO+ouBuBtER5rAmuMXA5MJeE73SdVkPhq0yaNll7aD
+         Cco9W5F+dVoVaFhdLPJo4xfxSeWI3X1MmI7+GOmhnGntAqQCyY7I7u3PkBZwA8GzCsrO
+         U8SFNhc47brmciR7IyAWhId/hlSBccsVHOOYPs/dX/7OdthJeArS6VUlJkvweYJsgUtv
+         qd0Lj66AeuOXG613UVUwNlND98njcSIqHnn89C8npZ/x7/fk5GUqVkMeb3JXjESK92Dj
+         SmKA==
+X-Gm-Message-State: AOJu0YwqQ77Lm/chfAW+resYjYBzPssdCH2UrYyWtUpN1RG224kQ37ri
+	0Bdqd5KGKuEJk8nOz4JtrbtJl0Shqtcazw==
+X-Google-Smtp-Source: AGHT+IF8scllTzcx/9xcRO4e50+IFhb7ToJN4T77vkNE6/V+kkUyEJxAQIHfGqG9F7TKzcPw2q97ew==
+X-Received: by 2002:a05:600c:a47:b0:40b:5e1b:54a0 with SMTP id c7-20020a05600c0a4700b0040b5e1b54a0mr6077257wmq.44.1703748258165;
+        Wed, 27 Dec 2023 23:24:18 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id je17-20020a05600c1f9100b0040d1450ca7esm34324834wmb.7.2023.12.27.23.24.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Dec 2023 23:24:17 -0800 (PST)
+Message-ID: <4c88b59e-9356-4709-b2c7-749c2e779cf9@linaro.org>
+Date: Thu, 28 Dec 2023 08:24:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 6/6] MIPS: mobileye: eyeq5: use OLB clocks controller
+Content-Language: en-US
+To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+ linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+References: <20231227-mbly-clk-v2-0-a05db63c380f@bootlin.com>
+ <20231227-mbly-clk-v2-6-a05db63c380f@bootlin.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231227-mbly-clk-v2-6-a05db63c380f@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-The struct mdio_driver_common is a wrapper for driver-model structure,
-it contains device_driver and flags. There are only struct phy_driver
-and mdio_driver that use it. The flags is used to distinguish between
-struct phy_driver and mdio_driver.
+On 27/12/2023 17:23, Théo Lebrun wrote:
+> We add the clock controller inside the OLB syscon region and removed
+> previous fixed devicetree nodes representing PLLs exposed by the clock
+> controller.
+> 
 
-We can test that if probe of device_driver is equal to phy_probe. This
-way, the struct mdio_driver_common is no longer needed, and struct
-phy_driver and usb_mdio_driver will be consistent with other driver
-structs.
+...
 
-Cleanup struct mdio_driver_common and introduce is_phy_driver(). Use
-is_phy_driver() test that if the driver is a phy or not.
+>  / {
+>  	#address-cells = <2>;
+> @@ -42,6 +42,19 @@ soc: soc {
+>  		ranges;
+>  		compatible = "simple-bus";
+>  
+> +		olb: olb@e00000 {
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
- drivers/net/dsa/b53/b53_mdio.c          |  2 +-
- drivers/net/dsa/dsa_loop.c              |  2 +-
- drivers/net/dsa/lan9303_mdio.c          |  2 +-
- drivers/net/dsa/microchip/ksz8863_smi.c |  2 +-
- drivers/net/dsa/mt7530-mdio.c           |  2 +-
- drivers/net/dsa/mv88e6060.c             |  2 +-
- drivers/net/dsa/mv88e6xxx/chip.c        |  2 +-
- drivers/net/dsa/qca/ar9331.c            |  2 +-
- drivers/net/dsa/qca/qca8k-8xxx.c        |  2 +-
- drivers/net/dsa/realtek/realtek-mdio.c  |  2 +-
- drivers/net/dsa/xrs700x/xrs700x_mdio.c  |  2 +-
- drivers/net/phy/mdio_bus.c              |  2 +-
- drivers/net/phy/mdio_device.c           | 21 +++++++--------
- drivers/net/phy/phy_device.c            | 35 ++++++++++++++-----------
- drivers/net/phy/xilinx_gmii2rgmii.c     |  2 +-
- drivers/phy/broadcom/phy-bcm-ns-usb3.c  |  8 +++---
- drivers/phy/broadcom/phy-bcm-ns2-pcie.c |  8 +++---
- include/linux/mdio.h                    | 16 ++---------
- include/linux/phy.h                     |  9 +++----
- 19 files changed, 54 insertions(+), 69 deletions(-)
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
 
-diff --git a/drivers/net/dsa/b53/b53_mdio.c b/drivers/net/dsa/b53/b53_mdio.c
-index 897e5e8b3d69..1ececa4d44e4 100644
---- a/drivers/net/dsa/b53/b53_mdio.c
-+++ b/drivers/net/dsa/b53/b53_mdio.c
-@@ -392,7 +392,7 @@ static struct mdio_driver b53_mdio_driver = {
- 	.probe	= b53_mdio_probe,
- 	.remove	= b53_mdio_remove,
- 	.shutdown = b53_mdio_shutdown,
--	.mdiodrv.driver = {
-+	.driver = {
- 		.name = "bcm53xx",
- 		.of_match_table = b53_of_match,
- 	},
-diff --git a/drivers/net/dsa/dsa_loop.c b/drivers/net/dsa/dsa_loop.c
-index c70ed67cc188..3f885878be3a 100644
---- a/drivers/net/dsa/dsa_loop.c
-+++ b/drivers/net/dsa/dsa_loop.c
-@@ -375,7 +375,7 @@ static void dsa_loop_drv_shutdown(struct mdio_device *mdiodev)
- }
- 
- static struct mdio_driver dsa_loop_drv = {
--	.mdiodrv.driver	= {
-+	.driver	= {
- 		.name	= "dsa-loop",
- 	},
- 	.probe	= dsa_loop_drv_probe,
-diff --git a/drivers/net/dsa/lan9303_mdio.c b/drivers/net/dsa/lan9303_mdio.c
-index 167a86f39f27..7cb7e2b1478a 100644
---- a/drivers/net/dsa/lan9303_mdio.c
-+++ b/drivers/net/dsa/lan9303_mdio.c
-@@ -162,7 +162,7 @@ static const struct of_device_id lan9303_mdio_of_match[] = {
- MODULE_DEVICE_TABLE(of, lan9303_mdio_of_match);
- 
- static struct mdio_driver lan9303_mdio_driver = {
--	.mdiodrv.driver = {
-+	.driver = {
- 		.name = "LAN9303_MDIO",
- 		.of_match_table = lan9303_mdio_of_match,
- 	},
-diff --git a/drivers/net/dsa/microchip/ksz8863_smi.c b/drivers/net/dsa/microchip/ksz8863_smi.c
-index 5711a59e2ac9..c788cadd7595 100644
---- a/drivers/net/dsa/microchip/ksz8863_smi.c
-+++ b/drivers/net/dsa/microchip/ksz8863_smi.c
-@@ -213,7 +213,7 @@ static struct mdio_driver ksz8863_driver = {
- 	.probe	= ksz8863_smi_probe,
- 	.remove	= ksz8863_smi_remove,
- 	.shutdown = ksz8863_smi_shutdown,
--	.mdiodrv.driver = {
-+	.driver = {
- 		.name	= "ksz8863-switch",
- 		.of_match_table = ksz8863_dt_ids,
- 	},
-diff --git a/drivers/net/dsa/mt7530-mdio.c b/drivers/net/dsa/mt7530-mdio.c
-index 088533663b83..7315654a6757 100644
---- a/drivers/net/dsa/mt7530-mdio.c
-+++ b/drivers/net/dsa/mt7530-mdio.c
-@@ -258,7 +258,7 @@ static struct mdio_driver mt7530_mdio_driver = {
- 	.probe  = mt7530_probe,
- 	.remove = mt7530_remove,
- 	.shutdown = mt7530_shutdown,
--	.mdiodrv.driver = {
-+	.driver = {
- 		.name = "mt7530-mdio",
- 		.of_match_table = mt7530_of_match,
- 	},
-diff --git a/drivers/net/dsa/mv88e6060.c b/drivers/net/dsa/mv88e6060.c
-index 294312b58e4f..5925f23e7ab3 100644
---- a/drivers/net/dsa/mv88e6060.c
-+++ b/drivers/net/dsa/mv88e6060.c
-@@ -367,7 +367,7 @@ static struct mdio_driver mv88e6060_driver = {
- 	.probe	= mv88e6060_probe,
- 	.remove = mv88e6060_remove,
- 	.shutdown = mv88e6060_shutdown,
--	.mdiodrv.driver = {
-+	.driver = {
- 		.name = "mv88e6060",
- 		.of_match_table = mv88e6060_of_match,
- 	},
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-index 383b3c4d6f59..4f24699264d1 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -7258,7 +7258,7 @@ static struct mdio_driver mv88e6xxx_driver = {
- 	.probe	= mv88e6xxx_probe,
- 	.remove = mv88e6xxx_remove,
- 	.shutdown = mv88e6xxx_shutdown,
--	.mdiodrv.driver = {
-+	.driver = {
- 		.name = "mv88e6085",
- 		.of_match_table = mv88e6xxx_of_match,
- 		.pm = &mv88e6xxx_pm_ops,
-diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-index 8d9d271ac3af..da392d60c9e7 100644
---- a/drivers/net/dsa/qca/ar9331.c
-+++ b/drivers/net/dsa/qca/ar9331.c
-@@ -1122,7 +1122,7 @@ static struct mdio_driver ar9331_sw_mdio_driver = {
- 	.probe = ar9331_sw_probe,
- 	.remove = ar9331_sw_remove,
- 	.shutdown = ar9331_sw_shutdown,
--	.mdiodrv.driver = {
-+	.driver = {
- 		.name = AR9331_SW_NAME,
- 		.of_match_table = ar9331_sw_of_match,
- 	},
-diff --git a/drivers/net/dsa/qca/qca8k-8xxx.c b/drivers/net/dsa/qca/qca8k-8xxx.c
-index ec57d9d52072..fe396397f405 100644
---- a/drivers/net/dsa/qca/qca8k-8xxx.c
-+++ b/drivers/net/dsa/qca/qca8k-8xxx.c
-@@ -2187,7 +2187,7 @@ static struct mdio_driver qca8kmdio_driver = {
- 	.probe  = qca8k_sw_probe,
- 	.remove = qca8k_sw_remove,
- 	.shutdown = qca8k_sw_shutdown,
--	.mdiodrv.driver = {
-+	.driver = {
- 		.name = "qca8k",
- 		.of_match_table = qca8k_of_match,
- 		.pm = &qca8k_pm_ops,
-diff --git a/drivers/net/dsa/realtek/realtek-mdio.c b/drivers/net/dsa/realtek/realtek-mdio.c
-index 292e6d087e8b..8e6a951b391c 100644
---- a/drivers/net/dsa/realtek/realtek-mdio.c
-+++ b/drivers/net/dsa/realtek/realtek-mdio.c
-@@ -274,7 +274,7 @@ static const struct of_device_id realtek_mdio_of_match[] = {
- MODULE_DEVICE_TABLE(of, realtek_mdio_of_match);
- 
- static struct mdio_driver realtek_mdio_driver = {
--	.mdiodrv.driver = {
-+	.driver = {
- 		.name = "realtek-mdio",
- 		.of_match_table = realtek_mdio_of_match,
- 	},
-diff --git a/drivers/net/dsa/xrs700x/xrs700x_mdio.c b/drivers/net/dsa/xrs700x/xrs700x_mdio.c
-index 5f7d344b5d73..1a76d9d49f13 100644
---- a/drivers/net/dsa/xrs700x/xrs700x_mdio.c
-+++ b/drivers/net/dsa/xrs700x/xrs700x_mdio.c
-@@ -164,7 +164,7 @@ static const struct of_device_id __maybe_unused xrs700x_mdio_dt_ids[] = {
- MODULE_DEVICE_TABLE(of, xrs700x_mdio_dt_ids);
- 
- static struct mdio_driver xrs700x_mdio_driver = {
--	.mdiodrv.driver = {
-+	.driver = {
- 		.name	= "xrs700x-mdio",
- 		.of_match_table = of_match_ptr(xrs700x_mdio_dt_ids),
- 	},
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index 6cf73c15635b..a1092c641d14 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -1342,7 +1342,7 @@ static int mdio_bus_match(struct device *dev, struct device_driver *drv)
- 	struct mdio_device *mdio = to_mdio_device(dev);
- 
- 	/* Both the driver and device must type-match */
--	if (!(mdiodrv->mdiodrv.flags & MDIO_DEVICE_IS_PHY) !=
-+	if (!(is_phy_driver(&mdiodrv->driver)) !=
- 	    !(mdio->flags & MDIO_DEVICE_FLAG_PHY))
- 		return 0;
- 
-diff --git a/drivers/net/phy/mdio_device.c b/drivers/net/phy/mdio_device.c
-index 73f6539b9e50..16232e7a1255 100644
---- a/drivers/net/phy/mdio_device.c
-+++ b/drivers/net/phy/mdio_device.c
-@@ -40,7 +40,7 @@ int mdio_device_bus_match(struct device *dev, struct device_driver *drv)
- 	struct mdio_device *mdiodev = to_mdio_device(dev);
- 	struct mdio_driver *mdiodrv = to_mdio_driver(drv);
- 
--	if (mdiodrv->mdiodrv.flags & MDIO_DEVICE_IS_PHY)
-+	if (is_phy_driver(&mdiodrv->driver))
- 		return 0;
- 
- 	return strcmp(mdiodev->modalias, drv->name) == 0;
-@@ -203,20 +203,19 @@ static void mdio_shutdown(struct device *dev)
-  */
- int mdio_driver_register(struct mdio_driver *drv)
- {
--	struct mdio_driver_common *mdiodrv = &drv->mdiodrv;
- 	int retval;
- 
--	pr_debug("%s: %s\n", __func__, mdiodrv->driver.name);
-+	pr_debug("%s: %s\n", __func__, drv->driver.name);
- 
--	mdiodrv->driver.bus = &mdio_bus_type;
--	mdiodrv->driver.probe = mdio_probe;
--	mdiodrv->driver.remove = mdio_remove;
--	mdiodrv->driver.shutdown = mdio_shutdown;
-+	drv->driver.bus = &mdio_bus_type;
-+	drv->driver.probe = mdio_probe;
-+	drv->driver.remove = mdio_remove;
-+	drv->driver.shutdown = mdio_shutdown;
- 
--	retval = driver_register(&mdiodrv->driver);
-+	retval = driver_register(&drv->driver);
- 	if (retval) {
- 		pr_err("%s: Error %d in registering driver\n",
--		       mdiodrv->driver.name, retval);
-+		       drv->driver.name, retval);
- 
- 		return retval;
- 	}
-@@ -227,8 +226,6 @@ EXPORT_SYMBOL(mdio_driver_register);
- 
- void mdio_driver_unregister(struct mdio_driver *drv)
- {
--	struct mdio_driver_common *mdiodrv = &drv->mdiodrv;
--
--	driver_unregister(&mdiodrv->driver);
-+	driver_unregister(&drv->driver);
- }
- EXPORT_SYMBOL(mdio_driver_unregister);
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index 3611ea64875e..55494a345bd4 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -529,7 +529,7 @@ static int phy_bus_match(struct device *dev, struct device_driver *drv)
- 	const int num_ids = ARRAY_SIZE(phydev->c45_ids.device_ids);
- 	int i;
- 
--	if (!(phydrv->mdiodrv.flags & MDIO_DEVICE_IS_PHY))
-+	if (!(is_phy_driver(&phydrv->driver)))
- 		return 0;
- 
- 	if (phydrv->match_phy_device)
-@@ -1456,9 +1456,9 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
- 	 */
- 	if (!d->driver) {
- 		if (phydev->is_c45)
--			d->driver = &genphy_c45_driver.mdiodrv.driver;
-+			d->driver = &genphy_c45_driver.driver;
- 		else
--			d->driver = &genphy_driver.mdiodrv.driver;
-+			d->driver = &genphy_driver.driver;
- 
- 		using_genphy = true;
- 	}
-@@ -1638,14 +1638,14 @@ static bool phy_driver_is_genphy_kind(struct phy_device *phydev,
- bool phy_driver_is_genphy(struct phy_device *phydev)
- {
- 	return phy_driver_is_genphy_kind(phydev,
--					 &genphy_driver.mdiodrv.driver);
-+					 &genphy_driver.driver);
- }
- EXPORT_SYMBOL_GPL(phy_driver_is_genphy);
- 
- bool phy_driver_is_genphy_10g(struct phy_device *phydev)
- {
- 	return phy_driver_is_genphy_kind(phydev,
--					 &genphy_c45_driver.mdiodrv.driver);
-+					 &genphy_c45_driver.driver);
- }
- EXPORT_SYMBOL_GPL(phy_driver_is_genphy_10g);
- 
-@@ -3410,6 +3410,12 @@ static int phy_remove(struct device *dev)
- 	return 0;
- }
- 
-+bool is_phy_driver(struct device_driver *driver)
-+{
-+	return driver->probe == phy_probe;
-+}
-+EXPORT_SYMBOL_GPL(is_phy_driver);
-+
- /**
-  * phy_driver_register - register a phy_driver with the PHY layer
-  * @new_driver: new phy_driver to register
-@@ -3433,20 +3439,19 @@ int phy_driver_register(struct phy_driver *new_driver, struct module *owner)
- 	 * is backed by a struct phy_device. If such a case happens, we will
- 	 * make out-of-bounds accesses and lockup in phydev->lock.
- 	 */
--	if (WARN(new_driver->mdiodrv.driver.of_match_table,
-+	if (WARN(new_driver->driver.of_match_table,
- 		 "%s: driver must not provide a DT match table\n",
- 		 new_driver->name))
- 		return -EINVAL;
- 
--	new_driver->mdiodrv.flags |= MDIO_DEVICE_IS_PHY;
--	new_driver->mdiodrv.driver.name = new_driver->name;
--	new_driver->mdiodrv.driver.bus = &mdio_bus_type;
--	new_driver->mdiodrv.driver.probe = phy_probe;
--	new_driver->mdiodrv.driver.remove = phy_remove;
--	new_driver->mdiodrv.driver.owner = owner;
--	new_driver->mdiodrv.driver.probe_type = PROBE_FORCE_SYNCHRONOUS;
-+	new_driver->driver.name = new_driver->name;
-+	new_driver->driver.bus = &mdio_bus_type;
-+	new_driver->driver.probe = phy_probe;
-+	new_driver->driver.remove = phy_remove;
-+	new_driver->driver.owner = owner;
-+	new_driver->driver.probe_type = PROBE_FORCE_SYNCHRONOUS;
- 
--	retval = driver_register(&new_driver->mdiodrv.driver);
-+	retval = driver_register(&new_driver->driver);
- 	if (retval) {
- 		pr_err("%s: Error %d in registering driver\n",
- 		       new_driver->name, retval);
-@@ -3479,7 +3484,7 @@ EXPORT_SYMBOL(phy_drivers_register);
- 
- void phy_driver_unregister(struct phy_driver *drv)
- {
--	driver_unregister(&drv->mdiodrv.driver);
-+	driver_unregister(&drv->driver);
- }
- EXPORT_SYMBOL(phy_driver_unregister);
- 
-diff --git a/drivers/net/phy/xilinx_gmii2rgmii.c b/drivers/net/phy/xilinx_gmii2rgmii.c
-index 7fd9fe6a602b..94ba87dc1975 100644
---- a/drivers/net/phy/xilinx_gmii2rgmii.c
-+++ b/drivers/net/phy/xilinx_gmii2rgmii.c
-@@ -129,7 +129,7 @@ MODULE_DEVICE_TABLE(of, xgmiitorgmii_of_match);
- 
- static struct mdio_driver xgmiitorgmii_driver = {
- 	.probe	= xgmiitorgmii_probe,
--	.mdiodrv.driver = {
-+	.driver = {
- 		.name = "xgmiitorgmii",
- 		.of_match_table = xgmiitorgmii_of_match,
- 	},
-diff --git a/drivers/phy/broadcom/phy-bcm-ns-usb3.c b/drivers/phy/broadcom/phy-bcm-ns-usb3.c
-index 2c8b1b7dda5b..cb6e54e9a37e 100644
---- a/drivers/phy/broadcom/phy-bcm-ns-usb3.c
-+++ b/drivers/phy/broadcom/phy-bcm-ns-usb3.c
-@@ -229,11 +229,9 @@ static int bcm_ns_usb3_mdio_probe(struct mdio_device *mdiodev)
- }
- 
- static struct mdio_driver bcm_ns_usb3_mdio_driver = {
--	.mdiodrv = {
--		.driver = {
--			.name = "bcm_ns_mdio_usb3",
--			.of_match_table = bcm_ns_usb3_id_table,
--		},
-+	.driver = {
-+		.name = "bcm_ns_mdio_usb3",
-+		.of_match_table = bcm_ns_usb3_id_table,
- 	},
- 	.probe = bcm_ns_usb3_mdio_probe,
- };
-diff --git a/drivers/phy/broadcom/phy-bcm-ns2-pcie.c b/drivers/phy/broadcom/phy-bcm-ns2-pcie.c
-index 2eaa41f8fc70..d23e19527379 100644
---- a/drivers/phy/broadcom/phy-bcm-ns2-pcie.c
-+++ b/drivers/phy/broadcom/phy-bcm-ns2-pcie.c
-@@ -73,11 +73,9 @@ static const struct of_device_id ns2_pci_phy_of_match[] = {
- MODULE_DEVICE_TABLE(of, ns2_pci_phy_of_match);
- 
- static struct mdio_driver ns2_pci_phy_driver = {
--	.mdiodrv = {
--		.driver = {
--			.name = "phy-bcm-ns2-pci",
--			.of_match_table = ns2_pci_phy_of_match,
--		},
-+	.driver = {
-+		.name = "phy-bcm-ns2-pci",
-+		.of_match_table = ns2_pci_phy_of_match,
- 	},
- 	.probe = ns2_pci_phy_probe,
- };
-diff --git a/include/linux/mdio.h b/include/linux/mdio.h
-index 79ceee3c8673..852f838f52f5 100644
---- a/include/linux/mdio.h
-+++ b/include/linux/mdio.h
-@@ -50,22 +50,11 @@ static inline struct mdio_device *to_mdio_device(const struct device *dev)
- 	return container_of(dev, struct mdio_device, dev);
- }
- 
--/* struct mdio_driver_common: Common to all MDIO drivers */
--struct mdio_driver_common {
--	struct device_driver driver;
--	int flags;
--};
- #define MDIO_DEVICE_FLAG_PHY		1
- 
--static inline struct mdio_driver_common *
--to_mdio_common_driver(const struct device_driver *driver)
--{
--	return container_of(driver, struct mdio_driver_common, driver);
--}
--
- /* struct mdio_driver: Generic MDIO driver */
- struct mdio_driver {
--	struct mdio_driver_common mdiodrv;
-+	struct device_driver driver;
- 
- 	/*
- 	 * Called during discovery.  Used to set
-@@ -83,8 +72,7 @@ struct mdio_driver {
- static inline struct mdio_driver *
- to_mdio_driver(const struct device_driver *driver)
- {
--	return container_of(to_mdio_common_driver(driver), struct mdio_driver,
--			    mdiodrv);
-+	return container_of(driver, struct mdio_driver, driver);
- }
- 
- /* device driver data */
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index e9e85d347587..458bceb4a832 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -87,7 +87,6 @@ extern const int phy_10gbit_features_array[1];
- #define PHY_RST_AFTER_CLK_EN	0x00000002
- #define PHY_POLL_CABLE_TEST	0x00000004
- #define PHY_ALWAYS_CALL_SUSPEND	0x00000008
--#define MDIO_DEVICE_IS_PHY	0x80000000
- 
- /**
-  * enum phy_interface_t - Interface Mode definitions
-@@ -873,7 +872,7 @@ struct phy_led {
- /**
-  * struct phy_driver - Driver structure for a particular PHY type
-  *
-- * @mdiodrv: Data common to all MDIO devices
-+ * @driver: The driver-model core driver structure.
-  * @phy_id: The result of reading the UID registers of this PHY
-  *   type, and ANDing them with the phy_id_mask.  This driver
-  *   only works for PHYs with IDs which match this field
-@@ -894,7 +893,7 @@ struct phy_led {
-  * though it is not currently supported in the driver).
-  */
- struct phy_driver {
--	struct mdio_driver_common mdiodrv;
-+	struct device_driver driver;
- 	u32 phy_id;
- 	char *name;
- 	u32 phy_id_mask;
-@@ -1147,8 +1146,7 @@ struct phy_driver {
- 				  unsigned long *rules);
- 
- };
--#define to_phy_driver(d) container_of(to_mdio_common_driver(d),		\
--				      struct phy_driver, mdiodrv)
-+#define to_phy_driver(d) container_of(d, struct phy_driver, driver)
- 
- #define PHY_ANY_ID "MATCH ANY PHY"
- #define PHY_ANY_UID 0xffffffff
-@@ -2148,5 +2146,6 @@ module_exit(phy_module_exit)
- 
- bool phy_driver_is_genphy(struct phy_device *phydev);
- bool phy_driver_is_genphy_10g(struct phy_device *phydev);
-+bool is_phy_driver(struct device_driver *driver);
- 
- #endif /* __PHY_H */
--- 
-2.25.1
+
+Often: system-controller
+
+> +			compatible = "mobileye,eyeq5-olb", "syscon", "simple-mfd";
+> +			reg = <0 0xe00000 0x0 0x400>;
+> +			reg-io-width = <4>;
+> +
+> +			clocks: clock-controller {
+> +				compatible = "mobileye,eyeq5-clk";
+> +				#clock-cells = <1>;
+> +				clocks = <&xtal>;
+> +				clock-names = "ref";
+> +			};
+> +		};
+> +
+
+
+Best regards,
+Krzysztof
 
 
