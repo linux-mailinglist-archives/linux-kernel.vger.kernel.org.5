@@ -1,474 +1,191 @@
-Return-Path: <linux-kernel+bounces-12511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E7E481F5EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:25:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D095F81F5F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:31:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 088D7281F78
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:25:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00C4F1C227DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0548F613C;
-	Thu, 28 Dec 2023 08:24:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA03D63AB;
+	Thu, 28 Dec 2023 08:30:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EZVvo6eC"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Hw7o0Lu9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 260655244;
-	Thu, 28 Dec 2023 08:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 778AD15B3;
+	Thu, 28 Dec 2023 08:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703751893; x=1735287893;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=aQQL/E4WC93dU9lJwbfBkAH12tiADbFtXqIQs6HL9SY=;
-  b=EZVvo6eCDYX7wGFalYFRWTlLMpGX6ZUrykc1H2dta7zoU3gH7dZUf0xX
-   Fr8Qd5+XaehR3BdZaIYr1ZSwbOlcTCLiOl2+RWVP0oNvcLlhb3dsIOiBY
-   o73crIs3CmMQ7K7JF+RP1HezXzxy4+2ELRTVmt6aoNgorMf2Wa/mSsM5K
-   nD/5taC1qH3DXGAkmSgcR4xfxlVVz8LFnN4L2upVxguV/tU9q1YhDyuOw
-   bhDt+uhan4dXbGC5GSr71sqJyXu1TDOIiVsNa8WPN/2PaWi8++q8zmvj3
-   CG8wzCzuFKoxIaCuRunRFLB+kdecSzIppOtrNpPBnViYnZXfyf9OAJ+/R
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="395418161"
+  t=1703752253; x=1735288253;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   mime-version;
+  bh=gmwumE3/01uRqBfQOKd+iMXqqji8zcxeyXn/0Y92BpM=;
+  b=Hw7o0Lu9alP5RghlvoLpOs3mi5EzfMli5AcTXOucf6F2k18e8G0Vnjw4
+   cuI/S1v0ubotI2wbO9enQNXhqhBiKAghTLn+FJOcrUZ8nCbE4J2aMbZeH
+   654jYbIt4iJC/q+wJ5ilSS6CCZkUdVjMQkBqd43DC/a9NTPTeOjpAoQJq
+   5bZ4TvqBnmCjIDtjNcioQxC4ih4R1U4Ei/oPG76i4i9L6IQSgHmERQymP
+   pep0jWXf0qCHUAx5dxZ1YbtllrLP68HBEPD/ZGxHOTuKP7utPiHsFi9tK
+   oRHrfJfMyEns8oV/Lrp4fUXLf9QxQY2CG0BaYuIOHB3QS4szNywZsmmMK
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="376013594"
 X-IronPort-AV: E=Sophos;i="6.04,311,1695711600"; 
-   d="scan'208";a="395418161"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 00:24:51 -0800
+   d="scan'208";a="376013594"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 00:30:45 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="754684483"
 X-IronPort-AV: E=Sophos;i="6.04,311,1695711600"; 
-   d="scan'208";a="26801795"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Dec 2023 00:24:51 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+   d="scan'208";a="754684483"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Dec 2023 00:30:39 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 28 Dec 2023 00:24:50 -0800
+ 15.1.2507.35; Thu, 28 Dec 2023 00:30:38 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 28 Dec 2023 00:30:38 -0800
 Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 28 Dec 2023 00:24:50 -0800
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ 15.1.2507.35 via Frontend Transport; Thu, 28 Dec 2023 00:30:38 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 28 Dec 2023 00:24:50 -0800
+ 15.1.2507.35; Thu, 28 Dec 2023 00:30:37 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TxsvZpvb9IcKiTSbrcZmhfYZnUrvs2nQcSpRnkvnGvWCNBCugBCsWUy5htWQ3dg5JooaZ64vMoW/WLwe7A8FnXDIlxnMbArWwT+ahWDMGABWjyCChU98kicItEyw2AK87jpATZy5MtlmTu/w6kfutEjSQx5YyYSKF//BFSrrYWVgd13z9UYVg76ijzXYsXlyEp03asJDTsiqy4lQhVafa2S/7UvScCMj4taOqDeWMZ/9yhixiGS2TIGOsRsL3X+z1cFMjRUwUMZjYgKA5a+3oaPAo4bfCl0MXYEXFVICBv4qQqyMpLF0vqcQcSSVnU+/Zq4ngpzYYyf2BGEaARX3tQ==
+ b=kHStB4HoKY7pn/sY69D7f3Mw3r8UcNI0z+BSgUzMBnA/TORa8uySvw8DYhrLvKEUCcnV/w+05H5QI2EV/wsj7b1W7U11VAnBSZNsx9qbeVFeonV70QdTtKsHdDkfAo1Bo2wKcw0fe/g19slk2vxc6UPng1NQp15g8BhVfEDRDY9t6Dv2ZsgNOAoe31Gnh3iIT/55koHziujSToBKaY7qjbOx5zpXxPgrFXzCNHC/f9mGf0A73TsC2JqsayjsOyMJn3CjHW88DTI3VqNXJIKZw66I1cV7xJM4OXyGkFvnEzFsFErRIlOfwtZpCpBTPWGCeZg7PkoDq5+6IEKxnjNgIg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b1TG1u4FB7ik/I9HjCYW5nF8W9rUzOkSlMiiqbuhEFE=;
- b=GI2zDiEZ1govYqqWxonDTmGo3mtwTR1nZP1fSr3GmSTMkxPgNcHPrWabif7c/uHeBN7kxDQTm1ZlNav67nGuBUlskzMNXZ11BCTVtm7deTqHNuI3rcICd13plk/wW3mb8STsdXOiYxDaL0+6HgJbNl8R1TKq7YI7rNu3g7DY1oXmkhYF8ZSlcuGcHW78X9zvtsdHEhkgCOdlMcf5TT0hqYE+4qOLmIa5hg6CCRcdYh0bwa8n43Dnz2GbqjopX9IKL42zNB5jDvL7Ovwbz3OD02t7vZBoVgo75MP2bq7llYJXwx/Sq+ugdEM6KzKMrLvZVXSrf7BeyKyWUzY3st6rDw==
+ bh=sq/My6RXglsvfq4z8gnAO2HYZTUwCaUNFoNDJNdu1qo=;
+ b=OhoD/w3H38caR5Y+yQwFr7gHaESqg2it8Jsk6mRK8V+s4/XCoWHfVdInEHKdIu2li3MMpun9V/8jcb3g7sGg+jpWqB987bUNyLF2DRLmCYTADoh79HBRkOz5oTHxU3rCgnfY57Dxe0UWOgrIgpRtMMZWaH5Y+FEoAFzqaxvNGolw1DNgTZdAgC1PZKwhHF6pm2OHWaAhWPUBQE4UCwnrFZavnN8Puod96YnvG+ctEj3RVygob3izU+1MEiezdszg8ssMIuhifK1xaiBXcXtbuH53n8UnEPEIaOq27P3dV/SPzsmtqvxdnEBuOcV2K3QhAq26fgihVtrZy4ag0pwT6w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BYAPR11MB3672.namprd11.prod.outlook.com (2603:10b6:a03:fa::30)
- by SA0PR11MB4750.namprd11.prod.outlook.com (2603:10b6:806:9d::11) with
+Received: from BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
+ by SN7PR11MB7668.namprd11.prod.outlook.com (2603:10b6:806:341::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.20; Thu, 28 Dec
- 2023 08:24:48 +0000
-Received: from BYAPR11MB3672.namprd11.prod.outlook.com
- ([fe80::ef7b:6435:f727:4d5c]) by BYAPR11MB3672.namprd11.prod.outlook.com
- ([fe80::ef7b:6435:f727:4d5c%3]) with mapi id 15.20.7113.026; Thu, 28 Dec 2023
- 08:24:48 +0000
-Message-ID: <95b7ee65-5661-6529-07d3-ce13968a3c25@intel.com>
-Date: Thu, 28 Dec 2023 09:24:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Subject: Re: [PATCH net-next] net: phy: Cleanup struct mdio_driver_common
-To: Yajun Deng <yajun.deng@linux.dev>
-CC: <andrew@lunn.ch>, <olteanv@gmail.com>, <hkallweit1@gmail.com>,
-	<linux@armlinux.org.uk>, <rmk+kernel@armlinux.org.uk>, <kabel@kernel.org>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-phy@lists.infradead.org>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>
-References: <20231228072350.1294425-1-yajun.deng@linux.dev>
-Content-Language: en-US
-From: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-In-Reply-To: <20231228072350.1294425-1-yajun.deng@linux.dev>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR0P281CA0099.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a9::17) To BYAPR11MB3672.namprd11.prod.outlook.com
- (2603:10b6:a03:fa::30)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.19; Thu, 28 Dec
+ 2023 08:30:35 +0000
+Received: from BL0PR11MB2995.namprd11.prod.outlook.com
+ ([fe80::2f1a:e62e:9fff:ae67]) by BL0PR11MB2995.namprd11.prod.outlook.com
+ ([fe80::2f1a:e62e:9fff:ae67%5]) with mapi id 15.20.7113.027; Thu, 28 Dec 2023
+ 08:30:35 +0000
+Date: Thu, 28 Dec 2023 16:30:25 +0800
+From: kernel test robot <lkp@intel.com>
+To: Allen_Lin <allencl_lin@hotmail.com>, <dmitry.torokhov@gmail.com>,
+	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <jikos@kernel.org>, <benjamin.tissoires@redhat.com>,
+	<linux-input@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <oe-kbuild-all@lists.linux.dev>, Allen_Lin <allencl_lin@hotmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: input: Add Himax HX83102J touchscreen
+Message-ID: <ZY0yIVHXrQ17GqO3@rli9-mobl>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <SEZPR06MB56080820EE51CBAE9C6B6B3E9E9FA@SEZPR06MB5608.apcprd06.prod.outlook.com>
+X-ClientProxiedBy: SG2PR04CA0170.apcprd04.prod.outlook.com (2603:1096:4::32)
+ To BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3672:EE_|SA0PR11MB4750:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7d90a34a-ac0d-47bc-d31d-08dc077e745a
+X-MS-TrafficTypeDiagnostic: BL0PR11MB2995:EE_|SN7PR11MB7668:EE_
+X-MS-Office365-Filtering-Correlation-Id: a7727e35-ad71-4adb-2f1b-08dc077f4328
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pYIVdfoRChmwGwoPr50zvu0QctUHWPKVUtOquJwTwgi/leInXT8Ys5VhXZMam4/LPOkYg0pjIIzB3kENI8zVIU87+L2pQF2YAOIkdTAUCaRnSRG+6bvX31h3JNL0KkDDIegrQYXVGHP7/F0PJeTCHrTSrnkDx04x7Gwa+3VHU062gfCv3Mnd9wCrg3nwj+nhrMrm5yU4uG/tQ+UlBXDqkXodMkg57QTDDAxrS2i7Dr0s82olC52zsHp/vPnhrRXoDXeJV2Bti/e0OIo0YpPUyAsvlPE3se7DqgUE/PgpZh3xRTGIXvPWhJ06k94zW4u9RJf10nq7qTGjsEExdHmxJux5Tkm3uCDsglY8oBKISvN0tbTOhObdJxQ3ht84RwaQtSPxugRozyi4ESLMovQzL+5Q1m0F21ZfxKigkr0Mh8LISZyp5XNZEUMAJD7R3EdlmgXRTtBeiMZITzMWXSMlfP8X6PgiWYtXPuz7WqTmdzgV9+0BS2GRZjcYfnEmxahP48OnEk/V4GtTyP+mOLcsdvTCuJXvOWQCJHvBCbcjVlVc7qDvqgo9VJ6k6wyjPpd2lmXA6cEzQJAx0u2yx1mbvY4cDpBXzpfa2bw2Be9nYUaVIr6M1nWGpwcccbaxLzfr
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3672.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(346002)(366004)(396003)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(36756003)(31686004)(82960400001)(41300700001)(83380400001)(38100700002)(66946007)(66476007)(8936002)(8676002)(6916009)(2616005)(66556008)(7416002)(5660300002)(30864003)(316002)(4326008)(6486002)(86362001)(31696002)(26005)(6512007)(6666004)(478600001)(6506007)(966005)(53546011)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: tt8IjM1LjZ57aj8yqi7Abk63dtbgHlasagTepqK3V9MmeXRerPTFJH5/Q2/eyjvBGCJzOQvsjKA8qMs/GLGVLYqPtYj/56VOWMiofpL1QOI6Xz7B9zyaUzKqiXNiYVkp0aFBS/y/YLFgqWU+Hlk7FiMkl3Ng5WqsvEreMG8yYB76ifU6p4ib9ktgJReNRuarT7SE7qaP4w0Gh69cvarxgSN3lkrZ4/w/KMD/nNYt9uRlpG2aWA03LK6DAg8VMoMsCqOmO9Dx4mp0XhPBd5p9HtzyB9eSCSFPfyYtkXmganEcbuvohU0JohTFk1sybP6+xHzXrZWAM9qi1c2upZRCao3P8jkp/g+PYzq7M90uaBnlW/oRm0HYYUglLIMClpw7A6IYUwbiDpvy1nA+TgPBbdcGz/AIE18JCaceGg8BGV/ahxE/NfUqvuK6KlI9RdVNcNnZ+hdCZER6ZwhKk4tYoXJMaA5tqhjd1fesrUdUOroAYPZtL34gip5IXT+VOIPrzdt9abnA1lA1RXTILEGuM/x2gOs+VfF/RmzpQk2ozT8ZyA/j6aKpz8+cb+HK0EuY3GZE/QbFCIArycXuFXgzm6zY+M0Qu5oD6AgsYhmJgExv5VhpvcCx5bOun1tgJjo8iLVWM7xRhMdhuAfboP7szGlHMTmYieUNRmoo8lLtQww=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB2995.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(376002)(39860400002)(346002)(396003)(136003)(230273577357003)(230173577357003)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(921011)(4001150100001)(7416002)(2906002)(82960400001)(5660300002)(38100700002)(33716001)(86362001)(4326008)(8936002)(8676002)(41300700001)(316002)(66476007)(66556008)(66946007)(83380400001)(26005)(966005)(478600001)(6512007)(9686003)(6486002)(6506007)(6666004)(45080400002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NE9yQlQ4OG1zRTh3NVhsSEVWc0ZIZ2lveEJGL2V5Y3ROc2F3MjBra0ZQZFpy?=
- =?utf-8?B?WG9qMGJhaWNvd205ZjVWWkNGSlRJazVGR3MvQytrWmVGbVNacHNQR0ZQK2kw?=
- =?utf-8?B?VTVpUU10VnExMmtrUTlDSHdRM1QzZzMzQTFXdldlcE9aVVQzUWJaVDN5Slh2?=
- =?utf-8?B?ckFlME00Tnl0ZU9ZOWZ1cG9NZ2lCSG85K0JObEdqbHdMWkNPUks5M1lQN3Y4?=
- =?utf-8?B?T05lL0ZwODdzTi9SbEs3NEx1TFBueE5LeXNOUENRdW40a2FGMUdvQ2Z5NE9F?=
- =?utf-8?B?bmxSelNrZ1BXU0RaTytSVGR5bCtMSVpWWjBEQUNMd0hZQ1U3YlpzbFZsR1ZF?=
- =?utf-8?B?SFc2ak1ySC9ISlZXd0JBYVhIa1MrY1BRdDE4cWJPS015Q0ZCV2VkQ1o0ZVlt?=
- =?utf-8?B?MGpBbjRtQjRtVW1rUWpEQmE3cEZETngzblZ3QzVaNEdqanlsM2NtR2ozaXUx?=
- =?utf-8?B?OStaVmd6ZW1HQ2ErNWR1cjdFSnYzeTNjOGdyMWlKYmtEUnJweTRTT2xuaTVK?=
- =?utf-8?B?alB2UVloaUd6UjQvd0pRam1RdFJ4T1FGQmx1Zktub1ZOREt1R2VDNThuY21o?=
- =?utf-8?B?dDZvaHpkUUlHanZTbFBSVHNrMDlhS3NCRzltaHVCR09zbUJQRllza1JFV28x?=
- =?utf-8?B?MWx1NU9HcXU3cGJVaTFqV3B6VmFCOWoyTWF5TGNtc2FDQWlySkdZVm9oUSt6?=
- =?utf-8?B?a05vWFFPWjJ3YXV0ZDB6K3pjbUxLM2JzQkxyYSt0OFY4VUdpU3pFZG1QbjNS?=
- =?utf-8?B?Y2c3RkpWTXdZMVZNK2U1bkJkSmNkaUhpUDRoOVJxZ2h4NGJBK2lldWcwUjJn?=
- =?utf-8?B?cURBeTdSTVpHb0ZwRGQyb2pkWW1LWitXV3VNNE4vQkd6ZUtrRHdZNzZhZ1pZ?=
- =?utf-8?B?bm9sQys4c2c5eGVtWmpzdXV5NkdYTE54cEFRQ0pvV2F4T2czRTZDcGk4dFh4?=
- =?utf-8?B?R0dXVW1tT0xlNW9YYVljYVRWZzRjWjRLclZSdXZBYi9qa2oxZW04eHRTUUZl?=
- =?utf-8?B?ZzJaRWVhMTNndHN6NnM0eG8reDBFRjc1b0ZwaFJNWngydnZzNGF2cjhDOGZw?=
- =?utf-8?B?SGt3WkVVWHk5TmZOODlVRU9MbXVxMDRJdThZL1NaZFJnU3JueVViMnZzc1E4?=
- =?utf-8?B?Wk1PYkZLTWV4MUpIanVUL0dJMmZRblc1Y09rZnVBbVBuRlhRVHJ5T1hvSUJV?=
- =?utf-8?B?RzZOUGc3alBZc01FemRHUWk0ditkdFVLSk9MMVU2b1MrcmlSOHpqT1pOSXVu?=
- =?utf-8?B?Tmx4SGM3eE9SV0p4ZmwvZjF4KzZ2NkxOZGl5OEVjWlRQMUozeWVMVGp3endt?=
- =?utf-8?B?UkRYMjNUT05TeDdBTFpNWnlQWVAxKzhDcE54blV6TmZWUVgzQ28wRVBTL0Jh?=
- =?utf-8?B?dEJIaUNYTzFlNmdnelM1TVFIdHZFNm5UTy9vZkNtbkViRkJVRlJyRERDNXJX?=
- =?utf-8?B?aWJvNFlCTGx1REY2ZVZMdzZvUWRkYXZydGpwNlBPc0w5c3R6VDVhQjRmNWEw?=
- =?utf-8?B?Z0s1NElDc1NsU1prb0srWDhrSUF0K0FRT01icTNYaUlza0hXdG1mZ3Q1ajh6?=
- =?utf-8?B?UU5DakJMR0V2cGNnbjdWR29YUTZmYTVTZTNCZHNUaHdQVU5rcTd4NWdrQVlz?=
- =?utf-8?B?VFdKUnc1bi9zOFQ1aG11ZWlWS1Y0Qk4wZUlhQkJhSkl4TmlSbFdGeEk5dXlv?=
- =?utf-8?B?eUNSRTFmOXd5a0U0T1ZueHZXTytrU0FQdEVMUFhhS1BwWjR4dkt0RmFJeW1y?=
- =?utf-8?B?SFpWSGtqRlRiV2gzcGs4K1N5MytiNURHeENaODl1WVNLaG5iTkRPNm1VKzZm?=
- =?utf-8?B?bjZ1bk1ZTDZrQkU3MFJMMW9pNDlLd05GMjJZNkVwNi9PN2V3ekhReWw3V2FU?=
- =?utf-8?B?dHBOSXVmaVZFZy9FYkVRNi81ZGJoMUIrOExYQ01FN3E5UmVSUUFFdnBENjNP?=
- =?utf-8?B?QzFyS241K3A1TVV0cUdPa0tFeFQvQm1jTEhQcGFxRkMxazJIdG1NeStsRHFM?=
- =?utf-8?B?ejhOdnI2dHRpMkFhdGhkTlY4VHNvc09WYnJ3M3ZNZW1NckV5bExoQkJsUDUz?=
- =?utf-8?B?L3FVV3J1OEFSTnVBWmpUbS93Z1dJbDhYZGkwbGwzM2dXTmtjSnZEUlI0Sk00?=
- =?utf-8?B?cnRrTGdTcjNvMXZLTXZYdzVyUlBtWVdnRXhzZkhWZ252ZGt6OHF3VmVjekxV?=
- =?utf-8?B?b2c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d90a34a-ac0d-47bc-d31d-08dc077e745a
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3672.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?//ZGreE/uFl+9sBpgqkQAGq78YPc6FhZEDHrwIuWUMvKQEzDbLV3wYkWXB9/?=
+ =?us-ascii?Q?dcmiMYBeVNzXWsxtvbrJmDm/IHUomnBNdQTp5M5Y+IZdcajh2z1naUNksGm0?=
+ =?us-ascii?Q?WCMYnwUge5Xv6VaRUfPRneTt1tmmEK/70biuFP1UFYIoGDSuIdzXe9zOxIXl?=
+ =?us-ascii?Q?GnQUN/Pgxf30kdd830Ibi25e6Z5OfosvruK5iu/w8ZYO5BZOiruXdVYKrW05?=
+ =?us-ascii?Q?283JCRQneeR+rj2xesWMe2hXHxd7p0MgyGqCG4VkSkrypCYWy1mqrv9i4C9Q?=
+ =?us-ascii?Q?SEeCm0vpZ/VHRdzr/IJyE58Ssp4qzFV7+fEUF/hYoiQWEi1AwAW48FrvUoL+?=
+ =?us-ascii?Q?x/L4k+YFPITLXnJvL2+6xKxPTMIzsSwzRve/0uMU/kc0l10ogpxWZ3irCFY4?=
+ =?us-ascii?Q?GcewtB+2kHv7KUhuZVnAm+BwHKse43BFpkZ2UgqU5j0ptuEcRiJjFD1Fd1dP?=
+ =?us-ascii?Q?A7jN6b7/x6CgWMqs3rIhc/7fMstELBKOeuEe/RcqtagPqVVIqxJaqIsMlL2s?=
+ =?us-ascii?Q?NTWLCTolRXaHjHydLai2R+zuCDBVmIz7e+SB/GCkPBuwz/wVyIMHFT0dxGQB?=
+ =?us-ascii?Q?D3xTaqkA5kGCyDM6gd6MmqZA/ZzLjv3/2tRnehZ/53aiOJZtclVwrIEQgfZA?=
+ =?us-ascii?Q?8IJh1lrAN7nph+wLQFsbtDkkHlRIW9Lk80IULUMuhsGzC0Njv8bBB+xfhxJA?=
+ =?us-ascii?Q?4fBCqC2vMwHU8sO+6Ry/2++00WOzjDQ64U4v5q/OnLVzuLrhgjkzYjEpyP4u?=
+ =?us-ascii?Q?PcKMy2cx5JTJPFQwLdHCipgqvscZsrRBr6R3vbm81QzcrOaochQCNbhffomf?=
+ =?us-ascii?Q?ZOip5WGpZlbCtkps6LuQU7U4gFE5zB3xOubgUd6EtenJdCE4FnqvBYMwx4HI?=
+ =?us-ascii?Q?qqPUBqCfhV2NUrTFhTDWuC7j7HMY7R6B1yr9Z0v7uuEQ97AfOUszHxukHB2U?=
+ =?us-ascii?Q?VtmsPKR3Qit+B0pGXfhNiP/CCrac7HGASyzrbIFOmlyNoj5j3jzFuReVbjDQ?=
+ =?us-ascii?Q?QpfkbNN+DFUPA9cgiikfhmYiezHGAwZUIZZEtpoACyp13k/BC4W8A7QajDi2?=
+ =?us-ascii?Q?OBIDX3GxzfKocyMzqNL6nfSptf6CVQ++0KLKd42aHmV0yrYsDUqDIoIiINIx?=
+ =?us-ascii?Q?01RjB/vSNdX8MzhtIylp2Gx8JEIUTg2dAUllWv67qUuBxwwQ7d2PzughvMj4?=
+ =?us-ascii?Q?CfPRvaAtMZzSCiatSM6Yyx6WHiSxnRBqr4ErmgKyWf2Bx8RshMYl0Y39z3Om?=
+ =?us-ascii?Q?iz7YWLBm9/hxRLZGh1aeQMkY86P1wn4BiBke0Q23JzmsC8BKPqh7q7KQsYeA?=
+ =?us-ascii?Q?liBscKuJOzDhmhbOqMVl7wvauyd7nMnCrtBKWSFCs5tVG5SmuWmaENUhVA4s?=
+ =?us-ascii?Q?3O0CnCvZBwGngD7Lz2x0hj/Cvp19d9UBNIgrRHmWMltIOj96lGvhUJRrnhP2?=
+ =?us-ascii?Q?PQIBi2Rh/SpSKUFjQBEVk4N1Vm1/fYqzktKZCd8DruhouIDOUUZOJ2vp6eFY?=
+ =?us-ascii?Q?1PxPqDf/vnhCYJMdLiD7mGEPv0RLut2U7V8OLZ/yBu+ckFgpl5nMMslPAiL7?=
+ =?us-ascii?Q?1pF3J67dCirjSWvxUwPUu4LVrOEVQ4LysPahijWr?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7727e35-ad71-4adb-2f1b-08dc077f4328
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB2995.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Dec 2023 08:24:48.0498
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Dec 2023 08:30:35.4288
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ju5apRSJj1yiACQKvsds1YkvBCpDw/3FP7xis9hW7CwEaVQHkTyAp/7BG99FyqT6wpiGuVMjFCRpg9B1P3pdEzc1s1Rgblbb49BVXhKFmwc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4750
+X-MS-Exchange-CrossTenant-UserPrincipalName: OGOvIFiCQjSVwhwxvCqKCaR0ZnlbfdEBXsEUKbCGbvk9YiFGBvScDwGCCdxgM99FVzHxXQug54oMycJdezF07A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7668
 X-OriginatorOrg: intel.com
 
-On 12/28/23 08:23, Yajun Deng wrote:
-> The struct mdio_driver_common is a wrapper for driver-model structure,
-> it contains device_driver and flags. There are only struct phy_driver
-> and mdio_driver that use it. The flags is used to distinguish between
-> struct phy_driver and mdio_driver.
-> 
-> We can test that if probe of device_driver is equal to phy_probe. This
-> way, the struct mdio_driver_common is no longer needed, and struct
-> phy_driver and usb_mdio_driver will be consistent with other driver
-> structs.
-> 
-> Cleanup struct mdio_driver_common and introduce is_phy_driver(). Use
-> is_phy_driver() test that if the driver is a phy or not.
-> 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->   drivers/net/dsa/b53/b53_mdio.c          |  2 +-
->   drivers/net/dsa/dsa_loop.c              |  2 +-
->   drivers/net/dsa/lan9303_mdio.c          |  2 +-
->   drivers/net/dsa/microchip/ksz8863_smi.c |  2 +-
->   drivers/net/dsa/mt7530-mdio.c           |  2 +-
->   drivers/net/dsa/mv88e6060.c             |  2 +-
->   drivers/net/dsa/mv88e6xxx/chip.c        |  2 +-
->   drivers/net/dsa/qca/ar9331.c            |  2 +-
->   drivers/net/dsa/qca/qca8k-8xxx.c        |  2 +-
->   drivers/net/dsa/realtek/realtek-mdio.c  |  2 +-
->   drivers/net/dsa/xrs700x/xrs700x_mdio.c  |  2 +-
->   drivers/net/phy/mdio_bus.c              |  2 +-
->   drivers/net/phy/mdio_device.c           | 21 +++++++--------
->   drivers/net/phy/phy_device.c            | 35 ++++++++++++++-----------
->   drivers/net/phy/xilinx_gmii2rgmii.c     |  2 +-
->   drivers/phy/broadcom/phy-bcm-ns-usb3.c  |  8 +++---
->   drivers/phy/broadcom/phy-bcm-ns2-pcie.c |  8 +++---
->   include/linux/mdio.h                    | 16 ++---------
->   include/linux/phy.h                     |  9 +++----
->   19 files changed, 54 insertions(+), 69 deletions(-)
-> 
+Hi Allen_Lin,
 
-some nitpicks from me,
-otherwise looks fine:
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+kernel test robot noticed the following build warnings:
 
-BTW, please send v2 after winter break:
-https://patchwork.hopto.org/net-next.html
+[auto build test WARNING on hid/for-next]
+[also build test WARNING on dtor-input/next dtor-input/for-linus robh/for-next linus/master v6.7-rc7 next-20231222]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Allen_Lin/Input-Add-Himax-HX83102J-touchscreen-driver/20231227-133817
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-next
+patch link:    https://lore.kernel.org/r/SEZPR06MB56080820EE51CBAE9C6B6B3E9E9FA%40SEZPR06MB5608.apcprd06.prod.outlook.com
+patch subject: [PATCH v3 1/2] dt-bindings: input: Add Himax HX83102J touchscreen
+:::::: branch date: 19 hours ago
+:::::: commit date: 19 hours ago
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231228/202312280837.b2PFmd9W-lkp@intel.com/reproduce)
 
-> diff --git a/drivers/net/dsa/b53/b53_mdio.c b/drivers/net/dsa/b53/b53_mdio.c
-> index 897e5e8b3d69..1ececa4d44e4 100644
-> --- a/drivers/net/dsa/b53/b53_mdio.c
-> +++ b/drivers/net/dsa/b53/b53_mdio.c
-> @@ -392,7 +392,7 @@ static struct mdio_driver b53_mdio_driver = {
->   	.probe	= b53_mdio_probe,
->   	.remove	= b53_mdio_remove,
->   	.shutdown = b53_mdio_shutdown,
-> -	.mdiodrv.driver = {
-> +	.driver = {
->   		.name = "bcm53xx",
->   		.of_match_table = b53_of_match,
->   	},
-> diff --git a/drivers/net/dsa/dsa_loop.c b/drivers/net/dsa/dsa_loop.c
-> index c70ed67cc188..3f885878be3a 100644
-> --- a/drivers/net/dsa/dsa_loop.c
-> +++ b/drivers/net/dsa/dsa_loop.c
-> @@ -375,7 +375,7 @@ static void dsa_loop_drv_shutdown(struct mdio_device *mdiodev)
->   }
->   
->   static struct mdio_driver dsa_loop_drv = {
-> -	.mdiodrv.driver	= {
-> +	.driver	= {
->   		.name	= "dsa-loop",
->   	},
->   	.probe	= dsa_loop_drv_probe,
-> diff --git a/drivers/net/dsa/lan9303_mdio.c b/drivers/net/dsa/lan9303_mdio.c
-> index 167a86f39f27..7cb7e2b1478a 100644
-> --- a/drivers/net/dsa/lan9303_mdio.c
-> +++ b/drivers/net/dsa/lan9303_mdio.c
-> @@ -162,7 +162,7 @@ static const struct of_device_id lan9303_mdio_of_match[] = {
->   MODULE_DEVICE_TABLE(of, lan9303_mdio_of_match);
->   
->   static struct mdio_driver lan9303_mdio_driver = {
-> -	.mdiodrv.driver = {
-> +	.driver = {
->   		.name = "LAN9303_MDIO",
->   		.of_match_table = lan9303_mdio_of_match,
->   	},
-> diff --git a/drivers/net/dsa/microchip/ksz8863_smi.c b/drivers/net/dsa/microchip/ksz8863_smi.c
-> index 5711a59e2ac9..c788cadd7595 100644
-> --- a/drivers/net/dsa/microchip/ksz8863_smi.c
-> +++ b/drivers/net/dsa/microchip/ksz8863_smi.c
-> @@ -213,7 +213,7 @@ static struct mdio_driver ksz8863_driver = {
->   	.probe	= ksz8863_smi_probe,
->   	.remove	= ksz8863_smi_remove,
->   	.shutdown = ksz8863_smi_shutdown,
-> -	.mdiodrv.driver = {
-> +	.driver = {
->   		.name	= "ksz8863-switch",
->   		.of_match_table = ksz8863_dt_ids,
->   	},
-> diff --git a/drivers/net/dsa/mt7530-mdio.c b/drivers/net/dsa/mt7530-mdio.c
-> index 088533663b83..7315654a6757 100644
-> --- a/drivers/net/dsa/mt7530-mdio.c
-> +++ b/drivers/net/dsa/mt7530-mdio.c
-> @@ -258,7 +258,7 @@ static struct mdio_driver mt7530_mdio_driver = {
->   	.probe  = mt7530_probe,
->   	.remove = mt7530_remove,
->   	.shutdown = mt7530_shutdown,
-> -	.mdiodrv.driver = {
-> +	.driver = {
->   		.name = "mt7530-mdio",
->   		.of_match_table = mt7530_of_match,
->   	},
-> diff --git a/drivers/net/dsa/mv88e6060.c b/drivers/net/dsa/mv88e6060.c
-> index 294312b58e4f..5925f23e7ab3 100644
-> --- a/drivers/net/dsa/mv88e6060.c
-> +++ b/drivers/net/dsa/mv88e6060.c
-> @@ -367,7 +367,7 @@ static struct mdio_driver mv88e6060_driver = {
->   	.probe	= mv88e6060_probe,
->   	.remove = mv88e6060_remove,
->   	.shutdown = mv88e6060_shutdown,
-> -	.mdiodrv.driver = {
-> +	.driver = {
->   		.name = "mv88e6060",
->   		.of_match_table = mv88e6060_of_match,
->   	},
-> diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-> index 383b3c4d6f59..4f24699264d1 100644
-> --- a/drivers/net/dsa/mv88e6xxx/chip.c
-> +++ b/drivers/net/dsa/mv88e6xxx/chip.c
-> @@ -7258,7 +7258,7 @@ static struct mdio_driver mv88e6xxx_driver = {
->   	.probe	= mv88e6xxx_probe,
->   	.remove = mv88e6xxx_remove,
->   	.shutdown = mv88e6xxx_shutdown,
-> -	.mdiodrv.driver = {
-> +	.driver = {
->   		.name = "mv88e6085",
->   		.of_match_table = mv88e6xxx_of_match,
->   		.pm = &mv88e6xxx_pm_ops,
-> diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-> index 8d9d271ac3af..da392d60c9e7 100644
-> --- a/drivers/net/dsa/qca/ar9331.c
-> +++ b/drivers/net/dsa/qca/ar9331.c
-> @@ -1122,7 +1122,7 @@ static struct mdio_driver ar9331_sw_mdio_driver = {
->   	.probe = ar9331_sw_probe,
->   	.remove = ar9331_sw_remove,
->   	.shutdown = ar9331_sw_shutdown,
-> -	.mdiodrv.driver = {
-> +	.driver = {
->   		.name = AR9331_SW_NAME,
->   		.of_match_table = ar9331_sw_of_match,
->   	},
-> diff --git a/drivers/net/dsa/qca/qca8k-8xxx.c b/drivers/net/dsa/qca/qca8k-8xxx.c
-> index ec57d9d52072..fe396397f405 100644
-> --- a/drivers/net/dsa/qca/qca8k-8xxx.c
-> +++ b/drivers/net/dsa/qca/qca8k-8xxx.c
-> @@ -2187,7 +2187,7 @@ static struct mdio_driver qca8kmdio_driver = {
->   	.probe  = qca8k_sw_probe,
->   	.remove = qca8k_sw_remove,
->   	.shutdown = qca8k_sw_shutdown,
-> -	.mdiodrv.driver = {
-> +	.driver = {
->   		.name = "qca8k",
->   		.of_match_table = qca8k_of_match,
->   		.pm = &qca8k_pm_ops,
-> diff --git a/drivers/net/dsa/realtek/realtek-mdio.c b/drivers/net/dsa/realtek/realtek-mdio.c
-> index 292e6d087e8b..8e6a951b391c 100644
-> --- a/drivers/net/dsa/realtek/realtek-mdio.c
-> +++ b/drivers/net/dsa/realtek/realtek-mdio.c
-> @@ -274,7 +274,7 @@ static const struct of_device_id realtek_mdio_of_match[] = {
->   MODULE_DEVICE_TABLE(of, realtek_mdio_of_match);
->   
->   static struct mdio_driver realtek_mdio_driver = {
-> -	.mdiodrv.driver = {
-> +	.driver = {
->   		.name = "realtek-mdio",
->   		.of_match_table = realtek_mdio_of_match,
->   	},
-> diff --git a/drivers/net/dsa/xrs700x/xrs700x_mdio.c b/drivers/net/dsa/xrs700x/xrs700x_mdio.c
-> index 5f7d344b5d73..1a76d9d49f13 100644
-> --- a/drivers/net/dsa/xrs700x/xrs700x_mdio.c
-> +++ b/drivers/net/dsa/xrs700x/xrs700x_mdio.c
-> @@ -164,7 +164,7 @@ static const struct of_device_id __maybe_unused xrs700x_mdio_dt_ids[] = {
->   MODULE_DEVICE_TABLE(of, xrs700x_mdio_dt_ids);
->   
->   static struct mdio_driver xrs700x_mdio_driver = {
-> -	.mdiodrv.driver = {
-> +	.driver = {
->   		.name	= "xrs700x-mdio",
->   		.of_match_table = of_match_ptr(xrs700x_mdio_dt_ids),
->   	},
-> diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-> index 6cf73c15635b..a1092c641d14 100644
-> --- a/drivers/net/phy/mdio_bus.c
-> +++ b/drivers/net/phy/mdio_bus.c
-> @@ -1342,7 +1342,7 @@ static int mdio_bus_match(struct device *dev, struct device_driver *drv)
->   	struct mdio_device *mdio = to_mdio_device(dev);
->   
->   	/* Both the driver and device must type-match */
-> -	if (!(mdiodrv->mdiodrv.flags & MDIO_DEVICE_IS_PHY) !=
-> +	if (!(is_phy_driver(&mdiodrv->driver)) !=
->   	    !(mdio->flags & MDIO_DEVICE_FLAG_PHY))
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/r/202312280837.b2PFmd9W-lkp@intel.com/
 
-you could remove one pair of parens, and even change condition to:
-   if (is_phy_driver(&mdiodrv->driver) == !(mdio->flags &
-       MDIO_DEVICE_FLAG_PHY))
+dtcheck warnings: (new ones prefixed by >>)
+>> Documentation/devicetree/bindings/input/himax,hx83102j.yaml:1:58: [error] wrong new line character: expected \n (new-lines)
 
+vim +1 Documentation/devicetree/bindings/input/himax,hx83102j.yaml
 
->   		return 0;
->   
-> diff --git a/drivers/net/phy/mdio_device.c b/drivers/net/phy/mdio_device.c
-> index 73f6539b9e50..16232e7a1255 100644
-> --- a/drivers/net/phy/mdio_device.c
-> +++ b/drivers/net/phy/mdio_device.c
-> @@ -40,7 +40,7 @@ int mdio_device_bus_match(struct device *dev, struct device_driver *drv)
->   	struct mdio_device *mdiodev = to_mdio_device(dev);
->   	struct mdio_driver *mdiodrv = to_mdio_driver(drv);
->   
-> -	if (mdiodrv->mdiodrv.flags & MDIO_DEVICE_IS_PHY)
-> +	if (is_phy_driver(&mdiodrv->driver))
->   		return 0;
->   
->   	return strcmp(mdiodev->modalias, drv->name) == 0;
-> @@ -203,20 +203,19 @@ static void mdio_shutdown(struct device *dev)
->    */
->   int mdio_driver_register(struct mdio_driver *drv)
->   {
-> -	struct mdio_driver_common *mdiodrv = &drv->mdiodrv;
->   	int retval;
->   
-> -	pr_debug("%s: %s\n", __func__, mdiodrv->driver.name);
-> +	pr_debug("%s: %s\n", __func__, drv->driver.name);
->   
-> -	mdiodrv->driver.bus = &mdio_bus_type;
-> -	mdiodrv->driver.probe = mdio_probe;
-> -	mdiodrv->driver.remove = mdio_remove;
-> -	mdiodrv->driver.shutdown = mdio_shutdown;
-> +	drv->driver.bus = &mdio_bus_type;
-> +	drv->driver.probe = mdio_probe;
-> +	drv->driver.remove = mdio_remove;
-> +	drv->driver.shutdown = mdio_shutdown;
->   
-> -	retval = driver_register(&mdiodrv->driver);
-> +	retval = driver_register(&drv->driver);
->   	if (retval) {
->   		pr_err("%s: Error %d in registering driver\n",
-> -		       mdiodrv->driver.name, retval);
-> +		       drv->driver.name, retval);
->   
->   		return retval;
->   	}
-> @@ -227,8 +226,6 @@ EXPORT_SYMBOL(mdio_driver_register);
->   
->   void mdio_driver_unregister(struct mdio_driver *drv)
->   {
-> -	struct mdio_driver_common *mdiodrv = &drv->mdiodrv;
-> -
-> -	driver_unregister(&mdiodrv->driver);
-> +	driver_unregister(&drv->driver);
->   }
->   EXPORT_SYMBOL(mdio_driver_unregister);
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> index 3611ea64875e..55494a345bd4 100644
-> --- a/drivers/net/phy/phy_device.c
-> +++ b/drivers/net/phy/phy_device.c
-> @@ -529,7 +529,7 @@ static int phy_bus_match(struct device *dev, struct device_driver *drv)
->   	const int num_ids = ARRAY_SIZE(phydev->c45_ids.device_ids);
->   	int i;
->   
-> -	if (!(phydrv->mdiodrv.flags & MDIO_DEVICE_IS_PHY))
-> +	if (!(is_phy_driver(&phydrv->driver)))
+b6f7a8833439cc Allen_Lin 2023-12-27 @1  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 
-here parens are redundant too
-
->   		return 0;
->   
->   	if (phydrv->match_phy_device)
-> @@ -1456,9 +1456,9 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
->   	 */
->   	if (!d->driver) {
->   		if (phydev->is_c45)
-> -			d->driver = &genphy_c45_driver.mdiodrv.driver;
-> +			d->driver = &genphy_c45_driver.driver;
->   		else
-> -			d->driver = &genphy_driver.mdiodrv.driver;
-> +			d->driver = &genphy_driver.driver;
->   
->   		using_genphy = true;
->   	}
-> @@ -1638,14 +1638,14 @@ static bool phy_driver_is_genphy_kind(struct phy_device *phydev,
->   bool phy_driver_is_genphy(struct phy_device *phydev)
->   {
->   	return phy_driver_is_genphy_kind(phydev,
-> -					 &genphy_driver.mdiodrv.driver);
-> +					 &genphy_driver.driver);
->   }
->   EXPORT_SYMBOL_GPL(phy_driver_is_genphy);
->   
->   bool phy_driver_is_genphy_10g(struct phy_device *phydev)
->   {
->   	return phy_driver_is_genphy_kind(phydev,
-> -					 &genphy_c45_driver.mdiodrv.driver);
-> +					 &genphy_c45_driver.driver);
-
-now it fits into one line (same for phy_driver_is_genphy())
-
->   }
->   EXPORT_SYMBOL_GPL(phy_driver_is_genphy_10g);
-
-[snip]
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
