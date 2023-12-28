@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-12368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC0C181F3BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:42:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1152C81F3C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:43:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85C21283E5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:42:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0696283EEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD57823BF;
-	Thu, 28 Dec 2023 01:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7ECB63D2;
+	Thu, 28 Dec 2023 01:42:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="hrprsTQ7"
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="IRj4wDWM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC18F15C4
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:42:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D55B03D8C
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6d98ce84e18so3891032b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 17:42:25 -0800 (PST)
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-204520717b3so3179291fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 17:42:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1703727745; x=1704332545; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1703727748; x=1704332548; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xuiZ+dA63qa6KuTRM/9EMSF12UiDXQURMhZ59hCd4g8=;
-        b=hrprsTQ71tPBhB2Fb/uL9FCkSQ7BtyqZJrmMSgxTQxDECXYvzerZcG5VXtzqhIhvk8
-         VHTf336LUSs3GJ8YczHMGB6xTrkQGjCf1NA9gOiq1bEMfMA70gCy13o0fqeg0LAnPBlX
-         bqfySVi47x95fL3M5cUDfJmhRMetJXHR3uhzCSeDlm3Bi+7s0ikAa55hhPxK70GiZoUY
-         cnfga12XDILrBR0P7wblA5Z6DAj8MW+dJ9Ov3wP2BEGNfpgri9DimtrN0+ZVN+FEsmR3
-         lunUaE5XV4gSo7HKgNB32RexxF4VjJkjmEooeo5jF8gVNkVIlDbLSBhRRLNhCT+TpyLp
-         2c6w==
+        bh=bJe+2iWG7zhbu2gjOAPKG3r+a1/tBb6PXcWtzUfSG2Y=;
+        b=IRj4wDWMchpe5e/SlDtZMjWCwEWx6bf7LCeVjTNfmaCvVOOK0CNgHJ0+I5Ttx1qYfw
+         IJa6H5PuBZ4y+0P/lRAdb90JZKw9KnYAaRErnR6Rpj6xq8Vfc0JmK3I2GJqRe/jIbVqF
+         gYUTK63PSAJhI13bAxb5gwp4Ti3d+gAPlaz6TSULeYg2LCA//Tq05BpUDWNOT8hDnfdp
+         aRL4i+pJ9NP4gaNohjf+05d3bwlDk32npHj/GxiO/xCnWEBj0TASIGagmkTURtqd3kPn
+         aNbZlCDfe/OMtBhOfA/Uy6bBjk0ciqWNRa37xEwqdsNnGUd0JH40B45m7mG3vNC4LPaQ
+         eXzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703727745; x=1704332545;
+        d=1e100.net; s=20230601; t=1703727748; x=1704332548;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xuiZ+dA63qa6KuTRM/9EMSF12UiDXQURMhZ59hCd4g8=;
-        b=BxzqfOV7fR1P64akSowKzZSxUIs6LkMClRAqGQjCkSfLYBZNnodTyVEtpwL+d548fZ
-         DsYIa5UZxQK7d84EX1jAlLcHSAR1JmIZCRdn4Z9RjHhRDz1T3nSMDuzgnaoZL5WhAbik
-         UlLp4UPxUpG72pZINzpDgIDsRRjTIMZykBuUArfXxndrno3DbKnN4aREqC1PfQkzlhZq
-         jDpt2SI6Dzojuulw5DW+iZqBPVdPMyZMNTIHVnKj23uq1G3YSBlClumJts76XlxIjnFT
-         KeL3r18iIl5LHLS507rJFpKArnYt/Z5Roz4a3Gp+LLTx/JaFX2WpBqoexV7x5QLkVTA3
-         KnFQ==
-X-Gm-Message-State: AOJu0YzdgYjzMpP7aFCMPKP7sUEypzk5vh6eVhuShAfWh6A9x7/oQ2s2
-	iUpX4uMH9ldaBwnwzBp3zPbUBUUVn4XzOA==
-X-Google-Smtp-Source: AGHT+IEILlR72JmnZxJTq7QER4Rq98IUb8qZ6aLblKynPh8gjQmZYjrM9YnZu6dduDjff4jpI/ud3w==
-X-Received: by 2002:aa7:9142:0:b0:6d9:cbb1:7818 with SMTP id 2-20020aa79142000000b006d9cbb17818mr4021989pfi.20.1703727745150;
-        Wed, 27 Dec 2023 17:42:25 -0800 (PST)
+        bh=bJe+2iWG7zhbu2gjOAPKG3r+a1/tBb6PXcWtzUfSG2Y=;
+        b=lcRBODFFc1JQhl5bYj8rexMR1dCJ68VyuOgTZmTQUoTI/HyBbvsFO2xreNjAPiMsNz
+         QYsVaNIRpCKyMt/oPDcCFaC7qWcM5hHh/OWPZFx2dsA1q56YT93V1nH3mU4HWTWY3b5p
+         njSHFaKRCzP3J9COtfK/dJIPK15TrsT3FjLG1aXJyeoxV17MnqNz41CtHlbduMiIzSU2
+         lrLH2ij+1OpRL27g1ujxBZDZi0hKQpDMna2KPSd3GJAWWqxVvJwnm9gl/k19hFUBfIt8
+         X6aJLzx0bKGF3HgWMxuWRdVc95BtPhezoZ1M+DCGJ2BQ8CDJ/gK6cVDGtctxWrQGNc1q
+         0aSw==
+X-Gm-Message-State: AOJu0Yy5SAc67tl3/+D/5gsL9ntS7fNUD/ic0nK5+TObsS43FFIxFevR
+	wP/XLzTEk2qGR+Zdd9kXwA9p4+m4DGbZoZUo1Qn4iGaakhk=
+X-Google-Smtp-Source: AGHT+IHYZaSMdp2QaO80SoY2qT34DsaM+IszcA+ix/EbDuC7szn+dKwMtM8zlpfibfh9dbJ1h4v/ng==
+X-Received: by 2002:a05:6870:355:b0:203:e0bc:5e11 with SMTP id n21-20020a056870035500b00203e0bc5e11mr10237951oaf.70.1703727746413;
+        Wed, 27 Dec 2023 17:42:26 -0800 (PST)
 Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id g24-20020aa78758000000b006d49ed3effasm7335440pfo.63.2023.12.27.17.42.24
+        by smtp.gmail.com with ESMTPSA id g24-20020aa78758000000b006d49ed3effasm7335440pfo.63.2023.12.27.17.42.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Dec 2023 17:42:24 -0800 (PST)
+        Wed, 27 Dec 2023 17:42:26 -0800 (PST)
 From: Samuel Holland <samuel.holland@sifive.com>
 To: linux-arm-kernel@lists.infradead.org,
 	linuxppc-dev@lists.ozlabs.org,
@@ -68,9 +68,9 @@ Cc: loongarch@lists.linux.dev,
 	amd-gfx@lists.freedesktop.org,
 	linux-arch@vger.kernel.org,
 	Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH v2 02/14] ARM: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
-Date: Wed, 27 Dec 2023 17:41:52 -0800
-Message-ID: <20231228014220.3562640-3-samuel.holland@sifive.com>
+Subject: [PATCH v2 03/14] ARM: crypto: Use CC_FLAGS_FPU for NEON CFLAGS
+Date: Wed, 27 Dec 2023 17:41:53 -0800
+Message-ID: <20231228014220.3562640-4-samuel.holland@sifive.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231228014220.3562640-1-samuel.holland@sifive.com>
 References: <20231228014220.3562640-1-samuel.holland@sifive.com>
@@ -82,74 +82,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-ARM provides an equivalent to the common kernel-mode FPU API, but in a
-different header and using different function names. Add a wrapper
-header, and export CFLAGS adjustments as found in lib/raid6/Makefile.
+Now that CC_FLAGS_FPU is exported and can be used anywhere in the source
+tree, use it instead of duplicating the flags here.
 
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 ---
 
-Changes in v2:
- - Remove file name from header comment
+(no changes since v1)
 
- arch/arm/Kconfig           |  1 +
- arch/arm/Makefile          |  7 +++++++
- arch/arm/include/asm/fpu.h | 15 +++++++++++++++
- 3 files changed, 23 insertions(+)
- create mode 100644 arch/arm/include/asm/fpu.h
+ arch/arm/lib/Makefile | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index f8567e95f98b..92e21a4a2903 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -14,6 +14,7 @@ config ARM
- 	select ARCH_HAS_FORTIFY_SOURCE
- 	select ARCH_HAS_KEEPINITRD
- 	select ARCH_HAS_KCOV
-+	select ARCH_HAS_KERNEL_FPU_SUPPORT if KERNEL_MODE_NEON
- 	select ARCH_HAS_MEMBARRIER_SYNC_CORE
- 	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
- 	select ARCH_HAS_PTE_SPECIAL if ARM_LPAE
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 5ba42f69f8ce..1dd860dba5f5 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -130,6 +130,13 @@ endif
- # Accept old syntax despite ".syntax unified"
- AFLAGS_NOWARN	:=$(call as-option,-Wa$(comma)-mno-warn-deprecated,-Wa$(comma)-W)
+diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile
+index 650404be6768..0ca5aae1bcc3 100644
+--- a/arch/arm/lib/Makefile
++++ b/arch/arm/lib/Makefile
+@@ -40,8 +40,7 @@ $(obj)/csumpartialcopy.o:	$(obj)/csumpartialcopygeneric.S
+ $(obj)/csumpartialcopyuser.o:	$(obj)/csumpartialcopygeneric.S
  
-+# The GCC option -ffreestanding is required in order to compile code containing
-+# ARM/NEON intrinsics in a non C99-compliant environment (such as the kernel)
-+CC_FLAGS_FPU	:= -ffreestanding
-+# Enable <arm_neon.h>
-+CC_FLAGS_FPU	+= -isystem $(shell $(CC) -print-file-name=include)
-+CC_FLAGS_FPU	+= -march=armv7-a -mfloat-abi=softfp -mfpu=neon
-+
- ifeq ($(CONFIG_THUMB2_KERNEL),y)
- CFLAGS_ISA	:=-Wa,-mimplicit-it=always $(AFLAGS_NOWARN)
- AFLAGS_ISA	:=$(CFLAGS_ISA) -Wa$(comma)-mthumb
-diff --git a/arch/arm/include/asm/fpu.h b/arch/arm/include/asm/fpu.h
-new file mode 100644
-index 000000000000..2ae50bdce59b
---- /dev/null
-+++ b/arch/arm/include/asm/fpu.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2023 SiFive
-+ */
-+
-+#ifndef __ASM_FPU_H
-+#define __ASM_FPU_H
-+
-+#include <asm/neon.h>
-+
-+#define kernel_fpu_available()	cpu_has_neon()
-+#define kernel_fpu_begin()	kernel_neon_begin()
-+#define kernel_fpu_end()	kernel_neon_end()
-+
-+#endif /* ! __ASM_FPU_H */
+ ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
+-  NEON_FLAGS			:= -march=armv7-a -mfloat-abi=softfp -mfpu=neon
+-  CFLAGS_xor-neon.o		+= $(NEON_FLAGS)
++  CFLAGS_xor-neon.o		+= $(CC_FLAGS_FPU)
+   obj-$(CONFIG_XOR_BLOCKS)	+= xor-neon.o
+ endif
+ 
 -- 
 2.42.0
 
