@@ -1,138 +1,91 @@
-Return-Path: <linux-kernel+bounces-12771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D148081F9DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 17:11:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A77DE81F9E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 17:21:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E8D01C219B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:11:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A7FF285B0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:21:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069A1F508;
-	Thu, 28 Dec 2023 16:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15247F50E;
+	Thu, 28 Dec 2023 16:21:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ddNeO62y"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ncXu2Kjc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41201F9C2;
-	Thu, 28 Dec 2023 16:11:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4FF7C433C7;
-	Thu, 28 Dec 2023 16:11:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703779894;
-	bh=nnd1opf9wwwaHv9hFWrSsn8RSzN3NL7jhKBJ7PrftXA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ddNeO62ybaBpFNoOjz3K+uJZohWA0sgqulib+7CrGvYRytyTC/op8ts7vqYgioTSV
-	 hdtP/HmHR4hejvEhY8fwZW9LcwYGaQ6f8wN0Lfml/roR60cqq9Rl9aWekkHqD/NbrU
-	 aKRdJzwfVCMKsbF3ViEgaJX1TE1z7pDZbPmnwCmwPRg5nztHBHzQ1jdDjRqXR+gdCN
-	 +R04njt0b9VYsUOqcgE4YYlmV+RYUTNgtxilk/01Ie+9mIemqlI7Op/BvZzV5PIvtV
-	 72Ri/SBJvMFQU7bLXD75UINNvGtEoIN3q5gyBSVsVZwZKlDWHCTUMz9DezO5U4sAnD
-	 Szkf1dv7GM1FQ==
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6dc07ce2a30so727529a34.0;
-        Thu, 28 Dec 2023 08:11:34 -0800 (PST)
-X-Gm-Message-State: AOJu0Yy2fPOT9nEfgl7AnNO/HsPyznWcQJnUni99K0xCUFD/1VMIK+DL
-	7Wq/+SVGNquGPkWYwf9jX+vKwDTKKAuwx2Py5c8=
-X-Google-Smtp-Source: AGHT+IFpQPoaCFoiP3xamYcVlaZnjD0yftzX87pucNojhXMz5LhYYevEbcYq5Ddt4qTOlEBDvZ66FICp60vasHoduC0=
-X-Received: by 2002:a05:6871:546:b0:204:2d89:21de with SMTP id
- t6-20020a056871054600b002042d8921demr9492889oal.15.1703779893965; Thu, 28 Dec
- 2023 08:11:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5539BF4F8
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 16:21:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703780475; x=1735316475;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vPPwiSf/usejUsjALBFvqgyVM1AHjnr7aw+GHuW/3LA=;
+  b=ncXu2KjcoNLqSPIamF7ZEcT6RlZQKwd6WAwu8YPtk7eCGOOC27YLSVvd
+   1OH0+3aHwuxvnlzIr/RUgow1fniIaisoP4u+aJlkiWJI8odH7J5BO6kOw
+   Xb72Fc6H27ab3m1pDiQ7hGg2MzBcTXSmK4qiNB+A/n9bJQ1ybadcX4MST
+   HSvYUp6j/kv9+CMfoJUl2pwRYafvlh5pdKMellJmNNplEq3nlCYWuF8zr
+   imB2WdCzK1plJZzxPVq7ZKYrPJXyfTaP+Tz9LluEJTLcG0k3qAf2b/I/b
+   PwKp8IYN5SbAPN0MjPAFVX6qPxDR7QKcxi6fYPahpSLOnpdW9LXwYTR1D
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="10118870"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="10118870"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 08:21:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="812827906"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="812827906"
+Received: from ceyeghel-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.50.226])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 08:21:11 -0800
+Date: Thu, 28 Dec 2023 17:21:07 +0100
+From: Andi Shyti <andi.shyti@linux.intel.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: Re: [PATCH v2 1/4] drm/i915/gem: reconcile Excess struct member
+ kernel-doc warnings
+Message-ID: <ZY2gc0gaR5i1Yct9@ashyti-mobl2.lan>
+References: <20231226195432.10891-1-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228070941.3611649-1-tfiga@chromium.org>
-In-Reply-To: <20231228070941.3611649-1-tfiga@chromium.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Fri, 29 Dec 2023 01:10:57 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASbgXSZNiwhMf8jm7511eyDm8oCqY=MzWhgWwNuVLk5Vw@mail.gmail.com>
-Message-ID: <CAK7LNASbgXSZNiwhMf8jm7511eyDm8oCqY=MzWhgWwNuVLk5Vw@mail.gmail.com>
-Subject: Re: [PATCH] kconfig: Add a build target for checking current config
- for issues
-To: Tomasz Figa <tfiga@chromium.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231226195432.10891-1-rdunlap@infradead.org>
 
-On Thu, Dec 28, 2023 at 4:09=E2=80=AFPM Tomasz Figa <tfiga@chromium.org> wr=
-ote:
->
-> The new target is called 'checkconfig' and currently is basically an
-> alias for `listnewconfig` with KCONFIG_WARN_UNKNOWN_SYMBOLS set to true.
-> It can be used to validate if the current config is directly compatible
-> with the current kernel version or needs some manual adjustment.
->
-> Signed-off-by: Tomasz Figa <tfiga@chromium.org>
+Hi Randy,
 
+On Tue, Dec 26, 2023 at 11:54:29AM -0800, Randy Dunlap wrote:
+> Document nested struct members with full names as described in
+> Documentation/doc-guide/kernel-doc.rst.
+> 
+> i915_gem_context_types.h:420: warning: Excess struct member 'lock' description in 'i915_gem_context'
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+> Cc: intel-gfx@lists.freedesktop.org
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: dri-devel@lists.freedesktop.org
+> Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 
-I rejected a new target in the past.
+Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com>
 
-https://lore.kernel.org/all/20230817012007.131868-1-senozhatsky@chromium.or=
-g/T/#m55c37e3091158f8cb008d9e0b5c6bf3f5ead225a
-
-
-
-Instead, you can run
-
-  KCONFIG_WARN_UNKNOWN_SYMBOLS=3D1 make listnewconfig
-
-or
-
-  make W=3Dc listnewconfig
-
-
-
-
-
-
-
-
-
-> ---
->  scripts/kconfig/Makefile | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
-> index 4eee155121a8..501cb9b76414 100644
-> --- a/scripts/kconfig/Makefile
-> +++ b/scripts/kconfig/Makefile
-> @@ -81,6 +81,9 @@ PHONY +=3D savedefconfig defconfig
->  savedefconfig: $(obj)/conf
->         $(Q)$< $(silent) --$@=3Ddefconfig $(Kconfig)
->
-> +checkconfig: $(obj)/conf
-> +       $(Q)KCONFIG_WARN_UNKNOWN_SYMBOLS=3Dtrue $< --listnewconfig $(Kcon=
-fig)
-> +
->  defconfig: $(obj)/conf
->  ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/configs/$(KBUILD_DEFCONFIG)=
-),)
->         @$(kecho) "*** Default configuration is based on '$(KBUILD_DEFCON=
-FIG)'"
-> @@ -144,6 +147,7 @@ help:
->         @echo  '                    default value without prompting'
->         @echo  '  tinyconfig      - Configure the tiniest possible kernel=
-'
->         @echo  '  testconfig      - Run Kconfig unit tests (requires pyth=
-on3 and pytest)'
-> +       @echo  '  checkconfig     - Check current config for unrecognized=
- and new symbols'
->         @echo  ''
->         @echo  'Configuration topic targets:'
->         @$(foreach f, $(all-config-fragments), \
-> --
-> 2.43.0.472.g3155946c3a-goog
->
-
-
---
-Best Regards
-
-Masahiro Yamada
+Thanks,
+Andi
 
