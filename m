@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-12340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C0DF81F39B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:34:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC0B681F39C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:35:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39FC7B22733
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:34:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41846B22AE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:35:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C965687;
-	Thu, 28 Dec 2023 01:33:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFAAF63DC;
+	Thu, 28 Dec 2023 01:33:55 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1192710F2
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:33:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3914E63D3
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:33:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T0rXR3vnZz1FGHJ;
-	Thu, 28 Dec 2023 09:29:43 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T0rXl1Qb6z1FFnD;
+	Thu, 28 Dec 2023 09:29:59 +0800 (CST)
 Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id 764441A0172;
-	Thu, 28 Dec 2023 09:33:35 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 22D4E1A019B;
+	Thu, 28 Dec 2023 09:33:36 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by kwepemm000013.china.huawei.com
  (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Dec
- 2023 09:33:34 +0800
+ 2023 09:33:35 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <david.oberhollenzer@sigma-star.at>, <richard@nod.at>,
 	<miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
 	<Tudor.Ambarus@linaro.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils 04/11] tests: ubifs_repair: Add powercut+repair+mount test
-Date: Thu, 28 Dec 2023 09:36:32 +0800
-Message-ID: <20231228013639.2827205-5-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils 05/11] tests: ubifs_repair: Add corrupt+repair+fault_inject test
+Date: Thu, 28 Dec 2023 09:36:33 +0800
+Message-ID: <20231228013639.2827205-6-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20231228013639.2827205-1-chengzhihao1@huawei.com>
 References: <20231228013639.2827205-1-chengzhihao1@huawei.com>
@@ -52,65 +52,64 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm000013.china.huawei.com (7.193.23.81)
 
-Inject powercut while doing fsstress on mounted UBIFS for kinds of
-flashes (eg. nand, nor).
-This testcase mainly makes sure that ubifs_repair can make UBIFS image
-be consistent on different flashes (eg. nand, nor). Because the
-min_io_size of nor flash is 1, the UBIFS image on nor flash will be
-different from nand flash after doing powercut, so we need make sure
-ubifs_repair can handle these two types of flash.
+Inject memory/io fault while repairing corrupted UBIFS images.
+This testcase mainly checks whether ubifs_repair has problems (eg.
+memleak, UAF, null-ptr-def, etc.) in random error paths. Besides,
+it provides a similar way to simulate powercut during repairing,
+and checks whether ubifs_repair can fix an UBIFS image after many
+repairing rounds interrupted by kinds of errors.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
  .gitignore                                         |   1 +
  configure.ac                                       |   3 +-
  tests/ubifs_repair-tests/Makemodule.am             |   3 +-
- .../tests/powercut_repair_mount.sh.in              | 138 +++++++++++++++++++++
- 4 files changed, 143 insertions(+), 2 deletions(-)
- create mode 100755 tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in
+ .../cycle_corrupted_repair_fault_inject.sh.in      | 233 +++++++++++++++++++++
+ 4 files changed, 238 insertions(+), 2 deletions(-)
+ create mode 100755 tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh.in
 
 diff --git a/.gitignore b/.gitignore
-index 1a5fe7e..d47282c 100644
+index d47282c..52396e6 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -115,6 +115,7 @@ tests/ubi-tests/ubi-stress-test.sh
- tests/ubifs_repair-tests/lib/common.sh
+@@ -116,6 +116,7 @@ tests/ubifs_repair-tests/lib/common.sh
  tests/ubifs_repair-tests/tests/authentication_refuse.sh
  tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
-+tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
+ tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
++tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh
  
  #
  # Files generated by autotools
 diff --git a/configure.ac b/configure.ac
-index 73a3853..349e4ad 100644
+index 349e4ad..31a7184 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -357,6 +357,7 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
- 	tests/ubi-tests/ubi-stress-test.sh
+@@ -358,6 +358,7 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
  	tests/ubifs_repair-tests/lib/common.sh
  	tests/ubifs_repair-tests/tests/authentication_refuse.sh
--	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh])
-+	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
-+	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh])
+ 	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
+-	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh])
++	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
++	tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh])
  
  AC_OUTPUT([Makefile])
 diff --git a/tests/ubifs_repair-tests/Makemodule.am b/tests/ubifs_repair-tests/Makemodule.am
-index c2556f5..92f288a 100644
+index 92f288a..0a9fb48 100644
 --- a/tests/ubifs_repair-tests/Makemodule.am
 +++ b/tests/ubifs_repair-tests/Makemodule.am
-@@ -1,4 +1,5 @@
- test_SCRIPTS += \
+@@ -2,4 +2,5 @@ test_SCRIPTS += \
  	tests/ubifs_repair-tests/lib/common.sh \
  	tests/ubifs_repair-tests/tests/authentication_refuse.sh \
--	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
-+	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh \
-+	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
-diff --git a/tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in b/tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in
+ 	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh \
+-	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
++	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh \
++	tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh
+diff --git a/tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh.in b/tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh.in
 new file mode 100755
-index 0000000..a5c7da6
+index 0000000..9752970
 --- /dev/null
-+++ b/tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in
-@@ -0,0 +1,138 @@
++++ b/tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh.in
+@@ -0,0 +1,233 @@
 +#!/bin/sh
 +# Copyright (c), 2023-2024, Huawei Technologies Co, Ltd.
 +# Author: Zhihao Cheng <chengzhihao1@huawei.com>
@@ -118,10 +117,11 @@ index 0000000..a5c7da6
 +# Test Description:
 +# For many kinds of flash, do following things
 +#  1. mount UBIFS
-+#  2. fsstress & powercut & unmount
-+#  3. repair ubifs
++#  2. fsstress && unmount
++#  3. inject corruption into UBIFS image randomly
++#  3. repair ubifs && inject kinds of errors(memory, io)
 +#  4. check UBIFS mounting result
-+# Running time: 1h
++# Running time: 10min
 +
 +TESTBINDIR=@TESTBINDIR@
 +source $TESTBINDIR/common.sh
@@ -162,8 +162,8 @@ index 0000000..a5c7da6
 +	fi
 +
 +	fsstress -d $MNT -l0 -p4 -n10000 &
-+	sleep $((RANDOM % 120))
-+	powercut
++
++	sleep $((RANDOM % 20))
 +
 +	ps -e | grep -w fsstress > /dev/null 2>&1
 +	while [ $? -eq 0 ]
@@ -184,49 +184,147 @@ index 0000000..a5c7da6
 +		sleep 0.1
 +	done
 +
-+	echo 'format "UBIFS DBG repair" +pflmt' > /sys/kernel/debug/dynamic_debug/control
-+	echo "$DEV" > /sys/kernel/debug/ubifs/repair_fs
-+	res=$?
-+	if [[ $res != 0 ]]
-+	then
-+		fatal "repair fail $res"
-+	fi
-+
-+	check_memleak
-+
-+	dmesg -c > /dev/null # powercut and repairing could reproduce error messages
-+
-+	enable_chkfs
-+
-+	mount_ubifs $DEV $MNT
-+	res=$?
-+	if [[ $res != 0 ]]
-+	then
-+		fatal "mount fail $res"
-+	fi
-+
-+	if [[ "$encryption" == "encrypted" ]]; then
-+		encryption_set_key $MNT
-+	fi
-+
-+	du -sh $MNT > /dev/null  # Make sure all files are accessible
-+	ret=$?
-+	if [[ $ret != 0 ]]; then
-+		fatal "Cannot access all files"
-+	fi
-+	check_err_msg
-+
-+	umount $MNT
-+	res=$?
-+	if [[ $res != 0 ]]
-+	then
-+		fatal "unmount fail $res"
-+	fi
-+
-+	check_err_msg
++	# inject corruption
++	times=$((RANDOM % 10))
++	let times=$times+10
++	i=0
++	tot_peb=`cat /sys/class/ubi/ubi$UBI_NUM/total_eraseblocks`;
 +
 +	modprobe -r ubifs
-+	modprobe -r ubi
++	modprobe -r ubi # Stop wear-leveling & erasing worker
++	while [[ $i -lt $times ]]
++	do
++		let i=$i+1;
++		peb=$((RANDOM % $tot_peb));
++		pg=`expr $peb_size \* 1024`;
++		peb_off=`expr $pg \* $peb`
++		pages=`expr $pg / $page_size`;
++		pg=`expr $pages - 2`;
++		pg=$((RANDOM % $pg));
++		pg_off=`expr $pg + 2`;
++		pg_start=`expr $pages \* $peb`;
++		pg=`expr $pg_start + $pg_off`;
++		vid_pg=`expr $pg_start + 1`;
++		dd if=/dev/mtd$mtdnum of=$TMP_FILE bs=$page_size skip=$vid_pg count=1 2>/dev/null;
++		content=`cat $TMP_FILE | grep UBI!`; # vid header magic
++		if [[ "$content" == "" ]]; then
++			# Skip free PEB, otherwise data could be overwritten in ubifs repairing process
++			continue;
++		fi
++		if [[ $((RANDOM % 2)) == 0 ]]; then
++			# Corrupts 1 page
++			dd if=/dev/urandom of=/dev/mtd$mtdnum bs=$page_size seek=$pg count=1;
++		else
++			# Erase 1 LEB, TNC points to an unmapped area
++			flash_erase /dev/mtd$mtdnum $peb_off 1
++		fi
++	done
++	rm -f $TMP_FILE 2>/dev/null
++	sync
++
++	skip=0
++	modprobe ubi mtd="$mtdnum,$page_size,0,0,1" fm_autoconvert
++	ret=$?
++	if [[ $ret != 0 ]]
++	then
++		skip=1
++		echo "UBI layout volume is corrupted, skip"
++	fi
++
++	if [[ $skip == 0 ]]; then
++		modprobe ubifs || fatal "modprobe ubifs2 fail"
++		dmesg -c > /dev/null
++
++		round=0
++		while true;
++		do
++			injected=0
++			inject_mem=0
++			res=0
++			let round=$round+1
++
++			echo 'format "UBIFS DBG repair" +pflmt' > /sys/kernel/debug/dynamic_debug/control
++			if [[ $round -lt 50 ]]; then
++				injected=1
++				echo "$DEV" > /sys/kernel/debug/ubifs/repair_fs &
++				pid=$!
++				if [[ $((RANDOM % 2)) == 0 ]]; then
++					inject_mem_err $pid
++					inject_mem=1
++				fi
++				inject_io_err
++				wait $pid
++				res=$?
++				if [[ $inject_mem == 1 ]]; then
++					cancel_mem_err
++				fi
++				cancel_io_err
++			else
++				echo "$DEV" > /sys/kernel/debug/ubifs/repair_fs
++				res=$?
++			fi
++			if [[ $res != 0 ]]
++			then
++				log=`dmesg | grep "bad node at LEB 0:"`
++				if [[ "$log" != "" ]]
++				then
++					skip=1
++					echo "SB is corrupted, skip repairing & mounting"
++					break
++				else
++					check_memleak
++					# UBI could become ro-mode
++					modprobe -r ubifs
++					modprobe -r ubi
++					modprobe ubi mtd="$mtdnum,$page_size,0,0,1" fm_autoconvert
++					modprobe ubifs || fatal "modprobe ubifs3 fail"
++					if [[ $injected == 0 ]]; then
++						fatal "repair fail $res"
++					fi
++				fi
++			else
++				break
++			fi
++		done
++
++		check_memleak
++
++		dmesg -c > /dev/null # repairing corrupted image could reproduce error messages
++
++		if [[ $skip == 0 ]]; then
++			enable_chkfs
++
++			mount_ubifs $DEV $MNT
++			res=$?
++			if [[ $res != 0 ]]
++			then
++				fatal "mount fail $res"
++			fi
++
++			if [[ "$encryption" == "encrypted" ]]; then
++				encryption_set_key $MNT
++			fi
++
++			du -sh $MNT > /dev/null  # Make sure all files are accessible
++			ret=$?
++			if [[ $ret != 0 ]]; then
++				fatal "Cannot access all files"
++			fi
++			# check_err_msg is not suggested in this testcase, because
++			# ubi_io_read(triggered by wear_leveling_worker -> ubi_eba_copy_leb)
++			# could print stack if ecc uncorrectable errors are detected.
++
++			umount $MNT
++			res=$?
++			if [[ $res != 0 ]]
++			then
++				fatal "unmount fail $res"
++			fi
++		fi
++
++		modprobe -r ubifs
++		modprobe -r ubi
++	fi
 +	modprobe -r $simulator
 +
 +	echo "----------------------------------------------------------------------"
@@ -234,15 +332,11 @@ index 0000000..a5c7da6
 +
 +check_fsstress
 +start_t=$(date +%s)
-+echo "Do powercut+repair+mount test in kinds of flashes"
++echo "Do corrruption+cycle_repair_fault_injection test in kinds of flashes"
 +for simulator in "mtdram" "nandsim"; do
 +	for encryption in "encrypted" "noencrypted"; do
 +		run_test "$simulator" "16" "16" "512" $encryption
-+		run_test "$simulator" "64" "16" "512" $encryption
-+		run_test "$simulator" "128" "64" "2048" $encryption
 +		run_test "$simulator" "256" "128" "2048" $encryption
-+		run_test "$simulator" "512" "128" "2048" $encryption
-+		run_test "$simulator" "1024" "512" "2048" $encryption
 +	done
 +done
 +end_t=$(date +%s)
