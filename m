@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-12738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D0F381F97D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CCE8481F97F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F2CD1C22932
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:10:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AB411C21E27
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:10:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C49F51A;
-	Thu, 28 Dec 2023 15:09:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35C7101C0;
+	Thu, 28 Dec 2023 15:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lyeXkaFp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M2f+35dD"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90AD5F4F0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2372E101C1;
+	Thu, 28 Dec 2023 15:09:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1BAAC433C9;
 	Thu, 28 Dec 2023 15:09:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89A99C433CA;
-	Thu, 28 Dec 2023 15:09:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703776179;
-	bh=jCI/YMfr+NrtHxo3qHYZpBjBqghFPe+6yiDfEv5LI1s=;
-	h=From:To:Cc:Subject:Date:From;
-	b=lyeXkaFpTNlQ8A459Cp2D3+Mwy+bf2puUUc4xFDxB2odlSXM93Y+D6YBDw+BT8Jsk
-	 JryFCU4yiriOFCQqYIMScdhFTb7e/Qfr9jkTL+Hjsg9+sQGYlABZpI3cR6qymWfdaI
-	 rzRuCg7uIAwWSzUa9gHTu16fhm/009B7VcgKSPxkq2o2pIin+hO7LKju2O0xJ3PFr1
-	 +nqTsv8lVK01XPSJsTslTYjoIsbxQFIuKGFUaCDvoNPhQXhLbAz2juxWFk7Fo7OFSh
-	 F/BSyr/QNdbVmiyHi2NeNgGhrs1lGQDcTNJ8TYJOfaAfQdZrrLB3Mqi3a5/YJS5z5G
-	 5t/wud5LAAnSA==
+	s=k20201202; t=1703776183;
+	bh=mGxTH6p5jBX4gADoMF5pkoAX42XpqpwCDCmjdKTMyAk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=M2f+35dD6QEMZArOJez3a+/jjnPrKlMTqmhahD62L1K7PkeyNd+XYVGxFVDEX4Jyf
+	 Qc7sThFnGLhGQCc2/sjcjKr3Q8VHV9iFm/x6WNz0pqWcpI01oYcC0isrOb5Xg9r+qq
+	 8EI5XXaPuJooewtbFMuPyFIOGm5b4+7EU0upUYA3gv8oEgxz1I2AbPGTwO7CdfWy1S
+	 4OrYmFPRZ9aj8VWonwVbawJ3nO3mGd/sYgIg/mvy9ne6R1LBjUR1phrvk+LlKwBI/i
+	 91S9RqPjJJ/GYYQfyonLSg5tDh1xFesTg6mc9ziDq5I0jO+YJ36PeOM1MOMZcehINi
+	 h7nwa6y+FUmQg==
 From: Jisheng Zhang <jszhang@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -45,10 +45,12 @@ Cc: devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-sunxi@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 0/2] arm64: dts: allwinner: h618: Add Sipeed Longan SoM 3H and Pi 3H board
-Date: Thu, 28 Dec 2023 22:56:45 +0800
-Message-Id: <20231228145647.1470-1-jszhang@kernel.org>
+Subject: [PATCH 1/2] dt-bindings: arm: sunxi: Add Sipeed Longan Module 3H and Longan Pi 3H
+Date: Thu, 28 Dec 2023 22:56:46 +0800
+Message-Id: <20231228145647.1470-2-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20231228145647.1470-1-jszhang@kernel.org>
+References: <20231228145647.1470-1-jszhang@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,44 +59,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add Sipeed Longan SoM 3H and Longan Pi 3H board support.
+Add name & compatible for the Sipeed Longan Module 3H and Longan PI 3H
+board.
 
-The Sipeed Longan SoM 3H is a system on module based on the Allwinner
-H618 SoC. The SoM features:
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ Documentation/devicetree/bindings/arm/sunxi.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-- Four ARM Cortex-A53 cores, Mali-G31 MP2 GPU
-- 2/4 GiB LPDDR4 DRAM SoMs
-- AXP313a PMIC
-- eMMC
-
-The Sipeed Longan PI 3H is a development board based on the above SoM.
-The board features:
-- Longan SoM 3H
-- Raspberry-Pi-1 compatible GPIO header
-- 2 USB 2.0 host port
-- 1 USB 2.0 type C port (power supply + OTG)
-- MicroSD slot
-- 1Gbps Ethernet port (via RTL8211 PHY)
-- HDMI port
-- WiFi/BT chip
-
-NOTE: I know it's too late for v6.8-rc1, but I want to send out this
-series so that the board users can easily get mainline support with two
-additional patches. I will send out v2 once v6.8-rc1 is out.
-
-Jisheng Zhang (2):
-  dt-bindings: arm: sunxi: Add Sipeed Longan Module 3H and Longan Pi 3H
-  arm64: dts: allwinner: h618: Add Sipeed Longan SoM 3H and Pi 3H board
-    support
-
- .../devicetree/bindings/arm/sunxi.yaml        |   7 +
- arch/arm64/boot/dts/allwinner/Makefile        |   1 +
- .../sun50i-h618-longan-module-3h.dtsi         |  82 +++++++++++
- .../dts/allwinner/sun50i-h618-longanpi-3h.dts | 133 ++++++++++++++++++
- 4 files changed, 223 insertions(+)
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h618-longan-module-3h.dtsi
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h618-longanpi-3h.dts
-
+diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
+index 11c5ce941dd7..34d8ae484e01 100644
+--- a/Documentation/devicetree/bindings/arm/sunxi.yaml
++++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
+@@ -835,6 +835,13 @@ properties:
+           - const: sinlinx,sina33
+           - const: allwinner,sun8i-a33
+ 
++      - description: Sipeed Longan Pi 3H board for the Sipeed Longan Module 3H
++        items:
++          - enum:
++              - sipeed,longan-pi-3h
++          - const: sipeed,longan-module-3h
++          - const: allwinner,sun50i-h618
++
+       - description: SourceParts PopStick v1.1
+         items:
+           - const: sourceparts,popstick-v1.1
 -- 
 2.40.0
 
