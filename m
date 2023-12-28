@@ -1,99 +1,86 @@
-Return-Path: <linux-kernel+bounces-12870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E76681FB75
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 23:09:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4734381FB79
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 23:12:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0477E1F244F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 22:09:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F146F1F24501
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 22:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC9071097C;
-	Thu, 28 Dec 2023 22:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CPel9GsK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5F810A10;
+	Thu, 28 Dec 2023 22:12:28 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF791096A;
-	Thu, 28 Dec 2023 22:09:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2ccabf5a4beso50675181fa.2;
-        Thu, 28 Dec 2023 14:09:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703801380; x=1704406180; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=MuNkt2PB+Z062eBAg21yz2J6ycJCgagCNtoRGXOXMpA=;
-        b=CPel9GsK3m3ZFosGQ6tUsiSqA4GgAvh8G+lluYZqzKXXCpWxv2bEvocKQfnXVQPmh0
-         8QFwyDF09pvvdLIVLeW1BmfZcPVz0eJg+CLeY6pa00QLTQ2FaAYtJkEPGKiANhMehLVV
-         dvL8m49Tpbna8BFNRvLspwVzF2SUbXLHY3pa2GszrxxqW8Y6DjN4OpArzQ2aGht3sYpa
-         9dpYzT0kv/3mEsrNvhunLbl/l8F5/EC1kPyTiUGFdIdkZNSxQHJ3Y9L6fask7UiGgPTG
-         0KFcL8lUCPr4oD2Dmzvp/2XSVmbGYLcmj9uox7cJWraNAUGIlNzRPqyR+VjS1CeeN6a+
-         u6+w==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796F610A00
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 22:12:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36007df1516so31860935ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 14:12:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703801380; x=1704406180;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MuNkt2PB+Z062eBAg21yz2J6ycJCgagCNtoRGXOXMpA=;
-        b=ExVTWlKIZRkQo7uwgc2N5XioRyuBSiX09crjVCIsvMxolZoHmRljGLC0M4ictCGV/1
-         RDhK9CG4xtzcPCcvx4A37yg22e2Y714JSf3upYqJOo5tX7GoN48e1AhWbnP25Qt41JmJ
-         3q5XpicidLxfM2N4ocloOqqiyI/sO9lFkSX/YWDgsvzmkUvlcHFjXd5BHiMcEZ/oeRea
-         2PqzNY+gMRWPLXaut0XLHhKdEQ4bX4D7URPVhzPAFi+Es0XlF+8Qm8Ppj9dA0PRJqrR1
-         8xpMXjXBulvMH3SyOjMgRr4sPvMbKw7oDGj2ci+cT3mMP6RHKhgmoI8joYUWw4e0IFEK
-         ujEg==
-X-Gm-Message-State: AOJu0YxrMwJSGZcGYozvr0o7XD8pfis/Crsaq+vLinoL4Rdh1Pp9ipsp
-	jEk3quKDlocBswb2OOY78K47x75E/wPMpo9DcJM=
-X-Google-Smtp-Source: AGHT+IGEyl0Mtl9HJ4bO8JI/BbyhwfKXLqzO5WlKp4E/jZf2T6ZAlaDT1C0o4AtB08bJVkEURCgyjFQ8P1ruKciqDjc=
-X-Received: by 2002:a2e:8883:0:b0:2cc:a532:a6e3 with SMTP id
- k3-20020a2e8883000000b002cca532a6e3mr2278203lji.15.1703801380097; Thu, 28 Dec
- 2023 14:09:40 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703801545; x=1704406345;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=m3YQZhWhujBROv0sS7CdL2R5DgVZfb0HKg8qJgmKT1E=;
+        b=KwXvSFKRWtltpgt67zNsLBnmWCGg1xcaX5PSUEsw5EXapqFUZHrmufrHXKA9pupC2w
+         SC+A6K3yXs0MyeT9YClCRAjI4clD2k3gYLDdwW3t0oI7nnUoMN0wENCSk88InOiClSkB
+         RaZtjmG9iIvztYVSwnwcWDmNtr+6kCDl86S5iAYXD3ZFIjDQcBFsiXC0NOePpTD1J92E
+         DmdM0p4wrl3168IfgxiMjg1o1pJde31wUIFeY1K2CVz1qz0HF4JeHocIc7A5dukny57a
+         h2QR/u642Y9zdSVVHG8je7u7X7RnjmGuKGB0k35GPZJNIjGepITKIlX6Sk/pcgLcA45t
+         5x0A==
+X-Gm-Message-State: AOJu0Yxf0PFChDQl868pmRvqyGYHdyWK0s1fgmYTaIp21f8BZp9YOkqM
+	7UXcfB+SWI0FIb9lJ7HUED0JrXOHjjVSo4yXHjB1T66PkXBOIiE=
+X-Google-Smtp-Source: AGHT+IEmZ+p8UfGnxal9iCf9P+sjKjvWosPhYr2b4O41Jg06zmUaO6mD1puRUTyohFTmfvBoTDZ5XpE3t2JO7nu5RPZx4lpbumDf
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Steve French <smfrench@gmail.com>
-Date: Thu, 28 Dec 2023 16:09:28 -0600
-Message-ID: <CAH2r5msxiNuCoXCvEF0X=7gdxD4-_X=E0b8mE_k7e=8HHz-VpQ@mail.gmail.com>
-Subject: [GIT PULL] ksmbd server fix
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Namjae Jeon <linkinjeon@kernel.org>, CIFS <linux-cifs@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a05:6e02:1d84:b0:35f:db4b:69dd with SMTP id
+ h4-20020a056e021d8400b0035fdb4b69ddmr1326862ila.0.1703801545594; Thu, 28 Dec
+ 2023 14:12:25 -0800 (PST)
+Date: Thu, 28 Dec 2023 14:12:25 -0800
+In-Reply-To: <000000000000321c24060d7cfa1c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e49f66060d993519@google.com>
+Subject: Re: [syzbot] Re: [syzbot] [erofs?] KMSAN: uninit-value in
+ z_erofs_lz4_decompress (2)
+From: syzbot <syzbot+6c746eea496f34b3161d@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Please pull the following changes since commit
-ceb6a6f023fd3e8b07761ed900352ef574010bcb:
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-  Linux 6.7-rc6 (2023-12-17 15:19:28 -0800)
+***
 
-are available in the Git repository at:
+Subject: Re: [syzbot] [erofs?] KMSAN: uninit-value in z_erofs_lz4_decompress (2)
+Author: eadavis@qq.com
 
-  git://git.samba.org/ksmbd.git tags/6.7rc7-smb3-srv-fix
+please test uninit-value in z_erofs_lz4_decompress (2)
 
-for you to fetch changes up to d10c77873ba1e9e6b91905018e29e196fd5f863d:
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fbafc3e621c3
 
-  ksmbd: fix slab-out-of-bounds in smb_strndup_from_utf16()
-(2023-12-27 22:55:36 -0600)
+diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+index 021be5feb1bc..f4cc77e3255f 100644
+--- a/fs/erofs/decompressor.c
++++ b/fs/erofs/decompressor.c
+@@ -250,7 +250,8 @@ static int z_erofs_lz4_decompress_mem(struct z_erofs_lz4_decompress_ctx *ctx,
+ 		print_hex_dump(KERN_DEBUG, "[ in]: ", DUMP_PREFIX_OFFSET,
+ 			       16, 1, src + inputmargin, rq->inputsize, true);
+ 		print_hex_dump(KERN_DEBUG, "[out]: ", DUMP_PREFIX_OFFSET,
+-			       16, 1, out, rq->outputsize, true);
++			       16, 1, out, ret < 0 ? (ret + rq->inputsize) : 
++			       rq->outputsize, true);
+ 
+ 		if (ret >= 0)
+ 			memset(out + ret, 0, rq->outputsize - ret);
 
-----------------------------------------------------------------
-ksmbd server fix, also for stable
- - address possible slab out of bounds in parsing of open requests
-----------------------------------------------------------------
-Namjae Jeon (1):
-      ksmbd: fix slab-out-of-bounds in smb_strndup_from_utf16()
-
- fs/smb/server/smb2misc.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-
--- 
-Thanks,
-
-Steve
 
