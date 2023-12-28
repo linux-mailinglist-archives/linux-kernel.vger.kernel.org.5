@@ -1,103 +1,126 @@
-Return-Path: <linux-kernel+bounces-12714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D146581F93A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C782881F939
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:48:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61244285B89
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:48:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82A19285B84
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:48:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABA5DF4EC;
-	Thu, 28 Dec 2023 14:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51398D51B;
+	Thu, 28 Dec 2023 14:48:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="MRrlsR3B"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="WMiJWQoC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com [209.85.217.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6935BEAF3
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 14:48:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-vs1-f42.google.com with SMTP id ada2fe7eead31-466f1fbb707so555631137.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 06:48:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1703774925; x=1704379725; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u0zhsoc7zLEWUspquC1xbxifv5WBj4GBVb2SAg7HeYA=;
-        b=MRrlsR3BmbeN8YQ5cQ2nrmAmHmde8ezPTJeU6CAdN65Q2UFbNFeb/mZOP7vvnEstl+
-         hvxf8tSe5fZVhO+yW3eIva5VUlnweIYfuuzjGgKAvaSdkRIQX7utxJsO0G04xs2aDIdN
-         BKgVDIde/A/n+tTU535LXp7QSLtfFdw+mpMZRSHzqmuWZsnAVVqmNbDAUv0oV3S7vhBd
-         cLN83eTs/hCowvSlR7Fes5kF7ukUMUL09SgldKuMRc9TBlM7RBu2o4Um24ab4XZGqDoW
-         rwXQNlZCcCkxtm/6A/040w2LSzclJFIQje/4rbzF3KVd4sphgt9xh8PqAfRWEtDF7V8u
-         Dpww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703774925; x=1704379725;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u0zhsoc7zLEWUspquC1xbxifv5WBj4GBVb2SAg7HeYA=;
-        b=W9/8qJ2rcmzEDJo2Qxs82S/4eyk6PIBsBJrjfbM56e1y3/+Zu1znSxAzs0hE858EbW
-         56HjmcjCEUDGF0Wlve3/ELxsaPDqvcr1d7+1F2VXrnkUjph4Gjj/D3VTtYwJoQuQcu6+
-         ZZozNnUTdQb4gDd8kZkc3R8fCC9PAqUft67L+gks/wY4se47fi+NC8//5ZLZWslvt/vC
-         IyQ+VE4fOjkqk65OOH6VIsXUpaVaSGRQsnGjZhdzxBz0ZJ8kSzzUvGjaKJi+ZPkg6D+i
-         gVEbhL+ATWHa4jNsW7zcbVZ/eHwLDnPO3oJKS2blOZuK/Xnb4tmhIxlFOx1Ehq6/egie
-         N+mA==
-X-Gm-Message-State: AOJu0YwWJRZm7Hf/DicRBxSiUK86Uf8BZIYXHnvmCsOlddVE3z1YvXYp
-	Jt7r5cATqZ79yGKexs+xJSoGwhx3B1A5gIxM5B88ojqv6zVv4Q==
-X-Google-Smtp-Source: AGHT+IG1OslSF2rqep3xU7q5DR6zY2q2AThUtHZXryNBrOdQOuAmmf/X4lKxUxSAnVnfIy4v9Rc7Im0O+qb15ZaPM3k=
-X-Received: by 2002:a05:6102:1514:b0:466:59a3:4461 with SMTP id
- f20-20020a056102151400b0046659a34461mr5074746vsv.32.1703774925370; Thu, 28
- Dec 2023 06:48:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D11DC8C2;
+	Thu, 28 Dec 2023 14:48:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703774895; x=1704379695; i=markus.elfring@web.de;
+	bh=sAIxkAw1lX6VWuCNZrJXiScDwwIsCu14H/IzP/+4ssQ=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=WMiJWQoCik6eoEyjG2ImslEJdGQjUdTv1hiQkyhXDm0z7wUg9SMM+S+s9syz5hQI
+	 r9wpJWRgN09YnC0KjxGDdFaIh0tHW5o1lqmGtKA1ghwpKAAfvtzr5eNJRvcSZhfPG
+	 tOG+GdLROn4fufroax0k5XbcYAkAYFltO6eEYcMJhrtyonxBCdUwdQQDh5jg7keFo
+	 dK3ElENYT71/XOa5Bmq0r1goGsEKeGlyw6sMr3sinif8QUJK+B0KXdRpBWlokqFhE
+	 I6nSvwOt+TvMlhyod1rv8+54Qeh/qTjA8Z01cVhMnaFj3Tc2e7XQsfp2QGIUSKIjz
+	 9xqSXa2J/kCcqLshHw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MUU6E-1rjMmF3diq-00QY9d; Thu, 28
+ Dec 2023 15:48:15 +0100
+Message-ID: <4616e325-e313-4078-9788-dd1e6e51b9e0@web.de>
+Date: Thu, 28 Dec 2023 15:48:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231211154644.4103495-1-pasha.tatashin@soleen.com>
- <3d415ab4-e8c7-7e72-0379-952370612bdd@google.com> <CA+CK2bA2vZp3e+HHfB-sdLsPUYghMxvKcWURktDtNjwPL79Csw@mail.gmail.com>
- <b1049bfa-68c4-e237-30a9-1514a378c7f1@google.com> <CA+CK2bBxbvO-osm5XKk4VkaXYgfZXkDAtfayaYJ-vXo=QFqGPA@mail.gmail.com>
- <13e5fbd4-d84d-faba-47f1-d0024d2c572d@google.com> <20231227104244.824b0977ae6d4bb6b37f6f79@linux-foundation.org>
-In-Reply-To: <20231227104244.824b0977ae6d4bb6b37f6f79@linux-foundation.org>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Thu, 28 Dec 2023 09:48:08 -0500
-Message-ID: <CA+CK2bAARPNHwZB9tkd6miKr8GWrZ_L6h1oiUM0qWu6pJqh3Wg@mail.gmail.com>
-Subject: Re: Sysfs one-value-per-file (was Re: [PATCH] vmstat: don't auto
- expand the sysfs files)
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: David Rientjes <rientjes@google.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, rafael@kernel.org, surenb@google.com, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, souravpanda@google.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+To: linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ "James E. J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] scsi: ses: Move a label in ses_enclosure_data_process()
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:MTGe2OuVnUsneV1nq8KjX7d7xxeZzAl1kJ3kgcc/6gNcqqxti0/
+ ixOGUbjp66KOrZKxxcrAkmkGgI9dHOL0emiLb6AMZ5SevW8bFAiGkh3UCWnWx/n4LSDaWzG
+ yIEQV59vbjbFECQUZJ/NW1LQuGC9Mki2OtaUC7qQPwK92wc+MJ5l7opEGRtcJJffbk1WWZo
+ E3LGc4PoYOz4vp9s3KEfw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:266RluJvshA=;zjH5Ja1AxNWNUrQdgP3O215bFxS
+ 8OCqy2IlVCThSpJPHZ2IQRF5OGUdDoyeC/j48chu+QMTCHtn/dAv5BrlwTLIM99ZluG6sPV5d
+ zyxY39E0Kpl1wmFamQVpxp+0j2waenSiV1BkVwgVIPqvrxXSTe4qhxOrIi8GeBp3QUVvasjFL
+ 5FK41LHmcYHhzDh3/2EiaQUJI3syk4XMyFkAY/u+CxwoICzZGZbyr6VRHQCuJo6wJFqNhfSB1
+ WooiFGHyQFUprw4lYNYUtuF/xbDIFtXTMpy7TJraxI2w8+gXQmq+gHp3cHirMgpKRaMLKJtcg
+ DDtaomSpB9Lpes3h4rrVVGvFxAtBwC9HGBG7/g7kctt+15kq4xRVu+33HgdwB5Flirxu+fJ7l
+ pMEtNgExQnhvPbouKSE0Yrfk/tGO7K0W5O0m3cAbnqXPdn9nGFPxNG5XzaqnKVa7bX/rGKZ5i
+ DjpwRRwbLHfLM28sS4P7JS5lyzcLmprEhAY+X5IwBGmDgdli/oZo/kgSpOUDboCvomaE4TlLt
+ 4lk1hhYPLjoD66GPWM5VIOV+G8qLzQt3aHaOb8neUoAmi7IcE+GfM2ujQFg6rjTAggx+zuk61
+ 5oTenHClItNJiSnKa1a0d9WPDGD9vSZFIa0vD/wkTBp+9AM9F6obEv/8peWIs/XEYw/pGDUEx
+ wNNMM5IO4pOqbzyCE2ibikzCp1ERBY0QKuLGPK93dlNtPGLHFeIuJ9dCfZNLM2e89oCEda+OM
+ yrgbWDQZ+H9IGSBOuycaw9xMeqqeXYiPHJiOHSPBqMSYpOaZOhk6zz512EFaVWiBynzlbz4Sf
+ 7K/UyZYAQxuyjeHPWcZlUbfUxJdVVlHFu94n121+gbJuuNr4h8UOAz83EkJKrOYpkLwHNfSHK
+ 5iV7SUFJ4IvruniCz2O+EGPmubSUSBQ+eVZJmhQH5UGcvQznWDj3SGm5hgBf6xmURkmYC1FPa
+ we1uJA==
 
-On Wed, Dec 27, 2023 at 1:42=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
->
-> On Tue, 26 Dec 2023 16:53:31 -0800 (PST) David Rientjes <rientjes@google.=
-com> wrote:
->
-> > But for existing files and conventions, I think we should settle it as
-> > "keep doing what you've been doing for 13+ years" and don't force this
-> > argument every time a kernel developer wants to just add one more stat.
->
-> Absolutely.  Let's do what makes most sense.  For new things, one value
-> per file.  For stats which logically group with other existing stats,
-> do whatever the existing other stats are currently doing.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 28 Dec 2023 15:38:09 +0100
 
-The intent of "[PATCH] vmstat: don't auto expand the sysfs files" is
-to do exactly this: keep the current fields in
-/sys/devices/system/node/node*/vmstat as-is, but prevent future fields
-added to node_stat, numa_stat, zone_stat from showing in vmstat.
+The kfree() function was called in up to three cases by
+the ses_enclosure_data_process() function during error handling
+even if the passed variable contained a null pointer.
+This issue was detected by using the Coccinelle software.
 
-Potentially, we could also extend checkpatch.pl to warn when
-VMSTAT_SHOW_SYSFS is used in the future patches.
+* Thus move the label =E2=80=9Csimple_populate=E2=80=9D behind this kfree(=
+) call.
 
-Pasha
+* Delete an initialisation (for the variable =E2=80=9Cbuf=E2=80=9D)
+  which became unnecessary with this refactoring.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/scsi/ses.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/ses.c b/drivers/scsi/ses.c
+index d7d0c35c58b8..e98f47d8206f 100644
+=2D-- a/drivers/scsi/ses.c
++++ b/drivers/scsi/ses.c
+@@ -528,7 +528,7 @@ static void ses_enclosure_data_process(struct enclosur=
+e_device *edev,
+ 				       int create)
+ {
+ 	u32 result;
+-	unsigned char *buf =3D NULL, *type_ptr, *desc_ptr, *addl_desc_ptr =3D NU=
+LL;
++	unsigned char *buf, *type_ptr, *desc_ptr, *addl_desc_ptr =3D NULL;
+ 	int i, j, page7_len, len, components;
+ 	struct ses_device *ses_dev =3D edev->scratch;
+ 	int types =3D ses_dev->page1_num_types;
+@@ -552,8 +552,8 @@ static void ses_enclosure_data_process(struct enclosur=
+e_device *edev,
+ 		goto simple_populate;
+ 	result =3D ses_recv_diag(sdev, 7, buf, len);
+ 	if (result) {
+- simple_populate:
+ 		kfree(buf);
++simple_populate:
+ 		buf =3D NULL;
+ 		desc_ptr =3D NULL;
+ 		len =3D 0;
+=2D-
+2.43.0
+
 
