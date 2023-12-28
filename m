@@ -1,180 +1,180 @@
-Return-Path: <linux-kernel+bounces-12637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC53881F82A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:16:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A478A81F82E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:21:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BA62B23919
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:16:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34C18B23C01
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:21:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B37779D7;
-	Thu, 28 Dec 2023 12:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TCKkpmkr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 253B3749F;
+	Thu, 28 Dec 2023 12:21:45 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2F079C1
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:16:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2ccc7d7e399so27122141fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 04:16:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703765791; x=1704370591; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Jy4IP1Kl2AB2GKEPjxgNpR4MZbSsWb2iMit5XkzF8Ao=;
-        b=TCKkpmkroFTvZjwtAZAQS6jfDF+7K2LZ6cg6JceKSJtJF4acQnfRoJ5pafATM8jdZS
-         PGgCsfp5aANONDQSYmMWL23Ly9T4zmbLxmrmc5C81gR+3krppPgIKPbdJhb2znLIuNHv
-         FYiV/N7gwKSVSavbz6ZzYzkTN9Qawf93GgfI2F5Oo1jR+NdAhjKD0xCDyOnpyLiTWBdc
-         y4bdZVFEu4KNzWfKUMNW0Bw1oRc5lfksmaVBE+qXehGHl4fsasxuFMhVaqnPobvqOxGR
-         /XJYDMYG68uVsXoSvQb0s6DXzIVT2bwfccnvCmI/KyvgwwiZGHwyh1glqpcsRg8XVCbC
-         TQPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703765791; x=1704370591;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jy4IP1Kl2AB2GKEPjxgNpR4MZbSsWb2iMit5XkzF8Ao=;
-        b=LKGDrZzCsyTWlfzlLUxeBO2odK6h4BH7O68kNP7pV8pNS+ii5sUDVURqfcTxBxodQO
-         XeZOTWRptad+pE0jLp/jvrQ/psBsyUGuV3cw+4fveqJqEsisLPg6u5YfEOf3CnQG0l5L
-         syPCeOCrfGYkc2IrS80ryilV1TbkVNLsszTI577FvYtyKaEJbUwzd6hlIaYuzfkA+jtd
-         KOeWNZmzfe8+HjeepNWadTuU7leHb/Fp4wJvZ1Db0eblaPyVD0b8lFSwX8Xja78mPPfs
-         8Em3zQ5otSj4Ev1YJxZYlQdrPqwYBdxuS1VxLdDW4xKL4BevAseMm3ma/bJ6XZtpw30h
-         xiiQ==
-X-Gm-Message-State: AOJu0YyT9mTApCYzP0a4FTCbglm+/dfHQyq+OpgaJn2YoU2NGylBevQ/
-	/dkxUrKK3Tq+UhuK3DaPbPgUk2S5e7Z3b51W4TIy88DIiIY=
-X-Google-Smtp-Source: AGHT+IEzNnJxO9r5hkXRQO0iXze5pkEqQtXtFoux8xSIl8tKr4p2lrhCrIWVk0HGbp10NVjz6LVl8A==
-X-Received: by 2002:a05:6512:696:b0:50e:7e29:b0e9 with SMTP id t22-20020a056512069600b0050e7e29b0e9mr2616586lfe.73.1703765790949;
-        Thu, 28 Dec 2023 04:16:30 -0800 (PST)
-Received: from [192.168.199.125] (178235179028.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.28])
-        by smtp.gmail.com with ESMTPSA id mf6-20020a1709071a4600b00a26aa8f3372sm6798159ejc.27.2023.12.28.04.16.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Dec 2023 04:16:30 -0800 (PST)
-Message-ID: <376d3040-b9ed-4574-90d7-fb864d694e3c@linaro.org>
-Date: Thu, 28 Dec 2023 13:16:28 +0100
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D64A7482;
+	Thu, 28 Dec 2023 12:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.2.5.213])
+	by gateway (Coremail) with SMTP id _____8Cx7+tTaI1lbQ0AAA--.300S3;
+	Thu, 28 Dec 2023 20:21:39 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.213])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Axnr5TaI1liCgOAA--.41543S2;
+	Thu, 28 Dec 2023 20:21:39 +0800 (CST)
+From: Bibo Mao <maobibo@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>
+Cc: WANG Xuerui <kernel@xen0n.name>,
+	loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org
+Subject: [PATCH] LoongArch: KVM: Add cpucfg area for kvm hypervisor
+Date: Thu, 28 Dec 2023 20:21:38 +0800
+Message-Id: <20231228122138.2161282-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] firmware/psci: Set
- pm_set_resume/suspend_via_firmware() on qcom
-Content-Language: en-US
-To: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Bjorn Andersson <andersson@kernel.org>
-References: <20231227-topic-psci_fw_sus-v1-0-6910add70bf3@linaro.org>
- <20231227-topic-psci_fw_sus-v1-2-6910add70bf3@linaro.org>
- <20231228102801.fzaubcjq5thfwgxg@bogus>
- <f34dd5de-9e56-4c58-b9bf-2356b41d17b1@linaro.org>
- <20231228115053.zlypgc5uxxvghi4a@bogus>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231228115053.zlypgc5uxxvghi4a@bogus>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8Axnr5TaI1liCgOAA--.41543S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxWF1fCFW3Cw45GF47JFWfXrc_yoW5KFW3pF
+	ZrZrn5Wr48GryfA39rt3yUWws8ZF4kGr12vFW3J3y5CF47XryrAr4vkrZFyFyDKws5Ca4I
+	qF15tr13XF4UAabCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE
+	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
+	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
+	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
+	CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8czVUUUUUU==
 
-On 28.12.2023 12:50, Sudeep Holla wrote:
-> On Thu, Dec 28, 2023 at 12:47:51PM +0100, Konrad Dybcio wrote:
->> On 28.12.2023 11:28, Sudeep Holla wrote:
->>> On Wed, Dec 27, 2023 at 11:15:31PM +0100, Konrad Dybcio wrote:
->>>> Most Qualcomm platforms implementing PSCI (ab)use CPU_SUSPEND for
->>>> entering various stages of suspend, across the SoC. These range from a
->>>> simple WFI to a full-fledged power collapse of the entire chip
->>>> (mostly, anyway).
->>>>
->>>> Some device drivers are curious to know whether "the firmware" (which is
->>>> often assumed to be ACPI) takes care of suspending or resuming the
->>>> platform. Set the flag that reports this behavior on the aforementioned
->>>> chips.
->>>>
->>>> Some newer Qualcomm chips ship with firmware that actually advertises
->>>> PSCI SYSTEM_SUSPEND, so the compatible list should only grow slightly.
->>>>
->>>
->>> NACK, just use suspend-to-idle if SYSTEM_SUSPEND is not advertised. It is
->>> designed for such platforms especially on x86/ACPI which don't advertise
->>> Sx states. I see no reason why that doesn't work on ARM platforms as well.
->>
->> Not sure if I got the message through well, but the bottom line is, on
->> Qualcomm platforms the "idle" states aren't actually just "idle" (read:
->> they're not like S0ix). All but the most shallow ones shut down quite a
->> chunk of the entire SoC, with the lowest ones being essentially S3 with
->> power being cut off from the entire chip, except for the memory rail.
->>
-> 
-> No I understood that and S2I is exactly what you need.
-> Have you checked if S2I already works as intended on these platforms ?
-Yes, simple CPU idling works OOTB and the SoC power collapse only works
-given the developer doesn't cut corners when bringing up the platform
-(read: works on some of the ones we support, trying hard to expand that
-group!)
+VM will trap into hypervisor when executing cpucfg instruction. With
+cpucfg instruction, address index is passed from register, so address
+space is large enough. And now hardware only uses the area 0 - 20 for
+actual usage, here one specified area 0x10000000 -- 0x100000ff is used
+for KVM hypervisor, and the area can be extended for other hypervisors
+in future.
 
-> What extra do you achieve with this hack by advertising fake S2R ?
-Uh.. unless I misunderstood something, I'm not advertising s2ram..
-Quite the opposite, I'm making sure only s2idle is allowed.
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+---
+ arch/loongarch/include/asm/inst.h      |  1 +
+ arch/loongarch/include/asm/loongarch.h |  9 +++++
+ arch/loongarch/kvm/exit.c              | 46 +++++++++++++++++---------
+ 3 files changed, 40 insertions(+), 16 deletions(-)
 
-Admittedly, my mistake, I managed to misname the function which I
-didn't spot before wrapping this patch up for sending..
+diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/asm/inst.h
+index d8f637f9e400..ad120f924905 100644
+--- a/arch/loongarch/include/asm/inst.h
++++ b/arch/loongarch/include/asm/inst.h
+@@ -67,6 +67,7 @@ enum reg2_op {
+ 	revhd_op	= 0x11,
+ 	extwh_op	= 0x16,
+ 	extwb_op	= 0x17,
++	cpucfg_op	= 0x1b,
+ 	iocsrrdb_op     = 0x19200,
+ 	iocsrrdh_op     = 0x19201,
+ 	iocsrrdw_op     = 0x19202,
+diff --git a/arch/loongarch/include/asm/loongarch.h b/arch/loongarch/include/asm/loongarch.h
+index 46366e783c84..a03b466555a1 100644
+--- a/arch/loongarch/include/asm/loongarch.h
++++ b/arch/loongarch/include/asm/loongarch.h
+@@ -158,6 +158,15 @@
+ #define  CPUCFG48_VFPU_CG		BIT(2)
+ #define  CPUCFG48_RAM_CG		BIT(3)
+ 
++/*
++ * cpucfg index area: 0x10000000 -- 0x100000ff
++ * SW emulation for KVM hypervirsor
++ */
++#define CPUCFG_KVM_BASE			0x10000000UL
++#define CPUCFG_KVM_SIZE			0x100
++#define CPUCFG_KVM_SIG			CPUCFG_KVM_BASE
++#define  KVM_SIGNATURE			"KVM\0"
++#define CPUCFG_KVM_FEATURE		(CPUCFG_KVM_BASE + 4)
+ #ifndef __ASSEMBLY__
+ 
+ /* CSR */
+diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
+index f453a3e40cab..a7da63ecc6ab 100644
+--- a/arch/loongarch/kvm/exit.c
++++ b/arch/loongarch/kvm/exit.c
+@@ -215,10 +215,37 @@ int kvm_emu_idle(struct kvm_vcpu *vcpu)
+ 	return EMULATE_DONE;
+ }
+ 
+-static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
++static int kvm_emu_cpucfg(struct kvm_vcpu *vcpu, larch_inst inst)
+ {
+ 	int rd, rj;
+ 	unsigned int index;
++
++	rd = inst.reg2_format.rd;
++	rj = inst.reg2_format.rj;
++	++vcpu->stat.cpucfg_exits;
++	index = vcpu->arch.gprs[rj];
++
++	/*
++	 * By LoongArch Reference Manual 2.2.10.5
++	 * Return value is 0 for undefined cpucfg index
++	 */
++	switch (index) {
++	case 0 ... (KVM_MAX_CPUCFG_REGS - 1):
++		vcpu->arch.gprs[rd] = vcpu->arch.cpucfg[index];
++		break;
++	case CPUCFG_KVM_SIG:
++		vcpu->arch.gprs[rd] = *(unsigned int *)KVM_SIGNATURE;
++		break;
++	default:
++		vcpu->arch.gprs[rd] = 0;
++		break;
++	}
++
++	return EMULATE_DONE;
++}
++
++static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
++{
+ 	unsigned long curr_pc;
+ 	larch_inst inst;
+ 	enum emulation_result er = EMULATE_DONE;
+@@ -233,21 +260,8 @@ static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
+ 	er = EMULATE_FAIL;
+ 	switch (((inst.word >> 24) & 0xff)) {
+ 	case 0x0: /* CPUCFG GSPR */
+-		if (inst.reg2_format.opcode == 0x1B) {
+-			rd = inst.reg2_format.rd;
+-			rj = inst.reg2_format.rj;
+-			++vcpu->stat.cpucfg_exits;
+-			index = vcpu->arch.gprs[rj];
+-			er = EMULATE_DONE;
+-			/*
+-			 * By LoongArch Reference Manual 2.2.10.5
+-			 * return value is 0 for undefined cpucfg index
+-			 */
+-			if (index < KVM_MAX_CPUCFG_REGS)
+-				vcpu->arch.gprs[rd] = vcpu->arch.cpucfg[index];
+-			else
+-				vcpu->arch.gprs[rd] = 0;
+-		}
++		if (inst.reg2_format.opcode == cpucfg_op)
++			er = kvm_emu_cpucfg(vcpu, inst);
+ 		break;
+ 	case 0x4: /* CSR{RD,WR,XCHG} GSPR */
+ 		er = kvm_handle_csr(vcpu, inst);
+-- 
+2.39.3
 
-> S2I will have less latency compared to S2R and the mem_sleep will be
-> automatically set to S2I if S2R is not supported, so no userspace impact
-> as well.
-Yes, everything that differs them is abstracted in TZ or through the
-power management coprocessor.
-
-> 
-> So please let us know what this change provide extra over S2I ? Until
-> then my NACK still stands.
-The main point here is to advertise pm_resume/suspend_via_firmware,
-which represents that Qualcomm does a lot of not-very-obvious power
-wire plumbing within their PSCI impl.
-
-Konrad
 
