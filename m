@@ -1,106 +1,98 @@
-Return-Path: <linux-kernel+bounces-12867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A77681FB6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 23:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EDAB081FB73
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 23:06:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2A3A1F24514
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 22:00:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83BC81F24507
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 22:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 283FD10A00;
-	Thu, 28 Dec 2023 22:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59B610A0A;
+	Thu, 28 Dec 2023 22:06:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="uJgMq1LK"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="tJEcP401"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9850E1095F;
-	Thu, 28 Dec 2023 22:00:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
-	t=1703800801; bh=jRxI4sUcGXVzqRs0DmQVhY8OELVqC2WR+H20U6gi5PA=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 874A710A00
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 22:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1703800865; bh=FbL3XUQGG36I/6CQH5chH65yLqnCzzZleBtliZ9ep7U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=uJgMq1LKFLUr5e7mCnCYPlG2CoGCPj6cY9l1P5tphocAHEn7ugK4NKErplKTJUX7w
-	 1TFJ2pZhvwEcHnnRl2IfCujQ8OU22Dqf2NhZYBQZN7DLv5jamw42q2fxnAaWNpqcZ3
-	 TjZGWQuYqVYXgX5SoOuuSF3ywIEXx6YODQcSCNjQ=
-From: Luca Weiss <luca@z3ntu.xyz>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Hardik Gajjar <hgajjar@de.adit-jv.com>, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, Richard Acayan <mailingradian@gmail.com>
-Cc: Richard Acayan <mailingradian@gmail.com>,
- Thorsten Leemhuis <regressions@leemhuis.info>,
- Caleb Connolly <caleb.connolly@linaro.org>
-Subject:
- Re: [PATCH] usb: gadget: u_ether: Re-attach netif device to mirror detachment
-Date: Thu, 28 Dec 2023 22:59:59 +0100
-Message-ID: <4713072.LvFx2qVVIh@z3ntu.xyz>
-In-Reply-To: <20231218164532.411125-2-mailingradian@gmail.com>
-References: <20231218164532.411125-2-mailingradian@gmail.com>
+	b=tJEcP401mJjpcbXt420oAZpUf1FU2VZx8zswdQH0x4WEFsc97949GCf6Dg+9O48WG
+	 tF+rX5VJjyLXIT47jlEin2LE7ZJbxStcAhqWo9jVIrzkMoyToZE2j6oF6bRsoZCP0B
+	 7qGwSxpj1rTdx8+yQMAbVg3kRfkVCUcvejOsgiTs=
+Received: from pek-lxu-l1.wrs.com ([2408:8409:7810:45b:788d:ee9e:1fba:da17])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id 431E6FF; Fri, 29 Dec 2023 06:01:03 +0800
+X-QQ-mid: xmsmtpt1703800863tzhjl841d
+Message-ID: <tencent_A16363296CC3BF645C7762576306DA737405@qq.com>
+X-QQ-XMAILINFO: MeB5Wo+JmnrbHp8YhYt8pWysVqY3GasZv29YWYaWew/nKzDLAGXgaDJ5CvCkaR
+	 3mYZFkcuVzwPo2b4UME4SEAQTfA57bazxtsI6vwJpC2SjLbMiKjrzrpuyjTPL/8UBgjUmX5g4P+B
+	 NUJKwXAxa+n+tbPJanGMJAKE1dB6VTEQD9DEYxz/1eBtfL4aI+xJOX0J3eO6zQbL9Vc/ovNez5ka
+	 1c7YpQBwsTLtbNzay3GvE2O+izAGLkfOoPZ4IasOv95vAtbAyEktobET/V298kYsB6y4Hokx4guO
+	 2sxO4toPPYvlsfoe9rxoT3XrxBg3hbxToPyD6xjR9xoU7f0mydiDNdxB4GtjfzlNui92jbfU027P
+	 VbMFoA5yKrRpgiGLhaE9ABmeLaWVR12u4+oAQi5bfxGchYeTDhceox3Zh+qTASOXlDhqlnzahR3X
+	 xcnuaw8pWireTRwcxTYHDn1Yky2fxBZ0xXYaRif5k9zkix5TbgPHiS8z7M03tLUR4OFeY5eFdk3A
+	 8+DRg5tDYUV6fxZ1xpX1ue4uHHT9z3dJdoqYOgs4hE/tdfLTh2Gs8HAeUv3Bp66tpFrPbqIHhdOu
+	 4Jgj5e4getyNtXhbvrBG96Cd7nJ4MP2k92RvmZh15IvNMZB9RKm+eWlp75jrR1OzZFFTCM5xitg9
+	 onMog4s3OduCBDdoBXWNlPM23k/FIhG2bNN/7U4RWU4pQ2CTO7TLKp65elHYHK9C8NeFKndW1XWP
+	 FV39W1Rf9HCWVctxNfsCiLLi3ELdsvSqYAL1fQ8JoWP9T2WNQkXeZ5D02CVMdYNgrElWrXjvi4VG
+	 swBNHZD1QPlkvYUWkuwS7e/oHCxideSvtCB+Cp97vxTmHeQcRALKtOwwO5F/8Fe7FrwO97/MQz2h
+	 9e41k4M2JqrJMFX5FzlSrt/OsqeFJEDxHKwNFgzKHNmZNHS796BDeD5bT41xWklWJlDS3AzKwR
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+55ad87f38795d6787521@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [hfs?] KMSAN: uninit-value in __hfsplus_ext_cache_extent
+Date: Fri, 29 Dec 2023 06:01:03 +0800
+X-OQ-MSGID: <20231228220102.215226-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000002cf943060d8f4e3c@google.com>
+References: <0000000000002cf943060d8f4e3c@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 
-On Montag, 18. Dezember 2023 17:45:33 CET Richard Acayan wrote:
-> In 6.7-rc1, there was a netif_device_detach call added to the
-> gether_disconnect function. This clears the __LINK_STATE_PRESENT bit of
-> the netif device and suppresses pings (ICMP messages) and TCP connection
-> requests from the connected host. If userspace temporarily disconnects
-> the gadget, such as by temporarily removing configuration in the gadget
-> configfs interface, network activity should continue to be processed
-> when the gadget is re-connected. Mirror the netif_device_detach call
-> with a netif_device_attach call in gether_connect to fix re-connecting
-> gadgets.
+please test uninit-value in __hfsplus_ext_cache_extent
 
-(+Cc Thorsten Leemhuis)
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fbafc3e621c3
 
-This appears to fix the regression on a 6.7-rc5-based build for
-qcom-msm8974pro-fairphone-fp2, that the NCM network gadget doesn't work.
-I've also heard reports from qcom-sdm845 and a PXA1908-based phone (if
-I see this correctly) about issues on 6.7.
-
-In postmarketOS on the device side the usb0 interface doesn't get the IP
-address assigned correctly it seems, but it seems to behave a bit
-inconsistently - but always broken.
-
-Anyways, with this patch everything looks good again. I hope this makes
-it for 6.7 final still.
-
-Tested-by: Luca Weiss <luca@z3ntu.xyz>
-
-
-> 
-> Link: https://gitlab.com/postmarketOS/pmaports/-/tree/6002e51b7090aeeb42947e0ca7ec22278d7227d0/main/postmarketos-base-ui/rootfs-usr-lib-NetworkManager-dispatcher.d-50-tethering.sh
-> Fixes: f49449fbc21e ("usb: gadget: u_ether: Replace netif_stop_queue with netif_device_detach")
-> Signed-off-by: Richard Acayan <mailingradian@gmail.com>
-> ---
->  drivers/usb/gadget/function/u_ether.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/usb/gadget/function/u_ether.c b/drivers/usb/gadget/function/u_ether.c
-> index 9d1c40c152d8..3c5a6f6ac341 100644
-> --- a/drivers/usb/gadget/function/u_ether.c
-> +++ b/drivers/usb/gadget/function/u_ether.c
-> @@ -1163,6 +1163,8 @@ struct net_device *gether_connect(struct gether *link)
-> if (netif_running(dev->net))
->  			eth_start(dev, GFP_ATOMIC);
-> 
-> +		netif_device_attach(dev->net);
-> +
->  	/* on error, disable any endpoints  */
->  	} else {
->  		(void) usb_ep_disable(link->out_ep);
-
-
-
+diff --git a/fs/hfsplus/bfind.c b/fs/hfsplus/bfind.c
+index ca2ba8c9f82e..9d4ffff6d42e 100644
+--- a/fs/hfsplus/bfind.c
++++ b/fs/hfsplus/bfind.c
+@@ -23,6 +23,7 @@ int hfs_find_init(struct hfs_btree *tree, struct hfs_find_data *fd)
+ 		return -ENOMEM;
+ 	fd->search_key = ptr;
+ 	fd->key = ptr + tree->max_key_len + 2;
++	fd->key->ext.fork_type = 0;
+ 	hfs_dbg(BNODE_REFS, "find_init: %d (%p)\n",
+ 		tree->cnid, __builtin_return_address(0));
+ 	switch (tree->cnid) {
+diff --git a/fs/hfsplus/extents.c b/fs/hfsplus/extents.c
+index 3c572e44f2ad..6681e3a24f29 100644
+--- a/fs/hfsplus/extents.c
++++ b/fs/hfsplus/extents.c
+@@ -206,7 +206,7 @@ static inline int __hfsplus_ext_cache_extent(struct hfs_find_data *fd,
+ static int hfsplus_ext_read_extent(struct inode *inode, u32 block)
+ {
+ 	struct hfsplus_inode_info *hip = HFSPLUS_I(inode);
+-	struct hfs_find_data fd;
++	struct hfs_find_data fd = { 0 };
+ 	int res;
+ 
+ 	if (block >= hip->cached_start &&
 
 
