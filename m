@@ -1,179 +1,184 @@
-Return-Path: <linux-kernel+bounces-12384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7591081F3E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:47:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4F9381F3F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:48:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ABC31C2193C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:47:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80C6828401F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:48:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDB863D2;
-	Thu, 28 Dec 2023 01:46:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC311396;
+	Thu, 28 Dec 2023 01:47:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="boaX16/u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eHd3PrDO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC45613C
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:45:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2ccc34a9f90so26946141fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 17:45:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76F5710E4;
+	Thu, 28 Dec 2023 01:47:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7ccfbdd77f6so580804241.3;
+        Wed, 27 Dec 2023 17:47:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703727955; x=1704332755; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703728075; x=1704332875; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=abPHoTgkKdKqNv7pVii73M9V/jiTguCmzH4R/B50i7k=;
-        b=boaX16/uPmjxMEQGH3Oh2SDlkIQyduzJBCnJLuzucXiIMUdlmYFYD+bSsrI0xU3qKG
-         PlXXwa+ONVxCHi0+EJFjxeQp/1okTC+/Nz9yR9j5Fs1BUDJVwkDAds9XJMs7rwa3D+oJ
-         hbaZV+2ux71SPg/cXYPRmEDXiOHENXcUWwf4E=
+        bh=QI+Jo8S8eKNa6GvwC0/2SMjIEOPh5BV9V7ThwuGJU0A=;
+        b=eHd3PrDONIYWOAhHLW7pjNxfCVgeeO8M/95LwzlWgsCVa2jWOyoTBeQbSPSF18G6pZ
+         JUCGKGeKu9L0H2dATPQSmvIJfT1EIEf7q6QhcrD9t74DqTgZSJZTxcOTX9ZNc1u3eBMK
+         46/Uv1I73N/0W/YSfW1VSoiRMWUpbZleTIDZiEyldMKL9MUcMaQ+nxJenCNF/Rwo90IQ
+         4+sMHw/JzvQIgC2NObFgHfRYda57bZpjPE2YPcYgu6k/TChtHEqizyJrPR0xjvt7nFl0
+         jeJqFHaaGjz2csejJxYC0ZEv8FjjLhLssceySO326sFU3pZFaPJPvOQRzptF2jxJ7Pyh
+         4WFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703727955; x=1704332755;
+        d=1e100.net; s=20230601; t=1703728075; x=1704332875;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=abPHoTgkKdKqNv7pVii73M9V/jiTguCmzH4R/B50i7k=;
-        b=pkoC3OwnCt3ZEjrLjmcuTVZjUs626PYgLZIbpyjFPMOBRKNO+koFU0e2Hap6SrzyMp
-         qdtwe1pY+G77JUUWlmvFxOys1rxYNTDl3CZ1Af7pyysm08YhBy1d29OiJDhIRZd8kzgh
-         iDzQMFcKhagKFCD3YHkCZJ9K+Ryh55ktZEcuXOuXsrUCJZEDAGRoAHThK2jLm1MrD93w
-         xYfaLUPTOo5xRoVuqu60h0TZpTjJSON5Qk6EnVpIdosaVU6kRzfIHRC+HpZCMQSN6wtX
-         qjQFmT1gCP/ex4MUQXuRnx+301NVPsSJxGSWGdWzEB3LC9BZ2uEAPW7p5g5pE7coyvcB
-         vhLg==
-X-Gm-Message-State: AOJu0Yy6RE4opNCxESfl0Pnejx85x6vTOaRMzbxVVHI6vat7GZayetG2
-	9tzJkzUIeala0IfCtFY/eDue28WbrRHu5Tt+FKZXYhQ8n0u7
-X-Google-Smtp-Source: AGHT+IFyQEVrdKaoeisrsf6Cy6K+2KeyCzfsqubA3HFnZaUvyDBGCdUMwxp3ymD+S4mf0mWRWa1471JPFZh8SGIkSiM=
-X-Received: by 2002:a2e:460a:0:b0:2cc:7445:bbc2 with SMTP id
- t10-20020a2e460a000000b002cc7445bbc2mr3496636lja.32.1703727955400; Wed, 27
- Dec 2023 17:45:55 -0800 (PST)
+        bh=QI+Jo8S8eKNa6GvwC0/2SMjIEOPh5BV9V7ThwuGJU0A=;
+        b=SSsbd0AuXHpnJhpaLJJiGANdkWdcmBG2C4Z2IUr2+wI6/Vrtsu4yIqgvZlVH+VmVJ/
+         +wIPEsPOffRukcJOzWd79qKNlzg7M46xFDuT/NJqpuO0Qdq+O+TvygBo9TU2VtZQtA6p
+         TmzaphIUowwNjLpBMGbbIYSne0xhAd/LWhIx4ewfpQBNHL5Px5vTmHBxNReYr3rMXZ4M
+         enxzECGq+vMkJK7a7zAMQ9XK7Nb947zurapyNZEYjNg5vbVHqriU3K/OZUhbj+HIPRPp
+         D5QaU5j7+/P4uNdArSLKhh2fQ3xqOptYekX3qS5Wi4FcAwcwNSKDo9cjLfwEq3pc2Iik
+         uS5g==
+X-Gm-Message-State: AOJu0YzihJINDHH77Nu/miIHIFk41tPKvRITuKpNd5OfdgLJIy9w9Up4
+	tCbjGzbBEvGjGyDIoY9RDvRwRkPI6XtZQY3U+Js=
+X-Google-Smtp-Source: AGHT+IF69Opj8uwYfLlf1vzXR1epZjDJNyePb7alXE7sxZFGNJKYgb/nW/FTV75L5FhutWNGe5tegWma9kqB1+HAyMA=
+X-Received: by 2002:a05:6102:3daa:b0:467:200b:ada with SMTP id
+ h42-20020a0561023daa00b00467200b0adamr2154312vsv.35.1703728075269; Wed, 27
+ Dec 2023 17:47:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231227090448.2216295-1-treapking@chromium.org>
-In-Reply-To: <20231227090448.2216295-1-treapking@chromium.org>
-From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Thu, 28 Dec 2023 10:45:44 +0900
-Message-ID: <CAGXv+5E-vn4pCCJr-Qs4tcbMAyGBWk4YQEzm=fkHjE0U9nBpiA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] clk: mediatek: Introduce need_pm_runtime to mtk_clk_desc
-To: Pin-yen Lin <treapking@chromium.org>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Weiyi Lu <weiyi.lu@mediatek.com>, 
-	linux-arm-kernel@lists.infradead.org
+References: <0000000000000b05cd060d6b5511@google.com> <CAKEwX=OmWYivf7dg_izW8pn5s5q15+nx-vRMsV47T_qG=dep_Q@mail.gmail.com>
+ <CAF8kJuPLEXEXG+4esR6MbRa3iirTrJ7-w3YCorB9iD=gnQ+G3A@mail.gmail.com>
+ <CAKEwX=PaFmreqmNrisatSN1=k2kRiYgDksgDze-t=GBD=0iJDg@mail.gmail.com>
+ <CAF8kJuPF5ACu8o1P7GqEQRb6p8QShyTVNuzrrY557g+SsddzWA@mail.gmail.com>
+ <CAKEwX=NHdr9=hUBiZhnLZyRPsp=JwN3Vkwud2XEn3=pNurYGpQ@mail.gmail.com>
+ <f27efd2e-ac65-4f6a-b1b5-c9fb0753d871@bytedance.com> <CAGsJ_4x31mT8TXt4c7ejJoDW1yJhyNqDmJmLZrf2LxMt7Zwg2A@mail.gmail.com>
+ <5aff3bcf-ef36-45b3-8ac0-a4b19697419c@bytedance.com> <CAGsJ_4xuuaPnQzkkQVaRyZL6ZdwkiQ_B7_c2baNaCKVg_O7ZQA@mail.gmail.com>
+ <e464c55e-d03a-4df9-abef-5ece182d7a2b@bytedance.com> <CAGsJ_4xknGt5Q6vTKHdnqvXi7fKMORwXywurdN09G2uOUJzCSg@mail.gmail.com>
+ <CAKEwX=PYK3hUzgm+qfs2sNU686RaE+_M3W4Zo_Q4mTMAgKaB2A@mail.gmail.com> <CAGsJ_4zwd71VmDsErFG-2=V8aqP9dc2qO_hRNcHPj51=CfTJww@mail.gmail.com>
+In-Reply-To: <CAGsJ_4zwd71VmDsErFG-2=V8aqP9dc2qO_hRNcHPj51=CfTJww@mail.gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Thu, 28 Dec 2023 09:47:43 +0800
+Message-ID: <CAGsJ_4zkyyvAzUoxy7-Puk3M5V6yqEXaNysF_HvZfuYwswarGA@mail.gmail.com>
+Subject: Re: [syzbot] [crypto?] general protection fault in
+ scatterwalk_copychunks (5)
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Chengming Zhou <zhouchengming@bytedance.com>, Chris Li <chrisl@kernel.org>, 
+	syzbot <syzbot+3eff5e51bf1db122a16e@syzkaller.appspotmail.com>, 
+	akpm@linux-foundation.org, davem@davemloft.net, herbert@gondor.apana.org.au, 
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, yosryahmed@google.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 27, 2023 at 6:05=E2=80=AFPM Pin-yen Lin <treapking@chromium.org=
-> wrote:
+On Thu, Dec 28, 2023 at 9:43=E2=80=AFAM Barry Song <21cnbao@gmail.com> wrot=
+e:
 >
-> Introduce a new need_pm_runtime variable to mtk_clk_desc to indicate this
-> clock needs a runtime PM get during the probing stage.
+> On Thu, Dec 28, 2023 at 7:26=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wro=
+te:
+> >
+> > On Wed, Dec 27, 2023 at 3:10=E2=80=AFAM Barry Song <21cnbao@gmail.com> =
+wrote:
+> > >
+> > > On Wed, Dec 27, 2023 at 5:16=E2=80=AFPM Chengming Zhou
+> > > <zhouchengming@bytedance.com> wrote:
+> > > >
+> > > > Thanks for your explanation! Maybe it's best for us to return to 2 =
+pages
+> > > > if no other people's comments. And this really need more documentat=
+ion :-)
+> >
+> > Fine by me. Hmm we're basically wasting one extra page per CPU (since
+> > these buffers are per-CPU), correct? That's not ideal, but not *too*
+> > bad for now I suppose...
+> >
+> > >
+> > > I agree. we need some doc.
+> > >
+> > > besides, i actually think we can skip zswap frontend if
+> > > over-compression is really
+> > > happening.
+> >
+> > IIUC, zsmalloc already checked that - and most people are (or should
+> > be) using zsmalloc for zswap anyway. I wouldn't be opposed to adding
+> > an added layer of protection on the zswap side, but not super high
+> > priority I'd say.
+>
+> Thanks for this info. I guess you mean the below ?
+> unsigned long zs_malloc(struct zs_pool *pool, size_t size, gfp_t gfp)
+> {
+>         ...
+>
+>         if (unlikely(!size || size > ZS_MAX_ALLOC_SIZE))
+>                 return (unsigned long)ERR_PTR(-EINVAL);
 
-Actually it means (based on our discussions and your code here) that
-runtime PM should be enabled for the clock controller. If runtime PM
-is not enabled before the clocks are registered, the CCF subsequently
-never toggles runtime PM.
+BTW, do you think zsmalloc is worth a patch to change the ret from
+EINVAL to ENOSPC?
+This seems more sensible and matches the behaviour of zswap, and zbud, z3fo=
+ld.
 
-The runtime PM get during the probe stage is to avoid triggering runtime
-suspend/resume during each clock registration, and hopefully avoid a
-deadlock. It should be mentioned separately. A comment should be added
-so that folks going over the code in the future don't remove it.
+        ret =3D zpool_malloc(zpool, dlen, gfp, &handle);
+        if (ret =3D=3D -ENOSPC) {
+                zswap_reject_compress_poor++;
+                goto put_dstmem;
+        }
+        if (ret) {
+                zswap_reject_alloc_fail++;
+                goto put_dstmem;
+        }
+        buf =3D z
 
-> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
-> ---
 >
->  drivers/clk/mediatek/clk-mtk.c | 15 +++++++++++++++
->  drivers/clk/mediatek/clk-mtk.h |  2 ++
->  2 files changed, 17 insertions(+)
+> }
 >
-> diff --git a/drivers/clk/mediatek/clk-mtk.c b/drivers/clk/mediatek/clk-mt=
-k.c
-> index 2e55368dc4d8..c31e535909c8 100644
-> --- a/drivers/clk/mediatek/clk-mtk.c
-> +++ b/drivers/clk/mediatek/clk-mtk.c
-> @@ -13,6 +13,7 @@
->  #include <linux/of.h>
->  #include <linux/of_address.h>
->  #include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/slab.h>
+> i find zbud also has similar code:
+> static int zbud_alloc(struct zbud_pool *pool, size_t size, gfp_t gfp,
+>                         unsigned long *handle)
+> {
+>         int chunks, i, freechunks;
+>         struct zbud_header *zhdr =3D NULL;
+>         enum buddy bud;
+>         struct page *page;
 >
->  #include "clk-mtk.h"
-> @@ -494,6 +495,14 @@ static int __mtk_clk_simple_probe(struct platform_de=
-vice *pdev,
->                         return IS_ERR(base) ? PTR_ERR(base) : -ENOMEM;
->         }
+>         if (!size || (gfp & __GFP_HIGHMEM))
+>                 return -EINVAL;
+>         if (size > PAGE_SIZE - ZHDR_SIZE_ALIGNED - CHUNK_SIZE)
+>                 return -ENOSPC;
 >
-> +
-> +       if (mcd->need_runtime_pm) {
-> +               devm_pm_runtime_enable(&pdev->dev);
-> +               r =3D pm_runtime_resume_and_get(&pdev->dev);
+> and z3fold,
+>
+> static int z3fold_alloc(struct z3fold_pool *pool, size_t size, gfp_t gfp,
+>                         unsigned long *handle)
+> {
+>         int chunks =3D size_to_chunks(size);
+>         struct z3fold_header *zhdr =3D NULL;
+>         struct page *page =3D NULL;
+>         enum buddy bud;
+>         bool can_sleep =3D gfpflags_allow_blocking(gfp);
+>
+>         if (!size || (gfp & __GFP_HIGHMEM))
+>                 return -EINVAL;
+>
+>         if (size > PAGE_SIZE)
+>                 return -ENOSPC;
+>
+>
+> Thus, I agree that another layer to check size in zswap isn't necessary n=
+ow.
 
-A comment for the resume and get should be added. Otherwise someone looking
-at this and the CCF could think that this isn't needed, since the CCF alrea=
-dy
-has similar calls.
-
-> +               if (r)
-> +                       return r;
-> +       }
-> +
->         /* Calculate how many clk_hw_onecell_data entries to allocate */
->         num_clks =3D mcd->num_clks + mcd->num_composite_clks;
->         num_clks +=3D mcd->num_fixed_clks + mcd->num_factor_clks;
-> @@ -574,6 +583,9 @@ static int __mtk_clk_simple_probe(struct platform_dev=
-ice *pdev,
->                         goto unregister_clks;
->         }
->
-> +       if (mcd->need_runtime_pm)
-> +               pm_runtime_put(&pdev->dev);
-> +
->         return r;
->
->  unregister_clks:
-> @@ -604,6 +616,9 @@ static int __mtk_clk_simple_probe(struct platform_dev=
-ice *pdev,
->  free_base:
->         if (mcd->shared_io && base)
->                 iounmap(base);
-> +
-> +       if (mcd->need_runtime_pm)
-> +               pm_runtime_put(&pdev->dev);
-
-Please keep the error path calls strictly in reverse order of the setup
-calls. So this should go before iounmap().
-
-ChenYu
-
->         return r;
->  }
-
-> diff --git a/drivers/clk/mediatek/clk-mtk.h b/drivers/clk/mediatek/clk-mt=
-k.h
-> index 22096501a60a..c17fe1c2d732 100644
-> --- a/drivers/clk/mediatek/clk-mtk.h
-> +++ b/drivers/clk/mediatek/clk-mtk.h
-> @@ -237,6 +237,8 @@ struct mtk_clk_desc {
->
->         int (*clk_notifier_func)(struct device *dev, struct clk *clk);
->         unsigned int mfg_clk_idx;
-> +
-> +       bool need_runtime_pm;
->  };
->
->  int mtk_clk_pdev_probe(struct platform_device *pdev);
-> --
-> 2.43.0.472.g3155946c3a-goog
->
+Thanks
+Barry
 
