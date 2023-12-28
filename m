@@ -1,131 +1,116 @@
-Return-Path: <linux-kernel+bounces-12737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC81781F97B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:10:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F13981F984
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:12:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 990E02854BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:10:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEAFEB20CCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:12:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54579DF4C;
-	Thu, 28 Dec 2023 15:09:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC73BE578;
+	Thu, 28 Dec 2023 15:12:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QQx88cHf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F60CDDCE
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 15:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7b7fdde8b58so856090639f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:09:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703776143; x=1704380943;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qIENxlQM/yHYfnHfvYfBgYoMXgPAxd2HBB1RQCpglng=;
-        b=VQ0Z9d1Ke64wZM+WOiVAw+BwCiNTjZlmu3LfY15med6KtJ8jxRbQx/RtdoDSi0Coko
-         imSLKTWyaDEokJOj+j6S3tOj964zDf+QMEkAnyoOLfVhizH/P5jwUnKiTT4TzXuIB7R9
-         1fkkmErMbe7YnF73VggmGsNPdVaegRcidwN3tX+1do3b3TyiwUcWTsjbE01/sQE5fCR+
-         ozO4F8agW5QeikzJUluOoc9hRcb3asAqaqy9cCiHaBzhMM8otkHqLxPW/D6pI/Bl26Ln
-         O6KY3q5Xo2JAhAzqT/THZESbCUqbJagUTid0bduOikFYUKo2VlTp6EcQrLUtMlnM96Qc
-         EBpw==
-X-Gm-Message-State: AOJu0Yz34ccpa/STXb0SmfWfGWVgFNSdkIJkDW0NlTpXyVw8j8QrRjIV
-	4yFXG2PTQXl27Bgwd8kBOOwiBOGQQCThveHUqEnLs8/t84o4
-X-Google-Smtp-Source: AGHT+IE3NCJ80rf2P8hl5aRimWdUicWR1q0xtmYU9WxKhTyID956TMZAEfmDgOvKD2O8xF9Xr1O/S/g0E5GNhmI2qt8pjKd7sC8f
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE5CDDB1;
+	Thu, 28 Dec 2023 15:12:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703776350; x=1735312350;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9joJ//r2WbPiqu6shWzXWoF/mATyTHXA55BcruPVTlE=;
+  b=QQx88cHfuXYmBlykUFPEHpba+ZakbER268nDjVkGgKUg9ybm5F8wds+A
+   Sv47NTPNW3cxemQMsj+zgo7td0OAmTPwHYH8ZkuCjUxpA7xBAKxGx3ovx
+   3MOIFXxzj1Fh5/yb4N3lyNJfqB1wZyZ/m3PT+thqYq9/0NENIKxqtxjMm
+   AM+4Fiq5NZdt32HDoWXAutm6ub7M2Pc0P3HMqIMDFrSbB9LHEd6wyq7yR
+   T9YPoOBb5Ob46W+qbKz+AVAYAQ8mXEWRdJIJIQsi0Et1JrXn8ROS9HbpE
+   FBf7ep1iTmV5IsJU2nklBEbV15W1UKp+Yc3x1MFX3N96afjMMpuguJrZb
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="482733304"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="482733304"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 07:12:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="922117912"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="922117912"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Dec 2023 07:12:26 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rIs3c-000GYX-07;
+	Thu, 28 Dec 2023 15:12:24 +0000
+Date: Thu, 28 Dec 2023 23:12:02 +0800
+From: kernel test robot <lkp@intel.com>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Stanimir Varbanov <svarbanov@mm-sol.com>,
+	Andrew Murray <amurray@thegoodpenguin.co.uk>,
+	Vinod Koul <vkoul@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: Re: [PATCH 4/4] PCI: qcom: Implement RC shutdown/power up
+Message-ID: <202312282244.N6b5czwN-lkp@intel.com>
+References: <20231227-topic-8280_pcie-v1-4-095491baf9e4@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1568:b0:35f:d9cc:1c9b with SMTP id
- k8-20020a056e02156800b0035fd9cc1c9bmr1826816ilu.0.1703776143631; Thu, 28 Dec
- 2023 07:09:03 -0800 (PST)
-Date: Thu, 28 Dec 2023 07:09:03 -0800
-In-Reply-To: <tencent_8E794F870DC725E80D9E92105DC45DE19907@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d16fcb060d934be7@google.com>
-Subject: Re: [syzbot] [erofs?] KMSAN: uninit-value in z_erofs_lz4_decompress (2)
-From: syzbot <syzbot+6c746eea496f34b3161d@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231227-topic-8280_pcie-v1-4-095491baf9e4@linaro.org>
 
-Hello,
+Hi Konrad,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KMSAN: uninit-value in z_erofs_lz4_decompress
+kernel test robot noticed the following build errors:
 
-loop0: detected capacity change from 0 to 16
-erofs: (device loop0): mounted with root inode @ nid 36.
-erofs: (device loop0): z_erofs_lz4_decompress_mem: failed to decompress -12 in[46, 4050] out[917]
-=====================================================
-BUG: KMSAN: uninit-value in hex_dump_to_buffer+0xae9/0x10f0 lib/hexdump.c:194
- hex_dump_to_buffer+0xae9/0x10f0 lib/hexdump.c:194
- print_hex_dump+0x13d/0x3e0 lib/hexdump.c:276
- z_erofs_lz4_decompress_mem fs/erofs/decompressor.c:252 [inline]
- z_erofs_lz4_decompress+0x28d0/0x2ae0 fs/erofs/decompressor.c:312
- z_erofs_decompress_pcluster fs/erofs/zdata.c:1290 [inline]
- z_erofs_decompress_queue+0x338c/0x6460 fs/erofs/zdata.c:1372
- z_erofs_runqueue+0x36cd/0x3830
- z_erofs_read_folio+0x435/0x810 fs/erofs/zdata.c:1843
- filemap_read_folio+0xce/0x370 mm/filemap.c:2323
- do_read_cache_folio+0x3b4/0x11e0 mm/filemap.c:3691
- read_cache_folio+0x60/0x80 mm/filemap.c:3723
- erofs_bread+0x286/0x6f0 fs/erofs/data.c:46
- erofs_find_target_block fs/erofs/namei.c:103 [inline]
- erofs_namei+0x2fe/0x1790 fs/erofs/namei.c:177
- erofs_lookup+0x100/0x3c0 fs/erofs/namei.c:206
- lookup_one_qstr_excl+0x233/0x520 fs/namei.c:1609
- filename_create+0x2fc/0x6d0 fs/namei.c:3876
- do_mkdirat+0x69/0x800 fs/namei.c:4121
- __do_sys_mkdirat fs/namei.c:4144 [inline]
- __se_sys_mkdirat fs/namei.c:4142 [inline]
- __x64_sys_mkdirat+0xc8/0x120 fs/namei.c:4142
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+[auto build test ERROR on 39676dfe52331dba909c617f213fdb21015c8d10]
 
-Uninit was created at:
- __alloc_pages+0x9a4/0xe00 mm/page_alloc.c:4591
- alloc_pages_mpol+0x62b/0x9d0 mm/mempolicy.c:2133
- alloc_pages mm/mempolicy.c:2204 [inline]
- folio_alloc+0x1da/0x380 mm/mempolicy.c:2211
- filemap_alloc_folio+0xa5/0x430 mm/filemap.c:974
- do_read_cache_folio+0x163/0x11e0 mm/filemap.c:3655
- read_cache_folio+0x60/0x80 mm/filemap.c:3723
- erofs_bread+0x286/0x6f0 fs/erofs/data.c:46
- erofs_find_target_block fs/erofs/namei.c:103 [inline]
- erofs_namei+0x2fe/0x1790 fs/erofs/namei.c:177
- erofs_lookup+0x100/0x3c0 fs/erofs/namei.c:206
- lookup_one_qstr_excl+0x233/0x520 fs/namei.c:1609
- filename_create+0x2fc/0x6d0 fs/namei.c:3876
- do_mkdirat+0x69/0x800 fs/namei.c:4121
- __do_sys_mkdirat fs/namei.c:4144 [inline]
- __se_sys_mkdirat fs/namei.c:4142 [inline]
- __x64_sys_mkdirat+0xc8/0x120 fs/namei.c:4142
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+url:    https://github.com/intel-lab-lkp/linux/commits/Konrad-Dybcio/PCI-qcom-Reshuffle-reset-logic-in-2_7_0-init/20231228-062002
+base:   39676dfe52331dba909c617f213fdb21015c8d10
+patch link:    https://lore.kernel.org/r/20231227-topic-8280_pcie-v1-4-095491baf9e4%40linaro.org
+patch subject: [PATCH 4/4] PCI: qcom: Implement RC shutdown/power up
+config: powerpc64-randconfig-002-20231228 (https://download.01.org/0day-ci/archive/20231228/202312282244.N6b5czwN-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231228/202312282244.N6b5czwN-lkp@intel.com/reproduce)
 
-CPU: 1 PID: 5487 Comm: syz-executor.0 Not tainted 6.7.0-rc7-syzkaller-00003-gfbafc3e621c3-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-=====================================================
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312282244.N6b5czwN-lkp@intel.com/
 
+All errors (new ones prefixed by >>):
 
-Tested on:
+   powerpc64-linux-ld: warning: orphan section `.stubs' from `drivers/dma/fsl-edma-common.o' being placed in section `.stubs'
+   powerpc64-linux-ld: warning: discarding dynamic section .glink
+   powerpc64-linux-ld: warning: discarding dynamic section .plt
+   powerpc64-linux-ld: linkage table error against `cmd_db_ready'
+   powerpc64-linux-ld: stubs don't match calculated size
+   powerpc64-linux-ld: can not build stubs: bad value
+   powerpc64-linux-ld: drivers/pci/controller/dwc/pcie-qcom.o: in function `qcom_pcie_probe':
+>> pcie-qcom.c:(.text+0x1894): undefined reference to `cmd_db_ready'
 
-commit:         fbafc3e6 Merge tag 'for_linus' of git://git.kernel.org..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=12bcb509e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7078a6b901aa3
-dashboard link: https://syzkaller.appspot.com/bug?extid=6c746eea496f34b3161d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16888cb5e80000
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
