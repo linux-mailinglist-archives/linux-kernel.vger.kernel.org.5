@@ -1,113 +1,85 @@
-Return-Path: <linux-kernel+bounces-12677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00D4981F8C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:20:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D033E81F8D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:29:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD6FF284AE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:20:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 655731F242C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:29:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95FE8480;
-	Thu, 28 Dec 2023 13:20:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1EF6847B;
+	Thu, 28 Dec 2023 13:29:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="azbnPFA9"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="vpWvnQ+d"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF0779E2;
-	Thu, 28 Dec 2023 13:20:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703769641; x=1735305641;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=l3y/rOXTcNM/KMjrfFxiHVoiCGwjaWFGIo5EQtn4TYA=;
-  b=azbnPFA9iKLjRwZMhagY4BuGCHMWBj9/MJkb4noRbrltgUXPvAP2q7Gj
-   EfVmWk3mIj8hG3+JqPyUj1V3PXFTi26/0BCE6Xku7rheQeBolNGtrzc7+
-   4p0H76SXP+OaJ1NIuomJE/tyBwpYsfHUNbiLvDSQYvM+mR0w1JhJwagH/
-   Im7Z4w6tTG/4Q/Dj+P4w8HOtTjt+hzTRLhYtsksyyRBoUkgjiEa9QAIQx
-   Fa/Db4SfxWKgp+5xtb+icLT/YLyzteazlx7qVpqi+k0JK3BaKL2GLAYQo
-   1GA3g4fhzV6x2PjGy0VrRoptDMHrMpF05zeWrgtcH/+ogkGyF9FAb+13g
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="400355127"
-X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
-   d="scan'208";a="400355127"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 05:20:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="782039401"
-X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
-   d="scan'208";a="782039401"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.249.169.62]) ([10.249.169.62])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 05:20:37 -0800
-Message-ID: <160a7f08-1e73-4468-80d8-6ac5974d81d3@linux.intel.com>
-Date: Thu, 28 Dec 2023 21:20:35 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5098F8470
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 13:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1703770160; bh=qpDeNZlSNBNw0kYgLVhEIbH+jxBdEEkgHnOnDAufrI0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=vpWvnQ+deNbvH2LJLWokUZtv9WTPux7bus7e8u9auxdnSqlzj6mNfCGqrEEYkZbNr
+	 qBSpjBnIGli6goB33ubeAswMJYShu1PXwH7+jIWUUaqZggoMTlxZvO6Liv+2IyPtt1
+	 6SvmUk01rioi476se7i+MjI/IRd0HlcD3L288iH0=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+	id 54113495; Thu, 28 Dec 2023 21:21:01 +0800
+X-QQ-mid: xmsmtpt1703769661t2ruuvpk9
+Message-ID: <tencent_73B236904A1C74EF77D367E43C4D36669709@qq.com>
+X-QQ-XMAILINFO: OGZxhFXqN7PJO9fwN0NmcXHaWDhqqaAgULV5AL1QebzvFBAzIUm/EJEVqcwbxI
+	 weMzkg6J0kWsgjX6FKR6J4xTF7OObWZImnVOCtANjyfdCVO6tmMWVoOg+ZQSAdUm+fhSWYSvQ4nM
+	 xhkPgiLSCJJmoWrcx4Mg5vM3nMHl0bYIsTVeku2196M0dSeanTOBm2OtRAc988lxmcQCoEB+elKt
+	 OiN4YR8L9OQBwwiQ+jkOLCmutuke3VtV/Aa1t6c33sQjcnJtP9daTROEdd53C0h1F0Iu9OoIrcRZ
+	 Mo6xrx7tfhm6QJCXDadessSlaUHQ47ORyPJ9woaZpCqZD+5228Lj1m1HGkS5ZULuteCf6SrtRiPS
+	 OLStCdBHG84guuGBNt/Epz7sv+GxRj/1QtCT2jyalQk/0T9+JOLB+CexSWIOY72EUbBty9UyvYtB
+	 Qh+J2YykZJrxTMlWvuah0HTDMxlJRSqiBk41zev0FTqFdQDsYDv7pIEr1UYJLMXpQVj/yiM6gYoJ
+	 t/+qt4XujkaYM88+ubDLLfoxC4WeJxq+q72+RJ9xljtj30eebnjv58ZMjp2g+kVMAL7Qa7FaYNvl
+	 ekM0mtyIsyCGLhO0yIxMmua2NgLRKL4aRItJ2FUgc7jdDCLE2FUgExg2VKGFaCqZIfEydR6c5zNn
+	 c0SuKRczAXdY2mtRwcEwVmucpnf+IJoeqcxlRlAZCk7H2cohUUOC1S6CbV4MMQOK8cOZWsfyi7mF
+	 q4InoJt6K//mfqatr9CjGJ6HmaX+K2nAdQ0KLHRBVpaVLj9hyoZDSlBKB+W1PwC81H6fM4t9XoTM
+	 1trW2v8ZwCZEtr6wCJdrtvW1vja9JV1NH/YvT1mBbXJMIXQiDUnBvUW9aOq9c2GwkhYBKbg5QM5I
+	 gM5M2ZbALuxdLsqD/bsU5RK/8/uvKkQ5lvV9RbYJzhCv0Zb4fmyayi3biON7J2oA==
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+55ad87f38795d6787521@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [hfs?] KMSAN: uninit-value in __hfsplus_ext_cache_extent
+Date: Thu, 28 Dec 2023 21:21:01 +0800
+X-OQ-MSGID: <20231228132100.29990-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000002cf943060d8f4e3c@google.com>
+References: <0000000000002cf943060d8f4e3c@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v9 1/5] iommu/vt-d: add flush_target_dev member to
- struct intel_iommu and pass device info to all ATS Invalidation functions
-To: "Tian, Kevin" <kevin.tian@intel.com>,
- "bhelgaas@google.com" <bhelgaas@google.com>,
- "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "will@kernel.org" <will@kernel.org>,
- "robin.murphy@arm.com" <robin.murphy@arm.com>,
- "lukas@wunner.de" <lukas@wunner.de>
-Cc: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231228001646.587653-1-haifeng.zhao@linux.intel.com>
- <20231228001646.587653-2-haifeng.zhao@linux.intel.com>
- <BN9PR11MB5276126B3D950AA2F23520898C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276126B3D950AA2F23520898C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+please test uninit-value in __hfsplus_ext_cache_extent
 
-On 12/28/2023 4:10 PM, Tian, Kevin wrote:
->> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
->> Sent: Thursday, December 28, 2023 8:17 AM
->>
->> @@ -181,6 +181,7 @@ static void __flush_svm_range_dev(struct intel_svm
->> *svm,
->>
->>   	qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, address, pages,
->> ih);
->>   	if (info->ats_enabled) {
->> +		info->iommu->flush_target_dev = info->dev;
->>   		qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, info-
->>> pfsid,
->>   					 svm->pasid, sdev->qdep, address,
->>   					 order_base_2(pages));
-> this is wrong both in concept and function.
-Yes, wrong.
->
-> an iommu instance can be shared by many devices which may all have
-> ongoing ATS invalidation requests to handle. Using a per-iommu field
-> to store the flush target is limiting (and there is no lock protection at all).
->
-> if there is a real need of passing dev pointer to qi helpers, just change
-> the helper to accept an explicit parameter.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fbafc3e621c3
 
-seems the only way is to add parameter and refactor all affected
-
-functions.
-
-
-Thanks,
-
-Ethan
+diff --git a/fs/hfsplus/bfind.c b/fs/hfsplus/bfind.c
+index ca2ba8c9f82e..9d4ffff6d42e 100644
+--- a/fs/hfsplus/bfind.c
++++ b/fs/hfsplus/bfind.c
+@@ -23,6 +23,7 @@ int hfs_find_init(struct hfs_btree *tree, struct hfs_find_data *fd)
+ 		return -ENOMEM;
+ 	fd->search_key = ptr;
+ 	fd->key = ptr + tree->max_key_len + 2;
++	fd->key->ext.fork_type = 0;
+ 	hfs_dbg(BNODE_REFS, "find_init: %d (%p)\n",
+ 		tree->cnid, __builtin_return_address(0));
+ 	switch (tree->cnid) {
 
 
