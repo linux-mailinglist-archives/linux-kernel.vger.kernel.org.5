@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-12659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4D9681F88F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:02:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C19E181F897
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:02:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A873287505
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:02:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 368AB1F24226
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:02:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78633125BF;
-	Thu, 28 Dec 2023 12:58:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3287E12E4A;
+	Thu, 28 Dec 2023 12:58:27 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9638A107B9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49F8210946;
 	Thu, 28 Dec 2023 12:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T17pv6tjlz4f3jYr;
-	Thu, 28 Dec 2023 20:58:15 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T17pr3CZQz4f3lDJ;
+	Thu, 28 Dec 2023 20:58:12 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 82C891A017B;
+	by mail.maildlp.com (Postfix) with ESMTP id DDF2B1A017F;
 	Thu, 28 Dec 2023 20:58:17 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgBHlQvmcI1lvcx3Ew--.36075S6;
+	by APP1 (Coremail) with SMTP id cCh0CgBHlQvmcI1lvcx3Ew--.36075S7;
 	Thu, 28 Dec 2023 20:58:17 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: song@kernel.org,
@@ -38,9 +38,9 @@ Cc: linux-raid@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH -next 2/3] md: remove redundant md_wakeup_thread()
-Date: Thu, 28 Dec 2023 20:55:52 +0800
-Message-Id: <20231228125553.2697765-3-yukuai1@huaweicloud.com>
+Subject: [PATCH -next 3/3] md: use interruptible apis in idle/frozen_sync_thread()
+Date: Thu, 28 Dec 2023 20:55:53 +0800
+Message-Id: <20231228125553.2697765-4-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231228125553.2697765-1-yukuai1@huaweicloud.com>
 References: <20231228125553.2697765-1-yukuai1@huaweicloud.com>
@@ -51,13 +51,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBHlQvmcI1lvcx3Ew--.36075S6
-X-Coremail-Antispam: 1UD129KBjvJXoW3XF13Aw18XrWkZr48Gw1fXrb_yoW7Xw18pa
-	yfJF98Cr45A34fAFsrKa4DGa45Zr1jqFWDtrW3u3yrJ3WfKw4SgFyY9FyDJ3yvyaykZw45
-	Xa1rGF48Za4xWF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:cCh0CgBHlQvmcI1lvcx3Ew--.36075S7
+X-Coremail-Antispam: 1UD129KBjvJXoW3JFyrKFyfAFW3Aw13Jr4Utwb_yoWxury3p3
+	yIgF98Ar45JrZ3Zr4DK3WkAayrZw1IqayDtry7Wa4fJw1fKrsrKFyY9a4UZFykCa4rAw4U
+	Ja1rJF4fCFZ7Wr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUU9m14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-	x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
+	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
 	Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
 	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
 	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
@@ -67,148 +67,220 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3XF13Aw18XrWkZr48Gw1fXrb_yoW7Xw18pa
 	6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
 	AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
 	s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-	0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUc6pPUUUUU=
+	0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd8n5UUUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-On the one hand, mddev_unlock() will call md_wakeup_thread()
-unconditionally; on the other hand, md_check_recovery() can't make
-progress if 'reconfig_mutex' can't be grabbed. Hence, it really doesn't
-make sense to wake up daemon thread while 'reconfig_mutex' is still
-grabbed.
+Before refactoring idle and frozen from action_store, interruptible apis
+is used so that hungtask warning won't be triggered if it takes too long
+to finish idle/frozen sync_thread. So change to use interruptible apis.
 
-Remove all the md_wakup_thread() for 'mddev->thread' while
-'reconfig_mtuex' is still grabbed.
+In order not to make stop_sync_thread() more complicated, factor out a
+helper prepare_to_stop_sync_thread() to replace stop_sync_thread().
 
+Also return error to user if idle/frozen_sync_thread() failed, otherwise
+user will be misleaded.
+
+Fixes: 130443d60b1b ("md: refactor idle/frozen_sync_thread() to fix deadlock")
+Fixes: 8e8e2518fcec ("md: Close race when setting 'action' to 'idle'.")
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/md.c | 20 ++------------------
- 1 file changed, 2 insertions(+), 18 deletions(-)
+ drivers/md/md.c | 105 ++++++++++++++++++++++++++++++------------------
+ 1 file changed, 67 insertions(+), 38 deletions(-)
 
 diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 2208eed3baac..60f99768a1a9 100644
+index 60f99768a1a9..9ea05de79fe4 100644
 --- a/drivers/md/md.c
 +++ b/drivers/md/md.c
-@@ -2904,7 +2904,6 @@ static int add_bound_rdev(struct md_rdev *rdev)
- 		set_bit(MD_RECOVERY_RECOVER, &mddev->recovery);
- 	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
- 	md_new_event();
--	md_wakeup_thread(mddev->thread);
- 	return 0;
+@@ -4846,26 +4846,34 @@ action_show(struct mddev *mddev, char *page)
+ 	return sprintf(page, "%s\n", type);
  }
  
-@@ -3019,10 +3018,8 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
- 
- 			if (err == 0) {
- 				md_kick_rdev_from_array(rdev);
--				if (mddev->pers) {
-+				if (mddev->pers)
- 					set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
--					md_wakeup_thread(mddev->thread);
--				}
- 				md_new_event();
- 			}
- 		}
-@@ -3052,7 +3049,6 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
- 		clear_bit(BlockedBadBlocks, &rdev->flags);
- 		wake_up(&rdev->blocked_wait);
- 		set_bit(MD_RECOVERY_NEEDED, &rdev->mddev->recovery);
--		md_wakeup_thread(rdev->mddev->thread);
- 
- 		err = 0;
- 	} else if (cmd_match(buf, "insync") && rdev->raid_disk == -1) {
-@@ -3090,7 +3086,6 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
- 		    !test_bit(Replacement, &rdev->flags))
- 			set_bit(WantReplacement, &rdev->flags);
- 		set_bit(MD_RECOVERY_NEEDED, &rdev->mddev->recovery);
--		md_wakeup_thread(rdev->mddev->thread);
- 		err = 0;
- 	} else if (cmd_match(buf, "-want_replacement")) {
- 		/* Clearing 'want_replacement' is always allowed.
-@@ -3220,7 +3215,6 @@ slot_store(struct md_rdev *rdev, const char *buf, size_t len)
- 		if (rdev->raid_disk >= 0)
- 			return -EBUSY;
- 		set_bit(MD_RECOVERY_NEEDED, &rdev->mddev->recovery);
--		md_wakeup_thread(rdev->mddev->thread);
- 	} else if (rdev->mddev->pers) {
- 		/* Activating a spare .. or possibly reactivating
- 		 * if we ever get bitmaps working here.
-@@ -6166,7 +6160,6 @@ int do_md_run(struct mddev *mddev)
- 	/* run start up tasks that require md_thread */
- 	md_start(mddev);
- 
--	md_wakeup_thread(mddev->thread);
- 	md_wakeup_thread(mddev->sync_thread); /* possibly kick off a reshape */
- 
- 	set_capacity_and_notify(mddev->gendisk, mddev->array_sectors);
-@@ -6187,7 +6180,6 @@ int md_start(struct mddev *mddev)
- 
- 	if (mddev->pers->start) {
- 		set_bit(MD_RECOVERY_WAIT, &mddev->recovery);
--		md_wakeup_thread(mddev->thread);
- 		ret = mddev->pers->start(mddev);
- 		clear_bit(MD_RECOVERY_WAIT, &mddev->recovery);
- 		md_wakeup_thread(mddev->sync_thread);
-@@ -6232,7 +6224,6 @@ static int restart_array(struct mddev *mddev)
- 	pr_debug("md: %s switched to read-write mode.\n", mdname(mddev));
- 	/* Kick recovery or resync if necessary */
- 	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
--	md_wakeup_thread(mddev->thread);
- 	md_wakeup_thread(mddev->sync_thread);
- 	sysfs_notify_dirent_safe(mddev->sysfs_state);
- 	return 0;
-@@ -6376,7 +6367,6 @@ static int md_set_readonly(struct mddev *mddev, struct block_device *bdev)
- 	if (!test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
- 		did_freeze = 1;
- 		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
--		md_wakeup_thread(mddev->thread);
++static bool sync_thread_stopped(struct mddev *mddev, int *sync_seq)
++{
++	if (!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
++		return true;
++
++	if (sync_seq && *sync_seq != atomic_read(&mddev->sync_seq))
++		return true;
++
++	return false;
++}
++
+ /**
+- * stop_sync_thread() - wait for sync_thread to stop if it's running.
++ * prepare_to_stop_sync_thread() - prepare to stop sync_thread if it's running.
+  * @mddev:	the array.
+- * @locked:	if set, reconfig_mutex will still be held after this function
+- *		return; if not set, reconfig_mutex will be released after this
+- *		function return.
+- * @check_seq:	if set, only wait for curent running sync_thread to stop, noted
+- *		that new sync_thread can still start.
++ * @unlock:	whether or not caller want to release reconfig_mutex if
++ *		sync_thread is not running.
++ *
++ * Return true if sync_thread is running, release reconfig_mutex and do
++ * preparatory work to stop sync_thread, caller should wait for
++ * sync_thread_stopped() to return true. Return false if sync_thread is not
++ * running, reconfig_mutex will be released if @unlock is set.
+  */
+-static void stop_sync_thread(struct mddev *mddev, bool locked, bool check_seq)
++static bool prepare_to_stop_sync_thread(struct mddev *mddev, bool unlock)
+ {
+-	int sync_seq;
+-
+-	if (check_seq)
+-		sync_seq = atomic_read(&mddev->sync_seq);
+-
+ 	if (!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
+-		if (!locked)
++		if (unlock)
+ 			mddev_unlock(mddev);
+-		return;
++		return false;
  	}
  
- 	stop_sync_thread(mddev, false, false);
-@@ -6408,7 +6398,6 @@ static int md_set_readonly(struct mddev *mddev, struct block_device *bdev)
- 	if ((mddev->pers && !err) || did_freeze) {
- 		clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 		set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
--		md_wakeup_thread(mddev->thread);
- 		sysfs_notify_dirent_safe(mddev->sysfs_state);
+ 	mddev_unlock(mddev);
+@@ -4879,53 +4887,67 @@ static void stop_sync_thread(struct mddev *mddev, bool locked, bool check_seq)
+ 	if (work_pending(&mddev->sync_work))
+ 		flush_work(&mddev->sync_work);
+ 
+-	wait_event(resync_wait,
+-		   !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) ||
+-		   (check_seq && sync_seq != atomic_read(&mddev->sync_seq)));
+-
+-	if (locked)
+-		mddev_lock_nointr(mddev);
++	return true;
+ }
+ 
+-static void idle_sync_thread(struct mddev *mddev)
++static int idle_sync_thread(struct mddev *mddev)
+ {
+-	mutex_lock(&mddev->sync_mutex);
++	int sync_seq = atomic_read(&mddev->sync_seq);
++	int err = mutex_lock_interruptible(&mddev->sync_mutex);
++
++	if (err)
++		return err;
+ 	clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+ 
+-	if (mddev_lock(mddev)) {
++	err = mddev_lock(mddev);
++	if (err) {
+ 		mutex_unlock(&mddev->sync_mutex);
+-		return;
++		return err;
  	}
  
-@@ -6430,7 +6419,6 @@ static int do_md_stop(struct mddev *mddev, int mode,
- 	if (!test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
- 		did_freeze = 1;
- 		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
--		md_wakeup_thread(mddev->thread);
+-	stop_sync_thread(mddev, false, true);
++	if (prepare_to_stop_sync_thread(mddev, true))
++		err = wait_event_interruptible(resync_wait,
++			   sync_thread_stopped(mddev, &sync_seq));
++
+ 	mutex_unlock(&mddev->sync_mutex);
++
++	return err;
+ }
+ 
+-static void frozen_sync_thread(struct mddev *mddev)
++static int frozen_sync_thread(struct mddev *mddev)
+ {
+-	mutex_lock(&mddev->sync_mutex);
++	int err = mutex_lock_interruptible(&mddev->sync_mutex);
++
++	if (err)
++		return err;
+ 	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+ 
+-	if (mddev_lock(mddev)) {
++	err = mddev_lock(mddev);
++	if (err) {
+ 		mutex_unlock(&mddev->sync_mutex);
+-		return;
++		return err;
  	}
  
- 	stop_sync_thread(mddev, true, false);
-@@ -6444,7 +6432,6 @@ static int do_md_stop(struct mddev *mddev, int mode,
- 		if (did_freeze) {
- 			clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 			set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
--			md_wakeup_thread(mddev->thread);
- 		}
+-	stop_sync_thread(mddev, false, false);
++	if (prepare_to_stop_sync_thread(mddev, true))
++		err = wait_event_interruptible(resync_wait,
++			   sync_thread_stopped(mddev, NULL));
+ 	mutex_unlock(&mddev->sync_mutex);
++
++	return err;
+ }
+ 
+ static ssize_t
+ action_store(struct mddev *mddev, const char *page, size_t len)
+ {
++	int err = 0;
++
+ 	if (!mddev->pers || !mddev->pers->sync_request)
+ 		return -EINVAL;
+ 
+-
+ 	if (cmd_match(page, "idle"))
+-		idle_sync_thread(mddev);
++		err = idle_sync_thread(mddev);
+ 	else if (cmd_match(page, "frozen"))
+-		frozen_sync_thread(mddev);
++		err = frozen_sync_thread(mddev);
+ 	else if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
  		return -EBUSY;
- 	}
-@@ -6985,9 +6972,7 @@ static int hot_remove_disk(struct mddev *mddev, dev_t dev)
- 
- 	md_kick_rdev_from_array(rdev);
- 	set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
--	if (mddev->thread)
--		md_wakeup_thread(mddev->thread);
--	else
-+	if (!mddev->thread)
- 		md_update_sb(mddev, 1);
- 	md_new_event();
- 
-@@ -7069,7 +7054,6 @@ static int hot_add_disk(struct mddev *mddev, dev_t dev)
- 	 * array immediately.
- 	 */
+ 	else if (cmd_match(page, "resync"))
+@@ -4934,7 +4956,6 @@ action_store(struct mddev *mddev, const char *page, size_t len)
+ 		clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+ 		set_bit(MD_RECOVERY_RECOVER, &mddev->recovery);
+ 	} else if (cmd_match(page, "reshape")) {
+-		int err;
+ 		if (mddev->pers->start_reshape == NULL)
+ 			return -EINVAL;
+ 		err = mddev_lock(mddev);
+@@ -4980,7 +5001,7 @@ action_store(struct mddev *mddev, const char *page, size_t len)
  	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
--	md_wakeup_thread(mddev->thread);
- 	md_new_event();
- 	return 0;
+ 	md_wakeup_thread(mddev->thread);
+ 	sysfs_notify_dirent_safe(mddev->sysfs_action);
+-	return len;
++	return err ? err : len;
+ }
  
+ static struct md_sysfs_entry md_scan_mode =
+@@ -6280,7 +6301,11 @@ static void md_clean(struct mddev *mddev)
+ 
+ static void __md_stop_writes(struct mddev *mddev)
+ {
+-	stop_sync_thread(mddev, true, false);
++	if (prepare_to_stop_sync_thread(mddev, false)) {
++		wait_event(resync_wait, sync_thread_stopped(mddev, NULL));
++		mddev_lock_nointr(mddev);
++	}
++
+ 	del_timer_sync(&mddev->safemode_timer);
+ 
+ 	if (mddev->pers && mddev->pers->quiesce) {
+@@ -6369,7 +6394,8 @@ static int md_set_readonly(struct mddev *mddev, struct block_device *bdev)
+ 		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+ 	}
+ 
+-	stop_sync_thread(mddev, false, false);
++	if (prepare_to_stop_sync_thread(mddev, true))
++		wait_event(resync_wait, sync_thread_stopped(mddev, NULL));
+ 	wait_event(mddev->sb_wait,
+ 		   !test_bit(MD_SB_CHANGE_PENDING, &mddev->sb_flags));
+ 	mddev_lock_nointr(mddev);
+@@ -6421,7 +6447,10 @@ static int do_md_stop(struct mddev *mddev, int mode,
+ 		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+ 	}
+ 
+-	stop_sync_thread(mddev, true, false);
++	if (prepare_to_stop_sync_thread(mddev, false)) {
++		wait_event(resync_wait, sync_thread_stopped(mddev, NULL));
++		mddev_lock_nointr(mddev);
++	}
+ 
+ 	mutex_lock(&mddev->open_mutex);
+ 	if ((mddev->pers && atomic_read(&mddev->openers) > !!bdev) ||
 -- 
 2.39.2
 
