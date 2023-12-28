@@ -1,126 +1,211 @@
-Return-Path: <linux-kernel+bounces-12858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E916581FB42
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 21:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 69A0681FB4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 22:02:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CA13285E09
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:56:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1630A285D9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 21:02:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1660107BB;
-	Thu, 28 Dec 2023 20:56:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16F610954;
+	Thu, 28 Dec 2023 21:02:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="w1sBAIFd"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="h1XN08sq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDFB710787
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 20:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6d9b082bb80so4965965b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:56:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703796997; x=1704401797; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=t78hDBrUy2r/v4jKJBjn31weh0NRCJxOqGE4NBHPluI=;
-        b=w1sBAIFdwJrNyBUxKWmubxn7zTWWgDNnoVO8C59AA3AmGQTbOrT/nUKIl2XNjbSPLm
-         uyq8zueLsATzEj3gI5oAgGryStoLljL0uhjcu+iniptc9jW+owH1hg2XEgzjPEqvRah8
-         vNoeAaGrHlKVNmsYlXaMYGvtaAAFXYREzeHWoN9dcyEWi+1BX0Uvivcug3x1WTmZgohc
-         1oW+Krt3DlXNKpJJLzmdt+N7LvzgnWMgkf9yFYtBLthZ/FtP0JED4NMBPP7K0Wwx4HMS
-         /D0id/h1ixCmcehD+hzq+9HU3sxsHPXBfxHXcA4SF2QPGaK9NpKZJn/LuQMSnI7W5Y5y
-         Fi+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703796997; x=1704401797;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=t78hDBrUy2r/v4jKJBjn31weh0NRCJxOqGE4NBHPluI=;
-        b=Z89nbpnq2uHpeiVAEGnIfMfUGPTqdCeEa+7uv2v4EiaegHZgnZkvcxOtypuas/HIy0
-         mAYDYZ6JNmf5mz4BU18akkoFkfT/8ka72H4VTRaj080lEicQQEODBDb7f+yOMCCfj9HO
-         yE+wQBU4I0ADkyFcyu4DeKTW93R0R6WpzGQwv33qGyNf5hueUkv+lsxWPeZQjp/UCZKX
-         9dQkVoOiK5Bq5te7npwRDybhowQd7/XQuK2qMGVDiGz1cNNXfm3pTGtyAYfHgiRmXM4d
-         gEMKJiXsRKxaqZErx4bcAz6AnagD2Ss0YGM6AYspbFOJXYjfbrE6A9JdLl6gf71/e2Qv
-         WsOg==
-X-Gm-Message-State: AOJu0YzAQ54D6C8xgNoyrozoQYlu0hVVR+Ev0J+X0Z+xBAOQRjoR/iuk
-	hBZs2PihwYbA5g0pwvBzvBseTPaCV+1maO6iyYc=
-X-Google-Smtp-Source: AGHT+IGiO0t4snAjRG1yLuyS5d/NOaZO8at8Abzneb1Hg2bheA9CKjAERnPAP6Zpoa1kFQT/Fi3/5qOQwzM0
-X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
- (user=tanzirh job=sendgmr) by 2002:a62:6386:0:b0:6d9:8a94:e0d with SMTP id
- x128-20020a626386000000b006d98a940e0dmr474300pfb.5.1703796997142; Thu, 28 Dec
- 2023 12:56:37 -0800 (PST)
-Date: Thu, 28 Dec 2023 20:56:35 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F68107B8;
+	Thu, 28 Dec 2023 21:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703797333; x=1704402133; i=markus.elfring@web.de;
+	bh=zCoJyL9Lw4BVM5kJ+m1jFQlSFuHfKA5ZkN/ugCaGkpc=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=h1XN08sqdVCVFxsP7TYketpXPUaKnK1+M0EdcqABxTYqmQD1sm2wA9JXSH2zRTms
+	 z5enO3BSwZz2Dp0wjSsUFAnXSxLwUo+y6PMawu74k0aTvm8o+JlR7Oy7W/aaMMlMo
+	 ShkRlcxI+dm847VBWVxmszSwD3W+YueSu5syaciftS5w/pC0Nj8n9/hSGCeH+5lF3
+	 8TlMsyNZ0fXwu+DzltBcBEG0ebcMIfREBkiFD8DijLpPw3XGhcKAVrGuSB+kBZS0t
+	 830/0GPfL5unmeNyZpvG2GL8d5EUp07UXJgM2A7ETV8t5A/fKBDxXHWnD2Qg8cBWG
+	 R5n9WDRvAF5QoI47uA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MiuSe-1qmwgD2V0e-00eyTS; Thu, 28
+ Dec 2023 22:02:13 +0100
+Message-ID: <70ebc121-4332-4c64-9a20-29837758aa19@web.de>
+Date: Thu, 28 Dec 2023 22:02:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAALhjWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDIyML3dSKksSknFRdQ4s0A0vTVIPE1KREJaDqgqLUtMwKsEnRsbW1ALZ mBnlZAAAA
-X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1703796995; l=1334;
- i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
- bh=qhMqheLdJU1VM1OLVkQtPBRBCwKZDC1Q/0SWaAx4u+0=; b=BD9Q3nkFn2wtF6zpV3w01mM4zCm8MM5HRaJxDkY7ofpa9hym+GTTKAk+DFyIE37NSEEV5BOyj
- 30PZnIux5Y4DuYgV8D/apJ7zr4daOa63euP1TMUKZcHzx2qpUD04QN6
-X-Mailer: b4 0.12.4
-Message-ID: <20231228-extable-v1-1-32a18c66b440@google.com>
-Subject: [PATCH] x86/vdso: shrink vdso/extable.i via IWYU
-From: Tanzir Hasan <tanzirh@google.com>
-To: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>
-Cc: linux-kernel@vger.kernel.org, Nick Desaulniers <nnn@google.com>, 
-	Tanzir Hasan <tanzirh@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: linux-fsdevel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Miklos Szeredi <miklos@szeredi.hu>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] fuse: Improve error handling in two functions
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:sHkI+Rrr7HyBvSt5sCxNI/wtzr9ipPp2/2/6P80wlBkN3nQbGSa
+ Pw8eCfF+LdglRxo1FTd7N+ircSHEN5pTeCjCbQ4HOPx0DAspdALzJR+Vy9U3ghX/2kl/E8h
+ Ffv58CG14w3dWhInpWq7/8AF5jZF/mEfAOh2Kd4TyPy+r2K0GpOUiaCaWo9AnVD2DokyjpH
+ 2PHCtpW4IpdzwdxZQi+lw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:STsuKzCbHW8=;Wxxtfx1zyOZ52rRYSBkfa/Yl100
+ dCwVvtn/F+YONzPwvQbiHmNetoF+3NOTfnHTK7AXuSM31nifq+OgH3RbZxu3EfRXwSKWGvY1D
+ 7wdBR1+CilJVvWKVkJZIFG2ZZoXqOEW6KwHqRJuXEe5DxgtpPqBRa0T5T/RSbtNt9bIGwdubw
+ MSUkdU23oU5Elc+/IDBae1dk8+ZJc0jMr6QhvPo0Ve4YrN66OE7eTwVXQdkUWyUBo6lvKJjE6
+ aF5bzsD7HzDCQckGIjsR6RrWPNlsqf9VJNFy222/B9f/INZB6yAuxoO2+b/ayrHPTertRqO3f
+ SncHB0+LWe12u7Hg4v7kgxBdkyfiHbb0wHB/R437FhAnNs/L0Sz/wUZSmtMki0DBEMKyfU/oD
+ 0Gov5iNtsY9zFAT3yiUeK4bgug0HaDFmIe3ZLc6ewZN7e7Yqeuw5Gql/dtUQipqearRe/qKZN
+ LPreTFHkU6QlazV/Huq5NHQDk4SdlNanPRpvq40wxeTnEmvYEsD8FC+iRdG1XPpi7P0YRG2Ca
+ XvMZbWdqF5JgnWftQjmltHSWuEIy/r2lF5sBlS1UkiMPeHTb5+qk0SZy4e58BFHstkk0bTVr8
+ 2Qxih6GwQ4IAKzbx4+kGq5jMqBnEBJizwUcMtB4OiPMPbgrV01qHVFznXPZ6zlwzcfigfyhlP
+ 2A2zwiGEqYKeAMfe6TRuzG5FayiL8SdzXtjeDqC+QOF0No+H0EKj47cMSO0WUAcQvvo+A01gt
+ 4awQetcFgRlbrwqln0CHdcoZnZjJ7iCZ2zb1Vl82xtUlo9ai6o7RML8jHATq+HwaGbTqtieyS
+ YMp8SJv35QX1pqlkkjHtTHQrKIh8k534EwdJ6nfQH3ZbFqFa9fbEqjnTTU1RhQRaPjwbNoPXZ
+ Y5ejcOAOsgOC0wd1vfeaX7Lkf8bCf9FULNvzh935sepOGq9oYjcnZILDLkot8pCCmno9swct0
+ INueJWRTGj84w4IkTcmFCoEGXUQ=
 
-This diff uses an open source tool include-what-you-use (IWYU) to modify
-the include list, changing indirect includes to direct includes. IWYU is
-implemented using the IWYUScripts github repository which is a tool that
-is currently undergoing development. These changes seek to improve build
-times.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 28 Dec 2023 21:57:00 +0100
 
-This change to vdso/extable.c resulted in a preprocessed size of
-vdso/extable.i from 64332 lines to 45377 lines (-27%) for the x86
-defconfig.
+The kfree() function was called in two cases during error handling
+even if the passed variable contained a null pointer.
+This issue was detected by using the Coccinelle software.
 
-Signed-off-by: Tanzir Hasan <tanzirh@google.com>
----
- arch/x86/entry/vdso/extable.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+* Thus use additional labels.
 
-diff --git a/arch/x86/entry/vdso/extable.c b/arch/x86/entry/vdso/extable.c
-index afcf5b65beef..8221231917ec 100644
---- a/arch/x86/entry/vdso/extable.c
-+++ b/arch/x86/entry/vdso/extable.c
-@@ -1,10 +1,14 @@
- // SPDX-License-Identifier: GPL-2.0
--#include <linux/err.h>
- #include <linux/mm.h>
-+#include <linux/sched.h>
-+#include <linux/stddef.h>
-+#include <linux/types.h>
- #include <asm/current.h>
--#include <asm/traps.h>
-+#include <asm/trapnr.h>
- #include <asm/vdso.h>
- 
-+struct pt_regs;
-+
- struct vdso_exception_table_entry {
- 	int insn, fixup;
- };
+* Move error code assignments into if branches.
 
----
-base-commit: f5837722ffecbbedf1b1dbab072a063565f0dad1
-change-id: 20231228-extable-18f095e0aeba
+* Delete initialisations (for the variable =E2=80=9Cerr=E2=80=9D)
+  which became unnecessary with this refactoring.
 
-Best regards,
--- 
-Tanzir Hasan <tanzirh@google.com>
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ fs/fuse/dev.c | 44 ++++++++++++++++++++++++++------------------
+ 1 file changed, 26 insertions(+), 18 deletions(-)
+
+diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
+index 1a8f82f478cb..8f2975b1aed3 100644
+=2D-- a/fs/fuse/dev.c
++++ b/fs/fuse/dev.c
+@@ -1468,29 +1468,30 @@ static int fuse_notify_inval_entry(struct fuse_con=
+n *fc, unsigned int size,
+ 				   struct fuse_copy_state *cs)
+ {
+ 	struct fuse_notify_inval_entry_out outarg;
+-	int err =3D -ENOMEM;
++	int err;
+ 	char *buf;
+ 	struct qstr name;
+
+ 	buf =3D kzalloc(FUSE_NAME_MAX + 1, GFP_KERNEL);
+-	if (!buf)
+-		goto err;
++	if (!buf) {
++		err =3D -ENOMEM;
++		goto finish_copy;
++	}
+
+-	err =3D -EINVAL;
+ 	if (size < sizeof(outarg))
+-		goto err;
++		goto e_inval;
+
+ 	err =3D fuse_copy_one(cs, &outarg, sizeof(outarg));
+ 	if (err)
+ 		goto err;
+
+-	err =3D -ENAMETOOLONG;
+-	if (outarg.namelen > FUSE_NAME_MAX)
++	if (outarg.namelen > FUSE_NAME_MAX) {
++		err =3D -ENAMETOOLONG;
+ 		goto err;
++	}
+
+-	err =3D -EINVAL;
+ 	if (size !=3D sizeof(outarg) + outarg.namelen + 1)
+-		goto err;
++		goto e_inval;
+
+ 	name.name =3D buf;
+ 	name.len =3D outarg.namelen;
+@@ -1506,8 +1507,11 @@ static int fuse_notify_inval_entry(struct fuse_conn=
+ *fc, unsigned int size,
+ 	kfree(buf);
+ 	return err;
+
++e_inval:
++	err =3D -EINVAL;
+ err:
+ 	kfree(buf);
++finish_copy:
+ 	fuse_copy_finish(cs);
+ 	return err;
+ }
+@@ -1516,29 +1520,30 @@ static int fuse_notify_delete(struct fuse_conn *fc=
+, unsigned int size,
+ 			      struct fuse_copy_state *cs)
+ {
+ 	struct fuse_notify_delete_out outarg;
+-	int err =3D -ENOMEM;
++	int err;
+ 	char *buf;
+ 	struct qstr name;
+
+ 	buf =3D kzalloc(FUSE_NAME_MAX + 1, GFP_KERNEL);
+-	if (!buf)
+-		goto err;
++	if (!buf) {
++		err =3D -ENOMEM;
++		goto finish_copy;
++	}
+
+-	err =3D -EINVAL;
+ 	if (size < sizeof(outarg))
+-		goto err;
++		goto e_inval;
+
+ 	err =3D fuse_copy_one(cs, &outarg, sizeof(outarg));
+ 	if (err)
+ 		goto err;
+
+-	err =3D -ENAMETOOLONG;
+-	if (outarg.namelen > FUSE_NAME_MAX)
++	if (outarg.namelen > FUSE_NAME_MAX) {
++		err =3D -ENAMETOOLONG;
+ 		goto err;
++	}
+
+-	err =3D -EINVAL;
+ 	if (size !=3D sizeof(outarg) + outarg.namelen + 1)
+-		goto err;
++		goto e_inval;
+
+ 	name.name =3D buf;
+ 	name.len =3D outarg.namelen;
+@@ -1554,8 +1559,11 @@ static int fuse_notify_delete(struct fuse_conn *fc,=
+ unsigned int size,
+ 	kfree(buf);
+ 	return err;
+
++e_inval:
++	err =3D -EINVAL;
+ err:
+ 	kfree(buf);
++finish_copy:
+ 	fuse_copy_finish(cs);
+ 	return err;
+ }
+=2D-
+2.43.0
 
 
