@@ -1,121 +1,108 @@
-Return-Path: <linux-kernel+bounces-12670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F285B81F8B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:14:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A5E081F8B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 14:17:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED4E21C21DF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:14:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAA54B236B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:17:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 800FF8472;
-	Thu, 28 Dec 2023 13:14:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76CE98475;
+	Thu, 28 Dec 2023 13:16:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="XcWHpjiZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LICwZNZ+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 155C379E2
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 13:14:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5cece20f006so53411017b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 05:14:04 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985E079CF;
+	Thu, 28 Dec 2023 13:16:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d3cfb1568eso49343665ad.1;
+        Thu, 28 Dec 2023 05:16:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1703769244; x=1704374044; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g7n5edAdKp2sw1VexxnRBg7C0RuN6uXmsbFRcdBd1nw=;
-        b=XcWHpjiZ72Xqv9M8Q4rejHIMEs3yccZP5hmTcrYBO8xWMvRZCuGMW52VOvIZWUR7N2
-         KyG+LTn1kiJo5XuDmM951mbb0/qewAqJVrOL2UEwTEJEkOkrv/YnEMFZdEDVzhfxkGaO
-         iO/gn1SeUjacStqayhmTspn9LMpDMq74M9yUqYtKnkIPagD1rWgd5ZLdwKiNrXyKZ9hQ
-         MFhUz5cWtQxJwuyXoEFa+YzEKiHtT7ZNGby3Okz58JWeMyg0zE65pNRFKWzWQIuPovgf
-         Tl4/MLkrk7LcTA+IYKb5JeDfjdY6FB5bXrxJkGBnbahQqVd8N2NmaxC4AvKcmALOkALc
-         hm1g==
+        d=gmail.com; s=20230601; t=1703769409; x=1704374209; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZdxMA0IFnQNSF87xNJWS4MQoHn8cWo2ZJ5T/rZOTLd4=;
+        b=LICwZNZ+nOf3lXg54F3hV5fE2iRbdB5vVNY5xDIRg+CwB1NwSlxIozDXrT8BMAcTMo
+         0EnT9Zxd6chwRviwffDdA0kXFKqdQJTRCM4SdmqSEDhm3hqIp4zTXx+4hqJe+XvlFySg
+         rTd4+/EotHmceEhbg/T4FFFKKfHm6vQovStBoHHB1ZsJW8+iRP0ttQOTy8u3EsMDE8pz
+         D7dgJ5kYXvK4y3vOQOHozQkYFDS4WfOaGxkzeNxIywEu4oZ3l+huxFWEgYpP0NmUVMQn
+         +gusuD/21XQyolkOU7/9h5ySxiFrc+oUWEzyvce88U2hqcyDxdALq9oSp5kstFQuogyJ
+         tj6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703769244; x=1704374044;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g7n5edAdKp2sw1VexxnRBg7C0RuN6uXmsbFRcdBd1nw=;
-        b=kfBUwWJXE6hlzx+ZBr6i9OmAnQ/nJXvtl409mxcgFfq4RbvM8Asbyj9Ij4n8CH80jf
-         kKzhdUVxo9EEv/dfOL0P2A8dBm3XHkogB5GWYFSK+dnZ4mZxHO39bzaov52evSaUY7zO
-         wowrifMWWFtNK4SNtFzfEQwwaBucxWtwgHJ76cE9JfeUPSRxxBuhlwIgyApw5kAHoodF
-         53F8qocrmaHidoJU8lmqodXAFYr+MXUdicNtQugVmyg7+FPWuWzvbqGn1mU2/L49j5LU
-         FfHTjNeFvBPjL2NUQxJd5UroSpzFsl0pdeWY15P28b4KKfZqRXsiSBRcmqYcxcF0Awde
-         pNkQ==
-X-Gm-Message-State: AOJu0YwMf9ZskBwnMZh4UV+RNRFGVqgpEK9cxMxwi7BzsUpIGD8g0nke
-	xLg8mQrWOkXktes5GRMTaPZDxVh90/YF5dSjulbHaowAjGoB
-X-Google-Smtp-Source: AGHT+IEvpcf3ph0FCh/as1QBcz6cCZaOokUNzWN5vXaOHCzDr32tNTP6Bo0dDisUpWXp/cuL8RewJyptMHvjCQRk/zM=
-X-Received: by 2002:a81:4854:0:b0:5e8:2bd:9b96 with SMTP id
- v81-20020a814854000000b005e802bd9b96mr6056023ywa.17.1703769243836; Thu, 28
- Dec 2023 05:14:03 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703769409; x=1704374209;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZdxMA0IFnQNSF87xNJWS4MQoHn8cWo2ZJ5T/rZOTLd4=;
+        b=f3K5K7RjOCn+NZOUxbqGmEQSzBUdZEt1foEOQ0N9Oem05p79cvdzij22Aj8sDJRWM3
+         pidvyzRDrIp/FNmBJcD6tnz5q81KX8hQHVe/jYrpf9ywmYDgUelUrlmrrMVl6MjZRR/B
+         1qlQIz4jlOMndxu4223P80+5ZqaWEYYwPShy4PdwpNITgclwu/fQyQFbW9aoejMVz2bG
+         8vNm1Esa68mYcjF4AG6WaYUPRBj5bPz0MiF+MgiaAdzhPqBRmfuXT8SzhR6AP+bO7+zb
+         Atkf/TqCcbMqzOEyqRwI++odQk+hAnhwhaakCBCardPCcJP8TaNYJ0V3nW/pBSDoPmGW
+         qpcw==
+X-Gm-Message-State: AOJu0YwS5kfP8IoLtHhqKhPVW7TkT/NIfKl3YkkvsYRRgg2o/0WV8iCN
+	z6BaXhQtNn8GBGpoCEgBLdc=
+X-Google-Smtp-Source: AGHT+IH8H9gke14Hfds3PK61sbjEENzKw+rV/8YgR/y3014PaI2W0cSmtiFb5LSDfFmIPkfRF8gw9w==
+X-Received: by 2002:a17:903:44d:b0:1d0:8554:5dd5 with SMTP id iw13-20020a170903044d00b001d085545dd5mr10136244plb.37.1703769408774;
+        Thu, 28 Dec 2023 05:16:48 -0800 (PST)
+Received: from localhost.localdomain ([2408:8207:2540:8c00:3708:559:ea20:9883])
+        by smtp.gmail.com with ESMTPSA id m10-20020a170902db0a00b001d0b4693539sm13864221plx.189.2023.12.28.05.16.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Dec 2023 05:16:48 -0800 (PST)
+From: Jianfeng Liu <liujianfeng1994@gmail.com>
+To: ezequiel@vanguardiasur.com.ar,
+	p.zabel@pengutronix.de,
+	mchehab@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	heiko@sntech.de,
+	sfr@canb.auug.org.au
+Cc: liujianfeng1994@gmail.com,
+	linux-media@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2 0/3] Add hantro g1 video decoder support for RK3588
+Date: Thu, 28 Dec 2023 21:16:14 +0800
+Message-Id: <20231228131617.3411561-1-liujianfeng1994@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228064358.3042747-1-linma@zju.edu.cn>
-In-Reply-To: <20231228064358.3042747-1-linma@zju.edu.cn>
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Thu, 28 Dec 2023 08:13:52 -0500
-Message-ID: <CAM0EoM=2v9-_Y+aiOaMR8=uWnwn_nwOMrBJkP=4UGoKLJniC6g@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] net/sched: cls_api: complement tcf_tfilter_dump_policy
-To: Lin Ma <linma@zju.edu.cn>
-Cc: xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 28, 2023 at 1:44=E2=80=AFAM Lin Ma <linma@zju.edu.cn> wrote:
->
-> In function `tc_dump_tfilter`, the attributes array is parsed via
-> tcf_tfilter_dump_policy which only describes TCA_DUMP_FLAGS. However,
-> the NLA TCA_CHAIN is also accessed with `nla_get_u32`.
->
-> The access to TCA_CHAIN is introduced in commit 5bc1701881e3 ("net:
-> sched: introduce multichain support for filters") and no nla_policy is
-> provided for parsing at that point. Later on, tcf_tfilter_dump_policy is
-> introduced in commit f8ab1807a9c9 ("net: sched: introduce terse dump
-> flag") while still ignoring the fact that TCA_CHAIN needs a check. This
-> patch does that by complementing the policy to allow the access
-> discussed here can be safe as other cases just choose rtm_tca_policy as
-> the parsing policy.
->
-> Signed-off-by: Lin Ma <linma@zju.edu.cn>
+This is the v2 version of this series adding hantro g1 video decoder
+support for rk3588.
 
-Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
+Changes in v2:
+- Fix alphabetical order in patch1 and patch3
+- Sort device tree node by bus-address
+- Drop rk3588_vpu_variant fron v1 because that is exactly the same as rk3568_vpu_variant
+- Link to v1: https://lore.kernel.org/all/20231227173911.3295410-1-liujianfeng1994@gmail.com
 
-cheers,
-jamal
+Jianfeng Liu (3):
+  media: verisilicon: Add support for Hantro G1 on RK3588
+  arm64: dts: rockchip: Add Hantro G1 VPU support for RK3588
+  dt-bindings: media: rockchip-vpu: Add RK3588 compatible
 
-> ---
-> V1 -> V2: send to net-next as told by Jamal <jhs@mojatatu.com>
->
->  net/sched/cls_api.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
-> index 1976bd163986..2b5b8eca2ee3 100644
-> --- a/net/sched/cls_api.c
-> +++ b/net/sched/cls_api.c
-> @@ -2732,6 +2732,7 @@ static bool tcf_chain_dump(struct tcf_chain *chain,=
- struct Qdisc *q, u32 parent,
->  }
->
->  static const struct nla_policy tcf_tfilter_dump_policy[TCA_MAX + 1] =3D =
-{
-> +       [TCA_CHAIN]      =3D { .type =3D NLA_U32 },
->         [TCA_DUMP_FLAGS] =3D NLA_POLICY_BITFIELD32(TCA_DUMP_FLAGS_TERSE),
->  };
->
-> --
-> 2.17.1
->
+ .../bindings/media/rockchip-vpu.yaml          |  1 +
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi     | 20 +++++++++++++++++++
+ .../media/platform/verisilicon/hantro_drv.c   |  1 +
+ 3 files changed, 22 insertions(+)
+
+-- 
+2.34.1
+
 
