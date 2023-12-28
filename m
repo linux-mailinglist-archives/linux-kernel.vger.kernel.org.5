@@ -1,99 +1,83 @@
-Return-Path: <linux-kernel+bounces-12571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49E9681F6F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 11:43:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3791081F6FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 11:48:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3A341F233C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:43:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7A7D281B72
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:48:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B393A6FA3;
-	Thu, 28 Dec 2023 10:42:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B07A6FBE;
+	Thu, 28 Dec 2023 10:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XagBvT/Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N0lbqOyo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 722CE63DA;
-	Thu, 28 Dec 2023 10:42:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703760175; x=1735296175;
-  h=message-id:date:mime-version:to:cc:references:from:
-   subject:in-reply-to:content-transfer-encoding;
-  bh=WY3yN9WgNfUdqLLgZpbcv5qQY5jc6G9ySIJZSYYAyew=;
-  b=XagBvT/Zcui/Hv08FxxDnnSbRbaRiAx8ZKC31a09SMgyz694KI5VLcjQ
-   1Orw2ZhInIzknv4vkfCN+edd4PpqMuSGpGcxdluy7z8/12QA/UZq981IC
-   YL9UTY+ltxyahVaSQM1ZdZc7UOFjioZsET4lKJ3ggUCeeTzPdt3WrseWq
-   ahA8zv+u3Vi1U5JzNb+gV2jHewnoKDbvWCQodVC/3IChTS9Z0Y0/B0e4L
-   ziJsUbK3ZeOWZYotCB0HHQMXgckgIPjRJd6wdEjTbFU6bIvCX/Pu1hAri
-   bWE/veS3WFZunJ7GuzyIsigmHTdNCbYNFQWXKERV2z2hr5rFFtwoDyBfi
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="400345434"
-X-IronPort-AV: E=Sophos;i="6.04,311,1695711600"; 
-   d="scan'208";a="400345434"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 02:42:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="897169005"
-X-IronPort-AV: E=Sophos;i="6.04,311,1695711600"; 
-   d="scan'208";a="897169005"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Dec 2023 02:42:50 -0800
-Message-ID: <1718f25d-3274-3e4d-0cdf-72fda8788e39@linux.intel.com>
-Date: Thu, 28 Dec 2023 12:44:15 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67AB46AA4;
+	Thu, 28 Dec 2023 10:47:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32363C433C8;
+	Thu, 28 Dec 2023 10:47:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703760473;
+	bh=5Oj5V39vAkN1/+i+CrgR3hM1xoyNKUjIkt8y2kK2itI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=N0lbqOyoJyeMAeYseh2byh6ANjb73lLSFoo/4Vf3UE84vYDk1TieZPcsFMbb0loqB
+	 J5c41nJjfroqg+lE9GGc0kOGcMTJxCy3AYauRg4GYPutMX/m+iGhLmhRqkfKY8IoEv
+	 HQ6gkkpXqpfaUSwSu7V7SK0kirgYW//TghKZrO0OFcZ8vFivTervREY8Iia7YzaARU
+	 4nrS8pD062BAXhO50kSt3MeaqULSjKL976XU3bOxCS4tcxu9/yoI/LjuylHOVl+oXi
+	 rYFTNFdvU8qGKDS84wZ+xsCp/I0UcygpkM55NDFDntoL8POVYFgAFXl/4qpQMmPknr
+	 lSRN3+TRLr3ug==
+Date: Thu, 28 Dec 2023 11:47:45 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: David Howells <dhowells@redhat.com>, Jeff Layton <jlayton@kernel.org>,
+	Steve French <smfrench@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v5 15/40] netfs: Add support for DIO buffering
+Message-ID: <20231228-wohlbefinden-museen-c5efad4e0d84@brauner>
+References: <20231221132400.1601991-1-dhowells@redhat.com>
+ <20231221132400.1601991-16-dhowells@redhat.com>
+ <20231226165442.GA1202197@dev-arch.thelio-3990X>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Content-Language: en-US
-To: Chunfeng Yun <chunfeng.yun@mediatek.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Conor Dooley <conor+dt@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Eddie Hung <eddie.hung@mediatek.com>, Macpaul Lin <macpaul.lin@mediatek.com>
-References: <20231227060316.8539-1-chunfeng.yun@mediatek.com>
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Re: [PATCH v4 1/3] dt-bindings: usb: mtk-xhci: add a property for
- Gen1 isoc-in transfer issue
-In-Reply-To: <20231227060316.8539-1-chunfeng.yun@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231226165442.GA1202197@dev-arch.thelio-3990X>
 
-Hi
+> This will break the build with versions of clang that have support for
+> counted_by (as it has been reverted in main but reapplication to main is
+> being actively worked on) because while annotating pointers with this
+> attribute is a goal of the counted_by attribute, it is not ready yet.
+> Please consider removing this and adding a TODO to annotate it when
+> support is available.
 
-On 27.12.2023 8.03, Chunfeng Yun wrote:
-> For Gen1 isoc-in endpoint on controller before about SSUSB IPM v1.6.0, it
-> still send out unexpected ACK after receiving a short packet in burst
-> transfer, this will cause an exception on connected device, specially for
-> a 4k camera.
-> Add a quirk property "rx-fifo-depth" to work around this hardware issue,
-> prefer to use 3k bytes;
-> The side-effect is that may cause performance drop about 10%, including
-> bulk transfer.
+It's really unpleasant that we keep getting new attributes that we
+seemingly are encouraged to use and get sent patches for it. And then we
+learn a little later that that stuff isn't ready yet. It's annoying. I
+know it isn't your fault but it would be wise to be a little more
+careful. IOW, unless both clang and gcc do support that thing
+appropriately don't send patches to various subsystems for this.
 
-Is it be possible to detect those Mediatek xHC versions that need this
-workaround in the xhci-mtk driver directly?
-
-This way we could avoid passing a new "rx-fifo-depth" property to it.
-
-Thanks
-Mathias
-
+In any case, this is now fixed. I pulled an updated version from David.
 
