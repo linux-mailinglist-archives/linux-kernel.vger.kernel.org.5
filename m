@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-12750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C3E481F99C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:25:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B047281F9A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:27:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A35191C21D95
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:25:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 490BC284C29
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:27:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E798DE578;
-	Thu, 28 Dec 2023 15:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC5FE575;
+	Thu, 28 Dec 2023 15:27:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HQ6saf1I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQTpnOAI"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CC2DF41;
-	Thu, 28 Dec 2023 15:25:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63479C433C7;
-	Thu, 28 Dec 2023 15:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ED82F4E7;
+	Thu, 28 Dec 2023 15:27:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93EE2C433C7;
+	Thu, 28 Dec 2023 15:27:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703777143;
-	bh=fuHNC7uZfC1+WxyG8g0nNgGlnHxR9vKtPnXR7gqQsXk=;
+	s=k20201202; t=1703777229;
+	bh=R8Taz5J4WKQtf9AaSv99pT33mk9ZEdsuVHTD2+UCW/Q=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=HQ6saf1IVmeYcYlBEE/26udgM0CH3XrCWXR5JzGij18O3hVGvbYnYfcmBQuvmoUAT
-	 8dey+aLzyuuY6r1lM5G8C6XWt69h103OH5BL74dYKV/XFIz6DsJ8qqkmEcOCTRL1vK
-	 o//m9f2ZEuQMGWh+LNGzcWfk79AnqmnxexH4AT9H0/E/crlw7ORRfqpEBQIFbCTZKM
-	 5PwH5P45kjuHtam+uJMtFLojOS7NQ6bPE0gsVJ/2jTa/lZGjtq9xiGMkySuQTAhnm9
-	 YbCjXvtDuEGgjYXWPzJyuEWCv85XMStTwa1l/iothiPUad0XugdNkoUO4HN4z2Ub3e
-	 gH1DEYz2khGqw==
-Message-ID: <049d9e11-fbee-4aa8-a52d-4b1ea68825b1@kernel.org>
-Date: Thu, 28 Dec 2023 16:25:34 +0100
+	b=LQTpnOAIeKaw/ZFA4GYT3xriXezh/nllXAsfQCBL0iPlmVNZC4guZcsGebq3CQAWS
+	 nwN7mCJ5z3fqXEt8qvgC9r8Dcbq7hQvq9X0//aF4noqUFtTe49VvD/OXUDS7h4Dzol
+	 NWEsbJGJ5Mohp/B9vn0ugA/zM/qKfb6GtwHtpK4jD2E2Mx1JUzWuxHtpPKKkaFnvEb
+	 p2pk0uLyllTO3/mrbsZnY/G5Yq+Z8kfHIXfBLj8ptTITzy0fUV1c6XHpRlggRS6j6S
+	 wC+w1zJnrYgHYmMQtopBrtIyxCOpgzR9myx/2kz3DkcKW5jEuZ8uyh2Xx3gaKqbXwC
+	 1suR4W77t8/AQ==
+Message-ID: <1d4ef18e-bb2c-4ede-872b-19bfd20b8170@kernel.org>
+Date: Thu, 28 Dec 2023 16:27:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,14 +41,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V8 0/3] Add support control UP board CPLD/FPGA pin control
+Subject: Re: [PATCH V8 1/3] mfd: Add support for UP board CPLD/FPGA
+Content-Language: en-US
 To: "larry.lai" <larry.lai@yunjingtech.com>, lee@kernel.org,
  andriy.shevchenko@linux.intel.com, linus.walleij@linaro.org, pavel@ucw.cz
 Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
  linux-leds@vger.kernel.org, GaryWang@aaeon.com.tw, musa.lin@yunjingtech.com,
  jack.chang@yunjingtech.com, noah.hung@yunjingtech.com
 References: <20231228151544.14408-1-larry.lai@yunjingtech.com>
-Content-Language: en-US
+ <20231228151544.14408-2-larry.lai@yunjingtech.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -93,20 +94,41 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231228151544.14408-1-larry.lai@yunjingtech.com>
+In-Reply-To: <20231228151544.14408-2-larry.lai@yunjingtech.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 28/12/2023 16:15, larry.lai wrote:
-> The UP board <https://up-board.org/> is the computer board for 
-> Professional Makers and Industrial Applications. We want to upstream 
-> the UP board 40-pin GP-bus Kernel driver for giving the users better 
-> experience on the software release. (not just download from UP board 
-> github)
+> The UP Squared board <http://www.upboard.com> implements certain
+> features (pin control, onboard LEDs or CEC) through an on-board CPLD/FPGA.
 > 
-> These patches are generated from the Linux kernel mainline tag v6.0.
+> This driver implements the line protocol to read and write registers
+> from the FPGA through regmap. The register address map is also included.
+> 
 
-That's too old. Please use latest mainline.
+...
+
+> +
+> +static const struct acpi_device_id upboard_fpga_acpi_match[] = {
+> +	{ "AANT0F00", (kernel_ulong_t)&upboard_up_fpga_data },
+> +	{ "AANT0F01", (kernel_ulong_t)&upboard_up2_fpga_data },
+> +	{ "AANT0F02", (kernel_ulong_t)&upboard_upcore_crex_fpga_data },
+> +	{ "AANT0F03", (kernel_ulong_t)&upboard_upcore_crst02_fpga_data },
+> +	{ "AANT0F04", (kernel_ulong_t)&upboard_up_fpga_data },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(acpi, upboard_fpga_acpi_match);
+> +
+> +static int upboard_fpga_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct upboard_fpga *ddata;
+> +	int ret;
+> +
+> +	ddata = devm_kzalloc(dev, sizeof(ddata), GFP_KERNEL);
+
+This wasn't tested. You allocate size of the pointer.
+
 
 Best regards,
 Krzysztof
