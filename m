@@ -1,545 +1,247 @@
-Return-Path: <linux-kernel+bounces-12418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF3A681F47C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 04:52:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1185981F47D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 04:53:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 400131F2233A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 03:52:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4BBDB214A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 03:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 302755386;
-	Thu, 28 Dec 2023 03:51:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 216FB1872;
+	Thu, 28 Dec 2023 03:53:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="V98/TIGp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41704684;
-	Thu, 28 Dec 2023 03:51:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=richtek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=richtek.com
-X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
-Received: from 192.168.10.47
-	by mg.richtek.com with MailGates ESMTPS Server V6.0(636808:0:AUTH_RELAY)
-	(envelope-from <cy_huang@richtek.com>)
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256); Thu, 28 Dec 2023 11:51:13 +0800 (CST)
-Received: from ex4.rt.l (192.168.10.47) by ex4.rt.l (192.168.10.47) with
+Received: from esa18.fujitsucc.c3s2.iphmx.com (esa18.fujitsucc.c3s2.iphmx.com [216.71.158.38])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BE8215A8
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 03:53:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1703735622; x=1735271622;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=qrUmE4+eq6IikHbU5B1QMnRfahN1DrCztyK8q02oqeQ=;
+  b=V98/TIGpdci4HoZVjiAXsY3fvqhl7HnedMWaHSnhc5YMijrEBcX4X1FO
+   i+CYsbCU2Nl86FHgu9IfHcRnSF3ufaNXJzMuvecvutIGJ4AIJu3L9lv+J
+   K1CumWZ0KXcxSQ4s3YEpzAaJv4o2eYPFNQ6RXvCcq3URfJARqjPS8w2wb
+   hEpnkYbN3/YrEMi2A/DK2mjDXbbLqJoJjaUeTv1oOc8YDaZZq7XnBfST2
+   aBHgngmNVeYSzfArUkN/YI11BMNZTQv44U3F+r3y8cU5o8k5/EALts304
+   bmYJc+hiI41GBloe6j5np6eOFqmkrRqvfxsxUQxlIegCcY/zGXdCJyKJk
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="110710307"
+X-IronPort-AV: E=Sophos;i="6.04,310,1695654000"; 
+   d="scan'208";a="110710307"
+Received: from mail-os0jpn01lp2104.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.104])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 12:52:29 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nrJIMyMptbvv/p/59hiI+V7Qa6x2DxFOsbOOuPUCYHurATlHd/4BhwrfaVVwZ9C13MxFkGNs9+yO46Ed/ALrlmrBEBmbvWsiT0ZH9cAadK4vzC3EeAXdjplCMka2fbBTw/qVVgrABvW+CcMEjRqbI8dez4490YmZX71lnJDI4AxTwErNaysCiaKX4WbsPZQMlN9fHqk/MoDfaXfhxPy7fd5xm06hUch/9eJmmGQeQiT8zLgkLjZU8Rb6szMYiilQhH0kKPG/JBu1PhWiEb06TMxktuVgqz8+Kb9A9GzygcKHaIO8+OODyqsqRE+Wfu0vZuT3T+xgPWbp8waixydlcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qrUmE4+eq6IikHbU5B1QMnRfahN1DrCztyK8q02oqeQ=;
+ b=XdNrgSptoBqLZ9IwMRAoV9/R+jPOaO3UQ+RlDR1fJAruuxqHILHkgC9Jq/72ATUO7uJXTKe+kvXzr2cGcVEt3xNw4WOLVQlCAEHb/87zUxJHaz2zA0Z8hcM2NOc8TM6iYl8w7MqdqaqRb10B+9NOeon3npKYH+BR+aQ4VJ2pHyLJcbxlKUEyAR+Xw/nNZX3S/EkHH2BTre0TvcqZ4P4gChFQb72VBXy9HIjtw3j6wU2YZ01EyKASXwrwm7ZPl29nREaXBlPjj8Fhb/4CwsSNP/Xt+lm4H5s0CMTx+1/C5TncDM3ctyscyo3F1GUawBBVQDdpW93qpsBMT1Sd/4s/Dg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+Received: from OS0PR01MB5442.jpnprd01.prod.outlook.com (2603:1096:604:a6::10)
+ by TYVPR01MB11364.jpnprd01.prod.outlook.com (2603:1096:400:36b::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.27; Thu, 28 Dec
- 2023 11:51:08 +0800
-Received: from linuxcarl2.richtek.com (192.168.10.154) by ex4.rt.l
- (192.168.10.45) with Microsoft SMTP Server id 15.2.1258.27 via Frontend
- Transport; Thu, 28 Dec 2023 11:51:08 +0800
-From: <cy_huang@richtek.com>
-To: Jonathan Cameron <jic23@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
-CC: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
-	ChiYuan Huang <cy_huang@richtek.com>, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=
-	<u.kleine-koenig@pengutronix.de>, <linux-iio@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] iio: adc: rtq6056: Add support for the whole RTQ6056 family
-Date: Thu, 28 Dec 2023 11:51:07 +0800
-Message-ID: <8bc3368d50db48d11dee63957a1d30bde1d76ce6.1703734994.git.cy_huang@richtek.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1703734994.git.cy_huang@richtek.com>
-References: <cover.1703734994.git.cy_huang@richtek.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.7; Thu, 28 Dec
+ 2023 03:52:25 +0000
+Received: from OS0PR01MB5442.jpnprd01.prod.outlook.com
+ ([fe80::c96f:52b0:dd4e:8d50]) by OS0PR01MB5442.jpnprd01.prod.outlook.com
+ ([fe80::c96f:52b0:dd4e:8d50%6]) with mapi id 15.20.7159.006; Thu, 28 Dec 2023
+ 03:52:25 +0000
+From: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+To: Andrew Morton <akpm@linux-foundation.org>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, "rafael@kernel.org" <rafael@kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>
+CC: "ying.huang@intel.com" <ying.huang@intel.com>, "Yasunori Gotou (Fujitsu)"
+	<y-goto@fujitsu.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mm/vmstat: Move pgdemote_* to per-node stats
+Thread-Topic: [PATCH v2] mm/vmstat: Move pgdemote_* to per-node stats
+Thread-Index: AQHaDgPwJ0YA7nAgOEO3M1tQJmYEarC+Zn+A
+Date: Thu, 28 Dec 2023 03:52:25 +0000
+Message-ID: <7cab217a-8543-4ede-aa67-4cc6900f5fb2@fujitsu.com>
+References: <20231103031450.1456523-1-lizhijian@fujitsu.com>
+In-Reply-To: <20231103031450.1456523-1-lizhijian@fujitsu.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OS0PR01MB5442:EE_|TYVPR01MB11364:EE_
+x-ms-office365-filtering-correlation-id: 2d7ed81c-9363-4404-c728-08dc07586742
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ kptiLvPiSnB0WHrrmGHcRWts/NfKpIhxCEQbhOEjBihTFxWv1hPjg5zbW9nou66zckmaKz4H4DgVl9SDcoVwa1mrzliSgb5zWsbU925EAr1u9QxjRiOkbULtnYVRukPFxGW2mtKbbPDBAt+T8YM3Oo9xrj72676XR/WmVLAdv9ssxbnHl9RFlI5pVmHOsqt9Ci+6twHddS6WX/Dm9a6fNTJrB+BdrMDLJlXFNBTwxAJ2IN0BZOmSj25ZcxB8FmWwzDijqv3c4EjXcy4kJuW0fgFZ2EMsPhoa9xjhfMTnu1gH5WeabDYThaa7p9DvSfGhimmXpKBCkr+zI0HElJluhtyML8og+0wCcynmKExizOyg+uheDpb83ysjNtE4cx3hU85DoUcvWcVVOOL64bzcqtdZqnoVjr8m6kDnwhaVEt7gO8zmdjh2UYpKSfaOmdzrZOw01WGgn4iDIVifapekUuCMgOnGDisv8eAb+89+E+TG86dT4kVUDIi7vMmP7uGq0yAuT/zMhepcFQbMF5PlQehFOLB+yjgIpWBdOPLtfZPIzebENHeTl20rHyU1BoF8kv91E2l3HMNxuqWuja8bh0sJOh28iDJQUKjhTqTICBYplF5XkbcC8mNxGHChQDfoziWicnTqGg4rg+/wfbOLxYa3Rl8lBnKI+KH0GGNoVrfzabpu3ey0NMcAmsejO3uu
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5442.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(376002)(396003)(136003)(230922051799003)(1800799012)(64100799003)(451199024)(1590799021)(186009)(1580799018)(66556008)(31696002)(86362001)(6512007)(478600001)(6506007)(53546011)(2906002)(966005)(71200400001)(26005)(2616005)(66446008)(64756008)(110136005)(66476007)(66946007)(76116006)(91956017)(8676002)(8936002)(54906003)(316002)(4326008)(5660300002)(6486002)(122000001)(41300700001)(82960400001)(38100700002)(83380400001)(36756003)(31686004)(85182001)(38070700009)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?dlpHeFBZMkZsV20xOExjQlNTdFdtTWRRS0c1aGhoM2F1ZnBOYlFPa2VlNFJL?=
+ =?utf-8?B?SGFMaUo5Y1dVSEZEUytRcG5mVW8vaiszYkJDdUVhRWJlOU5iUDhLMXAwK0ty?=
+ =?utf-8?B?a1Y1dTc5U1k2M0pzWE1heER1TFVmcXZsZjI3Q2dRbXh4czlxRXZFeURtbFAy?=
+ =?utf-8?B?bWJOU3kvR2htZUpsODQ1R09XcU5zaU5KRGw4YjVhSHpUbkQraFlMZGNFSjJJ?=
+ =?utf-8?B?elNvbjNYM3kwRWppVENtOGp1TC9sbUR3MTV5Zk9iY2tpeFNYbUlybTNmRWhu?=
+ =?utf-8?B?TjdRNGhnZ2ZBTEYrLy85OVhEbnJpd1dUMUM1bEJJTXpXN25uM0JTSE54M2xG?=
+ =?utf-8?B?cU1kN2dwcURLdWJUQzdjN0ZrQTFvaHVrRjhtcVcyVVN2akFyQ1BSM0FqMlZa?=
+ =?utf-8?B?dEE0K3J5YStLQWNrR0tsMHVnVVdRVU9rOWlPNytiWHFEejhhRTFibGZtMVRW?=
+ =?utf-8?B?NmN3cXQrN2NTUko3ZVRtVDhmRkVJZ3h0U3YrWS9uUnlSSnIrMFVJNHRkVit0?=
+ =?utf-8?B?bXhzOSttUy8vbGJrOU9tRGU3cDNtaWwwOXJuUFMxR00rSzBwd05LK21seTJ1?=
+ =?utf-8?B?QTJTeTF2Y3NJUXZDZDQ2alhKaXNQY0JIdFdkZTdkenEydm5DMjFGUTdFU0gr?=
+ =?utf-8?B?VWZ6a2J4a1B6azNpNzdWblBwNGorYks0bUZTME44U3c5b3IvNjBmVVBKRUZO?=
+ =?utf-8?B?M2lCVUJWTi9XbmRwOC9PeFlZNFd6enNTVHpIOWYwZDdNQ1hnUDI5ZXlOb3Ir?=
+ =?utf-8?B?MGlPRlhTdEVmc3pqZXVRZWlkWkZaL0l4cmNOUWp5VlFyWnBRei84NmcvTmdj?=
+ =?utf-8?B?cTF4M1hYWVVTOG9DNzlOUUpYUnZQNk91OFIyWFYxRGZFOTN0Y0xhWm5Zc2xr?=
+ =?utf-8?B?empaUUpKYjRicUhFaHJEbjlKSkNGMjFiQnFKQWNXd1pIRWdpN0p6NTFGRUJk?=
+ =?utf-8?B?bHNQZVdhWjBXM1hrU1JYbDFNOFNoZnhpeC9OSHNRdGY1Z1MrNU0wNUo1Ulp1?=
+ =?utf-8?B?THhwc3hQbVdnbnpMbkhicTUySU1wY0pnb3h6eTZHeHdRaStOM2gybUtjekRM?=
+ =?utf-8?B?ZklHUzZaYlpMRnVJWVdKRVh3cmIxOHNRZ0gwcHN6NGhra0JIem52czZESXRP?=
+ =?utf-8?B?SlNqZDh0QmV4ZGI0ZmJGVS9tRDhQQkkydDFZM0hqeXViV2NjMktxZ3dDVFo0?=
+ =?utf-8?B?TklHNnV6WGVUUDBCNTFiQ21EVVF3bnNnZUdoNGxnZjFMUGo0cWRXN1hsTXp4?=
+ =?utf-8?B?RzFTZ09YYWhja1JzY0czUCtqSm9DSTlCUmlkTWRoSXJYY1grZk52NGVOeURa?=
+ =?utf-8?B?cHZCNHF5dUc0WHBjRmJtLy8xZzNoVytMdUV4Qk5PRURLQ2doUFBDLzE0SjRF?=
+ =?utf-8?B?UkdkSHAza0dQRE5XOHhuOUg2YkpnTTBmaXdFSG90UStSU1ZjMjYyQTBwcSs4?=
+ =?utf-8?B?Mythc0UyUlV1SDRMN1RlUnpNNWQ4WWoyQ0pOOTJhc2tGSDZnUmx2WXVWVit5?=
+ =?utf-8?B?RkN2bjVicnc4Zk1BbkMwRWhDbnFOaTlpeXpMeTBzZFgyeGFXRVBlQUk5YVZM?=
+ =?utf-8?B?SXRoZmJwT21tQnUwd2U4QmxPbGVSUzh5OGUxRysyS2JKdEhvWE9MZ202bUp5?=
+ =?utf-8?B?OVVXN1hxRXNYSWFHVEVlRFUrQ0EyQ0o2ZkErSWtLL0ttVEJFbktCUTBkbWdu?=
+ =?utf-8?B?U3l1L1g3UWVIUjNDVG1rWjVxdHhReTNla05zZTN5ZEZ1V2VlUWhEYmQ2TkFR?=
+ =?utf-8?B?eTJxSFpLdGFUc1B3cXJITEY0THpOUXFhaDVFL3dwa1c4M05YTFc5RU00VHp4?=
+ =?utf-8?B?SGJPL3hZd1YyUUVEeEp2MnM5Q2RYSXp0WkYraXY2bkJlSVVPckRwVmdjUWpT?=
+ =?utf-8?B?NHM0YVUwSllsU2diWW1qSUZ6MGQrU2VpS0JnZDRteDYrN0tqaHBlaUFKQlNZ?=
+ =?utf-8?B?SkloN3BwZkNZUGFySURkRmlWU3dvbmNGa2xHTlJnMGp5V0Q3ZWFBV3Q0WHJ1?=
+ =?utf-8?B?MVlDYXhaSHlhRk9SRE1CcGhyRTNYNzlpYllnSWF1L2oxdjFmdHVMUkxQbnU5?=
+ =?utf-8?B?MWRvTEZBcWg1ZXJhYzZ2bG42b3ZPQit1ajBiNjFhMGRGWUtMdGwzMERnWCsy?=
+ =?utf-8?B?UkZOQ1FKZldLODlaYXBYbFpDZkRDZmN0dzFjVjFHWkxITjROYkJZaS9RSWho?=
+ =?utf-8?B?Z1E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8445F5BB74C9684DABE68BE6B69CD84E@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	viDjO4YG/lmaKNnXGyUd4O6Xum3rkoZ/9NT/OA9duMXerjyfp9a34IkY/Y/SQM2tgsKCjBC3Ba4F1D264a1z/GqPb4pXEtFvz2uz/wB/7pgNWhTHNYXodySuSvZzsLiqsJIQ7EFQM9x/yUzNMI39xNlkYqeg3rTOhLTPzEZ1oDQXHYtKH1MYcLrQxflA3nr2OKhtHpSfk8df+XxcKtGwMfzYNUgkdQbInmbfquuwVws+82hUle6VaAUfD4YXKcsd35KiWdfkzKcRGJmPZlydLnm/BNv/a5q/j3JEw1SEeP31+lPkqKoH1v/qJhlrgjM2PFK79aKgY/gKxlvwwmsuVJaN8oRbgtNvnvkSS4uTyVnthRmFFLImEOufsAMQ98uTvNHIuGY73ae0b36YSk3vyuQz3AAoxIEy3GpF4F1Y8Wck9WGJfw2Qpv0K3O5252np4xvnK1crh/fCoL/+qDLGjZs7iw4NEBEeYLP547r1cSUXg7ZEWy3GiMUWxMt1RXC0SWFbdCL1s8bfbN1U1RSF1VWBk/nAr+lIoYhO5isJJLpTcYUfpOS6yELKz4VyNvLOGpdaBUf4cCKYxBSQP0klpyvJDXGZu4okkYSpKh8+++FC0bFq8H7G6RZcBfoK65Vl
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5442.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d7ed81c-9363-4404-c728-08dc07586742
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Dec 2023 03:52:25.0557
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zHZ7DaEwaZSNvSPBMF/ZRu1TZzmivlhqqzBBBYy3XQqvuiunKKjjjrw6/oeeHkOXLAJnBeVGcBZAm5NYZakjXQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYVPR01MB11364
 
-From: ChiYuan Huang <cy_huang@richtek.com>
-
-RTQ6053 and RTQ6059 are the same series of RTQ6056.
-
-The respective differences with RTQ6056 are listed below
-RTQ6053
-- chip package type
-
-RTQ6059
-- Reduce the pinout for vbus sensing pin
-- Some internal ADC scaling change
-
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
- drivers/iio/adc/rtq6056.c | 265 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 251 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/iio/adc/rtq6056.c b/drivers/iio/adc/rtq6056.c
-index ad4cea6839b2..1bf43a90ca46 100644
---- a/drivers/iio/adc/rtq6056.c
-+++ b/drivers/iio/adc/rtq6056.c
-@@ -39,6 +39,16 @@
- #define RTQ6056_DEFAULT_CONFIG	0x4127
- #define RTQ6056_CONT_ALLON	7
- 
-+#define RTQ6059_DEFAULT_CONFIG	0x3C47
-+#define RTQ6059_VBUS_LSB_OFFSET	3
-+#define RTQ6059_AVG_BASE	8
-+
-+enum {
-+	RICHTEK_DEV_RTQ6056 = 0,
-+	RICHTEK_DEV_RTQ6059,
-+	RICHTEK_DEV_MAX
-+};
-+
- enum {
- 	RTQ6056_CH_VSHUNT = 0,
- 	RTQ6056_CH_VBUS,
-@@ -50,16 +60,29 @@ enum {
- enum {
- 	F_OPMODE = 0,
- 	F_VSHUNTCT,
-+	F_SADC = F_VSHUNTCT,
- 	F_VBUSCT,
-+	F_BADC = F_VBUSCT,
- 	F_AVG,
-+	F_PGA = F_AVG,
- 	F_RESET,
- 	F_MAX_FIELDS
- };
- 
-+struct richtek_dev_data {
-+	int dev_id;
-+	int default_conv_time;
-+	unsigned int default_config;
-+	unsigned int calib_coefficient;
-+	const struct reg_field *reg_fields;
-+	const struct iio_chan_spec *channels;
-+};
-+
- struct rtq6056_priv {
- 	struct device *dev;
- 	struct regmap *regmap;
- 	struct regmap_field *rm_fields[F_MAX_FIELDS];
-+	const struct richtek_dev_data *devdata;
- 	u32 shunt_resistor_uohm;
- 	int vshuntct_us;
- 	int vbusct_us;
-@@ -74,6 +97,14 @@ static const struct reg_field rtq6056_reg_fields[F_MAX_FIELDS] = {
- 	[F_RESET] = REG_FIELD(RTQ6056_REG_CONFIG, 15, 15),
- };
- 
-+static const struct reg_field rtq6059_reg_fields[F_MAX_FIELDS] = {
-+	[F_OPMODE] = REG_FIELD(RTQ6056_REG_CONFIG, 0, 2),
-+	[F_SADC] = REG_FIELD(RTQ6056_REG_CONFIG, 3, 6),
-+	[F_BADC] = REG_FIELD(RTQ6056_REG_CONFIG, 7, 10),
-+	[F_PGA]	= REG_FIELD(RTQ6056_REG_CONFIG, 11, 12),
-+	[F_RESET] = REG_FIELD(RTQ6056_REG_CONFIG, 15, 15),
-+};
-+
- static const struct iio_chan_spec rtq6056_channels[RTQ6056_MAX_CHANNEL + 1] = {
- 	{
- 		.type = IIO_VOLTAGE,
-@@ -151,10 +182,93 @@ static const struct iio_chan_spec rtq6056_channels[RTQ6056_MAX_CHANNEL + 1] = {
- 	IIO_CHAN_SOFT_TIMESTAMP(RTQ6056_MAX_CHANNEL),
- };
- 
-+/*
-+ * Difference between RTQ6056 and RTQ6059
-+ * - Fixed sampling conversion time
-+ * - Average sample numbers
-+ * - Channel scale
-+ * - calibration coefficient
-+ */
-+static const struct iio_chan_spec rtq6059_channels[RTQ6056_MAX_CHANNEL + 1] = {
-+	{
-+		.type = IIO_VOLTAGE,
-+		.indexed = 1,
-+		.channel = 0,
-+		.address = RTQ6056_REG_SHUNTVOLT,
-+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-+				      BIT(IIO_CHAN_INFO_SCALE) |
-+				      BIT(IIO_CHAN_INFO_SAMP_FREQ),
-+		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
-+		.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
-+		.scan_index = 0,
-+		.scan_type = {
-+			.sign = 's',
-+			.realbits = 16,
-+			.storagebits = 16,
-+			.endianness = IIO_CPU,
-+		},
-+	},
-+	{
-+		.type = IIO_VOLTAGE,
-+		.indexed = 1,
-+		.channel = 1,
-+		.address = RTQ6056_REG_BUSVOLT,
-+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-+				      BIT(IIO_CHAN_INFO_SCALE) |
-+				      BIT(IIO_CHAN_INFO_SAMP_FREQ),
-+		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
-+		.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
-+		.scan_index = 1,
-+		.scan_type = {
-+			.sign = 'u',
-+			.realbits = 16,
-+			.storagebits = 16,
-+			.endianness = IIO_CPU,
-+		},
-+	},
-+	{
-+		.type = IIO_POWER,
-+		.indexed = 1,
-+		.channel = 2,
-+		.address = RTQ6056_REG_POWER,
-+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-+				      BIT(IIO_CHAN_INFO_SCALE) |
-+				      BIT(IIO_CHAN_INFO_SAMP_FREQ),
-+		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
-+		.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
-+		.scan_index = 2,
-+		.scan_type = {
-+			.sign = 'u',
-+			.realbits = 16,
-+			.storagebits = 16,
-+			.endianness = IIO_CPU,
-+		},
-+	},
-+	{
-+		.type = IIO_CURRENT,
-+		.indexed = 1,
-+		.channel = 3,
-+		.address = RTQ6056_REG_CURRENT,
-+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-+				      BIT(IIO_CHAN_INFO_SAMP_FREQ),
-+		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
-+		.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
-+		.scan_index = 3,
-+		.scan_type = {
-+			.sign = 's',
-+			.realbits = 16,
-+			.storagebits = 16,
-+			.endianness = IIO_CPU,
-+		},
-+	},
-+	IIO_CHAN_SOFT_TIMESTAMP(RTQ6056_MAX_CHANNEL),
-+};
-+
- static int rtq6056_adc_read_channel(struct rtq6056_priv *priv,
- 				    struct iio_chan_spec const *ch,
- 				    int *val)
- {
-+	const struct richtek_dev_data *devdata = priv->devdata;
- 	struct device *dev = priv->dev;
- 	unsigned int addr = ch->address;
- 	unsigned int regval;
-@@ -168,10 +282,18 @@ static int rtq6056_adc_read_channel(struct rtq6056_priv *priv,
- 		return ret;
- 
- 	/* Power and VBUS is unsigned 16-bit, others are signed 16-bit */
--	if (addr == RTQ6056_REG_BUSVOLT || addr == RTQ6056_REG_POWER)
-+	switch (addr) {
-+	case RTQ6056_REG_BUSVOLT:
-+		if (devdata->dev_id == RICHTEK_DEV_RTQ6059)
-+			regval >>= RTQ6059_VBUS_LSB_OFFSET;
-+		fallthrough;
-+	case RTQ6056_REG_POWER:
- 		*val = regval;
--	else
-+		break;
-+	default:
- 		*val = sign_extend32(regval, 16);
-+		break;
-+	}
- 
- 	return IIO_VAL_INT;
- }
-@@ -199,6 +321,28 @@ static int rtq6056_adc_read_scale(struct iio_chan_spec const *ch, int *val,
- 	}
- }
- 
-+static int rtq6059_adc_read_scale(struct iio_chan_spec const *ch, int *val,
-+				  int *val2)
-+{
-+	switch (ch->address) {
-+	case RTQ6056_REG_SHUNTVOLT:
-+		/* VSHUNT lsb  10uV */
-+		*val = 10000;
-+		*val2 = 1000000;
-+		return IIO_VAL_FRACTIONAL;
-+	case RTQ6056_REG_BUSVOLT:
-+		/* VBUS lsb 4mV */
-+		*val = 4;
-+		return IIO_VAL_INT;
-+	case RTQ6056_REG_POWER:
-+		/* Power lsb 20mW */
-+		*val = 20;
-+		return IIO_VAL_INT;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
- /*
-  * Sample frequency for channel VSHUNT and VBUS. The indices correspond
-  * with the bit value expected by the chip. And it can be found at
-@@ -248,6 +392,10 @@ static const int rtq6056_avg_sample_list[] = {
- 	1, 4, 16, 64, 128, 256, 512, 1024,
- };
- 
-+static const int rtq6059_avg_sample_list[] = {
-+	1, 2, 4, 8, 16, 32, 64, 128,
-+};
-+
- static int rtq6056_adc_set_average(struct rtq6056_priv *priv, int val)
- {
- 	unsigned int selector;
-@@ -268,6 +416,30 @@ static int rtq6056_adc_set_average(struct rtq6056_priv *priv, int val)
- 	return 0;
- }
- 
-+static int rtq6059_adc_set_average(struct rtq6056_priv *priv, int val)
-+{
-+	unsigned int selector;
-+	int ret;
-+
-+	if (val > 128 || val < 1)
-+		return -EINVAL;
-+
-+	/* The supported average sample is 2^x (x from 0 to 7) */
-+	selector = fls(val) - 1;
-+
-+	ret = regmap_field_write(priv->rm_fields[F_BADC],
-+				 RTQ6059_AVG_BASE + selector);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_field_write(priv->rm_fields[F_SADC],
-+				 RTQ6059_AVG_BASE + selector);
-+
-+	priv->avg_sample = BIT(selector + 1);
-+
-+	return 0;
-+}
-+
- static int rtq6056_adc_get_sample_freq(struct rtq6056_priv *priv,
- 				       struct iio_chan_spec const *ch, int *val)
- {
-@@ -292,11 +464,15 @@ static int rtq6056_adc_read_raw(struct iio_dev *indio_dev,
- 				int *val2, long mask)
- {
- 	struct rtq6056_priv *priv = iio_priv(indio_dev);
-+	const struct richtek_dev_data *devdata = priv->devdata;
- 
- 	switch (mask) {
- 	case IIO_CHAN_INFO_RAW:
- 		return rtq6056_adc_read_channel(priv, chan, val);
- 	case IIO_CHAN_INFO_SCALE:
-+		if (devdata->dev_id == RICHTEK_DEV_RTQ6059)
-+			return rtq6059_adc_read_scale(chan, val, val2);
-+
- 		return rtq6056_adc_read_scale(chan, val, val2);
- 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
- 		*val = priv->avg_sample;
-@@ -313,16 +489,28 @@ static int rtq6056_adc_read_avail(struct iio_dev *indio_dev,
- 				  const int **vals, int *type, int *length,
- 				  long mask)
- {
-+	struct rtq6056_priv *priv = iio_priv(indio_dev);
-+	const struct richtek_dev_data *devdata = priv->devdata;
-+
- 	switch (mask) {
- 	case IIO_CHAN_INFO_SAMP_FREQ:
-+		if (devdata->dev_id == RICHTEK_DEV_RTQ6059)
-+			return -EINVAL;
-+
- 		*vals = rtq6056_samp_freq_list;
- 		*type = IIO_VAL_INT;
- 		*length = ARRAY_SIZE(rtq6056_samp_freq_list);
- 		return IIO_AVAIL_LIST;
- 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
--		*vals = rtq6056_avg_sample_list;
-+		if (devdata->dev_id == RICHTEK_DEV_RTQ6059) {
-+			*vals = rtq6059_avg_sample_list;
-+			*length = ARRAY_SIZE(rtq6059_avg_sample_list);
-+		} else {
-+			*vals = rtq6056_avg_sample_list;
-+			*length = ARRAY_SIZE(rtq6056_avg_sample_list);
-+		}
-+
- 		*type = IIO_VAL_INT;
--		*length = ARRAY_SIZE(rtq6056_avg_sample_list);
- 		return IIO_AVAIL_LIST;
- 	default:
- 		return -EINVAL;
-@@ -334,6 +522,7 @@ static int rtq6056_adc_write_raw(struct iio_dev *indio_dev,
- 				 int val2, long mask)
- {
- 	struct rtq6056_priv *priv = iio_priv(indio_dev);
-+	const struct richtek_dev_data *devdata = priv->devdata;
- 	int ret;
- 
- 	ret = iio_device_claim_direct_mode(indio_dev);
-@@ -342,10 +531,16 @@ static int rtq6056_adc_write_raw(struct iio_dev *indio_dev,
- 
- 	switch (mask) {
- 	case IIO_CHAN_INFO_SAMP_FREQ:
--		ret = rtq6056_adc_set_samp_freq(priv, chan, val);
-+		if (devdata->dev_id == RICHTEK_DEV_RTQ6059)
-+			ret = -EINVAL;
-+		else
-+			ret = rtq6056_adc_set_samp_freq(priv, chan, val);
- 		break;
- 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
--		ret = rtq6056_adc_set_average(priv, val);
-+		if (devdata->dev_id == RICHTEK_DEV_RTQ6059)
-+			ret = rtq6059_adc_set_average(priv, val);
-+		else
-+			ret = rtq6056_adc_set_average(priv, val);
- 		break;
- 	default:
- 		ret = -EINVAL;
-@@ -374,6 +569,7 @@ static int rtq6056_adc_read_label(struct iio_dev *indio_dev,
- static int rtq6056_set_shunt_resistor(struct rtq6056_priv *priv,
- 				      int resistor_uohm)
- {
-+	const struct richtek_dev_data *devdata = priv->devdata;
- 	unsigned int calib_val;
- 	int ret;
- 
-@@ -382,8 +578,8 @@ static int rtq6056_set_shunt_resistor(struct rtq6056_priv *priv,
- 		return -EINVAL;
- 	}
- 
--	/* calibration = 5120000 / (Rshunt (uOhm) * current lsb (1mA)) */
--	calib_val = 5120000 / resistor_uohm;
-+	/* calibration = coefficient / (Rshunt (uOhm) * current lsb (1mA)) */
-+	calib_val = devdata->calib_coefficient / resistor_uohm;
- 	ret = regmap_write(priv->regmap, RTQ6056_REG_CALIBRATION, calib_val);
- 	if (ret)
- 		return ret;
-@@ -445,11 +641,16 @@ static const struct iio_info rtq6056_info = {
- 	.read_label = rtq6056_adc_read_label,
- };
- 
-+static const struct iio_info rtq6059_info = {
-+	.attrs = &rtq6056_attribute_group,
-+};
-+
- static irqreturn_t rtq6056_buffer_trigger_handler(int irq, void *p)
- {
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct rtq6056_priv *priv = iio_priv(indio_dev);
-+	const struct richtek_dev_data *devdata = priv->devdata;
- 	struct device *dev = priv->dev;
- 	struct {
- 		u16 vals[RTQ6056_MAX_CHANNEL];
-@@ -469,6 +670,10 @@ static irqreturn_t rtq6056_buffer_trigger_handler(int irq, void *p)
- 		if (ret)
- 			goto out;
- 
-+		if (devdata->dev_id == RICHTEK_DEV_RTQ6059 &&
-+		    addr == RTQ6056_REG_BUSVOLT)
-+			raw >>= RTQ6059_VBUS_LSB_OFFSET;
-+
- 		data.vals[i++] = raw;
- 	}
- 
-@@ -528,20 +733,26 @@ static int rtq6056_probe(struct i2c_client *i2c)
- 	struct rtq6056_priv *priv;
- 	struct device *dev = &i2c->dev;
- 	struct regmap *regmap;
-+	const struct richtek_dev_data *devdata;
- 	unsigned int vendor_id, shunt_resistor_uohm;
- 	int ret;
- 
- 	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_WORD_DATA))
- 		return -EOPNOTSUPP;
- 
-+	devdata = device_get_match_data(dev);
-+	if (!devdata)
-+		return dev_err_probe(dev, -EINVAL, "Invalid dev data\n");
-+
- 	indio_dev = devm_iio_device_alloc(dev, sizeof(*priv));
- 	if (!indio_dev)
- 		return -ENOMEM;
- 
- 	priv = iio_priv(indio_dev);
- 	priv->dev = dev;
--	priv->vshuntct_us = priv->vbusct_us = 1037;
-+	priv->vshuntct_us = priv->vbusct_us = devdata->default_conv_time;
- 	priv->avg_sample = 1;
-+	priv->devdata = devdata;
- 	i2c_set_clientdata(i2c, priv);
- 
- 	regmap = devm_regmap_init_i2c(i2c, &rtq6056_regmap_config);
-@@ -556,20 +767,26 @@ static int rtq6056_probe(struct i2c_client *i2c)
- 		return dev_err_probe(dev, ret,
- 				     "Failed to get manufacturer info\n");
- 
-+	/* For RTQ6059, this vendor id value is meaningless */
- 	if (vendor_id != RTQ6056_VENDOR_ID)
- 		return dev_err_probe(dev, -ENODEV,
- 				     "Invalid vendor id 0x%04x\n", vendor_id);
- 
- 	ret = devm_regmap_field_bulk_alloc(dev, regmap, priv->rm_fields,
--					   rtq6056_reg_fields, F_MAX_FIELDS);
-+					   devdata->reg_fields, F_MAX_FIELDS);
- 	if (ret)
- 		return dev_err_probe(dev, ret, "Failed to init regmap field\n");
- 
- 	/*
-+	 * RTQ6053 & RTQ6056:
- 	 * By default, configure average sample as 1, bus and shunt conversion
- 	 * time as 1037 microsecond, and operating mode to all on.
-+	 *
-+	 * RTQ6059:
-+	 * By default, configure average sample as 1, bus and shunt conversion
-+	 * time as 532 microsecond, and operating mode to all on.
- 	 */
--	ret = regmap_write(regmap, RTQ6056_REG_CONFIG, RTQ6056_DEFAULT_CONFIG);
-+	ret = regmap_write(regmap, RTQ6056_REG_CONFIG, devdata->default_config);
- 	if (ret)
- 		return dev_err_probe(dev, ret,
- 				     "Failed to enable continuous sensing\n");
-@@ -598,8 +815,8 @@ static int rtq6056_probe(struct i2c_client *i2c)
- 
- 	indio_dev->name = "rtq6056";
- 	indio_dev->modes = INDIO_DIRECT_MODE;
--	indio_dev->channels = rtq6056_channels;
--	indio_dev->num_channels = ARRAY_SIZE(rtq6056_channels);
-+	indio_dev->channels = devdata->channels;
-+	indio_dev->num_channels = RTQ6056_MAX_CHANNEL + 1;
- 	indio_dev->info = &rtq6056_info;
- 
- 	ret = devm_iio_triggered_buffer_setup(dev, indio_dev, NULL,
-@@ -640,8 +857,28 @@ static int rtq6056_runtime_resume(struct device *dev)
- static DEFINE_RUNTIME_DEV_PM_OPS(rtq6056_pm_ops, rtq6056_runtime_suspend,
- 				 rtq6056_runtime_resume, NULL);
- 
-+static const struct richtek_dev_data rtq6056_devdata = {
-+	.dev_id = RICHTEK_DEV_RTQ6056,
-+	.default_conv_time = 1037,
-+	.calib_coefficient = 5120000,
-+	.default_config = RTQ6056_DEFAULT_CONFIG,
-+	.reg_fields = rtq6056_reg_fields,
-+	.channels = rtq6056_channels,
-+};
-+
-+static const struct richtek_dev_data rtq6059_devdata = {
-+	.dev_id = RICHTEK_DEV_RTQ6059,
-+	.default_conv_time = 532,
-+	.calib_coefficient = 40960000,
-+	.default_config = RTQ6059_DEFAULT_CONFIG,
-+	.reg_fields = rtq6059_reg_fields,
-+	.channels = rtq6059_channels,
-+};
-+
- static const struct of_device_id rtq6056_device_match[] = {
--	{ .compatible = "richtek,rtq6056" },
-+	{ .compatible = "richtek,rtq6053", .data = &rtq6056_devdata },
-+	{ .compatible = "richtek,rtq6056", .data = &rtq6056_devdata },
-+	{ .compatible = "richtek,rtq6059", .data = &rtq6059_devdata },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, rtq6056_device_match);
--- 
-2.34.1
-
+QW5kcmV3LA0KDQoNCg0KT24gMDMvMTEvMjAyMyAxMToxNCwgTGkgWmhpamlhbiB3cm90ZToNCj4g
+RGVtb3Rpb24gd2lsbCBtaWdyYXRlIHBhZ2VzIGFjcm9zcyBub2Rlcy4gUHJldmlvdXNseSwgb25s
+eSB0aGUgZ2xvYmFsDQo+IGRlbW90aW9uIHN0YXRpc3RpY3Mgd2VyZSBhY2NvdW50ZWQgZm9yLiBD
+aGFuZ2VkIHRoZW0gdG8gcGVyLW5vZGUNCj4gc3RhdGlzdGljcywgbWFraW5nIGl0IGVhc2llciB0
+byBvYnNlcnZlIHdoZXJlIGRlbW90aW9uIG9jY3VycyBvbiBlYWNoDQo+IG5vZGUuDQo+IA0KPiBU
+aGlzIHdpbGwgaGVscCB0byBpZGVudGlmeSB3aGljaCBub2RlcyBhcmUgdW5kZXIgcHJlc3N1cmUu
+DQo+IA0KPiBUaGlzIHBhdGNoIGFsc28gbWFrZSBwZ2RlbW90ZV8qIGJlaGluZCBDT05GSUdfTlVN
+QV9CQUxBTkNJTkcsIHNpbmNlDQo+IGRlbW90aW9uIGlzIG5vdCBhdmFpbGFibGUgZm9yICFDT05G
+SUdfTlVNQV9CQUxBTkNJTkcNCg0KSSBqdXN0IHJlYWxpemVkIHRoYXQgbW92aW5nIHBnZGVtb3Rl
+XyogYmVoaW5kIENPTkZJR19OVU1BX0JBTEFOQ0lORyB3YXMgd3JvbmcuDQpEZW1vdGlvbiB3b3Jr
+cyB3ZWxsIHdpdGhvdXQgQ09ORklHX05VTUFfQkFMQU5DSU5HLg0KDQpTaW5jZSB0aGlzIHBhdGNo
+IHdhcyBhbHJlYWR5IGluIHRoZSBtbS1zdGFibGUgYnJhbmNoLCBpcyBpdCBwb3NzaWJsZSB0bw0K
+cmVwbGFjZSB0aGlzIHBhdGNoIGZyb20gbW0tc3RhYmxlIG9yIHBvc3QgYSBmaXh1cCBmb3IgdGhp
+cw0KDQoNClRoYW5rcw0KWmhpamlhbg0KDQoNCj4gDQo+IFdpdGggdGhpcyBwYXRjaCwgaGVyZSBp
+cyBhIHNhbXBsZSB3aGVyZSBub2RlMCBub2RlMSBhcmUgRFJBTSwNCj4gbm9kZTMgaXMgUE1FTToN
+Cj4gR2xvYmFsIHN0YXRzOg0KPiAkIGdyZXAgZGVtb3RlIC9wcm9jL3Ztc3RhdA0KPiBwZ2RlbW90
+ZV9rc3dhcGQgMjU0Mjg4DQo+IHBnZGVtb3RlX2RpcmVjdCAxMTM0OTcNCj4gcGdkZW1vdGVfa2h1
+Z2VwYWdlZCAwDQo+IA0KPiBQZXItbm9kZSBzdGF0czoNCj4gJCBncmVwIGRlbW90ZSAvc3lzL2Rl
+dmljZXMvc3lzdGVtL25vZGUvbm9kZTAvdm1zdGF0ICMgZGVtb3Rpb24gc291cmNlDQo+IHBnZGVt
+b3RlX2tzd2FwZCA2ODQ1NA0KPiBwZ2RlbW90ZV9kaXJlY3QgODM0MzENCj4gcGdkZW1vdGVfa2h1
+Z2VwYWdlZCAwDQo+ICQgZ3JlcCBkZW1vdGUgL3N5cy9kZXZpY2VzL3N5c3RlbS9ub2RlL25vZGUx
+L3Ztc3RhdCAjIGRlbW90aW9uIHNvdXJjZQ0KPiBwZ2RlbW90ZV9rc3dhcGQgMTg1ODM0DQo+IHBn
+ZGVtb3RlX2RpcmVjdCAzMDA2Ng0KPiBwZ2RlbW90ZV9raHVnZXBhZ2VkIDANCj4gJCBncmVwIGRl
+bW90ZSAvc3lzL2RldmljZXMvc3lzdGVtL25vZGUvbm9kZTMvdm1zdGF0ICMgZGVtb3Rpb24gdGFy
+Z2V0DQo+IHBnZGVtb3RlX2tzd2FwZCAwDQo+IHBnZGVtb3RlX2RpcmVjdCAwDQo+IHBnZGVtb3Rl
+X2todWdlcGFnZWQgMA0KPiANCj4gUmVwb3J0ZWQtYnk6IGtlcm5lbCB0ZXN0IHJvYm90IDxsa3BA
+aW50ZWwuY29tPiAjIGNvbXBsaW5nIGVycm9ycw0KPiBDbG9zZXM6IGh0dHBzOi8vbG9yZS5rZXJu
+ZWwub3JnL29lLWtidWlsZC1hbGwvMjAyMzExMDMwMTM3LlZ1MmtpNnptLWxrcEBpbnRlbC5jb20v
+DQo+IEFja2VkLWJ5OiAiSHVhbmcsIFlpbmciIDx5aW5nLmh1YW5nQGludGVsLmNvbT4NCj4gU2ln
+bmVkLW9mZi1ieTogTGkgWmhpamlhbiA8bGl6aGlqaWFuQGZ1aml0c3UuY29tPg0KPiANCj4gLS0t
+DQo+IFYyOiBzcGxpdCBpdCBhcyBhIHNlcGFyYXRlIHBhdGNoIGZyb20gcHJldmlvdXMgcGF0Y2gg
+c2V0Lg0KPiAgICAgIGFjY291bnQgdGhlbSB0byB0aGUgc291cmNlIG5vZGUgaW5zdGVhZCBkZXN0
+aW5hdGlvbiBhbmQgYWRkIEFja2VkLWJ5ICMgSHVhbmcsIFlpbmcNCj4gLS0tDQo+ICAgaW5jbHVk
+ZS9saW51eC9tbXpvbmUuaCAgICAgICAgfCAgNCArKysrDQo+ICAgaW5jbHVkZS9saW51eC92bV9l
+dmVudF9pdGVtLmggfCAgMyAtLS0NCj4gICBtbS92bXNjYW4uYyAgICAgICAgICAgICAgICAgICB8
+IDEyICsrKysrKysrLS0tLQ0KPiAgIG1tL3Ztc3RhdC5jICAgICAgICAgICAgICAgICAgIHwgIDYg
+KysrLS0tDQo+ICAgNCBmaWxlcyBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspLCAxMCBkZWxldGlv
+bnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L21tem9uZS5oIGIvaW5jbHVk
+ZS9saW51eC9tbXpvbmUuaA0KPiBpbmRleCA0MTA2ZmJjNWI0YjMuLmFkMDMwOWVlYTg1MCAxMDA2
+NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9tbXpvbmUuaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4
+L21tem9uZS5oDQo+IEBAIC0yMDYsNiArMjA2LDEwIEBAIGVudW0gbm9kZV9zdGF0X2l0ZW0gew0K
+PiAgICNpZmRlZiBDT05GSUdfTlVNQV9CQUxBTkNJTkcNCj4gICAJUEdQUk9NT1RFX1NVQ0NFU1Ms
+CS8qIHByb21vdGUgc3VjY2Vzc2Z1bGx5ICovDQo+ICAgCVBHUFJPTU9URV9DQU5ESURBVEUsCS8q
+IGNhbmRpZGF0ZSBwYWdlcyB0byBwcm9tb3RlICovDQo+ICsJLyogUEdERU1PVEVfKjogcGFnZXMg
+ZGVtb3RlZCAqLw0KPiArCVBHREVNT1RFX0tTV0FQRCwNCj4gKwlQR0RFTU9URV9ESVJFQ1QsDQo+
+ICsJUEdERU1PVEVfS0hVR0VQQUdFRCwNCj4gICAjZW5kaWYNCj4gICAJTlJfVk1fTk9ERV9TVEFU
+X0lURU1TDQo+ICAgfTsNCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvdm1fZXZlbnRfaXRl
+bS5oIGIvaW5jbHVkZS9saW51eC92bV9ldmVudF9pdGVtLmgNCj4gaW5kZXggOGFiZmExMjQwMDQw
+Li5kMWI4NDc1MDJmMDkgMTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvbGludXgvdm1fZXZlbnRfaXRl
+bS5oDQo+ICsrKyBiL2luY2x1ZGUvbGludXgvdm1fZXZlbnRfaXRlbS5oDQo+IEBAIC00MSw5ICs0
+MSw2IEBAIGVudW0gdm1fZXZlbnRfaXRlbSB7IFBHUEdJTiwgUEdQR09VVCwgUFNXUElOLCBQU1dQ
+T1VULA0KPiAgIAkJUEdTVEVBTF9LU1dBUEQsDQo+ICAgCQlQR1NURUFMX0RJUkVDVCwNCj4gICAJ
+CVBHU1RFQUxfS0hVR0VQQUdFRCwNCj4gLQkJUEdERU1PVEVfS1NXQVBELA0KPiAtCQlQR0RFTU9U
+RV9ESVJFQ1QsDQo+IC0JCVBHREVNT1RFX0tIVUdFUEFHRUQsDQo+ICAgCQlQR1NDQU5fS1NXQVBE
+LA0KPiAgIAkJUEdTQ0FOX0RJUkVDVCwNCj4gICAJCVBHU0NBTl9LSFVHRVBBR0VELA0KPiBkaWZm
+IC0tZ2l0IGEvbW0vdm1zY2FuLmMgYi9tbS92bXNjYW4uYw0KPiBpbmRleCA2ZjEzMzk0YjExMmUu
+LmNjNzBkY2VmYzYwYSAxMDA2NDQNCj4gLS0tIGEvbW0vdm1zY2FuLmMNCj4gKysrIGIvbW0vdm1z
+Y2FuLmMNCj4gQEAgLTExMTAsMTIgKzExMTAsMTQgQEAgdm9pZCBkcm9wX3NsYWIodm9pZCkNCj4g
+ICANCj4gICBzdGF0aWMgaW50IHJlY2xhaW1lcl9vZmZzZXQodm9pZCkNCj4gICB7DQo+ICsjaWZk
+ZWYgQ09ORklHX05VTUFfQkFMQU5DSU5HDQo+ICAgCUJVSUxEX0JVR19PTihQR1NURUFMX0RJUkVD
+VCAtIFBHU1RFQUxfS1NXQVBEICE9DQo+ICAgCQkJUEdERU1PVEVfRElSRUNUIC0gUEdERU1PVEVf
+S1NXQVBEKTsNCj4gLQlCVUlMRF9CVUdfT04oUEdTVEVBTF9ESVJFQ1QgLSBQR1NURUFMX0tTV0FQ
+RCAhPQ0KPiAtCQkJUEdTQ0FOX0RJUkVDVCAtIFBHU0NBTl9LU1dBUEQpOw0KPiAgIAlCVUlMRF9C
+VUdfT04oUEdTVEVBTF9LSFVHRVBBR0VEIC0gUEdTVEVBTF9LU1dBUEQgIT0NCj4gICAJCQlQR0RF
+TU9URV9LSFVHRVBBR0VEIC0gUEdERU1PVEVfS1NXQVBEKTsNCj4gKyNlbmRpZg0KPiArCUJVSUxE
+X0JVR19PTihQR1NURUFMX0RJUkVDVCAtIFBHU1RFQUxfS1NXQVBEICE9DQo+ICsJCQlQR1NDQU5f
+RElSRUNUIC0gUEdTQ0FOX0tTV0FQRCk7DQo+ICAgCUJVSUxEX0JVR19PTihQR1NURUFMX0tIVUdF
+UEFHRUQgLSBQR1NURUFMX0tTV0FQRCAhPQ0KPiAgIAkJCVBHU0NBTl9LSFVHRVBBR0VEIC0gUEdT
+Q0FOX0tTV0FQRCk7DQo+ICAgDQo+IEBAIC0xNjc3LDggKzE2NzksMTAgQEAgc3RhdGljIHVuc2ln
+bmVkIGludCBkZW1vdGVfZm9saW9fbGlzdChzdHJ1Y3QgbGlzdF9oZWFkICpkZW1vdGVfZm9saW9z
+LA0KPiAgIAltaWdyYXRlX3BhZ2VzKGRlbW90ZV9mb2xpb3MsIGFsbG9jX2RlbW90ZV9mb2xpbywg
+TlVMTCwNCj4gICAJCSAgICAgICh1bnNpZ25lZCBsb25nKSZtdGMsIE1JR1JBVEVfQVNZTkMsIE1S
+X0RFTU9USU9OLA0KPiAgIAkJICAgICAgJm5yX3N1Y2NlZWRlZCk7DQo+IC0NCj4gLQlfX2NvdW50
+X3ZtX2V2ZW50cyhQR0RFTU9URV9LU1dBUEQgKyByZWNsYWltZXJfb2Zmc2V0KCksIG5yX3N1Y2Nl
+ZWRlZCk7DQo+ICsjaWZkZWYgQ09ORklHX05VTUFfQkFMQU5DSU5HDQo+ICsJbW9kX25vZGVfcGFn
+ZV9zdGF0ZShwZ2RhdCwgUEdERU1PVEVfS1NXQVBEICsgcmVjbGFpbWVyX29mZnNldCgpLA0KPiAr
+CQkJICAgIG5yX3N1Y2NlZWRlZCk7DQo+ICsjZW5kaWYNCj4gICANCj4gICAJcmV0dXJuIG5yX3N1
+Y2NlZWRlZDsNCj4gICB9DQo+IGRpZmYgLS1naXQgYS9tbS92bXN0YXQuYyBiL21tL3Ztc3RhdC5j
+DQo+IGluZGV4IDAwZTgxZTk5YzZlZS4uZjE0MWM0OGMzOWU0IDEwMDY0NA0KPiAtLS0gYS9tbS92
+bXN0YXQuYw0KPiArKysgYi9tbS92bXN0YXQuYw0KPiBAQCAtMTI0NCw2ICsxMjQ0LDkgQEAgY29u
+c3QgY2hhciAqIGNvbnN0IHZtc3RhdF90ZXh0W10gPSB7DQo+ICAgI2lmZGVmIENPTkZJR19OVU1B
+X0JBTEFOQ0lORw0KPiAgIAkicGdwcm9tb3RlX3N1Y2Nlc3MiLA0KPiAgIAkicGdwcm9tb3RlX2Nh
+bmRpZGF0ZSIsDQo+ICsJInBnZGVtb3RlX2tzd2FwZCIsDQo+ICsJInBnZGVtb3RlX2RpcmVjdCIs
+DQo+ICsJInBnZGVtb3RlX2todWdlcGFnZWQiLA0KPiAgICNlbmRpZg0KPiAgIA0KPiAgIAkvKiBl
+bnVtIHdyaXRlYmFja19zdGF0X2l0ZW0gY291bnRlcnMgKi8NCj4gQEAgLTEyNzUsOSArMTI3OCw2
+IEBAIGNvbnN0IGNoYXIgKiBjb25zdCB2bXN0YXRfdGV4dFtdID0gew0KPiAgIAkicGdzdGVhbF9r
+c3dhcGQiLA0KPiAgIAkicGdzdGVhbF9kaXJlY3QiLA0KPiAgIAkicGdzdGVhbF9raHVnZXBhZ2Vk
+IiwNCj4gLQkicGdkZW1vdGVfa3N3YXBkIiwNCj4gLQkicGdkZW1vdGVfZGlyZWN0IiwNCj4gLQki
+cGdkZW1vdGVfa2h1Z2VwYWdlZCIsDQo+ICAgCSJwZ3NjYW5fa3N3YXBkIiwNCj4gICAJInBnc2Nh
+bl9kaXJlY3QiLA0KPiAgIAkicGdzY2FuX2todWdlcGFnZWQiLA==
 
