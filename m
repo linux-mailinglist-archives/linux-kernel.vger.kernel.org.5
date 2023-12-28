@@ -1,143 +1,150 @@
-Return-Path: <linux-kernel+bounces-12318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D567281F354
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:18:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80FFC81F356
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91F1A283F98
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 00:18:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61BEDB22787
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 00:18:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6045C323C;
-	Thu, 28 Dec 2023 00:17:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB17D881E;
+	Thu, 28 Dec 2023 00:17:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NcDQUH4J"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="H9u8BA4n"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1326ABC;
-	Thu, 28 Dec 2023 00:17:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703722627; x=1735258627;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zVZqQhADGmi9C9GQU0Rpvfm53YSnRw8E732emv+/c8g=;
-  b=NcDQUH4JDI1HBp3eglGmJZl89vtfPsh8WVHzAUUetgSTQ/CCagVoO386
-   kP6KQYoFPmfaB3giiSzmp87rMLpIueBejui7nR7OHqiikCCd56QSrddhU
-   Rgepi500nsF5pZWHFbEfsLCBWkCjsGbi/jfUilniZjW9iAPEyXgPY3mfg
-   jSzTlURgPBrOAiirFygFJ1UnAFWGrECrdGQQBzFtrChPaO5heCewJ/SG+
-   AuXxCtDkC/fWHOMsWChe2op6RUR2IKsUzePrWwfrOjaxrt4hGJnSYykK6
-   11dntf1TTw8Q3VrWZlrQzcT6QE7aP+4iOe6o9rQ8OvkniX5UMtlYOonY8
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="3800513"
-X-IronPort-AV: E=Sophos;i="6.04,310,1695711600"; 
-   d="scan'208";a="3800513"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 16:17:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="848812712"
-X-IronPort-AV: E=Sophos;i="6.04,310,1695711600"; 
-   d="scan'208";a="848812712"
-Received: from ply01-vm-store.bj.intel.com ([10.238.153.201])
-  by fmsmga004.fm.intel.com with ESMTP; 27 Dec 2023 16:17:02 -0800
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-To: bhelgaas@google.com,
-	baolu.lu@linux.intel.com,
-	dwmw2@infradead.org,
-	will@kernel.org,
-	robin.murphy@arm.com,
-	lukas@wunner.de
-Cc: linux-pci@vger.kernel.org,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v9 5/5] iommu/vt-d: don't loop for timeout ATS Invalidation request forever
-Date: Wed, 27 Dec 2023 19:16:46 -0500
-Message-Id: <20231228001646.587653-6-haifeng.zhao@linux.intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20231228001646.587653-1-haifeng.zhao@linux.intel.com>
-References: <20231228001646.587653-1-haifeng.zhao@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDEF18474
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 00:17:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-427b515c2bbso1142981cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 16:17:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703722666; x=1704327466; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e+8/BuLzsD57+lMc61ddX8z8AcfRGULMkgo8cesMgKE=;
+        b=H9u8BA4nwUQd/ophw4TcV7WFcb3PkZbHsvJ2rb8i0inSMJ9lzhNkrGXOoS8P5C3tav
+         i9M6NXe9Dh6Uca/ostV3JEj3EWIcmaZNd/h1/ztegkVYHclOScBCd9TSepb546V9l2Iq
+         BGexuRQgZLRCKrTTTWahDuW4O/eB+e/mKypQQHFhczizBmTc3ComGEFZHEI2acC5yBL2
+         tgECKPaFWH7EmmnAFSiW1G+1noX5rQWN0OtnIYeitzzcKcQLU5v4Q1FqjjYDFvFgZDOr
+         +fYYINDPX/ZJDwOuVtl9ZdLtw5xU+8b8ky1pUrhm+dZy8mrSeliGxC5tgI9l6B3rfxwz
+         Bt2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703722666; x=1704327466;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e+8/BuLzsD57+lMc61ddX8z8AcfRGULMkgo8cesMgKE=;
+        b=EZNOI0kSJEg5P2tY0w7MLv47qehfAO2HziLDCS4uu4s9OxBkBg/Cu2yMdKD3D+3zbp
+         ND+cb7/idFUaLiGEn9cpbO23xyriaS7YjdwgB2XBefxYwnVGLpvZnq+KW2Fre7lyHKP8
+         WOFHNcUJpd/KhSN5CbhXSbK0Z2z2rB1jeGDL/U0zahjXLe8lsdTtUXyaoPnnJZNnHJ6Y
+         o3SmAg6t3gVvcwEmT79r02/3RN8bdz2+HRQ3xRpb3bqK23YfLR2Xn9p1rZQ5K6OTRj/i
+         IL8KRY6aI4fJG+j6XeijOIuAyVXnl6R9KAGqc65Sj+m/Fg36yuhGYtAo64ynr5Duu6Lc
+         D57Q==
+X-Gm-Message-State: AOJu0YxkuGvQPfoxdFXxEJGlOgtxl5jSmtkKcWpmrKqZ7jFtgEe7xCY6
+	CTCheZlevN1kVdyheJmH8V3CafNwCExFja4TKBs7AXwgE+Ga
+X-Google-Smtp-Source: AGHT+IE9hPKxsfSZJZ4QMlrexCnwChPJftMlgzyUG48Jhm/2kwHFG909QbIXm9wYquch7HcLDa4rHK47z45Bbnro924=
+X-Received: by 2002:ac8:7d0e:0:b0:41c:e312:cbd2 with SMTP id
+ g14-20020ac87d0e000000b0041ce312cbd2mr915671qtb.29.1703722666556; Wed, 27 Dec
+ 2023 16:17:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231227-syscall32-v1-1-9621140d33bd@google.com> <20231227233444.GH1674809@ZenIV>
+In-Reply-To: <20231227233444.GH1674809@ZenIV>
+From: Tanzir Hasan <tanzirh@google.com>
+Date: Wed, 27 Dec 2023 16:17:34 -0800
+Message-ID: <CAE-cH4qJKrgN6W-JrdiVw8dR-Bso1P0R0koWtw8CmNCYDHDM6w@mail.gmail.com>
+Subject: Re: [PATCH] x86/syscalls: shrink entry/syscall_32.i via IWYU
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, 
+	Nick Desaulniers <nnn@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When the ATS Invalidation request timeout happens, the qi_submit_sync()
-will restart and loop for the invalidation request forever till it is
-done, it will block another Invalidation thread such as the fq_timer
-to issue invalidation request, cause the system lockup as following
+On Wed, Dec 27, 2023 at 3:34=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> w=
+rote:
+>
+> On Wed, Dec 27, 2023 at 10:38:41PM +0000, Tanzir Hasan wrote:
+> > This diff uses an open source tool include-what-you-use (IWYU) to modif=
+y
+> > the include list, changing indirect includes to direct includes. IWYU i=
+s
+> > implemented using the IWYUScripts github repository which is a tool tha=
+t
+> > is currently undergoing development. These changes seek to improve buil=
+d
+> > times.
+> >
+> > This change to entry/syscall_32.c resulted in a preprocessed size of
+> > entry/syscall_32.i from 64002 lines to 47986 lines (-25%) for the x86
+> > defconfig.
+> >
+> > Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+> > ---
+> >  arch/x86/entry/syscall_32.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/x86/entry/syscall_32.c b/arch/x86/entry/syscall_32.c
+> > index 8cfc9bc73e7f..66db11fe8a1c 100644
+> > --- a/arch/x86/entry/syscall_32.c
+> > +++ b/arch/x86/entry/syscall_32.c
+> > @@ -4,7 +4,7 @@
+> >  #include <linux/linkage.h>
+> >  #include <linux/sys.h>
+> >  #include <linux/cache.h>
+> > -#include <linux/syscalls.h>
+> > +#include <linux/ptrace.h>
+> >  #include <asm/syscall.h>
+>
+> Really?  What do we need linux/ptrace.h for?  Because if it's
+> struct pt_regs for the generated externs, we might as well have
+> just said
+> struct pt_regs;
+> and that would be it.
+>
+> <digs around a bit>
+>
+> As the matter of fact, all you need out of those includes is this:
+>
+> struct pt_regs;
+> typedef long (*sys_call_ptr_t)(const struct pt_regs *);
+> extern const sys_call_ptr_t sys_call_table[];
+> #if defined(CONFIG_X86_32)
+> #define ia32_sys_call_table sys_call_table
+> #else
+> /*
+>  * These may not exist, but still put the prototypes in so we
+>  * can use IS_ENABLED().
+>  */
+> extern const sys_call_ptr_t ia32_sys_call_table[];
+> extern const sys_call_ptr_t x32_sys_call_table[];
+> #endif
 
-[exception RIP: native_queued_spin_lock_slowpath+92]
+I see that only pt_regs is necessary and I understand this approach.
+I was wondering if using this approach would reduce readability.
+Once we add the snippet, the file builds even after removing the
+following lines:
+#include <linux/linkage.h>
+#include <linux/sys.h>
+#include <linux/cache.h>
+#include <linux/ptrace.h>
+#include <asm/syscall.h>
 
-RIP: ffffffffa9d1025c RSP: ffffb202f268cdc8 RFLAGS: 00000002
+It is possible to remove them all, but do you think any should be kept?
 
-RAX: 0000000000000101 RBX: ffffffffab36c2a0 RCX: 0000000000000000
-
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffab36c2a0
-
-RBP: ffffffffab36c2a0 R8: 0000000000000001 R9: 0000000000000000
-
-R10: 0000000000000010 R11: 0000000000000018 R12: 0000000000000000
-
-R13: 0000000000000004 R14: ffff9e10d71b1c88 R15: ffff9e10d71b1980
-
-ORIG_RAX: ffffffffffffffff CS: 0010 SS: 0018
-                                                                          
-#12 [ffffb202f268cdc8] native_queued_spin_lock_slowpath at ffffffffa9d1025c
-                                                                           
-#13 [ffffb202f268cdc8] do_raw_spin_lock at ffffffffa9d121f1                
-                                                                           
-#14 [ffffb202f268cdd8] _raw_spin_lock_irqsave at ffffffffaa51795b          
-                                                                           
-#15 [ffffb202f268cdf8] iommu_flush_dev_iotlb at ffffffffaa20df48           
-                                                                           
-#16 [ffffb202f268ce28] iommu_flush_iova at ffffffffaa20e182                
-                                                                           
-#17 [ffffb202f268ce60] iova_domain_flush at ffffffffaa220e27               
-                                                                           
-#18 [ffffb202f268ce70] fq_flush_timeout at ffffffffaa221c9d                
-                                                                           
-#19 [ffffb202f268cea8] call_timer_fn at ffffffffa9d46661                   
-                                                                           
-#20 [ffffb202f268cf08] run_timer_softirq at ffffffffa9d47933               
-                                                                           
-#21 [ffffb202f268cf98] __softirqentry_text_start at ffffffffaa8000e0      
-                                                                         
-#22 [ffffb202f268cff0] asm_call_sysvec_on_stack at ffffffffaa60114f 
---- ---
-(the left part of exception see the hotplug case of ATS capable device)
-
-If one endpoint device just no response to the ATS Invalidation request,
-but is not gone, it will bring down the whole system, to avoid such 
-case, don't try the timeout ATS Invalidation request forever.
-
-Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
----
- drivers/iommu/intel/dmar.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-index 76903a8bf963..206ab0b7294f 100644
---- a/drivers/iommu/intel/dmar.c
-+++ b/drivers/iommu/intel/dmar.c
-@@ -1457,7 +1457,7 @@ int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
- 	reclaim_free_desc(qi);
- 	raw_spin_unlock_irqrestore(&qi->q_lock, flags);
- 
--	if (rc == -EAGAIN)
-+	if (rc == -EAGAIN && type !=QI_DIOTLB_TYPE && type != QI_DEIOTLB_TYPE)
- 		goto restart;
- 
- 	if (iotlb_start_ktime)
--- 
-2.31.1
-
+Best,
+Tanzir
 
