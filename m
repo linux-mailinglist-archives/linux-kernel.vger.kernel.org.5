@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-12478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35D9281F55C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:16:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D249381F568
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 08:21:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6A0A28202A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 07:16:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1442AB21431
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 07:21:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588F74409;
-	Thu, 28 Dec 2023 07:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A65F1441B;
+	Thu, 28 Dec 2023 07:21:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yKdLkohe"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="khbO2AQd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479F06129
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:16:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D87B3C0B
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:21:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3369339f638so4542685f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 23:16:43 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-336c8ab0b20so2454197f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 23:21:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703747801; x=1704352601; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703748082; x=1704352882; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=orLiv5p/GP4OAaXmfCYxNFR6jNGFihlPdUIlFwdvxns=;
-        b=yKdLkoheIE/aB66mZC2VX4Mr+h2EomFrVRAKbiyyb6c6K8bdrThvaAzMJ+VXN8WpHD
-         WVdJcyCiSPXDWjsHCqN5uMo9vQNB+7ZVbyw8soewwX13gPvRGnJkSC9kJkfyB6xGojve
-         aAWUwscwLCJKE9Ca/0Vbs/NQOWH3Rcouh4YApL0hAnPV8RG7VN1fQKGk0vZadqJuM/z+
-         6qt8K4CojgWYqG6ReL0qz4BhSiQcZzncKt3SvlQAW7+5OprfMxRZyT1gl/ypBIup1nj8
-         g2RAGu91rxJzAQNBdJyRdsxBJwlPyrvxUd7BX9kRtL9tRuMOU0gs3FSICcJPxtVlJ+cd
-         3zcw==
+        bh=jJK0Nq9LgQ9tHm35nTOVUNQO0ie7Z6nhmkXG1Ro2iJY=;
+        b=khbO2AQdIsj1dGcc+TMeHyIoDUlqX89WJuUWAhLNKBqbkEPM0ACy02Cfta8MhqOvlO
+         IkuHsLkhIvTl7+FjrRtCejwtCwBgpvyOLFkyvwUuzA2ZJr9WyUzxyZaPebgGw2R+0qrM
+         Glu5CbZYi9ir7dsYe1FaTqIfXBpwux5nscsExVFm+uHtpRam9T/A2GDRSwTbxEWu2+Do
+         Vcetu5d82lnbfKAF/3uO8iYpfGM+C8sRC3FjWG1DmrNPC2/3MjChovBR/60Z6VO3CNnK
+         UmYCDzLx5lbMaN64KgaYakc+SsaVSfONfuJlgE6KIK2uDR0wYsA+LrIHeW/ZYoYIKwdA
+         DkCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703747801; x=1704352601;
+        d=1e100.net; s=20230601; t=1703748082; x=1704352882;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=orLiv5p/GP4OAaXmfCYxNFR6jNGFihlPdUIlFwdvxns=;
-        b=ExcUyq6YIM4FEXS/DHKCBC7mvp2nefqXy+w9HjjjDX2qeF5Yg96KnyzOGRtJrXghFj
-         PSlJr5aPHaoLPh/cuG59IFf8sEDhr+MJmPG2SvVdPtkUHCPcAHd+lIQU+2rQxiStNKe0
-         qAX0hrIS65sS1iUUXeUZQuXT9ZCtc1FIViIDuB770Bvh/9VybO4jClg2/g7m52C67M9G
-         2opkedRZqXEtjkxIT0XwodruebnGhkKAtqs6w4tHluH1aJyN8WOMoRJDgiuoU/Ecvbmo
-         P6+j8UE0dUwiPX+SICxdRpkIEVGHGxgvpqMwlfGjM2zrZSlWCwl2Q32aCloIzzTLwHFe
-         aWVA==
-X-Gm-Message-State: AOJu0YwUR/PQ7BDPGprzL/BeIY4chFn4E8zjNlFnrkeWQLzxQfBzjINM
-	5lkW3HsJ8vK8j3zi8Db6kzGwGZ1zxW+t/A==
-X-Google-Smtp-Source: AGHT+IG51SY4mFp3XgR0z+HX/BxyM70kr1E3wOWnevi5Bp+5jYF2DW1sfNCRnuMt1Swatz1cPqafLg==
-X-Received: by 2002:adf:f3cf:0:b0:336:5bf4:9904 with SMTP id g15-20020adff3cf000000b003365bf49904mr3661914wrp.142.1703747801637;
-        Wed, 27 Dec 2023 23:16:41 -0800 (PST)
+        bh=jJK0Nq9LgQ9tHm35nTOVUNQO0ie7Z6nhmkXG1Ro2iJY=;
+        b=iBZMVstAFukooS27xWUhHE/iWeOZGmkEqwHEOLkD57eFFwEnGA4D9tgEOiMJqTp+El
+         eR7f3n7r7C1O7VrJJlmQObrSvhIXRsjiWgX1PWBpUiX5PT+sVHlcTtaNqnRFSznht2P1
+         2KeTR0phiVAJkBLmzF9uwjOMrx4m2LbDqlbGCh16xtUXRy0pZ0bsCAJLqS2ZlmyaATOr
+         JOOA+oGB8NSXC3djCAMbVXTYK/lcv0jEMLFCC6/6Qx1/Ho/gDQYZgj47Wd0NAAAtcxpd
+         lH60uzhFfvO/rTyuJeKnZ17uNoLHpWIN9bUtk8UPNDnC3NF7ItCrDtkF7xcsreVWswSY
+         AkWg==
+X-Gm-Message-State: AOJu0Ywv+SdmbsQkCcytYmZRcLSW1de8SL3NZ2r21C4zhgrjD/i1FxGK
+	TA0ruz+PM5ysuOfHNNOg5CtTkEgHcLOZaQ==
+X-Google-Smtp-Source: AGHT+IGVVJTdVG9DDdqDl7LdXOX+TwQ6JLaex8ZjMFaMaybMRy2WDCGE5M30leOPowsKbCDnU87pdw==
+X-Received: by 2002:a05:6000:46:b0:336:80c3:5caf with SMTP id k6-20020a056000004600b0033680c35cafmr4516447wrx.1.1703748081777;
+        Wed, 27 Dec 2023 23:21:21 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id b3-20020a5d5503000000b00336b8461a5esm10405114wrv.88.2023.12.27.23.16.40
+        by smtp.gmail.com with ESMTPSA id a18-20020a5d5712000000b003368f9ec9e0sm14120289wrv.42.2023.12.27.23.21.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Dec 2023 23:16:41 -0800 (PST)
-Message-ID: <ccc8081b-d7cb-44c2-b579-6e4a97a2168d@linaro.org>
-Date: Thu, 28 Dec 2023 08:16:40 +0100
+        Wed, 27 Dec 2023 23:21:21 -0800 (PST)
+Message-ID: <bf77bd32-b618-4409-ab8b-93e4439ee6bf@linaro.org>
+Date: Thu, 28 Dec 2023 08:21:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,16 +66,23 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] RTQ6056: Add compatible for the same chip family
+Subject: Re: [PATCH v2 3/6] dt-bindings: soc: mobileye: add EyeQ5 OLB system
+ controller
 Content-Language: en-US
-To: cy_huang@richtek.com, Jonathan Cameron <jic23@kernel.org>,
+To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <cover.1703734994.git.cy_huang@richtek.com>
+ Conor Dooley <conor+dt@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+ linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+References: <20231227-mbly-clk-v2-0-a05db63c380f@bootlin.com>
+ <20231227-mbly-clk-v2-3-a05db63c380f@bootlin.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -121,17 +128,65 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <cover.1703734994.git.cy_huang@richtek.com>
+In-Reply-To: <20231227-mbly-clk-v2-3-a05db63c380f@bootlin.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 28/12/2023 04:51, cy_huang@richtek.com wrote:
-> From: ChiYuan Huang <cy_huang@richtek.com>
+On 27/12/2023 17:23, Théo Lebrun wrote:
+> Add documentation to describe the "Other Logic Block" syscon.
 > 
-> *** Resend for the '--thread' config in 'git format-patch'.
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> ---
+>  .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 44 ++++++++++++++++++++++
+>  MAINTAINERS                                        |  1 +
+>  2 files changed, 45 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
+> new file mode 100644
+> index 000000000000..b148a49b08f1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
+> @@ -0,0 +1,44 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mobileye EyeQ5 SoC system controller
+> +
+> +maintainers:
+> +  - Grégory Clement <gregory.clement@bootlin.com>
+> +  - Théo Lebrun <theo.lebrun@bootlin.com>
+> +  - Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+> +
+> +description:
+> +  OLB ("Other Logic Block") is a hardware block grouping smaller blocks. Clocks,
+> +  resets, pinctrl are being handled from here.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: mobileye,eyeq5-olb
+> +      - const: syscon
+> +      - const: simple-mfd
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  reg-io-width:
+> +    const: 4
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-io-width
 
-Resending the same after you receive feedback means you entirely bypass
-that feedback. Don't do this. Ever.
+It's still wrong order of the patches. Binding should be complete, so
+you miss clock-controller in this patch. If you ordered them hoping
+there is no dependency between patches, it will not work. You still have
+dependency! Your next patch still depends on this, which should be
+clearly expressed either in cover letter or next patch.
 
 Best regards,
 Krzysztof
