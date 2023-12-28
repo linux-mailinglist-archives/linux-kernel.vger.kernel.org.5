@@ -1,180 +1,185 @@
-Return-Path: <linux-kernel+bounces-12638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A478A81F82E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:21:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 313F481F830
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:23:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34C18B23C01
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:21:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B25C31F233AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 253B3749F;
-	Thu, 28 Dec 2023 12:21:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38F067490;
+	Thu, 28 Dec 2023 12:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="0ftsP2Xu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D64A7482;
-	Thu, 28 Dec 2023 12:21:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8Cx7+tTaI1lbQ0AAA--.300S3;
-	Thu, 28 Dec 2023 20:21:39 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Axnr5TaI1liCgOAA--.41543S2;
-	Thu, 28 Dec 2023 20:21:39 +0800 (CST)
-From: Bibo Mao <maobibo@loongson.cn>
-To: Huacai Chen <chenhuacai@kernel.org>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>
-Cc: WANG Xuerui <kernel@xen0n.name>,
-	loongarch@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Subject: [PATCH] LoongArch: KVM: Add cpucfg area for kvm hypervisor
-Date: Thu, 28 Dec 2023 20:21:38 +0800
-Message-Id: <20231228122138.2161282-1-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E65318466
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=idosch.org
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id 4C6623200A89;
+	Thu, 28 Dec 2023 07:23:19 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 28 Dec 2023 07:23:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1703766198; x=1703852598; bh=fM7/zGyEYysEvVHcUQj7FtYh0mju
+	iCiJQyKM0uIK+uM=; b=0ftsP2XuEmLwU8V0h9/o/T0KuJkFfVwRPR6PLFma+MHe
+	tPuUCSBUGfM2SBMjR8YlcPmM4sexOGMfmC8qpITHeM83X/FBdUEjNu9ddHabkl9w
+	dcww+miIjRbpH2JeQV6ftEjINVOJUSi2kxcS3cBZRseIeNDz4Fl1Euhl0xK8vWDJ
+	CbHizentF2ONsIQHFelerPETLMPm1Bxek7iVBoC+/Bd9yG+YWwOHOwZP0xGq4jPf
+	CrIHpU9iEq590nlaV+M6zSB5xuY6jOJY/D/A++IDCdVAZcJRHolptjBAgtKnCraW
+	gGkbi0BC0r15hsKBVWnl1HkeFDuW+zNNT/XjWhAm7w==
+X-ME-Sender: <xms:tmiNZeDgGcQ5x9A4F3-DpbNXaJY6ZWGRoXFXIg-nz57v_syP3ayOcg>
+    <xme:tmiNZYgbhJXD-bTYtC_d2AdVzEoC5n7KQcdzG3KknA3J57FbjbqjAiRsezX6JPMLa
+    pH57eMLTG5-uPI>
+X-ME-Received: <xmr:tmiNZRlBvKIsR9EwvYViUx14ONBha_EWgPnN1bpBMCmnVe8fuf4jDCbsnN_L>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdefuddgfeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
+    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
+    htvghrnhephefhtdejvdeiffefudduvdffgeetieeigeeugfduffdvffdtfeehieejtdfh
+    jeeknecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:tmiNZcyZk2Ic7Cwm8bAt1twt32DRNVBi8KqyXixUPtBxDwvhKouz0A>
+    <xmx:tmiNZTSIWYG99jQC7lIiBUDidLyo6MzJ3WxF5V412etRd_IlLR3VoQ>
+    <xmx:tmiNZXZSVKzZEgLHvFtaY0vIcZY9KPxJxqs8yGZ55TP8gcTjd012Zg>
+    <xmx:tmiNZSE-QY-5GesfR6MSIE1KrAiXIKP0z072gQcgiNpG9KKanSaqbQ>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 28 Dec 2023 07:23:17 -0500 (EST)
+Date: Thu, 28 Dec 2023 14:23:13 +0200
+From: Ido Schimmel <idosch@idosch.org>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org, zhangzekun11@huawei.com,
+	john.g.garry@oracle.com, dheerajkumar.srivastava@amd.com,
+	jsnitsel@redhat.com
+Subject: Re: [PATCH v3 0/2] iommu/iova: Make the rcache depot properly
+ flexible
+Message-ID: <ZY1osaGLyT-sdKE8@shredder>
+References: <cover.1694535580.git.robin.murphy@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Axnr5TaI1liCgOAA--.41543S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxWF1fCFW3Cw45GF47JFWfXrc_yoW5KFW3pF
-	ZrZrn5Wr48GryfA39rt3yUWws8ZF4kGr12vFW3J3y5CF47XryrAr4vkrZFyFyDKws5Ca4I
-	qF15tr13XF4UAabCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE
-	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
-	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
-	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
-	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-	CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8czVUUUUUU==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1694535580.git.robin.murphy@arm.com>
 
-VM will trap into hypervisor when executing cpucfg instruction. With
-cpucfg instruction, address index is passed from register, so address
-space is large enough. And now hardware only uses the area 0 - 20 for
-actual usage, here one specified area 0x10000000 -- 0x100000ff is used
-for KVM hypervisor, and the area can be extended for other hypervisors
-in future.
+On Tue, Sep 12, 2023 at 05:28:04PM +0100, Robin Murphy wrote:
+> v2: https://lore.kernel.org/linux-iommu/cover.1692641204.git.robin.murphy@arm.com/
+> 
+> Hi all,
+> 
+> I hope this is good to go now, just fixed the locking (and threw
+> lockdep at it to confirm, which of course I should have done to begin
+> with...) and picked up tags.
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/loongarch/include/asm/inst.h      |  1 +
- arch/loongarch/include/asm/loongarch.h |  9 +++++
- arch/loongarch/kvm/exit.c              | 46 +++++++++++++++++---------
- 3 files changed, 40 insertions(+), 16 deletions(-)
+Hi,
 
-diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/asm/inst.h
-index d8f637f9e400..ad120f924905 100644
---- a/arch/loongarch/include/asm/inst.h
-+++ b/arch/loongarch/include/asm/inst.h
-@@ -67,6 +67,7 @@ enum reg2_op {
- 	revhd_op	= 0x11,
- 	extwh_op	= 0x16,
- 	extwb_op	= 0x17,
-+	cpucfg_op	= 0x1b,
- 	iocsrrdb_op     = 0x19200,
- 	iocsrrdh_op     = 0x19201,
- 	iocsrrdw_op     = 0x19202,
-diff --git a/arch/loongarch/include/asm/loongarch.h b/arch/loongarch/include/asm/loongarch.h
-index 46366e783c84..a03b466555a1 100644
---- a/arch/loongarch/include/asm/loongarch.h
-+++ b/arch/loongarch/include/asm/loongarch.h
-@@ -158,6 +158,15 @@
- #define  CPUCFG48_VFPU_CG		BIT(2)
- #define  CPUCFG48_RAM_CG		BIT(3)
- 
-+/*
-+ * cpucfg index area: 0x10000000 -- 0x100000ff
-+ * SW emulation for KVM hypervirsor
-+ */
-+#define CPUCFG_KVM_BASE			0x10000000UL
-+#define CPUCFG_KVM_SIZE			0x100
-+#define CPUCFG_KVM_SIG			CPUCFG_KVM_BASE
-+#define  KVM_SIGNATURE			"KVM\0"
-+#define CPUCFG_KVM_FEATURE		(CPUCFG_KVM_BASE + 4)
- #ifndef __ASSEMBLY__
- 
- /* CSR */
-diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
-index f453a3e40cab..a7da63ecc6ab 100644
---- a/arch/loongarch/kvm/exit.c
-+++ b/arch/loongarch/kvm/exit.c
-@@ -215,10 +215,37 @@ int kvm_emu_idle(struct kvm_vcpu *vcpu)
- 	return EMULATE_DONE;
- }
- 
--static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
-+static int kvm_emu_cpucfg(struct kvm_vcpu *vcpu, larch_inst inst)
- {
- 	int rd, rj;
- 	unsigned int index;
-+
-+	rd = inst.reg2_format.rd;
-+	rj = inst.reg2_format.rj;
-+	++vcpu->stat.cpucfg_exits;
-+	index = vcpu->arch.gprs[rj];
-+
-+	/*
-+	 * By LoongArch Reference Manual 2.2.10.5
-+	 * Return value is 0 for undefined cpucfg index
-+	 */
-+	switch (index) {
-+	case 0 ... (KVM_MAX_CPUCFG_REGS - 1):
-+		vcpu->arch.gprs[rd] = vcpu->arch.cpucfg[index];
-+		break;
-+	case CPUCFG_KVM_SIG:
-+		vcpu->arch.gprs[rd] = *(unsigned int *)KVM_SIGNATURE;
-+		break;
-+	default:
-+		vcpu->arch.gprs[rd] = 0;
-+		break;
-+	}
-+
-+	return EMULATE_DONE;
-+}
-+
-+static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
-+{
- 	unsigned long curr_pc;
- 	larch_inst inst;
- 	enum emulation_result er = EMULATE_DONE;
-@@ -233,21 +260,8 @@ static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
- 	er = EMULATE_FAIL;
- 	switch (((inst.word >> 24) & 0xff)) {
- 	case 0x0: /* CPUCFG GSPR */
--		if (inst.reg2_format.opcode == 0x1B) {
--			rd = inst.reg2_format.rd;
--			rj = inst.reg2_format.rj;
--			++vcpu->stat.cpucfg_exits;
--			index = vcpu->arch.gprs[rj];
--			er = EMULATE_DONE;
--			/*
--			 * By LoongArch Reference Manual 2.2.10.5
--			 * return value is 0 for undefined cpucfg index
--			 */
--			if (index < KVM_MAX_CPUCFG_REGS)
--				vcpu->arch.gprs[rd] = vcpu->arch.cpucfg[index];
--			else
--				vcpu->arch.gprs[rd] = 0;
--		}
-+		if (inst.reg2_format.opcode == cpucfg_op)
-+			er = kvm_emu_cpucfg(vcpu, inst);
- 		break;
- 	case 0x4: /* CSR{RD,WR,XCHG} GSPR */
- 		er = kvm_handle_csr(vcpu, inst);
--- 
-2.39.3
+After pulling the v6.7 changes we started seeing the following memory
+leaks [1] of 'struct iova_magazine'. I'm not sure how to reproduce it,
+which is why I didn't perform bisection. However, looking at the
+mentioned code paths, they seem to have been changed in v6.7 as part of
+this patchset. I reverted both patches and didn't see any memory leaks
+when running a full regression (~10 hours), but I will repeat it to be
+sure.
 
+Any idea what could be the problem?
+
+Thanks
+
+[1]
+unreferenced object 0xffff8881a5301000 (size 1024): 
+  comm "softirq", pid 0, jiffies 4306297099 (age 462.991s) 
+  hex dump (first 32 bytes): 
+    00 00 00 00 00 00 00 00 e7 7d 05 00 00 00 00 00  .........}...... 
+    0f b4 05 00 00 00 00 00 b4 96 05 00 00 00 00 00  ................ 
+  backtrace: 
+    [<ffffffff819f5f08>] __kmem_cache_alloc_node+0x1e8/0x320 
+    [<ffffffff818a239a>] kmalloc_trace+0x2a/0x60 
+    [<ffffffff8231d31e>] free_iova_fast+0x28e/0x4e0 
+    [<ffffffff82310860>] fq_ring_free_locked+0x1b0/0x310 
+    [<ffffffff8231225d>] fq_flush_timeout+0x19d/0x2e0 
+    [<ffffffff813e95ba>] call_timer_fn+0x19a/0x5c0 
+    [<ffffffff813ea16b>] __run_timers+0x78b/0xb80 
+    [<ffffffff813ea5bd>] run_timer_softirq+0x5d/0xd0 
+    [<ffffffff82f1d915>] __do_softirq+0x205/0x8b5 
+
+unreferenced object 0xffff8881392ec000 (size 1024): 
+  comm "softirq", pid 0, jiffies 4306326731 (age 433.359s) 
+  hex dump (first 32 bytes): 
+    00 10 30 a5 81 88 ff ff 50 ff 0f 00 00 00 00 00  ..0.....P....... 
+    f3 99 05 00 00 00 00 00 87 b7 05 00 00 00 00 00  ................ 
+  backtrace: 
+    [<ffffffff819f5f08>] __kmem_cache_alloc_node+0x1e8/0x320 
+    [<ffffffff818a239a>] kmalloc_trace+0x2a/0x60 
+    [<ffffffff8231d31e>] free_iova_fast+0x28e/0x4e0 
+    [<ffffffff82310860>] fq_ring_free_locked+0x1b0/0x310 
+    [<ffffffff8231225d>] fq_flush_timeout+0x19d/0x2e0 
+    [<ffffffff813e95ba>] call_timer_fn+0x19a/0x5c0 
+    [<ffffffff813ea16b>] __run_timers+0x78b/0xb80 
+    [<ffffffff813ea5bd>] run_timer_softirq+0x5d/0xd0 
+    [<ffffffff82f1d915>] __do_softirq+0x205/0x8b5 
+
+unreferenced object 0xffff8881411f9000 (size 1024): 
+  comm "softirq", pid 0, jiffies 4306708887 (age 51.459s) 
+  hex dump (first 32 bytes): 
+    00 10 1c 26 81 88 ff ff 2c 96 05 00 00 00 00 00  ...&....,....... 
+    ac fe 0f 00 00 00 00 00 a6 fe 0f 00 00 00 00 00  ................ 
+  backtrace: 
+    [<ffffffff819f5f08>] __kmem_cache_alloc_node+0x1e8/0x320 
+    [<ffffffff818a239a>] kmalloc_trace+0x2a/0x60 
+    [<ffffffff8231d31e>] free_iova_fast+0x28e/0x4e0 
+    [<ffffffff82310860>] fq_ring_free_locked+0x1b0/0x310 
+    [<ffffffff8231225d>] fq_flush_timeout+0x19d/0x2e0 
+    [<ffffffff813e95ba>] call_timer_fn+0x19a/0x5c0 
+    [<ffffffff813ea16b>] __run_timers+0x78b/0xb80 
+    [<ffffffff813ea5bd>] run_timer_softirq+0x5d/0xd0 
+    [<ffffffff82f1d915>] __do_softirq+0x205/0x8b5 
+
+unreferenced object 0xffff88812be26400 (size 1024): 
+  comm "softirq", pid 0, jiffies 4306710027 (age 50.319s) 
+  hex dump (first 32 bytes): 
+    00 c0 2e 39 81 88 ff ff 32 ab 05 00 00 00 00 00  ...9....2....... 
+    e3 ac 05 00 00 00 00 00 1f b6 05 00 00 00 00 00  ................ 
+  backtrace: 
+    [<ffffffff819f5f08>] __kmem_cache_alloc_node+0x1e8/0x320 
+    [<ffffffff818a239a>] kmalloc_trace+0x2a/0x60 
+    [<ffffffff8231d31e>] free_iova_fast+0x28e/0x4e0 
+    [<ffffffff82310860>] fq_ring_free_locked+0x1b0/0x310 
+    [<ffffffff8231225d>] fq_flush_timeout+0x19d/0x2e0 
+    [<ffffffff813e95ba>] call_timer_fn+0x19a/0x5c0 
+    [<ffffffff813ea16b>] __run_timers+0x78b/0xb80 
+    [<ffffffff813ea5bd>] run_timer_softirq+0x5d/0xd0 
+    [<ffffffff82f1d915>] __do_softirq+0x205/0x8b5 
+
+unreferenced object 0xffff8881261c1000 (size 1024): 
+  comm "softirq", pid 0, jiffies 4306711547 (age 48.799s) 
+  hex dump (first 32 bytes): 
+    00 64 e2 2b 81 88 ff ff c0 7c 05 00 00 00 00 00  .d.+.....|...... 
+    87 a5 05 00 00 00 00 00 0e 9a 05 00 00 00 00 00  ................ 
+  backtrace: 
+    [<ffffffff819f5f08>] __kmem_cache_alloc_node+0x1e8/0x320 
+    [<ffffffff818a239a>] kmalloc_trace+0x2a/0x60 
+    [<ffffffff8231d31e>] free_iova_fast+0x28e/0x4e0 
+    [<ffffffff82310860>] fq_ring_free_locked+0x1b0/0x310 
+    [<ffffffff8231225d>] fq_flush_timeout+0x19d/0x2e0 
+    [<ffffffff813e95ba>] call_timer_fn+0x19a/0x5c0 
+    [<ffffffff813ea16b>] __run_timers+0x78b/0xb80 
+    [<ffffffff813ea5bd>] run_timer_softirq+0x5d/0xd0 
+    [<ffffffff82f1d915>] __do_softirq+0x205/0x8b5 
 
