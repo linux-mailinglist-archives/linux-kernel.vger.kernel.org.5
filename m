@@ -1,106 +1,141 @@
-Return-Path: <linux-kernel+bounces-12561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE72981F6D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 11:17:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E411681F6D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 11:19:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F27F1F211E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:17:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26076B23C1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:19:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A626AAD;
-	Thu, 28 Dec 2023 10:17:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD19B6AA8;
+	Thu, 28 Dec 2023 10:18:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Mzksk20R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eqk6lSN0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B7F363C6
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 10:17:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66A93C433C7;
-	Thu, 28 Dec 2023 10:17:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1703758659;
-	bh=E52uTUo/hljsQwQ023swY2xZdyNV3GH52IXVtrNIF48=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Mzksk20R7PZW9oY90SUixy6imTJzFkT8Uhv47wEow8bwfucNfgXandFSuzcOJQBEG
-	 Tn7Gf3x9giWfziUCRlXayNqfcoo3EHo0ZZ8Fe8miQpA7jqwKMkCRNqGbncxk6cOqd2
-	 Tkb9oSoRGJkZUQYCo0lOmG95mm+IKWNE76rJ+3RA=
-Date: Thu, 28 Dec 2023 10:17:37 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: David Rientjes <rientjes@google.com>
-Cc: Pasha Tatashin <pasha.tatashin@soleen.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>, rafael@kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>, surenb@google.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	souravpanda@google.com
-Subject: Re: Sysfs one-value-per-file (was Re: [PATCH] vmstat: don't auto
- expand the sysfs files)
-Message-ID: <2023122824-washout-shrubs-1d6d@gregkh>
-References: <20231211154644.4103495-1-pasha.tatashin@soleen.com>
- <3d415ab4-e8c7-7e72-0379-952370612bdd@google.com>
- <CA+CK2bA2vZp3e+HHfB-sdLsPUYghMxvKcWURktDtNjwPL79Csw@mail.gmail.com>
- <b1049bfa-68c4-e237-30a9-1514a378c7f1@google.com>
- <CA+CK2bBxbvO-osm5XKk4VkaXYgfZXkDAtfayaYJ-vXo=QFqGPA@mail.gmail.com>
- <13e5fbd4-d84d-faba-47f1-d0024d2c572d@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF0C563C6
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 10:18:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-42786ec994bso50508631cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 02:18:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703758736; x=1704363536; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=76rIf+guTp5lw4RDD2pSw8InhFr5B3jeNbOCct2FRek=;
+        b=Eqk6lSN0j3tCCC73WOsVrYNM1RlzZIBd756UMykOi4dpotWT+82s8G3j8kE97BpZmq
+         XMoOkX8AzLUwA0z5EVcRz4XWuXcJynBB1L9Ow65Ix6pwRJTk/a5dRH7fza6yi5QpbzP5
+         VKMUF7TycI7fuA9l10KiQ1TW9o7c97xE1hSRvrQosrlXyJv2H2vLJM8GWiL0HdAsTQfX
+         5BJNvJczU9JxFE6iVcZFl29rII9qP0pepuTwJRvRgdnzgrTPpEQmkZHc45IYrXkjzXED
+         SVIibVXycv4dVxbHJ0a44UYmAyIF4N/COFnY55F0ReGB6kM77TrO4ezwmhA/jsGmt836
+         3fLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703758736; x=1704363536;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=76rIf+guTp5lw4RDD2pSw8InhFr5B3jeNbOCct2FRek=;
+        b=wKJq7DaM3Ub3iKo3fscLJlC56vqyshhafkUNpyZ1LoKJmUGZLR72qnGQuHR424x35Y
+         h9tz8kk96CQWnX6S9uC6ZMKhJILretpOLEDBU61GWVSvOcuwknBubuEp5TorkbipLPv/
+         Q4OzKD1cQdUrq7upicKWQkoxOGc35rjXTqDLT4Ew0nE1Xk2scXn8umPnLr41BeXb4wN2
+         /qA6UO868BfhFSZhF5pKkN/Yk/5BBK3E6+Z4dair1WVW4DQs+y0OQKc4e0PIJgQ0YEiP
+         FrFtUuwjRBAxTRlp60owDiuqXC9ywSSb1oRToPlOOBBLwzm0Ydr6HnuqhGHNd2/THvva
+         H7wQ==
+X-Gm-Message-State: AOJu0YzqcPWmvvi8ZzJMilf9QLxV52KPDinHk055leZgFlLsbzzN4h+K
+	Rgq3sR4z+MH5RcpLykUZkpTidFZEgEvS1LXKdDre8y5d5l7BySOwxPY=
+X-Google-Smtp-Source: AGHT+IGc5juyCyPvlpop20qPG41SPtHggp6E0LAvoyXGl9OdrSTesJK6ueLr8UHDG8CIjesk6/YLo24CrzHUZboLkkg=
+X-Received: by 2002:a05:622a:1813:b0:427:f931:bdbc with SMTP id
+ t19-20020a05622a181300b00427f931bdbcmr860721qtc.111.1703758735612; Thu, 28
+ Dec 2023 02:18:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <13e5fbd4-d84d-faba-47f1-d0024d2c572d@google.com>
+References: <CALf2hKsJjDY3OhtMCxhHh7rS=2S4Oq9Ns=t-NFq1MPD=f0K02Q@mail.gmail.com>
+ <BN9PR11MB52761AA391479A55533BFE718C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
+In-Reply-To: <BN9PR11MB52761AA391479A55533BFE718C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
+From: Zhang Zhiyu <zhiyuzhang999@gmail.com>
+Date: Thu, 28 Dec 2023 18:18:44 +0800
+Message-ID: <CALf2hKvjrUFDqPnZxv9RVZ=cxgUUwUBoMv2TVTcZHuMmca+MPQ@mail.gmail.com>
+Subject: Re: A bug was found in Linux Kernel 6.6+: KASAN: slab-use-after-free
+ in iommufd_test (with POC)
+To: "Tian, Kevin" <kevin.tian@intel.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>, "jgg@ziepe.ca" <jgg@ziepe.ca>, 
+	"joro@8bytes.org" <joro@8bytes.org>, "will@kernel.org" <will@kernel.org>, 
+	"robin.murphy@arm.com" <robin.murphy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 26, 2023 at 04:53:31PM -0800, David Rientjes wrote:
-> I'd argue that the ship on the "sysfs one-value-per-file rule" has sailed 
-> for long-standing use cases where either (1) switching is just not 
-> possible or (2) switching would be an undue burden to the user.
-> 
-> An example of (1) would be THP enablement and defrag options:
-> 
-> $ grep . /sys/kernel/mm/transparent_hugepage/{defrag,enabled,shmem_enabled}
-> /sys/kernel/mm/transparent_hugepage/defrag:always defer defer+madvise [madvise] never
-> /sys/kernel/mm/transparent_hugepage/enabled:[always] madvise never
-> /sys/kernel/mm/transparent_hugepage/shmem_enabled:always within_size advise [never] deny force
-> 
-> This convention isn't going to change.  We're not going to suddenly add a 
-> new enablement or defrag option that can only be set in a newly added 
-> file that is one-value-per-file.
-> 
-> THP was obviously introduced before any sysfs "one-value-per-file rule" 
+Hi Kevin,
 
-No, the rule has been there since "day one" for sysfs, this file snuck
-in much later with no one noticing it against the "rules" and I've been
-complaining about it every time someone tries to add a new field to it
-that I notice.
+Thanks for your advice.
 
-> and, in retrospect, I think most people would agree that these files would 
-> be much better off implemented returning a single word.  But, choices 
-> where made in the "before times", and it was implemented in a way that 
-> shows all the possible choices and which one is in effect.  Owell.  We 
-> deal with it, and we move on.
-> 
-> Imagine if I add a new choice of "lightweight" to the "defrag" file.  The 
-> only rational way to do that would be to extend the current interface, not 
-> create a new /sys/kernel/mm/transparent_hugepage/defrag/lightweight file 
-> that is one-value-per-file that unsets all the other options in "defrag."
-> Please.
+I check the patch which has been applied in Linux-6.7-rc5+, while not
+in the latest stable Linux-6.6.8. As a result, my poc is still
+reproducible on 6.6.8, but not on 6.7-rc5+. Maybe the stable line of
+Linux kernel should apply the patch asap.
 
-Please remember that the sysfs rule is there for a good reason, it makes
-it very hard to break existing userspace tools if you stick with it.  If
-you decide to ignore that rule, then you are on your own and better make
-sure that nothing breaks.
+Seems that I am late to this bug. Although the call trace of my poc is
+slightly different from the disclosed "KASAN: slab-use-after-free Read
+in iommufd_vfio_ioas"
+(https://syzkaller.appspot.com/bug?extid=3Dd31adfb277377ef8fcba), they
+share the same root cause.
 
-Again, please learn from our previous mistakes with proc files, that is
-why the rule is there.
+Best,
+Zhiyu
 
-If you wish to ignore the rule, you all really are on your own, good
-luck!
-
-greg k-h
+Tian, Kevin <kevin.tian@intel.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=8828=E6=
+=97=A5=E5=91=A8=E5=9B=9B 15:28=E5=86=99=E9=81=93=EF=BC=9A
+>
+> > From: Zhang Zhiyu <zhiyuzhang999@gmail.com>
+> > Sent: Wednesday, December 27, 2023 5:03 PM
+> >
+> > Hi upstream community,
+> >
+> > I am fuzzing a LTS version of Linux kernel 6.6 with my modified
+> > syzkaller and I find a bug named "KASAN: slab-use-after-free in
+> > iommufd_test". By analyzing the call trace in bug report, I address
+> > the root cause of this bug at drivers/iommu/iommufd. An iommufd_object
+> > is allocated in one task through
+> > iommufd_fops_ioctl->iommufd_ioas_alloc_ioctl->iommufd_ioas_alloc and
+> > freed in another task through iommufd_fops_ioctl->iommufd_destroy.
+> > Then when the kernel invokes the calls
+> > iommufd_fops_ioctl->iommufd_test->iommufd_test_add_reserved-
+> > >iommufd_put_object,
+> > an use-after-free read will occur. Detailed report, log, repro, config
+> > can be found in this google drive link:
+> > https://drive.usercontent.google.com/download?id=3D1nDJWUstYJNcC1zJ6q1r
+> > hB5zB0uV2yGvg&export=3Ddownload&authuser=3D0&confirm=3Dt
+> >
+> > The steps to reproduce the bug:
+> > 1. compile the kernel 6.6 with provided Linux-6.6.config
+> > 2. boot a qemu vm that runs the compiled kernel
+> > 3. scp the repro.c (repro.prog is not recommended) to the vm and
+> > compile it with gcc -pthread repro.c -o repro
+> > 4. execute ./repro and you will see the output stucks for a while and
+> > then KASAN is triggered and kernel panic.
+> > 5. you can speed up the crash by setting up another ssh shell to
+> > execute ./repro again.
+> >
+> > I have reproduced it on 6.6 and 6.6.1 (but haven't verified on the
+> > latest ver 6.6.8 yet). I didn't find any related reports on the
+> > internet, which indicates that it may be a 0day. Hope the upstream can
+> > help check and fix it. And I'll be happy to assist if needed.
+> >
+>
+> Could you try below fix? or just use latest kernel which already includes=
+ it:
+>
+> https://lore.kernel.org/all/2-v2-ca9e00171c5b+123-iommufd_syz4_jgg@nvidia=
+.com/
 
