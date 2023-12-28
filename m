@@ -1,120 +1,117 @@
-Return-Path: <linux-kernel+bounces-12856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 569A181FB3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 21:51:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 721B281FB40
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 21:52:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8884C1C22003
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:51:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CBF61F23F36
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:52:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E0A3107BB;
-	Thu, 28 Dec 2023 20:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549EB10945;
+	Thu, 28 Dec 2023 20:52:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="ZOO2s9w0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4VIuaT64"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA79107AB
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 20:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-427b1bf1896so43870131cf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:51:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9B210947
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 20:52:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d3ea8d0f9dso698455ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:52:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1703796661; x=1704401461; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O6AAWinozqvqRPJJJy9/95oMBpoLUYKoADUfceo9DTA=;
-        b=ZOO2s9w016us9/zqSzu6ouMitNSrHYm90kxaxvCWxAYSFRdMYWcYB4DMjUvbyoinA3
-         WKF6lSV1AOukHl5kxu+MDqCSkaSgf6ZRfF+9L+BXVT8PrNf6kAgJLo6KGC1F//I7js2j
-         HKI1miOMmH+SaY287fZ3ta5lPKAxYLJMRfG64/3MliliPrdlUua+kaFEpLyPSkMHH4g7
-         tlpyK8NHZKw+dLCrlQVwoPyRTmszFAySlopJiUNhIwaNW/RUEH3Kx0T9WRC4r3DJxb2q
-         7USmXYkTII1TGPsvDgURwXcCD+y4OwFstnsa022AEP1ExkXdZrcmORm0997tjFw+e3Lu
-         r/LA==
+        d=google.com; s=20230601; t=1703796754; x=1704401554; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=S788tp3IyJJGZzIwxLHgTA4XtDw+UIahU/ujGgekUjs=;
+        b=4VIuaT64H1q3F/1QIroidqb8/tFm6CxIPexsb1EpqvyOAILt46luAZClmdgwl/r3ko
+         MoQxhQAo5EnwYZ6pPLg0PDj4D+STFxqi8cXpLHEEu+NZg3rM3o2i90bBPwTHi8qiBmj+
+         6xkL2NNvF4QTiqf7fyi3K/3dltVEvvgUeM+TPmioPiqLz1EjU0pVr5Le14Mmg56yEyEl
+         Ec6vnTsGC1v6b4KVDoV6+VSzdziqZ0q6lOkzNCMInaLMXObEdmjNY1+MV9fwCMhNCwU/
+         4bp4rmuq+URqic1tHzu6EOpFBwPk0IDR5OR0sRvEwZmcJ5MVMZXDqScYwINZ0jxLV9yG
+         vf+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703796661; x=1704401461;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O6AAWinozqvqRPJJJy9/95oMBpoLUYKoADUfceo9DTA=;
-        b=jRIXRf6jL4+11VbULY+8jr+qHOQIyVH6GG8pb9IrCs4X+J4SW/mvGEWew6Z7lUNTs0
-         PTeVMVWzcaDRHhbNYVqJmWLYuVmbN+mT/i1MnCJzHSdccpoPsElL+RRTAFegDBETN0KB
-         i8HTbmKDePEN+afD5CYUwXbwr6UWSdAcHPzJOr1xGaJJ5T6yaT314SErPHf1llbubLJ5
-         Xehyv61UCSTeisXBPRHIr9+XG1d9JpiZfOMh4m1LsQ7pCzLkYKf7EH71txiQWgJ+/ZJT
-         BhPHVmmJos9bG88nXQ5cq8MQjl+iyi/rOkjjjCgp7ovugixdOnrgb6uWLOaSykY4SZ3y
-         KDjg==
-X-Gm-Message-State: AOJu0YzuxyhOxxejT76rWkgje7M8lFr82WdikbcmIzWjZzTA7RFxtqE9
-	evxD0R4lAB22XQr/UyNPmx9BB/INDLWetalXabHNBSe5TBXQTw==
-X-Google-Smtp-Source: AGHT+IFpM6FSJnu/fT7MUo3kvAgcqckDw2HVcb4L+wg/qq6S8e2uST/Lil7U8asRT24B/JXhj0d+Dr0vAnZygi7KTec=
-X-Received: by 2002:a05:622a:55:b0:425:8a26:9798 with SMTP id
- y21-20020a05622a005500b004258a269798mr14518555qtw.73.1703796661591; Thu, 28
- Dec 2023 12:51:01 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703796754; x=1704401554;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S788tp3IyJJGZzIwxLHgTA4XtDw+UIahU/ujGgekUjs=;
+        b=W9dJEClVWy+efYWqvoLawij1olCpP3+tQ6KiBIV6bq1AXga0Di+T209ykh7i0xHv28
+         KONUWve7sDnpj4oi4q3EcOT2l1FeoFxN9XOY3j3Uv9EKktkHceoWVpOQmMIoTTp0rx8w
+         QA8b6GU2JLPePI4R/CT6cFtyS7ZhIgk4e9RIV9XpWPO9LfHV74QgxDrgCpkwxGtxwOYL
+         GsDmgqGjOzCMrQIYKLGMWWjlVEGI7h2LRqo3AVWbnTTbWQtrUeMwJgG0qsWPuPlIaM9A
+         hx7f68a3pA8TM9hG2IQ6+tjQB0ptGVIJ1cHHsD+Hyt3z+0Er1tftSNRmatayz6uHC8Ke
+         /D6Q==
+X-Gm-Message-State: AOJu0YyPDFFrbY5BHOyxD0BEp4njNCwphZ2lDhkQQpad+Ka7One+JVbj
+	hebmG3kdHorGlm3XWw9nvKz9Yrposgoi
+X-Google-Smtp-Source: AGHT+IGlbqQLYbN6grmwp2KQNqREMnkwdmeje4MbNj3wZpkS6osclrkD9IvJ/FUiRZL1Hu3H0NWZtQ==
+X-Received: by 2002:a17:902:ce85:b0:1d0:a45c:202 with SMTP id f5-20020a170902ce8500b001d0a45c0202mr771128plg.24.1703796753327;
+        Thu, 28 Dec 2023 12:52:33 -0800 (PST)
+Received: from [2620:0:1008:15:5eb6:dfb2:ff4b:8b64] ([2620:0:1008:15:5eb6:dfb2:ff4b:8b64])
+        by smtp.gmail.com with ESMTPSA id ju22-20020a170903429600b001d1cd7e4acesm14344261plb.68.2023.12.28.12.52.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Dec 2023 12:52:32 -0800 (PST)
+Date: Thu, 28 Dec 2023 12:52:32 -0800 (PST)
+From: David Rientjes <rientjes@google.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc: Pasha Tatashin <pasha.tatashin@soleen.com>, 
+    Linus Torvalds <torvalds@linux-foundation.org>, rafael@kernel.org, 
+    Andrew Morton <akpm@linux-foundation.org>, surenb@google.com, 
+    linux-kernel@vger.kernel.org, linux-mm@kvack.org, souravpanda@google.com
+Subject: Re: Sysfs one-value-per-file (was Re: [PATCH] vmstat: don't auto
+ expand the sysfs files)
+In-Reply-To: <2023122824-washout-shrubs-1d6d@gregkh>
+Message-ID: <829410ca-1454-968e-b724-0ef0bfbca5cc@google.com>
+References: <20231211154644.4103495-1-pasha.tatashin@soleen.com> <3d415ab4-e8c7-7e72-0379-952370612bdd@google.com> <CA+CK2bA2vZp3e+HHfB-sdLsPUYghMxvKcWURktDtNjwPL79Csw@mail.gmail.com> <b1049bfa-68c4-e237-30a9-1514a378c7f1@google.com>
+ <CA+CK2bBxbvO-osm5XKk4VkaXYgfZXkDAtfayaYJ-vXo=QFqGPA@mail.gmail.com> <13e5fbd4-d84d-faba-47f1-d0024d2c572d@google.com> <2023122824-washout-shrubs-1d6d@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231211154644.4103495-1-pasha.tatashin@soleen.com>
- <3d415ab4-e8c7-7e72-0379-952370612bdd@google.com> <CA+CK2bA2vZp3e+HHfB-sdLsPUYghMxvKcWURktDtNjwPL79Csw@mail.gmail.com>
- <b1049bfa-68c4-e237-30a9-1514a378c7f1@google.com> <CA+CK2bBxbvO-osm5XKk4VkaXYgfZXkDAtfayaYJ-vXo=QFqGPA@mail.gmail.com>
- <13e5fbd4-d84d-faba-47f1-d0024d2c572d@google.com> <20231227104244.824b0977ae6d4bb6b37f6f79@linux-foundation.org>
- <CA+CK2bAARPNHwZB9tkd6miKr8GWrZ_L6h1oiUM0qWu6pJqh3Wg@mail.gmail.com> <c2b73ac2-c271-d11c-6d06-3e0ab74a29a6@google.com>
-In-Reply-To: <c2b73ac2-c271-d11c-6d06-3e0ab74a29a6@google.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Thu, 28 Dec 2023 15:50:24 -0500
-Message-ID: <CA+CK2bB2=raEP8W5GDW_JY7TDvwtSCbkQjvn=SvbjUjPETXZow@mail.gmail.com>
-Subject: Re: Sysfs one-value-per-file (was Re: [PATCH] vmstat: don't auto
- expand the sysfs files)
-To: David Rientjes <rientjes@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, rafael@kernel.org, surenb@google.com, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, souravpanda@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 
-On Thu, Dec 28, 2023 at 3:43=E2=80=AFPM David Rientjes <rientjes@google.com=
-> wrote:
->
-> On Thu, 28 Dec 2023, Pasha Tatashin wrote:
->
-> > > > But for existing files and conventions, I think we should settle it=
- as
-> > > > "keep doing what you've been doing for 13+ years" and don't force t=
-his
-> > > > argument every time a kernel developer wants to just add one more s=
-tat.
-> > >
-> > > Absolutely.  Let's do what makes most sense.  For new things, one val=
-ue
-> > > per file.  For stats which logically group with other existing stats,
-> > > do whatever the existing other stats are currently doing.
-> >
-> > The intent of "[PATCH] vmstat: don't auto expand the sysfs files" is
-> > to do exactly this: keep the current fields in
-> > /sys/devices/system/node/node*/vmstat as-is, but prevent future fields
-> > added to node_stat, numa_stat, zone_stat from showing in vmstat.
-> >
->
-> This is the opposite of what Andrew and I wrote above.  There should be n=
-o
-> need to start preventing future stats from being grouped together in
-> vmstat if it logically makes sense.
->
-> NAK.
+On Thu, 28 Dec 2023, Greg Kroah-Hartman wrote:
 
-Hm, I must have misunderstood what Andrew said.
+> > I'd argue that the ship on the "sysfs one-value-per-file rule" has sailed 
+> > for long-standing use cases where either (1) switching is just not 
+> > possible or (2) switching would be an undue burden to the user.
+> > 
+> > An example of (1) would be THP enablement and defrag options:
+> > 
+> > $ grep . /sys/kernel/mm/transparent_hugepage/{defrag,enabled,shmem_enabled}
+> > /sys/kernel/mm/transparent_hugepage/defrag:always defer defer+madvise [madvise] never
+> > /sys/kernel/mm/transparent_hugepage/enabled:[always] madvise never
+> > /sys/kernel/mm/transparent_hugepage/shmem_enabled:always within_size advise [never] deny force
+> > 
+> > This convention isn't going to change.  We're not going to suddenly add a 
+> > new enablement or defrag option that can only be set in a newly added 
+> > file that is one-value-per-file.
+> > 
+> > THP was obviously introduced before any sysfs "one-value-per-file rule" 
+> 
+> No, the rule has been there since "day one" for sysfs, this file snuck
+> in much later with no one noticing it against the "rules" and I've been
+> complaining about it every time someone tries to add a new field to it
+> that I notice.
+> 
 
-I am ok with this patch being NAK, as long as the IOMMU observability
-patch series and Per-Page Metadata patch can be merged upstream, and
-extend vmstat without a NAK from GregKH for expanding a sysfs vmstat
-file.
+Ah, gotcha, thanks.  I had assumed that the push for one-value-per-file 
+started after thp, and perhaps even because of thp :)  I have to admit 
+that whenever I log into a new server type one of the first things I do is
 
-Pasha
+$ cat /sys/devices/system/node/node*/distance
+
+and that table just makes intuitive sense.  If we were to go back in time 
+and reimplement that as one-value-per-file, I'd just assume that many 
+userspace implementations would just need to read 64 different files to 
+structure it into the same exact table.
+
+On the other hand, I have wished countless times that the thp settings 
+would have actually been one-value-per-file from the start.
 
