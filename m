@@ -1,141 +1,166 @@
-Return-Path: <linux-kernel+bounces-12562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E411681F6D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 11:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A9EC81F6DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 11:23:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26076B23C1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:19:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A922BB22E7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD19B6AA8;
-	Thu, 28 Dec 2023 10:18:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eqk6lSN0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 091A26ADC;
+	Thu, 28 Dec 2023 10:23:26 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF0C563C6
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 10:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-42786ec994bso50508631cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 02:18:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703758736; x=1704363536; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=76rIf+guTp5lw4RDD2pSw8InhFr5B3jeNbOCct2FRek=;
-        b=Eqk6lSN0j3tCCC73WOsVrYNM1RlzZIBd756UMykOi4dpotWT+82s8G3j8kE97BpZmq
-         XMoOkX8AzLUwA0z5EVcRz4XWuXcJynBB1L9Ow65Ix6pwRJTk/a5dRH7fza6yi5QpbzP5
-         VKMUF7TycI7fuA9l10KiQ1TW9o7c97xE1hSRvrQosrlXyJv2H2vLJM8GWiL0HdAsTQfX
-         5BJNvJczU9JxFE6iVcZFl29rII9qP0pepuTwJRvRgdnzgrTPpEQmkZHc45IYrXkjzXED
-         SVIibVXycv4dVxbHJ0a44UYmAyIF4N/COFnY55F0ReGB6kM77TrO4ezwmhA/jsGmt836
-         3fLg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2043C63C6
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 10:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b7018c9476so498753139f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 02:23:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703758736; x=1704363536;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=76rIf+guTp5lw4RDD2pSw8InhFr5B3jeNbOCct2FRek=;
-        b=wKJq7DaM3Ub3iKo3fscLJlC56vqyshhafkUNpyZ1LoKJmUGZLR72qnGQuHR424x35Y
-         h9tz8kk96CQWnX6S9uC6ZMKhJILretpOLEDBU61GWVSvOcuwknBubuEp5TorkbipLPv/
-         Q4OzKD1cQdUrq7upicKWQkoxOGc35rjXTqDLT4Ew0nE1Xk2scXn8umPnLr41BeXb4wN2
-         /qA6UO868BfhFSZhF5pKkN/Yk/5BBK3E6+Z4dair1WVW4DQs+y0OQKc4e0PIJgQ0YEiP
-         FrFtUuwjRBAxTRlp60owDiuqXC9ywSSb1oRToPlOOBBLwzm0Ydr6HnuqhGHNd2/THvva
-         H7wQ==
-X-Gm-Message-State: AOJu0YzqcPWmvvi8ZzJMilf9QLxV52KPDinHk055leZgFlLsbzzN4h+K
-	Rgq3sR4z+MH5RcpLykUZkpTidFZEgEvS1LXKdDre8y5d5l7BySOwxPY=
-X-Google-Smtp-Source: AGHT+IGc5juyCyPvlpop20qPG41SPtHggp6E0LAvoyXGl9OdrSTesJK6ueLr8UHDG8CIjesk6/YLo24CrzHUZboLkkg=
-X-Received: by 2002:a05:622a:1813:b0:427:f931:bdbc with SMTP id
- t19-20020a05622a181300b00427f931bdbcmr860721qtc.111.1703758735612; Thu, 28
- Dec 2023 02:18:55 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703759003; x=1704363803;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hd+YFMq5UU4QGqfb69wCvN3j30ey5zlrqHKEHPW8tDE=;
+        b=fKtXMZ1rySFeQL3GDZ7pFmRgxz+PH+mVSxf5VE5USxKs31g1EFr2/tGwtDSh38Q27i
+         ql3CZlC1vQ0BrqWsirM2SFu2fqWxEI6N1DFQM3mI1f7t3Sxr9Qc0YyBqtGus7pJzOX+D
+         iAMNqKzPNKfGJ82uRC8aO6B2t5lPOkWnXk9CZOO1C+hJKYJ0Cs5mP7maN4mZRvuWWh3p
+         K96r3sT2ZUeYjYJgSSmcg3DRSDhyAM25RjoXZkiNQe9d4CBMbMopbb/a7v9KpM+mLzOQ
+         DN3b8OTyVZ3gkqitynZxdDhhyf1u19hrRE39g6ZYxRZ5w0IUyVQnYXulY31G3mSnAa/v
+         Sg4g==
+X-Gm-Message-State: AOJu0YyhlmXYPQGhSKhtV/M7ZfxP6p7EOZe81uMA4FkIFGGxWmKlwUSs
+	nuoOO7LoiyZ9U9hzN6E9K6O83PEcZY2doGmhCBd2eS8kWAYH
+X-Google-Smtp-Source: AGHT+IFZL3WXQVtpSwFyljomHaI30dycfxKs37yqitf9206NQdx2yMJXJXes72Euj1DoshoVlghsnRXuRrJZ825zDOu7pEGBxPYT
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CALf2hKsJjDY3OhtMCxhHh7rS=2S4Oq9Ns=t-NFq1MPD=f0K02Q@mail.gmail.com>
- <BN9PR11MB52761AA391479A55533BFE718C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
-In-Reply-To: <BN9PR11MB52761AA391479A55533BFE718C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
-From: Zhang Zhiyu <zhiyuzhang999@gmail.com>
-Date: Thu, 28 Dec 2023 18:18:44 +0800
-Message-ID: <CALf2hKvjrUFDqPnZxv9RVZ=cxgUUwUBoMv2TVTcZHuMmca+MPQ@mail.gmail.com>
-Subject: Re: A bug was found in Linux Kernel 6.6+: KASAN: slab-use-after-free
- in iommufd_test (with POC)
-To: "Tian, Kevin" <kevin.tian@intel.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>, "jgg@ziepe.ca" <jgg@ziepe.ca>, 
-	"joro@8bytes.org" <joro@8bytes.org>, "will@kernel.org" <will@kernel.org>, 
-	"robin.murphy@arm.com" <robin.murphy@arm.com>
+X-Received: by 2002:a05:6638:410b:b0:46b:4319:59cc with SMTP id
+ ay11-20020a056638410b00b0046b431959ccmr668539jab.1.1703759003316; Thu, 28 Dec
+ 2023 02:23:23 -0800 (PST)
+Date: Thu, 28 Dec 2023 02:23:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002cf943060d8f4e3c@google.com>
+Subject: [syzbot] [hfs?] KMSAN: uninit-value in __hfsplus_ext_cache_extent
+From: syzbot <syzbot+55ad87f38795d6787521@syzkaller.appspotmail.com>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Kevin,
+Hello,
 
-Thanks for your advice.
+syzbot found the following issue on:
 
-I check the patch which has been applied in Linux-6.7-rc5+, while not
-in the latest stable Linux-6.6.8. As a result, my poc is still
-reproducible on 6.6.8, but not on 6.7-rc5+. Maybe the stable line of
-Linux kernel should apply the patch asap.
+HEAD commit:    fbafc3e621c3 Merge tag 'for_linus' of git://git.kernel.org..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1770ee26e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7078a6b901aa3
+dashboard link: https://syzkaller.appspot.com/bug?extid=55ad87f38795d6787521
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ea9be9e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149e8179e80000
 
-Seems that I am late to this bug. Although the call trace of my poc is
-slightly different from the disclosed "KASAN: slab-use-after-free Read
-in iommufd_vfio_ioas"
-(https://syzkaller.appspot.com/bug?extid=3Dd31adfb277377ef8fcba), they
-share the same root cause.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1520f7b6daa4/disk-fbafc3e6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8b490af009d5/vmlinux-fbafc3e6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/202ca200f4a4/bzImage-fbafc3e6.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/78ed00b58340/mount_0.gz
 
-Best,
-Zhiyu
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+55ad87f38795d6787521@syzkaller.appspotmail.com
 
-Tian, Kevin <kevin.tian@intel.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=8828=E6=
-=97=A5=E5=91=A8=E5=9B=9B 15:28=E5=86=99=E9=81=93=EF=BC=9A
->
-> > From: Zhang Zhiyu <zhiyuzhang999@gmail.com>
-> > Sent: Wednesday, December 27, 2023 5:03 PM
-> >
-> > Hi upstream community,
-> >
-> > I am fuzzing a LTS version of Linux kernel 6.6 with my modified
-> > syzkaller and I find a bug named "KASAN: slab-use-after-free in
-> > iommufd_test". By analyzing the call trace in bug report, I address
-> > the root cause of this bug at drivers/iommu/iommufd. An iommufd_object
-> > is allocated in one task through
-> > iommufd_fops_ioctl->iommufd_ioas_alloc_ioctl->iommufd_ioas_alloc and
-> > freed in another task through iommufd_fops_ioctl->iommufd_destroy.
-> > Then when the kernel invokes the calls
-> > iommufd_fops_ioctl->iommufd_test->iommufd_test_add_reserved-
-> > >iommufd_put_object,
-> > an use-after-free read will occur. Detailed report, log, repro, config
-> > can be found in this google drive link:
-> > https://drive.usercontent.google.com/download?id=3D1nDJWUstYJNcC1zJ6q1r
-> > hB5zB0uV2yGvg&export=3Ddownload&authuser=3D0&confirm=3Dt
-> >
-> > The steps to reproduce the bug:
-> > 1. compile the kernel 6.6 with provided Linux-6.6.config
-> > 2. boot a qemu vm that runs the compiled kernel
-> > 3. scp the repro.c (repro.prog is not recommended) to the vm and
-> > compile it with gcc -pthread repro.c -o repro
-> > 4. execute ./repro and you will see the output stucks for a while and
-> > then KASAN is triggered and kernel panic.
-> > 5. you can speed up the crash by setting up another ssh shell to
-> > execute ./repro again.
-> >
-> > I have reproduced it on 6.6 and 6.6.1 (but haven't verified on the
-> > latest ver 6.6.8 yet). I didn't find any related reports on the
-> > internet, which indicates that it may be a 0day. Hope the upstream can
-> > help check and fix it. And I'll be happy to assist if needed.
-> >
->
-> Could you try below fix? or just use latest kernel which already includes=
- it:
->
-> https://lore.kernel.org/all/2-v2-ca9e00171c5b+123-iommufd_syz4_jgg@nvidia=
-.com/
+=====================================================
+BUG: KMSAN: uninit-value in __hfsplus_ext_read_extent fs/hfsplus/extents.c:167 [inline]
+BUG: KMSAN: uninit-value in __hfsplus_ext_cache_extent+0x82a/0x960 fs/hfsplus/extents.c:191
+ __hfsplus_ext_read_extent fs/hfsplus/extents.c:167 [inline]
+ __hfsplus_ext_cache_extent+0x82a/0x960 fs/hfsplus/extents.c:191
+ hfsplus_ext_read_extent fs/hfsplus/extents.c:218 [inline]
+ hfsplus_file_extend+0x775/0x1b90 fs/hfsplus/extents.c:461
+ hfsplus_get_block+0xe99/0x1690 fs/hfsplus/extents.c:245
+ __block_write_begin_int+0x946/0x2c70 fs/buffer.c:2119
+ __block_write_begin fs/buffer.c:2168 [inline]
+ block_write_begin+0x143/0x450 fs/buffer.c:2227
+ cont_write_begin+0xd5c/0x12f0 fs/buffer.c:2582
+ hfsplus_write_begin+0x9a/0x130 fs/hfsplus/inode.c:52
+ generic_perform_write+0x3f5/0xc40 mm/filemap.c:3918
+ __generic_file_write_iter+0x20a/0x460 mm/filemap.c:4013
+ generic_file_write_iter+0x103/0x5b0 mm/filemap.c:4039
+ call_write_iter include/linux/fs.h:2020 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x8ef/0x1490 fs/read_write.c:584
+ ksys_write+0x20f/0x4c0 fs/read_write.c:637
+ __do_sys_write fs/read_write.c:649 [inline]
+ __se_sys_write fs/read_write.c:646 [inline]
+ __x64_sys_write+0x93/0xd0 fs/read_write.c:646
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Uninit was created at:
+ slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
+ slab_alloc_node mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc+0x121/0x3c0 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ hfsplus_find_init+0x91/0x250 fs/hfsplus/bfind.c:21
+ hfsplus_ext_read_extent fs/hfsplus/extents.c:216 [inline]
+ hfsplus_file_extend+0x6d8/0x1b90 fs/hfsplus/extents.c:461
+ hfsplus_get_block+0xe99/0x1690 fs/hfsplus/extents.c:245
+ __block_write_begin_int+0x946/0x2c70 fs/buffer.c:2119
+ __block_write_begin fs/buffer.c:2168 [inline]
+ block_write_begin+0x143/0x450 fs/buffer.c:2227
+ cont_write_begin+0xd5c/0x12f0 fs/buffer.c:2582
+ hfsplus_write_begin+0x9a/0x130 fs/hfsplus/inode.c:52
+ generic_perform_write+0x3f5/0xc40 mm/filemap.c:3918
+ __generic_file_write_iter+0x20a/0x460 mm/filemap.c:4013
+ generic_file_write_iter+0x103/0x5b0 mm/filemap.c:4039
+ call_write_iter include/linux/fs.h:2020 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x8ef/0x1490 fs/read_write.c:584
+ ksys_write+0x20f/0x4c0 fs/read_write.c:637
+ __do_sys_write fs/read_write.c:649 [inline]
+ __se_sys_write fs/read_write.c:646 [inline]
+ __x64_sys_write+0x93/0xd0 fs/read_write.c:646
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+CPU: 0 PID: 5003 Comm: syz-executor371 Not tainted 6.7.0-rc7-syzkaller-00003-gfbafc3e621c3 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
