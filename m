@@ -1,209 +1,227 @@
-Return-Path: <linux-kernel+bounces-12782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 027A281FA03
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 17:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AE5281FA06
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 17:46:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD6842853DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:45:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 510ED285C87
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:46:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BE59F519;
-	Thu, 28 Dec 2023 16:45:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F31A0F51D;
+	Thu, 28 Dec 2023 16:46:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="o2c7CSvx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T3Q0dp+z"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29AF4F508
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 16:45:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40d3c4bfe45so66781445e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 08:45:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5952F508;
+	Thu, 28 Dec 2023 16:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3366e78d872so5771183f8f.3;
+        Thu, 28 Dec 2023 08:46:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1703781907; x=1704386707; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vaQ04VZBIWMRErTRZHjHaCsni243QnJhodvuqHbEBT0=;
-        b=o2c7CSvxOnTJ9mKGbG7HulqiyMYsNUlab8wq5hDrGp/e6eB4WFuKCzC/tZi3ZfPHl2
-         QOx8SwXUYjO0MJDbbyKRD4Id9d+uFQO0CwqiKRv7y6euqvjEiE3lyrYVLyRUd2Pdlx4+
-         VmCAiNo6YiaVEiB0+e1HpMBEzH8SKd1iXUC/RYkpigcfoOmfZgTlXqRWm30g/cbrG4OI
-         r4PFUC3wLTHGa6KtwYLD2yZyHYMsck1Agc9aerHmFHNO8gPZxSOSxZZYaNAlnRFzhMm3
-         RwkTw6pd3hXoycg9UYjBK6O5eN3b4jx5TQM68CBf4SoOcszyTLScVjmwPeeCxKcuPQJI
-         WMJA==
+        d=gmail.com; s=20230601; t=1703781980; x=1704386780; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HL44JUUhIKonj5eVSNHWcy9AQst+n9F23ADYisb5HcY=;
+        b=T3Q0dp+zuRevHOj3B6OCtBfWF8rFDh8uZ2ZgNagX3I5uLfGAPpEc6JMtCI7w0dr4FR
+         Nbtmuw19pq7hDSQ6Uj/HExhMGaZ4fhKSMrNxap82OlPX2q/q4FwiHnpCNlt5bnKBKMnL
+         7YUYQNyZXlG228O9T/UvhqVJiJ8qE7/XD6SyZ4LiQRYblOrVy/K7bKJg36EwCe1Fbos7
+         Tbd1V2MFCR794B45V/aC2rxzDmy0UKsBN1VZnkgiaiQr8/WDozu+RrObji7dGao1eNrV
+         NfOXsPjiRl1Qgc/X7IFCsW+nlhvmQEAm8Ml7NMSYN/9VyqynafJLFkpvZRFggKYGozyf
+         xPpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703781907; x=1704386707;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vaQ04VZBIWMRErTRZHjHaCsni243QnJhodvuqHbEBT0=;
-        b=I5ywN0M0rXYbMXAlGa1xnoexi/hFckBG6P/IM9yk1viet9BzcX7+iXMKmJ/1t4yfQh
-         vWaqqouxnnH+20c4lp8rPMwgQNt7vx5dH4yqDmwToT2luTSb7C3ZTl4OKA3oBf9JwowV
-         C0573Qc5zBRpjCfScwnGwan6XhIDj4slCoyOBNgq3Wkw4PrpaY5CkueuuFnIUWVSSdpB
-         TyyZDRYbLRaWDR4EuCPhQhAot6QD74u9UFzvdQdMVI814bZO+wwdjsa0oAp9Rx5Kzi2d
-         /LQydtro5/6uVoj9XTg5t9RuL01WRsU4XoTMzlkMsCMUwTm03OnwaJ4dgAtblBQWVFAI
-         QIfg==
-X-Gm-Message-State: AOJu0YySBH8pJS7GR4OVgyxZOCR/sZgs7puNotVCZ93yyedmm75Evg67
-	R2HVDhKHoqGrmLLq5iTw3JCY8oeFmyQRqw==
-X-Google-Smtp-Source: AGHT+IHI4SCMJkUvvY1A7j8fWbnJYKSC7qDGu5cNYmsciMap06lpdXnUD2vyuQ/93rm0zcHI7ttpgg==
-X-Received: by 2002:a05:600c:22d2:b0:40d:6045:e847 with SMTP id 18-20020a05600c22d200b0040d6045e847mr647936wmg.88.1703781907318;
-        Thu, 28 Dec 2023 08:45:07 -0800 (PST)
-Received: from airbuntu (host109-154-238-212.range109-154.btcentralplus.com. [109.154.238.212])
-        by smtp.gmail.com with ESMTPSA id n7-20020a05600c4f8700b0040d5daa9092sm6504014wmq.44.2023.12.28.08.45.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Dec 2023 08:45:06 -0800 (PST)
-Date: Thu, 28 Dec 2023 16:45:05 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: John Stultz <jstultz@google.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Joel Fernandes <joelaf@google.com>,
-	Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Zimuzo Ezeozue <zezeozue@google.com>,
-	Youssef Esmat <youssefesmat@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com
-Subject: Re: [PATCH v6 00/20] Proxy Execution: A generalized form of Priority
- Inheritance v6
-Message-ID: <20231228164505.vpzymufqhm2ty3zh@airbuntu>
-References: <20231106193524.866104-1-jstultz@google.com>
- <20231217030734.ty7isyjyzgcix7er@airbuntu>
- <CANDhNCoC1fo8RoKsQHJUcJiJVAYjD8W+8jHZJ7XS-WpdikkvSQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1703781980; x=1704386780;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HL44JUUhIKonj5eVSNHWcy9AQst+n9F23ADYisb5HcY=;
+        b=TyIOoX7/PB8TcsRw9YowaYwWf40RrZ1037Xxh2NP47w60AOpnZxBNRC9lYH8Fg6ovB
+         NHb0Pmkf+oIjwWkB/NPCYadgqIqtx5QKw0UMIjpzkN/KrR999dXejwr00ucjEevM0J+2
+         ku4OkVfhZnmwr0vUXX2wuiq1VMAyMty0IPqitQQZmFi3wvYzMQBUMsjsp1+Wz9XO16bZ
+         +6DRG8LKyLdSZW7RbZSLMEZaQI7HL7NG9W9VXosfflHOyZmcbYW1qysnmy2KLGocEnFT
+         t9KeNfGPeTJvAG1IQaHrPsqMqBtbe2e2X7bkm22OaH87KIdx/1OPVVMnhTNd701XjrVQ
+         GYnQ==
+X-Gm-Message-State: AOJu0YxRafWeRS7QLQRezsc5locmvhQ9eO5DNsc1eUmqwjlNABwGqoOV
+	iuJzkowiFMDi6BcI1lvH0aA=
+X-Google-Smtp-Source: AGHT+IGH9WSkQ04Dg6hqTXmMDXycqTobxQtdmxWU/EXdSWUi2D3m1GmUEPiVwPfwHfnaYFxsIE1nsQ==
+X-Received: by 2002:adf:ab1b:0:b0:336:76f5:c7c7 with SMTP id q27-20020adfab1b000000b0033676f5c7c7mr2796013wrc.249.1703781979737;
+        Thu, 28 Dec 2023 08:46:19 -0800 (PST)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id t18-20020a0560001a5200b0033699668c2dsm13820008wry.32.2023.12.28.08.46.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Dec 2023 08:46:19 -0800 (PST)
+Message-ID: <40054646-09d9-0bd7-aaa6-24bbfe3d5f0c@gmail.com>
+Date: Thu, 28 Dec 2023 17:46:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANDhNCoC1fo8RoKsQHJUcJiJVAYjD8W+8jHZJ7XS-WpdikkvSQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/3] net: gro: parse ipv6 ext headers without
+ frag0
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, davem@davemloft.net,
+ dsahern@kernel.org, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ shuah@kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <f4eff69d-3917-4c42-8c6b-d09597ac4437@gmail.com>
+ <32febbc9-e603-4400-addd-bdb97ce56c1d@gmail.com>
+ <658b4cd4241c8_5c2a929499@willemb.c.googlers.com.notmuch>
+From: Richard Gobert <richardbgobert@gmail.com>
+In-Reply-To: <658b4cd4241c8_5c2a929499@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 12/18/23 15:38, John Stultz wrote:
-> On Sat, Dec 16, 2023 at 7:07 PM Qais Yousef <qyousef@layalina.io> wrote:
-> > I am trying to find more time to help with review and hopefully debugging too,
-> > but as it stands, I think to make progress we need to think about breaking this
-> > patchset into smaller problems and get them merged into phases so at least the
-> > review and actual work done would be broken down into smaller more manageable
-> > chunks.
-> >
-> > From my very birds eye view it seems we have 3 elements:
-> >
-> >         1. Extend locking infrastructure.
-> >         2. Split task context into scheduling and execution.
-> >         3. Actual proxy_execution implementation.
-> >
-> > It seems to me (and as ever I could be wrong of course) the first 7 patches are
-> > more or less stable? Could you send patch 1 individually and the next 6 patches
-> > to get the ground work to extend locking reviewed and merged first?
+
+
+Willem de Bruijn wrote:
+> Richard Gobert wrote:
+>> This commit utilizes a new helper function, ipv6_gro_pull_exthdrs, which
+>> is used in ipv6_gro_receive to pull ipv6 ext headers instead of
+>> ipv6_gso_pull_exthdrs. To use ipv6_gso_pull_exthdr, pskb_pull and
+>> __skb_push must be used, and frag0 must be invalidated. This commit
+>> removes unnecessary code around the call to ipv6_gso_pull_exthdrs and
+>> enables the frag0 fast path in IPv6 packets with ext headers.
+>>
+>> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
+>> ---
+>>  net/ipv6/ip6_offload.c | 51 +++++++++++++++++++++++++++++++++---------
+>>  1 file changed, 41 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/net/ipv6/ip6_offload.c b/net/ipv6/ip6_offload.c
+>> index 0e0b5fed0995..a3b8d9127dbb 100644
+>> --- a/net/ipv6/ip6_offload.c
+>> +++ b/net/ipv6/ip6_offload.c
+>> @@ -37,6 +37,40 @@
+>>  		INDIRECT_CALL_L4(cb, f2, f1, head, skb);	\
+>>  })
+>>  
+>> +static int ipv6_gro_pull_exthdrs(struct sk_buff *skb, int off, int proto)
+>> +{
+>> +	const struct net_offload *ops = NULL;
+>> +	struct ipv6_opt_hdr *opth;
+>> +
+>> +	for (;;) {
+>> +		int len;
+>> +
+>> +		ops = rcu_dereference(inet6_offloads[proto]);
+>> +
+>> +		if (unlikely(!ops))
+>> +			break;
+>> +
+>> +		if (!(ops->flags & INET6_PROTO_GSO_EXTHDR))
+>> +			break;
+>> +
+>> +		opth = skb_gro_header(skb, off + 8, off);
 > 
-> So I'm working hard to get v7 out the door here, but your general
-> suggestion here sounds fair.
+> When changing this code, it would be great to make it more self
+> documenting. It's not entirely clear what that 8 is based on.
+> sizeof(*opth) is only 2. Probably an optimization to handle the most
+> common extension headers in a single pskb_may_pull? If so, this new
+> code does not have that concern, so can just use sizeof(*opth). Or
+> else add a const int likely_max_opt_hdr_len = 8 or so.
 > 
-> Part of why I've not pushed as hard to get the first initial patches
-> in, is that the earlier changes to rework things are mostly done in
-> service of the later proxy exec logic, so it may be a little hard to
-> justify the churn on their own.  Also, I've been hoping to get more
-
-If by churn you mean they'd be changing a lot later, then yes.
-
-But by churn you mean merging patches to serve a purpose that is yet to follow
-up, then I think that is fine. I think other complex patches were staged in
-pieces to help with both review and test process. And to speed things up.
-
-> discussion & feedback around the big picture - but I suspect the size
-> & number of the changes makes this daunting.
-
-I don't know how the maintainers manage in general tbh. But finding the time
-for a smaller set of patches would be easier IMHO for everyone interested.
-
-Assuming my understanding is correct that the first set of patches upto
-splitting the scheduler context are more or less stable.
-
-> That said, if Peter is up for it, I'd be happy if the initial chunks
-> of the series were to be considered to be pulled in.
 > 
-> > After that we can focus on splitting the task context into scheduling and
-> > execution (and maybe introduce the PROXY_EXEC config along with it) but without
-> > actually implementing the inheritance, etc parts? Just generally teaching the
-> > scheduler these now are 2 separate parts.
+>> +		if (unlikely(!opth))
+>> +			break;
+>> +
+>> +		len = ipv6_optlen(opth);
+>> +
+>> +		opth = skb_gro_header(skb, off + len, off);
+>> +		if (unlikely(!opth))
+>> +			break;
+>> +		proto = opth->nexthdr;
+>> +
+>> +		off += len;
+>> +	}
+>> +
+>> +	skb_gro_pull(skb, off - skb_network_offset(skb));
+>> +	return proto;
+>> +}
+>> +
+>>  static int ipv6_gso_pull_exthdrs(struct sk_buff *skb, int proto)
+>>  {
+>>  	const struct net_offload *ops = NULL;
+>> @@ -203,28 +237,25 @@ INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_receive(struct list_head *head,
+>>  		goto out;
+>>  
+>>  	skb_set_network_header(skb, off);
+>> -	skb_gro_pull(skb, sizeof(*iph));
+>> -	skb_set_transport_header(skb, skb_gro_offset(skb));
+>>  
+>> -	flush += ntohs(iph->payload_len) != skb_gro_len(skb);
+>> +	flush += ntohs(iph->payload_len) != skb->len - hlen;
+>>  
+>>  	proto = iph->nexthdr;
+>>  	ops = rcu_dereference(inet6_offloads[proto]);
+>>  	if (!ops || !ops->callbacks.gro_receive) {
+>> -		pskb_pull(skb, skb_gro_offset(skb));
+>> -		skb_gro_frag0_invalidate(skb);
+>> -		proto = ipv6_gso_pull_exthdrs(skb, proto);
+>> -		skb_gro_pull(skb, -skb_transport_offset(skb));
+>> -		skb_reset_transport_header(skb);
+>> -		__skb_push(skb, skb_gro_offset(skb));
+>> +		proto = ipv6_gro_pull_exthdrs(skb, hlen, proto);
+>>  
+>>  		ops = rcu_dereference(inet6_offloads[proto]);
+>>  		if (!ops || !ops->callbacks.gro_receive)
+>>  			goto out;
+>>  
+>> -		iph = ipv6_hdr(skb);
+>> +		iph = skb_gro_network_header(skb);
+>> +	} else {
+>> +		skb_gro_pull(skb, sizeof(*iph));
+>>  	}
 > 
-> The majority of that is done in a single patch:
-> https://github.com/johnstultz-work/linux-dev/commit/9e3b364f3724ed840137d681876268b0ad67a469
+> This code is non-obvious and has proven fragile (57ea52a8651). Changes
+> are best as simple as they can be, with ample documentation. My
+> attempt, as arrived at during review:
+> 
+> The existing always pulls the IPv6 header and sets the transport
+> offset initially. Then optionally again pulls any extension headers
+> in ipv6_gso_pull_exthdrs and sets the transport offset again on
+> return from that call.
+> 
+> The new code adds a small optimization to only pull and set transport
+> offset once.
+> 
+> The existing code needs to set skb->data at the start of the first
+> extension header before calling ipv6_gso_pull_exthdrs, and must
+> disable the frag0 optimization because that function uses
+> pskb_may_pull/pskb_pull instead of skb_gro_ helpers. It sets the
+> GRO offset to the inner TCP header with skb_gro_pull and sets the
+> transport header. Then returns skb->data to its position before
+> this block.
+> 
+> The new code is much simpler: it does not have to modify skb->data,
+> as all operations are with skb_gro_ helpers.
+> 
+> Aside from the small comment above, and suggestion to include
+> something like this summary in the code and/or avoid the extra
+> optimization,
+> 
+> Reviewed-by: Willem de Bruijn <willemb@google.com>
+> 
 
-Yep!
+Thanks for the review, I'll submit v2 with an extended commit message
+summary as suggested.
 
+>>  
+>> +	skb_set_transport_header(skb, skb_gro_offset(skb));
+>> +
+>>  	NAPI_GRO_CB(skb)->proto = proto;
+>>  
+>>  	flush--;
+>> -- 
+>> 2.36.1
+>>
 > 
-> There we start to have separate names, but at least until we are doing
-> the proxying, the rq->curr and rq_selected() will be the same task.
 > 
-> > Are 1 and 2 dependent on each other or can be sent as two series in parallel
-> > actually?
-> 
-> Technically, I think they can be done in parallel. Though I'm not sure
-> if managing and submitting multiple patch series is easier or harder
-> for folks to review.
-
-I didn't mean you should do that :-) Meant they're actually completely
-independent.
-
-> 
-> > Hopefully this should reduce the work a lot from continuously rebasing these
-> > patches and focus on the last part which is the meaty and most difficult bit
-> > IIUC. Which I hope we can break down too; but I have no idea at the moment how
-> > to do that.
-> 
-> Rebasing hasn't been the major problem, but wrangling the large patch
-> set has. For v7 I got a lot of offlist feedback, and propagating those
-> changes through the full fine-grained stack makes even trivial changes
-> to early patches quite laborious.
-> 
-> As for breaking down the rest, I thought the v6 series had later
-> patches broken down fairly well:
-
-Hmm okay. I thought they're dependent; and I meant to potentially independent
-parts that can be piecewise merged. But perhaps I'm overthinking the splitting
-here :-)
-
-> 1) Just local rq proxying (where the owner happens to be on the current rq)
-> 2) Add proxy migration & return migration, so we can boost tasks on remote rqs
-> 3) Sleeping owner enqueueing (so we get woken and added to the rq the
-> owner gets woken on)
-> ...
-> 
-> And I have the fine-grained version that is even more split up so I
-> could test each small change at a time:
->   https://github.com/johnstultz-work/linux-dev/commits/proxy-exec-v6-6.6-fine-grained
-> 
-> But I'm open to other suggestions.
-> 
-> > Merging in parts will help with giving each part a chance to soak individually
-> > in mainline while the rest is being discussed. Which would make handling
-> > potential fall overs easier too.
-> 
-> Again, I think this would be great.
-> 
-> I'll try to get v7 out the door so folks can once more consider the
-> big picture, but then maybe I'll send out the earlier changes more
-> frequently.
-
-
-Thanks!
-
---
-Qais Yousef
 
