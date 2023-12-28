@@ -1,333 +1,208 @@
-Return-Path: <linux-kernel+bounces-12740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C73181F981
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:11:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA15781F959
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:06:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 158511C20B31
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:11:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A205B23433
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F6271078E;
-	Thu, 28 Dec 2023 15:09:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ONFTeL19"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6F65D526;
+	Thu, 28 Dec 2023 15:06:21 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F284101C1;
-	Thu, 28 Dec 2023 15:09:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51193C43391;
-	Thu, 28 Dec 2023 15:09:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703776187;
-	bh=C4BJGS32ZKxgcTmEcR+hxDBxjCex7+/UXa6MS9Hmn1w=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ONFTeL19zVdPf08JmfzO7k6gQ0m3UlWacWBE9EfAFQyxkL6muyJf/bvwtY+HL9Ldk
-	 u4VqDp0PuNNyWY/5w8lr7T6YB6jMySBvbRTPT7y8UNsb/IivIaRa+lpuCJ3gg3BhrM
-	 A0VsUPRD1RmZAAVIUbjBD8VwszCHsDfa41pvtYl9pwRtFQU/dn8ozEJSslat7m4TXl
-	 sMtwJrIOIS1h8sBAg53F5Nb5KUi93bspNjz77/WEoP7b67iZu4tNEkKeOTbkXAldaC
-	 GsXAKJJMjdvuokbwIsm/NvxBPaxq8lt+vvDSJ06sPLjh4Mk+O2EHVpfVbTfL0MSiBL
-	 9BQhPDqmmqdxA==
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Icenowy Zheng <uwu@icenowy.me>
-Cc: devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm64: dts: allwinner: h616: Add Sipeed Longan SoM 3H and Pi 3H board support
-Date: Thu, 28 Dec 2023 22:56:47 +0800
-Message-Id: <20231228145647.1470-3-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20231228145647.1470-1-jszhang@kernel.org>
-References: <20231228145647.1470-1-jszhang@kernel.org>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85E7FD2E6
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 15:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D8FB2F4;
+	Thu, 28 Dec 2023 07:07:03 -0800 (PST)
+Received: from [10.57.87.187] (unknown [10.57.87.187])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7CC293F64C;
+	Thu, 28 Dec 2023 07:06:14 -0800 (PST)
+Message-ID: <b038f966-95b9-49c6-baa3-f51ef64d5f69@arm.com>
+Date: Thu, 28 Dec 2023 15:06:13 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 06/23] sched: Add CONFIG_SCHED_PROXY_EXEC & boot
+ argument to enable/disable
+Content-Language: en-US
+To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
+Cc: Joel Fernandes <joelaf@google.com>, Qais Yousef <qyousef@google.com>,
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Valentin Schneider <vschneid@redhat.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat
+ <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+ Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Xuewen Yan <xuewen.yan94@gmail.com>, K Prateek Nayak
+ <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>,
+ kernel-team@android.com
+References: <20231220001856.3710363-1-jstultz@google.com>
+ <20231220001856.3710363-7-jstultz@google.com>
+From: Metin Kaya <metin.kaya@arm.com>
+In-Reply-To: <20231220001856.3710363-7-jstultz@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The Sipeed Longan SoM 3H is a system on module based on the Allwinner
-H618 SoC. The SoM features:
+On 20/12/2023 12:18 am, John Stultz wrote:
+> Add a CONFIG_SCHED_PROXY_EXEC option, along with a boot argument
+> sched_prox_exec= that can be used to disable the feature at boot
+> time if CONFIG_SCHED_PROXY_EXEC was enabled.
+> 
+> Cc: Joel Fernandes <joelaf@google.com>
+> Cc: Qais Yousef <qyousef@google.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Valentin Schneider <vschneid@redhat.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Zimuzo Ezeozue <zezeozue@google.com>
+> Cc: Youssef Esmat <youssefesmat@google.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Metin Kaya <Metin.Kaya@arm.com>
+> Cc: Xuewen Yan <xuewen.yan94@gmail.com>
+> Cc: K Prateek Nayak <kprateek.nayak@amd.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: kernel-team@android.com
+> Signed-off-by: John Stultz <jstultz@google.com>
+> ---
+> v7:
+> * Switch to CONFIG_SCHED_PROXY_EXEC/sched_proxy_exec= as
+>    suggested by Metin Kaya.
+> * Switch boot arg from =disable/enable to use kstrtobool(),
+>    which supports =yes|no|1|0|true|false|on|off, as also
+>    suggested by Metin Kaya, and print a message when a boot
+>    argument is used.
+> ---
+>   .../admin-guide/kernel-parameters.txt         |  5 ++++
+>   include/linux/sched.h                         | 13 +++++++++
+>   init/Kconfig                                  |  7 +++++
+>   kernel/sched/core.c                           | 29 +++++++++++++++++++
+>   4 files changed, 54 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 65731b060e3f..cc64393b913f 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5714,6 +5714,11 @@
+>   	sa1100ir	[NET]
+>   			See drivers/net/irda/sa1100_ir.c.
+>   
+> +	sched_proxy_exec= [KNL]
+> +			Enables or disables "proxy execution" style
+> +			solution to mutex based priority inversion.
+> +			Format: <bool>
+> +
+>   	sched_verbose	[KNL] Enables verbose scheduler debug messages.
+>   
+>   	schedstats=	[KNL,X86] Enable or disable scheduled statistics.
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index bfe8670f99a1..880af1c3097d 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1566,6 +1566,19 @@ struct task_struct {
+>   	 */
+>   };
+>   
+> +#ifdef CONFIG_SCHED_PROXY_EXEC
+> +DECLARE_STATIC_KEY_TRUE(__sched_proxy_exec);
+> +static inline bool sched_proxy_exec(void)
+> +{
+> +	return static_branch_likely(&__sched_proxy_exec);
+> +}
+> +#else
+> +static inline bool sched_proxy_exec(void)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
+>   static inline struct pid *task_pid(struct task_struct *task)
+>   {
+>   	return task->thread_pid;
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 9ffb103fc927..c5a759b6366a 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -908,6 +908,13 @@ config NUMA_BALANCING_DEFAULT_ENABLED
+>   	  If set, automatic NUMA balancing will be enabled if running on a NUMA
+>   	  machine.
+>   
+> +config SCHED_PROXY_EXEC
+> +	bool "Proxy Execution"
+> +	default n
+> +	help
+> +	  This option enables proxy execution, a mechanism for mutex owning
+> +	  tasks to inherit the scheduling context of higher priority waiters.
+> +
 
-- Four ARM Cortex-A53 cores, Mali-G31 MP2 GPU
-- 2/4 GiB LPDDR4 DRAM SoMs
-- AXP313a PMIC
-- eMMC
+Should `SCHED_PROXY_EXEC` config option be under `Scheduler features` menu?
 
-The Sipeed Longan PI 3H is a development board based on the above SoM.
-The board features:
-- Longan SoM 3H
-- Raspberry-Pi-1 compatible GPIO header
-- 2 USB 2.0 host port
-- 1 USB 2.0 type C port (power supply + OTG)
-- MicroSD slot
-- 1Gbps Ethernet port (via RTL8211 PHY)
-- HDMI port
-- WiFi/BT chip
-
-Add the devicetree file describing the currently supported features,
-namely PMIC, LEDs, UART, SD card, eMMC, USB and Ethernet.
-
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/arm64/boot/dts/allwinner/Makefile        |   1 +
- .../sun50i-h618-longan-module-3h.dtsi         |  82 +++++++++++
- .../dts/allwinner/sun50i-h618-longanpi-3h.dts | 133 ++++++++++++++++++
- 3 files changed, 216 insertions(+)
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h618-longan-module-3h.dtsi
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h618-longanpi-3h.dts
-
-diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-index 3aca6787a167..00db504a9b8c 100644
---- a/arch/arm64/boot/dts/allwinner/Makefile
-+++ b/arch/arm64/boot/dts/allwinner/Makefile
-@@ -42,4 +42,5 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
-+dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h618-longanpi-3h.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h618-orangepi-zero3.dtb
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h618-longan-module-3h.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h618-longan-module-3h.dtsi
-new file mode 100644
-index 000000000000..88a7d287b73c
---- /dev/null
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h618-longan-module-3h.dtsi
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) Jisheng Zhang <jszhang@kernel.org>
-+ */
-+
-+/dts-v1/;
-+
-+#include "sun50i-h616.dtsi"
-+
-+/ {
-+	model = "Sipeed Longan Module 3H";
-+	compatible = "sipeed,longan-module-3h", "allwinner,sun50i-h618";
-+};
-+
-+&mmc2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mmc2_pins>;
-+	vmmc-supply = <&reg_dldo1>;
-+	vqmmc-supply = <&reg_aldo1>;
-+	bus-width = <8>;
-+	non-removable;
-+	cap-mmc-hw-reset;
-+	mmc-ddr-1_8v;
-+	mmc-hs200-1_8v;
-+	status = "okay";
-+};
-+
-+&r_i2c {
-+	status = "okay";
-+
-+	axp313: pmic@36 {
-+		compatible = "x-powers,axp313a";
-+		reg = <0x36>;
-+
-+		regulators {
-+			/* Supplies VCC-PLL, so needs to be always on. */
-+			reg_aldo1: aldo1 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-name = "vcc1v8";
-+			};
-+
-+			/* Supplies VCC-IO, so needs to be always on. */
-+			reg_dldo1: dldo1 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-name = "vcc3v3";
-+			};
-+
-+			reg_dcdc1: dcdc1 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <810000>;
-+				regulator-max-microvolt = <990000>;
-+				regulator-name = "vdd-gpu-sys";
-+			};
-+
-+			reg_dcdc2: dcdc2 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <810000>;
-+				regulator-max-microvolt = <1100000>;
-+				regulator-name = "vdd-cpu";
-+			};
-+
-+			reg_dcdc3: dcdc3 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <1100000>;
-+				regulator-max-microvolt = <1100000>;
-+				regulator-name = "vdd-dram";
-+			};
-+		};
-+	};
-+};
-+
-+&pio {
-+	vcc-pc-supply = <&reg_dldo1>;
-+	vcc-pf-supply = <&reg_dldo1>;
-+	vcc-pg-supply = <&reg_aldo1>;
-+	vcc-ph-supply = <&reg_dldo1>;
-+	vcc-pi-supply = <&reg_dldo1>;
-+};
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h618-longanpi-3h.dts b/arch/arm64/boot/dts/allwinner/sun50i-h618-longanpi-3h.dts
-new file mode 100644
-index 000000000000..245583881549
---- /dev/null
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h618-longanpi-3h.dts
-@@ -0,0 +1,133 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) Jisheng Zhang <jszhang@kernel.org>
-+ */
-+
-+/dts-v1/;
-+
-+#include "sun50i-h618-longan-module-3h.dtsi"
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/leds/common.h>
-+
-+/ {
-+	model = "Sipeed Longan Pi 3H";
-+	compatible = "sipeed,longan-pi-3h", "sipeed,longan-module-3h", "allwinner,sun50i-h618";
-+
-+	aliases {
-+		ethernet0 = &emac0;
-+		serial0 = &uart0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-0 {
-+			color = <LED_COLOR_ID_ORANGE>;
-+			function = LED_FUNCTION_INDICATOR;
-+			function-enumerator = <0>;
-+			gpios = <&pio 6 2 GPIO_ACTIVE_LOW>; /* PG2 */
-+		};
-+
-+		led-1 {
-+			color = <LED_COLOR_ID_ORANGE>;
-+			function = LED_FUNCTION_INDICATOR;
-+			function-enumerator = <1>;
-+			gpios = <&pio 6 4 GPIO_ACTIVE_LOW>; /* PG4 */
-+		};
-+	};
-+
-+	reg_vcc5v: vcc5v {
-+		/* board wide 5V supply directly from the USB-C socket */
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc-5v";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+};
-+
-+&axp313 {
-+	vin1-supply = <&reg_vcc5v>;
-+	vin2-supply = <&reg_vcc5v>;
-+	vin3-supply = <&reg_vcc5v>;
-+};
-+
-+&ehci1 {
-+	status = "okay";
-+};
-+
-+&ohci1 {
-+	status = "okay";
-+};
-+
-+&ehci2 {
-+	status = "okay";
-+};
-+
-+&ohci2 {
-+	status = "okay";
-+};
-+
-+&ehci3 {
-+	status = "okay";
-+};
-+
-+&ohci3 {
-+	status = "okay";
-+};
-+
-+&emac0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&ext_rgmii_pins>;
-+	phy-mode = "rgmii";
-+	phy-handle = <&ext_rgmii_phy>;
-+	allwinner,rx-delay-ps = <3100>;
-+	allwinner,tx-delay-ps = <700>;
-+	phy-supply = <&reg_dldo1>;
-+	status = "okay";
-+};
-+
-+&mdio0 {
-+	ext_rgmii_phy: ethernet-phy@1 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <1>;
-+	};
-+};
-+
-+&mmc0 {
-+	bus-width = <4>;
-+	cd-gpios = <&pio 5 6 GPIO_ACTIVE_HIGH>;	/* PF6 */
-+	vmmc-supply = <&reg_dldo1>;
-+	status = "okay";
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
-+
-+&usbotg {
-+	/*
-+	 * PHY0 pins are connected to a USB-C socket, but a role switch
-+	 * is not implemented: both CC pins are pulled to GND.
-+	 * The VBUS pins power the device, so a fixed peripheral mode
-+	 * is the best choice.
-+	 * The board can be powered via GPIOs, in this case port0 *can*
-+	 * act as a host (with a cable/adapter ignoring CC), as VBUS is
-+	 * then provided by the GPIOs. Any user of this setup would
-+	 * need to adjust the DT accordingly: dr_mode set to "host",
-+	 * enabling OHCI0 and EHCI0.
-+	 */
-+	dr_mode = "peripheral";
-+	status = "okay";
-+};
-+
-+&usbphy {
-+	usb1_vbus-supply = <&reg_vcc5v>;
-+	status = "okay";
-+};
--- 
-2.40.0
+>   menuconfig CGROUPS
+>   	bool "Control Group support"
+>   	select KERNFS
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 4e46189d545d..e06558fb08aa 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -117,6 +117,35 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_compute_energy_tp);
+>   
+>   DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+>   
+> +#ifdef CONFIG_SCHED_PROXY_EXEC
+> +DEFINE_STATIC_KEY_TRUE(__sched_proxy_exec);
+> +static int __init setup_proxy_exec(char *str)
+> +{
+> +	bool proxy_enable;
+> +
+> +	if (kstrtobool(str, &proxy_enable)) {
+> +		pr_warn("Unable to parse sched_proxy_exec=\n");
+> +		return 0;
+> +	}
+> +
+> +	if (proxy_enable) {
+> +		pr_info("sched_proxy_exec enabled via boot arg\n");
+> +		static_branch_enable(&__sched_proxy_exec);
+> +	} else {
+> +		pr_info("sched_proxy_exec disabled via boot arg\n");
+> +		static_branch_disable(&__sched_proxy_exec);
+> +	}
+> +	return 1;
+> +}
+> +#else
+> +static int __init setup_proxy_exec(char *str)
+> +{
+> +	pr_warn("CONFIG_SCHED_PROXY_EXEC=n, so it cannot be enabled or disabled at boottime\n");
+> +	return 0;
+> +}
+> +#endif
+> +__setup("sched_proxy_exec=", setup_proxy_exec);
+> +
+>   #ifdef CONFIG_SCHED_DEBUG
+>   /*
+>    * Debugging: various feature bits
 
 
