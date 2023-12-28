@@ -1,43 +1,38 @@
-Return-Path: <linux-kernel+bounces-12549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D468381F68C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:55:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7446E81F6B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 11:04:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75CA51F23304
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:55:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BF27285667
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:04:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD616ABC;
-	Thu, 28 Dec 2023 09:55:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="QcCer+ma"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FBBA6ABC;
+	Thu, 28 Dec 2023 10:04:14 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [217.72.192.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F4EF63A8;
-	Thu, 28 Dec 2023 09:55:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703757268; x=1704362068; i=markus.elfring@web.de;
-	bh=LdODy8f52XjIOK0lSfQyj0RXaUr08zMyR40prr4dQGA=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=QcCer+malGs0R8tHkNVZJNODF7VXQCWs1FmPeLeDnHDA4R+NSAnmkg28sSKX6bjo
-	 e1hL+41LTyF8dfz+5DrSM84/YOz7Ou0c/mpIKb+5zz5osQiJ5K4UmW2x50or73Kq6
-	 9zZIPh+7he+jlVDTsJnLXsFPpd171CTbMXTDiN30nCHPjwsn8up1DBv/oeSYD7Zxw
-	 /LOxW/pNv13hPm79dTSU2XBlyjefGToZlz8cwYUKtD990WQoLH9980X7WsSwdeGoG
-	 G/mh/cp3LcV2xgECQvevNyipV4Wl4V3TLiLBbvb1G6GQgw8+brkTq3PEzCBZ617hq
-	 TRs0Yiz1DS8o3F6i7w==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1N1uAl-1r7cuT2k13-0124gY; Thu, 28
- Dec 2023 10:54:28 +0100
-Message-ID: <0d0c4876-37d7-4bee-912e-56324495454f@web.de>
-Date: Thu, 28 Dec 2023 10:54:27 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC1A63C9;
+	Thu, 28 Dec 2023 10:04:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by ex01.ufhost.com (Postfix) with ESMTP id C498324E386;
+	Thu, 28 Dec 2023 18:04:01 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Dec
+ 2023 18:04:01 +0800
+Received: from [192.168.125.85] (183.27.97.107) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Dec
+ 2023 18:04:00 +0800
+Message-ID: <ba4a73af-2fe0-455d-98f8-2b21c59628e3@starfivetech.com>
+Date: Thu, 28 Dec 2023 18:04:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -45,106 +40,242 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Content-Language: en-GB
-To: platform-driver-x86@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Hans de Goede <hdegoede@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] platform/x86/amd/pmf: Return a status code only as a constant
- in two functions
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jUyWQ8RdCi/tZgmPTVI41q7ZfAnELOCp0Gr+YCtZLiTgdfgay07
- gGXqfKbOwAOWKrG67ZvuiZlekxdBzMMLpxHD/qONJxGq5nNQqFJxdvgUxzjGgziIDoGdzvZ
- WakR3etjiquyCRo49clUjpeSUWaBv+cd0P4nFVqOqj7m1GVJDfJL7oVmFbDBOGow9k/HVQw
- x/f+h/Po33VoWewuIx5ag==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:TmTrwd9GXRU=;a027FqgyvmWIt3MVpkxyigPDqmP
- acsYJhm5sPpKoXVvfh7Gf+SjuizSh9inE2myh2BEj4WtO1/1VB6AL0Q6plOUyEuwqRQ7Q7nk8
- tU+k8UrcrwQcvUXD13RastM9QiqGPNnuOQtdveBb1mMKmiQdhnGKqnYLwmAYS0E+Epzv72761
- htaNIx58/hCGS6akKG35Mwiv9z6U9YSK8+WrS2vSzqAjzyCRRQH3CKJnL6f09sw9KiaM4DI5x
- 5W8GRDquBMA+zimrP3cIfOh+URtHirL0L9pYTSvNCmiwqmvApngWXgWZJ564Sx/hU7QICSMUk
- 7SE1PpmxfFUn7uWPfLxP/ZtlI1n4+0qEqBD6VMqOwBLVOxyd8l/vraEzoloWTm2E+17hQ7RMU
- 4UWeqxMoo885EOcoO6ohdkK7BdZw3Rl/0P//aijDOO7c4jC2OZev6pNr9Pxy/Gke7BjEJEbbf
- 0OHUuic3iaysSYgibyt+0ZvRmZuu7G5thk0nxqRAGnS9Iq6nF4wsA4HKgCrBXLQEDRg+DPFBL
- 3F1Pr64sa+uDVDAMD2dQ5JgBOHZ1heOskBw424rdltztdCv2tD7PsVoDCdWp3GoQS+XX087W5
- xfBISGMIatrHdUdyX2vzMUliId+NRfXqcvfjlzmHAyYiPmikF+5uRZWEM1rWrMDZ0k3RN0QCo
- sHTseRwbYQz3jemr5TypWn1oDTfI8EqIwPshqR+C/a6u1Tcwdd91YcgpfrZY+WgOjo93FDgza
- jtFLeqpT53t7SomsXg+KMQsh9qynyigtgeO6FSagAgJ0Jm3zAEUib02CkzmAgFn6U+tu+Sjmn
- 2hNnKiUcAo7wB8wJUlI6EvUbvgKdrbM2JXpUKy4npympipN4SRhLuT8g0jfBWgqjai/zBrIBH
- 2i/+rscupe+QBnzGbJI3NlPItlwA6/0jRP3P2Awm2ihsXqAQW4vNWTcl58R6Z5q+e3RIscZT2
- cxOvMg==
+Subject: Re: [PATCH v13 14/21] PCI: microchip: Add get_events() callback and
+ add PLDA get_event()
+Content-Language: en-US
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+CC: Conor Dooley <conor@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?=
+	<kw@linux.com>, Rob Herring <robh+dt@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>, Daire McNamara <daire.mcnamara@microchip.com>, "Emil
+ Renner Berthing" <emil.renner.berthing@canonical.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+	<linux-pci@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
+	"Palmer Dabbelt" <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+	"Philipp Zabel" <p.zabel@pengutronix.de>, Mason Huo
+	<mason.huo@starfivetech.com>, Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+	Kevin Xie <kevin.xie@starfivetech.com>
+References: <20231214072839.2367-1-minda.chen@starfivetech.com>
+ <20231214072839.2367-15-minda.chen@starfivetech.com>
+ <ZYxRf8d0+gSoqeRs@lpieralisi>
+From: Minda Chen <minda.chen@starfivetech.com>
+In-Reply-To: <ZYxRf8d0+gSoqeRs@lpieralisi>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 28 Dec 2023 10:48:16 +0100
 
-Return a status code without storing it in an intermediate variable.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/platform/x86/amd/pmf/acpi.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+On 2023/12/28 0:31, Lorenzo Pieralisi wrote:
+> On Thu, Dec 14, 2023 at 03:28:32PM +0800, Minda Chen wrote:
+>> PolarFire implements its own PCIe interrupts, additional to the regular
+>> PCIe interrupts, due to lack of an MSI controller, so the interrupt to
+>> event number mapping is different to the PLDA local interrupts,
+> 
+> I am sorry I don't understand what you mean here.
+> 
+> "its own PCIe interrupts" ?
+> 
+> "regular PCIe interrupts" ?
+> 
+> "PLDA local interrupts" ?
+> 
+> Can you spell out what those are referring to please ?
+> 
+> Thanks,
+> Lorenzo
+>
 
-diff --git a/drivers/platform/x86/amd/pmf/acpi.c b/drivers/platform/x86/am=
-d/pmf/acpi.c
-index 4ec7957eb707..ce00dd9a5391 100644
-=2D-- a/drivers/platform/x86/amd/pmf/acpi.c
-+++ b/drivers/platform/x86/amd/pmf/acpi.c
-@@ -111,7 +111,6 @@ int apmf_os_power_slider_update(struct amd_pmf_dev *pd=
-ev, u8 event)
- 	struct os_power_slider args;
- 	struct acpi_buffer params;
- 	union acpi_object *info;
--	int err =3D 0;
+"its own PCIe interrupts" ?
 
- 	args.size =3D sizeof(args);
- 	args.slider_event =3D event;
-@@ -121,10 +120,10 @@ int apmf_os_power_slider_update(struct amd_pmf_dev *=
-pdev, u8 event)
+PolarFire SoC PCIe implement 11 interrupt in their platform. 
+(can be found in pcie-microchip-host.c:87)
 
- 	info =3D apmf_if_call(pdev, APMF_FUNC_OS_POWER_SLIDER_UPDATE, &params);
- 	if (!info)
--		err =3D -EIO;
-+		return -EIO;
+#define EVENT_PCIE_L2_EXIT                      0
+#define EVENT_PCIE_HOTRST_EXIT                  1
+#define EVENT_PCIE_DLUP_EXIT                    2
+#define EVENT_SEC_TX_RAM_SEC_ERR                3
+#define EVENT_SEC_RX_RAM_SEC_ERR                4
+#define EVENT_SEC_PCIE2AXI_RAM_SEC_ERR          5
+#define EVENT_SEC_AXI2PCIE_RAM_SEC_ERR          6
+#define EVENT_DED_TX_RAM_DED_ERR                7
+#define EVENT_DED_RX_RAM_DED_ERR                8
+#define EVENT_DED_PCIE2AXI_RAM_DED_ERR          9
+#define EVENT_DED_AXI2PCIE_RAM_DED_ERR          10
 
- 	kfree(info);
--	return err;
-+	return 0;
- }
+"regular PCIe interrupts" ?
+ 
+"PLDA local interrupts" ?
 
- static void apmf_sbios_heartbeat_notify(struct work_struct *work)
-@@ -148,7 +147,6 @@ int apmf_update_fan_idx(struct amd_pmf_dev *pdev, bool=
- manual, u32 idx)
- 	union acpi_object *info;
- 	struct apmf_fan_idx args;
- 	struct acpi_buffer params;
--	int err =3D 0;
+Actually they are the same. I will change this.
+PLDA interrupt register graph in this patch.
+ 
+>> necessitating a custom get_events() implementation.
+>> 
+>> plda_get_events() adds interrupt register to PLDA local event num mapping
+>> codes except DMA engine interrupt events. The DMA engine interrupt events
+>> are implemented by vendors.
+>> 
+>> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>> ---
+>>  .../pci/controller/plda/pcie-microchip-host.c | 35 ++++++++++++++++++-
+>>  drivers/pci/controller/plda/pcie-plda.h       | 33 +++++++++++++++++
+>>  2 files changed, 67 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
+>> index 00250781b11c..fd0d92c3d03f 100644
+>> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
+>> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+>> @@ -627,6 +627,26 @@ static u32 mc_get_events(struct plda_pcie_rp *port)
+>>  	return events;
+>>  }
+>>  
+>> +static u32 plda_get_events(struct plda_pcie_rp *port)
+>> +{
+>> +	u32 events, val, origin;
+>> +
+>> +	origin = readl_relaxed(port->bridge_addr + ISTATUS_LOCAL);
+>> +
+>> +	/* Error events and doorbell events */
+>> +	events = (origin & ERROR_AND_DOORBELL_MASK) >> A_ATR_EVT_POST_ERR_SHIFT;
+>> +
+>> +	/* INTx events */
+>> +	if (origin & PM_MSI_INT_INTX_MASK)
+>> +		events |= BIT(EVENT_PM_MSI_INT_INTX);
+>> +
+>> +	/* MSI event and sys events */
+>> +	val = (origin & SYS_AND_MSI_MASK) >> PM_MSI_INT_MSI_SHIFT;
+>> +	events |= val << EVENT_PM_MSI_INT_MSI;
+>> +
+>> +	return events;
+>> +}
+>> +
+>>  static irqreturn_t mc_event_handler(int irq, void *dev_id)
+>>  {
+>>  	struct plda_pcie_rp *port = dev_id;
+>> @@ -657,7 +677,7 @@ static void plda_handle_event(struct irq_desc *desc)
+>>  
+>>  	chained_irq_enter(chip, desc);
+>>  
+>> -	events = mc_get_events(port);
+>> +	events = port->event_ops->get_events(port);
+>>  
+>>  	for_each_set_bit(bit, &events, port->num_events)
+>>  		generic_handle_domain_irq(port->event_domain, bit);
+>> @@ -751,6 +771,10 @@ static struct irq_chip mc_event_irq_chip = {
+>>  	.irq_unmask = mc_unmask_event_irq,
+>>  };
+>>  
+>> +static const struct plda_event_ops plda_event_ops = {
+>> +	.get_events = plda_get_events,
+>> +};
+>> +
+>>  static int plda_pcie_event_map(struct irq_domain *domain, unsigned int irq,
+>>  			       irq_hw_number_t hwirq)
+>>  {
+>> @@ -816,6 +840,10 @@ static int mc_request_event_irq(struct plda_pcie_rp *plda, int event_irq,
+>>  				0, event_cause[event].sym, plda);
+>>  }
+>>  
+>> +static const struct plda_event_ops mc_event_ops = {
+>> +	.get_events = mc_get_events,
+>> +};
+>> +
+>>  static const struct plda_event mc_event = {
+>>  	.request_event_irq = mc_request_event_irq,
+>>  	.intx_event        = EVENT_LOCAL_PM_MSI_INT_INTX,
+>> @@ -932,6 +960,9 @@ static int plda_init_interrupts(struct platform_device *pdev,
+>>  	int i, intx_irq, msi_irq, event_irq;
+>>  	int ret;
+>>  
+>> +	if (!port->event_ops)
+>> +		port->event_ops = &plda_event_ops;
+>> +
+>>  	ret = plda_pcie_init_irq_domains(port);
+>>  	if (ret) {
+>>  		dev_err(dev, "failed creating IRQ domains\n");
+>> @@ -1008,6 +1039,8 @@ static int mc_platform_init(struct pci_config_window *cfg)
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> +	port->plda.event_ops = &mc_event_ops;
+>> +
+>>  	/* Address translation is up; safe to enable interrupts */
+>>  	ret = plda_init_interrupts(pdev, &port->plda, &mc_event);
+>>  	if (ret)
+>> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
+>> index fba7343f9a96..dd8bc2750bfc 100644
+>> --- a/drivers/pci/controller/plda/pcie-plda.h
+>> +++ b/drivers/pci/controller/plda/pcie-plda.h
+>> @@ -40,6 +40,7 @@
+>>  #define  P_ATR_EVT_DISCARD_ERR_SHIFT		22
+>>  #define  P_ATR_EVT_DOORBELL_MASK		0x00000000u
+>>  #define  P_ATR_EVT_DOORBELL_SHIFT		23
+>> +#define  ERROR_AND_DOORBELL_MASK		GENMASK(23, 16)
+>>  #define  PM_MSI_INT_INTA_MASK			0x01000000u
+>>  #define  PM_MSI_INT_INTA_SHIFT			24
+>>  #define  PM_MSI_INT_INTB_MASK			0x02000000u
+>> @@ -58,6 +59,7 @@
+>>  #define  PM_MSI_INT_EVENTS_SHIFT		30
+>>  #define  PM_MSI_INT_SYS_ERR_MASK		0x80000000u
+>>  #define  PM_MSI_INT_SYS_ERR_SHIFT		31
+>> +#define  SYS_AND_MSI_MASK			GENMASK(31, 28)
+>>  #define  NUM_LOCAL_EVENTS			15
+>>  #define ISTATUS_LOCAL				0x184
+>>  #define IMASK_HOST				0x188
+>> @@ -102,6 +104,36 @@
+>>  #define EVENT_PM_MSI_INT_SYS_ERR		12
+>>  #define NUM_PLDA_EVENTS				13
+>>  
+>> +/*
+>> + * PLDA local interrupt register
+>> + *
+>> + * 31         27     23              15           7          0
+>> + * +--+--+--+-+------+-+-+-+-+-+-+-+-+-----------+-----------+
+>> + * |12|11|10|9| intx |7|6|5|4|3|2|1|0| DMA error | DMA end   |
+>> + * +--+--+--+-+------+-+-+-+-+-+-+-+-+-----------+-----------+
+>> + * 0:  AXI post error
+>> + * 1:  AXI fetch error
+>> + * 2:  AXI discard error
+>> + * 3:  AXI doorbell
+>> + * 4:  PCIe post error
+>> + * 5:  PCIe fetch error
+>> + * 6:  PCIe discard error
+>> + * 7:  PCIe doorbell
+>> + * 8:  4 INTx interruts
+>> + * 9:  MSI interrupt
+>> + * 10: AER event
+>> + * 11: PM/LTR/Hotplug
+>> + * 12: System error
+>> + * DMA error : reserved for vendor implement
+>> + * DMA end : reserved for vendor implement
+>> + */
+"PLDA local interrupts" ?
 
- 	args.size =3D sizeof(args);
- 	args.fan_ctl_mode =3D manual;
-@@ -158,14 +156,11 @@ int apmf_update_fan_idx(struct amd_pmf_dev *pdev, bo=
-ol manual, u32 idx)
- 	params.pointer =3D (void *)&args;
+They are all the PLDA PCIe interrupts .
 
- 	info =3D apmf_if_call(pdev, APMF_FUNC_SET_FAN_IDX, &params);
--	if (!info) {
--		err =3D -EIO;
--		goto out;
--	}
-+	if (!info)
-+		return -EIO;
-
--out:
- 	kfree(info);
--	return err;
-+	return 0;
- }
-
- int apmf_get_auto_mode_def(struct amd_pmf_dev *pdev, struct apmf_auto_mod=
-e *data)
-=2D-
-2.43.0
-
+>> +
+>> +struct plda_pcie_rp;
+>> +
+>> +struct plda_event_ops {
+>> +	u32 (*get_events)(struct plda_pcie_rp *pcie);
+>> +};
+>> +
+>>  struct plda_msi {
+>>  	struct mutex lock;		/* Protect used bitmap */
+>>  	struct irq_domain *msi_domain;
+>> @@ -117,6 +149,7 @@ struct plda_pcie_rp {
+>>  	struct irq_domain *event_domain;
+>>  	raw_spinlock_t lock;
+>>  	struct plda_msi msi;
+>> +	const struct plda_event_ops *event_ops;
+>>  	void __iomem *bridge_addr;
+>>  	int num_events;
+>>  };
+>> -- 
+>> 2.17.1
+>> 
 
