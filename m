@@ -1,157 +1,123 @@
-Return-Path: <linux-kernel+bounces-12632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0E2381F803
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:03:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8966E81F806
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 13:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97BA8284FA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:03:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34E98B237EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0764B7475;
-	Thu, 28 Dec 2023 12:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6C17489;
+	Thu, 28 Dec 2023 12:05:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="nJx0smHF"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="kCvCpeAv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01olkn2107.outbound.protection.outlook.com [40.92.66.107])
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F2F06FD6;
-	Thu, 28 Dec 2023 12:03:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ifAhGxu4VYVMH31FXxT4U1M8kIr4967wcSGtvj0x1CfOIr6RmSMk7tx4EN/gX/9mrmdXXj/ZLj32M2cUOhx2gKKxa618NVm6i8r09UHLg+Jy4aksQjaPy2ohPClIShCJ1bZQRLcnhnZxudnYxbN+9qHhweCBbgx0ayg+BZBADs4mEmJ178oaQu/5i1gIGZvJNgr3/SxC682SWPo/0wU6mYFgGZLDxKagvQVHhAamSkvC/hioC226HX/EGH1NYZdIFQS/EORrDQq5QCmbC8iJYFbcNucEJ94BP9q9GIgPZ7G8PQyWVtJNSwOhNsIuxPgdLO+VWX7TH+gLa+9sUJOMOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tQoKt9CoIBfbklrWmpRJC3fivC82Dm9M/D6YlDRoPiY=;
- b=JdRfBtV4nhTICAqG5RT1IxWmDWtTarB3m8pZqHwL6tAAeyPCBSfyHK3f2Sbwyt9Foqn0VQJ8KjNGlnP2SURgyt+tnVTVi8/hI/yafUs4T6lJaFjp6lQ1SZgyn9sPupB9b7m/Iu8WJsJ0yyhXlpPtPYDKFgK+k0gRZQAD59pXpK4dejWMf4GV/taWj97J4Kca1XLzGy1vwgDRUqgCo+Je6OJKH7b9/f5JmBu8mHthLLx/SQmICFMltZX1iOafTU+/IvUw53M1n2mDBuvmNzES5RBbKnJ0hih8wA53MZpuRBUoo7UiB71A0X2DoJlwiPQBKIkTsYUERFjno/ZRD/RKkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tQoKt9CoIBfbklrWmpRJC3fivC82Dm9M/D6YlDRoPiY=;
- b=nJx0smHFr5bpDwrAmCMpGe3tfOBMH+9+OK8ufAE6UKIkC2cjjAAnSJWzy/XmuYQa58t/8HU9avRjlMcDuXvZxgis4MqP0v4gjZkSyOLQCMAftIjZuftL0AU6ktxT9+0PrMh+nyenh2I4H0LjmzcOtgpxLGLVYfOCUJn/IFwjbfAsk5sRyg5yeo/xPzVwAVfAT9zLo4n4TVZPKRqPXaDFsPS5diutNk2pOIu8alIJi0RriomCWQr7IlQBB9Rgy8w4v/oOkXWMcwZ6IS0bWWWv5Sa0lMaUZkecJxNccfmyY6ienfTEZoch1TuT5ibHLqWbC4w5GlbzFPsJof/zgf0F2w==
-Received: from AS8PR02MB10217.eurprd02.prod.outlook.com
- (2603:10a6:20b:63e::17) by AS2PR02MB8949.eurprd02.prod.outlook.com
- (2603:10a6:20b:5e5::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.28; Thu, 28 Dec
- 2023 12:03:21 +0000
-Received: from AS8PR02MB10217.eurprd02.prod.outlook.com
- ([fe80::2b9c:230f:3297:57e8]) by AS8PR02MB10217.eurprd02.prod.outlook.com
- ([fe80::2b9c:230f:3297:57e8%7]) with mapi id 15.20.7135.019; Thu, 28 Dec 2023
- 12:03:21 +0000
-From: David Binderman <dcb314@hotmail.com>
-To: Bagas Sanjaya <bagasdotme@gmail.com>, "sfrench@samba.org"
-	<sfrench@samba.org>, "pc@manguebit.com" <pc@manguebit.com>,
-	"lsahlber@redhat.com" <lsahlber@redhat.com>, "sprasad@microsoft.com"
-	<sprasad@microsoft.com>, "tom@talpey.com" <tom@talpey.com>,
-	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-	"samba-technical@lists.samba.org" <samba-technical@lists.samba.org>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject:
- =?Windows-1252?Q?Re:_fs/smb/client/sess.c:462:20:_warning:_duplicated_=91?=
- =?Windows-1252?Q?if=92_condition?=
-Thread-Topic:
- =?Windows-1252?Q?fs/smb/client/sess.c:462:20:_warning:_duplicated_=91if?=
- =?Windows-1252?Q?=92_condition?=
-Thread-Index: AQHaOYFrCCXlZ38mvkmOuPmXNZXsLbC+lZgAgAABi2Q=
-Date: Thu, 28 Dec 2023 12:03:21 +0000
-Message-ID:
- <AS8PR02MB102175EE04EAB5CAB6E459BEF9C9EA@AS8PR02MB10217.eurprd02.prod.outlook.com>
-References:
- <AS8PR02MB1021708E77D868F8AE5EFD8859C9EA@AS8PR02MB10217.eurprd02.prod.outlook.com>
- <ZY1hcE5E3Mizv2il@archie.me>
-In-Reply-To: <ZY1hcE5E3Mizv2il@archie.me>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-x-ms-exchange-messagesentrepresentingtype: 1
-x-tmn: [uvvdClGaHx6ZPGH8LMT02Eoj+lqj97YJ]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS8PR02MB10217:EE_|AS2PR02MB8949:EE_
-x-ms-office365-filtering-correlation-id: e0a1ba68-ce17-4a5d-592f-08dc079cfcc5
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- +pXoZjTy+8MLtVuOohnUuAG/d+BY4yJ2zReslutUjipyXD1XfSKHtSOtP2qNh1QLXkzOtknkjK3KEEu3w1WLc/ikmbOVx5DzZ+zeDj7m9sCQTBwAMJKf5q0Ynd4QDLH3p5HcvI+HglK5aHRC7qFPT907UlL0cZPcSu/iFowrw/8lpiDPP0fWEHOpAMgMHhOoqKQhgmhoPtqGGueVk7A/TRBm+kInmk7VFl5Bnze6WZveXyCKSteq+qice4htnf2hGKtDQHVxIqiWSpV0VKZv7FJPewlVYrMxdZs/EZtDgWArwbvaq/XNhw0lVAmSviRo39YI0u6+72Sqr5Lqyfegcy5eg7NS7P6Gf5Vgvn1537nbx93tZl5YC2bLx8L8O5NaW/NVhpJkyyZj9imZQ4/3VrJAr5/FmztfFt0YESJdcGTaR6wEHatb5EonA1m2YJ7gM31qGNYfK9kFYDgWsRb/TEJXS/4wMuWlw8Pg+QuNCMGyv8CEks5wjIwzLoLdg/WlcMFOjdOvYyVAxWLZuUO97BXq5OobtfVe8c7zvwF4ncgjV7DCDNBrROBVwomULDW6
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?Windows-1252?Q?DL5ZFIJyZnFaHG17Eo75DyjLOIo0jzlW0Ee3In8WJb8kHwzn9kBBDzpl?=
- =?Windows-1252?Q?Zgy5o8eUci6KdydmjKEY+722LCh+4RJj1sDimwFs5Sz2NZmUGIKHDROx?=
- =?Windows-1252?Q?FmXe4IYQG0990JeTextHEVvhqEpREsNXhKwTcwSlQEcyUClkXYklZk+x?=
- =?Windows-1252?Q?CIvEyTm02wcQyTGa9I7QB8uLzKa5fc4bUvvF25UHG1wqZjDnSBwlwaPt?=
- =?Windows-1252?Q?ksGbHLjV0s8EfXYfqVOAgs3x9kMA4z4bKzSelBaO5HncJL1P8+ZzUunl?=
- =?Windows-1252?Q?JtMxMQqa9/0WxtTnSPMVlYJKfLSAOel3Do7uy7sBDlGZlgErP32xgM7q?=
- =?Windows-1252?Q?Gr5thiAz4QhXnWzcsdjh9lGb7OAWaVf/Ly6HltakfqQOtXvAFIRLwu2g?=
- =?Windows-1252?Q?8qvkJGJcw7ZDC4Ct721pSxG3AgqAMV2sOXFmC+UHw2BuC35+sol8+rle?=
- =?Windows-1252?Q?U1b8mfDc9op7bq6eLVM0H0xMd6I22A0UM37L+Y1IoBAS+NC6UDKdyDHX?=
- =?Windows-1252?Q?7Q+US7vuem8elS8NoTZ9rDkdopICMEgCFRBi4B4EojyFysnvN4kTfNDm?=
- =?Windows-1252?Q?eNdUK1iDS2t2lwqZZQpmD+JCwFms7K5hteIXqjFKFQC75nHKyNefRVdh?=
- =?Windows-1252?Q?15xLiH1G7b4QnA85zRg0XehhZ8iTPgyOBnhuKuzF4pNdRlkeNoFFIn41?=
- =?Windows-1252?Q?xWlfC7L7ihjIQRAygRswpmAgNVaa6umAzVSW4wxkFyiiBviTLjA3fhsQ?=
- =?Windows-1252?Q?FYr0T1VBAd/YlQd+2/mzl5h2EpXxJHrmv+NbzzstCms9LmyH9clY9wWf?=
- =?Windows-1252?Q?xStSbFv5AEwkGfQYLTd0WDnXTxBfR3bIv3ckr8AxFcWDG2En1+suQhMf?=
- =?Windows-1252?Q?325/KOlleV5SiFJ+ZffXx7iZqIk0xEvo8JjV6n62IfSA4RPEHwG21wfe?=
- =?Windows-1252?Q?0EYjkHolrwEGdXKYd00m4UkqeQTznDAPpiLRtoQP6pzjYJXbmvHgJENe?=
- =?Windows-1252?Q?wL/NeKRfUr0tuMeAyP6HlJAk11S8bVoIkExbd6iURROnrq/zgMp8m29B?=
- =?Windows-1252?Q?VlDH14FRQHmBjYwk9+cH6jsPP8S9S/qNV36XruAricplQoQwmGMpaQmc?=
- =?Windows-1252?Q?HZ/1i8t9f+yuUkId51uoDIgTpnY3tpHeXvCpxrZGFz/EHNJYds+UVGHi?=
- =?Windows-1252?Q?0ojOlt1LkJ9dxmgDSaCpIzKSCQZPtOm3mDQacSOdL+q2fDY8g8JCapgc?=
- =?Windows-1252?Q?iTekPeW6WM8GMOuG0EKP2uMzEmn2dQHZtnY+3rYC?=
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C409B6FD6;
+	Thu, 28 Dec 2023 12:05:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703765116; x=1704369916; i=markus.elfring@web.de;
+	bh=cJQqD6vC6OovsIlVnJsS/+nszJU8beuDfrI1RA2WO5k=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=kCvCpeAvjnFFioX1WSSvuToAGgUBbmrqXmC2XYSGG8qaPAXOjLV7zKEpwxa59QWr
+	 eXvVjdoYHhur48csz82wkTw26WHVpXkdk1wLo8JJ6ARjsWHq27eyDyhwFdtcwFDYE
+	 eyh0hM8LubG1phOjo7w87gKkXCGWJGGBJ6TNhEbiCQSMDdVzB+v3K52VcqT2zpevK
+	 IbXePELkZagsw8T/CySKBroltU6vSuCbIzTpDsr1Ac8HOTPI9YlHYWCVzuGODPZss
+	 hzyqA0dTX8vYKq/UOgKI+GYyLAQD2xY7wEY/zMOEBW0gelMBDaIkGTACv6z+joeJd
+	 wvT56P+jmEAb7Vkq/g==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1M4KNf-1rIY9d2Ma1-000Wmj; Thu, 28
+ Dec 2023 13:05:16 +0100
+Message-ID: <ba1c555a-6ddd-455f-862c-f1cb21e4ef8f@web.de>
+Date: Thu, 28 Dec 2023 13:05:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-bcc80.templateTenant
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB10217.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0a1ba68-ce17-4a5d-592f-08dc079cfcc5
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Dec 2023 12:03:21.6472
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR02MB8949
+User-Agent: Mozilla Thunderbird
+To: linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Hannes Reinecke <hare@suse.de>, "James E. J. Bottomley"
+ <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] scsi: fcoe: Return directly after a failed kzalloc() in
+ fcoe_sysfs_fcf_add()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:n3oW30yzy361TbC4+2QAbRA0LJ/v3WPMXWZWSmvY8JpYpKGXJno
+ ZbXXovZQz99Twcvyef0K4T1kjA0mU/+PB9Ax2EfvtfQYmWQ72jmD55Oo7w8Ja/k3p7jNkOx
+ 0rhEnDSLbgRDNKLCn4E9WObD1Y/g162+QamJ73gSSJsdDEAL0C1alxH4wxmb6W4jQijteHD
+ 0rHTUpGFHe2LQE+gaVHzg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:/rqUFD75ncM=;ZZr4t6L050dgCyjGKaZolwWcJC1
+ AC0UIpOhL1u/KwKhAMG4rkwkc62JvMdJAemPy6r0WrFfF2+DHL1H7zr9sjpmKsGgjwzIxv//2
+ UHwh+GlkV58XhJuLRO40hRTx/e4HSGhyP7jtRL4K4+ini0Ebg2YwUhUGcv9LmWGQQ/Ap+MZWU
+ 8aOxIbQ5fK+HBbfLPg1bs7iJWrPM87POY4hb0KUo1tp4SCsBG15u7RJfu4LKyqP1oeobAZKAh
+ 4pLoSOPUFdQelKN9DLrVVyd62M6nL/8sHrwa+0e7td0Xs/opEDhtwKCe/rwdlyA9RyHEk7VO5
+ TCJH/hhNOn6UoP+qO2+EBqToLqelZx9GvmOs+nrdAZxt0Oz+2WZVafCVx1tIsthnk/nDuCrjA
+ kYsgaanFRAGQwtqJc6Pr5At6U9WkWhvOmSbXFDXdJWhylFpIoifSI2ql2ChruOFz4q71qjOG9
+ 9PmQGiIDmcmYaluCetMvrJb1jH9yjRXUqihSt/7oRH7VH6hp/IkYG+lXnQ6eWVCfsGw1D3TvE
+ abitNxwfPiTLS8VsADeb2NdLrlhWTlJD4+XCHhMJOSibxKZWG1RqC60W+B4JAZWM/caBHHVsb
+ kBgXcjgzrN8rOZNU08JdW9HW8q4Jrxxho2qz+U0zwnWZlBMdDlmdaWbv24GBNPXdlV2QELfm5
+ Yf+up0THQwHh6IAbsKiu4jaIXRDKE8tcD/Q+flBWNpIXwvJB8Tv8hCzVeDrOcynP51M/r9aWU
+ bQGyyhAgwEt+NHxTqA3W8rMBmZxZ3Drzu7e/YOziPq/mkdSISD4shfAT7yOnKWnlow3r2KG5F
+ qYaWc7zp2QY2i3oKLSShqql01wS/DUSpLUTr8skoEffdAwlZzE5/w5uKXBavyBSrwmydZNagN
+ F9k5r7x4M2Z5yL0nL63CqQO/fvW1fFFk2QVFso7kCqX2fJM5+vljKaMUku4cckOylIzzA3Rtj
+ Pb7qpw==
 
-Hello there,=0A=
-=0A=
->What warnings? =0A=
-=0A=
-The warning mentioned in the title.=0A=
-=0A=
->And what gcc version? =0A=
-=0A=
-Probably most versions.=0A=
-=0A=
-You will probably have to switch on gcc compiler flag -Wduplicated-cond=0A=
-in any random released version of gcc to see what I see.=0A=
-=0A=
-=0A=
-Regards=0A=
-=0A=
-David Binderman=0A=
-=0A=
-=0A=
-=0A=
-=0A=
-=0A=
-=0A=
-Confused...=0A=
-=0A=
-=0A=
-=0A=
---=0A=
-=0A=
-An old man doll... just what I always wanted! - Clara=
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 28 Dec 2023 12:34:41 +0100
+
+The kfree() function was called in one case by
+the fcoe_sysfs_fcf_add() function during error handling
+even if the passed variable contained a null pointer.
+This issue was detected by using the Coccinelle software.
+
+* Thus return directly after a call of the function =E2=80=9Ckzalloc=E2=80=
+=9D failed
+  at the beginning.
+
+* Delete an initialisation for the variable =E2=80=9Crc=E2=80=9D
+  which became unnecessary with this refactoring.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/scsi/fcoe/fcoe_ctlr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/fcoe/fcoe_ctlr.c b/drivers/scsi/fcoe/fcoe_ctlr.c
+index 19eee108db02..df7c8f68596e 100644
+=2D-- a/drivers/scsi/fcoe/fcoe_ctlr.c
++++ b/drivers/scsi/fcoe/fcoe_ctlr.c
+@@ -163,14 +163,14 @@ static int fcoe_sysfs_fcf_add(struct fcoe_fcf *new)
+ 	struct fcoe_ctlr *fip =3D new->fip;
+ 	struct fcoe_ctlr_device *ctlr_dev;
+ 	struct fcoe_fcf_device *temp, *fcf_dev;
+-	int rc =3D -ENOMEM;
++	int rc;
+
+ 	LIBFCOE_FIP_DBG(fip, "New FCF fab %16.16llx mac %pM\n",
+ 			new->fabric_name, new->fcf_mac);
+
+ 	temp =3D kzalloc(sizeof(*temp), GFP_KERNEL);
+ 	if (!temp)
+-		goto out;
++		return -ENOMEM;
+
+ 	temp->fabric_name =3D new->fabric_name;
+ 	temp->switch_name =3D new->switch_name;
+=2D-
+2.43.0
+
 
