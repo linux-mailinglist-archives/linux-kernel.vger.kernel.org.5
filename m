@@ -1,64 +1,39 @@
-Return-Path: <linux-kernel+bounces-12393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E768C81F421
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 03:29:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B33881F42D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 03:44:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5603AB2184B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:29:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F2F4282542
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:44:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE56110B;
-	Thu, 28 Dec 2023 02:29:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF70F137B;
+	Thu, 28 Dec 2023 02:44:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="EVG2idgk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C1u06OLx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5884310E4
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 02:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d430bac207so21805885ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 18:28:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1703730538; x=1704335338; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=L9b6zoFhTsQdqlwbUa5zffkYVuCCwTirUAw7XRk7ZME=;
-        b=EVG2idgkQ/dH0EQN3xaCwwcLL7uvgiFGWigC1BEE19SHZYBNDOG2AAKFC3JpjUM6ph
-         Fm8NssbKa8Ng12qBcx+L//a79E0o5sy0IQyczrRwkPR+NDusVeOFfc+3SqBGCXzoexAq
-         mkV0Bf/3GhsSKeU5d23egwYn56yrqPewR304018yRiVNHxsbAUnXtUdlJ1fo4aijn/63
-         gnsvvGfSGvNUVdIKfOnchEVwC/MuAG9oMhMdpD/h6AI5BGpaSrlZkVL2pvyYbtTcNxXR
-         45adEEXCB5/YGDRLerUsFEhSFlVRELD2aL0W+5w8X+kyK+DWYgbXiztIoVUez3pft/6m
-         Ut1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703730538; x=1704335338;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L9b6zoFhTsQdqlwbUa5zffkYVuCCwTirUAw7XRk7ZME=;
-        b=iOpegC+uRJyXyKstqoiujy+6r5NbwGfbryzQxNMzSGKo0CGOohzSn8z9bNGv9zBke9
-         Xexr05yWX/9Red3+PGiqzpVspCJ8/cJnVdJvUr6pfijVbN6FY+TK14HIEYgPbfMIo6N5
-         uh48WX3H+iKQc14bQB9h4RrKr6ToZ63QZl7QPEWN7v3nRrJo8XZ/Mdw5o/+rwQgSKsN8
-         KKVddP7Zvu5y8gqUUiL3qKZkv8korp+JRBVe6OZWM1uNmMndPFi8VHnNXdD8RKNrJhN+
-         Jz7kUBLUJdDgStjbGUWwEz5bvbVbMlcnJLdBz5Y8d4mfla2ZigrZ0VcySdReYoI0wpPt
-         DY0w==
-X-Gm-Message-State: AOJu0Yzb+AegwrZspT9I7h1uaShe5k22titSR669v9zhFb1J1tXs56Fc
-	WVg/l/biUXiQXsrv9Rv2JAV+ymSFEMgYKg==
-X-Google-Smtp-Source: AGHT+IHQP6848dz6WO2/MRcWA0EKWw6u4tZgtShfJWCF7j5g2cz9p431rCkqyxXJt+yAd9Czf79IMQ==
-X-Received: by 2002:a17:902:c412:b0:1d4:3dfa:6060 with SMTP id k18-20020a170902c41200b001d43dfa6060mr9704231plk.52.1703730538535;
-        Wed, 27 Dec 2023 18:28:58 -0800 (PST)
-Received: from [10.5.81.224] ([139.177.225.238])
-        by smtp.gmail.com with ESMTPSA id n10-20020a1709026a8a00b001ab39cd875csm12695873plk.133.2023.12.27.18.28.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Dec 2023 18:28:58 -0800 (PST)
-Message-ID: <59815d0e-2f44-408e-a81d-989df3323f72@bytedance.com>
-Date: Thu, 28 Dec 2023 10:28:52 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4671310F2
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 02:44:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66E6AC433C7;
+	Thu, 28 Dec 2023 02:44:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703731456;
+	bh=5Sry3MZK5nXPzSBh0f8DSWrW1gKYAHch4PSI9KBt3g8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=C1u06OLxhWQVdwt+XdvP32ieP6YmSAzwoIzs1zdhTe3nAEy7El8CVx5xHUW2Skxz1
+	 4aXLMk0i0g5y3j4V4YNJHZBygBlPeFGMskkbDOZviro39Ja/cs8QdxuSprpWUeZQtt
+	 e8mGK51Bnog4dicRGLBNee5KqYZOiD0bGzlF05Ig1jyLJcP3ovDY6goqMa3XjKqRND
+	 6eBjzvfG+R4V4QhDDeD7JU+Gs1q9fZsezKKxfVLNIjGurRfN+jOQLpJ0vrWrgoGnC5
+	 MrXN5gvQdiINFPaMLxj843vnUYNrk/MWIRtVsEbr9745rA/oVfiukakwdiENQx7x6i
+	 QTZBnteaQyCuA==
+Message-ID: <aae654e7-8a7e-478d-9f5a-65807a0e0343@kernel.org>
+Date: Thu, 28 Dec 2023 10:44:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,87 +41,150 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [crypto?] general protection fault in
- scatterwalk_copychunks (5)
+Subject: Re: [PATCH 1/6] f2fs: compress: fix to guarantee persisting
+ compressed blocks by CP
 Content-Language: en-US
-To: syzbot <syzbot+3eff5e51bf1db122a16e@syzkaller.appspotmail.com>,
- akpm@linux-foundation.org, chrisl@kernel.org, davem@davemloft.net,
- herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
- linux-kernel@vger.kernel.org, nphamcs@gmail.com,
- syzkaller-bugs@googlegroups.com, yosryahmed@google.com
-References: <0000000000000b05cd060d6b5511@google.com>
-From: Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <0000000000000b05cd060d6b5511@google.com>
-Content-Type: text/plain; charset=UTF-8
+To: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20231220135934.3471407-1-chao@kernel.org>
+ <ZYs_S0VLFFnV1g-3@google.com>
+ <35f160e2-a9e4-4f76-af32-de00dce05fa1@kernel.org>
+ <ZYyrddJK8KJNpKXz@google.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <ZYyrddJK8KJNpKXz@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 2023/12/26 23:28, syzbot wrote:
-> Hello,
+On 2023/12/28 6:55, Jaegeuk Kim wrote:
+> On 12/27, Chao Yu wrote:
+>> On 2023/12/27 5:02, Jaegeuk Kim wrote:
+>>> On 12/20, Chao Yu wrote:
+>>>> If data block in compressed cluster is not persisted with metadata
+>>>> during checkpoint, after SPOR, the data may be corrupted, let's
+>>>> guarantee to write compressed page by checkpoint.
+>>>>
+>>>> Fixes: 4c8ff7095bef ("f2fs: support data compression")
+>>>> Signed-off-by: Chao Yu <chao@kernel.org>
+>>>> ---
+>>>>    fs/f2fs/compress.c |  3 ++-
+>>>>    fs/f2fs/data.c     | 12 +++++++++---
+>>>>    fs/f2fs/f2fs.h     |  3 ++-
+>>>>    3 files changed, 13 insertions(+), 5 deletions(-)
+>>>>
+>>>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+>>>> index 5b076329e9bf..1122db8cc0b0 100644
+>>>> --- a/fs/f2fs/compress.c
+>>>> +++ b/fs/f2fs/compress.c
+>>>> @@ -1442,6 +1442,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
+>>>>    	struct f2fs_sb_info *sbi = bio->bi_private;
+>>>>    	struct compress_io_ctx *cic =
+>>>>    			(struct compress_io_ctx *)page_private(page);
+>>>> +	enum count_type type = WB_DATA_TYPE(page);
+>>>>    	int i;
+>>>>    	if (unlikely(bio->bi_status))
+>>>> @@ -1449,7 +1450,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
+>>>>    	f2fs_compress_free_page(page);
+>>>> -	dec_page_count(sbi, F2FS_WB_DATA);
+>>>> +	dec_page_count(sbi, type);
+>>>>    	if (atomic_dec_return(&cic->pending_pages))
+>>>>    		return;
+>>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+>>>> index d28c97282e68..6c72a6e86ba8 100644
+>>>> --- a/fs/f2fs/data.c
+>>>> +++ b/fs/f2fs/data.c
+>>>> @@ -48,7 +48,7 @@ void f2fs_destroy_bioset(void)
+>>>>    	bioset_exit(&f2fs_bioset);
+>>>>    }
+>>>> -static bool __is_cp_guaranteed(struct page *page)
+>>>> +bool f2fs_is_cp_guaranteed(struct page *page)
+>>>>    {
+>>>>    	struct address_space *mapping = page->mapping;
+>>>>    	struct inode *inode;
+>>>> @@ -66,7 +66,7 @@ static bool __is_cp_guaranteed(struct page *page)
+>>>>    		return true;
+>>>>    	if (f2fs_is_compressed_page(page))
+>>>> -		return false;
+>>>> +		return true;
+>>>>    	if ((S_ISREG(inode->i_mode) && IS_NOQUOTA(inode)) ||
+>>>>    			page_private_gcing(page))
+>>>>    		return true;
+>>>> @@ -1007,6 +1007,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+>>>>    	enum page_type btype = PAGE_TYPE_OF_BIO(fio->type);
+>>>>    	struct f2fs_bio_info *io = sbi->write_io[btype] + fio->temp;
+>>>>    	struct page *bio_page;
+>>>> +	enum count_type type;
+>>>>    	f2fs_bug_on(sbi, is_read_io(fio->op));
+>>>> @@ -1046,7 +1047,12 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+>>>>    	/* set submitted = true as a return value */
+>>>>    	fio->submitted = 1;
+>>>> -	inc_page_count(sbi, WB_DATA_TYPE(bio_page));
+>>>> +	type = WB_DATA_TYPE(bio_page);
+>>>> +	/* override count type if page is compressed one */
+>>>> +	if (fio->compressed_page)
+>>>> +		type = WB_DATA_TYPE(fio->compressed_page);
+>>>
+>>> Doesn't bio_page already point fio->compressed_page?
+>>
+>> Please check below codes, bio_page will point to fio->encrypted_page if
+>> both software encryption feature and compression feature are on, for this
+>> case, we still need to account F2FS_WB_CP_DATA.
 > 
-> syzbot found the following issue on:
+> So, it seems you want to make F2FS_WB_CP_DATA regardless of conditions. Then,
+> how about making this explictly instead of implicit condition check of the page?
 > 
-> HEAD commit:    39676dfe5233 Add linux-next specific files for 20231222
-> git tree:       linux-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=172080a1e80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f3761490b734dc96
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3eff5e51bf1db122a16e
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=178f6e26e80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c399e9e80000
+> #define WB_DATA_TYPE(p, f) (f || __is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
 > 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/360542c2ca67/disk-39676dfe.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/900dfb21ca8a/vmlinux-39676dfe.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/c94a2a3ea0e0/bzImage-39676dfe.xz
-> 
-> The issue was bisected to:
-> 
-> commit 7bc134496bbbaacb0d4423b819da4eca850a839d
-> Author: Chengming Zhou <zhouchengming@bytedance.com>
-> Date:   Mon Dec 18 11:50:31 2023 +0000
-> 
->     mm/zswap: change dstmem size to one page
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15f60c36e80000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=17f60c36e80000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13f60c36e80000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+3eff5e51bf1db122a16e@syzkaller.appspotmail.com
-> Fixes: 7bc134496bbb ("mm/zswap: change dstmem size to one page")
-> 
+> 	inc_page_count(sbi, WB_DATA_TYPE(bio_page, bio_page == fio->compressed_page));
 
-#syz test
+Do you mean inc_page_count(sbi, WB_DATA_TYPE(bio_page, fio->compressed_page));?
 
-diff --git a/crypto/scompress.c b/crypto/scompress.c
-index 442a82c9de7d..b108a30a7600 100644
---- a/crypto/scompress.c
-+++ b/crypto/scompress.c
-@@ -117,6 +117,7 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 	struct crypto_scomp *scomp = *tfm_ctx;
- 	void **ctx = acomp_request_ctx(req);
- 	struct scomp_scratch *scratch;
-+	unsigned int dlen;
- 	int ret;
- 
- 	if (!req->src || !req->slen || req->slen > SCOMP_SCRATCH_SIZE)
-@@ -128,6 +129,8 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 	if (!req->dlen || req->dlen > SCOMP_SCRATCH_SIZE)
- 		req->dlen = SCOMP_SCRATCH_SIZE;
- 
-+	dlen = req->dlen;
-+
- 	scratch = raw_cpu_ptr(&scomp_scratch);
- 	spin_lock(&scratch->lock);
- 
-@@ -145,6 +148,9 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 				ret = -ENOMEM;
- 				goto out;
- 			}
-+		} else if (req->dlen > dlen) {
-+			ret = -ENOSPC;
-+			goto out;
- 		}
- 		scatterwalk_map_and_copy(scratch->dst, req->dst, 0, req->dlen,
- 					 1);
+If we use inc_page_count(sbi, WB_DATA_TYPE(bio_page, bio_page == fio->compressed_page));
+if bio_page points to fio->encrypted_page, but fio->compressed_page is valid, then
+WB_DATA_TYPE() will return F2FS_WB_DATA, it doesn't as expect.
+
+Or am I missing something?
+
+Thanks,
+
+> 
+> 	dec_page_count(sbi, WB_DATA_TYPE(page, f2fs_is_compressed_page(page)));
+> 
+>>
+>> 	if (fio->encrypted_page)
+>> 		bio_page = fio->encrypted_page;
+>> 	else if (fio->compressed_page)
+>> 		bio_page = fio->compressed_page;
+>> 	else
+>> 		bio_page = fio->page;
+>>
+>> Thanks,
+>>
+>>>
+>>>> +
+>>>> +	inc_page_count(sbi, type);
+>>>>    	if (io->bio &&
+>>>>    	    (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
+>>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>>> index 76e9a8682e38..bcb3940ab5ba 100644
+>>>> --- a/fs/f2fs/f2fs.h
+>>>> +++ b/fs/f2fs/f2fs.h
+>>>> @@ -1092,7 +1092,7 @@ struct f2fs_sm_info {
+>>>>     * f2fs monitors the number of several block types such as on-writeback,
+>>>>     * dirty dentry blocks, dirty node blocks, and dirty meta blocks.
+>>>>     */
+>>>> -#define WB_DATA_TYPE(p)	(__is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
+>>>> +#define WB_DATA_TYPE(p)	(f2fs_is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
+>>>>    enum count_type {
+>>>>    	F2FS_DIRTY_DENTS,
+>>>>    	F2FS_DIRTY_DATA,
+>>>> @@ -3824,6 +3824,7 @@ void f2fs_init_ckpt_req_control(struct f2fs_sb_info *sbi);
+>>>>     */
+>>>>    int __init f2fs_init_bioset(void);
+>>>>    void f2fs_destroy_bioset(void);
+>>>> +bool f2fs_is_cp_guaranteed(struct page *page);
+>>>>    int f2fs_init_bio_entry_cache(void);
+>>>>    void f2fs_destroy_bio_entry_cache(void);
+>>>>    void f2fs_submit_read_bio(struct f2fs_sb_info *sbi, struct bio *bio,
+>>>> -- 
+>>>> 2.40.1
 
