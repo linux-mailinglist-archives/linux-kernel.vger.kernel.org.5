@@ -1,295 +1,295 @@
-Return-Path: <linux-kernel+bounces-12545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CF8581F680
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:47:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C61C081F679
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:46:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07A0FB22951
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:47:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 513951F23214
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:46:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FD6D8C0A;
-	Thu, 28 Dec 2023 09:46:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480456AAD;
+	Thu, 28 Dec 2023 09:46:24 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7524C883B
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 09:46:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <zhouchengming@bytedance.com>
-Date: Thu, 28 Dec 2023 09:45:46 +0000
-Subject: [PATCH v5 5/5] mm/zswap: change per-cpu mutex and buffer to per-acomp_ctx
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 494C463C9;
+	Thu, 28 Dec 2023 09:46:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id D6DF07FDC;
+	Thu, 28 Dec 2023 17:46:11 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Dec
+ 2023 17:46:11 +0800
+Received: from [192.168.125.85] (183.27.97.107) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Dec
+ 2023 17:46:10 +0800
+Message-ID: <196e61f9-2beb-413f-b2fd-4cd8e347ad60@starfivetech.com>
+Date: Thu, 28 Dec 2023 17:46:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231213-zswap-dstmem-v5-5-9382162bbf05@bytedance.com>
-References: <20231213-zswap-dstmem-v5-0-9382162bbf05@bytedance.com>
-In-Reply-To: <20231213-zswap-dstmem-v5-0-9382162bbf05@bytedance.com>
-To: Barry Song <21cnbao@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, Dan Streetman <ddstreet@ieee.org>, Vitaly Wool <vitaly.wool@konsulko.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Chris Li <chriscli@google.com>, Seth Jennings <sjenning@redhat.com>
-Cc: Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>, Chris Li <chrisl@kernel.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Chengming Zhou <zhouchengming@bytedance.com>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1703756775; l=7667;
- i=zhouchengming@bytedance.com; s=20231204; h=from:subject:message-id;
- bh=4WwCjcTM4cvOikkhRW0eIrRaRjoJsRX6DvdiNXR+aoM=;
- b=zjkyeZ8GJvLmdKBjLPG2tkPu01IHk9nTR5X4BWfcrNSIJNqRsEvvUkf2037UBEjkA7VN2xRdg
- U2WvnDymn6ZCVI0TllIFnqKc5NdiqSdYpssVP3etAh5tKo+MGJxgduq
-X-Developer-Key: i=zhouchengming@bytedance.com; a=ed25519;
- pk=xFTmRtMG3vELGJBUiml7OYNdM393WOMv0iWWeQEVVdA=
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 09/21] PCI: microchip: Move setup functions to
+ pcie-plda-host.c
+Content-Language: en-US
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+CC: Conor Dooley <conor@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?=
+	<kw@linux.com>, Rob Herring <robh+dt@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>, Daire McNamara <daire.mcnamara@microchip.com>, "Emil
+ Renner Berthing" <emil.renner.berthing@canonical.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+	<linux-pci@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
+	"Palmer Dabbelt" <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+	"Philipp Zabel" <p.zabel@pengutronix.de>, Mason Huo
+	<mason.huo@starfivetech.com>, Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+	Kevin Xie <kevin.xie@starfivetech.com>
+References: <20231214072839.2367-1-minda.chen@starfivetech.com>
+ <20231214072839.2367-10-minda.chen@starfivetech.com>
+ <ZYxHl+R40b7t4Xn2@lpieralisi>
+From: Minda Chen <minda.chen@starfivetech.com>
+In-Reply-To: <ZYxHl+R40b7t4Xn2@lpieralisi>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
 
-First of all, we need to rename acomp_ctx->dstmem field to buffer,
-since we are now using for purposes other than compression.
 
-Then we change per-cpu mutex and buffer to per-acomp_ctx, since
-them belong to the acomp_ctx and are necessary parts when used
-in the compress/decompress contexts.
 
-So we can remove the old per-cpu mutex and dstmem.
-
-Acked-by: Chris Li <chrisl@kernel.org> (Google)
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- include/linux/cpuhotplug.h |   1 -
- mm/zswap.c                 | 104 ++++++++++++++-------------------------------
- 2 files changed, 33 insertions(+), 72 deletions(-)
-
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index efc0c0b07efb..c3e06e21766a 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -124,7 +124,6 @@ enum cpuhp_state {
- 	CPUHP_ARM_BL_PREPARE,
- 	CPUHP_TRACE_RB_PREPARE,
- 	CPUHP_MM_ZS_PREPARE,
--	CPUHP_MM_ZSWP_MEM_PREPARE,
- 	CPUHP_MM_ZSWP_POOL_PREPARE,
- 	CPUHP_KVM_PPC_BOOK3S_PREPARE,
- 	CPUHP_ZCOMP_PREPARE,
-diff --git a/mm/zswap.c b/mm/zswap.c
-index e756b2af838b..7c18755c6e1c 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -166,8 +166,8 @@ struct crypto_acomp_ctx {
- 	struct crypto_acomp *acomp;
- 	struct acomp_req *req;
- 	struct crypto_wait wait;
--	u8 *dstmem;
--	struct mutex *mutex;
-+	u8 *buffer;
-+	struct mutex mutex;
- };
- 
- /*
-@@ -694,63 +694,26 @@ static void zswap_alloc_shrinker(struct zswap_pool *pool)
- /*********************************
- * per-cpu code
- **********************************/
--static DEFINE_PER_CPU(u8 *, zswap_dstmem);
--/*
-- * If users dynamically change the zpool type and compressor at runtime, i.e.
-- * zswap is running, zswap can have more than one zpool on one cpu, but they
-- * are sharing dtsmem. So we need this mutex to be per-cpu.
-- */
--static DEFINE_PER_CPU(struct mutex *, zswap_mutex);
--
--static int zswap_dstmem_prepare(unsigned int cpu)
--{
--	struct mutex *mutex;
--	u8 *dst;
--
--	dst = kmalloc_node(PAGE_SIZE * 2, GFP_KERNEL, cpu_to_node(cpu));
--	if (!dst)
--		return -ENOMEM;
--
--	mutex = kmalloc_node(sizeof(*mutex), GFP_KERNEL, cpu_to_node(cpu));
--	if (!mutex) {
--		kfree(dst);
--		return -ENOMEM;
--	}
--
--	mutex_init(mutex);
--	per_cpu(zswap_dstmem, cpu) = dst;
--	per_cpu(zswap_mutex, cpu) = mutex;
--	return 0;
--}
--
--static int zswap_dstmem_dead(unsigned int cpu)
--{
--	struct mutex *mutex;
--	u8 *dst;
--
--	mutex = per_cpu(zswap_mutex, cpu);
--	kfree(mutex);
--	per_cpu(zswap_mutex, cpu) = NULL;
--
--	dst = per_cpu(zswap_dstmem, cpu);
--	kfree(dst);
--	per_cpu(zswap_dstmem, cpu) = NULL;
--
--	return 0;
--}
--
- static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
- {
- 	struct zswap_pool *pool = hlist_entry(node, struct zswap_pool, node);
- 	struct crypto_acomp_ctx *acomp_ctx = per_cpu_ptr(pool->acomp_ctx, cpu);
- 	struct crypto_acomp *acomp;
- 	struct acomp_req *req;
-+	int ret;
-+
-+	mutex_init(&acomp_ctx->mutex);
-+
-+	acomp_ctx->buffer = kmalloc_node(PAGE_SIZE * 2, GFP_KERNEL, cpu_to_node(cpu));
-+	if (!acomp_ctx->buffer)
-+		return -ENOMEM;
- 
- 	acomp = crypto_alloc_acomp_node(pool->tfm_name, 0, 0, cpu_to_node(cpu));
- 	if (IS_ERR(acomp)) {
- 		pr_err("could not alloc crypto acomp %s : %ld\n",
- 				pool->tfm_name, PTR_ERR(acomp));
--		return PTR_ERR(acomp);
-+		ret = PTR_ERR(acomp);
-+		goto acomp_fail;
- 	}
- 	acomp_ctx->acomp = acomp;
- 
-@@ -758,8 +721,8 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
- 	if (!req) {
- 		pr_err("could not alloc crypto acomp_request %s\n",
- 		       pool->tfm_name);
--		crypto_free_acomp(acomp_ctx->acomp);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto req_fail;
- 	}
- 	acomp_ctx->req = req;
- 
-@@ -772,10 +735,13 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
- 	acomp_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,
- 				   crypto_req_done, &acomp_ctx->wait);
- 
--	acomp_ctx->mutex = per_cpu(zswap_mutex, cpu);
--	acomp_ctx->dstmem = per_cpu(zswap_dstmem, cpu);
--
- 	return 0;
-+
-+req_fail:
-+	crypto_free_acomp(acomp_ctx->acomp);
-+acomp_fail:
-+	kfree(acomp_ctx->buffer);
-+	return ret;
- }
- 
- static int zswap_cpu_comp_dead(unsigned int cpu, struct hlist_node *node)
-@@ -788,6 +754,7 @@ static int zswap_cpu_comp_dead(unsigned int cpu, struct hlist_node *node)
- 			acomp_request_free(acomp_ctx->req);
- 		if (!IS_ERR_OR_NULL(acomp_ctx->acomp))
- 			crypto_free_acomp(acomp_ctx->acomp);
-+		kfree(acomp_ctx->buffer);
- 	}
- 
- 	return 0;
-@@ -1400,12 +1367,12 @@ static void __zswap_load(struct zswap_entry *entry, struct page *page)
- 	u8 *src;
- 
- 	acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
--	mutex_lock(acomp_ctx->mutex);
-+	mutex_lock(&acomp_ctx->mutex);
- 
- 	src = zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
- 	if (!zpool_can_sleep_mapped(zpool)) {
--		memcpy(acomp_ctx->dstmem, src, entry->length);
--		src = acomp_ctx->dstmem;
-+		memcpy(acomp_ctx->buffer, src, entry->length);
-+		src = acomp_ctx->buffer;
- 		zpool_unmap_handle(zpool, entry->handle);
- 	}
- 
-@@ -1415,7 +1382,7 @@ static void __zswap_load(struct zswap_entry *entry, struct page *page)
- 	acomp_request_set_params(acomp_ctx->req, &input, &output, entry->length, PAGE_SIZE);
- 	BUG_ON(crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req), &acomp_ctx->wait));
- 	BUG_ON(acomp_ctx->req->dlen != PAGE_SIZE);
--	mutex_unlock(acomp_ctx->mutex);
-+	mutex_unlock(&acomp_ctx->mutex);
- 
- 	if (zpool_can_sleep_mapped(zpool))
- 		zpool_unmap_handle(zpool, entry->handle);
-@@ -1636,13 +1603,17 @@ bool zswap_store(struct folio *folio)
- 	/* compress */
- 	acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
- 
--	mutex_lock(acomp_ctx->mutex);
-+	mutex_lock(&acomp_ctx->mutex);
- 
--	dst = acomp_ctx->dstmem;
-+	dst = acomp_ctx->buffer;
- 	sg_init_table(&input, 1);
- 	sg_set_page(&input, page, PAGE_SIZE, 0);
- 
--	/* zswap_dstmem is of size (PAGE_SIZE * 2). Reflect same in sg_list */
-+	/*
-+	 * We need PAGE_SIZE * 2 here since there maybe over-compression case,
-+	 * and hardware-accelerators may won't check the dst buffer size, so
-+	 * giving the dst buffer with enough length to avoid buffer overflow.
-+	 */
- 	sg_init_one(&output, dst, PAGE_SIZE * 2);
- 	acomp_request_set_params(acomp_ctx->req, &input, &output, PAGE_SIZE, dlen);
- 	/*
-@@ -1682,7 +1653,7 @@ bool zswap_store(struct folio *folio)
- 	buf = zpool_map_handle(zpool, handle, ZPOOL_MM_WO);
- 	memcpy(buf, dst, dlen);
- 	zpool_unmap_handle(zpool, handle);
--	mutex_unlock(acomp_ctx->mutex);
-+	mutex_unlock(&acomp_ctx->mutex);
- 
- 	/* populate entry */
- 	entry->swpentry = swp_entry(type, offset);
-@@ -1725,7 +1696,7 @@ bool zswap_store(struct folio *folio)
- 	return true;
- 
- put_dstmem:
--	mutex_unlock(acomp_ctx->mutex);
-+	mutex_unlock(&acomp_ctx->mutex);
- put_pool:
- 	zswap_pool_put(entry->pool);
- freepage:
-@@ -1900,13 +1871,6 @@ static int zswap_setup(void)
- 		goto cache_fail;
- 	}
- 
--	ret = cpuhp_setup_state(CPUHP_MM_ZSWP_MEM_PREPARE, "mm/zswap:prepare",
--				zswap_dstmem_prepare, zswap_dstmem_dead);
--	if (ret) {
--		pr_err("dstmem alloc failed\n");
--		goto dstmem_fail;
--	}
--
- 	ret = cpuhp_setup_state_multi(CPUHP_MM_ZSWP_POOL_PREPARE,
- 				      "mm/zswap_pool:prepare",
- 				      zswap_cpu_comp_prepare,
-@@ -1938,8 +1902,6 @@ static int zswap_setup(void)
- 	if (pool)
- 		zswap_pool_destroy(pool);
- hp_fail:
--	cpuhp_remove_state(CPUHP_MM_ZSWP_MEM_PREPARE);
--dstmem_fail:
- 	kmem_cache_destroy(zswap_entry_cache);
- cache_fail:
- 	/* if built-in, we aren't unloaded on failure; don't allow use */
-
--- 
-b4 0.10.1
+On 2023/12/27 23:49, Lorenzo Pieralisi wrote:
+> On Thu, Dec 14, 2023 at 03:28:27PM +0800, Minda Chen wrote:
+>> Move setup functions to common pcie-plda-host.c. So these two functions
+>> can be re-used.
+>> 
+>> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>> ---
+>>  drivers/pci/controller/plda/Kconfig           |  4 +
+>>  drivers/pci/controller/plda/Makefile          |  1 +
+>>  .../pci/controller/plda/pcie-microchip-host.c | 59 --------------
+>>  drivers/pci/controller/plda/pcie-plda-host.c  | 80 +++++++++++++++++++
+>>  drivers/pci/controller/plda/pcie-plda.h       |  5 ++
+>>  5 files changed, 90 insertions(+), 59 deletions(-)
+>>  create mode 100644 drivers/pci/controller/plda/pcie-plda-host.c
+>> 
+>> diff --git a/drivers/pci/controller/plda/Kconfig b/drivers/pci/controller/plda/Kconfig
+>> index 5cb3be4fc98c..e54a82ee94f5 100644
+>> --- a/drivers/pci/controller/plda/Kconfig
+>> +++ b/drivers/pci/controller/plda/Kconfig
+>> @@ -3,10 +3,14 @@
+>>  menu "PLDA-based PCIe controllers"
+>>  	depends on PCI
+>>  
+>> +config PCIE_PLDA_HOST
+>> +	bool
+>> +
+>>  config PCIE_MICROCHIP_HOST
+>>  	tristate "Microchip AXI PCIe controller"
+>>  	depends on PCI_MSI && OF
+>>  	select PCI_HOST_COMMON
+>> +	select PCIE_PLDA_HOST
+>>  	help
+>>  	  Say Y here if you want kernel to support the Microchip AXI PCIe
+>>  	  Host Bridge driver.
+>> diff --git a/drivers/pci/controller/plda/Makefile b/drivers/pci/controller/plda/Makefile
+>> index e1a265cbf91c..4340ab007f44 100644
+>> --- a/drivers/pci/controller/plda/Makefile
+>> +++ b/drivers/pci/controller/plda/Makefile
+>> @@ -1,2 +1,3 @@
+>>  # SPDX-License-Identifier: GPL-2.0
+>> +obj-$(CONFIG_PCIE_PLDA_HOST) += pcie-plda-host.o
+>>  obj-$(CONFIG_PCIE_MICROCHIP_HOST) += pcie-microchip-host.o
+>> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
+>> index 31ca8d44ee2a..2e79bcc7c0a5 100644
+>> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
+>> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+>> @@ -838,65 +838,6 @@ static int mc_pcie_init_irq_domains(struct plda_pcie_rp *port)
+>>  	return mc_allocate_msi_domains(port);
+>>  }
+>>  
+>> -static void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
+>> -				   phys_addr_t axi_addr, phys_addr_t pci_addr,
+>> -				   size_t size)
+>> -{
+>> -	u32 atr_sz = ilog2(size) - 1;
+>> -	u32 val;
+>> -
+>> -	if (index == 0)
+>> -		val = PCIE_CONFIG_INTERFACE;
+>> -	else
+>> -		val = PCIE_TX_RX_INTERFACE;
+>> -
+>> -	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+>> -	       ATR0_AXI4_SLV0_TRSL_PARAM);
+>> -
+>> -	val = lower_32_bits(axi_addr) | (atr_sz << ATR_SIZE_SHIFT) |
+>> -			    ATR_IMPL_ENABLE;
+>> -	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+>> -	       ATR0_AXI4_SLV0_SRCADDR_PARAM);
+>> -
+>> -	val = upper_32_bits(axi_addr);
+>> -	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+>> -	       ATR0_AXI4_SLV0_SRC_ADDR);
+>> -
+>> -	val = lower_32_bits(pci_addr);
+>> -	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+>> -	       ATR0_AXI4_SLV0_TRSL_ADDR_LSB);
+>> -
+>> -	val = upper_32_bits(pci_addr);
+>> -	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+>> -	       ATR0_AXI4_SLV0_TRSL_ADDR_UDW);
+>> -
+>> -	val = readl(bridge_base_addr + ATR0_PCIE_WIN0_SRCADDR_PARAM);
+>> -	val |= (ATR0_PCIE_ATR_SIZE << ATR0_PCIE_ATR_SIZE_SHIFT);
+>> -	writel(val, bridge_base_addr + ATR0_PCIE_WIN0_SRCADDR_PARAM);
+>> -	writel(0, bridge_base_addr + ATR0_PCIE_WIN0_SRC_ADDR);
+>> -}
+>> -
+>> -static int plda_pcie_setup_iomems(struct pci_host_bridge *bridge,
+>> -				  struct plda_pcie_rp *port)
+>> -{
+>> -	void __iomem *bridge_base_addr = port->bridge_addr;
+>> -	struct resource_entry *entry;
+>> -	u64 pci_addr;
+>> -	u32 index = 1;
+>> -
+>> -	resource_list_for_each_entry(entry, &bridge->windows) {
+>> -		if (resource_type(entry->res) == IORESOURCE_MEM) {
+>> -			pci_addr = entry->res->start - entry->offset;
+>> -			plda_pcie_setup_window(bridge_base_addr, index,
+>> -					       entry->res->start, pci_addr,
+>> -					       resource_size(entry->res));
+>> -			index++;
+>> -		}
+>> -	}
+>> -
+>> -	return 0;
+>> -}
+>> -
+>>  static inline void mc_clear_secs(struct mc_pcie *port)
+>>  {
+>>  	void __iomem *ctrl_base_addr = port->axi_base_addr + MC_PCIE_CTRL_ADDR;
+>> diff --git a/drivers/pci/controller/plda/pcie-plda-host.c b/drivers/pci/controller/plda/pcie-plda-host.c
+>> new file mode 100644
+>> index 000000000000..19131181897f
+>> --- /dev/null
+>> +++ b/drivers/pci/controller/plda/pcie-plda-host.c
+>> @@ -0,0 +1,80 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * PLDA PCIe XpressRich host controller driver
+>> + *
+>> + * Copyright (C) 2023 Microchip Co. Ltd
+>> + *
+>> + * Author: Daire McNamara <daire.mcnamara@microchip.com>
+>> + */
+>> +
+>> +#include <linux/irqchip/chained_irq.h>
+>> +#include <linux/irqdomain.h>
+>> +#include <linux/msi.h>
+>> +#include <linux/of_address.h>
+>> +#include <linux/of_pci.h>
+>> +#include <linux/pci_regs.h>
+>> +#include <linux/pci-ecam.h>
+>> +#include <linux/platform_device.h>
+> 
+> Do you really require these headers ? Not in this patch,
+> in later patches and that's why every header should be
+> added when it is really needed.
+> 
+> Lorenzo
+> 
+OK, I will change this. thanks.
+>> +
+>> +#include "pcie-plda.h"
+>> +
+>> +void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
+>> +			    phys_addr_t axi_addr, phys_addr_t pci_addr,
+>> +			    size_t size)
+>> +{
+>> +	u32 atr_sz = ilog2(size) - 1;
+>> +	u32 val;
+>> +
+>> +	if (index == 0)
+>> +		val = PCIE_CONFIG_INTERFACE;
+>> +	else
+>> +		val = PCIE_TX_RX_INTERFACE;
+>> +
+>> +	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+>> +	       ATR0_AXI4_SLV0_TRSL_PARAM);
+>> +
+>> +	val = lower_32_bits(axi_addr) | (atr_sz << ATR_SIZE_SHIFT) |
+>> +			    ATR_IMPL_ENABLE;
+>> +	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+>> +	       ATR0_AXI4_SLV0_SRCADDR_PARAM);
+>> +
+>> +	val = upper_32_bits(axi_addr);
+>> +	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+>> +	       ATR0_AXI4_SLV0_SRC_ADDR);
+>> +
+>> +	val = lower_32_bits(pci_addr);
+>> +	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+>> +	       ATR0_AXI4_SLV0_TRSL_ADDR_LSB);
+>> +
+>> +	val = upper_32_bits(pci_addr);
+>> +	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+>> +	       ATR0_AXI4_SLV0_TRSL_ADDR_UDW);
+>> +
+>> +	val = readl(bridge_base_addr + ATR0_PCIE_WIN0_SRCADDR_PARAM);
+>> +	val |= (ATR0_PCIE_ATR_SIZE << ATR0_PCIE_ATR_SIZE_SHIFT);
+>> +	writel(val, bridge_base_addr + ATR0_PCIE_WIN0_SRCADDR_PARAM);
+>> +	writel(0, bridge_base_addr + ATR0_PCIE_WIN0_SRC_ADDR);
+>> +}
+>> +EXPORT_SYMBOL_GPL(plda_pcie_setup_window);
+>> +
+>> +int plda_pcie_setup_iomems(struct pci_host_bridge *bridge,
+>> +			   struct plda_pcie_rp *port)
+>> +{
+>> +	void __iomem *bridge_base_addr = port->bridge_addr;
+>> +	struct resource_entry *entry;
+>> +	u64 pci_addr;
+>> +	u32 index = 1;
+>> +
+>> +	resource_list_for_each_entry(entry, &bridge->windows) {
+>> +		if (resource_type(entry->res) == IORESOURCE_MEM) {
+>> +			pci_addr = entry->res->start - entry->offset;
+>> +			plda_pcie_setup_window(bridge_base_addr, index,
+>> +					       entry->res->start, pci_addr,
+>> +					       resource_size(entry->res));
+>> +			index++;
+>> +		}
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +EXPORT_SYMBOL_GPL(plda_pcie_setup_iomems);
+>> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
+>> index 363fcbbaf6ec..3deefd35fa5a 100644
+>> --- a/drivers/pci/controller/plda/pcie-plda.h
+>> +++ b/drivers/pci/controller/plda/pcie-plda.h
+>> @@ -120,4 +120,9 @@ struct plda_pcie_rp {
+>>  	void __iomem *bridge_addr;
+>>  };
+>>  
+>> +void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
+>> +			    phys_addr_t axi_addr, phys_addr_t pci_addr,
+>> +			    size_t size);
+>> +int plda_pcie_setup_iomems(struct pci_host_bridge *bridge,
+>> +			   struct plda_pcie_rp *port);
+>>  #endif
+>> -- 
+>> 2.17.1
+>> 
 
