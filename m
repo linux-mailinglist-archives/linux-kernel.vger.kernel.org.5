@@ -1,99 +1,101 @@
-Return-Path: <linux-kernel+bounces-12785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42E1D81FA0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 17:51:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D0F381F97D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:10:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 740EE1C22666
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:51:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F2CD1C22932
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:10:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32128F519;
-	Thu, 28 Dec 2023 16:51:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C49F51A;
+	Thu, 28 Dec 2023 15:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XjY3XksU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lyeXkaFp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F99F4EC
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 16:51:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703782278; x=1735318278;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XYOTYJ77YKnUFrVlaJSxWr2I93Md1Ed7ac29wDvu4Fg=;
-  b=XjY3XksUTn12S+n8xcjUpru1jnLXPYoxRNT7Nu23x51x+i1cCCjzVXhy
-   LkwsNAEAwf76U1xOsc7u88BaoKFd0xCKb290HKrLSWPWMOG6uhxCc0y67
-   sRTspJqyA1pI0WmJorqA5eOEKqqIv3bU6RGBXA+KjTXKatgbXu3seSc+0
-   Ul8TuO0DEd3JztLMjevpC6uSkwVr8Aueq+u/Vqwd77NOEZbc0LCIIYjWf
-   RpIoHAtAk24M9nxAAAjQ05nMfPB8t/r5HYuG6rtYVZDLhYsnPiAb9UF/L
-   S6HeKjxTCdw2L9QknUxomETMLh48x9YOGCIr2ShPkqPB0nYM0yh4U7hQe
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="395455929"
-X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
-   d="scan'208";a="395455929"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 08:51:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="848987390"
-X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
-   d="scan'208";a="848987390"
-Received: from noblecat-mobl.ger.corp.intel.com (HELO localhost) ([10.252.35.63])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 08:51:15 -0800
-Date: Thu, 28 Dec 2023 15:04:37 +0100
-From: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-To: Yaxiong Tian <iambestgod@outlook.com>
-Cc: maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Yaxiong Tian <tianyaxiong@kylinos.cn>
-Subject: Re: [PATCH] drm/debugfs: fix memory leak in
- drm_debugfs_remove_files()
-Message-ID: <ZY2AdV1DP6YnSh6g@linux.intel.com>
-References: <PUZPR01MB4775A8F67AE31D6A4927E6B7D59EA@PUZPR01MB4775.apcprd01.prod.exchangelabs.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90AD5F4F0;
+	Thu, 28 Dec 2023 15:09:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89A99C433CA;
+	Thu, 28 Dec 2023 15:09:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703776179;
+	bh=jCI/YMfr+NrtHxo3qHYZpBjBqghFPe+6yiDfEv5LI1s=;
+	h=From:To:Cc:Subject:Date:From;
+	b=lyeXkaFpTNlQ8A459Cp2D3+Mwy+bf2puUUc4xFDxB2odlSXM93Y+D6YBDw+BT8Jsk
+	 JryFCU4yiriOFCQqYIMScdhFTb7e/Qfr9jkTL+Hjsg9+sQGYlABZpI3cR6qymWfdaI
+	 rzRuCg7uIAwWSzUa9gHTu16fhm/009B7VcgKSPxkq2o2pIin+hO7LKju2O0xJ3PFr1
+	 +nqTsv8lVK01XPSJsTslTYjoIsbxQFIuKGFUaCDvoNPhQXhLbAz2juxWFk7Fo7OFSh
+	 F/BSyr/QNdbVmiyHi2NeNgGhrs1lGQDcTNJ8TYJOfaAfQdZrrLB3Mqi3a5/YJS5z5G
+	 5t/wud5LAAnSA==
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Andre Przywara <andre.przywara@arm.com>,
+	Icenowy Zheng <uwu@icenowy.me>
+Cc: devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] arm64: dts: allwinner: h618: Add Sipeed Longan SoM 3H and Pi 3H board
+Date: Thu, 28 Dec 2023 22:56:45 +0800
+Message-Id: <20231228145647.1470-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.40.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PUZPR01MB4775A8F67AE31D6A4927E6B7D59EA@PUZPR01MB4775.apcprd01.prod.exchangelabs.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 28, 2023 at 04:07:40PM +0800, Yaxiong Tian wrote:
-> From: Yaxiong Tian <tianyaxiong@kylinos.cn>
-> 
-> The dentry returned by debugfs_lookup() needs to be released by calling
-> dput() which is missing in drm_debugfs_remove_files(). Fix this by adding
-> dput().
-> 
-> Signed-off-by: Yaxiong Tian <tianyaxiong@kylinos.cn>
-Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Add Sipeed Longan SoM 3H and Longan Pi 3H board support.
 
-> ---
->  drivers/gpu/drm/drm_debugfs.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
-> index f4715a67e340..4d299152c302 100644
-> --- a/drivers/gpu/drm/drm_debugfs.c
-> +++ b/drivers/gpu/drm/drm_debugfs.c
-> @@ -277,6 +277,7 @@ int drm_debugfs_remove_files(const struct drm_info_list *files, int count,
->  
->  		drmm_kfree(minor->dev, d_inode(dent)->i_private);
->  		debugfs_remove(dent);
-> +		dput(dent);
->  	}
->  	return 0;
->  }
-> -- 
-> 2.25.1
-> 
+The Sipeed Longan SoM 3H is a system on module based on the Allwinner
+H618 SoC. The SoM features:
+
+- Four ARM Cortex-A53 cores, Mali-G31 MP2 GPU
+- 2/4 GiB LPDDR4 DRAM SoMs
+- AXP313a PMIC
+- eMMC
+
+The Sipeed Longan PI 3H is a development board based on the above SoM.
+The board features:
+- Longan SoM 3H
+- Raspberry-Pi-1 compatible GPIO header
+- 2 USB 2.0 host port
+- 1 USB 2.0 type C port (power supply + OTG)
+- MicroSD slot
+- 1Gbps Ethernet port (via RTL8211 PHY)
+- HDMI port
+- WiFi/BT chip
+
+NOTE: I know it's too late for v6.8-rc1, but I want to send out this
+series so that the board users can easily get mainline support with two
+additional patches. I will send out v2 once v6.8-rc1 is out.
+
+Jisheng Zhang (2):
+  dt-bindings: arm: sunxi: Add Sipeed Longan Module 3H and Longan Pi 3H
+  arm64: dts: allwinner: h618: Add Sipeed Longan SoM 3H and Pi 3H board
+    support
+
+ .../devicetree/bindings/arm/sunxi.yaml        |   7 +
+ arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+ .../sun50i-h618-longan-module-3h.dtsi         |  82 +++++++++++
+ .../dts/allwinner/sun50i-h618-longanpi-3h.dts | 133 ++++++++++++++++++
+ 4 files changed, 223 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h618-longan-module-3h.dtsi
+ create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h618-longanpi-3h.dts
+
+-- 
+2.40.0
+
 
