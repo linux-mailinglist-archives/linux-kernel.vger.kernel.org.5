@@ -1,31 +1,31 @@
-Return-Path: <linux-kernel+bounces-12344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 117CE81F39F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:35:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5833481F3A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:36:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64CF0B227C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:35:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EACE1F21395
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:36:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90D82909;
-	Thu, 28 Dec 2023 01:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E7A63AD;
+	Thu, 28 Dec 2023 01:35:10 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 931B21FB9
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:34:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7CF6129
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:35:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T0rcq2dZfz1g0nR;
-	Thu, 28 Dec 2023 09:33:31 +0800 (CST)
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T0rd630Bnz1g0DD;
+	Thu, 28 Dec 2023 09:33:46 +0800 (CST)
 Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id 66EB21A0195;
-	Thu, 28 Dec 2023 09:34:36 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 7323C1A01A3;
+	Thu, 28 Dec 2023 09:34:51 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by kwepemm000013.china.huawei.com
  (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Dec
@@ -35,9 +35,9 @@ To: <david.oberhollenzer@sigma-star.at>, <richard@nod.at>,
 	<miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
 	<Tudor.Ambarus@linaro.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils 09/11] tests: ubifs_repair: Add bad images repairing test
-Date: Thu, 28 Dec 2023 09:36:37 +0800
-Message-ID: <20231228013639.2827205-10-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils 10/11] tests: ubifs_repair: Add run_all script
+Date: Thu, 28 Dec 2023 09:36:38 +0800
+Message-ID: <20231228013639.2827205-11-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20231228013639.2827205-1-chengzhihao1@huawei.com>
 References: <20231228013639.2827205-1-chengzhihao1@huawei.com>
@@ -47,343 +47,121 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm000013.china.huawei.com (7.193.23.81)
 
-For kinds of inconsistent UBIFS images(which can simulate corruptions
-caused by some potentional UBIFS bug), check repairing result.
-This testcase mainly checks whether the behavior is in expected after
-repairing specific inconsistent UBIFS image.
+Add run_all script to run all UBIFS repair testcases.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- .gitignore                                         |   1 +
- configure.ac                                       |   3 +-
- tests/ubifs_repair-tests/Makemodule.am             |   3 +-
- .../tests/repair_bad_image.sh.in                   | 274 +++++++++++++++++++++
- 4 files changed, 279 insertions(+), 2 deletions(-)
- create mode 100755 tests/ubifs_repair-tests/tests/repair_bad_image.sh.in
+ .gitignore                                         |  1 +
+ configure.ac                                       |  1 +
+ tests/ubifs_repair-tests/Makemodule.am             |  1 +
+ .../ubifs_repair-tests/ubifs_repair_run_all.sh.in  | 59 ++++++++++++++++++++++
+ 4 files changed, 62 insertions(+)
+ create mode 100755 tests/ubifs_repair-tests/ubifs_repair_run_all.sh.in
 
 diff --git a/.gitignore b/.gitignore
-index dbe63b7..89bca58 100644
+index 89bca58..0d9be34 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -119,6 +119,7 @@ tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
- tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh
- tests/ubifs_repair-tests/tests/cycle_powercut_mount_repair.sh
- tests/ubifs_repair-tests/tests/random_corrupted_repair.sh
-+tests/ubifs_repair-tests/tests/repair_bad_image.sh
- 
- #
- # Files generated by autotools
+@@ -113,6 +113,7 @@ tests/fs-tests/stress/fs_stress01.sh
+ tests/ubi-tests/runubitests.sh
+ tests/ubi-tests/ubi-stress-test.sh
+ tests/ubifs_repair-tests/lib/common.sh
++tests/ubifs_repair-tests/ubifs_repair_run_all.sh
+ tests/ubifs_repair-tests/tests/authentication_refuse.sh
+ tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
+ tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
 diff --git a/configure.ac b/configure.ac
-index 11d34bd..1c1c95b 100644
+index 1c1c95b..94b60c0 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -361,6 +361,7 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
+@@ -356,6 +356,7 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
+ 	tests/ubi-tests/runubitests.sh
+ 	tests/ubi-tests/ubi-stress-test.sh
+ 	tests/ubifs_repair-tests/lib/common.sh
++	tests/ubifs_repair-tests/ubifs_repair_run_all.sh
+ 	tests/ubifs_repair-tests/tests/authentication_refuse.sh
+ 	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
  	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
- 	tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh
- 	tests/ubifs_repair-tests/tests/cycle_powercut_mount_repair.sh
--	tests/ubifs_repair-tests/tests/random_corrupted_repair.sh])
-+	tests/ubifs_repair-tests/tests/random_corrupted_repair.sh
-+	tests/ubifs_repair-tests/tests/repair_bad_image.sh])
- 
- AC_OUTPUT([Makefile])
 diff --git a/tests/ubifs_repair-tests/Makemodule.am b/tests/ubifs_repair-tests/Makemodule.am
-index 6070b0c..f728823 100644
+index f728823..6030a1f 100644
 --- a/tests/ubifs_repair-tests/Makemodule.am
 +++ b/tests/ubifs_repair-tests/Makemodule.am
-@@ -5,7 +5,8 @@ test_SCRIPTS += \
+@@ -1,5 +1,6 @@
+ test_SCRIPTS += \
+ 	tests/ubifs_repair-tests/lib/common.sh \
++	tests/ubifs_repair-tests/ubifs_repair_run_all.sh \
+ 	tests/ubifs_repair-tests/tests/authentication_refuse.sh \
+ 	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh \
  	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh \
- 	tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh \
- 	tests/ubifs_repair-tests/tests/cycle_powercut_mount_repair.sh \
--	tests/ubifs_repair-tests/tests/random_corrupted_repair.sh
-+	tests/ubifs_repair-tests/tests/random_corrupted_repair.sh \
-+	tests/ubifs_repair-tests/tests/repair_bad_image.sh
- 
- test_DATA += \
- 	tests/ubifs_repair-tests/images/good.gz \
-diff --git a/tests/ubifs_repair-tests/tests/repair_bad_image.sh.in b/tests/ubifs_repair-tests/tests/repair_bad_image.sh.in
+diff --git a/tests/ubifs_repair-tests/ubifs_repair_run_all.sh.in b/tests/ubifs_repair-tests/ubifs_repair_run_all.sh.in
 new file mode 100755
-index 0000000..ce9cb70
+index 0000000..bb95369
 --- /dev/null
-+++ b/tests/ubifs_repair-tests/tests/repair_bad_image.sh.in
-@@ -0,0 +1,274 @@
++++ b/tests/ubifs_repair-tests/ubifs_repair_run_all.sh.in
+@@ -0,0 +1,59 @@
 +#!/bin/sh
 +# Copyright (c), 2023-2024, Huawei Technologies Co, Ltd.
 +# Author: Zhihao Cheng <chengzhihao1@huawei.com>
 +#
-+# Test Description: Tests whether all inconsistent UBIFS images can be fixed
-+# as expected.
-+# Origin UBIFS image content:
-+# /
-+# ├── corrupt_file (xattr - user.corrupt:123, 2K data)
-+# ├── dir
-+# │   ├── block_dev
-+# │   ├── char_dev
-+# │   ├── dir
-+# │   └── file (content: '123')
-+# ├── hardl_corrupt_file => corrupt_file
-+# └── softl_corrupt_file -> corrupt_file
-+#
-+# Running time: 2min
++# Test Description:
++# Run all testcases under 'tests' directory
 +
-+TESTBINDIR=@TESTBINDIR@
-+source $TESTBINDIR/common.sh
-+
-+CORRUPT_FILE=corrupt_file
-+XATTR_NAME="user.corrupt"
-+XATTR_VAL=123
-+CORRUPT_FILE_MD5=7d2f953e91033c743ab6a801d5ee6e15
-+SOFT_LINK_FILE=softl_corrupt_file
-+HARD_LINK_FILE=hardl_corrupt_file
-+DIR=dir
-+BLOCK_DEV=block_dev
-+CHAR_DEV=char_dev
-+FILE=file
-+FILE_MD5=ba1f2511fc30423bdbb183fe33f3dd0f
-+
-+function repair_image()
++function print_line()
 +{
-+	local img_type=$1;
-+	local img=$2;
-+	local repair_failed=$3;
-+	local file_exist=$4;
-+	local file_nochange=$5
-+	local file_xattr_exist=$6;
-+	local hard_link_exist=$7;
-+	local hard_link_no_change=$8;
-+	local hard_link_xattr_exist=$9;
-+	local soft_link_exist=${10};
-+	local dir_exist=${11};
-+
-+	echo "======================================================================"
-+	echo "repair $img_type, repair_failed:$repair_failed file_exist:$file_exist file_nochange:$file_nochange file_xattr_exist:$file_xattr_exist hard_link_exist:$hard_link_exist hard_link_no_change:$hard_link_no_change:hard_link_xattr_exist $hard_link_xattr_exist:soft_link_exist:$soft_link_exist dir_exist:$dir_exist"
-+
-+	load_mtdram 1 16 || echo "cannot load mtdram"
-+	mtdnum="$(find_mtd_device "$mtdram_patt")"
-+
-+	gzip -f -k -d $TESTBINDIR/${img}.gz || fatal "gzip failed"
-+	flash_eraseall /dev/mtd$mtdnum
-+	dd if=$TESTBINDIR/$img of=/dev/mtd$mtdnum bs=1M
-+	rm -f $TESTBINDIR/$img
-+	modprobe ubi mtd="$mtdnum,0" fm_autoconvert || fatal "modprobe ubi fail"
-+	modprobe ubifs || fatal "modprobe ubifs fail"
-+
-+	echo 'format "UBIFS DBG repair" +pflmt' > /sys/kernel/debug/dynamic_debug/control
-+	echo "$DEV" > /sys/kernel/debug/ubifs/repair_fs
-+	ret=$?
-+	check_memleak
-+	if [[ $ret != 0 ]]; then
-+		if [[ $repair_failed == 0 ]]; then
-+			fatal "repair failed, but expect success"
-+		fi
-+		echo "repair failed is expected, skip"
-+
-+		modprobe -r ubifs
-+		modprobe -r ubi
-+		modprobe -r mtdram
-+		echo "----------------------------------------------------------------------"
-+
-+		return;
-+	else
-+		if [[ $repair_failed != 0 ]]; then
-+			fatal "repair success, but expect failure"
-+		fi
-+	fi
-+
-+	dmesg -c > /dev/null # repairing could reproduce error messages
-+
-+	enable_chkfs
-+
-+	mount_ubifs $DEV $MNT
-+	ret=$?
-+	if [[ $ret != 0 ]]; then
-+		fatal "mount failed $ret"
-+	fi
-+
-+	du -sh $MNT > /dev/null  # Make sure all files are accessible
-+	ret=$?
-+	if [[ $ret != 0 ]]; then
-+		fatal "cannot access all files $ret"
-+	fi
-+
-+	if [[ $file_exist == 1 ]]; then
-+		if ! [ -f $MNT/$CORRUPT_FILE ]; then
-+			fatal "$MNT/$CORRUPT_FILE is lost"
-+		fi
-+	else
-+		if [ -f $MNT/$CORRUPT_FILE ]; then
-+			fatal "$MNT/$CORRUPT_FILE should not exist"
-+		fi
-+	fi
-+
-+	md5_after=`md5sum $MNT/$CORRUPT_FILE 2>/dev/null | awk '{print $1}'`
-+	if [[ $file_nochange == 1 ]]; then
-+		if [[ $CORRUPT_FILE_MD5 != $md5_after ]]; then
-+			fatal "content changed for $MNT/$CORRUPT_FILE"
-+		fi
-+	else
-+		if [[ $CORRUPT_FILE_MD5 == $md5_after ]]; then
-+			fatal "content not changed for $MNT/$CORRUPT_FILE"
-+		fi
-+	fi
-+
-+	xattr=`getfattr -n $XATTR_NAME $MNT/$CORRUPT_FILE 2>/dev/null | grep $XATTR_NAME | awk -F '=' '{ print $2 }'`
-+	if [[ $file_xattr_exist == 1 ]]; then
-+		if ! [[ "$xattr" =~ "$XATTR_VAL" ]]; then
-+			fatal "wrong xattr $xattr for $MNT/$CORRUPT_DENT_NAME"
-+		fi
-+	else
-+		if [[ "$xattr" =~ "$XATTR_VAL" ]]; then
-+			fatal "xattr $xattr for $MNT/$CORRUPT_DENT_NAME should not exist"
-+		fi
-+	fi
-+
-+	if [[ $hard_link_exist == 1 ]]; then
-+		if ! [ -f $MNT/$HARD_LINK_FILE ]; then
-+			fatal "$MNT/$HARD_LINK_FILE should is lost"
-+		fi
-+	else
-+		if [ -f $MNT/$HARD_LINK_FILE ]; then
-+			fatal "$MNT/$HARD_LINK_FILE should not exist"
-+		fi
-+	fi
-+
-+	md5_after=`md5sum $MNT/$HARD_LINK_FILE 2>/dev/null | awk '{print $1}'`
-+	if [[ $hard_link_no_change == 1 ]]; then
-+		if [[ $CORRUPT_FILE_MD5 != $md5_after ]]; then
-+			fatal "content changed for $MNT/$HARD_LINK_FILE"
-+		fi
-+	else
-+		if [[ $CORRUPT_FILE_MD5 == $md5_after ]]; then
-+			fatal "content not changed for $MNT/$HARD_LINK_FILE"
-+		fi
-+	fi
-+
-+	xattr=`getfattr -n $XATTR_NAME $MNT/$HARD_LINK_FILE 2>/dev/null | grep $XATTR_NAME | awk -F '=' '{ print $2 }'`
-+	if [[ $hard_link_xattr_exist == 1 ]]; then
-+		if ! [[ "$xattr" =~ "$XATTR_VAL" ]]; then
-+			fatal "wrong xattr $xattr for $MNT/$HARD_LINK_FILE"
-+		fi
-+	else
-+		if [[ "$xattr" =~ "$XATTR_VAL" ]]; then
-+			fatal "xattr $xattr for $MNT/$HARD_LINK_FILE should not exist"
-+		fi
-+	fi
-+
-+	link=`stat -c %N $MNT/$SOFT_LINK_FILE 2>/dev/null | grep $SOFT_LINK_FILE | grep $CORRUPT_FILE`
-+	if [[ $soft_link_exist == 1 ]]; then
-+		if [[ "$link" == "" ]]; then
-+			fatal "$MNT/$SOFT_LINK_FILE is lost"
-+		fi
-+	else
-+		if [[ "$link" != "" ]]; then
-+			fatal "$MNT/$SOFT_LINK_FILE should not exist"
-+		fi
-+	fi
-+
-+	if [[ $dir_exist == 1 ]]; then
-+		if ! [ -d $MNT/$DIR ]; then
-+			fatal "$MNT/$DIR is lost"
-+		fi
-+		if ! [ -d $MNT/$DIR/$DIR ]; then
-+			fatal "$MNT/$DIR/$DIR is lost"
-+		fi
-+		if ! [ -f $MNT/$DIR/$FILE ]; then
-+			fatal "$MNT/$DIR/$FILE is lost"
-+		fi
-+		f_md5=`md5sum $MNT/$DIR/$FILE 2>/dev/null | awk '{print $1}'`
-+		if [[ $FILE_MD5 != $f_md5 ]]; then
-+			fatal "content changed for $MNT/$DIR/$FILE"
-+		fi
-+		if ! [ -b $MNT/$DIR/$BLOCK_DEV ]; then
-+			fatal "$MNT/$DIR/$BLOCK_DEV is lost"
-+		fi
-+		major=`stat -c %t $MNT/$DIR/$BLOCK_DEV`
-+		minor=`stat -c %T $MNT/$DIR/$BLOCK_DEV`
-+		if [[ $major != 1 ]] || [[ $minor != 2 ]]; then
-+			echo "major/minor changed for $MNT/$DIR/$BLOCK_DEV"
-+		fi
-+		if ! [ -c $MNT/$DIR/$CHAR_DEV ]; then
-+			fatal "$MNT/$DIR/$CHAR_DEV is lost"
-+		fi
-+		major=`stat -c %t $MNT/$DIR/$CHAR_DEV`
-+		minor=`stat -c %T $MNT/$DIR/$CHAR_DEV`
-+		if [[ $major != 0 ]] || [[ $minor != 1 ]]; then
-+			echo "major/minor changed for $MNT/$DIR/$CHAR_DEV"
-+		fi
-+	else
-+		if [ -d $MNT/$DIR ]; then
-+			fatal "$MNT/$DIR should not exist"
-+		fi
-+	fi
-+
-+	umount $MNT
-+	res=$?
-+	if [[ $res != 0 ]]
-+	then
-+		fatal "unmount fail $res"
-+	fi
-+
-+	disable_chkfs
-+
-+	check_err_msg
-+
-+	modprobe -r ubifs
-+	modprobe -r ubi
-+	modprobe -r mtdram
-+
-+	echo "----------------------------------------------------------------------"
++	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
++	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 +}
 +
-+start_t=$(date +%s)
-+echo "Do inconsistent UBIFS images repairing test"
-+repair_image "good image" good 0 1 1 1 1 1 1 1 1
-+repair_image "bad sb fanout image" sb_fanout 1 1 1 1 1 1 1 1 1
-+repair_image "bad sb fmt_version image" sb_fmt_version 1 1 1 1 1 1 1 1 1
-+repair_image "bad sb leb_size image" sb_leb_size 1 1 1 1 1 1 1 1 1
-+repair_image "bad sb log_lebs image" sb_log_lebs 1 1 1 1 1 1 1 1 1
-+repair_image "bad sb min_io_size image" sb_min_io_size 1 1 1 1 1 1 1 1 1
-+repair_image "bad master highest_inum image" master_highest_inum 0 1 1 1 1 1 1 1 1
-+repair_image "bad master lpt image" master_lpt 0 1 1 1 1 1 1 1 1
-+repair_image "bad master tnc image" master_tnc 0 1 1 1 1 1 1 1 1
-+repair_image "bad master total_dead image" master_total_dead 0 1 1 1 1 1 1 1 1
-+repair_image "bad master total_dirty image" master_total_dirty 0 1 1 1 1 1 1 1 1
-+repair_image "bad master total_free image" master_total_free 0 1 1 1 1 1 1 1 1
-+repair_image "bad log image" log 0 1 1 1 1 1 1 1 1
-+repair_image "bad lpt dirty image" lpt_dirty 0 1 1 1 1 1 1 1 1
-+repair_image "bad lpt lpt_flags image" lpt_flags 0 1 1 1 1 1 1 1 1
-+repair_image "bad lpt free image" lpt_free 0 1 1 1 1 1 1 1 1
-+repair_image "bad lpt pos image" lpt_pos 0 1 1 1 1 1 1 1 1
-+repair_image "bad tnc lv0 key image" tnc_lv0_key 0 1 1 1 1 1 1 1 1
-+repair_image "bad tnc lv0 len image" tnc_lv0_len 0 1 1 1 1 1 1 1 1
-+repair_image "bad tnc lv0 pos image" tnc_lv0_pos 0 1 1 1 1 1 1 1 1
-+repair_image "bad tnc non-leaf key image" tnc_noleaf_key 0 1 1 1 1 1 1 1 1
-+repair_image "bad tnc non-leaf len image" tnc_noleaf_len 0 1 1 1 1 1 1 1 1
-+repair_image "bad tnc non-leaf pos image" tnc_noleaf_pos 0 1 1 1 1 1 1 1 1
-+repair_image "bad inode data image" inode_data 0 1 0 1 1 0 1 1 1
-+repair_image "bad inode mode image" inode_mode 0 1 1 1 1 1 1 0 1
-+repair_image "bad inode nlink image" inode_nlink 0 1 1 1 1 1 1 1 1
-+repair_image "bad inode size image" inode_size 0 1 1 1 1 1 1 1 1
-+repair_image "bad inode xattr_cnt image" inode_xcnt 0 1 1 1 1 1 1 1 1
-+repair_image "bad softlink data_len image" soft_link_data_len 0 1 1 1 1 1 1 0 1
-+repair_image "bad dentry key image" dentry_key 0 0 0 0 1 1 1 1 1
-+repair_image "bad dentry nlen image" dentry_nlen 0 0 0 0 1 1 1 1 1
-+repair_image "bad dentry type image" dentry_type 0 0 0 0 1 1 1 1 1
-+repair_image "bad xattr inode flags image" xinode_flags 0 1 1 0 1 1 0 1 1
-+repair_image "bad xattr inode key image" xinode_key 0 1 1 0 1 1 0 1 1
-+repair_image "bad xattr inode mode image" xinode_mode 0 1 1 0 1 1 0 1 1
-+repair_image "bad xattr dentry key image" xentry_key 0 1 1 0 1 1 0 1 1
-+repair_image "bad xattr dentry nlen image" xentry_nlen 0 1 1 0 1 1 0 1 1
-+repair_image "bad xattr dentry type image" xentry_type 0 1 1 0 1 1 0 1 1
-+repair_image "bad dir image" dir_lost 0 1 1 1 1 1 1 1 0
-+repair_image "bad root dir image" root_dir 0 0 0 0 0 0 0 0 0
-+end_t=$(date +%s)
-+time_cost=$(( end_t - start_t ))
-+echo "Success, cost $time_cost seconds"
++TESTBINDIR=@TESTBINDIR@
++
++print_line
++$TESTBINDIR/authentication_refuse.sh
++if [[ $? != 0 ]]; then
++	echo "authentication_refuse failed"
++	exit 1
++fi
++print_line
++$TESTBINDIR/powercut_repair_mount.sh
++if [[ $? != 0 ]]; then
++	echo "powercut_repair_mount failed"
++	exit 1
++fi
++print_line
++$TESTBINDIR/cycle_corrupted_repair_fault_inject.sh
++if [[ $? != 0 ]]; then
++	echo "cycle_corrupted_repair_fault_inject failed"
++	exit 1
++fi
++print_line
++$TESTBINDIR/repair_bad_image.sh
++if [[ $? != 0 ]]; then
++	echo "repair_bad_image failed"
++	exit 1
++fi
++print_line
++$TESTBINDIR/random_corrupted_repair.sh
++if [[ $? != 0 ]]; then
++	echo "random_corrupted_repair failed"
++	exit 1
++fi
++print_line
++$TESTBINDIR/cycle_powercut_mount_repair.sh
++if [[ $? != 0 ]]; then
++	echo "cycle_powercut_mount_repair failed"
++	exit 1
++fi
++print_line
++$TESTBINDIR/cycle_mount_repair_check.sh
++if [[ $? != 0 ]]; then
++	echo "cycle_mount_repair_check failed"
++	exit 1
++fi
++
 +exit 0
 -- 
 2.13.6
