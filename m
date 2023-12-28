@@ -1,137 +1,114 @@
-Return-Path: <linux-kernel+bounces-12538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F08F81F65B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:40:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAF5B81F67A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:46:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86335B212FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:39:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BB94B2163A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7163D63D2;
-	Thu, 28 Dec 2023 09:39:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="HGtaXCTW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFCBF6FA6;
+	Thu, 28 Dec 2023 09:46:24 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C50A63AD
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 09:39:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3bb53e20a43so4742282b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:39:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703756388; x=1704361188; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cE0PHPIX9V+Td6mS/CWtPhPTpSAbOD3GNR/J2y9uxsE=;
-        b=HGtaXCTWSc5xmYeGmFWcNgiFhRBXHHeg4yGCp0vs0GOy4mpHthhwmQ7ejvF3FBs3+r
-         UDEnutDOzcUCoytdQtiTg1EsQmjM7+AT9Ti4HPreWU/UIe1cdmmNtiHkBUoa/GE7kIlK
-         fZtczkp3dDgOm0KScLJspmINHrYqVYpV49ykE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703756388; x=1704361188;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cE0PHPIX9V+Td6mS/CWtPhPTpSAbOD3GNR/J2y9uxsE=;
-        b=hhjblNQIar//V12AuTwLNgQQ2NkmBPkl8mTtARNBn90UfJMnNLtdBXWaxJtoM/T51v
-         SUgsyBtRESCGyuRF54+xj855U6Kif2uFYvExGbT8/w2DztQEMEiF/Rmy5H4z9tTpSK9s
-         KoyoXv/h6OUextg8yz13dl81JIdUAkOjx7n/njYJ4aWMGYjVRDfCzoGXjrEA9H2bLjwN
-         u87uqLJvmVuvBSMprgib9E2KHpa0WMSfc16T5+w7N2+AeH5pAw6IJXjAuR6n4ONIJ5UL
-         6AIh49g9eXqBsmuVjWsPWliNxJ4AaOMn9hOLkqf6OSekLMLSzO4dlZpqWDkDRJ84BJ0j
-         o/mA==
-X-Gm-Message-State: AOJu0YxcCZZ3yCAf3CQwBAv8yq4bOSmcSu92A386hv9xTarJyOaaG+5P
-	eKYxLELWGzeg2ZQ8DdtfpK1liBzmSpP+
-X-Google-Smtp-Source: AGHT+IGbTuminLgcOnQUlBuq/CiKyVma7NOCX/U/Njm22uBcvNNUExq8KzkUlA1MXS1N922Upoikog==
-X-Received: by 2002:a05:6358:340f:b0:174:dc11:4827 with SMTP id h15-20020a056358340f00b00174dc114827mr5349757rwd.51.1703756388166;
-        Thu, 28 Dec 2023 01:39:48 -0800 (PST)
-Received: from localhost ([2401:fa00:8f:203:5411:cc6a:8ad4:c73c])
-        by smtp.gmail.com with ESMTPSA id rs16-20020a17090b2b9000b00286da7407f2sm17910570pjb.7.2023.12.28.01.39.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Dec 2023 01:39:47 -0800 (PST)
-From: Hidenori Kobayashi <hidenorik@chromium.org>
-To: Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Bingbu Cao <bingbu.cao@intel.com>,
-	Tianshu Qiu <tian.shu.qiu@intel.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Hidenori Kobayashi <hidenorik@chromium.org>,
-	linux-media@vger.kernel.org,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] media: staging: ipu3-imgu: Set fields before media_entity_pads_init()
-Date: Thu, 28 Dec 2023 18:39:25 +0900
-Message-ID: <20231228093926.748001-1-hidenorik@chromium.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB69163CD
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 09:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Subject: [PATCH v5 0/5] mm/zswap: dstmem reuse optimizations and cleanups
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-b4-tracking: H4sIAMVDjWUC/33NTQrCMBAF4KtI1kby15q48h7iYpIZbcC20tSKSu/u4FK0q+E9eN+8RKEhUxG71U
+ sMNOWS+45DtV6J1EB3JpmRszDKWG20lc9yh6vEMrbUSvTGn6raWmVR8CRCIRkH6FLDo+52uXDZ5DL2
+ w+PzYtJ8Dn+0SUslfai3DNYBldvHx0jIGm1S34ojY5NZAgwDCFBhAHIatr8AuwRYBhxBUiEGR4l+AW 4JcAycjPFRVQHRh29gnuc3d8znDnQBAAA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <zhouchengming@bytedance.com>
+Date: Thu, 28 Dec 2023 09:45:41 +0000
+Message-Id: <20231213-zswap-dstmem-v5-0-9382162bbf05@bytedance.com>
+To: Barry Song <21cnbao@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Dan Streetman <ddstreet@ieee.org>, Vitaly Wool <vitaly.wool@konsulko.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Chris Li <chriscli@google.com>, Seth Jennings <sjenning@redhat.com>
+Cc: Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>, Chris Li <chrisl@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, Chengming Zhou <zhouchengming@bytedance.com>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703756775; l=2769;
+ i=zhouchengming@bytedance.com; s=20231204; h=from:subject:message-id;
+ bh=HVI1JIYzdU7odrUyugqLS5ZpMBpfAXLpq1+kutx4nKw=;
+ b=0ZIIj3q0AvnJDzfu1QIRATwdEZ4lGT8Sp64+BP+0MmtVvY8NBjuizS6I0A5yqJURcKS/GmKSh
+ HqmUevQo/cEDsrYYuZujFQpKuvKBfv4KtWL89rCYgYtpKJ4J0+pifkM
+X-Developer-Key: i=zhouchengming@bytedance.com; a=ed25519;
+ pk=xFTmRtMG3vELGJBUiml7OYNdM393WOMv0iWWeQEVVdA=
+X-Migadu-Flow: FLOW_OUT
 
-The pad's flags is checked in media_entity_pads_init(), so it has to be
-initialized beforehand. The ops initialization is also moved together
-for readability.
+Hi everyone,
 
-Signed-off-by: Hidenori Kobayashi <hidenorik@chromium.org>
+Changes in v5:
+- Drop the first patch and change to use 2 pages for acomp_ctx buffer.
+  Related report link: https://lore.kernel.org/lkml/0000000000000b05cd060d6b5511@google.com/
+- Add comment why we need 2 pages for compression in the last patch.
+- Link to v4: https://lore.kernel.org/r/20231213-zswap-dstmem-v4-0-f228b059dd89@bytedance.com
+
+Changes in v4:
+- Collect Reviewed-by and Acked-by tags.
+- Fold in the comment fix in zswap_writeback_entry() from Yosry Ahmed.
+- Add patch to change per-cpu mutex and dstmem to per-acomp_ctx.
+- Just rename crypto_acomp_ctx->dstmem field to buffer.
+- Link to v3: https://lore.kernel.org/r/20231213-zswap-dstmem-v3-0-4eac09b94ece@bytedance.com
+
+Changes in v3:
+- Collect Reviewed-by tag.
+- Drop the __zswap_store() refactoring part.
+- Link to v2: https://lore.kernel.org/r/20231213-zswap-dstmem-v2-0-daa5d9ae41a7@bytedance.com
+
+Changes in v2:
+- Add more changelog and test data about changing dstmem to one page.
+- Reorder patches to put dstmem reusing and __zswap_load() refactoring
+  together, still refactor after dstmem reusing since we don't want
+  to handle __zswap_load() failure due to memory allocation failure
+  in zswap_writeback_entry().
+- Append a patch to directly use percpu mutex and buffer in load/store
+  and refactor out __zswap_store() to simplify zswap_store().
+- Link to v1: https://lore.kernel.org/r/20231213-zswap-dstmem-v1-0-896763369d04@bytedance.com
+
+This series is split from [1] to only include zswap dstmem reuse
+optimizations and cleanups, the other part of rbtree breakdown will
+be deferred to retest after the rbtree converted to xarray.
+
+And the problem this series tries to optimize is that zswap_load()
+and zswap_writeback_entry() have to malloc a temporary memory to
+support !zpool_can_sleep_mapped(). We can avoid it by reusing the
+percpu crypto_acomp_ctx->dstmem, which is also used by zswap_store()
+and protected by the same percpu crypto_acomp_ctx->mutex.
+
+[1] https://lore.kernel.org/all/20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com/
+
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
- drivers/staging/media/ipu3/ipu3-v4l2.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Chengming Zhou (5):
+      mm/zswap: reuse dstmem when decompress
+      mm/zswap: refactor out __zswap_load()
+      mm/zswap: cleanup zswap_load()
+      mm/zswap: cleanup zswap_writeback_entry()
+      mm/zswap: change per-cpu mutex and buffer to per-acomp_ctx
 
-diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
-index a66f034380c0..3df58eb3e882 100644
---- a/drivers/staging/media/ipu3/ipu3-v4l2.c
-+++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
-@@ -1069,6 +1069,11 @@ static int imgu_v4l2_subdev_register(struct imgu_device *imgu,
- 	struct imgu_media_pipe *imgu_pipe = &imgu->imgu_pipe[pipe];
- 
- 	/* Initialize subdev media entity */
-+	imgu_sd->subdev.entity.ops = &imgu_media_ops;
-+	for (i = 0; i < IMGU_NODE_NUM; i++) {
-+		imgu_sd->subdev_pads[i].flags = imgu_pipe->nodes[i].output ?
-+			MEDIA_PAD_FL_SINK : MEDIA_PAD_FL_SOURCE;
-+	}
- 	r = media_entity_pads_init(&imgu_sd->subdev.entity, IMGU_NODE_NUM,
- 				   imgu_sd->subdev_pads);
- 	if (r) {
-@@ -1076,11 +1081,6 @@ static int imgu_v4l2_subdev_register(struct imgu_device *imgu,
- 			"failed initialize subdev media entity (%d)\n", r);
- 		return r;
- 	}
--	imgu_sd->subdev.entity.ops = &imgu_media_ops;
--	for (i = 0; i < IMGU_NODE_NUM; i++) {
--		imgu_sd->subdev_pads[i].flags = imgu_pipe->nodes[i].output ?
--			MEDIA_PAD_FL_SINK : MEDIA_PAD_FL_SOURCE;
--	}
- 
- 	/* Initialize subdev */
- 	v4l2_subdev_init(&imgu_sd->subdev, &imgu_subdev_ops);
-@@ -1177,15 +1177,15 @@ static int imgu_v4l2_node_setup(struct imgu_device *imgu, unsigned int pipe,
- 	}
- 
- 	/* Initialize media entities */
-+	node->vdev_pad.flags = node->output ?
-+		MEDIA_PAD_FL_SOURCE : MEDIA_PAD_FL_SINK;
-+	vdev->entity.ops = NULL;
- 	r = media_entity_pads_init(&vdev->entity, 1, &node->vdev_pad);
- 	if (r) {
- 		dev_err(dev, "failed initialize media entity (%d)\n", r);
- 		mutex_destroy(&node->lock);
- 		return r;
- 	}
--	node->vdev_pad.flags = node->output ?
--		MEDIA_PAD_FL_SOURCE : MEDIA_PAD_FL_SINK;
--	vdev->entity.ops = NULL;
- 
- 	/* Initialize vbq */
- 	vbq->type = node->vdev_fmt.type;
+ include/linux/cpuhotplug.h |   1 -
+ mm/zswap.c                 | 251 ++++++++++++++-------------------------------
+ 2 files changed, 76 insertions(+), 176 deletions(-)
+---
+base-commit: 1f242c1964cf9b8d663a2fd72159b296205a8126
+change-id: 20231213-zswap-dstmem-d828f563303d
+
+Best regards,
 -- 
-2.43.0.472.g3155946c3a-goog
-
+Chengming Zhou <zhouchengming@bytedance.com>
 
