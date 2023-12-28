@@ -1,222 +1,215 @@
-Return-Path: <linux-kernel+bounces-12818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8A2B81FA65
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 18:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 829A581FA73
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 19:05:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FAED281A18
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 17:45:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BB66283A50
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 18:05:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 126E4F9E9;
-	Thu, 28 Dec 2023 17:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1015CF9E9;
+	Thu, 28 Dec 2023 18:04:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="qBrGohN7"
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="Jhe4BN41"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA592F9CD
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 17:45:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40d4a7f0c4dso54209505e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 09:45:34 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9665AF9D1
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 18:04:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1703785533; x=1704390333; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=t17zhnvUZMrwPe4M90D7rizbLoQ1mPsaQ/6pYkn8TPU=;
-        b=qBrGohN71R+JQBJd22bnE4v8kJEYC5En0f8Pfn/rYOszoo9nOohLIXOaD50SS6RFAP
-         MxMtDGBXDEQT48PcLzmuFp1lyT3J1kjdjvW7u/KVyHYwj6/RDK10Ys54RipesWkdYuS0
-         KzEzNwE3RLwEczHjoyc3kzEserb090ehsL+Dr/SYGM/33aB1RQ9huJgszbwhvcZobRmn
-         iClEsUo3oi2gULgWWFcWcVNxYx4P+Ebfm6ISNsW8PoEXTEsULB6b7Xm/ALg8oi6w5+mz
-         oXbnZ9unNnznVeHLQ3J/3bO5QRWRGnDvkA2WTBNAMgMaogC8QAlfemuB5xXuSg3E/FhD
-         ILlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703785533; x=1704390333;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t17zhnvUZMrwPe4M90D7rizbLoQ1mPsaQ/6pYkn8TPU=;
-        b=EXDx9sYkeKUSr8wUaCWhvp0BHWZ3NORI2slEz5mj/W/mtWkfCyKXwonlTSpNhffUB8
-         GJ+oaPxuYwyNndirTxR9jk6Tg0bKCU6LIxZS96R5fDiu1MJ6Pm785DqVoHHeceDt8uVK
-         ai0ApkAkQb+qBP+Qhh9q1x1iXUpDhtcJtZ+34x93GHF5XdXi9hZeUizdT+h8iKY/N0HK
-         105iq3ygrknLaTu+7UuetQiNO/SvPXfzANprFlZSHnPLqlPOMZo25RcNet6krev0za87
-         40rxouEaSw7MBDz1BH+rCj26tt1qBizX2T8W8AjiiTANBDAVdncmBU4xEZLbO2iAozUl
-         O+kA==
-X-Gm-Message-State: AOJu0Yy2pBfUl8LsyZc0RdO9EUcSkwA/nVQ2MVNjm6q1bsnoCXS4H2KW
-	hu5v7nX1fT1MiD1PozCnzWY2+jgNcx/xokwN7TvhhTqVujc=
-X-Google-Smtp-Source: AGHT+IFll7vT6kM9borH5xvYjMHoCPQmIe/6bYQfqRFdoeP0QrW+l0VDdEWLy2iioeMbz2VHA3QEdA==
-X-Received: by 2002:a05:600c:19c8:b0:40d:5f64:3498 with SMTP id u8-20020a05600c19c800b0040d5f643498mr1297942wmq.59.1703785532897;
-        Thu, 28 Dec 2023 09:45:32 -0800 (PST)
-Received: from airbuntu (host109-154-238-212.range109-154.btcentralplus.com. [109.154.238.212])
-        by smtp.gmail.com with ESMTPSA id q11-20020a05600c46cb00b0040d2d33312csm28200226wmo.2.2023.12.28.09.45.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Dec 2023 09:45:32 -0800 (PST)
-Date: Thu, 28 Dec 2023 17:45:31 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Lukasz Luba <lukasz.luba@arm.com>
-Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-	rafael@kernel.org, dietmar.eggemann@arm.com, rui.zhang@intel.com,
-	amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
-	daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
-	len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
-	wvw@google.com
-Subject: Re: [PATCH v5 13/23] PM: EM: Add performance field to struct
- em_perf_state
-Message-ID: <20231228174531.zackmuqatd5c2mup@airbuntu>
-References: <20231129110853.94344-1-lukasz.luba@arm.com>
- <20231129110853.94344-14-lukasz.luba@arm.com>
- <20231217180016.wkkatrjuanuk5x52@airbuntu>
- <315089c4-7a22-4661-8581-2d052c25e158@arm.com>
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=w6vDrnBJEMQiq5BbxSTVBT83/BhcKTZXKED9szAy8zI=;
+  b=Jhe4BN41kIo6dtj//nfUdxVAYT6wv7qODb1crWZbBZ40lmNj4bPhrk/U
+   xG/g2GERKKpNLx+D7rOO9KgW9g3qPx4JzdTPYXp3cEQzD/qh60qO7XMz7
+   NzMGIub8zqCFct2PcxTfqflHiUml3TLu/qC7pU3uNfKZ6xWH0Ea+a7F6W
+   c=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.04,312,1695679200"; 
+   d="scan'208";a="144239018"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 19:04:53 +0100
+Date: Thu, 28 Dec 2023 19:04:52 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: Ben Skeggs <bskeggs@redhat.com>, Lyude Paul <lyude@redhat.com>
+cc: linux-kernel@vger.kernel.org, oe-kbuild-all@lists.linux.dev
+Subject: drivers/gpu/drm/nouveau/nvkm/engine/gr/gv100.c:153:33-34: WARNING
+ opportunity for max() (fwd)
+Message-ID: <527193cf-3497-8e6c-6b15-d156d1ff894f@inria.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <315089c4-7a22-4661-8581-2d052c25e158@arm.com>
+Content-Type: text/plain; charset=US-ASCII
 
-On 12/20/23 08:21, Lukasz Luba wrote:
-> 
-> 
-> On 12/17/23 18:00, Qais Yousef wrote:
-> > On 11/29/23 11:08, Lukasz Luba wrote:
-> > > The performance doesn't scale linearly with the frequency. Also, it may
-> > > be different in different workloads. Some CPUs are designed to be
-> > > particularly good at some applications e.g. images or video processing
-> > > and other CPUs in different. When those different types of CPUs are
-> > > combined in one SoC they should be properly modeled to get max of the HW
-> > > in Energy Aware Scheduler (EAS). The Energy Model (EM) provides the
-> > > power vs. performance curves to the EAS, but assumes the CPUs capacity
-> > > is fixed and scales linearly with the frequency. This patch allows to
-> > > adjust the curve on the 'performance' axis as well.
-> > > 
-> > > Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> > > ---
-> > >   include/linux/energy_model.h | 11 ++++++-----
-> > >   kernel/power/energy_model.c  | 27 +++++++++++++++++++++++++++
-> > >   2 files changed, 33 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-> > > index ae3ccc8b9f44..e30750500b10 100644
-> > > --- a/include/linux/energy_model.h
-> > > +++ b/include/linux/energy_model.h
-> > > @@ -13,6 +13,7 @@
-> > >   /**
-> > >    * struct em_perf_state - Performance state of a performance domain
-> > > + * @performance:	Non-linear CPU performance at a given frequency
-> > >    * @frequency:	The frequency in KHz, for consistency with CPUFreq
-> > >    * @power:	The power consumed at this level (by 1 CPU or by a registered
-> > >    *		device). It can be a total power: static and dynamic.
-> > > @@ -21,6 +22,7 @@
-> > >    * @flags:	see "em_perf_state flags" description below.
-> > >    */
-> > >   struct em_perf_state {
-> > > +	unsigned long performance;
-> > >   	unsigned long frequency;
-> > >   	unsigned long power;
-> > >   	unsigned long cost;
-> > > @@ -207,14 +209,14 @@ void em_free_table(struct em_perf_table __rcu *table);
-> > >    */
-> > >   static inline int
-> > >   em_pd_get_efficient_state(struct em_perf_state *table, int nr_perf_states,
-> > > -			  unsigned long freq, unsigned long pd_flags)
-> > > +			  unsigned long max_util, unsigned long pd_flags)
-> > >   {
-> > >   	struct em_perf_state *ps;
-> > >   	int i;
-> > >   	for (i = 0; i < nr_perf_states; i++) {
-> > >   		ps = &table[i];
-> > > -		if (ps->frequency >= freq) {
-> > > +		if (ps->performance >= max_util) {
-> > >   			if (pd_flags & EM_PERF_DOMAIN_SKIP_INEFFICIENCIES &&
-> > >   			    ps->flags & EM_PERF_STATE_INEFFICIENT)
-> > >   				continue;
-> > > @@ -246,8 +248,8 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
-> > >   				unsigned long allowed_cpu_cap)
-> > >   {
-> > >   	struct em_perf_table *runtime_table;
-> > > -	unsigned long freq, scale_cpu;
-> > >   	struct em_perf_state *ps;
-> > > +	unsigned long scale_cpu;
-> > >   	int cpu, i;
-> > >   	if (!sum_util)
-> > > @@ -274,14 +276,13 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
-> > >   	max_util = map_util_perf(max_util);
-> > >   	max_util = min(max_util, allowed_cpu_cap);
-> > > -	freq = map_util_freq(max_util, ps->frequency, scale_cpu);
-> > >   	/*
-> > >   	 * Find the lowest performance state of the Energy Model above the
-> > >   	 * requested frequency.
-> > >   	 */
-> > >   	i = em_pd_get_efficient_state(runtime_table->state, pd->nr_perf_states,
-> > > -				      freq, pd->flags);
-> > > +				      max_util, pd->flags);
-> > >   	ps = &runtime_table->state[i];
-> > >   	/*
-> > > diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-> > > index 614891fde8df..b5016afe6a19 100644
-> > > --- a/kernel/power/energy_model.c
-> > > +++ b/kernel/power/energy_model.c
-> > > @@ -46,6 +46,7 @@ static void em_debug_create_ps(struct em_perf_state *ps, struct dentry *pd)
-> > >   	debugfs_create_ulong("frequency", 0444, d, &ps->frequency);
-> > >   	debugfs_create_ulong("power", 0444, d, &ps->power);
-> > >   	debugfs_create_ulong("cost", 0444, d, &ps->cost);
-> > > +	debugfs_create_ulong("performance", 0444, d, &ps->performance);
-> > >   	debugfs_create_ulong("inefficient", 0444, d, &ps->flags);
-> > >   }
-> > > @@ -171,6 +172,30 @@ em_allocate_table(struct em_perf_domain *pd)
-> > >   	return table;
-> > >   }
-> > > +static void em_init_performance(struct device *dev, struct em_perf_domain *pd,
-> > > +				struct em_perf_state *table, int nr_states)
-> > > +{
-> > > +	u64 fmax, max_cap;
-> > > +	int i, cpu;
-> > > +
-> > > +	/* This is needed only for CPUs and EAS skip other devices */
-> > > +	if (!_is_cpu_device(dev))
-> > > +		return;
-> > > +
-> > > +	cpu = cpumask_first(em_span_cpus(pd));
-> > > +
-> > > +	/*
-> > > +	 * Calculate the performance value for each frequency with
-> > > +	 * linear relationship. The final CPU capacity might not be ready at
-> > > +	 * boot time, but the EM will be updated a bit later with correct one.
-> > > +	 */
-> > > +	fmax = (u64) table[nr_states - 1].frequency;
-> > > +	max_cap = (u64) arch_scale_cpu_capacity(cpu);
-> > > +	for (i = 0; i < nr_states; i++)
-> > > +		table[i].performance = div64_u64(max_cap * table[i].frequency,
-> > > +						 fmax);
-> > 
-> > Should we sanity check the returned performance value is correct in case we got
-> > passed a malformed table? Maybe the table is sanity checked and sorted before
-> > we get here; I didn't check to be honest.
-> 
-> The frequency values are checked if they have asc sorting order. It's
-> done in the em_create_perf_table(). There is even an error printed and
-> returned, so the EM registration will fail.
-> 
-> > 
-> > I think a warning that performance is always <= max_cap would be helpful in
-> > general as code evolved in the future.
-> 
-> I don't see that need. There are needed checks for frequency values and
-> this simple math formula is just linear. Nothing can happen when
-> frequencies are sorted asc. The whole EAS relies on that fact:
-> 
-> Frequencies are sorted ascending, thus
-> fmax = (u64) table[nr_states - 1].frequency
-> is always true.
 
-I saw that but wasn't sure if this is always guaranteed. It seems it is from
-you're saying, then yes no issues here then.
+
+---------- Forwarded message ----------
+Date: Thu, 28 Dec 2023 19:36:08 +0800
+From: kernel test robot <lkp@intel.com>
+To: oe-kbuild@lists.linux.dev
+Cc: lkp@intel.com, Julia Lawall <julia.lawall@inria.fr>
+Subject: drivers/gpu/drm/nouveau/nvkm/engine/gr/gv100.c:153:33-34: WARNING
+    opportunity for max()
+
+BCC: lkp@intel.com
+CC: oe-kbuild-all@lists.linux.dev
+CC: linux-kernel@vger.kernel.org
+TO: Ben Skeggs <bskeggs@redhat.com>
+CC: Lyude Paul <lyude@redhat.com>
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f5837722ffecbbedf1b1dbab072a063565f0dad1
+commit: 3ffa6f329b610029b44ebd7bc2320a92468a0e42 drm/nouveau/gr/gv100-: port smid mapping code from nvgpu
+date:   1 year, 2 months ago
+:::::: branch date: 11 hours ago
+:::::: commit date: 1 year, 2 months ago
+config: loongarch-randconfig-r062-20231222 (https://download.01.org/0day-ci/archive/20231228/202312281922.kNIoRppR-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Julia Lawall <julia.lawall@inria.fr>
+| Closes: https://lore.kernel.org/r/202312281922.kNIoRppR-lkp@intel.com/
+
+cocci warnings: (new ones prefixed by >>)
+>> drivers/gpu/drm/nouveau/nvkm/engine/gr/gv100.c:153:33-34: WARNING opportunity for max()
+
+vim +153 drivers/gpu/drm/nouveau/nvkm/engine/gr/gv100.c
+
+3ffa6f329b6100 Ben Skeggs 2022-06-01  104
+3ffa6f329b6100 Ben Skeggs 2022-06-01  105  static int
+3ffa6f329b6100 Ben Skeggs 2022-06-01  106  gv100_gr_scg_estimate_perf(struct gf100_gr *gr, unsigned long *gpc_tpc_mask,
+3ffa6f329b6100 Ben Skeggs 2022-06-01  107  			   u32 disable_gpc, u32 disable_tpc, int *perf)
+3ffa6f329b6100 Ben Skeggs 2022-06-01  108  {
+3ffa6f329b6100 Ben Skeggs 2022-06-01  109  	const u32 scale_factor = 512UL;		/* Use fx23.9 */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  110  	const u32 pix_scale = 1024*1024UL;	/* Pix perf in [29:20] */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  111  	const u32 world_scale = 1024UL;		/* World performance in [19:10] */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  112  	const u32 tpc_scale = 1;		/* TPC balancing in [9:0] */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  113  	u32 scg_num_pes = 0;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  114  	u32 min_scg_gpc_pix_perf = scale_factor; /* Init perf as maximum */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  115  	u32 average_tpcs = 0; /* Average of # of TPCs per GPC */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  116  	u32 deviation; /* absolute diff between TPC# and average_tpcs, averaged across GPCs */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  117  	u32 norm_tpc_deviation;	/* deviation/max_tpc_per_gpc */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  118  	u32 tpc_balance;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  119  	u32 scg_gpc_pix_perf;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  120  	u32 scg_world_perf;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  121  	u32 gpc;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  122  	u32 pes;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  123  	int diff;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  124  	bool tpc_removed_gpc = false;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  125  	bool tpc_removed_pes = false;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  126  	u32 max_tpc_gpc = 0;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  127  	u32 num_tpc_mask;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  128  	u32 *num_tpc_gpc;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  129  	int ret = -EINVAL;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  130
+3ffa6f329b6100 Ben Skeggs 2022-06-01  131  	if (!(num_tpc_gpc = kcalloc(gr->gpc_nr, sizeof(*num_tpc_gpc), GFP_KERNEL)))
+3ffa6f329b6100 Ben Skeggs 2022-06-01  132  		return -ENOMEM;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  133
+3ffa6f329b6100 Ben Skeggs 2022-06-01  134  	/* Calculate pix-perf-reduction-rate per GPC and find bottleneck TPC */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  135  	for (gpc = 0; gpc < gr->gpc_nr; gpc++) {
+3ffa6f329b6100 Ben Skeggs 2022-06-01  136  		num_tpc_mask = gpc_tpc_mask[gpc];
+3ffa6f329b6100 Ben Skeggs 2022-06-01  137
+3ffa6f329b6100 Ben Skeggs 2022-06-01  138  		if ((gpc == disable_gpc) && num_tpc_mask & BIT(disable_tpc)) {
+3ffa6f329b6100 Ben Skeggs 2022-06-01  139  			/* Safety check if a TPC is removed twice */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  140  			if (WARN_ON(tpc_removed_gpc))
+3ffa6f329b6100 Ben Skeggs 2022-06-01  141  				goto done;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  142
+3ffa6f329b6100 Ben Skeggs 2022-06-01  143  			/* Remove logical TPC from set */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  144  			num_tpc_mask &= ~BIT(disable_tpc);
+3ffa6f329b6100 Ben Skeggs 2022-06-01  145  			tpc_removed_gpc = true;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  146  		}
+3ffa6f329b6100 Ben Skeggs 2022-06-01  147
+3ffa6f329b6100 Ben Skeggs 2022-06-01  148  		/* track balancing of tpcs across gpcs */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  149  		num_tpc_gpc[gpc] = hweight32(num_tpc_mask);
+3ffa6f329b6100 Ben Skeggs 2022-06-01  150  		average_tpcs += num_tpc_gpc[gpc];
+3ffa6f329b6100 Ben Skeggs 2022-06-01  151
+3ffa6f329b6100 Ben Skeggs 2022-06-01  152  		/* save the maximum numer of gpcs */
+3ffa6f329b6100 Ben Skeggs 2022-06-01 @153  		max_tpc_gpc = num_tpc_gpc[gpc] > max_tpc_gpc ? num_tpc_gpc[gpc] : max_tpc_gpc;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  154
+3ffa6f329b6100 Ben Skeggs 2022-06-01  155  		/*
+3ffa6f329b6100 Ben Skeggs 2022-06-01  156  		 * Calculate ratio between TPC count and post-FS and post-SCG
+3ffa6f329b6100 Ben Skeggs 2022-06-01  157  		 *
+3ffa6f329b6100 Ben Skeggs 2022-06-01  158  		 * ratio represents relative throughput of the GPC
+3ffa6f329b6100 Ben Skeggs 2022-06-01  159  		 */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  160  		scg_gpc_pix_perf = scale_factor * num_tpc_gpc[gpc] / gr->tpc_nr[gpc];
+3ffa6f329b6100 Ben Skeggs 2022-06-01  161  		if (min_scg_gpc_pix_perf > scg_gpc_pix_perf)
+3ffa6f329b6100 Ben Skeggs 2022-06-01  162  			min_scg_gpc_pix_perf = scg_gpc_pix_perf;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  163
+3ffa6f329b6100 Ben Skeggs 2022-06-01  164  		/* Calculate # of surviving PES */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  165  		for (pes = 0; pes < gr->ppc_nr[gpc]; pes++) {
+3ffa6f329b6100 Ben Skeggs 2022-06-01  166  			/* Count the number of TPC on the set */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  167  			num_tpc_mask = gr->ppc_tpc_mask[gpc][pes] & gpc_tpc_mask[gpc];
+3ffa6f329b6100 Ben Skeggs 2022-06-01  168
+3ffa6f329b6100 Ben Skeggs 2022-06-01  169  			if ((gpc == disable_gpc) && (num_tpc_mask & BIT(disable_tpc))) {
+3ffa6f329b6100 Ben Skeggs 2022-06-01  170  				if (WARN_ON(tpc_removed_pes))
+3ffa6f329b6100 Ben Skeggs 2022-06-01  171  					goto done;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  172
+3ffa6f329b6100 Ben Skeggs 2022-06-01  173  				num_tpc_mask &= ~BIT(disable_tpc);
+3ffa6f329b6100 Ben Skeggs 2022-06-01  174  				tpc_removed_pes = true;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  175  			}
+3ffa6f329b6100 Ben Skeggs 2022-06-01  176
+3ffa6f329b6100 Ben Skeggs 2022-06-01  177  			if (hweight32(num_tpc_mask))
+3ffa6f329b6100 Ben Skeggs 2022-06-01  178  				scg_num_pes++;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  179  		}
+3ffa6f329b6100 Ben Skeggs 2022-06-01  180  	}
+3ffa6f329b6100 Ben Skeggs 2022-06-01  181
+3ffa6f329b6100 Ben Skeggs 2022-06-01  182  	if (WARN_ON(!tpc_removed_gpc || !tpc_removed_pes))
+3ffa6f329b6100 Ben Skeggs 2022-06-01  183  		goto done;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  184
+3ffa6f329b6100 Ben Skeggs 2022-06-01  185  	if (max_tpc_gpc == 0) {
+3ffa6f329b6100 Ben Skeggs 2022-06-01  186  		*perf = 0;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  187  		goto done_ok;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  188  	}
+3ffa6f329b6100 Ben Skeggs 2022-06-01  189
+3ffa6f329b6100 Ben Skeggs 2022-06-01  190  	/* Now calculate perf */
+3ffa6f329b6100 Ben Skeggs 2022-06-01  191  	scg_world_perf = (scale_factor * scg_num_pes) / gr->ppc_total;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  192  	deviation = 0;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  193  	average_tpcs = scale_factor * average_tpcs / gr->gpc_nr;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  194  	for (gpc = 0; gpc < gr->gpc_nr; gpc++) {
+3ffa6f329b6100 Ben Skeggs 2022-06-01  195  		diff = average_tpcs - scale_factor * num_tpc_gpc[gpc];
+3ffa6f329b6100 Ben Skeggs 2022-06-01  196  		if (diff < 0)
+3ffa6f329b6100 Ben Skeggs 2022-06-01  197  			diff = -diff;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  198
+3ffa6f329b6100 Ben Skeggs 2022-06-01  199  		deviation += diff;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  200  	}
+3ffa6f329b6100 Ben Skeggs 2022-06-01  201
+3ffa6f329b6100 Ben Skeggs 2022-06-01  202  	deviation /= gr->gpc_nr;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  203
+3ffa6f329b6100 Ben Skeggs 2022-06-01  204  	norm_tpc_deviation = deviation / max_tpc_gpc;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  205
+3ffa6f329b6100 Ben Skeggs 2022-06-01  206  	tpc_balance = scale_factor - norm_tpc_deviation;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  207
+3ffa6f329b6100 Ben Skeggs 2022-06-01  208  	if ((tpc_balance > scale_factor)          ||
+3ffa6f329b6100 Ben Skeggs 2022-06-01  209  	    (scg_world_perf > scale_factor)       ||
+3ffa6f329b6100 Ben Skeggs 2022-06-01  210  	    (min_scg_gpc_pix_perf > scale_factor) ||
+3ffa6f329b6100 Ben Skeggs 2022-06-01  211  	    (norm_tpc_deviation > scale_factor)) {
+3ffa6f329b6100 Ben Skeggs 2022-06-01  212  		WARN_ON(1);
+3ffa6f329b6100 Ben Skeggs 2022-06-01  213  		goto done;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  214  	}
+3ffa6f329b6100 Ben Skeggs 2022-06-01  215
+3ffa6f329b6100 Ben Skeggs 2022-06-01  216  	*perf = (pix_scale * min_scg_gpc_pix_perf) +
+3ffa6f329b6100 Ben Skeggs 2022-06-01  217  		(world_scale * scg_world_perf) +
+3ffa6f329b6100 Ben Skeggs 2022-06-01  218  		(tpc_scale * tpc_balance);
+3ffa6f329b6100 Ben Skeggs 2022-06-01  219  done_ok:
+3ffa6f329b6100 Ben Skeggs 2022-06-01  220  	ret = 0;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  221  done:
+3ffa6f329b6100 Ben Skeggs 2022-06-01  222  	kfree(num_tpc_gpc);
+3ffa6f329b6100 Ben Skeggs 2022-06-01  223  	return ret;
+3ffa6f329b6100 Ben Skeggs 2022-06-01  224  }
+3ffa6f329b6100 Ben Skeggs 2022-06-01  225
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
