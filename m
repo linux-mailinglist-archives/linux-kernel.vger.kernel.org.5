@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-12865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B48DC81FB5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 22:26:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4CB081FB5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 22:26:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70167285D3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 21:26:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D9B81C21DF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 21:26:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30AEC10971;
-	Thu, 28 Dec 2023 21:26:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E751E10967;
+	Thu, 28 Dec 2023 21:26:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FpB9Hx0T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZnNCSJ/M"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 776AD10947;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344F2107BA;
 	Thu, 28 Dec 2023 21:26:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EA8C6C433C8;
-	Thu, 28 Dec 2023 21:26:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0A8A8C433C7;
+	Thu, 28 Dec 2023 21:26:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1703798789;
-	bh=UqvELVeXlXX4Lmsk18Ac7j8rmS8T0tWAFfszcXC+k8U=;
+	bh=wwUHoYtBd+l/dvrkQzEk/EWT4KkFtGnBMOmrOb5rNbc=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=FpB9Hx0TThUo9VtlCbZm6WzugQuyd1mt6zBYSbfK41yp9eqEhBh5fRL798NqG+tow
-	 J0NH18mGstER2HPoN0Y3mlH6s+LAvoE4h03kZpHBSc4PuOdY7j7LlyQOZTozdMGle6
-	 fRT4KhIHLc0C2HaQhu1+pNYVO8vfvG2MEbfv5N3zlyqXwmASbwTtzk22BE31Chf+Tp
-	 +FKuctj5Nl44PwLUc1p4kjXhhEUq7sgdOijWCpbIdkBQLEZ9X1tACvjhXG5mlYnmPj
-	 RFnjhyN2OpwHw/5xcZ0q+TO1e18WIn3PeZz4Js8nZW5HYBVc3V3I42UQethpXN8yYk
-	 Zm7MQd8J7Mlgw==
+	b=ZnNCSJ/MPyJRxmNBPOTxpTbrefK6sxdf7crP9oox/9fWUEjhGFZ6ObT7xmsmumoEv
+	 0mFKXCe/3bVUuUjksxeFw0nxsHjUoeTjO6qxYBahwa4I2MaZrnikaAMhPuVbOk5c2C
+	 jcL1UIDSoM9cEooVHXgFyXzB0GmXZwe5bk2FPB/ndPlJfBB3W7M5Nqds6U75Cbr8vM
+	 W3gkedB9bj2J8oaDzxlpmyeV+r1y3KXE4PF/LZRezTl5LzO6W+X4k5fhskkljLaJgo
+	 SmNFgOR+2Yg9Gn0bN2i+okDUm8oIE3kfSbqyJEbaLH/hweYHvDHnPcah1liBW3+8K5
+	 i6McykWOEjm5g==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D29ADC4314C;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E6FECE333D5;
 	Thu, 28 Dec 2023 21:26:28 +0000 (UTC)
-Subject: Re: [GIT PULL] Kbuild fixes for v6.7-rc8
+Subject: Re: [GIT PULL] more bcachefs fixes for 6.7
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <CAK7LNASh0Y0qyi+vJGbNvvEnGW3-hH=QBf=aEpbtxE2N9JSodg@mail.gmail.com>
-References: <CAK7LNASh0Y0qyi+vJGbNvvEnGW3-hH=QBf=aEpbtxE2N9JSodg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kbuild.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAK7LNASh0Y0qyi+vJGbNvvEnGW3-hH=QBf=aEpbtxE2N9JSodg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v6.7-2
-X-PR-Tracked-Commit-Id: 753547de0daecbdbd1af3618987ddade325d9aaa
+In-Reply-To: <2uukaswjjfuudinozm3igqtfwx2sgkmpwxp7t4jgq2icseoygm@sr3pst2cwvlq>
+References: <2uukaswjjfuudinozm3igqtfwx2sgkmpwxp7t4jgq2icseoygm@sr3pst2cwvlq>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <2uukaswjjfuudinozm3igqtfwx2sgkmpwxp7t4jgq2icseoygm@sr3pst2cwvlq>
+X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-12-27
+X-PR-Tracked-Commit-Id: 7b474c77daddaf89bbb72594737538f4e0dce2fd
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 505e701c0b2cfa9e34811020829759b7663a604c
-Message-Id: <170379878885.15710.251699762534050732.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: eeec2599630ac1ac03db98f3ba976975c72a1427
+Message-Id: <170379878894.15710.480601333610120560.pr-tracker-bot@kernel.org>
 Date: Thu, 28 Dec 2023 21:26:28 +0000
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Fri, 29 Dec 2023 01:46:54 +0900:
+The pull request you sent on Wed, 27 Dec 2023 11:44:50 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v6.7-2
+> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-12-27
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/505e701c0b2cfa9e34811020829759b7663a604c
+https://git.kernel.org/torvalds/c/eeec2599630ac1ac03db98f3ba976975c72a1427
 
 Thank you!
 
