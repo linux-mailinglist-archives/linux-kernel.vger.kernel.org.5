@@ -1,31 +1,31 @@
-Return-Path: <linux-kernel+bounces-12336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D14E81F397
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:33:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06EE281F399
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:34:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9868D1C20F27
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:33:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85C802827A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:34:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62D9137B;
-	Thu, 28 Dec 2023 01:33:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504F61842;
+	Thu, 28 Dec 2023 01:33:45 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E61CA10E3
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF2210E6
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 01:33:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4T0rcL0L0Lz1Q6th;
-	Thu, 28 Dec 2023 09:33:06 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4T0rbK2BGFz29dNf;
+	Thu, 28 Dec 2023 09:32:13 +0800 (CST)
 Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id CF09B18001F;
-	Thu, 28 Dec 2023 09:33:32 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 82ABD140120;
+	Thu, 28 Dec 2023 09:33:33 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by kwepemm000013.china.huawei.com
  (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Dec
@@ -35,10 +35,12 @@ To: <david.oberhollenzer@sigma-star.at>, <richard@nod.at>,
 	<miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
 	<Tudor.Ambarus@linaro.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils 00/11] tests: Add new testcases for ubifs_repair
-Date: Thu, 28 Dec 2023 09:36:28 +0800
-Message-ID: <20231228013639.2827205-1-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils 01/11] tests: Add common libs for ubifs_repair test
+Date: Thu, 28 Dec 2023 09:36:29 +0800
+Message-ID: <20231228013639.2827205-2-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20231228013639.2827205-1-chengzhihao1@huawei.com>
+References: <20231228013639.2827205-1-chengzhihao1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,133 +52,419 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm000013.china.huawei.com (7.193.23.81)
 
-This patchset add new testcases for UBIFS repair.
-Detailed testcases are explained in tests/ubifs_repair-tests/README.txt.
+This is a preparation for adding ubifs_repair testcases. Add some common
+functions, for example: powercut, load_mtdram, mount_ubifs, encryption
+operations, etc.
 
-After testing(fs/ubifs/repair.c):
-Kernel code coverage: 90%
-kernel function coverage: 100%
-
-Zhihao Cheng (11):
-  tests: Add common libs for ubifs_repair test
-  tests: ubifs_repair: Add authentication refusing test
-  tests: ubifs_repair: Add cycle mount+repair test
-  tests: ubifs_repair: Add powercut+repair+mount test
-  tests: ubifs_repair: Add corrupt+repair+fault_inject test
-  tests: ubifs_repair: Add cycle_powercut+repair test
-  tests: ubifs_repair: Add random_corrupt+repair test
-  tests: ubifs_repair: Add corrupted images
-  tests: ubifs_repair: Add bad images repairing test
-  tests: ubifs_repair: Add run_all script
-  tests: ubifs_repair: Add README
-
- .gitignore                                         |   9 +
- Makefile.am                                        |   2 +
- configure.ac                                       |  11 +-
- tests/ubifs_repair-tests/Makemodule.am             |  52 +++
- tests/ubifs_repair-tests/README.txt                | 233 ++++++++++++++
- tests/ubifs_repair-tests/images/dentry_key.gz      | Bin 0 -> 5377 bytes
- tests/ubifs_repair-tests/images/dentry_nlen.gz     | Bin 0 -> 5386 bytes
- tests/ubifs_repair-tests/images/dentry_type.gz     | Bin 0 -> 5384 bytes
- tests/ubifs_repair-tests/images/dir_lost.gz        | Bin 0 -> 5381 bytes
- tests/ubifs_repair-tests/images/good.gz            | Bin 0 -> 5251 bytes
- tests/ubifs_repair-tests/images/inode_data.gz      | Bin 0 -> 5297 bytes
- tests/ubifs_repair-tests/images/inode_mode.gz      | Bin 0 -> 5383 bytes
- tests/ubifs_repair-tests/images/inode_nlink.gz     | Bin 0 -> 5383 bytes
- tests/ubifs_repair-tests/images/inode_size.gz      | Bin 0 -> 5384 bytes
- tests/ubifs_repair-tests/images/inode_xcnt.gz      | Bin 0 -> 5388 bytes
- tests/ubifs_repair-tests/images/log.gz             | Bin 0 -> 5232 bytes
- tests/ubifs_repair-tests/images/lpt_dirty.gz       | Bin 0 -> 5360 bytes
- tests/ubifs_repair-tests/images/lpt_flags.gz       | Bin 0 -> 5361 bytes
- tests/ubifs_repair-tests/images/lpt_free.gz        | Bin 0 -> 5350 bytes
- tests/ubifs_repair-tests/images/lpt_pos.gz         | Bin 0 -> 5374 bytes
- .../images/master_highest_inum.gz                  | Bin 0 -> 5034 bytes
- tests/ubifs_repair-tests/images/master_lpt.gz      | Bin 0 -> 5035 bytes
- tests/ubifs_repair-tests/images/master_tnc.gz      | Bin 0 -> 5024 bytes
- .../ubifs_repair-tests/images/master_total_dead.gz | Bin 0 -> 5033 bytes
- .../images/master_total_dirty.gz                   | Bin 0 -> 5032 bytes
- .../ubifs_repair-tests/images/master_total_free.gz | Bin 0 -> 5030 bytes
- tests/ubifs_repair-tests/images/root_dir.gz        | Bin 0 -> 1298 bytes
- tests/ubifs_repair-tests/images/sb_fanout.gz       | Bin 0 -> 5322 bytes
- tests/ubifs_repair-tests/images/sb_fmt_version.gz  | Bin 0 -> 5326 bytes
- tests/ubifs_repair-tests/images/sb_leb_size.gz     | Bin 0 -> 5324 bytes
- tests/ubifs_repair-tests/images/sb_log_lebs.gz     | Bin 0 -> 5323 bytes
- tests/ubifs_repair-tests/images/sb_min_io_size.gz  | Bin 0 -> 5328 bytes
- .../images/soft_link_data_len.gz                   | Bin 0 -> 5389 bytes
- tests/ubifs_repair-tests/images/tnc_lv0_key.gz     | Bin 0 -> 5414 bytes
- tests/ubifs_repair-tests/images/tnc_lv0_len.gz     | Bin 0 -> 5420 bytes
- tests/ubifs_repair-tests/images/tnc_lv0_pos.gz     | Bin 0 -> 5404 bytes
- tests/ubifs_repair-tests/images/tnc_noleaf_key.gz  | Bin 0 -> 5430 bytes
- tests/ubifs_repair-tests/images/tnc_noleaf_len.gz  | Bin 0 -> 5437 bytes
- tests/ubifs_repair-tests/images/tnc_noleaf_pos.gz  | Bin 0 -> 5418 bytes
- tests/ubifs_repair-tests/images/xentry_key.gz      | Bin 0 -> 5378 bytes
- tests/ubifs_repair-tests/images/xentry_nlen.gz     | Bin 0 -> 5386 bytes
- tests/ubifs_repair-tests/images/xentry_type.gz     | Bin 0 -> 5386 bytes
- tests/ubifs_repair-tests/images/xinode_flags.gz    | Bin 0 -> 5384 bytes
- tests/ubifs_repair-tests/images/xinode_key.gz      | Bin 0 -> 5383 bytes
- tests/ubifs_repair-tests/images/xinode_mode.gz     | Bin 0 -> 5386 bytes
- tests/ubifs_repair-tests/lib/common.sh.in          | 347 +++++++++++++++++++++
- .../tests/authentication_refuse.sh.in              |  69 ++++
- .../cycle_corrupted_repair_fault_inject.sh.in      | 233 ++++++++++++++
- .../tests/cycle_mount_repair_check.sh.in           | 177 +++++++++++
- .../tests/cycle_powercut_mount_repair.sh.in        | 132 ++++++++
- .../tests/powercut_repair_mount.sh.in              | 138 ++++++++
- .../tests/random_corrupted_repair.sh.in            | 205 ++++++++++++
- .../tests/repair_bad_image.sh.in                   | 274 ++++++++++++++++
- .../ubifs_repair-tests/ubifs_repair_run_all.sh.in  |  59 ++++
- 54 files changed, 1940 insertions(+), 1 deletion(-)
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ .gitignore                                |   1 +
+ Makefile.am                               |   1 +
+ configure.ac                              |   3 +-
+ tests/ubifs_repair-tests/Makemodule.am    |   2 +
+ tests/ubifs_repair-tests/lib/common.sh.in | 347 ++++++++++++++++++++++++++++++
+ 5 files changed, 353 insertions(+), 1 deletion(-)
  create mode 100644 tests/ubifs_repair-tests/Makemodule.am
- create mode 100644 tests/ubifs_repair-tests/README.txt
- create mode 100644 tests/ubifs_repair-tests/images/dentry_key.gz
- create mode 100644 tests/ubifs_repair-tests/images/dentry_nlen.gz
- create mode 100644 tests/ubifs_repair-tests/images/dentry_type.gz
- create mode 100644 tests/ubifs_repair-tests/images/dir_lost.gz
- create mode 100644 tests/ubifs_repair-tests/images/good.gz
- create mode 100644 tests/ubifs_repair-tests/images/inode_data.gz
- create mode 100644 tests/ubifs_repair-tests/images/inode_mode.gz
- create mode 100644 tests/ubifs_repair-tests/images/inode_nlink.gz
- create mode 100644 tests/ubifs_repair-tests/images/inode_size.gz
- create mode 100644 tests/ubifs_repair-tests/images/inode_xcnt.gz
- create mode 100644 tests/ubifs_repair-tests/images/log.gz
- create mode 100644 tests/ubifs_repair-tests/images/lpt_dirty.gz
- create mode 100644 tests/ubifs_repair-tests/images/lpt_flags.gz
- create mode 100644 tests/ubifs_repair-tests/images/lpt_free.gz
- create mode 100644 tests/ubifs_repair-tests/images/lpt_pos.gz
- create mode 100644 tests/ubifs_repair-tests/images/master_highest_inum.gz
- create mode 100644 tests/ubifs_repair-tests/images/master_lpt.gz
- create mode 100644 tests/ubifs_repair-tests/images/master_tnc.gz
- create mode 100644 tests/ubifs_repair-tests/images/master_total_dead.gz
- create mode 100644 tests/ubifs_repair-tests/images/master_total_dirty.gz
- create mode 100644 tests/ubifs_repair-tests/images/master_total_free.gz
- create mode 100644 tests/ubifs_repair-tests/images/root_dir.gz
- create mode 100644 tests/ubifs_repair-tests/images/sb_fanout.gz
- create mode 100644 tests/ubifs_repair-tests/images/sb_fmt_version.gz
- create mode 100644 tests/ubifs_repair-tests/images/sb_leb_size.gz
- create mode 100644 tests/ubifs_repair-tests/images/sb_log_lebs.gz
- create mode 100644 tests/ubifs_repair-tests/images/sb_min_io_size.gz
- create mode 100644 tests/ubifs_repair-tests/images/soft_link_data_len.gz
- create mode 100644 tests/ubifs_repair-tests/images/tnc_lv0_key.gz
- create mode 100644 tests/ubifs_repair-tests/images/tnc_lv0_len.gz
- create mode 100644 tests/ubifs_repair-tests/images/tnc_lv0_pos.gz
- create mode 100644 tests/ubifs_repair-tests/images/tnc_noleaf_key.gz
- create mode 100644 tests/ubifs_repair-tests/images/tnc_noleaf_len.gz
- create mode 100644 tests/ubifs_repair-tests/images/tnc_noleaf_pos.gz
- create mode 100644 tests/ubifs_repair-tests/images/xentry_key.gz
- create mode 100644 tests/ubifs_repair-tests/images/xentry_nlen.gz
- create mode 100644 tests/ubifs_repair-tests/images/xentry_type.gz
- create mode 100644 tests/ubifs_repair-tests/images/xinode_flags.gz
- create mode 100644 tests/ubifs_repair-tests/images/xinode_key.gz
- create mode 100644 tests/ubifs_repair-tests/images/xinode_mode.gz
  create mode 100755 tests/ubifs_repair-tests/lib/common.sh.in
- create mode 100755 tests/ubifs_repair-tests/tests/authentication_refuse.sh.in
- create mode 100755 tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh.in
- create mode 100755 tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh.in
- create mode 100755 tests/ubifs_repair-tests/tests/cycle_powercut_mount_repair.sh.in
- create mode 100755 tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in
- create mode 100755 tests/ubifs_repair-tests/tests/random_corrupted_repair.sh.in
- create mode 100755 tests/ubifs_repair-tests/tests/repair_bad_image.sh.in
- create mode 100755 tests/ubifs_repair-tests/ubifs_repair_run_all.sh.in
 
+diff --git a/.gitignore b/.gitignore
+index 8c51ee5..c811883 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -112,6 +112,7 @@ tests/fs-tests/stress/fs_stress00.sh
+ tests/fs-tests/stress/fs_stress01.sh
+ tests/ubi-tests/runubitests.sh
+ tests/ubi-tests/ubi-stress-test.sh
++tests/ubifs_repair-tests/lib/common.sh
+ 
+ #
+ # Files generated by autotools
+diff --git a/Makefile.am b/Makefile.am
+index dd14d96..1454233 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -63,6 +63,7 @@ include tests/jittertest/Makemodule.am
+ include tests/checkfs/Makemodule.am
+ include tests/fs-tests/Makemodule.am
+ include tests/mtd-tests/Makemodule.am
++include tests/ubifs_repair-tests/Makemodule.am
+ endif
+ 
+ if UNIT_TESTS
+diff --git a/configure.ac b/configure.ac
+index cd48bb0..d3d3589 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -354,6 +354,7 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
+ 	tests/fs-tests/stress/fs_stress00.sh
+ 	tests/fs-tests/stress/fs_stress01.sh
+ 	tests/ubi-tests/runubitests.sh
+-	tests/ubi-tests/ubi-stress-test.sh])
++	tests/ubi-tests/ubi-stress-test.sh
++	tests/ubifs_repair-tests/lib/common.sh])
+ 
+ AC_OUTPUT([Makefile])
+diff --git a/tests/ubifs_repair-tests/Makemodule.am b/tests/ubifs_repair-tests/Makemodule.am
+new file mode 100644
+index 0000000..caa503d
+--- /dev/null
++++ b/tests/ubifs_repair-tests/Makemodule.am
+@@ -0,0 +1,2 @@
++test_SCRIPTS += \
++	tests/ubifs_repair-tests/lib/common.sh
+diff --git a/tests/ubifs_repair-tests/lib/common.sh.in b/tests/ubifs_repair-tests/lib/common.sh.in
+new file mode 100755
+index 0000000..656b609
+--- /dev/null
++++ b/tests/ubifs_repair-tests/lib/common.sh.in
+@@ -0,0 +1,347 @@
++#!/bin/sh
++# Copyright (c), 2023-2024, Huawei Technologies Co, Ltd.
++# Author: Zhihao Cheng <chengzhihao1@huawei.com>
++#
++# Provide basic functions.
++# Notice, all loaded modules(mtdram/nandsim/ubi/ubifs) won't be removed
++# if errors occur, it is useful to debug on problem ubifs image.
++
++UBI_NUM=0
++DEV=/dev/ubi0_0
++MNT=/mnt/test_file_system
++TMP_FILE=/tmp/ubi_test_file
++KEY_FILE=/tmp/key
++nandsim_patt="NAND simulator"
++mtdram_patt="mtdram test device"
++
++function fatal()
++{
++	echo "Error: $1" 1>&2
++	exit 1
++}
++
++function cleanup_handler()
++{
++	local ret="$1"
++
++	# Below is magic to exit with correct exit code
++	if [ "$ret" == "0" ]; then
++		umount $MNT >/dev/null 2>&1 ||:
++		modprobe -r ubifs >/dev/null 2>&1 ||:
++		modprobe -r ubi >/dev/null 2>&1 ||:
++		modprobe -r nandsim >/dev/null 2>&1 ||:
++		modprobe -r mtdram >/dev/null 2>&1  ||:
++		exit 0
++	else
++		exit 1
++	fi
++}
++trap 'cleanup_handler $?' EXIT
++trap 'cleanup_handler 1' HUP PIPE INT QUIT TERM
++
++function find_mtd_device()
++{
++	printf "%s" "$(grep "$1" /proc/mtd | sed -e "s/^mtd\([0-9]\+\):.*$/\1/")"
++}
++
++function powercut()
++{
++	dmesg -c > /dev/null
++	echo 1 > /sys/kernel/debug/ubifs/tst_recovery;
++	while true;
++	do
++		msg=`dmesg -c | grep "Power cut emulated"`;
++		if [[ "$msg" != "" ]];
++		then
++			break;
++		fi
++	done
++	echo 0 > /sys/kernel/debug/ubifs/tst_recovery
++}
++
++# Load mtdram with specified size and PEB size
++# Usage: load_mtdram <flash size> <PEB size>
++# 1. Flash size is specified in MiB
++# 2. PEB size is specified in KiB
++function load_mtdram()
++{
++	local size="$1";     shift
++	local peb_size="$1"; shift
++
++	size="$(($size * 1024))"
++	modprobe mtdram total_size="$size" erase_size="$peb_size"
++}
++
++function check_fsstress()
++{
++	cmd=`fsstress | grep "op_name"`
++	if ! [[ "$cmd" =~ "op_name" ]]; then
++		fatal "fsstress is not found"
++	fi
++}
++
++# Check error messages
++function check_err_msg()
++{
++	msg=`dmesg | grep -E "dump_stack|UBIFS error|switched to read-only mode"`;
++	if [[ "$msg" != "" ]]
++	then
++		dmesg
++		fatal "error message detected!"
++	fi
++	dmesg -c > /dev/null
++}
++
++# Check memleak
++function check_memleak()
++{
++	# CONFIG_DEBUG_KMEMLEAK=y
++	if ! [ -f /sys/kernel/debug/kmemleak ]; then
++		echo "kmemleak is not enabled, skip checking"
++		return;
++	fi
++
++	echo scan > /sys/kernel/debug/kmemleak
++	memleak=`cat /sys/kernel/debug/kmemleak`
++	if [[ "$memleak" != "" ]]; then
++		echo $memleak
++		fatal "kmemleak detected!"
++	fi
++}
++
++# Iterate all files under certain dir
++# $1: dir
++# $2: "md5sum" means that need record md5 for regular file, otherwise don't record md5 for regular file
++function read_dir() {
++	for file in `ls -a $1`
++	do
++		cur_f=$1"/"$file
++		if [ -b $cur_f ]
++		then
++			major=`stat -c %t $cur_f`
++			minor=`stat -c %T $cur_f`
++			echo "block $cur_f $major $minor" >> $TMP_FILE
++		elif [ -c $cur_f ]
++		then
++			major=`stat -c %t $cur_f`
++			minor=`stat -c %T $cur_f`
++			echo "char $cur_f $major $minor" >> $TMP_FILE
++		elif [ -L $cur_f ]
++		then
++			link=`stat -c %N $cur_f`
++			echo "symlink $cur_f $link" >> $TMP_FILE
++		elif [ -S $cur_f ]
++		then
++			echo "sock $cur_f" >> $TMP_FILE
++		elif [ -p $cur_f ]
++		then
++			echo "fifo $cur_f" >> $TMP_FILE
++		elif [ -f $cur_f ]
++		then
++			sz=`stat -c %s $cur_f`
++			if [[ "$2" != "md5sum" ]]; then
++				echo "reg $cur_f $sz" >> $TMP_FILE
++			else
++				md5=`md5sum $cur_f | awk '{print $1}'`
++				echo "reg $cur_f $md5 $sz" >> $TMP_FILE
++			fi
++		elif [ -d $cur_f ]
++		then
++			if [[ $file != '.' && $file != '..' ]]
++			then
++				echo "dir $cur_f" >> $TMP_FILE
++				read_dir $1"/"$file $2
++			fi
++		else
++			fatal "record unknown file type $cur_f"
++		fi
++	done
++}
++
++# Check whether there are files lost after repairing UBIFS
++# $1: "md5sum" means need record md5 for regular file, otherwise don't record md5 for regular file
++function parse_dir()
++{
++	while read line
++	do
++		array=(${line//\ / });
++		f_type=${array[0]};
++		cur_f=${array[1]};
++		cur_info=""
++		if [[ "$f_type" =~ "block" ]]
++		then
++			major=`stat -c %t $cur_f`
++			minor=`stat -c %T $cur_f`
++			cur_info="block $cur_f $major $minor"
++		elif [[ "$f_type" =~ "char" ]]
++		then
++			major=`stat -c %t $cur_f`
++			minor=`stat -c %T $cur_f`
++			cur_info="char $cur_f $major $minor"
++		elif [[ "$f_type" =~ "symlink" ]]
++		then
++			link=`stat -c %N $cur_f`
++			cur_info="symlink $cur_f $link"
++		elif [[ "$f_type" =~ "sock" ]]
++		then
++			cur_info="sock $cur_f"
++		elif [[ "$f_type" =~ "fifo" ]]
++		then
++			cur_info="fifo $cur_f"
++		elif [[ "$f_type" =~ "reg" ]]
++		then
++			sz=`stat -c %s $cur_f`
++			if [[ "$1" != "md5sum" ]]; then
++				cur_info="reg $cur_f $sz"
++			else
++				md5=`md5sum $cur_f | awk '{print $1}'`
++				cur_info="reg $cur_f $md5 $sz"
++			fi
++		elif [[ "$f_type" =~ "dir" ]]
++		then
++			cur_info="dir $cur_f"
++		else
++			fatal "parse unknown file type $cur_f"
++		fi
++		if [[ "$cur_info" != "$line" ]]
++		then
++			fatal "current info $cur_info, but expect $line"
++		fi
++	done < $TMP_FILE
++}
++
++function authentication()
++{
++	keyctl clear @s
++	res=$?
++	if [[ $res != 0 ]]; then
++		fatal "keyctl is not found"
++	fi
++	keyctl add logon ubifs:foo 12345678901234567890123456789012 @s
++}
++
++function encryption_gen_key()
++{
++	# CONFIG_FS_ENCRYPTION=y
++	head -c 64 /dev/urandom > $KEY_FILE
++	cmd=`fscryptctl -h | grep "set_policy"`
++	if ! [[ "$cmd" =~ "set_policy" ]]; then
++		fatal "fscryptctl is not found"
++	fi
++}
++
++function encryption_set_key()
++{
++	mnt=$1
++	# https://github.com/google/fscryptctl
++	key=$(fscryptctl add_key $mnt < $KEY_FILE)
++	fscryptctl set_policy $key $mnt
++	#fscryptctl get_policy $mnt
++	ret=$?
++	if [[ $ret != 0 ]]; then
++		fatal "set encryption policy failed"
++	fi
++}
++
++function mount_ubifs()
++{
++	dev=$1
++	mnt=$2
++	auth=$3
++	if [[ "$auth" == "authentication" ]]; then
++		authentication
++		mount -t ubifs -o auth_key=ubifs:foo,auth_hash_name=sha256 $dev $mnt
++	else
++		mount -t ubifs $dev $mnt
++	fi
++}
++
++function enable_chkfs()
++{
++	echo 1 > /sys/kernel/debug/ubifs/chk_fs
++	echo 1 > /sys/kernel/debug/ubifs/chk_general
++	echo 1 > /sys/kernel/debug/ubifs/chk_index
++	echo 1 > /sys/kernel/debug/ubifs/chk_lprops
++	echo 1 > /sys/kernel/debug/ubifs/chk_orphans
++}
++
++function disable_chkfs()
++{
++	echo 0 > /sys/kernel/debug/ubifs/chk_fs
++	echo 0 > /sys/kernel/debug/ubifs/chk_general
++	echo 0 > /sys/kernel/debug/ubifs/chk_index
++	echo 0 > /sys/kernel/debug/ubifs/chk_lprops
++	echo 0 > /sys/kernel/debug/ubifs/chk_orphans
++}
++
++function inject_mem_err()
++{
++	# CONFIG_FAILSLAB=y
++	# CONFIG_FAIL_PAGE_ALLOC=y
++	local pid=$1;
++
++	if ! [ -f /sys/kernel/debug/failslab/probability ]; then
++		fatal "failslab is not enabled, injection failed"
++	fi
++	if ! [ -f /sys/kernel/debug/fail_page_alloc/probability ]; then
++		fatal "fail_page_alloc is not enabled, injection failed"
++	fi
++
++	echo 1 > /proc/$pid/make-it-fail
++
++	echo Y > /sys/kernel/debug/failslab/task-filter
++	echo 1 > /sys/kernel/debug/failslab/probability # 1% failure
++	echo 10000 > /sys/kernel/debug/failslab/times
++	echo 1 > /sys/kernel/debug/failslab/verbose
++	echo N > /sys/kernel/debug/failslab/ignore-gfp-wait
++
++	echo Y > /sys/kernel/debug/fail_page_alloc/task-filter
++	echo 1 > /sys/kernel/debug/fail_page_alloc/probability
++	echo 10000 > /sys/kernel/debug/fail_page_alloc/times
++	echo 0 > /sys/kernel/debug/fail_page_alloc/verbose
++	echo N > /sys/kernel/debug/fail_page_alloc/ignore-gfp-wait
++}
++
++function cancel_mem_err()
++{
++	echo 0 > /sys/kernel/debug/failslab/probability
++	echo 0 > /sys/kernel/debug/failslab/times
++	echo 0 > /sys/kernel/debug/failslab/verbose
++	echo N > /sys/kernel/debug/failslab/task-filter
++	echo Y > /sys/kernel/debug/failslab/ignore-gfp-wait
++
++	echo 0 > /sys/kernel/debug/fail_page_alloc/probability
++	echo 0 > /sys/kernel/debug/fail_page_alloc/times
++	echo 1 > /sys/kernel/debug/fail_page_alloc/verbose
++	echo N > /sys/kernel/debug/fail_page_alloc/task-filter
++	echo Y > /sys/kernel/debug/fail_page_alloc/ignore-gfp-wait
++}
++
++function inject_io_err()
++{
++	if ! [ -f /sys/kernel/debug/ubi/ubi$UBI_NUM/tst_emulate_io_failures ]; then
++		fatal "tst_emulate_io_failures is not enabled, skip injection"
++	fi
++
++	echo 1 > /sys/kernel/debug/ubi/ubi$UBI_NUM/tst_emulate_io_failures
++}
++
++function cancel_io_err()
++{
++	echo 0 > /sys/kernel/debug/ubi/ubi$UBI_NUM/tst_emulate_io_failures
++}
++
++sysctl -w kernel.panic_on_warn=1
++sysctl -w kernel.panic_on_oops=1
++
++if ! [ -d $MNT ]; then
++	mkdir -p $MNT
++fi
++
++modprobe ubi || fatal "common.sh: cannot load ubi"
++modprobe ubifs || fatal "common.sh: cannot load ubifs"
++if ! [ -f /sys/kernel/debug/ubifs/repair_fs ]; then
++	fatal "common.sh: ubifs_repair is not supported"
++fi
++modprobe -r ubifs
++modprobe -r ubi
 -- 
 2.13.6
 
