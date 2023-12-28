@@ -1,170 +1,181 @@
-Return-Path: <linux-kernel+bounces-12827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 158E981FA94
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:07:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3198481FA97
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:13:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7E631F241D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 19:07:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDF851F2223E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 19:13:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22815101DE;
-	Thu, 28 Dec 2023 19:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6550B101E8;
+	Thu, 28 Dec 2023 19:13:18 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49FE58479;
-	Thu, 28 Dec 2023 19:07:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.104] (178.176.76.176) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 28 Dec
- 2023 22:07:31 +0300
-Subject: Re: [PATCH net v2 1/1] net: ravb: Wait for operation mode to be
- applied
-To: claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
-	<mitsuhiro.kimura.kc@renesas.com>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20231222113552.2049088-1-claudiu.beznea.uj@bp.renesas.com>
- <20231222113552.2049088-2-claudiu.beznea.uj@bp.renesas.com>
- <98efc508-c431-2509-5799-96decc124136@omp.ru>
- <d5448a91-a4d8-444d-9f96-083049b1e33e@tuxon.dev>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <9ebf96fb-c07a-8269-e5cd-0e71110941dd@omp.ru>
-Date: Thu, 28 Dec 2023 22:07:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 925D9101C1;
+	Thu, 28 Dec 2023 19:13:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-593f182f263so1327692eaf.0;
+        Thu, 28 Dec 2023 11:13:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703790795; x=1704395595;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M0OKN9HKwBCVGBwl7+BR58ZezIupQSEZhUTpvcAXEIc=;
+        b=miUOEzgsbYxLpsZEoJ3zdjCeKV1qdEMn+SVYXlvwvtwscs63Ql2JpeX7fqLjUXj1ql
+         JTkKXMinRyKsi+PBpno09m/dJFBWKT1G4Ti/Bce/1kUF/TVXIpuGht+OrpcFZZ23bhsq
+         1RzJA3roHsfO9xboT7cJrhnwZiYy9pxJLQdyCb1fDe0ZrAjg+OfYwjySTIAtFfFmJMno
+         K3b0ajD+6I552h/O23/H//RhCkRyRnEJphqOn3aLi247QxEANpwkdQuh5cXF8+RttkeU
+         Gc3izvAaVtva+SnB8TZJAuBvQjT6GONP0Ltc4a0xGRmKG0832Aq7tTEyIcAlWUTG2WJX
+         35TQ==
+X-Gm-Message-State: AOJu0YwexXoKmFtedP9C5j/4krwguNXFAwdBy4ia0CUZSRPX68j5ufjm
+	05RiAVJ0X6F0MgPMbabHykVcmgPtAgjzjaFU3FIp2lkf
+X-Google-Smtp-Source: AGHT+IHNVleauOP87gCEE931G0e8QpUkJGdtV9h5iHXztG7FwEnzgVVRmZFKGsjidN7ECBFe0Kb2s/meciXM2WR+E1w=
+X-Received: by 2002:a4a:c719:0:b0:594:c433:66e6 with SMTP id
+ n25-20020a4ac719000000b00594c43366e6mr6467169ooq.0.1703790795635; Thu, 28 Dec
+ 2023 11:13:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <d5448a91-a4d8-444d-9f96-083049b1e33e@tuxon.dev>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/28/2023 18:48:23
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182418 [Dec 28 2023]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.76.176 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;178.176.76.176:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.76.176
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/28/2023 18:54:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 12/28/2023 3:49:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+References: <20231227104532.2671761-1-daniel.lezcano@linaro.org>
+In-Reply-To: <20231227104532.2671761-1-daniel.lezcano@linaro.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 28 Dec 2023 20:13:05 +0100
+Message-ID: <CAJZ5v0goxF4sbipnLJCGkzBzKQgrYXyWSPtCbLjLqZ61AHo08Q@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] thermal/debugfs: Add thermal cooling device
+ debugfs information
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: rjw@rjwysocki.net, lukasz.luba@arm.com, rui.zhang@intel.com, 
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/27/23 1:10 PM, claudiu beznea wrote:
+On Wed, Dec 27, 2023 at 11:46=E2=80=AFAM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> The thermal framework does not have any debug information except a
+> sysfs stat which is a bit controversial. This one allocates big chunks
+> of memory for every cooling devices with a high number of states and
+> could represent on some systems in production several megabytes of
+> memory for just a portion of it. As the sysfs is limited to a page
+> size, the output is not exploitable with large data array and gets
+> truncated.
+>
+> The patch provides the same information than sysfs except the
+> transitions are dynamically allocated, thus they won't show more
+> events than the ones which actually occurred. There is no longer a
+> size limitation and it opens the field for more debugging information
+> where the debugfs is designed for, not sysfs.
+>
+> The thermal debugfs directory structure tries to stay consistent with
+> the sysfs one but in a very simplified way:
+>
+> thermal/
+>  -- cooling_devices
+>     |-- 0
+>     |   |-- clear
+>     |   |-- time_in_state_ms
+>     |   |-- total_trans
+>     |   `-- trans_table
+>     |-- 1
+>     |   |-- clear
+>     |   |-- time_in_state_ms
+>     |   |-- total_trans
+>     |   `-- trans_table
+>     |-- 2
+>     |   |-- clear
+>     |   |-- time_in_state_ms
+>     |   |-- total_trans
+>     |   `-- trans_table
+>     |-- 3
+>     |   |-- clear
+>     |   |-- time_in_state_ms
+>     |   |-- total_trans
+>     |   `-- trans_table
+>     `-- 4
+>         |-- clear
+>         |-- time_in_state_ms
+>         |-- total_trans
+>         `-- trans_table
+>
+> The content of the files in the cooling devices directory is the same
+> as the sysfs one except for the trans_table which has the following
+> format:
+>
+> Transition      Hits
+> 1->0            246
+> 0->1            246
+> 2->1            632
+> 1->2            632
+> 3->2            98
+> 2->3            98
+>
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+> Changelog:
+>   - v5
+>     - Removed a spurious change in thermal_helper.c, missed to remove it =
+in v4 (Rafael)
 
-[...]
+This one LGTM now.
 
->>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>
->>> CSR.OPS bits specify the current operating mode and (according to
->>> documentation) they are updated by HW when the operating mode change
->>> request is processed. To comply with this check CSR.OPS before proceeding.
->>>
->>> Commit introduces ravb_set_opmode() that does all the necessities for
->>> setting the operating mode (set DMA.CCC and wait for CSR.OPS) and call it
->>> where needed. This should comply with all the HW manuals requirements as
->>> different manual variants specify that different modes need to be checked
->>> in CSR.OPS when setting DMA.CCC.
->>>
->>> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
->>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>> ---
->>>  drivers/net/ethernet/renesas/ravb_main.c | 52 ++++++++++++++----------
->>>  1 file changed, 31 insertions(+), 21 deletions(-)
->>>
->>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->>> index 664eda4b5a11..ae99d035a3b6 100644
->>> --- a/drivers/net/ethernet/renesas/ravb_main.c
->>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->>> @@ -66,14 +66,15 @@ int ravb_wait(struct net_device *ndev, enum ravb_reg reg, u32 mask, u32 value)
->>>  	return -ETIMEDOUT;
->>>  }
->>>  
->>> -static int ravb_config(struct net_device *ndev)
->>> +static int ravb_set_opmode(struct net_device *ndev, u32 opmode)
->>
->>    Since you pass the complete CCC register value below, you should
->> rather call the function ravb_set_ccc() and call the parameter opmode
->> ccc.
-> 
-> This will be confusing. E.g., if renaming it ravb_set_ccc() one would
-> expect to set any fields of CCC though this function but this is not true
-> as ravb_modify() in this function masks only CCC_OPC. The call of:
-> 
-> error = ravb_set_opmode(ndev, CCC_OPC_CONFIG | CCC_GAC | CCC_CSEL_HPB);
-> 
-> bellow is just to comply with datasheet requirements, previous code and at
-> the same time re-use this function.
+I've only spotted a few very minor things that can be fixed up while
+applying the patch.
 
-   How about the following then (ugly... but does the job):
-
-	/* Set operating mode */
-	if (opmode & ~CCC_OPC)
-		ravb_write(ndev, opmode, CCC);
-	else
-		ravb_modify(ndev, CCC, CCC_OPC, opmode);
-
-   Either that or just don't use ravb_set_opmode() when writing the whole
-32-bit value below...
-
-[...]
-
->>> @@ -2560,21 +2559,23 @@ static int ravb_set_gti(struct net_device *ndev)
-[...]
->>
->>>  		/* Set CSEL value */
->>>  		ravb_modify(ndev, CCC, CCC_CSEL, CCC_CSEL_HPB);
->>>  	} else if (info->ccc_gac) {
->>> -		ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_CONFIG |
->>> -			    CCC_GAC | CCC_CSEL_HPB);
->>> +		error = ravb_set_opmode(ndev, CCC_OPC_CONFIG | CCC_GAC | CCC_CSEL_HPB);
-
-   ... like this?
-
-		ravb_write(ndev, CCC_OPC_CONFIG | CCC_GAC | CCC_CSEL_HPB, CCC);
-		error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_CONFIG);
-
-[...]
-
-MBR, Sergey
+>   - v4
+>     - Fixed kerneldoc description ordering (Rafael)
+>     - Fixed comment (Rafael)
+>     - Renamed s/cdev_value/cdev_record/ (Rafael)
+>     - Used union instead of a common 'value' field in cdev_record (Rafael=
+)
+>     - Renamed s/cdev/cdev_dbg/ for clarity (Rafael)
+>     - Renamed s/dfs/thermal_dbg/ for clarity (Rafael)
+>     - Renamed s/list/lists/ in the place where there are array of lists (=
+Rafael)
+>     - Inverted initialization logic when allocating a cdev_record (Rafael=
+)
+>     - Moved now =3D ktime_get() closer to the place where it is used (Raf=
+ael)
+>     - Moved two lines down to a condition (Rafael)
+>     - Removed strange and unexpected addition of function (Rafael)
+>   - v3
+>     - Fixed kerneldoc description (kbuild)
+>     - Made some functions static
+>   - v2
+>     - Added parameter names to fix kbuild report
+>     - Renamed 'reset' to 'clear' to avoid confusion (Rafael)
+>     - Fixed several typos and rephrased some sentences (Rafael)
+>     - Renamed structure field name s/list/node/ (Rafael)
+>     - Documented structures and exported functions (Rafael)
+>     - s/trans_list/transitions/ (Rafael)
+>     - s/duration_list/durations/ (Rafael)
+>     - Folded 'alloc' and 'insert' into a single function (Rafael)
+>     - s/list/lists/ as it is an array of lists (Rafael)
+>     - s/pos/entry/ (Rafael)
+>     - Introduced a locking in the 'clear' callback function (Rafael)
+>     - s/to/new_state/ and s/from/old_state/ (Rafael)
+>     - Added some comments in thermal_debug_cdev_transition() (Rafael)
+>     - Explained why char[11] (Rafael)
+>     - s/Hits/Occurrences/ (Rafael)
+>     - s/Time/Residency/ (Rafael)
+>     - Constified structure pointer passed to thermal_debug_cdev_transitio=
+n()
+>     - s/thermal_debug_cdev_transition()/thermal_debug_cdev_state_update()=
+/
+>   - v1 (from RFC):
+>     - Fixed typo "occurred"
+>     - Changed Kconfig option name and description
+>     - Removed comment in the Makefile
+>     - Renamed exported function name s/debugfs/debug/
+>     - Replaced thermal_debug_cdev_[unregister|register] by [add|remove]
+> ---
 
