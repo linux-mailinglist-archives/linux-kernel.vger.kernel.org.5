@@ -1,117 +1,126 @@
-Return-Path: <linux-kernel+bounces-12857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 721B281FB40
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 21:52:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E916581FB42
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 21:56:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CBF61F23F36
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:52:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CA13285E09
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:56:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549EB10945;
-	Thu, 28 Dec 2023 20:52:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1660107BB;
+	Thu, 28 Dec 2023 20:56:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4VIuaT64"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="w1sBAIFd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9B210947
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 20:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDFB710787
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 20:56:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d3ea8d0f9dso698455ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:52:34 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6d9b082bb80so4965965b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 12:56:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703796754; x=1704401554; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=S788tp3IyJJGZzIwxLHgTA4XtDw+UIahU/ujGgekUjs=;
-        b=4VIuaT64H1q3F/1QIroidqb8/tFm6CxIPexsb1EpqvyOAILt46luAZClmdgwl/r3ko
-         MoQxhQAo5EnwYZ6pPLg0PDj4D+STFxqi8cXpLHEEu+NZg3rM3o2i90bBPwTHi8qiBmj+
-         6xkL2NNvF4QTiqf7fyi3K/3dltVEvvgUeM+TPmioPiqLz1EjU0pVr5Le14Mmg56yEyEl
-         Ec6vnTsGC1v6b4KVDoV6+VSzdziqZ0q6lOkzNCMInaLMXObEdmjNY1+MV9fwCMhNCwU/
-         4bp4rmuq+URqic1tHzu6EOpFBwPk0IDR5OR0sRvEwZmcJ5MVMZXDqScYwINZ0jxLV9yG
-         vf+w==
+        d=google.com; s=20230601; t=1703796997; x=1704401797; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=t78hDBrUy2r/v4jKJBjn31weh0NRCJxOqGE4NBHPluI=;
+        b=w1sBAIFdwJrNyBUxKWmubxn7zTWWgDNnoVO8C59AA3AmGQTbOrT/nUKIl2XNjbSPLm
+         uyq8zueLsATzEj3gI5oAgGryStoLljL0uhjcu+iniptc9jW+owH1hg2XEgzjPEqvRah8
+         vNoeAaGrHlKVNmsYlXaMYGvtaAAFXYREzeHWoN9dcyEWi+1BX0Uvivcug3x1WTmZgohc
+         1oW+Krt3DlXNKpJJLzmdt+N7LvzgnWMgkf9yFYtBLthZ/FtP0JED4NMBPP7K0Wwx4HMS
+         /D0id/h1ixCmcehD+hzq+9HU3sxsHPXBfxHXcA4SF2QPGaK9NpKZJn/LuQMSnI7W5Y5y
+         Fi+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703796754; x=1704401554;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S788tp3IyJJGZzIwxLHgTA4XtDw+UIahU/ujGgekUjs=;
-        b=W9dJEClVWy+efYWqvoLawij1olCpP3+tQ6KiBIV6bq1AXga0Di+T209ykh7i0xHv28
-         KONUWve7sDnpj4oi4q3EcOT2l1FeoFxN9XOY3j3Uv9EKktkHceoWVpOQmMIoTTp0rx8w
-         QA8b6GU2JLPePI4R/CT6cFtyS7ZhIgk4e9RIV9XpWPO9LfHV74QgxDrgCpkwxGtxwOYL
-         GsDmgqGjOzCMrQIYKLGMWWjlVEGI7h2LRqo3AVWbnTTbWQtrUeMwJgG0qsWPuPlIaM9A
-         hx7f68a3pA8TM9hG2IQ6+tjQB0ptGVIJ1cHHsD+Hyt3z+0Er1tftSNRmatayz6uHC8Ke
-         /D6Q==
-X-Gm-Message-State: AOJu0YyPDFFrbY5BHOyxD0BEp4njNCwphZ2lDhkQQpad+Ka7One+JVbj
-	hebmG3kdHorGlm3XWw9nvKz9Yrposgoi
-X-Google-Smtp-Source: AGHT+IGlbqQLYbN6grmwp2KQNqREMnkwdmeje4MbNj3wZpkS6osclrkD9IvJ/FUiRZL1Hu3H0NWZtQ==
-X-Received: by 2002:a17:902:ce85:b0:1d0:a45c:202 with SMTP id f5-20020a170902ce8500b001d0a45c0202mr771128plg.24.1703796753327;
-        Thu, 28 Dec 2023 12:52:33 -0800 (PST)
-Received: from [2620:0:1008:15:5eb6:dfb2:ff4b:8b64] ([2620:0:1008:15:5eb6:dfb2:ff4b:8b64])
-        by smtp.gmail.com with ESMTPSA id ju22-20020a170903429600b001d1cd7e4acesm14344261plb.68.2023.12.28.12.52.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Dec 2023 12:52:32 -0800 (PST)
-Date: Thu, 28 Dec 2023 12:52:32 -0800 (PST)
-From: David Rientjes <rientjes@google.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc: Pasha Tatashin <pasha.tatashin@soleen.com>, 
-    Linus Torvalds <torvalds@linux-foundation.org>, rafael@kernel.org, 
-    Andrew Morton <akpm@linux-foundation.org>, surenb@google.com, 
-    linux-kernel@vger.kernel.org, linux-mm@kvack.org, souravpanda@google.com
-Subject: Re: Sysfs one-value-per-file (was Re: [PATCH] vmstat: don't auto
- expand the sysfs files)
-In-Reply-To: <2023122824-washout-shrubs-1d6d@gregkh>
-Message-ID: <829410ca-1454-968e-b724-0ef0bfbca5cc@google.com>
-References: <20231211154644.4103495-1-pasha.tatashin@soleen.com> <3d415ab4-e8c7-7e72-0379-952370612bdd@google.com> <CA+CK2bA2vZp3e+HHfB-sdLsPUYghMxvKcWURktDtNjwPL79Csw@mail.gmail.com> <b1049bfa-68c4-e237-30a9-1514a378c7f1@google.com>
- <CA+CK2bBxbvO-osm5XKk4VkaXYgfZXkDAtfayaYJ-vXo=QFqGPA@mail.gmail.com> <13e5fbd4-d84d-faba-47f1-d0024d2c572d@google.com> <2023122824-washout-shrubs-1d6d@gregkh>
+        d=1e100.net; s=20230601; t=1703796997; x=1704401797;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=t78hDBrUy2r/v4jKJBjn31weh0NRCJxOqGE4NBHPluI=;
+        b=Z89nbpnq2uHpeiVAEGnIfMfUGPTqdCeEa+7uv2v4EiaegHZgnZkvcxOtypuas/HIy0
+         mAYDYZ6JNmf5mz4BU18akkoFkfT/8ka72H4VTRaj080lEicQQEODBDb7f+yOMCCfj9HO
+         yE+wQBU4I0ADkyFcyu4DeKTW93R0R6WpzGQwv33qGyNf5hueUkv+lsxWPeZQjp/UCZKX
+         9dQkVoOiK5Bq5te7npwRDybhowQd7/XQuK2qMGVDiGz1cNNXfm3pTGtyAYfHgiRmXM4d
+         gEMKJiXsRKxaqZErx4bcAz6AnagD2Ss0YGM6AYspbFOJXYjfbrE6A9JdLl6gf71/e2Qv
+         WsOg==
+X-Gm-Message-State: AOJu0YzAQ54D6C8xgNoyrozoQYlu0hVVR+Ev0J+X0Z+xBAOQRjoR/iuk
+	hBZs2PihwYbA5g0pwvBzvBseTPaCV+1maO6iyYc=
+X-Google-Smtp-Source: AGHT+IGiO0t4snAjRG1yLuyS5d/NOaZO8at8Abzneb1Hg2bheA9CKjAERnPAP6Zpoa1kFQT/Fi3/5qOQwzM0
+X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
+ (user=tanzirh job=sendgmr) by 2002:a62:6386:0:b0:6d9:8a94:e0d with SMTP id
+ x128-20020a626386000000b006d98a940e0dmr474300pfb.5.1703796997142; Thu, 28 Dec
+ 2023 12:56:37 -0800 (PST)
+Date: Thu, 28 Dec 2023 20:56:35 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAALhjWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDIyML3dSKksSknFRdQ4s0A0vTVIPE1KREJaDqgqLUtMwKsEnRsbW1ALZ mBnlZAAAA
+X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703796995; l=1334;
+ i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
+ bh=qhMqheLdJU1VM1OLVkQtPBRBCwKZDC1Q/0SWaAx4u+0=; b=BD9Q3nkFn2wtF6zpV3w01mM4zCm8MM5HRaJxDkY7ofpa9hym+GTTKAk+DFyIE37NSEEV5BOyj
+ 30PZnIux5Y4DuYgV8D/apJ7zr4daOa63euP1TMUKZcHzx2qpUD04QN6
+X-Mailer: b4 0.12.4
+Message-ID: <20231228-extable-v1-1-32a18c66b440@google.com>
+Subject: [PATCH] x86/vdso: shrink vdso/extable.i via IWYU
+From: Tanzir Hasan <tanzirh@google.com>
+To: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>
+Cc: linux-kernel@vger.kernel.org, Nick Desaulniers <nnn@google.com>, 
+	Tanzir Hasan <tanzirh@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-On Thu, 28 Dec 2023, Greg Kroah-Hartman wrote:
+This diff uses an open source tool include-what-you-use (IWYU) to modify
+the include list, changing indirect includes to direct includes. IWYU is
+implemented using the IWYUScripts github repository which is a tool that
+is currently undergoing development. These changes seek to improve build
+times.
 
-> > I'd argue that the ship on the "sysfs one-value-per-file rule" has sailed 
-> > for long-standing use cases where either (1) switching is just not 
-> > possible or (2) switching would be an undue burden to the user.
-> > 
-> > An example of (1) would be THP enablement and defrag options:
-> > 
-> > $ grep . /sys/kernel/mm/transparent_hugepage/{defrag,enabled,shmem_enabled}
-> > /sys/kernel/mm/transparent_hugepage/defrag:always defer defer+madvise [madvise] never
-> > /sys/kernel/mm/transparent_hugepage/enabled:[always] madvise never
-> > /sys/kernel/mm/transparent_hugepage/shmem_enabled:always within_size advise [never] deny force
-> > 
-> > This convention isn't going to change.  We're not going to suddenly add a 
-> > new enablement or defrag option that can only be set in a newly added 
-> > file that is one-value-per-file.
-> > 
-> > THP was obviously introduced before any sysfs "one-value-per-file rule" 
-> 
-> No, the rule has been there since "day one" for sysfs, this file snuck
-> in much later with no one noticing it against the "rules" and I've been
-> complaining about it every time someone tries to add a new field to it
-> that I notice.
-> 
+This change to vdso/extable.c resulted in a preprocessed size of
+vdso/extable.i from 64332 lines to 45377 lines (-27%) for the x86
+defconfig.
 
-Ah, gotcha, thanks.  I had assumed that the push for one-value-per-file 
-started after thp, and perhaps even because of thp :)  I have to admit 
-that whenever I log into a new server type one of the first things I do is
+Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+---
+ arch/x86/entry/vdso/extable.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-$ cat /sys/devices/system/node/node*/distance
+diff --git a/arch/x86/entry/vdso/extable.c b/arch/x86/entry/vdso/extable.c
+index afcf5b65beef..8221231917ec 100644
+--- a/arch/x86/entry/vdso/extable.c
++++ b/arch/x86/entry/vdso/extable.c
+@@ -1,10 +1,14 @@
+ // SPDX-License-Identifier: GPL-2.0
+-#include <linux/err.h>
+ #include <linux/mm.h>
++#include <linux/sched.h>
++#include <linux/stddef.h>
++#include <linux/types.h>
+ #include <asm/current.h>
+-#include <asm/traps.h>
++#include <asm/trapnr.h>
+ #include <asm/vdso.h>
+ 
++struct pt_regs;
++
+ struct vdso_exception_table_entry {
+ 	int insn, fixup;
+ };
 
-and that table just makes intuitive sense.  If we were to go back in time 
-and reimplement that as one-value-per-file, I'd just assume that many 
-userspace implementations would just need to read 64 different files to 
-structure it into the same exact table.
+---
+base-commit: f5837722ffecbbedf1b1dbab072a063565f0dad1
+change-id: 20231228-extable-18f095e0aeba
 
-On the other hand, I have wished countless times that the thp settings 
-would have actually been one-value-per-file from the start.
+Best regards,
+-- 
+Tanzir Hasan <tanzirh@google.com>
+
 
