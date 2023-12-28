@@ -1,395 +1,98 @@
-Return-Path: <linux-kernel+bounces-12748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 453E981F996
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:19:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A505B81F997
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:19:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B77101F243A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:19:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E4D9B23507
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B987CE578;
-	Thu, 28 Dec 2023 15:19:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45F47F4F8;
+	Thu, 28 Dec 2023 15:19:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="W8iJNXoZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD305DF4A
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 15:19:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11C912F4;
-	Thu, 28 Dec 2023 07:19:52 -0800 (PST)
-Received: from [10.57.87.187] (unknown [10.57.87.187])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9144C3F64C;
-	Thu, 28 Dec 2023 07:19:02 -0800 (PST)
-Message-ID: <9dbcc5ed-8994-4929-9ac5-18b13c01eb2c@arm.com>
-Date: Thu, 28 Dec 2023 15:19:01 +0000
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2CFF4E7
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 15:19:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50e7aed09adso3555557e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:19:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703776785; x=1704381585; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8Ha+pAOWsoDIh9rt3FhMOiZJHiegkUy/cwMrNu3tQCw=;
+        b=W8iJNXoZsT5Zl76aQtyUJ/vpVAZBaTmp/LrV+HOIYpAxsxyn1S4mlig4MqykBoDesl
+         zUhSh7JGPING5uUohfG/fsuZAu1zZvgtIk1r2hzihvEsARKc4xYr9ISJdMBujuBKSiun
+         zpaegR2Mpff7IIw3vhNMs/xFUTAt8fiQ258oC8JAvJdZrTxBzKk/p5HdJdmNUqmJedV+
+         UnE9gmbK6Lzle3GXryE/MIOFPRsscam9FTyRGB/jT7EGhO/hlDqOq/cWHpQHdDDTcBAf
+         RKzNlbxp/V7lVcTlPPIJsQW0oMFpnfRcR5y4yYzabd5UpToZCn2NHarbokhwoNkZg3eM
+         rJVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703776785; x=1704381585;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8Ha+pAOWsoDIh9rt3FhMOiZJHiegkUy/cwMrNu3tQCw=;
+        b=NYMu7/8tTInafRhc1hNEyAGyCbdKUiiPtEFUwvZ35/kOUJcd7li9Elu/nHvKAd40Cz
+         DzTyr4Q6A/no2KN/mDOJg3k5jbR6RZZTmtGAZkYg6QHwaKDeiJOgL3hr5TrV170QDnDd
+         iOMSLpcNt6qkCbnFDcG+kuuDPYrB01GXZKBQklOwzo2lx+rqJJUWElNKbwsGnfllOyqP
+         +BmmXqzkPe+O5JsSd8ZLDyV8kZch0Trth9zk92pLjtPgKN2fq2IsflvvXc/VKmbKLPyp
+         HERZytjgL1qk3j5vZZ+w235iJTOnrOpwwtneho7zSPtPKZziR3feZvKA0n/dawmBCJ/a
+         qF0Q==
+X-Gm-Message-State: AOJu0Yyb9RjuTb1IAaDVshxg3fMe/snECvdkL6w5xVOBQk5rQupb4lSg
+	dcN0enzImzk2kCdV6RJsxxCZw3NUvaL9RW4cPnTnVS0M7d6K
+X-Google-Smtp-Source: AGHT+IFNY57uXAYiuNoisdfoK3o+0pMDBpwcVA50bsXFgyoyptZU2V5fBdcVs9EEPUiT5eyE1TLUAMSGFGCrTXBHPEQ=
+X-Received: by 2002:a05:6512:1329:b0:50e:8ccc:6df5 with SMTP id
+ x41-20020a056512132900b0050e8ccc6df5mr554370lfu.27.1703776784726; Thu, 28 Dec
+ 2023 07:19:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 17/23] sched: Initial sched_football test
- implementation
-Content-Language: en-US
-To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
-Cc: Joel Fernandes <joelaf@google.com>, Qais Yousef <qyousef@google.com>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Valentin Schneider <vschneid@redhat.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat
- <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
- Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- Xuewen Yan <xuewen.yan94@gmail.com>, K Prateek Nayak
- <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>,
- kernel-team@android.com
-References: <20231220001856.3710363-1-jstultz@google.com>
- <20231220001856.3710363-18-jstultz@google.com>
-From: Metin Kaya <metin.kaya@arm.com>
-In-Reply-To: <20231220001856.3710363-18-jstultz@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20231213-zswap-dstmem-v5-0-9382162bbf05@bytedance.com> <20231213-zswap-dstmem-v5-5-9382162bbf05@bytedance.com>
+In-Reply-To: <20231213-zswap-dstmem-v5-5-9382162bbf05@bytedance.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 28 Dec 2023 07:19:08 -0800
+Message-ID: <CAJD7tkber7UL7F-ZghNvVig=7zoAB9cPMjaQpWm8c6Y9OrmBFQ@mail.gmail.com>
+Subject: Re: [PATCH v5 5/5] mm/zswap: change per-cpu mutex and buffer to per-acomp_ctx
+To: Chengming Zhou <zhouchengming@bytedance.com>
+Cc: Barry Song <21cnbao@gmail.com>, Nhat Pham <nphamcs@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Dan Streetman <ddstreet@ieee.org>, 
+	Vitaly Wool <vitaly.wool@konsulko.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Chris Li <chriscli@google.com>, Seth Jennings <sjenning@redhat.com>, Chris Li <chrisl@kernel.org>, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 20/12/2023 12:18 am, John Stultz wrote:
-> Reimplementation of the sched_football test from LTP:
-> https://github.com/linux-test-project/ltp/blob/master/testcases/realtime/func/sched_football/sched_football.c
-> 
-> But reworked to run in the kernel and utilize mutexes
-> to illustrate proper boosting of low priority mutex
-> holders.
-> 
-> TODO:
-> * Need a rt_mutex version so it can work w/o proxy-execution
-> * Need a better place to put it
-> 
-> Cc: Joel Fernandes <joelaf@google.com>
-> Cc: Qais Yousef <qyousef@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Zimuzo Ezeozue <zezeozue@google.com>
-> Cc: Youssef Esmat <youssefesmat@google.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Metin Kaya <Metin.Kaya@arm.com>
-> Cc: Xuewen Yan <xuewen.yan94@gmail.com>
-> Cc: K Prateek Nayak <kprateek.nayak@amd.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: kernel-team@android.com
-> Signed-off-by: John Stultz <jstultz@google.com>
-> ---
->   kernel/sched/Makefile              |   1 +
->   kernel/sched/test_sched_football.c | 242 +++++++++++++++++++++++++++++
->   lib/Kconfig.debug                  |  14 ++
->   3 files changed, 257 insertions(+)
->   create mode 100644 kernel/sched/test_sched_football.c
-> 
-> diff --git a/kernel/sched/Makefile b/kernel/sched/Makefile
-> index 976092b7bd45..2729d565dfd7 100644
-> --- a/kernel/sched/Makefile
-> +++ b/kernel/sched/Makefile
-> @@ -32,3 +32,4 @@ obj-y += core.o
->   obj-y += fair.o
->   obj-y += build_policy.o
->   obj-y += build_utility.o
-> +obj-$(CONFIG_SCHED_RT_INVARIENT_TEST) += test_sched_football.o
-> diff --git a/kernel/sched/test_sched_football.c b/kernel/sched/test_sched_football.c
-> new file mode 100644
-> index 000000000000..9742c45c0fe0
-> --- /dev/null
-> +++ b/kernel/sched/test_sched_football.c
-> @@ -0,0 +1,242 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Module-based test case for RT scheduling invariant
-> + *
-> + * A reimplementation of my old sched_football test
-> + * found in LTP:
-> + *   https://github.com/linux-test-project/ltp/blob/master/testcases/realtime/func/sched_football/sched_football.c
-> + *
-> + * Similar to that test, this tries to validate the RT
-> + * scheduling invariant, that the across N available cpus, the
-> + * top N priority tasks always running.
-> + *
-> + * This is done via having N offsensive players that are
-> + * medium priority, which constantly are trying to increment the
-> + * ball_pos counter.
-> + *
-> + * Blocking this, are N defensive players that are higher
-> + * priority which just spin on the cpu, preventing the medium
-> + * priroity tasks from running.
-> + *
-> + * To complicate this, there are also N defensive low priority
-> + * tasks. These start first and each aquire one of N mutexes.
-> + * The high priority defense tasks will later try to grab the
-> + * mutexes and block, opening a window for the offsensive tasks
-> + * to run and increment the ball. If priority inheritance or
-> + * proxy execution is used, the low priority defense players
-> + * should be boosted to the high priority levels, and will
-> + * prevent the mid priority offensive tasks from running.
-> + *
-> + * Copyright © International Business Machines  Corp., 2007, 2008
-> + * Copyright (C) Google, 2023
-> + *
-> + * Authors: John Stultz <jstultz@google.com>
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/kthread.h>
-> +#include <linux/delay.h>
-> +#include <linux/sched/rt.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/mutex.h>
-> +#include <linux/rwsem.h>
-> +#include <linux/smp.h>
-> +#include <linux/slab.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/sched.h>
-> +#include <uapi/linux/sched/types.h>
-> +#include <linux/rtmutex.h>
-> +
-> +atomic_t players_ready;
-> +atomic_t ball_pos;
-> +int players_per_team;
-> +bool game_over;
-> +
-> +struct mutex *mutex_low_list;
-> +struct mutex *mutex_mid_list;
-> +
-> +static inline
-> +struct task_struct *create_fifo_thread(int (*threadfn)(void *data), void *data,
-> +				       char *name, int prio)
-> +{
-> +	struct task_struct *kth;
-> +	struct sched_attr attr = {
-> +		.size		= sizeof(struct sched_attr),
-> +		.sched_policy	= SCHED_FIFO,
-> +		.sched_nice	= 0,
-> +		.sched_priority	= prio,
-> +	};
-> +	int ret;
-> +
-> +	kth = kthread_create(threadfn, data, name);
-> +	if (IS_ERR(kth)) {
-> +		pr_warn("%s eerr, kthread_create failed\n", __func__);
-> +		return kth;
-> +	}
-> +	ret = sched_setattr_nocheck(kth, &attr);
-> +	if (ret) {
-> +		kthread_stop(kth);
-> +		pr_warn("%s: failed to set SCHED_FIFO\n", __func__);
-> +		return ERR_PTR(ret);
-> +	}
-> +
-> +	wake_up_process(kth);
-> +	return kth;
-> +}
-> +
-> +int defense_low_thread(void *arg)
-> +{
-> +	long tnum = (long)arg;
-> +
-> +	atomic_inc(&players_ready);
-> +	mutex_lock(&mutex_low_list[tnum]);
-> +	while (!READ_ONCE(game_over)) {
-> +		if (kthread_should_stop())
-> +			break;
-> +		schedule();
-> +	}
-> +	mutex_unlock(&mutex_low_list[tnum]);
-> +	return 0;
-> +}
-> +
-> +int defense_mid_thread(void *arg)
-> +{
-> +	long tnum = (long)arg;
-> +
-> +	atomic_inc(&players_ready);
-> +	mutex_lock(&mutex_mid_list[tnum]);
-> +	mutex_lock(&mutex_low_list[tnum]);
-> +	while (!READ_ONCE(game_over)) {
-> +		if (kthread_should_stop())
-> +			break;
-> +		schedule();
-> +	}
-> +	mutex_unlock(&mutex_low_list[tnum]);
-> +	mutex_unlock(&mutex_mid_list[tnum]);
-> +	return 0;
-> +}
-> +
-> +int offense_thread(void *)
-> +{
-> +	atomic_inc(&players_ready);
-> +	while (!READ_ONCE(game_over)) {
-> +		if (kthread_should_stop())
-> +			break;
-> +		schedule();
-> +		atomic_inc(&ball_pos);
-> +	}
-> +	return 0;
-> +}
-> +
-> +int defense_hi_thread(void *arg)
-> +{
-> +	long tnum = (long)arg;
-> +
-> +	atomic_inc(&players_ready);
-> +	mutex_lock(&mutex_mid_list[tnum]);
-> +	while (!READ_ONCE(game_over)) {
-> +		if (kthread_should_stop())
-> +			break;
-> +		schedule();
-> +	}
-> +	mutex_unlock(&mutex_mid_list[tnum]);
-> +	return 0;
-> +}
-> +
-> +int crazy_fan_thread(void *)
-> +{
-> +	int count = 0;
-> +
-> +	atomic_inc(&players_ready);
-> +	while (!READ_ONCE(game_over)) {
-> +		if (kthread_should_stop())
-> +			break;
-> +		schedule();
-> +		udelay(1000);
-> +		msleep(2);
-> +		count++;
-> +	}
-> +	return 0;
-> +}
-> +
-> +int ref_thread(void *arg)
-> +{
-> +	struct task_struct *kth;
-> +	long game_time = (long)arg;
-> +	unsigned long final_pos;
-> +	long i;
-> +
-> +	pr_info("%s: started ref, game_time: %ld secs !\n", __func__,
-> +		game_time);
-> +
-> +	/* Create low  priority defensive team */
-> +	for (i = 0; i < players_per_team; i++)
-> +		kth = create_fifo_thread(defense_low_thread, (void *)i,
-> +					 "defese-low-thread", 2);
-> +	/* Wait for the defense threads to start */
-> +	while (atomic_read(&players_ready) < players_per_team)
-> +		msleep(1);
-> +
-> +	for (i = 0; i < players_per_team; i++)
-> +		kth = create_fifo_thread(defense_mid_thread,
-> +					 (void *)(players_per_team - i - 1),
-> +					 "defese-mid-thread", 3);
-> +	/* Wait for the defense threads to start */
-> +	while (atomic_read(&players_ready) < players_per_team * 2)
-> +		msleep(1);
-> +
-> +	/* Create mid priority offensive team */
-> +	for (i = 0; i < players_per_team; i++)
-> +		kth = create_fifo_thread(offense_thread, NULL,
-> +					 "offense-thread", 5);
-> +	/* Wait for the offense threads to start */
-> +	while (atomic_read(&players_ready) < players_per_team * 3)
-> +		msleep(1);
-> +
-> +	/* Create high priority defensive team */
-> +	for (i = 0; i < players_per_team; i++)
-> +		kth = create_fifo_thread(defense_hi_thread, (void *)i,
-> +					 "defese-hi-thread", 10);
-> +	/* Wait for the defense threads to start */
-> +	while (atomic_read(&players_ready) < players_per_team * 4)
-> +		msleep(1);
-> +
-> +	/* Create high priority defensive team */
-> +	for (i = 0; i < players_per_team; i++)
-> +		kth = create_fifo_thread(crazy_fan_thread, NULL,
-> +					 "crazy-fan-thread", 15);
-> +	/* Wait for the defense threads to start */
-> +	while (atomic_read(&players_ready) < players_per_team * 5)
-> +		msleep(1);
-> +
-> +	pr_info("%s: all players checked in! Starting game.\n", __func__);
-> +	atomic_set(&ball_pos, 0);
-> +	msleep(game_time * 1000);
-> +	final_pos = atomic_read(&ball_pos);
-> +	pr_info("%s: final ball_pos: %ld\n", __func__, final_pos);
-> +	WARN_ON(final_pos != 0);
-> +	game_over = true;
-> +	return 0;
-> +}
-> +
-> +static int __init test_sched_football_init(void)
-> +{
-> +	struct task_struct *kth;
-> +	int i;
-> +
-> +	players_per_team = num_online_cpus();
-> +
-> +	mutex_low_list = kmalloc_array(players_per_team,  sizeof(struct mutex), GFP_ATOMIC);
-> +	mutex_mid_list = kmalloc_array(players_per_team,  sizeof(struct mutex), GFP_ATOMIC);
-> +
-> +	for (i = 0; i < players_per_team; i++) {
-> +		mutex_init(&mutex_low_list[i]);
-> +		mutex_init(&mutex_mid_list[i]);
-> +	}
-> +
-> +	kth = create_fifo_thread(ref_thread, (void *)10, "ref-thread", 20);
-> +
-> +	return 0;
-> +}
-> +module_init(test_sched_football_init);
+On Thu, Dec 28, 2023 at 1:46=E2=80=AFAM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
+>
+> First of all, we need to rename acomp_ctx->dstmem field to buffer,
+> since we are now using for purposes other than compression.
+>
+> Then we change per-cpu mutex and buffer to per-acomp_ctx, since
+> them belong to the acomp_ctx and are necessary parts when used
+> in the compress/decompress contexts.
+>
+> So we can remove the old per-cpu mutex and dstmem.
+>
+> Acked-by: Chris Li <chrisl@kernel.org> (Google)
+> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-Hit `modpost: missing MODULE_LICENSE() in 
-kernel/sched/test_sched_football.o` error when I build this module.
-
-JFYI: the module does not have MODULE_NAME(), MODULE_DESCRIPTION(), 
-MODULE_AUTHOR(), module_exit(), ... as well.
-
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 4405f81248fb..1d90059d190f 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1238,6 +1238,20 @@ config SCHED_DEBUG
->   	  that can help debug the scheduler. The runtime overhead of this
->   	  option is minimal.
->   
-> +config SCHED_RT_INVARIENT_TEST
-> +	tristate "RT invarient scheduling tester"
-> +	depends on DEBUG_KERNEL
-> +	help
-> +	  This option provides a kernel module that runs tests to make
-> +	  sure the RT invarient holds (top N priority tasks run on N
-> +	  available cpus).
-> +
-> +	  Say Y here if you want kernel rt scheduling tests
-> +	  to be built into the kernel.
-> +	  Say M if you want this test to build as a module.
-> +	  Say N if you are unsure.
-> +
-> +
->   config SCHED_INFO
->   	bool
->   	default n
-
+Instead of hardcoding PAGE_SIZE * 2 multiple times, can we define a
+constant for this and document the need for the buffer size there?
+Even better if that constant is based on WORST_COMPR_FACTOR and shared
+between zswap and zram -- but this can be a follow up change.
 
