@@ -1,90 +1,88 @@
-Return-Path: <linux-kernel+bounces-12388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8E3C81F40F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 03:09:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0C5B81F416
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 03:19:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67D0A1F21744
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:09:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77A2B281DF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 02:19:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C239B137B;
-	Thu, 28 Dec 2023 02:09:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 141F12CA5;
+	Thu, 28 Dec 2023 02:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="g4RhtE1B"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C41EA9;
-	Thu, 28 Dec 2023 02:09:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from linma$zju.edu.cn ( [42.120.103.51] ) by
- ajax-webmail-mail-app2 (Coremail) ; Thu, 28 Dec 2023 10:09:06 +0800
- (GMT+08:00)
-Date: Thu, 28 Dec 2023 10:09:06 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: "Lin Ma" <linma@zju.edu.cn>
-To: "Jamal Hadi Salim" <jhs@mojatatu.com>
-Cc: xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v1] net/sched: cls_api: complement
- tcf_tfilter_dump_policy
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.2-cmXT5 build
- 20230825(e13b6a3b) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <CAM0EoMm5ruiBfJC1C+Jvz=vuKz03e_KOS_jgbS7ETkSfV-SKDA@mail.gmail.com>
-References: <20231224165413.831486-1-linma@zju.edu.cn>
- <CAM0EoMm8F3UE3N-PBZmJHQpYYjiV23JKf6jGsvzzWs0PBd+AWQ@mail.gmail.com>
- <6aab36aa.56337.18ca3c6af7a.Coremail.linma@zju.edu.cn>
- <CAM0EoMmBp6SWDGhPkusnx0jh4y=1k9ggS+5UpV+0MtEccDgyXw@mail.gmail.com>
- <CAM0EoMm5ruiBfJC1C+Jvz=vuKz03e_KOS_jgbS7ETkSfV-SKDA@mail.gmail.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B442568
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 02:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 3BS2HbeK901683
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 27 Dec 2023 18:17:37 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 3BS2HbeK901683
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2023121201; t=1703729859;
+	bh=UjI/k3eS7O6HB0+dpx4a96mA1fLx2yo/8peSNdY8Cd0=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=g4RhtE1BUHXsYo8g5EjEHEKsjLkFfvZekSXLp7nart7XP4ecF+ZFHC18HWy5YVOFL
+	 cfE/7gHNg0rh6VBOaJuLntVcGNEcSyEkBtbxStwb/i5jFcdhmkQc+Hue+qgs+A74FU
+	 btketTrP3DNPPHIBMUCHZKEXUMW3wNX8Rc+nceBCgKxG/NNbtnpB2i4GwtjNxeHWlp
+	 o5+7AhDn93arHzyMkoQb4n4sxTU6xCavYWFUoUtGH9F5AqP4ztOJZ0KCSs/ITarYiI
+	 tR7uy/nYMcEHKLCsH7eq5Mi/frSkKGRqtP5B4tG7qUM7tyup98kCR7AHzqokw57Yik
+	 5oa+Sq9ZIe5CA==
+Date: Wed, 27 Dec 2023 18:17:35 -0800
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Al Viro <viro@zeniv.linux.org.uk>
+CC: Tanzir Hasan <tanzirh@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Nick Desaulniers <nnn@google.com>
+Subject: Re: [PATCH] x86/syscalls: shrink entry/syscall_32.i via IWYU
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20231228002614.GI1674809@ZenIV>
+References: <20231227-syscall32-v1-1-9621140d33bd@google.com> <20231227233444.GH1674809@ZenIV> <8B198413-0C9B-40A2-8478-F22206AAE6FA@zytor.com> <20231228002614.GI1674809@ZenIV>
+Message-ID: <7068F1FF-1266-447D-ACC8-2F1AD774F230@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <1869ff03.57bb7.18cae2eb8ad.Coremail.linma@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:by_KCgDnDirD2IxlFBoTAQ--.46830W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwIDEmWL9XsNeAABsE
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-SGVsbG8gSmFtYWwsCgo+ID4KPiA+IFNvcnJ5LCBzdGlsbCB0cnlpbmcgdG8gZm9sbG93IHlvdXIg
-cmVhc29uaW5nIHRoYXQgdGhpcyBpcyBhICJuZXQgaXNzdWUiOgo+ID4gQXMgeW91IHBvaW50IG91
-dCwgdGhlIHNrYiB3aWxsIGhhdmUgZW5vdWdoIHNwYWNlIHRvIGNhcnJ5IHRoZSAzMiBiaXQKPiA+
-IHZhbHVlLiBXb3JzdCBjYXNlIGlzIHdlIHJlYWQgZ2FyYmFnZS4gQW5kIHRoZSBkdW1wLCB1c2lu
-ZyB0aGlzIGdhcmJhZ2UKPiA+IGNoYWluIGluZGV4LCAgd2lsbCBub3QgZmluZCB0aGUgY2hhaW4g
-b3Igd2lsbCBmaW5kIHNvbWUgdW5pbnRlbmRlZAo+ID4gY2hhaW4uIEFtIGkgbWlzc2luZyBzb21l
-dGhpbmc/CgpUaGFua3MgZm9yIHlvdXIgcmVwbHlpbmcuIAoKSSBpbnZlc3RpZ2F0ZWQgdGhlIGNv
-ZGUgYW5kIHllcywgYXMgeW91IHNhaWQsIHRoZSBza2IgZGF0YSB3aWxsIGNhcnJ5CmEgdGFpbGlu
-ZyBzcGFjZSB1c2VkIGZvciBwdXR0aW5nIGBzdHJ1Y3Qgc2tiX3NoYXJlZF9pbmZvYC4gSGVuY2Us
-IDMyCmJpdCBpcyBub3QgZW5vdWdoIGhlcmUgdG8gY29uZHVjdCBhbiBvdmVyZmxvdyByZWFkIHRv
-IG5leHQgb2JqZWN0LgoKSGVuY2UgSSBndWVzcyB5b3UgaGF2ZSBub3QgbWlzc2VkIGFueXRoaW5n
-IGJ1dCBJIGRvLiBGb3IgdGhlCkNWRS0yMDIzLTM3NzMsIHRoZSByZWFkIHZhbHVlIGlzIGR1bXBl
-ZCB0byB1c2VyLXNwYWNlIHNvIHRoZSBsZWFrIGlzCmRpcmVjdC4gQnV0IHNpbmNlIHRoZSBjaGFp
-biBpbmRleCBpcyBub3QgZGlyZWN0bHkgZHVtcGVkCmludG8gdXNlcnNwYWNlLiBUaGUgYXR0YWNr
-ZXIgY2FuIG9ubHkgZXhwbG9pdCB0aGlzIHZpYSBhIHNpZGUtY2hhbm5lbAptYW5uZXIuIEFzc3Vt
-aW5nIHRoZSBhdHRhY2tlciBjb3VsZCBjcmVhdGUgYXMgbWFueSBjaGFpbiBhcyBoZSBjYW4KKDIq
-KjMyIG1heWJlIDtQKSwgdGhlbiB0aGUgZHVtcCBmcm9tIHRoZSBnYXJiYWdlIGNoYWluIGluZGV4
-IHdpbGwgbGVhawp0aGUga2VybmVsIGRhdGEgaW5kaXJlY3RseS4KCj4gPgo+ID4gQ2FuIHlvdSBz
-ZW5kIG1lIGEgcmVwcm8gKHByaXZhdGVseSkgdGhhdCBhY3R1YWxseSBjYXVzZXMgdGhlICJoZWFw
-Cj4gPiBkYXRhIGxlYWsiIGlmIHlvdSBoYXZlIG9uZT8KPiAKPiBUbyBjbGFyaWZ5IHdoYXQgdHJp
-Z2dlcmVkIG1lIGlzIHlvdXIgdGllIG9mIHRoaXMgYXMgYW4gZXhwbG9pdCBhbmQKPiBxdW90aW5n
-IENWRXMuIE1heWJlIG5vdCBzbyBtdWNoIG5ldCB2cyBuZXQtbmV4dC4KClRoZXJlIG1heSBiZSBh
-IG1pc3VuZGVyc3RhbmRpbmcgaGVyZS4gSSBkaWRuJ3Qgd3JpdGUgc3VjaCBhIHNpZGUtY2hhbm5l
-bApleHBsb2l0IGhlcmUgYW5kIGFzIHlvdSBwb2ludCBvdXQsIHRoaXMgaXMgbm90IGFuIGVhc3kg
-YW5kIHdvcnRoeSB0YXNrLgooYnV0IElmIHlvdSBhcmUgYXNraW5nIHRoZSBleHBsb2l0IGZvciBD
-VkUtMjAyMy0zNzczLCBJIHdpbGwgaW5mb3JtIHlvdQogd2hlbiBpdCBpcyBzZW5kIHRvIG9zcy1z
-ZWN1cml0eSkKCkFueXdheSwgSSBiZWxpZXZlIHlvdSBhcmUgcmlnaHQuIEdpdmVuIHRoZSBmYWN0
-IHRoYXQgSSBpZ25vcmUgdGhlCmRpZmZpY3VsdHkgb2YgdGhpcyBleHBsb2l0YXRpb24sIHN1Y2gg
-YSBidWcgcmF0aGVyIHRoYW4gYSB2dWxuZXJhYmlsaXR5CnNob3VsZCBnbyB0byBuZXQtbmV4dCBp
-bnN0ZWFkIG9mIG5ldC4gCgpTaGFsbCBJIGFkZCBhbnkgdGFnIGZyb20geW91IGxpa2UgU3VnZ2Vz
-dGVkIG9yIFJldmlld2VkPwoKPiBjaGVlcnMsCj4gamFtYWwKPiAKClRoYW5rcwpMaW4=
+On December 27, 2023 4:26:14 PM PST, Al Viro <viro@zeniv=2Elinux=2Eorg=2Euk=
+> wrote:
+>On Wed, Dec 27, 2023 at 03:50:33PM -0800, H=2E Peter Anvin wrote:
+>> > /*
+>> >  * Only the low 32 bits of orig_ax are meaningful, so we return int=
+=2E
+>> >  * This importantly ignores the high bits on 64-bit, so comparisons
+>>=20
+>> __visible is for LTO, no?
+>
+>If we need it in cases when array defined in entry/syscall_32=2Ec and
+>used in entry/common=2Ec, I would respectfully suggest that whatever
+>we need it for is misguided garbage=2E  I don't think that LTO does
+>need it, though=2E  How is arch/x86/entry/{syscall_32,common}=2Ec
+>different from e=2Eg=2E fs/{namespace,d_path}=2Ec, where we have
+>fs/namespace=2Ec:100:__cacheline_aligned_in_smp DEFINE_SEQLOCK(mount_lock=
+);
+>and
+>fs/d_path=2Ec:166:        read_seqbegin_or_lock(&mount_lock, &m_seq);
+>respectively?
+
+You're correct of course; __visible for LTO is for functions called from a=
+ssembly *at the point of definition*, not declaration and certainly not as =
+a type=2E
 
