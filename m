@@ -1,227 +1,131 @@
-Return-Path: <linux-kernel+bounces-12736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 256A881F979
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:10:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC81781F97B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:10:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C522C1F241FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:10:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 990E02854BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:10:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C3912B87;
-	Thu, 28 Dec 2023 15:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BOLZvKdk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54579DF4C;
+	Thu, 28 Dec 2023 15:09:06 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8338F125B4;
-	Thu, 28 Dec 2023 15:06:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703776008; x=1735312008;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=k8MfoxWF1GWpKLv7i4xBh341gPxN5h7L+16xXDYToqk=;
-  b=BOLZvKdkMAnHJj5Nh2WZHs4QgMGD32PaDf2WLI7ozSAd10Glb5szWbGP
-   1R7JZhUoXodM4kGkYS6ry0ZH6X3tLjSforQDBA0HIOse8AuvTRADjTcex
-   b/XS5ldfFdyTlZYPTl/LHF5HMaCEngF8x8p0lYWB2jV/2t8h7V8JcycQY
-   nzNpvzTmNyD8NaueYisrHViGE16+PRxxjmzSt1M84LPwR/Sf8eCw0MF2F
-   o6fYmFdLEgj1evZ1ufiW7+hohjMpkjNTnmCZ3ibDQMxOrXp7pMOBCU15r
-   DOQhnH+jtVZHXT/eL7QGAkloFPsmrws/ETSna+MXs1O7tR1NCWTkSqfWb
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="393702038"
-X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
-   d="scan'208";a="393702038"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 07:06:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="869155189"
-X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
-   d="scan'208";a="869155189"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by FMSMGA003.fm.intel.com with ESMTP; 28 Dec 2023 07:06:46 -0800
-From: Yi Liu <yi.l.liu@intel.com>
-To: joro@8bytes.org,
-	alex.williamson@redhat.com,
-	jgg@nvidia.com,
-	kevin.tian@intel.com,
-	robin.murphy@arm.com,
-	baolu.lu@linux.intel.com
-Cc: cohuck@redhat.com,
-	eric.auger@redhat.com,
-	nicolinc@nvidia.com,
-	kvm@vger.kernel.org,
-	mjrosato@linux.ibm.com,
-	chao.p.peng@linux.intel.com,
-	yi.l.liu@intel.com,
-	yi.y.sun@linux.intel.com,
-	peterx@redhat.com,
-	jasowang@redhat.com,
-	shameerali.kolothum.thodi@huawei.com,
-	lulu@redhat.com,
-	suravee.suthikulpanit@amd.com,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	zhenzhong.duan@intel.com,
-	joao.m.martins@oracle.com,
-	xin.zeng@intel.com,
-	yan.y.zhao@intel.com,
-	j.granados@samsung.com
-Subject: [PATCH v9 10/10] iommu/vt-d: Add iotlb flush for nested domain
-Date: Thu, 28 Dec 2023 07:06:29 -0800
-Message-Id: <20231228150629.13149-11-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231228150629.13149-1-yi.l.liu@intel.com>
-References: <20231228150629.13149-1-yi.l.liu@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F60CDDCE
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 15:09:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7b7fdde8b58so856090639f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:09:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703776143; x=1704380943;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qIENxlQM/yHYfnHfvYfBgYoMXgPAxd2HBB1RQCpglng=;
+        b=VQ0Z9d1Ke64wZM+WOiVAw+BwCiNTjZlmu3LfY15med6KtJ8jxRbQx/RtdoDSi0Coko
+         imSLKTWyaDEokJOj+j6S3tOj964zDf+QMEkAnyoOLfVhizH/P5jwUnKiTT4TzXuIB7R9
+         1fkkmErMbe7YnF73VggmGsNPdVaegRcidwN3tX+1do3b3TyiwUcWTsjbE01/sQE5fCR+
+         ozO4F8agW5QeikzJUluOoc9hRcb3asAqaqy9cCiHaBzhMM8otkHqLxPW/D6pI/Bl26Ln
+         O6KY3q5Xo2JAhAzqT/THZESbCUqbJagUTid0bduOikFYUKo2VlTp6EcQrLUtMlnM96Qc
+         EBpw==
+X-Gm-Message-State: AOJu0Yz34ccpa/STXb0SmfWfGWVgFNSdkIJkDW0NlTpXyVw8j8QrRjIV
+	4yFXG2PTQXl27Bgwd8kBOOwiBOGQQCThveHUqEnLs8/t84o4
+X-Google-Smtp-Source: AGHT+IE3NCJ80rf2P8hl5aRimWdUicWR1q0xtmYU9WxKhTyID956TMZAEfmDgOvKD2O8xF9Xr1O/S/g0E5GNhmI2qt8pjKd7sC8f
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1568:b0:35f:d9cc:1c9b with SMTP id
+ k8-20020a056e02156800b0035fd9cc1c9bmr1826816ilu.0.1703776143631; Thu, 28 Dec
+ 2023 07:09:03 -0800 (PST)
+Date: Thu, 28 Dec 2023 07:09:03 -0800
+In-Reply-To: <tencent_8E794F870DC725E80D9E92105DC45DE19907@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d16fcb060d934be7@google.com>
+Subject: Re: [syzbot] [erofs?] KMSAN: uninit-value in z_erofs_lz4_decompress (2)
+From: syzbot <syzbot+6c746eea496f34b3161d@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+Hello,
 
-This implements the .cache_invalidate_user() callback to support iotlb
-flush for nested domain.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KMSAN: uninit-value in z_erofs_lz4_decompress
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Co-developed-by: Yi Liu <yi.l.liu@intel.com>
-Signed-off-by: Yi Liu <yi.l.liu@intel.com>
----
- drivers/iommu/intel/nested.c | 107 +++++++++++++++++++++++++++++++++++
- 1 file changed, 107 insertions(+)
+loop0: detected capacity change from 0 to 16
+erofs: (device loop0): mounted with root inode @ nid 36.
+erofs: (device loop0): z_erofs_lz4_decompress_mem: failed to decompress -12 in[46, 4050] out[917]
+=====================================================
+BUG: KMSAN: uninit-value in hex_dump_to_buffer+0xae9/0x10f0 lib/hexdump.c:194
+ hex_dump_to_buffer+0xae9/0x10f0 lib/hexdump.c:194
+ print_hex_dump+0x13d/0x3e0 lib/hexdump.c:276
+ z_erofs_lz4_decompress_mem fs/erofs/decompressor.c:252 [inline]
+ z_erofs_lz4_decompress+0x28d0/0x2ae0 fs/erofs/decompressor.c:312
+ z_erofs_decompress_pcluster fs/erofs/zdata.c:1290 [inline]
+ z_erofs_decompress_queue+0x338c/0x6460 fs/erofs/zdata.c:1372
+ z_erofs_runqueue+0x36cd/0x3830
+ z_erofs_read_folio+0x435/0x810 fs/erofs/zdata.c:1843
+ filemap_read_folio+0xce/0x370 mm/filemap.c:2323
+ do_read_cache_folio+0x3b4/0x11e0 mm/filemap.c:3691
+ read_cache_folio+0x60/0x80 mm/filemap.c:3723
+ erofs_bread+0x286/0x6f0 fs/erofs/data.c:46
+ erofs_find_target_block fs/erofs/namei.c:103 [inline]
+ erofs_namei+0x2fe/0x1790 fs/erofs/namei.c:177
+ erofs_lookup+0x100/0x3c0 fs/erofs/namei.c:206
+ lookup_one_qstr_excl+0x233/0x520 fs/namei.c:1609
+ filename_create+0x2fc/0x6d0 fs/namei.c:3876
+ do_mkdirat+0x69/0x800 fs/namei.c:4121
+ __do_sys_mkdirat fs/namei.c:4144 [inline]
+ __se_sys_mkdirat fs/namei.c:4142 [inline]
+ __x64_sys_mkdirat+0xc8/0x120 fs/namei.c:4142
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
-index b5a5563ab32c..f1f86437939c 100644
---- a/drivers/iommu/intel/nested.c
-+++ b/drivers/iommu/intel/nested.c
-@@ -73,9 +73,116 @@ static void intel_nested_domain_free(struct iommu_domain *domain)
- 	kfree(to_dmar_domain(domain));
- }
- 
-+static void nested_flush_dev_iotlb(struct dmar_domain *domain, u64 addr,
-+				   unsigned mask, u32 *fault)
-+{
-+	struct device_domain_info *info;
-+	unsigned long flags;
-+	u16 sid, qdep;
-+
-+	spin_lock_irqsave(&domain->lock, flags);
-+	list_for_each_entry(info, &domain->devices, link) {
-+		if (!info->ats_enabled)
-+			continue;
-+		sid = info->bus << 8 | info->devfn;
-+		qdep = info->ats_qdep;
-+		qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
-+				   qdep, addr, mask, fault);
-+		quirk_extra_dev_tlb_flush(info, addr, mask,
-+					  IOMMU_NO_PASID, qdep);
-+	}
-+	spin_unlock_irqrestore(&domain->lock, flags);
-+}
-+
-+static void intel_nested_flush_cache(struct dmar_domain *domain, u64 addr,
-+				     unsigned long npages, bool ih, u32 *error)
-+{
-+	struct iommu_domain_info *info;
-+	unsigned long i;
-+	unsigned mask;
-+	u32 fault;
-+
-+	xa_for_each(&domain->iommu_array, i, info)
-+		qi_flush_piotlb(info->iommu,
-+				domain_id_iommu(domain, info->iommu),
-+				IOMMU_NO_PASID, addr, npages, ih, NULL);
-+
-+	if (!domain->has_iotlb_device)
-+		return;
-+
-+	if (npages == U64_MAX)
-+		mask = 64 - VTD_PAGE_SHIFT;
-+	else
-+		mask = ilog2(__roundup_pow_of_two(npages));
-+
-+	nested_flush_dev_iotlb(domain, addr, mask, &fault);
-+
-+	*error = 0;
-+	/*
-+	 * Invalidation queue error (i.e. IQE) will not be reported to user
-+	 * as it's caused only by driver internal bug.
-+	 */
-+	if (fault & DMA_FSTS_ICE)
-+		*error |= IOMMU_HWPT_INVALIDATE_VTD_S1_ICE;
-+	if (fault & DMA_FSTS_ITE)
-+		*error |= IOMMU_HWPT_INVALIDATE_VTD_S1_ITE;
-+}
-+
-+static int intel_nested_cache_invalidate_user(struct iommu_domain *domain,
-+					      struct iommu_user_data_array *array)
-+{
-+	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
-+	struct iommu_hwpt_vtd_s1_invalidate inv_entry;
-+	u32 processed = 0;
-+	int ret = 0;
-+	u32 index;
-+
-+	if (array->type != IOMMU_HWPT_INVALIDATE_DATA_VTD_S1) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	for (index = 0; index < array->entry_num; index++) {
-+		ret = iommu_copy_struct_from_user_array(&inv_entry, array,
-+							IOMMU_HWPT_INVALIDATE_DATA_VTD_S1,
-+							index, hw_error);
-+		if (ret)
-+			break;
-+
-+		if (inv_entry.flags & ~IOMMU_VTD_INV_FLAGS_LEAF) {
-+			ret = -EOPNOTSUPP;
-+			break;
-+		}
-+
-+		if (!IS_ALIGNED(inv_entry.addr, VTD_PAGE_SIZE) ||
-+		    ((inv_entry.npages == U64_MAX) && inv_entry.addr)) {
-+			ret = -EINVAL;
-+			break;
-+		}
-+
-+		intel_nested_flush_cache(dmar_domain, inv_entry.addr,
-+					 inv_entry.npages,
-+					 inv_entry.flags & IOMMU_VTD_INV_FLAGS_LEAF,
-+					 &inv_entry.hw_error);
-+
-+		ret = iommu_respond_struct_to_user_array(array, index,
-+							 (void *)&inv_entry,
-+							 sizeof(inv_entry));
-+		if (ret)
-+			break;
-+
-+		processed++;
-+	}
-+
-+out:
-+	array->entry_num = processed;
-+	return ret;
-+}
-+
- static const struct iommu_domain_ops intel_nested_domain_ops = {
- 	.attach_dev		= intel_nested_attach_dev,
- 	.free			= intel_nested_domain_free,
-+	.cache_invalidate_user	= intel_nested_cache_invalidate_user,
- };
- 
- struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain *parent,
--- 
-2.34.1
+Uninit was created at:
+ __alloc_pages+0x9a4/0xe00 mm/page_alloc.c:4591
+ alloc_pages_mpol+0x62b/0x9d0 mm/mempolicy.c:2133
+ alloc_pages mm/mempolicy.c:2204 [inline]
+ folio_alloc+0x1da/0x380 mm/mempolicy.c:2211
+ filemap_alloc_folio+0xa5/0x430 mm/filemap.c:974
+ do_read_cache_folio+0x163/0x11e0 mm/filemap.c:3655
+ read_cache_folio+0x60/0x80 mm/filemap.c:3723
+ erofs_bread+0x286/0x6f0 fs/erofs/data.c:46
+ erofs_find_target_block fs/erofs/namei.c:103 [inline]
+ erofs_namei+0x2fe/0x1790 fs/erofs/namei.c:177
+ erofs_lookup+0x100/0x3c0 fs/erofs/namei.c:206
+ lookup_one_qstr_excl+0x233/0x520 fs/namei.c:1609
+ filename_create+0x2fc/0x6d0 fs/namei.c:3876
+ do_mkdirat+0x69/0x800 fs/namei.c:4121
+ __do_sys_mkdirat fs/namei.c:4144 [inline]
+ __se_sys_mkdirat fs/namei.c:4142 [inline]
+ __x64_sys_mkdirat+0xc8/0x120 fs/namei.c:4142
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+CPU: 1 PID: 5487 Comm: syz-executor.0 Not tainted 6.7.0-rc7-syzkaller-00003-gfbafc3e621c3-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+=====================================================
+
+
+Tested on:
+
+commit:         fbafc3e6 Merge tag 'for_linus' of git://git.kernel.org..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=12bcb509e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7078a6b901aa3
+dashboard link: https://syzkaller.appspot.com/bug?extid=6c746eea496f34b3161d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16888cb5e80000
 
 
