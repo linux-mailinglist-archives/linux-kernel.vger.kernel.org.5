@@ -1,70 +1,72 @@
-Return-Path: <linux-kernel+bounces-12425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE9DC81F4AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 06:19:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40FCE81F4B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 06:29:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAE3B1C21A92
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 05:19:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54DE71C20E25
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 05:29:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BDCC2904;
-	Thu, 28 Dec 2023 05:19:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFFB323A7;
+	Thu, 28 Dec 2023 05:29:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OCQ1XFZi"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fNrWRZ0B"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D4D715C3;
-	Thu, 28 Dec 2023 05:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703740771; x=1735276771;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HcGj3hy/rgIPr7kx2Q/XYCRW7TjUvWTpE5wspKmi1ck=;
-  b=OCQ1XFZiEp1ouyFNEGQRrz5UuZK7feKntZF2+50/T4NTxMyUAvqZL/TM
-   QHULu6vlziKnlKbRCjwaPercrCNaw86L2e6+F2Nht3x1uOM4u0+zCSFaN
-   yw79x9IQwfGLYxepoDQ2QibREw82JtLNabUNsWNzubrgAz/FNR8hrPjSa
-   sIIu66x6F6JHaiuNoWl0tvwndvjzCHaF1hACHH0UTgQ1BFySNy2lXwZzZ
-   Cjai2MLuf/uGlANaVRrgsKtzVoA39G5QUL1zAXgZ4gRhxZFp7ZAkRzF93
-   2+MzI7VDR/A3jBW5BDGXtq6rIl0p8nxetKkcOP0UTppRBQMJYEwDr86yM
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="482692903"
-X-IronPort-AV: E=Sophos;i="6.04,311,1695711600"; 
-   d="scan'208";a="482692903"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2023 21:19:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="754643985"
-X-IronPort-AV: E=Sophos;i="6.04,311,1695711600"; 
-   d="scan'208";a="754643985"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 27 Dec 2023 21:19:26 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rIinj-000G81-2x;
-	Thu, 28 Dec 2023 05:19:23 +0000
-Date: Thu, 28 Dec 2023 13:18:28 +0800
-From: kernel test robot <lkp@intel.com>
-To: Markus Elfring <Markus.Elfring@web.de>, linux-omap@vger.kernel.org,
-	linux-clk@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-	Tero Kristo <kristo@kernel.org>, Tony Lindgren <tony@atomide.com>
-Cc: oe-kbuild-all@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
-	cocci@inria.fr
-Subject: Re: [PATCH 09/10] clk: ti: Less function calls in
- _ti_clkctrl_clk_register() after error detection
-Message-ID: <202312281350.5H2Rhh67-lkp@intel.com>
-References: <b11039e4-69c6-4247-b4ba-c442b9427231@web.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF74515D2
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 05:29:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d45f182fa2so18572045ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 21:29:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703741359; x=1704346159; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=V4wrXuBDdQR1JrqtAidYtGXT/UZktLXAIUHcsugG1q0=;
+        b=fNrWRZ0BcDDYxZLkSpI31wjRq83VQwL7KllLIs9puqxkeyoR9Rudb2zkABaw7A2PpU
+         ZyhxQugPHqGbPTUgjNLqcNlnjkeCitU8IeMibmwaDPYvWLMslxTWRPz2a9LzuK0E+iiT
+         z5vJcUYISYzDEZNc/QM+b6ScqZHDXYms4GrikeW9vmFrZrvE34mgyGj8dT86XefUf/aL
+         TP7M6IKmIa9m2vak+aaEYOhOkAnWer7B6svB/CJ5N0O3j8oe+OPTAixqux0ksVDlUlYh
+         N22qKtU2dfjg1r2UHb/rjALSiHa+BVmTXmOfBdkFvoydoGKOY48Z6GEEhpWGOUH62V7J
+         v86g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703741359; x=1704346159;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V4wrXuBDdQR1JrqtAidYtGXT/UZktLXAIUHcsugG1q0=;
+        b=gypqBeX5Tkrt01b+AYIBTroaaAdUdhCdqMUxu7UxuRduwJcti32aaXTcNq7OTdS8Er
+         fj9CSHmZkjYZe2re89VOPU10LMtFWgyCy2SZYKfw3O2Uc6NXllleHg7ovmLUxhLqlB/3
+         7tQfKk26G5h4q7QH0VDFDfpbPrzEgCeElMph4PXUu8c57lDwZ4Jn1UTupP6mqlROlACp
+         zLM40Ss4FTkRKLQk+M34SQZCOI7hf6/pIbR6wp7DRWuVyOJIm1T+fOKqfB4wXapBRCLf
+         Y6q1yGESOO0XyLNxdx4gFByMnFG+8N66pM4X36pdTX/QqcWmvX9Ui8VJkpCdBaYbaBwh
+         yw/Q==
+X-Gm-Message-State: AOJu0YxK13cHS1LreVwKCwMe3VvWa8E8df2bfucJWh7TFR0ybsyhFFZc
+	F4mJy3YMWe5UWngJfQMrTPwGm7PczOB6Nw==
+X-Google-Smtp-Source: AGHT+IHHGfSXRmYt4sOEi0zvGnO3QGTmhrJKVc+PpJqkEYRmshLT6zpqR8p4t0JKp9qKt177O5CAKQ==
+X-Received: by 2002:a17:902:684f:b0:1d0:6ffe:9f5 with SMTP id f15-20020a170902684f00b001d06ffe09f5mr342433pln.83.1703741359089;
+        Wed, 27 Dec 2023 21:29:19 -0800 (PST)
+Received: from localhost ([122.172.86.168])
+        by smtp.gmail.com with ESMTPSA id c22-20020a170902b69600b001d2ffeac9d3sm3716220pls.186.2023.12.27.21.29.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Dec 2023 21:29:18 -0800 (PST)
+Date: Thu, 28 Dec 2023 10:59:15 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc: vireshk@kernel.org, nm@ti.com, sboyd@kernel.org, ulf.hansson@linaro.org,
+	stephan.gerhold@kernkonzept.com, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] OPP: Fix _set_required_opps when opp is NULL
+Message-ID: <20231228052915.ft4e7hwgtngfsyc7@vireshk-i7>
+References: <20231223023421.3818297-1-bryan.odonoghue@linaro.org>
+ <20231226055936.pzyt4xjzlfhfqb4y@vireshk-i7>
+ <d50810e0-b8e7-4394-975f-d77d8dd24849@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,99 +75,91 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b11039e4-69c6-4247-b4ba-c442b9427231@web.de>
+In-Reply-To: <d50810e0-b8e7-4394-975f-d77d8dd24849@linaro.org>
 
-Hi Markus,
+On 27-12-23, 12:41, Bryan O'Donoghue wrote:
+> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-kernel test robot noticed the following build errors:
+Thanks Bryan. Here is the merged commit:
 
-[auto build test ERROR on clk/clk-next]
-[also build test ERROR on linus/master v6.7-rc7 next-20231222]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Date: Sat, 23 Dec 2023 02:34:21 +0000
+Subject: [PATCH] OPP: Fix _set_required_opps when opp is NULL
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Markus-Elfring/clk-ti-Less-function-calls-in-of_omap2_apll_setup-after-error-detection/20231225-152410
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git clk-next
-patch link:    https://lore.kernel.org/r/b11039e4-69c6-4247-b4ba-c442b9427231%40web.de
-patch subject: [PATCH 09/10] clk: ti: Less function calls in _ti_clkctrl_clk_register() after error detection
-config: arm-allmodconfig (https://download.01.org/0day-ci/archive/20231228/202312281350.5H2Rhh67-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231228/202312281350.5H2Rhh67-lkp@intel.com/reproduce)
+_set_required_opps can be called with opp NULL in _disable_opp_table().
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312281350.5H2Rhh67-lkp@intel.com/
+commit e37440e7e2c2 ("OPP: Call dev_pm_opp_set_opp() for required OPPs")
+requires the opp pointer to be non-NULL to function.
 
-All errors (new ones prefixed by >>):
+[   81.253439] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000048
+[   81.438407] Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
+[   81.445296] Workqueue: pm pm_runtime_work
+[   81.449446] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[   81.456609] pc : _set_required_opps+0x178/0x28c
+[   81.461288] lr : _set_required_opps+0x178/0x28c
+[   81.465962] sp : ffff80008078bb00
+[   81.469375] x29: ffff80008078bb00 x28: ffffd1cd71bfe308 x27: 0000000000000000
+[   81.476730] x26: ffffd1cd70ebc578 x25: ffffd1cd70a08710 x24: 00000000ffffffff
+[   81.484083] x23: 00000000ffffffff x22: 0000000000000000 x21: ffff56ff892b3c48
+[   81.491435] x20: ffff56f1071c10 x19: 0000000000000000 x18: ffffffffffffffff
+[   81.498788] x17: 2030207865646e69 x16: 2030303131207370 x15: 706f5f6465726975
+[   81.506141] x14: 7165725f7465735f x13: ffff5700f5c00000 x12: 00000000000008ac
+[   81.513495] x11: 00000000000002e4 x10: ffff5700f6700000 x9 : ffff5700f5c00000
+[   81.520848] x8 : 00000000fffdffff x7 : ffff5700f6700000 x6 : 80000000fffe0000
+[   81.528200] x5 : ffff5700fef40d08 x4 : 0000000000000000 x3 : 0000000000000000
+[   81.535551] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff56ff81298f80
+[   81.542904] Call trace:
+[   81.545437]  _set_required_opps+0x178/0x28c
+[   81.549754]  _set_opp+0x3fc/0x5c0
+[   81.553181]  dev_pm_opp_set_rate+0x90/0x26c
+[   81.557498]  core_power_v4+0x44/0x15c [venus_core]
+[   81.562509]  venus_runtime_suspend+0x40/0xd0 [venus_core]
+[   81.568135]  pm_generic_runtime_suspend+0x2c/0x44
+[   81.572983]  __rpm_callback+0x48/0x1d8
+[   81.576852]  rpm_callback+0x6c/0x78
+[   81.580453]  rpm_suspend+0x10c/0x570
+[   81.584143]  pm_runtime_work+0xc4/0xc8
+[   81.588011]  process_one_work+0x138/0x244
+[   81.592153]  worker_thread+0x320/0x438
+[   81.596021]  kthread+0x110/0x114
+[   81.599355]  ret_from_fork+0x10/0x20
+[   81.603052] Code: f10000ff fa5410e0 54fffbe1 97f05ae8 (f94026c5)
+[   81.609317] ---[ end trace 0000000000000000 ]---
 
-   drivers/clk/ti/clkctrl.c: In function '_ti_clkctrl_clk_register':
->> drivers/clk/ti/clkctrl.c:330:1: error: 'free_init_name' undeclared (first use in this function)
-     330 | free_init_name;
-         | ^~~~~~~~~~~~~~
-   drivers/clk/ti/clkctrl.c:330:1: note: each undeclared identifier is reported only once for each function it appears in
->> drivers/clk/ti/clkctrl.c:305:17: error: label 'free_init_name' used but not defined
-     305 |                 goto free_init_name;
-         |                 ^~~~
+Fix it.
 
+Fixes: e37440e7e2c2 ("OPP: Call dev_pm_opp_set_opp() for required OPPs")
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+[ Viresh: Implemented the fix differently ]
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+---
+ drivers/opp/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-vim +/free_init_name +330 drivers/clk/ti/clkctrl.c
-
-   283	
-   284	static int __init
-   285	_ti_clkctrl_clk_register(struct omap_clkctrl_provider *provider,
-   286				 struct device_node *node, struct clk_hw *clk_hw,
-   287				 u16 offset, u8 bit, const char * const *parents,
-   288				 int num_parents, const struct clk_ops *ops,
-   289				 const char *clkctrl_name)
-   290	{
-   291		struct clk_init_data init = { NULL };
-   292		struct clk *clk;
-   293		struct omap_clkctrl_clk *clkctrl_clk;
-   294		int ret = 0;
-   295	
-   296		init.name = clkctrl_get_clock_name(node, clkctrl_name, offset, bit,
-   297						   ti_clk_get_features()->flags &
-   298						   TI_CLK_CLKCTRL_COMPAT);
-   299		if (!init.name)
-   300			return -ENOMEM;
-   301	
-   302		clkctrl_clk = kzalloc(sizeof(*clkctrl_clk), GFP_KERNEL);
-   303		if (!clkctrl_clk) {
-   304			ret = -ENOMEM;
- > 305			goto free_init_name;
-   306		}
-   307	
-   308		clk_hw->init = &init;
-   309		init.parent_names = parents;
-   310		init.num_parents = num_parents;
-   311		init.ops = ops;
-   312		init.flags = 0;
-   313	
-   314		clk = of_ti_clk_register(node, clk_hw, init.name);
-   315		if (IS_ERR_OR_NULL(clk)) {
-   316			ret = -EINVAL;
-   317			goto cleanup;
-   318		}
-   319	
-   320		clkctrl_clk->reg_offset = offset;
-   321		clkctrl_clk->bit_offset = bit;
-   322		clkctrl_clk->clk = clk_hw;
-   323	
-   324		list_add(&clkctrl_clk->node, &provider->clocks);
-   325	
-   326		return 0;
-   327	
-   328	cleanup:
-   329		kfree(clkctrl_clk);
- > 330	free_init_name;
-   331		kfree(init.name);
-   332		return ret;
-   333	}
-   334	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 49b429984bdb..a6e80f566e9b 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -1066,6 +1066,7 @@ static int _set_required_opps(struct device *dev, struct opp_table *opp_table,
+ 			      struct dev_pm_opp *opp, bool up)
+ {
+ 	struct device **devs = opp_table->required_devs;
++	struct dev_pm_opp *required_opp;
+ 	int index, target, delta, ret;
+ 
+ 	if (!devs)
+@@ -1088,7 +1089,9 @@ static int _set_required_opps(struct device *dev, struct opp_table *opp_table,
+ 
+ 	while (index != target) {
+ 		if (devs[index]) {
+-			ret = dev_pm_opp_set_opp(devs[index], opp->required_opps[index]);
++			required_opp = opp ? opp->required_opps[index] : NULL;
++
++			ret = dev_pm_opp_set_opp(devs[index], required_opp);
+ 			if (ret)
+ 				return ret;
+ 		}
 
