@@ -1,224 +1,209 @@
-Return-Path: <linux-kernel+bounces-12724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C417D81F958
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:02:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25C3B81F9C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:54:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EB321F22909
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:02:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7610C285769
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 15:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2D6D2F5;
-	Thu, 28 Dec 2023 15:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="HvT1wIFX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B527AF502;
+	Thu, 28 Dec 2023 15:54:11 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-m12773.qiye.163.com (mail-m12773.qiye.163.com [115.236.127.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 104F0F4E1
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 15:02:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-427e59202ceso12677981cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 07:02:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1703775732; x=1704380532; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L/6cBo3Wyb/38nIDe6ydYNszYPe9c+GQu22EYbo95bE=;
-        b=HvT1wIFXnGmPPfIw4pul8bn4pcIrhMpX2+0ThYvjubUrTGDDOtBboB9hh2zYQi252F
-         Csgmqo7xRoGgz9ey4zyi5taz4w9cqqRf5V6p2AWEuAS7wH/uoPJClDHaKie7Rqq7AOmk
-         ll2zT5Tps2c++EFQF0S0c6yCGRdCtZ4w2Fs2jY/QkNgP7pG6gjinZvcRO0kYMJ4cBLD6
-         OkKrlmQic921WDXdFW7cKXuxnCGvDn1MOC+0F5LV6wPWh3CSRhHO2wwZglGsa36FFNXl
-         V8FQd80V3Hf+zEwulXLwk7FuYPPdiJx1RZZs33rs/AtgJLhViz4bPgpORgu5yQpIHHsw
-         0ZjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703775732; x=1704380532;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L/6cBo3Wyb/38nIDe6ydYNszYPe9c+GQu22EYbo95bE=;
-        b=HBdM6Jz77lWO1CW72AXdIM4hVTeIUY68v2rO1XnOelKctAOP+ETJXK4vpVYmo0fsMu
-         xhyCih7wIBY6rdqE+98vsLi1iUohiesGTU4a2xquSdBMU8LyZFcu6U/6OUinV85g/VcZ
-         pxzn8BM1cNWZF0Hqef8Nb1FzySLVW9X/bVfKAHGYKTdT77nw6wNuOGnEJG2vfpWaH6x1
-         E1G1u0AugJK3Unn3KoWl0J6ZQkC4vtWeWT2kBGd3yuJPMEDjwzX38b3yLgKS/WUT36zH
-         7dza79jWdZXaj8mu1h52mhoBB5sIRQfGsY6O8ROwOJ9a6l+Ne4JpxNXjfqYw/cLRggnw
-         KdZg==
-X-Gm-Message-State: AOJu0Yw5RO0jowoK1XXD4DB3dJ24wZBIB/U7Ono6kgX4cXf6DboJBzOG
-	dQRqDwAoSnu1UC61gISv9f+U3JE9ttUW1ETGGULrbay1wxS6ELWrtX5cV2s9kcA=
-X-Google-Smtp-Source: AGHT+IGTWqap7OQo2+ut8dqdkZE0j9g7QmI6eM86JzAPMzCq4CrNH+GLlgUN27a0N+PUFgPy7ylZHp/70YRwqbaOozs=
-X-Received: by 2002:a05:622a:134a:b0:41e:453a:4dfe with SMTP id
- w10-20020a05622a134a00b0041e453a4dfemr15697224qtk.36.1703775731870; Thu, 28
- Dec 2023 07:02:11 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79FFAF4E3;
+	Thu, 28 Dec 2023 15:54:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=senarytech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=senarytech.com
+Received: from liubo (unknown [61.183.143.78])
+	by mail-m12756.qiye.163.com (Hmail) with ESMTPA id B98DCDC035B;
+	Thu, 28 Dec 2023 10:57:43 +0800 (CST)
+From: =?utf-8?B?5YiY5Y2a?= <bo.liu@senarytech.com>
+To: <perex@perex.cz>,
+	<tiwai@suse.com>
+Cc: <linux-sound@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: =?utf-8?Q?Due_to_returning_the_email_and_r?=
+	=?utf-8?Q?esending_it//=E7=AD=94=E5=A4=8D:_=5BPATCH_1/3=5D_Fix?=
+	=?utf-8?Q?_headset_auto_detect_fail_in_cx8?=
+	=?utf-8?Q?070_and_SN6140?=
+Date: Thu, 28 Dec 2023 10:57:43 +0800
+Message-ID: <009d01da3939$a1517440$e3f45cc0$@senarytech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221031915.619337-1-pasha.tatashin@soleen.com>
- <20231221031915.619337-2-pasha.tatashin@soleen.com> <a77781a4-2d3c-403a-88a6-57242c7f0246@intel.com>
-In-Reply-To: <a77781a4-2d3c-403a-88a6-57242c7f0246@intel.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Thu, 28 Dec 2023 10:01:35 -0500
-Message-ID: <CA+CK2bACOdqYNTPO+EN90L5ZnCYT_UeKaLWp-xDrS8Jg3hMkHQ@mail.gmail.com>
-Subject: Re: [RFC 1/3] iommu/intel: Use page->refcount to count number of
- entries in IOMMU
-To: "Liu, Jingqi" <jingqi.liu@intel.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rientjes@google.com, dwmw2@infradead.org, 
-	baolu.lu@linux.intel.com, joro@8bytes.org, will@kernel.org, 
-	robin.murphy@arm.com, iommu@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+	charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: Ado5OZT0IQYjxbjwTr6PBszvuPulOQ==
+Content-Language: zh-cn
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaSx9JVh0ZHhkfH0IZTE0dHlUTARMWGhIXJBQOD1
+	lXWRgSC1lBWU1KVUpDSFVKT0hVTENZV1kWGg8SFR0UWUFZT0tIVUpNT0lOSFVKS0tVSkJLS1kG
+X-HM-Tid: 0a8cae5b3ba8b223kuuub98dcdc035b
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NUk6Vio5Kjw6CQ8SCC4tPxEL
+	KAMKCy5VSlVKTEtITEhJSU1PTkpOVTMWGhIXVRkUVRcSDjsIHhUaCQIPHhgTVRgUFkVZV1kSC1lB
+	WU1KVUpDSFVKT0hVTENZV1kIAVlBTU5OSjcG
 
-On Sun, Dec 24, 2023 at 9:59=E2=80=AFPM Liu, Jingqi <jingqi.liu@intel.com> =
-wrote:
->
-> On 12/21/2023 11:19 AM, Pasha Tatashin wrote:
-> > In order to be able to efficiently free empty page table levels, count =
-the
-> > number of entries in each page table my incremeanting and decremeanting
-> s/incremeanting/incrementing
-> s/decremeanting/decrementing
->
-> > refcount every time a PTE is inserted or removed form the page table.
-> s/form/from
->
-> >
-> > For this to work correctly, add two helper function:
-> > dma_clear_pte and dma_set_pte where counting is performed,
-> >
-> > Also, modify the code so every page table entry is always updated using=
- the
-> > two new functions.
-> >
-> > Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> > ---
-> >   drivers/iommu/intel/iommu.c | 40 +++++++++++++++++++++---------------
-> >   drivers/iommu/intel/iommu.h | 41 +++++++++++++++++++++++++++++++-----=
--
-> >   2 files changed, 58 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> > index 897159dba47d..4688ef797161 100644
-> > --- a/drivers/iommu/intel/iommu.c
-> > +++ b/drivers/iommu/intel/iommu.c
-> > @@ -949,7 +949,7 @@ static struct dma_pte *pfn_to_dma_pte(struct dmar_d=
-omain *domain,
-> >                       if (domain->use_first_level)
-> >                               pteval |=3D DMA_FL_PTE_XD | DMA_FL_PTE_US=
- | DMA_FL_PTE_ACCESS;
-> >
-> > -                     if (cmpxchg64(&pte->val, 0ULL, pteval))
-> > +                     if (dma_set_pte(pte, pteval))
-> >                               /* Someone else set it while we were thin=
-king; use theirs. */
-> >                               free_pgtable_page(tmp_page);
-> >                       else
-> > @@ -1021,7 +1021,8 @@ static void dma_pte_clear_range(struct dmar_domai=
-n *domain,
-> >                       continue;
-> >               }
-> >               do {
-> > -                     dma_clear_pte(pte);
-> > +                     if (dma_pte_present(pte))
-> > +                             dma_clear_pte(pte);
-> >                       start_pfn +=3D lvl_to_nr_pages(large_page);
-> >                       pte++;
-> >               } while (start_pfn <=3D last_pfn && !first_pte_in_page(pt=
-e));
-> > @@ -1062,7 +1063,8 @@ static void dma_pte_free_level(struct dmar_domain=
- *domain, int level,
-> >                */
-> >               if (level < retain_level && !(start_pfn > level_pfn ||
-> >                     last_pfn < level_pfn + level_size(level) - 1)) {
-> > -                     dma_clear_pte(pte);
-> > +                     if (dma_pte_present(pte))
-> > +                             dma_clear_pte(pte);
-> >                       domain_flush_cache(domain, pte, sizeof(*pte));
-> >                       free_pgtable_page(level_pte);
-> >               }
-> > @@ -1093,12 +1095,13 @@ static void dma_pte_free_pagetable(struct dmar_=
-domain *domain,
-> >       }
-> >   }
-> >
-> > -/* When a page at a given level is being unlinked from its parent, we =
-don't
-> > -   need to *modify* it at all. All we need to do is make a list of all=
- the
-> > -   pages which can be freed just as soon as we've flushed the IOTLB an=
-d we
-> > -   know the hardware page-walk will no longer touch them.
-> > -   The 'pte' argument is the *parent* PTE, pointing to the page that i=
-s to
-> > -   be freed. */
-> > +/*
-> > + * A given page at a given level is being unlinked from its parent.
-> > + * We need to make a list of all the pages which can be freed just as =
-soon as
-> > + * we've flushed the IOTLB and we know the hardware page-walk will no =
-longer
-> > + * touch them. The 'pte' argument is the *parent* PTE, pointing to the=
- page
-> > + * that is to be freed.
-> > + */
-> >   static void dma_pte_list_pagetables(struct dmar_domain *domain,
-> >                                   int level, struct dma_pte *pte,
-> >                                   struct list_head *freelist)
-> > @@ -1106,17 +1109,20 @@ static void dma_pte_list_pagetables(struct dmar=
-_domain *domain,
-> >       struct page *pg;
-> >
-> >       pg =3D pfn_to_page(dma_pte_addr(pte) >> PAGE_SHIFT);
-> > -     list_add_tail(&pg->lru, freelist);
-> > -
-> > -     if (level =3D=3D 1)
-> > -             return;
-> > -
-> >       pte =3D page_address(pg);
-> > +
-> >       do {
-> > -             if (dma_pte_present(pte) && !dma_pte_superpage(pte))
-> > -                     dma_pte_list_pagetables(domain, level - 1, pte, f=
-reelist);
-> > +             if (dma_pte_present(pte)) {
-> > +                     if (level > 1 && !dma_pte_superpage(pte)) {
-> > +                             dma_pte_list_pagetables(domain, level - 1=
-, pte,
-> > +                                                     freelist);
-> > +                     }
-> > +                     dma_clear_pte(pte);
-> > +             }
-> >               pte++;
-> >       } while (!first_pte_in_page(pte));
-> > +
-> > +     list_add_tail(&pg->lru, freelist);
-> >   }
-> >
-> How about calculating the page decrement when the pages in the freelist
-> are really freed in iommu_free_pgtbl_pages() ?
+FYI
 
+Best Regards
+Bo Liu =EF=BC=88=E5=88=98=E5=8D=9A=EF=BC=89
+Cell#: +86-18986160629
+=E3=80=80Email: bo.liu@senarytech.com
+=E6=B7=B1=E5=9C=B3=E5=89=8D=E6=B5=B7=E6=B7=B1=E8=95=BE=E5=8D=8A=E5=AF=BC=E4=
+=BD=93=E6=9C=89=E9=99=90=E5=85=AC=E5=8F=B8
+=E6=B9=96=E5=8C=97=E7=9C=81=E6=AD=A6=E6=B1=89=E5=B8=82=E4=B8=9C=E6=B9=96=E9=
+=AB=98=E6=96=B0=E6=8A=80=E6=9C=AF=E5=BC=80=E5=8F=91=E5=8C=BA=E5=85=B3=E5=B1=
+=B1=E5=A4=A7=E9=81=93355=E5=8F=B7=E9=93=AD=E4=B8=B0=E5=A4=A7=E5=8E=A6
+16=E6=A5=BC1601-1603=E5=AE=A4
+=E3=80=80Room 1601-1603=EF=BC=8CmTower, No. 355 Guanshan Avenue,=20
+=E3=80=80East Lake High-tech Development Zone, Wuhan, Hubei Province.
+=E3=80=80
+-----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
+=E5=8F=91=E4=BB=B6=E4=BA=BA: bo liu <bo.liu@senarytech.com>=20
+=E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: =
+2023=E5=B9=B412=E6=9C=8827=E6=97=A5 15:10
+=E6=94=B6=E4=BB=B6=E4=BA=BA: perex@perex.cz; tiwai@suse.com
+=E6=8A=84=E9=80=81: linux-sound@vger.kernel.org; =
+linux-kernel@vger.kernel.org; bo liu <bo.liu@senarytech.com>
+=E4=B8=BB=E9=A2=98: [PATCH 1/3] Fix headset auto detect fail in cx8070 =
+and SN6140
 
-Hi Jingqi,
+CX8070 and SN6140 will get wrong headset type when use OMTP headset, =
+then the headset mic will not work.
 
-Thank you for looking at this.
+Signed-off-by: bo liu <bo.liu@senarytech.com>
+---
+ sound/pci/hda/patch_conexant.c | 75 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 74 insertions(+), 1 deletion(-)
 
-My understanding is what you are suggesting is to count number of
-entries and subtract them from refcount only once before adding page
-to the freelist, is this correct?
+diff --git a/sound/pci/hda/patch_conexant.c =
+b/sound/pci/hda/patch_conexant.c index a889cccdd607..2d58595bfbdd 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -166,6 +166,7 @@ static void cxt_init_gpio_led(struct hda_codec =
+*codec)
+=20
+ static int cx_auto_init(struct hda_codec *codec)  {
++	unsigned int mic_persent;
+ 	struct conexant_spec *spec =3D codec->spec;
+ 	snd_hda_gen_init(codec);
+ 	if (!spec->dynamic_eapd)
+@@ -174,6 +175,23 @@ static int cx_auto_init(struct hda_codec *codec)
+ 	cxt_init_gpio_led(codec);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_INIT);
+=20
++	switch (codec->core.vendor_id) {
++	case 0x14f11f86:
++	case 0x14f11f87:
++		/* fix some headset recognize fail issue */
++		snd_hda_codec_write(codec, 0x1c, 0, 0x320, 0x010);
++		snd_hda_codec_write(codec, 0x1c, 0, 0x3b0, 0xe10);
++		snd_hda_codec_write(codec, 0x1c, 0, 0x4f0, 0x0eb);
++		/* fix reboot headset recognize fail issue */
++		mic_persent =3D snd_hda_codec_read(codec, 0x19, 0, 0xf09, 0x0);
++		if (mic_persent&0x80000000) {
++			snd_hda_codec_write(codec, 0x19, 0, 0x707, 0x24);
++		} else {
++			snd_hda_codec_write(codec, 0x19, 0, 0x707, 0x20);
++		}
++		break;
++	}
++
+ 	return 0;
+ }
+=20
+@@ -191,6 +209,60 @@ static void cx_auto_free(struct hda_codec *codec)
+ 	cx_auto_shutdown(codec);
+ 	snd_hda_gen_free(codec);
+ }
++=20
++static int headset_present_flag;
++static void cx_jack_unsol_event(struct hda_codec *codec, unsigned int=20
++res) {
++	unsigned int val,phone_present,mic_persent,phone_tag,mic_tag;
++	unsigned int count=3D0;
++=09
++	switch (codec->core.vendor_id) {
++	case 0x14f11f86:
++	case 0x14f11f87:
++		/* check hp&mic tag to process headset pulgin&plugout */
++		phone_tag =3D snd_hda_codec_read(codec, 0x16, 0, 0xf08, 0x0);
++		mic_tag =3D snd_hda_codec_read(codec, 0x19, 0, 0xf08, 0x0);
++		if((phone_tag&(res>>26)) || (mic_tag&(res>>26))) {
++			//msleep(600);
++			phone_present =3D snd_hda_codec_read(codec, 0x16, 0, 0xf09, 0x0);
++			if(!(phone_present&0x80000000)) {/* headphone plugout */
++				headset_present_flag =3D 0;
++				snd_hda_codec_write(codec, 0x19, 0, 0x707, 0x20);
++				break;
++			}
++			if (headset_present_flag =3D=3D 0) {
++				headset_present_flag =3D 1;
++			} else if(headset_present_flag =3D=3D 1) {
++				mic_persent =3D snd_hda_codec_read(codec, 0x19, 0, 0xf09, 0x0);
++				if ((phone_present&0x80000000)&&(mic_persent&0x80000000)) {/* =
+headset is present */
++					/* wait headset detect done */
++					do {
++						val =3D snd_hda_codec_read(codec, 0x1c, 0, 0xca0, 0x0);
++						if(val&0x080) {
++							break;
++						}
++						msleep(10);
++						count +=3D 1;
++					} while(count > 5);
++					val =3D snd_hda_codec_read(codec, 0x1c, 0, 0xcb0, 0x0);
++					if(val&0x800) {
++						codec_dbg(codec, "headset plugin, type is CTIA\n");
++						snd_hda_codec_write(codec, 0x19, 0, 0x707, 0x24);
++					} else if(val&0x400) {
++						codec_dbg(codec, "headset plugin, type is OMTP\n");
++						snd_hda_codec_write(codec, 0x19, 0, 0x707, 0x24);
++					} else {
++						codec_dbg(codec, "headphone plugin\n");
++					}
++					headset_present_flag =3D 2;
++				}
++			}
++		}
++		break;
++	}
++
++	snd_hda_jack_unsol_event(codec, res);
++}
+=20
+ #ifdef CONFIG_PM
+ static int cx_auto_suspend(struct hda_codec *codec) @@ -205,7 +277,7 @@ =
+static const struct hda_codec_ops cx_auto_patch_ops =3D {
+ 	.build_pcms =3D snd_hda_gen_build_pcms,
+ 	.init =3D cx_auto_init,
+ 	.free =3D cx_auto_free,
+-	.unsol_event =3D snd_hda_jack_unsol_event,
++	.unsol_event =3D cx_jack_unsol_event,
+ #ifdef CONFIG_PM
+ 	.suspend =3D cx_auto_suspend,
+ 	.check_power_status =3D snd_hda_gen_check_power_status, @@ -1042,6 =
++1114,7 @@ static int patch_conexant_auto(struct hda_codec *codec)
+ 	codec->spec =3D spec;
+ 	codec->patch_ops =3D cx_auto_patch_ops;
+=20
++	headset_present_flag =3D 0;
+ 	cx_auto_parse_eapd(codec);
+ 	spec->gen.own_eapd_ctl =3D 1;
+=20
+--
+2.34.1
 
-We could do that, but having dma_clear_pte() for each entry is very
-beneficial, as we could extend IOMMU page tables with other debug
-technologies, such as page_table_check, if every single entry in the
-page table is added and removed via dma_clear_pte() and dma_set_pte(),
-since we are alreadying clearing pte, there is no reason not to change
-the refcount at the same time.
-
-Pasha
 
