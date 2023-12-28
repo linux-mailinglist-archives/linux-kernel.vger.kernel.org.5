@@ -1,116 +1,101 @@
-Return-Path: <linux-kernel+bounces-12795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE24C81FA25
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 17:59:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F88A81FA2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 18:00:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9944C1F243E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 16:59:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF6D92852B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 17:00:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C6E310A24;
-	Thu, 28 Dec 2023 16:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5491F9D1;
+	Thu, 28 Dec 2023 16:59:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lWpAGoY8"
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="gGN9rLI8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82DC210A09;
-	Thu, 28 Dec 2023 16:58:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9499CC433C9;
-	Thu, 28 Dec 2023 16:58:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703782714;
-	bh=LtB9LsZRFoK2mRick0kUYbdhu9aPS6cGfKbd+Bt8FtI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lWpAGoY88Go6sFhC5oHMizbI6XpsDbe3P9/irSiWfwoLQGwfrrdzSswLuoybnRUFT
-	 Y+XqOp9YWoQsYRrr6bvMkd8mxSERkT48kgdNRqDjCUUttR5Q3H3U0h6pPQweVEORBc
-	 I8WSnOqHV1rhNFbW5BbgKKPNaTH+Ac5AbrB8xN5rrfXe+tCgqQs5Rp1ezx8NBaLOU2
-	 N34MiXPPv82Oc2WqM4yvpi5XSNSYcpVl0ehK6ySaDLDFWybSeNgF8bZuALCNNz0wJQ
-	 6D8Um8C0blfpXdkHQK5vaSPd/HhcXAfTjTliP0Y6lp9eN5VXRU/sim+RtVXRhf+tQ6
-	 UVcz4gfMLuMIw==
-Date: Thu, 28 Dec 2023 09:58:31 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: David Howells <dhowells@redhat.com>, Jeff Layton <jlayton@kernel.org>,
-	Steve French <smfrench@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Paulo Alcantara <pc@manguebit.com>,
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
-	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-	linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-	v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v5 15/40] netfs: Add support for DIO buffering
-Message-ID: <20231228165831.GA348702@dev-arch.thelio-3990X>
-References: <20231221132400.1601991-1-dhowells@redhat.com>
- <20231221132400.1601991-16-dhowells@redhat.com>
- <20231226165442.GA1202197@dev-arch.thelio-3990X>
- <20231228-wohlbefinden-museen-c5efad4e0d84@brauner>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97ED0F513
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 16:59:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d5ab2f9f1so24551615e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 08:59:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1703782743; x=1704387543; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BJkw3kMfw4c7+0aPOU/382bF1hMC8vk98/y6RCWuVXs=;
+        b=gGN9rLI8hHJjgC/bAtsjR0B5MC+34HnQRgGoA1UwRtqpmFstl2p5P9+gc6JuPkVjwC
+         Ztz7T5ZWe9UBst/+Kq3k2By8LDdadE1ZHiO7/HLB/ooNZ+1cKjQUCj9vn4KPmVOn1f5j
+         6N3f+lbS0Ugi/k25HvDyd0wOiO6Mp2vY6Xp3Fl0C6Ty4ACnCJrqV8ScBFbTKxaASlMnK
+         27417QjXJHeeXNPOKFWYgUTeBKuMnjzZD8hwrOQip4Ov0dvfkHuBYx17Op/WtYJJFX44
+         LSXYRDVgHIfO4j75OguQV9dmFOenldm9BQ5X14PO65bGYEJWM8Ff3lhOv1aEgLuNH5ob
+         lvYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703782743; x=1704387543;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BJkw3kMfw4c7+0aPOU/382bF1hMC8vk98/y6RCWuVXs=;
+        b=tq2aFZkKuVC+IFZe9dcXLRT9wDsL545oEQeabwrZzFIlOr5Q8Nz6/XLIWc8UHw/c76
+         9osM6Fr+pX7EnK8Lj7z38GKp4/pmgWvZvLPbI2UUitZ7lV+SF7hOasxIZ+Czw6JUN/zN
+         5J2SJaKB4Pgch1V2lAxTYAOBDO5QgWV0ebzYAczab9svZ/TMz/WhVcS20LbKUdQUbgn6
+         RYs2f3knmMmnuM5yn+zILR/aUkaVBQWyeI0MDnB+S0D2QF6RtCl4Ryjniqzm+FctTVPI
+         tnGFnPiVOn4lzKD5liHEhN3ZJePD4YguSlp4GNM9a4DYnQOX8744a3sd5zyzBA3TyvB7
+         oPTA==
+X-Gm-Message-State: AOJu0YxE4ScGuSMoSroHZCzVoydnHVjyPF2OM88wjJPdDAR48yX5DxGs
+	AesyuS/fGxzPnuA+9vGKSgM4tKM8qnInRA==
+X-Google-Smtp-Source: AGHT+IH7bPqpbYnbSKS9iLDqgXE0pweTMlZ6RMG8DNsA1bAhDM0jgnm0wwEh7m3MP0lcZcEyRBpvcQ==
+X-Received: by 2002:a05:600c:a04:b0:40d:6f02:cbef with SMTP id z4-20020a05600c0a0400b0040d6f02cbefmr309420wmp.59.1703782742789;
+        Thu, 28 Dec 2023 08:59:02 -0800 (PST)
+Received: from airbuntu (host109-154-238-212.range109-154.btcentralplus.com. [109.154.238.212])
+        by smtp.gmail.com with ESMTPSA id t7-20020a05600c198700b0040d579817b0sm12545409wmq.15.2023.12.28.08.59.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Dec 2023 08:59:02 -0800 (PST)
+Date: Thu, 28 Dec 2023 16:59:01 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+	rafael@kernel.org, dietmar.eggemann@arm.com, rui.zhang@intel.com,
+	amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+	daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+	len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
+	wvw@google.com
+Subject: Re: [PATCH v5 02/23] PM: EM: Refactor
+ em_cpufreq_update_efficiencies() arguments
+Message-ID: <20231228165901.q4sj43wkpiy2be2t@airbuntu>
+References: <20231129110853.94344-1-lukasz.luba@arm.com>
+ <20231129110853.94344-3-lukasz.luba@arm.com>
+ <20231217175812.s5vaabxtm4cgil36@airbuntu>
+ <89df2982-5492-43db-8e25-d974ff19fda2@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231228-wohlbefinden-museen-c5efad4e0d84@brauner>
+In-Reply-To: <89df2982-5492-43db-8e25-d974ff19fda2@arm.com>
 
-On Thu, Dec 28, 2023 at 11:47:45AM +0100, Christian Brauner wrote:
-> > This will break the build with versions of clang that have support for
-> > counted_by (as it has been reverted in main but reapplication to main is
-> > being actively worked on) because while annotating pointers with this
-> > attribute is a goal of the counted_by attribute, it is not ready yet.
-> > Please consider removing this and adding a TODO to annotate it when
-> > support is available.
+On 12/19/23 10:30, Lukasz Luba wrote:
 > 
-> It's really unpleasant that we keep getting new attributes that we
-> seemingly are encouraged to use and get sent patches for it. And then we
-> learn a little later that that stuff isn't ready yet. It's annoying. I
+> 
+> On 12/17/23 17:58, Qais Yousef wrote:
+> > On 11/29/23 11:08, Lukasz Luba wrote:
+> > > In order to prepare the code for the modifiable EM perf_state table,
+> > > refactor existing function em_cpufreq_update_efficiencies().
+> > 
+> > nit: What is being refactored here? The description is not adding much info
+> > about the change.
+> 
+> The function takes the ptr to the table now as its argument. You have
+> missed that in the code below?
 
-I will assume the "get sent patches for it" is referring to the patches
-that Kees has been sending out to add this attribute to flexible array
-members. In his defense, that part of the attribute is very nearly ready
-(it is only the pointer annotations that are not ready, as in not worked
-on at all as far as I am aware). In fact, it was merged in clang's main
-branch for some time and the only reason that it was backed out was
-because adoption in the kernel had pointed out bugs in the original
-implementation that were harder to fix than initially thought; in other
-words, only because we started adding this attribute to the kernel were
-we able to realize that the initial implementation in clang needed to be
-improved, otherwise this feature may have shipped completely broken in
-clang 18.1.0 because it had not been stress tested yet. Now we can get
-it right.
-
-However, I do not necessarily disagree that it is annoying for
-maintainers who are not following this saga but are just receiving
-patches to add these annotatations because adds additional things to
-check for. Perhaps there should be some guidance added to the
-__counted_by definition or Documentation around how it is expected to be
-used so that there is clear advice for both developers and maintainers?
-
-> know it isn't your fault but it would be wise to be a little more
-> careful. IOW, unless both clang and gcc do support that thing
-> appropriately don't send patches to various subsystems for this.
-
-I will assume this was not necessarily directed at me because I have not
-sent any patches for __counted_by.
-
-> In any case, this is now fixed. I pulled an updated version from David.
-
-Thanks a lot.
-
-Cheers,
-Nathan
+I meant the commit message could be more descriptive if you care to expand on
+it.
 
