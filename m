@@ -1,76 +1,221 @@
-Return-Path: <linux-kernel+bounces-12630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A552B81F7FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:58:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 216CA81F801
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 12:58:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D678F1C23510
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 11:58:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CBEAB20D57
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 11:58:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C41A7469;
-	Thu, 28 Dec 2023 11:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37DE3747D;
+	Thu, 28 Dec 2023 11:58:40 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D607A6FD6
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 11:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35ffb5723e9so40678075ab.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 03:58:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703764684; x=1704369484;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bmj/fU3ExJnfSF47OMzKNqiO6h6v27r6V5UqzFV96so=;
-        b=icOue98P6y5ma7bkae/VS0uUcjDjQtE2yiDrUvQJAkS0hxDCop2SikxvjBBoDVyift
-         Bmmf6vT0qinbzZYnXxlqNQgWSEkK0B+Xx73FHMfl16qugzeoM7cd+2m+PiHlp9LVaXj0
-         iL0JsJYQr2A6fO//6vhnBq24WwpX1ak2i4MHYd8huZRtGCcXi9+AEdt9Mp3nqI/ZtOeM
-         aDpsyqVa6CKWCBjCw/3j9n6TFdecoBpYTPUtfI2EHqeXrjnFkC3Euk1l7Zazs7y8uk20
-         XteUPQ36bBrZrWd0J7P3tr2nlBglJ0yIXzSt0Iq/5LXI9YHXpTNGuSHYdzyFcbB4YJ8h
-         aApg==
-X-Gm-Message-State: AOJu0YzhpFr5x8nKOClN+TRu2sMfb5JSIEBFbRddRsegQ4k0H4d6ahXm
-	ssdMbFgPBNRRo5s6EL8OM3TAb2hW7lG7LPjuzL6LmZAhfqlG
-X-Google-Smtp-Source: AGHT+IFiFrGQQUVjEoNVUCJPyG7ISS2ISKzLaxwNmuO1iDV8oH+8xRuYnR284oJRRqUGi7w2SjVMr4n+wwPFCmz9nIM1zXnt4da3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6382A7462;
+	Thu, 28 Dec 2023 11:58:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by ex01.ufhost.com (Postfix) with ESMTP id 41A0624E257;
+	Thu, 28 Dec 2023 19:58:32 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Dec
+ 2023 19:58:32 +0800
+Received: from [192.168.125.85] (183.27.97.107) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Dec
+ 2023 19:58:31 +0800
+Message-ID: <987e4153-236a-4bc6-9db6-f9ad58846267@starfivetech.com>
+Date: Thu, 28 Dec 2023 19:58:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1b0c:b0:35f:b715:ed36 with SMTP id
- i12-20020a056e021b0c00b0035fb715ed36mr1386221ilv.5.1703764684162; Thu, 28 Dec
- 2023 03:58:04 -0800 (PST)
-Date: Thu, 28 Dec 2023 03:58:04 -0800
-In-Reply-To: <20231228113657.1673-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c7cd53060d90a0d8@google.com>
-Subject: Re: [syzbot] [bluetooth?] WARNING in l2cap_do_send (2)
-From: syzbot <syzbot+d6cd076b385aefcb6b16@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 12/21] PCI: microchip: Add request_event_irq()
+ callback function
+Content-Language: en-US
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+CC: Conor Dooley <conor@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?=
+	<kw@linux.com>, Rob Herring <robh+dt@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>, Daire McNamara <daire.mcnamara@microchip.com>, "Emil
+ Renner Berthing" <emil.renner.berthing@canonical.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+	<linux-pci@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
+	"Palmer Dabbelt" <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+	"Philipp Zabel" <p.zabel@pengutronix.de>, Mason Huo
+	<mason.huo@starfivetech.com>, Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+	Kevin Xie <kevin.xie@starfivetech.com>
+References: <20231214072839.2367-1-minda.chen@starfivetech.com>
+ <20231214072839.2367-13-minda.chen@starfivetech.com>
+ <ZYxKYhVycTOfbDTI@lpieralisi>
+From: Minda Chen <minda.chen@starfivetech.com>
+In-Reply-To: <ZYxKYhVycTOfbDTI@lpieralisi>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
 
-Hello,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Reported-and-tested-by: syzbot+d6cd076b385aefcb6b16@syzkaller.appspotmail.com
+On 2023/12/28 0:01, Lorenzo Pieralisi wrote:
+> On Thu, Dec 14, 2023 at 03:28:30PM +0800, Minda Chen wrote:
+>> PolarFire implements specific PCIe interrupts except PLDA local interrupt.
+> 
+> Please explain to me what you want to say here.
+> >> For lack of MSI controller, these interrupts have to be added to global
+>> event field. PolarFire PCIe driver also register additional interrupt
+>> symbol name.
+> 
+> And here.
+> 
+The sentence mean architecture should have an advance interrupt 
+controller can support MSI interrupt and these new added interrupts should
+be added to MSI interrupt. (Like ARM GIC high level version)
 
-Tested on:
+Maybe this commit message should be deleted. The commit message should claim
+why add request_event_irq() callback function.
 
-commit:         f5837722 Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=12fc9ba5e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=da1c95d4e55dda83
-dashboard link: https://syzkaller.appspot.com/bug?extid=d6cd076b385aefcb6b16
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15177855e80000
+Add this callback function is for vendor register the interrupt handler and
+the name of new added PCIe interrupts. 
 
-Note: testing is done by a robot and is best-effort only.
+"new added PCIe interrupts" is mean microchip new added interrupt.
+#define EVENT_PCIE_L2_EXIT                      0
+#define EVENT_PCIE_HOTRST_EXIT                  1
+#define EVENT_PCIE_DLUP_EXIT                    2
+#define EVENT_SEC_TX_RAM_SEC_ERR                3
+#define EVENT_SEC_RX_RAM_SEC_ERR                4
+#define EVENT_SEC_PCIE2AXI_RAM_SEC_ERR          5
+#define EVENT_SEC_AXI2PCIE_RAM_SEC_ERR          6
+#define EVENT_DED_TX_RAM_DED_ERR                7
+#define EVENT_DED_RX_RAM_DED_ERR                8
+#define EVENT_DED_PCIE2AXI_RAM_DED_ERR          9
+#define EVENT_DED_AXI2PCIE_RAM_DED_ERR          10
+
+
+>> PolarFire PCIe contain total 28 interrupts event while PLDA contain 13
+>> local interrupts event, interrupt to event num mapping is different.
+> 
+> It "is different" in different platforms ? Is that correct ?
+> 
+yes
+>> So add a callback function to support different IRQ register function.
+>> Also Add PLDA default handler function, which will be moved to pcie-
+>> plda-host.c in moving codes patch.
+> 
+> As I said before, a patch is a single self-contained change, don't
+> refer to other patches, they may or may not be merged or even exist
+> by the time this one hits mainline.
+> 
+> Lorenzo
+> 
+OK. I will delete the "which will be moved to pcie-plda-host.c in 
+moving codes patch" and change the commit message.
+
+>> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>> ---
+>>  .../pci/controller/plda/pcie-microchip-host.c | 31 ++++++++++++++++---
+>>  drivers/pci/controller/plda/pcie-plda.h       |  5 +++
+>>  2 files changed, 32 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
+>> index 7b3f4f74745d..624e4e2e97d3 100644
+>> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
+>> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+>> @@ -643,6 +643,11 @@ static irqreturn_t mc_event_handler(int irq, void *dev_id)
+>>  	return IRQ_HANDLED;
+>>  }
+>>  
+>> +static irqreturn_t plda_event_handler(int irq, void *dev_id)
+>> +{
+>> +	return IRQ_HANDLED;
+>> +}
+>> +
+>>  static void plda_handle_event(struct irq_desc *desc)
+>>  {
+>>  	struct plda_pcie_rp *port = irq_desc_get_handler_data(desc);
+>> @@ -804,6 +809,17 @@ static int mc_pcie_init_clks(struct device *dev)
+>>  	return 0;
+>>  }
+>>  
+>> +static int mc_request_event_irq(struct plda_pcie_rp *plda, int event_irq,
+>> +				int event)
+>> +{
+>> +	return devm_request_irq(plda->dev, event_irq, mc_event_handler,
+>> +				0, event_cause[event].sym, plda);
+>> +}
+>> +
+>> +static const struct plda_event mc_event = {
+>> +	.request_event_irq = mc_request_event_irq,
+>> +};
+>> +
+>>  static int plda_pcie_init_irq_domains(struct plda_pcie_rp *port)
+>>  {
+>>  	struct device *dev = port->dev;
+>> @@ -905,7 +921,9 @@ static void mc_disable_interrupts(struct mc_pcie *port)
+>>  	writel_relaxed(GENMASK(31, 0), bridge_base_addr + ISTATUS_HOST);
+>>  }
+>>  
+>> -static int plda_init_interrupts(struct platform_device *pdev, struct plda_pcie_rp *port)
+>> +static int plda_init_interrupts(struct platform_device *pdev,
+>> +				struct plda_pcie_rp *port,
+>> +				const struct plda_event *event)
+>>  {
+>>  	struct device *dev = &pdev->dev;
+>>  	int irq;
+>> @@ -929,8 +947,13 @@ static int plda_init_interrupts(struct platform_device *pdev, struct plda_pcie_r
+>>  			return -ENXIO;
+>>  		}
+>>  
+>> -		ret = devm_request_irq(dev, event_irq, mc_event_handler,
+>> -				       0, event_cause[i].sym, port);
+>> +		if (event->request_event_irq)
+>> +			ret = event->request_event_irq(port, event_irq, i);
+>> +		else
+>> +			ret = devm_request_irq(dev, event_irq,
+>> +					       plda_event_handler,
+>> +					       0, NULL, port);
+>> +
+>>  		if (ret) {
+>>  			dev_err(dev, "failed to request IRQ %d\n", event_irq);
+>>  			return ret;
+>> @@ -984,7 +1007,7 @@ static int mc_platform_init(struct pci_config_window *cfg)
+>>  		return ret;
+>>  
+>>  	/* Address translation is up; safe to enable interrupts */
+>> -	ret = plda_init_interrupts(pdev, &port->plda);
+>> +	ret = plda_init_interrupts(pdev, &port->plda, &mc_event);
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
+>> index e3d35cef9894..28ed1374e1de 100644
+>> --- a/drivers/pci/controller/plda/pcie-plda.h
+>> +++ b/drivers/pci/controller/plda/pcie-plda.h
+>> @@ -121,6 +121,11 @@ struct plda_pcie_rp {
+>>  	int num_events;
+>>  };
+>>  
+>> +struct plda_event {
+>> +	int (*request_event_irq)(struct plda_pcie_rp *pcie,
+>> +				 int event_irq, int event);
+>> +};
+>> +
+>>  void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
+>>  			    phys_addr_t axi_addr, phys_addr_t pci_addr,
+>>  			    size_t size);
+>> -- 
+>> 2.17.1
+>> 
 
