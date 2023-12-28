@@ -1,53 +1,68 @@
-Return-Path: <linux-kernel+bounces-12531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6180481F643
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:24:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4846381F648
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 10:29:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16448282EC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:24:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 843571C208C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 09:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5804F63CD;
-	Thu, 28 Dec 2023 09:24:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6AB263D3;
+	Thu, 28 Dec 2023 09:29:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SPL99FjM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XE3WZoif"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C724163A8;
-	Thu, 28 Dec 2023 09:24:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703755469; x=1735291469;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=0BnRPGjZ08Szibrn+c+3PaPkhu55oPawbz2u9zwgUAU=;
-  b=SPL99FjMfJSlEk42JVfx4MRHUILI78BFRQU7ki0D9mw2x+2n/i2TxNSo
-   gYkV/7oO5OgkNmUX2h9yBqEw9wSNnpK2lsjzVnjfJ1XVllRCcMs9pqJJH
-   F0vJtpDDS1+nAw3EpCoH+213eRcE83ObswjPkhtk4CVcj9e9k4bOvefZp
-   8BCMT8GTtU0SXoSq+N5C168KTxsbr3pJHwF+LNZcOJLSd1zs24JfMyfZr
-   1DJ9Qs7TJho7RTCMLLX3x8D/DHlvRTl8GmarR73U4Jekw1tILuohN8Mxi
-   WpWXIKAb+I1g3vbe9iIutwq2gFf5hGz4s2OqPN6m6ghO7GZ6Q1CuKVc/o
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="9924249"
-X-IronPort-AV: E=Sophos;i="6.04,311,1695711600"; 
-   d="scan'208";a="9924249"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 01:24:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10936"; a="771675446"
-X-IronPort-AV: E=Sophos;i="6.04,311,1695711600"; 
-   d="scan'208";a="771675446"
-Received: from naamamex-mobl.ger.corp.intel.com (HELO [10.245.129.232]) ([10.245.129.232])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 01:24:23 -0800
-Message-ID: <02414651-df89-48cf-ac13-25f581f3e34f@linux.intel.com>
-Date: Thu, 28 Dec 2023 11:24:21 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C1B63A8;
+	Thu, 28 Dec 2023 09:29:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-28c7c422ad3so1089239a91.3;
+        Thu, 28 Dec 2023 01:29:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703755751; x=1704360551; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=A3Ig0aHapiIQwgj1PxxKUjtSncjMhZol6viXCrEfEek=;
+        b=XE3WZoifSPRSa08i6PXZxXCZW2jbxRD24ZAdgxD70Mh2WJtbmia8tFvc5JukXd7zMw
+         XmSo0OqGM9YlLEJHTJo4Ihm8u31Ikv3HyR33U5PGDy1XiGBxOJgTZZYEqf8FifASu3lz
+         nbl3nnY3Zu5clxqn3h1IfkXVn75OpDCfVqy160iZsFQUN7rdKCDGGpbXDgHYMW51/OpW
+         lNg8fGFysgoGYf8wuRg2s+CcvK542aJgSxR31nTncTAq1Lx61+OIF3dtG01aHvQtNnTj
+         RoiIfTs5NmjKvHaGyJP1tk2VDGr8+ZjUzD9fTV3sdiyVUxSpJsNphMrCTG2H+Xskb6GK
+         Uoiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703755751; x=1704360551;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A3Ig0aHapiIQwgj1PxxKUjtSncjMhZol6viXCrEfEek=;
+        b=jtuRfvX7Qg78uUpgRU2tXwY6jXW1rBNKXRM+kal3FkpMPgM+6ZRsh3yk6kf8Z1bAy6
+         v2CKl3Ydeip7J9ABiWIk8ywitz07NpsWd7L9tmePgG0lh1hqKYU0Z6TfqCaOpbZiXWff
+         iKfBnGUf5XHrDRm0Q/4XnF/l7G7DcRTA+kaEnPYRGKqIx1SnEAGWGZBM/GnBOOMe0YX6
+         vxHLMfTZHJOkxMAD9Zxcv+oHO7juSfazLL5BYw6HZzkbQ/kJpGKJmq1XZMvwYuktDDM6
+         kgItj47lK4rbNlaT85ZSW+XoCdPpoawaZWuL1iEZ/ULjd9rPjFTwxBw7pC99trv9jegw
+         +aXQ==
+X-Gm-Message-State: AOJu0YyW3fuuSC+q5TSa4/8YnKlJ9ioC5r9RB4miXETQzx+ZpozMP0QT
+	dFg9vnh0WRbASmtjZOn4APykUBN0evAvnQ==
+X-Google-Smtp-Source: AGHT+IF/bKRPI+W2d1VRvmjycdc+I4rdVZDuWOFW2kkcZ7NdY5Mse25vgnUI1S11jVtB7wCzFxO2ig==
+X-Received: by 2002:a17:90b:3785:b0:28c:3db:44c8 with SMTP id mz5-20020a17090b378500b0028c03db44c8mr2997270pjb.95.1703755751257;
+        Thu, 28 Dec 2023 01:29:11 -0800 (PST)
+Received: from ddawson.local ([174.31.117.194])
+        by smtp.gmail.com with ESMTPSA id k62-20020a17090a4cc400b0028c72951de9sm6307047pjh.20.2023.12.28.01.29.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Dec 2023 01:29:10 -0800 (PST)
+Received: from [127.0.0.1] (unknown [127.0.0.1])
+	by ddawson.local (Postfix) with ESMTP id A1AE52F36DA8;
+	Thu, 28 Dec 2023 01:29:09 -0800 (PST)
+Message-ID: <3341f8e6-5aab-4454-a1c6-805abf868b44@gmail.com>
+Date: Thu, 28 Dec 2023 01:29:04 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,48 +70,61 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [PATCH iwl-net] igc: Fix hicredit calculation
-To: rodrigo.cadore@l-acoustics.com,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Aravindhan Gunasekaran <aravindhan.gunasekaran@intel.com>,
- Mallikarjuna Chilakala <mallikarjuna.chilakala@intel.com>,
- Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Cc: netdev@vger.kernel.org, Kurt Kanzenbach <kurt@linutronix.de>,
- intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
-References: <20231208-igc-fix-hicredit-calc-v1-1-7e505fbe249d@l-acoustics.com>
+Subject: Re: [inline_data] ext4: Stale flags before sync when convert to
+ non-inline
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <5189fe60-c3e3-4bc6-89d4-1033cf4337c3@gmail.com>
+ <20231130040651.GC510020@mit.edu>
 Content-Language: en-US
-From: "naamax.meir" <naamax.meir@linux.intel.com>
-In-Reply-To: <20231208-igc-fix-hicredit-calc-v1-1-7e505fbe249d@l-acoustics.com>
+From: Daniel Dawson <danielcdawson@gmail.com>
+Autocrypt: addr=danielcdawson@gmail.com; keydata=
+ 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
+ bi1gCpm8
+In-Reply-To: <20231130040651.GC510020@mit.edu>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 12/8/2023 16:58, Rodrigo Cataldo via B4 Relay wrote:
-> From: Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
-> 
-> According to the Intel Software Manual for I225, Section 7.5.2.7,
-> hicredit should be multiplied by the constant link-rate value, 0x7736.
-> 
-> Currently, the old constant link-rate value, 0x7735, from the boards
-> supported on igb are being used, most likely due to a copy'n'paste, as
-> the rest of the logic is the same for both drivers.
-> 
-> Update hicredit accordingly.
-> 
-> Fixes: 1ab011b0bf07 ("igc: Add support for CBS offloading")
-> Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
-> Signed-off-by: Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
-> ---
-> This is a simple fix for the credit calculation on igc devices
-> (i225/i226) to match the Intel software manual.
-> 
-> This is my first contribution to the Linux Kernel. Apologies for any
-> mistakes and let me know if I improve anything.
-> ---
->   drivers/net/ethernet/intel/igc/igc_tsn.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+On 11/29/23 8:06 PM, Theodore Ts'o wrote:
+> I'll need to turn this into an actual patch and then create a test to
+> validate the patch but I'm pretty sure this should deal with the
+> problem you've come across.
+Is there anything new on this (apologies if I managed to miss it)? Let 
+me know if there's anything I might do to help, like maybe testing.
 
-Tested-by: Naama Meir <naamax.meir@linux.intel.com>
+-- 
+PGP fingerprint: 5BBD5080FEB0EF7F142F8173D572B791F7B4422A
+
 
