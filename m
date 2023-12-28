@@ -1,153 +1,113 @@
-Return-Path: <linux-kernel+bounces-12409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D4E981F460
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 04:21:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CC6B81F462
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 04:22:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7F60283AD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 03:21:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBE04283B34
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 03:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3D115B3;
-	Thu, 28 Dec 2023 03:21:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nr1s9yot"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 066931FDD;
+	Thu, 28 Dec 2023 03:22:47 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A333C07;
-	Thu, 28 Dec 2023 03:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-781708819c4so25624585a.1;
-        Wed, 27 Dec 2023 19:21:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703733693; x=1704338493; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9+46J6+2KoeZZSgHS8eqkcEN7H/BVTk49hUInsE7T38=;
-        b=Nr1s9yotz+cfodwH5AXc/kptGFXXqtj/HZa37anNUrQnETggAhauodpOTOaWtGS0WO
-         HC+jxBOeMg23YPFeGtJj66njE/2gM0k5BQPu7gVwsQ5R2dFfRyiLpP5iJXdFF25eWob2
-         fhPG07ZxiYyYmmrGmTaUYf1KCvKvWcWAwRWIjFh/HsROqu4kdOYBeABVdWX6PjOXu6jZ
-         NAmzZ8h2e8/pXuC0Najrh6T3qStjXq46yogofj3ME7mhiaWQH7CyW3jdx2BOXNRQYypA
-         YgEY3soY07BsMXX+Trcy7b2bP9PLFDNbaHb5Xt5XuJfCCsxRw8V7/E1bh8nYOq/zAdDM
-         rPIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703733693; x=1704338493;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9+46J6+2KoeZZSgHS8eqkcEN7H/BVTk49hUInsE7T38=;
-        b=dQYgTXXntV4TVJDq9yOAkpXSHj6GCCn9kxy3hS8SuRwoayoPmXpkAe3cWeg48s4Afq
-         4R7rRFcZUiicVPZt/06Aba+7N0bMDaLMscd0+ocee/gnSmx7fxAN455LMlHZUuVfs2K2
-         KBtOmZlnqueLStHdedFdl/JEfNOnkdFvKYzi9ASR5MBc+HByUl3VqjeY/GxhzykDxXvx
-         bW8CJYnOHcwwrI+WyyamQxoIEJg+NhbmiHi1jQc26yvBtS7QJVbWasUKPOqW2imNMxNc
-         5G1LKCm9AuBa5qhpwDC6GiI17g+gEKJzFqzkLi7HixehWRMC9xFZERPjwWsY0OyXyVMw
-         vFow==
-X-Gm-Message-State: AOJu0Yw/gLLtsjuOiaAzgbXqIafckNx1TwIT1Kdj62UvFjALZVu/EFUs
-	HESBXn8W4PUJazDa+iub8mU6Nxzv3FJpjA==
-X-Google-Smtp-Source: AGHT+IEh/GynUMc484RkLckzzPYuuSTDz6/asR0WgSk8uLlMI48DAARuq7L2QIzSjOBuY2Ivj3ds9g==
-X-Received: by 2002:ac8:5847:0:b0:427:ecee:fd01 with SMTP id h7-20020ac85847000000b00427eceefd01mr1795965qth.72.1703733693496;
-        Wed, 27 Dec 2023 19:21:33 -0800 (PST)
-Received: from localhost.localdomain (107-015-241-140.res.spectrum.com. [107.15.241.140])
-        by smtp.gmail.com with ESMTPSA id eq20-20020a05622a5e1400b004278e7f122esm3382294qtb.25.2023.12.27.19.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Dec 2023 19:21:33 -0800 (PST)
-From: John Clark <inindev@gmail.com>
-To: "Rob Herring" <robh+dt@kernel.org>,
-	"Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-	"Conor Dooley" <conor+dt@kernel.org>,
-	"Heiko Stuebner" <heiko@sntech.de>,
-	linux-rockchip@lists.infradead.org
-Cc: "Thomas McKahan" <tmckahan@singleboardsolutions.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	John Clark <inindev@gmail.com>
-Subject: [PATCH] arm64: dts: rockchip: nanopc-t6 sdmmc device tuning
-Date: Thu, 28 Dec 2023 03:21:13 +0000
-Message-ID: <20231228032114.1157-1-inindev@gmail.com>
-X-Mailer: git-send-email 2.43.0
+Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692CC15B3;
+	Thu, 28 Dec 2023 03:22:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from localhost.localdomain (unknown [10.190.65.111])
+	by mail-app3 (Coremail) with SMTP id cC_KCgBXX4_w6YxlMc6TAQ--.5357S4;
+	Thu, 28 Dec 2023 11:22:31 +0800 (CST)
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+To: dinghao.liu@zju.edu.cn
+Cc: James Smart <james.smart@broadcom.com>,
+	Dick Kennedy <dick.kennedy@broadcom.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: lpfc: Fix memleak in lpfc_nvmet_setup_io_context
+Date: Thu, 28 Dec 2023 11:22:17 +0800
+Message-Id: <20231228032217.4100-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:cC_KCgBXX4_w6YxlMc6TAQ--.5357S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7KrW7XFyUKw1UZr4fWw4UJwb_yoW8ury5pa
+	1rGF12ywsrGF1IkF43Aw48Cry3ta48Jw4qkFZFvw13CFyrtrW7Kay5A3srJFy3W3WxK34U
+	try8Ga47G3WUJFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk21xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+	IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
+	87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+	8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+	Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+	xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+	aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+	4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+	rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+	CI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+	z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgwPBmWCupcTBwAjs6
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-1) sdmmc on the nanopc-t6 is powered by vcc3v3_sd_s0, not vcc_3v3_s3
-   add the supply vcc3v3_sd_s0, and control it with gpio4_a5
-2) add the card detection property gpio0_a4
-3) drop max-frequency = <200000000> as it is already defined in rk3588s.dtsi
-4) order no-sdio & no-mmc properties while we are here
+lpfc_nvmet_setup_io_context() allocates memory for
+phba->sli4_hba.nvmet_ctx_info, but does not free it in
+the following error handling paths, which may lead to
+a memleak.
 
-Signed-off-by: John Clark <inindev@gmail.com>
+Fixes: 66d7ce93a0f5 ("scsi: lpfc: Fix MRQ > 1 context list handling")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- .../boot/dts/rockchip/rk3588-nanopc-t6.dts    | 27 ++++++++++++++++---
- 1 file changed, 23 insertions(+), 4 deletions(-)
+ drivers/scsi/lpfc/lpfc_nvmet.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-index e83b71510a47..2360735e58a1 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-@@ -159,6 +159,19 @@ vcc3v3_pcie30: vcc3v3-pcie30-regulator {
- 		regulator-max-microvolt = <3300000>;
- 		vin-supply = <&vcc5v0_sys>;
- 	};
-+
-+	vcc3v3_sd_s0: vcc3v3-sd-s0-regulator {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpio = <&gpio4 RK_PA5 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&sd_s0_pwren>;
-+		regulator-boot-on;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-min-microvolt = <3300000>;
-+		regulator-name = "vcc3v3_sd_s0";
-+		vin-supply = <&vcc_3v3_s3>;
-+	};
- };
- 
- &combphy0_ps {
-@@ -503,6 +516,12 @@ pcie_m2_1_pwren: pcie-m21-pwren {
- 		};
- 	};
- 
-+	sdmmc {
-+		sd_s0_pwren: sd-s0-pwren {
-+			rockchip,pins = <4 RK_PA5 RK_FUNC_GPIO &pcfg_pull_down>;
-+		};
-+	};
-+
- 	usb {
- 		typec5v_pwren: typec5v-pwren {
- 			rockchip,pins = <1 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
-@@ -536,15 +555,15 @@ &sdhci {
- };
- 
- &sdmmc {
--	max-frequency = <200000000>;
--	no-sdio;
--	no-mmc;
- 	bus-width = <4>;
- 	cap-mmc-highspeed;
- 	cap-sd-highspeed;
-+	cd-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_LOW>;
- 	disable-wp;
-+	no-mmc;
-+	no-sdio;
- 	sd-uhs-sdr104;
--	vmmc-supply = <&vcc_3v3_s3>;
-+	vmmc-supply = <&vcc3v3_sd_s0>;
- 	vqmmc-supply = <&vccio_sd_s0>;
- 	status = "okay";
- };
+diff --git a/drivers/scsi/lpfc/lpfc_nvmet.c b/drivers/scsi/lpfc/lpfc_nvmet.c
+index 425328d9c2d8..9131a04aea28 100644
+--- a/drivers/scsi/lpfc/lpfc_nvmet.c
++++ b/drivers/scsi/lpfc/lpfc_nvmet.c
+@@ -1556,6 +1556,8 @@ lpfc_nvmet_setup_io_context(struct lpfc_hba *phba)
+ 	for (i = 0; i < phba->sli4_hba.nvmet_xri_cnt; i++) {
+ 		ctx_buf = kzalloc(sizeof(*ctx_buf), GFP_KERNEL);
+ 		if (!ctx_buf) {
++			kfree(phba->sli4_hba.nvmet_ctx_info);
++			phba->sli4_hba.nvmet_ctx_info = NULL;
+ 			lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
+ 					"6404 Ran out of memory for NVMET\n");
+ 			return -ENOMEM;
+@@ -1565,6 +1567,8 @@ lpfc_nvmet_setup_io_context(struct lpfc_hba *phba)
+ 					   GFP_KERNEL);
+ 		if (!ctx_buf->context) {
+ 			kfree(ctx_buf);
++			kfree(phba->sli4_hba.nvmet_ctx_info);
++			phba->sli4_hba.nvmet_ctx_info = NULL;
+ 			lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
+ 					"6405 Ran out of NVMET "
+ 					"context memory\n");
+@@ -1577,6 +1581,8 @@ lpfc_nvmet_setup_io_context(struct lpfc_hba *phba)
+ 		if (!ctx_buf->iocbq) {
+ 			kfree(ctx_buf->context);
+ 			kfree(ctx_buf);
++			kfree(phba->sli4_hba.nvmet_ctx_info);
++			phba->sli4_hba.nvmet_ctx_info = NULL;
+ 			lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
+ 					"6406 Ran out of NVMET iocb/WQEs\n");
+ 			return -ENOMEM;
+@@ -1596,6 +1602,8 @@ lpfc_nvmet_setup_io_context(struct lpfc_hba *phba)
+ 			lpfc_sli_release_iocbq(phba, ctx_buf->iocbq);
+ 			kfree(ctx_buf->context);
+ 			kfree(ctx_buf);
++			kfree(phba->sli4_hba.nvmet_ctx_info);
++			phba->sli4_hba.nvmet_ctx_info = NULL;
+ 			lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
+ 					"6407 Ran out of NVMET XRIs\n");
+ 			return -ENOMEM;
 -- 
-2.43.0
+2.17.1
 
 
