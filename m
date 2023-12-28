@@ -1,301 +1,286 @@
-Return-Path: <linux-kernel+bounces-12837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC71C81FABE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:27:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B85F81FAC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 20:28:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37BBBB240DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 19:27:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F3171C21F0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 19:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE97B125B5;
-	Thu, 28 Dec 2023 19:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD2B10795;
+	Thu, 28 Dec 2023 19:28:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="eEMZi1EL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iqlhSLS5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD71E11CAA
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 19:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-203fed05a31so4673917fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 11:24:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1703791492; x=1704396292; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X6NHqoeKipmnRRrBtGGekIe1Ago4hx2yTydoB5DSv04=;
-        b=eEMZi1ELj49Ln0yTBgt7llYl1X3QSw+RwCpX890q3AKiaGOXJkDQlq3l5ai3xahFIU
-         vO4360huoav1roNykaT7oVwQbdUDlZ3k9oKi6ooM/WB6JTwDlWaSQbBVwDG271JyfyJ1
-         sIMiU8dJ2XaBe5qBHo6VXRCiCmag2J+uoYrBg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703791492; x=1704396292;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X6NHqoeKipmnRRrBtGGekIe1Ago4hx2yTydoB5DSv04=;
-        b=gywOT/KJ68Ne0DQunVYiiyOlX/0LnToOt2FHVC1Czm+Gb56OgggE84BFtK5BLdF0Bu
-         ub/LfXu4IMhfwAt+eSTtUzCBHTdAguYoEoO1qSkxCgRH+Pg7coKXISqitf9WeUCoBBdZ
-         ZoZ5EX3CHVGJJ06iNMq7o7VWwuwbv5Z1SG7gumxeLdXDAu5SUd+Qfnp8fFwD+RjdMalC
-         sfmBp01GpHpzjxeteqaY2YTONN9/61/bmDPUgwHfWwMh+chzYhDerz1K0VIGNenJKLbp
-         fZLfKgNAHv0CfDXlFzBmmtv+X9Ua6ciOv8cSixPz3HrmYTXEepcRIgsQ7LLTwCk4+6FD
-         dDPw==
-X-Gm-Message-State: AOJu0YybXyC/Vfr2WvGLW8lt/dEurmBl6lRqEUCUgBJydVvX2sIodsm5
-	h/N8c8xif7NJA8mscD1kBCqU+Zf+pikijruEyafzqj4KcX6SBHZFNubknSpUSDzvKKwY1owcHIP
-	qYgcF9s48dQ/+WCHXQgqR9B95TZ1E8Q3f3OYHYEHoMjkqUNNA1r1ytYtY7iUtME7BfBSVQso3CZ
-	H8bTlx9yApU8jP8Y67/aPLavk=
-X-Google-Smtp-Source: AGHT+IGJebG9JICRtVEUcH3Odb3+eLOWCUIwJ1rjVhgy8IuYbT6wze/ypQ5qNR6Xj+Jk0qDwouIr2w==
-X-Received: by 2002:a05:6870:9106:b0:204:792:8a55 with SMTP id o6-20020a056870910600b0020407928a55mr12289655oae.37.1703791491770;
-        Thu, 28 Dec 2023 11:24:51 -0800 (PST)
-Received: from amakhalov-build-vm.eng.vmware.com ([128.177.82.146])
-        by smtp.gmail.com with ESMTPSA id k16-20020aa79990000000b006d9aa04574csm9522987pfh.52.2023.12.28.11.24.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Dec 2023 11:24:51 -0800 (PST)
-From: Alexey Makhalov <alexey.makhalov@broadcom.com>
-To: linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	bp@alien8.de,
-	hpa@zytor.com,
-	dave.hansen@linux.intel.com,
-	mingo@redhat.com,
-	tglx@linutronix.de
-Cc: x86@kernel.org,
-	netdev@vger.kernel.org,
-	richardcochran@gmail.com,
-	linux-input@vger.kernel.org,
-	dmitry.torokhov@gmail.com,
-	zackr@vmware.com,
-	linux-graphics-maintainer@vmware.com,
-	pv-drivers@vmware.com,
-	namit@vmware.com,
-	timothym@vmware.com,
-	akaher@vmware.com,
-	jsipek@vmware.com,
-	dri-devel@lists.freedesktop.org,
-	daniel@ffwll.ch,
-	airlied@gmail.com,
-	tzimmermann@suse.de,
-	mripard@kernel.org,
-	maarten.lankhorst@linux.intel.com,
-	horms@kernel.org,
-	kirill.shutemov@linux.intel.com
-Subject: [PATCH v4 6/6] x86/vmware: Add TDX hypercall support
-Date: Thu, 28 Dec 2023 11:24:21 -0800
-Message-Id: <20231228192421.29894-7-alexey.makhalov@broadcom.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20231228192421.29894-1-alexey.makhalov@broadcom.com>
-References: <20231228192421.29894-1-alexey.makhalov@broadcom.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A40E101E9
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 19:28:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703791694; x=1735327694;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=tsELVkiu7YtqsUSOZRInAOjmwGJBnFc4k0u5Xt3YVoo=;
+  b=iqlhSLS5wQxDJ+gVWweDc8F+dPuJzjXPHpdOpQQzxDiY8iXjkQbtJO3b
+   xhqq5Amc0WGroc79SqYtFq11oXLTranR6mjQGXyPqmX2EanGU4VrhOpt6
+   gfGFxCaulWG+P9l4p8fWe5ioWJofJCUGDh92T75NNCJrrdEKlSIQtv2ry
+   zm3SCFZPhM127ozbpp0bheJWutmHqEvnbAXw9lUVwHMMHpv4qnfN59H66
+   d3eH7npjOikzJrkh+HYEGiiY11Lz1WfB5fT9a5+SRVVxNkrZFBKhHd0t6
+   KVrkkHjclsFa6kzK2Ckp3fEFloLmUo33GNPS67n9YWx46tMzcrnGVfLAf
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="381553940"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="381553940"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 11:28:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="844509193"
+X-IronPort-AV: E=Sophos;i="6.04,312,1695711600"; 
+   d="scan'208";a="844509193"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 28 Dec 2023 11:28:11 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rIw37-000Gld-0M;
+	Thu, 28 Dec 2023 19:28:09 +0000
+Date: Fri, 29 Dec 2023 03:27:16 +0800
+From: kernel test robot <lkp@intel.com>
+To: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: fs/exec.c:1307:26: sparse: sparse: incorrect type in argument 1
+ (different address spaces)
+Message-ID: <202312290301.jAqPvG1w-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Alexey Makhalov <amakhalov@vmware.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f5837722ffecbbedf1b1dbab072a063565f0dad1
+commit: e362359ace6f87c201531872486ff295df306d13 posix-cpu-timers: Cleanup CPU timers before freeing them during exec
+date:   1 year, 5 months ago
+config: x86_64-alldefconfig (https://download.01.org/0day-ci/archive/20231229/202312290301.jAqPvG1w-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231229/202312290301.jAqPvG1w-lkp@intel.com/reproduce)
 
-VMware hypercalls use I/O port, VMCALL or VMMCALL instructions.
-Add __tdx_hypercall path to support TDX guests.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312290301.jAqPvG1w-lkp@intel.com/
 
-No change in high bandwidth hypercalls, as only low bandwidth
-ones are supported for TDX guests.
+sparse warnings: (new ones prefixed by >>)
+   fs/exec.c:422:31: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected char const [noderef] __user * @@     got void * @@
+   fs/exec.c:422:31: sparse:     expected char const [noderef] __user *
+   fs/exec.c:422:31: sparse:     got void *
+   fs/exec.c:1051:48: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *oldsighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   fs/exec.c:1051:48: sparse:     expected struct sighand_struct *oldsighand
+   fs/exec.c:1051:48: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   fs/exec.c:1158:56: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu *parent @@
+   fs/exec.c:1158:56: sparse:     expected struct task_struct *parent
+   fs/exec.c:1158:56: sparse:     got struct task_struct [noderef] __rcu *parent
+   fs/exec.c:1193:47: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *oldsighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   fs/exec.c:1193:47: sparse:     expected struct sighand_struct *oldsighand
+   fs/exec.c:1193:47: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+>> fs/exec.c:1307:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   fs/exec.c:1307:26: sparse:     expected struct spinlock [usertype] *lock
+   fs/exec.c:1307:26: sparse:     got struct spinlock [noderef] __rcu *
+   fs/exec.c:1309:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   fs/exec.c:1309:28: sparse:     expected struct spinlock [usertype] *lock
+   fs/exec.c:1309:28: sparse:     got struct spinlock [noderef] __rcu *
+   fs/exec.c:1766:70: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *tsk @@     got struct task_struct [noderef] __rcu *parent @@
+   fs/exec.c:1766:70: sparse:     expected struct task_struct *tsk
+   fs/exec.c:1766:70: sparse:     got struct task_struct [noderef] __rcu *parent
 
-Co-developed-by: Tim Merrifield <timothym@vmware.com>
-Signed-off-by: Tim Merrifield <timothym@vmware.com>
-Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
-Reviewed-by: Nadav Amit <namit@vmware.com>
----
- arch/x86/include/asm/vmware.h | 79 +++++++++++++++++++++++++++++++++++
- arch/x86/kernel/cpu/vmware.c  | 24 +++++++++++
- 2 files changed, 103 insertions(+)
+vim +1307 fs/exec.c
 
-diff --git a/arch/x86/include/asm/vmware.h b/arch/x86/include/asm/vmware.h
-index 84a31f579a30..3bd593c6591d 100644
---- a/arch/x86/include/asm/vmware.h
-+++ b/arch/x86/include/asm/vmware.h
-@@ -18,6 +18,12 @@
-  * arg2 - Hypercall command
-  * arg3 bits [15:0] - Port number, LB and direction flags
-  *
-+ * - Low bandwidth TDX hypercalls (x86_64 only) are similar to LB
-+ * hypercalls. They also have up to 6 input and 6 output on registers
-+ * arguments, with different argument to register mapping:
-+ * %r12 (arg0), %rbx (arg1), %r13 (arg2), %rdx (arg3),
-+ * %rsi (arg4), %rdi (arg5).
-+ *
-  * - High bandwidth (HB) hypercalls are I/O port based only. They have
-  * up to 7 input and 7 output arguments passed and returned using
-  * registers: %eax (arg0), %ebx (arg1), %ecx (arg2), %edx (arg3),
-@@ -54,12 +60,61 @@
- #define VMWARE_CMD_GETHZ		45
- #define VMWARE_CMD_GETVCPU_INFO		68
- #define VMWARE_CMD_STEALCLOCK		91
-+/*
-+ * Hypercall command mask:
-+ *   bits [6:0] command, range [0, 127]
-+ *   bits [19:16] sub-command, range [0, 15]
-+ */
-+#define VMWARE_CMD_MASK			0xf007fU
- 
- #define CPUID_VMWARE_FEATURES_ECX_VMMCALL	BIT(0)
- #define CPUID_VMWARE_FEATURES_ECX_VMCALL	BIT(1)
- 
- extern u8 vmware_hypercall_mode;
- 
-+#define VMWARE_TDX_VENDOR_LEAF 0x1af7e4909ULL
-+#define VMWARE_TDX_HCALL_FUNC  1
-+
-+extern unsigned long vmware_tdx_hypercall(unsigned long cmd,
-+					  struct tdx_module_args *args);
-+
-+/*
-+ * TDCALL[TDG.VP.VMCALL] uses %rax (arg0) and %rcx (arg2). Therefore,
-+ * we remap those registers to %r12 and %r13, respectively.
-+ */
-+static inline
-+unsigned long vmware_tdx_hypercall_args(unsigned long cmd, unsigned long in1,
-+					unsigned long in3, unsigned long in4,
-+					unsigned long in5,
-+					uint32_t *out1, uint32_t *out2,
-+					uint32_t *out3, uint32_t *out4,
-+					uint32_t *out5)
-+{
-+	unsigned long ret;
-+
-+	struct tdx_module_args args = {
-+		.rbx = in1,
-+		.rdx = in3,
-+		.rsi = in4,
-+		.rdi = in5,
-+	};
-+
-+	ret = vmware_tdx_hypercall(cmd, &args);
-+
-+	if (out1)
-+		*out1 = args.rbx;
-+	if (out2)
-+		*out2 = args.r13;
-+	if (out3)
-+		*out3 = args.rdx;
-+	if (out4)
-+		*out4 = args.rsi;
-+	if (out5)
-+		*out5 = args.rdi;
-+
-+	return ret;
-+}
-+
- /*
-  * The low bandwidth call. The low word of %edx is presumed to have OUT bit
-  * set. The high word of %edx may contain input data from the caller.
-@@ -87,6 +142,10 @@ unsigned long vmware_hypercall1(unsigned long cmd, unsigned long in1)
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall_args(cmd, in1, 0, 0, 0,
-+						 NULL, NULL, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -105,6 +164,10 @@ unsigned long vmware_hypercall3(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall_args(cmd, in1, 0, 0, 0,
-+						 out1, out2, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=b" (*out1), "=c" (*out2)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -124,6 +187,10 @@ unsigned long vmware_hypercall4(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall_args(cmd, in1, 0, 0, 0,
-+						 out1, out2, out3, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=b" (*out1), "=c" (*out2), "=d" (*out3)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -143,6 +210,10 @@ unsigned long vmware_hypercall5(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall_args(cmd, in1, in3, in4, in5,
-+						 NULL, out2, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=c" (*out2)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -165,6 +236,10 @@ unsigned long vmware_hypercall6(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall_args(cmd, in1, in3, 0, 0,
-+						 NULL, out2, out3, out4, out5);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=c" (*out2), "=d" (*out3), "=S" (*out4),
- 		  "=D" (*out5)
-@@ -186,6 +261,10 @@ unsigned long vmware_hypercall7(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall_args(cmd, in1, in3, in4, in5,
-+						 out1, out2, out3, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=b" (*out1), "=c" (*out2), "=d" (*out3)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-diff --git a/arch/x86/kernel/cpu/vmware.c b/arch/x86/kernel/cpu/vmware.c
-index 3aa1adaed18f..a88dcd25aefe 100644
---- a/arch/x86/kernel/cpu/vmware.c
-+++ b/arch/x86/kernel/cpu/vmware.c
-@@ -428,6 +428,30 @@ static bool __init vmware_legacy_x2apic_available(void)
- 		(eax & BIT(VCPU_LEGACY_X2APIC));
- }
- 
-+#ifdef CONFIG_INTEL_TDX_GUEST
-+unsigned long vmware_tdx_hypercall(unsigned long cmd,
-+				   struct tdx_module_args *args)
-+{
-+	if (!hypervisor_is_type(X86_HYPER_VMWARE))
-+		return ULONG_MAX;
-+
-+	if (cmd & ~VMWARE_CMD_MASK) {
-+		pr_warn_once("Out of range command %lx\n", cmd);
-+		return ULONG_MAX;
-+	}
-+
-+	args->r10 = VMWARE_TDX_VENDOR_LEAF;
-+	args->r11 = VMWARE_TDX_HCALL_FUNC;
-+	args->r12 = VMWARE_HYPERVISOR_MAGIC;
-+	args->r13 = cmd;
-+
-+	__tdx_hypercall(args);
-+
-+	return args->r12;
-+}
-+EXPORT_SYMBOL_GPL(vmware_tdx_hypercall);
-+#endif
-+
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- static void vmware_sev_es_hcall_prepare(struct ghcb *ghcb,
- 					struct pt_regs *regs)
+  1243	
+  1244	/*
+  1245	 * Calling this is the point of no return. None of the failures will be
+  1246	 * seen by userspace since either the process is already taking a fatal
+  1247	 * signal (via de_thread() or coredump), or will have SEGV raised
+  1248	 * (after exec_mmap()) by search_binary_handler (see below).
+  1249	 */
+  1250	int begin_new_exec(struct linux_binprm * bprm)
+  1251	{
+  1252		struct task_struct *me = current;
+  1253		int retval;
+  1254	
+  1255		/* Once we are committed compute the creds */
+  1256		retval = bprm_creds_from_file(bprm);
+  1257		if (retval)
+  1258			return retval;
+  1259	
+  1260		/*
+  1261		 * Ensure all future errors are fatal.
+  1262		 */
+  1263		bprm->point_of_no_return = true;
+  1264	
+  1265		/*
+  1266		 * Make this the only thread in the thread group.
+  1267		 */
+  1268		retval = de_thread(me);
+  1269		if (retval)
+  1270			goto out;
+  1271	
+  1272		/*
+  1273		 * Cancel any io_uring activity across execve
+  1274		 */
+  1275		io_uring_task_cancel();
+  1276	
+  1277		/* Ensure the files table is not shared. */
+  1278		retval = unshare_files();
+  1279		if (retval)
+  1280			goto out;
+  1281	
+  1282		/*
+  1283		 * Must be called _before_ exec_mmap() as bprm->mm is
+  1284		 * not visible until then. This also enables the update
+  1285		 * to be lockless.
+  1286		 */
+  1287		retval = set_mm_exe_file(bprm->mm, bprm->file);
+  1288		if (retval)
+  1289			goto out;
+  1290	
+  1291		/* If the binary is not readable then enforce mm->dumpable=0 */
+  1292		would_dump(bprm, bprm->file);
+  1293		if (bprm->have_execfd)
+  1294			would_dump(bprm, bprm->executable);
+  1295	
+  1296		/*
+  1297		 * Release all of the old mmap stuff
+  1298		 */
+  1299		acct_arg_size(bprm, 0);
+  1300		retval = exec_mmap(bprm->mm);
+  1301		if (retval)
+  1302			goto out;
+  1303	
+  1304		bprm->mm = NULL;
+  1305	
+  1306	#ifdef CONFIG_POSIX_TIMERS
+> 1307		spin_lock_irq(&me->sighand->siglock);
+  1308		posix_cpu_timers_exit(me);
+  1309		spin_unlock_irq(&me->sighand->siglock);
+  1310		exit_itimers(me);
+  1311		flush_itimer_signals();
+  1312	#endif
+  1313	
+  1314		/*
+  1315		 * Make the signal table private.
+  1316		 */
+  1317		retval = unshare_sighand(me);
+  1318		if (retval)
+  1319			goto out_unlock;
+  1320	
+  1321		me->flags &= ~(PF_RANDOMIZE | PF_FORKNOEXEC |
+  1322						PF_NOFREEZE | PF_NO_SETAFFINITY);
+  1323		flush_thread();
+  1324		me->personality &= ~bprm->per_clear;
+  1325	
+  1326		clear_syscall_work_syscall_user_dispatch(me);
+  1327	
+  1328		/*
+  1329		 * We have to apply CLOEXEC before we change whether the process is
+  1330		 * dumpable (in setup_new_exec) to avoid a race with a process in userspace
+  1331		 * trying to access the should-be-closed file descriptors of a process
+  1332		 * undergoing exec(2).
+  1333		 */
+  1334		do_close_on_exec(me->files);
+  1335	
+  1336		if (bprm->secureexec) {
+  1337			/* Make sure parent cannot signal privileged process. */
+  1338			me->pdeath_signal = 0;
+  1339	
+  1340			/*
+  1341			 * For secureexec, reset the stack limit to sane default to
+  1342			 * avoid bad behavior from the prior rlimits. This has to
+  1343			 * happen before arch_pick_mmap_layout(), which examines
+  1344			 * RLIMIT_STACK, but after the point of no return to avoid
+  1345			 * needing to clean up the change on failure.
+  1346			 */
+  1347			if (bprm->rlim_stack.rlim_cur > _STK_LIM)
+  1348				bprm->rlim_stack.rlim_cur = _STK_LIM;
+  1349		}
+  1350	
+  1351		me->sas_ss_sp = me->sas_ss_size = 0;
+  1352	
+  1353		/*
+  1354		 * Figure out dumpability. Note that this checking only of current
+  1355		 * is wrong, but userspace depends on it. This should be testing
+  1356		 * bprm->secureexec instead.
+  1357		 */
+  1358		if (bprm->interp_flags & BINPRM_FLAGS_ENFORCE_NONDUMP ||
+  1359		    !(uid_eq(current_euid(), current_uid()) &&
+  1360		      gid_eq(current_egid(), current_gid())))
+  1361			set_dumpable(current->mm, suid_dumpable);
+  1362		else
+  1363			set_dumpable(current->mm, SUID_DUMP_USER);
+  1364	
+  1365		perf_event_exec();
+  1366		__set_task_comm(me, kbasename(bprm->filename), true);
+  1367	
+  1368		/* An exec changes our domain. We are no longer part of the thread
+  1369		   group */
+  1370		WRITE_ONCE(me->self_exec_id, me->self_exec_id + 1);
+  1371		flush_signal_handlers(me, 0);
+  1372	
+  1373		retval = set_cred_ucounts(bprm->cred);
+  1374		if (retval < 0)
+  1375			goto out_unlock;
+  1376	
+  1377		/*
+  1378		 * install the new credentials for this executable
+  1379		 */
+  1380		security_bprm_committing_creds(bprm);
+  1381	
+  1382		commit_creds(bprm->cred);
+  1383		bprm->cred = NULL;
+  1384	
+  1385		/*
+  1386		 * Disable monitoring for regular users
+  1387		 * when executing setuid binaries. Must
+  1388		 * wait until new credentials are committed
+  1389		 * by commit_creds() above
+  1390		 */
+  1391		if (get_dumpable(me->mm) != SUID_DUMP_USER)
+  1392			perf_event_exit_task(me);
+  1393		/*
+  1394		 * cred_guard_mutex must be held at least to this point to prevent
+  1395		 * ptrace_attach() from altering our determination of the task's
+  1396		 * credentials; any time after this it may be unlocked.
+  1397		 */
+  1398		security_bprm_committed_creds(bprm);
+  1399	
+  1400		/* Pass the opened binary to the interpreter. */
+  1401		if (bprm->have_execfd) {
+  1402			retval = get_unused_fd_flags(0);
+  1403			if (retval < 0)
+  1404				goto out_unlock;
+  1405			fd_install(retval, bprm->executable);
+  1406			bprm->executable = NULL;
+  1407			bprm->execfd = retval;
+  1408		}
+  1409		return 0;
+  1410	
+  1411	out_unlock:
+  1412		up_write(&me->signal->exec_update_lock);
+  1413	out:
+  1414		return retval;
+  1415	}
+  1416	EXPORT_SYMBOL(begin_new_exec);
+  1417	
+
 -- 
-2.39.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
