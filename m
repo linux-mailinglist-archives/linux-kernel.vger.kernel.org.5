@@ -1,99 +1,78 @@
-Return-Path: <linux-kernel+bounces-12321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E17C81F35D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:26:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C154E81F35E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 01:26:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24E2C1C210FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 00:26:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62973B2295A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Dec 2023 00:26:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EDA7637;
-	Thu, 28 Dec 2023 00:26:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C9D23A7;
+	Thu, 28 Dec 2023 00:26:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dFS20mxK"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="DKGjIDec"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57181368
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 00:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5e7f0bf46a2so46620767b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Dec 2023 16:26:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703723184; x=1704327984; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5LrHXPwrA94UWexKglXOYSXxae6NHDJXHVO3uKsVohg=;
-        b=dFS20mxKpwqlFCs0f+RNV5oteNpLb8cMAC1P1Vt3b1wRDC254PeX8xVx51YRVBLnuT
-         WWUP2cpkayUnLg5BwqGRvZKpptq8GKFew6Mui3f3TMb/awQvASY00/mSKLUKGWCtapme
-         UdxA+2lizII+r8fdBQg7hmA5RSB5KOCaZBgsOzBTm30wr7LKja8NiGfN3g7MbGNdUajD
-         52vbykjmc3y5jYETb79OPX0NAfzYA9IVN7hGI96QXsU3ovnRfY5znbFMgoqinRoOfPhO
-         wtJh3Ne8/qxuoC7W+972jr2QAN/YEJIapHWLbv43BpeILMNeAwgkeK1A1trdGRBQ4bGb
-         Q5ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703723184; x=1704327984;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5LrHXPwrA94UWexKglXOYSXxae6NHDJXHVO3uKsVohg=;
-        b=C44XXL3HDO2WmgAQy9g0ilcAzU+o/4vDFK09BwLCoqo7HMsB7+kZGwdWGSQOcziqKb
-         vtTLH2XmXr71Fax3FvUUWworWGPU5JG5kRvUIUDsOXOXvvLKrCqSZLrr/1xYCmkyz8Wc
-         Ry7op9dQejDhx46q5BD88gM3eVbeTd4peAggibKTmYa6MoQtcXUQauBkq+EhH6fyChPN
-         /qe0CFd8JWHeey8dJuK6baE5uRznr7dkZtNjbOxymBJsMk6rGq9wV+xEFZ9uBt/D8l2n
-         mTK712jCZECz90ftBjyGCuR8nIEJuce6EPwpsdaq+35a4q2usAYy5X4PvVOINF9nG3kZ
-         vmSA==
-X-Gm-Message-State: AOJu0Yxr4RcfDYfWA31UqEdILXYTUyevon3M7DTy03sdb6vWfVEQqbbw
-	tYSj1gkJj5pN3NBT/3BnHDgMHgPx1G5kNPBbxo5oLxsN+wHcVA==
-X-Google-Smtp-Source: AGHT+IESVq5n0e7oP1b/tJTd29cZ1WSG2HZHIL3RRYJg92NdYDbTPukugI9kwpvhkgABC5ifi5MghjbOCgoyfMySJxs=
-X-Received: by 2002:a81:b722:0:b0:5ec:f73b:711f with SMTP id
- v34-20020a81b722000000b005ecf73b711fmr2249196ywh.31.1703723184389; Wed, 27
- Dec 2023 16:26:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5531C3D
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 00:26:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=MP16u6EN11eo7xZ2yXWU55KJjCzR/dx7xVgAy3OFLzU=; b=DKGjIDectkRFa7HaOtXNKUroOX
+	s7hFzpKTYX3vBXDREusrkX8XEgXJYL0mKuFEdoVe8SfLk2NojBvBBtUWCtDYCALDz6meul2f2nOOT
+	jHqCjZ6wNl1aQh812Ku9gp2HHHjT8u1yqVs9rlGTJRUJVfovZYiTMbtlNj6+S4mn7oy8fbXNDnuiu
+	aNIb56x7mZ/0MBkencnLWcoU+LUdruPSmYn9Gy1l57SWCZvybP6ID4xIxdomKSimkYV7wO3Xy1dl+
+	aJiIlO/lYAW9SDHd/iV6uXwsAYifQFmyDNcQIHiDBZb3ty4xJIMTTMDpfTLeEXTU2KwhkWAfxVOHA
+	xC18zzAQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rIeE2-00BnnV-2g;
+	Thu, 28 Dec 2023 00:26:14 +0000
+Date: Thu, 28 Dec 2023 00:26:14 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Tanzir Hasan <tanzirh@google.com>, Andy Lutomirski <luto@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, Nick Desaulniers <nnn@google.com>
+Subject: Re: [PATCH] x86/syscalls: shrink entry/syscall_32.i via IWYU
+Message-ID: <20231228002614.GI1674809@ZenIV>
+References: <20231227-syscall32-v1-1-9621140d33bd@google.com>
+ <20231227233444.GH1674809@ZenIV>
+ <8B198413-0C9B-40A2-8478-F22206AAE6FA@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221175527.2814506-1-andriy.shevchenko@linux.intel.com>
- <ZYTihbWMcHMHSkC_@rigel> <ZYWDij-J1YruTIM7@smile.fi.intel.com>
- <ZYWHjq_7PnwO27ro@rigel> <CAMRc=McPzQyR1J5Mhn7_cBrWEcqz2JKg7t8CpjHx6jgVEnYBvA@mail.gmail.com>
- <ZYWYZ6Ys3hSb4IOe@rigel> <CACMJSeu-bS+MpP8HCcD74w0j6vFt821bpgth5LHpqq-fHnEe1w@mail.gmail.com>
- <ZYWZ4yhqzTF8rShe@rigel> <CACRpkdZrnOJ-Sjj4VpuVU0Gvzca_uGN9Um5Zj=bRMH2df4kRZw@mail.gmail.com>
- <ZYZBDu1HjtU23fnB@rigel>
-In-Reply-To: <ZYZBDu1HjtU23fnB@rigel>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 28 Dec 2023 01:26:13 +0100
-Message-ID: <CACRpkda9j+5zT58vqip-JjtNQEZ+dWFLxdCmmLN8GpS8R8e7zA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpiolib: cdev: Split line_get_debounce_period()
- and use
-To: Kent Gibson <warthog618@gmail.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8B198413-0C9B-40A2-8478-F22206AAE6FA@zytor.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Hi Kent,
+On Wed, Dec 27, 2023 at 03:50:33PM -0800, H. Peter Anvin wrote:
+> > /*
+> >  * Only the low 32 bits of orig_ax are meaningful, so we return int.
+> >  * This importantly ignores the high bits on 64-bit, so comparisons
+> 
+> __visible is for LTO, no?
 
-On Sat, Dec 23, 2023 at 3:08=E2=80=AFAM Kent Gibson <warthog618@gmail.com> =
-wrote:
-
-> There is no escaping that my fingerprints are all over that so it does
-> make sense to list me over you. Given that patch and git-tree management
-> will be deferred to the GPIO subsystem/Bart, there isn't much distinction
-> between a reviewer and a maintainer, so I'm ok with being listed as a
-> maintainer - I'll just have to pay a bit more attention to the list mails
-> than I have been.
-
-You're doing fine with responsiveness and feedback is always timely
-and verbose, so just keep doing what you do :)
-
-Yours,
-Linus Walleij
+If we need it in cases when array defined in entry/syscall_32.c and
+used in entry/common.c, I would respectfully suggest that whatever
+we need it for is misguided garbage.  I don't think that LTO does
+need it, though.  How is arch/x86/entry/{syscall_32,common}.c
+different from e.g. fs/{namespace,d_path}.c, where we have
+fs/namespace.c:100:__cacheline_aligned_in_smp DEFINE_SEQLOCK(mount_lock);
+and
+fs/d_path.c:166:        read_seqbegin_or_lock(&mount_lock, &m_seq);
+respectively?
 
