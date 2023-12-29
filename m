@@ -1,145 +1,106 @@
-Return-Path: <linux-kernel+bounces-12888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E459081FC20
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 01:05:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B068981FC22
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 01:08:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD6B21C213C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 00:05:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16DD6B23829
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 00:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D84437FF;
-	Fri, 29 Dec 2023 00:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=semihalf.com header.i=@semihalf.com header.b="fm3VigLf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85781FD3;
+	Fri, 29 Dec 2023 00:08:06 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E15633
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 00:05:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=semihalf.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=semihalf.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cb21afa6c1so80967521fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 16:05:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1703808341; x=1704413141; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B1uQHxJ/UMslgvxsnPESIEbCfyITt0swCrvdM6gTclE=;
-        b=fm3VigLfXIMLb5a2aJ6xQFxbUjw1+8MFeZ8zqqYGdNOLAj/ThNfTtJOK3Fi6njzK9Z
-         ROftyw6WyziHmiG9BakLV0TDniiyEB848GlUG77fCBCic5e0R/ufvNWP3JzFFTYR2ePA
-         7y3w21sizzxZqsU6ffnk4Qz9rZE6EcSyu9wbQsyUtEwqxRo5u/6snosoeF2OB8rXEjVy
-         vuOGDoKY01n617OrKdphQGCaa1a7zsSdAKzgueo9ozl6WPvwuVzsNrj1s5xZJmA5Iy7d
-         n+eZ34qjvI2TChxKPzZ8KJcr92n3zJXwjmu7o9UYPR2sU3lWcw6YQoho4fXSSYjucmFR
-         8phg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBB881FA8
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 00:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35ff54778ddso78557105ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 16:08:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703808341; x=1704413141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B1uQHxJ/UMslgvxsnPESIEbCfyITt0swCrvdM6gTclE=;
-        b=TLdZM4JDrKfU2HBXHOT7dBWNCe3mEr/hMM5oXXMpnHmKgxgJKTrbOUHB7eQuZ8pNUJ
-         ECDxTP7Mwa+tmpfWb86CKqAsxkBCknngdnOBbxFSL3PkS84SbrlX0XODmlzAWQ1MP36S
-         H+KAH4LqjLaMmNPEJPchpYPQcNpAqJrtfMhRRm1jrrtboNfysBrmU2kL+dHKgkP71Mak
-         EZlvEXg8irdkWKyzv2P75SuK4o0i27zWinI+quAqO1QT53BwMRODJoRNDcqgO908qFut
-         S+ccAw0e7vQg7aN30vldDs8ZidkYJJhZxMOtGZEk0LRiPNYiGxbuVd6s/+K0G8gqDLnD
-         kKcg==
-X-Gm-Message-State: AOJu0YxUvoidtNeRS8U4Jrkpg5dtuCniH538E8IJnbwJew6pwpwvUEd1
-	rweI7MUh2q40qhEyrRqASATA41Sed4KsX4Iw+L5kXAJj/KaT
-X-Google-Smtp-Source: AGHT+IGpVDyeZg9aMabF8Z3XI5HktLMS+tNvGABnw2Oy3gSYcyrZzM8/jYKyw7bcom9loi2vGCbWiT74whi5ve6DZBY=
-X-Received: by 2002:a2e:2413:0:b0:2cc:9493:8117 with SMTP id
- k19-20020a2e2413000000b002cc94938117mr4838058ljk.65.1703808341202; Thu, 28
- Dec 2023 16:05:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703808484; x=1704413284;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=95vr8T8ggZqW3Bq9/rzgrnZasLlu5URfa7PcdoxQO9M=;
+        b=kxUfdXk0gaQCUxHqREb2a4+JNwiTgNGHXtDR7efaV0gLtxGZwVhwuTCG+V+GucGFeW
+         t0dD2/k2MLjFx6LwQF2038QeTOopvXFuSrPhfLEn2ZXm9l3XjBUvrM583C8coilASyZU
+         lTuWnpBISw8yMs3bdMxG+8B7k1IZm/h6PWp9U5qbhL7ETVBg9V65sOAC/m09ly3olH2i
+         mU3rjDoSCIQpEXWg/ETF05H7ygLw2LMmFLDhhqju5NqVl7sBNt12QpWnbn5k/Cup1osp
+         KeYJvgMqAAA/Mkx90VKMr5OYhVVy6/N6pogeZ/pr2XpOe4fSKvtc0O/28Sex8P1ig4Cd
+         G46g==
+X-Gm-Message-State: AOJu0YyszyYo/xgQEps3cM2eEXg4fdmeRJwWz0hcbfgXweFyOTfCkv0F
+	GJq00dovy5jxBNiBDnoqFP1+nqLJk+kI/SGYUSp2UnZNt4vg
+X-Google-Smtp-Source: AGHT+IF3TVnlznYAut69c59r5kntV0NrB9WiRytLCXOxl9Mmahxqx1o5FRH4im/KkMKjj4sbAJVV0cdkELt98fGAhUtZaOLADmZ8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231223015131.2836090-1-lb@semihalf.com> <CAJfuBxyN+t6OgzzX3ZT6MxdMT6Awr29orJAucVMDz2zmEFCDDQ@mail.gmail.com>
- <CAJfuBxz24vu5d1v=mKfRTD5OwrC_bvWZeD-PubaCFOZbmihjiA@mail.gmail.com>
-In-Reply-To: <CAJfuBxz24vu5d1v=mKfRTD5OwrC_bvWZeD-PubaCFOZbmihjiA@mail.gmail.com>
-From: =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Date: Fri, 29 Dec 2023 01:05:30 +0100
-Message-ID: <CAK8Bye+K9cWG_AJ-2rTzRn4eZn-9fDreP8zsRfrPdV4wcRD7pw@mail.gmail.com>
-Subject: Re: [PATCH v3 00/22] dyndbg: add support for writing debug logs to trace
-To: jim.cromie@gmail.com
-Cc: Jason Baron <jbaron@akamai.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Kees Cook <keescook@chromium.org>, Douglas Anderson <dianders@chromium.org>, 
-	Guenter Roeck <groeck@google.com>, Yaniv Tzoreff <yanivt@google.com>, Benson Leung <bleung@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Vincent Whitchurch <vincent.whitchurch@axis.com>, 
-	Pekka Paalanen <ppaalanen@gmail.com>, Sean Paul <seanpaul@chromium.org>, 
-	Daniel Vetter <daniel@ffwll.ch>, Simon Ser <contact@emersion.fr>, 
-	John Ogness <john.ogness@linutronix.de>, Petr Mladek <pmladek@suse.com>, 
-	Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, linux-kernel@vger.kernel.org, 
-	upstream@semihalf.com, Greg KH <gregkh@linuxfoundation.org>
+X-Received: by 2002:a05:6e02:1d92:b0:35f:efdc:75b6 with SMTP id
+ h18-20020a056e021d9200b0035fefdc75b6mr1169289ila.6.1703808484196; Thu, 28 Dec
+ 2023 16:08:04 -0800 (PST)
+Date: Thu, 28 Dec 2023 16:08:04 -0800
+In-Reply-To: <tencent_A16363296CC3BF645C7762576306DA737405@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000774a19060d9ad3c8@google.com>
+Subject: Re: [syzbot] [hfs?] KMSAN: uninit-value in __hfsplus_ext_cache_extent
+From: syzbot <syzbot+55ad87f38795d6787521@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-=C5=9Br., 27 gru 2023 o 05:44 <jim.cromie@gmail.com> napisa=C5=82(a):
->
-> > >
-> > > Jim, I made a few changes to the test script dd-selftest.rc you creat=
-ed
-> > > and I also added new test scenarios. You can find the entire patchset
-> > > with the test script changes on top here
-> > > https://chromium.googlesource.com/chromiumos/third_party/kernel/+log/=
-refs/sandbox/ukaszb/dyndbg_trace_v3
-> > > I wonder where would be the proper place to store the test script
-> > > (upstream, your github.com:jimc/linux.git)
-> > > Do you have a suggestion for that ?
-> > >
-> >
-> > I got it (your HEAD), renamed and put it in:
-> > tools/testing/selftests/dynamic_debug/
-> > and copied & modified Makefile and config from ../users/
-> > I added your SOB, that seems proper.
-> >
->
-> meh.
-> my select-paste of your HEAD dropped all the whitespace.
-> how annoying.
->
->
-> > nice additions.  and I like the colors.  maybe they belong in lib.mk,
-> > but thats 4 later.
-> >
-> > and tweaked the modules / DUTs to *hopefully* get stable callsite count=
-s
-> > from the tests on them, in virtually any usable config.
-> > DUTs: file init/main, module mm_init, and module test_dynamic_debug (a
-> > config constraint)
-> > The ref-counts are taken from a default virtme-ng -k config on my x86-6=
-4 box
-> >
-> > I now pass tests up to:
-> >
-> > [root@v6 wk-proof]# ./tools/testing/selftests/dynamic_debug/dyndbg_self=
-test.sh
-> > ...
-> > # TEST_PRIVATE_TRACE_6
-> > [ 1009.296557] dyndbg: read 3 bytes from userspace
-> > [ 1009.296876] dyndbg: query 0: <=3D_> on module: <*>
-> > [ 1009.297171] dyndbg: processed 1 queries, with 1559 matches, 0 errs
-> > [ 1009.311621] dyndbg: read 39 bytes from userspace
-> > [ 1009.312032] dyndbg: query 0: <open
-> > A_bit_lengthy_trace_instance_name> on module: <*>
-> > [ 1009.312569] dyndbg: instance is already opened
-> > name:A_bit_lengthy_trace_instance_name
-> > [ 1009.313063] dyndbg: processed 1 queries, with 0 matches, 1 errs
-> > : ./tools/testing/selftests/dynamic_debug/dyndbg_selftest.sh:454
-> > ddcmd() expected to exit with code 0
-> > Error: 'File exists'
-> >
->
-> _7 has some obsolete counts, after previous $modname changes
+Hello,
 
-Which obsolete counts are you referring to ?
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KMSAN: uninit-value in __hfsplus_ext_cache_extent
 
-Thanks,
-Lukasz
+loop0: detected capacity change from 0 to 1024
+=====================================================
+BUG: KMSAN: uninit-value in __hfsplus_ext_read_extent fs/hfsplus/extents.c:170 [inline]
+BUG: KMSAN: uninit-value in __hfsplus_ext_cache_extent+0x851/0x960 fs/hfsplus/extents.c:191
+ __hfsplus_ext_read_extent fs/hfsplus/extents.c:170 [inline]
+ __hfsplus_ext_cache_extent+0x851/0x960 fs/hfsplus/extents.c:191
+ hfsplus_file_truncate+0x730/0xf50 fs/hfsplus/extents.c:598
+ hfsplus_write_failed+0xab/0x100 fs/hfsplus/inode.c:42
+ hfsplus_write_begin+0x12e/0x130 fs/hfsplus/inode.c:56
+ generic_perform_write+0x3f5/0xc40 mm/filemap.c:3918
+ __generic_file_write_iter+0x20a/0x460 mm/filemap.c:4013
+ generic_file_write_iter+0x103/0x5b0 mm/filemap.c:4039
+ call_write_iter include/linux/fs.h:2020 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x8ef/0x1490 fs/read_write.c:584
+ ksys_write+0x20f/0x4c0 fs/read_write.c:637
+ __do_sys_write fs/read_write.c:649 [inline]
+ __se_sys_write fs/read_write.c:646 [inline]
+ __x64_sys_write+0x93/0xd0 fs/read_write.c:646
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Local variable fd created at:
+ hfsplus_file_truncate+0x5d/0xf50 fs/hfsplus/extents.c:547
+ hfsplus_write_failed+0xab/0x100 fs/hfsplus/inode.c:42
+
+CPU: 1 PID: 5490 Comm: syz-executor.0 Not tainted 6.7.0-rc7-syzkaller-00003-gfbafc3e621c3-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+=====================================================
+
+
+Tested on:
+
+commit:         fbafc3e6 Merge tag 'for_linus' of git://git.kernel.org..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=14922dcee80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7078a6b901aa3
+dashboard link: https://syzkaller.appspot.com/bug?extid=55ad87f38795d6787521
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=12e443d9e80000
+
 
