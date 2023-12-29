@@ -1,70 +1,71 @@
-Return-Path: <linux-kernel+bounces-13051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F19681FEFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:01:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DF4D81FF03
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:02:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81C141C2231B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 11:01:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D67B41F23E85
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 11:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCB7311185;
-	Fri, 29 Dec 2023 11:01:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A302811185;
+	Fri, 29 Dec 2023 11:02:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lkywn9zR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nAMLSXQy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A253410A25;
-	Fri, 29 Dec 2023 11:01:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B79D10A26;
+	Fri, 29 Dec 2023 11:02:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50e68e93be1so5823677e87.0;
-        Fri, 29 Dec 2023 03:01:23 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50e49a0b5caso7591003e87.0;
+        Fri, 29 Dec 2023 03:02:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703847682; x=1704452482; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703847739; x=1704452539; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=i0ULouMbZfbNQIosOC2sdx22KVaZt1+H52YT662+sxE=;
-        b=lkywn9zRGfhNMlvglUV1wD6BnXQtf0ADLQ0ppxD5pdZ7q5rePnSQKHvlQFa91C6Bmz
-         yKjvSLrrfxe1lWS5rvnm2BhgMz0i8LWZ7bQHDbYpbxrMaIxLN/WRZCR3NgkPUU9IcF/0
-         26AfLW3SKw1PLgukl5yK8qtGTfUOuTWQMElHc7Io9jNspmd+4vQY2rCJFiNXccEBRp2s
-         J1sX/iZdw3lVBio+dQBLT3SEtpqhn0Dek+xn2XnhWtvz1D6pXIXgj9lLydf2Hh1AV1XQ
-         +T/RfYgWCNM64wZruecfPutSLE8wZNJuDgOA2jywIPXhHMddnW86rFq4cROGBbxH8CqZ
-         jVDA==
+        bh=NsD+IB2GT6Qzi6UFqd7zR6s13SfDz8WzYWnYArIREis=;
+        b=nAMLSXQyfAOAF30s4eIBTK4KLNyHBeqwrAt5x8PG3P++ouDlOKAbekcTJWJ/6myYEl
+         Q4tjN/kTUD72XXVKNvOJnb/51XrFPOuZX/t4J8Mv0WzlscoMU4FLLiSBLXps1evByo0n
+         Jpv8fGXMCZFAnsYStdBB7re9JsY/XeLf8x7LwTMLjSoAy0gYKjehMIM90pBCq824g0hp
+         y9aZNN1IEgWG4FVx35IAV0qt0UrR9FOrKO5Af/uimHHzBRRV96QtDPOkXv2xw7ZXb2yV
+         YA4+ODoCp62qvYoMsfd5NEWTtHip7OKCw1INftcSgiVsyfUunUHkJK7YzB2TYanUKRHr
+         Z3Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703847682; x=1704452482;
+        d=1e100.net; s=20230601; t=1703847739; x=1704452539;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=i0ULouMbZfbNQIosOC2sdx22KVaZt1+H52YT662+sxE=;
-        b=rnI7MTWUMTBzfSz+hy/HQTIzj1dKyixk1NyPVa2zkhukrEQBlhOKZYeq5mBIDTG3x1
-         RJt8OkNYXIZwzp/91+6JiBTCKkqOY9EmlW9+NSBvq0NQuY0n9BZ2jPlrLy8H3/9Nn19T
-         QthLoHR39UlnL0CkGxpIGVBsLmtoDwhzm/wyL1If1P0CfKn7WDOMqNPRNUodaF0qdIjY
-         uYgHQwIs49VLX7yZ15BuPjONyMA+Kqy65LnpqpntLm2y66W8LPWUp5zlt34UOiDcND1Z
-         yAe6f7yUwK42KEdfUgOmdcZrE1+AIbJQ3Ry3lwO/dmskiA2T9eemT+Js3bvLdrF9TPJP
-         EgVA==
-X-Gm-Message-State: AOJu0Yy7+om35Bd486VAJUAxNgD73aozjabRJgLNTHzTyo3WKG06edPA
-	PILghPWsOiR2Q3GaCLI9hYdKoE77V9FsrYxUuNocVjvbWpeM4A==
-X-Google-Smtp-Source: AGHT+IFYmZYcuaNbniJSBscSzp9FFsmSNpN2Lf6ogu42hEQ/b84GJyhHVpKT54sM7Bzbn6T7OweYzUudjSyuZqxMlQ0=
-X-Received: by 2002:ac2:5934:0:b0:50e:7673:54d4 with SMTP id
- v20-20020ac25934000000b0050e767354d4mr2872352lfi.29.1703847681448; Fri, 29
- Dec 2023 03:01:21 -0800 (PST)
+        bh=NsD+IB2GT6Qzi6UFqd7zR6s13SfDz8WzYWnYArIREis=;
+        b=FHIBqnqRr9jdoI+2yDHWxGqLyTwpcgtqVbAbM1rEiJ/4P6NaotHjOioQat2kYIzeWt
+         KqxaxTVZKJJxxQ3ibACQwonpO0sB1SDrmF1NNJpEZlzISAdE9528u1SlJZ2+U/dpF5dV
+         I8SvLcjEb7ffAWXUcZ/qQVfLHPFyZY35zI18g0lz9cSMAwXDGPRsYk80pOXh8yzm8TSw
+         N/VuAASIRiHp+fbjK484X/DCs6Pza8xExkjQ9dVeiMcvwuvEXSJAvnMf+YWW2prqhiZj
+         mwrpescNLugmitL880J/ROw65xlZjRbju+poZqsg5dovgMd8ppCFfLbAHuiigIRe4M9P
+         eBSQ==
+X-Gm-Message-State: AOJu0Ywf0xPjgGlHil99iC9SmdJrjfETq8ZetkprHUHfYL9antg49NJf
+	wmluFbXojr6nlLykb/iVUgdANS1WHNsOeJnzCsI=
+X-Google-Smtp-Source: AGHT+IERL8Fz7j8WMbUOpMCFPbrDbSTtPYypwgal/QfaUZS54vWya0WCGbTSxe/zIN2kyKTgHAh7Lm/csOMuUbNpOMM=
+X-Received: by 2002:ac2:4259:0:b0:50e:40bf:e0a4 with SMTP id
+ m25-20020ac24259000000b0050e40bfe0a4mr4242506lfl.132.1703847739347; Fri, 29
+ Dec 2023 03:02:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228131617.3411561-1-liujianfeng1994@gmail.com>
-In-Reply-To: <20231228131617.3411561-1-liujianfeng1994@gmail.com>
+References: <20231228131617.3411561-1-liujianfeng1994@gmail.com> <20231228131617.3411561-3-liujianfeng1994@gmail.com>
+In-Reply-To: <20231228131617.3411561-3-liujianfeng1994@gmail.com>
 From: Hugh Cole-Baker <sigmaris@gmail.com>
-Date: Fri, 29 Dec 2023 11:01:09 +0000
-Message-ID: <CAAXNxMT3f68-ptM7Crhrfmn7iwTyJc9pwz4Beob+5beVODaSHQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Add hantro g1 video decoder support for RK3588
+Date: Fri, 29 Dec 2023 11:02:08 +0000
+Message-ID: <CAAXNxMRkpM+dSV3azDFgm07ygJrXyS=Htz_h8Z_WMmeG0YZ+ig@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] arm64: dts: rockchip: Add Hantro G1 VPU support
+ for RK3588
 To: Jianfeng Liu <liujianfeng1994@gmail.com>
 Cc: ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de, mchehab@kernel.org, 
 	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
@@ -73,43 +74,55 @@ Cc: ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de, mchehab@kernel.org,
 	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 28 Dec 2023 at 13:16, Jianfeng Liu <liujianfeng1994@gmail.com> wrote:
+On Thu, 28 Dec 2023 at 13:17, Jianfeng Liu <liujianfeng1994@gmail.com> wrote:
 >
-> This is the v2 version of this series adding hantro g1 video decoder
-> support for rk3588.
+> This patch enables Hantro G1 video decoder in RK3588's
+> devicetree.
 >
-> Changes in v2:
-> - Fix alphabetical order in patch1 and patch3
-> - Sort device tree node by bus-address
-> - Drop rk3588_vpu_variant fron v1 because that is exactly the same as rk3568_vpu_variant
-> - Link to v1: https://lore.kernel.org/all/20231227173911.3295410-1-liujianfeng1994@gmail.com
+> Tested with FFmpeg v4l2_request code taken from [1]
+> with MPEG2, H.264 and VP8 samples.
 >
-> Jianfeng Liu (3):
->   media: verisilicon: Add support for Hantro G1 on RK3588
->   arm64: dts: rockchip: Add Hantro G1 VPU support for RK3588
->   dt-bindings: media: rockchip-vpu: Add RK3588 compatible
+> [1] https://github.com/LibreELEC/LibreELEC.tv/blob/master/packages/multimedia/ffmpeg/patches/v4l2-request/ffmpeg-001-v4l2-request.patch
 >
->  .../bindings/media/rockchip-vpu.yaml          |  1 +
->  arch/arm64/boot/dts/rockchip/rk3588s.dtsi     | 20 +++++++++++++++++++
->  .../media/platform/verisilicon/hantro_drv.c   |  1 +
->  3 files changed, 22 insertions(+)
+> Signed-off-by: Jianfeng Liu <liujianfeng1994@gmail.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 >
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> index 5fb0baf8a..5da668184 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> @@ -640,6 +640,26 @@ i2c0: i2c@fd880000 {
+>                 status = "disabled";
+>         };
+>
+> +       vpu: video-codec@fdb50400 {
+
+The node name should be video-codec@fdb50000 to match the reg address.
+
+> +               compatible = "rockchip,rk3588-vpu";
+> +               reg = <0x0 0xfdb50000 0x0 0x800>;
+> +               interrupts = <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH 0>;
+> +               clocks = <&cru ACLK_VPU>, <&cru HCLK_VPU>;
+> +               clock-names = "aclk", "hclk";
+> +               iommus = <&vdpu_mmu>;
+> +               power-domains = <&power RK3588_PD_VDPU>;
+> +       };
+> +
+> +       vdpu_mmu: iommu@fdb50800 {
+> +               compatible = "rockchip,rk3588-iommu", "rockchip,rk3568-iommu";
+> +               reg = <0x0 0xfdb50800 0x0 0x40>;
+> +               interrupts = <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH 0>;
+> +               clock-names = "aclk", "iface";
+> +               clocks = <&cru ACLK_VPU>, <&cru HCLK_VPU>;
+> +               power-domains = <&power RK3588_PD_VDPU>;
+> +               #iommu-cells = <0>;
+> +       };
+> +
+>         vop: vop@fdd90000 {
+>                 compatible = "rockchip,rk3588-vop";
+>                 reg = <0x0 0xfdd90000 0x0 0x4200>, <0x0 0xfdd95000 0x0 0x1000>;
 > --
 > 2.34.1
-
-Tested H.264 and VP8 decode with Fluster on NanoPC T6;
-
-H.264 JVT-AVC_V1 test suite:
-  Ran 129/135 tests successfully.
-  (matches FFmpeg-H.264 software decoder)
-H.264 JVT-FR-EXT test suite:
-  Ran 44/69 tests successfully
-  (some failures caused by lack of support for Hi10P and 4:2:2)
-VP8-TEST-VECTORS test suite:
-  Ran 59/61 tests successfully
-  (matches FFmpeg-VP8 software decoder)
-Full results at:
-https://gist.github.com/sigmaris/d3d8586bfced5ddc021aa9dab94d4ab8
-
-Tested-by: Hugh Cole-Baker <sigmaris@gmail.com>
 
