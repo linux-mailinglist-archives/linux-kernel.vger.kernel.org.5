@@ -1,172 +1,111 @@
-Return-Path: <linux-kernel+bounces-13080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 054F681FF75
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 13:44:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47C4881FF78
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 13:45:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 733CFB216BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:44:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7ABA21C20CE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F61111A6;
-	Fri, 29 Dec 2023 12:44:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D34C3111B5;
+	Fri, 29 Dec 2023 12:45:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="wvYnRPjD";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="/Zg013Go";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="wvYnRPjD";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="/Zg013Go"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="cI0HlUwP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [217.72.192.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7066D1119E;
-	Fri, 29 Dec 2023 12:44:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5BA5121E82;
-	Fri, 29 Dec 2023 12:44:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1703853865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PfSIuJOLoDBb/clSFRScf5DAtw9ldgb0edljZkRP9XM=;
-	b=wvYnRPjDe4snZSvoIn2Mm4/Ut85eUT6oTuXqxlOkCZNE7czFJZEvwRrv/MXYFIozFG6Zth
-	QmAMpp20mRXxhHvglISamUonbp7DgbAJzvT5Q7519HZru+RAGHnTjR8yDsceUHOW5e3RUE
-	jpaycRaxf+OLIhU1631oEgTfPQ9Qtrs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1703853865;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PfSIuJOLoDBb/clSFRScf5DAtw9ldgb0edljZkRP9XM=;
-	b=/Zg013Gon+ocWUGkcPFZqsgi6VkYiJOq3WS5zgbAVRdrFGL7LAU3xbB0ZPzsxh0Nkaq4/n
-	8yv4wR7OWHrbi7Bw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1703853865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PfSIuJOLoDBb/clSFRScf5DAtw9ldgb0edljZkRP9XM=;
-	b=wvYnRPjDe4snZSvoIn2Mm4/Ut85eUT6oTuXqxlOkCZNE7czFJZEvwRrv/MXYFIozFG6Zth
-	QmAMpp20mRXxhHvglISamUonbp7DgbAJzvT5Q7519HZru+RAGHnTjR8yDsceUHOW5e3RUE
-	jpaycRaxf+OLIhU1631oEgTfPQ9Qtrs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1703853865;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PfSIuJOLoDBb/clSFRScf5DAtw9ldgb0edljZkRP9XM=;
-	b=/Zg013Gon+ocWUGkcPFZqsgi6VkYiJOq3WS5zgbAVRdrFGL7LAU3xbB0ZPzsxh0Nkaq4/n
-	8yv4wR7OWHrbi7Bw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DBD03133E5;
-	Fri, 29 Dec 2023 12:44:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id H72LMyi/jmUCaAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 29 Dec 2023 12:44:24 +0000
-Date: Fri, 29 Dec 2023 13:44:24 +0100
-Message-ID: <87zfxtxjo7.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Dorian Cruveiller <doriancruveiller@gmail.com>
-Cc: perex@perex.cz,
-	tiwai@suse.com,
-	sbinding@opensource.cirrus.com,
-	kailang@realtek.com,
-	luke@ljones.dev,
-	andy.chi@canonical.com,
-	shenghao-ding@ti.com,
-	ruinairas1992@gmail.com,
-	l.guzenko@web.de,
-	yangyuchi66@gmail.com,
-	vitalyr@opensource.cirrus.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Add support for cirrus cs35l41 sound amplifier
-In-Reply-To: <20231225181352.185455-1-doriancruveiller@gmail.com>
-References: <20231225181352.185455-1-doriancruveiller@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E438910A24;
+	Fri, 29 Dec 2023 12:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703853909; x=1704458709; i=markus.elfring@web.de;
+	bh=2doc9tGjsfe7edwhPQC4ZU47xXYbFltN+jMs52TiMR8=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=cI0HlUwPQrZ4tA+iBLetN47oW3FeYGHfoEFunTLCwjxn424cn8PudYBzWvjmn0lm
+	 77rMZLtgod9cAoRyO7nR/8B8ln+YXaye7LN04bI0vBpm1z2hj+05wRfv1czQwhZ6x
+	 KpsXPTGi9dOaaoeZSjV1yhUu7ApCkClfzzRZK+MuCy2XWRbPWCrSQrMMTNCIFKUwS
+	 jHIID4ohLGA0LR4TWv/v9GpsElevTVmjTTW4d8mmXyhW4yG50eBYbt1xxWYMYmMLz
+	 uv1I+pH4r03+k3r0Nn/gTPuFCWesBojqgLaEFsolsGFWclPXUZAt0/uFb7jG2bhsF
+	 nyQBntz+MRgoCi6qVA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1N45xz-1rAZHg1H2f-00zcWB; Fri, 29
+ Dec 2023 13:45:09 +0100
+Message-ID: <bbf26021-798a-41a7-840e-62c8d383bb93@web.de>
+Date: Fri, 29 Dec 2023 13:45:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Level: 
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: linux-nfs@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Anna Schumaker <anna@kernel.org>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] rpc_pipefs: Replace one label in bl_resolve_deviceid()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:mzRfjuPlxk5vnDVMY1zbfyGBw2FMtZ8FjuEciWqcOhd2mAzhsR3
+ 32CPXaA32iHm7eADhE55jAoL8I9LZn/zgiWIom9+T/i7xy6rZg68GVJkg9MCIJ9gUIiaTaV
+ 9JNvGUHiiDbBhjNnsubnKOCxOFFuAZrb50D3IYBCLWctSAZojveQfL6KcXsZ9dFzSVLUYYS
+ yf6EBJHqp2/QdtqzVsgeA==
 X-Spam-Flag: NO
-X-Spamd-Result: default: False [-5.75 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com,web.de];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[perex.cz,suse.com,opensource.cirrus.com,realtek.com,ljones.dev,canonical.com,ti.com,gmail.com,web.de,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.94)[99.75%];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from]
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=wvYnRPjD;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="/Zg013Go"
-X-Spam-Score: -5.75
-X-Rspamd-Queue-Id: 5BA5121E82
+UI-OutboundReport: notjunk:1;M01:P0:Qk1wAC/EVyA=;QgxENkvTw9f67KNy9dBqhxqTxae
+ InW4/60sWTufBIVY95K8s+hZyRHwyH+CWQWq+HZz+DtZuvtT8gQZ5B/4o+G2D5oBh6es8LJR0
+ PzByYQ0oRiDHjz88YbwOJ8aq5xsQNtJ4BP/WhDmNOe14lbLsL0JgyHGNs+PJqAcvATiwyA6qO
+ kSqYH+cYTzwVnzJgKtb2OoXOHVvIbR8MI8nCL9j3jTJKvecNqFICGdUwGW1AXG+m3wcwBsfI8
+ aCTXDopKSS4armUoyJRfrEcSr2CLYXMT7SiO1TyErgS6pmrYCHljh4b9B6k3/cIkPqKnV+6pJ
+ DzG56g3il8tSmx/n5EbE6cwt0YnyeXP5qpogvSKwdM3KiN+ixGZRprTLXj3jm4vk8w7ZnLi3G
+ ewPhfKqlq/lsdbhknG1JV6NVCbzDXPstZnIF0gVB8slkXwfCGw1NOXP4ktSKpp5SenDMY0Vwe
+ 8V0GYluJDQzNSMp9eZ6j9fHBwNxAxInKIKc459IG1hZV2CYGMnMw1rgipTF8pA/F9pTZQ8TPQ
+ g7PFmuHOqouWZAnhXN1ryrjhbcsgLFwOf0Z8Gc1OEBHcBk9LGuFspjJpO+h4nE7UKGxEWPD5W
+ DPeWnnLOpDIDuRRbmTwoVKVO18yXQjXoUKTh/B9/8ajzeZluLpkSPz0MO2Z4citqgI4mab/Wi
+ 2n1+W4Dm6YiN89qpOdCMQ4pOoqwDrKxyGATPxvu3IbQbN2yzVhiS11zQdYrwYBZnbbVmnoCCc
+ OAhxrSJkg45QP/eK+EHkZQdWaOsYxK4pfiOCVHSoyjJQW2f/VK6tYupoUYNfx4qFvDmAUorcz
+ b8oSt7e+nuGUB9HlvFu+ngZiNxSedmUFK2uhcbDiDnb9j9Ywll6JO4eevAQoQ4ExqeK3Id68J
+ rkg4SHhFcNWtAggKBfkMrZKDMWIxJHVF6iDL5xPUWhqGCer9zTVO1NYo+Dw/9fHZpozA/wdgr
+ XPLEJw==
 
-On Mon, 25 Dec 2023 19:13:52 +0100,
-Dorian Cruveiller wrote:
-> 
-> Link up the realtek audio chip to the cirrus cs35l41 sound amplifier chip
-> on 2 two models of the Lenovo legion slim 7 gen 8 (2023). These models are
-> 16IRH8 and 16APH8.
-> 
-> Signed-off-by: Dorian Cruveiller <doriancruveiller@gmail.com>
-> ---
->  sound/pci/hda/patch_realtek.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index c3a756528886..d8c8bb4c71b7 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -10208,6 +10208,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0x17aa, 0x3819, "Lenovo 13s Gen2 ITL", ALC287_FIXUP_13S_GEN2_SPEAKERS),
->  	SND_PCI_QUIRK(0x17aa, 0x3820, "Yoga Duet 7 13ITL6", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
->  	SND_PCI_QUIRK(0x17aa, 0x3824, "Legion Y9000X 2020", ALC285_FIXUP_LEGION_Y9000X_SPEAKERS),
-> +	SND_PCI_QUIRK(0x17aa, 0x38b4, "Legion Slim 7 16IRH8", ALC287_FIXUP_CS35L41_I2C_2),
-> +	SND_PCI_QUIRK(0x17aa, 0x38b7, "Legion Slim 7 16APH8", ALC287_FIXUP_CS35L41_I2C_2),
->  	SND_PCI_QUIRK(0x17aa, 0x3827, "Ideapad S740", ALC285_FIXUP_IDEAPAD_S740_COEF),
->  	SND_PCI_QUIRK(0x17aa, 0x3834, "Lenovo IdeaPad Slim 9i 14ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
->  	SND_PCI_QUIRK(0x17aa, 0x383d, "Legion Y9000X 2019", ALC285_FIXUP_LEGION_Y9000X_SPEAKERS),
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 29 Dec 2023 13:18:56 +0100
 
-The table entries are sorted in PCI SSID order.
-Could you try to put at the right place and resubmit?
+The kfree() function was called in one case by
+the bl_resolve_deviceid() function during error handling
+even if the passed data structure member contained a null pointer.
+This issue was detected by using the Coccinelle software.
 
+Thus use an other label.
 
-thanks,
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ fs/nfs/blocklayout/rpc_pipefs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Takashi
+diff --git a/fs/nfs/blocklayout/rpc_pipefs.c b/fs/nfs/blocklayout/rpc_pipe=
+fs.c
+index 6c977288cc28..d8d50a88de04 100644
+=2D-- a/fs/nfs/blocklayout/rpc_pipefs.c
++++ b/fs/nfs/blocklayout/rpc_pipefs.c
+@@ -75,7 +75,7 @@ bl_resolve_deviceid(struct nfs_server *server, struct pn=
+fs_block_volume *b,
+ 	msg->len =3D sizeof(*bl_msg) + b->simple.len;
+ 	msg->data =3D kzalloc(msg->len, gfp_mask);
+ 	if (!msg->data)
+-		goto out_free_data;
++		goto out_unlock;
+
+ 	bl_msg =3D msg->data;
+ 	bl_msg->type =3D BL_DEVICE_MOUNT;
+=2D-
+2.43.0
+
 
