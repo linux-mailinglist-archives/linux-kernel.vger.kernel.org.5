@@ -1,219 +1,155 @@
-Return-Path: <linux-kernel+bounces-13139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 396F582003A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:27:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF35382003F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:30:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D2481C2252D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:27:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CAAA1C22553
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:30:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECB2B125BF;
-	Fri, 29 Dec 2023 15:27:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F137125A5;
+	Fri, 29 Dec 2023 15:30:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="VJk4pzLZ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="HSB2MU1I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qhIcz4qU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841C6125AD;
-	Fri, 29 Dec 2023 15:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 9C1AB3200906;
-	Fri, 29 Dec 2023 10:27:08 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 29 Dec 2023 10:27:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1703863628; x=1703950028; bh=a4DE6lOAy5
-	UJ7XbWIZJKIkOz1MpDU+Xi8bnPQlzva/A=; b=VJk4pzLZ3jsN5yrTVY9rB5MqEO
-	t63AaOm0BTOpekd7Yk9s0B23makvF6HrsB4oPnU8/WWXGGAMD0p5CIyhVm9k1U7t
-	HJl1Cj+4svu7FSbXuWjdoasn6RgjQtlQyetnuHffeKCOYSj6euS+Ya4YFSOm8FWS
-	gyHJ3kU0KM/WpQCA40aPPmqCO2sVR9BN2UOB4AOM4Vd7Q+JWo69W9J9XyBv8PPzA
-	EFG5EfJEluh2mmHqyUOlQ3G86j5AXK4JA3rL3cxx0MYvicCjCsMJEHOKCkBgv73K
-	rtjsl8vy3GVFwgUidTs14P+JKKZOFI4jpDAw1UK5vKlZRsQUeuCYirsuqg/Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1703863628; x=1703950028; bh=a4DE6lOAy5UJ7XbWIZJKIkOz1MpD
-	U+Xi8bnPQlzva/A=; b=HSB2MU1Ivw5qTw3eOQn25v23N3Fs3zRMA+fDYx66Q7Td
-	4+rSDlbfUNarkcSpiDlIy5VRZfu3JwxKZOn9KYWGg1JcvAGXSjAzyZ1DPIXloJ2p
-	d9h8ZtuPT9DHzjJyZ4UqEM8rioa75rCtVpXBrYkzkUqbPRXXktxzizocUkqwcPnO
-	iebyH6O3t2o3UNw/PMpq2FyiaUpcBTCN9SkfvNrgVZG5xLiotkfgGEuZh70INKP0
-	0DEPJGuqQbSLKWJs+zBXQxZ4aBiUeCaBPGTG38yXoIhyUZXwXxAE6KxwtVnVUQzm
-	DArXHKHQrcTgfcJFoOmevU1NDlFYK1m4dXQYFYUMGQ==
-X-ME-Sender: <xms:SuWOZTpWb9_0aUReToHlOMcJl5AzbVmlTSBsYBK74Qt02uYW2WbGiQ>
-    <xme:SuWOZdruTTvDd7wB24CFZ650mYjhVObddrZkUNGzhzKvakpuaZ9JWUWoLqxExFElR
-    TDiSvlDm3XN58ZBzJA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeffedgjeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:SuWOZQPnHnkpSYg0-ssBQr-DVtIolpI9wCOPNYy4VUvzWZv-UPDLtg>
-    <xmx:SuWOZW56XCsfQRrmqjBFk2Llvuf9SwsRWwjK_9IvqWS2APbvgQMGlw>
-    <xmx:SuWOZS65Cgo2Qr-hgDn7YQJ_KgOYajCp-X94PZf3mCtCClnj0miJNw>
-    <xmx:TOWOZY6oVL3YAlf6hNZ3iwkZU2_bRgcXVAnINCIw8sexnwXb5GOIDg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id A40F6B6008F; Fri, 29 Dec 2023 10:27:06 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75BC0125AD;
+	Fri, 29 Dec 2023 15:30:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFBD4C433C8;
+	Fri, 29 Dec 2023 15:30:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703863802;
+	bh=rrRRym+4B4/ohQWp8hfDWnDdsCoZaLrAne2Eup3YzEA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qhIcz4qUO22X6OPMTIQfrlr2Rps8fsxwxyhzPG/Dy1xiVaP7+vSb2GZnYdB6Prea0
+	 gLM//hbU1L9cx5kys2LRlGA3TLmz5O7rAYZDoTibfTQT5heoPmijRG5HFffzeamBSz
+	 uxa3Ao13IaCBS99AMaZfprby3kcNSPLAmljdSj8hErHqmCaQ69kv5XM7vZUi8UZriE
+	 vOCcSPAEs/563+z0mLn2ez7nb31IKo1c4kjQtIUwZ6ZxL6yWgm30LVT6fheVl67Mfk
+	 DrwqztIDisvjQ1B0koJRwr4bq7tDJxwiPrHFtIK5mSuDao7qPEQupg+A38ABvo32A9
+	 NJYE9SKCmtmtQ==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan@kernel.org>)
+	id 1rJEo7-0005gI-0h;
+	Fri, 29 Dec 2023 16:29:55 +0100
+Date: Fri, 29 Dec 2023 16:29:55 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Manivannan Sadhasivam <mani@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Stanimir Varbanov <svarbanov@mm-sol.com>,
+	Andrew Murray <amurray@thegoodpenguin.co.uk>,
+	Vinod Koul <vkoul@kernel.org>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] PCI: qcom: Reshuffle reset logic in 2_7_0 .init
+Message-ID: <ZY7l828-mSGXVwrk@hovoldconsulting.com>
+References: <20231227-topic-8280_pcie-v1-0-095491baf9e4@linaro.org>
+ <20231227-topic-8280_pcie-v1-1-095491baf9e4@linaro.org>
+ <ZY7R581pgn3uO6kk@hovoldconsulting.com>
+ <fa0fbadc-a7c3-4bea-bed7-0006db0616dc@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <f254c189-463e-43a3-bc09-9a8869ebf819@app.fastmail.com>
-In-Reply-To: <20231228122411.3189-1-maimon.sagi@gmail.com>
-References: <20231228122411.3189-1-maimon.sagi@gmail.com>
-Date: Fri, 29 Dec 2023 16:26:46 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Sagi Maimon" <maimon.sagi@gmail.com>,
- "Richard Cochran" <richardcochran@gmail.com>,
- "Andy Lutomirski" <luto@kernel.org>, datglx@linutronix.de,
- "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
- "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Peter Zijlstra" <peterz@infradead.org>,
- "Johannes Weiner" <hannes@cmpxchg.org>,
- "Sohil Mehta" <sohil.mehta@intel.com>,
- "Rick Edgecombe" <rick.p.edgecombe@intel.com>,
- "Nhat Pham" <nphamcs@gmail.com>, "Palmer Dabbelt" <palmer@sifive.com>,
- "Kees Cook" <keescook@chromium.org>, "Alexey Gladkov" <legion@kernel.org>,
- "Mark Rutland" <mark.rutland@arm.com>
-Cc: linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
- Linux-Arch <linux-arch@vger.kernel.org>, Netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v3] posix-timers: add multi_clock_gettime system call
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa0fbadc-a7c3-4bea-bed7-0006db0616dc@linaro.org>
 
-On Thu, Dec 28, 2023, at 13:24, Sagi Maimon wrote:
-> Some user space applications need to read some clocks.
-> Each read requires moving from user space to kernel space.
-> The syscall overhead causes unpredictable delay between N clocks reads
-> Removing this delay causes better synchronization between N clocks.
->
-> Introduce a new system call multi_clock_gettime, which can be used to measure
-> the offset between multiple clocks, from variety of types: PHC, virtual PHC
-> and various system clocks (CLOCK_REALTIME, CLOCK_MONOTONIC, etc).
-> The offset includes the total time that the driver needs to read the clock
-> timestamp.
->
-> New system call allows the reading of a list of clocks - up to PTP_MAX_CLOCKS.
-> Supported clocks IDs: PHC, virtual PHC and various system clocks.
-> Up to PTP_MAX_SAMPLES times (per clock) in a single system call read.
-> The system call returns n_clocks timestamps for each measurement:
-> - clock 0 timestamp
-> - ...
-> - clock n timestamp
->
-> Signed-off-by: Sagi Maimon <maimon.sagi@gmail.com>
+[ Again, please remember to add a newline before you inline comments to
+make you replies readable. ]
 
-Hi Sagi,
+On Fri, Dec 29, 2023 at 04:01:27PM +0100, Konrad Dybcio wrote:
+> On 29.12.2023 15:04, Johan Hovold wrote:
+> > On Wed, Dec 27, 2023 at 11:17:19PM +0100, Konrad Dybcio wrote:
+> >> At least on SC8280XP, if the PCIe reset is asserted, the corresponding
+> >> AUX_CLK will be stuck at 'off'.
+> > 
+> > No, this path is exercised on every boot without the aux clock ever
+> > being stuck at off. So something is clearly missing in this description.
 
-Exposing an interface to read multiple clocks makes sense to me,
-but I wonder if the interface you use is too inflexible.
+> That's likely because the hardware has been initialized and not cleanly
+> shut down by your bootloader. When you reset it, or your bootloader
+> wasn't so kind, you need to start initialization from scratch.
 
-> --- a/include/uapi/asm-generic/unistd.h
-> +++ b/include/uapi/asm-generic/unistd.h
-> @@ -828,9 +828,11 @@ __SYSCALL(__NR_futex_wake, sys_futex_wake)
->  __SYSCALL(__NR_futex_wait, sys_futex_wait)
->  #define __NR_futex_requeue 456
->  __SYSCALL(__NR_futex_requeue, sys_futex_requeue)
-> +#define __NR_multi_clock_gettime 457
-> +__SYSCALL(__NR_multi_clock_gettime, sys_multi_clock_gettime)
+What does that even mean? I'm telling you that this reset is asserted on
+each boot, on all sc8280xp platforms I have access to, and never have I
+seen the aux clk stuck at off.
+
+So clearly your claim above is too broad and the commit message is
+incorrect or incomplete.
+ 
+> >> Assert the reset (which may end up being a NOP if it was previously
+> >> asserted) and de-assert it back *before* turning on the clocks to avoid
+> >> such cases.
+> >>
+> >> In addition to that, in case the clock bulk enable fails, assert the
+> >> RC reset back, as the hardware is in an unknown state at best.
+> > 
+> > This is arguably a separate change, and not necessarily one that is
+> > correct either
+
+> If the clock enable fails, the PCIe hw is not in reset state, ergo it
+> may be doing "something", and that "something" would eat non-zero power.
+> It's just cleaning up after yourself.
+
+How can it do something without power and clocks? And leaving reset
+asserted for non-powered devices is generally not a good idea.
+ 
+> > so should at least go in a separate patch if it should
+> > be done at all.
+
+> I'll grumpily comply..
+
+I suggest you leave it deasserted unless you have documentation
+suggesting that the opposite is safe and recommended for this piece of
+hardware.
+ 
+> >> Fixes: ed8cc3b1fc84 ("PCI: qcom: Add support for SDM845 PCIe controller")
+> > 
+> > I think you're being way to liberal with your use of Fixes tags. To
+> > claim that this is a bug, you need to make a more convincing case for
+> > why you think so.
+
+> The first paragraph describes the issue that this patch fixes.
+
+Yes, but this is all very hand-wavy so far. With a complete commit
+message I may agree, but you still haven't convinced me that this is a
+bug and not just a workaround from some not fully-understood issue on
+one particular platform.
+ 
+> > Also note Qualcomm's vendor driver is similarly asserting reset after
+> > enabling the clocks.
+
+> It's also not asserting the reset on suspend, see below.
+
+Right, as I mentioned.
+ 
+> > That driver does not seem to reset the controller on resume, though, in
+> > case that is relevant for your current experiments.
+
+> I know, the vendor driver doesn't fully shut down the controller. This
+> is however the only sequence that we (partially) have upstream, and the
+> only one that is going to work on SC8280XP (due to hw design).
 > 
->  #undef __NR_syscalls
-> -#define __NR_syscalls 457
-> +#define __NR_syscalls 458
+> On other platforms, a "soft shutdown" (i.e. dropping the link, cutting
+> clocks but not fully resetting the RC state) should be possible, but
+> that's not what this patchset concerns.
 
-Site note: hooking it up only here is sufficient for the
-code review but not for inclusion: once we have an agreement
-on the API, this should be added to all architectures at once.
+The commit message does not even mention suspend, it just makes a
+clearly false general claim about a clock being stuck unless you reorder
+things.
 
-> +#define MULTI_PTP_MAX_CLOCKS 5 /* Max number of clocks */
-> +#define MULTI_PTP_MAX_SAMPLES 10 /* Max allowed offset measurement samples. */
-> +
-> +struct __ptp_multi_clock_get {
-> +	unsigned int n_clocks; /* Desired number of clocks. */
-> +	unsigned int n_samples; /* Desired number of measurements per clock. */
-> +	clockid_t clkid_arr[MULTI_PTP_MAX_CLOCKS]; /* list of clock IDs */
-> +	/*
-> +	 * Array of list of n_clocks clocks time samples n_samples times.
-> +	 */
-> +	struct  __kernel_timespec ts[MULTI_PTP_MAX_SAMPLES][MULTI_PTP_MAX_CLOCKS];
-> +};
-
-The fixed size arrays here seem to be an unnecessary limitation,
-both MULTI_PTP_MAX_SAMPLES and MULTI_PTP_MAX_CLOCKS are small
-enough that one can come up with scenarios where you would want
-a higher number, but at the same time the structure is already
-808 bytes long, which is more than you'd normally want to put
-on the kernel stack, and which may take a significant time to
-copy to and from userspace.
-
-Since n_clocks and n_samples are always inputs to the syscall,
-you can just pass them as register arguments and use a dynamically
-sized array instead.
-
-It's not clear to me what you gain from having the n_samples
-argument over just calling the syscall repeatedly. Does
-this offer a benefit for accuracy or is this just meant to
-avoid syscall overhead.
-> +SYSCALL_DEFINE1(multi_clock_gettime, struct __ptp_multi_clock_get 
-> __user *, ptp_multi_clk_get)
-> +{
-> +	const struct k_clock *kc;
-> +	struct timespec64 kernel_tp;
-> +	struct __ptp_multi_clock_get multi_clk_get;
-> +	unsigned int i, j;
-> +	int error;
-> +
-> +	if (copy_from_user(&multi_clk_get, ptp_multi_clk_get, 
-> sizeof(multi_clk_get)))
-> +		return -EFAULT;
-
-Here you copy the entire structure from userspace, but
-I don't actually see the .ts[] array on the stack being
-accessed later as you just copy to the user pointer
-directly.
-
-> +		for (i = 0; i < multi_clk_get.n_clocks; i++) {
-> +			kc = clockid_to_kclock(multi_clk_get.clkid_arr[i]);
-> +			if (!kc)
-> +				return -EINVAL;
-> +			error = kc->clock_get_timespec(multi_clk_get.clkid_arr[i], 
-> &kernel_tp);
-> +			if (!error && put_timespec64(&kernel_tp, (struct __kernel_timespec 
-> __user *)
-> +						     &ptp_multi_clk_get->ts[j][i]))
-> +				error = -EFAULT;
-> +		}
-
-The put_timespec64() and possibly the clockid_to_kclock() have
-some overhead that may introduce jitter, so it may be better to
-pull that out of the loop and have a fixed-size array
-of timespec64 values on the stack and then copy them
-at the end.
-
-On the other hand, this will still give less accuracy than the
-getcrosststamp() callback with ioctl(PTP_SYS_OFFSET_PRECISE),
-so either the last bit of accuracy isn't all that important,
-or you need to refine the interface to actually be an
-improvement over the chardev.
-
-      Arnd
+Johan
 
