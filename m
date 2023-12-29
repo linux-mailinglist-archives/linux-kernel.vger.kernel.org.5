@@ -1,218 +1,185 @@
-Return-Path: <linux-kernel+bounces-12939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 238B881FCEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 04:57:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61B3F81FCF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 05:06:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB60E2834F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 03:57:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDDD51C2152B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 04:06:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6B81FC6;
-	Fri, 29 Dec 2023 03:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34BC9210A;
+	Fri, 29 Dec 2023 04:05:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="noC2c9zp";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZDgM8txC"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SiFXUIp/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE81C1FA2;
-	Fri, 29 Dec 2023 03:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id DFDFD5C0211;
-	Thu, 28 Dec 2023 22:57:41 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 28 Dec 2023 22:57:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
-	:from:in-reply-to:message-id:mime-version:reply-to:subject
-	:subject:to:to; s=fm2; t=1703822261; x=1703908661; bh=32++MlctQn
-	piXBMjonb/FCIOqh7Sk/QwQuAJH3L64QI=; b=noC2c9zp6dlW33tHRBdtekLw5j
-	p64qKqU0ZPR6qdxn5YS/mzz3CICrzakekT2phhmVlR64rQPWllOM9hGj/DOLH3wV
-	DYRunWlOs0XvMr180ksbJ7CVXCI1FnRYbDMxZ34qMl1PmzYfoLbBRyJ5/WwqYhOY
-	j9aqyH3nOWvCTa9Jx6yEcyE6cPnkVhv2hRAqFNqYPqcp4tDQXyuajDeL+3HHbMR+
-	Aidr6w8v+CJmegzn2bmdNyoamxW4d9Trh2ng+skpxJRQfjbsQO/PdOETfwaD4k0t
-	5S7sTu1BRA2e7YpLKZlD4TifGSpP5n5CfWamXWu3G9czHEh3yq+7nCIpI9Fw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1703822261; x=1703908661; bh=32++MlctQnpiXBMjonb/FCIOqh7S
-	k/QwQuAJH3L64QI=; b=ZDgM8txCIAcfUcnJF/LiSWZtVWZ6wGfDFpY4/5s8H9VH
-	2q45HpF8Rf1SNY4TqYl+/PiQlFm01TiFJgY3rWzkJtTdGiwY4gxOI+6pPk6a/dT4
-	LZCjpUHfd2nH/rR4Ll/ne+4XuRJBM6cD2aV2mkisQDjnvhhuCzScL1XgzSvlJNZA
-	zR6ArOo0A1i9V/2QwUT8cdeEd2jvDehm2ObGSktiubuqfX2cif2Rx0VQP1kzkZhN
-	kqC08LNu2duM2zySRqLtcaUFWqeCrhXvAUW+YblRFHto7pdAS064etBec8z8f7oe
-	YA2BFqFWWDMF4CtrRyU5NPRX7J9SCz8KD8HAhr4ouA==
-X-ME-Sender: <xms:tUOOZYwl_oYfi5V42ndoyYORHya1wpXrAxc5p_jqVcaioJ2IOq37nA>
-    <xme:tUOOZcTg9xzO4E6viyJHlwvPjUPrnx9lAEQW7xDqoJiptNoGUuVQ-oBdbYFIrzOqk
-    GkT11sY12ngBmoQCyo>
-X-ME-Received: <xmr:tUOOZaUjiy1ZcG-CwLxjB4neEhwoZqdeuKaYG62qbKW71s-DE0tNkmQe0y4prxEX62pcpH0Qb05RjqhmlEtgkYR1i_-_AFImALsglMPyt2Wk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdefvddgieeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhephffvvefufffkofgggfes
-    tdekredtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqth
-    grkhgrshhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepgeei
-    tdetvddtfeeuhffgfeffveefgfevtdduveevieettefgueeivdetvedugfeinecuffhomh
-    grihhnpehsuhhsvgdrtghomhdpkhgvrhhnvghlrdhorhhgpdhsohhurhgtvghfohhrghgv
-    rdhnvghtpdhrvgguhhgrthdrtghomhdplhgruhhntghhphgrugdrnhgvthenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhi
-    sehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:tUOOZWjXQ50HGXErigUlxdHBuIDgrWMYA7e1XdrhG8BwMZZ4ecOYAA>
-    <xmx:tUOOZaDrjek2KQdF7B1jOaCahqrzgBBHdwkcKIFkyB2cEbUZN1VFhA>
-    <xmx:tUOOZXKvhWuzQT-eyszVRdL6b5nfQIGGRwRfS4Wjdn77lWmCutM_CQ>
-    <xmx:tUOOZR4sWBEVA0kj7kgq9X6GSOqRlRaKQsG6W1LAiW9uIyJgM6fkxg>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 28 Dec 2023 22:57:39 -0500 (EST)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: linux1394-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org
-Cc: adamg@pobox.com,
-	stable@vger.kernel.org,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Tobias Gruetzmacher <tobias-lists@23.gs>
-Subject: [PATCH] firewire: ohci: suppress unexpected system reboot in AMD Ryzen machines and ASM108x/VT630x PCIe cards
-Date: Fri, 29 Dec 2023 12:57:35 +0900
-Message-Id: <20231229035735.11127-1-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB7F5C9B;
+	Fri, 29 Dec 2023 04:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703822753; x=1735358753;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7hahtoToS7LBmBNlG0a/hax2YTgm+rOGmZDL7DnlF8s=;
+  b=SiFXUIp/ni9VSI3JLvGsFfKRndIsb0Vo4hDO2121cdo9WyQIqmSiM/2R
+   s4Xitu8vhGbOOVDFLaMRBddzZe0k2TPm002JB6l9l67cn3hrxa0wOyzbY
+   FcZ/0XLb9591oLk6EdI3B09Y6y1e9vYNunXpuvyE5BDAZlg85GUiYYmWy
+   bQL4IXgVhtzmqDxSyrnqOyc/iQ0DZsZmCCJ7DUkmRS6di+jZb+kX4USwi
+   UVerezUVexFmML8tjAt9MzObfsC++ihdonGLnifhN8srLiGBR20bPumPm
+   i1QEu1aq8nI5TmUy/tQXeCefrlEAoLP8V3xAfLhHdcInSQn7Rb0yuFib8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="396339537"
+X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
+   d="scan'208";a="396339537"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 20:05:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="782215180"
+X-IronPort-AV: E=Sophos;i="6.04,313,1695711600"; 
+   d="scan'208";a="782215180"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 28 Dec 2023 20:05:44 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rJ47P-000H5J-36;
+	Fri, 29 Dec 2023 04:05:34 +0000
+Date: Fri, 29 Dec 2023 12:03:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sagi Maimon <maimon.sagi@gmail.com>, richardcochran@gmail.com,
+	luto@kernel.org, datglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+	hpa@zytor.com, arnd@arndb.de, geert@linux-m68k.org,
+	peterz@infradead.org, hannes@cmpxchg.org, sohil.mehta@intel.com,
+	rick.p.edgecombe@intel.com, nphamcs@gmail.com, palmer@sifive.com,
+	keescook@chromium.org, legion@kernel.org, mark.rutland@arm.com
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-arch@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3] posix-timers: add multi_clock_gettime system call
+Message-ID: <202312291154.hCJdKLKM-lkp@intel.com>
+References: <20231228122411.3189-1-maimon.sagi@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231228122411.3189-1-maimon.sagi@gmail.com>
 
-VIA VT6306/6307/6308 provides PCI interface compliant to 1394 OHCI. When
-the hardware is combined with Asmedia ASM1083/1085 PCIe-to-PCI bus bridge,
-it appears that accesses to its 'Isochronous Cycle Timer' register (offset
-0xf0 on PCI I/O space) often causes unexpected system reboot in any type
-of AMD Ryzen machine (both 0x17 and 0x19 families). It does not appears in
-the other type of machine (AMD pre-Ryzen machine, Intel machine, at least),
-or in the other OHCI 1394 hardware (e.g. Texas Instruments).
+Hi Sagi,
 
-The issue explicitly appears at a commit dcadfd7f7c74 ("firewire: core:
-use union for callback of transaction completion") added to v6.5 kernel.
-It changed 1394 OHCI driver to access to the register every time to
-dispatch local asynchronous transaction. However, the issue exists in
-older version of kernel as long as it runs in AMD Ryzen machine, since
-the access to the register is required to maintain bus time. It is not
-hard to imagine that users experience the unexpected system reboot when
-generating bus reset by plugging any devices in, or reading the register
-by time-aware application programs; e.g. audio sample processing.
+kernel test robot noticed the following build errors:
 
-Well, this commit suppresses the system reboot in the combination of
-hardware. It avoids the access itself. As a result, the software stack can
-not provide the hardware time anymore to unit drivers, userspace
-applications, and nodes in the same IEEE 1394 bus. It brings apparent
-disadvantage since time-aware application programs require it, while
-time-unaware applications are available again; e.g. sbp2.
+[auto build test ERROR on tip/x86/asm]
+[also build test ERROR on arnd-asm-generic/master tip/timers/core linus/master v6.7-rc7]
+[cannot apply to next-20231222]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Cc: stable@vger.kernel.org
-Reported-by: Jiri Slaby <jirislaby@kernel.org>
-Closes: https://bugzilla.suse.com/show_bug.cgi?id=1215436
-Reported-by: Mario Limonciello <mario.limonciello@amd.com>
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217994
-Reported-by: Tobias Gruetzmacher <tobias-lists@23.gs>
-Closes: https://sourceforge.net/p/linux1394/mailman/message/58711901/
-Closes: https://bugzilla.redhat.com/show_bug.cgi?id=2240973
-Closes: https://bugs.launchpad.net/linux/+bug/2043905
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- drivers/firewire/ohci.c | 49 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+url:    https://github.com/intel-lab-lkp/linux/commits/Sagi-Maimon/posix-timers-add-multi_clock_gettime-system-call/20231228-202632
+base:   tip/x86/asm
+patch link:    https://lore.kernel.org/r/20231228122411.3189-1-maimon.sagi%40gmail.com
+patch subject: [PATCH v3] posix-timers: add multi_clock_gettime system call
+config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20231229/202312291154.hCJdKLKM-lkp@intel.com/config)
+compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project 8a4266a626914765c0c69839e8a51be383013c1a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231229/202312291154.hCJdKLKM-lkp@intel.com/reproduce)
 
-diff --git a/drivers/firewire/ohci.c b/drivers/firewire/ohci.c
-index 7e88fd489741..62af3fa39a70 100644
---- a/drivers/firewire/ohci.c
-+++ b/drivers/firewire/ohci.c
-@@ -279,6 +279,8 @@ static char ohci_driver_name[] = KBUILD_MODNAME;
- #define QUIRK_TI_SLLZ059		0x20
- #define QUIRK_IR_WAKE			0x40
- 
-+#define QUIRK_REBOOT_BY_CYCLE_TIMER_READ	0x80000000
-+
- /* In case of multiple matches in ohci_quirks[], only the first one is used. */
- static const struct {
- 	unsigned short vendor, device, revision, flags;
-@@ -1724,6 +1726,11 @@ static u32 get_cycle_time(struct fw_ohci *ohci)
- 	s32 diff01, diff12;
- 	int i;
- 
-+#if IS_ENABLED(CONFIG_X86)
-+	if (ohci->quirks & QUIRK_REBOOT_BY_CYCLE_TIMER_READ)
-+		return 0;
-+#endif
-+
- 	c2 = reg_read(ohci, OHCI1394_IsochronousCycleTimer);
- 
- 	if (ohci->quirks & QUIRK_CYCLE_TIMER) {
-@@ -3527,6 +3534,45 @@ static const struct fw_card_driver ohci_driver = {
- 	.stop_iso		= ohci_stop_iso,
- };
- 
-+// On PCI Express Root Complex in any type of AMD Ryzen machine, VIA VT6306/6307/6308 with Asmedia
-+// ASM1083/1085 brings an inconvenience that read accesses to 'Isochronous Cycle Timer' register
-+// (at offset 0xf0 in PCI I/O space) often causes unexpected system reboot. The mechanism is not
-+// clear, since the read access to the other registers is enough safe; e.g. 'Node ID' register,
-+// while it is probable due to detection of any type of PCIe error.
-+#if IS_ENABLED(CONFIG_X86)
-+
-+#define PCI_DEVICE_ID_ASMEDIA_ASM108X	0x1080
-+
-+static bool detect_vt630x_with_asm1083_on_amd_ryzen_machine(const struct pci_dev *pdev,
-+							    struct fw_ohci *ohci)
-+{
-+	const struct pci_dev *pcie_to_pci_bridge;
-+	const struct cpuinfo_x86 *cinfo = &cpu_data(0);
-+
-+	// Detect any type of AMD Ryzen machine.
-+	if (cinfo->x86_vendor != X86_VENDOR_AMD || cinfo->x86 < 0x17)
-+		return false;
-+
-+	// Detect VIA VT6306/6307/6308.
-+	if (pdev->vendor != PCI_VENDOR_ID_VIA)
-+		return false;
-+	if (pdev->device != PCI_DEVICE_ID_VIA_VT630X)
-+		return false;
-+
-+	// Detect Asmedia ASM1083/1085.
-+	pcie_to_pci_bridge = pdev->bus->self;
-+	if (pcie_to_pci_bridge->vendor != PCI_VENDOR_ID_ASMEDIA)
-+		return false;
-+	if (pcie_to_pci_bridge->device != PCI_DEVICE_ID_ASMEDIA_ASM108X)
-+		return false;
-+
-+	return true;
-+}
-+
-+#else
-+#define detect_vt630x_with_asm1083_on_amd_ryzen_machine(pdev)	false
-+#endif
-+
- #ifdef CONFIG_PPC_PMAC
- static void pmac_ohci_on(struct pci_dev *dev)
- {
-@@ -3630,6 +3676,9 @@ static int pci_probe(struct pci_dev *dev,
- 	if (param_quirks)
- 		ohci->quirks = param_quirks;
- 
-+	if (detect_vt630x_with_asm1083_on_amd_ryzen_machine(dev, ohci))
-+		ohci->quirks |= QUIRK_REBOOT_BY_CYCLE_TIMER_READ;
-+
- 	/*
- 	 * Because dma_alloc_coherent() allocates at least one page,
- 	 * we save space by using a common buffer for the AR request/
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312291154.hCJdKLKM-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+   In file included from kernel/time/time.c:33:
+>> include/linux/syscalls.h:1164:48: warning: declaration of 'struct __ptp_multi_clock_get' will not be visible outside of this function [-Wvisibility]
+    1164 | asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
+         |                                                ^
+   1 warning generated.
+--
+   In file included from kernel/time/hrtimer.c:30:
+>> include/linux/syscalls.h:1164:48: warning: declaration of 'struct __ptp_multi_clock_get' will not be visible outside of this function [-Wvisibility]
+    1164 | asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
+         |                                                ^
+   kernel/time/hrtimer.c:147:20: warning: unused function 'is_migration_base' [-Wunused-function]
+     147 | static inline bool is_migration_base(struct hrtimer_clock_base *base)
+         |                    ^~~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:1876:20: warning: unused function '__hrtimer_peek_ahead_timers' [-Wunused-function]
+    1876 | static inline void __hrtimer_peek_ahead_timers(void)
+         |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   3 warnings generated.
+--
+   In file included from kernel/time/posix-timers.c:26:
+>> include/linux/syscalls.h:1164:48: warning: declaration of 'struct __ptp_multi_clock_get' will not be visible outside of this function [-Wvisibility]
+    1164 | asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
+         |                                                ^
+>> kernel/time/posix-timers.c:1430:1: error: conflicting types for 'sys_multi_clock_gettime'
+    1430 | SYSCALL_DEFINE1(multi_clock_gettime, struct __ptp_multi_clock_get __user *, ptp_multi_clk_get)
+         | ^
+   include/linux/syscalls.h:219:36: note: expanded from macro 'SYSCALL_DEFINE1'
+     219 | #define SYSCALL_DEFINE1(name, ...) SYSCALL_DEFINEx(1, _##name, __VA_ARGS__)
+         |                                    ^
+   include/linux/syscalls.h:230:2: note: expanded from macro 'SYSCALL_DEFINEx'
+     230 |         __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
+         |         ^
+   include/linux/syscalls.h:244:18: note: expanded from macro '__SYSCALL_DEFINEx'
+     244 |         asmlinkage long sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))       \
+         |                         ^
+   <scratch space>:135:1: note: expanded from here
+     135 | sys_multi_clock_gettime
+         | ^
+   include/linux/syscalls.h:1164:17: note: previous declaration is here
+    1164 | asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
+         |                 ^
+   1 warning and 1 error generated.
+
+
+vim +/sys_multi_clock_gettime +1430 kernel/time/posix-timers.c
+
+  1429	
+> 1430	SYSCALL_DEFINE1(multi_clock_gettime, struct __ptp_multi_clock_get __user *, ptp_multi_clk_get)
+  1431	{
+  1432		const struct k_clock *kc;
+  1433		struct timespec64 kernel_tp;
+  1434		struct __ptp_multi_clock_get multi_clk_get;
+  1435		unsigned int i, j;
+  1436		int error;
+  1437	
+  1438		if (copy_from_user(&multi_clk_get, ptp_multi_clk_get, sizeof(multi_clk_get)))
+  1439			return -EFAULT;
+  1440	
+  1441		if (multi_clk_get.n_samples > MULTI_PTP_MAX_SAMPLES)
+  1442			return -EINVAL;
+  1443		if (multi_clk_get.n_clocks > MULTI_PTP_MAX_CLOCKS)
+  1444			return -EINVAL;
+  1445	
+  1446		for (j = 0; j < multi_clk_get.n_samples; j++) {
+  1447			for (i = 0; i < multi_clk_get.n_clocks; i++) {
+  1448				kc = clockid_to_kclock(multi_clk_get.clkid_arr[i]);
+  1449				if (!kc)
+  1450					return -EINVAL;
+  1451				error = kc->clock_get_timespec(multi_clk_get.clkid_arr[i], &kernel_tp);
+  1452				if (!error && put_timespec64(&kernel_tp, (struct __kernel_timespec __user *)
+  1453							     &ptp_multi_clk_get->ts[j][i]))
+  1454					error = -EFAULT;
+  1455			}
+  1456		}
+  1457	
+  1458		return error;
+  1459	}
+  1460	
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
