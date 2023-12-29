@@ -1,261 +1,137 @@
-Return-Path: <linux-kernel+bounces-13049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321CB81FEF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 11:55:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFC3781FEF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 11:58:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB1B11F21966
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:55:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D9A71C217C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:58:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A1A10A39;
-	Fri, 29 Dec 2023 10:54:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA0E10A3A;
+	Fri, 29 Dec 2023 10:58:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c2y3j9ae"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD35C10A1A;
-	Fri, 29 Dec 2023 10:54:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id 0D6F71402B9; Fri, 29 Dec 2023 11:54:42 +0100 (CET)
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: devicetree@vger.kernel.org
-Cc: "Christian A. Ehrhardt" <lk@c--e.de>,
-	Stephen Boyd <stephen.boyd@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] of: Fix double free in of_parse_phandle_with_args_map
-Date: Fri, 29 Dec 2023 11:54:11 +0100
-Message-Id: <20231229105411.1603434-1-lk@c--e.de>
-X-Mailer: git-send-email 2.30.2
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B3610A21;
+	Fri, 29 Dec 2023 10:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5947cf2a4f6so2743201eaf.2;
+        Fri, 29 Dec 2023 02:58:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703847489; x=1704452289; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OrReeVliOmZdguazqDBOVNNl/lwwaLdeM1q8GOH71Zg=;
+        b=c2y3j9aearkuTYGTsxlPJPZw73PrsPl38yXB+Yr8jpCw/IQcVYe/Ydhh257fpVc44b
+         ZJJc5SJG0aZnjatwIGfkY2L1SKCJuRoAYYSYnFDZBN0R/eGoDd5/c32Y4GgXG/6jHIJ7
+         q+UnDDjO03O8ecoHhHNCgyvZQ56wlY4JBF0nBME8MG3/a12bScTXJkyVKUnaBK89tdWV
+         vGSbD58GR7fW2dUerA07VdSE5QY3qmjs439qtkbASUb/B1RWZfiz9QWjy0ZzTyOzPhD6
+         ya4lRW3o4i7VNgoffbP0p8/BKV9M1js8z3eeftMtHTGjWoQJUhClvf4ef8X7T23P2Gwm
+         5zbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703847489; x=1704452289;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OrReeVliOmZdguazqDBOVNNl/lwwaLdeM1q8GOH71Zg=;
+        b=LBjpbgW4LN6uibnaEUpZ0Nze5ApglgDx0WhglZpNj3y/FtQqtTOKGgPQiHt1rKhdob
+         PnRr+Qs3jpa9Qwa2Z0Yv1eT7VW9PsrNjNKYddKZXWxOmwJFjqnBe6tFqY3HQMK65bp4x
+         UlBSAnKmSwmawJGKLwWS5cXH6a2mzhoB3v2PKuFsyfGcplmbAYG8vVKXSRp/IpDEAo/F
+         YM7cqsYQssxKtZqJmYm+kCOvIp6LkjSou5VuH9aadgUcKw/uzXPnHXyyg6g2P7FVKo4n
+         cUxqzHJDy2q5EOjhZtoo6hb9FObpOFgkjkfuJIG8k5Gm3R4gUEfQD3G8HIYnkUf1m2xf
+         mgGg==
+X-Gm-Message-State: AOJu0YyHKttHemsiqE1Bj5R2a/myoDL8DAac1CDZehUhmS/mGLP54zfi
+	+NV1y9JQuO2mdTKvquULFXjvEFXHrq35Y9skwA7WG61uqnxHsA==
+X-Google-Smtp-Source: AGHT+IEpA9Q7AinmU9SKdNZXyql6kqFJOrk+XQQkpYyXggeacP1MhCsLUptbgYQR0o3uM4nr1HthQ+JCDAk/8I99o+M=
+X-Received: by 2002:a05:6359:4599:b0:175:2220:2e6b with SMTP id
+ no25-20020a056359459900b0017522202e6bmr86403rwb.43.1703847489101; Fri, 29 Dec
+ 2023 02:58:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Jasper Niebuhr <yjnworkstation@gmail.com>
+Date: Fri, 29 Dec 2023 11:57:57 +0100
+Message-ID: <CAMjCObt_VOWp9fz_onYesfpvLLiJqnzpQA8W1HfOpLc0_bNGog@mail.gmail.com>
+Subject: Post Compile-Time RandStruct
+To: linux-kernel@vger.kernel.org
+Cc: linux-security-module@vger.kernel.org, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "luto@amacapital.net" <luto@amacapital.net>, hpa@zytor.com, 
+	Linus Torvalds <torvalds@linux-foundation.org>, 
+	"keescook@chromium.org" <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 
-In of_parse_phandle_with_args_map() the inner loop that
-iterates through the map entries calls of_node_put(new)
-to free the reference acquired by the previous iteration
-of the inner loop. This assumes that the value of "new" is
-NULL on the first iteration of the inner loop.
+Hi,
+my name is York Jasper Niebuhr and I am currently approaching the
+finish line of by bachelor's thesis at the Technical University of
+Munich. My supervisor and I addressed an issue with grsecurity's
+RandStruct (structure layout randomization). Millions of end-users of
+any distros - that pre-compile the kernel - are given a kernel with
+the same randomization seed, or simply no randomization at all.
+Furthermore, distros usually need to publish this seed to ensure
+compatibility with separately built components.
 
-Make sure that this is true in all iterations of the outer
-loop by setting "new" to NULL after its value is assigned to "cur".
+We came up with the idea to apply structure layout randomization to
+the kernel AFTER it was compiled. In theory, this can be done by
+disassembling machine instructions to check if they access a member of
+a struct we want to randomize. If so, we can change the according
+operand's displacement to reflect the new position of that member.
+Additionally, any initial data of objects can be reordered in the
+kernel's data segments.
 
-Extend the unittest to detect the double free and add an additional
-test case that actually triggers this path.
+To explore this concept a little further, I spent the past 3 months
+building a prototype. This prototype uses only the kernel's debug
+information (32 bit DWARF 4, not 32 bit kernel!), especially stuff
+like the location descriptions, to get an idea of any entities in the
+program. Then, a scanner goes through any function's machine code to
+check if the instructions access one such object. Any access is logged
+in an intermediate file (pretty much just a binary list). A second
+program loads this file, randomizes a few chosen structures and
+updates the kernel accordingly. This separation into two programs was
+done to lift some load from the end-users machine. Everything up to a
+complete intermediate file can be done by the distributor, as it is
+fully independent of randomizations. The distributor can then publish
+this file, so the end-user's machine can resume with only the
+randomization and update process.
 
-Fixes: bd6f2fd5a1 ("of: Support parsing phandle argument lists through a nexus node")
-Cc: Stephen Boyd <stephen.boyd@linaro.org>
-Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
----
- drivers/of/base.c                           |  1 +
- drivers/of/unittest-data/tests-phandle.dtsi | 10 ++-
- drivers/of/unittest.c                       | 74 ++++++++++++---------
- 3 files changed, 53 insertions(+), 32 deletions(-)
+In practice, this concept seems to have a lot of potential. Among
+other structs, the prototype is currently able to randomize
+approximately 70% of the task_struct, including its cred member. This
+requires about 20 seconds to run the first program (distributor), as
+well as less than 10 milliseconds for the randomization and changes to
+the kernel (end-user). These 10 milliseconds include all the file
+operations in the kernel's binary file. The prototype detects more
+than 11000 instructions that access the task_struct and replaces many
+thousands that are relevant to the part it can currently randomize. In
+the end, the kernel boots in qemu just fine and system calls like fork
+and setuid/getuid produce the expected results.
 
-diff --git a/drivers/of/base.c b/drivers/of/base.c
-index 8d93cb6ea9cd..b0ad8fc06e80 100644
---- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -1464,6 +1464,7 @@ int of_parse_phandle_with_args_map(const struct device_node *np,
- 		out_args->np = new;
- 		of_node_put(cur);
- 		cur = new;
-+		new = NULL;
- 	}
- put:
- 	of_node_put(cur);
-diff --git a/drivers/of/unittest-data/tests-phandle.dtsi b/drivers/of/unittest-data/tests-phandle.dtsi
-index d01f92f0f0db..554a996b2ef1 100644
---- a/drivers/of/unittest-data/tests-phandle.dtsi
-+++ b/drivers/of/unittest-data/tests-phandle.dtsi
-@@ -40,6 +40,13 @@ provider4: provider4 {
- 				phandle-map-pass-thru = <0x0 0xf0>;
- 			};
- 
-+			provider5: provider5 {
-+				#phandle-cells = <2>;
-+				phandle-map = <2 7 &provider4 2 3>;
-+				phandle-map-mask = <0xff 0xf>;
-+				phandle-map-pass-thru = <0x0 0xf0>;
-+			};
-+
- 			consumer-a {
- 				phandle-list =	<&provider1 1>,
- 						<&provider2 2 0>,
-@@ -66,7 +73,8 @@ consumer-b {
- 						<&provider4 4 0x100>,
- 						<&provider4 0 0x61>,
- 						<&provider0>,
--						<&provider4 19 0x20>;
-+						<&provider4 19 0x20>,
-+						<&provider5 2 7>;
- 				phandle-list-bad-phandle = <12345678 0 0>;
- 				phandle-list-bad-args = <&provider2 1 0>,
- 							<&provider4 0>;
-diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-index e9e90e96600e..45bd0d28c717 100644
---- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -456,6 +456,9 @@ static void __init of_unittest_parse_phandle_with_args(void)
- 
- 		unittest(passed, "index %i - data error on node %pOF rc=%i\n",
- 			 i, args.np, rc);
-+
-+		if (rc == 0)
-+			of_node_put(args.np);
- 	}
- 
- 	/* Check for missing list property */
-@@ -545,8 +548,9 @@ static void __init of_unittest_parse_phandle_with_args(void)
- 
- static void __init of_unittest_parse_phandle_with_args_map(void)
- {
--	struct device_node *np, *p0, *p1, *p2, *p3;
-+	struct device_node *np, *p[6] = {};
- 	struct of_phandle_args args;
-+	unsigned int prefs[6];
- 	int i, rc;
- 
- 	np = of_find_node_by_path("/testcase-data/phandle-tests/consumer-b");
-@@ -555,34 +559,24 @@ static void __init of_unittest_parse_phandle_with_args_map(void)
- 		return;
- 	}
- 
--	p0 = of_find_node_by_path("/testcase-data/phandle-tests/provider0");
--	if (!p0) {
--		pr_err("missing testcase data\n");
--		return;
--	}
--
--	p1 = of_find_node_by_path("/testcase-data/phandle-tests/provider1");
--	if (!p1) {
--		pr_err("missing testcase data\n");
--		return;
--	}
--
--	p2 = of_find_node_by_path("/testcase-data/phandle-tests/provider2");
--	if (!p2) {
--		pr_err("missing testcase data\n");
--		return;
--	}
--
--	p3 = of_find_node_by_path("/testcase-data/phandle-tests/provider3");
--	if (!p3) {
--		pr_err("missing testcase data\n");
--		return;
-+	p[0] = of_find_node_by_path("/testcase-data/phandle-tests/provider0");
-+	p[1] = of_find_node_by_path("/testcase-data/phandle-tests/provider1");
-+	p[2] = of_find_node_by_path("/testcase-data/phandle-tests/provider2");
-+	p[3] = of_find_node_by_path("/testcase-data/phandle-tests/provider3");
-+	p[4] = of_find_node_by_path("/testcase-data/phandle-tests/provider4");
-+	p[5] = of_find_node_by_path("/testcase-data/phandle-tests/provider5");
-+	for (i = 0; i < ARRAY_SIZE(p); ++i) {
-+		if (!p[i]) {
-+			pr_err("missing testcase data\n");
-+			return;
-+		}
-+		prefs[i] = kref_read(&p[i]->kobj.kref);
- 	}
- 
- 	rc = of_count_phandle_with_args(np, "phandle-list", "#phandle-cells");
--	unittest(rc == 7, "of_count_phandle_with_args() returned %i, expected 7\n", rc);
-+	unittest(rc == 8, "of_count_phandle_with_args() returned %i, expected 7\n", rc);
- 
--	for (i = 0; i < 8; i++) {
-+	for (i = 0; i < 9; i++) {
- 		bool passed = true;
- 
- 		memset(&args, 0, sizeof(args));
-@@ -593,13 +587,13 @@ static void __init of_unittest_parse_phandle_with_args_map(void)
- 		switch (i) {
- 		case 0:
- 			passed &= !rc;
--			passed &= (args.np == p1);
-+			passed &= (args.np == p[1]);
- 			passed &= (args.args_count == 1);
- 			passed &= (args.args[0] == 1);
- 			break;
- 		case 1:
- 			passed &= !rc;
--			passed &= (args.np == p3);
-+			passed &= (args.np == p[3]);
- 			passed &= (args.args_count == 3);
- 			passed &= (args.args[0] == 2);
- 			passed &= (args.args[1] == 5);
-@@ -610,28 +604,36 @@ static void __init of_unittest_parse_phandle_with_args_map(void)
- 			break;
- 		case 3:
- 			passed &= !rc;
--			passed &= (args.np == p0);
-+			passed &= (args.np == p[0]);
- 			passed &= (args.args_count == 0);
- 			break;
- 		case 4:
- 			passed &= !rc;
--			passed &= (args.np == p1);
-+			passed &= (args.np == p[1]);
- 			passed &= (args.args_count == 1);
- 			passed &= (args.args[0] == 3);
- 			break;
- 		case 5:
- 			passed &= !rc;
--			passed &= (args.np == p0);
-+			passed &= (args.np == p[0]);
- 			passed &= (args.args_count == 0);
- 			break;
- 		case 6:
- 			passed &= !rc;
--			passed &= (args.np == p2);
-+			passed &= (args.np == p[2]);
- 			passed &= (args.args_count == 2);
- 			passed &= (args.args[0] == 15);
- 			passed &= (args.args[1] == 0x20);
- 			break;
- 		case 7:
-+			passed &= !rc;
-+			passed &= (args.np == p[3]);
-+			passed &= (args.args_count == 3);
-+			passed &= (args.args[0] == 2);
-+			passed &= (args.args[1] == 5);
-+			passed &= (args.args[2] == 3);
-+			break;
-+		case 8:
- 			passed &= (rc == -ENOENT);
- 			break;
- 		default:
-@@ -640,6 +642,9 @@ static void __init of_unittest_parse_phandle_with_args_map(void)
- 
- 		unittest(passed, "index %i - data error on node %s rc=%i\n",
- 			 i, args.np->full_name, rc);
-+
-+		if (rc == 0)
-+			of_node_put(args.np);
- 	}
- 
- 	/* Check for missing list property */
-@@ -686,6 +691,13 @@ static void __init of_unittest_parse_phandle_with_args_map(void)
- 		   "OF: /testcase-data/phandle-tests/consumer-b: #phandle-cells = 2 found 1");
- 
- 	unittest(rc == -EINVAL, "expected:%i got:%i\n", -EINVAL, rc);
-+
-+	for (i = 0; i < ARRAY_SIZE(p); ++i) {
-+		unittest(prefs[i] == kref_read(&p[i]->kobj.kref),
-+			 "provider%d: expected:%d got:%d\n",
-+			 i, prefs[i], kref_read(&p[i]->kobj.kref));
-+		of_node_put(p[i]);
-+	}
- }
- 
- static void __init of_unittest_property_string(void)
--- 
-2.40.1
+Unfortunately, debug information turned out to be inaccurate and
+incomplete at times. Combined with the kernel's quadrillion edge
+cases, this prevented me from taking the prototype any further until
+the deadline. We can see this concept fully shine with, for example, a
+compiler plugin to log any accesses, instead of a tool that deals with
+debug info. The second part of the prototype (or a mature, later
+version of it) can be integrated into distro installers or run
+whenever the kernel is updated. Even integration into the kernel's
+boot process would be an option.
 
+Since I am now in the writing phase of my thesis (deadline mid
+January), I thought I'd share our thoughts to hopefully get some
+feedback. Do you think this approach solves some of the issues that
+RandStruct currently comes with? Can you see such a system actually
+being deployed once it's fully functional?
+
+I am of course open to any further questions or suggestions!
+
+Kind Regards,
+Jasper
 
