@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-13189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D27498200E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 18:43:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 003558200F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 18:46:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E8CDB21769
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:43:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B916B282251
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 099BF12B85;
-	Fri, 29 Dec 2023 17:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B519D12B86;
+	Fri, 29 Dec 2023 17:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TJotHam+"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ArIQTrje"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D65A412B6B
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 17:43:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A516C12B7A
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 17:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-da7ea62e76cso5998896276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 09:43:24 -0800 (PST)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dbd73ac40ecso5227499276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 09:46:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703871803; x=1704476603; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703872001; x=1704476801; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NksR4Y0NrUvy+Rxpg9VzrCsku+YIs4s2MG0gMgIvcUc=;
-        b=TJotHam+BKNSdFJnwV7PM6HwuRpj02wcB/otHqA6bJQ8WMu3fPZPS9g1BNO5ZzRPdi
-         hvciOwb++SOw9XC8zHz7mte3RqdQNfivLmdKYEP956V0s0QxOGdYBNLBE0Q6WGcPploW
-         OF4wq0gziggD3V4u4PiRcPjv0O3UiLSlrM1s/MjXETJwIX1SYm3OsQAQsKgDZkP/xxge
-         AOexerPioGaeDQI/69TcEQV67LSN4ct51eDYQ+JQDgJ15GAKvuAxn3Ze0pGyZHSscKB9
-         CLx2qVU9dUA9kNGO9DCh08JdHnMWjoPkvOfhPwCUMtfplVRfbcVNmiGcF1OriBMHloxB
-         pKzg==
+        bh=bW/8qnQVOuCrpelBOhL9bBZ5oe2cPmQUpD0VXBVorkw=;
+        b=ArIQTrjeqOU62WiMI9FMCw79OP+MODMUtzsP39IfY6DBo4eAMx+FcCn8ANfF2jzqQc
+         uDkHZCwrfwPmNOsu3AMH6mGfWiLDV9n4147F4FJYDvHago9yWDrDw29gd83ljEvswqHO
+         RDPovKbOtqcCqRnVTOxAtm2E9rUN3gHUER+w6rxV9WgsNeXhPrP2RkoySqY0Zg38q97i
+         bhgaA7Gl5n4YA/932RhzO3Z3HtZNqogLn1SIw4u1l3KNcfZlZ1uJ+YnRzUuVA0D/m8vq
+         vVqL2DITCkAeIB8Fti9MtpDe2vr/8/AM0cMug6fogDOmzezaqkWw6rrCCTIomL8MIx3F
+         ZwAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703871803; x=1704476603;
+        d=1e100.net; s=20230601; t=1703872001; x=1704476801;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NksR4Y0NrUvy+Rxpg9VzrCsku+YIs4s2MG0gMgIvcUc=;
-        b=qA/4TGVdMPYYIyPf4BglCalJC4U+aa8UFn/B6A/R1WkLU1dCXNmV/96jGzaFjr55gv
-         5uCb0VV+mCtHqv3ll97xhb9tU/J4bVCMsDKpVuh4OrwMpKXKmgg53n2IHCBnCJGI8rjJ
-         rhenbP6jXwvaC23LZJnuU2FEz06tHCwgl7DP6O6uZ5auKSGoTDa5U3ttNxbVtBs4lEcE
-         +JRzzbrDFJSrI24sv0xeoSgYq0jV0HyEY4m0+E2UyDfA+7CZwX6voyVNdopvl/zd824t
-         Hl166hwB5ZQWtbO2HxtOu0skYcneXR9v4tJQ0RKj0xWlq8wcwGz0j2z/Gat6MbGUy/uZ
-         CSjQ==
-X-Gm-Message-State: AOJu0Yxt80cYn+le6CdEkD2GM9vNaZQScA79Y0s2j9u9wRM9VgjUschQ
-	AqW3Nl1HBOD9BvcOpAeJKRIYhrDAIZRyFt/9hCFfs6bUKJP0GQ==
-X-Google-Smtp-Source: AGHT+IFnWHAjBL3ppmZayDtDj98vb3SmrehR/QcRTr7cVgxlTrwqWX5c8SlCfehL2vjo/b007G6ikA2wwqzr7RJ6klE=
-X-Received: by 2002:a25:9f0b:0:b0:dbe:3259:770f with SMTP id
- n11-20020a259f0b000000b00dbe3259770fmr2678598ybq.71.1703871803682; Fri, 29
- Dec 2023 09:43:23 -0800 (PST)
+        bh=bW/8qnQVOuCrpelBOhL9bBZ5oe2cPmQUpD0VXBVorkw=;
+        b=GzXB2PiTxXXW0aKZGXrPZnreXK4xLeKuZ8WOxJkpoQRb5w/3MjYzwHQR18s8FCsVma
+         9HWyr5Qe07Va+eIaj/C3iiTLE35D/OqTzYPnFJamNUFptrx6JpB4WMx9MvNQlu+iyi3o
+         mDk+kwwvlKKGrqKWEzcoHYicXhVpOOsD3KckW4BCKlWK0yCjA/eXJnwcngyAeW9DO3Fb
+         PRUOQi7VVVGSmmB4XNEz/Nrn8NeBNwQmUCI2sn1qEjxg0AhpuHO3hxaGCQjs9RliITcw
+         VP1GLx1Ot40woIBZg99fDcBOYis0xpnW5mYEeRzA2JCGNW/5dl5CHW+WGV1QmkOzlrfR
+         z3Vw==
+X-Gm-Message-State: AOJu0Yy7p10vIhDo/d71bo89/wGvF7CLlj7W3X+VAoixxSXcMt38xorJ
+	c2QSUmc6pYCVsMWcoIfkb+uxiFDc2Imy4w0eXguhhJ3j28+2hQ==
+X-Google-Smtp-Source: AGHT+IGLODEawCuJpoVcBVXIkKKkBjBq8qoZWCqtUWJ3Y7AZ05fBAjMAbbu202fTig97uet5lOUKFj54M3tLy989Hr8=
+X-Received: by 2002:a25:664d:0:b0:dbd:c1ef:bca8 with SMTP id
+ z13-20020a25664d000000b00dbdc1efbca8mr6857806ybm.40.1703872001727; Fri, 29
+ Dec 2023 09:46:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231229135154.675946-1-dario.binacchi@amarulasolutions.com> <20231229135154.675946-8-dario.binacchi@amarulasolutions.com>
-In-Reply-To: <20231229135154.675946-8-dario.binacchi@amarulasolutions.com>
+References: <20231229135154.675946-1-dario.binacchi@amarulasolutions.com> <20231229135154.675946-9-dario.binacchi@amarulasolutions.com>
+In-Reply-To: <20231229135154.675946-9-dario.binacchi@amarulasolutions.com>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 29 Dec 2023 18:43:11 +0100
-Message-ID: <CACRpkdbHodbAwoaTyxTX4LxYm6ZrBV6m6ht31Y2OaUPxS0Zhrw@mail.gmail.com>
-Subject: Re: [PATCH 7/8] drm/panel: nt35510: refactor panel initialization
+Date: Fri, 29 Dec 2023 18:46:30 +0100
+Message-ID: <CACRpkdaEPGonc_pDiApEN2XNn3R4hdUtEp0TZqWjBOmbM_Gimw@mail.gmail.com>
+Subject: Re: [PATCH 8/8] drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
 To: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 Cc: linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com, 
 	Alexandre Torgue <alexandre.torgue@foss.st.com>, Daniel Vetter <daniel@ffwll.ch>, 
@@ -76,41 +76,28 @@ Cc: linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
+Hi Dario,
+
 On Fri, Dec 29, 2023 at 2:52=E2=80=AFPM Dario Binacchi
 <dario.binacchi@amarulasolutions.com> wrote:
 
-> The previous implementation did not make it easy to support new
-> NT35510-based panels with different initialization sequences.
-> This patch, preparatory for future developmentes, simplifies the
-> addition of new NT35510-based displays and also avoids the risk of
-> creating regressions on already managed panels.
+> The initialization commands are taken from the STMicroelectronics driver
+> found at https://github.com/STMicroelectronics/STM32CubeF7/blob/master/Dr=
+ivers/BSP/Components/nt35510/
 >
 > Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-The idea is to have the driver adapt to different panels, and encode a deep
-understanding just like we do with all hardware drivers.
-
 NAK.
 
-This patch:
+Please rewrite the patch to use the detailed instructions with clear defini=
+tions
+about what is going on the same way as in the old driver, and add #defines
+for all the magic commands, and break down the commands to what they
+are actually doing with the display hardware.
 
-- Deletes a lot of useful documentation on how the panel works.
-
-- Deletes defines and replaces them with magic numbers
-
-All it achieves is a bit of "magic sequences because we are used to
-magic sequences" and that doesn't look like an improvement at all,
-instead it creates a dumber driver which has no explanations at all
-to what is going on.
-
-Please rewrite the patch in the same style as the original driver.
-The fact that you (probably) are not used to writing display drivers
-in this way is not an excuse to destroy this nice structure.
-
-There are things that can be done, like create an abstraction for
-sequence encoding with less open coded command issue
-statements, by adding helpers to the DRM core, so if that is what
-you want to do, then do that instead?
+Magic display init sequences are not OK in this driver, and not in general,
+it is all the other drivers that are just unaware about what they are doing
+and this driver actually isn't.
 
 Yours,
 Linus Walleij
