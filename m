@@ -1,126 +1,93 @@
-Return-Path: <linux-kernel+bounces-13064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5B0581FF31
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:37:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 563BE81FF2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:36:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 140DE1C22377
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 11:37:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 887C21C21792
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 11:36:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 752821119E;
-	Fri, 29 Dec 2023 11:37:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5D71118F;
+	Fri, 29 Dec 2023 11:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bah1vHAg"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="enI5zDCb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A09510A36;
-	Fri, 29 Dec 2023 11:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703849826; x=1735385826;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jXpLHm3Y0MAniZ7pNG5aFvqoCCSnZ/QB13PROwYSaT8=;
-  b=bah1vHAgKd0F16QnKtzcmLBAg379AwRKSusj1s2II9twMOje6gkwGpWM
-   yNtfSOPQX94TfmtUVVjv05tgi+Bx74U+dU/flizPFmbvC/mAa8Yab5mQX
-   +Io+pkRXoZrw+ssI3EKjfBd1tZ9/i6oP9S6Ie9/VLqZBtS5caeQ93VYD+
-   WRsL9crS2fNhGlLzd2X5fQDh8hK0vtBFh2+eMUX9f45+NyedWRQI/Z3o2
-   PUK73ul/z9PWPItM8h3gasBnPwt2ooChlI23AzbKdeamZasGdVjQVfX7c
-   V/rc2wcHGkOqC0XMP3hCHqf+v5lyuhEYSc+dRETaKnkbJNlRq5gr2RWsB
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="381615577"
-X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="381615577"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 03:37:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="771950637"
-X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="771950637"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 29 Dec 2023 03:36:59 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rJBAe-000HOd-0D;
-	Fri, 29 Dec 2023 11:36:56 +0000
-Date: Fri, 29 Dec 2023 19:35:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: Matthew Wilcox <willy@infradead.org>,
-	"Eric W. Biederman" <ebiederm@xmission.com>
-Cc: oe-kbuild-all@lists.linux.dev, Maria Yu <quic_aiquny@quicinc.com>,
-	kernel@quicinc.com, quic_pkondeti@quicinc.com, keescook@chromium.or,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, oleg@redhat.com,
-	dhowells@redhat.com, jarkko@kernel.org, paul@paul-moore.com,
-	jmorris@namei.org, serge@hallyn.com, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: Re: [PATCH] kernel: Introduce a write lock/unlock wrapper for
- tasklist_lock
-Message-ID: <202312291936.G87eGfCo-lkp@intel.com>
-References: <ZY30k7OCtxrdR9oP@casper.infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3E010A2E;
+	Fri, 29 Dec 2023 11:36:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703849778; x=1704454578; i=markus.elfring@web.de;
+	bh=bT5iUlJtBnPgfkwMqM8aRFxOKOnLJ2N+sHYoEYyh7V4=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=enI5zDCbX5rYVHnR7JDklsELQf8i+V/dpaxEp1oyPuu/dbNGyxNQhk8xl3oMn18U
+	 cUHENFPfFnsinQawf4rYMYh9y+5HCl3exIUllB+yushuliX9NHYmivk5VCdDN9Xzl
+	 k7gm0gNrFAXwW6hLTK8pcEXk59JnXeDh3e6Gf8QDgnUPKhJ/BcnjQ8vcXjWMbC834
+	 3jUDqpHiTue51YApWSEOcWu11epCICRiUxfOfz8S4uUpAlFu3ZpkKawgBi9KtRl8S
+	 GTFO0saoG7ElmZfggAdQSYUeSv/rujUUi0WyX248RcSjCOoFGPVjQi9/qAauU68He
+	 Ktv3kPE5Lpx7UBMrbg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1M9ZeA-1rMUXm0Er6-00619G; Fri, 29
+ Dec 2023 12:36:18 +0100
+Message-ID: <9ce3f553-24bc-4ecd-ac5e-7ba27caeff57@web.de>
+Date: Fri, 29 Dec 2023 12:36:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZY30k7OCtxrdR9oP@casper.infradead.org>
+User-Agent: Mozilla Thunderbird
+To: linux-mm@kvack.org, kernel-janitors@vger.kernel.org,
+ Muchun Song <muchun.song@linux.dev>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH 0/2] hugetlbfs: Adjustments for two function implementations
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:zmPL3zuCMseUMikKu19QGDmehHT65Bw9/KBE14p6VW8VcZbbwU9
+ kMz+gvKyg0RS7WjualXdj8hhNOBNOtbBozcD6Qv/4N/uLes/2gChUoUk6slayJ33ES9tiCr
+ YpUdQmwqcmsAeblm3zwFHm2No9DyuHQu3so+nimsij8aHohnax6FU1gOgggtg8SBmx2i2Ao
+ VQlJUXikmtCsv664qyjOw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:IR5K9XE0/K8=;J6XN6ruCw9rw7+bIfDOaCtu7NSF
+ TAgN9EanRBWN0tMe/2bHAc60yNnXHvJR2N094yHmsfL6nG7ZvBxwul0+vW1H2JkJ/T1mVIecv
+ lsBEGugr/9+5E/QLFe7oS+hRZUqlEFvkdHZgzq92665iceODLioZNT3tfS7YuTLTI5e9jLSHW
+ aHpHZe6WkviUSd+y56dwCrj4LECvsCIB24gag/Qgq2Rq565lVoYj1KY7yxPskC+cQexSGRJIN
+ V9XhAiMKxgAUBNTGvEgi7ufVAVKAJXoqm4TMM9yBwUxRtP6Nf17/vrj7U2cRoeb3yk2133gCb
+ fxx/dUBFL0KDgzszpnt9QHEXW3nlOLVU3u1nNMZdxk4R/EqV7QAGfEvwOmzP69h3EvEEvDOpW
+ eC5faQpJuRXiCFO3q2I55aZWDVynb+F610ZUriol8Zy8zrY6rfxb9MJYDBlV2jEJq1EYB1xbc
+ 7TkdjV3Bk5Dspa+CCtYkg6vDeejc64nEzCN1gpumHqZ+7BM2Zl3gZs0IigXn1Kprp4S5Z4dNx
+ vypKYDH51j04fQQKJCoVyddcyMp1fiulAcmVu5s0gqI3atuXJadiSDMe+D/fOVeHHzFGwMkfZ
+ AWLxtQl1dl9tOltzAlUST3uWJTwfbokxvKA8EgB9NEIod0a9x1IHKOeinu1S0VMxU2Y1vfYnj
+ 1VrjM26kyDxycVa8hE86AE69cP6awrghhkaP2C5QIx+bRCPmuRac084sqRzYWU+UO6e2nnVbH
+ 0S5ma8LMbvWH5Z1KWbSoySF0t7UgXHockF3kVq5qKCUCDiR4KT5evSv9CSrVXZlM829tggn4b
+ 7cjq4q/VIfLdQS2NsqNR/rNDdAQH3furkiP0o8ZudPHuDKYyGJoFoMOejYUi2XkYJ2zAHXsXb
+ yDd+gppsMCr+QrpriPeuFFB0pOTy7wubea9LnORVXFua7Bk/cgnQRxW7zQD+1pVi1mJiYCMD5
+ hUJ20w==
 
-Hi Matthew,
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 29 Dec 2023 12:32:12 +0100
 
-kernel test robot noticed the following build errors:
+A few update suggestions were taken into account
+from static source code analysis.
 
-[auto build test ERROR on tip/locking/core]
-[also build test ERROR on arnd-asm-generic/master brauner-vfs/vfs.all vfs-idmapping/for-next linus/master v6.7-rc7 next-20231222]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Markus Elfring (2):
+  Improve a size determination in two functions
+  Improve exception handling in hugetlbfs_fill_super()
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Matthew-Wilcox/Re-PATCH-kernel-Introduce-a-write-lock-unlock-wrapper-for-tasklist_lock/20231229-062352
-base:   tip/locking/core
-patch link:    https://lore.kernel.org/r/ZY30k7OCtxrdR9oP%40casper.infradead.org
-patch subject: Re: [PATCH] kernel: Introduce a write lock/unlock wrapper for tasklist_lock
-config: i386-randconfig-011-20231229 (https://download.01.org/0day-ci/archive/20231229/202312291936.G87eGfCo-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231229/202312291936.G87eGfCo-lkp@intel.com/reproduce)
+ fs/hugetlbfs/inode.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312291936.G87eGfCo-lkp@intel.com/
+=2D-
+2.43.0
 
-All errors (new ones prefixed by >>):
-
-   kernel/locking/spinlock_debug.c: In function 'do_raw_write_lock_irq':
->> kernel/locking/spinlock_debug.c:217:9: error: implicit declaration of function 'arch_write_lock_irq'; did you mean '_raw_write_lock_irq'? [-Werror=implicit-function-declaration]
-     217 |         arch_write_lock_irq(&lock->raw_lock);
-         |         ^~~~~~~~~~~~~~~~~~~
-         |         _raw_write_lock_irq
-   cc1: some warnings being treated as errors
-
-
-vim +217 kernel/locking/spinlock_debug.c
-
-   213	
-   214	void do_raw_write_lock_irq(rwlock_t *lock)
-   215	{
-   216		debug_write_lock_before(lock);
- > 217		arch_write_lock_irq(&lock->raw_lock);
-   218		debug_write_lock_after(lock);
-   219	}
-   220	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
