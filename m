@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-13275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78BD58202C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 00:16:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DFFF8202CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 00:18:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A089F1C22412
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 23:16:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22F4D1F23006
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 23:18:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F084314ABD;
-	Fri, 29 Dec 2023 23:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DC914F65;
+	Fri, 29 Dec 2023 23:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="q7kEKXuG"
+	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="Yy5Zu/tZ"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A530D14F63;
-	Fri, 29 Dec 2023 23:16:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A6214AAF;
+	Fri, 29 Dec 2023 23:18:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ixit.cz
 Received: from [151.217.64.190] (unknown [151.217.64.190])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by ixit.cz (Postfix) with ESMTPSA id 6C1DC163865;
-	Sat, 30 Dec 2023 00:16:18 +0100 (CET)
+	by ixit.cz (Postfix) with ESMTPSA id BB665163865;
+	Sat, 30 Dec 2023 00:18:37 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-	t=1703891778;
+	t=1703891918;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=SP3KXuvER62zXqUF8j95MvyZ5hgIivFc7OHMnKII5X4=;
-	b=q7kEKXuGvI8pgdrKNc6YDxAfH6PJESpDgF1wJpyVJrBneWNTrmW0yMyZhqb6oHw18ZcyIh
-	wqJ+j0zIdtPHMk6ugigE5J9kqdOTE/NHZRAUrkRTlYrUcz6GZ7XAx0f52QTlqrlCYk2maZ
-	3saJy2yQOrWulA5kO5J9iylzzN3qQ6I=
-Message-ID: <0657f8d7-d09f-41be-85a2-f8bbece0368b@ixit.cz>
-Date: Sat, 30 Dec 2023 00:16:17 +0100
+	bh=zSYUMSW0R8QXx6cCnsu+oWLbXKhMRIE3bmoXu2/jrdM=;
+	b=Yy5Zu/tZOCEaMxMLaeR8fx8Oy9cVlM+68+fuAA0WEY6dKO5irkmhmUmLKP6m+F3w3xCnkA
+	2A95IHTQm6h15gwqMLvy0dXNzW6ZKZNJO6Wrygs1P3yGQ42dA9Dd7XTKxymihEJn7YvMlA
+	QgOM7J2hq5furiD4/dobTkVJpJi9j7E=
+Message-ID: <e299a7bd-2f50-41e0-a638-a1fbbeb65635@ixit.cz>
+Date: Sat, 30 Dec 2023 00:18:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,19 +47,18 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH] arm64: dts: qcom: sdm845-oneplus-common: improve DAI node
- naming
+Subject: Re: [PATCH] arm64: dts: qcom: sdm845: add power domain to UFS phy
+ interface
 Content-Language: en-US
 To: Luca Weiss <luca@z3ntu.xyz>, Bjorn Andersson <andersson@kernel.org>,
  Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Caleb Connolly <caleb.connolly@linaro.org>,
- Dylan Van Assche <me@dylanvanassche.be>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231229200245.259689-1-david@ixit.cz>
- <6001009.lOV4Wx5bFT@z3ntu.xyz>
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Caleb Connolly <caleb.connolly@linaro.org>,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Manivannan Sadhasivam <mani@kernel.org>
+References: <20231229202959.266502-1-david@ixit.cz>
+ <2710291.mvXUDI8C0e@z3ntu.xyz>
 From: David Heidelberg <david@ixit.cz>
 Autocrypt: addr=david@ixit.cz; keydata=
  xsFNBF5v1x4BEADS3EddwsNsvVAI1XF8uQKbdYPY/GhjaSLziwVnbwv5BGwqB1tfXoHnccoA
@@ -104,66 +103,43 @@ Autocrypt: addr=david@ixit.cz; keydata=
  8udw5/rKxFMHhti1wgtklyJBc64JK2vgB6xJz9Zc4WoNnifc8QjyhsQ7K0UI9jykBXrb1ZZO
  DYlcrAqh9Sx4vNTmdi6pJWSsrhDtfmDIw81GIW5pc0QpZPqGeKMi5xEU8se5fQ21DuE5LRKF
  Zd4Uq64igWvLAgHIcJHgNbc5BruuZm9p1+S5SfQGfnOYxJM1PkY/E32H52iV/Babj30=
-In-Reply-To: <6001009.lOV4Wx5bFT@z3ntu.xyz>
+In-Reply-To: <2710291.mvXUDI8C0e@z3ntu.xyz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Weird, I'm on next-20231222 so I assume it got missed somehow :(
+On 29/12/2023 22:37, Luca Weiss wrote:
 
-Thanks!
-
-On 29/12/2023 22:41, Luca Weiss wrote:
-> On Freitag, 29. Dezember 2023 21:02:33 CET David Heidelberg wrote:
->> Make it easier to understand what the reg in those nodes is by using the
->> constants provided by qcom,q6dsp-lpass-ports.h.
+> On Freitag, 29. Dezember 2023 21:29:54 CET David Heidelberg wrote:
+>> Reported by: `make CHECK_DTBS=1 qcom/sdm845-oneplus-enchilada.dtb`
 >>
->> Name nodes according to dt-binding expectations.
->>
->> Fix for
->> ```
->> arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dtb: service@4: dais:
->> Unevaluated properties are not allowed ('qi2s@22', 'qi2s@23' were
->> unexpected) ```
->>
->> Fixes: b7b734286856 ("arm64: dts: qcom: sdm845-oneplus-*: add audio
->> devices") Signed-off-by: David Heidelberg <david@ixit.cz>
+>> Signed-off-by: David Heidelberg <david@ixit.cz>
 >> ---
->>   arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi | 8 ++++----
->>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>   arch/arm64/boot/dts/qcom/sdm845.dtsi | 2 ++
+>>   1 file changed, 2 insertions(+)
 >>
->> diff --git a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
->> b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi index
->> e821103d49c0..46e25c53829a 100644
->> --- a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
->> @@ -508,13 +508,13 @@ led-1 {
->>   };
+>> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>> b/arch/arm64/boot/dts/qcom/sdm845.dtsi index c2244824355a..ad8677b62bfb
+>> 100644
+>> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>> @@ -2644,6 +2644,8 @@ ufs_mem_phy: phy@1d87000 {
+>>   			clocks = <&gcc GCC_UFS_MEM_CLKREF_CLK>,
+>>   				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>;
 >>
->>   &q6afedai {
->> -	qi2s@22 {
->> -		reg = <22>;
->> +	dai@22 {
->> +		reg = <QUATERNARY_MI2S_RX>;
->>   		qcom,sd-lines = <1>;
->>   	};
->>
->> -	qi2s@23 {
->> -		reg = <23>;
->> +	dai@23 {
->> +		reg = <QUATERNARY_MI2S_TX>;
-> I did the 'reg' part before, either I missed this file or it was added after I
-> made the patch.
-> https://lore.kernel.org/linux-arm-msm/20220603094710.64591-1-luca.weiss@fairphone.com/
+>> +			power-domains = <&gcc UFS_PHY_GDSC>;
+>> +
+>>   			resets = <&ufs_mem_hc 0>;
+>>   			reset-names = "ufsphy";
+> This is potentially the wrong power domain, see the conversation here:
+> https://lore.kernel.org/linux-arm-msm/20231204172829.GA69580@thinkpad/
+Thanks, I was thinking about  SDM845_MX, but then looked at rest more 
+closer qcom archs and thought it'll be likely GDSC (also by looking at 
+ufs_mem_hc reset vectors).
 >
-> But looks correct:
+> Hopefully Mani can give some input here :)
 >
-> Reviewed-by: Luca Weiss <luca@z3ntu.xyz>
->
->
->>   		qcom,sd-lines = <0>;
->>   	};
->>   };
->
+> Regards
+> Luca
 >
 >
 -- 
