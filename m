@@ -1,91 +1,129 @@
-Return-Path: <linux-kernel+bounces-13040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBD6381FEC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:46:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B3BB81FED1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 11:06:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B04BD28462D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:46:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FC5C1C22CC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:06:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 658DA10A25;
-	Fri, 29 Dec 2023 09:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="EgbTzA5G"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28DB910A1F;
+	Fri, 29 Dec 2023 10:06:10 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4552010A01;
-	Fri, 29 Dec 2023 09:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
-ARC-Seal: i=1; a=rsa-sha256; t=1703843173; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=XKYrmvLuzmk/r08tvchrXv5qgEXmbsTjVRFcDnTVF+VvTVhfs5dIBb9e9uOlUZ30BfUQy+6UqUdJhwQM/WRUqROBflrZCcE1U3DzKGWNuSwuGJD/zQBWbRNvlEBXdE/u9aSpLg+mTJ7qdjHFyr8L8+mh1iyjqVG7yD0wwOkiLA8=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1703843173; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=K7r5sOmsaLOjWS98lIO6mw48w74TdCOUpMHvWTK+zR8=; 
-	b=mGnB4hjHctrZsrMyTkUnzLEBqgUS7g/WuXmPND8o9/5JvPncqUQ8HF5NhW722I/omznSqAPtIrZgjBWTPk9GUXxu5p9ag0tZRpneps5ksrkmXaUx7T8f9jXn1hsvFVHM73bt/dPq7eoW1di5v4My4TbXI4Poz5t1A3WiHMTfHO4=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=linux.beauty;
-	spf=pass  smtp.mailfrom=me@linux.beauty;
-	dmarc=pass header.from=<me@linux.beauty>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1703843173;
-	s=zmail; d=linux.beauty; i=me@linux.beauty;
-	h=Date:Date:From:From:To:To:Cc:Cc:Message-ID:In-Reply-To:References:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=K7r5sOmsaLOjWS98lIO6mw48w74TdCOUpMHvWTK+zR8=;
-	b=EgbTzA5GwIo/K8TixJCJX5e0iNwIrOPXHDTfU+Q0A3o/Bct4YhfWgvBnPHi9XoZX
-	p9YdMkr8h5fwEtnPlwrFwrL30wJu9x+dU803K/2jMpRlB7omuJWdUrqoJ92S06hRxNR
-	X+URABNIXz1YFswM9Yi3QjZYz+z3tfYq8AmE4EnA=
-Received: from mail.zoho.com by mx.zohomail.com
-	with SMTP id 1703843171327603.2461899337034; Fri, 29 Dec 2023 01:46:11 -0800 (PST)
-Date: Fri, 29 Dec 2023 04:46:11 -0500
-From: Li Chen <me@linux.beauty>
-To: "Bjorn Helgaas" <helgaas@kernel.org>
-Cc: "Tom Joseph" <tjoseph@cadence.com>,
-	"Parshuram Thombare" <pthombar@cadence.com>,
-	"Pawel Laszczak" <pawell@cadence.com>,
-	=?UTF-8?Q?=22Przemys=C5=82aw_Gaj=22?= <pgaj@cadence.com>,
-	"Nadeem Athani" <nadeem@cadence.com>,
-	"Siddharth Vadapalli" <s-vadapalli@ti.com>,
-	"Kishon Vijay Abraham I" <kishon@ti.com>,
-	=?UTF-8?Q?=22Krzysztof_Wilczy=C5=84ski=22?= <kwilczynski@kernel.org>,
-	"Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
-	"linux-pci" <linux-pci@vger.kernel.org>,
-	"linux-kernel" <linux-kernel@vger.kernel.org>
-Message-ID: <18cb4f78be7.118217ede232604.6825928402358580565@linux.beauty>
-In-Reply-To: <20231228134132.GA1486379@bhelgaas>
-References: <20231228134132.GA1486379@bhelgaas>
-Subject: Re: Is Cadence PCIe IP orphaned?
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E0110A09
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 10:06:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nod.at
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 8DB196343B36;
+	Fri, 29 Dec 2023 11:06:03 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id W5C9DOrgUFB0; Fri, 29 Dec 2023 11:06:02 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id B7F466343B3C;
+	Fri, 29 Dec 2023 11:06:02 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id W8mcbDZFkA7d; Fri, 29 Dec 2023 11:06:02 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 8365E6343B36;
+	Fri, 29 Dec 2023 11:06:02 +0100 (CET)
+Date: Fri, 29 Dec 2023 11:06:02 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: chengzhihao1 <chengzhihao1@huawei.com>
+Cc: david oberhollenzer <david.oberhollenzer@sigma-star.at>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, 
+	Tudor Ambarus <Tudor.Ambarus@linaro.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <1145531757.175508.1703844362355.JavaMail.zimbra@nod.at>
+In-Reply-To: <20231228014112.2836317-1-chengzhihao1@huawei.com>
+References: <20231228014112.2836317-1-chengzhihao1@huawei.com>
+Subject: Re: [PATCH RFC 00/17] ubifs: Add filesystem repair support
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: Add filesystem repair support
+Thread-Index: dDGyRRcFTNJRSeVoML57/54HOrx0FA==
 
-Hi Bjorn,
+----- Urspr=C3=BCngliche Mail -----
+> Von: "chengzhihao1" <chengzhihao1@huawei.com>
+> An: "david oberhollenzer" <david.oberhollenzer@sigma-star.at>, "richard" =
+<richard@nod.at>, "Miquel Raynal"
+> <miquel.raynal@bootlin.com>, "Sascha Hauer" <s.hauer@pengutronix.de>, "Tu=
+dor Ambarus" <Tudor.Ambarus@linaro.org>
+> CC: "linux-kernel" <linux-kernel@vger.kernel.org>, "linux-mtd" <linux-mtd=
+@lists.infradead.org>
+> Gesendet: Donnerstag, 28. Dezember 2023 02:40:55
+> Betreff: [PATCH RFC 00/17] ubifs: Add filesystem repair support
 
- ---- On Thu, 28 Dec 2023 08:41:32 -0500  Bjorn Helgaas  wrote --- 
- > Tom Joseph tjoseph@cadence.com> is listed as the maintainer of the
- > Cadence PCIe IP, but email to that address bounces and lore has no
- > correspondence from Tom in the past two years
- > (https://lore.kernel.org/all/?q=f%3Atjoseph).
- > 
- > Does anybody want to step up to maintain this?  Should we apply a
- > patch like the one below?
+Thanks a lot for sharing this.
+Below you find some thoughts that came into my mind while skimming over the
+patch series.
 
-AFAIK, Cadence people are preparing to upstream their Gen5 controller and PHY drivers. They may update the maintainers when they do so.
+> UBIFS repair provides a way to fix inconsistent UBIFS image(which is
+> corrupted by hardware exceptions or UBIFS realization bugs) and makes
+> filesystem become consistent, just like fsck tools(eg. fsck.ext4,
+> fsck.f2fs, fsck.fat, etc.) do.
 
-Regards,
-Li
+I don't fully agree. The tool makes UBIFS mount again but you still have lo=
+st data
+and later userspace might fail because file no longer contain what the appl=
+ication
+expected.
+So my fear is that we're just shifting the problem one layer up.
 
+UBIFS never had a fsck for reasons. UBIFS tries hard to not become inconsis=
+tent,
+by maintaining a data journal for example.
+It can fail of course by hardware issues. e.g. if the underlying MTD loses =
+bits,
+but there is nothing UBIFS can do except something like storing duplicates
+of data like BTRFS does.
+
+And finally, the biggest pain point, it can fail due to bugs in UBIFS itsel=
+f.
+In my opinion bugs should get addressed by improving our test infrastructur=
+e
+instead of working around.
+
+> About why do we need it, how it works, what it can fix or it can not
+> fix, when and how to use it, see more details in
+> Documentation/filesystems/ubifs/repair.rst (Patch 17).
+
+This needs to go into the cover letter.
+=20
+> Testing on UBIFS repair refers to
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D218327
+>=20
+> Whatever, we finally have a way to fix inconsistent UBFIS image instead
+> of formatting UBI when UBIFS becomes inconsistent.
+
+Fix in terms of making mount work again, I fear? As I said, most likely
+the problem is now one layer above. UBIFS thinks everything is good but
+userspace suddenly will see old/incomplete files.
+
+What I can think of is a tool (in userspace like other fscks) which
+can recover certain UBIFS structures but makes very clear to the user what
+the data is lost. e.g. that inode XY now misses some blocks or an old versi=
+on
+of something will be used.
+But this isl nothing you can run blindly in production.
+
+Thanks,
+//richard
 
