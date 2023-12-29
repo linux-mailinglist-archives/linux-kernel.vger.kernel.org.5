@@ -1,103 +1,110 @@
-Return-Path: <linux-kernel+bounces-13160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC485820087
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3288C820089
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:36:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8CDD284850
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:33:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E440E284833
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE87812B6A;
-	Fri, 29 Dec 2023 16:33:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b="UeGlzbGQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C55A12B61;
+	Fri, 29 Dec 2023 16:36:15 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mr85p00im-ztdg06021201.me.com (mr85p00im-ztdg06021201.me.com [17.58.23.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B563612B60
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 16:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danm.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danm.net; s=sig1;
-	t=1703867622; bh=mdHoqF4DBozjc5AZdCsy35qAGohL7+5V9GIyKGF0W98=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=UeGlzbGQ9DI+Z0AI49toYh8BED1yiu6kUd6XzJPfiynDICAgvJY1c65EJ9GhETVxx
-	 VXftzlAS/g3gz038LMlo/7PQhIiURZ0P07kLKCSIX/iWuxtJqNNuLoDFKd5KUr3R3c
-	 wrPQy7V/8K+3G1OcoRWmPoDNLHcOn9rr3XKWcLdYH1JNJiL71d3o2K21h5AIc2ZgWk
-	 DYr7oLAs4m9Jkqzch6NkEEibCD7tag2xrdBTw4zRHTovorWYYlHoDCevD1UOdvFUD9
-	 6Q7sadSRKZm6qJLswMQ2pXmci78/w/D/3Cs9yvYftj8qX9s7Pc2VnfWJpc6OugRlak
-	 afms62LOfOYSg==
-Received: from hitch.danm.net (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
-	by mr85p00im-ztdg06021201.me.com (Postfix) with ESMTPSA id 146253201A3;
-	Fri, 29 Dec 2023 16:33:40 +0000 (UTC)
-From: Dan Moulding <dan@danm.net>
-To: alexhenrie24@gmail.com
-Cc: bagasdotme@gmail.com,
-	dan@danm.net,
-	davem@davemloft.net,
-	dsahern@kernel.org,
-	edumazet@google.com,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	regressions@lists.linux.dev
-Subject: Re: [REGRESSION] net/ipv6/addrconf: Temporary addresses with short lifetimes generating when they shouldn't, causing applications to fail
-Date: Fri, 29 Dec 2023 09:33:39 -0700
-Message-ID: <20231229163339.2716-1-dan@danm.net>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <CAMMLpeTCZDakqdkxm+jvQHxbRXhCYd4_PK+VVqMAmZHjSPuPRw@mail.gmail.com>
-References: <CAMMLpeTCZDakqdkxm+jvQHxbRXhCYd4_PK+VVqMAmZHjSPuPRw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5AF12B60;
+	Fri, 29 Dec 2023 16:36:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bbc5cd15b6so361934b6e.0;
+        Fri, 29 Dec 2023 08:36:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703867772; x=1704472572;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g5osr6xfn25Wt0TdDGmPAZn7SDMAzkOWPXYFwHYI1i4=;
+        b=v05a3tJjKfXRApfF4MI7GmraruaMjJN0N6i3Nw/OHO4BjLBJe4WhaRMrfvMkxnsZrU
+         fgnoPDJhXrPqPTHaQNZtbEMTHLTNK4nhVtXvmG+J1/UBZlQFyqJRgFwWb3xHnG+Gdd99
+         129p6TuHUYJdDgpd+yN1jBt4VOylZk7HlPsSX9jISGLpht6auoZ2IFJybj+4m9tJzfIb
+         1ScDPbIRv4ioRp38sNXJS2Bhb4K2zRU14jELTPQGvJXx1cqNvRp3u3VH8ii1D9Mjda68
+         tW/mQ6EhW/J2KPIofn2jRbhBcNSdEQTIZ5yy/PN5IdBMqrGrAIJJnRnIzQn5L8NyIyvi
+         mMag==
+X-Gm-Message-State: AOJu0YyoIaMwxX8NstoctBIP+ZxZ75ZnmzEyQoEk80uXm4Ta/oo39+aC
+	ciPYZGC2qfojxLhIWroxpqDjXtWCrRmfrj9cTkQ=
+X-Google-Smtp-Source: AGHT+IFs9CoXnbyFsUnv7A/DkAc47usxTcTcrUe5GUpFVHU+aw3llxkYsOyxE6COSY8AJNEwPeqiOjViUCTybWo9Bog=
+X-Received: by 2002:a4a:dc96:0:b0:594:ad62:bab9 with SMTP id
+ g22-20020a4adc96000000b00594ad62bab9mr10280653oou.1.1703867772553; Fri, 29
+ Dec 2023 08:36:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: oFRRsbiheUkH9f2_QvM7LSR0PZXkau7h
-X-Proofpoint-ORIG-GUID: oFRRsbiheUkH9f2_QvM7LSR0PZXkau7h
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-29_06,2023-12-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1030 mlxlogscore=696
- spamscore=0 phishscore=0 adultscore=0 mlxscore=0 bulkscore=0
- malwarescore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2308100000 definitions=main-2312290132
+References: <CGME20231227084252epcas2p3b063f7852f81f82cd0a31afd7f404db4@epcas2p3.samsung.com>
+ <5754861.DvuYhMxLoT@kreacher> <6019796.lOV4Wx5bFT@kreacher>
+ <4874693.GXAFRqVoOG@kreacher> <ZY3auVvVzxwTmAX8@linux.intel.com>
+ <CAJZ5v0gns5zeLEk39NGwjLy40wzHAHDWYBYapWwQWcJ9jrF-3Q@mail.gmail.com> <ZY44KH2wGIUyIZp6@linux.intel.com>
+In-Reply-To: <ZY44KH2wGIUyIZp6@linux.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 29 Dec 2023 17:36:01 +0100
+Message-ID: <CAJZ5v0jWSH_+wC7P=bBV8uKNp1PBUjkE06Ec6HR1Zd5as8GQ2g@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] async: Introduce async_schedule_dev_nocall()
+To: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
+	Greg KH <gregkh@linuxfoundation.org>, linux-pm@vger.kernel.org, 
+	Youngmin Nam <youngmin.nam@samsung.com>, linux-kernel@vger.kernel.org, 
+	d7271.choe@samsung.com, janghyuck.kim@samsung.com, hyesoo.yu@samsung.com, 
+	Alan Stern <stern@rowland.harvard.edu>, Ulf Hansson <ulf.hansson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I think a maintainer will probably need to make a call here and decide
-how to proceed.
+On Fri, Dec 29, 2023 at 3:54=E2=80=AFPM Stanislaw Gruszka
+<stanislaw.gruszka@linux.intel.com> wrote:
+>
+> On Fri, Dec 29, 2023 at 02:37:36PM +0100, Rafael J. Wysocki wrote:
+> > > > +bool async_schedule_dev_nocall(async_func_t func, struct device *d=
+ev)
+> > > > +{
+> > > > +     struct async_entry *entry;
+> > > > +
+> > > > +     entry =3D kzalloc(sizeof(struct async_entry), GFP_KERNEL);
+> > >
+> > > Is GFP_KERNEL intended here ?
+> >
+> > Yes, it is.
+> >
+> > PM will be the only user of this, at least for now, and it all runs in
+> > process context.
+> >
+> > > I think it's not safe since will
+> > > be called from device_resume_noirq() .
+> >
+> > device_resume_noirq() runs in process context too.
+> >
+> > The name is somewhat confusing (sorry about that) and it means that
+> > hardirq handlers (for the majority of IRQs) don't run in that resume
+> > phase, but interrupts are enabled locally on all CPUs (this is
+> > required for wakeup handling, among other things).
+>
+> Then my concern would be: if among devices with disabled IRQs are
+> disk devices? Seems there are disk devices as well, and because
+> GFP_KERNEL can start reclaiming memory by doing disk IO (write
+> dirty pages for example), with disk driver interrupts disabled
+> reclaiming process can not finish.
+>
+> I do not see how such possible infinite waiting for disk IO
+> scenario is prevented here, did I miss something?
 
-> TEMP_PREFERRED_LIFETIME is an administratively set variable: The user
-> can change it to whatever they want whenever they want, and the
-> operating system can adjust it automatically too.
+Well, it is not a concern, because the suspend code already prevents
+the mm subsystem from trying too hard to find free memory.  See the
+pm_restrict_gfp_mask() call in enter_state().
 
-Agreed. And the behavior it seems you really want is to prevent the
-user from administratively setting it to a value that is lower than
-REGEN_ADVANCE, so that it won't stop generating new temporary
-addresses altogether.
-
-But preventing the user from configuring it to a value that is too low
-is different from generating new temporary addresses with preferred
-lifetimes that are greater than the currently configured value of
-TEMP_PREFERRED_LIFETIME. I still believe it would be better, and would
-be in conformance with the RFC, to simply not allow the user to
-configure a too-short TEMP_PREFERRED_LIFETIME instead of tinkering
-with the lifetimes of generated temporary addresses.
-
-> It's fine to revert the commit for version 6.7 (after all, I think
-> everyone wants a break for the holidays). Hopefully by version 6.8 we
-> can agree on a way to support users who want to randomize their IPv6
-> address as frequently as the network allows.
-
-FWIW, I think the desired effect you are seeking makes sense and is
-the right thing to do. I'm just not convinced this is the correct way
-to do it. But I'm not a maintainer and also not an expert in IPv6, so
-I'm definitely not the right person to make that call.
-
--- Dan
+Otherwise, it would have been a problem for any GFP_KERNEL allocations
+made during system-wide suspend-resume, not just in the _noirq phases.
 
