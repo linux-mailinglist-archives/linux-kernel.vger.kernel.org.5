@@ -1,77 +1,83 @@
-Return-Path: <linux-kernel+bounces-13145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CF3A82004D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:36:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79B3482004E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:38:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0555B224B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:36:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 115791F22D0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:38:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95CD8125C2;
-	Fri, 29 Dec 2023 15:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47FC5125B8;
+	Fri, 29 Dec 2023 15:38:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="YuW/8oMr"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="udNjXux4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FCA2125A4;
-	Fri, 29 Dec 2023 15:36:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ixit.cz
-Received: from [151.217.64.190] (unknown [151.217.64.190])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by ixit.cz (Postfix) with ESMTPSA id DAFBA16395D;
-	Fri, 29 Dec 2023 16:36:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-	t=1703864192;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y0xq10+Biw3ZEd5W/yZjtFohwA0ukqV+GjZogCbByW0=;
-	b=YuW/8oMriElR1HoxkYjcY/58gjB7Wlf9l40FZ4tV8hlPy9oCAlOJsRN7jJ3IYHEa3/igPl
-	39BKV33NuseR95fQ9/fZxWbNK1sFTG3OP6kBhqFfBRim5lDeuh1+CIRXftGCch4RR1i9El
-	nYjoOebKWa0wIcWpCMqvBkUI1KeVZqo=
-Message-ID: <dfc4f26c-74fe-47b3-af96-e97765082f4e@ixit.cz>
-Date: Fri, 29 Dec 2023 16:36:31 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EBE4125AD
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 15:38:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=MMUixECVcqZI6/mrGqfR1zbER3vh+C3mM3cXKwGEL8s=; b=udNjXux4MUMTrSoC+YQQIhhvXc
+	LrhlUHntT/e8YWgJ7h0BN5WXGP4LttWNJ3PgRTV6XR5hqI2MzN1/Y5XxrstdxNFtPJNleTAp+WAcn
+	E3OIuoO6CXGseHGk+UdvvvbwJz3I7CDFEnXIs6GG2kO+rqFK9h1immV7yx7KGVE4FdhhvFJ3XR/ZZ
+	jxQnAEn/z4CgqaRnMFpr0/S/s3MfwS5aaUKQVTIkUA+9NCHHZsAAgiVeBe0iXW0+bECFRMq4R0hpE
+	+eCrDVdryXV/KzeJhKYlf0Y5YJJLD8Uzzm2vSedJGBAZni74fM/6tOxxEGkIeudd+RD7x7tYTDWfA
+	QNCDrwnQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rJEwb-006J3z-Qo; Fri, 29 Dec 2023 15:38:41 +0000
+Date: Fri, 29 Dec 2023 15:38:41 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Malkoot Khan <engr.mkhan1990@gmail.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm/cma: Move opening brace to next line for coding
+ style
+Message-ID: <ZY7oAR7l4HYxJ8y3@casper.infradead.org>
+References: <20231229153238.153627-1-engr.mkhan1990@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-To: krzysztof.kozlowski@linaro.org
-Cc: agross@kernel.org, andersson@kernel.org, bhelgaas@google.com,
- conor+dt@kernel.org, conor.dooley@microchip.com, devicetree@vger.kernel.org,
- konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-pci@vger.kernel.org, lpieralisi@kernel.org, mani@kernel.org,
- manivannan.sadhasivam@linaro.org, robh@kernel.org
-References: <20231120070910.16697-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: PCI: qcom: adjust iommu-map for
- different SoC
-Content-Language: en-US
-From: David <david@ixit.cz>
-In-Reply-To: <20231120070910.16697-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231229153238.153627-1-engr.mkhan1990@gmail.com>
 
-> +    minItems: 1
-Hello Krzysztof,
+On Fri, Dec 29, 2023 at 03:32:37PM +0000, Malkoot Khan wrote:
+> Move the opening brace of a function definition 'cma_for_each_area'
+> to the next line which resolved the error
 
-the driver will accept 0 just fine, so I think this definition may be wrong.
+What error?  This seems like the _wrong_ coding style to me.
 
-I sent just generic "dt-bindings: PCI: qcom: delimit number of iommu-map entries" which doesn't care about the numbers (in similar fashion as other bindings having iommu-map).
-
-Tell me what you think.
-
-David
-
+> Signed-off-by: Malkoot Khan <engr.mkhan1990@gmail.com>
+> ---
+>  mm/cma.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/mm/cma.c b/mm/cma.c
+> index 2b2494fd6b59..01ccd26e8bc2 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -579,6 +579,7 @@ bool cma_release(struct cma *cma, const struct page *pages,
+>  }
+>  
+>  int cma_for_each_area(int (*it)(struct cma *cma, void *data), void *data)
+> +
+>  {
+>  	int i;
+>  
+> -- 
+> 2.34.1
+> 
+> 
 
