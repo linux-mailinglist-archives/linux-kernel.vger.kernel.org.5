@@ -1,153 +1,162 @@
-Return-Path: <linux-kernel+bounces-12983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C030281FDFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:02:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC48A81FDFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:03:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D4D11F21889
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 08:02:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 694A21F21A56
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 08:03:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9736B6FA9;
-	Fri, 29 Dec 2023 08:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B44A37497;
+	Fri, 29 Dec 2023 08:03:40 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C39563BD
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 08:02:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2140C433C8;
-	Fri, 29 Dec 2023 08:02:31 +0000 (UTC)
-From: Huacai Chen <chenhuacai@loongson.cn>
-To: Baoquan He <bhe@redhat.com>
-Cc: Vivek Goyal <vgoyal@redhat.com>,
-	Dave Young <dyoung@redhat.com>,
-	Youling Tang <tangyouling@kylinos.cn>,
-	kexec@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH] kdump: Defer the insertion of crashkernel resources
-Date: Fri, 29 Dec 2023 16:02:13 +0800
-Message-Id: <20231229080213.2622204-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5308BE7;
+	Fri, 29 Dec 2023 08:03:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VzQtt.u_1703837012;
+Received: from 30.221.145.217(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VzQtt.u_1703837012)
+          by smtp.aliyun-inc.com;
+          Fri, 29 Dec 2023 16:03:33 +0800
+Message-ID: <00d390f3-1d92-43e5-adec-b7d0b8885fdc@linux.alibaba.com>
+Date: Fri, 29 Dec 2023 16:03:31 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC nf-next v4 1/2] netfilter: bpf: support prog update
+Content-Language: en-US
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, coreteam@netfilter.org,
+ netfilter-devel@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, ast@kernel.org
+References: <1703836449-88705-1-git-send-email-alibuda@linux.alibaba.com>
+ <1703836449-88705-2-git-send-email-alibuda@linux.alibaba.com>
+In-Reply-To: <1703836449-88705-2-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-In /proc/iomem, sub-regions should be inserted after their parent,
-otherwise the insertion of parent resource fails. But after generic
-crashkernel reservation applied, in both RISC-V and ARM64 (LoongArch
-will also use generic reservation later on), crashkernel resources are
-inserted before their parent, which causes the parent disappear in
-/proc/iomem. So we defer the insertion of crashkernel resources to an
-early_initcall().
 
-1, Without 'crashkernel' parameter:
 
- 100d0100-100d01ff : LOON0001:00
-   100d0100-100d01ff : LOON0001:00 LOON0001:00
- 100e0000-100e0bff : LOON0002:00
-   100e0000-100e0bff : LOON0002:00 LOON0002:00
- 1fe001e0-1fe001e7 : serial
- 90400000-fa17ffff : System RAM
-   f6220000-f622ffff : Reserved
-   f9ee0000-f9ee3fff : Reserved
-   fa120000-fa17ffff : Reserved
- fa190000-fe0bffff : System RAM
-   fa190000-fa1bffff : Reserved
- fe4e0000-47fffffff : System RAM
-   43c000000-441ffffff : Reserved
-   47ff98000-47ffa3fff : Reserved
-   47ffa4000-47ffa7fff : Reserved
-   47ffa8000-47ffabfff : Reserved
-   47ffac000-47ffaffff : Reserved
-   47ffb0000-47ffb3fff : Reserved
+On 12/29/23 3:54 PM, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>
+> To support the prog update, we need to ensure that the prog seen
+> within the hook is always valid. Considering that hooks are always
+> protected by rcu_read_lock(), which provide us the ability to
+> access the prog under rcu.
+>
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> ---
+>   net/netfilter/nf_bpf_link.c | 50 ++++++++++++++++++++++++++++++---------------
+>   1 file changed, 34 insertions(+), 16 deletions(-)
+>
+> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+> index e502ec0..7c32ccb 100644
+> --- a/net/netfilter/nf_bpf_link.c
+> +++ b/net/netfilter/nf_bpf_link.c
+> @@ -8,26 +8,26 @@
+>   #include <net/netfilter/nf_bpf_link.h>
+>   #include <uapi/linux/netfilter_ipv4.h>
+>   
+> -static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
+> -				    const struct nf_hook_state *s)
+> -{
+> -	const struct bpf_prog *prog = bpf_prog;
+> -	struct bpf_nf_ctx ctx = {
+> -		.state = s,
+> -		.skb = skb,
+> -	};
+> -
+> -	return bpf_prog_run(prog, &ctx);
+> -}
+> -
+>   struct bpf_nf_link {
+>   	struct bpf_link link;
+>   	struct nf_hook_ops hook_ops;
+>   	struct net *net;
+>   	u32 dead;
+>   	const struct nf_defrag_hook *defrag_hook;
+> +	struct rcu_head head;
+>   };
+>   
+> +static unsigned int nf_hook_run_bpf(void *bpf_link, struct sk_buff *skb,
+> +				    const struct nf_hook_state *s)
+> +{
+> +	const struct bpf_nf_link *nf_link = bpf_link;
+> +	struct bpf_nf_ctx ctx = {
+> +		.state = s,
+> +		.skb = skb,
+> +	};
+> +	return bpf_prog_run(rcu_dereference_raw(nf_link->link.prog), &ctx);
+> +}
+> +
+>   #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+>   static const struct nf_defrag_hook *
+>   get_proto_defrag_hook(struct bpf_nf_link *link,
+> @@ -126,8 +126,7 @@ static void bpf_nf_link_release(struct bpf_link *link)
+>   static void bpf_nf_link_dealloc(struct bpf_link *link)
+>   {
+>   	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
+> -
+> -	kfree(nf_link);
+> +	kfree_rcu(nf_link, head);
+>   }
+>   
+>   static int bpf_nf_link_detach(struct bpf_link *link)
+> @@ -162,7 +161,22 @@ static int bpf_nf_link_fill_link_info(const struct bpf_link *link,
+>   static int bpf_nf_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
+>   			      struct bpf_prog *old_prog)
+>   {
+> -	return -EOPNOTSUPP;
+> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
+> +	int err = 0;
+> +
+> +	if (nf_link->dead)
+> +		return -EPERM;
+> +
+> +	if (old_prog) {
+> +		/* target old_prog mismatch */
+> +		if (!cmpxchg(&link->prog, old_prog, new_prog))
+> +			return -EPERM;
+> +	} else {
+> +		old_prog = xchg(&link->prog, new_prog);
+> +	}
+> +
+> +	bpf_prog_put(old_prog);
+> +	return err;
+>   }
 
-2, With 'crashkernel' parameter, before this patch:
+I made a mistake here, and I will fix it in the next version.
+Sorry for that.
 
- 100d0100-100d01ff : LOON0001:00
-   100d0100-100d01ff : LOON0001:00 LOON0001:00
- 100e0000-100e0bff : LOON0002:00
-   100e0000-100e0bff : LOON0002:00 LOON0002:00
- 1fe001e0-1fe001e7 : serial
- e6200000-f61fffff : Crash kernel
- fa190000-fe0bffff : System RAM
-   fa190000-fa1bffff : Reserved
- fe4e0000-47fffffff : System RAM
-   43c000000-441ffffff : Reserved
-   47ff98000-47ffa3fff : Reserved
-   47ffa4000-47ffa7fff : Reserved
-   47ffa8000-47ffabfff : Reserved
-   47ffac000-47ffaffff : Reserved
-   47ffb0000-47ffb3fff : Reserved
+D. Wythe
 
-3, With 'crashkernel' parameter, after this patch:
-
- 100d0100-100d01ff : LOON0001:00
-   100d0100-100d01ff : LOON0001:00 LOON0001:00
- 100e0000-100e0bff : LOON0002:00
-   100e0000-100e0bff : LOON0002:00 LOON0002:00
- 1fe001e0-1fe001e7 : serial
- 90400000-fa17ffff : System RAM
-   e6200000-f61fffff : Crash kernel
-   f6220000-f622ffff : Reserved
-   f9ee0000-f9ee3fff : Reserved
-   fa120000-fa17ffff : Reserved
- fa190000-fe0bffff : System RAM
-   fa190000-fa1bffff : Reserved
- fe4e0000-47fffffff : System RAM
-   43c000000-441ffffff : Reserved
-   47ff98000-47ffa3fff : Reserved
-   47ffa4000-47ffa7fff : Reserved
-   47ffa8000-47ffabfff : Reserved
-   47ffac000-47ffaffff : Reserved
-   47ffb0000-47ffb3fff : Reserved
-
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
----
- kernel/crash_core.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index d4313b53837e..755d8d4ef5b0 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -377,7 +377,6 @@ static int __init reserve_crashkernel_low(unsigned long long low_size)
- 
- 	crashk_low_res.start = low_base;
- 	crashk_low_res.end   = low_base + low_size - 1;
--	insert_resource(&iomem_resource, &crashk_low_res);
- #endif
- 	return 0;
- }
-@@ -459,8 +458,19 @@ void __init reserve_crashkernel_generic(char *cmdline,
- 
- 	crashk_res.start = crash_base;
- 	crashk_res.end = crash_base + crash_size - 1;
--	insert_resource(&iomem_resource, &crashk_res);
- }
-+
-+static __init int insert_crashkernel_resources(void)
-+{
-+	if (crashk_res.start < crashk_res.end)
-+		insert_resource(&iomem_resource, &crashk_res);
-+
-+	if (crashk_low_res.start < crashk_low_res.end)
-+		insert_resource(&iomem_resource, &crashk_low_res);
-+
-+	return 0;
-+}
-+early_initcall(insert_crashkernel_resources);
- #endif
- 
- int crash_prepare_elf64_headers(struct crash_mem *mem, int need_kernel_map,
--- 
-2.39.3
+>   
+>   static const struct bpf_link_ops bpf_nf_link_lops = {
+> @@ -226,7 +240,11 @@ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>   
+>   	link->hook_ops.hook = nf_hook_run_bpf;
+>   	link->hook_ops.hook_ops_type = NF_HOOK_OP_BPF;
+> -	link->hook_ops.priv = prog;
+> +
+> +	/* bpf_nf_link_release & bpf_nf_link_dealloc() can ensures that link remains
+> +	 * valid at all times within nf_hook_run_bpf().
+> +	 */
+> +	link->hook_ops.priv = link;
+>   
+>   	link->hook_ops.pf = attr->link_create.netfilter.pf;
+>   	link->hook_ops.priority = attr->link_create.netfilter.priority;
 
 
