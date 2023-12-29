@@ -1,100 +1,78 @@
-Return-Path: <linux-kernel+bounces-13055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 362A181FF0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D89781FF06
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:10:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4CAB28473E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 11:14:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE2282848F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 11:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2571D11188;
-	Fri, 29 Dec 2023 11:14:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="QJvn+Ikd"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 763C210A3B;
+	Fri, 29 Dec 2023 11:10:08 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out203-205-251-60.mail.qq.com (out203-205-251-60.mail.qq.com [203.205.251.60])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 199D410A1B;
-	Fri, 29 Dec 2023 11:14:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1703848181; bh=IWLItomP6GEXQZbCwu1A31BjXLnz2T16xYfN+yaLlRY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=QJvn+IkdOAsfSxK8m39N+yRtFLYxVqIHzWBqyj6n14fVL+q4JAUW7PmiUnfShmzUA
-	 jR6C+I2qw6yQgKK+dtmmugRUcM6uY8l9ITgBXpNF1dGRPmqX3DPNzvbe0pZufsJDOo
-	 z9P/GizC5IL0BN5PcGyTFWBAgl9FhUvHWaoKo8Dc=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
-	id 266AE21D; Fri, 29 Dec 2023 19:09:38 +0800
-X-QQ-mid: xmsmtpt1703848178tler3y48n
-Message-ID: <tencent_8D66B23C9D36BA971637084BA27411767F09@qq.com>
-X-QQ-XMAILINFO: OKKHiI6c9SH39IW5HizR2sWu+zJcP3A71yxExmFmhU/mUvv0aGo++xNpfn7PSz
-	 H0JdlsXhnCdg4V1KzL6pRBg7xd7kL7/AxPr1KYTqzA65gJjwcp+tczR3xCtMYStXSX3M6BJ2UELk
-	 ynGqHqPXvkUTwWRwVRvGCphwYqBF8vS7dxaXTFrWJfBPS1DQleBFYVI4W4d8A5qH0mPpjKWbeLdr
-	 KSc0J/wSRsNEsrTvJWwz9gjGf1OaSUdv0EQabUK/7QhqKtelMwrvcMdFAzeap9f+jcAb9aVem2Xg
-	 WhpCpM/wV0wqhnbTOvInTkUOTJhMCCriMCiCji08CIYg/NCEGMZsRG+B2U7VmaydfSJJqbMubUFB
-	 XabmIqXi9BDpce7JuVMoWLdxY6PXkI2IzM5zRAAYusI5oXBWsFtCSzoSiOe6AHJ9SbKI4IgBwjWw
-	 F1ZlT8HEoHgmW4HqKeJvUVl9daW1wtoi9A8f9clR16R/cmJWPri1Uca+sVVNBU984s/WO8eB8Gib
-	 BLyOgKANBQYIbdIAZmxstFzHe6tzUk2hLFjFqVMLqn7A8/3vIlURrul+l5OWrtISAopif4YJywDP
-	 sLUiVXxo9SmyzNe2xjAZjUq5HgVBuXotNdWD9Wqp5MgERLGNzoiFz/bONnKhRDyKbH5vchdqaRev
-	 vSxDA2LOvEeyg60sHMUb8CLw2ppZz24JvqRA9lmqNn0au+F1jww4WqFVaNp+z64U/l0Hqir6f/W7
-	 vzM875o4UWzFBa0TvL1EA9G8vjSXW5E1pxw8kL7Gv69VtZ676B21KzFvs+TSmwHHMLTj9JUkpVkN
-	 2Xm6EW/hC0usa1YPs5bnJomcYOmm1CD5VU49SkphNlysdKDlYTA7IVr3jKylTFHO/5DEHVVK2ZlR
-	 SM1w98xfLlAmrpSaR3gBHsOb/WG5wbE+R6vRMqqXntmII7wXQuxErQTqIft4eaAg==
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+6c746eea496f34b3161d@syzkaller.appspotmail.com
-Cc: chao@kernel.org,
-	huyue2@coolpad.com,
-	jefflexu@linux.alibaba.com,
-	linux-erofs@lists.ozlabs.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	xiang@kernel.org
-Subject: [PATCH] erofs: fix uninit-value in z_erofs_lz4_decompress
-Date: Fri, 29 Dec 2023 19:09:39 +0800
-X-OQ-MSGID: <20231229110938.1157837-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000321c24060d7cfa1c@google.com>
-References: <000000000000321c24060d7cfa1c@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB7D10A1B
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 11:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bb454e1d64so103064539f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 03:10:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703848206; x=1704453006;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Chb2vlA4LActVFiNDAWk46034fCzF24yUVD9dZLCdw8=;
+        b=Pwp4jUk8k6x3x445OpdnpZibwXH+iyNwIG008CEUDeu1gRismTjuU9XIVgn2X22+/2
+         +zFf/VF74Po6VvW5pEIrbtDtEBdkv+/YzGJFpecZ6hFDO4CKDgkL4UODD/XkDRh3ftlc
+         LGTTzAJgkip5qiyjq0i/WTOzGWthuSL2FK8iTT7R/b2HH87OLhopBAe+WmEDZ/I70zwT
+         QiBy8hDEb22OkWBsb2VC0QWGnT7Z7mqTGTft8rxUG/oYxBWON3mzv2vGE36s3y3nQL6J
+         a/9njR7R2eCy54uoX5dGwTpriZHZ4ShJ9gQ+igRRcdwVleefJFvejZ++qUwGCU8e3SU1
+         8Dvw==
+X-Gm-Message-State: AOJu0YxrrTfpPQiA5cSSlIadkEqEdA8MHS1k8bQQ0jwQW/cRuk2AD4Af
+	k/vaoCDza6uW6DwFZvXFXtd3j7tdk/fpNCDrBSl5mk38x8eL
+X-Google-Smtp-Source: AGHT+IHAr/sReOuW9LQnCPgNK0h9F+fGh40frMAce3gfmCHtHoOoGhA/GPFuKB8kiqeobJrFgfXvBJqxqULrx4GYmQRVMrWcbGl4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:4888:b0:46c:ff73:a8f5 with SMTP id
+ ct8-20020a056638488800b0046cff73a8f5mr322643jab.4.1703848205863; Fri, 29 Dec
+ 2023 03:10:05 -0800 (PST)
+Date: Fri, 29 Dec 2023 03:10:05 -0800
+In-Reply-To: <20231229104551.1876-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000fd27c060da413f5@google.com>
+Subject: Re: [syzbot] [net?] INFO: rcu detected stall in fq_pie_timer (2)
+From: syzbot <syzbot+15c3ba3f7ca8ced0914d@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-When LZ4 decompression fails, the number of bytes read from out should be 
-inputsize plus the returned overflow value ret.
+Hello,
 
-Reported-and-tested-by: syzbot+6c746eea496f34b3161d@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- fs/erofs/decompressor.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+INFO: rcu detected stall in corrupted
 
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index 021be5feb1bc..8ac3f96676c4 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -250,7 +250,8 @@ static int z_erofs_lz4_decompress_mem(struct z_erofs_lz4_decompress_ctx *ctx,
- 		print_hex_dump(KERN_DEBUG, "[ in]: ", DUMP_PREFIX_OFFSET,
- 			       16, 1, src + inputmargin, rq->inputsize, true);
- 		print_hex_dump(KERN_DEBUG, "[out]: ", DUMP_PREFIX_OFFSET,
--			       16, 1, out, rq->outputsize, true);
-+			       16, 1, out, (ret < 0 && rq->inputsize > 0) ? 
-+			       (ret + rq->inputsize) : rq->outputsize, true);
- 
- 		if (ret >= 0)
- 			memset(out + ret, 0, rq->outputsize - ret);
--- 
-2.43.0
+rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 0-.... } 2652 jiffies s: 13037 root: 0x1/.
+rcu: blocking rcu_node structures (internal RCU debug):
+
+
+Tested on:
+
+commit:         8735c7c8 Merge tag '6.7rc7-smb3-srv-fix' of git://git...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=16b4a855e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c7bcb8f62f1e2c3e
+dashboard link: https://syzkaller.appspot.com/bug?extid=15c3ba3f7ca8ced0914d
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=17522dcee80000
 
 
