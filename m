@@ -1,147 +1,248 @@
-Return-Path: <linux-kernel+bounces-13173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 959888200B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 18:13:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D31948200B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 18:14:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 362F2B21AD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:12:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 491E71F221AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8207D12B75;
-	Fri, 29 Dec 2023 17:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D3012B7E;
+	Fri, 29 Dec 2023 17:14:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ka4ZNgsS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C424C12B61;
-	Fri, 29 Dec 2023 17:12:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3bbc5cd15b6so367348b6e.0;
-        Fri, 29 Dec 2023 09:12:48 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3890C12B6B
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 17:14:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-427a462fc5dso34679381cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 09:14:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703870075; x=1704474875; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zh8fOp0kVPMuIegzy0Ht8ImQGG07PuOEnsybQwGt/AU=;
+        b=ka4ZNgsS4Lrd67+0ixriXiwb3RkMQL1OPj/ZQ/aK0jOcjk41buCZCvEOfMmH1FcK8j
+         93kMVW24ac44Hg2xz3PhpiVKglRxw2UoenEUYtDZOOLJcupBVYeTcViCGS1DLUtGcQZh
+         EC3iNBHiOyIj2Rin/3t2BUZJsjYLv2RUXW/2V1v+J3ClwQleEHxNDyOX8yr8LDa4UrBR
+         WUcluO+B54Jb2x/p0ZXUNb20Jtd7E1938sYMUR0lPY4lt2SYLKV2cJkgCtF36pTOAEri
+         hAekUNju8IH0Mo9bJudYdUJeu30fw0BjXUqp4J1Ib3NhpioNSuKVriO4STvjgUgsu4hc
+         5XTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703869968; x=1704474768;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HdiTaY4wXcOHiFobHYaOWoRTwcwWY53xK1QwAvbQC8E=;
-        b=dTjcBoqcAfRy/6p41TbGYdFruKKuW3UJu9q+y9vqlZMpLIqD9Oj7mVpf5kbIZ+fm4o
-         DR3WAwHvzCBNBOeR6gQrroITJ2Gw6u+A+cW3o4HC5Eh+cOH77mLe5uyBXrvx54FXcU5p
-         FJEdeAL+ta+MAwuZAKB0bmS1/F53CUESkfNQbWEoykkf4MhjVnzero3e1BD/qm+4P+bg
-         Zsv6lbUYE6/3GRlysZIGnTTLxeE4dj5tYtWaejJnzyDsburpVZXwjQDYrMe/DLFKSYcq
-         Vie8MjWt3W3gH2ku+7A6cNOEJSBD3By+q3Kgy/mBmpBr1Cq16FaqYXiL7q2WnmbuJIgU
-         d8tg==
-X-Gm-Message-State: AOJu0YynTl20tZ02sgRizMOZnvgrok1mUX6AG38hNhdTVlM1Z0Bo1XR8
-	SB23A1a+7TTQOX40OHBMXLhJq1AzwYYL2UaVDe0=
-X-Google-Smtp-Source: AGHT+IFfyXOQC8zU2QuZ7sMVZIymxpNx27SsWQtka+nbAAgX317CZe3KvSGEwVOQknk1f83gxxIBuBKxIZ3q+8e1hRQ=
-X-Received: by 2002:a4a:ce87:0:b0:594:ec5f:f697 with SMTP id
- f7-20020a4ace87000000b00594ec5ff697mr5429797oos.0.1703869967849; Fri, 29 Dec
- 2023 09:12:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703870075; x=1704474875;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zh8fOp0kVPMuIegzy0Ht8ImQGG07PuOEnsybQwGt/AU=;
+        b=dhNG4T+wuraWOx+i3FsUsrwfD6vSDUGebuFpgwUfEv3Yd7p4/WsiB21rgLX5Ccm6l2
+         ZFyHiAzubAGlp5o6y1aVKM3oMZfg1J738OHT3y9Kq7ZIRlfTM8j1fmT0Q33UdQ6N6WVC
+         mcjBhy6wT+UUewSRUfa/5pCdnVXLkfiWKoXixWN7EMNfHawk69Ki9xtaTM6vgRF3AOr+
+         9H7Tzi7FUZ7syLNrIS1amqqgqcs4b3aOcDlr897cvh8ANKHJbnLwaI0i0WfKisezkZ/T
+         4zlxcSE8QlgwLSdItngVXj9IuftkMoD7dHAQOAzAC/S8jkONs6AIqs+2OSdlZUvfbbvR
+         AguA==
+X-Gm-Message-State: AOJu0YxMKOU8to90bg09H85eU5eA2Eku8toUMvBGtGD5XeNbtLsV+Msc
+	PPxKIVUBlsMpBQVagDqxCoOK7MGXcQoZ
+X-Google-Smtp-Source: AGHT+IH/g21GtNan7HVM4yKKpcfcEVmgcHJK+d54J10TnWBAocH02Sn7SWXgF+RUrLC0tZ9luI8+yw==
+X-Received: by 2002:a05:622a:1b09:b0:428:9cb:e2d3 with SMTP id bb9-20020a05622a1b0900b0042809cbe2d3mr737431qtb.117.1703870075132;
+        Fri, 29 Dec 2023 09:14:35 -0800 (PST)
+Received: from thinkpad ([117.207.24.172])
+        by smtp.gmail.com with ESMTPSA id w2-20020ac86b02000000b00427e7970d38sm3367243qts.51.2023.12.29.09.14.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Dec 2023 09:14:34 -0800 (PST)
+Date: Fri, 29 Dec 2023 22:44:25 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Konrad Dybcio <konrad.dybcio@somainline.org>
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: sc8280xp-crd: Add PCIe CLKREQ#
+ sleep state
+Message-ID: <20231229171425.GC9098@thinkpad>
+References: <20231227-topic-8280_pcie_dts-v1-0-13d12b1698ff@linaro.org>
+ <20231227-topic-8280_pcie_dts-v1-3-13d12b1698ff@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228145416.GAZY2MGLY6THMkAZ2W@fat_crate.local>
-In-Reply-To: <20231228145416.GAZY2MGLY6THMkAZ2W@fat_crate.local>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 29 Dec 2023 18:12:36 +0100
-Message-ID: <CAJZ5v0j3Wb-9Czb50u=NWjNz-W8mgMDEarWY7XG49d+LdzKAYw@mail.gmail.com>
-Subject: Re: [PATCH] cpuidle: haltpoll: Do not enable interrupts when entering idle
-To: "Borislav Petkov (AMD)" <bp@alien8.de>
-Cc: linux-pm@vger.kernel.org, forza@tnonline.net, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231227-topic-8280_pcie_dts-v1-3-13d12b1698ff@linaro.org>
 
-On Thu, Dec 28, 2023 at 3:54=E2=80=AFPM Borislav Petkov (AMD) <bp@alien8.de=
-> wrote:
->
-> Hi,
->
-> I think PeterZ's massaging from
->
->   https://lore.kernel.org/all/20230112194314.845371875@infradead.org/
->
-> missed one.
->
-> @Forza, if you want to have your real name in the patch tags below and
-> thus be part of git history, lemme know. If you don't want them there,
-> either.
->
-> Thx.
->
+On Wed, Dec 27, 2023 at 11:28:28PM +0100, Konrad Dybcio wrote:
+> The CLKREQ pin should not be muxed to its active function when the RC
+> is asleep. Add the missing pin sleep states to resolve that.
+> 
+
+I don't understand why it should not be muxed and wondering what is the actual
+issue you are seeing that lead to this conclusion.
+
+- Mani
+
+> Fixes: d907fe5acbf1 ("arm64: dts: qcom: sc8280xp-crd: enable WiFi controller")
+> Fixes: 17e2ccaf65d1 ("arm64: dts: qcom: sc8280xp-crd: enable SDX55 modem")
+> Fixes: 6a1ec5eca73c ("arm64: dts: qcom: sc8280xp-crd: enable NVMe SSD")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
-> From: Borislav Petkov (AMD) <bp@alien8.de>
-
-I would have appreciated a Subject: line here.
-
->
-> The cpuidle governors' ->enter() methods are supposed to be IRQ
-> invariant:
-
-cpuidle governors have no ->enter() callbacks, drivers do.  And this
-particular haltpoll is a driver (there is a haltpoll governor too,
-confusingly enough).
-
->
->   5e26aa933911 ("cpuidle/poll: Ensure IRQs stay disabled after cpuidle_st=
-ate::enter() calls")
->   bb7b11258561 ("cpuidle: Move IRQ state validation")
->
-> Do that in the haltpoll governor too.
-
-And so s/governor/driver/ here.
-
-> Fixes: 5e26aa933911 ("cpuidle/poll: Ensure IRQs stay disabled after cpuid=
-le_state::enter() calls")
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D218245
-> Reported-by: <forza@tnonline.net>
-> Tested-by: <forza@tnonline.net>
-> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-
-Nevertheless, applied (with the changelog adjustments mentioned above).
-
-> ---
->  drivers/cpuidle/cpuidle-haltpoll.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/cpuidle/cpuidle-haltpoll.c b/drivers/cpuidle/cpuidle=
--haltpoll.c
-> index e66df22f9695..d8515d5c0853 100644
-> --- a/drivers/cpuidle/cpuidle-haltpoll.c
-> +++ b/drivers/cpuidle/cpuidle-haltpoll.c
-> @@ -25,13 +25,12 @@ MODULE_PARM_DESC(force, "Load unconditionally");
->  static struct cpuidle_device __percpu *haltpoll_cpuidle_devices;
->  static enum cpuhp_state haltpoll_hp_state;
->
-> -static int default_enter_idle(struct cpuidle_device *dev,
-> -                             struct cpuidle_driver *drv, int index)
-> +static __cpuidle int default_enter_idle(struct cpuidle_device *dev,
-> +                                       struct cpuidle_driver *drv, int i=
-ndex)
->  {
-> -       if (current_clr_polling_and_test()) {
-> -               local_irq_enable();
-> +       if (current_clr_polling_and_test())
->                 return index;
-> -       }
+>  arch/arm64/boot/dts/qcom/sc8280xp-crd.dts | 78 ++++++++++++++++++++-----------
+>  1 file changed, 51 insertions(+), 27 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts b/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
+> index ffc4406422ae..58c0c2d10cb3 100644
+> --- a/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
+> @@ -530,8 +530,9 @@ &pcie2a {
+>  
+>  	vddpe-3v3-supply = <&vreg_nvme>;
+>  
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&pcie2a_default>;
+> +	pinctrl-0 = <&pcie2a_default>, <&pcie2a_clkreq_default>;
+> +	pinctrl-1 = <&pcie2a_default>, <&pcie2a_clkreq_sleep>;
+> +	pinctrl-names = "default", "sleep";
+>  
+>  	status = "okay";
+>  };
+> @@ -549,8 +550,9 @@ &pcie3a {
+>  
+>  	vddpe-3v3-supply = <&vreg_wwan>;
+>  
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&pcie3a_default>;
+> +	pinctrl-0 = <&pcie3a_default>, <&pcie3a_clkreq_default>;
+> +	pinctrl-1 = <&pcie3a_default>, <&pcie3a_clkreq_sleep>;
+> +	pinctrl-names = "default", "sleep";
+>  
+>  	status = "okay";
+>  };
+> @@ -568,8 +570,9 @@ &pcie4 {
+>  
+>  	vddpe-3v3-supply = <&vreg_wlan>;
+>  
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&pcie4_default>;
+> +	pinctrl-0 = <&pcie4_default>, <&pcie4_clkreq_default>;
+> +	pinctrl-1 = <&pcie4_default>, <&pcie4_clkreq_sleep>;
+> +	pinctrl-names = "default", "sleep";
+>  
+>  	status = "okay";
+>  };
+> @@ -835,13 +838,6 @@ nvme_reg_en: nvme-reg-en-state {
+>  	};
+>  
+>  	pcie2a_default: pcie2a-default-state {
+> -		clkreq-n-pins {
+> -			pins = "gpio142";
+> -			function = "pcie2a_clkreq";
+> -			drive-strength = <2>;
+> -			bias-pull-up;
+> -		};
+> -
+>  		perst-n-pins {
+>  			pins = "gpio143";
+>  			function = "gpio";
+> @@ -857,14 +853,21 @@ wake-n-pins {
+>  	       };
+>  	};
+>  
+> -	pcie3a_default: pcie3a-default-state {
+> -		clkreq-n-pins {
+> -			pins = "gpio150";
+> -			function = "pcie3a_clkreq";
+> -			drive-strength = <2>;
+> -			bias-pull-up;
+> -		};
+> +	pcie2a_clkreq_default: pcie2a-clkreq-default-state {
+> +		pins = "gpio142";
+> +		function = "pcie2a_clkreq";
+> +		drive-strength = <2>;
+> +		bias-pull-up;
+> +	};
 > +
->         arch_cpu_idle();
->         return index;
->  }
-> --
-> 2.42.0.rc0.25.ga82fb66fed25
->
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+> +	pcie2a_clkreq_sleep: pcie2a-clkreq-sleep-state {
+> +		pins = "gpio142";
+> +		function = "gpio";
+> +		drive-strength = <2>;
+> +		bias-pull-up;
+> +	};
+>  
+> +	pcie3a_default: pcie3a-default-state {
+>  		perst-n-pins {
+>  			pins = "gpio151";
+>  			function = "gpio";
+> @@ -880,14 +883,21 @@ wake-n-pins {
+>  		};
+>  	};
+>  
+> -	pcie4_default: pcie4-default-state {
+> -		clkreq-n-pins {
+> -			pins = "gpio140";
+> -			function = "pcie4_clkreq";
+> -			drive-strength = <2>;
+> -			bias-pull-up;
+> -		};
+> +	pcie3a_clkreq_default: pcie3a-clkreq-default-state {
+> +		pins = "gpio150";
+> +		function = "pcie3a_clkreq";
+> +		drive-strength = <2>;
+> +		bias-pull-up;
+> +	};
+>  
+> +	pcie3a_clkreq_sleep: pcie3a-clkreq-sleep-state {
+> +		pins = "gpio150";
+> +		function = "gpio";
+> +		drive-strength = <2>;
+> +		bias-pull-up;
+> +	};
+> +
+> +	pcie4_default: pcie4-default-state {
+>  		perst-n-pins {
+>  			pins = "gpio141";
+>  			function = "gpio";
+> @@ -903,6 +913,20 @@ wake-n-pins {
+>  		};
+>  	};
+>  
+> +	pcie4_clkreq_default: pcie4-clkreq-default-state {
+> +		pins = "gpio140";
+> +		function = "pcie4_clkreq";
+> +		drive-strength = <2>;
+> +		bias-pull-up;
+> +	};
+> +
+> +	pcie4_clkreq_sleep: pcie4-clkreq-sleep-state {
+> +		pins = "gpio140";
+> +		function = "gpio";
+> +		drive-strength = <2>;
+> +		bias-pull-up;
+> +	};
+> +
+>  	sdc2_default_state: sdc2-default-state {
+>  		clk-pins {
+>  			pins = "sdc2_clk";
+> 
+> -- 
+> 2.43.0
+> 
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
