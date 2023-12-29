@@ -1,195 +1,155 @@
-Return-Path: <linux-kernel+bounces-13073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24F1981FF51
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 13:08:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5C1081FF59
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 13:16:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B96551F22C4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:08:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 991EF1C22292
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:16:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB68511195;
-	Fri, 29 Dec 2023 12:08:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="XwUp+3rM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD00111A8;
+	Fri, 29 Dec 2023 12:16:19 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01on2060.outbound.protection.outlook.com [40.107.222.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6241811187;
-	Fri, 29 Dec 2023 12:08:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E556A40E01AC;
-	Fri, 29 Dec 2023 12:08:37 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id QvfOF0d8TSHs; Fri, 29 Dec 2023 12:08:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1703851715; bh=Kfd1jieI9qV+3NknFAZpcLVi7tzXyVNY3wF/gry+AQ8=;
-	h=Date:From:To:Cc:Subject:From;
-	b=XwUp+3rMIRnGPMdKubaV0xzBC/sAs+4Hh0egy62kBIYEzTA/BtCNGD0lbmy073ETu
-	 w/naJ7onJfg4ehf6u/FkiUlCoKTLUgYFE425cpq2sUXHRU1YCPsV7P8tnNd9GVElZF
-	 q3maDX7Ha5jEzkrBKk5YO+rmEo2UTyUm2naJz3NsT34NoHC0lHf4FdlyRjfbXMvUsN
-	 Qm2gzEm8Jq3UJYh6lPTgIlQO5VcdCCmDwVIvJKobzgnUH5fZXE62qH9+ZbdiZoVbxJ
-	 cwUnMAOSiNCh8FzrfTL2Hu50gm96iSwgN6+nm8St5wk9le+MGiX63rbtfBvQ6VVkSK
-	 HoFPFswtyukWQgTkEmTN6ySOHcJ+vdlaPp2E0UjGsGfQduZNFo/ugSjyY5MwLHQ3t/
-	 TYME8/ugZkDRwZCfbvLREm0aclFORPeXnrUDSdx0PvX5G75iwGnFV8XMmq6L0hLuGG
-	 eRK6M1J53rCkUge8JbunWabu4WdRTQTphGHJ9AH3xi+Aa2pu1qBBXzyeRIkZUiPxXq
-	 2lg05di+DeGxMXvxNOUZnOMoKAJ4DS8GVXRkzKV/BQO2LQbZcSTxo3Q4wG2vTTI0lS
-	 f8Kl6YP8XLhZRFwXroNu/UN1uUw/oXgcF5O7BOfkuRshSBH1MfheOnuHMtxcJRrrAB
-	 Mk3Gu7mjZEd6rFtY+tqHeexo=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 31BC540E00C7;
-	Fri, 29 Dec 2023 12:08:26 +0000 (UTC)
-Date: Fri, 29 Dec 2023 13:08:20 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: linux-i2c@vger.kernel.org
-Cc: lkml <linux-kernel@vger.kernel.org>,
-	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
-	Mario Limonciello <mario.limonciello@amd.com>, narasimhan.v@amd.com
-Subject: i2c-designware: NULL ptr at RIP: 0010:regmap_read+0x12/0x70
-Message-ID: <20231229120820.GCZY62tM7z4v2XmOAZ@fat_crate.local>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DACDF11193;
+	Fri, 29 Dec 2023 12:16:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=siliconsignals.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siliconsignals.io
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aqdHWnFBsxfOmykj9yvKMigv8uGfxeUfS1VZNhs3mwVpDvbqxdVZJV+PNqLhFeAap0+r+NnN4muyWvXtgSeQAFRem6hj8KtHqz/zpLhImfHIZnGGStECF3PWuMQDsZA5Xgh1zfWjQCGi+WYdImsnGeViac1YDkPCyIjzr+2l7Bw1qYl4B39H7Z/jPrjk1Ucd7fvj6OuR+XhgNDjNE0kg8KF9N9OnBhUufHsvh5BZk5oqhIVuV4Ml54PvEMkfjD/EdNbGW8UnW6IEqIvkl4PHgCFcsI7fqqSz5jVwaJFKibSBGwHqz3W1A/wWElR7Rb6U8PGULTQTmN/vGdSj3aaEmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=U6Q4MoHWzfJ+/LnfE+sBWsslpOJXWVQZW2adOZSBdew=;
+ b=iWlvK3A7uJLlJO4Gkr0ey5XQWXHtDTk7uoFLk3zM9E3h7K5WH/VruLL20Si9n7m8VR5rUSeXLJNbo+XAaollOlXaD1rk2EEbRXnJnGi0ZKV5YYW7kPvKENlL56MOpVcmA+H4gJsk/bIo436aDT73TvMIxPC4S6tCRbwSiI9xjRvywE8yh0JmtEb0pAjbd0IXZxZ74IxqCx1uDJwg15c1JA5nJbFVxwNjenlEyZUfsjtDsRvpXUuW0IW4Ib21pJtFo0E5lCNdWS95zjVPiaqoNFeSQ/SwZTRMrgLM+hQUm1asRBlNjUB/X/O52qYmH+poyVZxGCFAEGuG2wogehxMow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siliconsignals.io; dmarc=pass action=none
+ header.from=siliconsignals.io; dkim=pass header.d=siliconsignals.io; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=siliconsignals.io;
+Received: from BM1PR01MB4899.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b01:b::15)
+ by PN3PR01MB10228.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:1df::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.21; Fri, 29 Dec
+ 2023 12:16:13 +0000
+Received: from BM1PR01MB4899.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::54b6:4ebc:13fb:818c]) by BM1PR01MB4899.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::54b6:4ebc:13fb:818c%6]) with mapi id 15.20.7113.028; Fri, 29 Dec 2023
+ 12:16:13 +0000
+From: Himanshu Bhavani <himanshu.bhavani@siliconsignals.io>
+To: stanimir.k.varbanov@gmail.com,
+	quic_vgarodia@quicinc.com,
+	agross@kernel.org,
+	andersson@kernel.org,
+	konrad.dybcio@linaro.org,
+	mchehab@kernel.org
+Cc: himanshu.bhavani@siliconsignals.io,
+	"Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+	linux-media@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] media: venus: use div64_u64() instead of do_div()
+Date: Fri, 29 Dec 2023 17:45:04 +0530
+Message-Id: <20231229121504.3479594-1-himanshu.bhavani@siliconsignals.io>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: PN2PR01CA0227.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:eb::14) To BM1PR01MB4899.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b01:b::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BM1PR01MB4899:EE_|PN3PR01MB10228:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2dfa8341-305b-4d75-64b3-08dc0867f2f1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	uSuboL+RWE81VpzvinLomqv6+kRs7R5a2vh3RcvLjJutCtrWV4hCtDF8fhV8Du15Jl4iFXqSV/nsNk8W2hjSR5Ko9Igh/+Xx7jXQ8FcebMN+u5FASsb0V8xTHDWcywRa5di37GNOwkpDVTZ8O5rub4rVfiqXbn2jUAKWeXz69Fb8CrCakR2u2i62wqAUKNDuZkZtxLAga21/WYZGgd1aCxP6Yxhyzky/Zwb8qljipixT6b/6Vk37lMqFvc9byrTexyQvgziG4e336XEdy8Yyhl9v8SDi7cPr0Vy04G/ide12OTxyJaX876+0jj6R9m1SjhkLIsuNZ9RdmnssTntmXbkSkIRCn3uSXhNRUSj47sFls1XxYX8hHda9kxWEpniKDsJkQ53skdbz5Tr6xtY7oDh2CoIpfp/d81S9jMUczUfNTgqVd5XN/uiPqKpZXtY2yh6t/kJ8inoWnxIkGeXbhWrOOaZe+XvsZ8brchPffg65E2Lw6/Mh3cCd84rSgHHMG1Ro6Dkk//1J53f3Cz4X/fPZStVhhZ8eb6HKUYURxmNUH1TZet4irYpWMLuJliEuQ26QbvVmIoHIp0svMS+BFLPq2yk8bckbvfYJiU+rKzj5sHO0DPuZbsys42mULls45NgkLR2iW/3n1OnveSznTIezrI3b06yub0Hzd226TLQ=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BM1PR01MB4899.INDPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39830400003)(346002)(366004)(136003)(376002)(396003)(230173577357003)(230922051799003)(230273577357003)(451199024)(1800799012)(64100799003)(186009)(26005)(41300700001)(83380400001)(2616005)(1076003)(38100700002)(8936002)(316002)(8676002)(5660300002)(4326008)(2906002)(7416002)(44832011)(478600001)(6506007)(6512007)(66476007)(66556008)(52116002)(6486002)(6666004)(66946007)(86362001)(38350700005)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?jZYRekuezD1HakyZEMEQFUBT7rf+0X7n5E9FPekgm0HwuhXpKxsKqYbmEVWM?=
+ =?us-ascii?Q?si/AA0/Jz1SKCBtGQ3Y8uz/2g995FkHk/AVK2H078wFLS5e8yhDFvvXefwqJ?=
+ =?us-ascii?Q?xbCOJXJ+744VqMBiqe3Batrh5yQZmk7WsZU/HW7/wfiKK//aD6V5fd92N+Am?=
+ =?us-ascii?Q?UpIJxZhrcmEhEhESEMXjxbAdHZm9gtp18afUbnTdCYmCezuXNg0MuPWJzh4I?=
+ =?us-ascii?Q?grs7F7lIUGvrebFsXtOmWs4qTCXYzLkZnMPRlUCO5LYu95YFi3/kFSys8Pid?=
+ =?us-ascii?Q?F1hmiTrERwvyo2cF8KMKK5o//t4c9mgO2NlN5rJjpQVImzFuxE22zFjFYXKu?=
+ =?us-ascii?Q?642niYbCU4Mk0s/z9apLbPgdtE7cO6l4nVusGyUubbh04ZcaEi4+PVW0OZ5B?=
+ =?us-ascii?Q?QUfqLJ/ZKaDOx5YLoagFrx2RrsC8ebQ5NVeSWQgi23A+NlOOFNTzY8Gw/6Eg?=
+ =?us-ascii?Q?VEM2gtKYDSmecbqEgPt9q6tdtJtOC+z3gjyZH+erOfFvv6r/kaORTeCiIneu?=
+ =?us-ascii?Q?VCm0WZP8VdqIjSYvBDrWwHDs2VvsTAr7FwIBRdySMGlsF2UuPcoo5KYNiYhe?=
+ =?us-ascii?Q?kIa8+MjyIzw7u5D52MBAbFazQf/pMjFe3HlLmpfK79kq/Wi5IdwKmfpzQua8?=
+ =?us-ascii?Q?OywTsGpoaYXAH8znBiIOxdirB36wa+EcyFWhHe8u7ceD/wZ4F+9xj7Ti92nJ?=
+ =?us-ascii?Q?csVfsvy73+K71+b6DG2Rit7KQTyN9N9LzpX9nz/RZv7rcQ6Zab4eUGB1Zedb?=
+ =?us-ascii?Q?avqydvgRMqJwnGglz4jrf3YbMLr1+fazn7/3if+UJWf1Ivoqbu0JZ6LUz2dR?=
+ =?us-ascii?Q?QfFQInhH2jhlk7ENXjxbAq4PARKTqaUvG4OPfH5Jl8ytrw2a8ot8u4ZKTKVZ?=
+ =?us-ascii?Q?i4h1BdM0DB0gyAWw3I4Q3VTMo0K4N99hV5LXDqIdsACzvq05Zzr0E1MBUDTl?=
+ =?us-ascii?Q?KY9oUZwlg5AhHC3pt9RDeVgydTBN0PxbwFRL3kttFaRam/jRRXpUJPuRsTNv?=
+ =?us-ascii?Q?IV5rRFgQ97dvrX3Q6Tm3TIC9WKHWP1UxyV3KCzq/9N6sXRvMbUbZDXpAeJOh?=
+ =?us-ascii?Q?I3yvXVMvF72RkGsLWP430Ske0iDwcX4t+fipoL1czrJ44Y7p2Y3e9KPeU36u?=
+ =?us-ascii?Q?cA2dktQwE1vJO9sNc76xTrdvKir3oTaezI+vazaC7JwhvcxjDvMwD+gjQdp+?=
+ =?us-ascii?Q?mHf8MPIVcvoqHvQP1Sqt984/WRO40JTidIOqvBJWpftxob3oafzvVKexTZod?=
+ =?us-ascii?Q?hdoh//MQfAYU+ySQCNMIozPqG26CP0HwFc1DLpplzoAeXyJJvqxTRUtf89kA?=
+ =?us-ascii?Q?BsT3eIrpzPopnG8eq+2LqsaRy6+jaNoBbo8WqXqhuwq9w4k/ZV1lEb2eNp0S?=
+ =?us-ascii?Q?KPV/SRZLJHMAazq+YD75FLLEbiPfK036T1UKTW9oAtrR1K8I55s9qX3j9XxS?=
+ =?us-ascii?Q?W2VgZRBoTyZQsVsml9Yiq9slhQ3t3WnCwd4t7RGtNZ5VvUjwbCPzOiTcXx3r?=
+ =?us-ascii?Q?7suBaESFbM1bbS0J/BfuNqTJ54djR7SVvBV/fB5VsxQS0kk2tgmbVSoFoWKQ?=
+ =?us-ascii?Q?2K/b/+TbenAuS/QzWjpMQFX3C3i2ghzfifhzOQW/ND5RjD2Yd8ORm54RwKyi?=
+ =?us-ascii?Q?8VRdk6hfSpyab+1ShZvv/fE=3D?=
+X-OriginatorOrg: siliconsignals.io
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2dfa8341-305b-4d75-64b3-08dc0867f2f1
+X-MS-Exchange-CrossTenant-AuthSource: BM1PR01MB4899.INDPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2023 12:16:13.1801
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 7ec5089e-a433-4bd1-a638-82ee62e21d37
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l0oioEHDNwtb/rrr0+nlwQUX209fcOUmGiNi1sqIjnQEHhI1xRxUjRxJAeR77afHk8nm/J09z0ptjqt2ETw0IMwwSMZbwnKLMSFQTP/VtKu1pYZ9+e2WDdynVdkSlrzY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3PR01MB10228
 
-Hi,
+do_div() does a 64-by-32 division.
+When the divisor is u64, do_div() truncates it to 32 bits, this means it
+can test non-zero and be truncated to zero for division.
 
-we're seeing the below splat in our testing of linux-next.
+fix do_div.cocci warning:
+do_div() does a 64-by-32 division, please consider using div64_u64 instead.
 
-Disassembling Code: gives
+Signed-off-by: Himanshu Bhavani <himanshu.bhavani@siliconsignals.io>
 
-  17:	90                   	nop
-  18:	f3 0f 1e fa          	endbr64
-  1c:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
-  21:	55                   	push   %rbp
-  22:	48 89 e5             	mov    %rsp,%rbp
-  25:	41 55                	push   %r13
-  27:	41 54                	push   %r12
-  29:	53                   	push   %rbx
-  2a:*	8b 87 fc 01 00 00    	mov    0x1fc(%rdi),%eax		<-- trapping instruction
-
-which is
-
-regmap_read:
-	endbr64
-1:	call	__fentry__
-	.section __mcount_loc, "a",@progbits
-	.quad 1b
-	.previous
-	pushq	%rbp	#
-	movq	%rsp, %rbp	#,
-	pushq	%r13	#
-	pushq	%r12	#
-	pushq	%rbx	#
-# drivers/base/regmap/regmap.c:2826: 	if (!IS_ALIGNED(reg, map->reg_stride))
-	movl	508(%rdi), %eax	# map_12(D)->reg_stride, tmp107
-	^^^^^^^^
-
-i.e., that @map argument is 0.
-
-Looking at the call stack, I see
-
-  2409205acd3c ("i2c: designware: fix __i2c_dw_disable() in case master is holding SCL low")
-
-which does that dev->map deref in __i2c_dw_disable() but maybe ->map is
-invalid by then...?
-
-Just a stab in the dark anyway...
-
-Thx.
-
-[    6.245173] i2c_designware AMDI0010:00: Unknown Synopsys component type: 0xffffffff
-[    6.252683] BUG: kernel NULL pointer dereference, address: 00000000000001fc
-[    6.256551] #PF: supervisor read access in kernel mode
-[    6.256551] #PF: error_code(0x0000) - not-present page
-[    6.256551] PGD 0 
-[    6.256551] Oops: 0000 [#1] PREEMPT SMP NOPTI
-[    6.256551] CPU: 32 PID: 211 Comm: kworker/32:0 Not tainted 6.7.0-rc6-next-20231222-1703820640818 #1
-[    6.256551] Workqueue: pm pm_runtime_work
-[    6.256551] RIP: 0010:regmap_read+0x12/0x70
-[    6.256551] Code: 00 00 00 00 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 55 48 89 e5 41 55 41 54 53 <8b> 87 fc 01 00 00 83 e8 01 85 f0 75 42 48 89 fb 41 89 f4 49 89 d5
-[    6.256551] RSP: 0018:ff7fa5c740bcbc98 EFLAGS: 00010246
-[    6.256551] RAX: 0000000000000000 RBX: ff38ff5c159f1028 RCX: 0000000000000008
-[    6.256551] RDX: ff7fa5c740bcbcc4 RSI: 0000000000000034 RDI: 0000000000000000
-[    6.256551] RBP: ff7fa5c740bcbcb0 R08: ff38ff5c02ceb8b0 R09: ff38ff5c002a4500
-[    6.256551] R10: 0000000000000003 R11: 0000000000000003 R12: ff38ff5c159f1028
-[    6.256551] R13: 0000000000000000 R14: 0000000000000000 R15: ff38ff5c159ed8f4
-[    6.256551] FS:  0000000000000000(0000) GS:ff38ff6b0d200000(0000) knlGS:0000000000000000
-[    6.256551] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    6.256551] CR2: 00000000000001fc CR3: 000000007403c001 CR4: 0000000000771ef0
-[    6.256551] PKRU: 55555554
-[    6.256551] Call Trace:
-[    6.256551]  <TASK>
-[    6.256551]  ? show_regs+0x6d/0x80
-[    6.256551]  ? __die+0x29/0x70
-[    6.256551]  ? page_fault_oops+0x153/0x4a0
-[    6.256551]  ? do_user_addr_fault+0x30f/0x6c0
-[    6.256551]  ? exc_page_fault+0x7c/0x190
-[    6.256551]  ? asm_exc_page_fault+0x2b/0x30
-[    6.256551]  ? regmap_read+0x12/0x70
-[    6.256551]  ? update_load_avg+0x82/0x7d0
-[    6.256551]  __i2c_dw_disable+0x38/0x180
-[    6.256551]  i2c_dw_disable+0x3f/0xb0
-[    6.256551]  i2c_dw_runtime_suspend+0x33/0x50
-[    6.256551]  ? __pfx_pm_generic_runtime_suspend+0x10/0x10
-[    6.256551]  pm_generic_runtime_suspend+0x2f/0x40
-[    6.256551]  __rpm_callback+0x48/0x120
-[    6.256551]  ? __pfx_pm_generic_runtime_suspend+0x10/0x10
-[    6.256551]  rpm_callback+0x66/0x70
-[    6.256551]  ? __pfx_pm_generic_runtime_suspend+0x10/0x10
-[    6.256551]  rpm_suspend+0x166/0x700
-[    6.256551]  ? srso_alias_return_thunk+0x5/0xfbef5
-[    6.256551]  ? __schedule+0x3df/0x1720
-[    6.256551]  pm_runtime_work+0xb2/0xd0
-[    6.256551]  process_one_work+0x178/0x350
-[    6.256551]  worker_thread+0x2f5/0x420
-[    6.256551]  ? __pfx_worker_thread+0x10/0x10
-[    6.256551]  kthread+0xf5/0x130
-[    6.256551]  ? __pfx_kthread+0x10/0x10
-[    6.256551]  ret_from_fork+0x3d/0x60
-[    6.256551]  ? __pfx_kthread+0x10/0x10
-[    6.256551]  ret_from_fork_asm+0x1a/0x30
-[    6.256551]  </TASK>
-[    6.256551] Modules linked in:
-[    6.256551] CR2: 00000000000001fc
-[    6.256551] ---[ end trace 0000000000000000 ]---
-[    6.256551] RIP: 0010:regmap_read+0x12/0x70
-[    6.256551] Code: 00 00 00 00 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 55 48 89 e5 41 55 41 54 53 <8b> 87 fc 01 00 00 83 e8 01 85 f0 75 42 48 89 fb 41 89 f4 49 89 d5
-[    6.256551] RSP: 0018:ff7fa5c740bcbc98 EFLAGS: 00010246
-[    6.256551] RAX: 0000000000000000 RBX: ff38ff5c159f1028 RCX: 0000000000000008
-[    6.256551] RDX: ff7fa5c740bcbcc4 RSI: 0000000000000034 RDI: 0000000000000000
-[    6.256551] RBP: ff7fa5c740bcbcb0 R08: ff38ff5c02ceb8b0 R09: ff38ff5c002a4500
-[    6.256551] R10: 0000000000000003 R11: 0000000000000003 R12: ff38ff5c159f1028
-[    6.256551] R13: 0000000000000000 R14: 0000000000000000 R15: ff38ff5c159ed8f4
-[    6.256551] FS:  0000000000000000(0000) GS:ff38ff6b0d200000(0000) knlGS:0000000000000000
-[    6.256551] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    6.256551] CR2: 00000000000001fc CR3: 000000007403c001 CR4: 0000000000771ef0
-[    6.256551] PKRU: 55555554
-[    6.256551] note: kworker/32:0[211] exited with irqs disabled
-
-
+diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+index 44b13696cf82..81853eb2993a 100644
+--- a/drivers/media/platform/qcom/venus/venc.c
++++ b/drivers/media/platform/qcom/venus/venc.c
+@@ -409,13 +409,13 @@ static int venc_s_parm(struct file *file, void *fh, struct v4l2_streamparm *a)
+ 	out->capability = V4L2_CAP_TIMEPERFRAME;
+ 
+ 	us_per_frame = timeperframe->numerator * (u64)USEC_PER_SEC;
+-	do_div(us_per_frame, timeperframe->denominator);
++	div64_u64(us_per_frame, timeperframe->denominator);
+ 
+ 	if (!us_per_frame)
+ 		return -EINVAL;
+ 
+ 	fps = (u64)USEC_PER_SEC;
+-	do_div(fps, us_per_frame);
++	div64_u64(fps, us_per_frame);
+ 
+ 	inst->timeperframe = *timeperframe;
+ 	inst->fps = fps;
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
