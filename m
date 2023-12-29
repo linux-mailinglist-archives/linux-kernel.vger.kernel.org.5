@@ -1,114 +1,339 @@
-Return-Path: <linux-kernel+bounces-13165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6633820096
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:48:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E88EB820098
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:50:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71F222847C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:48:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17BDE1C22DFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A10212B6C;
-	Fri, 29 Dec 2023 16:48:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b="F1LpKjRR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A8B12B61;
+	Fri, 29 Dec 2023 16:50:46 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eggs.gnu.org (eggs.gnu.org [209.51.188.92])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85BA8125D8;
-	Fri, 29 Dec 2023 16:48:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnu.org
-Received: from fencepost.gnu.org ([2001:470:142:3::e])
-	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.90_1)
-	(envelope-from <othacehe@gnu.org>)
-	id 1rJG25-0007qL-Bq; Fri, 29 Dec 2023 11:48:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
-	s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
-	From; bh=38VNaP7pfXM1GvqJGD2jWMf0tAg+ZbVq33Sknm8YBK4=; b=F1LpKjRRlV4aJDyJwf5s
-	emr6NKrn13fWNmqGLjgPcyXXlVgH2GGhcJZs4XE/z3gQ28la1zmMOtGjNwAfLPpZF+Umij4bVDQfo
-	xmK2BWDW2O+7299NW1wUs26WHr7Kx3/7sLVhf+tl1u7VJcIO4SUIFdssR0zkDGV+cIyipp+uAmhDS
-	hBC9wFLDN2CYG71YD3y+7YuQusBQwFWHpQR3UklGaaHwjwhJJmhMFYT9EeXmIIbfp+0EyEIZGCZnI
-	Fqr2h9clQUEhvKL264unK0tigYix/ytGRlBOlimm+ppF41lV61svejDheBTC97az8Zo52L0LH1cqh
-	tek+S2I+pdZkhQ==;
-From: Mathieu Othacehe <othacehe@gnu.org>
-To: Stefan Wahren <wahrenst@gmx.net>
-Cc: Rob Herring <robh+dt@kernel.org>,  Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
-  Shawn Guo <shawnguo@kernel.org>,  Sascha Hauer <s.hauer@pengutronix.de>,
-  Pengutronix Kernel Team <kernel@pengutronix.de>,  Fabio Estevam
- <festevam@gmail.com>,  NXP Linux Team <linux-imx@nxp.com>,  Li Yang
- <leoyang.li@nxp.com>,  devicetree@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  linux-arm-kernel@lists.infradead.org,
-  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v4 2/2] arm64: dts: imx93-var-som: Add Variscite
- VAR-SOM-MX93
-In-Reply-To: <4e3a0328-0ae7-40fa-b37d-16b661e28a1e@gmx.net> (Stefan Wahren's
-	message of "Fri, 29 Dec 2023 15:08:02 +0100")
-References: <20231227170919.8771-1-othacehe@gnu.org>
-	<20231227170919.8771-3-othacehe@gnu.org>
-	<d378ad67-2a75-4a14-a131-7eb91de9ad3d@gmx.net>
-	<87plypqi2d.fsf@gnu.org>
-	<4e3a0328-0ae7-40fa-b37d-16b661e28a1e@gmx.net>
-Date: Fri, 29 Dec 2023 17:48:21 +0100
-Message-ID: <87zfxtosyy.fsf@gnu.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A423A12B60;
+	Fri, 29 Dec 2023 16:50:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CCDFC433C7;
+	Fri, 29 Dec 2023 16:50:44 +0000 (UTC)
+Date: Fri, 29 Dec 2023 11:51:34 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Subject: [PATCH] ftrace: Fix modification of direct_function hash while in
+ use
+Message-ID: <20231229115134.08dd5174@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Hey,
+Masami Hiramatsu reported a memory leak in register_ftrace_direct() where
+if the number of new entries are added is large enough to cause two
+allocations in the loop:
 
-> I also saw in the other Symphony DTS a LED for heartbeat. Is it usable, too?
+        for (i = 0; i < size; i++) {
+                hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+                        new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
+                        if (!new)
+                                goto out_remove;
+                        entry->direct = addr;
+                }
+        }
 
-Yes, I will add it to in v5.
+Where ftrace_add_rec_direct() has:
 
-> According to the datasheet the SOM expose 7 UARTs, but only the debug
-> UART is enable. What is the reason for this?
+        if (ftrace_hash_empty(direct_functions) ||
+            direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
+                struct ftrace_hash *new_hash;
+                int size = ftrace_hash_empty(direct_functions) ? 0 :
+                        direct_functions->count + 1;
 
-So those 7 UARTs are:
+                if (size < 32)
+                        size = 32;
 
-UART1: console
-UART2: used by the microphone
-UART3: used by the resistive touch
-UART4: used by the ethernet/resistive touch
-UART5: on J18.4,6,8,10 (used by BT)
-UART6: on J18.7 and J18.9 (available)
-UART7: on J18.3 and J18.5 (used by the M33 firmware)
+                new_hash = dup_hash(direct_functions, size);
+                if (!new_hash)
+                        return NULL;
 
-I will enable UART6, and add a mention about UART7, something like:
+                *free_hash = direct_functions;
+                direct_functions = new_hash;
+        }
 
-/* J18.7, J18.9 */
-&lpuart6 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_uart6>;
-	status = "okay";
-};
+The "*free_hash = direct_functions;" can happen twice, losing the previous
+allocation of direct_functions.
 
-/* J18.3, J18.5 - used by M33 firmware */
-&lpuart7 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_uart7>;
-	status = "disabled";
-};
+But this also exposed a more serious bug.
 
-> Btw the commit log mentions a Wifi (via SDIO?) and audio interface. This
-> is currently not supported by Linux?
+The modification of direct_functions above is not safe. As
+direct_functions can be referenced at any time to find what direct caller
+it should call, the time between:
 
-I am not sure about that, and I would prefer to study that a bit later
-on if that's OK :) I can remove it from the commit log as this is
-misleading as not already supported / tested.
+                new_hash = dup_hash(direct_functions, size);
+ and
+                direct_functions = new_hash;
 
-Thanks,
+can have a race with another CPU (or even this one if it gets interrupted),
+and the entries being moved to the new hash are not referenced.
 
-Mathieu
+That's because the "dup_hash()" is really misnamed and is really a
+"move_hash()". It moves the entries from the old hash to the new one.
+
+Now even if that was changed, this code is not proper as direct_functions
+should not be updated until the end. That is the best way to handle
+function reference changes, and is the way other parts of ftrace handles
+this.
+
+The following is done:
+
+ 1. Change add_hash_entry() to return the entry it created and inserted
+    into the hash, and not just return success or not.
+
+ 2. Replace ftrace_add_rec_direct() with add_hash_entry(), and remove
+    the former.
+
+ 3. Allocate a "new_hash" at the start that is made for holding both the
+    new hash entries as well as the existing entries in direct_functions.
+
+ 4. Copy (not move) the direct_function entries over to the new_hash.
+
+ 5. Copy the entries of the added hash to the new_hash.
+
+ 6. If everything succeeds, then use rcu_pointer_assign() to update the
+    direct_functions with the new_hash.
+
+This simplifies the code and fixes both the memory leak as well as the
+race condition mentioned above.
+
+Link: https://lore.kernel.org/all/170368070504.42064.8960569647118388081.stgit@devnote2/
+
+Cc: stable@vger.kernel.org
+Fixes: 763e34e74bb7d ("ftrace: Add register_ftrace_direct()")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/ftrace.c | 100 ++++++++++++++++++++----------------------
+ 1 file changed, 47 insertions(+), 53 deletions(-)
+
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 8de8bec5f366..b01ae7d36021 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -1183,18 +1183,19 @@ static void __add_hash_entry(struct ftrace_hash *hash,
+ 	hash->count++;
+ }
+ 
+-static int add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
++static struct ftrace_func_entry *
++add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
+ {
+ 	struct ftrace_func_entry *entry;
+ 
+ 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+ 	if (!entry)
+-		return -ENOMEM;
++		return NULL;
+ 
+ 	entry->ip = ip;
+ 	__add_hash_entry(hash, entry);
+ 
+-	return 0;
++	return entry;
+ }
+ 
+ static void
+@@ -1349,7 +1350,6 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
+ 	struct ftrace_func_entry *entry;
+ 	struct ftrace_hash *new_hash;
+ 	int size;
+-	int ret;
+ 	int i;
+ 
+ 	new_hash = alloc_ftrace_hash(size_bits);
+@@ -1366,8 +1366,7 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
+ 	size = 1 << hash->size_bits;
+ 	for (i = 0; i < size; i++) {
+ 		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+-			ret = add_hash_entry(new_hash, entry->ip);
+-			if (ret < 0)
++			if (add_hash_entry(new_hash, entry->ip) == NULL)
+ 				goto free_hash;
+ 		}
+ 	}
+@@ -2536,7 +2535,7 @@ ftrace_find_unique_ops(struct dyn_ftrace *rec)
+ 
+ #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ /* Protected by rcu_tasks for reading, and direct_mutex for writing */
+-static struct ftrace_hash *direct_functions = EMPTY_HASH;
++static struct ftrace_hash __rcu *direct_functions = EMPTY_HASH;
+ static DEFINE_MUTEX(direct_mutex);
+ int ftrace_direct_func_count;
+ 
+@@ -2555,39 +2554,6 @@ unsigned long ftrace_find_rec_direct(unsigned long ip)
+ 	return entry->direct;
+ }
+ 
+-static struct ftrace_func_entry*
+-ftrace_add_rec_direct(unsigned long ip, unsigned long addr,
+-		      struct ftrace_hash **free_hash)
+-{
+-	struct ftrace_func_entry *entry;
+-
+-	if (ftrace_hash_empty(direct_functions) ||
+-	    direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
+-		struct ftrace_hash *new_hash;
+-		int size = ftrace_hash_empty(direct_functions) ? 0 :
+-			direct_functions->count + 1;
+-
+-		if (size < 32)
+-			size = 32;
+-
+-		new_hash = dup_hash(direct_functions, size);
+-		if (!new_hash)
+-			return NULL;
+-
+-		*free_hash = direct_functions;
+-		direct_functions = new_hash;
+-	}
+-
+-	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+-	if (!entry)
+-		return NULL;
+-
+-	entry->ip = ip;
+-	entry->direct = addr;
+-	__add_hash_entry(direct_functions, entry);
+-	return entry;
+-}
+-
+ static void call_direct_funcs(unsigned long ip, unsigned long pip,
+ 			      struct ftrace_ops *ops, struct ftrace_regs *fregs)
+ {
+@@ -4223,8 +4189,8 @@ enter_record(struct ftrace_hash *hash, struct dyn_ftrace *rec, int clear_filter)
+ 		/* Do nothing if it exists */
+ 		if (entry)
+ 			return 0;
+-
+-		ret = add_hash_entry(hash, rec->ip);
++		if (add_hash_entry(hash, rec->ip) == NULL)
++			ret = -ENOMEM;
+ 	}
+ 	return ret;
+ }
+@@ -5266,7 +5232,8 @@ __ftrace_match_addr(struct ftrace_hash *hash, unsigned long ip, int remove)
+ 		return 0;
+ 	}
+ 
+-	return add_hash_entry(hash, ip);
++	entry = add_hash_entry(hash, ip);
++	return entry ? 0 :  -ENOMEM;
+ }
+ 
+ static int
+@@ -5410,7 +5377,7 @@ static void remove_direct_functions_hash(struct ftrace_hash *hash, unsigned long
+  */
+ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+ {
+-	struct ftrace_hash *hash, *free_hash = NULL;
++	struct ftrace_hash *hash, *new_hash = NULL, *free_hash = NULL;
+ 	struct ftrace_func_entry *entry, *new;
+ 	int err = -EBUSY, size, i;
+ 
+@@ -5436,17 +5403,44 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+ 		}
+ 	}
+ 
+-	/* ... and insert them to direct_functions hash. */
+ 	err = -ENOMEM;
++
++	/* Make a copy hash to place the new and the old entries in */
++	size = hash->count + direct_functions->count;
++	if (size > 32)
++		size = 32;
++	new_hash = alloc_ftrace_hash(fls(size));
++	if (!new_hash)
++		goto out_unlock;
++
++	/* Now copy over the existing direct entries */
++	size = 1 << direct_functions->size_bits;
++	for (i = 0; i < size; i++) {
++		hlist_for_each_entry(entry, &direct_functions->buckets[i], hlist) {
++			new = add_hash_entry(new_hash, entry->ip);
++			if (!new)
++				goto out_unlock;
++			new->direct = entry->direct;
++		}
++	}
++
++	/* ... and add the new entries */
++	size = 1 << hash->size_bits;
+ 	for (i = 0; i < size; i++) {
+ 		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+-			new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
++			new = add_hash_entry(new_hash, entry->ip);
+ 			if (!new)
+-				goto out_remove;
++				goto out_unlock;
++			/* Update both the copy and the hash entry */
++			new->direct = addr;
+ 			entry->direct = addr;
+ 		}
+ 	}
+ 
++	free_hash = direct_functions;
++	rcu_assign_pointer(direct_functions, new_hash);
++	new_hash = NULL;
++
+ 	ops->func = call_direct_funcs;
+ 	ops->flags = MULTI_FLAGS;
+ 	ops->trampoline = FTRACE_REGS_ADDR;
+@@ -5454,17 +5448,17 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+ 
+ 	err = register_ftrace_function_nolock(ops);
+ 
+- out_remove:
+-	if (err)
+-		remove_direct_functions_hash(hash, addr);
+-
+  out_unlock:
+ 	mutex_unlock(&direct_mutex);
+ 
+-	if (free_hash) {
++	if (free_hash && free_hash != EMPTY_HASH) {
+ 		synchronize_rcu_tasks();
+ 		free_ftrace_hash(free_hash);
+ 	}
++
++	if (new_hash)
++		free_ftrace_hash(new_hash);
++
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(register_ftrace_direct);
+@@ -6309,7 +6303,7 @@ ftrace_graph_set_hash(struct ftrace_hash *hash, char *buffer)
+ 
+ 				if (entry)
+ 					continue;
+-				if (add_hash_entry(hash, rec->ip) < 0)
++				if (add_hash_entry(hash, rec->ip) == NULL)
+ 					goto out;
+ 			} else {
+ 				if (entry) {
+-- 
+2.42.0
+
 
