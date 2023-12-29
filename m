@@ -1,133 +1,114 @@
-Return-Path: <linux-kernel+bounces-13101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA2CF81FFB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 14:37:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 350A281FFB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 14:42:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B39BB1C217A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 13:37:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9BC9B22352
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 13:42:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 913ED11713;
-	Fri, 29 Dec 2023 13:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44B3D11715;
+	Fri, 29 Dec 2023 13:42:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PJj+1esU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7B0D11C89;
-	Fri, 29 Dec 2023 13:37:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6dbb09061c0so702450a34.0;
-        Fri, 29 Dec 2023 05:37:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703857067; x=1704461867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=drT8s+9Lo4+5xk7ZxtQR2sSrDLvVgTHuFaCMfu3pdag=;
-        b=jjjdrYmlt83Gxk3/lJbyEgIGy5auA5McVadTlVL3n4SJQqq95Eo5/TzyxkZB0TI2lE
-         Z3SzGkvNGiG6cSMiH9xFsD8QcuqP/5MiP8rJt+ftWRxPaCtElntDIPRM796ODSz48l0j
-         y+g++xfj2M+QTmQuQ7aWdxXm3FuZ9PMKdCK+5O35x60JNnGWk2Zhbp4nMpUaeZzg4soQ
-         OjxHh8Yb7vAIOw3UyMFi/beCZRmJN6Z04ElIT7GLxLDlw4bDE4sMiccN9iT4tpe+G+h/
-         m5xHJ9NQft4R04hvEB534sfzV29BaVnTarQ/qp3CblNRuC+16r5L3URwbef6s34/0JbU
-         S/DA==
-X-Gm-Message-State: AOJu0YwS3u/Lk0dKXGLTWFFPtorC8bqiHBxgtErDtHxOg87Fh91Mlqxj
-	wHHpv5xXNGHLk6KcK1EqnpjEebzl5iiCL9SIr24=
-X-Google-Smtp-Source: AGHT+IGEah4smnh3673Ggbi7LnWBwdysNZv3gQ/XZQ6XmhmEhR2aGnlwdVeSk4oAdq7B71RVy2rkTd8yfY0wZSTVa1s=
-X-Received: by 2002:a05:6820:2801:b0:594:cb36:b255 with SMTP id
- dm1-20020a056820280100b00594cb36b255mr7180554oob.1.1703857067610; Fri, 29 Dec
- 2023 05:37:47 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1CD11702;
+	Fri, 29 Dec 2023 13:42:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19E2BC433C7;
+	Fri, 29 Dec 2023 13:42:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703857352;
+	bh=UCDeRZ0409HKlYsThc9AhumuUp/zCGyhIYwYKwqHDqI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=PJj+1esUzdVCZjnqPkNvukhFpfPRZWhKFHdglnYazV/jwbcHsZ5bD1GxlWtjGUCn8
+	 5O05da+ev+HA4U8Y1kcu5uQ53muZYNFhgYAhKHhdyqASjRjHMUfP4jSTIWf+yvxd47
+	 efMrJ/AnnchsK6HDcS8cG4LEL8oLI8XyxqihjLp6iLi5FSWg3Y/wYFAaoNzliBoJ6N
+	 6A5Z/w9dDnjEIaQ8o8PC0HNCFyaaVVRqoqKn66H4nhnPbeiMm4lAagjzEFtmRgiQ68
+	 gpSZIdRMUcLsGyvBdoMbRkSKvxEni3RDV2f5jw7uQcmpFRtWiRk9ixY22SKYf8l/Uy
+	 7FgzXQlDQLeYA==
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6dc07ce2a30so1174529a34.0;
+        Fri, 29 Dec 2023 05:42:32 -0800 (PST)
+X-Gm-Message-State: AOJu0YxbIVNigI8jpNKy/1/ESailsJRScsm2m0b1wYdAlUC10l8yeLfe
+	Jy33iWSLublMSqA4YiSmcOUVqt3KatPkLAMUBSs=
+X-Google-Smtp-Source: AGHT+IEfa/8c+zCJ2ieJAUQOX1Bw4b6TheF/gueMgv5HSqCz90kd/M4c0z1uRxzM5anOE68ebgU6UY8qDkEgsnJnQQE=
+X-Received: by 2002:a05:6871:2306:b0:203:7035:8a83 with SMTP id
+ sf6-20020a056871230600b0020370358a83mr10441046oab.85.1703857351471; Fri, 29
+ Dec 2023 05:42:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CGME20231227084252epcas2p3b063f7852f81f82cd0a31afd7f404db4@epcas2p3.samsung.com>
- <5754861.DvuYhMxLoT@kreacher> <6019796.lOV4Wx5bFT@kreacher>
- <4874693.GXAFRqVoOG@kreacher> <ZY3auVvVzxwTmAX8@linux.intel.com>
-In-Reply-To: <ZY3auVvVzxwTmAX8@linux.intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 29 Dec 2023 14:37:36 +0100
-Message-ID: <CAJZ5v0gns5zeLEk39NGwjLy40wzHAHDWYBYapWwQWcJ9jrF-3Q@mail.gmail.com>
-Subject: Re: [PATCH v1 2/3] async: Introduce async_schedule_dev_nocall()
-To: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Greg KH <gregkh@linuxfoundation.org>, 
-	linux-pm@vger.kernel.org, Youngmin Nam <youngmin.nam@samsung.com>, rafael@kernel.org, 
-	linux-kernel@vger.kernel.org, d7271.choe@samsung.com, 
-	janghyuck.kim@samsung.com, hyesoo.yu@samsung.com, 
-	Alan Stern <stern@rowland.harvard.edu>, Ulf Hansson <ulf.hansson@linaro.org>
+References: <20231122034753.1446513-1-senozhatsky@chromium.org>
+ <20231128053443.GA6525@google.com> <CAK7LNAT_Z4TeNzngMskEoNdSTWUH5gGzYm5MfO6C_H8rFcF6ng@mail.gmail.com>
+ <20231129041307.GB6525@google.com> <CAK7LNAS8q9eDerwVRbPbqd+AKjNVkEKLOW+NAKaD4duP-gViqw@mail.gmail.com>
+ <20231222025701.GA3568309@google.com>
+In-Reply-To: <20231222025701.GA3568309@google.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 29 Dec 2023 22:41:54 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARa3WrRp5vmX5M3tTkS-jdno-vFe8WLPXjF8+hHxVUmFA@mail.gmail.com>
+Message-ID: <CAK7LNARa3WrRp5vmX5M3tTkS-jdno-vFe8WLPXjF8+hHxVUmFA@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: WERROR unmet symbol dependency
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Patrick Georgi <pgeorgi@google.com>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Stefan Reinauer <reinauer@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 29, 2023 at 8:02=E2=80=AFAM Stanislaw Gruszka
-<stanislaw.gruszka@linux.intel.com> wrote:
+On Fri, Dec 22, 2023 at 11:57=E2=80=AFAM Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
 >
-> On Wed, Dec 27, 2023 at 09:38:23PM +0100, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> On (23/12/01 00:42), Masahiro Yamada wrote:
+> > On Wed, Nov 29, 2023 at 1:13=E2=80=AFPM Sergey Senozhatsky
+> > <senozhatsky@chromium.org> wrote:
+> > >
+> > > On (23/11/28 23:19), Masahiro Yamada wrote:
+> > >
+> > > [..]
+> > >
+> > > > KCONFIG_WERROR is meant to turn all warnings
+> > > > to errors.
+> > > > I do not see getenv("KCONFIG_WERROR")
+> > > > sprinkled everywhere in Kconfig.
+> > > > One more thing, you cannot directly exit(1)
+> > > > from sym_calc_value().
+> > >
+> > > We do exit(1) for KCONFIG_WARN_UNKNOWN_SYMBOLS in conf_read().
+> > >
+> > > I can introduce two new helpers that will tell if confdata.c and symb=
+ol.c
+> > > triggered any warnings and if KCONFIG_WERROR is set. And then differe=
+nt
+> > > code paths can call them and handle exit gracefully, depending on the
+> > > context (ncurses, menu, etc.).
+> > >
+> > > Something like this
 > >
-> > In preparation for subsequent changes, introduce a specialized variant
-> > of async_schedule_dev() that will not invoke the argument function
-> > synchronously when it cannot be scheduled for asynchronous execution.
 > >
-> > The new function, async_schedule_dev_nocall(), will be used for fixing
-> > possible deadlocks in the system-wide power management core code.
+> > I do not want to patch warnings one by one.
 > >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >  drivers/base/power/main.c |   12 ++++++++----
-> >  include/linux/async.h     |    2 ++
-> >  kernel/async.c            |   29 +++++++++++++++++++++++++++++
-> >  3 files changed, 39 insertions(+), 4 deletions(-)
 > >
-> > Index: linux-pm/kernel/async.c
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > --- linux-pm.orig/kernel/async.c
-> > +++ linux-pm/kernel/async.c
-> > @@ -244,6 +244,35 @@ async_cookie_t async_schedule_node(async
-> >  EXPORT_SYMBOL_GPL(async_schedule_node);
-> >
-> >  /**
-> > + * async_schedule_dev_nocall - A simplified variant of async_schedule_=
-dev()
-> > + * @func: function to execute asynchronously
-> > + * @dev: device argument to be passed to function
-> > + *
-> > + * @dev is used as both the argument for the function and to provide N=
-UMA
-> > + * context for where to run the function.
-> > + *
-> > + * If the asynchronous execution of @func is scheduled successfully, r=
-eturn
-> > + * true. Otherwise, do nothing and return false, unlike async_schedule=
-_dev()
-> > + * that will run the function synchronously then.
-> > + */
-> > +bool async_schedule_dev_nocall(async_func_t func, struct device *dev)
-> > +{
-> > +     struct async_entry *entry;
-> > +
-> > +     entry =3D kzalloc(sizeof(struct async_entry), GFP_KERNEL);
+> > I will take some time to think about it.
 >
-> Is GFP_KERNEL intended here ?
+> Gentle ping on this.
+>
+> We are not concerned with every possible warning at the moment, however,
+> we do want the critical ones from CI and (semi)automated continuous uprev
+> PoV to be covered by WERROR. We do experience real life problems with
+> "missing direct dependency" not being a terminal condition under WERROR.
 
-Yes, it is.
 
-PM will be the only user of this, at least for now, and it all runs in
-process context.
+Applied to linux-kbuild.
+Thanks.
 
-> I think it's not safe since will
-> be called from device_resume_noirq() .
-
-device_resume_noirq() runs in process context too.
-
-The name is somewhat confusing (sorry about that) and it means that
-hardirq handlers (for the majority of IRQs) don't run in that resume
-phase, but interrupts are enabled locally on all CPUs (this is
-required for wakeup handling, among other things).
+--=20
+Best Regards
+Masahiro Yamada
 
