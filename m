@@ -1,123 +1,104 @@
-Return-Path: <linux-kernel+bounces-13025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88A0981FE94
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:24:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F282E81FE9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:25:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A8F7B20FDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:24:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8AA41F22E15
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F2310A1D;
-	Fri, 29 Dec 2023 09:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401B6111A8;
+	Fri, 29 Dec 2023 09:25:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cZ932hBb"
+	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="m68GZYKJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6938110A00;
-	Fri, 29 Dec 2023 09:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703841877; x=1735377877;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6eyA6I/IA06zG3oVXU054nozNu51dK0BuoClY9Ax83c=;
-  b=cZ932hBb1BOhdSUp3sXeQOHKmSERypV755ey1Qv2fPDoo3aKaMhRljYd
-   rHqOKIYXkVKoIZhe4aJbAkdlOcuzHrYnsAppNJYe99moK+e9E4QkCLSGh
-   SjccqHHnikekaMVMFXx468kSUrr7by9+3CaqgR4qgOCRAIigMnNsZ851c
-   H2j03GX9nq4wWyfi47z0om6jsJ8w5jJ0l2suSe2gz4bLzOoftTb9s/sXB
-   SABAyPiN2avw2XyfBDvrQRZIC4Qdl7tDUdTdFTbm25BcjvbfRJ7xnBjP1
-   nCFg004nLbvdWLbKccT4zWEJPlhsf3LR+2uK6qxhiv42UJ5WT4od0mGBj
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="399414616"
-X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="399414616"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 01:24:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="13238090"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.26.117]) ([10.93.26.117])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 01:24:34 -0800
-Message-ID: <b1ac7e4c-e59f-43c8-a914-415a511beccc@linux.intel.com>
-Date: Fri, 29 Dec 2023 17:24:31 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 520C510A0A;
+	Fri, 29 Dec 2023 09:25:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=subdimension.ro
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
+Received: from localhost.localdomain (unknown [188.24.94.216])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.subdimension.ro (Postfix) with ESMTPSA id 0286628B586;
+	Fri, 29 Dec 2023 09:25:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+	s=skycaves; t=1703841907;
+	bh=tlhYys3P3yLGPXxjY35bhZAwm+PVbm6Qq70uWBAQSm8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=m68GZYKJYu9MVhSNNAhugzNP9Hjh9U5xoPyi8ZIdCy19klvpOuB3MGfceyHvae5HW
+	 YoQcUZMH9ESCm93nkGIh9jPTzbonbnlw8HtYFYLBrrSncnm8T/FsYacqwY8hyu99vJ
+	 gXjOwsgFOChM9ADJp8t5RVqynNHf45lVMJolEtSg=
+From: Petre Rodan <petre.rodan@subdimension.ro>
+To: linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Petre Rodan <petre.rodan@subdimension.ro>,
+	Andreas Klinger <ak@it-klinger.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Angel Iglesias <ang.iglesiasg@gmail.com>,
+	Matti Vaittinen <mazziesaccount@gmail.com>
+Subject: [PATCH v3 04/10] iio: pressure: mprls0025pa fix off-by-one enum
+Date: Fri, 29 Dec 2023 11:24:32 +0200
+Message-ID: <20231229092445.30180-5-petre.rodan@subdimension.ro>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231229092445.30180-1-petre.rodan@subdimension.ro>
+References: <20231229092445.30180-1-petre.rodan@subdimension.ro>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v9 5/5] iommu/vt-d: don't loop for timeout ATS
- Invalidation request forever
-To: "Tian, Kevin" <kevin.tian@intel.com>,
- "bhelgaas@google.com" <bhelgaas@google.com>,
- "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "will@kernel.org" <will@kernel.org>,
- "robin.murphy@arm.com" <robin.murphy@arm.com>,
- "lukas@wunner.de" <lukas@wunner.de>
-Cc: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231228001646.587653-1-haifeng.zhao@linux.intel.com>
- <20231228001646.587653-6-haifeng.zhao@linux.intel.com>
- <BN9PR11MB527651C1A108721CFF057BCF8C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <bb3a8a4c-6dad-4347-9076-0f28d1e23de3@linux.intel.com>
- <BN9PR11MB5276E70591021395F1ED90D28C9DA@BN9PR11MB5276.namprd11.prod.outlook.com>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276E70591021395F1ED90D28C9DA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Fix off-by-one error in transfer-function property.
+The honeywell,transfer-function property takes values between 1-3 so
+make sure the proper enum gets used.
 
-On 12/29/2023 4:17 PM, Tian, Kevin wrote:
->> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
->> Sent: Thursday, December 28, 2023 9:10 PM
->>
->> On 12/28/2023 4:38 PM, Tian, Kevin wrote:
->>>> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
->>>> Sent: Thursday, December 28, 2023 8:17 AM
->>>>
->>>>
->>>> -	if (rc == -EAGAIN)
->>>> +	if (rc == -EAGAIN && type !=QI_DIOTLB_TYPE && type !=
->>>> QI_DEIOTLB_TYPE)
->>>>    		goto restart;
->>>>
->>> this change is moot.
->>>
->>> -EAGAIN is set only when hardware detects a ATS invalidation completion
->>> timeout in qi_check_fault(). so above just essentially kills the restart logic.
->> This change is intended to break the restar login when device-TLB
->>
->> invalidation timeout happens, we don't know how long the ITE took
->>
->> if the device is just no reponse.
-> if in the end the agreement is to remove the restart logic, then do it.
->
-> it's not good to introduce a change which essentially kills the restart
-> logic but still keeps the related code.
+Fixes: <713337d9143ed> ("iio: pressure: Honeywell mprls0025pa pressure sensor")
+Co-developed-by: Andreas Klinger <ak@it-klinger.de>
+Signed-off-by: Andreas Klinger <ak@it-klinger.de>
+Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+---
+v2 -> v3 no changes
 
-Here, the device-TLB invalidation, depends on devcies response,
+ drivers/iio/pressure/mprls0025pa.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-no one could make sure the what the third party adapters will act.
+diff --git a/drivers/iio/pressure/mprls0025pa.c b/drivers/iio/pressure/mprls0025pa.c
+index 30fb2de36821..e3f0de020a40 100644
+--- a/drivers/iio/pressure/mprls0025pa.c
++++ b/drivers/iio/pressure/mprls0025pa.c
+@@ -323,6 +323,7 @@ static int mpr_probe(struct i2c_client *client)
+ 	struct iio_dev *indio_dev;
+ 	struct device *dev = &client->dev;
+ 	s64 scale, offset;
++	u32 func;
 
-but for those invalidation issued to iommu itself, should be more
-
-likely to survive ?
-
-Anyway, would like to see more comments.
-
-
-Thanks,
-
-Ethan
+ 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_READ_BYTE))
+ 		return dev_err_probe(dev, -EOPNOTSUPP,
+@@ -362,10 +363,11 @@ static int mpr_probe(struct i2c_client *client)
+ 			return dev_err_probe(dev, ret,
+ 				"honeywell,pmax-pascal could not be read\n");
+ 		ret = device_property_read_u32(dev,
+-				"honeywell,transfer-function", &data->function);
++				"honeywell,transfer-function", &func);
+ 		if (ret)
+ 			return dev_err_probe(dev, ret,
+ 				"honeywell,transfer-function could not be read\n");
++		data->function = func - 1;
+ 		if (data->function > MPR_FUNCTION_C)
+ 			return dev_err_probe(dev, -EINVAL,
+ 				"honeywell,transfer-function %d invalid\n",
+--
+2.41.0
 
 
