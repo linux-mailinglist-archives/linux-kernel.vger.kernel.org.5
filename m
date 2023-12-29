@@ -1,101 +1,103 @@
-Return-Path: <linux-kernel+bounces-13159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FA3F82007F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:21:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC485820087
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:33:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAD71282834
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:21:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8CDD284850
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:33:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DFB8125D8;
-	Fri, 29 Dec 2023 16:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE87812B6A;
+	Fri, 29 Dec 2023 16:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kG+bQGKy"
+	dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b="UeGlzbGQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mr85p00im-ztdg06021201.me.com (mr85p00im-ztdg06021201.me.com [17.58.23.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1C6125BD;
-	Fri, 29 Dec 2023 16:21:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE461C433C7;
-	Fri, 29 Dec 2023 16:21:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703866886;
-	bh=ARSKX5W0g0Zwila4O/VGjKHV4IBWlDQhdUmnu1kpDFU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=kG+bQGKy7qgSnrhI+i8k1pU2PmuDAmSvcyZfXu9BpqeztJUNlnu0LDbAVnjh5t48Y
-	 j1/TD+e6B1L8niAUkngRnpdSlVlf8b6Evme+JNjZ4K2v1uzmMdZc3z4Wjp9AeC3iIj
-	 l9GJ6IzeZE6LkVKy2tiNPjWhdS1+lRqww1LQk1izBw57+uvGhD2yAmhHM7QzUCIjB7
-	 +KvjrIO9a4M0eqFTknVEEmsWUiGylsxaHxDWofsalLhyW82I2FMZYT1Pj8Zhdha9VY
-	 xSDXCTCu6XKhRdYPBEWbxp83Ql/M1zypcKTR/NhUKgq2g+Z2TSnmPaJdIKCyDqpbJP
-	 csfer7KUGYvbQ==
-Received: (nullmailer pid 110405 invoked by uid 1000);
-	Fri, 29 Dec 2023 16:21:20 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B563612B60
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 16:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danm.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danm.net; s=sig1;
+	t=1703867622; bh=mdHoqF4DBozjc5AZdCsy35qAGohL7+5V9GIyKGF0W98=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=UeGlzbGQ9DI+Z0AI49toYh8BED1yiu6kUd6XzJPfiynDICAgvJY1c65EJ9GhETVxx
+	 VXftzlAS/g3gz038LMlo/7PQhIiURZ0P07kLKCSIX/iWuxtJqNNuLoDFKd5KUr3R3c
+	 wrPQy7V/8K+3G1OcoRWmPoDNLHcOn9rr3XKWcLdYH1JNJiL71d3o2K21h5AIc2ZgWk
+	 DYr7oLAs4m9Jkqzch6NkEEibCD7tag2xrdBTw4zRHTovorWYYlHoDCevD1UOdvFUD9
+	 6Q7sadSRKZm6qJLswMQ2pXmci78/w/D/3Cs9yvYftj8qX9s7Pc2VnfWJpc6OugRlak
+	 afms62LOfOYSg==
+Received: from hitch.danm.net (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
+	by mr85p00im-ztdg06021201.me.com (Postfix) with ESMTPSA id 146253201A3;
+	Fri, 29 Dec 2023 16:33:40 +0000 (UTC)
+From: Dan Moulding <dan@danm.net>
+To: alexhenrie24@gmail.com
+Cc: bagasdotme@gmail.com,
+	dan@danm.net,
+	davem@davemloft.net,
+	dsahern@kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	regressions@lists.linux.dev
+Subject: Re: [REGRESSION] net/ipv6/addrconf: Temporary addresses with short lifetimes generating when they shouldn't, causing applications to fail
+Date: Fri, 29 Dec 2023 09:33:39 -0700
+Message-ID: <20231229163339.2716-1-dan@danm.net>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <CAMMLpeTCZDakqdkxm+jvQHxbRXhCYd4_PK+VVqMAmZHjSPuPRw@mail.gmail.com>
+References: <CAMMLpeTCZDakqdkxm+jvQHxbRXhCYd4_PK+VVqMAmZHjSPuPRw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, David Airlie <airlied@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, devicetree@vger.kernel.org, Maxime Ripard <mripard@kernel.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>, Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, linux-amarula@amarulasolutions.com, Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
-In-Reply-To: <20231229135154.675946-6-dario.binacchi@amarulasolutions.com>
-References: <20231229135154.675946-1-dario.binacchi@amarulasolutions.com>
- <20231229135154.675946-6-dario.binacchi@amarulasolutions.com>
-Message-Id: <170386688086.110201.17529837792970249585.robh@kernel.org>
-Subject: Re: [PATCH 5/8] dt-bindings: nt35510: add compatible for FRIDA
- FRD400B25025-A-CTK
-Date: Fri, 29 Dec 2023 09:21:20 -0700
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: oFRRsbiheUkH9f2_QvM7LSR0PZXkau7h
+X-Proofpoint-ORIG-GUID: oFRRsbiheUkH9f2_QvM7LSR0PZXkau7h
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-29_06,2023-12-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1030 mlxlogscore=696
+ spamscore=0 phishscore=0 adultscore=0 mlxscore=0 bulkscore=0
+ malwarescore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2308100000 definitions=main-2312290132
 
+I think a maintainer will probably need to make a call here and decide
+how to proceed.
 
-On Fri, 29 Dec 2023 14:51:20 +0100, Dario Binacchi wrote:
-> The patch adds the FRIDA FRD400B25025-A-CTK panel, which belongs to the
-> Novatek NT35510-based panel family.
-> 
-> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-> ---
-> 
->  .../display/panel/novatek,nt35510.yaml        | 20 +++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
-> 
+> TEMP_PREFERRED_LIFETIME is an administratively set variable: The user
+> can change it to whatever they want whenever they want, and the
+> operating system can adjust it automatically too.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Agreed. And the behavior it seems you really want is to prevent the
+user from administratively setting it to a value that is lower than
+REGEN_ADVANCE, so that it won't stop generating new temporary
+addresses altogether.
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml:21:7: [error] duplication of key "items" in mapping (key-duplicates)
+But preventing the user from configuring it to a value that is too low
+is different from generating new temporary addresses with preferred
+lifetimes that are greater than the currently configured value of
+TEMP_PREFERRED_LIFETIME. I still believe it would be better, and would
+be in conformance with the RFC, to simply not allow the user to
+configure a too-short TEMP_PREFERRED_LIFETIME instead of tinkering
+with the lifetimes of generated temporary addresses.
 
-dtschema/dtc warnings/errors:
-make[2]: *** Deleting file 'Documentation/devicetree/bindings/display/panel/novatek,nt35510.example.dts'
-Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml:21:7: found duplicate key "items" with value "[]" (original value: "[]")
-make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/display/panel/novatek,nt35510.example.dts] Error 1
-make[2]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml:21:7: found duplicate key "items" with value "[]" (original value: "[]")
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml: ignoring, error parsing file
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1424: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
+> It's fine to revert the commit for version 6.7 (after all, I think
+> everyone wants a break for the holidays). Hopefully by version 6.8 we
+> can agree on a way to support users who want to randomize their IPv6
+> address as frequently as the network allows.
 
-doc reference errors (make refcheckdocs):
+FWIW, I think the desired effect you are seeking makes sense and is
+the right thing to do. I'm just not convinced this is the correct way
+to do it. But I'm not a maintainer and also not an expert in IPv6, so
+I'm definitely not the right person to make that call.
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231229135154.675946-6-dario.binacchi@amarulasolutions.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+-- Dan
 
