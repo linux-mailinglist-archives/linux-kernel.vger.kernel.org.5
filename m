@@ -1,301 +1,397 @@
-Return-Path: <linux-kernel+bounces-13157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 256A782007B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:13:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 476B182007D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:18:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 918DE1F229C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:13:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91552B21CFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0CEF125CF;
-	Fri, 29 Dec 2023 16:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M39wBIJQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30A9F125D1;
+	Fri, 29 Dec 2023 16:17:57 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E354125C2;
-	Fri, 29 Dec 2023 16:12:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e5a9bcec9so8676604e87.3;
-        Fri, 29 Dec 2023 08:12:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703866374; x=1704471174; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uXclIxtXqPFsxy0XcvgnkjbTaVqZ7ItIisfYtSYDS1c=;
-        b=M39wBIJQL2qmL4bqPoo2uP/yqMbZuoqhXXeB2IhBKdEKNq5RtR8Mtm+99Y/8GHsGTd
-         8NK4DhGUYksv9ydbMAp33tz9IcrNLMVmMx1oH+O8v5E1Q2jkt+XBRMeloEdMTtsSZPWW
-         m00s+deJ15CJP5y8nOiM+mJXPG7bCBZNyaCRqQvm+t08bOxx/byuJBI3Vx5OeyEPdXrT
-         j3YvR/CNRCTjy7ypHNuNPHRWVICPWmLCtyIAO6LKTXY024qQvUr0vyCeXE1sckX4V05u
-         eD46iwf+rQIDHovcge6dyDtyJRs3j8T540a0rwTiUcu8qTPI/23f8y8KQrys2NEYh681
-         gGiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703866374; x=1704471174;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uXclIxtXqPFsxy0XcvgnkjbTaVqZ7ItIisfYtSYDS1c=;
-        b=mAzOsV5IQHDysDlmjJES1B/yRYUByQgBS5R2NXriUuw6WoRREEc98fqiLexup3C9Bt
-         NSPmcy1qg1lNtGUhBTzWZGap30OGuRlBfiu3PkMVBnA2AXvnxb/tbjsVWAY05yCjGbyo
-         A6IQjprBijhi5dEdCdyafcqcvD+02dLtaTQfpDk6YwwJS9GFaM8/Z63g20hvmQ9lbzQH
-         ra+wp23bzmBFiYY3cu2Pe+545OIHa0EjV+DDmcubXBhbpzX2JxwweQ17c/Vgz3Km2kCl
-         QkFlrwaW90l4CzdOIOrQb2tbM7ly1cEucDoGCbT5rFopAXoSv28KfYzpDG/2SUzdOkc+
-         kklQ==
-X-Gm-Message-State: AOJu0YwUW0nFG98plzc4/mFCqAZQjzK4VjG+LiKNmymxciMOvWYi+9uZ
-	YE82JrsCNNuF030L/B8elCU=
-X-Google-Smtp-Source: AGHT+IEoFACccC5y4WSZ4NEC++5o3kSgCsgwMu9rljl0dlfSrV72atbmVicDlHhumYF13mACQU7ZcA==
-X-Received: by 2002:a05:6512:3986:b0:50e:7f9d:18d8 with SMTP id j6-20020a056512398600b0050e7f9d18d8mr3277511lfu.85.1703866374196;
-        Fri, 29 Dec 2023 08:12:54 -0800 (PST)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id az15-20020a170907904f00b00a26aa734349sm7988188ejc.39.2023.12.29.08.12.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Dec 2023 08:12:53 -0800 (PST)
-Message-ID: <18c8c89a-9962-40f0-814f-81e2c420c957@gmail.com>
-Date: Fri, 29 Dec 2023 17:12:52 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3868125BD;
+	Fri, 29 Dec 2023 16:17:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC999C433C9;
+	Fri, 29 Dec 2023 16:17:55 +0000 (UTC)
+Date: Fri, 29 Dec 2023 11:18:46 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>, linux-trace-kernel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing: Fix possible memory leak in
+ ftrace_regsiter_direct()
+Message-ID: <20231229111846.36d09812@gandalf.local.home>
+In-Reply-To: <170368070504.42064.8960569647118388081.stgit@devnote2>
+References: <170368070504.42064.8960569647118388081.stgit@devnote2>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From: Johan Jonker <jbx6244@gmail.com>
-Subject: [PATCH v4 2/2] arm64: dts: rockchip: add gpio-ranges property to gpio
- nodes
-To: heiko@sntech.de
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, kever.yang@rock-chips.com, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <26007385-81dc-9961-05d5-8b9a0969d0b6@gmail.com>
-Content-Language: en-US
-In-Reply-To: <26007385-81dc-9961-05d5-8b9a0969d0b6@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-Add a gpio-ranges property to Rockchip gpio nodes similar to
-rk356x/rk3588 to be independent from aliases and probe order.
+On Wed, 27 Dec 2023 21:38:25 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Reviewed-by: Kever Yang <kever.yang@rock-chips.com>
----
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> If ftrace_register_direct() called with a large number of target
 
-Changed V3:
-  reword
-  remove rk356x part
----
- arch/arm64/boot/dts/rockchip/px30.dtsi   | 4 ++++
- arch/arm64/boot/dts/rockchip/rk3308.dtsi | 5 +++++
- arch/arm64/boot/dts/rockchip/rk3328.dtsi | 4 ++++
- arch/arm64/boot/dts/rockchip/rk3368.dtsi | 4 ++++
- arch/arm64/boot/dts/rockchip/rk3399.dtsi | 5 +++++
- 5 files changed, 22 insertions(+)
+There's no function called "ftrace_register_direct()", I guess you meant
+register_ftrace_direct()?
 
-diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
-index d0905515399b..27d045296388 100644
---- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-@@ -1394,6 +1394,7 @@ gpio0: gpio@ff040000 {
- 			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&pmucru PCLK_GPIO0_PMU>;
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 0 32>;
- 			#gpio-cells = <2>;
+> functions (e.g. 65), the free_hash can be updated twice or more
+> in the ftrace_add_rec_direct() without freeing the previous hash
+> memory. Thus this can cause a memory leak.
+> 
+> Fix this issue by expanding the direct_hash at once before
+> adding the new entries.
+> 
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Fixes: f64dd4627ec6 ("ftrace: Add multi direct register/unregister interface")
+> Cc: stable@vger.kernel.org
+> ---
+>  kernel/trace/ftrace.c |   49 +++++++++++++++++++++++++++++++------------------
+>  1 file changed, 31 insertions(+), 18 deletions(-)
+> 
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index 8de8bec5f366..9269c2c3e595 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -2555,28 +2555,33 @@ unsigned long ftrace_find_rec_direct(unsigned long ip)
+>  	return entry->direct;
+>  }
+>  
+> -static struct ftrace_func_entry*
+> -ftrace_add_rec_direct(unsigned long ip, unsigned long addr,
+> -		      struct ftrace_hash **free_hash)
+> +static struct ftrace_hash *ftrace_expand_direct(int inc_count)
+>  {
+> -	struct ftrace_func_entry *entry;
+> +	struct ftrace_hash *new_hash, *free_hash;
+> +	int size = ftrace_hash_empty(direct_functions) ? 0 :
+> +		direct_functions->count + inc_count;
+>  
+> -	if (ftrace_hash_empty(direct_functions) ||
+> -	    direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
+> -		struct ftrace_hash *new_hash;
+> -		int size = ftrace_hash_empty(direct_functions) ? 0 :
+> -			direct_functions->count + 1;
+> +	if (!ftrace_hash_empty(direct_functions) &&
+> +	    size <= 2 * (1 << direct_functions->size_bits))
+> +		return NULL;
+>  
+> -		if (size < 32)
+> -			size = 32;
+> +	if (size < 32)
+> +		size = 32;
 
- 			interrupt-controller;
-@@ -1406,6 +1407,7 @@ gpio1: gpio@ff250000 {
- 			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&cru PCLK_GPIO1>;
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 32 32>;
- 			#gpio-cells = <2>;
+Hmm, why the limit of 32? I know this was there before this patch, but this
+patch made me notice it.
 
- 			interrupt-controller;
-@@ -1418,6 +1420,7 @@ gpio2: gpio@ff260000 {
- 			interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&cru PCLK_GPIO2>;
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 64 32>;
- 			#gpio-cells = <2>;
+In dup_hash() we have:
 
- 			interrupt-controller;
-@@ -1430,6 +1433,7 @@ gpio3: gpio@ff270000 {
- 			interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&cru PCLK_GPIO3>;
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 96 32>;
- 			#gpio-cells = <2>;
+	bits = fls(size / 2);
 
- 			interrupt-controller;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-index cfc0a87b5195..09fda512c101 100644
---- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-@@ -804,6 +804,7 @@ gpio0: gpio@ff220000 {
- 			interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&cru PCLK_GPIO0>;
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 0 32>;
- 			#gpio-cells = <2>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-@@ -815,6 +816,7 @@ gpio1: gpio@ff230000 {
- 			interrupts = <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&cru PCLK_GPIO1>;
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 32 32>;
- 			#gpio-cells = <2>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-@@ -826,6 +828,7 @@ gpio2: gpio@ff240000 {
- 			interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&cru PCLK_GPIO2>;
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 64 32>;
- 			#gpio-cells = <2>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-@@ -837,6 +840,7 @@ gpio3: gpio@ff250000 {
- 			interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&cru PCLK_GPIO3>;
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 96 32>;
- 			#gpio-cells = <2>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-@@ -848,6 +852,7 @@ gpio4: gpio@ff260000 {
- 			interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&cru PCLK_GPIO4>;
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 128 32>;
- 			#gpio-cells = <2>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-index fb5dcf6e9327..2cead2e85c07 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-@@ -1058,6 +1058,7 @@ gpio0: gpio@ff210000 {
- 			clocks = <&cru PCLK_GPIO0>;
+	/* Don't allocate too much */
+	if (bits > FTRACE_HASH_MAX_BITS)
+		bits = FTRACE_HASH_MAX_BITS;
 
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 0 32>;
- 			#gpio-cells = <2>;
+Where bits will determine the number of buckets.
 
- 			interrupt-controller;
-@@ -1071,6 +1072,7 @@ gpio1: gpio@ff220000 {
- 			clocks = <&cru PCLK_GPIO1>;
+If size = 32, then bits = fls(32/2) = fls(16) = 5
 
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 32 32>;
- 			#gpio-cells = <2>;
+So the buckets will be 2^5 = 32. Thus, you will get 32 buckets even with 64
+entries, which will cause a minimum of two loops to find a bucket.
 
- 			interrupt-controller;
-@@ -1084,6 +1086,7 @@ gpio2: gpio@ff230000 {
- 			clocks = <&cru PCLK_GPIO2>;
+Is this a concern?
 
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 64 32>;
- 			#gpio-cells = <2>;
 
- 			interrupt-controller;
-@@ -1097,6 +1100,7 @@ gpio3: gpio@ff240000 {
- 			clocks = <&cru PCLK_GPIO3>;
+>  
+> -		new_hash = dup_hash(direct_functions, size);
+> -		if (!new_hash)
+> -			return NULL;
+> +	new_hash = dup_hash(direct_functions, size);
+> +	if (!new_hash)
+> +		return ERR_PTR(-ENOMEM);
+>  
+> -		*free_hash = direct_functions;
+> -		direct_functions = new_hash;
+> -	}
+> +	free_hash = direct_functions;
+> +	direct_functions = new_hash;
+> +
+> +	return free_hash;
+> +}
+> +
+> +static struct ftrace_func_entry*
+> +ftrace_add_rec_direct(unsigned long ip, unsigned long addr)
+> +{
+> +	struct ftrace_func_entry *entry;
+>  
+>  	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+>  	if (!entry)
+> @@ -5436,11 +5441,19 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+>  		}
+>  	}
+>  
+> +	/* ... and prepare the insertion */
+> +	free_hash = ftrace_expand_direct(hash->count);
 
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 96 32>;
- 			#gpio-cells = <2>;
+Why does the direct_functions need to be expanded before new items are
+entered? Can't we do it the way ftrace does it, and that is just to fill
+the hash, and then expand if necessary.
 
- 			interrupt-controller;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3368.dtsi b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-index 62af0cb94839..2a017c862263 100644
---- a/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-@@ -987,6 +987,7 @@ gpio0: gpio@ff750000 {
- 			interrupts = <GIC_SPI 0x51 IRQ_TYPE_LEVEL_HIGH>;
+Hmm, also, I think there's a bug here too. That is, hash_dup() does not do
+what it says. It doesn't copy it actually moves. So when you use hash_dup()
+with the source being direct_functions, it's removing the entries from the
+direct functions, and not copying them :-/
 
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 0 32>;
- 			#gpio-cells = <0x2>;
+That is, during the resize, the check against direct_functions will not
+find them and things will be missed!
 
- 			interrupt-controller;
-@@ -1000,6 +1001,7 @@ gpio1: gpio@ff780000 {
- 			interrupts = <GIC_SPI 0x52 IRQ_TYPE_LEVEL_HIGH>;
+What I think we need to do, is what ftrace does, and that is to add
+everything to a temp hash first and then do an RCU assign to the
+direct_functions.
 
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 32 32>;
- 			#gpio-cells = <0x2>;
+> +	if (IS_ERR(free_hash)) {
+> +		err = PTR_ERR(free_hash);
+> +		free_hash = NULL;
+> +		goto out_unlock;
+> +	}
+> +
+>  	/* ... and insert them to direct_functions hash. */
+>  	err = -ENOMEM;
+>  	for (i = 0; i < size; i++) {
+>  		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+> -			new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
+> +			new = ftrace_add_rec_direct(entry->ip, addr);
+>  			if (!new)
+>  				goto out_remove;
+>  			entry->direct = addr;
 
- 			interrupt-controller;
-@@ -1013,6 +1015,7 @@ gpio2: gpio@ff790000 {
- 			interrupts = <GIC_SPI 0x53 IRQ_TYPE_LEVEL_HIGH>;
+This should fix both the leak and the fact that direct_functions are being
+modified while in use.
 
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 64 32>;
- 			#gpio-cells = <0x2>;
+Also, by reusing add_hash_entry() and removing ftrace_add_rec_direct(),
+this simplifies the code. The biggest change is changing add_hash_entry()
+to return the entry and not an int, which required updates to its other
+users.
 
- 			interrupt-controller;
-@@ -1026,6 +1029,7 @@ gpio3: gpio@ff7a0000 {
- 			interrupts = <GIC_SPI 0x54 IRQ_TYPE_LEVEL_HIGH>;
+-- Steve
 
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 96 32>;
- 			#gpio-cells = <0x2>;
-
- 			interrupt-controller;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index 6e12c5a920ca..206f7d54d4d0 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -2138,6 +2138,7 @@ gpio0: gpio@ff720000 {
- 			interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH 0>;
-
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 0 32>;
- 			#gpio-cells = <0x2>;
-
- 			interrupt-controller;
-@@ -2151,6 +2152,7 @@ gpio1: gpio@ff730000 {
- 			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH 0>;
-
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 32 32>;
- 			#gpio-cells = <0x2>;
-
- 			interrupt-controller;
-@@ -2164,6 +2166,7 @@ gpio2: gpio@ff780000 {
- 			interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH 0>;
-
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 64 32>;
- 			#gpio-cells = <0x2>;
-
- 			interrupt-controller;
-@@ -2177,6 +2180,7 @@ gpio3: gpio@ff788000 {
- 			interrupts = <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH 0>;
-
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 96 32>;
- 			#gpio-cells = <0x2>;
-
- 			interrupt-controller;
-@@ -2190,6 +2194,7 @@ gpio4: gpio@ff790000 {
- 			interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH 0>;
-
- 			gpio-controller;
-+			gpio-ranges = <&pinctrl 0 128 32>;
- 			#gpio-cells = <0x2>;
-
- 			interrupt-controller;
---
-2.39.2
-
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 8de8bec5f366..78ad2c4210cf 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -1183,18 +1183,19 @@ static void __add_hash_entry(struct ftrace_hash *hash,
+ 	hash->count++;
+ }
+ 
+-static int add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
++static struct ftrace_func_entry *
++add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
+ {
+ 	struct ftrace_func_entry *entry;
+ 
+ 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+ 	if (!entry)
+-		return -ENOMEM;
++		return NULL;
+ 
+ 	entry->ip = ip;
+ 	__add_hash_entry(hash, entry);
+ 
+-	return 0;
++	return entry;
+ }
+ 
+ static void
+@@ -1349,7 +1350,6 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
+ 	struct ftrace_func_entry *entry;
+ 	struct ftrace_hash *new_hash;
+ 	int size;
+-	int ret;
+ 	int i;
+ 
+ 	new_hash = alloc_ftrace_hash(size_bits);
+@@ -1366,8 +1366,7 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
+ 	size = 1 << hash->size_bits;
+ 	for (i = 0; i < size; i++) {
+ 		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+-			ret = add_hash_entry(new_hash, entry->ip);
+-			if (ret < 0)
++			if (add_hash_entry(new_hash, entry->ip) == NULL)
+ 				goto free_hash;
+ 		}
+ 	}
+@@ -2536,7 +2535,7 @@ ftrace_find_unique_ops(struct dyn_ftrace *rec)
+ 
+ #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ /* Protected by rcu_tasks for reading, and direct_mutex for writing */
+-static struct ftrace_hash *direct_functions = EMPTY_HASH;
++static struct ftrace_hash __rcu *direct_functions = EMPTY_HASH;
+ static DEFINE_MUTEX(direct_mutex);
+ int ftrace_direct_func_count;
+ 
+@@ -2555,39 +2554,6 @@ unsigned long ftrace_find_rec_direct(unsigned long ip)
+ 	return entry->direct;
+ }
+ 
+-static struct ftrace_func_entry*
+-ftrace_add_rec_direct(unsigned long ip, unsigned long addr,
+-		      struct ftrace_hash **free_hash)
+-{
+-	struct ftrace_func_entry *entry;
+-
+-	if (ftrace_hash_empty(direct_functions) ||
+-	    direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
+-		struct ftrace_hash *new_hash;
+-		int size = ftrace_hash_empty(direct_functions) ? 0 :
+-			direct_functions->count + 1;
+-
+-		if (size < 32)
+-			size = 32;
+-
+-		new_hash = dup_hash(direct_functions, size);
+-		if (!new_hash)
+-			return NULL;
+-
+-		*free_hash = direct_functions;
+-		direct_functions = new_hash;
+-	}
+-
+-	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+-	if (!entry)
+-		return NULL;
+-
+-	entry->ip = ip;
+-	entry->direct = addr;
+-	__add_hash_entry(direct_functions, entry);
+-	return entry;
+-}
+-
+ static void call_direct_funcs(unsigned long ip, unsigned long pip,
+ 			      struct ftrace_ops *ops, struct ftrace_regs *fregs)
+ {
+@@ -4223,8 +4189,8 @@ enter_record(struct ftrace_hash *hash, struct dyn_ftrace *rec, int clear_filter)
+ 		/* Do nothing if it exists */
+ 		if (entry)
+ 			return 0;
+-
+-		ret = add_hash_entry(hash, rec->ip);
++		if (add_hash_entry(hash, rec->ip) == NULL)
++			ret = -ENOMEM;
+ 	}
+ 	return ret;
+ }
+@@ -5266,7 +5232,8 @@ __ftrace_match_addr(struct ftrace_hash *hash, unsigned long ip, int remove)
+ 		return 0;
+ 	}
+ 
+-	return add_hash_entry(hash, ip);
++	entry = add_hash_entry(hash, ip);
++	return entry ? 0 :  -ENOMEM;
+ }
+ 
+ static int
+@@ -5410,7 +5377,7 @@ static void remove_direct_functions_hash(struct ftrace_hash *hash, unsigned long
+  */
+ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+ {
+-	struct ftrace_hash *hash, *free_hash = NULL;
++	struct ftrace_hash *hash, *new_hash = NULL, *free_hash = NULL;
+ 	struct ftrace_func_entry *entry, *new;
+ 	int err = -EBUSY, size, i;
+ 
+@@ -5436,17 +5403,44 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+ 		}
+ 	}
+ 
+-	/* ... and insert them to direct_functions hash. */
+ 	err = -ENOMEM;
++
++	/* Make a copy hash to place the new and the old entries in */
++	size += (1 << direct_functions->size_bits);
++	if (size > 32)
++		size = 32;
++	new_hash = alloc_ftrace_hash(fls(size));
++	if (!new_hash)
++		goto out_unlock;
++
++	/* Now copy over the existing direct entries */
++	size = 1 << direct_functions->size_bits;
++	for (i = 0; i < size; i++) {
++		hlist_for_each_entry(entry, &direct_functions->buckets[i], hlist) {
++			new = add_hash_entry(new_hash, entry->ip);
++			if (!new)
++				goto out_unlock;
++			new->direct = entry->direct;
++		}
++	}
++
++	/* ... and add the new entries */
++	size = 1 << hash->size_bits;
+ 	for (i = 0; i < size; i++) {
+ 		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+-			new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
++			new = add_hash_entry(new_hash, entry->ip);
+ 			if (!new)
+-				goto out_remove;
++				goto out_unlock;
++			/* Update both the copy and the hash entry */
++			new->direct = addr;
+ 			entry->direct = addr;
+ 		}
+ 	}
+ 
++	free_hash = direct_functions;
++	rcu_assign_pointer(direct_functions, new_hash);
++	new_hash = NULL;
++
+ 	ops->func = call_direct_funcs;
+ 	ops->flags = MULTI_FLAGS;
+ 	ops->trampoline = FTRACE_REGS_ADDR;
+@@ -5454,17 +5448,17 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+ 
+ 	err = register_ftrace_function_nolock(ops);
+ 
+- out_remove:
+-	if (err)
+-		remove_direct_functions_hash(hash, addr);
+-
+  out_unlock:
+ 	mutex_unlock(&direct_mutex);
+ 
+-	if (free_hash) {
++	if (free_hash && free_hash != EMPTY_HASH) {
+ 		synchronize_rcu_tasks();
+ 		free_ftrace_hash(free_hash);
+ 	}
++
++	if (new_hash)
++		free_ftrace_hash(new_hash);
++
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(register_ftrace_direct);
+@@ -6309,7 +6303,7 @@ ftrace_graph_set_hash(struct ftrace_hash *hash, char *buffer)
+ 
+ 				if (entry)
+ 					continue;
+-				if (add_hash_entry(hash, rec->ip) < 0)
++				if (add_hash_entry(hash, rec->ip) == NULL)
+ 					goto out;
+ 			} else {
+ 				if (entry) {
 
