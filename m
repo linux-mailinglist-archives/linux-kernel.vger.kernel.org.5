@@ -1,86 +1,117 @@
-Return-Path: <linux-kernel+bounces-13227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDC67820168
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 21:30:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 539A0820171
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 21:52:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08C02B22189
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 20:30:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E54C2836CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 20:52:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5BEB14A90;
-	Fri, 29 Dec 2023 20:30:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="1jBzkh8F"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B7D1428E;
+	Fri, 29 Dec 2023 20:52:16 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C74E14284;
-	Fri, 29 Dec 2023 20:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ixit.cz
-Received: from newone.congress.ccc.de (unknown [151.217.64.190])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ixit.cz (Postfix) with ESMTPSA id 28C53163998;
-	Fri, 29 Dec 2023 21:30:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-	t=1703881805;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=W1DwKX7Tz/5TTyYVFi24EUOrX90BXUle9nCmdIhFA28=;
-	b=1jBzkh8FP7nsZ3cPYsjY/0y2YREnZN4iHiqoo8Y5ufW5pSzSzwwAl9HBL/OVb/GSzSVOO6
-	DZ0bMILvFj5eLPZdnfyS4WkAJn6yJddU+dD3vNsrJhck+zcdQZ3GXKNPUAbDWKrd3UafFT
-	LEnPmItUuK9zX8vik66xnDds9P7GUTM=
-From: David Heidelberg <david@ixit.cz>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Caleb Connolly <caleb.connolly@linaro.org>,
-	David Heidelberg <david@ixit.cz>,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: sdm845: add power domain to UFS phy interface
-Date: Fri, 29 Dec 2023 21:29:54 +0100
-Message-ID: <20231229202959.266502-1-david@ixit.cz>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2985D1426F
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 20:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-41-5wEkoRtvMh2PFOiaJkfYoA-1; Fri, 29 Dec 2023 20:52:04 +0000
+X-MC-Unique: 5wEkoRtvMh2PFOiaJkfYoA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 29 Dec
+ 2023 20:51:46 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 29 Dec 2023 20:51:46 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"peterz@infradead.org" <peterz@infradead.org>, "longman@redhat.com"
+	<longman@redhat.com>
+CC: "mingo@redhat.com" <mingo@redhat.com>, "will@kernel.org"
+	<will@kernel.org>, "boqun.feng@gmail.com" <boqun.feng@gmail.com>, "'Linus
+ Torvalds'" <torvalds@linux-foundation.org>, "'xinhui.pan@linux.vnet.ibm.com'"
+	<xinhui.pan@linux.vnet.ibm.com>,
+	"'virtualization@lists.linux-foundation.org'"
+	<virtualization@lists.linux-foundation.org>, 'Zeng Heng'
+	<zengheng4@huawei.com>
+Subject: [PATCH next 0/5] locking/osq_lock: Optimisations to osq_lock code
+Thread-Topic: [PATCH next 0/5] locking/osq_lock: Optimisations to osq_lock
+ code
+Thread-Index: Ado6lJ8STYITmewCRxaK5t3V4duzKg==
+Date: Fri, 29 Dec 2023 20:51:46 +0000
+Message-ID: <73a4b31c9c874081baabad9e5f2e5204@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Reported by: `make CHECK_DTBS=1 qcom/sdm845-oneplus-enchilada.dtb`
+Zeng Heng noted that heavy use of the osq (optimistic spin queue) code
+used rather more cpu than might be expected. See:
+https://lore.kernel.org/lkml/202312210155.Wc2HUK8C-lkp@intel.com/T/#mcc46ee=
+dd1ef22a0d668828b1d088508c9b1875b8
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+Part of the problem is there is a pretty much guaranteed cache line reload
+reading node->prev->cpu for the vcpu_is_preempted() check (even on bare met=
+al)
+in the wakeup path which slows it down.
+(On bare metal the hypervisor call is patched out, but the argument is stil=
+l read.)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index c2244824355a..ad8677b62bfb 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -2644,6 +2644,8 @@ ufs_mem_phy: phy@1d87000 {
- 			clocks = <&gcc GCC_UFS_MEM_CLKREF_CLK>,
- 				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>;
- 
-+			power-domains = <&gcc UFS_PHY_GDSC>;
-+
- 			resets = <&ufs_mem_hc 0>;
- 			reset-names = "ufsphy";
- 
--- 
-2.43.0
+Careful analysis shows that it isn't necessary to dirty the per-cpu data
+on the fast-path osq_lock() path. This may be slightly beneficial.
+
+The code also uses this_cpu_ptr() to get the address of the per-cpu data.
+On x86-64 (at least) this is implemented as:
+=09 &per_cpu_data[smp_processor_id()]->member
+ie there is a real function call, an array index and an add.
+However if raw_cpu_read() can used then (which is typically just an offset
+from register - %gs for x86-64) the code will be faster.
+Putting the address of the per-cpu node into itself means that only one
+cache line need be loaded.
+
+I can't see a list of per-cpu data initialisation functions, so the fields
+are initialised on the first osq_lock() call.
+
+The last patch avoids the cache line reload calling vcpu_is_preempted()
+by simply saving node->prev->cpu as node->prev_cpu and updating it when
+node->prev changes.
+This is simpler than the patch proposed by Waimon.
+
+David Laight (5):
+  Move the definition of optimistic_spin_node into osf_lock.c
+  Avoid dirtying the local cpu's 'node' in the osq_lock() fast path.
+  Clarify osq_wait_next()
+  Optimise per-cpu data accesses.
+  Optimise vcpu_is_preempted() check.
+
+ include/linux/osq_lock.h  |  5 ----
+ kernel/locking/osq_lock.c | 61 +++++++++++++++++++++------------------
+ 2 files changed, 33 insertions(+), 33 deletions(-)
+
+--=20
+2.17.1
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
 
