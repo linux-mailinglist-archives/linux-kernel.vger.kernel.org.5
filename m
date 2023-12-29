@@ -1,255 +1,154 @@
-Return-Path: <linux-kernel+bounces-13128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26A8A820016
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:05:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F470820018
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:05:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A1C8B22227
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:05:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4750328471D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D20B125A1;
-	Fri, 29 Dec 2023 15:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB5511CBD;
+	Fri, 29 Dec 2023 15:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=linosanfilippo@gmx.de header.b="r2dZZbEa"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EO+B0mM7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B743411CAE;
-	Fri, 29 Dec 2023 15:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1703862196; x=1704466996; i=linosanfilippo@gmx.de;
-	bh=AVsyOvF8iyVIZ+y0HTYWiJ5lv/jurTEehXeDcW566s0=;
-	h=X-UI-Sender-Class:From:Subject:To:Cc:References:Date:
-	 In-Reply-To;
-	b=r2dZZbEaWPakyKajbHilP2dnmyJQIb86Rl008O7k9kDpUqJpmZQEZkjI/NXiK8rG
-	 MnvCowJCC5OgZxpapX/fGY8SxDumm/i7qAlZayspO5DABfCL8PdKmD4Y2YnRV09JR
-	 TmR+fpSUNJ1mwUOskIIoBrgZzrLIamEi2adOrQIK19sHEF039vFt+VjnDngfrAuV1
-	 Es9klZjHMmjwV1MA9dqP1NpU34hNI2+tCLoNhxBp/YTY0Dwd0oA6bdrZ7nnw5Y+I/
-	 c+/jpKt9464KyX6IwDzsyj9R/3fyRd7t4v/cdh8jOpnyGG8QyzF1ZwLOTIh6Emml9
-	 aG+lcQpdgMCs2IVwag==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.2.37] ([84.162.15.98]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MVvPJ-1rilU12tdd-00Rsyf; Fri, 29
- Dec 2023 16:03:16 +0100
-From: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Subject: Re: [PATCH v6 1/7] serial: Do not hold the port lock when setting
- rx-during-tx GPIO
-To: Maarten Brock <m.brock@vanmierlo.com>,
- Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org,
- ilpo.jarvinen@linux.intel.com, u.kleine-koenig@pengutronix.de,
- shawnguo@kernel.org, s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
- alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
- hugo@hugovil.com, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, lukas@wunner.de, p.rosenberger@kunbus.com,
- stable@vger.kernel.org, Hugo Villeneuve <hvilleneuve@dimonoff.com>
-References: <20231225113524.8800-1-l.sanfilippo@kunbus.com>
- <20231225113524.8800-2-l.sanfilippo@kunbus.com>
- <5177a7aef77a6b77a6e742a2fdd52a0e@vanmierlo.com>
-Message-ID: <988518d5-0d4f-1362-64f9-8bfeb3e3b700@gmx.de>
-Date: Fri, 29 Dec 2023 16:03:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 743E0125A4
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 15:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50e7abe4be4so4672175e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 07:05:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703862321; x=1704467121; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LI8tZ4xmGQoPWoAmYH9zktwI7/vEBWrFa18ETiwGSuM=;
+        b=EO+B0mM7HowwbGLsYgjiy6jEH+BRhfQiPlMyuey37QVzsI1X2GhFNdiBTHbkd/Lekv
+         C9WA8Nx+iVJjkkXFGS/M3cyJgoTmhN7oTdn4i3rFMDw24tNx9AUf2aPYFTBz+OaKiwes
+         V9o2FPUofR9ZPqIjRptKVCi68BZ2LSKtgJtcBTdP2Lqh8dwecGgLRoXYi+RGyDU5LJB/
+         TX8DoEMQVkl3J2ySY3o8BkOHuBP8cXlwMlKZPJJF02LHwHp0EC30lVYcW7wN0J9tr/iK
+         zCb+0Jpon49Fk8ZCy/gHQ+IjUkWIFCY18UzxM+Q7aKt+iWJAuxzs5OdqvmIyxulDNrAJ
+         aSXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703862321; x=1704467121;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LI8tZ4xmGQoPWoAmYH9zktwI7/vEBWrFa18ETiwGSuM=;
+        b=pjCbkyIoXo2IHUOraK4dTpCH6wCVD9gBs/42CeJThM+xWbS2ZW5ZDzVHi70sfgsMjh
+         DQ0Rl+76DiSACFReB41pdBZgrwpRO71GxGucokfTpuJ9tRm7GoqHVdKUpsBuBCTGAbSj
+         8u6ozHVYHx//jlaxgC0J6IvdonWRpCMBceRtACTSGFKTbXosiU/HyILTC1Qc1ICD5HAw
+         Otz9rvY6Is0fVTJi6w2P8m6Sm2kq2TtA7osQCxxIMdom2rhcvRWOpqYVQHU1ml1lvPoa
+         BUnSvJjQqZ86E+pULobsW1osYOrw7MVABPJRaRwOVkZz9ArsX2Dw48KloV2jYDRhJBjA
+         H0dw==
+X-Gm-Message-State: AOJu0Yx3XcGiCGacWsx+evyhjvPKVdAOj30pPUTlMu14H+j76E1Rp0uI
+	6up5BalgeS5WZj9ad8WbGfVHQbJmG3928w==
+X-Google-Smtp-Source: AGHT+IHtqF4araK/7HsfoTLOgdzip7g33hgiJXUjY4pAbP43QnQJKUFmRNfVvcHPMJ8E0UbKWjiL1w==
+X-Received: by 2002:a05:6512:3592:b0:50e:6a07:5c02 with SMTP id m18-20020a056512359200b0050e6a075c02mr4698769lfr.15.1703862321464;
+        Fri, 29 Dec 2023 07:05:21 -0800 (PST)
+Received: from [192.168.199.125] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
+        by smtp.gmail.com with ESMTPSA id bg10-20020a170906a04a00b00a26a443e98esm8225174ejb.169.2023.12.29.07.05.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Dec 2023 07:05:21 -0800 (PST)
+Message-ID: <11aa0b82-ddab-4b65-8f49-54e15e0ce44e@linaro.org>
+Date: Fri, 29 Dec 2023 16:05:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <5177a7aef77a6b77a6e742a2fdd52a0e@vanmierlo.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: sc8280xp: Correct USB PHY power
+ domains
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:p+fqf9l7jTjDJGxOH1YnDruj+CgRcfHEjHCkTRBGnhLYpt29OXV
- R50OBYMIgvUo5aIQm5sh9SxU6sVZXMnlFA0+GDq6udaQo3wcl+rbv34yuG5VN29b2Vlffu6
- zAvc8CpRqId2jLxcr6nPA9IofjPOvyAU9zamJUHNf+kGZ62cHjoS5DczHJqzwEn8+y+LMaq
- NrW/B/qTVorJKXXGloH4Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:sRL9VqN4ciI=;ndmP7eJWlwKe3/QqbuaaDjEotdN
- +lfLCMaxTEtl1BV/yENDeJ/gzs8DB07gKzSpOq7e3apLb0V1uvLKw5fsfA7CiBiWNv5ZObq/7
- rPU+FHhmV1K2wjdRauS9nHBy2nMsCTf+EqiPKv+QWb2VlAq7NgO6FfFXJ/wK6MZrx4l1TyfOW
- l55S6fF3ugQ6HRdKWHaQktYkNdXy5V6N/tyMmCGHdcwyKFAKdlRW7O7uLW/2e7/abIrr50YMG
- dwsshviwna+ZcnJTtrWeHAvacFSV4oo2tEzl5rRt51flvQVt4w9qIVHIRXsJ2+Tx6hvIDovoc
- BrP44nSYLAGYesBd9mnvQiZKbUG0kZrfzm0rYSpcZBTN4PuPVMJJQFfOFjx0+PE1vJdw3v/So
- tY7FKzrxBWScjjYSPvpu/d0s4LOMrUysgjQaSSYWxQB6GD3rrVlm5ORJta63SKvH2eTYTc5Ln
- 3d1Mv464qX7tZ2DlaSZdjJ+DYZrkQGwRkwmZDg9yxSr2afb+EJpNJTYefd32S6/9f1G5fsw9s
- baOA12B2TIhjGQ2c/qmWUCKfwldpDzbIl5dneoOVdVSCGom1LDuO26R9+hjq9p139THl9vNMJ
- ENKm1w9G6dr0XSVwULfKC2LeeNRAcqeQt5R33JY7DZRyoq7vzVwiwnxK3UMtE6ElwVbmHnetP
- Sw2mLuMA19evwfCv0RGUDzL+LL9rgX3a58uayTI00t6N9ddNAUHUBgSo6Rl7i3szN3qRqoY5Z
- A6UjPnok9EKW5Ibb5MxGGf/fksFwC2wECE299A24b6oq2ZPddZXnJVrwV4JvObc6omsE56MO6
- H6S9R0IDuTTActmzsZdracFUSR9YDUqiNgnFaCVUNNHHl4bJRw/0VDcBXSf93kv96ohSWzZjE
- bTzLJDBrjHXHql2SCSSO4xgVOUBqimtjRdDNqjFohZT4N6bssbfQgOLgHb2pjQVuYlT/EO6VO
- jfmI1TOsZ8LrJBmsmJZr1O1y1BQ=
+To: Johan Hovold <johan@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Johan Hovold <johan+linaro@kernel.org>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Konrad Dybcio <konrad.dybcio@somainline.org>
+References: <20231227-topic-8280_pcie_dts-v1-0-13d12b1698ff@linaro.org>
+ <20231227-topic-8280_pcie_dts-v1-2-13d12b1698ff@linaro.org>
+ <ZY7DEpaIgvfL_A11@hovoldconsulting.com>
+ <b730bf22-fa3a-4720-9fd1-79d2207d6812@linaro.org>
+ <ZY7I1brn0chtOzis@hovoldconsulting.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <ZY7I1brn0chtOzis@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 29.12.2023 14:25, Johan Hovold wrote:
+> [ Please remember to trim your replies and add a newline before your
+>   inline comments to make them readable. ]
+> 
+> On Fri, Dec 29, 2023 at 02:06:26PM +0100, Konrad Dybcio wrote:
+>> On 29.12.2023 14:01, Johan Hovold wrote:
+>>> On Wed, Dec 27, 2023 at 11:28:27PM +0100, Konrad Dybcio wrote:
+> 
+>>>> Fix the power-domains assignment to stop potentially toggling the GDSC
+>>>> unnecessarily.
+>>>
+>>> Again, there's no additional toggling being done here, but yes, this may
+>>> keep the domains enabled during suspend depending on how the driver is
+>>> implemented.
+> 
+>> No, it can actually happen. (Some) QMP PHYs are referenced by the
+>> DP hardware. If USB is disabled (or suspended), the DP being active
+>> will hold these GDSCs enabled.
+> 
+> That's not a "toggling", is it? Also if the DP controller is a consumer of
+> these PHY's why should it not prevent the PHYs from suspending?
 
-Hi,
+As far as I'm concerned, "toggling" is the correct word for "switching it
+on".. While the PHYs are indeed useful for getting displayport to work,
+the USB controller itself may not be necessary there, so enabling its
+power line would be a bit of a waste..
 
-On 25.12.23 at 13:31, Maarten Brock wrote:
-> Lino Sanfilippo wrote on 2023-12-25 12:35:
->> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/seri=
-al_core.c
->> index f1348a509552..d155131f221d 100644
->> --- a/drivers/tty/serial/serial_core.c
->> +++ b/drivers/tty/serial/serial_core.c
->> @@ -1402,6 +1402,16 @@ static void uart_set_rs485_termination(struct
->> uart_port *port,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !!(rs485->flags & SER_RS485_TERMINATE_BU=
-S));
->> =C2=A0}
->>
->> +static void uart_set_rs485_rx_during_tx(struct uart_port *port,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct serial_rs485 *r=
-s485)
->> +{
->> +=C2=A0=C2=A0=C2=A0 if (!(rs485->flags & SER_RS485_ENABLED))
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
->> +
->
-> How about checking port->rs485_rx_during_tx_gpio here against NULL inste=
-ad of
-> before every call?
->
-
-gpiod_set_value_cansleep() already checks for a NULL pointer, so doing thi=
-s check
-in the caller is not needed.
-
->> +=C2=A0=C2=A0=C2=A0 gpiod_set_value_cansleep(port->rs485_rx_during_tx_g=
-pio,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 !!(rs485->flags & SER_RS485_RX_DURING_TX));
->> +}
->> +
->> =C2=A0static int uart_rs485_config(struct uart_port *port)
->> =C2=A0{
->> =C2=A0=C2=A0=C2=A0=C2=A0 struct serial_rs485 *rs485 =3D &port->rs485;
->> @@ -1413,12 +1423,17 @@ static int uart_rs485_config(struct uart_port *=
-port)
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0 uart_sanitize_serial_rs485(port, rs485);
->> =C2=A0=C2=A0=C2=A0=C2=A0 uart_set_rs485_termination(port, rs485);
->> +=C2=A0=C2=A0=C2=A0 uart_set_rs485_rx_during_tx(port, rs485);
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0 uart_port_lock_irqsave(port, &flags);
->> =C2=A0=C2=A0=C2=A0=C2=A0 ret =3D port->rs485_config(port, NULL, rs485);
->> =C2=A0=C2=A0=C2=A0=C2=A0 uart_port_unlock_irqrestore(port, flags);
->> -=C2=A0=C2=A0=C2=A0 if (ret)
->> +=C2=A0=C2=A0=C2=A0 if (ret) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memset(rs485, 0, sizeo=
-f(*rs485));
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* unset GPIOs */
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpiod_set_value_cansleep(po=
-rt->rs485_term_gpio, 0);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpiod_set_value_cansleep(po=
-rt->rs485_rx_during_tx_gpio, 0);
->> +=C2=A0=C2=A0=C2=A0 }
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->> =C2=A0}
->> @@ -1457,6 +1472,7 @@ static int uart_set_rs485_config(struct
->> tty_struct *tty, struct uart_port *port,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->> =C2=A0=C2=A0=C2=A0=C2=A0 uart_sanitize_serial_rs485(port, &rs485);
->> =C2=A0=C2=A0=C2=A0=C2=A0 uart_set_rs485_termination(port, &rs485);
->> +=C2=A0=C2=A0=C2=A0 uart_set_rs485_rx_during_tx(port, &rs485);
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0 uart_port_lock_irqsave(port, &flags);
->> =C2=A0=C2=A0=C2=A0=C2=A0 ret =3D port->rs485_config(port, &tty->termios=
-, &rs485);
->> @@ -1468,8 +1484,14 @@ static int uart_set_rs485_config(struct
->> tty_struct *tty, struct uart_port *port,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 port->ops->set_mctrl(port, port->mctrl);
->> =C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0 uart_port_unlock_irqrestore(port, flags);
->> -=C2=A0=C2=A0=C2=A0 if (ret)
->> +=C2=A0=C2=A0=C2=A0 if (ret) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* restore old GPIO setting=
-s */
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpiod_set_value_cansleep(po=
-rt->rs485_term_gpio,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !!(=
-port->rs485.flags & SER_RS485_TERMINATE_BUS));
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpiod_set_value_cansleep(po=
-rt->rs485_rx_during_tx_gpio,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !!(=
-port->rs485.flags & SER_RS485_RX_DURING_TX));
->
-> This does not look like restoring.
-
-
-Hmm. The rx-during-tx and terminate-bus GPIOs may have changed before the
-drivers rs485_config() was called. If that function fails, the GPIOs
-are set back to the values they had before (i.e what is still stored in
-the ports serial_rs485 struct). So what is wrong with the term "restore"?
-
-> Further this looks suspiciously like duplicated code
-
-Since the added code consists of two one-liners I am not sure how to
-decrease code duplication in this case. We could introduce wrapper functio=
-ns (the only
-ones we have so far to set the GPIOs are uart_set_rs485_termination() and
-uart_set_rs485_rx_during_tx() which cannot be used here due to the initial
-check for SER_RS485_ENABLED). But would that really help?
-
-
->
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->> +=C2=A0=C2=A0=C2=A0 }
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0 if (copy_to_user(rs485_user, &port->rs485, siz=
-eof(port->rs485)))
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EFAULT;
->> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm3=
-2-usart.c
->> index 3048620315d6..ec9a72a5bea9 100644
->> --- a/drivers/tty/serial/stm32-usart.c
->> +++ b/drivers/tty/serial/stm32-usart.c
->> @@ -226,10 +226,7 @@ static int stm32_usart_config_rs485(struct
->> uart_port *port, struct ktermios *ter
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0 stm32_usart_clr_bits(port, ofs->cr1, BIT(cfg->=
-uart_enable_bit));
->>
->> -=C2=A0=C2=A0=C2=A0 if (port->rs485_rx_during_tx_gpio)
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpiod_set_value_cansleep(po=
-rt->rs485_rx_during_tx_gpio,
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !!(rs485conf->flags & =
-SER_RS485_RX_DURING_TX));
->> -=C2=A0=C2=A0=C2=A0 else
->> +=C2=A0=C2=A0=C2=A0 if (!port->rs485_rx_during_tx_gpio)
->
-> Should the ! be there?
->
-
-Thats a good point, the "else" seems indeed to be wrong. It has been intro=
-duced
-with the code that added the GPIO support (c54d48543689 "serial: stm32: Ad=
-d support for rs485 RX_DURING_TX output GPIO")
-
-I will fix it in the next version of this patch, thanks.
-
-
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rs485conf->flags |=3D =
-SER_RS485_RX_DURING_TX;
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0 if (rs485conf->flags & SER_RS485_ENABLED) {
->
-> Kind Regards
-> Maarten Brock
->
-
-Thanks a lot for the review.
-
-BR,
-Lino
+Konrad
 
