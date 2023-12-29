@@ -1,62 +1,95 @@
-Return-Path: <linux-kernel+bounces-13147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F89C82004F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:39:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5703A820064
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:51:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3B14B21FC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:39:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D55F1F21FAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C025125B5;
-	Fri, 29 Dec 2023 15:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A96FD125C4;
+	Fri, 29 Dec 2023 15:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Y8SykXx6"
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="jxp6LpTG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69ADC125B0
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 15:39:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=jdfHfTT3DefZaMq66qHiHAagBb+Df8zEc06UQXPphJY=; b=Y8SykXx6aDVkOUvNGs7LHZBvjS
-	WPO/XLBxxmmajKPco0fpzW1xp3Unn9iAHP0p4dRlN5+iqblxtrAuk1+rC0RGQ1tcnKaNspLcfN7q2
-	WPqFZoPOq0rK3XiPQttLy8izJwFNctBM8hUJti91VSdWRv70+nUKYVUcEsc01D3gsYL20xGHEG64F
-	T88uQqhlfRrdhZ2DCeW5/D2fTc97+WbOxUOiJHNcjmJiAF4eK229P3yaJ/Bi5v9MDn/STs0oyHgIq
-	X7Fjmi5pI6UOTO6HsFn0wPX3T2iQk7GA2z5C0ha4wDV8VQdvZVC9XbX1fuSFt1Iec+wBEqR/k8PEd
-	6iv94jMA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rJExP-006J5L-4A; Fri, 29 Dec 2023 15:39:31 +0000
-Date: Fri, 29 Dec 2023 15:39:31 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Malkoot Khan <engr.mkhan1990@gmail.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm/cma: Use 'unsigned int' for cma_area_count type
- clarity
-Message-ID: <ZY7oM8E5Mqqs5xHz@casper.infradead.org>
-References: <20231229153238.153627-1-engr.mkhan1990@gmail.com>
- <20231229153238.153627-2-engr.mkhan1990@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F44125A4;
+	Fri, 29 Dec 2023 15:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 4717D1C0050; Fri, 29 Dec 2023 16:41:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1703864497;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BxMs/kzpNymFcmFDEtEcM/zevTNnwByTQvgBKVE7D2M=;
+	b=jxp6LpTGOCf7KbPks0fFRUE4SxYKGccEBysv8LdiWscTakaMIDroi4NHwDf2w8FFI4yZSH
+	zMZxVMfNMo/K702IKJ7WATTW0SME1RU5olqaoY2WvQ5OKirPl4gsVbU7fLyT5U5uiJIyFZ
+	9IGs38AK0VzLZzsknjen+w7pz2a/+CU=
+Date: Fri, 29 Dec 2023 16:41:35 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Chris Rankin <rankincj@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
+Subject: Re: Does Linux still support UP?
+Message-ID: <ZY7omD5OBLUg6pyx@duo.ucw.cz>
+References: <CAK2bqVKCdaD6-PZi6gXhf=9CiKGhxQM_UHyKV_onzDPnhbAmvw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="70EgRxlTRoKgOZlJ"
+Content-Disposition: inline
+In-Reply-To: <CAK2bqVKCdaD6-PZi6gXhf=9CiKGhxQM_UHyKV_onzDPnhbAmvw@mail.gmail.com>
+
+
+--70EgRxlTRoKgOZlJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231229153238.153627-2-engr.mkhan1990@gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 29, 2023 at 03:32:38PM +0000, Malkoot Khan wrote:
-> Replace 'unsigned' with 'unsigned int' for the variable cma_area_count.
+Hi!
 
-Please don't run coding style tools over other people's code.  Such
-changes are generally unwelcome.
+> I have an ancient i586 UP machine that happily runs vanilla Linux
+> 6.4.16, but which locks up shortly after booting vanilla 6.5.0. The
+> kernel *seems* to run into trouble as soon as the networking layer
+> becomes busy. However, its SysRq-S/U/B sequence still seems to work as
+> expected and so obviously *something* is still responding somewhere.
+>=20
+> This problem still exists in vanilla 6.6.8.
+>=20
+> FWIW I have raised this bug in bugzilla:
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D218296
+
+Yes, UP should still work. I'm using such machine and intend to
+continue with that. But it seems more testing would be welcome.
+
+And yes, you'll likely need to bisect.
+
+Best regards,
+								Pavel
+
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--70EgRxlTRoKgOZlJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZY7orwAKCRAw5/Bqldv6
+8todAKCibSurY7CjS6hkVxuB6tEcdKxdLACeLH+oqOiHZHCnHVi5lzu8QjNJUkA=
+=41qP
+-----END PGP SIGNATURE-----
+
+--70EgRxlTRoKgOZlJ--
 
