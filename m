@@ -1,68 +1,69 @@
-Return-Path: <linux-kernel+bounces-13038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 759D581FEB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:29:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26B2081FEBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:40:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3187328476A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:29:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BD4F1C22370
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:40:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE13D10A1C;
-	Fri, 29 Dec 2023 09:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E090210A1B;
+	Fri, 29 Dec 2023 09:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="aMJyCzf4"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="OSVJ0Ppg"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473D811184;
-	Fri, 29 Dec 2023 09:29:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0620910A00
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 09:40:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
 Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5D84640E01A1;
-	Fri, 29 Dec 2023 09:29:16 +0000 (UTC)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8B19340E00CB;
+	Fri, 29 Dec 2023 09:39:59 +0000 (UTC)
 X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
 Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
 	header.d=alien8.de
 Received: from mail.alien8.de ([127.0.0.1])
 	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id wnHWluQJn0sJ; Fri, 29 Dec 2023 09:29:14 +0000 (UTC)
+	with ESMTP id a6tiNQdeLUCW; Fri, 29 Dec 2023 09:39:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1703842154; bh=4N7Kr/MGSg7tikDeaMTSR6yCealwOw+LHZRbN09RIsU=;
+	t=1703842797; bh=Qk0q6nX2Cs4vSXvdmDOIyxNTDDZXTbe3ccra2vUYMFI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aMJyCzf4v7ql2qBmsCvnNfdzwM6/znzmWeVs3SNkzOR6Gnf+gqtceacA6hDUteVqa
-	 Q77PMNMe3A4DsCyCsI8WkrrSB+vaBg6gewhx4p7RnoNZw0qWfTjJARmvgTMTS0FRwx
-	 8k5YharTbMf2jdEFNfVxCsAmRCc58bQo7cZKKpu51Be9PyGGpJ28qedYt1MOU7DPkU
-	 kALk7BCAmahZhoZXeVr96hFe8W3wmldFYeKFiEgvfA70bE9b3PhKJuHloB7EUvE4nj
-	 46XkE1m1+dQApy9WsaR6N8RlxctGaUFtog7hs3fiYMjpjuiaKcVihplY6uTVRJOAVh
-	 NQ5WkTsiBbLnAZN2id6Sc03jIe8XuLTMQ4nmKjm/7bfwutMwpgeP2W5NHgSWEUAOhj
-	 PKqnafZywXmFBRLDD4gqWvmFBWjq0c45XeHoUb7wBF33YurZi3r4LFoypt5Oj70hPI
-	 bk4AnFPYubi6XC3ogzRjUeEaTaTNOopzK2XwW2EHUppckA6JOcHRFHUrgHRumb+xBc
-	 gbx5cAToPFHji2eBBHYGHqYrd+O0HECI6UNXTOxndl2rimNBQje01YPTfnw2oDotVU
-	 ovBNbnqDIYI6QDRsW/jsYNWiR8+1cK2iPOSmmxI+3Fk/709/Aio3qfCeDezQeaoMlp
-	 I+/AAFNNAvV9iKGZRZ3zC0yU=
+	b=OSVJ0PpgLIeyh/2zUwfpZ7psmp8LMBltWzdfZhA4+/hoe27U/5lTrp119CH1ucDwJ
+	 VEOkLfHbzBRRFpBvwaYR+nFvS0wmGrRPP2kDae3OVCY54YV+eRnu0xiemHgSAjk2f/
+	 xOEH1EIlVJ4hdk+ISI78WDKlIIIm4aLda0nbOQDgTHLpCpaKj1rl6GNrTfGbkJnbdX
+	 tyWJQvIUjZOAY3vidYY0k7FQTKZzBEapKnQ83sErNty+EJtF3xhTZ07qv+exFx+4xl
+	 nugJ4xcGGEXCNJ3RF5eD45ji1cPCpp23KmZKSY5hHYC/TTvg5j+cCluuT/cCnF642S
+	 WniSODD9q5ajlWrsGN5T8yADqAIB4yXI1Mho0RfbmEMWtSMWrxBHQjihiY+9YTWUVK
+	 L4isCE4jStJDHZWd49ozsAcFLe82XctVgArQ/9aT+hPTGr8v+87SYJRs4IsSsGliQp
+	 Nih+GDC8dYHAM1zIWf2gPaQIf0XZgsTFg5kPwWLJH2f8CM3efEQ7PfKpH09Z7mXFGs
+	 Qj8v2cKSzTm/pFMrXwUyMpXn3CeE3LFELp5lG6UImaOoO1KWmI7hMLrrZX09ZS5tSD
+	 TfvHJ4rjYXdIdyODyU6accS0bphrGkPoFVw/LAsUSCMUhwVtJVr6A3lz1S4kzwDsnE
+	 6PviDYYi46IeQ+dsVcG9NRN0=
 Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1C0A540E00CB;
-	Fri, 29 Dec 2023 09:29:07 +0000 (UTC)
-Date: Fri, 29 Dec 2023 10:29:01 +0100
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 414D440E00C9;
+	Fri, 29 Dec 2023 09:39:48 +0000 (UTC)
+Date: Fri, 29 Dec 2023 10:39:42 +0100
 From: Borislav Petkov <bp@alien8.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: tony.luck@intel.com, linux-kernel@vger.kernel.org,
-	James Morse <james.morse@arm.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org
-Subject: Re: [PATCH] EDAC: constantify the struct bus_type usage
-Message-ID: <20231229092901.GAZY6RXUVHsq1d8gEI@fat_crate.local>
-References: <2023121909-tribute-punctuate-4b22@gregkh>
- <20231228150003.GAZY2Nc38sAIa0bat/@fat_crate.local>
- <2023122918-tiring-isolating-3f4a@gregkh>
+To: Tanzir Hasan <tanzirh@google.com>
+Cc: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+	Nick Desaulniers <nnn@google.com>
+Subject: Re: [PATCH] x86/vdso: shrink vdso/extable.i via IWYU
+Message-ID: <20231229093942.GBZY6T3knaGKpeRA9a@fat_crate.local>
+References: <20231228-extable-v1-1-32a18c66b440@google.com>
+ <20231228212511.GCZY3nt3gKI+aDvSF1@fat_crate.local>
+ <CAE-cH4rEWU-+ovwo8_-i3b2F8pK17kORJ3gV5tnjnUpRJA+B0Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,24 +72,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2023122918-tiring-isolating-3f4a@gregkh>
+In-Reply-To: <CAE-cH4rEWU-+ovwo8_-i3b2F8pK17kORJ3gV5tnjnUpRJA+B0Q@mail.gmail.com>
 
-On Fri, Dec 29, 2023 at 09:10:02AM +0000, Greg Kroah-Hartman wrote:
-> Hey, we could be using German and then it would be something like
-> "Konstantifizierung" :)
+On Thu, Dec 28, 2023 at 02:01:20PM -0800, Tanzir Hasan wrote:
+> The intention with these changes is to add up the impact of these small changes
+> over time to improve build time and also use more direct inclusions where
+> possible.
 
-Ewww. Or to say in German: "Oh nee". :-P
+The problem I see with such "changes" is that it'll be a never-ending
+stream of them because over time, headers get reworked, moved, changed,
+split, etc and one would have to do such reorganization again.
 
-Lemme guess, that must sound similar in Dutch. google translate says
-"constantificatie". Fun.
+And I'd understand it if the benefits were higher than what you're
+seeing. But right now it looks like unnecessary churn.
 
-> Ah, oops, that means this depends on a patch in my trees already that
-> fix this up.  You can wait until after 6.8-rc1 to get to this, or I can
-> take it in my tree if you want now, which ever is easiest for you.
+Dunno, perhaps one could do those in one single patch for, say,
+on arch/x86/ or so, and show a before and after wrt numbers. And then do it
+again in a couple of releases, when it becomes necessary again.
 
-Either's fine with me so I leave it up to you.
+Or one could run that tool on patches which haven't been applied yet,
+patches on lkml.
 
-Thx.
+Patches which touch headers or add #include directives and then reply
+with an automatic report to them, saying something along the lines of
+
+"your patch has a suboptimal include - if you include this and that,
+it'll improve build time by this and that"
+
+and then people would incorporate those changes and right then and
+there.
+
+But let's see what the others think first.
 
 -- 
 Regards/Gruss,
