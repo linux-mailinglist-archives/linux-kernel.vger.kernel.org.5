@@ -1,309 +1,249 @@
-Return-Path: <linux-kernel+bounces-12895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9527881FC36
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 01:46:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 326D481FC54
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 02:27:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A5FB1C2146A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 00:46:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFCA6285E00
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 01:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 357111388;
-	Fri, 29 Dec 2023 00:46:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4872617C0;
+	Fri, 29 Dec 2023 01:27:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YAP2H1bO"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="n9DCibkL";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="Co3WR0TN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B621385;
-	Fri, 29 Dec 2023 00:45:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703810759; x=1735346759;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=h0d7MyfanjVVQK9qj4fu4bv00Y+gJQB03toFTcpEIak=;
-  b=YAP2H1bOvDCGqC0zopqFPphWRXxhKqbyAgeYw/gpxto1A32LU266Y7oJ
-   7uvSHrzkp035n1hUuqdTzNUdzN7DyE2561GL/0jRq/691zYYdcgd3VVHh
-   2kyDwsRL4htzEhkTVuCpQdmfIUAdJzAW1ysaxM4EJBb0Q36MvvSS81zHo
-   L91iSI0kLOIPjzIUR0NIuDL5mPl/ZxNnybwh3NU0MK+skLZLNW61ZI95e
-   NXDkDPiLN+4F8aSgESIuQPzgktVu+JtmVE4ZFWIkRHiHjB9RKc3mktoxU
-   jNruhh1rxyoL0MMN9Z+vq+Gpe20kyz22I2iT9fMMOFEyZk0qk0cQJZdgn
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="381578338"
-X-IronPort-AV: E=Sophos;i="6.04,313,1695711600"; 
-   d="scan'208";a="381578338"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 16:45:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="869261577"
-X-IronPort-AV: E=Sophos;i="6.04,313,1695711600"; 
-   d="scan'208";a="869261577"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 28 Dec 2023 16:45:46 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rJ10S-000Gxl-0Y;
-	Fri, 29 Dec 2023 00:45:44 +0000
-Date: Fri, 29 Dec 2023 08:44:49 +0800
-From: kernel test robot <lkp@intel.com>
-To: Peter Tsao <peter.tsao@mediatek.com>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Von Dentz <luiz.dentz@gmail.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Sean Wang <sean.wang@mediatek.com>,
-	Deren Wu <deren.Wu@mediatek.com>, Chris Lu <chris.lu@mediatek.com>,
-	Aaron Hou <aaron.hou@mediatek.com>,
-	Steve Lee <steve.lee@mediatek.com>,
-	linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	linux-mediatek <linux-mediatek@lists.infradead.org>,
-	Peter Tsao <peter.tsao@mediatek.com>
-Subject: Re: [PATCH] Bluetooth: btusb: Fix MT7925 fail to send download patch
- command
-Message-ID: <202312290838.c0zcBoUz-lkp@intel.com>
-References: <20231228092014.23184-1-peter.tsao@mediatek.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24092137F;
+	Fri, 29 Dec 2023 01:27:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 5f7bbad6a5e911eea2298b7352fd921d-20231229
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=UB9FV4Zh3w7vsXP7MgduU31Cz6sRW+ibus/Q4YAzwhc=;
+	b=n9DCibkLjrTp1n0XMgN5Emqy4lVatAQw8UCYa4rXNTYZZ7oSABJCufVACbGib0TBDdBUpAINvWfExzMKfBFHIHxRS4OEGvs13y+VDfD9+txuueCCHyjt9+ru/uMcTZ9Ng6yRLyr6jkwi2K6AW3grMc0moprOoAVce/R3xulHmS8=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:16907f1d-8ef4-49c1-8710-a28db673bbdb,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:5d391d7,CLOUDID:a7c0ae8d-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+	NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 5f7bbad6a5e911eea2298b7352fd921d-20231229
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
+	(envelope-from <ck.hu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 968745390; Fri, 29 Dec 2023 09:27:04 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 29 Dec 2023 09:27:03 +0800
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 29 Dec 2023 09:27:03 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bukdZyq3O41YH288TtMGtEsCYHis++ZbG+xDjl67WRgEzmV3M3VCg2QhDJJZcwHKxjFVyJ0E1RkXgLE8nqJ7PvJgJyV0gHCac7rvhMu0PW73YVwZlennHJscpSc/rKja0lhUsdKXkbhDRFndqEftbUTWDF9sVbAcbzMb3uNQIaVqnGti1q2SFdinLgKmkSTRxGaplw8U5d2wknYpd85YMgwHdyJ9tMDi+H/PurcDlopMTdkCTb3YpJKW07Q5DqhHEcmd+nFmgxJOqOcw8QanpIjaU1wrEHY5l+9RTpWaKgGbUhKzSYS968900ynJHqpu7RfxXA15mo36y2pIE9Hxog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UB9FV4Zh3w7vsXP7MgduU31Cz6sRW+ibus/Q4YAzwhc=;
+ b=LbDIKtO27HxbF6BNb4oPdO1Ya7CQ8sQTm8sCICEk7GRYCd5QwPdio9YiSFVhP8zmbGXe4l27dg+wgj1rvuK5B0hEKDp7tODgBtEmW9QesB7shGnUdCRwHvUmu2YNIfXMg+R+NhGWAQh3kk4h05P3AaewXW1iv/sUrzZfktCwHAnntrCX86M73WM6YqN80iltAiGc2ht0jUgq6tldmBuPD/iiXLXDLFqLUEbmO1//qthEUVdjt4cQZjpgEdLZ66sViPJXnwOZjVFziWwK8AtGxfLnajRbCLM8tBa/6gs9H/H/vg3c0a8HptWUX3s/z9lcmLXBp7ga0PsdM68kHYlCpw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UB9FV4Zh3w7vsXP7MgduU31Cz6sRW+ibus/Q4YAzwhc=;
+ b=Co3WR0TN16MXvHkavmUVD2Vhbe1GPtasN5w+FHhMREnWl+SwkAU+3mqY/O9x8mWlkVfIUEreDxLcWMbsPr6Flpd7UPVD6Ydb0e5gV0ZUNCM1RT/RmZbxikUHMmstaY3Q/zCjV6UTaU1wl7pYuDTELAapSVunH3ovxhd2tsDD3e8=
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
+ by PSAPR03MB5302.apcprd03.prod.outlook.com (2603:1096:301:40::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.21; Fri, 29 Dec
+ 2023 01:27:01 +0000
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::eb43:57cb:edfd:3762]) by TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::eb43:57cb:edfd:3762%7]) with mapi id 15.20.7135.019; Fri, 29 Dec 2023
+ 01:27:01 +0000
+From: =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
+To: "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
+	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+	=?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= <Jason-JH.Lin@mediatek.com>,
+	"angelogioacchino.delregno@collabora.com"
+	<angelogioacchino.delregno@collabora.com>, "robh+dt@kernel.org"
+	<robh+dt@kernel.org>, "krzysztof.kozlowski+dt@linaro.org"
+	<krzysztof.kozlowski+dt@linaro.org>, "chunkuang.hu@kernel.org"
+	<chunkuang.hu@kernel.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	=?utf-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= <Singo.Chang@mediatek.com>,
+	=?utf-8?B?Sm9obnNvbiBXYW5nICjnjovogZbpkasp?= <Johnson.Wang@mediatek.com>,
+	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	=?utf-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?=
+	<Jason-ch.Chen@mediatek.com>, =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?=
+	<Shawn.Sung@mediatek.com>, "mchehab@kernel.org" <mchehab@kernel.org>,
+	=?utf-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	Project_Global_Chrome_Upstream_Group
+	<Project_Global_Chrome_Upstream_Group@mediatek.com>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v3 8/9] mailbox: mediatek: Add CMDQ secure mailbox driver
+Thread-Topic: [PATCH v3 8/9] mailbox: mediatek: Add CMDQ secure mailbox driver
+Thread-Index: AQHaNJMHlgU6p3MSPUCi0pus2NsH47C/gxcA
+Date: Fri, 29 Dec 2023 01:27:00 +0000
+Message-ID: <1b21f5bfa561b049193742804de42a1c03500a73.camel@mediatek.com>
+References: <20231222045228.27826-1-jason-jh.lin@mediatek.com>
+	 <20231222045228.27826-9-jason-jh.lin@mediatek.com>
+In-Reply-To: <20231222045228.27826-9-jason-jh.lin@mediatek.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|PSAPR03MB5302:EE_
+x-ms-office365-filtering-correlation-id: 1d67aca3-45c8-4fc1-7c48-08dc080d41b5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8JsdUz6K9zGwxTyLp9TRSfccH6ckMzbpZmdND9VC0EAJo30SDwqKKPXwf25vOYOPCIkZhBQZJuCEAB0B+G96nnOWtCO4LjDiSQb984PMk4b0p2wHl3kstoywWr51oGgsDrA3e+xMMt2liZKyNmjW9sEfRIb61lp8VS5n1mpZYVdxyDpCDl7UlGZsKzJWtK3eoyUX8woSNWrDa5C633I6os9ZquCSY/0tQIX5NOwfTOMe5ReF60ogaY+ypwR+vPvUExT7dk3FO9gCb2WJK6NuAjG5oFcDe+4/oL857k+Zm9DXegTrYXN2JjAgjSo1YQaDRXP94BdZAStxtlGYlmDK6gR9oPek0HutR1S0DivfjSeSzrRKE/oWXV1pMeb2qr40iP//NRn2reIvM3Mg7N/GLAGdFJb4u/sFxV0lhbwa2acl1KRnu9iBWwufA6bLdcLxHi4nrogZ+Rr/Qb+CuSNbGrgkYekrHBRIniNStlndaoPAvtGoP3+JDAJPdiLrJER+Ts9u+n6QNnJxN3d61B/IO7DlfG/o4VdLVQN3FTS99yDkJcKCDX21xjj/1N4IILfksMNDhsXYqeojdvcLYKLQfG5VcVgJ+Fmly8XgXwIvkYv6wnirPyKIyXXuxdfNTIMv1sRYofMdh6BIvJ4Fix4hQHunxYq+fKmpBACES+Q1KoI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(376002)(39860400002)(346002)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(41300700001)(83380400001)(2906002)(4001150100001)(54906003)(66946007)(76116006)(66476007)(64756008)(66446008)(66556008)(110136005)(316002)(6512007)(38070700009)(122000001)(71200400001)(6506007)(478600001)(26005)(2616005)(38100700002)(86362001)(6486002)(15650500001)(5660300002)(7416002)(8676002)(8936002)(85182001)(4326008)(36756003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UHAyRjV0eFliRnp4T2RiNVVza0RVWnQySmRISkRsNGxIMzljR3czcGVDampD?=
+ =?utf-8?B?WHlVVTFqaHpVSkZzQm5INTV0eHZaSWVINUE4UGd0VU9pbzZUbUx2QllDdXc2?=
+ =?utf-8?B?cU1TMzkydjV2SjIwUmI1dHdPMnREdnJWRXB1S2c5TFgrdGxXclltTVgyd0J1?=
+ =?utf-8?B?Z2lEd29TNHFmZy9LSlZ1ZVN4RnhYUU5JdlFKN2tUOWZocXFaRjMybzI1ZlRG?=
+ =?utf-8?B?dUFpZDFBODJhazBXejBpVlZIcFAxTnROUGJ4eVVvdHZPd1NsMXJWbFgwdXpv?=
+ =?utf-8?B?NUNaTUxjL1dWM1o3aTY2ekF6OUNhYXZVSTI4OENTUDZaS0dMbjRxSE1KVVNx?=
+ =?utf-8?B?NUlVYThsd0RKaUNDMWc0SCtVbWlmNEtuVnFxZGpwaC9HeUlVdzBIejE1VTVv?=
+ =?utf-8?B?a1ZVMDVIaXBaRHlPNFMwOWI2Wm1uUXVJVzVUZ2xiKzdQQTNtQ01HeURyS1p3?=
+ =?utf-8?B?SlRuaTRrNWd1aGZPWjF2dkVLYnpMdDRvTXMvYTlsbG5rV1NLNU9VbGtQdDhs?=
+ =?utf-8?B?azVQN0RHVWlpWnRDdTBFME5lWjFPKzBKbjJ6UythM010d2tZbzBpb2JXUjBS?=
+ =?utf-8?B?c3pYTG1RV3RkTEZTeWVTaVhvd2dEUnVvU3BVeEtXREVhVlNpWFNZS3hSSWZY?=
+ =?utf-8?B?ZjZ2TEQ5eWJ4eWQ2aDJYcnQ5L3NqVlRBREk2QmFsUFZRdG1DK2hxQVR6cFdG?=
+ =?utf-8?B?Mzh4aGhoWWRrQVBVNE1md2NlV1FpRVo1UG4wOUlKajZyZzRUWis0MnR2bGlV?=
+ =?utf-8?B?ckZxbkwzWk4yU2M0R2UyVituTWNDTmQ4Z0Y3c096azI2K1NIQ2J0cnVWeVAw?=
+ =?utf-8?B?cExCNlBHRHRJNlIyNys3TkV2bk53RTl5b25mRDRQWVBETkxzZ3JyUHoxYXJj?=
+ =?utf-8?B?QjB3ZnNFNXpKM2JvditjWk80RUwzdXRBSGFpaE1ONCswanFDeGptVURrZXhB?=
+ =?utf-8?B?Z25SYWNreDZVVlJuV2hrakZGWXVDSW9WWGp1WWRnNmhpQ0hzSXIrYTVJSVBo?=
+ =?utf-8?B?VnhWYmJRSFpOZXh0YzBOZFZ3Q0h1YjN5SWwyZE4wMmxmdklZTUk0YVdWZnBi?=
+ =?utf-8?B?OTJvUm1yNkVrZE5DLzlzMUdlMmNZays4WTdCdFlmaWh2TUI2eWJ0RlpHbzZG?=
+ =?utf-8?B?MmdFY3BDY0kzYnNZTjNBUDRYZ1BFZVROMHdRV01OclFCREx0dTBFZFU2NWx3?=
+ =?utf-8?B?c3RKMUFxUzZMM2VzQlVzb25Ta0QwYlhzcnVFcjJ2dllBUkhSd0crQjdpZEUx?=
+ =?utf-8?B?SGZzYnZJZHJJQW9yaXJTYVpMbHZlcTlESUxnanIzQjJ6TEJKVE1qRUQxTjd0?=
+ =?utf-8?B?Qm85MHdTTGFrVEFZZDFtM3RaVTlqU2kwZXlnUXlNSzN1dzV5Q1VPWkxqMHdQ?=
+ =?utf-8?B?am40dXMwSDZqcEdMelFaZTF0ak9KZ2FXMnJZZVFZREJDTERmeGJ0THZlWE5u?=
+ =?utf-8?B?SFNHY3VvM2VMQ0lhUGUvallwVi91Ly9tMHI4d0N6Z2Vadm50ZTMrYVZQbmZI?=
+ =?utf-8?B?UXZydkExc0N2QXptRlFwV1MyRWtTQjkrc2dMSm40NWgyLytnanJhUm53MG5P?=
+ =?utf-8?B?aE50dEsraDVyRlJlODVDMmhBS2JZNEFsNUs5RVJWcDRvVUFQNTZSTlJBTTIx?=
+ =?utf-8?B?ZkczTjdoUWNNTGkzYVpiT0o3MEhobDUwNklPalJ6L3NLUGtyTHBtSk9qTlUv?=
+ =?utf-8?B?S056SUtLbmtlazdwSnV0Qyt3ZVRXYnU5NVVjVHpQYU44SkZ4TFQ3OVN4d25r?=
+ =?utf-8?B?RmEvcEJWS2xkV3NOUjZmN1MvTmRqN0RUU0FaU0ZEZDcyQ0RmaDR2THJDWFVr?=
+ =?utf-8?B?TmVFUURENW5GNXMvYWFLdlJsc0VCc0xWODNJbmZxT0t4aEliSDhUM0VPeGFi?=
+ =?utf-8?B?TUt0NVM4RWxJcnRvSUlkRkpxblUzYTNTa1UwZTVWTGpBTWhvQSsyR1NvcURZ?=
+ =?utf-8?B?MHVhc3RpTDZWK25YTkRPZFlHWk5Za1BKZWhpdXg5MStPbkxLUlhUdkNzVVdV?=
+ =?utf-8?B?UysxWmlLV2FlakNpNDcrYlZJZytMSEcySTY2VjI5QmpPT2pHSnBFamsxeUNG?=
+ =?utf-8?B?bHI3Qllzc2pmeWI5dXNuTEhhSzJoQjB0Q3l6c09mM0lEZjNObUtBVkZZQy9n?=
+ =?utf-8?Q?A/nIMZ/YA7w3T15GF+WHwKtqF?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6D4A100A98650649AF99087C1404DAD7@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231228092014.23184-1-peter.tsao@mediatek.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d67aca3-45c8-4fc1-7c48-08dc080d41b5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Dec 2023 01:27:00.9758
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: U/0aCcY6tFGJYmmJOXRxkfvn1E3CwNrezVfn7FsOG0ZcVOn69IdUNwBq/JifSTluW2/7mc6xcm64pcRhgqm80A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR03MB5302
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--17.298800-8.000000
+X-TMASE-MatchedRID: QfHZjzml1E8OwH4pD14DsPHkpkyUphL9qQ9UezeTkThu4FknyqyshF1Q
+	po5pNysMe29pTfBhqOY7b3Js3F6vVD1LciJB3541o65WJt1k1O8TbU1KYGoQp3vsbfoZixUT3oz
+	JRX7b4NlXDMdLGLREMMXK8CR3a95BwkdUVZ4wAsQdxBAG5/hkW9qgUkBwIfKYrcsFdtecvlP6p1
+	jlhLAJAvcqU4dInnrp5tlnPJX7htRoAILruplAqrdQIb8hCnY+I7OxeNfmD+wIxs8bpapULKPFj
+	JEFr+olFUew0Fl/1pEBi3kqJOK62QtuKBGekqUpI/NGWt0UYPCQjpWlTG6/YrkraxDde6naBUVv
+	b7IBJzEH5eyzBoWGRHPmli6osFKp
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--17.298800-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	AD86BE1E1160C73C4DD29A134235C7DBEC29837991A2530FB21E33118AE90AE82000:8
 
-Hi Peter,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on bluetooth/master]
-[also build test ERROR on bluetooth-next/master linus/master v6.7-rc7 next-20231222]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Peter-Tsao/Bluetooth-btusb-Fix-MT7925-fail-to-send-download-patch-command/20231228-172328
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth.git master
-patch link:    https://lore.kernel.org/r/20231228092014.23184-1-peter.tsao%40mediatek.com
-patch subject: [PATCH] Bluetooth: btusb: Fix MT7925 fail to send download patch command
-config: i386-buildonly-randconfig-002-20231229 (https://download.01.org/0day-ci/archive/20231229/202312290838.c0zcBoUz-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231229/202312290838.c0zcBoUz-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312290838.c0zcBoUz-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/bluetooth/btusb.c:3122:49: error: use of undeclared identifier 'val'
-    3122 |                 btusb_mtk_uhw_reg_read(data, MT7925_SLPPROT, &val);
-         |                                                               ^
-   drivers/bluetooth/btusb.c:3123:3: error: use of undeclared identifier 'val'
-    3123 |                 val |= SLPPROT_BYPASS;
-         |                 ^
-   drivers/bluetooth/btusb.c:3124:49: error: use of undeclared identifier 'val'
-    3124 |                 btusb_mtk_uhw_reg_write(data, MT7925_SLPPROT, val);
-         |                                                               ^
-   3 errors generated.
-
-
-vim +/val +3122 drivers/bluetooth/btusb.c
-
-  3068	
-  3069	static int btusb_mtk_setup(struct hci_dev *hdev)
-  3070	{
-  3071		struct btusb_data *data = hci_get_drvdata(hdev);
-  3072		struct btmtk_hci_wmt_params wmt_params;
-  3073		ktime_t calltime, delta, rettime;
-  3074		struct btmtk_tci_sleep tci_sleep;
-  3075		unsigned long long duration;
-  3076		struct sk_buff *skb;
-  3077		const char *fwname;
-  3078		int err, status;
-  3079		u32 dev_id = 0;
-  3080		char fw_bin_name[64];
-  3081		u32 fw_version = 0;
-  3082		u8 param;
-  3083		struct btmediatek_data *mediatek;
-  3084	
-  3085		calltime = ktime_get();
-  3086	
-  3087		err = btusb_mtk_id_get(data, 0x80000008, &dev_id);
-  3088		if (err < 0) {
-  3089			bt_dev_err(hdev, "Failed to get device id (%d)", err);
-  3090			return err;
-  3091		}
-  3092	
-  3093		if (!dev_id || dev_id != 0x7663) {
-  3094			err = btusb_mtk_id_get(data, 0x70010200, &dev_id);
-  3095			if (err < 0) {
-  3096				bt_dev_err(hdev, "Failed to get device id (%d)", err);
-  3097				return err;
-  3098			}
-  3099			err = btusb_mtk_id_get(data, 0x80021004, &fw_version);
-  3100			if (err < 0) {
-  3101				bt_dev_err(hdev, "Failed to get fw version (%d)", err);
-  3102				return err;
-  3103			}
-  3104		}
-  3105	
-  3106		mediatek = hci_get_priv(hdev);
-  3107		mediatek->dev_id = dev_id;
-  3108		mediatek->reset_sync = btusb_mtk_reset;
-  3109	
-  3110		err = btmtk_register_coredump(hdev, btusb_driver.name, fw_version);
-  3111		if (err < 0)
-  3112			bt_dev_err(hdev, "Failed to register coredump (%d)", err);
-  3113	
-  3114		switch (dev_id) {
-  3115		case 0x7663:
-  3116			fwname = FIRMWARE_MT7663;
-  3117			break;
-  3118		case 0x7668:
-  3119			fwname = FIRMWARE_MT7668;
-  3120			break;
-  3121		case 0x7925:
-> 3122			btusb_mtk_uhw_reg_read(data, MT7925_SLPPROT, &val);
-  3123			val |= SLPPROT_BYPASS;
-  3124			btusb_mtk_uhw_reg_write(data, MT7925_SLPPROT, val);
-  3125			fallthrough;
-  3126		case 0x7922:
-  3127		case 0x7961:
-  3128			if (dev_id == 0x7925)
-  3129				snprintf(fw_bin_name, sizeof(fw_bin_name),
-  3130					 "mediatek/mt%04x/BT_RAM_CODE_MT%04x_1_%x_hdr.bin",
-  3131					 dev_id & 0xffff, dev_id & 0xffff, (fw_version & 0xff) + 1);
-  3132			else
-  3133				snprintf(fw_bin_name, sizeof(fw_bin_name),
-  3134					 "mediatek/BT_RAM_CODE_MT%04x_1_%x_hdr.bin",
-  3135					 dev_id & 0xffff, (fw_version & 0xff) + 1);
-  3136	
-  3137			err = btmtk_setup_firmware_79xx(hdev, fw_bin_name,
-  3138							btusb_mtk_hci_wmt_sync);
-  3139			if (err < 0) {
-  3140				bt_dev_err(hdev, "Failed to set up firmware (%d)", err);
-  3141				return err;
-  3142			}
-  3143	
-  3144			/* It's Device EndPoint Reset Option Register */
-  3145			btusb_mtk_uhw_reg_write(data, MTK_EP_RST_OPT, MTK_EP_RST_IN_OUT_OPT);
-  3146	
-  3147			/* Enable Bluetooth protocol */
-  3148			param = 1;
-  3149			wmt_params.op = BTMTK_WMT_FUNC_CTRL;
-  3150			wmt_params.flag = 0;
-  3151			wmt_params.dlen = sizeof(param);
-  3152			wmt_params.data = &param;
-  3153			wmt_params.status = NULL;
-  3154	
-  3155			err = btusb_mtk_hci_wmt_sync(hdev, &wmt_params);
-  3156			if (err < 0) {
-  3157				bt_dev_err(hdev, "Failed to send wmt func ctrl (%d)", err);
-  3158				return err;
-  3159			}
-  3160	
-  3161			hci_set_msft_opcode(hdev, 0xFD30);
-  3162			hci_set_aosp_capable(hdev);
-  3163			goto done;
-  3164		default:
-  3165			bt_dev_err(hdev, "Unsupported hardware variant (%08x)",
-  3166				   dev_id);
-  3167			return -ENODEV;
-  3168		}
-  3169	
-  3170		/* Query whether the firmware is already download */
-  3171		wmt_params.op = BTMTK_WMT_SEMAPHORE;
-  3172		wmt_params.flag = 1;
-  3173		wmt_params.dlen = 0;
-  3174		wmt_params.data = NULL;
-  3175		wmt_params.status = &status;
-  3176	
-  3177		err = btusb_mtk_hci_wmt_sync(hdev, &wmt_params);
-  3178		if (err < 0) {
-  3179			bt_dev_err(hdev, "Failed to query firmware status (%d)", err);
-  3180			return err;
-  3181		}
-  3182	
-  3183		if (status == BTMTK_WMT_PATCH_DONE) {
-  3184			bt_dev_info(hdev, "firmware already downloaded");
-  3185			goto ignore_setup_fw;
-  3186		}
-  3187	
-  3188		/* Setup a firmware which the device definitely requires */
-  3189		err = btmtk_setup_firmware(hdev, fwname,
-  3190					   btusb_mtk_hci_wmt_sync);
-  3191		if (err < 0)
-  3192			return err;
-  3193	
-  3194	ignore_setup_fw:
-  3195		err = readx_poll_timeout(btusb_mtk_func_query, hdev, status,
-  3196					 status < 0 || status != BTMTK_WMT_ON_PROGRESS,
-  3197					 2000, 5000000);
-  3198		/* -ETIMEDOUT happens */
-  3199		if (err < 0)
-  3200			return err;
-  3201	
-  3202		/* The other errors happen in btusb_mtk_func_query */
-  3203		if (status < 0)
-  3204			return status;
-  3205	
-  3206		if (status == BTMTK_WMT_ON_DONE) {
-  3207			bt_dev_info(hdev, "function already on");
-  3208			goto ignore_func_on;
-  3209		}
-  3210	
-  3211		/* Enable Bluetooth protocol */
-  3212		param = 1;
-  3213		wmt_params.op = BTMTK_WMT_FUNC_CTRL;
-  3214		wmt_params.flag = 0;
-  3215		wmt_params.dlen = sizeof(param);
-  3216		wmt_params.data = &param;
-  3217		wmt_params.status = NULL;
-  3218	
-  3219		err = btusb_mtk_hci_wmt_sync(hdev, &wmt_params);
-  3220		if (err < 0) {
-  3221			bt_dev_err(hdev, "Failed to send wmt func ctrl (%d)", err);
-  3222			return err;
-  3223		}
-  3224	
-  3225	ignore_func_on:
-  3226		/* Apply the low power environment setup */
-  3227		tci_sleep.mode = 0x5;
-  3228		tci_sleep.duration = cpu_to_le16(0x640);
-  3229		tci_sleep.host_duration = cpu_to_le16(0x640);
-  3230		tci_sleep.host_wakeup_pin = 0;
-  3231		tci_sleep.time_compensation = 0;
-  3232	
-  3233		skb = __hci_cmd_sync(hdev, 0xfc7a, sizeof(tci_sleep), &tci_sleep,
-  3234				     HCI_INIT_TIMEOUT);
-  3235		if (IS_ERR(skb)) {
-  3236			err = PTR_ERR(skb);
-  3237			bt_dev_err(hdev, "Failed to apply low power setting (%d)", err);
-  3238			return err;
-  3239		}
-  3240		kfree_skb(skb);
-  3241	
-  3242	done:
-  3243		rettime = ktime_get();
-  3244		delta = ktime_sub(rettime, calltime);
-  3245		duration = (unsigned long long)ktime_to_ns(delta) >> 10;
-  3246	
-  3247		bt_dev_info(hdev, "Device setup in %llu usecs", duration);
-  3248	
-  3249		return 0;
-  3250	}
-  3251	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+SGksIEphc29uOg0KDQpPbiBGcmksIDIwMjMtMTItMjIgYXQgMTI6NTIgKzA4MDAsIEphc29uLUpI
+LkxpbiB3cm90ZToNCj4gVG8gc3VwcG9ydCBzZWN1cmUgdmlkZW8gcGF0aCBmZWF0dXJlLCBHQ0Ug
+aGF2ZSB0byByZWFkL3dyaXRlDQo+IHJlZ2lzdGdlcnMNCj4gaW4gdGhlIHNlY3VyZSB3b3JsZC4g
+R0NFIHdpbGwgZW5hYmxlIHRoZSBzZWN1cmUgYWNjZXNzIHBlcm1pc3Npb24gdG8NCj4gdGhlDQo+
+IEhXIHdobyB3YW50cyB0byBhY2Nlc3MgdGhlIHNlY3VyZSBjb250ZW50IGJ1ZmZlci4NCj4gDQo+
+IEFkZCBDTURRIHNlY3VyZSBtYWlsYm94IGRyaXZlciB0byBtYWtlIENNRFEgY2xpZW50IHVzZXIg
+aXMgYWJsZSB0bw0KPiBzZW5kaW5nIHRoZWlyIEhXIHNldHRpbmdzIHRvIHRoZSBzZWN1cmUgd29y
+bGQuIFNvIHRoYXQgR0NFIGNhbg0KPiBleGVjdXRlDQo+IGFsbCBpbnN0cnVjdGlvbnMgdG8gY29u
+ZmlndXJlIEhXIGluIHRoZSBzZWN1cmUgd29ybGQuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBKYXNv
+bi1KSC5MaW4gPGphc29uLWpoLmxpbkBtZWRpYXRlay5jb20+DQo+IC0tLQ0KDQpbc25pcF0NCg0K
+PiArDQo+ICtzdGF0aWMgaW50IGNtZHFfc2VjX3Nlc3Npb25fc2VuZChzdHJ1Y3QgY21kcV9zZWNf
+Y29udGV4dCAqY29udGV4dCwNCj4gKwkJCQkgc3RydWN0IGNtZHFfc2VjX3Rhc2sgKnNlY190YXNr
+LCBjb25zdA0KPiB1MzIgaXdjX2NtZCwNCj4gKwkJCQkgY29uc3QgdTMyIHRocmRfaWR4LCBzdHJ1
+Y3QgY21kcV9zZWMNCj4gKmNtZHEpDQo+ICt7DQo+ICsJaW50IGVyciA9IDA7DQo+ICsJdTY0IGNv
+c3Q7DQo+ICsJc3RydWN0IGl3Y19jbWRxX21lc3NhZ2VfdCAqaXdjX21zZyA9IE5VTEw7DQo+ICsN
+Cj4gKwlpd2NfbXNnID0gKHN0cnVjdCBpd2NfY21kcV9tZXNzYWdlX3QgKiljb250ZXh0LT5pd2Nf
+bXNnOw0KPiArDQo+ICsJbWVtc2V0KGl3Y19tc2csIDAsIHNpemVvZigqaXdjX21zZykpOw0KPiAr
+CWl3Y19tc2ctPmNtZCA9IGl3Y19jbWQ7DQo+ICsJaXdjX21zZy0+Y21kcV9pZCA9IGNtZHEtPnBk
+YXRhLT5od2lkOw0KPiArCWl3Y19tc2ctPmNvbW1hbmQudGhyZWFkID0gdGhyZF9pZHg7DQo+ICsN
+Cj4gKwlzd2l0Y2ggKGl3Y19jbWQpIHsNCj4gKwljYXNlIENNRF9DTURRX0lXQ19TVUJNSVRfVEFT
+SzoNCj4gKwkJZXJyID0gY21kcV9zZWNfZmlsbF9pd2NfbXNnKGNvbnRleHQsIHNlY190YXNrLA0K
+PiB0aHJkX2lkeCk7DQo+ICsJCWlmIChlcnIpDQo+ICsJCQlyZXR1cm4gZXJyOw0KPiArCQlicmVh
+azsNCj4gKwljYXNlIENNRF9DTURRX0lXQ19DQU5DRUxfVEFTSzoNCj4gKwkJaXdjX21zZy0+Y2Fu
+Y2VsX3Rhc2sud2FpdF9jb29raWUgPSBzZWNfdGFzay0NCj4gPndhaXRfY29va2llOw0KPiArCQlp
+d2NfbXNnLT5jYW5jZWxfdGFzay50aHJlYWQgPSB0aHJkX2lkeDsNCj4gKwkJYnJlYWs7DQo+ICsJ
+Y2FzZSBDTURfQ01EUV9JV0NfUEFUSF9SRVNfQUxMT0NBVEU6DQo+ICsJCWlmICghY21kcS0+c2hh
+cmVkX21lbSB8fCAhY21kcS0+c2hhcmVkX21lbS0+dmEpIHsNCj4gKwkJCWRldl9lcnIoY21kcS0+
+bWJveC5kZXYsICIlcyAlZDogc2hhcmVkX21lbSBpcw0KPiBOVUxMIiwgX19mdW5jX18sIF9fTElO
+RV9fKTsNCj4gKwkJCXJldHVybiAtRUZBVUxUOw0KPiArCQl9DQo+ICsJCWl3Y19tc2ctPnBhdGhf
+cmVzb3VyY2Uuc2l6ZSA9IGNtZHEtPnNoYXJlZF9tZW0tPnNpemU7DQo+ICsJCWl3Y19tc2ctPnBh
+dGhfcmVzb3VyY2Uuc2hhcmVfbWVtb3lfcGEgPSBjbWRxLQ0KPiA+c2hhcmVkX21lbS0+cGE7DQo+
+ICsJCWl3Y19tc2ctPnBhdGhfcmVzb3VyY2UudXNlX25vcm1hbF9pcnEgPSAxOw0KPiArCQlicmVh
+azsNCj4gKwlkZWZhdWx0Og0KPiArCQlicmVhazsNCj4gKwl9DQo+ICsNCj4gKwljbWRxLT5zZWNf
+aW52b2tlID0gc2NoZWRfY2xvY2soKTsNCj4gKwlkZXZfZGJnKGNtZHEtPm1ib3guZGV2LCAiJXMg
+ZXhlY3V0ZSBjbWRxOiVwIHNlY190YXNrOiVwDQo+IGNvbW1hbmQ6JXUgdGhyZWFkOiV1IGNvb2tp
+ZTolZCIsDQo+ICsJCV9fZnVuY19fLCBjbWRxLCBzZWNfdGFzaywgaXdjX2NtZCwgdGhyZF9pZHgs
+DQo+ICsJCXNlY190YXNrID8gc2VjX3Rhc2stPndhaXRfY29va2llIDogLTEpOw0KPiArDQo+ICsJ
+Lyogc2VuZCBtZXNzYWdlICovDQo+ICsJZXJyID0gY21kcV9zZWNfZXhlY3V0ZV9zZXNzaW9uKCZj
+b250ZXh0LT50ZWVfY3R4LCBpd2NfY21kLA0KPiBDTURRX1RJTUVPVVRfREVGQVVMVCk7DQo+ICsN
+Cj4gKwljbWRxLT5zZWNfZG9uZSA9IHNjaGVkX2Nsb2NrKCk7DQo+ICsJY29zdCA9IGRpdl91NjQo
+Y21kcS0+c2VjX2RvbmUgLSBjbWRxLT5zZWNfaW52b2tlLCAxMDAwMDAwKTsNCj4gKwlpZiAoY29z
+dCA+PSBDTURRX1RJTUVPVVRfREVGQVVMVCkNCg0KTWF5YmUgZm9yIHNvbWUgY2xpZW50IGRyaXZl
+ciwgMSBtcyBpcyB0b28gbG9uZywgYW5kIGZvciBzb21lIGNsaWVudA0KZHJpdmVyIDEgc2Vjb25k
+IGlzIG5vdCBsb25nLiBTbyBJIHRoaW5rIHRoZSB0aW1lb3V0IGRldGVjdGlvbiBzaG91bGQgYmUN
+CmRvbmUgYnkgY2xpZW50IGRyaXZlci4gQW5kIHRoZSBleGVjdXRpb24gdGltZSBkZXBlbmQgb24g
+dGhlIGNvbW1hbmQNCmJ1ZmZlciBnZW5lcmF0ZWQgYnkgY2xpZW50IGRyaXZlciwgc28gb25seSBj
+bGllbnQgZHJpdmVyIGhhcyB0aGUNCmFiaWxpdHkgdG8gZGVidWcgdGhlIGNvbW1hbmQgYnVmZmVy
+IGl0IGdlbmVyYXRlZC4gU28gaXQncyBub3QgbmVjZXNzYXJ5DQp0byBkZXRlY3QgdGltZW91dCBp
+biBjbWRxIGRyaXZlci4NCg0KUmVnYXJkcywNCkNLDQoNCj4gKwkJZGV2X2VycihjbWRxLT5tYm94
+LmRldiwgIiVzIGV4ZWN1dGUgdGltZW91dCBjbWRxOiVwDQo+IHNlY190YXNrOiVwIGNvc3Q6JWxs
+dXVzIiwNCj4gKwkJCV9fZnVuY19fLCBjbWRxLCBzZWNfdGFzaywgY29zdCk7DQo+ICsJZWxzZQ0K
+PiArCQlkZXZfZGJnKGNtZHEtPm1ib3guZGV2LCAiJXMgZXhlY3V0ZSBkb25lIGNtZHE6JXANCj4g
+c2VjX3Rhc2s6JXAgY29zdDolbGx1dXMiLA0KPiArCQkJX19mdW5jX18sIGNtZHEsIHNlY190YXNr
+LCBjb3N0KTsNCj4gKw0KPiArCWlmIChlcnIpDQo+ICsJCXJldHVybiBlcnI7DQo+ICsNCj4gKwlj
+b250ZXh0LT5zdGF0ZSA9IElXQ19TRVNfT05fVFJBTlNBQ1RFRDsNCj4gKwlyZXR1cm4gMDsNCj4g
+K30NCj4gKw0K
 
