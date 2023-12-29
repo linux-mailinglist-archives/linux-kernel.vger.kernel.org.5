@@ -1,98 +1,148 @@
-Return-Path: <linux-kernel+bounces-13096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA9A881FFA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 14:20:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A61B81FFA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 14:21:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70FB31F22C19
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 13:20:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06A7E2833BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 13:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A67211711;
-	Fri, 29 Dec 2023 13:20:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91EA311706;
+	Fri, 29 Dec 2023 13:21:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ARsCAUrd"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="RMnMj0P5";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SyPFXpl2";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="RMnMj0P5";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SyPFXpl2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B910111B5;
-	Fri, 29 Dec 2023 13:20:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B061C433C7;
-	Fri, 29 Dec 2023 13:20:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703856022;
-	bh=PZ8xNlGCvRbn/i0nNGotIHyKuFdlPak1Ni35jU5x2xQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ARsCAUrdFPk9WlFqWn1bmXWWZPl7mLPBucASz2oJIvyqSx/pIR7CGyRn360YWj3bU
-	 i6Vmq78XvLMouTN4NtS5eghI8YGAH8N+39AGUEKs7vdmT8L/1uB/992YFf05u0lPIO
-	 1GHFNQktP3L3GrnDSa0z2Ua5B+1QAo+vWI/bnzbxNgLgNZxlCGOg//mG74yC0TMMiM
-	 R/8iMW8UTFXaovVw2B/HmFwB5m96hdrktXZ2gVOKxVwFbu3nig6fjLA+u1UgCulXnO
-	 BnNStwk8wKf5uRonGrN9WEOxDIOe5rQ5BGE7HHGnXgG457lKI6ijXTVv1k6ERhnqwU
-	 D1rphok6WoOmA==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rJCmd-0000A6-1u;
-	Fri, 29 Dec 2023 14:20:15 +0100
-Date: Fri, 29 Dec 2023 14:20:15 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Konrad Dybcio <konrad.dybcio@somainline.org>
-Subject: Re: [PATCH 1/3] arm64: dts: qcom: sc8280xp: Fix PCIe PHY
- power-domains
-Message-ID: <ZY7HjxOXhikr4VKM@hovoldconsulting.com>
-References: <20231227-topic-8280_pcie_dts-v1-0-13d12b1698ff@linaro.org>
- <20231227-topic-8280_pcie_dts-v1-1-13d12b1698ff@linaro.org>
- <ZY6sh8nlEUyEfL0u@hovoldconsulting.com>
- <ce7022e6-011c-4745-a508-4776269708d0@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA1711703;
+	Fri, 29 Dec 2023 13:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 432E12209E;
+	Fri, 29 Dec 2023 13:21:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1703856091; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cTMDUEOCmZ1Qrqn6ErsZBP8qT5PCPSG5Mq6RwTP1Bt4=;
+	b=RMnMj0P5rvQ/ka9nSfCDw12NyZem5mnqje3ZDEwGG1K0eXn7bQRckZkcaJTGPOPSeFNbVJ
+	Q39Nnn6Lz+ZaTYvE8S1nkkjOqJTf2aCKAe0cJZc7h5wl4R+8erKZdRHKQql0hc4bxqW6g6
+	OdzrTPcBmkBYuJgEW3qlNNrLyLCwuzo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1703856091;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cTMDUEOCmZ1Qrqn6ErsZBP8qT5PCPSG5Mq6RwTP1Bt4=;
+	b=SyPFXpl2M4OlPpBwxtBcfhqgNx342x1l0WsN6k943jNbusrDcW8WwIIc3YZ5f9Zhmkq2FP
+	nAWoojXL1Cg4wqAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1703856091; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cTMDUEOCmZ1Qrqn6ErsZBP8qT5PCPSG5Mq6RwTP1Bt4=;
+	b=RMnMj0P5rvQ/ka9nSfCDw12NyZem5mnqje3ZDEwGG1K0eXn7bQRckZkcaJTGPOPSeFNbVJ
+	Q39Nnn6Lz+ZaTYvE8S1nkkjOqJTf2aCKAe0cJZc7h5wl4R+8erKZdRHKQql0hc4bxqW6g6
+	OdzrTPcBmkBYuJgEW3qlNNrLyLCwuzo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1703856091;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cTMDUEOCmZ1Qrqn6ErsZBP8qT5PCPSG5Mq6RwTP1Bt4=;
+	b=SyPFXpl2M4OlPpBwxtBcfhqgNx342x1l0WsN6k943jNbusrDcW8WwIIc3YZ5f9Zhmkq2FP
+	nAWoojXL1Cg4wqAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 116B4133E5;
+	Fri, 29 Dec 2023 13:21:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id P590AtvHjmXUbgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 29 Dec 2023 13:21:31 +0000
+Date: Fri, 29 Dec 2023 14:21:30 +0100
+Message-ID: <87o7e9xhyd.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Zhipeng Lu <alexious@zju.edu.cn>
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] ALSA: hdsp: fix some memleaks in snd_hdsp_hwdep_ioctl
+In-Reply-To: <20231227060322.3556052-1-alexious@zju.edu.cn>
+References: <20231227060322.3556052-1-alexious@zju.edu.cn>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ce7022e6-011c-4745-a508-4776269708d0@linaro.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.86 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.55)[92.09%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=RMnMj0P5;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=SyPFXpl2
+X-Spam-Score: -2.86
+X-Rspamd-Queue-Id: 432E12209E
 
-On Fri, Dec 29, 2023 at 02:08:25PM +0100, Konrad Dybcio wrote:
-> On 29.12.2023 12:24, Johan Hovold wrote:
-> > On Wed, Dec 27, 2023 at 11:28:26PM +0100, Konrad Dybcio wrote:
-> >> The PCIe GDSCs are only related to the RCs. The PCIe PHYs on the other
-> >> hand, are powered by VDD_MX and their specific VDDA_PHY/PLL regulators.
-> > 
-> > No, that does not seem to be entirely correct. I added the power-domains
-> > here precisely because they were needed to enable the PHYs.
+On Wed, 27 Dec 2023 07:03:20 +0100,
+Zhipeng Lu wrote:
+> 
+> When snd_hdsp_load_firmware_from_cache and snd_hdsp_enable_io fails,
+> the hdsp->fw_uploaded needs to be free.Or there could be memleaks in
+> snd_hdsp_hwdep_ioctl.
+> 
+> Fixes: 90caaef6a1ce ("ALSA: hdsp: improve firmware caching")
+> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
 
-> > If you try to enable one of these PHYs without the corresponding GDSC
-> > being enabled, you end up with:
-> > 
-> > [   37.709324] ------------[ cut here ]------------
-> > [   37.718196] gcc_pcie_3b_aux_clk status stuck at 'off'
-> > [   37.718205] WARNING: CPU: 4 PID: 482 at drivers/clk/qcom/clk-branch.c:86 clk_branch_wait+0x144/0x15c
-> > 	
-> > Now, you may or may not want to describe the above in the devicetree,
-> > but this makes it sound like you're trying to work around an issue with
-> > the current Linux implementation.
+Thanks for the patch, but the patch description is misleading.
+The allocated object isn't really "leaked"; it's released at the
+removal of the driver.
 
-> Could you please recheck this with patch 1 from [1] applied?
+We may apply some optimization like you did, but then it should have a
+different description.
 
-As expected that makes no difference as I'm powering on the PHY without
-the corresponding controller being enabled (which otherwise guarantees
-the GDSC to be on).
 
-> [1] https://lore.kernel.org/linux-arm-msm/20231227-topic-8280_pcie-v1-1-095491baf9e4@linaro.org/T/#u
+thanks,
 
-Johan
+Takashi
 
