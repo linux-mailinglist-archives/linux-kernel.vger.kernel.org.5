@@ -1,193 +1,318 @@
-Return-Path: <linux-kernel+bounces-12980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76C8A81FDF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 08:55:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36FDC81FDF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 08:58:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8DDB1C222A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 07:55:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7C961F21767
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 07:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F23BE4E;
-	Fri, 29 Dec 2023 07:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB3317472;
+	Fri, 29 Dec 2023 07:57:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jcl/kNgV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ABE463C6;
-	Fri, 29 Dec 2023 07:54:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VzQygTj_1703836456;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VzQygTj_1703836456)
-          by smtp.aliyun-inc.com;
-          Fri, 29 Dec 2023 15:54:16 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: pablo@netfilter.org,
-	kadlec@netfilter.org,
-	fw@strlen.de
-Cc: bpf@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62D3663BD;
+	Fri, 29 Dec 2023 07:57:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2343c31c4bso756222166b.1;
+        Thu, 28 Dec 2023 23:57:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703836668; x=1704441468; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aC/jqfThqXUSI51sfHhy0CvTGG4B4LNXIBP7bVGM1r0=;
+        b=jcl/kNgVFi6UXwzhzROw2Vz+3qZn3RkaJCl2JVs/8nrG1Zm2ZH0kcnQnZp8jKWn+2w
+         9vg7VXLrgCGC11f9dHoAhqVnMcZt9noWFkeQKZKhD+Dbt9KGslhQvuTUP2JuT/albZol
+         rxcUz+Ejp/F48NHfrZoxAM4iRwYlUkdHc2O7v2vqsu5lSinx5ZcSucCM38F+E02ee1YW
+         H6jp9AmBPmCeoozu4GRSscx2mii+lnmfTQSzSXv47nOzzzQARc2InZnRrYfSc4Rk4sn0
+         bxIQctF/BXhjRM2vx7aNIUdKi/iwR0Rw+ouTW4nUvqof3Fr/RU6+pOqOU/c/7R7Rn1Im
+         Cvaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703836668; x=1704441468;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aC/jqfThqXUSI51sfHhy0CvTGG4B4LNXIBP7bVGM1r0=;
+        b=eSj7luJ++bwoVN8aAJxqjKxy+MkvWyvLBuRFb6NgVZRvoLILhrya/Ncd+M+V/jbCt6
+         cIaCX2kTf86ZHVO3HBtpXccTUjZeX5JBPOmdTGpHLvX8g2OYHNQkRrjABiqFEs0r0g4J
+         7+ZgQvdd4v9MVvFquV+Khx5g28QeGvEyVe1N5xrP56+F46WtHodmCG/xghlAbPxpmC4A
+         HiX6CObBJVLwO7JSNEo3N8MpLfnZwGNq9iffyAUIDVk23ujJzLXImYTfnFzJsB9eQYbC
+         4B+sQNxro2Fl3MSvSO9kCgDTw+C6DSgBs2AOcA1vaAGoKn/kiWefU02AA5rl8BRAdrop
+         84VQ==
+X-Gm-Message-State: AOJu0YxmAc1lhh9ip1VObrzRh+vHMXzMzTeJjGQ1sfyELZDgOKouxcJk
+	0tHlIc90F+RhEKJ4T+O+LlY=
+X-Google-Smtp-Source: AGHT+IHrAtN7LZkNf03QOXG8GL5AdPbgF5/rBKk+hdBcHgXDuq6+YX9HC4AtU5B+mXYXn+wbY/N6zw==
+X-Received: by 2002:a17:906:519a:b0:a27:7cc5:425d with SMTP id y26-20020a170906519a00b00a277cc5425dmr401094ejk.52.1703836668210;
+        Thu, 28 Dec 2023 23:57:48 -0800 (PST)
+Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.gmail.com with ESMTPSA id wh13-20020a170906fd0d00b00a2684d2e684sm8120865ejb.92.2023.12.28.23.57.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Dec 2023 23:57:47 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	coreteam@netfilter.org,
-	netfilter-devel@vger.kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org
-Subject: [RFC nf-next v4 2/2] selftests/bpf: Add netfilter link prog update test
-Date: Fri, 29 Dec 2023 15:54:09 +0800
-Message-Id: <1703836449-88705-3-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1703836449-88705-1-git-send-email-alibuda@linux.alibaba.com>
-References: <1703836449-88705-1-git-send-email-alibuda@linux.alibaba.com>
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH 1/2] arm64: dts: mediatek: mt7986: reorder properties
+Date: Fri, 29 Dec 2023 08:57:38 +0100
+Message-Id: <20231229075739.8328-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-Update prog for active links and verify whether
-the prog has been successfully replaced.
+Use order described as preferred in DTS Coding Style. Mostly just move
+"compatible", "reg" and "ranges" properties. In two nodes also move
+vendor-prefixed props down.
 
-Expected output:
-
-./test_progs -t netfilter_link_update_prog
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 ---
- .../bpf/prog_tests/netfilter_link_update_prog.c    | 83 ++++++++++++++++++++++
- .../bpf/progs/test_netfilter_link_update_prog.c    | 24 +++++++
- 2 files changed, 107 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
+ arch/arm64/boot/dts/mediatek/mt7986a.dtsi | 67 ++++++++++++-----------
+ 1 file changed, 34 insertions(+), 33 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c b/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
-new file mode 100644
-index 00000000..d23b544
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
-@@ -0,0 +1,83 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+index fc751e049953..23feeff881de 100644
+--- a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+@@ -27,34 +27,34 @@ cpus {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		cpu0: cpu@0 {
+-			device_type = "cpu";
+ 			compatible = "arm,cortex-a53";
+-			enable-method = "psci";
+ 			reg = <0x0>;
++			device_type = "cpu";
++			enable-method = "psci";
+ 			#cooling-cells = <2>;
+ 		};
+ 
+ 		cpu1: cpu@1 {
+-			device_type = "cpu";
+ 			compatible = "arm,cortex-a53";
+-			enable-method = "psci";
+ 			reg = <0x1>;
++			device_type = "cpu";
++			enable-method = "psci";
+ 			#cooling-cells = <2>;
+ 		};
+ 
+ 		cpu2: cpu@2 {
+-			device_type = "cpu";
+ 			compatible = "arm,cortex-a53";
+-			enable-method = "psci";
+ 			reg = <0x2>;
++			device_type = "cpu";
++			enable-method = "psci";
+ 			#cooling-cells = <2>;
+ 		};
+ 
+ 		cpu3: cpu@3 {
+-			device_type = "cpu";
+-			enable-method = "psci";
+ 			compatible = "arm,cortex-a53";
+ 			reg = <0x3>;
++			device_type = "cpu";
++			enable-method = "psci";
+ 			#cooling-cells = <2>;
+ 		};
+ 	};
+@@ -131,22 +131,22 @@ timer {
+ 	};
+ 
+ 	soc {
+-		#address-cells = <2>;
+-		#size-cells = <2>;
+ 		compatible = "simple-bus";
+ 		ranges;
++		#address-cells = <2>;
++		#size-cells = <2>;
+ 
+ 		gic: interrupt-controller@c000000 {
+ 			compatible = "arm,gic-v3";
+-			#interrupt-cells = <3>;
+-			interrupt-parent = <&gic>;
+-			interrupt-controller;
+ 			reg = <0 0x0c000000 0 0x10000>,  /* GICD */
+ 			      <0 0x0c080000 0 0x80000>,  /* GICR */
+ 			      <0 0x0c400000 0 0x2000>,   /* GICC */
+ 			      <0 0x0c410000 0 0x1000>,   /* GICH */
+ 			      <0 0x0c420000 0 0x2000>;   /* GICV */
++			interrupt-parent = <&gic>;
+ 			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-controller;
++			#interrupt-cells = <3>;
+ 		};
+ 
+ 		infracfg: infracfg@10001000 {
+@@ -311,9 +311,9 @@ i2c0: i2c@11008000 {
+ 
+ 		spi0: spi@1100a000 {
+ 			compatible = "mediatek,mt7986-spi-ipm", "mediatek,spi-ipm";
++			reg = <0 0x1100a000 0 0x100>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-			reg = <0 0x1100a000 0 0x100>;
+ 			interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&topckgen CLK_TOP_MPLL_D2>,
+ 				 <&topckgen CLK_TOP_SPI_SEL>,
+@@ -325,9 +325,9 @@ spi0: spi@1100a000 {
+ 
+ 		spi1: spi@1100b000 {
+ 			compatible = "mediatek,mt7986-spi-ipm", "mediatek,spi-ipm";
++			reg = <0 0x1100b000 0 0x100>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-			reg = <0 0x1100b000 0 0x100>;
+ 			interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&topckgen CLK_TOP_MPLL_D2>,
+ 				 <&topckgen CLK_TOP_SPIM_MST_SEL>,
+@@ -389,7 +389,6 @@ mmc0: mmc@11230000 {
+ 		};
+ 
+ 		thermal: thermal@1100c800 {
+-			#thermal-sensor-cells = <1>;
+ 			compatible = "mediatek,mt7986-thermal";
+ 			reg = <0 0x1100c800 0 0x800>;
+ 			interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
+@@ -397,30 +396,30 @@ thermal: thermal@1100c800 {
+ 				 <&infracfg CLK_INFRA_ADC_26M_CK>,
+ 				 <&infracfg CLK_INFRA_ADC_FRC_CK>;
+ 			clock-names = "therm", "auxadc", "adc_32k";
+-			mediatek,auxadc = <&auxadc>;
+-			mediatek,apmixedsys = <&apmixedsys>;
+ 			nvmem-cells = <&thermal_calibration>;
+ 			nvmem-cell-names = "calibration-data";
++			#thermal-sensor-cells = <1>;
++			mediatek,auxadc = <&auxadc>;
++			mediatek,apmixedsys = <&apmixedsys>;
+ 		};
+ 
+ 		pcie: pcie@11280000 {
+ 			compatible = "mediatek,mt7986-pcie",
+ 				     "mediatek,mt8192-pcie";
++			reg = <0x00 0x11280000 0x00 0x4000>;
++			reg-names = "pcie-mac";
++			ranges = <0x82000000 0x00 0x20000000 0x00
++				  0x20000000 0x00 0x10000000>;
+ 			device_type = "pci";
+ 			#address-cells = <3>;
+ 			#size-cells = <2>;
+-			reg = <0x00 0x11280000 0x00 0x4000>;
+-			reg-names = "pcie-mac";
+ 			interrupts = <GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>;
+ 			bus-range = <0x00 0xff>;
+-			ranges = <0x82000000 0x00 0x20000000 0x00
+-				  0x20000000 0x00 0x10000000>;
+ 			clocks = <&infracfg CLK_INFRA_IPCIE_PIPE_CK>,
+ 				 <&infracfg CLK_INFRA_IPCIE_CK>,
+ 				 <&infracfg CLK_INFRA_IPCIER_CK>,
+ 				 <&infracfg CLK_INFRA_IPCIEB_CK>;
+ 			clock-names = "pl_250m", "tl_26m", "peri_26m", "top_133m";
+-			status = "disabled";
+ 
+ 			phys = <&pcie_port PHY_TYPE_PCIE>;
+ 			phy-names = "pcie-phy";
+@@ -431,6 +430,8 @@ pcie: pcie@11280000 {
+ 					<0 0 0 2 &pcie_intc 1>,
+ 					<0 0 0 3 &pcie_intc 2>,
+ 					<0 0 0 4 &pcie_intc 3>;
++			status = "disabled";
 +
-+#include <test_progs.h>
-+#include <linux/netfilter.h>
-+#include <network_helpers.h>
-+#include "test_netfilter_link_update_prog.skel.h"
-+
-+#define SERVER_ADDR "127.0.0.1"
-+#define SERVER_PORT 12345
-+
-+static const char dummy_message[] = "A dummy message";
-+
-+static int send_dummy(int client_fd)
-+{
-+	struct sockaddr_storage saddr;
-+	struct sockaddr *saddr_p;
-+	socklen_t saddr_len;
-+	int err;
-+
-+	saddr_p = (struct sockaddr *)&saddr;
-+	err = make_sockaddr(AF_INET, SERVER_ADDR, SERVER_PORT, &saddr, &saddr_len);
-+	if (!ASSERT_OK(err, "make_sockaddr"))
-+		return -1;
-+
-+	err = sendto(client_fd, dummy_message, sizeof(dummy_message) - 1, 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+void test_netfilter_link_update_prog(void)
-+{
-+	LIBBPF_OPTS(bpf_netfilter_opts, opts,
-+		.pf = NFPROTO_IPV4,
-+		.hooknum = NF_INET_LOCAL_OUT,
-+		.priority = 100);
-+	struct test_netfilter_link_update_prog *skel;
-+	struct bpf_program *prog;
-+	int server_fd, client_fd;
-+	int err;
-+
-+	skel = test_netfilter_link_update_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_netfilter_link_update_prog__open_and_load"))
-+		goto out;
-+
-+	prog = skel->progs.nf_link_prog;
-+
-+	if (!ASSERT_OK_PTR(prog, "load program"))
-+		goto out;
-+
-+	skel->links.nf_link_prog = bpf_program__attach_netfilter(prog, &opts);
-+	if (!ASSERT_OK_PTR(skel->links.nf_link_prog, "attach netfilter program"))
-+		goto out;
-+
-+	server_fd = start_server(AF_INET, SOCK_DGRAM, SERVER_ADDR, SERVER_PORT, 0);
-+	if (!ASSERT_GE(server_fd, 0, "start_server"))
-+		goto out;
-+
-+	client_fd = connect_to_fd(server_fd, 0);
-+	if (!ASSERT_GE(client_fd, 0, "connect_to_fd"))
-+		goto out;
-+
-+	send_dummy(client_fd);
-+
-+	ASSERT_EQ(skel->bss->counter, 0, "counter should be zero");
-+
-+	err = bpf_link__update_program(skel->links.nf_link_prog, skel->progs.nf_link_prog_new);
-+	if (!ASSERT_OK(err, "bpf_link__update_program"))
-+		goto out;
-+
-+	send_dummy(client_fd);
-+	ASSERT_GE(skel->bss->counter, 0, "counter should be greater than zero");
-+out:
-+	if (client_fd > 0)
-+		close(client_fd);
-+	if (server_fd > 0)
-+		close(server_fd);
-+
-+	test_netfilter_link_update_prog__destroy(skel);
-+}
-+
-+
-diff --git a/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c b/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
-new file mode 100644
-index 00000000..42ae332
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+#define NF_ACCEPT 1
-+
-+SEC("netfilter")
-+int nf_link_prog(struct bpf_nf_ctx *ctx)
-+{
-+	return NF_ACCEPT;
-+}
-+
-+u64 counter = 0;
-+
-+SEC("netfilter")
-+int nf_link_prog_new(struct bpf_nf_ctx *ctx)
-+{
-+	counter++;
-+	return NF_ACCEPT;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+
+ 			pcie_intc: interrupt-controller {
+ 				#address-cells = <0>;
+ 				#interrupt-cells = <1>;
+@@ -441,9 +442,9 @@ pcie_intc: interrupt-controller {
+ 		pcie_phy: t-phy {
+ 			compatible = "mediatek,mt7986-tphy",
+ 				     "mediatek,generic-tphy-v2";
++			ranges;
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
+-			ranges;
+ 			status = "disabled";
+ 
+ 			pcie_port: pcie-phy@11c00000 {
+@@ -468,9 +469,9 @@ thermal_calibration: calib@274 {
+ 		usb_phy: t-phy@11e10000 {
+ 			compatible = "mediatek,mt7986-tphy",
+ 				     "mediatek,generic-tphy-v2";
++			ranges = <0 0 0x11e10000 0x1700>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+-			ranges = <0 0 0x11e10000 0x1700>;
+ 			status = "disabled";
+ 
+ 			u2port0: usb-phy@0 {
+@@ -498,11 +499,11 @@ u2port1: usb-phy@1000 {
+ 		};
+ 
+ 		ethsys: syscon@15000000 {
+-			 #address-cells = <1>;
+-			 #size-cells = <1>;
+ 			 compatible = "mediatek,mt7986-ethsys",
+ 				      "syscon";
+ 			 reg = <0 0x15000000 0 0x1000>;
++			 #address-cells = <1>;
++			 #size-cells = <1>;
+ 			 #clock-cells = <1>;
+ 			 #reset-cells = <1>;
+ 		};
+@@ -579,26 +580,26 @@ eth: ethernet@15100000 {
+ 					  <&topckgen CLK_TOP_SGM_325M_SEL>;
+ 			assigned-clock-parents = <&apmixedsys CLK_APMIXED_NET2PLL>,
+ 						 <&apmixedsys CLK_APMIXED_SGMPLL>;
++			#reset-cells = <1>;
++			#address-cells = <1>;
++			#size-cells = <0>;
+ 			mediatek,ethsys = <&ethsys>;
+ 			mediatek,sgmiisys = <&sgmiisys0>, <&sgmiisys1>;
+ 			mediatek,wed-pcie = <&wed_pcie>;
+ 			mediatek,wed = <&wed0>, <&wed1>;
+-			#reset-cells = <1>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+ 			status = "disabled";
+ 		};
+ 
+ 		wifi: wifi@18000000 {
+ 			compatible = "mediatek,mt7986-wmac";
++			reg = <0 0x18000000 0 0x1000000>,
++			      <0 0x10003000 0 0x1000>,
++			      <0 0x11d10000 0 0x1000>;
+ 			resets = <&watchdog MT7986_TOPRGU_CONSYS_SW_RST>;
+ 			reset-names = "consys";
+ 			clocks = <&topckgen CLK_TOP_CONN_MCUSYS_SEL>,
+ 				 <&topckgen CLK_TOP_AP2CNN_HOST_SEL>;
+ 			clock-names = "mcu", "ap2conn";
+-			reg = <0 0x18000000 0 0x1000000>,
+-			      <0 0x10003000 0 0x1000>,
+-			      <0 0x11d10000 0 0x1000>;
+ 			interrupts = <GIC_SPI 213 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 214 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>,
 -- 
-1.8.3.1
+2.35.3
 
 
