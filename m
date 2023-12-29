@@ -1,164 +1,220 @@
-Return-Path: <linux-kernel+bounces-13211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24BE8820130
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 20:22:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 395F082012B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 20:15:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4DC7282761
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 19:22:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CAF41C21952
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 19:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D386212E72;
-	Fri, 29 Dec 2023 19:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9620712E72;
+	Fri, 29 Dec 2023 19:15:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="Ud/KVEaL"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dPi6bE+r"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E61712E46;
-	Fri, 29 Dec 2023 19:22:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.42.20] (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 1DA392FC006B;
-	Fri, 29 Dec 2023 20:13:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1703877226;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SLTb8MHngpCr9Ay6alL/D0Bkd3X169eJXti2fNSNyUU=;
-	b=Ud/KVEaLvSu5mZr8YUyKpZxPaKTMiVlzkT7gRzRovNYW5O6jE76s0nHvX3sKKkiqpQ4aT+
-	g4FVQEN+xtw5YnRmzO2e8ZpaoD5WznFS69Z9PTGoEwWlaBAp0BBwGevuglfcPbg+8T7vN1
-	xP2xSqZwiIfMaoLCgHz9FoImfR4yKeQ=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <49f12cc1-2dce-43b3-addf-b0fdb7df8fdb@tuxedocomputers.com>
-Date: Fri, 29 Dec 2023 20:13:44 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2292F12E44;
+	Fri, 29 Dec 2023 19:15:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BTIWaVa013888;
+	Fri, 29 Dec 2023 19:14:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=J3eS5bDnSos7ysUiTU5ykNlo718JRz72hO5XekH6WfM=;
+ b=dPi6bE+r1Xouurm9nQW9ote0HhNS/tqIaPZ3nAg6bEMM7RdBCy94nivliixH/aw7WnQB
+ 5yP2nvnSmnNRTnrbw1zYUcvYdelGP2sNqjLKix/Y9AUjsflspllD6fmzMJ3ulJmREGVF
+ qqHxP4VyfCA+askEk924VEOflpfVWPse1a9Ymtu9RnIrNCKHI1xP3lYLDD+wj3THzRAd
+ M4R0TM4wlrO0hIIrAVlICkWBGr3kFO/xMpHPv8WvENChNQCn1TyR7PXHB1mkhjEnexwD
+ KuFJySBAsfiLTg/sDgaUSdyuT/Yyfbuti0MIrApkD4D57ozMtn4QXczv/lG9AMBpFX82 dA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3va3fu8q0w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Dec 2023 19:14:57 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BTJEvpW028058;
+	Fri, 29 Dec 2023 19:14:57 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3va3fu8q0m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Dec 2023 19:14:57 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BTG955t008302;
+	Fri, 29 Dec 2023 19:14:56 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3v6ck26m25-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Dec 2023 19:14:56 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BTJEuS863045964
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 29 Dec 2023 19:14:56 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 59D3E58058;
+	Fri, 29 Dec 2023 19:14:56 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D111F58057;
+	Fri, 29 Dec 2023 19:14:55 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 29 Dec 2023 19:14:55 +0000 (GMT)
+Message-ID: <e32077de-b159-4a7b-89a3-e1925239142f@linux.ibm.com>
+Date: Fri, 29 Dec 2023 14:14:55 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] rootfs: Fix support for rootfstype= when root= is
+ given
+Content-Language: en-US
+To: Rob Landley <rob@landley.net>, Askar Safin <safinaskar@gmail.com>
+Cc: gregkh@linuxfoundation.org, initramfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        zohar@linux.ibm.com
+References: <CAPnZJGDcNwPLbzC99qNQ+bRMwxPU-Z0xe=TD6DWQU=0MNyeftA@mail.gmail.com>
+ <d4b227de-d609-aef2-888b-203dbcf06707@landley.net>
+ <CAPnZJGBeV-E_AN8GnTfkaJvRtBmCeMYYCt+O0XMsc3kDULRuKg@mail.gmail.com>
+ <fb776d99-1956-4e1b-9afc-84f27ca40f46@linux.ibm.com>
+ <0879141d-462c-7e94-7c87-7a5b5422b8ed@landley.net>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <0879141d-462c-7e94-7c87-7a5b5422b8ed@landley.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: y6eSWf-VkW_26zwfMq9tfrKvvNMM_ug3
+X-Proofpoint-ORIG-GUID: 3UUtt-e5-9_VNJM8V50AVMIQ4E8SX2im
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Implement per-key keyboard backlight as auxdisplay?
-From: Werner Sembach <wse@tuxedocomputers.com>
-To: Hans de Goede <hdegoede@redhat.com>, Pavel Machek <pavel@ucw.cz>,
- Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org,
- Jelle van der Waa <jelle@vdwaa.nl>
-Cc: Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, linux-input@vger.kernel.org,
- ojeda@kernel.org, linux-leds@vger.kernel.org
-References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
- <ZSe1GYLplZo5fsAe@duo.ucw.cz>
- <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
- <ZSf9QneKO/8IzWhd@duo.ucw.cz>
- <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
- <ZSk16iTBmZ2fLHZ0@duo.ucw.cz>
- <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
- <ZSmg4tqXiYiX18K/@duo.ucw.cz>
- <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
- <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
- <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
- <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
- <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
- <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
- <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
-Content-Language: en-US
-In-Reply-To: <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-29_08,2023-12-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ bulkscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312290154
 
-Hi Hans & the others,
 
-[snip]
-> I also stumbled across a new Problem:
->
-> We have an upcoming device that has a per-key keyboard backlight, but does the 
-> control completely via a wmi/acpi interface. So no usable hidraw here for a 
-> potential userspace driver implementation ...
->
-> So a quick summary for the ideas floating in this thread so far:
->
-> 1. Expand leds interface allowing arbitrary modes with semi arbitrary optional 
-> attributes:
->
->     - Pro:
->
->         - Still offers all default attributes for use with UPower
->
->         - Fairly simple to implement from the preexisting codebase
->
->         - Could be implemented for all (to me) known internal keyboard backlights
->
->     - Con:
->
->         - Violates the simplicity paradigm of the leds interface (e.g. with 
-> this one leds entry controls possible multiple leds)
->
-> 2. Implement per-key keyboards as auxdisplay
->
->     - Pro:
->
->         - Already has a concept for led positions
->
->         - Is conceptually closer to "multiple leds forming a singular entity"
->
->     - Con:
->
->         - No preexisting UPower support
->
->         - No concept for special hardware lighting modes
->
->         - No support for arbitrary led outlines yet (e.g. ISO style enter-key)
->
-> 3. Implement in input subsystem
->
->     - Pro:
->
->         - Preexisting concept for keys and key purpose
->
->     - Con:
->
->         - Not in scope for subsystem
->
->         - No other preexisting light infrastructure
->
-> 4. Implement a simple leds driver only supporting a small subset of the 
-> capabilities and make it disable-able for a userspace driver to take over
->
->     - Pro:
->
->         - Most simple to implement basic support
->
->         - In scope for led subsystem simplicity paradigm
->
->     - Con:
->
->         - Not all built in keyboard backlights can be implemented in a 
-> userspace only driver
->
-> Kind Regards,
->
-> Werner
 
-Just a gentle bump and request for comments again. 4. would be better then 
-nothing but it is not a universal future proof solution so I'm hesitant to put 
-work into it even though it would be the simplest driver. I still tend towards 
-1. as the leds interface already got expanded once with the multicolor stuff.
+On 12/29/23 13:35, Rob Landley wrote:
+> On 12/29/23 10:39, Stefan Berger wrote:> On 12/21/23 17:58, Askar Safin wrote:
+>>> Hi, Rob. And Stefan.
+>>>
+>>> First of all, this patch got to linux-next (
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/?qt=author&q=Stefan+Berger
+>>> ), so it seems it soon will be in mainline.
+>>>
+>>> On Thu, Dec 21, 2023 at 12:24 PM Rob Landley <rob@landley.net> wrote:
+>>>> Can you build tmpfs on a nommu system? Last I checked the plumbing expects swap,
+>>>> but it's been a while...
+>>> Okay, I agree, let's not remove ramfs.
+>>>
+>>> Still, I don't like this (already applied) patch. init= and rdinit=
+>>> are two different options,
+> 
+> Because they control two different things which are often used at the same time.
+> (Debian has an initramfs that hands off to the final root filesystem, for
+> example. Hence the initramfs-tools package that runs every time apt-get updates
+> the kernel.)
+> 
+> So being able to specify rdinit= to intercept the ramfs layer or init= to
+> intercept the root= layer made sense, because they did different things.
+> 
+> But the only reason to specify anything nontrivial for the initramfs
+> _filesystem_ mount properties is because you intend to stay there. They don't
+> get used together.
+> 
+>>> and this is good.
+> 
+> Eh, not really. Strange legacy decision we're now stuck with. The kernel only
+> ever runs one init task per boot. If init= was _also_ checked to see which file
+> to run out of initramfs (and the plumbing still justs silently fails and moves
+> on if it's not found) then the debian script would have been forced to do INIT=
+> or similar to override the overmounted root's init task separately from initrd's
+> init task, making it clear a script (not the kernel) is making that decision.
+> 
+> But that would have been a user-visible change, and when initramfs was going in
+> they were trying to avoid user-visible changes that would force sysadmins to
+> learn new stuff because the plumbing changed out from under them. (Like the
+> change you're proposing now would.)
+> 
+>>> So, I think we should
+>>> have two different options. Analogously they should be rootfstype= and
+>>> rdrootfstype=.
+> 
+> You can't have a root= type of initramfs or tmpfs. The specified values can't
+> overlap. The plumbing I wrote responds to specific values but otherwise leaves
+> it for later users.
+> 
+>>> https://salsa.debian.org/kernel-team/initramfs-tools/-/blob/cf964bfb4362019fd7fba1e839e403ff950dca8e/init#L103
+>>>
+>>> As you can see, this shell script parses /proc/cmdline and assumes
+>>> that rootfstype= always applies to real root.
+> 
+> The script is running _in_ the initramfs, which is already loaded and running at
+> that point. Meaning the _kernel_ will not parse root= at that point, userspace
+> has to do it.
+> 
+>>> So, if someone sets
+>>> rootfstype= to tmpfs or ramfs, this will likely break this script.
+> 
+> Which was the same 10 years ago?
+> 
+> The script is running in a context where initramfs is not persistent, so
+> overriding it to be a tmpfs has no benefit. (I mean you _can_... Nobody does,
+> because we're gonna switch_root off of it.)
+> 
+> And once code _is_ running in initramfs, the kernel's internal root= automounter
+> will never run. The initramfs code can parse /proc/cmdline to use the same
+> arguments as the kernel, or it could much more easily use the "any unrecognized
+> arguments get set as environment variables in PID 1" and use ROOT= or similar,
+> like many scripts do.
+> 
+> Modifying kernel code that NEVER RUNS in the case you're pointing out seems
+> silly to me.
+> 
+> That said, the code I wrote is doing a strstr to see if the argument's there,
+> but doesn't care what ELSE is there, so it could easily be
+> "rootfstype=tmpfs,ext4" and have the userspace script also filter the argument
+> for just what it's interested in, since at that point it's NOT THE KERNEL DOING IT.
 
-The only other way I see would be to implement a platform driver with no 
-standardized api or implement a complete new api/subsystem from the ground up.
+It's a bit tricky that this particular option, that can support a 
+comma-separated list, is shared between kernel and user space and user 
+space does not already filter-out what is not relevant for it.
 
-Kind Regards,
+> 
+>> Setting the kernel boot command line option rootfstype= to tmpfs or
+>> ramfs was possible so far and that's what the documentation and code
+>> supported so far as well. The bug surfaced when root= was provided, in
+>> which case it was ignored.
+> 
+> No, as I explained when I wrote the initmpfs code in 2013 when you say root= you
+> are explicitly requesting the kernel mount a second file system over rootfs
 
-Werner
+ From the perspective of needing xattr support in initramfs it's 
+unfortunately not so obvious what the filesystem type of the kernel's 
+rootfs (presumably the 1st file system) has to do with the option given 
+for the 2nd filesystem. Though the Debian scripts are the bigger problem 
+it seems. However, for those one could argue that the Debian scripts 
+could be updated and for as long as they are not able to filter-out the 
+tmpfs or ramfs options we are interested in one cannot pass these 
+options or a comma-separated list on systems that run the current Debian 
+scripts.
 
+> (that's what root= MEANS), and thus don't bother making it a (more expensive)
+> tmpfs because it's not sticking around.
+
+That's true unless you want to use IMA signature enforcement in the 
+initramfs already and tmpfs is now required.
+
+    Stefan
 
