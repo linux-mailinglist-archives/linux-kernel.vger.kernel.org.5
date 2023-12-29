@@ -1,91 +1,122 @@
-Return-Path: <linux-kernel+bounces-13138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 557F2820035
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:26:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86B0B820027
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:18:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DE6D1F2201B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:26:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EE94284757
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:18:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1BBB125AB;
-	Fri, 29 Dec 2023 15:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94158125A7;
+	Fri, 29 Dec 2023 15:18:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="pgm0v+Kg"
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="bl3eD9EX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D001125A3;
-	Fri, 29 Dec 2023 15:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ixit.cz
-Received: from newone.congress.ccc.de (unknown [151.217.64.190])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ixit.cz (Postfix) with ESMTPSA id 924581638E3;
-	Fri, 29 Dec 2023 16:17:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-	t=1703863072;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=xchHYDvWOZwi4vwJm8ifd1Jdh6d+pqsm1Jnha2iBM84=;
-	b=pgm0v+Kg8Qd87BjgSgGmLfviaMyUz+c6AABslJ6MQsLy1YbyL6XbPsbUEQUfHfsJR3qZBI
-	eL6ui06woQdKHiOdz2uBPIvNZ9AXFns1Jugzxud6JFQxe/GwiXwDZmHN85j1gg8VehfkE5
-	A3QhOfW/UoeTfDOWfc6K+PKArldoNvA=
-From: David Heidelberg <david@ixit.cz>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <mani@kernel.org>
-Cc: David Heidelberg <david@ixit.cz>,
-	linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: PCI: qcom: delimit number of iommu-map entries
-Date: Fri, 29 Dec 2023 16:17:37 +0100
-Message-ID: <20231229151744.203828-1-david@ixit.cz>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD81125A3
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 15:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=BO59ay58b+3H0q4MiJOf8mCVwTT90IGD/0wSgqjT9uc=;
+  b=bl3eD9EXW1fFY03a3QeQo570zaXEj5RpUsoe9ogtj6CxcXQimeKbPEQS
+   6wZHmxnYA+l2ecFMnYl7vw5ufJIf4rWzvjjfxw68t/3KR5RbdpmvPqNix
+   4tW9vnzaTZrManLDPti3kNwxmEXkfhFfABkswt7HuOasAKbmEjTp/qIcB
+   k=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.04,315,1695679200"; 
+   d="scan'208";a="144313364"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 16:18:23 +0100
+Date: Fri, 29 Dec 2023 16:18:22 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+    Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, 
+    linux-kernel@vger.kernel.org
+Subject: Re: EEVDF and NUMA balancing
+In-Reply-To: <edbd8ecd-148c-b366-fd46-3531dec39d49@inria.fr>
+Message-ID: <cecfd395-f067-99e1-bdd2-fec2ebc3db3@inria.fr>
+References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien> <alpine.DEB.2.22.394.2310041958380.3108@hadrien> <20231009102949.GC14330@noisy.programming.kicks-ass.net> <b8ab29de-1775-46e-dd75-cdf98be8b0@inria.fr> <CAKfTPtBhWwk9sf9F1=KwubiAWFDC2A9ZT-SSJ+tgFxme1cFmYA@mail.gmail.com>
+ <alpine.DEB.2.22.394.2312182302310.3361@hadrien> <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com> <98b3df1-79b7-836f-e334-afbdd594b55@inria.fr> <CAKfTPtCRN_eWgVdK2-h6E_ifJKwwJEtMjeNjB=5DXZFWyBS+tQ@mail.gmail.com>
+ <93112fbe-30be-eab8-427c-5d4670a0f94e@inria.fr> <CAKfTPtAeFvrZxApK3RruWwCjMxbQvOkU+_YgZSo4QPT_AD6FxA@mail.gmail.com> <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr> <CAKfTPtDCsLnDnVje9maP5s-L7TbtSu4CvF19xHOxbkvSNd7vZg@mail.gmail.com>
+ <2359ab5-4556-1a73-9255-3fcf2fc57ec@inria.fr> <6618dcfa-a42f-567c-2a9d-a76786683b29@inria.fr> <CAKfTPtDrULyOB9+RhjoPfCpHKVhx5kRf6dq79DSE6jZgsEairw@mail.gmail.com> <edbd8ecd-148c-b366-fd46-3531dec39d49@inria.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-The code or specific SoC doesn't seem to limit the number of iommu-map entries.
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- Documentation/devicetree/bindings/pci/qcom,pcie.yaml | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-index eadba38171e1..c6111278162f 100644
---- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-+++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-@@ -61,8 +61,7 @@ properties:
-     minItems: 1
-     maxItems: 8
- 
--  iommu-map:
--    maxItems: 2
-+  iommu-map: true
- 
-   # Common definitions for clocks, clock-names and reset.
-   # Platform constraints are described later.
--- 
-2.43.0
+On Thu, 28 Dec 2023, Julia Lawall wrote:
+
+> > > > > > > I'm surprised that you have mainly CPU_NEWLY_IDLE. Do you know the reason ?
+> > > > > >
+> > > > > > No.  They come from do_idle calling the scheduler.  I will look into why
+> > > > > > this happens so often.
+> > > > >
+> > > > > Hmm, the CPU was idle and received a need resched which triggered the
+> > > > > scheduler but there was nothing to schedule so it goes back to idle
+> > > > > after running a newly_idle _load_balance.
+> > > >
+> > > > I spent quite some time thinking the same until I saw the following code
+> > > > in do_idle:
+> > > >
+> > > > preempt_set_need_resched();
+> > > >
+> > > > So I have the impression that do_idle sets need resched itself.
+> > >
+> > > But of course that code is only executed if need_resched is true.  But I
+> >
+> > Yes, that is your root cause. something, most probably in interrupt
+> > context, wakes up your CPU and expect to wake up a thread
+> >
+> > > don't know who would be setting need resched on each clock tick.
+> >
+> > that can be a timer, interrupt, ipi, rcu ...
+> > a trace should give you some hints
+>
+> I have the impression that it is the goal of calling nohz_csd_func on each
+> clock tick that causes the calls to need_resched.  If the idle process is
+> polling, call_function_single_prep_ipi just sets need_resched to get the
+> idle process to stop polling.  But there is no actual task that the idle
+> process should schedule.  The need_resched then prevents the idle process
+> from stealing, due to the CPU_NEWLY_IDLE flag, contradicting the whole
+> purpose of calling nohz_csd_func in the first place.
+
+Looking in more detail, do_idle contains the following after existing the
+polling loop:
+
+        flush_smp_call_function_queue();
+ 	schedule_idle();
+
+flush_smp_call_function_queue() does end up calling nohz_csd_func, but
+this has no impact, because it first checks that need_resched() is false,
+whereas it is currently true to cause existing the polling loop.  Removing
+that test causes:
+
+raise_softirq_irqoff(SCHED_SOFTIRQ);
+
+but that causes the load balancing code to be executed from a ksoftirqd
+task, which means that there is now no load imbalance.
+
+So the only chance to detect an imbalance does seem to be to have the load
+balance call be executed by the idle task, via schedule_idle(), as is
+done currently.  But that leads to the core being considered to be newly
+idle.
+
+julia
+
 
 
