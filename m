@@ -1,134 +1,135 @@
-Return-Path: <linux-kernel+bounces-12942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F174B81FCF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 05:21:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7B2581FD02
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 05:30:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 069211C21FC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 04:21:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E4E828523C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 04:30:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA33A23A1;
-	Fri, 29 Dec 2023 04:21:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6B8220E1;
+	Fri, 29 Dec 2023 04:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hwEuCGuG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZOutGeEu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E221FA8;
-	Fri, 29 Dec 2023 04:21:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703823665; x=1735359665;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=bCk1WmPQGNe7VSwvo3KzDGGlaLdYm0gwge09YznPONI=;
-  b=hwEuCGuG+hbLU/WbK8Goo6Ia0hJ05zQ5hsdpIqhMd3Xa453MnuarUlYD
-   DXO6Q2MREo/X3UoYhjv5fOBF/Tvyx9owFV+/KFPGIR8o1dSx/zUJcX1Vm
-   +YL8ga7dhYpvkh6y4rW832PPpzM3oCtQrq8TbGAJLgXTMPW1GotM/aESE
-   D5G1WRuuOCzpZ52xAw9p0xMdVOvnh6OdyT5PajS2t9V0K54+OU3Vqkyyu
-   tzMmROucTTa6d93MRM83+4HFqz9fE8/m8XDv0rDjmiUvPL3aKnzcF9eCM
-   37e8pBN6Y1wbXaV4g93PYGHPMZBiNCOtQ7fi1ARYDuvz5BBTI6zywpgOA
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="482801277"
-X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="482801277"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 20:21:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="728502480"
-X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="728502480"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.22.149]) ([10.93.22.149])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 20:21:01 -0800
-Message-ID: <7e614fab-8f91-4a91-bfbf-1b02b9f12cdb@intel.com>
-Date: Fri, 29 Dec 2023 12:20:57 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70CF6612A;
+	Fri, 29 Dec 2023 04:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-67f911e9ac4so52092886d6.3;
+        Thu, 28 Dec 2023 20:30:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703824222; x=1704429022; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=siCP+01Rw8sv/FO7/j37qD22Hyz6Ky5dYCZkzYaFy1A=;
+        b=ZOutGeEu/ET9I/Xj7NX/Bq4uu9+rlJqjwRE3ibopi5K3KrQ6yl7saBTKnHtoSDSeJ7
+         tvMAxVac2l5j0ZFeljLOxCJHkDr2c3T/uzjWXBUUVd+2ypggSVKinVfRO7wMJb/Xj4pq
+         Wo0o7b3sMIYl77b+Wql7fx9uPOBgnKnVZKJwEip33l1/5SeIck0py9n/dmkDG0JVibrz
+         TbyDru68l7VWdJsDmJb1xhV6tJey7BmRZDib0VhtsWsZTrZbr8EPWyuQa6NQMB2GUV+W
+         UEQzm+aMz+OI2ZAJkMwhaH2uEsHV6hTPJuCQOsGb4atf2xoRJghVP686jOHOCzI5sEgB
+         d2xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703824222; x=1704429022;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=siCP+01Rw8sv/FO7/j37qD22Hyz6Ky5dYCZkzYaFy1A=;
+        b=XtqyedDunN2NF6ma/hD3iIxN8lLW6lfY9adQ0g/KuVL/Wyt2HidQd2dPDld6dep0D1
+         /rLGLBJGvkUzcRRtQpGEMruRAm8XRx+WwdRbbx61EkJ7jVtkBq8Ux7bQ7pEb7cHUOHoi
+         bleeq4rUWOUNrdSAnNF66CL/fXgmtxkvdODFPd8ZfNK1nptq3erwypQ0l6uwOjsOzQeD
+         wrCbeigDky1qa9+TaYOOFWsrFEx0qd9pb7ZG4OtIzFPcWqXcM7fjWD13pyljiiY/SX4i
+         Su6Uc8J5ODbghIja+yRFjtT+N7sz2cgsIbMb3BSvZlRE2WzqSA43w7b9mjqzKKj9BBqn
+         LlkA==
+X-Gm-Message-State: AOJu0Yxt1Gt/kW/GqAsMxDqvvpnjYAkswOas4l+m8gBsPQb6KxsOaRpb
+	ZDfFDQ8+353KnCFn0VtMYMpgOR0dGJqKV5mxw7A=
+X-Google-Smtp-Source: AGHT+IFLFR3I5Dh5jwn9n1wg7C45v+vP5k/zr57xOfGbcX2de+sdM9KRc5F7XePdRKzEt+cWvvhK4tkefp5TJfXXbZ8=
+X-Received: by 2002:a05:6214:90b:b0:67f:fc06:5ae3 with SMTP id
+ dj11-20020a056214090b00b0067ffc065ae3mr7080443qvb.81.1703824222067; Thu, 28
+ Dec 2023 20:30:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] KVM: x86/hyperv: Calculate APIC bus frequency for
- hyper-v
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-To: Isaku Yamahata <isaku.yamahata@intel.com>, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Vishal Annapurve <vannapurve@google.com>, Jim Mattson <jmattson@google.com>,
- Maxim Levitsky <mlevitsk@redhat.com>
-Cc: isaku.yamahata@gmail.com
-References: <cover.1702974319.git.isaku.yamahata@intel.com>
- <ecd345619fdddfe48f375160c90322754cec9096.1702974319.git.isaku.yamahata@intel.com>
- <09cec4fd-2d79-4925-bb2b-7814032fdda3@intel.com>
-In-Reply-To: <09cec4fd-2d79-4925-bb2b-7814032fdda3@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20231228103921.23839-1-di.shen@unisoc.com> <CAJZ5v0jYX8QJjFzOTSWFf7PnBP+twm3Ww+9MVqwAsJrPx1fycQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jYX8QJjFzOTSWFf7PnBP+twm3Ww+9MVqwAsJrPx1fycQ@mail.gmail.com>
+From: Di Shen <cindygm567@gmail.com>
+Date: Fri, 29 Dec 2023 12:30:10 +0800
+Message-ID: <CAHYJL4p9ocr1FsM_Oc-p-H=NzfVuU3=8NYBwSV8oi+_vNuVUPg@mail.gmail.com>
+Subject: Re: [PATCH] thermal: core: export the governor register related API
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Di Shen <di.shen@unisoc.com>, daniel.lezcano@linaro.org, rui.zhang@intel.com, 
+	lukasz.luba@arm.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	xuewen.yan@unisoc.com, zhanglyra@gmail.com, orsonzhai@gmail.com, 
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/21/2023 1:26 PM, Xiaoyao Li wrote:
-> On 12/19/2023 4:34 PM, Isaku Yamahata wrote:
->> Remove APIC_BUS_FREUQNCY and calculate it based on APIC bus cycles per 
->> NS.
->> APIC_BUS_FREUQNCY is used only for HV_X64_MSR_APIC_FREQUENCY.  The MSR is
->> not frequently read, calculate it every time.
->>
->> In order to make APIC bus frequency configurable, we need to make make 
->> two
-> 
-> two 'make', please drop one.
+Hi Rafael,
 
-With this and other typos pointed by Maxim fixed.
+On Fri, Dec 29, 2023 at 4:24=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.or=
+g> wrote:
+>
+> On Thu, Dec 28, 2023 at 11:39=E2=80=AFAM Di Shen <di.shen@unisoc.com> wro=
+te:
+> >
+> > To enable users to register their own thermal governor,
+>
+> Why would anyone want to do that?
+>
 
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+On Android systems, due to GKI restrictions, vendors cannot modify the
+kernel, and
+vendor-specific changes must be loaded as modules, so export this symbol so=
+ that
+vendors can load their own specific governor.
 
->> related constants into variables.  APIC_BUS_FREUQNCY and 
->> APIC_BUS_CYCLE_NS.
->> One can be calculated from the other.
->>     APIC_BUS_CYCLES_NS = 1000 * 1000 * 1000 / APIC_BUS_FREQUENCY.
->> By removing APIC_BUS_FREQUENCY, we need to track only single variable
->> instead of two.
->>
->> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
->> ---
->> Changes v3:
->> - Newly added according to Maxim Levistsky suggestion.
->> ---
->>   arch/x86/kvm/hyperv.c | 2 +-
->>   arch/x86/kvm/lapic.h  | 1 -
->>   2 files changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
->> index 238afd7335e4..a40ca2fef58c 100644
->> --- a/arch/x86/kvm/hyperv.c
->> +++ b/arch/x86/kvm/hyperv.c
->> @@ -1687,7 +1687,7 @@ static int kvm_hv_get_msr(struct kvm_vcpu *vcpu, 
->> u32 msr, u64 *pdata,
->>           data = (u64)vcpu->arch.virtual_tsc_khz * 1000;
->>           break;
->>       case HV_X64_MSR_APIC_FREQUENCY:
->> -        data = APIC_BUS_FREQUENCY;
->> +        data = div64_u64(1000000000ULL, APIC_BUS_CYCLE_NS);
->>           break;
->>       default:
->>           kvm_pr_unimpl_rdmsr(vcpu, msr);
->> diff --git a/arch/x86/kvm/lapic.h b/arch/x86/kvm/lapic.h
->> index 0a0ea4b5dd8c..a20cb006b6c8 100644
->> --- a/arch/x86/kvm/lapic.h
->> +++ b/arch/x86/kvm/lapic.h
->> @@ -17,7 +17,6 @@
->>   #define APIC_DEST_MASK            0x800
->>   #define APIC_BUS_CYCLE_NS       1
->> -#define APIC_BUS_FREQUENCY      (1000000000ULL / APIC_BUS_CYCLE_NS)
->>   #define APIC_BROADCAST            0xFF
->>   #define X2APIC_BROADCAST        0xFFFFFFFFul
-> 
-> 
+> > this patch
+> > exports thermal_register_governor() and thermal_unregister_governor().
+> > This change would not affect the registration of the default governor.
+> >
+> > Signed-off-by: Di Shen <di.shen@unisoc.com>
+> > ---
+> >  drivers/thermal/thermal_core.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_c=
+ore.c
+> > index 9c17d35ccbbd..56695988e20f 100644
+> > --- a/drivers/thermal/thermal_core.c
+> > +++ b/drivers/thermal/thermal_core.c
+> > @@ -167,6 +167,7 @@ int thermal_register_governor(struct thermal_govern=
+or *governor)
+> >
+> >         return err;
+> >  }
+> > +EXPORT_SYMBOL_GPL(thermal_register_governor);
+> >
+> >  void thermal_unregister_governor(struct thermal_governor *governor)
+> >  {
+> > @@ -193,6 +194,7 @@ void thermal_unregister_governor(struct thermal_gov=
+ernor *governor)
+> >  exit:
+> >         mutex_unlock(&thermal_governor_lock);
+> >  }
+> > +EXPORT_SYMBOL_GPL(thermal_unregister_governor);
+> >
+> >  int thermal_zone_device_set_policy(struct thermal_zone_device *tz,
+> >                                    char *policy)
+> > --
+> > 2.17.1
+> >
+>
 
+Best regards,
+Di
 
