@@ -1,206 +1,228 @@
-Return-Path: <linux-kernel+bounces-13016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FC7581FE78
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:08:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECB6481FE7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:09:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62CABB220E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:08:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C4091C22D66
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:09:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC8610A18;
-	Fri, 29 Dec 2023 09:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB9110A1C;
+	Fri, 29 Dec 2023 09:09:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GBFaum1G"
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="KoIxRrYY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2013.outbound.protection.outlook.com [40.92.107.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D0CA10A09;
-	Fri, 29 Dec 2023 09:08:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703840889; x=1735376889;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=KAX2L3dtkmuv8E2Df3D0zLV9/zyFwoPlmG1nSIF/cnQ=;
-  b=GBFaum1GYbJ0Pwhdvz/FKgXTnROgPl6lxtz1m0t5134tYdkZVYJ3ge9z
-   ExkjiDQD+p+Yvjm4PJEvNQGWZ0UF+rdBzteujXYlrisvdeeYPG5YI4sUc
-   yAuKDH+m+D7+Vovt/b0nNifNSmCf3UXKYbtKW4vep/dgqGwbufTsERnyd
-   GxynkUJzcpqMhnRk9vRBrJBIIOo5MS7PqoQvhssxeMqoo0qb0ely7euJN
-   0ff3N3ZJwh4dtCk4QGEutWXKvLcOcIHPvDvmujxScfegKmsE5Mm+xoBnf
-   KlKSDCz9wD6YWMQ7rL7SAbE+Ci5jzv03Po9f+bivn5dZ4Lavt6HJ4BAu6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="393776401"
-X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="393776401"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 01:08:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="20504931"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.26.117]) ([10.93.26.117])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 01:08:05 -0800
-Message-ID: <89747805-c322-4b6c-8830-3c1e51606416@linux.intel.com>
-Date: Fri, 29 Dec 2023 17:07:47 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F87410A00;
+	Fri, 29 Dec 2023 09:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VujChWYOqMtN7Z0cFrkfkooU/jXc8tZ2DcBPylTzZPUNcjafsJ0ibKgO0qTjDfhGYmlDHd6kqdeMaA04KGwIBzBMPUUS4uz4RkiGAzmjHciBtYXry6E3TclLr4hcJb/eXZyapNUAk/EBr2mOhkGT+psN82H5me2g1I6hYHIr0g2uxApa9hPNz2jVobS0eHLPesTVh7qlnuNMaLsnDQ3kQW/MzbFOYwmi5Hw2V5h5Ydnh0CJGIk4PJFZV4OweHzLy+98qOSYC2zWSZVF4KFjThT7RKL9Kpt/PELZzEC7dNZD3an8A7CcfC0QDB2TNGcU3oSfaaeH4CQCh9avdPat9tA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VYuhkeV/Lqtxfuo+6+a7mzQKn4HKrclB4oK/2U3G1fg=;
+ b=eJ1U3Z6qm0FCUOcseCVKysr5hiKxaJFgchF8x8DTzVP2eQbgeal8Ci9VGBz9u90OfmEMtxeDvnVM29p1j5MJFBEwCBDeldQ6NJl+NbnvCRkyUzD8KrpfpskCBTiVb1aGKfm/Z+HYHW0eS1biw2bNJRQ9IYk2KjrDuicJh0XIZliv4qlNQ+zk2lfnrvG5R7etOyUbYISjedtSLRkaylAvgNkZZiZXVK06LOzpwesGP8SMEces8SBZS8W3zET+VyPcsdu+WVhhZAZfNOIrY9rVo1BtvvVS09x2JdLo6fjTFcLkpGK2nUgBPP2e1Ag4C5LPzdTMedu5qQ7WhAc8fJHQzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VYuhkeV/Lqtxfuo+6+a7mzQKn4HKrclB4oK/2U3G1fg=;
+ b=KoIxRrYY1ZB3aCV8htAI01z5u3cssDaK7J9/8jTl4P+24/oK3e9g977yR60Oi7mPSXa5edbrriPso14Jk0JD7PHa5Gjj7q0Rl1khcLI5vDGK6+tf2QAghW5E1MnzFcBuyp34S2xgXJxdtspQWH7UzGcuzihUn72cGX+5mozFOGm3158ZAr6aJ2xCFw3Qs/au/iW/ByrHlENZo3ryZ6WM1D56tAClvmjkoQeUJAetO3Qzsknh6v9RYTZVOTpP5u6iPNOkPCIiNCHgoZnn5Oc1yFZ2vo5IkPI1RS3W7JDHOk0nqrF2HMsvLBSPf5ExS6Cfc/G6D4k2vszF7dp6tXI6vg==
+Received: from TY0PR06MB5611.apcprd06.prod.outlook.com (2603:1096:400:31e::8)
+ by TYUPR06MB6052.apcprd06.prod.outlook.com (2603:1096:400:354::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.20; Fri, 29 Dec
+ 2023 09:09:15 +0000
+Received: from TY0PR06MB5611.apcprd06.prod.outlook.com
+ ([fe80::2925:f80d:d159:5e08]) by TY0PR06MB5611.apcprd06.prod.outlook.com
+ ([fe80::2925:f80d:d159:5e08%4]) with mapi id 15.20.7113.028; Fri, 29 Dec 2023
+ 09:09:15 +0000
+X-Gm-Message-State: AOJu0YxX110+seslIgeKB55UGiPTNDiRcHbuyCVqSpzvZ0hw7Yp8lue0
+	nlgJBdApwbvWQsgwidgqxWyTBun49XT7N+lszFk=
+X-Google-Smtp-Source: AGHT+IEom+BhYMeoR9sWT6DtDhYHUvefLbL+S7H84MNZI+9eS/V5PV9ojmf1p96Lu9yaL8pByupFeEg+feM+WXCoO20=
+X-Received: by 2002:a17:906:251:b0:a27:5ff2:121c with SMTP id
+ 17-20020a170906025100b00a275ff2121cmr1036455ejl.139.1703840951218; Fri, 29
+ Dec 2023 01:09:11 -0800 (PST)
+References: <20231227053509.894642-1-allencl_lin@hotmail.com>
+ <SEZPR06MB56080820EE51CBAE9C6B6B3E9E9FA@SEZPR06MB5608.apcprd06.prod.outlook.com>
+ <08623087-bf1c-411e-87de-d40ffab6e2bc@linaro.org>
+In-Reply-To: <08623087-bf1c-411e-87de-d40ffab6e2bc@linaro.org>
+From: Allen Lin <allencl_lin@hotmail.com>
+Date: Fri, 29 Dec 2023 17:08:59 +0800
+X-Gmail-Original-Message-ID: <CAEr79DVMwZ46WSgC4P5f8rp9ej+psivEcp0+zXKEot+jXhM-4A@mail.gmail.com>
+Message-ID:
+ <TY0PR06MB56114444CCF08BAA6EE340DF9E9DA@TY0PR06MB5611.apcprd06.prod.outlook.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: input: Add Himax HX83102J touchscreen
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: dmitry.torokhov@gmail.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, jikos@kernel.org, 
+	benjamin.tissoires@redhat.com, linux-input@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-TMN: [7uDYR5cLFBv0MnOS19PSb4D2usYp4rhT]
+X-ClientProxiedBy: AS4P195CA0007.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5e2::7) To TY0PR06MB5611.apcprd06.prod.outlook.com
+ (2603:1096:400:31e::8)
+X-Microsoft-Original-Message-ID:
+ <CAEr79DVMwZ46WSgC4P5f8rp9ej+psivEcp0+zXKEot+jXhM-4A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v9 2/5] iommu/vt-d: break out ATS Invalidation if
- target device is gone
-To: "Tian, Kevin" <kevin.tian@intel.com>,
- "bhelgaas@google.com" <bhelgaas@google.com>,
- "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "will@kernel.org" <will@kernel.org>,
- "robin.murphy@arm.com" <robin.murphy@arm.com>,
- "lukas@wunner.de" <lukas@wunner.de>
-Cc: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231228001646.587653-1-haifeng.zhao@linux.intel.com>
- <20231228001646.587653-3-haifeng.zhao@linux.intel.com>
- <BN9PR11MB5276D70FD60FD1E0733B35AE8C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <17725ef5-d777-420b-9586-4aade103282e@linux.intel.com>
- <BN9PR11MB5276ED0949E04BD25A4F91428C9DA@BN9PR11MB5276.namprd11.prod.outlook.com>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276ED0949E04BD25A4F91428C9DA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TY0PR06MB5611:EE_|TYUPR06MB6052:EE_
+X-MS-Office365-Filtering-Correlation-Id: 849f37b9-4767-4cba-eafd-08dc084dd411
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	FPD1JIpTekBITaHGZb9oP+AYee9mAjcBsgZOMOer4+c5oDf+EMPN4oMAbrv2XEe6sBAmHrPy4gGJBnnypROP+0SScfAX87uHydcxuSmWkTVAod16YRR+bG7/ZmP0nrhW0U4EXOwSfJQsebBV/016gQaCLG3p4oP8SVs0cN3YCSCnGqQcahL//2HfM4khtknWGHPfZbgsOL9qlhy3oLVukVJl7PrPlmmqYprtxyqSNDqxlyQMmY/o7fO7jHktculHtp2NwLVNDKbIqZGq/UoRbSuC/tv29DK+ci4x+hWVscSyhnQLnoFMf1vRuy6JxExrTqZDjZYKmhZBf/YB/5+Z1lb3wc7fVBFPgZNVWwy+ie1ryzQ+y7edaBrks97bUk1NPN59pG4GMo2cKfEhawBYvPR7I/ktpl/jbGOM++BhJQ93ySyWHLt9n5LGLtlwak0Kueb16VPC+GIUSeFvjWoX++U4EVaugK7QZ1rHfQ6hO3XSV283fnfxijMAUgvDiVHvC15jVqr3CQKGAa9hr+rUYH2PsBnUaCzJlXXYOdkDyGv7m3nLpow85JcxAc2Ec8mcz1gIZ/uiZPt97MDXcjtNB0I4tRvnmsv65+IRUEk1gGw=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?YVA3V25sVGdZdmdkOC94aFEvSXMrdWtjWjZmd09ieStqR2pNdVlNeWxBcktL?=
+ =?utf-8?B?NzczTjZqK1VYM0xCWnZVUHV2M1l4a2dIdzJ5MVh2V21qdzVIWlBVUWg1N3Ni?=
+ =?utf-8?B?QWFjTXhyTCtGN3ZwYjN5ZjhFV1RjNE9mMkxqWnZYTkRSWDNNUGlMYWFuZkhl?=
+ =?utf-8?B?WGVQc1VKajVZRDlhaTcybTUyMmUrZVRKckpkdmtmR0lDR1V1bUZveXJ4a2VZ?=
+ =?utf-8?B?emU1QmdMV0EyQjRMbm41ZTNCMDMvSlJ3eWNNbGdNQ0lqVHJKWGt3NFhaMEZQ?=
+ =?utf-8?B?TXRkN0hpNlhRRlYrWVdKNFM3R1pkbmhjSUY3ZFptSzFwR0lGblNBY3JpOVZs?=
+ =?utf-8?B?OVdHNjdVaG04c3VwV0xIZVBVYWtMUG43ZHpSOTh4R3MzMk9haE9UU0JMUGhN?=
+ =?utf-8?B?Q21VSjBsUFpMTGFkRW9idmNZQTlvZ2NNazdOUzc4YU1RYkQ0MDVKQ0VvSkVh?=
+ =?utf-8?B?WHRtNWFPdER3U2ludUowTkFwaVRjdTR3NHgwZVdjZmRTZ2RlRjRya2I4c3VM?=
+ =?utf-8?B?bXFZRWdUa3RCTnExUk9UZ0N4RjV3NG5jUWRKVHhuZXVUU0wwVndvRmJ2Z3Br?=
+ =?utf-8?B?T0xkcnExNVdHN3dTeEVRaUNXQUY2cGQvMXl5V2g2QWdSa1lONCtXbWl3ZzJF?=
+ =?utf-8?B?N0x5NjJJUHY4WTVEaGdUb2ZhOWNoVEd2UVJsOEtYWXV2MGUrMWZrOTJMYXp0?=
+ =?utf-8?B?emNqaWNTVzlDVWhOT3pxZWVLNVBJdEVISXdNRlNsZXJvK3k3SWQ4WEZqTmtV?=
+ =?utf-8?B?MG5leWFYazdCaVMwVTlUVkJuR0tyYlpwMVUrRnFXV2dJMkZkWi9CQnY5azFZ?=
+ =?utf-8?B?b2JFYjltVG5jUVZWdzN4UlFTbmQ3ak9paityQkdxc2dkUU9LVm1HT3Q2N0xI?=
+ =?utf-8?B?MGZhazNGQVpNanJqN0hQSDBrY0NQN2J3di9ES0taZ0ZQV1UyUm83U0J1OHlQ?=
+ =?utf-8?B?dEJBQ0Q3UEkyVis0ZHFBTFp6M25mUmlnVzJnZXViOUlwYUhkbTdheTBlTk5Y?=
+ =?utf-8?B?QnJ4NUQwV1lKaHpNUXR5VnlXdzZybG15aGI2cHYwMGtnQ2RuQW5KNUdqSkJk?=
+ =?utf-8?B?V0lWZHQzSUQwTVluOTY3SFBXVksrcE5COEd3RHVlbDhVZk15OFQ2R0R4SXpk?=
+ =?utf-8?B?eXhzWVdnVVN0d1dCandTdzNVUWErV0xJRzRYYSsvcFYwbUJCREhXOURBbUJq?=
+ =?utf-8?B?VmpEM3VZYUVWdUtTSUhkYnVmTHlyWG4zb1NyMnBxc1l6ZlRoWldmYlV5RUFZ?=
+ =?utf-8?B?M0lvdGZJRnhRRjJ0QzlwbTg4aVBNZEp4V09YK0V4RnhLQ09Pc1hZOXhiNm9o?=
+ =?utf-8?B?SjdvWUxxcmQ0RVZJR3NmeWFXckFWa3pSb0xnRXRUUTRHeUZrTVBiQm0yRUZw?=
+ =?utf-8?B?cWw5M25Uc21vOHAvMm4zWHlqaFB4ejhDcDRqRXd0VG14blBRdy93VmwyanFk?=
+ =?utf-8?B?Ty9xWlpmZ1ZlTU94QldreG0yOHMwaktWOUhRc2wwb1FFdXNoNUtaU0dVbkth?=
+ =?utf-8?B?QmNYclF2RFo0bkJvVlV3aXIvMThzTVNRTVhERjF1MkczOFNqWndnVkRSOGxV?=
+ =?utf-8?B?dk9iV05xMVgzanFWeW1VRkxJZVM0cy9VZDBGeHdscEJic09iTGp0dDI2c1JC?=
+ =?utf-8?Q?fvs5+6q+LVZvYsIF/5KbJjbDUQ9XSIVPT5HOZ3nYCQTY=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-3208f.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 849f37b9-4767-4cba-eafd-08dc084dd411
+X-MS-Exchange-CrossTenant-AuthSource: TY0PR06MB5611.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2023 09:09:14.8629
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYUPR06MB6052
 
-
-On 12/29/2023 4:06 PM, Tian, Kevin wrote:
->> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
->> Sent: Thursday, December 28, 2023 9:03 PM
->>
->> On 12/28/2023 4:30 PM, Tian, Kevin wrote:
->>>> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
->>>> Sent: Thursday, December 28, 2023 8:17 AM
->>>>
->>>> For those endpoint devices connect to system via hotplug capable ports,
->>>> users could request a warm reset to the device by flapping device's link
->>>> through setting the slot's link control register, as pciehp_ist() DLLSC
->>>> interrupt sequence response, pciehp will unload the device driver and
->>>> then power it off. thus cause an IOMMU device-TLB invalidation (Intel
->>>> VT-d spec, or ATS Invalidation in PCIe spec r6.1) request for device to
->>>> be sent and a long time completion/timeout waiting in interrupt context.
->>> is above describing the behavior of safe removal or surprise removal?
->> bring the link down is a kind of surprise removal for hotplug capable
->>
->> device.
-> then it's better to make it clear from beginning that this is about surprise
-> removal in which device is removed and cannot respond to on-going
-> ATS invalidation request incurred in the removal process.
-
-This case, customer insisted he wasn't meant to do "surprise removal", but
-
-did a warm reset, perhas by chance, they populated adapters in the hotplug
-
-capable slots.
-
-typical surprise removal doesn't include such case in my understanding.
-
-1. pull out adapter directly
-
-2. request power off via sysfs.
-
-but the behaviour of pciehp (hotplug driver) is exactly the same as other
-
-surprise removal operation, so just classify it as "surprise removal" , no
-
-items in PCIe spec mentioned this is one typical surprise removal.
-
-perhaps no one did surprise removal via setpci tool to access pci
-
-config space to flap power/link state, why not just pull it out.
-
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> =E6=96=BC 2023=E5=B9=
+=B412=E6=9C=8828=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=886:36=E5=AF=
+=AB=E9=81=93=EF=BC=9A
 >
-> safe removal should be immune from this problem as the device is still
-> responsive in the whole removal process.
-Yup, agree.
+> On 27/12/2023 06:35, Allen_Lin wrote:
+> > Add the HX83102j touchscreen device tree bindings documents.
+> >
+> > Signed-off-by: Allen_Lin <allencl_lin@hotmail.com>
+> > ---
 >
->>>> [ 4223.822628] Call Trace:
->>>> [ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
->>>> [ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
->>>> [ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
->>>> [ 4223.822629]  intel_iommu_release_device+0x1f/0x30
->>>> [ 4223.822629]  iommu_release_device+0x33/0x60
->>>> [ 4223.822629]  iommu_bus_notifier+0x7f/0x90
->>>> [ 4223.822630]  blocking_notifier_call_chain+0x60/0x90
->>>> [ 4223.822630]  device_del+0x2e5/0x420
->>>> [ 4223.822630]  pci_remove_bus_device+0x70/0x110
->>>> [ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130
-> I'm curious why this doesn't occur earlier when the device is
-> detached from the driver. At that point presumably the device
-> should be detached from the DMA domain which involves
-> ATS invalidation too.
-
-well, that is not weird as I know
-
-I am sure the device driver was unloaded already before user
-
-tries to do a warm reset to the device.
-
-In fact, customer uses a firmware tool called "mlxfwreset"
-
-the steps that tool executed
-
-1. send reset command to firmware
-
-2. stop driver
-
-3. reset pci (via setpci , then hang here).
-
-
-Thanks,
-
-Ethan
-
->>>>    	while (qi->desc_status[wait_index] != QI_DONE) {
->>>> +		/*
->>>> +		 * if the device-TLB invalidation target device is gone, don't
->>>> +		 * wait anymore, it might take up to 1min+50%, causes
->>>> system
->>>> +		 * hang. (see Implementation Note in PCIe spec r6.1 sec
->>>> 10.3.1)
->>>> +		 */
->>>> +		if ((type == QI_DIOTLB_TYPE || type == QI_DEIOTLB_TYPE)
->>>> && pdev)
->>>> +			if (!pci_device_is_present(pdev))
->>>> +				break;
->>> I'm not sure it's the right thing to do. Such check should be put in the
->>> caller which has the device pointer and can already know it's absent
->>> to not call those cache invalidation helpers.
->> Here is to handle such case, the invalidation request is sent, but the
->>
->> device is just pulled out at that moment.
->>
-> one problem - the caller could pass multiple descriptors while type
-> only refers to the 1st descriptor.
+> Where is the changelog? There is no cover letter attached, so changelog
+> is supposed to be here. There were several comments, so does it mean you
+> ignored them?
 >
-> btw is it an Intel specific problem? A quick glance at smmu driver
-> suggests the same problem too:
+Cover letter is not in this mail but in the mail with this title
+"[PATCH v3 0/2] Add HX83102j driver for HIMAX HID touchscreen"
+
+Hi,
+This driver implements for Himax HID touchscreen HX83102j.
+
+Using SPI interface to receive/send HID packets.
+
+Patchs notes as below
+1. Add the Maintainer and devicetree bindings document for driver
+2. Add the driver code and modify Kconfig/Makefile to support the driver
+
+change in v2 :
+- Fix kernel test robot build warnings.
+change in v3 :
+- Modify code according to review suggesions.
+
+Thanks.
+
+
+Allen_Lin (2):
+  dt-bindings: input: Add Himax HX83102J touchscreen
+  Input: Add Himax HX83102J touchscreen driver
+
+ .../bindings/input/himax,hx83102j.yaml        |   65 +
+ MAINTAINERS                                   |    7 +
+ drivers/hid/Kconfig                           |    8 +
+ drivers/hid/Makefile                          |    2 +
+ drivers/hid/hid-himax-83102j.c                | 1096 +++++++++++++++++
+ drivers/hid/hid-himax-83102j.h                |  202 +++
+ 6 files changed, 1380 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/himax,hx83102j.=
+yaml
+ create mode 100644 drivers/hid/hid-himax-83102j.c
+ create mode 100644 drivers/hid/hid-himax-83102j.h
+
+--
+2.34.1
 >
->    arm_smmu_atc_inv_domain()
->      arm_smmu_cmdq_batch_submit()
->        arm_smmu_cmdq_issue_cmdlist()
->          arm_smmu_cmdq_poll_until_sync()
->            __arm_smmu_cmdq_poll_until_consumed()
+> >  .../bindings/input/himax,hx83102j.yaml        | 65 +++++++++++++++++++
+> >  MAINTAINERS                                   |  6 ++
+> >  2 files changed, 71 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/input/himax,hx831=
+02j.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/input/himax,hx83102j.yam=
+l b/Documentation/devicetree/bindings/input/himax,hx83102j.yaml
+> > new file mode 100644
+> > index 000000000000..872b478c5753
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/input/himax,hx83102j.yaml
+> > @@ -0,0 +1,65 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/input/himax,hx83102j.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Himax hx83102j touchscreen
+> > +
 >
-> /*
->   * Wait until the SMMU cons index passes llq->prod.
->   * Must be called with the cmdq lock held in some capacity.
->   */
-> static int __arm_smmu_cmdq_poll_until_consumed(struct arm_smmu_device *smmu,
->                                                 struct arm_smmu_ll_queue *llq)
+> ...
 >
-> is there a more general way to solve it?
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    spi {
+> > +      #address-cells =3D <1>;
+> > +      #size-cells =3D <0>;
+> > +      hid-himax-spi@0 {
+>
+> Still not the name I asked - it should be generic, like touchscreen.
+>
+I will fix it, thanks for your review. if driver code needs to be
+modified, i will fix it together.
+> Best regards,
+> Krzysztof
+>
+
+Best regards
+Allen
 
