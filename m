@@ -1,91 +1,119 @@
-Return-Path: <linux-kernel+bounces-12933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 377D981FCDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 04:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB9E681FCE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 04:46:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9A4C1F24A2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 03:40:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FF301F21652
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 03:46:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9013023AF;
-	Fri, 29 Dec 2023 03:40:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD54620E1;
+	Fri, 29 Dec 2023 03:46:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ah/aicGE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3C0317EF
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 03:40:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b7fdde8b58so915588339f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 19:40:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703821214; x=1704426014;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-        b=sK+y7rcwxSk7xjONKnNIGJaIXREzLH2qG0rwCNnMAnZG8cTggol5oGfqAiudzgx3Ky
-         1Srf955uQMjlCdlYpE9v/U6WWyz6iu1TRoWgcrNUoIwVeoeqcHCNzhDeijX6lQshzqKe
-         aWMCm2Gm0z41zDMiqVrlcFCphoV6dtKJXkf/gcFJIlgm1HWijxoN+8/9s7YpftSEdKws
-         H78XCFOZSi7BrjzMHNluZ2mSZBATD19VTaGtO4j7yb7NahD5BDvnPDoU9Z75qiha/GqJ
-         1indEDUudscjrzgemc7DEPn5g52bjiehFt9HLUyfuVzw0om1EtgkMVxVA/qhoMYzTpsg
-         t/Pw==
-X-Gm-Message-State: AOJu0Yz7cVfmuEwxB+qX6nrPcr+A2/mX/vfR22gq45ZmojP7bMg6HWFA
-	G12YRxDeL38P/A6t8TC25462yylZ3fV/e40eBZkh8HPvaSO5
-X-Google-Smtp-Source: AGHT+IEkAGjwi+IkyhqrzNDOTpnjqIEIdvqSb/HQ56k/Ws0Mj7r3H0FCFiYVeWjl4P/gSUkbHvnRxME/4WghGDJY9dzzc5Q4cfEE
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9734B567C;
+	Fri, 29 Dec 2023 03:46:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703821574; x=1735357574;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Vm6p9nuxloRluzYcX979ML+GT8QFdDfRTL49gEoXQn4=;
+  b=Ah/aicGELwRB1UDR92/tVtkjEliD2YeJgdQDbaXjBdctPgzi1culLNtX
+   2T+o2BGygwzY0sQOK0XSbm4wcHrmP3+esO5Xvm9A7CXR8kE/vRo0LtBTh
+   h1G7m5tunRj+UAwDhYaTlgC1Hq3HENcTFxJ6IPnfUYjls0PwrERExeXJc
+   bWYkOVu+FyXg1Nqr/p2E2xOpQjWTbeZYh4mhbky2K7MgKcmMpUEuhTLnn
+   TlpjEK8Y1k3MIs3U+kDTHaLil7io1Sno8jzKRT44Q1C56Ap3wr6xZBlIy
+   ABP8grqmDyheonJ2TCgqO5yw4/pppY0ndFCSTG0jIO4YF4LyjAWkSr0m6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="381591511"
+X-IronPort-AV: E=Sophos;i="6.04,313,1695711600"; 
+   d="scan'208";a="381591511"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 19:46:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="778711269"
+X-IronPort-AV: E=Sophos;i="6.04,313,1695711600"; 
+   d="scan'208";a="778711269"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 28 Dec 2023 19:46:10 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rJ3oz-000H4F-1U;
+	Fri, 29 Dec 2023 03:46:06 +0000
+Date: Fri, 29 Dec 2023 11:42:53 +0800
+From: kernel test robot <lkp@intel.com>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Stanimir Varbanov <svarbanov@mm-sol.com>,
+	Andrew Murray <amurray@thegoodpenguin.co.uk>,
+	Vinod Koul <vkoul@kernel.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: Re: [PATCH 4/4] PCI: qcom: Implement RC shutdown/power up
+Message-ID: <202312291155.8v6ZEtrf-lkp@intel.com>
+References: <20231227-topic-8280_pcie-v1-4-095491baf9e4@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2708:b0:46b:719a:62d0 with SMTP id
- m8-20020a056638270800b0046b719a62d0mr434473jav.5.1703821214020; Thu, 28 Dec
- 2023 19:40:14 -0800 (PST)
-Date: Thu, 28 Dec 2023 19:40:14 -0800
-In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000038f8c3060d9dca3d@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
-From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231227-topic-8280_pcie-v1-4-095491baf9e4@linaro.org>
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+Hi Konrad,
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+kernel test robot noticed the following build errors:
 
-#syz fix: exact-commit-title
+[auto build test ERROR on 39676dfe52331dba909c617f213fdb21015c8d10]
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+url:    https://github.com/intel-lab-lkp/linux/commits/Konrad-Dybcio/PCI-qcom-Reshuffle-reset-logic-in-2_7_0-init/20231228-062002
+base:   39676dfe52331dba909c617f213fdb21015c8d10
+patch link:    https://lore.kernel.org/r/20231227-topic-8280_pcie-v1-4-095491baf9e4%40linaro.org
+patch subject: [PATCH 4/4] PCI: qcom: Implement RC shutdown/power up
+config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20231229/202312291155.8v6ZEtrf-lkp@intel.com/config)
+compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project 8a4266a626914765c0c69839e8a51be383013c1a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231229/202312291155.8v6ZEtrf-lkp@intel.com/reproduce)
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312291155.8v6ZEtrf-lkp@intel.com/
 
----
-[1] I expect the commit to be present in:
+All errors (new ones prefixed by >>):
 
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+>> ld.lld: error: undefined symbol: cmd_db_ready
+   >>> referenced by pcie-qcom.c
+   >>>               drivers/pci/controller/dwc/pcie-qcom.o:(qcom_pcie_probe) in archive vmlinux.a
+--
+>> ld.lld: error: undefined symbol: crc8_populate_msb
+   >>> referenced by pcie-qcom.c
+   >>>               drivers/pci/controller/dwc/pcie-qcom.o:(qcom_pcie_config_sid_1_9_0) in archive vmlinux.a
+--
+>> ld.lld: error: undefined symbol: crc8
+   >>> referenced by pcie-qcom.c
+   >>>               drivers/pci/controller/dwc/pcie-qcom.o:(qcom_pcie_config_sid_1_9_0) in archive vmlinux.a
 
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
