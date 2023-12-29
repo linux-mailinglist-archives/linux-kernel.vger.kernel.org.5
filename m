@@ -1,41 +1,62 @@
-Return-Path: <linux-kernel+bounces-13207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA29A82011F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 20:10:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 089FE820127
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 20:11:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 106D7283945
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 19:10:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBE251F235D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 19:11:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E1F134A5;
-	Fri, 29 Dec 2023 19:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84FE112E43;
+	Fri, 29 Dec 2023 19:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s4YcQPcG"
+	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="xs/aaxtT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD3612E4E
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 19:10:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D981EC433CC;
-	Fri, 29 Dec 2023 19:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703877024;
-	bh=Ri74LIwEC9/3K1qM7Hw/JxzXKBrH1rB3W05Jf9Ft5fA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=s4YcQPcGh39Vs0Snr6lEdMBC9XSHn5ag0IUp4v+Nq76HH4kaMaLZ+4CTqxCSHD0MY
-	 YaP9Ku/tDq8dnNqjxULHBxxkZMjk/Mj4uKpgRjUW7o0+eMAQul/nrFUO0iadNgc+C4
-	 nraFl4I84XOIZzpwCu9pllofsV/XDdk2v+BS0Pblsx/pXiY3d116Fb2CwGu2G8UlMh
-	 IXr14/i9qXFQ4xJM67/3PYcWZrOLfH6k2PWBAv7I2grjEX1h0T955tesMtSimRUf61
-	 d3wtgjamIq+W2A2Bc5EjjYLyZuI2HB8YI/KSWdtsmMqgfd59sFgmlu1Qxl7Vzhba2b
-	 7PAv3VVSjywDQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BE132E333DA;
-	Fri, 29 Dec 2023 19:10:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48EE712E46;
+	Fri, 29 Dec 2023 19:10:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ixit.cz
+Received: from newone.congress.ccc.de (unknown [151.217.64.190])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ixit.cz (Postfix) with ESMTPSA id BEE601630CF;
+	Fri, 29 Dec 2023 20:10:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+	t=1703877043;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=q0JdO7g/7YiJgRmDEIU1W+ag1x30v1qSlkuc7yHM1QY=;
+	b=xs/aaxtTA1BdwJ9DgsJ4JxoQGwVX3OJYMgjVE9CaomvVGN4/OZEiQ9y6WNoSghib28eyFJ
+	1ZVgqXpxdrkv1pm9eeaROCvM9tHxCpHZbL18XUZOainHloZ4qwP9BJRK2GeMp3/+xsxTF4
+	ySEfKdJfzQriecRbbCOJOZ9LL/yQb88=
+From: David Heidelberg <david@ixit.cz>
+To: Viresh Kumar <vireshk@kernel.org>,
+	Nishanth Menon <nm@ti.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>
+Cc: David Heidelberg <david@ixit.cz>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-pm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: opp: switch inner and outer min/maxItems rules for opp-hz
+Date: Fri, 29 Dec 2023 20:10:29 +0100
+Message-ID: <20231229191038.247258-1-david@ixit.cz>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -43,44 +64,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [f2fs-dev] [PATCH V2] f2fs: fix to check return value of
- f2fs_recover_xattr_data
-From: patchwork-bot+f2fs@kernel.org
-Message-Id: 
- <170387702477.8173.5505716820349568272.git-patchwork-notify@kernel.org>
-Date: Fri, 29 Dec 2023 19:10:24 +0000
-References: <1702347327-24181-1-git-send-email-zhiguo.niu@unisoc.com>
-In-Reply-To: <1702347327-24181-1-git-send-email-zhiguo.niu@unisoc.com>
-To: Zhiguo Niu <zhiguo.niu@unisoc.com>
-Cc: jaegeuk@kernel.org, chao@kernel.org, ke.wang@unisoc.com,
- niuzhiguo84@gmail.com, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net
 
-Hello:
+Fixes issue as:
+```
+arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dtb: opp-table: opp-200000000:opp-hz:0: [200000000, 0, 0, 150000000, 0, 0, 0, 0, 300000000] is too long
+```
 
-This patch was applied to jaegeuk/f2fs.git (dev)
-by Jaegeuk Kim <jaegeuk@kernel.org>:
+Fixes: 3cb16ad69bef ("dt-bindings: opp: accept array of frequencies")
 
-On Tue, 12 Dec 2023 10:15:27 +0800 you wrote:
-> Should check return value of f2fs_recover_xattr_data in
-> __f2fs_setxattr rather than doing invalid retry if error happen.
-> 
-> Also just do set_page_dirty in f2fs_recover_xattr_data when
-> page is changed really.
-> 
-> Fixes: 50a472bbc79f ("f2fs: do not return EFSCORRUPTED, but try to run online repair")
-> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> 
-> [...]
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ Documentation/devicetree/bindings/opp/opp-v2-base.yaml | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Here is the summary with links:
-  - [f2fs-dev,V2] f2fs: fix to check return value of f2fs_recover_xattr_data
-    https://git.kernel.org/jaegeuk/f2fs/c/86d7d57a3f09
-
-You are awesome, thank you!
+diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+index e2f8f7af3cf4..86d3aa0eb435 100644
+--- a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
++++ b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+@@ -55,10 +55,9 @@ patternProperties:
+           to relate the values to their clocks or the order in which the clocks
+           need to be configured and that is left for the implementation
+           specific binding.
+-        minItems: 1
+-        maxItems: 32
+         items:
+-          maxItems: 1
++          minItems: 1
++          maxItems: 32
+ 
+       opp-microvolt:
+         description: |
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.43.0
 
 
