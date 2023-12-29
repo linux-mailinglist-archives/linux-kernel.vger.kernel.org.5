@@ -1,352 +1,212 @@
-Return-Path: <linux-kernel+bounces-13234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12DD1820184
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 22:04:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07850820189
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 22:09:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAA12283717
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 21:04:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A5201F22F7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 21:09:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6D71429E;
-	Fri, 29 Dec 2023 21:04:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2693214299;
+	Fri, 29 Dec 2023 21:09:12 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A52F414A84;
-	Fri, 29 Dec 2023 21:04:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B2B4C433C7;
-	Fri, 29 Dec 2023 21:04:04 +0000 (UTC)
-Date: Fri, 29 Dec 2023 16:04:55 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Subject: Re: [PATCH] ftrace: Fix modification of direct_function hash while
- in use
-Message-ID: <20231229160455.17b0f136@gandalf.local.home>
-In-Reply-To: <20231229115134.08dd5174@gandalf.local.home>
-References: <20231229115134.08dd5174@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04C681428C
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 21:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nod.at
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id F16556343B5F;
+	Fri, 29 Dec 2023 22:08:59 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id rK-5C5k2T2LH; Fri, 29 Dec 2023 22:08:59 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 3E8EE6343B49;
+	Fri, 29 Dec 2023 22:08:59 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 0EugnY1wJAwv; Fri, 29 Dec 2023 22:08:59 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 1B1F36343B3A;
+	Fri, 29 Dec 2023 22:08:59 +0100 (CET)
+Date: Fri, 29 Dec 2023 22:08:59 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: chengzhihao1 <chengzhihao1@huawei.com>
+Cc: david oberhollenzer <david.oberhollenzer@sigma-star.at>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, 
+	Tudor Ambarus <Tudor.Ambarus@linaro.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <642239519.177270.1703884138999.JavaMail.zimbra@nod.at>
+In-Reply-To: <13b259ca-b32f-a8d6-5e11-8bb38df72f5c@huawei.com>
+References: <20231228014112.2836317-1-chengzhihao1@huawei.com> <1145531757.175508.1703844362355.JavaMail.zimbra@nod.at> <13b259ca-b32f-a8d6-5e11-8bb38df72f5c@huawei.com>
+Subject: Re: [PATCH RFC 00/17] ubifs: Add filesystem repair support
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: Add filesystem repair support
+Thread-Index: AkgMz2JGx84iN/cShcb2uWeDWhTkSA==
 
+----- Urspr=C3=BCngliche Mail -----
+> Von: "chengzhihao1" <chengzhihao1@huawei.com>
+> I make UBIFS repair for two reasons:
+>=20
+> 1. There have been many inconsistent problems happened in our
+> products(40+ per year), and reasons for most of them are unknown, I even
+> can't judge the problem is caused by UBIFS bug or hardware exception.
+> The consistent problems, for example, TNC points to an empty space, TNC
+> points to an unexpected node, bad key order in znodes, dirty space of
+> pnode becomes greater than LEB size, huge number in
+> master->total_dead(looks like overflow), etc. I cannot send these bad
+> images to find help, because the corporate policy. Our kernel version is
+> new, and latest bugfixs in linux-mainline are picked in time. I have
 
-Masami and Jiri,
+Regarding company policy, we could implement a tool which dumps just UBIFS'
+meta data (no data node content nor filenames). ext4 has such a tool to
+exchange faulty filesystems.
+Another option is, in case you want some else looking into the issue,
+asking a contractor like me. Usually signing a NDA is not a big deal.
 
-This patch made it through all my tests. If I can get an Acked-by by
-Sunday, I'll include it in my push to Linus (I have a couple of other fixes
-to send him).
+In any case, I'm keen to look into this issues. But I fear
+we need more testing to find the root cause, if they are caused by UBIFS bu=
+gs.
 
--- Steve
+> looked though journal/recovery UBIFS subsystem dozens of times, the
+> implementation looks good, except one problem[2]. And we have do many
+> powercut/faul-injection tests for ubifs, and Zhaolong has published our
+> fault-injection implementation in [3], the result is that
+> journal/recovery UBIFS subsystem does look sturdy.
 
+I came to the same conclusion after digging through the code more than once=
+. :-)
+=20
+> 2. If there exists a fsck tool, user have one more option to deal with
+> inconsistent UBIFS image. UBIFS is mainly applied in embeded system,
+> making filesystem available is most important when filesystem becomes
+> inconsistent in some situations.
 
-On Fri, 29 Dec 2023 11:51:34 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+This is the point where I'm more sceptical.
+Please see my comments below.
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> Masami Hiramatsu reported a memory leak in register_ftrace_direct() where
-> if the number of new entries are added is large enough to cause two
-> allocations in the loop:
-> 
->         for (i = 0; i < size; i++) {
->                 hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
->                         new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
->                         if (!new)
->                                 goto out_remove;
->                         entry->direct = addr;
->                 }
->         }
-> 
-> Where ftrace_add_rec_direct() has:
-> 
->         if (ftrace_hash_empty(direct_functions) ||
->             direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
->                 struct ftrace_hash *new_hash;
->                 int size = ftrace_hash_empty(direct_functions) ? 0 :
->                         direct_functions->count + 1;
-> 
->                 if (size < 32)
->                         size = 32;
-> 
->                 new_hash = dup_hash(direct_functions, size);
->                 if (!new_hash)
->                         return NULL;
-> 
->                 *free_hash = direct_functions;
->                 direct_functions = new_hash;
->         }
-> 
-> The "*free_hash = direct_functions;" can happen twice, losing the previous
-> allocation of direct_functions.
-> 
-> But this also exposed a more serious bug.
-> 
-> The modification of direct_functions above is not safe. As
-> direct_functions can be referenced at any time to find what direct caller
-> it should call, the time between:
-> 
->                 new_hash = dup_hash(direct_functions, size);
->  and
->                 direct_functions = new_hash;
-> 
-> can have a race with another CPU (or even this one if it gets interrupted),
-> and the entries being moved to the new hash are not referenced.
-> 
-> That's because the "dup_hash()" is really misnamed and is really a
-> "move_hash()". It moves the entries from the old hash to the new one.
-> 
-> Now even if that was changed, this code is not proper as direct_functions
-> should not be updated until the end. That is the best way to handle
-> function reference changes, and is the way other parts of ftrace handles
-> this.
-> 
-> The following is done:
-> 
->  1. Change add_hash_entry() to return the entry it created and inserted
->     into the hash, and not just return success or not.
-> 
->  2. Replace ftrace_add_rec_direct() with add_hash_entry(), and remove
->     the former.
-> 
->  3. Allocate a "new_hash" at the start that is made for holding both the
->     new hash entries as well as the existing entries in direct_functions.
-> 
->  4. Copy (not move) the direct_function entries over to the new_hash.
-> 
->  5. Copy the entries of the added hash to the new_hash.
-> 
->  6. If everything succeeds, then use rcu_pointer_assign() to update the
->     direct_functions with the new_hash.
-> 
-> This simplifies the code and fixes both the memory leak as well as the
-> race condition mentioned above.
-> 
-> Link: https://lore.kernel.org/all/170368070504.42064.8960569647118388081.stgit@devnote2/
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 763e34e74bb7d ("ftrace: Add register_ftrace_direct()")
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  kernel/trace/ftrace.c | 100 ++++++++++++++++++++----------------------
->  1 file changed, 47 insertions(+), 53 deletions(-)
-> 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 8de8bec5f366..b01ae7d36021 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -1183,18 +1183,19 @@ static void __add_hash_entry(struct ftrace_hash *hash,
->  	hash->count++;
->  }
->  
-> -static int add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
-> +static struct ftrace_func_entry *
-> +add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
->  {
->  	struct ftrace_func_entry *entry;
->  
->  	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
->  	if (!entry)
-> -		return -ENOMEM;
-> +		return NULL;
->  
->  	entry->ip = ip;
->  	__add_hash_entry(hash, entry);
->  
-> -	return 0;
-> +	return entry;
->  }
->  
->  static void
-> @@ -1349,7 +1350,6 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
->  	struct ftrace_func_entry *entry;
->  	struct ftrace_hash *new_hash;
->  	int size;
-> -	int ret;
->  	int i;
->  
->  	new_hash = alloc_ftrace_hash(size_bits);
-> @@ -1366,8 +1366,7 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
->  	size = 1 << hash->size_bits;
->  	for (i = 0; i < size; i++) {
->  		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> -			ret = add_hash_entry(new_hash, entry->ip);
-> -			if (ret < 0)
-> +			if (add_hash_entry(new_hash, entry->ip) == NULL)
->  				goto free_hash;
->  		}
->  	}
-> @@ -2536,7 +2535,7 @@ ftrace_find_unique_ops(struct dyn_ftrace *rec)
->  
->  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
->  /* Protected by rcu_tasks for reading, and direct_mutex for writing */
-> -static struct ftrace_hash *direct_functions = EMPTY_HASH;
-> +static struct ftrace_hash __rcu *direct_functions = EMPTY_HASH;
->  static DEFINE_MUTEX(direct_mutex);
->  int ftrace_direct_func_count;
->  
-> @@ -2555,39 +2554,6 @@ unsigned long ftrace_find_rec_direct(unsigned long ip)
->  	return entry->direct;
->  }
->  
-> -static struct ftrace_func_entry*
-> -ftrace_add_rec_direct(unsigned long ip, unsigned long addr,
-> -		      struct ftrace_hash **free_hash)
-> -{
-> -	struct ftrace_func_entry *entry;
-> -
-> -	if (ftrace_hash_empty(direct_functions) ||
-> -	    direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
-> -		struct ftrace_hash *new_hash;
-> -		int size = ftrace_hash_empty(direct_functions) ? 0 :
-> -			direct_functions->count + 1;
-> -
-> -		if (size < 32)
-> -			size = 32;
-> -
-> -		new_hash = dup_hash(direct_functions, size);
-> -		if (!new_hash)
-> -			return NULL;
-> -
-> -		*free_hash = direct_functions;
-> -		direct_functions = new_hash;
-> -	}
-> -
-> -	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
-> -	if (!entry)
-> -		return NULL;
-> -
-> -	entry->ip = ip;
-> -	entry->direct = addr;
-> -	__add_hash_entry(direct_functions, entry);
-> -	return entry;
-> -}
-> -
->  static void call_direct_funcs(unsigned long ip, unsigned long pip,
->  			      struct ftrace_ops *ops, struct ftrace_regs *fregs)
->  {
-> @@ -4223,8 +4189,8 @@ enter_record(struct ftrace_hash *hash, struct dyn_ftrace *rec, int clear_filter)
->  		/* Do nothing if it exists */
->  		if (entry)
->  			return 0;
-> -
-> -		ret = add_hash_entry(hash, rec->ip);
-> +		if (add_hash_entry(hash, rec->ip) == NULL)
-> +			ret = -ENOMEM;
->  	}
->  	return ret;
->  }
-> @@ -5266,7 +5232,8 @@ __ftrace_match_addr(struct ftrace_hash *hash, unsigned long ip, int remove)
->  		return 0;
->  	}
->  
-> -	return add_hash_entry(hash, ip);
-> +	entry = add_hash_entry(hash, ip);
-> +	return entry ? 0 :  -ENOMEM;
->  }
->  
->  static int
-> @@ -5410,7 +5377,7 @@ static void remove_direct_functions_hash(struct ftrace_hash *hash, unsigned long
->   */
->  int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
->  {
-> -	struct ftrace_hash *hash, *free_hash = NULL;
-> +	struct ftrace_hash *hash, *new_hash = NULL, *free_hash = NULL;
->  	struct ftrace_func_entry *entry, *new;
->  	int err = -EBUSY, size, i;
->  
-> @@ -5436,17 +5403,44 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
->  		}
->  	}
->  
-> -	/* ... and insert them to direct_functions hash. */
->  	err = -ENOMEM;
-> +
-> +	/* Make a copy hash to place the new and the old entries in */
-> +	size = hash->count + direct_functions->count;
-> +	if (size > 32)
-> +		size = 32;
-> +	new_hash = alloc_ftrace_hash(fls(size));
-> +	if (!new_hash)
-> +		goto out_unlock;
-> +
-> +	/* Now copy over the existing direct entries */
-> +	size = 1 << direct_functions->size_bits;
-> +	for (i = 0; i < size; i++) {
-> +		hlist_for_each_entry(entry, &direct_functions->buckets[i], hlist) {
-> +			new = add_hash_entry(new_hash, entry->ip);
-> +			if (!new)
-> +				goto out_unlock;
-> +			new->direct = entry->direct;
-> +		}
-> +	}
-> +
-> +	/* ... and add the new entries */
-> +	size = 1 << hash->size_bits;
->  	for (i = 0; i < size; i++) {
->  		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> -			new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
-> +			new = add_hash_entry(new_hash, entry->ip);
->  			if (!new)
-> -				goto out_remove;
-> +				goto out_unlock;
-> +			/* Update both the copy and the hash entry */
-> +			new->direct = addr;
->  			entry->direct = addr;
->  		}
->  	}
->  
-> +	free_hash = direct_functions;
-> +	rcu_assign_pointer(direct_functions, new_hash);
-> +	new_hash = NULL;
-> +
->  	ops->func = call_direct_funcs;
->  	ops->flags = MULTI_FLAGS;
->  	ops->trampoline = FTRACE_REGS_ADDR;
-> @@ -5454,17 +5448,17 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
->  
->  	err = register_ftrace_function_nolock(ops);
->  
-> - out_remove:
-> -	if (err)
-> -		remove_direct_functions_hash(hash, addr);
-> -
->   out_unlock:
->  	mutex_unlock(&direct_mutex);
->  
-> -	if (free_hash) {
-> +	if (free_hash && free_hash != EMPTY_HASH) {
->  		synchronize_rcu_tasks();
->  		free_ftrace_hash(free_hash);
->  	}
-> +
-> +	if (new_hash)
-> +		free_ftrace_hash(new_hash);
-> +
->  	return err;
->  }
->  EXPORT_SYMBOL_GPL(register_ftrace_direct);
-> @@ -6309,7 +6303,7 @@ ftrace_graph_set_hash(struct ftrace_hash *hash, char *buffer)
->  
->  				if (entry)
->  					continue;
-> -				if (add_hash_entry(hash, rec->ip) < 0)
-> +				if (add_hash_entry(hash, rec->ip) == NULL)
->  					goto out;
->  			} else {
->  				if (entry) {
+> [1]
+> https://linux-mtd.infradead.narkive.com/bfcHzD0j/ubi-ubifs-corruptions-du=
+ring-random-power-cuts
+>=20
+> [2] https://bugzilla.kernel.org/show_bug.cgi?id=3D218309
+>=20
+> [3] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D388034
+>=20
+> I'm not sure whether you prefer a fsck tool, in my opinion, fsck just
+> provide a way for userspace to fix filesystem, user can choose invoke it
+> or not according to the tool's limitations based on specific situation.
+> But according to your following reply, I guess you can accept that UBIFS
+> can have a fsck, and fsck should let user known which file is recovered
+> incomplete, which file is old, rather than just make filesystem become
+> consistent.
 
+I see three different functions:
+
+1. Online scrubbing
+
+A feature which can check all UBIFS structures while UBIFS is mounted
+and tell what's wrong. We have this already more or less ready, the chk_fs
+debugfs knob.
+
+2. Online repair
+
+Like XFS online repair, this feature allows UBIFS to fix data structures by
+*re-computing* them from other structures without loosing data nor violatin=
+g
+file contents consistency.
+E.g. if a data node vanished, it can do nothing. Fixing the index tree
+will make UBIFS no longer fail but userspace will be unhappy if a file
+has suddenly a hole or is truncated.
+On the other hand, a disconnected inode could be linked into a lost+found
+folder or re-computing the LPT tree (I'm still not sure about the LPT).
+Same for updating link counters, etc...
+
+3. Offline repair
+
+This is the classical fsck. It can do everything what 1) and 2) can do plus
+dangerous operations like re-building the index tree by scanning for
+UBIFS nodes on the media.
+
+Re-building the index tree is dangerous because file *contents* can be
+inconsistent later. If for example a whole LEB is lost, a file can
+contain a mixture of old and new data blocks. For a text file this is
+not always fatal. For a database it is.
+
+But UBIFS itself will be consistent again, will mount and not render
+read-only all of a sudden.
+
+>>
+>>> About why do we need it, how it works, what it can fix or it can not
+>>> fix, when and how to use it, see more details in
+>>> Documentation/filesystems/ubifs/repair.rst (Patch 17).
+>> This needs to go into the cover letter.
+> OK, thanks for reminding.
+>>  =20
+>>> Testing on UBIFS repair refers to
+>>> https://bugzilla.kernel.org/show_bug.cgi?id=3D218327
+>>>
+>>> Whatever, we finally have a way to fix inconsistent UBFIS image instead
+>>> of formatting UBI when UBIFS becomes inconsistent.
+>> Fix in terms of making mount work again, I fear? As I said, most likely
+>> the problem is now one layer above. UBIFS thinks everything is good but
+>> userspace suddenly will see old/incomplete files.
+>>
+>> What I can think of is a tool (in userspace like other fscks) which
+>> can recover certain UBIFS structures but makes very clear to the user wh=
+at
+>> the data is lost. e.g. that inode XY now misses some blocks or an old ve=
+rsion
+>> of something will be used.
+>> But this isl nothing you can run blindly in production.
+>=20
+> Let me see.
+>=20
+> First, we have a common view, fsck tool is valuable for UBIFS, it just
+> provide a way for user application to make UBIFS be consistent and
+> available. Right?
+
+Yes. David Oberhollenzer and I will happily help with implementing, testing=
+ and
+reviewing code.
+=20
+> Second, you concern odd/incomplete files are recovered just like I
+> metioned in documentation(Limitations section), which still make
+> application failed because the recovered file lost data or deleted file
+> is recovered. So you suggested me that make a userspace fsck tool, and
+> fsck can telll user which file is data lost, which file is recovered
+> after deletion.
+>=20
+> The difficulty comes from second point,=C2=A0 how does fsck know a file i=
+s
+> recovered incomplete or old. Whether the node is existing, it is judged
+> by TNC, but TNC could be damaged like I descibed in above. Do you have
+> any ideas?
+
+That's the problem what all fsck tools have in common.
+The best we can do is offering safe and dangerous repair modes
+plus a good repair report.
+
+Long story short, I'm not opposed to the idea, I just want to make
+sure that this new tool or feature is not used blindly, since
+it cannot do magic.
+
+Thanks,
+//richard
 
