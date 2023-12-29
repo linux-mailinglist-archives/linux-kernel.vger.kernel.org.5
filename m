@@ -1,338 +1,339 @@
-Return-Path: <linux-kernel+bounces-13224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E178C82015D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 21:19:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C042820161
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 21:21:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99FA6282B9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 20:19:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51BFB282679
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 20:21:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2B014010;
-	Fri, 29 Dec 2023 20:18:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3083C1401F;
+	Fri, 29 Dec 2023 20:21:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="ej9A6HT4"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="JM8IOoEF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF64E13FF9
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 20:18:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bbc649c275so1431863b6e.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 12:18:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1703881130; x=1704485930; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LAm1Gv24m5eKtpM2VegsdBcgdCr09tg+CtjUEmyp3ww=;
-        b=ej9A6HT4WCDD7vus6ghbxyCT5RDWwJpbHlWW/6Xu3OoEEn1aECCe8SxnD9PnZ4C17d
-         iMzf4ET8heKXwuszEQOR60Tls9T59w9+07yhW1Zrz43OfnUdfspqg20XxK1dYgREyOBv
-         RBum4rraOlZWkPEn4KHopvPpl/bQIgLgcRrME=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703881130; x=1704485930;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LAm1Gv24m5eKtpM2VegsdBcgdCr09tg+CtjUEmyp3ww=;
-        b=Oyt+xqx+X07gf+3CU3MJdH+V7FXTFpfdQAK1alq0teYATcgqBpeBiiVn84iHXdpnji
-         MQ4uk0qTVbUmte1u8U5pQi04EEYAhRBaMq+uxWhHjpQDjO8V/8JSajYXYWR9p4EUyFTD
-         yiblo6dX5DTFWqakE+mGSF24LIMNKKeIoASWMG0BU/63q9SgVLe9V2PsWbxA5Vaab9eD
-         k0dVh6keduB1N22J/cARMYWno/N06kdAyL4NSvRbPrZXFF1RZ+gU1gY9JPUtLQ/v6FIW
-         EbbkB9bV9XjDxU8ZK5J10tuBaAkkenkma22ogQFWWWf6JtJXcb0sXmzNcoRzEGcQG07u
-         PmdQ==
-X-Gm-Message-State: AOJu0YwgGtSpxHXb4ZdFHdi9lrRT72a8nNmUmgYLCdAXNmVxXcC/SWgb
-	E32ZS6Fn9trq163Q7LLCf6bw2MFo6w0dAHMd1cBYes74TVYzfg==
-X-Google-Smtp-Source: AGHT+IE7yV4SqDHk31PXqJmrlb8c3/AFFiG74agsF08XEHRYgF02/GXCsCVBJdY9jTtqV+xjFpgrHQT8Q+HV4D3V5XU=
-X-Received: by 2002:a05:6808:1403:b0:3b6:a1f4:8066 with SMTP id
- w3-20020a056808140300b003b6a1f48066mr8540948oiv.37.1703881130651; Fri, 29 Dec
- 2023 12:18:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD5F913FEB;
+	Fri, 29 Dec 2023 20:21:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BTJuc5Z016170;
+	Fri, 29 Dec 2023 20:21:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=BRA6Aw7Uh/UneTlaFbDZ/f1zn/5HEUgf2LwzUlJ61yw=; b=JM
+	8IOoEFW/owGeXa0s30XVhgVjW3MO/BwaDntp7Agohneaw0vcBEt4lcLCd5xi7XKU
+	RCilUydnZHVG+O3GNwTY+H5pxHIDi4xy845FXE8wfMMmZxRAUBIhIo7fAXDW3C3d
+	5V9ZTUHN8uoTLavNqsEMWUWYL+olWtqxaL+dHZsjyORBxpo0491uoOOzeOvrXY67
+	RfsbeMa4JrMFXv9rTFhn1H91dMttH2wOuhkkJ5WCkHQsy/JwM8bg1ljjkvJCV5sk
+	a8d+sWuy9OzpBvkrq6ucTnrl8m3lk98ZK4bhve4r6l1T+SA8wu0ZQbHOA4Kqhkjr
+	EXysaDpZ1f3fgWo07NxA==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v9qx51c4a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Dec 2023 20:21:17 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BTKLG7d029034
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Dec 2023 20:21:16 GMT
+Received: from [10.110.100.181] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 29 Dec
+ 2023 12:21:16 -0800
+Message-ID: <22330d85-1d5c-48de-b006-9176f275328e@quicinc.com>
+Date: Fri, 29 Dec 2023 12:21:15 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAMty3ZCn+yGr2MG3WYg+i4DsZWk5b-xEw0SDvNbeGzs6pMwjfQ@mail.gmail.com>
- <20231222145100.sfcuux7ayxtxgogo@skbuf> <CAMty3ZBZNugYmKMjDdZnY0kFMeEb86uzSg2XL9Tn6Yb4t-TXKQ@mail.gmail.com>
- <20231226153055.4yihsmu6kiak6hkf@skbuf> <CAMty3ZDnAFR9a1BM89mx3bmrQzGC7nvazt42_v4JF_QpwPkS4w@mail.gmail.com>
- <20231229152519.2jxrwaeltp4pxlms@skbuf>
-In-Reply-To: <20231229152519.2jxrwaeltp4pxlms@skbuf>
-From: Jagan Teki <jagan@amarulasolutions.com>
-Date: Sat, 30 Dec 2023 01:48:38 +0530
-Message-ID: <CAMty3ZAOM5+EMw9sLVOq-=CH_sP=1TLAGEMF9LYOZ4aFbNUtsg@mail.gmail.com>
-Subject: Re: PHY issue with SJA1105Q/DP84849I Design
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, "Andrew F. Davis" <afd@ti.com>, 
-	Florian Fainelli <f.fainelli@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, 
-	netdev@vger.kernel.org, 
-	Michael Nazzareno Trimarchi <michael@amarulasolutions.com>, Ioana Ciornei <ioana.ciornei@nxp.com>, 
-	Shawn Guo <shawnguo@kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Fabio Estevam <festevam@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/5] PM: domains: Add helper functions to attach/detach
+ multiple PM domains
+To: Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J . Wysocki"
+	<rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Viresh
+ Kumar" <viresh.kumar@linaro.org>, <linux-pm@vger.kernel.org>
+CC: Sudeep Holla <sudeep.holla@arm.com>, Kevin Hilman <khilman@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi
+	<psodagud@quicinc.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Ben Horgan
+	<Ben.Horgan@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-media@vger.kernel.org>
+References: <20231228114157.104822-1-ulf.hansson@linaro.org>
+ <20231228114157.104822-2-ulf.hansson@linaro.org>
+Content-Language: en-US
+From: Nikunj Kela <quic_nkela@quicinc.com>
+In-Reply-To: <20231228114157.104822-2-ulf.hansson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: S55ni0MA2R4e_lG86vwD_7cEsxpdTb2a
+X-Proofpoint-ORIG-GUID: S55ni0MA2R4e_lG86vwD_7cEsxpdTb2a
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
+ lowpriorityscore=0 impostorscore=0 mlxlogscore=999 malwarescore=0
+ bulkscore=0 mlxscore=0 priorityscore=1501 spamscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312290162
 
-On Fri, Dec 29, 2023 at 8:55=E2=80=AFPM Vladimir Oltean <olteanv@gmail.com>=
- wrote:
+
+On 12/28/2023 3:41 AM, Ulf Hansson wrote:
+> Attaching/detaching of a device to multiple PM domains has started to
+> become a common operation for many drivers, typically during ->probe() and
+> ->remove(). In most cases, this has lead to lots of boilerplate code in the
+> drivers.
 >
-> On Fri, Dec 29, 2023 at 05:12:39PM +0530, Jagan Teki wrote:
-> > With fec0 fixed-link and 3 different switch port configurations, the
-> > result of the link seems to be up but the ping not working and even
-> > the packets are not transmitted via eth0.
-> >
-> > DT Combinations:
-> >
-> > - Port0 is ethphy0, Port1 is ethphy1, Port2 is disabled, Port3 is
-> > disabled, Port4 is FEC
-> > - Port0 is disabled, Port1 is ethphy0, Port2 is ethphy1, Port3 is
-> > disabled, Port4 is FEC
-> > - Port0 is disabled, Port1 is disabled, Port2 is ethphy0, Port3 is
-> > ethphy1, Port4 as FEC
+> To fixup up the situation, let's introduce a pair of helper functions,
+> dev_pm_domain_attach|detach_list(), that driver can use instead of the
+> open-coding. Note that, it seems reasonable to limit the support for these
+> helpers to DT based platforms, at it's the only valid use case for now.
 >
-> Why all these combinations? You don't know which switch port is which?
-
-This is where I get confused in the first place. I didn't find proper
-information on binding about how the physical pin-out is to be
-configured in DT ports or maybe I didn't understand properly.
-
-As per schematics.
-Pin MII0_RXD0-D3/TXD0-D3 is connected to PROC_MII0_RXD0-D3/TXD0-D3
-this would be fec0.
-Pin MII1_RXD0-D3/TXD0-D3 is connected to PHY_MII1_RXD0-D3/TXD0-D3 this
-would be ethphy0.
-Pin MII2_RXD0-D3/TXD0-D3 is connected to PHY_MII2_RXD0-D3/TXD0-D3 this
-would be ethphy1.
-Pin MII3_RXD0-D3/TXD0-D3 is grounded
-Pin MII4_RXD0-D3/TXD0-D3 is grounded
-
-So, I did use the above 3 combinations and assumed fec0 is always a
-port4 based on existing DTS in the tree. Please let me know which
-configuration is proper as per schematic connections.
-
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>   drivers/base/power/common.c | 133 ++++++++++++++++++++++++++++++++++++
+>   include/linux/pm_domain.h   |  38 +++++++++++
+>   2 files changed, 171 insertions(+)
 >
-> > DT: (with Port0 is ethphy0, Port1 is ethphy1, Port2 is disabled, Port3
-> > is disabled, Port4 is FEC)
-> >
-> > &ecspi2 {
-> >     cs-gpios =3D <&gpio2 27 GPIO_ACTIVE_HIGH>;
-> >     pinctrl-names =3D "default";
-> >     pinctrl-0 =3D <&pinctrl_ecspi2>;
-> >     status =3D "okay";
-> >
-> >     switch@0 {
-> >         compatible =3D "nxp,sja1105q";
-> >         reg =3D <0>;
-> >         spi-max-frequency =3D <4000000>;
-> >         spi-rx-delay-us =3D <1>;
-> >         spi-tx-delay-us =3D <1>;
-> >         spi-cpha;
-> >
-> >        clocks =3D <&clk25m>;
-> >
-> >        pinctrl-0 =3D <&pinctrl_sja1105_rst>;
-> >        pinctrl-names =3D "default";
-> >        reset-gpios =3D <&gpio6 5 GPIO_ACTIVE_LOW>;
-> >
-> >        ports {
-> >               #address-cells =3D <1>;
-> >               #size-cells =3D <0>;
-> >
-> >              port@0 {
-> >                   reg =3D <0>;
-> >                   label =3D "ethphy0";
-> >                   phy-handle =3D <&ethphy0>;
-> >                   phy-mode =3D "mii";
-> >             };
-> >
-> >             port@1 {
-> >                  reg =3D <1>;
-> >                  label =3D "ethphy1";
-> >                  phy-handle =3D <&ethphy1>;
-> >                  phy-mode =3D "mii";
-> >            };
-> >
-> >            port@2 {
-> >                 reg =3D <2>;
-> >                 status =3D "disabled";
-> >            };
-> >
-> >             port@3 {
-> >                  reg =3D <3>;
-> >                  status =3D "disabled";
-> >            };
-> >
-> >            port@4 {
-> >                 reg =3D <4>;
-> >                 label =3D "cpu";
-> >                 ethernet =3D <&fec>;
-> >                 phy-mode =3D "mii";
-> >                 rx-internal-delay-ps =3D <2000>;
-> >                 tx-internal-delay-ps =3D <2000>;
->
-> This looks suspicious. "rx-internal-delay-ps" and "tx-internal-delay-ps"
-> are only relevant for the RGMII modes, but you specify phy-mode =3D "mii"=
-.
-> Does the board schematic confirm that MII is the physical connection
-> being used from the switch to the FEC?
+> diff --git a/drivers/base/power/common.c b/drivers/base/power/common.c
+> index 44ec20918a4d..1ef51889fc6f 100644
+> --- a/drivers/base/power/common.c
+> +++ b/drivers/base/power/common.c
+> @@ -167,6 +167,114 @@ struct device *dev_pm_domain_attach_by_name(struct device *dev,
+>   }
+>   EXPORT_SYMBOL_GPL(dev_pm_domain_attach_by_name);
+>   
+> +/**
+> + * dev_pm_domain_attach_list - Associate a device with its PM domains.
+> + * @dev: The device used to lookup the PM domains for.
+> + * @data: The data used for attaching to the PM domains.
+> + * @list: An out-parameter with an allocated list of attached PM domains.
+> + *
+> + * This function helps to attach a device to its multiple PM domains. The
+> + * caller, which is typically a driver's probe function, may provide a list of
+> + * names for the PM domains that we should try to attach the device to, but it
+> + * may also provide an empty list, in case the attach should be done for all of
+> + * the available PM domains.
+> + *
+> + * Callers must ensure proper synchronization of this function with power
+> + * management callbacks.
+> + *
+> + * Returns the number of attached PM domains or a negative error code in case of
+> + * a failure. Note that, to detach the list of PM domains, the driver shall call
+> + * dev_pm_domain_detach_list(), typically during the remove phase.
+> + */
+> +int dev_pm_domain_attach_list(struct device *dev,
+> +			      const struct dev_pm_domain_attach_data *data,
+> +			      struct dev_pm_domain_list **list)
+> +{
+> +	struct device_node *np = dev->of_node;
+> +	struct dev_pm_domain_list *pds;
+> +	struct device *pd_dev = NULL;
+> +	int ret, i, num_pds = 0;
+> +	bool by_id = true;
+> +	u32 link_flags = data && data->pd_flags & PD_FLAG_NO_DEV_LINK ? 0 :
+> +			DL_FLAG_STATELESS | DL_FLAG_PM_RUNTIME;
+> +
+> +	if (dev->pm_domain)
+> +		return -EEXIST;
+> +
+> +	/* For now this is limited to OF based platforms. */
+> +	if (!np)
+> +		return 0;
+> +
+> +	if (data && data->pd_names) {
+> +		num_pds = data->num_pd_names;
+> +		by_id = false;
+> +	} else {
+> +		num_pds = of_count_phandle_with_args(np, "power-domains",
+> +						     "#power-domain-cells");
+> +	}
+> +
+> +	if (num_pds <= 0)
+> +		return 0;
+> +
+> +	pds = devm_kzalloc(dev, sizeof(*pds), GFP_KERNEL);
+> +	if (!pds)
+> +		return -ENOMEM;
+> +
+> +	pds->pd_devs = devm_kcalloc(dev, num_pds, sizeof(*pds->pd_devs),
+> +				    GFP_KERNEL);
+> +	if (!pds->pd_devs)
+> +		return -ENOMEM;
+> +
+> +	pds->pd_links = devm_kcalloc(dev, num_pds, sizeof(*pds->pd_links),
+> +				     GFP_KERNEL);
+> +	if (!pds->pd_links)
+> +		return -ENOMEM;
+> +
+> +	if (link_flags && data->pd_flags & PD_FLAG_DEV_LINK_ON)
 
-Yes, the design uses MII.
+Since data is optional, this check results in crash if data is NULL. Thanks
 
->
-> If you are truly using MII, then you should remove the RGMII delay
-> properties, and since you are using a 6.1 kernel - hence after kernel
-> commit 5d645df99ac6 ("net: dsa: sja1105: determine PHY/MAC role from PHY
-> interface type") - you should be using phy-mode =3D "rev-mii" to put this
-> port in MII PHY ("RevMII") mode - to interoperate with the FEC in MII
-> MAC mode.
 
-Okay, I will remove RGMII delay. is phy-mode =3D "rev-mii" applicable to
-all ports or only for fec port4?
-
->
-> >
-> >                fixed-link {
-> >                    speed =3D <100>;
-> >                    full-duplex;
-> >                };
-> >             };
-> >           };
-> >      };
-> > };
-> >
-> > &fec {
-> >        pinctrl-names =3D "default";
-> >        pinctrl-0 =3D <&pinctrl_enet>;
-> >        phy-mode =3D "mii";
-> >        status =3D "okay";
-> >
-> >        fixed-link {
-> >           speed =3D <100>;
-> >           full-duplex;
-> >        };
-> >
-> >        mdio {
-> >             #address-cells =3D <1>;
-> >             #size-cells =3D <0>;
-> >
-> >             ethphy0: ethernet-phy@0 {
-> >                     compatible =3D "ethernet-phy-ieee802.3-c22";
-> >                     reg =3D <0>;
-> >             };
-> >
-> >            ethphy1: ethernet-phy@1 {
-> >                compatible =3D "ethernet-phy-ieee802.3-c22";
-> >                 reg =3D <1>;
-> >             };
-> >     };
-> > };
-> >
-> > root@ltts-imx6solo:~# bash /usr/phynew.sh
-> > =3D=3D=3D=3D=3D=3D=3D MDIO: PHY0 =3D=3D=3D=3D=3D=3D=3D=3D
-> > [  162.426515] mdio_netlink: loading out-of-tree module taints kernel.
->
-> Still, please refrain from involving out-of-tree modules when asking for
-> help upstream. Thanks.
-
-Sorry, I didn't remove it during this log, but I did remove this
-module at runtime during my actual sanity tests.
-
->
-> > root@ltts-imx6solo:~# [  165.208656] sja1105 spi1.0 ethphy0: Link is
-> > Up - 100Mbps/Full - flow control off
-> > [  165.225788] sja1105 spi1.0 ethphy1: Link is Up - 100Mbps/Full -
-> > flow control off
-> > [  165.235925] IPv6: ADDRCONF(NETDEV_CHANGE): ethphy0: link becomes rea=
-dy
-> > [  165.255777] IPv6: ADDRCONF(NETDEV_CHANGE): ethphy1: link becomes rea=
-dy
-> >
-> > root@ltts-imx6solo:~# ifconfig
-> > eth0: flags=3D4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1504
-> >         inet6 fe80::68fb:8ff:fedf:d377  prefixlen 64  scopeid 0x20<link=
->
-> >         ether 6a:fb:08:df:d3:77  txqueuelen 1000  (Ethernet)
-> >         RX packets 0  bytes 0 (0.0 B)
-> >         RX errors 0  dropped 0  overruns 0  frame 0
-> >         TX packets 0  bytes 0 (0.0 B)
-> >         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-> >
-> > ethphy0: flags=3D4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-> >         inet 169.254.178.1  netmask 255.255.0.0  broadcast 0.0.0.0
-> >         inet6 fe80::211:22ff:fe33:4455  prefixlen 64  scopeid 0x20<link=
->
-> >         ether 00:11:22:33:44:55  txqueuelen 1000  (Ethernet)
-> >         RX packets 0  bytes 0 (0.0 B)
-> >         RX errors 0  dropped 0  overruns 0  frame 0
-> >         TX packets 30  bytes 4071 (3.9 KiB)
-> >         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-> >
-> > ethphy1: flags=3D4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-> >         inet 169.253.178.2  netmask 255.255.0.0  broadcast 0.0.0.0
-> >         inet6 fe80::211:22ff:fe33:4466  prefixlen 64  scopeid 0x20<link=
->
-> >         ether 00:11:22:33:44:66  txqueuelen 1000  (Ethernet)
-> >         RX packets 0  bytes 0 (0.0 B)
-> >         RX errors 0  dropped 0  overruns 0  frame 0
-> >         TX packets 30  bytes 4071 (3.9 KiB)
-> >         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-> >
-> > lo: flags=3D73<UP,LOOPBACK,RUNNING>  mtu 65536
-> >         inet 127.0.0.1  netmask 255.0.0.0
-> >         inet6 ::1  prefixlen 128  scopeid 0x10<host>
-> >         loop  txqueuelen 1000  (Local Loopback)
-> >         RX packets 89  bytes 7675 (7.4 KiB)
-> >         RX errors 0  dropped 0  overruns 0  frame 0
-> >         TX packets 89  bytes 7675 (7.4 KiB)
-> >         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
->
-> ifconfig reports statistics counters from the /proc/net/dev interface,
-> which the sja1105 does not report very well (they don't come from hardwar=
-e).
-> It's best to use "ethtool -S eth0 | grep -v ': 0'" for FEC and SJA1105
-> CPU port (named "p04_*") counters, and "ethtool -S ethphy0 | grep -v ': 0=
-'"
-> to get hardware counters from the switch user ports.
-
-Okay.
-
->
-> You can also use the RX counters to determine which switch port is which
-> (but the phy-handle of each port to each PHY needs to be correct).
-
-RX counters in ethtool you mean?
-
->
-> > mytsl02383@MYTSL02383:~$ ifconfig -a
-> > enp43s0: flags=3D4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-> >         inet 169.254.178.2  netmask 255.255.0.0  broadcast 169.254.255.=
-255
-> >         inet6 fe80::d71b:4bdd:27bd:2a1a  prefixlen 64  scopeid 0x20<lin=
-k>
-> >         ether 00:be:43:20:9a:26  txqueuelen 1000  (Ethernet)
-> >         RX packets 272356  bytes 27099064 (27.0 MB)
-> >         RX errors 0  dropped 19  overruns 0  frame 0
-> >         TX packets 862  bytes 300806 (300.8 KB)
-> >         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-> > mytsl02383@MYTSL02383:~$ ping 169.254.178.1
-> > PING 169.254.178.1 (169.254.178.1) 56(84) bytes of data.
-> > From 169.254.178.2 icmp_seq=3D1 Destination Host Unreachable
-> >
-> > Let me know if you need any more details.
->
-> I'm not convinced packets are routed through ethphy0 or ethphy1, since
-> all interfaces have IPv4 link-local addresses only. You can use
-> "ip route get 169.254.178.1" to confirm what interface gets chosen.
-> This is not indicative of a device-level problem, just a setup one.
-> Please set up some IPv4 static addresses which are not link-local on the
-> DSA user ports and try to ping a link partner which has an IP address in
-> the same subnet.
-
-Okay. I will update this test along with DT changes.
-
-Thanks,
-Jagan.
+> +		link_flags |= DL_FLAG_RPM_ACTIVE;
+> +
+> +	for (i = 0; i < num_pds; i++) {
+> +		if (by_id)
+> +			pd_dev = dev_pm_domain_attach_by_id(dev, i);
+> +		else
+> +			pd_dev = dev_pm_domain_attach_by_name(dev,
+> +							data->pd_names[i]);
+> +		if (IS_ERR_OR_NULL(pd_dev)) {
+> +			ret = pd_dev ? PTR_ERR(pd_dev) : -ENODEV;
+> +			goto err_attach;
+> +		}
+> +
+> +		if (link_flags) {
+> +			struct device_link *link;
+> +
+> +			link = device_link_add(dev, pd_dev, link_flags);
+> +			if (!link) {
+> +				ret = -ENODEV;
+> +				goto err_link;
+> +			}
+> +
+> +			pds->pd_links[i] = link;
+> +		}
+> +
+> +		pds->pd_devs[i] = pd_dev;
+> +	}
+> +
+> +	pds->num_pds = num_pds;
+> +	*list = pds;
+> +	return num_pds;
+> +
+> +err_link:
+> +	dev_pm_domain_detach(pd_dev, true);
+> +err_attach:
+> +	while (--i >= 0) {
+> +		if (pds->pd_links[i])
+> +			device_link_del(pds->pd_links[i]);
+> +		dev_pm_domain_detach(pds->pd_devs[i], true);
+> +	}
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(dev_pm_domain_attach_list);
+> +
+>   /**
+>    * dev_pm_domain_detach - Detach a device from its PM domain.
+>    * @dev: Device to detach.
+> @@ -187,6 +295,31 @@ void dev_pm_domain_detach(struct device *dev, bool power_off)
+>   }
+>   EXPORT_SYMBOL_GPL(dev_pm_domain_detach);
+>   
+> +/**
+> + * dev_pm_domain_detach_list - Detach a list of PM domains.
+> + * @list: The list of PM domains to detach.
+> + *
+> + * This function reverse the actions from dev_pm_domain_attach_list().
+> + * Typically it should be invoked during the remove phase from drivers.
+> + *
+> + * Callers must ensure proper synchronization of this function with power
+> + * management callbacks.
+> + */
+> +void dev_pm_domain_detach_list(struct dev_pm_domain_list *list)
+> +{
+> +	int i;
+> +
+> +	if (!list)
+> +		return;
+> +
+> +	for (i = 0; i < list->num_pds; i++) {
+> +		if (list->pd_links[i])
+> +			device_link_del(list->pd_links[i]);
+> +		dev_pm_domain_detach(list->pd_devs[i], true);
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(dev_pm_domain_detach_list);
+> +
+>   /**
+>    * dev_pm_domain_start - Start the device through its PM domain.
+>    * @dev: Device to start.
+> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+> index 34663d0d5c55..6b71fb69c349 100644
+> --- a/include/linux/pm_domain.h
+> +++ b/include/linux/pm_domain.h
+> @@ -19,6 +19,33 @@
+>   #include <linux/cpumask.h>
+>   #include <linux/time64.h>
+>   
+> +/*
+> + * Flags to control the behaviour when attaching a device to its PM domains.
+> + *
+> + * PD_FLAG_NO_DEV_LINK:		As the default behaviour creates a device-link
+> + *				for every PM domain that gets attached, this
+> + *				flag can be used to skip that.
+> + *
+> + * PD_FLAG_DEV_LINK_ON:		Add the DL_FLAG_RPM_ACTIVE to power-on the
+> + *				supplier and its PM domain when creating the
+> + *				device-links.
+> + *
+> + */
+> +#define PD_FLAG_NO_DEV_LINK		BIT(0)
+> +#define PD_FLAG_DEV_LINK_ON		BIT(1)
+> +
+> +struct dev_pm_domain_attach_data {
+> +	const char * const *pd_names;
+> +	const u32 num_pd_names;
+> +	const u32 pd_flags;
+> +};
+> +
+> +struct dev_pm_domain_list {
+> +	struct device **pd_devs;
+> +	struct device_link **pd_links;
+> +	u32 num_pds;
+> +};
+> +
+>   /*
+>    * Flags to control the behaviour of a genpd.
+>    *
+> @@ -432,7 +459,11 @@ struct device *dev_pm_domain_attach_by_id(struct device *dev,
+>   					  unsigned int index);
+>   struct device *dev_pm_domain_attach_by_name(struct device *dev,
+>   					    const char *name);
+> +int dev_pm_domain_attach_list(struct device *dev,
+> +			      const struct dev_pm_domain_attach_data *data,
+> +			      struct dev_pm_domain_list **list);
+>   void dev_pm_domain_detach(struct device *dev, bool power_off);
+> +void dev_pm_domain_detach_list(struct dev_pm_domain_list *list);
+>   int dev_pm_domain_start(struct device *dev);
+>   void dev_pm_domain_set(struct device *dev, struct dev_pm_domain *pd);
+>   int dev_pm_domain_set_performance_state(struct device *dev, unsigned int state);
+> @@ -451,7 +482,14 @@ static inline struct device *dev_pm_domain_attach_by_name(struct device *dev,
+>   {
+>   	return NULL;
+>   }
+> +static inline int dev_pm_domain_attach_list(struct device *dev,
+> +				const struct dev_pm_domain_attach_data *data,
+> +				struct dev_pm_domain_list **list)
+> +{
+> +	return 0;
+> +}
+>   static inline void dev_pm_domain_detach(struct device *dev, bool power_off) {}
+> +static inline void dev_pm_domain_detach_list(struct dev_pm_domain_list *list) {}
+>   static inline int dev_pm_domain_start(struct device *dev)
+>   {
+>   	return 0;
 
