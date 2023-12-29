@@ -1,152 +1,282 @@
-Return-Path: <linux-kernel+bounces-13452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E0768206C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:31:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 892F482071F
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 17:21:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D3DB281EA2
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 14:31:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49A56281CB3
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 16:21:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A013FBE65;
-	Sat, 30 Dec 2023 14:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53404BA31;
+	Sat, 30 Dec 2023 16:21:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O7CkIRt8"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ZpYJF7fF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2076.outbound.protection.outlook.com [40.107.243.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D54ABE4D
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 14:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40d5f40ce04so28907415e9.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 06:31:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703946701; x=1704551501; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=b4gk9zeURxSP70R8K7qMMz7OFbYRIjI7BmDBTadm3dU=;
-        b=O7CkIRt86jaQE6ZM3qJSvFDhSCs8PsxYhXnOmL7MDVEgKJNLhX3YENFazbSm23btLP
-         +1eESQlwwXM8pJJcnqya4G2D9210USuT5ApcIRiDp1KgwcsPp3Bp9kJ+4rhhhW+IFDOy
-         SRPe5hZI9zZsanaNGYYuZKHhsBchv1oY1AcevQXsVMsO0EM8Mw4iWylnLSwlY26+I3nH
-         +7yayh5MNbjbbesOTsBv4RcRcBBC9AH6Fy/e5DYXJylMcQ98/fi055oed0lVzDxNa7RV
-         Yc1k/rjBrkp5jpTvyIMWZ8PRpiiXEFBQQF09BbYq5J3a3TwNLMqI7s2ulqgNVagLjLTk
-         yGfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703946701; x=1704551501;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b4gk9zeURxSP70R8K7qMMz7OFbYRIjI7BmDBTadm3dU=;
-        b=lUF0/7PSIp50m4pSkjT4M0GzgKC+xSFuZaOql10nF5Y6c5mvGvv/GMDBrYENKMAiSp
-         v8zYo+OAcI6o7Gbvo3vu+ssD+f7+NILIYJRuXYTxDa7XN/as6CccxeEPkqq961XQRYf0
-         yoYL7kWmxlgJlbNAiNZTy8rdvfAh/89sfk+Yy805fliEf4+tazntb9hEZSxpX3KF9jYn
-         MSQsOq0uAZYZCdTPYhEYAdS9+HjAiBKBOBY9O50YKGCmaBD4nAFo498RCJQrFN7XdZ2r
-         vEN3iCq2Wz5KrjPQceyv+FK4c+UZ4S2ui+SSQU3RzPXfk9OqRaO0FlQLUotjW9rwI6h4
-         xvNQ==
-X-Gm-Message-State: AOJu0Yzx6MkbyNkzGK6WEpNzt3GSo5TmPea2aIptFkFUrfdBNH76dsYN
-	hPgvolz9W52RlV11i6WCQxmWbkA1RXr7bw==
-X-Google-Smtp-Source: AGHT+IFeqEBjwbxvDCPdwj4hV18VumHO0MGlE/qsisETP462FxGiT8Br8SlMmaXDP/+a8gH7n6ExKw==
-X-Received: by 2002:a1c:7507:0:b0:40d:5821:516b with SMTP id o7-20020a1c7507000000b0040d5821516bmr4280663wmc.54.1703946700730;
-        Sat, 30 Dec 2023 06:31:40 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id iv7-20020a05600c548700b0040d746bb8a0sm6130026wmb.43.2023.12.30.06.31.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Dec 2023 06:31:40 -0800 (PST)
-Message-ID: <04403a25-ea88-425d-bbb2-c042d2d0cacb@linaro.org>
-Date: Sat, 30 Dec 2023 15:31:37 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAC1BE5E;
+	Sat, 30 Dec 2023 16:21:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mrioVGssFbsYcaupaFCQD0YLmchS+LUCw9HWu4O7Kh1nDjU1Qss5fqJsSmvfr2DEXTlNcv0Zf1vLapqnMnov4SNODhyGQPHre3nd13S3Zp385okRanG5xBoiFWZZO7fFkN4tlR0FVGjCM90wirXSKsk8hFtaCdyxoiYektcDgdxs6eG60PYgqVI7UJf9PwHWgxpvu9bVVqbU6qWVrcxkAe7gOcy7e3xtonrlYZ47ZUu+04bQKhTuLsc8yWCmhakVM5nyIMmHjVwVNwvN7P9x/+luzWlk3xHvIeZoQG5z48uFLAevZUVocX7/XAZ6VpAWPa1XD7EUwgmM8R02fAP7CQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=X7abPHumm18y06mL52tBqOgOI2cb2Tchln9cQGzSgh4=;
+ b=a4aL+S+p1FC4jWVVX0xa4Ou6ec+BwKverLdo/wRtEkqMCJZH2MNYD+R3o83wQ8ey/LUF/I/hgyMCQ0ZPQncWcmJTla0fsp/DodBIQADz9gfEGL75qesSVRRgrt73hf5yhUR+i9Q+VORo9SOYJ4QINCh3PO9K7PxaU4jq0Ll7Hkr0bfFW1UlrChnIDHAkuipLr8Spok5pGukR5WzGJqtt2v5qggqC2WB4VL056eLQq+3yasrxbm0khHgvn5VskcafSIxufErNy7X3mMx50zxfGuFtbu01X8G5Qdc1l2YgTaGrDAFrdhW1I+Y4dkCag5Xne4hlFsKODwwztsUutrv2Ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X7abPHumm18y06mL52tBqOgOI2cb2Tchln9cQGzSgh4=;
+ b=ZpYJF7fF0Auc78lrPCWp1Rkw2tLyv0lDa2OEz7Cmtlv00GZ6KOAMWc7yizWozGDCbVhnZ0Y9Q+WQ4jyKndBT2/ZQECB17VSeAzepSCO4DaN5xc5ubG30SsqdhULCTj2ozpWPpbCGC6n/8E63u2XoDPj2rpaTyyyFMtD0gFSKkAQ=
+Received: from CH2PR11CA0009.namprd11.prod.outlook.com (2603:10b6:610:54::19)
+ by BN9PR12MB5273.namprd12.prod.outlook.com (2603:10b6:408:11e::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.23; Sat, 30 Dec
+ 2023 16:21:05 +0000
+Received: from DS3PEPF000099DE.namprd04.prod.outlook.com
+ (2603:10b6:610:54:cafe::ba) by CH2PR11CA0009.outlook.office365.com
+ (2603:10b6:610:54::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.21 via Frontend
+ Transport; Sat, 30 Dec 2023 16:21:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS3PEPF000099DE.mail.protection.outlook.com (10.167.17.200) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7159.9 via Frontend Transport; Sat, 30 Dec 2023 16:21:04 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Sat, 30 Dec
+ 2023 10:21:04 -0600
+Date: Fri, 29 Dec 2023 15:38:28 -0600
+From: Michael Roth <michael.roth@amd.com>
+To: Borislav Petkov <bp@alien8.de>
+CC: <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
+	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
+	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
+	<ardb@kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
+	<vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
+	<dave.hansen@linux.intel.com>, <slp@redhat.com>, <pgonda@google.com>,
+	<peterz@infradead.org>, <srinivas.pandruvada@linux.intel.com>,
+	<rientjes@google.com>, <dovmurik@linux.ibm.com>, <tobin@ibm.com>,
+	<vbabka@suse.cz>, <kirill@shutemov.name>, <ak@linux.intel.com>,
+	<tony.luck@intel.com>, <marcorr@google.com>,
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
+	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
+	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>,
+	Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 18/50] crypto: ccp: Handle the legacy SEV command
+ when SNP is enabled
+Message-ID: <20231229213828.x6zivjikri5qfa5e@amd.com>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-19-michael.roth@amd.com>
+ <20231209153656.GGZXSJmNAyMUT+qIpQ@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] docs: dt-bindings: suggest "reg-names" position in DTS
- Coding Style
-Content-Language: en-US
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
- Konrad Dybcio <konradybcio@kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- Andrew Davis <afd@ti.com>, Andrew Lunn <andrew@lunn.ch>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Arnd Bergmann <arnd@arndb.de>, Bjorn Andersson <andersson@kernel.org>,
- Chen-Yu Tsai <wens@kernel.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Jonathan Corbet <corbet@lwn.net>, Matthias Brugger <matthias.bgg@gmail.com>,
- Michal Simek <michal.simek@amd.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Nishanth Menon <nm@ti.com>,
- Olof Johansson <olof@lixom.net>
-References: <20231229054711.17317-1-zajec5@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231229054711.17317-1-zajec5@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231209153656.GGZXSJmNAyMUT+qIpQ@fat_crate.local>
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099DE:EE_|BN9PR12MB5273:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1082e1f0-6b9c-4061-2791-08dc09535263
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	v5ekBm/OWn6KHg4EBbWCW9/s6fgCmYMBkK45HdHzzAJvJ4wqITDZVFyRL4Cffk4lPAhMr3RKstphPgJs6VhQ/sE4r3A75LJRLhB9Icnk65F9zlfzBtU/X6jkyMsTC9sNCxkldS4EJ2pdh67yxS2e9z2FkyJTDJpD7iDR+fYH2L509UesGFmeAEiAFhmrLAh/RhUGNftgsfb7PHB7AzbvDocV1O+VLthuT9C2DU/DBr3kPpr+eW8qvKdDGhdmE+KovEGroMoTx/l171VO8cdNwQNp+RfMzF8AM+7pNQrAet7qOXLQheTBY5OUknNGAObLiuBQRnuik4NyCFjXnZC7p6a2HFJg8vIEMQm5z4b8MSdt+Gj9c7WLsed7aUhS6C02NNYHClB+315zRgPyT0jH3oVn157FuW/ubzN7qtwk/9p9r8XnQH3xdiS8v7KUz0uWcbsfnXrZhXwoKt5y4c9usBOfPq86U2rxRc0lojc/FkcFQtSRuYRLpHG+SOWtZDAnQMpYo+lhZmbjM96WjSw6LHxoA0ZW0y4PdG16g5ZALoq2Av3W7rud6OT+GslkZ05Qk9dacBUkgd/rwsu6VfAQhBXojfw4yjVZ9snDD9vT/LOiPmglQIpLet78r2aoA8Jg/YMpvQBmTx4XW2PvdUDGA8xj2dLpTFPye/s5kfuEe8hwvMkbY6NKssVyXJGX8i/+OyKeV7cS2CQrdG1kNxbxnjJ8bqvBGoqubwMV5tkEbsZ7a+QqYi868o+L3lqlDfxcDGAEQqriT2cXbHUjG6VKQw==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(39860400002)(396003)(346002)(230922051799003)(186009)(82310400011)(451199024)(64100799003)(1800799012)(46966006)(36840700001)(40470700004)(2906002)(7406005)(7416002)(5660300002)(41300700001)(16526019)(40480700001)(83380400001)(426003)(40460700003)(2616005)(336012)(1076003)(26005)(47076005)(966005)(478600001)(6666004)(86362001)(81166007)(82740400003)(36860700001)(356005)(70586007)(70206006)(6916009)(54906003)(316002)(4326008)(44832011)(8676002)(8936002)(36756003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Dec 2023 16:21:04.8151
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1082e1f0-6b9c-4061-2791-08dc09535263
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS3PEPF000099DE.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5273
 
-On 29/12/2023 06:47, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Sat, Dec 09, 2023 at 04:36:56PM +0100, Borislav Petkov wrote:
+> > +static int __snp_cmd_buf_copy(int cmd, void *cmd_buf, bool to_fw, int fw_err)
+> > +{
+> > +	int (*func)(u64 *paddr, u32 len, bool guest, struct snp_host_map *map);
+> > +	struct sev_device *sev = psp_master->sev_data;
+> > +	bool from_fw = !to_fw;
+> > +
+> > +	/*
+> > +	 * After the command is completed, change the command buffer memory to
+> > +	 * hypervisor state.
+> > +	 *
+> > +	 * The immutable bit is automatically cleared by the firmware, so
+> > +	 * no not need to reclaim the page.
+> > +	 */
+> > +	if (from_fw && sev_legacy_cmd_buf_writable(cmd)) {
+> > +		if (snp_reclaim_pages(__pa(cmd_buf), 1, true))
+> > +			return -EFAULT;
+> > +
+> > +		/* No need to go further if firmware failed to execute command. */
+> > +		if (fw_err)
+> > +			return 0;
+> > +	}
+> > +
+> > +	if (to_fw)
+> > +		func = map_firmware_writeable;
+> > +	else
+> > +		func = unmap_firmware_writeable;
 > 
-> Property "reg-names" is strictly related to "reg" so it should follow it
-> directly instead of falling into "Standard/common properties". This
-> helps reading DTS files.
+> Eww, ugly and with the macro above even worse. And completely
+> unnecessary.
+> 
+> Define prep_buffer() as a normal function which selects which @func to
+> call and then does it. Not like this.
 
-All 'xxx-names' should immediately follow 'xxx'. Instead of this change,
-just add a note at the bottom of this section?
+I've rewritten this using a descriptor array to handle buffers for
+various command parameters, and switched to allocating bounce buffers
+on-demand to avoid some of the init/cleanup coordination. I dont think
+any of these are really performance critical and its only for legacy
+support, but would be straightforward to add a cache of pre-allocated
+buffers later if needed.
 
-Best regards,
-Krzysztof
+I've tried to document/name the helpers so the flow is a bit clearer.
 
+-Mike
+
+> 
+> ...
+> 
+> > +static inline bool need_firmware_copy(int cmd)
+> > +{
+> > +	struct sev_device *sev = psp_master->sev_data;
+> > +
+> > +	/* After SNP is INIT'ed, the behavior of legacy SEV command is changed. */
+> 
+> "initialized"
+> 
+> > +	return ((cmd < SEV_CMD_SNP_INIT) && sev->snp_initialized) ? true : false;
+> 
+> redundant ternary conditional:
+> 
+> 	return cmd < SEV_CMD_SNP_INIT && sev->snp_initialized;
+> 
+> > +}
+> > +
+> > +static int snp_aware_copy_to_firmware(int cmd, void *data)
+> 
+> What does "SNP aware" even mean?
+> 
+> > +{
+> > +	return __snp_cmd_buf_copy(cmd, data, true, 0);
+> > +}
+> > +
+> > +static int snp_aware_copy_from_firmware(int cmd, void *data, int fw_err)
+> > +{
+> > +	return __snp_cmd_buf_copy(cmd, data, false, fw_err);
+> > +}
+> > +
+> >  static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+> >  {
+> >  	struct psp_device *psp = psp_master;
+> >  	struct sev_device *sev;
+> >  	unsigned int phys_lsb, phys_msb;
+> >  	unsigned int reg, ret = 0;
+> > +	void *cmd_buf;
+> >  	int buf_len;
+> >  
+> >  	if (!psp || !psp->sev_data)
+> > @@ -487,12 +770,28 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+> >  	 * work for some memory, e.g. vmalloc'd addresses, and @data may not be
+> >  	 * physically contiguous.
+> >  	 */
+> > -	if (data)
+> > -		memcpy(sev->cmd_buf, data, buf_len);
+> > +	if (data) {
+> > +		if (sev->cmd_buf_active > 2)
+> 
+> What is that silly counter supposed to mean?
+> 
+> Nested SNP commands?
+> 
+> > +			return -EBUSY;
+> > +
+> > +		cmd_buf = sev->cmd_buf_active ? sev->cmd_buf_backup : sev->cmd_buf;
+> > +
+> > +		memcpy(cmd_buf, data, buf_len);
+> > +		sev->cmd_buf_active++;
+> > +
+> > +		/*
+> > +		 * The behavior of the SEV-legacy commands is altered when the
+> > +		 * SNP firmware is in the INIT state.
+> > +		 */
+> > +		if (need_firmware_copy(cmd) && snp_aware_copy_to_firmware(cmd, cmd_buf))
+> 
+> Move that need_firmware_copy() check inside snp_aware_copy_to_firmware()
+> and the other one.
+> 
+> > +			return -EFAULT;
+> > +	} else {
+> > +		cmd_buf = sev->cmd_buf;
+> > +	}
+> >  
+> >  	/* Get the physical address of the command buffer */
+> > -	phys_lsb = data ? lower_32_bits(__psp_pa(sev->cmd_buf)) : 0;
+> > -	phys_msb = data ? upper_32_bits(__psp_pa(sev->cmd_buf)) : 0;
+> > +	phys_lsb = data ? lower_32_bits(__psp_pa(cmd_buf)) : 0;
+> > +	phys_msb = data ? upper_32_bits(__psp_pa(cmd_buf)) : 0;
+> >  
+> >  	dev_dbg(sev->dev, "sev command id %#x buffer 0x%08x%08x timeout %us\n",
+> >  		cmd, phys_msb, phys_lsb, psp_timeout);
+> 
+> ...
+> 
+> > @@ -639,6 +947,14 @@ static int ___sev_platform_init_locked(int *error, bool probe)
+> >  	if (probe && !psp_init_on_probe)
+> >  		return 0;
+> >  
+> > +	/*
+> > +	 * Allocate the intermediate buffers used for the legacy command handling.
+> > +	 */
+> > +	if (rc != -ENODEV && alloc_snp_host_map(sev)) {
+> 
+> Why isn't this
+> 
+> 	if (!rc && ...)
+> 
+> > +		dev_notice(sev->dev, "Failed to alloc host map (disabling legacy SEV)\n");
+> > +		goto skip_legacy;
+> 
+> No need for that skip_legacy silly label. Just "return 0" here.
+> 
+> ...
+> 
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+> 
 
