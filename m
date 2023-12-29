@@ -1,208 +1,141 @@
-Return-Path: <linux-kernel+bounces-13194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E267820102
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 18:59:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5AC0820100
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 18:59:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 060501F22093
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:59:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71A8528270E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:59:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A17125B4;
-	Fri, 29 Dec 2023 17:59:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2A1212B9F;
+	Fri, 29 Dec 2023 17:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b9b8S3nV"
+	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="10S7uPNe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97064134AA
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 17:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703872760;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E993212B7C;
+	Fri, 29 Dec 2023 17:59:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ixit.cz
+Received: from [151.217.64.190] (unknown [151.217.64.190])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ixit.cz (Postfix) with ESMTPSA id 681D01638DA;
+	Fri, 29 Dec 2023 18:59:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+	t=1703872753;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yeKqaIlvVPoYPC4W0RMtxJ/Ybm4HjQYyUHUu8GgGRhQ=;
-	b=b9b8S3nVKyTH+PoeF9OS2jjhBthr1RqdzRTvV/CDAI/BL809id83k+SJukPrRsNubVRaEW
-	W9NK8D0mTrO20AHl84LKsM4rOy5l2f9c+IwtAeHfbpU/zthXzc+mwAoGDXg3MwQl46OKmI
-	G9u8DKkFm1bRTxRmnMvngMuHIa/RiY4=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-608-Qu68Deq4O3OAk3s3APu6jQ-1; Fri, 29 Dec 2023 12:59:13 -0500
-X-MC-Unique: Qu68Deq4O3OAk3s3APu6jQ-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-336f07b29e6so1435288f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 09:59:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703872752; x=1704477552;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yeKqaIlvVPoYPC4W0RMtxJ/Ybm4HjQYyUHUu8GgGRhQ=;
-        b=Q5huEl2bdRUkVXWj5baxcwljSPTPrrHXGwSqf312PCzMhf0uGJIwOp5uAbxGR/4Jgf
-         ZedWdentR3FCHADDpdWW9KrqtSFq9TFj5sb/tZKtGuiL3pVxzduOL/iSuS+iGn8jEu9Z
-         es9k+pvHachtjAfucYA1BcdAmj47wr+CubrTGyqz2AFfiEM2kqoqh08PGoef742S54gk
-         +tAOauPCOCIUyCcXN2c6XgpYsqSEl21MtTLnCAMKiwX0U18y5j/3mtrjfiftiliymVaM
-         ZH3qO014GC5KToYLygzSI9ajAdXCyHEfox04dyI7YSJjx3MfVPHykvkaLMv6aozcZFR6
-         ZDXw==
-X-Gm-Message-State: AOJu0YzQuYajqMQUNF3xiPNZACvhKcPxJpsIaOEEh47nQYPSobLT8m2p
-	Z+HKBmdIpmYxZARdYDVXI27JV1noGN3gk58gQ3XqQYhobhazJ6Xp8Qws6INCelM2s4VtG/Zno7d
-	xVQs0vYGnWukZGOpifBXRaDoetQy7B/Pl1UiW93uguEO4AqbIva+QHbNb
-X-Received: by 2002:a05:600c:4fcc:b0:40d:5166:f08a with SMTP id o12-20020a05600c4fcc00b0040d5166f08amr4881315wmq.134.1703872752407;
-        Fri, 29 Dec 2023 09:59:12 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH4XYAdhzlSJ84JJ/WzhDuQ96mOPSB8f7l3hWPGmgxlugzFemQsCgqo6ZAvHVkBoJdvDXd+2f4GHras+R8DhBc=
-X-Received: by 2002:a05:600c:4fcc:b0:40d:5166:f08a with SMTP id
- o12-20020a05600c4fcc00b0040d5166f08amr4881309wmq.134.1703872752069; Fri, 29
- Dec 2023 09:59:12 -0800 (PST)
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=5HyKDYiO6vxY7a0FUq1Nb+VTD+wtGLj25e2Ql+FTlwo=;
+	b=10S7uPNeB8UyMiWW6ThjBwZdM/85rgTAS4i3lO2FzpcF5PvqAqdKRVjjbbGjuSNMudNKiU
+	ybJgDPwoqtu5/ecjeol95hJ3+eQegzgzFnk79r+YmxJjU76Dt2BzIzk2md41k11/O1z3Pm
+	yAu0nfBQQfMUpsiKvQo3UhlAvi51vwQ=
+Message-ID: <869df984-d3e8-4b2d-8724-6829e9c23269@ixit.cz>
+Date: Fri, 29 Dec 2023 18:59:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAE8KmOw1DzOr-GvQ9E+Y5RCX1GQ1h1Bumk5pB++9=SjMUPHxBg@mail.gmail.com>
- <ZT_HeK7GXdY-6L3t@google.com> <CAE8KmOxKkojqrqWE1RMa4YY3=of1AEFcDth_6b2ZCHJHzb8nng@mail.gmail.com>
- <CAE8KmOxd-Xib+qfiiBepP-ydjSAn32gjOTdLLUqm-i5vgzTv8w@mail.gmail.com>
-In-Reply-To: <CAE8KmOxd-Xib+qfiiBepP-ydjSAn32gjOTdLLUqm-i5vgzTv8w@mail.gmail.com>
-From: Prasad Pandit <ppandit@redhat.com>
-Date: Fri, 29 Dec 2023 23:28:55 +0530
-Message-ID: <CAE8KmOyffXD4k69vRAFwesaqrBGzFY3i+kefbkHcQf4=jNYzOA@mail.gmail.com>
-Subject: Fwd: About patch bdedff263132 - KVM: x86: Route pending NMIs
-To: kvm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-
-Hello Sean,
-
-On Tue, 31 Oct 2023 at 17:45, Prasad Pandit <ppandit@redhat.com> wrote:
-> On Mon, 30 Oct 2023 at 20:41, Sean Christopherson <seanjc@google.com> wrote:
->>> -               kvm_make_request(KVM_REQ_NMI, vcpu);
->>> +               if (events->nmi.pending)
->>> +                       kvm_make_request(KVM_REQ_NMI, vcpu);
-> >
-> > This looks sane, but it should be unnecessary as KVM_REQ_NMI nmi_queued=0 should
-> > be a (costly) nop.  Hrm, unless the vCPU is in HLT, in which case KVM will treat
-> > a spurious KVM_REQ_NMI as a wake event.  When I made this change, my assumption
-> > was that userspace would set KVM_VCPUEVENT_VALID_NMI_PENDING iff there was
-> > relevant information to process.  But if I'm reading the code correctly, QEMU
-> > invokes KVM_SET_VCPU_EVENTS with KVM_VCPUEVENT_VALID_NMI_PENDING at the end of
-> > machine creation.
-> >
-
-QEMU:
-qemu_thread_start
- kvm_start_vcpu_thread
-  kvm_vcpu_thread_fn
-   kvm_cpu_exec
-    kvm_arch_put_registers
-     kvm_put_vcpu_events (cpu=..., level=1)
-
-qemu_thread_start (args=0x559fdc852110) at ../util/qemu-thread-posix.c:534
- kvm_vcpu_thread_fn (arg=0x559fdc84cdc0) at ../accel/kvm/kvm-accel-ops.c:56
-  qemu_wait_io_event (cpu=0x559fdc84cdc0) at ../softmmu/cpus.c:435
-   qemu_wait_io_event_common (cpu=0x559fdc84cdc0) at ../softmmu/cpus.c:411
-    process_queued_cpu_work (cpu=0x559fdc84cdc0) at ../cpus-common.c:351
-     do_kvm_cpu_synchronize_post_reset (cpu=0x559fdc84cdc0, arg=...)
-at ../accel/kvm/kvm-all.c:2808
-      kvm_arch_put_registers (cpu=0x559fdc84cdc0, level=2) at
-../target/i386/kvm/kvm.c:4664
-       kvm_put_vcpu_events (cpu=0x559fdc84cdc0, level=2) at
-../target/i386/kvm/kvm.c:4308
-
-qemu_thread_start (args=0x559fdc852110) at ../util/qemu-thread-posix.c:534
- kvm_vcpu_thread_fn (arg=0x559fdc84cdc0) at ../accel/kvm/kvm-accel-ops.c:56
-  qemu_wait_io_event (cpu=0x559fdc84cdc0) at ../softmmu/cpus.c:435
-   qemu_wait_io_event_common (cpu=0x559fdc84cdc0) at ../softmmu/cpus.c:411
-    process_queued_cpu_work (cpu=0x559fdc84cdc0) at ../cpus-common.c:351
-     do_kvm_cpu_synchronize_post_init (cpu=0x559fdc84cdc0, arg=...) at
-../accel/kvm/kvm-all.c:2819
-      kvm_arch_put_registers (cpu=0x559fdc84cdc0, level=3) at
-../target/i386/kvm/kvm.c:4664
-       kvm_put_vcpu_events (cpu=0x559fdc84cdc0, level=3) at
-../target/i386/kvm/kvm.c:4308
-
-Kernel:
-  kvm_vcpu_ioctl
-   mutex_lock_killable(&vcpu->mutex)
-    kvm_arch_vcpu_ioctl(, KVM_SET_VCPU_EVENTS, ... )
-   mutex_unlock(&vcpu->mutex);
-     -> kvm_vcpu_ioctl_x86_set_vcpu_events()
-
-* Above are 3 different ways in which KVM_SET_VCPU_EVENTS ioctl(2) gets called.
-        QEMU/target/i386/kvm/kvm.c: kvm_put_vcpu_events()
-         if (level >= KVM_PUT_RESET_STATE) {
-             events.flags |= KVM_VCPUEVENT_VALID_NMI_PENDING;
-  But KVM_VCPUEVENT_VALID_NMI_PENDING is set only when level >=
-2(KVM_PUT_RESET_STATE). ie. in the first (level=1) case _NMI_PENDING
-is not set.
-
-* In the real-time host set-up I have, KVM_VCPUEVENT_VALID_NMI_PENDING
-is called twice for each VCPU and after that kernel goes into what
-looks like a lock contention loop. Each time
-KVM_VCPUEVENT_VALID_NMI_PENDING is called with 'cpu->env->nmi_injected
-= 0' and  'cpu->env->nmi_pending = 0'.  ie. for each VCPU two NMI
-events are injected via - kvm_make_request(KVM_REQ_NMI, vcpu), when
-vcpu has no NMIs pending.
-
-# perf lock report -t
-                Name   acquired  contended     avg wait   total wait
-  max wait     min wait
-
-           CPU 3/KVM     154017     154017     62.19 us      9.58 s
- 101.01 us      1.49 us
-           CPU 9/KVM     152796     152796     62.67 us      9.58 s
-  95.92 us      1.49 us
-           CPU 7/KVM     151554     151554     63.16 us      9.57 s
- 102.70 us      1.48 us
-           CPU 1/KVM     151273     151273     65.30 us      9.88 s
-  98.88 us      1.52 us
-           CPU 6/KVM     151107     151107     63.34 us      9.57 s
- 107.64 us      1.50 us
-           CPU 8/KVM     151038     151038     63.37 us      9.57 s
- 102.93 us      1.51 us
-           CPU 2/KVM     150701     150701     63.52 us      9.57 s
-  99.24 us      1.50 us
-           CPU 5/KVM     150695     150695     63.56 us      9.58 s
- 142.15 us      1.50 us
-           CPU 4/KVM     150527     150527     63.60 us      9.57 s
- 102.04 us      1.44 us
-     qemu-system-x86        665        665     65.92 us     43.84 ms
- 100.67 us      1.55 us
-           CPU 0/KVM             2          2    210.46 us    420.92
-us    411.89 us      9.03 us
-     qemu-system-x86          1          1    404.91 us    404.91 us
- 404.91 us    404.91 us
-        TC tc-pc.ram               1          1    414.22 us    414.22
-us    414.22 us    414.22 us
-  === output for debug===
-bad: 10, total: 13
-bad rate: 76.92 %
-histogram of events caused bad sequence
-    acquire: 0
-   acquired: 10
-  contended: 0
-    release: 0
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH v2 1/2] dt-bindings: PCI: qcom: adjust iommu-map for
+ different SoC
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: krzysztof.kozlowski@linaro.org, agross@kernel.org, andersson@kernel.org,
+ bhelgaas@google.com, conor+dt@kernel.org, conor.dooley@microchip.com,
+ devicetree@vger.kernel.org, konrad.dybcio@linaro.org,
+ krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-pci@vger.kernel.org, lpieralisi@kernel.org, mani@kernel.org,
+ robh@kernel.org
+References: <20231120070910.16697-1-krzysztof.kozlowski@linaro.org>
+ <dfc4f26c-74fe-47b3-af96-e97765082f4e@ixit.cz>
+ <20231229171754.GD9098@thinkpad>
+Content-Language: en-US
+From: David Heidelberg <david@ixit.cz>
+Autocrypt: addr=david@ixit.cz; keydata=
+ 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
+In-Reply-To: <20231229171754.GD9098@thinkpad>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-* VCPU#0 thread seems to wait indefinitely to get
-qemu_mutex_iothread_lock() to make any progress. The proposed patch
-above to check 'events->nmi_pending' for non-zero value helps to fix
-this issue.
+On 29/12/2023 18:17, Manivannan Sadhasivam wrote:
+> On Fri, Dec 29, 2023 at 04:36:31PM +0100, David wrote:
+>>> +    minItems: 1
+>> Hello Krzysztof,
+>>
+>> the driver will accept 0 just fine, so I think this definition may be wrong.
+>>
+> It's not entirely wrong but the actual SID mapping differs between SoCs.
+Sure, I think I can live with this.
+>
+>> I sent just generic "dt-bindings: PCI: qcom: delimit number of iommu-map entries" which doesn't care about the numbers (in similar fashion as other bindings having iommu-map).
+>>
+> No, we should not just ignore the MAX limit. If you add <N> number of entries
+> exceeding the max SID assigned to PCIe bus, it will fail.
+>
+> - Mani
 
-...wdyt?
+Make sense, thanks for explanation.
 
-Thank you.
----
-  - Prasad
-PS: The kvm_make_request() routine has following comment, I wonder if
-this is what is happening with empty NMI events.
-         Request that don't require vCPU action should never be logged in
-         vcpu->requests.  The vCPU won't clear the request, so it will stay
-         logged indefinitely and prevent the vCPU from entering the guest.
+Reviewed-by: David Heidelberg <david@ixit.cz>
+
+>> Tell me what you think.
+>>
+>> David
+>>
+-- 
+David Heidelberg
 
 
