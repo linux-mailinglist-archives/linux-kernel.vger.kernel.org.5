@@ -1,294 +1,399 @@
-Return-Path: <linux-kernel+bounces-13071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3587481FF40
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:51:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C6DC81FF44
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:57:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D75E228371E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 11:51:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E71FD1F234BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 11:57:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D63E111A1;
-	Fri, 29 Dec 2023 11:51:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158EE11198;
+	Fri, 29 Dec 2023 11:57:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d7GJJSWx"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dYQ4rxAL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B489511185;
-	Fri, 29 Dec 2023 11:51:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2FCC11185;
+	Fri, 29 Dec 2023 11:57:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703850671; x=1735386671;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=M9A2T8rtE8fPevl1X5IDWOUyfJK24mLNpkXd1HhG04Q=;
-  b=d7GJJSWxlG5GvICQJzZhn9S6ztZn9Jtp4vggnLIbIYwOJT2XqtdSeAV7
-   9BfVPjoQkag/j/U0lqt5rDr1FdQ09lXzDM0dqs1sR6W8ELCI9DEeHpIz9
-   0uQDDsZPveZnNhZ/R5r+CXXFS3f4fCCfhhWWaF1Yd04bCydTzdfGiw8e7
-   HHrrK75yyG9QsYL2tYMSuNZyrO7SkvsXcKwLVygGmqdsDmUuJUf4HXbUD
-   jwmeIIlKEtbkHaaccUJAG+UeKCXlEznu8WIqiQrVF4qwPI9npg+qPa8Wy
-   gTXPdOG8qKxI2ZFSbxX0xOxgkUAK12lUwCVDx0MeWZ9YqQ6Y9JdIwfQB1
+  t=1703851023; x=1735387023;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DTlQJczvvFLgdrK2fpElfp8nTf07vIktGqkhqHM/r1k=;
+  b=dYQ4rxALqRfdKwOOD5Y4tO3ScxMxbYa941xQLbghDcEdOoFll4VgacYj
+   JI2y76p6g0RsFu0WeuW+gSixM7W2wgtxoiUfe7m1Y6GX7JlYmxKbRXTAU
+   7tRao57xVy4a0bLb0F+eTxExRIxFHz+ufAgW4lJqc5Uf2X6lkHnKI7lOK
+   ccqmFirN9FiJAfRyOUMcQCq9w2qAQiWGrhVjFzLfyOnHnyEQkiTKmFMOd
+   il49SfGuU6qhUll2myawNQhreYiXvlIzgpwNKhu/XTCCpMNbZIXzhUmtw
+   +v4ptkkQ+46Yw7nxiJlR4JJ44SlSyAq409G6mjkSFLl84+PNqY3IGswRx
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="396369344"
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="400449337"
 X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="396369344"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 03:51:10 -0800
+   d="scan'208";a="400449337"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 03:57:02 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="728582783"
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="778798949"
 X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="728582783"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Dec 2023 03:51:10 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 29 Dec 2023 03:51:09 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 29 Dec 2023 03:51:09 -0800
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 29 Dec 2023 03:51:09 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JiskfCrNjYz9hwbUxtPQ48XHk8QOQ9lmCM/0HWDBtX3exb9Gr7WSyC7MzjEMgQ87e33t1y0506eFozSg7/8zg46NEMl5yeAK9eQ1pMr+M0AMSAxGL2uE1RiN9ChZTJTHNk5HeaUiI7Brny68ZvWutvpTBMJr4fzUgdrvN8BGG3NKzlcUQv2UUQBzarjMcUR1tKVFHZ42tyDPTzzTESjjNGEe5PdcrI0kvbmUFB+C+xl2DFebW/ftwk/lmuM+R49DCwnK2CJHs47he+URnVIcCsHHbz7L4yea7Ic0TJhqtJACGoQD6j/f5YjRPFey66RQYusgEjNh3wGcPVYlWjIyzg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=spFPFJfru2UlhXsqdxf4z3VfqRAFTOQWrlbiOu7AHnQ=;
- b=AGINBkAY7Ddjc4tTKkf8zjW4qd2c+EO53VVpSKoP8a3NePEesHN8I63/MRuew+rEpePkqkOyvp9PQtqa6APmNWQ6QSCqH0M5BxpWixmz/n5KtLkRZSfR4a/fNU6sembsQJYCzHxksbAknlk22tqGlOkfyiNYPJiCQu/bb/LUVrZuMFdOVXKBm4wtf9soNeA6I3+rOTcOp3zG0lS47ztQlUWIKdB/faCEV6EoLphmTjxvWpORZUN2k35NRLvhyNzDbESqhiJtFhanugBml7heu98nH3zGrsQDLAQQPdUu81VjZxxbFwdRmDlFu9aSDj2Dymn/u5/gJx4acpwz34qMBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from CH0PR11MB5490.namprd11.prod.outlook.com (2603:10b6:610:d5::6)
- by SA2PR11MB4922.namprd11.prod.outlook.com (2603:10b6:806:111::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.21; Fri, 29 Dec
- 2023 11:51:07 +0000
-Received: from CH0PR11MB5490.namprd11.prod.outlook.com
- ([fe80::9afc:fa9d:5f42:8fd7]) by CH0PR11MB5490.namprd11.prod.outlook.com
- ([fe80::9afc:fa9d:5f42:8fd7%7]) with mapi id 15.20.7135.019; Fri, 29 Dec 2023
- 11:51:07 +0000
-From: "Swee, Leong Ching" <leong.ching.swee@intel.com>
-To: Serge Semin <fancer.lancer@gmail.com>
-CC: Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue
-	<alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, "David S .
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
- Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-	"linux-stm32@st-md-mailman.stormreply.com"
-	<linux-stm32@st-md-mailman.stormreply.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>
-Subject: RE: [PATCH net-next v1 4/4] net: stmmac: Use interrupt mode INTM=1
- for per channel irq
-Thread-Topic: [PATCH net-next v1 4/4] net: stmmac: Use interrupt mode INTM=1
- for per channel irq
-Thread-Index: AQHaNJo+8U9tJ0DEGUmu+Vd+sNpgu7C12k4AgApRhVA=
-Date: Fri, 29 Dec 2023 11:51:06 +0000
-Message-ID: <CH0PR11MB5490FBE567511E89C8F80BE5CF9DA@CH0PR11MB5490.namprd11.prod.outlook.com>
-References: <20231222054451.2683242-1-leong.ching.swee@intel.com>
- <20231222054451.2683242-5-leong.ching.swee@intel.com>
- <prjrrsznvpnbanseqttqgtu3s6kgillyyhs5hozwxwh4kt7eiv@zmups3rcbvby>
-In-Reply-To: <prjrrsznvpnbanseqttqgtu3s6kgillyyhs5hozwxwh4kt7eiv@zmups3rcbvby>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CH0PR11MB5490:EE_|SA2PR11MB4922:EE_
-x-ms-office365-filtering-correlation-id: 2abcce0a-192f-4a88-9252-08dc086470ff
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ls4klg80vkckhyfLFJc2Ms/FXyAjJ+prs3Urh4FyYhHn2cTPHShr8qitkfDCLL8uskizKinGgyxxvNGv7TMoGPRgNiacSiSpS+DjTrhQtzBqCneoXpApE/jpCh9VJqj6nSC3eF7hti2t9iz/4BA+k0nfjLuN/X33cq+DM3YaFwPqRXNR9sQ8PXwanbIgoViDE2iZYiSocZJpr0xn0alBdobtS8uqthNLszcou6WXcpNTohR9X40/UyfzNME/j9yknoQYFZHv6BBWlUmNJ+jDg3LBKHKRWlL7SBpqn2CWce40kAZ/cd+cqPJaXp31CSASQoIRIXcd3dKdTo7Io4HgDZ8rI5dYFXgmlnDCeWBJbufaYjBCmdGHxt7kmBY26X5R+YVcnbdxW05cf3HS0xGO6ajNXTugQxQSyEz8+wVJ9PA5ArvvaPh2oD2oDva+4+ddGMvBeH8o0iZXmT1HITN8FWeoFuIUgellZRDul/5Vt6rPhbcDxxUhqQU+fBBXgBAlTaa2ThcpVWFcwe3PQuDCrZTh5S2SF2KsCyZTDa49EPDla8HAv3wgdE2byb4IVj2cr5YWCNxxi+MbWgJHSqDw0N7YgNTCHyp2rr9aJpWTdVAR2jgCvNzld3hCSkh0JJ8c
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR11MB5490.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(366004)(136003)(376002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(122000001)(478600001)(55016003)(6916009)(86362001)(9686003)(54906003)(71200400001)(53546011)(316002)(6506007)(8936002)(83380400001)(8676002)(38070700009)(66556008)(5660300002)(66946007)(76116006)(7696005)(64756008)(66446008)(66476007)(52536014)(7416002)(4326008)(2906002)(33656002)(82960400001)(41300700001)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?WN7iOskPt5Dj35PN0FKtEfSZCQo2wa4OYeBKPXCAPKI0TIOOuJ16HFXexoLy?=
- =?us-ascii?Q?p6dEoLFzJ1VOmejbZzeE56RpJl/Nzt30CpVORtfY7S+UoS1+i8r3dqMTc9wU?=
- =?us-ascii?Q?V9ZtUdTGkzaB+7xOeKEBHafs5l+i+V9hnZ1GCXeEAIDDvKM/I+OM0OMrFXyv?=
- =?us-ascii?Q?Qc0YTCf0TIpaC+WcgQxEkhxsdNFf4Z8+r6nSh37IdozdH/R9tIri8wOWwpSK?=
- =?us-ascii?Q?/EXHAVjUTNOrtUv+o7gbqkjNfOB4k3W6nE4REj9O4uTpysn8r2UozovuCyUf?=
- =?us-ascii?Q?OYcJWbfsK4rk8t8vAv+oncPkvP2TeO7gq8qOUq3oT3SWDv5RjiwzP8RRRCQJ?=
- =?us-ascii?Q?izfQMewtJbu9/VBBloFH3oDxhT/xQHLEIaZzjRMsGnv5Nzp0aIAX1xgGhel5?=
- =?us-ascii?Q?GJ4rTNUnvOVM6KmvnQEsQIZdXTmB6IjH0E5vatCzkZLof+zLZ1wKR3tyhyJc?=
- =?us-ascii?Q?1yyBDGlHnnQ0DfSOEAa+9vuVv5FLde3WpeuLD3cUefmfXxIEuL7F2240zAgc?=
- =?us-ascii?Q?wD5fCcK36s6kk0cttW/tag7OvOmQ2eKiz8oo8dUSkkNvENjdTgreB5wCvpYb?=
- =?us-ascii?Q?5/RaZJsFpo2LLU3Vq0SCKfFLcqaGhLiLMQPINaj5oNuRMjw/VfS+1QYQGglR?=
- =?us-ascii?Q?UZXzcjp1jrqQZ+5yB4Tz10yEx0NWO794NG2dFrg983bS9hL03NRegXpsT7Zk?=
- =?us-ascii?Q?yCW+lUSc7qFVj5lVXU8DHah6NLq5YpUFnURReMHf5r/xG26LAwcFmXjNU8E+?=
- =?us-ascii?Q?2FeJqZ341x8ZqlA3OsgyjgFuiHmzxoQ4j7NIHF3y1cdMcTegZCjotBb4CqKz?=
- =?us-ascii?Q?35r2E0FEJZsql0PQpmjY4TVVyf/IJTu/MkKXvNCHGWx5tciOqn+FxHeoyxd3?=
- =?us-ascii?Q?3dD+Ra/O928W0s7ZpV5hjh/R8f0oSeMuaB2wy6kK2CRIf4WcQRgdovs2wyhn?=
- =?us-ascii?Q?xFrD+eKwNvCRtV7remOyjY737KhaK8Mdb64PfVBDxiMBpXUJBGrT4vOV2fuB?=
- =?us-ascii?Q?CHJIRkPHUaGjoy8+SfhVMHHJ+/FKwNf5yjxikkTJUfdT5amd2n2k/I68pTR9?=
- =?us-ascii?Q?8f4x/P2YS9rcSKkDoKLJxCXn0QC1coedjb59Um/QUo2+hUr2cFwUL/aUVomE?=
- =?us-ascii?Q?95oEQ2NNAbLZVGm2Wc3vBtsgvBmIMssYdfE4jXMJ0++lFv+x01UztJMszqvi?=
- =?us-ascii?Q?U43KZ+r6tLwGE1j/97YaTJxvs+UlPMyubYqf6oI8RdaD2fr4paq76ektN0Tb?=
- =?us-ascii?Q?TeSE8+nMK0VWyvqeuGDWdXCxlVOqZuVzWNCtMRzculGUls7eyJSwx8F+58tZ?=
- =?us-ascii?Q?Zx2k/S26pJKJlxmmqJUnPL0DFwEZDy/U3Q/JtMRzkvgPVDU/wFvs08BsdXu4?=
- =?us-ascii?Q?plFhox5eEGLFzfez0y3GFgceK9JGRKNxoCmu4yQPWlWnvtO26M2RNxN0BEyL?=
- =?us-ascii?Q?wxw7OqNyBZ5DvqzeM9YWqFXyVNQnyIY+ZPt4mWiEzuIihI2YV8Eluie5zSxc?=
- =?us-ascii?Q?OOLHCLTXo2i/9cq5Rkf9NeKOD4JhDQ6P8AbelmhMJS24qVTia3hzdF6zcXz8?=
- =?us-ascii?Q?ffotK079wj5PmZSMhXc=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+   d="scan'208";a="778798949"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 29 Dec 2023 03:56:58 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rJBU0-000HQ2-2D;
+	Fri, 29 Dec 2023 11:56:56 +0000
+Date: Fri, 29 Dec 2023 19:56:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: "larry.lai" <larry.lai@yunjingtech.com>, lee@kernel.org,
+	andriy.shevchenko@linux.intel.com, linus.walleij@linaro.org,
+	pavel@ucw.cz, krzk@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-leds@vger.kernel.org, GaryWang@aaeon.com.tw,
+	musa.lin@yunjingtech.com, jack.chang@yunjingtech.com,
+	noah.hung@yunjingtech.com, "larry.lai" <larry.lai@yunjingtech.com>
+Subject: Re: [PATCH V8 2/3] pinctrl: Add support pin control for UP board
+ CPLD/FPGA
+Message-ID: <202312291907.7mgFSafz-lkp@intel.com>
+References: <20231228151544.14408-3-larry.lai@yunjingtech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR11MB5490.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2abcce0a-192f-4a88-9252-08dc086470ff
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Dec 2023 11:51:06.4884
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kHvfwaXR8dSylyBf19EIeo7HWyiHubywFXJ9rkrKXSqZwfRuS5PBmf3NssgH6b7g49WIcD6kgz7AsV250Kn7ScqbuaeL/wn4sUpMQ3MCMDI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4922
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231228151544.14408-3-larry.lai@yunjingtech.com>
 
-> -----Original Message-----
-> From: Serge Semin <fancer.lancer@gmail.com>
-> Sent: Saturday, December 23, 2023 5:57 AM
-> To: Swee, Leong Ching <leong.ching.swee@intel.com>
-> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>; Alexandre Torgue
-> <alexandre.torgue@foss.st.com>; Jose Abreu <joabreu@synopsys.com>;
-> David S . Miller <davem@davemloft.net>; Eric Dumazet
-> <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
-> <pabeni@redhat.com>; Rob Herring <robh+dt@kernel.org>; Krzysztof
-> Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
-> <conor+dt@kernel.org>; Giuseppe Cavallaro <peppe.cavallaro@st.com>;
-> linux-stm32@st-md-mailman.stormreply.com; linux-arm-
-> kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> netdev@vger.kernel.org; devicetree@vger.kernel.org; Teoh Ji Sheng
-> <ji.sheng.teoh@intel.com>
-> Subject: Re: [PATCH net-next v1 4/4] net: stmmac: Use interrupt mode
-> INTM=3D1 for per channel irq
->=20
-> On Fri, Dec 22, 2023 at 01:44:51PM +0800, Leong Ching Swee wrote:
-> > From: Swee Leong Ching <leong.ching.swee@intel.com>
-> >
-> > Enable per DMA channel interrupt that uses shared peripheral interrupt
-> > (SPI), so only per channel TX and RX intr (TI/RI) are handled by TX/RX
-> > ISR without calling common interrupt ISR.
-> >
-> > Signed-off-by: Teoh Ji Sheng <ji.sheng.teoh@intel.com>
-> > Signed-off-by: Swee Leong Ching <leong.ching.swee@intel.com>
-> > ---
-> >  .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |  3 ++
-> >  .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    | 32 +++++++++++-------
-> -
-> >  2 files changed, 22 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-> > b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-> > index 207ff1799f2c..04bf731cb7ea 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-> > @@ -346,6 +346,9 @@
-> >  /* DMA Registers */
-> >  #define XGMAC_DMA_MODE			0x00003000
-> >  #define XGMAC_SWR			BIT(0)
-> > +#define XGMAC_DMA_MODE_INTM_MASK	GENMASK(13, 12)
-> > +#define XGMAC_DMA_MODE_INTM_SHIFT	12
-> > +#define XGMAC_DMA_MODE_INTM_MODE1	0x1
-> >  #define XGMAC_DMA_SYSBUS_MODE		0x00003004
-> >  #define XGMAC_WR_OSR_LMT		GENMASK(29, 24)
-> >  #define XGMAC_WR_OSR_LMT_SHIFT		24
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-> > b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-> > index 3cde695fec91..dcb9f094415d 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-> > @@ -31,6 +31,13 @@ static void dwxgmac2_dma_init(void __iomem
-> *ioaddr,
-> >  		value |=3D XGMAC_EAME;
-> >
-> >  	writel(value, ioaddr + XGMAC_DMA_SYSBUS_MODE);
-> > +
-> > +	if (dma_cfg->multi_irq_en) {
-> > +		value =3D readl(ioaddr + XGMAC_DMA_MODE);
-> > +		value &=3D ~XGMAC_DMA_MODE_INTM_MASK;
-> > +		value |=3D (XGMAC_DMA_MODE_INTM_MODE1 <<
-> XGMAC_DMA_MODE_INTM_SHIFT);
-> > +		writel(value, ioaddr + XGMAC_DMA_MODE);
-> > +	}
-> >  }
-> >
-> >  static void dwxgmac2_dma_init_chan(struct stmmac_priv *priv, @@
-> > -365,19 +372,18 @@ static int dwxgmac2_dma_interrupt(struct
-> stmmac_priv *priv,
-> >  	}
-> >
->=20
-> >  	/* TX/RX NORMAL interrupts */
-> > -	if (likely(intr_status & XGMAC_NIS)) {
-> > -		if (likely(intr_status & XGMAC_RI)) {
-> > -			u64_stats_update_begin(&rxq_stats->syncp);
-> > -			rxq_stats->rx_normal_irq_n++;
-> > -			u64_stats_update_end(&rxq_stats->syncp);
-> > -			ret |=3D handle_rx;
-> > -		}
-> > -		if (likely(intr_status & (XGMAC_TI | XGMAC_TBU))) {
-> > -			u64_stats_update_begin(&txq_stats->syncp);
-> > -			txq_stats->tx_normal_irq_n++;
-> > -			u64_stats_update_end(&txq_stats->syncp);
-> > -			ret |=3D handle_tx;
-> > -		}
-> > +	if (likely(intr_status & XGMAC_RI)) {
-> > +		u64_stats_update_begin(&rxq_stats->syncp);
-> > +		rxq_stats->rx_normal_irq_n++;
-> > +		u64_stats_update_end(&rxq_stats->syncp);
-> > +		ret |=3D handle_rx;
-> > +	}
-> > +
-> > +	if (likely(intr_status & (XGMAC_TI | XGMAC_TBU))) {
-> > +		u64_stats_update_begin(&txq_stats->syncp);
-> > +		txq_stats->tx_normal_irq_n++;
-> > +		u64_stats_update_end(&txq_stats->syncp);
-> > +		ret |=3D handle_tx;
->=20
-> Could you please clarify my comment to the original patch:
->=20
-> On Fri, Aug 18, 2023 at 20:10:21PM +0300, Serge Semin wrote:
-> > Just curious. Is this change really necessary seeing NIS IRQ is
-> > unmasked and it is unmasked-OR of the RI/TI/TBU flags in the
-> > DMA_CHx_Status register? Moreover based on the HW manual,
-> > DMA_CHx_Status reflects raw IRQ flags status except NIS and AIS which
-> > are the masked OR of the respective flags. So AFAIU NIS will be set in
-> > anyway if you have RI/TI/TBU IRQs enabled.
->=20
-> -Serge(y)
->=20
-Thanks for your comment.=20
-From my test, NIS bit value is 0 once INTM is set, even with RI/TI flags va=
-lue is 1.=20
-This might be the reason why previous patch set had this change.
--Jim
-> >  	}
-> >
-> >  	/* Clear interrupts */
-> > --
-> > 2.34.1
-> >
-> >
+Hi larry.lai,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on 4fe89d07dcc2804c8b562f6c7896a45643d34b2f]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/larry-lai/mfd-Add-support-for-UP-board-CPLD-FPGA/20231228-231750
+base:   4fe89d07dcc2804c8b562f6c7896a45643d34b2f
+patch link:    https://lore.kernel.org/r/20231228151544.14408-3-larry.lai%40yunjingtech.com
+patch subject: [PATCH V8 2/3] pinctrl: Add support pin control for UP board CPLD/FPGA
+config: i386-allyesconfig (https://download.01.org/0day-ci/archive/20231229/202312291907.7mgFSafz-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231229/202312291907.7mgFSafz-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312291907.7mgFSafz-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/pinctrl/pinctrl-upboard.c:709:13: warning: variable length array used [-Wvla]
+     709 |         int offset[pctrl->pctldesc->npins];
+         |                    ^~~~~~~~~~~~~~~~~~~~~~
+>> drivers/pinctrl/pinctrl-upboard.c:1089:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+    1089 |                 .ident = BOARD_UP_APL01,
+         |                          ^~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:46:27: note: expanded from macro 'BOARD_UP_APL01'
+      46 | #define BOARD_UP_APL01                          1
+         |                                                 ^
+   drivers/pinctrl/pinctrl-upboard.c:1096:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+    1096 |                 .ident = BOARD_UP_APL01,
+         |                          ^~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:46:27: note: expanded from macro 'BOARD_UP_APL01'
+      46 | #define BOARD_UP_APL01                          1
+         |                                                 ^
+   drivers/pinctrl/pinctrl-upboard.c:1103:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+    1103 |                 .ident = BOARD_UP_APL03,
+         |                          ^~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:53:27: note: expanded from macro 'BOARD_UP_APL03'
+      53 | #define BOARD_UP_APL03                          9
+         |                                                 ^
+   drivers/pinctrl/pinctrl-upboard.c:1110:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+    1110 |                 .ident = BOARD_UP_WHL01,
+         |                          ^~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:50:27: note: expanded from macro 'BOARD_UP_WHL01'
+      50 | #define BOARD_UP_WHL01                          5
+         |                                                 ^
+   drivers/pinctrl/pinctrl-upboard.c:1117:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+    1117 |                 .ident = BOARD_UPX_TGL,
+         |                          ^~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:55:26: note: expanded from macro 'BOARD_UPX_TGL'
+      55 | #define BOARD_UPX_TGL                           11
+         |                                                 ^~
+   drivers/pinctrl/pinctrl-upboard.c:1124:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+    1124 |                 .ident = BOARD_UPN_EHL01,
+         |                          ^~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:57:28: note: expanded from macro 'BOARD_UPN_EHL01'
+      57 | #define BOARD_UPN_EHL01                         13
+         |                                                 ^~
+   drivers/pinctrl/pinctrl-upboard.c:1131:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+    1131 |                 .ident = BOARD_UPS_EHL01,
+         |                          ^~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:58:28: note: expanded from macro 'BOARD_UPS_EHL01'
+      58 | #define BOARD_UPS_EHL01                         BOARD_UPN_EHL01
+         |                                                 ^~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:57:28: note: expanded from macro 'BOARD_UPN_EHL01'
+      57 | #define BOARD_UPN_EHL01                         13
+         |                                                 ^~
+   drivers/pinctrl/pinctrl-upboard.c:1138:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+    1138 |                 .ident = BOARD_UPX_ADLP01,
+         |                          ^~~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:59:28: note: expanded from macro 'BOARD_UPX_ADLP01'
+      59 | #define BOARD_UPX_ADLP01                        15
+         |                                                 ^~
+   drivers/pinctrl/pinctrl-upboard.c:1145:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+    1145 |                 .ident = BOARD_UPN_ADLN01,
+         |                          ^~~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:60:28: note: expanded from macro 'BOARD_UPN_ADLN01'
+      60 | #define BOARD_UPN_ADLN01                        16
+         |                                                 ^~
+   drivers/pinctrl/pinctrl-upboard.c:1152:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+    1152 |                 .ident = BOARD_UPS_ADLP01,
+         |                          ^~~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:61:28: note: expanded from macro 'BOARD_UPS_ADLP01'
+      61 | #define BOARD_UPS_ADLP01                        BOARD_UPX_ADLP01
+         |                                                 ^~~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:59:28: note: expanded from macro 'BOARD_UPX_ADLP01'
+      59 | #define BOARD_UPX_ADLP01                        15
+         |                                                 ^~
+   drivers/pinctrl/pinctrl-upboard.c:1159:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+    1159 |                 .ident = BOARD_UP_ADLN01,
+         |                          ^~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:62:28: note: expanded from macro 'BOARD_UP_ADLN01'
+      62 | #define BOARD_UP_ADLN01                         18
+         |                                                 ^~
+>> drivers/pinctrl/pinctrl-upboard.c:1185:12: error: incompatible pointer to integer conversion assigning to 'int' from 'const char *const' [-Wint-conversion]
+    1185 |                 board_id = system_id->ident;
+         |                          ^ ~~~~~~~~~~~~~~~~
+   1 warning and 12 errors generated.
+
+
+vim +1089 drivers/pinctrl/pinctrl-upboard.c
+
+  1085	
+  1086	/* DMI Matches to assign pin mapping driver data */
+  1087	static const struct dmi_system_id upboard_dmi_table[] __initconst = {
+  1088		{
+> 1089			.ident = BOARD_UP_APL01,
+  1090			.matches = { /* UP SQUARED */
+  1091				DMI_EXACT_MATCH(DMI_SYS_VENDOR, "AAEON"),
+  1092				DMI_EXACT_MATCH(DMI_BOARD_NAME, "UP-APL01"),
+  1093			},
+  1094		},
+  1095		{
+  1096			.ident = BOARD_UP_APL01,
+  1097			.matches = { /* UP SQUARED Pro*/
+  1098				DMI_EXACT_MATCH(DMI_SYS_VENDOR, "AAEON"),
+  1099				DMI_EXACT_MATCH(DMI_BOARD_NAME, "UPN-APL01"),
+  1100			},
+  1101		},
+  1102		{
+  1103			.ident = BOARD_UP_APL03,
+  1104			.matches = { /* UP 4000 */
+  1105				DMI_EXACT_MATCH(DMI_SYS_VENDOR, "AAEON"),
+  1106				DMI_EXACT_MATCH(DMI_BOARD_NAME, "UP-APL03"),
+  1107			},
+  1108		},
+  1109		{
+  1110			.ident = BOARD_UP_WHL01,
+  1111			.matches = { /* UPX WHL */
+  1112				DMI_EXACT_MATCH(DMI_SYS_VENDOR, "AAEON"),
+  1113				DMI_EXACT_MATCH(DMI_BOARD_NAME, "UP-WHL01"),
+  1114			},
+  1115		},
+  1116		{
+  1117			.ident = BOARD_UPX_TGL,
+  1118			.matches = { /* UP i11 */
+  1119				DMI_EXACT_MATCH(DMI_SYS_VENDOR, "AAEON"),
+  1120				DMI_EXACT_MATCH(DMI_BOARD_NAME, "UPX-TGL01"),
+  1121			},
+  1122		},
+  1123		{
+  1124			.ident = BOARD_UPN_EHL01,
+  1125			.matches = { /* UP 6000 */
+  1126				DMI_EXACT_MATCH(DMI_SYS_VENDOR, "AAEON"),
+  1127				DMI_EXACT_MATCH(DMI_BOARD_NAME, "UPN-EHL01"),
+  1128			},
+  1129		},
+  1130		{
+  1131			.ident = BOARD_UPS_EHL01,
+  1132			.matches = { /* UP squared v2 */
+  1133				DMI_EXACT_MATCH(DMI_SYS_VENDOR, "AAEON"),
+  1134				DMI_EXACT_MATCH(DMI_BOARD_NAME, "UPS-EHL01"),
+  1135			},
+  1136		},
+  1137		{
+  1138			.ident = BOARD_UPX_ADLP01,
+  1139			.matches = { /* UP Xtreme i12 */
+  1140				DMI_EXACT_MATCH(DMI_SYS_VENDOR, "AAEON"),
+  1141				DMI_EXACT_MATCH(DMI_BOARD_NAME, "UPX-ADLP01"),
+  1142			},
+  1143		},
+  1144		{
+  1145			.ident = BOARD_UPN_ADLN01,
+  1146			.matches = { /* UP 7000 */
+  1147				DMI_EXACT_MATCH(DMI_SYS_VENDOR, "AAEON"),
+  1148				DMI_EXACT_MATCH(DMI_BOARD_NAME, "UPN-ADLN01"),
+  1149			},
+  1150		},
+  1151		{
+  1152			.ident = BOARD_UPS_ADLP01,
+  1153			.matches = { /* UP Squared i12 */
+  1154				DMI_EXACT_MATCH(DMI_SYS_VENDOR, "AAEON"),
+  1155				DMI_EXACT_MATCH(DMI_BOARD_NAME, "UPS-ADLP01"),
+  1156			},
+  1157		},
+  1158		{
+  1159			.ident = BOARD_UP_ADLN01,
+  1160			.matches = { /* UP 7000 */
+  1161				DMI_EXACT_MATCH(DMI_SYS_VENDOR, "AAEON"),
+  1162				DMI_EXACT_MATCH(DMI_BOARD_NAME, "UP-ADLN01"),
+  1163			},
+  1164		},
+  1165		{ }	/* Terminating entry */
+  1166	};
+  1167	
+  1168	static int upboard_pinctrl_probe(struct platform_device *pdev)
+  1169	{
+  1170		struct upboard_fpga * const fpga = dev_get_drvdata(pdev->dev.parent);
+  1171		struct pinctrl_desc *pctldesc;
+  1172		struct upboard_pinctrl *pctrl;
+  1173		struct upboard_pin *pins;
+  1174		const struct dmi_system_id *system_id;
+  1175		const unsigned int *rpi_mapping;
+  1176		unsigned int ngpio;
+  1177		int ret;
+  1178		int i;
+  1179		/* default */
+  1180		int board_id = BOARD_UP_APL03;
+  1181	
+  1182		/* check board id to arrange driver data */
+  1183		system_id = dmi_first_match(upboard_dmi_table);
+  1184		if (system_id)
+> 1185			board_id = system_id->ident;
+  1186		dev_info(&pdev->dev, "Compatible Up Board ID %d", board_id);
+  1187		switch (board_id) {
+  1188		case BOARD_UP_APL01:
+  1189			pctldesc = &upboard_up2_pinctrl_desc;
+  1190			rpi_mapping = upboard_up2_rpi_mapping;
+  1191			ngpio = ARRAY_SIZE(upboard_up2_rpi_mapping);
+  1192			break;
+  1193		case BOARD_UP_UPCORE:
+  1194			pctldesc = &upboard_upcore_crex_pinctrl_desc;
+  1195			rpi_mapping = upboard_upcore_crex_rpi_mapping;
+  1196			ngpio = ARRAY_SIZE(upboard_upcore_crex_rpi_mapping);
+  1197			break;
+  1198		case BOARD_UP_CORE_PLUS:
+  1199			pctldesc = &upboard_upcore_crst02_pinctrl_desc;
+  1200			rpi_mapping = upboard_upcore_crst02_rpi_mapping;
+  1201			ngpio = ARRAY_SIZE(upboard_upcore_crst02_rpi_mapping);
+  1202			break;
+  1203		default:
+  1204			pctldesc = &upboard_up_pinctrl_desc;
+  1205			rpi_mapping = upboard_up_rpi_mapping;
+  1206			ngpio = ARRAY_SIZE(upboard_up_rpi_mapping);
+  1207			break;
+  1208		}
+  1209	
+  1210		pctldesc->name = dev_name(&pdev->dev);
+  1211	
+  1212		pins = devm_kcalloc(&pdev->dev, pctldesc->npins, sizeof(*pins), GFP_KERNEL);
+  1213		if (!pins)
+  1214			return -ENOMEM;
+  1215	
+  1216		/* initialise pins */
+  1217		for (i = 0; i < pctldesc->npins; i++) {
+  1218			struct upboard_pin *pin = &pins[i];
+  1219			struct pinctrl_pin_desc *pd = (struct pinctrl_pin_desc *) &pctldesc->pins[i];
+  1220			struct reg_field fldconf = {0};
+  1221			unsigned int regoff = (pd->number / UPFPGA_REGISTER_SIZE);
+  1222			unsigned int lsb = pd->number % UPFPGA_REGISTER_SIZE;
+  1223	
+  1224			pin->funcbit = NULL;
+  1225	
+  1226			if (pd->drv_data) {
+  1227				fldconf = *(struct reg_field *)pd->drv_data;
+  1228	
+  1229				pin->funcbit = devm_regmap_field_alloc(&pdev->dev,
+  1230								       fpga->regmap,
+  1231								       fldconf);
+  1232				if (IS_ERR(pin->funcbit))
+  1233					return PTR_ERR(pin->funcbit);
+  1234			}
+  1235	
+  1236			fldconf.reg = UPFPGA_REG_GPIO_EN0 + regoff;
+  1237			fldconf.lsb = lsb;
+  1238			fldconf.msb = lsb;
+  1239	
+  1240			pin->enbit = devm_regmap_field_alloc(&pdev->dev,
+  1241							     fpga->regmap,
+  1242							     fldconf);
+  1243			if (IS_ERR(pin->enbit))
+  1244				return PTR_ERR(pin->enbit);
+  1245	
+  1246			fldconf.reg = UPFPGA_REG_GPIO_DIR0 + regoff;
+  1247			fldconf.lsb = lsb;
+  1248			fldconf.msb = lsb;
+  1249	
+  1250			pin->dirbit = devm_regmap_field_alloc(&pdev->dev,
+  1251							      fpga->regmap,
+  1252							      fldconf);
+  1253			if (IS_ERR(pin->dirbit))
+  1254				return PTR_ERR(pin->dirbit);
+  1255	
+  1256			pd->drv_data = pin;
+  1257		}
+  1258	
+  1259		/* create a new pinctrl device and register it */
+  1260		pctrl = devm_kzalloc(&pdev->dev, sizeof(*pctrl), GFP_KERNEL);
+  1261		if (!pctrl)
+  1262			return -ENOMEM;
+  1263	
+  1264		pctrl->rpi_mapping = rpi_mapping;
+  1265		pctrl->chip = upboard_gpio_chip;
+  1266		pctrl->pctldesc = pctldesc;
+  1267		pctrl->chip.parent = &pdev->dev;
+  1268		pctrl->chip.ngpio = ngpio;
+  1269		pctrl->pins = pins;
+  1270		pctrl->ident = board_id;
+  1271	
+  1272		ret = devm_gpiochip_add_data(&pdev->dev, &pctrl->chip, pctrl);
+  1273		if (ret)
+  1274			return ret;
+  1275	
+  1276		pctrl->pctldev = devm_pinctrl_register(&pdev->dev, pctldesc, pctrl);
+  1277		if (IS_ERR(pctrl->pctldev))
+  1278			return PTR_ERR(pctrl->pctldev);
+  1279	
+  1280		/* add acpi pin mapping according to external-gpios key */
+  1281		ret = upboard_acpi_node_pin_mapping(fpga, pctrl,
+  1282						    "external",
+  1283						    dev_name(&pdev->dev),
+  1284						    0);
+  1285		if (ret)
+  1286			return ret;
+  1287	
+  1288		upboard_alt_func_enable(&pctrl->chip, "I2C",    pctrl->ident);
+  1289		upboard_alt_func_enable(&pctrl->chip, "SPI",    pctrl->ident);
+  1290		upboard_alt_func_enable(&pctrl->chip, "UART",   pctrl->ident);
+  1291		upboard_alt_func_enable(&pctrl->chip, "I2S",    pctrl->ident);
+  1292		upboard_alt_func_enable(&pctrl->chip, "PWM",    pctrl->ident);
+  1293		upboard_alt_func_enable(&pctrl->chip, "ADC",    pctrl->ident);
+  1294		upboard_alt_func_enable(&pctrl->chip, "PINMUX", pctrl->ident);
+  1295	
+  1296		return ret;
+  1297	}
+  1298	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
