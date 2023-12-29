@@ -1,95 +1,108 @@
-Return-Path: <linux-kernel+bounces-13151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5703A820064
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 47AB0820053
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:43:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D55F1F21FAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:51:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F178B1F22167
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:43:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A96FD125C4;
-	Fri, 29 Dec 2023 15:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 688CE125C0;
+	Fri, 29 Dec 2023 15:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="jxp6LpTG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rFGfPfGe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F44125A4;
-	Fri, 29 Dec 2023 15:51:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 4717D1C0050; Fri, 29 Dec 2023 16:41:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-	t=1703864497;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BxMs/kzpNymFcmFDEtEcM/zevTNnwByTQvgBKVE7D2M=;
-	b=jxp6LpTGOCf7KbPks0fFRUE4SxYKGccEBysv8LdiWscTakaMIDroi4NHwDf2w8FFI4yZSH
-	zMZxVMfNMo/K702IKJ7WATTW0SME1RU5olqaoY2WvQ5OKirPl4gsVbU7fLyT5U5uiJIyFZ
-	9IGs38AK0VzLZzsknjen+w7pz2a/+CU=
-Date: Fri, 29 Dec 2023 16:41:35 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: Chris Rankin <rankincj@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
-Subject: Re: Does Linux still support UP?
-Message-ID: <ZY7omD5OBLUg6pyx@duo.ucw.cz>
-References: <CAK2bqVKCdaD6-PZi6gXhf=9CiKGhxQM_UHyKV_onzDPnhbAmvw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA5BF125AB;
+	Fri, 29 Dec 2023 15:43:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06D96C433C7;
+	Fri, 29 Dec 2023 15:43:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703864626;
+	bh=cHBszsE5H32BHTyrznenF9Yp/nF4ekKNzOaOvnlvEqc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rFGfPfGePCynPG1iwxs8Brzg3+CXnuNzs5/CI7W71aRuI1tmsrzDyx9Ftw6YeIlVR
+	 gxDtFcuCbigwwm8jWN7QsxANVQF0J5390xMh1JkrhA3nT1fY9bBlRGRWGCTp1Gbi2V
+	 idG6joyQa004AoQd1UfdijsBzEf74iKZvLVVE85nq5Lu5XCPL4e/84t5rheMUoMH22
+	 rdwzXhzsfR8U6SgcdoE40+xDCG7I4xuL5Keq1227fzykiIwxiQjYwv1hzAWwPRNp9i
+	 Upqh1iH2nodqa0+dHUeZNg8/KO3QNlsKXoL7aXIEZ1fnYD6eTghy90Lod2LrpUH73z
+	 mqfTenABoRfkA==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan@kernel.org>)
+	id 1rJF1N-0005jc-2J;
+	Fri, 29 Dec 2023 16:43:38 +0100
+Date: Fri, 29 Dec 2023 16:43:37 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Konrad Dybcio <konrad.dybcio@somainline.org>
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: sc8280xp: Correct USB PHY power
+ domains
+Message-ID: <ZY7pKZ40oMQPIzGh@hovoldconsulting.com>
+References: <20231227-topic-8280_pcie_dts-v1-0-13d12b1698ff@linaro.org>
+ <20231227-topic-8280_pcie_dts-v1-2-13d12b1698ff@linaro.org>
+ <ZY7DEpaIgvfL_A11@hovoldconsulting.com>
+ <b730bf22-fa3a-4720-9fd1-79d2207d6812@linaro.org>
+ <ZY7I1brn0chtOzis@hovoldconsulting.com>
+ <11aa0b82-ddab-4b65-8f49-54e15e0ce44e@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="70EgRxlTRoKgOZlJ"
-Content-Disposition: inline
-In-Reply-To: <CAK2bqVKCdaD6-PZi6gXhf=9CiKGhxQM_UHyKV_onzDPnhbAmvw@mail.gmail.com>
-
-
---70EgRxlTRoKgOZlJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <11aa0b82-ddab-4b65-8f49-54e15e0ce44e@linaro.org>
 
-Hi!
+On Fri, Dec 29, 2023 at 04:05:18PM +0100, Konrad Dybcio wrote:
+> On 29.12.2023 14:25, Johan Hovold wrote:
 
-> I have an ancient i586 UP machine that happily runs vanilla Linux
-> 6.4.16, but which locks up shortly after booting vanilla 6.5.0. The
-> kernel *seems* to run into trouble as soon as the networking layer
-> becomes busy. However, its SysRq-S/U/B sequence still seems to work as
-> expected and so obviously *something* is still responding somewhere.
->=20
-> This problem still exists in vanilla 6.6.8.
->=20
-> FWIW I have raised this bug in bugzilla:
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D218296
+> > On Fri, Dec 29, 2023 at 02:06:26PM +0100, Konrad Dybcio wrote:
+> >> On 29.12.2023 14:01, Johan Hovold wrote:
+> >>> On Wed, Dec 27, 2023 at 11:28:27PM +0100, Konrad Dybcio wrote:
+> > 
+> >>>> Fix the power-domains assignment to stop potentially toggling the GDSC
+> >>>> unnecessarily.
+> >>>
+> >>> Again, there's no additional toggling being done here, but yes, this may
+> >>> keep the domains enabled during suspend depending on how the driver is
+> >>> implemented.
+> > 
+> >> No, it can actually happen. (Some) QMP PHYs are referenced by the
+> >> DP hardware. If USB is disabled (or suspended), the DP being active
+> >> will hold these GDSCs enabled.
+> > 
+> > That's not a "toggling", is it? Also if the DP controller is a consumer of
+> > these PHY's why should it not prevent the PHYs from suspending?
+> 
+> As far as I'm concerned, "toggling" is the correct word for "switching it
+> on".. 
 
-Yes, UP should still work. I'm using such machine and intend to
-continue with that. But it seems more testing would be welcome.
+Hmm, this doesn't make sense. The PHY power domain will be disabled when
+the PHY is suspended, regardless of the DP controller. But sure, a
+system with USB disabled, would end up with the USB GDSC on.
 
-And yes, you'll likely need to bisect.
+> While the PHYs are indeed useful for getting displayport to work,
+> the USB controller itself may not be necessary there, so enabling its
+> power line would be a bit of a waste..
 
-Best regards,
-								Pavel
+Sure, if the PHYs truly don't need the USB PD then fine, this just
+doesn't seem to be case for PCIe, or at least the picture isn't as clear
+as your previous commit message suggested.
 
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
-
---70EgRxlTRoKgOZlJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZY7orwAKCRAw5/Bqldv6
-8todAKCibSurY7CjS6hkVxuB6tEcdKxdLACeLH+oqOiHZHCnHVi5lzu8QjNJUkA=
-=41qP
------END PGP SIGNATURE-----
-
---70EgRxlTRoKgOZlJ--
+Johan
 
