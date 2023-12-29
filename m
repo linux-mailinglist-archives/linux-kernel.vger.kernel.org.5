@@ -1,149 +1,105 @@
-Return-Path: <linux-kernel+bounces-12923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3456F81FCB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 04:15:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FC5081FCC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 04:28:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82ACD1F2316F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 03:15:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10F1A1F21972
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 03:28:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE101857;
-	Fri, 29 Dec 2023 03:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="UzKkMzPw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 567491FB6;
+	Fri, 29 Dec 2023 03:28:27 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2096.outbound.protection.outlook.com [40.107.117.96])
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C4917C4
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 03:14:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nGIx4SQDO9wMwddwA+Rtfs+2msxxjp1bSDLikmeK31C5Ho/ojnJwPaqUywG5xeZhWvNlYbiUxrMZFchPCtLE9hRFVqWJDJXBDE/Igp6CaLP+YtHb/QcaiPdOcbcYwQqKq7s93xpKp2J/XV/ogM1NvvcqD2y3zgwwba4/+J7M/b+Ysi0RHEgem76AK3qIbciX2kFmEOFXBIXOYMtov4O7fHSSnIe0uwCe1MKihHjyOdKGwI4F+kVgh/vcS5eIpYwCPK3ucNBzaHkaxvZbB7COhh5Gja38VmzXlEM1JIyB8YSmzxJfDHXcaVnYqC8aN07uP+TYs0rycdppBSaSh+AM/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4EpF9hvmVdzcrFSR5BcoJs2yQywPah5jHT+51PTUHvg=;
- b=ZmsPhVv0QNIupbzWy8BaJ6vvdBkiJdxmfGAOXcdhcboQBtsjqSkJqrvQH/MDM6DiQ6/r3J7teHPny+iZmRHeyZ6x0IVHJ9iC2WMHVR1BbDcx/K+ZhWpXP4NWM2fArKoSFWHDK6JuW2H1zJ21mc0HMhk8JPS4RZdXIyZ6GFAF8E1TZHMTAxwFT+ivisU4Il9qq1B8XB3MRAq9g8dJe0bbrF74pgdBcCLC8r0rJGkoK82wB4x0qP2qzH6as5j36mO+bqdtw24FkiVsq6qfq5cj6PRm1tA+1DxB0zVh8QPf9DuHL1MxpvZjrabSl6TstJIPPNy8XSM2JKQsPNGC5hgMNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4EpF9hvmVdzcrFSR5BcoJs2yQywPah5jHT+51PTUHvg=;
- b=UzKkMzPwX97NzXbK8uBcTCbDFFVFIrQ0suUgxJzqIMZ/yWZ6NVYcJhN88JZ3r4aNP/BwJdP7VdDjs/A9PjYoVv3YrPcrIQM9SFu5pixI2ykKhMsfg24jpfGh1//95DsevZjjjOIBEeu070hAqXybjbg65byR4G3vzaZ8QIvgd8ZpBNElsayWkRu2uO7RjrEfH50NGlqLFms4p6Kgnjy2i1TJ5D3e60bn0HBnnB73f4JqEceLf5lKCiRW+vM1SqcgyfEKiVotkJitHANcWSVYd//vP3VSzfgDmU13krIQdqso21jexxli/qXjfjc+BGYGSsUkKKiG/05/nqiqQbSHFQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PS2PR06MB3509.apcprd06.prod.outlook.com (2603:1096:300:67::17)
- by TY0PR06MB5593.apcprd06.prod.outlook.com (2603:1096:400:31e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.27; Fri, 29 Dec
- 2023 03:14:56 +0000
-Received: from PS2PR06MB3509.apcprd06.prod.outlook.com
- ([fe80::5cc4:b440:9894:d19]) by PS2PR06MB3509.apcprd06.prod.outlook.com
- ([fe80::5cc4:b440:9894:d19%3]) with mapi id 15.20.7135.019; Fri, 29 Dec 2023
- 03:14:55 +0000
-From: Wu Bo <bo.wu@vivo.com>
-To: Jaegeuk Kim <jaegeuk@kernel.org>,
-	Chao Yu <chao@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Wu Bo <wubo.oduw@gmail.com>,
-	Wu Bo <bo.wu@vivo.com>
-Subject: [PATCH] f2fs: check free sections before disable checkpoint
-Date: Thu, 28 Dec 2023 20:25:07 -0700
-Message-Id: <20231229032507.2016012-1-bo.wu@vivo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2P153CA0018.APCP153.PROD.OUTLOOK.COM (2603:1096:4:140::9)
- To PS2PR06MB3509.apcprd06.prod.outlook.com (2603:1096:300:67::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0571E17D8;
+	Fri, 29 Dec 2023 03:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rJ3Xj-00FG2T-5H; Fri, 29 Dec 2023 11:28:16 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 Dec 2023 11:28:26 +0800
+Date: Fri, 29 Dec 2023 11:28:26 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: WangJinchao <wangjinchao@xfusion.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Tim Chen <tim.c.chen@linux.intel.com>, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stone.xulei@xfusion.com
+Subject: Re: [PATCH v2] crypto:tcrypt: add script tcrypt_speed_compare.py
+Message-ID: <ZY482sGYU+4s8eJj@gondor.apana.org.au>
+References: <202312182113+0800-wangjinchao@xfusion.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PS2PR06MB3509:EE_|TY0PR06MB5593:EE_
-X-MS-Office365-Filtering-Correlation-Id: b40853f6-5bd8-4044-610b-08dc081c542c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Tm1L2fYWSafsSeKmPSToQvnStWWrYxh4k7X28yT/wIPc5NZH+6ny5rryYlb6YPVQ44Xk8/g04g9AentdXv4rDceWAU51mezIgLrJ63Hj9ZiNRRjthJ1H41ueguni8NBCxqNlQosPxFaiiDwQpKTAOWpRoDNNPdoJOp9Ar+AgVAuhFQQRHXbka7SjZNBN5nakwfnSuN/XnS98T8phSFPvxLAi46K9hNedQIN39iKMpgZDhj5zXbYgSHDSG/x62vXnmfhrFABHsDhrNktSa6iwFeGBfH2mRnLhRBLvK9BNGmJ98pv6gBh0P9/pj+o8KTTLEuukQrM5AF/NffTM4X4hh2dbniJl2FZaYC+pnZL80TvnNfHXaH0ZcD8IKt0BGytFCur98+tnQPAeP7VIDHQjSQN4V2HVrtOC2cTASB1x9vCYvkIaZgPovRNwqqdds1OPI9QCkHgGC6cebhdpL7dX3GHHFGJ6yhRQ4isC28ENXPgediPG84l/gnPpp2HCdfYVZykKqEGGOjW6zo95/SPFJ2vrlqzV7GjRHivDcm1bTo3y0sMCqvOyoWNI8Gn7hNS3Ef70BDo4dSKeLO9BU6pOAlH9J97J0nBVQaacn8GI+ak=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS2PR06MB3509.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(376002)(39860400002)(366004)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(316002)(6486002)(54906003)(8676002)(8936002)(1076003)(2616005)(36756003)(26005)(6512007)(478600001)(107886003)(6506007)(86362001)(38100700002)(38350700005)(83380400001)(41300700001)(110136005)(6666004)(52116002)(4744005)(5660300002)(66946007)(2906002)(66476007)(66556008)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?FBxW4OIIADQh2xNcfyooOLq+ZtwjwPi3w01qagzapVr42xsmOMWe0725GExM?=
- =?us-ascii?Q?oDFT/hP/0P65OuM7wYEo67A1cLQVIao3NLeBKsyzjt5DCDUMe+JxOm0wQX1s?=
- =?us-ascii?Q?g2FHqk0FT9whOnVOnUV1Xa1p0c0qyEKzIOWTZeZ2Pz3VPbTPLd8DSJ0xSta+?=
- =?us-ascii?Q?Yx6zl3Bvou7nyDhjoRnaxGXQmkQNxIvYuQErCc7J/huao24I2imnHtWnh6vI?=
- =?us-ascii?Q?G/GaqbNvukrNirYBQcJscRmMIi/akJqaKOmWtJgy+eIaV5b64vW/QN/P6AVn?=
- =?us-ascii?Q?t8MPMY/IVgCgKw2QzqPOqe1zLO1witYrE+p1249cvN+XSVJ1SHBhgkMl2TWH?=
- =?us-ascii?Q?Jb7g68fnBoUR1Ul/morfdqHv/wai7KIYoM4lZYM6+HyeIE7X/fiThMchKwDE?=
- =?us-ascii?Q?I4RIaQj3+MD13N0T1yYEiR5wvNwMByyQ9RKCmwiz+m/2ojsQpPcfXDtA4x0I?=
- =?us-ascii?Q?1voRWJkLrL6XNgkL5VLwlinfQ0qar9FGozMhH9YIGFRL3rK+8InxvqvV/dYG?=
- =?us-ascii?Q?VjmCoJe6ni9Zo3zNgcCQ9DPO8AVXAVZBnPkRQSedeplbMaJqs6SPNzV9YEw3?=
- =?us-ascii?Q?8FzzVMFLarVjX4MGKG4sSQdyeo3KEN4UQiWsQDuYq4TdJ+TsSGcSG8+4AINs?=
- =?us-ascii?Q?okhiDQAuXRTF3qNSevZDNh0amZvpwTgItj48T19xVR7wZq5FenOgvPFp/A6y?=
- =?us-ascii?Q?EotIcKU47qdVvyOW306ebRdTYbWWPhlNFs/YU6PmjRgfGZeX6sLA9sxgRAqI?=
- =?us-ascii?Q?QRR/9MJPm5DMsHR2HJfZTHt3ETGf4iyhmZdags1IKUtepflSoWHV9Q0P3xhe?=
- =?us-ascii?Q?g6TIV2VWBQqfzZTX4RA13OD8YWXZFHPhZCjHaajvqv4V+xDthh5SplCqMdN2?=
- =?us-ascii?Q?7u55LpzZLX8nnJ7Pc9xzM94yvYO6RhrYa7zf91OUEIxqSVjL1XF9QnJh69kb?=
- =?us-ascii?Q?mGd5Y3FCMyDMrOQxQSVYyS1Ix3mVQIzY97CMFTkJj3baUzWbBTce8aaUvprd?=
- =?us-ascii?Q?pJqUeT9wzweYWTUneBT7wzAlz1xYWxqB1yiuQLoI04zVaPJHupZhZb/F+ig3?=
- =?us-ascii?Q?vyIQhAbGD+vMqjSMnvKgomSDh1NsKGCT1deMIsFzqSJlj3Qpym0N+ARtMqtS?=
- =?us-ascii?Q?/L4KofOkcoUWPJZUNnwD2Bx/ro4RjM92W55K2Q9dHUE+NaEE6VFSuG0kebhF?=
- =?us-ascii?Q?iGH3IfvjXu/Vs6Mm1lmo7SoOT+EnQCrhuDUZzlz8Btcxc3O1+7Bj/BTSqd5p?=
- =?us-ascii?Q?TAeuWgBN9zjKMxzjpEC+CMxrnLDZm5bHs2fg1clwAku6pbdNA+Z1GwbqtcgD?=
- =?us-ascii?Q?KKxTIVTZ+/GfD6y+hY4KSuqaNGYV5AQMhiqHeZ9Jw73QEt4I6MrkOSCjAaHW?=
- =?us-ascii?Q?MdQQzADl0SD0ul0ZFX1G1/D5ql1dZvSijz6M+D6uDCwtanJ0q10iO2cTOBW/?=
- =?us-ascii?Q?IEbskJlOjM+Ipkc267V1l16faKlI9i2IHPjXPobpBdEglsXCP7W7X9weqGX5?=
- =?us-ascii?Q?UVnWxC2panu1sxyD9eGVbhSlrVgiAWcsIq5hPUw2cXVWIK6yvLxtA/frbiTr?=
- =?us-ascii?Q?Ql4aFhpEIkBHAgPLQGGIpA/wHnvGfh8+BKtKxdpp?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b40853f6-5bd8-4044-610b-08dc081c542c
-X-MS-Exchange-CrossTenant-AuthSource: PS2PR06MB3509.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2023 03:14:55.3853
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zHTe1rx6DuA5n0G6qaqSVcyDjEuzCECbv2nHrLmI7ASiRAwZ5VQU2DH4QBO7hFZsapzoG0k4I8k6ejYAlW91eQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR06MB5593
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202312182113+0800-wangjinchao@xfusion.com>
 
-'f2fs_is_checkpoint_ready()' checks free sections. If there is not
-enough free sections, most f2fs operations will return -ENOSPC when
-checkpoint is disabled.
+On Mon, Dec 18, 2023 at 09:15:01PM +0800, WangJinchao wrote:
+> Create a script for comparing tcrypt speed test logs.
+> The script will systematically analyze differences item
+> by item and provide a summary (average).
+> This tool is useful for evaluating the stability of
+> cryptographic module algorithms and assisting with
+> performance optimization.
+> 
+> Please note that for such a comparison, stability depends
+> on whether we allow frequency to float or pin the frequency.
+> 
+> The script produces comparisons in two scenes:
+> 
+> 1. For operations in seconds
+> ================================================================================
+> rfc4106(gcm(aes)) (pcrypt(rfc4106(gcm_base(ctr(aes-generic),ghash-generic))))
+>                          encryption
+> --------------------------------------------------------------------------------
+> bit key | byte blocks | base ops    | new ops     | differ(%)
+> 160     | 16          | 66439       | 63063       | -5.08
+> 160     | 64          | 62220       | 57439       | -7.68
+> ...
+> 288     | 4096        | 15059       | 16278       | 8.09
+> 288     | 8192        | 9043        | 9526        | 5.34
+> --------------------------------------------------------------------------------
+> average differ(%s)    | total_differ(%)
+> --------------------------------------------------------------------------------
+> 5.70                  | -4.49
+> ================================================================================
+> 
+> 2. For avg cycles of operation
+> ================================================================================
+> rfc4106(gcm(aes)) (pcrypt(rfc4106(gcm_base(ctr(aes-generic),ghash-generic))))
+>                          encryption
+> --------------------------------------------------------------------------------
+> bit key | byte blocks | base cycles | new cycles  | differ(%)
+> 160     | 16          | 32500       | 35847       | 10.3
+> 160     | 64          | 33175       | 45808       | 38.08
+> ...
+> 288     | 4096        | 131369      | 132132      | 0.58
+> 288     | 8192        | 229503      | 234581      | 2.21
+> --------------------------------------------------------------------------------
+> average differ(%s)    | total_differ(%)
+> --------------------------------------------------------------------------------
+> 8.41                  | -6.70
+> ================================================================================
+> 
+> Signed-off-by: WangJinchao <wangjinchao@xfusion.com>
+> ---
+>  MAINTAINERS                                 |   6 +
+>  tools/crypto/tcrypt/tcrypt_speed_compare.py | 190 ++++++++++++++++++++
+>  2 files changed, 196 insertions(+)
+>  create mode 100755 tools/crypto/tcrypt/tcrypt_speed_compare.py
 
-It would be better to check free sections before disable checkpoint.
-
-Signed-off-by: Wu Bo <bo.wu@vivo.com>
----
- fs/f2fs/segment.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 727d016318f9..8f8c0bb75be1 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -906,6 +906,8 @@ int f2fs_disable_cp_again(struct f2fs_sb_info *sbi, block_t unusable)
- 	if (is_sbi_flag_set(sbi, SBI_CP_DISABLED_QUICK) &&
- 		dirty_segments(sbi) > ovp_hole_segs)
- 		return -EAGAIN;
-+	if (has_not_enough_free_secs(sbi, 0, 0))
-+		return -EAGAIN;
- 	return 0;
- }
- 
+Patch applied.  Thanks.
 -- 
-2.25.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
