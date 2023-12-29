@@ -1,93 +1,114 @@
-Return-Path: <linux-kernel+bounces-13265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CD8C82023D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 23:52:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECC8E82023E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 23:54:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F4AE1C219E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 22:52:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E212C1C21954
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 22:54:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9119F14AAF;
-	Fri, 29 Dec 2023 22:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A64B314AAE;
+	Fri, 29 Dec 2023 22:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZOCJwh5o"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="AU0WAstE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC1314A9E;
-	Fri, 29 Dec 2023 22:52:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19148C433C8;
-	Fri, 29 Dec 2023 22:52:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703890321;
-	bh=jA/D7U42zKQCqXGdQ5da1seauDiv5W9RuorKy8W1/so=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ZOCJwh5o6HR+HCr+YuMGg+gS4qa45h71d12lE/zKoOAQN6ani7mwX25H+ngrUhRES
-	 EEja2TCvKHhvrpECJ62Fr7eJhIvord+LB82dP9ECjr6aDl4uRWZuyIVo3GuCpXxc1X
-	 tycmVD6oA3PMMfyRO6LJH4BZ71oybLoq59t432xjie7ZAIZcIZZ5Sc4StPAURDcp2l
-	 E+aty5vedrFBoSHDEes8+YMeX/XTvjouXKTZAjL+s6NKqKx1n/mfjjlba1zApRUItp
-	 xl1RMi/7YBvQOPYUw02tfudL9P1N5tRJH16YBwAOhmqMlTfA/Em943Gl+E3zpCOJzN
-	 KPy1VXnztYhHg==
-Message-ID: <d2f328c6-b5b4-46d0-b087-c70e2460d28a@kernel.org>
-Date: Fri, 29 Dec 2023 15:52:00 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E4B14AA1
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 22:54:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a27bdd05fd5so4301366b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 14:54:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1703890459; x=1704495259; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6m9VLF20O4X/KrY9sImyrM2z1XysljU0MX887Rj6Zms=;
+        b=AU0WAstED9IOJVCtIV4tYJaKakjKm3i0NNjy+OBJoxEInztqykeXgFrfSyGX8DT9gY
+         WHmYWVvi+omqv/cQL4Qe2OK7rPM6dzc//e2KTI5IUsWAjXflm43uHK+4M5lzDEweq9Ck
+         eV9mhyYgkvFE8DXc5FnYcxvo4TUkjHGTbnCc4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703890459; x=1704495259;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6m9VLF20O4X/KrY9sImyrM2z1XysljU0MX887Rj6Zms=;
+        b=NvTzXm4Uce2RXfQc0tDKgE3nexgSuzp3k8uFsZNFFjMqwka7XDF0hQ1Ny0sSnDcMTY
+         oDrl736wz+sxVYU+KA68Z0kHXl4+Ra0eiBaMSlLbd+ZchttmYpwvy3Eb2MXXF44/TtF0
+         a4guAtZtA+IuXY1q1hn3xzVLBQKk+dX8U49IYpf7HdwHQhdCuGpj6XEEIGIOy+IFbKMr
+         GXTghLFix/fCZebLjWqI1ICfyfQhqglYg/nVUZ0B8yDeiPmx6PBx0mn209ZYxvILD4jn
+         oMuFNsTc6B5rmDqYYLmmrET2wSs+hjzPCezuQFh8PvEKrVUN7PrNYYIi5fZOWyZ//Ayh
+         7Lhw==
+X-Gm-Message-State: AOJu0Ywn203xyElw2+H7JIcvlqhLgExXaSVtu3nK2yfC77MPs1/RVB7v
+	p07zk0GVVI7LFpd4jG6gx2DFzgwp2yli/RizFFhlfCcSlHplEw==
+X-Google-Smtp-Source: AGHT+IF3iuNWh5aFrTbSzDcOh29nQwQOeugl/mIGJmFjq2JBXEYU1z/iYEqXY5kVjHs2FMHr18U2fg==
+X-Received: by 2002:a17:906:73c7:b0:a27:9a96:83c6 with SMTP id n7-20020a17090673c700b00a279a9683c6mr693932ejl.44.1703890458994;
+        Fri, 29 Dec 2023 14:54:18 -0800 (PST)
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
+        by smtp.gmail.com with ESMTPSA id zz16-20020a170907351000b00a26e0236191sm5764463ejb.208.2023.12.29.14.54.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Dec 2023 14:54:18 -0800 (PST)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a2356bb40e3so596371566b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 14:54:18 -0800 (PST)
+X-Received: by 2002:a17:906:15b:b0:a23:6084:d5c4 with SMTP id
+ 27-20020a170906015b00b00a236084d5c4mr6851817ejh.34.1703890457697; Fri, 29 Dec
+ 2023 14:54:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [REGRESSION] net/ipv6/addrconf: Temporary addresses with short
- lifetimes generating when they shouldn't, causing applications to fail
-Content-Language: en-US
-To: Dan Moulding <dan@danm.net>, alexhenrie24@gmail.com
-Cc: bagasdotme@gmail.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- pabeni@redhat.com, regressions@lists.linux.dev
-References: <CAMMLpeTCZDakqdkxm+jvQHxbRXhCYd4_PK+VVqMAmZHjSPuPRw@mail.gmail.com>
- <20231229163339.2716-1-dan@danm.net>
-From: David Ahern <dsahern@kernel.org>
-In-Reply-To: <20231229163339.2716-1-dan@danm.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <73a4b31c9c874081baabad9e5f2e5204@AcuMS.aculab.com> <7c8828aec72e42eeb841ca0ee3397e9a@AcuMS.aculab.com>
+In-Reply-To: <7c8828aec72e42eeb841ca0ee3397e9a@AcuMS.aculab.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 29 Dec 2023 14:54:00 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj3pHPAyNNaZ78u-RA=iwN8CPkfe69txoK=b0oKdKfROA@mail.gmail.com>
+Message-ID: <CAHk-=wj3pHPAyNNaZ78u-RA=iwN8CPkfe69txoK=b0oKdKfROA@mail.gmail.com>
+Subject: Re: [PATCH next 3/5] locking/osq_lock: Clarify osq_wait_next()
+To: David Laight <David.Laight@aculab.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"peterz@infradead.org" <peterz@infradead.org>, "longman@redhat.com" <longman@redhat.com>, 
+	"mingo@redhat.com" <mingo@redhat.com>, "will@kernel.org" <will@kernel.org>, 
+	"boqun.feng@gmail.com" <boqun.feng@gmail.com>, 
+	"xinhui.pan@linux.vnet.ibm.com" <xinhui.pan@linux.vnet.ibm.com>, 
+	"virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>, 
+	Zeng Heng <zengheng4@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/29/23 11:33 AM, Dan Moulding wrote:
-> I think a maintainer will probably need to make a call here and decide
-> how to proceed.
-> 
->> TEMP_PREFERRED_LIFETIME is an administratively set variable: The user
->> can change it to whatever they want whenever they want, and the
->> operating system can adjust it automatically too.
-> 
-> Agreed. And the behavior it seems you really want is to prevent the
-> user from administratively setting it to a value that is lower than
-> REGEN_ADVANCE, so that it won't stop generating new temporary
-> addresses altogether.
-> 
-> But preventing the user from configuring it to a value that is too low
-> is different from generating new temporary addresses with preferred
-> lifetimes that are greater than the currently configured value of
-> TEMP_PREFERRED_LIFETIME. I still believe it would be better, and would
-> be in conformance with the RFC, to simply not allow the user to
-> configure a too-short TEMP_PREFERRED_LIFETIME instead of tinkering
-> with the lifetimes of generated temporary addresses.
-> 
->> It's fine to revert the commit for version 6.7 (after all, I think
->> everyone wants a break for the holidays). Hopefully by version 6.8 we
->> can agree on a way to support users who want to randomize their IPv6
->> address as frequently as the network allows.
-> 
-> FWIW, I think the desired effect you are seeking makes sense and is
-> the right thing to do. I'm just not convinced this is the correct way
-> to do it. But I'm not a maintainer and also not an expert in IPv6, so
-> I'm definitely not the right person to make that call.
-> 
+On Fri, 29 Dec 2023 at 12:56, David Laight <David.Laight@aculab.com> wrote:
+>
+> osq_wait_next() is passed 'prev' from osq_lock() and NULL from osq_unlock()
+> but only needs the 'cpu' value to write to lock->tail.
+> Just pass prev->cpu or OSQ_UNLOCKED_VAL instead.
+>
+> Also directly return NULL or 'next' instead of breaking the loop.
 
-Send a revert before 6.7 is released which will most likely be this
-weekend.
+Please split these two totally independent things out of the patch,
+just to make things much more obvious.
 
+I like the new calling convention, but I don't like how the patch
+isn't obviously just that.
+
+In fact, I'd take your patch #1 and just the calling convention change
+from #3 as "these are obviously not changing anything at all, only
+moving things to more local places".
+
+I'd also take the other part of #3 as a "clearly doesn't change
+anything" but it should be a separate patch, and it should be done
+differently: make 'next' be local to just *inside* the for-loop (in
+fact, make it local to the if-statement that sets it), to clarify the
+whole thing that it can never be non-NULL at the top of the loop, and
+can never have any long-term semantics.
+
+The other parts actually change some logic, and would need the OSQ
+people to take a more serious look.
+
+            Linus
 
