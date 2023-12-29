@@ -1,79 +1,50 @@
-Return-Path: <linux-kernel+bounces-12891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9080281FC2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 01:25:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5B2081FC30
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 01:26:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CA691F21A39
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 00:25:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47635B239A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 00:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0F0A42;
-	Fri, 29 Dec 2023 00:25:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D4B37FF;
+	Fri, 29 Dec 2023 00:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="McCFbQn7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b6LHx1w/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA45B629
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 00:25:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40d2376db79so60354945e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 16:25:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1703809532; x=1704414332; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bP0g7lIRh9MPS+9WmWLRf0jRJ7GkiNotvW++SMmiKMg=;
-        b=McCFbQn7dGGAKxBRySeqWAoDgYsm2pn/Vge0JdZ0NB/99zr4Y7rj4wzUuroDj7INXT
-         vthkEuu4+DVCBcntpaPPJDVBWdQHHPoxHXlkhn4UFYiMGWviX2mWmYsSjoXEim2UNKNK
-         4J5286wyo5lKecUenINPgtBpPGlV2IpMDTorvT6c182pmoiNp/HZgjJhFAC8cAJ1T2gS
-         QMrg592lvRCxrEM1uQhjU/vQMLNeojTJSYu4BJfA/mSIlc8QLmwMFYvzSwdWU1UGQPtl
-         CZLyGMCvWEedPSVa4vPH3p/j79UjKeU7cV93lncNiSlVKibRcq1ILJPELIixj9XC3LWj
-         wigA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703809532; x=1704414332;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bP0g7lIRh9MPS+9WmWLRf0jRJ7GkiNotvW++SMmiKMg=;
-        b=TmRaJdHHSZWbZfuC/uYuNvUrJb2Nons7Q/tbSXNqUar/m0Bo+B+gBYLn5GyRFJyUQ7
-         W3yeVYmjfWQrpzmMV202v8xst+SZG4RuXQmjvxDQ2kbxkYLddLRtDS3gJ0LjRWRSaGk+
-         7qEWIxL84KKqEGsPpmBJ3Elf/uenXQ+FY5UvbpotfQnZ5B/FneGGakgaxFOshmEDVZWK
-         2Xg8ugasAeTdbYYGvdRTW+cnPUmkAooYOn7AglBxKmQTiFGH9ZTsNj8ydwGNX60I2yWE
-         T70fMcHr3bAqPJ/w5W2SV/gBtYjJUkECHS1bfl/A+XcyRCa2b0s9GsqYqpogcq0GvJf3
-         o+CQ==
-X-Gm-Message-State: AOJu0Yy0DgLeLBdWg3z9Eyn7WxRt57cdUwTIOd+asLLEsotQgChVHs7j
-	SmY+Y9TNTAkE13zZ2pFV1WIKZa1HfQg+pg==
-X-Google-Smtp-Source: AGHT+IHYcek1jav/89+eMf9vT5jZH45z4kVWcj7XFlkn4/hWuiLL0g4bQGAEVSQtIcFE72UNsd5s4A==
-X-Received: by 2002:a05:600c:314d:b0:40d:5f4f:c8a3 with SMTP id h13-20020a05600c314d00b0040d5f4fc8a3mr1651412wmo.25.1703809531769;
-        Thu, 28 Dec 2023 16:25:31 -0800 (PST)
-Received: from airbuntu (host109-154-238-212.range109-154.btcentralplus.com. [109.154.238.212])
-        by smtp.gmail.com with ESMTPSA id fm13-20020a05600c0c0d00b0040b37f107c4sm29444108wmb.16.2023.12.28.16.25.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Dec 2023 16:25:31 -0800 (PST)
-Date: Fri, 29 Dec 2023 00:25:29 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-	Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>,
-	Rick Yiu <rickyiu@google.com>, Chung-Kai Mei <chungkai@google.com>,
-	Hongyan Xia <hongyan.xia2@arm.com>
-Subject: Re: [PATCH 1/4] sched/fair: Be less aggressive in calling
- cpufreq_update_util()
-Message-ID: <20231229002529.sidy6wxmclhzlzib@airbuntu>
-References: <20231208015242.385103-1-qyousef@layalina.io>
- <20231208015242.385103-2-qyousef@layalina.io>
- <CAKfTPtAKainBfpPOKTJ21zQmmYw7O0Z0v8utfg=QTBtE1L5O_w@mail.gmail.com>
- <20231212124037.at47izy5xp6lsxh2@airbuntu>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 726C61FA8;
+	Fri, 29 Dec 2023 00:26:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9601AC433C8;
+	Fri, 29 Dec 2023 00:26:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703809585;
+	bh=BJohCkA7YHahiDrFNqp4Y7hVOiO71OJmxBQI+pKm+dQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=b6LHx1w/cWwRmwoEuzQfGeJOS+0IHMLb8w5VDV6bmYA3yeLCOPBwMUYvWR7Weq1Mb
+	 kCESzKnHq3H6YH+NSpi76Da1qUQwszdrNj46tccUZaPR1Z867Fra5EgrwmMa9FgWBX
+	 ztyaFKjgs8ywraiT0HCUPakwatG0pT9Jyb8nD+XxI8tDWfddkDCNG4b/6bOsZy1QuB
+	 VwvJCA+JPwsc5acNVd4X3vxihOvja6M2vqJSndt8AVNKFmQTn/CABZdaUzFIRrwnRS
+	 y+499xMnwR5lSUA+1uNfQ/V+cCV4rAUORL96bNdURCHMkiz9awBZJejf08In72w31b
+	 800QgfV56OiRQ==
+Date: Thu, 28 Dec 2023 18:26:23 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Michael Schaller <michael@5challer.de>
+Cc: bhelgaas@google.com, kai.heng.feng@canonical.com,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	regressions@lists.linux.dev, macro@orcam.me.uk,
+	ajayagarwal@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+	gregkh@linuxfoundation.org, hkallweit1@gmail.com,
+	michael.a.bottini@linux.intel.com, johan+linaro@kernel.org,
+	"David E. Box" <david.e.box@linux.intel.com>
+Subject: Re: [Regression] [PCI/ASPM] [ASUS PN51] Reboot on resume attempt
+ (bisect done; commit found)
+Message-ID: <20231229002623.GA1560896@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,240 +53,114 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231212124037.at47izy5xp6lsxh2@airbuntu>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <76c61361-b8b4-435f-a9f1-32b716763d62@5challer.de>
 
-On 12/12/23 12:40, Qais Yousef wrote:
-> On 12/12/23 12:06, Vincent Guittot wrote:
+[+cc David (more details at
+https://lore.kernel.org/r/76c61361-b8b4-435f-a9f1-32b716763d62@5challer.de)]
+
+Hi Michael, thank you very much for debugging and reporting this!
+Sorry for the major inconvenience.
+
+On Mon, Dec 25, 2023 at 07:29:02PM +0100, Michael Schaller wrote:
+> Issue:
+> On resume from suspend to RAM there is no output for about 12 seconds, then
+> shortly a blinking cursor is visible in the upper left corner on an
+> otherwise black screen which is followed by a reboot.
 > 
-> > > @@ -6772,6 +6737,8 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
-> > >  enqueue_throttle:
-> > >         assert_list_leaf_cfs_rq(rq);
-> > >
-> > 
-> > Here and in the other places below,  you lose :
-> > 
-> >  -       } else if (decayed) {
-> > 
-> > The decayed condition ensures a rate limit (~1ms) in the number of
-> > calls to cpufreq_update_util.
-> > 
-> > enqueue/dequeue/tick don't create any sudden change in the PELT
-> > signals that would require to update cpufreq of the change unlike
-> > attach/detach
+> Setup:
+> * Machine: ASUS mini PC PN51-BB757MDE1 (DMI model: MINIPC PN51-E1)
+> * Firmware: 0508 (latest; also tested previous 0505)
+> * OS: Ubuntu 23.10 (except kernel)
+> * Kernel: 6.6.8 (also tested 6.7-rc7; config attached)
 > 
-> Okay, thanks for the clue. Let me rethink this again.
+> Debugging summary:
+> * Kernel 5.10.205 isn’t affected.
+> * Bisect identified commit 08d0cc5f34265d1a1e3031f319f594bd1970976c as
+> cause.
 
-Thinking more about this. Do we really need to send freq updates at
-enqueue/attach etc?
+#regzbot introduced: 08d0cc5f3426^
 
-I did an experiment to remove all the updates except in three places:
+> * PCI device 0000:03:00.0 (Intel 8265 Wifi) causes resume issues as long as
+> ASPM is enabled (default).
+> * The commit message indicates that a quirk could be written to mitigate the
+> issue but I don’t know how to write such a quirk.
+> 
+> Confirmed workarounds:
+> * Connect a USB flash drive (no clue why; maybe this causes a delay that
+> lets the resume succeed)
+> * Revert commit 08d0cc5f34265d1a1e3031f319f594bd1970976c (commit seemed
+> intentional; a quirk seems to be the preferred solution)
+> * pcie_aspm=off
+> * pcie_aspm.policy=performance
+> * echo 0 | sudo tee /sys/bus/pci/devices/0000:03:00.0/link/l1_aspm
+> 
+> Debugging details:
+> * The resume trigger (power button, keyboard, mouse) doesn’t seem to make
+> any difference.
+> * Double checked that the kernel is configured to *not* reboot on panic.
+> * Double checked that there still isn't any kernel output without quiet and
+> splash.
+> * The issue doesn’t happen if a USB flash drive is connected. The content of
+> the flash drive doesn’t appear to matter. The USB port doesn’t appear to
+> matter.
+> * No information in any logs after the reboot. I suspect the resume from
+> suspend to RAM isn’t getting far enough as that logs could be written.
+> * Kernel 5.10.205 isn’t affected. Kernel 5.15.145, 6.6.8 and 6.7-rc7 are
+> affected.
+> * A kernel bisect has revealed the following commit as cause:
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=08d0cc5f34265d1a1e3031f319f594bd1970976c
+> * The commit was part of kernel 5.20 and has been backported to 5.15.
+> * The commit mentions that a device-specific quirk could be added in case of
+> new issues.
+> * According to sysfs and lspci only device 0000:03:00.0 (Intel 8265 Wifi)
+> has ASPM enabled by default.
+> * Disabling ASPM for device 0000:03:00.0 lets the resume from suspend to RAM
+> succeed.
+> * Enabling ASPM for all devices except 0000:03:00.0 lets the resume from
+> suspend to RAM succeed.
+> * This would indicate that a quirk is missing for the device 0000:03:00.0
+> (Intel 8265 Wifi) but I have no clue how to write such a quirk or how to get
+> the specifics for such a quirk.
+> * I still have no clue how a USB flash drive plays into all this. Maybe some
+> kind of a timing issue where the connected USB flash drive delays something
+> long enough so that the resume succeeds. Maybe the code removed by commit
+> 08d0cc5f34265d1a1e3031f319f594bd1970976c caused a similar delay. ¯\_(ツ)_/¯
 
-1. Context switch (done unconditionally)
-2. Tick
-2. update_blocked_averages()
+We have some known issues with saving and restoring ASPM state on
+suspend/resume, in particular with ASPM L1 Substates, which are
+enabled on this device.
 
-I tried the below patch on mac mini with m1 SoC, 6.6 kernel; speedometers
-scores were the same (against this series).
+David Box has a patch in the works that should fix one of those
+issues:
+https://lore.kernel.org/r/20231221011250.191599-1-david.e.box@linux.intel.com
 
-I ran perf bench sched pipe to see if the addition in context switch will make
-things worse
+It's not merged yet, but it's possible it might fix or at least be
+related to this.  If you try it out, please let us know what happens.
 
-before (this series applied):
+> 03:00.0 Network controller: Intel Corporation Wireless 8265 / 8275 (rev 78)
+> 	Capabilities: [40] Express (v2) Endpoint, MSI 00
+> 		LnkCap:	Port #6, Speed 2.5GT/s, Width x1, ASPM L1, Exit Latency L1 <8us
+> 			ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp+
+> 		LnkCtl:	ASPM L1 Enabled; RCB 64 bytes, Disabled- CommClk+
+> 			ExtSynch- ClockPM+ AutWidDis- BWInt- AutBWInt-
+> 	Capabilities: [14c v1] Latency Tolerance Reporting
+> 		Max snoop latency: 1048576ns
+> 		Max no snoop latency: 1048576ns
+> 	Capabilities: [154 v1] L1 PM Substates
+> 		L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+ L1_PM_Substates+
+> 			  PortCommonModeRestoreTime=30us PortTPowerOnTime=18us
+> 		L1SubCtl1: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+
+> 			   T_CommonMode=0us LTR1.2_Threshold=186368ns
+> 		L1SubCtl2: T_PwrOn=150us
 
-	# Running 'sched/pipe' benchmark:
-	# Executed 1000000 pipe operations between two processes
-
-	     Total time: 20.505 [sec]
-
-	      20.505628 usecs/op
-		  48767 ops/sec
-
-after (proposed patch below applied on top):
-
-	# Running 'sched/pipe' benchmark:
-	# Executed 1000000 pipe operations between two processes
-
-	     Total time: 19.475 [sec]
-
-	      19.475838 usecs/op
-		  51345 ops/sec
-
-I tried against vanilla kernel (without any patches, including some dependency
-backports) using schedutil governor
-
-	# Running 'sched/pipe' benchmark:
-	# Executed 1000000 pipe operations between two processes
-
-	     Total time: 22.428 [sec]
-
-	      22.428166 usecs/op
-		  44586 ops/sec
-
-(I got higher run to run variance against this kernel)
-
-So things got better. I think we can actually unify all updates to be at
-context switch and tick for all classes.
-
-The one hole is for long running CFS tasks without context switch; no updates
-until tick this means the dvfs headroom needs to cater for that as worst case
-scenario now. I think this is the behavior today actually; but accidental
-updates due to enqueue/dequeue could have helped to issue more updates. If none
-of that happens, then updating load_avg at entity_tick() is what would have
-triggered a frequency update.
-
-I'm not sure if the blocked average one is required to be honest. But feared
-that when the cpu goes to idle we might miss reducing frequencies vote for that
-CPU - which matters on shared cpufreq policies.
-
-I haven't done comprehensive testing of course. But would love to hear any
-thoughts on how we can be more strategic and reduce the number of cpufreq
-updates we send. And iowait boost state needs to be verified.
-
-While testing this series more I did notice that short kworker context switches
-still can cause the frequency to go high. I traced this back to
-__balance_callbacks() in finish_lock_switch() after calling
-uclamp_context_switch(). So I think we do have a problem of updates being
-'accidental' and we need to improve the interaction with the governor to be
-more intentional keeping in mind all the constraints we have today in h/w and
-software.
-
---->8---
-
-
-From 6deed09be1d075afa3858ca62dd54826cdb60d44 Mon Sep 17 00:00:00 2001
-From: Qais Yousef <qyousef@layalina.io>
-Date: Tue, 26 Dec 2023 01:23:57 +0000
-Subject: [PATCH] sched/fair: Update freq on tick and context switch and
- blocked avgs
-
-Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
----
- kernel/sched/cpufreq_schedutil.c |  3 ---
- kernel/sched/fair.c              | 13 +------------
- kernel/sched/sched.h             | 15 +--------------
- 3 files changed, 2 insertions(+), 29 deletions(-)
-
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index c0879a985097..553a3d7f02d8 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -166,9 +166,6 @@ static inline bool ignore_short_tasks(int cpu,
- 	struct task_struct *p = cpu_rq(cpu)->curr;
- 	unsigned long task_util;
- 
--	if (!(flags & SCHED_CPUFREQ_PERF_HINTS))
--		return false;
--
- 	if (!fair_policy(p->policy))
- 		return false;
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index d63eae534cec..3a30f78b37d3 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5717,8 +5717,6 @@ static bool throttle_cfs_rq(struct cfs_rq *cfs_rq)
- 	sub_nr_running(rq, task_delta);
- 
- done:
--	cpufreq_update_util(rq, 0);
--
- 	/*
- 	 * Note: distribution will already see us throttled via the
- 	 * throttled-list.  rq->lock protects completion.
-@@ -5811,8 +5809,6 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
- unthrottle_throttle:
- 	assert_list_leaf_cfs_rq(rq);
- 
--	cpufreq_update_util(rq, 0);
--
- 	/* Determine whether we need to wake up potentially idle CPU: */
- 	if (rq->curr == rq->idle && rq->cfs.nr_running)
- 		resched_curr(rq);
-@@ -6675,8 +6671,6 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- enqueue_throttle:
- 	assert_list_leaf_cfs_rq(rq);
- 
--	cpufreq_update_util(rq, p->in_iowait ? SCHED_CPUFREQ_IOWAIT : 0);
--
- 	hrtick_update(rq);
- }
- 
-@@ -6754,7 +6748,6 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 
- dequeue_throttle:
- 	util_est_update(&rq->cfs, p, task_sleep);
--	cpufreq_update_util(rq, 0);
- 	hrtick_update(rq);
- }
- 
-@@ -8338,7 +8331,6 @@ done: __maybe_unused;
- 
- 	update_misfit_status(p, rq);
- 	sched_fair_update_stop_tick(rq, p);
--	cpufreq_update_util(rq, 0);
- 
- 	return p;
- 
-@@ -12460,7 +12452,7 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
- 
- 	update_misfit_status(curr, rq);
- 	update_overutilized_status(task_rq(curr));
--	cpufreq_update_util(rq, SCHED_CPUFREQ_PERF_HINTS);
-+	cpufreq_update_util(rq, current->in_iowait ? SCHED_CPUFREQ_IOWAIT : 0);
- 
- 	task_tick_core(rq, curr);
- }
-@@ -12585,7 +12577,6 @@ static void detach_task_cfs_rq(struct task_struct *p)
- 	struct sched_entity *se = &p->se;
- 
- 	detach_entity_cfs_rq(se);
--	cpufreq_update_util(task_rq(p), 0);
- }
- 
- static void attach_task_cfs_rq(struct task_struct *p)
-@@ -12593,7 +12584,6 @@ static void attach_task_cfs_rq(struct task_struct *p)
- 	struct sched_entity *se = &p->se;
- 
- 	attach_entity_cfs_rq(se);
--	cpufreq_update_util(task_rq(p), 0);
- }
- 
- static void switched_from_fair(struct rq *rq, struct task_struct *p)
-@@ -12839,7 +12829,6 @@ static int __sched_group_set_shares(struct task_group *tg, unsigned long shares)
- 			update_load_avg(cfs_rq_of(se), se, UPDATE_TG);
- 			update_cfs_group(se);
- 		}
--		cpufreq_update_util(rq, 0);
- 		rq_unlock_irqrestore(rq, &rf);
- 	}
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 516187ea2b81..e1622e2b82be 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -3076,20 +3076,7 @@ static inline bool uclamp_rq_is_capped(struct rq *rq)
- /* Request freq update on context switch if necessary */
- static inline void uclamp_context_switch(struct rq *rq)
- {
--	unsigned long uclamp_min;
--	unsigned long uclamp_max;
--	unsigned long util;
--
--	/* Only RT and FAIR tasks are aware of uclamp */
--	if (!rt_policy(current->policy) && !fair_policy(current->policy))
--		return;
--
--	uclamp_min = uclamp_eff_value(current, UCLAMP_MIN);
--	uclamp_max = uclamp_eff_value(current, UCLAMP_MAX);
--	util = rq->cfs.avg.util_avg;
--
--	if (uclamp_min > util || uclamp_max < util)
--		cpufreq_update_util(rq, SCHED_CPUFREQ_PERF_HINTS);
-+	cpufreq_update_util(rq, current->in_iowait ? SCHED_CPUFREQ_IOWAIT : 0);
- }
- #else /* CONFIG_UCLAMP_TASK */
- static inline unsigned long uclamp_eff_value(struct task_struct *p,
--- 
-2.40.1
-
+> $ grep -F '' /sys/bus/pci/devices/*/link/*pm
+> /sys/bus/pci/devices/0000:03:00.0/link/clkpm:1
+> /sys/bus/pci/devices/0000:03:00.0/link/l1_1_aspm:1
+> /sys/bus/pci/devices/0000:03:00.0/link/l1_1_pcipm:1
+> /sys/bus/pci/devices/0000:03:00.0/link/l1_2_aspm:1
+> /sys/bus/pci/devices/0000:03:00.0/link/l1_2_pcipm:1
+> /sys/bus/pci/devices/0000:03:00.0/link/l1_aspm:1
+> /sys/bus/pci/devices/0000:04:00.0/link/clkpm:0
+> ...
 
