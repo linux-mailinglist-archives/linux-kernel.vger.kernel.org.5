@@ -1,104 +1,111 @@
-Return-Path: <linux-kernel+bounces-13190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 003558200F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 18:46:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50CE48200F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 18:49:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B916B282251
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:46:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD5D32821BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:49:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B519D12B86;
-	Fri, 29 Dec 2023 17:46:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08C5B12B8B;
+	Fri, 29 Dec 2023 17:48:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ArIQTrje"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XO6OqFw+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A516C12B7A
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 17:46:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dbd73ac40ecso5227499276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 09:46:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703872001; x=1704476801; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bW/8qnQVOuCrpelBOhL9bBZ5oe2cPmQUpD0VXBVorkw=;
-        b=ArIQTrjeqOU62WiMI9FMCw79OP+MODMUtzsP39IfY6DBo4eAMx+FcCn8ANfF2jzqQc
-         uDkHZCwrfwPmNOsu3AMH6mGfWiLDV9n4147F4FJYDvHago9yWDrDw29gd83ljEvswqHO
-         RDPovKbOtqcCqRnVTOxAtm2E9rUN3gHUER+w6rxV9WgsNeXhPrP2RkoySqY0Zg38q97i
-         bhgaA7Gl5n4YA/932RhzO3Z3HtZNqogLn1SIw4u1l3KNcfZlZ1uJ+YnRzUuVA0D/m8vq
-         vVqL2DITCkAeIB8Fti9MtpDe2vr/8/AM0cMug6fogDOmzezaqkWw6rrCCTIomL8MIx3F
-         ZwAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703872001; x=1704476801;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bW/8qnQVOuCrpelBOhL9bBZ5oe2cPmQUpD0VXBVorkw=;
-        b=GzXB2PiTxXXW0aKZGXrPZnreXK4xLeKuZ8WOxJkpoQRb5w/3MjYzwHQR18s8FCsVma
-         9HWyr5Qe07Va+eIaj/C3iiTLE35D/OqTzYPnFJamNUFptrx6JpB4WMx9MvNQlu+iyi3o
-         mDk+kwwvlKKGrqKWEzcoHYicXhVpOOsD3KckW4BCKlWK0yCjA/eXJnwcngyAeW9DO3Fb
-         PRUOQi7VVVGSmmB4XNEz/Nrn8NeBNwQmUCI2sn1qEjxg0AhpuHO3hxaGCQjs9RliITcw
-         VP1GLx1Ot40woIBZg99fDcBOYis0xpnW5mYEeRzA2JCGNW/5dl5CHW+WGV1QmkOzlrfR
-         z3Vw==
-X-Gm-Message-State: AOJu0Yy7p10vIhDo/d71bo89/wGvF7CLlj7W3X+VAoixxSXcMt38xorJ
-	c2QSUmc6pYCVsMWcoIfkb+uxiFDc2Imy4w0eXguhhJ3j28+2hQ==
-X-Google-Smtp-Source: AGHT+IGLODEawCuJpoVcBVXIkKKkBjBq8qoZWCqtUWJ3Y7AZ05fBAjMAbbu202fTig97uet5lOUKFj54M3tLy989Hr8=
-X-Received: by 2002:a25:664d:0:b0:dbd:c1ef:bca8 with SMTP id
- z13-20020a25664d000000b00dbdc1efbca8mr6857806ybm.40.1703872001727; Fri, 29
- Dec 2023 09:46:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3E8912B82
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 17:48:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703872132; x=1735408132;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gD4Waq4JAKpu9j8/VS57ViNcFT1weUAfHOM6HezPVK4=;
+  b=XO6OqFw+LUqq+5hpn6XRt+gmkzIIpK4y/8KBXHjnqvW1qUzli8UftfRv
+   hw6L/mjzZJ6J0KbfoKOzd476GRPpXuGP6GsHWJ3p9QpvKZ5fwb8Sj6ba1
+   NVNPSB/LVVle9Gsh6YLTJtRk24iF1ArA2HYF388SO3yL+OFi6TgAFeNQJ
+   G1z4GlnzlR52w5XeqUFxYb76pomWZzYHYrLTiYiOBbNgemHikFtNZg1O1
+   jwVmQ5RXFpBaQJI7A4wycgx2hNFhtRkAz0undkYfu3moDO+1Be7XmeAHv
+   0IFL0jGNxm0rTBNJjR+Tpg3aN9kBMU8Gt1bh3zvOD2LHhCv0EbTsuzd0k
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10938"; a="395552038"
+X-IronPort-AV: E=Sophos;i="6.04,315,1695711600"; 
+   d="scan'208";a="395552038"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 09:48:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10938"; a="1110222855"
+X-IronPort-AV: E=Sophos;i="6.04,315,1695711600"; 
+   d="scan'208";a="1110222855"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 29 Dec 2023 09:48:50 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rJGyW-000He5-0V;
+	Fri, 29 Dec 2023 17:48:48 +0000
+Date: Sat, 30 Dec 2023 01:47:55 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH, REBASED 1/2] mm, treewide: Introduce NR_PAGE_ORDERS
+Message-ID: <202312300143.DOaFj2Yb-lkp@intel.com>
+References: <20231228144704.14033-1-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231229135154.675946-1-dario.binacchi@amarulasolutions.com> <20231229135154.675946-9-dario.binacchi@amarulasolutions.com>
-In-Reply-To: <20231229135154.675946-9-dario.binacchi@amarulasolutions.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 29 Dec 2023 18:46:30 +0100
-Message-ID: <CACRpkdaEPGonc_pDiApEN2XNn3R4hdUtEp0TZqWjBOmbM_Gimw@mail.gmail.com>
-Subject: Re: [PATCH 8/8] drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
-To: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc: linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	David Airlie <airlied@gmail.com>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Sam Ravnborg <sam@ravnborg.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231228144704.14033-1-kirill.shutemov@linux.intel.com>
 
-Hi Dario,
+Hi Kirill,
 
-On Fri, Dec 29, 2023 at 2:52=E2=80=AFPM Dario Binacchi
-<dario.binacchi@amarulasolutions.com> wrote:
+kernel test robot noticed the following build warnings:
 
-> The initialization commands are taken from the STMicroelectronics driver
-> found at https://github.com/STMicroelectronics/STM32CubeF7/blob/master/Dr=
-ivers/BSP/Components/nt35510/
->
-> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.7-rc7 next-20231222]
+[cannot apply to akpm-mm/mm-everything drm-misc/drm-misc-next powerpc/next powerpc/fixes]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-NAK.
+url:    https://github.com/intel-lab-lkp/linux/commits/Kirill-A-Shutemov/mm-treewide-Rename-MAX_ORDER-to-MAX_PAGE_ORDER/20231228-224916
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231228144704.14033-1-kirill.shutemov%40linux.intel.com
+patch subject: [PATCH, REBASED 1/2] mm, treewide: Introduce NR_PAGE_ORDERS
+reproduce: (https://download.01.org/0day-ci/archive/20231230/202312300143.DOaFj2Yb-lkp@intel.com/reproduce)
 
-Please rewrite the patch to use the detailed instructions with clear defini=
-tions
-about what is going on the same way as in the old driver, and add #defines
-for all the magic commands, and break down the commands to what they
-are actually doing with the display hardware.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312300143.DOaFj2Yb-lkp@intel.com/
 
-Magic display init sequences are not OK in this driver, and not in general,
-it is all the other drivers that are just unaware about what they are doing
-and this driver actually isn't.
+All warnings (new ones prefixed by >>):
 
-Yours,
-Linus Walleij
+>> Documentation/admin-guide/kdump/vmcoreinfo.rst:193: WARNING: Title underline too short.
+
+vim +193 Documentation/admin-guide/kdump/vmcoreinfo.rst
+
+f263245a0ce2c4 Documentation/kdump/vmcoreinfo.txt             Lianbo Jiang       2019-01-10  191  
+fff97f56344c04 Documentation/admin-guide/kdump/vmcoreinfo.rst Kirill A. Shutemov 2023-12-28  192  (zone.free_area, NR_PAGE_ORDERS)
+23baf831a32c04 Documentation/admin-guide/kdump/vmcoreinfo.rst Kirill A. Shutemov 2023-03-15 @193  -------------------------------
+f263245a0ce2c4 Documentation/kdump/vmcoreinfo.txt             Lianbo Jiang       2019-01-10  194  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
