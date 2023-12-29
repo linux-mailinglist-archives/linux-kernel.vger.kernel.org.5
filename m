@@ -1,97 +1,89 @@
-Return-Path: <linux-kernel+bounces-13123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 667D0820005
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EC7C820006
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:52:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 152861F228CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 14:51:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 059E01F22531
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 14:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472EF11C8E;
-	Fri, 29 Dec 2023 14:51:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF24611C9D;
+	Fri, 29 Dec 2023 14:52:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="epBXIWDp"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="O2/kZo7k"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B51F11C81
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 14:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703861469; x=1735397469;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=dvIUAGYDbpNOrkJuEoFIYV3Hi7P1WdKlCDuxuKOr/z0=;
-  b=epBXIWDpUHuANL1KjiLA9vvuW+Pz4fjdJFrXtXIzRpS52jvrmvGC9umm
-   S/Hv/BxNecmSSGdeC+8Ir50/uYXitKtUNjGK0qpfxFcBr26EyKD+rv5Zi
-   jcsQq6yEQPVyEE4ty6DLXnPrDYYjhKiN2aL/z1FMVJVAV2EHA/pXmCdkb
-   KeTJOmNxEDjiX22+MuaYXewkmqN4T5k8ZcyZv8yhsHG4aesmv9ZNoW9z3
-   Yh2cKJDRZdus8j2uoSEQRfdMZwJi44vuTxDA/IUIU8HtYEbgyCP4S/2xM
-   Kh56/zt20rFgPz+Yj+hLkQ9QLzwK1/AAKTLnshH3rca7CQ+MgtmwYe+yT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10938"; a="3727766"
-X-IronPort-AV: E=Sophos;i="6.04,315,1695711600"; 
-   d="scan'208";a="3727766"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 06:51:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,315,1695711600"; 
-   d="scan'208";a="13303267"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.48.133])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 06:51:05 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Peter Tyser <ptyser@xes-inc.com>,
-	Lee Jones <lee@kernel.org>,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 1/1] mfd: lpc_ich: Use ALIGN_DOWN()
-Date: Fri, 29 Dec 2023 16:50:59 +0200
-Message-Id: <20231229145059.6138-1-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B6D911C8B;
+	Fri, 29 Dec 2023 14:52:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=TuPgDojPHKw6CupQJwG5ikeXW8l957Szqc5prQs1GYE=; b=O2/kZo7k8MHhbMITfFhsRHEtGN
+	SSg362JTpWehiBgATb5XQbubnuuFcdIT5HYWMYgG/JMopjWjU3j2GAyLYm0Ktxl4fIFtdJJsUeTc2
+	H56iyH8WAyeRr/Gfq8HgnK1dQOVoir4xBUeaddBW9U/Lr+Jt91O1rAKyVX/Fv+VhfC/qmwSyLW0Dj
+	MSKBoRQQqMJMRJ12NMT2Li3XHY3Qm0ljB+hZ6anHWhRIuWP0UC9W2+0ERjW3727M6fZRrWqC2nO2F
+	S/+M6rLLRc+rNz4m9UZwegWEG1DQrqE/3CXT6zE9QnFUAXo4MsvEFRkNtnKRxC+JzM8syg0KejMtL
+	6hgvC5Ig==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rJEDR-006HV8-I8; Fri, 29 Dec 2023 14:52:01 +0000
+Date: Fri, 29 Dec 2023 14:52:01 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: linux-mm@kvack.org, kernel-janitors@vger.kernel.org,
+	Muchun Song <muchun.song@linux.dev>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] hugetlbfs: Improve exception handling in
+ hugetlbfs_fill_super()
+Message-ID: <ZY7dEbRJb1dHkQPd@casper.infradead.org>
+References: <9ce3f553-24bc-4ecd-ac5e-7ba27caeff57@web.de>
+ <b109b7dc-3972-4b2e-ae4c-89bf8eecf8f2@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b109b7dc-3972-4b2e-ae4c-89bf8eecf8f2@web.de>
 
-Instead of open coding, use ALIGN_DOWN() for alignment.
+On Fri, Dec 29, 2023 at 12:40:12PM +0100, Markus Elfring wrote:
+> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+> index 24401a5046dd..5687ec574dc4 100644
+> --- a/fs/hugetlbfs/inode.c
+> +++ b/fs/hugetlbfs/inode.c
+> @@ -1483,7 +1483,7 @@ hugetlbfs_fill_super(struct super_block *sb, struct fs_context *fc)
+>  						     ctx->max_hpages,
+>  						     ctx->min_hpages);
+>  		if (!sbinfo->spool)
+> -			goto out_free;
+> +			goto free_sbinfo;
+>  	}
+>  	sb->s_maxbytes = MAX_LFS_FILESIZE;
+>  	sb->s_blocksize = huge_page_size(ctx->hstate);
+> @@ -1499,10 +1499,12 @@ hugetlbfs_fill_super(struct super_block *sb, struct fs_context *fc)
+>  	sb->s_stack_depth = FILESYSTEM_MAX_STACK_DEPTH;
+>  	sb->s_root = d_make_root(hugetlbfs_get_root(sb, ctx));
+>  	if (!sb->s_root)
+> -		goto out_free;
+> +		goto free_spool;
+>  	return 0;
+> -out_free:
+> +
+> +free_spool:
+>  	kfree(sbinfo->spool);
+> +free_sbinfo:
+>  	kfree(sbinfo);
+>  	return -ENOMEM;
+>  }
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- drivers/mfd/lpc_ich.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
-index 73a0e7f9bd31..f14901660147 100644
---- a/drivers/mfd/lpc_ich.c
-+++ b/drivers/mfd/lpc_ich.c
-@@ -38,6 +38,7 @@
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
-+#include <linux/align.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/errno.h>
-@@ -1321,7 +1322,7 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
- 	case INTEL_SPI_BYT:
- 		pci_read_config_dword(dev, SPIBASE_BYT, &spi_base);
- 		if (spi_base & SPIBASE_BYT_EN) {
--			res->start = spi_base & ~(SPIBASE_BYT_SZ - 1);
-+			res->start = ALIGN_DOWN(spi_base, SPIBASE_BYT_SZ);
- 			res->end = res->start + SPIBASE_BYT_SZ - 1;
- 
- 			info->set_writeable = lpc_ich_byt_set_writeable;
--- 
-2.39.2
-
+This is more complex.  NACK.
 
