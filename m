@@ -1,105 +1,78 @@
-Return-Path: <linux-kernel+bounces-13167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B85F182009F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:53:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 460F78200A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:56:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7581728481E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:53:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01F4D284883
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:56:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AEB212B71;
-	Fri, 29 Dec 2023 16:52:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="kUlbguWY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E5BC12B6D;
+	Fri, 29 Dec 2023 16:56:09 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD25B12B60
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 16:52:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d3b84173feso14636715ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 08:52:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1703868770; x=1704473570; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vSNSWnuaXWoD96pZfJRvHlzqw6OfFPh5yR+M67iO49I=;
-        b=kUlbguWY7v2RnOcvb+MFg5wRvScaqr2iM03/jLZEbjgvZUaKLThvjZxUJVc2tn4p0p
-         yOmeayFWrHFI1lXFExP44SIkYBvGc4TtYQ30GAAyq7ZPNAffa76JqBh2EO00jWoCEj6E
-         95O7ML3RFmVvlT02OY+S6GYYiN6hsXbOtkUsAwCp/3A0TvV/u9P3FYD9UDZNGKf+yEJX
-         a69KEMd+kP6Wg9SQYr1XwjKDttPC5YlvR0BtWk1OM+BxqE3cYlr3mJluNpbkawIrGOcf
-         TTSj+AFzbpSnusYVdqPS8AUrjalwm7DwQgxq1XACcq2hM6rL2sPZyAtPSogeuHU/8bBb
-         o0DA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9429112B66
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 16:56:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3601028d487so39044485ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 08:56:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703868770; x=1704473570;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1703868966; x=1704473766;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vSNSWnuaXWoD96pZfJRvHlzqw6OfFPh5yR+M67iO49I=;
-        b=p+lt0ChaYmS/g081AW2TLlYjhdvvCey5b96fylzTPW1Fqnv9lbf814KSoynvGBWF4p
-         wWCfMz4zW5qPHg3l8ucAnTN2oesgiBTIImfcTixo07TKMr3qJA3eWk/iksd4WGvK/K2e
-         Wzdw2wCHJ/NpISI2v+BzJTmeMMKYAwdMXZimi4D5CQi6wJ39TqfIDq9qLtn67xo5fUaf
-         AJSABy5Lr1YLz9S2ql4Tzb2mlvyfjIRE0TlvD/QbXpo9N2a71/O16f/W5cSD12hW++p5
-         3nSDTV0WhGzgFb01ZIiyYG6owvKSVekpQcUKCA81bb0dya9xy7ZsTUaJV0IlAVF4O6Wr
-         hmiw==
-X-Gm-Message-State: AOJu0YwzLferbI2mTd2gsELMTjFcQDEY76A2MiD5ByrLVHGKgHQn26Ys
-	Yo4oL6FhHSARoEbvp+sIlIWBLNCI4uZHNg==
-X-Google-Smtp-Source: AGHT+IGiSo6gfL6F95WOAnfesLOgRyGsedXwl+rlko3RNnUsSMwbXGkaPtrt/okfz5sK3yB1/MkqyQ==
-X-Received: by 2002:a17:902:ea06:b0:1d3:f36a:9d21 with SMTP id s6-20020a170902ea0600b001d3f36a9d21mr25302192plg.4.1703868770057;
-        Fri, 29 Dec 2023 08:52:50 -0800 (PST)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id jj4-20020a170903048400b001d3cb4e3302sm15220806plb.214.2023.12.29.08.52.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Dec 2023 08:52:49 -0800 (PST)
-Message-ID: <f1f002e9-8010-4b74-9da8-2551be97fa6f@kernel.dk>
-Date: Fri, 29 Dec 2023 09:52:47 -0700
+        bh=UcVXDKCTC52LBudLeIL1xmSr/5SC9kwTBjDg7U/qhA0=;
+        b=bUpZOyObzptLlIsQS1g+5e4sKMFfgCAFufgyUL3tY/20HH6k/ei2agdlJXmufL/Hl4
+         xwurBE7bN+RIgkBVta/6nRqB1MiHg+1pblIkLM5CoOsIu+MKRq+sL+xc1Ase+DN5thuf
+         HQMPHmUadxlL49+ntA3MAzHdsZ459XS1e2WS8JtwS9RfvJijfCGI+tbg141YkHxW+BIA
+         m7D0HLiY8siWlUv3MIFZqpSI+mquHR3VENribol4flX3UGCC9NVFPytkaEbW3cicSPRw
+         r1wc/Hq4T9kHbVrszjxn3XrV61PA5TBBA+mHK4RGPAxjfUUi4CuN9LcHfdr28wzq4/7i
+         ckag==
+X-Gm-Message-State: AOJu0YzovURBWLgYeC2IdcYi94OUHMxSDV3rfW5nv0tEaPZN65P1w34G
+	IKW4cRe9wvuVoNi5NTn2F7Qgx5GiI0UC631SXvwn1fGAT1zk
+X-Google-Smtp-Source: AGHT+IEKaam3P5UaWG6eOgrWmrAKGMdmElc/De0jxXKADL49by1kFQEWypzLldZaFv3cEJeIejN4nhhz/UrZPqbyx3uUozjOtBWD
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drivers/block/null_blk: Switch from radix tree api to
- xarrays
-Content-Language: en-US
-To: Gautam Menghani <gautam@linux.ibm.com>, kch@nvidia.com,
- ming.lei@redhat.com, damien.lemoal@opensource.wdc.com,
- zhouchengming@bytedance.com, nj.shetty@samsung.com, akinobu.mita@gmail.com
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- riteshh@linux.ibm.com
-References: <20231229164155.73541-1-gautam@linux.ibm.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20231229164155.73541-1-gautam@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1aa6:b0:35f:535a:9c64 with SMTP id
+ l6-20020a056e021aa600b0035f535a9c64mr1342361ilv.3.1703868966388; Fri, 29 Dec
+ 2023 08:56:06 -0800 (PST)
+Date: Fri, 29 Dec 2023 08:56:06 -0800
+In-Reply-To: <7227c8d1-08f6-4f95-ad0f-d5c3e47d874d@I-love.SAKURA.ne.jp>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007c4bba060da8e89d@google.com>
+Subject: Re: [syzbot] [kernel?] KMSAN: uninit-value in profile_hits (3)
+From: syzbot <syzbot+b1a83ab2a9eb9321fbdd@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, ebiederm@xmission.com, glider@google.com, 
+	hughd@google.com, linux-kernel@vger.kernel.org, mingo@redhat.com, 
+	paskripkin@gmail.com, penguin-kernel@i-love.sakura.ne.jp, rostedt@goodmis.org, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/29/23 9:41 AM, Gautam Menghani wrote:
-> Convert the null_blk driver to use the xarray API instead of radix tree 
-> API.
-> 
-> Testing:
-> Used blktests test suite (block and zbd suites) to test the current 
-> null_blk driver and null_blk driver with this patch applied. The tests 
-> results in both the instances were the same.
+Hello,
 
-What's the purpose of the change?
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-One thing that always annoys me slightly with xarray is the implied
-locking. So now you're grabbing two locks rather than just utilizing the
-lock that was already held. I think a better transformation would be to
-first change the locking to be closer to the lookup and deletion, and
-then convert to xarray and now being able to drop that other lock. Just
-doing a blind conversion like this without potentially understanding the
-details of it is not a good idea, imho.
+Reported-and-tested-by: syzbot+b1a83ab2a9eb9321fbdd@syzkaller.appspotmail.com
 
--- 
-Jens Axboe
+Tested on:
 
+commit:         8735c7c8 Merge tag '6.7rc7-smb3-srv-fix' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=122dcf81e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b2fd2f495c90e6b7
+dashboard link: https://syzkaller.appspot.com/bug?extid=b1a83ab2a9eb9321fbdd
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=13f021b5e80000
+
+Note: testing is done by a robot and is best-effort only.
 
