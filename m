@@ -1,98 +1,98 @@
-Return-Path: <linux-kernel+bounces-13037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43CBC81FEB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:29:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 759D581FEB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:29:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F014628478E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:29:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3187328476A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:29:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E748110A24;
-	Fri, 29 Dec 2023 09:28:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE13D10A1C;
+	Fri, 29 Dec 2023 09:29:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ABdgmjKW"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="aMJyCzf4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3632210A01;
-	Fri, 29 Dec 2023 09:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703842136; x=1735378136;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=fCPGi4wYrtRpwAnUyry4tOS8qG9qYsY1PjjUZyEwZvI=;
-  b=ABdgmjKW6y6CSsJIMgtycW6ICicIOI1dpCNjPkqAexLX6CiWmza1yD2m
-   0K7Iat1MZpJjp6/Iru800SKlUppKci0qJUdfvjiJJGoz59XpGQ//Nr2Nh
-   NtBE5pIkHHJ29u9VvYfegfIJED/abwVXJ1LehmiUVmsWv5FQwBVeIRosK
-   i6XYo6Ne4JlQzWrsKqWpyF6AGd91xjAqmdxbApVI/079D7ODmwBMJQI8M
-   FcfcazLjU2+Xl8yr87tWSsoPPOqN/DaIMrEqXihRADxL/DCO0q2L68cqy
-   SBqgS6pFgaknlrcSPLcttksJMFFNNkdoRN7YqJoSvfE3C7Z5h/HXT886R
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="460951865"
-X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="460951865"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 01:28:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="849175048"
-X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="849175048"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.26.117]) ([10.93.26.117])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 01:28:52 -0800
-Message-ID: <9c10b57e-bdc3-4cfa-944d-21f5bcf2f4f2@linux.intel.com>
-Date: Fri, 29 Dec 2023 17:28:50 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473D811184;
+	Fri, 29 Dec 2023 09:29:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5D84640E01A1;
+	Fri, 29 Dec 2023 09:29:16 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id wnHWluQJn0sJ; Fri, 29 Dec 2023 09:29:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1703842154; bh=4N7Kr/MGSg7tikDeaMTSR6yCealwOw+LHZRbN09RIsU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aMJyCzf4v7ql2qBmsCvnNfdzwM6/znzmWeVs3SNkzOR6Gnf+gqtceacA6hDUteVqa
+	 Q77PMNMe3A4DsCyCsI8WkrrSB+vaBg6gewhx4p7RnoNZw0qWfTjJARmvgTMTS0FRwx
+	 8k5YharTbMf2jdEFNfVxCsAmRCc58bQo7cZKKpu51Be9PyGGpJ28qedYt1MOU7DPkU
+	 kALk7BCAmahZhoZXeVr96hFe8W3wmldFYeKFiEgvfA70bE9b3PhKJuHloB7EUvE4nj
+	 46XkE1m1+dQApy9WsaR6N8RlxctGaUFtog7hs3fiYMjpjuiaKcVihplY6uTVRJOAVh
+	 NQ5WkTsiBbLnAZN2id6Sc03jIe8XuLTMQ4nmKjm/7bfwutMwpgeP2W5NHgSWEUAOhj
+	 PKqnafZywXmFBRLDD4gqWvmFBWjq0c45XeHoUb7wBF33YurZi3r4LFoypt5Oj70hPI
+	 bk4AnFPYubi6XC3ogzRjUeEaTaTNOopzK2XwW2EHUppckA6JOcHRFHUrgHRumb+xBc
+	 gbx5cAToPFHji2eBBHYGHqYrd+O0HECI6UNXTOxndl2rimNBQje01YPTfnw2oDotVU
+	 ovBNbnqDIYI6QDRsW/jsYNWiR8+1cK2iPOSmmxI+3Fk/709/Aio3qfCeDezQeaoMlp
+	 I+/AAFNNAvV9iKGZRZ3zC0yU=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1C0A540E00CB;
+	Fri, 29 Dec 2023 09:29:07 +0000 (UTC)
+Date: Fri, 29 Dec 2023 10:29:01 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: tony.luck@intel.com, linux-kernel@vger.kernel.org,
+	James Morse <james.morse@arm.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org
+Subject: Re: [PATCH] EDAC: constantify the struct bus_type usage
+Message-ID: <20231229092901.GAZY6RXUVHsq1d8gEI@fat_crate.local>
+References: <2023121909-tribute-punctuate-4b22@gregkh>
+ <20231228150003.GAZY2Nc38sAIa0bat/@fat_crate.local>
+ <2023122918-tiring-isolating-3f4a@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v10 0/5] fix vt-d hard lockup when hotplug ATS capable
- device
-To: "Tian, Kevin" <kevin.tian@intel.com>,
- "bhelgaas@google.com" <bhelgaas@google.com>,
- "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "will@kernel.org" <will@kernel.org>,
- "robin.murphy@arm.com" <robin.murphy@arm.com>,
- "lukas@wunner.de" <lukas@wunner.de>
-Cc: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231228170206.720675-1-haifeng.zhao@linux.intel.com>
- <BN9PR11MB527685C387DDD5FA4B189B3C8C9DA@BN9PR11MB5276.namprd11.prod.outlook.com>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <BN9PR11MB527685C387DDD5FA4B189B3C8C9DA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2023122918-tiring-isolating-3f4a@gregkh>
 
+On Fri, Dec 29, 2023 at 09:10:02AM +0000, Greg Kroah-Hartman wrote:
+> Hey, we could be using German and then it would be something like
+> "Konstantifizierung" :)
 
-On 12/29/2023 4:18 PM, Tian, Kevin wrote:
->> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
->> Sent: Friday, December 29, 2023 1:02 AM
->>
->> change log:
->> v10:
->> - refactor qi_submit_sync() and its callers to get pci_dev instance, as
->>    Kevin pointed out add target_flush_dev to iommu is not right.
-> let's not rush for new versions when there are still opens unclosed in
-> previous one (and considering most related folks are in vacation).
+Ewww. Or to say in German: "Oh nee". :-P
 
-Just have some hours these days to make it in well shape.
+Lemme guess, that must sound similar in Dutch. google translate says
+"constantificatie". Fun.
 
-Okay, let's think, and wait for new comments.
+> Ah, oops, that means this depends on a patch in my trees already that
+> fix this up.  You can wait until after 6.8-rc1 to get to this, or I can
+> take it in my tree if you want now, which ever is easiest for you.
 
+Either's fine with me so I leave it up to you.
 
-Thanks,
+Thx.
 
-Ethan
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
