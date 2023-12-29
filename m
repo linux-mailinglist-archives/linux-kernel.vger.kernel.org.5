@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-12959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 289BE81FD57
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 07:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D403F81FD59
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 07:46:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88647282B1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 06:45:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AC642829D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 06:46:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46B7F2F30;
-	Fri, 29 Dec 2023 06:45:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35DFF79D8;
+	Fri, 29 Dec 2023 06:45:32 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E94A723A1;
-	Fri, 29 Dec 2023 06:45:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00CBF7472;
+	Fri, 29 Dec 2023 06:45:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4T1bTR0FLtz1wpkX;
-	Fri, 29 Dec 2023 14:44:43 +0800 (CST)
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4T1bTz35djz1vqcK;
+	Fri, 29 Dec 2023 14:45:11 +0800 (CST)
 Received: from dggpeml500001.china.huawei.com (unknown [7.185.36.227])
-	by mail.maildlp.com (Postfix) with ESMTPS id 314891A0192;
-	Fri, 29 Dec 2023 14:44:52 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 359C01A0197;
+	Fri, 29 Dec 2023 14:45:07 +0800 (CST)
 Received: from huawei.com (10.69.192.56) by dggpeml500001.china.huawei.com
  (7.185.36.227) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 29 Dec
- 2023 14:44:51 +0800
+ 2023 14:44:52 +0800
 From: Qi Tao <taoqi10@huawei.com>
 To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
 	<liulongfang@huawei.com>
 CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>
-Subject: [PATCH 3/4] crypto: hisilicon/sec2 - fix some cleanup issues
-Date: Fri, 29 Dec 2023 14:44:20 +0800
-Message-ID: <20231229064421.16981-4-taoqi10@huawei.com>
+Subject: [PATCH 4/4] crypto: hisilicon/sec - remove unused parameter
+Date: Fri, 29 Dec 2023 14:44:21 +0800
+Message-ID: <20231229064421.16981-5-taoqi10@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20231229064421.16981-1-taoqi10@huawei.com>
 References: <20231229064421.16981-1-taoqi10@huawei.com>
@@ -51,40 +51,77 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggpeml500001.china.huawei.com (7.185.36.227)
 
-This patch fixes following cleanup issues:
- - The return value of the function is
-   inconsistent with the actual return type.
- - After the pointer type is directly converted
-   to the '__le64' type, the program may crash
-   or produce unexpected results.
+From: Wenkai Lin <linwenkai6@hisilicon.com>
 
-Signed-off-by: Qi Tao <taoqi10@huawei.com>
+Unused parameter of static functions should be removed.
+
+Signed-off-by: Wenkai Lin <linwenkai6@hisilicon.com>
 ---
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/crypto/hisilicon/sec2/sec_crypto.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 692ba3213cc6..5d4facf62c86 100644
+index 5d4facf62c86..ee6cc2e483ab 100644
 --- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
 +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -118,7 +118,7 @@ struct sec_aead {
- };
- 
- /* Get an en/de-cipher queue cyclically to balance load over queues of TFM */
--static inline int sec_alloc_queue_id(struct sec_ctx *ctx, struct sec_req *req)
-+static inline u32 sec_alloc_queue_id(struct sec_ctx *ctx, struct sec_req *req)
- {
- 	if (req->c_req.encrypt)
- 		return (u32)atomic_inc_return(&ctx->enc_qcyclic) %
-@@ -1371,7 +1371,7 @@ static int sec_skcipher_bd_fill_v3(struct sec_ctx *ctx, struct sec_req *req)
- 	sec_sqe3->bd_param = cpu_to_le32(bd_param);
- 
- 	sec_sqe3->c_len_ivin |= cpu_to_le32(c_req->c_len);
--	sec_sqe3->tag = cpu_to_le64(req);
-+	sec_sqe3->tag = cpu_to_le64((unsigned long)(uintptr_t)req);
- 
- 	return 0;
+@@ -485,8 +485,7 @@ static void sec_alg_resource_free(struct sec_ctx *ctx,
+ 		sec_free_mac_resource(dev, qp_ctx->res);
  }
+ 
+-static int sec_alloc_qp_ctx_resource(struct hisi_qm *qm, struct sec_ctx *ctx,
+-				     struct sec_qp_ctx *qp_ctx)
++static int sec_alloc_qp_ctx_resource(struct sec_ctx *ctx, struct sec_qp_ctx *qp_ctx)
+ {
+ 	u16 q_depth = qp_ctx->qp->sq_depth;
+ 	struct device *dev = ctx->dev;
+@@ -541,8 +540,7 @@ static void sec_free_qp_ctx_resource(struct sec_ctx *ctx, struct sec_qp_ctx *qp_
+ 	kfree(qp_ctx->req_list);
+ }
+ 
+-static int sec_create_qp_ctx(struct hisi_qm *qm, struct sec_ctx *ctx,
+-			     int qp_ctx_id, int alg_type)
++static int sec_create_qp_ctx(struct sec_ctx *ctx, int qp_ctx_id)
+ {
+ 	struct sec_qp_ctx *qp_ctx;
+ 	struct hisi_qp *qp;
+@@ -561,7 +559,7 @@ static int sec_create_qp_ctx(struct hisi_qm *qm, struct sec_ctx *ctx,
+ 	idr_init(&qp_ctx->req_idr);
+ 	INIT_LIST_HEAD(&qp_ctx->backlog);
+ 
+-	ret = sec_alloc_qp_ctx_resource(qm, ctx, qp_ctx);
++	ret = sec_alloc_qp_ctx_resource(ctx, qp_ctx);
+ 	if (ret)
+ 		goto err_destroy_idr;
+ 
+@@ -614,7 +612,7 @@ static int sec_ctx_base_init(struct sec_ctx *ctx)
+ 	}
+ 
+ 	for (i = 0; i < sec->ctx_q_num; i++) {
+-		ret = sec_create_qp_ctx(&sec->qm, ctx, i, 0);
++		ret = sec_create_qp_ctx(ctx, i);
+ 		if (ret)
+ 			goto err_sec_release_qp_ctx;
+ 	}
+@@ -750,9 +748,7 @@ static void sec_skcipher_uninit(struct crypto_skcipher *tfm)
+ 	sec_ctx_base_uninit(ctx);
+ }
+ 
+-static int sec_skcipher_3des_setkey(struct crypto_skcipher *tfm, const u8 *key,
+-				    const u32 keylen,
+-				    const enum sec_cmode c_mode)
++static int sec_skcipher_3des_setkey(struct crypto_skcipher *tfm, const u8 *key, const u32 keylen)
+ {
+ 	struct sec_ctx *ctx = crypto_skcipher_ctx(tfm);
+ 	struct sec_cipher_ctx *c_ctx = &ctx->c_ctx;
+@@ -843,7 +839,7 @@ static int sec_skcipher_setkey(struct crypto_skcipher *tfm, const u8 *key,
+ 
+ 	switch (c_alg) {
+ 	case SEC_CALG_3DES:
+-		ret = sec_skcipher_3des_setkey(tfm, key, keylen, c_mode);
++		ret = sec_skcipher_3des_setkey(tfm, key, keylen);
+ 		break;
+ 	case SEC_CALG_AES:
+ 	case SEC_CALG_SM4:
 -- 
 2.33.0
 
