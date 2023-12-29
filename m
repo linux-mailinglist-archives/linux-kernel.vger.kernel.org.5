@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-12902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2CE381FC68
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 02:45:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73A6281FC6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 02:45:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DC1528607B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 01:45:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B29F1F246B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 01:45:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A822D17FA;
-	Fri, 29 Dec 2023 01:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A00B33F5;
+	Fri, 29 Dec 2023 01:44:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="Gvju+amL"
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="joUfx3Iw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0231388
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 01:44:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 129F015A2
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 01:44:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-28bcc273833so5421740a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 17:44:50 -0800 (PST)
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bbd1f9e0b8so782729b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Dec 2023 17:44:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1703814289; x=1704419089; darn=vger.kernel.org;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1703814291; x=1704419091; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:to:from:cc
          :in-reply-to:subject:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WNCVR8SMHnCHeEQ/yMeXXkUdP9Bs/RTaT2/RSyEx1Tc=;
-        b=Gvju+amLK1SWDCzrmCohjbd3fDyjKYopcQjuln/p70su+MGV689NW/Lpjve1AfMgDZ
-         3Lpnen4voluq9tu3z7SemfGVZeStKrnbWSeIZVNio72MJ0OSLTV7jkC1FB8O5ws9nxLw
-         iNn/Btn1asPDoGzeDxgfy403w2VNqkd3x6KDAciEHFeJEwp2Tq9f5JDlerxNiyb/sltK
-         l0jr7Jh4DMzQW6Vj25Sq1+neQRbbibTq5Ju77TwnUbYA4S5W2YfF+j4lkDfiQAFhkyhe
-         ufVEqgB+gKjq411/BuEYAl7tPMT/m3eWffCqbHRTZ3Q+qvsrwHh4e/HKC1sP1LlR7BNf
-         wERw==
+        bh=m4V1BHEupFQbqBJMrfQMAXq3kLkeflc54O4MuJlc11M=;
+        b=joUfx3IwJENjSkDaqCzgDzdXMyaPbNaUVAl7Sce9DiDx1LvCe2Xr/cO5szO7sNsNUY
+         4kQ169IsxanN82yl98edssKkiarP6GbXZbOIp6nwzr01vmwYnc/udMTL5UHijIXyqtNx
+         dUtGkFq+nBhcov84ft5j8cQBk8UB0PmEYJvvdaS1G11vgNemtZyF7w4VTUHWleqNzwuy
+         7lvA7JHva+awCyG3HHsAUK0qB5Iv1ozjFehSI8PtsQaB1NeB5IysdRBAIsm3NzcxW8nd
+         IG6nq8eZBvlq3FVTVg5F4msPbfFDLjVxICSVuLSzeaXDsCpqIZwtTTztCjgOGatNtqlJ
+         dsqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703814289; x=1704419089;
+        d=1e100.net; s=20230601; t=1703814291; x=1704419091;
         h=content-transfer-encoding:mime-version:message-id:to:from:cc
          :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WNCVR8SMHnCHeEQ/yMeXXkUdP9Bs/RTaT2/RSyEx1Tc=;
-        b=atPVJP3+u2dPxblFMeYDmdODUqDTSPjWBYIljcOgA9rdNE06u5KrgiTkoTJRwHBhXY
-         QfcyIPpadUPWxbEnqy5vM6XzCCERVwDbVHVn3OVnmH27pneHONY5AmXi3SE7lhHVmR4R
-         +JuaUhoMjGZaSgKwWaDvkZ8KPyIuVM7MdC30PBqNQmLVeuobaE3COfSp17x9ceF8BGJx
-         M3zmPPk+3/GeODrt2qFMvBQiJ/AxD8uOqPVmOHDEalZafvbHXfUGtq5g5wUDVwX47Ldo
-         CdKnPE8+C8Wch7HAFSrk0sAW29ucJqDTa88WrktEHNujVcuCxckgkrFh6GFc4AP4SfNJ
-         1SLg==
-X-Gm-Message-State: AOJu0Yw1V6/HpRQYB8TtrQmymv1Iu9wYCL3o50E5jXpWU0Fcu9xt0DWb
-	FYZrcCs3+Uo0NtDI8vm8dMX/BgYmeGAyvXQ+LPz+esXVqSM=
-X-Google-Smtp-Source: AGHT+IHJ97SDIMc6/L9jYSipHJSv37tASQguwy1/ne3mvPNbcopocbR96EShTn3HW49dMkrd1Sk0UQ==
-X-Received: by 2002:a17:902:f7ca:b0:1d3:f067:a3f0 with SMTP id h10-20020a170902f7ca00b001d3f067a3f0mr11108857plw.107.1703814289238;
-        Thu, 28 Dec 2023 17:44:49 -0800 (PST)
+        bh=m4V1BHEupFQbqBJMrfQMAXq3kLkeflc54O4MuJlc11M=;
+        b=S012xKjjPT11nqO6V08OnwyyxmEdnV7XZo0uarqzzYWI7wuXE+cw+05x6TNIptKF1I
+         6EGIC5y8t2rnqpNBtKj1Kk49SjJIjBHrl98/g/WMoNSSZo50Rgb+BsQxjAgVsin1mjmH
+         qfexItohVb9/rcSKFVDXd2JHHuyLP0FzK/UB1OYNk2VTy13Qsv4vwQfgth02WR2ecdM/
+         ztoL7hCwZsZgsfGRCXE4TPDUVE/8jbhNal7jUH1YFvyPDSX91dyXg12fEmWt+1Yz+mKr
+         AL37znqikX+b5v917jTJlkDk33qVnn2f6V0wOYAH7jtFqmWDn9wzb9TtPRaaNKmsnuTo
+         4OpA==
+X-Gm-Message-State: AOJu0YwD21NQf4wee6lE0lZ/+a9lKtDUxK2GY9XdfZz4f+n6sTVlglWa
+	ZILpwMCerzzbVdWDTPfNqe8s3opyyygICSR4svEKMxhXV7w=
+X-Google-Smtp-Source: AGHT+IEJDPm2HxcdY+IacGVsA8lBK6Lf18NKOW8Wt/2LU5dUqXP+w/AMvLeHFRRdjdIVbKE+YBkJyw==
+X-Received: by 2002:a05:6808:3c4a:b0:3bb:ce8b:94b9 with SMTP id gl10-20020a0568083c4a00b003bbce8b94b9mr3240341oib.111.1703814290662;
+        Thu, 28 Dec 2023 17:44:50 -0800 (PST)
 Received: from localhost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id pl18-20020a17090b269200b0028ae9a419f0sm19000570pjb.44.2023.12.28.17.44.48
+        by smtp.gmail.com with ESMTPSA id a25-20020aa78659000000b006d9c216a9e6sm7077180pfo.56.2023.12.28.17.44.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Dec 2023 17:44:48 -0800 (PST)
-Date: Thu, 28 Dec 2023 17:44:48 -0800 (PST)
-X-Google-Original-Date: Thu, 28 Dec 2023 17:44:25 PST (-0800)
-Subject:     Re: [v1 03/10] drivers/perf: riscv: Read upper bits of a firmware counter
-In-Reply-To: <20231218104107.2976925-4-atishp@rivosinc.com>
+        Thu, 28 Dec 2023 17:44:50 -0800 (PST)
+Date: Thu, 28 Dec 2023 17:44:50 -0800 (PST)
+X-Google-Original-Date: Thu, 28 Dec 2023 17:44:33 PST (-0800)
+Subject:     Re: [v1 04/10] RISC-V: Add SBI PMU snapshot definitions
+In-Reply-To: <20231218104107.2976925-5-atishp@rivosinc.com>
 CC: linux-kernel@vger.kernel.org, Atish Patra <atishp@rivosinc.com>,
-  aou@eecs.berkeley.edu, alexghiti@rivosinc.com, ajones@ventanamicro.com, anup@brainfault.org,
+  anup@brainfault.org, aou@eecs.berkeley.edu, alexghiti@rivosinc.com, ajones@ventanamicro.com,
   atishp@atishpatra.org, Conor Dooley <conor.dooley@microchip.com>, guoren@kernel.org, uwu@icenowy.me,
   kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, linux-riscv@lists.infradead.org,
   Mark Rutland <mark.rutland@arm.com>, Paul Walmsley <paul.walmsley@sifive.com>, Will Deacon <will@kernel.org>
 From: Palmer Dabbelt <palmer@dabbelt.com>
 To: Atish Patra <atishp@rivosinc.com>
-Message-ID: <mhng-94cdfcf4-01c1-493c-a23e-32bc8b391aad@palmer-ri-x1c9a>
+Message-ID: <mhng-bc357c81-f43a-40e2-b4ac-f9c462e4c006@palmer-ri-x1c9a>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,68 +78,64 @@ Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On Mon, 18 Dec 2023 02:41:00 PST (-0800), Atish Patra wrote:
-> SBI v2.0 introduced a explicit function to read the upper 32 bits
-> for any firmwar counter width that is longer than 32bits.
-> This is only applicable for RV32 where firmware counter can be
-> 64 bit.
+On Mon, 18 Dec 2023 02:41:01 PST (-0800), Atish Patra wrote:
+> SBI PMU Snapshot function optimizes the number of traps to
+> higher privilege mode by leveraging a shared memory between the S/VS-mode
+> and the M/HS mode. Add the definitions for that extension and new error
+> codes.
 >
+> Reviewed-by: Anup Patel <anup@brainfault.org>
 > Signed-off-by: Atish Patra <atishp@rivosinc.com>
 > ---
->  drivers/perf/riscv_pmu_sbi.c | 20 ++++++++++++++++----
->  1 file changed, 16 insertions(+), 4 deletions(-)
+>  arch/riscv/include/asm/sbi.h | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 >
-> diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-> index 16acd4dcdb96..646604f8c0a5 100644
-> --- a/drivers/perf/riscv_pmu_sbi.c
-> +++ b/drivers/perf/riscv_pmu_sbi.c
-> @@ -35,6 +35,8 @@
->  PMU_FORMAT_ATTR(event, "config:0-47");
->  PMU_FORMAT_ATTR(firmware, "config:63");
+> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+> index f3eeca79a02d..a24bc4fa34ff 100644
+> --- a/arch/riscv/include/asm/sbi.h
+> +++ b/arch/riscv/include/asm/sbi.h
+> @@ -122,6 +122,7 @@ enum sbi_ext_pmu_fid {
+>  	SBI_EXT_PMU_COUNTER_STOP,
+>  	SBI_EXT_PMU_COUNTER_FW_READ,
+>  	SBI_EXT_PMU_COUNTER_FW_READ_HI,
+> +	SBI_EXT_PMU_SNAPSHOT_SET_SHMEM,
+>  };
 >
-> +static bool sbi_v2_available;
+>  union sbi_pmu_ctr_info {
+> @@ -138,6 +139,13 @@ union sbi_pmu_ctr_info {
+>  	};
+>  };
+>
+> +/* Data structure to contain the pmu snapshot data */
+> +struct riscv_pmu_snapshot_data {
+> +	uint64_t ctr_overflow_mask;
+> +	uint64_t ctr_values[64];
+> +	uint64_t reserved[447];
+> +};
 > +
->  static struct attribute *riscv_arch_formats_attr[] = {
->  	&format_attr_event.attr,
->  	&format_attr_firmware.attr,
-> @@ -488,16 +490,23 @@ static u64 pmu_sbi_ctr_read(struct perf_event *event)
->  	struct hw_perf_event *hwc = &event->hw;
->  	int idx = hwc->idx;
->  	struct sbiret ret;
-> -	union sbi_pmu_ctr_info info;
->  	u64 val = 0;
-> +	union sbi_pmu_ctr_info info = pmu_ctr_list[idx];
+>  #define RISCV_PMU_RAW_EVENT_MASK GENMASK_ULL(47, 0)
+>  #define RISCV_PMU_RAW_EVENT_IDX 0x20000
 >
->  	if (pmu_sbi_is_fw_event(event)) {
->  		ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_FW_READ,
->  				hwc->idx, 0, 0, 0, 0, 0);
-> -		if (!ret.error)
-> -			val = ret.value;
-> +		if (ret.error)
-> +			return val;
-> +
-> +		val = ret.value;
-> +		if (IS_ENABLED(CONFIG_32BIT) && sbi_v2_available && info.width >= 32) {
-> +			ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_FW_READ_HI,
-> +					hwc->idx, 0, 0, 0, 0, 0);
-> +			if (!ret.error)
-> +				val |= ((u64)ret.value << 32);
-> +		}
->  	} else {
-> -		info = pmu_ctr_list[idx];
->  		val = riscv_pmu_ctr_read_csr(info.csr);
->  		if (IS_ENABLED(CONFIG_32BIT))
->  			val = ((u64)riscv_pmu_ctr_read_csr(info.csr + 0x80)) << 31 | val;
-> @@ -1108,6 +1117,9 @@ static int __init pmu_sbi_devinit(void)
->  		return 0;
->  	}
+> @@ -234,9 +242,11 @@ enum sbi_pmu_ctr_type {
 >
-> +	if (sbi_spec_version >= sbi_mk_version(2, 0))
-> +		sbi_v2_available = true;
-> +
->  	ret = cpuhp_setup_state_multi(CPUHP_AP_PERF_RISCV_STARTING,
->  				      "perf/riscv/pmu:starting",
->  				      pmu_sbi_starting_cpu, pmu_sbi_dying_cpu);
+>  /* Flags defined for counter start function */
+>  #define SBI_PMU_START_FLAG_SET_INIT_VALUE (1 << 0)
+> +#define SBI_PMU_START_FLAG_INIT_FROM_SNAPSHOT BIT(1)
+>
+>  /* Flags defined for counter stop function */
+>  #define SBI_PMU_STOP_FLAG_RESET (1 << 0)
+> +#define SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT BIT(1)
+>
+>  enum sbi_ext_dbcn_fid {
+>  	SBI_EXT_DBCN_CONSOLE_WRITE = 0,
+> @@ -259,6 +269,7 @@ enum sbi_ext_dbcn_fid {
+>  #define SBI_ERR_ALREADY_AVAILABLE -6
+>  #define SBI_ERR_ALREADY_STARTED -7
+>  #define SBI_ERR_ALREADY_STOPPED -8
+> +#define SBI_ERR_NO_SHMEM	-9
+>
+>  extern unsigned long sbi_spec_version;
+>  struct sbiret {
 
 Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
 
