@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-13004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84B9381FE51
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:54:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 210DA81FE4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:53:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 397602848CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 08:54:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E2991F232BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 08:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 154D410A30;
-	Fri, 29 Dec 2023 08:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC34107A1;
+	Fri, 29 Dec 2023 08:53:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JKtKndqA"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="avgJgm0t"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D107010A1B;
-	Fri, 29 Dec 2023 08:53:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2019CFBF9;
+	Fri, 29 Dec 2023 08:53:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703840024; x=1735376024;
+  t=1703840019; x=1735376019;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=5rjYo9oP6i1bR7sOWzCgxdIBIM7V7qc09Qiqt4MFB4A=;
-  b=JKtKndqAkEq6TNkO6nuAy3DxIu9M5vKuw4XV4tkRglSyRnkq0o6iKL3j
-   tu0clEP7NUibDzD99zhUeV6R/xil0gzaMOFwzeCrQwF3tDkVKjvgWJCkH
-   pjKVw23stfVMPZNZJ995tA/uYx6KutNWHTAmpWxBj42LD7KT1QwNplaCG
-   S7ye313nPspr86GgaRiclQeL2akrvmA8zKNMJ0Ux6sxUvdKKXp7JIt4OY
-   QMUCJ84/Z3gOVyJnvx/QIIS1XL5AwgnuqMSh+rtvgTkOTj1lyhHFtpRR+
-   IzybfM3TGLzinGgzpxEh7jg+jueKLMZaj5R0j+ZnvN/Y7A1RzT9TGRQw9
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="396359565"
+  bh=KEH0DzktZzMChMErKUnMsrxem7mhAA7Bkaa1QsiaQvA=;
+  b=avgJgm0t6DNzelmOTNHvNBcccARuxCWCY08ic6xmKyELhAfWEZrRfsQS
+   qk9y8jpgiO5ChF8ZRUSHAfl2gujLZyScJVdxd9x2mlq9mD3y5FpkMIhK5
+   0anlkKS56NLt05JBptabmE9r7+vG7BrngOblxVqNOXIEmqFmDWF5C6tz4
+   gDeJk0n0MNOufWlD0u/BQ0QT/KpnXHdmcsvORCwUHMZvDs5Ku37w9S2wi
+   YPneuNmgmmEW+byBfXo0SUE+1drylgrdUUtgEfRivuTnchVp6+CO6uPC0
+   tvO3DaIJQLoKhHHRpoZBFngWTNb9NddaBMmWWVFsJT856YT3ltlSfV65C
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="395522093"
 X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="396359565"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 00:53:44 -0800
+   d="scan'208";a="395522093"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 00:53:38 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="778768885"
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="869351091"
 X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="778768885"
+   d="scan'208";a="869351091"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 29 Dec 2023 00:53:40 -0800
+  by FMSMGA003.fm.intel.com with ESMTP; 29 Dec 2023 00:53:29 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rJ8cR-000HFn-1t;
-	Fri, 29 Dec 2023 08:53:27 +0000
-Date: Fri, 29 Dec 2023 16:52:56 +0800
+	id 1rJ8cQ-000HFl-15;
+	Fri, 29 Dec 2023 08:53:26 +0000
+Date: Fri, 29 Dec 2023 16:52:57 +0800
 From: kernel test robot <lkp@intel.com>
 To: "larry.lai" <larry.lai@yunjingtech.com>, lee@kernel.org,
 	andriy.shevchenko@linux.intel.com, linus.walleij@linaro.org,
 	pavel@ucw.cz, krzk@kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-	linux-leds@vger.kernel.org, GaryWang@aaeon.com.tw,
-	musa.lin@yunjingtech.com, jack.chang@yunjingtech.com,
-	noah.hung@yunjingtech.com, "larry.lai" <larry.lai@yunjingtech.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-leds@vger.kernel.org,
+	GaryWang@aaeon.com.tw, musa.lin@yunjingtech.com,
+	jack.chang@yunjingtech.com, noah.hung@yunjingtech.com,
+	"larry.lai" <larry.lai@yunjingtech.com>
 Subject: Re: [PATCH V8 2/3] pinctrl: Add support pin control for UP board
  CPLD/FPGA
-Message-ID: <202312291646.wfn6dxdH-lkp@intel.com>
+Message-ID: <202312291634.yn0gCqZI-lkp@intel.com>
 References: <20231228151544.14408-3-larry.lai@yunjingtech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -84,99 +84,173 @@ url:    https://github.com/intel-lab-lkp/linux/commits/larry-lai/mfd-Add-support
 base:   4fe89d07dcc2804c8b562f6c7896a45643d34b2f
 patch link:    https://lore.kernel.org/r/20231228151544.14408-3-larry.lai%40yunjingtech.com
 patch subject: [PATCH V8 2/3] pinctrl: Add support pin control for UP board CPLD/FPGA
-config: i386-allyesconfig (https://download.01.org/0day-ci/archive/20231229/202312291646.wfn6dxdH-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231229/202312291646.wfn6dxdH-lkp@intel.com/reproduce)
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20231229/202312291634.yn0gCqZI-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231229/202312291634.yn0gCqZI-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312291646.wfn6dxdH-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312291634.yn0gCqZI-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
->> drivers/pinctrl/pinctrl-upboard.c:709:13: warning: variable length array used [-Wvla]
+   drivers/pinctrl/pinctrl-upboard.c: In function 'upboard_alt_func_enable':
+>> drivers/pinctrl/pinctrl-upboard.c:709:9: warning: ISO C90 forbids variable length array 'offset' [-Wvla]
      709 |         int offset[pctrl->pctldesc->npins];
-         |                    ^~~~~~~~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:1089:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+         |         ^~~
+   drivers/pinctrl/pinctrl-upboard.c: At top level:
+>> drivers/pinctrl/pinctrl-upboard.c:46:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+      46 | #define BOARD_UP_APL01                          1
+         |                                                 ^
+   drivers/pinctrl/pinctrl-upboard.c:1089:26: note: in expansion of macro 'BOARD_UP_APL01'
     1089 |                 .ident = BOARD_UP_APL01,
          |                          ^~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:46:27: note: expanded from macro 'BOARD_UP_APL01'
+   drivers/pinctrl/pinctrl-upboard.c:46:49: note: (near initialization for 'upboard_dmi_table[0].ident')
       46 | #define BOARD_UP_APL01                          1
          |                                                 ^
-   drivers/pinctrl/pinctrl-upboard.c:1096:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+   drivers/pinctrl/pinctrl-upboard.c:1089:26: note: in expansion of macro 'BOARD_UP_APL01'
+    1089 |                 .ident = BOARD_UP_APL01,
+         |                          ^~~~~~~~~~~~~~
+>> drivers/pinctrl/pinctrl-upboard.c:46:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+      46 | #define BOARD_UP_APL01                          1
+         |                                                 ^
+   drivers/pinctrl/pinctrl-upboard.c:1096:26: note: in expansion of macro 'BOARD_UP_APL01'
     1096 |                 .ident = BOARD_UP_APL01,
          |                          ^~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:46:27: note: expanded from macro 'BOARD_UP_APL01'
+   drivers/pinctrl/pinctrl-upboard.c:46:49: note: (near initialization for 'upboard_dmi_table[1].ident')
       46 | #define BOARD_UP_APL01                          1
          |                                                 ^
-   drivers/pinctrl/pinctrl-upboard.c:1103:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
-    1103 |                 .ident = BOARD_UP_APL03,
+   drivers/pinctrl/pinctrl-upboard.c:1096:26: note: in expansion of macro 'BOARD_UP_APL01'
+    1096 |                 .ident = BOARD_UP_APL01,
          |                          ^~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:53:27: note: expanded from macro 'BOARD_UP_APL03'
+   drivers/pinctrl/pinctrl-upboard.c:53:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
       53 | #define BOARD_UP_APL03                          9
          |                                                 ^
-   drivers/pinctrl/pinctrl-upboard.c:1110:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
-    1110 |                 .ident = BOARD_UP_WHL01,
+   drivers/pinctrl/pinctrl-upboard.c:1103:26: note: in expansion of macro 'BOARD_UP_APL03'
+    1103 |                 .ident = BOARD_UP_APL03,
          |                          ^~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:50:27: note: expanded from macro 'BOARD_UP_WHL01'
+   drivers/pinctrl/pinctrl-upboard.c:53:49: note: (near initialization for 'upboard_dmi_table[2].ident')
+      53 | #define BOARD_UP_APL03                          9
+         |                                                 ^
+   drivers/pinctrl/pinctrl-upboard.c:1103:26: note: in expansion of macro 'BOARD_UP_APL03'
+    1103 |                 .ident = BOARD_UP_APL03,
+         |                          ^~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:50:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
       50 | #define BOARD_UP_WHL01                          5
          |                                                 ^
-   drivers/pinctrl/pinctrl-upboard.c:1117:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
-    1117 |                 .ident = BOARD_UPX_TGL,
-         |                          ^~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:55:26: note: expanded from macro 'BOARD_UPX_TGL'
+   drivers/pinctrl/pinctrl-upboard.c:1110:26: note: in expansion of macro 'BOARD_UP_WHL01'
+    1110 |                 .ident = BOARD_UP_WHL01,
+         |                          ^~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:50:49: note: (near initialization for 'upboard_dmi_table[3].ident')
+      50 | #define BOARD_UP_WHL01                          5
+         |                                                 ^
+   drivers/pinctrl/pinctrl-upboard.c:1110:26: note: in expansion of macro 'BOARD_UP_WHL01'
+    1110 |                 .ident = BOARD_UP_WHL01,
+         |                          ^~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:55:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
       55 | #define BOARD_UPX_TGL                           11
          |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1124:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+   drivers/pinctrl/pinctrl-upboard.c:1117:26: note: in expansion of macro 'BOARD_UPX_TGL'
+    1117 |                 .ident = BOARD_UPX_TGL,
+         |                          ^~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:55:49: note: (near initialization for 'upboard_dmi_table[4].ident')
+      55 | #define BOARD_UPX_TGL                           11
+         |                                                 ^~
+   drivers/pinctrl/pinctrl-upboard.c:1117:26: note: in expansion of macro 'BOARD_UPX_TGL'
+    1117 |                 .ident = BOARD_UPX_TGL,
+         |                          ^~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:57:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+      57 | #define BOARD_UPN_EHL01                         13
+         |                                                 ^~
+   drivers/pinctrl/pinctrl-upboard.c:1124:26: note: in expansion of macro 'BOARD_UPN_EHL01'
     1124 |                 .ident = BOARD_UPN_EHL01,
          |                          ^~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:57:28: note: expanded from macro 'BOARD_UPN_EHL01'
+   drivers/pinctrl/pinctrl-upboard.c:57:49: note: (near initialization for 'upboard_dmi_table[5].ident')
       57 | #define BOARD_UPN_EHL01                         13
          |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1131:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
-    1131 |                 .ident = BOARD_UPS_EHL01,
+   drivers/pinctrl/pinctrl-upboard.c:1124:26: note: in expansion of macro 'BOARD_UPN_EHL01'
+    1124 |                 .ident = BOARD_UPN_EHL01,
          |                          ^~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:58:28: note: expanded from macro 'BOARD_UPS_EHL01'
+   drivers/pinctrl/pinctrl-upboard.c:57:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+      57 | #define BOARD_UPN_EHL01                         13
+         |                                                 ^~
+   drivers/pinctrl/pinctrl-upboard.c:58:49: note: in expansion of macro 'BOARD_UPN_EHL01'
       58 | #define BOARD_UPS_EHL01                         BOARD_UPN_EHL01
          |                                                 ^~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:57:28: note: expanded from macro 'BOARD_UPN_EHL01'
+   drivers/pinctrl/pinctrl-upboard.c:1131:26: note: in expansion of macro 'BOARD_UPS_EHL01'
+    1131 |                 .ident = BOARD_UPS_EHL01,
+         |                          ^~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:57:49: note: (near initialization for 'upboard_dmi_table[6].ident')
       57 | #define BOARD_UPN_EHL01                         13
          |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1138:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
+   drivers/pinctrl/pinctrl-upboard.c:58:49: note: in expansion of macro 'BOARD_UPN_EHL01'
+      58 | #define BOARD_UPS_EHL01                         BOARD_UPN_EHL01
+         |                                                 ^~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:1131:26: note: in expansion of macro 'BOARD_UPS_EHL01'
+    1131 |                 .ident = BOARD_UPS_EHL01,
+         |                          ^~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:59:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+      59 | #define BOARD_UPX_ADLP01                        15
+         |                                                 ^~
+   drivers/pinctrl/pinctrl-upboard.c:1138:26: note: in expansion of macro 'BOARD_UPX_ADLP01'
     1138 |                 .ident = BOARD_UPX_ADLP01,
          |                          ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:59:28: note: expanded from macro 'BOARD_UPX_ADLP01'
+   drivers/pinctrl/pinctrl-upboard.c:59:49: note: (near initialization for 'upboard_dmi_table[7].ident')
       59 | #define BOARD_UPX_ADLP01                        15
          |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1145:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
-    1145 |                 .ident = BOARD_UPN_ADLN01,
+   drivers/pinctrl/pinctrl-upboard.c:1138:26: note: in expansion of macro 'BOARD_UPX_ADLP01'
+    1138 |                 .ident = BOARD_UPX_ADLP01,
          |                          ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:60:28: note: expanded from macro 'BOARD_UPN_ADLN01'
+   drivers/pinctrl/pinctrl-upboard.c:60:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
       60 | #define BOARD_UPN_ADLN01                        16
          |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1152:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
-    1152 |                 .ident = BOARD_UPS_ADLP01,
+   drivers/pinctrl/pinctrl-upboard.c:1145:26: note: in expansion of macro 'BOARD_UPN_ADLN01'
+    1145 |                 .ident = BOARD_UPN_ADLN01,
          |                          ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:61:28: note: expanded from macro 'BOARD_UPS_ADLP01'
-      61 | #define BOARD_UPS_ADLP01                        BOARD_UPX_ADLP01
-         |                                                 ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:59:28: note: expanded from macro 'BOARD_UPX_ADLP01'
+   drivers/pinctrl/pinctrl-upboard.c:60:49: note: (near initialization for 'upboard_dmi_table[8].ident')
+      60 | #define BOARD_UPN_ADLN01                        16
+         |                                                 ^~
+   drivers/pinctrl/pinctrl-upboard.c:1145:26: note: in expansion of macro 'BOARD_UPN_ADLN01'
+    1145 |                 .ident = BOARD_UPN_ADLN01,
+         |                          ^~~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:59:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
       59 | #define BOARD_UPX_ADLP01                        15
          |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1159:12: error: incompatible integer to pointer conversion initializing 'const char *' with an expression of type 'int' [-Wint-conversion]
-    1159 |                 .ident = BOARD_UP_ADLN01,
-         |                          ^~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:62:28: note: expanded from macro 'BOARD_UP_ADLN01'
+   drivers/pinctrl/pinctrl-upboard.c:61:49: note: in expansion of macro 'BOARD_UPX_ADLP01'
+      61 | #define BOARD_UPS_ADLP01                        BOARD_UPX_ADLP01
+         |                                                 ^~~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:1152:26: note: in expansion of macro 'BOARD_UPS_ADLP01'
+    1152 |                 .ident = BOARD_UPS_ADLP01,
+         |                          ^~~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:59:49: note: (near initialization for 'upboard_dmi_table[9].ident')
+      59 | #define BOARD_UPX_ADLP01                        15
+         |                                                 ^~
+   drivers/pinctrl/pinctrl-upboard.c:61:49: note: in expansion of macro 'BOARD_UPX_ADLP01'
+      61 | #define BOARD_UPS_ADLP01                        BOARD_UPX_ADLP01
+         |                                                 ^~~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:1152:26: note: in expansion of macro 'BOARD_UPS_ADLP01'
+    1152 |                 .ident = BOARD_UPS_ADLP01,
+         |                          ^~~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:62:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
       62 | #define BOARD_UP_ADLN01                         18
          |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1185:12: error: incompatible pointer to integer conversion assigning to 'int' from 'const char *const' [-Wint-conversion]
+   drivers/pinctrl/pinctrl-upboard.c:1159:26: note: in expansion of macro 'BOARD_UP_ADLN01'
+    1159 |                 .ident = BOARD_UP_ADLN01,
+         |                          ^~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c:62:49: note: (near initialization for 'upboard_dmi_table[10].ident')
+      62 | #define BOARD_UP_ADLN01                         18
+         |                                                 ^~
+   drivers/pinctrl/pinctrl-upboard.c:1159:26: note: in expansion of macro 'BOARD_UP_ADLN01'
+    1159 |                 .ident = BOARD_UP_ADLN01,
+         |                          ^~~~~~~~~~~~~~~
+   drivers/pinctrl/pinctrl-upboard.c: In function 'upboard_pinctrl_probe':
+>> drivers/pinctrl/pinctrl-upboard.c:1185:26: warning: assignment to 'int' from 'const char *' makes integer from pointer without a cast [-Wint-conversion]
     1185 |                 board_id = system_id->ident;
-         |                          ^ ~~~~~~~~~~~~~~~~
-   1 warning and 12 errors generated.
+         |                          ^
 
 
-vim +709 drivers/pinctrl/pinctrl-upboard.c
+vim +/offset +709 drivers/pinctrl/pinctrl-upboard.c
 
    705	
    706	static void upboard_alt_func_enable(struct gpio_chip *gc, const char *name, int id)
