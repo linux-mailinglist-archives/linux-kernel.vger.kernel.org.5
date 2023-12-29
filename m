@@ -1,91 +1,93 @@
-Return-Path: <linux-kernel+bounces-13264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DB1982023B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 23:50:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CD8C82023D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 23:52:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE099282F82
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 22:50:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F4AE1C219E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 22:52:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E276F14AAF;
-	Fri, 29 Dec 2023 22:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9119F14AAF;
+	Fri, 29 Dec 2023 22:52:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hqDGwR2n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZOCJwh5o"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD4C14A92;
-	Fri, 29 Dec 2023 22:50:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B26B2C433C9;
-	Fri, 29 Dec 2023 22:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC1314A9E;
+	Fri, 29 Dec 2023 22:52:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19148C433C8;
+	Fri, 29 Dec 2023 22:52:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703890224;
-	bh=zLKGYy9v9XGw8j9gQF7uqPziGB9EX+1ZBl9IaY3B82g=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=hqDGwR2nCkMNzLruk+Hc/u687Yc/T9V15WJkdTH/9ilO6spxNJUxCULrYPeimzsRb
-	 kuULWdddDKH/ky0xlmmsedidvV0FNh5MCFurULLYj7+b4cTALYSdZmkyYlyEWDXSQg
-	 cdTzz+8L07P09uwbyqeuXaTSzNW7S7J1zFU1RB2lslBhzGEQxzhkG5B3IL0F2KF52Z
-	 xrX/8ZCIaE8ID8rHC/qQjAXlDFHvrXoQXXQ4BEdEOjOI8rCBrpjwep8L1umBclv94r
-	 +a1QjVCV21bVvc+1OAEVEjJUc8iCf6HAtWO4PFxYYYGtDox1gF3mwg57NfEhROVinQ
-	 iD4MMrbSLxS+w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 99209E333D8;
-	Fri, 29 Dec 2023 22:50:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1703890321;
+	bh=jA/D7U42zKQCqXGdQ5da1seauDiv5W9RuorKy8W1/so=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ZOCJwh5o6HR+HCr+YuMGg+gS4qa45h71d12lE/zKoOAQN6ani7mwX25H+ngrUhRES
+	 EEja2TCvKHhvrpECJ62Fr7eJhIvord+LB82dP9ECjr6aDl4uRWZuyIVo3GuCpXxc1X
+	 tycmVD6oA3PMMfyRO6LJH4BZ71oybLoq59t432xjie7ZAIZcIZZ5Sc4StPAURDcp2l
+	 E+aty5vedrFBoSHDEes8+YMeX/XTvjouXKTZAjL+s6NKqKx1n/mfjjlba1zApRUItp
+	 xl1RMi/7YBvQOPYUw02tfudL9P1N5tRJH16YBwAOhmqMlTfA/Em943Gl+E3zpCOJzN
+	 KPy1VXnztYhHg==
+Message-ID: <d2f328c6-b5b4-46d0-b087-c70e2460d28a@kernel.org>
+Date: Fri, 29 Dec 2023 15:52:00 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] mlxbf_gige: fix receive packet race condition
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170389022462.11317.1228428127301048793.git-patchwork-notify@kernel.org>
-Date: Fri, 29 Dec 2023 22:50:24 +0000
-References: <20231220234739.13753-1-davthompson@nvidia.com>
-In-Reply-To: <20231220234739.13753-1-davthompson@nvidia.com>
-To: David Thompson <davthompson@nvidia.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, tbogendoerfer@suse.de, horms@kernel.org, asmaa@nvidia.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] net/ipv6/addrconf: Temporary addresses with short
+ lifetimes generating when they shouldn't, causing applications to fail
+Content-Language: en-US
+To: Dan Moulding <dan@danm.net>, alexhenrie24@gmail.com
+Cc: bagasdotme@gmail.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ pabeni@redhat.com, regressions@lists.linux.dev
+References: <CAMMLpeTCZDakqdkxm+jvQHxbRXhCYd4_PK+VVqMAmZHjSPuPRw@mail.gmail.com>
+ <20231229163339.2716-1-dan@danm.net>
+From: David Ahern <dsahern@kernel.org>
+In-Reply-To: <20231229163339.2716-1-dan@danm.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Wed, 20 Dec 2023 18:47:39 -0500 you wrote:
-> Under heavy traffic, the BlueField Gigabit interface can
-> become unresponsive. This is due to a possible race condition
-> in the mlxbf_gige_rx_packet function, where the function exits
-> with producer and consumer indices equal but there are remaining
-> packet(s) to be processed. In order to prevent this situation,
-> read receive consumer index *before* the HW replenish so that
-> the mlxbf_gige_rx_packet function returns an accurate return
-> value even if a packet is received into just-replenished buffer
-> prior to exiting this routine. If the just-replenished buffer
-> is received and occupies the last RX ring entry, the interface
-> would not recover and instead would encounter RX packet drops
-> related to internal buffer shortages since the driver RX logic
-> is not being triggered to drain the RX ring. This patch will
-> address and prevent this "ring full" condition.
+On 12/29/23 11:33 AM, Dan Moulding wrote:
+> I think a maintainer will probably need to make a call here and decide
+> how to proceed.
 > 
-> [...]
+>> TEMP_PREFERRED_LIFETIME is an administratively set variable: The user
+>> can change it to whatever they want whenever they want, and the
+>> operating system can adjust it automatically too.
+> 
+> Agreed. And the behavior it seems you really want is to prevent the
+> user from administratively setting it to a value that is lower than
+> REGEN_ADVANCE, so that it won't stop generating new temporary
+> addresses altogether.
+> 
+> But preventing the user from configuring it to a value that is too low
+> is different from generating new temporary addresses with preferred
+> lifetimes that are greater than the currently configured value of
+> TEMP_PREFERRED_LIFETIME. I still believe it would be better, and would
+> be in conformance with the RFC, to simply not allow the user to
+> configure a too-short TEMP_PREFERRED_LIFETIME instead of tinkering
+> with the lifetimes of generated temporary addresses.
+> 
+>> It's fine to revert the commit for version 6.7 (after all, I think
+>> everyone wants a break for the holidays). Hopefully by version 6.8 we
+>> can agree on a way to support users who want to randomize their IPv6
+>> address as frequently as the network allows.
+> 
+> FWIW, I think the desired effect you are seeking makes sense and is
+> the right thing to do. I'm just not convinced this is the correct way
+> to do it. But I'm not a maintainer and also not an expert in IPv6, so
+> I'm definitely not the right person to make that call.
+> 
 
-Here is the summary with links:
-  - [net,v2] mlxbf_gige: fix receive packet race condition
-    https://git.kernel.org/netdev/net/c/dcea1bd45e6d
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Send a revert before 6.7 is released which will most likely be this
+weekend.
 
 
