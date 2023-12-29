@@ -1,111 +1,157 @@
-Return-Path: <linux-kernel+bounces-13081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47C4881FF78
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 13:45:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5725981FF7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 13:45:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7ABA21C20CE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:45:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89ECB1C20E22
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:45:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D34C3111B5;
-	Fri, 29 Dec 2023 12:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE57C111AB;
+	Fri, 29 Dec 2023 12:45:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="cI0HlUwP"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Y1SJsrhU";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="mch25re2";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Y1SJsrhU";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="mch25re2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [217.72.192.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E438910A24;
-	Fri, 29 Dec 2023 12:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703853909; x=1704458709; i=markus.elfring@web.de;
-	bh=2doc9tGjsfe7edwhPQC4ZU47xXYbFltN+jMs52TiMR8=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=cI0HlUwPQrZ4tA+iBLetN47oW3FeYGHfoEFunTLCwjxn424cn8PudYBzWvjmn0lm
-	 77rMZLtgod9cAoRyO7nR/8B8ln+YXaye7LN04bI0vBpm1z2hj+05wRfv1czQwhZ6x
-	 KpsXPTGi9dOaaoeZSjV1yhUu7ApCkClfzzRZK+MuCy2XWRbPWCrSQrMMTNCIFKUwS
-	 jHIID4ohLGA0LR4TWv/v9GpsElevTVmjTTW4d8mmXyhW4yG50eBYbt1xxWYMYmMLz
-	 uv1I+pH4r03+k3r0Nn/gTPuFCWesBojqgLaEFsolsGFWclPXUZAt0/uFb7jG2bhsF
-	 nyQBntz+MRgoCi6qVA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1N45xz-1rAZHg1H2f-00zcWB; Fri, 29
- Dec 2023 13:45:09 +0100
-Message-ID: <bbf26021-798a-41a7-840e-62c8d383bb93@web.de>
-Date: Fri, 29 Dec 2023 13:45:06 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7C211700;
+	Fri, 29 Dec 2023 12:45:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B354022079;
+	Fri, 29 Dec 2023 12:45:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1703853943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I7Wfom3eiZsOxTmsNiOfUqJFjm7nHGnBwz7eB13WVM8=;
+	b=Y1SJsrhUaaooLYrM5oqGMT9wqnfNw7LbXg4i3rJkSJrULI0JndLP+e1bOLTLwFgoMYRJKS
+	WN/OjKO4Vl4UzlsEVHvHKykt5eBMLhqaClUBMAMzoeiCFwuCLcETnqWcOMbJ40V88ynfTQ
+	BuGncbnWFNeC8Q8rSC1Jh6dyfKLUdBE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1703853943;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I7Wfom3eiZsOxTmsNiOfUqJFjm7nHGnBwz7eB13WVM8=;
+	b=mch25re2XeVd4pMrCHda6Tuo6sl+ttlPRTb1QHGzlxez5YlCMnxkBU3fKYZMYCNkjnoO04
+	l4HMIuq4EKwoRzCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1703853943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I7Wfom3eiZsOxTmsNiOfUqJFjm7nHGnBwz7eB13WVM8=;
+	b=Y1SJsrhUaaooLYrM5oqGMT9wqnfNw7LbXg4i3rJkSJrULI0JndLP+e1bOLTLwFgoMYRJKS
+	WN/OjKO4Vl4UzlsEVHvHKykt5eBMLhqaClUBMAMzoeiCFwuCLcETnqWcOMbJ40V88ynfTQ
+	BuGncbnWFNeC8Q8rSC1Jh6dyfKLUdBE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1703853943;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I7Wfom3eiZsOxTmsNiOfUqJFjm7nHGnBwz7eB13WVM8=;
+	b=mch25re2XeVd4pMrCHda6Tuo6sl+ttlPRTb1QHGzlxez5YlCMnxkBU3fKYZMYCNkjnoO04
+	l4HMIuq4EKwoRzCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6BE61133E5;
+	Fri, 29 Dec 2023 12:45:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id fbsuGXe/jmVaaAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 29 Dec 2023 12:45:43 +0000
+Date: Fri, 29 Dec 2023 13:45:43 +0100
+Message-ID: <87y1ddxjm0.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Gergo Koteles <soyer@irl.hu>
+Cc: Shenghao Ding <shenghao-ding@ti.com>,
+	Kevin Lu <kevin-lu@ti.com>,
+	Baojun Xu <baojun.xu@ti.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/tas2781: do not use regcache
+In-Reply-To: <491aeed0e2eecc3b704ec856f815db21bad3ba0e.1703202126.git.soyer@irl.hu>
+References: <491aeed0e2eecc3b704ec856f815db21bad3ba0e.1703202126.git.soyer@irl.hu>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-nfs@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Anna Schumaker <anna@kernel.org>,
- Trond Myklebust <trond.myklebust@hammerspace.com>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] rpc_pipefs: Replace one label in bl_resolve_deviceid()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mzRfjuPlxk5vnDVMY1zbfyGBw2FMtZ8FjuEciWqcOhd2mAzhsR3
- 32CPXaA32iHm7eADhE55jAoL8I9LZn/zgiWIom9+T/i7xy6rZg68GVJkg9MCIJ9gUIiaTaV
- 9JNvGUHiiDbBhjNnsubnKOCxOFFuAZrb50D3IYBCLWctSAZojveQfL6KcXsZ9dFzSVLUYYS
- yf6EBJHqp2/QdtqzVsgeA==
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: 
+X-Spam-Level: 
+X-Spamd-Result: default: False [-1.89 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-2.79)[99.11%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[ti.com,perex.cz,suse.com,gmail.com,kernel.org,vger.kernel.org,alsa-project.org];
+	 RCVD_TLS_ALL(0.00)[]
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Score: -1.89
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Qk1wAC/EVyA=;QgxENkvTw9f67KNy9dBqhxqTxae
- InW4/60sWTufBIVY95K8s+hZyRHwyH+CWQWq+HZz+DtZuvtT8gQZ5B/4o+G2D5oBh6es8LJR0
- PzByYQ0oRiDHjz88YbwOJ8aq5xsQNtJ4BP/WhDmNOe14lbLsL0JgyHGNs+PJqAcvATiwyA6qO
- kSqYH+cYTzwVnzJgKtb2OoXOHVvIbR8MI8nCL9j3jTJKvecNqFICGdUwGW1AXG+m3wcwBsfI8
- aCTXDopKSS4armUoyJRfrEcSr2CLYXMT7SiO1TyErgS6pmrYCHljh4b9B6k3/cIkPqKnV+6pJ
- DzG56g3il8tSmx/n5EbE6cwt0YnyeXP5qpogvSKwdM3KiN+ixGZRprTLXj3jm4vk8w7ZnLi3G
- ewPhfKqlq/lsdbhknG1JV6NVCbzDXPstZnIF0gVB8slkXwfCGw1NOXP4ktSKpp5SenDMY0Vwe
- 8V0GYluJDQzNSMp9eZ6j9fHBwNxAxInKIKc459IG1hZV2CYGMnMw1rgipTF8pA/F9pTZQ8TPQ
- g7PFmuHOqouWZAnhXN1ryrjhbcsgLFwOf0Z8Gc1OEBHcBk9LGuFspjJpO+h4nE7UKGxEWPD5W
- DPeWnnLOpDIDuRRbmTwoVKVO18yXQjXoUKTh/B9/8ajzeZluLpkSPz0MO2Z4citqgI4mab/Wi
- 2n1+W4Dm6YiN89qpOdCMQ4pOoqwDrKxyGATPxvu3IbQbN2yzVhiS11zQdYrwYBZnbbVmnoCCc
- OAhxrSJkg45QP/eK+EHkZQdWaOsYxK4pfiOCVHSoyjJQW2f/VK6tYupoUYNfx4qFvDmAUorcz
- b8oSt7e+nuGUB9HlvFu+ngZiNxSedmUFK2uhcbDiDnb9j9Ywll6JO4eevAQoQ4ExqeK3Id68J
- rkg4SHhFcNWtAggKBfkMrZKDMWIxJHVF6iDL5xPUWhqGCer9zTVO1NYo+Dw/9fHZpozA/wdgr
- XPLEJw==
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 29 Dec 2023 13:18:56 +0100
+On Fri, 22 Dec 2023 00:48:56 +0100,
+Gergo Koteles wrote:
+> 
+> There are two problems with using regcache in this module.
+> 
+> The amplifier has 3 addressing levels (BOOK, PAGE, REG). The firmware
+> contains blocks that must be written to BOOK 0x8C. The regcache doesn't
+> know anything about BOOK, so regcache_sync writes invalid values to the
+> actual BOOK.
+> 
+> The module handles 2 or more separate amplifiers. The amplifiers have
+> different register values, and the module uses only one regmap/regcache
+> for all the amplifiers. The regcache_sync only writes the last amplifier
+> used.
+> 
+> The module successfully restores all the written register values (RC
+> profile, program, configuration, calibration) without regcache.
+> 
+> Remove regcache functions and set regmap cache_type to REGCACHE_NONE.
+> 
+> Link: https://lore.kernel.org/r/21a183b5a08cb23b193af78d4b1114cc59419272.1701906455.git.soyer@irl.hu/
+> 
+> Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
+> CC: stable@vger.kernel.org
+> Signed-off-by: Gergo Koteles <soyer@irl.hu>
 
-The kfree() function was called in one case by
-the bl_resolve_deviceid() function during error handling
-even if the passed data structure member contained a null pointer.
-This issue was detected by using the Coccinelle software.
+Applied to for-linus branch now.  Thanks.
 
-Thus use an other label.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- fs/nfs/blocklayout/rpc_pipefs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/nfs/blocklayout/rpc_pipefs.c b/fs/nfs/blocklayout/rpc_pipe=
-fs.c
-index 6c977288cc28..d8d50a88de04 100644
-=2D-- a/fs/nfs/blocklayout/rpc_pipefs.c
-+++ b/fs/nfs/blocklayout/rpc_pipefs.c
-@@ -75,7 +75,7 @@ bl_resolve_deviceid(struct nfs_server *server, struct pn=
-fs_block_volume *b,
- 	msg->len =3D sizeof(*bl_msg) + b->simple.len;
- 	msg->data =3D kzalloc(msg->len, gfp_mask);
- 	if (!msg->data)
--		goto out_free_data;
-+		goto out_unlock;
-
- 	bl_msg =3D msg->data;
- 	bl_msg->type =3D BL_DEVICE_MOUNT;
-=2D-
-2.43.0
-
+Takashi
 
