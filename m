@@ -1,120 +1,145 @@
-Return-Path: <linux-kernel+bounces-12947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D32F581FD20
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 06:47:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E81281FD25
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 06:48:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ACFA1F23AC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 05:47:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B425BB223D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 05:48:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 768D123B5;
-	Fri, 29 Dec 2023 05:47:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDBC2904;
+	Fri, 29 Dec 2023 05:48:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=crc.id.au header.i=@crc.id.au header.b="grMlhT3f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CpF5Y2Yv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailfilter.crc.id.au (mailfilter.crc.id.au [202.172.99.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5A4220FC;
-	Fri, 29 Dec 2023 05:47:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crc.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crc.id.au
-Received: from mailfilter.crc.id.au (localhost.localdomain [127.0.0.1])
-	by mailfilter.crc.id.au (Proxmox) with ESMTP id F284961599;
-	Fri, 29 Dec 2023 16:46:51 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crc.id.au; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:from:from:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=default; bh=EzA4I9oxv9twX0fBT
-	4dYB1xTAfs78hsRJSgPdiv8UCk=; b=grMlhT3f661h6Zp+vD+aVcxCIptPyx8yO
-	dXrUj+WazhWR7H0AUNb7j9/bz32uWpmb4xOOBhkPKZm7G8XAkzVmbSW4mt4WsECQ
-	+Q68jD4biXEvjWBKqXYcCPBB7UI73r+Oy0EZsZdOu1tk2wd2M+3rlBqCv89hLg/u
-	YhuuTbMPnK5y3rxbRLAefJ3y6irXywJdG5vHh/I8wuYw+Zf6m+FFnu9OMtWSWK7K
-	d0sLM4joAbfX6+exWIDn1SqJu8bB6Oi85S0nfJt9GRJZJfHohQqN8dY1wd8ADDqC
-	5BgD4zYgoznRYlB3i0L5R54BMzSXAG9Fv6Ow55SzfbyMbCAYEBe/TO+/gb7ZAfgy
-	QzttvtI5lT+plN3k6FLcCQW1trGqt5adnBUk78VG05yWggHmm7sIC0xh0T2TADl4
-	ddSL9VBuFUmUud3fDf+6DYiymmINgDa4cuZOkeGBocQ8sIOIlAizng15yqcU56mI
-	MsbmQMV2cheg3eCdDgdKDgWPGW0j1ySUkqTsoyBEoJnzKRJ6nNZQfUcxTUZeDxH4
-	7vXHs2wfakh0YO649G7o0hOtrUSAwge+nTfz9WrUpgGndpji8C2yymF5JTBB3rEN
-	IKEOuO1sRdarM1ijGK4NCLmxm3mgTFgq3Hc64cYCjHo3srpdE8ZaNH0rtN0lkFSE
-	iJmXbwfELY=
-Message-ID: <5f4dfc03-bdfc-41d1-8c5a-1e767e472a96@crc.id.au>
-Date: Fri, 29 Dec 2023 16:46:50 +1100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3F523A1;
+	Fri, 29 Dec 2023 05:48:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a26fa294e56so327146566b.0;
+        Thu, 28 Dec 2023 21:48:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703828883; x=1704433683; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ClpHT/yJDzsGfgCrD6c+GMtCBr/uPP1onuzKC8VSZQ4=;
+        b=CpF5Y2YvIkzoEK+lve9nIwn+8tiQ2HYyy5S1YEQjwyoc9bCo79Lm24stYhkrcH7tzW
+         WgYMIYqhHIOqV5X59Bp9Q8Uy/JKd3WIaShK6d8o8fB3z27RLJ+bjA+I6zRm5Z/sf8u/N
+         t2bxSxA8hYw+c6KNtAsjJm6Ln7MbN+PMfGnkF13WISoOvNQ68hwTAGJRI2IBQj0OQAZi
+         NkGNNwNVwtP8sxlxIxn/vYuZ0U4RAWjMaZNvTGovfkxy+XWkq5V5mqvqBeBzT0g20CC/
+         nKPcP1vY2P6XpXiJectefdR1Ue8n/2xuvi+ll2V5GjEllFV638hKITeaa96Has9jf+vF
+         /nyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703828883; x=1704433683;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ClpHT/yJDzsGfgCrD6c+GMtCBr/uPP1onuzKC8VSZQ4=;
+        b=Fq/duKHs/43RTB4wkb4YDXdwipvzZXMYIzCT/Y2xYi+Kb4tjHIKQ5TkYy0PZ7Nndi9
+         lpSbkwj/pRbQNAaD2TCMEu1Vs9aodDZzLDwLrYOk8kunlsHheQ8fAHggxG4U2AoHf859
+         vIvO0f3q5Hh9QRDjnrxa4uiBLYRu7drbmmH79P41X5TaQjLHBchdELapknW/tBL4YrRb
+         Q5DVaD8ZSqFT5ibby7Jnl4+/7PVbEHz4VlZR2i4ax3YAGQWxoZ9JeQBegFmZVcZ3uYvM
+         TFJ+LKeCuAVMBksMk/e50RD4uIitn33CshEmCABhEDg0TL7QA1lrKAUkNOO0eWzevmtK
+         d8ag==
+X-Gm-Message-State: AOJu0YwWWZMqFBpVMPjzC5WJ43i6jSs+N5U0oKbMJUUL9LqkFuAq+SEo
+	sUh4Py2XnfSUXb9eiJ0b/r4=
+X-Google-Smtp-Source: AGHT+IFL8DFI8p3gnQwdfmcbvGKDdV8wbnHjMlisdB9dvoqPQBIZ7Ahgsoiclvysyoj+fShdas3h6A==
+X-Received: by 2002:a17:906:b114:b0:a27:59a2:93fc with SMTP id u20-20020a170906b11400b00a2759a293fcmr1726278ejy.107.1703828882565;
+        Thu, 28 Dec 2023 21:48:02 -0800 (PST)
+Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.gmail.com with ESMTPSA id e17-20020a170906505100b00a26ade46618sm7230880ejk.99.2023.12.28.21.48.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Dec 2023 21:48:02 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Konrad Dybcio <konradybcio@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Andrew Davis <afd@ti.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Chen-Yu Tsai <wens@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Nishanth Menon <nm@ti.com>,
+	Olof Johansson <olof@lixom.net>
+Subject: [PATCH] docs: dt-bindings: suggest "reg-names" position in DTS Coding Style
+Date: Fri, 29 Dec 2023 06:47:11 +0100
+Message-Id: <20231229054711.17317-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Qemu KVM thread spins at 100% CPU usage on scsi hot-unplug
- (kernel 6.6.8 guest)
-To: Lukas Wunner <lukas@wunner.de>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- f.ebner@proxmox.com
-References: <3a7656ab-df4c-4d57-8866-661beffcddd7@crc.id.au>
- <20231228131802.GA21994@wunner.de>
-Content-Language: en-AU
-From: Steven Haigh <netwiz@crc.id.au>
-Autocrypt: addr=netwiz@crc.id.au; keydata=
- xjMEZYuvwhYJKwYBBAHaRw8BAQdAKpahulREd3FFQb6QJI7Oa1QG7i0y5GxpKWd/Pgz3bDHN
- H1N0ZXZlbiBIYWlnaCA8bmV0d2l6QGNyYy5pZC5hdT7CiQQTFggAMRYhBIB4i95REtt8lf8r
- 5YPV5iDbUrwABQJli6/CAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQg9XmINtSvADhuAEAq5fb
- ocNh/FVsflYj8owAQlb3jez8GcMdZqBty8OAY2QBAK+xbsxaJ+KtOPFmmmzzLcf5LQFvOYZs
- o+Y3Ot5ublIIzjgEZYuvwhIKKwYBBAGXVQEFAQEHQH0ZpXIkJEoTdAhHcvEj417Bb55+wGsz
- 07FgcbLaIl9AAwEIB8J4BBgWCAAgFiEEgHiL3lES23yV/yvlg9XmINtSvAAFAmWLr8ICGwwA
- CgkQg9XmINtSvABslgD8D7f1NX9bEu5mH8VF7Z58Orygx4Qc7w5qvM1qvQB8UfkBAID3m4bI
- 0Y9hW5iuV4RfgH3SkrIp4diWii1facZPd4EC
-In-Reply-To: <20231228131802.GA21994@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 29/12/23 00:18, Lukas Wunner wrote:
-> On Thu, Dec 28, 2023 at 01:03:10PM +1100, Steven Haigh wrote:
->> At some point in kernel 6.6.x, SCSI hotplug in qemu VMs broke. This was
->> mostly fixed in the following commit to release 6.6.8:
->> 	commit 5cc8d88a1b94b900fd74abda744c29ff5845430b
->> 	Author: Bjorn Helgaas <bhelgaas@google.com>
->> 	Date:   Thu Dec 14 09:08:56 2023 -0600
->> 	Revert "PCI: acpiphp: Reassign resources on bridge if necessary"
->>
->> After this commit, the SCSI block device is hotplugged correctly, and a device node as /dev/sdX appears within the qemu VM.
->>
->> New problem:
->>
->> When the same SCSI block device is hot-unplugged, the QEMU KVM process will
->> spin at 100% CPU usage. The guest shows no CPU being used via top, but the
->> host will continue to spin in the KVM thread until the VM is rebooted.
-> 
-> Find out the PID of the qemu process on the host, then cat /proc/$PID/stack
-> to see where the CPU time is spent.
+From: Rafał Miłecki <rafal@milecki.pl>
 
-Thanks for the tip - I'll certainly do that.
+Property "reg-names" is strictly related to "reg" so it should follow it
+directly instead of falling into "Standard/common properties". This
+helps reading DTS files.
 
-Annoyingly, since I posted this report originally, then adding in a new report to the kernel.org lists in this, I have 
-been unable to reproduce this problem. I have successfully done ~22 scsi hotplug / remove cycles and none resulted in 
-reproducing the issue.
+Cc: Andrew Davis <afd@ti.com>
+cc: Andrew Lunn <andrew@lunn.ch>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Bjorn Andersson <andersson@kernel.org>
+Cc: Chen-Yu Tsai <wens@kernel.org>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Michal Simek <michal.simek@amd.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Nishanth Menon <nm@ti.com>
+Cc: Olof Johansson <olof@lixom.net>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+ .../devicetree/bindings/dts-coding-style.rst          | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-Kernel versions are still the same on both proxmox host and the Fedora guest - however I see an update on the host of 
-the qemu-kvm packages in Proxmox. The proxmox host hasn't even been rebooted in this time.
-
-I wonder if the initial revert included in 6.6.8 fixed the main problem, and the later update to qemu-kvm packages on 
-the proxmox host followed by the last reboot of the VM with the new KVM package sorted the second issue.
-
-Seeing as I can no longer reproduce this reliably - whereas it was 100% reproducible prior, maybe I'm now chasing ghosts.
-
-I'll still continue to monitor - as I normally do this SCSI hotplug ~3 times per week doing backups to different 
-external HDDs - so if I do observe it again, I'll grab the stack and reply to this thread again with what I can find.
-
-Until then, I don't want to waste other peoples time also chasing ghosts :)
-
+diff --git a/Documentation/devicetree/bindings/dts-coding-style.rst b/Documentation/devicetree/bindings/dts-coding-style.rst
+index a9bdd2b59dca..1a48e2ca80e9 100644
+--- a/Documentation/devicetree/bindings/dts-coding-style.rst
++++ b/Documentation/devicetree/bindings/dts-coding-style.rst
+@@ -116,12 +116,13 @@ The following order of properties in device nodes is preferred:
+ 
+ 1. "compatible"
+ 2. "reg"
+-3. "ranges"
+-4. Standard/common properties (defined by common bindings, e.g. without
++3. "reg-names"
++4. "ranges"
++5. Standard/common properties (defined by common bindings, e.g. without
+    vendor-prefixes)
+-5. Vendor-specific properties
+-6. "status" (if applicable)
+-7. Child nodes, where each node is preceded with a blank line
++6. Vendor-specific properties
++7. "status" (if applicable)
++8. Child nodes, where each node is preceded with a blank line
+ 
+ The "status" property is by default "okay", thus it can be omitted.
+ 
 -- 
-Steven Haigh
-
-📧 netwiz@crc.id.au
-💻 https://crc.id.au
+2.35.3
 
 
