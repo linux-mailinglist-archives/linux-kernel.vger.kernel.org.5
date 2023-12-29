@@ -1,185 +1,139 @@
-Return-Path: <linux-kernel+bounces-12941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61B3F81FCF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 05:06:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A17C381FCF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 05:05:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDDD51C2152B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 04:06:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D16028455C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 04:05:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34BC9210A;
-	Fri, 29 Dec 2023 04:05:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SiFXUIp/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF6241FAF;
+	Fri, 29 Dec 2023 04:05:24 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB7F5C9B;
-	Fri, 29 Dec 2023 04:05:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703822753; x=1735358753;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7hahtoToS7LBmBNlG0a/hax2YTgm+rOGmZDL7DnlF8s=;
-  b=SiFXUIp/ni9VSI3JLvGsFfKRndIsb0Vo4hDO2121cdo9WyQIqmSiM/2R
-   s4Xitu8vhGbOOVDFLaMRBddzZe0k2TPm002JB6l9l67cn3hrxa0wOyzbY
-   FcZ/0XLb9591oLk6EdI3B09Y6y1e9vYNunXpuvyE5BDAZlg85GUiYYmWy
-   bQL4IXgVhtzmqDxSyrnqOyc/iQ0DZsZmCCJ7DUkmRS6di+jZb+kX4USwi
-   UVerezUVexFmML8tjAt9MzObfsC++ihdonGLnifhN8srLiGBR20bPumPm
-   i1QEu1aq8nI5TmUy/tQXeCefrlEAoLP8V3xAfLhHdcInSQn7Rb0yuFib8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="396339537"
-X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
-   d="scan'208";a="396339537"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 20:05:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="782215180"
-X-IronPort-AV: E=Sophos;i="6.04,313,1695711600"; 
-   d="scan'208";a="782215180"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 28 Dec 2023 20:05:44 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rJ47P-000H5J-36;
-	Fri, 29 Dec 2023 04:05:34 +0000
-Date: Fri, 29 Dec 2023 12:03:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sagi Maimon <maimon.sagi@gmail.com>, richardcochran@gmail.com,
-	luto@kernel.org, datglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-	hpa@zytor.com, arnd@arndb.de, geert@linux-m68k.org,
-	peterz@infradead.org, hannes@cmpxchg.org, sohil.mehta@intel.com,
-	rick.p.edgecombe@intel.com, nphamcs@gmail.com, palmer@sifive.com,
-	keescook@chromium.org, legion@kernel.org, mark.rutland@arm.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-arch@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3] posix-timers: add multi_clock_gettime system call
-Message-ID: <202312291154.hCJdKLKM-lkp@intel.com>
-References: <20231228122411.3189-1-maimon.sagi@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8087B23A4;
+	Fri, 29 Dec 2023 04:05:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E5FFC433C8;
+	Fri, 29 Dec 2023 04:05:23 +0000 (UTC)
+Date: Thu, 28 Dec 2023 23:05:21 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH] ring-buffer: Fix wake ups when buffer_percent is set to
+ 100
+Message-ID: <20231228230521.7dc92d1f@rorschach.local.home>
+In-Reply-To: <20231227075708.008225fc3c04444aac193b39@kernel.org>
+References: <20231226125902.4a057f1d@gandalf.local.home>
+	<20231227075708.008225fc3c04444aac193b39@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231228122411.3189-1-maimon.sagi@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Sagi,
+On Wed, 27 Dec 2023 07:57:08 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-kernel test robot noticed the following build errors:
+> On Tue, 26 Dec 2023 12:59:02 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> > 
+> > The tracefs file "buffer_percent" is to allow user space to set a
+> > water-mark on how much of the tracing ring buffer needs to be filled in
+> > order to wake up a blocked reader.
+> > 
+> >  0 - is to wait until any data is in the buffer
+> >  1 - is to wait for 1% of the sub buffers to be filled
+> >  50 - would be half of the sub buffers are filled with data
+> >  100 - is not to wake the waiter until the ring buffer is completely full
+> > 
+> > Unfortunately the test for being full was:
+> > 
+> > 	dirty = ring_buffer_nr_dirty_pages(buffer, cpu);
+> > 	return (dirty * 100) > (full * nr_pages);
+> > 
+> > Where "full" is the value for "buffer_percent".
+> > 
+> > There is two issues with the above when full == 100.
+> > 
+> > 1. dirty * 100 > 100 * nr_pages will never be true
+> >    That is, the above is basically saying that if the user sets
+> >    buffer_percent to 100, more pages need to be dirty than exist in the
+> >    ring buffer!
+> > 
+> > 2. The page that the writer is on is never considered dirty, as dirty
+> >    pages are only those that are full. When the writer goes to a new
+> >    sub-buffer, it clears the contents of that sub-buffer.
+> > 
+> > That is, even if the check was ">=" it would still not be equal as the
+> > most pages that can be considered "dirty" is nr_pages - 1.
+> > 
+> > To fix this, add one to dirty and use ">=" in the compare.
+> > 
+> > Cc: stable@vger.kernel.org
+> > Fixes: 03329f9939781 ("tracing: Add tracefs file buffer_percentage")
+> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> > ---
+> >  kernel/trace/ring_buffer.c | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> > index 83eab547f1d1..32c0dd2fd1c3 100644
+> > --- a/kernel/trace/ring_buffer.c
+> > +++ b/kernel/trace/ring_buffer.c
+> > @@ -881,9 +881,14 @@ static __always_inline bool full_hit(struct trace_buffer *buffer, int cpu, int f
+> >  	if (!nr_pages || !full)
+> >  		return true;
+> >  
+> > -	dirty = ring_buffer_nr_dirty_pages(buffer, cpu);
+> > +	/*
+> > +	 * Add one as dirty will never equal nr_pages, as the sub-buffer
+> > +	 * that the writer is on is not counted as dirty.
+> > +	 * This is needed if "buffer_percent" is set to 100.
+> > +	 */
+> > +	dirty = ring_buffer_nr_dirty_pages(buffer, cpu) + 1;  
+> 
+> Is this "+ 1" required? If we have 200 pages and 1 buffer is dirty,
+> it is 0.5% dirty. Consider @full = 1%.
 
-[auto build test ERROR on tip/x86/asm]
-[also build test ERROR on arnd-asm-generic/master tip/timers/core linus/master v6.7-rc7]
-[cannot apply to next-20231222]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Yes it is required, as the comment above it states. dirty will never
+equal nr_pages. Without it, buffer_percent == 100 will never wake up.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sagi-Maimon/posix-timers-add-multi_clock_gettime-system-call/20231228-202632
-base:   tip/x86/asm
-patch link:    https://lore.kernel.org/r/20231228122411.3189-1-maimon.sagi%40gmail.com
-patch subject: [PATCH v3] posix-timers: add multi_clock_gettime system call
-config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20231229/202312291154.hCJdKLKM-lkp@intel.com/config)
-compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project 8a4266a626914765c0c69839e8a51be383013c1a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231229/202312291154.hCJdKLKM-lkp@intel.com/reproduce)
+The +1 is to add the page the writer is on, which is never considered
+"dirty".
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312291154.hCJdKLKM-lkp@intel.com/
+> 
+> @dirty = 1 + 1 = 2 and @dirty * 100 == 200. but 
+> @full * @nr_pages = 1 * 200 = 200.
+> Thus it hits (200 >= 200 is true) even if dirty pages are 0.5%.
 
-All error/warnings (new ones prefixed by >>):
+Do we care?
 
-   In file included from kernel/time/time.c:33:
->> include/linux/syscalls.h:1164:48: warning: declaration of 'struct __ptp_multi_clock_get' will not be visible outside of this function [-Wvisibility]
-    1164 | asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
-         |                                                ^
-   1 warning generated.
---
-   In file included from kernel/time/hrtimer.c:30:
->> include/linux/syscalls.h:1164:48: warning: declaration of 'struct __ptp_multi_clock_get' will not be visible outside of this function [-Wvisibility]
-    1164 | asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
-         |                                                ^
-   kernel/time/hrtimer.c:147:20: warning: unused function 'is_migration_base' [-Wunused-function]
-     147 | static inline bool is_migration_base(struct hrtimer_clock_base *base)
-         |                    ^~~~~~~~~~~~~~~~~
-   kernel/time/hrtimer.c:1876:20: warning: unused function '__hrtimer_peek_ahead_timers' [-Wunused-function]
-    1876 | static inline void __hrtimer_peek_ahead_timers(void)
-         |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   3 warnings generated.
---
-   In file included from kernel/time/posix-timers.c:26:
->> include/linux/syscalls.h:1164:48: warning: declaration of 'struct __ptp_multi_clock_get' will not be visible outside of this function [-Wvisibility]
-    1164 | asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
-         |                                                ^
->> kernel/time/posix-timers.c:1430:1: error: conflicting types for 'sys_multi_clock_gettime'
-    1430 | SYSCALL_DEFINE1(multi_clock_gettime, struct __ptp_multi_clock_get __user *, ptp_multi_clk_get)
-         | ^
-   include/linux/syscalls.h:219:36: note: expanded from macro 'SYSCALL_DEFINE1'
-     219 | #define SYSCALL_DEFINE1(name, ...) SYSCALL_DEFINEx(1, _##name, __VA_ARGS__)
-         |                                    ^
-   include/linux/syscalls.h:230:2: note: expanded from macro 'SYSCALL_DEFINEx'
-     230 |         __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
-         |         ^
-   include/linux/syscalls.h:244:18: note: expanded from macro '__SYSCALL_DEFINEx'
-     244 |         asmlinkage long sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))       \
-         |                         ^
-   <scratch space>:135:1: note: expanded from here
-     135 | sys_multi_clock_gettime
-         | ^
-   include/linux/syscalls.h:1164:17: note: previous declaration is here
-    1164 | asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
-         |                 ^
-   1 warning and 1 error generated.
+What's the difference if it wakes up on 2 dirty pages or 1? It would be
+very hard to measure the difference.
 
+But if you say 100, which means "I want to wake up when full" it will
+never wake up. Because it will always be nr_pages - 1.
 
-vim +/sys_multi_clock_gettime +1430 kernel/time/posix-timers.c
+We could also say the +1 is the reader page too, because that's not
+counted as well.
 
-  1429	
-> 1430	SYSCALL_DEFINE1(multi_clock_gettime, struct __ptp_multi_clock_get __user *, ptp_multi_clk_get)
-  1431	{
-  1432		const struct k_clock *kc;
-  1433		struct timespec64 kernel_tp;
-  1434		struct __ptp_multi_clock_get multi_clk_get;
-  1435		unsigned int i, j;
-  1436		int error;
-  1437	
-  1438		if (copy_from_user(&multi_clk_get, ptp_multi_clk_get, sizeof(multi_clk_get)))
-  1439			return -EFAULT;
-  1440	
-  1441		if (multi_clk_get.n_samples > MULTI_PTP_MAX_SAMPLES)
-  1442			return -EINVAL;
-  1443		if (multi_clk_get.n_clocks > MULTI_PTP_MAX_CLOCKS)
-  1444			return -EINVAL;
-  1445	
-  1446		for (j = 0; j < multi_clk_get.n_samples; j++) {
-  1447			for (i = 0; i < multi_clk_get.n_clocks; i++) {
-  1448				kc = clockid_to_kclock(multi_clk_get.clkid_arr[i]);
-  1449				if (!kc)
-  1450					return -EINVAL;
-  1451				error = kc->clock_get_timespec(multi_clk_get.clkid_arr[i], &kernel_tp);
-  1452				if (!error && put_timespec64(&kernel_tp, (struct __kernel_timespec __user *)
-  1453							     &ptp_multi_clk_get->ts[j][i]))
-  1454					error = -EFAULT;
-  1455			}
-  1456		}
-  1457	
-  1458		return error;
-  1459	}
-  1460	
+In other words, we can bike shed this to make 1% accurate (which
+honestly, I have no idea what the use case for that would be) or we can
+fix the bug that has 100% which just means, wake me up if the buffer is
+full, and when the writer is on the last page, it is considered full.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+-- Steve
 
