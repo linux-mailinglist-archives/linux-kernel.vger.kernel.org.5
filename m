@@ -1,31 +1,64 @@
-Return-Path: <linux-kernel+bounces-12984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC48A81FDFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:03:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BB5281FE05
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:04:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 694A21F21A56
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 08:03:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84C801F2177D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 08:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B44A37497;
-	Fri, 29 Dec 2023 08:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3603D749C;
+	Fri, 29 Dec 2023 08:04:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oIzOOtvL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5308BE7;
-	Fri, 29 Dec 2023 08:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VzQtt.u_1703837012;
-Received: from 30.221.145.217(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VzQtt.u_1703837012)
-          by smtp.aliyun-inc.com;
-          Fri, 29 Dec 2023 16:03:33 +0800
-Message-ID: <00d390f3-1d92-43e5-adec-b7d0b8885fdc@linux.alibaba.com>
-Date: Fri, 29 Dec 2023 16:03:31 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D1B63D3
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 08:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33674f60184so6707846f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 00:04:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703837065; x=1704441865; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0VWBP1TVQ7NQgud/UujhhMlQGKCoT87k5cfBJC4USCo=;
+        b=oIzOOtvLX8oxOgl/kB564knQV/hbgkwMOwaJO2aVa7wgYIPpEClXudNixvSPtV6SaH
+         NrUXUDEeCG3cRZNH+zSfxK05qr4rkUJmjn0viGUbAE63tdS98HEQfhYpiYFblH7RzjiZ
+         4AOGZNqIqrGjS+sSL4Zkf7utLvqLgSyBUIJOwZ0nrG76WEWx6XDQ6M1jElU+mpSDyH5n
+         7CppcQPlEOV1VbIFKCF78EZ3GyUmTIqOBndylxLsGDoQR/+u++oHRshpIFGnqnupxS51
+         QgMHO1Guth+gZueg+IvQed9GNVWcAD67L3qmOpKvKV+Wufg5rouHF1RyRztWBC+uIoZM
+         xneg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703837065; x=1704441865;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0VWBP1TVQ7NQgud/UujhhMlQGKCoT87k5cfBJC4USCo=;
+        b=cxrwPMh31GlCVUEejuYLb3KTESZy5cjWjpXjQgv5ZEnSdGR9mlKu6SL/xkqC/KkoNe
+         +qR65QMxh/dqRfL0i0sZeoQ/78uQd5YGAl1Y7L5RPLNXo/0yGrp9JbXdiedubuXuRx4N
+         Bxxkfa5Sb/H00QTHqiuV0t2AzQx1wDZQUgi6UkbMrfSX72ssfLE/sabtjG6nTcl1MFeB
+         pO+jGTnkzH4AnJYPR9S75K17YrkfpyW8wHkDTBZfDdCu1p2piwOhi1PkptpFJg3en+tD
+         S7tW4dT5ENwEt62T449QCfD0f6q+NatF3N5O8zQFSPsOl5qxB9TqeSpQhspOj0VKpkaP
+         Q+Lw==
+X-Gm-Message-State: AOJu0YyU23Z2raYZvsgNL3M4fOdy/QIX0ZsuN+2iQkI4Qkws4FYtHo3U
+	9isRTeKQRPXr3RYOqd0AGOi7vCJ1wEf2ww==
+X-Google-Smtp-Source: AGHT+IH9Rs1zXW90kwlrJC3ECsTBcBWiMXn1x3xfOgBLp2MCsAomAneZT6yIkeYVWtcDHWBCYYJ7vg==
+X-Received: by 2002:a05:6000:100b:b0:336:8d4f:6b1b with SMTP id a11-20020a056000100b00b003368d4f6b1bmr6064936wrx.131.1703837064908;
+        Fri, 29 Dec 2023 00:04:24 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id d5-20020adffbc5000000b00336e69fbc32sm7218151wrs.102.2023.12.29.00.04.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Dec 2023 00:04:24 -0800 (PST)
+Message-ID: <387303b4-d912-480c-a50c-9f9efa386ef3@linaro.org>
+Date: Fri, 29 Dec 2023 08:04:21 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -33,130 +66,88 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC nf-next v4 1/2] netfilter: bpf: support prog update
+Subject: Re: [PATCH v2 11/12] arm64: dts: exynos: gs101: define USI8 with I2C
+ configuration
 Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, coreteam@netfilter.org,
- netfilter-devel@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, ast@kernel.org
-References: <1703836449-88705-1-git-send-email-alibuda@linux.alibaba.com>
- <1703836449-88705-2-git-send-email-alibuda@linux.alibaba.com>
-In-Reply-To: <1703836449-88705-2-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ peter.griffin@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+ sboyd@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
+ alim.akhtar@samsung.com, gregkh@linuxfoundation.org, jirislaby@kernel.org,
+ s.nawrocki@samsung.com, tomasz.figa@gmail.com, cw00.choi@samsung.com,
+ arnd@arndb.de, semen.protsenko@linaro.org
+Cc: saravanak@google.com, willmcvicker@google.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-serial@vger.kernel.org, kernel-team@android.com
+References: <20231228125805.661725-1-tudor.ambarus@linaro.org>
+ <20231228125805.661725-12-tudor.ambarus@linaro.org>
+ <a40b5d0dc3e151fede14aa00bcb853d1eeb8824b.camel@linaro.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <a40b5d0dc3e151fede14aa00bcb853d1eeb8824b.camel@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
 
-On 12/29/23 3:54 PM, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
->
-> To support the prog update, we need to ensure that the prog seen
-> within the hook is always valid. Considering that hooks are always
-> protected by rcu_read_lock(), which provide us the ability to
-> access the prog under rcu.
->
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> ---
->   net/netfilter/nf_bpf_link.c | 50 ++++++++++++++++++++++++++++++---------------
->   1 file changed, 34 insertions(+), 16 deletions(-)
->
-> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-> index e502ec0..7c32ccb 100644
-> --- a/net/netfilter/nf_bpf_link.c
-> +++ b/net/netfilter/nf_bpf_link.c
-> @@ -8,26 +8,26 @@
->   #include <net/netfilter/nf_bpf_link.h>
->   #include <uapi/linux/netfilter_ipv4.h>
->   
-> -static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
-> -				    const struct nf_hook_state *s)
-> -{
-> -	const struct bpf_prog *prog = bpf_prog;
-> -	struct bpf_nf_ctx ctx = {
-> -		.state = s,
-> -		.skb = skb,
-> -	};
-> -
-> -	return bpf_prog_run(prog, &ctx);
-> -}
-> -
->   struct bpf_nf_link {
->   	struct bpf_link link;
->   	struct nf_hook_ops hook_ops;
->   	struct net *net;
->   	u32 dead;
->   	const struct nf_defrag_hook *defrag_hook;
-> +	struct rcu_head head;
->   };
->   
-> +static unsigned int nf_hook_run_bpf(void *bpf_link, struct sk_buff *skb,
-> +				    const struct nf_hook_state *s)
-> +{
-> +	const struct bpf_nf_link *nf_link = bpf_link;
-> +	struct bpf_nf_ctx ctx = {
-> +		.state = s,
-> +		.skb = skb,
-> +	};
-> +	return bpf_prog_run(rcu_dereference_raw(nf_link->link.prog), &ctx);
-> +}
-> +
->   #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
->   static const struct nf_defrag_hook *
->   get_proto_defrag_hook(struct bpf_nf_link *link,
-> @@ -126,8 +126,7 @@ static void bpf_nf_link_release(struct bpf_link *link)
->   static void bpf_nf_link_dealloc(struct bpf_link *link)
->   {
->   	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
-> -
-> -	kfree(nf_link);
-> +	kfree_rcu(nf_link, head);
->   }
->   
->   static int bpf_nf_link_detach(struct bpf_link *link)
-> @@ -162,7 +161,22 @@ static int bpf_nf_link_fill_link_info(const struct bpf_link *link,
->   static int bpf_nf_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
->   			      struct bpf_prog *old_prog)
->   {
-> -	return -EOPNOTSUPP;
-> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
-> +	int err = 0;
-> +
-> +	if (nf_link->dead)
-> +		return -EPERM;
-> +
-> +	if (old_prog) {
-> +		/* target old_prog mismatch */
-> +		if (!cmpxchg(&link->prog, old_prog, new_prog))
-> +			return -EPERM;
-> +	} else {
-> +		old_prog = xchg(&link->prog, new_prog);
-> +	}
-> +
-> +	bpf_prog_put(old_prog);
-> +	return err;
->   }
+On 12/28/23 14:04, André Draszik wrote:
+> Hi Tudor,
 
-I made a mistake here, and I will fix it in the next version.
-Sorry for that.
+Hi!
 
-D. Wythe
+> 
+> On Thu, 2023-12-28 at 12:58 +0000, Tudor Ambarus wrote:
+>> [...]
+>>
+>> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+>> index 0e5b1b490b0b..c6ae33016992 100644
+>> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+>> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+>> @@ -354,6 +354,35 @@ pinctrl_peric0: pinctrl@10840000 {
+>>  			interrupts = <GIC_SPI 625 IRQ_TYPE_LEVEL_HIGH 0>;
+>>  		};
+>>  
+>> +		usi8: usi@109700c0 {
+>> +			compatible = "google,gs101-usi",
+>> +				     "samsung,exynos850-usi";
+>> +			reg = <0x109700c0 0x20>;
+>> +			ranges;
+>> +			#address-cells = <1>;
+>> +			#size-cells = <1>;
+>> +			clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_7>,
+>> +				 <&cmu_peric0 CLK_GOUT_PERIC0_CLK_PERIC0_USI8_USI_CLK>;
+>> +			clock-names = "pclk", "ipclk";
+> 
+> Given the clock-names, shouldn't the clock indices be the other way around? Also see below.
 
->   
->   static const struct bpf_link_ops bpf_nf_link_lops = {
-> @@ -226,7 +240,11 @@ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
->   
->   	link->hook_ops.hook = nf_hook_run_bpf;
->   	link->hook_ops.hook_ops_type = NF_HOOK_OP_BPF;
-> -	link->hook_ops.priv = prog;
-> +
-> +	/* bpf_nf_link_release & bpf_nf_link_dealloc() can ensures that link remains
-> +	 * valid at all times within nf_hook_run_bpf().
-> +	 */
-> +	link->hook_ops.priv = link;
->   
->   	link->hook_ops.pf = attr->link_create.netfilter.pf;
->   	link->hook_ops.priority = attr->link_create.netfilter.priority;
+You're right, they should have been the other way around! Didn't make
+any difference at testing because the usi driver uses
+clk_bulk_prepare_enable(), what matters is the order of clocks in the
+i2c node, and those are fine.
 
+> 
+>> +			samsung,sysreg = <&sysreg_peric0 0x101c>;
+>> +			status = "disabled";
+>> +
+>> +			hsi2c_8: i2c@10970000 {
+>> +				compatible = "google,gs101-hsi2c",
+>> +					     "samsung,exynosautov9-hsi2c";
+>> +				reg = <0x10970000 0xc0>;
+>> +				interrupts = <GIC_SPI 642 IRQ_TYPE_LEVEL_HIGH 0>;
+>> +				#address-cells = <1>;
+>> +				#size-cells = <0>;
+>> +				pinctrl-names = "default";
+>> +				pinctrl-0 = <&hsi2c8_bus>;
+>> +				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_7>,
+>> +					 <&cmu_peric0 CLK_GOUT_PERIC0_CLK_PERIC0_USI8_USI_CLK>;
+>> +				clock-names = "hsi2c", "hsi2c_pclk";
+> 
+> Here, pclk == CLK_GOUT_PERIC0_CLK_PERIC0_USI8_USI_CLK (which is correct, I believe), whereas
+> above pclk == CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_7
+> 
+
+Indeed, I'll reverse the order for the USI clocks and do some more
+testing. Thanks!
+ta
 
