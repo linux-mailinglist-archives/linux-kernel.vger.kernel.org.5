@@ -1,148 +1,352 @@
-Return-Path: <linux-kernel+bounces-13233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E5FC820178
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 21:58:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12DD1820184
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 22:04:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFB671C2134C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 20:58:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAA12283717
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 21:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960F11428D;
-	Fri, 29 Dec 2023 20:58:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6D71429E;
+	Fri, 29 Dec 2023 21:04:06 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACEA91426F
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 20:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-202-bl5_I54CNsuf5Ujw93Ax2g-1; Fri, 29 Dec 2023 20:58:32 +0000
-X-MC-Unique: bl5_I54CNsuf5Ujw93Ax2g-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 29 Dec
- 2023 20:58:15 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 29 Dec 2023 20:58:15 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-	"'peterz@infradead.org'" <peterz@infradead.org>, "'longman@redhat.com'"
-	<longman@redhat.com>
-CC: "'mingo@redhat.com'" <mingo@redhat.com>, "'will@kernel.org'"
-	<will@kernel.org>, "'boqun.feng@gmail.com'" <boqun.feng@gmail.com>, "'Linus
- Torvalds'" <torvalds@linux-foundation.org>, "'xinhui.pan@linux.vnet.ibm.com'"
-	<xinhui.pan@linux.vnet.ibm.com>,
-	"'virtualization@lists.linux-foundation.org'"
-	<virtualization@lists.linux-foundation.org>, 'Zeng Heng'
-	<zengheng4@huawei.com>
-Subject: [PATCH next 5/5] locking/osq_lock: Optimise vcpu_is_preempted()
- check.
-Thread-Topic: [PATCH next 5/5] locking/osq_lock: Optimise vcpu_is_preempted()
- check.
-Thread-Index: Ado6mcFsTi5k8LaETrKavOOIB4in0Q==
-Date: Fri, 29 Dec 2023 20:58:15 +0000
-Message-ID: <23cef5ac49494b9087953f529ae5df16@AcuMS.aculab.com>
-References: <73a4b31c9c874081baabad9e5f2e5204@AcuMS.aculab.com>
-In-Reply-To: <73a4b31c9c874081baabad9e5f2e5204@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A52F414A84;
+	Fri, 29 Dec 2023 21:04:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B2B4C433C7;
+	Fri, 29 Dec 2023 21:04:04 +0000 (UTC)
+Date: Fri, 29 Dec 2023 16:04:55 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Subject: Re: [PATCH] ftrace: Fix modification of direct_function hash while
+ in use
+Message-ID: <20231229160455.17b0f136@gandalf.local.home>
+In-Reply-To: <20231229115134.08dd5174@gandalf.local.home>
+References: <20231229115134.08dd5174@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The vcpu_is_preempted() test stops osq_lock() spinning if a virtual
-  cpu is no longer running.
-Although patched out for bare-metal the code still needs the cpu number.
-Reading this from 'prev->cpu' is a pretty much guaranteed have a cache miss
-when osq_unlock() is waking up the next cpu.
 
-Instead save 'prev->cpu' in 'node->prev_cpu' and use that value instead.
-Update in the osq_lock() 'unqueue' path when 'node->prev' is changed.
+Masami and Jiri,
 
-This is simpler than checking for 'node->prev' changing and caching
-'prev->cpu'.
+This patch made it through all my tests. If I can get an Acked-by by
+Sunday, I'll include it in my push to Linus (I have a couple of other fixes
+to send him).
 
-Signed-off-by: David Laight <david.laight@aculab.com>
----
- kernel/locking/osq_lock.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+-- Steve
 
-diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
-index b60b0add0161..89be63627434 100644
---- a/kernel/locking/osq_lock.c
-+++ b/kernel/locking/osq_lock.c
-@@ -14,8 +14,9 @@
-=20
- struct optimistic_spin_node {
- =09struct optimistic_spin_node *self, *next, *prev;
--=09int locked; /* 1 if lock acquired */
--=09int cpu; /* encoded CPU # + 1 value */
-+=09int locked;    /* 1 if lock acquired */
-+=09int cpu;       /* encoded CPU # + 1 value */
-+=09int prev_cpu;  /* actual CPU # for vpcu_is_preempted() */
- };
-=20
- static DEFINE_PER_CPU_SHARED_ALIGNED(struct optimistic_spin_node, osq_node=
-);
-@@ -29,11 +30,6 @@ static inline int encode_cpu(int cpu_nr)
- =09return cpu_nr + 1;
- }
-=20
--static inline int node_cpu(struct optimistic_spin_node *node)
--{
--=09return node->cpu - 1;
--}
--
- static inline struct optimistic_spin_node *decode_cpu(int encoded_cpu_val)
- {
- =09int cpu_nr =3D encoded_cpu_val - 1;
-@@ -114,6 +110,7 @@ bool osq_lock(struct optimistic_spin_queue *lock)
- =09if (old =3D=3D OSQ_UNLOCKED_VAL)
- =09=09return true;
-=20
-+=09node->prev_cpu =3D old - 1;
- =09prev =3D decode_cpu(old);
- =09node->prev =3D prev;
- =09node->locked =3D 0;
-@@ -148,7 +145,7 @@ bool osq_lock(struct optimistic_spin_queue *lock)
- =09 * polling, be careful.
- =09 */
- =09if (smp_cond_load_relaxed(&node->locked, VAL || need_resched() ||
--=09=09=09=09  vcpu_is_preempted(node_cpu(node->prev))))
-+=09=09=09=09  vcpu_is_preempted(node->prev_cpu)))
- =09=09return true;
-=20
- =09/* unqueue */
-@@ -205,6 +202,7 @@ bool osq_lock(struct optimistic_spin_queue *lock)
- =09 * it will wait in Step-A.
- =09 */
-=20
-+=09WRITE_ONCE(next->prev_cpu, prev->cpu - 1);
- =09WRITE_ONCE(next->prev, prev);
- =09WRITE_ONCE(prev->next, next);
-=20
---=20
-2.17.1
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+On Fri, 29 Dec 2023 11:51:34 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> Masami Hiramatsu reported a memory leak in register_ftrace_direct() where
+> if the number of new entries are added is large enough to cause two
+> allocations in the loop:
+> 
+>         for (i = 0; i < size; i++) {
+>                 hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+>                         new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
+>                         if (!new)
+>                                 goto out_remove;
+>                         entry->direct = addr;
+>                 }
+>         }
+> 
+> Where ftrace_add_rec_direct() has:
+> 
+>         if (ftrace_hash_empty(direct_functions) ||
+>             direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
+>                 struct ftrace_hash *new_hash;
+>                 int size = ftrace_hash_empty(direct_functions) ? 0 :
+>                         direct_functions->count + 1;
+> 
+>                 if (size < 32)
+>                         size = 32;
+> 
+>                 new_hash = dup_hash(direct_functions, size);
+>                 if (!new_hash)
+>                         return NULL;
+> 
+>                 *free_hash = direct_functions;
+>                 direct_functions = new_hash;
+>         }
+> 
+> The "*free_hash = direct_functions;" can happen twice, losing the previous
+> allocation of direct_functions.
+> 
+> But this also exposed a more serious bug.
+> 
+> The modification of direct_functions above is not safe. As
+> direct_functions can be referenced at any time to find what direct caller
+> it should call, the time between:
+> 
+>                 new_hash = dup_hash(direct_functions, size);
+>  and
+>                 direct_functions = new_hash;
+> 
+> can have a race with another CPU (or even this one if it gets interrupted),
+> and the entries being moved to the new hash are not referenced.
+> 
+> That's because the "dup_hash()" is really misnamed and is really a
+> "move_hash()". It moves the entries from the old hash to the new one.
+> 
+> Now even if that was changed, this code is not proper as direct_functions
+> should not be updated until the end. That is the best way to handle
+> function reference changes, and is the way other parts of ftrace handles
+> this.
+> 
+> The following is done:
+> 
+>  1. Change add_hash_entry() to return the entry it created and inserted
+>     into the hash, and not just return success or not.
+> 
+>  2. Replace ftrace_add_rec_direct() with add_hash_entry(), and remove
+>     the former.
+> 
+>  3. Allocate a "new_hash" at the start that is made for holding both the
+>     new hash entries as well as the existing entries in direct_functions.
+> 
+>  4. Copy (not move) the direct_function entries over to the new_hash.
+> 
+>  5. Copy the entries of the added hash to the new_hash.
+> 
+>  6. If everything succeeds, then use rcu_pointer_assign() to update the
+>     direct_functions with the new_hash.
+> 
+> This simplifies the code and fixes both the memory leak as well as the
+> race condition mentioned above.
+> 
+> Link: https://lore.kernel.org/all/170368070504.42064.8960569647118388081.stgit@devnote2/
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 763e34e74bb7d ("ftrace: Add register_ftrace_direct()")
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/ftrace.c | 100 ++++++++++++++++++++----------------------
+>  1 file changed, 47 insertions(+), 53 deletions(-)
+> 
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index 8de8bec5f366..b01ae7d36021 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -1183,18 +1183,19 @@ static void __add_hash_entry(struct ftrace_hash *hash,
+>  	hash->count++;
+>  }
+>  
+> -static int add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
+> +static struct ftrace_func_entry *
+> +add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
+>  {
+>  	struct ftrace_func_entry *entry;
+>  
+>  	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+>  	if (!entry)
+> -		return -ENOMEM;
+> +		return NULL;
+>  
+>  	entry->ip = ip;
+>  	__add_hash_entry(hash, entry);
+>  
+> -	return 0;
+> +	return entry;
+>  }
+>  
+>  static void
+> @@ -1349,7 +1350,6 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
+>  	struct ftrace_func_entry *entry;
+>  	struct ftrace_hash *new_hash;
+>  	int size;
+> -	int ret;
+>  	int i;
+>  
+>  	new_hash = alloc_ftrace_hash(size_bits);
+> @@ -1366,8 +1366,7 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
+>  	size = 1 << hash->size_bits;
+>  	for (i = 0; i < size; i++) {
+>  		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+> -			ret = add_hash_entry(new_hash, entry->ip);
+> -			if (ret < 0)
+> +			if (add_hash_entry(new_hash, entry->ip) == NULL)
+>  				goto free_hash;
+>  		}
+>  	}
+> @@ -2536,7 +2535,7 @@ ftrace_find_unique_ops(struct dyn_ftrace *rec)
+>  
+>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+>  /* Protected by rcu_tasks for reading, and direct_mutex for writing */
+> -static struct ftrace_hash *direct_functions = EMPTY_HASH;
+> +static struct ftrace_hash __rcu *direct_functions = EMPTY_HASH;
+>  static DEFINE_MUTEX(direct_mutex);
+>  int ftrace_direct_func_count;
+>  
+> @@ -2555,39 +2554,6 @@ unsigned long ftrace_find_rec_direct(unsigned long ip)
+>  	return entry->direct;
+>  }
+>  
+> -static struct ftrace_func_entry*
+> -ftrace_add_rec_direct(unsigned long ip, unsigned long addr,
+> -		      struct ftrace_hash **free_hash)
+> -{
+> -	struct ftrace_func_entry *entry;
+> -
+> -	if (ftrace_hash_empty(direct_functions) ||
+> -	    direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
+> -		struct ftrace_hash *new_hash;
+> -		int size = ftrace_hash_empty(direct_functions) ? 0 :
+> -			direct_functions->count + 1;
+> -
+> -		if (size < 32)
+> -			size = 32;
+> -
+> -		new_hash = dup_hash(direct_functions, size);
+> -		if (!new_hash)
+> -			return NULL;
+> -
+> -		*free_hash = direct_functions;
+> -		direct_functions = new_hash;
+> -	}
+> -
+> -	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+> -	if (!entry)
+> -		return NULL;
+> -
+> -	entry->ip = ip;
+> -	entry->direct = addr;
+> -	__add_hash_entry(direct_functions, entry);
+> -	return entry;
+> -}
+> -
+>  static void call_direct_funcs(unsigned long ip, unsigned long pip,
+>  			      struct ftrace_ops *ops, struct ftrace_regs *fregs)
+>  {
+> @@ -4223,8 +4189,8 @@ enter_record(struct ftrace_hash *hash, struct dyn_ftrace *rec, int clear_filter)
+>  		/* Do nothing if it exists */
+>  		if (entry)
+>  			return 0;
+> -
+> -		ret = add_hash_entry(hash, rec->ip);
+> +		if (add_hash_entry(hash, rec->ip) == NULL)
+> +			ret = -ENOMEM;
+>  	}
+>  	return ret;
+>  }
+> @@ -5266,7 +5232,8 @@ __ftrace_match_addr(struct ftrace_hash *hash, unsigned long ip, int remove)
+>  		return 0;
+>  	}
+>  
+> -	return add_hash_entry(hash, ip);
+> +	entry = add_hash_entry(hash, ip);
+> +	return entry ? 0 :  -ENOMEM;
+>  }
+>  
+>  static int
+> @@ -5410,7 +5377,7 @@ static void remove_direct_functions_hash(struct ftrace_hash *hash, unsigned long
+>   */
+>  int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+>  {
+> -	struct ftrace_hash *hash, *free_hash = NULL;
+> +	struct ftrace_hash *hash, *new_hash = NULL, *free_hash = NULL;
+>  	struct ftrace_func_entry *entry, *new;
+>  	int err = -EBUSY, size, i;
+>  
+> @@ -5436,17 +5403,44 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+>  		}
+>  	}
+>  
+> -	/* ... and insert them to direct_functions hash. */
+>  	err = -ENOMEM;
+> +
+> +	/* Make a copy hash to place the new and the old entries in */
+> +	size = hash->count + direct_functions->count;
+> +	if (size > 32)
+> +		size = 32;
+> +	new_hash = alloc_ftrace_hash(fls(size));
+> +	if (!new_hash)
+> +		goto out_unlock;
+> +
+> +	/* Now copy over the existing direct entries */
+> +	size = 1 << direct_functions->size_bits;
+> +	for (i = 0; i < size; i++) {
+> +		hlist_for_each_entry(entry, &direct_functions->buckets[i], hlist) {
+> +			new = add_hash_entry(new_hash, entry->ip);
+> +			if (!new)
+> +				goto out_unlock;
+> +			new->direct = entry->direct;
+> +		}
+> +	}
+> +
+> +	/* ... and add the new entries */
+> +	size = 1 << hash->size_bits;
+>  	for (i = 0; i < size; i++) {
+>  		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+> -			new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
+> +			new = add_hash_entry(new_hash, entry->ip);
+>  			if (!new)
+> -				goto out_remove;
+> +				goto out_unlock;
+> +			/* Update both the copy and the hash entry */
+> +			new->direct = addr;
+>  			entry->direct = addr;
+>  		}
+>  	}
+>  
+> +	free_hash = direct_functions;
+> +	rcu_assign_pointer(direct_functions, new_hash);
+> +	new_hash = NULL;
+> +
+>  	ops->func = call_direct_funcs;
+>  	ops->flags = MULTI_FLAGS;
+>  	ops->trampoline = FTRACE_REGS_ADDR;
+> @@ -5454,17 +5448,17 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+>  
+>  	err = register_ftrace_function_nolock(ops);
+>  
+> - out_remove:
+> -	if (err)
+> -		remove_direct_functions_hash(hash, addr);
+> -
+>   out_unlock:
+>  	mutex_unlock(&direct_mutex);
+>  
+> -	if (free_hash) {
+> +	if (free_hash && free_hash != EMPTY_HASH) {
+>  		synchronize_rcu_tasks();
+>  		free_ftrace_hash(free_hash);
+>  	}
+> +
+> +	if (new_hash)
+> +		free_ftrace_hash(new_hash);
+> +
+>  	return err;
+>  }
+>  EXPORT_SYMBOL_GPL(register_ftrace_direct);
+> @@ -6309,7 +6303,7 @@ ftrace_graph_set_hash(struct ftrace_hash *hash, char *buffer)
+>  
+>  				if (entry)
+>  					continue;
+> -				if (add_hash_entry(hash, rec->ip) < 0)
+> +				if (add_hash_entry(hash, rec->ip) == NULL)
+>  					goto out;
+>  			} else {
+>  				if (entry) {
 
 
