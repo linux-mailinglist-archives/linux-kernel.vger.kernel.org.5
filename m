@@ -1,176 +1,255 @@
-Return-Path: <linux-kernel+bounces-13127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C7D9820013
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:01:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26A8A820016
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B86BC284645
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:01:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A1C8B22227
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 15:05:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADE4F125A5;
-	Fri, 29 Dec 2023 15:01:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D20B125A1;
+	Fri, 29 Dec 2023 15:05:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cuDvjIx/"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=linosanfilippo@gmx.de header.b="r2dZZbEa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DCDA11CB9
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 15:01:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-555aa7fd668so1156128a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 07:01:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703862091; x=1704466891; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OJGAbTsJuV5c3Gk6VGVnHrcLGAJpmZfominI1jRqdbY=;
-        b=cuDvjIx/AaPwCvtsVoX9cVFHQNjHNMs8TqNApLoK6NLIb8L1uBgsYnL1KXUMykvEqv
-         9SQAu/YsY2PHRS3LJlHvc4KPTK/vwkuxCWSM9gnqxX9LBSN87lho+fJQP5ekRJXbNpJO
-         ShFB2Js6fNiUif0a6nCZXsKF7fROLkNpaaqob1UfHSGgwUY94WWwRmYUl6bNrqwky/Hm
-         RLbyIJfVYF8BqiAnfZDiQja/SblNTJqYCLJCvsIqiu0TaAmJQuDEIRn0aXVSjTP7mS/m
-         M6Ji50QAlzE+YdHPWicHlmN3i8DMJOsNBKes7bg+QCzr8xUBfqUjgT233u+epHD/3RDq
-         PaTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703862091; x=1704466891;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OJGAbTsJuV5c3Gk6VGVnHrcLGAJpmZfominI1jRqdbY=;
-        b=Y+2hFynBJ+mxDS+nWus+ZXMMURxcGjPCaTQoLOF4xgSsi3OCvzooS0cjW9YxgUt29w
-         Pyw2ceQtU+TL3haKXhnmzGDV5qgUMIl5OlPjUoX2RcC5G4CtsQ+SeJKpFJn5XJ/7fcbq
-         9A5ZO8OzsSUNYsj3U1x3+lYT9P2Ya1AkxY784qYX3d2GAreQ4mMT71z1bfAlOQ9H6OGF
-         FRVfwhLtj5I29ODalHcbDW67wlBCGVHKOz8VfFLED8MOqmoRKa2QjV1MAR7fG/zXg8D+
-         q4VLVFsbJA90Ew69ct9q/mjnNRrlb+EEESex8G8No/RyoQfoldCMCiBZgsbaT4QNcba0
-         rpNA==
-X-Gm-Message-State: AOJu0YxLj1o9paSuLcY+ewM9ukIF/cs7EmhOU0ZbHYZuIUH5+iMVASZ2
-	sZlqVLKQTZDCoS5t02GHnonSyo7So98CQQ==
-X-Google-Smtp-Source: AGHT+IEZeurjyRSu48qUdStUze94ZQxDBRD2FAfapU1QE4BtuFKUPN6p6ZaG2oLuMSrnqbkHNZqbfA==
-X-Received: by 2002:a50:ccd9:0:b0:553:a5e5:78d8 with SMTP id b25-20020a50ccd9000000b00553a5e578d8mr8073190edj.26.1703862090577;
-        Fri, 29 Dec 2023 07:01:30 -0800 (PST)
-Received: from [192.168.199.125] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
-        by smtp.gmail.com with ESMTPSA id ek19-20020a056402371300b0055383eb043csm11193743edb.56.2023.12.29.07.01.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Dec 2023 07:01:30 -0800 (PST)
-Message-ID: <fa0fbadc-a7c3-4bea-bed7-0006db0616dc@linaro.org>
-Date: Fri, 29 Dec 2023 16:01:27 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B743411CAE;
+	Fri, 29 Dec 2023 15:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1703862196; x=1704466996; i=linosanfilippo@gmx.de;
+	bh=AVsyOvF8iyVIZ+y0HTYWiJ5lv/jurTEehXeDcW566s0=;
+	h=X-UI-Sender-Class:From:Subject:To:Cc:References:Date:
+	 In-Reply-To;
+	b=r2dZZbEaWPakyKajbHilP2dnmyJQIb86Rl008O7k9kDpUqJpmZQEZkjI/NXiK8rG
+	 MnvCowJCC5OgZxpapX/fGY8SxDumm/i7qAlZayspO5DABfCL8PdKmD4Y2YnRV09JR
+	 TmR+fpSUNJ1mwUOskIIoBrgZzrLIamEi2adOrQIK19sHEF039vFt+VjnDngfrAuV1
+	 Es9klZjHMmjwV1MA9dqP1NpU34hNI2+tCLoNhxBp/YTY0Dwd0oA6bdrZ7nnw5Y+I/
+	 c+/jpKt9464KyX6IwDzsyj9R/3fyRd7t4v/cdh8jOpnyGG8QyzF1ZwLOTIh6Emml9
+	 aG+lcQpdgMCs2IVwag==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.2.37] ([84.162.15.98]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MVvPJ-1rilU12tdd-00Rsyf; Fri, 29
+ Dec 2023 16:03:16 +0100
+From: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Subject: Re: [PATCH v6 1/7] serial: Do not hold the port lock when setting
+ rx-during-tx GPIO
+To: Maarten Brock <m.brock@vanmierlo.com>,
+ Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org,
+ ilpo.jarvinen@linux.intel.com, u.kleine-koenig@pengutronix.de,
+ shawnguo@kernel.org, s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
+ alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
+ hugo@hugovil.com, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org, lukas@wunner.de, p.rosenberger@kunbus.com,
+ stable@vger.kernel.org, Hugo Villeneuve <hvilleneuve@dimonoff.com>
+References: <20231225113524.8800-1-l.sanfilippo@kunbus.com>
+ <20231225113524.8800-2-l.sanfilippo@kunbus.com>
+ <5177a7aef77a6b77a6e742a2fdd52a0e@vanmierlo.com>
+Message-ID: <988518d5-0d4f-1362-64f9-8bfeb3e3b700@gmx.de>
+Date: Fri, 29 Dec 2023 16:03:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] PCI: qcom: Reshuffle reset logic in 2_7_0 .init
+In-Reply-To: <5177a7aef77a6b77a6e742a2fdd52a0e@vanmierlo.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To: Johan Hovold <johan@kernel.org>
-Cc: Manivannan Sadhasivam <mani@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Stanimir Varbanov <svarbanov@mm-sol.com>,
- Andrew Murray <amurray@thegoodpenguin.co.uk>, Vinod Koul <vkoul@kernel.org>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231227-topic-8280_pcie-v1-0-095491baf9e4@linaro.org>
- <20231227-topic-8280_pcie-v1-1-095491baf9e4@linaro.org>
- <ZY7R581pgn3uO6kk@hovoldconsulting.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <ZY7R581pgn3uO6kk@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:p+fqf9l7jTjDJGxOH1YnDruj+CgRcfHEjHCkTRBGnhLYpt29OXV
+ R50OBYMIgvUo5aIQm5sh9SxU6sVZXMnlFA0+GDq6udaQo3wcl+rbv34yuG5VN29b2Vlffu6
+ zAvc8CpRqId2jLxcr6nPA9IofjPOvyAU9zamJUHNf+kGZ62cHjoS5DczHJqzwEn8+y+LMaq
+ NrW/B/qTVorJKXXGloH4Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:sRL9VqN4ciI=;ndmP7eJWlwKe3/QqbuaaDjEotdN
+ +lfLCMaxTEtl1BV/yENDeJ/gzs8DB07gKzSpOq7e3apLb0V1uvLKw5fsfA7CiBiWNv5ZObq/7
+ rPU+FHhmV1K2wjdRauS9nHBy2nMsCTf+EqiPKv+QWb2VlAq7NgO6FfFXJ/wK6MZrx4l1TyfOW
+ l55S6fF3ugQ6HRdKWHaQktYkNdXy5V6N/tyMmCGHdcwyKFAKdlRW7O7uLW/2e7/abIrr50YMG
+ dwsshviwna+ZcnJTtrWeHAvacFSV4oo2tEzl5rRt51flvQVt4w9qIVHIRXsJ2+Tx6hvIDovoc
+ BrP44nSYLAGYesBd9mnvQiZKbUG0kZrfzm0rYSpcZBTN4PuPVMJJQFfOFjx0+PE1vJdw3v/So
+ tY7FKzrxBWScjjYSPvpu/d0s4LOMrUysgjQaSSYWxQB6GD3rrVlm5ORJta63SKvH2eTYTc5Ln
+ 3d1Mv464qX7tZ2DlaSZdjJ+DYZrkQGwRkwmZDg9yxSr2afb+EJpNJTYefd32S6/9f1G5fsw9s
+ baOA12B2TIhjGQ2c/qmWUCKfwldpDzbIl5dneoOVdVSCGom1LDuO26R9+hjq9p139THl9vNMJ
+ ENKm1w9G6dr0XSVwULfKC2LeeNRAcqeQt5R33JY7DZRyoq7vzVwiwnxK3UMtE6ElwVbmHnetP
+ Sw2mLuMA19evwfCv0RGUDzL+LL9rgX3a58uayTI00t6N9ddNAUHUBgSo6Rl7i3szN3qRqoY5Z
+ A6UjPnok9EKW5Ibb5MxGGf/fksFwC2wECE299A24b6oq2ZPddZXnJVrwV4JvObc6omsE56MO6
+ H6S9R0IDuTTActmzsZdracFUSR9YDUqiNgnFaCVUNNHHl4bJRw/0VDcBXSf93kv96ohSWzZjE
+ bTzLJDBrjHXHql2SCSSO4xgVOUBqimtjRdDNqjFohZT4N6bssbfQgOLgHb2pjQVuYlT/EO6VO
+ jfmI1TOsZ8LrJBmsmJZr1O1y1BQ=
 
-On 29.12.2023 15:04, Johan Hovold wrote:
-> On Wed, Dec 27, 2023 at 11:17:19PM +0100, Konrad Dybcio wrote:
->> At least on SC8280XP, if the PCIe reset is asserted, the corresponding
->> AUX_CLK will be stuck at 'off'.
-> 
-> No, this path is exercised on every boot without the aux clock ever
-> being stuck at off. So something is clearly missing in this description.
-That's likely because the hardware has been initialized and not cleanly
-shut down by your bootloader. When you reset it, or your bootloader
-wasn't so kind, you need to start initialization from scratch.
 
->> Assert the reset (which may end up being a NOP if it was previously
->> asserted) and de-assert it back *before* turning on the clocks to avoid
->> such cases.
+Hi,
+
+On 25.12.23 at 13:31, Maarten Brock wrote:
+> Lino Sanfilippo wrote on 2023-12-25 12:35:
+>> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/seri=
+al_core.c
+>> index f1348a509552..d155131f221d 100644
+>> --- a/drivers/tty/serial/serial_core.c
+>> +++ b/drivers/tty/serial/serial_core.c
+>> @@ -1402,6 +1402,16 @@ static void uart_set_rs485_termination(struct
+>> uart_port *port,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !!(rs485->flags & SER_RS485_TERMINATE_BU=
+S));
+>> =C2=A0}
 >>
->> In addition to that, in case the clock bulk enable fails, assert the
->> RC reset back, as the hardware is in an unknown state at best.
-> 
-> This is arguably a separate change, and not necessarily one that is
-> correct either
-If the clock enable fails, the PCIe hw is not in reset state, ergo it
-may be doing "something", and that "something" would eat non-zero power.
-It's just cleaning up after yourself.
+>> +static void uart_set_rs485_rx_during_tx(struct uart_port *port,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct serial_rs485 *r=
+s485)
+>> +{
+>> +=C2=A0=C2=A0=C2=A0 if (!(rs485->flags & SER_RS485_ENABLED))
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
+>> +
+>
+> How about checking port->rs485_rx_during_tx_gpio here against NULL inste=
+ad of
+> before every call?
+>
 
-> so should at least go in a separate patch if it should
-> be done at all.
-I'll grumpily comply..
+gpiod_set_value_cansleep() already checks for a NULL pointer, so doing thi=
+s check
+in the caller is not needed.
 
->> Fixes: ed8cc3b1fc84 ("PCI: qcom: Add support for SDM845 PCIe controller")
-> 
-> I think you're being way to liberal with your use of Fixes tags. To
-> claim that this is a bug, you need to make a more convincing case for
-> why you think so.
-The first paragraph describes the issue that this patch fixes.
+>> +=C2=A0=C2=A0=C2=A0 gpiod_set_value_cansleep(port->rs485_rx_during_tx_g=
+pio,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 !!(rs485->flags & SER_RS485_RX_DURING_TX));
+>> +}
+>> +
+>> =C2=A0static int uart_rs485_config(struct uart_port *port)
+>> =C2=A0{
+>> =C2=A0=C2=A0=C2=A0=C2=A0 struct serial_rs485 *rs485 =3D &port->rs485;
+>> @@ -1413,12 +1423,17 @@ static int uart_rs485_config(struct uart_port *=
+port)
+>>
+>> =C2=A0=C2=A0=C2=A0=C2=A0 uart_sanitize_serial_rs485(port, rs485);
+>> =C2=A0=C2=A0=C2=A0=C2=A0 uart_set_rs485_termination(port, rs485);
+>> +=C2=A0=C2=A0=C2=A0 uart_set_rs485_rx_during_tx(port, rs485);
+>>
+>> =C2=A0=C2=A0=C2=A0=C2=A0 uart_port_lock_irqsave(port, &flags);
+>> =C2=A0=C2=A0=C2=A0=C2=A0 ret =3D port->rs485_config(port, NULL, rs485);
+>> =C2=A0=C2=A0=C2=A0=C2=A0 uart_port_unlock_irqrestore(port, flags);
+>> -=C2=A0=C2=A0=C2=A0 if (ret)
+>> +=C2=A0=C2=A0=C2=A0 if (ret) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memset(rs485, 0, sizeo=
+f(*rs485));
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* unset GPIOs */
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpiod_set_value_cansleep(po=
+rt->rs485_term_gpio, 0);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpiod_set_value_cansleep(po=
+rt->rs485_rx_during_tx_gpio, 0);
+>> +=C2=A0=C2=A0=C2=A0 }
+>>
+>> =C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>> =C2=A0}
+>> @@ -1457,6 +1472,7 @@ static int uart_set_rs485_config(struct
+>> tty_struct *tty, struct uart_port *port,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>> =C2=A0=C2=A0=C2=A0=C2=A0 uart_sanitize_serial_rs485(port, &rs485);
+>> =C2=A0=C2=A0=C2=A0=C2=A0 uart_set_rs485_termination(port, &rs485);
+>> +=C2=A0=C2=A0=C2=A0 uart_set_rs485_rx_during_tx(port, &rs485);
+>>
+>> =C2=A0=C2=A0=C2=A0=C2=A0 uart_port_lock_irqsave(port, &flags);
+>> =C2=A0=C2=A0=C2=A0=C2=A0 ret =3D port->rs485_config(port, &tty->termios=
+, &rs485);
+>> @@ -1468,8 +1484,14 @@ static int uart_set_rs485_config(struct
+>> tty_struct *tty, struct uart_port *port,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 port->ops->set_mctrl(port, port->mctrl);
+>> =C2=A0=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0=C2=A0=C2=A0=C2=A0 uart_port_unlock_irqrestore(port, flags);
+>> -=C2=A0=C2=A0=C2=A0 if (ret)
+>> +=C2=A0=C2=A0=C2=A0 if (ret) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* restore old GPIO setting=
+s */
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpiod_set_value_cansleep(po=
+rt->rs485_term_gpio,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !!(=
+port->rs485.flags & SER_RS485_TERMINATE_BUS));
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpiod_set_value_cansleep(po=
+rt->rs485_rx_during_tx_gpio,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !!(=
+port->rs485.flags & SER_RS485_RX_DURING_TX));
+>
+> This does not look like restoring.
 
-> Also note Qualcomm's vendor driver is similarly asserting reset after
-> enabling the clocks.
-It's also not asserting the reset on suspend, see below.
 
-> That driver does not seem to reset the controller on resume, though, in
-> case that is relevant for your current experiments.
-I know, the vendor driver doesn't fully shut down the controller. This
-is however the only sequence that we (partially) have upstream, and the
-only one that is going to work on SC8280XP (due to hw design).
+Hmm. The rx-during-tx and terminate-bus GPIOs may have changed before the
+drivers rs485_config() was called. If that function fails, the GPIOs
+are set back to the values they had before (i.e what is still stored in
+the ports serial_rs485 struct). So what is wrong with the term "restore"?
 
-On other platforms, a "soft shutdown" (i.e. dropping the link, cutting
-clocks but not fully resetting the RC state) should be possible, but
-that's not what this patchset concerns.
+> Further this looks suspiciously like duplicated code
 
-Konrad
+Since the added code consists of two one-liners I am not sure how to
+decrease code duplication in this case. We could introduce wrapper functio=
+ns (the only
+ones we have so far to set the GPIOs are uart_set_rs485_termination() and
+uart_set_rs485_rx_during_tx() which cannot be used here due to the initial
+check for SER_RS485_ENABLED). But would that really help?
+
+
+>
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>> +=C2=A0=C2=A0=C2=A0 }
+>>
+>> =C2=A0=C2=A0=C2=A0=C2=A0 if (copy_to_user(rs485_user, &port->rs485, siz=
+eof(port->rs485)))
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EFAULT;
+>> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm3=
+2-usart.c
+>> index 3048620315d6..ec9a72a5bea9 100644
+>> --- a/drivers/tty/serial/stm32-usart.c
+>> +++ b/drivers/tty/serial/stm32-usart.c
+>> @@ -226,10 +226,7 @@ static int stm32_usart_config_rs485(struct
+>> uart_port *port, struct ktermios *ter
+>>
+>> =C2=A0=C2=A0=C2=A0=C2=A0 stm32_usart_clr_bits(port, ofs->cr1, BIT(cfg->=
+uart_enable_bit));
+>>
+>> -=C2=A0=C2=A0=C2=A0 if (port->rs485_rx_during_tx_gpio)
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpiod_set_value_cansleep(po=
+rt->rs485_rx_during_tx_gpio,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !!(rs485conf->flags & =
+SER_RS485_RX_DURING_TX));
+>> -=C2=A0=C2=A0=C2=A0 else
+>> +=C2=A0=C2=A0=C2=A0 if (!port->rs485_rx_during_tx_gpio)
+>
+> Should the ! be there?
+>
+
+Thats a good point, the "else" seems indeed to be wrong. It has been intro=
+duced
+with the code that added the GPIO support (c54d48543689 "serial: stm32: Ad=
+d support for rs485 RX_DURING_TX output GPIO")
+
+I will fix it in the next version of this patch, thanks.
+
+
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rs485conf->flags |=3D =
+SER_RS485_RX_DURING_TX;
+>>
+>> =C2=A0=C2=A0=C2=A0=C2=A0 if (rs485conf->flags & SER_RS485_ENABLED) {
+>
+> Kind Regards
+> Maarten Brock
+>
+
+Thanks a lot for the review.
+
+BR,
+Lino
 
