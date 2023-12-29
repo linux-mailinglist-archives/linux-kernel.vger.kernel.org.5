@@ -1,142 +1,123 @@
-Return-Path: <linux-kernel+bounces-13029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 054BD81FE9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:25:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88A0981FE94
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 10:24:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 635ED281E62
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:25:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A8F7B20FDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 09:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F733111AA;
-	Fri, 29 Dec 2023 09:25:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F2310A1D;
+	Fri, 29 Dec 2023 09:24:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="Bs3f2hKK"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cZ932hBb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5373810A18;
-	Fri, 29 Dec 2023 09:25:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=subdimension.ro
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
-Received: from localhost.localdomain (unknown [188.24.94.216])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.subdimension.ro (Postfix) with ESMTPSA id 9608728B53A;
-	Fri, 29 Dec 2023 09:25:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
-	s=skycaves; t=1703841906;
-	bh=YfYGIoUsTI6RzgUmUkVBpE+dj6lFzao+jS0AmTGN81E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Bs3f2hKKzk/GN5rdiRahccBHXedBZeaRMfYOijRNv3atFnfBu0vgHc0bpf429z+/U
-	 /afaatpwBitxDxOuFQy/kTM5Gw72BNCdunkg6F4QZqg3UxoUA0EuUPamNn1cP/rmxt
-	 G3OuSnQQpleEN/3Eco7Z0H18znauBia+WVL4U9nI=
-From: Petre Rodan <petre.rodan@subdimension.ro>
-To: linux-iio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Petre Rodan <petre.rodan@subdimension.ro>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Andreas Klinger <ak@it-klinger.de>
-Subject: [PATCH v3 03/10] dt-bindings: iio: pressure: honeywell,mprls0025pa.yaml add spi bus
-Date: Fri, 29 Dec 2023 11:24:31 +0200
-Message-ID: <20231229092445.30180-4-petre.rodan@subdimension.ro>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231229092445.30180-1-petre.rodan@subdimension.ro>
-References: <20231229092445.30180-1-petre.rodan@subdimension.ro>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6938110A00;
+	Fri, 29 Dec 2023 09:24:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703841877; x=1735377877;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=6eyA6I/IA06zG3oVXU054nozNu51dK0BuoClY9Ax83c=;
+  b=cZ932hBb1BOhdSUp3sXeQOHKmSERypV755ey1Qv2fPDoo3aKaMhRljYd
+   rHqOKIYXkVKoIZhe4aJbAkdlOcuzHrYnsAppNJYe99moK+e9E4QkCLSGh
+   SjccqHHnikekaMVMFXx468kSUrr7by9+3CaqgR4qgOCRAIigMnNsZ851c
+   H2j03GX9nq4wWyfi47z0om6jsJ8w5jJ0l2suSe2gz4bLzOoftTb9s/sXB
+   SABAyPiN2avw2XyfBDvrQRZIC4Qdl7tDUdTdFTbm25BcjvbfRJ7xnBjP1
+   nCFg004nLbvdWLbKccT4zWEJPlhsf3LR+2uK6qxhiv42UJ5WT4od0mGBj
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="399414616"
+X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
+   d="scan'208";a="399414616"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 01:24:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
+   d="scan'208";a="13238090"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.26.117]) ([10.93.26.117])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2023 01:24:34 -0800
+Message-ID: <b1ac7e4c-e59f-43c8-a914-415a511beccc@linux.intel.com>
+Date: Fri, 29 Dec 2023 17:24:31 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v9 5/5] iommu/vt-d: don't loop for timeout ATS
+ Invalidation request forever
+To: "Tian, Kevin" <kevin.tian@intel.com>,
+ "bhelgaas@google.com" <bhelgaas@google.com>,
+ "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "will@kernel.org" <will@kernel.org>,
+ "robin.murphy@arm.com" <robin.murphy@arm.com>,
+ "lukas@wunner.de" <lukas@wunner.de>
+Cc: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231228001646.587653-1-haifeng.zhao@linux.intel.com>
+ <20231228001646.587653-6-haifeng.zhao@linux.intel.com>
+ <BN9PR11MB527651C1A108721CFF057BCF8C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <bb3a8a4c-6dad-4347-9076-0f28d1e23de3@linux.intel.com>
+ <BN9PR11MB5276E70591021395F1ED90D28C9DA@BN9PR11MB5276.namprd11.prod.outlook.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <BN9PR11MB5276E70591021395F1ED90D28C9DA@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add spi based example.
 
-Add spi-max-frequency property required by chip specifications.
+On 12/29/2023 4:17 PM, Tian, Kevin wrote:
+>> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+>> Sent: Thursday, December 28, 2023 9:10 PM
+>>
+>> On 12/28/2023 4:38 PM, Tian, Kevin wrote:
+>>>> From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+>>>> Sent: Thursday, December 28, 2023 8:17 AM
+>>>>
+>>>>
+>>>> -	if (rc == -EAGAIN)
+>>>> +	if (rc == -EAGAIN && type !=QI_DIOTLB_TYPE && type !=
+>>>> QI_DEIOTLB_TYPE)
+>>>>    		goto restart;
+>>>>
+>>> this change is moot.
+>>>
+>>> -EAGAIN is set only when hardware detects a ATS invalidation completion
+>>> timeout in qi_check_fault(). so above just essentially kills the restart logic.
+>> This change is intended to break the restar login when device-TLB
+>>
+>> invalidation timeout happens, we don't know how long the ITE took
+>>
+>> if the device is just no reponse.
+> if in the end the agreement is to remove the restart logic, then do it.
+>
+> it's not good to introduce a change which essentially kills the restart
+> logic but still keeps the related code.
 
-Add additional maintainer.
+Here, the device-TLB invalidation, depends on devcies response,
 
-Co-developed-by: Andreas Klinger <ak@it-klinger.de>
-Signed-off-by: Andreas Klinger <ak@it-klinger.de>
-Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
----
-v2 -> v3 add $ref: /schemas/spi/spi-peripheral-props.yaml
+no one could make sure the what the third party adapters will act.
 
- .../iio/pressure/honeywell,mprls0025pa.yaml   | 27 +++++++++++++++++--
- 1 file changed, 25 insertions(+), 2 deletions(-)
+but for those invalidation issued to iommu itself, should be more
 
-diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
-index 6643e51c481d..6994b30015bd 100644
---- a/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
-+++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
-@@ -8,12 +8,12 @@ title: Honeywell mprls0025pa pressure sensor
+likely to survive ?
 
- maintainers:
-   - Andreas Klinger <ak@it-klinger.de>
-+  - Petre Rodan <petre.rodan@subdimension.ro>
+Anyway, would like to see more comments.
 
- description: |
-   Honeywell pressure sensor of model mprls0025pa.
 
--  This sensor has an I2C and SPI interface. Only the I2C interface is
--  implemented.
-+  This sensor has an I2C and SPI interface.
+Thanks,
 
-   There are many models with different pressure ranges available. The vendor
-   calls them "mpr series". All of them have the identical programming model and
-@@ -86,6 +86,9 @@ properties:
-     description:
-       Maximum pressure value the sensor can measure in pascal.
-
-+  spi-max-frequency:
-+    maximum: 800000
-+
-   vdd-supply:
-     description: provide VDD power to the sensor.
-
-@@ -103,6 +106,7 @@ oneOf:
-       - honeywell,pmax-pascal
-
- allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml
-   - if:
-       required:
-         - honeywell,pressure-triplet
-@@ -133,3 +137,22 @@ examples:
-             vdd-supply = <&vcc_3v3>;
-         };
-     };
-+  - |
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        pressure@0 {
-+            compatible = "honeywell,mprls0025pa";
-+            reg = <0>;
-+            spi-max-frequency = <800000>;
-+            reset-gpios = <&gpio1 28 GPIO_ACTIVE_HIGH>;
-+            interrupt-parent = <&gpio0>;
-+            interrupts = <30 IRQ_TYPE_EDGE_RISING>;
-+
-+            honeywell,pressure-triplet = "0015PA";
-+            honeywell,transfer-function = <1>;
-+            vdd-supply = <&vcc_3v3>;
-+        };
-+    };
-+...
---
-2.41.0
+Ethan
 
 
