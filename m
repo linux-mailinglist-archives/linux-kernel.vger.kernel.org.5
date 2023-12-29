@@ -1,253 +1,79 @@
-Return-Path: <linux-kernel+bounces-12964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5FE181FD62
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 07:57:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08D1081FD5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 07:54:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45A391F21C91
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 06:57:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 278061C20927
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 06:54:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 367AB79EE;
-	Fri, 29 Dec 2023 06:56:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B337A79CD;
+	Fri, 29 Dec 2023 06:54:34 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C573F8BEB;
-	Fri, 29 Dec 2023 06:56:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4T1bkp6W2BzZfsj;
-	Fri, 29 Dec 2023 14:56:18 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0C0F21402DE;
-	Fri, 29 Dec 2023 14:56:30 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 29 Dec 2023 14:56:29 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
-	<stephen@networkplumber.org>
-CC: <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
-	<huangjunxian6@hisilicon.com>
-Subject: [PATCH iproute2-rc 2/2] rdma: Fix the error of accessing string variable outside the lifecycle
-Date: Fri, 29 Dec 2023 14:52:41 +0800
-Message-ID: <20231229065241.554726-3-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20231229065241.554726-1-huangjunxian6@hisilicon.com>
-References: <20231229065241.554726-1-huangjunxian6@hisilicon.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5FFE747E
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 06:54:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 2EBAE80B2;
+	Fri, 29 Dec 2023 14:54:17 +0800 (CST)
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 29 Dec
+ 2023 14:54:16 +0800
+Received: from jsia-virtual-machine.localdomain (175.136.135.142) by
+ EXMBX066.cuchost.com (172.16.6.66) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.42; Fri, 29 Dec 2023 14:54:13 +0800
+From: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+To: <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
+CC: <rafael.j.wysocki@intel.com>, <ajones@ventanamicro.com>,
+	<conor.dooley@microchip.com>, <sunilvl@ventanamicro.com>,
+	<jeeheng.sia@starfivetech.com>, <aou@eecs.berkeley.edu>,
+	<palmer@dabbelt.com>, <paul.walmsley@sifive.com>
+Subject: [RFC v1 0/1] Enable SPCR table for console output on RISC-V
+Date: Fri, 29 Dec 2023 14:54:04 +0800
+Message-ID: <20231229065405.235625-1-jeeheng.sia@starfivetech.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX066.cuchost.com
+ (172.16.6.66)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: quoted-printable
 
-From: wenglianfa <wenglianfa@huawei.com>
+This patch will enable the SPCR table for RISC-V.
 
-All these SPRINT_BUF(b) definitions are inside the 'if' block, but
-accessed outside the 'if' block through the pointers 'comm'. This
-leads to empty 'comm' attribute when querying resource information.
-So move the definitions to the beginning of the functions to extend
-their life cycle.
+Vendor will enable/disable the SPCR table in the firmware based on the
+platform design. However, in cases where the SPCR table is not usable,
+a kernel parameter could be used to specify the preferred console.
 
-Before:
-$ rdma res show srq
-dev hns_0 srqn 0 type BASIC lqpn 18 pdn 5 pid 7775 comm
+This patch depends on Sunil's patch series, as indicated in [1] and
+the corresponding Qemu patch can be found at [2].
 
-After:
-$ rdma res show srq
-dev hns_0 srqn 0 type BASIC lqpn 18 pdn 5 pid 7775 comm ib_send_bw
+[1] https://lore.kernel.org/lkml/20231219174526.2235150-1-sunilvl@ventana=
+micro.com/
+[2] https://lore.kernel.org/qemu-devel/20231228080616.158822-1-jeeheng.si=
+a@starfivetech.com/
 
-Fixes: 1808f002dfdd ("lib/fs: fix memory leak in get_task_name()")
-Signed-off-by: wenglianfa <wenglianfa@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- rdma/res-cmid.c | 3 +--
- rdma/res-cq.c   | 3 +--
- rdma/res-ctx.c  | 3 +--
- rdma/res-mr.c   | 3 +--
- rdma/res-pd.c   | 3 +--
- rdma/res-qp.c   | 3 +--
- rdma/res-srq.c  | 3 +--
- rdma/stat.c     | 3 +--
- 8 files changed, 8 insertions(+), 16 deletions(-)
+Sia Jee Heng (1):
+  RISC-V: ACPI: Enable SPCR table for console output on RISC-V
 
-diff --git a/rdma/res-cmid.c b/rdma/res-cmid.c
-index 7371c3a6..595af848 100644
---- a/rdma/res-cmid.c
-+++ b/rdma/res-cmid.c
-@@ -102,6 +102,7 @@ static int res_cm_id_line(struct rd *rd, const char *name, int idx,
- 	uint32_t lqpn = 0, ps;
- 	uint32_t cm_idn = 0;
- 	char *comm = NULL;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_STATE] ||
- 	    !nla_line[RDMA_NLDEV_ATTR_RES_PS])
-@@ -159,8 +160,6 @@ static int res_cm_id_line(struct rd *rd, const char *name, int idx,
- 		goto out;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/res-cq.c b/rdma/res-cq.c
-index 2cfa4994..80994a03 100644
---- a/rdma/res-cq.c
-+++ b/rdma/res-cq.c
-@@ -63,6 +63,7 @@ static int res_cq_line(struct rd *rd, const char *name, int idx,
- 	uint32_t cqn = 0;
- 	uint64_t users;
- 	uint32_t cqe;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_CQE] ||
- 	    !nla_line[RDMA_NLDEV_ATTR_RES_USECNT])
-@@ -84,8 +85,6 @@ static int res_cq_line(struct rd *rd, const char *name, int idx,
- 		goto out;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/res-ctx.c b/rdma/res-ctx.c
-index 500186d9..99736ea0 100644
---- a/rdma/res-ctx.c
-+++ b/rdma/res-ctx.c
-@@ -13,13 +13,12 @@ static int res_ctx_line(struct rd *rd, const char *name, int idx,
- 	char *comm = NULL;
- 	uint32_t ctxn = 0;
- 	uint32_t pid = 0;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_CTXN])
- 		return MNL_CB_ERROR;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/res-mr.c b/rdma/res-mr.c
-index fb48d5df..e6c81d11 100644
---- a/rdma/res-mr.c
-+++ b/rdma/res-mr.c
-@@ -30,6 +30,7 @@ static int res_mr_line(struct rd *rd, const char *name, int idx,
- 	uint32_t pdn = 0;
- 	uint32_t mrn = 0;
- 	uint32_t pid = 0;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_MRLEN])
- 		return MNL_CB_ERROR;
-@@ -47,8 +48,6 @@ static int res_mr_line(struct rd *rd, const char *name, int idx,
- 		goto out;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/res-pd.c b/rdma/res-pd.c
-index 66f91f42..0dbb310a 100644
---- a/rdma/res-pd.c
-+++ b/rdma/res-pd.c
-@@ -16,6 +16,7 @@ static int res_pd_line(struct rd *rd, const char *name, int idx,
- 	uint32_t pid = 0;
- 	uint32_t pdn = 0;
- 	uint64_t users;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_USECNT])
- 		return MNL_CB_ERROR;
-@@ -34,8 +35,6 @@ static int res_pd_line(struct rd *rd, const char *name, int idx,
- 			nla_line[RDMA_NLDEV_ATTR_RES_UNSAFE_GLOBAL_RKEY]);
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/res-qp.c b/rdma/res-qp.c
-index c180a97e..cd2f4aa2 100644
---- a/rdma/res-qp.c
-+++ b/rdma/res-qp.c
-@@ -86,6 +86,7 @@ static int res_qp_line(struct rd *rd, const char *name, int idx,
- 	uint32_t port = 0, pid = 0;
- 	uint32_t pdn = 0;
- 	char *comm = NULL;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_LQPN] ||
- 	    !nla_line[RDMA_NLDEV_ATTR_RES_SQ_PSN] ||
-@@ -146,8 +147,6 @@ static int res_qp_line(struct rd *rd, const char *name, int idx,
- 		goto out;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/res-srq.c b/rdma/res-srq.c
-index cf9209d7..758bb193 100644
---- a/rdma/res-srq.c
-+++ b/rdma/res-srq.c
-@@ -183,13 +183,12 @@ static int res_srq_line(struct rd *rd, const char *name, int idx,
- 	char qp_str[MAX_QP_STR_LEN] = {};
- 	char *comm = NULL;
- 	uint8_t type = 0;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_SRQN])
- 		return MNL_CB_ERROR;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/stat.c b/rdma/stat.c
-index 3df2c98f..c7dde680 100644
---- a/rdma/stat.c
-+++ b/rdma/stat.c
-@@ -223,6 +223,7 @@ static int res_counter_line(struct rd *rd, const char *name, int index,
- 	struct nlattr *hwc_table, *qp_table;
- 	struct nlattr *nla_entry;
- 	const char *comm = NULL;
-+	SPRINT_BUF(b);
- 	bool isfirst;
- 	int err;
- 
-@@ -248,8 +249,6 @@ static int res_counter_line(struct rd *rd, const char *name, int index,
- 		return MNL_CB_OK;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
--- 
-2.30.0
+ arch/riscv/kernel/acpi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--=20
+2.34.1
 
 
