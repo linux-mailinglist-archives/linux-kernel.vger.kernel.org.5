@@ -1,139 +1,134 @@
-Return-Path: <linux-kernel+bounces-12940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A17C381FCF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 05:05:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F174B81FCF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 05:21:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D16028455C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 04:05:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 069211C21FC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 04:21:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF6241FAF;
-	Fri, 29 Dec 2023 04:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA33A23A1;
+	Fri, 29 Dec 2023 04:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hwEuCGuG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8087B23A4;
-	Fri, 29 Dec 2023 04:05:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E5FFC433C8;
-	Fri, 29 Dec 2023 04:05:23 +0000 (UTC)
-Date: Thu, 28 Dec 2023 23:05:21 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] ring-buffer: Fix wake ups when buffer_percent is set to
- 100
-Message-ID: <20231228230521.7dc92d1f@rorschach.local.home>
-In-Reply-To: <20231227075708.008225fc3c04444aac193b39@kernel.org>
-References: <20231226125902.4a057f1d@gandalf.local.home>
-	<20231227075708.008225fc3c04444aac193b39@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E221FA8;
+	Fri, 29 Dec 2023 04:21:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703823665; x=1735359665;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=bCk1WmPQGNe7VSwvo3KzDGGlaLdYm0gwge09YznPONI=;
+  b=hwEuCGuG+hbLU/WbK8Goo6Ia0hJ05zQ5hsdpIqhMd3Xa453MnuarUlYD
+   DXO6Q2MREo/X3UoYhjv5fOBF/Tvyx9owFV+/KFPGIR8o1dSx/zUJcX1Vm
+   +YL8ga7dhYpvkh6y4rW832PPpzM3oCtQrq8TbGAJLgXTMPW1GotM/aESE
+   D5G1WRuuOCzpZ52xAw9p0xMdVOvnh6OdyT5PajS2t9V0K54+OU3Vqkyyu
+   tzMmROucTTa6d93MRM83+4HFqz9fE8/m8XDv0rDjmiUvPL3aKnzcF9eCM
+   37e8pBN6Y1wbXaV4g93PYGHPMZBiNCOtQ7fi1ARYDuvz5BBTI6zywpgOA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="482801277"
+X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
+   d="scan'208";a="482801277"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 20:21:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10937"; a="728502480"
+X-IronPort-AV: E=Sophos;i="6.04,314,1695711600"; 
+   d="scan'208";a="728502480"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.22.149]) ([10.93.22.149])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2023 20:21:01 -0800
+Message-ID: <7e614fab-8f91-4a91-bfbf-1b02b9f12cdb@intel.com>
+Date: Fri, 29 Dec 2023 12:20:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] KVM: x86/hyperv: Calculate APIC bus frequency for
+ hyper-v
+Content-Language: en-US
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+To: Isaku Yamahata <isaku.yamahata@intel.com>, kvm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Vishal Annapurve <vannapurve@google.com>, Jim Mattson <jmattson@google.com>,
+ Maxim Levitsky <mlevitsk@redhat.com>
+Cc: isaku.yamahata@gmail.com
+References: <cover.1702974319.git.isaku.yamahata@intel.com>
+ <ecd345619fdddfe48f375160c90322754cec9096.1702974319.git.isaku.yamahata@intel.com>
+ <09cec4fd-2d79-4925-bb2b-7814032fdda3@intel.com>
+In-Reply-To: <09cec4fd-2d79-4925-bb2b-7814032fdda3@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, 27 Dec 2023 07:57:08 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-
-> On Tue, 26 Dec 2023 12:59:02 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
+On 12/21/2023 1:26 PM, Xiaoyao Li wrote:
+> On 12/19/2023 4:34 PM, Isaku Yamahata wrote:
+>> Remove APIC_BUS_FREUQNCY and calculate it based on APIC bus cycles per 
+>> NS.
+>> APIC_BUS_FREUQNCY is used only for HV_X64_MSR_APIC_FREQUENCY.  The MSR is
+>> not frequently read, calculate it every time.
+>>
+>> In order to make APIC bus frequency configurable, we need to make make 
+>> two
 > 
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> > 
-> > The tracefs file "buffer_percent" is to allow user space to set a
-> > water-mark on how much of the tracing ring buffer needs to be filled in
-> > order to wake up a blocked reader.
-> > 
-> >  0 - is to wait until any data is in the buffer
-> >  1 - is to wait for 1% of the sub buffers to be filled
-> >  50 - would be half of the sub buffers are filled with data
-> >  100 - is not to wake the waiter until the ring buffer is completely full
-> > 
-> > Unfortunately the test for being full was:
-> > 
-> > 	dirty = ring_buffer_nr_dirty_pages(buffer, cpu);
-> > 	return (dirty * 100) > (full * nr_pages);
-> > 
-> > Where "full" is the value for "buffer_percent".
-> > 
-> > There is two issues with the above when full == 100.
-> > 
-> > 1. dirty * 100 > 100 * nr_pages will never be true
-> >    That is, the above is basically saying that if the user sets
-> >    buffer_percent to 100, more pages need to be dirty than exist in the
-> >    ring buffer!
-> > 
-> > 2. The page that the writer is on is never considered dirty, as dirty
-> >    pages are only those that are full. When the writer goes to a new
-> >    sub-buffer, it clears the contents of that sub-buffer.
-> > 
-> > That is, even if the check was ">=" it would still not be equal as the
-> > most pages that can be considered "dirty" is nr_pages - 1.
-> > 
-> > To fix this, add one to dirty and use ">=" in the compare.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Fixes: 03329f9939781 ("tracing: Add tracefs file buffer_percentage")
-> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > ---
-> >  kernel/trace/ring_buffer.c | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> > index 83eab547f1d1..32c0dd2fd1c3 100644
-> > --- a/kernel/trace/ring_buffer.c
-> > +++ b/kernel/trace/ring_buffer.c
-> > @@ -881,9 +881,14 @@ static __always_inline bool full_hit(struct trace_buffer *buffer, int cpu, int f
-> >  	if (!nr_pages || !full)
-> >  		return true;
-> >  
-> > -	dirty = ring_buffer_nr_dirty_pages(buffer, cpu);
-> > +	/*
-> > +	 * Add one as dirty will never equal nr_pages, as the sub-buffer
-> > +	 * that the writer is on is not counted as dirty.
-> > +	 * This is needed if "buffer_percent" is set to 100.
-> > +	 */
-> > +	dirty = ring_buffer_nr_dirty_pages(buffer, cpu) + 1;  
+> two 'make', please drop one.
+
+With this and other typos pointed by Maxim fixed.
+
+Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+
+>> related constants into variables.  APIC_BUS_FREUQNCY and 
+>> APIC_BUS_CYCLE_NS.
+>> One can be calculated from the other.
+>>     APIC_BUS_CYCLES_NS = 1000 * 1000 * 1000 / APIC_BUS_FREQUENCY.
+>> By removing APIC_BUS_FREQUENCY, we need to track only single variable
+>> instead of two.
+>>
+>> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+>> ---
+>> Changes v3:
+>> - Newly added according to Maxim Levistsky suggestion.
+>> ---
+>>   arch/x86/kvm/hyperv.c | 2 +-
+>>   arch/x86/kvm/lapic.h  | 1 -
+>>   2 files changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+>> index 238afd7335e4..a40ca2fef58c 100644
+>> --- a/arch/x86/kvm/hyperv.c
+>> +++ b/arch/x86/kvm/hyperv.c
+>> @@ -1687,7 +1687,7 @@ static int kvm_hv_get_msr(struct kvm_vcpu *vcpu, 
+>> u32 msr, u64 *pdata,
+>>           data = (u64)vcpu->arch.virtual_tsc_khz * 1000;
+>>           break;
+>>       case HV_X64_MSR_APIC_FREQUENCY:
+>> -        data = APIC_BUS_FREQUENCY;
+>> +        data = div64_u64(1000000000ULL, APIC_BUS_CYCLE_NS);
+>>           break;
+>>       default:
+>>           kvm_pr_unimpl_rdmsr(vcpu, msr);
+>> diff --git a/arch/x86/kvm/lapic.h b/arch/x86/kvm/lapic.h
+>> index 0a0ea4b5dd8c..a20cb006b6c8 100644
+>> --- a/arch/x86/kvm/lapic.h
+>> +++ b/arch/x86/kvm/lapic.h
+>> @@ -17,7 +17,6 @@
+>>   #define APIC_DEST_MASK            0x800
+>>   #define APIC_BUS_CYCLE_NS       1
+>> -#define APIC_BUS_FREQUENCY      (1000000000ULL / APIC_BUS_CYCLE_NS)
+>>   #define APIC_BROADCAST            0xFF
+>>   #define X2APIC_BROADCAST        0xFFFFFFFFul
 > 
-> Is this "+ 1" required? If we have 200 pages and 1 buffer is dirty,
-> it is 0.5% dirty. Consider @full = 1%.
-
-Yes it is required, as the comment above it states. dirty will never
-equal nr_pages. Without it, buffer_percent == 100 will never wake up.
-
-The +1 is to add the page the writer is on, which is never considered
-"dirty".
-
 > 
-> @dirty = 1 + 1 = 2 and @dirty * 100 == 200. but 
-> @full * @nr_pages = 1 * 200 = 200.
-> Thus it hits (200 >= 200 is true) even if dirty pages are 0.5%.
 
-Do we care?
-
-What's the difference if it wakes up on 2 dirty pages or 1? It would be
-very hard to measure the difference.
-
-But if you say 100, which means "I want to wake up when full" it will
-never wake up. Because it will always be nr_pages - 1.
-
-We could also say the +1 is the reader page too, because that's not
-counted as well.
-
-In other words, we can bike shed this to make 1% accurate (which
-honestly, I have no idea what the use case for that would be) or we can
-fix the bug that has 100% which just means, wake me up if the buffer is
-full, and when the writer is on the last page, it is considered full.
-
--- Steve
 
