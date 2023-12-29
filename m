@@ -1,134 +1,212 @@
-Return-Path: <linux-kernel+bounces-13171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 528848200AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 18:10:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 143B88200B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 18:11:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43E701C210DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:10:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E4AB1C21953
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:11:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE4512B75;
-	Fri, 29 Dec 2023 17:10:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7DF12B75;
+	Fri, 29 Dec 2023 17:11:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y1U6Vteg"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="S/eGzVmA";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rD9XuYYr";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="S/eGzVmA";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rD9XuYYr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC8AF12B6B
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 17:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-68015293aa3so18837846d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 09:10:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703869818; x=1704474618; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=bn7Ypr1yINWIrF1HsU+9Oaoc2yoSbevJLsQCr58V/sc=;
-        b=Y1U6VtegJF6D5UfqzdCATQZHq+jDXOJOXMRW9iNHWTiHJmeigFHD4IObfLCnMSEFGZ
-         BbxASrfi9jrDomb2C2u+mXBMV+ZoFVuy0wQYu3ys8Deyi0Gr54xkiOiJyw5Ob/zepOpj
-         yRw8N6lcky5+6LVm8utLMF0VnTdyN8KusGYijwZXxN4uAvwqGqcxtlhlKta6fjyRdCP2
-         0irugM5uBUop6gTBuWiZwsgRs/Fn+KTeL0URihIEKsX4oBWO0rAEm/nz3noEXtCyFz8v
-         Qnz+PaD9XostiIHP4B+d+6Cd1FIRwHzt4M9Hf4cafDwojTBy32Aj3saVaLMI9aKlsxu0
-         KdFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703869818; x=1704474618;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bn7Ypr1yINWIrF1HsU+9Oaoc2yoSbevJLsQCr58V/sc=;
-        b=jPYeHFQ1kFo2JgIi+11TjHE8Nxu6f83jRxgwvKizl/6Yjj3vB6cGkcGSwL7I87pLL1
-         gHGwdjWJ8Cyeax6jlhvGZ7nrF9clC98nUigGcyiEEFLMzD2Gz/KY70OkHZoqIqN0CPHA
-         I6D3R40Gy/gKngGzgqr2nByhtK7L0vYWcn0t9lntfcuQIF4syW1TjFiP4lAGlPKoHMqm
-         9QTDgfv8vksgNUtRsT1pDCI3BTOzG6YHSGqOUJyGK6dUv6Mkm5wPh9+T/vsg1QgFZo16
-         OUTyyFfE9f3so6y4bqDBcMtGM9MxoDbhFZ3iABpnAxa1T5rZKkeYTbLLMUffH7Qb3Zz3
-         P24g==
-X-Gm-Message-State: AOJu0YzF9372Xm917BeJW68GTZBpKDGqpnr4iQ85zcGqsjMegJMuET2b
-	GUrN9PlQx66AIBu7k9Wb8dsHQxW3NVDm
-X-Google-Smtp-Source: AGHT+IFOtfZk5ygOqwlXAAgl64auJMA1fyIe+Ru1+46ug74bAuW5Qg0DbNqPe5nRjj9BaEWs7QXTtQ==
-X-Received: by 2002:a05:6214:a51:b0:67f:cf88:9912 with SMTP id ee17-20020a0562140a5100b0067fcf889912mr6376835qvb.107.1703869818571;
-        Fri, 29 Dec 2023 09:10:18 -0800 (PST)
-Received: from thinkpad ([117.207.24.172])
-        by smtp.gmail.com with ESMTPSA id t7-20020a056214118700b0067f80a27790sm7161516qvv.37.2023.12.29.09.10.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Dec 2023 09:10:18 -0800 (PST)
-Date: Fri, 29 Dec 2023 22:40:08 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Johan Hovold <johan@kernel.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB43612B68;
+	Fri, 29 Dec 2023 17:11:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B323821CF2;
+	Fri, 29 Dec 2023 17:11:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1703869904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tZehKtOidM/ksrl2T81jqfsSZp7GZn6XIl7nNRgrGng=;
+	b=S/eGzVmAA6Ap3PuXn45nqNlTdrP2TIxrszu9GDoIwfM/hIItuegORKSbqkl4g7x9vrZyWg
+	6vojizgLs7Ep0wNvKj6ITcUGUsGovOJGRM+zd3Jlw82s4BlM8BO5vwnJZbvpFYvPFtS2+6
+	YX6Xns0fJC3ftU54pV11SuW8bM5UZls=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1703869904;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tZehKtOidM/ksrl2T81jqfsSZp7GZn6XIl7nNRgrGng=;
+	b=rD9XuYYrGWY+QjCpAVprJTrwz2N7yEqzQxaPnNIWB/zCeDtfIY7h13wWZsT+SjIdzu4hQ2
+	meSBlXwAe3zLE+CQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1703869904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tZehKtOidM/ksrl2T81jqfsSZp7GZn6XIl7nNRgrGng=;
+	b=S/eGzVmAA6Ap3PuXn45nqNlTdrP2TIxrszu9GDoIwfM/hIItuegORKSbqkl4g7x9vrZyWg
+	6vojizgLs7Ep0wNvKj6ITcUGUsGovOJGRM+zd3Jlw82s4BlM8BO5vwnJZbvpFYvPFtS2+6
+	YX6Xns0fJC3ftU54pV11SuW8bM5UZls=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1703869904;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tZehKtOidM/ksrl2T81jqfsSZp7GZn6XIl7nNRgrGng=;
+	b=rD9XuYYrGWY+QjCpAVprJTrwz2N7yEqzQxaPnNIWB/zCeDtfIY7h13wWZsT+SjIdzu4hQ2
+	meSBlXwAe3zLE+CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 42738133E5;
+	Fri, 29 Dec 2023 17:11:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id MIFiDtD9jmVDFwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 29 Dec 2023 17:11:44 +0000
+Date: Fri, 29 Dec 2023 18:11:43 +0100
+Message-ID: <874jg1x7ao.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: peter.ujfalusi@linux.intel.com,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
 	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Konrad Dybcio <konrad.dybcio@somainline.org>
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: sc8280xp: Correct USB PHY power
- domains
-Message-ID: <20231229171008.GB9098@thinkpad>
-References: <20231227-topic-8280_pcie_dts-v1-0-13d12b1698ff@linaro.org>
- <20231227-topic-8280_pcie_dts-v1-2-13d12b1698ff@linaro.org>
- <ZY7DEpaIgvfL_A11@hovoldconsulting.com>
+	regressions@lists.linux.dev
+Subject: Re: Oops in hdac_hda_dev_probe (6.7-rc7)
+In-Reply-To: <ZY7kosArPqhlCfOA@shine.dominikbrodowski.net>
+References: <ZYvUIxtrqBQZbNlC@shine.dominikbrodowski.net>
+	<87sf3lxiet.wl-tiwai@suse.de>
+	<ZY7kosArPqhlCfOA@shine.dominikbrodowski.net>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZY7DEpaIgvfL_A11@hovoldconsulting.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: 
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.10 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linux.intel.com,gmail.com,kernel.org,perex.cz,suse.com,alsa-project.org,vger.kernel.org,lists.linux.dev];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Score: -2.10
+X-Spam-Flag: NO
 
-On Fri, Dec 29, 2023 at 02:01:06PM +0100, Johan Hovold wrote:
-> On Wed, Dec 27, 2023 at 11:28:27PM +0100, Konrad Dybcio wrote:
-> > The USB GDSCs are only related to the controllers.
+On Fri, 29 Dec 2023 16:24:18 +0100,
+Dominik Brodowski wrote:
 > 
-> Are you sure?
+> Hi Takashi,
 > 
+> many thanks for your response. Your patch helps half-way: the oops goes
+> away, but so does the sound... With your patch, the decisive lines in dmesg
+> are:
+> 
+> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
+> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
+> 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
+> 	sof_sdw sof_sdw: snd_soc_register_card failed -517
+> 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
+> 	sof_sdw sof_sdw: snd_soc_register_card failed -517
+> 	platform sof_sdw: deferred probe pending
+> 
+> With a revert of the a0575b4add21, it is:
+> 
+> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
+> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
+> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Topology: ABI 3:22:1 Kernel ABI 3:23:0
+> 	sof_sdw sof_sdw: ASoC: Parent card not yet available, widget card binding deferred
+> 	sof_sdw sof_sdw: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 3
+> 	input: sof-soundwire HDMI/DP,pcm=5 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input14
+> 	input: sof-soundwire HDMI/DP,pcm=6 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input15
+> 	input: sof-soundwire HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input16
+> 
+> Maybe this helps a bit further?
 
-Yes, that's what I was told by UFS and PCIe teams and some of the internal
-documentation also confirms the same.
+Thanks for quick testing.
+It shows at least that my guess wasn't wrong.
 
-> > The PHYs on the other
-> > hand, are powered by VDD_MX and their specific VDDA_PHY/PLL regulators.
-> > 
-> > Fix the power-domains assignment to stop potentially toggling the GDSC
-> > unnecessarily.
-> 
-> Again, there's no additional toggling being done here, but yes, this may
-> keep the domains enabled during suspend depending on how the driver is
-> implemented.
-> 
-> If that's the concern, then please spell that out too.
-> 
-> > Fixes: 152d1faf1e2f ("arm64: dts: qcom: add SC8280XP platform")
-> 
-> May not be needed either.
-> 
+The problem could be the initialization order in the caller side.
+Can the patch below work instead?
 
-Fixes tag is indeed needed on this platform and all other platforms too.
 
-- Mani
+Takashi
 
-> > @@ -2597,7 +2597,7 @@ usb_2_qmpphy0: phy@88ef000 {
-> >  				 <&gcc GCC_USB3UNIPHY_PHY_MP0_BCR>;
-> >  			reset-names = "phy", "phy_phy";
-> >  
-> > -			power-domains = <&gcc USB30_MP_GDSC>;
-> > +			power-domains = <&rpmhpd SC8280XP_MX>;
-> 
-> Johan
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+-- 8< --
+--- a/sound/soc/sof/intel/hda-codec.c
++++ b/sound/soc/sof/intel/hda-codec.c
+@@ -113,7 +113,9 @@ EXPORT_SYMBOL_NS_GPL(hda_codec_jack_check, SND_SOC_SOF_HDA_AUDIO_CODEC);
+ #define is_generic_config(x)	0
+ #endif
+ 
+-static struct hda_codec *hda_codec_device_init(struct hdac_bus *bus, int addr, int type)
++static struct hda_codec *hda_codec_device_init(struct hdac_bus *bus, int addr,
++					       int type,
++					       struct hdac_hda_priv *hda_priv)
+ {
+ 	struct hda_codec *codec;
+ 	int ret;
+@@ -126,6 +128,10 @@ static struct hda_codec *hda_codec_device_init(struct hdac_bus *bus, int addr, i
+ 
+ 	codec->core.type = type;
+ 
++	hda_priv->codec = codec;
++	hda_priv->dev_index = addr;
++	dev_set_drvdata(&codec->core.dev, hda_priv);
++
+ 	ret = snd_hdac_device_register(&codec->core);
+ 	if (ret) {
+ 		dev_err(bus->dev, "failed to register hdac device\n");
+@@ -163,15 +169,12 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
+ 	if (!hda_priv)
+ 		return -ENOMEM;
+ 
+-	codec = hda_codec_device_init(&hbus->core, address, HDA_DEV_LEGACY);
++	codec = hda_codec_device_init(&hbus->core, address, HDA_DEV_LEGACY,
++				      hda_priv);
+ 	ret = PTR_ERR_OR_ZERO(codec);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	hda_priv->codec = codec;
+-	hda_priv->dev_index = address;
+-	dev_set_drvdata(&codec->core.dev, hda_priv);
+-
+ 	if ((resp & 0xFFFF0000) == IDISP_VID_INTEL) {
+ 		if (!hbus->core.audio_component) {
+ 			dev_dbg(sdev->dev,
 
