@@ -1,78 +1,95 @@
-Return-Path: <linux-kernel+bounces-13168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 460F78200A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:56:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D89148200A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 17:58:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01F4D284883
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:56:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 117421C2276C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 16:58:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E5BC12B6D;
-	Fri, 29 Dec 2023 16:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9910512B6F;
+	Fri, 29 Dec 2023 16:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qbs7vhMY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9429112B66
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 16:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3601028d487so39044485ab.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 08:56:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703868966; x=1704473766;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UcVXDKCTC52LBudLeIL1xmSr/5SC9kwTBjDg7U/qhA0=;
-        b=bUpZOyObzptLlIsQS1g+5e4sKMFfgCAFufgyUL3tY/20HH6k/ei2agdlJXmufL/Hl4
-         xwurBE7bN+RIgkBVta/6nRqB1MiHg+1pblIkLM5CoOsIu+MKRq+sL+xc1Ase+DN5thuf
-         HQMPHmUadxlL49+ntA3MAzHdsZ459XS1e2WS8JtwS9RfvJijfCGI+tbg141YkHxW+BIA
-         m7D0HLiY8siWlUv3MIFZqpSI+mquHR3VENribol4flX3UGCC9NVFPytkaEbW3cicSPRw
-         r1wc/Hq4T9kHbVrszjxn3XrV61PA5TBBA+mHK4RGPAxjfUUi4CuN9LcHfdr28wzq4/7i
-         ckag==
-X-Gm-Message-State: AOJu0YzovURBWLgYeC2IdcYi94OUHMxSDV3rfW5nv0tEaPZN65P1w34G
-	IKW4cRe9wvuVoNi5NTn2F7Qgx5GiI0UC631SXvwn1fGAT1zk
-X-Google-Smtp-Source: AGHT+IEKaam3P5UaWG6eOgrWmrAKGMdmElc/De0jxXKADL49by1kFQEWypzLldZaFv3cEJeIejN4nhhz/UrZPqbyx3uUozjOtBWD
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D62C3125AB;
+	Fri, 29 Dec 2023 16:58:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0B1FC433C7;
+	Fri, 29 Dec 2023 16:58:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703869101;
+	bh=b4JkRx9IW/2Mqis6Wxs8UBnV3+psqONjdD8/WLplL4o=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=qbs7vhMYcMb4ICsZXu39XriMqUaLOaVs4Lk/yGM4iXMzitHergVz/QOBScC8ykPv8
+	 j9yb2b8Re7LqgxUgcSCdzPm2fR9HO87QOB6LuPXRMbOmcocqJH4sfwM6KvjKsexTmP
+	 S0LqOlAtTh1USnt0kCcyzCka/EnFb/jhes7tXkPXftd8ruQtaPj1dxU6ND346Dnu1C
+	 kp58fT/d63Xk6D/owpnFxB78dV/8y76W/+6qTs/6KCkqQbiPIHCNh1EfHBYrhHwhZ9
+	 P29VMADrlu9B3W6t4/ONRs0aoTlrtMguEz1IZHeNzK8P/+apm71kiy85Xwmux2zxiz
+	 cZrBO7XNHHNCQ==
+From: Mark Brown <broonie@kernel.org>
+To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, 
+ nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, 
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, 
+ linuxppc-dev@lists.ozlabs.org, linux-sound@vger.kernel.org, 
+ Chancel Liu <chancel.liu@nxp.com>
+In-Reply-To: <20231225080608.967953-1-chancel.liu@nxp.com>
+References: <20231225080608.967953-1-chancel.liu@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_rpmsg: Fix error handler with
+ pm_runtime_enable
+Message-Id: <170386909836.3001741.632329944524813915.b4-ty@kernel.org>
+Date: Fri, 29 Dec 2023 16:58:18 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aa6:b0:35f:535a:9c64 with SMTP id
- l6-20020a056e021aa600b0035f535a9c64mr1342361ilv.3.1703868966388; Fri, 29 Dec
- 2023 08:56:06 -0800 (PST)
-Date: Fri, 29 Dec 2023 08:56:06 -0800
-In-Reply-To: <7227c8d1-08f6-4f95-ad0f-d5c3e47d874d@I-love.SAKURA.ne.jp>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007c4bba060da8e89d@google.com>
-Subject: Re: [syzbot] [kernel?] KMSAN: uninit-value in profile_hits (3)
-From: syzbot <syzbot+b1a83ab2a9eb9321fbdd@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, ebiederm@xmission.com, glider@google.com, 
-	hughd@google.com, linux-kernel@vger.kernel.org, mingo@redhat.com, 
-	paskripkin@gmail.com, penguin-kernel@i-love.sakura.ne.jp, rostedt@goodmis.org, 
-	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
 
-Hello,
+On Mon, 25 Dec 2023 17:06:08 +0900, Chancel Liu wrote:
+> There is error message when defer probe happens:
+> 
+> fsl_rpmsg rpmsg_audio: Unbalanced pm_runtime_enable!
+> 
+> Fix the error handler with pm_runtime_enable.
+> 
+> 
+> [...]
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Applied to
 
-Reported-and-tested-by: syzbot+b1a83ab2a9eb9321fbdd@syzkaller.appspotmail.com
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Tested on:
+Thanks!
 
-commit:         8735c7c8 Merge tag '6.7rc7-smb3-srv-fix' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=122dcf81e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b2fd2f495c90e6b7
-dashboard link: https://syzkaller.appspot.com/bug?extid=b1a83ab2a9eb9321fbdd
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=13f021b5e80000
+[1/1] ASoC: fsl_rpmsg: Fix error handler with pm_runtime_enable
+      commit: f9d378fc68c43fd41b35133edec9cd902ec334ec
 
-Note: testing is done by a robot and is best-effort only.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
