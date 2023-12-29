@@ -1,155 +1,152 @@
-Return-Path: <linux-kernel+bounces-13074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5C1081FF59
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 13:16:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F023681FF5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 13:23:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 991EF1C22292
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:16:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75551B225C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 12:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD00111A8;
-	Fri, 29 Dec 2023 12:16:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692DE111AF;
+	Fri, 29 Dec 2023 12:23:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01on2060.outbound.protection.outlook.com [40.107.222.60])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DACDF11193;
-	Fri, 29 Dec 2023 12:16:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=siliconsignals.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siliconsignals.io
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aqdHWnFBsxfOmykj9yvKMigv8uGfxeUfS1VZNhs3mwVpDvbqxdVZJV+PNqLhFeAap0+r+NnN4muyWvXtgSeQAFRem6hj8KtHqz/zpLhImfHIZnGGStECF3PWuMQDsZA5Xgh1zfWjQCGi+WYdImsnGeViac1YDkPCyIjzr+2l7Bw1qYl4B39H7Z/jPrjk1Ucd7fvj6OuR+XhgNDjNE0kg8KF9N9OnBhUufHsvh5BZk5oqhIVuV4Ml54PvEMkfjD/EdNbGW8UnW6IEqIvkl4PHgCFcsI7fqqSz5jVwaJFKibSBGwHqz3W1A/wWElR7Rb6U8PGULTQTmN/vGdSj3aaEmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=U6Q4MoHWzfJ+/LnfE+sBWsslpOJXWVQZW2adOZSBdew=;
- b=iWlvK3A7uJLlJO4Gkr0ey5XQWXHtDTk7uoFLk3zM9E3h7K5WH/VruLL20Si9n7m8VR5rUSeXLJNbo+XAaollOlXaD1rk2EEbRXnJnGi0ZKV5YYW7kPvKENlL56MOpVcmA+H4gJsk/bIo436aDT73TvMIxPC4S6tCRbwSiI9xjRvywE8yh0JmtEb0pAjbd0IXZxZ74IxqCx1uDJwg15c1JA5nJbFVxwNjenlEyZUfsjtDsRvpXUuW0IW4Ib21pJtFo0E5lCNdWS95zjVPiaqoNFeSQ/SwZTRMrgLM+hQUm1asRBlNjUB/X/O52qYmH+poyVZxGCFAEGuG2wogehxMow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siliconsignals.io; dmarc=pass action=none
- header.from=siliconsignals.io; dkim=pass header.d=siliconsignals.io; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siliconsignals.io;
-Received: from BM1PR01MB4899.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b01:b::15)
- by PN3PR01MB10228.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:1df::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.21; Fri, 29 Dec
- 2023 12:16:13 +0000
-Received: from BM1PR01MB4899.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::54b6:4ebc:13fb:818c]) by BM1PR01MB4899.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::54b6:4ebc:13fb:818c%6]) with mapi id 15.20.7113.028; Fri, 29 Dec 2023
- 12:16:13 +0000
-From: Himanshu Bhavani <himanshu.bhavani@siliconsignals.io>
-To: stanimir.k.varbanov@gmail.com,
-	quic_vgarodia@quicinc.com,
-	agross@kernel.org,
-	andersson@kernel.org,
-	konrad.dybcio@linaro.org,
-	mchehab@kernel.org
-Cc: himanshu.bhavani@siliconsignals.io,
-	"Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-	linux-media@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] media: venus: use div64_u64() instead of do_div()
-Date: Fri, 29 Dec 2023 17:45:04 +0530
-Message-Id: <20231229121504.3479594-1-himanshu.bhavani@siliconsignals.io>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: PN2PR01CA0227.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:eb::14) To BM1PR01MB4899.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b01:b::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 984DB11193
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 12:23:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35fcbc79fd3so124785185ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 04:23:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703852584; x=1704457384;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pfuh7QOehlQL8hJA5WaXOjpb9WjD99H5CtOQrTPuErQ=;
+        b=U1jZ/oZk6ZV8IRq38f6XrkrLwFXdW1Fy9+QrqVaF6k7veiTBu1T56qHFtnClMyDA1h
+         RoLP+snNJzh5bDskHEqhTsW6Mdx19Th4q8fnm0UT4HWZ9h1xEa9Sudi1ez7MDmrcTzfw
+         M0ZSZ3KxxUYGSG/TlLMruFmWWvQNN5ZMVQ/w4jMleci6k/saDI465Vr3PDHCjSYoDVOM
+         UtYOeZWapdhXjSbcg73LhLGhr54nSC0hPpQsrDTfacTeUuIgEkwu2DFawWVeykoI62P9
+         7iLaIxBb/tJnYygItHQ6YHZHtlDtVGhrDvPl7e2xybLF8XGnUZLuy4o0S8ZDjodM12rk
+         Xg5A==
+X-Gm-Message-State: AOJu0Ywyalq79goUEAER2WuU1H22zAJbpZzXO9cEncM+QkUPNcGthdWY
+	tc78AKUicWPjCOE14BKRkOzB6JK8y3eaDNpfqN/8w0pWiwDL
+X-Google-Smtp-Source: AGHT+IFI8zUlvR0dsOjKEA9e4hWnPCwz9AJegw2Wp/0Vex0zZPRYQExYrqBQOCNKLpQwcsyZzWGcwiNFwUHeEcjOiju8WU0MlKLg
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BM1PR01MB4899:EE_|PN3PR01MB10228:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2dfa8341-305b-4d75-64b3-08dc0867f2f1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	uSuboL+RWE81VpzvinLomqv6+kRs7R5a2vh3RcvLjJutCtrWV4hCtDF8fhV8Du15Jl4iFXqSV/nsNk8W2hjSR5Ko9Igh/+Xx7jXQ8FcebMN+u5FASsb0V8xTHDWcywRa5di37GNOwkpDVTZ8O5rub4rVfiqXbn2jUAKWeXz69Fb8CrCakR2u2i62wqAUKNDuZkZtxLAga21/WYZGgd1aCxP6Yxhyzky/Zwb8qljipixT6b/6Vk37lMqFvc9byrTexyQvgziG4e336XEdy8Yyhl9v8SDi7cPr0Vy04G/ide12OTxyJaX876+0jj6R9m1SjhkLIsuNZ9RdmnssTntmXbkSkIRCn3uSXhNRUSj47sFls1XxYX8hHda9kxWEpniKDsJkQ53skdbz5Tr6xtY7oDh2CoIpfp/d81S9jMUczUfNTgqVd5XN/uiPqKpZXtY2yh6t/kJ8inoWnxIkGeXbhWrOOaZe+XvsZ8brchPffg65E2Lw6/Mh3cCd84rSgHHMG1Ro6Dkk//1J53f3Cz4X/fPZStVhhZ8eb6HKUYURxmNUH1TZet4irYpWMLuJliEuQ26QbvVmIoHIp0svMS+BFLPq2yk8bckbvfYJiU+rKzj5sHO0DPuZbsys42mULls45NgkLR2iW/3n1OnveSznTIezrI3b06yub0Hzd226TLQ=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BM1PR01MB4899.INDPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39830400003)(346002)(366004)(136003)(376002)(396003)(230173577357003)(230922051799003)(230273577357003)(451199024)(1800799012)(64100799003)(186009)(26005)(41300700001)(83380400001)(2616005)(1076003)(38100700002)(8936002)(316002)(8676002)(5660300002)(4326008)(2906002)(7416002)(44832011)(478600001)(6506007)(6512007)(66476007)(66556008)(52116002)(6486002)(6666004)(66946007)(86362001)(38350700005)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?jZYRekuezD1HakyZEMEQFUBT7rf+0X7n5E9FPekgm0HwuhXpKxsKqYbmEVWM?=
- =?us-ascii?Q?si/AA0/Jz1SKCBtGQ3Y8uz/2g995FkHk/AVK2H078wFLS5e8yhDFvvXefwqJ?=
- =?us-ascii?Q?xbCOJXJ+744VqMBiqe3Batrh5yQZmk7WsZU/HW7/wfiKK//aD6V5fd92N+Am?=
- =?us-ascii?Q?UpIJxZhrcmEhEhESEMXjxbAdHZm9gtp18afUbnTdCYmCezuXNg0MuPWJzh4I?=
- =?us-ascii?Q?grs7F7lIUGvrebFsXtOmWs4qTCXYzLkZnMPRlUCO5LYu95YFi3/kFSys8Pid?=
- =?us-ascii?Q?F1hmiTrERwvyo2cF8KMKK5o//t4c9mgO2NlN5rJjpQVImzFuxE22zFjFYXKu?=
- =?us-ascii?Q?642niYbCU4Mk0s/z9apLbPgdtE7cO6l4nVusGyUubbh04ZcaEi4+PVW0OZ5B?=
- =?us-ascii?Q?QUfqLJ/ZKaDOx5YLoagFrx2RrsC8ebQ5NVeSWQgi23A+NlOOFNTzY8Gw/6Eg?=
- =?us-ascii?Q?VEM2gtKYDSmecbqEgPt9q6tdtJtOC+z3gjyZH+erOfFvv6r/kaORTeCiIneu?=
- =?us-ascii?Q?VCm0WZP8VdqIjSYvBDrWwHDs2VvsTAr7FwIBRdySMGlsF2UuPcoo5KYNiYhe?=
- =?us-ascii?Q?kIa8+MjyIzw7u5D52MBAbFazQf/pMjFe3HlLmpfK79kq/Wi5IdwKmfpzQua8?=
- =?us-ascii?Q?OywTsGpoaYXAH8znBiIOxdirB36wa+EcyFWhHe8u7ceD/wZ4F+9xj7Ti92nJ?=
- =?us-ascii?Q?csVfsvy73+K71+b6DG2Rit7KQTyN9N9LzpX9nz/RZv7rcQ6Zab4eUGB1Zedb?=
- =?us-ascii?Q?avqydvgRMqJwnGglz4jrf3YbMLr1+fazn7/3if+UJWf1Ivoqbu0JZ6LUz2dR?=
- =?us-ascii?Q?QfFQInhH2jhlk7ENXjxbAq4PARKTqaUvG4OPfH5Jl8ytrw2a8ot8u4ZKTKVZ?=
- =?us-ascii?Q?i4h1BdM0DB0gyAWw3I4Q3VTMo0K4N99hV5LXDqIdsACzvq05Zzr0E1MBUDTl?=
- =?us-ascii?Q?KY9oUZwlg5AhHC3pt9RDeVgydTBN0PxbwFRL3kttFaRam/jRRXpUJPuRsTNv?=
- =?us-ascii?Q?IV5rRFgQ97dvrX3Q6Tm3TIC9WKHWP1UxyV3KCzq/9N6sXRvMbUbZDXpAeJOh?=
- =?us-ascii?Q?I3yvXVMvF72RkGsLWP430Ske0iDwcX4t+fipoL1czrJ44Y7p2Y3e9KPeU36u?=
- =?us-ascii?Q?cA2dktQwE1vJO9sNc76xTrdvKir3oTaezI+vazaC7JwhvcxjDvMwD+gjQdp+?=
- =?us-ascii?Q?mHf8MPIVcvoqHvQP1Sqt984/WRO40JTidIOqvBJWpftxob3oafzvVKexTZod?=
- =?us-ascii?Q?hdoh//MQfAYU+ySQCNMIozPqG26CP0HwFc1DLpplzoAeXyJJvqxTRUtf89kA?=
- =?us-ascii?Q?BsT3eIrpzPopnG8eq+2LqsaRy6+jaNoBbo8WqXqhuwq9w4k/ZV1lEb2eNp0S?=
- =?us-ascii?Q?KPV/SRZLJHMAazq+YD75FLLEbiPfK036T1UKTW9oAtrR1K8I55s9qX3j9XxS?=
- =?us-ascii?Q?W2VgZRBoTyZQsVsml9Yiq9slhQ3t3WnCwd4t7RGtNZ5VvUjwbCPzOiTcXx3r?=
- =?us-ascii?Q?7suBaESFbM1bbS0J/BfuNqTJ54djR7SVvBV/fB5VsxQS0kk2tgmbVSoFoWKQ?=
- =?us-ascii?Q?2K/b/+TbenAuS/QzWjpMQFX3C3i2ghzfifhzOQW/ND5RjD2Yd8ORm54RwKyi?=
- =?us-ascii?Q?8VRdk6hfSpyab+1ShZvv/fE=3D?=
-X-OriginatorOrg: siliconsignals.io
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2dfa8341-305b-4d75-64b3-08dc0867f2f1
-X-MS-Exchange-CrossTenant-AuthSource: BM1PR01MB4899.INDPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2023 12:16:13.1801
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 7ec5089e-a433-4bd1-a638-82ee62e21d37
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: l0oioEHDNwtb/rrr0+nlwQUX209fcOUmGiNi1sqIjnQEHhI1xRxUjRxJAeR77afHk8nm/J09z0ptjqt2ETw0IMwwSMZbwnKLMSFQTP/VtKu1pYZ9+e2WDdynVdkSlrzY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3PR01MB10228
+X-Received: by 2002:a05:6e02:2191:b0:360:1684:9509 with SMTP id
+ j17-20020a056e02219100b0036016849509mr671261ila.2.1703852584817; Fri, 29 Dec
+ 2023 04:23:04 -0800 (PST)
+Date: Fri, 29 Dec 2023 04:23:04 -0800
+In-Reply-To: <20231229112851.2000-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001161a5060da518a6@google.com>
+Subject: Re: [syzbot] [dri?] WARNING in drm_prime_destroy_file_private (2)
+From: syzbot <syzbot+59dcc2e7283a6f5f5ba1@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-do_div() does a 64-by-32 division.
-When the divisor is u64, do_div() truncates it to 32 bits, this means it
-can test non-zero and be truncated to zero for division.
+Hello,
 
-fix do_div.cocci warning:
-do_div() does a 64-by-32 division, please consider using div64_u64 instead.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+general protection fault in drm_prime_del_handles
 
-Signed-off-by: Himanshu Bhavani <himanshu.bhavani@siliconsignals.io>
+general protection fault, probably for non-canonical address 0xe000130900000017: 0000 [#1] PREEMPT SMP KASAN
+KASAN: maybe wild-memory-access in range [0x0000b848000000b8-0x0000b848000000bf]
+CPU: 0 PID: 5576 Comm: syz-executor.0 Not tainted 6.7.0-rc7-syzkaller-00029-g8735c7c84d1b-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+RIP: 0010:__rb_erase_augmented include/linux/rbtree_augmented.h:292 [inline]
+RIP: 0010:rb_erase+0xbb/0x1360 lib/rbtree.c:443
+Code: 5e 10 4c 89 f5 48 ba 00 00 00 00 00 fc ff df 48 85 db 75 0b e9 e8 04 00 00 48 89 dd 48 89 c3 4c 8d 63 10 4c 89 e0 48 c1 e8 03 <80> 3c 10 00 0f 85 de 0b 00 00 48 8b 43 10 48 85 c0 75 dc 4c 8d 7b
+RSP: 0018:ffffc900052b7d20 EFLAGS: 00010216
+RAX: 0000170900000017 RBX: 0000b848000000a8 RCX: ffff88802836d408
+RDX: dffffc0000000000 RSI: ffff88802836d408 RDI: ffff8880297d2c10
+RBP: ffffffff84f35220 R08: 0000000000000000 R09: fffffbfff1e327aa
+R10: ffffc900052b7d70 R11: 0000000000000000 R12: 0000b848000000b8
+R13: ffff888020c8c5f8 R14: ffff8880297d2c00 R15: 0000000000000001
+FS:  0000555556db8480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6ad1c2fd58 CR3: 0000000017726000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ drm_prime_del_handles+0x55/0xb0 drivers/gpu/drm/drm_prime.c:201
+ drm_file_free.part.0+0x73b/0xba0 drivers/gpu/drm/drm_file.c:290
+ drm_file_free drivers/gpu/drm/drm_file.c:247 [inline]
+ drm_close_helper.isra.0+0x180/0x1f0 drivers/gpu/drm/drm_file.c:308
+ drm_release+0x22a/0x4f0 drivers/gpu/drm/drm_file.c:495
+ __fput+0x270/0xb70 fs/file_table.c:394
+ __fput_sync+0x47/0x50 fs/file_table.c:475
+ __do_sys_close fs/open.c:1587 [inline]
+ __se_sys_close fs/open.c:1572 [inline]
+ __x64_sys_close+0x87/0xf0 fs/open.c:1572
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f6ad0e7bbda
+Code: 48 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c 24 0c e8 03 7f 02 00 8b 7c 24 0c 89 c2 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 36 89 d7 89 44 24 0c e8 63 7f 02 00 8b 44 24
+RSP: 002b:00007ffc7c5e8f10 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f6ad0e7bbda
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 00007f6ad0f9d980 R08: 0000001b2e860000 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000013a70
+R13: ffffffffffffffff R14: 00007f6ad0a00000 R15: 000000000001372f
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__rb_erase_augmented include/linux/rbtree_augmented.h:292 [inline]
+RIP: 0010:rb_erase+0xbb/0x1360 lib/rbtree.c:443
+Code: 5e 10 4c 89 f5 48 ba 00 00 00 00 00 fc ff df 48 85 db 75 0b e9 e8 04 00 00 48 89 dd 48 89 c3 4c 8d 63 10 4c 89 e0 48 c1 e8 03 <80> 3c 10 00 0f 85 de 0b 00 00 48 8b 43 10 48 85 c0 75 dc 4c 8d 7b
+RSP: 0018:ffffc900052b7d20 EFLAGS: 00010216
+RAX: 0000170900000017 RBX: 0000b848000000a8 RCX: ffff88802836d408
+RDX: dffffc0000000000 RSI: ffff88802836d408 RDI: ffff8880297d2c10
+RBP: ffffffff84f35220 R08: 0000000000000000 R09: fffffbfff1e327aa
+R10: ffffc900052b7d70 R11: 0000000000000000 R12: 0000b848000000b8
+R13: ffff888020c8c5f8 R14: ffff8880297d2c00 R15: 0000000000000001
+FS:  0000555556db8480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6ad1c2fd58 CR3: 0000000017726000 CR4: 0000000000350ef0
+----------------
+Code disassembly (best guess):
+   0:	5e                   	pop    %rsi
+   1:	10 4c 89 f5          	adc    %cl,-0xb(%rcx,%rcx,4)
+   5:	48 ba 00 00 00 00 00 	movabs $0xdffffc0000000000,%rdx
+   c:	fc ff df
+   f:	48 85 db             	test   %rbx,%rbx
+  12:	75 0b                	jne    0x1f
+  14:	e9 e8 04 00 00       	jmp    0x501
+  19:	48 89 dd             	mov    %rbx,%rbp
+  1c:	48 89 c3             	mov    %rax,%rbx
+  1f:	4c 8d 63 10          	lea    0x10(%rbx),%r12
+  23:	4c 89 e0             	mov    %r12,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	80 3c 10 00          	cmpb   $0x0,(%rax,%rdx,1) <-- trapping instruction
+  2e:	0f 85 de 0b 00 00    	jne    0xc12
+  34:	48 8b 43 10          	mov    0x10(%rbx),%rax
+  38:	48 85 c0             	test   %rax,%rax
+  3b:	75 dc                	jne    0x19
+  3d:	4c                   	rex.WR
+  3e:	8d                   	.byte 0x8d
+  3f:	7b                   	.byte 0x7b
 
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 44b13696cf82..81853eb2993a 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -409,13 +409,13 @@ static int venc_s_parm(struct file *file, void *fh, struct v4l2_streamparm *a)
- 	out->capability = V4L2_CAP_TIMEPERFRAME;
- 
- 	us_per_frame = timeperframe->numerator * (u64)USEC_PER_SEC;
--	do_div(us_per_frame, timeperframe->denominator);
-+	div64_u64(us_per_frame, timeperframe->denominator);
- 
- 	if (!us_per_frame)
- 		return -EINVAL;
- 
- 	fps = (u64)USEC_PER_SEC;
--	do_div(fps, us_per_frame);
-+	div64_u64(fps, us_per_frame);
- 
- 	inst->timeperframe = *timeperframe;
- 	inst->fps = fps;
--- 
-2.25.1
+
+Tested on:
+
+commit:         8735c7c8 Merge tag '6.7rc7-smb3-srv-fix' of git://git...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=133148d9e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c7bcb8f62f1e2c3e
+dashboard link: https://syzkaller.appspot.com/bug?extid=59dcc2e7283a6f5f5ba1
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1041c931e80000
 
 
