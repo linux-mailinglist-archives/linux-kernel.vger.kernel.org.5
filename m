@@ -1,86 +1,90 @@
-Return-Path: <linux-kernel+bounces-13204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D8DC820119
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 19:55:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B24A82011E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 20:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A11C91C2189B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 18:55:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE7151C21722
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Dec 2023 19:10:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0444A12B92;
-	Fri, 29 Dec 2023 18:55:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 105AF134A0;
+	Fri, 29 Dec 2023 19:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="u0eehce0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YaoBjIYh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE08612B93
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 18:54:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 29 Dec 2023 13:54:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703876096;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=foI3BeWGtWNh75wzfz6IrCcvUtBQLjp/z/XKEKBzVhY=;
-	b=u0eehce0bxNGwlmKU/aq20IQw+j5KErIRGrefwyqbpu8QEP7ok4N5q2s6dC3Tf+hZMvJGa
-	pBfraAY7XoVBLi2q+5+LV4p+nrsGyntsMo2CRRF5R1gOVi9jZu/icKilwnvogLpOT9bdKG
-	kv3qc7dmP9OX5vnpmX2uxp4g28ztvOY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Daniel J Blueman <daniel@quora.org>
-Cc: linux-bcachefs@vger.kernel.org, 
-	Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: Stack corruption in bch2_nocow_write
-Message-ID: <jt3gy5v3jhqadakhxbdezvfo2n2f4n7sc52ljw4kztct6poihr@zork6muwdity>
-References: <CAMVG2su=Kt5mkyEHGh5D4YH+1xTUFX3BhOjf-D0bcRTntav3ng@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6253D12B98
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 19:10:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C9B74C433CA;
+	Fri, 29 Dec 2023 19:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703877024;
+	bh=1u6y4yARCqRY7+e2rXMY/Xf05MSeoSpwpaXcLPm8MmU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=YaoBjIYhg7svxuhYCMisexTJeVOQ1uWK7jiHzv0Qdln9Gemz7XTwo7u1D8HUBuS9C
+	 NmtWpP7yW/qc8TYjViYqOWK1unjORvoCNr5RrV72K6RsMzPChSJWbszg9wffceMHVn
+	 S1AmBOr6sb81cZn8Vqz/SRqKxIBu9SK1GFGKk5Znl7fDh0Lm8XYAvFeqyzyMddmWN/
+	 QyYJm4/phqECiX4vpS5DxG6tlq2U4CWh+cdua8zVoRyUtJGUStfiBUf61W3BbwcyuL
+	 Rvm6HOWSsQn7kYSSaReh3xV5GPoeuYSt9B+fAxspM3qvYxytaHsifNF4jVCRoKRFco
+	 Frph1nx2LtB2w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A10D8E333D8;
+	Fri, 29 Dec 2023 19:10:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMVG2su=Kt5mkyEHGh5D4YH+1xTUFX3BhOjf-D0bcRTntav3ng@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Subject: Re: [f2fs-dev] [PATCH 1/2] f2fs: Constrain the modification range of
+ dir_level in the sysfs
+From: patchwork-bot+f2fs@kernel.org
+Message-Id: 
+ <170387702465.8173.9564076529806115023.git-patchwork-notify@kernel.org>
+Date: Fri, 29 Dec 2023 19:10:24 +0000
+References: <20231222032901.3861649-1-yangyongpeng1@oppo.com>
+In-Reply-To: <20231222032901.3861649-1-yangyongpeng1@oppo.com>
+To: Yongpeng Yang <yangyongpeng1@oppo.com>
+Cc: jaegeuk@kernel.org, chao@kernel.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net
 
-On Fri, Dec 29, 2023 at 07:43:13PM +0800, Daniel J Blueman wrote:
-> Hi Kent et al,
+Hello:
+
+This series was applied to jaegeuk/f2fs.git (dev)
+by Jaegeuk Kim <jaegeuk@kernel.org>:
+
+On Fri, 22 Dec 2023 11:29:00 +0800 you wrote:
+> The {struct f2fs_sb_info}->dir_level can be modified through the sysfs
+> interface, but its value range is not limited. If the value exceeds
+> MAX_DIR_HASH_DEPTH and the mount options include "noinline_dentry",
+> the following error will occur:
+> [root@fedora ~]# mount -o noinline_dentry /dev/sdb  /mnt/sdb/
+> [root@fedora ~]# echo 128 > /sys/fs/f2fs/sdb/dir_level
+> [root@fedora ~]# cd /mnt/sdb/
+> [root@fedora sdb]# mkdir test
+> [root@fedora sdb]# cd test/
+> [root@fedora test]# mkdir test
+> mkdir: cannot create directory 'test': Argument list too long
 > 
-> On Linux 6.7-rc7 from bcachefs master SHA f3608cbdfd built with UBSAN
-> [1], with a crafted workload [2] I'm able to trigger stack corruption
-> in bch2_nocow_write [3].
-> 
-> Let me know if you can't reproduce it and I'll check reproducibility
-> on another platform, and let me know for any patch testing.
+> [...]
 
-this should be fixed in the testing branch:
+Here is the summary with links:
+  - [f2fs-dev,1/2] f2fs: Constrain the modification range of dir_level in the sysfs
+    https://git.kernel.org/jaegeuk/f2fs/c/0145eed6ed32
+  - [f2fs-dev,2/2] f2fs: Add error handling for negative returns from do_garbage_collect
+    https://git.kernel.org/jaegeuk/f2fs/c/19ec1d31fa56
 
-commit ab35f724070ccdaa31f6376a1890473e7d031ed0
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Fri Dec 29 13:54:00 2023 -0500
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-    bcachefs: fix nocow write path when writing to multiple extents
-    
-    Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-diff --git a/fs/bcachefs/io_write.c b/fs/bcachefs/io_write.c
-index c5961bac19f0..7c5963cd0b85 100644
---- a/fs/bcachefs/io_write.c
-+++ b/fs/bcachefs/io_write.c
-@@ -1316,6 +1316,7 @@ static void bch2_nocow_write(struct bch_write_op *op)
- 		closure_get(&op->cl);
- 		bch2_submit_wbio_replicas(to_wbio(bio), c, BCH_DATA_user,
- 					  op->insert_keys.top, true);
-+		nr_buckets = 0;
- 
- 		bch2_keylist_push(&op->insert_keys);
- 		if (op->flags & BCH_WRITE_DONE)
 
