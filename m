@@ -1,129 +1,146 @@
-Return-Path: <linux-kernel+bounces-13608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 800D482091E
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 00:28:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A32B820929
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 00:56:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12F51B216DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 23:28:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E20F2B21B02
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 23:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 792DCE559;
-	Sat, 30 Dec 2023 23:28:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57BDBF505;
+	Sat, 30 Dec 2023 23:56:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T+tjupVo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CWUDlUd5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15811D309
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 23:28:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40d2376db79so72170785e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 15:28:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1256BDDC6;
+	Sat, 30 Dec 2023 23:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2ccf55bed13so8744111fa.1;
+        Sat, 30 Dec 2023 15:56:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703978920; x=1704583720; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V9gYy29s9UglOJFtyJmti8blfRTxnRaCJhWJbNKd0iE=;
-        b=T+tjupVoc4TgJjE/caSyNAUwhaqVRuzKinS5ujFzAA9HMsjdYfDp+2F1dz9HprTepm
-         MzaQdjPvuTQwiLUtFGDfsZ/njmhN6eVJprKSgKFtD3CIfHZjrJBMv1CNQBsBDXkqoM1s
-         /i/D/Lkvn9J0LogCZUp8hejW57jO2usTbg+aRz+TP8SlO4+5EqISxpbPeHFhmMnlLZfJ
-         z1dZrjKlXJWStjlRiBA2xEr0empqfR+Mm95hXX6ZFAjRk4RdJSQtAQkkR7urw2WJd9bi
-         kKlH9QDajL5mfYPFHSkvXs+YKff8PbWIhniudV4+1/zsSLhgc24oWheax9dtlM7XJTUp
-         FIfA==
+        d=gmail.com; s=20230601; t=1703980582; x=1704585382; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=L5zAmrcU0rDyTMldnWGuhFtbY40ZcOd+zmFip/yI9K8=;
+        b=CWUDlUd5LI4yyn4puZcvTu7vvKyts2XBTGeRqf6tcftAfXMNByNWlhvWZgKtbJBhxW
+         AtPPoB20dwnIsf2iw0D2a98S0j1RK1PXU16TOuJK7Y/zLzmdtHqM7gkLDTatDmATEWZ0
+         Ac9b+o0vjGzF1Rt3Llm+jXTm5spOW43gYFxTyvSXsfXiQ5KcDoAgM98QU7JbIHjhZJ9U
+         Mnn4+IgMSL64upk+S3A1DGYwOi7xlCCEmBzR4QhDfBpbx0bQFMpifaSt+1nqTHPNQ1tr
+         8T5pg0rdiPbrLiVt3YsNt4NmC44QprTGfHPbXsmHsPkhXj9v7f4OQkaIKJkGeCEoSVKh
+         voAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703978920; x=1704583720;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V9gYy29s9UglOJFtyJmti8blfRTxnRaCJhWJbNKd0iE=;
-        b=pCET/Ba+dDuFVJSYfoQDrCCHUAHrVTjkvrvUREBcXceF3/EMkKu40lUvByvyPwbsC6
-         ESEqRknhNPUMYJroN7RxciRfy1gpwU9GZnGr8xuC3Bkf8frIavOXyXgtvpYD0yrVYbdO
-         afn4R7E0qJyg/m1yw6sdQsV3V/SvxyySiXvVAS9xdxJ5dqNr5MGmxDyqeF60DNjQ/OEu
-         ZolcrJA1tmmSGG7MOu224KtdR9aPdMU1zoXfgyRSpv3eYf9M7C7MGyj17r95S2RDGCCD
-         F91FPAw6VxGwNlhfIhjOfCejA0IMgdhgjDR7O8t/+UJamDUSquBl83eW51YVe5sN/BU1
-         Rd/A==
-X-Gm-Message-State: AOJu0YwUSRs9TERvsBfOcxdIoMdaJauGq96s/E5Bhc31eOt5vEg0L4cF
-	G35TbhMhsO8S6mgI9TnKgiKgNxDMw2ZXog==
-X-Google-Smtp-Source: AGHT+IExjsLqcwbnW3Dqimmzlg/bXNIGAXMRbVDyfe+oH5+zqSBGlBWlYfVGNVwyCZYaBqYqRzNWdQ==
-X-Received: by 2002:a05:600c:4e09:b0:40d:7b1f:e424 with SMTP id b9-20020a05600c4e0900b0040d7b1fe424mr1739072wmq.20.1703978920243;
-        Sat, 30 Dec 2023 15:28:40 -0800 (PST)
-Received: from [192.168.16.140] (92.40.174.136.threembb.co.uk. [92.40.174.136])
-        by smtp.gmail.com with ESMTPSA id l4-20020a05600c1d0400b0040d3276ba19sm35621982wms.25.2023.12.30.15.28.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Dec 2023 15:28:39 -0800 (PST)
-Message-ID: <8301e5b9-29fa-4c60-8694-335c63ae1883@linaro.org>
-Date: Sun, 31 Dec 2023 00:28:37 +0100
+        d=1e100.net; s=20230601; t=1703980582; x=1704585382;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L5zAmrcU0rDyTMldnWGuhFtbY40ZcOd+zmFip/yI9K8=;
+        b=qc09aUfp2Dr4M+du2i2qPFJFqbkpwW4LSJwRjAkyxkixe5mMm9dF0u7AKE98PVlml6
+         yDQj0PZBOrsdM8L2jvgn1lwAgmsRM87fo2XxDbycJWb99YhU0ac+c/AvCoNdT7NwaCPg
+         aJHQ9lPxUOXuxTxXMXsDnDwLwZ8DTt1JEEiuYhPEQiLr/7J5djqa3cBpSM7S/Uj/9OsH
+         +mynZoc9maIZrGI+q6HBU/Ja/IF35T1dHjusc/0G4H1b/TEPKfQSuHY0/gKKPJDj8sVW
+         xbBvlfnkXR4poGQopC6cCbcW60lOz79ZZQQp7o2B8okE5ahhIXHh1KQsMvDzRKqLBdwD
+         hV0A==
+X-Gm-Message-State: AOJu0YztGJnGQMtLZy471qO9/NK6sndEwKtv3OTkSTl2YUyG0JXw+EFz
+	pqBDsRMMtthcwButRKfc3rervPORynmQG5E81JRgtoWVEPOnX7pI
+X-Google-Smtp-Source: AGHT+IF2Wg676gczAtvkd20vpFPvT40Dbhl8a/yw1mt/kUXSYbEgd067fvLk6YybmgGC6T+VAhzbNZwwi2bmj+f4KL4=
+X-Received: by 2002:a2e:9686:0:b0:2cc:7db2:acb9 with SMTP id
+ q6-20020a2e9686000000b002cc7db2acb9mr6007446lji.24.1703980581641; Sat, 30 Dec
+ 2023 15:56:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: sdm845: add power domain to UFS phy
- interface
-Content-Language: en-US
-To: David Heidelberg <david@ixit.cz>, Luca Weiss <luca@z3ntu.xyz>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Manivannan Sadhasivam <mani@kernel.org>
-References: <20231229202959.266502-1-david@ixit.cz>
- <2710291.mvXUDI8C0e@z3ntu.xyz> <e299a7bd-2f50-41e0-a638-a1fbbeb65635@ixit.cz>
-From: Caleb Connolly <caleb.connolly@linaro.org>
-In-Reply-To: <e299a7bd-2f50-41e0-a638-a1fbbeb65635@ixit.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
+ <20231030141623.ufzhb4ttvxi3ukbj@skbuf> <CACRpkdaN2rTSHXDxwuS4czCzWyUkazY4Fn5vVLYosqF0=qi-Bw@mail.gmail.com>
+ <20231030222035.oqos7v7sdq5u6mti@skbuf> <CACRpkdZ4+QrSA0+JCOrx_OZs4gzt1zx1kPK5bdqxp0AHfEQY3g@mail.gmail.com>
+ <20231030233334.jcd5dnojruo57hfk@skbuf> <CACRpkdbLTNVJusuCw2hrHDzx5odw8vw8hMWvvvvgEPsAFwB8hg@mail.gmail.com>
+ <CAJq09z4+3g7-h5asYPs_3g4e9NbPnxZQK+NxggYXGGxO+oHU1g@mail.gmail.com>
+ <CACRpkdZ-M5mSUeVNhdahQRpm+oA1zfFkq6kZEbpp=3sKjdV9jA@mail.gmail.com>
+ <CAJq09z6QwLNEc5rEGvE3jujZ-vb+vtUQLS-fkOnrdnYqk5KvxA@mail.gmail.com>
+ <CACRpkdaoBo0S0RgLhacObd3pbjtWAfr6s3oizQAHqdB76gaG5A@mail.gmail.com>
+ <CAJq09z4YSGyU6QuZL1uEB9vH39-WbR2dZhy7MiD=5yZb0Urz1Q@mail.gmail.com> <CACRpkdZOKz-DdZgwwxj9FsJZ+GNMCXUjTDLo5wVgjw5OrfOZQA@mail.gmail.com>
+In-Reply-To: <CACRpkdZOKz-DdZgwwxj9FsJZ+GNMCXUjTDLo5wVgjw5OrfOZQA@mail.gmail.com>
+From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Date: Sat, 30 Dec 2023 20:56:10 -0300
+Message-ID: <CAJq09z6xA7roZJYuQFn6B1ivOUOyhrE4-wf4Kj3o6az8hArNqg@mail.gmail.com>
+Subject: Re: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>, 
+	Vladimir Oltean <olteanv@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi David,
+> > I took a look at the LED code. It looks like you got it a little bit wrong.
+>
+> You are right...
+>
+> > If LEDs are not disabled, it will use the RTL8366RB_LED_FORCE for all
+> > 4 LED groups. That RTL8366RB_LED_FORCE keeps the LEDs on. I would use
+> > RTL8366RB_LED_LINK_ACT by default to make it blink on link activity
+> > (or make it configurable as the comment suggests) but it is not wrong.
+> > I cannot evaluate the RTL8366RB_INTERRUPT_CONTROL_REG usage when you
+> > disable the LEDs but it seems to be odd.
+>
+> The problem is that since I don't have a device with LEDs connected
+> to tHE RTL8366RB it is all just dry coding.
+>
+> I would suggest if you can test it just make a basic patch that will
+> at least turn on the LEDs to some default setting that works for
+> you?
 
-Did you boot-test this?
+Sure. I believe using link act will be much more useful than just
+turning all leds on, independently from the port state. It is an easy
+one-line fix.
+I can do that after the other series gets merged.
 
-On 30/12/2023 00:18, David Heidelberg wrote:
-> On 29/12/2023 22:37, Luca Weiss wrote:
-> 
->> On Freitag, 29. Dezember 2023 21:29:54 CET David Heidelberg wrote:
->>> Reported by: `make CHECK_DTBS=1 qcom/sdm845-oneplus-enchilada.dtb`
->>>
->>> Signed-off-by: David Heidelberg <david@ixit.cz>
->>> ---
->>>   arch/arm64/boot/dts/qcom/sdm845.dtsi | 2 ++
->>>   1 file changed, 2 insertions(+)
->>>
->>> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi
->>> b/arch/arm64/boot/dts/qcom/sdm845.dtsi index c2244824355a..ad8677b62bfb
->>> 100644
->>> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
->>> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
->>> @@ -2644,6 +2644,8 @@ ufs_mem_phy: phy@1d87000 {
->>>               clocks = <&gcc GCC_UFS_MEM_CLKREF_CLK>,
->>>                    <&gcc GCC_UFS_PHY_PHY_AUX_CLK>;
->>>
->>> +            power-domains = <&gcc UFS_PHY_GDSC>;
->>> +
->>>               resets = <&ufs_mem_hc 0>;
->>>               reset-names = "ufsphy";
->> This is potentially the wrong power domain, see the conversation here:
->> https://lore.kernel.org/linux-arm-msm/20231204172829.GA69580@thinkpad/
-> Thanks, I was thinking about  SDM845_MX, but then looked at rest more 
-> closer qcom archs and thought it'll be likely GDSC (also by looking at 
-> ufs_mem_hc reset vectors).
->>
->> Hopefully Mani can give some input here :)
->>
->> Regards
->> Luca
->>
->>
+I think that we should also remove rb8366rb_set_port_led(). Even if I
+fix it, it will just turn the LED off when the port is
+administratively down. RTL8366RB_LED_0_1_CTRL_REG and
+RTL8366RB_LED_2_3_CTRL_REG are only used to control leds when you
+force them to be on (RTL8366RB_LED_FORCE). In that scenario, the OS
+might be in charge of triggering them, even for uses not related to
+the switch.
 
--- 
-// Caleb (they/them)
+> > I though that maybe we could setup a LED driver to expose the LEDs
+> > status in sysfs. However, I'm not sure it is worth it. If you change a
+> > LED behavior, it would break the HW triggering rule for all the group.
+> > I'm not sure the LED API is ready to expose LEDs with related fate. It
+> > would, indeed, be useful as a readonly source or just to
+> > enable/disable a LED.
+>
+> The LED subsystem supports hardware triggering etc thanks to the
+> elaborate work by Christian (ansuel). You can see an example of how
+> this is done in:
+> drivers/net/dsa/qca/qca8k-leds.c
+>
+> Christian also extended the LEDs subsystem with the necessary
+> callbacks to support HW-backed LED control.
+>
+> This can be used already to achieve HW triggers for the LEDs
+> from sysfs. (See callbacks .hw_control_is_supported,
+> .hw_control_set etc etc).
+>
+> I was working to implement this for the Marvell switches but Andrew
+> wanted to do some more structured approach with a LED library
+> for DSA switches.
+
+Yes, I took a look at it. It would be my inspiration if I go down that
+road. I can use the HW offload only if all LEDs in the group share the
+same trigger and timer. Otherwise, I'll need to fall back to software
+control. I'll think about it if that is a viable solution.
+
+Regards,
+
+Luiz
 
