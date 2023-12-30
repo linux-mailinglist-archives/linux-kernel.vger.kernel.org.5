@@ -1,150 +1,122 @@
-Return-Path: <linux-kernel+bounces-13400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 787D4820499
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:29:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6615782049C
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:31:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA7EF1F21993
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:29:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1378F281E6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:31:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE0E979C2;
-	Sat, 30 Dec 2023 11:29:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 869B679CC;
+	Sat, 30 Dec 2023 11:31:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="ZS1dVcc5"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3ECxP8U6";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aBHPInxp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F677481
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 11:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4280bd41317so5601851cf.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 03:29:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1703935776; x=1704540576; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rdHRZOJmLihwmundfIYh/Hz760M3I/Nde2Bk7xxTT8A=;
-        b=ZS1dVcc5xSN5J+8wM562Zu//LTlPPJLJM2U4IetRSufRMbA01mMVsgrr5mY7f+B2Ul
-         BUAQZXAuHVZmen6u+6VhFAq/QfZqZH0W39gmMZaPPB0yYIVYIYPpE5RIbMVVO4pPTN3D
-         Ppe/z+1/QialIU00YhmQip3YpCYuN9BBNw7Rs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703935776; x=1704540576;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rdHRZOJmLihwmundfIYh/Hz760M3I/Nde2Bk7xxTT8A=;
-        b=csos+pIrFjbyHRjUNGBIy9gkHlI5FnBDuMJlu6lAeVR4oZpaQwIclv2SzYeG//6JQa
-         2hMuiHWu2Sr4Ef0tKtcbdq+oiXVglSBRR4qpKO9bZATvBZMorXzXkGVhZbIpoifuTzxB
-         qGgrigSgCyiebJbbMRvYn94ubx/Jg4//eoEOVNGmrqv4bNEPdAnSPn24/hN2AsWWs8TX
-         LNZpWJC4q4YWr+GIlnjeXK9ZxCQnakPMGoriHHn+L79+8VqyfJtutuFnJuJ5967/EJfE
-         royWyh0cRjn0vhfm9l7ireb5i9fA36hYLZy8Ac4e5RWXh3ieytKrAe7i3D5gpQHtOlVa
-         eLVA==
-X-Gm-Message-State: AOJu0YyfCOMttQZNdt1ebVREmGwnic5vo/eAgKy+wDTJBhEdeGujAHPU
-	/PCn7Otlymwjhfqb9ggBl33F9s6mB3Z8K4hU1IF8TKu9Lhp8kw==
-X-Google-Smtp-Source: AGHT+IERnlTpmOwuxpaJxtAALpkHsOCMYmErEeE799Q8hbMelUhNiSF7yID6JUsxUnY0tfGC2aD2IOPLZZPULy041zE=
-X-Received: by 2002:a05:622a:1393:b0:428:c11:47aa with SMTP id
- o19-20020a05622a139300b004280c1147aamr1958131qtk.57.1703935775771; Sat, 30
- Dec 2023 03:29:35 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0441A7487;
+	Sat, 30 Dec 2023 11:31:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Sat, 30 Dec 2023 11:31:22 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1703935883;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5YekaI+XSXzVudCa+DmlL/evq5KrMF9TXWnC3KY0bLQ=;
+	b=3ECxP8U6giePTZVmturwNcYulTP+uV0UjbT0pGvUNxHoaYaCLZP1/mdIp5SpJoNm6A73rc
+	eLNrZbwLRhX0h0bTzH0RPNHQNqL7G+nSiV46RynPrXxhn8Z2F8EjLfPKEO2djjaaNDgoCs
+	GAGwZdZtLBf2tLPW/SzU4oPTIp52dmtLML62Qt6LzVzU0VJ56TRFLA2OPvKs4LjPDkEKA2
+	9pTHD579KvPQKY/3BBR3OIxonxKoGYmad7mVQeELOkKfbubVrJJPbr/iYp6wAvAkaNCXpG
+	obLg+sql0CSY8+D3fuBVBiK+agRDWwDFEsz3xCAKfFZh26HV/N2ShCLi2MHwxw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1703935883;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5YekaI+XSXzVudCa+DmlL/evq5KrMF9TXWnC3KY0bLQ=;
+	b=aBHPInxpfgK/+hOHdOxeLwNb+dNyKN6/xkja7EtxbnXaqwrRzqxlfRe4ymHzol/jYbXuRm
+	tgt3OJyEIJLc1QCQ==
+From: "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/paravirt] x86/alternative: Correct feature bit debug output
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20231206110636.GBZXBVvCWj2IDjVk4c@fat_crate.local>
+References: <20231206110636.GBZXBVvCWj2IDjVk4c@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231229135154.675946-1-dario.binacchi@amarulasolutions.com>
- <20231229135154.675946-8-dario.binacchi@amarulasolutions.com> <CACRpkdbHodbAwoaTyxTX4LxYm6ZrBV6m6ht31Y2OaUPxS0Zhrw@mail.gmail.com>
-In-Reply-To: <CACRpkdbHodbAwoaTyxTX4LxYm6ZrBV6m6ht31Y2OaUPxS0Zhrw@mail.gmail.com>
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Date: Sat, 30 Dec 2023 12:29:25 +0100
-Message-ID: <CABGWkvpvze9pBg9_3r9A0oWjTQ8JrRzXU+-0HX_9kkJFNNW8ig@mail.gmail.com>
-Subject: Re: [PATCH 7/8] drm/panel: nt35510: refactor panel initialization
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	David Airlie <airlied@gmail.com>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Sam Ravnborg <sam@ravnborg.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <170393588213.398.4263924144760280684.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Hi Linus,
+The following commit has been merged into the x86/paravirt branch of tip:
 
-On Fri, Dec 29, 2023 at 6:43=E2=80=AFPM Linus Walleij <linus.walleij@linaro=
-.org> wrote:
->
-> On Fri, Dec 29, 2023 at 2:52=E2=80=AFPM Dario Binacchi
-> <dario.binacchi@amarulasolutions.com> wrote:
->
-> > The previous implementation did not make it easy to support new
-> > NT35510-based panels with different initialization sequences.
-> > This patch, preparatory for future developmentes, simplifies the
-> > addition of new NT35510-based displays and also avoids the risk of
-> > creating regressions on already managed panels.
-> >
-> > Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
->
-> The idea is to have the driver adapt to different panels, and encode a de=
-ep
-> understanding just like we do with all hardware drivers.
->
-> NAK.
->
-> This patch:
->
-> - Deletes a lot of useful documentation on how the panel works.
->
-> - Deletes defines and replaces them with magic numbers
->
-> All it achieves is a bit of "magic sequences because we are used to
-> magic sequences" and that doesn't look like an improvement at all,
-> instead it creates a dumber driver which has no explanations at all
-> to what is going on.
->
-> Please rewrite the patch in the same style as the original driver.
-> The fact that you (probably) are not used to writing display drivers
-> in this way is not an excuse to destroy this nice structure.
->
-> There are things that can be done, like create an abstraction for
-> sequence encoding with less open coded command issue
-> statements, by adding helpers to the DRM core, so if that is what
-> you want to do, then do that instead?
+Commit-ID:     7991ed43587d1106315208cc289c851d6915d4a3
+Gitweb:        https://git.kernel.org/tip/7991ed43587d1106315208cc289c851d6915d4a3
+Author:        Borislav Petkov (AMD) <bp@alien8.de>
+AuthorDate:    Sat, 30 Dec 2023 12:20:04 +01:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Sat, 30 Dec 2023 12:25:55 +01:00
 
-Thanks for your explanations and suggestions.
-I will rewrite the patch following your suggestions.
+x86/alternative: Correct feature bit debug output
 
-Thanks and regards,
-Dario
+In
 
->
-> Yours,
-> Linus Walleij
+  https://lore.kernel.org/r/20231206110636.GBZXBVvCWj2IDjVk4c@fat_crate.local
 
+I wanted to adjust the alternative patching debug output to the new
+changes introduced by
 
+  da0fe6e68e10 ("x86/alternative: Add indirect call patching")
 
---=20
+but removed the '*' which denotes the ->x86_capability word. The correct
+output should be, for example:
 
-Dario Binacchi
+  [    0.230071] SMP alternatives: feat: 11*32+15, old: (entry_SYSCALL_64_after_hwframe+0x5a/0x77 (ffffffff81c000c2) len: 16), repl: (ffffffff89ae896a, len: 5) flags: 0x0
 
-Senior Embedded Linux Developer
+while the incorrect one says "... 1132+15" currently.
 
-dario.binacchi@amarulasolutions.com
+Add back the '*'.
 
-__________________________________
+Fixes: da0fe6e68e10 ("x86/alternative: Add indirect call patching")
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20231206110636.GBZXBVvCWj2IDjVk4c@fat_crate.local
+---
+ arch/x86/kernel/alternative.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Amarula Solutions SRL
-
-Via Le Canevare 30, 31100 Treviso, Veneto, IT
-
-T. +39 042 243 5310
-info@amarulasolutions.com
-
-www.amarulasolutions.com
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index f26983a..f7ea108 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -498,7 +498,7 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+ 			continue;
+ 		}
+ 
+-		DPRINTK(ALT, "feat: %d32+%d, old: (%pS (%px) len: %d), repl: (%px, len: %d) flags: 0x%x",
++		DPRINTK(ALT, "feat: %d*32+%d, old: (%pS (%px) len: %d), repl: (%px, len: %d) flags: 0x%x",
+ 			a->cpuid >> 5,
+ 			a->cpuid & 0x1f,
+ 			instr, instr, a->instrlen,
 
