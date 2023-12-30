@@ -1,393 +1,293 @@
-Return-Path: <linux-kernel+bounces-13455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DD9D8206DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 16:20:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D8338206E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 16:33:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 109BCB212A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:20:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B060E1C21224
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC8FD8F77;
-	Sat, 30 Dec 2023 15:20:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 880C7BA46;
+	Sat, 30 Dec 2023 15:33:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=permerror (0-bit key) header.d=sapience.com header.i=@sapience.com header.b="1cSqkXZ9";
+	dkim=pass (2048-bit key) header.d=sapience.com header.i=@sapience.com header.b="GejyRS1s"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from s1.sapience.com (s1.sapience.com [72.84.236.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A238F5C
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 15:20:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78ABBC433C8;
-	Sat, 30 Dec 2023 15:20:41 +0000 (UTC)
-Date: Sat, 30 Dec 2023 10:21:34 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [GIT PULL] tracing: Fixes for 6.7-rc7
-Message-ID: <20231230102134.149235d7@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83002BA27;
+	Sat, 30 Dec 2023 15:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sapience.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sapience.com
+Authentication-Results: dkim-srvy7; dkim=pass (Good ed25519-sha256 
+   signature) header.d=sapience.com header.i=@sapience.com 
+   header.a=ed25519-sha256; dkim=pass (Good 2048 bit rsa-sha256 signature) 
+   header.d=sapience.com header.i=@sapience.com header.a=rsa-sha256
+Received: from srv8.prv.sapience.com (srv8.prv.sapience.com [x.x.x.x])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by s1.sapience.com (Postfix) with ESMTPS id 522D8480A25;
+	Sat, 30 Dec 2023 10:23:26 -0500 (EST)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-ed25519-220413; t=1703949806;
+ h=message-id : subject : from : to : cc : date : content-type :
+ mime-version : from; bh=nFcp0elFnmNcja7RlqRVcaS+kKIovNFoNB4flIIuqkQ=;
+ b=1cSqkXZ90NkOD14CGVjigfD7glJXufTNEepy5/a+tP/dLpnJGeJiilMgm9o0VVXkoWnS/
+ f9+BvGycjtef92GDw==
+ARC-Seal: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412; t=1703949806;
+	cv=none; b=O1qV66X6WQJuC/eeVg/Is6wffFopTJT3PAxZx/Pb7yWKy0/YELkfnXR0UoX7nQ1cko8sosSxsjGn3HR6F1sL4zMJ2yAVyoREbTE+8WNS+vEaTLC8BJj/hKHnUqITIlawTJZzv1o+aUyzEpeZGgEnF/t9AHmU4vpqvazEMq0n2rkogZYV67K2tvsgILdzZnsFCUn7HYcPr5obuuHEMBecePy+JqRm5k2mlqdahlqLwR5LujA8/jjFqWgj62H6z1UiK5M6ISxZHPDjH6wKkFBhWJ9F0KN/qcIW1cY+0KTw7xXLZgzptB8OTT005ZxatLaGjEGbC/7j9h7S1yfWgIs+Pw==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412;
+	t=1703949806; c=relaxed/simple;
+	bh=4bkIVgY1UhZvffRGURKKVrVMR4oYgp9a19P2a8bDumg=;
+	h=DKIM-Signature:DKIM-Signature:Message-ID:Subject:From:To:Cc:Date:
+	 Autocrypt:Content-Type:User-Agent:MIME-Version; b=t+EsuvRtPc8rZ8Kh9a+PIG8Xu5OgdZAkEGznpT0LyPvZBfB0+u8CUA8Qk/hsCKlXVVtt7JGcKx7UpEOvOxTa8g0Bw0D3OuE3o/Xn79pi7eVGew/gHsZKZBAh1kKvizm1zwxrwwsMjBTwXKMxWuHyTBy3BGG7O39bvjIwcYDouO/I50MHBM7lXGh/j6R7+6iluTCD5W+yI7GATbPYzAmpGbwDq9dMzIxdkok/6Vk3fShzYw7ta6bSDk2JjMFipm801VT7Ph5oZSC4EZzNKPrH8DKSEIKgqL3ffGfwMYBs+HRA2XNzlXWAcfCy6r5awlknayVBGSKXdPId81MUqWI1sA==
+ARC-Authentication-Results: i=1; arc-srv8.sapience.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-rsa-220413; t=1703949806;
+ h=message-id : subject : from : to : cc : date : content-type :
+ mime-version : from; bh=nFcp0elFnmNcja7RlqRVcaS+kKIovNFoNB4flIIuqkQ=;
+ b=GejyRS1sFCkVTXc0pSWAMvzPeseovqb2e+OTcBRHfAfpjRPlmKopl0oz4DJa0PHGb5D75
+ JHbEZRvduRPu7PRK8SRsDbwhdB7j7v2z/8B24K8mxSzZH9HrdPCPC+mlkCKfBxb9qq8jpTB
+ UykewULVbfwH/N5rhlR8y/01rWwhdmao1Y45KJ/kNd77sN5jyXoBFUv5OkQLznCSgg+sdhZ
+ FgSqI6idEtUAWVDagA8HltQhS7uAHEs/IT1QdVDASVHu+vOyvlsnYBV8U524cq4AWsjo/VZ
+ FGNtsB5Hwd8vh8XVTl2F9sHZEyT21LQGXcOT2ZT5EVHM9g6PniVqloZt/Ljw==
+Message-ID: <8bb29431064fc1f70a42edef75a8788dd4a0eecc.camel@sapience.com>
+Subject: 6.6.8 stable: crash in folio_mark_dirty
+From: Genes Lists <lists@sapience.com>
+To: linux-kernel@vger.kernel.org
+Cc: "MatthewWilcox(Oracle)" <willy@infradead.org>, Andrew Morton
+ <akpm@linux-foundation.org>, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org
+Date: Sat, 30 Dec 2023 10:23:26 -0500
+Autocrypt: addr=lists@sapience.com; prefer-encrypt=mutual;
+ keydata=mQENBFx5lqsBCACnoqPWNljBVS+eM+AiVpFn25csowDVqjLKEmCxJ0CWD/jj4h0opv2278TgyPrAny9Zw0Vrtb38ho6i0LqKE4mptFDxp/aRP9v+ywE8Ax/XCaOYeQ2u8eKKI4iLyjFdlzETpMfF4Xs5HKklugmhPxqcQs1S+4pzrQoch5z0aBi8A3MiGc9QVZEjfiK5NmRgibg3cHXMGcuODeijoYWDjcU/Y+yTyQ9MG4p95pUMPYBEVufR+Gaksk4xULurOlciphQC8oO9uV9X9f8CvEOBilM1eo98NL0egnOWg4hJgcBgHJ6vjalW7v+3gjoyLxbqzRDTjp63nMAF08C5RAY+ylCdABEBAAG0IEdlbmVzIExpc3RzIDxsaXN0c0BzYXBpZW5jZS5jb20+iQFUBBMBCAA+FiEEc/TBPYz5PhmLF5p8HgSPILb7+v0FAlx5lqwCGwMFCQHhM4AFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQHgSPILb7+v38fgf/T0t7OSNSi6AfSdZrt1Uy04mY7A9MqLhRn00gJMXQMiZRdlkFROUXLkLYLiZUVJRLCsXXDGHMl44EsWddwwTqx0cVGBjErT2AkKnN+o72Uc+fyI5XCMjgQafFIHXVcOBmbM9QjruL6zgbmPO8EtndHGsQ7pVhN3ysZxQfcN+wxdaufXXi8ZQzNvCMyE9dVnVWBpKRSxgN1L33SyjPnuJIdGCYz1ZIgfyUyB3AF/dK8ZQ05NW8TxFcsOF1lsku4WINNBMkd+WaSaxQ+lsCPhRiw+aL87HWccUI4wnNOdvo76f1Hork6Abd6S0UKlBDrknaNsFERvErSguAmqFMmIxhd5gzBF0mPRkWCSsGAQQB2kcPAQEHQMMxX5qfptJXZdr4Jm7Twv1ze/5Ob7HKQA6twZkcuUe8tC1NYWlsIExpc3RzIChMMCAyMDE5MDcxMCkgPGxpc3RzQHNhcGllb
+	mNlLmNvbT6IlgQTFggAPgIbAQULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBOWDKFMXGxIEDrzjCnPnZQr+j8UABQJjyX6KBQkZb0RxAAoJEHPnZQr+j8UAHP8BAPw25oPdQzhl5ZdDltRimmUBkA5e3x4mzDikRgul/3pqAPsEEeRSMwZ1fz6122qPC0v4dLUpHl4D7GMa8732SJyAArgzBF0mPVgWCSsGAQQB2kcPAQEHQB+8yWRF3SUA9RiXZR3wH7WZJ3IH09ZiCLamrdomXGXmiPUEGBYIACYCGwIWIQTlgyhTFxsSBA684wpz52UK/o/FAAUCY8l+sQUJF44Q2QCBdiAEGRYIAB0WIQRByXNdQO2KDRJ2iXo5BdB0L6Ze2wUCXSY9WAAKCRA5BdB0L6Ze2+tHAQDDg1To6YZVGo2AorjOaX4H54E08Avh+qttW+8Ly8YwGAD/eEZvKAxdDj9SvNGqtJh+76Q/fso19FpN+CRYWc+9wgMJEHPnZQr+j8UAwo4A/184tkQWY8y8K1kumSuhiSl6tbXSHNNKA3g/dsxns0UgAQC1MAJo2MJzCrIV5pyVnmHfiNDFPctA2G1RiLo/9TPnB7g4BF0mPYwSCisGAQQBl1UBBQEBB0BAXvdh6o1D7dZqc5tLM3t5KMVbxdtbTY07YFCtLbCNCgMBCAeIfgQYFggAJgIbDBYhBOWDKFMXGxIEDrzjCnPnZQr+j8UABQJjyX6xBQkXjhClAAoJEHPnZQr+j8UAgpIA/0trNf9NrQszYGZ1cq27doPaDeWDbp5HwQFdCcxTuIIRAP9x4Ia8td4dbauGMK343i+xViosCxWwh49r1gqZULEtDg==
+Content-Type: multipart/mixed; boundary="=-tq64fylqLrgyJbZBhP6n"
+User-Agent: Evolution 3.50.2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+
+--=-tq64fylqLrgyJbZBhP6n
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
 
+Apologies in advance, but I cannot git bisect this since machine was
+running for 10 days on 6.6.8 before this happened.
 
-Linus,
+Reporting in case it's useful (and not a hardware fail).
 
-[
-  This is on top of the last pull request you wanted to wait on:
-    https://lore.kernel.org/all/20231222082959.7d08894a@gandalf.local.home/
+There is nothing interesting in journal ahead of the crash - previous
+entry, 2 minutes prior from user space dhcp server.
 
-  This current pull request has nothing to do with eventfs, but more
-  with errors found in reading the ring buffer as well as direct
-  callbacks from ftrace.
-]
-
-tracing fixes for v6.7-rc7:
-
-- Fix readers that are blocked on the ring buffer when buffer_percent is
-  100%. They are supposed to wake up when the buffer is full, but
-  because the sub-buffer that the writer is on is never considered
-  "dirty" in the calculation, dirty pages will never equal nr_pages.
-  Add +1 to the dirty count in order to count for the sub-buffer that
-  the writer is on.
-
-- When a reader is blocked on the "snapshot_raw" file, it is to be
-  woken up when a snapshot is done and be able to read the snapshot
-  buffer. But because the snapshot swaps the buffers (the main one
-  with the snapshot one), and the snapshot reader is waiting on the
-  old snapshot buffer, it was not woken up (because it is now on
-  the main buffer after the swap). Worse yet, when it reads the buffer
-  after a snapshot, it's not reading the snapshot buffer, it's reading
-  the live active main buffer.
-
-  Fix this by forcing a wakeup of all readers on the snapshot buffer when
-  a new snapshot happens, and then update the buffer that the reader
-  is reading to be back on the snapshot buffer.
-
-- Fix the modification of the direct_function hash. There was a race
-  when new functions were added to the direct_function hash as when
-  it moved function entries from the old hash to the new one, a direct
-  function trace could be hit and not see its entry.
-
-  This is fixed by allocating the new hash, copy all the old entries
-  onto it as well as the new entries, and then use rcu_assign_pointer()
-  to update the new direct_function hash with it.
-
-  This also fixes a memory leak in that code.
+ - Root, efi is on nvme
+ - Spare root,efi is on sdg
+ - md raid6 on sda-sd with lvmcache from one partition on nvme drive.
+ - all filesystems are ext4 (other than efi).
+ - 32 GB mem.
 
 
-Please pull the latest trace-v6.7-rc7 tree, which can be found at:
+regards
+
+gene
+
+details attached which show:
+
+Dec 30 07:00:36 s6 kernel:  <TASK>
+Dec 30 07:00:36 s6 kernel:  ? __folio_mark_dirty+0x21c/0x2a0
+Dec 30 07:00:36 s6 kernel:  ? __warn+0x81/0x130
+Dec 30 07:00:36 s6 kernel:  ? __folio_mark_dirty+0x21c/0x2a0
+Dec 30 07:00:36 s6 kernel:  ? report_bug+0x171/0x1a0
+Dec 30 07:00:36 s6 kernel:  ? handle_bug+0x3c/0x80
+Dec 30 07:00:36 s6 kernel:  ? exc_invalid_op+0x17/0x70
+Dec 30 07:00:36 s6 kernel:  ? asm_exc_invalid_op+0x1a/0x20
+Dec 30 07:00:36 s6 kernel:  ? __folio_mark_dirty+0x21c/0x2a0
+Dec 30 07:00:36 s6 kernel:  block_dirty_folio+0x8a/0xb0
+Dec 30 07:00:36 s6 kernel:  unmap_page_range+0xd17/0x1120
+Dec 30 07:00:36 s6 kernel:  unmap_vmas+0xb5/0x190
+Dec 30 07:00:36 s6 kernel:  exit_mmap+0xec/0x340
+Dec 30 07:00:36 s6 kernel:  __mmput+0x3e/0x130
+Dec 30 07:00:36 s6 kernel:  do_exit+0x31c/0xb20
+Dec 30 07:00:36 s6 kernel:  do_group_exit+0x31/0x80
+Dec 30 07:00:36 s6 kernel:  __x64_sys_exit_group+0x18/0x20
+Dec 30 07:00:36 s6 kernel:  do_syscall_64+0x5d/0x90
+Dec 30 07:00:36 s6 kernel:  ? count_memcg_events.constprop.0+0x1a/0x30
+Dec 30 07:00:36 s6 kernel:  ? handle_mm_fault+0xa2/0x360
+Dec 30 07:00:36 s6 kernel:  ? do_user_addr_fault+0x30f/0x660
+Dec 30 07:00:36 s6 kernel:  ? exc_page_fault+0x7f/0x180
+Dec 30 07:00:36 s6 kernel:  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+Dec 30 07:00:36 s6 kernel: RIP: 0033:0x7fb3c581ee2d
+Dec 30 07:00:36 s6 kernel: Code: Unable to access opcode bytes at
+0x7fb3c581ee03.
+Dec 30 07:00:36 s6 kernel: RSP: 002b:00007fff620541e8 EFLAGS: 00000206
+ORIG_RAX: 00000000000000e7
+Dec 30 07:00:36 s6 kernel: RAX: ffffffffffffffda RBX: 00007fb3c591efa8
+RCX: 00007fb3c581ee2d
+Dec 30 07:00:36 s6 kernel: RDX: 00000000000000e7 RSI: ffffffffffffff88
+RDI: 0000000000000000
+Dec 30 07:00:36 s6 kernel: RBP: 0000000000000002 R08: 0000000000000000
+R09: 00007fb3c5924920
+Dec 30 07:00:36 s6 kernel: R10: 00005650f2e615f0 R11: 0000000000000206
+R12: 0000000000000000
+Dec 30 07:00:36 s6 kernel: R13: 0000000000000000 R14: 00007fb3c591d680
+R15: 00007fb3c591efc0
+Dec 30 07:00:36 s6 kernel:  </TASK>
 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-trace-v6.7-rc7
+--=-tq64fylqLrgyJbZBhP6n
+Content-Disposition: attachment; filename="s6-crash"
+Content-Type: text/plain; name="s6-crash"; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-Tag SHA1: c7f52a28c2ee2edb40e4884b45e3a12440ee6774
-Head SHA1: d05cb470663a2a1879277e544f69e660208f08f2
+RGVjIDMwIDA3OjAwOjM2IHM2IGtlcm5lbDogLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0t
+LS0tLS0tCkRlYyAzMCAwNzowMDozNiBzNiBrZXJuZWw6IFdBUk5JTkc6IENQVTogMCBQSUQ6IDUy
+MTUyNCBhdCBtbS9wYWdlLXdyaXRlYmFjay5jOjI2NjggX19mb2xpb19tYXJrX2RpcnR5ICg/Pzo/
+KSAKRGVjIDMwIDA3OjAwOjM2IHM2IGtlcm5lbDogTW9kdWxlcyBsaW5rZWQgaW46IGFsZ2lmX2hh
+c2ggYWZfYWxnIHJwY3NlY19nc3Nfa3JiNSBuZnN2NCBkbnNfcmVzb2x2ZXIgbmZzIGZzY2FjaGUg
+bmV0ZnMgbmZ0X25hdCBuZnRfY2hhaW5fbmF0IG5mX25hdCBuZnRfY3QgbmZfY29ubnRyYWNrIG5m
+X2RlZnJhZ19pcHY2IG5mX2RlZnJhZ19pcHY0IG5mX3RhYmxlcyBycGNyZG1hIHJkbWE+CkRlYyAz
+MCAwNzowMDozNiBzNiBrZXJuZWw6ICBhc3luY194b3IgcmFwbCBqb3lkZXYgYXN5bmNfdHggaW50
+ZWxfY3N0YXRlIG1laV9tZSBubHNfaXNvODg1OV8xIHZmYXQgaTJjX2k4MDEgeG9yIGNlYyBzbmQg
+cmFpZDZfcHEgbGliY3JjMzJjIGludGVsX3VuY29yZSBteG1fd21pIHBjc3BrciBlMTAwMGUgaTJj
+X3NtYnVzIGludGVsX3dtaV90aHVuZGVyYm9sdCBzb3VuZGNvcmUgbWVpPgpEZWMgMzAgMDc6MDA6
+MzYgczYga2VybmVsOiBDUFU6IDAgUElEOiA1MjE1MjQgQ29tbTogcnN5bmMgTm90IHRhaW50ZWQg
+Ni42Ljgtc3RhYmxlLTEgIzEzIGQyMzhmNWFiNmEyMDZjZGIwY2M1Y2Q3MmY4Njg4MjMwZjIzZDU4
+ZGYKRGVjIDMwIDA3OjAwOjM2IHM2IGtlcm5lbDogSGFyZHdhcmUgbmFtZTogVG8gQmUgRmlsbGVk
+IEJ5IE8uRS5NLiBUbyBCZSBGaWxsZWQgQnkgTy5FLk0uL1ozNzAgRXh0cmVtZTQsIEJJT1MgUDQu
+MjAgMTAvMzEvMjAxOQpEZWMgMzAgMDc6MDA6MzYgczYga2VybmVsOiBSSVA6IDAwMTA6X19mb2xp
+b19tYXJrX2RpcnR5ICg/Pzo/KSAKRGVjIDMwIDA3OjAwOjM2IHM2IGtlcm5lbDogQ29kZTogODkg
+ZmUgZTggNTcgMjIgMTQgMDAgNjUgZmYgMGQgYjggZmYgZjIgNjIgMGYgODQgOGQgMDAgMDAgMDAg
+NDkgOGIgM2MgMjQgZTkgNDcgZmUgZmYgZmYgNGMgODkgZmYgZTggYjkgMTggMDggMDAgNDggODkg
+YzYgZWIgODUgPDBmPiAwYiBlOSAyNyBmZSBmZiBmZiA0OCA4YiA1MiAxMCBlOSA1NiBmZiBmZiBm
+ZiA0OCBjNyAwNCA+CkFsbCBjb2RlCj09PT09PT09CiAgIDA6CTg5IGZlICAgICAgICAgICAgICAg
+IAltb3YgICAgJWVkaSwlZXNpCiAgIDI6CWU4IDU3IDIyIDE0IDAwICAgICAgIAljYWxsICAgMHgx
+NDIyNWUKICAgNzoJNjUgZmYgMGQgYjggZmYgZjIgNjIgCWRlY2wgICAlZ3M6MHg2MmYyZmZiOCgl
+cmlwKSAgICAgICAgIyAweDYyZjJmZmM2CiAgIGU6CTBmIDg0IDhkIDAwIDAwIDAwICAgIAlqZSAg
+ICAgMHhhMQogIDE0Ogk0OSA4YiAzYyAyNCAgICAgICAgICAJbW92ICAgICglcjEyKSwlcmRpCiAg
+MTg6CWU5IDQ3IGZlIGZmIGZmICAgICAgIAlqbXAgICAgMHhmZmZmZmZmZmZmZmZmZTY0CiAgMWQ6
+CTRjIDg5IGZmICAgICAgICAgICAgIAltb3YgICAgJXIxNSwlcmRpCiAgMjA6CWU4IGI5IDE4IDA4
+IDAwICAgICAgIAljYWxsICAgMHg4MThkZQogIDI1Ogk0OCA4OSBjNiAgICAgICAgICAgICAJbW92
+ICAgICVyYXgsJXJzaQogIDI4OgllYiA4NSAgICAgICAgICAgICAgICAJam1wICAgIDB4ZmZmZmZm
+ZmZmZmZmZmZhZgogIDJhOioJMGYgMGIgICAgICAgICAgICAgICAgCXVkMgkJPC0tIHRyYXBwaW5n
+IGluc3RydWN0aW9uCiAgMmM6CWU5IDI3IGZlIGZmIGZmICAgICAgIAlqbXAgICAgMHhmZmZmZmZm
+ZmZmZmZmZTU4CiAgMzE6CTQ4IDhiIDUyIDEwICAgICAgICAgIAltb3YgICAgMHgxMCglcmR4KSwl
+cmR4CiAgMzU6CWU5IDU2IGZmIGZmIGZmICAgICAgIAlqbXAgICAgMHhmZmZmZmZmZmZmZmZmZjkw
+CiAgM2E6CTQ4ICAgICAgICAgICAgICAgICAgIAlyZXguVwogIDNiOgljNyAgICAgICAgICAgICAg
+ICAgICAJLmJ5dGUgMHhjNwogIDNjOgkwNCAwMCAgICAgICAgICAgICAgICAJYWRkICAgICQweDAs
+JWFsCgpDb2RlIHN0YXJ0aW5nIHdpdGggdGhlIGZhdWx0aW5nIGluc3RydWN0aW9uCj09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgMDoJMGYgMGIgICAgICAgICAg
+ICAgICAgCXVkMgogICAyOgllOSAyNyBmZSBmZiBmZiAgICAgICAJam1wICAgIDB4ZmZmZmZmZmZm
+ZmZmZmUyZQogICA3Ogk0OCA4YiA1MiAxMCAgICAgICAgICAJbW92ICAgIDB4MTAoJXJkeCksJXJk
+eAogICBiOgllOSA1NiBmZiBmZiBmZiAgICAgICAJam1wICAgIDB4ZmZmZmZmZmZmZmZmZmY2Ngog
+IDEwOgk0OCAgICAgICAgICAgICAgICAgICAJcmV4LlcKICAxMToJYzcgICAgICAgICAgICAgICAg
+ICAgCS5ieXRlIDB4YzcKICAxMjoJMDQgMDAgICAgICAgICAgICAgICAgCWFkZCAgICAkMHgwLCVh
+bApEZWMgMzAgMDc6MDA6MzYgczYga2VybmVsOiBSU1A6IDAwMTg6ZmZmZmM5MDAwYzAzN2IwMCBF
+RkxBR1M6IDAwMDEwMDQ2CkRlYyAzMCAwNzowMDozNiBzNiBrZXJuZWw6IFJBWDogMDJmZmZmNjAw
+MDAwODAzMCBSQlg6IDAwMDAwMDAwMDAwMDAyODYgUkNYOiBmZmZmODg4NWQ0NGRmZjA4CkRlYyAz
+MCAwNzowMDozNiBzNiBrZXJuZWw6IFJEWDogMDAwMDAwMDAwMDAwMDAwMSBSU0k6IGZmZmY4ODgx
+MGQwMTVjYTggUkRJOiBmZmZmODg4MTBkMDE1Y2IwCkRlYyAzMCAwNzowMDozNiBzNiBrZXJuZWw6
+IFJCUDogZmZmZjg4ODEwZDAxNWNiMCBSMDg6IGZmZmY4ODg1MjA4YzEzMDAgUjA5OiAwMDAwMDAw
+MDAwMDAwMDAwCkRlYyAzMCAwNzowMDozNiBzNiBrZXJuZWw6IFIxMDogMDAwMDAwMDAwMDAwMDIw
+MCBSMTE6IDAwMDAwMDAwMDAwMDAwMDIgUjEyOiBmZmZmODg4MTBkMDE1Y2E4CkRlYyAzMCAwNzow
+MDozNiBzNiBrZXJuZWw6IFIxMzogMDAwMDAwMDAwMDAwMDAwMSBSMTQ6IGZmZmY4ODg1MWVjNzJm
+YzAgUjE1OiBmZmZmZWEwMDEwNWM1ZTAwCkRlYyAzMCAwNzowMDozNiBzNiBrZXJuZWw6IEZTOiAg
+MDAwMDAwMDAwMDAwMDAwMCgwMDAwKSBHUzpmZmZmODg4ODllZTAwMDAwKDAwMDApIGtubEdTOjAw
+MDAwMDAwMDAwMDAwMDAKRGVjIDMwIDA3OjAwOjM2IHM2IGtlcm5lbDogQ1M6ICAwMDEwIERTOiAw
+MDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMwpEZWMgMzAgMDc6MDA6MzYgczYga2Vy
+bmVsOiBDUjI6IDAwMDA3ZmIzYzU5M2IwMjAgQ1IzOiAwMDAwMDAwNjkwZTIwMDAzIENSNDogMDAw
+MDAwMDAwMDM3MDZmMApEZWMgMzAgMDc6MDA6MzYgczYga2VybmVsOiBEUjA6IDAwMDAwMDAwMDAw
+MDAwMDAgRFIxOiAwMDAwMDAwMDAwMDAwMDAwIERSMjogMDAwMDAwMDAwMDAwMDAwMApEZWMgMzAg
+MDc6MDA6MzYgczYga2VybmVsOiBEUjM6IDAwMDAwMDAwMDAwMDAwMDAgRFI2OiAwMDAwMDAwMGZm
+ZmUwZmYwIERSNzogMDAwMDAwMDAwMDAwMDQwMApEZWMgMzAgMDc6MDA6MzYgczYga2VybmVsOiBD
+YWxsIFRyYWNlOgpEZWMgMzAgMDc6MDA6MzYgczYga2VybmVsOiAgPFRBU0s+CkRlYyAzMCAwNzow
+MDozNiBzNiBrZXJuZWw6ID8gX19mb2xpb19tYXJrX2RpcnR5ICg/Pzo/KSAKRGVjIDMwIDA3OjAw
+OjM2IHM2IGtlcm5lbDogPyBfX3dhcm4gKD8/Oj8pIApEZWMgMzAgMDc6MDA6MzYgczYga2VybmVs
+OiA/IF9fZm9saW9fbWFya19kaXJ0eSAoPz86PykgCkRlYyAzMCAwNzowMDozNiBzNiBrZXJuZWw6
+ID8gcmVwb3J0X2J1ZyAoPz86PykgCkRlYyAzMCAwNzowMDozNiBzNiBrZXJuZWw6ID8gaGFuZGxl
+X2J1ZyAoPz86PykgCkRlYyAzMCAwNzowMDozNiBzNiBrZXJuZWw6ID8gZXhjX2ludmFsaWRfb3Ag
+KD8/Oj8pIApEZWMgMzAgMDc6MDA6MzYgczYga2VybmVsOiA/IGFzbV9leGNfaW52YWxpZF9vcCAo
+Pz86PykgCkRlYyAzMCAwNzowMDozNiBzNiBrZXJuZWw6ID8gX19mb2xpb19tYXJrX2RpcnR5ICg/
+Pzo/KSAKRGVjIDMwIDA3OjAwOjM2IHM2IGtlcm5lbDogYmxvY2tfZGlydHlfZm9saW8gKD8/Oj8p
+IApEZWMgMzAgMDc6MDA6MzYgczYga2VybmVsOiB1bm1hcF9wYWdlX3JhbmdlICg/Pzo/KSAKRGVj
+IDMwIDA3OjAwOjM2IHM2IGtlcm5lbDogdW5tYXBfdm1hcyAoPz86PykgCkRlYyAzMCAwNzowMDoz
+NiBzNiBrZXJuZWw6IGV4aXRfbW1hcCAoPz86PykgCkRlYyAzMCAwNzowMDozNiBzNiBrZXJuZWw6
+IF9fbW1wdXQgKD8/Oj8pIApEZWMgMzAgMDc6MDA6MzYgczYga2VybmVsOiBkb19leGl0ICg/Pzo/
+KSAKRGVjIDMwIDA3OjAwOjM2IHM2IGtlcm5lbDogZG9fZ3JvdXBfZXhpdCAoPz86PykgCkRlYyAz
+MCAwNzowMDozNiBzNiBrZXJuZWw6IF9feDY0X3N5c19leGl0X2dyb3VwICg/Pzo/KSAKRGVjIDMw
+IDA3OjAwOjM2IHM2IGtlcm5lbDogZG9fc3lzY2FsbF82NCAoPz86PykgCkRlYyAzMCAwNzowMDoz
+NiBzNiBrZXJuZWw6ID8gY291bnRfbWVtY2dfZXZlbnRzLmNvbnN0cHJvcC4wICg/Pzo/KSAKRGVj
+IDMwIDA3OjAwOjM2IHM2IGtlcm5lbDogPyBoYW5kbGVfbW1fZmF1bHQgKD8/Oj8pIApEZWMgMzAg
+MDc6MDA6MzYgczYga2VybmVsOiA/IGRvX3VzZXJfYWRkcl9mYXVsdCAoPz86PykgCkRlYyAzMCAw
+NzowMDozNiBzNiBrZXJuZWw6ID8gZXhjX3BhZ2VfZmF1bHQgKD8/Oj8pIApEZWMgMzAgMDc6MDA6
+MzYgczYga2VybmVsOiBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUgKD8/Oj8pIApEZWMg
+MzAgMDc6MDA6MzYgczYga2VybmVsOiBSSVA6IDAwMzM6MHg3ZmIzYzU4MWVlMmQKRGVjIDMwIDA3
+OjAwOjM2IHM2IGtlcm5lbDogQ29kZTogVW5hYmxlIHRvIGFjY2VzcyBvcGNvZGUgYnl0ZXMgYXQg
+MHg3ZmIzYzU4MWVlMDMuCgpDb2RlIHN0YXJ0aW5nIHdpdGggdGhlIGZhdWx0aW5nIGluc3RydWN0
+aW9uCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KRGVjIDMwIDA3
+OjAwOjM2IHM2IGtlcm5lbDogUlNQOiAwMDJiOjAwMDA3ZmZmNjIwNTQxZTggRUZMQUdTOiAwMDAw
+MDIwNiBPUklHX1JBWDogMDAwMDAwMDAwMDAwMDBlNwpEZWMgMzAgMDc6MDA6MzYgczYga2VybmVs
+OiBSQVg6IGZmZmZmZmZmZmZmZmZmZGEgUkJYOiAwMDAwN2ZiM2M1OTFlZmE4IFJDWDogMDAwMDdm
+YjNjNTgxZWUyZApEZWMgMzAgMDc6MDA6MzYgczYga2VybmVsOiBSRFg6IDAwMDAwMDAwMDAwMDAw
+ZTcgUlNJOiBmZmZmZmZmZmZmZmZmZjg4IFJESTogMDAwMDAwMDAwMDAwMDAwMApEZWMgMzAgMDc6
+MDA6MzYgczYga2VybmVsOiBSQlA6IDAwMDAwMDAwMDAwMDAwMDIgUjA4OiAwMDAwMDAwMDAwMDAw
+MDAwIFIwOTogMDAwMDdmYjNjNTkyNDkyMApEZWMgMzAgMDc6MDA6MzYgczYga2VybmVsOiBSMTA6
+IDAwMDA1NjUwZjJlNjE1ZjAgUjExOiAwMDAwMDAwMDAwMDAwMjA2IFIxMjogMDAwMDAwMDAwMDAw
+MDAwMApEZWMgMzAgMDc6MDA6MzYgczYga2VybmVsOiBSMTM6IDAwMDAwMDAwMDAwMDAwMDAgUjE0
+OiAwMDAwN2ZiM2M1OTFkNjgwIFIxNTogMDAwMDdmYjNjNTkxZWZjMApEZWMgMzAgMDc6MDA6MzYg
+czYga2VybmVsOiAgPC9UQVNLPgpEZWMgMzAgMDc6MDA6MzYgczYga2VybmVsOiAtLS1bIGVuZCB0
+cmFjZSAwMDAwMDAwMDAwMDAwMDAwIF0tLS0KRGVjIDMwIDA3OjAwOjM2IHM2IGtlcm5lbDogQlVH
+OiBCYWQgcnNzLWNvdW50ZXIgc3RhdGUgbW06MDAwMDAwMDA4ZTI0ZDU3YSB0eXBlOk1NX0ZJTEVQ
+QUdFUyB2YWw6LTEKRGVjIDMwIDA3OjAwOjM2IHM2IGtlcm5lbDogQlVHOiBCYWQgcnNzLWNvdW50
+ZXIgc3RhdGUgbW06MDAwMDAwMDA4ZTI0ZDU3YSB0eXBlOk1NX0FOT05QQUdFUyB2YWw6MQpEZWMg
+MzAgMDc6MDI6MjMgczYga2VybmVsOiBnZW5lcmFsIHByb3RlY3Rpb24gZmF1bHQsIHByb2JhYmx5
+IGZvciBub24tY2Fub25pY2FsIGFkZHJlc3MgMHg2ZDY1NTMyZDY2Njk3OTc1OiAwMDAwIFsjMV0g
+UFJFRU1QVCBTTVAgUFRJCkRlYyAzMCAwNzowMjoyMyBzNiBrZXJuZWw6IENQVTogNyBQSUQ6IDUy
+MTU3OCBDb21tOiByc3luYyBUYWludGVkOiBHICAgICAgICBXICAgICAgICAgIDYuNi44LXN0YWJs
+ZS0xICMxMyBkMjM4ZjVhYjZhMjA2Y2RiMGNjNWNkNzJmODY4ODIzMGYyM2Q1OGRmCkRlYyAzMCAw
+NzowMjoyMyBzNiBrZXJuZWw6IEhhcmR3YXJlIG5hbWU6IFRvIEJlIEZpbGxlZCBCeSBPLkUuTS4g
+VG8gQmUgRmlsbGVkIEJ5IE8uRS5NLi9aMzcwIEV4dHJlbWU0LCBCSU9TIFA0LjIwIDEwLzMxLzIw
+MTkKRGVjIDMwIDA3OjAyOjIzIHM2IGtlcm5lbDogUklQOiAwMDEwOl9fbW9kX21lbWNnX2xydXZl
+Y19zdGF0ZSAoPz86PykgCkRlYyAzMCAwNzowMjoyMyBzNiBrZXJuZWw6IENvZGU6IGZmIDkwIDkw
+IDkwIDkwIDkwIDkwIDkwIDkwIDkwIDkwIDkwIDkwIDkwIDkwIDkwIDkwIDY2IDBmIDFmIDAwIDBm
+IDFmIDQ0IDAwIDAwIDQ4IDhiIDhmIDQwIDBiIDAwIDAwIDQ4IDYzIGMyIDg5IGY2IDQ4IGMxIGU2
+IDAzIDw0OD4gOGIgOTEgMTAgMDcgMDAgMDAgNDggMDEgZjIgNjUgNDggMDEgMDIgNDggMDMgYjcg
+MjggMDYgPgpBbGwgY29kZQo9PT09PT09PQogICAwOglmZiA5MCA5MCA5MCA5MCA5MCAgICAJY2Fs
+bCAgICotMHg2ZjZmNmY3MCglcmF4KQogICA2Ogk5MCAgICAgICAgICAgICAgICAgICAJbm9wCiAg
+IDc6CTkwICAgICAgICAgICAgICAgICAgIAlub3AKICAgODoJOTAgICAgICAgICAgICAgICAgICAg
+CW5vcAogICA5Ogk5MCAgICAgICAgICAgICAgICAgICAJbm9wCiAgIGE6CTkwICAgICAgICAgICAg
+ICAgICAgIAlub3AKICAgYjoJOTAgICAgICAgICAgICAgICAgICAgCW5vcAogICBjOgk5MCAgICAg
+ICAgICAgICAgICAgICAJbm9wCiAgIGQ6CTkwICAgICAgICAgICAgICAgICAgIAlub3AKICAgZToJ
+OTAgICAgICAgICAgICAgICAgICAgCW5vcAogICBmOgk5MCAgICAgICAgICAgICAgICAgICAJbm9w
+CiAgMTA6CTkwICAgICAgICAgICAgICAgICAgIAlub3AKICAxMToJNjYgMGYgMWYgMDAgICAgICAg
+ICAgCW5vcHcgICAoJXJheCkKICAxNToJMGYgMWYgNDQgMDAgMDAgICAgICAgCW5vcGwgICAweDAo
+JXJheCwlcmF4LDEpCiAgMWE6CTQ4IDhiIDhmIDQwIDBiIDAwIDAwIAltb3YgICAgMHhiNDAoJXJk
+aSksJXJjeAogIDIxOgk0OCA2MyBjMiAgICAgICAgICAgICAJbW92c2xxICVlZHgsJXJheAogIDI0
+Ogk4OSBmNiAgICAgICAgICAgICAgICAJbW92ICAgICVlc2ksJWVzaQogIDI2Ogk0OCBjMSBlNiAw
+MyAgICAgICAgICAJc2hsICAgICQweDMsJXJzaQogIDJhOioJNDggOGIgOTEgMTAgMDcgMDAgMDAg
+CW1vdiAgICAweDcxMCglcmN4KSwlcmR4CQk8LS0gdHJhcHBpbmcgaW5zdHJ1Y3Rpb24KICAzMToJ
+NDggMDEgZjIgICAgICAgICAgICAgCWFkZCAgICAlcnNpLCVyZHgKICAzNDoJNjUgNDggMDEgMDIg
+ICAgICAgICAgCWFkZCAgICAlcmF4LCVnczooJXJkeCkKICAzODoJNDggICAgICAgICAgICAgICAg
+ICAgCXJleC5XCiAgMzk6CTAzICAgICAgICAgICAgICAgICAgIAkuYnl0ZSAweDMKICAzYToJYjcg
+MjggICAgICAgICAgICAgICAgCW1vdiAgICAkMHgyOCwlYmgKICAzYzoJMDYgICAgICAgICAgICAg
+ICAgICAgCShiYWQpCgkuLi4KCkNvZGUgc3RhcnRpbmcgd2l0aCB0aGUgZmF1bHRpbmcgaW5zdHJ1
+Y3Rpb24KPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogICAwOgk0
+OCA4YiA5MSAxMCAwNyAwMCAwMCAJbW92ICAgIDB4NzEwKCVyY3gpLCVyZHgKICAgNzoJNDggMDEg
+ZjIgICAgICAgICAgICAgCWFkZCAgICAlcnNpLCVyZHgKICAgYToJNjUgNDggMDEgMDIgICAgICAg
+ICAgCWFkZCAgICAlcmF4LCVnczooJXJkeCkKICAgZToJNDggICAgICAgICAgICAgICAgICAgCXJl
+eC5XCiAgIGY6CTAzICAgICAgICAgICAgICAgICAgIAkuYnl0ZSAweDMKICAxMDoJYjcgMjggICAg
+ICAgICAgICAgICAgCW1vdiAgICAkMHgyOCwlYmgKICAxMjoJMDYgICAgICAgICAgICAgICAgICAg
+CShiYWQpCgkuLi4KRGVjIDMwIDA3OjAyOjIzIHM2IGtlcm5lbDogUlNQOiAwMDE4OmZmZmZjOTAw
+MGMxMmZiNjggRUZMQUdTOiAwMDAxMDIwNgoK
 
 
-Steven Rostedt (Google) (3):
-      ring-buffer: Fix wake ups when buffer_percent is set to 100
-      tracing: Fix blocked reader of snapshot buffer
-      ftrace: Fix modification of direct_function hash while in use
-
-----
- kernel/trace/ftrace.c      | 100 +++++++++++++++++++++------------------------
- kernel/trace/ring_buffer.c |  12 ++++--
- kernel/trace/trace.c       |  20 +++++++--
- 3 files changed, 73 insertions(+), 59 deletions(-)
----------------------------
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 8de8bec5f366..b01ae7d36021 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -1183,18 +1183,19 @@ static void __add_hash_entry(struct ftrace_hash *hash,
- 	hash->count++;
- }
- 
--static int add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
-+static struct ftrace_func_entry *
-+add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
- {
- 	struct ftrace_func_entry *entry;
- 
- 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
- 	if (!entry)
--		return -ENOMEM;
-+		return NULL;
- 
- 	entry->ip = ip;
- 	__add_hash_entry(hash, entry);
- 
--	return 0;
-+	return entry;
- }
- 
- static void
-@@ -1349,7 +1350,6 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
- 	struct ftrace_func_entry *entry;
- 	struct ftrace_hash *new_hash;
- 	int size;
--	int ret;
- 	int i;
- 
- 	new_hash = alloc_ftrace_hash(size_bits);
-@@ -1366,8 +1366,7 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
- 	size = 1 << hash->size_bits;
- 	for (i = 0; i < size; i++) {
- 		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
--			ret = add_hash_entry(new_hash, entry->ip);
--			if (ret < 0)
-+			if (add_hash_entry(new_hash, entry->ip) == NULL)
- 				goto free_hash;
- 		}
- 	}
-@@ -2536,7 +2535,7 @@ ftrace_find_unique_ops(struct dyn_ftrace *rec)
- 
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- /* Protected by rcu_tasks for reading, and direct_mutex for writing */
--static struct ftrace_hash *direct_functions = EMPTY_HASH;
-+static struct ftrace_hash __rcu *direct_functions = EMPTY_HASH;
- static DEFINE_MUTEX(direct_mutex);
- int ftrace_direct_func_count;
- 
-@@ -2555,39 +2554,6 @@ unsigned long ftrace_find_rec_direct(unsigned long ip)
- 	return entry->direct;
- }
- 
--static struct ftrace_func_entry*
--ftrace_add_rec_direct(unsigned long ip, unsigned long addr,
--		      struct ftrace_hash **free_hash)
--{
--	struct ftrace_func_entry *entry;
--
--	if (ftrace_hash_empty(direct_functions) ||
--	    direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
--		struct ftrace_hash *new_hash;
--		int size = ftrace_hash_empty(direct_functions) ? 0 :
--			direct_functions->count + 1;
--
--		if (size < 32)
--			size = 32;
--
--		new_hash = dup_hash(direct_functions, size);
--		if (!new_hash)
--			return NULL;
--
--		*free_hash = direct_functions;
--		direct_functions = new_hash;
--	}
--
--	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
--	if (!entry)
--		return NULL;
--
--	entry->ip = ip;
--	entry->direct = addr;
--	__add_hash_entry(direct_functions, entry);
--	return entry;
--}
--
- static void call_direct_funcs(unsigned long ip, unsigned long pip,
- 			      struct ftrace_ops *ops, struct ftrace_regs *fregs)
- {
-@@ -4223,8 +4189,8 @@ enter_record(struct ftrace_hash *hash, struct dyn_ftrace *rec, int clear_filter)
- 		/* Do nothing if it exists */
- 		if (entry)
- 			return 0;
--
--		ret = add_hash_entry(hash, rec->ip);
-+		if (add_hash_entry(hash, rec->ip) == NULL)
-+			ret = -ENOMEM;
- 	}
- 	return ret;
- }
-@@ -5266,7 +5232,8 @@ __ftrace_match_addr(struct ftrace_hash *hash, unsigned long ip, int remove)
- 		return 0;
- 	}
- 
--	return add_hash_entry(hash, ip);
-+	entry = add_hash_entry(hash, ip);
-+	return entry ? 0 :  -ENOMEM;
- }
- 
- static int
-@@ -5410,7 +5377,7 @@ static void remove_direct_functions_hash(struct ftrace_hash *hash, unsigned long
-  */
- int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
- {
--	struct ftrace_hash *hash, *free_hash = NULL;
-+	struct ftrace_hash *hash, *new_hash = NULL, *free_hash = NULL;
- 	struct ftrace_func_entry *entry, *new;
- 	int err = -EBUSY, size, i;
- 
-@@ -5436,17 +5403,44 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
- 		}
- 	}
- 
--	/* ... and insert them to direct_functions hash. */
- 	err = -ENOMEM;
-+
-+	/* Make a copy hash to place the new and the old entries in */
-+	size = hash->count + direct_functions->count;
-+	if (size > 32)
-+		size = 32;
-+	new_hash = alloc_ftrace_hash(fls(size));
-+	if (!new_hash)
-+		goto out_unlock;
-+
-+	/* Now copy over the existing direct entries */
-+	size = 1 << direct_functions->size_bits;
-+	for (i = 0; i < size; i++) {
-+		hlist_for_each_entry(entry, &direct_functions->buckets[i], hlist) {
-+			new = add_hash_entry(new_hash, entry->ip);
-+			if (!new)
-+				goto out_unlock;
-+			new->direct = entry->direct;
-+		}
-+	}
-+
-+	/* ... and add the new entries */
-+	size = 1 << hash->size_bits;
- 	for (i = 0; i < size; i++) {
- 		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
--			new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
-+			new = add_hash_entry(new_hash, entry->ip);
- 			if (!new)
--				goto out_remove;
-+				goto out_unlock;
-+			/* Update both the copy and the hash entry */
-+			new->direct = addr;
- 			entry->direct = addr;
- 		}
- 	}
- 
-+	free_hash = direct_functions;
-+	rcu_assign_pointer(direct_functions, new_hash);
-+	new_hash = NULL;
-+
- 	ops->func = call_direct_funcs;
- 	ops->flags = MULTI_FLAGS;
- 	ops->trampoline = FTRACE_REGS_ADDR;
-@@ -5454,17 +5448,17 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
- 
- 	err = register_ftrace_function_nolock(ops);
- 
-- out_remove:
--	if (err)
--		remove_direct_functions_hash(hash, addr);
--
-  out_unlock:
- 	mutex_unlock(&direct_mutex);
- 
--	if (free_hash) {
-+	if (free_hash && free_hash != EMPTY_HASH) {
- 		synchronize_rcu_tasks();
- 		free_ftrace_hash(free_hash);
- 	}
-+
-+	if (new_hash)
-+		free_ftrace_hash(new_hash);
-+
- 	return err;
- }
- EXPORT_SYMBOL_GPL(register_ftrace_direct);
-@@ -6309,7 +6303,7 @@ ftrace_graph_set_hash(struct ftrace_hash *hash, char *buffer)
- 
- 				if (entry)
- 					continue;
--				if (add_hash_entry(hash, rec->ip) < 0)
-+				if (add_hash_entry(hash, rec->ip) == NULL)
- 					goto out;
- 			} else {
- 				if (entry) {
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 83eab547f1d1..9286f88fcd32 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -881,9 +881,14 @@ static __always_inline bool full_hit(struct trace_buffer *buffer, int cpu, int f
- 	if (!nr_pages || !full)
- 		return true;
- 
--	dirty = ring_buffer_nr_dirty_pages(buffer, cpu);
-+	/*
-+	 * Add one as dirty will never equal nr_pages, as the sub-buffer
-+	 * that the writer is on is not counted as dirty.
-+	 * This is needed if "buffer_percent" is set to 100.
-+	 */
-+	dirty = ring_buffer_nr_dirty_pages(buffer, cpu) + 1;
- 
--	return (dirty * 100) > (full * nr_pages);
-+	return (dirty * 100) >= (full * nr_pages);
- }
- 
- /*
-@@ -944,7 +949,8 @@ void ring_buffer_wake_waiters(struct trace_buffer *buffer, int cpu)
- 	/* make sure the waiters see the new index */
- 	smp_wmb();
- 
--	rb_wake_up_waiters(&rbwork->work);
-+	/* This can be called in any context */
-+	irq_work_queue(&rbwork->work);
- }
- 
- /**
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 199df497db07..a0defe156b57 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1894,6 +1894,9 @@ update_max_tr(struct trace_array *tr, struct task_struct *tsk, int cpu,
- 	__update_max_tr(tr, tsk, cpu);
- 
- 	arch_spin_unlock(&tr->max_lock);
-+
-+	/* Any waiters on the old snapshot buffer need to wake up */
-+	ring_buffer_wake_waiters(tr->array_buffer.buffer, RING_BUFFER_ALL_CPUS);
- }
- 
- /**
-@@ -1945,12 +1948,23 @@ update_max_tr_single(struct trace_array *tr, struct task_struct *tsk, int cpu)
- 
- static int wait_on_pipe(struct trace_iterator *iter, int full)
- {
-+	int ret;
-+
- 	/* Iterators are static, they should be filled or empty */
- 	if (trace_buffer_iter(iter, iter->cpu_file))
- 		return 0;
- 
--	return ring_buffer_wait(iter->array_buffer->buffer, iter->cpu_file,
--				full);
-+	ret = ring_buffer_wait(iter->array_buffer->buffer, iter->cpu_file, full);
-+
-+#ifdef CONFIG_TRACER_MAX_TRACE
-+	/*
-+	 * Make sure this is still the snapshot buffer, as if a snapshot were
-+	 * to happen, this would now be the main buffer.
-+	 */
-+	if (iter->snapshot)
-+		iter->array_buffer = &iter->tr->max_buffer;
-+#endif
-+	return ret;
- }
- 
- #ifdef CONFIG_FTRACE_STARTUP_TEST
-@@ -8517,7 +8531,7 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
- 
- 		wait_index = READ_ONCE(iter->wait_index);
- 
--		ret = wait_on_pipe(iter, iter->tr->buffer_percent);
-+		ret = wait_on_pipe(iter, iter->snapshot ? 0 : iter->tr->buffer_percent);
- 		if (ret)
- 			goto out;
- 
+--=-tq64fylqLrgyJbZBhP6n--
 
