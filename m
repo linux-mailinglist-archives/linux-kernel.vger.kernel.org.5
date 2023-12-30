@@ -1,108 +1,122 @@
-Return-Path: <linux-kernel+bounces-13343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 948AC8203CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 07:33:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0E588203D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 07:46:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2E671C20E9A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 06:33:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80BEAB2164A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 06:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3507823A0;
-	Sat, 30 Dec 2023 06:33:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A0123CF;
+	Sat, 30 Dec 2023 06:46:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="KMV0nsVr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+Received: from mout.web.de (mout.web.de [212.227.17.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC1661FAF
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 06:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T2C9x6wNxz4f3jMC
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 14:33:25 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 7A02E1A017D
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 14:33:31 +0800 (CST)
-Received: from [10.174.179.247] (unknown [10.174.179.247])
-	by APP2 (Coremail) with SMTP id Syh0CgAnyki6uY9lCnOaFA--.42895S3;
-	Sat, 30 Dec 2023 14:33:31 +0800 (CST)
-Message-ID: <9a4da75c-b6cf-0ee4-ef3b-5e19af6cb144@huaweicloud.com>
-Date: Sat, 30 Dec 2023 14:33:30 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025841FA2;
+	Sat, 30 Dec 2023 06:46:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703918766; x=1704523566; i=markus.elfring@web.de;
+	bh=MrI+HlTPHjGiVMETAdFalpnGbyZX2n6jfxRAlWoU6no=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=KMV0nsVrGxfofH8a/TpBKu3neLfMhUs+V3VGW6Cn7iLkUp/N6la6vwe/V6d8kWfX
+	 BqCnPkVRebmheAolwV9RQpOOA18ke46k1d9XRDo08BjesW4YEeHX7OCCyrhfjFQ35
+	 9ZKwhibEeOqxZstAth4zI6FlzJVKlNsbDdq26uvCRmJQEUvBfFCjhLx+mZ0rAHpqH
+	 fSy6KXvxdVRZ2dJLcIejyGuHULC9SwZAfGTzDhbhlUSgLx6dhR5zpv/AtNjDMTl9l
+	 69Mjr74xO+vCMy6owLxtNrcjbpYCjK9bMU5jCus+PkpJW+rYj1neO8tgTrPePmKBu
+	 8UvNi3ZzfOH2Amu/5A==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.87.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MjgSv-1qprqH0saR-00kqVE; Sat, 30
+ Dec 2023 07:46:06 +0100
+Message-ID: <621c7483-9a8c-431c-86e0-85d23b983471@web.de>
+Date: Sat, 30 Dec 2023 07:45:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH v2] ubi: block: fix memleak in ubiblock_create()
-To: linan666@huaweicloud.com, richard@nod.at, miquel.raynal@bootlin.com,
- vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
- yangerkun@huawei.com
-References: <20231208074629.1656356-1-linan666@huaweicloud.com>
-From: Li Nan <linan666@huaweicloud.com>
-In-Reply-To: <20231208074629.1656356-1-linan666@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgAnyki6uY9lCnOaFA--.42895S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrKry7KrWrWFyDAr43CFWUtwb_yoWkGrcE9w
-	4aqr93XrWIkwn2k34jyry3ua1Ykr4UKrWkuF1ftws8XFW7XFn7AF93Kr15Ww4DAF429a4r
-	A3W8Wr12yr40qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbfAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-	Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-	64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
-	Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7
-	M4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
-	8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-	CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VU1c4S5UUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] hugetlbfs: Improve exception handling in
+ hugetlbfs_fill_super()
+To: Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org
+Cc: kernel-janitors@vger.kernel.org, Muchun Song <muchun.song@linux.dev>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <9ce3f553-24bc-4ecd-ac5e-7ba27caeff57@web.de>
+ <b109b7dc-3972-4b2e-ae4c-89bf8eecf8f2@web.de>
+ <ZY7dEbRJb1dHkQPd@casper.infradead.org>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <ZY7dEbRJb1dHkQPd@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Ve8neiGe2q5ryqxM6dzaXIxfeGHBlbzo1qJcYLsQ4RG1C0BHG4Y
+ iVXPNs6/F7b6gq1kCic2vQE8tnCUG8nDZWQ6OteFB4tPYOuO15VfGA+Q0BoFCkjfGjWdOch
+ pgEpL5ZqaEBhHT/rwmCXMzu2ZjWuTeuxuQcCMZaf31OwzKx07UoZ7shYeIu9ZlWsIg/gOBY
+ QLh0SUQlhJQiX/PYhWGIA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:M7PlL5FeIXY=;P9CA05MuiTsu8Dx9xQU42UD9CtZ
+ LDI4EywlodTtkCBe6x9Sz2G/e0wDw+0kn53GXNqM2o0sisVkvVUAFeQPUpxhC3VKhxjtLfRPW
+ /egtBlhmnM6s6MWd2hitASrMibEmiZGchb6CDPKyasJ+azcGFfybofZEzTzAVncYkPqaNEutB
+ hYRGUHc8IaWo7/XdbHjOU1skOELwJQ6rgJU2WQT52/VS4TkIl9fOnyJLHjRQVN6ZGhlI81lKD
+ oP9HAXrGbSYGb/0+1zIL+CawJ8fRMa3IWu6Fn3Qg8kf6/tQyRQwl0rUhJTyeZlDvDtl/ftFqO
+ 1oPLgpe7o1+FebxrkOJgbi9iB3BzGAf0BlLiD/0UZLWHj1A+BeCRXH3iWyUSQDL1JeJbC9SbO
+ dYDJJKt6heT3OXxlQgrqTI3B4+4JPjGdMbhchQ3MzdsylWZ/Z9pC+QD5QWoVtQdPnsYTiO/+c
+ k1I80Eiqa8WfDJJoDZrQm0SN7jEdmgtlrFKn7DHjHFK21JxCMpeHC5aly7xajtYd5nr2A/RmC
+ WJabT0ZKJou9U7sTkoUoCG/ek8usKP7FmY02aqWosl3dXWi5Ns9nm1cItEbSP3PXEqQ09TIMv
+ x9uBABU6P/Gzs1w6H9kfJTUVfIYLjqP8jUqG2leSfM0oEJPk0awurtYRGjQXr+CeuSnwklxPW
+ 6YfDKwy9f1OElxm0AGvWpjo5NVic/Mdc8GF313axP9ICGODsYtpTqyrZIFvStTT2waUjvyqSJ
+ a0AXAQB9HPHmNLrkmBnVWvIiZTNMTOIGo0KsLO0ck1xO968zG5VdiZNXqFsyOLDNCAJfkf32Y
+ cWhdQ1++FjFeLhe/kIxPgV4xRgNB2KFU3inTJBXCemktUDTsWX/SHhl3upzmH+dlpnKqRW6Wy
+ 7ix7xwFhZvsg6UUc6vRqYgH+NUKvB3K4Q30tPs1BmB78/6UR+C3RIllUFGpUd5XllI5v0zK8S
+ ci8axg==
 
-friendly ping...
+>> +++ b/fs/hugetlbfs/inode.c
+>> @@ -1483,7 +1483,7 @@ hugetlbfs_fill_super(struct super_block *sb, stru=
+ct fs_context *fc)
+>>  						     ctx->max_hpages,
+>>  						     ctx->min_hpages);
+>>  		if (!sbinfo->spool)
+>> -			goto out_free;
+>> +			goto free_sbinfo;
+>>  	}
+>>  	sb->s_maxbytes =3D MAX_LFS_FILESIZE;
+>>  	sb->s_blocksize =3D huge_page_size(ctx->hstate);
+>> @@ -1499,10 +1499,12 @@ hugetlbfs_fill_super(struct super_block *sb, st=
+ruct fs_context *fc)
+>>  	sb->s_stack_depth =3D FILESYSTEM_MAX_STACK_DEPTH;
+>>  	sb->s_root =3D d_make_root(hugetlbfs_get_root(sb, ctx));
+>>  	if (!sb->s_root)
+>> -		goto out_free;
+>> +		goto free_spool;
+>>  	return 0;
+>> -out_free:
+>> +
+>> +free_spool:
+>>  	kfree(sbinfo->spool);
+>> +free_sbinfo:
+>>  	kfree(sbinfo);
+>>  	return -ENOMEM;
+>>  }
+>
+> This is more complex.  NACK.
 
-在 2023/12/8 15:46, linan666@huaweicloud.com 写道:
-> From: Li Nan <linan122@huawei.com>
-> 
-> If idr_alloc() fails, dev->gd will be put after goto out_cleanup_disk in
-> ubiblock_create(), but dev->gd has not been assigned yet at this time, and
-> 'gd' will not be put anymore. Fix it by putting 'gd' directly.
-> 
-> Signed-off-by: Li Nan <linan122@huawei.com>
-> Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> ---
-> Changes in v2:
->   - modify the description of the problem in log
-> 
->   drivers/mtd/ubi/block.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-> index 309a42aeaa4c..654bd7372cd8 100644
-> --- a/drivers/mtd/ubi/block.c
-> +++ b/drivers/mtd/ubi/block.c
-> @@ -434,7 +434,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
->   	list_del(&dev->list);
->   	idr_remove(&ubiblock_minor_idr, gd->first_minor);
->   out_cleanup_disk:
-> -	put_disk(dev->gd);
-> +	put_disk(gd);
->   out_free_tags:
->   	blk_mq_free_tag_set(&dev->tag_set);
->   out_free_dev:
+I am curious how coding style preferences will evolve further.
 
--- 
-Thanks,
-Nan
+See also:
+https://wiki.sei.cmu.edu/confluence/display/c/MEM12-C.+Consider+using+a+go=
+to+chain+when+leaving+a+function+on+error+when+using+and+releasing+resourc=
+es
 
+Regards,
+Markus
 
