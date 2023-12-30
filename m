@@ -1,112 +1,116 @@
-Return-Path: <linux-kernel+bounces-13311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9771C820355
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 03:31:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B399282035D
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 03:42:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3AFB0B2219E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 02:31:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF2131C21056
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 02:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7BDBB658;
-	Sat, 30 Dec 2023 02:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 496A74419;
+	Sat, 30 Dec 2023 02:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="jZGNaKcM"
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="jpTpyxnJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529E6B651
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 02:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5eefd0da5c0so21287147b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 18:30:51 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C758B3D90
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 02:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3ba14203a34so7215572b6e.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 18:42:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1703903451; x=1704508251; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zi7zPeVB3x2mGJ1Nu2v7GBTLEy5HH9AALnbu4XFSRD8=;
-        b=jZGNaKcMno1yrsTZbTucehVAg0hhqlcSaF1W29ZNUxV/1cwrCIavCtFoBjJ0plBNP+
-         4cRdcKBvRNz6Smqcnh4SExXLQ3HBXAm2COKRs+W+TDoVLg5Q0nES1yEgmRLrUK9awsvH
-         AIu1/gfqwPG4El9mJu/HgHcnv0+CHvZHsj03jujetBvUwqNztkiyfz5qQQQ2WeRUF1SF
-         rlI4bydNkF35dvYK//GE3prObd3ts7Mscgc7F/bVhkE3/A3HUKe8NazWrW3Vy4rI5VX9
-         ihp37zX67KfoAgrNwWRYLJjZy5qY52gVWGcZ3G+zag7xc21ruhhCyo1Lq5ZOhRJpof60
-         NZdg==
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1703904122; x=1704508922; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PkMRDEc3q7i96HgJAw1IRoh+BsMy8VlyiKEtAyjrTsc=;
+        b=jpTpyxnJgYDTpq3zuDegrAALR41PYKjF7NHKRtQd8wykqphJE0IU0RMC6U2iXRHCxx
+         yuodqZtJKtQXW7SwMLzzbrgAmPQNbffsCI8nWRJt9ZFk8ipV5OrJzRjzyy4D+GDTjVUL
+         dKWpJ/of/6ajij9/fKK1oJxKdC3tn6eCgPvLcuUsL+hw7LoRkQIWjZNbLpkpGAQZC+MW
+         m+0dUMe1C2WdN9AUb0P3unz2t2DoAS0NLPyvL2S5fOph/XPpx7MOkk4jyvymQrMBGxjc
+         2Iub098FfO7PQGh310W3vOAfFlZXaHRRUV5lY77LUXHcG6G60yGMG/9l7kXkW3+WYKrL
+         vmRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703903451; x=1704508251;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zi7zPeVB3x2mGJ1Nu2v7GBTLEy5HH9AALnbu4XFSRD8=;
-        b=syyiVplFu6KBlIUb7nQMRRqc9zMidqd+6aqeoifENyeUc8zUxX1cjS4sHSrLqOmN5y
-         VZLy9kck9KPrS2a9mqnOdAoXnBoDekpUVEd0lZC8/HFIHvl9npCVxaWED0a3jXm+0F/1
-         CIr5pzL0bv1ylKxe2E4rABhyRB9EC/1TMChUuooq5RAaA21uS5ozjfwlbQ8lSvgyvEtO
-         6fD8k+yssP3pcSSBRPxl1nC+yGhH64j0uH74eZLZOdAjUUOj/qzwXI9Sfi+oX3pVXtvy
-         m6iE9WpVnRlP9b7uaoiYH+4LWBI6qSRp6DfXLBYLvmiYDWVZFClxVvdMMhQlyxsV7Igp
-         bgcQ==
-X-Gm-Message-State: AOJu0YwwNkd3fJIVqPAblAnTB2vIb8dAV11XPdYRkNWRQCvkCVBBHOJR
-	M4mH8eUmHuRQp3LIM0D+GY/P7ud92nEgzAVejdNcDZr8QDh4kQ==
-X-Google-Smtp-Source: AGHT+IFIZhu7nrGBZ7lGSPHP5/PBJHTcxsM11IKduP4jZ50sNyU/5ZWTHQb4Xxkd/JSjq8K0ZVaiUYv5KetvFgnbmJQ=
-X-Received: by 2002:a25:d6cc:0:b0:db7:c8b7:3f1d with SMTP id
- n195-20020a25d6cc000000b00db7c8b73f1dmr7030642ybg.19.1703903451078; Fri, 29
- Dec 2023 18:30:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703904122; x=1704508922;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PkMRDEc3q7i96HgJAw1IRoh+BsMy8VlyiKEtAyjrTsc=;
+        b=qTxxY0Ww+dBO7ziDCzxx/+H62Tqh3NWLO6tWAqq3YdHI+R6UKCciQfXDI/EC9Bhcyj
+         /qt2xrlaK2tQEzzTlPTtfvHgnW68+yjYImsQV9g2ukX1jRMsIJOSU6zVo4yNrVoUhf8R
+         SB2OF5EB4q3r7U80dblWQk3MXyaiK7VeW5iXUkaB0w9BGE/udAUUc9tTWTCwQXGJVc2u
+         /NKqQpnOd9bSgFmyynZUrhLQeuIWszo37uOZLb3G8NLSGq/7OnkWrt2BLtt8N+pyWaR2
+         pHUQ5FulPCzjlTDMaiUYH4i0QQAJUA/EyrsV5WDOhAQVmD2sXtiICX+Oh7WfgoWlKvD9
+         8SJQ==
+X-Gm-Message-State: AOJu0YymJZIW6K6jiCLOtvXl2JxfZ/+OABrERSJrlIX7sx32gd8KFz9e
+	l1Uceve3ZwA5+/U4QcbfG8dfIygLe02BOw==
+X-Google-Smtp-Source: AGHT+IE2LtcyOE7VGF7LqxlgOpp/gooJgjcVuO2l8WC7IBsT5j/W/mrEzafOXAobKw1fwRCfOs5KKQ==
+X-Received: by 2002:a05:6808:e8c:b0:3bb:edf8:c497 with SMTP id k12-20020a0568080e8c00b003bbedf8c497mr1147353oil.71.1703904121807;
+        Fri, 29 Dec 2023 18:42:01 -0800 (PST)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id c18-20020aca1c12000000b003b3ec15d8ebsm2648397oic.5.2023.12.29.18.42.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Dec 2023 18:42:01 -0800 (PST)
+Date: Fri, 29 Dec 2023 18:42:01 -0800 (PST)
+X-Google-Original-Date: Fri, 29 Dec 2023 18:41:57 PST (-0800)
+Subject:     Re: [PATCH v7 1/4] riscv: defconfig: Enable mmc and dma drivers for T-Head TH1520
+In-Reply-To: <20231129-th1520_mmc_dts-v7-1-c77fc19caa6f@baylibre.com>
+CC: Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+  jszhang@kernel.org, guoren@kernel.org, wefu@redhat.com, Conor Dooley <conor@kernel.org>,
+  robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, jkridner@beagleboard.org,
+  robertcnelson@beagleboard.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+  devicetree@vger.kernel.org, dfustini@baylibre.com
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: dfustini@baylibre.com
+Message-ID: <mhng-577f4913-06ac-4f80-8793-6336132d503e@palmer-ri-x1c9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231222235248.576482-1-debug@rivosinc.com> <20231227134514.13629032c39decdf1dddcc75@linux-foundation.org>
- <CAKC1njTry42zAkZWq3pAgoe3YFaHN6UcB4i56BDQRxYbTEigRw@mail.gmail.com> <20231227142441.f9a76fa3c8b9b79eea8f93a2@linux-foundation.org>
-In-Reply-To: <20231227142441.f9a76fa3c8b9b79eea8f93a2@linux-foundation.org>
-From: Deepak Gupta <debug@rivosinc.com>
-Date: Fri, 29 Dec 2023 18:30:39 -0800
-Message-ID: <CAKC1njTPBqtsAOn-CWhB+-8FaZ2KWkkz-vRZr7MZq=0yLUdjcQ@mail.gmail.com>
-Subject: Re: [PATCH v1] mm: abstract shadow stack vma behind arch_is_shadow_stack_vma
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: rick.p.edgecombe@intel.com, broonie@kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 27, 2023 at 2:24=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
+On Wed, 29 Nov 2023 17:48:47 PST (-0800), dfustini@baylibre.com wrote:
+> Enable the mmc controller driver and dma controller driver needed for
+> T-Head TH1520 based boards, like the LicheePi 4A and BeagleV-Ahead, to
+> boot from eMMC storage.
 >
-> On Wed, 27 Dec 2023 14:20:36 -0800 Deepak Gupta <debug@rivosinc.com> wrot=
-e:
+> Reviewed-by: Guo Ren <guoren@kernel.org>
+> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> ---
+>  arch/riscv/configs/defconfig | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-> > On Wed, Dec 27, 2023 at 1:45=E2=80=AFPM Andrew Morton <akpm@linux-found=
-ation.org> wrote:
-> > >
-> > > On Fri, 22 Dec 2023 15:51:04 -0800 Deepak Gupta <debug@rivosinc.com> =
-wrote:
-> > >
-> > > > x86 has used VM_SHADOW_STACK (alias to VM_HIGH_ARCH_5) to encode sh=
-adow
-> > > > stack VMA. VM_SHADOW_STACK is thus not possible on 32bit. Some arch=
-es may
-> > > > need a way to encode shadow stack on 32bit and 64bit both and they =
-may
-> > > > encode this information differently in VMAs.
-> > >
-> > > Is such a patch in the pipeline?  Otherwise we're making a change tha=
-t
-> > > serves no purpose.
-> >
-> > Yes I do have patches in the pipeline for riscv.
-> > On riscv, presence of only `VM_WRITE` (i.e. (flags & (VM_READ |
-> > VM_WRITE | VM_EXEC))
-> > =3D=3D VM_WRITE) would mean a shadow stack.
-> > And yes there would be  relevant patches to ensure that existing consum=
-ers using
-> > `PROT_WRITE` gets translated to (VM_WRITE | VM_READ)
->
-> OK, please plan to carry this patch in whatever tree contains the above.
->
->
-ACK. Thanks
+> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+> index 905881282a7c..e635dc9d1997 100644
+> --- a/arch/riscv/configs/defconfig
+> +++ b/arch/riscv/configs/defconfig
+> @@ -214,6 +214,7 @@ CONFIG_MMC=y
+>  CONFIG_MMC_SDHCI=y
+>  CONFIG_MMC_SDHCI_PLTFM=y
+>  CONFIG_MMC_SDHCI_CADENCE=y
+> +CONFIG_MMC_SDHCI_OF_DWCMSHC=y
+>  CONFIG_MMC_SPI=y
+>  CONFIG_MMC_DW=y
+>  CONFIG_MMC_DW_STARFIVE=y
+> @@ -223,6 +224,7 @@ CONFIG_RTC_CLASS=y
+>  CONFIG_RTC_DRV_SUN6I=y
+>  CONFIG_DMADEVICES=y
+>  CONFIG_DMA_SUN6I=m
+> +CONFIG_DW_AXI_DMAC=y
+>  CONFIG_RZ_DMAC=y
+>  CONFIG_VIRTIO_PCI=y
+>  CONFIG_VIRTIO_BALLOON=y
+
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+
+in case folks want to keep this with the DTS updates.  Thanks!
 
