@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-13402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54C7E82049E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:34:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FC798204A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:35:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8502E1C20E5E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:34:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E8EEB214ED
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:35:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486677493;
-	Sat, 30 Dec 2023 11:34:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E82779C2;
+	Sat, 30 Dec 2023 11:34:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O8UwZWxi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U5n/1dIl"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936D98BE7;
-	Sat, 30 Dec 2023 11:34:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D9ADC433C7;
-	Sat, 30 Dec 2023 11:33:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5DAE5676;
+	Sat, 30 Dec 2023 11:34:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D72A9C433C8;
+	Sat, 30 Dec 2023 11:34:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703936040;
-	bh=e4zIj9WN1rHOoaFgv5qNtqov46wr61rNTXnZQylXXXg=;
+	s=k20201202; t=1703936091;
+	bh=1yYEGXvx/YDRGmJ5mBECuPkbf2R58XFI65h+zZJ+hE8=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=O8UwZWxiI8abpS9S3Lbzp3CPK0eqfMjQb8MxCb4ajF5b2Lw/b81zF9pvi64laJn7h
-	 FQjvOzNMA9nRZgsoGmd+qKq7Hiz07IfoAtI7+igco24jicf+IDTtKIypIbPLufzxwB
-	 EEk46PwTcc6kMTIios4IdViifsNwTLZS/tX9h0JuDgzw0NyPASanMUPtc9YwiPYOPw
-	 bk6gBmqQgp3qakzg+tjBMbJaQYxpPShB8DJHCmNV3GwXl05cM6RIkeqTc/bKVSr3WE
-	 /K6My5E7LrgKED24TcamFDb6b7YiJEPA1FcbX9DfRk+ICfZDsnw0G3FP/XR37xMzH5
-	 AF8odw6CUHh6g==
-Date: Sat, 30 Dec 2023 11:33:54 +0000
+	b=U5n/1dIlvru2ILAHUy4fukwKHQtmfPKekQCobkHm8aCa74HOEwFVtKbfuKSg3xC8c
+	 ytDK4wl5vBK7RcWCnD5dmVoqMxb3KvJv2K3vyQCHniMBniHW17q9u2XE2nkwiNe88F
+	 hSjZdO7PG1Febjzvx4aHs3CNnbxJuG5FG+BmyOr42RkW4TFwEyjm49QlxWysEc05vb
+	 bNDLhA1vOWrC8D4CB2u33muSOLUT0hBvXy084NhfVKWo//DDq0aY+FyW4VgPmr9fyk
+	 eKR3nnNPMOyps0uRBKXtsvT/067UNJAWZdDFL7sg8+Z/f+M7gzRj18IdFBu5R72pYu
+	 jZnZDbZs70+zg==
+Date: Sat, 30 Dec 2023 11:34:44 +0000
 From: Jonathan Cameron <jic23@kernel.org>
-To: Petre Rodan <petre.rodan@subdimension.ro>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, Andreas Klinger
- <ak@it-klinger.de>, Lars-Peter Clausen <lars@metafoo.de>, Angel Iglesias
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Petre Rodan <petre.rodan@subdimension.ro>, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Andreas Klinger <ak@it-klinger.de>,
+ Lars-Peter Clausen <lars@metafoo.de>, Angel Iglesias
  <ang.iglesiasg@gmail.com>, Matti Vaittinen <mazziesaccount@gmail.com>
-Subject: Re: [PATCH v2 07/10] iio: pressure: mprls0025pa.c whitespace
- cleanup
-Message-ID: <20231230113354.0abaa6c1@jic23-huawei>
-In-Reply-To: <ZYxhUJlAb63wRJE-@sunspire>
+Subject: Re: [PATCH v2 08/10] iio: pressure: mprls0025pa.c refactor
+Message-ID: <20231230113444.74de6b93@jic23-huawei>
+In-Reply-To: <ZYxS1o2lSlaJ6dG4@smile.fi.intel.com>
 References: <20231224143500.10940-1-petre.rodan@subdimension.ro>
-	<20231224143500.10940-8-petre.rodan@subdimension.ro>
-	<ZYxSERlEAfwWpqWP@smile.fi.intel.com>
-	<ZYxhUJlAb63wRJE-@sunspire>
+	<20231224143500.10940-9-petre.rodan@subdimension.ro>
+	<20231226164922.6d7132c1@jic23-huawei>
+	<ZYw1wbvYQqqCr5C2@sunspire>
+	<ZYxS1o2lSlaJ6dG4@smile.fi.intel.com>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -57,50 +57,49 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 27 Dec 2023 19:39:28 +0200
-Petre Rodan <petre.rodan@subdimension.ro> wrote:
+On Wed, 27 Dec 2023 18:37:42 +0200
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-> On Wed, Dec 27, 2023 at 06:34:25PM +0200, Andy Shevchenko wrote:
-> > On Sun, Dec 24, 2023 at 04:34:52PM +0200, Petre Rodan wrote:  
-> > > Fix indentation and whitespace in code that will not get refactored.
+> On Wed, Dec 27, 2023 at 04:33:37PM +0200, Petre Rodan wrote:
+> > On Tue, Dec 26, 2023 at 04:49:22PM +0000, Jonathan Cameron wrote:  
+> 
+> ,,,
+> 
+> > > >  		ret = devm_request_irq(dev, data->irq, mpr_eoc_handler,
+> > > > -				IRQF_TRIGGER_RISING, client->name, data);
+> > > > +				      IRQF_TRIGGER_RISING, dev_name(dev), data);  
 > > > 
-> > > Make URL inside comment copy-paste friendly.  
-> >   
-> > >  			return dev_err_probe(dev, ret,
-> > > -				"honeywell,pmin-pascal could not be read\n");
-> > > +				   "honeywell,pmin-pascal could not be read\n");  
+> > > Even though you'll change it again here, would have been nice to have
+> > > the alignment fixed in the earlier patch then the code update here.  
 > > 
-> > As done elsewhere, here and in other similar places fix the indentation
-> > by making first character on the latter line to be in the same column as
-> > the first character after the opening parenthesis.  
+> > I tried this, but due to the fact that the line has to be right-aligned to
+> > column 80 we will still see a whitespace difference due to the length diff of
+> > the name-related argument.  
 > 
-> I triple-checked that I am following the max 80 column rule, the parenthesis
-> rule and the 'do not split printk messages' rules in all my code in these 10 patches.
-> precisely so I don't get feedback like this one.
-> if the parenthesis rule makes the line longer then 80 chars I right-align to
-> column 80 as seen above.
-
-I'm not aware of (and can't immediately see) anything about right aligning to 80
-columns.  It's fine to align it less if line length is long but normally people
-go with aligning to one tab more than the start of the block.
-
-> that is what I understand from the latest coding style document and that is what
-> I will follow.
+> You can split in the previous patch accordingly, so data comes to a new line.
 > 
-> in this particular case if I were to ignore the 80 column rule we would end up on
-> column 90 if I were to follow your feedback (open parenthesis is at column 45
-> and the error takes 45 chars more).
+> ...
+> 
+> > > > +#include <linux/iio/iio.h>  
+> > > 
+> > > Why include this?  Can't see an IIO specific stuff in here.  
+> > 
+> > tried to remove it and
+> > 
+> >   CC [M]  mprls0025pa_i2c.o
+> > mprls0025pa.h:89:63: error: 'IIO_DMA_MINALIGN' undeclared here (not in a function); did you mean 'ARCH_DMA_MINALIGN'?
+> >    89 |         u8          buffer[MPR_MEASUREMENT_RD_SIZE] __aligned(IIO_DMA_MINALIGN);  
+> 
+> > I guess it makes more sense to move it to the .h file, where buffer[] is defined.  
+> 
+> Yes, C-code and especially headers should follow IWYI principle. The real user
+> of that definition is _the header_ file, and not C in this case.
 
-It's fine to do this in the interests of readability.
-
-People differ in opinion on what constitutes 'significant readability' and I'd
-be happy with either a shorter alignment (single tab more than line above)
-or going over 80 chars in this case.
+Absolutely - it is clear why this should be included from the header file.
 
 Jonathan
 
 > 
-> peter
 > 
 
 
