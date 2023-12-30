@@ -1,96 +1,105 @@
-Return-Path: <linux-kernel+bounces-13518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A177F820793
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 18:15:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11A9D820796
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 18:17:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E449281D1F
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 17:15:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE4031F214AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 17:17:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53EF3B672;
-	Sat, 30 Dec 2023 17:15:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF2A2BA40;
+	Sat, 30 Dec 2023 17:17:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="MLN/rQ0/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HiufmAv6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41D988F44;
-	Sat, 30 Dec 2023 17:15:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1703956524; x=1704215724;
-	bh=09Hmr6FulL4GOGnkm6RTp3Uh3iuibt0XtEnBi3NKpx0=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=MLN/rQ0//gvkGbqBg5K0NlNmP/OmjnP8M0ydYz3Vfm5Q9VhHo65tFsttgxjI373kY
-	 DLsdsatl10g40/HIWtIbK949a2mjL+/3aqGkGVSFRTUqq0UNziRjpysRTVwUKopUU8
-	 kpi/7S9Ec2n1btgdDV9oJdv6WtP++98Nd4131EuT9x7b7WAInfo+yrBE8gIFI2+hPT
-	 S9AY37xg0JgEnPP1B8/a0N77HgXBbKXuRlvmNjlqENoWpUjtuc6XureBi9VcYunmXX
-	 mhj+Rjexpufc8LfWWgH2/zUw7dhjOO37XDDmcaCihEddzsXHPcezCrCY1bBJ/z4oii
-	 vgaH11JAEEyKw==
-Date: Sat, 30 Dec 2023 17:15:18 +0000
-To: =?utf-8?Q?Michael_B=C3=BCsch?= <m@bues.ch>
-From: Rahul Rameshbabu <sergeantsagara@protonmail.com>
-Cc: Julian Calaby <julian.calaby@gmail.com>, Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org, b43-dev@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH wireless 2/5] wifi: b43: Stop/wake correct queue in DMA Tx path when QoS is disabled
-Message-ID: <878r5bk3x9.fsf@protonmail.com>
-In-Reply-To: <20231230144036.7f48b739@barney>
-References: <20231230045105.91351-1-sergeantsagara@protonmail.com> <20231230045105.91351-3-sergeantsagara@protonmail.com> <CAGRGNgWYLTmRfvw94Ok_FfcEVGPa0tRg-ELxkD8K6nxTTNZ9jg@mail.gmail.com> <20231230144036.7f48b739@barney>
-Feedback-ID: 26003777:user:proton
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E5BC2D0;
+	Sat, 30 Dec 2023 17:17:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d3f8af8297so29084565ad.2;
+        Sat, 30 Dec 2023 09:17:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703956642; x=1704561442; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uKuUOBW2WKM7L/OUaH8vZcmfejQ/Wt+Dd1qvXbLrpms=;
+        b=HiufmAv6+BpULbI5tTCqwIG5LBHFdpCejhUDjQ7pT7Ad5LjpmTmtx9MLuACLXVIiIm
+         b9O4LLtYnBDxcecC+jrhJR4y4/pddr3pJoJ9omEW8WeqGuEWgMMVFt46GGsEumMI1Pm+
+         RhqdihRDIeCabXkkTc3MlKOesoX3mmAn1WVcH2GaRx+SNPrmuZLKPfqNAiiwulC5nmQT
+         V2m9ImjipECiSGeZbFP/ChM+TWAUd25z8822xT/TQDnnYcQHi5ibfsxczgftGgV7GYNF
+         in8hBF5h+FUFSA7jE2R7SaWZpXxYxmYJDP/GHN8+iNHOvm+ioVmAZ2bOmYXX7Z0G5jLa
+         DhbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703956642; x=1704561442;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uKuUOBW2WKM7L/OUaH8vZcmfejQ/Wt+Dd1qvXbLrpms=;
+        b=HyNQ7znW8v3RjjhZovS9XGLXtJwh6N2/rhLNq4fAmxxBqpp+8mEdaYAsb6EYkf6+HD
+         5tHPjkSz+/gApC4ius/S9Ux4/e0ZXtJEnxik5lk1toij8u3CundtmneXQ16SlYzUGgp/
+         UtNHBxM5zFnfTAPPi98zReycdFVcouK9ZkyPmXQXfi5WjDckGx7aTglLeCdVERmePWSY
+         x5CB0D8WFtWF5nCGtBpCYEc/C1wYEA8fmiVk8SZ4s4o8YZh3YbWQILCah5r0FeNPngB2
+         FxVTj+v6FfKY4fPha4IS/KvgxqaotesnDG42L/fzGWmHqoyWNV16X7KL5yj2W2Y44uXA
+         mEdA==
+X-Gm-Message-State: AOJu0Yy8Flij0Lm+/RlYgLmBwiH9po1qhqvVJdNtyEI+KbOQHVVYrhY5
+	OrZNft5/dsomSH5I17DIuZPUb4DT3J7Fi8Fz
+X-Google-Smtp-Source: AGHT+IFTYxLGmFHYKwM+FFOypakP5F+gsWJtJQduPKVjqb5KvG/4MKZ96ZeM/sekpP7W6B62MPuzSg==
+X-Received: by 2002:a17:903:110d:b0:1d4:8512:5871 with SMTP id n13-20020a170903110d00b001d485125871mr3675265plh.27.1703956642353;
+        Sat, 30 Dec 2023 09:17:22 -0800 (PST)
+Received: from localhost.localdomain ([2408:8207:2540:8c00:9802:680d:e03a:17cd])
+        by smtp.gmail.com with ESMTPSA id e12-20020a170902b78c00b001cfca7b8ee7sm17487385pls.99.2023.12.30.09.17.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Dec 2023 09:17:22 -0800 (PST)
+From: amazingfate <liujianfeng1994@gmail.com>
+To: krzysztof.kozlowski@linaro.org
+Cc: conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	ezequiel@vanguardiasur.com.ar,
+	heiko@sntech.de,
+	krzysztof.kozlowski+dt@linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	liujianfeng1994@gmail.com,
+	mchehab@kernel.org,
+	p.zabel@pengutronix.de,
+	robh+dt@kernel.org,
+	sfr@canb.auug.org.au
+Subject: Re: [PATCH v2 3/3] dt-bindings: media: rockchip-vpu: Add RK3588 compatible
+Date: Sun, 31 Dec 2023 01:17:11 +0800
+Message-Id: <20231230171711.3912776-1-liujianfeng1994@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <02e64f0f-6add-4583-9ee4-d5ace6497776@linaro.org>
+References: <02e64f0f-6add-4583-9ee4-d5ace6497776@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sat, 30 Dec, 2023 14:40:36 +0100 Michael B=C3=BCsch <m@bues.ch> wrote:
-> [[PGP Signed Part:Undecided]]
-> On Sat, 30 Dec 2023 18:48:45 +1100
-> Julian Calaby <julian.calaby@gmail.com> wrote:
->> > --- a/drivers/net/wireless/broadcom/b43/dma.c
->> > +++ b/drivers/net/wireless/broadcom/b43/dma.c
->> > @@ -1399,7 +1399,10 @@ int b43_dma_tx(struct b43_wldev *dev, struct sk=
-_buff *skb)
->> >             should_inject_overflow(ring)) {
->> >                 /* This TX ring is full. */
->> >                 unsigned int skb_mapping =3D skb_get_queue_mapping(skb=
-);
->> > -               ieee80211_stop_queue(dev->wl->hw, skb_mapping);
->> > +               if (dev->qos_enabled)
->> > +                       ieee80211_stop_queue(dev->wl->hw, skb_mapping)=
-;
->> > +               else
->> > +                       ieee80211_stop_queue(dev->wl->hw, 0); =20
->>=20
->> Would this be a little cleaner if we only look up the queue mapping if
->> QOS is enabled? I.e.
+Hi Krzysztof,
+
+Sat, 30 Dec 2023 17:06:48 +0100, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+>Your driver suggests it is compatible with 3568-vpu.
 >
-> No. It would break the other uses of skb_mapping.
->
-> But I am wondering why skb_mapping is non-zero in the first place.
-> I think the actual bug might be somewhere else.
+>Also, nothing in commit msg explains me differences against existing
+>av1-vpu.
 
-Right, skb_mapping is used to map to the correct software structures DMA
-mapped to the device. The reason the mapping for the best effort queue
-(the default/defacto when QoS is disabled) is not zero is due to the way
-initialization of the queues/rings occurs in the driver. The best effort
-queue is mapped as the third queue, which leads to this issue when QoS
-is disabled. Would it make more sense to change the mappings in
-initialization such that the best effort queue is by default mapped to
-zero, so we would not need such conditionals?
+Yes, this vpu is exactly the same as the one on rk3568, so we can
+make rockchip,rk3588-vpu compatible with rockchip,rk3568-vpu, just
+like what we have done on rk3188/rk3066 and rk3228/rk3399.
+I will update it in v3 patch.
 
---
-Thanks,
-
-Rahul Rameshbabu
-
+Best regards,
+Jianfeng
 
