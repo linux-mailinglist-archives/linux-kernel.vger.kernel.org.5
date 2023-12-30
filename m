@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-13611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A688282092E
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 00:57:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 530FA82092D
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 00:57:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B05BB21A95
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 23:57:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 771611C21AC0
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 23:57:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51A7C11737;
-	Sat, 30 Dec 2023 23:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ADF7F9C4;
+	Sat, 30 Dec 2023 23:57:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b+QqX5Vr"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="btWdNYC1"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C42E556
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 23:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE79BE555
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 23:57:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703980654; x=1735516654;
+  t=1703980652; x=1735516652;
   h=date:from:to:cc:subject:message-id;
-  bh=95UuGwMrMkexwgXApKoA8+Ml5CIyPvLyvjehrvnZ2mM=;
-  b=b+QqX5VrKoZ+etM/dAHyShfmC/ENZnCjh6YdmLK299kR++aRrKxQgW4m
-   LvokRR71mXKDxYEF+eRfZV0aM4a2YUl1TfZniB2Z6aVaD2Ehysoqdv0Hh
-   lC6YO2EXdRZx2N1tHKMExgBtZmDFPS2+wL0OFkBdNhh18u44tW5Jkoem9
-   zUDn1is7OuAkedF1QK9/wVYlH+pRpJGp/69ISniair8/gSoJipBP+z1JB
-   CX+4svoQ6o5+Z8/gQ3oqd3MwItnUU+v/sNACaT9TEK1sRlk1AVshU92HW
-   hy40z7krCljBXuCJ+EHaPdxLnAePAEcNPXMGswzdP9cU3/uKpfPzmNLf8
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10939"; a="4034996"
+  bh=LjUV7k+jql6hoeayu4lqel4/rUKQGPjM5cqoQxxVpjQ=;
+  b=btWdNYC15hLQydymsKxoo4T6UqGUB+iDPHuAU9EKVt3VZhCIqq0b/wgl
+   5d4U/w0tXwsmxu7dFZ8n45N8MvyIIHr6JNSBrVb4POsoRTlC2SvumuycM
+   +3/mdVbNgS6yIemlGbKPgNAuO88O2BYERFJSDtzO/kujo61eQ+qA7t8Bm
+   YYGallUHXkMIOEw0ntEDzl7upgqI0gdIYQa70BFLrXsJn8u1kQXt/Zxvo
+   ZrjC1zDMNjuNg9vf0zfXlYyOPHJ0e7uuXErk2BaAYvBBCuAYAWbNP+oeX
+   ymJy1SCiW/r0qsn+y4Ag7bguLvxzbpYdkiRumgTFPyaPFle6LiUkSvIgx
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10939"; a="4034994"
 X-IronPort-AV: E=Sophos;i="6.04,319,1695711600"; 
-   d="scan'208";a="4034996"
+   d="scan'208";a="4034994"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2023 15:57:27 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10939"; a="772246044"
+X-IronPort-AV: E=McAfee;i="6600,9927,10939"; a="772246045"
 X-IronPort-AV: E=Sophos;i="6.04,319,1695711600"; 
-   d="scan'208";a="772246044"
+   d="scan'208";a="772246045"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
   by orsmga007.jf.intel.com with ESMTP; 30 Dec 2023 15:57:24 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rJjCk-000Iqj-1Q;
+	id 1rJjCk-000Iqf-1H;
 	Sat, 30 Dec 2023 23:57:22 +0000
-Date: Sun, 31 Dec 2023 07:56:38 +0800
+Date: Sun, 31 Dec 2023 07:57:13 +0800
 From: kernel test robot <lkp@intel.com>
 To: "x86-ml" <x86@kernel.org>
 Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/paravirt] BUILD SUCCESS
- 7991ed43587d1106315208cc289c851d6915d4a3
-Message-ID: <202312310734.xkJFNDw9-lkp@intel.com>
+Subject: [tip:master] BUILD SUCCESS
+ 0147ba23ddaee4c32fe9c9f327d276763e2db349
+Message-ID: <202312310709.Occ8JaDz-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -63,10 +63,10 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/paravirt
-branch HEAD: 7991ed43587d1106315208cc289c851d6915d4a3  x86/alternative: Correct feature bit debug output
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 0147ba23ddaee4c32fe9c9f327d276763e2db349  Merge x86/paravirt into tip/master
 
-elapsed time: 730m
+elapsed time: 731m
 
 configs tested: 158
 configs skipped: 135
