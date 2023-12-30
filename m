@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-13448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00C6A8206B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:17:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A0BA8206BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:19:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 641261F21A2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 14:17:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCB3FB21302
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 14:19:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A599D8F5C;
-	Sat, 30 Dec 2023 14:17:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93C538F66;
+	Sat, 30 Dec 2023 14:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="v8lFMBWB"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VYfHEPv5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7164E8C1B
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 14:17:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6778A8BFB
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 14:19:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40d5d898162so25292315e9.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 06:17:25 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40d3352b525so84922165e9.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 06:19:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703945844; x=1704550644; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703945947; x=1704550747; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=zPRBGyj304vUw0wlTcAWfv+50IlkNf/a6PfYPZpFY8Y=;
-        b=v8lFMBWBj7dZn6TKr8zvr8ZfZa7OGPWOKeg5EGFZpKoDSpyd3kcgdY2gTrT4n5d22Y
-         nfNPyCs2K8m1IuCSiAxjnu6tRSX2ibqu8cd502moPi0CSzYxlb45/068qosp03y5k0ZE
-         hVrElEyFmuU8REflbfh9iy8gGBGXFqG0HgwuckqCH4+GgMp99rdgNsDx5vHdeiJBzGsD
-         Z5svZdzb/sFhhuz20xdBnMFsb2Nh/Hvaj0yfVzRsDlUmHGJPFFLiNFyuE99bFGxCI/t1
-         QrtOnzcSga3jPwB5aAsyL5JZFWtrNipx2kVAhsdMjm7oujpn9bkZiEfpdH9kefmfC68v
-         swkw==
+        bh=bnwFzokMFq6sRku5OR+irTlJ4VbXFvh2T+HlMGY35dU=;
+        b=VYfHEPv5ciFPFgv0LCcCdp4LlgOCUDUHDoH4vlQzExi0sr0TRGdksMycGa56fAj+Uy
+         79XCxvxhd8w4Bl4IgLfGJf7oMMBuyYjTeAYbGDDRW7JpyFpYOScGVfP7VsyQwstI6+di
+         gQBuhrfvNeKkLH+QAKzn+szk5gxUjWmlVVZLMOA+NWCJJOzUozbG4LpGr66ZKjTl2q7M
+         JWtAaSp3IdhVaDgzPXQdf4/I/jUUR2IqwsDHB3zrdM7TjeGLJNyf76aXn6a0ucf6e/cy
+         uE4fPH6NcRAnIY13Ywefc/kMUGb+zen8NP3dvIEh397JkT2KM7Vad2uqsUAnBptkRYcV
+         nqkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703945844; x=1704550644;
+        d=1e100.net; s=20230601; t=1703945947; x=1704550747;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zPRBGyj304vUw0wlTcAWfv+50IlkNf/a6PfYPZpFY8Y=;
-        b=RvJk0dDtl3OuJekPrYrK6UvvCJJSFIUhqlDFddZblafX4QeJaTv441H+4amdgX9FG2
-         DSFQqtB46hMXOMVpaoAj8zp7UWpi0HPXWwEUBrTaLur0yFde8Spa39nWTu3Ju+5PLpHF
-         u6vks225w1xlRyFN9Nv1y8xC4jgtcR9fDkhQET4jRL5iNgq0sA70R/zOj2p6WHymwrOY
-         /MxS5pACf2nHNzBAxXg9XPYiMHER0eSEGUamrt3mr+8AfgS+fGBlushOGrSoLZCeh+Fd
-         nB6Z7jV5O8C8Zvpcq6fpUKJsnhCx2a0i3CBqkGSf8wQOndpAi9A2yGMfPxEktQ505yxN
-         PmZg==
-X-Gm-Message-State: AOJu0YzlBv5VwJsziCBEkGCp1zZxSwA+Be430NxIeAZdbCEDvpulBou1
-	tfv+tZGHgXkbNg+FSyY+pkFiWkIidQehLQ==
-X-Google-Smtp-Source: AGHT+IHBN51oEtNMLMS2ff2/NzcF+gYNqR8Gi9XvsxabbVvIPxlKR6GNsgr1vlmnbIHy+yV5JdFdtA==
-X-Received: by 2002:a05:600c:ca:b0:40d:376b:c640 with SMTP id u10-20020a05600c00ca00b0040d376bc640mr9279351wmm.102.1703945843694;
-        Sat, 30 Dec 2023 06:17:23 -0800 (PST)
+        bh=bnwFzokMFq6sRku5OR+irTlJ4VbXFvh2T+HlMGY35dU=;
+        b=bs1YL4ZmzATubEjGSBYvs4EhEgUgYoDTBqfIHbganstoJMqKCVEUyXyHit/PV5vDYo
+         xpO33d8+KmQMrL0dIvl9soNcGmFIyLsL32POOpUVgZcPQ1LobGLgAAUzhUpI2sH85c/J
+         ewNdx60JNktJWNvDUzkV1fk+wu0ZAdp1/gLOlqHVXpAoXfrfMlt43MTYHYrrVNJnLjWi
+         0942msUl4tK8tLIFvyPrq1FEGEbV/uxjwWHVfREmKc5TVDLOfyHuzsQIpxOI1T8xaXrp
+         q+YYhFJBS3YnnbLLNypX7E8IxEBw1nOQ2ZE6l5c8s3jpz5LDSacf0Z7V9/kYd1Yp0Y0L
+         M+KA==
+X-Gm-Message-State: AOJu0YzEi0NGmt+E1YzndrF9qEtQPmDWW3yt0TcFr+zjQvdpatANoZpP
+	RX1x1+0utDkaTQ1QdKB2x7dwX/W7o6pbzQ==
+X-Google-Smtp-Source: AGHT+IGx5Tg8Abb01KTsNquhaY3zQ+vyIyMdTk213r3iOvgWpSuRrjoSOayXtVQuxRkjxkvoATBDfQ==
+X-Received: by 2002:a05:600c:4695:b0:40d:484c:5375 with SMTP id p21-20020a05600c469500b0040d484c5375mr7496704wmo.153.1703945947708;
+        Sat, 30 Dec 2023 06:19:07 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id r12-20020a05600c35cc00b0040d3dc78003sm33434966wmq.17.2023.12.30.06.17.21
+        by smtp.gmail.com with ESMTPSA id c20-20020a7bc014000000b0040d79997731sm2135337wmb.0.2023.12.30.06.19.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Dec 2023 06:17:22 -0800 (PST)
-Message-ID: <2c9e91c7-8588-4260-8f5d-22c822019f62@linaro.org>
-Date: Sat, 30 Dec 2023 15:17:21 +0100
+        Sat, 30 Dec 2023 06:19:07 -0800 (PST)
+Message-ID: <0a817121-620c-4630-93a3-5cf3173b924f@linaro.org>
+Date: Sat, 30 Dec 2023 15:19:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,19 +66,17 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: opp: switch inner and outer min/maxItems
- rules for opp-hz
+Subject: Re: [PATCH v3 1/2] dt-bindings: input: Add Himax HX83102J touchscreen
 Content-Language: en-US
-To: David Heidelberg <david@ixit.cz>, Viresh Kumar <vireshk@kernel.org>,
- Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>
-Cc: Viresh Kumar <viresh.kumar@linaro.org>, Rob Herring <robh@kernel.org>,
- linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231229191038.247258-1-david@ixit.cz>
+To: Allen Lin <allencl_lin@hotmail.com>
+Cc: dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, jikos@kernel.org,
+ benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231227053509.894642-1-allencl_lin@hotmail.com>
+ <SEZPR06MB56080820EE51CBAE9C6B6B3E9E9FA@SEZPR06MB5608.apcprd06.prod.outlook.com>
+ <08623087-bf1c-411e-87de-d40ffab6e2bc@linaro.org>
+ <TY0PR06MB561188EBD127F8ECF4A7052B9E9DA@TY0PR06MB5611.apcprd06.prod.outlook.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -124,43 +122,45 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231229191038.247258-1-david@ixit.cz>
+In-Reply-To: <TY0PR06MB561188EBD127F8ECF4A7052B9E9DA@TY0PR06MB5611.apcprd06.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 29/12/2023 20:10, David Heidelberg wrote:
-> Fixes issue as:
-> ```
+On 29/12/2023 10:08, Allen Lin wrote:
+> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> 於 2023年12月28日 週四 下午6:36寫道：
+>>
+>> On 27/12/2023 06:35, Allen_Lin wrote:
+>>> Add the HX83102j touchscreen device tree bindings documents.
+>>>
+>>> Signed-off-by: Allen_Lin <allencl_lin@hotmail.com>
+>>> ---
+>>
+>> Where is the changelog? There is no cover letter attached, so changelog
+>> is supposed to be here. There were several comments, so does it mean you
+>> ignored them?
+>>
+> Cover letter is not in this mail but in the mail with this title
+> "[PATCH v3 0/2] Add HX83102j driver for HIMAX HID touchscreen"
 
-Drop, it's not RST, but commit msg.
+There was no cover letter attached to this thread. Don't send cover
+letters in separate threads.
 
-> arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dtb: opp-table: opp-200000000:opp-hz:0: [200000000, 0, 0, 150000000, 0, 0, 0, 0, 300000000] is too long
-> ```
 > 
-> Fixes: 3cb16ad69bef ("dt-bindings: opp: accept array of frequencies")
+> Hi,
+> This driver implements for Himax HID touchscreen HX83102j.
 > 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
->  Documentation/devicetree/bindings/opp/opp-v2-base.yaml | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> Using SPI interface to receive/send HID packets.
 > 
-> diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
-> index e2f8f7af3cf4..86d3aa0eb435 100644
-> --- a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
-> +++ b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
-> @@ -55,10 +55,9 @@ patternProperties:
->            to relate the values to their clocks or the order in which the clocks
->            need to be configured and that is left for the implementation
->            specific binding.
-> -        minItems: 1
-> -        maxItems: 32
->          items:
-> -          maxItems: 1
-> +          minItems: 1
-> +          maxItems: 32
+> Patchs notes as below
+> 1. Add the Maintainer and devicetree bindings document for driver
+> 2. Add the driver code and modify Kconfig/Makefile to support the driver
+> 
+> change in v2 :
+> - Fix kernel test robot build warnings.
+> change in v3 :
+> - Modify code according to review suggesions.
 
-This does not look like correct fix. The original code looked fine -
-only one item is allowed in each sub-element (array).
+Not detailed enough. What did you change exactly?
 
 
 Best regards,
