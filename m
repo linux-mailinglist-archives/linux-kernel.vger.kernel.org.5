@@ -1,78 +1,98 @@
-Return-Path: <linux-kernel+bounces-13368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9716D820414
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:57:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D444820416
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 10:00:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C84241C20BF8
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 08:57:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E2C01F216BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:00:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9754F2567;
-	Sat, 30 Dec 2023 08:57:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9E652587;
+	Sat, 30 Dec 2023 09:00:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="s0aYt+I0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C995323AE
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 08:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7baec2c5f30so472481439f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 00:57:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703926623; x=1704531423;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c/2JFH6hFG4yS1PCEphEIs5Vmwkj5XCp92KX5S53m3Y=;
-        b=Mqe+xBiFlbqSjvN1wWn64xmMXoy4Z95pfI3zlOc68O2HThYgTFF72z3oZP73Pd93Xg
-         yB5xKLf9EQRVeHy25d9HtCPfvTteffq7m3TE203yJvpvsKO3XQzhrbEPmXgpzO/fLjM7
-         ureIzXz2MiqxuF3cFJ4UjSofMOeXk1meLig0G8YdUizXJp3XjC2MPV/1EYeDjVUnxciy
-         87m7DweBylPhPBzjVRxHj9YpnBkhErfzrC9/sYmDInPOGoMYkcSiV4Lla4A6A7ZwAA0Y
-         UkpELNavCSHecV0ZauXw97boB4Fa2/6+LnA/4C7UuvsjCWiZKA70dOaV8fS+v6N9J7n8
-         1Ifw==
-X-Gm-Message-State: AOJu0Yx4QvUX0PogIDRyDxj8T1WedYCRYzvXcHc/WhVdxBeVIxZEfx2l
-	mjwnkZ6oDwHOhuZQJToCfteKMLQbMPG9XiJuh0eaDDkrnVfT
-X-Google-Smtp-Source: AGHT+IHE3RytBluQJZTzfU/w+r0z5GPlZQ7PeL0kmyPd9CAFH8rWcUXvTp3SDAYA2zhBSzFOMd1DkbuxrTBUao35A8ZWvc2VvGs2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7024E23A5;
+	Sat, 30 Dec 2023 09:00:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1703926805; bh=JhwbLXrg9xb5P3kWXzS/FhXW8uVTkvP/c+tNkfreaxg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=s0aYt+I01HVG4w0djuk1tDqHKHtrcyh4mERzbmQZkyYFxJ6ntiFYmSxkNMxhlM6xx
+	 DOMyQ0BSWfjco7CLbEKjz58v559wg2XTdDct2g5WasZDMooZYuLPBsSqMzi6opeSbt
+	 3TiXnBlisrOWHZZEYjyc/fP+gyQLYxFeT01aqjA8=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 31FA94; Sat, 30 Dec 2023 17:00:03 +0800
+X-QQ-mid: xmsmtpt1703926803tjsu7s8b9
+Message-ID: <tencent_C51BB525D6BA72BB25338C9EB41B094B3608@qq.com>
+X-QQ-XMAILINFO: Mdc3TkmnJyI/uQ6d1i0rpisJz8zTDHyh0uBVnwzQKJOiejgXThC3kq8HRO08Q/
+	 Qmt22IQ+MQgsr1fl8h8KsdgsZfUS492UvqiuEpDsVXTPWD1XymN+pl66Rn7TK50GVZmKn0oA1lP0
+	 0LLMb3XnPd/36Ofh2z2NbNaMPfJH/mlUHzz2ar2Wpy4U8M6ugu/mrZJKZ4Sie7p+6a/BVnfBo7u2
+	 23TD05HmGeA7HCfU5BLNCjaAZW79W+BS7DJiZHS/42237LH2dJwRdJ4iDXxM9V8rbOaUlnzbx3qF
+	 ZhJc9ZZfRLseunviQSQ7lQelnB7IQNN/GIWYOdezgaLu9KQ2V4R4gE3lojNpd067m2taRS6MyYLX
+	 R8yfH2FbJENWPKoHJ2PV+XEvlZQbF6cJdACFkpH3y7Ibd//6JVWioM56t1wkUrCagtByDI8B6R8G
+	 /S1ifnrnD+2ANWHEqv+3Wmg3ffdGepdQwj14HMJJu+Iv/1lysO9ws3JnixtsIsnz9P4dMAme3qZi
+	 37AM24bZxoy3MnKVzYgM5BYIIt6WeKhpvV4POWq9YJ6t7dmcrGmhULBmwF4RAhAdW5r5Ci/VlMJx
+	 DxZAOvniAqeMBS2qm/t4HdCYmzROu0DJKRCVnTVnrUdDjaTk8EjDVzBN18wniUuwbFaVGoZbB1Xl
+	 F7whgSmz7khzl0KuST1I5r0vNK9f0f60PswpbQK9D3yj/KEirSC8ttJC5fdL01sa5VZ+4z6sB7V0
+	 LaFyN7gL4Jl56tPLIU5ixbeiFFEW1WRXFPmSemiLyDhoo8AnSuNX8mRgEVLAUnHMRcSqM/6nfcCV
+	 L64MgraHhVlCWLkyLpWEtkr2bNXHphyNH5V41dRTEVC2DbmTqnHlyswltvPnvzD4Xm+ghyfI+sHy
+	 qAelAX8wIrdzngnY7I1rrlwFsm59H9f8Ue1a5ECKC2fhM9W+gHejyc++L7NadbiY0oiPcQMTv0m3
+	 aoFtOs9eM=
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+65e940cfb8f99a97aca7@syzkaller.appspotmail.com
+Cc: almaz.alexandrovich@paragon-software.com,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ntfs3@lists.linux.dev,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH arm64] ntfs3: fix oob in ntfs_listxattr
+Date: Sat, 30 Dec 2023 17:00:03 +0800
+X-OQ-MSGID: <20231230090002.2305989-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000038cf2f060d7170a9@google.com>
+References: <00000000000038cf2f060d7170a9@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e017:0:b0:7ba:e2f0:30b3 with SMTP id
- z23-20020a6be017000000b007bae2f030b3mr328459iog.2.1703926623045; Sat, 30 Dec
- 2023 00:57:03 -0800 (PST)
-Date: Sat, 30 Dec 2023 00:57:03 -0800
-In-Reply-To: <tencent_50A825E08D9F92025DEF5DE4992C4FB00D07@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000017115a060db6559e@google.com>
-Subject: Re: [syzbot] [ntfs3?] KASAN: slab-out-of-bounds Read in
- ntfs_listxattr (2)
-From: syzbot <syzbot+65e940cfb8f99a97aca7@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
-
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+The length of name cannot exceed the space occupied by ea.
 
 Reported-and-tested-by: syzbot+65e940cfb8f99a97aca7@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ fs/ntfs3/xattr.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Tested on:
+diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+index 4274b6f31cfa..3b97508a7bf2 100644
+--- a/fs/ntfs3/xattr.c
++++ b/fs/ntfs3/xattr.c
+@@ -219,6 +219,9 @@ static ssize_t ntfs_list_ea(struct ntfs_inode *ni, char *buffer,
+ 		if (!ea->name_len)
+ 			break;
+ 
++		if (ea->name_len > ea_size)
++			break;
++
+ 		if (buffer) {
+ 			/* Check if we can use field ea->name */
+ 			if (off + ea_size > size)
+-- 
+2.43.0
 
-commit:         aafe7ad7 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=12128e7ee80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=23ce86eb3d78ef4d
-dashboard link: https://syzkaller.appspot.com/bug?extid=65e940cfb8f99a97aca7
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14b48c9ae80000
 
-Note: testing is done by a robot and is best-effort only.
 
