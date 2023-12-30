@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-13597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E06E482089A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 23:11:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDA1A82089D
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 23:17:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DD2D1C21699
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 22:11:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ED8EB21BC6
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 22:17:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39269D510;
-	Sat, 30 Dec 2023 22:11:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405D6D310;
+	Sat, 30 Dec 2023 22:17:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="C8tNuZcK"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="jPKkB8Kk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A6CCA74
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 22:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2768b78a9eso399742366b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 14:11:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D59C0CA73
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 22:17:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6d9bd8adb9aso273990b3a.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 14:17:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703974286; x=1704579086; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1703974639; x=1704579439; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=StYu92PpyoTdvBqFEiCBcfqfFxrQCU7OKjpRO9URN6c=;
-        b=C8tNuZcKpAvXI5zrDML1r4G7lUpX28SCujxjUGvPwc7FM1Te7xkj48eUr9OXuRxQ/6
-         +iLew7WH/WO199x6d38epzAoV1g+lUwoiNDuBhHrd9/weegFXPTysxNI1blH4htuY4wF
-         6ZwDz3Si7IkOavYJTLEAcp3Jidjf3ltb2uY3PQNSKKs75h9EP4XZGyGpLFnF2wl44S1t
-         17X0WesbwHOjLs3roajPPUUSzsgOyRWEeYrtfG2LYSpqhIW4UtCWGpR2zXPoZTx1FlRM
-         3jN3e88XyLibDMtDz29Ez8FZG1RR4TbkObnEjUfaZMxV/55QNAhevsYw8qe1fbvak5GN
-         t7MQ==
+        bh=KQ8sovo2bizB+K5f8FD1flPar00AxPI0fwjU2TE0akA=;
+        b=jPKkB8Kku6QZgHB54jq+jAT0VL+i64RfwugIB7UYuXHm6ajvK9Cb3KE+U9na71UF5Y
+         D1qFLpRXbSuI3Kb3u7tAq1BHuw2pZAMlwyXe0qoqTKiUf9cds/OPKbuZ/tpnJU3rRmCI
+         H9vzkZBBCzxI2sRhA4E9C7bLDvwVq6Ab2cYxy+iKUMnyhXN6Z49FhB5yGuaNvSz/yHFj
+         yg4sfRs5qJ1rLpBm6v6rrc2CoL2hbe4ZWWMAKdPlcLYSBa0MTKYKitZ9aObDwcHrd2ny
+         hHCrd2Dwhv/5Y9S19AfTvRS68KvuEeCIN7D+u4wBkpN2tRQe7iHfHE0mLyGPNKspwOO3
+         espQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703974286; x=1704579086;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1703974639; x=1704579439;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=StYu92PpyoTdvBqFEiCBcfqfFxrQCU7OKjpRO9URN6c=;
-        b=uYPlkWoEDoz05LYG9hchzh08XezdxYIRKeRc3h19/L7kQu46ejugmLeaQA9+hObhid
-         v1P02tbzuRd3SAjfr1diK4NK03F/1jw351AwAcdM0o0Wpacr2Pm9UZJVB4HdNFbmefzi
-         HcWJ+hHYKJ3Ke0TGnROp8EZIgpKOiaoI9SECcdOGBzgcf7rWijLjJlmqfP5PYtqj85Cf
-         Xi11r1r83Z37x651Rf6RkRp1poWGivOqOJj+PzWtTV2OVXwqKYgCEaIuiMhqrXwEbzrY
-         m/+Q1lGnuHgIbDMBQGpr3nL9uKlFEJxU3/gn131/7Ku//16YwWkALuBSHGGcvm210GUo
-         dQCA==
-X-Gm-Message-State: AOJu0YwCIk2CcEKVxhjc/JSaskylvl6qDAU3NoHlUEh+/55cv8Se21Dv
-	a8I73tkA9KeMgIGpYBH01UTHSl6NyQVNfA==
-X-Google-Smtp-Source: AGHT+IF+MfDu1YGbhZfhZQjOUI61gjm4fKufA8yM4V9iXpFL9zXzNLz3NtpNsVOlIlMGa5i/11684Q==
-X-Received: by 2002:a17:906:7e4f:b0:a23:4c0d:c0a6 with SMTP id z15-20020a1709067e4f00b00a234c0dc0a6mr12320913ejr.39.1703974286136;
-        Sat, 30 Dec 2023 14:11:26 -0800 (PST)
-Received: from [192.168.199.125] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
-        by smtp.gmail.com with ESMTPSA id v11-20020a17090610cb00b00a26c2f99cd0sm7750670ejv.204.2023.12.30.14.11.22
+        bh=KQ8sovo2bizB+K5f8FD1flPar00AxPI0fwjU2TE0akA=;
+        b=Uthvy8jF/zvGE3Db1oRFPn/+cejTXiGn3bRL8Etrm1U0/ZdHjULUmtdZps35eU7MPL
+         CIwrJUhh0HXMU/3gM/9zFuMS0Iou4NNMNXwT0mQIyNY99ZW+ILfaoHrvAJXI469l5Hjk
+         yftPquNeePknOYDduFOSq3SjlLhj+fR1yD1j4txP5jpEkg51YHfDfMdfObQzLSO4RWZ5
+         0RHC3Quuf7JTZhenA4A8Z+32CrivJGr7lL2SwSVh65R287tSSJSjld52eAhRNhYqJ7Xb
+         eE2oZTrZhBZuiidX3INbIr+OccKLMssJ3jJtxuJahpMW2p8/7llDnYcuY5G8lP58b94C
+         vVXg==
+X-Gm-Message-State: AOJu0YxBOm9PP1Hqcwavy2UiF6/f/qzQqVJwy25p8/3j5xUY4ec9yyrt
+	lInS4gIXP6fHubPrOzaoUQKbyjH/JQb4bA==
+X-Google-Smtp-Source: AGHT+IFwZc0N1Vsc1jp/K0NEObt8wc1MXFPN9k0Z8EY1WRITtrJhBE4EM6cG4pON5uWVyWO8VELcBQ==
+X-Received: by 2002:a05:6a21:819b:b0:196:16b0:c554 with SMTP id pd27-20020a056a21819b00b0019616b0c554mr12387117pzb.5.1703974639128;
+        Sat, 30 Dec 2023 14:17:19 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id n38-20020a634d66000000b005897bfc2ed3sm16381078pgl.93.2023.12.30.14.17.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Dec 2023 14:11:25 -0800 (PST)
-Message-ID: <10b38cb3-cfe0-4fff-8c10-4d2ec98f9dc7@linaro.org>
-Date: Sat, 30 Dec 2023 23:11:21 +0100
+        Sat, 30 Dec 2023 14:17:18 -0800 (PST)
+Message-ID: <d383aaa6-8918-42c6-8ec0-73e234175770@kernel.dk>
+Date: Sat, 30 Dec 2023 15:17:17 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,79 +66,143 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] PCI: qcom: Reshuffle reset logic in 2_7_0 .init
+Subject: Re: [PATCH v6] io_uring: Statistics of the true utilization of sq
+ threads.
 Content-Language: en-US
-To: Bjorn Helgaas <helgaas@kernel.org>, Johan Hovold <johan@kernel.org>
-Cc: Manivannan Sadhasivam <mani@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Stanimir Varbanov <svarbanov@mm-sol.com>,
- Andrew Murray <amurray@thegoodpenguin.co.uk>, Vinod Koul <vkoul@kernel.org>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231229154604.GA1577854@bhelgaas>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231229154604.GA1577854@bhelgaas>
+To: Pavel Begunkov <asml.silence@gmail.com>,
+ Xiaobing Li <xiaobing.li@samsung.com>
+Cc: linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+ kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
+ kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com,
+ cliang01.li@samsung.com, xue01.he@samsung.com
+References: <CGME20231225055252epcas5p43ae8016d329b160f688def7b4f9d4ddb@epcas5p4.samsung.com>
+ <20231225054438.44581-1-xiaobing.li@samsung.com>
+ <170360833542.1229482.7687326255574388809.b4-ty@kernel.dk>
+ <7967c7a9-3d17-44de-a170-2b5354460126@gmail.com>
+ <57b81a15-58ae-46c1-a1af-9117457a31c7@kernel.dk>
+ <6167a98c-35f3-4ea6-a807-dc87c0e4e1bf@gmail.com>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <6167a98c-35f3-4ea6-a807-dc87c0e4e1bf@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 29.12.2023 16:46, Bjorn Helgaas wrote:
-> On Fri, Dec 29, 2023 at 03:04:23PM +0100, Johan Hovold wrote:
->> On Wed, Dec 27, 2023 at 11:17:19PM +0100, Konrad Dybcio wrote:
->> ...
+On 12/30/23 2:06 PM, Pavel Begunkov wrote:
+> On 12/30/23 17:41, Jens Axboe wrote:
+>> On 12/30/23 9:27 AM, Pavel Begunkov wrote:
+>>> On 12/26/23 16:32, Jens Axboe wrote:
+>>>>
+>>>> On Mon, 25 Dec 2023 13:44:38 +0800, Xiaobing Li wrote:
+>>>>> Count the running time and actual IO processing time of the sqpoll
+>>>>> thread, and output the statistical data to fdinfo.
+>>>>>
+>>>>> Variable description:
+>>>>> "work_time" in the code represents the sum of the jiffies of the sq
+>>>>> thread actually processing IO, that is, how many milliseconds it
+>>>>> actually takes to process IO. "total_time" represents the total time
+>>>>> that the sq thread has elapsed from the beginning of the loop to the
+>>>>> current time point, that is, how many milliseconds it has spent in
+>>>>> total.
+>>>>>
+>>>>> [...]
+>>>>
+>>>> Applied, thanks!
+>>>>
+>>>> [1/1] io_uring: Statistics of the true utilization of sq threads.
+>>>>         commit: 9f7e5872eca81d7341e3ec222ebdc202ff536655
+>>>
+>>> I don't believe the patch is near complete, there are still
+>>> pending question that the author ignored (see replies to
+>>> prev revisions).
+>>
+>> We can drop and defer, that's not an issue. It's still sitting top of
+>> branch.
+>>
+>> Can you elaborate on the pending questions?
 > 
->> This is arguably a separate change, and not necessarily one that is
->> correct either, so should at least go in a separate patch if it should
->> be done at all.
+> I guess that wasn't clear, but I duplicated all of them in the
+> email you're replying to for convenience
 > 
-> A nice side effect of splitting might be that it would be a chance to
-> put a little more specific information in the subject lines.
-> "Reshuffle reset logic" by itself doesn't connect it to a specific
-> issue or reason for the change.
-Yes, sorry, that's on me.
+>>> Why it uses jiffies instead of some task run time?
+>>> Consequently, why it's fine to account irq time and other
+>>> preemption? (hint, it's not)
+>>
+>> Yeah that's a good point, might be better to use task run time. Jiffies
+>> is also an annoying metric to expose, as you'd need to then get the tick
+>> rate as well. Though I suspect the ratio is the interesting bit here.
+> 
+> I agree that seconds are nicer, but that's not my point. That's
+> not about jiffies, but that the patch keeps counting regardless
+> whether the SQ task was actually running, or the CPU was serving
+> irq, or even if it was force descheduled.
 
-I've been deep inside this topic recently and many things on the QC
-side are quite obvious to me, but I often keep forgetting that I
-need to externalize that knowledge in commit messages properly..
+Right, guess I wasn't clear, I did very much agree with using task run
+time to avoid cases like that where it's perceived running, but really
+isn't. For example.
 
-Konrad
+> I even outlined what a solution may look like, i.e. replace jiffies
+> with task runtime, which should already be counted in the task.
+
+Would be a good change to make. And to be fair, I guess they originally
+wanted something like that, as the very first patch had some scheduler
+interactions. Just wasn't done quite right.
+
+>>> Why it can't be done with userspace and/or bpf? Why
+>>> can't it be estimated by checking and tracking
+>>> IORING_SQ_NEED_WAKEUP in userspace?
+>>
+>> Asking people to integrate bpf for this is a bit silly imho. Tracking
+> 
+> I haven't seen any mention of the real use case, did I miss it?
+> Because otherwise I fail to see how it can possibly be called
+> silly when it's not clear how exactly it's used.
+> 
+> Maybe it's a bash program printing stats to a curious user? Or
+> maybe it's to track once at start, and then nobody cares about
+> it, in which case NEED_WAKEUP would be justified.
+> 
+> I can guess it's for adjusting the sq timeouts, but who knows.
+
+I only know what is in those threads, but the most obvious use case
+would indeed be to vet the efficiency of the chosen timeout value and
+balance cpu usage with latency like that.
+
+>> NEED_WAKEUP is also quite cumbersome and would most likely be higher
+>> overhead as well.
+> 
+> Comparing to reading a procfs file or doing an io_uring
+> register syscall? I doubt that. It's also not everyone
+> would be using that.
+
+What's the proposed integration to make NEED_WAKEUP sampling work? As
+far as I can tell, you'd need to either do that kind of accounting every
+time you do io_uring_submit(), or make it conditional which would then
+at least still have a branch.
+
+The kernel side would obviously not be free either, but at least it
+would be restricted to the SQPOLL side of things and not need to get
+entangled with the general IO path that doesn't use SQPOLL.
+
+If we put it in there and have some way to enable/query/disable, then it
+least it would just be a branch or two in there rather than in the
+generic path.
+
+>>> What's the use case in particular? Considering that
+>>> one of the previous revisions was uapi-less, something
+>>> is really fishy here. Again, it's a procfs file nobody
+>>> but a few would want to parse to use the feature.
+>>
+>> I brought this up earlier too, fdinfo is not a great API. For anything,
+>> really.
+> 
+> I saw that comment, that's why I mentioned, but the
+> point is that I have doubts the author is even using
+> the uapi.
+
+Not sure I follow... If they aren't using the API, what's the point of
+the patch? Or are you questioning whether this is being done for an
+actual use case, or just as a "why not, might be handy" kind of thing?
+
+-- 
+Jens Axboe
+
 
