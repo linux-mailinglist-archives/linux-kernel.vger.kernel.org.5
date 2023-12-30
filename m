@@ -1,195 +1,304 @@
-Return-Path: <linux-kernel+bounces-13595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 967DC820887
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 22:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D008782088B
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 22:17:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF1031F2236D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 21:08:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45C4E1F213F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 21:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65321C2FD;
-	Sat, 30 Dec 2023 21:07:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85256C2E9;
+	Sat, 30 Dec 2023 21:17:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IjxGLXw2"
+	dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b="Sm3iHXtN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4DEC13D;
-	Sat, 30 Dec 2023 21:07:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2339262835so803314966b.3;
-        Sat, 30 Dec 2023 13:07:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703970475; x=1704575275; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sHF3sKZsu4R9CnT8G/yUetsryJNI3ATWl2kq3NMJLPo=;
-        b=IjxGLXw2QPjVMHSppLwlsTXrysz0oMozJrayQeiunLTvz7f5yvNlK15TFlkdYf5uzu
-         ItwOJOQ05SAzp2pivyQdSGsaPURLcCWMmHfuPpgi66sP8aWnqFSW+zSeDY0DXrMf7UbX
-         jDK17wqdvK02sChMAsua1zm4m2yrt7lEdVw+pnESh8qVibvyxEHSsckBxkQ+Q+RJV8j2
-         X9Z7I2b9HLEoSsdvJPRYb4Nv0+xZ31s9jDYaMYYBzXepy5R3swZ1OROKhDmgWymxI1Rx
-         Fmdf6j8c8RoF/SAWpvy6xkgcglGczOVa47nGGDSGRtMqawgGxjUHPIkrQLYed5G965W+
-         kYfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703970475; x=1704575275;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sHF3sKZsu4R9CnT8G/yUetsryJNI3ATWl2kq3NMJLPo=;
-        b=FXCWHge46uEAuHlOP/mW9pOfG+KHRSjuYKjRttdaRm1TLi0G4HFEKSRHlnJ64Cb0s7
-         sovbzMEBEP39X1+Q34MpaibbsXOde0RY8jHMQwXifD+jCHjeo5W2rcZylCCn7RjW5r2w
-         S4xMk5TBWEhot7mCgkACkSskI+ApYu/85fs0SDAiuE5BVRvAji/fXOzYQKE5WMSjDspj
-         CHKFhBA4aQTY8rcWxhLN39M/ET/EJrTUnQuG+nrpJ6d4Gj2lIq+QLtOHlq7BqFf6BZwD
-         Zj6i8hMZc5FQImDVnkXTeyqVrHKcdgfyff+QBgA/ANutTxuGFCx6rZ2WoKoLwofOa3qj
-         eBkw==
-X-Gm-Message-State: AOJu0YyZzfEK/klG7eg0Kb5TthUFDU+WclmU3RY41z4gLRl+cTOIbT+L
-	j1cUy+8N2C4zNxbZL1qdzUo=
-X-Google-Smtp-Source: AGHT+IE3W3+1/5K2uOt47lp/N6mUEhP9aZKY+UiD/5HNRjQb6Y2ABwDn3LHrPc+CLw1M+obw4JHASQ==
-X-Received: by 2002:a17:906:7151:b0:a26:983a:af7a with SMTP id z17-20020a170906715100b00a26983aaf7amr6228275ejj.31.1703970475234;
-        Sat, 30 Dec 2023 13:07:55 -0800 (PST)
-Received: from [192.168.8.100] ([185.69.144.139])
-        by smtp.gmail.com with ESMTPSA id su24-20020a17090703d800b00a26ab41d0f7sm8892631ejb.26.2023.12.30.13.07.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Dec 2023 13:07:54 -0800 (PST)
-Message-ID: <6167a98c-35f3-4ea6-a807-dc87c0e4e1bf@gmail.com>
-Date: Sat, 30 Dec 2023 21:06:10 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C502DDDBB;
+	Sat, 30 Dec 2023 21:17:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oltmanns.dev
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4T2Znr2Cjnz9scM;
+	Sat, 30 Dec 2023 22:17:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
+	s=MBO0001; t=1703971040;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EqzpSggOCyXix/RyQdbwO3KPIBKLdQSHS6acVQjzt6c=;
+	b=Sm3iHXtNAXh9K/xf42tiU1rN0I+mCEy7Yh5xJB7lDG45dqj4W4QsJ7Q/8b/Z+/TQTOU6uL
+	xJzOGVp79vCiwI3fCWWUQt/IPOXhjto4X8+hF37c+grkV4kAMOOZCqwAm8Y2mnb6XP8d+z
+	sWkJ/CZAPewrist1vQJCgjN00S26rMZvLb5LeIiZJjWtBqHgUUHVHpw7yMy3M68bcYolTL
+	gB1ZRwWHrAaIUagoQw6KafgX2nljdrhZMH1SDYB7NJw92QYz8Zqoq2tQpdiAVY4bpGg21o
+	78kBpVZuMnESIZSP+DJR/X8wjBz5hKJDNFFo2xDZWzRFFpOp7sxQMs3olLm4lg==
+References: <20231218-pinephone-pll-fixes-v1-0-e238b6ed6dc1@oltmanns.dev>
+ <10386431.nUPlyArG6x@jernej-laptop> <87edfh9ud8.fsf@oltmanns.dev>
+ <1845418.atdPhlSkOF@jernej-laptop>
+From: Frank Oltmanns <frank@oltmanns.dev>
+To: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Samuel Holland
+ <samuel@sholland.org>, Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
+ Purism Kernel Team
+ <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>,
+ Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, linux-clk@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Icenowy
+ Zheng <uwu@icenowy.me>
+Subject: Re: [PATCH 5/5] drm/panel: st7703: Drive XBD599 panel at higher
+ clock rate
+In-reply-to: <1845418.atdPhlSkOF@jernej-laptop>
+Date: Sat, 30 Dec 2023 22:17:06 +0100
+Message-ID: <87wmsvo0fh.fsf@oltmanns.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6] io_uring: Statistics of the true utilization of sq
- threads.
-Content-Language: en-US
-To: Jens Axboe <axboe@kernel.dk>, Xiaobing Li <xiaobing.li@samsung.com>
-Cc: linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
- kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
- kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com,
- cliang01.li@samsung.com, xue01.he@samsung.com
-References: <CGME20231225055252epcas5p43ae8016d329b160f688def7b4f9d4ddb@epcas5p4.samsung.com>
- <20231225054438.44581-1-xiaobing.li@samsung.com>
- <170360833542.1229482.7687326255574388809.b4-ty@kernel.dk>
- <7967c7a9-3d17-44de-a170-2b5354460126@gmail.com>
- <57b81a15-58ae-46c1-a1af-9117457a31c7@kernel.dk>
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <57b81a15-58ae-46c1-a1af-9117457a31c7@kernel.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 4T2Znr2Cjnz9scM
 
-On 12/30/23 17:41, Jens Axboe wrote:
-> On 12/30/23 9:27 AM, Pavel Begunkov wrote:
->> On 12/26/23 16:32, Jens Axboe wrote:
->>>
->>> On Mon, 25 Dec 2023 13:44:38 +0800, Xiaobing Li wrote:
->>>> Count the running time and actual IO processing time of the sqpoll
->>>> thread, and output the statistical data to fdinfo.
->>>>
->>>> Variable description:
->>>> "work_time" in the code represents the sum of the jiffies of the sq
->>>> thread actually processing IO, that is, how many milliseconds it
->>>> actually takes to process IO. "total_time" represents the total time
->>>> that the sq thread has elapsed from the beginning of the loop to the
->>>> current time point, that is, how many milliseconds it has spent in
->>>> total.
->>>>
->>>> [...]
->>>
->>> Applied, thanks!
->>>
->>> [1/1] io_uring: Statistics of the true utilization of sq threads.
->>>         commit: 9f7e5872eca81d7341e3ec222ebdc202ff536655
+
+On 2023-12-20 at 16:18:49 +0100, Jernej =C5=A0krabec <jernej.skrabec@gmail.=
+com> wrote:
+> Dne sreda, 20. december 2023 ob 08:14:27 CET je Frank Oltmanns napisal(a):
 >>
->> I don't believe the patch is near complete, there are still
->> pending question that the author ignored (see replies to
->> prev revisions).
-> 
-> We can drop and defer, that's not an issue. It's still sitting top of
-> branch.
-> 
-> Can you elaborate on the pending questions?
+>> On 2023-12-19 at 18:04:29 +0100, Jernej =C5=A0krabec <jernej.skrabec@gma=
+il.com> wrote:
+>> > Dne ponedeljek, 18. december 2023 ob 14:35:23 CET je Frank Oltmanns na=
+pisal(a):
+>> >> This panel is used in the pinephone that runs on a Allwinner A64 SOC.
+>> >> Acoording to it's datasheet, the SOC requires PLL-MIPI to run at more
+>> >> than 500 MHz.
+>> >>
+>> >> Therefore, change [hv]sync_(start|end) so that we reach a clock rate
+>> >> that is high enough to drive PLL-MIPI within its limits.
+>> >>
+>> >> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+>> >
+>> > I'm not too sure about this patch. I see that PLL_MIPI doesn't have set
+>> > minimum frequency limit in clock driver. If you add it, clock framework
+>> > should find rate that is high enough and divisible with target rate.
+>>
+>> This one is really a tough nut. Unfortunately, the PLL_MIPI clock for
+>> this panel has to run exactly at 6 * panel clock. Let me start by
+>> showing the relevant part of the clock tree (this is on the pinephone
+>> after applying the patches):
+>>     pll-video0                 393600000
+>>        pll-mipi                500945454
+>>           tcon0                500945454
+>>              tcon-data-clock   125236363
+>>
+>> To elaborate, tcon-data-clock has to run at 1/4 the DSI per-lane bit
+>> rate [1]. It's a fixed divisor
+>>
+>> The panel I'm proposing to change is defined as this:
+>>
+>>     static const struct st7703_panel_desc xbd599_desc =3D {
+>>     	.mode =3D &xbd599_mode,
+>>     	.lanes =3D 4,
+>>     	.mode_flags =3D MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULS=
+E,
+>>     	.format =3D MIPI_DSI_FMT_RGB888,
+>>     	.init_sequence =3D xbd599_init_sequence,
+>>     };
+>>
+>> So, we have 24 bpp and 4 lanes. Therefore, the resulting requested
+>> tcon-data-clock rate is
+>>     crtc_clock * 1000 * (24 / 4) / 4
+>>
+>> tcon-data-clock therefore requests a parent rate of
+>>     4 * (crtc_clock * 1000 * (24 / 4) / 4)
+>>
+>> The initial 4 is the fixed divisor between tcon0 and tcon-data-clock.
+>> Since tcon0 is a ccu_mux, the rate of tcon0 equals the rate of pll-mipi.
+>>
+>> Since PLL-MIPI has to run at at least at 500MHz this forces us to have a
+>> crtc_clock >=3D 83.333 MHz. The mode I'm prorposing results in a rate of
+>> 83.502 MHz.
+>
+> This is much better explanation why this change is needed. Still, I think
+> adding min and max rate to PLL_MIPI would make sense, so proper rates
+> are guaranteed.
 
-I guess that wasn't clear, but I duplicated all of them in the
-email you're replying to for convenience
+Okay, I'll include min and max rate in V2, because you're right that
+it's the sane thing to do and actually it wasn't too much work. I (and
+others) do experience crashes if pll-mipi is driven below the 500 MHz
+mark, so let's fix this once and for all.
 
->> Why it uses jiffies instead of some task run time?
->> Consequently, why it's fine to account irq time and other
->> preemption? (hint, it's not)
-> 
-> Yeah that's a good point, might be better to use task run time. Jiffies
-> is also an annoying metric to expose, as you'd need to then get the tick
-> rate as well. Though I suspect the ratio is the interesting bit here.
+> Anyway, do you know where are all those old values come from?
 
-I agree that seconds are nicer, but that's not my point. That's
-not about jiffies, but that the patch keeps counting regardless
-whether the SQ task was actually running, or the CPU was serving
-irq, or even if it was force descheduled.
+I've done some digging on lore and the values were originally submitted
+by Icenowy Zheng as part of a series to support the pinephone's LCD [1].
+There has been some refactoring after this initial submission and Ondrej
+Jirman took over. But the values are still the ones submitted by
+Icenowy, so I've added her to CC. I couldn't find any documentation for
+this specific panel.
 
-I even outlined what a solution may look like, i.e. replace jiffies
-with task runtime, which should already be counted in the task.
+> And how did
+> you come up with new ones?
 
->> Why it can't be done with userspace and/or bpf? Why
->> can't it be estimated by checking and tracking
->> IORING_SQ_NEED_WAKEUP in userspace?
-> 
-> Asking people to integrate bpf for this is a bit silly imho. Tracking
+Trial and no error. :)
 
-I haven't seen any mention of the real use case, did I miss it?
-Because otherwise I fail to see how it can possibly be called
-silly when it's not clear how exactly it's used.
+No, really, it was just a lucky guess. I know nothing about LCD panels,
+so I only looked at the original values:
+.htotal =3D  720 + 40 + 40 + 40,
+.vtotal =3D 1440 + 18 + 10 + 17,
 
-Maybe it's a bash program printing stats to a curious user? Or
-maybe it's to track once at start, and then nobody cares about
-it, in which case NEED_WAKEUP would be justified.
+I thought, what if every time I increase a horizontal value by 2, I
+increase a vertical value by 1 (very roughly).
 
-I can guess it's for adjusting the sq timeouts, but who knows.
+So I ended up with:
+.htotal =3D  720 + 65 + 65 + 65,
+.vtotal =3D 1440 + 30 + 22 + 29,
 
-> NEED_WAKEUP is also quite cumbersome and would most likely be higher
-> overhead as well.
+So, in conclusion, I've increased each of the horizontal values by 25
+and each of the vertical values by 12. Then I just tried out these new
+values, and the world didn't end. :)
 
-Comparing to reading a procfs file or doing an io_uring
-register syscall? I doubt that. It's also not everyone
-would be using that.
+If this is stupid, please somebody let me know.
 
->> What's the use case in particular? Considering that
->> one of the previous revisions was uapi-less, something
->> is really fishy here. Again, it's a procfs file nobody
->> but a few would want to parse to use the feature.
-> 
-> I brought this up earlier too, fdinfo is not a great API. For anything,
-> really.
+I (and at least one postmarket OS tester) have been daily driving the
+panel with these values for about a week now.
 
-I saw that comment, that's why I mentioned, but the
-point is that I have doubts the author is even using
-the uapi.
+I've checked the panel's refresh rate with the following test setup:
+ - I created a 60 fps video that shows the current frame number in each
+   frame. The video is 10 seconds (600 frames) long. [2]
+ - I played that video on my pinephone using vlc. [3]
+ - I recorded the playback with a Google Pixel 5 phone at 1/8 slow
+   motion (240 fps).
+ - I converted the video into individual pictures [4], resized
+   the pictures to 10% [5], and finally - after deleting some superfluous
+   pictures at the beginning and end - I created one big collage out of
+   these [6].
 
->> Why it just keeps aggregating stats for the whole
->> life time of the ring? If the workload changes,
->> that would either totally screw the stats or would make
->> it too inert to be useful. That's especially relevant
->> for long running (days) processes. There should be a
->> way to reset it so it starts counting anew.
-> 
-> I don't see a problem there with the current revision, as the app can
-> just remember the previous two numbers and do the appropriate math
-> "since last time".
+I've uploaded the video[7], resulting collage [8] and the individual
+pictures [9].
 
-I assumed it only prints the ratio. Looked it up, there
-are 2 values, so you're right, can be easily recalculated.
+In the resulting picture you can see that in the beginning frame 2 is
+missing and frame 136 is only barely visible because it is stuck too
+long on frame 135. Other than that, I think this looks pretty good.
 
->> I say the patch has to be removed until all that is
->> figured, but otherwise I'll just leave a NACK for
->> history.
-> 
-> That's fine, I can drop it for now and we can get the rest addressed.
+> I guess you can't just simply change timings,
+> there are probably some HW limitations? Do you know if BSP kernel support
+> this panel and how this situation is solved there?
 
--- 
-Pavel Begunkov
+I'm not aware of any BSP kernel that supports this kernel.
+
+>> If we only changed the constraints on the PLL_MIPI without changing the
+>> panel mode, we end up with a mismatch. This, in turn, would result in
+>> dropped frames, right?
+>
+> From what I read, I think frame rate would be higher than 60 fps. What
+> exactly would happen depends on the panel.
+
+To give this a fair comparison, I tested with the original timings but
+with correcting the panel's clock rate of 74844 kHZ instead of 69000 kHz
+as discussed elsewhere in this thread [10] and pll-mipi running at
+500MHz (because that's really a must to run the pinephone in a stable
+manner). I used the same procedure as described above. Again, I've
+uploaded the resulting video [11], collage [12] and the individual files
+[13].
+
+Here, the being stuck happens much more often, e.g. frames 23, 31, 40,
+49, 58, 66 etc.
+
+So, I think, in order to have a better user experience, I think it's a
+good idea to update the XBD599 panel with the new values I proposed in
+this patch.
+
+Best regards,
+  Frank
+
+[1]: https://lore.kernel.org/all/20200311162936.221613-1-icenowy@aosc.io/
+[2]: ffmpeg -f lavfi -i testsrc=3Dduration=3D10:size=3D80x50:rate=3D60 -vf \
+   "drawtext=3Dtext=3D%{n}:fontsize=3D36:r=3D60:x=3D(w-tw)/2: y=3Dh-(1*lh):=
+fontcolor=3Dwhite:box=3D1:boxcolor=3D0x00000099"\
+   test_80x50.mp4
+[3]: cvlc test_80x50.mp4  --fullscreen --play-and-exit
+[4]: ffmpeg -i video_from_pixel_phone.mp4 -vsync vfr output_%04d.jpg
+[5]: mogrify -resize 10% output_*.jpg
+[6]: montage output_*.jpg -tile 20x -geometry +0+0 \
+      verify_panel_65_65_65_30_22_29_83502.jpg
+[7]: https://share.mailbox.org/ajax/share/0a471a7205211949ad7067d5211945719=
+84a15d1613d74be/1/8/Njg/NjgvMzE
+[8]: https://share.mailbox.org/ajax/share/0741f90808f2df4e7d1e5078f2df43cfa=
+e732189f27e75e3/1/8/Njg/NjgvMzI
+[9]: https://share.mailbox.org/ajax/share/0471bc0706bfee4e4e1a0086bfee40ecb=
+a2123a14c9b8d4d/1/8/Njg/NjgvMzA
+[10]: https://lore.kernel.org/all/87v88qk3ge.fsf@oltmanns.dev/
+[11]: https://share.mailbox.org/ajax/share/036036d00eac574e3f02adfeac5741dd=
+a88105026a1221f4/1/8/Njg/NjgvMzQ
+[12]: https://share.mailbox.org/ajax/share/05f6d3e905e30058566cfe65e300486a=
+a936122f2414639a/1/8/Njg/NjgvMzU
+[13]: https://share.mailbox.org/ajax/share/0cf25a810cce2357c62468ecce234681=
+a4e8e674d38d02cd/1/8/Njg/NjgvMzM
+
+>
+> Best regards,
+> Jernej
+>
+>>
+>> Best regards,
+>>   Frank
+>>
+>> [1] Source:
+>> https://elixir.bootlin.com/linux/v6.6.7/source/drivers/gpu/drm/sun4i/sun=
+4i_tcon.c#L346
+>>
+>> >
+>> > Best regards,
+>> > Jernej
+>> >
+>> >> ---
+>> >>  drivers/gpu/drm/panel/panel-sitronix-st7703.c | 14 +++++++-------
+>> >>  1 file changed, 7 insertions(+), 7 deletions(-)
+>> >>
+>> >> diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7703.c b/drivers/=
+gpu/drm/panel/panel-sitronix-st7703.c
+>> >> index b55bafd1a8be..6886fd7f765e 100644
+>> >> --- a/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+>> >> +++ b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+>> >> @@ -320,14 +320,14 @@ static int xbd599_init_sequence(struct st7703 *=
+ctx)
+>> >>
+>> >>  static const struct drm_display_mode xbd599_mode =3D {
+>> >>  	.hdisplay    =3D 720,
+>> >> -	.hsync_start =3D 720 + 40,
+>> >> -	.hsync_end   =3D 720 + 40 + 40,
+>> >> -	.htotal	     =3D 720 + 40 + 40 + 40,
+>> >> +	.hsync_start =3D 720 + 65,
+>> >> +	.hsync_end   =3D 720 + 65 + 65,
+>> >> +	.htotal      =3D 720 + 65 + 65 + 65,
+>> >>  	.vdisplay    =3D 1440,
+>> >> -	.vsync_start =3D 1440 + 18,
+>> >> -	.vsync_end   =3D 1440 + 18 + 10,
+>> >> -	.vtotal	     =3D 1440 + 18 + 10 + 17,
+>> >> -	.clock	     =3D 69000,
+>> >> +	.vsync_start =3D 1440 + 30,
+>> >> +	.vsync_end   =3D 1440 + 30 + 22,
+>> >> +	.vtotal	     =3D 1440 + 30 + 22 + 29,
+>> >> +	.clock	     =3D (720 + 65 + 65 + 65) * (1440 + 30 + 22 + 29) * 60 /=
+ 1000,
+>> >>  	.flags	     =3D DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
+>> >>  	.width_mm    =3D 68,
+>> >>  	.height_mm   =3D 136,
+>> >>
+>> >>
+>>
 
