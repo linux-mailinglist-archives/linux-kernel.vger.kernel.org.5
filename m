@@ -1,97 +1,130 @@
-Return-Path: <linux-kernel+bounces-13386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CED7182044E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:20:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A7EF820450
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:28:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DA1BB2150A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 10:20:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C4721C20CC7
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 10:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12ADA2567;
-	Sat, 30 Dec 2023 10:20:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8904A210A;
+	Sat, 30 Dec 2023 10:28:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lkf0Dl1L"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DpmXUBOg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E68023A0;
-	Sat, 30 Dec 2023 10:20:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d3e84fded7so36906645ad.1;
-        Sat, 30 Dec 2023 02:20:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703931637; x=1704536437; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4XaXtsrgSXYum/vGa7ZpC/g8Y8EoPoiL6Ss51LA99lM=;
-        b=Lkf0Dl1LGuLJE3EdwO570C3cRXZ0tRBHCg5MMATMJGzCTY32pA/n8cCTHC/1buxgbY
-         6KvXtG6nOqfMITz33xDgiHhjHQ8Sod7X+pOtr0tsBjoLgVfJGY9AH+xJD6G+Am+mTe5S
-         jK7WugMMHh+ryxVKFq3xkDqdnHMRLj7h7v/RWHDwUtLAiEe65aM2LpzTP72kQBJYgU9p
-         zV285hBzGVx9Wf0C+1aPgeCvg9RxzVkkVvttR8ZpoudHmDjA1oORWBtzeUlVHHFBfRBt
-         KkZK3BLQ7Wbhir6im60+bz7Ou8eKogpYX0bNtRR2X1WCPJbKvKe4nROiRVUJwiapSao+
-         3IWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703931637; x=1704536437;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4XaXtsrgSXYum/vGa7ZpC/g8Y8EoPoiL6Ss51LA99lM=;
-        b=FkVXCINLtvBnrY2l7q/KoAaJnk2NSA0Ct/4zZO1Z9yXL4WDLqb4Otqjr8xPjFHSN+O
-         wE7lW1IyiEzARqSW8fFkjejt55NnlNQL673WyH8v3lRV445l49CLjyghx3jqjBLdxCzG
-         JreN98f/LchR2L0jRcEFJjZ4WT1zFQnsp4bDKoIJdinQhNivmrdOotbOJ29aMNlchURc
-         +Of3GcXzn38rnMGwFEjwI/UtsVERyWcfrKvp+yrorEzZqy0MYpEQyLOOb2VQH79KqK+q
-         jBY0n5m5ZPic7fpRwwGaWV20sjRUqizzH6o/CQueEhB52YDzg4RqKXE4fN4WveEQdSNi
-         VjfA==
-X-Gm-Message-State: AOJu0YymFXcIv1M4doMCuWboG01IC9fClGISXDKKZc5WVv2cdrtPOr/h
-	BWRIbVTj/vwrUDk2H31RvBA=
-X-Google-Smtp-Source: AGHT+IHtd3W1hmJqeHzjse7BNVqjjzNfPExVuEDemRsdmZbWPy4wmQhiPx0NDD/Ifvyn7rdVCRojUw==
-X-Received: by 2002:a17:90b:101:b0:286:6cc1:2cce with SMTP id p1-20020a17090b010100b002866cc12ccemr4180950pjz.88.1703931637268;
-        Sat, 30 Dec 2023 02:20:37 -0800 (PST)
-Received: from localhost.localdomain ([2408:8207:2540:8c00:23b7:4d83:3222:c5dd])
-        by smtp.gmail.com with ESMTPSA id ok13-20020a17090b1d4d00b0028aea6c24bcsm22160649pjb.53.2023.12.30.02.20.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Dec 2023 02:20:36 -0800 (PST)
-From: amazingfate <liujianfeng1994@gmail.com>
-To: sigmaris@gmail.com
-Cc: conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	ezequiel@vanguardiasur.com.ar,
-	heiko@sntech.de,
-	krzysztof.kozlowski+dt@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	liujianfeng1994@gmail.com,
-	mchehab@kernel.org,
-	p.zabel@pengutronix.de,
-	robh+dt@kernel.org,
-	sfr@canb.auug.org.au
-Subject: Re: [PATCH v2 2/3] arm64: dts: rockchip: Add Hantro G1 VPU support for RK3588
-Date: Sat, 30 Dec 2023 18:20:25 +0800
-Message-Id: <20231230102025.3740749-1-liujianfeng1994@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CAAXNxMRkpM+dSV3azDFgm07ygJrXyS=Htz_h8Z_WMmeG0YZ+ig@mail.gmail.com>
-References: <CAAXNxMRkpM+dSV3azDFgm07ygJrXyS=Htz_h8Z_WMmeG0YZ+ig@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A69463C4
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 10:28:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703932095;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aX1O++zYx1k3/mNIX5UfYhS34dL4AjJIqDFQMzvM7pA=;
+	b=DpmXUBOgl6EtQObEnSkfxYvgBEgdPp8uWzf+Ns5vqQi99pKq5hJl1Zc/ZbFQ/kO57f2qJk
+	e9NQh2leRsDEkjIaNTCB8dPqh2BtTS0iJAGuvFulObPe+0dzMpvwilqnPldx4YZXtcW9ik
+	2lBi3GuwTRqEH0y3AsKHGOWsLhcl5pQ=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-41-mWMzJCyJOcSEIdihBIHiBA-1; Sat,
+ 30 Dec 2023 05:28:11 -0500
+X-MC-Unique: mWMzJCyJOcSEIdihBIHiBA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E0E6529AA396;
+	Sat, 30 Dec 2023 10:28:10 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.216])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 1B0C53C25;
+	Sat, 30 Dec 2023 10:28:09 +0000 (UTC)
+Date: Sat, 30 Dec 2023 18:28:06 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Yuntao Wang <ytcoode@gmail.com>, bp@alien8.de,
+	dave.hansen@linux.intel.com, dyoung@redhat.com,
+	hbathini@linux.ibm.com, hpa@zytor.com, kexec@lists.infradead.org,
+	linux-kernel@vger.kernel.org, mingo@redhat.com, seanjc@google.com,
+	tglx@linutronix.de, tiwai@suse.de, vgoyal@redhat.com,
+	x86@kernel.org
+Subject: Re: [PATCH] crash_core: optimize crash_exclude_mem_range()
+Message-ID: <ZY/wtvltzGR0CokV@MiWiFi-R3L-srv>
+References: <20231218092902.9fae480cfcad3874e9e7236f@linux-foundation.org>
+ <20231219163418.108591-1-ytcoode@gmail.com>
+ <20231229121014.fd090f8c616a34fbb45f7843@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231229121014.fd090f8c616a34fbb45f7843@linux-foundation.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-On Fri, 29 Dec 2023 11:02:08 +0000, Hugh Cole-Baker <sigmaris@gmail.com> wrote:
->The node name should be video-codec@fdb50000 to match the reg address.
+On 12/29/23 at 12:10pm, Andrew Morton wrote:
+> On Wed, 20 Dec 2023 00:34:18 +0800 Yuntao Wang <ytcoode@gmail.com> wrote:
+> 
+> > Because memory ranges in mem->ranges are stored in ascending order, when we
+> > detect `p_end < start`, we can break the for loop early, as the subsequent
+> > memory ranges must also be outside the range we are looking for.
+> > 
+> > Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> > ---
+> > Hi Andrew,
+> > 
+> > Patch "[PATCH 2/2] crash_core: fix out-of-bounds access check in
+> > crash_exclude_mem_range()" can be ignored, use this patch instead.
+> > 
+> 
+> Some reviewer input on this would be helpful please?
 
-Hi,
-Thanks a lot for youre review, I will change the node name in v3.
 
-Jianfeng
+I suggested this in below discussion thread:
+https://lore.kernel.org/all/ZYEOshALGbDKwSdc@MiWiFi-R3L-srv/T/#u
+
+So it would be good if squashing this into patch 3 of another patch
+thread you are asking:
+[PATCH 3/3] crash_core: fix and simplify the logic of crash_exclude_mem_range()
+
+And I would suggest withdrawing Yuntao's below patch on your
+mm-nonmm-unstable branch.
+
+961c69e9f1bf x86/crash: fix potential cmem->ranges array overflow
+
+Becase there's better one to fix the potential oob from fuqiang,
+although fuqiang need improve his patch log.
+
+[PATCH v3] x86/kexec: fix potential cmem->ranges out of bounds
+https://lore.kernel.org/all/20231222121855.148215-1-fuqiang.wang@easystack.cn/T/#u
+
+> 
+> > --- a/kernel/crash_core.c
+> > +++ b/kernel/crash_core.c
+> > @@ -575,9 +575,12 @@ int crash_exclude_mem_range(struct crash_mem *mem,
+> >  		p_start = mstart;
+> >  		p_end = mend;
+> >  
+> > -		if (p_start > end || p_end < start)
+> > +		if (p_start > end)
+> >  			continue;
+> >  
+> > +		if (p_end < start)
+> > +			break;
+> > +
+> >  		/* Truncate any area outside of range */
+> >  		if (p_start < start)
+> >  			p_start = start;
+> > -- 
+> > 2.43.0
+> 
+
 
