@@ -1,44 +1,64 @@
-Return-Path: <linux-kernel+bounces-13451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 980F48206C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:25:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E0768206C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:31:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D4B8B21063
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 14:25:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D3DB281EA2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 14:31:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD109463;
-	Sat, 30 Dec 2023 14:25:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A013FBE65;
+	Sat, 30 Dec 2023 14:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="JrZgkkLc"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O7CkIRt8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70F08C17;
-	Sat, 30 Dec 2023 14:25:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703946312; x=1704551112; i=markus.elfring@web.de;
-	bh=dI9cCClD6JexG1woOmdgPnUw06082v8DX+zQoFVxay0=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=JrZgkkLcSZEPJI2sUZwLyvAFvdiwnzUUMNrTO+464QkuRNRbHs0x0k+4okj/iV3n
-	 RleY5H0MRaRdI6RTzbBQHRRvq+7MvBUeqsOSc3NJXUEJfGPYNPcyuRMb2WY6DScgH
-	 XZ8+l1Dry/BirwDYtwVnvLrn/cwZ4DPbhnL7YUV/pjpOIJ6EPuUbFu6vBWEHBvPTI
-	 FIwl0YQOSBl6WkizinXiUky2nwsom+ojXYDpACegt7/BzGmx5+IcyrJbh33PV29t7
-	 FSYRJmASTws7Fljq7ADYjU6fgk8hFPRl/HYKXoZSyvi1aRYiAhzVTKhNQZscmWSGk
-	 OKiHxIUdn5h86cX3UA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.87.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1N9cLR-1r7xFt1Rhd-0159S3; Sat, 30
- Dec 2023 15:25:12 +0100
-Message-ID: <38dfe7b6-6d8b-4056-9943-12197c80f4d7@web.de>
-Date: Sat, 30 Dec 2023 15:25:11 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D54ABE4D
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 14:31:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40d5f40ce04so28907415e9.2
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 06:31:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703946701; x=1704551501; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=b4gk9zeURxSP70R8K7qMMz7OFbYRIjI7BmDBTadm3dU=;
+        b=O7CkIRt86jaQE6ZM3qJSvFDhSCs8PsxYhXnOmL7MDVEgKJNLhX3YENFazbSm23btLP
+         +1eESQlwwXM8pJJcnqya4G2D9210USuT5ApcIRiDp1KgwcsPp3Bp9kJ+4rhhhW+IFDOy
+         SRPe5hZI9zZsanaNGYYuZKHhsBchv1oY1AcevQXsVMsO0EM8Mw4iWylnLSwlY26+I3nH
+         +7yayh5MNbjbbesOTsBv4RcRcBBC9AH6Fy/e5DYXJylMcQ98/fi055oed0lVzDxNa7RV
+         Yc1k/rjBrkp5jpTvyIMWZ8PRpiiXEFBQQF09BbYq5J3a3TwNLMqI7s2ulqgNVagLjLTk
+         yGfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703946701; x=1704551501;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=b4gk9zeURxSP70R8K7qMMz7OFbYRIjI7BmDBTadm3dU=;
+        b=lUF0/7PSIp50m4pSkjT4M0GzgKC+xSFuZaOql10nF5Y6c5mvGvv/GMDBrYENKMAiSp
+         v8zYo+OAcI6o7Gbvo3vu+ssD+f7+NILIYJRuXYTxDa7XN/as6CccxeEPkqq961XQRYf0
+         yoYL7kWmxlgJlbNAiNZTy8rdvfAh/89sfk+Yy805fliEf4+tazntb9hEZSxpX3KF9jYn
+         MSQsOq0uAZYZCdTPYhEYAdS9+HjAiBKBOBY9O50YKGCmaBD4nAFo498RCJQrFN7XdZ2r
+         vEN3iCq2Wz5KrjPQceyv+FK4c+UZ4S2ui+SSQU3RzPXfk9OqRaO0FlQLUotjW9rwI6h4
+         xvNQ==
+X-Gm-Message-State: AOJu0Yzx6MkbyNkzGK6WEpNzt3GSo5TmPea2aIptFkFUrfdBNH76dsYN
+	hPgvolz9W52RlV11i6WCQxmWbkA1RXr7bw==
+X-Google-Smtp-Source: AGHT+IFeqEBjwbxvDCPdwj4hV18VumHO0MGlE/qsisETP462FxGiT8Br8SlMmaXDP/+a8gH7n6ExKw==
+X-Received: by 2002:a1c:7507:0:b0:40d:5821:516b with SMTP id o7-20020a1c7507000000b0040d5821516bmr4280663wmc.54.1703946700730;
+        Sat, 30 Dec 2023 06:31:40 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id iv7-20020a05600c548700b0040d746bb8a0sm6130026wmb.43.2023.12.30.06.31.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Dec 2023 06:31:40 -0800 (PST)
+Message-ID: <04403a25-ea88-425d-bbb2-c042d2d0cacb@linaro.org>
+Date: Sat, 30 Dec 2023 15:31:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,60 +66,87 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: scsi: ses: Move a label in ses_enclosure_data_process()
-Content-Language: en-GB
-To: James Bottomley <jejb@linux.ibm.com>, linux-scsi@vger.kernel.org,
- kernel-janitors@vger.kernel.org,
- "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <4616e325-e313-4078-9788-dd1e6e51b9e0@web.de>
- <9d24844f30604f969ac10da456801f594ce72f2d.camel@linux.ibm.com>
- <b65afa15-41e6-4d71-87bd-39fd688fa551@web.de>
- <a35c6128d4449fec00238c909e5f6f45ebf4bcba.camel@linux.ibm.com>
- <a3825ab2-8987-4b85-9db0-642035789c49@web.de>
- <4018ab9225ecaf18501e54114a94217a58a8a57f.camel@linux.ibm.com>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <4018ab9225ecaf18501e54114a94217a58a8a57f.camel@linux.ibm.com>
+Subject: Re: [PATCH] docs: dt-bindings: suggest "reg-names" position in DTS
+ Coding Style
+Content-Language: en-US
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+ Konrad Dybcio <konradybcio@kernel.org>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Andrew Davis <afd@ti.com>, Andrew Lunn <andrew@lunn.ch>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Arnd Bergmann <arnd@arndb.de>, Bjorn Andersson <andersson@kernel.org>,
+ Chen-Yu Tsai <wens@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Jonathan Corbet <corbet@lwn.net>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Michal Simek <michal.simek@amd.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Nishanth Menon <nm@ti.com>,
+ Olof Johansson <olof@lixom.net>
+References: <20231229054711.17317-1-zajec5@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231229054711.17317-1-zajec5@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:GNJw0eiTnvRz1Z7tZBuB+o4pb2XmsXkWWTZiR+2n3Tvnb6BFqlp
- pAi4/57LDG+7T+iqF45/wO7HVSzok2K91AmYGWbueThOhNsTbMdd/XS1h4jVX+bIJiSfBee
- y+TE/KR2g1a0mx/hHl1Eng1SxE4DnQBlK2d9/1y9QbHRIag5zCKiw3Jf7vcfHBza0ZeL3Ot
- NOU7r/Ul+GWy3MtQJA0Zw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Dv4K7cuIcss=;f9YSP876OXo4u8npqQbrBWqzcnR
- Aa5pg1EAca/6Vvw6iVYzRo07mMqjCV5x3Bx9SCn/KZqfb39Kszo7sk4UtLK8hjOciIl72hIje
- HJirzLhbASjwNDjaY64AzE37v7kGcO/p72Rs3YkY1+6Jswx4s+zg4XjNLLBIt0jQ+NC/6qlwz
- fq5WwDbZY3uaRC/EkUETlx+emjPRzeFrUvi2wRXM/jVF+merCQIpchW4IRHQO7PSRlKfDfFdC
- QGqJVvkHUITnTjaFlT3E8ugMaWh1moO+Zjl3JSe/nHfEXt7GHCUk3IhwIneT/eUbPmaVOzKil
- v7A+X0ArDLhikEGDWBq8IAFf20mV8D7S2T5wlZKX8sOioLL1JW2ZzM8EKkLvgy//X25PoERwX
- eBMQYEOAX/46J938bbBNs/hYkl3WvK8ZGNEB6BGPsm4sZ9EVKOG1dWtYbWMpBHwLNc855f7K1
- VZPx/qXMhXmuzqy9NO2zbcyF8upj0pFsMO2DEjGsvgE8N0nFs46+KfimnfmjA/LwI0l9phEax
- Ras33D5O/u9iJHjtNsK+sEN6yCoy8O645a/T2tkfSe09zyuymbg0cysAZzz8+JOg26yt2RZqe
- 3vyRGw0kZeO66qGVTlEbZBR+sInbuXB96+umk4LiuVHYrOvmS1CIIf6JqgYXRm1La+4m+A40q
- yUpB+v7fvphXCWVCutulLBcr+MpPSLztGboAF0sqDMK0gE1lMsXTBmWCQDy1BytrNKXyuFF6s
- WF4FFcn/4aZ40Xi9mOuslFbeUCuKQFm9WLVEIomBlFTWijuBk0acIDudd5ATdfs7+ykUEjlnz
- ZQ9DQcGKgjMFZX79MySJA2zQ4lMED7uUNtzKWTupva5+14t5+nnae61oQU0LJMZtDQlDyXSoD
- 2zADWO5ELDdUyeRfCEzvTfGPKReLBwbtNZkQ8Vb+xNkOKSoyoY63VIQyeNGI6AT7QdZkNg2fb
- 0kNrI4d/cH5rQd99QHOYQYMY9cM=
+Content-Transfer-Encoding: 8bit
 
->> If you would dare to follow advice from goto chains in a strict way,
->> I imagine that you can tend to stress the attention for more useful
->> data processing a bit more than such a redundant function call.
->
-> It's about maintainability and simplicity.  Eliminating kfree(NULL)
-> doesn't simplify most code,
+On 29/12/2023 06:47, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> Property "reg-names" is strictly related to "reg" so it should follow it
+> directly instead of falling into "Standard/common properties". This
+> helps reading DTS files.
 
-I find it easy to avoid such a call in the affected and concrete
-function implementation.
+All 'xxx-names' should immediately follow 'xxx'. Instead of this change,
+just add a note at the bottom of this section?
 
+Best regards,
+Krzysztof
 
->                             it just makes the exit paths more complex
-
-Where is undesirable software complexity here in the repositioning
-of the label =E2=80=9Csimple_populate=E2=80=9D before the statement =E2=80=
-=9Cbuf =3D NULL;=E2=80=9D?
-
-Regards,
-Markus
 
