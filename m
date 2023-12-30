@@ -1,153 +1,329 @@
-Return-Path: <linux-kernel+bounces-13418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0A5A820607
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 13:42:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C919820638
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 13:51:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46F361F2179B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:42:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52BB0281D6F
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:51:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF2138BF6;
-	Sat, 30 Dec 2023 12:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1848A8BFB;
+	Sat, 30 Dec 2023 12:51:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="HLZCkMOv"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ixcWtXED"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 992958BEB;
-	Sat, 30 Dec 2023 12:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BU5qIWv010575;
-	Sat, 30 Dec 2023 12:41:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : content-transfer-encoding : mime-version; s=pp1;
- bh=5WPb7lu8nCv6A+qP0p0HpluMWmDEtFO0vVPTnxPG74k=;
- b=HLZCkMOvP8Wzcx826QNz3jbBskppdgrSxmBqJnNTMd5ndr75dXPwZreNlgxK2NG4rhr+
- JknwRR8Ou7WadQKb8UuP67OU0ayVUHxUAz1oXCD3O2HiDqPMP4yiN4J0e0tMrgCY0xww
- 27Ly6o5PCNcWfFtJfVOF8J/v5hJjDb0IxkeYhucyMTXb+bSiB5vlIrsSGtFGIL6/PfqI
- TZf6xzHG8kzmnUrXlISpPW1rzY7ohDbRvNasOxeLtZgJFRILglLu/jwIAv8bj49D6iAK
- fKyn+2wS5KIvKvpKSVz+VW2Hgkx8/5qRVgSWLTePxe3dBnBh1aA0bI1U7hUqU+65+e6D /w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vadecmqc6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 30 Dec 2023 12:41:59 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BUCRWDV016919;
-	Sat, 30 Dec 2023 12:41:58 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vadecmqc1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 30 Dec 2023 12:41:58 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BUBRstu016595;
-	Sat, 30 Dec 2023 12:41:57 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3v6c3kjg5v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 30 Dec 2023 12:41:57 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BUCfu3U18547396
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 30 Dec 2023 12:41:57 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C3CDC58057;
-	Sat, 30 Dec 2023 12:41:56 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5F84058059;
-	Sat, 30 Dec 2023 12:41:55 +0000 (GMT)
-Received: from lingrow.int.hansenpartnership.com (unknown [9.67.64.147])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Sat, 30 Dec 2023 12:41:55 +0000 (GMT)
-Message-ID: <a35c6128d4449fec00238c909e5f6f45ebf4bcba.camel@linux.ibm.com>
-Subject: Re: scsi: ses: Move a label in ses_enclosure_data_process()
-From: James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To: Markus Elfring <Markus.Elfring@web.de>, linux-scsi@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        "Martin K. Petersen"
-	 <martin.petersen@oracle.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Date: Sat, 30 Dec 2023 07:41:53 -0500
-In-Reply-To: <b65afa15-41e6-4d71-87bd-39fd688fa551@web.de>
-References: <4616e325-e313-4078-9788-dd1e6e51b9e0@web.de>
-	 <9d24844f30604f969ac10da456801f594ce72f2d.camel@linux.ibm.com>
-	 <b65afa15-41e6-4d71-87bd-39fd688fa551@web.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: voUnU-wsCS1EbwPdhiveWTACMypjg6C3
-X-Proofpoint-GUID: iSykN4Qcx_VcRpfdVAFxLZU11Z24z3hT
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 475798BE3
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 12:51:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703940706; x=1735476706;
+  h=date:from:to:cc:subject:message-id;
+  bh=xFN968wrFircNz0rrsTqBTaBGP7s1HcN9QEgH6aqjuU=;
+  b=ixcWtXEDdUhGKmF9aRmpzf1jeDXA5tFoU4FLFBIroGrgpiYZqz35Cqyj
+   4+ac1fWwQ+JRkrPY9S2porpj54x77ldPzExxB0FpbElPZg5TN6DUutdUz
+   iGmbqI80/OmLAOLFkQpDID13eyIxYuMtpmN7p94F5NfeEBNQ86bTolG41
+   RtCbT3iAqP3TgDJspmiqD/RX/7QPbEThlT5f6L0wW3ZwUX5pV/V/heBPn
+   anvHLYpuFE4+VVNA6UY8DHuSypAHxduw2zdEiMbQZ6lziS9M/8ABC8lfU
+   /uzmxlot4PuFI6Duvysk4yIDyDelb63ed68GAJnR6Ie3Wo2HIy1pQfXUn
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10938"; a="10101412"
+X-IronPort-AV: E=Sophos;i="6.04,318,1695711600"; 
+   d="scan'208";a="10101412"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2023 04:51:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10938"; a="755252138"
+X-IronPort-AV: E=Sophos;i="6.04,318,1695711600"; 
+   d="scan'208";a="755252138"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 30 Dec 2023 04:51:44 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rJYoX-000IRH-2Y;
+	Sat, 30 Dec 2023 12:51:41 +0000
+Date: Sat, 30 Dec 2023 20:51:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:sched/urgent] BUILD SUCCESS
+ f60a631ab9ed5df15e446269ea515f2b8948ba0c
+Message-ID: <202312302013.4X6s2TWI-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-30_07,2023-12-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- mlxlogscore=922 mlxscore=0 bulkscore=0 adultscore=0 malwarescore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312300106
 
-On Sat, 2023-12-30 at 08:04 +0100, Markus Elfring wrote:
-> > > The kfree() function was called in up to three cases by
-> > > the ses_enclosure_data_process() function during error handling
-> > > even if the passed variable contained a null pointer.
-> > > This issue was detected by using the Coccinelle software.
-> > 
-> > Why is this an issue?  The whole point of having kfree(NULL) be a
-> > nop
-> 
-> Such “a nop” can trigger the allocation of extra data processing
-> resources, can't it?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/urgent
+branch HEAD: f60a631ab9ed5df15e446269ea515f2b8948ba0c  sched/fair: Fix tg->load when offlining a CPU
 
-No.
+elapsed time: 1448m
 
-> > is so we don't have to special case the free path.
-> 
-> A bit more development attention can hopefully connect the mentioned
-> label with a more appropriate jump target directly.
+configs tested: 247
+configs skipped: 2
 
-That's making the flow more complex as I pointed out in my initial
-email.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> >                                                     The reason we
-> > do that is because multiple special case paths through code leads
-> > to more complex control flows and more potential bugs.
-> 
-> You probably know some advices from another information source.
-> 
-> https://wiki.sei.cmu.edu/confluence/display/c/MEM12-C.+Consider+using+a+goto+chain+when+leaving+a+function+on+error+when+using+and+releasing+resources
-> 
+tested configs:
+alpha                            alldefconfig   gcc  
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs101_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                     haps_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20231229   gcc  
+arc                   randconfig-001-20231230   gcc  
+arc                   randconfig-002-20231229   gcc  
+arc                   randconfig-002-20231230   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                       aspeed_g5_defconfig   gcc  
+arm                         bcm2835_defconfig   clang
+arm                                 defconfig   clang
+arm                        multi_v7_defconfig   gcc  
+arm                         orion5x_defconfig   clang
+arm                   randconfig-001-20231229   clang
+arm                   randconfig-002-20231229   clang
+arm                   randconfig-003-20231229   clang
+arm                   randconfig-004-20231229   clang
+arm                        realview_defconfig   gcc  
+arm                         s3c6400_defconfig   gcc  
+arm                           sama7_defconfig   clang
+arm                           stm32_defconfig   gcc  
+arm                           sunxi_defconfig   gcc  
+arm                           tegra_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20231229   clang
+arm64                 randconfig-002-20231229   clang
+arm64                 randconfig-003-20231229   clang
+arm64                 randconfig-004-20231229   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20231229   gcc  
+csky                  randconfig-001-20231230   gcc  
+csky                  randconfig-002-20231229   gcc  
+csky                  randconfig-002-20231230   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20231229   clang
+hexagon               randconfig-002-20231229   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20231229   clang
+i386         buildonly-randconfig-002-20231229   clang
+i386         buildonly-randconfig-003-20231229   clang
+i386         buildonly-randconfig-004-20231229   clang
+i386         buildonly-randconfig-005-20231229   clang
+i386         buildonly-randconfig-006-20231229   clang
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231229   clang
+i386                  randconfig-002-20231229   clang
+i386                  randconfig-003-20231229   clang
+i386                  randconfig-004-20231229   clang
+i386                  randconfig-005-20231229   clang
+i386                  randconfig-006-20231229   clang
+i386                  randconfig-011-20231229   gcc  
+i386                  randconfig-011-20231230   gcc  
+i386                  randconfig-012-20231229   gcc  
+i386                  randconfig-012-20231230   gcc  
+i386                  randconfig-013-20231229   gcc  
+i386                  randconfig-013-20231230   gcc  
+i386                  randconfig-014-20231229   gcc  
+i386                  randconfig-014-20231230   gcc  
+i386                  randconfig-015-20231229   gcc  
+i386                  randconfig-015-20231230   gcc  
+i386                  randconfig-016-20231229   gcc  
+i386                  randconfig-016-20231230   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231229   gcc  
+loongarch             randconfig-001-20231230   gcc  
+loongarch             randconfig-002-20231229   gcc  
+loongarch             randconfig-002-20231230   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                         apollo_defconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+mips                          ath79_defconfig   clang
+mips                         bigsur_defconfig   gcc  
+mips                           ci20_defconfig   gcc  
+mips                     cu1830-neo_defconfig   clang
+mips                      fuloong2e_defconfig   gcc  
+mips                           gcw0_defconfig   gcc  
+mips                     loongson1c_defconfig   clang
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20231229   gcc  
+nios2                 randconfig-001-20231230   gcc  
+nios2                 randconfig-002-20231229   gcc  
+nios2                 randconfig-002-20231230   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                       virt_defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20231229   gcc  
+parisc                randconfig-001-20231230   gcc  
+parisc                randconfig-002-20231229   gcc  
+parisc                randconfig-002-20231230   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                    amigaone_defconfig   gcc  
+powerpc                      arches_defconfig   gcc  
+powerpc                 mpc8315_rdb_defconfig   clang
+powerpc               mpc834x_itxgp_defconfig   clang
+powerpc                      pcm030_defconfig   gcc  
+powerpc                     ppa8548_defconfig   gcc  
+powerpc               randconfig-001-20231229   clang
+powerpc               randconfig-002-20231229   clang
+powerpc               randconfig-003-20231229   clang
+powerpc                    socrates_defconfig   gcc  
+powerpc64             randconfig-001-20231229   clang
+powerpc64             randconfig-002-20231229   clang
+powerpc64             randconfig-003-20231229   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv             nommu_k210_sdcard_defconfig   gcc  
+riscv                 randconfig-001-20231229   clang
+riscv                 randconfig-002-20231229   clang
+riscv                          rv32_defconfig   clang
+s390                             alldefconfig   clang
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231229   gcc  
+s390                  randconfig-001-20231230   gcc  
+s390                  randconfig-002-20231229   gcc  
+s390                  randconfig-002-20231230   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                        dreamcast_defconfig   gcc  
+sh                         ecovec24_defconfig   gcc  
+sh                          lboxre2_defconfig   gcc  
+sh                    randconfig-001-20231229   gcc  
+sh                    randconfig-001-20231230   gcc  
+sh                    randconfig-002-20231229   gcc  
+sh                    randconfig-002-20231230   gcc  
+sh                          rsk7201_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20231229   gcc  
+sparc64               randconfig-001-20231230   gcc  
+sparc64               randconfig-002-20231229   gcc  
+sparc64               randconfig-002-20231230   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20231229   clang
+um                    randconfig-002-20231229   clang
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20231229   clang
+x86_64       buildonly-randconfig-001-20231230   clang
+x86_64       buildonly-randconfig-002-20231229   clang
+x86_64       buildonly-randconfig-002-20231230   clang
+x86_64       buildonly-randconfig-003-20231229   clang
+x86_64       buildonly-randconfig-003-20231230   clang
+x86_64       buildonly-randconfig-004-20231229   clang
+x86_64       buildonly-randconfig-004-20231230   clang
+x86_64       buildonly-randconfig-005-20231229   clang
+x86_64       buildonly-randconfig-005-20231230   clang
+x86_64       buildonly-randconfig-006-20231229   clang
+x86_64       buildonly-randconfig-006-20231230   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-001-20231229   gcc  
+x86_64                randconfig-002-20231229   gcc  
+x86_64                randconfig-003-20231229   gcc  
+x86_64                randconfig-004-20231229   gcc  
+x86_64                randconfig-005-20231229   gcc  
+x86_64                randconfig-006-20231229   gcc  
+x86_64                randconfig-011-20231229   clang
+x86_64                randconfig-011-20231230   clang
+x86_64                randconfig-012-20231229   clang
+x86_64                randconfig-012-20231230   clang
+x86_64                randconfig-013-20231229   clang
+x86_64                randconfig-013-20231230   clang
+x86_64                randconfig-014-20231229   clang
+x86_64                randconfig-014-20231230   clang
+x86_64                randconfig-015-20231229   clang
+x86_64                randconfig-015-20231230   clang
+x86_64                randconfig-016-20231229   clang
+x86_64                randconfig-016-20231230   clang
+x86_64                randconfig-071-20231229   clang
+x86_64                randconfig-071-20231230   clang
+x86_64                randconfig-072-20231229   clang
+x86_64                randconfig-072-20231230   clang
+x86_64                randconfig-073-20231229   clang
+x86_64                randconfig-073-20231230   clang
+x86_64                randconfig-074-20231229   clang
+x86_64                randconfig-074-20231230   clang
+x86_64                randconfig-075-20231229   clang
+x86_64                randconfig-075-20231230   clang
+x86_64                randconfig-076-20231229   clang
+x86_64                randconfig-076-20231230   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                randconfig-001-20231229   gcc  
+xtensa                randconfig-001-20231230   gcc  
+xtensa                randconfig-002-20231229   gcc  
+xtensa                randconfig-002-20231230   gcc  
+xtensa                    xip_kc705_defconfig   gcc  
 
-Yes, but it's about using staged deallocation at the end of the
-function instead of in the if loops.  That's to *simplify* the exit
-chain and make the error legs less error prone because the teardown
-isn't repeated in if bodies.  It has no bearing on what you just tried
-to do.
-
-> >                                               If coccinelle
-> > suddenly thinks this is a problem, it's coccinelle that needs
-> > fixing.
-> 
-> This software tool can help to point source code places out for
-> further considerations. The search patterns are evolving accordingly.
-
-The pattern is wrong because kfree(NULL) exists as a teardown
-simplification.
-
-James
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
