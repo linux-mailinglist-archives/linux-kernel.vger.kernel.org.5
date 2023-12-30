@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-13470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CFE88206FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 16:47:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D987820702
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 16:47:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53788B214AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:47:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E93321F21D53
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:47:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31F814F8F;
-	Sat, 30 Dec 2023 15:44:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1060C14F63;
+	Sat, 30 Dec 2023 15:44:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="Qq/G7LQG"
+	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="Let3g5mo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2083.outbound.protection.outlook.com [40.107.21.83])
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2081.outbound.protection.outlook.com [40.107.21.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96114EAD8;
-	Sat, 30 Dec 2023 15:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC23F13AD4;
+	Sat, 30 Dec 2023 15:44:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=solid-run.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KpSlte3rR2T5S+qEUJ9+Wlz9KizR7ZNXBrwQbhpaQ8O/xmYt451JPyaxURKrjcet73wRlwH1UhydgsNJMu/HhxE7QYkPgwHnEzdIKwyAfuhXJcbkINrcH5g2N2LnMbeEzjPIUMupebSCVqLVop+Ntw4GTtE+Stl36QLdQjtfrCryMObQ8CCELC9BZVPpPJivjo1r1ZmC2cXepy+/BVjWyHV79GLVaFTUqj+U3PXI9GwIJcEf7yDGeGmV669nW0IKh0YkX5cT+I/ZtSd3G5XeA6rcCwCI4vEodDDMexWd3acYMmm0C2EHQbGh9mzoeLXIRt4hlCY9EXOPFx293ruDGQ==
+ b=VAzCT50EIo7TyxfWvyYfeIY9zP5uHqYX/5GlS/OCeMlXtjVs5Bsv/SKtqa130jhP9LBpjYsEBdVzBUW6r8lHlCDFKP5wwBwKd4PWeB5VE0GzzVUuYbL8SkaYpkBkQ/xO4cHZJm4mAWRG3y1Vvs4qIqexMt9/bmwdRA7lg5/R60EHDb7Hc58fqEJoJKns8Y73gf7qB/ugDiMQqQxHOMptHXZ2lkhfYHQ2tDbLaDfkJQRrE8HpS934PCB/YbugEC12xZ4QnnLgXq3E43w/Y9wLBL58IbPOTu2bNlXqfP1Yg1h3k1kkO3xloEfAMPQlDNsQrbwgG+Y9Q6tM+DtpE8AYhQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nCBdrFu6wi/4xCggEEL2XHfnXLqWqq1GEdFnn4dbi6g=;
- b=M0VpY7aQuyujktEsnJnTC5iMBRp+rbxQqGhcnghR2YhrLQH5rXmi/1YlzZOqhb4nGwejgzB3MpeGbFbfz9/zcMfgt1I9JoQzwl/pNulS8BZ87H4j6MxlS8AKhs6W2rKzecImoO9FfK+L6B4nMfllH5iyQEVyhqIMqQQAmWcjA4yE4IPQzppxjTOW4Puv+E8WSsF0dXsy+S844aMPb7veeMLgbHVs+ucCBqeCSFlPgx/hd81emlI66+VsEyFGZ2P6Xhe7PnsAHQYj8GfYzF50vaVOqHAAF5YMuPb1qc5gMmeZrRKOxEYOZWVb4zcWskK/U1GthxFMSSrJepw/sZQ6oA==
+ bh=7eVb71Hg6FixSBVV0em2rboA8oaGpIxtsGng3PO8n9Y=;
+ b=PLTr7YZ2TBTiA2zPB8yczG2j3+LnlmfAr2xN5iRCP4/3gNy0OME8vuK1kRbXdE0VrIHxPsvzKvMpMjusTk49OH9B9MVROoQuOUDYmvcD+T4V6I1phWbLJlM0uXaaPDKG/rgSSznonkMu8sZV2sT6odXYl++t+p+AlU1q5kH1FJHq0cdxK2Fxvhjas3LmP5u5i0ps6CjwigNqCLiwNrrcc9uBhaEmXNTK5ch8weOl9uqIoYhf7x/KBTMuHLXNaRWgrOOxOn/AvDh1cBaXqCG62Z2SpJjhXzt9M7aN0B48eCbPFU3JFnRqJ6PnbaJPPCF0C+FqHWo0PGzNHyOYMhVvdw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=solid-run.com; dmarc=pass action=none
  header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nCBdrFu6wi/4xCggEEL2XHfnXLqWqq1GEdFnn4dbi6g=;
- b=Qq/G7LQG/DX4pBv9MrIWf1Pf2lsPRvKLJBno+iNcplqxIQM4qfu85keDJ21X2mErgDv7NZTFEzG83X/PWbIxAERoFatgO6WtD3oH5AKsRKZiaMMcJUg5j5V0dmWfIYeeDA8FdhI8vtzLfXtgk/JWWcXIRwbRC2abYydOivzhdYs=
+ bh=7eVb71Hg6FixSBVV0em2rboA8oaGpIxtsGng3PO8n9Y=;
+ b=Let3g5mohvIifA7Vd7LHncteaEVzUUby8ZHOQIcFHfIJt7EAFVY8Yk8DGspylhm2pXjP0gWw/i7DJ31hgbFedQeQMSzDT09yTaSdv6+ZSWMSTQea9fQHqQOwzHwLlGyFstRXB/6rUdz8ZaYbQbnq9GNAiHfFOmul3UWWNt8A7pg=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=solid-run.com;
 Received: from AS8PR04MB8963.eurprd04.prod.outlook.com (2603:10a6:20b:42e::18)
@@ -49,12 +49,12 @@ Received: from AS8PR04MB8963.eurprd04.prod.outlook.com
  ([fe80::4db1:aae8:c643:2e73%6]) with mapi id 15.20.7135.023; Sat, 30 Dec 2023
  15:44:48 +0000
 From: Josua Mayer <josua@solid-run.com>
-Date: Sat, 30 Dec 2023 16:44:40 +0100
-Subject: [PATCH v4 06/11] arm: dts: marvell: clearfog: add pro variant
- compatible in legacy dts
+Date: Sat, 30 Dec 2023 16:44:41 +0100
+Subject: [PATCH v4 07/11] arm: dts: marvell: clearfog-gtr: add
+ board-specific compatible strings
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231230-support-clearfog-gtr-l8-sfp-v4-6-1d7f0e2c7128@solid-run.com>
+Message-Id: <20231230-support-clearfog-gtr-l8-sfp-v4-7-1d7f0e2c7128@solid-run.com>
 References: <20231230-support-clearfog-gtr-l8-sfp-v4-0-1d7f0e2c7128@solid-run.com>
 In-Reply-To: <20231230-support-clearfog-gtr-l8-sfp-v4-0-1d7f0e2c7128@solid-run.com>
 To: Andrew Lunn <andrew@lunn.ch>, 
@@ -77,96 +77,109 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AS8PR04MB8963:EE_|DB8PR04MB6970:EE_
-X-MS-Office365-Filtering-Correlation-Id: d1256802-bda9-4a0b-d83a-08dc094e40d9
+X-MS-Office365-Filtering-Correlation-Id: 9a0c1b46-d77e-46ba-fcb3-08dc094e411e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	BR1FCTkubg6lxAzakppQxN+XGd3hAh7CRhN3ZyIbkMuMLYN0aNYkKKSuLh9+xpnEVevqWlPCdiRWM2KSL+06kmFUNmGwwRPss8uslQWv6eNwMbn7iFUXW2DOYxgttQGdGo4oqOJ4jS+NvkqLykvm0hzUImxDpZWwCwHRMQahur7mqiTKoVxGZlciS9TYVSaW/HYWg2Lwuu+dbVI3VTr7rsUMx7ljjH4hgmJJUgJCfVd0TcM7yB8DHuA+LcGUI3rOZpg6krKrxg/u8RynXrxlOpWLSSCJ0tDQtdAt1Fv1yHSB2M3MxVmUJBzpjvJI3Q8zBoOFKizxXCjwG+Xa0pwrACfn07sXYENSw7mW5JNRJYT0YNGbRaezAQnB6Nkq7uMZW0yLYQ6ZPCfcgbRF9Gnygq8ONfNngCfG+h0N7VHFEewqYaouQ48ov8gDvuklEWWV+aqfmFoKE3g+ST+18gAhkm8PABOCfcw5ZkYvEl3ZZ8QHj7GHKCItT9VPrBGlfp1HNi8sZhbd4sIYA77hK/Ubv87u+mE2YP7J+L8MKRgSPgQYwv3VNFNh+qCjE8GbS+F8RsczwRhZf58JifJrsux5g1gqLb+fAeHKWCVHHG43w4U=
+	LXG/PEuXK6u2JqXofe63yozFmm8DBQ0GTZIWgeZKzoBnWaxWJDVebEz7emKWREiRpLPxlWBe/bmLt4A5zIoFED7N6dOCyXMkFqZgZCrGLqOeBsuN3GQLV6JktTGOyZtXYQtOxcYnoxrwGQd829+eeJyxFGCeo2eI9u+YyZwCWu9j+8cafeNnEWt7WWrxjMoPGlDAFE0ulJdcD/IPbcHkf0IK0YSPVb2XrohBYQMP2pSt2woGfE0emmExHZzrrQEkANOqvxGScd5Ej92wBEnGDYqbnqj9IWFm20X0u4aUHuYrYxhMM8ypLP9JcWnU6SPrbfiN7Hkzkh6yLfRxQNKYMvjS4TjizU3ICb6BHvxdUXo7w/hzCebVwxYbadHqnSwRyJ+CF1xXfHoglaDKhqF3//o7Acdsb5mMt082g3eoDBfPphB9/B96W2OO6IHQVGDPh1lUlJsicMU82V9ONyaIHMVU9h+XysAJIqs5R39NEr1MKO/2fNRfpBXSXaw0T2RPx/+PwEhwzxVZSL5Dd63wSADchI1KkbzgZ3JrbHuayRf73CFgDc0n9kfO59ojqT8N5dpFV8gXBHgEIeCRkhU053vXxwo2ZAjcCYklxAVP5ZX0xGxhjn9OqjUiyJgrPsqw
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8963.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(39830400003)(376002)(136003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(2616005)(36756003)(2906002)(86362001)(107886003)(478600001)(66556008)(66476007)(66946007)(5660300002)(83380400001)(26005)(6486002)(110136005)(8936002)(8676002)(316002)(4326008)(6666004)(6506007)(6512007)(52116002)(38350700005)(41300700001)(38100700002);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8963.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(39830400003)(376002)(136003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(2616005)(36756003)(2906002)(86362001)(107886003)(478600001)(66556008)(66476007)(66946007)(5660300002)(26005)(6486002)(110136005)(8936002)(8676002)(316002)(4326008)(6666004)(6506007)(6512007)(52116002)(38350700005)(41300700001)(38100700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Z3lKQmhvYlFDNm1vZmRqcDhGTGVzb2dFWFRIeGRMQ1UwMHo3RWoyejRLREhC?=
- =?utf-8?B?TVJaSzFrbTlJVFB5WHh1Zzl0ckZaQVdtNEpGbWowZDlSdWdMdTM3T0hrUTh1?=
- =?utf-8?B?OVdadWRSZUJnT00vTS9XbXM5WDdjTlRVcDRKemNYZXNSSlBjamh0ZnZwQ3hX?=
- =?utf-8?B?YndrTlF2L0pNM1BlWmx3Tkx6VmJuajVGdlFMeVM2UG5rUlJEckNsMWVTUXBG?=
- =?utf-8?B?TXZtSkNJYmcwekp6TU4zV0RJZFQ2V21Vem11KzFjSnpHcTREVDAvUXFwTGNL?=
- =?utf-8?B?dGpmd1hOaVBLaGRxOWJ6VmkzSjNwbXRIckVWUEk1RTBJemtRS0hob29ua0Nm?=
- =?utf-8?B?Y2RadExERHovSHRRYS8yS3lERnl1S0F0dko0bUxYR0REWlN5WDE4YlJ6V25i?=
- =?utf-8?B?elRUaVB5RXlrdDVMNHEzQUlxM20ycWpaTFBWK3lJNkxMdHhWa2lwYUFSUWNI?=
- =?utf-8?B?UHVqczYyUDIvK1dNQUxxYmpMMVIzMjRyWEs3OUJ5bEk0RnJLRVprWUE3MG9B?=
- =?utf-8?B?NW1MZHN2aGN1RGJUVGN3bUUzZjRtNWVNTHZIYStpQnRBUXhwNkJCRVZ2OHNM?=
- =?utf-8?B?RWxYUGlFQWlmUEZ5ckUxby84OGs2TTZBbCtpZjJUQi8xV3c1NDVKM2hTb0tp?=
- =?utf-8?B?TmUyVmtnalBZSXhZakd1K3htL2FxMEx6T2UzUUs0aWVDbDM0UldMdWJVM1Fi?=
- =?utf-8?B?MnFUR3pCMnl0NGFUYzZSWDFoZWNoTyt5b2VDanJ3b1VQWTNrVHNERUg4SmEx?=
- =?utf-8?B?VlNnOGh4TjllRmZDam5xdldkb1p0RmQvM2VSS0Y4Ym1IRmhkSGoxOUlLV1ox?=
- =?utf-8?B?VDVZTUp2L1BCUzNsbEJFS2VqN3Q4OWJWOUZxWXNHeTg4M3dxNHY4bm50YU9p?=
- =?utf-8?B?b01zRFNIR1J0V0t5MExZZTFkaWJodXF2S1JOQWhQVEEwZFE0Lzk3amtxRkNl?=
- =?utf-8?B?NWFqeEh4QlQ2ZUl4b2U0d0RKV3pUUnBwZ0p1OXgwakIyY1FyZTMrVFV0U1NL?=
- =?utf-8?B?M29oS21FTTc5RkYzcGZtMHFPSFlBYlA1aXZQWm1sZG53SUxLWWNXU1Q4dGFu?=
- =?utf-8?B?ZnRCcWMyZGkwbW9MV3NMVXhVS2tNSldLNm9DN2E2LzZDUGlMclY2akk3UHhp?=
- =?utf-8?B?Um14Rmg5aHVZR3g4L0xVbjFzcGI2YmRSSHpaR1ZyL08xNHRVWGlyM3FRUmJI?=
- =?utf-8?B?TnNtQ09iamtHSFpTNzUzejJIMThvSUN2cThSN2gyR3BxdTE5TkMwdTFoRmNK?=
- =?utf-8?B?ZzMvaDRvTXBZRk5nUzE5bzV4Uk9vd0E1dlJRRXRuNHVjRzRrT2k3QWRSYVBo?=
- =?utf-8?B?UXBRaFRJMGoxS2xiZ01pbXRyM1dIR21RU2s3MS93TU1aQ1dkVHpTZVZpNjZQ?=
- =?utf-8?B?dkkwbzhpY1puUnZxcXk5M2VGajdmYnNFVmZUKzV0MkdSMDAwZHk0ZDJQL2Zy?=
- =?utf-8?B?aHdCeXRzWTE5MHRYbEtkdXlTbDg2WS93YklNcmM2MHQxUHUraEdGMXVRSU5K?=
- =?utf-8?B?T09tWE5LbXNkV2hUU2V3THVFTUdIYk11VVRhTTg5ejVqYld6L3R3OVlYT09O?=
- =?utf-8?B?Ym9CUUtwbHFseEpuc0hZcHRIVXJ4S1BmQk1lYjJDT1NvM1o3TFFjTlVKa3VV?=
- =?utf-8?B?WDk3d25oNVdBVFRCa05ZNkYxSHhBZ0djejc2czRuMUZSQWs4RXV1WjRsck9R?=
- =?utf-8?B?UkxtNExQUmNFaWt2c3VUc2lKY3MvTDRFbjFMRWhGZkh5ZnN5My82N2JsSGd4?=
- =?utf-8?B?eVkvL3ZGQzQrVENYMVViaVhQelMvMUNYemFieUVVMnk2L0VkeDZvTEZ6dkta?=
- =?utf-8?B?Ukk3cFZIdlc5dFo1eEpNSk9zZGdVa2RCUDQwKy9tSHUrSmd6NnpNeW8xU08v?=
- =?utf-8?B?a0tNNlVtOXZueWU4OXRCbnc1ZWdXNHhIK0lIdUNQeWhCWDA4dnF0bUE4eWg0?=
- =?utf-8?B?eHgxNkJFUEhyNHZ0NHhzT25xNnZOU2ZsSHJMdDBvdk40cWc0KzV1TmxNT3do?=
- =?utf-8?B?dGlqY1pMcEh5UlJJVGtVK0s1R2FtR29aZXBTNWw1bmFNSjhBTHIwUG04SVhB?=
- =?utf-8?B?STJvQlZrejBCQ0o1b1JvSjNidm4wU2E1djJwQnVHenMwSE5jS3lwcERpU2hp?=
- =?utf-8?Q?bvFFBLLvK5WLiV5mtW3IFIAE2?=
+	=?utf-8?B?dnBXV1JUUnlZRDhjMEhIQ2hJVGEydkl2S1FpMFNuSlVESXNzbk5oT3pKNW93?=
+ =?utf-8?B?VHM2UVlGUmtCNkNsbk85clNyUmNuS1hPUFpwTkFPT2V4NFVpaHlPbmRwNFNM?=
+ =?utf-8?B?YXNLTGllVlYzZ1RSTGdBQ0dzL3RiSjBYeHI4OUxBK2VCZU1NekFVUStkNnNw?=
+ =?utf-8?B?VEZ1aXhmUGlsVjY4VGlJVmZyT0pBQ0pJcS9WQmtnOGJIZ0ZhMWVuL05nU0R2?=
+ =?utf-8?B?RzR1SEt5MTNlY3BacEZoME4yM1Y2TEtWY2pYRzRNVXAxV3ljcEpLd09Xam5o?=
+ =?utf-8?B?NUswcnRXMVZxWU1ib0t2Tm9xRm5Db3FRdVJKMlVRb0VCdXg4ZHZ5VTY0Y3Zr?=
+ =?utf-8?B?SERMZVEyekFIMGV5RGFEbGltczlicnlNcjhYblFneFRiUk51WWJNVnBMMWJ5?=
+ =?utf-8?B?Z1phQ09ndXZyTllWa1dPMEZpYW9jVVBGaWZLYm53MHpEWFhYMytpZXBHZUdj?=
+ =?utf-8?B?QnRQcmpjeDMzK2taL3J1cnBybWhXSGNPaURpNjBHSzN0ZTliUHRuUWxnV25t?=
+ =?utf-8?B?a3ZiZDZ1MThzYXFmU1FvUTVUOFNWdUdBOXNmc0VHUTZlT3ViVThDYkZWWGN3?=
+ =?utf-8?B?RHU4amJvQnpwNm9TdW0wWks3NnNBZy9SbkliL25iekU0V0dlU0JkVjJhL1dv?=
+ =?utf-8?B?SXlTTlpVZXVWSGNLekEyZlF3R0pPMWZMYXRHL0lRVTN2OXNlS21rS1JYcUwz?=
+ =?utf-8?B?emprMGdYZlo0NTZoVkJZenA5bWlpak1maXV0ZEVhdHIyWFRpKzZkalh4NVFk?=
+ =?utf-8?B?a1B6bVNIRkJtS3RYWis2eVhPWC81c2VPaTUzUTJLT2lSVWVPeDFDTDdhYlh6?=
+ =?utf-8?B?d0VFY1c1dDM5VmlSa1Q4R0NsMHhlNFBRa0s1UDEwbjcxWDB3N1luS2NSRnhD?=
+ =?utf-8?B?MXVZdks4QkQrdlAxWlFsTEwxQXVaemo3UTF0VzhtYjJLZWNtYmtsRVIxWU5o?=
+ =?utf-8?B?Ulo2UTIycEVIbVN5UkVSUkJOMFkrRGdMSlkwZUI4QldJZjExTEV1OFg4YkxN?=
+ =?utf-8?B?akVMSFRRcEdDVlpyZE14V2g4RXcrYjEva1F3NmVpVWxpeXUxd1V0WkV4ZmNV?=
+ =?utf-8?B?UVZwWTM5YVhCQ2t1VVd1ZXh2TTZtSEZpandsQll0UlNIV2d1YnpEQlJGdUhZ?=
+ =?utf-8?B?Tk43MWxzRGZHS21XS1JsWEJIOFJBWnBQaXlCWVZoS1NXZ1h4RzZYZXo3N29s?=
+ =?utf-8?B?WlNXQzgwM2RSaXM4WUhtS3RNTEVxakc4SlBydDVCUHNhVVpLY0RPTE5UREVl?=
+ =?utf-8?B?cXk4bTlnTjZ3WVdySUwyV3k2SWtQc3owS1RxM2VXTm8yRXdUNkdNN3hiZkFG?=
+ =?utf-8?B?ZjliZ0xENFlOL2JweDFubk5hNW9OdmZFYmJGN1pqck5Udk1uSm1jNzZBRC8w?=
+ =?utf-8?B?YTdtbVIycWZkTW81MWlYSlc5VzUrdXdYY2thbE1Hdld5VktQeWZNT3VRSTVB?=
+ =?utf-8?B?UWRrNm16Y3o0RWN5Z2loSUJIaWFIZ2FhRVpNQUpNRWVUeTVPTmZIb3JIaXk3?=
+ =?utf-8?B?cFVHWHZ6d2RQN1A2T2tPVlIyZ1RFZ2xLZ1QrTVFpcE80cmVNdG5yRGxYU25B?=
+ =?utf-8?B?NGY5NVE0VkdITFF5RzJWUHIyY1dMLzZvS0I5emdPM045Vkg0c0s0amZDMkk3?=
+ =?utf-8?B?T0UyTnFDOGZwZjBLMTNDcWhXVCt2c252VkN1WGF2NkNWN0tOK3hoTzBvK1BJ?=
+ =?utf-8?B?Q25DTlhtRURMV3ExZXhDWDZiTEYwUXZISXpiMjJxL2FTWHFUeWc0N3lDeEI0?=
+ =?utf-8?B?alRUOTVNRE9jdjdmVTF2MUUyVWVMQTJ0d0J6MzQvZ1JsYkJRSlV1Vk0wa1px?=
+ =?utf-8?B?bUJtZi9vWUgyd25vZDc2WUM2YVlrMThqMmdsZ0F4NHFta1NaUHcyUVVRc3lm?=
+ =?utf-8?B?UklyNGNBWmN0S3RFRnRQMERybkhaN2pCSUxhNW5uVXNOTjMycHRJWWtZSTZY?=
+ =?utf-8?B?Q3R5ek5kOWFhV0NDMFRtUGlUTnJKZ2IxdFZ2UzUvcmViekhLRldsRjFYYWxn?=
+ =?utf-8?B?Uk9tSVJMcmVvaFM3cmliNFNlcU1oWFRGUFo0bHVPanQxbDN2aVNSRkc0VXlt?=
+ =?utf-8?B?SVNsWThJVTAwK3VsMUFWdFl0QWpVUHUrK2pPT1ljSnBob3lLSmpScmY0di9B?=
+ =?utf-8?Q?tA4xzoKc5kh3xkUQybF/AYl0r?=
 X-OriginatorOrg: solid-run.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d1256802-bda9-4a0b-d83a-08dc094e40d9
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a0c1b46-d77e-46ba-fcb3-08dc094e411e
 X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8963.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Dec 2023 15:44:48.1332
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Dec 2023 15:44:48.6126
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qEL5qXJLEc/SfUuFqH1lrwZ6HeQ00qwOhPMbj+vAzxWLVFpWDzeLEOL20x7OSsMTe8joaHcnWEG21clKz2hCEA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: q31NKjdjNYbuFnU0dPgoSrZOCc12JdN3BafejtLV2SfgSI66O2R78kbeQ2hBN/4AjinGz0mYw41uk+4Yp8iJHw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6970
 
-Armada 388 Clearfog ("armada-388-clearfog.dts)" is a legacy filename for
-the Armada 388 Clearfog Pro ("armada-388-clearfog-pro.dts").
-The "Pro" suffix was only used when the smaller version, the "Base" got
-released.
+Most arm board have a board-specific compatible string that allows e.g.
+userspace to match specific firmware variants or apply specific
+policies.
 
-The two names refer to exactly the same hardware, therefore they should
-share the same compatible strings.
+Add board-specific properties to both variants of the Clearfog GTR:
+- solidrun,clearfog-gtr-l8
+- solidrun,clearfog-gtr-s4
 
-Copy "solidrun,clearfog-pro-a1" compatible from the -pro dts and add it
-to this legacy file.
+Introduction of a common parent (e.g. "solidrun,clearfog-gtr") is
+omitted for brevity.
+Since announcement of the two products no additional variants were added
+it is assumed that there will always be just two.
 
 Signed-off-by: Josua Mayer <josua@solid-run.com>
 ---
- arch/arm/boot/dts/marvell/armada-388-clearfog.dts | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-l8.dts | 2 ++
+ arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-s4.dts | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/marvell/armada-388-clearfog.dts b/arch/arm/boot/dts/marvell/armada-388-clearfog.dts
-index 32c569df142f..24e478a3cc99 100644
---- a/arch/arm/boot/dts/marvell/armada-388-clearfog.dts
-+++ b/arch/arm/boot/dts/marvell/armada-388-clearfog.dts
-@@ -10,8 +10,9 @@
+diff --git a/arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-l8.dts b/arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-l8.dts
+index 1990f7d0cc79..cd5b070f1218 100644
+--- a/arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-l8.dts
++++ b/arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-l8.dts
+@@ -4,6 +4,8 @@
  
  / {
- 	model = "SolidRun Clearfog A1";
--	compatible = "solidrun,clearfog-a1", "marvell,armada388",
--		"marvell,armada385", "marvell,armada380";
-+	compatible = "solidrun,clearfog-pro-a1", "solidrun,clearfog-a1",
-+		     "marvell,armada388", "marvell,armada385",
+ 	model = "SolidRun Clearfog GTR L8";
++	compatible = "solidrun,clearfog-gtr-l8", "marvell,armada385",
 +		     "marvell,armada380";
+ };
  
- 	soc {
- 		internal-regs {
+ &mdio {
+diff --git a/arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-s4.dts b/arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-s4.dts
+index b795ad573891..4a9736ec99b6 100644
+--- a/arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-s4.dts
++++ b/arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-s4.dts
+@@ -4,6 +4,8 @@
+ 
+ / {
+ 	model = "SolidRun Clearfog GTR S4";
++	compatible = "solidrun,clearfog-gtr-s4", "marvell,armada385",
++		     "marvell,armada380";
+ };
+ 
+ &sfp0 {
 
 -- 
 2.35.3
