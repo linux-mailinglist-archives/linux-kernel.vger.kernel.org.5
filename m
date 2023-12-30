@@ -1,113 +1,121 @@
-Return-Path: <linux-kernel+bounces-13576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7DBD820844
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 20:30:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 231FD820848
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 20:38:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B054283C44
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 19:30:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D954C283898
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 19:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95AD6C139;
-	Sat, 30 Dec 2023 19:30:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62AFAC143;
+	Sat, 30 Dec 2023 19:38:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="Aahj92t5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7472FBE4E;
-	Sat, 30 Dec 2023 19:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout3.hostsharing.net (Postfix) with ESMTPS id 0065D100D943F;
-	Sat, 30 Dec 2023 20:30:01 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id A79A3517AC; Sat, 30 Dec 2023 20:30:00 +0100 (CET)
-Date: Sat, 30 Dec 2023 20:30:00 +0100
-From: Lukas Wunner <lukas@wunner.de>
-To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>, Krzysztof Wilczy??ski <kw@linux.com>,
-	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-kernel@vger.kernel.org,
-	Alex Deucher <alexdeucher@gmail.com>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>
-Subject: Re: [PATCH v3 05/10] PCI: Store all PCIe Supported Link Speeds
-Message-ID: <20231230193000.GA11331@wunner.de>
-References: <20230929115723.7864-1-ilpo.jarvinen@linux.intel.com>
- <20230929115723.7864-6-ilpo.jarvinen@linux.intel.com>
- <20231230114549.GB12257@wunner.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C9B0C139
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 19:38:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1703965094; x=1704224294;
+	bh=hzDnlR2JtaWtfwJIyhGyRAK5TYxs41N11mbfkjjCeuA=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=Aahj92t5uGFWTqmOxjniE5OZ3TRJguziyPxCCgQ29EPrxtCqZ3kR9LtjXcV1/LdZq
+	 9j8dwpnozl5p+zuocdqzsViooERopNkJy5IEHRpUXIvGkV2uQVFYVoULoJOGoGBpI2
+	 BXLOQmcihq1llvS/oZJ07g9Qq5mE/P040mT9XhiI8iJbUc2iexcxjxzySToYm/rW3W
+	 fL6kBJIZQfAeTMxTNqYQZ9rXklN8a7aY0bWDyf5VeNpbDqr7VRo0BGRJpdbvKJ5ds5
+	 Z+bSqsWNDnAaMOSv7vKYvXRbEPX5NW21pIht+Qe0yue4PeDz9t3NRaVhZwl/GroKXy
+	 WHdWzXYC5iuag==
+Date: Sat, 30 Dec 2023 19:37:56 +0000
+To: =?utf-8?Q?Michael_B=C3=BCsch?= <m@bues.ch>
+From: Rahul Rameshbabu <sergeantsagara@protonmail.com>
+Cc: Julian Calaby <julian.calaby@gmail.com>, Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org, b43-dev@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH wireless 2/5] wifi: b43: Stop/wake correct queue in DMA Tx path when QoS is disabled
+Message-ID: <87bka7wkfm.fsf@protonmail.com>
+In-Reply-To: <20231230184113.3ecfed4f@barney>
+References: <20231230045105.91351-1-sergeantsagara@protonmail.com> <20231230045105.91351-3-sergeantsagara@protonmail.com> <CAGRGNgWYLTmRfvw94Ok_FfcEVGPa0tRg-ELxkD8K6nxTTNZ9jg@mail.gmail.com> <20231230144036.7f48b739@barney> <878r5bk3x9.fsf@protonmail.com> <20231230184113.3ecfed4f@barney>
+Feedback-ID: 26003777:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231230114549.GB12257@wunner.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 30, 2023 at 12:45:49PM +0100, Lukas Wunner wrote:
-> On Fri, Sep 29, 2023 at 02:57:18PM +0300, Ilpo Järvinen wrote:
-> > struct pci_bus stores max_bus_speed. Implementation Note in PCIe r6.0.1
-> > sec 7.5.3.18, however, recommends determining supported Link Speeds
-> > using the Supported Link Speeds Vector in the Link Capabilities 2
-> > Register (when available).
-> > 
-> > Add pcie_bus_speeds into struct pci_bus which caches the Supported Link
-> > Speeds. The value is taken directly from the Supported Link Speeds
-> > Vector or synthetized from the Max Link Speed in the Link Capabilities
-> > Register when the Link Capabilities 2 Register is not available.
-> 
-> Remind me, what's the reason again to cache this and why is
-> max_bus_speed not sufficient?  Is the point that there may be
-> "gaps" in the supported link speeds, i.e. not every bit below
-> the maximum supported speed may be set?  And you need to skip
-> over those gaps when throttling to a lower speed?
+On Sat, 30 Dec, 2023 18:41:13 +0100 Michael B=C3=BCsch <m@bues.ch> wrote:
+> [[PGP Signed Part:Undecided]]
+> On Sat, 30 Dec 2023 17:15:18 +0000
+> Rahul Rameshbabu <sergeantsagara@protonmail.com> wrote:
+>
+>> On Sat, 30 Dec, 2023 14:40:36 +0100 Michael B=C3=BCsch <m@bues.ch> wrote=
+:
+>> > [[PGP Signed Part:Undecided]]
+>> > On Sat, 30 Dec 2023 18:48:45 +1100
+>> > Julian Calaby <julian.calaby@gmail.com> wrote: =20
+>> >> > --- a/drivers/net/wireless/broadcom/b43/dma.c
+>> >> > +++ b/drivers/net/wireless/broadcom/b43/dma.c
+>> >> > @@ -1399,7 +1399,10 @@ int b43_dma_tx(struct b43_wldev *dev, struct=
+ sk_buff *skb)
+>> >> >             should_inject_overflow(ring)) {
+>> >> >                 /* This TX ring is full. */
+>> >> >                 unsigned int skb_mapping =3D skb_get_queue_mapping(=
+skb);
+>> >> > -               ieee80211_stop_queue(dev->wl->hw, skb_mapping);
+>> >> > +               if (dev->qos_enabled)
+>> >> > +                       ieee80211_stop_queue(dev->wl->hw, skb_mappi=
+ng);
+>> >> > +               else
+>> >> > +                       ieee80211_stop_queue(dev->wl->hw, 0);   =20
+>> >>=20
+>> >> Would this be a little cleaner if we only look up the queue mapping i=
+f
+>> >> QOS is enabled? I.e. =20
+>> >
+>> > No. It would break the other uses of skb_mapping.
+>> >
+>> > But I am wondering why skb_mapping is non-zero in the first place.
+>> > I think the actual bug might be somewhere else. =20
+>>=20
+>> Right, skb_mapping is used to map to the correct software structures DMA
+>> mapped to the device. The reason the mapping for the best effort queue
+>> (the default/defacto when QoS is disabled) is not zero is due to the way
+>> initialization of the queues/rings occurs in the driver. The best effort
+>> queue is mapped as the third queue, which leads to this issue when QoS
+>> is disabled. Would it make more sense to change the mappings in
+>> initialization such that the best effort queue is by default mapped to
+>> zero, so we would not need such conditionals?
+>
+> Maybe it is a good idea to find the patch that broke non-QoS.
+> That possibly helps to understand the situation.
+>
+> Non-QoS used to work just fine.
 
-FWIW I went and re-read the internal review I provided on May 18.
-Turns out I already mentioned back then that gaps aren't permitted:
+I did some git analysis, and I actually believe that this issue has been
+present since the commit e6f5b934fba8 ("b43: Add QOS support"). Before
+then, non-QOS would not trigger this issue. There is a cosmetic change
+after this commit, b27faf8ebf25 ("b43: Rename the DMA ring pointers"),
+but this change does not introduce the issue (but makes it more
+obvious). I think the reason nobody has ever reported this is that even
+when the warnings are triggered, everything appears to work fine. I
+think therefore the two options are the following.
 
- "Per PCIe r6.0.1 sec 8.2.1, the bitfield in the Link Capabilities 2
-  register is not permitted to contain gaps between maximum supported
-  speed and lowest possible speed (2.5 GT/s Gen1)."
+1. Remap the BE queue to 0 instead of the BK queue.
+2. Use this kind of conditional to handle the mapping when QoS is
+   disabled.
 
-
-> Also, I note that pci_set_bus_speed() doesn't use LNKCAP2.
-
-About that, I wrote in May:
-
- "Actually, scratch that.  pci_set_bus_speed() is fine.  Since it's only
-  interested in the *maximum* link speed, reading just LnkCap is correct.
-  LnkCap2 only needs to be read to determine if a certain speed is
-  *supported*.  E.g., even though 32 GT/s are supported, perhaps 16 GT/s
-  are not.
-
-  It's rather pcie_get_speed_cap() which should be changed.  There's
-  no need for it to read LnkCap2.  The commit which introduced this,
-  6cf57be0f78e, was misguided and had to be fixed up with f1f90e254e46.
-  It could be simplified to just read LnkCap and return
-  pcie_link_speed[linkcap & PCI_EXP_LNKCAP_SLS].  If the device is a
-  Root Port or Downstream Port, it doesn't even have to do that but
-  could return the cached value in subordinate->max_bus_speed.
-  If you add another attribute to struct pci_bus for the downstream
-  device's maximum speed, the maximum speed for Endpoints and Upstream
-  Ports could be returned directly as well from that attribute."
-
+--
 Thanks,
 
-Lukas
+Rahul Rameshbabu
+
 
