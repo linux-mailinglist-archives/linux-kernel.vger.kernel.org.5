@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-13607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FB97820918
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 00:24:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 800D482091E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 00:28:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 817BE1C20B78
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 23:24:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12F51B216DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 23:28:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EABAA13AD4;
-	Sat, 30 Dec 2023 23:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 792DCE559;
+	Sat, 30 Dec 2023 23:28:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="DprD3K4R"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T+tjupVo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C90F125B5
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 23:24:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d3b84173feso16264925ad.1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 15:24:26 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15811D309
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 23:28:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40d2376db79so72170785e9.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 15:28:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1703978666; x=1704583466; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703978920; x=1704583720; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WAmYOQN3gQ7eCM0/vaP/2AXPfS5zVjhbSjoMJEh4XMU=;
-        b=DprD3K4RV7HB4ScdG74x1vm/SPsQ4tMXF6RUG6TqvN7NUhljIP5m2vVVS4kZUXV9VG
-         CRP4xBpTBVtOmreAXmi9O08JiB8hDMliyEjiV6GB/1QDGNpHKMexveRtXr+t8MoWlZCL
-         ZhAq9N+lnvgk53OjOsqY5vHqaMJhN7bzF/YW9x3C5AE6obay0W3j3il3n69igpoeHHud
-         1HcM+IjE9LxX4D8TbszXTFsVsnzqKcrDcNQfcZm0kYcHe8cbaNuS7tSpTZYOc1Bjjl3d
-         zNUHTwQXjQt/2y52B4t52/QWtFvK/x1AOIrmRh4t17xwgIKs8zHuf8dK+S6/4BcBsZlk
-         qbEw==
+        bh=V9gYy29s9UglOJFtyJmti8blfRTxnRaCJhWJbNKd0iE=;
+        b=T+tjupVoc4TgJjE/caSyNAUwhaqVRuzKinS5ujFzAA9HMsjdYfDp+2F1dz9HprTepm
+         MzaQdjPvuTQwiLUtFGDfsZ/njmhN6eVJprKSgKFtD3CIfHZjrJBMv1CNQBsBDXkqoM1s
+         /i/D/Lkvn9J0LogCZUp8hejW57jO2usTbg+aRz+TP8SlO4+5EqISxpbPeHFhmMnlLZfJ
+         z1dZrjKlXJWStjlRiBA2xEr0empqfR+Mm95hXX6ZFAjRk4RdJSQtAQkkR7urw2WJd9bi
+         kKlH9QDajL5mfYPFHSkvXs+YKff8PbWIhniudV4+1/zsSLhgc24oWheax9dtlM7XJTUp
+         FIfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703978666; x=1704583466;
+        d=1e100.net; s=20230601; t=1703978920; x=1704583720;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WAmYOQN3gQ7eCM0/vaP/2AXPfS5zVjhbSjoMJEh4XMU=;
-        b=vK11LLX8iQIrFoWsAVKnfy//f6B98axFWxVSOW3JvxmGUc+lfqrcMzPP8NuZbGDbUv
-         pf6UyrpRzydcF86y7D2FFf0yP1QB7zMuqrrYzgvUXHQOr9bjmUsxqpUyuZMXlpuQA8GC
-         nppqPXsky+tCXYuNcAq44RJJrPM6oXRNcbxKt5k1Z0M4RtudukL7zF7csequPnaYcLoD
-         pS6i9EDn9OXZDwVGqbAfip/ys4rggzhwoII8Lq/Ob+qBSAzxESDOATi+sSE/eAeL4tqW
-         jFWmYMVl/EY63oqLqQaNwV+oYEyZIbvN4srPyjGUPqJ8riBh9gmivM2sl823TUuwzTjk
-         hRww==
-X-Gm-Message-State: AOJu0Yx1qid7D7aJqvdGFEVM8uGqwDReoPZNxsZseSZzsoXw3SttdN4L
-	i4J+jVU70r7YL3g1N4ofLaCZgkTQEzwW5g==
-X-Google-Smtp-Source: AGHT+IEaWIRqH8ItHNWm6KdRb4Le8xvy6Zzs6qriNRpCwq5fWtgF+1TBS/9JZoMkMoQ3cZJpFapbsA==
-X-Received: by 2002:a05:6a20:160d:b0:195:f471:b713 with SMTP id l13-20020a056a20160d00b00195f471b713mr18110115pzj.2.1703978666328;
-        Sat, 30 Dec 2023 15:24:26 -0800 (PST)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id u36-20020a056a0009a400b006d9b3b38525sm11772234pfg.161.2023.12.30.15.24.24
+        bh=V9gYy29s9UglOJFtyJmti8blfRTxnRaCJhWJbNKd0iE=;
+        b=pCET/Ba+dDuFVJSYfoQDrCCHUAHrVTjkvrvUREBcXceF3/EMkKu40lUvByvyPwbsC6
+         ESEqRknhNPUMYJroN7RxciRfy1gpwU9GZnGr8xuC3Bkf8frIavOXyXgtvpYD0yrVYbdO
+         afn4R7E0qJyg/m1yw6sdQsV3V/SvxyySiXvVAS9xdxJ5dqNr5MGmxDyqeF60DNjQ/OEu
+         ZolcrJA1tmmSGG7MOu224KtdR9aPdMU1zoXfgyRSpv3eYf9M7C7MGyj17r95S2RDGCCD
+         F91FPAw6VxGwNlhfIhjOfCejA0IMgdhgjDR7O8t/+UJamDUSquBl83eW51YVe5sN/BU1
+         Rd/A==
+X-Gm-Message-State: AOJu0YwUSRs9TERvsBfOcxdIoMdaJauGq96s/E5Bhc31eOt5vEg0L4cF
+	G35TbhMhsO8S6mgI9TnKgiKgNxDMw2ZXog==
+X-Google-Smtp-Source: AGHT+IExjsLqcwbnW3Dqimmzlg/bXNIGAXMRbVDyfe+oH5+zqSBGlBWlYfVGNVwyCZYaBqYqRzNWdQ==
+X-Received: by 2002:a05:600c:4e09:b0:40d:7b1f:e424 with SMTP id b9-20020a05600c4e0900b0040d7b1fe424mr1739072wmq.20.1703978920243;
+        Sat, 30 Dec 2023 15:28:40 -0800 (PST)
+Received: from [192.168.16.140] (92.40.174.136.threembb.co.uk. [92.40.174.136])
+        by smtp.gmail.com with ESMTPSA id l4-20020a05600c1d0400b0040d3276ba19sm35621982wms.25.2023.12.30.15.28.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Dec 2023 15:24:25 -0800 (PST)
-Message-ID: <f334ec63-2c01-4a2d-a3ba-91aad8e10c92@kernel.dk>
-Date: Sat, 30 Dec 2023 16:24:23 -0700
+        Sat, 30 Dec 2023 15:28:39 -0800 (PST)
+Message-ID: <8301e5b9-29fa-4c60-8694-335c63ae1883@linaro.org>
+Date: Sun, 31 Dec 2023 00:28:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,182 +66,64 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6] io_uring: Statistics of the true utilization of sq
- threads.
+Subject: Re: [PATCH] arm64: dts: qcom: sdm845: add power domain to UFS phy
+ interface
 Content-Language: en-US
-To: Pavel Begunkov <asml.silence@gmail.com>,
- Xiaobing Li <xiaobing.li@samsung.com>
-Cc: linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
- kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
- kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com,
- cliang01.li@samsung.com, xue01.he@samsung.com
-References: <CGME20231225055252epcas5p43ae8016d329b160f688def7b4f9d4ddb@epcas5p4.samsung.com>
- <20231225054438.44581-1-xiaobing.li@samsung.com>
- <170360833542.1229482.7687326255574388809.b4-ty@kernel.dk>
- <7967c7a9-3d17-44de-a170-2b5354460126@gmail.com>
- <57b81a15-58ae-46c1-a1af-9117457a31c7@kernel.dk>
- <6167a98c-35f3-4ea6-a807-dc87c0e4e1bf@gmail.com>
- <d383aaa6-8918-42c6-8ec0-73e234175770@kernel.dk>
- <97804586-ca0c-4918-be05-0863b92cc141@gmail.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <97804586-ca0c-4918-be05-0863b92cc141@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: David Heidelberg <david@ixit.cz>, Luca Weiss <luca@z3ntu.xyz>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Manivannan Sadhasivam <mani@kernel.org>
+References: <20231229202959.266502-1-david@ixit.cz>
+ <2710291.mvXUDI8C0e@z3ntu.xyz> <e299a7bd-2f50-41e0-a638-a1fbbeb65635@ixit.cz>
+From: Caleb Connolly <caleb.connolly@linaro.org>
+In-Reply-To: <e299a7bd-2f50-41e0-a638-a1fbbeb65635@ixit.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 12/30/23 4:17 PM, Pavel Begunkov wrote:
-> On 12/30/23 22:17, Jens Axboe wrote:
->> On 12/30/23 2:06 PM, Pavel Begunkov wrote:
->>> On 12/30/23 17:41, Jens Axboe wrote:
->>>> On 12/30/23 9:27 AM, Pavel Begunkov wrote:
->>>>> On 12/26/23 16:32, Jens Axboe wrote:
->>>>>>
->>>>>> On Mon, 25 Dec 2023 13:44:38 +0800, Xiaobing Li wrote:
->>>>>>> Count the running time and actual IO processing time of the sqpoll
->>>>>>> thread, and output the statistical data to fdinfo.
->>>>>>>
->>>>>>> Variable description:
->>>>>>> "work_time" in the code represents the sum of the jiffies of the sq
->>>>>>> thread actually processing IO, that is, how many milliseconds it
->>>>>>> actually takes to process IO. "total_time" represents the total time
->>>>>>> that the sq thread has elapsed from the beginning of the loop to the
->>>>>>> current time point, that is, how many milliseconds it has spent in
->>>>>>> total.
->>>>>>>
->>>>>>> [...]
->>>>>>
->>>>>> Applied, thanks!
->>>>>>
->>>>>> [1/1] io_uring: Statistics of the true utilization of sq threads.
->>>>>>          commit: 9f7e5872eca81d7341e3ec222ebdc202ff536655
->>>>>
->>>>> I don't believe the patch is near complete, there are still
->>>>> pending question that the author ignored (see replies to
->>>>> prev revisions).
->>>>
->>>> We can drop and defer, that's not an issue. It's still sitting top of
->>>> branch.
->>>>
->>>> Can you elaborate on the pending questions?
->>>
->>> I guess that wasn't clear, but I duplicated all of them in the
->>> email you're replying to for convenience
->>>
->>>>> Why it uses jiffies instead of some task run time?
->>>>> Consequently, why it's fine to account irq time and other
->>>>> preemption? (hint, it's not)
->>>>
->>>> Yeah that's a good point, might be better to use task run time. Jiffies
->>>> is also an annoying metric to expose, as you'd need to then get the tick
->>>> rate as well. Though I suspect the ratio is the interesting bit here.
->>>
->>> I agree that seconds are nicer, but that's not my point. That's
->>> not about jiffies, but that the patch keeps counting regardless
->>> whether the SQ task was actually running, or the CPU was serving
->>> irq, or even if it was force descheduled.
->>
->> Right, guess I wasn't clear, I did very much agree with using task run
->> time to avoid cases like that where it's perceived running, but really
->> isn't. For example.
->>
->>> I even outlined what a solution may look like, i.e. replace jiffies
->>> with task runtime, which should already be counted in the task.
->>
->> Would be a good change to make. And to be fair, I guess they originally
->> wanted something like that, as the very first patch had some scheduler
->> interactions. Just wasn't done quite right.
+Hi David,
+
+Did you boot-test this?
+
+On 30/12/2023 00:18, David Heidelberg wrote:
+> On 29/12/2023 22:37, Luca Weiss wrote:
 > 
-> Right, just like what the v1 was doing but without touching
-> core/sched.
-
-Yep
-
->>>>> Why it can't be done with userspace and/or bpf? Why
->>>>> can't it be estimated by checking and tracking
->>>>> IORING_SQ_NEED_WAKEUP in userspace?
->>>>
->>>> Asking people to integrate bpf for this is a bit silly imho. Tracking
+>> On Freitag, 29. Dezember 2023 21:29:54 CET David Heidelberg wrote:
+>>> Reported by: `make CHECK_DTBS=1 qcom/sdm845-oneplus-enchilada.dtb`
 >>>
->>> I haven't seen any mention of the real use case, did I miss it?
->>> Because otherwise I fail to see how it can possibly be called
->>> silly when it's not clear how exactly it's used.
+>>> Signed-off-by: David Heidelberg <david@ixit.cz>
+>>> ---
+>>>   arch/arm64/boot/dts/qcom/sdm845.dtsi | 2 ++
+>>>   1 file changed, 2 insertions(+)
 >>>
->>> Maybe it's a bash program printing stats to a curious user? Or
->>> maybe it's to track once at start, and then nobody cares about
->>> it, in which case NEED_WAKEUP would be justified.
+>>> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>>> b/arch/arm64/boot/dts/qcom/sdm845.dtsi index c2244824355a..ad8677b62bfb
+>>> 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>>> @@ -2644,6 +2644,8 @@ ufs_mem_phy: phy@1d87000 {
+>>>               clocks = <&gcc GCC_UFS_MEM_CLKREF_CLK>,
+>>>                    <&gcc GCC_UFS_PHY_PHY_AUX_CLK>;
 >>>
->>> I can guess it's for adjusting the sq timeouts, but who knows.
+>>> +            power-domains = <&gcc UFS_PHY_GDSC>;
+>>> +
+>>>               resets = <&ufs_mem_hc 0>;
+>>>               reset-names = "ufsphy";
+>> This is potentially the wrong power domain, see the conversation here:
+>> https://lore.kernel.org/linux-arm-msm/20231204172829.GA69580@thinkpad/
+> Thanks, I was thinking about  SDM845_MX, but then looked at rest more 
+> closer qcom archs and thought it'll be likely GDSC (also by looking at 
+> ufs_mem_hc reset vectors).
 >>
->> I only know what is in those threads, but the most obvious use case
->> would indeed be to vet the efficiency of the chosen timeout value and
->> balance cpu usage with latency like that.
+>> Hopefully Mani can give some input here :)
 >>
->>>> NEED_WAKEUP is also quite cumbersome and would most likely be higher
->>>> overhead as well.
->>>
->>> Comparing to reading a procfs file or doing an io_uring
->>> register syscall? I doubt that. It's also not everyone
->>> would be using that.
+>> Regards
+>> Luca
 >>
->> What's the proposed integration to make NEED_WAKEUP sampling work? As
->> far as I can tell, you'd need to either do that kind of accounting every
->> time you do io_uring_submit(), or make it conditional which would then
->> at least still have a branch.
 >>
->> The kernel side would obviously not be free either, but at least it
->> would be restricted to the SQPOLL side of things and not need to get
->> entangled with the general IO path that doesn't use SQPOLL.
->>
->> If we put it in there and have some way to enable/query/disable, then it
->> least it would just be a branch or two in there rather than in the
->> generic path.
-> 
-> It can be in the app without ever touching liburing/kernel. E.g. you
-> can binary search the idle time, minimising it, while looking that
-> sqpoll doesn't go to sleep too often topping with other conditions.
-> Another stat you can get right away is to compare the current idle
-> time with the total time since last wake up (which should be idle +
-> extra).
-
-Sure, it's more a question of if you want a simple to query metric, or
-build something a lot more involved to do it. Guess it depends on the
-use case. I think exposing a metric makes sense, as it'll provide an
-easy way for an app to gauge efficiency of it and whether it'd make
-sense to tweak settings. But I guess then what comes next is a way to
-modify the timeout setting at runtime...
-
->>>>> What's the use case in particular? Considering that
->>>>> one of the previous revisions was uapi-less, something
->>>>> is really fishy here. Again, it's a procfs file nobody
->>>>> but a few would want to parse to use the feature.
->>>>
->>>> I brought this up earlier too, fdinfo is not a great API. For anything,
->>>> really.
->>>
->>> I saw that comment, that's why I mentioned, but the
->>> point is that I have doubts the author is even using
->>> the uapi.
->>
->> Not sure I follow... If they aren't using the API, what's the point of
->> the patch? Or are you questioning whether this is being done for an
->> actual use case, or just as a "why not, might be handy" kind of thing?
-> I assume there is a use case, which hasn't been spelled out
-> though AFAIK, but as a matter of fact earlier patches had no uapi.
-> 
-> https://lore.kernel.org/all/20231106074055.1248629-1-xiaobing.li@samsung.com/
-
-Might be because they already have some patches exposing these metrics.
-But ->
-
-> and later patches use a suspiciously inconvenient interface,
-> i.e. /proc. It's a good question how it was supposed to be used
-> (and tested), but I have only guesses. Private patches? A custom
-> module? Or maybe a genuine mistake, which is why I'm still very
-> curious hearing about the application.
-
-Agree, Xiaobing, can you expand on the actual use case here? How are you
-intending to use this metric?
 
 -- 
-Jens Axboe
-
+// Caleb (they/them)
 
