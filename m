@@ -1,237 +1,93 @@
-Return-Path: <linux-kernel+bounces-13335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A84708203AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 06:20:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D8908203AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 06:20:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5497B282E13
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 05:20:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8016C1C20F27
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 05:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 318B01FCF;
-	Sat, 30 Dec 2023 05:19:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="APKe3h12"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B0F1FA2;
+	Sat, 30 Dec 2023 05:20:23 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D868615AE;
-	Sat, 30 Dec 2023 05:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2ccc7d7e399so42871041fa.0;
-        Fri, 29 Dec 2023 21:19:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703913588; x=1704518388; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nv7UO7csjNz160y529e4P/Xh16i9o3WZFxaja/0pQ64=;
-        b=APKe3h12xzqb12SvSjlD2GGi3b16H1OCJ+XFqAddAxqhKlyZasKdJcj89ME5hDGrER
-         P0UR36Bvw3Jm7B/IR7Vn6c42ctNAdeyxExkek/IoL2Wbqo1i9Ha48jtuklUSb5fZ9smw
-         idpRvKm+Yryd5aGNuJ2CUbOY9IVfi9+FC9TvxgchOEys3u00fhyKxXLQ03UrO89atguE
-         By43NWc9onxLlBN1IS9bl6WBIUCW/LK7y664a2KWgupdxUw84cbpgOvY4nzVBbOeSF8b
-         dpvRBzFyrwBlw0957/JEJZ7vfePc6GumOcor9UnXVDs2Vlzc75ckJWMI4+GSLNHWsCYf
-         bQHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703913588; x=1704518388;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Nv7UO7csjNz160y529e4P/Xh16i9o3WZFxaja/0pQ64=;
-        b=kKYDXps5ykUfXqhESU/La3WxyX0Vs07TKwcHzvqEuEzHjlAwlOos2Z4MgbWQh/V7cE
-         fUh4KyUaYKaPqXOcHzIfrgHKPvVcGMPBxfc2EE0syK6XLp4SDjKWqG18nSpO+BBmMUXk
-         hRrxZMkCgFzngT4oKIsbqJ3rzG8eIRB967QS+mNEFBlznnDpQbOmmGYjwJJlDCi1fqvj
-         AQBDypClG1/6ZQ+Do5Twgz//4wlq1Av4eRUI671cI2hols59jW9LysFfwtVHwlT6on0/
-         vAfGN1cGd1XvwOq5wxL5zu5Z6r1T1rux8Z3cBmqh7xNZIReEHTvAElGg6fdnu7z0z1/8
-         5XgQ==
-X-Gm-Message-State: AOJu0YwVmOR3DFmeryZ2HjOHlgDGOUWFDX96jBMMZ/LzWmz51upok4Jp
-	ljcxCvFsndgdCVaYziWw4BJtWxESGxufULLTCzc=
-X-Google-Smtp-Source: AGHT+IEpz5a/cYri9HwuK0EiUNxDNfgNaTnYWMZgWHmhW8Xhf6o2WH8E9j6ZHlBpg9IbZrqeRr21tELP6o1njKx2v5I=
-X-Received: by 2002:a05:651c:10a3:b0:2cc:a51c:32ed with SMTP id
- k3-20020a05651c10a300b002cca51c32edmr4723621ljn.22.1703913587293; Fri, 29 Dec
- 2023 21:19:47 -0800 (PST)
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271143D6C;
+	Sat, 30 Dec 2023 05:20:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from localhost.localdomain (unknown [39.174.92.167])
+	by mail-app3 (Coremail) with SMTP id cC_KCgBXeNx+qI9l6wOiAQ--.22293S4;
+	Sat, 30 Dec 2023 13:20:00 +0800 (CST)
+From: Lin Ma <linma@zju.edu.cn>
+To: jgg@ziepe.ca,
+	leon@kernel.org,
+	gustavoars@kernel.org,
+	bvanassche@acm.org,
+	markzhang@nvidia.com,
+	linma@zju.edu.cn,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1] RDMA/sa_query: use validate not parser in ib_nl_is_good_resolve_resp
+Date: Sat, 30 Dec 2023 13:19:56 +0800
+Message-Id: <20231230051956.82499-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:cC_KCgBXeNx+qI9l6wOiAQ--.22293S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gry5KFWxAw45CrWUAr43ZFb_yoWDKFcEkr
+	4vgrn2qr18CFnIkrnxtr4fuFy2gw4Yqw1fuas2qa43K34DXr9xWa4xXFZxCayUWws2kF13
+	Crn5Cw48GF4IkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbwkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxG
+	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+	vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
+	x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
+	xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
+	wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
- <20231030141623.ufzhb4ttvxi3ukbj@skbuf> <CACRpkdaN2rTSHXDxwuS4czCzWyUkazY4Fn5vVLYosqF0=qi-Bw@mail.gmail.com>
- <20231030222035.oqos7v7sdq5u6mti@skbuf> <CACRpkdZ4+QrSA0+JCOrx_OZs4gzt1zx1kPK5bdqxp0AHfEQY3g@mail.gmail.com>
- <20231030233334.jcd5dnojruo57hfk@skbuf> <CACRpkdbLTNVJusuCw2hrHDzx5odw8vw8hMWvvvvgEPsAFwB8hg@mail.gmail.com>
- <CAJq09z4+3g7-h5asYPs_3g4e9NbPnxZQK+NxggYXGGxO+oHU1g@mail.gmail.com>
- <CACRpkdZ-M5mSUeVNhdahQRpm+oA1zfFkq6kZEbpp=3sKjdV9jA@mail.gmail.com>
- <CAJq09z6QwLNEc5rEGvE3jujZ-vb+vtUQLS-fkOnrdnYqk5KvxA@mail.gmail.com> <CACRpkdaoBo0S0RgLhacObd3pbjtWAfr6s3oizQAHqdB76gaG5A@mail.gmail.com>
-In-Reply-To: <CACRpkdaoBo0S0RgLhacObd3pbjtWAfr6s3oizQAHqdB76gaG5A@mail.gmail.com>
-From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Date: Sat, 30 Dec 2023 02:19:35 -0300
-Message-ID: <CAJq09z4YSGyU6QuZL1uEB9vH39-WbR2dZhy7MiD=5yZb0Urz1Q@mail.gmail.com>
-Subject: Re: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>, 
-	Florian Fainelli <f.fainelli@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-> > [    3.976779] realtek-smi switch: missing child interrupt-controller node
-> > [    3.983455] realtek-smi switch: no interrupt support
-> > [    4.158891] realtek-smi switch: no LED for port 5
->
-> Are the LEDs working? My device has no LEDs so I have never
-> tested it, despite I coded it. (Also these days we can actually
-> support each LED individually configured from device tree using
-> the LED API, but that would be quite a bit of code, so only some
-> fun for the aspiring developer...)
+The attributes array `tb` in ib_nl_is_good_resolve_resp is never used
+after the parsing. Therefore use nla_validate_deprecated function here
+for improvement.
 
-Hi Linus,
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+ drivers/infiniband/core/sa_query.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-I took a look at the LED code. It looks like you got it a little bit wrong.
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index 8175dde60b0a..c7407a53fcda 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -1047,14 +1047,13 @@ int ib_nl_handle_set_timeout(struct sk_buff *skb,
+ 
+ static inline int ib_nl_is_good_resolve_resp(const struct nlmsghdr *nlh)
+ {
+-	struct nlattr *tb[LS_NLA_TYPE_MAX];
+ 	int ret;
+ 
+ 	if (nlh->nlmsg_flags & RDMA_NL_LS_F_ERR)
+ 		return 0;
+ 
+-	ret = nla_parse_deprecated(tb, LS_NLA_TYPE_MAX - 1, nlmsg_data(nlh),
+-				   nlmsg_len(nlh), ib_nl_policy, NULL);
++	ret = nla_validate_deprecated(nlmsg_data(nlh), nlmsg_len(nlh),
++				      LS_NLA_TYPE_MAX - 1, ib_nl_policy, NULL);
+ 	if (ret)
+ 		return 0;
+ 
+-- 
+2.17.1
 
-        /* Set blinking, TODO: make this configurable */
-       ret = regmap_update_bits(priv->map, RTL8366RB_LED_BLINKRATE_REG,
-                                RTL8366RB_LED_BLINKRATE_MASK,
-                                RTL8366RB_LED_BLINKRATE_56MS);
-       if (ret)
-               return ret;
-
-       /* Set up LED activity:
-        * Each port has 4 LEDs, we configure all ports to the same
-        * behaviour (no individual config) but we can set up each
-        * LED separately.
-        */
-       if (priv->leds_disabled) {
-               /* Turn everything off */
-               regmap_update_bits(priv->map,
-                                  RTL8366RB_LED_0_1_CTRL_REG,
-                                  0x0FFF, 0);
-               regmap_update_bits(priv->map,
-                                  RTL8366RB_LED_2_3_CTRL_REG,
-                                  0x0FFF, 0);
-               regmap_update_bits(priv->map,
-                                  RTL8366RB_INTERRUPT_CONTROL_REG,
-                                  RTL8366RB_P4_RGMII_LED,
-                                  0);
-               val = RTL8366RB_LED_OFF;
-       } else {
-               /* TODO: make this configurable per LED */
-               val = RTL8366RB_LED_FORCE;
-       }
-       for (i = 0; i < 4; i++) {
-               ret = regmap_update_bits(priv->map,
-                                        RTL8366RB_LED_CTRL_REG,
-                                        0xf << (i * 4),
-                                        val << (i * 4));
-               if (ret)
-                       return ret;
-       }
-
-If LEDs are not disabled, it will use the RTL8366RB_LED_FORCE for all
-4 LED groups. That RTL8366RB_LED_FORCE keeps the LEDs on. I would use
-RTL8366RB_LED_LINK_ACT by default to make it blink on link activity
-(or make it configurable as the comment suggests) but it is not wrong.
-I cannot evaluate the RTL8366RB_INTERRUPT_CONTROL_REG usage when you
-disable the LEDs but it seems to be odd.
-
-We also have:
-
-static void rb8366rb_set_port_led(struct realtek_priv *priv,
-                                 int port, bool enable)
-{
-       u16 val = enable ? 0x3f : 0;
-       int ret;
-
-       if (priv->leds_disabled)
-               return;
-
-       switch (port) {
-       case 0:
-               ret = regmap_update_bits(priv->map,
-                                        RTL8366RB_LED_0_1_CTRL_REG,
-                                        0x3F, val);
-               break;
-       case 1:
-               ret = regmap_update_bits(priv->map,
-                                        RTL8366RB_LED_0_1_CTRL_REG,
-                                        0x3F << RTL8366RB_LED_1_OFFSET,
-                                        val << RTL8366RB_LED_1_OFFSET);
-               break;
-       case 2:
-               ret = regmap_update_bits(priv->map,
-                                        RTL8366RB_LED_2_3_CTRL_REG,
-                                        0x3F, val);
-               break;
-       case 3:
-               ret = regmap_update_bits(priv->map,
-                                        RTL8366RB_LED_2_3_CTRL_REG,
-                                        0x3F << RTL8366RB_LED_3_OFFSET,
-                                        val << RTL8366RB_LED_3_OFFSET);
-               break;
-       case 4:
-               ret = regmap_update_bits(priv->map,
-                                        RTL8366RB_INTERRUPT_CONTROL_REG,
-                                        RTL8366RB_P4_RGMII_LED,
-                                        enable ? RTL8366RB_P4_RGMII_LED : 0);
-               break;
-       default:
-               dev_err(priv->dev, "no LED for port %d\n", port);
-               return;
-       }
-       if (ret)
-               dev_err(priv->dev, "error updating LED on port %d\n", port);
-}
-
-Here things gets strange. The code assumes that
-RTL8366RB_LED_0_1_CTRL_REG is related to ports 0 and 1. However, it is
-actually LED group 0 and 1. I don't have the docs but the register
-seem to enable/disable a port in a group. The first LED pins for all
-ports form the group 0 (and so on). My device only use the group 0 for
-its 5 ports, limiting my tests. Anyway, to make all ports blink on
-link act, I need, at least:
-
-RTL8366RB_LED_CTRL_REG(0x0431) = 0x0002 / 0x000f (set led group 0 to
-RTL8366RB_LED_LINK_ACT or 0x2)
-RTL8366RB_LED_0_1_CTRL_REG(0x0432) = 0x001f / 0x003f (enable ports
-0..5 in LED group 0. I don't really know the mask but the probe code
-indicates it is 6 bits per group).
-
-If you really want to disable port 0 LEDs in all groups, you should
-unset the first bit for each group. If the mask is really 0x3f, it
-would be:
-
-               ret = regmap_update_bits(priv->map,
-                                        RTL8366RB_LED_0_1_CTRL_REG,
-                                        port,
-                                        enable);
-               ret = regmap_update_bits(priv->map,
-                                        RTL8366RB_LED_0_1_CTRL_REG,
-                                        port << RTL8366RB_LED_1_OFFSET,
-                                        enable);
-               ret = regmap_update_bits(priv->map,
-                                        RTL8366RB_LED_2_3_CTRL_REG,
-                                        port,
-                                        enable);
-               ret = regmap_update_bits(priv->map,
-                                        RTL8366RB_LED_2_3_CTRL_REG,
-                                        port << RTL8366RB_LED_3_OFFSET,
-                                        enable);
-
-This message, in fact, does not make sense:
-
-> > [    4.158891] realtek-smi switch: no LED for port 5
-
-I though that maybe we could setup a LED driver to expose the LEDs
-status in sysfs. However, I'm not sure it is worth it. If you change a
-LED behavior, it would break the HW triggering rule for all the group.
-I'm not sure the LED API is ready to expose LEDs with related fate. It
-would, indeed, be useful as a readonly source or just to
-enable/disable a LED.
-
-Regards,
-
-Luiz
 
