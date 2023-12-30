@@ -1,226 +1,187 @@
-Return-Path: <linux-kernel+bounces-13361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85A91820400
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D79AF820404
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:20:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 168BB281E15
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 08:10:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 681B2281F38
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 08:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8D03C0F;
-	Sat, 30 Dec 2023 08:10:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D3D23BB;
+	Sat, 30 Dec 2023 08:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="SWbnYKeE"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="eTwsyt0A"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B1A23AE
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 08:10:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7ba737ee9b5so530850739f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 00:10:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1703923830; x=1704528630; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yiNrSH9oUjINY/vtkmdArFK8GmKKmu32NZyqnMgcK1w=;
-        b=SWbnYKeEQgImfiXRdKfjLr17q3Ih3+w1K9rEy2kvHK6ESKTDS6sz/SBGDyQ1o3ek2X
-         22Visn/sb/E9nK4NtWHJ7pufyiMXfCEHyHAuIr0zuSlHNh8U1v7CRko/zRCtl9tW2Smq
-         dtaP5i/xU1pjP2x75A/UO2n5oXTVKdcpIUxL/xsVotPNgA5CGWW4DfL+0AwTLgs6ogPd
-         KSLqbbG5Q0uhwp9UqQk4x+32vQ+AI7AGO0CfmCZGE777OKyqAh/Wu1vtBnF+kT5R9Odd
-         RVqSgbq/PZJagDFCv2g79ETWvLRM6PRlwOWzX9T112HrchgizNANi2tRf0dv4QE2lSj+
-         UceQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703923830; x=1704528630;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yiNrSH9oUjINY/vtkmdArFK8GmKKmu32NZyqnMgcK1w=;
-        b=Lk9PWeFF6saN9ppODm30+kuTti4JOdzpY+xFrsQAzMLwDUg3hw+jjO4OuoKu17x2RE
-         HfDdTfPI4CfgrXARV2LJcESbi2XUbBO9fMz0ja8zOMvSlOo1YDuUXsa7Aj+SJH2Dpdb3
-         0WMfiE0+WR9B/XPxx3tDJrDh6OnZV8+H2QcvlvymQ+QmF/mFekI3NnuFPeTCTMlaYiz7
-         xJYSidIgoq1Q1Cu95Cq4VcfXGKscD/L91CeCpzE9TOW4KWKIp+/vtHDGZg/0AMEUcwBY
-         KOJqXQeDfCBcyjzZV8piOnsPmD60a2W5SuF9/ZdQalCC8cn+AatkG8gPWdtOKnOHWxeh
-         lTTg==
-X-Gm-Message-State: AOJu0YwszMEuPMR2MWuYWIeuf4y8Om9T1hjbE13Dv0r+b2nqdsK9wKzT
-	PX371a1zWBcdeQg4u4k4xK5KByCCaUFXNZgTTjqqBHQEnpI3Uw==
-X-Google-Smtp-Source: AGHT+IEhY4D0sK9xFLORpCAS+I82gFLXEGeS2aN1Vp0qGYmEIOgWrqL0REUG0dfNSg0lCV7PZGEUmGb8+bNLhldBe68=
-X-Received: by 2002:a05:6e02:2408:b0:35d:5995:7992 with SMTP id
- bs8-20020a056e02240800b0035d59957992mr23726864ilb.44.1703923830374; Sat, 30
- Dec 2023 00:10:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0125C23A0;
+	Sat, 30 Dec 2023 08:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1703924394;
+	bh=D/rmWS9VU4cYt40QweSANvOejlIuAoUvy2Du5sUf6eg=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=eTwsyt0AV6pv+3zawmmedJxOW/I2uboiAgqm2UDj8H6xlD+ysBWsNNsnonqO0I8LT
+	 XL7T3N7bJif7bd1qezdZmz68CBcTyNnantyuyujzRYgKqhguagfdarlncg0uGcu+qu
+	 QMPz8ThVtDDC1CK1inh6AP10G/EpC8kpCGRvm+0puapKf8vLpuLSNaHvaLZR/HpEFU
+	 wdOe6FBzo3O400HFWHJI8O/ATTW/q/rX18HwwDNVdFpAejP6UusElTdd6RxPhnh5Rs
+	 hywXpQYJ09RRDoEE61eSKr10ZzqW8ChtfhAJMkI7pOUufaSqp6nasoq3iuL9Tc0YvE
+	 qGFJpLdF6sFbA==
+Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 243F837813CF;
+	Sat, 30 Dec 2023 08:19:48 +0000 (UTC)
+Message-ID: <ce75321b-da1f-457a-abc5-982c0e95fff6@collabora.com>
+Date: Sat, 30 Dec 2023 13:19:47 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231229214950.4061381-1-atishp@rivosinc.com> <20231229214950.4061381-11-atishp@rivosinc.com>
-In-Reply-To: <20231229214950.4061381-11-atishp@rivosinc.com>
-From: Anup Patel <anup@brainfault.org>
-Date: Sat, 30 Dec 2023 13:40:20 +0530
-Message-ID: <CAAhSdy03BLQRdTZAqteK9PsbjxQt7cncXu_fG1CG99uQK5v6CA@mail.gmail.com>
-Subject: Re: [v2 10/10] RISC-V: KVM: Support 64 bit firmware counters on RV32
-To: Atish Patra <atishp@rivosinc.com>
-Cc: linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Andrew Jones <ajones@ventanamicro.com>, 
-	Atish Patra <atishp@atishpatra.org>, Conor Dooley <conor.dooley@microchip.com>, 
-	Guo Ren <guoren@kernel.org>, Heiko Stuebner <heiko@sntech.de>, kvm-riscv@lists.infradead.org, 
-	kvm@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <benno.lossin@proton.me>,
+ Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl
+ <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ kernel@collabora.com
+Subject: Re: [PATCH] kselftest: Add basic test for probing the rust sample
+ modules
+Content-Language: en-US
+To: Laura Nao <laura.nao@collabora.com>, Miguel Ojeda <ojeda@kernel.org>,
+ Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>, Shuah Khan <shuah@kernel.org>
+References: <20231215132132.169628-1-laura.nao@collabora.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20231215132132.169628-1-laura.nao@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Dec 30, 2023 at 3:20=E2=80=AFAM Atish Patra <atishp@rivosinc.com> w=
-rote:
->
-> The SBI v2.0 introduced a fw_read_hi function to read 64 bit firmware
-> counters for RV32 based systems.
->
-> Add infrastructure to support that.
->
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
-
-LGTM.
-
-Reviewed-by: Anup Patel <anup@brainfault.org>
-
-Regards,
-Anup
+On 12/15/23 6:21 PM, Laura Nao wrote:
+> Add new basic kselftest that checks if the available rust sample modules
+> can be added and removed correctly.
+> 
+> Signed-off-by: Laura Nao <laura.nao@collabora.com>
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Tested-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 
 > ---
->  arch/riscv/include/asm/kvm_vcpu_pmu.h |  4 ++-
->  arch/riscv/kvm/vcpu_pmu.c             | 37 ++++++++++++++++++++++++++-
->  arch/riscv/kvm/vcpu_sbi_pmu.c         |  6 +++++
->  3 files changed, 45 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/kvm_vcpu_pmu.h b/arch/riscv/include/a=
-sm/kvm_vcpu_pmu.h
-> index af6d0ff5ce41..463c349a9ea5 100644
-> --- a/arch/riscv/include/asm/kvm_vcpu_pmu.h
-> +++ b/arch/riscv/include/asm/kvm_vcpu_pmu.h
-> @@ -20,7 +20,7 @@ static_assert(RISCV_KVM_MAX_COUNTERS <=3D 64);
->
->  struct kvm_fw_event {
->         /* Current value of the event */
-> -       unsigned long value;
-> +       u64 value;
->
->         /* Event monitoring status */
->         bool started;
-> @@ -91,6 +91,8 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcpu *v=
-cpu, unsigned long ctr_ba
->                                      struct kvm_vcpu_sbi_return *retdata)=
-;
->  int kvm_riscv_vcpu_pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cid=
-x,
->                                 struct kvm_vcpu_sbi_return *retdata);
-> +int kvm_riscv_vcpu_pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned lo=
-ng cidx,
-> +                                     struct kvm_vcpu_sbi_return *retdata=
-);
->  void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu);
->  int kvm_riscv_vcpu_pmu_setup_snapshot(struct kvm_vcpu *vcpu, unsigned lo=
-ng saddr_low,
->                                       unsigned long saddr_high, unsigned =
-long flags,
-> diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
-> index f2bf5b5bdd61..e6ce37819ca2 100644
-> --- a/arch/riscv/kvm/vcpu_pmu.c
-> +++ b/arch/riscv/kvm/vcpu_pmu.c
-> @@ -196,6 +196,29 @@ static int pmu_get_pmc_index(struct kvm_pmu *pmu, un=
-signed long eidx,
->         return kvm_pmu_get_programmable_pmc_index(pmu, eidx, cbase, cmask=
-);
->  }
->
-> +static int pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned long cidx,
-> +                             unsigned long *out_val)
-> +{
-> +       struct kvm_pmu *kvpmu =3D vcpu_to_pmu(vcpu);
-> +       struct kvm_pmc *pmc;
-> +       int fevent_code;
+>  MAINTAINERS                                   |  1 +
+>  tools/testing/selftests/Makefile              |  1 +
+>  tools/testing/selftests/rust/.gitignore       |  1 +
+>  tools/testing/selftests/rust/Makefile         |  8 ++++
+>  .../selftests/rust/test_probe_samples.sh      | 42 +++++++++++++++++++
+>  5 files changed, 53 insertions(+)
+>  create mode 100644 tools/testing/selftests/rust/.gitignore
+>  create mode 100644 tools/testing/selftests/rust/Makefile
+>  create mode 100755 tools/testing/selftests/rust/test_probe_samples.sh
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e2c6187a3ac8..acf283a5d2c0 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18847,6 +18847,7 @@ F:	Documentation/rust/
+>  F:	rust/
+>  F:	samples/rust/
+>  F:	scripts/*rust*
+> +F:	tools/testing/selftests/rust/
+>  K:	\b(?i:rust)\b
+>  
+>  RXRPC SOCKETS (AF_RXRPC)
+> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+> index 3b2061d1c1a5..26140426c849 100644
+> --- a/tools/testing/selftests/Makefile
+> +++ b/tools/testing/selftests/Makefile
+> @@ -74,6 +74,7 @@ TARGETS += riscv
+>  TARGETS += rlimits
+>  TARGETS += rseq
+>  TARGETS += rtc
+> +TARGETS += rust
+>  TARGETS += seccomp
+>  TARGETS += sgx
+>  TARGETS += sigaltstack
+> diff --git a/tools/testing/selftests/rust/.gitignore b/tools/testing/selftests/rust/.gitignore
+> new file mode 100644
+> index 000000000000..e3c5c04d1b19
+> --- /dev/null
+> +++ b/tools/testing/selftests/rust/.gitignore
+> @@ -0,0 +1 @@
+> +ktap_helpers.sh
+> diff --git a/tools/testing/selftests/rust/Makefile b/tools/testing/selftests/rust/Makefile
+> new file mode 100644
+> index 000000000000..ccaa50f35b5b
+> --- /dev/null
+> +++ b/tools/testing/selftests/rust/Makefile
+> @@ -0,0 +1,8 @@
 > +
-> +       if (!IS_ENABLED(CONFIG_32BIT))
-> +               return -EINVAL;
+> +TEST_PROGS += test_probe_samples.sh
+> +TEST_GEN_FILES := ktap_helpers.sh
 > +
-> +       pmc =3D &kvpmu->pmc[cidx];
+> +include ../lib.mk
 > +
-> +       if (pmc->cinfo.type !=3D SBI_PMU_CTR_TYPE_FW)
-> +               return -EINVAL;
+> +$(OUTPUT)/ktap_helpers.sh:
+> +	cp $(top_srcdir)/tools/testing/selftests/dt/ktap_helpers.sh $@
+> diff --git a/tools/testing/selftests/rust/test_probe_samples.sh b/tools/testing/selftests/rust/test_probe_samples.sh
+> new file mode 100755
+> index 000000000000..a46550543f73
+> --- /dev/null
+> +++ b/tools/testing/selftests/rust/test_probe_samples.sh
+> @@ -0,0 +1,42 @@
+> +#!/bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Copyright (c) 2023 Collabora Ltd
+> +#
+> +# This script tests whether the rust sample modules can
+> +# be added and removed correctly.
+> +#
 > +
-> +       fevent_code =3D get_event_code(pmc->event_idx);
-> +       pmc->counter_val =3D kvpmu->fw_event[fevent_code].value;
+> +DIR="$(dirname "$(readlink -f "$0")")"
 > +
-> +       *out_val =3D pmc->counter_val >> 32;
+> +source "${DIR}"/ktap_helpers.sh
 > +
-> +       return 0;
-> +}
+> +rust_sample_modules=("rust_minimal" "rust_print")
 > +
->  static int pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
->                         unsigned long *out_val)
->  {
-> @@ -701,6 +724,18 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcpu=
- *vcpu, unsigned long ctr_ba
->         return 0;
->  }
->
-> +int kvm_riscv_vcpu_pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned lo=
-ng cidx,
-> +                                     struct kvm_vcpu_sbi_return *retdata=
-)
-> +{
-> +       int ret;
+> +KSFT_PASS=0
+> +KSFT_FAIL=1
+> +KSFT_SKIP=4
 > +
-> +       ret =3D pmu_fw_ctr_read_hi(vcpu, cidx, &retdata->out_val);
-> +       if (ret =3D=3D -EINVAL)
-> +               retdata->err_val =3D SBI_ERR_INVALID_PARAM;
+> +ret="${KSFT_PASS}"
 > +
-> +       return 0;
-> +}
+> +ktap_print_header
 > +
->  int kvm_riscv_vcpu_pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cid=
-x,
->                                 struct kvm_vcpu_sbi_return *retdata)
->  {
-> @@ -774,7 +809,7 @@ void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu)
->                         pmc->cinfo.csr =3D CSR_CYCLE + i;
->                 } else {
->                         pmc->cinfo.type =3D SBI_PMU_CTR_TYPE_FW;
-> -                       pmc->cinfo.width =3D BITS_PER_LONG - 1;
-> +                       pmc->cinfo.width =3D 63;
->                 }
->         }
->
-> diff --git a/arch/riscv/kvm/vcpu_sbi_pmu.c b/arch/riscv/kvm/vcpu_sbi_pmu.=
-c
-> index 9f61136e4bb1..58a0e5587e2a 100644
-> --- a/arch/riscv/kvm/vcpu_sbi_pmu.c
-> +++ b/arch/riscv/kvm/vcpu_sbi_pmu.c
-> @@ -64,6 +64,12 @@ static int kvm_sbi_ext_pmu_handler(struct kvm_vcpu *vc=
-pu, struct kvm_run *run,
->         case SBI_EXT_PMU_COUNTER_FW_READ:
->                 ret =3D kvm_riscv_vcpu_pmu_ctr_read(vcpu, cp->a0, retdata=
-);
->                 break;
-> +       case SBI_EXT_PMU_COUNTER_FW_READ_HI:
-> +               if (IS_ENABLED(CONFIG_32BIT))
-> +                       ret =3D kvm_riscv_vcpu_pmu_fw_ctr_read_hi(vcpu, c=
-p->a0, retdata);
-> +               else
-> +                       retdata->out_val =3D 0;
-> +               break;
->         case SBI_EXT_PMU_SNAPSHOT_SET_SHMEM:
->                 ret =3D kvm_riscv_vcpu_pmu_setup_snapshot(vcpu, cp->a0, c=
-p->a1, cp->a2, retdata);
->                 break;
-> --
-> 2.34.1
->
+> +ktap_set_plan "${#rust_sample_modules[@]}"
+> +
+> +for sample in "${rust_sample_modules[@]}"; do
+> +    if ! /sbin/modprobe -n -q "$sample"; then
+> +        ktap_test_skip "module $sample is not found in /lib/modules/$(uname -r)"
+> +        continue
+> +    fi
+> +
+> +    if /sbin/modprobe -q "$sample"; then
+> +        /sbin/modprobe -q -r "$sample"
+> +        ktap_test_pass "$sample"
+> +    else
+> +        ret="${KSFT_FAIL}"
+> +        ktap_test_fail "$sample"
+> +    fi
+> +done
+> +
+> +ktap_print_totals
+> +exit "${ret}"
+
+-- 
+BR,
+Muhammad Usama Anjum
 
