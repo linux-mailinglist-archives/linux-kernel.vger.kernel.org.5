@@ -1,187 +1,115 @@
-Return-Path: <linux-kernel+bounces-13363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D79AF820404
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:20:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0255282040B
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:35:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 681B2281F38
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 08:20:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC75EB2137A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 08:35:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D3D23BB;
-	Sat, 30 Dec 2023 08:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 908DE2569;
+	Sat, 30 Dec 2023 08:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="eTwsyt0A"
+	dkim=pass (1024-bit key) header.d=quora.org header.i=@quora.org header.b="I4KSlf/e"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0125C23A0;
-	Sat, 30 Dec 2023 08:19:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1703924394;
-	bh=D/rmWS9VU4cYt40QweSANvOejlIuAoUvy2Du5sUf6eg=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=eTwsyt0AV6pv+3zawmmedJxOW/I2uboiAgqm2UDj8H6xlD+ysBWsNNsnonqO0I8LT
-	 XL7T3N7bJif7bd1qezdZmz68CBcTyNnantyuyujzRYgKqhguagfdarlncg0uGcu+qu
-	 QMPz8ThVtDDC1CK1inh6AP10G/EpC8kpCGRvm+0puapKf8vLpuLSNaHvaLZR/HpEFU
-	 wdOe6FBzo3O400HFWHJI8O/ATTW/q/rX18HwwDNVdFpAejP6UusElTdd6RxPhnh5Rs
-	 hywXpQYJ09RRDoEE61eSKr10ZzqW8ChtfhAJMkI7pOUufaSqp6nasoq3iuL9Tc0YvE
-	 qGFJpLdF6sFbA==
-Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 243F837813CF;
-	Sat, 30 Dec 2023 08:19:48 +0000 (UTC)
-Message-ID: <ce75321b-da1f-457a-abc5-982c0e95fff6@collabora.com>
-Date: Sat, 30 Dec 2023 13:19:47 +0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A11BB23AF
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 08:34:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=quora.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quora.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a2768b78a9eso337311366b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 00:34:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=quora.org; s=google; t=1703925291; x=1704530091; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jKSwzg5qyL9S9punEuxfKNhmr3B9w+Hx8x84ychqNZo=;
+        b=I4KSlf/eOLGBilBW0ohqJzKGmtzMjF8aOokU1I67Uaj+/q+7O1XvwDkB+hYTJCN6/U
+         8q8g79Yf7SlbB0gnUafJC+RCqpwHSNa9bU1gVMoi3bgbs34VPnzSR+MAq322FzohJtim
+         83/D5r5jCLppj6nSv4vAQKe6P2m/NHmg6ChV4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703925291; x=1704530091;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jKSwzg5qyL9S9punEuxfKNhmr3B9w+Hx8x84ychqNZo=;
+        b=ldzlg4UOPHxr1aWxntEmLM466/Ot43K69gg+53tuAjGPOFrt3182GgXE4pMtti6xC1
+         W6xKCqVjfyYLbpaUb1Kkvosej7Hkxuyaf7WTETKxjBO4SaqDqEWYhkpODy4AuItn+6ke
+         7cdP8arMZrbAA6qhnPKlG/WWjsEXg8I6xKf0kaGrkUVYHu7F9PjhqfydXdew+qwyHqkc
+         UpqoJuFWktaLYJoneXggK2YuiZvyioNsZSxhMGHgiB2rbiYnnj5AFIlTwmqUsG8aRms0
+         l4W/uDtlLbT8fvZYOI2fleklm7zas3CbvssRjHjgy+9Agt8pP1DOD7COHEujEYHSYbLM
+         Bs0g==
+X-Gm-Message-State: AOJu0YwlNyNlJ3weivi850DhRh/qaWefEwchb8N0EF+1LTZLGOkN5UKg
+	nq/MWWFYNJ+X//CGZlERqVJ7ZIphWt0XJ8zCAU6LnOgEa3iglQ==
+X-Google-Smtp-Source: AGHT+IGZ1829LMk+ibKivi9thXfdLJc26LZgUmRke9amhyQhkx0MkfWd+YibVkFTZXYyPxySeMX0Z8quwmY2SmDM7zQ=
+X-Received: by 2002:a17:906:97:b0:a27:a953:bf63 with SMTP id
+ 23-20020a170906009700b00a27a953bf63mr1356526ejc.42.1703925291104; Sat, 30 Dec
+ 2023 00:34:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- Benno Lossin <benno.lossin@proton.me>,
- Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl
- <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- kernel@collabora.com
-Subject: Re: [PATCH] kselftest: Add basic test for probing the rust sample
- modules
-Content-Language: en-US
-To: Laura Nao <laura.nao@collabora.com>, Miguel Ojeda <ojeda@kernel.org>,
- Alex Gaynor <alex.gaynor@gmail.com>,
- Wedson Almeida Filho <wedsonaf@gmail.com>, Shuah Khan <shuah@kernel.org>
-References: <20231215132132.169628-1-laura.nao@collabora.com>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20231215132132.169628-1-laura.nao@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CAMVG2su=Kt5mkyEHGh5D4YH+1xTUFX3BhOjf-D0bcRTntav3ng@mail.gmail.com>
+ <jt3gy5v3jhqadakhxbdezvfo2n2f4n7sc52ljw4kztct6poihr@zork6muwdity>
+In-Reply-To: <jt3gy5v3jhqadakhxbdezvfo2n2f4n7sc52ljw4kztct6poihr@zork6muwdity>
+From: Daniel J Blueman <daniel@quora.org>
+Date: Sat, 30 Dec 2023 16:34:39 +0800
+Message-ID: <CAMVG2sveJiXO=88uFfrxYK0n3Nx1a4mTDJZ6N-zwaAUj76twDw@mail.gmail.com>
+Subject: Re: Stack corruption in bch2_nocow_write
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, 
+	Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/15/23 6:21 PM, Laura Nao wrote:
-> Add new basic kselftest that checks if the available rust sample modules
-> can be added and removed correctly.
-> 
-> Signed-off-by: Laura Nao <laura.nao@collabora.com>
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Tested-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+On Sat, 30 Dec 2023 at 02:54, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+> On Fri, Dec 29, 2023 at 07:43:13PM +0800, Daniel J Blueman wrote:
+> > Hi Kent et al,
+> >
+> > On Linux 6.7-rc7 from bcachefs master SHA f3608cbdfd built with UBSAN
+> > [1], with a crafted workload [2] I'm able to trigger stack corruption
+> > in bch2_nocow_write [3].
+> >
+> > Let me know if you can't reproduce it and I'll check reproducibility
+> > on another platform, and let me know for any patch testing.
+>
+> this should be fixed in the testing branch:
+>
+> commit ab35f724070ccdaa31f6376a1890473e7d031ed0
+> Author: Kent Overstreet <kent.overstreet@linux.dev>
+> Date:   Fri Dec 29 13:54:00 2023 -0500
+>
+>     bcachefs: fix nocow write path when writing to multiple extents
+>
+>     Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+>
+> diff --git a/fs/bcachefs/io_write.c b/fs/bcachefs/io_write.c
+> index c5961bac19f0..7c5963cd0b85 100644
+> --- a/fs/bcachefs/io_write.c
+> +++ b/fs/bcachefs/io_write.c
+> @@ -1316,6 +1316,7 @@ static void bch2_nocow_write(struct bch_write_op *op)
+>                 closure_get(&op->cl);
+>                 bch2_submit_wbio_replicas(to_wbio(bio), c, BCH_DATA_user,
+>                                           op->insert_keys.top, true);
+> +               nr_buckets = 0;
+>
+>                 bch2_keylist_push(&op->insert_keys);
+>                 if (op->flags & BCH_WRITE_DONE)
 
-> ---
->  MAINTAINERS                                   |  1 +
->  tools/testing/selftests/Makefile              |  1 +
->  tools/testing/selftests/rust/.gitignore       |  1 +
->  tools/testing/selftests/rust/Makefile         |  8 ++++
->  .../selftests/rust/test_probe_samples.sh      | 42 +++++++++++++++++++
->  5 files changed, 53 insertions(+)
->  create mode 100644 tools/testing/selftests/rust/.gitignore
->  create mode 100644 tools/testing/selftests/rust/Makefile
->  create mode 100755 tools/testing/selftests/rust/test_probe_samples.sh
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e2c6187a3ac8..acf283a5d2c0 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -18847,6 +18847,7 @@ F:	Documentation/rust/
->  F:	rust/
->  F:	samples/rust/
->  F:	scripts/*rust*
-> +F:	tools/testing/selftests/rust/
->  K:	\b(?i:rust)\b
->  
->  RXRPC SOCKETS (AF_RXRPC)
-> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-> index 3b2061d1c1a5..26140426c849 100644
-> --- a/tools/testing/selftests/Makefile
-> +++ b/tools/testing/selftests/Makefile
-> @@ -74,6 +74,7 @@ TARGETS += riscv
->  TARGETS += rlimits
->  TARGETS += rseq
->  TARGETS += rtc
-> +TARGETS += rust
->  TARGETS += seccomp
->  TARGETS += sgx
->  TARGETS += sigaltstack
-> diff --git a/tools/testing/selftests/rust/.gitignore b/tools/testing/selftests/rust/.gitignore
-> new file mode 100644
-> index 000000000000..e3c5c04d1b19
-> --- /dev/null
-> +++ b/tools/testing/selftests/rust/.gitignore
-> @@ -0,0 +1 @@
-> +ktap_helpers.sh
-> diff --git a/tools/testing/selftests/rust/Makefile b/tools/testing/selftests/rust/Makefile
-> new file mode 100644
-> index 000000000000..ccaa50f35b5b
-> --- /dev/null
-> +++ b/tools/testing/selftests/rust/Makefile
-> @@ -0,0 +1,8 @@
-> +
-> +TEST_PROGS += test_probe_samples.sh
-> +TEST_GEN_FILES := ktap_helpers.sh
-> +
-> +include ../lib.mk
-> +
-> +$(OUTPUT)/ktap_helpers.sh:
-> +	cp $(top_srcdir)/tools/testing/selftests/dt/ktap_helpers.sh $@
-> diff --git a/tools/testing/selftests/rust/test_probe_samples.sh b/tools/testing/selftests/rust/test_probe_samples.sh
-> new file mode 100755
-> index 000000000000..a46550543f73
-> --- /dev/null
-> +++ b/tools/testing/selftests/rust/test_probe_samples.sh
-> @@ -0,0 +1,42 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Copyright (c) 2023 Collabora Ltd
-> +#
-> +# This script tests whether the rust sample modules can
-> +# be added and removed correctly.
-> +#
-> +
-> +DIR="$(dirname "$(readlink -f "$0")")"
-> +
-> +source "${DIR}"/ktap_helpers.sh
-> +
-> +rust_sample_modules=("rust_minimal" "rust_print")
-> +
-> +KSFT_PASS=0
-> +KSFT_FAIL=1
-> +KSFT_SKIP=4
-> +
-> +ret="${KSFT_PASS}"
-> +
-> +ktap_print_header
-> +
-> +ktap_set_plan "${#rust_sample_modules[@]}"
-> +
-> +for sample in "${rust_sample_modules[@]}"; do
-> +    if ! /sbin/modprobe -n -q "$sample"; then
-> +        ktap_test_skip "module $sample is not found in /lib/modules/$(uname -r)"
-> +        continue
-> +    fi
-> +
-> +    if /sbin/modprobe -q "$sample"; then
-> +        /sbin/modprobe -q -r "$sample"
-> +        ktap_test_pass "$sample"
-> +    else
-> +        ret="${KSFT_FAIL}"
-> +        ktap_test_fail "$sample"
-> +    fi
-> +done
-> +
-> +ktap_print_totals
-> +exit "${ret}"
+Thanks for the quick update, Kent.
 
+With this change and a few runs of the reproducer, I still hit this
+stack corruption with the same backtrace.
+
+Let me know for any further testing,
+  Dan
 -- 
-BR,
-Muhammad Usama Anjum
+Daniel J Blueman
 
