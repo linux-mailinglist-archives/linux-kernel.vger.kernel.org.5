@@ -1,170 +1,95 @@
-Return-Path: <linux-kernel+bounces-13562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BA8E820815
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 18:57:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5634820817
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 19:02:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C107A283E03
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 17:57:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1277D1C21EE6
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 18:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 995C6BA4B;
-	Sat, 30 Dec 2023 17:57:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C063BE4C;
+	Sat, 30 Dec 2023 18:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OF+JWlNJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8FBBA31
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 17:57:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2EFBF2F4;
-	Sat, 30 Dec 2023 09:57:55 -0800 (PST)
-Received: from [192.168.178.38] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 819633F64C;
-	Sat, 30 Dec 2023 09:57:05 -0800 (PST)
-Message-ID: <dbd36b16-4acb-415a-9bbd-258b2e022475@arm.com>
-Date: Sat, 30 Dec 2023 18:56:58 +0100
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43CD5BA37;
+	Sat, 30 Dec 2023 18:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=mg4NEAtlIdMJsQ3DLm6kXqa/wV+e7FCzKtuVzxdonAU=; b=OF+JWlNJMC8/3tu2Szw4PK/Ar0
+	5ey8YqWRAtAv2ZPHLGNnOKWZ4kZqbPXaN6M6v1zEI7L2qPhhwfbR5fkYIF1577WQXcdwEqymggxga
+	0LAMzWx+nLz27hbMyWfQWxtP+1ebGkRL2fHtJjFi0Tn9W2W0RmDHpkYlxfnmfofHR5HUeeozGAJRr
+	N1H3Jl08EL9sE/e+0ZYmT+XvqIXMdwgv2XKLSmLhpj7CB1NhLCeAsylVYa1bFFrM5JK34wWIUwhIN
+	kASApqY2fx2FjZyRUidkpOxyNJ4LM9U2ni7HI1LE5tJXUk6KIKabqeDRzBTJo+lsYwlLMgqP1IVVF
+	etclSpgg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rJdfK-007C9z-VU; Sat, 30 Dec 2023 18:02:31 +0000
+Date: Sat, 30 Dec 2023 18:02:30 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Genes Lists <lists@sapience.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: 6.6.8 stable: crash in folio_mark_dirty
+Message-ID: <ZZBbNm5RRSGEDlqk@casper.infradead.org>
+References: <8bb29431064fc1f70a42edef75a8788dd4a0eecc.camel@sapience.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] v2 sched: Fix tg->load when offlining a CPU
-Content-Language: en-US
-To: Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
- peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org,
- bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
- vschneid@redhat.com, imran.f.khan@oracle.com, aaron.lu@intel.com,
- linux-kernel@vger.kernel.org
-References: <20231223111545.62135-1-vincent.guittot@linaro.org>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <20231223111545.62135-1-vincent.guittot@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8bb29431064fc1f70a42edef75a8788dd4a0eecc.camel@sapience.com>
 
-On 23/12/2023 12:15, Vincent Guittot wrote:
-> When a CPU taken offline, the contribution of its cfs_rqs to task_groups'
-> load may remain and impact the calculation of the share of the online
-> CPUs.
-> Clear the contribution of an offlining CPU to task groups' load and skip
-> its contribution while it is inactive.
+On Sat, Dec 30, 2023 at 10:23:26AM -0500, Genes Lists wrote:
+> Apologies in advance, but I cannot git bisect this since machine was
+> running for 10 days on 6.6.8 before this happened.
 
-The patch got applied to tip/sched/core a couple of hours ago so this
-might be too late ...
+Thanks for the report.  Apologies, I'm on holiday until the middle of
+the week so this will be extremely terse.
 
-Isn't this fix in rq_offline_fair() also affecting all the other cpus
-via cpuset_hotplug_workfn() -> rebuild_sched_domains_locked() ->
-partition_sched_domains_locked() -> cpu_attach_domain() ->
-rq_attach_root() -> set_rq_offline() ?
+>  - Root, efi is on nvme
+>  - Spare root,efi is on sdg
+>  - md raid6 on sda-sd with lvmcache from one partition on nvme drive.
+>  - all filesystems are ext4 (other than efi).
+>  - 32 GB mem.
 
-> 
-> Reported-by: Imran Khan <imran.f.khan@oracle.com>
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Reviewed-and-tested-by: Imran Khan <imran.f.khan@oracle.com>
-> ---
-> 
-> - Fix !CONFIG_FAIR_GROUP_SCHED case
-> 
->  kernel/sched/fair.c | 52 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 52 insertions(+)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index bcea3d55d95d..4b09237d24b9 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4100,6 +4100,10 @@ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
->  	if (cfs_rq->tg == &root_task_group)
->  		return;
->  
-> +	/* rq has been offline and doesn't contribute anymore to the share */
-> +	if (!cpu_active(cpu_of(rq_of(cfs_rq))))
-> +		return;
-> +
->  	/*
->  	 * For migration heavy workloads, access to tg->load_avg can be
->  	 * unbound. Limit the update rate to at most once per ms.
-> @@ -4116,6 +4120,49 @@ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
->  	}
->  }
->  
-> +static inline void clear_tg_load_avg(struct cfs_rq *cfs_rq)
-> +{
-> +	long delta;
-> +	u64 now;
-> +
-> +	/*
-> +	 * No need to update load_avg for root_task_group as it is not used.
-> +	 */
-> +	if (cfs_rq->tg == &root_task_group)
-> +		return;
-> +
-> +	now = sched_clock_cpu(cpu_of(rq_of(cfs_rq)));
-> +	delta = 0 - cfs_rq->tg_load_avg_contrib;
-> +	atomic_long_add(delta, &cfs_rq->tg->load_avg);
+> Dec 30 07:00:36 s6 kernel: ------------[ cut here ]------------
+> Dec 30 07:00:36 s6 kernel: WARNING: CPU: 0 PID: 521524 at mm/page-writeback.c:2668 __folio_mark_dirty (??:?) 
 
-Why not:
+This is:
 
-atomic_long_sub(cfs_rq->tg_load_avg_contrib, &cfs_rq->tg->load_avg) w/o
-the local `long delta`?
+                WARN_ON_ONCE(warn && !folio_test_uptodate(folio));
 
-> +	cfs_rq->tg_load_avg_contrib = 0;
-> +	cfs_rq->last_update_tg_load_avg = now;
-> +}
-> +
-> +/* cpu offline callback */
-> +static void __maybe_unused clear_tg_offline_cfs_rqs(struct rq *rq)
-> +{
-> +	struct task_group *tg;
-> +
-> +	lockdep_assert_rq_held(rq);
-> +
-> +	/*
-> +	 * The rq clock has already been updated in the
-> +	 * set_rq_offline(), so we should skip updating
-> +	 * the rq clock again in unthrottle_cfs_rq().
+> Dec 30 07:00:36 s6 kernel: CPU: 0 PID: 521524 Comm: rsync Not tainted 6.6.8-stable-1 #13 d238f5ab6a206cdb0cc5cd72f8688230f23d58df
 
-This comment seems misleading here since it looks that it is tailored to
-unthrottle_offline_cfs_rqs(), the other cpu offline callback.
+So rsync is exiting.  Do you happen to know what rsync is doing?
 
-> +	 */
-> +	rq_clock_start_loop_update(rq);
-> +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(tg, &task_groups, list) {
-> +		struct cfs_rq *cfs_rq = tg->cfs_rq[cpu_of(rq)];
-> +
-> +		clear_tg_load_avg(cfs_rq);
-> +	}
-> +	rcu_read_unlock();
-> +
-> +	rq_clock_stop_loop_update(rq);
-> +}
-> +
->  /*
->   * Called within set_task_rq() right before setting a task's CPU. The
->   * caller only guarantees p->pi_lock is held; no other assumptions,
-> @@ -4412,6 +4459,8 @@ static inline bool skip_blocked_update(struct sched_entity *se)
->  
->  static inline void update_tg_load_avg(struct cfs_rq *cfs_rq) {}
->  
-> +static inline void clear_tg_offline_cfs_rqs(struct rq *rq) {}
-> +
->  static inline int propagate_entity_load_avg(struct sched_entity *se)
->  {
->  	return 0;
-> @@ -12446,6 +12495,9 @@ static void rq_offline_fair(struct rq *rq)
->  
->  	/* Ensure any throttled groups are reachable by pick_next_task */
->  	unthrottle_offline_cfs_rqs(rq);
-> +
-> +	/* Ensure that we remove rq contribution to group share */
-> +	clear_tg_offline_cfs_rqs(rq);
->  }
->  
->  #endif /* CONFIG_SMP */
+> Dec 30 07:00:36 s6 kernel: block_dirty_folio (??:?) 
+> Dec 30 07:00:36 s6 kernel: unmap_page_range (??:?) 
+> Dec 30 07:00:36 s6 kernel: unmap_vmas (??:?) 
+> Dec 30 07:00:36 s6 kernel: exit_mmap (??:?) 
+> Dec 30 07:00:36 s6 kernel: __mmput (??:?) 
+> Dec 30 07:00:36 s6 kernel: do_exit (??:?) 
+> Dec 30 07:00:36 s6 kernel: do_group_exit (??:?) 
+> Dec 30 07:00:36 s6 kernel: __x64_sys_exit_group (??:?) 
+> Dec 30 07:00:36 s6 kernel: do_syscall_64 (??:?) 
 
+It looks llike rsync has a page from the block device mmaped?  I'll have
+to investigate this properly when I'm back.  If you haven't heard from
+me in a week, please ping me.
+
+(I don't think I caused this, but I think I stand a fighting chance of
+tracking down what the problem is, just not right now).
 
