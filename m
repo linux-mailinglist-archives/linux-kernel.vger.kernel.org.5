@@ -1,149 +1,115 @@
-Return-Path: <linux-kernel+bounces-13446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FA588206B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3045C8206B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:14:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 971B31F21576
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 14:11:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C34461F21591
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 14:14:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F5D8F5F;
-	Sat, 30 Dec 2023 14:11:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B75428F59;
+	Sat, 30 Dec 2023 14:14:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PhQEzXsa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m4V9C77n"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C99D8BFB
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 14:11:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a27733ae1dfso214751166b.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 06:11:36 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC0DB642;
+	Sat, 30 Dec 2023 14:14:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-67fa018c116so44140686d6.3;
+        Sat, 30 Dec 2023 06:14:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703945495; x=1704550295; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8D+6OD5768CMC9lV5VrV9hKQqRaZdZu6kBM6LK1mwKM=;
-        b=PhQEzXsanQYyQFSr3ZmngCGGoNvtzTDzFcEFs6rP68UNBGjq8gRPgsoy+BYQGzpthZ
-         cHHF5bsJ9Es4lt71Vk3NcyOnswPp04VubPEj3eGQBnwt75uXgPjnwp+XAeJkdg7u/P2C
-         E44JI8I9DeyLMwDE96ZXWhRhl8VlIhrTMJ82zk9zXRk/4lq7z/z87Zb5x4edtOjnepQF
-         evunM38DF2ToDminyiS/+1F7eUidl59H4osMbvqaSSLmqmTQze0nRJZ6wlbpXDiOwjJl
-         Mj2zc9+Qu394jjg3hGTv8yi2UPPM8+Qci10zh4ICwwQARiZoSnWcjpKOd/QS3AFKhmGO
-         KJUA==
+        d=gmail.com; s=20230601; t=1703945671; x=1704550471; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mcI8rtnO2DHiVZkR5J3yMIc49aRf9YUpVyZK2ry/OBk=;
+        b=m4V9C77nHpH0l3dG47aOuvtAkZT8mkVOg6M742vIP4BrTumaat/dHJycWm0JqTWaO2
+         163i/dEnQaZPxYYaAeIoqpf34poZP4JeG7suRsKummK1YrFbUeH9C9ANSkIzcGPyQAPg
+         rGzDW4lWF8zW24QBSToFudMydG8kwLbB9a82dEJ1NwPBfv+f+lTx1gNTUWbBlVdAY9FE
+         avsJFboQXFjtD8/dhlZe4Zj+MdMdUH4IRnmiWFNQkNIb25XlOjJW+WXvpYWEDc/ht1tQ
+         T7saUrTFlY/TaJPCAGWmWl+4xedxxxNA7sXPGT8Ctt8Bcx1VJkW2cfsZkS0slUTwokSC
+         1k/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703945495; x=1704550295;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8D+6OD5768CMC9lV5VrV9hKQqRaZdZu6kBM6LK1mwKM=;
-        b=INm72D7wZ3w9GpYIkwW/6vmGeEsdclpujN2/paZSOvaWz/LBnbNGRbvbjz3/xYMX/U
-         zAMY5JWPUbLQnM51z0dyiCEWmFbgYCbIEnnn0L29yk9O7btFKL5cnjln3FmtrKxS6cy+
-         323g6VjxfTY5lmKLBlVEA3RggJEYDeDY7XJ+Dfs/+kH5OYYaLui+cOLK775so+KnHr1U
-         BoLOl6MmkVSNDtzKmL4wpYqmtZW0d6wCPnnhfC4lgFGMLXTEbQHb5NMycB6tnpbjSw3b
-         O94N/s1YE3+OPQ7naU49Ov7dDTZSYmppToznfvVwy6OpB6cnMbPR8Wuk48ZD/2xK8hL5
-         nvPA==
-X-Gm-Message-State: AOJu0Yz/gHj4umKlO+Mx1A6zf3NPGHn3hkB2a97L8CF1Xt14d7Iq04ru
-	WZ9U5DUslrdb2NKVyCZIf9NSFdi8F2io+g==
-X-Google-Smtp-Source: AGHT+IGF34YfcXh8ZKfYGRWf52qQT9WIItnrZ/pMDd2s7/cltqWSEOnh4mIv2WeT19MpWQzzXf6R2A==
-X-Received: by 2002:a17:906:1807:b0:a26:e492:da8f with SMTP id v7-20020a170906180700b00a26e492da8fmr2474055eje.176.1703945495458;
-        Sat, 30 Dec 2023 06:11:35 -0800 (PST)
-Received: from [192.168.199.125] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
-        by smtp.gmail.com with ESMTPSA id p9-20020a170907910900b00a26ac5e3683sm8529380ejq.100.2023.12.30.06.11.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Dec 2023 06:11:35 -0800 (PST)
-Message-ID: <240a1791-cb81-49e5-960b-9c960c0c15de@linaro.org>
-Date: Sat, 30 Dec 2023 15:11:34 +0100
+        d=1e100.net; s=20230601; t=1703945671; x=1704550471;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mcI8rtnO2DHiVZkR5J3yMIc49aRf9YUpVyZK2ry/OBk=;
+        b=xDbZEzvR4nzm+K/t5c9OHE0SVRCKaS0fk4zV1721xU0KieXB6Vl2dDSOs5Hc1RsXBN
+         MIDQEY8n4oZS+efrwWMZKD67tfxGVFnQH995FSbB2Tx70D7WSlSbmMMZlEC6xPuDPIS/
+         7YhPLgQ5WKeddeN/g/67wyCSuWabHSPvEWkjZlX4oumT0W1qOMee0pRiXDqu6omjaSjT
+         9IkOKIK9wJSkelShmq8dGURSGE/LkMN/vVEb5l4pTJsMBfcNn3qp0kgZu+dK9XxI4B4G
+         q/gBJlgNeT20OkQaUkwMhhF1RJ7MWoEI+3j8fggB15OjDSJxyLIhfc3RcazdqWbxaHU4
+         X+WA==
+X-Gm-Message-State: AOJu0Yx3o4UcTGkdeioQLDR8lKeAZOB5+TWeFDF93qjhj5117/OoxL4n
+	qrAH9p+blLRU9ZCVpWykkzer9fZ+q+p7BPsaJcYPl66MiWU=
+X-Google-Smtp-Source: AGHT+IGvH4Zqw0uOFIcVVR+Te/cPb4vC9coHRn2BESa8IgsVLKG+Ltm3pAUsRomrOrcVISwi+eT0Ps4MHDjKGlMrVE0=
+X-Received: by 2002:a05:6214:4b84:b0:680:5f49:6912 with SMTP id
+ qf4-20020a0562144b8400b006805f496912mr5223461qvb.118.1703945671025; Sat, 30
+ Dec 2023 06:14:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: sc8280xp-crd: Add PCIe CLKREQ#
- sleep state
-Content-Language: en-US
-To: Johan Hovold <johan@kernel.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Johan Hovold <johan+linaro@kernel.org>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Konrad Dybcio <konrad.dybcio@somainline.org>
-References: <20231227-topic-8280_pcie_dts-v1-0-13d12b1698ff@linaro.org>
- <20231227-topic-8280_pcie_dts-v1-3-13d12b1698ff@linaro.org>
- <ZY7BqLJZ0btpuL4b@hovoldconsulting.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <ZY7BqLJZ0btpuL4b@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CAK2bqVKCdaD6-PZi6gXhf=9CiKGhxQM_UHyKV_onzDPnhbAmvw@mail.gmail.com>
+ <ZY7omD5OBLUg6pyx@duo.ucw.cz> <CAK2bqVLBZvU2fVfY4bkFrU=4X+W4O3f5pbTdeQjMW=W2sGWpeQ@mail.gmail.com>
+ <20231229172823.GC148343@mit.edu>
+In-Reply-To: <20231229172823.GC148343@mit.edu>
+From: Chris Rankin <rankincj@gmail.com>
+Date: Sat, 30 Dec 2023 14:14:20 +0000
+Message-ID: <CAK2bqVJ-odOQP6jHQJr6Xuyiw26C3RLzuFJt0NbANDY=0sO3qA@mail.gmail.com>
+Subject: Re: Does Linux still support UP?
+To: netdev@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 29.12.2023 13:55, Johan Hovold wrote:
-> On Wed, Dec 27, 2023 at 11:28:28PM +0100, Konrad Dybcio wrote:
->> The CLKREQ pin should not be muxed to its active function when the RC
->> is asleep. 
-> 
-> You forgot to explain *why* you think this is needed.
-You're right, I was in a flurry of patchsending..
+Yes, the bright spots are my phone's flash. But I did check the images
+to ensure that their information was still legible before posting
+them.
 
-> 
-> Note that this is only appears to be done for one upstream Qualcomm SoC
-> (msm8996) currently, and that, notably, there is no driver support for
-> actually changing the pin state.
-Please see my reply to Mani.
+Image resolution is 4128x2322, which should be more than adequate for
+zooming in.
 
-> 
->> Add the missing pin sleep states to resolve that.
-> 
->> Fixes: d907fe5acbf1 ("arm64: dts: qcom: sc8280xp-crd: enable WiFi controller")
->> Fixes: 17e2ccaf65d1 ("arm64: dts: qcom: sc8280xp-crd: enable SDX55 modem")
->> Fixes: 6a1ec5eca73c ("arm64: dts: qcom: sc8280xp-crd: enable NVMe SSD")
-> 
-> So not sure these Fixes tags are warranted either.
-Agreed!
-
-Konrad
+On Fri, 29 Dec 2023 at 17:28, Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Fri, Dec 29, 2023 at 04:03:56PM +0000, Chris Rankin wrote:
+> >
+> > I have already attached as much information as I am *ever* likely to
+> > be able to extract about this problem to the Bugzilla ticket.
+>
+> In addition to doing a bisection, something else you might want to
+> try, since in the bugzilla you have hypothesized that it might be a
+> bug in the e100 driver, is to try building a kernel without the driver
+> configured, and see if that makes the kernel not hang.  If it does,
+> then it's likely that the problem is either in the e100 driver, or
+> maybe somewhere in the networking stack --- although in that case it's
+> more likely someone else would have noticed.
+>
+> Something else you might try is to connect up a serial console, so you
+> can get the full output from sysrq output.  The other advantage of
+> using a serial console is people are much more likely to scan a text
+> file with the consoles, as opposed to downloading and trying to make
+> sense of the screen snapshots.  (BTW, was the flash enabled on your
+> cell phone?  The bright white spot in the middle of the screen makes
+> it very hard to read.)
+>
+> I'd also try sysrq-l (show backtrace for all active CPU's), so you can
+> see where the kernel is actually hanging.
+>
+> For better or for worse, support for old hardware is a volunteer
+> effort, so owners of the said old hardware need to do a bunch of the
+> leg work.  Or if you can have a paid support contract, maybe you can
+> pay someone to gather the detail, but when you say "is feature X
+> supported" in an open source project, that has a different meaning
+> from a commercial software product.
+>
+>                                                 - Ted
 
