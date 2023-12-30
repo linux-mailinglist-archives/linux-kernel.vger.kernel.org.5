@@ -1,106 +1,113 @@
-Return-Path: <linux-kernel+bounces-13384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 197E9820449
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:10:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B05CE82044A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:16:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 682FDB2133D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 10:10:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C4AA1F21757
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 10:16:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A997823CF;
-	Sat, 30 Dec 2023 10:10:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A13CA23C4;
+	Sat, 30 Dec 2023 10:16:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K2uIiWPp"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hLbnTDNc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D228E1FAF;
-	Sat, 30 Dec 2023 10:10:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-28c179bf45cso4845281a91.1;
-        Sat, 30 Dec 2023 02:10:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703931039; x=1704535839; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GUwoHcWCWeNwaua/GlD5vIC8+pco3z2IDUy7BqEvQuc=;
-        b=K2uIiWPphOVeChtZ6d8ncj9rdRIXzfUbqi3AuoPAhuMV3gc+gbvAkuHSs4gmoCsSC3
-         FHHrSoWhsLISzu3SEulflY26NtpMDhFD8JsP/1ZpQf39M326f/EAidQRlcT9srhy8NX2
-         xfyv4rNTso8S8aC472qSkL8+JgqCjt/WXtVpMIpNj8fGX/dYzqqeCdkYPDbj9c+n6QRD
-         9J0diDeCt58MSApXSsvZLGKIw5JR35bwqjnuhb2nsq9ScsQTQPFPMLWM0VaFj5GYYyeF
-         MxsAxa93V8dR90vRCP6K4iYEmBDWuKep51ZWGNrExpxAi4rCwDbeNtiuFihjxLZ5/l2E
-         sVYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703931039; x=1704535839;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GUwoHcWCWeNwaua/GlD5vIC8+pco3z2IDUy7BqEvQuc=;
-        b=QKGoq46mWgqiHgtaL+lYuuLE0Ui0m2fO6YAH//P6lI7xoQK8V7U2YMCPFakmD8ZTrr
-         WYpklEz6JvsVnACUAU4ZYeDXIcvS/uPKTFf9FzExk2Kh8cMN9ayL3b8f8ERpzslmGrGe
-         BS9YBbG9CYF8BLKsPN+9wont/Gn0oWqBoNv8QCZ14Zj0WxOHoZwBA2Y7zY46m/iT6ZXV
-         qmzse8XLChnVMYFCwjLUG0BfbsTVdE4dPWa5y0wp4SroXUrh5NcaIn4LB6d1OZi1nPDW
-         CKjXS+UWVPbvQfekQ/aAYyDdOQtaJ2T9pRUDqMVE6kHG/IckysgXDzBfoa2sbaswjUOs
-         RfCA==
-X-Gm-Message-State: AOJu0YyHKmrOX2Cvj7kLWhtXuZOurMvPoQbhOKemlJrt8LXmcbvrElKX
-	u2F/jDjWlRYMZVhoB4Y1+C8=
-X-Google-Smtp-Source: AGHT+IG6AQ7NkttmEt+vKSAtKtO4REhFtyapg0WY7cxINl846hNcIzMUUlHk84tKE6tmQ3nMDwZbFA==
-X-Received: by 2002:a17:902:e549:b0:1d4:48ab:a83 with SMTP id n9-20020a170902e54900b001d448ab0a83mr10017701plf.71.1703931039106;
-        Sat, 30 Dec 2023 02:10:39 -0800 (PST)
-Received: from localhost.localdomain ([2408:8207:2540:8c00:23b7:4d83:3222:c5dd])
-        by smtp.gmail.com with ESMTPSA id u1-20020a17090282c100b001c71ec1866fsm9751639plz.258.2023.12.30.02.09.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Dec 2023 02:10:35 -0800 (PST)
-From: amazingfate <liujianfeng1994@gmail.com>
-To: knaerzche@gmail.com
-Cc: conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	ezequiel@vanguardiasur.com.ar,
-	heiko@sntech.de,
-	krzysztof.kozlowski+dt@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	liujianfeng1994@gmail.com,
-	mchehab@kernel.org,
-	p.zabel@pengutronix.de,
-	robh+dt@kernel.org,
-	sfr@canb.auug.org.au
-Subject: Re: [PATCH v2 0/3] Add hantro g1 video decoder support for RK3588
-Date: Sat, 30 Dec 2023 18:09:30 +0800
-Message-Id: <20231230100930.3740439-1-liujianfeng1994@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <35df6456-2bc2-415d-bc61-09e4b440e2ac@gmail.com>
-References: <35df6456-2bc2-415d-bc61-09e4b440e2ac@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563D5210A
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 10:16:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703931405;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8Ah+0r8YHHWoN4cbO1+eIvu2p9Fc5rhLuP9mStoN/2M=;
+	b=hLbnTDNcSQolOZ7Ls+ZKd5vsbZrrVUXQVElr9ke6M/4mrgLaL22adPOFLMjhhDMMFgZsar
+	Qq48Ml061BXDGiZPdZwxTbMr35+NGrFBkYDAL0vR0W3OUvLJu4hA6/6Zxs96wS0HO/HYoh
+	smS7q4xeLOSO+wdRyqzFWrzV/rpnqnE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-643-pItFQRRhNh-h7l-uP85TvQ-1; Sat, 30 Dec 2023 05:16:41 -0500
+X-MC-Unique: pItFQRRhNh-h7l-uP85TvQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C169583F265;
+	Sat, 30 Dec 2023 10:16:40 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.216])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 96676492BC8;
+	Sat, 30 Dec 2023 10:16:39 +0000 (UTC)
+Date: Sat, 30 Dec 2023 18:16:36 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Yuntao Wang <ytcoode@gmail.com>, bp@alien8.de,
+	dave.hansen@linux.intel.com, dyoung@redhat.com,
+	eric.devolder@oracle.com, hbathini@linux.ibm.com, hpa@zytor.com,
+	kexec@lists.infradead.org, lijiang@redhat.com,
+	linux-kernel@vger.kernel.org, mingo@redhat.com, seanjc@google.com,
+	sourabhjain@linux.ibm.com, tglx@linutronix.de, tiwai@suse.de,
+	vgoyal@redhat.com, x86@kernel.org
+Subject: Re: [PATCH 3/3] crash_core: fix and simplify the logic of
+ crash_exclude_mem_range()
+Message-ID: <ZY/uBJmpG14Ogvet@MiWiFi-R3L-srv>
+References: <ZXxtfpXpuFXLd+ge@MiWiFi-R3L-srv>
+ <20231216015410.188924-1-ytcoode@gmail.com>
+ <ZX0Z+IyaAX9lNSok@MiWiFi-R3L-srv>
+ <20231229121052.cac37914c7a051b829fcf933@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231229121052.cac37914c7a051b829fcf933@linux-foundation.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
->On Sat, 30 Dec 2023 10:46:42 +0100, Alex Bee <knaerzche@gmail.com> wrote:
->if the RK3568 and RK3588 variants match, patch [1/3] is not necessary. Just
->document a additional compatible in a similar way it's being done for
->rk3188/rk3066 or rk3228/rk3399.
->If there are ever differences we don't know about yet, a additional variant
->can still be added in the driver.
+On 12/29/23 at 12:10pm, Andrew Morton wrote:
+> On Sat, 16 Dec 2023 11:31:04 +0800 Baoquan He <bhe@redhat.com> wrote:
+> 
+> > > > Imagine we have a crashkernel region 256M reserved under 4G, say [2G, 2G+256M].
+> > > > Then after excluding the 256M from a region, it should stop. But now, this patch
+> > > > will make it continue scanning. Not sure if it's all in my mind.
+> > > 
+> > > Hi Baoquan,
+> > > 
+> > > Thank you for such a detailed reply. Now I finally understand why the code is
+> > > written this way.
+> > > 
+> > > However, if we can guarantee its correctness, wouldn't it be better to use the
+> > > generic region removing logic? At least it is more concise and clear, and other
+> > > people reading this code for the first time wouldn't get confused like me.
+> > > 
+> > > As for your concern about the while loop, I think it wouldn't affect performance
+> > > much because the total number of loops is small.
+> > 
+> > Well, see below kexec-tools commit, you wouldn't say that. And when you
+> > understand the code, you will feel a little uncomfortable about the
+> > sustaining useless scanning. At least, we should stop scanning after
+> > needed exluding is done.
+> > 
+> > Or, we may need add a generic region removing function so that it
+> > can be shared, e.g e820 memory region removing, memblock region removing.
+> > Otherwise, I can't see why a specific region excluding need a generic 
+> > region removing function.
+> 
+> So where do we now stand on this patchset?
 
-Hi Alex,
-I did try to not touching hantro driver code and just enabling the node in
-devicetree by a compatible property like:
-compatible = "rockchip,rk3588-vpu", "rockchip,rk3568-vpu";
-but the hantro g1 node is not binded by hantro driver. I guess that is
-because hantro driver is already binded to the hantro av1 vpu on rk3588,
-so I added patch[1/3] to make it work.
+The patch 1 and 2 are good clean up. The patch 3 plus below one, the
+entire is a good code improvement patch.
 
-Jianfeng
+[PATCH] crash_core: optimize crash_exclude_mem_range()
+https://lore.kernel.org/all/20231219163418.108591-1-ytcoode@gmail.com/T/#u
+
 
