@@ -1,273 +1,152 @@
-Return-Path: <linux-kernel+bounces-13301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D13EA820337
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 02:16:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD1CD820339
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 02:22:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3B031C20E8E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 01:16:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 054D028263D
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 01:22:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E9A810F7;
-	Sat, 30 Dec 2023 01:16:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rPPnWcyQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B98EA8;
+	Sat, 30 Dec 2023 01:22:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77601801
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 01:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so756872566b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 17:16:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703898987; x=1704503787; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EcIe4YJ5YCTQdS+tf3+D0wVuBPwXDmW3xk764/9wSSI=;
-        b=rPPnWcyQNJb6GYO6NY79RTsOAvALwsO8VbpAjyRia2vurXSev+fSLfYLSEjfpcV+F1
-         mzYzYyKjyWlhdMqwXSzx1TGwOKlUAr74Hs36YH2iR4QfEyYMd//gntOcJrCKIa7sq5ri
-         Xqc8iiKMkkq8SCrY4xkrButWEPusB0DLEYoDeNjeeKJOA9WmtUO8T+oUagrSlGapJLrQ
-         D25sNMJH2+89IdR8H6oxuufHEz2Gbcm2wIbOGoK5wT2qKgMlK0EMTtL24CzEwLvFvUJL
-         YSuAoeg50cZKpzhCoyVxLW8nwjIbnXtgtb0JXmjDLDMy62NgVKbwXOACSqA1JyPeh39b
-         eMDw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B78801
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 01:22:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b7fef9ef2aso915871239f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Dec 2023 17:22:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703898987; x=1704503787;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1703899324; x=1704504124;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EcIe4YJ5YCTQdS+tf3+D0wVuBPwXDmW3xk764/9wSSI=;
-        b=JF5/n5hs72fYoNkMoPBQkBvB7t7A3bCmaZzQbPG3xSQZ+RcMhvKxMl9pQs5d1CKzUq
-         qUaWityVYDh31Zqn+CU+Bzw4kbZmMmr3VOt/bnkrgpWhqPmwaPnePtrYxfCJv9Kc9Gkk
-         JTd67u3/q3073ld+J0rUNY4DCM4x9Fws/Y+ywbqMf14iFlXpF5zILvRQ0p/U0ECWnhQX
-         wh32eTwoF93ge9gVzm8VQKRQ92w8o3/WQ08SVNnMMMhrbluhlcsXdyNjoR5it2WbSreq
-         iCZwiKclE95sgd4CGijTyWyjIexr7j2jO+1naWoPv842MkFnUakd1by/SR+lbUM41wxJ
-         YMCg==
-X-Gm-Message-State: AOJu0YzzBAIk80U5RUQDoxDQSA7H7QC9YtyJc7c5d553cvs1YnOSRAOj
-	o+mVnmnUWDD4B7L5/katrdOySpBLkXH10w==
-X-Google-Smtp-Source: AGHT+IHWXrAn3AaZSP5giRmCNTQGDxW9VBM1R4CeODgbmnJ1+Tim4Uq3twZVIGvJye2TZn/uE4d5Zw==
-X-Received: by 2002:a17:906:cc12:b0:a17:d7ea:f59e with SMTP id ml18-20020a170906cc1200b00a17d7eaf59emr5811394ejb.48.1703898986762;
-        Fri, 29 Dec 2023 17:16:26 -0800 (PST)
-Received: from [192.168.199.125] ([178.235.179.36])
-        by smtp.gmail.com with ESMTPSA id fp21-20020a1709069e1500b00a26ade46619sm8019163ejc.121.2023.12.29.17.16.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Dec 2023 17:16:26 -0800 (PST)
-Message-ID: <598ede70-bc01-4137-b68b-981c3d420735@linaro.org>
-Date: Sat, 30 Dec 2023 02:16:18 +0100
+        bh=xjyRYCqYJuuEo6FJuDOysy/2ZFJvNq4BZm5lHPU7uFs=;
+        b=BERzV2aR5FyCfWZOKeshvhcvgt5j4egV7BYfWWXojF8xD0PjLudfq52epAD4V0z/hY
+         4326GxNPr3YA9Dj6VOOtZbO/n8NDQT1z5nEij6AYcLuTZzRLjMHwVNnFsAXMTKGF2aWa
+         sJpRA/bDw3tOKPJmJq5ci23iPOKhYfNlpcHZjUDytzzSm6OKcAv/QThpczA7Zvdh6i8V
+         5d3JG7YuXWl9NETxL4vjRC+2qrafXOJrti7rn8+uPJiSPNM+dwrHJgjkHFKurHY2huLM
+         CNZ8Cc2wik2M1v1PJzf9HONqjHlGjdyZVqY2Nmr4c1uXBvsDi03eraJV/xnU9VfxT8W4
+         dyOg==
+X-Gm-Message-State: AOJu0YxLpISOJFBptp157tO4pfDLI9qabh8YeEXCi1EVEyTl41+amgvl
+	NfzvtTvnpwAC5E6de4MWhrTtz7LNrPzK+ULl2+cKsbMCB4l3
+X-Google-Smtp-Source: AGHT+IHfe1v//oWosqfIIIN7y2rRRt+3aZSHiPkuK9az+XNaKSGFiPOFXrNvczhucFrN1JhCbYSkZ7FrwI7yXCsEC+/J1GyaVjER
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] PCI: qcom: Reshuffle reset logic in 2_7_0 .init
-Content-Language: en-US
-To: Johan Hovold <johan@kernel.org>
-Cc: Manivannan Sadhasivam <mani@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Stanimir Varbanov <svarbanov@mm-sol.com>,
- Andrew Murray <amurray@thegoodpenguin.co.uk>, Vinod Koul <vkoul@kernel.org>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231227-topic-8280_pcie-v1-0-095491baf9e4@linaro.org>
- <20231227-topic-8280_pcie-v1-1-095491baf9e4@linaro.org>
- <ZY7R581pgn3uO6kk@hovoldconsulting.com>
- <fa0fbadc-a7c3-4bea-bed7-0006db0616dc@linaro.org>
- <ZY7l828-mSGXVwrk@hovoldconsulting.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <ZY7l828-mSGXVwrk@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1d0c:b0:35f:c8aa:b526 with SMTP id
+ i12-20020a056e021d0c00b0035fc8aab526mr1770140ila.2.1703899324306; Fri, 29 Dec
+ 2023 17:22:04 -0800 (PST)
+Date: Fri, 29 Dec 2023 17:22:04 -0800
+In-Reply-To: <20231230010350.2074-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f55b69060daff97a@google.com>
+Subject: Re: [syzbot] [dri?] WARNING in drm_prime_destroy_file_private (2)
+From: syzbot <syzbot+59dcc2e7283a6f5f5ba1@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 29.12.2023 16:29, Johan Hovold wrote:
-> [ Again, please remember to add a newline before you inline comments to
-> make you replies readable. ]
-> 
-> On Fri, Dec 29, 2023 at 04:01:27PM +0100, Konrad Dybcio wrote:
->> On 29.12.2023 15:04, Johan Hovold wrote:
->>> On Wed, Dec 27, 2023 at 11:17:19PM +0100, Konrad Dybcio wrote:
->>>> At least on SC8280XP, if the PCIe reset is asserted, the corresponding
->>>> AUX_CLK will be stuck at 'off'.
->>>
->>> No, this path is exercised on every boot without the aux clock ever
->>> being stuck at off. So something is clearly missing in this description.
-> 
->> That's likely because the hardware has been initialized and not cleanly
->> shut down by your bootloader. When you reset it, or your bootloader
->> wasn't so kind, you need to start initialization from scratch.
-> 
-> What does that even mean? I'm telling you that this reset is asserted on
-> each boot, on all sc8280xp platforms I have access to, and never have I
-> seen the aux clk stuck at off.
-> 
-> So clearly your claim above is too broad and the commit message is
-> incorrect or incomplete.
+Hello,
 
-diff --git a/drivers/clk/qcom/gcc-sc8280xp.c b/drivers/clk/qcom/gcc-sc8280xp.c
-index 0b7801971dc1..6650bd6af5e3 100644
---- a/drivers/clk/qcom/gcc-sc8280xp.c
-+++ b/drivers/clk/qcom/gcc-sc8280xp.c
-@@ -7566,6 +7566,18 @@ static int gcc_sc8280xp_probe(struct platform_device *pdev)
-        if (ret)
-                goto err_put_rpm;
- 
-+       int val;
-+       regmap_read(regmap, 0xa0000, &val);
-+       pr_err("GCC_PCIE_3A_BCR = 0x%x\n", val);
-+       regmap_read(regmap, 0xa00f0, &val);
-+       pr_err("GCC_PCIE_3A_LINK_DOWN_BCR = 0x%x\n", val);
-+       regmap_read(regmap, 0xa00fc, &val);
-+       pr_err("GCC_PCIE_3A_NOCSR_COM_PHY_BCR = 0x%x\n", val);
-+       regmap_read(regmap, 0xa00e0, &val);
-+       pr_err("GCC_PCIE_3A_PHY_BCR = 0x%x\n", val);
-+       regmap_read(regmap, 0xa00e4, &val);
-+       pr_err("GCC_PCIE_3A_PHY_NOCSR_COM_PHY_BCR = 0x%x\n", val);
-+
-        pm_runtime_put(&pdev->dev);
- 
-        return 0;
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+general protection fault in drm_prime_del_handles
+
+general protection fault, probably for non-canonical address 0xe000130900000017: 0000 [#1] PREEMPT SMP KASAN
+KASAN: maybe wild-memory-access in range [0x0000b848000000b8-0x0000b848000000bf]
+CPU: 1 PID: 5576 Comm: syz-executor.0 Not tainted 6.7.0-rc7-syzkaller-00041-gf016f7547aee-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+RIP: 0010:__rb_erase_augmented include/linux/rbtree_augmented.h:292 [inline]
+RIP: 0010:rb_erase+0xbb/0x1360 lib/rbtree.c:443
+Code: 5e 10 4c 89 f5 48 ba 00 00 00 00 00 fc ff df 48 85 db 75 0b e9 e8 04 00 00 48 89 dd 48 89 c3 4c 8d 63 10 4c 89 e0 48 c1 e8 03 <80> 3c 10 00 0f 85 de 0b 00 00 48 8b 43 10 48 85 c0 75 dc 4c 8d 7b
+RSP: 0018:ffffc9000526fd20 EFLAGS: 00010216
+RAX: 0000170900000017 RBX: 0000b848000000a8 RCX: ffff88806486d408
+RDX: dffffc0000000000 RSI: ffff88806486d408 RDI: ffff88802919b810
+RBP: ffffffff84f351e0 R08: 0000000000000000 R09: fffffbfff1e327ba
+R10: ffffc9000526fd70 R11: 0000000000000000 R12: 0000b848000000b8
+R13: ffff88802808eff8 R14: ffff88802919b800 R15: 0000000000000001
+FS:  0000555556b94480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f01823cd5e8 CR3: 0000000023343000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ drm_prime_del_handles+0x55/0xb0 drivers/gpu/drm/drm_prime.c:203
+ drm_file_free.part.0+0x73b/0xba0 drivers/gpu/drm/drm_file.c:290
+ drm_file_free drivers/gpu/drm/drm_file.c:247 [inline]
+ drm_close_helper.isra.0+0x180/0x1f0 drivers/gpu/drm/drm_file.c:308
+ drm_release+0x22a/0x4f0 drivers/gpu/drm/drm_file.c:495
+ __fput+0x270/0xb70 fs/file_table.c:394
+ __fput_sync+0x47/0x50 fs/file_table.c:475
+ __do_sys_close fs/open.c:1587 [inline]
+ __se_sys_close fs/open.c:1572 [inline]
+ __x64_sys_close+0x87/0xf0 fs/open.c:1572
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f32ec87bbda
+Code: 48 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c 24 0c e8 03 7f 02 00 8b 7c 24 0c 89 c2 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 36 89 d7 89 44 24 0c e8 63 7f 02 00 8b 44 24
+RSP: 002b:00007ffe0da98170 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f32ec87bbda
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 00007f32ec99d980 R08: 0000001b2ea60000 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000014e33
+R13: ffffffffffffffff R14: 00007f32ec400000 R15: 0000000000014af2
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__rb_erase_augmented include/linux/rbtree_augmented.h:292 [inline]
+RIP: 0010:rb_erase+0xbb/0x1360 lib/rbtree.c:443
+Code: 5e 10 4c 89 f5 48 ba 00 00 00 00 00 fc ff df 48 85 db 75 0b e9 e8 04 00 00 48 89 dd 48 89 c3 4c 8d 63 10 4c 89 e0 48 c1 e8 03 <80> 3c 10 00 0f 85 de 0b 00 00 48 8b 43 10 48 85 c0 75 dc 4c 8d 7b
+RSP: 0018:ffffc9000526fd20 EFLAGS: 00010216
+RAX: 0000170900000017 RBX: 0000b848000000a8 RCX: ffff88806486d408
+RDX: dffffc0000000000 RSI: ffff88806486d408 RDI: ffff88802919b810
+RBP: ffffffff84f351e0 R08: 0000000000000000 R09: fffffbfff1e327ba
+R10: ffffc9000526fd70 R11: 0000000000000000 R12: 0000b848000000b8
+R13: ffff88802808eff8 R14: ffff88802919b800 R15: 0000000000000001
+FS:  0000555556b94480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f01823cd5e8 CR3: 0000000023343000 CR4: 0000000000350ef0
+----------------
+Code disassembly (best guess):
+   0:	5e                   	pop    %rsi
+   1:	10 4c 89 f5          	adc    %cl,-0xb(%rcx,%rcx,4)
+   5:	48 ba 00 00 00 00 00 	movabs $0xdffffc0000000000,%rdx
+   c:	fc ff df
+   f:	48 85 db             	test   %rbx,%rbx
+  12:	75 0b                	jne    0x1f
+  14:	e9 e8 04 00 00       	jmp    0x501
+  19:	48 89 dd             	mov    %rbx,%rbp
+  1c:	48 89 c3             	mov    %rax,%rbx
+  1f:	4c 8d 63 10          	lea    0x10(%rbx),%r12
+  23:	4c 89 e0             	mov    %r12,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	80 3c 10 00          	cmpb   $0x0,(%rax,%rdx,1) <-- trapping instruction
+  2e:	0f 85 de 0b 00 00    	jne    0xc12
+  34:	48 8b 43 10          	mov    0x10(%rbx),%rax
+  38:	48 85 c0             	test   %rax,%rax
+  3b:	75 dc                	jne    0x19
+  3d:	4c                   	rex.WR
+  3e:	8d                   	.byte 0x8d
+  3f:	7b                   	.byte 0x7b
 
 
-[root@sc8280xp-crd ~]# dmesg | grep BCR
-[    2.500245] GCC_PCIE_3A_BCR = 0x0
-[    2.500250] GCC_PCIE_3A_LINK_DOWN_BCR = 0x0
-[    2.500253] GCC_PCIE_3A_NOCSR_COM_PHY_BCR = 0x0
-[    2.500255] GCC_PCIE_3A_PHY_BCR = 0x0
-[    2.500257] GCC_PCIE_3A_PHY_NOCSR_COM_PHY_BCR = 0x0
+Tested on:
 
+commit:         f016f754 Merge tag 'gpio-fixes-for-v6.7-rc8' of git://..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=14b493a1e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c7bcb8f62f1e2c3e
+dashboard link: https://syzkaller.appspot.com/bug?extid=59dcc2e7283a6f5f5ba1
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1510031de80000
 
-0 meaning "not asserted".
-
-Adding the read in the GCC driver .probe ensures we get the
-unmodified data, as all GCC consumers must wait for it to probe. 
-
-PCIE3A is used for WLAN on the CRD, btw.
-
->  
->>>> Assert the reset (which may end up being a NOP if it was previously
->>>> asserted) and de-assert it back *before* turning on the clocks to avoid
->>>> such cases.
->>>>
->>>> In addition to that, in case the clock bulk enable fails, assert the
->>>> RC reset back, as the hardware is in an unknown state at best.
->>>
->>> This is arguably a separate change, and not necessarily one that is
->>> correct either
-> 
->> If the clock enable fails, the PCIe hw is not in reset state, ergo it
->> may be doing "something", and that "something" would eat non-zero power.
->> It's just cleaning up after yourself.
-> 
-> How can it do something without power and clocks?
-
-Fair point.
-
-As far as power goes, the RC hangs off CX, which is on whenever the
-system is not in power collapse. As for clocks, at least parts of it
-use the crystal oscillator, not sure if directly.
-
-> And leaving reset
-> asserted for non-powered devices is generally not a good idea.
-
-Depends on the hw.
-
->  
->>> so should at least go in a separate patch if it should
->>> be done at all.
-> 
->> I'll grumpily comply..
-> 
-> I suggest you leave it deasserted unless you have documentation
-> suggesting that the opposite is safe and recommended for this piece of
-> hardware.
->  
->>>> Fixes: ed8cc3b1fc84 ("PCI: qcom: Add support for SDM845 PCIe controller")
->>>
->>> I think you're being way to liberal with your use of Fixes tags. To
->>> claim that this is a bug, you need to make a more convincing case for
->>> why you think so.
-> 
->> The first paragraph describes the issue that this patch fixes.
-> 
-> Yes, but this is all very hand-wavy so far. With a complete commit
-> message I may agree, but you still haven't convinced me that this is a
-> bug and not just a workaround from some not fully-understood issue on
-> one particular platform.
-
-Right, reading it again, it doesn't really tell the whole story.
-
->  
->>> Also note Qualcomm's vendor driver is similarly asserting reset after
->>> enabling the clocks.
-> 
->> It's also not asserting the reset on suspend, see below.
-> 
-> Right, as I mentioned.
->  
->>> That driver does not seem to reset the controller on resume, though, in
->>> case that is relevant for your current experiments.
-> 
->> I know, the vendor driver doesn't fully shut down the controller. This
->> is however the only sequence that we (partially) have upstream, and the
->> only one that is going to work on SC8280XP (due to hw design).
->>
->> On other platforms, a "soft shutdown" (i.e. dropping the link, cutting
->> clocks but not fully resetting the RC state) should be possible, but
->> that's not what this patchset concerns.
-> 
-> The commit message does not even mention suspend, it just makes a
-> clearly false general claim about a clock being stuck unless you reorder
-> things.
-
-No, I insist that this general statement, while indeed lacking a full
-description of the problem, is provably true. The AUX clock will not
-turn on if the PCIe reset is asserted, at least on SC8280XP.
-
-Konrad
 
