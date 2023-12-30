@@ -1,133 +1,78 @@
-Return-Path: <linux-kernel+bounces-13367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE2FF820413
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:56:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9716D820414
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:57:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6873B21041
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 08:56:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C84241C20BF8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 08:57:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627931FCF;
-	Sat, 30 Dec 2023 08:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="kPtzuGcU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9754F2567;
+	Sat, 30 Dec 2023 08:57:05 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB322291D
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 08:56:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=M3IbXD47V+68pz6eRVZ5zyb6qExz4Zb8clyjB1ECu2c=;
-  b=kPtzuGcUZn4BJZXKFnhzJC6swibobBy8sKGy1f6n8fQBdusFsJaTVUex
-   qgrypwgGUM9nOB1D2NnA+bbszVU14Abz85G10S829Qc6MhAsaFXuZvxfA
-   4VIhz40rPx3Lrsb2VBfJarruL9ji5LRErW/9qDHgFmqsbXe7w/kfyo3NV
-   0=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.04,317,1695679200"; 
-   d="scan'208";a="144357072"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2023 09:56:00 +0100
-Date: Sat, 30 Dec 2023 09:56:00 +0100 (CET)
-From: Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To: Thomas Zimmermann <tzimmermann@suse.de>
-cc: linux-kernel@vger.kernel.org, oe-kbuild-all@lists.linux.dev
-Subject: drivers/video/fbdev/core/fb_logo.c:67:41-42: WARNING opportunity
- for min() (fwd)
-Message-ID: <alpine.DEB.2.22.394.2312300955341.3057@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C995323AE
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 08:57:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7baec2c5f30so472481439f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 00:57:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703926623; x=1704531423;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c/2JFH6hFG4yS1PCEphEIs5Vmwkj5XCp92KX5S53m3Y=;
+        b=Mqe+xBiFlbqSjvN1wWn64xmMXoy4Z95pfI3zlOc68O2HThYgTFF72z3oZP73Pd93Xg
+         yB5xKLf9EQRVeHy25d9HtCPfvTteffq7m3TE203yJvpvsKO3XQzhrbEPmXgpzO/fLjM7
+         ureIzXz2MiqxuF3cFJ4UjSofMOeXk1meLig0G8YdUizXJp3XjC2MPV/1EYeDjVUnxciy
+         87m7DweBylPhPBzjVRxHj9YpnBkhErfzrC9/sYmDInPOGoMYkcSiV4Lla4A6A7ZwAA0Y
+         UkpELNavCSHecV0ZauXw97boB4Fa2/6+LnA/4C7UuvsjCWiZKA70dOaV8fS+v6N9J7n8
+         1Ifw==
+X-Gm-Message-State: AOJu0Yx4QvUX0PogIDRyDxj8T1WedYCRYzvXcHc/WhVdxBeVIxZEfx2l
+	mjwnkZ6oDwHOhuZQJToCfteKMLQbMPG9XiJuh0eaDDkrnVfT
+X-Google-Smtp-Source: AGHT+IHE3RytBluQJZTzfU/w+r0z5GPlZQ7PeL0kmyPd9CAFH8rWcUXvTp3SDAYA2zhBSzFOMd1DkbuxrTBUao35A8ZWvc2VvGs2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-Received: by 2002:a6b:e017:0:b0:7ba:e2f0:30b3 with SMTP id
+ z23-20020a6be017000000b007bae2f030b3mr328459iog.2.1703926623045; Sat, 30 Dec
+ 2023 00:57:03 -0800 (PST)
+Date: Sat, 30 Dec 2023 00:57:03 -0800
+In-Reply-To: <tencent_50A825E08D9F92025DEF5DE4992C4FB00D07@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000017115a060db6559e@google.com>
+Subject: Re: [syzbot] [ntfs3?] KASAN: slab-out-of-bounds Read in
+ ntfs_listxattr (2)
+From: syzbot <syzbot+65e940cfb8f99a97aca7@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hello,
 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
----------- Forwarded message ----------
-Date: Sat, 30 Dec 2023 15:22:13 +0800
-From: kernel test robot <lkp@intel.com>
-To: oe-kbuild@lists.linux.dev
-Cc: lkp@intel.com, Julia Lawall <julia.lawall@inria.fr>
-Subject: drivers/video/fbdev/core/fb_logo.c:67:41-42: WARNING opportunity for
-    min()
+Reported-and-tested-by: syzbot+65e940cfb8f99a97aca7@syzkaller.appspotmail.com
 
-BCC: lkp@intel.com
-CC: oe-kbuild-all@lists.linux.dev
-CC: linux-kernel@vger.kernel.org
-TO: Thomas Zimmermann <tzimmermann@suse.de>
+Tested on:
 
-Hi Thomas,
+commit:         aafe7ad7 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=12128e7ee80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=23ce86eb3d78ef4d
+dashboard link: https://syzkaller.appspot.com/bug?extid=65e940cfb8f99a97aca7
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=14b48c9ae80000
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f016f7547aeedefed9450499d002ba983b8fce15
-commit: 8887086ef2e0047ec321103a15e7d766be3a3874 fbdev/core: Move logo functions into separate source file
-date:   4 months ago
-:::::: branch date: 11 hours ago
-:::::: commit date: 4 months ago
-config: hexagon-randconfig-r052-20231228 (https://download.01.org/0day-ci/archive/20231230/202312301511.93E0cv5e-lkp@intel.com/config)
-compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project d3ef86708241a3bee902615c190dead1638c4e09)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Julia Lawall <julia.lawall@inria.fr>
-| Closes: https://lore.kernel.org/r/202312301511.93E0cv5e-lkp@intel.com/
-
-cocci warnings: (new ones prefixed by >>)
->> drivers/video/fbdev/core/fb_logo.c:67:41-42: WARNING opportunity for min()
-   drivers/video/fbdev/core/fb_logo.c:68:41-42: WARNING opportunity for min()
-   drivers/video/fbdev/core/fb_logo.c:69:41-42: WARNING opportunity for min()
-
-vim +67 drivers/video/fbdev/core/fb_logo.c
-
-8887086ef2e004 Thomas Zimmermann 2023-09-07  49
-8887086ef2e004 Thomas Zimmermann 2023-09-07  50  static void  fb_set_logo_truepalette(struct fb_info *info,
-8887086ef2e004 Thomas Zimmermann 2023-09-07  51  					    const struct linux_logo *logo,
-8887086ef2e004 Thomas Zimmermann 2023-09-07  52  					    u32 *palette)
-8887086ef2e004 Thomas Zimmermann 2023-09-07  53  {
-8887086ef2e004 Thomas Zimmermann 2023-09-07  54  	static const unsigned char mask[] = {
-8887086ef2e004 Thomas Zimmermann 2023-09-07  55  		0, 0x80, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc, 0xfe, 0xff
-8887086ef2e004 Thomas Zimmermann 2023-09-07  56  	};
-8887086ef2e004 Thomas Zimmermann 2023-09-07  57  	unsigned char redmask, greenmask, bluemask;
-8887086ef2e004 Thomas Zimmermann 2023-09-07  58  	int redshift, greenshift, blueshift;
-8887086ef2e004 Thomas Zimmermann 2023-09-07  59  	int i;
-8887086ef2e004 Thomas Zimmermann 2023-09-07  60  	const unsigned char *clut = logo->clut;
-8887086ef2e004 Thomas Zimmermann 2023-09-07  61
-8887086ef2e004 Thomas Zimmermann 2023-09-07  62  	/*
-8887086ef2e004 Thomas Zimmermann 2023-09-07  63  	 * We have to create a temporary palette since console palette is only
-8887086ef2e004 Thomas Zimmermann 2023-09-07  64  	 * 16 colors long.
-8887086ef2e004 Thomas Zimmermann 2023-09-07  65  	 */
-8887086ef2e004 Thomas Zimmermann 2023-09-07  66  	/* Bug: Doesn't obey msb_right ... (who needs that?) */
-8887086ef2e004 Thomas Zimmermann 2023-09-07 @67  	redmask   = mask[info->var.red.length   < 8 ? info->var.red.length   : 8];
-8887086ef2e004 Thomas Zimmermann 2023-09-07  68  	greenmask = mask[info->var.green.length < 8 ? info->var.green.length : 8];
-8887086ef2e004 Thomas Zimmermann 2023-09-07  69  	bluemask  = mask[info->var.blue.length  < 8 ? info->var.blue.length  : 8];
-8887086ef2e004 Thomas Zimmermann 2023-09-07  70  	redshift   = info->var.red.offset   - (8 - info->var.red.length);
-8887086ef2e004 Thomas Zimmermann 2023-09-07  71  	greenshift = info->var.green.offset - (8 - info->var.green.length);
-8887086ef2e004 Thomas Zimmermann 2023-09-07  72  	blueshift  = info->var.blue.offset  - (8 - info->var.blue.length);
-8887086ef2e004 Thomas Zimmermann 2023-09-07  73
-8887086ef2e004 Thomas Zimmermann 2023-09-07  74  	for (i = 0; i < logo->clutsize; i++) {
-8887086ef2e004 Thomas Zimmermann 2023-09-07  75  		palette[i+32] = (safe_shift((clut[0] & redmask), redshift) |
-8887086ef2e004 Thomas Zimmermann 2023-09-07  76  				 safe_shift((clut[1] & greenmask), greenshift) |
-8887086ef2e004 Thomas Zimmermann 2023-09-07  77  				 safe_shift((clut[2] & bluemask), blueshift));
-8887086ef2e004 Thomas Zimmermann 2023-09-07  78  		clut += 3;
-8887086ef2e004 Thomas Zimmermann 2023-09-07  79  	}
-8887086ef2e004 Thomas Zimmermann 2023-09-07  80  }
-8887086ef2e004 Thomas Zimmermann 2023-09-07  81
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Note: testing is done by a robot and is best-effort only.
 
