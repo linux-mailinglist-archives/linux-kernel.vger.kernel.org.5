@@ -1,65 +1,84 @@
-Return-Path: <linux-kernel+bounces-13603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 281F18208AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 23:41:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EAA38208B6
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 23:46:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3CCCB20B26
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 22:41:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69D381C20F84
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 22:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8111DDCD;
-	Sat, 30 Dec 2023 22:41:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7992D518;
+	Sat, 30 Dec 2023 22:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Su/iHtyh"
+	dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b="WzJblL9s"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC672D30B
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 22:41:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sat, 30 Dec 2023 17:40:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703976061;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aPL9HjNhcVqPD8dzsIKc0xX7K6T9gIH6eRuhKS9PZT4=;
-	b=Su/iHtyheno4Z5KoWaDx1NjXQoKhZQy0RGX/pUoKnpNHF5/EF1cUEPQCOjEIJ/Q/knE1+v
-	s/yN2qRZ3JsdkBS4umWulBuCazHROxEaV1AQy5jrsIqa0jMXErwH6jK/HoHLEsjJU2cwqC
-	U27SIjX9pteeQ6EfZghdScH00Z/zmAA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Daniel J Blueman <daniel@quora.org>
-Cc: linux-bcachefs@vger.kernel.org, 
-	Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: Stack corruption in bch2_nocow_write
-Message-ID: <2g6gw7ybne5d5u2ewsbfpsoxslw5vie3d6whlhrcmbombkyzqs@dd6tr3se6fu7>
-References: <CAMVG2su=Kt5mkyEHGh5D4YH+1xTUFX3BhOjf-D0bcRTntav3ng@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A329CE57E
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 22:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iwanders.net
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-680a13af19bso7744376d6.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 14:46:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=iwanders.net; s=google; t=1703976393; x=1704581193; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fZIH0cllwWP10xEZ7qclYaGxBZpXoISgRGheC+EsW2c=;
+        b=WzJblL9s5WcFHtPruCmD8VKuI5L4zDuOBb3kc/ERqm55ISpz8zQTa3u1SWB+5TcE8P
+         hM/6Fwey6xz7cOzWUax2Z+Bggizf+mmoUH+Qv/zQyFJEQ8boZDfRUMAAkPSy4k5zG+Bz
+         9QPnpgIVcq9X2B2hPyhRMYtMTSrYiIq2eUBfo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703976393; x=1704581193;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fZIH0cllwWP10xEZ7qclYaGxBZpXoISgRGheC+EsW2c=;
+        b=DN7d9r3arr3xH7vdpYk4i6XaogMdtXHQiT29kLI3IN7F23vMY4aWOF7GFojqX4IJc2
+         uwaNKTQ1QlNyEhiVZcpJxht5LnjCuiNh7ynYsa6Jxh+P+4GDwvDgic9JBXO8BecqyUn+
+         ONfV6e9eqyW5yh997BN3S+cwAfhbaDrxam5s5yXH5z8Z2qHwh5F4krdFu3aLXjcnrvX7
+         WYIDVpM5o3GJEp6U06EcCxZbnPk/vnug3AHcTsYZdeq+WS+RFRZ+7lEfsehxVoMJrIX4
+         4KdFWnFuPjBUQI0GOeJm3o9kqV8suCtZiXDOyrhYKMlGnjJN63y3MgDsnaOG+BxhnHYX
+         wddQ==
+X-Gm-Message-State: AOJu0YwZbngiUgVesFXsByBsBcM5rMhPDyZEqG11jh2BNfzX+e2wP+T2
+	WKxH6XKWX1vMi5BrIRhsbby+BGbbB0s3EorAgzndZ87zR+uTvw==
+X-Google-Smtp-Source: AGHT+IHJ9upV4SW2nHDVn+pdfd0Dmw6j+xR3o3cnnfx5doXDlyLXLFSm+v3OsxVzMPdKpASOiFCHCg==
+X-Received: by 2002:a05:6214:1110:b0:680:1099:851f with SMTP id e16-20020a056214111000b006801099851fmr11210203qvs.83.1703976393569;
+        Sat, 30 Dec 2023 14:46:33 -0800 (PST)
+Received: from eagle.lan (24-246-30-234.cable.teksavvy.com. [24.246.30.234])
+        by smtp.gmail.com with ESMTPSA id da7-20020a05621408c700b0067f2c03d4adsm8136440qvb.100.2023.12.30.14.46.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Dec 2023 14:46:33 -0800 (PST)
+From: Ivor Wanders <ivor@iwanders.net>
+To: luzmaximilian@gmail.com
+Cc: corbet@lwn.net,
+	hdegoede@redhat.com,
+	ivor@iwanders.net,
+	jdelvare@suse.com,
+	linux-doc@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux@roeck-us.net,
+	markgross@kernel.org,
+	platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] hwmon: add fan speed monitoring driver for Surface devices
+Date: Sat, 30 Dec 2023 17:46:30 -0500
+Message-Id: <20231230224630.12618-1-ivor@iwanders.net>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <f564b1b4-d8d1-4809-9cc0-b01aa53570a0@gmail.com>
+References: <f564b1b4-d8d1-4809-9cc0-b01aa53570a0@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMVG2su=Kt5mkyEHGh5D4YH+1xTUFX3BhOjf-D0bcRTntav3ng@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
 
-On Fri, Dec 29, 2023 at 07:43:13PM +0800, Daniel J Blueman wrote:
-> Hi Kent et al,
-> 
-> On Linux 6.7-rc7 from bcachefs master SHA f3608cbdfd built with UBSAN
-> [1], with a crafted workload [2] I'm able to trigger stack corruption
-> in bch2_nocow_write [3].
-> 
-> Let me know if you can't reproduce it and I'll check reproducibility
-> on another platform, and let me know for any patch testing.
+> As far as I can see, linux/platform_device.h is not needed.
 
-Can you give the bcachefs-testing branch a try?
+Correct, it's no longer necessary, I've removed it, thanks!
+
+~Ivor
 
