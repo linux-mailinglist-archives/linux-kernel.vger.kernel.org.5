@@ -1,130 +1,93 @@
-Return-Path: <linux-kernel+bounces-13387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A7EF820450
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:28:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76004820456
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:33:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C4721C20CC7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 10:28:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D7A11C20D3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 10:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8904A210A;
-	Sat, 30 Dec 2023 10:28:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DpmXUBOg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E09D2587;
+	Sat, 30 Dec 2023 10:33:26 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A69463C4
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 10:28:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703932095;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aX1O++zYx1k3/mNIX5UfYhS34dL4AjJIqDFQMzvM7pA=;
-	b=DpmXUBOgl6EtQObEnSkfxYvgBEgdPp8uWzf+Ns5vqQi99pKq5hJl1Zc/ZbFQ/kO57f2qJk
-	e9NQh2leRsDEkjIaNTCB8dPqh2BtTS0iJAGuvFulObPe+0dzMpvwilqnPldx4YZXtcW9ik
-	2lBi3GuwTRqEH0y3AsKHGOWsLhcl5pQ=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-41-mWMzJCyJOcSEIdihBIHiBA-1; Sat,
- 30 Dec 2023 05:28:11 -0500
-X-MC-Unique: mWMzJCyJOcSEIdihBIHiBA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1CE23A5;
+	Sat, 30 Dec 2023 10:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E0E6529AA396;
-	Sat, 30 Dec 2023 10:28:10 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.216])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 1B0C53C25;
-	Sat, 30 Dec 2023 10:28:09 +0000 (UTC)
-Date: Sat, 30 Dec 2023 18:28:06 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Yuntao Wang <ytcoode@gmail.com>, bp@alien8.de,
-	dave.hansen@linux.intel.com, dyoung@redhat.com,
-	hbathini@linux.ibm.com, hpa@zytor.com, kexec@lists.infradead.org,
-	linux-kernel@vger.kernel.org, mingo@redhat.com, seanjc@google.com,
-	tglx@linutronix.de, tiwai@suse.de, vgoyal@redhat.com,
-	x86@kernel.org
-Subject: Re: [PATCH] crash_core: optimize crash_exclude_mem_range()
-Message-ID: <ZY/wtvltzGR0CokV@MiWiFi-R3L-srv>
-References: <20231218092902.9fae480cfcad3874e9e7236f@linux-foundation.org>
- <20231219163418.108591-1-ytcoode@gmail.com>
- <20231229121014.fd090f8c616a34fbb45f7843@linux-foundation.org>
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout1.hostsharing.net (Postfix) with ESMTPS id 594B6300002D0;
+	Sat, 30 Dec 2023 11:33:13 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 3DE44254B5A; Sat, 30 Dec 2023 11:33:13 +0100 (CET)
+Date: Sat, 30 Dec 2023 11:33:13 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>, Krzysztof Wilczy??ski <kw@linux.com>,
+	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Alex Deucher <alexdeucher@gmail.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>
+Subject: Re: [PATCH v3 01/10] PCI: Protect Link Control 2 Register with RMW
+ locking
+Message-ID: <20231230103313.GA12257@wunner.de>
+References: <20230929115723.7864-1-ilpo.jarvinen@linux.intel.com>
+ <20230929115723.7864-2-ilpo.jarvinen@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231229121014.fd090f8c616a34fbb45f7843@linux-foundation.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230929115723.7864-2-ilpo.jarvinen@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On 12/29/23 at 12:10pm, Andrew Morton wrote:
-> On Wed, 20 Dec 2023 00:34:18 +0800 Yuntao Wang <ytcoode@gmail.com> wrote:
-> 
-> > Because memory ranges in mem->ranges are stored in ascending order, when we
-> > detect `p_end < start`, we can break the for loop early, as the subsequent
-> > memory ranges must also be outside the range we are looking for.
-> > 
-> > Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-> > ---
-> > Hi Andrew,
-> > 
-> > Patch "[PATCH 2/2] crash_core: fix out-of-bounds access check in
-> > crash_exclude_mem_range()" can be ignored, use this patch instead.
-> > 
-> 
-> Some reviewer input on this would be helpful please?
+On Fri, Sep 29, 2023 at 02:57:14PM +0300, Ilpo Järvinen wrote:
+> PCIe Bandwidth Controller performs RMW accesses the Link Control 2
+                                                 ^
+						 to
 
+> Register which can occur concurrently to other sources of Link Control
+> 2 Register writes. Therefore, add Link Control 2 Register among the PCI
+> Express Capability Registers that need RMW locking.
+[...]
+> --- a/Documentation/PCI/pciebus-howto.rst
+> +++ b/Documentation/PCI/pciebus-howto.rst
+> @@ -218,7 +218,7 @@ that is shared between many drivers including the service drivers.
+>  RMW Capability accessors (pcie_capability_clear_and_set_word(),
+>  pcie_capability_set_word(), and pcie_capability_clear_word()) protect
+>  a selected set of PCI Express Capability Registers (Link Control
+> -Register and Root Control Register). Any change to those registers
+> -should be performed using RMW accessors to avoid problems due to
+> -concurrent updates. For the up-to-date list of protected registers,
+> -see pcie_capability_clear_and_set_word().
+> +Register, Root Control Register, and Link Control 2 Register). Any
+> +change to those registers should be performed using RMW accessors to
+> +avoid problems due to concurrent updates. For the up-to-date list of
+> +protected registers, see pcie_capability_clear_and_set_word().
 
-I suggested this in below discussion thread:
-https://lore.kernel.org/all/ZYEOshALGbDKwSdc@MiWiFi-R3L-srv/T/#u
+Maybe use a list of bullet points of the affected registers so that
+this can be extended more easily in the future.
 
-So it would be good if squashing this into patch 3 of another patch
-thread you are asking:
-[PATCH 3/3] crash_core: fix and simplify the logic of crash_exclude_mem_range()
-
-And I would suggest withdrawing Yuntao's below patch on your
-mm-nonmm-unstable branch.
-
-961c69e9f1bf x86/crash: fix potential cmem->ranges array overflow
-
-Becase there's better one to fix the potential oob from fuqiang,
-although fuqiang need improve his patch log.
-
-[PATCH v3] x86/kexec: fix potential cmem->ranges out of bounds
-https://lore.kernel.org/all/20231222121855.148215-1-fuqiang.wang@easystack.cn/T/#u
-
-> 
-> > --- a/kernel/crash_core.c
-> > +++ b/kernel/crash_core.c
-> > @@ -575,9 +575,12 @@ int crash_exclude_mem_range(struct crash_mem *mem,
-> >  		p_start = mstart;
-> >  		p_end = mend;
-> >  
-> > -		if (p_start > end || p_end < start)
-> > +		if (p_start > end)
-> >  			continue;
-> >  
-> > +		if (p_end < start)
-> > +			break;
-> > +
-> >  		/* Truncate any area outside of range */
-> >  		if (p_start < start)
-> >  			p_start = start;
-> > -- 
-> > 2.43.0
-> 
-
+Otherwise,
+Reviewed-by: Lukas Wunner <lukas@wunner.de>
 
