@@ -1,75 +1,119 @@
-Return-Path: <linux-kernel+bounces-13299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC487820326
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 01:13:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E65C3820333
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 02:04:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B8E5283F41
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 00:13:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62CB81F220A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 01:04:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ADEC625;
-	Sat, 30 Dec 2023 00:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1B080C;
+	Sat, 30 Dec 2023 01:04:52 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from irl.hu (irl.hu [95.85.9.111])
+Received: from mail115-80.sinamail.sina.com.cn (mail115-80.sinamail.sina.com.cn [218.30.115.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60AFC945A;
-	Sat, 30 Dec 2023 00:13:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
-Received: from fedori.lan (51b6838a.dsl.pool.telekom.hu [::ffff:81.182.131.138])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 0000000000071ED9.00000000658F60B8.0014D4ED; Sat, 30 Dec 2023 01:13:44 +0100
-From: Gergo Koteles <soyer@irl.hu>
-To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-  Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-  Takashi Iwai <tiwai@suse.com>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-  alsa-devel@alsa-project.org, Gergo Koteles <soyer@irl.hu>
-Subject: [PATCH] ALSA: hda/tas2781: configure the amp after firmware load
-Date: Sat, 30 Dec 2023 01:13:41 +0100
-Message-ID: <7f2f65d9212aa16edd4db8725489ae59dbe74c66.1703895108.git.soyer@irl.hu>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0993563A
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 01:04:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.88.48.29])
+	by sina.com (10.75.12.45) with ESMTP
+	id 658F6C8000000AE7; Sat, 30 Dec 2023 09:04:03 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 40394831457296
+X-SMAIL-UIID: 48C0B5A6D4984AD48B554A6DC79204F2-20231230-090403-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+59dcc2e7283a6f5f5ba1@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [dri?] WARNING in drm_prime_destroy_file_private (2)
+Date: Sat, 30 Dec 2023 09:03:50 +0800
+Message-Id: <20231230010350.2074-1-hdanton@sina.com>
+In-Reply-To: <000000000000f4faa2060d83f582@google.com>
+References: <000000000000f4faa2060d83f582@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Make the amp available immediately after a module
-load to avoid having to wait for a PCM hook action.
-(eg. unloading & loading the module while listening
-music)
+On Wed, 27 Dec 2023 12:51:18 -0800
+> HEAD commit:    5254c0cbc92d Merge tag 'block-6.7-2023-12-22' of git://git..
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=155d5fd6e80000
 
-Signed-off-by: Gergo Koteles <soyer@irl.hu>
----
- sound/pci/hda/tas2781_hda_i2c.c | 2 ++
- 1 file changed, 2 insertions(+)
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
 
-diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index dfe281b57aa6..c8523df4105f 100644
---- a/sound/pci/hda/tas2781_hda_i2c.c
-+++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -584,6 +584,8 @@ static void tasdev_fw_ready(const struct firmware *fmw, void *context)
- 	 */
- 	tas2781_save_calibration(tas_priv);
+--- a/drivers/gpu/drm/drm_file.c
++++ b/drivers/gpu/drm/drm_file.c
+@@ -287,6 +287,7 @@ void drm_file_free(struct drm_file *file
+ 	if (dev->driver->postclose)
+ 		dev->driver->postclose(dev, file);
  
-+	tasdevice_tuning_switch(tas_hda->priv, 0);
++	drm_prime_del_handles(&file->prime);
+ 	drm_prime_destroy_file_private(&file->prime);
+ 
+ 	WARN_ON(!list_empty(&file->event_list));
+--- a/drivers/gpu/drm/drm_internal.h
++++ b/drivers/gpu/drm/drm_internal.h
+@@ -76,6 +76,7 @@ void drm_prime_init_file_private(struct
+ void drm_prime_destroy_file_private(struct drm_prime_file_private *prime_fpriv);
+ void drm_prime_remove_buf_handle(struct drm_prime_file_private *prime_fpriv,
+ 				 uint32_t handle);
++void drm_prime_del_handles(struct drm_prime_file_private *prime_fpriv);
+ 
+ /* drm_drv.c */
+ struct drm_minor *drm_minor_acquire(unsigned int minor_id);
+--- a/drivers/gpu/drm/drm_prime.c
++++ b/drivers/gpu/drm/drm_prime.c
+@@ -106,6 +106,8 @@ static int drm_prime_add_buf_handle(stru
+ 	get_dma_buf(dma_buf);
+ 	member->dma_buf = dma_buf;
+ 	member->handle = handle;
++	RB_CLEAR_NODE(&member->dmabuf_rb);
++	RB_CLEAR_NODE(&member->handle_rb);
+ 
+ 	rb = NULL;
+ 	p = &prime_fpriv->dmabufs.rb_node;
+@@ -185,6 +187,27 @@ static int drm_prime_lookup_buf_handle(s
+ 	return -ENOENT;
+ }
+ 
++void drm_prime_del_handles(struct drm_prime_file_private *prime_fpriv)
++{
++	struct drm_prime_member *member;
++	struct rb_node *rb;
 +
- out:
- 	mutex_unlock(&tas_hda->priv->codec_lock);
- 	if (fmw)
-
-base-commit: 64bf8dec54cfe57f416884a6b3d54c7f4259e93f
--- 
-2.43.0
-
++	mutex_lock(&prime_fpriv->lock);
++	for (;;) {
++		rb = rb_first(&prime_fpriv->dmabufs);
++		if (!rb)
++			break;
++		member = rb_entry(rb, struct drm_prime_member, handle_rb);
++
++		rb_erase(&member->handle_rb, &prime_fpriv->handles);
++		rb_erase(&member->dmabuf_rb, &prime_fpriv->dmabufs);
++
++		dma_buf_put(member->dma_buf);
++		kfree(member);
++	}
++	mutex_unlock(&prime_fpriv->lock);
++}
++
+ void drm_prime_remove_buf_handle(struct drm_prime_file_private *prime_fpriv,
+ 				 uint32_t handle)
+ {
+--
 
