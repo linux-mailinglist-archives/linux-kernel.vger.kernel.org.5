@@ -1,122 +1,120 @@
-Return-Path: <linux-kernel+bounces-13407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C156A8204A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:44:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC18E8204AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:46:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64D49B21336
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:44:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BA6FB211BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:46:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4040279DF;
-	Sat, 30 Dec 2023 11:43:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="rtItvV3f";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZhOK0LBZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A2628486;
+	Sat, 30 Dec 2023 11:46:01 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8DC79CD;
-	Sat, 30 Dec 2023 11:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id D6BA85C0075;
-	Sat, 30 Dec 2023 06:43:48 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Sat, 30 Dec 2023 06:43:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1703936628; x=1704023028; bh=RDMzNXeoRc
-	XtTozgalvQ1v7S9gcCF0W/23GWD67Yelg=; b=rtItvV3fct9Ah3tKmTbcAT+uro
-	/8gumEOF30bzbKOqwjqcRllVZmBQPkn99DlIR0/NHH1R8jkAjhlFp3/ncXdGdj3l
-	A/6p1FANm2O5UE+zY60kaaUmMARtGeDgayCODji3pDdCso1b5qslEOQaZP88+24z
-	Z0BkybZk7MfkpKuSCwzrc2ZhPG0CsAhZKdkqWK4XmnpqBYeLZRo2cOfVvBxTnfOK
-	lfBo8HKZ4vteixcWMTmzZBlOzot3xWnBetFYT6pX4hBvT2N/i90/N7WlIlUtkdZb
-	oj+GjB7lShuyQQtRCm4Uu9c4eebrxMSNrP8/SW32slFyozjYdGxSA9uJddfg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1703936628; x=1704023028; bh=RDMzNXeoRcXtTozgalvQ1v7S9gcC
-	F0W/23GWD67Yelg=; b=ZhOK0LBZRGNZxTF7TQ9YpCn1UYZkqTyTW0WKhBC2Av8V
-	zqhUAaCDhEMWP0uaRG2+RmIE+Ra/FAFT8esGtklM92Xdn5DMK4TP7KyGJb9AyHUd
-	BfeFUwSigl/+srUQB0/VKpOWj92YJZpQRf5Ih2allHdvToJBONXrBy5OoNcajo8l
-	siWvQw1tjOVNRPXoV1vJkoS2w1zWja8su73SkjyI90/iqFAdLaG3b5h3Tg8zAxsf
-	0XDDpx2/urcS5xv8hTtKiB+8ONfejWGyvgEeDdfuYUadt0BzY5r5zXwazhxCEYyD
-	3W3+xodNudClje4KKFMmowDaMNVMxaGWPLQpA+HP3Q==
-X-ME-Sender: <xms:cwKQZcsdQj0szJ-3NOwXM7UiDdTvPF2gregvMHjs2hMEKPEyrqeIyA>
-    <xme:cwKQZZctBUV3M1gAfno5rYvqiz_D-RViQTWIyvEE63r0PT5bMQw6hmwPre68fDYIh
-    QFyprTxr6Pv0w>
-X-ME-Received: <xmr:cwKQZXxrvvrF9JRfCGVb9X-JGtal9csvgPeu__01K1YXBU-rIM3FJq34_hs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdefhedgfedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
-    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
-    hhrdgtohhm
-X-ME-Proxy: <xmx:cwKQZfOX2LorBkssFUmtubV2xCjis9sUvR0IXWwWpcv66R9zLIO64Q>
-    <xmx:cwKQZc_IBDGj518M2AxafhPVHdJ_NzYgzBMU1QQTh2-jESsctBEZgg>
-    <xmx:cwKQZXUWLk3w6C6UM3DUgb4fj5FzIfz_mDsTjQKFmiLlSG-mykkFgA>
-    <xmx:dAKQZcNx5nXiPU5lClqzSvPhrzj8iZTxuVnDIR88Bi4WHFpabCvUIQ>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 30 Dec 2023 06:43:47 -0500 (EST)
-Date: Sat, 30 Dec 2023 11:43:46 +0000
-From: Greg KH <greg@kroah.com>
-To: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	maple-tree@lists.infradead.org, akpm@linux-foundation.org,
-	willy@infradead.org, liam.howlett@oracle.com,
-	zhangpeng.00@bytedance.com, stable@vger.kernel.org
-Subject: Re: [PATCH 6.6.y] maple_tree: do not preallocate nodes for slot
- stores
-Message-ID: <2023123027-baffling-arise-63bf@gregkh>
-References: <20231212195255.219624-1-sidhartha.kumar@oracle.com>
- <2023121847-cope-surviving-26bf@gregkh>
- <19b88718-a1e6-d699-f056-cf00b1b75346@oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67A779CD;
+	Sat, 30 Dec 2023 11:45:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 0F3BB2800B6C3;
+	Sat, 30 Dec 2023 12:45:50 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 007581AA9C7; Sat, 30 Dec 2023 12:45:49 +0100 (CET)
+Date: Sat, 30 Dec 2023 12:45:49 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>, Krzysztof Wilczy??ski <kw@linux.com>,
+	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-kernel@vger.kernel.org,
+	Alex Deucher <alexdeucher@gmail.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>
+Subject: Re: [PATCH v3 05/10] PCI: Store all PCIe Supported Link Speeds
+Message-ID: <20231230114549.GB12257@wunner.de>
+References: <20230929115723.7864-1-ilpo.jarvinen@linux.intel.com>
+ <20230929115723.7864-6-ilpo.jarvinen@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <19b88718-a1e6-d699-f056-cf00b1b75346@oracle.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230929115723.7864-6-ilpo.jarvinen@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Mon, Dec 18, 2023 at 09:53:53AM -0800, Sidhartha Kumar wrote:
-> On 12/18/23 2:59 AM, Greg KH wrote:
-> > On Tue, Dec 12, 2023 at 11:52:55AM -0800, Sidhartha Kumar wrote:
-> > > mas_preallocate() defaults to requesting 1 node for preallocation and then
-> > > ,depending on the type of store, will update the request variable. There
-> > > isn't a check for a slot store type, so slot stores are preallocating the
-> > > default 1 node. Slot stores do not require any additional nodes, so add a
-> > > check for the slot store case that will bypass node_count_gfp(). Update
-> > > the tests to reflect that slot stores do not require allocations.
-> > > 
-> > > User visible effects of this bug include increased memory usage from the
-> > > unneeded node that was allocated.
-> > > 
-> > > Fixes: 0b8bb544b1a7 ("maple_tree: update mas_preallocate() testing")
-> > > Cc: <stable@vger.kernel.org> # 6.6+
-> > > Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-> > > ---
-> > > This is a modified backport as the patch to fix this in upstream does not
-> > > apply to 6.6 because the node_end field was moved from the ma_wr_state to
-> > > the ma_state after 6.6.
-> > 
-> > What is the git commit id of this change in Linus's tree?
+On Fri, Sep 29, 2023 at 02:57:18PM +0300, Ilpo Järvinen wrote:
+> struct pci_bus stores max_bus_speed. Implementation Note in PCIe r6.0.1
+> sec 7.5.3.18, however, recommends determining supported Link Speeds
+> using the Supported Link Speeds Vector in the Link Capabilities 2
+> Register (when available).
 > 
-> The patch is in akpm's mm-hotfixes-unstable tree and has not made it to
-> Linus's tree yet.
+> Add pcie_bus_speeds into struct pci_bus which caches the Supported Link
+> Speeds. The value is taken directly from the Supported Link Speeds
+> Vector or synthetized from the Max Link Speed in the Link Capabilities
+> Register when the Link Capabilities 2 Register is not available.
 
-Ok, please resend when it hits Linus's tree.
+Remind me, what's the reason again to cache this and why is
+max_bus_speed not sufficient?  Is the point that there may be
+"gaps" in the supported link speeds, i.e. not every bit below
+the maximum supported speed may be set?  And you need to skip
+over those gaps when throttling to a lower speed?
+
+Maybe this becomes apparent in a later patch but from a reviewer's
+perspective starting at patch 1 and working one's way forward through
+the series, it's a bit puzzling, so an explanation in the commit
+message would be beneficial.
+
+
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+[...]
+> +static u8 pcie_get_supported_speeds(u32 linkcap, u32 linkcap2)
+> +{
+> +	u8 speeds;
+> +
+> +	speeds = linkcap2 & PCI_EXP_LNKCAP2_SLS;
+> +	if (speeds)
+> +		return speeds;
+> +
+> +	/*
+> +	 * Synthetize supported link speeds from the Max Link Speed in the
+> +	 * Link Capabilities Register.
+> +	 */
+> +	speeds = PCI_EXP_LNKCAP2_SLS_2_5GB;
+> +	if ((linkcap & PCI_EXP_LNKCAP_SLS) == PCI_EXP_LNKCAP_SLS_5_0GB)
+> +		speeds |= PCI_EXP_LNKCAP2_SLS_5_0GB;
+> +	return speeds;
+> +}
+
+This seems to duplicate portions of pcie_get_speed_cap().
+
+Can you refactor that function to take advantage of the cached value,
+i.e. basically return PCIE_LNKCAP2_SLS2SPEED(dev->bus->pcie_bus_speeds)?
+
+Also, I note that pci_set_bus_speed() doesn't use LNKCAP2.
+Presumably that's a historic artefact but maybe it can be
+converted to use LNKCAP2 as well.  Granted, it's not directly
+related to this series, but always nice to clean up and
+rationalize the code.
+
+Thanks,
+
+Lukas
 
