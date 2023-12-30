@@ -1,64 +1,66 @@
-Return-Path: <linux-kernel+bounces-13598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDA1A82089D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 23:17:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1519C8208A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 23:24:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ED8EB21BC6
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 22:17:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4AC21F22451
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 22:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405D6D310;
-	Sat, 30 Dec 2023 22:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92486DDC6;
+	Sat, 30 Dec 2023 22:24:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="jPKkB8Kk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iGNnpcV6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D59C0CA73
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 22:17:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6d9bd8adb9aso273990b3a.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 14:17:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195C3D26D;
+	Sat, 30 Dec 2023 22:24:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lwfinger.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-7810827e54eso741364185a.2;
+        Sat, 30 Dec 2023 14:24:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1703974639; x=1704579439; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703975043; x=1704579843; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KQ8sovo2bizB+K5f8FD1flPar00AxPI0fwjU2TE0akA=;
-        b=jPKkB8Kku6QZgHB54jq+jAT0VL+i64RfwugIB7UYuXHm6ajvK9Cb3KE+U9na71UF5Y
-         D1qFLpRXbSuI3Kb3u7tAq1BHuw2pZAMlwyXe0qoqTKiUf9cds/OPKbuZ/tpnJU3rRmCI
-         H9vzkZBBCzxI2sRhA4E9C7bLDvwVq6Ab2cYxy+iKUMnyhXN6Z49FhB5yGuaNvSz/yHFj
-         yg4sfRs5qJ1rLpBm6v6rrc2CoL2hbe4ZWWMAKdPlcLYSBa0MTKYKitZ9aObDwcHrd2ny
-         hHCrd2Dwhv/5Y9S19AfTvRS68KvuEeCIN7D+u4wBkpN2tRQe7iHfHE0mLyGPNKspwOO3
-         espQ==
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ytqw2FHmhrz2Q/Vvd/gZICZv8ex4sbCt21vyO6FDogw=;
+        b=iGNnpcV6PGi/HH0advNart2vEnLIH16GLqd/o5TY6K+mDQ3fNqkLG2Byzm9HHy67/h
+         SAeBF2JTjogEyf/y0uEWeqx6UNM1xqiEsbl+HE6AB5vCQlUmv9e2ndR1dEaDEM2RAINy
+         4RzTPIKA0ITCTpmLpE1kHUQSjjf/aLxsABOOgeuk0Ubdc/HhJzmpsnBDKdcxRh/5490D
+         gRsZs2/eQPBrp/KaEsu1ZyC5UKDTiO9EPzJDEWYNFlxr7XxbGeTSvx5Jq6O1MRSnQnI4
+         terliPgxCZIQj/tw5AYg/gGxyu6YGq6BFwg3gsTavyAHr7V278IZXZD11MjNLwTaZR8G
+         5TYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703974639; x=1704579439;
+        d=1e100.net; s=20230601; t=1703975043; x=1704579843;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KQ8sovo2bizB+K5f8FD1flPar00AxPI0fwjU2TE0akA=;
-        b=Uthvy8jF/zvGE3Db1oRFPn/+cejTXiGn3bRL8Etrm1U0/ZdHjULUmtdZps35eU7MPL
-         CIwrJUhh0HXMU/3gM/9zFuMS0Iou4NNMNXwT0mQIyNY99ZW+ILfaoHrvAJXI469l5Hjk
-         yftPquNeePknOYDduFOSq3SjlLhj+fR1yD1j4txP5jpEkg51YHfDfMdfObQzLSO4RWZ5
-         0RHC3Quuf7JTZhenA4A8Z+32CrivJGr7lL2SwSVh65R287tSSJSjld52eAhRNhYqJ7Xb
-         eE2oZTrZhBZuiidX3INbIr+OccKLMssJ3jJtxuJahpMW2p8/7llDnYcuY5G8lP58b94C
-         vVXg==
-X-Gm-Message-State: AOJu0YxBOm9PP1Hqcwavy2UiF6/f/qzQqVJwy25p8/3j5xUY4ec9yyrt
-	lInS4gIXP6fHubPrOzaoUQKbyjH/JQb4bA==
-X-Google-Smtp-Source: AGHT+IFwZc0N1Vsc1jp/K0NEObt8wc1MXFPN9k0Z8EY1WRITtrJhBE4EM6cG4pON5uWVyWO8VELcBQ==
-X-Received: by 2002:a05:6a21:819b:b0:196:16b0:c554 with SMTP id pd27-20020a056a21819b00b0019616b0c554mr12387117pzb.5.1703974639128;
-        Sat, 30 Dec 2023 14:17:19 -0800 (PST)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id n38-20020a634d66000000b005897bfc2ed3sm16381078pgl.93.2023.12.30.14.17.17
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ytqw2FHmhrz2Q/Vvd/gZICZv8ex4sbCt21vyO6FDogw=;
+        b=KiHXPlOK0cjFFXOxv7uR3w0SiglZpZ64N4eAR9gYdMNmohOgA2Y5AD2W+p1RwW5UdT
+         XmooAtIGuDr1wgkweswfinHC+AzJyGr7RWPvO680UweCtSWFMH1HCHrTmaDlmD5io2Hb
+         aZiZ102NA9VieFKeGQQ29AutC3gswR4Sq/MqyxQg5DNfERRyWs+Q+n/FWZI6XXlJ/Z05
+         eoeIvJ47SZKOsbTaNsVeRrTu9qZpFQTAjD8pv/leMOaoxmjS+TRUPy7yVx5LkV6KUYt6
+         1k+Fe7qmLBajth/Yj/w69KqRnY0bPX+98losrWtDqafOSXQlFSICFjZXaUx0hju7QqLx
+         vj2Q==
+X-Gm-Message-State: AOJu0YxhTocbdyWR3GT92+1XzDhW74pp78ccVvz4hVgHhrGaHZiBdZAd
+	p8E/VSpcJwJuPtQv1+WbRzw=
+X-Google-Smtp-Source: AGHT+IGTWXvfDNFHuJs/2JwYmQDseU7HorFDI4IceT3cAbf4f88WDlSNXxN5ZhWt0jW2njXpvMCx1Q==
+X-Received: by 2002:a05:620a:1aa9:b0:781:5c68:a5ee with SMTP id bl41-20020a05620a1aa900b007815c68a5eemr9616536qkb.45.1703975042959;
+        Sat, 30 Dec 2023 14:24:02 -0800 (PST)
+Received: from [192.168.0.162] ([216.130.59.33])
+        by smtp.gmail.com with ESMTPSA id u11-20020a9d4d8b000000b006d9fb0458cdsm3232223otk.39.2023.12.30.14.24.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Dec 2023 14:17:18 -0800 (PST)
-Message-ID: <d383aaa6-8918-42c6-8ec0-73e234175770@kernel.dk>
-Date: Sat, 30 Dec 2023 15:17:17 -0700
+        Sat, 30 Dec 2023 14:24:02 -0800 (PST)
+Sender: Larry Finger <larry.finger@gmail.com>
+Message-ID: <ca357d13-7da9-490f-9e69-4674c6ede057@lwfinger.net>
+Date: Sat, 30 Dec 2023 16:23:58 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,143 +68,34 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6] io_uring: Statistics of the true utilization of sq
- threads.
+Subject: Re: [PATCH wireless 3/5] wifi: b43: Stop/wake correct queue in PIO Tx
+ path when QoS is disabled
 Content-Language: en-US
-To: Pavel Begunkov <asml.silence@gmail.com>,
- Xiaobing Li <xiaobing.li@samsung.com>
-Cc: linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
- kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
- kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com,
- cliang01.li@samsung.com, xue01.he@samsung.com
-References: <CGME20231225055252epcas5p43ae8016d329b160f688def7b4f9d4ddb@epcas5p4.samsung.com>
- <20231225054438.44581-1-xiaobing.li@samsung.com>
- <170360833542.1229482.7687326255574388809.b4-ty@kernel.dk>
- <7967c7a9-3d17-44de-a170-2b5354460126@gmail.com>
- <57b81a15-58ae-46c1-a1af-9117457a31c7@kernel.dk>
- <6167a98c-35f3-4ea6-a807-dc87c0e4e1bf@gmail.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <6167a98c-35f3-4ea6-a807-dc87c0e4e1bf@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To: Rahul Rameshbabu <sergeantsagara@protonmail.com>
+Cc: Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
+ b43-dev@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231230045105.91351-1-sergeantsagara@protonmail.com>
+ <20231230045105.91351-4-sergeantsagara@protonmail.com>
+ <cb9dcb49-ad94-40df-9f01-a28df3daf6c3@lwfinger.net>
+ <877ckvwk5v.fsf@protonmail.com>
+From: Larry Finger <Larry.Finger@lwfinger.net>
+In-Reply-To: <877ckvwk5v.fsf@protonmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 12/30/23 2:06 PM, Pavel Begunkov wrote:
-> On 12/30/23 17:41, Jens Axboe wrote:
->> On 12/30/23 9:27 AM, Pavel Begunkov wrote:
->>> On 12/26/23 16:32, Jens Axboe wrote:
->>>>
->>>> On Mon, 25 Dec 2023 13:44:38 +0800, Xiaobing Li wrote:
->>>>> Count the running time and actual IO processing time of the sqpoll
->>>>> thread, and output the statistical data to fdinfo.
->>>>>
->>>>> Variable description:
->>>>> "work_time" in the code represents the sum of the jiffies of the sq
->>>>> thread actually processing IO, that is, how many milliseconds it
->>>>> actually takes to process IO. "total_time" represents the total time
->>>>> that the sq thread has elapsed from the beginning of the loop to the
->>>>> current time point, that is, how many milliseconds it has spent in
->>>>> total.
->>>>>
->>>>> [...]
->>>>
->>>> Applied, thanks!
->>>>
->>>> [1/1] io_uring: Statistics of the true utilization of sq threads.
->>>>         commit: 9f7e5872eca81d7341e3ec222ebdc202ff536655
->>>
->>> I don't believe the patch is near complete, there are still
->>> pending question that the author ignored (see replies to
->>> prev revisions).
->>
->> We can drop and defer, that's not an issue. It's still sitting top of
->> branch.
->>
->> Can you elaborate on the pending questions?
-> 
-> I guess that wasn't clear, but I duplicated all of them in the
-> email you're replying to for convenience
-> 
->>> Why it uses jiffies instead of some task run time?
->>> Consequently, why it's fine to account irq time and other
->>> preemption? (hint, it's not)
->>
->> Yeah that's a good point, might be better to use task run time. Jiffies
->> is also an annoying metric to expose, as you'd need to then get the tick
->> rate as well. Though I suspect the ratio is the interesting bit here.
-> 
-> I agree that seconds are nicer, but that's not my point. That's
-> not about jiffies, but that the patch keeps counting regardless
-> whether the SQ task was actually running, or the CPU was serving
-> irq, or even if it was force descheduled.
+On 12/30/23 13:43, Rahul Rameshbabu wrote:
+> Unfortunately, new firmware would not prevent the need to fix up the
+> code with regards to QoS being disabled via the kernel parameter or
+> using OpenFW. That said, new firmware could help us drop the fifth patch
+> in this series. I am thinking about using b43-fwcutter to extract
+> proprietary fw from a newer release of broadcom-wl to see if that makes
+> a difference. That said, I am a bit puzzled since the device I am
+> testing on released in early 2011, and I used firmware released in late
+> 2012.
 
-Right, guess I wasn't clear, I did very much agree with using task run
-time to avoid cases like that where it's perceived running, but really
-isn't. For example.
+Unfortunately, it is very difficult to get the parameters for fwcutter from an 
+x86 binary. Some of the other architectures are easier.
 
-> I even outlined what a solution may look like, i.e. replace jiffies
-> with task runtime, which should already be counted in the task.
-
-Would be a good change to make. And to be fair, I guess they originally
-wanted something like that, as the very first patch had some scheduler
-interactions. Just wasn't done quite right.
-
->>> Why it can't be done with userspace and/or bpf? Why
->>> can't it be estimated by checking and tracking
->>> IORING_SQ_NEED_WAKEUP in userspace?
->>
->> Asking people to integrate bpf for this is a bit silly imho. Tracking
-> 
-> I haven't seen any mention of the real use case, did I miss it?
-> Because otherwise I fail to see how it can possibly be called
-> silly when it's not clear how exactly it's used.
-> 
-> Maybe it's a bash program printing stats to a curious user? Or
-> maybe it's to track once at start, and then nobody cares about
-> it, in which case NEED_WAKEUP would be justified.
-> 
-> I can guess it's for adjusting the sq timeouts, but who knows.
-
-I only know what is in those threads, but the most obvious use case
-would indeed be to vet the efficiency of the chosen timeout value and
-balance cpu usage with latency like that.
-
->> NEED_WAKEUP is also quite cumbersome and would most likely be higher
->> overhead as well.
-> 
-> Comparing to reading a procfs file or doing an io_uring
-> register syscall? I doubt that. It's also not everyone
-> would be using that.
-
-What's the proposed integration to make NEED_WAKEUP sampling work? As
-far as I can tell, you'd need to either do that kind of accounting every
-time you do io_uring_submit(), or make it conditional which would then
-at least still have a branch.
-
-The kernel side would obviously not be free either, but at least it
-would be restricted to the SQPOLL side of things and not need to get
-entangled with the general IO path that doesn't use SQPOLL.
-
-If we put it in there and have some way to enable/query/disable, then it
-least it would just be a branch or two in there rather than in the
-generic path.
-
->>> What's the use case in particular? Considering that
->>> one of the previous revisions was uapi-less, something
->>> is really fishy here. Again, it's a procfs file nobody
->>> but a few would want to parse to use the feature.
->>
->> I brought this up earlier too, fdinfo is not a great API. For anything,
->> really.
-> 
-> I saw that comment, that's why I mentioned, but the
-> point is that I have doubts the author is even using
-> the uapi.
-
-Not sure I follow... If they aren't using the API, what's the point of
-the patch? Or are you questioning whether this is being done for an
-actual use case, or just as a "why not, might be handy" kind of thing?
-
--- 
-Jens Axboe
+Larry
 
 
