@@ -1,122 +1,106 @@
-Return-Path: <linux-kernel+bounces-13401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6615782049C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:31:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54C7E82049E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:34:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1378F281E6A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:31:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8502E1C20E5E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:34:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 869B679CC;
-	Sat, 30 Dec 2023 11:31:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486677493;
+	Sat, 30 Dec 2023 11:34:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3ECxP8U6";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aBHPInxp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O8UwZWxi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0441A7487;
-	Sat, 30 Dec 2023 11:31:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Sat, 30 Dec 2023 11:31:22 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1703935883;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5YekaI+XSXzVudCa+DmlL/evq5KrMF9TXWnC3KY0bLQ=;
-	b=3ECxP8U6giePTZVmturwNcYulTP+uV0UjbT0pGvUNxHoaYaCLZP1/mdIp5SpJoNm6A73rc
-	eLNrZbwLRhX0h0bTzH0RPNHQNqL7G+nSiV46RynPrXxhn8Z2F8EjLfPKEO2djjaaNDgoCs
-	GAGwZdZtLBf2tLPW/SzU4oPTIp52dmtLML62Qt6LzVzU0VJ56TRFLA2OPvKs4LjPDkEKA2
-	9pTHD579KvPQKY/3BBR3OIxonxKoGYmad7mVQeELOkKfbubVrJJPbr/iYp6wAvAkaNCXpG
-	obLg+sql0CSY8+D3fuBVBiK+agRDWwDFEsz3xCAKfFZh26HV/N2ShCLi2MHwxw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1703935883;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5YekaI+XSXzVudCa+DmlL/evq5KrMF9TXWnC3KY0bLQ=;
-	b=aBHPInxpfgK/+hOHdOxeLwNb+dNyKN6/xkja7EtxbnXaqwrRzqxlfRe4ymHzol/jYbXuRm
-	tgt3OJyEIJLc1QCQ==
-From: "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/paravirt] x86/alternative: Correct feature bit debug output
-Cc: "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20231206110636.GBZXBVvCWj2IDjVk4c@fat_crate.local>
-References: <20231206110636.GBZXBVvCWj2IDjVk4c@fat_crate.local>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936D98BE7;
+	Sat, 30 Dec 2023 11:34:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D9ADC433C7;
+	Sat, 30 Dec 2023 11:33:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703936040;
+	bh=e4zIj9WN1rHOoaFgv5qNtqov46wr61rNTXnZQylXXXg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=O8UwZWxiI8abpS9S3Lbzp3CPK0eqfMjQb8MxCb4ajF5b2Lw/b81zF9pvi64laJn7h
+	 FQjvOzNMA9nRZgsoGmd+qKq7Hiz07IfoAtI7+igco24jicf+IDTtKIypIbPLufzxwB
+	 EEk46PwTcc6kMTIios4IdViifsNwTLZS/tX9h0JuDgzw0NyPASanMUPtc9YwiPYOPw
+	 bk6gBmqQgp3qakzg+tjBMbJaQYxpPShB8DJHCmNV3GwXl05cM6RIkeqTc/bKVSr3WE
+	 /K6My5E7LrgKED24TcamFDb6b7YiJEPA1FcbX9DfRk+ICfZDsnw0G3FP/XR37xMzH5
+	 AF8odw6CUHh6g==
+Date: Sat, 30 Dec 2023 11:33:54 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Petre Rodan <petre.rodan@subdimension.ro>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, Andreas Klinger
+ <ak@it-klinger.de>, Lars-Peter Clausen <lars@metafoo.de>, Angel Iglesias
+ <ang.iglesiasg@gmail.com>, Matti Vaittinen <mazziesaccount@gmail.com>
+Subject: Re: [PATCH v2 07/10] iio: pressure: mprls0025pa.c whitespace
+ cleanup
+Message-ID: <20231230113354.0abaa6c1@jic23-huawei>
+In-Reply-To: <ZYxhUJlAb63wRJE-@sunspire>
+References: <20231224143500.10940-1-petre.rodan@subdimension.ro>
+	<20231224143500.10940-8-petre.rodan@subdimension.ro>
+	<ZYxSERlEAfwWpqWP@smile.fi.intel.com>
+	<ZYxhUJlAb63wRJE-@sunspire>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170393588213.398.4263924144760280684.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-The following commit has been merged into the x86/paravirt branch of tip:
+On Wed, 27 Dec 2023 19:39:28 +0200
+Petre Rodan <petre.rodan@subdimension.ro> wrote:
 
-Commit-ID:     7991ed43587d1106315208cc289c851d6915d4a3
-Gitweb:        https://git.kernel.org/tip/7991ed43587d1106315208cc289c851d6915d4a3
-Author:        Borislav Petkov (AMD) <bp@alien8.de>
-AuthorDate:    Sat, 30 Dec 2023 12:20:04 +01:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Sat, 30 Dec 2023 12:25:55 +01:00
+> On Wed, Dec 27, 2023 at 06:34:25PM +0200, Andy Shevchenko wrote:
+> > On Sun, Dec 24, 2023 at 04:34:52PM +0200, Petre Rodan wrote:  
+> > > Fix indentation and whitespace in code that will not get refactored.
+> > > 
+> > > Make URL inside comment copy-paste friendly.  
+> >   
+> > >  			return dev_err_probe(dev, ret,
+> > > -				"honeywell,pmin-pascal could not be read\n");
+> > > +				   "honeywell,pmin-pascal could not be read\n");  
+> > 
+> > As done elsewhere, here and in other similar places fix the indentation
+> > by making first character on the latter line to be in the same column as
+> > the first character after the opening parenthesis.  
+> 
+> I triple-checked that I am following the max 80 column rule, the parenthesis
+> rule and the 'do not split printk messages' rules in all my code in these 10 patches.
+> precisely so I don't get feedback like this one.
+> if the parenthesis rule makes the line longer then 80 chars I right-align to
+> column 80 as seen above.
 
-x86/alternative: Correct feature bit debug output
+I'm not aware of (and can't immediately see) anything about right aligning to 80
+columns.  It's fine to align it less if line length is long but normally people
+go with aligning to one tab more than the start of the block.
 
-In
+> that is what I understand from the latest coding style document and that is what
+> I will follow.
+> 
+> in this particular case if I were to ignore the 80 column rule we would end up on
+> column 90 if I were to follow your feedback (open parenthesis is at column 45
+> and the error takes 45 chars more).
 
-  https://lore.kernel.org/r/20231206110636.GBZXBVvCWj2IDjVk4c@fat_crate.local
+It's fine to do this in the interests of readability.
 
-I wanted to adjust the alternative patching debug output to the new
-changes introduced by
+People differ in opinion on what constitutes 'significant readability' and I'd
+be happy with either a shorter alignment (single tab more than line above)
+or going over 80 chars in this case.
 
-  da0fe6e68e10 ("x86/alternative: Add indirect call patching")
+Jonathan
 
-but removed the '*' which denotes the ->x86_capability word. The correct
-output should be, for example:
+> 
+> peter
+> 
 
-  [    0.230071] SMP alternatives: feat: 11*32+15, old: (entry_SYSCALL_64_after_hwframe+0x5a/0x77 (ffffffff81c000c2) len: 16), repl: (ffffffff89ae896a, len: 5) flags: 0x0
-
-while the incorrect one says "... 1132+15" currently.
-
-Add back the '*'.
-
-Fixes: da0fe6e68e10 ("x86/alternative: Add indirect call patching")
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20231206110636.GBZXBVvCWj2IDjVk4c@fat_crate.local
----
- arch/x86/kernel/alternative.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index f26983a..f7ea108 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -498,7 +498,7 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
- 			continue;
- 		}
- 
--		DPRINTK(ALT, "feat: %d32+%d, old: (%pS (%px) len: %d), repl: (%px, len: %d) flags: 0x%x",
-+		DPRINTK(ALT, "feat: %d*32+%d, old: (%pS (%px) len: %d), repl: (%px, len: %d) flags: 0x%x",
- 			a->cpuid >> 5,
- 			a->cpuid & 0x1f,
- 			instr, instr, a->instrlen,
 
