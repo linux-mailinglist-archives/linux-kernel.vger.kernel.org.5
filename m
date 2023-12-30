@@ -1,371 +1,280 @@
-Return-Path: <linux-kernel+bounces-13365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34C60820410
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:41:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40EB2820412
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:44:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A3D2B214F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 08:41:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B039B21410
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 08:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C0CF258B;
-	Sat, 30 Dec 2023 08:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E56210A;
+	Sat, 30 Dec 2023 08:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DOrXnMgu"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HYO6b3Ex"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D10A23A5;
-	Sat, 30 Dec 2023 08:41:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C058CC433C8;
-	Sat, 30 Dec 2023 08:41:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703925696;
-	bh=dzteouM10pv6wk8uNmQ/VLB0p6VTmDWkZ/hi/6DF8y8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=DOrXnMguPzj6kjPbJVJBJ7kOOWHicouD6MQY3Kv1TdJ7Ho6rbLqIV/Uuh3dsKLdKC
-	 wiFVZuqbXEX5wSK65we2CMbdKa4nzX2HdkBxZ1DWoe4ndj84K8un/Dw7rgKgZcg21m
-	 bwX60dCXvvbTwCPNA24KrK/Vk84lOoz+fcLqkVQNcnoRsjgyOgH7sg4MfHZc2ndqyU
-	 DEu2QQG6xG9xF89MA5BQ58hN6A7dOOUWCsQSyNahq9QDLXiX4f7X3Zear9X21iJ0z5
-	 U3Sx1H8YBD9gvmPpyse21kuuSqg7zh3cD8ZD6ap1WIKdK3/lm1ygtXK1POVLOpnZ30
-	 uYFoy4Jswp+/g==
-Date: Sat, 30 Dec 2023 17:41:31 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Jiri Olsa <jolsa@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, bpf@vger.kernel.org
-Subject: Re: [PATCH] ftrace: Fix modification of direct_function hash while
- in use
-Message-Id: <20231230174131.fe6dc271f126d0e17662514c@kernel.org>
-In-Reply-To: <20231229115134.08dd5174@gandalf.local.home>
-References: <20231229115134.08dd5174@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 000095239;
+	Sat, 30 Dec 2023 08:44:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703925863; x=1735461863;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kP48Qr7mS35FgW5l3bihWVKTEbnJqD/ev/ndiwrg9tM=;
+  b=HYO6b3ExF5WQx7Pb8Da0mbIZNb+ic2SxHyLxkzrP9mMmjC8GEpUcSH0s
+   AMpXQ8ijGUv4A3TYq2eVeLfo7RKL9WZN0+8b++A+yJWjn1+KkGcGWi2uz
+   WpL53jU02rwdvftYpBj9ZpzPuwrYi3sNkiR0vl4Jd0tumzDmixaNXUOVy
+   G0KKD2LS+N5tRhrv1paAM9dAfyMLPvplVlf9rKFpKLe5GA38AueGrMFPI
+   ny3eScnCmvSUZA4tH9/5EEjCj3z8XqunCAoQIBuyKWJpdg+lvI/4M/smE
+   A8uVpjds04o0bQsftGApFjPooys3Kf5k+CJ5HIcDIuZdOLtysxJ3cBBr7
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10938"; a="376184511"
+X-IronPort-AV: E=Sophos;i="6.04,317,1695711600"; 
+   d="scan'208";a="376184511"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2023 00:44:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10938"; a="1026075769"
+X-IronPort-AV: E=Sophos;i="6.04,317,1695711600"; 
+   d="scan'208";a="1026075769"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 30 Dec 2023 00:44:19 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rJUx7-000IHJ-16;
+	Sat, 30 Dec 2023 08:44:17 +0000
+Date: Sat, 30 Dec 2023 16:43:35 +0800
+From: kernel test robot <lkp@intel.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, adamg@pobox.com,
+	stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Tobias Gruetzmacher <tobias-lists@23.gs>
+Subject: Re: [PATCH] firewire: ohci: suppress unexpected system reboot in AMD
+ Ryzen machines and ASM108x/VT630x PCIe cards
+Message-ID: <202312301629.2sCcBeRp-lkp@intel.com>
+References: <20231229035735.11127-1-o-takashi@sakamocchi.jp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231229035735.11127-1-o-takashi@sakamocchi.jp>
 
-On Fri, 29 Dec 2023 11:51:34 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hi Takashi,
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> Masami Hiramatsu reported a memory leak in register_ftrace_direct() where
-> if the number of new entries are added is large enough to cause two
-> allocations in the loop:
-> 
->         for (i = 0; i < size; i++) {
->                 hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
->                         new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
->                         if (!new)
->                                 goto out_remove;
->                         entry->direct = addr;
->                 }
->         }
-> 
-> Where ftrace_add_rec_direct() has:
-> 
->         if (ftrace_hash_empty(direct_functions) ||
->             direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
->                 struct ftrace_hash *new_hash;
->                 int size = ftrace_hash_empty(direct_functions) ? 0 :
->                         direct_functions->count + 1;
-> 
->                 if (size < 32)
->                         size = 32;
-> 
->                 new_hash = dup_hash(direct_functions, size);
->                 if (!new_hash)
->                         return NULL;
-> 
->                 *free_hash = direct_functions;
->                 direct_functions = new_hash;
->         }
-> 
-> The "*free_hash = direct_functions;" can happen twice, losing the previous
-> allocation of direct_functions.
-> 
-> But this also exposed a more serious bug.
-> 
-> The modification of direct_functions above is not safe. As
-> direct_functions can be referenced at any time to find what direct caller
-> it should call, the time between:
-> 
->                 new_hash = dup_hash(direct_functions, size);
->  and
->                 direct_functions = new_hash;
-> 
-> can have a race with another CPU (or even this one if it gets interrupted),
-> and the entries being moved to the new hash are not referenced.
-> 
-> That's because the "dup_hash()" is really misnamed and is really a
-> "move_hash()". It moves the entries from the old hash to the new one.
-> 
-> Now even if that was changed, this code is not proper as direct_functions
-> should not be updated until the end. That is the best way to handle
-> function reference changes, and is the way other parts of ftrace handles
-> this.
+kernel test robot noticed the following build errors:
 
-Oops, I also misunderstood.
+[auto build test ERROR on ieee1394-linux1394/for-next]
+[also build test ERROR on ieee1394-linux1394/for-linus linus/master v6.7-rc7 next-20231222]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> 
-> The following is done:
-> 
->  1. Change add_hash_entry() to return the entry it created and inserted
->     into the hash, and not just return success or not.
-> 
->  2. Replace ftrace_add_rec_direct() with add_hash_entry(), and remove
->     the former.
-> 
->  3. Allocate a "new_hash" at the start that is made for holding both the
->     new hash entries as well as the existing entries in direct_functions.
-> 
->  4. Copy (not move) the direct_function entries over to the new_hash.
-> 
->  5. Copy the entries of the added hash to the new_hash.
-> 
->  6. If everything succeeds, then use rcu_pointer_assign() to update the
->     direct_functions with the new_hash.
-> 
-> This simplifies the code and fixes both the memory leak as well as the
-> race condition mentioned above.
+url:    https://github.com/intel-lab-lkp/linux/commits/Takashi-Sakamoto/firewire-ohci-suppress-unexpected-system-reboot-in-AMD-Ryzen-machines-and-ASM108x-VT630x-PCIe-cards/20231229-120311
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git for-next
+patch link:    https://lore.kernel.org/r/20231229035735.11127-1-o-takashi%40sakamocchi.jp
+patch subject: [PATCH] firewire: ohci: suppress unexpected system reboot in AMD Ryzen machines and ASM108x/VT630x PCIe cards
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20231230/202312301629.2sCcBeRp-lkp@intel.com/config)
+compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project 8a4266a626914765c0c69839e8a51be383013c1a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231230/202312301629.2sCcBeRp-lkp@intel.com/reproduce)
 
-This looks good to me.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312301629.2sCcBeRp-lkp@intel.com/
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+All errors (new ones prefixed by >>):
 
-Thank you,
+>> drivers/firewire/ohci.c:3679:59: error: too many arguments provided to function-like macro invocation
+    3679 |         if (detect_vt630x_with_asm1083_on_amd_ryzen_machine(dev, ohci))
+         |                                                                  ^
+   drivers/firewire/ohci.c:3573:9: note: macro 'detect_vt630x_with_asm1083_on_amd_ryzen_machine' defined here
+    3573 | #define detect_vt630x_with_asm1083_on_amd_ryzen_machine(pdev)   false
+         |         ^
+>> drivers/firewire/ohci.c:3679:6: error: use of undeclared identifier 'detect_vt630x_with_asm1083_on_amd_ryzen_machine'
+    3679 |         if (detect_vt630x_with_asm1083_on_amd_ryzen_machine(dev, ohci))
+         |             ^
+   2 errors generated.
 
-> 
-> Link: https://lore.kernel.org/all/170368070504.42064.8960569647118388081.stgit@devnote2/
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 763e34e74bb7d ("ftrace: Add register_ftrace_direct()")
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  kernel/trace/ftrace.c | 100 ++++++++++++++++++++----------------------
->  1 file changed, 47 insertions(+), 53 deletions(-)
-> 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 8de8bec5f366..b01ae7d36021 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -1183,18 +1183,19 @@ static void __add_hash_entry(struct ftrace_hash *hash,
->  	hash->count++;
->  }
->  
-> -static int add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
-> +static struct ftrace_func_entry *
-> +add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
->  {
->  	struct ftrace_func_entry *entry;
->  
->  	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
->  	if (!entry)
-> -		return -ENOMEM;
-> +		return NULL;
->  
->  	entry->ip = ip;
->  	__add_hash_entry(hash, entry);
->  
-> -	return 0;
-> +	return entry;
->  }
->  
->  static void
-> @@ -1349,7 +1350,6 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
->  	struct ftrace_func_entry *entry;
->  	struct ftrace_hash *new_hash;
->  	int size;
-> -	int ret;
->  	int i;
->  
->  	new_hash = alloc_ftrace_hash(size_bits);
-> @@ -1366,8 +1366,7 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
->  	size = 1 << hash->size_bits;
->  	for (i = 0; i < size; i++) {
->  		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> -			ret = add_hash_entry(new_hash, entry->ip);
-> -			if (ret < 0)
-> +			if (add_hash_entry(new_hash, entry->ip) == NULL)
->  				goto free_hash;
->  		}
->  	}
-> @@ -2536,7 +2535,7 @@ ftrace_find_unique_ops(struct dyn_ftrace *rec)
->  
->  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
->  /* Protected by rcu_tasks for reading, and direct_mutex for writing */
-> -static struct ftrace_hash *direct_functions = EMPTY_HASH;
-> +static struct ftrace_hash __rcu *direct_functions = EMPTY_HASH;
->  static DEFINE_MUTEX(direct_mutex);
->  int ftrace_direct_func_count;
->  
-> @@ -2555,39 +2554,6 @@ unsigned long ftrace_find_rec_direct(unsigned long ip)
->  	return entry->direct;
->  }
->  
-> -static struct ftrace_func_entry*
-> -ftrace_add_rec_direct(unsigned long ip, unsigned long addr,
-> -		      struct ftrace_hash **free_hash)
-> -{
-> -	struct ftrace_func_entry *entry;
-> -
-> -	if (ftrace_hash_empty(direct_functions) ||
-> -	    direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
-> -		struct ftrace_hash *new_hash;
-> -		int size = ftrace_hash_empty(direct_functions) ? 0 :
-> -			direct_functions->count + 1;
-> -
-> -		if (size < 32)
-> -			size = 32;
-> -
-> -		new_hash = dup_hash(direct_functions, size);
-> -		if (!new_hash)
-> -			return NULL;
-> -
-> -		*free_hash = direct_functions;
-> -		direct_functions = new_hash;
-> -	}
-> -
-> -	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
-> -	if (!entry)
-> -		return NULL;
-> -
-> -	entry->ip = ip;
-> -	entry->direct = addr;
-> -	__add_hash_entry(direct_functions, entry);
-> -	return entry;
-> -}
-> -
->  static void call_direct_funcs(unsigned long ip, unsigned long pip,
->  			      struct ftrace_ops *ops, struct ftrace_regs *fregs)
->  {
-> @@ -4223,8 +4189,8 @@ enter_record(struct ftrace_hash *hash, struct dyn_ftrace *rec, int clear_filter)
->  		/* Do nothing if it exists */
->  		if (entry)
->  			return 0;
-> -
-> -		ret = add_hash_entry(hash, rec->ip);
-> +		if (add_hash_entry(hash, rec->ip) == NULL)
-> +			ret = -ENOMEM;
->  	}
->  	return ret;
->  }
-> @@ -5266,7 +5232,8 @@ __ftrace_match_addr(struct ftrace_hash *hash, unsigned long ip, int remove)
->  		return 0;
->  	}
->  
-> -	return add_hash_entry(hash, ip);
-> +	entry = add_hash_entry(hash, ip);
-> +	return entry ? 0 :  -ENOMEM;
->  }
->  
->  static int
-> @@ -5410,7 +5377,7 @@ static void remove_direct_functions_hash(struct ftrace_hash *hash, unsigned long
->   */
->  int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
->  {
-> -	struct ftrace_hash *hash, *free_hash = NULL;
-> +	struct ftrace_hash *hash, *new_hash = NULL, *free_hash = NULL;
->  	struct ftrace_func_entry *entry, *new;
->  	int err = -EBUSY, size, i;
->  
-> @@ -5436,17 +5403,44 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
->  		}
->  	}
->  
-> -	/* ... and insert them to direct_functions hash. */
->  	err = -ENOMEM;
-> +
-> +	/* Make a copy hash to place the new and the old entries in */
-> +	size = hash->count + direct_functions->count;
-> +	if (size > 32)
-> +		size = 32;
-> +	new_hash = alloc_ftrace_hash(fls(size));
-> +	if (!new_hash)
-> +		goto out_unlock;
-> +
-> +	/* Now copy over the existing direct entries */
-> +	size = 1 << direct_functions->size_bits;
-> +	for (i = 0; i < size; i++) {
-> +		hlist_for_each_entry(entry, &direct_functions->buckets[i], hlist) {
-> +			new = add_hash_entry(new_hash, entry->ip);
-> +			if (!new)
-> +				goto out_unlock;
-> +			new->direct = entry->direct;
-> +		}
-> +	}
-> +
-> +	/* ... and add the new entries */
-> +	size = 1 << hash->size_bits;
->  	for (i = 0; i < size; i++) {
->  		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> -			new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
-> +			new = add_hash_entry(new_hash, entry->ip);
->  			if (!new)
-> -				goto out_remove;
-> +				goto out_unlock;
-> +			/* Update both the copy and the hash entry */
-> +			new->direct = addr;
->  			entry->direct = addr;
->  		}
->  	}
->  
-> +	free_hash = direct_functions;
-> +	rcu_assign_pointer(direct_functions, new_hash);
-> +	new_hash = NULL;
-> +
->  	ops->func = call_direct_funcs;
->  	ops->flags = MULTI_FLAGS;
->  	ops->trampoline = FTRACE_REGS_ADDR;
-> @@ -5454,17 +5448,17 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
->  
->  	err = register_ftrace_function_nolock(ops);
->  
-> - out_remove:
-> -	if (err)
-> -		remove_direct_functions_hash(hash, addr);
-> -
->   out_unlock:
->  	mutex_unlock(&direct_mutex);
->  
-> -	if (free_hash) {
-> +	if (free_hash && free_hash != EMPTY_HASH) {
->  		synchronize_rcu_tasks();
->  		free_ftrace_hash(free_hash);
->  	}
-> +
-> +	if (new_hash)
-> +		free_ftrace_hash(new_hash);
-> +
->  	return err;
->  }
->  EXPORT_SYMBOL_GPL(register_ftrace_direct);
-> @@ -6309,7 +6303,7 @@ ftrace_graph_set_hash(struct ftrace_hash *hash, char *buffer)
->  
->  				if (entry)
->  					continue;
-> -				if (add_hash_entry(hash, rec->ip) < 0)
-> +				if (add_hash_entry(hash, rec->ip) == NULL)
->  					goto out;
->  			} else {
->  				if (entry) {
-> -- 
-> 2.42.0
-> 
 
+vim +3679 drivers/firewire/ohci.c
+
+  3617	
+  3618	static int pci_probe(struct pci_dev *dev,
+  3619				       const struct pci_device_id *ent)
+  3620	{
+  3621		struct fw_ohci *ohci;
+  3622		u32 bus_options, max_receive, link_speed, version;
+  3623		u64 guid;
+  3624		int i, err;
+  3625		size_t size;
+  3626	
+  3627		if (dev->vendor == PCI_VENDOR_ID_PINNACLE_SYSTEMS) {
+  3628			dev_err(&dev->dev, "Pinnacle MovieBoard is not yet supported\n");
+  3629			return -ENOSYS;
+  3630		}
+  3631	
+  3632		ohci = devres_alloc(release_ohci, sizeof(*ohci), GFP_KERNEL);
+  3633		if (ohci == NULL)
+  3634			return -ENOMEM;
+  3635		fw_card_initialize(&ohci->card, &ohci_driver, &dev->dev);
+  3636		pci_set_drvdata(dev, ohci);
+  3637		pmac_ohci_on(dev);
+  3638		devres_add(&dev->dev, ohci);
+  3639	
+  3640		err = pcim_enable_device(dev);
+  3641		if (err) {
+  3642			dev_err(&dev->dev, "failed to enable OHCI hardware\n");
+  3643			return err;
+  3644		}
+  3645	
+  3646		pci_set_master(dev);
+  3647		pci_write_config_dword(dev, OHCI1394_PCI_HCI_Control, 0);
+  3648	
+  3649		spin_lock_init(&ohci->lock);
+  3650		mutex_init(&ohci->phy_reg_mutex);
+  3651	
+  3652		INIT_WORK(&ohci->bus_reset_work, bus_reset_work);
+  3653	
+  3654		if (!(pci_resource_flags(dev, 0) & IORESOURCE_MEM) ||
+  3655		    pci_resource_len(dev, 0) < OHCI1394_REGISTER_SIZE) {
+  3656			ohci_err(ohci, "invalid MMIO resource\n");
+  3657			return -ENXIO;
+  3658		}
+  3659	
+  3660		err = pcim_iomap_regions(dev, 1 << 0, ohci_driver_name);
+  3661		if (err) {
+  3662			ohci_err(ohci, "request and map MMIO resource unavailable\n");
+  3663			return -ENXIO;
+  3664		}
+  3665		ohci->registers = pcim_iomap_table(dev)[0];
+  3666	
+  3667		for (i = 0; i < ARRAY_SIZE(ohci_quirks); i++)
+  3668			if ((ohci_quirks[i].vendor == dev->vendor) &&
+  3669			    (ohci_quirks[i].device == (unsigned short)PCI_ANY_ID ||
+  3670			     ohci_quirks[i].device == dev->device) &&
+  3671			    (ohci_quirks[i].revision == (unsigned short)PCI_ANY_ID ||
+  3672			     ohci_quirks[i].revision >= dev->revision)) {
+  3673				ohci->quirks = ohci_quirks[i].flags;
+  3674				break;
+  3675			}
+  3676		if (param_quirks)
+  3677			ohci->quirks = param_quirks;
+  3678	
+> 3679		if (detect_vt630x_with_asm1083_on_amd_ryzen_machine(dev, ohci))
+  3680			ohci->quirks |= QUIRK_REBOOT_BY_CYCLE_TIMER_READ;
+  3681	
+  3682		/*
+  3683		 * Because dma_alloc_coherent() allocates at least one page,
+  3684		 * we save space by using a common buffer for the AR request/
+  3685		 * response descriptors and the self IDs buffer.
+  3686		 */
+  3687		BUILD_BUG_ON(AR_BUFFERS * sizeof(struct descriptor) > PAGE_SIZE/4);
+  3688		BUILD_BUG_ON(SELF_ID_BUF_SIZE > PAGE_SIZE/2);
+  3689		ohci->misc_buffer = dmam_alloc_coherent(&dev->dev, PAGE_SIZE, &ohci->misc_buffer_bus,
+  3690							GFP_KERNEL);
+  3691		if (!ohci->misc_buffer)
+  3692			return -ENOMEM;
+  3693	
+  3694		err = ar_context_init(&ohci->ar_request_ctx, ohci, 0,
+  3695				      OHCI1394_AsReqRcvContextControlSet);
+  3696		if (err < 0)
+  3697			return err;
+  3698	
+  3699		err = ar_context_init(&ohci->ar_response_ctx, ohci, PAGE_SIZE/4,
+  3700				      OHCI1394_AsRspRcvContextControlSet);
+  3701		if (err < 0)
+  3702			return err;
+  3703	
+  3704		err = context_init(&ohci->at_request_ctx, ohci,
+  3705				   OHCI1394_AsReqTrContextControlSet, handle_at_packet);
+  3706		if (err < 0)
+  3707			return err;
+  3708	
+  3709		err = context_init(&ohci->at_response_ctx, ohci,
+  3710				   OHCI1394_AsRspTrContextControlSet, handle_at_packet);
+  3711		if (err < 0)
+  3712			return err;
+  3713	
+  3714		reg_write(ohci, OHCI1394_IsoRecvIntMaskSet, ~0);
+  3715		ohci->ir_context_channels = ~0ULL;
+  3716		ohci->ir_context_support = reg_read(ohci, OHCI1394_IsoRecvIntMaskSet);
+  3717		reg_write(ohci, OHCI1394_IsoRecvIntMaskClear, ~0);
+  3718		ohci->ir_context_mask = ohci->ir_context_support;
+  3719		ohci->n_ir = hweight32(ohci->ir_context_mask);
+  3720		size = sizeof(struct iso_context) * ohci->n_ir;
+  3721		ohci->ir_context_list = devm_kzalloc(&dev->dev, size, GFP_KERNEL);
+  3722		if (!ohci->ir_context_list)
+  3723			return -ENOMEM;
+  3724	
+  3725		reg_write(ohci, OHCI1394_IsoXmitIntMaskSet, ~0);
+  3726		ohci->it_context_support = reg_read(ohci, OHCI1394_IsoXmitIntMaskSet);
+  3727		/* JMicron JMB38x often shows 0 at first read, just ignore it */
+  3728		if (!ohci->it_context_support) {
+  3729			ohci_notice(ohci, "overriding IsoXmitIntMask\n");
+  3730			ohci->it_context_support = 0xf;
+  3731		}
+  3732		reg_write(ohci, OHCI1394_IsoXmitIntMaskClear, ~0);
+  3733		ohci->it_context_mask = ohci->it_context_support;
+  3734		ohci->n_it = hweight32(ohci->it_context_mask);
+  3735		size = sizeof(struct iso_context) * ohci->n_it;
+  3736		ohci->it_context_list = devm_kzalloc(&dev->dev, size, GFP_KERNEL);
+  3737		if (!ohci->it_context_list)
+  3738			return -ENOMEM;
+  3739	
+  3740		ohci->self_id     = ohci->misc_buffer     + PAGE_SIZE/2;
+  3741		ohci->self_id_bus = ohci->misc_buffer_bus + PAGE_SIZE/2;
+  3742	
+  3743		bus_options = reg_read(ohci, OHCI1394_BusOptions);
+  3744		max_receive = (bus_options >> 12) & 0xf;
+  3745		link_speed = bus_options & 0x7;
+  3746		guid = ((u64) reg_read(ohci, OHCI1394_GUIDHi) << 32) |
+  3747			reg_read(ohci, OHCI1394_GUIDLo);
+  3748	
+  3749		if (!(ohci->quirks & QUIRK_NO_MSI))
+  3750			pci_enable_msi(dev);
+  3751		err = devm_request_irq(&dev->dev, dev->irq, irq_handler,
+  3752				       pci_dev_msi_enabled(dev) ? 0 : IRQF_SHARED, ohci_driver_name, ohci);
+  3753		if (err < 0) {
+  3754			ohci_err(ohci, "failed to allocate interrupt %d\n", dev->irq);
+  3755			goto fail_msi;
+  3756		}
+  3757	
+  3758		err = fw_card_add(&ohci->card, max_receive, link_speed, guid);
+  3759		if (err)
+  3760			goto fail_msi;
+  3761	
+  3762		version = reg_read(ohci, OHCI1394_Version) & 0x00ff00ff;
+  3763		ohci_notice(ohci,
+  3764			    "added OHCI v%x.%x device as card %d, "
+  3765			    "%d IR + %d IT contexts, quirks 0x%x%s\n",
+  3766			    version >> 16, version & 0xff, ohci->card.index,
+  3767			    ohci->n_ir, ohci->n_it, ohci->quirks,
+  3768			    reg_read(ohci, OHCI1394_PhyUpperBound) ?
+  3769				", physUB" : "");
+  3770	
+  3771		return 0;
+  3772	
+  3773	 fail_msi:
+  3774		pci_disable_msi(dev);
+  3775	
+  3776		return err;
+  3777	}
+  3778	
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
