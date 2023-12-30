@@ -1,93 +1,69 @@
-Return-Path: <linux-kernel+bounces-13336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D8908203AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 06:20:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F17178203B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 06:30:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8016C1C20F27
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 05:20:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98AB31F2219F
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 05:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B0F1FA2;
-	Sat, 30 Dec 2023 05:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC4323A5;
+	Sat, 30 Dec 2023 05:30:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=su-phil.net header.i=@su-phil.net header.b="XnPjN6hT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271143D6C;
-	Sat, 30 Dec 2023 05:20:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from localhost.localdomain (unknown [39.174.92.167])
-	by mail-app3 (Coremail) with SMTP id cC_KCgBXeNx+qI9l6wOiAQ--.22293S4;
-	Sat, 30 Dec 2023 13:20:00 +0800 (CST)
-From: Lin Ma <linma@zju.edu.cn>
-To: jgg@ziepe.ca,
-	leon@kernel.org,
-	gustavoars@kernel.org,
-	bvanassche@acm.org,
-	markzhang@nvidia.com,
-	linma@zju.edu.cn,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1] RDMA/sa_query: use validate not parser in ib_nl_is_good_resolve_resp
-Date: Sat, 30 Dec 2023 13:19:56 +0800
-Message-Id: <20231230051956.82499-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:cC_KCgBXeNx+qI9l6wOiAQ--.22293S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gry5KFWxAw45CrWUAr43ZFb_yoWDKFcEkr
-	4vgrn2qr18CFnIkrnxtr4fuFy2gw4Yqw1fuas2qa43K34DXr9xWa4xXFZxCayUWws2kF13
-	Crn5Cw48GF4IkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbwkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxG
-	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-	vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
-	x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
-	xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-	wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C73401FC5
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 05:30:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=su-phil.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=su-phil.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=su-phil.net
+	; s=ds202310; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
+	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=yBIkw4hlw325cp0Dr+tbsBKrDlM8i1rhyXSIiSJde9A=; b=XnPjN6hTFPGsFFfruXPh3Vc6xK
+	36tZTRJPk3fpblyz4aNTRAUu6vFmmdgDVsQPU1aipNICOm1lbQdmGRimB4ZSwhBbuqToJdzua9/Df
+	fOVabxHtkQ9tij9uqEXuEumfiYPRCrzva0EA1opG4S3IcK6LgaENUON2XOJU7j35aARi/budvZl3v
+	jV6WX8A4vRqyqQc0W4IQtrhmGSfdpgFbdfx26gGOYPzYUXexQr5DX+6Ji6GRPkqP1EMK7n8IoLaHg
+	yAeM0Tluj2yUFtKXkEYVrR47NJFZP0+qeTSLid83IScUgjmlOMWeyOwzQ4X9Z31pRq3xS23uLb3Uo
+	TjGRsr/A==;
+Received: from [84.215.119.50] (port=60947 helo=[192.168.0.2])
+	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <Ywe_C4rlyn@su-phil.net>)
+	id 1rJRvg-0040OA-Vr
+	for linux-kernel@vger.kernel.org;
+	Sat, 30 Dec 2023 06:30:37 +0100
+Message-ID: <1e261933-1ccb-4edf-b865-fd983635dc98@su-phil.net>
+Date: Sat, 30 Dec 2023 06:30:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: linux-kernel@vger.kernel.org
+From: =?UTF-8?Q?Ywe_C=C3=A6rlyn?= <Ywe_C4rlyn@su-phil.net>
+Subject: F x concentrate channel (was Fair Pay, Low Jitter, Philosophy)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-The attributes array `tb` in ib_nl_is_good_resolve_resp is never used
-after the parsing. Therefore use nla_validate_deprecated function here
-for improvement.
+I did a channel on youtube, with a concentrate of the culture that will 
+be in F x.
 
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
- drivers/infiniband/core/sa_query.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+https://www.youtube.com/@Ywe_Caerlyn
 
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index 8175dde60b0a..c7407a53fcda 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -1047,14 +1047,13 @@ int ib_nl_handle_set_timeout(struct sk_buff *skb,
- 
- static inline int ib_nl_is_good_resolve_resp(const struct nlmsghdr *nlh)
- {
--	struct nlattr *tb[LS_NLA_TYPE_MAX];
- 	int ret;
- 
- 	if (nlh->nlmsg_flags & RDMA_NL_LS_F_ERR)
- 		return 0;
- 
--	ret = nla_parse_deprecated(tb, LS_NLA_TYPE_MAX - 1, nlmsg_data(nlh),
--				   nlmsg_len(nlh), ib_nl_policy, NULL);
-+	ret = nla_validate_deprecated(nlmsg_data(nlh), nlmsg_len(nlh),
-+				      LS_NLA_TYPE_MAX - 1, ib_nl_policy, NULL);
- 	if (ret)
- 		return 0;
- 
--- 
-2.17.1
+F x being the design guidelines, symbol and philosophy in practise here.
 
+-Peace.
+Ywe Cærlyn
+AKA BiT, Haqon of Hyperia.
 
