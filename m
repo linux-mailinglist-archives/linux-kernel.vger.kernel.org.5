@@ -1,122 +1,102 @@
-Return-Path: <linux-kernel+bounces-13453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D96EF8206D6
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 16:05:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 760CA8206DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 16:19:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06C0D1C20FED
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:05:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF2A2281E47
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:19:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72CEA8F7D;
-	Sat, 30 Dec 2023 15:05:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b="S4SKqaUR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0CE946E;
+	Sat, 30 Dec 2023 15:19:37 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7068F59
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 15:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=futuring-girl.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-28cc07d8876so122706a91.1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 07:05:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1703948729; x=1704553529; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3TEYAiX+bNQzKptVufen3ugGP71A82gfbOiCal17chk=;
-        b=S4SKqaURfYE+r6c6svDG+4FCeWB7lpBP2h5TxRxzls2gvQIJa2h6EfLC9Zu5xI5oC2
-         UuyFZPIkZly3ZXaz3ldnhkHIk/Tx41b3xCZo5pGyMtGLns2GFeP/KcGItGalW8oTMjIG
-         H3sSHE2v0A5bAO1dtUkdRyOt39MAv+CeW601sBz8H1cRH1bpof69lGV7d6Z410DmKl08
-         /TPSmchLpbflHPqL8epu6I5CR/xLVnuKEFQ7LF9oXUaAQAXmyeXnUtnD5qPt1N6rRQjs
-         zfdOzCFNBkcsCKFj9523inOCu2YONXRLEZti8nqzgVtUOXTn3W/2z5l2O4x2v/jMNru1
-         XM4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703948729; x=1704553529;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3TEYAiX+bNQzKptVufen3ugGP71A82gfbOiCal17chk=;
-        b=idxTRoPKyzNPeLDRuWXe8h0sWxLBION6kbMxYyUwjWt9pQgW+ATvs+7zJ03SDP6rCE
-         V8Aqqw6rufroZS5xt2tVToAHwGHuPa9ADiiye4WrPVT7al1LSbrP1JErG5sdPsNk9pUT
-         ivSkVNN1satoPRxZHoRAdoPDXqPDrkzSvZwYs2+ykGS0Ij+B/aHSlKeI6Iv6nguVnxfS
-         fRpffwDNY8Zr7DJn+ykIKz9ax1L15i+qxg4DyqM/3OZJdgQkvrHQb0c4wOtjqf1biw7/
-         zxR28pgqqzcUflX8YjqUttT+3srW4VLDLcO3X8fMAZXr3XXRqf1sDL2/H7FDrZlJzkPw
-         182w==
-X-Gm-Message-State: AOJu0YyfYva9JVUdcSRr60Nymq6B6i3XN/CsVKT8qoRVJY2HSwgtbnxv
-	Y6HppZNB089v+vD/YNQ4RWEt+8FI7t9NEkS8FPpVOtCDpFPDmA==
-X-Google-Smtp-Source: AGHT+IEmKJ6+SVcBplkQkP6nIVcPQFmJeBLzWGJdt3El4x6EUmZ7FEIfxnhfLwwI27JJCMsJdHQs7z4nykiFFhUIj+g=
-X-Received: by 2002:a17:90a:f182:b0:28c:3b37:acb0 with SMTP id
- bv2-20020a17090af18200b0028c3b37acb0mr3473793pjb.17.1703948729452; Sat, 30
- Dec 2023 07:05:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 437BE8F59;
+	Sat, 30 Dec 2023 15:19:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout2.hostsharing.net (Postfix) with ESMTPS id CD95D2800BBD8;
+	Sat, 30 Dec 2023 16:19:31 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id C07F640FBD; Sat, 30 Dec 2023 16:19:31 +0100 (CET)
+Date: Sat, 30 Dec 2023 16:19:31 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>, Krzysztof Wilczy??ski <kw@linux.com>,
+	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-kernel@vger.kernel.org,
+	Alex Deucher <alexdeucher@gmail.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>
+Subject: Re: [PATCH v3 06/10] PCI: Cache PCIe device's Supported Speed Vector
+Message-ID: <20231230151931.GA25718@wunner.de>
+References: <20230929115723.7864-1-ilpo.jarvinen@linux.intel.com>
+ <20230929115723.7864-7-ilpo.jarvinen@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231230115812.333117904@linuxfoundation.org>
-In-Reply-To: <20231230115812.333117904@linuxfoundation.org>
-From: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date: Sun, 31 Dec 2023 00:05:18 +0900
-Message-ID: <CAKL4bV5hCwCxCX28akpXFE178ny0s_rSXuJK3JYz=RC6z=tYTw@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/156] 6.6.9-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230929115723.7864-7-ilpo.jarvinen@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Hi Greg
+On Fri, Sep 29, 2023 at 02:57:19PM +0300, Ilpo Järvinen wrote:
+> The Supported Link Speeds Vector in the Link Capabilities Register 2
+> corresponds to the bus below on Root Ports and Downstream Ports,
+> whereas it corresponds to the bus above on Upstream Ports and
+> Endpoints.
 
-On Sat, Dec 30, 2023 at 9:01=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.6.9 release.
-> There are 156 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Mon, 01 Jan 2024 11:57:43 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.6.9-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+It would be good to add a pointer to the spec here.  I think the
+relevant section is PCIe r6.1 sec 7.5.3.18 which says:
 
-6.6.9-rc1 tested.
+ "Supported Link Speeds Vector - This field indicates the supported
+  Link speed(s) of the associated Port."
+                       ^^^^^^^^^^^^^^^
 
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
+Obviously the associated port is upstream on a Switch Upstream Port
+or Endpoint, whereas it is downstream on a Switch Downstream Port
+or Root Port.
 
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
+Come to think of it, what about edge cases such as RCiEPs?
 
-[    0.000000] Linux version 6.6.9-rc1rv
-(takeshi@ThinkPadX1Gen10J0764) (gcc (GCC) 13.2.1 20230801, GNU ld (GNU
-Binutils) 2.41.0) #1 SMP PREEMPT_DYNAMIC Sat Dec 30 23:43:57 JST 2023
 
-Thanks
+> Only the former is currently cached in pcie_bus_speeds in
+> the struct pci_bus. The link speeds that are supported is the
+> intersection of these two.
 
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+I'm wondering if caching both is actually necessary.  Why not cache
+just the intersection?  Do we need either of the two somewhere?
+
+
+> Store the device's Supported Link Speeds Vector into the struct pci_bus
+> when the Function 0 is enumerated (the Multi-Function Devices must have
+> same speeds the same for all Functions) to be easily able to calculate
+> the intersection of Supported Link Speeds.
+
+Might want to add an explanation what you're going to need this for,
+I assume it's accessed frequently by the bandwidth throttling driver
+in a subsequent patch?
+
+Thanks,
+
+Lukas
 
