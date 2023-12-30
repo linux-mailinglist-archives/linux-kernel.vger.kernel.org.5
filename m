@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-13439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 345288206A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 14:52:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D65538206A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 14:52:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF04FB213BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 13:52:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 728CC1F21AF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 13:52:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD2B8946C;
-	Sat, 30 Dec 2023 13:52:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5847ABA26;
+	Sat, 30 Dec 2023 13:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uMHcSBpv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VgkfbaYC"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08C7D8F65;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A40F0B661;
+	Sat, 30 Dec 2023 13:52:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB020C433C8;
 	Sat, 30 Dec 2023 13:52:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31B0DC433CB;
-	Sat, 30 Dec 2023 13:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703944326;
-	bh=kDbLJxPgBxd0hxuVu8WO1yEFieOFRTfcfLs0cYwU+DM=;
+	s=k20201202; t=1703944328;
+	bh=h/bVRvqBDpxa6Xn0ybqaJ9bxYvhDa1MDNIDx4fYYn6s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uMHcSBpvo7B5K13+zqSWNAHlxna6pKVh2SM6n1VZ7bNqHaA/sxvQ+wWj7TFo2uFkp
-	 jSX0Nl0GQdqc6shqmy3oJGcFSs1uhZYoHdn4P5XCwnpYeQF5Q1WP1OHbUE4lp4AZPt
-	 AFViReyWtCCUF/r/8c3W+DRwlogPOTbj4jw/od6rqmk2kJoNUZ4+LvvQO5zYFxc7/K
-	 oMIlz7TyByTbYORuNOO/SjXC2M1hiMWMKD67WlJZDYXSm4v21SeUXZgWT8TaSoJ9iu
-	 NCKZI9q9YGrbkXA6QFpv6J153orCu1nKxYIf+XRZ4nYP4nCkIxI0HJw7fENKir2RKQ
-	 05EPLKopj/yKg==
+	b=VgkfbaYCDnHDqECG5hJVZR4EQlngt3vDZwFAgOzAFgdXSBoJ7FXVGq7VOueQuzxsS
+	 hHwa1t8KnFh4E8L5rr3MbbignJ7mDEOXoiTR+DXXqLlfemzFZH+S4PhLjRW3VnYPDk
+	 drVHFhSJcJ+E51onp3H6vscUszm3mH33sAR4eu3Bzkm2bSq0EhdWkrkGruZAITfeoD
+	 3+dJPOhpQpfo5Dvbul59uZCTRhsL2nKuExlfb/YIxeUUtr2ais4vJRqBHClToyoY7K
+	 pWYhp24PFAfwIfpLQsdHfiMLV5cndhZ14/E409qw7CADQ2RFYaHQNSamG1yrtZtD2U
+	 FwCxOQ9coOuJg==
 From: Masahiro Yamada <masahiroy@kernel.org>
 To: linux-kbuild@vger.kernel.org
 Cc: Ben Hutchings <ben@decadent.org.uk>,
@@ -40,9 +40,9 @@ Cc: Ben Hutchings <ben@decadent.org.uk>,
 	Nick Desaulniers <ndesaulniers@google.com>,
 	Nicolas Schier <nicolas@fjasle.eu>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/5] kbuild: deb-pkg: make debian/rules quiet by default
-Date: Sat, 30 Dec 2023 22:51:57 +0900
-Message-Id: <20231230135200.1058873-2-masahiroy@kernel.org>
+Subject: [PATCH 3/5] kbuild: deb-pkg: use debian/<package> for tmpdir
+Date: Sat, 30 Dec 2023 22:51:58 +0900
+Message-Id: <20231230135200.1058873-3-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231230135200.1058873-1-masahiroy@kernel.org>
 References: <20231230135200.1058873-1-masahiroy@kernel.org>
@@ -54,69 +54,104 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add $(Q) to commands in debian/rules to make them quiet when the package
-built is initiated by 'make deb-pkg'.
-
-While the commands in debian/rules are not hidden when you directly work
-with the debianized tree, you can set 'terse' to DEB_BUILD_OPTIONS to
-silence them.
+Use debian/<package> for tmpdir, which is the default of debhelper.
+This simplifies the code.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- scripts/package/debian/rules | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ scripts/package/builddeb | 41 ++++++++++++----------------------------
+ 1 file changed, 12 insertions(+), 29 deletions(-)
 
-diff --git a/scripts/package/debian/rules b/scripts/package/debian/rules
-index a686c37d0d02..b3f80f62236c 100755
---- a/scripts/package/debian/rules
-+++ b/scripts/package/debian/rules
-@@ -11,6 +11,10 @@ ifneq (,$(filter-out parallel=1,$(filter parallel=%,$(DEB_BUILD_OPTIONS))))
-     MAKEFLAGS += -j$(NUMJOBS)
- endif
+diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+index 842ee4b40528..bf96a3c24608 100755
+--- a/scripts/package/builddeb
++++ b/scripts/package/builddeb
+@@ -25,9 +25,7 @@ if_enabled_echo() {
+ }
  
-+ifneq (,$(filter terse,$(DEB_BUILD_OPTIONS)))
-+    Q ?= @
-+endif
-+
- revision = $(lastword $(subst -, ,$(shell dpkg-parsechangelog -S Version)))
- CROSS_COMPILE ?= $(filter-out $(DEB_BUILD_GNU_TYPE)-, $(DEB_HOST_GNU_TYPE)-)
- make-opts = ARCH=$(ARCH) KERNELRELEASE=$(KERNELRELEASE) KBUILD_BUILD_VERSION=$(revision) $(addprefix CROSS_COMPILE=,$(CROSS_COMPILE))
-@@ -19,20 +23,20 @@ make-opts = ARCH=$(ARCH) KERNELRELEASE=$(KERNELRELEASE) KBUILD_BUILD_VERSION=$(r
- binary: binary-arch binary-indep
- binary-indep: build-indep
- binary-arch: build-arch
--	$(MAKE) $(make-opts) \
-+	$(Q)$(MAKE) $(make-opts) \
- 	run-command KBUILD_RUN_COMMAND='+$$(srctree)/scripts/package/builddeb'
+ create_package() {
+-	local pname="$1" pdir="$2"
+-
+-	export DH_OPTIONS="-p${pname} -P${pdir}"
++	export DH_OPTIONS="-p${1}"
  
- .PHONY: build build-indep build-arch
- build: build-arch build-indep
- build-indep:
- build-arch:
--	$(MAKE) $(make-opts) olddefconfig
--	$(MAKE) $(make-opts) headers all
-+	$(Q)$(MAKE) $(make-opts) olddefconfig
-+	$(Q)$(MAKE) $(make-opts) headers all
+ 	dh_installdocs
+ 	dh_installchangelogs
+@@ -39,8 +37,8 @@ create_package() {
+ }
  
- .PHONY: clean
- clean:
--	rm -rf debian/files debian/linux-* debian/deb-env.vars*
--	$(MAKE) ARCH=$(ARCH) clean
-+	$(Q)rm -rf debian/files debian/linux-* debian/deb-env.vars*
-+	$(Q)$(MAKE) ARCH=$(ARCH) clean
+ install_linux_image () {
+-	pdir=$1
+-	pname=$2
++	pname=$1
++	pdir=debian/$1
  
- # If DEB_HOST_ARCH is empty, it is likely that debian/rules was executed
- # directly. Run 'dpkg-architecture --print-set --print-format=make' to
-@@ -41,6 +45,6 @@ ifndef DEB_HOST_ARCH
- -include debian/deb-env.vars
+ 	rm -rf ${pdir}
  
- debian/deb-env.vars:
--	dpkg-architecture -a$$(cat debian/arch) --print-set --print-format=make > $@.tmp
--	mv $@.tmp $@
-+	$(Q)dpkg-architecture -a$$(cat debian/arch) --print-set --print-format=make > $@.tmp
-+	$(Q)mv $@.tmp $@
- endif
+@@ -109,7 +107,7 @@ install_linux_image () {
+ }
+ 
+ install_linux_image_dbg () {
+-	pdir=$1
++	pdir=debian/$1
+ 
+ 	rm -rf ${pdir}
+ 
+@@ -139,8 +137,8 @@ install_linux_image_dbg () {
+ }
+ 
+ install_kernel_headers () {
+-	pdir=$1
+-	version=$2
++	pdir=debian/$1
++	version=${1#linux-headers-}
+ 
+ 	rm -rf $pdir
+ 
+@@ -151,7 +149,7 @@ install_kernel_headers () {
+ }
+ 
+ install_libc_headers () {
+-	pdir=$1
++	pdir=debian/$1
+ 
+ 	rm -rf $pdir
+ 
+@@ -171,28 +169,13 @@ for package in ${packages_enabled}
+ do
+ 	case ${package} in
+ 	*-dbg)
+-		install_linux_image_dbg debian/linux-image-dbg;;
++		install_linux_image_dbg "${package}";;
+ 	linux-image-*|user-mode-linux-*)
+-		install_linux_image debian/linux-image ${package};;
++		install_linux_image "${package}";;
+ 	linux-libc-dev)
+-		install_libc_headers debian/linux-libc-dev;;
++		install_libc_headers "${package}";;
+ 	linux-headers-*)
+-		install_kernel_headers debian/linux-headers ${package#linux-headers-};;
++		install_kernel_headers "${package}";;
+ 	esac
++	create_package "${package}"
+ done
+-
+-for package in ${packages_enabled}
+-do
+-	case ${package} in
+-	*-dbg)
+-		create_package ${package} debian/linux-image-dbg;;
+-	linux-image-*|user-mode-linux-*)
+-		create_package ${package} debian/linux-image;;
+-	linux-libc-dev)
+-		create_package ${package} debian/linux-libc-dev;;
+-	linux-headers-*)
+-		create_package ${package} debian/linux-headers;;
+-	esac
+-done
+-
+-exit 0
 -- 
 2.40.1
 
