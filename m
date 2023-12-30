@@ -1,104 +1,113 @@
-Return-Path: <linux-kernel+bounces-13575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A7FB820841
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 20:24:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7DBD820844
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 20:30:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5018E1C21E23
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 19:24:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B054283C44
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 19:30:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 281D2BE68;
-	Sat, 30 Dec 2023 19:24:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vLj1KmNw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95AD6C139;
+	Sat, 30 Dec 2023 19:30:11 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B459BE58
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 19:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sat, 30 Dec 2023 14:24:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703964253;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PvM8Sn8DH7rCqnf+LkHgkFYPn3ooypFdz/LllQI5VSg=;
-	b=vLj1KmNw8I72SVlvdc4NNNGDiYm6uOrZRw4nlTAdA/ejGfKPCu23SfDiPmwP4fZvvccDDg
-	PDP22YFXAv1AJwKqQy6GKRDOVpICVX0ebgq6Cv1Fsnvc62dJ1ZFwNlLf0QzhNIkTLXka0i
-	AizSQMPdNC4LICel5EAZfnf6Ca/oB44=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Daniel J Blueman <daniel@quora.org>
-Cc: linux-bcachefs@vger.kernel.org, 
-	Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: Stack corruption in bch2_nocow_write
-Message-ID: <ueizlpjhajjrik2ayiiqqhynvlqjwpaxccc624edkayemgqtcm@kzmbsh4ghx2n>
-References: <CAMVG2su=Kt5mkyEHGh5D4YH+1xTUFX3BhOjf-D0bcRTntav3ng@mail.gmail.com>
- <jt3gy5v3jhqadakhxbdezvfo2n2f4n7sc52ljw4kztct6poihr@zork6muwdity>
- <CAMVG2sveJiXO=88uFfrxYK0n3Nx1a4mTDJZ6N-zwaAUj76twDw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7472FBE4E;
+	Sat, 30 Dec 2023 19:30:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout3.hostsharing.net (Postfix) with ESMTPS id 0065D100D943F;
+	Sat, 30 Dec 2023 20:30:01 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id A79A3517AC; Sat, 30 Dec 2023 20:30:00 +0100 (CET)
+Date: Sat, 30 Dec 2023 20:30:00 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>, Krzysztof Wilczy??ski <kw@linux.com>,
+	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-kernel@vger.kernel.org,
+	Alex Deucher <alexdeucher@gmail.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>
+Subject: Re: [PATCH v3 05/10] PCI: Store all PCIe Supported Link Speeds
+Message-ID: <20231230193000.GA11331@wunner.de>
+References: <20230929115723.7864-1-ilpo.jarvinen@linux.intel.com>
+ <20230929115723.7864-6-ilpo.jarvinen@linux.intel.com>
+ <20231230114549.GB12257@wunner.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAMVG2sveJiXO=88uFfrxYK0n3Nx1a4mTDJZ6N-zwaAUj76twDw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231230114549.GB12257@wunner.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Sat, Dec 30, 2023 at 04:34:39PM +0800, Daniel J Blueman wrote:
-> On Sat, 30 Dec 2023 at 02:54, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > On Fri, Dec 29, 2023 at 07:43:13PM +0800, Daniel J Blueman wrote:
-> > > Hi Kent et al,
-> > >
-> > > On Linux 6.7-rc7 from bcachefs master SHA f3608cbdfd built with UBSAN
-> > > [1], with a crafted workload [2] I'm able to trigger stack corruption
-> > > in bch2_nocow_write [3].
-> > >
-> > > Let me know if you can't reproduce it and I'll check reproducibility
-> > > on another platform, and let me know for any patch testing.
-> >
-> > this should be fixed in the testing branch:
-> >
-> > commit ab35f724070ccdaa31f6376a1890473e7d031ed0
-> > Author: Kent Overstreet <kent.overstreet@linux.dev>
-> > Date:   Fri Dec 29 13:54:00 2023 -0500
-> >
-> >     bcachefs: fix nocow write path when writing to multiple extents
-> >
-> >     Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> >
-> > diff --git a/fs/bcachefs/io_write.c b/fs/bcachefs/io_write.c
-> > index c5961bac19f0..7c5963cd0b85 100644
-> > --- a/fs/bcachefs/io_write.c
-> > +++ b/fs/bcachefs/io_write.c
-> > @@ -1316,6 +1316,7 @@ static void bch2_nocow_write(struct bch_write_op *op)
-> >                 closure_get(&op->cl);
-> >                 bch2_submit_wbio_replicas(to_wbio(bio), c, BCH_DATA_user,
-> >                                           op->insert_keys.top, true);
-> > +               nr_buckets = 0;
-> >
-> >                 bch2_keylist_push(&op->insert_keys);
-> >                 if (op->flags & BCH_WRITE_DONE)
+On Sat, Dec 30, 2023 at 12:45:49PM +0100, Lukas Wunner wrote:
+> On Fri, Sep 29, 2023 at 02:57:18PM +0300, Ilpo Järvinen wrote:
+> > struct pci_bus stores max_bus_speed. Implementation Note in PCIe r6.0.1
+> > sec 7.5.3.18, however, recommends determining supported Link Speeds
+> > using the Supported Link Speeds Vector in the Link Capabilities 2
+> > Register (when available).
+> > 
+> > Add pcie_bus_speeds into struct pci_bus which caches the Supported Link
+> > Speeds. The value is taken directly from the Supported Link Speeds
+> > Vector or synthetized from the Max Link Speed in the Link Capabilities
+> > Register when the Link Capabilities 2 Register is not available.
 > 
-> Thanks for the quick update, Kent.
-> 
-> With this change and a few runs of the reproducer, I still hit this
-> stack corruption with the same backtrace.
+> Remind me, what's the reason again to cache this and why is
+> max_bus_speed not sufficient?  Is the point that there may be
+> "gaps" in the supported link speeds, i.e. not every bit below
+> the maximum supported speed may be set?  And you need to skip
+> over those gaps when throttling to a lower speed?
 
-Reprod it - my first fix was bogus. Turns out I didn't consider cached
-extents; those can exceed the BCH_REPLICAS_MAX limit, and there's
-another issue I just spotted - the bucket invalidate path doesn't
-respect nocow locking.
+FWIW I went and re-read the internal review I provided on May 18.
+Turns out I already mentioned back then that gaps aren't permitted:
 
-And I'm wondering if there's a lock inversion between nocow locks and
-btree locks as well; need to add lockdep support for that.
+ "Per PCIe r6.0.1 sec 8.2.1, the bitfield in the Link Capabilities 2
+  register is not permitted to contain gaps between maximum supported
+  speed and lowest possible speed (2.5 GT/s Gen1)."
+
+
+> Also, I note that pci_set_bus_speed() doesn't use LNKCAP2.
+
+About that, I wrote in May:
+
+ "Actually, scratch that.  pci_set_bus_speed() is fine.  Since it's only
+  interested in the *maximum* link speed, reading just LnkCap is correct.
+  LnkCap2 only needs to be read to determine if a certain speed is
+  *supported*.  E.g., even though 32 GT/s are supported, perhaps 16 GT/s
+  are not.
+
+  It's rather pcie_get_speed_cap() which should be changed.  There's
+  no need for it to read LnkCap2.  The commit which introduced this,
+  6cf57be0f78e, was misguided and had to be fixed up with f1f90e254e46.
+  It could be simplified to just read LnkCap and return
+  pcie_link_speed[linkcap & PCI_EXP_LNKCAP_SLS].  If the device is a
+  Root Port or Downstream Port, it doesn't even have to do that but
+  could return the cached value in subordinate->max_bus_speed.
+  If you add another attribute to struct pci_bus for the downstream
+  device's maximum speed, the maximum speed for Endpoints and Upstream
+  Ports could be returned directly as well from that attribute."
+
+Thanks,
+
+Lukas
 
