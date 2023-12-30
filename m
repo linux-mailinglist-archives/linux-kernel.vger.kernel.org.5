@@ -1,151 +1,179 @@
-Return-Path: <linux-kernel+bounces-13475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A62A82070D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 16:57:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE6CB820710
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 16:58:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F1851C21391
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:57:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B53051C2139E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 15:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B3ABB670;
-	Sat, 30 Dec 2023 15:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VgV4Cwtb"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12489B671;
+	Sat, 30 Dec 2023 15:58:16 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83719461
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 15:57:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703951859;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D8YGP5w/TfVq3L6L3AbJfFKhLcWdghWgoyKI0rbGjFU=;
-	b=VgV4CwtbzR2XmeRJgzwuSJUHK6OAJ7vz1NDPF/LIyiNaB1xHRmZDk6lUuUOFxpEdjrRNH6
-	UIXtJMe3De5cTDMSJjjX5UsVg6zc13XGkYUqT/1s9JBIlYKz5erJx6yKD/6hayGKvCRxiT
-	MNLVFlqCw1GUGhyRfdsR6AwJ7HBDrsY=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-371-a1hG0aTjNg25b3aYpFm7Eg-1; Sat,
- 30 Dec 2023 10:57:30 -0500
-X-MC-Unique: a1hG0aTjNg25b3aYpFm7Eg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2FCE9461;
+	Sat, 30 Dec 2023 15:58:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 372B53804A48;
-	Sat, 30 Dec 2023 15:57:30 +0000 (UTC)
-Received: from [10.22.32.90] (unknown [10.22.32.90])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 5C0601121306;
-	Sat, 30 Dec 2023 15:57:29 +0000 (UTC)
-Message-ID: <3b5c5cf3-1b8b-4815-8d19-2e28c9751305@redhat.com>
-Date: Sat, 30 Dec 2023 10:57:29 -0500
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout1.hostsharing.net (Postfix) with ESMTPS id 41C0B300002D0;
+	Sat, 30 Dec 2023 16:58:10 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 2FA672CD0A; Sat, 30 Dec 2023 16:58:10 +0100 (CET)
+Date: Sat, 30 Dec 2023 16:58:10 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>, Krzysztof Wilczy??ski <kw@linux.com>,
+	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-kernel@vger.kernel.org,
+	Alex Deucher <alexdeucher@gmail.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>
+Subject: Re: [PATCH v3 07/10] PCI/LINK: Re-add BW notification portdrv as
+ PCIe BW controller
+Message-ID: <20231230155810.GB25718@wunner.de>
+References: <20230929115723.7864-1-ilpo.jarvinen@linux.intel.com>
+ <20230929115723.7864-8-ilpo.jarvinen@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH next 5/5] locking/osq_lock: Optimise vcpu_is_preempted()
- check.
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-To: David Laight <David.Laight@ACULAB.COM>,
- "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
- "'peterz@infradead.org'" <peterz@infradead.org>
-Cc: "'mingo@redhat.com'" <mingo@redhat.com>,
- "'will@kernel.org'" <will@kernel.org>,
- "'boqun.feng@gmail.com'" <boqun.feng@gmail.com>,
- 'Linus Torvalds' <torvalds@linux-foundation.org>,
- "'xinhui.pan@linux.vnet.ibm.com'" <xinhui.pan@linux.vnet.ibm.com>,
- "'virtualization@lists.linux-foundation.org'"
- <virtualization@lists.linux-foundation.org>,
- 'Zeng Heng' <zengheng4@huawei.com>
-References: <73a4b31c9c874081baabad9e5f2e5204@AcuMS.aculab.com>
- <23cef5ac49494b9087953f529ae5df16@AcuMS.aculab.com>
- <e7cf4154-294e-40bd-a485-0b23220d4b7a@redhat.com>
-In-Reply-To: <e7cf4154-294e-40bd-a485-0b23220d4b7a@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+In-Reply-To: <20230929115723.7864-8-ilpo.jarvinen@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On 12/29/23 22:13, Waiman Long wrote:
->
-> On 12/29/23 15:58, David Laight wrote:
->> The vcpu_is_preempted() test stops osq_lock() spinning if a virtual
->>    cpu is no longer running.
->> Although patched out for bare-metal the code still needs the cpu number.
->> Reading this from 'prev->cpu' is a pretty much guaranteed have a 
->> cache miss
->> when osq_unlock() is waking up the next cpu.
->>
->> Instead save 'prev->cpu' in 'node->prev_cpu' and use that value instead.
->> Update in the osq_lock() 'unqueue' path when 'node->prev' is changed.
->>
->> This is simpler than checking for 'node->prev' changing and caching
->> 'prev->cpu'.
->>
->> Signed-off-by: David Laight <david.laight@aculab.com>
->> ---
->>   kernel/locking/osq_lock.c | 14 ++++++--------
->>   1 file changed, 6 insertions(+), 8 deletions(-)
->>
->> diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
->> index b60b0add0161..89be63627434 100644
->> --- a/kernel/locking/osq_lock.c
->> +++ b/kernel/locking/osq_lock.c
->> @@ -14,8 +14,9 @@
->>     struct optimistic_spin_node {
->>       struct optimistic_spin_node *self, *next, *prev;
->> -    int locked; /* 1 if lock acquired */
->> -    int cpu; /* encoded CPU # + 1 value */
->> +    int locked;    /* 1 if lock acquired */
->> +    int cpu;       /* encoded CPU # + 1 value */
->> +    int prev_cpu;  /* actual CPU # for vpcu_is_preempted() */
->>   };
->>     static DEFINE_PER_CPU_SHARED_ALIGNED(struct optimistic_spin_node, 
->> osq_node);
->> @@ -29,11 +30,6 @@ static inline int encode_cpu(int cpu_nr)
->>       return cpu_nr + 1;
->>   }
->>   -static inline int node_cpu(struct optimistic_spin_node *node)
->> -{
->> -    return node->cpu - 1;
->> -}
->> -
->>   static inline struct optimistic_spin_node *decode_cpu(int 
->> encoded_cpu_val)
->>   {
->>       int cpu_nr = encoded_cpu_val - 1;
->> @@ -114,6 +110,7 @@ bool osq_lock(struct optimistic_spin_queue *lock)
->>       if (old == OSQ_UNLOCKED_VAL)
->>           return true;
->>   +    node->prev_cpu = old - 1;
->>       prev = decode_cpu(old);
->>       node->prev = prev;
->>       node->locked = 0;
->> @@ -148,7 +145,7 @@ bool osq_lock(struct optimistic_spin_queue *lock)
->>        * polling, be careful.
->>        */
->>       if (smp_cond_load_relaxed(&node->locked, VAL || need_resched() ||
->> -                  vcpu_is_preempted(node_cpu(node->prev))))
->> +                  vcpu_is_preempted(node->prev_cpu)))
+On Fri, Sep 29, 2023 at 02:57:20PM +0300, Ilpo J�rvinen wrote:
+> This mostly reverts b4c7d2076b4e ("PCI/LINK: Remove bandwidth
+> notification"), however, there are small tweaks:
+> 
+> 1) Call it PCIe bwctrl (bandwidth controller) instead of just
+>    bandwidth notifications.
+> 2) Don't print the notifications into kernel log, just keep the current
+>    link speed updated.
+> 3) Use concurrency safe LNKCTL RMW operations.
+> 4) Read link speed after enabling the notification to ensure the
+>    current link speed is correct from the start.
+> 5) Add local variable in probe for srv->port.
+> 6) Handle link speed read and LBMS write race in
+>    pcie_bw_notification_irq().
+> 
+> The reason for 1) is to indicate the increased scope of the driver. A
+> subsequent commit extends the driver to allow controlling PCIe
+> bandwidths from user space upon crossing thermal thresholds.
+> 
+> While 2) is somewhat unfortunate, the log spam was the source of
+> complaints that eventually lead to the removal of the bandwidth
+> notifications driver (see the links below for further information).
+> After re-adding this driver back the userspace can, if it wishes to,
+> observe the link speed changes using the current bus speed files under
+> sysfs.
 
-On second thought, I believe it is more correct to use READ_ONCE() to 
-access "node->prev_cpu" as this field is subjected to change by a 
-WRITE_ONCE().
-
-Cheers,
-Longman
+Good commit message.
 
 
+> --- a/drivers/pci/pcie/Kconfig
+> +++ b/drivers/pci/pcie/Kconfig
+> @@ -137,6 +137,14 @@ config PCIE_PTM
+>  	  This is only useful if you have devices that support PTM, but it
+>  	  is safe to enable even if you don't.
+>  
+> +config PCIE_BW
+> +	bool "PCI Express Bandwidth Change Notification"
+> +	depends on PCIEPORTBUS
+> +	help
+> +	  This enables PCI Express Bandwidth Change Notification.  If
+> +	  you know link width or rate changes occur to correct unreliable
+> +	  links, you may answer Y.
+> +
+
+For an end user browsing Kconfig entries, this isn't as helpful as it
+could be.  Maybe mention that autonomous link changes are automatically
+picked up and observable through sysfs (name the relevant attributes).
+
+
+> --- /dev/null
+> +++ b/drivers/pci/pcie/bwctrl.c
+> @@ -0,0 +1,131 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * PCI Express Link Bandwidth Notification services driver
+> + * Author: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+> + *
+> + * Copyright (C) 2019, Dell Inc
+> + *
+> + * The PCIe Link Bandwidth Notification provides a way to notify the
+> + * operating system when the link width or data rate changes.  This
+> + * capability is required for all root ports and downstream ports
+> + * supporting links wider than x1 and/or multiple link speeds.
+
+Capitalize Root Ports and Downstream Ports.
+Reference the spec section prescribing this.
+
+
+> +static bool pcie_link_bandwidth_notification_supported(struct pci_dev *dev)
+> +{
+> +	int ret;
+> +	u32 lnk_cap;
+
+Inverse Christmas tree?
+
+
+> +static void pcie_enable_link_bandwidth_notification(struct pci_dev *dev)
+> +{
+> +	u16 link_status;
+> +	int ret;
+> +
+> +	pcie_capability_write_word(dev, PCI_EXP_LNKSTA, PCI_EXP_LNKSTA_LBMS);
+> +	pcie_capability_set_word(dev, PCI_EXP_LNKCTL, PCI_EXP_LNKCTL_LBMIE);
+
+I'm wondering why we're not enabling LABIE as well?
+(And clear LABS.)
+
+Can't it happen that we miss bandwidth changes unless we enable that
+as well?
+
+
+> +static int pcie_bandwidth_notification_probe(struct pcie_device *srv)
+> +{
+> +	struct pci_dev *port = srv->port;
+> +	int ret;
+> +
+> +	/* Single-width or single-speed ports do not have to support this. */
+> +	if (!pcie_link_bandwidth_notification_supported(port))
+> +		return -ENODEV;
+
+I'm wondering if this should be checked in get_port_device_capability()
+instead?
+
+
+> +	ret = request_irq(srv->irq, pcie_bw_notification_irq,
+> +			  IRQF_SHARED, "PCIe BW ctrl", srv);
+
+Is there a reason to run the IRQ handler in hardirq context
+or would it work to run it in an IRQ thread?  Usually on systems
+than enable PREEMPT_RT, a threaded IRQ handler is preferred,
+so unless hardirq context is necessary, I'd recommend using
+an IRQ thread.
+
+Thanks,
+
+Lukas
 
