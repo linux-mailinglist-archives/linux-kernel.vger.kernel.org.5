@@ -1,441 +1,165 @@
-Return-Path: <linux-kernel+bounces-13413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DE38820505
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 13:04:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 861088205DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 13:22:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2CAC1C20F5F
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:04:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DB612820BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:22:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D2B8BE7;
-	Sat, 30 Dec 2023 12:03:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77FD28BED;
+	Sat, 30 Dec 2023 12:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bSIYVExP"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UdTmY8PN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1845A79DF;
-	Sat, 30 Dec 2023 12:03:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3EADC433C9;
-	Sat, 30 Dec 2023 12:03:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703937833;
-	bh=r/tXXeAnCHvwEpo6MV27QydIsEHsS9gab9b2FMQ46lw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=bSIYVExPSMmdhZNlM2OQW/NglPLY5lk1jBy32FLCj26Bd/thj7vw/RDqsvv02LJx1
-	 XjuWAbzw2SVByS8Rwx6i1VeMv7K96TOIDNhDN/9QOeX/sRdErhQ3Xae2mLfD/Ysb8I
-	 l9uoPoAAx2yXwDuTusoUE5CsYCtI/XIDskGOvkHm7YbKqg+MxcdCTSXEKgEAXqKlIR
-	 q3yxsbL3VcEQwXGdUt80mknfTlMzNj39tI2ZsDxKkIB0sZOI07ZoRIB2dNCtDaZUlq
-	 Ik24Srz8Vt5b4fv2cDqUcwbYUcIa7OERG/1OwYl/AXfSVyaIs6kKqymVBmkBAYJUjv
-	 S17zA06Oq7WrQ==
-Date: Sat, 30 Dec 2023 12:03:47 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: <cy_huang@richtek.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Rob Herring
- <robh+dt@kernel.org>, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?=
- <u.kleine-koenig@pengutronix.de>, <linux-iio@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] iio: adc: rtq6056: Add support for the whole
- RTQ6056 family
-Message-ID: <20231230120347.0816bd09@jic23-huawei>
-In-Reply-To: <74db15583a9a68701dbff5a1a967c0d987d6dfb6.1703762557.git.cy_huang@richtek.com>
-References: <cover.1703762557.git.cy_huang@richtek.com>
-	<74db15583a9a68701dbff5a1a967c0d987d6dfb6.1703762557.git.cy_huang@richtek.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5FE679EF
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 12:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5555f9061b9so3531544a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 04:22:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703938933; x=1704543733; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=WraejfcK2e2j5BfUVDmZdtIL5eFxZdjlTkM6VwDeTVI=;
+        b=UdTmY8PNFYbmblYxw7hPNxvRCIn36zCMi8eXvlKUi1WLs5Rlmye9eaP4+7vA8uBiRM
+         RjpbWA04HOzVZiJmsR8io1p+96XQtZ6scoA7Iu4C0wkXVgYUU2I1Hr8Shh2zjZJUDSoB
+         yZWMETjJFJsvudSSCjkr9cKnKkB+richEhYHDUBaHi9Sr/Zt72FUQAiH0OHRdaljCWqU
+         bNlXvsPnXa5ckhsAp7i1l+kIh8eDD0kNVxmL9r1Kiu3Xp0FRdKRdOXGKVwCZVV9m4lIK
+         vrMrvd5+FpM/lkOaABJmvsXsykxq0Wm2l5G9CbXm3tn+PmXapx8ZqCN3N3XOJI8wagrN
+         1CxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703938933; x=1704543733;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WraejfcK2e2j5BfUVDmZdtIL5eFxZdjlTkM6VwDeTVI=;
+        b=aZIipgPYI8pk/q1gLncKEVieiNDeGDlImcD6a05DCWF0iShHbGFj4AwsXbhbghtv7h
+         wliPZC2F7Rictb2O/UpMvZFE7IykNsSpKb+wicWUztvNJXcwJDqfYDGAWVre9pre8cRq
+         2K4xpEuJ08c8PYRHx6rKf32okzzSmci4uShaT9s66CWmjogGp1B8ZaxwJs/oSDu2K3ck
+         enMGtL2TVmdzTIlQdSPT99wkxFj+lFJEy60OXm5frjf8Hs315QORVZ6ORIRoaY1381Of
+         ROntsZN74UuZRkQAiJo0/u/CwPICe3EB2NdjU9/N/ZCOiGlaBOAV7VicQrzT5+sGeO4U
+         a/4w==
+X-Gm-Message-State: AOJu0YzH9UBEtsl2dIniHOGtjssXWTPLqogqGjrUdiAupKUNZxJGELdg
+	2JmykktrHPn8UomkcARZiJv/iIHX9bAokA==
+X-Google-Smtp-Source: AGHT+IGioza2ZLJGqYDEiNM69okkxaTquc5p5kuP+zRZUhfhEuqvZbJCDySqOqnouQ7x7+YejTIElA==
+X-Received: by 2002:a50:8acb:0:b0:554:4dce:9d47 with SMTP id k11-20020a508acb000000b005544dce9d47mr7873841edk.14.1703938932976;
+        Sat, 30 Dec 2023 04:22:12 -0800 (PST)
+Received: from [192.168.199.125] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
+        by smtp.gmail.com with ESMTPSA id s20-20020a056402015400b005530cb1464bsm12202499edu.15.2023.12.30.04.22.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Dec 2023 04:22:12 -0800 (PST)
+Message-ID: <dc11577e-7088-4975-8543-ad8001e678fe@linaro.org>
+Date: Sat, 30 Dec 2023 13:22:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 7/8] arm64: dts: qcom: sa8295p-adp: Enable GPU
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Taniya Das <quic_tdas@quicinc.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Johan Hovold
+ <johan+linaro@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20231220-sa8295p-gpu-v2-0-4763246b72c0@quicinc.com>
+ <20231220-sa8295p-gpu-v2-7-4763246b72c0@quicinc.com>
+ <4a1c18e3-39c8-4070-ae55-b1148b3dc65b@linaro.org>
+ <20231227202130.GA1315173@hu-bjorande-lv.qualcomm.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231227202130.GA1315173@hu-bjorande-lv.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Thu, 28 Dec 2023 19:29:35 +0800
-<cy_huang@richtek.com> wrote:
-
-> From: ChiYuan Huang <cy_huang@richtek.com>
+On 27.12.2023 21:21, Bjorn Andersson wrote:
+> On Wed, Dec 27, 2023 at 02:09:47AM +0100, Konrad Dybcio wrote:
+>> On 22.12.2023 05:39, Bjorn Andersson wrote:
+>>> With the necessary support in place for supplying VDD_GFX from the
+>>> MAX20411 regulator, enable the GPU clock controller, GMU, Adreno SMMU
+>>> and the GPU on the SA8295P ADP.
+>>>
+>>> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+>>> ---
+>> [...]
+>>
+>>> +&gpucc {
+>>> +	vdd-gfx-supply = <&vdd_gfx>;
+>>> +	status = "okay";
+>>> +};
+>> Already enabled
+>>
 > 
-> RTQ6053 and RTQ6059 are the same series of RTQ6056.
+> No, we're disabling these in sa8540p.dtsi, so they need to be re-enabled
+> here.
 > 
-> The respective differences with RTQ6056 are listed below
-> RTQ6053
-> - chip package type
+> I don't remember if it's because the attempt to bring up gfx.lvl or if
+> it's the attempt to operate the GPU components without adequate VDD_GFX,
+> that is causing the issue...but either way, we don't survive boot.
+Oh right!
+
+On 8155 touching mmcx, lcx or lmx would kaboom the platform..
+
 > 
-> RTQ6059
-> - Reduce the pinout for vbus sensing pin
-> - Some internal ADC scaling change
 > 
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-Hi ChiYuan,
+> It's possible that we could move the max20411 up to sa8540p.dtsi to
+> avoid the intermediate disable, but I'm not confident that it's "part of
+> the platform"...
+Yeah, it's probably a question that is impossible to answer, as my
+wild assumption is that all designs are ADP-derived anyway..
 
-Some comments inline, most focus on not mixing device specific features
-across code and data.  You always want them to be fully specified by
-the the device specific const struct directly not by code using an
-ID from there.  It ends up more readable and more flexible to have it
-all done via data or callbacks where things are a too complex for data.
-
-Thanks,
-
-Jonathan
-
-> ---
-> v2
-> - Remove rtq6053 in DT match table and make rtq6053 fallback compatible
->   with rtq6056
-> ---
->  drivers/iio/adc/rtq6056.c | 264 ++++++++++++++++++++++++++++++++++++--
->  1 file changed, 250 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/rtq6056.c b/drivers/iio/adc/rtq6056.c
-> index ad4cea6839b2..5587178cea83 100644
-> --- a/drivers/iio/adc/rtq6056.c
-> +++ b/drivers/iio/adc/rtq6056.c
-> @@ -39,6 +39,16 @@
->  #define RTQ6056_DEFAULT_CONFIG	0x4127
->  #define RTQ6056_CONT_ALLON	7
->  
-> +#define RTQ6059_DEFAULT_CONFIG	0x3C47
-> +#define RTQ6059_VBUS_LSB_OFFSET	3
-> +#define RTQ6059_AVG_BASE	8
-> +
-> +enum {
-> +	RICHTEK_DEV_RTQ6056 = 0,
-> +	RICHTEK_DEV_RTQ6059,
-> +	RICHTEK_DEV_MAX
-> +};
-> +
->  enum {
->  	RTQ6056_CH_VSHUNT = 0,
->  	RTQ6056_CH_VBUS,
-> @@ -50,16 +60,29 @@ enum {
->  enum {
->  	F_OPMODE = 0,
->  	F_VSHUNTCT,
-> +	F_SADC = F_VSHUNTCT,
-
-If the devices have different register fields, better to have different enums
-for them as well as that should result in less confusing code.
-
-
->  	F_VBUSCT,
-> +	F_BADC = F_VBUSCT,
->  	F_AVG,
-> +	F_PGA = F_AVG,
->  	F_RESET,
->  	F_MAX_FIELDS
->  };
->  
-> +struct richtek_dev_data {
-> +	int dev_id;
-
-It almost always turns out to be a bad idea to use a mixture of
-'data' in a structure like this and a device id plus special casing int he
-code.  Better to add more data to this structure or callbacks specific
-to the individual devices types.  So I shouldn't see a dev_id field in
-here at all.
-
-> +	int default_conv_time;
-> +	unsigned int default_config;
-> +	unsigned int calib_coefficient;
-> +	const struct reg_field *reg_fields;
-> +	const struct iio_chan_spec *channels;
-> +};
-
-...
-
->  static int rtq6056_adc_read_channel(struct rtq6056_priv *priv,
->  				    struct iio_chan_spec const *ch,
->  				    int *val)
->  {
-> +	const struct richtek_dev_data *devdata = priv->devdata;
->  	struct device *dev = priv->dev;
->  	unsigned int addr = ch->address;
->  	unsigned int regval;
-> @@ -168,10 +282,18 @@ static int rtq6056_adc_read_channel(struct rtq6056_priv *priv,
->  		return ret;
->  
->  	/* Power and VBUS is unsigned 16-bit, others are signed 16-bit */
-> -	if (addr == RTQ6056_REG_BUSVOLT || addr == RTQ6056_REG_POWER)
-> +	switch (addr) {
-> +	case RTQ6056_REG_BUSVOLT:
-> +		if (devdata->dev_id == RICHTEK_DEV_RTQ6059)
-> +			regval >>= RTQ6059_VBUS_LSB_OFFSET;
-
-Store the offset as for other case below and apply it unconditionally. If it is
-zero then this is a noop.
-
-> +		fallthrough;
-> +	case RTQ6056_REG_POWER:
->  		*val = regval;
-> -	else
-> +		break;
-> +	default:
->  		*val = sign_extend32(regval, 16);
-
-Fallthrough stuff is harder to read so only use it when there is significant saving
-in code.  here just repeat the sign_extend32() in both cases.
-
-> +		break;
-> +	}
->  
->  	return IIO_VAL_INT;
->  }
-> @@ -199,6 +321,28 @@ static int rtq6056_adc_read_scale(struct iio_chan_spec const *ch, int *val,
->  	}
->  }
->  
-
->  static int rtq6056_adc_get_sample_freq(struct rtq6056_priv *priv,
->  				       struct iio_chan_spec const *ch, int *val)
->  {
-> @@ -292,11 +464,15 @@ static int rtq6056_adc_read_raw(struct iio_dev *indio_dev,
->  				int *val2, long mask)
->  {
->  	struct rtq6056_priv *priv = iio_priv(indio_dev);
-> +	const struct richtek_dev_data *devdata = priv->devdata;
->  
->  	switch (mask) {
->  	case IIO_CHAN_INFO_RAW:
->  		return rtq6056_adc_read_channel(priv, chan, val);
->  	case IIO_CHAN_INFO_SCALE:
-> +		if (devdata->dev_id == RICHTEK_DEV_RTQ6059)
-> +			return rtq6059_adc_read_scale(chan, val, val2);
-
-Provide a callback for this as for other examples below.
-
-> +
->  		return rtq6056_adc_read_scale(chan, val, val2);
->  	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
->  		*val = priv->avg_sample;
-> @@ -313,16 +489,28 @@ static int rtq6056_adc_read_avail(struct iio_dev *indio_dev,
->  				  const int **vals, int *type, int *length,
->  				  long mask)
->  {
-> +	struct rtq6056_priv *priv = iio_priv(indio_dev);
-> +	const struct richtek_dev_data *devdata = priv->devdata;
-> +
->  	switch (mask) {
->  	case IIO_CHAN_INFO_SAMP_FREQ:
-> +		if (devdata->dev_id == RICHTEK_DEV_RTQ6059)
-> +			return -EINVAL;
-
-Shouldn't need this protection as the channels won't have relevant
-bitmap bit set and this will never be called.
-
-> +
->  		*vals = rtq6056_samp_freq_list;
->  		*type = IIO_VAL_INT;
->  		*length = ARRAY_SIZE(rtq6056_samp_freq_list);
->  		return IIO_AVAIL_LIST;
->  	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
-> -		*vals = rtq6056_avg_sample_list;
-> +		if (devdata->dev_id == RICHTEK_DEV_RTQ6059) {
-> +			*vals = rtq6059_avg_sample_list;
-> +			*length = ARRAY_SIZE(rtq6059_avg_sample_list);
-Store all this in devdata.
-
-		*vals = devdata->avg_sample_list;
-		*length = devdata->avg_sample_list_length;
-
-> +		} else {
-> +			*vals = rtq6056_avg_sample_list;
-> +			*length = ARRAY_SIZE(rtq6056_avg_sample_list);
-> +		}
-> +
->  		*type = IIO_VAL_INT;
-> -		*length = ARRAY_SIZE(rtq6056_avg_sample_list);
->  		return IIO_AVAIL_LIST;
->  	default:
->  		return -EINVAL;
-> @@ -334,6 +522,7 @@ static int rtq6056_adc_write_raw(struct iio_dev *indio_dev,
->  				 int val2, long mask)
->  {
->  	struct rtq6056_priv *priv = iio_priv(indio_dev);
-> +	const struct richtek_dev_data *devdata = priv->devdata;
->  	int ret;
->  
->  	ret = iio_device_claim_direct_mode(indio_dev);
-> @@ -342,10 +531,16 @@ static int rtq6056_adc_write_raw(struct iio_dev *indio_dev,
->  
->  	switch (mask) {
->  	case IIO_CHAN_INFO_SAMP_FREQ:
-> -		ret = rtq6056_adc_set_samp_freq(priv, chan, val);
-> +		if (devdata->dev_id == RICHTEK_DEV_RTQ6059)
-> +			ret = -EINVAL;
-> +		else
-> +			ret = rtq6056_adc_set_samp_freq(priv, chan, val);
->  		break;
->  	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
-> -		ret = rtq6056_adc_set_average(priv, val);
-> +		if (devdata->dev_id == RICHTEK_DEV_RTQ6059)
-> +			ret = rtq6059_adc_set_average(priv, val);
-> +		else
-> +			ret = rtq6056_adc_set_average(priv, val);
-
-Provide a callback in devdata so this becomes something like
-		ret = devdata->set_averate(priv, val);
-
->  		break;
->  	default:
-
-> +static const struct iio_info rtq6059_info = {
-> +	.attrs = &rtq6056_attribute_group,
-
-This is odd. you don't provide an access functions so you won't be able to read
-channels etc. It isn't used so I guess you should just get rid of it.
-
-> +};
-> +
->  static irqreturn_t rtq6056_buffer_trigger_handler(int irq, void *p)
->  {
->  	struct iio_poll_func *pf = p;
->  	struct iio_dev *indio_dev = pf->indio_dev;
->  	struct rtq6056_priv *priv = iio_priv(indio_dev);
-> +	const struct richtek_dev_data *devdata = priv->devdata;
->  	struct device *dev = priv->dev;
->  	struct {
->  		u16 vals[RTQ6056_MAX_CHANNEL];
-> @@ -469,6 +670,10 @@ static irqreturn_t rtq6056_buffer_trigger_handler(int irq, void *p)
->  		if (ret)
->  			goto out;
->  
-> +		if (devdata->dev_id == RICHTEK_DEV_RTQ6059 &&
-> +		    addr == RTQ6056_REG_BUSVOLT)
-
-Store an offset in the devdata->dev_id and this becomes something like.
-		if (addr == RTQ6056_REG_BUS_VOLT)
-			raw >>= devdata->vbus_offset;
-
-> +			raw >>= RTQ6059_VBUS_LSB_OFFSET;
-> +
->  		data.vals[i++] = raw;
->  	}
->  
-> @@ -528,20 +733,26 @@ static int rtq6056_probe(struct i2c_client *i2c)
->  	struct rtq6056_priv *priv;
->  	struct device *dev = &i2c->dev;
->  	struct regmap *regmap;
-> +	const struct richtek_dev_data *devdata;
->  	unsigned int vendor_id, shunt_resistor_uohm;
->  	int ret;
->  
->  	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_WORD_DATA))
->  		return -EOPNOTSUPP;
->  
-> +	devdata = device_get_match_data(dev);
-> +	if (!devdata)
-> +		return dev_err_probe(dev, -EINVAL, "Invalid dev data\n");
-> +
->  	indio_dev = devm_iio_device_alloc(dev, sizeof(*priv));
->  	if (!indio_dev)
->  		return -ENOMEM;
->  
->  	priv = iio_priv(indio_dev);
->  	priv->dev = dev;
-> -	priv->vshuntct_us = priv->vbusct_us = 1037;
-> +	priv->vshuntct_us = priv->vbusct_us = devdata->default_conv_time;
-
-I'd keep a _us postfix for default_conv_time to make the units of that
-self documenting as well.
-
->  	priv->avg_sample = 1;
-> +	priv->devdata = devdata;
->  	i2c_set_clientdata(i2c, priv);
->  
->  	regmap = devm_regmap_init_i2c(i2c, &rtq6056_regmap_config);
-> @@ -556,20 +767,26 @@ static int rtq6056_probe(struct i2c_client *i2c)
->  		return dev_err_probe(dev, ret,
->  				     "Failed to get manufacturer info\n");
->  
-> +	/* For RTQ6059, this vendor id value is meaningless */
-
-If that is the case, why are you checking it?
-I'd read that comment as meaning this will fail for RTQ6059
-
->  	if (vendor_id != RTQ6056_VENDOR_ID)
->  		return dev_err_probe(dev, -ENODEV,
->  				     "Invalid vendor id 0x%04x\n", vendor_id);
->  
->  	ret = devm_regmap_field_bulk_alloc(dev, regmap, priv->rm_fields,
-> -					   rtq6056_reg_fields, F_MAX_FIELDS);
-> +					   devdata->reg_fields, F_MAX_FIELDS);
->  	if (ret)
->  		return dev_err_probe(dev, ret, "Failed to init regmap field\n");
->  
->  	/*
-> +	 * RTQ6053 & RTQ6056:
->  	 * By default, configure average sample as 1, bus and shunt conversion
->  	 * time as 1037 microsecond, and operating mode to all on.
-> +	 *
-> +	 * RTQ6059:
-> +	 * By default, configure average sample as 1, bus and shunt conversion
-> +	 * time as 532 microsecond, and operating mode to all on.
-Move this documentation to where devdata->default_config is set. 
-It's device specific information, so put it in the device specific place not
-the main code flow.
-
->  	 */
-> -	ret = regmap_write(regmap, RTQ6056_REG_CONFIG, RTQ6056_DEFAULT_CONFIG);
-> +	ret = regmap_write(regmap, RTQ6056_REG_CONFIG, devdata->default_config);
->  	if (ret)
->  		return dev_err_probe(dev, ret,
->  				     "Failed to enable continuous sensing\n");
-> @@ -598,8 +815,8 @@ static int rtq6056_probe(struct i2c_client *i2c)
->  
->  	indio_dev->name = "rtq6056";
->  	indio_dev->modes = INDIO_DIRECT_MODE;
-> -	indio_dev->channels = rtq6056_channels;
-> -	indio_dev->num_channels = ARRAY_SIZE(rtq6056_channels);
-> +	indio_dev->channels = devdata->channels;
-> +	indio_dev->num_channels = RTQ6056_MAX_CHANNEL + 1;
-
-I'd embed the number of channels in devdata as well then the ARRAY_SIZE() code
-that is obviously correct can still be used (just with different things being
-counted depending on which channels are being used). The gain in readability
-is worth the tiny bit of extra code and data.
-
->  	indio_dev->info = &rtq6056_info;
->  
->  	ret = devm_iio_triggered_buffer_setup(dev, indio_dev, NULL,
-> @@ -640,8 +857,27 @@ static int rtq6056_runtime_resume(struct device *dev)
->  static DEFINE_RUNTIME_DEV_PM_OPS(rtq6056_pm_ops, rtq6056_runtime_suspend,
->  				 rtq6056_runtime_resume, NULL);
->  
-> +static const struct richtek_dev_data rtq6056_devdata = {
-> +	.dev_id = RICHTEK_DEV_RTQ6056,
-> +	.default_conv_time = 1037,
-> +	.calib_coefficient = 5120000,
-> +	.default_config = RTQ6056_DEFAULT_CONFIG,
-> +	.reg_fields = rtq6056_reg_fields,
-> +	.channels = rtq6056_channels,
-> +};
-> +
-> +static const struct richtek_dev_data rtq6059_devdata = {
-> +	.dev_id = RICHTEK_DEV_RTQ6059,
-As mentioned above, this mix of data and a dev_id is not a good design pattern.
-It tends to end up as insufficiently flexible as support for more devices is
-added to a driver - plus it scatters the device type specific stuff all through
-the driver rather than having it all in one place.
-
-> +	.default_conv_time = 532,
-> +	.calib_coefficient = 40960000,
-> +	.default_config = RTQ6059_DEFAULT_CONFIG,
-> +	.reg_fields = rtq6059_reg_fields,
-> +	.channels = rtq6059_channels,
-> +};
-> +
->  static const struct of_device_id rtq6056_device_match[] = {
-> -	{ .compatible = "richtek,rtq6056" },
-> +	{ .compatible = "richtek,rtq6056", .data = &rtq6056_devdata },
-> +	{ .compatible = "richtek,rtq6059", .data = &rtq6059_devdata },
->  	{}
->  };
->  MODULE_DEVICE_TABLE(of, rtq6056_device_match);
-
+Konrad
 
