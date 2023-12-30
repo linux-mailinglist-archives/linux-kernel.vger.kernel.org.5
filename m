@@ -1,121 +1,97 @@
-Return-Path: <linux-kernel+bounces-13577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 231FD820848
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 20:38:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CC8282084B
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 20:41:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D954C283898
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 19:38:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86AEF1C21D40
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 19:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62AFAC143;
-	Sat, 30 Dec 2023 19:38:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB5EBE6F;
+	Sat, 30 Dec 2023 19:41:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="Aahj92t5"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="RnOGC95j"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C9B0C139
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 19:38:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1703965094; x=1704224294;
-	bh=hzDnlR2JtaWtfwJIyhGyRAK5TYxs41N11mbfkjjCeuA=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=Aahj92t5uGFWTqmOxjniE5OZ3TRJguziyPxCCgQ29EPrxtCqZ3kR9LtjXcV1/LdZq
-	 9j8dwpnozl5p+zuocdqzsViooERopNkJy5IEHRpUXIvGkV2uQVFYVoULoJOGoGBpI2
-	 BXLOQmcihq1llvS/oZJ07g9Qq5mE/P040mT9XhiI8iJbUc2iexcxjxzySToYm/rW3W
-	 fL6kBJIZQfAeTMxTNqYQZ9rXklN8a7aY0bWDyf5VeNpbDqr7VRo0BGRJpdbvKJ5ds5
-	 Z+bSqsWNDnAaMOSv7vKYvXRbEPX5NW21pIht+Qe0yue4PeDz9t3NRaVhZwl/GroKXy
-	 WHdWzXYC5iuag==
-Date: Sat, 30 Dec 2023 19:37:56 +0000
-To: =?utf-8?Q?Michael_B=C3=BCsch?= <m@bues.ch>
-From: Rahul Rameshbabu <sergeantsagara@protonmail.com>
-Cc: Julian Calaby <julian.calaby@gmail.com>, Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org, b43-dev@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH wireless 2/5] wifi: b43: Stop/wake correct queue in DMA Tx path when QoS is disabled
-Message-ID: <87bka7wkfm.fsf@protonmail.com>
-In-Reply-To: <20231230184113.3ecfed4f@barney>
-References: <20231230045105.91351-1-sergeantsagara@protonmail.com> <20231230045105.91351-3-sergeantsagara@protonmail.com> <CAGRGNgWYLTmRfvw94Ok_FfcEVGPa0tRg-ELxkD8K6nxTTNZ9jg@mail.gmail.com> <20231230144036.7f48b739@barney> <878r5bk3x9.fsf@protonmail.com> <20231230184113.3ecfed4f@barney>
-Feedback-ID: 26003777:user:proton
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A345BBE5D
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 19:41:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a23350cd51cso870551466b.2
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 11:41:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1703965260; x=1704570060; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GoFIhXDqs+3JV6YOccBLM5u+iUwrlM3KyelM0uyYE3o=;
+        b=RnOGC95jMlf7SNhTeq1uZezW/VzPcWB17PKZMQi7nW7kO6vg38zwz3aWsn6uSr8NPh
+         RDAGm9imSlghebKIB9E6rumejobtWJoAj7SwODlRf9iB2Z6JmH35fdeXXLJNeNmf2Dol
+         DLitFynX9o2A0zxYMeJXpFXevLLHIsmoqxKAQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703965260; x=1704570060;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GoFIhXDqs+3JV6YOccBLM5u+iUwrlM3KyelM0uyYE3o=;
+        b=cBpuQTPgaQTcRGRtMR0DkBbcGj9CrE8PdGn28PJ1jBh9ShhzcMlEXmag3SxJJfFbKl
+         CEct5S6+QD5SkRjuFRtR9bYUnrrVIfM4ixQ5aGbbewaByibqZ4RYI0ALzxjygZbKJFAD
+         l4Txbs0B5xIMKBBAvNo2gx6i1SuCNwjPHcwmOGr8Tet0E94sFkvgBV1paUGScMXT/TWM
+         IPw61POky7dkzhlndkyo8M6l72QNt+UYtPgFu+koBhR0EYtuLhA1iNhfIoV4O56evbO1
+         8Gn96Qj+tBROVh16Th5ei2zrwmk43EB8bCUmXEs1KDd9ePuOMJ9HXoDEVCS47M8k6uaU
+         f6rw==
+X-Gm-Message-State: AOJu0YyP6pVLyY1+qItVR92LTsQDxuhXUaAvjCsL/jhoqxig4P4Gjl9X
+	lAr0Wr1DSkg6xrGr3bYW6q1JmSBeK/sphdF9BIePbRrxz+2nDA==
+X-Google-Smtp-Source: AGHT+IFUyOCAgAcR6Myo18PkB6KlwNc2t9XRrHgfKBFFY7/pQoOULU7HzZg/i4wMcr18C834xiCnYg==
+X-Received: by 2002:a17:906:209e:b0:a23:2762:e48a with SMTP id 30-20020a170906209e00b00a232762e48amr5932921ejq.78.1703965259807;
+        Sat, 30 Dec 2023 11:40:59 -0800 (PST)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id n16-20020a170906b31000b00a235e5139d2sm9545367ejz.150.2023.12.30.11.40.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Dec 2023 11:40:58 -0800 (PST)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2340c803c6so873930566b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 11:40:58 -0800 (PST)
+X-Received: by 2002:a17:906:3a16:b0:a26:e4ec:b6ca with SMTP id
+ z22-20020a1709063a1600b00a26e4ecb6camr3417319eje.92.1703965258406; Sat, 30
+ Dec 2023 11:40:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <73a4b31c9c874081baabad9e5f2e5204@AcuMS.aculab.com>
+In-Reply-To: <73a4b31c9c874081baabad9e5f2e5204@AcuMS.aculab.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 30 Dec 2023 11:40:41 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wg7PKm+9tv+60DTfZuu-Kh00uR8zKAGtTdUkSOXaLO1_g@mail.gmail.com>
+Message-ID: <CAHk-=wg7PKm+9tv+60DTfZuu-Kh00uR8zKAGtTdUkSOXaLO1_g@mail.gmail.com>
+Subject: Re: [PATCH next 0/5] locking/osq_lock: Optimisations to osq_lock code
+To: David Laight <David.Laight@aculab.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"peterz@infradead.org" <peterz@infradead.org>, "longman@redhat.com" <longman@redhat.com>, 
+	"mingo@redhat.com" <mingo@redhat.com>, "will@kernel.org" <will@kernel.org>, 
+	"boqun.feng@gmail.com" <boqun.feng@gmail.com>, 
+	"xinhui.pan@linux.vnet.ibm.com" <xinhui.pan@linux.vnet.ibm.com>, 
+	"virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>, 
+	Zeng Heng <zengheng4@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, 30 Dec, 2023 18:41:13 +0100 Michael B=C3=BCsch <m@bues.ch> wrote:
-> [[PGP Signed Part:Undecided]]
-> On Sat, 30 Dec 2023 17:15:18 +0000
-> Rahul Rameshbabu <sergeantsagara@protonmail.com> wrote:
+On Fri, 29 Dec 2023 at 12:52, David Laight <David.Laight@aculab.com> wrote:
 >
->> On Sat, 30 Dec, 2023 14:40:36 +0100 Michael B=C3=BCsch <m@bues.ch> wrote=
-:
->> > [[PGP Signed Part:Undecided]]
->> > On Sat, 30 Dec 2023 18:48:45 +1100
->> > Julian Calaby <julian.calaby@gmail.com> wrote: =20
->> >> > --- a/drivers/net/wireless/broadcom/b43/dma.c
->> >> > +++ b/drivers/net/wireless/broadcom/b43/dma.c
->> >> > @@ -1399,7 +1399,10 @@ int b43_dma_tx(struct b43_wldev *dev, struct=
- sk_buff *skb)
->> >> >             should_inject_overflow(ring)) {
->> >> >                 /* This TX ring is full. */
->> >> >                 unsigned int skb_mapping =3D skb_get_queue_mapping(=
-skb);
->> >> > -               ieee80211_stop_queue(dev->wl->hw, skb_mapping);
->> >> > +               if (dev->qos_enabled)
->> >> > +                       ieee80211_stop_queue(dev->wl->hw, skb_mappi=
-ng);
->> >> > +               else
->> >> > +                       ieee80211_stop_queue(dev->wl->hw, 0);   =20
->> >>=20
->> >> Would this be a little cleaner if we only look up the queue mapping i=
-f
->> >> QOS is enabled? I.e. =20
->> >
->> > No. It would break the other uses of skb_mapping.
->> >
->> > But I am wondering why skb_mapping is non-zero in the first place.
->> > I think the actual bug might be somewhere else. =20
->>=20
->> Right, skb_mapping is used to map to the correct software structures DMA
->> mapped to the device. The reason the mapping for the best effort queue
->> (the default/defacto when QoS is disabled) is not zero is due to the way
->> initialization of the queues/rings occurs in the driver. The best effort
->> queue is mapped as the third queue, which leads to this issue when QoS
->> is disabled. Would it make more sense to change the mappings in
->> initialization such that the best effort queue is by default mapped to
->> zero, so we would not need such conditionals?
->
-> Maybe it is a good idea to find the patch that broke non-QoS.
-> That possibly helps to understand the situation.
->
-> Non-QoS used to work just fine.
+> David Laight (5):
+>   Move the definition of optimistic_spin_node into osf_lock.c
+>   Clarify osq_wait_next()
 
-I did some git analysis, and I actually believe that this issue has been
-present since the commit e6f5b934fba8 ("b43: Add QOS support"). Before
-then, non-QOS would not trigger this issue. There is a cosmetic change
-after this commit, b27faf8ebf25 ("b43: Rename the DMA ring pointers"),
-but this change does not introduce the issue (but makes it more
-obvious). I think the reason nobody has ever reported this is that even
-when the warnings are triggered, everything appears to work fine. I
-think therefore the two options are the following.
+I took these two as preparatory independent patches, with that
+osq_wait_next() clarification split into two.
 
-1. Remap the BE queue to 0 instead of the BK queue.
-2. Use this kind of conditional to handle the mapping when QoS is
-   disabled.
+I also did the renaming that Waiman asked for.
 
---
-Thanks,
-
-Rahul Rameshbabu
-
+           Linus
 
