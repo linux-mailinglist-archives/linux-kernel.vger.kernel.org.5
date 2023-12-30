@@ -1,326 +1,299 @@
-Return-Path: <linux-kernel+bounces-13353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68C938203EC
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 08:33:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9AA58203EF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 08:49:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC15B281C5B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 07:33:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDBC31C20BAE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 07:49:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F04291D;
-	Sat, 30 Dec 2023 07:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE5A23AF;
+	Sat, 30 Dec 2023 07:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="fmwJGS+R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rp04hx52"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADAB2569;
-	Sat, 30 Dec 2023 07:33:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1703921605; x=1704526405; i=deller@gmx.de;
-	bh=xni73b/fmqnkrhJ8X+AT459zG1XZ686uE4vG9mDt6nY=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=fmwJGS+RRwKmhAsgTUgewCzQqTSUcvlAkswOrPJAaXkB4ez6OT1DRUSYMLdkpT+i
-	 pP1TkWqFVmuJJXwcl9UBryQT6Xr1Rof5QQ3QaZbpLNHWmIBClPLUw4ddQNytBLxNY
-	 HdmwIM4c55SGoKVbYMtX8OjjBQiXPxzUzEn9zwBBZeMyipT3kToHqcWRRx9CwyGNu
-	 ecjxx9vzEfn36/XrS7uJJDba/IeRogYdM15w6jqcF25Ybgl9aHECha+Av+epY7Jbn
-	 fH9ageo5VL+KKdp7NHsM4ms47g+ZzoqIVhIESt/Dd5PNNsKc1FPP3u5c1Cy3fb+4q
-	 /rKfTVOMCbot4ApLaA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.55] ([94.134.152.157]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MEUz4-1rTzJf1Rms-00G0an; Sat, 30
- Dec 2023 08:33:25 +0100
-Message-ID: <59bc81b5-820e-40ff-9159-c03e429af9a6@gmx.de>
-Date: Sat, 30 Dec 2023 08:33:24 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD591864;
+	Sat, 30 Dec 2023 07:48:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-7811c02cfecso488766485a.2;
+        Fri, 29 Dec 2023 23:48:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703922537; x=1704527337; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/cul2h63M3brEi2ZK+56BvsegpNVKrmDUZdVlDzAPSM=;
+        b=Rp04hx52vLL/z0RucmG8b4dyO56U0hkETR4MtzAWcQvp9UglD0MJStjPCmhlE7a6gq
+         CZ3TiuVeOCOo8E9wMclI7T1k+6pmnJK4VcHO/rqJMCMWmZT2aX+1t54XYdb5lBGx9JvF
+         5AjuJtvCNnfJeHDsxingZvA+L40UJEXlV22ANyaxRr4nMRHYNa86hmRP4azTZ4nphtS8
+         rEx9qqzUQcoaQZjKQbqpv95utzWJWecUFC1bAu72AxlTZY+0JjOzO9C0Rg5QkKy6HEMP
+         GXWPgAYFcGGKU/5Pna70a0WhAu6iLMZzogOBvRKCg7nzz8QayRkx24r43dyhFLTtzj+S
+         eomw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703922537; x=1704527337;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/cul2h63M3brEi2ZK+56BvsegpNVKrmDUZdVlDzAPSM=;
+        b=tSj+3yzwFNKRdwZminacxVJHhla7SQ5qn7W6T+qFVUEcgn/Ih1PyPQm/JWZm3Tgvd0
+         0WDzR6zmLXd74z6Od6Z/x4+yGrTTj0HQ6MSuXFsZwuYR/WnnuXK0pg8vj6rB9716lfKw
+         N2LZxPFM66jf/wk3KrYymh7grenDqGEvTLX6tv6JaAnyZcdHz862JXvzUJ9uatxRdUjH
+         zrhhPD3r9miCMt3gZQrh5gJ1ev53xWLPMvz/wKuv2xjbYz2h9sKt+UT9keEMQVgFnQ1J
+         iNOCpO7Q808xiadj2hxDAdc3tWvP7APsEixHJ2AWU0W0NlYjM+rDWbJKQiEQmo8JN81Y
+         4kDA==
+X-Gm-Message-State: AOJu0Yx14/crUfoKjbjIBBjWDwliRrLpp3mtVASqKLvpaidW6l8DFr33
+	7JAjfLX9fezV6I0Ocwyg0E/3uYg0A/4pffd8a5c=
+X-Google-Smtp-Source: AGHT+IH0IGIWdOA2lXSQyv29coSaXrp9DOdK1bLbqyG3VIoBJYx/BN8ZqQoTIDVxamRrrsxWAkAS8j4I1T4WgAaWURs=
+X-Received: by 2002:a05:620a:ed8:b0:77f:95a5:8109 with SMTP id
+ x24-20020a05620a0ed800b0077f95a58109mr12886020qkm.141.1703922537146; Fri, 29
+ Dec 2023 23:48:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] modules: Ensure 64-bit alignment on __ksymtab_*
- sections
-Content-Language: en-US
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: deller@kernel.org, linux-kernel@vger.kernel.org,
- Masahiro Yamada <masahiroy@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- linux-modules@vger.kernel.org, linux-arch@vger.kernel.org
-References: <20231122221814.139916-1-deller@kernel.org>
- <20231122221814.139916-3-deller@kernel.org>
- <ZYUlpxlg/WooxGWZ@bombadil.infradead.org>
- <1b73bc5a-1948-4e67-9ec5-b238723b3a48@gmx.de>
- <ZYXtPL7Ds1SUKPLT@bombadil.infradead.org>
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <ZYXtPL7Ds1SUKPLT@bombadil.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <20231230045105.91351-1-sergeantsagara@protonmail.com> <20231230045105.91351-3-sergeantsagara@protonmail.com>
+In-Reply-To: <20231230045105.91351-3-sergeantsagara@protonmail.com>
+From: Julian Calaby <julian.calaby@gmail.com>
+Date: Sat, 30 Dec 2023 18:48:45 +1100
+Message-ID: <CAGRGNgWYLTmRfvw94Ok_FfcEVGPa0tRg-ELxkD8K6nxTTNZ9jg@mail.gmail.com>
+Subject: Re: [PATCH wireless 2/5] wifi: b43: Stop/wake correct queue in DMA Tx
+ path when QoS is disabled
+To: Rahul Rameshbabu <sergeantsagara@protonmail.com>
+Cc: Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org, 
+	b43-dev@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:OzfSEZKH8jNRkcgP9iKAK8JSqt1F71b7zuc+MiQIbdUN13KrtcK
- 68c11U3ceiTbQxhp+KXCVOR4Bg9aF9Y1he6dmyXnUxMWGLmXy+9iYqxEah7xT+zERYZUZfo
- a9vtJMvVgjBqQOwxm6mij9M6Od4LMHVBur5P11ctfC32m/U++0XCVAnTJunB45Wfz2wTcRS
- z4v4MPdn4/JRexgdRrngw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:vRdRdOk43i4=;27Id2SuD9tQu7nOfNoSnvp7z3U4
- QuK5l8BcyVgsXgr2be7m7hwXoxck25UkBD0F/OyaL5joTgZEltkxxXUkS7umBkUGuQ/3Gnou8
- NjFrUTHMVOs3WbCC1aX9Zhp/qiwkRvz/0aKmgt3Xt8u427+3ZVg8Ytg3aF5EgveT50sm7AciF
- hX+FUF2mFtCD43Sj1xFR3yyC1aE0UPHimaIp4ksNgQzMs59nlAUCHQdulbAgspoohf4z9esvR
- UD222OTS8B+ZLG04ubuJERqZipK2sGjg4GQOgCOgVdy8lUxMyMWNLcW8z35YhOJWWRtHmcTCJ
- TQfgXVx8hKDwcUDHAf9j5anPKFK4Ig/ermHjfqbs1LcYCeFul16ByYsYaurwch1f9DnX/JKmM
- NqXU3Xa9w6O9/TDsMMHNxO7Lzh/UAfhf3D+TVObkPiHd/9dKSXPu6aI13jwCWlpkE24N56EOM
- QTx/knITFldhNPEbj4sXtDa2crbF/604mp/Hu8nEv9xy31snqYZhW9ED6swtnxTDVv/ooElsA
- 0aqAJrQLTA4Yw48mQuTmeffxjIjx809+xXSswE2ZTfbLFpJ8sfqhbAxkZ1xQd0w30kO8bA7t8
- wd10ZunR3SpiZlfF2MlLrp4xJ+pR4k7pesBJDSCY2W4sNj8jFLReFazwIbRnkhG8x8fW+s4IS
- p1mB5tJe1HyzG9cAeZd2NAqma0waCIRIqlfing4X/GkoRa/aDqSsWudUmU0xvheyOF5EUiAMw
- dXbuDMEBdsoq0dp48A2q+DB06bXHdDG+eu9PpOTAUI768y6xhaslFY2L+91HM401JQxRTEK8y
- PsfGpnmqV9xdd77fLOQkuU/CMcQVs2VuqLmgdPao+YKqFw+SVnG9bpJhajmMBd4KISzQGt5rD
- XgXbZkXHioyWCCVJXisYiXjYnTWciX81OlRnj+/w5fynJFTorKiXVQslBcptXT1UMf/PIfrUd
- 96whvYGuBTonijbg8gVJqMxuxpQ=
 
-Hi Luis,
+Hi Rahul,
 
-On 12/22/23 21:10, Luis Chamberlain wrote:
-> On Fri, Dec 22, 2023 at 01:13:26PM +0100, Helge Deller wrote:
->> On 12/22/23 06:59, Luis Chamberlain wrote:
->>> On Wed, Nov 22, 2023 at 11:18:12PM +0100, deller@kernel.org wrote:
->>>> On 64-bit architectures without CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
->>>> (e.g. ppc64, ppc64le, parisc, s390x,...) the __KSYM_REF() macro store=
-s
->>>> 64-bit pointers into the __ksymtab* sections.
->>>> Make sure that those sections will be correctly aligned at module lin=
-k time,
->>>> otherwise unaligned memory accesses may happen at runtime.
->>> ...
-...
->> So, honestly I don't see a real reason why it shouldn't be applied...
+On Sat, Dec 30, 2023 at 3:52=E2=80=AFPM Rahul Rameshbabu
+<sergeantsagara@protonmail.com> wrote:
 >
-> Like I said, you Cc'd stable as a fix,
+> When QoS is disabled, the queue priority value will not map to the correc=
+t
+> ieee80211 queue since there is only one queue. Stop/wake queue 0 when QoS
+> is disabled to prevent trying to stop/wake a non-existent queue and faili=
+ng
+> to stop/wake the actual queue instantiated.
+>
+> Log of issue before change (with kernel parameter qos=3D0):
+>     [  +5.112651] ------------[ cut here ]------------
+>     [  +0.000005] WARNING: CPU: 7 PID: 25513 at net/mac80211/util.c:449 _=
+_ieee80211_wake_queue+0xd5/0x180 [mac80211]
+>     [  +0.000067] Modules linked in: b43(O) snd_seq_dummy snd_hrtimer snd=
+_seq snd_seq_device nft_chain_nat xt_MASQUERADE nf_nat xfrm_user xfrm_algo =
+xt_addrtype overlay ccm af_packet amdgpu snd_hda_codec_cirrus snd_hda_codec=
+_generic ledtrig_audio drm_exec amdxcp gpu_sched xt_conntrack nf_conntrack =
+nf_defrag_ipv6 nf_defrag_ipv4 ip6t_rpfilter ipt_rpfilter xt_pkttype xt_LOG =
+nf_log_syslog xt_tcpudp nft_compat nf_tables nfnetlink sch_fq_codel btusb u=
+input iTCO_wdt ctr btrtl intel_pmc_bxt i915 intel_rapl_msr mei_hdcp mei_pxp=
+ joydev at24 watchdog btintel atkbd libps2 serio radeon btbcm vivaldi_fmap =
+btmtk intel_rapl_common snd_hda_codec_hdmi bluetooth uvcvideo nls_iso8859_1=
+ applesmc nls_cp437 x86_pkg_temp_thermal snd_hda_intel intel_powerclamp vfa=
+t videobuf2_vmalloc coretemp fat snd_intel_dspcfg crc32_pclmul uvc polyval_=
+clmulni snd_intel_sdw_acpi loop videobuf2_memops snd_hda_codec tun drm_suba=
+lloc_helper polyval_generic drm_ttm_helper drm_buddy tap ecdh_generic video=
+buf2_v4l2 gf128mul macvlan ttm ghash_clmulni_intel ecc tg3
+>     [  +0.000044]  videodev bridge snd_hda_core rapl crc16 drm_display_he=
+lper cec mousedev snd_hwdep evdev intel_cstate bcm5974 hid_appleir videobuf=
+2_common stp mac_hid libphy snd_pcm drm_kms_helper acpi_als mei_me intel_un=
+core llc mc snd_timer intel_gtt industrialio_triggered_buffer apple_mfi_fas=
+tcharge i2c_i801 mei snd lpc_ich agpgart ptp i2c_smbus thunderbolt apple_gm=
+ux i2c_algo_bit kfifo_buf video industrialio soundcore pps_core wmi tiny_po=
+wer_button sbs sbshc button ac cordic bcma mac80211 cfg80211 ssb rfkill lib=
+arc4 kvm_intel kvm drm irqbypass fuse backlight firmware_class efi_pstore c=
+onfigfs efivarfs dmi_sysfs ip_tables x_tables autofs4 dm_crypt cbc encrypte=
+d_keys trusted asn1_encoder tee tpm rng_core input_leds hid_apple led_class=
+ hid_generic usbhid hid sd_mod t10_pi crc64_rocksoft crc64 crc_t10dif crct1=
+0dif_generic ahci libahci libata uhci_hcd ehci_pci ehci_hcd crct10dif_pclmu=
+l crct10dif_common sha512_ssse3 sha512_generic sha256_ssse3 sha1_ssse3 aesn=
+i_intel usbcore scsi_mod libaes crypto_simd cryptd scsi_common
+>     [  +0.000055]  usb_common rtc_cmos btrfs blake2b_generic libcrc32c cr=
+c32c_generic crc32c_intel xor raid6_pq dm_snapshot dm_bufio dm_mod dax [las=
+t unloaded: b43(O)]
+>     [  +0.000009] CPU: 7 PID: 25513 Comm: irq/17-b43 Tainted: G        W =
+ O       6.6.7 #1-NixOS
+>     [  +0.000003] Hardware name: Apple Inc. MacBookPro8,3/Mac-942459F5819=
+B171B, BIOS 87.0.0.0.0 06/13/2019
+>     [  +0.000001] RIP: 0010:__ieee80211_wake_queue+0xd5/0x180 [mac80211]
+>     [  +0.000046] Code: 00 45 85 e4 0f 85 9b 00 00 00 48 8d bd 40 09 00 0=
+0 f0 48 0f ba ad 48 09 00 00 00 72 0f 5b 5d 41 5c 41 5d 41 5e e9 cb 6d 3c d=
+0 <0f> 0b 5b 5d 41 5c 41 5d 41 5e c3 cc cc cc cc 48 8d b4 16 94 00 00
+>     [  +0.000002] RSP: 0018:ffffc90003c77d60 EFLAGS: 00010097
+>     [  +0.000001] RAX: 0000000000000001 RBX: 0000000000000002 RCX: 000000=
+0000000000
+>     [  +0.000001] RDX: 0000000000000000 RSI: 0000000000000002 RDI: ffff88=
+820b924900
+>     [  +0.000002] RBP: ffff88820b924900 R08: ffffc90003c77d90 R09: 000000=
+000003bfd0
+>     [  +0.000001] R10: ffff88820b924900 R11: ffffc90003c77c68 R12: 000000=
+0000000000
+>     [  +0.000001] R13: 0000000000000000 R14: ffffc90003c77d90 R15: ffffff=
+ffc0fa6f40
+>     [  +0.000001] FS:  0000000000000000(0000) GS:ffff88846fb80000(0000) k=
+nlGS:0000000000000000
+>     [  +0.000001] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     [  +0.000001] CR2: 00007fafda7ae008 CR3: 000000046d220005 CR4: 000000=
+00000606e0
+>     [  +0.000002] Call Trace:
+>     [  +0.000003]  <TASK>
+>     [  +0.000001]  ? __ieee80211_wake_queue+0xd5/0x180 [mac80211]
+>     [  +0.000044]  ? __warn+0x81/0x130
+>     [  +0.000005]  ? __ieee80211_wake_queue+0xd5/0x180 [mac80211]
+>     [  +0.000045]  ? report_bug+0x171/0x1a0
+>     [  +0.000004]  ? handle_bug+0x41/0x70
+>     [  +0.000004]  ? exc_invalid_op+0x17/0x70
+>     [  +0.000003]  ? asm_exc_invalid_op+0x1a/0x20
+>     [  +0.000005]  ? __ieee80211_wake_queue+0xd5/0x180 [mac80211]
+>     [  +0.000043]  ieee80211_wake_queue+0x4a/0x80 [mac80211]
+>     [  +0.000044]  b43_dma_handle_txstatus+0x29c/0x3a0 [b43]
+>     [  +0.000016]  ? __pfx_irq_thread_fn+0x10/0x10
+>     [  +0.000002]  b43_handle_txstatus+0x61/0x80 [b43]
+>     [  +0.000012]  b43_interrupt_thread_handler+0x3f9/0x6b0 [b43]
+>     [  +0.000011]  irq_thread_fn+0x23/0x60
+>     [  +0.000002]  irq_thread+0xfe/0x1c0
+>     [  +0.000002]  ? __pfx_irq_thread_dtor+0x10/0x10
+>     [  +0.000001]  ? __pfx_irq_thread+0x10/0x10
+>     [  +0.000001]  kthread+0xe8/0x120
+>     [  +0.000003]  ? __pfx_kthread+0x10/0x10
+>     [  +0.000003]  ret_from_fork+0x34/0x50
+>     [  +0.000002]  ? __pfx_kthread+0x10/0x10
+>     [  +0.000002]  ret_from_fork_asm+0x1b/0x30
+>     [  +0.000004]  </TASK>
+>     [  +0.000001] ---[ end trace 0000000000000000 ]---
+>
+>     [  +0.000065] ------------[ cut here ]------------
+>     [  +0.000001] WARNING: CPU: 0 PID: 56077 at net/mac80211/util.c:514 _=
+_ieee80211_stop_queue+0xcc/0xe0 [mac80211]
+>     [  +0.000077] Modules linked in: b43(O) snd_seq_dummy snd_hrtimer snd=
+_seq snd_seq_device nft_chain_nat xt_MASQUERADE nf_nat xfrm_user xfrm_algo =
+xt_addrtype overlay ccm af_packet amdgpu snd_hda_codec_cirrus snd_hda_codec=
+_generic ledtrig_audio drm_exec amdxcp gpu_sched xt_conntrack nf_conntrack =
+nf_defrag_ipv6 nf_defrag_ipv4 ip6t_rpfilter ipt_rpfilter xt_pkttype xt_LOG =
+nf_log_syslog xt_tcpudp nft_compat nf_tables nfnetlink sch_fq_codel btusb u=
+input iTCO_wdt ctr btrtl intel_pmc_bxt i915 intel_rapl_msr mei_hdcp mei_pxp=
+ joydev at24 watchdog btintel atkbd libps2 serio radeon btbcm vivaldi_fmap =
+btmtk intel_rapl_common snd_hda_codec_hdmi bluetooth uvcvideo nls_iso8859_1=
+ applesmc nls_cp437 x86_pkg_temp_thermal snd_hda_intel intel_powerclamp vfa=
+t videobuf2_vmalloc coretemp fat snd_intel_dspcfg crc32_pclmul uvc polyval_=
+clmulni snd_intel_sdw_acpi loop videobuf2_memops snd_hda_codec tun drm_suba=
+lloc_helper polyval_generic drm_ttm_helper drm_buddy tap ecdh_generic video=
+buf2_v4l2 gf128mul macvlan ttm ghash_clmulni_intel ecc tg3
+>     [  +0.000073]  videodev bridge snd_hda_core rapl crc16 drm_display_he=
+lper cec mousedev snd_hwdep evdev intel_cstate bcm5974 hid_appleir videobuf=
+2_common stp mac_hid libphy snd_pcm drm_kms_helper acpi_als mei_me intel_un=
+core llc mc snd_timer intel_gtt industrialio_triggered_buffer apple_mfi_fas=
+tcharge i2c_i801 mei snd lpc_ich agpgart ptp i2c_smbus thunderbolt apple_gm=
+ux i2c_algo_bit kfifo_buf video industrialio soundcore pps_core wmi tiny_po=
+wer_button sbs sbshc button ac cordic bcma mac80211 cfg80211 ssb rfkill lib=
+arc4 kvm_intel kvm drm irqbypass fuse backlight firmware_class efi_pstore c=
+onfigfs efivarfs dmi_sysfs ip_tables x_tables autofs4 dm_crypt cbc encrypte=
+d_keys trusted asn1_encoder tee tpm rng_core input_leds hid_apple led_class=
+ hid_generic usbhid hid sd_mod t10_pi crc64_rocksoft crc64 crc_t10dif crct1=
+0dif_generic ahci libahci libata uhci_hcd ehci_pci ehci_hcd crct10dif_pclmu=
+l crct10dif_common sha512_ssse3 sha512_generic sha256_ssse3 sha1_ssse3 aesn=
+i_intel usbcore scsi_mod libaes crypto_simd cryptd scsi_common
+>     [  +0.000084]  usb_common rtc_cmos btrfs blake2b_generic libcrc32c cr=
+c32c_generic crc32c_intel xor raid6_pq dm_snapshot dm_bufio dm_mod dax [las=
+t unloaded: b43]
+>     [  +0.000012] CPU: 0 PID: 56077 Comm: kworker/u16:17 Tainted: G      =
+  W  O       6.6.7 #1-NixOS
+>     [  +0.000003] Hardware name: Apple Inc. MacBookPro8,3/Mac-942459F5819=
+B171B, BIOS 87.0.0.0.0 06/13/2019
+>     [  +0.000001] Workqueue: phy7 b43_tx_work [b43]
+>     [  +0.000019] RIP: 0010:__ieee80211_stop_queue+0xcc/0xe0 [mac80211]
+>     [  +0.000076] Code: 74 11 48 8b 78 08 0f b7 d6 89 e9 4c 89 e6 e8 ab f=
+4 00 00 65 ff 0d 9c b7 34 3f 0f 85 55 ff ff ff 0f 1f 44 00 00 e9 4b ff ff f=
+f <0f> 0b 5b 5d 41 5c 41 5d c3 cc cc cc cc 0f 1f 80 00 00 00 00 90 90
+>     [  +0.000002] RSP: 0000:ffffc90004157d50 EFLAGS: 00010097
+>     [  +0.000002] RAX: 0000000000000001 RBX: 0000000000000002 RCX: 000000=
+0000000000
+>     [  +0.000002] RDX: 0000000000000000 RSI: 0000000000000002 RDI: ffff88=
+82d65d0900
+>     [  +0.000002] RBP: 0000000000000000 R08: 0000000000000001 R09: 000000=
+0000000001
+>     [  +0.000001] R10: 00000000000000ff R11: ffff88814d0155a0 R12: ffff88=
+82d65d0900
+>     [  +0.000002] R13: 0000000000000000 R14: ffff8881002d2800 R15: 000000=
+00000000d0
+>     [  +0.000002] FS:  0000000000000000(0000) GS:ffff88846f800000(0000) k=
+nlGS:0000000000000000
+>     [  +0.000003] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     [  +0.000002] CR2: 00007f2e8c10c880 CR3: 0000000385b66005 CR4: 000000=
+00000606f0
+>     [  +0.000002] Call Trace:
+>     [  +0.000001]  <TASK>
+>     [  +0.000001]  ? __ieee80211_stop_queue+0xcc/0xe0 [mac80211]
+>     [  +0.000075]  ? __warn+0x81/0x130
+>     [  +0.000004]  ? __ieee80211_stop_queue+0xcc/0xe0 [mac80211]
+>     [  +0.000075]  ? report_bug+0x171/0x1a0
+>     [  +0.000005]  ? handle_bug+0x41/0x70
+>     [  +0.000003]  ? exc_invalid_op+0x17/0x70
+>     [  +0.000004]  ? asm_exc_invalid_op+0x1a/0x20
+>     [  +0.000004]  ? __ieee80211_stop_queue+0xcc/0xe0 [mac80211]
+>     [  +0.000076]  ieee80211_stop_queue+0x36/0x50 [mac80211]
+>     [  +0.000077]  b43_dma_tx+0x550/0x780 [b43]
+>     [  +0.000023]  b43_tx_work+0x90/0x130 [b43]
+>     [  +0.000018]  process_one_work+0x174/0x340
+>     [  +0.000003]  worker_thread+0x27b/0x3a0
+>     [  +0.000004]  ? __pfx_worker_thread+0x10/0x10
+>     [  +0.000002]  kthread+0xe8/0x120
+>     [  +0.000003]  ? __pfx_kthread+0x10/0x10
+>     [  +0.000004]  ret_from_fork+0x34/0x50
+>     [  +0.000002]  ? __pfx_kthread+0x10/0x10
+>     [  +0.000003]  ret_from_fork_asm+0x1b/0x30
+>     [  +0.000006]  </TASK>
+>     [  +0.000001] ---[ end trace 0000000000000000 ]---
+>
+> Fixes: e6f5b934fba8 ("b43: Add QOS support")
+> Signed-off-by: Rahul Rameshbabu <sergeantsagara@protonmail.com>
+> ---
+>  drivers/net/wireless/broadcom/b43/dma.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/wireless/broadcom/b43/dma.c b/drivers/net/wirele=
+ss/broadcom/b43/dma.c
+> index 760d1a28edc6..68671de27569 100644
+> --- a/drivers/net/wireless/broadcom/b43/dma.c
+> +++ b/drivers/net/wireless/broadcom/b43/dma.c
+> @@ -1399,7 +1399,10 @@ int b43_dma_tx(struct b43_wldev *dev, struct sk_bu=
+ff *skb)
+>             should_inject_overflow(ring)) {
+>                 /* This TX ring is full. */
+>                 unsigned int skb_mapping =3D skb_get_queue_mapping(skb);
+> -               ieee80211_stop_queue(dev->wl->hw, skb_mapping);
+> +               if (dev->qos_enabled)
+> +                       ieee80211_stop_queue(dev->wl->hw, skb_mapping);
+> +               else
+> +                       ieee80211_stop_queue(dev->wl->hw, 0);
 
-I added "Cc: stable@vger.kernel.org" on the patch itself, so *if* the patc=
-h
-would have been applied by you, it would later end up in stable kernel ser=
-ies too.
-But I did not CC'ed the stable mailing list directly, so my patch was neve=
-r
-sent to that mailing list.
+Would this be a little cleaner if we only look up the queue mapping if
+QOS is enabled? I.e.
 
-> as a maintainer it is my job to
-> verify how critical this is and ask for more details about how you found
-> it and evaluate the real impact. Even if it was not a stable fix I tend
-> to ask this for patches, even if they are trivial.
-> ...
-> OK, can you extend the patch below with something like:
->
-> perf stat --repeat 100 --pre 'modprobe -r b a b c' -- ./tools/testing/se=
-lftests/module/find_symbol.sh
->
-> And test before and after?
->
-> I ran a simple test as-is and the data I get is within noise, and so
-> I think we need the --repeat 100 thing.
 
-Your selftest code is based on perf.
-AFAICS we don't have perf on parisc/hppa, so I can't test your selftest co=
-de
-on that architecture.
-I assume you tested on x86, where the CPU will transparently take care of
-unaligned accesses. This is probably why the results are within
-the noise.
-But on some platforms the CPU raises an exception on unaligned accesses
-and jumps into special exception handler assembler code inside the kernel.
-This is much more expensive than on x86, which is why we track on parisc
-in /proc/cpuinfo counters on how often this exception handler is called:
-IRQ:       CPU0       CPU1
-   3:       1332          0         SuperIO  ttyS0
-   7:    1270013          0         SuperIO  pata_ns87415
-  64:  320023012  320021431             CPU  timer
-  65:   17080507   20624423             CPU  IPI
-UAH:   10948640      58104   Unaligned access handler traps
+unsigned int skb_mapping =3D 0;
 
-This "UAH" field could theoretically be used to extend your selftest.
-But is it really worth it? The outcome is very much architecture and CPU
-specific, maybe it's just within the noise as you measured.
+if (dev->qos_enabled) {
+    skb_mapping =3D skb_get_queue_mapping(skb);
+}
 
-IMHO we should always try to natively align structures, and if we see
-we got it wrong in kernel code, we should fix it.
-My patches just fix those memory sections where we use inline
-assembly (instead of C) and thus missed to provide the correct alignments.
+ieee80211_stop_queue(dev->wl->hw, skb_mapping);
 
-Helge
 
-> ------------------------------------------------------------------------=
------------
-> before:
-> sudo ./tools/testing/selftests/module/find_symbol.sh
->
->   Performance counter stats for '/sbin/modprobe test_kallsyms_b':
->
->          81,956,206 ns   duration_time
->          81,883,000 ns   system_time
->                 210      page-faults
->
->         0.081956206 seconds time elapsed
->
->         0.000000000 seconds user
->         0.081883000 seconds sys
->
->
->
->   Performance counter stats for '/sbin/modprobe test_kallsyms_b':
->
->          85,960,863 ns   duration_time
->          84,679,000 ns   system_time
->                 212      page-faults
->
->         0.085960863 seconds time elapsed
->
->         0.000000000 seconds user
->         0.084679000 seconds sys
->
->
->
->   Performance counter stats for '/sbin/modprobe test_kallsyms_b':
->
->          86,484,868 ns   duration_time
->          86,541,000 ns   system_time
->                 213      page-faults
->
->         0.086484868 seconds time elapsed
->
->         0.000000000 seconds user
->         0.086541000 seconds sys
->
-> ------------------------------------------------------------------------=
------------
-> After your modules alignement fix:
-> sudo ./tools/testing/selftests/module/find_symbol.sh
->   Performance counter stats for '/sbin/modprobe test_kallsyms_b':
->
->          83,579,980 ns   duration_time
->          83,530,000 ns   system_time
->                 212      page-faults
->
->         0.083579980 seconds time elapsed
->
->         0.000000000 seconds user
->         0.083530000 seconds sys
->
->
->
->   Performance counter stats for '/sbin/modprobe test_kallsyms_b':
->
->          70,721,786 ns   duration_time
->          69,289,000 ns   system_time
->                 211      page-faults
->
->         0.070721786 seconds time elapsed
->
->         0.000000000 seconds user
->         0.069289000 seconds sys
->
->
->
->   Performance counter stats for '/sbin/modprobe test_kallsyms_b':
->
->          76,513,219 ns   duration_time
->          76,381,000 ns   system_time
->                 214      page-faults
->
->         0.076513219 seconds time elapsed
->
->         0.000000000 seconds user
->         0.076381000 seconds sys
->
-> After your modules alignement fix:
-> sudo ./tools/testing/selftests/module/find_symbol.sh
->   Performance counter stats for '/sbin/modprobe test_kallsyms_b':
->
->          83,579,980 ns   duration_time
->          83,530,000 ns   system_time
->                 212      page-faults
->
->         0.083579980 seconds time elapsed
->
->         0.000000000 seconds user
->         0.083530000 seconds sys
->
->
->
->   Performance counter stats for '/sbin/modprobe test_kallsyms_b':
->
->          70,721,786 ns   duration_time
->          69,289,000 ns   system_time
->                 211      page-faults
->
->         0.070721786 seconds time elapsed
->
->         0.000000000 seconds user
->         0.069289000 seconds sys
->
->
->
->   Performance counter stats for '/sbin/modprobe test_kallsyms_b':
->
->          76,513,219 ns   duration_time
->          76,381,000 ns   system_time
->                 214      page-faults
->
->         0.076513219 seconds time elapsed
->
->         0.000000000 seconds user
->         0.076381000 seconds sys
-> ------------------------------------------------------------------------=
------------
->
-> [perf-based selftest patch from Luis stripped]
+Thanks,
 
+--=20
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
 
