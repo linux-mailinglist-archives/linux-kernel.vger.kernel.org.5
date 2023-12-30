@@ -1,178 +1,122 @@
-Return-Path: <linux-kernel+bounces-13404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F4C38204A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:36:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 611428204A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:40:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49B7D281F62
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:36:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD54DB2153A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:40:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 623F98BFC;
-	Sat, 30 Dec 2023 11:35:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1D379CD;
+	Sat, 30 Dec 2023 11:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PhLhOjpB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB43B8BE3
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 11:35:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-250-bYVrSc7XPvudaj0upR0veg-1; Sat, 30 Dec 2023 11:35:48 +0000
-X-MC-Unique: bYVrSc7XPvudaj0upR0veg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 30 Dec
- 2023 11:35:32 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sat, 30 Dec 2023 11:35:32 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Ingo Molnar' <mingo@kernel.org>, Waiman Long <longman@redhat.com>
-CC: "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-	"'peterz@infradead.org'" <peterz@infradead.org>, "'mingo@redhat.com'"
-	<mingo@redhat.com>, "'will@kernel.org'" <will@kernel.org>,
-	"'boqun.feng@gmail.com'" <boqun.feng@gmail.com>, 'Linus Torvalds'
-	<torvalds@linux-foundation.org>, "'xinhui.pan@linux.vnet.ibm.com'"
-	<xinhui.pan@linux.vnet.ibm.com>,
-	"'virtualization@lists.linux-foundation.org'"
-	<virtualization@lists.linux-foundation.org>, 'Zeng Heng'
-	<zengheng4@huawei.com>
-Subject: RE: [PATCH next 4/5] locking/osq_lock: Optimise per-cpu data
- accesses.
-Thread-Topic: [PATCH next 4/5] locking/osq_lock: Optimise per-cpu data
- accesses.
-Thread-Index: Ado6mZUJWFdx4PkETd+mn/PWVjPd0AAdwkAdAABoNTA=
-Date: Sat, 30 Dec 2023 11:35:32 +0000
-Message-ID: <4b9da867c24f4ff990851050c8f61515@AcuMS.aculab.com>
-References: <73a4b31c9c874081baabad9e5f2e5204@AcuMS.aculab.com>
- <bddb6b00434d4492abca4725c10f8d5a@AcuMS.aculab.com>
- <346c40b5-686f-461e-a1e3-9f255418efb2@redhat.com>
- <ZY/6YCNJ7tSCmiGo@gmail.com>
-In-Reply-To: <ZY/6YCNJ7tSCmiGo@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 064167465;
+	Sat, 30 Dec 2023 11:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40d60c49ee7so25512495e9.0;
+        Sat, 30 Dec 2023 03:40:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703936424; x=1704541224; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jZVgsk7Ptq4Zn7LUzSb7KSddvFu6VpF8VaABTVbWLiI=;
+        b=PhLhOjpBup5iWZ4obyOeTuPZfcWKF3tYahJ+CSmGpyV66xTtgRZTB/lCR7omI5fgCh
+         LnCQiqMrx7xSYfl5C6qoncT2PIrRKczsER4C3C3bYUYwK0/YRtmYR9AeP/BZLB08Bika
+         GlnKtPgF2bhkKmpKlqUDefz9zQSNSmbKEem/IICwhYzgL9LZRZNjnfqEuoQTwc5Vkzq/
+         ejQAbeSIsOGKTwxuGTgg30EhyA2PDJdHAspfFyBpXPNI+SC3OtMBRLDCEZBoL62KopHJ
+         F7iNKFg3PH9JPKBNO1tmVQVqXe8AJoUL71NgucyNwCnmvKC5bqhkQVd/b4VC8XXzO+PT
+         NBfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703936424; x=1704541224;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jZVgsk7Ptq4Zn7LUzSb7KSddvFu6VpF8VaABTVbWLiI=;
+        b=i3U8QQcX9v9DC44NZCHHNyfuOoNtMGCQuCZofWJj7Bw0BC/8h5HHT/O1QkaMRCatQA
+         doLokwaTiI2x33nPPnFxBJuqieMp/4jQcgE387fxS+VEWmlKo5wS2/Phf5R68l8kF1EE
+         vBQsDpadz5EDaKjiN8XS8osJbkNzOmTSQUjpiX+8krQD+47nFVn72yPsvn+j8pg2yvPV
+         l/Ds1id2XKuECBiuKE9qT9VR4K6suKatSuRMX5mM1+pSMDwdxzJx6KxMft8M0tGLnEFM
+         q9LaD1uggd2YEBZKlTZWnFmhgSFFbBKtLSZOqPD2yfp8SVbTMAqyAzRerk43sWGKfkWj
+         FUuQ==
+X-Gm-Message-State: AOJu0YyrAXMv8Czu9hDx+ryH4XRS+a40Aed/Jbt+hcNQuIF94u5mD1np
+	qsSt/NWtsTK7zqw2BkcNbSU=
+X-Google-Smtp-Source: AGHT+IF7cnKWL9Sl/Kj2ZKrQDAZ+xfJ7Y9Wja5AiQx6iNFiXVsZHcTHAoQqYfpjwblJz02kXI9278g==
+X-Received: by 2002:a7b:cc8e:0:b0:40c:6b60:343e with SMTP id p14-20020a7bcc8e000000b0040c6b60343emr6104093wma.119.1703936423737;
+        Sat, 30 Dec 2023 03:40:23 -0800 (PST)
+Received: from localhost.localdomain ([2a02:842a:1ce:5301:f733:18af:2fff:3d3d])
+        by smtp.gmail.com with ESMTPSA id r14-20020a05600c458e00b0040d724896cbsm6313296wmo.18.2023.12.30.03.40.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Dec 2023 03:40:23 -0800 (PST)
+From: Dorian Cruveiller <doriancruveiller@gmail.com>
+To: perex@perex.cz,
+	tiwai@suse.com,
+	sbinding@opensource.cirrus.com,
+	kailang@realtek.com,
+	luke@ljones.dev,
+	andy.chi@canonical.com,
+	shenghao-ding@ti.com,
+	l.guzenko@web.de,
+	ruinairas1992@gmail.com,
+	yangyuchi66@gmail.com,
+	vitalyr@opensource.cirrus.com,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Dorian Cruveiller <doriancruveiller@gmail.com>
+Subject: [PATCH v2 1/2] ALSA:hda/realtek enable SND_PCI_QUIRK for Lenovo Legion Slim 7 Gen 8 (2023) serie
+Date: Sat, 30 Dec 2023 12:40:01 +0100
+Message-ID: <20231230114001.19855-1-doriancruveiller@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231229230703.73876-1-doriancruveiller@gmail.com>
+References: <20231229230703.73876-1-doriancruveiller@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-From: Ingo Molnar
-> Sent: 30 December 2023 11:09
->=20
->=20
-> * Waiman Long <longman@redhat.com> wrote:
->=20
-> > On 12/29/23 15:57, David Laight wrote:
-> > > this_cpu_ptr() is rather more expensive than raw_cpu_read() since
-> > > the latter can use an 'offset from register' (%gs for x86-84).
-> > >
-> > > Add a 'self' field to 'struct optimistic_spin_node' that can be
-> > > read with raw_cpu_read(), initialise on first call.
-> > >
-> > > Signed-off-by: David Laight <david.laight@aculab.com>
-> > > ---
-> > >   kernel/locking/osq_lock.c | 14 +++++++++-----
-> > >   1 file changed, 9 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
-> > > index 9bb3a077ba92..b60b0add0161 100644
-> > > --- a/kernel/locking/osq_lock.c
-> > > +++ b/kernel/locking/osq_lock.c
-> > > @@ -13,7 +13,7 @@
-> > >    */
-> > >   struct optimistic_spin_node {
-> > > -=09struct optimistic_spin_node *next, *prev;
-> > > +=09struct optimistic_spin_node *self, *next, *prev;
-> > >   =09int locked; /* 1 if lock acquired */
-> > >   =09int cpu; /* encoded CPU # + 1 value */
-> > >   };
-> > > @@ -93,12 +93,16 @@ osq_wait_next(struct optimistic_spin_queue *lock,
-> > >   bool osq_lock(struct optimistic_spin_queue *lock)
-> > >   {
-> > > -=09struct optimistic_spin_node *node =3D this_cpu_ptr(&osq_node);
-> > > +=09struct optimistic_spin_node *node =3D raw_cpu_read(osq_node.self)=
-;
-> >
-> > My gcc 11 compiler produces the following x86-64 code:
-> >
-> > 92=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 struct optimistic_spin_node *no=
-de =3D this_cpu_ptr(&osq_node);
-> > =C2=A0=C2=A0 0x0000000000000029 <+25>:=C2=A0=C2=A0=C2=A0 mov=C2=A0=C2=
-=A0=C2=A0 %rcx,%rdx
-> > =C2=A0=C2=A0 0x000000000000002c <+28>:=C2=A0=C2=A0=C2=A0 add %gs:0x0(%r=
-ip),%rdx=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 # 0x34
-> > <osq_lock+36>
-> >
-> > Which looks pretty optimized for me. Maybe older compiler may generate =
-more
-> > complex code. However, I do have some doubt as to the benefit of this p=
-atch
-> > at the expense of making the code a bit more complex.
+Link up the realtek audio chip to the cirrus cs35l41 sound amplifier chip
+on 4 models of the Lenovo legion slim 7 gen 8 (2023). These models are
+16IRH8 (2 differents subsystem id) and 16APH8 (2 differents subsystem ids).
 
-My changed code is one instruction shorter!
-  18:   65 48 8b 15 00 00 00    mov    %gs:0x0(%rip),%rdx        # 20 <osq_=
-lock+0x20>
-  1f:   00
-                        1c: R_X86_64_PC32       .data..percpu..shared_align=
-ed-0x4
-However is might have one less cache line miss.
+Subsystem ids list:
+ - 17AA38B4
+ - 17AA38B5
+ - 17AA38B6
+ - 17AA38B7
 
-> GCC-11 is plenty of a look-back window in terms of compiler efficiency:
-> latest enterprise distros use GCC-11 or newer, while recent desktop
-> distros use GCC-13. Anything older won't matter, because no major
-> distribution is going to use new kernels with old compilers.
+Signed-off-by: Dorian Cruveiller <doriancruveiller@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-There must be a difference in the header files as well.
-Possibly forced by the older compiler I'm using (7.5 from Ubuntu 18.04).
-But maybe based on some config option.
-
-I'm seeing this_cpu_ptr(&xxx) converted to per_cpu_ptr(&xxx, smp_processor_=
-id())
-which necessitates an array lookup (indexed by cpu number).
-Whereas I think you are seeing it implemented as
-  raw_cpu_read(per_cpu_data_base) + offset_to(xxx)
-
-So the old code generates (after the prologue):
-  10:   49 89 fd                mov    %rdi,%r13
-  13:   49 c7 c4 00 00 00 00    mov    $0x0,%r12
-                        16: R_X86_64_32S        .data..percpu..shared_align=
-ed
-  1a:   e8 00 00 00 00          callq  1f <osq_lock+0x1f>
-                        1b: R_X86_64_PC32       debug_smp_processor_id-0x4
-  1f:   89 c0                   mov    %eax,%eax
-  21:   48 8b 1c c5 00 00 00    mov    0x0(,%rax,8),%rbx
-  28:   00
-                        25: R_X86_64_32S        __per_cpu_offset
-  29:   e8 00 00 00 00          callq  2e <osq_lock+0x2e>
-                        2a: R_X86_64_PC32       debug_smp_processor_id-0x4
-  2e:   4c 01 e3                add    %r12,%rbx
-  31:   83 c0 01                add    $0x1,%eax
-  34:   c7 43 10 00 00 00 00    movl   $0x0,0x10(%rbx)
-  3b:   48 c7 03 00 00 00 00    movq   $0x0,(%rbx)
-  42:   89 43 14                mov    %eax,0x14(%rbx)
-  45:   41 87 45 00             xchg   %eax,0x0(%r13)
-
-I was also surprised that smp_processor_id() is a real function rather
-than an offset from %gs.
-
-=09David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 19040887ff67..bc4e3a85137c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10239,6 +10239,10 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x3886, "Y780 VECO DUAL", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x38a7, "Y780P AMD YG dual", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x38a8, "Y780P AMD VECO dual", ALC287_FIXUP_TAS2781_I2C),
++	SND_PCI_QUIRK(0x17aa, 0x38b4, "Legion Slim 7 16IRH8", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x17aa, 0x38b5, "Legion Slim 7 16IRH8", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x17aa, 0x38b6, "Legion Slim 7 16APH8", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x17aa, 0x38b7, "Legion Slim 7 16APH8", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x17aa, 0x38ba, "Yoga S780-14.5 Air AMD quad YC", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x38bb, "Yoga S780-14.5 Air AMD quad AAC", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x38be, "Yoga S980-14.5 proX YC Dual", ALC287_FIXUP_TAS2781_I2C),
+-- 
+2.43.0
 
 
