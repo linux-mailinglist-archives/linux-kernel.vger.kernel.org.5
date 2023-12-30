@@ -1,180 +1,150 @@
-Return-Path: <linux-kernel+bounces-13380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 617A0820437
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 10:54:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58C3F820439
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 10:55:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 276092821ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:54:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 156E82821E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:55:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 105045699;
-	Sat, 30 Dec 2023 09:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054D12589;
+	Sat, 30 Dec 2023 09:55:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="d1w1OrxQ"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="JGa6o1ox"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4D45248
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 09:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-555b361353bso1523131a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 01:54:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1703930058; x=1704534858; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:references:message-id:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=abUTt15ozYHOLG/fk60Lc57aa9WtZ24J7IwER8hUXeE=;
-        b=d1w1OrxQSL/PEmBYJoZE4VTCpsv6fck5HKO6c46JnAR8GE5mtXbL/rPyuRcjk5KF/2
-         v2CDieeJkgZ0VzOjaTSuK6ATFDK2IsqDErlIWH68xZTiT0dcazKphxUHgAzYOD6A12O8
-         JcMBABm7/194Lg/YTOLGmJUSJVj9E3zv9rtWE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703930058; x=1704534858;
-        h=content-transfer-encoding:to:references:message-id:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=abUTt15ozYHOLG/fk60Lc57aa9WtZ24J7IwER8hUXeE=;
-        b=PQuJL+gsbx9FiYse5tVNpYjbo8Mvgcpq4EgN9Z2znUIoTxIIzOKbjkLuC1TnNBaSqU
-         TRNCVRArmUkAv7Fua6+UPRKY8env36ItyImkKmJKVVWEkLNjj1Oc8sjuFKCScoaIcn0a
-         ewoa7+Sa7umIOAhipO7UpK5X7TabbD0AtIc3L4/Wc1lGKPGT1qdpuQ7Jtq2aEqrP81Ex
-         PjcBEEhPFoRpm4r0Q9Kq++y6KvwXItWPj/1wOr9+cRKrsnYjp4vNhQ9TZOJrbaISkGMQ
-         43i9jPQey2tQaKnDUQAjCBaeFD4IJk0R5S0Q3iz+cxGMOec2uEJAGFQmyJiN+Bqt2kGa
-         xDaQ==
-X-Gm-Message-State: AOJu0YydlZUaeAsiZdQexYSb+UPZnVs1avYdm25tGP4IumSVdJh7ynPt
-	DQbiwy83YPn4N6tmgBluH8ngJDJ5y0j4LRPlkbbBfnZaSGMKJOkgqbMdAwaCpslVQ7Q+Hc9MEwC
-	IqhkOGD1RVO4bFcy2r+PgbQ==
-X-Google-Smtp-Source: AGHT+IGK1uGrlady2TpLBMfqqY9A7tHn9+lcZGtpiYGeIBTdCURXuQcXKU0VKUNz5G0qW4/zkYvz4w==
-X-Received: by 2002:a05:6402:ca3:b0:54c:9dbe:5c03 with SMTP id cn3-20020a0564020ca300b0054c9dbe5c03mr5290445edb.40.1703930057752;
-        Sat, 30 Dec 2023 01:54:17 -0800 (PST)
-Received: from smtpclient.apple ([132.69.236.92])
-        by smtp.gmail.com with ESMTPSA id m9-20020aa7c2c9000000b00552666f4745sm12089039edp.22.2023.12.30.01.54.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 30 Dec 2023 01:54:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF66023A5;
+	Sat, 30 Dec 2023 09:55:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703930114; x=1704534914; i=markus.elfring@web.de;
+	bh=7hagqCEjKrE57PtopHnSuOX+w+TMvxsBegLDaXo0Kb0=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=JGa6o1oxw0k67h3KuXcBNezZeqaQVg4RYFegayDvsMmpvLdrFj3wdi7k/53OcZRd
+	 YmoU8zVPYVwQF7IkrG2yeyZD3HugmksJ+9oQP4yZ8O9qaF1n+YtJzzTWSljonUHcd
+	 OpmyG3XbwLBLNT2M03+d6oRbhSEYsH5WTPqCQYX6PpF/HH5zkgKEPoavMUHNogkCr
+	 VMq2/chsfGUbD5xiw02jc/NfALg/sJHaw/O5M83OQgBSjmj8NPr1+7kp1yT5S/FuE
+	 CfzRN8WrYKkAMe2r9BlMwfeKix4mAxTA1NfjKgNT6dsJpDjbSSwgQ1P6HxdG01a1s
+	 SVk5sjgAYZ1uyFmT0Q==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.87.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1M2Phi-1rFfFE28CM-004Hne; Sat, 30
+ Dec 2023 10:55:14 +0100
+Message-ID: <49472d26-29e6-443f-b0f5-21967a67dd4a@web.de>
+Date: Sat, 30 Dec 2023 10:55:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
-Subject: Re: [PATCH 1/2] mm/tlb: fix fullmm semantics
-From: Nadav Amit <nadav.amit@broadcom.com>
-In-Reply-To: <20231228084642.1765-2-jszhang@kernel.org>
-Date: Sat, 30 Dec 2023 11:54:02 +0200
-Cc: Will Deacon <will@kernel.org>,
- "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Nick Piggin <npiggin@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>,
- Arnd Bergmann <arnd@arndb.de>,
- linux-arch@vger.kernel.org,
- linux-mm <linux-mm@kvack.org>,
- linux-arm-kernel@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-riscv@lists.infradead.org,
- Nadav Amit <namit@vmware.com>,
- Andrea Arcangeli <aarcange@redhat.com>,
- Andy Lutomirski <luto@kernel.org>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Yu Zhao <yuzhao@google.com>,
- the arch/x86 maintainers <x86@kernel.org>
-Message-Id: <204B6410-2EFA-462B-9DF7-64CC5F1D3AD2@broadcom.com>
-References: <20231228084642.1765-1-jszhang@kernel.org>
- <20231228084642.1765-2-jszhang@kernel.org>
-To: Jisheng Zhang <jszhang@kernel.org>
-X-Mailer: Apple Mail (2.3774.300.61.1.2)
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-GB
+To: Phillip Lougher <phillip@squashfs.org.uk>, kernel-janitors@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] squashfs: Improve error handling in
+ squashfs_decompressor_create()
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:zIZCN2IxrquqiixhE0hQxGRDU10391YouoqgzwH7Rw1rkkp88rI
+ 8Wqc9A0me1A+YSBDFDnsB6yLGNQb5bJkS9lMj00wODaF88/LXHymCHLaVyY0k2AR84aSI+G
+ 7PInNJ82uifUkieWNPHY2f9m5wkNUiPNgVrgLv4rrPYNOJwmmi1tUxWKMMBlL4EcYLa3SDY
+ FREUnscBQHrFKNpUAxRbA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:AdBholhUsCU=;684vah8ghC2pt9ND06Ye301jzWF
+ VGmoXmlYUwykEcCy44yESwt8uOTNzDWUlmt7NUJkhdtNA5MunDDMMJtluocDYmIailILMefTc
+ iW5eIQyJ4mMokvHS3zWuABQ3et7GoEvgpkbaeOVFGH5aRev21dY1C9k2Or3evZpNC/pMBDV+J
+ PE00iqUVhhvejWoccAvVPwrjng4vRskPq3JJ6z6v0Xp6mVE4vDPqHwOUdEbihddXod9tBSzU2
+ R2ryoNMPBAx3MmBCVySnnU2A9x2pUHLvg61CSAueYMDENoVcL4frOdef2ZmJ2mxETNiIkgrG1
+ RtCiPXOHD/J8hH84fPMS7pZGzgjMfJCw+MCpYNrw47Fai9reU+lOgv0N63DzzWazXshGhMgMi
+ HTFGyrT97PY+CbMZbEycPOfWrrCdaFwqnKns8KY+GbZ+hSCaFo+q/99UIlDndlIwB3ZFJBVCD
+ OPUWsLFJO3TCYow2ET9kufNBdWaYaZwqWXL6gvmOuvYHqcXdxhHOHPwGG9Wtn4So+aswj5QK+
+ amH2T70uIGql/5p+JES6bce1rxU2XZC1QrN85yeOCrcYN+KE3X8koYRkzvwxlYNAcjTyS26D8
+ xR2KOucdhFo03mGAkhdhFGSe2wvq1qXM4zgorIKXDKtmrExl+L/FKK0+79lkkHmtKTxWI02mB
+ D/SjFwYV5gbAXePhVvKDiBrPhYdCcA+DzJM6tlJQsSAiqtf7jPsW6pimVYnTpzudL/AFIMSZU
+ FNahou3gq3zHv5nNpLyn/JBeJzKbzfSjfzL34MdktTm7ywhUqfJBlt5WlnYODugxGuyzKPorB
+ r1zJrjUq3nGNOPXaupE9je3cX+LlD3mXlAliYInvPz+/HxA0H6R6HPZPShBvhS61UG3U8BQk3
+ kIKf3eh3pzPSLViA++D11V+eVEYXRdH3k4364XnIZeeVLq9eldag6i3GApjGy8w2zAY9npQWA
+ 8qm6B4uQAcRAx/QE6tNVP9JhIMg=
 
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 29 Dec 2023 21:30:26 +0100
 
+The kfree() function was called in two cases by
+the squashfs_decompressor_create() function during error handling
+even if the passed variable contained a null pointer.
+This issue was detected by using the Coccinelle software.
 
-> On Dec 28, 2023, at 10:46=E2=80=AFAM, Jisheng Zhang <jszhang@kernel.org> =
-wrote:
->=20
-> From: Nadav Amit <namit@vmware.com>
->=20
-> fullmm in mmu_gather is supposed to indicate that the mm is torn-down
-> (e.g., on process exit) and can therefore allow certain optimizations.
-> However, tlb_finish_mmu() sets fullmm, when in fact it want to say that
-> the TLB should be fully flushed.
->=20
-> Change tlb_finish_mmu() to set need_flush_all and check this flag in
-> tlb_flush_mmu_tlbonly() when deciding whether a flush is needed.
->=20
-> At the same time, bring the arm64 fullmm on process exit optimization bac=
-k.
->=20
-> Signed-off-by: Nadav Amit <namit@vmware.com>
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Yu Zhao <yuzhao@google.com>
-> Cc: Nick Piggin <npiggin@gmail.com>
-> Cc: x86@kernel.org
-> ---
-> arch/arm64/include/asm/tlb.h | 5 ++++-
-> include/asm-generic/tlb.h    | 2 +-
-> mm/mmu_gather.c              | 2 +-
-> 3 files changed, 6 insertions(+), 3 deletions(-)
->=20
-> diff --git a/arch/arm64/include/asm/tlb.h b/arch/arm64/include/asm/tlb.h
-> index 846c563689a8..6164c5f3b78f 100644
-> --- a/arch/arm64/include/asm/tlb.h
-> +++ b/arch/arm64/include/asm/tlb.h
-> @@ -62,7 +62,10 @@ static inline void tlb_flush(struct mmu_gather *tlb)
-> 	 * invalidating the walk-cache, since the ASID allocator won't
-> 	 * reallocate our ASID without invalidating the entire TLB.
-> 	 */
-> -	if (tlb->fullmm) {
-> +	if (tlb->fullmm)
-> +		return;
-> +
-> +	if (tlb->need_flush_all) {
-> 		if (!last_level)
-> 			flush_tlb_mm(tlb->mm);
-> 		return;
->=20
+* Thus return directly after a call of the function =E2=80=9Ckzalloc=E2=80=
+=9D failed
+  at the beginning.
 
-Thanks for pulling my patch out of the abyss, but the chunk above
-did not come from my old patch.
+* Use another label.
 
-My knowledge of arm64 is a bit limited, but the code does not seem
-to match the comment, so if it is correct (which I strongly doubt),
-the comment should be updated.
+* Move an error code assignment into an if branch.
 
-[1] https://lore.kernel.org/all/20210131001132.3368247-2-namit@vmware.com/
+* Delete an initialisation (for the variable =E2=80=9Cdecomp_strm=E2=80=9D=
+)
+  which became unnecessary with this refactoring.
 
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ fs/squashfs/decompressor_multi.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---=20
-This electronic communication and the information and any files transmitted=
-=20
-with it, or attached to it, are confidential and are intended solely for=20
-the use of the individual or entity to whom it is addressed and may contain=
-=20
-information that is confidential, legally privileged, protected by privacy=
-=20
-laws, or otherwise restricted from disclosure to anyone else. If you are=20
-not the intended recipient or the person responsible for delivering the=20
-e-mail to the intended recipient, you are hereby notified that any use,=20
-copying, distributing, dissemination, forwarding, printing, or copying of=
-=20
-this e-mail is strictly prohibited. If you received this e-mail in error,=
-=20
-please return the e-mail to the sender, delete it from your computer, and=
-=20
-destroy any printed copy of it.
+diff --git a/fs/squashfs/decompressor_multi.c b/fs/squashfs/decompressor_m=
+ulti.c
+index 416c53eedbd1..81fd15d5163c 100644
+=2D-- a/fs/squashfs/decompressor_multi.c
++++ b/fs/squashfs/decompressor_multi.c
+@@ -62,12 +62,12 @@ static void *squashfs_decompressor_create(struct squas=
+hfs_sb_info *msblk,
+ 				void *comp_opts)
+ {
+ 	struct squashfs_stream *stream;
+-	struct decomp_stream *decomp_strm =3D NULL;
+-	int err =3D -ENOMEM;
++	struct decomp_stream *decomp_strm;
++	int err;
+
+ 	stream =3D kzalloc(sizeof(*stream), GFP_KERNEL);
+ 	if (!stream)
+-		goto out;
++		return ERR_PTR(-ENOMEM);
+
+ 	stream->comp_opts =3D comp_opts;
+ 	mutex_init(&stream->mutex);
+@@ -81,8 +81,10 @@ static void *squashfs_decompressor_create(struct squash=
+fs_sb_info *msblk,
+ 	 * file system works.
+ 	 */
+ 	decomp_strm =3D kmalloc(sizeof(*decomp_strm), GFP_KERNEL);
+-	if (!decomp_strm)
+-		goto out;
++	if (!decomp_strm) {
++		err =3D -ENOMEM;
++		goto free_stream;
++	}
+
+ 	decomp_strm->stream =3D msblk->decompressor->init(msblk,
+ 						stream->comp_opts);
+@@ -97,6 +99,7 @@ static void *squashfs_decompressor_create(struct squashf=
+s_sb_info *msblk,
+
+ out:
+ 	kfree(decomp_strm);
++free_stream:
+ 	kfree(stream);
+ 	return ERR_PTR(err);
+ }
+=2D-
+2.43.0
+
 
