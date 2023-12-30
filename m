@@ -1,44 +1,39 @@
-Return-Path: <linux-kernel+bounces-13586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BC21820869
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 21:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA2F1820866
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 21:12:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 587E2283E02
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 20:13:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6A8E283E4C
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 20:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE716FBE1;
-	Sat, 30 Dec 2023 20:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47CA0C8F8;
+	Sat, 30 Dec 2023 20:12:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="PKzhjnSI"
+	dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b="CwSvrHrV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 315F8C8E0;
-	Sat, 30 Dec 2023 20:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703967145; x=1704571945; i=markus.elfring@web.de;
-	bh=K6NQxGj4hjvTJqhKo6zca8RxH2GLf14mMfJnmGs1PZ4=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=PKzhjnSIfb5qnv45Iy5h8oQjavLuoskbDGK8zV+/1SCUw4NpUPo5pcK1EWtM3Hoq
-	 fX8AHsUeQNSwrSV8zA2U4SGSm8b6RBhTbYhm8nOXP+Nc7wpd5vbmuOr9Ia8V+QZyS
-	 GNghKMOMJjy9FRR/APcSw0yrpWXEauB7mN36tk3B07AR++xB/iIr/rX5gn75MfjYJ
-	 sB+gJrV/m7GuV37ySnNU4QzOsMjvUGJvNVoL4EovIhc7lcLG0NX2NUWk3cgMhH5dq
-	 3avfpC3um3UZOpbUd08zlCkWjaWo4TnVIdxFnFJaWNMx+n+vLsgEYhCIV3YB1QqNy
-	 e8PcuSFOekyDSN/e7A==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.87.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MjBVh-1qhZWe0I9V-00emtj; Sat, 30
- Dec 2023 21:12:25 +0100
-Message-ID: <996d5970-3295-493f-b144-99a0ff771576@web.de>
-Date: Sat, 30 Dec 2023 21:12:22 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BB2BC13D
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 20:12:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+ h=Content-Transfer-Encoding: Content-Type: In-Reply-To: From: References:
+ Cc: To: Subject: MIME-Version: Date: Message-ID; q=dns/txt;
+ s=fe-e1b5cab7be; t=1703967150;
+ bh=48uwgyUepoTSwyC5niR44R50rvv/N7Od8yW5FGvT5tM=;
+ b=CwSvrHrVc21lQQfqDKPX8TCsCabekBKSYC+SHd0X6ZS3dIaFBFvV4slhuGiHpCybwX02zt1VN
+ mDD2UQDU1B1e+K/hCXkMNJOX3BbVsh5zLDUJTTF1CV553y6fe23e8HN7CtT88ilOpQmVwD4U5jA
+ M/vu83g0v0WPu6PN5V+LqchpMRaXNTmZAKZ+mPuMqaCAk2FZVfkzkAMrGFXeJ3Wq/qPvLRXp8qS
+ fJpI9/+hPIrP9iD4ca3xK5qLVng4xWUTGZtVH1az5wyrT/4Yd6wiVMN0Nv8qAuzlx4bQd6OjFjg
+ aSKtUr5zXKcTjwOAqH7xqGktW6WMln/olg6T3FxBrm7w==
+Message-ID: <b9e6702d-4781-413b-8e4c-0b74272e9f22@kwiboo.se>
+Date: Sat, 30 Dec 2023 21:12:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,75 +41,73 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: [PATCH 4/5] bpf: Return directly after a failed
- bpf_map_kmalloc_node() in bpf_cgroup_storage_alloc()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-To: bpf@vger.kernel.org, netdev@vger.kernel.org,
- kernel-janitors@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Yonghong Song <yonghong.song@linux.dev>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <7011cdcc-4287-4e63-8bfa-f08710f670b1@web.de>
-In-Reply-To: <7011cdcc-4287-4e63-8bfa-f08710f670b1@web.de>
+Subject: Re: [PATCH v2 0/3] Add hantro g1 video decoder support for RK3588
+Content-Language: en-US
+To: amazingfate <liujianfeng1994@gmail.com>
+Cc: conor+dt@kernel.org, devicetree@vger.kernel.org,
+ ezequiel@vanguardiasur.com.ar, heiko@sntech.de,
+ krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, mchehab@kernel.org,
+ p.zabel@pengutronix.de, robh+dt@kernel.org, sfr@canb.auug.org.au,
+ sigmaris@gmail.com
+References: <97faf49b-0109-439a-accf-251b502ad40b@kwiboo.se>
+ <20231230153159.3748580-1-liujianfeng1994@gmail.com>
+From: Jonas Karlman <jonas@kwiboo.se>
+In-Reply-To: <20231230153159.3748580-1-liujianfeng1994@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Bzd7uR+QKaeuLp/OaokKWTTVdIx1ZBWHfLlJFsxem5Z06wv8etG
- f3A528Ziitxub2/6Djz3VLqtG5s7YYTc71g6LoHzXsF2qQw99GBF/iB+pXJ9et/1V3Zu2HY
- OxA7outD4cGk/rO94yv7wfn7uywF7I7neFKN2plTMYR9GIIu/xIi2ENIOji9NxLuep7DLHv
- gWEdB/v9gQVUtxnDS9oTQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:h3eYr8fwcAM=;ke5sU6HYS0rZSEQXBHFFa/fgy1V
- cmawg2hCsSZ/DcNDXX6Gxgdt5bnRjCmATpmuj/J6gQrP3yFA8l1D+DWe9qLuqA8363Ue9N07u
- BAGPE5piSufMyUasFwTGEcibF4zVGMXI7J0rq71nU8tsniaJ3w4nhZWwSa/xXrXR4o7zz+ft2
- XO7E9XqAEVahNXNnwll5QHzTe6/faChZ+VwM00iHVEVwMR+lFxQgpaJpZrijFhi3SlP4iniRl
- 3KI45dlUgfo4fyx/CxVyqYYdq2eze7FLf5+Lobkf7rO3dluUrJL05VZWknH79oJWNQqrd+qtl
- 4iSLyaEb/9gnBSoRKMdYyWETe4H5/qsnWH8+ldW1e+/ykDpgJGQ7TIA3aKZKxka10CCbGgLie
- NNQPDcVH9DeyY5szX5k8W5jcoO3L00sPnR/TDJSEL1Hw/RQv0JD/vCs6E5Uicn0ekUPQdd4WI
- Lsu2OrzECb6drkUBewtbhP+JNMzg1zZlQEAcmNPbct7RNw3ApvgVvFZqRKPGVB+YKRYI+EfNm
- O8nDaa50Tnsw71MP6lHfsUzorp+Ve3bEU6DMc/q2HiGcwOmQxiJOSW8rTIu31t8GmP1+8TEoa
- aiuimsPn5wSSRedxOiO88AXIS3sdx7AeeEFBmLKTYJeKs6GPDyWYRLSqUSDQ1tlbv42TIW1xg
- YTqeyTVlHJWlrvrdEBIGT/aAmUPDcZOzY5N8ySk+1+ucfAdzsRB8EctrWzicIIdzskhDzB9h5
- F5/7SiPFFovNDhOCL4G1oI3oAqIviRAP2xC7BnsRCsLWnjMMQaJrrh4N4M3MKhnfCfzivKUH4
- bN6VgsArqPI0bLRvpsrKUVGgXs+cIoU6w3yJKXnubngoOWaolCeCtZWevKpI5/G8xkrqolQdb
- m7yx684r1ag62i/Ixg0+rEFkrfPq2XSiLCCVRcHfGiEmz5H3x4AH3s6FNq0iZPqmV+gkbhQXU
- RVmAUnF0OBshMw5rgmO29/IeonY=
+Content-Transfer-Encoding: 7bit
+X-Report-Abuse-To: abuse@forwardemail.net
+X-Report-Abuse: abuse@forwardemail.net
+X-Complaints-To: abuse@forwardemail.net
+X-ForwardEmail-Version: 0.4.40
+X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
+ 149.28.215.223
+X-ForwardEmail-ID: 659079ad220dc6bab27e429e
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 30 Dec 2023 20:06:02 +0100
+Hi Jianfeng,
 
-The kfree() function was called in one case by
-the bpf_cgroup_storage_alloc() function during error handling
-even if the passed variable contained a null pointer.
-This issue was detected by using the Coccinelle software.
+On 2023-12-30 16:31, amazingfate wrote:
+> Hi Jonas,
+> 
+> On Sat, 30 Dec 2023 12:49:38 +0100, Jonas Karlman <jonas@kwiboo.se> wrote:
+>> I have only tested this fork of fluster with ffmpeg 6.x, what version of
+>> ffmpeg did you test with? I was expecting it to also work on ffmpeg 5.x.
+> 
+> I am using ffmpeg 6.0 with v4l2-request patches from libreelec[1].
 
-Thus return directly after a call of the function =E2=80=9Cbpf_map_kmalloc=
-_node=E2=80=9D
-failed at the beginning.
+Great, that patch should match my v4l2-request-n6.0.1 branch [2],
+and does not have any NV15/NV20 ffmpeg pix fmt patches that could
+interfere.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- kernel/bpf/local_storage.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[2] https://github.com/Kwiboo/FFmpeg/commits/v4l2-request-n6.0.1/
 
-diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-index a04f505aefe9..e16a80c93cd7 100644
-=2D-- a/kernel/bpf/local_storage.c
-+++ b/kernel/bpf/local_storage.c
-@@ -514,7 +514,7 @@ struct bpf_cgroup_storage *bpf_cgroup_storage_alloc(st=
-ruct bpf_prog *prog,
- 	storage =3D bpf_map_kmalloc_node(map, sizeof(struct bpf_cgroup_storage),
- 				       gfp, map->numa_node);
- 	if (!storage)
--		goto enomem;
-+		return ERR_PTR(-ENOMEM);
+> Ffmpeg v4l2 decoder in fluster fork is using ffmpeg args:
+> "-hwaccel_device /dev/dri/renderD128"
+> which make the test fall with hantro g1 on rk3588. After removing it I
+> can run tests by ffmpeg v4l2-request decoder. 
 
- 	if (stype =3D=3D BPF_CGROUP_STORAGE_SHARED) {
- 		storage->buf =3D bpf_map_kmalloc_node(map, size, gfp,
-=2D-
-2.43.0
+Thanks for confirming and testing again, and I fully understand why
+"-hwaccel_device /dev/dri/renderD128" caused issues on rk3588 :-)
+
+The commit "HACK: hwcontext_drm: do not require drm device" was required
+to run ffmpeg without a hwaccel_device, and I tested fluster without it.
+
+Regards,
+Jonas
+
+> 
+> Rk3566 and rk3588 are sharing the same results:
+> JVT-AVC_V1 test suite with decoder FFmpeg-H.264-V4L2-request:
+>  Ran 127/135 tests successfully.
+> JVT-FR_EXT test suite with decoder FFmpeg-H.264-V4L2-request:
+>  Ran 44/69 tests successfully.
+> VP8-TEST-VECTORS test suite with decoder FFmpeg-VP8-V4L2-request:
+>  Ran 59/61 tests successfully.
+> 
+> [1] https://github.com/LibreELEC/LibreELEC.tv/blob/master/packages/multimedia/ffmpeg/patches/v4l2-request/ffmpeg-001-v4l2-request.patch
+> 
+> Regards,
+> Jianfeng
 
 
