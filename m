@@ -1,122 +1,122 @@
-Return-Path: <linux-kernel+bounces-13406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85B9B8204A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:43:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C156A8204A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 12:44:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1AB71C20B0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:43:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64D49B21336
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 11:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F3879E0;
-	Sat, 30 Dec 2023 11:43:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4040279DF;
+	Sat, 30 Dec 2023 11:43:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P8ttRqSv"
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="rtItvV3f";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZhOK0LBZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76A327481;
-	Sat, 30 Dec 2023 11:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40d60a96533so30693275e9.1;
-        Sat, 30 Dec 2023 03:43:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703936595; x=1704541395; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qvrLNC3g/wzxAt5MvFq+hYUdLZQM7U+bQ6kKSNvKMdo=;
-        b=P8ttRqSv3oc0fejYUXtxsGch7A4bH2Vv8Nnv8hApq67kd9d5Pi6jd8f8r4bUN61lxs
-         FPVhm56+StElVCcuEJhh57lg4YYIaWMSyk0s3ZRHgkTeLGwKYWuBkSmL3hg8ge9Fl/MD
-         Sot4chW5pEjom2GEvFAzQJYMceS7V55lb/BAmSV/Bc9u5WpzvZtex7/RLEDah6XiXzg+
-         99NKOGImUCK1qidVsww8vdTuIoPLLIRQLI613Gcm4KNmNsxDMXAZ394SBCs1RsrAavvC
-         s0U3vudVxi5/tcZgMxe1aQ1oH2aFJF3vk0XgmTHWbGClxnm2bjtHTySYMoeXvZLF8/B7
-         KtWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703936595; x=1704541395;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qvrLNC3g/wzxAt5MvFq+hYUdLZQM7U+bQ6kKSNvKMdo=;
-        b=FTGkf1CUiyOfD7RA89J0TKvL4tJPTMP+0XrzCsvAd/7Ih4XhYLGbxkjASd+LEEXAxm
-         7lZm6Nh7IWXRNRXrAVcKlyx+cqdW1+qmTjHmlIdZBtl3lbX+4jMR4RoBTau4xyD3dhtU
-         TTRVpAQjGLU9gUkkp3opBDcmwxGiH63/N52UXmY1chTJyXSE9sEoswRSezPKQlSwkvXn
-         IgoI43dt0bt413ce6qjRSXgcIZoEZs631GYBR/PH+4GNYxuHwk9Qad367gSy/wTknF+v
-         R+uCoxvmLHYIRys+hFzyIg2PdKQFxjR8yJix+WfzMaMZ+/XxiuS9nH/Ph42xvdC3iGfZ
-         c4QA==
-X-Gm-Message-State: AOJu0Yw++A7isEq/mWUJf2mf4j835SxgGBp5oT2FkSDIkzH9E4/Ho3xT
-	MIdmLqQMp+AunOzDQR1HnHc=
-X-Google-Smtp-Source: AGHT+IF2hsAFPytjlDGngKmBi5SYH9/xT8jozGqndryZPjzVWQTFpFgzBFjbs714v/q7bbKsQM63HQ==
-X-Received: by 2002:a05:600c:1994:b0:40d:5f45:fa2c with SMTP id t20-20020a05600c199400b0040d5f45fa2cmr2931815wmq.27.1703936595540;
-        Sat, 30 Dec 2023 03:43:15 -0800 (PST)
-Received: from localhost.localdomain ([2a02:842a:1ce:5301:f733:18af:2fff:3d3d])
-        by smtp.gmail.com with ESMTPSA id z4-20020a5d4d04000000b00336a1f6ce7csm16845745wrt.19.2023.12.30.03.43.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Dec 2023 03:43:15 -0800 (PST)
-From: Dorian Cruveiller <doriancruveiller@gmail.com>
-To: james.schulman@cirrus.com,
-	david.rhodes@cirrus.com,
-	rf@opensource.cirrus.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Dorian Cruveiller <doriancruveiller@gmail.com>
-Subject: [PATCH v2 2/2] Add driver properties for cs35l41 for Lenovo Legion Slim 7 Gen 8 serie
-Date: Sat, 30 Dec 2023 12:43:12 +0100
-Message-ID: <20231230114312.22118-1-doriancruveiller@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231229230703.73876-1-doriancruveiller@gmail.com>
-References: <20231229230703.73876-1-doriancruveiller@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8DC79CD;
+	Sat, 30 Dec 2023 11:43:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id D6BA85C0075;
+	Sat, 30 Dec 2023 06:43:48 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Sat, 30 Dec 2023 06:43:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1703936628; x=1704023028; bh=RDMzNXeoRc
+	XtTozgalvQ1v7S9gcCF0W/23GWD67Yelg=; b=rtItvV3fct9Ah3tKmTbcAT+uro
+	/8gumEOF30bzbKOqwjqcRllVZmBQPkn99DlIR0/NHH1R8jkAjhlFp3/ncXdGdj3l
+	A/6p1FANm2O5UE+zY60kaaUmMARtGeDgayCODji3pDdCso1b5qslEOQaZP88+24z
+	Z0BkybZk7MfkpKuSCwzrc2ZhPG0CsAhZKdkqWK4XmnpqBYeLZRo2cOfVvBxTnfOK
+	lfBo8HKZ4vteixcWMTmzZBlOzot3xWnBetFYT6pX4hBvT2N/i90/N7WlIlUtkdZb
+	oj+GjB7lShuyQQtRCm4Uu9c4eebrxMSNrP8/SW32slFyozjYdGxSA9uJddfg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1703936628; x=1704023028; bh=RDMzNXeoRcXtTozgalvQ1v7S9gcC
+	F0W/23GWD67Yelg=; b=ZhOK0LBZRGNZxTF7TQ9YpCn1UYZkqTyTW0WKhBC2Av8V
+	zqhUAaCDhEMWP0uaRG2+RmIE+Ra/FAFT8esGtklM92Xdn5DMK4TP7KyGJb9AyHUd
+	BfeFUwSigl/+srUQB0/VKpOWj92YJZpQRf5Ih2allHdvToJBONXrBy5OoNcajo8l
+	siWvQw1tjOVNRPXoV1vJkoS2w1zWja8su73SkjyI90/iqFAdLaG3b5h3Tg8zAxsf
+	0XDDpx2/urcS5xv8hTtKiB+8ONfejWGyvgEeDdfuYUadt0BzY5r5zXwazhxCEYyD
+	3W3+xodNudClje4KKFMmowDaMNVMxaGWPLQpA+HP3Q==
+X-ME-Sender: <xms:cwKQZcsdQj0szJ-3NOwXM7UiDdTvPF2gregvMHjs2hMEKPEyrqeIyA>
+    <xme:cwKQZZctBUV3M1gAfno5rYvqiz_D-RViQTWIyvEE63r0PT5bMQw6hmwPre68fDYIh
+    QFyprTxr6Pv0w>
+X-ME-Received: <xmr:cwKQZXxrvvrF9JRfCGVb9X-JGtal9csvgPeu__01K1YXBU-rIM3FJq34_hs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdefhedgfedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
+    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:cwKQZfOX2LorBkssFUmtubV2xCjis9sUvR0IXWwWpcv66R9zLIO64Q>
+    <xmx:cwKQZc_IBDGj518M2AxafhPVHdJ_NzYgzBMU1QQTh2-jESsctBEZgg>
+    <xmx:cwKQZXUWLk3w6C6UM3DUgb4fj5FzIfz_mDsTjQKFmiLlSG-mykkFgA>
+    <xmx:dAKQZcNx5nXiPU5lClqzSvPhrzj8iZTxuVnDIR88Bi4WHFpabCvUIQ>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 30 Dec 2023 06:43:47 -0500 (EST)
+Date: Sat, 30 Dec 2023 11:43:46 +0000
+From: Greg KH <greg@kroah.com>
+To: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	maple-tree@lists.infradead.org, akpm@linux-foundation.org,
+	willy@infradead.org, liam.howlett@oracle.com,
+	zhangpeng.00@bytedance.com, stable@vger.kernel.org
+Subject: Re: [PATCH 6.6.y] maple_tree: do not preallocate nodes for slot
+ stores
+Message-ID: <2023123027-baffling-arise-63bf@gregkh>
+References: <20231212195255.219624-1-sidhartha.kumar@oracle.com>
+ <2023121847-cope-surviving-26bf@gregkh>
+ <19b88718-a1e6-d699-f056-cf00b1b75346@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19b88718-a1e6-d699-f056-cf00b1b75346@oracle.com>
 
-Add driver properties on 4 models of this laptop serie since they don't
-have _DSD in the ACPI table
+On Mon, Dec 18, 2023 at 09:53:53AM -0800, Sidhartha Kumar wrote:
+> On 12/18/23 2:59 AM, Greg KH wrote:
+> > On Tue, Dec 12, 2023 at 11:52:55AM -0800, Sidhartha Kumar wrote:
+> > > mas_preallocate() defaults to requesting 1 node for preallocation and then
+> > > ,depending on the type of store, will update the request variable. There
+> > > isn't a check for a slot store type, so slot stores are preallocating the
+> > > default 1 node. Slot stores do not require any additional nodes, so add a
+> > > check for the slot store case that will bypass node_count_gfp(). Update
+> > > the tests to reflect that slot stores do not require allocations.
+> > > 
+> > > User visible effects of this bug include increased memory usage from the
+> > > unneeded node that was allocated.
+> > > 
+> > > Fixes: 0b8bb544b1a7 ("maple_tree: update mas_preallocate() testing")
+> > > Cc: <stable@vger.kernel.org> # 6.6+
+> > > Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+> > > ---
+> > > This is a modified backport as the patch to fix this in upstream does not
+> > > apply to 6.6 because the node_end field was moved from the ma_wr_state to
+> > > the ma_state after 6.6.
+> > 
+> > What is the git commit id of this change in Linus's tree?
+> 
+> The patch is in akpm's mm-hotfixes-unstable tree and has not made it to
+> Linus's tree yet.
 
-Signed-off-by: Dorian Cruveiller <doriancruveiller@gmail.com>
----
- sound/pci/hda/cs35l41_hda_property.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index be2b01b596c2..52820ca9c603 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -71,6 +71,10 @@ static const struct cs35l41_config cs35l41_config_table[] = {
- 	{ "10431F12", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
- 	{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
- 	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
-+	{ "17AA38B4", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
-+	{ "17AA38B5", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
-+	{ "17AA38B6", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
-+	{ "17AA38B7", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{}
- };
- 
-@@ -381,6 +385,10 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CSC3551", "10431F12", generic_dsd_config },
- 	{ "CSC3551", "10431F1F", generic_dsd_config },
- 	{ "CSC3551", "10431F62", generic_dsd_config },
-+	{ "CSC3551", "17AA38B4", generic_dsd_config },
-+	{ "CSC3551", "17AA38B5", generic_dsd_config },
-+	{ "CSC3551", "17AA38B6", generic_dsd_config },
-+	{ "CSC3551", "17AA38B7", generic_dsd_config },
- 	{}
- };
- 
--- 
-2.43.0
-
+Ok, please resend when it hits Linus's tree.
 
