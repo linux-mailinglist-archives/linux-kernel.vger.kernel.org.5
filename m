@@ -1,113 +1,180 @@
-Return-Path: <linux-kernel+bounces-13379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30B43820434
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 10:52:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 617A0820437
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 10:54:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C42A81F21843
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:52:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 276092821ED
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Dec 2023 09:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED66F23AF;
-	Sat, 30 Dec 2023 09:52:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 105045699;
+	Sat, 30 Dec 2023 09:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lWN7YEBr"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="d1w1OrxQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A6E5441C;
-	Sat, 30 Dec 2023 09:52:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-594965fbb3cso2929930eaf.1;
-        Sat, 30 Dec 2023 01:52:40 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4D45248
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 09:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-555b361353bso1523131a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Dec 2023 01:54:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703929960; x=1704534760; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=broadcom.com; s=google; t=1703930058; x=1704534858; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:references:message-id:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=f2ug4vrrJxLoeI9/pb4M3tzSvC+dUh/AitXDBaOV7p4=;
-        b=lWN7YEBrbiawchx6zUE0B2jNRbKHxIn7PKCTqRs+g8ldxs6EO0/deNbWmIcuUSHbUy
-         VnJMH+YNwBpzWjYvQSafgE3bP8Ot6k/xTyoaBr1/A6Csjb/hMBIZQRyBKCxXSZBQvIGs
-         JNExpOzwhYZ0cALe+GiGfZQuKV+PIMUthkaBbeaKaUAf2ztBnIvpLMlgiHhLnPvTMj0f
-         VLroFDIdCURXPq5E0ebFGg8K35g+ZDfEWw9DnBLBJp4xtCrHO2ZctjwLryIdUOJZnn9s
-         hpE8M37TWLT7+xmpvR/N/gnhZhthRGEnwao8CLGRdFcdAS9oE31FY8UAspj4R6e8+tsw
-         RMJg==
+        bh=abUTt15ozYHOLG/fk60Lc57aa9WtZ24J7IwER8hUXeE=;
+        b=d1w1OrxQSL/PEmBYJoZE4VTCpsv6fck5HKO6c46JnAR8GE5mtXbL/rPyuRcjk5KF/2
+         v2CDieeJkgZ0VzOjaTSuK6ATFDK2IsqDErlIWH68xZTiT0dcazKphxUHgAzYOD6A12O8
+         JcMBABm7/194Lg/YTOLGmJUSJVj9E3zv9rtWE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703929960; x=1704534760;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1703930058; x=1704534858;
+        h=content-transfer-encoding:to:references:message-id:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=f2ug4vrrJxLoeI9/pb4M3tzSvC+dUh/AitXDBaOV7p4=;
-        b=RoiB6Jxb7BF4BVtR7DUd5oDNMsrrpG6xKRc3Y3nRRd3d9vc4Op0DdvY8MjzAdSey1i
-         U2l1Xc/L/5Bz6EXuaDI3rnkI3J0l6BWPmQsXebYsXbOduCRWySDQaDe7tsySzKbJr3LW
-         nzeJHShSA3Lp6M03FyM24kAPplAvtccj4Me0tYyciwwJ+TSxqmhHPm6an39Gx379wev9
-         g8J2Qj8yOSJjFSoOgKudZ++dkd+oBJl3wZaqIcvsPUEiIDjsFOEMzCNOJhQ1MLbxbkkM
-         XNlG6XT3ZpPRW8b7gbFLX5kAMmkHoulDyW97g6geyHAU1XhWslPGufYj4fKCc3IuS+mx
-         VxlQ==
-X-Gm-Message-State: AOJu0Yze6JOx2kYIuF3m/5d6zudXJ+c6NXD50SZ1Nt49kQaK1OysAuQV
-	rbKLp2bCcKogRc7JUPKbrfGbaLsTwPLqjyWc
-X-Google-Smtp-Source: AGHT+IE4ydwPSSJsdouK6gFidOvqGq0hFHDyDo7Z8qjafOwU9NYVnsO6so+ScA/jFOskXKE46w/iIg==
-X-Received: by 2002:a05:6358:cc1d:b0:170:c991:d419 with SMTP id gx29-20020a056358cc1d00b00170c991d419mr13188168rwb.48.1703929959838;
-        Sat, 30 Dec 2023 01:52:39 -0800 (PST)
-Received: from localhost.localdomain ([2408:8207:2540:8c00:23b7:4d83:3222:c5dd])
-        by smtp.gmail.com with ESMTPSA id m20-20020a170902c45400b001d316770044sm17170905plm.56.2023.12.30.01.52.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Dec 2023 01:52:39 -0800 (PST)
-From: amazingfate <liujianfeng1994@gmail.com>
-To: sigmaris@gmail.com
-Cc: ezequiel@vanguardiasur.com.ar,
-	p.zabel@pengutronix.de,
-	mchehab@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	heiko@sntech.de,
-	sfr@canb.auug.org.au,
-	liujianfeng1994@gmail.com,
-	linux-media@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/3] Add hantro g1 video decoder support for RK3588
-Date: Sat, 30 Dec 2023 17:52:28 +0800
-Message-Id: <20231230095228.3739806-1-liujianfeng1994@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CAAXNxMT3f68-ptM7Crhrfmn7iwTyJc9pwz4Beob+5beVODaSHQ@mail.gmail.com>
-References: <CAAXNxMT3f68-ptM7Crhrfmn7iwTyJc9pwz4Beob+5beVODaSHQ@mail.gmail.com>
+        bh=abUTt15ozYHOLG/fk60Lc57aa9WtZ24J7IwER8hUXeE=;
+        b=PQuJL+gsbx9FiYse5tVNpYjbo8Mvgcpq4EgN9Z2znUIoTxIIzOKbjkLuC1TnNBaSqU
+         TRNCVRArmUkAv7Fua6+UPRKY8env36ItyImkKmJKVVWEkLNjj1Oc8sjuFKCScoaIcn0a
+         ewoa7+Sa7umIOAhipO7UpK5X7TabbD0AtIc3L4/Wc1lGKPGT1qdpuQ7Jtq2aEqrP81Ex
+         PjcBEEhPFoRpm4r0Q9Kq++y6KvwXItWPj/1wOr9+cRKrsnYjp4vNhQ9TZOJrbaISkGMQ
+         43i9jPQey2tQaKnDUQAjCBaeFD4IJk0R5S0Q3iz+cxGMOec2uEJAGFQmyJiN+Bqt2kGa
+         xDaQ==
+X-Gm-Message-State: AOJu0YydlZUaeAsiZdQexYSb+UPZnVs1avYdm25tGP4IumSVdJh7ynPt
+	DQbiwy83YPn4N6tmgBluH8ngJDJ5y0j4LRPlkbbBfnZaSGMKJOkgqbMdAwaCpslVQ7Q+Hc9MEwC
+	IqhkOGD1RVO4bFcy2r+PgbQ==
+X-Google-Smtp-Source: AGHT+IGK1uGrlady2TpLBMfqqY9A7tHn9+lcZGtpiYGeIBTdCURXuQcXKU0VKUNz5G0qW4/zkYvz4w==
+X-Received: by 2002:a05:6402:ca3:b0:54c:9dbe:5c03 with SMTP id cn3-20020a0564020ca300b0054c9dbe5c03mr5290445edb.40.1703930057752;
+        Sat, 30 Dec 2023 01:54:17 -0800 (PST)
+Received: from smtpclient.apple ([132.69.236.92])
+        by smtp.gmail.com with ESMTPSA id m9-20020aa7c2c9000000b00552666f4745sm12089039edp.22.2023.12.30.01.54.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 30 Dec 2023 01:54:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Re: [PATCH 1/2] mm/tlb: fix fullmm semantics
+From: Nadav Amit <nadav.amit@broadcom.com>
+In-Reply-To: <20231228084642.1765-2-jszhang@kernel.org>
+Date: Sat, 30 Dec 2023 11:54:02 +0200
+Cc: Will Deacon <will@kernel.org>,
+ "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Nick Piggin <npiggin@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>,
+ Arnd Bergmann <arnd@arndb.de>,
+ linux-arch@vger.kernel.org,
+ linux-mm <linux-mm@kvack.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-riscv@lists.infradead.org,
+ Nadav Amit <namit@vmware.com>,
+ Andrea Arcangeli <aarcange@redhat.com>,
+ Andy Lutomirski <luto@kernel.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Yu Zhao <yuzhao@google.com>,
+ the arch/x86 maintainers <x86@kernel.org>
+Message-Id: <204B6410-2EFA-462B-9DF7-64CC5F1D3AD2@broadcom.com>
+References: <20231228084642.1765-1-jszhang@kernel.org>
+ <20231228084642.1765-2-jszhang@kernel.org>
+To: Jisheng Zhang <jszhang@kernel.org>
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your test with fluster. I also tested on my rock-5b(rk3588)
-and orangepi-3b(rk3566) which are sharing the same hantro g1 ip. I am
-running on ubuntu jammy so I'm using gstreamer 1.20.1
 
-rk3566 and rk3588 are sharing the same results:
-JVT-AVC_V1 test suite with decoder GStreamer-H.264-V4L2SL-Gst1.0:
-  Ran 112/135 tests successfully.
-JVT-FR_EXT test suite with decoder GStreamer-H.264-V4L2SL-Gst1.0:
-  Ran 27/69 tests successfully.
-VP8-TEST-VECTORS test suite with decoder GStreamer-VP8-V4L2SL-Gst1.0:
-  Ran 59/61 tests successfully.
 
-H264 decoder test has less test case passing. I think that's because
-of my low gstreamer version. If you have a rk356x board I guess you
-will get the same result as rk3588. That should be the mainline support
-status of hantro g1 decoder.
+> On Dec 28, 2023, at 10:46=E2=80=AFAM, Jisheng Zhang <jszhang@kernel.org> =
+wrote:
+>=20
+> From: Nadav Amit <namit@vmware.com>
+>=20
+> fullmm in mmu_gather is supposed to indicate that the mm is torn-down
+> (e.g., on process exit) and can therefore allow certain optimizations.
+> However, tlb_finish_mmu() sets fullmm, when in fact it want to say that
+> the TLB should be fully flushed.
+>=20
+> Change tlb_finish_mmu() to set need_flush_all and check this flag in
+> tlb_flush_mmu_tlbonly() when deciding whether a flush is needed.
+>=20
+> At the same time, bring the arm64 fullmm on process exit optimization bac=
+k.
+>=20
+> Signed-off-by: Nadav Amit <namit@vmware.com>
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Yu Zhao <yuzhao@google.com>
+> Cc: Nick Piggin <npiggin@gmail.com>
+> Cc: x86@kernel.org
+> ---
+> arch/arm64/include/asm/tlb.h | 5 ++++-
+> include/asm-generic/tlb.h    | 2 +-
+> mm/mmu_gather.c              | 2 +-
+> 3 files changed, 6 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/arm64/include/asm/tlb.h b/arch/arm64/include/asm/tlb.h
+> index 846c563689a8..6164c5f3b78f 100644
+> --- a/arch/arm64/include/asm/tlb.h
+> +++ b/arch/arm64/include/asm/tlb.h
+> @@ -62,7 +62,10 @@ static inline void tlb_flush(struct mmu_gather *tlb)
+> 	 * invalidating the walk-cache, since the ASID allocator won't
+> 	 * reallocate our ASID without invalidating the entire TLB.
+> 	 */
+> -	if (tlb->fullmm) {
+> +	if (tlb->fullmm)
+> +		return;
+> +
+> +	if (tlb->need_flush_all) {
+> 		if (!last_level)
+> 			flush_tlb_mm(tlb->mm);
+> 		return;
+>=20
 
-For ffmpeg at the moment fluster doesn't support v4l2-request decoder.
-I tried Kwiboo's fork[1] but failed to pass tests with decoder
-FFmpeg-H.264-V4L2-request. I can decode video with ffmpeg command like:
-"ffmpeg -benchmark -hwaccel drm -hwaccel_output_format drm_prime -i Big_Buck_Bunny_1080_10s_30MB.mp4 -f null -"
+Thanks for pulling my patch out of the abyss, but the chunk above
+did not come from my old patch.
 
-[1] https://github.com/Kwiboo/fluster/tree/v4l2-request
+My knowledge of arm64 is a bit limited, but the code does not seem
+to match the comment, so if it is correct (which I strongly doubt),
+the comment should be updated.
+
+[1] https://lore.kernel.org/all/20210131001132.3368247-2-namit@vmware.com/
+
+
+--=20
+This electronic communication and the information and any files transmitted=
+=20
+with it, or attached to it, are confidential and are intended solely for=20
+the use of the individual or entity to whom it is addressed and may contain=
+=20
+information that is confidential, legally privileged, protected by privacy=
+=20
+laws, or otherwise restricted from disclosure to anyone else. If you are=20
+not the intended recipient or the person responsible for delivering the=20
+e-mail to the intended recipient, you are hereby notified that any use,=20
+copying, distributing, dissemination, forwarding, printing, or copying of=
+=20
+this e-mail is strictly prohibited. If you received this e-mail in error,=
+=20
+please return the e-mail to the sender, delete it from your computer, and=
+=20
+destroy any printed copy of it.
 
