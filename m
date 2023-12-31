@@ -1,82 +1,75 @@
-Return-Path: <linux-kernel+bounces-13703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49FFE820B64
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 13:20:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 130CE820B66
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 13:21:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C703E1F21792
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 12:20:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 464061C21379
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 12:21:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2D24699;
-	Sun, 31 Dec 2023 12:20:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AEBF4698;
+	Sun, 31 Dec 2023 12:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QlVpLuWU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="no09Tun9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0478F4415
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 12:20:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6602963A4;
+	Sun, 31 Dec 2023 12:20:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d3dee5f534so58277755ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 04:20:47 -0800 (PST)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55644a67e3fso89877a12.2;
+        Sun, 31 Dec 2023 04:20:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704025247; x=1704630047; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704025254; x=1704630054; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gwhX+cAV5A0hcUGz8xI0OEKJHWE3jawNxtgj/Y32ErQ=;
-        b=QlVpLuWUo3vf84T8DPP20qaOJkHym9Gmv6dN7v5NuxLH5h5lsBM0CKjAdFhruEwZVr
-         F8mqXUI/7QW3xdn1CxKTCMfGhyBJ8UbjH8n8Eadm0RPchAxXjhXetiuKONx649HqEVD9
-         +6VlrlhhSAVDdwefzLgYo2/WbbybBP0uMc7Z4V/zA22YPuqLsbZCw0Fn5msHocUESaqa
-         znShDDSV0hB9KJIaEjQwLPW65c1EV01V7bdbkGXGWzMmn9lwyF5cjE3EEHQvCxOwmk3T
-         Y2lKfPKMb9f8mTHOtNGBxqYGN+l3EHQ/HX5NRyHQ0fh98GE2+EIuBbvtqBBa5HJO+z4n
-         mJYg==
+        bh=OyEBlc5ZSs1I+XcM4fg18hFXs7fYBFAo20uTCN54lOQ=;
+        b=no09Tun9Tkgo8pfv03rE/nqqRsEt8KYxW64/RfLIZ+XC/CKZ8daU2y3FnbtSesdWk4
+         XjxUhCYihm0zmzhrpeIoR8dY+vfylOFFzR2TfBm0kF1YZ3W+N3tMNbhWq2IJl1wYMEcF
+         itMMWoHEye9o1RWj2pu6drCZQZ3Z1ijCnpSrAyqUvsjJvEG9RXQ6D86eOi4o/wqO4Bsk
+         ptU6G3SleXCdPXHooUFMzKlpcFMixhVxGmXVYWimN7Fp83WZ87Sgb9tRvIByr7qJfRRK
+         Cp8YPTycRWG7IdTnASOW+nhfr3tXG3OeaWKB9OJoTSyQoaL9H8ynDev76+fRg1Cjc4wh
+         HRog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704025247; x=1704630047;
+        d=1e100.net; s=20230601; t=1704025254; x=1704630054;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=gwhX+cAV5A0hcUGz8xI0OEKJHWE3jawNxtgj/Y32ErQ=;
-        b=gWyQ7zfGsaZYeJ9ArHYKfNcK7664WXNLBcvwgNtlDENya7nU7n8LjkBVQBk3SrSVo8
-         en6R4CCZkThVBO5r/6NhaGM048Y6zlPJc2LQgRl4EqNLCJ70SWzfZ8wKIg+ZyAXp3FyB
-         wOia/fjgaVwcOo1RCM4IgCAQKrmwsxFlL20lZUTOG77wBhqeQL1WydTfbbNVH0kJteVk
-         LkPG/TjD2xBZgt2vGe6lZCR6rnJjICXKhWhoZurpAugt2dizw3871LJBXO0JtnUuG1jb
-         7eLPbsAlCzLYVKiUJfGE36N07OjOxqSjXbhjIhoklvgZIDZUZTl89K2eZen3L52j/CpK
-         BVhQ==
-X-Gm-Message-State: AOJu0YzOa+gVPZCLF7tJeY+GdK65m2TTGFKO1N0Uk23K8tRUVlKTXiNq
-	6IaMFBWc+9nhmJqUZ4wcWd2bsJeRxydCtA==
-X-Google-Smtp-Source: AGHT+IGKZtZvJGkeJmV5NmzrUWh5fq0p+ugPtzR9v3Q1VFuyqYs/WoHIJP+Tscmtk/kVxjf8dABN+A==
-X-Received: by 2002:a17:903:2285:b0:1d4:3aa8:fa37 with SMTP id b5-20020a170903228500b001d43aa8fa37mr14994904plh.29.1704025246965;
-        Sun, 31 Dec 2023 04:20:46 -0800 (PST)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id k24-20020a170902ba9800b001acae9734c0sm18352223pls.266.2023.12.31.04.20.41
+        bh=OyEBlc5ZSs1I+XcM4fg18hFXs7fYBFAo20uTCN54lOQ=;
+        b=wbOLT78w1kOJq0tVY4T6woQpcSuddMOatGKjxkOb7jqVX1CtccCuYJpu1r8F6todLG
+         j4K3Sieh6cuIOAk8vq1aV6h5KlSJfU2NaEuC8eG/GbIzStoS4exQAAYe+0Qz5QNPBQi/
+         X8QkRqA6jIx8zHP1PvkwgX5rUjsN4p2MmjlQRt7wjCgQQW5Pcx/4R9p988LXXH4qMoBd
+         X2TxGhGlXKzAFJ1TjgSZjP85WRvd3bJz6W3wPCLr1Nhmswwjw2ho55C7RFxz+AP/mGAT
+         94qdrETvzXropIaz1ZrYhhaDCQxuRLgWRoIeiHMM8AZVvjwDG5cYMc36MAVGzwXWtm45
+         V/kA==
+X-Gm-Message-State: AOJu0YzFghmGVpiCTmC5KeeBA5eXLt1GWMYZbQ8fkcTFl5Q+QeEMbjlr
+	p09JL5cDnVHldmZp69inso8YsOwdZMEGQQ==
+X-Google-Smtp-Source: AGHT+IGTRdnO5P/1q9UtcvGDV1MKuRQC7nmSu5QQtVH0zQWAEm5mzxmWH8NoF9St5kLyyHGjhZGVrg==
+X-Received: by 2002:a50:f60d:0:b0:555:dc5f:101d with SMTP id c13-20020a50f60d000000b00555dc5f101dmr1102831edn.8.1704025254464;
+        Sun, 31 Dec 2023 04:20:54 -0800 (PST)
+Received: from mwserver.home (83.22.156.127.ipv4.supernova.orange.pl. [83.22.156.127])
+        by smtp.gmail.com with ESMTPSA id n6-20020a05640204c600b00555ec66a440sm2201856edw.59.2023.12.31.04.20.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Dec 2023 04:20:46 -0800 (PST)
-From: Yuntao Wang <ytcoode@gmail.com>
+        Sun, 31 Dec 2023 04:20:54 -0800 (PST)
+From: Marcin Wojtas <marcin.s.wojtas@gmail.com>
 To: linux-kernel@vger.kernel.org,
-	x86@kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Brian Gerst <brgerst@gmail.com>,
-	Usama Arif <usama.arif@bytedance.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH] x86/head: Simplify #include "../../x86/xen/xen-head.S"
-Date: Sun, 31 Dec 2023 20:19:04 +0800
-Message-ID: <20231231121904.24622-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	netdev@vger.kernel.org
+Cc: andriy.shevchenko@linux.intel.com,
+	olteanv@gmail.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	linux@armlinux.org.uk,
+	Marcin Wojtas <marcin.s.wojtas@gmail.com>
+Subject: [net-next: PATCH] net: mvpp2: initialize port fwnode pointer
+Date: Sun, 31 Dec 2023 12:20:19 +0000
+Message-Id: <20231231122019.123344-1-marcin.s.wojtas@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,46 +78,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Since `kernel/head_32.S`, `kernel/head_64.S`, and `xen/xen-head.S` are all
-located in the same `arch/x86` directory, when `kernel/head_32.S` and
-`kernel/head_64.S` want to include `xen/xen-head.S`, we can directly use
-the `#include "../xen/xen-head.S"` directive rather than the more verbose
-`#include "../../x86/xen/xen-head.S"` directive. They point to the same
-file.
+Update the port's device structure also with its fwnode pointer
+with a recommended device_set_node() helper routine.
 
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+Signed-off-by: Marcin Wojtas <marcin.s.wojtas@gmail.com>
 ---
- arch/x86/kernel/head_32.S | 2 +-
- arch/x86/kernel/head_64.S | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/head_32.S b/arch/x86/kernel/head_32.S
-index 487ac57e2c81..7804fff8bf8e 100644
---- a/arch/x86/kernel/head_32.S
-+++ b/arch/x86/kernel/head_32.S
-@@ -500,7 +500,7 @@ __INITRODATA
- int_msg:
- 	.asciz "Unknown interrupt or fault at: %p %p %p\n"
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index 1ca273f17d29..820b1fabe297 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -6877,7 +6877,7 @@ static int mvpp2_port_probe(struct platform_device *pdev,
+ 	dev->min_mtu = ETH_MIN_MTU;
+ 	/* 9704 == 9728 - 20 and rounding to 8 */
+ 	dev->max_mtu = MVPP2_BM_JUMBO_PKT_SIZE;
+-	dev->dev.of_node = port_node;
++	device_set_node(&dev->dev, port_fwnode);
  
--#include "../../x86/xen/xen-head.S"
-+#include "../xen/xen-head.S"
- 
- /*
-  * The IDT and GDT 'descriptors' are a strange 48-bit object
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 0f8103240fda..af31200a2ebe 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -748,7 +748,7 @@ SYM_DATA(smpboot_control,		.long 0)
- SYM_DATA(phys_base, .quad 0x0)
- EXPORT_SYMBOL(phys_base)
- 
--#include "../../x86/xen/xen-head.S"
-+#include "../xen/xen-head.S"
- 
- 	__PAGE_ALIGNED_BSS
- SYM_DATA_START_PAGE_ALIGNED(empty_zero_page)
+ 	port->pcs_gmac.ops = &mvpp2_phylink_gmac_pcs_ops;
+ 	port->pcs_gmac.neg_mode = true;
 -- 
-2.43.0
+2.34.1
 
 
