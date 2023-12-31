@@ -1,96 +1,139 @@
-Return-Path: <linux-kernel+bounces-13694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA08A820B45
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 12:21:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BB6B820B46
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 12:25:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 869C2281BD3
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 11:21:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34140B213DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 11:24:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 543E04436;
-	Sun, 31 Dec 2023 11:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 068E54691;
+	Sun, 31 Dec 2023 11:24:53 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8809B4430;
-	Sun, 31 Dec 2023 11:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-28c0536806fso5842154a91.0;
-        Sun, 31 Dec 2023 03:21:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704021689; x=1704626489;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rFsBn22TbsEIXDWM6rhjhtNrMA442HR3KGjQKwJDdfU=;
-        b=AidCzgsp9p3hd7jb4tQRAiVEo/EPBlPAQ8ycpeOZ/+EAdK5SsYtQdPKg0wZHzwaF8I
-         69R4ef6YDJBlAPcLplfakCh0HKjQrA0JYq/B7IXxaWHejwqIO6JOLQgodCwvxvT3x7yw
-         NQXPV+AIYitnTzUgNJG/KIkYt11t2+otAj/pDMvbdRnyiGIbyXEUIR8HE1H1RpShXV9G
-         IvAVSh3Up2OXiJ7IgbLJfnWiqQRyA3CPzPcOVMUrvuQjAIeK46XnHAnnpK4vdxuTNAMe
-         Qvdl4jdj/mBPntU1GpOo+O8pJ/JN4vYWAPbwxLxhesQywk83s+MacObN6gp7eMX9XOht
-         kUKg==
-X-Gm-Message-State: AOJu0Yzs/EARwPuHefoKWPpmbUwovuPAXVwZuPZ0M8o8p2aKp3FjjeAH
-	g0n6b5kFvGhyITTw+KSWXnA=
-X-Google-Smtp-Source: AGHT+IGYmh0JgEncm++5erAkP8Qzi5VZlkDn0VQqhBf7rJJGZFuNdUzkXCLK4i9c+KC522rH6/7pRQ==
-X-Received: by 2002:a17:903:26c3:b0:1d3:efda:2671 with SMTP id jg3-20020a17090326c300b001d3efda2671mr15719086plb.19.1704021688841;
-        Sun, 31 Dec 2023 03:21:28 -0800 (PST)
-Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
-        by smtp.gmail.com with ESMTPSA id jw12-20020a170903278c00b001d4b7021ff7sm448792plb.304.2023.12.31.03.21.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Dec 2023 03:21:28 -0800 (PST)
-Date: Sun, 31 Dec 2023 20:21:27 +0900
-From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-pci@vger.kernel.org
-Subject: Re: [PATCH] PCI: vmd: Remove usage of the deprecated ida_simple_xx()
- API
-Message-ID: <20231231112127.GC3813474@rocinante>
-References: <270f25cdc154f3b0309e57b2f6421776752e2170.1702230593.git.christophe.jaillet@wanadoo.fr>
- <20231213192659.GA1123825@rocinante>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B814418
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 11:24:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav117.sakura.ne.jp (fsav117.sakura.ne.jp [27.133.134.244])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 3BVBOZgG083971;
+	Sun, 31 Dec 2023 20:24:35 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav117.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp);
+ Sun, 31 Dec 2023 20:24:35 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 3BVBOZds083967
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sun, 31 Dec 2023 20:24:35 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <88573ed5-5b9b-4488-9b4c-71ca6ad95101@I-love.SAKURA.ne.jp>
+Date: Sun, 31 Dec 2023 20:24:34 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213192659.GA1123825@rocinante>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Sebastian Ott <sebott@redhat.com>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH] profiling: Remove create_prof_cpu_mask().
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+create_prof_cpu_mask() is no longer used after commit 1f44a225777e ("s390:
+convert interrupt handling to use generic hardirq").
 
-> > ida_alloc() and ida_free() should be preferred to the deprecated
-> > ida_simple_get() and ida_simple_remove().
-> > 
-> > This is less verbose.
-> 
-> Applied to controller/vmd, thank you!
-> 
-> [1/1] PCI: vmd: Remove usage of the deprecated ida_simple_xx() API
->       https://git.kernel.org/pci/pci/c/991801bc4722
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+ include/linux/profile.h |  5 -----
+ kernel/profile.c        | 43 -----------------------------------------
+ 2 files changed, 48 deletions(-)
 
-Given two other similar changes:
+diff --git a/include/linux/profile.h b/include/linux/profile.h
+index 11db1ec516e2..04ae5ebcb637 100644
+--- a/include/linux/profile.h
++++ b/include/linux/profile.h
+@@ -18,13 +18,8 @@ struct proc_dir_entry;
+ struct notifier_block;
+ 
+ #if defined(CONFIG_PROFILING) && defined(CONFIG_PROC_FS)
+-void create_prof_cpu_mask(void);
+ int create_proc_profile(void);
+ #else
+-static inline void create_prof_cpu_mask(void)
+-{
+-}
+-
+ static inline int create_proc_profile(void)
+ {
+ 	return 0;
+diff --git a/kernel/profile.c b/kernel/profile.c
+index 8a77769bc4b4..2b775cc5c28f 100644
+--- a/kernel/profile.c
++++ b/kernel/profile.c
+@@ -344,49 +344,6 @@ void profile_tick(int type)
+ #include <linux/seq_file.h>
+ #include <linux/uaccess.h>
+ 
+-static int prof_cpu_mask_proc_show(struct seq_file *m, void *v)
+-{
+-	seq_printf(m, "%*pb\n", cpumask_pr_args(prof_cpu_mask));
+-	return 0;
+-}
+-
+-static int prof_cpu_mask_proc_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, prof_cpu_mask_proc_show, NULL);
+-}
+-
+-static ssize_t prof_cpu_mask_proc_write(struct file *file,
+-	const char __user *buffer, size_t count, loff_t *pos)
+-{
+-	cpumask_var_t new_value;
+-	int err;
+-
+-	if (!zalloc_cpumask_var(&new_value, GFP_KERNEL))
+-		return -ENOMEM;
+-
+-	err = cpumask_parse_user(buffer, count, new_value);
+-	if (!err) {
+-		cpumask_copy(prof_cpu_mask, new_value);
+-		err = count;
+-	}
+-	free_cpumask_var(new_value);
+-	return err;
+-}
+-
+-static const struct proc_ops prof_cpu_mask_proc_ops = {
+-	.proc_open	= prof_cpu_mask_proc_open,
+-	.proc_read	= seq_read,
+-	.proc_lseek	= seq_lseek,
+-	.proc_release	= single_release,
+-	.proc_write	= prof_cpu_mask_proc_write,
+-};
+-
+-void create_prof_cpu_mask(void)
+-{
+-	/* create /proc/irq/prof_cpu_mask */
+-	proc_create("irq/prof_cpu_mask", 0600, NULL, &prof_cpu_mask_proc_ops);
+-}
+-
+ /*
+  * This function accesses profiling information. The returned data is
+  * binary: the sampling step and the actual contents of the profile
+-- 
+2.18.4
 
-  - https://lore.kernel.org/linux-pci/cc01721cec2d416d7bdf47086943b17ef44b7286.1702966181.git.christophe.jaillet@wanadoo.fr
-  - https://lore.kernel.org/linux-pci/47a30441242c4d5f0e00555cbddd7783350ff1b2.1702966523.git.christophe.jaillet@wanadoo.fr
-
-I moved this particular change to the same branch as the above so that
-these are collected together within a single branch. And, as such:
-
-Applied to remove-old-api, thank you!
-
-[1/1] PCI: vmd: Remove usage of the deprecated ida_simple_*() API
-      https://git.kernel.org/pci/pci/c/0eccea7150e3
-
-	Krzysztof
 
