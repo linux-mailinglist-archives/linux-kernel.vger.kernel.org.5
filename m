@@ -1,115 +1,118 @@
-Return-Path: <linux-kernel+bounces-13722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87EDB820BA4
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 15:57:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C491C820BA8
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 15:58:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F5D5B21124
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 14:57:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C1541F219E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 14:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F289C6124;
-	Sun, 31 Dec 2023 14:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB12963CF;
+	Sun, 31 Dec 2023 14:58:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gh57j8zY"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="qoRmw7rL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431C16112;
-	Sun, 31 Dec 2023 14:57:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d4b650bc9cso1947895ad.0;
-        Sun, 31 Dec 2023 06:57:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704034627; x=1704639427; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fTz5TyGFzp4ZGQ+lOKRvj2KlDWSDsjrIEBja4htkNhg=;
-        b=Gh57j8zYkzIVg9urYyNHY19j5wXzZwnsOSOtGaLC0ZgO7qlOha5voIr2xvUND6UoYa
-         g7pAdSeBsvd346NmJi2KQ6O9WhY5kUFshiF+U7Qf6eLgtCRP6UEQ3o6jmO+lNeJxXT8x
-         SDPMgAlgG18cSC/f7Zodm3ajSOv3QJUiOb3OdFbr1pbNKClHamUEF8aeUD4IulFs6yr7
-         fNPE8pz+vrLIU7Yqg2g23ByoOTHnf0OKe/1GzdNTTYcreojySldf2ITd2Ars0QunOuDo
-         ivqtPM8cJMAvv08MHnLQwB56zPcRibwlrM4Gvmo1n4ygxw+tGRP3KmTltUAv5Qyio58a
-         DNXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704034627; x=1704639427;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fTz5TyGFzp4ZGQ+lOKRvj2KlDWSDsjrIEBja4htkNhg=;
-        b=AKOrek7jSkze6zUlyhhpNzaHQlRmonX41PpQ0X04EyVLadFHQKR9tPaOg/kE9Cvi9s
-         Ch2CY3oKJtVbYNfBhPy6I9TkvR9oOmkqO4Z1USDMCswS+cphtGcix3otiWrqXw+hXanQ
-         rEGr1mjWVjgRArLgr6VqJ53ezQBQyrbJOzLRqy9KJHmuAaotDDmlxzge4S/bsDXN/yeA
-         vt7ba8XbRi4vMHAc9tYghpmZEJXLOGylx+dNJP5K9z47uAUvhWb+HJHkDtc5LEuSd8j+
-         mrujo3rW/m8WHH9Zw8fcOrrVLx/h9+vuQlgLv3xHyZ/ySCwnCBYxlh3RMNRLufBQnez9
-         n3cQ==
-X-Gm-Message-State: AOJu0Yy+h4CzOB5mL3fe1u8GrCXXsimKf7jWn3j8cPyg5pXcpw0XESiS
-	Q5ABPV7R8q7FrX9Rcg9mXz+5txIdaZPOrw==
-X-Google-Smtp-Source: AGHT+IFpjDlcTRgrP8bt+8GIv5RObFRd/g2bE84fn78g+W591uHv/dU9aemwKo65bgNn+M8LaDexGw==
-X-Received: by 2002:a17:903:244d:b0:1d4:b017:a053 with SMTP id l13-20020a170903244d00b001d4b017a053mr2183914pls.116.1704034627330;
-        Sun, 31 Dec 2023 06:57:07 -0800 (PST)
-Received: from localhost.localdomain ([154.220.3.115])
-        by smtp.gmail.com with ESMTPSA id r4-20020a170902ea4400b001d3f285157dsm18704367plg.124.2023.12.31.06.57.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 31 Dec 2023 06:57:06 -0800 (PST)
-From: zhouzhouyi@gmail.com
-To: songqiang1304521@gmail.com,
-	jic23@kernel.org,
-	lars@metafoo.de,
-	linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: "zhili.liu" <zhili.liu@ucas.com.cn>
-Subject: [PATCH v2] iio: magnetometer: rm3100: add boundary check for the value read from RM3100_REG_TMRC
-Date: Sun, 31 Dec 2023 22:56:44 +0800
-Message-Id: <1704034604-9846-1-git-send-email-zhouzhouyi@gmail.com>
-X-Mailer: git-send-email 1.7.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D709567E;
+	Sun, 31 Dec 2023 14:58:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704034696; x=1704639496; i=markus.elfring@web.de;
+	bh=gPeNin7ZI68tdFqinqaBy+vemPELROI0zDhtVnj5Qdk=;
+	h=X-UI-Sender-Class:Date:Subject:From:To:References:Cc:
+	 In-Reply-To;
+	b=qoRmw7rLE3imcfRlnd7KwXnQQLZHBOwEuL6y2JV6TC0NvTcSKswMNa+IrSjil+wK
+	 +vp/dzbL9DzPTevbILfI3Dbgj2oV0t3fSN/GF/fTn8psAFVA5v/Yfk5VYE3MBwLAW
+	 FZWWC7zJRhRLZalVb4rZ3r7+ULFH5ua1tsF96QysMbk1/cc4chNxITWGnhKAg5a9G
+	 7aVyHVZJhp2zxDw/adgNjcdUBPkzZ6Jyo7DtPVvCXO48VezS3D8c5mLsyFVeNUDij
+	 aseSKK1+ibexNYRINIWJAQPrlvbrSxgvK2cx/H5MXiVoV7WT11kti7nAQgr3mTJyc
+	 FWu+mF8WDOH1dLKXHg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mt8kX-1r4DfF172v-00t0YO; Sun, 31
+ Dec 2023 15:58:16 +0100
+Message-ID: <f02303c3-5968-48c3-990b-be0be8a66521@web.de>
+Date: Sun, 31 Dec 2023 15:58:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH 1/2] net/smc: Return directly after a failed kzalloc() in
+ smc_fill_gid_list()
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+To: linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ "D. Wythe" <alibuda@linux.alibaba.com>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Jan Karcher <jaka@linux.ibm.com>,
+ Paolo Abeni <pabeni@redhat.com>, Tony Lu <tonylu@linux.alibaba.com>,
+ Wen Gu <guwen@linux.alibaba.com>, Wenjia Zhang <wenjia@linux.ibm.com>
+References: <8ba404fd-7f41-44a9-9869-84f3af18fb46@web.de>
+Cc: LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <8ba404fd-7f41-44a9-9869-84f3af18fb46@web.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:NFasV8DHiXAdOQ2Yt1SU4XelxafXt3W/2zfsYc0p4Q+GDO3yPiS
+ LLrJI+PyVtxxsmJ3RJ7FweRyjQdttD5guFeI4nnRM6rd6vkxykjF8fQnNrNZfhOFdU+WsV1
+ 5UvfAQLdQuqOtuE1v/BBq8c8c/A+V3qWWyjk/ugt9++mU+cDIslgqdco1vrtXyRXVDImZqd
+ BIEcmNDCu+rK45VXeY4Eg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:NRWMyYBZErQ=;lSeCc59AM4dR0tqYtgjUHNs80j1
+ y7ia6cpPN1KXri4Ec9dhPWjXB3aJPVh8N2DtbVrRXmE5YaZMwDkoWz3J2PcYJHeekvWqQfAFg
+ hwsyjaDxXbxRVQJk6oPvid5YDPLAwCSD49URlz2wFt7Rb8XSj66uicguPLQBnQBtoJeytf76z
+ nGrV6V7jGB4k9IuBT9h43N3lfVXoo374ROHtfNmoN2L7kYTrKRYIAr/1Gr0vxYZy1xMMqn+k3
+ qWGBS0zLMwzG+Wj8u2Jbm6k06BL4qvGeicsTG8zF/hx2qnvruQS5B8/CjrnBojLpfRzmKn7Y9
+ WOvm9Uqs6vJphiUTL3Z0/FPlsL3rx2x6rrVLeFHTdLMHrzbfkuGHWsExj6HPgYu6rj1HzAIgy
+ +vyGIAN8J9tDr+K7ureshkwoZ6xHeqmiJcnw0Hg+k8nf0OHTqDGrtxV1G/dyizPT1AEIv56L5
+ QPSBd7tT6g2f3LQwvTIDBPKelYL/0lAFb94UvN7keSdJaij3G6UikDlFydv1x7cwe4MFWiwGW
+ TGm/1xPgkB+GnWN96F6B/FlxfFojXPnRBmUMs2AzAw1oM20Y4qrvpqM0ikkF8IKCqcF4IpOns
+ a0DvWrA2Vm/NUV7ITDU3lAxl4SDHYcR1bBfx12xN2p9iG7LFH0NtdYn8rQW+RqL+syBv+vHjB
+ ABnYRNYOoEVxT9jCRm8Y0tY9Ac7DJN2GN4muEyEVQaBRTznbJjuFrsmAS7S0W85UIhU3oGhFo
+ k+vEhBsRrWaG3fN/s4ZuU7yP29D25u41TyiQMb5CtrfO93S4ASfLFxP2qYLEFg+C5BBd7zwjn
+ xUPzokc+tRP+UXjSNOlHJOTtXlSZWcHMZqh10/TO/nC3aHrIXu2ROFl07qyluolK9b0u7y+zF
+ r1Ek+JkDuLQ0PlHtsr0BRbcZk5c5QIFEZiz5gVxSjW3NazmdksmG72JJIi0RvCpw4rkPcZyex
+ DnoTC1eiyCeeTYwUdOPJgdSB6Ds=
 
-From: "zhili.liu" <zhili.liu@ucas.com.cn>
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 31 Dec 2023 15:15:19 +0100
 
-Recently, we encounter kernel crash in function rm3100_common_probe
-caused by out of bound access of array rm3100_samp_rates (because of
-underlying hardware failures). Add boundary check to prevent out of
-bound access.
+The kfree() function was called in one case by
+the smc_fill_gid_list() function during error handling
+even if the passed variable contained a null pointer.
+This issue was detected by using the Coccinelle software.
 
-Suggested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Signed-off-by: zhili.liu <zhili.liu@ucas.com.cn>
----
-The format of the previous patch was a bit problematic,
-we are sending it again.
+Thus return directly after a call of the function =E2=80=9Ckzalloc=E2=80=
+=9D failed
+at the beginning.
 
-Sorry for the trouble.
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ net/smc/af_smc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you very much.
---
- drivers/iio/magnetometer/rm3100-core.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 7fc2f3c6d248..a396a9977ba9 100644
+=2D-- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -1180,7 +1180,7 @@ void smc_fill_gid_list(struct smc_link_group *lgr,
 
-diff --git a/drivers/iio/magnetometer/rm3100-core.c b/drivers/iio/magnetometer/rm3100-core.c
-index 69938204456f..fc50b6d4a334 100644
---- a/drivers/iio/magnetometer/rm3100-core.c
-+++ b/drivers/iio/magnetometer/rm3100-core.c
-@@ -586,6 +586,12 @@ int rm3100_common_probe(struct device *dev, struct regmap *regmap, int irq)
- 	ret = regmap_read(regmap, RM3100_REG_TMRC, &tmp);
- 	if (ret < 0)
- 		return ret;
-+
-+	if (tmp < RM3100_SAMP_NUM || tmp - RM3100_TMRC_OFFSET >= RM3100_SAMP_NUM) {
-+		dev_err(dev, "The value read from RM3100_REG_TMRC is invalid!\n");
-+		return -EINVAL;
-+	}
-+
- 	/* Initializing max wait time, which is double conversion time. */
- 	data->conversion_time = rm3100_samp_rates[tmp - RM3100_TMRC_OFFSET][2]
- 				* 2;
--- 
-2.25.1
+ 	alt_ini =3D kzalloc(sizeof(*alt_ini), GFP_KERNEL);
+ 	if (!alt_ini)
+-		goto out;
++		return;
+
+ 	alt_ini->vlan_id =3D lgr->vlan_id;
+ 	alt_ini->check_smcrv2 =3D true;
+=2D-
+2.43.0
 
 
