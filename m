@@ -1,142 +1,116 @@
-Return-Path: <linux-kernel+bounces-13648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE2ED820A55
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 08:28:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27A5C820A57
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 08:34:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A907C283446
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 07:28:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D94712833BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 07:34:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C942210B;
-	Sun, 31 Dec 2023 07:28:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F274220FB;
+	Sun, 31 Dec 2023 07:33:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ELwpUcpY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T7hBKGci"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C55C17C2;
-	Sun, 31 Dec 2023 07:28:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704007702; x=1704612502; i=markus.elfring@web.de;
-	bh=PcBUvluZb/BvdgF7ktzLibEt8A6a4VGufG/N/XU2tBU=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=ELwpUcpYPoNstTo91UNCbohC7BFOMxxWrqAkEmEOqjWz3nqiDvzL2I3euvfKyNmI
-	 nPi3A5ivgBq/LZiGsIH+l6YnzuXg1opvuAi7X/4VvtW7ALscdj5B/jiaihEIzg0lz
-	 VORijwlqpsLv+KQaO2212muYJ6Cg9HbiH2txaffdryuEpvzZ7xoU0z08mFzTcL4ox
-	 fF8zl/KPXt/VQjrzzIs3E03Qxl3P27dx7FEcVQ7sRTvlHWN3wOEyREq5yBH0YydYI
-	 fbAACO6kC25hBxQ7qjDYWo1MaXkovH0U3VBByJSjb0IKAGyhK9namzw9ZeDnWb9Va
-	 LA0hLj24xtUhjcSbZQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MkVwo-1qxSnY0oKE-00mBMi; Sun, 31
- Dec 2023 08:28:22 +0100
-Message-ID: <53be5f98-6359-48b5-955e-fd203d99d3cb@web.de>
-Date: Sun, 31 Dec 2023 08:28:08 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1145E1844;
+	Sun, 31 Dec 2023 07:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7b7d65d4eecso407871639f.0;
+        Sat, 30 Dec 2023 23:33:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704008036; x=1704612836; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FT4YKhx1arQKM4uZFE6CXUn3u3YsdPfEE6W1XkpDDy0=;
+        b=T7hBKGcifCaTIG8Qvw70/ot4lg9RObFfMz6/BzqCbQvvhkAy9t4csl5ThhXOBwvwDD
+         wlsrw33T+ybIC8f1Cwwh350PHJKwGI+NVXiyNhfTF8mQqeb+K2EBdA3p9Pa9kNK2n7wt
+         riCUlL0TIlGbiq+h/Womko5rQulcsW69Ba4XOTuNbxblw/GWyTpcr3R5dTGKTCMNR1S2
+         0yfz6u8PiRgfapiNW886e9WusXHhEe17sd1/Hy01zxtNwyUT4PYDM10ubOsBW42rfpFI
+         nwgZ+CwLrWQam+XuIPmfxLF5Oz1D6OhRtE7dOuBEo51wydqkCtL5ms9TD7n4WcOzIhKs
+         GkVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704008036; x=1704612836;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FT4YKhx1arQKM4uZFE6CXUn3u3YsdPfEE6W1XkpDDy0=;
+        b=iBf3YE2qp/p4HA0QgoN+vlniYGmAP6D8OLq6CnXKziyc8QNgcmCV+gDkZmAzyDSYG7
+         wSyV6KhqdZVFtN+JPahVGTHfkeJdy/RYG8hSecOQ0HIcEeC4+ZlWFFSvg8KZESMS6k1D
+         AmwWtgL7JnEr/KMfBQAp69JOL85cwIPMX6+m1ABOlfssDCK4d0ih4+hdF2UKxT41Tcfj
+         TlnZ4JHEui3faT8FgCuZg5P0/wfDS8DgdfBNuSoxeOi0pAJCuxOP3DFiVOS7e7YCxKfm
+         zGXU62ELdkuN6wYar4p/hwW6LCSqepiKlhDOhxMk6ubfcYpg4DpuFDmWfInKFhUlyh4G
+         x0xQ==
+X-Gm-Message-State: AOJu0YyiuPUdjEds6BTbRl3ti7FB/tTToiZ9KBrCdUaWSi08FjbNcaH8
+	8JOk5rECfRWlZxhhb3Cbdp2mRO6mvRdzAg==
+X-Google-Smtp-Source: AGHT+IE1pM6K605ozyzhYXLrB3XJM1l6npyq5tKa9uP+Fm/Krjwxk9xQ/SBD8NRX49F4oBgvK3F87g==
+X-Received: by 2002:a05:6e02:198b:b0:35f:dea6:55c with SMTP id g11-20020a056e02198b00b0035fdea6055cmr23465268ilf.3.1704008036010;
+        Sat, 30 Dec 2023 23:33:56 -0800 (PST)
+Received: from goorm.ap-northeast-2.compute.internal (ec2-52-78-220-127.ap-northeast-2.compute.amazonaws.com. [52.78.220.127])
+        by smtp.gmail.com with ESMTPSA id q20-20020a170902789400b001d47868c31fsm8496519pll.194.2023.12.30.23.33.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Dec 2023 23:33:55 -0800 (PST)
+From: yongsuyoo0215@gmail.com
+To: mchehab@kernel.org,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yongsu.yoo@lge.com,
+	v4bel@theori.io,
+	0215yys@hanmail.net
+Cc: Yongsu yoo <yongsuyoo0215@gmail.com>
+Subject: [PATCH] [PATCH] media: dvb_ca_en50221: Fix a bug for detecting CI MODULE
+Date: Sun, 31 Dec 2023 07:33:52 +0000
+Message-Id: <20231231073352.1929-1-yongsuyoo0215@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: cgroups@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
- Waiman Long <longman@redhat.com>, Zefan Li <lizefan.x@bytedance.com>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] cgroup/cpuset: Adjust exception handling in
- generate_sched_domains()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pgnSzo2W+vneiGpO38IiNDAlEaIXKSMMACiIapp8BWsnXekDcdT
- PbTKnujXFwSFjr6dNhr2LWeXpGIYfELudkL0U/datOqgwQAGOG/p9DwHtGBFh/9TQQafMBx
- pd+MTC5ua7UFSk/OLfcvENKiCpoFoOWzzkxvHQ+qqoVir1t+VcPONx+YOK5gSR+1EnqEaYv
- 0Fq2o9AvO1SPmzhnL2LyA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:MF8NwxLMoUE=;Vth/hMGB+E6eKMV2W7MGJ4MxLZ9
- hf387lQW9S4mRbLHw+Wk1eXh7IbH+bgBJcy+74ziZppgtw0VnnxAe5jSfvj68WT4yCJJ/Nwvc
- BWJ8IKnFwUDWr2Kk70SQv2jfBC3WA6dZPSjPXCb+esuBBnLv4YTDuBhQigtyV+y0Za3A10B7A
- yxAq/Fk+Jmim1yWVSd5OBavzsMkvdSjw9V3xIz5/cVckRMsEIgheJT3wFUqxKTZNpG5t32mcD
- ggFRvYvU2FysZZp0bB6dShfetu8WG1oot+Kw62+/MVsh35d8/UKxNvZu1nmD1aQC5kPFwh19n
- TEmjEgHyRG2oPSMt5VXucXMoHBS6l+HuGcI1OUk917w28P1DWe5nXfCuhhrZHp5IFPvGXtaRe
- MPUjozzfWjDMuT5F7TKq4A/rICf6lRPeWfhSB1brZp8x72mfmQX3E4hmM0RN3SPku4Fro6kjt
- VPN8BRJJP+jg/+KqDgIYxt7OC1L9F9oHSMtJ9xALb9kv7ftI5A14kT/9u5E8m5RcZfBfUq7Ob
- 4TrJM7zUO4dImuHeG7tmPDlDeKTrH2RhgBCia8zAlLdHTh9h59+MWSXsD6QP6Frl1ZkkRnhYc
- B76CGZ6ZHAyKp31HgPvYCYw6SOoXHzKc2BWKRGFXu1gaborbduJsWr02wcmKT7wnXORtwM/Ul
- dCRVeLp1kzUfsFUq4iC8Cj2ve5zwMG+zly/IfCUpF4q7Fdu2AxS/zJsC6Kvom89eGf8twuRb6
- 4jdUSIsetjqDbx910SJ/COQuAeUSNqHW0w/6HO7YQMYmsjYE34UAxFrGOVbGAJUDrRP616MyE
- AgikrA491MEz8xjVuqhULxPJ/BrThtIt4OrEZz8nnv5YIrTf3j79DA+CKuryk/mx5MeXcEKeT
- 7z35aZi/HPSiirS9mGKOQ4ychsjertrc23Jb4ZLEVaRdgUobNWgsbRFS3Fv8APXd+S5im2PiT
- uy8gWQ==
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 31 Dec 2023 08:00:31 +0100
+From: Yongsu yoo <yongsuyoo0215@gmail.com>
 
-Two resource allocation failures triggered further actions
-over the label =E2=80=9Cdone=E2=80=9D so far.
+Signed-off-by:Yongsu Yoo <yongsuyoo0215@gmail.com>
 
-* Jump to the statement =E2=80=9Cndoms =3D 1;=E2=80=9D in three cases dire=
-ctly
-  by using the label =E2=80=9Cset_ndoms=E2=80=9D instead.
+In source/drivers/media/dvb-core/dvb_ca_en50221.c, if the CA_RESET
+ioctl is called, the dvb_ca_en50221_slot_shutdown will also be called.
+Inside of the dvb_ca_en50221_slot_shutdown,
+the ca->slot_info[slot].slot_state will become DVB_CA_SLOTSTATE_NONE.
+In the most of cases, the ca->slot_info[slot].slot_state will quickly
+becomes restored to other states by the subsequent operations of the
+thread dvb_ca_en50221_thread_state_machine.
+But in some rare cases, when the CA_GET_SLOT_INFO ioctl is immediately
+called after the CA_RESET ioctl is called, the
+the ca->slot_info[slot].slot_state can still remains at
+DVB_CA_SLOTSTATE_NONE, and this causes CA_GET_SLOT_INFO ioctl not to
+return CA_CI_MODULE_PRESENT as info->flags even if CA_CI_MODULE is
+really connected on TV. This means that the CA_GET_SLOT_INFO ioctl
+does not return right informtion. This is a Bug. We fix this bug.
+---
+ drivers/media/dvb-core/dvb_ca_en50221.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-* Delete an assignment for the variable =E2=80=9Cndoms=E2=80=9D in one if =
-branch.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- kernel/cgroup/cpuset.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index ba36c073304a..29ccd52eb45c 100644
-=2D-- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -973,10 +973,9 @@ static int generate_sched_domains(cpumask_var_t **dom=
-ains,
-
- 	/* Special case for the 99% of systems with one, full, sched domain */
- 	if (root_load_balance && !top_cpuset.nr_subparts) {
--		ndoms =3D 1;
- 		doms =3D alloc_sched_domains(ndoms);
- 		if (!doms)
--			goto done;
-+			goto set_ndoms;
-
- 		dattr =3D kmalloc(sizeof(struct sched_domain_attr), GFP_KERNEL);
- 		if (dattr) {
-@@ -986,12 +985,12 @@ static int generate_sched_domains(cpumask_var_t **do=
-mains,
- 		cpumask_and(doms[0], top_cpuset.effective_cpus,
- 			    housekeeping_cpumask(HK_TYPE_DOMAIN));
-
--		goto done;
-+		goto set_ndoms;
- 	}
-
- 	csa =3D kmalloc_array(nr_cpusets(), sizeof(cp), GFP_KERNEL);
- 	if (!csa)
--		goto done;
-+		goto set_ndoms;
- 	csn =3D 0;
-
- 	rcu_read_lock();
-@@ -1123,6 +1122,7 @@ static int generate_sched_domains(cpumask_var_t **do=
-mains,
- 	 * See comments in partition_sched_domains().
- 	 */
- 	if (doms =3D=3D NULL)
-+set_ndoms:
- 		ndoms =3D 1;
-
- 	*domains    =3D doms;
-=2D-
-2.43.0
+diff --git a/drivers/media/dvb-core/dvb_ca_en50221.c b/drivers/media/dvb-core/dvb_ca_en50221.c
+index baf64540dc00..8d37c3c13227 100644
+--- a/drivers/media/dvb-core/dvb_ca_en50221.c
++++ b/drivers/media/dvb-core/dvb_ca_en50221.c
+@@ -1403,6 +1403,10 @@ static int dvb_ca_en50221_io_do_ioctl(struct file *file,
+ 		    (sl->slot_state != DVB_CA_SLOTSTATE_INVALID)) {
+ 			info->flags = CA_CI_MODULE_PRESENT;
+ 		}
++		if ((sl->slot_state == DVB_CA_SLOTSTATE_NONE) &&
++		    (sl->camchange_type == DVB_CA_EN50221_CAMCHANGE_INSERTED)) {
++			info->flags = CA_CI_MODULE_PRESENT;
++	     	}
+ 		if (sl->slot_state == DVB_CA_SLOTSTATE_RUNNING)
+ 			info->flags |= CA_CI_MODULE_READY;
+ 		break;
+-- 
+2.17.1
 
 
