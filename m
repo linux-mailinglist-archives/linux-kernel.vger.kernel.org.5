@@ -1,83 +1,92 @@
-Return-Path: <linux-kernel+bounces-13762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10909820C31
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 18:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C3383820C2A
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 18:29:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40D6F281A68
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 17:37:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42151280DD2
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 17:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83EC8F69;
-	Sun, 31 Dec 2023 17:36:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063B28F6E;
+	Sun, 31 Dec 2023 17:29:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b="vOKuWTbv"
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="mOARG1PV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D3E58F42;
-	Sun, 31 Dec 2023 17:36:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorminy.me
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-	(No client certificate requested)
-	by box.fidei.email (Postfix) with ESMTPSA id 419BF80A59;
-	Sun, 31 Dec 2023 12:26:59 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-	t=1704043620; bh=rBePiq3m19xLDYg1NFE6jjWigazxJvjaHtlPnRE8KQ0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=vOKuWTbv1uVpzjAVEcMw8DcLgEbWU3WJmkaVOO7tr8HLtA55nKeK2ACIhRU541JT/
-	 6+a2Kn2wuBlI19NsYzCdD5n0YdhORpAluSGO9jUJ49JzJWA1ZH8RccCakllvPPFRc8
-	 tcsz3zlHPCw2KZnz8d5AvjsVrQ5mvgEC/ciziHN36ClgzbLDKmjjPt2+T+8V0f0Uid
-	 LqlFoSOLDKGs/D1yMMBgrBnOVjYA8E669Wqo5zym9PH7bNlb8Mg1SC5607/CK9rCan
-	 DQxLabPoYRn3a6t26e3eDw40jrB0X5DONmQW0Hk2i2v/vayotvMvj5tId6vRppL23Z
-	 yJ6cdkqAbaoIA==
-Message-ID: <4c402f0f-1298-4dbb-b593-79e7e5233694@dorminy.me>
-Date: Sun, 31 Dec 2023 12:26:57 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F77D8F40;
+	Sun, 31 Dec 2023 17:29:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1704043773; x=1704302973;
+	bh=hU+O3O0WZy59tVU9PtFRXLLdlxK59XaCKjJYfsYMEPY=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=mOARG1PVmRQaf7Zhnnrdn7cfcZpEoJKtv2dOnFYbBACfCnhTkfEZ3xRcJ+hVp4ioZ
+	 8anPHtZ+xlmHR1XZ26EJn6BsQSHyOO8XLJyzyud1naAxRxGeuc+h1BA4YOlOYIu0L5
+	 RLceeNf7lGn7GJpdKbgtoUjIJQlf9wWiL979J/sco7XMtGTToJLaZTWzM2NZE4oZcd
+	 PNafsdnxLdU525kXHVqPVpYTQq1GGLZx1wVNGIqAAXXkn72QW1o8DzextZyfP2wZ/C
+	 FIZRGjFLULgkY+foKItIeiA7lhedDswK/FbwCl8S55cxdKvn49nSx7tlg6gjSh6mYk
+	 GVlgmOEME0lHw==
+Date: Sun, 31 Dec 2023 17:29:14 +0000
+To: =?utf-8?Q?Michael_B=C3=BCsch?= <m@bues.ch>
+From: Rahul Rameshbabu <sergeantsagara@protonmail.com>
+Cc: Larry Finger <Larry.Finger@lwfinger.net>, Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org, b43-dev@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH wireless 3/5] wifi: b43: Stop/wake correct queue in PIO Tx path when QoS is disabled
+Message-ID: <87sf3iz3ff.fsf@protonmail.com>
+In-Reply-To: <20231231103302.04cc37ae@barney>
+References: <20231230045105.91351-1-sergeantsagara@protonmail.com> <20231230045105.91351-4-sergeantsagara@protonmail.com> <cb9dcb49-ad94-40df-9f01-a28df3daf6c3@lwfinger.net> <877ckvwk5v.fsf@protonmail.com> <ca357d13-7da9-490f-9e69-4674c6ede057@lwfinger.net> <874jfzutm5.fsf@protonmail.com> <20231231103302.04cc37ae@barney>
+Feedback-ID: 26003777:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC v2 00/16] btrfs: fscrypt integration status
-To: Stephen Andary <stephen@jamminmusic.com>
-Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, kernel-team@fb.com,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- osandov@osandov.com
-References: <CAH6pm79WsviF-L3kq+peAiSgZsrHbNfPzeYWNEE6KU=TRhiyVw@mail.gmail.com>
-Content-Language: en-US
-From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <CAH6pm79WsviF-L3kq+peAiSgZsrHbNfPzeYWNEE6KU=TRhiyVw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 12/30/23 10:26, Stephen Andary wrote:
-> Happy Holidays. I stumbled on this public mailbox in an article, and 
-> would love to follow encryption progress in the new year.
-> Where is the best place to follow the current progress of fscrypt BTRFS 
-> integration?
-> 
-> Best,
-> Stephen
+On Sun, 31 Dec, 2023 10:33:02 +0100 Michael B=C3=BCsch <m@bues.ch> wrote:
+> [[PGP Signed Part:Undecided]]
+> On Sun, 31 Dec 2023 00:02:32 +0000
+> Rahul Rameshbabu <sergeantsagara@protonmail.com> wrote:
+>
+>> > Unfortunately, it is very difficult to get the parameters for fwcutter=
+ from an
+>> > x86 binary. Some of the other architectures are easier. =20
+>>=20
+>> Just tried this with the x86 binary just because and ran into extraction
+>> issues as expected. I could not find other architecture options from
+>> Broadcom's download page, but I may not have been looking well enough...
+>>=20
+>>   =E2=9D=AF b43-fwcutter ./wlc_hybrid.o_shipped
+>>   Sorry, the input file is either wrong or not supported by b43-fwcutter=
+.
+>>   This file has an unknown MD5sum 6889dbd24abf8006de5cc6eddd138518.
+>
+> b43-fwcutter works only on known files. It has a table of hashes of these=
+ files.
+>
+> But there is a script that can be used to create a hash table entry for a=
+ .o file:
+> https://bues.ch/cgit/b43-tools.git/plain/fwcutter/mklist.py
+>
+> This probably doesn't work on x86 binaries, though.
+> But maybe by reading the script you can get an idea how this works.
 
-Current version of the patchset is 
-https://lore.kernel.org/linux-btrfs/cover.1697480198.git.josef@toxicpanda.com/ 
--- the patches are mailed to linux-btrfs and linux-fscrypt, I would 
-suggest subscribing to a mailing list linux-fscrypt (less traffic) andor 
-linux-btrfs at https://subspace.kernel.org/vger.kernel.org.html for 
-email updates.
+Thanks for the pointer. I will take a look and follow up with you and
+Larry with the b43-dev mailing list CCed. If we can get QoS working on
+bcm4331, then I can send a revert for the disablement patch.
 
-(You could also try using lei as described at 
-https://josefbacik.github.io/kernel/2021/10/18/lei-and-b4.html to look 
-for only relevant emails, but I don't personally know how to use lei to 
-do that.)
+--
+Thanks,
 
-Thanks for the interest!
+Rahul Rameshbabu
 
-Sweet Tea
 
