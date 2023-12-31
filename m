@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-13766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B64C2820C43
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 18:44:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2003820C46
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 18:46:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CEFCB20FCC
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 17:44:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 623121F219A4
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 17:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AE1D944E;
-	Sun, 31 Dec 2023 17:44:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C659B944D;
+	Sun, 31 Dec 2023 17:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ZICg/2x8"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="kgAISiG5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 212468F57;
-	Sun, 31 Dec 2023 17:44:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20CBB8F48;
+	Sun, 31 Dec 2023 17:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704044654; x=1704649454; i=markus.elfring@web.de;
-	bh=aLRR7U3/AFWimf4oVCx2OhgMuy/xKWfmXx3IC9naGIo=;
+	t=1704044770; x=1704649570; i=markus.elfring@web.de;
+	bh=zNxLcIyTelDfgCWbRzOiNYP/OsCyug4PyGLRPHXHIgA=;
 	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
 	 In-Reply-To;
-	b=ZICg/2x8jB8G+KIct6nZM1VB7yYS8bZKI8uVBgjZDgsHINnA996adoD4Yb6O60kS
-	 f0g96Di7aDn+W/3ehNB0jrfNgrsWQTOE8+weRlUJrbbU8BeKbrrvc9HzUZLy5m2P8
-	 WZILEv8b6f0sFodSLEhxztGhYr52mRXldwyRb27UBZYlLt9AyG5+bq8GiOBYoP/m4
-	 U870N9NZd7T5TVgckvKpJum8Eqc4qzqfySSe6qokoQQRQPWqiKLQvBp3IKDt2/KZA
-	 PUhIwVQLrjJiDv4kKMEN8e7ZWm2LkKmig5xL5bywy2yQpnRW76SU2/Y+Tdp6ClZPj
-	 wUojxS92Rv5ST+hiaw==
+	b=kgAISiG5TUD48eiMkvyLXJHBZaaqVgO1aqqr/bfgByJKmIxto6bfhEkQ4Jrih3eP
+	 bqYsXbC5BYj3XVyN78DyWZg9MMaJsTJ++hkaC1w2wDD3wHkZSo01HOC2kFBgkXyhf
+	 WrywTw1OhJrEtc29Z3zYyl6ximTGQ6YrJLMW+m1ANtdKggWvg+YLFHj5hK1l6P3Jd
+	 a8X4MHkZMVGt3dfsn/EV3z2/01W7xZj0x05yu4kdi7f5CWxzwTgLWTZ9boixJdO/h
+	 ovMITJwFeAlWP6FrTd5DWbJHclP571w0hXTFwKUrvfLsYHdQOSAzk6iwexJxEIqR6
+	 QfdMFeW67zuZbhjmdQ==
 X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
 Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MGgJK-1rOvng17Cs-00EAuA; Sun, 31
- Dec 2023 18:44:14 +0100
-Message-ID: <223a61e9-f826-4f37-b514-ca6ed53b1269@web.de>
-Date: Sun, 31 Dec 2023 18:44:13 +0100
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MGxQV-1rOeqf0ukl-00Dtmh; Sun, 31
+ Dec 2023 18:46:10 +0100
+Message-ID: <57779d2f-0d39-4c2e-8718-3c9242177013@web.de>
+Date: Sun, 31 Dec 2023 18:46:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,8 +46,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: =?UTF-8?Q?=5BPATCH_2/4=5D_netlink=3A_Move_an_assignment_for_the_var?=
- =?UTF-8?B?aWFibGUg4oCcc2vigJ0gaW4gX19uZXRsaW5rX2tlcm5lbF9jcmVhdGUoKQ==?=
+Subject: [PATCH 3/4] netlink: Delete an unnecessary variable initialisation in
+ __netlink_kernel_create()
 Content-Language: en-GB
 From: Markus Elfring <Markus.Elfring@web.de>
 To: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
@@ -60,62 +60,53 @@ References: <90679f69-951c-47b3-b86f-75fd9fde3da3@web.de>
 In-Reply-To: <90679f69-951c-47b3-b86f-75fd9fde3da3@web.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ksyD/iMiLeEsohqK+0cCAC5fthmh8rU3GpZGbK03fzCSWClI94G
- 37s9Zn3bmBCTEv2pCWiDkyKTTAnUFupLBgaHD123O7VIh+wUSyNdMhI8snA5lb7pOIJe0+8
- CqUxbtM0vaAbEPtiBLJPNs1KNBKH1fJGNBUgeGPKqOZHjZtGdoEf24MwaFrJRCHVVHc+ewh
- FM6JFRq1R3r+r3aTKOBwQ==
+X-Provags-ID: V03:K1:LYJBemVScIDnkTHCBaOU7X3PN9jEiJKMRkwsrbqrrh1trsJmQbL
+ Xkz3LO9XKgdMqnZds9v3GlwhFnfWk3nX7DW/qzr6U29o2sZlj3RjMMo1HWeIvTNmfQfwWT2
+ MRIDtjEgVlSHSqWN7kOw30XZYSOvDQL05WfCj/DDW6lJ6fZ1bYtPM+XMkw7l8Z0BhRVcJoK
+ BmojJ6Yodgb75Ixa1fRUg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:3vJBw6+nSHY=;FCw8Qqfha8upD8QrqFMCGDHpOeM
- FSFOuMqokXOUCvUYgZJDBwafuX59T1/hLY9Ibp6QO9aoqKI1xx+OA2urVj3EsmcWwQUnhOYle
- hsuamEAQPRDwNJAliMPJlF9PWoXvK33c9YXHffLpMpRfSyua0Jm4Zdq7ha1s5EMvp9OHmryyL
- EUscDbvHLIREli8RVjqi0hyNnN3z06nyRyYTkN3IHSjW6WZhM70TewhcSiS2lxbgdKdJLx7KE
- JKrtAQSTfKpwAo/lid9EanpneMSuJhFxKeWdUH/kyVT3rjdgtW6lIKdcBYRY7H6udc8p9pqjP
- KNQRtnVrpSlMQ8puURlQHiAeaVc7VN+DICpeDs2YEYJwCseyHoGyXhgZBB7cwb9EK6Ey37Jqx
- BSFGFZXyC5xGpU6lyR8JB4zuKXM6wRnzfayoU3dwO7DrGpkV22Gn85S2edDsfVd2kNqcht4X/
- zm9/LMdF3KNhFCzBpSGu+FW/ZWuc0lEiKxpg4USsXAeTKDDWlXnfnlpfCJJy3YX7mMrqIOV8E
- jQex9+H/lrvt2XXv02msanXiB5FytV/vH7CreghlX1Bmxk1eqA+2wx1IxLCh4eMAJ07H4BDNf
- kCzE7CIQ6fkxa4TzXhnhTD0uY2UYUTlvIuAIetCmYHWcPvycjI/+lgVTjEdIkpAxMBzORr4j/
- i663RPem2oGSHsZODzXYempljTIE4B9IXFnpSYCm/bOAiLzPYVwtRd2e3M4OfQtSP7If0v4db
- At2Se17pX2eBoj31ID5mtd1MiNNQ7034+rPmcTXNeQqf0sKYmFpxCgEPmEmOIDk7uW2ef8ZnA
- M7xKK4PCxMjhSBZYjbwmhpPdaH6DHDk6RsOPj+CuPsdx8yZFuJPlh78Hkz+LewzcYbAr4tkrP
- Yu/mHhZXugcOtmg6aGmtukzpL+lE0SrYIp4J7KrK0o+fJ1+YTsWCkHpSy5MaNajG3oGBfrpmd
- W7MQUw==
+UI-OutboundReport: notjunk:1;M01:P0:gjC212gal3M=;oZQAD3kGRYWDqKtckJnzDSnm7wh
+ kgi/6vhcQYFeUNX+m1Rhf7I1MlYO++FJv/bbCDUWXIsLAgALPtWMJuMAWZaMl+bzebt1E/Xhn
+ Gog+AgirnC1dOgvh1pH+gvtu3xfNxZFaAT0n8/0nCi1Db/3XWH+Oh8NdZ97hJWALa0zH5tlBW
+ FaPN8oANtJHjTPLMzRfj12Rxxm27Ao3vuleWQ7v0/HwclwnXQz631GNvIpgrnX56G/po9a4bl
+ TamdEFNRVr0qt+Njk3ozT7wpas56mTV9+ajJb0Y6Q7DDle2yZl+8LliatC/iUp3lt/ON52b8G
+ YJpUWe9hcQ5ZTWHDZgqC9GcXmIqny9MYQLbuH4iNjzyHwxAEBDDv88HB7bwIsY4RcHW1dbnRl
+ WDfzWwFfHd7/Atsz4uBOxDXFVyw/1xlIaOtEBy+uXJzKt5vKGZ08U/ltU3RA9yDftLB2EAJct
+ SSmKxvUsa4heza1Gx80kLGbbjoRGi6ESOHFFY/vXHCJfu9MWROUFjG4/nhnjZVbdWrfUN3uLw
+ VYar5n+aFMCvqFAcoD8d3QIEShkD2QOnDQix0uZh1Adk2BJT+5kLL70h63IzJTousjDLey6O9
+ F9i+Sn67qkXhggNfzKwyIhvTHkXJ25AXXmNnOHUAR4mKxbHdOQAowf6MvM3bEr0i55x7broO8
+ lN68vF4BTG3udAPgR5viuhWGdBid/bDBjI79ZJ+rFP2xeTXlypSG23BNIemvvP9D1SwdXBcZ/
+ 1arQXkSKpa2tdsWjgNYW+KcNoVtfg3vUUbkZB8EIT3vpXjoEaLqHD2NlOHi3iJsyPl8ZKcS61
+ jh0zuxRRF9F00/O55JNdaAzZ5pQfE7LSLGu0RcWj17m/SRxC567Ogic2IMWa8r6g9vm63AraY
+ A+0u5UHK9vtLwV3X571b6VWN8wpB4EnbXsb99gxuAXGrN1iujKvhMqSG5L+/YM10oex4MjfcV
+ 0eHUTQ==
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 31 Dec 2023 17:36:50 +0100
+Date: Sun, 31 Dec 2023 17:45:00 +0100
 
-Move one assignment for the variable =E2=80=9Csk=E2=80=9D closer to the pl=
-ace
-where this pointer is used.
+The variable =E2=80=9Clisteners=E2=80=9D will eventually be set to an appr=
+opriate pointer
+a bit later. Thus omit the explicit initialisation at the beginning.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 =2D--
- net/netlink/af_netlink.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/netlink/af_netlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
-index c3f88015cacf..b71d9c21d15b 100644
+index b71d9c21d15b..cfddc9c6a376 100644
 =2D-- a/net/netlink/af_netlink.c
 +++ b/net/netlink/af_netlink.c
-@@ -2033,8 +2033,6 @@ __netlink_kernel_create(struct net *net, int unit, s=
+@@ -2018,7 +2018,7 @@ __netlink_kernel_create(struct net *net, int unit, s=
 truct module *module,
- 	if (__netlink_create(net, sock, cb_mutex, unit, 1) < 0)
- 		goto out_sock_release_nosk;
+ 	struct socket *sock;
+ 	struct sock *sk;
+ 	struct netlink_sock *nlk;
+-	struct listeners *listeners =3D NULL;
++	struct listeners *listeners;
+ 	struct mutex *cb_mutex =3D cfg ? cfg->cb_mutex : NULL;
+ 	unsigned int groups;
 
--	sk =3D sock->sk;
--
- 	if (!cfg || cfg->groups < 32)
- 		groups =3D 32;
- 	else
-@@ -2044,6 +2042,7 @@ __netlink_kernel_create(struct net *net, int unit, s=
-truct module *module,
- 	if (!listeners)
- 		goto out_netlink_release_sock;
-
-+	sk =3D sock->sk;
- 	sk->sk_data_ready =3D netlink_data_ready;
- 	if (cfg && cfg->input)
- 		nlk_sk(sk)->netlink_rcv =3D cfg->input;
 =2D-
 2.43.0
 
