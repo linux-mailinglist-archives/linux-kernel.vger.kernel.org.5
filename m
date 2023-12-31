@@ -1,116 +1,123 @@
-Return-Path: <linux-kernel+bounces-13699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B473A820B56
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 12:56:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1ACC820B5A
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 13:06:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61725281BEE
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 11:56:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB9281C213E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 12:06:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5529C8F5A;
-	Sun, 31 Dec 2023 11:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 871284698;
+	Sun, 31 Dec 2023 12:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="fOiMM5Nc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2838F8F40
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 11:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-281-aBBp7YTVPSWzhyLiFTN6yg-1; Sun, 31 Dec 2023 11:56:25 +0000
-X-MC-Unique: aBBp7YTVPSWzhyLiFTN6yg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 31 Dec
- 2023 11:56:05 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 31 Dec 2023 11:56:05 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Linus Torvalds' <torvalds@linux-foundation.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"peterz@infradead.org" <peterz@infradead.org>, "longman@redhat.com"
-	<longman@redhat.com>, "mingo@redhat.com" <mingo@redhat.com>,
-	"will@kernel.org" <will@kernel.org>, "boqun.feng@gmail.com"
-	<boqun.feng@gmail.com>, "xinhui.pan@linux.vnet.ibm.com"
-	<xinhui.pan@linux.vnet.ibm.com>, "virtualization@lists.linux-foundation.org"
-	<virtualization@lists.linux-foundation.org>, Zeng Heng <zengheng4@huawei.com>
-Subject: RE: [PATCH next 4/5] locking/osq_lock: Optimise per-cpu data
- accesses.
-Thread-Topic: [PATCH next 4/5] locking/osq_lock: Optimise per-cpu data
- accesses.
-Thread-Index: Ado6mZUJWFdx4PkETd+mn/PWVjPd0AAyXXgoAB7ieYA=
-Date: Sun, 31 Dec 2023 11:56:05 +0000
-Message-ID: <5cff1ac6581142228886f78d54d836cf@AcuMS.aculab.com>
-References: <73a4b31c9c874081baabad9e5f2e5204@AcuMS.aculab.com>
- <bddb6b00434d4492abca4725c10f8d5a@AcuMS.aculab.com>
- <CAHk-=wjbWTbRKDP=Yb9VWBGjSBEGB3dJ0=--+7-4oA2n1=1FKw@mail.gmail.com>
- <CAHk-=wjsO=ODvUcwi=SPSzvsxW7Gj+3OU8q4CfHa+zMcivF6Bw@mail.gmail.com>
-In-Reply-To: <CAHk-=wjsO=ODvUcwi=SPSzvsxW7Gj+3OU8q4CfHa+zMcivF6Bw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D8E3C37
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 12:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-5002a.ext.cloudfilter.net ([10.0.29.215])
+	by cmsmtp with ESMTPS
+	id JuU8rWui08HteJuYrroHCO; Sun, 31 Dec 2023 12:04:57 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id JuYqrkvqcRQmiJuYqrh0qo; Sun, 31 Dec 2023 12:04:57 +0000
+X-Authority-Analysis: v=2.4 cv=CdcbWZnl c=1 sm=1 tr=0 ts=659158e9
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=e2cXIFwxEfEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=mXnCyquSlPjAy6dvzwgA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=jVBDB5fHsjyyZj/a6YgGxOC3B4CrqzM1aF4ZjesDwDU=; b=fOiMM5Nc3x7NH8aZIAoaMW4Quv
+	T33H9n/a8DeYtSAnt2MhpuTGuKGehbPhYH08kNBjvsZP93lp+KZtp3MDGcTn86ZErp8BhDK+VGgfu
+	Ug3otVelxqz0JdaCjsxlflgstQC4Cf0MfbyoG5gtYNwIjv/p6YcspxPGAmluBSQuRefRFbUzfXGHq
+	HZ2I78vNw0fvhdj1/zIHp8GVxHxSr6ELEYbcsNAK/A4QO93Qxwif7xojAJHBAvQPgBOS/56rYB7m/
+	vfG3vVL72PZuyhRlhBQtifrDI5WFj7TPGWnxV/7RcMXxJ8jq18wilYGgKUzmkMoBOBBquldE6T6Yn
+	ERpdXcxA==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:33768 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rJuYo-000nUH-0H;
+	Sun, 31 Dec 2023 05:04:54 -0700
+Subject: Re: [PATCH 6.1 000/112] 6.1.70-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20231230115806.714618407@linuxfoundation.org>
+In-Reply-To: <20231230115806.714618407@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <a50d5997-0a8a-ef49-c8b8-68d640389a68@w6rz.net>
+Date: Sun, 31 Dec 2023 04:04:51 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rJuYo-000nUH-0H
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:33768
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfFZMXj2vDiaGumBUCMQ56aFJ+2ZRtGBTU7HdewkkPDCQjGMc3cBmdkZhH1RMHlTimG+cxPBhyNLlu9mMIxAXacUqBR2PTWAlkgzALU3KbRTtSwaxeWL0
+ pRy6oUMPTEEieBVKM5sCWFNyiixgFTtbg1q+7LBc8QZFtjQyppgneDiN5fDhIRxDz4b/IHhrK5CsyM82H2Hh1EpsW6/nnZ/qJVY=
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMzAgRGVjZW1iZXIgMjAyMyAyMDo1OQ0KPiAN
-Cj4gT24gU2F0LCAzMCBEZWMgMjAyMyBhdCAxMjo0MSwgTGludXMgVG9ydmFsZHMNCj4gPHRvcnZh
-bGRzQGxpbnV4LWZvdW5kYXRpb24ub3JnPiB3cm90ZToNCj4gPg0KPiA+IFVOVEVTVEVEIHBhdGNo
-IHRvIGp1c3QgZG8gdGhlICJ0aGlzX2NwdV93cml0ZSgpIiBwYXJ0cyBhdHRhY2hlZC4NCj4gPiBB
-Z2Fpbiwgbm90ZSBob3cgd2UgZG8gZW5kIHVwIGRvaW5nIHRoYXQgdGhpc19jcHVfcHRyIGNvbnZl
-cnNpb24gbGF0ZXINCj4gPiBhbnl3YXksIGJ1dCBhdCBsZWFzdCBpdCdzIG9mZiB0aGUgY3JpdGlj
-YWwgcGF0aC4NCj4gDQo+IEFsc28gbm90ZSB0aGF0IHdoaWxlICd0aGlzX2NwdV9wdHIoKScgZG9l
-c24ndCBleGFjdGx5IGdlbmVyYXRlIGxvdmVseQ0KPiBjb2RlLCBpdCByZWFsbHkgaXMgc3RpbGwg
-YmV0dGVyIHRoYW4gY2FjaGluZyBhIHZhbHVlIGluIG1lbW9yeS4NCj4gDQo+IEF0IGxlYXN0IHRo
-ZSBtZW1vcnkgbG9jYXRpb24gdGhhdCAndGhpc19jcHVfcHRyKCknIGFjY2Vzc2VzIGlzDQo+IHNs
-aWdodGx5IG1vcmUgbGlrZWx5IHRvIGJlIGhvdCAoYW5kIGlzIHJpZ2h0IG5leHQgdG8gdGhlIGNw
-dSBudW1iZXIsDQo+IGlpcmMpLg0KDQpJIHdhcyBvbmx5IGdvaW5nIHRvIGFjY2VzcyB0aGUgJ3Nl
-bGYnIGZpZWxkIGluIGNvZGUgdGhhdCByZXF1aXJlZA0KdGhlICdub2RlJyBjYWNoZSBsaW5lIGJl
-IHByZXNlbnQuDQoNCj4gDQo+IFRoYXQgc2FpZCwgSSB0aGluayB3ZSBzaG91bGQgZml4IHRoaXNf
-Y3B1X3B0cigpIHRvIG5vdCBldmVyIGdlbmVyYXRlDQo+IHRoYXQgZGlzZ3VzdGluZyBjbHRxIGp1
-c3QgYmVjYXVzZSB0aGUgY3B1IHBvaW50ZXIgaGFzIHRoZSB3cm9uZw0KPiBzaWduZWRuZXNzLiBJ
-IGRvbid0IHF1aXRlIGtub3cgaG93IHRvIGRvIGl0LCBidXQgdGhpczoNCj4gDQo+ICAgLSNkZWZp
-bmUgcGVyX2NwdV9vZmZzZXQoeCkgKF9fcGVyX2NwdV9vZmZzZXRbeF0pDQo+ICAgKyNkZWZpbmUg
-cGVyX2NwdV9vZmZzZXQoeCkgKF9fcGVyX2NwdV9vZmZzZXRbKHVuc2lnbmVkKSh4KV0pDQo+IA0K
-PiBhdCBsZWFzdCBoZWxwcyBhICpiaXQqLiBJdCBnZXRzIHJpZCBvZiB0aGUgY2x0cSwgYXQgbGVh
-c3QsIGJ1dCBpZg0KPiBzb21lYm9keSBhY3R1YWxseSBwYXNzZXMgaW4gYW4gJ3Vuc2lnbmVkIGxv
-bmcnIGNwdWlkLCBpdCB3b3VsZCBjYXVzZQ0KPiBhbiB1bm5lY2Vzc2FyeSB0cnVuY2F0aW9uLg0K
-DQpEb2luZyB0aGUgY29udmVyc2lvbiB1c2luZyBhcml0aG1ldGljIG1pZ2h0IGhlbHAsIHNvOg0K
-CQlfX3Blcl9jcHVfb2Zmc2V0Wyh4KSArIDB1XQ0KDQo+IEFuZCBnY2Mgc3RpbGwgZ2VuZXJhdGVz
-DQo+IA0KPiAgICAgICAgIHN1YmwgICAgJDEsICVlYXggICAgICAgICMsIGNwdV9ucg0KPiAgICAg
-ICAgIGFkZHEgICAgX19wZXJfY3B1X29mZnNldCgsJXJheCw4KSwgJXJjeA0KPiANCj4gaW5zdGVh
-ZCBvZiBqdXN0IGRvaW5nDQo+IA0KPiAgICAgICAgIGFkZHEgICAgX19wZXJfY3B1X29mZnNldC04
-KCwlcmF4LDgpLCAlcmN4DQo+IA0KPiBiZWNhdXNlIGl0IHN0aWxsIG5lZWRzIHRvIGNsZWFyIHRo
-ZSB1cHBlciAzMiBiaXRzIGFuZCBkb2Vzbid0IGtub3cNCj4gdGhhdCB0aGUgJ3hjaGcoKScgYWxy
-ZWFkeSBkaWQgdGhhdC4NCg0KTm90IG9ubHkgdGhhdCwgeW91IG5lZWQgdG8gZG8gdGhlICdzdWJs
-JyBhZnRlciBjb252ZXJ0aW5nIHRvIDY0IGJpdHMuDQpPdGhlcndpc2UgdGhlIHdyb25nIGxvY2F0
-aW9uIGlzIHJlYWQgd2VyZSBjcHVfbnIgdG8gYmUgemVyby4NCkkndmUgdHJpZWQgdGhhdCAtIGJ1
-dCBpdCBzdGlsbCBmYWlsZWQuDQoNCj4gT2ggd2VsbC4gSSBndWVzcyBldmVuIHdpdGhvdXQgdGhl
-IC0xLysxIGdhbWVzIGJ5IHRoZSBPU1EgY29kZSwgd2UNCj4gd291bGQgc3RpbGwgZW5kIHVwIHdp
-dGggYSAibW92bCIganVzdCB0byBkbyB0aGF0IHVwcGVyIGJpdHMgY2xlYXJpbmcNCj4gdGhhdCB0
-aGUgY29tcGlsZXIgZG9lc24ndCBrbm93IGlzIHVubmVjZXNzYXJ5Lg0KPiANCj4gSSBkb24ndCB0
-aGluayB3ZSBoYXZlIGFueSByZWFzb25hYmxlIHdheSB0byB0ZWxsIHRoZSBjb21waWxlciB0aGF0
-IHRoZQ0KPiByZWdpc3RlciBvdXRwdXQgb2Ygb3VyIHhjaGcoKSBpbmxpbmUgYXNtIGhhcyB0aGUg
-dXBwZXIgMzIgYml0cyBjbGVhci4NCg0KSXQgY291bGQgYmUgZG9uZSBmb3IgYSAzMmJpdCB1bnNp
-Z25lZCB4Y2hnKCkgLSBqdXN0IG1ha2UgdGhlIHJldHVybg0KdHlwZSB1bnNpZ25lZCA2NGJpdC4N
-CkJ1dCB0aGF0IHdvbid0IHdvcmsgZm9yIHRoZSBzaWduZWQgZXhjaGFuZ2UgLSBhbmQgJ2F0b21p
-Y190JyBpcyBzaWduZWQuDQpPVE9IIEknZCBndWVzcyB0aGlzIGNvZGUgY291bGQgdXNlICd1bnNp
-Z25lZCBpbnQnIGluc3RlYWQgb2YgYXRvbWljX3Q/DQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVk
-IEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5l
-cywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On 12/30/23 3:58 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.70 release.
+> There are 112 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Mon, 01 Jan 2024 11:57:43 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.70-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+
+Tested-by: Ron Economos <re@w6rz.net>
 
 
