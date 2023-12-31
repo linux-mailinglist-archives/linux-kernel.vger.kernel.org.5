@@ -1,407 +1,192 @@
-Return-Path: <linux-kernel+bounces-13701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B0C9820B5C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 13:07:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95B47820B60
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 13:17:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 325F31F21B98
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 12:07:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D89BB28201C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 12:17:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2C2A6111;
-	Sun, 31 Dec 2023 12:07:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 157B16111;
+	Sun, 31 Dec 2023 12:17:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="AiEuwa1N"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OOaOR2kz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1601C6112
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 12:07:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1704024437;
-	bh=/WrU80qWc7OW86N0kbr81Eb509eI9lCRfjc+HEg7+FQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=AiEuwa1Nhj7i87Whi6v91aJ6YyCYNx1wwHz407BiQ1OXwXrbk0qYlhNU5El/hbKWR
-	 bQRin5N5qk77YNOrOpEU1RHe2sNq367lMN3Igs/boQBkJgZKeN5aOopaKoi/NwSi9z
-	 ZsgIezq9JdZqgEQtu8p+LDkiGKbTcRJCQOi1BJW3PgqM2sppxR8x1X/iz2G6wDzmEq
-	 SddSCpZODrtaUxPoj4VCabI/BVBq5mwVg4ldEiEQcyX1QaeJYpdQYByjQMOS1jIAp8
-	 2hXKRan8XS7obPj3o/VTv1nBf1MNvJdxietWMQiwKX5Wq1EydxU8ZEOptSdAshCxy2
-	 l8YXamhV6TJMw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T2yXg4PgVz4wqN;
-	Sun, 31 Dec 2023 23:07:14 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: adityag@linux.ibm.com, ajd@linux.ibm.com, aneesh.kumar@kernel.org,
- aneesh.kumar@linux.ibm.com, arnd@arndb.de, chentao@kylinos.cn,
- christophe.leroy@csgroup.eu, colin.i.king@gmail.com,
- dario.binacchi@amarulasolutions.com, david@ixit.cz, fbarrat@linux.ibm.com,
- geoff@infradead.org, haokexin@gmail.com, jniethe5@gmail.com,
- ke.zhao@shingroup.cn, kjain@linux.ibm.com, kuba@kernel.org,
- kunyu@nfschina.com, linux-kernel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, liuhaoran14@163.com, masahiroy@kernel.org,
- nathanl@linux.ibm.com, naveen@kernel.org, npiggin@gmail.com,
- oss@buserror.net, rdunlap@infradead.org, segher@kernel.crashing.org,
- sfr@canb.auug.org.au, srikar@linux.vnet.ibm.com, sv@linux.ibm.com,
- vaibhav@linux.ibm.com, zeming@nfschina.com
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-6.8-1 tag
-Date: Sun, 31 Dec 2023 23:07:14 +1100
-Message-ID: <87r0j2k231.fsf@mail.lhotse>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B04125390
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 12:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704025037;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=adPJVxO7TfBjcBAzSxJW6gA78OICpm0oYZHYg9+yj2U=;
+	b=OOaOR2kzUz3iZyfTeo634m2LlbVa08kVZJb2wJn8HU9pxe7ZM58gQBBtKwQszRjwro3red
+	Th+Z0ob2QwgucctUay2svh7PRPhHfstV2yu/DkTjBpsDIWaMhnDt9TbAow3bgKFGu322E5
+	7Q7MS4Z7wVJ+a2eZ+FPLnE2s02DeEQ8=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-371-gmQAzOf9PeuhmxowWMXTiA-1; Sun, 31 Dec 2023 07:17:16 -0500
+X-MC-Unique: gmQAzOf9PeuhmxowWMXTiA-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40d5ab2fbc9so37500065e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 04:17:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704025035; x=1704629835;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=adPJVxO7TfBjcBAzSxJW6gA78OICpm0oYZHYg9+yj2U=;
+        b=tcfXe9lLbYOsdXZwre0Ex+TznRmT34Fm5O2LVH1nWGdE70Of8s/cdZFvw+lrqWx8yY
+         OEjl5ehs5IhHwVyWvDJ/O/vW0eC5ISNlpRZYsdK6xi4p2LlFJm7T6fFHa6l7wyCUg7JA
+         rEbGYsskPCqI4Tl1hJ4bZqRq93o7fyrSv+93iNeouWuRHBSkkM+hWRuHfgJ6fShqSKOy
+         Fh1n2LY8ZoqiB3DGN1smghqZ09/9DvMh6JNuYv2u6A8EQpgA5R064MfOr8+vby9bwlqD
+         z2XrC7s3EVOGTz63YFpa7tXhopHo+uJwro920kn3NDqAqu6mfyzhIHLV7VRVNPr0bXT8
+         0NQw==
+X-Gm-Message-State: AOJu0YxHTFl8Yfm4QwbO8b+TNLm1VOiy6DyNINzL8G1dLdHID+KszVHp
+	cB/JkO1RoPh/ROyLJCQEm+2R4Kn2l2CSJatompdbgfifomFtg7tYs1Vwp7lyU+Mr2ZpGI3kjg/r
+	oBRvUNuNfjJFMP1BJbnbiBgDi7n64cy7z
+X-Received: by 2002:a05:600c:1709:b0:40d:3d98:3747 with SMTP id c9-20020a05600c170900b0040d3d983747mr7936487wmn.121.1704025034865;
+        Sun, 31 Dec 2023 04:17:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFeRa3sSYC/IDsaC8X9PK91/olU5JA7EPp9i6CTQtNttPRgB8n1xtBNim78bDbOVNO55tcCYw==
+X-Received: by 2002:a05:600c:1709:b0:40d:3d98:3747 with SMTP id c9-20020a05600c170900b0040d3d983747mr7936482wmn.121.1704025034585;
+        Sun, 31 Dec 2023 04:17:14 -0800 (PST)
+Received: from debian (2a01cb058918ce00b14e8593d3a1c390.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:b14e:8593:d3a1:c390])
+        by smtp.gmail.com with ESMTPSA id g14-20020a05600c310e00b0040d6eb862a7sm11145610wmo.41.2023.12.31.04.17.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Dec 2023 04:17:13 -0800 (PST)
+Date: Sun, 31 Dec 2023 13:17:11 +0100
+From: Guillaume Nault <gnault@redhat.com>
+To: Yujie Liu <yujie.liu@intel.com>
+Cc: netdev@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+	Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	lkp@intel.com, kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v2 net-next] selftests/net: change shebang to bash to
+ support "source"
+Message-ID: <ZZFbxyQeHgf3UQrN@debian>
+References: <20231229131931.3961150-1-yujie.liu@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231229131931.3961150-1-yujie.liu@intel.com>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On Fri, Dec 29, 2023 at 09:19:31PM +0800, Yujie Liu wrote:
+> The patch set [1] added a general lib.sh in net selftests, and converted
+> several test scripts to source the lib.sh.
+> 
+> unicast_extensions.sh (converted in [1]) and pmtu.sh (converted in [2])
+> have a /bin/sh shebang which may point to various shells in different
+> distributions, but "source" is only available in some of them. For
+> example, "source" is a built-it function in bash, but it cannot be
+> used in dash.
+> 
+> Refer to other scripts that were converted together, simply change the
+> shebang to bash to fix the following issues when the default /bin/sh
+> points to other shells.
 
-Hi Linus,
+Looks like it'd be simpler to just replace the "source" commands with
+"." and leave the shebang as is (unless there are other bash-specific
+constructs in these scripts of course).
 
-When the time comes, please pull powerpc updates for 6.8:
+Generally speaking, I think we should avoid madating a specific shell,
+unless that really simplifies the test script (which is not the case
+here).
 
-The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
+> # selftests: net: unicast_extensions.sh
+> # ./unicast_extensions.sh: 31: source: not found
+> # ###########################################################################
+> # Unicast address extensions tests (behavior of reserved IPv4 addresses)
+> # ###########################################################################
+> # TEST: assign and ping within 240/4 (1 of 2) (is allowed)            [FAIL]
+> # TEST: assign and ping within 240/4 (2 of 2) (is allowed)            [FAIL]
+> # TEST: assign and ping within 0/8 (1 of 2) (is allowed)              [FAIL]
+> # TEST: assign and ping within 0/8 (2 of 2) (is allowed)              [FAIL]
+> # TEST: assign and ping inside 255.255/16 (is allowed)                [FAIL]
+> # TEST: assign and ping inside 255.255.255/24 (is allowed)            [FAIL]
+> # TEST: route between 240.5.6/24 and 255.1.2/24 (is allowed)          [FAIL]
+> # TEST: route between 0.200/16 and 245.99/16 (is allowed)             [FAIL]
+> # TEST: assign and ping lowest address (/24)                          [FAIL]
+> # TEST: assign and ping lowest address (/26)                          [FAIL]
+> # TEST: routing using lowest address                                  [FAIL]
+> # TEST: assigning 0.0.0.0 (is forbidden)                              [ OK ]
+> # TEST: assigning 255.255.255.255 (is forbidden)                      [ OK ]
+> # TEST: assign and ping inside 127/8 (is forbidden)                   [ OK ]
+> # TEST: assign and ping class D address (is forbidden)                [ OK ]
+> # TEST: routing using class D (is forbidden)                          [ OK ]
+> # TEST: routing using 127/8 (is forbidden)                            [ OK ]
+> not ok 51 selftests: net: unicast_extensions.sh # exit=1
+> 
+> v1 -> v2:
+>   - Fix pmtu.sh which has the same issue as unicast_extensions.sh,
+>     suggested by Hangbin
+>   - Change the style of the "source" line to be consistent with other
+>     tests, suggested by Hangbin
+> 
+> Link: https://lore.kernel.org/all/20231202020110.362433-1-liuhangbin@gmail.com/ [1]
+> Link: https://lore.kernel.org/all/20231219094856.1740079-1-liuhangbin@gmail.com/ [2]
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Yujie Liu <yujie.liu@intel.com>
+> ---
+>  tools/testing/selftests/net/pmtu.sh               | 4 ++--
+>  tools/testing/selftests/net/unicast_extensions.sh | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/net/pmtu.sh b/tools/testing/selftests/net/pmtu.sh
+> index 175d3d1d773b..f10879788f61 100755
+> --- a/tools/testing/selftests/net/pmtu.sh
+> +++ b/tools/testing/selftests/net/pmtu.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # SPDX-License-Identifier: GPL-2.0
+>  #
+>  # Check that route PMTU values match expectations, and that initial device MTU
+> @@ -198,7 +198,7 @@
+>  # - pmtu_ipv6_route_change
+>  #	Same as above but with IPv6
+>  
+> -source ./lib.sh
+> +source lib.sh
+>  
+>  PAUSE_ON_FAIL=no
+>  VERBOSE=0
+> diff --git a/tools/testing/selftests/net/unicast_extensions.sh b/tools/testing/selftests/net/unicast_extensions.sh
+> index b7a2cb9e7477..f52aa5f7da52 100755
+> --- a/tools/testing/selftests/net/unicast_extensions.sh
+> +++ b/tools/testing/selftests/net/unicast_extensions.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # SPDX-License-Identifier: GPL-2.0
+>  #
+>  # By Seth Schoen (c) 2021, for the IPv4 Unicast Extensions Project
+> @@ -28,7 +28,7 @@
+>  # These tests provide an easy way to flip the expected result of any
+>  # of these behaviors for testing kernel patches that change them.
+>  
+> -source ./lib.sh
+> +source lib.sh
+>  
+>  # nettest can be run from PATH or from same directory as this selftest
+>  if ! which nettest >/dev/null; then
+> 
+> base-commit: cd4d7263d58ab98fd4dee876776e4da6c328faa3
+> -- 
+> 2.34.1
+> 
+> 
 
-  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
-werpc-6.8-1
-
-for you to fetch changes up to 44a1aad2fe6c10bfe0589d8047057b10a4c18a19:
-
-  Merge branch 'topic/ppc-kvm' into next (2023-12-29 15:30:45 +1100)
-
-- ------------------------------------------------------------------
-powerpc updates for 6.8
-
- - Add initial support to recognise the HeXin C2000 processor.
-
- - Add papr-vpd and papr-sysparm character device drivers for VPD & sysparm
-   retrieval, so userspace tools can be adapted to avoid doing raw firmware
-   calls from userspace.
-
- - Sched domains optimisations for shared processor partitions on P9/P10.
-
- - A series of optimisations for KVM running as a nested HV under PowerVM.
-
- - Other small features and fixes.
-
-Thanks to: Aditya Gupta, Aneesh Kumar K.V, Arnd Bergmann, Christophe Leroy,
-Colin Ian King, Dario Binacchi, David Heidelberg, Geoff Levand, Gustavo A.
-R. Silva, Haoran Liu, Jordan Niethe, Kajol Jain, Kevin Hao, Kunwu Chan, Li
-kunyu, Li zeming, Masahiro Yamada, Michal Such=C3=A1nek, Nathan Lynch, Nave=
-en N Rao,
-Nicholas Piggin, Randy Dunlap, Sathvika Vasireddy, Srikar Dronamraju, Steph=
-en
-Rothwell, Vaibhav Jain, Zhao Ke.
-
-- ------------------------------------------------------------------
-Aditya Gupta (1):
-      powerpc: add cpu_spec.cpu_features to vmcoreinfo
-
-Aneesh Kumar K.V (1):
-      powerpc/sched: Cleanup vcpu_is_preempted()
-
-Aneesh Kumar K.V (IBM) (2):
-      powerpc/book3s/hash: Drop _PAGE_PRIVILEGED from PAGE_NONE
-      powerpc/book3s64: Avoid __pte_protnone() check in __pte_flags_need_fl=
-ush()
-
-Arnd Bergmann (3):
-      powerpc/ps3: move udbg_shutdown_ps3gelic prototype
-      powerpc/pasemi: mark pas_shutdown() static
-      powerpc/powermac: mark smp_psurge_{give,take}_timebase static
-
-Colin Ian King (1):
-      selftests/powerpc: Fix spelling mistake "EACCESS" -> "EACCES"
-
-Dario Binacchi (1):
-      powerpc/85xx: Fix typo in code comment
-
-David Heidelberg (1):
-      powerpc/fsl: Fix fsl,tmu-calibration to match the schema
-
-Geoff Levand (1):
-      powerpc/ps3_defconfig: Disable PPC64_BIG_ENDIAN_ELF_ABI_V2
-
-Haoran Liu (1):
-      powerpc/powernv: Add error handling to opal_prd_range_is_valid
-
-Jordan Niethe (11):
-      KVM: PPC: Book3S HV nestedv2: Invalidate RPT before deleting a guest
-      KVM: PPC: Book3S HV nestedv2: Avoid reloading the tb offset
-      KVM: PPC: Book3S HV nestedv2: Do not check msr on hcalls
-      KVM: PPC: Book3S HV nestedv2: Get the PID only if needed to copy tofr=
-om a guest
-      KVM: PPC: Book3S HV nestedv2: Ensure LPCR_MER bit is passed to the L0
-      KVM: PPC: Book3S HV nestedv2: Do not inject certain interrupts
-      KVM: PPC: Book3S HV nestedv2: Avoid msr check in kvmppc_handle_exit_h=
-v()
-      KVM: PPC: Book3S HV nestedv2: Do not call H_COPY_TOFROM_GUEST
-      KVM: PPC: Book3S HV nestedv2: Register the VPA with the L0
-      KVM: PPC: Reduce reliance on analyse_instr() in mmio emulation
-      KVM: PPC: Book3S HV nestedv2: Do not cancel pending decrementer excep=
-tion
-
-Kajol Jain (1):
-      powerpc/hv-gpci: Add return value check in affinity_domain_via_partit=
-ion_show function
-
-Kevin Hao (3):
-      powerpc/mpc83xx: Add the missing set_freezable() for agent_thread_fn()
-      powerpc/mpc83xx: Use wait_event_freezable() for freezable kthread
-      powerpc/ps3: Add missing set_freezable() for ps3_probe_thread()
-
-Kunwu Chan (6):
-      powerpc/xics: Check return value of kasprintf in icp_native_map_one_c=
-pu
-      powerpc/mm: Fix null-pointer dereference in pgtable_cache_add
-      powerpc/powernv: Add a null pointer check to scom_debug_init_one()
-      powerpc/powernv: Add a null pointer check in opal_event_init()
-      powerpc/powernv: Add a null pointer check in opal_powercap_init()
-      powerpc/imc-pmu: Add a null pointer check in update_events_in_group()
-
-Li kunyu (1):
-      misc: ocxl: main: Remove unnecessary =E2=80=980=E2=80=99 values from =
-rc
-
-Li zeming (3):
-      misc: ocxl: context: Remove unnecessary (void*) conversions
-      misc: ocxl: afu_irq: Remove unnecessary (void*) conversions
-      misc: ocxl: link: Remove unnecessary (void*) conversions
-
-Masahiro Yamada (1):
-      powerpc: add crtsavres.o to always-y instead of extra-y
-
-Michael Ellerman (25):
-      powerpc/configs/64s: Enable CONFIG_MEM_SOFT_DIRTY
-      powerpc: Make cpu_spec __ro_after_init
-      powerpc: Remove orphaned reg_a2.h
-      powerpc/32: Drop unused grackle_set_stg()
-      powerpc/lib: Avoid array bounds warnings in vec ops
-      powerpc/suspend: Add prototype for do_after_copyback()
-      powerpc/512x: Make pdm360ng_init() static
-      powerpc/512x: Fix missing prototype warnings
-      powerpc/44x: Make ppc44x_idle_init() static
-      powerpc/64s: Fix CONFIG_NUMA=3Dn build due to create_section_mapping()
-      powerpc/mm: Fix build failures due to arch_reserved_kernel_pages()
-      powerpc: Fix build error due to is_valid_bugaddr()
-      MAINTAINERS: powerpc: Transfer PPC83XX to Christophe
-      powerpc/Makefile: Don't use $(ARCH) unnecessarily
-      powerpc/vdso: No need to undef powerpc for 64-bit build
-      powerpc/Makefile: Default to ppc64le_defconfig when cross building
-      powerpc/Makefile: Auto detect cross compiler
-      selftests/powerpc: Fix error handling in FPU/VMX preemption tests
-      selftests/powerpc: Check all FPRs in fpu_preempt
-      selftests/powerpc: Generate better bit patterns for FPU tests
-      selftests/powerpc: Run fpu_preempt test for 60 seconds
-      selftests/powerpc: Check all FPRs in fpu_syscall test
-      Merge branch 'smp-topo' into next
-      powerpc/86xx: Drop unused CONFIG_MPC8610
-      Merge branch 'topic/ppc-kvm' into next
-
-Nathan Lynch (21):
-      powerpc/rtas: Drop declaration of undefined call_rtas() function
-      powerpc/rtas: Remove unused rtas_service_present()
-      powerpc/rtas: Move post_mobility_fixup() declaration to pseries
-      powerpc/rtas: Remove trailing space
-      powerpc/rtas: Remove 'extern' from function declarations in rtas.h
-      powerpc/rtas_pci: rename and properly expose config access APIs
-      powerpc/pseries/memhp: Fix access beyond end of drmem array
-      powerpc/pseries/memhp: Log more error conditions in add path
-      powerpc/rtas: Avoid warning on invalid token argument to sys_rtas()
-      powerpc/rtas: Add for_each_rtas_function() iterator
-      powerpc/rtas: Fall back to linear search on failed token->function lo=
-okup
-      powerpc/rtas: Add function return status constants
-      powerpc/rtas: Move token validation from block_rtas_call() to sys_rta=
-s()
-      powerpc/rtas: Facilitate high-level call sequences
-      powerpc/rtas: Serialize firmware activation sequences
-      powerpc/rtas: Warn if per-function lock isn't held
-      powerpc/pseries: Add papr-vpd character driver for VPD retrieval
-      powerpc/pseries/papr-sysparm: Validate buffer object lengths
-      powerpc/pseries/papr-sysparm: Expose character device to user space
-      powerpc/selftests: Add test for papr-vpd
-      powerpc/selftests: Add test for papr-sysparm
-
-Naveen N Rao (3):
-      powerpc/lib: Validate size for vector operations
-      powerpc/ftrace: Fix indentation in ftrace.h
-      powerpc/ftrace: Remove nops after the call to ftrace_stub
-
-Nicholas Piggin (1):
-      KVM: PPC: Book3S HV: Handle pending exceptions on guest entry with MS=
-R_EE
-
-Randy Dunlap (1):
-      powerpc/44x: select I2C for CURRITUCK
-
-Sathvika Vasireddy (1):
-      powerpc/Kconfig: Select FUNCTION_ALIGNMENT_4B
-
-Srikar Dronamraju (5):
-      powerpc/smp: Enable Asym packing for cores on shared processor
-      powerpc/smp: Disable MC domain for shared processor
-      powerpc/smp: Add __ro_after_init attribute
-      powerpc/smp: Avoid asym packing within thread_group of a core
-      powerpc/smp: Dynamically build Powerpc topology
-
-Stephen Rothwell (1):
-      powerpc: pmd_move_must_withdraw() is only needed for CONFIG_TRANSPARE=
-NT_HUGEPAGE
-
-Vaibhav Jain (1):
-      powerpc/hvcall: Reorder Nestedv2 hcall opcodes
-
-Zhao Ke (1):
-      powerpc: Add PVN support for HeXin C2000 processor
-
-
- Documentation/userspace-api/ioctl/ioctl-number.rst          |   4 +
- MAINTAINERS                                                 |   6 +-
- arch/powerpc/Kconfig                                        |   1 +
- arch/powerpc/Kconfig.debug                                  |   1 -
- arch/powerpc/Makefile                                       |  25 +-
- arch/powerpc/boot/dts/fsl/t1023si-post.dtsi                 |  79 +--
- arch/powerpc/boot/dts/fsl/t1040si-post.dtsi                 |  71 +--
- arch/powerpc/configs/ppc64_defconfig                        |   1 +
- arch/powerpc/configs/ps3_defconfig                          |   1 +
- arch/powerpc/include/asm/book3s/64/pgtable.h                |  10 +-
- arch/powerpc/include/asm/book3s/64/tlbflush.h               |   9 +-
- arch/powerpc/include/asm/ftrace.h                           |   2 +-
- arch/powerpc/include/asm/hvcall.h                           |  20 +-
- arch/powerpc/include/asm/kvm_book3s.h                       |  10 +-
- arch/powerpc/include/asm/kvm_book3s_64.h                    |   1 +
- arch/powerpc/include/asm/linkage.h                          |   3 -
- arch/powerpc/include/asm/mmu.h                              |   4 +
- arch/powerpc/include/asm/mmzone.h                           |   8 -
- arch/powerpc/include/asm/papr-sysparm.h                     |  17 +-
- arch/powerpc/include/asm/paravirt.h                         |  33 +-
- arch/powerpc/include/asm/ppc-pci.h                          |   5 +-
- arch/powerpc/include/asm/ps3.h                              |   6 +
- arch/powerpc/include/asm/reg.h                              |   1 +
- arch/powerpc/include/asm/reg_a2.h                           | 154 ------
- arch/powerpc/include/asm/rtas.h                             |  91 ++--
- arch/powerpc/include/uapi/asm/papr-miscdev.h                |   9 +
- arch/powerpc/include/uapi/asm/papr-sysparm.h                |  58 +++
- arch/powerpc/include/uapi/asm/papr-vpd.h                    |  22 +
- arch/powerpc/kernel/cpu_specs_book3s_64.h                   |  15 +
- arch/powerpc/kernel/cputable.c                              |   4 +-
- arch/powerpc/kernel/exceptions-64e.S                        |   1 -
- arch/powerpc/kernel/rtas.c                                  | 207 ++++++--
- arch/powerpc/kernel/rtas_pci.c                              |   8 +-
- arch/powerpc/kernel/smp.c                                   | 124 +++--
- arch/powerpc/kernel/swsusp_64.c                             |   2 +
- arch/powerpc/kernel/trace/ftrace_entry.S                    |   2 -
- arch/powerpc/kernel/traps.c                                 |   2 +
- arch/powerpc/kernel/udbg_16550.c                            |   1 -
- arch/powerpc/kernel/vdso/Makefile                           |   2 +-
- arch/powerpc/kexec/core.c                                   |   1 +
- arch/powerpc/kvm/book3s.c                                   |   4 +-
- arch/powerpc/kvm/book3s_64_mmu_radix.c                      |   7 +-
- arch/powerpc/kvm/book3s_hv.c                                |  72 ++-
- arch/powerpc/kvm/book3s_hv_nested.c                         |   2 +-
- arch/powerpc/kvm/book3s_hv_nestedv2.c                       |  29 ++
- arch/powerpc/kvm/book3s_pr.c                                |   1 +
- arch/powerpc/kvm/emulate_loadstore.c                        |  21 +-
- arch/powerpc/lib/Makefile                                   |   2 +-
- arch/powerpc/lib/sstep.c                                    |  14 +-
- arch/powerpc/mm/book3s64/hash_utils.c                       |   7 +
- arch/powerpc/mm/book3s64/pgtable.c                          |   2 +
- arch/powerpc/mm/book3s64/pkeys.c                            |   3 +-
- arch/powerpc/mm/init-common.c                               |   5 +-
- arch/powerpc/mm/mmu_decl.h                                  |   5 +
- arch/powerpc/perf/hv-gpci.c                                 |   3 +
- arch/powerpc/perf/imc-pmu.c                                 |   6 +
- arch/powerpc/platforms/44x/Kconfig                          |   1 +
- arch/powerpc/platforms/44x/idle.c                           |   2 +-
- arch/powerpc/platforms/512x/mpc5121_ads_cpld.c              |   2 +
- arch/powerpc/platforms/512x/pdm360ng.c                      |   2 +-
- arch/powerpc/platforms/83xx/suspend.c                       |   5 +-
- arch/powerpc/platforms/85xx/mpc85xx_rdb.c                   |   2 +-
- arch/powerpc/platforms/86xx/Kconfig                         |   7 -
- arch/powerpc/platforms/pasemi/setup.c                       |   2 +-
- arch/powerpc/platforms/powermac/smp.c                       |   4 +-
- arch/powerpc/platforms/powernv/opal-irqchip.c               |   2 +
- arch/powerpc/platforms/powernv/opal-powercap.c              |   6 +
- arch/powerpc/platforms/powernv/opal-prd.c                   |   2 +
- arch/powerpc/platforms/powernv/opal-xscom.c                 |   5 +
- arch/powerpc/platforms/powernv/subcore.c                    |   3 +-
- arch/powerpc/platforms/ps3/Kconfig                          |  12 -
- arch/powerpc/platforms/ps3/Makefile                         |   2 +-
- arch/powerpc/platforms/ps3/device-init.c                    |   1 +
- arch/powerpc/platforms/ps3/gelic_udbg.c                     |   1 +
- arch/powerpc/platforms/pseries/Makefile                     |   1 +
- arch/powerpc/platforms/pseries/eeh_pseries.c                |  18 +-
- arch/powerpc/platforms/pseries/hotplug-memory.c             |  16 +-
- arch/powerpc/platforms/pseries/papr-sysparm.c               | 205 +++++++-
- arch/powerpc/platforms/pseries/papr-vpd.c                   | 541 ++++++++=
-++++++++++++
- arch/powerpc/platforms/pseries/pseries.h                    |   1 +
- arch/powerpc/platforms/pseries/suspend.c                    |   1 +
- arch/powerpc/sysdev/grackle.c                               |  19 -
- arch/powerpc/sysdev/xics/icp-native.c                       |   2 +
- drivers/misc/cxl/cxl.h                                      |   3 +-
- drivers/misc/ocxl/afu_irq.c                                 |   2 +-
- drivers/misc/ocxl/context.c                                 |   2 +-
- drivers/misc/ocxl/link.c                                    |  14 +-
- drivers/misc/ocxl/main.c                                    |   2 +-
- drivers/net/ethernet/toshiba/ps3_gelic_net.h                |   6 -
- tools/testing/selftests/powerpc/Makefile                    |   2 +
- tools/testing/selftests/powerpc/math/fpu.h                  |  25 +
- tools/testing/selftests/powerpc/math/fpu_asm.S              |  48 +-
- tools/testing/selftests/powerpc/math/fpu_preempt.c          |  30 +-
- tools/testing/selftests/powerpc/math/fpu_syscall.c          |   8 +-
- tools/testing/selftests/powerpc/math/vmx_preempt.c          |  10 +-
- tools/testing/selftests/powerpc/papr_sysparm/.gitignore     |   1 +
- tools/testing/selftests/powerpc/papr_sysparm/Makefile       |  12 +
- tools/testing/selftests/powerpc/papr_sysparm/papr_sysparm.c | 196 +++++++
- tools/testing/selftests/powerpc/papr_vpd/.gitignore         |   1 +
- tools/testing/selftests/powerpc/papr_vpd/Makefile           |  12 +
- tools/testing/selftests/powerpc/papr_vpd/papr_vpd.c         | 352 ++++++++=
-+++++
- 101 files changed, 2192 insertions(+), 603 deletions(-)
- delete mode 100644 arch/powerpc/include/asm/reg_a2.h
- create mode 100644 arch/powerpc/include/uapi/asm/papr-miscdev.h
- create mode 100644 arch/powerpc/include/uapi/asm/papr-sysparm.h
- create mode 100644 arch/powerpc/include/uapi/asm/papr-vpd.h
- create mode 100644 arch/powerpc/platforms/pseries/papr-vpd.c
- create mode 100644 tools/testing/selftests/powerpc/math/fpu.h
- create mode 100644 tools/testing/selftests/powerpc/papr_sysparm/.gitignore
- create mode 100644 tools/testing/selftests/powerpc/papr_sysparm/Makefile
- create mode 100644 tools/testing/selftests/powerpc/papr_sysparm/papr_syspa=
-rm.c
- create mode 100644 tools/testing/selftests/powerpc/papr_vpd/.gitignore
- create mode 100644 tools/testing/selftests/powerpc/papr_vpd/Makefile
- create mode 100644 tools/testing/selftests/powerpc/papr_vpd/papr_vpd.c
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmWRWKYACgkQUevqPMjh
-pYCTAhAAo27KrBu64B8SCgVJK38i7gmoLYwTXfYpxYzboO0K+KmRJjn/+eqZDsMz
-c9Woq47b7dk9MKLOv8Nt16fC5LGZQxKnicEKfJ20kx0mBASLMIGYSIl3eqycw1ho
-+iv6fVoKt9HiefTQcy/s5fK9d2cvECMO8rriUH0iT7QU4NbJ6qHtmM9RH6jVwKMl
-uVU68beC0cRGpIkVN+i+uSXIl1QG0dLI4jcISQFkZKAzTrjDBJY6uBms9PtUQGKZ
-CBALHg5jyThndO0EODxY3E9GoHvOy5ai6Ft2FBMR7UcovqWI7xldfMUvvp2c9hxY
-+JLnesBPZ9nm7xD32feoWFTraszC7cR04BsbU/lOxZqjBiZmVwkP3mX17hmDO5NV
-KEpCYC/K/pFtVjsVGu4m1IQoSO9XfxT3iyBs73XJCuUijo6g2HwvyhtTSYjIIj40
-9Ko6/idaVyecymsat0p4+n2oOy0jbVfwHrsPX8GaSQyFU7oMLHZ2JqHqx69QU4qc
-+UtGqxBwpNK38wlN8Sj7ITRgFIoIpp1WO5MOOLENb56xW91G6djccfTRV+YhkpvL
-y2Yd6JnuynfioVhddzNyuFowlvaX+gXeVKrwZ4gjQqE6jhtKpAfDAe9f/qR6wy/Q
-Scgd3t+3poOIIsjVsCQrqPTRN2AU2Nel/zQzjWtBFNLlM/dvzNY=3D
-=3DrikN
------END PGP SIGNATURE-----
 
