@@ -1,99 +1,115 @@
-Return-Path: <linux-kernel+bounces-13721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E730820BA2
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 15:49:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87EDB820BA4
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 15:57:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F5DE1C20EB3
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 14:49:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F5D5B21124
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 14:57:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A20D1B653;
-	Sun, 31 Dec 2023 14:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F289C6124;
+	Sun, 31 Dec 2023 14:57:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="CeRHjMud"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gh57j8zY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 491996112;
-	Sun, 31 Dec 2023 14:49:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
-	t=1704034145; bh=tVjN4y/BnadVs97PBPGAD+VjNQlvK4oNmgi6kkD+O/4=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=CeRHjMud6XWX40zWnbKtNDtb427ErZ9/Owab5DLKsPgbVDQCvWfzQi9Eg+0+uMpUt
-	 EOPjb2Fuy7DzPYrqkS/T3eMaAlEZLw94FkujE7VP2hjRZWLW4pwFdj6Lw4YbgD7uk8
-	 0nLIQ5M7XfPw5ppvQXR4UT+g6TCjvPccBVxx2vro=
-From: Luca Weiss <luca@z3ntu.xyz>
-Date: Sun, 31 Dec 2023 15:48:45 +0100
-Subject: [PATCH 3/3] arm64: dts: qcom: qcs404: Use specific compatible for
- hfpll
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431C16112;
+	Sun, 31 Dec 2023 14:57:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d4b650bc9cso1947895ad.0;
+        Sun, 31 Dec 2023 06:57:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704034627; x=1704639427; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fTz5TyGFzp4ZGQ+lOKRvj2KlDWSDsjrIEBja4htkNhg=;
+        b=Gh57j8zYkzIVg9urYyNHY19j5wXzZwnsOSOtGaLC0ZgO7qlOha5voIr2xvUND6UoYa
+         g7pAdSeBsvd346NmJi2KQ6O9WhY5kUFshiF+U7Qf6eLgtCRP6UEQ3o6jmO+lNeJxXT8x
+         SDPMgAlgG18cSC/f7Zodm3ajSOv3QJUiOb3OdFbr1pbNKClHamUEF8aeUD4IulFs6yr7
+         fNPE8pz+vrLIU7Yqg2g23ByoOTHnf0OKe/1GzdNTTYcreojySldf2ITd2Ars0QunOuDo
+         ivqtPM8cJMAvv08MHnLQwB56zPcRibwlrM4Gvmo1n4ygxw+tGRP3KmTltUAv5Qyio58a
+         DNXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704034627; x=1704639427;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fTz5TyGFzp4ZGQ+lOKRvj2KlDWSDsjrIEBja4htkNhg=;
+        b=AKOrek7jSkze6zUlyhhpNzaHQlRmonX41PpQ0X04EyVLadFHQKR9tPaOg/kE9Cvi9s
+         Ch2CY3oKJtVbYNfBhPy6I9TkvR9oOmkqO4Z1USDMCswS+cphtGcix3otiWrqXw+hXanQ
+         rEGr1mjWVjgRArLgr6VqJ53ezQBQyrbJOzLRqy9KJHmuAaotDDmlxzge4S/bsDXN/yeA
+         vt7ba8XbRi4vMHAc9tYghpmZEJXLOGylx+dNJP5K9z47uAUvhWb+HJHkDtc5LEuSd8j+
+         mrujo3rW/m8WHH9Zw8fcOrrVLx/h9+vuQlgLv3xHyZ/ySCwnCBYxlh3RMNRLufBQnez9
+         n3cQ==
+X-Gm-Message-State: AOJu0Yy+h4CzOB5mL3fe1u8GrCXXsimKf7jWn3j8cPyg5pXcpw0XESiS
+	Q5ABPV7R8q7FrX9Rcg9mXz+5txIdaZPOrw==
+X-Google-Smtp-Source: AGHT+IFpjDlcTRgrP8bt+8GIv5RObFRd/g2bE84fn78g+W591uHv/dU9aemwKo65bgNn+M8LaDexGw==
+X-Received: by 2002:a17:903:244d:b0:1d4:b017:a053 with SMTP id l13-20020a170903244d00b001d4b017a053mr2183914pls.116.1704034627330;
+        Sun, 31 Dec 2023 06:57:07 -0800 (PST)
+Received: from localhost.localdomain ([154.220.3.115])
+        by smtp.gmail.com with ESMTPSA id r4-20020a170902ea4400b001d3f285157dsm18704367plg.124.2023.12.31.06.57.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 31 Dec 2023 06:57:06 -0800 (PST)
+From: zhouzhouyi@gmail.com
+To: songqiang1304521@gmail.com,
+	jic23@kernel.org,
+	lars@metafoo.de,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: "zhili.liu" <zhili.liu@ucas.com.cn>
+Subject: [PATCH v2] iio: magnetometer: rm3100: add boundary check for the value read from RM3100_REG_TMRC
+Date: Sun, 31 Dec 2023 22:56:44 +0800
+Message-Id: <1704034604-9846-1-git-send-email-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 1.7.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231231-hfpll-yaml-v1-3-359d44a4e194@z3ntu.xyz>
-References: <20231231-hfpll-yaml-v1-0-359d44a4e194@z3ntu.xyz>
-In-Reply-To: <20231231-hfpll-yaml-v1-0-359d44a4e194@z3ntu.xyz>
-To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Luca Weiss <luca@z3ntu.xyz>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=747; i=luca@z3ntu.xyz;
- h=from:subject:message-id; bh=tVjN4y/BnadVs97PBPGAD+VjNQlvK4oNmgi6kkD+O/4=;
- b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlkX9esuevqApXc3vIL/HJ1Wd9C4bC8OXDGBq5V
- sD6FIi41KGJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZZF/XgAKCRBy2EO4nU3X
- VqFqD/4riijlKN8UQrEk8JI1yX3T3yETB/ns9rWEQMbrpBpEPBOq7w0nAcWqbWQriUYeQ/yjFKU
- b6hMbItKaEJwFBc2FdQWWj7s+TV60CyT5TmBw5Dw5QwzgNu7FWuIRr0GnOknfFbZPYkQ3A6b8bz
- q2Zsu++1ffScpTvT1EqsPbMU5TiXU1f1w0OScaObnAzbmY/8hP8GGnqoKW9070S0QVv0UO0OGWc
- CtT23QRxU6yB8oxkKZJieC6Sj5mLIjBeDIZA5jGSBDFYQk/IFHl43HxHhjSOaLBoD0le+SKGhQM
- 27A43OMnUtyYAmMO5LG/Gsf/wnpFDJhPa+Wdd0cS1rrFpe97F8EzsfK22hxyCIlJslHkMctc6w0
- zO+eUh9OzHUNZH+qHb2yybytL+WwXrXx5pbRTM3LXORUOMM7AHS/PjJasQX3x3pUlgL6+KLwix1
- fdo5N3qphM2722Dv3rvA2wGEU+26sZrEQAJ1LZVSrINVlmBVOkJKJLRjmpgbYEE/LI3q6icZQHg
- d8DEsEr1NI94b537FKx9ETdEkfaRONMdhWjngrWw6vBnc2mNxSzB9CblIXvF5k+wUx859zzqvcV
- 5SOCS2JYOR7gzGcgUI1p4z3e5VswnnXLmCvAZ6fcOKq4N/UCp4U/QX548AL2URiC2JyFil4kvRP
- TDprAB3WilIY3Cw==
-X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
- fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
 
-Follow the updated bindings and use a QCS404-specific compatible for the
-HFPLL.
+From: "zhili.liu" <zhili.liu@ucas.com.cn>
 
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+Recently, we encounter kernel crash in function rm3100_common_probe
+caused by out of bound access of array rm3100_samp_rates (because of
+underlying hardware failures). Add boundary check to prevent out of
+bound access.
+
+Suggested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Signed-off-by: zhili.liu <zhili.liu@ucas.com.cn>
 ---
- arch/arm64/boot/dts/qcom/qcs404.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The format of the previous patch was a bit problematic,
+we are sending it again.
 
-diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-index 6ac64ce9bb68..788dcc747a24 100644
---- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-@@ -1317,7 +1317,7 @@ apcs_glb: mailbox@b011000 {
- 		};
- 
- 		apcs_hfpll: clock-controller@b016000 {
--			compatible = "qcom,hfpll";
-+			compatible = "qcom,qcs404-hfpll", "qcom,hfpll";
- 			reg = <0x0b016000 0x30>;
- 			#clock-cells = <0>;
- 			clock-output-names = "apcs_hfpll";
+Sorry for the trouble.
 
+Thank you very much.
+--
+ drivers/iio/magnetometer/rm3100-core.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/iio/magnetometer/rm3100-core.c b/drivers/iio/magnetometer/rm3100-core.c
+index 69938204456f..fc50b6d4a334 100644
+--- a/drivers/iio/magnetometer/rm3100-core.c
++++ b/drivers/iio/magnetometer/rm3100-core.c
+@@ -586,6 +586,12 @@ int rm3100_common_probe(struct device *dev, struct regmap *regmap, int irq)
+ 	ret = regmap_read(regmap, RM3100_REG_TMRC, &tmp);
+ 	if (ret < 0)
+ 		return ret;
++
++	if (tmp < RM3100_SAMP_NUM || tmp - RM3100_TMRC_OFFSET >= RM3100_SAMP_NUM) {
++		dev_err(dev, "The value read from RM3100_REG_TMRC is invalid!\n");
++		return -EINVAL;
++	}
++
+ 	/* Initializing max wait time, which is double conversion time. */
+ 	data->conversion_time = rm3100_samp_rates[tmp - RM3100_TMRC_OFFSET][2]
+ 				* 2;
 -- 
-2.43.0
+2.25.1
 
 
