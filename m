@@ -1,244 +1,251 @@
-Return-Path: <linux-kernel+bounces-13781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E82A1820C7D
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 19:33:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60467820CCB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 20:35:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46E511F21DBD
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 18:33:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFE1A281FBD
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 19:35:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D91F9E0;
-	Sun, 31 Dec 2023 18:33:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iMTrr+Ib"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B541FBA49;
+	Sun, 31 Dec 2023 19:35:21 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688FAF9C4;
-	Sun, 31 Dec 2023 18:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-35fb39c9dcaso40311485ab.2;
-        Sun, 31 Dec 2023 10:32:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704047577; x=1704652377; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JPxDhV2DoSEaju0MY7mnRtbVT0XkCMWBP3dJFYBm6x8=;
-        b=iMTrr+IbNhIo6xWUfisMHm96gx6lkhFluKVusHLncsPBbvR4Km+rleJNs0wrlhxcFP
-         Qr0UXM/IBafCuuuKZeFPfeNa3QVSqSTHI3zQSMx79rbs5aF0cGfNzZCIxSr8B8bRtiFr
-         PUC/Ithgy7JdVfdCv2KX02mSvRFL0lebm/wEMYQfWMeQkqncHiZ3HQ3NJdt7K4WI0X6l
-         66gNtQBpsRwbhReZDELgUTByyaGi2XpCqkidQiI9qTpqsh8Bip4+Fcqh674c4+FFa802
-         owIQrUzhaXZrKzA0OySNyn2l3RLBOMunAUg5g9YkSbfOc8KXb7l4yOUW9n1nqDZOeiZL
-         p+zQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4866B670
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 19:35:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3601028d487so54139435ab.0
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 11:35:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704047577; x=1704652377;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JPxDhV2DoSEaju0MY7mnRtbVT0XkCMWBP3dJFYBm6x8=;
-        b=JEpb8JYnIcU23WBXl+YwrTUmhLaAEfk1GatXBZH8M3Nv8ekybUJq5mEs9+BflozIkw
-         ouJnvRvWisgt3zMVYMK0oNAzmrBn6cfNGbUUWmTFRdova7Q9IGSH/YtO28aXAJZlqR/E
-         kc02mLmnfX1FN8yhsWGWAeqbSXCgYTACeJSiCItvZ0VIx6ZIUBT9C5HsNPYqmL8AOPHB
-         SjO3zTsJFl80FI3Wce9TsI73ojn38r2OkhgPmjXUt/WHJJuOi9emmFKOzJJ3akBaq6gf
-         UFDsC+pX0gyG6zVdOKF4KFFsYhYn2S5N28naIuDy1t3Fds0KfwOE5JSJ32kMnzZpEiJO
-         AVzA==
-X-Gm-Message-State: AOJu0Yz6DhRmE5OMzEipcj6cKZ0IXN93nTjdLdS3/0mF5MSf2b9g9baJ
-	qqv7aCzEILovq5DXKM8j09A=
-X-Google-Smtp-Source: AGHT+IHLkpzy9hlz0hmq8tE4by5tSjoSu5tF+z6yRAUTuN679aGgua/VuYNLhwirFxAJ9y7gTnbpsg==
-X-Received: by 2002:a05:6e02:16cf:b0:35f:f01e:bb2d with SMTP id 15-20020a056e0216cf00b0035ff01ebb2dmr24139543ilx.26.1704047577323;
-        Sun, 31 Dec 2023 10:32:57 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id iz2-20020a170902ef8200b001d49c061804sm4766204plb.202.2023.12.31.10.32.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Dec 2023 10:32:56 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sun, 31 Dec 2023 10:32:56 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Stefan Gloor <code@stefan-gloor.ch>
-Cc: jdelvare@suse.com, corbet@lwn.net, linux-hwmon@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] hwmon: (sht3x) read out sensor serial number
-Message-ID: <4389cd48-5d61-49bc-8cb5-b337afe40c23@roeck-us.net>
-References: <20231227190036.20725-1-code@stefan-gloor.ch>
- <20231227190036.20725-2-code@stefan-gloor.ch>
+        d=1e100.net; s=20230601; t=1704051319; x=1704656119;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qYw7/ldIJh1p9SJY6IYq282r1KDte2/58Sd0APbI3wA=;
+        b=m2oXPQknIGBOarBCk/1lgLnCwaDYSqEdiU9lNt0uXRhMg1hggs8V2oqIBGZgWasqRy
+         5V6CD1yubBjwAr1PYFrrTgCkLCjKj3u/Heg/jvwi3aqAP9Lyl+sc+4HEv1sqd/A0GJGf
+         kyhGWqx53GX6WDZ7A2I42uVVjSU//Rl8ih6e1klSTBfH+E3YJ32dxtLBWgNxsas4pAGi
+         +G6bZ61Z9fnSmEDreifcIKYQvxJhFWw/ARaOTnlEiiKcTQ8kWHR7J1tqD3cKCKVKwoRI
+         AFM3J9jJ1Dd2fMptrQ+MKUHRGqWuehXFA5JD+J1ZkpBTTdKclEnQcMIw9H2AAk2qIRT5
+         9sjw==
+X-Gm-Message-State: AOJu0Yz5fbUuMGS29PMJiHgVhMatg7IBLnrfj3/g8V478aGltMvZmJ3F
+	d9Mk5dijxRSqHynSzpzVYi8x8ZlfqNWyWTtNSYz7Ev293Dtw
+X-Google-Smtp-Source: AGHT+IFy+BPQ/2TwVjisSdAZVotswJyjkMEYZwuMmMafYbXL+pfw00p9SZH2e7l4QJ7dTnDsZgqo0bXro+wxHJ9KeUD1sjvc0njM
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231227190036.20725-2-code@stefan-gloor.ch>
+X-Received: by 2002:a05:6e02:b4c:b0:35f:f683:fa1c with SMTP id
+ f12-20020a056e020b4c00b0035ff683fa1cmr1562835ilu.5.1704051318927; Sun, 31 Dec
+ 2023 11:35:18 -0800 (PST)
+Date: Sun, 31 Dec 2023 11:35:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008b3bfa060dd35d57@google.com>
+Subject: [syzbot] [mm?] INFO: rcu detected stall in dput (8)
+From: syzbot <syzbot+eb9f416500ff134ab699@syzkaller.appspotmail.com>
+To: brauner@kernel.org, davem@davemloft.net, jack@suse.cz, jhs@mojatatu.com, 
+	jiri@resnulli.us, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	vinicius.gomes@intel.com, viro@zeniv.linux.org.uk, xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Dec 27, 2023 at 08:00:36PM +0100, Stefan Gloor wrote:
-> The temperature/humidity sensors of the STS3x/SHT3x family are
-> calibrated and factory-programmed with a unique serial number.
-> For some sensors, this serial number can be used to obtain a calibration
-> certificate via an API provided by the manufacturer (Sensirion).
-> Expose the serial number via debugfs.
-> 
-> Tested with: 2x STS31, 1x STS32, 1x SHT31
-> 
-> Signed-off-by: Stefan Gloor <code@stefan-gloor.ch>
-> ---
->  Documentation/hwmon/sht3x.rst | 11 +++++++
->  drivers/hwmon/sht3x.c         | 56 ++++++++++++++++++++++++++++++++++-
->  2 files changed, 66 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/hwmon/sht3x.rst b/Documentation/hwmon/sht3x.rst
-> index 957c854f5d08..9585fa7c5a5d 100644
-> --- a/Documentation/hwmon/sht3x.rst
-> +++ b/Documentation/hwmon/sht3x.rst
-> @@ -65,6 +65,10 @@ When the temperature and humidity readings move back between the hysteresis
->  values, the alert bit is set to 0 and the alert pin on the sensor is set to
->  low.
->  
-> +The serial number exposed to debugfs allows for unique identification of the
-> +sensors. For sts32, sts33 and sht33, the manufacturer provides calibration
-> +certificates through an API.
-> +
->  sysfs-Interface
->  ---------------
->  
-> @@ -99,3 +103,10 @@ repeatability:      write or read repeatability, higher repeatability means
->                          - 1: medium repeatability
->                          - 2: high repeatability
->  =================== ============================================================
-> +
-> +debugfs-Interface
-> +-----------------
-> +
-> +=================== ============================================================
-> +serial_number:      unique serial number of the sensor in decimal
-> +=================== ============================================================
-> diff --git a/drivers/hwmon/sht3x.c b/drivers/hwmon/sht3x.c
-> index 79657910b79e..e016e0d9a6c4 100644
-> --- a/drivers/hwmon/sht3x.c
-> +++ b/drivers/hwmon/sht3x.c
-> @@ -10,6 +10,7 @@
->  
->  #include <asm/page.h>
->  #include <linux/crc8.h>
-> +#include <linux/debugfs.h>
->  #include <linux/delay.h>
->  #include <linux/err.h>
->  #include <linux/hwmon.h>
-> @@ -41,6 +42,9 @@ static const unsigned char sht3x_cmd_heater_off[]              = { 0x30, 0x66 };
->  /* other commands */
->  static const unsigned char sht3x_cmd_read_status_reg[]         = { 0xf3, 0x2d };
->  static const unsigned char sht3x_cmd_clear_status_reg[]        = { 0x30, 0x41 };
-> +static const unsigned char sht3x_cmd_read_serial_number[]      = { 0x37, 0x80 };
-> +
-> +static struct dentry *debugfs;
->  
->  /* delays for single-shot mode i2c commands, both in us */
->  #define SHT3X_SINGLE_WAIT_TIME_HPM  15000
-> @@ -169,6 +173,7 @@ struct sht3x_data {
->  	u32 wait_time;			/* in us*/
->  	unsigned long last_update;	/* last update in periodic mode*/
->  	enum sht3x_repeatability repeatability;
-> +	u32 serial_number;
->  
->  	/*
->  	 * cached values for temperature and humidity and limits
-> @@ -831,6 +836,36 @@ static int sht3x_write(struct device *dev, enum hwmon_sensor_types type,
->  	}
->  }
->  
-> +static void sht3x_debugfs_init(struct sht3x_data *data)
-> +{
-> +	char name[32];
-> +	struct dentry *sensor_dir;
-> +
-> +	snprintf(name, sizeof(name), "i2c%u-%02x",
-> +		 data->client->adapter->nr, data->client->addr);
-> +	sensor_dir = debugfs_create_dir(name, debugfs);
-> +	debugfs_create_u32("serial_number", 0444,
-> +			   sensor_dir, &data->serial_number);
+Hello,
 
-This creates i2c<bus>-<address>/serial_number when the device is instantiated.
-That debugfs entry is not removed when the device is removed, only when the
-driver is unloaded. This means that de-instantiating the device will leave
-stray debugfs directories and files behind until the driver is unloaded.
+syzbot found the following issue on:
 
-We had this before, and I understand that you claimed that this doesn't happen.
-To get me to believe you, you'll have to provide a log of
+HEAD commit:    39676dfe5233 Add linux-next specific files for 20231222
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1586fd31e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f3761490b734dc96
+dashboard link: https://syzkaller.appspot.com/bug?extid=eb9f416500ff134ab699
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15449dcee80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10e2787ee80000
 
-- instantiating the driver 
-- Showing the debufs tree
-- de-instantiating the driver
-- Showing the debugfs tree
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/360542c2ca67/disk-39676dfe.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/900dfb21ca8a/vmlinux-39676dfe.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c94a2a3ea0e0/bzImage-39676dfe.xz
 
-... but even then I'll want to be able to test it myself. Not sure if I
-have an eval board, but either case that will take some time. Frankly,
-I don't understand why you refuse to remove
-i2c<bus>-<address>/serial_number on device removal.
+The issue was bisected to:
 
-Guenter
+commit 5a781ccbd19e4664babcbe4b4ead7aa2b9283d22
+Author: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Date:   Sat Sep 29 00:59:43 2018 +0000
 
-> +}
-> +
-> +static int sht3x_serial_number_read(struct sht3x_data *data)
-> +{
-> +	int ret;
-> +	char buffer[SHT3X_RESPONSE_LENGTH];
-> +	struct i2c_client *client = data->client;
-> +
-> +	ret = sht3x_read_from_command(client, data,
-> +				      sht3x_cmd_read_serial_number,
-> +				      buffer,
-> +				      SHT3X_RESPONSE_LENGTH, 0);
-> +	if (ret)
-> +		return ret;
-> +
-> +	data->serial_number = (buffer[0] << 24) | (buffer[1] << 16) |
-> +			      (buffer[3] << 8) | buffer[4];
-> +	return ret;
-> +}
-> +
->  static const struct hwmon_ops sht3x_ops = {
->  	.is_visible = sht3x_is_visible,
->  	.read = sht3x_read,
-> @@ -899,6 +934,13 @@ static int sht3x_probe(struct i2c_client *client)
->  	if (ret)
->  		return ret;
->  
-> +	ret = sht3x_serial_number_read(data);
-> +	if (ret) {
-> +		dev_dbg(dev, "unable to read serial number\n");
-> +	} else {
-> +		sht3x_debugfs_init(data);
-> +	}
-> +
->  	hwmon_dev = devm_hwmon_device_register_with_info(dev,
->  							 client->name,
->  							 data,
-> @@ -917,7 +959,19 @@ static struct i2c_driver sht3x_i2c_driver = {
->  	.id_table    = sht3x_ids,
->  };
->  
-> -module_i2c_driver(sht3x_i2c_driver);
-> +static int __init sht3x_init(void)
-> +{
-> +	debugfs = debugfs_create_dir("sht3x", NULL);
-> +	return i2c_add_driver(&sht3x_i2c_driver);
-> +}
-> +module_init(sht3x_init);
-> +
-> +static void __exit sht3x_cleanup(void)
-> +{
-> +	debugfs_remove_recursive(debugfs);
-> +	i2c_del_driver(&sht3x_i2c_driver);
-> +}
-> +module_exit(sht3x_cleanup);
->  
->  MODULE_AUTHOR("David Frey <david.frey@sensirion.com>");
->  MODULE_AUTHOR("Pascal Sachs <pascal.sachs@sensirion.com>");
+    tc: Add support for configuring the taprio scheduler
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=104c379ee80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=144c379ee80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+eb9f416500ff134ab699@syzkaller.appspotmail.com
+Fixes: 5a781ccbd19e ("tc: Add support for configuring the taprio scheduler")
+
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+rcu: 	1-...!: (1 GPs behind) idle=754c/1/0x4000000000000000 softirq=6521/6522 fqs=5
+rcu: 	(detected by 0, t=10502 jiffies, g=6645, q=124 ncpus=2)
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 5081 Comm: syz-executor262 Not tainted 6.7.0-rc6-next-20231222-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+RIP: 0010:check_preemption_disabled+0x1d/0xe0 lib/smp_processor_id.c:56
+Code: 04 90 0f 0b 90 e9 83 fc ff ff 0f 1f 00 41 54 55 53 48 83 ec 08 65 8b 1d 4d 2e 77 75 65 8b 05 42 2e 77 75 a9 ff ff ff 7f 74 0b <48> 83 c4 08 89 d8 5b 5d 41 5c c3 9c 58 f6 c4 02 74 ee 65 48 8b 05
+RSP: 0018:ffffc900001f0d10 EFLAGS: 00000002
+RAX: 0000000000010002 RBX: 0000000000000001 RCX: ffffffff81686719
+RDX: fffffbfff1e74b63 RSI: ffffffff8b2f95c0 RDI: ffffffff8b2f9600
+RBP: 1ffff9200003e1ac R08: 0000000000000000 R09: fffffbfff1e74b62
+R10: ffffffff8f3a5b17 R11: ffffffff8acf3060 R12: ffff8880b992bad8
+R13: ffff888022d1b340 R14: 000000000003c2cc R15: ffffffff88ad04f0
+FS:  00005555574c3380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020001d88 CR3: 0000000029bb6000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <IRQ>
+ rcu_dynticks_curr_cpu_in_eqs include/linux/context_tracking.h:122 [inline]
+ rcu_is_watching+0x12/0xb0 kernel/rcu/tree.c:700
+ trace_lock_release include/trace/events/lock.h:69 [inline]
+ lock_release+0x4c8/0x6a0 kernel/locking/lockdep.c:5765
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:149 [inline]
+ _raw_spin_unlock_irqrestore+0x1a/0x70 kernel/locking/spinlock.c:194
+ __run_hrtimer kernel/time/hrtimer.c:1684 [inline]
+ __hrtimer_run_queues+0x5a4/0xc20 kernel/time/hrtimer.c:1752
+ hrtimer_interrupt+0x31b/0x800 kernel/time/hrtimer.c:1814
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1065 [inline]
+ __sysvec_apic_timer_interrupt+0x10c/0x410 arch/x86/kernel/apic/apic.c:1082
+ sysvec_apic_timer_interrupt+0x90/0xb0 arch/x86/kernel/apic/apic.c:1076
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:649
+RIP: 0010:destroy_inode+0x44/0x1b0 fs/inode.c:305
+Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 4c 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 6b 28 48 8d 7d 30 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 1f 01 00 00 4c 8d a3 b8 01 00 00 48 8b 6d 30 48
+RSP: 0018:ffffc90003b0fd70 EFLAGS: 00000a06
+RAX: dffffc0000000000 RBX: ffff88807daf9ec0 RCX: 0000000000000000
+RDX: 1ffff11002e59806 RSI: ffffffff81f6c6fc RDI: ffff8880172cc030
+RBP: ffff8880172cc000 R08: 0000000000000000 R09: ffffed100fb5f3e9
+R10: ffff88807daf9f4b R11: ffffffff8ace32a0 R12: 0000000000000001
+R13: 0000000000000020 R14: ffffffff8be8e660 R15: ffff88807daf9f98
+ iput_final fs/inode.c:1739 [inline]
+ iput.part.0+0x570/0x7c0 fs/inode.c:1765
+ iput+0x5c/0x80 fs/inode.c:1755
+ dentry_unlink_inode+0x292/0x430 fs/dcache.c:400
+ __dentry_kill+0x1ca/0x5f0 fs/dcache.c:603
+ dput.part.0+0x4ac/0x9a0 fs/dcache.c:845
+ dput+0x1f/0x30 fs/dcache.c:835
+ __fput+0x3b9/0xb70 fs/file_table.c:384
+ __fput_sync+0x47/0x50 fs/file_table.c:461
+ __do_sys_close fs/open.c:1592 [inline]
+ __se_sys_close fs/open.c:1577 [inline]
+ __x64_sys_close+0x86/0xf0 fs/open.c:1577
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x62/0x6a
+RIP: 0033:0x7f79c2db61c0
+Code: ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 80 3d e1 de 07 00 00 74 17 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c
+RSP: 002b:00007fff0221e5b8 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007f79c2db61c0
+RDX: 00007f79c2db6f29 RSI: 0000000020000040 RDI: 0000000000000004
+RBP: 00000000000f4240 R08: 0000000100000000 R09: 0000000100000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 00007fff0221e610
+R13: 0000000000000001 R14: 00007fff0221e610 R15: 0000000000000003
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.569 msecs
+rcu: rcu_preempt kthread starved for 10492 jiffies! g6645 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:R  running task     stack:28256 pid:17    tgid:17    ppid:2      flags:0x00004000
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5400 [inline]
+ __schedule+0xf15/0x5c80 kernel/sched/core.c:6727
+ __schedule_loop kernel/sched/core.c:6802 [inline]
+ schedule+0xe7/0x270 kernel/sched/core.c:6817
+ schedule_timeout+0x136/0x290 kernel/time/timer.c:2183
+ rcu_gp_fqs_loop+0x1eb/0xb00 kernel/rcu/tree.c:1631
+ rcu_gp_kthread+0x271/0x380 kernel/rcu/tree.c:1830
+ kthread+0x2c1/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+rcu: Stack dump where RCU GP kthread last ran:
+CPU: 0 PID: 1043 Comm: kworker/u4:7 Not tainted 6.7.0-rc6-next-20231222-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Workqueue: events_unbound toggle_allocation_gate
+RIP: 0010:csd_lock_wait kernel/smp.c:311 [inline]
+RIP: 0010:smp_call_function_many_cond+0x4e4/0x1570 kernel/smp.c:855
+Code: 0b 00 85 ed 74 4d 48 b8 00 00 00 00 00 fc ff df 4d 89 f4 4c 89 f5 49 c1 ec 03 83 e5 07 49 01 c4 83 c5 03 e8 7e c5 0b 00 f3 90 <41> 0f b6 04 24 40 38 c5 7c 08 84 c0 0f 85 44 0e 00 00 8b 43 08 31
+RSP: 0018:ffffc90004eaf920 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: ffff8880b9942060 RCX: ffffffff817c4e68
+RDX: ffff8880201b3b80 RSI: ffffffff817c4e42 RDI: 0000000000000005
+RBP: 0000000000000003 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: ffffed101732840d
+R13: 0000000000000001 R14: ffff8880b9942068 R15: ffff8880b983dec0
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005623e60a17e8 CR3: 000000000cf78000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ </IRQ>
+ <TASK>
+ on_each_cpu_cond_mask+0x40/0x90 kernel/smp.c:1023
+ on_each_cpu include/linux/smp.h:71 [inline]
+ text_poke_sync arch/x86/kernel/alternative.c:2086 [inline]
+ text_poke_bp_batch+0x22b/0x750 arch/x86/kernel/alternative.c:2296
+ text_poke_flush arch/x86/kernel/alternative.c:2487 [inline]
+ text_poke_flush arch/x86/kernel/alternative.c:2484 [inline]
+ text_poke_finish+0x30/0x40 arch/x86/kernel/alternative.c:2494
+ arch_jump_label_transform_apply+0x1c/0x30 arch/x86/kernel/jump_label.c:146
+ jump_label_update+0x1d7/0x400 kernel/jump_label.c:829
+ static_key_enable_cpuslocked+0x1b7/0x270 kernel/jump_label.c:205
+ static_key_enable+0x1a/0x20 kernel/jump_label.c:218
+ toggle_allocation_gate mm/kfence/core.c:826 [inline]
+ toggle_allocation_gate+0xf4/0x250 mm/kfence/core.c:818
+ process_one_work+0x8a4/0x15f0 kernel/workqueue.c:2633
+ process_scheduled_works kernel/workqueue.c:2706 [inline]
+ worker_thread+0x8b6/0x1290 kernel/workqueue.c:2787
+ kthread+0x2c1/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
