@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-13653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C553820A61
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 09:30:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C179820A62
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 09:31:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C75FB21AEF
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 08:30:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 739BF1C213C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 08:31:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E64CA75;
-	Sun, 31 Dec 2023 08:30:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D79D5FBFA;
+	Sun, 31 Dec 2023 08:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pV/cfNnl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l74aSVZn"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1388FC8D5
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 08:30:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B8B8C433C7;
-	Sun, 31 Dec 2023 08:30:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F79F9FA
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 08:30:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E492C433C9;
+	Sun, 31 Dec 2023 08:30:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704011418;
-	bh=D6VXuRwAKv9dO+mNmqMLcBG3Fo8hoXZOx0qi+4o2+wM=;
+	s=k20201202; t=1704011424;
+	bh=pGyWv9VDcODy3haubtquFUnBMC/QK1gpzpez9PuUJg8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pV/cfNnlutV5oJo3GVEF+qPX7SM5xqctJKNU2amJ7TJU4IOiq3JWRgdUT3zEA+zi6
-	 yA+d+w+GWovK1mBnqsKKPAxRFaGoEXNANQwL9/HeB2MfY2USxVQhZJ8gxA11tPd/ue
-	 ATpwZ1PQR5TOJg2o5rIlKdnu3JGH35NPy7eQ+GPyknwR0xYo7c8BwjD5fehnihnKCX
-	 T02m2Cg1NosuM5VC+Kz+A4jl4He+Eq8Jc6iqdT4m572jiZKEeAE+S8eMqhezNpsHe8
-	 dHtKfAfC7klMoG5W7b00l4uXr43yVa8nE9paBEU8WFl2azCTQsVJosZ64QKwWKcfAX
-	 iJLa9KiKs6u5w==
+	b=l74aSVZnKCkxsU7iG5U39K6snGA5u0zORTgPF1sZDwcJ0bzyhtgB5uUiyzw0HVVsw
+	 ek4vZ6ge7ZUHDNrjVflanVu296zbSASdogcEg8Tb6frJ30w/0BZHKH5UJQoV7dXJ97
+	 GeKq2Ox/1nR8xHE2+sEscfLFV5ut83FCw7ogbacrRHQq/Sa6Yp0wMU31UFkt+TVHfO
+	 u7t5+I8bIvXQjLwJOkgzlanYNs2WAr6AaUEXlmLudcTrbCGUW57Je2lm1kCJ8R/N/F
+	 6bJ5FuvlLyeRYYASv8mvFG0yR+qcAblM9nRS23ll9s/RHLDqOvR9fgn3rkJwG5sq7P
+	 uFhh6mMktlIiQ==
 From: guoren@kernel.org
 To: paul.walmsley@sifive.com,
 	palmer@dabbelt.com,
@@ -54,9 +54,9 @@ To: paul.walmsley@sifive.com,
 Cc: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH V2 2/3] riscv: Add ARCH_HAS_PRETCHW support with Zibop
-Date: Sun, 31 Dec 2023 03:29:52 -0500
-Message-Id: <20231231082955.16516-3-guoren@kernel.org>
+Subject: [PATCH V2 3/3] riscv: xchg: Prefetch the destination word for sc.w
+Date: Sun, 31 Dec 2023 03:29:53 -0500
+Message-Id: <20231231082955.16516-4-guoren@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231231082955.16516-1-guoren@kernel.org>
 References: <20231231082955.16516-1-guoren@kernel.org>
@@ -70,49 +70,51 @@ Content-Transfer-Encoding: 8bit
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-Enable Linux prefetchw primitive with Zibop cpufeature, which preloads
-cache line into L1 cache for the next write operation.
+The cost of changing a cacheline from shared to exclusive state can be
+significant, especially when this is triggered by an exclusive store,
+since it may result in having to retry the transaction.
+
+This patch makes use of prefetch.w to prefetch cachelines for write
+prior to lr/sc loops when using the xchg_small atomic routine.
+
+This patch is inspired by commit: 0ea366f5e1b6 ("arm64: atomics:
+prefetch the destination word for write prior to stxr").
 
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Signed-off-by: Guo Ren <guoren@kernel.org>
 ---
- arch/riscv/include/asm/processor.h | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/riscv/include/asm/cmpxchg.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-index f19f861cda54..8d3a2ab37678 100644
---- a/arch/riscv/include/asm/processor.h
-+++ b/arch/riscv/include/asm/processor.h
-@@ -13,6 +13,9 @@
- #include <vdso/processor.h>
+diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
+index 26cea2395aae..d7b9d7951f08 100644
+--- a/arch/riscv/include/asm/cmpxchg.h
++++ b/arch/riscv/include/asm/cmpxchg.h
+@@ -10,6 +10,7 @@
  
- #include <asm/ptrace.h>
-+#include <asm/insn-def.h>
-+#include <asm/alternative-macros.h>
-+#include <asm/hwcap.h>
+ #include <asm/barrier.h>
+ #include <asm/fence.h>
++#include <asm/processor.h>
  
- #ifdef CONFIG_64BIT
- #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
-@@ -106,6 +109,19 @@ static inline void arch_thread_struct_whitelist(unsigned long *offset,
- #define KSTK_EIP(tsk)		(task_pt_regs(tsk)->epc)
- #define KSTK_ESP(tsk)		(task_pt_regs(tsk)->sp)
- 
-+#ifdef CONFIG_RISCV_ISA_ZICBOP
-+#define ARCH_HAS_PREFETCHW
-+
-+#define PREFETCHW_ASM(x)						\
-+	ALTERNATIVE(__nops(1), CBO_PREFETCH_W(x, 0), 0,			\
-+		    RISCV_ISA_EXT_ZICBOP, CONFIG_RISCV_ISA_ZICBOP)
-+
-+
-+static inline void prefetchw(const void *x)
-+{
-+	__asm__ __volatile__(PREFETCHW_ASM(%0) : : "r" (x) : "memory");
-+}
-+#endif /* CONFIG_RISCV_ISA_ZICBOP */
- 
- /* Do necessary setup to start up a newly executed thread. */
- extern void start_thread(struct pt_regs *regs,
+ #define __arch_xchg_masked(prepend, append, r, p, n)			\
+ ({									\
+@@ -23,6 +24,7 @@
+ 									\
+ 	__asm__ __volatile__ (						\
+ 	       prepend							\
++	       PREFETCHW_ASM(%5)					\
+ 	       "0:	lr.w %0, %2\n"					\
+ 	       "	and  %1, %0, %z4\n"				\
+ 	       "	or   %1, %1, %z3\n"				\
+@@ -30,7 +32,7 @@
+ 	       "	bnez %1, 0b\n"					\
+ 	       append							\
+ 	       : "=&r" (__retx), "=&r" (__rc), "+A" (*(__ptr32b))	\
+-	       : "rJ" (__newx), "rJ" (~__mask)				\
++	       : "rJ" (__newx), "rJ" (~__mask), "rJ" (__ptr32b)		\
+ 	       : "memory");						\
+ 									\
+ 	r = (__typeof__(*(p)))((__retx & __mask) >> __s);		\
 -- 
 2.40.1
 
