@@ -1,203 +1,123 @@
-Return-Path: <linux-kernel+bounces-13684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B260820AFC
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 11:29:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7280820B11
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 11:33:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BAE81C20CE1
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 10:29:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DAB81C20FCC
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 10:33:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939E328F5;
-	Sun, 31 Dec 2023 10:29:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3529933EA;
+	Sun, 31 Dec 2023 10:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="i4QjwUUn";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="UKJuc0vh";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="i4QjwUUn";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="UKJuc0vh"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="jtKpTd1m"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E46B211C;
-	Sun, 31 Dec 2023 10:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9FFAC21D10;
-	Sun, 31 Dec 2023 10:28:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704018539; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gU/7SX+x84Zafnu4sZDk7oJ3cJRBbNvRTFmeeU4ZD7U=;
-	b=i4QjwUUnP8EfCdJ6pSO98lkC2eo1ztbDer+ThE3OUzQxH/79lCPVN9DXf6uqHIDcqQdDGC
-	yEMVZipdE3Xcd0R//urWYxog+gCP55HGkBmmX28Dj+RlgcFX36Z3nzvpyKBOTCQAgwtCM4
-	MIi9XxAc81qC5ds7abr+u4L7grhtbqo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704018539;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gU/7SX+x84Zafnu4sZDk7oJ3cJRBbNvRTFmeeU4ZD7U=;
-	b=UKJuc0vhL8oLAgU78kqQqELwPa2vszCdM0e6n2gqVa8WR9yZu/VLK8293dqrjjr1XJxYRf
-	GKoFoscWZFupInBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704018539; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gU/7SX+x84Zafnu4sZDk7oJ3cJRBbNvRTFmeeU4ZD7U=;
-	b=i4QjwUUnP8EfCdJ6pSO98lkC2eo1ztbDer+ThE3OUzQxH/79lCPVN9DXf6uqHIDcqQdDGC
-	yEMVZipdE3Xcd0R//urWYxog+gCP55HGkBmmX28Dj+RlgcFX36Z3nzvpyKBOTCQAgwtCM4
-	MIi9XxAc81qC5ds7abr+u4L7grhtbqo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704018539;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gU/7SX+x84Zafnu4sZDk7oJ3cJRBbNvRTFmeeU4ZD7U=;
-	b=UKJuc0vhL8oLAgU78kqQqELwPa2vszCdM0e6n2gqVa8WR9yZu/VLK8293dqrjjr1XJxYRf
-	GKoFoscWZFupInBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3C0691398B;
-	Sun, 31 Dec 2023 10:28:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 94VCDWtCkWUGNwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sun, 31 Dec 2023 10:28:59 +0000
-Date: Sun, 31 Dec 2023 11:28:58 +0100
-Message-ID: <87a5pqwtqt.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: peter.ujfalusi@linux.intel.com
-Cc: Dominik Brodowski <linux@dominikbrodowski.net>,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev
-Subject: Re: Oops in hdac_hda_dev_probe (6.7-rc7)
-In-Reply-To: <87plyovwg7.wl-tiwai@suse.de>
-References: <ZYvUIxtrqBQZbNlC@shine.dominikbrodowski.net>
-	<87sf3lxiet.wl-tiwai@suse.de>
-	<ZY7kosArPqhlCfOA@shine.dominikbrodowski.net>
-	<874jg1x7ao.wl-tiwai@suse.de>
-	<ZY_Gb8-rncuOjRq-@shine.dominikbrodowski.net>
-	<87plyovwg7.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9736A8F48;
+	Sun, 31 Dec 2023 10:33:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704018801; x=1704623601; i=markus.elfring@web.de;
+	bh=I0Xu6K601Nm32B7uvcWfNE+QosXgVl3IjaU3K1o4CgM=;
+	h=X-UI-Sender-Class:Date:To:From:Subject:Cc;
+	b=jtKpTd1mVE8EfPH3AgRi3bsjnjZu0bbyDmAl1LXrxczjagkwrkM70hTSTBrYmLMr
+	 evo6ZnUhBhJs+Pg7ugM5f06Vx/GgIRluk3HkhK4dYW7Avop9nGg1upOsNKKCEprY4
+	 HR2/i0T7ndOsd0BSVzX8MXktTkYF5MBvDylQRieOI3PXW+BeNrk6UYUVLPV6KrMYW
+	 fn5DNdN7f2hYnj8vZNLZo49YDt05nXKxEQzZPP6wJSDqtGYCtl4VkuZ5DHI1jC712
+	 LbYgb1MJv1d4auXv/P87flrKrfOouewzAix/58REJaJAJkrA4gmnvCn6/pUM+NQMh
+	 8+917lu1L/wZBimnFA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1N6sG3-1rAOUA1RyJ-017uVs; Sun, 31
+ Dec 2023 11:33:21 +0100
+Message-ID: <873097b9-5a0b-495b-83ae-f2247fbb512b@web.de>
+Date: Sun, 31 Dec 2023 11:33:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=i4QjwUUn;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=UKJuc0vh
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_CC(0.00)[dominikbrodowski.net,gmail.com,kernel.org,perex.cz,suse.com,alsa-project.org,vger.kernel.org,linux.intel.com,lists.linux.dev];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -3.51
-X-Rspamd-Queue-Id: 9FFAC21D10
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Johannes Berg <johannes@sipsolutions.net>, Paolo Abeni <pabeni@redhat.com>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] wifi: cfg80211: Replace a label in
+ cfg80211_parse_ml_sta_data()
+Cc: LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:iM1BOGtdeD8AtCAAfFlwSOiytaVaoci3r6z1EsCpcglGg4EL/hA
+ IXcu2yRVlCN53tgjzSijw6VgV7AsMO5XQQ8aTJLtR00XmbtkBSg9KF3fJdaoLbYfthPZd9m
+ vzO0lXKJsuNYJlw6UBcP1P14+EAvlO9UDD5OvpwbEVbz1MMlz3u/3G4Um5kXIvKuBL30qrb
+ qdONys6dZdda+oG21cszg==
 X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:0+UXqzkwbU8=;mZ1uV5g6EcraQSB7q7DMh40Rgha
+ mdyfTu67DW1VQCUIFbjKQs6MVWe8n1uG1O0VR74tK7mCcIEJ5x7Rh2ZQHecIoAY+UnfLEJtVf
+ RpTix2ykctPyxxTDEQhbrRDdqxSv2O9DMJBU4RaS2i9tB+/VryJlOZmlhlrggSbm64OYxHzAv
+ O2H36Eg+lX4ZdOl96OZG90eZ7Ksar9tK0UkxplhDuNqIr9ciMCWa6w4T7qHRYC/REawypR6ZM
+ LUQ9SZ9KSk1BQfgGrIjMvF49YLiV+d2M6KyRg+lIg8t8x8CQgH7tTulKMfOvslkQ0sAVN7/dd
+ ckNBF6Xj+KvyATOeLy6R/8+UgWnrA122VvkIfNmlTm7DSdo65jBWceO36GRUvFZZyfuD7BBvc
+ 3h9AEaYSIzkvf0rqJUrioBNnubES5gCVYeMOfGR3ANgIEXPdgnOuwwSLSaMZmq/V3B+qGAwn1
+ 09fS6gT6w+8ByfNq1h0FoDb2AK20mp0gU+zncpWY8F1DNdkp4x8HfvpSF28w+nLAY7RF2Nu+j
+ l5WROVg44dhML8c6wjMJkAWFw3L1Gc/3cI/ARsGkUUL05CCjAVt2Ch3QAKrA4hLtFAb9/PrLF
+ dqL5RLfVhApN5yXlJOJWL58q6QTQmWD9m9yVOwezXDao6jSgQwljx26lDqOM1qVv1Kwi+b+WZ
+ 38LeByva4HDq2AiLiyrk/UFIDEMuYZishuYy4T2TeibsgqFB+4SZNWy+0VVE7B0TOrY4JP96y
+ 6nVfAn7v8TB0WRK61etRq0Gnke+rug4uOUcEanAbpdM91YPCsH+tT+bpYYDaNfKhCl1jTo5l1
+ +V/vK34eCgRt5/HSN5G9wQIIxtQisHKpLx7Fnu0LAdSm6CY88V2mpCyFyxPb9TsyEXbSgQLO0
+ dgEoBR6WHAYXhnwZ2RownoeOufKaQB0TtHMxbAImFEUpokcjiNEt2ibBB5AgrZRKaNPBrq8YG
+ tcL/Rg==
 
-On Sat, 30 Dec 2023 11:03:36 +0100,
-Takashi Iwai wrote:
-> 
-> On Sat, 30 Dec 2023 08:27:43 +0100,
-> Dominik Brodowski wrote:
-> > 
-> > Am Fri, Dec 29, 2023 at 06:11:43PM +0100 schrieb Takashi Iwai:
-> > > On Fri, 29 Dec 2023 16:24:18 +0100,
-> > > Dominik Brodowski wrote:
-> > > > 
-> > > > Hi Takashi,
-> > > > 
-> > > > many thanks for your response. Your patch helps half-way: the oops goes
-> > > > away, but so does the sound... With your patch, the decisive lines in dmesg
-> > > > are:
-> > > > 
-> > > > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> > > > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> > > > 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> > > > 	sof_sdw sof_sdw: snd_soc_register_card failed -517
-> > > > 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> > > > 	sof_sdw sof_sdw: snd_soc_register_card failed -517
-> > > > 	platform sof_sdw: deferred probe pending
-> > > > 
-> > > > With a revert of the a0575b4add21, it is:
-> > > > 
-> > > > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> > > > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> > > > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Topology: ABI 3:22:1 Kernel ABI 3:23:0
-> > > > 	sof_sdw sof_sdw: ASoC: Parent card not yet available, widget card binding deferred
-> > > > 	sof_sdw sof_sdw: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 3
-> > > > 	input: sof-soundwire HDMI/DP,pcm=5 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input14
-> > > > 	input: sof-soundwire HDMI/DP,pcm=6 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input15
-> > > > 	input: sof-soundwire HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input16
-> > > > 
-> > > > Maybe this helps a bit further?
-> > > 
-> > > Thanks for quick testing.
-> > > It shows at least that my guess wasn't wrong.
-> > > 
-> > > The problem could be the initialization order in the caller side.
-> > > Can the patch below work instead?
-> > 
-> > Unfortunately, no:
-> > 
-> > sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> > sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> > sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> > sof_sdw sof_sdw: snd_soc_register_card failed -517
-> > sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> > sof_sdw sof_sdw: snd_soc_register_card failed -517
-> > platform sof_sdw: deferred probe pending
-> 
-> Hm, then it might be the logical failure of that commit.
-> Peter?
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 31 Dec 2023 11:22:42 +0100
 
-FWIW, there was a report on bugzilla, too:
-  https://bugzilla.kernel.org/show_bug.cgi?id=218304
+The kfree() function was called in one case by
+the cfg80211_parse_ml_sta_data() function during error handling
+even if the passed variable contained a null pointer.
+This issue was detected by using the Coccinelle software.
 
+Thus use an other label.
 
-Takashi
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ net/wireless/scan.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/wireless/scan.c b/net/wireless/scan.c
+index cf2131671eb6..492e30138418 100644
+=2D-- a/net/wireless/scan.c
++++ b/net/wireless/scan.c
+@@ -2693,7 +2693,7 @@ static void cfg80211_parse_ml_sta_data(struct wiphy =
+*wiphy,
+
+ 	new_ie =3D kmalloc(IEEE80211_MAX_DATA_LEN, gfp);
+ 	if (!new_ie)
+-		goto out;
++		goto free_mle;
+
+ 	for (i =3D 0; i < ARRAY_SIZE(mle->sta_prof) && mle->sta_prof[i]; i++) {
+ 		const struct ieee80211_neighbor_ap_info *ap_info;
+@@ -2812,8 +2812,8 @@ static void cfg80211_parse_ml_sta_data(struct wiphy =
+*wiphy,
+ 		cfg80211_put_bss(wiphy, bss);
+ 	}
+
+-out:
+ 	kfree(new_ie);
++free_mle:
+ 	kfree(mle);
+ }
+
+=2D-
+2.43.0
+
 
