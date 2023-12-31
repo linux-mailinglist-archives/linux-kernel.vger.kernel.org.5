@@ -1,137 +1,142 @@
-Return-Path: <linux-kernel+bounces-13710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A8BF820B7B
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 15:08:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 585C7820B7D
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 15:10:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAACB281E78
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 14:08:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A14F1C2138C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 14:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12247611B;
-	Sun, 31 Dec 2023 14:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 728D15390;
+	Sun, 31 Dec 2023 14:10:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="I5Rsre8W"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="GdPi/rcN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4408C63A7;
-	Sun, 31 Dec 2023 14:08:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BV8QA1Z003121;
-	Sun, 31 Dec 2023 14:08:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=/uM23a1DykmVUSnyJhKoNd/pLzJUVQGzc8LClp1i+c4=;
- b=I5Rsre8WTcCRXkQ3neHKlQoHtyml0m9oQc25vVZI9ObgJHsywbXvaE6E31wPWK043gPp
- tYgdPzOs7p7iyJQnte+0HK/iDw+KKyt3KzKVDA4+5z6/OmzBqvl9gM9HTNbgJHmBUh/M
- VD+L96k8ZS0uGZIXnpkyPUDASlZV4Nzx59pczon3gzCR/hjDzxBWrwg7CyvNK7E5BOVa
- NIJT4Qexzg/Mk2Z2OjoKQV2ofPFzllXgvkT75EgL4mp4YPbSWhmRXhwwmhTxfSC1RTxX
- gmlsAI+XbJC+aVQ61R09On0KAbph77pKf++Oe7S2UHzS08W3LM1mu9fpoQogDjkwpBl4 3w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vak6f2ag3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 31 Dec 2023 14:08:05 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BVDxBEZ029654;
-	Sun, 31 Dec 2023 14:08:04 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vak6f2afn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 31 Dec 2023 14:08:04 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BVDj9iA007335;
-	Sun, 31 Dec 2023 14:08:03 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vaxhnjpae-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 31 Dec 2023 14:08:03 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BVE82vO17433138
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 31 Dec 2023 14:08:03 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 95F0758058;
-	Sun, 31 Dec 2023 14:08:02 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 545CA58057;
-	Sun, 31 Dec 2023 14:08:01 +0000 (GMT)
-Received: from lingrow.int.hansenpartnership.com (unknown [9.67.79.160])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Sun, 31 Dec 2023 14:08:01 +0000 (GMT)
-Message-ID: <775642a320f7dae53d70610f265056bcdfd8ab13.camel@linux.ibm.com>
-Subject: Re: scsi: ses: Move a label in ses_enclosure_data_process()
-From: James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To: Markus Elfring <Markus.Elfring@web.de>, linux-scsi@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        "Martin K. Petersen"
-	 <martin.petersen@oracle.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Date: Sun, 31 Dec 2023 09:07:59 -0500
-In-Reply-To: <38dfe7b6-6d8b-4056-9943-12197c80f4d7@web.de>
-References: <4616e325-e313-4078-9788-dd1e6e51b9e0@web.de>
-	 <9d24844f30604f969ac10da456801f594ce72f2d.camel@linux.ibm.com>
-	 <b65afa15-41e6-4d71-87bd-39fd688fa551@web.de>
-	 <a35c6128d4449fec00238c909e5f6f45ebf4bcba.camel@linux.ibm.com>
-	 <a3825ab2-8987-4b85-9db0-642035789c49@web.de>
-	 <4018ab9225ecaf18501e54114a94217a58a8a57f.camel@linux.ibm.com>
-	 <38dfe7b6-6d8b-4056-9943-12197c80f4d7@web.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46FA86111
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 14:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso405273a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 06:10:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1704031827; x=1704636627; darn=vger.kernel.org;
+        h=in-reply-to:from:references:to:content-language:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l2P8UJoxBQv0z0II8XtzeG8pYJ+EsqqcSqS8meWeRzI=;
+        b=GdPi/rcNlhTL3UcRTd39Fa6R1fNdiPcYQUPIRBVcpE2rXyvcRv5fm4TCzYK7htVUh5
+         yqZZRG8Qd0WJfx9Lzm/+p3b5U3WNkpw6oeCpgmM4SI0HZ6SmKxFLUEUIkrqELXudgTU8
+         F68s0DM6KMAY6hGjbszgexdFCmsp8d3ycju4VASN09a37T3UmB3bkgmWdOrvas7R2Hwq
+         ocpL2/6bw7Tk6a8/ukCp8TsYuMrr2NbXOdKSLf9i/A5Y/O/Qq2n2jUvNpjzBis4Cg80n
+         jjB0cpurShtw+gUn02qpZs04x7+JHwI/VuRBhLvbyjCmGiPsthHCjaNS+47TmEOUEaXo
+         Au2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704031827; x=1704636627;
+        h=in-reply-to:from:references:to:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=l2P8UJoxBQv0z0II8XtzeG8pYJ+EsqqcSqS8meWeRzI=;
+        b=qo0CmmckdHRZXrl+4V+M4M2Cu8DIKsYau59pMBDDoXTrb8qFTnJcQE+XNee9+I/zwz
+         OmnxTxsydOzblt479Yf/+NoAs5Ps/fZtLPz7nQFH4Fkzfbyd8q/WW6X7XnYSFx77h5HJ
+         WLXpwoOxMC0OvCeRFAyTXcHR7v7e31F3kiywpUqJD1b8d7M4pfo1u/u+/Vu8AF3gyLSE
+         9hpUnegNkyi1PvYR9GH2NPbUFp+0zZXXOCuGzMr1fgp35OWsPfmePjP1yHAWISnMdJyO
+         FCczf4W8m9eFCuEDTEq1bvjEyMFU97XG4f6um9G5xNwiaV5WTz5nb+1hcemrVo3KRibK
+         PplQ==
+X-Gm-Message-State: AOJu0YwJvTalWhpRJzlPa5j4+HulJG10XgRvjiBoG06Pp5fEN5SJ4vRD
+	enqtTPpw4TF70iGhcGTBGc5uA15LUbeq
+X-Google-Smtp-Source: AGHT+IGmciecIxAsDwnBp+IrNvVwJ9Q+rs9NQPKL6Ki0bd6gGqUQvaO1ndNkfJdgnjXsycNjg0gilg==
+X-Received: by 2002:a05:6a00:3a05:b0:6da:73b4:1c20 with SMTP id fj5-20020a056a003a0500b006da73b41c20mr384121pfb.29.1704031827521;
+        Sun, 31 Dec 2023 06:10:27 -0800 (PST)
+Received: from ?IPV6:2804:7f1:e2c0:aba3:7663:8830:3d6b:aa9f? ([2804:7f1:e2c0:aba3:7663:8830:3d6b:aa9f])
+        by smtp.gmail.com with ESMTPSA id a1-20020a624d01000000b006d974d47a8csm18485013pfb.115.2023.12.31.06.10.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Dec 2023 06:10:27 -0800 (PST)
+Content-Type: multipart/mixed; boundary="------------uW7Kf7C5l765pwsBWEPcP16I"
+Message-ID: <675e418f-ef2f-4bb7-9fde-337171aea92e@mojatatu.com>
+Date: Sun, 31 Dec 2023 11:10:23 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: djWPtmrHUpMkdhmwwenP19MDP89Ifvn2
-X-Proofpoint-GUID: vFr7PqRaRso_YZKBlAOYJp00uqQ-d7az
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-31_07,2023-12-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=15 clxscore=1015 mlxscore=15
- priorityscore=1501 bulkscore=0 suspectscore=0 adultscore=0
- lowpriorityscore=0 impostorscore=0 phishscore=0 spamscore=15
- mlxlogscore=74 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2312310116
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [net?] general protection fault in qdisc_create
+Content-Language: en-US
+To: syzbot <syzbot+84339b9e7330daae4d66@syzkaller.appspotmail.com>,
+ davem@davemloft.net, edumazet@google.com, jhs@mojatatu.com,
+ jiri@resnulli.us, kuba@kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, pabeni@redhat.com, pctammela@mojatatu.com,
+ syzkaller-bugs@googlegroups.com, xiyou.wangcong@gmail.com
+References: <0000000000007c85f5060dcc3a28@google.com>
+From: Victor Nogueira <victor@mojatatu.com>
+In-Reply-To: <0000000000007c85f5060dcc3a28@google.com>
 
-On Sat, 2023-12-30 at 15:25 +0100, Markus Elfring wrote:
-> > > If you would dare to follow advice from goto chains in a strict
-> > > way, I imagine that you can tend to stress the attention for more
-> > > useful data processing a bit more than such a redundant function
-> > > call.
-> > 
-> > It's about maintainability and simplicity.  Eliminating kfree(NULL)
-> > doesn't simplify most code,
-> 
-> I find it easy to avoid such a call in the affected and concrete
-> function implementation.
+This is a multi-part message in MIME format.
+--------------uW7Kf7C5l765pwsBWEPcP16I
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I find it easy to fall down stairs nowadays; that doesn't make it a
-necessary or even desirable thing to do.
+On 31/12/2023 08:04, syzbot wrote:
+> HEAD commit:    c2b2ee36250d bridge: cfm: fix enum typo in br_cc_ccm_tx_pa..
+> git tree:       net-next
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15fed8f6e80000
 
-> >                             it just makes the exit paths more
-> > complex
-> 
-> Where is undesirable software complexity here in the repositioning
-> of the label “simple_populate” before the statement “buf = NULL;”?
+#syz test
+--------------uW7Kf7C5l765pwsBWEPcP16I
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-net-sched-We-should-only-add-appropriate-qdiscs-bloc.patch"
+Content-Disposition: attachment;
+ filename*0="0001-net-sched-We-should-only-add-appropriate-qdiscs-bloc.pa";
+ filename*1="tch"
+Content-Transfer-Encoding: base64
 
-We don't just apply patches because we can: code churn is inimical to
-software maintenance and backporting, so every patch has an application
-cost.  The value provided by any patch has to be greater than that
-cost. kfree(NULL) is an expected operation so there's little value in
-avoiding it and certainly not enough to overcome the patch application
-cost.
+RnJvbSBlNjMzNDA3MDdjZTg1Zjg2MDhlM2MzYWUzY2VjMTM0MGVmMTdlZWRlIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBWaWN0b3IgTm9ndWVpcmEgPHZpY3RvckBtb2phdGF0
+dS5jb20+CkRhdGU6IFRodSwgMjggRGVjIDIwMjMgMTM6MTg6NDkgKzAwMDAKU3ViamVjdDog
+W1BBVENIIG5ldC1uZXh0IDEvMV0gbmV0L3NjaGVkOiBXZSBzaG91bGQgb25seSBhZGQgYXBw
+cm9wcmlhdGUgcWRpc2NzCiBibG9ja3MgdG8gcG9ydHMnIHhhcnJheQoKV2Ugc2hvdWxkIG9u
+bHkgYWRkIHFkaXNjcyB0byB0aGUgYmxvY2tzIHBvcnRzJyB4YXJyYXkgaW4gaW5ncmVzcyB0
+aGF0CnN1cHBvcnQgaW5ncmVzc19ibG9ja19zZXQvZ2V0IG9yIGluIGVncmVzcyB0aGF0IHN1
+cHBvcnQKZWdyZXNzX2Jsb2NrX3NldC9nZXQuCgpGaXhlczogOTEzYjQ3ZDM0MjRlICgibmV0
+L3NjaGVkOiBJbnRyb2R1Y2UgdGMgYmxvY2sgbmV0ZGV2IHRyYWNraW5nIGluZnJhIikKClNp
+Z25lZC1vZmYtYnk6IFZpY3RvciBOb2d1ZWlyYSA8dmljdG9yQG1vamF0YXR1LmNvbT4KUmV2
+aWV3ZWQtYnk6IEphbWFsIEhhZGkgU2FsaW0gPGpoc0Btb2phdGF0dS5jb20+Ci0tLQogbmV0
+L3NjaGVkL3NjaF9hcGkuYyB8IDM0ICsrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0t
+LS0KIDEgZmlsZSBjaGFuZ2VkLCAyMCBpbnNlcnRpb25zKCspLCAxNCBkZWxldGlvbnMoLSkK
+CmRpZmYgLS1naXQgYS9uZXQvc2NoZWQvc2NoX2FwaS5jIGIvbmV0L3NjaGVkL3NjaF9hcGku
+YwppbmRleCAyOTkwODZiYjYyMDUuLjQyNmJlODEyNzZmMSAxMDA2NDQKLS0tIGEvbmV0L3Nj
+aGVkL3NjaF9hcGkuYworKysgYi9uZXQvc2NoZWQvc2NoX2FwaS5jCkBAIC0xMTg3LDIzICsx
+MTg3LDI5IEBAIHN0YXRpYyBpbnQgcWRpc2NfYmxvY2tfYWRkX2RldihzdHJ1Y3QgUWRpc2Mg
+KnNjaCwgc3RydWN0IG5ldF9kZXZpY2UgKmRldiwKIAlzdHJ1Y3QgdGNmX2Jsb2NrICpibG9j
+azsKIAlpbnQgZXJyOwogCi0JYmxvY2sgPSBjbF9vcHMtPnRjZl9ibG9jayhzY2gsIFRDX0hf
+TUlOX0lOR1JFU1MsIE5VTEwpOwotCWlmIChibG9jaykgewotCQllcnIgPSB4YV9pbnNlcnQo
+JmJsb2NrLT5wb3J0cywgZGV2LT5pZmluZGV4LCBkZXYsIEdGUF9LRVJORUwpOwotCQlpZiAo
+ZXJyKSB7Ci0JCQlOTF9TRVRfRVJSX01TRyhleHRhY2ssCi0JCQkJICAgICAgICJpbmdyZXNz
+IGJsb2NrIGRldiBpbnNlcnQgZmFpbGVkIik7Ci0JCQlyZXR1cm4gZXJyOworCWlmIChzY2gt
+Pm9wcy0+aW5ncmVzc19ibG9ja19nZXQpIHsKKwkJYmxvY2sgPSBjbF9vcHMtPnRjZl9ibG9j
+ayhzY2gsIFRDX0hfTUlOX0lOR1JFU1MsIE5VTEwpOworCQlpZiAoYmxvY2spIHsKKwkJCWVy
+ciA9IHhhX2luc2VydCgmYmxvY2stPnBvcnRzLCBkZXYtPmlmaW5kZXgsIGRldiwKKwkJCQkJ
+R0ZQX0tFUk5FTCk7CisJCQlpZiAoZXJyKSB7CisJCQkJTkxfU0VUX0VSUl9NU0coZXh0YWNr
+LAorCQkJCQkgICAgICAgImluZ3Jlc3MgYmxvY2sgZGV2IGluc2VydCBmYWlsZWQiKTsKKwkJ
+CQlyZXR1cm4gZXJyOworCQkJfQogCQl9CiAJfQogCi0JYmxvY2sgPSBjbF9vcHMtPnRjZl9i
+bG9jayhzY2gsIFRDX0hfTUlOX0VHUkVTUywgTlVMTCk7Ci0JaWYgKGJsb2NrKSB7Ci0JCWVy
+ciA9IHhhX2luc2VydCgmYmxvY2stPnBvcnRzLCBkZXYtPmlmaW5kZXgsIGRldiwgR0ZQX0tF
+Uk5FTCk7Ci0JCWlmIChlcnIpIHsKLQkJCU5MX1NFVF9FUlJfTVNHKGV4dGFjaywKLQkJCQkg
+ICAgICAgIkVncmVzcyBibG9jayBkZXYgaW5zZXJ0IGZhaWxlZCIpOwotCQkJZ290byBlcnJf
+b3V0OworCWlmIChzY2gtPm9wcy0+ZWdyZXNzX2Jsb2NrX2dldCkgeworCQlibG9jayA9IGNs
+X29wcy0+dGNmX2Jsb2NrKHNjaCwgVENfSF9NSU5fRUdSRVNTLCBOVUxMKTsKKwkJaWYgKGJs
+b2NrKSB7CisJCQllcnIgPSB4YV9pbnNlcnQoJmJsb2NrLT5wb3J0cywgZGV2LT5pZmluZGV4
+LCBkZXYsCisJCQkJCUdGUF9LRVJORUwpOworCQkJaWYgKGVycikgeworCQkJCU5MX1NFVF9F
+UlJfTVNHKGV4dGFjaywKKwkJCQkJICAgICAgICJFZ3Jlc3MgYmxvY2sgZGV2IGluc2VydCBm
+YWlsZWQiKTsKKwkJCQlnb3RvIGVycl9vdXQ7CisJCQl9CiAJCX0KIAl9CiAKLS0gCjIuMjUu
+MQoK
 
-James
-
+--------------uW7Kf7C5l765pwsBWEPcP16I--
 
