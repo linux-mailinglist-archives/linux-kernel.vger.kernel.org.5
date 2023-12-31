@@ -1,196 +1,114 @@
-Return-Path: <linux-kernel+bounces-13785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C045820E46
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 22:05:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EEA1820E61
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 22:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A85011C21903
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 21:05:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 425ED1C2095E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 21:10:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F88BA43;
-	Sun, 31 Dec 2023 21:05:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA89BE47;
+	Sun, 31 Dec 2023 21:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="a1pAEO7J"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N/BGgOp4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D32E8BA2E
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 21:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5565067fcbbso211116a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 13:05:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1704056707; x=1704661507; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6sCewcdjIkirA2iA/HRqx9fla0rvCRhR05Oa10U152M=;
-        b=a1pAEO7J20WO4y4CWDZi4hZzKncgk6PEatlczLiwFlRYI8oW47oAwDNZZ8K4MyrVrq
-         aMJw6tW4ITyS6Un3U08YfkI3Emgs9nRiAL+7Rk77iNG2eaWu11GYKWhPAZIB41CexF49
-         G1LEMnt45+s8Q8WFyfP+rMruSO2RqUwNo3loI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704056707; x=1704661507;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6sCewcdjIkirA2iA/HRqx9fla0rvCRhR05Oa10U152M=;
-        b=gaEVVUn22gxP5oGU2sa3qsiZ8i6eJSfRWKo820clv9n78EUit5e3MMhpcccpbJ8FF9
-         eJe6WkgbLDcxsnjvx2Cih381OOs/E9q5pBcpxX0jwpV6QU8ozit0VF2Ip3jOLYdttHlz
-         rXFEYzRkeUyAHOsR8jva4ZQLGSvMFIhfjpktiEpBBrM/7QiSctu3rD0/zas9jNX7OLAe
-         vVZJPkpBwyYOhHO1XIP3/IZHgoSwu4MwAL6foHJXCfyN0d+pbcdXmAkXsUmWP+eYnd7R
-         csLxgSeUhzunAT0uLN0dzjTPZ47aIA+rhARHzh8I9fTaAUGPBKYJ4c+uOOI++MBXliwE
-         VH9A==
-X-Gm-Message-State: AOJu0YyV1BRFKoFXwG4lxlj76d8/wk78a/B/rVSkL+9cP/DveK4pM3qX
-	XxR50knl5MUsdxEZHG0ng/dX29SyteH/oenv9DhrefHZMQdzfQ==
-X-Google-Smtp-Source: AGHT+IEpTZHn60AsPdrToHDzK4ot0CyxdKcz85GHunqHtENONzUv3VVryQ6Xfm32dfzkTdp02liQxA==
-X-Received: by 2002:a50:cd88:0:b0:553:5b1d:956e with SMTP id p8-20020a50cd88000000b005535b1d956emr7863550edi.82.1704056706679;
-        Sun, 31 Dec 2023 13:05:06 -0800 (PST)
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
-        by smtp.gmail.com with ESMTPSA id g6-20020a056402320600b0055410f0d709sm13767470eda.19.2023.12.31.13.05.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Dec 2023 13:05:06 -0800 (PST)
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a2339262835so849503366b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 13:05:06 -0800 (PST)
-X-Received: by 2002:a17:906:7497:b0:a28:c22:bcb2 with SMTP id
- e23-20020a170906749700b00a280c22bcb2mr146825ejl.14.1704056705715; Sun, 31 Dec
- 2023 13:05:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 008CEBA3F
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 21:10:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC09FC433CB
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 21:10:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704057025;
+	bh=ADVGoneIdstsKr16ibvhATBX2Jiv5nuTwiT5ZmAB7uc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=N/BGgOp4vDBtl27a9MFf6vjYvackawX9UlBVzXl3vwd1QN11AGKDCuHGmXLOKieRn
+	 74VnzoVMBf/PnMD7ihBGeqqSNVQ1y/ylz0gQjlVB3ewREmn0iG11g1OYRGljxKqdxm
+	 RaVSfODio6dKCw/krph7VRIwBZQM3KuAZIOEU5bO25DuQcGFYFsyEdUzp4LAhxKb6Y
+	 +kPCflFBjflxbfe4TEr4umM/gH+0cMvkPPU8KJ3d/CoCCZkQ5uyp6VQ/QOa/sFdNVU
+	 E270JNpdb8/1hktYU6K6/hLXFIKufZwxcvBTDFNFPsV/1zisy2iXmJwMK+L8cSoC5s
+	 qnZHsQPycTJgg==
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6808c3938afso19440496d6.1
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 13:10:25 -0800 (PST)
+X-Gm-Message-State: AOJu0YyvZKPCi+dygGdWNiXguH2ANtdarwwWx6NpS5iZ7AS3EPyuocdP
+	Fo0p9XG4Mb1lHAjwEHa+uCX41HRY8TUXy73Rp6lp5M/9bgD1
+X-Google-Smtp-Source: AGHT+IFE+RuDfp0wNzIxM7ulzxdLkwtysZpnvjF5g2Rdw2duSR/L0bQDW47w7X+fmx+mIfbo4pFi/FYf4uHacQVW2Sw=
+X-Received: by 2002:a05:620a:22d:b0:781:e26:a513 with SMTP id
+ u13-20020a05620a022d00b007810e26a513mr17770518qkm.14.1704057004460; Sun, 31
+ Dec 2023 13:10:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 31 Dec 2023 13:04:49 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whbyHgacqfOJ0VU_GxB-p=Cz+xsQ6XWrAEx=gT_QO9ERg@mail.gmail.com>
-Message-ID: <CAHk-=whbyHgacqfOJ0VU_GxB-p=Cz+xsQ6XWrAEx=gT_QO9ERg@mail.gmail.com>
-Subject: Linux 6.7-rc8
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20231231170721.3381-1-maimon.sagi@gmail.com>
+In-Reply-To: <20231231170721.3381-1-maimon.sagi@gmail.com>
+From: Andy Lutomirski <luto@kernel.org>
+Date: Sun, 31 Dec 2023 13:09:52 -0800
+X-Gmail-Original-Message-ID: <CALCETrUd=16gAYvx93EsyMaaSJ-6mLvSru8Gie48Y+_dXq5FGA@mail.gmail.com>
+Message-ID: <CALCETrUd=16gAYvx93EsyMaaSJ-6mLvSru8Gie48Y+_dXq5FGA@mail.gmail.com>
+Subject: Re: [PATCH v4] posix-timers: add multi_clock_gettime system call
+To: Sagi Maimon <maimon.sagi@gmail.com>
+Cc: richardcochran@gmail.com, luto@kernel.org, datglx@linutronix.de, 
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, 
+	hpa@zytor.com, arnd@arndb.de, geert@linux-m68k.org, peterz@infradead.org, 
+	hannes@cmpxchg.org, sohil.mehta@intel.com, rick.p.edgecombe@intel.com, 
+	nphamcs@gmail.com, palmer@sifive.com, keescook@chromium.org, 
+	legion@kernel.org, mark.rutland@arm.com, linux-kernel@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-arch@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-So as expected, pretty much nothing happened over the holiday week.
-We've got literally just 45 files changed, and almost a third of those
-files aren't even kernel code (ie things like selftests, scripting,
-Kconfig and maintainer file updates). And some of the rest is
-prep-work and cleanups for future (real) changes.
+On Sun, Dec 31, 2023 at 9:07=E2=80=AFAM Sagi Maimon <maimon.sagi@gmail.com>=
+ wrote:
+>
+> Some user space applications need to read some clocks.
+> Each read requires moving from user space to kernel space.
+> The syscall overhead causes unpredictable delay between N clocks reads
+> Removing this delay causes better synchronization between N clocks.
+>
+> Introduce a new system call multi_clock_gettime, which can be used to mea=
+sure
+> the offset between multiple clocks, from variety of types: PHC, virtual P=
+HC
+> and various system clocks (CLOCK_REALTIME, CLOCK_MONOTONIC, etc).
+> The offset includes the total time that the driver needs to read the cloc=
+k
+> timestamp.
 
-But we do have a couple of real fixes in there, and I suspect we'll
-get a few more next week as people come back from their food-induced
-torpor.
+Knowing this offset sounds quite nice, but...
 
-So rc8 is mostly just a placeholder, and a "I do rc's each week,
-whether they matter or not". Shortlog appended for completeness.
+>
+> New system call allows the reading of a list of clocks - up to PTP_MAX_CL=
+OCKS.
+> Supported clocks IDs: PHC, virtual PHC and various system clocks.
+> Up to PTP_MAX_SAMPLES times (per clock) in a single system call read.
+> The system call returns n_clocks timestamps for each measurement:
+> - clock 0 timestamp
+> - ...
+> - clock n timestamp
 
-And hey, regardless of whether all you peeps are interested in testing
-another rc or not, here's to hoping you all had a good 2023, and
-wishes for an even better 2024!
+Could this instead be arranged to read the actual, exact offset?
 
-                     Linus
+> +       kernel_tp =3D kernel_tp_base;
+> +       for (j =3D 0; j < n_samples; j++) {
+> +               for (i =3D 0; i < n_clocks; i++) {
+> +                       if (put_timespec64(kernel_tp++, (struct __kernel_=
+timespec __user *)
+> +                                       &ptp_multi_clk_get->ts[j][i])) {
+> +                               error =3D -EFAULT;
+> +                               goto out;
+> +                       }
+> +               }
+> +       }
 
----
-
-Alvin =C5=A0ipraga (2):
-      get_maintainer: correctly parse UTF-8 encoded names in files
-      get_maintainer: remove stray punctuation when cleaning file emails
-
-Andy Shevchenko (2):
-      MAINTAINERS: Remove Andy from GPIO maintainers
-      MAINTAINERS: Add a missing file to the INTEL GPIO section
-
-Arnd Bergmann (2):
-      kexec: fix KEXEC_FILE dependencies
-      kexec: select CRYPTO from KEXEC_FILE instead of depending on it
-
-Baokun Li (1):
-      mm/filemap: avoid buffered read/write race to read inconsistent data
-
-Bartosz Golaszewski (1):
-      MAINTAINERS: split out the uAPI into a new section
-
-Charan Teja Kalla (1):
-      mm: migrate high-order folios in swap cache correctly
-
-Christoph Hellwig (1):
-      block: renumber QUEUE_FLAG_HW_WC
-
-Coly Li (1):
-      badblocks: avoid checking invalid range in badblocks_check()
-
-David E. Box (3):
-      platform/x86/intel/pmc: Add suspend callback
-      platform/x86/intel/pmc: Allow reenabling LTRs
-      platform/x86/intel/pmc: Move GBE LTR ignore to suspend callback
-
-David Laight (3):
-      locking/osq_lock: Move the definition of optimistic_spin_node
-into osq_lock.c
-      locking/osq_lock: Clarify osq_wait_next() calling convention
-      locking/osq_lock: Clarify osq_wait_next()
-
-Edward Adam Davis (1):
-      keys, dns: Fix missing size check of V1 server-list header
-
-Helge Deller (2):
-      linux/export: Fix alignment for 64-bit ksymtab entries
-      linux/export: Ensure natural alignment of kcrctab array
-
-Jialu Xu (1):
-      gen_compile_commands.py: fix path resolve with symlinks in it
-
-Kent Overstreet (4):
-      bcachefs: fix BCH_FSCK_ERR enum
-      bcachefs: Fix insufficient disk reservation with compression + snapsh=
-ots
-      bcachefs: Fix leakage of internal error code
-      bcachefs: Fix promotes
-
-Linus Torvalds (1):
-      Linux 6.7-rc8
-
-Masahiro Yamada (1):
-      kbuild: fix build ID symlinks to installed debug VDSO files
-
-Matthew Wilcox (Oracle) (4):
-      mm/memory-failure: pass the folio and the page to collect_procs()
-      mm/memory-failure: check the mapcount of the precise page
-      mm/memory-failure: cast index to loff_t before shifting it
-      mailmap: add an old address for Naoya Horiguchi
-
-Muhammad Usama Anjum (1):
-      selftests: secretmem: floor the memory size to the multiple of page_s=
-ize
-
-Namjae Jeon (1):
-      ksmbd: fix slab-out-of-bounds in smb_strndup_from_utf16()
-
-Nathan Chancellor (1):
-      MAINTAINERS: Add scripts/clang-tools to Kbuild section
-
-Nico Pache (1):
-      kunit: kasan_test: disable fortify string checker on kmalloc_oob_mems=
-et
-
-Shin'ichiro Kawasaki (1):
-      platform/x86: p2sb: Allow p2sb_bar() calls during PCI device probe
-
-Sidhartha Kumar (1):
-      maple_tree: do not preallocate nodes for slot stores
-
-Stefan Hajnoczi (1):
-      virtio_blk: fix snprintf truncation compiler warning
-
-Steven Rostedt (Google) (4):
-      eventfs: Fix file and directory uid and gid ownership
-      ring-buffer: Fix wake ups when buffer_percent is set to 100
-      tracing: Fix blocked reader of snapshot buffer
-      ftrace: Fix modification of direct_function hash while in use
-
-Xuan Zhuo (1):
-      virtio_ring: fix syncs DMA memory with different direction
+There are several pairs of clocks that tick at precisely same rate
+(and use the same underlying hardware clock), and the offset could be
+computed exactly instead of doing this noisy loop that is merely
+somewhat less bad than what user code could do all by itself.
 
