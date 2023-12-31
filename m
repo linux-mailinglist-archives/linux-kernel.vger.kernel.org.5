@@ -1,155 +1,138 @@
-Return-Path: <linux-kernel+bounces-21314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1737828D6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:32:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 112038210D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 00:12:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85EDC1F25F5D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:32:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47AE9B21ABB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 23:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C6B3D57C;
-	Tue,  9 Jan 2024 19:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB1EC8CA;
+	Sun, 31 Dec 2023 23:12:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X5zsyK8K"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aVfxCF7M"
+X-Original-To: linux-kernel@vger.kernel.org
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50F63D540
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 19:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6d99980b2e0so2894519b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 11:31:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704828716; x=1705433516; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=boBDnUGC8eDAyWfJkqoTtfypKbl4pabOXDd3nFFPUqc=;
-        b=X5zsyK8KYeGlffhodOWhOgK7mNXrS8rtSWu2P/kN/9iLrxCXLtZLRCFsNU93KYMyg1
-         YgCfTE6us/SDYjaVWD3BEfZKgq3klWd9egwpiAz4ZJS06F9USCyXz7+myktIrgqkHYMV
-         Wu8dA9LJZiPgys7XX4sPJh49jpS1qcelLiB9/BrFuYWhra7SicsvPlP74jV5k26W1hoJ
-         BqJ8Usko7QuP009aQUrrXa6MaPeEfg+d1DwiW3aUFi2T3NREKqbi/kbiC3Guhntf6rT8
-         bhQV0gbhIXFv406/NrKQ1I4BRvWpBhVlU/nPrUOMHH0KdzrClaiEJ8MzbydOnl8SA5Cl
-         zlGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704828716; x=1705433516;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=boBDnUGC8eDAyWfJkqoTtfypKbl4pabOXDd3nFFPUqc=;
-        b=fOwnVTmDbC4brAHhXqCAW6kdR2EGki22l7qgHQqKxF8Br9wI07PurLQMy9BDoG5CRg
-         YmXwSskJmwYXzb4duKY6FiDczWQEOX/pH1H536JcjrII1WRI4+KYjmBbCwQXxHykOKDR
-         v8NAhN77xjrK4hNCtpRjLffBc99YjKxcVoqE9Os4mP/fF18gnqPvXrznIQVKeQNRasZ4
-         l+0YPkHgp1xQzkT+teQJ2vDkeMCHdgE6MO7y4mQU55grxPrb6shN5KqWRH+g2gFR713h
-         q5x3HApadj32TudqBkSlP5YXQws7cWsHRrZ7WOQmzMi175vV6TJwfhBHYxGpGDzqCRN3
-         b5Rg==
-X-Gm-Message-State: AOJu0YyK0pbRz3T/sStFPORTcyUNjbZRWQphLmqs0fBx+gQjmSXstQV2
-	6VT/aX8w/DKIab3CQp/G4Ho=
-X-Google-Smtp-Source: AGHT+IEtvrNm37Vvvl0827rIgbrDG58I/0qQbKIDWzn9TwkPcvUu7DXuRPZOfZnXdYNEvE1ghK989w==
-X-Received: by 2002:a05:6a00:80f4:b0:6d9:bf35:768f with SMTP id ei52-20020a056a0080f400b006d9bf35768fmr5370598pfb.46.1704828716163;
-        Tue, 09 Jan 2024 11:31:56 -0800 (PST)
-Received: from localhost.localdomain (c-67-174-241-145.hsd1.ca.comcast.net. [67.174.241.145])
-        by smtp.gmail.com with ESMTPSA id w2-20020a62c702000000b006d9a0059a9asm2173490pfg.172.2024.01.09.11.31.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 11:31:55 -0800 (PST)
-From: Yang Shi <shy828301@gmail.com>
-To: oliver.sang@intel.com,
-	riel@surriel.com,
-	fengwei.yin@intel.com,
-	willy@infradead.org,
-	cl@linux.com,
-	ying.huang@intel.com,
-	akpm@linux-foundation.org
-Cc: shy828301@gmail.com,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: [PATCH 2/2] mm: mmap: map MAP_STACK to VM_NOHUGEPAGE
-Date: Wed, 20 Dec 2023 22:59:43 -0800
-Message-Id: <20231221065943.2803551-2-shy828301@gmail.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20231221065943.2803551-1-shy828301@gmail.com>
-References: <20231221065943.2803551-1-shy828301@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751A8C2C5;
+	Sun, 31 Dec 2023 23:12:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704064350; x=1735600350;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=62bNteZDkhz2KSoLHklFYTxgVS2scwtyvlyZ0y55ohg=;
+  b=aVfxCF7MRKSUyHvY8XELb0DRX7xwG3YGxZ2rejirjVOhnrd1d4gJ9kP8
+   Ervh6qTXBJd4JxOuQ2zXA9NZbBeH0NN3XjxmFa6fmh3WuoVmqVzLxE5zi
+   pX8/BqXBL9LcQzM26e92wM14R8g2dv+RtOO6bMbTf06bcjUGux49II5At
+   yJPkXSetRygHEexPjXrduISElqmQPUCcF56MM859tzndsh6VNDAeYCem3
+   NAu5+VWVfOXxiHHS82y/yLrkZqUs6ChVOVFDjZlhTfQByl7ePAEcSPsmE
+   QEH1qMU6v/Vh0oWHvHriacmSMnFRnyadmOfLLNpvYSAPvXdOdOT9AWHQJ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="3588643"
+X-IronPort-AV: E=Sophos;i="6.04,321,1695711600"; 
+   d="scan'208";a="3588643"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Dec 2023 15:12:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="902746244"
+X-IronPort-AV: E=Sophos;i="6.04,321,1695711600"; 
+   d="scan'208";a="902746244"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 31 Dec 2023 15:12:23 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rK4yi-000Jo0-34;
+	Sun, 31 Dec 2023 23:12:20 +0000
+Date: Mon, 1 Jan 2024 07:11:48 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sagi Maimon <maimon.sagi@gmail.com>, richardcochran@gmail.com,
+	luto@kernel.org, datglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+	hpa@zytor.com, arnd@arndb.de, geert@linux-m68k.org,
+	peterz@infradead.org, hannes@cmpxchg.org, sohil.mehta@intel.com,
+	rick.p.edgecombe@intel.com, nphamcs@gmail.com, palmer@sifive.com,
+	keescook@chromium.org, legion@kernel.org, mark.rutland@arm.com
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v4] posix-timers: add multi_clock_gettime system call
+Message-ID: <202401010719.QfVc3HOt-lkp@intel.com>
+References: <20231231170721.3381-1-maimon.sagi@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231231170721.3381-1-maimon.sagi@gmail.com>
 
-From: Yang Shi <yang@os.amperecomputing.com>
+Hi Sagi,
 
-The commit efa7df3e3bb5 ("mm: align larger anonymous mappings on THP
-boundaries") incured regression for stress-ng pthread benchmark [1].
-It is because THP get allocated to pthread's stack area much more possible
-than before.  Pthread's stack area is allocated by mmap without VM_GROWSDOWN
-or VM_GROWSUP flag, so kernel can't tell whether it is a stack area or not.
+kernel test robot noticed the following build errors:
 
-The MAP_STACK flag is used to mark the stack area, but it is a no-op on
-Linux.  Mapping MAP_STACK to VM_NOHUGEPAGE to prevent from allocating
-THP for such stack area.
+[auto build test ERROR on tip/x86/asm]
+[also build test ERROR on tip/timers/core linus/master v6.7-rc7]
+[cannot apply to arnd-asm-generic/master next-20231222]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-With this change the stack area looks like:
+url:    https://github.com/intel-lab-lkp/linux/commits/Sagi-Maimon/posix-timers-add-multi_clock_gettime-system-call/20240101-011104
+base:   tip/x86/asm
+patch link:    https://lore.kernel.org/r/20231231170721.3381-1-maimon.sagi%40gmail.com
+patch subject: [PATCH v4] posix-timers: add multi_clock_gettime system call
+config: sparc-allmodconfig (https://download.01.org/0day-ci/archive/20240101/202401010719.QfVc3HOt-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240101/202401010719.QfVc3HOt-lkp@intel.com/reproduce)
 
-fffd18e10000-fffd19610000 rw-p 00000000 00:00 0
-Size:               8192 kB
-KernelPageSize:        4 kB
-MMUPageSize:           4 kB
-Rss:                  12 kB
-Pss:                  12 kB
-Pss_Dirty:            12 kB
-Shared_Clean:          0 kB
-Shared_Dirty:          0 kB
-Private_Clean:         0 kB
-Private_Dirty:        12 kB
-Referenced:           12 kB
-Anonymous:            12 kB
-KSM:                   0 kB
-LazyFree:              0 kB
-AnonHugePages:         0 kB
-ShmemPmdMapped:        0 kB
-FilePmdMapped:         0 kB
-Shared_Hugetlb:        0 kB
-Private_Hugetlb:       0 kB
-Swap:                  0 kB
-SwapPss:               0 kB
-Locked:                0 kB
-THPeligible:           0
-VmFlags: rd wr mr mw me ac nh
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401010719.QfVc3HOt-lkp@intel.com/
 
-The "nh" flag is set.
+All errors (new ones prefixed by >>):
 
-[1] https://lore.kernel.org/linux-mm/202312192310.56367035-oliver.sang@intel.com/
+   In file included from arch/sparc/kernel/setup_64.c:21:
+>> include/linux/syscalls.h:1164:48: error: 'struct __ptp_multi_clock_get' declared inside parameter list will not be visible outside of this definition or declaration [-Werror]
+    1164 | asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
+         |                                                ^~~~~~~~~~~~~~~~~~~~~
+   arch/sparc/kernel/setup_64.c:602:13: error: no previous prototype for 'alloc_irqstack_bootmem' [-Werror=missing-prototypes]
+     602 | void __init alloc_irqstack_bootmem(void)
+         |             ^~~~~~~~~~~~~~~~~~~~~~
+   cc1: all warnings being treated as errors
+--
+   In file included from arch/sparc/kernel/sys_sparc_64.c:25:
+>> include/linux/syscalls.h:1164:48: error: 'struct __ptp_multi_clock_get' declared inside parameter list will not be visible outside of this definition or declaration [-Werror]
+    1164 | asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
+         |                                                ^~~~~~~~~~~~~~~~~~~~~
+   cc1: all warnings being treated as errors
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Tested-by: Oliver Sang <oliver.sang@intel.com>
-Cc: Yin Fengwei <fengwei.yin@intel.com>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Christopher Lameter <cl@linux.com>
-Cc: Huang, Ying <ying.huang@intel.com>
-Signed-off-by: Yang Shi <yang@os.amperecomputing.com>
----
- include/linux/mman.h | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/mman.h b/include/linux/mman.h
-index 40d94411d492..dc7048824be8 100644
---- a/include/linux/mman.h
-+++ b/include/linux/mman.h
-@@ -156,6 +156,7 @@ calc_vm_flag_bits(unsigned long flags)
- 	return _calc_vm_trans(flags, MAP_GROWSDOWN,  VM_GROWSDOWN ) |
- 	       _calc_vm_trans(flags, MAP_LOCKED,     VM_LOCKED    ) |
- 	       _calc_vm_trans(flags, MAP_SYNC,	     VM_SYNC      ) |
-+	       _calc_vm_trans(flags, MAP_STACK,	     VM_NOHUGEPAGE) |
- 	       arch_calc_vm_flag_bits(flags);
- }
- 
+vim +1164 include/linux/syscalls.h
+
+  1154	
+  1155	/* obsolete */
+  1156	asmlinkage long sys_ipc(unsigned int call, int first, unsigned long second,
+  1157			unsigned long third, void __user *ptr, long fifth);
+  1158	
+  1159	/* obsolete */
+  1160	asmlinkage long sys_mmap_pgoff(unsigned long addr, unsigned long len,
+  1161				unsigned long prot, unsigned long flags,
+  1162				unsigned long fd, unsigned long pgoff);
+  1163	asmlinkage long sys_old_mmap(struct mmap_arg_struct __user *arg);
+> 1164	asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
+  1165	
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
