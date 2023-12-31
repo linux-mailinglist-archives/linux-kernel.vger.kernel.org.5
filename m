@@ -1,92 +1,152 @@
-Return-Path: <linux-kernel+bounces-13798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A1F6820FC8
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 23:29:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE1D3821003
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 23:41:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B8481C21B54
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 22:29:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 683862827FA
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 22:41:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6607C8CA;
-	Sun, 31 Dec 2023 22:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F464C8CA;
+	Sun, 31 Dec 2023 22:41:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OPjU10Ab"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DvJWXKHS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8FA2C127;
-	Sun, 31 Dec 2023 22:28:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-336746a545fso4763764f8f.0;
-        Sun, 31 Dec 2023 14:28:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704061731; x=1704666531; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2cQ7dAlg8dvK0u1JM7suKS/rJ6Yn0bYuLvOXdSYO1Ak=;
-        b=OPjU10AbeM3mOljBRkixF35SijqFa920BvSEtb6ZkffzBSqK08fCRgN58ZKJRnhwmD
-         JnkP81KrXQt01uOVEMluijZvZA+hmfpn+1R3LQwtnpXCYdq/xPbj3PgX4fNXEOVRm+tZ
-         LwXiPJSmZVwV63oPdO/LyfrQvLndYX8A0ovVuHmZifE+zcm8U/l39VZKhBTKTH9nWeXU
-         WdIsC3YXUlMeKE3Ijex2KSgkSRu8bAf2NwXn39LUzswoFEqc4Fsdf8tvek9sBRFwQTD1
-         GDwe2s3jsKAVt7oDiRXpnN1mbqiiEUgnnBaQM8wQdgTLLjeJ+4JE7r374q5KwI/xroso
-         3lJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704061731; x=1704666531;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2cQ7dAlg8dvK0u1JM7suKS/rJ6Yn0bYuLvOXdSYO1Ak=;
-        b=VE38r7s7pEDpsPkJrGDd3tPB1Ix80x0izCQZfBOdRWnnB7gSBjHok6kR5ibcFPrssQ
-         VzsTGux1k5sFk43AQINEvOhNLDBeCKp95P3lkE0BzqX1+I8ODF90L5PZy3Pm4SL9MoFL
-         rrHqvBOmhYjkgujZE7lBAlCkDQ9por3mVU5dgK8dBjwXYSZ3Bc64NldgC7J4f6nNkQ/h
-         VMGGJP2CUKK4adj2TDvEiBCSbj85Sy3/q52vy2RwF+lx0VZ5zKur5L7dn0skfkdiYrNW
-         gYgV/1xOjEqi9HLiFSg0z+hjL2xR2GM8Cg3aUCk2GtJUEmyCpoL02qIi6rqPBNOKjxij
-         TmvQ==
-X-Gm-Message-State: AOJu0YxJjhBbC4XbD/9iAr2D9fJJGDc1AEJ4A+XibmaxHtULCQomLeE5
-	Tshyus5L0CPZYinn75YXOwsyWjHv+KcpRmT3dUQ=
-X-Google-Smtp-Source: AGHT+IHNi6dZhDS0epQz+mEmSYY/YeBLka2pG9b+mY0Phd9O6WkTRrP7h95+Q9fbkdycfV1QhbAy1MoI/sERN1d5dQg=
-X-Received: by 2002:adf:b35a:0:b0:336:7472:a40b with SMTP id
- k26-20020adfb35a000000b003367472a40bmr7965585wrd.0.1704061730737; Sun, 31 Dec
- 2023 14:28:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926A2C147;
+	Sun, 31 Dec 2023 22:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704062483; x=1735598483;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CNbHn5JZhY17vzo7hwS/CKhb0QyVaposJD+CErl8kwo=;
+  b=DvJWXKHSVSL0BeZjhHjB2lBdOpm2Grbi7kFrELoVm3UzF0lZf1fUHj+8
+   RI+X+JdbVf4DXKmdOYZKqQcsss964euTa+lwe9+upwxwoNK+UVtFxoSet
+   5vwgInPVNTJlchhb7mla0qKSfisH7ppgcvVAOi9siqZp6n3SHv4ewB0fu
+   sgSEOc+o0DMody7UULjvRYr4JUR0aEH+hn6uQ5V0iuacIhNQ4TQKdjMt7
+   pqpzj9n2J9NpKe9f2+Z+x4epNRBxIwQTEp1xwwcvvnf9moBilwq3xsEI5
+   S7wU/aX7p/h5br4AsiRjBokRPTspXRsXtYhQlxe295fLTgDX80Hoyvn4m
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="463172294"
+X-IronPort-AV: E=Sophos;i="6.04,321,1695711600"; 
+   d="scan'208";a="463172294"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Dec 2023 14:41:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="849735592"
+X-IronPort-AV: E=Sophos;i="6.04,321,1695711600"; 
+   d="scan'208";a="849735592"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 31 Dec 2023 14:41:19 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rK4Ue-000JnI-26;
+	Sun, 31 Dec 2023 22:41:16 +0000
+Date: Mon, 1 Jan 2024 06:40:49 +0800
+From: kernel test robot <lkp@intel.com>
+To: Markus Elfring <Markus.Elfring@web.de>, linux-s390@vger.kernel.org,
+	netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Jan Karcher <jaka@linux.ibm.com>,
+	Paolo Abeni <pabeni@redhat.com>, Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>
+Cc: oe-kbuild-all@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] net/smc: Improve exception handling in
+ smc_llc_cli_add_link_invite()
+Message-ID: <202401010657.eexbMD1F-lkp@intel.com>
+References: <5253e660-6b66-4775-ae2f-06f5a1d40be5@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <7011cdcc-4287-4e63-8bfa-f08710f670b1@web.de>
-In-Reply-To: <7011cdcc-4287-4e63-8bfa-f08710f670b1@web.de>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 31 Dec 2023 14:28:39 -0800
-Message-ID: <CAADnVQLq7RKV+RBJm02HwfXujaUwFXsD77BqJK6ZpLQ-BObCdA@mail.gmail.com>
-Subject: Re: [PATCH 0/5] bpf: Adjustments for four function implementations
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	kernel-janitors@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5253e660-6b66-4775-ae2f-06f5a1d40be5@web.de>
 
-On Sat, Dec 30, 2023 at 12:04=E2=80=AFPM Markus Elfring <Markus.Elfring@web=
-.de> wrote:
->
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Sat, 30 Dec 2023 20:51:23 +0100
->
-> A few update suggestions were taken into account
-> from static source code analysis.
+Hi Markus,
 
-Auto Nack.
-Pls don't send such patches. You were told multiple
-times that such kfree usage is fine.
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on net/main]
+[also build test WARNING on net-next/main linus/master v6.7-rc7 next-20231222]
+[cannot apply to horms-ipvs/master]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Markus-Elfring/net-smc-Return-directly-after-a-failed-kzalloc-in-smc_fill_gid_list/20231231-231406
+base:   net/main
+patch link:    https://lore.kernel.org/r/5253e660-6b66-4775-ae2f-06f5a1d40be5%40web.de
+patch subject: [PATCH 2/2] net/smc: Improve exception handling in smc_llc_cli_add_link_invite()
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20240101/202401010657.eexbMD1F-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240101/202401010657.eexbMD1F-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401010657.eexbMD1F-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   net/smc/smc_llc.c: In function 'smc_llc_cli_add_link_invite':
+>> net/smc/smc_llc.c:1175:41: warning: suggest parentheses around '&&' within '||' [-Wparentheses]
+    1175 |             lgr->type == SMC_LGR_SINGLE && lgr->max_links <= 1)
+         |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +1175 net/smc/smc_llc.c
+
+  1160	
+  1161	/* as an SMC client, invite server to start the add_link processing */
+  1162	static void smc_llc_cli_add_link_invite(struct smc_link *link,
+  1163						struct smc_llc_qentry *qentry)
+  1164	{
+  1165		struct smc_link_group *lgr = smc_get_lgr(link);
+  1166		struct smc_init_info *ini;
+  1167	
+  1168		if (lgr->smc_version == SMC_V2) {
+  1169			smc_llc_send_request_add_link(link);
+  1170			goto free_qentry;
+  1171		}
+  1172	
+  1173		if (lgr->type == SMC_LGR_SYMMETRIC ||
+  1174		    lgr->type == SMC_LGR_ASYMMETRIC_PEER ||
+> 1175		    lgr->type == SMC_LGR_SINGLE && lgr->max_links <= 1)
+  1176			goto free_qentry;
+  1177	
+  1178		ini = kzalloc(sizeof(*ini), GFP_KERNEL);
+  1179		if (!ini)
+  1180			goto free_qentry;
+  1181	
+  1182		ini->vlan_id = lgr->vlan_id;
+  1183		smc_pnet_find_alt_roce(lgr, ini, link->smcibdev);
+  1184		if (!ini->ib_dev)
+  1185			goto out;
+  1186	
+  1187		smc_llc_send_add_link(link, ini->ib_dev->mac[ini->ib_port - 1],
+  1188				      ini->ib_gid, NULL, SMC_LLC_REQ);
+  1189	out:
+  1190		kfree(ini);
+  1191	free_qentry:
+  1192		kfree(qentry);
+  1193	}
+  1194	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
