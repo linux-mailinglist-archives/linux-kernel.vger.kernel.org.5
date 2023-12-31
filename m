@@ -1,88 +1,89 @@
-Return-Path: <linux-kernel+bounces-13614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 801FD820937
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 01:33:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D08BF820968
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 01:47:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02DDBB21C02
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 00:33:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8098C283582
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 00:47:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1E20FBF2;
-	Sun, 31 Dec 2023 00:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF2187F7;
+	Sun, 31 Dec 2023 00:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="wm9UnN0v"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZRiCHFrP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3D99FBE1
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 00:32:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1703982767; bh=3rh044RPtRnB5qOZlrTQZ3Wq1aiTMZDQakFyYtFhlrU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=wm9UnN0vE+aTAwk4iDtKV7Xld9m7Uvrj2Y4S5sc3wL1uB9KPgLOA+PkKel4kMgJZy
-	 4DrF6ZsqLzKaV5w0M7DZ41EbxL6JzUAhFeb7ZmXGhjr2EiNS37kc2fYE6zjd5hYTyL
-	 hUYuHP6XdMQ4JWF5K7ogIq7VkaQhx10weLrcTlS8=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id 62402630; Sun, 31 Dec 2023 08:24:36 +0800
-X-QQ-mid: xmsmtpt1703982276t8iav807o
-Message-ID: <tencent_A1836F2960A3B98451B765576926CA937305@qq.com>
-X-QQ-XMAILINFO: OUrMHMu9XZHvWDiNOLc4isXh0ELZPUmr0gmXh3prjQ7wuQ/3ZpQKbSYEZzqcvd
-	 3xbog8WSkjYWDTqgxvs8aUJKpGSAceBUeJHeibWKbIg7ajK/HO+yZHy9A/Y+gbxpHi3muiTR6Txm
-	 MhT2q5S6Yv+muo7/c76h+VW+awfE8PClUli2L5ZzK9uJdPrfhi7prKvEwVjPRy0Jf5NvIfIoDSMV
-	 AkPaOpg0NmzQDysNg5Q5A4tlpu2LHkI6a9kCDsmg8WysDKNrcsRTiefl/coKNYPhulpHNngS099o
-	 nK9mFcnynbKnPwO8kEL0/SJcO+ZwOQZEIMUNSHpJ75y0XzMrewy5YpvWPJ+epc3ZETSkbip1sCq9
-	 IyQcrXgOfdKpHqGPSoCzDLS5jDeeYSpediupwLNjy6YDUt7bDWej/oYkQnvd6Gy2MgjB/U29SbmA
-	 TSVAsWEMWESe7mpafnKMzF/zyOibjSVbqW6NkpAl4jnDG8KQzsbXT+YxR3NPrMRd0/lhzg+YL/b/
-	 NuVcusM/DODEyam6zcLze1SN2R9z/H9U552lBCW72gY2/EL69uJmKZauBfHmg3AsMj9yUIQjyizk
-	 cV91UsECvALLNO2D3pGvdxwX84Eh2Or+hPCup5vmStWDHauvRbxVfAw3IAQ09fe0jv5Rv6wcwp+i
-	 DkTfYmfJ8BuBLlOGQxFp4bwP7Kvf1PfrkVnsgFvbB4PezH4uHWPqJojB93OcR5f9UYbadDdb8tyd
-	 H85uyZ24smLqfRxouxvkVEm3Z5w5usxQEqpfpVc0iMg/iut80GmGdcddRsgHrIpRlHRITRJaFQaA
-	 w2gKGtZqsBWBinS/v+Ixgwv0aHEWejtvna/CYE3DRGPE7KjQTrGoyMAbAv8QkUokpxdL005d/ud0
-	 /65vzpvEi9/GfMQDX+S0fcjrWu+yOavkW0Tx6J+0VJ3OdlZr5gQQXXtd1BrsFVCg==
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+6450929faa7a97cd42d1@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [reiserfs?] KMSAN: uninit-value in reiserfs_new_inode (2)
-Date: Sun, 31 Dec 2023 08:24:36 +0800
-X-OQ-MSGID: <20231231002435.3023407-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000da757a060d58ebbe@google.com>
-References: <000000000000da757a060d58ebbe@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19DA233CE;
+	Sun, 31 Dec 2023 00:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3bbe00b163bso265473b6e.1;
+        Sat, 30 Dec 2023 16:47:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703983645; x=1704588445; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j9UlgtUYTIvMQFMEP8d/dsSgErE5LVy70R1OWjxF4gM=;
+        b=ZRiCHFrPbvrlJ3bbSjATrg4ppaPdx+POwijMcusJgqBLgo+TxaZOGso2UTxnKa1/3H
+         Y4/0lxoz+har9wGvjyPavu76I76mFTkXpACZBfKkyOMVFwM1QfJjEgrCRAJA8itOavwI
+         6isEuWcIIWq0z1ckCVVratRjkQT6GTMoLELXJNejHOCrCd5hGjiAOYozbnJN137W6HWJ
+         e2t85MEUNeMf9H8vd69ueCLICLwv2UsjDOawgAZ65KAqc5G9camU6vsmDwQqew5Icl/X
+         +iQ3BcFzILGOMyrWpeyO0gBlQzIVVI0Nf+k4eKmJyu23f8qOsZ9ev4Bp+k8bWnDRTpYp
+         vkSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703983645; x=1704588445;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j9UlgtUYTIvMQFMEP8d/dsSgErE5LVy70R1OWjxF4gM=;
+        b=cVH/dcIhtPaq4HYD8DUjJwuO7YYN16W5BANjxNQYPv00IQ1rg1NeV5sSGwPfAlJHd/
+         Iffj4OcL9qs7xdOMcABUMoJl/LfjOaUgll72bynOyLOEOwlV4iEqqpr3bFnZFf5A2SSq
+         0a9fTomAaF3vC3e//f7VvUATpyED8D8Knhvh9nGYv2qQV/xGWhXZJDY89d8SLpS2S2Bb
+         e2YDpccrDuGJZ6C8FHXFwJrnQysbPdmt2AAH0KbEHt/mEpQlJtCA1GhQy9NKYBxPvwjI
+         o1MZcdOU7ph4VYXNdcTaLOVeO/p7O/rashsfkeqKzsJTEtHOL87fJxbBvp77R+wa1fJl
+         OFRg==
+X-Gm-Message-State: AOJu0Yx+xZYyWn1P2iOBZ+A+dIOzG+1wXaq2sgZUvh6aXaVoJvKALioS
+	E8+HrroRefKpdFce9VZwl6QWKwDwkAB+RaJln6A=
+X-Google-Smtp-Source: AGHT+IFX1UPGaZ8HmSmbP+cO0LcxcUIy1oLLVKkOpcI5ER6AIQRfPKHf+ykwSdij5XzL8GKsdWBJzX8hn5RMXOpDhDM=
+X-Received: by 2002:a05:6808:2896:b0:3bb:d60f:df61 with SMTP id
+ eu22-20020a056808289600b003bbd60fdf61mr6874945oib.5.1703983644545; Sat, 30
+ Dec 2023 16:47:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAPnZJGDcNwPLbzC99qNQ+bRMwxPU-Z0xe=TD6DWQU=0MNyeftA@mail.gmail.com>
+ <d4b227de-d609-aef2-888b-203dbcf06707@landley.net> <CAPnZJGBeV-E_AN8GnTfkaJvRtBmCeMYYCt+O0XMsc3kDULRuKg@mail.gmail.com>
+ <fb776d99-1956-4e1b-9afc-84f27ca40f46@linux.ibm.com> <0879141d-462c-7e94-7c87-7a5b5422b8ed@landley.net>
+ <e32077de-b159-4a7b-89a3-e1925239142f@linux.ibm.com> <fcb45898-0699-878f-0656-f570607fbed4@landley.net>
+In-Reply-To: <fcb45898-0699-878f-0656-f570607fbed4@landley.net>
+From: Askar Safin <safinaskar@gmail.com>
+Date: Sun, 31 Dec 2023 03:46:45 +0300
+Message-ID: <CAPnZJGBdwSBeKUK-An8n-eDJdrrA-rnKPMX16cFDfwx8wxQiwA@mail.gmail.com>
+Subject: Re: [PATCH v3] rootfs: Fix support for rootfstype= when root= is given
+To: Rob Landley <rob@landley.net>
+Cc: Stefan Berger <stefanb@linux.ibm.com>, gregkh@linuxfoundation.org, 
+	initramfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	stable@vger.kernel.org, zohar@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-please test uninit-value in reiserfs_new_inode
+On Sat, Dec 30, 2023 at 8:01=E2=80=AFPM Rob Landley <rob@landley.net> wrote=
+:
+> You want to add a new capability requiring a new build dependency in the
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 861deac3b092
+Rob, who are you telling this to? To Stefan? It seems he doesn't
+propose any further changes. *I* did propose changes (i. e. adding
+rdrootfstype=3D), and I already wrote that I will not pursue further
 
-diff --git a/fs/reiserfs/namei.c b/fs/reiserfs/namei.c
-index 994d6e6995ab..3a824fb170d5 100644
---- a/fs/reiserfs/namei.c
-+++ b/fs/reiserfs/namei.c
-@@ -638,6 +638,10 @@ static int reiserfs_create(struct mnt_idmap *idmap, struct inode *dir,
- 	if (retval)
- 		return retval;
- 
-+#ifdef DISPLACE_NEW_PACKING_LOCALITIES
-+	REISERFS_I(dir)->new_packing_locality = 0;
-+#endif
-+
- 	if (!(inode = new_inode(dir->i_sb))) {
- 		return -ENOMEM;
- 	}
-
+--=20
+Askar Safin
 
