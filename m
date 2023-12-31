@@ -1,203 +1,284 @@
-Return-Path: <linux-kernel+bounces-13752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B80C9820C08
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 17:45:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25BD3820C12
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 18:07:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D483281D70
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 16:45:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99F4E1F21610
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 17:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D20A38F71;
-	Sun, 31 Dec 2023 16:45:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C17B8F67;
+	Sun, 31 Dec 2023 17:07:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wm6tNN7l"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H9GQ4MeO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2065.outbound.protection.outlook.com [40.107.94.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CC18F48;
-	Sun, 31 Dec 2023 16:45:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XIr42lHTIvFEHDULdKSmTHvRTYab5cuvlG9AItrcTgwXVyc9rW03yaPeQyADpF9RniaqhfFMTftY9XEtPQksVOezCw2Vh5/PZDNGw+ec8xhKbbZANBK/M4Nx/oJM5fCWA+mnxPDH8HXb60dUmLerEnng+uKvdVgTKJSEc8BaCUSc5cWIqyBqBYpBfmzyenFhcZQyO+fe7jiWz1ERRNfl58OemvjmVkWlQjOcGNIYz0sYO/WvA29jPvz19emywpOKsvkqLzkLvTfZPyi9E/YPpKp7PyxsgJ0yHDkPjbbU4ckMFc1TZ/p6Q2whfBP2REbzvxUJ7ASVpG0+e1McjipDjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nTzLcDtllNFqZ6s9ehy9kf7kXTafi3HDtuvCwvyUd9c=;
- b=OUtUKWEkmMgEdDZb9cF+CGI9KVRhf7QrH0o6kC0Cq6qrFmM/PZAxxKBppBG5c016k30jK+zG7H/lJCbrccA9Bstz53sEFsFqZiCCJKY0orrWarr9k3LMZuH9P6G0UHLXJuZfFSf3HCAIARB5fq06HwUt7SFYdVQhjWRWGauiRxxMNKhTOpjjZ2LRvWgCxG7sYjl6fajc06qM+pAZNeldquQ5SFkk5HnZTUjxcHUz/e+jBztg+UqfoEPrGYXYkPqoH5o4G7l3bSeNooIepn1HukIBQEmb/ApCa7vYVsqV0dTWsNMuUGCvJbN+7s4Aa5yU5infwCrHH4YQZzJoS+Jwbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nTzLcDtllNFqZ6s9ehy9kf7kXTafi3HDtuvCwvyUd9c=;
- b=wm6tNN7lwQiihqqZMhDfn2BBOzyRcWO/6gigHskCQqwSWrd04Rm+oJmVDzlqb3F1GPAN4KnesY7kFj59PG7RFd7ATrjMk6lJq0NmkRdwM3aODufoGMMCIBLxXatRjDNu401UJwS68zVJIOEYDfHY9iXNOyf3EXR5RbbgEHT6uvw=
-Received: from DM6PR11CA0045.namprd11.prod.outlook.com (2603:10b6:5:14c::22)
- by LV8PR12MB9154.namprd12.prod.outlook.com (2603:10b6:408:190::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.20; Sun, 31 Dec
- 2023 16:44:57 +0000
-Received: from DS1PEPF00017092.namprd03.prod.outlook.com
- (2603:10b6:5:14c:cafe::1a) by DM6PR11CA0045.outlook.office365.com
- (2603:10b6:5:14c::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.20 via Frontend
- Transport; Sun, 31 Dec 2023 16:44:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS1PEPF00017092.mail.protection.outlook.com (10.167.17.135) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7159.9 via Frontend Transport; Sun, 31 Dec 2023 16:44:57 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Sun, 31 Dec
- 2023 10:44:56 -0600
-Date: Sun, 31 Dec 2023 10:44:40 -0600
-From: Michael Roth <michael.roth@amd.com>
-To: Borislav Petkov <bp@alien8.de>
-CC: <x86@kernel.org>, <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>,
-	<linux-mm@kvack.org>, <linux-crypto@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
-	<vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
-	<dave.hansen@linux.intel.com>, <slp@redhat.com>, <pgonda@google.com>,
-	<peterz@infradead.org>, <srinivas.pandruvada@linux.intel.com>,
-	<rientjes@google.com>, <tobin@ibm.com>, <vbabka@suse.cz>,
-	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>,
-	Brijesh Singh <brijesh.singh@amd.com>, Jarkko Sakkinen <jarkko@profian.com>
-Subject: Re: [PATCH v1 01/26] x86/cpufeatures: Add SEV-SNP CPU feature
-Message-ID: <20231231164440.lj5v7eeu5r3cqzlg@amd.com>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-2-michael.roth@amd.com>
- <20231231115012.GAZZFVdHCWijp7yFls@fat_crate.local>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169058F42;
+	Sun, 31 Dec 2023 17:07:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40d3ae326f6so90286095e9.3;
+        Sun, 31 Dec 2023 09:07:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704042449; x=1704647249; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n/M2QU8ovLnm7JVX+BLvVX+SFfKrCPAK+NLbXM2IK84=;
+        b=H9GQ4MeOg5g4W4sEkIoaGFpV93wpLhFJ1Fufn0unxwFhesUw++TFh8XW3hFvPd3mNF
+         N3J+u4xhzwEKjreEwTK3HACZMp8hrglm6DZOFE83Xo2kePC0etT7OmAlaCqxIIGBtzqc
+         eq7V8GoWiRumDXL3HIACvnacZRfmVNXHKqXc/W08z4s6g4l9xAjrFT8gmdcHyQpIsRoV
+         LobfTQ8bY8PSbs6bTqXdFe1tIaqzHEOhRz1anGP/94MvkO45K1G2LZLDyoBHqjeNVx8i
+         DkhTbcAm9HsfyJ35S25fZuITjovF2lrmiH/4LrzkXLUJzGfXXLRS685q9xTFhWZOgJpq
+         T0OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704042449; x=1704647249;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n/M2QU8ovLnm7JVX+BLvVX+SFfKrCPAK+NLbXM2IK84=;
+        b=CHLT3sH+SXNxCqiC2O2la8HplvlKWLYwuNEAkZwRowZ2zgNRzca+3ey/lRqiDF5q04
+         /tFiCrEd+Eymf92Hz19wuOq1iXiMkI84SMjOTReE5Ttedd4DCVMDfpysmhw0nAtUDhKw
+         cW28pe0SV6i5MZRQdUDXe2ylz2JD+75Ulbg71/kGD//NlVPc0ota5g6fOdR38IhhV0Hd
+         7C18rFaB+QTa9iImjyHE7tachx0OqlotcfxrzTp6mzrcE/x6/MHaPMLhfJzWeu5yGWLT
+         Fk595quYf57ZmE1cUe50JnxtHVaKQHm2LDg88ri/Rqll8TVvAV/X5ygPiF06XxVfdl9Y
+         9a3A==
+X-Gm-Message-State: AOJu0YwwOtxG42wG9C7f5jGict95c5IBuuyCaFge/x8mpz4A4zRSiQDO
+	+Ny+cGUX5Ia4Tg7i31rgxKs=
+X-Google-Smtp-Source: AGHT+IFtOicv5vkf+f6WonETGdxwCmPsO6RSimYSRaQLXO6CGrieZ+R0CBgABoB2Sxk9EgVwZM1bfw==
+X-Received: by 2002:a05:600c:3d1a:b0:40d:887b:f510 with SMTP id bh26-20020a05600c3d1a00b0040d887bf510mr216811wmb.86.1704042448971;
+        Sun, 31 Dec 2023 09:07:28 -0800 (PST)
+Received: from ran.advaoptical.com ([82.166.23.19])
+        by smtp.gmail.com with ESMTPSA id u14-20020a05600c138e00b0040d62f97e3csm13452347wmf.10.2023.12.31.09.07.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Dec 2023 09:07:28 -0800 (PST)
+From: Sagi Maimon <maimon.sagi@gmail.com>
+To: richardcochran@gmail.com,
+	luto@kernel.org,
+	datglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	arnd@arndb.de,
+	geert@linux-m68k.org,
+	peterz@infradead.org,
+	hannes@cmpxchg.org,
+	sohil.mehta@intel.com,
+	rick.p.edgecombe@intel.com,
+	nphamcs@gmail.com,
+	palmer@sifive.com,
+	maimon.sagi@gmail.com,
+	keescook@chromium.org,
+	legion@kernel.org,
+	mark.rutland@arm.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH v4] posix-timers: add multi_clock_gettime system call
+Date: Sun, 31 Dec 2023 19:07:21 +0200
+Message-Id: <20231231170721.3381-1-maimon.sagi@gmail.com>
+X-Mailer: git-send-email 2.26.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231231115012.GAZZFVdHCWijp7yFls@fat_crate.local>
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF00017092:EE_|LV8PR12MB9154:EE_
-X-MS-Office365-Filtering-Correlation-Id: c9f80bfd-07fa-4551-f92a-08dc0a1fd286
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	f8DUsodeokI3415GLTDC9FxQFM1dxIGTSemRrcAoJc3KCcGdffC0GAWUwGsBMacBTPaIKvvS4o59nQvuqqvDwr8lLAdiByFSiaiUx1ftApVHMCFiqdpk9IWUMd3Ngy3fzZzc/TMclbyoerDanS7diaGhGFwpxThPeDw16eghs4M/IYV2iYEoHW+qPgWsxFF7xU2AsIMMcGY9ZBNmr6vDVg7HRNTwEw+sj/Q7cKM7sJGF8ac9evsGDEY9yY+ZiFIFgf9qSfJ0gE2duUh4VzYUq56Oy6Y7xd/H9RQRtArqcNKmpvarVAgWe72NZgdu25xH0CzAiDOF4AM+loyJwTbIz8tAkBdAKs9Lz95uzMCFrVM6SHCt/VF3WCU0WFomfTuywCzKf5TGbPvSHLTNPYECeqs9Q8WtYVwYT+6uXLSies/QDRUrb1lsAYAkUo1C4754UAdPmqU0e15/eAzftZGmHiSI33B7m86rmJHiUvAdJGWmRfSFUez6Yk0OcTvYiSBToDkfRbXWaL1djHPy9gPFHNZ/X69jUUwTuHJe4d/bbg592RADtLk1jGCtehGevssyOCcE5QUtwrc2w4hqkpZ4yXl0QtpXSNo6WH1p2DUUs1iPDf96j23dXzf+dfhEzbA1Tf7o81WVOExLRKbO3b3SDYyIqmh9n6MkvI4kO1BVHNXLp6IXw5iprSIRji4QHVbRH+rpNP8wnUjRfZfKWv3ev2lcJthnikE3Na/kc0l1esx7L9iLsVVyKnzcb6sSeYZP5y9oupm5AwG8D58dPoIh7A==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(396003)(39860400002)(136003)(230922051799003)(451199024)(1800799012)(82310400011)(64100799003)(186009)(40470700004)(46966006)(36840700001)(8936002)(2616005)(26005)(83380400001)(426003)(47076005)(41300700001)(81166007)(356005)(82740400003)(336012)(36860700001)(316002)(16526019)(8676002)(54906003)(44832011)(7406005)(2906002)(7416002)(5660300002)(4326008)(966005)(478600001)(70586007)(70206006)(6916009)(86362001)(6666004)(1076003)(36756003)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Dec 2023 16:44:57.1467
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c9f80bfd-07fa-4551-f92a-08dc0a1fd286
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS1PEPF00017092.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9154
+Content-Transfer-Encoding: 8bit
 
-On Sun, Dec 31, 2023 at 12:50:12PM +0100, Borislav Petkov wrote:
-> On Sat, Dec 30, 2023 at 10:19:29AM -0600, Michael Roth wrote:
-> > From: Brijesh Singh <brijesh.singh@amd.com>
-> > 
-> > Add CPU feature detection for Secure Encrypted Virtualization with
-> > Secure Nested Paging. This feature adds a strong memory integrity
-> > protection to help prevent malicious hypervisor-based attacks like
-> > data replay, memory re-mapping, and more.
-> > 
-> > Since enabling the SNP CPU feature imposes a number of additional
-> > requirements on host initialization and handling legacy firmware APIs
-> > for SEV/SEV-ES guests, only introduce the CPU feature bit so that the
-> > relevant handling can be added, but leave it disabled via a
-> > disabled-features mask.
-> > 
-> > Once all the necessary changes needed to maintain legacy SEV/SEV-ES
-> > support are introduced in subsequent patches, the SNP feature bit will
-> > be unmasked/enabled.
-> > 
-> > Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> > Signed-off-by: Jarkko Sakkinen <jarkko@profian.com>
-> > Signed-off-by: Ashish Kalra <Ashish.Kalra@amd.com>
-> > Signed-off-by: Michael Roth <michael.roth@amd.com>
-> > ---
-> >  arch/x86/include/asm/cpufeatures.h       | 1 +
-> >  arch/x86/include/asm/disabled-features.h | 4 +++-
-> >  arch/x86/kernel/cpu/amd.c                | 5 +++--
-> >  tools/arch/x86/include/asm/cpufeatures.h | 1 +
-> >  4 files changed, 8 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> > index 29cb275a219d..9492dcad560d 100644
-> > --- a/arch/x86/include/asm/cpufeatures.h
-> > +++ b/arch/x86/include/asm/cpufeatures.h
-> > @@ -442,6 +442,7 @@
-> >  #define X86_FEATURE_SEV			(19*32+ 1) /* AMD Secure Encrypted Virtualization */
-> >  #define X86_FEATURE_VM_PAGE_FLUSH	(19*32+ 2) /* "" VM Page Flush MSR is supported */
-> >  #define X86_FEATURE_SEV_ES		(19*32+ 3) /* AMD Secure Encrypted Virtualization - Encrypted State */
-> > +#define X86_FEATURE_SEV_SNP		(19*32+ 4) /* AMD Secure Encrypted Virtualization - Secure Nested Paging */
-> >  #define X86_FEATURE_V_TSC_AUX		(19*32+ 9) /* "" Virtual TSC_AUX */
-> >  #define X86_FEATURE_SME_COHERENT	(19*32+10) /* "" AMD hardware-enforced cache coherency */
-> >  #define X86_FEATURE_DEBUG_SWAP		(19*32+14) /* AMD SEV-ES full debug state swap support */
-> > diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
-> > index 702d93fdd10e..a864a5b208fa 100644
-> > --- a/arch/x86/include/asm/disabled-features.h
-> > +++ b/arch/x86/include/asm/disabled-features.h
-> > @@ -117,6 +117,8 @@
-> >  #define DISABLE_IBT	(1 << (X86_FEATURE_IBT & 31))
-> >  #endif
-> >  
-> > +#define DISABLE_SEV_SNP		0
-> 
-> I think you want this here if SEV_SNP should be initially disabled:
-> 
-> diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
-> index a864a5b208fa..5b2fab8ad262 100644
-> --- a/arch/x86/include/asm/disabled-features.h
-> +++ b/arch/x86/include/asm/disabled-features.h
-> @@ -117,7 +117,7 @@
->  #define DISABLE_IBT	(1 << (X86_FEATURE_IBT & 31))
->  #endif
->  
-> -#define DISABLE_SEV_SNP		0
-> +#define DISABLE_SEV_SNP	(1 << (X86_FEATURE_SEV_SNP & 31))
->  
->  /*
->   * Make sure to add features to the correct mask
+Some user space applications need to read some clocks.
+Each read requires moving from user space to kernel space.
+The syscall overhead causes unpredictable delay between N clocks reads
+Removing this delay causes better synchronization between N clocks.
 
-Sorry, I must have inverted things when I was squashing in the changes =\
+Introduce a new system call multi_clock_gettime, which can be used to measure
+the offset between multiple clocks, from variety of types: PHC, virtual PHC
+and various system clocks (CLOCK_REALTIME, CLOCK_MONOTONIC, etc).
+The offset includes the total time that the driver needs to read the clock
+timestamp.
 
-I've gone ahead and force-pushed your fixup to the snp-host-init-v1
-branch.
+New system call allows the reading of a list of clocks - up to PTP_MAX_CLOCKS.
+Supported clocks IDs: PHC, virtual PHC and various system clocks.
+Up to PTP_MAX_SAMPLES times (per clock) in a single system call read.
+The system call returns n_clocks timestamps for each measurement:
+- clock 0 timestamp
+- ...
+- clock n timestamp
 
-Thanks,
+Signed-off-by: Sagi Maimon <maimon.sagi@gmail.com>
+---
 
-Mike
+ Addressed comments from:
+ - Arnd Bergmann : https://www.spinics.net/lists/netdev/msg962019.html
+          
+ Changes since version 3:
+ - Replacing the clkid fixed size arrays with a dynamically sized array.
+ - Coping only necessary data from user space.
+ - Calling put_timespec64() only after all time samples taken in order to 
+   reduce the put_timespec64() overhead.
 
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+ arch/x86/entry/syscalls/syscall_64.tbl |  1 +
+ include/linux/syscalls.h               |  2 +-
+ include/uapi/asm-generic/unistd.h      |  4 +-
+ include/uapi/linux/multi_clock.h       | 21 +++++++++
+ kernel/time/posix-timers.c             | 59 ++++++++++++++++++++++++++
+ 5 files changed, 85 insertions(+), 2 deletions(-)
+ create mode 100644 include/uapi/linux/multi_clock.h
+
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index 8cb8bf68721c..9cdeb0bf49db 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -378,6 +378,7 @@
+ 454	common	futex_wake		sys_futex_wake
+ 455	common	futex_wait		sys_futex_wait
+ 456	common	futex_requeue		sys_futex_requeue
++457	common	multi_clock_gettime	sys_multi_clock_gettime
+ 
+ #
+ # Due to a historical design error, certain syscalls are numbered differently
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index fd9d12de7e92..b59fa776ab76 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -1161,7 +1161,7 @@ asmlinkage long sys_mmap_pgoff(unsigned long addr, unsigned long len,
+ 			unsigned long prot, unsigned long flags,
+ 			unsigned long fd, unsigned long pgoff);
+ asmlinkage long sys_old_mmap(struct mmap_arg_struct __user *arg);
+-
++asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
+ 
+ /*
+  * Not a real system call, but a placeholder for syscalls which are
+diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
+index 756b013fb832..beb3e0052d3c 100644
+--- a/include/uapi/asm-generic/unistd.h
++++ b/include/uapi/asm-generic/unistd.h
+@@ -828,9 +828,11 @@ __SYSCALL(__NR_futex_wake, sys_futex_wake)
+ __SYSCALL(__NR_futex_wait, sys_futex_wait)
+ #define __NR_futex_requeue 456
+ __SYSCALL(__NR_futex_requeue, sys_futex_requeue)
++#define __NR_multi_clock_gettime 457
++__SYSCALL(__NR_multi_clock_gettime, sys_multi_clock_gettime)
+ 
+ #undef __NR_syscalls
+-#define __NR_syscalls 457
++#define __NR_syscalls 458
+ 
+ /*
+  * 32 bit systems traditionally used different
+diff --git a/include/uapi/linux/multi_clock.h b/include/uapi/linux/multi_clock.h
+new file mode 100644
+index 000000000000..5e78dac3a533
+--- /dev/null
++++ b/include/uapi/linux/multi_clock.h
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _UAPI_MULTI_CLOCK_H
++#define _UAPI_MULTI_CLOCK_H
++
++#include <linux/types.h>
++#include <linux/time_types.h>
++
++#define MULTI_PTP_MAX_CLOCKS 32 /* Max number of clocks */
++#define MULTI_PTP_MAX_SAMPLES 32 /* Max allowed offset measurement samples. */
++
++struct __ptp_multi_clock_get {
++	unsigned int n_clocks; /* Desired number of clocks. */
++	unsigned int n_samples; /* Desired number of measurements per clock. */
++	clockid_t clkid_arr[MULTI_PTP_MAX_CLOCKS]; /* list of clock IDs */
++	/*
++	 * Array of list of n_clocks clocks time samples n_samples times.
++	 */
++	struct  __kernel_timespec ts[MULTI_PTP_MAX_SAMPLES][MULTI_PTP_MAX_CLOCKS];
++};
++
++#endif /* _UAPI_MULTI_CLOCK_H */
+diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
+index b924f0f096fa..1d321dc56a25 100644
+--- a/kernel/time/posix-timers.c
++++ b/kernel/time/posix-timers.c
+@@ -31,6 +31,8 @@
+ #include <linux/compat.h>
+ #include <linux/nospec.h>
+ #include <linux/time_namespace.h>
++#include <linux/multi_clock.h>
++#include <linux/slab.h>
+ 
+ #include "timekeeping.h"
+ #include "posix-timers.h"
+@@ -1426,6 +1428,63 @@ SYSCALL_DEFINE4(clock_nanosleep_time32, clockid_t, which_clock, int, flags,
+ 
+ #endif
+ 
++SYSCALL_DEFINE1(multi_clock_gettime, struct __ptp_multi_clock_get __user *, ptp_multi_clk_get)
++{
++	const struct k_clock *kc;
++	struct timespec64 *kernel_tp;
++	struct timespec64 *kernel_tp_base;
++	unsigned int n_clocks; /* Desired number of clocks. */
++	unsigned int n_samples; /* Desired number of measurements per clock. */
++	unsigned int i, j;
++	clockid_t clkid_arr[MULTI_PTP_MAX_CLOCKS]; /* list of clock IDs */
++	int error = 0;
++
++	if (copy_from_user(&n_clocks, &ptp_multi_clk_get->n_clocks, sizeof(n_clocks)))
++		return -EFAULT;
++	if (copy_from_user(&n_samples, &ptp_multi_clk_get->n_samples, sizeof(n_samples)))
++		return -EFAULT;
++	if (n_samples > MULTI_PTP_MAX_SAMPLES)
++		return -EINVAL;
++	if (n_clocks > MULTI_PTP_MAX_CLOCKS)
++		return -EINVAL;
++	if (copy_from_user(clkid_arr, &ptp_multi_clk_get->clkid_arr,
++			   sizeof(clockid_t) * n_clocks))
++		return -EFAULT;
++
++	kernel_tp_base = kmalloc_array(n_clocks * n_samples,
++				       sizeof(struct timespec64), GFP_KERNEL);
++	if (!kernel_tp_base)
++		return -ENOMEM;
++
++	kernel_tp = kernel_tp_base;
++	for (j = 0; j < n_samples; j++) {
++		for (i = 0; i < n_clocks; i++) {
++			kc = clockid_to_kclock(clkid_arr[i]);
++			if (!kc) {
++				error = -EINVAL;
++				goto out;
++			}
++			error = kc->clock_get_timespec(clkid_arr[i], kernel_tp++);
++			if (error)
++				goto out;
++		}
++	}
++
++	kernel_tp = kernel_tp_base;
++	for (j = 0; j < n_samples; j++) {
++		for (i = 0; i < n_clocks; i++) {
++			if (put_timespec64(kernel_tp++, (struct __kernel_timespec __user *)
++					&ptp_multi_clk_get->ts[j][i])) {
++				error = -EFAULT;
++				goto out;
++			}
++		}
++	}
++out:
++	kfree(kernel_tp_base);
++	return error;
++}
++
+ static const struct k_clock clock_realtime = {
+ 	.clock_getres		= posix_get_hrtimer_res,
+ 	.clock_get_timespec	= posix_get_realtime_timespec,
+-- 
+2.26.3
+
 
