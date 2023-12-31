@@ -1,123 +1,104 @@
-Return-Path: <linux-kernel+bounces-13617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B003B820970
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 02:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 36637820973
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 02:10:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E28251C20EB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 01:05:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E5821C217DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 01:10:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C3F8A50;
-	Sun, 31 Dec 2023 01:05:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 944E3A50;
+	Sun, 31 Dec 2023 01:10:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="orJIXsMc"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="OpP4hxLk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2F8B65C
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 01:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
-	by cmsmtp with ESMTPS
-	id JgeprwgMM6nOZJkEmrUZjm; Sun, 31 Dec 2023 01:03:32 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id JkElr0F9v1b9NJkElr4jkw; Sun, 31 Dec 2023 01:03:32 +0000
-X-Authority-Analysis: v=2.4 cv=FLYIesks c=1 sm=1 tr=0 ts=6590bde4
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=e2cXIFwxEfEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=FZRryd9vdzjGbbfKjtQA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=xx9SnSiPZtgb/X/N2IqfZ0fQLJnuY9/+aje1lLKoYAE=; b=orJIXsMcHsE+vN9yfKcUOwxZzo
-	FiEs5EiVpYmhFj0dgu/f9hgiJm6OnPMHLwfDxgNBhBXAhYTC7S3Lt+bdmgZ9p5o+HIqyBGxU+QQzH
-	e2Qn6xTh0pbCiFWUbezFQfPdJFqMIfWUTRIC7rKNRJzn6ECoLkoJK0JL4qSCIO1IIPfrgYCMy2YBM
-	NiaJxB/epoVxT4ytH62yFdqhAAnpFcHBOllZujhCQKVQPSUtQpcpzb6J7f4+xfBzQ4qoattKCchCQ
-	//ch9wAehvlmnJotSyJ5AxYKv1Gt0LprlARa1tgXWNN2SA1Lcc/OYEZLNxadatxhGkZEbbqjduL48
-	kWn1d17Q==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:33714 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1rJkEj-001Auh-0f;
-	Sat, 30 Dec 2023 18:03:29 -0700
-Subject: Re: [PATCH 6.6 000/156] 6.6.9-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20231230115812.333117904@linuxfoundation.org>
-In-Reply-To: <20231230115812.333117904@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <ccd6a5d2-2a96-4d6f-f494-3a6a38784362@w6rz.net>
-Date: Sat, 30 Dec 2023 17:03:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73172658;
+	Sun, 31 Dec 2023 01:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1703985009; bh=mx0sCWNRfBLx3ezGSOMtDchdS/1eDlFrWCt0iQUhKNU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=OpP4hxLkOmTkVLj3scT2XftWMuhi13YpPQHW6AlgjPV/8za3/fDH6CD5u3XxPMIwt
+	 6iVoK0NBUe1eIT3BXi6uunNf8/sEXmCV0woP89eR2/eY7rjZ0JxVLeHB/XlrdjSU+0
+	 piP4IftdbHb8KaGUn5P4MqyYR1WptCYe+OS6sAIA=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id 10432694; Sun, 31 Dec 2023 09:04:04 +0800
+X-QQ-mid: xmsmtpt1703984644twpxpbfs7
+Message-ID: <tencent_897491761D662E3D7336B297BA37064A7C09@qq.com>
+X-QQ-XMAILINFO: M/NR0wiIuy70OXQzeMyHWZy5rl5KZS7wqodldixfgh69aF9vkvxWz4muaOD10b
+	 aBMQtRPP9MzBwYafBYQ0VvVUaglXQzyppcC9sw9rVrJCjwpAL69X+lxMZ+vIEsx9MCWByj6n5cSk
+	 H8K2PPzCvOMjNH0l3Qv7xPs1wu1AANyiHr49kzq/6zfzy/6paTq2Li7vBfwGhXy9nydGvo78d109
+	 bXtFFle6CbOOciTvPabkHnIQs8NQRyyyk0MTYI8ggPooGl++k+bDPOlmDpjvftxhe7kKOXaLQMU+
+	 REMp3xndVQFZ6xL2vHMvbIRzetb0k+XtHWWCiDWR7heSY8byDz5ohpzvTRxg1FCNhx4CmYyj7e28
+	 ReDNLfn5pFYMWyPXY7n6cPn9DVHQLddrULMYf7Lehusysdj6Q1BAvHBNPwrpgD6ML12ZywL/ieK6
+	 XoYWwzAASzyEhSq1VXWCqe3z9cqqkXv5FCQgYJUUS0vjJnM0RQnPgikMOksyikmEFISTnwgtloRF
+	 PYNCHeOZ+UMugUqsruI1q1cZFrOy+ronPdwjo1Y7sw0irTsUPYN95DBCOUytOq/18UrMJKIWQYGu
+	 f1qeM2PHoLBNJsNDqKYCcxaGItIhg0g2WuFt8ybr3rLrSV55IS+c5EMstscBmCwVYpgOh+EA2+Y6
+	 aWtTazPiG0vgLL78vrjYox3N6zOi1Q+EdRtC+hWiCY/FIQlwIFvTeYNy/Ml95UKoG5wfeqtqZiRU
+	 nIfwKg+xN7biFDnwMDeKZdPa8GnrpVjUxVNsURWbQtkarUG9DBSw3FiSY91vUvcVOTZNsq+vfO8n
+	 oSK9tSz5F0GygxI1anrMly265Jq4IHGZJcaJXE8pgs+ip7O9p6YT853Ff/i6gDq+6B9rIfu4CQ5/
+	 LVTzKePriwTuVQxZ9NMmrnalZyTtjag304JRKTN2/KOWO/irVLd8Gz+tYmhJtOwg==
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+6450929faa7a97cd42d1@syzkaller.appspotmail.com
+Cc: brauner@kernel.org,
+	damien.lemoal@opensource.wdc.com,
+	edward.shishkin@gmail.com,
+	glider@google.com,
+	jack@suse.cz,
+	jlayton@kernel.org,
+	linuszeng@tencent.com,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	reiserfs-devel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	willy@infradead.org
+Subject: [PATCH] reiserfs: fix uninit-value in reiserfs_new_inode
+Date: Sun, 31 Dec 2023 09:04:04 +0800
+X-OQ-MSGID: <20231231010403.3061947-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000da757a060d58ebbe@google.com>
+References: <000000000000da757a060d58ebbe@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1rJkEj-001Auh-0f
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:33714
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfKNH5N3tZKgU63JCq4jzD48ESlP8G9PW2QSgFyCNXuK00N02I10cgnzoqP6HI1DZR1e/XRO1Y5GFY4Gn3I+69XilMAMSPwnGRoVPklBPpjpNiRKb6N9/
- OC+fJMu5Y0Vmu70X0Yx0h8GNjrS/ZQevzrOitcU92FFyeIVlJzp5xj4mugfHhL7q7Spfp8CStIedQ4PaKJeuBn6ga9NgkbLLEnQ=
+Content-Transfer-Encoding: 8bit
 
-On 12/30/23 3:57 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.9 release.
-> There are 156 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Mon, 01 Jan 2024 11:57:43 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.9-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Before creating a new inode, it is necessary to initialize the "new packing
+locality" tag of the dir.
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ fs/reiserfs/namei.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Tested-by: Ron Economos <re@w6rz.net>
+diff --git a/fs/reiserfs/namei.c b/fs/reiserfs/namei.c
+index 994d6e6995ab..3a824fb170d5 100644
+--- a/fs/reiserfs/namei.c
++++ b/fs/reiserfs/namei.c
+@@ -638,6 +638,10 @@ static int reiserfs_create(struct mnt_idmap *idmap, struct inode *dir,
+ 	if (retval)
+ 		return retval;
+ 
++#ifdef DISPLACE_NEW_PACKING_LOCALITIES
++	REISERFS_I(dir)->new_packing_locality = 0;
++#endif
++
+ 	if (!(inode = new_inode(dir->i_sb))) {
+ 		return -ENOMEM;
+ 	}
+-- 
+2.43.0
 
 
