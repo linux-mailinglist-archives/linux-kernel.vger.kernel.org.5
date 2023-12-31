@@ -1,142 +1,157 @@
-Return-Path: <linux-kernel+bounces-13696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 422E8820B49
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 12:31:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88BCB820B4C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 12:42:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA7901F21C51
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 11:31:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05876281C48
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 11:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035414699;
-	Sun, 31 Dec 2023 11:31:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="WvLW7K1U"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D72DF4691;
+	Sun, 31 Dec 2023 11:42:02 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.14])
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD32D33D3;
-	Sun, 31 Dec 2023 11:31:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704022236; x=1704627036; i=markus.elfring@web.de;
-	bh=nbY6QmFmNQ+E2mdJ5exz4FGfT6XhL01ROUuaUkZePiA=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=WvLW7K1U+fUm7eSlkrEmXhbDm/eJLthpAbQRMwoFBOJuc0vLSyoYpO4gB8xvsPB3
-	 84e4rm8eQxm8zX0hFTPtumwO5ACPIEFF/i8yzslprqard+YCfFB+UsO1q2/0p5/9w
-	 zZlJwDJJWnwFmHaEM8/tJAi9O/jZcqUOd++pRILvSRPDAaVDGG+PrpBuz0OnV0+l6
-	 DqtopD2D25ESuNS5gzvbLLd19NijKL9ymKb07ycedhP0/ALMCLpPxnpUd+TiMAhKA
-	 mnRjrsCk2rHd9+SI7NWev3sCfQOlRGo7Yp5pfWPl7EQ5Gzeuat22eol1N917bMsEF
-	 h0TMW4dvvVz7Zp5YyQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MIyeU-1reC1u2Ozq-00KrK4; Sun, 31
- Dec 2023 12:30:36 +0100
-Message-ID: <b9646b4a-61a2-41fb-8fea-ba63e08996f3@web.de>
-Date: Sun, 31 Dec 2023 12:30:34 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934334422
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 11:42:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-222-eZJrhSwfMT6Fde44uV7HcA-1; Sun, 31 Dec 2023 11:41:56 +0000
+X-MC-Unique: eZJrhSwfMT6Fde44uV7HcA-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 31 Dec
+ 2023 11:41:37 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 31 Dec 2023 11:41:37 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Linus Torvalds' <torvalds@linux-foundation.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"peterz@infradead.org" <peterz@infradead.org>, "longman@redhat.com"
+	<longman@redhat.com>, "mingo@redhat.com" <mingo@redhat.com>,
+	"will@kernel.org" <will@kernel.org>, "boqun.feng@gmail.com"
+	<boqun.feng@gmail.com>, "xinhui.pan@linux.vnet.ibm.com"
+	<xinhui.pan@linux.vnet.ibm.com>, "virtualization@lists.linux-foundation.org"
+	<virtualization@lists.linux-foundation.org>, Zeng Heng <zengheng4@huawei.com>
+Subject: RE: [PATCH next 4/5] locking/osq_lock: Optimise per-cpu data
+ accesses.
+Thread-Topic: [PATCH next 4/5] locking/osq_lock: Optimise per-cpu data
+ accesses.
+Thread-Index: Ado6mZUJWFdx4PkETd+mn/PWVjPd0AAxvFwAAARuwIA=
+Date: Sun, 31 Dec 2023 11:41:37 +0000
+Message-ID: <b2ab72ad8e28433e852a4081718ec37b@AcuMS.aculab.com>
+References: <73a4b31c9c874081baabad9e5f2e5204@AcuMS.aculab.com>
+ <bddb6b00434d4492abca4725c10f8d5a@AcuMS.aculab.com>
+ <CAHk-=wjbWTbRKDP=Yb9VWBGjSBEGB3dJ0=--+7-4oA2n1=1FKw@mail.gmail.com>
+In-Reply-To: <CAHk-=wjbWTbRKDP=Yb9VWBGjSBEGB3dJ0=--+7-4oA2n1=1FKw@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: tipc-discussion@lists.sourceforge.net, netdev@vger.kernel.org,
- kernel-janitors@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Jon Maloy <jmaloy@redhat.com>, Paolo Abeni <pabeni@redhat.com>,
- Ying Xue <ying.xue@windriver.com>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] tipc: Improve exception handling in tipc_bcast_init()
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7eSsDxH83otSo60n2ilX+f33/N7QzAImV6PhRy6CnGPK57balpY
- 3FgRNv746DviRyDa7CFwrqNhMjriXC8sVt57C/+aa7UEuatXbF2+CDvtO9Wl6KfXvgLLskQ
- 5t55KLC/WozCe/xxS+ZqUFJYVXTNvLBpfet4LgoT/CpP0Lf1p6vsmrX/mriT0TgytPEyExg
- MMhhSXRfA7wPIbnOSifTw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YTPF1jvdTGs=;zJ3xJemRZiorgjWTtMXD5gJdx2g
- oT8ysAYylDZ4b5aGJymiTYpVJpus0zE6vTVAE/hPhx45M1uJcczl71C8o+PXAMg+ECxOJa78S
- lnIS08Bw+6lSF2wap4PJeOIH2LqZGd0u/vcF2glXDtuzhKIG+EWUc8apkUMb8HPMouRV7q3/O
- oIOhtM7M9NmsZP8FihiJIWF2bTyy6tnmdHpZ0xA2ZWHuDyIbBPGAYf76EP6TiGbM+ZDpym6jL
- moIC2Zpa8LeOhiQ9pkutaD68l1RsfmxYFGosSE5IXaHQepnFozk4qt8RdW7aV9iALQSM3L/y0
- ou3D/PYEbY02TFXweCR2cnJRUs6QK9AIjWfKWCpAcqJnq3LHTZ1lGQOgxTE5/B4OiTsQHUhUV
- +cQByw9piIm0a5lELAuIv8Cdj8j7zAZhRrD/e4eOWEtvKV6yuQsFky9CbxLRk5c++PQBC3pzc
- 4jJ9wzn86OB8Xeabc/0nIgVuH1x5k9uZb6Rn52hjkfyqedeq7nLGyEeWc5B9ZnGNJPEs95lKO
- SKHagYEn8/SUz9GS3cUVkMjeEpfbkX7RKEVo106UcaX0qlhOZdw6YokZIsbNQoFVHucm5YLHS
- rjhrnHeQ5hNV5etRAchpLtaFmz0Lx46s9Myx/C2nOxh9xOyxDzZj49KdQf42yyuQiNhkfPH0l
- bdEWGL3cDwsQv84lyKEAZgIqHi5Pq3xGha5lUCk+y88P92Mx8HGyTfMebPsacLqi3Lw/+yvmE
- boU0Jl4qLK8lOr7vW6mZlVrtaL5DeWJgsoUz5SCjAZdgCLkWQE6cPKKlZwgXfe+HGql9F1HB2
- wSyG0SLjCEa2T5SZPtmfNi6JmffL3z9JpFDNX8bZZdy0jMKcC8JhuJB1+lZ4l9Xd7o+vaniZz
- XTqblTdfi68eqDKitvoh1JRolfH6HBgNKTwFvkM3LSPJLaa4lf0XdLFgOh3TuWXMyDBhBDwkc
- 0G/M2A==
+Content-Transfer-Encoding: base64
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 31 Dec 2023 12:20:06 +0100
-
-The kfree() function was called in two cases by
-the tipc_bcast_init() function during error handling
-even if the passed variable contained a null pointer.
-This issue was detected by using the Coccinelle software.
-
-* Thus return directly after a call of the function =E2=80=9Ckzalloc=E2=80=
-=9D failed
-  at the beginning.
-
-* Move one assignment for the variable =E2=80=9Ctn=E2=80=9D closer to the =
-place
-  where this pointer is used.
-
-* Delete a redundant kfree() call.
-
-* Omit initialisations (for the local variables)
-  which became unnecessary with this refactoring.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- net/tipc/bcast.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/net/tipc/bcast.c b/net/tipc/bcast.c
-index 593846d25214..631aef2dde45 100644
-=2D-- a/net/tipc/bcast.c
-+++ b/net/tipc/bcast.c
-@@ -688,13 +688,15 @@ int tipc_nl_bc_link_set(struct net *net, struct nlat=
-tr *attrs[])
-
- int tipc_bcast_init(struct net *net)
- {
--	struct tipc_net *tn =3D tipc_net(net);
--	struct tipc_bc_base *bb =3D NULL;
--	struct tipc_link *l =3D NULL;
-+	struct tipc_net *tn;
-+	struct tipc_bc_base *bb;
-+	struct tipc_link *l;
-
- 	bb =3D kzalloc(sizeof(*bb), GFP_KERNEL);
- 	if (!bb)
--		goto enomem;
-+		return -ENOMEM;
-+
-+	tn =3D tipc_net(net);
- 	tn->bcbase =3D bb;
- 	spin_lock_init(&tipc_net(net)->bclock);
-
-@@ -715,7 +717,6 @@ int tipc_bcast_init(struct net *net)
- 	return 0;
- enomem:
- 	kfree(bb);
--	kfree(l);
- 	return -ENOMEM;
- }
-
-=2D-
-2.43.0
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMzAgRGVjZW1iZXIgMjAyMyAyMDo0MQ0KPiAN
+Cj4gT24gRnJpLCAyOSBEZWMgMjAyMyBhdCAxMjo1NywgRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWln
+aHRAYWN1bGFiLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiB0aGlzX2NwdV9wdHIoKSBpcyByYXRoZXIg
+bW9yZSBleHBlbnNpdmUgdGhhbiByYXdfY3B1X3JlYWQoKSBzaW5jZQ0KPiA+IHRoZSBsYXR0ZXIg
+Y2FuIHVzZSBhbiAnb2Zmc2V0IGZyb20gcmVnaXN0ZXInICglZ3MgZm9yIHg4Ni04NCkuDQo+ID4N
+Cj4gPiBBZGQgYSAnc2VsZicgZmllbGQgdG8gJ3N0cnVjdCBvcHRpbWlzdGljX3NwaW5fbm9kZScg
+dGhhdCBjYW4gYmUNCj4gPiByZWFkIHdpdGggcmF3X2NwdV9yZWFkKCksIGluaXRpYWxpc2Ugb24g
+Zmlyc3QgY2FsbC4NCj4gDQo+IE5vLCB0aGlzIGlzIGhvcnJpYmxlLg0KPiANCj4gVGhlIHByb2Js
+ZW0gaXNuJ3QgdGhlICJ0aGlzX2NwdV9wdHIoKSIsIGl0J3MgdGhlIHJlc3Qgb2YgdGhlIGNvZGUu
+DQo+IA0KPiA+ICBib29sIG9zcV9sb2NrKHN0cnVjdCBvcHRpbWlzdGljX3NwaW5fcXVldWUgKmxv
+Y2spDQo+ID4gIHsNCj4gPiAtICAgICAgIHN0cnVjdCBvcHRpbWlzdGljX3NwaW5fbm9kZSAqbm9k
+ZSA9IHRoaXNfY3B1X3B0cigmb3NxX25vZGUpOw0KPiA+ICsgICAgICAgc3RydWN0IG9wdGltaXN0
+aWNfc3Bpbl9ub2RlICpub2RlID0gcmF3X2NwdV9yZWFkKG9zcV9ub2RlLnNlbGYpOw0KPiANCj4g
+Tm8uIEJvdGggb2YgdGhlc2UgYXJlIGNyYXAuDQo+IA0KPiA+ICAgICAgICAgc3RydWN0IG9wdGlt
+aXN0aWNfc3Bpbl9ub2RlICpwcmV2LCAqbmV4dDsNCj4gPiAgICAgICAgIGludCBvbGQ7DQo+ID4N
+Cj4gPiAtICAgICAgIGlmICh1bmxpa2VseShub2RlLT5jcHUgPT0gT1NRX1VOTE9DS0VEX1ZBTCkp
+DQo+ID4gLSAgICAgICAgICAgICAgIG5vZGUtPmNwdSA9IGVuY29kZV9jcHUoc21wX3Byb2Nlc3Nv
+cl9pZCgpKTsNCj4gPiArICAgICAgIGlmICh1bmxpa2VseSghbm9kZSkpIHsNCj4gPiArICAgICAg
+ICAgICAgICAgaW50IGNwdSA9IGVuY29kZV9jcHUoc21wX3Byb2Nlc3Nvcl9pZCgpKTsNCj4gPiAr
+ICAgICAgICAgICAgICAgbm9kZSA9IGRlY29kZV9jcHUoY3B1KTsNCj4gPiArICAgICAgICAgICAg
+ICAgbm9kZS0+c2VsZiA9IG5vZGU7DQo+ID4gKyAgICAgICAgICAgICAgIG5vZGUtPmNwdSA9IGNw
+dTsNCj4gPiArICAgICAgIH0NCj4gDQo+IFRoZSBwcm9wZXIgZml4IGhlcmUgaXMgdG8gbm90IGRv
+IHRoYXQgc2lsbHkNCj4gDQo+ICAgICAgICAgbm9kZSA9IHRoaXNfY3B1X3B0cigmb3NxX25vZGUp
+Ow0KPiAgICAgICAgIC4uDQo+ICAgICAgICAgbm9kZS0+bmV4dCA9IE5VTEw7DQo+IA0KPiBkYW5j
+ZSBhdCBhbGwsIGJ1dCB0byBzaW1wbHkgZG8NCj4gDQo+ICAgICAgICAgdGhpc19jcHVfd3JpdGUo
+b3NxX25vZGUubmV4dCwgTlVMTCk7DQo+IA0KPiBpbiB0aGUgZmlyc3QgcGxhY2UuIFRoYXQgbWFr
+ZXMgdGhlIHdob2xlIHRoaW5nIGp1c3QgYSBzaW5nbGUgc3RvcmUgb2ZmDQo+IHRoZSBzZWdtZW50
+IGRlc2NyaXB0b3IuDQoNCklzIHRoZSBlcXVpdmFsZW50IHRydWUgKGllIG9mZnNldCBmcm9tIGZp
+eGVkIHJlZ2lzdGVyKSBmb3IgYWxsIFNNUCBhcmNocz8NCk9yIGRvIHNvbWUgaGF2ZSB0byBkbyBz
+b21ldGhpbmcgcmF0aGVyIG1vcmUgY29tcGxpY2F0ZWQ/DQoNCj4gWWVzLCB5b3UnbGwgZXZlbnR1
+YWxseSBlbmQgdXAgZG9pbmcgdGhhdA0KPiANCj4gICAgICAgICBub2RlID0gdGhpc19jcHVfcHRy
+KCZvc3Ffbm9kZSk7DQoNCkZvciBzb21lIHJlYXNvbiBJJ3ZlIGhhZCBDT05GSUdfREVCVUdfUFJF
+RU1QVCBzZXQuIEkgZG9uJ3QgcmVtZW1iZXINCnNldHRpbmcgaXQsIGFuZCBjYW4ndCBpbWFnaW5l
+IHdoeSBJIG1pZ2h0IGhhdmUuDQpCZXN0IGd1ZXNzIGlzIGl0IHdhcyBpbmhlcml0ZWQgZnJvbSB0
+aGUgdWJ1bnR1IC5jb25maWcgSSBzdGFydGVkIHdpdGguDQpJbiBhbnkgY2FzZSBpdCBjaGFuZ2Vz
+IHNtcF9wcm9jZXNzb3JfaWQoKSBpbnRvIGEgcmVhbCBmdW5jdGlvbg0KaW4gb3JkZXIgdG8gY2hl
+Y2sgdGhhdCBwcmVlbXB0aW9uIGlzIGRpc2FibGVkLg0KSSdkIGd1ZXNzIHNvbWV0aGluZyBsaWtl
+IEJVR19PTighcmF3X2NwdV9yZWFkKHByZWVtcHRfZGlzYWJsZV9jb3VudCkpDQp3b3VsZCBiZSBm
+YXN0ZXIgYW5kIG1vcmUgb2J2aW91cyENCg0KPiB0aGluZyBiZWNhdXNlIGl0IHRoZW4gd2FudHMg
+dG8gdXNlIHRoYXQgcmF3IHBvaW50ZXIgdG8gZG8NCj4gDQo+ICAgICAgICAgV1JJVEVfT05DRShw
+cmV2LT5uZXh0LCBub2RlKTsNCj4gDQo+IGJ1dCB0aGF0J3MgYSBzZXBhcmF0ZSBpc3N1ZSBhbmQg
+c3RpbGwgZG9lcyBub3QgbWFrZSBpdCB3b3J0aCBpdCB0bw0KPiBjcmVhdGUgYSBwb2ludGxlc3Mg
+c2VsZi1wb2ludGVyLg0KDQpJIGNvdWxkIGNsYWltIHRoYXQgbG9hZGluZyBpdCBpcyBvbmUgaW5z
+dHJ1Y3Rpb24gc2hvcnRlciBhbmQgdGhhdA0KaWYgdGhlIGNhY2hlIGxpbmUgY29udGFpbmluZyAn
+bm9kZScgaXMgbmVlZGVkIGFuZCAncGNwdV9ob3QnDQppcyAodW5leHBlY3RlZGx5KSBub3QgY2Fj
+aGVkIGl0IHNhdmVzIGEgY2FjaGUgbGluZSBsb2FkLg0KQnV0IEkgcHJvYmFibHkgd29uJ3QhDQoN
+Cj4gDQo+IEJ0dywgaWYgeW91ICpyZWFsbHkqIHdhbnQgdG8gc29sdmUgdGhhdCBzZXBhcmF0ZSBp
+c3N1ZSwgdGhlbiBtYWtlIHRoZQ0KPiBvcHRpbWlzdGljX3NwaW5fbm9kZSBzdHJ1Y3Qgbm90IGNv
+bnRhaW4gdGhlIHBvaW50ZXJzIGF0IGFsbCwgYnV0IHRoZQ0KPiBDUFUgbnVtYmVycywgYW5kIHRo
+ZW4gdHVybiB0aG9zZSBudW1iZXJzIGludG8gdGhlIHBvaW50ZXJzIHRoZSBleGFjdA0KPiBzYW1l
+IHdheSBpdCBkb2VzIGZvciB0aGUgImxvY2stPnRhaWwiIHRoaW5nLCBpZSBkb2luZyB0aGF0IHdo
+b2xlDQo+IA0KPiAgICAgICAgIHByZXYgPSBkZWNvZGVfY3B1KG9sZCk7DQo+IA0KPiBkYW5jZS4g
+VGhhdCAqbWF5KiB0aGVuIHJlc3VsdCBpbiBhdm9pZGluZyB0dXJuaW5nIHRoZW0gaW50byBwb2lu
+dGVycw0KPiBhdCBhbGwgaW4gc29tZSBjYXNlcy4NCg0KRG9uJ3QgdGhpbmsgc28uDQpQcmV0dHkg
+bXVjaCBhbGwgdGhlIHVzZXMgbmVlZCB0byBkZXJlZmVyZW5jZSB0aGUgbmV4dC9wcmV2IHBvaW50
+ZXJzLg0KDQo+IEFsc28sIEkgdGhpbmsgdGhhdCB5b3UgbWlnaHQgd2FudCB0byBsb29rIGludG8g
+bWFraW5nIE9TUV9VTkxPQ0tFRF9WQUwNCj4gYmUgLTEgaW5zdGVhZCwgYW5kIGFkZCBzb21ldGhp
+bmcgbGlrZQ0KPiANCj4gICAjZGVmaW5lIElTX09TUV9VTkxPQ0tFRCh4KSAoKGludCkoeCk8MCkN
+Cg0KSSBkaWQgdGhpbmsgYWJvdXQgdGhhdCAoYnV0IG5vdCBmb3IgdGhlc2UgcGF0Y2hlcykuDQpC
+dXQgaXQgaXMgYSBsb3QgbW9yZSBkYW5nZXJvdXMgYmVjYXVzZSBpdCBhYnNvbHV0ZWx5IHJlcXVp
+cmVzDQp0aGUgc3RydWN0dXJlIGJlIGNvcnJlY3RseSBpbml0aWFsaXNlZCwgbm90IGp1c3QgYmUg
+YWxsIHplcm8uDQpUaGF0IG1pZ2h0IHNob3cgdXAgc29tZSB2ZXJ5IHN0cmFuZ2UgYnVncy4NCg0K
+PiBhbmQgdGhhdCB3b3VsZCB0aGVuIGF2b2lkIHRoZSArMSAvIC0xIGdhbWVzIGluIGVuY29kaW5n
+L2RlY29kaW5nIHRoZQ0KPiBDUFUgbnVtYmVycy4gSXQgY2F1c2VzIHNpbGx5IGNvZGUgZ2VuZXJh
+dGVkIGxpa2UgdGhpczoNCj4gDQo+ICAgICAgICAgc3VibCAgICAkMSwgJWVheCAgICAgICAgIywg
+Y3B1X25yDQo+IC4uLg0KPiAgICAgICAgIGNsdHENCj4gICAgICAgICBhZGRxICAgIF9fcGVyX2Nw
+dV9vZmZzZXQoLCVyYXgsOCksICVyY3gNCj4gDQo+IHdoaWNoIHNlZW1zIGhvbmVzdGx5IHN0dXBp
+ZC4gVGhlIGNsdHEgaXMgdGhlcmUgZm9yIHNpZ24tZXh0ZW5zaW9uLA0KPiB3aGljaCBpcyBiZWNh
+dXNlIGFsbCB0aGVzZSB0aGluZ3MgYXJlICJpbnQiLCBhbmQgdGhlICJzdWJsIiB3aWxsDQo+IHpl
+cm8tZXh0ZW5kIHRvIDY0LWJpdCwgbm90IHNpZ24tZXh0ZW5kLg0KDQpDaGFuZ2luZyBhbGwgdGhl
+IHZhcmlhYmxlcyB0byAndW5zaWduZWQgaW50JyB3aWxsIHJlbW92ZSB0aGUgc2lnbg0KZXh0ZW5z
+aW9uIGFuZCwgYWZ0ZXIgdGhlIGRlY3JlbWVudCwgZ2NjIHdpbGwga25vdyB0aGUgaGlnaCBiaXRz
+DQphcmUgemVybyBzbyBzaG91bGRuJ3QgbmVlZCB0byB6ZXJvIGV4dGVuZC4NCg0KPiBBdCB0aGF0
+IHBvaW50LCBJIHRoaW5rIGdjYyBtaWdodCBiZSBhYmxlIHRvIGp1c3QgZ2VuZXJhdGUNCj4gDQo+
+ICAgICAgICAgYWRkcSAgICBfX3Blcl9jcHVfb2Zmc2V0LTgoLCVyYXgsOCksICVyY3gNCg0KVGhh
+dCB3b3VsZCBuZWVkIHRoZSBkZWNyZW1lbnQgdG8gYmUgNjRiaXQuDQpBIHF1aWNrIHRlc3QgZmFp
+bGVkIHRvIG1ha2UgdGhhdCB3b3JrLg0KUHJvYmFibHkgKGFzIHlvdSBtZW50aW9uZWQgaW4gdGhl
+IG5leHQgZW1haWwpIGJlY2F1c2UgZ2NjDQpkb2Vzbid0IGtub3cgdGhhdCB0aGUgaGlnaCBiaXRz
+IGZyb20gYXRvbWljX3hjaGcoKSBhcmUgemVyby4NCg0KPiBidXQgaG9uZXN0bHksIEkgdGhpbmsg
+aXQgd291bGQgYmUgbmljZXIgdG8ganVzdCBoYXZlIGRlY29kZV9jcHUoKSBkbw0KPiANCj4gICAg
+ICAgICB1bnNpZ25lZCBpbnQgY3B1X25yID0gZW5jb2RlZF9jcHVfdmFsOw0KPiANCj4gICAgICAg
+ICByZXR1cm4gcGVyX2NwdV9wdHIoJm9zcV9ub2RlLCBjcHVfbnIpOw0KPiANCj4gYW5kIG5vdCBo
+YXZlIHRoZSAtMS8rMSBhdCBhbGwuDQoNClVubGVzcyB5b3UgY2FuIHBlcnN1YWRlIGdjYyB0aGF0
+IHRoZSBoaWdoIGJpdHMgZnJvbSBhdG9taWNfeGNoZygpDQphcmUgemVybyB0aGF0IHdpbGwgcmVx
+dWlyZSBhIHplcm8gZXh0ZW5kLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
+a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
+IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
 
