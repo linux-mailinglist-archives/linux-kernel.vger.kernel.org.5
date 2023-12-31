@@ -1,190 +1,94 @@
-Return-Path: <linux-kernel+bounces-13656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71699820A6A
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 09:34:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91005820A6E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 09:39:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14FB9B217D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 08:33:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C445A1C214E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 08:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DE9B185D;
-	Sun, 31 Dec 2023 08:33:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9952020FB;
+	Sun, 31 Dec 2023 08:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="HZVxcC/y";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="T5ztKVj1";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="HZVxcC/y";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="T5ztKVj1"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="rbjjdll8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81D31186C;
-	Sun, 31 Dec 2023 08:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 22E3421DFB;
-	Sun, 31 Dec 2023 08:33:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704011624; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N4RTRshVREzFDoQShoQSeJ7L1xCrv3rMfCKwpXDSiu4=;
-	b=HZVxcC/yybZy9ySs7R1EzckIbpfuTkvqsqaGiunMvFXeP0u/PWrW7ktJmLQO7ihlMWx6rR
-	9nuGxmsxp1tD50YZLX7GMmpiSzsurMftAsXFMU4cU2VcTcAUiORHrXmRTC21aQIToX7m0Z
-	gsqw7b5xpKmOVAL+CiDLa/B0byxFgbE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704011624;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N4RTRshVREzFDoQShoQSeJ7L1xCrv3rMfCKwpXDSiu4=;
-	b=T5ztKVj1Pk/2MNK6+rQHZd7Q0j92pkpdLJfYYfbyMMurDW0n3iYSVV6z6auWlXDEo1xSmE
-	wVVRnlF0bfXm6HAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704011624; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N4RTRshVREzFDoQShoQSeJ7L1xCrv3rMfCKwpXDSiu4=;
-	b=HZVxcC/yybZy9ySs7R1EzckIbpfuTkvqsqaGiunMvFXeP0u/PWrW7ktJmLQO7ihlMWx6rR
-	9nuGxmsxp1tD50YZLX7GMmpiSzsurMftAsXFMU4cU2VcTcAUiORHrXmRTC21aQIToX7m0Z
-	gsqw7b5xpKmOVAL+CiDLa/B0byxFgbE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704011624;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N4RTRshVREzFDoQShoQSeJ7L1xCrv3rMfCKwpXDSiu4=;
-	b=T5ztKVj1Pk/2MNK6+rQHZd7Q0j92pkpdLJfYYfbyMMurDW0n3iYSVV6z6auWlXDEo1xSmE
-	wVVRnlF0bfXm6HAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B96031398B;
-	Sun, 31 Dec 2023 08:33:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4JsKKmcnkWWkHwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sun, 31 Dec 2023 08:33:43 +0000
-Date: Sun, 31 Dec 2023 09:33:43 +0100
-Message-ID: <87cyumwz2w.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Gergo Koteles <soyer@irl.hu>
-Cc: Shenghao Ding <shenghao-ding@ti.com>,
-	Kevin Lu <kevin-lu@ti.com>,
-	Baojun Xu <baojun.xu@ti.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH v2 0/4] ALSA: hda/tas2781: Add tas2563 support
-In-Reply-To: <3933d97638cfe57de5f9651b1f9a168bf88e43a5.camel@irl.hu>
-References: <cover.1701906455.git.soyer@irl.hu>
-	<cover.1703891777.git.soyer@irl.hu>
-	<87il4fwrs1.wl-tiwai@suse.de>
-	<3933d97638cfe57de5f9651b1f9a168bf88e43a5.camel@irl.hu>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 285C517C7;
+	Sun, 31 Dec 2023 08:39:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704011964; x=1704616764; i=markus.elfring@web.de;
+	bh=Nx5AiU9kG4mlRgZKJZE6QHd/i2gpSelR/eMf8alkr2U=;
+	h=X-UI-Sender-Class:Date:From:Subject:To:Cc;
+	b=rbjjdll8c1mWMOyItNH49l1U5BtNemIprbvZkuuWWG4L3b/Qe8A3NrD82y1YP7on
+	 E401AX9OYwdmQotSBCH88C+AmO3gu8+ZE/3RjnWs667osM5cTNgqEwQbo36TSDi1y
+	 820SpwHd+Fv709lLf+RP9sQlwW6nJOpPCU9zHAXOZ4fSwDyecvak2zDJg0LbV3pm9
+	 SywtldKrhlS+Wp/wnNqE9nLojhNpeWlOhdJYtTk2VDjv08YB0wc68bHVgS90dCziB
+	 JWczzMbEHLFj2ykS5pm09q2Cs5dNKZYKnBgQG/SOj0mNw3MwfWcC9yYfnoSe3MyBx
+	 JJwrISIWcJNM6u2V7w==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MWi9q-1ri6K42OHA-00XQUQ; Sun, 31
+ Dec 2023 09:39:24 +0100
+Message-ID: <ebffa8ea-8d0c-4b83-805b-754e25bd4603@web.de>
+Date: Sun, 31 Dec 2023 09:39:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Level: 
-X-Spamd-Bar: /
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH 0/3] gcov: Adjustments for two function implementations
+To: Peter Oberparleiter <oberpar@linux.ibm.com>,
+ kernel-janitors@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:VYK5fVj/h+Jgh14fsFuXa5QWRNakQWSBEYW2sDP8UfsLeuTRie3
+ h0QgkSzl2ZEwG+RBCfIBPk6ifpXNcVlRtKMNdnXtKW3bVz/8gcU3dZT0ztGgqrpa+bDuOO2
+ LA/eu9CUf+91tMNLDYTq4GVDmw3Zmkes8dV6bK4r+EdyvdQTtwiFbeQSTrXMl0Tk5Av/Ncu
+ TseRNwHg2hzPkieuzmiEg==
 X-Spam-Flag: NO
-X-Spamd-Result: default: False [0.67 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[ti.com,perex.cz,suse.com,gmail.com,kernel.org,vger.kernel.org,alsa-project.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.02)[54.96%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="HZVxcC/y";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=T5ztKVj1
-X-Spam-Score: 0.67
-X-Rspamd-Queue-Id: 22E3421DFB
+UI-OutboundReport: notjunk:1;M01:P0:Y/EHK/WHi0w=;hZo5ekWKvfOtJFvtF8VAI5zdG9s
+ sZLMsrBhNYn0jd1p1G5cCPrCfH9nrhUnyXbx6n02pat2MWFoZJGKihtJjFJfbJnwP3ayA42Ms
+ pHKekkgKqLbphCOXbtd3jYXZ1DmEpTNn3ayFtvkXszb4cE6VC5gmebJRPN9aaR3sDvs1FHR8a
+ SEsuTOOgdDvlO7gb3jypFjT07M6lwR9H3IGFzQzrcvw5B38AJ9uyqRnNe2ff5qmOtKEcfHDh3
+ /8l1ZWSaUDyabGtz3wWK7hPECmpL2ZOpahbG5DD98owkYLdJlgczlbZMkl+JZJhkRTmdUm7Sd
+ A8tOZrPs/LIODKVQdB1KV9c1r/FgWAqdxAsrcq6LlvSqnmx1sZAHx+slGO7e2lc4sXmE7yvFV
+ xwL90g77SXequFxGzign959dY8r459LF+14u4vCpWxftpHmTJUbjmgByr1671ctjMD2tSTxwo
+ sXS6WTQmSZ8qcMOkdcUY2XHuLm3v6bvx7yfiAmKU1l3kjwTmFOof+6bNmfORJ1XrWR55AZSOH
+ np+0l0BbNPh3VborXxs4Jz73UkcQVZlPMq4gyQcs83d21b6d4L6b6uWZku9zkpeuQHwSmL8u4
+ UH4u+L48tkZKEUg16SPJcKcnpKPyoH1vkUdi6u2l0XvNm1naoTKMO5JgE5eejHk6FOt0ZHmAJ
+ P+jq0k0KdYpu27+NREUMyjJr8exi2aAjv6m007yv96kO2FnTPqK8jfbj1avQneSAtdNs78YaV
+ 7ezWn0c3KnGYNzD6CY7dLkB/hfQVDED6Rf/Q7TvUrUFHL8Y5293pMfIyzeZJiwLX/0NuTYTK9
+ kdreasCMegdvAkTmJ7nBFkQf2kBEkgUte4pFQNfxpxjzWGhk4xKBQO+jl6PYxjrH5Hd5GyG7I
+ VGokDmrmM9XbDItxWicN2tvkcMaIZpuYHg0Fy4j55Ptritoa1WaaufH1XDW2MF7AP15smd6jF
+ 2aX29Q==
 
-On Sat, 30 Dec 2023 21:18:06 +0100,
-Gergo Koteles wrote:
-> 
-> Hi Takashi,
-> 
-> On Sat, 2023-12-30 at 17:59 +0100, Takashi Iwai wrote:
-> > Thanks, I guess I'll take this series later for 6.8 unless any
-> > objection is raised from reviewers.
-> > 
-> > But, I'd like to hear clarifications of some points beforehand:
-> > 
-> > - Did we get consensus about the ACPI HID?  I didn't follow the
-> >   previous thread completely.
-> > 
-> 
-> The INT8866 is a (wrong) PNP ID, that should only be used by the owner
-> "Interphase Corporation".
-> Intel has also mistakenly used the INT PNP prefix in the past, and now
-> TI/leNovo.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 31 Dec 2023 09:34:56 +0100
 
-Yeah, and the question is whether TI / Lenovo recognize the problem
-and will avoid such a failure in future again.
+A few update suggestions were taken into account
+from static source code analysis.
 
-> >   Since those models have been already in the market for quite some
-> >   time, we'd have to accept "INT8866", I'm afraid.  But it's still
-> >   very important to know whether a similar problem can be avoided in
-> >   future.
-> > 
-> > - Will be the firmware files upstreamed to linux-firmware tree later?
-> >   Otherwise users will have significant difficulties.
-> 
-> Shenghao sent the two files to linux-firmware@kernel.org a few days
-> ago, but I think the "Allegedly GPLv2+ ... Found in hex form in kernel
-> source." Licence needs to be fixed before acceptance.
+Markus Elfring (3):
+  Delete an error message for a failed memory allocation in new_node()
+  Return directly after a failed kzalloc() in new_node()
+  Improve exception handling in add_links()
 
-OK, that sounds promising.
+ kernel/gcov/fs.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-> But even if it is not included in the linux-firmware package, it is
-> easier for users to put two files in place per OS installation than
-> patching the kernel.
+=2D-
+2.43.0
 
-Sure.
-
-
-thanks,
-
-Takashi
 
