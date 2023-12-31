@@ -1,157 +1,158 @@
-Return-Path: <linux-kernel+bounces-13697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88BCB820B4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 12:42:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69D5D820B52
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 12:51:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05876281C48
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 11:42:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DA43B212AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 11:51:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D72DF4691;
-	Sun, 31 Dec 2023 11:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BBC75686;
+	Sun, 31 Dec 2023 11:51:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="cl9kUDyW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934334422
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 11:42:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-222-eZJrhSwfMT6Fde44uV7HcA-1; Sun, 31 Dec 2023 11:41:56 +0000
-X-MC-Unique: eZJrhSwfMT6Fde44uV7HcA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 31 Dec
- 2023 11:41:37 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 31 Dec 2023 11:41:37 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Linus Torvalds' <torvalds@linux-foundation.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"peterz@infradead.org" <peterz@infradead.org>, "longman@redhat.com"
-	<longman@redhat.com>, "mingo@redhat.com" <mingo@redhat.com>,
-	"will@kernel.org" <will@kernel.org>, "boqun.feng@gmail.com"
-	<boqun.feng@gmail.com>, "xinhui.pan@linux.vnet.ibm.com"
-	<xinhui.pan@linux.vnet.ibm.com>, "virtualization@lists.linux-foundation.org"
-	<virtualization@lists.linux-foundation.org>, Zeng Heng <zengheng4@huawei.com>
-Subject: RE: [PATCH next 4/5] locking/osq_lock: Optimise per-cpu data
- accesses.
-Thread-Topic: [PATCH next 4/5] locking/osq_lock: Optimise per-cpu data
- accesses.
-Thread-Index: Ado6mZUJWFdx4PkETd+mn/PWVjPd0AAxvFwAAARuwIA=
-Date: Sun, 31 Dec 2023 11:41:37 +0000
-Message-ID: <b2ab72ad8e28433e852a4081718ec37b@AcuMS.aculab.com>
-References: <73a4b31c9c874081baabad9e5f2e5204@AcuMS.aculab.com>
- <bddb6b00434d4492abca4725c10f8d5a@AcuMS.aculab.com>
- <CAHk-=wjbWTbRKDP=Yb9VWBGjSBEGB3dJ0=--+7-4oA2n1=1FKw@mail.gmail.com>
-In-Reply-To: <CAHk-=wjbWTbRKDP=Yb9VWBGjSBEGB3dJ0=--+7-4oA2n1=1FKw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024D54415;
+	Sun, 31 Dec 2023 11:51:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 49E0540E016E;
+	Sun, 31 Dec 2023 11:51:01 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 4eg0_SLg_kXx; Sun, 31 Dec 2023 11:50:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704023458; bh=rshc7RO4qeTYeDFjVLydvwS1x2ZSFRCAo8/CN5Dns6c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cl9kUDyWnKHtQdd3kIozQ9uHF3eWNBAkA9wIgKNRIu7FMlBgTYVYC8j3eLDIc1+Bp
+	 hkCM/Nd7vdnc1b+zGVWwr43REhIvmABVHseMEcIDn96Gx7LzqRXuybrYhAPiUWP5sC
+	 Y+JS+4LXvxMsCuf0ZcgEBL4kezJ21Q5JQPftrjJ7263+bAT8WydTNUI14eWvOQUoa7
+	 MuR75H5YqKM/aJUMfhpWTNPKtLamIY3o/qMzhEYVBnetBqfMFoLFuqtAMdAJ7Qm4xF
+	 gDLIwz6WbJhe2mZ+JdJKrKDpUYNZzAotH/h/jJrAEbfNpKlINtQVMX6dLN+TaGh821
+	 L4OAMbOrvvamJrpu7L6HRKkgyktN3uVI9DQeiPnHvDo5oIXW2pxRfgkd2wu4og8eOw
+	 XbTSlD3s8+Qgux9YzBYAAuo5MGTkXznhDF6wrO0oI4fN3Cx42URjZxtEG4BYS26kcb
+	 FsESawR83FkYNekXbGrwE6ZyGKbm/n+82GK36oZAZLn5vwZcDFw6etAKx0K8ZpHzOi
+	 cwjrNNoC0yFFF7VaZjIcsogfnSxgwjbOlvBHIqhRXr0+Q9thC5IdKR3jqal48lWgWP
+	 awEOLCZO8cBJ62WGwyz1cZ4+0yOfOkwBMR8MWUkqUW1jPDOP0VpS/nWzvsh8Hh5/dM
+	 hi7IT3zlZSgFvThJFDwVQDTw=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BA2A040E00C7;
+	Sun, 31 Dec 2023 11:50:18 +0000 (UTC)
+Date: Sun, 31 Dec 2023 12:50:12 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Michael Roth <michael.roth@amd.com>
+Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
+	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
+	Brijesh Singh <brijesh.singh@amd.com>,
+	Jarkko Sakkinen <jarkko@profian.com>
+Subject: Re: [PATCH v1 01/26] x86/cpufeatures: Add SEV-SNP CPU feature
+Message-ID: <20231231115012.GAZZFVdHCWijp7yFls@fat_crate.local>
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-2-michael.roth@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231230161954.569267-2-michael.roth@amd.com>
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMzAgRGVjZW1iZXIgMjAyMyAyMDo0MQ0KPiAN
-Cj4gT24gRnJpLCAyOSBEZWMgMjAyMyBhdCAxMjo1NywgRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWln
-aHRAYWN1bGFiLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiB0aGlzX2NwdV9wdHIoKSBpcyByYXRoZXIg
-bW9yZSBleHBlbnNpdmUgdGhhbiByYXdfY3B1X3JlYWQoKSBzaW5jZQ0KPiA+IHRoZSBsYXR0ZXIg
-Y2FuIHVzZSBhbiAnb2Zmc2V0IGZyb20gcmVnaXN0ZXInICglZ3MgZm9yIHg4Ni04NCkuDQo+ID4N
-Cj4gPiBBZGQgYSAnc2VsZicgZmllbGQgdG8gJ3N0cnVjdCBvcHRpbWlzdGljX3NwaW5fbm9kZScg
-dGhhdCBjYW4gYmUNCj4gPiByZWFkIHdpdGggcmF3X2NwdV9yZWFkKCksIGluaXRpYWxpc2Ugb24g
-Zmlyc3QgY2FsbC4NCj4gDQo+IE5vLCB0aGlzIGlzIGhvcnJpYmxlLg0KPiANCj4gVGhlIHByb2Js
-ZW0gaXNuJ3QgdGhlICJ0aGlzX2NwdV9wdHIoKSIsIGl0J3MgdGhlIHJlc3Qgb2YgdGhlIGNvZGUu
-DQo+IA0KPiA+ICBib29sIG9zcV9sb2NrKHN0cnVjdCBvcHRpbWlzdGljX3NwaW5fcXVldWUgKmxv
-Y2spDQo+ID4gIHsNCj4gPiAtICAgICAgIHN0cnVjdCBvcHRpbWlzdGljX3NwaW5fbm9kZSAqbm9k
-ZSA9IHRoaXNfY3B1X3B0cigmb3NxX25vZGUpOw0KPiA+ICsgICAgICAgc3RydWN0IG9wdGltaXN0
-aWNfc3Bpbl9ub2RlICpub2RlID0gcmF3X2NwdV9yZWFkKG9zcV9ub2RlLnNlbGYpOw0KPiANCj4g
-Tm8uIEJvdGggb2YgdGhlc2UgYXJlIGNyYXAuDQo+IA0KPiA+ICAgICAgICAgc3RydWN0IG9wdGlt
-aXN0aWNfc3Bpbl9ub2RlICpwcmV2LCAqbmV4dDsNCj4gPiAgICAgICAgIGludCBvbGQ7DQo+ID4N
-Cj4gPiAtICAgICAgIGlmICh1bmxpa2VseShub2RlLT5jcHUgPT0gT1NRX1VOTE9DS0VEX1ZBTCkp
-DQo+ID4gLSAgICAgICAgICAgICAgIG5vZGUtPmNwdSA9IGVuY29kZV9jcHUoc21wX3Byb2Nlc3Nv
-cl9pZCgpKTsNCj4gPiArICAgICAgIGlmICh1bmxpa2VseSghbm9kZSkpIHsNCj4gPiArICAgICAg
-ICAgICAgICAgaW50IGNwdSA9IGVuY29kZV9jcHUoc21wX3Byb2Nlc3Nvcl9pZCgpKTsNCj4gPiAr
-ICAgICAgICAgICAgICAgbm9kZSA9IGRlY29kZV9jcHUoY3B1KTsNCj4gPiArICAgICAgICAgICAg
-ICAgbm9kZS0+c2VsZiA9IG5vZGU7DQo+ID4gKyAgICAgICAgICAgICAgIG5vZGUtPmNwdSA9IGNw
-dTsNCj4gPiArICAgICAgIH0NCj4gDQo+IFRoZSBwcm9wZXIgZml4IGhlcmUgaXMgdG8gbm90IGRv
-IHRoYXQgc2lsbHkNCj4gDQo+ICAgICAgICAgbm9kZSA9IHRoaXNfY3B1X3B0cigmb3NxX25vZGUp
-Ow0KPiAgICAgICAgIC4uDQo+ICAgICAgICAgbm9kZS0+bmV4dCA9IE5VTEw7DQo+IA0KPiBkYW5j
-ZSBhdCBhbGwsIGJ1dCB0byBzaW1wbHkgZG8NCj4gDQo+ICAgICAgICAgdGhpc19jcHVfd3JpdGUo
-b3NxX25vZGUubmV4dCwgTlVMTCk7DQo+IA0KPiBpbiB0aGUgZmlyc3QgcGxhY2UuIFRoYXQgbWFr
-ZXMgdGhlIHdob2xlIHRoaW5nIGp1c3QgYSBzaW5nbGUgc3RvcmUgb2ZmDQo+IHRoZSBzZWdtZW50
-IGRlc2NyaXB0b3IuDQoNCklzIHRoZSBlcXVpdmFsZW50IHRydWUgKGllIG9mZnNldCBmcm9tIGZp
-eGVkIHJlZ2lzdGVyKSBmb3IgYWxsIFNNUCBhcmNocz8NCk9yIGRvIHNvbWUgaGF2ZSB0byBkbyBz
-b21ldGhpbmcgcmF0aGVyIG1vcmUgY29tcGxpY2F0ZWQ/DQoNCj4gWWVzLCB5b3UnbGwgZXZlbnR1
-YWxseSBlbmQgdXAgZG9pbmcgdGhhdA0KPiANCj4gICAgICAgICBub2RlID0gdGhpc19jcHVfcHRy
-KCZvc3Ffbm9kZSk7DQoNCkZvciBzb21lIHJlYXNvbiBJJ3ZlIGhhZCBDT05GSUdfREVCVUdfUFJF
-RU1QVCBzZXQuIEkgZG9uJ3QgcmVtZW1iZXINCnNldHRpbmcgaXQsIGFuZCBjYW4ndCBpbWFnaW5l
-IHdoeSBJIG1pZ2h0IGhhdmUuDQpCZXN0IGd1ZXNzIGlzIGl0IHdhcyBpbmhlcml0ZWQgZnJvbSB0
-aGUgdWJ1bnR1IC5jb25maWcgSSBzdGFydGVkIHdpdGguDQpJbiBhbnkgY2FzZSBpdCBjaGFuZ2Vz
-IHNtcF9wcm9jZXNzb3JfaWQoKSBpbnRvIGEgcmVhbCBmdW5jdGlvbg0KaW4gb3JkZXIgdG8gY2hl
-Y2sgdGhhdCBwcmVlbXB0aW9uIGlzIGRpc2FibGVkLg0KSSdkIGd1ZXNzIHNvbWV0aGluZyBsaWtl
-IEJVR19PTighcmF3X2NwdV9yZWFkKHByZWVtcHRfZGlzYWJsZV9jb3VudCkpDQp3b3VsZCBiZSBm
-YXN0ZXIgYW5kIG1vcmUgb2J2aW91cyENCg0KPiB0aGluZyBiZWNhdXNlIGl0IHRoZW4gd2FudHMg
-dG8gdXNlIHRoYXQgcmF3IHBvaW50ZXIgdG8gZG8NCj4gDQo+ICAgICAgICAgV1JJVEVfT05DRShw
-cmV2LT5uZXh0LCBub2RlKTsNCj4gDQo+IGJ1dCB0aGF0J3MgYSBzZXBhcmF0ZSBpc3N1ZSBhbmQg
-c3RpbGwgZG9lcyBub3QgbWFrZSBpdCB3b3J0aCBpdCB0bw0KPiBjcmVhdGUgYSBwb2ludGxlc3Mg
-c2VsZi1wb2ludGVyLg0KDQpJIGNvdWxkIGNsYWltIHRoYXQgbG9hZGluZyBpdCBpcyBvbmUgaW5z
-dHJ1Y3Rpb24gc2hvcnRlciBhbmQgdGhhdA0KaWYgdGhlIGNhY2hlIGxpbmUgY29udGFpbmluZyAn
-bm9kZScgaXMgbmVlZGVkIGFuZCAncGNwdV9ob3QnDQppcyAodW5leHBlY3RlZGx5KSBub3QgY2Fj
-aGVkIGl0IHNhdmVzIGEgY2FjaGUgbGluZSBsb2FkLg0KQnV0IEkgcHJvYmFibHkgd29uJ3QhDQoN
-Cj4gDQo+IEJ0dywgaWYgeW91ICpyZWFsbHkqIHdhbnQgdG8gc29sdmUgdGhhdCBzZXBhcmF0ZSBp
-c3N1ZSwgdGhlbiBtYWtlIHRoZQ0KPiBvcHRpbWlzdGljX3NwaW5fbm9kZSBzdHJ1Y3Qgbm90IGNv
-bnRhaW4gdGhlIHBvaW50ZXJzIGF0IGFsbCwgYnV0IHRoZQ0KPiBDUFUgbnVtYmVycywgYW5kIHRo
-ZW4gdHVybiB0aG9zZSBudW1iZXJzIGludG8gdGhlIHBvaW50ZXJzIHRoZSBleGFjdA0KPiBzYW1l
-IHdheSBpdCBkb2VzIGZvciB0aGUgImxvY2stPnRhaWwiIHRoaW5nLCBpZSBkb2luZyB0aGF0IHdo
-b2xlDQo+IA0KPiAgICAgICAgIHByZXYgPSBkZWNvZGVfY3B1KG9sZCk7DQo+IA0KPiBkYW5jZS4g
-VGhhdCAqbWF5KiB0aGVuIHJlc3VsdCBpbiBhdm9pZGluZyB0dXJuaW5nIHRoZW0gaW50byBwb2lu
-dGVycw0KPiBhdCBhbGwgaW4gc29tZSBjYXNlcy4NCg0KRG9uJ3QgdGhpbmsgc28uDQpQcmV0dHkg
-bXVjaCBhbGwgdGhlIHVzZXMgbmVlZCB0byBkZXJlZmVyZW5jZSB0aGUgbmV4dC9wcmV2IHBvaW50
-ZXJzLg0KDQo+IEFsc28sIEkgdGhpbmsgdGhhdCB5b3UgbWlnaHQgd2FudCB0byBsb29rIGludG8g
-bWFraW5nIE9TUV9VTkxPQ0tFRF9WQUwNCj4gYmUgLTEgaW5zdGVhZCwgYW5kIGFkZCBzb21ldGhp
-bmcgbGlrZQ0KPiANCj4gICAjZGVmaW5lIElTX09TUV9VTkxPQ0tFRCh4KSAoKGludCkoeCk8MCkN
-Cg0KSSBkaWQgdGhpbmsgYWJvdXQgdGhhdCAoYnV0IG5vdCBmb3IgdGhlc2UgcGF0Y2hlcykuDQpC
-dXQgaXQgaXMgYSBsb3QgbW9yZSBkYW5nZXJvdXMgYmVjYXVzZSBpdCBhYnNvbHV0ZWx5IHJlcXVp
-cmVzDQp0aGUgc3RydWN0dXJlIGJlIGNvcnJlY3RseSBpbml0aWFsaXNlZCwgbm90IGp1c3QgYmUg
-YWxsIHplcm8uDQpUaGF0IG1pZ2h0IHNob3cgdXAgc29tZSB2ZXJ5IHN0cmFuZ2UgYnVncy4NCg0K
-PiBhbmQgdGhhdCB3b3VsZCB0aGVuIGF2b2lkIHRoZSArMSAvIC0xIGdhbWVzIGluIGVuY29kaW5n
-L2RlY29kaW5nIHRoZQ0KPiBDUFUgbnVtYmVycy4gSXQgY2F1c2VzIHNpbGx5IGNvZGUgZ2VuZXJh
-dGVkIGxpa2UgdGhpczoNCj4gDQo+ICAgICAgICAgc3VibCAgICAkMSwgJWVheCAgICAgICAgIywg
-Y3B1X25yDQo+IC4uLg0KPiAgICAgICAgIGNsdHENCj4gICAgICAgICBhZGRxICAgIF9fcGVyX2Nw
-dV9vZmZzZXQoLCVyYXgsOCksICVyY3gNCj4gDQo+IHdoaWNoIHNlZW1zIGhvbmVzdGx5IHN0dXBp
-ZC4gVGhlIGNsdHEgaXMgdGhlcmUgZm9yIHNpZ24tZXh0ZW5zaW9uLA0KPiB3aGljaCBpcyBiZWNh
-dXNlIGFsbCB0aGVzZSB0aGluZ3MgYXJlICJpbnQiLCBhbmQgdGhlICJzdWJsIiB3aWxsDQo+IHpl
-cm8tZXh0ZW5kIHRvIDY0LWJpdCwgbm90IHNpZ24tZXh0ZW5kLg0KDQpDaGFuZ2luZyBhbGwgdGhl
-IHZhcmlhYmxlcyB0byAndW5zaWduZWQgaW50JyB3aWxsIHJlbW92ZSB0aGUgc2lnbg0KZXh0ZW5z
-aW9uIGFuZCwgYWZ0ZXIgdGhlIGRlY3JlbWVudCwgZ2NjIHdpbGwga25vdyB0aGUgaGlnaCBiaXRz
-DQphcmUgemVybyBzbyBzaG91bGRuJ3QgbmVlZCB0byB6ZXJvIGV4dGVuZC4NCg0KPiBBdCB0aGF0
-IHBvaW50LCBJIHRoaW5rIGdjYyBtaWdodCBiZSBhYmxlIHRvIGp1c3QgZ2VuZXJhdGUNCj4gDQo+
-ICAgICAgICAgYWRkcSAgICBfX3Blcl9jcHVfb2Zmc2V0LTgoLCVyYXgsOCksICVyY3gNCg0KVGhh
-dCB3b3VsZCBuZWVkIHRoZSBkZWNyZW1lbnQgdG8gYmUgNjRiaXQuDQpBIHF1aWNrIHRlc3QgZmFp
-bGVkIHRvIG1ha2UgdGhhdCB3b3JrLg0KUHJvYmFibHkgKGFzIHlvdSBtZW50aW9uZWQgaW4gdGhl
-IG5leHQgZW1haWwpIGJlY2F1c2UgZ2NjDQpkb2Vzbid0IGtub3cgdGhhdCB0aGUgaGlnaCBiaXRz
-IGZyb20gYXRvbWljX3hjaGcoKSBhcmUgemVyby4NCg0KPiBidXQgaG9uZXN0bHksIEkgdGhpbmsg
-aXQgd291bGQgYmUgbmljZXIgdG8ganVzdCBoYXZlIGRlY29kZV9jcHUoKSBkbw0KPiANCj4gICAg
-ICAgICB1bnNpZ25lZCBpbnQgY3B1X25yID0gZW5jb2RlZF9jcHVfdmFsOw0KPiANCj4gICAgICAg
-ICByZXR1cm4gcGVyX2NwdV9wdHIoJm9zcV9ub2RlLCBjcHVfbnIpOw0KPiANCj4gYW5kIG5vdCBo
-YXZlIHRoZSAtMS8rMSBhdCBhbGwuDQoNClVubGVzcyB5b3UgY2FuIHBlcnN1YWRlIGdjYyB0aGF0
-IHRoZSBoaWdoIGJpdHMgZnJvbSBhdG9taWNfeGNoZygpDQphcmUgemVybyB0aGF0IHdpbGwgcmVx
-dWlyZSBhIHplcm8gZXh0ZW5kLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
-a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
-IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Sat, Dec 30, 2023 at 10:19:29AM -0600, Michael Roth wrote:
+> From: Brijesh Singh <brijesh.singh@amd.com>
+> 
+> Add CPU feature detection for Secure Encrypted Virtualization with
+> Secure Nested Paging. This feature adds a strong memory integrity
+> protection to help prevent malicious hypervisor-based attacks like
+> data replay, memory re-mapping, and more.
+> 
+> Since enabling the SNP CPU feature imposes a number of additional
+> requirements on host initialization and handling legacy firmware APIs
+> for SEV/SEV-ES guests, only introduce the CPU feature bit so that the
+> relevant handling can be added, but leave it disabled via a
+> disabled-features mask.
+> 
+> Once all the necessary changes needed to maintain legacy SEV/SEV-ES
+> support are introduced in subsequent patches, the SNP feature bit will
+> be unmasked/enabled.
+> 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko@profian.com>
+> Signed-off-by: Ashish Kalra <Ashish.Kalra@amd.com>
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> ---
+>  arch/x86/include/asm/cpufeatures.h       | 1 +
+>  arch/x86/include/asm/disabled-features.h | 4 +++-
+>  arch/x86/kernel/cpu/amd.c                | 5 +++--
+>  tools/arch/x86/include/asm/cpufeatures.h | 1 +
+>  4 files changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index 29cb275a219d..9492dcad560d 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -442,6 +442,7 @@
+>  #define X86_FEATURE_SEV			(19*32+ 1) /* AMD Secure Encrypted Virtualization */
+>  #define X86_FEATURE_VM_PAGE_FLUSH	(19*32+ 2) /* "" VM Page Flush MSR is supported */
+>  #define X86_FEATURE_SEV_ES		(19*32+ 3) /* AMD Secure Encrypted Virtualization - Encrypted State */
+> +#define X86_FEATURE_SEV_SNP		(19*32+ 4) /* AMD Secure Encrypted Virtualization - Secure Nested Paging */
+>  #define X86_FEATURE_V_TSC_AUX		(19*32+ 9) /* "" Virtual TSC_AUX */
+>  #define X86_FEATURE_SME_COHERENT	(19*32+10) /* "" AMD hardware-enforced cache coherency */
+>  #define X86_FEATURE_DEBUG_SWAP		(19*32+14) /* AMD SEV-ES full debug state swap support */
+> diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
+> index 702d93fdd10e..a864a5b208fa 100644
+> --- a/arch/x86/include/asm/disabled-features.h
+> +++ b/arch/x86/include/asm/disabled-features.h
+> @@ -117,6 +117,8 @@
+>  #define DISABLE_IBT	(1 << (X86_FEATURE_IBT & 31))
+>  #endif
+>  
+> +#define DISABLE_SEV_SNP		0
 
+I think you want this here if SEV_SNP should be initially disabled:
+
+diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
+index a864a5b208fa..5b2fab8ad262 100644
+--- a/arch/x86/include/asm/disabled-features.h
++++ b/arch/x86/include/asm/disabled-features.h
+@@ -117,7 +117,7 @@
+ #define DISABLE_IBT	(1 << (X86_FEATURE_IBT & 31))
+ #endif
+ 
+-#define DISABLE_SEV_SNP		0
++#define DISABLE_SEV_SNP	(1 << (X86_FEATURE_SEV_SNP & 31))
+ 
+ /*
+  * Make sure to add features to the correct mask
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
