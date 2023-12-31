@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-13652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE5AC820A5F
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 09:30:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C553820A61
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 09:30:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42D4B282A8C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 08:30:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C75FB21AEF
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 08:30:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1811A958;
-	Sun, 31 Dec 2023 08:30:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E64CA75;
+	Sun, 31 Dec 2023 08:30:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AgacJY7U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pV/cfNnl"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B0D9455
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 08:30:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE04DC433C8;
-	Sun, 31 Dec 2023 08:30:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1388FC8D5
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 08:30:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B8B8C433C7;
+	Sun, 31 Dec 2023 08:30:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704011412;
-	bh=lqr8kVrKoF7VekfM2/bpKrD4rWRk1NZ9sSJM5YGYlHk=;
+	s=k20201202; t=1704011418;
+	bh=D6VXuRwAKv9dO+mNmqMLcBG3Fo8hoXZOx0qi+4o2+wM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AgacJY7UMsYUR5+lF8G56Nw0hW1kukPYIRTmm57xTr82tFnG+Q/7J6aMKzZO7FN/n
-	 3GD4NM3cEEyAkmcdr5GQ6tx+DGenEEXRlptQmYVN3OB0TLtd6v+9T8Qih4UuQLIhHB
-	 7rG2M0yRtvMsD3qnDQd5V6ZTE4/aZP8z0QL9SSyX/gHOQg2BkbkcQ+bcHI2ugQBfd4
-	 03fyqm5bdN9TUJWcUlAnTupFArh0H8dKdfYo921qeadTiErrEgwRi1Ea0PvcV1B0qB
-	 x5ttO069TYDVY+YchUOzKd0CbRqeOwkKscTnI0yvRHQGOdin/irNujeJCtF+3gkf5P
-	 Q9zkeHLiX+wOg==
+	b=pV/cfNnlutV5oJo3GVEF+qPX7SM5xqctJKNU2amJ7TJU4IOiq3JWRgdUT3zEA+zi6
+	 yA+d+w+GWovK1mBnqsKKPAxRFaGoEXNANQwL9/HeB2MfY2USxVQhZJ8gxA11tPd/ue
+	 ATpwZ1PQR5TOJg2o5rIlKdnu3JGH35NPy7eQ+GPyknwR0xYo7c8BwjD5fehnihnKCX
+	 T02m2Cg1NosuM5VC+Kz+A4jl4He+Eq8Jc6iqdT4m572jiZKEeAE+S8eMqhezNpsHe8
+	 dHtKfAfC7klMoG5W7b00l4uXr43yVa8nE9paBEU8WFl2azCTQsVJosZ64QKwWKcfAX
+	 iJLa9KiKs6u5w==
 From: guoren@kernel.org
 To: paul.walmsley@sifive.com,
 	palmer@dabbelt.com,
@@ -54,9 +54,9 @@ To: paul.walmsley@sifive.com,
 Cc: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH V2 1/3] riscv: Add Zicbop instruction definitions & cpufeature
-Date: Sun, 31 Dec 2023 03:29:51 -0500
-Message-Id: <20231231082955.16516-2-guoren@kernel.org>
+Subject: [PATCH V2 2/3] riscv: Add ARCH_HAS_PRETCHW support with Zibop
+Date: Sun, 31 Dec 2023 03:29:52 -0500
+Message-Id: <20231231082955.16516-3-guoren@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231231082955.16516-1-guoren@kernel.org>
 References: <20231231082955.16516-1-guoren@kernel.org>
@@ -70,206 +70,49 @@ Content-Transfer-Encoding: 8bit
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-Cache-block prefetch instructions are HINTs to the hardware to
-indicate that software intends to perform a particular type of
-memory access in the near future. This patch adds prefetch.i,
-prefetch.r and prefetch.w instruction definitions by
-RISCV_ISA_EXT_ZICBOP cpufeature.
+Enable Linux prefetchw primitive with Zibop cpufeature, which preloads
+cache line into L1 cache for the next write operation.
 
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Signed-off-by: Guo Ren <guoren@kernel.org>
 ---
- arch/riscv/Kconfig                | 15 ++++++++
- arch/riscv/include/asm/hwcap.h    |  1 +
- arch/riscv/include/asm/insn-def.h | 60 +++++++++++++++++++++++++++++++
- arch/riscv/kernel/cpufeature.c    |  1 +
- 4 files changed, 77 insertions(+)
+ arch/riscv/include/asm/processor.h | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 24c1799e2ec4..fcbd417d65ea 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -579,6 +579,21 @@ config RISCV_ISA_ZICBOZ
+diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+index f19f861cda54..8d3a2ab37678 100644
+--- a/arch/riscv/include/asm/processor.h
++++ b/arch/riscv/include/asm/processor.h
+@@ -13,6 +13,9 @@
+ #include <vdso/processor.h>
  
- 	   If you don't know what to do here, say Y.
+ #include <asm/ptrace.h>
++#include <asm/insn-def.h>
++#include <asm/alternative-macros.h>
++#include <asm/hwcap.h>
  
-+config RISCV_ISA_ZICBOP
-+	bool "Zicbop extension support for cache block prefetch"
-+	depends on MMU
-+	depends on RISCV_ALTERNATIVE
-+	default y
-+	help
-+	  Adds support to dynamically detect the presence of the ZICBOP
-+	  extension (Cache Block Prefetch Operations) and enable its
-+	  usage.
+ #ifdef CONFIG_64BIT
+ #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
+@@ -106,6 +109,19 @@ static inline void arch_thread_struct_whitelist(unsigned long *offset,
+ #define KSTK_EIP(tsk)		(task_pt_regs(tsk)->epc)
+ #define KSTK_ESP(tsk)		(task_pt_regs(tsk)->sp)
+ 
++#ifdef CONFIG_RISCV_ISA_ZICBOP
++#define ARCH_HAS_PREFETCHW
 +
-+	  The Zicbop extension can be used to prefetch cache block for
-+	  read/write fetch.
++#define PREFETCHW_ASM(x)						\
++	ALTERNATIVE(__nops(1), CBO_PREFETCH_W(x, 0), 0,			\
++		    RISCV_ISA_EXT_ZICBOP, CONFIG_RISCV_ISA_ZICBOP)
 +
-+	  If you don't know what to do here, say Y.
 +
- config TOOLCHAIN_HAS_ZIHINTPAUSE
- 	bool
- 	default y
-diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
-index 06d30526ef3b..77d3b6ee25ab 100644
---- a/arch/riscv/include/asm/hwcap.h
-+++ b/arch/riscv/include/asm/hwcap.h
-@@ -57,6 +57,7 @@
- #define RISCV_ISA_EXT_ZIHPM		42
- #define RISCV_ISA_EXT_SMSTATEEN		43
- #define RISCV_ISA_EXT_ZICOND		44
-+#define RISCV_ISA_EXT_ZICBOP		45
++static inline void prefetchw(const void *x)
++{
++	__asm__ __volatile__(PREFETCHW_ASM(%0) : : "r" (x) : "memory");
++}
++#endif /* CONFIG_RISCV_ISA_ZICBOP */
  
- #define RISCV_ISA_EXT_MAX		64
- 
-diff --git a/arch/riscv/include/asm/insn-def.h b/arch/riscv/include/asm/insn-def.h
-index e27179b26086..bbda350a63bf 100644
---- a/arch/riscv/include/asm/insn-def.h
-+++ b/arch/riscv/include/asm/insn-def.h
-@@ -18,6 +18,13 @@
- #define INSN_I_RD_SHIFT			 7
- #define INSN_I_OPCODE_SHIFT		 0
- 
-+#define INSN_S_SIMM7_SHIFT		25
-+#define INSN_S_RS2_SHIFT		20
-+#define INSN_S_RS1_SHIFT		15
-+#define INSN_S_FUNC3_SHIFT		12
-+#define INSN_S_SIMM5_SHIFT		 7
-+#define INSN_S_OPCODE_SHIFT		 0
-+
- #ifdef __ASSEMBLY__
- 
- #ifdef CONFIG_AS_HAS_INSN
-@@ -30,6 +37,10 @@
- 	.insn	i \opcode, \func3, \rd, \rs1, \simm12
- 	.endm
- 
-+	.macro insn_s, opcode, func3, rs2, simm12, rs1
-+	.insn	s \opcode, \func3, \rs2, \simm12(\rs1)
-+	.endm
-+
- #else
- 
- #include <asm/gpr-num.h>
-@@ -51,10 +62,20 @@
- 		 (\simm12 << INSN_I_SIMM12_SHIFT))
- 	.endm
- 
-+	.macro insn_s, opcode, func3, rs2, simm12, rs1
-+	.4byte	((\opcode << INSN_S_OPCODE_SHIFT) |		\
-+		 (\func3 << INSN_S_FUNC3_SHIFT) |		\
-+		 (.L__gpr_num_\rs2 << INSN_S_RS2_SHIFT) |	\
-+		 (.L__gpr_num_\rs1 << INSN_S_RS1_SHIFT) |	\
-+		 ((\simm12 & 0x1f) << INSN_S_SIMM5_SHIFT) |	\
-+		 (((\simm12 >> 5) & 0x7f) << INSN_S_SIMM7_SHIFT))
-+	.endm
-+
- #endif
- 
- #define __INSN_R(...)	insn_r __VA_ARGS__
- #define __INSN_I(...)	insn_i __VA_ARGS__
-+#define __INSN_S(...)	insn_s __VA_ARGS__
- 
- #else /* ! __ASSEMBLY__ */
- 
-@@ -66,6 +87,9 @@
- #define __INSN_I(opcode, func3, rd, rs1, simm12)	\
- 	".insn	i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n"
- 
-+#define __INSN_S(opcode, func3, rs2, simm12, rs1)	\
-+	".insn	s " opcode ", " func3 ", " rs2 ", " simm12 "(" rs1 ")\n"
-+
- #else
- 
- #include <linux/stringify.h>
-@@ -92,12 +116,26 @@
- "		 (\\simm12 << " __stringify(INSN_I_SIMM12_SHIFT) "))\n"	\
- "	.endm\n"
- 
-+#define DEFINE_INSN_S							\
-+	__DEFINE_ASM_GPR_NUMS						\
-+"	.macro insn_s, opcode, func3, rs2, simm12, rs1\n"		\
-+"	.4byte	((\\opcode << " __stringify(INSN_S_OPCODE_SHIFT) ") |"	\
-+"		 (\\func3 << " __stringify(INSN_S_FUNC3_SHIFT) ") |"	\
-+"		 (.L__gpr_num_\\rs2 << " __stringify(INSN_S_RS2_SHIFT) ") |" \
-+"		 (.L__gpr_num_\\rs1 << " __stringify(INSN_S_RS1_SHIFT) ") |" \
-+"		 ((\\simm12 & 0x1f) << " __stringify(INSN_S_SIMM5_SHIFT) ") |" \
-+"		 (((\\simm12 >> 5) & 0x7f) << " __stringify(INSN_S_SIMM7_SHIFT) "))\n" \
-+"	.endm\n"
-+
- #define UNDEFINE_INSN_R							\
- "	.purgem insn_r\n"
- 
- #define UNDEFINE_INSN_I							\
- "	.purgem insn_i\n"
- 
-+#define UNDEFINE_INSN_S							\
-+"	.purgem insn_s\n"
-+
- #define __INSN_R(opcode, func3, func7, rd, rs1, rs2)			\
- 	DEFINE_INSN_R							\
- 	"insn_r " opcode ", " func3 ", " func7 ", " rd ", " rs1 ", " rs2 "\n" \
-@@ -108,6 +146,11 @@
- 	"insn_i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n" \
- 	UNDEFINE_INSN_I
- 
-+#define __INSN_S(opcode, func3, rs2, simm12, rs1)			\
-+	DEFINE_INSN_S							\
-+	"insn_s " opcode ", " func3 ", " rs2 ", " simm12 ", " rs1 "\n"	\
-+	UNDEFINE_INSN_S
-+
- #endif
- 
- #endif /* ! __ASSEMBLY__ */
-@@ -120,6 +163,10 @@
- 	__INSN_I(RV_##opcode, RV_##func3, RV_##rd,		\
- 		 RV_##rs1, RV_##simm12)
- 
-+#define INSN_S(opcode, func3, rs2, simm12, rs1)			\
-+	__INSN_S(RV_##opcode, RV_##func3, RV_##rs2,		\
-+		 RV_##simm12, RV_##rs1)
-+
- #define RV_OPCODE(v)		__ASM_STR(v)
- #define RV_FUNC3(v)		__ASM_STR(v)
- #define RV_FUNC7(v)		__ASM_STR(v)
-@@ -133,6 +180,7 @@
- #define RV___RS2(v)		__RV_REG(v)
- 
- #define RV_OPCODE_MISC_MEM	RV_OPCODE(15)
-+#define RV_OPCODE_OP_IMM	RV_OPCODE(19)
- #define RV_OPCODE_SYSTEM	RV_OPCODE(115)
- 
- #define HFENCE_VVMA(vaddr, asid)				\
-@@ -196,4 +244,16 @@
- 	INSN_I(OPCODE_MISC_MEM, FUNC3(2), __RD(0),		\
- 	       RS1(base), SIMM12(4))
- 
-+#define CBO_PREFETCH_I(base, offset)				\
-+	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(0),		\
-+	       SIMM12(offset), RS1(base))
-+
-+#define CBO_PREFETCH_R(base, offset)				\
-+	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(1),		\
-+	       SIMM12(offset), RS1(base))
-+
-+#define CBO_PREFETCH_W(base, offset)				\
-+	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3),		\
-+	       SIMM12(offset), RS1(base))
-+
- #endif /* __ASM_INSN_DEF_H */
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index b3785ffc1570..bdb02b066041 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -168,6 +168,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
- 	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
- 	__RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
- 	__RISCV_ISA_EXT_DATA(zicboz, RISCV_ISA_EXT_ZICBOZ),
-+	__RISCV_ISA_EXT_DATA(zicbop, RISCV_ISA_EXT_ZICBOP),
- 	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
- 	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
- 	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
+ /* Do necessary setup to start up a newly executed thread. */
+ extern void start_thread(struct pt_regs *regs,
 -- 
 2.40.1
 
