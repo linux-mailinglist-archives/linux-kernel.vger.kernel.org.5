@@ -1,164 +1,122 @@
-Return-Path: <linux-kernel+bounces-13629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35B638209AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 05:19:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FBD98209B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 05:39:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC262B20F0B
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 04:19:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C7AE1F21663
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 04:39:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6FE186C;
-	Sun, 31 Dec 2023 04:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B0D117F4;
+	Sun, 31 Dec 2023 04:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lS6aN9hp"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EEL4F3KZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A52F217F4
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 04:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703996381; x=1735532381;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=zloXj5UX2LuWzrooN0OpYA0j0P+jbK9JU33GI2cucaE=;
-  b=lS6aN9hpj2tPJvouo4vViLz6MWi9etKwxzfJrhe+eB6xNZK6YsUGO37s
-   ZAR7oHUFG64elIQtHI/Vxug7/1K5gfAgeRiJ3QFsqeI3EKI+WwimmUHre
-   /xF/KNdd/Z4hyH7QVV3twAP43H33iVih/9Hyi8ip4Q3rFb2OhA6x/nJh/
-   u6MQsZyGRp0oA8j9jp/PO9kga+SxFK627QDAcywwcKaZ9f3ScXWGnaFd4
-   a2tXjb/luazwnDWKBHS6YyLheCJk5IX7TCiA7fHdzUGDN1ANXEQWM880g
-   4NdVgrVv193lKET1J2odv9ljA7vleIC53I46uAyLUUliRQNT0vDIzlk8D
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10939"; a="3574244"
-X-IronPort-AV: E=Sophos;i="6.04,319,1695711600"; 
-   d="scan'208";a="3574244"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2023 20:19:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10939"; a="772280800"
-X-IronPort-AV: E=Sophos;i="6.04,319,1695711600"; 
-   d="scan'208";a="772280800"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 30 Dec 2023 20:19:38 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rJnIW-000Izp-0e;
-	Sun, 31 Dec 2023 04:19:36 +0000
-Date: Sun, 31 Dec 2023 12:18:48 +0800
-From: kernel test robot <lkp@intel.com>
-To: Grygorii Strashko <grygorii.strashko@ti.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/net/ethernet/ti/am65-cpsw-nuss.c:1640:55: sparse: sparse:
- incorrect type in initializer (different address spaces)
-Message-ID: <202312311235.NwNBzCd7-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEDA6138A;
+	Sun, 31 Dec 2023 04:39:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=IVgiiMZDdOtzhHaKIlJ7lRKAgdbPHW0wrCohBZPxCWA=; b=EEL4F3KZtl41bZZKJ0d3hf/GgY
+	r7VdpYBtVMkLrvW9l/yF8ppEMjk34MvQQKY1X0McrXzr6EK1NUdlOMy1ug3pOevIMgVFDkYnKToF7
+	9B0GK4VmTlhGrReZYbcTOi81JWqFVZjZfXyk2Fk4cQan1fHl1CxQ9YKuzbYWRPRVMKvkuU9cdQKf8
+	aoF/dMkLYxk5W83UmubMnXbFShjk6cySsQZPdbASM30J8uTYPOlm3+MT4gfcN6D8bL3vDVWKNeg2O
+	x+9PeQgWFrw62aJ+JSrfehJYAmAXhWesJI+BtE+2Upjl22eUmqj8Z5awHTmwHHdksfwtDn3DWvk6N
+	6x0l8DFQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rJnbZ-003wt9-1b;
+	Sun, 31 Dec 2023 04:39:17 +0000
+Message-ID: <4ad2944b-db65-4877-b388-2bcaa23e88ec@infradead.org>
+Date: Sat, 30 Dec 2023 20:39:16 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] ring-buffer/Documentation: Add documentation on
+ buffer_percent file
+Content-Language: en-US
+To: Steven Rostedt <rostedt@goodmis.org>, LKML
+ <linux-kernel@vger.kernel.org>,
+ Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+ linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+References: <20231229122402.537eb252@gandalf.local.home>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231229122402.537eb252@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   453f5db0619e2ad64076aab16ff5a00e0f7c53a2
-commit: 93a76530316a3d8cc2d82c3deca48424fee92100 net: ethernet: ti: introduce am65x/j721e gigabit eth subsystem driver
-date:   3 years, 9 months ago
-config: arm64-randconfig-r123-20231231 (https://download.01.org/0day-ci/archive/20231231/202312311235.NwNBzCd7-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231231/202312311235.NwNBzCd7-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312311235.NwNBzCd7-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/net/ethernet/ti/am65-cpsw-nuss.c:1640:55: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct am65_cpsw_ndev_stats [noderef] __percpu *stats @@     got void *data @@
-   drivers/net/ethernet/ti/am65-cpsw-nuss.c:1640:55: sparse:     expected struct am65_cpsw_ndev_stats [noderef] __percpu *stats
-   drivers/net/ethernet/ti/am65-cpsw-nuss.c:1640:55: sparse:     got void *data
->> drivers/net/ethernet/ti/am65-cpsw-nuss.c:1692:49: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void *data @@     got struct am65_cpsw_ndev_stats [noderef] __percpu *stats @@
-   drivers/net/ethernet/ti/am65-cpsw-nuss.c:1692:49: sparse:     expected void *data
-   drivers/net/ethernet/ti/am65-cpsw-nuss.c:1692:49: sparse:     got struct am65_cpsw_ndev_stats [noderef] __percpu *stats
+On 12/29/23 09:24, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> When the buffer_percent file was added to the kernel, the documentation
+> should have been updated to document what that file does.
+> 
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Fixes: 03329f9939781 ("tracing: Add tracefs file buffer_percentage")
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-vim +1640 drivers/net/ethernet/ti/am65-cpsw-nuss.c
+LGTM. Thanks.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-  1637	
-  1638	static void am65_cpsw_pcpu_stats_free(void *data)
-  1639	{
-> 1640		struct am65_cpsw_ndev_stats __percpu *stats = data;
-  1641	
-  1642		free_percpu(stats);
-  1643	}
-  1644	
-  1645	static int am65_cpsw_nuss_init_ndev_2g(struct am65_cpsw_common *common)
-  1646	{
-  1647		struct am65_cpsw_ndev_priv *ndev_priv;
-  1648		struct device *dev = common->dev;
-  1649		struct am65_cpsw_port *port;
-  1650		int ret;
-  1651	
-  1652		port = am65_common_get_port(common, 1);
-  1653	
-  1654		/* alloc netdev */
-  1655		port->ndev = devm_alloc_etherdev_mqs(common->dev,
-  1656						     sizeof(struct am65_cpsw_ndev_priv),
-  1657						     AM65_CPSW_MAX_TX_QUEUES,
-  1658						     AM65_CPSW_MAX_RX_QUEUES);
-  1659		if (!port->ndev) {
-  1660			dev_err(dev, "error allocating slave net_device %u\n",
-  1661				port->port_id);
-  1662			return -ENOMEM;
-  1663		}
-  1664	
-  1665		ndev_priv = netdev_priv(port->ndev);
-  1666		ndev_priv->port = port;
-  1667		ndev_priv->msg_enable = AM65_CPSW_DEBUG;
-  1668		SET_NETDEV_DEV(port->ndev, dev);
-  1669	
-  1670		ether_addr_copy(port->ndev->dev_addr, port->slave.mac_addr);
-  1671	
-  1672		port->ndev->min_mtu = AM65_CPSW_MIN_PACKET_SIZE;
-  1673		port->ndev->max_mtu = AM65_CPSW_MAX_PACKET_SIZE;
-  1674		port->ndev->hw_features = NETIF_F_SG |
-  1675					  NETIF_F_RXCSUM |
-  1676					  NETIF_F_HW_CSUM;
-  1677		port->ndev->features = port->ndev->hw_features |
-  1678				       NETIF_F_HW_VLAN_CTAG_FILTER;
-  1679		port->ndev->vlan_features |=  NETIF_F_SG;
-  1680		port->ndev->netdev_ops = &am65_cpsw_nuss_netdev_ops_2g;
-  1681		port->ndev->ethtool_ops = &am65_cpsw_ethtool_ops_slave;
-  1682	
-  1683		/* Disable TX checksum offload by default due to HW bug */
-  1684		if (common->pdata->quirks & AM65_CPSW_QUIRK_I2027_NO_TX_CSUM)
-  1685			port->ndev->features &= ~NETIF_F_HW_CSUM;
-  1686	
-  1687		ndev_priv->stats = netdev_alloc_pcpu_stats(struct am65_cpsw_ndev_stats);
-  1688		if (!ndev_priv->stats)
-  1689			return -ENOMEM;
-  1690	
-  1691		ret = devm_add_action_or_reset(dev, am65_cpsw_pcpu_stats_free,
-> 1692					       ndev_priv->stats);
-  1693		if (ret) {
-  1694			dev_err(dev, "failed to add percpu stat free action %d", ret);
-  1695			return ret;
-  1696		}
-  1697	
-  1698		netif_napi_add(port->ndev, &common->napi_rx,
-  1699			       am65_cpsw_nuss_rx_poll, NAPI_POLL_WEIGHT);
-  1700	
-  1701		common->pf_p0_rx_ptype_rrobin = false;
-  1702	
-  1703		return ret;
-  1704	}
-  1705	
+> ---
+> Changes since v2: https://lore.kernel.org/linux-trace-kernel/20231226130149.4685c838@gandalf.local.home
+> 
+> - s/watermark/water-mark/ (Randy Dunlap)
+
+That comment is backwards. :)
+No new patch needed IMO.
+
+> 
+> - Added '::' and indented the number list so that it has better
+>   formatting (kernel test robot)
+> 
+>  Documentation/trace/ftrace.rst | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
+> index 933e7efb9f1b..917501a2f348 100644
+> --- a/Documentation/trace/ftrace.rst
+> +++ b/Documentation/trace/ftrace.rst
+> @@ -180,6 +180,21 @@ of ftrace. Here is a list of some of the key files:
+>  	Only active when the file contains a number greater than 0.
+>  	(in microseconds)
+>  
+> +  buffer_percent:
+> +
+> +	This is the watermark for how much the ring buffer needs to be filled
+> +	before a waiter is woken up. That is, if an application calls a
+> +	blocking read syscall on one of the per_cpu trace_pipe_raw files, it
+> +	will block until the given amount of data specified by buffer_percent
+> +	is in the ring buffer before it wakes the reader up. This also
+> +	controls how the splice system calls are blocked on this file::
+> +
+> +	  0   - means to wake up as soon as there is any data in the ring buffer.
+> +	  50  - means to wake up when roughly half of the ring buffer sub-buffers
+> +	        are full.
+> +	  100 - means to block until the ring buffer is totally full and is
+> +	        about to start overwriting the older data.
+> +
+>    buffer_size_kb:
+>  
+>  	This sets or displays the number of kilobytes each CPU
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+#Randy
 
