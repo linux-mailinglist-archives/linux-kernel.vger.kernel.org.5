@@ -1,126 +1,95 @@
-Return-Path: <linux-kernel+bounces-13705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E8E2820B6B
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 14:06:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52103820B6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 14:07:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4B56B21291
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 13:06:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 876F81C20F24
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 13:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35EB9539A;
-	Sun, 31 Dec 2023 13:06:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C7E8F69;
+	Sun, 31 Dec 2023 13:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KCF92qqm"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="vd+WJ1ej"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4291A4422;
-	Sun, 31 Dec 2023 13:06:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d427518d52so41462145ad.0;
-        Sun, 31 Dec 2023 05:06:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704027959; x=1704632759; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8ODXawsHJR4eKKT5RiYXWxhMa6vsUAfbFsXJZGtRm/w=;
-        b=KCF92qqmrZ4d96IW4hOdh6PBvEVF5keOcSsR7tPe88SqRELM/tkH272m27yUfTtoID
-         vogyqGKDnIKwNHhoNBRVozb+sW8U5gwOHw5zUqDYWajoThTILi8FzQTGyY1uuag8G0h1
-         eFPMWBbgHEI0YItFqjIZQapna41icoo7A4YSTqry0cUMAmQ5VW7f74ZYPjyvWPXEgVsx
-         9RcZKnINWKj8naXUsk7y2drsm/LEDa3SfLXmiYulyjP3xdDSPEPAtycNAQDNLC8JhFz8
-         sk5UO+gw2PP5EQLES6Qdp0Y7UvBBE0liJMg4YWTNP7aJPvmbsNoPFW3wnA8I8NqNQJr2
-         EZww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704027959; x=1704632759;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8ODXawsHJR4eKKT5RiYXWxhMa6vsUAfbFsXJZGtRm/w=;
-        b=ctrJEgJ78OTJGK14LtQx0KuBrE7Df2TU/etEVxTPlGYl0pky0f0F+3GvvN+XBjo5yM
-         HuMLf4NdPwNp+OeSBwzF2The3OJrvZaX/mluTEJttm9LE/vFyKneBjwxWAEHx+yu3285
-         0TTfghZEMW/+G8zMiu99acxuUMUMKZxLyhh4tFvf+nPdFQU8X9LnkWdNVaUO+kGCyiK9
-         Y7X5hMoq81kjh7D9ryVpg8sNpUJJejnS7RFfD7cHZgsS+FL1iyT2Dub/BEZ2T9H7C6C3
-         oUA7INSg7HWSiSERtu5aBOAv1UP96GBdMHi7baG7eGnU1c479sOTUGEDbcDHtkLUcE7d
-         Baiw==
-X-Gm-Message-State: AOJu0YygoWmalnVND+0sYjontswJUYY0zxnKyaoWyY+jeP3++Tx+XC5e
-	djG9n2TeLF7FjzF6G1ZphF8=
-X-Google-Smtp-Source: AGHT+IHtcVSsqpn2OhDdtONPYrd3CID5q3FzehUaHcETIpeA1Eu0aToGbx41tsGa1BUMaoa7kxCnVw==
-X-Received: by 2002:a17:902:e293:b0:1d4:381c:a3e5 with SMTP id o19-20020a170902e29300b001d4381ca3e5mr12389414plc.66.1704027959481;
-        Sun, 31 Dec 2023 05:05:59 -0800 (PST)
-Received: from goorm.ap-northeast-2.compute.internal (ec2-43-201-67-36.ap-northeast-2.compute.amazonaws.com. [43.201.67.36])
-        by smtp.gmail.com with ESMTPSA id b12-20020a655ccc000000b005cdf7923113sm13137144pgt.68.2023.12.31.05.05.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Dec 2023 05:05:59 -0800 (PST)
-From: yongsuyoo0215@gmail.com
-To: mchehab@kernel.org,
-	linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	yongsu.yoo@lge.com,
-	v4bel@theori.io,
-	0215yys@hanmail.net
-Cc: Yongsu yoo <yongsuyoo0215@gmail.com>
-Subject: [PATCH] [PATCH] media: dvb_ca_en50221: Add a returing EBUSY logic into CA_RESET
-Date: Sun, 31 Dec 2023 13:05:55 +0000
-Message-Id: <20231231130555.1415-1-yongsuyoo0215@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EEF58F49;
+	Sun, 31 Dec 2023 13:07:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Qgrieap/ole6x6jYsISD/ePi3BdA5BVA5GTXQ+NppF8=; b=vd+WJ1ejSpDkbMALMRIQ/s2vTl
+	LL0gwyRqKsqKp8i+9VpptdcjB4juRO5y6b8zARSBmABKf8PGUAMle9KVhdTXYTf0Am/saSQXw04uU
+	6FKKnvptyzbh+H/34h9ASMoZ9/1umfKgtOX/JXOJOScchowUFOR0tRuRao5DVTKh2Fy1AWQvpuz5K
+	3FLRaIY25URYIf9cbU4DrsqLzrDYRc5T1JT9HKZFAzOhsA47apLLIhtJhj6zxqZc0i634KOliIqYg
+	cdmqun3zNvB981cxyf71clmsF97kLsiBoyDdV+29moFlm6vtwuPtkcM185TGn/GRbXFMIK00u+C9F
+	ed/sgQcw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rJvWx-007p83-SY; Sun, 31 Dec 2023 13:07:03 +0000
+Date: Sun, 31 Dec 2023 13:07:03 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Hillf Danton <hdanton@sina.com>
+Cc: Genes Lists <lists@sapience.com>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: 6.6.8 stable: crash in folio_mark_dirty
+Message-ID: <ZZFnd3tZZvg2eZun@casper.infradead.org>
+References: <8bb29431064fc1f70a42edef75a8788dd4a0eecc.camel@sapience.com>
+ <20231231012846.2355-1-hdanton@sina.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231231012846.2355-1-hdanton@sina.com>
 
-From: Yongsu yoo <yongsuyoo0215@gmail.com>
+On Sun, Dec 31, 2023 at 09:28:46AM +0800, Hillf Danton wrote:
+> On Sat, Dec 30, 2023 at 10:23:26AM -0500 Genes Lists <lists@sapience.com>
+> > Apologies in advance, but I cannot git bisect this since machine was
+> > running for 10 days on 6.6.8 before this happened.
+> >
+> > Dec 30 07:00:36 s6 kernel: ------------[ cut here ]------------
+> > Dec 30 07:00:36 s6 kernel: WARNING: CPU: 0 PID: 521524 at mm/page-writeback.c:2668 __folio_mark_dirty (??:?) 
+> > Dec 30 07:00:36 s6 kernel: CPU: 0 PID: 521524 Comm: rsync Not tainted 6.6.8-stable-1 #13 d238f5ab6a206cdb0cc5cd72f8688230f23d58df
+> > Dec 30 07:00:36 s6 kernel: block_dirty_folio (??:?) 
+> > Dec 30 07:00:36 s6 kernel: unmap_page_range (??:?) 
+> > Dec 30 07:00:36 s6 kernel: unmap_vmas (??:?) 
+> > Dec 30 07:00:36 s6 kernel: exit_mmap (??:?) 
+> > Dec 30 07:00:36 s6 kernel: __mmput (??:?) 
+> > Dec 30 07:00:36 s6 kernel: do_exit (??:?) 
+> > Dec 30 07:00:36 s6 kernel: do_group_exit (??:?) 
+> > Dec 30 07:00:36 s6 kernel: __x64_sys_exit_group (??:?) 
+> > Dec 30 07:00:36 s6 kernel: do_syscall_64 (??:?) 
+> 
+> See what comes out if race is handled.
+> Only for thoughts.
 
-Signed-off-by:Yongsu Yoo <yongsuyoo0215@gmail.com>
+I don't think this can happen.  Look at the call trace;
+block_dirty_folio() is called from unmap_page_range().  That means the
+page is in the page tables.  We unmap the pages in a folio from the
+page tables before we set folio->mapping to NULL.  Look at
+invalidate_inode_pages2_range() for example:
 
-In source/drivers/media/dvb-core/dvb_ca_en50221.c, if the CA_RESET ioctl
-is called, in a normal case, the state of the thread of the
-dvb_ca_en50221_thread_state_machine will transit like below order.
-DVB_CA_SLOTSTATE_NONE -> DVB_CA_SLOTSTATE_UNINITIALISED ->
-DVB_CA_SLOTSTATE_WAITREADY -> DVB_CA_SLOTSTATE_VALIDATE ->
-DVB_CA_SLOTSTATE_WAITFR -> DVB_CA_SLOTSTATE_LINKINIT ->
-DVB_CA_SLOTSTATE_RUNNING
-But in some problem cases, the state will become DVB_CA_SLOTSTATE_INVALID.
-Among the above mentioned states, the DVB_CA_SLOTSTATE_NONE and
-the DVB_CA_SLOTSTATE_INVALID are "already stablized" states,
-whereas other states are "transiting" states.
-The "already stablized" states mean no matter how long time we wait,
-the state will not be changed.
-The "transiting" states mean the states whose final state is not yet
-determined. The state keeps to be changed. Only after some time passes,
-we get to know whether the final state will be DVB_CA_SLOTSTATE_RUNNING
-or DVB_CA_SLOTSTATE_INVALID.
-During the "transiting" states, we do not yet know whether the
-CA_RESET operation, which triggered the "transiting" states, will
-succeed or fail. For this reason, during the "transiting" states, if
-another CA_RESET ioctl is called and if this new CA_RESET ioctl
-operation begins again, it will be meaningless and waste time.
-For preventing this problem from happening, we make CA_RESET ioctl do
-nothing and only return EBUSY if the ioctl is called during the
-"transiting" states.
----
- drivers/media/dvb-core/dvb_ca_en50221.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+                                unmap_mapping_pages(mapping, indices[i],
+                                                (1 + end - indices[i]), false);
+                        folio_lock(folio);
+                        folio_wait_writeback(folio);
+                        if (folio_mapped(folio))
+                                unmap_mapping_folio(folio);
+                        BUG_ON(folio_mapped(folio));
+                                if (!invalidate_complete_folio2(mapping, folio))
 
-diff --git a/drivers/media/dvb-core/dvb_ca_en50221.c b/drivers/media/dvb-core/dvb_ca_en50221.c
-index baf64540dc00..506a46844ad8 100644
---- a/drivers/media/dvb-core/dvb_ca_en50221.c
-+++ b/drivers/media/dvb-core/dvb_ca_en50221.c
-@@ -1362,7 +1362,8 @@ static int dvb_ca_en50221_io_do_ioctl(struct file *file,
- 			struct dvb_ca_slot *sl = &ca->slot_info[slot];
- 
- 			mutex_lock(&sl->slot_lock);
--			if (sl->slot_state != DVB_CA_SLOTSTATE_NONE) {
-+			if ((sl->slot_state == DVB_CA_SLOTSTATE_RUNNING) ||      
-+			    (sl->slot_state == DVB_CA_SLOTSTATE_INVALID)) { 
- 				dvb_ca_en50221_slot_shutdown(ca, slot);
- 				if (ca->flags & DVB_CA_EN50221_FLAG_IRQ_CAMCHANGE)
- 					dvb_ca_en50221_camchange_irq(ca->pub,
--- 
-2.17.1
+... and invalidate_complete_folio2() is where we set ->mapping to NULL
+in __filemap_remove_folio -> page_cache_delete().
 
 
