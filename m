@@ -1,119 +1,132 @@
-Return-Path: <linux-kernel+bounces-13777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F29C820C6B
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 19:20:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFD79820C75
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 19:28:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19D82281E5D
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 18:20:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A17D1C2183F
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 18:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A95944E;
-	Sun, 31 Dec 2023 18:20:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F54C947A;
+	Sun, 31 Dec 2023 18:28:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AT6S4JA1"
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="frMILF5T"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from sonic306-20.consmr.mail.gq1.yahoo.com (sonic306-20.consmr.mail.gq1.yahoo.com [98.137.68.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6686F8F57;
-	Sun, 31 Dec 2023 18:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d9b51093a0so4350757b3a.0;
-        Sun, 31 Dec 2023 10:20:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704046812; x=1704651612; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JIpTps2Gd27tNr3Tgv5wfCAUbFZsgb7+4fv9SKg9nU4=;
-        b=AT6S4JA1hm3JLxw63A0E0gya3UrR8Hsru2/0W+ZyJ9do84/2G+CGNwA9fGkTybS+YU
-         GVQ+Cs8qKGbklSGv4N/cVHSki3EcTovVBggJUKrzlYv9RoOeH7vyYY0ybEBwdX6pcJqd
-         SVPYe/QRHgMGIZP6xhHZFbErJCCu6Bv7uipicqU/ThJN+30XEi/TxIS4eKUMmZ/Q08Q+
-         tO1RrHL8BM9PN/4JvmUd6o0GDoP79eX+3Tsou3er81UZ3qhnYENlAa013tEDBf71uUEg
-         tcgbBlJrTYXbx88dYgG9pqOQdBUYqu0+Hv8cqP77P6OCsdS6gkbcBDT//SWZOd+LA6vc
-         XPgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704046812; x=1704651612;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JIpTps2Gd27tNr3Tgv5wfCAUbFZsgb7+4fv9SKg9nU4=;
-        b=N9JGEd2bA/wWsn9fHW9TfC7ZA2bJALSeaX/QXPiO/GD0SySRIgbzGbjUwNwRB3jmTd
-         16ECQAgR2ie9phd7fdiipxyWJ6x18q2aGfoOApOXcG6N5SxESrxli7ChkDfXrPa0Vo14
-         BpBUaa7Z7U0myvo6Lu67vMRrfqD0xWVX1UxfgPAB+XdVlyAkRGhBLACiWRwBmbvot4GM
-         W8hUcDQufa1W08cUZEtIW0QSPXwAL558pZ1UM1sikNskhqRnsFJJJrPfLT0uueuTSXch
-         88zVo4/EOYGrbwf+YZgZiyuvuNa9hRNZVVjju11RSGOPUfE3qzFKEDx+P8+FCbhDb7tf
-         M6Iw==
-X-Gm-Message-State: AOJu0Yyxl5perCRYx4sZhBmC2y+SEmcOxnBRarnc2fm3/n11J/P6N81Q
-	VZqYEJ1MFAAaQBiGKuveUsc=
-X-Google-Smtp-Source: AGHT+IEG0seqytSNt5hdasgs0H+g4deXdxR0yd8qUYx+kg461NzeRl3WO0/HHhgneD7MctaaEsCEvQ==
-X-Received: by 2002:a05:6a00:1152:b0:6da:2f76:2421 with SMTP id b18-20020a056a00115200b006da2f762421mr5144804pfm.38.1704046812576;
-        Sun, 31 Dec 2023 10:20:12 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f6-20020a056a001ac600b006d9a48882f7sm14189381pfv.118.2023.12.31.10.20.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Dec 2023 10:20:12 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sun, 31 Dec 2023 10:20:11 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Abdel Alkuor <alkuor@gmail.com>
-Cc: Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] hwmon: (lm75) Add AMS AS6200 temperature sensor
-Message-ID: <d25238a7-0193-4025-950e-086ae2ce853b@roeck-us.net>
-References: <17ba2dfdb3d25bf1b5b4ed9f858b6e28902bedbe.1703127334.git.alkuor@gmail.com>
- <d1686678991bf8ee0d00cb08ca046798f37ca4b3.1703127334.git.alkuor@gmail.com>
- <ca786cac-aa83-4795-8b91-ee85b07bdcfa@roeck-us.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715418F74
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 18:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1704047304; bh=HiwRm0rJ5Svc0DizNfvOuHwtUzRbt1EWbxbQm/AUj9o=; h=Date:From:To:Cc:Subject:References:From:Subject:Reply-To; b=frMILF5TyiJ2FlNcz1w916SUiuysoIQog0Pwmhgh9nVIK9hOuJbU+DSnSssRWMLsqvCx3XKU+VmK+Uo+bFRWkupI43nB1pid4CQjYioCEarVnzTXTjXyUde6t8z0vhtAYxr0lCVyLk+PebqlXtvTBD+owqZrO9+0rruv+Jx65SQY2VsZeZTTyxAbgod3zkp0yTzS7VYH+aYA4fYHIeOal8bnsQon8vi0xVKn0POxY2RAWNtRuQUwOIQlDoFMdSU2UDt9Smv3T8OKnj+rTNmY8Gya0oM+PiNKgclF3KPUtkz0CIK0G5uUGQ+DDOqJK4xTGnjK2HDr/vY90wSZIjZ9OA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1704047304; bh=1QDJ/1oGsGas92j/Df8Tct/y8vzK0gAenhT1IgxwNgo=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=ZVgw33s3e30QTP5wqqEeC+32cLENIRK2gNvz8i40AhfeC3zeBqc773hcWdSGCQjy/kazry6TLFgzImf+ogW+t6Bxff6j7cS/z4MmXi8r9hkHT1sV44hKIbvL/L8gQd3PfF0O/2Nwo3ofKPZ5HS58mvas8PUOS6PNi7c/IGxfaMyG2Uq8hEQ3ovJWiqzDEkz76IlkiFE7P2iXfYfxM33oXAllmCysooAr3L2Gehc2fVJkqUj01eBTmMs6F7GFlyH6Wbn+eaYK+Q3+AF1OFU4Fg+tXMUvlu6z4coxVS/Y/hBQxR5sPDNbqD+ORrw+JX/l7XoexxSNhM83yn8LSxd/o8A==
+X-YMail-OSG: tK430I4VM1nnw7eC_MnXwny0wnFCw_H5T57E.R31mgpppp76EqlDAvfRYViZ7hw
+ aF3_WqtHulePDqOoMQ.Ly6v3Isn7FV7Cuxb.vXUoCTfbq2suIHD0kp4nOzb0Qs2t3J520UQ53Mtq
+ sgfEZIoOCPVZ2LdN41bJiFtWRu9leVpm2TndAXvcBtAb6rVub2gWMp95RckDp49jZuoPB4rqAdsg
+ NdeZcPayXbW08D7YBYnww3TacQgK.bh.nKIDSU6T.iekVnAulYXzaLqfwGwLPrYwPv.iaX09fzne
+ T6girChdZ4O4RHnm3uvS.OINeBHJycpqGNdcxRPKmgPsZ9qFo.5F67ZhoX_xdSjyBSFKvgcKzKPu
+ 3JINyELvnMKqWWpFJ71AEBORhDiKVSlZ0HtMaz2drULb8ZDucAWoqGc9dsZj5YeNMDBsXl38QA16
+ ldGMawVh6q6Fndu6V3VC24DOsY1OcH67AjLkqTKJdoNrPYIXm63LjbZOWbgb67Zplkq925LOgzo.
+ SkIWlayGYvF0R1WdqJiyVPX4RaxD6W4t0gbojo9P2.vjrg04bi_a8FjFXNeTiBwPTPTvdx5MkSsM
+ 5zVqP_hqY92w25T70H0iyreoPJarHhl3tej9CYQ7ra.nFPXV_w9SmbLQOSL3bFU4lJ91ovnPVBrj
+ jYgLcA.bGzEAcPiClckvCak.QQRgfslk4jdK6nKsEBVn865dnKyvjuDspDOhe2eZaXv_zsCGLu2W
+ RdcYd0p3TIcepCmxLj7a2GIjt3E5z.qWf3TjQrpoe2A7vGs9l7lgLYQDQHRX7IiSgM1BQRFdDIKW
+ e0HJ3TZQd2mdkDGmDcZdC_7cbfGuUfThv_Ln9niBheE5WG8t3klK7r2EY01EIsnaPZdUwMfRQMoT
+ qXkJJh89f4LnPsTbtm2xRWwscuFeYYuA1Wjpcd4mEs4YK8uVuguwD45IHX6p_130Zo6qyT_TRMlA
+ h5p6bElfUJWxZW_U0s6TokrbBb1juSZMzxlDnfROwaggHemizOxfymOCB42hTf3TOydnyMyhT0Wz
+ j0UMhRrJ5d1bmmqP6LS1yz4bw.djq9Kt.TixpDT.0XZeNIfafBt0qLkbcolLfjwFJrvJaUuY6jUl
+ d8aoK.c18gTgOq25AhBpXSzsrhaxiUbcWVkLxOtRL6P966hZaW67NHSGoCUTZg8hwTkYqFQXYJ0L
+ j3MIXc.l8B0zlo1cHaHLhSanbFAeUP2ktV2lJLM4ywqT_fIpuXPQ1mP1J9nw_aQRQlAvN4EVQ1TI
+ lfmCKEZnGLdulp3eueW3lXYvYVZhSn0loHM3g0I6lvNJB.3_EV6jBWWpn7rCV5mLZhRo.Rq60ukd
+ Dots51Jt6VWUkldCiSMlI6iNAeh2arBLb14MwYvCKv6HoGHCCAjPuauz7w3spUpWC4HFKnw4Wdbz
+ Ee38yX2BrzcG2_DkOGHA7ZPgOApj1byyFm7tnqYEDCvJCIaiSR5LOeMBZTJfBMKzSnBRwI5AAlcX
+ l2Erb0qWJGJF8iitsoDL66IezkEgpVRKLeXWnTTz0T3swC8lY2.mr89jPRNX9BFOVbV40RuWUPVw
+ TVJj_d6mqAlaogOnLEXJcvxZpNhWAlW2rH4kEPmlTlGMc_MzlgsVANO7ut5aFUENUY2LZMCzF5Tp
+ a6oPRUl2kSGPrwIfstFro44rv2oTAzg8HGxOVDRdHTDmbEQ8s75sX.qbPNBUY72v8QhatISedrpo
+ ZwEggtFK7N3_BN.JFMyBBvR.5n3nAJ2PQRUF1C_GXRcOSiOV15l2nem9xtxseHBSxdJDw_TFk0ho
+ H2FpMoGxDklpy2qYg1Q2nh37N9OgrrCQ2N7uvjs8OUDJjlyuKqWCNsP0R8x7wMEoYs6rIdwDnEiu
+ gNpcaurTM6NQc1Du6DQuUmOMFwz_8T1Fgrrt0GLzVtX08N3O7iHXAv_dY_EF1ao3XMXXmgz2s1P_
+ 4ZGPP4uPmkuFEoDSif1tG4zP2sj.f3k3HnVGFt5lzvR83PM1957xoN0nihwHQpY957vdoHV2nisU
+ _kiwqXB_bnR38s5CDsV.CnJUrJVG.I1j1Xvxn.dwb_ew9Z92.Q7wvAkmYJwJGtrJkPICCvjmm4.X
+ H6acdAdDoRq7kDynswNCWVxBnZAVmxe8JtBWTzIva2X0KQIWdoQXPGVBVa_n.TFbEwZd8yURsEGQ
+ lTmxsSMN_cP3CaUIaZjwcmJOv478GHn.pjLtvv.De2g3TtvjG52TEnJrK4gNN.TkkYtJiso4m84R
+ F.pxUaN.Cn_Ttbo._9uO_2oi.Uw--
+X-Sonic-MF: <chaosesqueteam@yahoo.com>
+X-Sonic-ID: 02b8b50d-e7c4-4b36-85b0-35e9a0106bbd
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.gq1.yahoo.com with HTTP; Sun, 31 Dec 2023 18:28:24 +0000
+Date: Sun, 31 Dec 2023 18:28:20 +0000 (UTC)
+From: "chaosesqueteam@yahoo.com" <chaosesqueteam@yahoo.com>
+To: Bruce Perens <bruce@perens.com>, Richard Stallman <rms@gnu.org>, 
+	Aditya Pakki <pakki001@umn.edu>
+Cc: Anna Schumaker <anna.schumaker@netapp.com>, 
+	"ansgar@debian.org" <ansgar@debian.org>, 
+	"blukashev@sempervictus.com" <blukashev@sempervictus.com>, 
+	Chuck Lever <chuck.lever@oracle.com>, 
+	Dave Wysochanski <dwysocha@redhat.com>, 
+	"David S. Miller" <davem@davemloft.net>, 
+	"editor@lwn.net" <editor@lwn.net>,  <esr@thyrsus.com>, 
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, 
+	"J. Bruce Fields" <bfields@fieldses.org>, 
+	Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Networking <netdev@vger.kernel.org>, 
+	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, 
+	"moglen@columbia.edu" <moglen@columbia.edu>, 
+	"skraw.ml@ithnet.com" <skraw.ml@ithnet.com>, 
+	"tcallawa@redhat.com" <tcallawa@redhat.com>, 
+	"torvalds@linuxfoundation.org" <torvalds@linuxfoundation.org>, 
+	"torvalds@osdl.org" <torvalds@osdl.org>, 
+	Trond Myklebust <trond.myklebust@hammerspace.com>, 
+	"misc@openbsd.org" <misc@openbsd.org>, 
+	"tech@openbsd.org" <tech@openbsd.org>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, 
+	Eric Dumazet <edumazet@google.com>, 
+	Julia Lawall <julia.lawall@inria.fr>, 
+	Paolo Abeni <pabeni@redhat.com>, Jan Stary <hans@stare.cz>, 
+	"jon@elytron.openbsd.amsterdam" <jon@elytron.openbsd.amsterdam>, 
+	"netbsd-current-users@netbsd.org" <netbsd-current-users@netbsd.org>, 
+	"netbsd-users@netbsd.org" <netbsd-users@netbsd.org>, 
+	Polarian <polarian@polarian.dev>, 
+	Rudy Zijlstra <rudy@grumpydevil.homelinux.org>, 
+	"theo@openbsd.org" <theo@openbsd.org>, 
+	Wolfenstein Enemy Territory Fans <6469670767@groups.facebook.com>
+Message-ID: <289062279.5555651.1704047300437@mail.yahoo.com>
+Subject: Re: Shut the fuck up GPL user
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ca786cac-aa83-4795-8b91-ee85b07bdcfa@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <289062279.5555651.1704047300437.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.21952 YMailNorrin
 
-On Sun, Dec 31, 2023 at 10:17:05AM -0800, Guenter Roeck wrote:
-> On Sat, Dec 23, 2023 at 11:21:59AM -0500, Abdel Alkuor wrote:
-> > as6200 is a temperature sensor with 0.0625°C resolution and a
-> > range between -40°C to 125°C.
-> > 
-> > By default, the driver configures as6200 as following:
-> > - Converstion rate: 8 Hz
-> > - Conversion mode: continuous
-> > - Consecutive fault counts: 4 samples
-> > - Alert state: high polarity
-> > - Alert mode: comparator mode
-> > 
-> > Interrupt is supported for the alert pin.
-> > 
-> > Datasheet: https://ams.com/documents/20143/36005/AS6200_DS000449_4-00.pdf
-> > Signed-off-by: Abdel Alkuor <alkuor@gmail.com>
-> 
-> Applied. Side note below.
-> 
-> > +    Datasheet: Publicly available at the AMS website
-> > +
-> > +               https://ams.com/documents/20143/36005/AS6200_DS000449_4-00.pdf
-> 
-> Apparently checkpatch doesn't like this way of pointing to a datasheet anymore
-> and reacts with a warning, demanding the use of Link: or similar.
-> I don't think this is appropriate, so I guess we see the first instance of
-> to-be-ignored checkpatch warnings ins the hwmon subsystem.
-> 
+>someone1611 >someone1611 - 5 days ago
+>No one is gonna help GPL.
+OpenBSD uses GPL'd code in it's kernel, just stripped out the GPL: because that code was a derivative work of an earlier work OpenBSD authored.
+(and the change was perhaps deminimus, or the only way one could add the new feature or fix)
+Things aren't as "simple" as you white programmers believe.
+>Don't post to mailing list.
+I won't obey you. Don't like it: meet me in real life: I will fucking kill you dead and gone: or die trying.
+You think you're the boss of me faggot white FUCK?
 
-Ah, no, this was a tag in the commit message, which is indeeed inappropriate.
-I dropped it from the commit.
+>Can you kindly shut your fck up and stop spreading that virus to mailing list?
+No. It's a game, and if you hadn't noticed from Grsecurity: the GPL is basically BSD now-a-days.
+Did anyone sue OpenSourceSecurity: no.
 
-Guenter
+So your "ideas" are outdated. GPL is a dog with no teeth.
+But it's still opensource.
+
+>Stop spreading virus.
+What fucking virus? if the GPL was effective GRsecurity would be sued.
+It is not. You're worrying for nothing. Completely outdated information.
+You think any white faggot is going to sue someone over the GPL? They never have. They won't even approach a girl, and they worship adult women as a god. They follow a demi-god who tells them to cut their dick-and-balls off (matthew 19, greek). You worry for nothing.
+
+Anyway: please help this videogame do unreal map loading. License it BSD if you want: we won't change your license: we'll make sure around your code the opensource license you choose is made clear (and that others who contribute will use your license): sf.net/p/chaosesqueanthology/tickets/2/
 
