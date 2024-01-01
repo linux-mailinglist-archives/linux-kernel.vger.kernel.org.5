@@ -1,144 +1,76 @@
-Return-Path: <linux-kernel+bounces-13840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C82CE821354
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 09:45:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FE16821356
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 09:47:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F3C7281430
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 08:45:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2D97281D40
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 08:47:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46E01C2D;
-	Mon,  1 Jan 2024 08:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P13B6y0L"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 012C46123;
+	Mon,  1 Jan 2024 08:47:34 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B80A76107;
-	Mon,  1 Jan 2024 08:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-67f911e9ac4so71978356d6.3;
-        Mon, 01 Jan 2024 00:45:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704098706; x=1704703506; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zMd3337IrmQ0bZURCWuZgY7ObmtziyKnBbbsdShesQA=;
-        b=P13B6y0L/VLM+WrzGnbvTTHsbtYiNQbkOZp9Qmd50bvisyBta/mdpID43uJL60f7O1
-         UwsKhBl30I5DkPE3Z4liNcbHYLKeEYB5jdun3naPYQPi0e9lUOKGGWM1RLbUITJ7j/6G
-         X5uyf6yEA9JFqfWSdr/OU5B6Ck2COtkska5RVd/nYyNY5oaDCVwdWcqWsb5bivJ/rUlH
-         4slAIRo47yNLUy1mpu1JmCs6YeNON0N3yncLoNI7MK2W+kG9rlWIxaWAabJwUHVrNjB3
-         +elCjSxp0wVaDEHkAlaWOVzPACnon22dATDrh7tcV6ReGHB+bESRzheo+zSzsdnrFMgi
-         t8iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704098706; x=1704703506;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zMd3337IrmQ0bZURCWuZgY7ObmtziyKnBbbsdShesQA=;
-        b=OBu5zuLNfVN9LnAzHkqPC2dbm61GAmjRPWn/P9R4hnwFIuBn/y9fSKaRN61w3fVzwN
-         ilEbyarkrLqV7qDQgGZI+wCJLt2q2zBcmlZhXn2rLgkeqn8LYzS4RqEizPJcwWYuIfYS
-         JBllE2yD7VkunfhVomZr4YvazZtIUoUN+A+/F5QPQ9jutqd3VvXrAqyj5ry9scK0GoHn
-         rQz6JOUowo9PmIGZnMA0/lCQmEGDZOTM6UPgSb/b2hiofn3uom/JvL7DddmjZkQ2ivvI
-         /H7+YSc58LB9N1pMdpGtpRZNtrb+cnKdLtMYLPnC4JFwfpTH9PZzQvfnNoNJzHgFa8YB
-         P6Yw==
-X-Gm-Message-State: AOJu0Yyx3e9nhxIn/A8NTOuS2mqgb+MgwP5vTOvZvvTAUvMSDg+kxePM
-	cgw2jp3qyQpr7ff2f97aA2BHRd4VPF2JzZelMg0=
-X-Google-Smtp-Source: AGHT+IFuLXt2pu/sD00gZE5db/2DT8ryB8RwTB2TigDIieI5XuP6+gGgYA8QO8yQM+kQAlpRCRFRxvoEP+MVvlSKc5s=
-X-Received: by 2002:a0c:ec05:0:b0:67f:b9a4:80e4 with SMTP id
- y5-20020a0cec05000000b0067fb9a480e4mr16658116qvo.39.1704098706637; Mon, 01
- Jan 2024 00:45:06 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03E86108
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 08:47:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-202-6tI6FJcvNlSXTRofi999ww-1; Mon, 01 Jan 2024 08:47:23 +0000
+X-MC-Unique: 6tI6FJcvNlSXTRofi999ww-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 1 Jan
+ 2024 08:47:00 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 1 Jan 2024 08:47:00 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Waiman Long' <longman@redhat.com>, "'linux-kernel@vger.kernel.org'"
+	<linux-kernel@vger.kernel.org>, "'peterz@infradead.org'"
+	<peterz@infradead.org>
+CC: "'mingo@redhat.com'" <mingo@redhat.com>, "'will@kernel.org'"
+	<will@kernel.org>, "'boqun.feng@gmail.com'" <boqun.feng@gmail.com>, "'Linus
+ Torvalds'" <torvalds@linux-foundation.org>,
+	"'virtualization@lists.linux-foundation.org'"
+	<virtualization@lists.linux-foundation.org>, 'Zeng Heng'
+	<zengheng4@huawei.com>
+Subject: RE: [PATCH next v2 5/5] locking/osq_lock: Optimise decode_cpu() and
+ per_cpu_ptr().
+Thread-Topic: [PATCH next v2 5/5] locking/osq_lock: Optimise decode_cpu() and
+ per_cpu_ptr().
+Thread-Index: Ado8NCf0vtha6NqURtGgfE7//QxHewANNbaAAAlISbA=
+Date: Mon, 1 Jan 2024 08:47:00 +0000
+Message-ID: <013b3c16ea8a459c81def9be7439cbb1@AcuMS.aculab.com>
+References: <2b4e8a5816a742d2bd23fdbaa8498e80@AcuMS.aculab.com>
+ <7c1148fe64fb46a7a81c984776cd91df@AcuMS.aculab.com>
+ <9d4024ba-6422-4775-b934-bfa80a72a858@redhat.com>
+In-Reply-To: <9d4024ba-6422-4775-b934-bfa80a72a858@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231231170721.3381-1-maimon.sagi@gmail.com> <CALCETrUd=16gAYvx93EsyMaaSJ-6mLvSru8Gie48Y+_dXq5FGA@mail.gmail.com>
-In-Reply-To: <CALCETrUd=16gAYvx93EsyMaaSJ-6mLvSru8Gie48Y+_dXq5FGA@mail.gmail.com>
-From: Sagi Maimon <maimon.sagi@gmail.com>
-Date: Mon, 1 Jan 2024 10:44:55 +0200
-Message-ID: <CAMuE1bEuou1Bx-6c3es3+FuTguOCb+iqU=hickK5hP7wT=M6Pw@mail.gmail.com>
-Subject: Re: [PATCH v4] posix-timers: add multi_clock_gettime system call
-To: Andy Lutomirski <luto@kernel.org>
-Cc: richardcochran@gmail.com, datglx@linutronix.de, mingo@redhat.com, 
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	arnd@arndb.de, geert@linux-m68k.org, peterz@infradead.org, hannes@cmpxchg.org, 
-	sohil.mehta@intel.com, rick.p.edgecombe@intel.com, nphamcs@gmail.com, 
-	palmer@sifive.com, keescook@chromium.org, legion@kernel.org, 
-	mark.rutland@arm.com, linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
-	linux-arch@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On Sun, Dec 31, 2023 at 11:10=E2=80=AFPM Andy Lutomirski <luto@kernel.org> =
-wrote:
->
-> On Sun, Dec 31, 2023 at 9:07=E2=80=AFAM Sagi Maimon <maimon.sagi@gmail.co=
-m> wrote:
-> >
-> > Some user space applications need to read some clocks.
-> > Each read requires moving from user space to kernel space.
-> > The syscall overhead causes unpredictable delay between N clocks reads
-> > Removing this delay causes better synchronization between N clocks.
-> >
-> > Introduce a new system call multi_clock_gettime, which can be used to m=
-easure
-> > the offset between multiple clocks, from variety of types: PHC, virtual=
- PHC
-> > and various system clocks (CLOCK_REALTIME, CLOCK_MONOTONIC, etc).
-> > The offset includes the total time that the driver needs to read the cl=
-ock
-> > timestamp.
-Andy Thank you for your notes.
->
-> Knowing this offset sounds quite nice, but...
->
-> >
-> > New system call allows the reading of a list of clocks - up to PTP_MAX_=
-CLOCKS.
-> > Supported clocks IDs: PHC, virtual PHC and various system clocks.
-> > Up to PTP_MAX_SAMPLES times (per clock) in a single system call read.
-> > The system call returns n_clocks timestamps for each measurement:
-> > - clock 0 timestamp
-> > - ...
-> > - clock n timestamp
->
-> Could this instead be arranged to read the actual, exact offset?
->
-It can be done, but I prefer to leave it generic and consistent with
-other time system calls.
-In most cases the offset calculation is done in user space application
-> > +       kernel_tp =3D kernel_tp_base;
-> > +       for (j =3D 0; j < n_samples; j++) {
-> > +               for (i =3D 0; i < n_clocks; i++) {
-> > +                       if (put_timespec64(kernel_tp++, (struct __kerne=
-l_timespec __user *)
-> > +                                       &ptp_multi_clk_get->ts[j][i])) =
-{
-> > +                               error =3D -EFAULT;
-> > +                               goto out;
-> > +                       }
-> > +               }
-> > +       }
->
-> There are several pairs of clocks that tick at precisely same rate
-> (and use the same underlying hardware clock), and the offset could be
-> computed exactly instead of doing this noisy loop that is merely
-> somewhat less bad than what user code could do all by itself.
-You are correct, there are some PHCs on the same NIC (each per port)
-that share the same HW counter/clock.
-In that case it is slightly better to do the offset calculation in the
-NIC driver code,
-but that requires changes in each NIC driver's code.
-The main thing is that the multi_clock_gettime system call is a
-generic solution,
-it covers that case among other cases, for example sync between two
-PHCs on different NICs.
+RnJvbTogV2FpbWFuIExvbmcNCj4gU2VudDogMDEgSmFudWFyeSAyMDI0IDA0OjE0DQouLi4NCj4g
+WW91IHJlYWxseSBsaWtlIG1pY3JvLW9wdGltaXphdGlvbi4NCg0KVGhleSBhbGwgYWRkIHVwIDot
+KQ0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJv
+YWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24g
+Tm86IDEzOTczODYgKFdhbGVzKQ0K
+
 
