@@ -1,160 +1,146 @@
-Return-Path: <linux-kernel+bounces-13850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 709F5821379
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 11:14:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13A1182137E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 11:23:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08E441F220C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 10:14:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DB721C2185D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 10:23:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CCF53C39;
-	Mon,  1 Jan 2024 10:14:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6AE223DB;
+	Mon,  1 Jan 2024 10:23:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="WiM0X3mz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 969AB2112
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 10:14:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7baf2c8f19eso550398639f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 02:14:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704104058; x=1704708858;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GXvqISVn8onyZBKPrIZRQ97IB9/CKJb74yBSAE58lx8=;
-        b=bwDDTLeusoEFmPVMcqiNJfr+PdsZUXigfczY6L0Uk80zunzu5KDHwm7ISKKeKrhpqr
-         zyqGUhD76zG7zp2oDPY6m1WeMmH+60gaHDQ7nLYubFS7cZU6iX6yraYAe9czYdOqWyXk
-         nBnGP4Ic2khW+ZyJEOUVQFKGrt1WlEARe0FXNZ30RmciVKN+unbdf0OWuIBPPVWR4L0T
-         2rRFdmVjiQhe71i9gUXifW+I6UA7Lgg/8sZfsngeSjDlW7NImfk33T5AumhBmjS2fb1I
-         OJ1wK5YPa4PKUcCwwmxD1w/GFAGCNvNgzr6L3Rdi3z2lbHoCkjHJIdQrIiqQgPRmOPK6
-         X1LA==
-X-Gm-Message-State: AOJu0Yxx9lmZZcSHXGgfhFQJK9/0+cPKQuugoNB6vXJIoEQJz3BKDP5G
-	UfNp6W5UoEtL/z7co8yuoJp8jgVHrBxeER9+/hEwNiNxOjuX
-X-Google-Smtp-Source: AGHT+IG9WCs0yadqIyxWkG+e9QpgUgkNv0sV4LNNJsBrhkqessl9rE0X6f9YMyo0+7WD5qk4h0CjVBcQOdYdnJjBl2mAkyMase+3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE34B46A2;
+	Mon,  1 Jan 2024 10:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704104570; x=1704709370; i=markus.elfring@web.de;
+	bh=3rrWVUyzD81jNe2M5aQcv76/ryCSUnodIUw9mv/60B4=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=WiM0X3mznBGwtXK7cJpC6ZqVOg8EqKq7RpkvepXQqkNlrgjR2xOA9lXB7aZoWFvq
+	 xaQMkQfdIM27de3EMrgUgEWynRvbZb/3XYBdMF9UY6K/9pNG8XgGqSSp9XT0y2Yi8
+	 uQ7kqAfCMl8kLavchpuedNVijOWkrA8P4r797dVLxzKHnsqZsRbzk1Kkxr2yahHFv
+	 d6l5yWuD5WzMcdIMYAe7Mn8r1HfRvdbbosG2QIEDLFiv0tN5WxCAVzM5gxs8SlgMk
+	 DL2Ay32Q0boRrWgnDi/i5uc84Sj8VSA1ATggoDCNSlDJ3rsvXNWaaPhintsv3S3mp
+	 WpApVpGD0lYovxchbQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1N7gbW-1r6Rfk0isk-014vzN; Mon, 01
+ Jan 2024 11:22:50 +0100
+Message-ID: <d2827643-2859-46c9-8f71-723108329cd4@web.de>
+Date: Mon, 1 Jan 2024 11:22:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c2d:b0:360:e80:1bd6 with SMTP id
- m13-20020a056e021c2d00b003600e801bd6mr1541462ilh.1.1704104058798; Mon, 01 Jan
- 2024 02:14:18 -0800 (PST)
-Date: Mon, 01 Jan 2024 02:14:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000015c980060ddfa5d0@google.com>
-Subject: [syzbot] [hams?] KMSAN: uninit-value in ax25cmp (3)
-From: syzbot <syzbot+74161d266475935e9c5d@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	linux-hams@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, ralf@linux-mips.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_=5BPATCH_2/4=5D_netlink=3A_Move_an_assignment_for_t?=
+ =?UTF-8?B?aGUgdmFyaWFibGUg4oCcc2vigJ0gaW4gX19uZXRsaW5rX2tlcm5lbF9jcmVhdGUo?=
+ =?UTF-8?Q?=29?=
+Content-Language: en-GB
+To: kernel test robot <lkp@intel.com>, netdev@vger.kernel.org,
+ kernel-janitors@vger.kernel.org,
+ Anjali Kulkarni <anjali.k.kulkarni@oracle.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+ LKML <linux-kernel@vger.kernel.org>
+References: <223a61e9-f826-4f37-b514-ca6ed53b1269@web.de>
+ <202401010855.4iU6im1B-lkp@intel.com>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <202401010855.4iU6im1B-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:le4yLfZi8Cs2gMwuf2Hysqz4ZSz92zNU0xB1QJCz351Eox8ntp1
+ qxMxLKc90/JXAXCcGMNXkWt46JiBtAYnwmppjy8qHnlw9YO+21L+gzI79rBO1EKOoHABIgu
+ tRXct3mS+fztw+sb+hUNlyYWyvXsC2okwO5ko8hspkoUrQoVauofO5+0lfZofn0hRA93YwN
+ QpEt+h3jE6/mDCBtR6Krw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:KQZj8+oppFU=;i8hCbyZJqYcyBg6ffq0UGk++7gU
+ lFLtdhKHhLGqPLvg5RBapmBLxEquen9apRsNZhYr+P2RRRT+VFf9d5VRFLbO557peJhdy7axP
+ 4Hslz/yGOTDTt36G9zeirMrPq+Pke2nUJJSGI/oy4XvxQlcyuLcz6M+0/0qFfn6TDubSCsaEN
+ 2EAFjuOTSkt2FlAGVd55Uo6Tk3mAQPp2TpNBnf0DrrElLf/989DC42aHUY3cuETKQU0ZB4fFo
+ 3ij6v6m6HbJCN3P4QFmKgm/QhOdDlhs/wYmdM2oWLk6KfNMdRr4l9AitQ0ZFHuu64xNXEUg4f
+ Xk6dpPgw18tYS1A+kj3NsUni5q2MJR/5pgYZnu8sdvdkAyBHH9ffJMzKllS9IcA1ql14VMJL9
+ xCShHd1Dp05Jx7tmEf3lxMRVqx9cEKCvS/nndUQQbnNCJm7adTn0UyRGszncno/JNer3/d5DE
+ j3QnH1NZXlDaR01CRgR99a6rBvUyB/rtjAMc6ZhZqCi55jkfwaM00fpfxZZMJ0hv96oP0WGN0
+ 5OrIkHZ9GYcbL37DtZElw/kUnlozHk+GvD6VyiMHlM1GqkWb7oIyRwpx1Nf4ZFtmiXoxY6RTk
+ RCSvq0xjjy9vwmxdBburAusgG8SYHxVETUHzSFtLGpzPWlam0pg+/I/Ind4Q+rppTw4Js+zB2
+ vlrdeLLzha/7/pvwez/5YOitkTmn5gLYjX9xQncpvS57k/K6S3Zd2cYzmXMTcWHbypglUhf68
+ gtdSfLrcxl4RGGDr2izjzohcxktsF+LLgbmDmXUKcJpcio3HOXCm8CO7hDU37bUT+YiRH4ZPs
+ 6IHzdlGpJqsx8VxjWgwsND6LlUB4yX57m+pqlsH6m5tej6/sn914e1Zlufs+ShwBtLLDJXP8I
+ 1de8vIMH5U5h/7RJoQ6elmJUx9b0i9DIMFLYTls80XtbVPqa3xP8HNTqVLW3eyjec0h1d8WYd
+ 6X+kXVTpLjB+w/+Vyry59Nl96Qc=
 
-Hello,
+=E2=80=A6
+> url:    https://github.com/intel-lab-lkp/linux/commits/Markus-Elfring/ne=
+tlink-Improve-exception-handling-in-__netlink_kernel_create/20240101-01502=
+5
+=E2=80=A6
+> patch link:    https://lore.kernel.org/r/223a61e9-f826-4f37-b514-ca6ed53=
+b1269%40web.de
+=E2=80=A6
+> All warnings (new ones prefixed by >>):
+>
+>>> net/netlink/af_netlink.c:2044:6: warning: variable 'sk' is used uninit=
+ialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+=E2=80=A6
+>
+=E2=80=A6
+> ^1da177e4c3f41 Linus Torvalds    2005-04-16  2016  struct sock *
+> 9f00d9776bc5be Pablo Neira Ayuso 2012-09-08  2017  __netlink_kernel_crea=
+te(struct net *net, int unit, struct module *module,
+> a31f2d17b331db Pablo Neira Ayuso 2012-06-29  2018  			struct netlink_ker=
+nel_cfg *cfg)
+> ^1da177e4c3f41 Linus Torvalds    2005-04-16  2019  {
+> ^1da177e4c3f41 Linus Torvalds    2005-04-16  2020  	struct socket *sock;
+> ^1da177e4c3f41 Linus Torvalds    2005-04-16  2021  	struct sock *sk;
+=E2=80=A6
+> 5c398dc8f5a58b Eric Dumazet      2010-10-24  2023  	struct listeners *li=
+steners =3D NULL;
+=E2=80=A6
+> ^1da177e4c3f41 Linus Torvalds    2005-04-16  2032  	if (sock_create_lite=
+(PF_NETLINK, SOCK_DGRAM, unit, &sock))
+> ^1da177e4c3f41 Linus Torvalds    2005-04-16  2033  		return NULL;
+=E2=80=A6
+> 5c398dc8f5a58b Eric Dumazet      2010-10-24  2043  	listeners =3D kzallo=
+c(sizeof(*listeners) + NLGRPSZ(groups), GFP_KERNEL);
+> 4277a083ecd2c8 Patrick McHardy   2006-03-20 @2044  	if (!listeners)
+> 90ae404765d263 Markus Elfring    2023-12-31  2045  		goto out_netlink_re=
+lease_sock;
+> 4277a083ecd2c8 Patrick McHardy   2006-03-20  2046
+> e547df909ec09d Markus Elfring    2023-12-31  2047  	sk =3D sock->sk;
+> ^1da177e4c3f41 Linus Torvalds    2005-04-16  2048  	sk->sk_data_ready =
+=3D netlink_data_ready;
+=E2=80=A6
+> 4fdb3bb723db46 Harald Welte      2005-08-09  2075  	netlink_table_ungrab=
+();
+> 77247bbb309424 Patrick McHardy   2005-08-14  2076  	return sk;
+> 77247bbb309424 Patrick McHardy   2005-08-14  2077
+> 4fdb3bb723db46 Harald Welte      2005-08-09  2078  out_sock_release:
+> 4277a083ecd2c8 Patrick McHardy   2006-03-20  2079  	kfree(listeners);
+> 90ae404765d263 Markus Elfring    2023-12-31  2080  out_netlink_release_s=
+ock:
+> 9dfbec1fb2bedf Denis V. Lunev    2008-02-29  2081  	netlink_kernel_relea=
+se(sk);
+> 23fe18669e7fda Pavel Emelyanov   2008-01-30  2082  	return NULL;
 
-syzbot found the following issue on:
+How do you think about to use the function call =E2=80=9Cnetlink_kernel_re=
+lease(sock->sk)=E2=80=9D?
 
-HEAD commit:    fbafc3e621c3 Merge tag 'for_linus' of git://git.kernel.org..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13563e09e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7078a6b901aa3
-dashboard link: https://syzkaller.appspot.com/bug?extid=74161d266475935e9c5d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a0b836e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1201287ee80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1520f7b6daa4/disk-fbafc3e6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8b490af009d5/vmlinux-fbafc3e6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/202ca200f4a4/bzImage-fbafc3e6.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+74161d266475935e9c5d@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in ax25cmp+0x3a5/0x460 net/ax25/ax25_addr.c:119
- ax25cmp+0x3a5/0x460 net/ax25/ax25_addr.c:119
- nr_dev_get+0x20e/0x450 net/netrom/nr_route.c:601
- nr_route_frame+0x1a2/0xfc0 net/netrom/nr_route.c:774
- nr_xmit+0x5a/0x1c0 net/netrom/nr_dev.c:144
- __netdev_start_xmit include/linux/netdevice.h:4940 [inline]
- netdev_start_xmit include/linux/netdevice.h:4954 [inline]
- xmit_one net/core/dev.c:3548 [inline]
- dev_hard_start_xmit+0x247/0xa10 net/core/dev.c:3564
- __dev_queue_xmit+0x33b8/0x5130 net/core/dev.c:4349
- dev_queue_xmit include/linux/netdevice.h:3134 [inline]
- raw_sendmsg+0x654/0xc10 net/ieee802154/socket.c:299
- ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
- ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
- __sys_sendmsg net/socket.c:2667 [inline]
- __do_sys_sendmsg net/socket.c:2676 [inline]
- __se_sys_sendmsg net/socket.c:2674 [inline]
- __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Uninit was created at:
- slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
- slab_alloc_node mm/slub.c:3478 [inline]
- kmem_cache_alloc_node+0x5e9/0xb10 mm/slub.c:3523
- kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:560
- __alloc_skb+0x318/0x740 net/core/skbuff.c:651
- alloc_skb include/linux/skbuff.h:1286 [inline]
- alloc_skb_with_frags+0xc8/0xbd0 net/core/skbuff.c:6334
- sock_alloc_send_pskb+0xa80/0xbf0 net/core/sock.c:2780
- sock_alloc_send_skb include/net/sock.h:1884 [inline]
- raw_sendmsg+0x36d/0xc10 net/ieee802154/socket.c:282
- ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
- ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
- __sys_sendmsg net/socket.c:2667 [inline]
- __do_sys_sendmsg net/socket.c:2676 [inline]
- __se_sys_sendmsg net/socket.c:2674 [inline]
- __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-CPU: 0 PID: 5037 Comm: syz-executor166 Not tainted 6.7.0-rc7-syzkaller-00003-gfbafc3e621c3 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Regards,
+Markus
 
