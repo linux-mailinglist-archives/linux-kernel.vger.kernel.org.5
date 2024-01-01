@@ -1,138 +1,111 @@
-Return-Path: <linux-kernel+bounces-13842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 282A782135A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 09:58:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D102582135F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 10:08:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E1421C20AB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 08:58:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E39641C21898
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 09:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6D9120FD;
-	Mon,  1 Jan 2024 08:58:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA7D440C;
+	Mon,  1 Jan 2024 09:08:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="p6AgW3xS"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="dMJHNqsl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A436E17C8;
-	Mon,  1 Jan 2024 08:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704099456; x=1704704256; i=markus.elfring@web.de;
-	bh=agDsBCNizMRnAhd3ZLJbePedKBgljy4IQu9qS5vaM9U=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=p6AgW3xSKvzw/ZSqUEwWFeRwaqeoRrV9fPVTPvrf/Q9VWTXpin/fUJX/PRTb19mf
-	 sBz/3HPobLINIBRSAWNWlomo638nrp/9XGW5L0dEimB5TvXp/+ve8Kb75U0Lf0wSO
-	 +fX9iKA1r2IhrDUcexrjJZmUEeLQevbRtLduOfAvfL9s990qvqh/3pzwxqlp14cUN
-	 p0zmltsRA1UcbA9srFfAMMLx4hdCoc07ahqRyVGTXKdToTz7J45Ybyqiqg6kkhzvC
-	 iJmnOuCE0YCkt/8ciqNNgkCIrjMCPZ1uVmJDwNQOQUxKbzm4L27Os8pzCUZVzsrlI
-	 BWH5gpNJ+uPfCO73Kg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MpU1w-1qsnjY1G28-00q14H; Mon, 01
- Jan 2024 09:57:36 +0100
-Message-ID: <b441f304-a3cc-4ebe-91cb-84caf55cbfe2@web.de>
-Date: Mon, 1 Jan 2024 09:56:53 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB1C63C28;
+	Mon,  1 Jan 2024 09:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=HXbZ0sxnDZzhlQp2F6Mpy+dhtbcwpBUtIlShgaOKyHE=; b=dMJHNqslObVykUwGUh7oBNKQbJ
+	dTBwsbSKgXSx6mgGrtVy6fS1Jco+6rzyqoL+TPl6tLvXlsVt7wXfSoU4rxIX1oge7YiPtoIVMSXHS
+	u2gOa4ImoDONf8qjT/QhbvlRU4Ukk5+Ew/8JYvxPKmQXwqpBOvtf+gW6FYn9QLCb6ZZhpIrameylM
+	88CAOLshXbNvBW3YAfHvodHqEjGcj/mB1SEHryW6SAEEmpzB9+kp7YDFuwzSJI6oV5raGMuUZ5oVi
+	PP320X5QmfO4tdl4ARdwoFKAkTiU1x3J/aHPsOkIXs5PRfigvqowcGodoKDQUrkPDj3+E0o6pWSeE
+	6OyWF2mA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rKEH2-008Rnu-77; Mon, 01 Jan 2024 09:07:52 +0000
+Date: Mon, 1 Jan 2024 09:07:52 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Hillf Danton <hdanton@sina.com>
+Cc: Genes Lists <lists@sapience.com>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: 6.6.8 stable: crash in folio_mark_dirty
+Message-ID: <ZZKA6Phgfa78kM9I@casper.infradead.org>
+References: <8bb29431064fc1f70a42edef75a8788dd4a0eecc.camel@sapience.com>
+ <20231231012846.2355-1-hdanton@sina.com>
+ <20240101015504.2446-1-hdanton@sina.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/cpuset: Adjust exception handling in
- generate_sched_domains()
-To: Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
- kernel-janitors@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
- Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <53be5f98-6359-48b5-955e-fd203d99d3cb@web.de>
- <9cd1ce1d-15c7-427c-9929-f3c75b97b49c@redhat.com>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <9cd1ce1d-15c7-427c-9929-f3c75b97b49c@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Nt0ajD4ZaUbOXmcwE4wMyZy7kP2gGXaGyEGiaR/J5xah78nfeRQ
- rjDvyjN+Cx71OgiCR3gTw6RTTU2EiWdEECokCntHuVmDHuXmV2D7uO+7se93HAdGIF+7r/O
- +0VDt8Jgc/7XYG7NzEY7Buau01KX3JfpmcRIvJ6/ByG1WlpI0ON6TBPKtGMDikqXxQ7/dSS
- iH12QbJ81RWT2lUZGsBiA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:FtZC8cznO5E=;7FrmcAQ4cUKIffUX75YG7eV3iWQ
- WZY/5EGwBaJO3XpDUc6+uW8XeW6l8pAgb15FjXRgRdt1LUwrJQH49FObRb4xeGhEn84zDURxg
- 4BBWALxKEmF7IbFc+KvdP9pGJNoChNH3TGh1tXD3OvWx0rwjBIevx0hC9LQqc3dHAL5EeRIbt
- esl98hUXon0HTu7EuZlK3ahwVFoSR5lQLy+54YdCiJu6RKoL/NDS9qrUH19iir11/5mNRbOyK
- nx+v8GjbtWBogBNr4Te3JLj1L9ArasTceSuCg77LUPcd9K2uylmLA+tnbiIuGJ68fbXD+xdls
- +3LurC2Vt6a1iZyZVI1Ai4ICbXTd/o29XSOQScTqzOZafttAfnVJjaLr3K9JLK0zfXsageedz
- kaXbvTICwxJRDT0XjUKO+CNpc8P1XZn1tm7zCi1hLGQZLbiRQmZxPwpvAD9/ZGGytZKeF8VxO
- Vx6MagNWO/2jdf4ovRXdpOZudsU4ErLAGmc+x3dHIdtrhrlpprAJGP0CHJM0g/iZGaeJOAMAI
- ekm7Vf4lJ+K+2MBqWx7+Ws39QxexHcdY7Azv1J0r89rCC7yrq+6q92MroKeXz0CbqtnofrPbX
- lxiYX11uksWQoLlRT6kz9CBV7jG9p14Xo5c/KJMbwUZqFY9hT7QAimQnTFFAF2Rcv6BNJFZFf
- RaGBdX1XTCRuHusXywn6h5CNgQvHgm1+c58OtXH9GxApX+jCU8KPca5qi16Xd0p9tdvETGuXI
- OooICzUxqa2q3XyooovVxEtG+KAVppVqBYUG0pJEft478DUxROzV2dnCLPhvRXiTOnZR7Eogc
- zoWalmVr9yMNvQp9fAdbFPM/Bjmcom20G59RyAxBAxQ/QUBCG0QsJfjO/HZORIwhTtLcrstdV
- 0xBllrunpqGAKDiL+dt6s3YJ3XetgV/+dRHBoCg+bA8Jq6hlrccgKzgyGEwZHEYDWk/gwVDFe
- PoJG1g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240101015504.2446-1-hdanton@sina.com>
 
->> Two resource allocation failures triggered further actions
->> over the label =E2=80=9Cdone=E2=80=9D so far.
->>
->> * Jump to the statement =E2=80=9Cndoms =3D 1;=E2=80=9D in three cases d=
-irectly
->> =C2=A0=C2=A0 by using the label =E2=80=9Cset_ndoms=E2=80=9D instead.
->>
->> * Delete an assignment for the variable =E2=80=9Cndoms=E2=80=9D in one =
-if branch.
-=E2=80=A6
->> ---
->> =C2=A0 kernel/cgroup/cpuset.c | 8 ++++----
->> =C2=A0 1 file changed, 4 insertions(+), 4 deletions(-)
-=E2=80=A6
->> @@ -973,10 +973,9 @@ static int generate_sched_domains(cpumask_var_t **=
-domains,
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Special case for the 99% of systems w=
-ith one, full, sched domain */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (root_load_balance && !top_cpuset.nr_=
-subparts) {
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ndoms =3D 1;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 doms =3D alloc_s=
-ched_domains(ndoms);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!doms)
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 got=
-o done;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 got=
-o set_ndoms;
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dattr =3D kmallo=
-c(sizeof(struct sched_domain_attr), GFP_KERNEL);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (dattr) {
-=E2=80=A6
->> @@ -1123,6 +1122,7 @@ static int generate_sched_domains(cpumask_var_t *=
-*domains,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * See comments in partition_sched_=
-domains().
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (doms =3D=3D NULL)
->> +set_ndoms:
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ndoms =3D 1;
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *domains=C2=A0=C2=A0=C2=A0 =3D doms;
-=E2=80=A6
-> Please clarify what this patch is for. Is it just a cleanup with no func=
-tional changes or is there a bug that is being fixed?
+On Mon, Jan 01, 2024 at 09:55:04AM +0800, Hillf Danton wrote:
+> On Sun, 31 Dec 2023 13:07:03 +0000 Matthew Wilcox <willy@infradead.org>
+> > On Sun, Dec 31, 2023 at 09:28:46AM +0800, Hillf Danton wrote:
+> > > On Sat, Dec 30, 2023 at 10:23:26AM -0500 Genes Lists <lists@sapience.com>
+> > > > Apologies in advance, but I cannot git bisect this since machine was
+> > > > running for 10 days on 6.6.8 before this happened.
+> > > >
+> > > > Dec 30 07:00:36 s6 kernel: ------------[ cut here ]------------
+> > > > Dec 30 07:00:36 s6 kernel: WARNING: CPU: 0 PID: 521524 at mm/page-writeback.c:2668 __folio_mark_dirty (??:?) 
+> > > > Dec 30 07:00:36 s6 kernel: CPU: 0 PID: 521524 Comm: rsync Not tainted 6.6.8-stable-1 #13 d238f5ab6a206cdb0cc5cd72f8688230f23d58df
+> > > > Dec 30 07:00:36 s6 kernel: block_dirty_folio (??:?) 
+> > > > Dec 30 07:00:36 s6 kernel: unmap_page_range (??:?) 
+> > > > Dec 30 07:00:36 s6 kernel: unmap_vmas (??:?) 
+> > > > Dec 30 07:00:36 s6 kernel: exit_mmap (??:?) 
+> > > > Dec 30 07:00:36 s6 kernel: __mmput (??:?) 
+> > > > Dec 30 07:00:36 s6 kernel: do_exit (??:?) 
+> > > > Dec 30 07:00:36 s6 kernel: do_group_exit (??:?) 
+> > > > Dec 30 07:00:36 s6 kernel: __x64_sys_exit_group (??:?) 
+> > > > Dec 30 07:00:36 s6 kernel: do_syscall_64 (??:?) 
+> > > 
+> > > See what comes out if race is handled.
+> > > Only for thoughts.
+> > 
+> > I don't think this can happen.  Look at the call trace;
+> > block_dirty_folio() is called from unmap_page_range().  That means the
+> > page is in the page tables.  We unmap the pages in a folio from the
+> > page tables before we set folio->mapping to NULL.  Look at
+> > invalidate_inode_pages2_range() for example:
+> > 
+> >                                 unmap_mapping_pages(mapping, indices[i],
+> >                                                 (1 + end - indices[i]), false);
+> >                         folio_lock(folio);
+> >                         folio_wait_writeback(folio);
+> >                         if (folio_mapped(folio))
+> >                                 unmap_mapping_folio(folio);
+> >                         BUG_ON(folio_mapped(folio));
+> >                                 if (!invalidate_complete_folio2(mapping, folio))
+> > 
+> What is missed here is the same check [1] in invalidate_inode_pages2_range(),
+> so I built no wheel.
+> 
+> 			folio_lock(folio);
+> 			if (unlikely(folio->mapping != mapping)) {
+> 				folio_unlock(folio);
+> 				continue;
+> 			}
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/truncate.c#n658
 
-The development opinions might vary for the presented transformation.
-I suggest to reconsider the number of relevant variable assignments here.
-Would you categorise an extra statement still as a desirable implementatio=
-n detail?
-
-Regards,
-Markus
+That's entirely different.  That's checking in the truncate path whether
+somebody else already truncated this page.  What I was showing was why
+a page found through a page table walk cannot have been truncated (which
+is actually quite interesting, because it's the page table lock that
+prevents the race).
 
