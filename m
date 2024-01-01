@@ -1,108 +1,122 @@
-Return-Path: <linux-kernel+bounces-13922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64EC48214E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 19:06:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 922248214E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 19:12:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC9B7B20D1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 18:06:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 606181C20AA5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 18:12:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C40EBA35;
-	Mon,  1 Jan 2024 18:05:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qfxGlA1y"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCEC2BE5F;
+	Mon,  1 Jan 2024 18:11:58 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA4FB8F6E;
-	Mon,  1 Jan 2024 18:05:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A75FC433C8;
-	Mon,  1 Jan 2024 18:05:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704132355;
-	bh=+cCe5o3RRCYAMqeKsVmrT8NhuMZxadYYIe3PASgNwg0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=qfxGlA1yXV18HvyP44JXFlAiWbAt4VR9PcGCJokRXAhdpXKMjdMOpO7QKA3hWXwM+
-	 h/gxKtSzLK8awgjdYs3iUWD7IshU9fhm4/GoqDDVKJuJH++yb2CXLWF15V8BsepN7/
-	 EnBmbCZS8orVO2L2GIU2Gds/tQkuCdo6Tp+8ePkHch/trW5hvORM9FYB5F0Jb2IEZd
-	 Gsl4c/P5E0UDHz0Lh5donS3YaSWewoXXiJ5MNz0N3cp0W8ZCSVCGPZcbBMoA91nOBV
-	 GY1wAJooRnw8ziJFoJGzAVuhSRjBgc1wN9vdh/UHEqglmvNDKed0JVAh2LkK5aDvxV
-	 n3EV0EJ47ahHQ==
-Date: Mon, 1 Jan 2024 18:05:49 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: zhouzhouyi@gmail.com
-Cc: songqiang1304521@gmail.com, lars@metafoo.de, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org, "zhili.liu" <zhili.liu@ucas.com.cn>
-Subject: Re: [PATCH v2] iio: magnetometer: rm3100: add boundary check for
- the value read from RM3100_REG_TMRC
-Message-ID: <20240101180549.1be7e6de@jic23-huawei>
-In-Reply-To: <1704034604-9846-1-git-send-email-zhouzhouyi@gmail.com>
-References: <1704034604-9846-1-git-send-email-zhouzhouyi@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0E79464;
+	Mon,  1 Jan 2024 18:11:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout1.hostsharing.net (Postfix) with ESMTPS id B644B300002C4;
+	Mon,  1 Jan 2024 19:11:46 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 9770D4E76C; Mon,  1 Jan 2024 19:11:46 +0100 (CET)
+Date: Mon, 1 Jan 2024 19:11:46 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>, Krzysztof Wilczy??ski <kw@linux.com>,
+	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Alex Deucher <alexdeucher@gmail.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>
+Subject: Re: [PATCH v3 07/10] PCI/LINK: Re-add BW notification portdrv as
+ PCIe BW controller
+Message-ID: <20240101181146.GA26390@wunner.de>
+References: <20230929115723.7864-1-ilpo.jarvinen@linux.intel.com>
+ <20230929115723.7864-8-ilpo.jarvinen@linux.intel.com>
+ <20231230155810.GB25718@wunner.de>
+ <ada759ad-c2e-41d7-e15f-a7a3dc208771@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ada759ad-c2e-41d7-e15f-a7a3dc208771@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Sun, 31 Dec 2023 22:56:44 +0800
-zhouzhouyi@gmail.com wrote:
-
-> From: "zhili.liu" <zhili.liu@ucas.com.cn>
+On Mon, Jan 01, 2024 at 07:37:25PM +0200, Ilpo Järvinen wrote:
+> On Sat, 30 Dec 2023, Lukas Wunner wrote:
+> > On Fri, Sep 29, 2023 at 02:57:20PM +0300, Ilpo Järvinen wrote:
+> > > +	pcie_capability_write_word(dev, PCI_EXP_LNKSTA, PCI_EXP_LNKSTA_LBMS);
+> > > +	pcie_capability_set_word(dev, PCI_EXP_LNKCTL, PCI_EXP_LNKCTL_LBMIE);
+> > 
+> > I'm wondering why we're not enabling LABIE as well?
+> > (And clear LABS.)
+> > 
+> > Can't it happen that we miss bandwidth changes unless we enable that
+> > as well?
 > 
-> Recently, we encounter kernel crash in function rm3100_common_probe
-> caused by out of bound access of array rm3100_samp_rates (because of
-> underlying hardware failures). Add boundary check to prevent out of
-> bound access.
+> Thanks. Reading the spec, it sounds like both are necessary to not miss 
+> changes.
+
+I guess this is an artefact of Alex' original patch.
+I don't know why he enabled one but not the other.
+
+
+> > > +	ret = request_irq(srv->irq, pcie_bw_notification_irq,
+> > > +			  IRQF_SHARED, "PCIe BW ctrl", srv);
+> > 
+> > Is there a reason to run the IRQ handler in hardirq context
+> > or would it work to run it in an IRQ thread?  Usually on systems
+> > than enable PREEMPT_RT, a threaded IRQ handler is preferred,
+> > so unless hardirq context is necessary, I'd recommend using
+> > an IRQ thread.
 > 
-> Suggested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> Signed-off-by: zhili.liu <zhili.liu@ucas.com.cn>
-Please provide a Fixes tag so we know how far back to backport this.
-
-Seems like a reasonable bit of hardening against potential hardware issues.
-However it would be cleaner with a local variable used for the index.
-See inline.
-
-
-Jonathan
-
-> ---
-> The format of the previous patch was a bit problematic,
-> we are sending it again.
+> Can I somehow postpone the decision between IRQ_NONE / IRQ_HANDLED
+> straight into the thread_fn? One LNKSTA read is necessary to decide 
+> that.
 > 
-> Sorry for the trouble.
-> 
-> Thank you very much.
-> --
->  drivers/iio/magnetometer/rm3100-core.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/iio/magnetometer/rm3100-core.c b/drivers/iio/magnetometer/rm3100-core.c
-> index 69938204456f..fc50b6d4a334 100644
-> --- a/drivers/iio/magnetometer/rm3100-core.c
-> +++ b/drivers/iio/magnetometer/rm3100-core.c
-> @@ -586,6 +586,12 @@ int rm3100_common_probe(struct device *dev, struct regmap *regmap, int irq)
->  	ret = regmap_read(regmap, RM3100_REG_TMRC, &tmp);
->  	if (ret < 0)
->  		return ret;
-> +
-> +	if (tmp < RM3100_SAMP_NUM || tmp - RM3100_TMRC_OFFSET >= RM3100_SAMP_NUM) {
-Just a local variable of
-int samp_rate_index = tmp - RM3100_TMRC_OFFSET;
-Check that for negative or >=  RM3100_SAMP_NUM 
-> +		dev_err(dev, "The value read from RM3100_REG_TMRC is invalid!\n");
-> +		return -EINVAL;
-> +	}
-> +
->  	/* Initializing max wait time, which is double conversion time. */
->  	data->conversion_time = rm3100_samp_rates[tmp - RM3100_TMRC_OFFSET][2]
->  				* 2;
+> I suppose the other write + reread of LNKSTA could be moved into
+> thread_fn even if the first read would not be movable.
 
+You can just use request_threaded_irq(), pass NULL for the "handler"
+argument and pcie_bw_notification_irq for the "thread_fn" argument.
+
+Because of the NULL argument for "handler", the hardirq handler will
+then become irq_default_primary_handler().  Which does nothing else
+but return IRQ_WAKE_THREAD.  And the decision between IRQ_NONE and
+IRQ_HANDLED is then indeed postponed to the IRQ thread.
+
+Alternatively you can split the IRQ handler, move the check whether
+PCI_EXP_LNKSTA_LBMS is set to the hardirq handler and keep the rest
+in the IRQ thread.  Means you won't have unnecessary wakeups of the
+IRQ thread if the interrupt is caused by something else (I understand
+it's always shared with PME and hotplug).  But you'll spend more time
+in hardirq context.  In practice bandwidth notifications may be more
+frequent than PME and hotplug interrupts, so unnecessary wakeups of
+the IRQ thread will be rare.  Hence not splitting the IRQ handler
+may be better.  Dunno.  Ask Thomas Gleixner or Sebastian Siewior. :)
+
+Thanks,
+
+Lukas
 
