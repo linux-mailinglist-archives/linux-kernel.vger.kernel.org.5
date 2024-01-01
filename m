@@ -1,111 +1,102 @@
-Return-Path: <linux-kernel+bounces-13843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D102582135F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 10:08:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B8BCA821363
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 10:10:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E39641C21898
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 09:08:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0D0B1C21DDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 09:10:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA7D440C;
-	Mon,  1 Jan 2024 09:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 957DA23DB;
+	Mon,  1 Jan 2024 09:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="dMJHNqsl"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="KBTKypbx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB1C63C28;
-	Mon,  1 Jan 2024 09:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=HXbZ0sxnDZzhlQp2F6Mpy+dhtbcwpBUtIlShgaOKyHE=; b=dMJHNqslObVykUwGUh7oBNKQbJ
-	dTBwsbSKgXSx6mgGrtVy6fS1Jco+6rzyqoL+TPl6tLvXlsVt7wXfSoU4rxIX1oge7YiPtoIVMSXHS
-	u2gOa4ImoDONf8qjT/QhbvlRU4Ukk5+Ew/8JYvxPKmQXwqpBOvtf+gW6FYn9QLCb6ZZhpIrameylM
-	88CAOLshXbNvBW3YAfHvodHqEjGcj/mB1SEHryW6SAEEmpzB9+kp7YDFuwzSJI6oV5raGMuUZ5oVi
-	PP320X5QmfO4tdl4ARdwoFKAkTiU1x3J/aHPsOkIXs5PRfigvqowcGodoKDQUrkPDj3+E0o6pWSeE
-	6OyWF2mA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rKEH2-008Rnu-77; Mon, 01 Jan 2024 09:07:52 +0000
-Date: Mon, 1 Jan 2024 09:07:52 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Hillf Danton <hdanton@sina.com>
-Cc: Genes Lists <lists@sapience.com>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: 6.6.8 stable: crash in folio_mark_dirty
-Message-ID: <ZZKA6Phgfa78kM9I@casper.infradead.org>
-References: <8bb29431064fc1f70a42edef75a8788dd4a0eecc.camel@sapience.com>
- <20231231012846.2355-1-hdanton@sina.com>
- <20240101015504.2446-1-hdanton@sina.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B9417C9;
+	Mon,  1 Jan 2024 09:10:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704100211; x=1704705011; i=markus.elfring@web.de;
+	bh=HLXRLltHUfyafr70c4W+KbfbTYAxtORaeKRu1+nfa4s=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=KBTKypbxeRI11ODKaZc/WtjDaclzDqLRQlWMw1X6jts/rU+tL7fTFAqNX5a5UEX1
+	 k7TZWuDgrL7uVJMHaoweGYN5O+ajuIGSe28M/WcOg02Or/UqVsgi3LIlJJ31u+VEX
+	 928quQA37dZsHnITuMroVbIESKtoQdZpSKL7M0wuYsnEQY7Cs7SLPKZpyz79OuXfi
+	 4nvjn0w91a7ArbGPQjV1e4h7n5/BBTC+DIvF6UqBX6+wNjseltQ4VhCYWGkxoYjSf
+	 tMhHXDEDjWpkAzMcX69Y9YhqhCt0XCC2T6oAHXmVaM9KYpvLd6bdrsNTfP107hkt6
+	 5w6yEUvlLoVyWwJb0g==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1Meler-1qmH0I22Mv-00aNBr; Mon, 01
+ Jan 2024 10:10:11 +0100
+Message-ID: <dc0a1c9d-ceca-473d-9ad5-89b59e6af2e7@web.de>
+Date: Mon, 1 Jan 2024 10:10:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240101015504.2446-1-hdanton@sina.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/5] bpf: Adjustments for four function implementations
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>, LKML <linux-kernel@vger.kernel.org>
+References: <7011cdcc-4287-4e63-8bfa-f08710f670b1@web.de>
+ <CAADnVQLq7RKV+RBJm02HwfXujaUwFXsD77BqJK6ZpLQ-BObCdA@mail.gmail.com>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <CAADnVQLq7RKV+RBJm02HwfXujaUwFXsD77BqJK6ZpLQ-BObCdA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:su+B1C5CGpMaob4ZRA6yo2u6yjKAcFN7lO1g2bOyxgWIWNdFFfL
+ WURRaUgW4wiLT7WqBpXMVpJW4hJ4ezzhBnRQJPKhuFGoKFQ/O4aq297ByxMASkNPRSXvNLQ
+ IwKpAQnA/CZQiPuw4FC0zJBtHvZlz65PJfRIAJiWdt2CwmFbana6q4T9BrSzgzQBpqCfn1X
+ RP9SR3sageKAEnqzvj00w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ojwleqwWfQ4=;hBbTcOQ7Qnj/GwECcfGj226lcKA
+ qUJkD7N4+uGhRMPwGfSzxNk/HwqciJT6UO1i+HqQ2Bxh6qdn9/8RLdMNs7mrGhzAwA+0VP2h3
+ dUx6zdP4jVmsizV9mx3iTexwouRwe52/2nLxE7eET0sUTcqAccvPkWf5DpeFu63BzgX9LcD/p
+ /k1RbIVqrv7sEWMaE/jNKKw0/nIcGEEDWdhlr3n6Pw/Zk6l+APcSPzgMG1IO19T7vdul3qFMF
+ MVaoKJEhwCnakhPyE0hiDzlaDaFTIJ1Py/6Qfex09dobeF5YJY/4DVihzv5uFo5cJ4gEjXnAs
+ NuZyXfU56yaYLCcvPszCUHKPXiUp72BITuBl+irEvGfK9DLM2GAua08FvmKhvclFiChUUb8aS
+ qlaCXgYsKCAZEgkmR5dfo6WDeUzmSbLGTZkXaUrOJ1T7fqfohnMppYt95D3tDqEtC120eYlqA
+ koVtvAcU8wnR5s2sZ2gid2P7ZmbzTa8JcQ0sPFU6CIT++3PiaQG5V6rbE9CYpBPScvoqCiIWP
+ DFud369y8NYyQv3u46gBNegRiVQ1O2NRNEGcwLNW88PTsZjQM12rG2a0KF/Ccafv9J/4mdbK9
+ /34mStG1Oa5PCR+qDj1bhdQpbESOBh+bPuVn8b61jfi/kzrmeDxJXFP+ijz1QLBJ705zNeLgo
+ csIH+6+0zL2bbZA8v3919jUrm4iFNab0gxWkMoSZHJqwAjb1Qu4+yh8qH7KdEMpBFwZuOAzkJ
+ a+mK1yRHqdqi12x7I1ibNwVHdU0TzvpyQLrMHFbX0FuEPHn7XJ8XP59FpNTqlgAVOFRyhnJDz
+ 3d3nPVyF7wRfTgslXXnM7yHRAL2UXq2ec9KU6HDkVAwIhhb0By3PLcIgjqR0LH+cV7X1hqk7w
+ rqmpEEYdhi6Ga7x5VRIB6NIx2oFGuYrqc09JNcTfEOGc67CYzRZIeKBS/gxxaS7qoN6Xah6QI
+ HcgF/w==
 
-On Mon, Jan 01, 2024 at 09:55:04AM +0800, Hillf Danton wrote:
-> On Sun, 31 Dec 2023 13:07:03 +0000 Matthew Wilcox <willy@infradead.org>
-> > On Sun, Dec 31, 2023 at 09:28:46AM +0800, Hillf Danton wrote:
-> > > On Sat, Dec 30, 2023 at 10:23:26AM -0500 Genes Lists <lists@sapience.com>
-> > > > Apologies in advance, but I cannot git bisect this since machine was
-> > > > running for 10 days on 6.6.8 before this happened.
-> > > >
-> > > > Dec 30 07:00:36 s6 kernel: ------------[ cut here ]------------
-> > > > Dec 30 07:00:36 s6 kernel: WARNING: CPU: 0 PID: 521524 at mm/page-writeback.c:2668 __folio_mark_dirty (??:?) 
-> > > > Dec 30 07:00:36 s6 kernel: CPU: 0 PID: 521524 Comm: rsync Not tainted 6.6.8-stable-1 #13 d238f5ab6a206cdb0cc5cd72f8688230f23d58df
-> > > > Dec 30 07:00:36 s6 kernel: block_dirty_folio (??:?) 
-> > > > Dec 30 07:00:36 s6 kernel: unmap_page_range (??:?) 
-> > > > Dec 30 07:00:36 s6 kernel: unmap_vmas (??:?) 
-> > > > Dec 30 07:00:36 s6 kernel: exit_mmap (??:?) 
-> > > > Dec 30 07:00:36 s6 kernel: __mmput (??:?) 
-> > > > Dec 30 07:00:36 s6 kernel: do_exit (??:?) 
-> > > > Dec 30 07:00:36 s6 kernel: do_group_exit (??:?) 
-> > > > Dec 30 07:00:36 s6 kernel: __x64_sys_exit_group (??:?) 
-> > > > Dec 30 07:00:36 s6 kernel: do_syscall_64 (??:?) 
-> > > 
-> > > See what comes out if race is handled.
-> > > Only for thoughts.
-> > 
-> > I don't think this can happen.  Look at the call trace;
-> > block_dirty_folio() is called from unmap_page_range().  That means the
-> > page is in the page tables.  We unmap the pages in a folio from the
-> > page tables before we set folio->mapping to NULL.  Look at
-> > invalidate_inode_pages2_range() for example:
-> > 
-> >                                 unmap_mapping_pages(mapping, indices[i],
-> >                                                 (1 + end - indices[i]), false);
-> >                         folio_lock(folio);
-> >                         folio_wait_writeback(folio);
-> >                         if (folio_mapped(folio))
-> >                                 unmap_mapping_folio(folio);
-> >                         BUG_ON(folio_mapped(folio));
-> >                                 if (!invalidate_complete_folio2(mapping, folio))
-> > 
-> What is missed here is the same check [1] in invalidate_inode_pages2_range(),
-> so I built no wheel.
-> 
-> 			folio_lock(folio);
-> 			if (unlikely(folio->mapping != mapping)) {
-> 				folio_unlock(folio);
-> 				continue;
-> 			}
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/truncate.c#n658
+>> A few update suggestions were taken into account
+>> from static source code analysis.
+>
+> Auto Nack.
+> Pls don't send such patches. You were told multiple
+> times that such kfree usage is fine.
 
-That's entirely different.  That's checking in the truncate path whether
-somebody else already truncated this page.  What I was showing was why
-a page found through a page table walk cannot have been truncated (which
-is actually quite interesting, because it's the page table lock that
-prevents the race).
+Some implementation details are improvable.
+Can you find an update step (like the following) helpful?
+
+[PATCH 2/5] bpf: Move an assignment for the variable =E2=80=9Cst_map=E2=80=
+=9D in bpf_struct_ops_link_create()
+https://lore.kernel.org/bpf/ed2f5323-390f-4c9d-919d-df43ba1cad2b@web.de/
+
+Regards,
+Markus
 
