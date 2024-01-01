@@ -1,137 +1,90 @@
-Return-Path: <linux-kernel+bounces-13856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F22282139A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 12:25:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A6E882139D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 12:33:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF32B1F219E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 11:25:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CA601C20C83
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 11:33:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6C723C32;
-	Mon,  1 Jan 2024 11:25:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="WibzVTXS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BF653C39;
+	Mon,  1 Jan 2024 11:33:45 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.11])
+Received: from mail115-69.sinamail.sina.com.cn (mail115-69.sinamail.sina.com.cn [218.30.115.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B06D3210B;
-	Mon,  1 Jan 2024 11:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704108303; x=1704713103; i=markus.elfring@web.de;
-	bh=KBCe5bAyw6ghD008K0JgVekThO7siyPaiU7l1J0vQGE=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=WibzVTXSTg+qNgBDrvuSXpIDRTZvvUPJ1JrzTsjybr5mgdqhGx1bSoOVi3ZY+9m1
-	 BqwjqL0fpscze353vP4faBGkNV67s77noGVeWL8t7wjZ2g/x31Oz4TsFXG2BC4Y8o
-	 lBXI0f5uPHoSOdQsgVmwajr7AfaorohMRyKslZS4tZBYDFcr0diC1m7LKbdPSAdQm
-	 SRmxsJEPS05RfW2GfKZVFKhmF2Bw2qFay/1j+spUANlWKoiwnISlcN/X0zljIfzEg
-	 sWaSHXopwvj421iaS+w1JnhfeAkLaz3GJXK6yzn5J3PMTBobYSIVqYQKQXKp4upqa
-	 uD0YuTAGsYX9jU4L4w==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MLzn1-1rcCo33Ymn-00I3sH; Mon, 01
- Jan 2024 12:25:02 +0100
-Message-ID: <4307bce9-ccbd-4bc5-aa8e-b618a1664cbe@web.de>
-Date: Mon, 1 Jan 2024 12:24:59 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF2D20E8
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 11:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.68.122])
+	by sina.com (10.75.12.45) with ESMTP
+	id 6592A30500007E54; Mon, 1 Jan 2024 19:33:31 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 3265331457689
+X-SMAIL-UIID: 05E51E30F69B439BA57A35AEF53799B8-20240101-193331-1
+From: Hillf Danton <hdanton@sina.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Genes Lists <lists@sapience.com>,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: 6.6.8 stable: crash in folio_mark_dirty
+Date: Mon,  1 Jan 2024 19:33:16 +0800
+Message-Id: <20240101113316.2595-1-hdanton@sina.com>
+In-Reply-To: <ZZKA6Phgfa78kM9I@casper.infradead.org>
+References: <8bb29431064fc1f70a42edef75a8788dd4a0eecc.camel@sapience.com> <20231231012846.2355-1-hdanton@sina.com> <20240101015504.2446-1-hdanton@sina.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sunrpc: Improve exception handling in krb5_etm_checksum()
-Content-Language: en-GB
-To: Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org,
- netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
-Cc: Anna Schumaker <anna@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
- Dai Ngo <Dai.Ngo@oracle.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, Jakub Kicinski <kuba@kernel.org>,
- Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
- Olga Kornievskaia <kolga@netapp.com>, Paolo Abeni <pabeni@redhat.com>,
- Simo Sorce <simo@redhat.com>, Tom Talpey <tom@talpey.com>,
- Trond Myklebust <trond.myklebust@hammerspace.com>,
- LKML <linux-kernel@vger.kernel.org>
-References: <9561c78e-49a2-430c-a611-52806c0cdf25@web.de>
- <ZZIhEJK68Sapos2t@tissot.1015granger.net>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <ZZIhEJK68Sapos2t@tissot.1015granger.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Vn/HkV0Ure2YCzmNLi3xwD29bLKJb2dTQOMTnC7oLEdFVLRHM3r
- uviIFdxclVy651SOw7PMjVJJ8NXHqmDZKU9M3JrQvWvhwV0U0VdhVxd5BY4meP0iy/8vyOi
- 6OYy0JarKfUE+OS3eZMrHUzSJyWycyPrQJdqmMfsNyqVHiqnzSd79ivyma3qY0kE416y3yP
- RuSKnjlngaUQEPYhqMwww==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:UdF4WRWURZA=;pdsBrnNEagtfYnRIibWLfuZ6qQz
- OgKCfYYf0dvoBc/SZ9UbJEQC9Zpt/RDML186UyhsETArxUvCLaqqQqcnXn6B1cHz+LDh3JBse
- 9Zm4+/ss6A5w5oMg+UP9wbWvy5wO419D4YeeUBKKOKqfuMq97xzMNx4XQHuMTzr2MgLMP1/zx
- CHXuriei2XUOtKnCoI/uMzHIGSqVf8IXgRLiudR4J0x2wawzZYoLg5Ef8IcAx8f8sbM88LXUM
- bI4Q3gGkCzUun4ytu9G4qS74O40/MHMfDcZjMnunOJ88A2uuixxwFbwtpCdNZ3nZb1LTbA+aB
- MpFjTkku53lDMjOn68DT1lkemkFSLE8Z/PtaH4Jd1GEX2IDUBhpgjx/eA1MCey2BBTmo6IopJ
- lBeXxgX88ZnO/ESzQspj20X6qd4/yBGroWfdRB5Z4nh/UD+if7///ijVBK4XVCDiQVJeDYP/p
- KcNhA8OTnGVGhBcsqFQfbViYHZb1Fb6IjtFMrudptaLfpkwtHpqTX7Wb2eS36k97PtxmIb85q
- lnC76zIY/IKfmbAUKGQHXMbE5Vmb6qpsEpmmKIZl6seGrORsk/8XZ1yOO0eyOhypUcMwHEX/o
- utxDtkkgQm04nUBddwCodG42Ey4s4JoP0y/fWtN57x2wadJ5Q2/XFfRv91zmL2uszTVRifJi9
- l7E+Vev+J/HDzCDny9b1znh+rf10C2r8LIDyLAH1okZ9b1dnFCbyOroVB5myZ64lFqTIQ4iF8
- HROSUEp8FNuJkChDTfG7BXNnYCYojOKaFyU8VpXBZTQnvg1qybXgPzfO5J8D7px8/jkvHhBdl
- O+HCwp5ivRsBu65NGv91drq5wdKvgNViLP4CpF5NX+k6B/VqZtKJ+wp/hZXVMxan1ABQK5Tes
- 04MjYlWf3bDWlDfynN82OCl6qFElmzBgthArfeV5Eyfz2kZiZ1Op/sh6HvBS34s7cQ0SCJt7e
- LuVrEA==
+Content-Transfer-Encoding: 8bit
 
-=E2=80=A6
->> Thus use another label.
-=E2=80=A6
->> ---
->>  net/sunrpc/auth_gss/gss_krb5_crypto.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
-=E2=80=A6
-> As has undoubtedly been pointed out in other forums, calling kfree()
-> with a NULL argument is perfectly valid.
-
-The function call =E2=80=9Ckfree(NULL)=E2=80=9D is not really useful for e=
-rror/exception handling
-while it is tolerated at various source code places.
-
-
->                                          Since this small GFP_KERNEL
-> allocation almost never fails, it's unlikely this change is going to
-> make any difference except for readability.
-
-I became curious if development interests can grow for the usage of
-an additional label.
-https://wiki.sei.cmu.edu/confluence/display/c/MEM12-C.+Consider+using+a+go=
-to+chain+when+leaving+a+function+on+error+when+using+and+releasing+resourc=
-es
-
-
-> Now if we want to clean up the error flows in here to look more
-> idiomatic, how about this:
-=E2=80=A6
-> +++ b/net/sunrpc/auth_gss/gss_krb5_crypto.c
-=E2=80=A6
-> @@ -970,8 +970,9 @@ u32 krb5_etm_checksum(struct crypto_sync_skcipher *c=
-ipher,
->
->  out_free_ahash:
->  	ahash_request_free(req);
-> -out_free_mem:
-> +out_free_iv:
->  	kfree(iv);
-> +out_free_cksumdata:
->  	kfree_sensitive(checksumdata);
-=E2=80=A6
-
-I find it nice that you show another possible adjustment of corresponding =
-identifiers.
-
-Regards,
-Markus
+On Mon, 1 Jan 2024 09:07:52 +0000 Matthew Wilcox
+> On Mon, Jan 01, 2024 at 09:55:04AM +0800, Hillf Danton wrote:
+> > On Sun, 31 Dec 2023 13:07:03 +0000 Matthew Wilcox <willy@infradead.org>
+> > > I don't think this can happen.  Look at the call trace;
+> > > block_dirty_folio() is called from unmap_page_range().  That means the
+> > > page is in the page tables.  We unmap the pages in a folio from the
+> > > page tables before we set folio->mapping to NULL.  Look at
+> > > invalidate_inode_pages2_range() for example:
+> > > 
+> > >                                 unmap_mapping_pages(mapping, indices[i],
+> > >                                                 (1 + end - indices[i]), false);
+> > >                         folio_lock(folio);
+> > >                         folio_wait_writeback(folio);
+> > >                         if (folio_mapped(folio))
+> > >                                 unmap_mapping_folio(folio);
+> > >                         BUG_ON(folio_mapped(folio));
+> > >                                 if (!invalidate_complete_folio2(mapping, folio))
+> > > 
+> > What is missed here is the same check [1] in invalidate_inode_pages2_range(),
+> > so I built no wheel.
+> > 
+> > 			folio_lock(folio);
+> > 			if (unlikely(folio->mapping != mapping)) {
+> > 				folio_unlock(folio);
+> > 				continue;
+> > 			}
+> > 
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/truncate.c#n658
+> 
+> That's entirely different.  That's checking in the truncate path whether
+> somebody else already truncated this page.  What I was showing was why
+> a page found through a page table walk cannot have been truncated (which
+> is actually quite interesting, because it's the page table lock that
+> prevents the race).
+> 
+Feel free to shed light on how ptl protects folio->mapping.
 
