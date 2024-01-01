@@ -1,188 +1,96 @@
-Return-Path: <linux-kernel+bounces-13940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB7E8821546
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 21:49:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ECE682154D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 21:57:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F4D81F21722
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 20:49:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1A501C20ED7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 20:57:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D18A8DF5C;
-	Mon,  1 Jan 2024 20:49:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFEDBDF6E;
+	Mon,  1 Jan 2024 20:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="qRQWbEo7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF15DF42;
-	Mon,  1 Jan 2024 20:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.104] (178.176.77.76) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 1 Jan
- 2024 23:49:07 +0300
-Subject: Re: [PATCH net v2 1/1] net: ravb: Wait for operation mode to be
- applied
-To: claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
-	<mitsuhiro.kimura.kc@renesas.com>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20231222113552.2049088-1-claudiu.beznea.uj@bp.renesas.com>
- <20231222113552.2049088-2-claudiu.beznea.uj@bp.renesas.com>
- <98efc508-c431-2509-5799-96decc124136@omp.ru>
- <d5448a91-a4d8-444d-9f96-083049b1e33e@tuxon.dev>
- <9ebf96fb-c07a-8269-e5cd-0e71110941dd@omp.ru>
- <ca01da5f-0928-4a95-83f4-8d9056107f42@tuxon.dev>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <aa9a9929-92ff-ab4b-a2ea-142b522eb344@omp.ru>
-Date: Mon, 1 Jan 2024 23:49:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9745DF43;
+	Mon,  1 Jan 2024 20:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704142598; x=1704747398; i=markus.elfring@web.de;
+	bh=uQ72KmkEiCY1K2+lxFladD8w67DLPeNf77Y7kouAhuc=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=qRQWbEo7Uj0bycJsCGl3WQaRCiA+viKLFFojXA92z8kVy9Xr/aI+/mMAvi26nfZj
+	 KSWLKveWMYq1KZ3rlH7OigD71+/imEs/bDQVGWSTAEgnibH7qhlS9UJMXGP2yNfMx
+	 2XfKz0vZfAJX+Hz/H1lTACb+2HkztmNwpHNHcuDNWsS0XY2KGjR9D5KYXv7Xg/iju
+	 YlIXtbz2YCTy43dW3cGVYwDXBscAuruTGmcfdakVZRJDEskBWfXgVkC25L/2ejBh4
+	 uEW8MZWalGMZ2EEyZl3qp6LIn2dxX8S2+V67Plp1lFn0aXKzAypKEhOI39kmTUXGV
+	 Yf3EznOb4allV+ixxg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MjgSv-1qvUej3HMh-00kqgO; Mon, 01
+ Jan 2024 21:56:38 +0100
+Message-ID: <cde82080-c715-473c-97ac-6ef66bba6d64@web.de>
+Date: Mon, 1 Jan 2024 21:56:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ca01da5f-0928-4a95-83f4-8d9056107f42@tuxon.dev>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/01/2024 20:37:31
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182447 [Dec 31 2023]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.77.76 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.77.76
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/01/2024 20:41:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/1/2024 5:15:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+User-Agent: Mozilla Thunderbird
+To: linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Alexandra Winter <wintera@linux.ibm.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Wenjia Zhang <wenjia@linux.ibm.com>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH 0/2] net/iucv: Adjustments for iucv_enable()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:blsZ30Nj59LtPTmw09zo9JUQSYZGKjLUYX5rqMaLMMICqxD2Fna
+ 8i0n2D5jG2kO6DPrF/Nj6NR0IVV708OtVrOHSN6IxYK4lqX80cUFjHexyXjdbhshNBrye0J
+ inrPFXON6UQ3hkicL+yxEAPUqA3y5YiEgZgw9sEv2VdURToGur0R/X97KqtlNJAY+mtW16w
+ 9mKTuqVu5idWhZznP5p2A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:8M1iMyIHr4k=;r4Qw8+G82S1zfQWRkw6jKEhbXMN
+ 9KB9OfIWaxurHgVjJ6JkjH5mim1sbP3uhi/7kj3qbtLPb7jvsas65mpEzuOysC0e9ePiJ6r2d
+ SuFFQdv+QSfna8dH00ZkC0WyfTpM0JCqJpBywKnqnUfxIy0jAI1NzUsfhQwxjft1DQtNapswS
+ mQRvJzwFplPS6HhNciKDWFT3MJgd1AYlAJSxNr1Ic6hcJN3GGr8SnjxZnNOycJU03CD+8uoVr
+ 8QPxY0+/bVNPC8h2F5LnsUxDFd7Gp7868GjIp3nnWECEvspPxppzBTKiYftP5uE3zdCJ8ePME
+ tstvYSqKisdcSdIldBMyWPBr6yKRFLipkLHxygyGeL47ES+vnBo9tpGrw+yXrxl44DHAsmp/B
+ VuyFvP8uJmzvYTRc2YieBpFCOcWsq03e5CwnIJD4su52YraNZrNCTLVF+2ubmVwJJWuTeRSGh
+ 1okgus6Wi6h/vUviIG0dipoZqD7BnX73AisVY9AzeiBioM0E6BIIDRhe7eihBpBHc6MvpcLjM
+ NBxUlFH5u5A/w63u35LVE9JmYJ65rC6T1NwmidxveuLhn2N8oLZ3JuOgSCJ5PP+/vSFyaIL+F
+ OkmPoP3qcoTTH4HL2P7At+BHLFlgyI65JylAJ3xoru+JJvS9yRtvlh2uOQt5RZep4ME0iEMQf
+ 1Nxno0HAjfkP9t2gJ4gAJf1b2tQexHaOcf9bg9SOaMNcrsJt6GvIwEgefqNW1P9X3TxjJOfUz
+ DCy9jowZSgaZTlnQNavfupyn7+XITGHMa5MA8QJR3GAQe2iSDJLRBYOXJGJjPoLfrOjSlbqIG
+ r//qRivnSnb+yxywEWjfme7BaLfqjmNg/EKmhmOmCz7hXQ2hDzLKQGMGyJ0zBZNnxWyRW6aza
+ LYiu6mu3pAdviWGQ2jfglQYxoqDYJB8SvPjpuXhZNgo1NVA2IZHJ1ZfnH7Rmj+EXSh8HbKWyq
+ sCpcFA==
 
-On 12/29/23 6:07 PM, claudiu beznea wrote:
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 1 Jan 2024 21:52:12 +0100
 
-[...]
+A few update suggestions were taken into account
+from static source code analysis.
 
->>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>>
->>>>> CSR.OPS bits specify the current operating mode and (according to
->>>>> documentation) they are updated by HW when the operating mode change
->>>>> request is processed. To comply with this check CSR.OPS before proceeding.
->>>>>
->>>>> Commit introduces ravb_set_opmode() that does all the necessities for
->>>>> setting the operating mode (set DMA.CCC and wait for CSR.OPS) and call it
->>>>> where needed. This should comply with all the HW manuals requirements as
->>>>> different manual variants specify that different modes need to be checked
->>>>> in CSR.OPS when setting DMA.CCC.
->>>>>
->>>>> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
->>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>> ---
->>>>>  drivers/net/ethernet/renesas/ravb_main.c | 52 ++++++++++++++----------
->>>>>  1 file changed, 31 insertions(+), 21 deletions(-)
->>>>>
->>>>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->>>>> index 664eda4b5a11..ae99d035a3b6 100644
->>>>> --- a/drivers/net/ethernet/renesas/ravb_main.c
->>>>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->>>>> @@ -66,14 +66,15 @@ int ravb_wait(struct net_device *ndev, enum ravb_reg reg, u32 mask, u32 value)
->>>>>  	return -ETIMEDOUT;
->>>>>  }
->>>>>  
->>>>> -static int ravb_config(struct net_device *ndev)
->>>>> +static int ravb_set_opmode(struct net_device *ndev, u32 opmode)
->>>>
->>>>    Since you pass the complete CCC register value below, you should
->>>> rather call the function ravb_set_ccc() and call the parameter opmode
->>>> ccc.
->>>
->>> This will be confusing. E.g., if renaming it ravb_set_ccc() one would
->>> expect to set any fields of CCC though this function but this is not true
->>> as ravb_modify() in this function masks only CCC_OPC. The call of:
->>>
->>> error = ravb_set_opmode(ndev, CCC_OPC_CONFIG | CCC_GAC | CCC_CSEL_HPB);
->>>
->>> bellow is just to comply with datasheet requirements, previous code and at
->>> the same time re-use this function.
->>
->>    How about the following then (ugly... but does the job):
->>
->> 	/* Set operating mode */
->> 	if (opmode & ~CCC_OPC)
->> 		ravb_write(ndev, opmode, CCC);
->> 	else
->> 		ravb_modify(ndev, CCC, CCC_OPC, opmode);
->>
->>    Either that or just don't use ravb_set_opmode() when writing the whole
->> 32-bit value below...
-> 
-> This looks uglier to me...
-> 
-> We have this discussion because of ccc_gac. For ccc_gac platforms we need
-> to set OPC, GAC, CSEL at the same time. This is how we can change the
-> operating mode to configuration mode in case we also need to configure GAC
-> (due to restrictions imposed by hardware).
-> 
-> What I want to say is that setting GAC and CSEL along with CCC is part of
-> changing the operating mode to configuration mode for platforms supporting
-> GAC because of hardware limitations.
+Markus Elfring (2):
+  Improve unlocking
+  Improve error handling
 
-   After thinking about it once more, your description seems correct.
-But then we need something like this:
+ net/iucv/iucv.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-static int ravb_set_opmode(struct net_device *ndev, u32 opmode)
-{
-	u32 ccc_mask = CCC_OPC;
-	u32 csr_ops = 1U << (opmode & CCC_OPC);
- 	int error;
+=2D-
+2.43.0
 
- 	if (opmode & CCC_GAC)
- 		ccc_mask |= CCC_CSEL;
-
-	/* Set operating mode */
-	ravb_modify(ndev, CCC, ccc_mask, opmode);
-	/* Check if the operating mode is changed to the requested one */
-	error = ravb_wait(ndev, CSR, CSR_OPS, csr_ops);
- 	if (error)
- 		netdev_err(ndev, "failed to switch device to  requested mode\n");
-
-	return error;
-}
-
-[...]
-
-MBR, Sergey
 
