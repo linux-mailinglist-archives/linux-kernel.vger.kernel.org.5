@@ -1,148 +1,120 @@
-Return-Path: <linux-kernel+bounces-14788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B7C982225C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:58:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E67A8212E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 04:40:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A315284779
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:58:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2E311F2252E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 03:40:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0156B16407;
-	Tue,  2 Jan 2024 19:58:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F7731110;
+	Mon,  1 Jan 2024 03:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="sf+h60Ai"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kTZTylDt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2541F168D6;
-	Tue,  2 Jan 2024 19:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from skinsburskii. (c-73-239-240-195.hsd1.wa.comcast.net [73.239.240.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 2C6DD20B3CC1;
-	Tue,  2 Jan 2024 11:58:13 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2C6DD20B3CC1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1704225493;
-	bh=2UaDwV/oGm+Epqzq+iuoXLl1XYKs/iiOjHPSgAf4WNI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sf+h60AikfAoNDWIfOQf+gp/7n62YjqR91jk021dI0v+1a8M9a0OEjS7fQlNbGHtT
-	 ipeSl4ZqBYQjVEH3GZlLaVHYTWm8e6nUV0SEqCtKnbq135a3/00oHsQNKX3wd4Z7BD
-	 ICaDdMQVBMMzyyO3sadV/R66AVE4C1KSJe3ErDtk=
-Date: Sun, 31 Dec 2023 19:33:01 -0800
-From: Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>
-To: Alexander Graf <graf@amazon.com>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-mm@kvack.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, kexec@lists.infradead.org,
-	linux-doc@vger.kernel.org, x86@kernel.org,
-	Eric Biederman <ebiederm@xmission.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Ashish Kalra <ashish.kalra@amd.com>,
-	James Gowans <jgowans@amazon.com>, arnd@arndb.de,
-	pbonzini@redhat.com, madvenka@linux.microsoft.com,
-	Anthony Yznaga <anthony.yznaga@oracle.com>,
-	Usama Arif <usama.arif@bytedance.com>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH v2 04/17] kexec: Add KHO parsing support
-Message-ID: <20240101033301.GA765@skinsburskii.>
-References: <20231222193607.15474-1-graf@amazon.com>
- <20231222193607.15474-5-graf@amazon.com>
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A164A52;
+	Mon,  1 Jan 2024 03:39:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704080394; x=1735616394;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=TGBXTbeX8tde9ouDg3XSWCKQoZCnrld95jzC7rtlJzQ=;
+  b=kTZTylDtci4r9lxihY/c8bL5EONzJB7/jQJjnW5XZ0ShUTVpJjRp3fvS
+   7+KESNa29noghU2Br+MaPjnFt45fO2lFrf3wt1yfXU1rO16xSGUeIsSGi
+   Md1N5v1Dy+FKoRsd2U3wCG6iLRpXLMHqXFKlooSxZx0E801eqnoHB7X+w
+   78x+d5/lLIoGIChkS4aOI8Lg1oTubKQt2K6g8D4PzNVDqR7VHAZuAUqrN
+   lCC3dXaRjJ9YmpTrDOMi05rF+nKBCWLkLo+AqtTi9upJhiI9+8vCi6Jbm
+   w6XaMYlFkX5etbvdVUNL0l2OPa5wtYWMj1/LX7w8SxZSvb5orZA98f9nw
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="15412198"
+X-IronPort-AV: E=Sophos;i="6.04,321,1695711600"; 
+   d="scan'208";a="15412198"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Dec 2023 19:39:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="902785434"
+X-IronPort-AV: E=Sophos;i="6.04,321,1695711600"; 
+   d="scan'208";a="902785434"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga004.jf.intel.com with ESMTP; 31 Dec 2023 19:39:47 -0800
+Message-ID: <50098edc-2bbb-4c8f-9360-6990f0f5d88a@linux.intel.com>
+Date: Mon, 1 Jan 2024 11:34:45 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231222193607.15474-5-graf@amazon.com>
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, "cohuck@redhat.com" <cohuck@redhat.com>,
+ "eric.auger@redhat.com" <eric.auger@redhat.com>,
+ "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+ "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+ "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+ "peterx@redhat.com" <peterx@redhat.com>,
+ "jasowang@redhat.com" <jasowang@redhat.com>,
+ "shameerali.kolothum.thodi@huawei.com"
+ <shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
+ "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+ "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+ "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y" <yan.y.zhao@intel.com>,
+ "j.granados@samsung.com" <j.granados@samsung.com>
+Subject: Re: [PATCH v8 07/10] iommu/vt-d: Allow qi_submit_sync() to return the
+ QI faults
+To: "Tian, Kevin" <kevin.tian@intel.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
+ "joro@8bytes.org" <joro@8bytes.org>,
+ "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+ "jgg@nvidia.com" <jgg@nvidia.com>,
+ "robin.murphy@arm.com" <robin.murphy@arm.com>
+References: <20231227161354.67701-1-yi.l.liu@intel.com>
+ <20231227161354.67701-8-yi.l.liu@intel.com>
+ <BN9PR11MB5276429906ED56258BB433068C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB5276429906ED56258BB433068C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Dec 22, 2023 at 07:35:54PM +0000, Alexander Graf wrote:
-> +/**
-> + * kho_reserve_previous_mem - Adds all memory reservations into memblocks
-> + * and moves us out of the scratch only phase. Must be called after page tables
-> + * are initialized and memblock_allow_resize().
-> + */
-> +void __init kho_reserve_previous_mem(void)
-> +{
-> +	void *mem_virt = __va(mem_phys);
-> +	int off, err;
-> +
-> +	if (!handover_phys || !mem_phys)
-> +		return;
-> +
-> +	/*
-> +	 * We reached here because we are running inside a working linear map
-> +	 * that allows us to resize memblocks dynamically. Use the chance and
-> +	 * populate the global fdt pointer
-> +	 */
-> +	fdt = __va(handover_phys);
-> +
-> +	off = fdt_path_offset(fdt, "/");
-> +	if (off < 0) {
-> +		fdt = NULL;
-> +		return;
-> +	}
-> +
-> +	err = fdt_node_check_compatible(fdt, off, "kho-v1");
-> +	if (err) {
-> +		pr_warn("KHO has invalid compatible, disabling.");
+On 12/28/23 2:17 PM, Tian, Kevin wrote:
+>>   	raw_spin_lock_irqsave(&qi->q_lock, flags);
+>>   	/*
+>> @@ -1430,7 +1439,7 @@ int qi_submit_sync(struct intel_iommu *iommu,
+>> struct qi_desc *desc,
+>>   		 * a deadlock where the interrupt context can wait
+>> indefinitely
+>>   		 * for free slots in the queue.
+>>   		 */
+>> -		rc = qi_check_fault(iommu, index, wait_index);
+>> +		rc = qi_check_fault(iommu, index, wait_index, fault);
+>>   		if (rc)
+>>   			break;
+> and as replied in another thread let's change qi_check_fault to return
+> -ETIMEDOUT to break the restart loop when fault pointer is valid.
 
-It looks like KHO preserved regions won't be reserved in this case.
-Should KHO DT state be destroyed here to prevent KHO memory regions
-reuse upon rollback?
+It's fine to break the retry loop when fault happens and the fault
+pointer is valid. Please don't forget to add an explanation comment
+around the code. Something like:
 
-> +
-> +void __init kho_populate(phys_addr_t handover_dt_phys, phys_addr_t scratch_phys,
-> +			 u64 scratch_len, phys_addr_t mem_cache_phys,
-> +			 u64 mem_cache_len)
-> +{
-> +	void *handover_dt;
-> +
-> +	/* Determine the real size of the DT */
-> +	handover_dt = early_memremap(handover_dt_phys, sizeof(struct fdt_header));
-> +	if (!handover_dt) {
-> +		pr_warn("setup: failed to memremap kexec FDT (0x%llx)\n", handover_dt_phys);
-> +		return;
-> +	}
-> +
-> +	if (fdt_check_header(handover_dt)) {
-> +		pr_warn("setup: kexec handover FDT is invalid (0x%llx)\n", handover_dt_phys);
-> +		early_memunmap(handover_dt, PAGE_SIZE);
-> +		return;
-> +	}
-> +
-> +	handover_len = fdt_totalsize(handover_dt);
-> +	handover_phys = handover_dt_phys;
-> +
-> +	/* Reserve the DT so we can still access it in late boot */
-> +	memblock_reserve(handover_phys, handover_len);
-> +
-> +	/* Reserve the mem cache so we can still access it later */
-> +	memblock_reserve(mem_cache_phys, mem_cache_len);
-> +
-> +	/*
-> +	 * We pass a safe contiguous block of memory to use for early boot purporses from
-> +	 * the previous kernel so that we can resize the memblock array as needed.
-> +	 */
-> +	memblock_add(scratch_phys, scratch_len);
-> +
-> +	if (WARN_ON(memblock_mark_scratch(scratch_phys, scratch_len))) {
-> +		pr_err("Kexec failed to mark the scratch region. Disabling KHO.");
-> +		handover_len = 0;
-> +		handover_phys = 0;
+/*
+  * The caller is able to handle the fault by itself. The IOMMU driver
+  * should not attempt to retry this request.
+  */
 
-Same question here: doesn't all the KHO state gets invalid in case of any
-restoration error?
-
+Best regards,
+baolu
 
