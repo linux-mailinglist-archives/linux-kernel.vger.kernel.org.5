@@ -1,128 +1,122 @@
-Return-Path: <linux-kernel+bounces-13815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 304578212D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 03:29:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 745E88212DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 03:49:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDE351F22595
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 02:29:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 367171C20F72
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 02:49:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0F142578;
-	Mon,  1 Jan 2024 02:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 205B581E;
+	Mon,  1 Jan 2024 02:49:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="deuTnnbh"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Bdgtk0Jz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out203-205-221-239.mail.qq.com (out203-205-221-239.mail.qq.com [203.205.221.239])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27840210B
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 02:29:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DA4BC433C9
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 02:29:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704076174;
-	bh=NxcQt/1WVdElhgcHVwYbzLY/6vPTKg2Mr7ScZIEVR7w=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=deuTnnbhP22cVt2mKII+KMjMY/MdkNY5Tvkb/5RpiAWGhNn7wEPfvUzw1PybSQpwh
-	 vru6kbn9xK/daV/HLaPB9JDtK7e2/N/4H4jV4tNeL+N1nYP6a5hudu7CPKLYDp2jXO
-	 +15rND5Phz5X1ycirGD85UrH+LzdzO93K5WljP4mRSeIuv4BbMaD69LEKj7bpIWDla
-	 4ausGfo+FDNdYsDEsaDIOhANCU0ywF1Au0WC/CKBjf43BQ9Xfb6pXnmVoJfM3Z6sIT
-	 Wzq40HjMvjxAV4nJCH53zj3MBKTaO40MRDQ13DmeYLwAVHLppyJ5C5+EMl7DsF+Grf
-	 eTT4b5/ocprvA==
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55559e26ccfso4211518a12.3
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 18:29:34 -0800 (PST)
-X-Gm-Message-State: AOJu0YxiY0Bj6wzZTuODEz0dr/MAm3RSAaK+nuezZKk9SUecQqXlRwnw
-	MLd8+RsubReCZBl4a+rrisk13EMhbE6yga+zew4=
-X-Google-Smtp-Source: AGHT+IFYhP/lTo9lpMwcHTK1Xjo1hbbfc1WD5tZJurTZJC1E2j/Mg8ZBMjQY1xh6HrQvXAx9kEtDW4p5Eh59NHPbY8c=
-X-Received: by 2002:a50:8e17:0:b0:54f:51cc:6570 with SMTP id
- 23-20020a508e17000000b0054f51cc6570mr6935713edw.63.1704076173099; Sun, 31 Dec
- 2023 18:29:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4857F9
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 02:49:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1704077348; bh=KabU2A20PeH4SZvFCt9NizESfm+H7X76LgXU4kut9EA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=Bdgtk0Jz8er9VwJV5A+nzjanappZ/3m3AY0LZ/azIcz/Kop8D9psWvKOVW+1ROotx
+	 ZbOZSdPqby+vmds+uMb+Cjoc7nR18wHrtWzy5fiNoDWobG53blIdMkIt9DujBVNl+v
+	 fx5VqM16htLqGEFqN6ZeCGVHGfOkx4sXVsryVnPY=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id AB9902DF; Mon, 01 Jan 2024 10:42:57 +0800
+X-QQ-mid: xmsmtpt1704076977tn6u9b761
+Message-ID: <tencent_1C4C8CE7D046CC52DC0664498C6ED52EDB06@qq.com>
+X-QQ-XMAILINFO: N7h1OCCDntuj9WoC9EoF/oqbsyZHeK7h3Ac31eb5jQGc0J4BZuiJJHd/po+Yky
+	 Rb+rrS66YsZJPgVn+QP+KM8m8bzWF+VF2/HNIH7v8ymN045MHASXVn/xi+1uOcP0MVE2qqkxNZZl
+	 V431AW7s8z0Y85lLJmqtyClpNFiEuVT2j7tsEQt/oxAl4kjqonnpW9yGYKrruTWYLGS+8QtMNQ/r
+	 fr3UjQ+M/R6ULUX0t99sdGKzgh9r7X8M/RGv+PTh2Hknq/0qDJRPMDjyGmHIuDfWnp1flQRLxHdP
+	 yORihYuAsZbeCb7LjvM83wOePoaJbiF7RBuwkKNiAVe6HwzuhzJ0WTNXZrj/QohIxXE0uBqpHxu/
+	 V9aRvPqqx1NDth57kqHu5NYqlkAvIt7qDp1gdAsSwkkaibhWTpvKehGnXmiSufTD9YbduUBx3OGo
+	 XQ9rNVVoFKfo3Wz0H6lf7Xu6FeR8fb1S9ZQH9tmR+9ApS59uALQlRwlOLcglO3zrqxM/aMGuG1sl
+	 n31K2A79eXcSQEy9D+O96zT/VXBsUIJFzc4AZmIGzJCE0XJJRkXTh+hQm+MrxQnRPSN5bNaQJY44
+	 1K5G+UQIncnjJiZzxdoLtaQZOJsAQJqYnjpidwDUagFWU1MD7ca5pqq6gGuqL4FlfZc45flzm2JT
+	 VEggB/1rw69KH8S2pe8GzObbZ8X/Oq3g49ZkptmBkNzNr0CBzRbq5JO6sh3iBaZpG2HT++JbDm4z
+	 JgSJ9V9xQe1X3dwaTMkaU73HMwb7LfUYUYOKHdbQOCPB7j8QrqEnESp8xIbRTR0cgkuFxzC1MN+h
+	 cpG2Qoltfkdc1ks+SN2v9IqTiRHwQM2ySulfaZvvQ8BCXXtcUH8qXCWyqPKNZyorbrmBytJuhHqC
+	 QN8SVa4cOe+lHc1ekCJOK6HOlMpW88zA5lD7zkCVdBq4eCfva53BL5/RCL27Sh8w==
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+9b4adfed366b14496e7e@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [dri?] [media?] memory leak in get_sg_table
+Date: Mon,  1 Jan 2024 10:42:58 +0800
+X-OQ-MSGID: <20240101024257.148635-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000009e6825060dd6c287@google.com>
+References: <0000000000009e6825060dd6c287@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231231082955.16516-1-guoren@kernel.org> <20231231082955.16516-3-guoren@kernel.org>
-In-Reply-To: <20231231082955.16516-3-guoren@kernel.org>
-From: Guo Ren <guoren@kernel.org>
-Date: Mon, 1 Jan 2024 10:29:21 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTZeN+rfG6szdB+J1QySQ2tAadwpG_zt2cRir7Bn+Yh4g@mail.gmail.com>
-Message-ID: <CAJF2gTTZeN+rfG6szdB+J1QySQ2tAadwpG_zt2cRir7Bn+Yh4g@mail.gmail.com>
-Subject: Re: [PATCH V2 2/3] riscv: Add ARCH_HAS_PRETCHW support with Zibop
-To: paul.walmsley@sifive.com, palmer@dabbelt.com, guoren@kernel.org, 
-	panqinglin2020@iscas.ac.cn, bjorn@rivosinc.com, conor.dooley@microchip.com, 
-	leobras@redhat.com, peterz@infradead.org, keescook@chromium.org, 
-	wuwei2016@iscas.ac.cn, xiaoguang.xing@sophgo.com, chao.wei@sophgo.com, 
-	unicorn_wang@outlook.com, uwu@icenowy.me, jszhang@kernel.org, wefu@redhat.com, 
-	atishp@atishpatra.org, ajones@ventanamicro.com
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Dec 31, 2023 at 4:30=E2=80=AFPM <guoren@kernel.org> wrote:
->
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> Enable Linux prefetchw primitive with Zibop cpufeature, which preloads
-> cache line into L1 cache for the next write operation.
->
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Signed-off-by: Guo Ren <guoren@kernel.org>
-> ---
->  arch/riscv/include/asm/processor.h | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
->
-> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/=
-processor.h
-> index f19f861cda54..8d3a2ab37678 100644
-> --- a/arch/riscv/include/asm/processor.h
-> +++ b/arch/riscv/include/asm/processor.h
-> @@ -13,6 +13,9 @@
->  #include <vdso/processor.h>
->
->  #include <asm/ptrace.h>
-> +#include <asm/insn-def.h>
-> +#include <asm/alternative-macros.h>
-> +#include <asm/hwcap.h>
->
->  #ifdef CONFIG_64BIT
->  #define DEFAULT_MAP_WINDOW     (UL(1) << (MMAP_VA_BITS - 1))
-> @@ -106,6 +109,19 @@ static inline void arch_thread_struct_whitelist(unsi=
-gned long *offset,
->  #define KSTK_EIP(tsk)          (task_pt_regs(tsk)->epc)
->  #define KSTK_ESP(tsk)          (task_pt_regs(tsk)->sp)
->
-> +#ifdef CONFIG_RISCV_ISA_ZICBOP
-> +#define ARCH_HAS_PREFETCHW
-> +
-> +#define PREFETCHW_ASM(x)                                               \
-> +       ALTERNATIVE(__nops(1), CBO_PREFETCH_W(x, 0), 0,                 \
-> +                   RISCV_ISA_EXT_ZICBOP, CONFIG_RISCV_ISA_ZICBOP)
-The PREFETCHW_ASM(x) definition should be out of "ifdef
-CONFIG_RISCV_ISA_ZICBOP... #endif", because xchg_small may use this
-macro without CONFIG_RISCV_ISA_ZICBOP.
+please test memory leak in get_sg_table
 
-> +
-> +
-> +static inline void prefetchw(const void *x)
-> +{
-> +       __asm__ __volatile__(PREFETCHW_ASM(%0) : : "r" (x) : "memory");
-> +}
-> +#endif /* CONFIG_RISCV_ISA_ZICBOP */
->
->  /* Do necessary setup to start up a newly executed thread. */
->  extern void start_thread(struct pt_regs *regs,
-> --
-> 2.40.1
->
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fbafc3e621c3
 
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index 21916bba77d5..709260211546 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -471,8 +471,11 @@ static long dma_buf_ioctl(struct file *file,
+ 
+ 		if (sync.flags & DMA_BUF_SYNC_END)
+ 			ret = dma_buf_end_cpu_access(dmabuf, direction);
+-		else
++		else {
++			if (dmabuf->doing)
++				return -EBUSY;
+ 			ret = dma_buf_begin_cpu_access(dmabuf, direction);
++		}
+ 
+ 		return ret;
+ 
+diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
+index c40645999648..ed98c0319e03 100644
+--- a/drivers/dma-buf/udmabuf.c
++++ b/drivers/dma-buf/udmabuf.c
+@@ -152,6 +152,7 @@ static int begin_cpu_udmabuf(struct dma_buf *buf,
+ 	struct device *dev = ubuf->device->this_device;
+ 	int ret = 0;
+ 
++	buf->doing = true;
+ 	if (!ubuf->sg) {
+ 		ubuf->sg = get_sg_table(dev, buf, direction);
+ 		if (IS_ERR(ubuf->sg)) {
+@@ -162,6 +163,7 @@ static int begin_cpu_udmabuf(struct dma_buf *buf,
+ 		dma_sync_sg_for_cpu(dev, ubuf->sg->sgl, ubuf->sg->nents,
+ 				    direction);
+ 	}
++	buf->doing = false;
+ 
+ 	return ret;
+ }
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index 3f31baa3293f..4316ad0e6155 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -446,6 +446,7 @@ struct dma_buf {
+ 		struct dma_buf *dmabuf;
+ 	} *sysfs_entry;
+ #endif
++	bool doing;
+ };
+ 
+ /**
 
---=20
-Best Regards
- Guo Ren
 
