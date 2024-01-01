@@ -1,235 +1,198 @@
-Return-Path: <linux-kernel+bounces-13911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BED49821495
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 18:00:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7624082149C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 18:18:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5724B212EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 17:00:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02029281D92
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 17:18:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07FF079F2;
-	Mon,  1 Jan 2024 17:00:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="j48D/gbS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A9479C5;
+	Mon,  1 Jan 2024 17:18:19 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097C863A7;
-	Mon,  1 Jan 2024 17:00:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704128420; x=1704733220; i=markus.elfring@web.de;
-	bh=jt0jjg+eimru4BQyDAlCdV4s+tkByojsMTZSQQ+umHc=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=j48D/gbSB+TQnLiZIq/v7o2ONanye319FJHEw05/LjFntPfG0ByiD2W2qHEzX/gm
-	 /wiMGq2G7eRL9bQnorT1Xf0YLYd1bmWnM8UjMPXWbhywtLhCVASn7GPQzbZ7S4wv1
-	 cqlVmKAiMgQcMwTPn1R0JJrHCPxwI9agcVrOwL3sW2Pq0PluWvMp3iCiOcOnaroWK
-	 PDcBMvc4XaresTDMJiQNjrPZdL4rgTaqFxiSHO5V13MU2iSLmgo0rx0HPZqNH2aD8
-	 bEau4rp7qY0HTzfDUi3mUCFdho2IJAqaGBiMl79XkLwe3ejaFNvekidvYGzb0MLmz
-	 F6l7Q1XCGj2t5E/lKg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MoeY7-1qrrO11gfh-00og42; Mon, 01
- Jan 2024 18:00:20 +0100
-Message-ID: <7daa06c8-7d96-4126-a182-ca4c5e67f7a4@web.de>
-Date: Mon, 1 Jan 2024 18:00:15 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 384E163C7
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 17:18:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7baae0a27efso499092539f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 09:18:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704129496; x=1704734296;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=F9cXFa/sT4NhazoGhL0aFUkvNSDfMMax6IksebCOSks=;
+        b=of8tcdsMph/GSgGvMWyGVa9ZoG9PBFBxiMz7jIOCsWE+918dLCFCHEgTQQxARqKkZ4
+         EJiGDTwg4cnYgy8d9FUMra3X43tsYrc2Yf26Vg3PkyR9IyZ1659tc8+8qCB8dcSt9tYt
+         AxAhbIVrZ1dmb9XDgwheR0Z6B9NJpkzl8W7L5PSy/WGojtjA1kxtgaU7vmFNVZ6++fbz
+         zlWbu043WFKk5jkhja5xjyFzU2aPSaygjDw+R0xVzq3GoJ6D5EXPbX8WE7Ljuc0/EnV2
+         NZN1jJF80uxtKAgcY+J9wKZTRHq/NmV5HaOAf8Qm5MAP3qJR7Y71etxEB+v0FwoEx07E
+         aCGg==
+X-Gm-Message-State: AOJu0YwxgLLqwi02b0keMfzmBEm7kYYrNtV6Soy/1G7RyPEJLnX1RbGU
+	l5u4Vs0ZBoEwnSFQBMNEfyRSFu7l6DlFTx8d83X+7GWoW4uy
+X-Google-Smtp-Source: AGHT+IHDhRtiCPkXVRge+lXdk8r4A3tzBmBJonC0XwBDyCmHfc8fn8d386LwcmYgKXgnqh6z6uMywWmWPNz+md1F+0lqbGQ5opEG
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: bpf@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Yonghong Song <yonghong.song@linux.dev>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] bpf: Improve 11 size determinations
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:v86Vs62BHchJJKAdMgD0EeqotTgVb0nTmYvBzO0cZeKqJd1f400
- +UhG3FpnfGq+PKC4UW1p3808eZlsff5Ui+Ah22uG1s98RbLPttCcyL1Q1V7h04lnkPpXtqw
- 0K3G4qKn+8AkaaeH2+sv9KMFT9fP3VXMXQeq68bJzm+SPexeCZbWSkqBEC4ceSaAM1OdNKj
- 5GWUR7EHjhLiZ+oGH7FTQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YbwE0/JINh4=;3Hutg4rS2LnlMHt7cy+e1dNqYib
- YecUKMHgDWj7bgWjKqXcNqpBR6mqT0IwZMtnYyd5V4UFHjZrAYoOmvU6qtCPRmGnultiPwF1Q
- pe1Yb3nGWWmLhkQZ+bPTAlyPKf12h6OiqEN9CXQ+5TJJP+g1NTsrsFrQDPMCFfcU+VJDh4RDs
- kslF20c8Du6P4+GYA76hEGNIgDgjrxK+vQIFobcSbsrNczeIU75YcjTz1LBWHzEF0K/g0omyP
- Gja+SDsP/r8N9e49R2HXkOi2RFneBtxnxac9ImtBXYTAuVXo6h8P9pdediafMNLYiiyOb1Ilq
- dEYYWyHbBybz/yexAYSq0u5wnDrGY4Ps3mqraCED83UrqOdVICA5Dkp0HbvSV8V4Kj2P9Pe3s
- a8geLIo1vcDEeLwjmQ0N5b4uTQu1bXUGrzN9QvCDCkuv8BXWknrupndioXINdcxEB6azG91QG
- O/Z3nQELZuqXW1v5JVo2qfYrtpnN4yYMn9XjVsHzgWjtmgbTOEdujFXwfmdN54p7U1NqXWRQt
- j6FXVWmYHAtPOC/osvd5zgssDl2A1WKxdqYlRu7VbkjE5eOwZFbQ+hAFtLDfzDkoCgXyKRqBU
- B8a64oc4RNAWoRzNrSogjv+mQOruEY6K1WtQ9l/xSs15Cjn2rLnQs6jY2et+MYDbWYCAPMVG5
- dMGlXl1MWisGaM5sLUQlGxbHERW/luNqiFpTMZgopmR8yB6EcQ/kKBVusbt0H6RFTGILeXmg8
- uyvImsdIJMnhGm6Mpug//We/5WzsnKgRLEcR6PDxLU4v/UiF6Sr0SwLxMIQS1YUOfK1hPhVKg
- Uwx+wLOTjer4YRJ8L4z2skj8NFgnIMkuRJrGkMJTOUCrPiSlsvgg8mmbCcNFw1pIWM+4xDGz3
- HkBrL+UeKgND/PJ8V5DIqc1klTHMh6Bi1ceMSGVLRhRt3CJABcS+e+RIi2pZQ9jkgq5tPkuHr
- bPSWRA==
+X-Received: by 2002:a05:6e02:340d:b0:35f:e800:eb79 with SMTP id
+ bo13-20020a056e02340d00b0035fe800eb79mr614603ilb.1.1704129496449; Mon, 01 Jan
+ 2024 09:18:16 -0800 (PST)
+Date: Mon, 01 Jan 2024 09:18:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000498a02060de59162@google.com>
+Subject: [syzbot] [net?] KASAN: use-after-free Read in __skb_flow_dissect (3)
+From: syzbot <syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com>
+To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 1 Jan 2024 17:33:55 +0100
+Hello,
 
-Replace the specification of data structures by pointer dereferences
-as the parameter for the operator =E2=80=9Csizeof=E2=80=9D to make the cor=
-responding size
-determination a bit safer according to the Linux coding style convention.
+syzbot found the following issue on:
 
-This issue was transformed by using the Coccinelle software.
+HEAD commit:    f5837722ffec Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1650e3d9e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=da1c95d4e55dda83
+dashboard link: https://syzkaller.appspot.com/bug?extid=bfde3bef047a81b8fde6
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e61d95e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=122dfc65e80000
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- kernel/bpf/core.c          |  2 +-
- kernel/bpf/inode.c         |  2 +-
- kernel/bpf/local_storage.c |  4 ++--
- kernel/bpf/lpm_trie.c      |  2 +-
- kernel/bpf/verifier.c      | 13 ++++++-------
- 5 files changed, 11 insertions(+), 12 deletions(-)
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-f5837722.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/148f0f94b7b6/vmlinux-f5837722.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d63ba20405f3/bzImage-f5837722.xz
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index ea6843be2616..1ae7b3054424 100644
-=2D-- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2517,7 +2517,7 @@ int bpf_prog_array_copy_to_user(struct bpf_prog_arra=
-y *array,
- 	 *     bpf_prog_array_copy_to_user(..., cnt);
- 	 * so below kcalloc doesn't need extra cnt > 0 check.
- 	 */
--	ids =3D kcalloc(cnt, sizeof(u32), GFP_USER | __GFP_NOWARN);
-+	ids =3D kcalloc(cnt, sizeof(*ids), GFP_USER | __GFP_NOWARN);
- 	if (!ids)
- 		return -ENOMEM;
- 	nospc =3D bpf_prog_array_copy_core(array, ids, cnt);
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index 41e0a55c35f5..2189760bdf0b 100644
-=2D-- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -827,7 +827,7 @@ static int bpf_init_fs_context(struct fs_context *fc)
- {
- 	struct bpf_mount_opts *opts;
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bfde3bef047a81b8fde6@syzkaller.appspotmail.com
 
--	opts =3D kzalloc(sizeof(struct bpf_mount_opts), GFP_KERNEL);
-+	opts =3D kzalloc(sizeof(*opts), GFP_KERNEL);
- 	if (!opts)
- 		return -ENOMEM;
+==================================================================
+BUG: KASAN: use-after-free in __skb_flow_dissect+0x19d1/0x7a50 net/core/flow_dissector.c:1170
+Read of size 1 at addr ffff88812fb4000e by task syz-executor183/5191
 
-diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-index a04f505aefe9..75dba32cf91c 100644
-=2D-- a/kernel/bpf/local_storage.c
-+++ b/kernel/bpf/local_storage.c
-@@ -313,7 +313,7 @@ static struct bpf_map *cgroup_storage_map_alloc(union =
-bpf_attr *attr)
- 		/* max_entries is not used and enforced to be 0 */
- 		return ERR_PTR(-EINVAL);
+CPU: 1 PID: 5191 Comm: syz-executor183 Not tainted 6.7.0-rc7-syzkaller-00016-gf5837722ffec #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ __skb_flow_dissect+0x19d1/0x7a50 net/core/flow_dissector.c:1170
+ skb_flow_dissect_flow_keys include/linux/skbuff.h:1514 [inline]
+ ___skb_get_hash net/core/flow_dissector.c:1791 [inline]
+ __skb_get_hash+0xc7/0x540 net/core/flow_dissector.c:1856
+ skb_get_hash include/linux/skbuff.h:1556 [inline]
+ ip_tunnel_xmit+0x1855/0x33c0 net/ipv4/ip_tunnel.c:748
+ ipip_tunnel_xmit+0x3cc/0x4e0 net/ipv4/ipip.c:308
+ __netdev_start_xmit include/linux/netdevice.h:4940 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4954 [inline]
+ xmit_one net/core/dev.c:3548 [inline]
+ dev_hard_start_xmit+0x13d/0x6d0 net/core/dev.c:3564
+ __dev_queue_xmit+0x7c1/0x3d60 net/core/dev.c:4349
+ dev_queue_xmit include/linux/netdevice.h:3134 [inline]
+ neigh_connected_output+0x42c/0x5d0 net/core/neighbour.c:1592
+ neigh_output include/net/neighbour.h:542 [inline]
+ ip_finish_output2+0x833/0x2550 net/ipv4/ip_output.c:235
+ __ip_finish_output net/ipv4/ip_output.c:313 [inline]
+ __ip_finish_output+0x38b/0x650 net/ipv4/ip_output.c:295
+ ip_finish_output+0x31/0x310 net/ipv4/ip_output.c:323
+ NF_HOOK_COND include/linux/netfilter.h:303 [inline]
+ ip_mc_output+0x1dd/0x6a0 net/ipv4/ip_output.c:420
+ dst_output include/net/dst.h:451 [inline]
+ ip_local_out+0xaf/0x1a0 net/ipv4/ip_output.c:129
+ iptunnel_xmit+0x5b4/0x9b0 net/ipv4/ip_tunnel_core.c:82
+ ip_tunnel_xmit+0x1dbc/0x33c0 net/ipv4/ip_tunnel.c:831
+ ipgre_xmit+0x4a1/0x980 net/ipv4/ip_gre.c:665
+ __netdev_start_xmit include/linux/netdevice.h:4940 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4954 [inline]
+ xmit_one net/core/dev.c:3548 [inline]
+ dev_hard_start_xmit+0x13d/0x6d0 net/core/dev.c:3564
+ __dev_queue_xmit+0x7c1/0x3d60 net/core/dev.c:4349
+ dev_queue_xmit include/linux/netdevice.h:3134 [inline]
+ __bpf_tx_skb net/core/filter.c:2133 [inline]
+ __bpf_redirect_no_mac net/core/filter.c:2163 [inline]
+ __bpf_redirect+0x6f1/0xf10 net/core/filter.c:2186
+ ____bpf_clone_redirect net/core/filter.c:2457 [inline]
+ bpf_clone_redirect+0x2b2/0x420 net/core/filter.c:2429
+ ___bpf_prog_run+0x3e44/0xabc0 kernel/bpf/core.c:1962
+ __bpf_prog_run512+0xb7/0xf0 kernel/bpf/core.c:2203
+ bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_test_run+0x3d3/0x9c0 net/bpf/test_run.c:423
+ bpf_prog_test_run_skb+0xb75/0x1dd0 net/bpf/test_run.c:1045
+ bpf_prog_test_run kernel/bpf/syscall.c:4040 [inline]
+ __sys_bpf+0x11bf/0x4910 kernel/bpf/syscall.c:5401
+ __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
+ __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5485
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f8b086e9d69
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff09b0b818 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f8b086e9d69
+RDX: 0000000000000028 RSI: 0000000020000080 RDI: 000000000000000a
+RBP: 0000000000000000 R08: 0000000100000000 R09: 0000000100000000
+R10: 0000000100000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
 
--	map =3D bpf_map_area_alloc(sizeof(struct bpf_cgroup_storage_map), numa_n=
-ode);
-+	map =3D bpf_map_area_alloc(sizeof(*map), numa_node);
- 	if (!map)
- 		return ERR_PTR(-ENOMEM);
+The buggy address belongs to the physical page:
+page:ffffea0004bed000 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x12fb40
+flags: 0x57ff00000000000(node=1|zone=2|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 057ff00000000000 ffffea0004bed008 ffffea0004bed008 0000000000000000
+raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner info is not present (never set?)
 
-@@ -511,7 +511,7 @@ struct bpf_cgroup_storage *bpf_cgroup_storage_alloc(st=
-ruct bpf_prog *prog,
+Memory state around the buggy address:
+ ffff88812fb3ff00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88812fb3ff80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff88812fb40000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                      ^
+ ffff88812fb40080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88812fb40100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
 
- 	size =3D bpf_cgroup_storage_calculate_size(map, &pages);
 
--	storage =3D bpf_map_kmalloc_node(map, sizeof(struct bpf_cgroup_storage),
-+	storage =3D bpf_map_kmalloc_node(map, sizeof(*storage),
- 				       gfp, map->numa_node);
- 	if (!storage)
- 		goto enomem;
-diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
-index b32be680da6c..3a69155d4ef3 100644
-=2D-- a/kernel/bpf/lpm_trie.c
-+++ b/kernel/bpf/lpm_trie.c
-@@ -643,7 +643,7 @@ static int trie_get_next_key(struct bpf_map *map, void=
- *_key, void *_next_key)
- 		goto find_leftmost;
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- 	node_stack =3D kmalloc_array(trie->max_prefixlen,
--				   sizeof(struct lpm_trie_node *),
-+				   sizeof(*node_stack),
- 				   GFP_ATOMIC | __GFP_NOWARN);
- 	if (!node_stack)
- 		return -ENOMEM;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a376eb609c41..98c1dd43670b 100644
-=2D-- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1677,7 +1677,7 @@ static struct bpf_verifier_state *push_stack(struct =
-bpf_verifier_env *env,
- 	struct bpf_verifier_stack_elem *elem;
- 	int err;
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
--	elem =3D kzalloc(sizeof(struct bpf_verifier_stack_elem), GFP_KERNEL);
-+	elem =3D kzalloc(sizeof(*elem), GFP_KERNEL);
- 	if (!elem)
- 		goto err;
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-@@ -2374,7 +2374,7 @@ static struct bpf_verifier_state *push_async_cb(stru=
-ct bpf_verifier_env *env,
- 	struct bpf_verifier_stack_elem *elem;
- 	struct bpf_func_state *frame;
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
--	elem =3D kzalloc(sizeof(struct bpf_verifier_stack_elem), GFP_KERNEL);
-+	elem =3D kzalloc(sizeof(*elem), GFP_KERNEL);
- 	if (!elem)
- 		goto err;
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-@@ -15913,8 +15913,7 @@ static int check_btf_line(struct bpf_verifier_env =
-*env,
- 	/* Need to zero it in case the userspace may
- 	 * pass in a smaller bpf_line_info object.
- 	 */
--	linfo =3D kvcalloc(nr_linfo, sizeof(struct bpf_line_info),
--			 GFP_KERNEL | __GFP_NOWARN);
-+	linfo =3D kvcalloc(nr_linfo, sizeof(*linfo), GFP_KERNEL | __GFP_NOWARN);
- 	if (!linfo)
- 		return -ENOMEM;
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-@@ -17161,7 +17160,7 @@ static int is_state_visited(struct bpf_verifier_en=
-v *env, int insn_idx)
- 	 * When looping the sl->state.branches will be > 0 and this state
- 	 * will not be considered for equivalence until branches =3D=3D 0.
- 	 */
--	new_sl =3D kzalloc(sizeof(struct bpf_verifier_state_list), GFP_KERNEL);
-+	new_sl =3D kzalloc(sizeof(*new_sl), GFP_KERNEL);
- 	if (!new_sl)
- 		return -ENOMEM;
- 	env->total_states++;
-@@ -20003,7 +20002,7 @@ static int do_check_common(struct bpf_verifier_env=
- *env, int subprog)
- 	env->prev_linfo =3D NULL;
- 	env->pass_cnt++;
-
--	state =3D kzalloc(sizeof(struct bpf_verifier_state), GFP_KERNEL);
-+	state =3D kzalloc(sizeof(*state), GFP_KERNEL);
- 	if (!state)
- 		return -ENOMEM;
- 	state->curframe =3D 0;
-@@ -20717,7 +20716,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_at=
-tr *attr, bpfptr_t uattr, __u3
- 	/* 'struct bpf_verifier_env' can be global, but since it's not small,
- 	 * allocate/free it every time bpf_check() is called
- 	 */
--	env =3D kzalloc(sizeof(struct bpf_verifier_env), GFP_KERNEL);
-+	env =3D kzalloc(sizeof(*env), GFP_KERNEL);
- 	if (!env)
- 		return -ENOMEM;
-
-=2D-
-2.43.0
-
+If you want to undo deduplication, reply with:
+#syz undup
 
