@@ -1,96 +1,101 @@
-Return-Path: <linux-kernel+bounces-13811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7B9A8212C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 02:16:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A91E8212CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 02:55:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FA761F21769
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 01:16:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 267BAB21B95
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 01:55:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E044E7FD;
-	Mon,  1 Jan 2024 01:16:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T45J0Oj3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D935381B;
+	Mon,  1 Jan 2024 01:55:30 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail115-95.sinamail.sina.com.cn (mail115-95.sinamail.sina.com.cn [218.30.115.95])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0869217C6;
-	Mon,  1 Jan 2024 01:16:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7bb06f56fe9so54958739f.0;
-        Sun, 31 Dec 2023 17:16:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704071774; x=1704676574; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=igLpTaTtuBNjhMxOT0ObscwM7f/uo9GkEsq0L4+MN+0=;
-        b=T45J0Oj3WsdLzb8hi/7YMexWz/a5lmPL35fPxQdWGW++t9pi1LxMJnpeDPuB61QTRO
-         df1O6HoijngewBABl4mMQHyYnsE9Y+qx4WbF33YcZ4w++E4qZpHon2LGbqWvbiuOYWUL
-         yjTOyMdeq9A9RfZWPw+L6SrufYKgATkrP/hgthukWxwav2Y4fN28n8z1xb+T0TXJJ3wM
-         KnYGNs519OdxOkhPOQ84qIMu1HfV7A061H8YXLKfuv9nOzqikMN5P+8Fss33FGnPxHyo
-         dhvHiKOMrW5/viGdDnpNlq9m6cEqMgTGVIGUMIjDlcClV8G3LV6nTzE+uCHA7TKvtaM7
-         0Jyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704071774; x=1704676574;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=igLpTaTtuBNjhMxOT0ObscwM7f/uo9GkEsq0L4+MN+0=;
-        b=gbEJjoZtjdKBJVEtXU/fasfk2ZViREOmXh5dM2JQX+5CoFqgK7uw+9pBFzDBafJbsV
-         8DYsxpWm1eG8tvxSxQlp6QojSAXo1QT0Lb2aDZFMmx7yttgA+dxEEDtoS0x3Npa9m0xd
-         Gsb240LMSjUUy2VAy6k9VODnIWsJevBN899GSz0dDTN6lWj3pgrmQP3n9fdal8gWd0B2
-         Cvlm29kKJRZkD02Z4Amt8VPU04TDF3AsdFW33OcBhBWDBqhZkaLxoowNx5McWoNwbI4I
-         oBSsK5TMcXR8DrfTzlwI/NkiKvaWzgI+/D9JklKiAQsIDr0/2RzmcmaFWu7XSZqJxLPr
-         lv+Q==
-X-Gm-Message-State: AOJu0YwSLwZc/41K+n0DXzuEmdhMuUQFVCayoiMBDxmIW/8clwxzy+30
-	C8bMuPIDCSx4ah/OoDhqU1hjcGnzNbvZ3xR/NT0=
-X-Google-Smtp-Source: AGHT+IH9jf8WYpQtAcBecswGMkYwiqNiBGh4FJ/2sQJ4BKcCxUErEQhbdXQ4ezkL4J6/BeyqlYR1BGMwx5WAEhCdREI=
-X-Received: by 2002:a05:6e02:1d13:b0:35f:da7a:3797 with SMTP id
- i19-20020a056e021d1300b0035fda7a3797mr27411494ila.1.1704071774062; Sun, 31
- Dec 2023 17:16:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2480B7F9
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 01:55:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.70.64])
+	by sina.com (172.16.235.24) with ESMTP
+	id 65921B8100004871; Mon, 1 Jan 2024 09:55:16 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 15200245089584
+X-SMAIL-UIID: 0DEB7DF064144DCD825404CC9C1C793E-20240101-095516-1
+From: Hillf Danton <hdanton@sina.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Genes Lists <lists@sapience.com>,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: 6.6.8 stable: crash in folio_mark_dirty
+Date: Mon,  1 Jan 2024 09:55:04 +0800
+Message-Id: <20240101015504.2446-1-hdanton@sina.com>
+In-Reply-To: <ZZFnd3tZZvg2eZun@casper.infradead.org>
+References: <8bb29431064fc1f70a42edef75a8788dd4a0eecc.camel@sapience.com> <20231231012846.2355-1-hdanton@sina.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAPnZJGDcNwPLbzC99qNQ+bRMwxPU-Z0xe=TD6DWQU=0MNyeftA@mail.gmail.com>
- <d4b227de-d609-aef2-888b-203dbcf06707@landley.net> <CAPnZJGBeV-E_AN8GnTfkaJvRtBmCeMYYCt+O0XMsc3kDULRuKg@mail.gmail.com>
- <fb776d99-1956-4e1b-9afc-84f27ca40f46@linux.ibm.com> <0879141d-462c-7e94-7c87-7a5b5422b8ed@landley.net>
- <e32077de-b159-4a7b-89a3-e1925239142f@linux.ibm.com> <fcb45898-0699-878f-0656-f570607fbed4@landley.net>
- <8b85253d-dd75-42e4-9a05-dafb3618269c@linux.ibm.com>
-In-Reply-To: <8b85253d-dd75-42e4-9a05-dafb3618269c@linux.ibm.com>
-From: Askar Safin <safinaskar@gmail.com>
-Date: Mon, 1 Jan 2024 04:15:33 +0300
-Message-ID: <CAPnZJGCcsSoJVs_ct_9ngTrPpH0dxAakJCVGnYaYCDPbw2EyLQ@mail.gmail.com>
-Subject: Re: [PATCH v3] rootfs: Fix support for rootfstype= when root= is given
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: Rob Landley <rob@landley.net>, gregkh@linuxfoundation.org, initramfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org, zohar@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi, Stefan. Hi, Rob.
+On Sun, 31 Dec 2023 13:07:03 +0000 Matthew Wilcox <willy@infradead.org>
+> On Sun, Dec 31, 2023 at 09:28:46AM +0800, Hillf Danton wrote:
+> > On Sat, Dec 30, 2023 at 10:23:26AM -0500 Genes Lists <lists@sapience.com>
+> > > Apologies in advance, but I cannot git bisect this since machine was
+> > > running for 10 days on 6.6.8 before this happened.
+> > >
+> > > Dec 30 07:00:36 s6 kernel: ------------[ cut here ]------------
+> > > Dec 30 07:00:36 s6 kernel: WARNING: CPU: 0 PID: 521524 at mm/page-writeback.c:2668 __folio_mark_dirty (??:?) 
+> > > Dec 30 07:00:36 s6 kernel: CPU: 0 PID: 521524 Comm: rsync Not tainted 6.6.8-stable-1 #13 d238f5ab6a206cdb0cc5cd72f8688230f23d58df
+> > > Dec 30 07:00:36 s6 kernel: block_dirty_folio (??:?) 
+> > > Dec 30 07:00:36 s6 kernel: unmap_page_range (??:?) 
+> > > Dec 30 07:00:36 s6 kernel: unmap_vmas (??:?) 
+> > > Dec 30 07:00:36 s6 kernel: exit_mmap (??:?) 
+> > > Dec 30 07:00:36 s6 kernel: __mmput (??:?) 
+> > > Dec 30 07:00:36 s6 kernel: do_exit (??:?) 
+> > > Dec 30 07:00:36 s6 kernel: do_group_exit (??:?) 
+> > > Dec 30 07:00:36 s6 kernel: __x64_sys_exit_group (??:?) 
+> > > Dec 30 07:00:36 s6 kernel: do_syscall_64 (??:?) 
+> > 
+> > See what comes out if race is handled.
+> > Only for thoughts.
+> 
+> I don't think this can happen.  Look at the call trace;
+> block_dirty_folio() is called from unmap_page_range().  That means the
+> page is in the page tables.  We unmap the pages in a folio from the
+> page tables before we set folio->mapping to NULL.  Look at
+> invalidate_inode_pages2_range() for example:
+> 
+>                                 unmap_mapping_pages(mapping, indices[i],
+>                                                 (1 + end - indices[i]), false);
+>                         folio_lock(folio);
+>                         folio_wait_writeback(folio);
+>                         if (folio_mapped(folio))
+>                                 unmap_mapping_folio(folio);
+>                         BUG_ON(folio_mapped(folio));
+>                                 if (!invalidate_complete_folio2(mapping, folio))
+> 
+What is missed here is the same check [1] in invalidate_inode_pages2_range(),
+so I built no wheel.
 
-> My intention is to be able to pass rootfstype= to the kernel and have it
-> interpreted correctly in the presence of root=, which currently does not
-> work
-Stefan, let me repeat: your patch, which does exactly this, got to
-linux-next: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=21528c69a0d8483f7c6345b1a0bc8d8975e9a172
+			folio_lock(folio);
+			if (unlikely(folio->mapping != mapping)) {
+				folio_unlock(folio);
+				continue;
+			}
 
-I think there is some misunderstanding here. First, there is Stefan's
-patch (based on Rob's patch), which makes the kernel parse rootfstype=
-even if root= is present. As well as I understand, we all agree that
-this patch is needed, and it was applied to linux-next, so all is
-good!
-
-Second, there was my suggestion to introduce rdrootfstype= option. You
-both reacted sceptically, so I withdraw this suggestion
-
--- 
-Askar Safin
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/truncate.c#n658
 
