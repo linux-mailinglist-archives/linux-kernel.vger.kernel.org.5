@@ -1,163 +1,124 @@
-Return-Path: <linux-kernel+bounces-13903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB1F5821471
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 17:27:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54911821472
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 17:27:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 785831F21741
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 16:27:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B2DA1C20C78
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 16:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E22B6AD7;
-	Mon,  1 Jan 2024 16:26:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA71D8F79;
+	Mon,  1 Jan 2024 16:27:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fSKrkM8b"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WrCyt+Ka"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABB6363A0;
-	Mon,  1 Jan 2024 16:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704126412; x=1735662412;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=qkQCaAfgp9d77EcAt0SnIBdGmkAlVg1/8Or7Ngnt334=;
-  b=fSKrkM8b7C9/geQ4ZQGzAg8rXkeWs3GQ0sz/KSbKf3oZGuKHN4vZtdqB
-   QZDILJYv57cCBf/kajvJfUhYGABqElWnCA1wywgz6w04xJLrG1hMs/KwD
-   RmGxM3endeGlgHFhpWF7MZDBkg4RmH+7sFjBefH0r68mNM+thGgcVHMPR
-   4fFKdGIHCYIrWDXhoeruPterqBBnUmKPmc0RbOuf9zkjnj1PKJrwunKb2
-   khX9Wu8NHFAA5UYn7oEzUpxHKq4evMWb+hro7FpKze0vW4TaergNzcqDK
-   dfEyBmqhb1bIVLqeI01aGmsrwb8nLfXlbR76SKqToQXM3GWexmri8UH4M
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="18346893"
-X-IronPort-AV: E=Sophos;i="6.04,322,1695711600"; 
-   d="scan'208";a="18346893"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2024 08:26:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="729271316"
-X-IronPort-AV: E=Sophos;i="6.04,322,1695711600"; 
-   d="scan'208";a="729271316"
-Received: from amazouz-mobl.ger.corp.intel.com ([10.251.210.158])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2024 08:26:45 -0800
-Date: Mon, 1 Jan 2024 18:26:40 +0200 (EET)
-From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Lukas Wunner <lukas@wunner.de>
-cc: linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>, 
-    Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, 
-    Rob Herring <robh@kernel.org>, Krzysztof Wilczy??ski <kw@linux.com>, 
-    Alexandru Gagniuc <mr.nuke.me@gmail.com>, 
-    Krishna chaitanya chundru <quic_krichai@quicinc.com>, 
-    Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, 
-    "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org, 
-    Bjorn Helgaas <bhelgaas@google.com>, LKML <linux-kernel@vger.kernel.org>, 
-    Alex Deucher <alexdeucher@gmail.com>, 
-    Daniel Lezcano <daniel.lezcano@linaro.org>, 
-    Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>
-Subject: Re: [PATCH v3 05/10] PCI: Store all PCIe Supported Link Speeds
-In-Reply-To: <20231230193000.GA11331@wunner.de>
-Message-ID: <5dd84bbf-2e5-dded-bf49-f4db17b265f0@linux.intel.com>
-References: <20230929115723.7864-1-ilpo.jarvinen@linux.intel.com> <20230929115723.7864-6-ilpo.jarvinen@linux.intel.com> <20231230114549.GB12257@wunner.de> <20231230193000.GA11331@wunner.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 727148F68
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 16:27:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704126422;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fHJuaOOoMITcmaF/jJKQveH0rmkD/J9cEtpvvbiUPHE=;
+	b=WrCyt+KaLMhLINXSSsr9+Fo6jtUe0HuJ/E0siYguvUL+mEgdGBEk24Xb8lyWFNxr9YVgMu
+	AGy15SxMfyYXHgLvqbg0IaAbeLyTJvc7bEZn8TmM2Rd7TusyRpiTV8ER5Uvo5NZOnTCJAh
+	3FxYbYSvkBjBcDWL9yHsshTzxG9gk6Q=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-691-EbaG0ZwFMgeB8Eg_Jyl7kA-1; Mon, 01 Jan 2024 11:26:59 -0500
+X-MC-Unique: EbaG0ZwFMgeB8Eg_Jyl7kA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B9E8B83FC22;
+	Mon,  1 Jan 2024 16:26:58 +0000 (UTC)
+Received: from [10.22.32.137] (unknown [10.22.32.137])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 11B96492BF0;
+	Mon,  1 Jan 2024 16:26:58 +0000 (UTC)
+Message-ID: <86fa9afa-21c0-42fb-926d-5ffc69695d30@redhat.com>
+Date: Mon, 1 Jan 2024 11:26:57 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-737575340-1704125951=:2521"
-Content-ID: <a0e641d6-2894-330-dff2-2c4cfef8318@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup/cpuset: Adjust exception handling in
+ generate_sched_domains()
+Content-Language: en-US
+To: Markus Elfring <Markus.Elfring@web.de>, cgroups@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+ Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <53be5f98-6359-48b5-955e-fd203d99d3cb@web.de>
+ <9cd1ce1d-15c7-427c-9929-f3c75b97b49c@redhat.com>
+ <b441f304-a3cc-4ebe-91cb-84caf55cbfe2@web.de>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <b441f304-a3cc-4ebe-91cb-84caf55cbfe2@web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 1/1/24 03:56, Markus Elfring wrote:
+>>> Two resource allocation failures triggered further actions
+>>> over the label “done” so far.
+>>>
+>>> * Jump to the statement “ndoms = 1;” in three cases directly
+>>>     by using the label “set_ndoms” instead.
+>>>
+>>> * Delete an assignment for the variable “ndoms” in one if branch.
+> …
+>>> ---
+>>>    kernel/cgroup/cpuset.c | 8 ++++----
+>>>    1 file changed, 4 insertions(+), 4 deletions(-)
+> …
+>>> @@ -973,10 +973,9 @@ static int generate_sched_domains(cpumask_var_t **domains,
+>>>
+>>>        /* Special case for the 99% of systems with one, full, sched domain */
+>>>        if (root_load_balance && !top_cpuset.nr_subparts) {
+>>> -        ndoms = 1;
+>>>            doms = alloc_sched_domains(ndoms);
+>>>            if (!doms)
+>>> -            goto done;
+>>> +            goto set_ndoms;
+>>>
+>>>            dattr = kmalloc(sizeof(struct sched_domain_attr), GFP_KERNEL);
+>>>            if (dattr) {
+> …
+>>> @@ -1123,6 +1122,7 @@ static int generate_sched_domains(cpumask_var_t **domains,
+>>>         * See comments in partition_sched_domains().
+>>>         */
+>>>        if (doms == NULL)
+>>> +set_ndoms:
+>>>            ndoms = 1;
+>>>
+>>>        *domains    = doms;
+> …
+>> Please clarify what this patch is for. Is it just a cleanup with no functional changes or is there a bug that is being fixed?
+> The development opinions might vary for the presented transformation.
+> I suggest to reconsider the number of relevant variable assignments here.
+> Would you categorise an extra statement still as a desirable implementation detail?
 
---8323329-737575340-1704125951=:2521
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Content-ID: <e45f3096-c420-8925-b335-96f1482f6de9@linux.intel.com>
+My understanding of the patch is just to avoid an unnecessary call to 
+kfree() as kfree(NULL) is basically a NOP. By jumping inside the "if" 
+part of the conditional statement, however, it makes it a bit harder to 
+read. As generate_sched_domains() is not in the fast path, I would 
+rather have a patch that can simplify the logic than to make it harder 
+to understand.
 
-On Sat, 30 Dec 2023, Lukas Wunner wrote:
+Cheers,
+Longman
 
-> On Sat, Dec 30, 2023 at 12:45:49PM +0100, Lukas Wunner wrote:
-> > On Fri, Sep 29, 2023 at 02:57:18PM +0300, Ilpo J�rvinen wrote:
-> > > struct pci_bus stores max_bus_speed. Implementation Note in PCIe r6.0.1
-> > > sec 7.5.3.18, however, recommends determining supported Link Speeds
-> > > using the Supported Link Speeds Vector in the Link Capabilities 2
-> > > Register (when available).
-> > > 
-> > > Add pcie_bus_speeds into struct pci_bus which caches the Supported Link
-> > > Speeds. The value is taken directly from the Supported Link Speeds
-> > > Vector or synthetized from the Max Link Speed in the Link Capabilities
-> > > Register when the Link Capabilities 2 Register is not available.
-> > 
-> > Remind me, what's the reason again to cache this and why is
-> > max_bus_speed not sufficient?  Is the point that there may be
-> > "gaps" in the supported link speeds, i.e. not every bit below
-> > the maximum supported speed may be set?  And you need to skip
-> > over those gaps when throttling to a lower speed?
-> 
-> FWIW I went and re-read the internal review I provided on May 18.
-> Turns out I already mentioned back then that gaps aren't permitted:
-> 
->  "Per PCIe r6.0.1 sec 8.2.1, the bitfield in the Link Capabilities 2
->   register is not permitted to contain gaps between maximum supported
->   speed and lowest possible speed (2.5 GT/s Gen1)."
-> 
-> 
-> > Also, I note that pci_set_bus_speed() doesn't use LNKCAP2.
-> 
-> About that, I wrote in May:
-> 
->  "Actually, scratch that.  pci_set_bus_speed() is fine.  Since it's only
->   interested in the *maximum* link speed, reading just LnkCap is correct.
->   LnkCap2 only needs to be read to determine if a certain speed is
->   *supported*.  E.g., even though 32 GT/s are supported, perhaps 16 GT/s
->   are not.
-> 
->   It's rather pcie_get_speed_cap() which should be changed.  There's
->   no need for it to read LnkCap2.  The commit which introduced this,
->   6cf57be0f78e, was misguided and had to be fixed up with f1f90e254e46.
->   It could be simplified to just read LnkCap and return
->   pcie_link_speed[linkcap & PCI_EXP_LNKCAP_SLS].  If the device is a
->   Root Port or Downstream Port, it doesn't even have to do that but
->   could return the cached value in subordinate->max_bus_speed.
->   If you add another attribute to struct pci_bus for the downstream
->   device's maximum speed, the maximum speed for Endpoints and Upstream
->   Ports could be returned directly as well from that attribute."
-
-I know it's quite far back so it's understandable to forget :-), 
-but already by May 23rd your position had changed and you wrote this:
-
-'Per the Implementation Note at the end of PCIe r6.0.1 sec 7.5.3.18,
-
-   "It is strongly encouraged that software primarily utilize the
-    Supported Link Speeds Vector instead of the Max Link Speed field,
-    so that software can determine the exact set of supported speeds on
-    current and future hardware. This can avoid software being confused
-    if a future specification defines Links that do not require support
-    for all slower speeds."
-
-This means that it's not sufficient if you just check that the desired 
-speed is lower than the maximum.  Instead, you should check if the bit 
-corresponding to the desired speed is set in the LnkCap2 register's 
-Supported Link Speeds Vector.
-
-PCIe r6.0.1 sec 8.2.1 stipulates that the bitfield is not permitted to 
-contain gaps between maximum supported speed and lowest possible speed
-(2.5 GT/s Gen1).  However the Implementation Note suggests that rule may 
-no longer apply in future revisions of the PCIe Base Spec.'
-
-So I'd assume I should still follow the way spec recommends, not the "old 
-method" that may not function correctly after some future version of the 
-spec, or have you really changed position once again on this?
-
-
--- 
- i.
---8323329-737575340-1704125951=:2521--
 
