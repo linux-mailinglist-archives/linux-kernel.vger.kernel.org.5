@@ -1,94 +1,188 @@
-Return-Path: <linux-kernel+bounces-13939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB630821542
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 21:47:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB7E8821546
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 21:49:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA9191C20E20
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 20:47:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F4D81F21722
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 20:49:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F4FDF4D;
-	Mon,  1 Jan 2024 20:47:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pHDMVyJS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D18A8DF5C;
+	Mon,  1 Jan 2024 20:49:27 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF8DDDD1
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 20:47:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7810827e54eso878754585a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 12:47:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704142061; x=1704746861; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eMNhsLNc6JH9BXxdcz3QKLU0dw4+NL8hfWK4BqvCMdk=;
-        b=pHDMVyJSYFQhf6bFAh8xTzc060pebQunTJvIN6GyJLKHV5SxF9qFFtAjPhQsqW9ExM
-         ac6sJ6e0fo5smdeDU8e8zoGpGc2Ynwj9eUoHKvFQX50w+XFpHJpwduKqospw+KgZCjGf
-         wnn/8LfJ+623wEfaH6MA74n+7PghyI/pM042UuThY8zOZdCJtYoN7skkOBxamGVukvzf
-         g5bOq0B8i6RLFBAIHKnywNUCDoM5ADG1iVXpAu1TzpGtpjroPcgymtbr+XCKQzPtGMYq
-         P5nFnUkMdIxMYZprL2NpFNpNz3wE9fsq1jRirKY24Ewc+K2nhzdAvl/spZMsIjzBTwov
-         Gdsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704142061; x=1704746861;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eMNhsLNc6JH9BXxdcz3QKLU0dw4+NL8hfWK4BqvCMdk=;
-        b=b3gpdFPud5wX0mPPpdXLnCmfAawLgNHrj6ZRBbBlh+RNcOu3fQDyG4DMYKatsHimAy
-         JgJi2WM5J4tViX1e/hJoeE8T2sGi89NpgfNaXzdVqC+t5Tfkh1tXUSx2SYlJhCidItkp
-         t3MoVnr91m7Muys1dScH19zvMK33JcmPopQDxqM5U9uUxEQv/Z+RHtYFyAmWlKqRZmvz
-         C8e3Tazs8dxp7OzwfAQRpTnhjlN0T+1R2xj2bu9yXOXQeJ4e9AvLb71flc0bkEKn+EZv
-         8bHzq8kWExKyX9wt0C1NHY5hNcD78pQqA6cMoD79J8kX1HrAjbjAdHgLWI0gCU7uNR99
-         PB/A==
-X-Gm-Message-State: AOJu0Yw0+mXsTJSEo127Hp8wqhbGt8jJJb6RaFjUWEmAMrcfPmJq1uqj
-	ESvJUCBShcX25oV9V/UJ45bBZxNMue8J8mTvmEUmV2LRWzNwUQ==
-X-Google-Smtp-Source: AGHT+IGMZWwx9wRdBBgtWnhlfZlEube5GQnbCSOBm+J8RbjRpT4yUEx7cGRRlsuthan29DxTW0sY1BWDFrfyh1/zX7Y=
-X-Received: by 2002:a05:620a:55b4:b0:781:d96d:e132 with SMTP id
- vr20-20020a05620a55b400b00781d96de132mr426264qkn.157.1704142061002; Mon, 01
- Jan 2024 12:47:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF15DF42;
+	Mon,  1 Jan 2024 20:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (178.176.77.76) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 1 Jan
+ 2024 23:49:07 +0300
+Subject: Re: [PATCH net v2 1/1] net: ravb: Wait for operation mode to be
+ applied
+To: claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
+	<mitsuhiro.kimura.kc@renesas.com>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20231222113552.2049088-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231222113552.2049088-2-claudiu.beznea.uj@bp.renesas.com>
+ <98efc508-c431-2509-5799-96decc124136@omp.ru>
+ <d5448a91-a4d8-444d-9f96-083049b1e33e@tuxon.dev>
+ <9ebf96fb-c07a-8269-e5cd-0e71110941dd@omp.ru>
+ <ca01da5f-0928-4a95-83f4-8d9056107f42@tuxon.dev>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <aa9a9929-92ff-ab4b-a2ea-142b522eb344@omp.ru>
+Date: Mon, 1 Jan 2024 23:49:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240101161601.2232247-1-dario.binacchi@amarulasolutions.com> <20240101161601.2232247-6-dario.binacchi@amarulasolutions.com>
-In-Reply-To: <20240101161601.2232247-6-dario.binacchi@amarulasolutions.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 1 Jan 2024 21:47:30 +0100
-Message-ID: <CACRpkdZrbfVLNMxf9jXMJNEEtk242FW6msUHBBh+X99dNKS4Tg@mail.gmail.com>
-Subject: Re: [PATCH v2 5/8] dt-bindings: nt35510: add compatible for FRIDA FRD400B25025-A-CTK
-To: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc: linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Conor Dooley <conor+dt@kernel.org>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Sam Ravnborg <sam@ravnborg.org>, Thomas Zimmermann <tzimmermann@suse.de>, devicetree@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ca01da5f-0928-4a95-83f4-8d9056107f42@tuxon.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/01/2024 20:37:31
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182447 [Dec 31 2023]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.77.76 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info:
+	127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.77.76
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/01/2024 20:41:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/1/2024 5:15:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On Mon, Jan 1, 2024 at 5:16=E2=80=AFPM Dario Binacchi
-<dario.binacchi@amarulasolutions.com> wrote:
+On 12/29/23 6:07 PM, claudiu beznea wrote:
 
-> The patch adds the FRIDA FRD400B25025-A-CTK panel, which belongs to the
-> Novatek NT35510-based panel family.
->
-> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+[...]
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>>
+>>>>> CSR.OPS bits specify the current operating mode and (according to
+>>>>> documentation) they are updated by HW when the operating mode change
+>>>>> request is processed. To comply with this check CSR.OPS before proceeding.
+>>>>>
+>>>>> Commit introduces ravb_set_opmode() that does all the necessities for
+>>>>> setting the operating mode (set DMA.CCC and wait for CSR.OPS) and call it
+>>>>> where needed. This should comply with all the HW manuals requirements as
+>>>>> different manual variants specify that different modes need to be checked
+>>>>> in CSR.OPS when setting DMA.CCC.
+>>>>>
+>>>>> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+>>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>> ---
+>>>>>  drivers/net/ethernet/renesas/ravb_main.c | 52 ++++++++++++++----------
+>>>>>  1 file changed, 31 insertions(+), 21 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>>>>> index 664eda4b5a11..ae99d035a3b6 100644
+>>>>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>>>>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>>>>> @@ -66,14 +66,15 @@ int ravb_wait(struct net_device *ndev, enum ravb_reg reg, u32 mask, u32 value)
+>>>>>  	return -ETIMEDOUT;
+>>>>>  }
+>>>>>  
+>>>>> -static int ravb_config(struct net_device *ndev)
+>>>>> +static int ravb_set_opmode(struct net_device *ndev, u32 opmode)
+>>>>
+>>>>    Since you pass the complete CCC register value below, you should
+>>>> rather call the function ravb_set_ccc() and call the parameter opmode
+>>>> ccc.
+>>>
+>>> This will be confusing. E.g., if renaming it ravb_set_ccc() one would
+>>> expect to set any fields of CCC though this function but this is not true
+>>> as ravb_modify() in this function masks only CCC_OPC. The call of:
+>>>
+>>> error = ravb_set_opmode(ndev, CCC_OPC_CONFIG | CCC_GAC | CCC_CSEL_HPB);
+>>>
+>>> bellow is just to comply with datasheet requirements, previous code and at
+>>> the same time re-use this function.
+>>
+>>    How about the following then (ugly... but does the job):
+>>
+>> 	/* Set operating mode */
+>> 	if (opmode & ~CCC_OPC)
+>> 		ravb_write(ndev, opmode, CCC);
+>> 	else
+>> 		ravb_modify(ndev, CCC, CCC_OPC, opmode);
+>>
+>>    Either that or just don't use ravb_set_opmode() when writing the whole
+>> 32-bit value below...
+> 
+> This looks uglier to me...
+> 
+> We have this discussion because of ccc_gac. For ccc_gac platforms we need
+> to set OPC, GAC, CSEL at the same time. This is how we can change the
+> operating mode to configuration mode in case we also need to configure GAC
+> (due to restrictions imposed by hardware).
+> 
+> What I want to say is that setting GAC and CSEL along with CCC is part of
+> changing the operating mode to configuration mode for platforms supporting
+> GAC because of hardware limitations.
 
-Yours,
-Linus Walleij
+   After thinking about it once more, your description seems correct.
+But then we need something like this:
+
+static int ravb_set_opmode(struct net_device *ndev, u32 opmode)
+{
+	u32 ccc_mask = CCC_OPC;
+	u32 csr_ops = 1U << (opmode & CCC_OPC);
+ 	int error;
+
+ 	if (opmode & CCC_GAC)
+ 		ccc_mask |= CCC_CSEL;
+
+	/* Set operating mode */
+	ravb_modify(ndev, CCC, ccc_mask, opmode);
+	/* Check if the operating mode is changed to the requested one */
+	error = ravb_wait(ndev, CSR, CSR_OPS, csr_ops);
+ 	if (error)
+ 		netdev_err(ndev, "failed to switch device to  requested mode\n");
+
+	return error;
+}
+
+[...]
+
+MBR, Sergey
 
