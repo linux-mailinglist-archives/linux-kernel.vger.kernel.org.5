@@ -1,84 +1,76 @@
-Return-Path: <linux-kernel+bounces-13951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 330FC82157F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 23:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BC63821582
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 23:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD187281CED
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 22:09:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9236A281BE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 22:16:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EAEAF9C8;
-	Mon,  1 Jan 2024 22:09:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80E42E56A;
+	Mon,  1 Jan 2024 22:16:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="CQLPc2Iq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m4KseXHX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from libero.it (smtp-33-i2.italiaonline.it [213.209.12.33])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC150F9C4
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 22:09:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inwind.it
-Received: from [192.168.1.176] ([87.20.18.66])
-	by smtp-33.iol.local with ESMTPA
-	id KQTkrVxdl0IGyKQTkrOG02; Mon, 01 Jan 2024 23:09:48 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-	t=1704146988; bh=mDe350ZREd+2N67YfHmo9OtfQvcQA9XR54gWaDV8xMo=;
-	h=From;
-	b=CQLPc2Iq5XGEs5KH4SbHg9vAjrOOatWqX33EpV6cqeHmlCUJbYMjOD+G5HwczAv3r
-	 Go6dNlhGYD8tr1U7xEvve1yjCHBIG0qzdNgsWJJZb1uQf3iV1Eml5pUvYCfXqkWokH
-	 ffsgiIYDHlEkbuEqca2ISGwU3GEtieaHT8gJiixntkaC3+CgNnU1FZiSUj12lwjphW
-	 Sf9Yj91TtseEB+jA01jizlGGnQz9LVszrEh0LmaL42V+VTccvuJy+nUEuitKCciS7N
-	 pV1VMuZAUZlDVYY6A9YIXgXTrUOqmDoO75YXd17NVEUUhXdHVoNfBSTPHouogA4OW8
-	 aYu6V6Zu5doEg==
-X-CNFS-Analysis: v=2.4 cv=WdjKKWtX c=1 sm=1 tr=0 ts=6593382c cx=a_exe
- a=3SqfP+zelxMsqVWg0RdiUA==:117 a=3SqfP+zelxMsqVWg0RdiUA==:17
- a=IkcTkHD0fZMA:10 a=VwQbUJbxAAAA:8 a=f3xpugNLimARsEotuToA:9 a=QEXdDO2ut3YA:10
- a=hwl4U-1iQxQA:10 a=AjGcO6oz07-iQ99wixmX:22
-Message-ID: <d90fd289-0535-c4ab-8dc0-5e0fb0a36a72@inwind.it>
-Date: Mon, 1 Jan 2024 23:09:48 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAFB6FBE1;
+	Mon,  1 Jan 2024 22:15:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1F61C433C8;
+	Mon,  1 Jan 2024 22:15:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704147359;
+	bh=vaYP09n7NQRCkMOIIM0dBoEGJ1KUL9tEiUtSqhELX54=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=m4KseXHX5wx9q+NQWukSufL8Ons5NIm6HUAxspt2Me2WIKQipZ9Qowhs7quVQr10r
+	 8jAFoZMMYgEEPZ82kdzVkgzCmYnJ5SHN04u8ud42C65GbLqbxjQDuJyiaiwLtt69cR
+	 H/Nil9ta+37qrsLjFCq00dxafC7WQv5M4EppNgPJTe0fI7fcszB4zjTy64DeU3LUMz
+	 qqAQ+mWPYEOqEn9SAiUL7V+P/bc4HRnul80OcdVxW+ljf7eJ1NuakXbr8F8AAwqSj2
+	 wdi9gt/2ovYjHyUxbf7MCYxFHI2MPqlqDUJLOlAjbw9ZG43AGbDJh44jiE7/oP2bWX
+	 gvZ5IKHMux54Q==
+Date: Mon, 1 Jan 2024 16:15:54 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Michael Schaller <michael@5challer.de>
+Cc: bhelgaas@google.com, kai.heng.feng@canonical.com,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	regressions@lists.linux.dev, macro@orcam.me.uk,
+	ajayagarwal@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+	gregkh@linuxfoundation.org, hkallweit1@gmail.com,
+	michael.a.bottini@linux.intel.com, johan+linaro@kernel.org
+Subject: Re: [Regression] [PCI/ASPM] [ASUS PN51] Reboot on resume attempt
+ (bisect done; commit found)
+Message-ID: <20240101221554.GA1693060@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-From: Valerio Vanni <valerio.vanni@inwind.it>
-Subject: Unable to unsubscribe
-To: linux-kernel@vger.kernel.org
-Content-Language: it-IT
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Antivirus: AVG (VPS 231230-2, 30/12/2023), Outbound message
-X-Antivirus-Status: Clean
-X-CMAE-Envelope: MS4xfKkam4ZT6jdXUHtrTRHqo1USCi8IkwNRXw6JRpPRuDacUHKNRNUbuo6L628HOu5VdxPoraiMmymJFECetOe6A/ORV6PEJFfpLxuZ1GI5WSYWZTLlRZiX
- O0CJfuHQSSJ418+zMI8qmRsgPt/55Ff4jxqf8BUddXARM3owDsNjHYzdkSAlEOysHtVTz4N6rMHf+XcXIKj1d7qDT7iYmVRbx6E=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0f121140-e5dc-4c1a-b510-a9d791004a27@5challer.de>
 
-Some time I subscribed to linux-kernel list, but now I want to unsubscribe.
+On Mon, Jan 01, 2024 at 07:57:40PM +0100, Michael Schaller wrote:
+> On 01.01.24 19:13, Bjorn Helgaas wrote:
+> > On Mon, Dec 25, 2023 at 07:29:02PM +0100, Michael Schaller wrote:
+> > ...
 
-I read here
-https://subspace.kernel.org/vger.kernel.org.html#what-happened-to-majordomo
-that to subscribe and unsubscribe a list I have to use the address provided.
+> > So unless somebody has a counter-argument, I plan to queue a revert of
+> > 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()") for
+> > v6.7.
+> 
+> If it helps I could also try if a partial revert of 08d0cc5f3426 would be
+> sufficient. This might also narrow down the issue and give more insight
+> where the issue originates from.
 
-For linux-kernel I find:
-linux-kernel+unsubscribe@vger.kernel.org
+We're so close to the v6.7 final release that I doubt we can figure
+out the problem and test a fix before v6.7.  I'm sure Kai-Heng would
+appreciate any additional data, but I don't think it's urgent at this
+point.
 
-I wrote two o three times, but nothing happens. I don't get any error 
-oro bounce messages. Simply, it doesn't work: I continue to receive 
-messages.
-
-At the same time, I was trying to subscribe linux media with
-linux-media+subscribe@vger.kernel.org
-
-But, again, nothing happens.
-
-Is there any other way?
-
-I wrote also to postmaster@vger.kernel.org, but got no answer.
+Bjorn
 
