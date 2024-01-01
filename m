@@ -1,118 +1,170 @@
-Return-Path: <linux-kernel+bounces-13881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 926AB821424
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 15:51:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39406821432
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 16:23:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EA3CB217B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 14:51:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BABF1F21330
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 15:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0875A6123;
-	Mon,  1 Jan 2024 14:51:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5932613D;
+	Mon,  1 Jan 2024 15:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="NnY9GSAv"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="um9n6pCm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D70F8610B;
-	Mon,  1 Jan 2024 14:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 401D0MkN007851;
-	Mon, 1 Jan 2024 06:50:52 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=pfpt0220; bh=6sriA2l4
-	2T78+rHF9EwLHfRICQQCLeM75RC67WJEGqU=; b=NnY9GSAv0Iw8dGWUb1/pqvg3
-	1v28ohFD994wNvIOG5ualhth8Y8E/FnjwsDFodQRkBnWvTbczSFHfMmMM5J9F+hn
-	vxVCGgupzSsFkEP5V6jjGt8TDSCCpDDRczE5I60Wwo+3Kc+fHj8skfij8SE92T4K
-	9GSQEmB2a3rE3dPIuaQsIejh9ak08Ws3Hkkv5bM92gpQVE+j2RFyTq4TSk5VS9XS
-	7cNtjWQcR9I8wdE0bFcoX6sU5gG3zRfnoxVlqqF6d3/96ruUaQpKYB9b3RzpE3Wd
-	uY5EzSbLfYD9KugWgj5fFWaAk1GZlqzaFwXpo//xw4WVn9SI+58I833Y2cxW6g==
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3vakkkvj29-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-	Mon, 01 Jan 2024 06:50:51 -0800 (PST)
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 1 Jan
- 2024 06:50:49 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Mon, 1 Jan 2024 06:50:49 -0800
-Received: from localhost.localdomain (unknown [10.28.36.166])
-	by maili.marvell.com (Postfix) with ESMTP id 7359F3F7093;
-	Mon,  1 Jan 2024 06:50:45 -0800 (PST)
-From: Suman Ghosh <sumang@marvell.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <sgoutham@marvell.com>, <sbhatta@marvell.com>,
-        <jerinj@marvell.com>, <gakula@marvell.com>, <hkelam@marvell.com>,
-        <lcherian@marvell.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC: Suman Ghosh <sumang@marvell.com>
-Subject: [net PATCH] octeontx2-af: Fix max NPC MCAM entry check while validating ref_entry
-Date: Mon, 1 Jan 2024 20:20:42 +0530
-Message-ID: <20240101145042.419697-1-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2AB0610B;
+	Mon,  1 Jan 2024 15:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 389412B3;
+	Mon,  1 Jan 2024 16:21:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1704122518;
+	bh=3H0pGVXkmvQq4iSjto9/8c7JIW0F+uQywqKCqLYStOw=;
+	h=In-Reply-To:References:Subject:From:To:Date:From;
+	b=um9n6pCmOvk/UMif8+aDf7Uuna+aDZ0+wPeo5oOcpu9+mo1r+J8BATXwsRdB1fqs/
+	 RFw4dTAyibv09tjoWYoj37oWat0zT0SBh0sG6cqaAkUPhVYzZ4/8XaeG7UVQIHMsCL
+	 lGideJzYOaDAGdnZWXj41HrDXCUsiZ8kUCLGKWCU=
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: BatOGr3U1s7txp9LhqQMDsP5HozhSEpY
-X-Proofpoint-GUID: BatOGr3U1s7txp9LhqQMDsP5HozhSEpY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <MAZPR01MB695797DF964AA599AF2D7D05F29DA@MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM>
+References: <20231227133516.1356553-1-bhavin.sharma@siliconsignals.io> <170376380893.2881109.11558061738942135116@ping.linuxembedded.co.uk> <MAZPR01MB695797DF964AA599AF2D7D05F29DA@MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM>
+Subject: Re: [PATCH] media: adv7180: Fix cppcheck warnings and errors
+From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+To: Bhavin Sharma <bhavin.sharma@siliconsignals.io>, lars@metafoo.de, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, mchehab@kernel.org
+Date: Mon, 01 Jan 2024 15:22:53 +0000
+Message-ID: <170412257392.923098.3453218353962810283@ping.linuxembedded.co.uk>
+User-Agent: alot/0.10
 
-As of today, the last MCAM entry was not getting allocated because of
-a <= check with the max_bmap count. This patch modifies that and if the
-requested entry is greater than the available entries then set it to the
-max value.
+Quoting Bhavin Sharma (2023-12-29 13:37:14)
+> Thanks for the reply,=EF=BF=BDKieran
+>=20
+> >> WARNING: Missing a blank line after declarations
+> >> ERROR: else should follow close brace '}'
+> >>=20
+> >> Signed-off-by: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
+> >>=20
+> >> diff --git a/drivers/media/i2c/adv7180.c b/drivers/media/i2c/adv7180.c
+> >> index 54134473186b..91756116eff7 100644
+> >> --- a/drivers/media/i2c/adv7180.c
+> >> +++ b/drivers/media/i2c/adv7180.c
+> >> @@ -357,6 +357,7 @@ static int adv7180_querystd(struct v4l2_subdev *sd=
+, v4l2_std_id *std)
+> >>=EF=BF=BD {
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD struct adv7180_state *state =3D to_state(sd);
+>=20
+> >>Personally, I would keep the if (err) hugging the line it's associated
+> with.
+>=20
+> If we follow the code base pattern for this diver, we are getting same on=
+line space in conditional if statements.
+> So, we need to make changes there also.
 
-Fixes: f92749586176 ("octeontx2-af: NPC MCAM entry alloc/free support")
-Signed-off-by: Suman Ghosh <sumang@marvell.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+If there are multiple places in a file for the same fixup, then indeed -
+make them all in a single patch as a single cleanup.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-index 0bcf3e559280..3784347b6fd8 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-@@ -2678,18 +2678,17 @@ int rvu_mbox_handler_npc_mcam_alloc_entry(struct rvu *rvu,
- 	rsp->entry = NPC_MCAM_ENTRY_INVALID;
- 	rsp->free_count = 0;
- 
--	/* Check if ref_entry is within range */
--	if (req->priority && req->ref_entry >= mcam->bmap_entries) {
--		dev_err(rvu->dev, "%s: reference entry %d is out of range\n",
--			__func__, req->ref_entry);
--		return NPC_MCAM_INVALID_REQ;
--	}
-+	/* Check if ref_entry is greater that the range
-+	 * then set it to max value.
-+	 */
-+	if (req->ref_entry > mcam->bmap_entries)
-+		req->ref_entry = mcam->bmap_entries;
- 
- 	/* ref_entry can't be '0' if requested priority is high.
- 	 * Can't be last entry if requested priority is low.
- 	 */
- 	if ((!req->ref_entry && req->priority == NPC_MCAM_HIGHER_PRIO) ||
--	    ((req->ref_entry == (mcam->bmap_entries - 1)) &&
-+	    ((req->ref_entry == mcam->bmap_entries) &&
- 	     req->priority == NPC_MCAM_LOWER_PRIO))
- 		return NPC_MCAM_INVALID_REQ;
- 
--- 
-2.25.1
 
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD int err =3D mutex_lock_interruptible(&state->mutex);
+> >> +
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD if (err)
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+ return err;
+> >>=EF=BF=BD=20
+> >> @@ -411,6 +412,7 @@ static int adv7180_g_input_status(struct v4l2_subd=
+ev *sd, u32 *status)
+> >>=EF=BF=BD {
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD struct adv7180_state *state =3D to_state(sd);
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD int ret =3D mutex_lock_interruptible(&state->mutex);
+> >> +
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD if (ret)
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+ return ret;
+> >>=EF=BF=BD=20
+> >> @@ -1046,8 +1048,7 @@ static int adv7182_init(struct adv7180_state *st=
+ate)
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD ADV7180_REG_EXTENDED_OUTPUT_C=
+ONTROL,
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD 0x17);
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD }
+> >> -=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD }
+> >> -=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD else
+> >> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD } else
+>=20
+> >>I think kernel code style requires an else clause following a multiline
+> scope to also have its scope enclosed in braces even if it's a single
+> statement.
+>=20
+> On many places in driver there is single statement after else without clo=
+sing=EF=BF=BD
+> So, we have to make changes in those places also.
+>=20
+> So, better I should make changes in all places and make version V2 patch.
+
+Yes, but you should probably tackle both cleanups as two patches
+covering the whole file for each cleanup.
+
+--
+Kieran
+
+
+>=20
+> Please give your suggestions.
+>=20
+> --
+> Bhavin Sharma
+>=20
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD ad=
+v7180_write(state,
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD ADV7180_REG_EXTENDED_OUTPU=
+T_CONTROL,
+> >>=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD 0x07);
+> >> --=20
+> >> 2.25.1
+> >>
 
