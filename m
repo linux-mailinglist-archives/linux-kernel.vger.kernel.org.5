@@ -1,97 +1,184 @@
-Return-Path: <linux-kernel+bounces-13846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CB8C82136E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 10:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B8334821371
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 10:54:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 624881C211AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 09:47:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70C841C21061
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 09:54:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A3E23AD;
-	Mon,  1 Jan 2024 09:47:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="X2fd9lWX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FE82112;
+	Mon,  1 Jan 2024 09:54:25 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800E817E4;
-	Mon,  1 Jan 2024 09:47:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704102407; x=1704707207; i=markus.elfring@web.de;
-	bh=ohTC7seVsNS0COAISRqD2zegJLuYh8qhP2umPTLV674=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=X2fd9lWXGmNSQNbN3kzZQxJxk4vMWQNdXdoGd3m+NcMqTWNYxTg/uhpZZwmF7EKc
-	 XphdcV2pWxcQ5VIpZzj8ooE4SMJ5srmL/qLfQD1pLXeimmJdTAK/G/DQZM34q2v9s
-	 rT+b8DycnW3ujXQ7VScBRtGbWSe8hKaF4vlFFuesm6nYUvPonowHbVZuoaILouJaj
-	 d4o8pgYsz4T6EfrX/GKJ57jXGfHG1PnW3T29huT2aQgK0nVx90is3dmQAR3iuaUXx
-	 EGoyUy2+1AQjce9XgYWFuFqewBc/U+BvtG4XrxQ9+z4+DjrrIK65eYwCNbkxWZzsV
-	 CCFxXuv1iXJHgicvng==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mfc4q-1qiiHH0ang-00gAQK; Mon, 01
- Jan 2024 10:46:47 +0100
-Message-ID: <a69fce11-68c2-446c-9da8-b959bb3ba70f@web.de>
-Date: Mon, 1 Jan 2024 10:46:45 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 878D417C9
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 09:54:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bb582f9d5eso291964439f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 01:54:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704102863; x=1704707663;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NP45h3cNbaU1W5ZqRvf11WWj8aK3hXs0ylShj0AXyVE=;
+        b=X86uScMsEvt1oIW/CuD6xlwxzmpzvV0qypuu8wvgJMrOS9t3PNqR2KkiijfK3WuST4
+         2300Y3paorLDp0oVrihHVxNZfKjhJh7Sp2HyN93MzG5YUZEzX8x9c32/Qw2EbzBc9fbD
+         G1q645rL56U4HnZdmZrwTCfGJbtAV+S5qqi2Ha661f3tCTuMRc1qs4wYjFxvzwfvxPcG
+         VXsUsqpV00ouFp68JlUC46k0gzl44ZEgCJOTr01ExNmxfSRP0p8T0+BXnny7FZcT03Sq
+         y3jYao+0HjwtpHB+2wWIOHgYT77zYAIGC+bt8uxPLaNZNBlZMx8HdVpqzavRpnyKPl+N
+         fJNg==
+X-Gm-Message-State: AOJu0YyvrS5oPouVXgvBaDV/9uZn4q+TN5zlq4bdFBP8oftTEquApDna
+	AQ0bUr6GF4lX+GbYNuSvGqW+Mjt2ujqayCb8qLlRq9pqBkLI
+X-Google-Smtp-Source: AGHT+IHDYxOCBF+E6pNKWPBAt9KLV5FKIdmX2t66B6it0QtyPV4fgZkAmPgnM+4f6esnhpzLNSUN2BmMKRZXgYzZ83PdfluVSkBl
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: packet: Improve exception handling in fanout_add()
-Content-Language: en-GB
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Stephen Hemminger <stephen@networkplumber.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <828bb442-29d0-4bb8-b90d-f200bdd4faf6@web.de>
- <6591e0fcb089f_21410c2946c@willemb.c.googlers.com.notmuch>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <6591e0fcb089f_21410c2946c@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KGfwOwu/eh5LtNtDcfQEBI45/T0hTBcGx/MVu2HzdjjE90FwTu4
- 41iCdR3ET9SV6e1PktEj9RVgKgi7iEgSGFLccSyIQBKVoDqXB8cuJ6uvxNb2ExgvDka6Fh1
- eWE5eax/j0uddKcx9zslYVogHVodTfW2dK7U6Sd+IcrKJkp71yEByJcc6a0se/rkBHqtw5Q
- MwRqkE2F4+tw/n8qxiJ1Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:KYd6LUFArsY=;CCkVL4dKWDh6cWNFSXUvpopHMbd
- l3ToZgfQnrx4ofAA6ksaAXU/bRHYh+9pI8CjDwfPh8Tl2urEbncxcsDFB0vHsJJXAzQaSbpu8
- ZMYQ7Ihb/hCBFzkSnd5lef9f816VXvYdi7Q+fJI1BuTHh+u+VZIB3qnmvWUjllRdc5PTVE0dv
- 7S3uItmcujQxSLIH4uJY5TWM56ByBjQHyLSbo3Ykf1vd46EuW6jtcXNBsT3sb1ojq3SYCXL/w
- zHRPDI4rUKKI8RsHNqMHTZ0QBgNLJ/Ana7FHl9jDoZWv0CJibDZHaokRXU8ryH2ay/YkacFKJ
- qgrNJMHmaG0k1jFCwt6JUs7CbFYWdGQFkDC2ytE03LixrRa5X9XqIPznMfxdgqYB30xGp/lIM
- o5StJJrYbr7Hn0R+LxnBV9BGRQG8RJXGw1rke2qeJ4s/pkNOBTOU3rM3z8U4J6RgG5KDxn3W6
- ift0Bgzq7YdXU6cRnqswXidaUtTG/N2uw2IvJqWyapxLqU5yRsNEdktrZ3t9S00Q7+p8G8oQw
- hRFyCeVc5XCGMUCZPpb52lkUIXkp9k5SUKeHFsDVoL9o4VsBS8j09M2iOAT66siQWBVFJCFon
- Mp4lctVbaxK4m4m7RE5+ioRg2v5dMtMhFufeb1fkZESuz/UunmV3v3Ti+fpjNvhLJhabVVCTm
- 7RJQbtC5f0idzx4AjFdltl+iOvbArVSkBkJT1g1NEBsz/UULTfNOLnqniptBnQExREl4ad+xN
- bj8WPCMqUoyxM77fuppkb/LSN63fvYZNovQd49EQNM72WEhISP1TR4SE2hpWGqBE3FhWc9Q+Q
- ZfVxWa2HP1DLoEhDNlqIMzaBHx7paLbZQ+5zc1XVTa0t3xu4v/ZVqYsl4NUiHpCsdXC481pT+
- ELYHayC1ZMQdvwu+GcqVc7p4HTN5vLxOaRUbanxj6m2UNO11O7zxgG3TvJyuFfIcC1h05ByBb
- hLVbAo88My9+3EzWwZxDmHSJPtY=
+X-Received: by 2002:a05:6e02:1bad:b0:360:e6b:bc4a with SMTP id
+ n13-20020a056e021bad00b003600e6bbc4amr1255413ili.2.1704102862692; Mon, 01 Jan
+ 2024 01:54:22 -0800 (PST)
+Date: Mon, 01 Jan 2024 01:54:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000caa956060ddf5db1@google.com>
+Subject: [syzbot] [reiserfs?] general protection fault in __fget_files (2)
+From: syzbot <syzbot+63cebbb27f598a7f901b@syzkaller.appspotmail.com>
+To: brauner@kernel.org, chouhan.shreyansh630@gmail.com, jack@suse.cz, 
+	jeffm@suse.com, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	reiserfs-devel@vger.kernel.org, rkovhaev@gmail.com, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 
-> It is fine to call kfree with a possible NULL pointer:
-=E2=80=A6
-> 	 * If @object is NULL, no operation is performed.
-> 	 */
-> 	void kfree(const void *object)
+Hello,
 
-Such a function call triggers an input parameter validation
-with a corresponding immediate return, doesn't it?
-Do you find such data processing really helpful for the desired error/exce=
-ption handling?
+syzbot found the following issue on:
 
-Regards,
-Markus
+HEAD commit:    f5837722ffec Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17ad7616e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=da1c95d4e55dda83
+dashboard link: https://syzkaller.appspot.com/bug?extid=63cebbb27f598a7f901b
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1230c7e9e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=133d189ae80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/bb9a47cfe092/disk-f5837722.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3e6428b5b55b/vmlinux-f5837722.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/545d22abacbc/bzImage-f5837722.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/bb1e27bc000d/mount_0.gz
+
+The issue was bisected to:
+
+commit 13d257503c0930010ef9eed78b689cec417ab741
+Author: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+Date:   Fri Jul 9 15:29:29 2021 +0000
+
+    reiserfs: check directory items on read from disk
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=125e92f9e80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=115e92f9e80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=165e92f9e80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+63cebbb27f598a7f901b@syzkaller.appspotmail.com
+Fixes: 13d257503c09 ("reiserfs: check directory items on read from disk")
+
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 5053 Comm: sshd Not tainted 6.7.0-rc7-syzkaller-00016-gf5837722ffec #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+RIP: 0010:__fget_files_rcu fs/file.c:963 [inline]
+RIP: 0010:__fget_files+0x96/0x340 fs/file.c:1022
+Code: 89 f8 48 c1 e8 03 4c 01 f0 48 89 04 24 e8 62 86 92 ff 48 8b 04 24 80 38 00 0f 85 7f 02 00 00 4d 8b 65 58 4c 89 e0 48 c1 e8 03 <42> 0f b6 04 30 84 c0 74 08 3c 03 0f 8e 70 02 00 00 41 8b 1c 24 89
+RSP: 0018:ffffc9000331f8a0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81f3df8d
+RDX: ffff88802a5e2180 RSI: ffffffff81f3de1e RDI: 0000000000000001
+RBP: 0000000000000004 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88807300f040 R14: dffffc0000000000 R15: ffff88807300f098
+FS:  00007f9d8d382800(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005592de0c8df8 CR3: 000000001f753000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __fget fs/file.c:1030 [inline]
+ __fget_light+0xd0/0x260 fs/file.c:1137
+ fdget include/linux/file.h:64 [inline]
+ do_pollfd fs/select.c:866 [inline]
+ do_poll fs/select.c:921 [inline]
+ do_sys_poll+0x469/0xde0 fs/select.c:1015
+ __do_sys_ppoll fs/select.c:1121 [inline]
+ __se_sys_ppoll fs/select.c:1101 [inline]
+ __x64_sys_ppoll+0x256/0x2d0 fs/select.c:1101
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f9d8cf19ad5
+Code: 85 d2 74 0d 0f 10 02 48 8d 54 24 20 0f 11 44 24 20 64 8b 04 25 18 00 00 00 85 c0 75 27 41 b8 08 00 00 00 b8 0f 01 00 00 0f 05 <48> 3d 00 f0 ff ff 76 75 48 8b 15 24 73 0d 00 f7 d8 64 89 02 48 83
+RSP: 002b:00007ffeaa4272d0 EFLAGS: 00000246 ORIG_RAX: 000000000000010f
+RAX: ffffffffffffffda RBX: 00000000000668a0 RCX: 00007f9d8cf19ad5
+RDX: 00007ffeaa4272f0 RSI: 0000000000000004 RDI: 000055c03123eaa0
+RBP: 000055c03123f260 R08: 0000000000000008 R09: 0000000000000000
+R10: 00007ffeaa4273d8 R11: 0000000000000246 R12: 000055c02f66caa4
+R13: 0000000000000001 R14: 000055c02f66d3e8 R15: 00007ffeaa427358
+ </TASK>
+Modules linked in:
+----------------
+Code disassembly (best guess):
+   0:	89 f8                	mov    %edi,%eax
+   2:	48 c1 e8 03          	shr    $0x3,%rax
+   6:	4c 01 f0             	add    %r14,%rax
+   9:	48 89 04 24          	mov    %rax,(%rsp)
+   d:	e8 62 86 92 ff       	call   0xff928674
+  12:	48 8b 04 24          	mov    (%rsp),%rax
+  16:	80 38 00             	cmpb   $0x0,(%rax)
+  19:	0f 85 7f 02 00 00    	jne    0x29e
+  1f:	4d 8b 65 58          	mov    0x58(%r13),%r12
+  23:	4c 89 e0             	mov    %r12,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 0f b6 04 30       	movzbl (%rax,%r14,1),%eax <-- trapping instruction
+  2f:	84 c0                	test   %al,%al
+  31:	74 08                	je     0x3b
+  33:	3c 03                	cmp    $0x3,%al
+  35:	0f 8e 70 02 00 00    	jle    0x2ab
+  3b:	41 8b 1c 24          	mov    (%r12),%ebx
+  3f:	89                   	.byte 0x89
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
