@@ -1,99 +1,111 @@
-Return-Path: <linux-kernel+bounces-13953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E15E821585
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 23:17:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6224A821589
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 23:29:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 078101C20EBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 22:17:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFAF91F214D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 22:29:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA7DDF9DE;
-	Mon,  1 Jan 2024 22:17:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="GiGWh4nQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4093EE57E;
+	Mon,  1 Jan 2024 22:29:46 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from mxout013.mail.hostpoint.ch (mxout013.mail.hostpoint.ch [217.26.49.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A757F9C3;
-	Mon,  1 Jan 2024 22:17:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1704147459;
-	bh=jnfiSVdTzJ86zToeJsrO3Q6T2ovObuN4eFEHjCoaQDU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=GiGWh4nQHhSSNPpymC/bwaKLczvBtVBemy+5M5Mzw7JZZNJHsPiHsQuZF8UOaXHPc
-	 kEC58l7TW6Z7jKYzQcGRNUULPiheFSoL7pPaD8twi+52SkQjYcEAdx3+SPM5nPzJxg
-	 cTudBcCznehf9S7vmGiUtb3PuAsPqWnKFR45mXrstTzU5DOOy/DeSqTTlAdQ0BuIJN
-	 UsmEPZeHL3P2nlykwQBZ+C70VBFkaKIFOzT3LrloHNg/JTDDke9wmcqGbCP+wqQUn6
-	 iH9s1rHVsIcx9+x/BdELrdbNobf351zWPXiA6b9sqJs4ng+5JTaJ6x7gLknSBZE1Rr
-	 XIPt21mupYtpw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T3r2V2Bs4z4wnx;
-	Tue,  2 Jan 2024 09:17:38 +1100 (AEDT)
-Date: Tue, 2 Jan 2024 09:17:36 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Alexandre Torgue <alexandre.torgue@st.com>, Olof Johansson
- <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>
-Cc: ARM <linux-arm-kernel@lists.infradead.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the stm32 tree
-Message-ID: <20240102091736.0cc42b20@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39706E556;
+	Mon,  1 Jan 2024 22:29:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stefan-gloor.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stefan-gloor.ch
+Received: from [10.0.2.46] (helo=asmtp013.mail.hostpoint.ch)
+	by mxout013.mail.hostpoint.ch with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2 (FreeBSD))
+	(envelope-from <code@stefan-gloor.ch>)
+	id 1rKQc2-0008Ap-1b;
+	Mon, 01 Jan 2024 23:18:22 +0100
+Received: from 157.20.79.83.dynamic.wline.res.cust.swisscom.ch ([83.79.20.157] helo=thinkpad)
+	by asmtp013.mail.hostpoint.ch with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2 (FreeBSD))
+	(envelope-from <code@stefan-gloor.ch>)
+	id 1rKQc2-000Miy-10;
+	Mon, 01 Jan 2024 23:18:22 +0100
+X-Authenticated-Sender-Id: code@stefan-gloor.ch
+Date: Mon, 1 Jan 2024 23:18:21 +0100
+From: Stefan Gloor <code@stefan-gloor.ch>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: jdelvare@suse.com, corbet@lwn.net, linux-hwmon@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] hwmon: (sht3x) read out sensor serial number
+Message-ID: <20240101221448.wtwn23vgeptgs36v@thinkpad>
+References: <20231227190036.20725-1-code@stefan-gloor.ch>
+ <20231227190036.20725-2-code@stefan-gloor.ch>
+ <4389cd48-5d61-49bc-8cb5-b337afe40c23@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/3YvS5ATBLY5SZeLM3vM6J/1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4389cd48-5d61-49bc-8cb5-b337afe40c23@roeck-us.net>
+X-Vs-State: 0
 
---Sig_/3YvS5ATBLY5SZeLM3vM6J/1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Dec 31, 2023 at 10:32:56AM -0800, Guenter Roeck wrote:
+> This creates i2c<bus>-<address>/serial_number when the device is instantiated.
+> That debugfs entry is not removed when the device is removed, only when the
+> driver is unloaded. This means that de-instantiating the device will leave
+> stray debugfs directories and files behind until the driver is unloaded.
+> 
+> We had this before, and I understand that you claimed that this doesn't happen.
+> To get me to believe you, you'll have to provide a log of
+> 
+> - instantiating the driver 
+> - Showing the debufs tree
+> - de-instantiating the driver
+> - Showing the debugfs tree
+> 
+> ... but even then I'll want to be able to test it myself. Not sure if I
+> have an eval board, but either case that will take some time. Frankly,
+> I don't understand why you refuse to remove
+> i2c<bus>-<address>/serial_number on device removal.
+> 
+> Guenter
+> 
 
-Hi all,
+Hi Guenter,
 
-The following commit is also in the arm-soc tree as a different commit
-(but the same patch):
+Thank you for your patience. As this is my first patch set for Linux I still
+need to learn a lot.
 
-  769e4b077b2e ("ARM: multi_v7_defconfig: enable STM32 DCMIPP media support=
-")
+You are right. I was confused about driver instantiation and driver
+loading/unloading. The i2cX-XX directory needs to be removed explicitly.
 
-This is commit
+If I understood correctly, the following changes should achieve this:
 
-  ed27e15bc490 ("ARM: multi_v7_defconfig: enable STM32 DCMIPP media support=
-")
++static void sht3x_remove(struct i2c_client *client)
++{
++	struct sht3x_data *data;
++
++	data = dev_get_drvdata(&client->dev);
++	debugfs_remove_recursive(data->sensor_dir);
++}
++
+ static struct i2c_driver sht3x_i2c_driver = {
+ 	.driver.name = "sht3x",
+ 	.probe       = sht3x_probe,
++	.remove      = sht3x_remove,
+ 	.id_table    = sht3x_ids,
+ };
 
-in the arm-soc tree.
+Of course data->sensor_dir needs to be set to the i2X-XX directory when it is
+created.
 
---=20
-Cheers,
-Stephen Rothwell
+If there is nothing obviously wrong with it I'll submit v4 shortly.
 
---Sig_/3YvS5ATBLY5SZeLM3vM6J/1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWTOgAACgkQAVBC80lX
-0GyKeAf8DiSV7AbkKWSk0w18M6PJ1vULFe45+BiANIh3qV77QXfXl1p7n4RK/May
-tSD0yXE10ZJtZLqKYMFuS7cKXd77ToqwF3BSRq5Np+HPM038gvt5oQDFDehmmmV+
-5gjFR1kK5ZjPrwFPWm/t2xIJq9d/O45fD3Z1Xu+uSpp0nF+ke8TY4en17wQ8YeeX
-OZqFDZiaUtRjlk9GbJaCojkdYGQJymQtdPVigXH+PTxJRzckCRIoDHfRADhY9Rpp
-NvmcXRZU0FStjZH6kNPOysi9JX8cA0KfaIIf0lBjf8OKkZrMfZkBv4EDkZxTAx+2
-ZAwgKdm/g2GUfCM2NVP5q0BrMOooHQ==
-=9nlA
------END PGP SIGNATURE-----
-
---Sig_/3YvS5ATBLY5SZeLM3vM6J/1--
+Best,
+Stefan
 
