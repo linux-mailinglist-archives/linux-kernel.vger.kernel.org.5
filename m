@@ -1,183 +1,249 @@
-Return-Path: <linux-kernel+bounces-13913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6460B82149E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 18:23:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ABC68214C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 18:31:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E483EB212C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 17:23:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A23E31C20CE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 17:31:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D63A7484;
-	Mon,  1 Jan 2024 17:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621449464;
+	Mon,  1 Jan 2024 17:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="DyQU46Wl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SXIidgFC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from xry111.site (xry111.site [89.208.246.23])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7817B6AC0;
-	Mon,  1 Jan 2024 17:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1704129763;
-	bh=kOVhB8eAhMECnpseuk0bXmRz3MVKmBv7ePdWReB+bcU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=DyQU46WlQcXzDRfGJtks7zcVhy3iJMOOA7Bgez0O+zKuP3IIc2sOO2lu0ZBZb90rM
-	 CLkX1SoLUCvMlaIQ5RwaXWgvZXYCayzuCokSGZW2zXX2lk6chlYbWNNcolav/EqFWK
-	 2F6OVaVK7+YgUrO7jOatoTY7qu1kjlsjcFAaFoKw=
-Received: from stargazer.. (unknown [IPv6:240e:358:11a9:2200:dc73:854d:832e:3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 270FA66C94;
-	Mon,  1 Jan 2024 12:22:34 -0500 (EST)
-From: Xi Ruoyao <xry111@xry111.site>
-To: Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>
-Cc: Eric Biederman <ebiederm@xmission.com>,
-	Kees Cook <keescook@chromium.org>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Jinyang He <hejinyang@loongson.cn>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	loongarch@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Xi Ruoyao <xry111@xry111.site>,
-	stable@vger.kernel.org
-Subject: [PATCH] LoongArch: Fix and simplify fcsr initialization on execve
-Date: Tue,  2 Jan 2024 01:21:44 +0800
-Message-ID: <20240101172143.14530-2-xry111@xry111.site>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8B1945F;
+	Mon,  1 Jan 2024 17:31:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF5DDC433C7;
+	Mon,  1 Jan 2024 17:31:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704130271;
+	bh=IpekLPO/bhpfBR6SUNYWxaC/ReSzdsaQ7WSCC67bnig=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SXIidgFCydJ7lOwp6GAux/HddHuebpNAQQLZb3D+Tgqcf+IHFk0IxV8SphswNb5DF
+	 CMIsrE0G38xmLC7IP+diwVNBx7VUcV61TLdPPx/hI501JeghX9+26nRB5YryGFBjZR
+	 3bsOIjF6d0A7MSrWxmm4rXYQWCJuqEDk4Wv9dXxAA6UJycXqEsjrzlQCMBptPRaWOP
+	 4reTQ3QGMvi/WU5VEcffQ/B5ANtkx3F81G4NF0/Ng+4tDIRRWjxWjjAxANtiGbBiZV
+	 GjxCtmCbJSbr6zuyucTecnzo+4VHFGFyN+87UPqrY6Tk9K1jiAAp+klxhm366IuFUu
+	 MTov9lRWd2KiQ==
+Date: Mon, 1 Jan 2024 23:01:00 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Johan Hovold <johan@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Stanimir Varbanov <svarbanov@mm-sol.com>,
+	Andrew Murray <amurray@thegoodpenguin.co.uk>,
+	Vinod Koul <vkoul@kernel.org>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] PCI: qcom: Reshuffle reset logic in 2_7_0 .init
+Message-ID: <20240101173100.GB3280@thinkpad>
+References: <20231227-topic-8280_pcie-v1-0-095491baf9e4@linaro.org>
+ <20231227-topic-8280_pcie-v1-1-095491baf9e4@linaro.org>
+ <ZY7R581pgn3uO6kk@hovoldconsulting.com>
+ <fa0fbadc-a7c3-4bea-bed7-0006db0616dc@linaro.org>
+ <ZY7l828-mSGXVwrk@hovoldconsulting.com>
+ <598ede70-bc01-4137-b68b-981c3d420735@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <598ede70-bc01-4137-b68b-981c3d420735@linaro.org>
 
-There has been a lingering bug in LoongArch Linux systems causing some
-GCC tests to intermittently fail (see Closes link).  I've made a minimal
-reproducer:
+On Sat, Dec 30, 2023 at 02:16:18AM +0100, Konrad Dybcio wrote:
+> On 29.12.2023 16:29, Johan Hovold wrote:
+> > [ Again, please remember to add a newline before you inline comments to
+> > make you replies readable. ]
+> > 
+> > On Fri, Dec 29, 2023 at 04:01:27PM +0100, Konrad Dybcio wrote:
+> >> On 29.12.2023 15:04, Johan Hovold wrote:
+> >>> On Wed, Dec 27, 2023 at 11:17:19PM +0100, Konrad Dybcio wrote:
+> >>>> At least on SC8280XP, if the PCIe reset is asserted, the corresponding
+> >>>> AUX_CLK will be stuck at 'off'.
+> >>>
+> >>> No, this path is exercised on every boot without the aux clock ever
+> >>> being stuck at off. So something is clearly missing in this description.
+> > 
+> >> That's likely because the hardware has been initialized and not cleanly
+> >> shut down by your bootloader. When you reset it, or your bootloader
+> >> wasn't so kind, you need to start initialization from scratch.
+> > 
+> > What does that even mean? I'm telling you that this reset is asserted on
+> > each boot, on all sc8280xp platforms I have access to, and never have I
+> > seen the aux clk stuck at off.
+> > 
+> > So clearly your claim above is too broad and the commit message is
+> > incorrect or incomplete.
+> 
+> diff --git a/drivers/clk/qcom/gcc-sc8280xp.c b/drivers/clk/qcom/gcc-sc8280xp.c
+> index 0b7801971dc1..6650bd6af5e3 100644
+> --- a/drivers/clk/qcom/gcc-sc8280xp.c
+> +++ b/drivers/clk/qcom/gcc-sc8280xp.c
+> @@ -7566,6 +7566,18 @@ static int gcc_sc8280xp_probe(struct platform_device *pdev)
+>         if (ret)
+>                 goto err_put_rpm;
+>  
+> +       int val;
+> +       regmap_read(regmap, 0xa0000, &val);
+> +       pr_err("GCC_PCIE_3A_BCR = 0x%x\n", val);
+> +       regmap_read(regmap, 0xa00f0, &val);
+> +       pr_err("GCC_PCIE_3A_LINK_DOWN_BCR = 0x%x\n", val);
+> +       regmap_read(regmap, 0xa00fc, &val);
+> +       pr_err("GCC_PCIE_3A_NOCSR_COM_PHY_BCR = 0x%x\n", val);
+> +       regmap_read(regmap, 0xa00e0, &val);
+> +       pr_err("GCC_PCIE_3A_PHY_BCR = 0x%x\n", val);
+> +       regmap_read(regmap, 0xa00e4, &val);
+> +       pr_err("GCC_PCIE_3A_PHY_NOCSR_COM_PHY_BCR = 0x%x\n", val);
+> +
+>         pm_runtime_put(&pdev->dev);
+>  
+>         return 0;
+> 
+> 
+> [root@sc8280xp-crd ~]# dmesg | grep BCR
+> [    2.500245] GCC_PCIE_3A_BCR = 0x0
+> [    2.500250] GCC_PCIE_3A_LINK_DOWN_BCR = 0x0
+> [    2.500253] GCC_PCIE_3A_NOCSR_COM_PHY_BCR = 0x0
+> [    2.500255] GCC_PCIE_3A_PHY_BCR = 0x0
+> [    2.500257] GCC_PCIE_3A_PHY_NOCSR_COM_PHY_BCR = 0x0
+> 
+> 
+> 0 meaning "not asserted".
+> 
+> Adding the read in the GCC driver .probe ensures we get the
+> unmodified data, as all GCC consumers must wait for it to probe. 
+> 
+> PCIE3A is used for WLAN on the CRD, btw.
+> 
 
-    zsh% cat measure.s
-    .align 4
-    .globl _start
-    _start:
-        movfcsr2gr  $a0, $fcsr0
-        bstrpick.w  $a0, $a0, 16, 16
-        beqz        $a0, .ok
-	break       0
-    .ok:
-        li.w        $a7, 93
-	syscall     0
-    zsh% cc mesaure.s -o measure -nostdlib
-    zsh% echo $((1.0/3))
-    0.33333333333333331
-    zsh% while ./measure; do ; done
+I get what you are trying to do, but I should say that your justification so far
+didn't do the justice.
 
-This while loop should not stop as POSIX is clear that execve must set
-fenv to the default, where FCSR should be zero.  But in fact it will
-just stop after running for a while (normally less than 30 seconds).
-Note that "$((1.0/3))" is needed to reproduce the issue because it
-raises FE_INVALID and makes fcsr0 non-zero.
+Your point is that, if the PCIe BCR is asserted during boot (which can happen if
+the bootloader didn't initialize PCIe for things like storage), then trying to
+enable clocks will result in the "clk stuck" error from GCC. But in the case of
+sc8280xp, bootloader would've already initialized PCIe during boot as it is uses
+NVMe for things like firmware. But when you do a full power down during suspend
+(CX power collapse), then while reinitializing the controller during resume, you
+are hitting the "clk stuck" error because at that time, the BCR reset would be
+asserted (POR value).
 
-The problem is we are relying on SET_PERSONALITY2 to reset
-current->thread.fpu.fcsr.  But SET_PERSONALITY2 is executed before
-start_thread which calls lose_fpu(0).  We can see if kernel preempt is
-enabled, we may switch to another thread after SET_PERSONALITY2 but
-before lose_fpu(0).  Then bad thing happens: during the thread switch
-the value of the fcsr0 register is stored into current->thread.fpu.fcsr,
-making it dirty again.
+But I really suspect if that is the case... Because, the same init function is
+being used by other SoCs (sm8150, sm8250, etc... even sdx55) and I'm pretty sure
+that in those SoCs, the bootloader wouldn't have initialized PCIe during boot as
+there is no use case.
 
-The issue can be fixed by setting current->thread.fpu.fcsr after
-lose_fpu(0) because lose_fpu clears TIF_USEDFPU, then the thread
-switch won't touch current->thread.fpu.fcsr.
+So I cross checked it on SM8450, but I saw the BCR status being "0" during boot
+(same as on sc8280xp). Then I checked the HPG and came to know that when the
+PCIe GDSC is uncollapsed, some of the BCRs would be deasserted in the back.
+Though it mentioned only PHY_BCR and not the PCIE_n_BCR. But I think the
+behavior might be same for both. You can verify it by printing the state of all
+BCRs during resume from suspend. This will give us some clue...
 
-The only other architecture setting FCSR in SET_PERSONALITY2 is MIPS.
-They do this for supporting different FP flavors (NaN encodings etc).
-which do not exist on LoongArch.  I'm not sure how MIPS evades the issue
-(or maybe it's just buggy too) as I don't have a running MIPS hardware
-now.
+> >  
+> >>>> Assert the reset (which may end up being a NOP if it was previously
+> >>>> asserted) and de-assert it back *before* turning on the clocks to avoid
+> >>>> such cases.
+> >>>>
+> >>>> In addition to that, in case the clock bulk enable fails, assert the
+> >>>> RC reset back, as the hardware is in an unknown state at best.
+> >>>
+> >>> This is arguably a separate change, and not necessarily one that is
+> >>> correct either
+> > 
+> >> If the clock enable fails, the PCIe hw is not in reset state, ergo it
+> >> may be doing "something", and that "something" would eat non-zero power.
+> >> It's just cleaning up after yourself.
+> > 
+> > How can it do something without power and clocks?
+> 
+> Fair point.
+> 
+> As far as power goes, the RC hangs off CX, which is on whenever the
+> system is not in power collapse. As for clocks, at least parts of it
+> use the crystal oscillator, not sure if directly.
+> 
+> > And leaving reset
+> > asserted for non-powered devices is generally not a good idea.
+> 
+> Depends on the hw.
+> 
 
-So for LoongArch, just remove the current->thread.fpu.fcsr setting from
-SET_PERSONALITY2 and do it in start_thread, after lose_fpu(0).  And we
-just set it to 0, instead of boot_cpu_data.fpu_csr0 (because we should
-provide the userspace a consistent configuration, no matter how hardware
-and firmware behave).
+I do not have any strong argument here as there are too many things happening
+that determines whether the controller is properly powered or not. So I'd say
+that if you do not have any power numbers, it is best to leave it as it is.
 
-The while loop failing with the mainline kernel has survived one hour
-after this change.
+- Mani
 
-Closes: https://github.com/loongson-community/discussions/issues/7
-Fixes: 803b0fc5c3f2 ("LoongArch: Add process management")
-Cc: stable@vger.kernel.org
-Signed-off-by: Xi Ruoyao <xry111@xry111.site>
----
- arch/loongarch/include/asm/elf.h | 5 -----
- arch/loongarch/kernel/elf.c      | 5 -----
- arch/loongarch/kernel/process.c  | 1 +
- 3 files changed, 1 insertion(+), 10 deletions(-)
+> >  
+> >>> so should at least go in a separate patch if it should
+> >>> be done at all.
+> > 
+> >> I'll grumpily comply..
+> > 
+> > I suggest you leave it deasserted unless you have documentation
+> > suggesting that the opposite is safe and recommended for this piece of
+> > hardware.
+> >  
+> >>>> Fixes: ed8cc3b1fc84 ("PCI: qcom: Add support for SDM845 PCIe controller")
+> >>>
+> >>> I think you're being way to liberal with your use of Fixes tags. To
+> >>> claim that this is a bug, you need to make a more convincing case for
+> >>> why you think so.
+> > 
+> >> The first paragraph describes the issue that this patch fixes.
+> > 
+> > Yes, but this is all very hand-wavy so far. With a complete commit
+> > message I may agree, but you still haven't convinced me that this is a
+> > bug and not just a workaround from some not fully-understood issue on
+> > one particular platform.
+> 
+> Right, reading it again, it doesn't really tell the whole story.
+> 
+> >  
+> >>> Also note Qualcomm's vendor driver is similarly asserting reset after
+> >>> enabling the clocks.
+> > 
+> >> It's also not asserting the reset on suspend, see below.
+> > 
+> > Right, as I mentioned.
+> >  
+> >>> That driver does not seem to reset the controller on resume, though, in
+> >>> case that is relevant for your current experiments.
+> > 
+> >> I know, the vendor driver doesn't fully shut down the controller. This
+> >> is however the only sequence that we (partially) have upstream, and the
+> >> only one that is going to work on SC8280XP (due to hw design).
+> >>
+> >> On other platforms, a "soft shutdown" (i.e. dropping the link, cutting
+> >> clocks but not fully resetting the RC state) should be possible, but
+> >> that's not what this patchset concerns.
+> > 
+> > The commit message does not even mention suspend, it just makes a
+> > clearly false general claim about a clock being stuck unless you reorder
+> > things.
+> 
+> No, I insist that this general statement, while indeed lacking a full
+> description of the problem, is provably true. The AUX clock will not
+> turn on if the PCIe reset is asserted, at least on SC8280XP.
+> 
+> Konrad
 
-diff --git a/arch/loongarch/include/asm/elf.h b/arch/loongarch/include/asm/elf.h
-index 9b16a3b8e706..f16bd42456e4 100644
---- a/arch/loongarch/include/asm/elf.h
-+++ b/arch/loongarch/include/asm/elf.h
-@@ -241,8 +241,6 @@ void loongarch_dump_regs64(u64 *uregs, const struct pt_regs *regs);
- do {									\
- 	current->thread.vdso = &vdso_info;				\
- 									\
--	loongarch_set_personality_fcsr(state);				\
--									\
- 	if (personality(current->personality) != PER_LINUX)		\
- 		set_personality(PER_LINUX);				\
- } while (0)
-@@ -259,7 +257,6 @@ do {									\
- 	clear_thread_flag(TIF_32BIT_ADDR);				\
- 									\
- 	current->thread.vdso = &vdso_info;				\
--	loongarch_set_personality_fcsr(state);				\
- 									\
- 	p = personality(current->personality);				\
- 	if (p != PER_LINUX32 && p != PER_LINUX)				\
-@@ -340,6 +337,4 @@ extern int arch_elf_pt_proc(void *ehdr, void *phdr, struct file *elf,
- extern int arch_check_elf(void *ehdr, bool has_interpreter, void *interp_ehdr,
- 			  struct arch_elf_state *state);
- 
--extern void loongarch_set_personality_fcsr(struct arch_elf_state *state);
--
- #endif /* _ASM_ELF_H */
-diff --git a/arch/loongarch/kernel/elf.c b/arch/loongarch/kernel/elf.c
-index 183e94fc9c69..0fa81ced28dc 100644
---- a/arch/loongarch/kernel/elf.c
-+++ b/arch/loongarch/kernel/elf.c
-@@ -23,8 +23,3 @@ int arch_check_elf(void *_ehdr, bool has_interpreter, void *_interp_ehdr,
- {
- 	return 0;
- }
--
--void loongarch_set_personality_fcsr(struct arch_elf_state *state)
--{
--	current->thread.fpu.fcsr = boot_cpu_data.fpu_csr0;
--}
-diff --git a/arch/loongarch/kernel/process.c b/arch/loongarch/kernel/process.c
-index 767d94cce0de..caed58770650 100644
---- a/arch/loongarch/kernel/process.c
-+++ b/arch/loongarch/kernel/process.c
-@@ -92,6 +92,7 @@ void start_thread(struct pt_regs *regs, unsigned long pc, unsigned long sp)
- 	clear_used_math();
- 	regs->csr_era = pc;
- 	regs->regs[3] = sp;
-+	current->thread.fpu.fcsr = 0;
- }
- 
- void flush_thread(void)
 -- 
-2.43.0
-
+மணிவண்ணன் சதாசிவம்
 
