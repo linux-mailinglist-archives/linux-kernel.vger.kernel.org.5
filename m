@@ -1,123 +1,133 @@
-Return-Path: <linux-kernel+bounces-13945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 469D182155E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 22:00:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F074821562
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 22:01:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8029C281E13
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 21:00:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE848B20F35
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 21:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4913F9DB;
-	Mon,  1 Jan 2024 21:00:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2190BF9F0;
+	Mon,  1 Jan 2024 21:00:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f15NnXGY"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="KGkfDBAa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB9E9E57E;
-	Mon,  1 Jan 2024 21:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50e72e3d435so6359302e87.2;
-        Mon, 01 Jan 2024 13:00:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704142824; x=1704747624; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZKO7t2hG9wQZbOuOZ2OBdmSsh90rgqQlCZCF6Y6YFcg=;
-        b=f15NnXGY2amTPPRVFmkx73O2jPiSy5A0/x6aY9zqj5tsmdb/sC6s+o3MBCTtjkaSN9
-         y3e/Pwm9/mGeipR5sGBBZp7xIyekzoW5IrLJ9cCMKkNeVOiIdtN959DoDkXapiOt2p8w
-         2s2ndjJe0wHBbvvS857oLsxS6ElJfDqfckY68aK460nBMYvcIUCBbBWt4FSz10fJFF7T
-         myl7sgBWQb/qui+2GiESmwwWJGZH5cFWct4ollcRfm/y+XlJz0sIs6chpiHjZ843vDgv
-         wNv8ee40/8CB0CmzkQV2UJn5rSoMvEYcXgdR7SP2ON7n34HkG/XkaibJl+dUSo5P99Do
-         C1UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704142824; x=1704747624;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZKO7t2hG9wQZbOuOZ2OBdmSsh90rgqQlCZCF6Y6YFcg=;
-        b=HFrsanv+B5rgk0j2t6FMOaI6Yqx6Gg2dBclEY6ZyDKUxpt79xGbhOHCArRwjAzM7fG
-         GwSWl97yhdXkYwdl+vX5ea854ySCPducuuZzkoirD+/rquuiq0Mtu3nfQ5tTrS8fFLD+
-         5kniih7d8RpRWWOjyMLDJBvHMQ7+F/vcss4W0ARddgl06iSj/ks6gbAJoHMp8zyy1Um7
-         BTlaAHlGJY+38eHVdoPWa5J3zE3vDyXf/V+spH9wuCDQohIu0UOOBpXVTSDZ4bhi4X9i
-         G2I+FTKOBPi4x8lCHU2k0gBPvo23KEKPZx0OGptK3qxCA4w7aQBg/I1y13w9OAsQXlQn
-         V9og==
-X-Gm-Message-State: AOJu0YwgbFaWHTnlSZQUM+Y4lFt4YekrlXh/hH2ukLELjJLs64qfTmaf
-	n5iWFeRcIjTkJbdMq51LmFI=
-X-Google-Smtp-Source: AGHT+IE86fSR+lttAonljpboKktMB8Ji41vcG9rV4MNjyxOno5Zp8U6svFT8fnkFNZxZ561m0wvtBA==
-X-Received: by 2002:a05:6512:33d5:b0:50e:7e1c:9049 with SMTP id d21-20020a05651233d500b0050e7e1c9049mr4083434lfg.70.1704142824646;
-        Mon, 01 Jan 2024 13:00:24 -0800 (PST)
-Received: from hex.my.domain (83.11.207.119.ipv4.supernova.orange.pl. [83.11.207.119])
-        by smtp.gmail.com with ESMTPSA id i15-20020a05640200cf00b0055404e08589sm15122045edu.85.2024.01.01.13.00.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jan 2024 13:00:23 -0800 (PST)
-From: Artur Weber <aweber.kernel@gmail.com>
-Date: Mon, 01 Jan 2024 22:00:16 +0100
-Subject: [PATCH 2/2] drm/panel: samsung-s6d7aa0: drop DRM_BUS_FLAG_DE_HIGH
- for lsl080al02
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A792FBF2;
+	Mon,  1 Jan 2024 21:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704142817; x=1704747617; i=markus.elfring@web.de;
+	bh=soggXHKwlX5H4i278ffY+sla9st1cZwXGpXQmiuTWMQ=;
+	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
+	 In-Reply-To;
+	b=KGkfDBAaAr7ik0/EV0cN7LvvDwwKPJ7GJ1RSfcV1LPp0ejo+ogtGEnl4CPieSlEU
+	 cpNjl9tMVwoGHreF6BQZ28ptv8uWHcOWyajQe9IyqBXIfThzW6k6rv/4Xw1hh0Is2
+	 HLRwaGFrI6L9PuQLZGPWMYNMYBtpXPhS6tppItX1AhtCcEjl7bOZczxD+vqlSn6cq
+	 QaQ6+GGfBYhoFv1MC18BZgl4n0u1Cx9DU4TNfRRQfMcXpYSXixDUEEqc/q9mAVKXv
+	 a4Qo3dMyhI6Z+S2lwWfnYN7qr6LMIAFC69QGQzIB1e9ezcbBCf8uMvfsvVToVMa1w
+	 /nKLHO49ieakCVWSGQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MHEbq-1rOn6f0GC8-00DgW5; Mon, 01
+ Jan 2024 22:00:17 +0100
+Message-ID: <d4b65eeb-0ded-4a04-a58e-496a7609edb3@web.de>
+Date: Mon, 1 Jan 2024 22:00:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240101-tab3-display-fixes-v1-2-887ba4dbd16b@gmail.com>
-References: <20240101-tab3-display-fixes-v1-0-887ba4dbd16b@gmail.com>
-In-Reply-To: <20240101-tab3-display-fixes-v1-0-887ba4dbd16b@gmail.com>
-To: Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, Artur Weber <aweber.kernel@gmail.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1704142819; l=1047;
- i=aweber.kernel@gmail.com; s=20231030; h=from:subject:message-id;
- bh=pg28sLvX5GdC5bOF/yyzGASGCCoIgKs1qHIpKvHG7pQ=;
- b=V1bj5lEkTVkRcuqmS/0vog/IRKcLOnQ/VyKrfKyWkMBtEXBwTIYRhz1D8Isd2VzvjtsLbDXb0
- DvkWU1R5FlRBed5qaJ/SpcpwyEMKCETBnjzMpeIDR9/2JAqKyROVfsf
-X-Developer-Key: i=aweber.kernel@gmail.com; a=ed25519;
- pk=RhDBfWbJEHqDibXbhNEBAnc9FMkyznGxX/hwfhL8bv8=
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH 2/2] net/iucv: Improve error handling in iucv_enable()
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+To: linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Alexandra Winter <wintera@linux.ibm.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Wenjia Zhang <wenjia@linux.ibm.com>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <cde82080-c715-473c-97ac-6ef66bba6d64@web.de>
+In-Reply-To: <cde82080-c715-473c-97ac-6ef66bba6d64@web.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:3sLFUxO0MRy26dd/7tWyoDkY1R9BrJbPkUg+db930Ay14GrrrhG
+ AMYI8XZD3UfWYRnl4l8ozmGKCgJyllAecW77Ts5AIxVPtW9WbhpEXrs2+tolQGvpR1OAFfO
+ 52POuTCOBqOKo/+uesr5uOG3c71HTnhF97Yo9ar0CVYuIPlXg2RYrYcIl3YpyeBg7fswIYv
+ IyIXgwrW3XkB7WeD8PMXA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:u5JaqyafKKw=;Yfgd+RdWhfCOMl/7gO9DZVrO0X1
+ mRZq2XL+r7fweRFANlHZxbVSUILJrff9u/NEGrzEBVLmYv+5qo+FDlIEtvK+fuVT611eqRNB0
+ wxSBMp2X8vVcV1fWRycf/2B3kjJUd7K+L0gGb2snu3Klpb3l6VWXYyI7gzDUV7G6rrDhaj5hg
+ Os3HGDWVunkUFgJ1EVCdrkPUlcqKRwupBE5hgZizYjRSNO84gc8+CtVRBHV49Qd9/5qO//k2R
+ 7Yf1SmQD3B1NBUL0oGy/hdH44Cu/K25pwKA69lrt2VqZPpUiwsasHwkOSXgbJas5z68Xy/YuG
+ dnjWKZvhZ+yGd0BSaeL91K9PGwTnQPYg4a3NlvdbMvJyAdZe+0dYkqwPMsVZc+Fac4CJ2/Y/m
+ XpcVAgWBAjonKSXAOzctntIjzZdE/C5LLrS4bC3/cx8Y3KNQSuwoScJ5BNlUWqZTTmnaFZ7ST
+ ikOIgk+VuEvml1itpJoz/il5BwiGlH4gPUmzF78zzrjW4oNKKHdoxhxzPLBQhYjnf4n4O5D6s
+ wT/0opadKEuZl3sr/PpTCKNApk2SAWQJ9i9dlxrmeL410Pmbr21UuiLaRaDgLmGbzQE6rlBey
+ 9GwwKLvC1gxcY8iJgSSwJmqbvB/v8QrGAbN7IuH+GEfALxN4pib7PEC1n5iOLo9SMktd2UJ4O
+ wzeOW7Te5V9CAlh7S6uOUCIbn4jV3imHtl6ShXU7iTtphJSRT7JGJHsAQxBJny1semAElTK6N
+ 3d77+BZJHbvhlPjvhtHQLhFBA/tQAoJgars5pbEKg0OpUWs/mgwJdDnGcDGZI8rMwhuwHDvNY
+ gSoo38wBbVU+LGJnKudvMBQeYfDtDfqz1sNZ5TJYm0iT/TJQd0QG2qUe8aNBqEZYXZkbdHMeq
+ ul6yvzvU9DWguFXgcS51+UkxbfJenfQ2Ce6UoFo9gKpcCrubD1se9nCQUMi0L9Gxqi1GRqKoK
+ zaH8Kw==
 
-It turns out that I had misconfigured the device I was using the panel
-with; the bus data polarity is not high for this panel, I had to change
-the config on the display controller's side.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 1 Jan 2024 21:44:46 +0100
 
-Fix the panel config to properly reflect its accurate settings.
+The kfree() function was called in one case during error handling
+even if the passed variable contained a null pointer.
+This issue was detected by using the Coccinelle software.
 
-Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
----
- drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+* Thus achieve an unlock operation by using the corresponding label.
 
-diff --git a/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c b/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c
-index ea5a85779382..f23d8832a1ad 100644
---- a/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c
-+++ b/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c
-@@ -309,7 +309,7 @@ static const struct s6d7aa0_panel_desc s6d7aa0_lsl080al02_desc = {
- 	.off_func = s6d7aa0_lsl080al02_off,
- 	.drm_mode = &s6d7aa0_lsl080al02_mode,
- 	.mode_flags = MIPI_DSI_MODE_VSYNC_FLUSH | MIPI_DSI_MODE_VIDEO_NO_HFP,
--	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
-+	.bus_flags = 0,
- 
- 	.has_backlight = false,
- 	.use_passwd3 = false,
+* Move two error code assignments to other places.
 
--- 
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ net/iucv/iucv.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/net/iucv/iucv.c b/net/iucv/iucv.c
+index 71ba309e05ee..09e78a57bab8 100644
+=2D-- a/net/iucv/iucv.c
++++ b/net/iucv/iucv.c
+@@ -543,13 +543,14 @@ static int iucv_enable(void)
+ 	int cpu, rc;
+
+ 	cpus_read_lock();
+-	rc =3D -ENOMEM;
+ 	alloc_size =3D iucv_max_pathid * sizeof(struct iucv_path);
+ 	iucv_path_table =3D kzalloc(alloc_size, GFP_KERNEL);
+-	if (!iucv_path_table)
+-		goto out;
++	if (!iucv_path_table) {
++		rc =3D -ENOMEM;
++		goto unlock;
++	}
++
+ 	/* Declare per cpu buffers. */
+-	rc =3D -EIO;
+ 	for_each_online_cpu(cpu)
+ 		smp_call_function_single(cpu, iucv_declare_cpu, NULL, 1);
+ 	if (cpumask_empty(&iucv_buffer_cpumask))
+@@ -564,6 +565,7 @@ static int iucv_enable(void)
+ out:
+ 	kfree(iucv_path_table);
+ 	iucv_path_table =3D NULL;
++	rc =3D -EIO;
+ 	goto unlock;
+ }
+
+=2D-
 2.43.0
 
 
