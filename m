@@ -1,211 +1,69 @@
-Return-Path: <linux-kernel+bounces-13861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 610F18213BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 13:28:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 022F08213BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 13:42:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95395B21571
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 12:28:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1E5628209E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 12:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 041822913;
-	Mon,  1 Jan 2024 12:28:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="LbAOP40K"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 085903D70;
+	Mon,  1 Jan 2024 12:42:53 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [195.130.137.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF862595;
-	Mon,  1 Jan 2024 12:28:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704112100;
-	bh=xm7n6hqVFtL1Me4dPsBfzKOCO6qpbR9c3yDpqbhJUvQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=LbAOP40KIWKYJRLjFziqkGOQtKijTCBwQ3amcroOFuxF1B3j0OIHe8u5Z6dH7rgkV
-	 31oTuXJdPjbpbX4bd9CWZ5/PLOfIyd5fDj4Z6GFHElIgvdFXxOJHBPMhKPN7HilHb5
-	 IfFkdfU0FXb1mqaDEVeboUy4iqubseDAooZBgp8MtYTvTSD3GGfYaVSsHoKBvcK60i
-	 pHr+CdoKjXiTtIz7wwBIXs6YPJZfL/yDTaz6MJ5LYUHOr5ku7gl+5BMao22ckVLP9D
-	 8HunyrqP1yaV1OfWEQVd7Yl2HrItqR28DcRqDqg+wRFhGk3Bl7DmsEzViPYWio9Wpz
-	 31KrGV2cbEnrQ==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0AE243780029;
-	Mon,  1 Jan 2024 12:28:18 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	kernel@collabora.com,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests/mm: conform test to TAP format output
-Date: Mon,  1 Jan 2024 17:28:14 +0500
-Message-ID: <20240101122815.1716498-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.42.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D26F83C17
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 12:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+	by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4T3b5Q20Tyz4x1NJ
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 13:34:18 +0100 (CET)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:80cd:b0f2:ee79:513f])
+	by baptiste.telenet-ops.be with bizsmtp
+	id VQaA2B0073YAfuD01QaA8A; Mon, 01 Jan 2024 13:34:10 +0100
+Received: from geert (helo=localhost)
+	by ramsan.of.borg with local-esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rKHUg-00EAv7-3m
+	for linux-kernel@vger.kernel.org;
+	Mon, 01 Jan 2024 13:34:10 +0100
+Date: Mon, 1 Jan 2024 13:34:10 +0100 (CET)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-kernel@vger.kernel.org
+Subject: Re: Build regressions/improvements in v6.7-rc8
+In-Reply-To: <20240101121746.384920-1-geert@linux-m68k.org>
+Message-ID: <e0d7d1b-6d28-5d9a-d2f9-7ab218a1a730@linux-m68k.org>
+References: <CAHk-=whbyHgacqfOJ0VU_GxB-p=Cz+xsQ6XWrAEx=gT_QO9ERg@mail.gmail.com> <20240101121746.384920-1-geert@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-Conform the layout, informational and status messages to TAP. No
-functional change is intended other than the layout of output messages.
+On Mon, 1 Jan 2024, Geert Uytterhoeven wrote:
+> JFYI, when comparing v6.7-rc8[1] to v6.7-rc7[3], the summaries are:
+>  - build errors: +10/-3
 
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
- tools/testing/selftests/mm/gup_test.c | 70 +++++++++++++++------------
- 1 file changed, 38 insertions(+), 32 deletions(-)
+Just tbe usual SH ICE crickets.
 
-diff --git a/tools/testing/selftests/mm/gup_test.c b/tools/testing/selftests/mm/gup_test.c
-index ec2229136384..09efd1b3559e 100644
---- a/tools/testing/selftests/mm/gup_test.c
-+++ b/tools/testing/selftests/mm/gup_test.c
-@@ -50,39 +50,41 @@ static char *cmd_to_str(unsigned long cmd)
- void *gup_thread(void *data)
- {
- 	struct gup_test gup = *(struct gup_test *)data;
--	int i;
-+	int i, status;
- 
- 	/* Only report timing information on the *_BENCHMARK commands: */
- 	if ((cmd == PIN_FAST_BENCHMARK) || (cmd == GUP_FAST_BENCHMARK) ||
- 	     (cmd == PIN_LONGTERM_BENCHMARK)) {
- 		for (i = 0; i < repeats; i++) {
- 			gup.size = size;
--			if (ioctl(gup_fd, cmd, &gup))
--				perror("ioctl"), exit(1);
-+			status = ioctl(gup_fd, cmd, &gup);
-+			if (status)
-+				break;
- 
- 			pthread_mutex_lock(&print_mutex);
--			printf("%s: Time: get:%lld put:%lld us",
--			       cmd_to_str(cmd), gup.get_delta_usec,
--			       gup.put_delta_usec);
-+			ksft_print_msg("%s: Time: get:%lld put:%lld us",
-+				       cmd_to_str(cmd), gup.get_delta_usec,
-+				       gup.put_delta_usec);
- 			if (gup.size != size)
--				printf(", truncated (size: %lld)", gup.size);
--			printf("\n");
-+				ksft_print_msg(", truncated (size: %lld)", gup.size);
-+			ksft_print_msg("\n");
- 			pthread_mutex_unlock(&print_mutex);
- 		}
- 	} else {
- 		gup.size = size;
--		if (ioctl(gup_fd, cmd, &gup)) {
--			perror("ioctl");
--			exit(1);
--		}
-+		status = ioctl(gup_fd, cmd, &gup);
-+		if (status)
-+			goto return_;
- 
- 		pthread_mutex_lock(&print_mutex);
--		printf("%s: done\n", cmd_to_str(cmd));
-+		ksft_print_msg("%s: done\n", cmd_to_str(cmd));
- 		if (gup.size != size)
--			printf("Truncated (size: %lld)\n", gup.size);
-+			ksft_print_msg("Truncated (size: %lld)\n", gup.size);
- 		pthread_mutex_unlock(&print_mutex);
- 	}
- 
-+return_:
-+	ksft_test_result(!status, "ioctl status %d\n", status);
- 	return NULL;
- }
- 
-@@ -170,7 +172,7 @@ int main(int argc, char **argv)
- 			touch = 1;
- 			break;
- 		default:
--			return -1;
-+			ksft_exit_fail_msg("Wrong argument\n");
- 		}
- 	}
- 
-@@ -198,11 +200,12 @@ int main(int argc, char **argv)
- 		}
- 	}
- 
-+	ksft_print_header();
-+	ksft_set_plan(nthreads);
-+
- 	filed = open(file, O_RDWR|O_CREAT);
--	if (filed < 0) {
--		perror("open");
--		exit(filed);
--	}
-+	if (filed < 0)
-+		ksft_exit_fail_msg("Unable to open %s: %s\n", file, strerror(errno));
- 
- 	gup.nr_pages_per_call = nr_pages;
- 	if (write)
-@@ -213,27 +216,29 @@ int main(int argc, char **argv)
- 		switch (errno) {
- 		case EACCES:
- 			if (getuid())
--				printf("Please run this test as root\n");
-+				ksstatic unsigned long cmd = GUP_FAST_BENCHMARK;
-+			static int gup_fd, repeats = 1;
-+			static unsigned long size = 128 * MB;
-+			/* Serialize prints */
-+			static pthread_mutex_t print_mutex = PTHREAD_MUTEX_INITIALIZER;
-+ft_print_msg("Please run this test as root\n");
- 			break;
- 		case ENOENT:
--			if (opendir("/sys/kernel/debug") == NULL) {
--				printf("mount debugfs at /sys/kernel/debug\n");
--				break;
--			}
--			printf("check if CONFIG_GUP_TEST is enabled in kernel config\n");
-+			if (opendir("/sys/kernel/debug") == NULL)
-+				ksft_print_msg("mount debugfs at /sys/kernel/debug\n");
-+			ksft_print_msg("check if CONFIG_GUP_TEST is enabled in kernel config\n");
- 			break;
- 		default:
--			perror("failed to open " GUP_TEST_FILE);
-+			ksft_print_msg("failed to open %s: %s\n", GUP_TEST_FILE, strerror(errno));
- 			break;
- 		}
--		exit(KSFT_SKIP);
-+		ksft_test_result_skip("Please run this test as root\n");
-+		return ksft_exit_pass();
- 	}
- 
- 	p = mmap(NULL, size, PROT_READ | PROT_WRITE, flags, filed, 0);
--	if (p == MAP_FAILED) {
--		perror("mmap");
--		exit(1);
--	}
-+	if (p == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap: %s\n", strerror(errno));
- 	gup.addr = (unsigned long)p;
- 
- 	if (thp == 1)
-@@ -264,7 +269,8 @@ int main(int argc, char **argv)
- 		ret = pthread_join(tid[i], NULL);
- 		assert(ret == 0);
- 	}
-+
- 	free(tid);
- 
--	return 0;
-+	return ksft_exit_pass();
- }
--- 
-2.42.0
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/610a9b8f49fbcf1100716370d3b5f6f884a2835a/ (all 239 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/861deac3b092f37b2c5e6871732f3e11486f7082/ (237 out of 239 configs)
 
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
 
