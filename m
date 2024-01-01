@@ -1,39 +1,37 @@
-Return-Path: <linux-kernel+bounces-13937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3559F821516
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 19:58:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2024F82151C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 20:07:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C2231C20A51
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 18:58:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9555281B9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 19:07:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9AED53B;
-	Mon,  1 Jan 2024 18:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C389CD529;
+	Mon,  1 Jan 2024 19:07:50 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from sender4-of-o50.zoho.com (sender4-of-o50.zoho.com [136.143.188.50])
+Received: from mta.juntadeandalucia.es (mta6.juntadeandalucia.es [217.12.26.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F496D527;
-	Mon,  1 Jan 2024 18:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=5challer.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=5challer.de
-ARC-Seal: i=1; a=rsa-sha256; t=1704135467; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=AKxpEeSK4iDX/TSjl/kybcrUWG0bN3IT0sI7TgQyj2sYCafmapzJKTcR1I/PnMkNfBhcOwdJmnvwuFEhE2n8/N9G5zb8jQqTCbcjLpXXo+YE+HWVXf4+tRp0KZ3onT69vyG46PCcykhh0nN5sYs7zbBgsz2KN2t3iGm9ynU07sg=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1704135467; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=/giFL055qn/sUxy3bkzIZMO2Ta2VvDHwh+De5bT1qFM=; 
-	b=Xf2PQigYRN6WhWCn1ctXgeisFJvXZFYhZvCyStU/8Sb0vgXnCxiFNWcReHhMKdNIFqZwRbipLQGcPY66YTs+tmJpOHUFKraN4mhewk3htyHz2W6Wic2BDYHPDB+zJl2cE7Ehfw2/iydHOLeTzjbuuHPzM3/Ytc6tBZCAObGjqdI=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	spf=pass  smtp.mailfrom=michael@5challer.de;
-	dmarc=pass header.from=<michael@5challer.de>
-Received: from [192.168.144.187] (188.193.25.19 [188.193.25.19]) by mx.zohomail.com
-	with SMTPS id 1704135465705385.3692486187583; Mon, 1 Jan 2024 10:57:45 -0800 (PST)
-Message-ID: <0f121140-e5dc-4c1a-b510-a9d791004a27@5challer.de>
-Date: Mon, 1 Jan 2024 19:57:40 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC0A2D51C
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 19:07:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=juntadeandalucia.es
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=juntadeandalucia.es
+Received: from [10.240.225.252] (helo=mail.juntadeandalucia.es)
+	by ccodis04.juntadeandalucia.es with esmtp (Exim 4.94.2)
+	(envelope-from <luis.munoz.edu@juntadeandalucia.es>)
+	id 1rKNda-000DT8-P4
+	for linux-kernel@vger.kernel.org; Mon, 01 Jan 2024 20:07:46 +0100
+Received: from [213.194.128.62] (helo=[192.168.1.148])
+	by mail.juntadeandalucia.es with esmtpa (Exim 4.94.2)
+	(envelope-from <luis.munoz.edu@juntadeandalucia.es>)
+	id 1rKNda-0001w3-EU
+	for linux-kernel@vger.kernel.org; Mon, 01 Jan 2024 20:07:46 +0100
+Message-ID: <002cc4da-e502-4c79-97bd-0a8b6cb2630c@juntadeandalucia.es>
+Date: Mon, 1 Jan 2024 20:07:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,120 +39,32 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Regression] [PCI/ASPM] [ASUS PN51] Reboot on resume attempt
- (bisect done; commit found)
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: bhelgaas@google.com, kai.heng.feng@canonical.com,
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- regressions@lists.linux.dev, macro@orcam.me.uk, ajayagarwal@google.com,
- sathyanarayanan.kuppuswamy@linux.intel.com, gregkh@linuxfoundation.org,
- hkallweit1@gmail.com, michael.a.bottini@linux.intel.com,
- johan+linaro@kernel.org
-References: <20240101181348.GA1684058@bhelgaas>
-Content-Language: en-US
-From: Michael Schaller <michael@5challer.de>
-In-Reply-To: <20240101181348.GA1684058@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+To: linux-kernel@vger.kernel.org
+Content-Language: es-ES
+From: =?UTF-8?Q?Luis_Mu=C3=B1oz_Fuente?= <luis.munoz.edu@juntadeandalucia.es>
+Subject: I can't activate term(e) and kill(i) magic SysRq key
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 182447 [Dec 31 2023]
+X-KLMS-AntiSpam-Version: 6.1.0.3
+X-KLMS-AntiSpam-Envelope-From: luis.munoz.edu@juntadeandalucia.es
+X-KLMS-AntiSpam-Rate: 0
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {rep_avail}, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s, ApMailHostAddress: 213.194.128.62
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2024/01/01 17:34:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2024/01/01 17:15:00 #22921685
+X-KLMS-AntiVirus-Status: Clean, skipped
 
-On 01.01.24 19:13, Bjorn Helgaas wrote:
-> On Mon, Dec 25, 2023 at 07:29:02PM +0100, Michael Schaller wrote:
->> Issue:
->> On resume from suspend to RAM there is no output for about 12 seconds, then
->> shortly a blinking cursor is visible in the upper left corner on an
->> otherwise black screen which is followed by a reboot.
->>
->> Setup:
->> * Machine: ASUS mini PC PN51-BB757MDE1 (DMI model: MINIPC PN51-E1)
->> * Firmware: 0508 (latest; also tested previous 0505)
->> * OS: Ubuntu 23.10 (except kernel)
->> * Kernel: 6.6.8 (also tested 6.7-rc7; config attached)
->>
->> Debugging summary:
->> * Kernel 5.10.205 isn’t affected.
->> * Bisect identified commit 08d0cc5f34265d1a1e3031f319f594bd1970976c as
->> cause.
->> * PCI device 0000:03:00.0 (Intel 8265 Wifi) causes resume issues as long as
->> ASPM is enabled (default).
->> * The commit message indicates that a quirk could be written to mitigate the
->> issue but I don’t know how to write such a quirk.
->>
->> Confirmed workarounds:
->> * Connect a USB flash drive (no clue why; maybe this causes a delay that
->> lets the resume succeed)
->> * Revert commit 08d0cc5f34265d1a1e3031f319f594bd1970976c (commit seemed
->> intentional; a quirk seems to be the preferred solution)
->> * pcie_aspm=off
->> * pcie_aspm.policy=performance
->> * echo 0 | sudo tee /sys/bus/pci/devices/0000:03:00.0/link/l1_aspm
->>
->> Debugging details:
->> * The resume trigger (power button, keyboard, mouse) doesn’t seem to make
->> any difference.
->> * Double checked that the kernel is configured to *not* reboot on panic.
->> * Double checked that there still isn't any kernel output without quiet and
->> splash.
->> * The issue doesn’t happen if a USB flash drive is connected. The content of
->> the flash drive doesn’t appear to matter. The USB port doesn’t appear to
->> matter.
->> * No information in any logs after the reboot. I suspect the resume from
->> suspend to RAM isn’t getting far enough as that logs could be written.
->> * Kernel 5.10.205 isn’t affected. Kernel 5.15.145, 6.6.8 and 6.7-rc7 are
->> affected.
->> * A kernel bisect has revealed the following commit as cause:
->> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=08d0cc5f34265d1a1e3031f319f594bd1970976c
->> * The commit was part of kernel 5.20 and has been backported to 5.15.
->> * The commit mentions that a device-specific quirk could be added in case of
->> new issues.
->> * According to sysfs and lspci only device 0000:03:00.0 (Intel 8265 Wifi)
->> has ASPM enabled by default.
->> * Disabling ASPM for device 0000:03:00.0 lets the resume from suspend to RAM
->> succeed.
->> * Enabling ASPM for all devices except 0000:03:00.0 lets the resume from
->> suspend to RAM succeed.
->> * This would indicate that a quirk is missing for the device 0000:03:00.0
->> (Intel 8265 Wifi) but I have no clue how to write such a quirk or how to get
->> the specifics for such a quirk.
->> * I still have no clue how a USB flash drive plays into all this. Maybe some
->> kind of a timing issue where the connected USB flash drive delays something
->> long enough so that the resume succeeds. Maybe the code removed by commit
->> 08d0cc5f34265d1a1e3031f319f594bd1970976c caused a similar delay. ¯\_(ツ)_/¯
-> 
-> Hmmm.  08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()")
-> appeared in v6.0, released Oct 2, 2022, so it's been there a while.
-> 
-> But I think the best option is to revert it until this issue is
-> resolved.  Per the commit log, 08d0cc5f3426 solved two problems:
-> 
->    1) ASPM config changes done via sysfs are lost if the device power
->       state is changed, e.g., typically set to D3hot in .suspend() and
->       D0 in .resume().
-> 
->    2) If L1SS is restored during system resume, that restored state
->       would be overwritten.
-> 
-> Problem 2) relates to a patch that is currently reverted (a7152be79b62
-> ("Revert "PCI/ASPM: Save L1 PM Substates Capability for
-> suspend/resume""), so I don't think reverting 08d0cc5f3426 will make
-> this problem worse.
-> 
-> Reverting 08d0cc5f3426 will make 1) a problem again.  But my guess is
-> ASPM changes via sysfs are fairly unusual and the device probably
-> remains functional even though it may use more power because the ASPM
-> configuration was lost.
-> 
-> So unless somebody has a counter-argument, I plan to queue a revert of
-> 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()") for
-> v6.7.
-> 
-> Bjorn
 
-If it helps I could also try if a partial revert of 08d0cc5f3426 would 
-be sufficient. This might also narrow down the issue and give more 
-insight where the issue originates from.
+Hello:
+I try to activate all magic SysRq key options according to:
+https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html
+but I can't activate term(e) and kill(i) option, is this option
+disabled? Thank you
 
-Let me know what you think.
-
-Michael
 
