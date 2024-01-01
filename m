@@ -1,127 +1,148 @@
-Return-Path: <linux-kernel+bounces-13820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A2088212E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 04:18:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B7C982225C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:58:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1436DB21BBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 03:18:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A315284779
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:58:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DBE41870;
-	Mon,  1 Jan 2024 03:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0156B16407;
+	Tue,  2 Jan 2024 19:58:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="L7wZziSo"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="sf+h60Ai"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.197])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 167EC17C8
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 03:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=78rvv
-	5vRxcrC9Qr4qOI+5DrrZFZ+xcT1jYy/BiyFMqY=; b=L7wZziSolnirBsREX6/mL
-	xyt6wJRQydbZYKsRC9nqhElLCs9e7g2eY4H7QPgvn44KHztWaw3tCw8kkWu15A3e
-	xqpRGgy/Rqze7Rheunda1228ZRdY+wpOpEeIR0COwVFh45fyxhR6c58rrYkjgIEa
-	R5vECx6epSusS1SiIIv+tY=
-Received: from ubuntu.lan (unknown [120.229.70.93])
-	by zwqz-smtp-mta-g4-4 (Coremail) with SMTP id _____wCXkomyLpJlw_TNBA--.40935S2;
-	Mon, 01 Jan 2024 11:17:08 +0800 (CST)
-From: Junwen Wu <wudaemon@163.com>
-To: mingo@redhat.com,
-	laoar.shao@gmail.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com
-Cc: mgorman@suse.de,
-	bristot@redhat.com,
-	vschneid@redhat.com,
-	linux-kernel@vger.kernel.org,
-	Junwen Wu <wudaemon@163.com>
-Subject: [PATCH v3] sched/stats: Fix rt/dl task's sched latency statistics error in sched_stat_wait trace_point
-Date: Mon,  1 Jan 2024 03:17:04 +0000
-Message-Id: <20240101031704.227541-1-wudaemon@163.com>
-X-Mailer: git-send-email 2.34.1
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2541F168D6;
+	Tue,  2 Jan 2024 19:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from skinsburskii. (c-73-239-240-195.hsd1.wa.comcast.net [73.239.240.195])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 2C6DD20B3CC1;
+	Tue,  2 Jan 2024 11:58:13 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2C6DD20B3CC1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1704225493;
+	bh=2UaDwV/oGm+Epqzq+iuoXLl1XYKs/iiOjHPSgAf4WNI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sf+h60AikfAoNDWIfOQf+gp/7n62YjqR91jk021dI0v+1a8M9a0OEjS7fQlNbGHtT
+	 ipeSl4ZqBYQjVEH3GZlLaVHYTWm8e6nUV0SEqCtKnbq135a3/00oHsQNKX3wd4Z7BD
+	 ICaDdMQVBMMzyyO3sadV/R66AVE4C1KSJe3ErDtk=
+Date: Sun, 31 Dec 2023 19:33:01 -0800
+From: Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>
+To: Alexander Graf <graf@amazon.com>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-mm@kvack.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, kexec@lists.infradead.org,
+	linux-doc@vger.kernel.org, x86@kernel.org,
+	Eric Biederman <ebiederm@xmission.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Ashish Kalra <ashish.kalra@amd.com>,
+	James Gowans <jgowans@amazon.com>, arnd@arndb.de,
+	pbonzini@redhat.com, madvenka@linux.microsoft.com,
+	Anthony Yznaga <anthony.yznaga@oracle.com>,
+	Usama Arif <usama.arif@bytedance.com>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH v2 04/17] kexec: Add KHO parsing support
+Message-ID: <20240101033301.GA765@skinsburskii.>
+References: <20231222193607.15474-1-graf@amazon.com>
+ <20231222193607.15474-5-graf@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wCXkomyLpJlw_TNBA--.40935S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ur17Kry8AryDKr1fWFyrtFb_yoW8ZrWfp3
-	yDWay8Jw4qq3y0g3yxZr4DGr45Wwn3J342gF97GayftF4Fyr1YqFn0qry3WrZ09rn5uF17
-	tF40krZxKa1vkF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piKZX7UUUUU=
-X-CM-SenderInfo: 5zxgtvxprqqiywtou0bp/1tbisBhYbWV4HH2segAAs3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231222193607.15474-5-graf@amazon.com>
 
-When enable sched_stat_wait trace_point, some rt tasks sched latency so long, like this,
-sched_stat_wait: comm=rcu_preempt pid=14 delay=4936139545261 [ns]
-Rt task has low latency, it must have a bug. When rt task balance off source cpu,
-dequeue operation not update the sched_statistics, so follow update_stats_wait_end_fair
-update method, so do dl tasks.
+On Fri, Dec 22, 2023 at 07:35:54PM +0000, Alexander Graf wrote:
+> +/**
+> + * kho_reserve_previous_mem - Adds all memory reservations into memblocks
+> + * and moves us out of the scratch only phase. Must be called after page tables
+> + * are initialized and memblock_allow_resize().
+> + */
+> +void __init kho_reserve_previous_mem(void)
+> +{
+> +	void *mem_virt = __va(mem_phys);
+> +	int off, err;
+> +
+> +	if (!handover_phys || !mem_phys)
+> +		return;
+> +
+> +	/*
+> +	 * We reached here because we are running inside a working linear map
+> +	 * that allows us to resize memblocks dynamically. Use the chance and
+> +	 * populate the global fdt pointer
+> +	 */
+> +	fdt = __va(handover_phys);
+> +
+> +	off = fdt_path_offset(fdt, "/");
+> +	if (off < 0) {
+> +		fdt = NULL;
+> +		return;
+> +	}
+> +
+> +	err = fdt_node_check_compatible(fdt, off, "kho-v1");
+> +	if (err) {
+> +		pr_warn("KHO has invalid compatible, disabling.");
 
-Fixes: 57a5c2dafca8 ("sched/rt: Support schedstats for RT sched class")
-Fixes: b5eb4a5f6521 ("sched/dl: Support schedstats for deadline sched class")
-Signed-off-by: Junwen Wu <wudaemon@163.com>
----
- kernel/sched/deadline.c | 8 +++++++-
- kernel/sched/rt.c       | 7 +++++++
- 2 files changed, 14 insertions(+), 1 deletion(-)
+It looks like KHO preserved regions won't be reserved in this case.
+Should KHO DT state be destroyed here to prevent KHO memory regions
+reuse upon rollback?
 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index b28114478b82..29223163ee22 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1558,10 +1558,16 @@ update_stats_dequeue_dl(struct dl_rq *dl_rq, struct sched_dl_entity *dl_se,
- 			int flags)
- {
- 	struct task_struct *p = dl_task_of(dl_se);
-+	struct rq *rq = rq_of_dl_rq(dl_rq);
- 
- 	if (!schedstat_enabled())
- 		return;
--
-+	/*
-+	 * Mark the end of the wait period
-+	 * if dequeueing a waiting task.
-+	 */
-+	if (p && (p != rq->curr))
-+		 update_stats_wait_end_dl(dl_rq, dl_se);
- 	if ((flags & DEQUEUE_SLEEP)) {
- 		unsigned int state;
- 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 6aaf0a3d6081..6a2600213991 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -1360,12 +1360,19 @@ update_stats_dequeue_rt(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se,
- 			int flags)
- {
- 	struct task_struct *p = NULL;
-+	struct rq *rq = rq_of_rt_se(rt_se);
- 
- 	if (!schedstat_enabled())
- 		return;
- 
- 	if (rt_entity_is_task(rt_se))
- 		p = rt_task_of(rt_se);
-+	 /*
-+	  * Mark the end of the wait period
-+	  * if dequeueing a waiting task.
-+	  */
-+	if (p && (p != rq->curr))
-+		update_stats_wait_end_rt(rt_rq, rt_se);
- 
- 	if ((flags & DEQUEUE_SLEEP) && p) {
- 		unsigned int state;
--- 
-2.34.1
+> +
+> +void __init kho_populate(phys_addr_t handover_dt_phys, phys_addr_t scratch_phys,
+> +			 u64 scratch_len, phys_addr_t mem_cache_phys,
+> +			 u64 mem_cache_len)
+> +{
+> +	void *handover_dt;
+> +
+> +	/* Determine the real size of the DT */
+> +	handover_dt = early_memremap(handover_dt_phys, sizeof(struct fdt_header));
+> +	if (!handover_dt) {
+> +		pr_warn("setup: failed to memremap kexec FDT (0x%llx)\n", handover_dt_phys);
+> +		return;
+> +	}
+> +
+> +	if (fdt_check_header(handover_dt)) {
+> +		pr_warn("setup: kexec handover FDT is invalid (0x%llx)\n", handover_dt_phys);
+> +		early_memunmap(handover_dt, PAGE_SIZE);
+> +		return;
+> +	}
+> +
+> +	handover_len = fdt_totalsize(handover_dt);
+> +	handover_phys = handover_dt_phys;
+> +
+> +	/* Reserve the DT so we can still access it in late boot */
+> +	memblock_reserve(handover_phys, handover_len);
+> +
+> +	/* Reserve the mem cache so we can still access it later */
+> +	memblock_reserve(mem_cache_phys, mem_cache_len);
+> +
+> +	/*
+> +	 * We pass a safe contiguous block of memory to use for early boot purporses from
+> +	 * the previous kernel so that we can resize the memblock array as needed.
+> +	 */
+> +	memblock_add(scratch_phys, scratch_len);
+> +
+> +	if (WARN_ON(memblock_mark_scratch(scratch_phys, scratch_len))) {
+> +		pr_err("Kexec failed to mark the scratch region. Disabling KHO.");
+> +		handover_len = 0;
+> +		handover_phys = 0;
+
+Same question here: doesn't all the KHO state gets invalid in case of any
+restoration error?
 
 
