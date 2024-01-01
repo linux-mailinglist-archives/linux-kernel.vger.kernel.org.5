@@ -1,148 +1,104 @@
-Return-Path: <linux-kernel+bounces-13926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B40678214EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 19:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2376E8214F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 19:14:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C6B1281D52
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 18:13:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B40CD281D44
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 18:14:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D95BC8D5;
-	Mon,  1 Jan 2024 18:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E4BD263;
+	Mon,  1 Jan 2024 18:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j52jHwRY"
+	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="2rxMKVpK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD712C2EE;
-	Mon,  1 Jan 2024 18:13:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E0FCC433C8;
-	Mon,  1 Jan 2024 18:13:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704132830;
-	bh=hhp2PoiaJ8C7NYym9a0J8DEeSWibrTvYe4eEPHl4oZc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=j52jHwRY+jAc4dZQmyQpxYtwHqlw0+N9FQs3c/+a+wav3nEDn/dZ5D9B4V8m3wjgt
-	 jOu4r/+2q6d+IhZJJVteqKKhHByNNwVrL6pTrE3C4nFBv4Nb6PNDa2MkWez+U1t6k7
-	 hskiNkgVG70edF9rNnDGmupfa0L0Ei3rBBz1fvlLws4aAAgF2wfT6Kc3w+EcDgBiR3
-	 IhgYDzi1WfOAaDYVeDyTmbU6H5vD/9AaLignM0275sBGWIcrVQ+0no9KOY4Tqrx4EJ
-	 +Mw6SywsCYgeaoyvMTK4Saqx2ctBffXBQDhgkqVNWADEqm1o/mazvBCFG5c4SV8rza
-	 Zmu6Bza1MRXXQ==
-Date: Mon, 1 Jan 2024 12:13:48 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Michael Schaller <michael@5challer.de>
-Cc: bhelgaas@google.com, kai.heng.feng@canonical.com,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev, macro@orcam.me.uk,
-	ajayagarwal@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-	gregkh@linuxfoundation.org, hkallweit1@gmail.com,
-	michael.a.bottini@linux.intel.com, johan+linaro@kernel.org
-Subject: Re: [Regression] [PCI/ASPM] [ASUS PN51] Reboot on resume attempt
- (bisect done; commit found)
-Message-ID: <20240101181348.GA1684058@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B2F0C8CB
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 18:13:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d3ef33e68dso56586995ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 10:13:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1704132831; x=1704737631; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ReGf1cOAhj5IBC+Obt0k8qwdOa0dy6S3IHxPRIfLygQ=;
+        b=2rxMKVpKYJGh89+4cRUkVNguolMz98/F8BfPX7AjYTzt85ld+lTvge0nKQXFpiKMle
+         XrXeMSdy5iPYDEhg4sL7VmCW94xkMEAd5wUCxZw3aYDOLNgDvs2l/oEA0JuI0cv/3IdN
+         vz5JDguPVtYFld8j2ADnGXbEPB8OGWEDsN3PNoGAuZIgZ1FgBXuhwP1ETaw8275EncT9
+         DmPihLut3rIZHGeJgrBXVbFYWzX7TJcojxoJ8BQlk6SX1hRIUBcBL59BZ6GCmWIEHoa+
+         srSmQ7n5LpXMQEGV/W1oYfr6lhheyymsQzMYsvnTYebF0ulxH3QO2urA24XoRX2AAu6i
+         fhmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704132831; x=1704737631;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ReGf1cOAhj5IBC+Obt0k8qwdOa0dy6S3IHxPRIfLygQ=;
+        b=ZJ/v7hhcxwSToCtnZG18JgMbfNjflu/wFG24IPGpcHQhP/MI9rfJjHuqV/N7tugnq3
+         ts93AkkD0/cwR++c1t1CTBI1j/pBoOQp59GbWVtvOx9rNdTrn6zp3z+9cCd6rfn8I/nx
+         AlLScL0zNUeUJKrC7YHqpZPkPnzcVMk9RU9DOKhYTcEP85ajpLixJ0467sh+FLplUd27
+         siYzwzy8k87X0q6Lp4B4Nmjgyxz74mQKUdRy0t1089pru9uGfk3uw0SFL4scgIZLwGC1
+         NQLZHlR/TC4PeTyLJnGlwTO1eeY/gKJe7ID0rEhFeLsUfATAJEk7D38VT83v3ZxUNsdu
+         A/Ow==
+X-Gm-Message-State: AOJu0YzetBX7pTjYUX4gz1vslgkj49Umb/tL+SWXgBw4rkhK/fbErfk0
+	w95CciFbFoEy3HZzTvFaYYYVRh/iXokT9Q==
+X-Google-Smtp-Source: AGHT+IE1cS1k9Ungll9iPm/B/JTbPCnFxwHlQyrtzFcKGgrKDOLHBYvSnkU2Ezw4xjx0mKWQyKlUEA==
+X-Received: by 2002:a17:902:ced2:b0:1d3:f344:6b01 with SMTP id d18-20020a170902ced200b001d3f3446b01mr19617998plg.3.1704132830785;
+        Mon, 01 Jan 2024 10:13:50 -0800 (PST)
+Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
+        by smtp.gmail.com with ESMTPSA id e9-20020a170902b78900b001cfb4d36eb1sm20375206pls.215.2024.01.01.10.13.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jan 2024 10:13:50 -0800 (PST)
+Date: Mon, 1 Jan 2024 10:13:48 -0800
+From: Stephen Hemminger <stephen@networkplumber.org>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, Anjali Kulkarni
+ <anjali.k.kulkarni@oracle.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Kuniyuki Iwashima <kuniyu@amazon.com>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] netlink: Improve exception handling in
+ __netlink_kernel_create()
+Message-ID: <20240101101348.66978156@hermes.local>
+In-Reply-To: <477e5649-87e3-44d9-8226-010b9822e649@web.de>
+References: <90679f69-951c-47b3-b86f-75fd9fde3da3@web.de>
+	<477e5649-87e3-44d9-8226-010b9822e649@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <76c61361-b8b4-435f-a9f1-32b716763d62@5challer.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Dec 25, 2023 at 07:29:02PM +0100, Michael Schaller wrote:
-> Issue:
-> On resume from suspend to RAM there is no output for about 12 seconds, then
-> shortly a blinking cursor is visible in the upper left corner on an
-> otherwise black screen which is followed by a reboot.
+On Sun, 31 Dec 2023 18:42:30 +0100
+Markus Elfring <Markus.Elfring@web.de> wrote:
+
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Sun, 31 Dec 2023 17:26:41 +0100
 > 
-> Setup:
-> * Machine: ASUS mini PC PN51-BB757MDE1 (DMI model: MINIPC PN51-E1)
-> * Firmware: 0508 (latest; also tested previous 0505)
-> * OS: Ubuntu 23.10 (except kernel)
-> * Kernel: 6.6.8 (also tested 6.7-rc7; config attached)
+> The kfree() function was called in one case by
+> the __netlink_kernel_create() function during error handling
+> even if the passed variable contained a null pointer.
+> This issue was detected by using the Coccinelle software.
 > 
-> Debugging summary:
-> * Kernel 5.10.205 isn’t affected.
-> * Bisect identified commit 08d0cc5f34265d1a1e3031f319f594bd1970976c as
-> cause.
-> * PCI device 0000:03:00.0 (Intel 8265 Wifi) causes resume issues as long as
-> ASPM is enabled (default).
-> * The commit message indicates that a quirk could be written to mitigate the
-> issue but I don’t know how to write such a quirk.
+> Thus use another label.
 > 
-> Confirmed workarounds:
-> * Connect a USB flash drive (no clue why; maybe this causes a delay that
-> lets the resume succeed)
-> * Revert commit 08d0cc5f34265d1a1e3031f319f594bd1970976c (commit seemed
-> intentional; a quirk seems to be the preferred solution)
-> * pcie_aspm=off
-> * pcie_aspm.policy=performance
-> * echo 0 | sudo tee /sys/bus/pci/devices/0000:03:00.0/link/l1_aspm
-> 
-> Debugging details:
-> * The resume trigger (power button, keyboard, mouse) doesn’t seem to make
-> any difference.
-> * Double checked that the kernel is configured to *not* reboot on panic.
-> * Double checked that there still isn't any kernel output without quiet and
-> splash.
-> * The issue doesn’t happen if a USB flash drive is connected. The content of
-> the flash drive doesn’t appear to matter. The USB port doesn’t appear to
-> matter.
-> * No information in any logs after the reboot. I suspect the resume from
-> suspend to RAM isn’t getting far enough as that logs could be written.
-> * Kernel 5.10.205 isn’t affected. Kernel 5.15.145, 6.6.8 and 6.7-rc7 are
-> affected.
-> * A kernel bisect has revealed the following commit as cause:
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=08d0cc5f34265d1a1e3031f319f594bd1970976c
-> * The commit was part of kernel 5.20 and has been backported to 5.15.
-> * The commit mentions that a device-specific quirk could be added in case of
-> new issues.
-> * According to sysfs and lspci only device 0000:03:00.0 (Intel 8265 Wifi)
-> has ASPM enabled by default.
-> * Disabling ASPM for device 0000:03:00.0 lets the resume from suspend to RAM
-> succeed.
-> * Enabling ASPM for all devices except 0000:03:00.0 lets the resume from
-> suspend to RAM succeed.
-> * This would indicate that a quirk is missing for the device 0000:03:00.0
-> (Intel 8265 Wifi) but I have no clue how to write such a quirk or how to get
-> the specifics for such a quirk.
-> * I still have no clue how a USB flash drive plays into all this. Maybe some
-> kind of a timing issue where the connected USB flash drive delays something
-> long enough so that the resume succeeds. Maybe the code removed by commit
-> 08d0cc5f34265d1a1e3031f319f594bd1970976c caused a similar delay. ¯\_(ツ)_/¯
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
-Hmmm.  08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()")
-appeared in v6.0, released Oct 2, 2022, so it's been there a while.
 
-But I think the best option is to revert it until this issue is
-resolved.  Per the commit log, 08d0cc5f3426 solved two problems:
+NAK
+Please look at something else, calling kfree(NULL) is correct
+and the preferred solution.
 
-  1) ASPM config changes done via sysfs are lost if the device power
-     state is changed, e.g., typically set to D3hot in .suspend() and
-     D0 in .resume().
 
-  2) If L1SS is restored during system resume, that restored state
-     would be overwritten.
-
-Problem 2) relates to a patch that is currently reverted (a7152be79b62
-("Revert "PCI/ASPM: Save L1 PM Substates Capability for
-suspend/resume""), so I don't think reverting 08d0cc5f3426 will make
-this problem worse.
-
-Reverting 08d0cc5f3426 will make 1) a problem again.  But my guess is
-ASPM changes via sysfs are fairly unusual and the device probably
-remains functional even though it may use more power because the ASPM
-configuration was lost.
-
-So unless somebody has a counter-argument, I plan to queue a revert of
-08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()") for
-v6.7.
-
-Bjorn
 
