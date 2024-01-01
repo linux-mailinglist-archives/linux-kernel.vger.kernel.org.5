@@ -1,186 +1,160 @@
-Return-Path: <linux-kernel+bounces-13934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C877C821506
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 19:44:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3559F821516
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 19:58:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D7721F2176A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 18:44:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C2231C20A51
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 18:58:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C46CA4E;
-	Mon,  1 Jan 2024 18:44:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b="UdgpbZ0C"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9AED53B;
+	Mon,  1 Jan 2024 18:58:17 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sender4-of-o50.zoho.com (sender4-of-o50.zoho.com [136.143.188.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CC7FD51C
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 18:44:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=landley.net
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6dbb7d80df8so6114322a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 10:44:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20230601.gappssmtp.com; s=20230601; t=1704134651; x=1704739451; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sjmXOhTctx42zOaMIsPFinaKFIHlr/ulkQ7Lu3BkB+w=;
-        b=UdgpbZ0CL9BY45Pt+ewC0brwHYnSlpgkh8oNOXjVh66JyarN6aHMhr9wqTHf59cNsh
-         NiFjXztRwN6yQiTcDmAHn2dDJaH7Fxu6XSyotPvaoHR2EX9nYtugc/k1YjstJ9mentbg
-         doVa5/9853Wq8odtWXZLmbk0zkCl5MDRio9q5Tmf9JeHXtekiAIE+Xxo1If5VXEoLy52
-         qyOBBqFKcmlHjKbGExANh21NHPy4IDxPViW3NIFZytSM4JPYsNO6ssWk1NdU4TSK4Q45
-         SpDtg/CW9IwySsL5+iL8Mf0wFTLHWtTOPTXyQJL3XBi/nrxOOuUHytUuRru0eoPFeheV
-         tg5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704134651; x=1704739451;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sjmXOhTctx42zOaMIsPFinaKFIHlr/ulkQ7Lu3BkB+w=;
-        b=JdU5nyOAnsGeKAMRaWRVAN0g3fik248bMAv5su37nZaZEGw5GCHaixecoWfbcCIzaV
-         ZfFlzJQoS1v9u3Q+KyU0gCs/RIElHAEgpg19AMbxg3nymXE7V/3PPugoghSlD7wgxG0C
-         AtCAZ39ryEH77Y67neT8E8GQPxumugDkIvE6EEVKEZsZJlSuAgeUBOmTmcPUTHa8+yIh
-         7vFET7EkMRSGcS3gfYU5RLkOnOsTlsC3UXCay8k3LKF1E6H48v1E9Zg7ljAckKkYYVcQ
-         0Hie24gYsRTJGnEPgQizTjnTEhDXbhvvZ1O46phx2c/HXUV71OOXTK6m9BnKL2Hxr9S7
-         UTzg==
-X-Gm-Message-State: AOJu0YxsV+YGhiys5d6lAT2K9+GBdPEdeYuMUrG5hFNGccjOOl9+Ipxd
-	Q13VjaIfIc9HSXdadJaiswkvusy78KOs2vOHU7rC7p8/p1g=
-X-Google-Smtp-Source: AGHT+IEGggXhpHPG1W3qW7pdwlHgw/HZy7YXw6H/rODYtkG6/6okVpvuY9/RVCotfiLACdJliNmjpw==
-X-Received: by 2002:a05:6830:12c6:b0:6dc:20e:a447 with SMTP id a6-20020a05683012c600b006dc020ea447mr6046580otq.25.1704134650809;
-        Mon, 01 Jan 2024 10:44:10 -0800 (PST)
-Received: from ?IPV6:2607:fb90:f21e:ce05:3ea9:f4ff:fe4b:aee8? ([2607:fb90:f21e:ce05:3ea9:f4ff:fe4b:aee8])
-        by smtp.gmail.com with ESMTPSA id l35-20020a0568302b2300b006d9a339773csm1562495otv.27.2024.01.01.10.44.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Jan 2024 10:44:10 -0800 (PST)
-Message-ID: <01010fbc-50d9-37f3-309c-f01643865ed9@landley.net>
-Date: Mon, 1 Jan 2024 12:50:31 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F496D527;
+	Mon,  1 Jan 2024 18:58:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=5challer.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=5challer.de
+ARC-Seal: i=1; a=rsa-sha256; t=1704135467; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=AKxpEeSK4iDX/TSjl/kybcrUWG0bN3IT0sI7TgQyj2sYCafmapzJKTcR1I/PnMkNfBhcOwdJmnvwuFEhE2n8/N9G5zb8jQqTCbcjLpXXo+YE+HWVXf4+tRp0KZ3onT69vyG46PCcykhh0nN5sYs7zbBgsz2KN2t3iGm9ynU07sg=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1704135467; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=/giFL055qn/sUxy3bkzIZMO2Ta2VvDHwh+De5bT1qFM=; 
+	b=Xf2PQigYRN6WhWCn1ctXgeisFJvXZFYhZvCyStU/8Sb0vgXnCxiFNWcReHhMKdNIFqZwRbipLQGcPY66YTs+tmJpOHUFKraN4mhewk3htyHz2W6Wic2BDYHPDB+zJl2cE7Ehfw2/iydHOLeTzjbuuHPzM3/Ytc6tBZCAObGjqdI=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	spf=pass  smtp.mailfrom=michael@5challer.de;
+	dmarc=pass header.from=<michael@5challer.de>
+Received: from [192.168.144.187] (188.193.25.19 [188.193.25.19]) by mx.zohomail.com
+	with SMTPS id 1704135465705385.3692486187583; Mon, 1 Jan 2024 10:57:45 -0800 (PST)
+Message-ID: <0f121140-e5dc-4c1a-b510-a9d791004a27@5challer.de>
+Date: Mon, 1 Jan 2024 19:57:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v3] rootfs: Fix support for rootfstype= when root= is
- given
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Regression] [PCI/ASPM] [ASUS PN51] Reboot on resume attempt
+ (bisect done; commit found)
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: bhelgaas@google.com, kai.heng.feng@canonical.com,
+ linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ regressions@lists.linux.dev, macro@orcam.me.uk, ajayagarwal@google.com,
+ sathyanarayanan.kuppuswamy@linux.intel.com, gregkh@linuxfoundation.org,
+ hkallweit1@gmail.com, michael.a.bottini@linux.intel.com,
+ johan+linaro@kernel.org
+References: <20240101181348.GA1684058@bhelgaas>
 Content-Language: en-US
-To: Stefan Berger <stefanb@linux.ibm.com>, Askar Safin <safinaskar@gmail.com>
-Cc: gregkh@linuxfoundation.org, initramfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, zohar@linux.ibm.com
-References: <CAPnZJGDcNwPLbzC99qNQ+bRMwxPU-Z0xe=TD6DWQU=0MNyeftA@mail.gmail.com>
- <d4b227de-d609-aef2-888b-203dbcf06707@landley.net>
- <CAPnZJGBeV-E_AN8GnTfkaJvRtBmCeMYYCt+O0XMsc3kDULRuKg@mail.gmail.com>
- <fb776d99-1956-4e1b-9afc-84f27ca40f46@linux.ibm.com>
- <0879141d-462c-7e94-7c87-7a5b5422b8ed@landley.net>
- <e32077de-b159-4a7b-89a3-e1925239142f@linux.ibm.com>
- <fcb45898-0699-878f-0656-f570607fbed4@landley.net>
- <8b85253d-dd75-42e4-9a05-dafb3618269c@linux.ibm.com>
-From: Rob Landley <rob@landley.net>
-In-Reply-To: <8b85253d-dd75-42e4-9a05-dafb3618269c@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Michael Schaller <michael@5challer.de>
+In-Reply-To: <20240101181348.GA1684058@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 
-On 12/31/23 10:03, Stefan Berger wrote:
->> Let me see if I understand your problem: it sounds like debian's initramfs-tools
->> overloads the root= and rootfstype= arguments parsed by the kernel to have a
->> second meaning (the kernel uses them for one thing, you want to use them for
->> something else, and there's currently a semantic gap between the two.)
+On 01.01.24 19:13, Bjorn Helgaas wrote:
+> On Mon, Dec 25, 2023 at 07:29:02PM +0100, Michael Schaller wrote:
+>> Issue:
+>> On resume from suspend to RAM there is no output for about 12 seconds, then
+>> shortly a blinking cursor is visible in the upper left corner on an
+>> otherwise black screen which is followed by a reboot.
+>>
+>> Setup:
+>> * Machine: ASUS mini PC PN51-BB757MDE1 (DMI model: MINIPC PN51-E1)
+>> * Firmware: 0508 (latest; also tested previous 0505)
+>> * OS: Ubuntu 23.10 (except kernel)
+>> * Kernel: 6.6.8 (also tested 6.7-rc7; config attached)
+>>
+>> Debugging summary:
+>> * Kernel 5.10.205 isn’t affected.
+>> * Bisect identified commit 08d0cc5f34265d1a1e3031f319f594bd1970976c as
+>> cause.
+>> * PCI device 0000:03:00.0 (Intel 8265 Wifi) causes resume issues as long as
+>> ASPM is enabled (default).
+>> * The commit message indicates that a quirk could be written to mitigate the
+>> issue but I don’t know how to write such a quirk.
+>>
+>> Confirmed workarounds:
+>> * Connect a USB flash drive (no clue why; maybe this causes a delay that
+>> lets the resume succeed)
+>> * Revert commit 08d0cc5f34265d1a1e3031f319f594bd1970976c (commit seemed
+>> intentional; a quirk seems to be the preferred solution)
+>> * pcie_aspm=off
+>> * pcie_aspm.policy=performance
+>> * echo 0 | sudo tee /sys/bus/pci/devices/0000:03:00.0/link/l1_aspm
+>>
+>> Debugging details:
+>> * The resume trigger (power button, keyboard, mouse) doesn’t seem to make
+>> any difference.
+>> * Double checked that the kernel is configured to *not* reboot on panic.
+>> * Double checked that there still isn't any kernel output without quiet and
+>> splash.
+>> * The issue doesn’t happen if a USB flash drive is connected. The content of
+>> the flash drive doesn’t appear to matter. The USB port doesn’t appear to
+>> matter.
+>> * No information in any logs after the reboot. I suspect the resume from
+>> suspend to RAM isn’t getting far enough as that logs could be written.
+>> * Kernel 5.10.205 isn’t affected. Kernel 5.15.145, 6.6.8 and 6.7-rc7 are
+>> affected.
+>> * A kernel bisect has revealed the following commit as cause:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=08d0cc5f34265d1a1e3031f319f594bd1970976c
+>> * The commit was part of kernel 5.20 and has been backported to 5.15.
+>> * The commit mentions that a device-specific quirk could be added in case of
+>> new issues.
+>> * According to sysfs and lspci only device 0000:03:00.0 (Intel 8265 Wifi)
+>> has ASPM enabled by default.
+>> * Disabling ASPM for device 0000:03:00.0 lets the resume from suspend to RAM
+>> succeed.
+>> * Enabling ASPM for all devices except 0000:03:00.0 lets the resume from
+>> suspend to RAM succeed.
+>> * This would indicate that a quirk is missing for the device 0000:03:00.0
+>> (Intel 8265 Wifi) but I have no clue how to write such a quirk or how to get
+>> the specifics for such a quirk.
+>> * I still have no clue how a USB flash drive plays into all this. Maybe some
+>> kind of a timing issue where the connected USB flash drive delays something
+>> long enough so that the resume succeeds. Maybe the code removed by commit
+>> 08d0cc5f34265d1a1e3031f319f594bd1970976c caused a similar delay. ¯\_(ツ)_/¯
 > 
-> My intention is to be able to pass rootfstype= to the kernel and have it 
-> interpreted correctly in the presence of root=, which currently does not 
-> work. User space tools that interpret the value of rootfstype= as if 
-> this option belonged to user space is not helpful, though it should be 
-> easy to teach the user space scripts to strip a leading 'tmpfs,' or 
-> 'ramfs,' from the rootfstype value and let them interpret the rest.
-
-Does your initramfs plumbing need to pass a rootfstype equivalent on to the
-userspace mount at all? In what cases does it not autodetect the type correctly?
-
-(Even NFS and SMB mounts are generally detectable because of the leading \\ or
-blah: although I suppose there are other network filesystem types that wouldn't
-be. Or if you wanted to micromanage the fat variant you were using...)
-
-"rootfstype=" is the argument that tells the _kernel_ how to mount / and by the
-time init runs the kernel's already mounted what it's going to mount. The kernel
-only exposes one visible / mount to userspace, you don't return back into it and
-get another init launched running in a different root filesystem.
-
->> You want to add a new capability requiring a new build dependency in the
->> initramfs-tools package because it's doing new stuff, but there cannot be any
->> OTHER changes made to initramfs-tools, so the kernel should change its existing
->> semantics instead.
+> Hmmm.  08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()")
+> appeared in v6.0, released Oct 2, 2022, so it's been there a while.
 > 
-> I haven't even thought of what would need to be added to Debian's 
-> initramfs-tools package since my primary goal was to enable tmpfs for 
-> the initramfs on OpenBMC where we then read the xattr values from a file 
-> and write them into the filesystem because cpio format doesn't carry 
-> them.
-
-Me, I'd have a simple initramfs extract/decrypt a tarball with the filesystem
-that needs xattr values into a new tmpfs mount and switch_root to that. But I
-tend to statically link an initramfs into the kernel image when I want to be
-sure what it's running, and have never quite been clear on the benefit of
-_additionally_ verifying data that originates from within the kernel image. (If
-they can change that, they can change ring 0 code.)
-
-Still, adding xattr support to cpio comes up a lot. It seems like a couple days
-work tops, maybe the interested parties should do a video conference thingy,
-hammer out the details, and come up with a patch to add support? The userspace
-side sounds easy enough, I added xattr support to toybox tar in 2021 in a
-weekend, and have sent "would you like to keep up with toybox" patches at the
-busybox guys semi-regularly.
-
-I even poked coreutils about feature parity once (the Android guys asked me to),
-which they said they would like to add, but which but still isn't in years later:
-
-https://lists.gnu.org/archive/html/coreutils/2023-08/msg00009.html
-https://lists.gnu.org/archive/html/coreutils/2023-08/msg00100.html
-
-But eh, I'm used to that with 30 year old projects licensed under copyleft...
-
-> Also, I didn't expect that any user space tools would try to 
-> handle a kernel command line option as if it was theirs.
-
-Debian predates the 1.0 kernel release, so has some historical design baggage.
-That's why it's I tend to check them for snags in this area.
-
->> You can't NOT provide root=, and you can't provide initramfstype=tmpfs...
+> But I think the best option is to revert it until this issue is
+> resolved.  Per the commit log, 08d0cc5f3426 solved two problems:
 > 
-> I only know about rootfstype= ( 
-> https://github.com/torvalds/linux/blob/master/init/do_mounts.c#L128 ). 
-> If currently handling of rootfstype= in presence of root= is not 
-> considered a bug and we should introduce initramfstype= instead, we 
-> could do that. But doesn't this become a bit confusing if rootfstype= 
-> can be passed when root= is absent but then initramfstype= must be used 
-> when root= is present?
-
-I personally think having two would be confusing, and changing the existing API
-without adding new capabilities is pointless.
-
-> This is 'our' patch describing the issue: 
-> https://github.com/torvalds/linux/blob/master/init/do_mounts.c#L128
+>    1) ASPM config changes done via sysfs are lost if the device power
+>       state is changed, e.g., typically set to D3hot in .suspend() and
+>       D0 in .resume().
 > 
->> either, and those are the two existing ways to tell rootfs to be tmpfs instead
->> of ramfs. You'd like to add a third way to specify the same thing.
+>    2) If L1SS is restored during system resume, that restored state
+>       would be overwritten.
 > 
-> Do you have a link to initramfstype= handling in kernel code?
+> Problem 2) relates to a patch that is currently reverted (a7152be79b62
+> ("Revert "PCI/ASPM: Save L1 PM Substates Capability for
+> suspend/resume""), so I don't think reverting 08d0cc5f3426 will make
+> this problem worse.
+> 
+> Reverting 08d0cc5f3426 will make 1) a problem again.  But my guess is
+> ASPM changes via sysfs are fairly unusual and the device probably
+> remains functional even though it may use more power because the ASPM
+> configuration was lost.
+> 
+> So unless somebody has a counter-argument, I plan to queue a revert of
+> 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()") for
+> v6.7.
+> 
+> Bjorn
 
-No, it's never done that. There was a suggestion to do that earlier in this thread:
+If it helps I could also try if a partial revert of 08d0cc5f3426 would 
+be sufficient. This might also narrow down the issue and give more 
+insight where the issue originates from.
 
-https://lkml.iu.edu/hypermail/linux/kernel/2312.2/07060.html
+Let me know what you think.
 
-And I thought it was a bad idea. The submitter agreed it was a bad idea. (Over
-the holidays I've haven't been paying close attention and threads tend to bleed
-together, sorry. :)
-
-The answer to my "do I have this right" question was, apparently, "no". I mixed
-together what two different people wanted...
-
-Rob
+Michael
 
