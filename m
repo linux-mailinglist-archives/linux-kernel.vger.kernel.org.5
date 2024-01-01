@@ -1,133 +1,224 @@
-Return-Path: <linux-kernel+bounces-13818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2B288212E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 04:07:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF9FD8212E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 04:12:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10C411C21A19
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 03:07:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 746EA28284F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jan 2024 03:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DD7DA4F;
-	Mon,  1 Jan 2024 03:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B116BA52;
+	Mon,  1 Jan 2024 03:12:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a42qvMKy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6011C7F9
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Jan 2024 03:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35fedd5e6beso69714435ab.3
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 19:07:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BC02803;
+	Mon,  1 Jan 2024 03:12:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-2044d093b3fso5536279fac.3;
+        Sun, 31 Dec 2023 19:12:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704078738; x=1704683538; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=u7GvQd+qHdmtATzJklO2uLLq2EMXX40HqpmDmkw+3xc=;
+        b=a42qvMKyW+XoKvvIpgdgdZPtfQt26VuYTi9XQjfghrnwfdxP2iSqu04mw6woyQXi/Q
+         0pr4uVDjDgbM6qOnS+5/HiVCbL8+9CuuvUk5JMx0vYum9hfBO/ZsIIzo9tduNyiOHt4n
+         L3TfRGeSSwA+993w6ApDcuTj71YHSdm/mSiaAUNPtCUmXpeOM3KWkogqBR+guKc2pRYp
+         3OVkoAUwSAKgw48xc9A2F+JDfRX5vsKKUXfEVoBeV8DsD7ATiLn4LBj2OLuK2ar2Wlnr
+         dJephnPRtQFOVK6VvkL9Gb9bzw17CURuq4PDTtdNHZn12fbWK0EcQLmAVISdm5bscDXs
+         3fqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704078424; x=1704683224;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1704078738; x=1704683538;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Cw35tYwONLgZqbqw4wi1+dVSu/2XDy+iD7y4RKCqUS0=;
-        b=pWneqJ8WFhiNbiOAKBG5ha0I0bdtqLqJoGG7AHHf7+bREWnsD8O8KAzgUWKNJErjkR
-         sxsOVXm8FxzVk7ViVa9SVcGQHdkisiU0V7qmlTPOpR/01QCXKLWS/QDTzVngIfLDiSJL
-         zn9z2DM/+dkB5fLg8PGNfO3FVW95Qk7Y2YIOg+MGV3tBcgCznd7CuJurBw0pTRiqIhFA
-         GV5VksPqztb4hlzQPOiG5m2l6f0Z2uX4s5A9ViXX1Mo1ceY++ONM6A1OEqpgx25XG279
-         Y9vY5wB/0pWWBY8Qyp4P+hTfm8km3AiG3w260W8IZZIccUHeqvfgP5Dae616IGj7K+Z5
-         +4cw==
-X-Gm-Message-State: AOJu0YztpRdW0T/LP5RmsiqzeQ75XbFJOnhPt7Qr/TKotaNv/2U1mjLH
-	/YFa1jo9WN3yOhWU0ywQ6xSdAYcP91lXQMUrkgrtwpdAdF4b
-X-Google-Smtp-Source: AGHT+IGrYYmuaweWz1RKz37Lzjw15vhx74NAAL9eIRFPRHp4E1+/+xhhnihd+99hcGkdjMEoxne3E+qUrMgKYRjoEWqFF1tZqs2l
+        bh=u7GvQd+qHdmtATzJklO2uLLq2EMXX40HqpmDmkw+3xc=;
+        b=nw/kNM6DUDCBjWPE9vBf6TeEulEuY4kg0tBb8+KcYwiLxcdzwdPGh8e6G2LVJAzPQk
+         qd6ISr4qx9leADfmpLNohFfxdNGCMg/8H7//hTEbKeEAd2a1UHw+6MUMMC67ONsC6UyP
+         3pNZGyjrmjPqA89rJiGF3wKD/vH6cxG+R3CPkayVvkURDswqT4kWi7zHsuuGpIo0OH3+
+         lJUGmJ8ZOmDLsoqVhXpTC4cToeAiUGumNXwJBkShqXwoRdNXfZYzWhyFhk2k+j0HhwSi
+         3CGyGfN9dQh9nBeSsGnwSwdtYzjlUAf2MtgZvtr/rQF52Uo/jBdeb+SBvN2UTu0YxkDq
+         hPrw==
+X-Gm-Message-State: AOJu0YwO7E0rWJ4rMILdFvrx/cw76hwAgHlZiTShwWOeU53n8/M8Zzoa
+	/Ku2Ay8kbDnwH9GfpXvQlks=
+X-Google-Smtp-Source: AGHT+IHQ+OiL9S5Ow8z8Ds9CB3HJTSLmax8kYcY2mrz/LWBaOfNiMH1YtKidYuTf8kt4QMLxMbVIjA==
+X-Received: by 2002:a05:6871:60e:b0:203:b5ec:ef08 with SMTP id w14-20020a056871060e00b00203b5ecef08mr18560864oan.107.1704078738325;
+        Sun, 31 Dec 2023 19:12:18 -0800 (PST)
+Received: from [10.0.2.15] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id cb5-20020a056a02070500b005ce170c797bsm10975835pgb.87.2023.12.31.19.12.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Dec 2023 19:12:17 -0800 (PST)
+Message-ID: <4b2d4c62-135d-4d25-8a3a-2fabd996c980@gmail.com>
+Date: Mon, 1 Jan 2024 12:12:16 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1785:b0:35f:eae9:3f26 with SMTP id
- y5-20020a056e02178500b0035feae93f26mr2001600ilu.1.1704078424661; Sun, 31 Dec
- 2023 19:07:04 -0800 (PST)
-Date: Sun, 31 Dec 2023 19:07:04 -0800
-In-Reply-To: <tencent_1C4C8CE7D046CC52DC0664498C6ED52EDB06@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002be800060dd9ad75@google.com>
-Subject: Re: [syzbot] [dri?] [media?] memory leak in get_sg_table
-From: syzbot <syzbot+9b4adfed366b14496e7e@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] docs: Raise the minimum Sphinx requirement to 2.4.4
+To: Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Akira Yokosawa <akiyks@gmail.com>
+References: <874jgs47fq.fsf@meer.lwn.net>
+ <50830030-dca7-4c43-bcc8-449c7cfa9fbb@gmail.com>
+ <87sf43qxzt.fsf@meer.lwn.net>
+Content-Language: en-US
+From: Akira Yokosawa <akiyks@gmail.com>
+In-Reply-To: <87sf43qxzt.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+Hi,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-memory leak in get_sg_table
+On Fri, 15 Dec 2023 08:36:06 -0700, Jonathan Corbet wrote:
+> Akira Yokosawa <akiyks@gmail.com> writes:
+> 
+>> With this patch applied, I get a confusing looking warning from
+>> "make htmldocs" on a machine where the Sphinx version is 2.4.5:
+>>
+>> --------
+>> Warning: It is recommended at least Sphinx version 3.4.3.
+>> To upgrade Sphinx, use:
+>>
+>> 	/home/akira/sphinx-2.4.5/bin/python3 -m venv sphinx_2.4.4
+>> 	. sphinx_2.4.4/bin/activate
+>> 	pip install -r ./Documentation/sphinx/requirements.txt
+>>
+>>     If you want to exit the virtualenv, you can use:
+>> 	deactivate
+>> --------
+>>
+>> Looks like we need to update requirements.txt as well so that it
+>> installs Sphinx 3.4.3.  Appended below is a fixup patch to that
+>> effect.
+> 
+> So I can apply this, certainly, but it makes me feel like perhaps we
+> need to reconsider our approach a bit.  It's kind of weird that we have
+> a minimum supported version, then a semi-random "recommended" version
+> that is still pretty old.
+> 
+> Is there a reason to suggest to people that they should run something
+> other than current sphinx, especially if they are updating it anyway?
+> So our "recommended version" is really "recommended *minimum* version"?
 
-2024/01/01 02:58:28 executed programs: 1
-BUG: memory leak
-unreferenced object 0xffff88811b080600 (size 16):
-  comm "syz-executor.0", pid 5492, jiffies 4294944266 (age 13.620s)
-  hex dump (first 16 bytes):
-    80 22 25 1b 81 88 ff ff 04 00 00 00 04 00 00 00  ."%.............
-  backtrace:
-    [<ffffffff816346ed>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff816346ed>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff816346ed>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff816346ed>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:3517
-    [<ffffffff8157f315>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
-    [<ffffffff82cfd82a>] kmalloc include/linux/slab.h:600 [inline]
-    [<ffffffff82cfd82a>] kzalloc include/linux/slab.h:721 [inline]
-    [<ffffffff82cfd82a>] get_sg_table.isra.0+0x2a/0xe0 drivers/dma-buf/udmabuf.c:93
-    [<ffffffff82cfd986>] begin_cpu_udmabuf+0x76/0xb0 drivers/dma-buf/udmabuf.c:157
-    [<ffffffff82cf114b>] dma_buf_begin_cpu_access+0x3b/0xc0 drivers/dma-buf/dma-buf.c:1405
-    [<ffffffff82cf1bd4>] dma_buf_ioctl+0x394/0x690 drivers/dma-buf/dma-buf.c:477
-    [<ffffffff816bf4a2>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff816bf4a2>] __do_sys_ioctl fs/ioctl.c:871 [inline]
-    [<ffffffff816bf4a2>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816bf4a2>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:857
-    [<ffffffff84b71e2f>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-    [<ffffffff84b71e2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+I picked 3.4.3 just because it is the version of distro Sphinx on
+debian 11 and RHEL 9.  It works just fine and "make htmldocs" should
+not complain it as not-recommended.
 
-BUG: memory leak
-unreferenced object 0xffff88811b252280 (size 128):
-  comm "syz-executor.0", pid 5492, jiffies 4294944266 (age 13.620s)
-  hex dump (first 32 bytes):
-    00 b1 52 04 00 ea ff ff 00 00 00 00 00 10 00 00  ..R.............
-    00 40 ac 14 01 00 00 00 00 10 00 00 00 00 00 00  .@..............
-  backtrace:
-    [<ffffffff816346ed>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff816346ed>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff816346ed>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff816346ed>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:3517
-    [<ffffffff8157f9bb>] __do_kmalloc_node mm/slab_common.c:1006 [inline]
-    [<ffffffff8157f9bb>] __kmalloc+0x4b/0x150 mm/slab_common.c:1020
-    [<ffffffff8251661f>] kmalloc_array include/linux/slab.h:637 [inline]
-    [<ffffffff8251661f>] sg_kmalloc lib/scatterlist.c:167 [inline]
-    [<ffffffff8251661f>] get_next_sg lib/scatterlist.c:402 [inline]
-    [<ffffffff8251661f>] sg_alloc_append_table_from_pages+0x35f/0x770 lib/scatterlist.c:526
-    [<ffffffff82516abc>] sg_alloc_table_from_pages_segment+0x8c/0x120 lib/scatterlist.c:586
-    [<ffffffff82cfd85e>] sg_alloc_table_from_pages include/linux/scatterlist.h:477 [inline]
-    [<ffffffff82cfd85e>] get_sg_table.isra.0+0x5e/0xe0 drivers/dma-buf/udmabuf.c:96
-    [<ffffffff82cfd986>] begin_cpu_udmabuf+0x76/0xb0 drivers/dma-buf/udmabuf.c:157
-    [<ffffffff82cf114b>] dma_buf_begin_cpu_access+0x3b/0xc0 drivers/dma-buf/dma-buf.c:1405
-    [<ffffffff82cf1bd4>] dma_buf_ioctl+0x394/0x690 drivers/dma-buf/dma-buf.c:477
-    [<ffffffff816bf4a2>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff816bf4a2>] __do_sys_ioctl fs/ioctl.c:871 [inline]
-    [<ffffffff816bf4a2>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816bf4a2>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:857
-    [<ffffffff84b71e2f>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-    [<ffffffff84b71e2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+In sphinx-pre-install, "recommended version", aka $rec_version, works
+as a criteria to emit upgrade suggestion.
 
+That said, I think it should be OK if "pip install -r requirements.txt"
+installs a newer version.
 
+>
+> 
+>> ----8<----
+>> From: Akira Yokosawa <akiyks@gmail.com>
+>> Subject: [PATCH] docs: sphinx/requirement.txt: Reflect recommended Sphinx version
+>>
+>> sphinx_pre_install parses the version of Sphinx in requirements.txt
+>> and emits messages based on it.
+>> Update requirements.txt so that it installs Sphinx 3.4.3, as well as
+>> the examples in documentation.
+>>
+>> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+>> ---
+>>  Documentation/doc-guide/sphinx.rst    | 14 +++++++-------
+>>  Documentation/sphinx/requirements.txt |  4 +++-
+>>  2 files changed, 10 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/Documentation/doc-guide/sphinx.rst b/Documentation/doc-guide/sphinx.rst
+>> index 3d125fb4139d..5227a2611026 100644
+>> --- a/Documentation/doc-guide/sphinx.rst
+>> +++ b/Documentation/doc-guide/sphinx.rst
+>> @@ -48,13 +48,13 @@ or ``virtualenv``, depending on how your distribution packaged Python 3.
+>>        on the Sphinx version, it should be installed separately,
+>>        with ``pip install sphinx_rtd_theme``.
+>>  
+>> -In summary, if you want to install Sphinx version 2.4.4, you should do::
+>> +In summary, if you want to install Sphinx version 3.4.3, you should do::
+>>  
+>> -       $ virtualenv sphinx_2.4.4
+>> -       $ . sphinx_2.4.4/bin/activate
+>> -       (sphinx_2.4.4) $ pip install -r Documentation/sphinx/requirements.txt
+>> +       $ virtualenv sphinx_3.4.3
+>> +       $ . sphinx_3.4.3/bin/activate
+>> +       (sphinx_3.4.3) $ pip install -r Documentation/sphinx/requirements.txt
+> 
+> Here we could take version numbers out entirely; otherwise we'll always
+> be updating this.
 
-Tested on:
+I thing this should be a verbatim copy of message from sphinx_pre_install
+presented later in sphinx.rst.
 
-commit:         fbafc3e6 Merge tag 'for_linus' of git://git.kernel.org..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=13cf2909e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e81921f96ae24ec0
-dashboard link: https://syzkaller.appspot.com/bug?extid=9b4adfed366b14496e7e
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14778665e80000
+> 
+>> -After running ``. sphinx_2.4.4/bin/activate``, the prompt will change,
+>> +After running ``. sphinx_3.4.3/bin/activate``, the prompt will change,
+>>  in order to indicate that you're using the new environment. If you
+>>  open a new shell, you need to rerun this command to enter again at
+>>  the virtual environment before building the documentation.
+>> @@ -118,8 +118,8 @@ command line options for your distro::
+>>  	You should run:
+>>  
+>>  		sudo dnf install -y texlive-luatex85
+>> -		/usr/bin/virtualenv sphinx_2.4.4
+>> -		. sphinx_2.4.4/bin/activate
+>> +		/usr/bin/virtualenv sphinx_3.4.3
+>> +		. sphinx_3.4.3/bin/activate
+>>  		pip install -r Documentation/sphinx/requirements.txt
+>>  
+>>  	Can't build as 1 mandatory dependency is missing at ./scripts/sphinx-pre-install line 468.
+>> diff --git a/Documentation/sphinx/requirements.txt b/Documentation/sphinx/requirements.txt
+>> index 335b53df35e2..89329e67e788 100644
+>> --- a/Documentation/sphinx/requirements.txt
+>> +++ b/Documentation/sphinx/requirements.txt
+>> @@ -1,3 +1,5 @@
+>>  # jinja2>=3.1 is not compatible with Sphinx<4.0
+>>  jinja2<3.1
+>> -Sphinx==2.4.4
+>> +# docutils>=0.18 is not compatible with 3.0 <= Sphinx < 4.0
+>> +docutils<0.18
+>> +Sphinx==3.4.3
+> 
+> I'd forgotten about the docutils fun.  I wonder of our recommended
+> minimum should actually be 4.0, then here we could put simply:
+> 
+>   Sphinx>4.0
+
+I tried it and "make htmldocs" complains:
+
+    Can't get default sphinx version from ./Documentation/sphinx/requirements.txt at ./scripts/sphinx-pre-install line 305.
+    make[2]: *** [Documentation/Makefile:101: htmldocs] Error 255
+    make[1]: *** [/home/akira/git/linux/Makefile:1695: htmldocs] Error 2
+    make: *** [Makefile:234: __sub-make] Error 2
+
+I did try to remedy this, but realized that I was too frustrated in
+deciphering the script to come up with a reasonable update.
+
+I'm giving up on this.
+
+Sorry about that.
+
+Regards,
+Akira
+
+> 
+> ?
+> 
+> Thanks,
+> 
+> jon
 
 
