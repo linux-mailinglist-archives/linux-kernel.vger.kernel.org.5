@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-14508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CA0E821E0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:50:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C15B0821E0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:50:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA84F2838C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:50:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D92B41C20617
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2722614F73;
-	Tue,  2 Jan 2024 14:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B12C14F68;
+	Tue,  2 Jan 2024 14:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K9+gvbW8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bM3HUjIj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 516B514F67
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE3614F62
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-28c467446f0so4159082a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:50:20 -0800 (PST)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-28bc870c540so7315983a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:50:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704207019; x=1704811819; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704207027; x=1704811827; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nx9emZL9ku/A2bkH8s+Myg+EcmBlTQ3WIwd3hli5Dao=;
-        b=K9+gvbW8XwHe079jSn5gCAvnEQ2XmA19vVTdGS1SZmIBvxnSYwtvmOtoxvnDdYXsxW
-         bvGjlDeDpXPp/zMzvZZvcJcSOUspOFB9eIrQmQMnPJwU6mtJmaSv1wqbeAq3AMeqsArM
-         ItoDxaidzPjMWjxpMw3LfFfvYLtxXf8B4XzrI8McHr503FcpQaPebBI4ujVlWph1vWQj
-         kYlEVC6pJcARsJmt9NyD3hnhb808RDiz6xJd0Guv2dSE3464QfmglRut6H3e6hgaCwdM
-         RvP2EQqm+7yMPhaIv6mMQRUWLAaaRmTECKh00j7UxdjHgh7NWvG5bWsjCDIF2y/9e44k
-         hf8g==
+        bh=LCgO/9ttUPkNH7K3G/yJnpUY2imlxWqPy44q0o7/7cg=;
+        b=bM3HUjIjdkKuziGFOvXltDwZisIBomDfioRKmjqsY9RlP6Fd4Nz/EsRAro9S4Dcj/r
+         3WeQA7enlJk2n3voOhzq3bKaRNQYtz83aNvXTBOAk7Df8cyRhkWvrfc4T4P4XYggMt5d
+         Tobd5t1iq2eVa6XsXNrDRvVllUbGDO0f1h/dHPHex539uPleK2IT41xTve0Xy1GWOBJh
+         I7VrKAjrpcb7BOp56UpBxjyJ3NnzUNvGesfsxFk9Rt1Ox8ja7C9MSi01bD7YQUr3Gw/A
+         XXit4g53IyRfcNbWdUVosITLKaVCvr59NktFRPvrodJICkdqSAYO8WQd2bfTXFUOOyPO
+         vcOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704207019; x=1704811819;
+        d=1e100.net; s=20230601; t=1704207027; x=1704811827;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nx9emZL9ku/A2bkH8s+Myg+EcmBlTQ3WIwd3hli5Dao=;
-        b=YET1OPTpwjrMIYj3LASJumK+W0NJwNYRx8SjKm4FxGX4iNzClfRp8ST0U8K3Tqci9P
-         F4+/u6O5VPIMIDhfKgQOjCDeOaoxVUKolr723+J+UfBZ53KCC7QZLyhT3z6OC9gENANA
-         WKy/MCeULV+ZkJRUHZfFUEGH3RbwixDiRgfKM+B33cWD4cAorznK8EYr+WCYR49h4SJr
-         KoBHUmfTedOsGn8gd0UP4DS3lHTsrBoQnhAgTo2FFbIoPqLeZkLQ3a167gmkK4lgjXdA
-         LlFYDqQq8VcGG8vVgFHndg5Dq36HW9J0bDqhVvx2/yXYicJlFFJ1on3IbevKsCd5oqGE
-         O9MQ==
-X-Gm-Message-State: AOJu0YxR2OFPv5oiW8QJDkmF0JrbTnIPbsVQZII2qDfphW79uTozf4Sc
-	T4R4v/jRpFrDwRZtRcqG95eGebrilbuLog==
-X-Google-Smtp-Source: AGHT+IH1AtANcoTpV/1fg7LaSPtmB+gncYnvxJC4l0K9bGliRbPQf3qOvwE+k/EciIKWd+fgvtLnfw==
-X-Received: by 2002:a17:90b:3781:b0:28b:d31d:bca5 with SMTP id mz1-20020a17090b378100b0028bd31dbca5mr21613623pjb.32.1704207019429;
-        Tue, 02 Jan 2024 06:50:19 -0800 (PST)
+        bh=LCgO/9ttUPkNH7K3G/yJnpUY2imlxWqPy44q0o7/7cg=;
+        b=n3yKr5rGr8Z7n+Yruy7EANNwS8O2cmLu7ZkLang2tLK5bg+2oCcIUJwQUbUZxvxidd
+         gsXitSqlBUFQ2r5oH/zL0jmOx8DQw+o0KV5cEOsg+cpI1DBgrV5nfJSj+e+a/RlrM9AK
+         nxpes4w2lz1Zym2pmS3qpx7WZggXZOZhfPUNYDqFhs9G6xrwUJJCWYjJXc71itdURD5d
+         cvkclUKqs79GwKNSdrl5GfmfdqYpM+4XjumWFFCQ/odNbD6FwdESKYDdVQwH6BQVwSZ8
+         PkS6afrQJm6KnAGM+svx2grsN8UI3TnqPjX9wkAYq9HMpHUm4yGg39sOkmrYOAeJzUxC
+         pnwQ==
+X-Gm-Message-State: AOJu0YzwDy6l8qrXIuhyUGXU4OnvifV4WBnUMBiRkf86++9KpY80Wj/6
+	3+rdRqovuqZiJhMmLGQPD8RRiMjOqCe19w==
+X-Google-Smtp-Source: AGHT+IEp/OYVuT1KyjbMk8HhRA8LrmsYNrUwPzBctDSGWxhQxggYuqj7FbqKq9gKzAV7mA4P8VLVlA==
+X-Received: by 2002:a17:90b:4b52:b0:28b:e79e:f8d9 with SMTP id mi18-20020a17090b4b5200b0028be79ef8d9mr8228754pjb.84.1704207027515;
+        Tue, 02 Jan 2024 06:50:27 -0800 (PST)
 Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id 19-20020a17090a005300b0028be216595csm25836878pjb.4.2024.01.02.06.50.12
+        by smtp.gmail.com with ESMTPSA id 19-20020a17090a005300b0028be216595csm25836878pjb.4.2024.01.02.06.50.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 06:50:19 -0800 (PST)
+        Tue, 02 Jan 2024 06:50:27 -0800 (PST)
 From: Yuntao Wang <ytcoode@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	kexec@lists.infradead.org,
@@ -74,9 +74,9 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Sourabh Jain <sourabhjain@linux.ibm.com>,
 	Takashi Iwai <tiwai@suse.de>,
 	Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH v2 2/3] x86/crash: use SZ_1M macro instead of hardcoded value
-Date: Tue,  2 Jan 2024 22:49:04 +0800
-Message-ID: <20240102144905.110047-3-ytcoode@gmail.com>
+Subject: [PATCH v2 3/3] crash_core: fix and simplify the logic of crash_exclude_mem_range()
+Date: Tue,  2 Jan 2024 22:49:05 +0800
+Message-ID: <20240102144905.110047-4-ytcoode@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240102144905.110047-1-ytcoode@gmail.com>
 References: <20240102144905.110047-1-ytcoode@gmail.com>
@@ -88,26 +88,136 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use SZ_1M macro instead of hardcoded 1<<20 to make code more readable.
+The purpose of crash_exclude_mem_range() is to remove all memory ranges
+that overlap with [mstart-mend]. However, the current logic only removes
+the first overlapping memory range.
+
+Commit a2e9a95d2190 ("kexec: Improve & fix crash_exclude_mem_range() to
+handle overlapping ranges") attempted to address this issue, but it did not
+fix all error cases.
+
+Let's fix and simplify the logic of crash_exclude_mem_range().
 
 Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-Acked-by: Baoquan He <bhe@redhat.com>
 ---
- arch/x86/kernel/crash.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/crash_core.c | 80 ++++++++++++++++-----------------------------
+ 1 file changed, 29 insertions(+), 51 deletions(-)
 
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index 792231a56d11..249b5876e7ec 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -170,7 +170,7 @@ static int elf_header_exclude_ranges(struct crash_mem *cmem)
- 	int ret = 0;
+diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+index efe87d501c8c..c51d0a54296b 100644
+--- a/kernel/crash_core.c
++++ b/kernel/crash_core.c
+@@ -565,9 +565,8 @@ int crash_prepare_elf64_headers(struct crash_mem *mem, int need_kernel_map,
+ int crash_exclude_mem_range(struct crash_mem *mem,
+ 			    unsigned long long mstart, unsigned long long mend)
+ {
+-	int i, j;
++	int i;
+ 	unsigned long long start, end, p_start, p_end;
+-	struct range temp_range = {0, 0};
  
- 	/* Exclude the low 1M because it is always reserved */
--	ret = crash_exclude_mem_range(cmem, 0, (1<<20)-1);
-+	ret = crash_exclude_mem_range(cmem, 0, SZ_1M - 1);
- 	if (ret)
- 		return ret;
+ 	for (i = 0; i < mem->nr_ranges; i++) {
+ 		start = mem->ranges[i].start;
+@@ -575,72 +574,51 @@ int crash_exclude_mem_range(struct crash_mem *mem,
+ 		p_start = mstart;
+ 		p_end = mend;
+ 
+-		if (mstart > end || mend < start)
++		if (p_start > end)
+ 			continue;
+ 
++		/*
++		 * Because the memory ranges in mem->ranges are stored in
++		 * ascending order, when we detect `p_end < start`, we can
++		 * immediately exit the for loop, as the subsequent memory
++		 * ranges will definitely be outside the range we are looking
++		 * for.
++		 */
++		if (p_end < start)
++			break;
++
+ 		/* Truncate any area outside of range */
+-		if (mstart < start)
++		if (p_start < start)
+ 			p_start = start;
+-		if (mend > end)
++		if (p_end > end)
+ 			p_end = end;
+ 
+ 		/* Found completely overlapping range */
+ 		if (p_start == start && p_end == end) {
+-			mem->ranges[i].start = 0;
+-			mem->ranges[i].end = 0;
+-			if (i < mem->nr_ranges - 1) {
+-				/* Shift rest of the ranges to left */
+-				for (j = i; j < mem->nr_ranges - 1; j++) {
+-					mem->ranges[j].start =
+-						mem->ranges[j+1].start;
+-					mem->ranges[j].end =
+-							mem->ranges[j+1].end;
+-				}
+-
+-				/*
+-				 * Continue to check if there are another overlapping ranges
+-				 * from the current position because of shifting the above
+-				 * mem ranges.
+-				 */
+-				i--;
+-				mem->nr_ranges--;
+-				continue;
+-			}
++			memmove(&mem->ranges[i], &mem->ranges[i + 1],
++				(mem->nr_ranges - (i + 1)) * sizeof(mem->ranges[i]));
++			i--;
+ 			mem->nr_ranges--;
+-			return 0;
+-		}
+-
+-		if (p_start > start && p_end < end) {
++		} else if (p_start > start && p_end < end) {
+ 			/* Split original range */
++			if (mem->nr_ranges >= mem->max_nr_ranges)
++				return -ENOMEM;
++
++			memmove(&mem->ranges[i + 2], &mem->ranges[i + 1],
++				(mem->nr_ranges - (i + 1)) * sizeof(mem->ranges[i]));
++
+ 			mem->ranges[i].end = p_start - 1;
+-			temp_range.start = p_end + 1;
+-			temp_range.end = end;
++			mem->ranges[i + 1].start = p_end + 1;
++			mem->ranges[i + 1].end = end;
++
++			i++;
++			mem->nr_ranges++;
+ 		} else if (p_start != start)
+ 			mem->ranges[i].end = p_start - 1;
+ 		else
+ 			mem->ranges[i].start = p_end + 1;
+-		break;
+-	}
+-
+-	/* If a split happened, add the split to array */
+-	if (!temp_range.end)
+-		return 0;
+-
+-	/* Split happened */
+-	if (i == mem->max_nr_ranges - 1)
+-		return -ENOMEM;
+-
+-	/* Location where new range should go */
+-	j = i + 1;
+-	if (j < mem->nr_ranges) {
+-		/* Move over all ranges one slot towards the end */
+-		for (i = mem->nr_ranges - 1; i >= j; i--)
+-			mem->ranges[i + 1] = mem->ranges[i];
+ 	}
+ 
+-	mem->ranges[j].start = temp_range.start;
+-	mem->ranges[j].end = temp_range.end;
+-	mem->nr_ranges++;
+ 	return 0;
+ }
  
 -- 
 2.43.0
