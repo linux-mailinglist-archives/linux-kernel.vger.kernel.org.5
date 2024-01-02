@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-14835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E4F822309
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:11:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1520082230E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:12:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29F4F2845BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:11:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 087A21C22AFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:12:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF74418653;
-	Tue,  2 Jan 2024 21:08:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5280F1864A;
+	Tue,  2 Jan 2024 21:08:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KkhdR48g"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="JXIgDXon"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16037182A7
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:08:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5441818632
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:08:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-35fe9a6609eso73631245ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:08:53 -0800 (PST)
+Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7bb5fda069bso168111439f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:08:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704229733; x=1704834533; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1704229734; x=1704834534; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Kv/aa+b9yoEdKvBahkqrw433Fqiy1xO+ioSsYaTJvb4=;
-        b=KkhdR48gDfOnK0JzFjr9dKqzquQEnAWkct5MJKxXTVUYMsVdlUwo5iSD+vN7NzaVQa
-         jetjvii6Fno+XkzfzFS/H1THp689jd0nzmp9/pCLWh616Sa0EGBDt+JmupEyUi/76F/2
-         Re4a0iKMXdCcCSwVDy1s5HI2HojH4odrxmZGs=
+        bh=n3q5bAzQikGEaFLCjfRt4Z8nKD+aA0c3SnrfHNcWXEY=;
+        b=JXIgDXonyYNTm//xOUZbqvGEUrcO/uNkN4iZlt5SKgdAoy2vIhCqJ8k3ilv1Qyju9n
+         sqEoOwLdDWLnZ5BHEI3SEUOUyYRBKWtMGCPbadhqosOiYy2D0oupIDf7vv0ygYDSO2F6
+         Z92VWWV+mmFZk/gLa7p6FtRIY8D2fo6aJ2Mm8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704229733; x=1704834533;
+        d=1e100.net; s=20230601; t=1704229734; x=1704834534;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Kv/aa+b9yoEdKvBahkqrw433Fqiy1xO+ioSsYaTJvb4=;
-        b=QhLoPEaXPldUuxyJGLLzWlJ+HR42T0g4v/4Mi7jRBsBR/1NGTITUPMhuimaeXJVxRf
-         ZxrUoF8VkcEd/BGEK2kACmCAkqGgjWg74KhUIMv6kUacDsp4TsFMqv02Kzxdp74EU2Me
-         oGJeh8JRP1hLzC2BXveKwveIH1iQffHzGuPLanGbKu2HokWylAs8vnlRD4ogvLeTqbRR
-         q74HwTMVe7hCD4Nhsgm5cQm89PN7gm1Kq4PWtWnjKbZaXKtiSnK01LNJkAdSVAXBKQUu
-         s6hFqBt8jGFfiIpc7uxHzreBWE/ZMhnT8iHrRIFULN48r+f0juqyRDohemsv1y271Zd7
-         xGdw==
-X-Gm-Message-State: AOJu0YwcphmTuviG0GuQoCArfTXCdlpW7AqjMknqu2g1EBNcA/YeQZM2
-	Bp+bIM/iDaWzKj0vbL61Cy7QONSBlnmjWmGRJwwlFFwoDQLr
-X-Google-Smtp-Source: AGHT+IHHN3TbtDEmyfVNFzxMQSipzvaGMekbOIDXc3JT0zP9D5s4Ute8SBzjxYwpVjI4JooHeisxkw==
-X-Received: by 2002:a05:6e02:1a88:b0:35f:a4b2:7018 with SMTP id k8-20020a056e021a8800b0035fa4b27018mr27509779ilv.29.1704229733266;
-        Tue, 02 Jan 2024 13:08:53 -0800 (PST)
+        bh=n3q5bAzQikGEaFLCjfRt4Z8nKD+aA0c3SnrfHNcWXEY=;
+        b=AwCIba5QWgWYIF8Tga2Krr4zgfP7rJbM3Cx/IkvYT5kobZO1lmnin1WXWVlx1FvhiA
+         e8T7zHK04Zs5D1mUDynQv4+MY6n/L6G5iafNH/JgKSolrtCCyYWnP+UpxvdDTeRnVslH
+         bvLFIgMQbUphlhFGocgnnu93hnsX4sBBsxCWy3SaMiYV0YDOtD74qvgdXC7Tp8PkI3wV
+         37kbSFeW9R6h8hbSB/GaXd/ECsmnoaOJaEzuVPbmDfH4zC694BRRtP2GQOeaZrYPwGah
+         mGPL7YY5BZyZrcikUgS7Mw8a/wfN/fSlKvdyET8l1Tpv4Ao4JGK+FSqUYbPuCN74Mudj
+         pClA==
+X-Gm-Message-State: AOJu0YxtMrdJVMFjdPDUzHDs0GSRJny2jOZrpT+xmM8kLTNYlk9t5Vfe
+	Fn7E9jDC8AI+i5p2PVoPHMtccWorIsbaC4kwUdRUZer8oHkK
+X-Google-Smtp-Source: AGHT+IFyaB/cl9XINtwxzc8FyOfrkFwShCGVt+Q6OLCTlAP9Elw0gWl88LBFhGGJGmWTzbBD05MnBA==
+X-Received: by 2002:a6b:5905:0:b0:7bb:bca0:7670 with SMTP id n5-20020a6b5905000000b007bbbca07670mr1472284iob.23.1704229734077;
+        Tue, 02 Jan 2024 13:08:54 -0800 (PST)
 Received: from markhas1.lan (71-218-50-136.hlrn.qwest.net. [71.218.50.136])
-        by smtp.gmail.com with ESMTPSA id bo18-20020a056638439200b0046993034c91sm6956978jab.77.2024.01.02.13.08.52
+        by smtp.gmail.com with ESMTPSA id bo18-20020a056638439200b0046993034c91sm6956978jab.77.2024.01.02.13.08.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 02 Jan 2024 13:08:53 -0800 (PST)
 From: Mark Hasemeyer <markhas@chromium.org>
@@ -72,9 +72,9 @@ Cc: Sudeep Holla <sudeep.holla@arm.com>,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org
-Subject: [PATCH v4 11/24] arm64: dts: mediatek: mt8192: Enable cros-ec-spi as wake source
-Date: Tue,  2 Jan 2024 14:07:35 -0700
-Message-ID: <20240102140734.v4.11.Ibd330d26a00f5e219a7e448452769124833a9762@changeid>
+Subject: [PATCH v4 12/24] arm64: dts: mediatek: mt8195: Enable cros-ec-spi as wake source
+Date: Tue,  2 Jan 2024 14:07:36 -0700
+Message-ID: <20240102140734.v4.12.Iee33a7f1f991408cef372744199026f936bf54e2@changeid>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20240102210820.2604667-1-markhas@chromium.org>
 References: <20240102210820.2604667-1-markhas@chromium.org>
@@ -112,21 +112,21 @@ change
 Changes in v2:
 -Split by arch/soc
 
- arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi | 1 +
+ arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi b/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
-index f2281250ac35d..ab44d382f757e 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
-@@ -1332,6 +1332,7 @@ cros_ec: ec@0 {
- 		spi-max-frequency = <3000000>;
+diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
+index bbdcd441c049d..2edb270d0bc2f 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
+@@ -1149,6 +1149,7 @@ cros_ec: ec@0 {
  		pinctrl-names = "default";
  		pinctrl-0 = <&cros_ec_int>;
+ 		spi-max-frequency = <3000000>;
 +		wakeup-source;
  
- 		#address-cells = <1>;
- 		#size-cells = <0>;
+ 		keyboard-backlight {
+ 			compatible = "google,cros-kbd-led-backlight";
 -- 
 2.43.0.472.g3155946c3a-goog
 
