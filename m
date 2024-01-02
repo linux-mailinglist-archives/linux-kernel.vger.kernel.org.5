@@ -1,175 +1,168 @@
-Return-Path: <linux-kernel+bounces-14436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC538821D0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:48:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C9F8821D0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:48:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BFF6B21CF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:48:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C61511F22BB0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:48:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5DD5FC1C;
-	Tue,  2 Jan 2024 13:47:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63095FC1F;
+	Tue,  2 Jan 2024 13:48:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Gd9hn96C";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lf4aYHUL";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Gd9hn96C";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lf4aYHUL"
+	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="IJ7RiyOs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C22DA10940;
-	Tue,  2 Jan 2024 13:47:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BBA4A21FD3;
-	Tue,  2 Jan 2024 13:47:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704203271; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Fn91W3IuOvD77xTkollMSFA//O+slhWPewfM4nu/8YY=;
-	b=Gd9hn96CbvxDZREN/9vBcxFp5oo63p8ln1MRJHJFNTW8bBR4ynjNMEH6Tltih8fDHCtoA+
-	FMu7UYsuCF8rwhDzD5q475ALaJsFqYkmcwCXqWxyPFcYtrWYpanBj5JJSBGxm1t8MkPSyz
-	+peYwb8+F7ck4OD/42Jba7iTzRTzUdo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704203271;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Fn91W3IuOvD77xTkollMSFA//O+slhWPewfM4nu/8YY=;
-	b=lf4aYHULWqzaj7W0XVWI941+Kj4b88tYBjE2svC80AKn70RYPZdJpAnb7LJX7cedUIZh+I
-	fUo3jfFhB0zI2pBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704203271; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Fn91W3IuOvD77xTkollMSFA//O+slhWPewfM4nu/8YY=;
-	b=Gd9hn96CbvxDZREN/9vBcxFp5oo63p8ln1MRJHJFNTW8bBR4ynjNMEH6Tltih8fDHCtoA+
-	FMu7UYsuCF8rwhDzD5q475ALaJsFqYkmcwCXqWxyPFcYtrWYpanBj5JJSBGxm1t8MkPSyz
-	+peYwb8+F7ck4OD/42Jba7iTzRTzUdo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704203271;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Fn91W3IuOvD77xTkollMSFA//O+slhWPewfM4nu/8YY=;
-	b=lf4aYHULWqzaj7W0XVWI941+Kj4b88tYBjE2svC80AKn70RYPZdJpAnb7LJX7cedUIZh+I
-	fUo3jfFhB0zI2pBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B054313AC6;
-	Tue,  2 Jan 2024 13:47:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qNP9KgcUlGWqVQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 02 Jan 2024 13:47:51 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3D0A6A07EF; Tue,  2 Jan 2024 14:47:51 +0100 (CET)
-Date: Tue, 2 Jan 2024 14:47:51 +0100
-From: Jan Kara <jack@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Su Hui <suhui@nfschina.com>, jack@suse.cz, repnop@google.com,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] fanotify: avoid possible NULL dereference
-Message-ID: <20240102134751.2flliwe4lfvp3r5a@quack3>
-References: <20230808091849.505809-1-suhui@nfschina.com>
- <CAOQ4uxhtZSr-kq3G1vmm4=GyBO3E5RdSbGSp108moRiRBx4vvg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6EB8FBFC;
+	Tue,  2 Jan 2024 13:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
+Received: from wse.fritz.box (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
+	(Authenticated sender: wse@tuxedocomputers.com)
+	by mail.tuxedocomputers.com (Postfix) with ESMTPA id DA3822FC0048;
+	Tue,  2 Jan 2024 14:48:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+	s=default; t=1704203315;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=xJNhvlNEbhz6wkYNou1HHqLAU/bd7n4aZ11XtrXYphc=;
+	b=IJ7RiyOsDKx4+ZQOgaBao2511oVmSJCygE7sKa/jJ/hpl4zzO1sI7iynQXe7+6WXxweu0W
+	SGj5cPtPvV/8FCZOdmyKGTT/l/PxVsEQJsZZqHlXKqZeajmxBewdvo9Sim/We0wEdYlPrw
+	KAscv0mcqWQmEiv3rey+p8b612BlZu8=
+Authentication-Results: mail.tuxedocomputers.com;
+	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
+From: Werner Sembach <wse@tuxedocomputers.com>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Werner Sembach <wse@tuxedocomputers.com>,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] i8042: Add forcenorestore quirk to leave controller untouched even on s3
+Date: Tue,  2 Jan 2024 14:48:31 +0100
+Message-Id: <20240102134833.68646-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxhtZSr-kq3G1vmm4=GyBO3E5RdSbGSp108moRiRBx4vvg@mail.gmail.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.12
-X-Spamd-Result: default: False [-2.12 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.997];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.32)[90.27%]
-X-Spam-Flag: NO
 
-On Thu 10-08-23 20:58:16, Amir Goldstein wrote:
-> On Tue, Aug 8, 2023 at 12:19 PM Su Hui <suhui@nfschina.com> wrote:
-> >
-> > smatch error:
-> > fs/notify/fanotify/fanotify_user.c:462 copy_fid_info_to_user():
-> > we previously assumed 'fh' could be null (see line 421)
-> >
-> > Fixes: afc894c784c8 ("fanotify: Store fanotify handles differently")
-> > Signed-off-by: Su Hui <suhui@nfschina.com>'
-> 
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+On s3 resume the i8042 driver tries to restore the controller to a known
+state by reinitializing things, however can this confuses the controller
+with different effects. Mostly occasionally unresponsive keyboards after
+resume.
 
-I'm sorry but this has somehow fallen through the cracks. 
+These issues do not rise on s0ix resume as here the controller is assumed
+to preserved its state from before suspend.
 
-> > diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> > index f69c451018e3..5a5487ae2460 100644
-> > --- a/fs/notify/fanotify/fanotify_user.c
-> > +++ b/fs/notify/fanotify/fanotify_user.c
-> > @@ -459,12 +459,13 @@ static int copy_fid_info_to_user(__kernel_fsid_t *fsid, struct fanotify_fh *fh,
-> >         if (WARN_ON_ONCE(len < sizeof(handle)))
-> >                 return -EFAULT;
-> >
-> > -       handle.handle_type = fh->type;
-> >         handle.handle_bytes = fh_len;
+This patch adds a quirk for devices where the reinitialization on s3 resume
+is not needed and might be harmful as described above. It does this by
+using the s0ix resume code path at selected locations.
 
-Well, if passed 'fh' is NULL, we have problems later in the function
-anyway. E.g. in fanotify_fh_buf() a few lines below. So I think this needs
-a bit more work that just this small fixup...
+This new quirk goes beyond what the preexisting reset=never quirk does,
+which only skips some reinitialization steps.
 
-								Honza
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/input/serio/i8042-acpipnpio.h | 10 +++++++---
+ drivers/input/serio/i8042.c           | 10 +++++++---
+ 2 files changed, 14 insertions(+), 6 deletions(-)
 
-> >
-> >         /* Mangle handle_type for bad file_handle */
-> >         if (!fh_len)
-> >                 handle.handle_type = FILEID_INVALID;
-> > +       else
-> > +               handle.handle_type = fh->type;
-> >
-> >         if (copy_to_user(buf, &handle, sizeof(handle)))
-> >                 return -EFAULT;
-> > --
-> > 2.30.2
-> >
+diff --git a/drivers/input/serio/i8042-acpipnpio.h b/drivers/input/serio/i8042-acpipnpio.h
+index b585b1dab870e..10ec4534e5e14 100644
+--- a/drivers/input/serio/i8042-acpipnpio.h
++++ b/drivers/input/serio/i8042-acpipnpio.h
+@@ -83,6 +83,7 @@ static inline void i8042_write_command(int val)
+ #define SERIO_QUIRK_KBDRESET		BIT(12)
+ #define SERIO_QUIRK_DRITEK		BIT(13)
+ #define SERIO_QUIRK_NOPNP		BIT(14)
++#define SERIO_QUIRK_FORCENORESTORE	BIT(15)
+ 
+ /* Quirk table for different mainboards. Options similar or identical to i8042
+  * module parameters.
+@@ -1657,6 +1658,8 @@ static void __init i8042_check_quirks(void)
+ 	if (quirks & SERIO_QUIRK_NOPNP)
+ 		i8042_nopnp = true;
+ #endif
++	if (quirks & SERIO_QUIRK_FORCENORESTORE)
++		i8042_forcenorestore = true;
+ }
+ #else
+ static inline void i8042_check_quirks(void) {}
+@@ -1690,7 +1693,7 @@ static int __init i8042_platform_init(void)
+ 
+ 	i8042_check_quirks();
+ 
+-	pr_debug("Active quirks (empty means none):%s%s%s%s%s%s%s%s%s%s%s%s%s\n",
++	pr_debug("Active quirks (empty means none):%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n",
+ 		i8042_nokbd ? " nokbd" : "",
+ 		i8042_noaux ? " noaux" : "",
+ 		i8042_nomux ? " nomux" : "",
+@@ -1710,10 +1713,11 @@ static int __init i8042_platform_init(void)
+ 		"",
+ #endif
+ #ifdef CONFIG_PNP
+-		i8042_nopnp ? " nopnp" : "");
++		i8042_nopnp ? " nopnp" : "",
+ #else
+-		"");
++		"",
+ #endif
++		i8042_forcenorestore ? " forcenorestore" : "");
+ 
+ 	retval = i8042_pnp_init();
+ 	if (retval)
+diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
+index 9fbb8d31575ae..2233d93f90e81 100644
+--- a/drivers/input/serio/i8042.c
++++ b/drivers/input/serio/i8042.c
+@@ -115,6 +115,10 @@ module_param_named(nopnp, i8042_nopnp, bool, 0);
+ MODULE_PARM_DESC(nopnp, "Do not use PNP to detect controller settings");
+ #endif
+ 
++static bool i8042_forcenorestore;
++module_param_named(forcenorestore, i8042_forcenorestore, bool, 0);
++MODULE_PARM_DESC(forcenorestore, "Force no restore on s3 resume, copying s2idle behaviour");
++
+ #define DEBUG
+ #ifdef DEBUG
+ static bool i8042_debug;
+@@ -1232,7 +1236,7 @@ static int i8042_pm_suspend(struct device *dev)
+ {
+ 	int i;
+ 
+-	if (pm_suspend_via_firmware())
++	if (!i8042_forcenorestore && pm_suspend_via_firmware())
+ 		i8042_controller_reset(true);
+ 
+ 	/* Set up serio interrupts for system wakeup. */
+@@ -1248,7 +1252,7 @@ static int i8042_pm_suspend(struct device *dev)
+ 
+ static int i8042_pm_resume_noirq(struct device *dev)
+ {
+-	if (!pm_resume_via_firmware())
++	if (i8042_forcenorestore || !pm_resume_via_firmware())
+ 		i8042_interrupt(0, NULL);
+ 
+ 	return 0;
+@@ -1271,7 +1275,7 @@ static int i8042_pm_resume(struct device *dev)
+ 	 * not restore the controller state to whatever it had been at boot
+ 	 * time, so we do not need to do anything.
+ 	 */
+-	if (!pm_suspend_via_firmware())
++	if (i8042_forcenorestore || !pm_suspend_via_firmware())
+ 		return 0;
+ 
+ 	/*
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.34.1
+
 
