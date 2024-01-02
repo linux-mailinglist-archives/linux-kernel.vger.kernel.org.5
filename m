@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-14402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55DD3821C92
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:30:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D16F821C95
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:30:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F3F21C220B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:30:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11E291F22AF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C01FAFBF5;
-	Tue,  2 Jan 2024 13:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A04F6FC1A;
+	Tue,  2 Jan 2024 13:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="et1pk75c"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jkcYUec3"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194FCFBE2;
-	Tue,  2 Jan 2024 13:30:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 867F5C433C9;
-	Tue,  2 Jan 2024 13:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E793CFBF8;
+	Tue,  2 Jan 2024 13:30:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7AF1FC433C7;
+	Tue,  2 Jan 2024 13:30:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704202227;
-	bh=Vblnpl77YLwIntfxgREMrVtIplojtMngCNhj99g7qM8=;
+	s=k20201202; t=1704202228;
+	bh=K9JcRmV8/t3li0JpOvM7C9MUh83KIAuq7YYQ80apTPQ=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=et1pk75cD4O3Uo3Smf7k+nFGm1FKWjjjFEcIrKHvUFjacBYbyppU/Amv+uKc+kMwS
-	 ay1tkG8MF6EtUm1sw2e9Pv9KAUce7ZeGwJ3Xy35Z9wrBBpX40VfSK3FAAn9yTNSBN3
-	 rqI29dv6zz/hqZnWn6wj79p2yLR91AHqZc10aqAfv5mfgTZp7NRq4Kd6BEi/clXXE8
-	 /MV80psaMneppMTjczyANcT0+3tJgDHNpat4+Ix56MB15Eh3rkaU8g6+gH7NSEf6vQ
-	 1vC+uHC4uhu8urtGDuGXuDeFx6cNzAtMDVkApA88zERlp4XN7eyJrkeFkUIOfZDPTO
-	 4NhL52R8FYebw==
+	b=jkcYUec3NDMLFG2LNozfG1EOKlu3QnQwIYf7LTQK4+TAgr3CZ8WLfJYTbWmpziE2n
+	 6QrlUfL7pRbXi02BGaTKD+Oup1UJiagEAjTUQ6u9xs+2PidaMg0VxAk/GEK5L1bYuE
+	 v08DKbTkl7vsWQW93ly80z2qAZxDsMGVaaR+TZf91B96OkfnGgli1GDl4ux+7ib6lv
+	 P6yKs17VmKN87i9+W8Cst/OQJCy5jUAW8dtCJjO0DlZZPQt6zW3iBNN3tEjhrwr6KO
+	 zAVZYg4+sK1AyE5GLh++hi5QzNffK5Qtt0Qv1UMJqUbtP1Vmp2yxV4OYEkGpaNzEPD
+	 HFftmtUYfTT2w==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6C0B0DCB6D1;
-	Tue,  2 Jan 2024 13:30:27 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 66802C395F8;
+	Tue,  2 Jan 2024 13:30:28 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -43,37 +43,40 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: Implement missing getsockopt(SO_TIMESTAMPING_NEW)
+Subject: Re: [PATCH net-next 0/2] selftest/net: Some more TCP-AO selftest
+ post-merge fixups
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170420222743.17440.3588891639926250517.git-patchwork-notify@kernel.org>
-Date: Tue, 02 Jan 2024 13:30:27 +0000
-References: <20231221231901.67003-1-jthinz@mailbox.tu-berlin.de>
-In-Reply-To: <20231221231901.67003-1-jthinz@mailbox.tu-berlin.de>
-To: =?utf-8?q?J=C3=B6rn-Thorben_Hinz_=3Cjthinz=40mailbox=2Etu-berlin=2Ede=3E?=@codeaurora.org
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, willemb@google.com,
- deepa.kernel@gmail.com
+ <170420222841.17440.2782571129678540998.git-patchwork-notify@kernel.org>
+Date: Tue, 02 Jan 2024 13:30:28 +0000
+References: <20231222-selftests-tcp-ao-fixups-v1-0-39c73817c372@arista.com>
+In-Reply-To: <20231222-selftests-tcp-ao-fixups-v1-0-39c73817c372@arista.com>
+To: Dmitry Safonov <dima@arista.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ 0x7f454c46@gmail.com, liuhangbin@gmail.com
 
 Hello:
 
-This patch was applied to netdev/net.git (main)
+This series was applied to netdev/net-next.git (main)
 by David S. Miller <davem@davemloft.net>:
 
-On Fri, 22 Dec 2023 00:19:01 +0100 you wrote:
-> Commit 9718475e6908 ("socket: Add SO_TIMESTAMPING_NEW") added the new
-> socket option SO_TIMESTAMPING_NEW. Setting the option is handled in
-> sk_setsockopt(), querying it was not handled in sk_getsockopt(), though.
+On Fri, 22 Dec 2023 01:59:05 +0000 you wrote:
+> Note that there's another post-merge fix for TCP-AO selftests, but that
+> doesn't conflict with these, so I don't resend that:
 > 
-> Following remarks on an earlier submission of this patch, keep the old
-> behavior of getsockopt(SO_TIMESTAMPING_OLD) which returns the active
-> flags even if they actually have been set through SO_TIMESTAMPING_NEW.
+> https://lore.kernel.org/all/20231219-b4-tcp-ao-selftests-out-of-tree-v1-1-0fff92d26eac@arista.com/T/#u
+> 
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] net: Implement missing getsockopt(SO_TIMESTAMPING_NEW)
-    https://git.kernel.org/netdev/net/c/7f6ca95d16b9
+  - [net-next,1/2] selftest/tcp-ao: Set routes in a proper VRF table id
+    https://git.kernel.org/netdev/net-next/c/72cd9f8d5a99
+  - [net-next,2/2] selftest/tcp-ao: Work on namespace-ified sysctl_optmem_max
+    https://git.kernel.org/netdev/net-next/c/80057b2080a8
 
 You are awesome, thank you!
 -- 
