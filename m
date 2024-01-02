@@ -1,183 +1,126 @@
-Return-Path: <linux-kernel+bounces-14567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E1A9821EE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C6FFC821EEF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:39:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F0CA1F2114C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:37:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64FC11F22F09
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:39:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D7214A9A;
-	Tue,  2 Jan 2024 15:37:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC51814AAC;
+	Tue,  2 Jan 2024 15:39:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="VMVgLxOt";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="y1xwT7kW";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="VMVgLxOt";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="y1xwT7kW"
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="buhmTjny"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91A3C14A8A;
-	Tue,  2 Jan 2024 15:37:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7D6221FD01;
-	Tue,  2 Jan 2024 15:37:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704209855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iFeSjnnhDL7UuXIIfB/Pi2bJdb0mIR0c/ug20ece57o=;
-	b=VMVgLxOt01P6HaMA7mmz1BGr+bjL1THr82uAhSoc/1Ti4hkcotJJ2bkjtaVjMPTsamniHt
-	IoxQqDI4nlVART/YOYi8hXgKKBXo3jLI1JXc9J5DxFiZ1suZuc8UvzD5Y6FjkeNpuNWL3B
-	SkxTDOo1kowN40N15/k5dz8EWccVe8Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704209855;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iFeSjnnhDL7UuXIIfB/Pi2bJdb0mIR0c/ug20ece57o=;
-	b=y1xwT7kW662Nawv0VmaTw9y2AV7W7WaUsEKoRUhpWq+ei2p434HwSn9DgF7udfzl5Esprz
-	tTdQPAKUCmEoHgCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704209855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iFeSjnnhDL7UuXIIfB/Pi2bJdb0mIR0c/ug20ece57o=;
-	b=VMVgLxOt01P6HaMA7mmz1BGr+bjL1THr82uAhSoc/1Ti4hkcotJJ2bkjtaVjMPTsamniHt
-	IoxQqDI4nlVART/YOYi8hXgKKBXo3jLI1JXc9J5DxFiZ1suZuc8UvzD5Y6FjkeNpuNWL3B
-	SkxTDOo1kowN40N15/k5dz8EWccVe8Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704209855;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iFeSjnnhDL7UuXIIfB/Pi2bJdb0mIR0c/ug20ece57o=;
-	b=y1xwT7kW662Nawv0VmaTw9y2AV7W7WaUsEKoRUhpWq+ei2p434HwSn9DgF7udfzl5Esprz
-	tTdQPAKUCmEoHgCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2696713AC6;
-	Tue,  2 Jan 2024 15:37:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id QBLJB78tlGVdcgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 02 Jan 2024 15:37:35 +0000
-Date: Tue, 02 Jan 2024 16:37:34 +0100
-Message-ID: <87sf3f7nlt.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Gergo Koteles <soyer@irl.hu>
-Cc: Shenghao Ding <shenghao-ding@ti.com>,
-	Kevin Lu <kevin-lu@ti.com>,
-	Baojun Xu <baojun.xu@ti.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH v2 0/4] ALSA: hda/tas2781: Add tas2563 support
-In-Reply-To: <cover.1703891777.git.soyer@irl.hu>
-References: <cover.1701906455.git.soyer@irl.hu>
-	<cover.1703891777.git.soyer@irl.hu>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 199A314A82
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 15:39:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40d604b4b30so26578495e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 07:39:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1704209948; x=1704814748; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8PuIzcJWDs7Ycx+IDbB+TKZ/Gz1HLUaLNM0aewStBVA=;
+        b=buhmTjnyG4vSsPEuQgIhtTsfaJN5/vTtImEsp/zkxC8cDuEDGEQBNKB7sXgtRhSsMF
+         WWGrZjxyMqe7bjSqcrApgLbwZarz0emGjfvqTo3N4rvd4Cr7BJKazmtkygQiqF/BtFbT
+         rMZM9xYQrfTN5/L/vtlhpHxOGr5Wxsqkrsspc4vtFNr6RQEBxwnUbYcC6qsKXzCWrbQS
+         OJCeFFMnSlqaR28SIS99FwUzgDcUCh+wdpw4T3fnCBMZpaev3MnFL4Ethi7ee2o7BOW5
+         P6EckcttglMMFf5G+CFEX86+tqvp1acWuNldJDnahbv3f5tey8TRCYd16ALhRlG8llOU
+         zz/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704209948; x=1704814748;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8PuIzcJWDs7Ycx+IDbB+TKZ/Gz1HLUaLNM0aewStBVA=;
+        b=i1M+Z9KDqDO7kM0rGUHMfnnkIR39VYJlXlVAVlGoDnEME21MX+8xDowmdNnymUQjOh
+         W1GNeAln28qrHc7HD7QqgmiV2ZZRrnKqP9MvEBU0ELIvMZ+m5PybaNsKD+K+gwXJ8bSP
+         /Iofa5XOVNJmd6bPHvf603ZBLVm3J5QJ1LMl/9MbkwJCz4UMEsK1Dluboahq4GH5buO9
+         REwXTJxek4LjpUsyNxy8YDeNdJJeXerj3GToIrolrwa0gVmiZk0+2ueP+A80w08kk5rT
+         8HGHfNNThawo3XyFQVeTcCwD/mPhoogxcjs/WQHLdCplsfMIn11yZvDGku6ZrNnJs6Qf
+         nufQ==
+X-Gm-Message-State: AOJu0Yw7fGg1oB2blkQ0Gl04FZkSnYnAhzmX/oj2RnCRPCmWpYrv/P4s
+	zTmI37Yj5QJ53kG2CXomhSj3uyVldBP2kw==
+X-Google-Smtp-Source: AGHT+IG1N4DB7FVoiHTpO09/sHvmv28ZIzI+6/qYRY5XJbohkHs6MM1mD5mZprp39syqBQUmrgyESQ==
+X-Received: by 2002:a05:600c:a084:b0:40d:8a52:c998 with SMTP id jh4-20020a05600ca08400b0040d8a52c998mr1072817wmb.17.1704209948254;
+        Tue, 02 Jan 2024 07:39:08 -0800 (PST)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id iv13-20020a05600c548d00b0040d30af488asm49891379wmb.40.2024.01.02.07.39.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 07:39:07 -0800 (PST)
+Date: Tue, 2 Jan 2024 16:39:06 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+Cc: linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	rafael.j.wysocki@intel.com, conor.dooley@microchip.com, sunilvl@ventanamicro.com, 
+	aou@eecs.berkeley.edu, palmer@dabbelt.com, paul.walmsley@sifive.com
+Subject: Re: [RFC v1 1/1] RISC-V: ACPI: Enable SPCR table for console output
+ on RISC-V
+Message-ID: <20240102-1ddc9ec273fded1548ee586d@orel>
+References: <20231229065405.235625-1-jeeheng.sia@starfivetech.com>
+ <20231229065405.235625-2-jeeheng.sia@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: *
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=VMVgLxOt;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=y1xwT7kW
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.47 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_CC(0.00)[ti.com,perex.cz,suse.com,gmail.com,kernel.org,vger.kernel.org,alsa-project.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.96)[94.84%]
-X-Spam-Score: -2.47
-X-Rspamd-Queue-Id: 7D6221FD01
-X-Spam-Flag: NO
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231229065405.235625-2-jeeheng.sia@starfivetech.com>
 
-On Sat, 30 Dec 2023 01:09:41 +0100,
-Gergo Koteles wrote:
+On Fri, Dec 29, 2023 at 02:54:05PM +0800, Sia Jee Heng wrote:
+> The ACPI SPCR code has been used to enable console output for ARM64 and
+> X86. The same code can be reused for RISC-V.
 > 
-> The tas2781-hda driver can be modified to support tas2563 as well.
-> Before knowing this information, I created another series for a
-> new driver.
-> Link: https://lore.kernel.org/lkml/cover.1701733441.git.soyer@irl.hu/
+> Vendor will enable/disable the SPCR table in the firmware based on the
+> platform design. However, in cases where the SPCR table is not usable,
+> a kernel parameter could be used to specify the preferred console.
 > 
-> This series now extends tas2781-hda.
+> Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+> ---
+>  arch/riscv/kernel/acpi.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> The tas2563 is a smart amplifier. Similar to tas2562 but with DSP. Some
-> Lenovo laptops have it to drive the bass speakers. By default, it is in
-> software shutdown state.
-> 
-> To make the DSP work it needs a firmware and some calibration data.
-> The latter can be read from the EFI in Lenovo laptops.
-> 
-> For the correct configuration it needs additional register data.
-> It captured after running the Windows driver.
-> 
-> The firmware can be extracted as TAS2563Firmware.bin from the Windows
-> driver with innoextract.
-> https://download.lenovo.com/consumer/mobiles/h5yd037fbfyy7kd0.exe
-> 
-> The driver will search for it as TAS2XXX3870.bin with the Lenovo Yoga 7 
-> 14ARB7.
-> 
-> The captured registers extracted with TI's regtool: 
-> https://github.com/soyersoyer/tas2563rca/raw/main/INT8866RCA2.bin
-> 
-> Changes since v1:
-> - fixes were sent as individual patches
-> - rebased onto for-next
-> - adding the missed fixup
-> 
-> Gergo Koteles (4):
->   ALSA: hda/tas2781: add ptrs to calibration functions
->   ALSA: hda/tas2781: add configurable global i2c address
->   ALSA: hda/tas2781: add TAS2563 support for 14ARB7
->   ALSA: hda/tas2781: add fixup for Lenovo 14ARB7
+> diff --git a/arch/riscv/kernel/acpi.c b/arch/riscv/kernel/acpi.c
+> index e619edc8b0cc..5ec2fdf9e09f 100644
+> --- a/arch/riscv/kernel/acpi.c
+> +++ b/arch/riscv/kernel/acpi.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/io.h>
+>  #include <linux/memblock.h>
+>  #include <linux/pci.h>
+> +#include <linux/serial_core.h>
+>  
+>  int acpi_noirq = 1;		/* skip ACPI IRQ initialization */
+>  int acpi_disabled = 1;
+> @@ -151,6 +152,9 @@ void __init acpi_boot_table_init(void)
+>  		if (!param_acpi_force)
+>  			disable_acpi();
+>  	}
+> +
+> +	if (!acpi_disabled)
+> +		acpi_parse_spcr(earlycon_acpi_spcr_enable, true);
 
-Applies all patches to for-next branch now.
+Both arm64 and loongarch call early_init_dt_scan_chosen_stdout() when
+acpi_disabled and earlycon_acpi_spcr_enable are both true. Is that
+not necessary for RISC-V?
 
+Thanks,
+drew
 
-thanks,
-
-Takashi
+>  }
+>  
+>  static int acpi_parse_madt_rintc(union acpi_subtable_headers *header, const unsigned long end)
+> -- 
+> 2.34.1
+> 
 
