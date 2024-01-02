@@ -1,146 +1,131 @@
-Return-Path: <linux-kernel+bounces-14706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6796F8220F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:22:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2CB18220EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AE351F21C60
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:22:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B23251C22986
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7900F156F4;
-	Tue,  2 Jan 2024 18:22:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18069156EC;
+	Tue,  2 Jan 2024 18:22:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZMtYEv1X";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MxrJq0CO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UX+diyF0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2FF115AD8;
-	Tue,  2 Jan 2024 18:22:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 02 Jan 2024 18:21:52 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1704219713;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SK5ZmdPni3oiwsprKqAA8w0COgY7F015Nt8bwwcDuKI=;
-	b=ZMtYEv1XmaV6l2LbJ88534WVYNKrmqnFdCAsHrHMHMHXh7oMLf1V2KQUX18+MaxlDt+NL7
-	I90yUfTKmuhl6BGIWMinTvscxBS1LSqkO3ulY8xQg0x6NfEwxg9ek5KXpFHcl9wkqvUGO7
-	0FTWrlUs3lknr9dOIMapcTH0VBkoNZXbnEM/jqL94uR5faqL4EsEj6RUrxRfaguxgl++vj
-	zMVT2R75gW/tU2lQhnqm54ozYTX3A0dxFSDAhWTkzFvJVNzRbSqg4eLFEK+4hr6xdyjHPM
-	DFXHCGCDqHkYhxfXiksjyxjTBzsEtEHgJsypLB2vYjmdno2vnOlD57+XKovSyA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1704219713;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SK5ZmdPni3oiwsprKqAA8w0COgY7F015Nt8bwwcDuKI=;
-	b=MxrJq0CO375g2Mw6LOtD0lJMj6RnoTPBqKIz2IyOzkSd3DAo6I/08nakRbnGSTqKHwyoRE
-	xeSshJg8Co+MABCg==
-From:
- tip-bot2 for Uwe =?utf-8?q?Kleine-K=C3=B6nig?= <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sev] virt: sev-guest: Convert to platform remove callback
- returning void
-Cc: u.kleine-koenig@pengutronix.de, "Borislav Petkov (AMD)" <bp@alien8.de>,
- Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3C52826a50250304ab0af14c594009f7b901c2cd31=2E17035?=
- =?utf-8?q?96577=2Egit=2Eu=2Ekleine-koenig=40pengutronix=2Ede=3E?=
-References: =?utf-8?q?=3C52826a50250304ab0af14c594009f7b901c2cd31=2E170359?=
- =?utf-8?q?6577=2Egit=2Eu=2Ekleine-koenig=40pengutronix=2Ede=3E?=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65665156E3;
+	Tue,  2 Jan 2024 18:21:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8583EC433C7;
+	Tue,  2 Jan 2024 18:21:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704219718;
+	bh=oavpCV5JrAJzdhCL01iv99+74mbDtupZw0so3YeF/4c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=UX+diyF04X1Mk9kCS14fnlp3Bzd5JfmCCga1RlJ68hf4NTIsu4K8P6qw7W/7aIsjI
+	 tKu+WE2xNPe6uoAXcrT85bH3J4oIn5Nk1lPPPLtAd7FgNhF3opJS+XSp5Exk302yA9
+	 Si5Wye7BIG6wQy5bF3o/++VO3i8Ff85zY6VoP6MnT64Qh/Rv6eXfY3SQsD4T+AsT2s
+	 eJIMF1OrLP5D4SLzC4Am/zzIPE4nVxy7rY/qgkBdZPMkyOyIe26+TNaG6/9BHzmDpf
+	 T+9aTFa1JM7zktrUenVuLP7xPhPlFVbYQAl9O0jmOqRUHFPngfJ4/IXWsu2CLBNAfj
+	 /tX+KQCUpXdow==
+Date: Tue, 2 Jan 2024 12:21:57 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Li Chen <me@linux.beauty>
+Cc: Tom Joseph <tjoseph@cadence.com>,
+	Parshuram Thombare <pthombar@cadence.com>,
+	Pawel Laszczak <pawell@cadence.com>,
+	=?utf-8?B?IlByemVteXPFgmF3IEdhaiI=?= <pgaj@cadence.com>,
+	Nadeem Athani <nadeem@cadence.com>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>,
+	Kishon Vijay Abraham I <kishon@ti.com>,
+	=?utf-8?Q?=22Krzysztof_Wilczy=C5=84ski=22?= <kwilczynski@kernel.org>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	linux-pci <linux-pci@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: Is Cadence PCIe IP orphaned?
+Message-ID: <20240102182157.GA1732664@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170421971260.398.3650838941459484381.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <18cb4f78be7.118217ede232604.6825928402358580565@linux.beauty>
 
-The following commit has been merged into the x86/sev branch of tip:
+On Fri, Dec 29, 2023 at 04:46:11AM -0500, Li Chen wrote:
+>  ---- On Thu, 28 Dec 2023 08:41:32 -0500  Bjorn Helgaas  wrote --- 
+>  > Tom Joseph tjoseph@cadence.com> is listed as the maintainer of the
+>  > Cadence PCIe IP, but email to that address bounces and lore has no
+>  > correspondence from Tom in the past two years
+>  > (https://lore.kernel.org/all/?q=f%3Atjoseph).
+>  > 
+>  > Does anybody want to step up to maintain this?  Should we apply a
+>  > patch like the one below?
+> 
+> AFAIK, Cadence people are preparing to upstream their Gen5
+> controller and PHY drivers. They may update the maintainers when
+> they do so.
 
-Commit-ID:     d642ef7111014805f2e21e9cddb0c0a93ae1313d
-Gitweb:        https://git.kernel.org/tip/d642ef7111014805f2e21e9cddb0c0a93ae=
-1313d
-Author:        Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-AuthorDate:    Tue, 26 Dec 2023 14:28:03 +01:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Tue, 02 Jan 2024 19:07:18 +01:00
+I hope so.  In the meantime, I applied the patch below to for-linus
+for v6.7.  I don't think there's value in keeping an email address
+that goes nowhere.
 
-virt: sev-guest: Convert to platform remove callback returning void
+Bjorn
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-.remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
+commit 54d52fb6fe70 ("MAINTAINERS: Orphan Cadence PCIe IP")
+Author: Bjorn Helgaas <bhelgaas@google.com>
+Date:   Tue Dec 26 18:43:03 2023 -0600
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+    MAINTAINERS: Orphan Cadence PCIe IP
+    
+    Tom Joseph <tjoseph@cadence.com> is listed as the maintainer of the Cadence
+    PCIe IP, but email to that address bounces and lore has no correspondence
+    from Tom in the past two years
+    (https://lore.kernel.org/all/?q=f%3Atjoseph).
+    
+    Mark the Cadence IP orphaned and add Tom to CREDITS.
+    
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Link: https://lore.kernel.org/r/52826a50250304ab0af14c594009f7b901c2cd31.1703=
-596577.git.u.kleine-koenig@pengutronix.de
----
- drivers/virt/coco/sev-guest/sev-guest.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-=
-guest/sev-guest.c
-index bc564ad..87f2418 100644
---- a/drivers/virt/coco/sev-guest/sev-guest.c
-+++ b/drivers/virt/coco/sev-guest/sev-guest.c
-@@ -994,7 +994,7 @@ e_unmap:
- 	return ret;
- }
-=20
--static int __exit sev_guest_remove(struct platform_device *pdev)
-+static void __exit sev_guest_remove(struct platform_device *pdev)
- {
- 	struct snp_guest_dev *snp_dev =3D platform_get_drvdata(pdev);
-=20
-@@ -1003,8 +1003,6 @@ static int __exit sev_guest_remove(struct platform_devi=
-ce *pdev)
- 	free_shared_pages(snp_dev->request, sizeof(struct snp_guest_msg));
- 	deinit_crypto(snp_dev->crypto);
- 	misc_deregister(&snp_dev->misc);
--
--	return 0;
- }
-=20
- /*
-@@ -1013,7 +1011,7 @@ static int __exit sev_guest_remove(struct platform_devi=
-ce *pdev)
-  * with the SEV-SNP support, it is named "sev-guest".
-  */
- static struct platform_driver sev_guest_driver =3D {
--	.remove		=3D __exit_p(sev_guest_remove),
-+	.remove_new	=3D __exit_p(sev_guest_remove),
- 	.driver		=3D {
- 		.name =3D "sev-guest",
- 	},
+diff --git a/CREDITS b/CREDITS
+index f33a33fd2371..55be8af1c74f 100644
+--- a/CREDITS
++++ b/CREDITS
+@@ -1855,6 +1855,10 @@ D: Fedora kernel maintenance (2003-2014).
+ D: 'Trinity' and similar fuzz testing work.
+ D: Misc/Other.
+ 
++N: Tom Joseph
++E: tjoseph@cadence.com
++D: Cadence PCIe driver
++
+ N: Martin Josfsson
+ E: gandalf@wlug.westbo.se
+ P: 1024D/F6B6D3B1 7610 7CED 5C34 4AA6 DBA2  8BE1 5A6D AF95 F6B6 D3B1
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 97f51d5ec1cf..595aa56acde4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16511,11 +16511,10 @@ F:	Documentation/devicetree/bindings/pci/pci-armada8k.txt
+ F:	drivers/pci/controller/dwc/pcie-armada8k.c
+ 
+ PCI DRIVER FOR CADENCE PCIE IP
+-M:	Tom Joseph <tjoseph@cadence.com>
+ L:	linux-pci@vger.kernel.org
+-S:	Maintained
++S:	Orphan
+ F:	Documentation/devicetree/bindings/pci/cdns,*
+-F:	drivers/pci/controller/cadence/
++F:	drivers/pci/controller/cadence/*cadence*
+ 
+ PCI DRIVER FOR FREESCALE LAYERSCAPE
+ M:	Minghuan Lian <minghuan.Lian@nxp.com>
 
