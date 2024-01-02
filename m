@@ -1,187 +1,119 @@
-Return-Path: <linux-kernel+bounces-14974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0D7582258B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AA6D82258F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:34:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAFAD1C2180D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:34:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0998B1C21A70
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:34:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8563C1775E;
-	Tue,  2 Jan 2024 23:33:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 377AA17986;
+	Tue,  2 Jan 2024 23:34:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T0PE5hAi"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="j09U362r"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 465CE17982;
-	Tue,  2 Jan 2024 23:33:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704238434; x=1735774434;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=hmnREbkJ1spni6quDzIEHXCaQXW3TktM92/lBSG23sI=;
-  b=T0PE5hAiC4Xewm3C6culXzxpzHV4YvDgFq+hdbaV96FzOPk8/5HG2Iqn
-   wvVF3Jb/0vjfdd/96jASXHAO1UFuk4jk/rFOE2OOOsiMOHc9SlE6Oik+v
-   TzGS1yxcd8RXTc+/6i8ZJZK7ZyxMEqVssL9aEo412uRSyeCRCUYF7xB18
-   FiECVJZ+1uWX2KwazMLLoqJDmZ4L7Jm4KP3KZ0bw3zuuSKcTXc0vQrT/a
-   d20aWBLYm8gWam0iYuTBcHGmbFbl0pvUY/NvZExfny7yB6Ae+yPQii8Pn
-   /wVvNTojt/jWFmFeoB36NceFxnZ3uM3t2ZlY4Q03k8IxiXL7boRdnlrQ0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="3769991"
-X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
-   d="scan'208";a="3769991"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 15:33:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="1111182255"
-X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
-   d="scan'208";a="1111182255"
-Received: from keithj1-mobl2.amr.corp.intel.com (HELO [10.209.44.31]) ([10.209.44.31])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 15:33:51 -0800
-Message-ID: <20cd835e-f84c-4c43-812e-6706f7266150@linux.intel.com>
-Date: Tue, 2 Jan 2024 15:33:51 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE9F17981
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 23:34:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a285d66a79eso97548466b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 15:34:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704238444; x=1704843244; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zk6oHVMcIK6wAHvWLyxW6Opf0LhWwnBN+RD7Fzz1+XQ=;
+        b=j09U362rZHEiwrIAalDcXl0yd0KQ+jDRCz7nmg2EWocZTKYkg1dtwbrA7Tq5xLbLK9
+         /5jhRtLJgHnIkU0T9xOPsm05qnWqX7IG+3Lov792fN8BDmSvvTwJkr6DDkCS1zUAKkuP
+         jqUB95uyjHviOC5aNSLGsag0b+212SAyjE0yftUkPKz25a/+6aNRqn0dGJgHuSUzLIc7
+         VnynI7aqrNKZAXj3+naLCRwpdd4nXm9CKdOfHMFTD3iJDPBCS78b7zU+xGo/8FwWbgFv
+         eNIM1xYA/ZvD1Xvjss9rtTKmtdvTgSL3eqmxHkyrX7lHttwjHmNwkZtsCsHZejm3E5UI
+         y83w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704238444; x=1704843244;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zk6oHVMcIK6wAHvWLyxW6Opf0LhWwnBN+RD7Fzz1+XQ=;
+        b=Vpu/6oVSiuhBKQwXp4l/CKd20u10yGpBSamyA59q3GLq2Zhi0j2LtkrWBpXLIH+enp
+         SWenDdPYm6cjww/7i3bQoeOBJZjHDsftSHSgo21/CgkRGlC+lZeLLdknk6ECWhnCL5vK
+         PFJmnTjJbwf8+y93OZOeV4My2mYRM1mZFsBRinmQTmpPrZr9aByCBZxo/+l2AnD4tYw0
+         FYqL93ATkiA8Ozo6qiaZb8NmB9AaCVNggXzFgNX6257w8Ln6eJQmZu34UlhscWwX0M3B
+         41zBDhRcZwrSiPxjlIBQfPDnvsLgrz7bEdcPiDLmFJ6b/2fImFMq74Zq+b4hzIDPKg/D
+         kOHA==
+X-Gm-Message-State: AOJu0YzlpB3nQYTdHCn3BOhW7KNldaFSetri30wSe4b8ZjatoCo6Mvaf
+	sWpOlhlbw9pyVqeFdaAIAOhG4j1cg4fQYQ==
+X-Google-Smtp-Source: AGHT+IEDIWbYuebx/kzhfTbw4i0zNV2fm/AuZ9oe97CUJHNKf5NgUTBvTFrKDjThsWg+6Vrbi+m5NQ==
+X-Received: by 2002:a17:906:97:b0:a27:a92a:ec15 with SMTP id 23-20020a170906009700b00a27a92aec15mr2652703ejc.122.1704238443706;
+        Tue, 02 Jan 2024 15:34:03 -0800 (PST)
+Received: from linaro.org ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id jt6-20020a170906dfc600b00a234085cfa2sm12187081ejc.190.2024.01.02.15.34.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 15:34:03 -0800 (PST)
+Date: Wed, 3 Jan 2024 01:34:01 +0200
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Georgi Djakov <djakov@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Rajendra Nayak <quic_rjendra@quicinc.com>,
+	Sibi Sankar <quic_sibis@quicinc.com>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 4/4] arm64: dts: qcom: x1e80100: Flush RSC sleep & wake
+ votes
+Message-ID: <ZZSdaXpwqb7jfhQZ@linaro.org>
+References: <20240102-topic-x1e_fixes-v1-0-70723e08d5f6@linaro.org>
+ <20240102-topic-x1e_fixes-v1-4-70723e08d5f6@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Revert "PCI/ASPM: Remove pcie_aspm_pm_state_change()"
-Content-Language: en-US
-To: Bjorn Helgaas <helgaas@kernel.org>, Michael Schaller
- <michael@5challer.de>, Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- regressions@lists.linux.dev, "Maciej W . Rozycki" <macro@orcam.me.uk>,
- Ajay Agarwal <ajayagarwal@google.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Heiner Kallweit <hkallweit1@gmail.com>,
- Johan Hovold <johan+linaro@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- stable@vger.kernel.org
-References: <76c61361-b8b4-435f-a9f1-32b716763d62@5challer.de>
- <20240102232550.1751655-1-helgaas@kernel.org>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240102232550.1751655-1-helgaas@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102-topic-x1e_fixes-v1-4-70723e08d5f6@linaro.org>
 
+On 24-01-02 19:29:50, Konrad Dybcio wrote:
+> The RPMh driver will cache sleep and wake votes until the cluster
+> power-domain is about to enter idle, to avoid unnecessary writes. So
+> associate the apps_rsc with the cluster pd, so that it can be notified
+> about this event.
+> 
+> Without this, only AMC votes are being committed.
+> 
+> Fixes: af16b00578a7 ("arm64: dts: qcom: Add base X1E80100 dtsi and the QCP dts")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
+Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
 
-On 1/2/2024 3:25 PM, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> This reverts commit 08d0cc5f34265d1a1e3031f319f594bd1970976c.
-> 
-> Michael reported that when attempting to resume from suspend to RAM on ASUS
-> mini PC PN51-BB757MDE1 (DMI model: MINIPC PN51-E1), 08d0cc5f3426
-> ("PCI/ASPM: Remove pcie_aspm_pm_state_change()") caused a 12-second delay
-> with no output, followed by a reboot.
-> 
-> Workarounds include:
-> 
->   - Reverting 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()")
->   - Booting with "pcie_aspm=off"
->   - Booting with "pcie_aspm.policy=performance"
->   - "echo 0 | sudo tee /sys/bus/pci/devices/0000:03:00.0/link/l1_aspm"
->     before suspending
->   - Connecting a USB flash drive
-> 
-
-Did you find the root cause? Is this issue specific to that particular
-device? If yes, can we do a quirk?
-
-> Fixes: 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()")
-> Reported-by: Michael Schaller <michael@5challer.de>
-> Link: https://lore.kernel.org/r/76c61361-b8b4-435f-a9f1-32b716763d62@5challer.de
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: <stable@vger.kernel.org>
 > ---
->  drivers/pci/pci.c       |  6 ++++++
->  drivers/pci/pci.h       |  2 ++
->  drivers/pci/pcie/aspm.c | 19 +++++++++++++++++++
->  3 files changed, 27 insertions(+)
+>  arch/arm64/boot/dts/qcom/x1e80100.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 55bc3576a985..bdbf8a94b4d0 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -1335,6 +1335,9 @@ static int pci_set_full_power_state(struct pci_dev *dev)
->  		pci_restore_bars(dev);
->  	}
+> diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+> index fc164b9b3ef1..2a14e8e39b3b 100644
+> --- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+> @@ -3334,6 +3334,7 @@ apps_rsc: rsc@17500000 {
+>  					  <WAKE_TCS      2>, <CONTROL_TCS   0>;
 >  
-> +	if (dev->bus->self)
-> +		pcie_aspm_pm_state_change(dev->bus->self);
-> +
->  	return 0;
->  }
+>  			label = "apps_rsc";
+> +			power-domains = <&SYSTEM_PD>;
 >  
-> @@ -1429,6 +1432,9 @@ static int pci_set_low_power_state(struct pci_dev *dev, pci_power_t state)
->  				     pci_power_name(dev->current_state),
->  				     pci_power_name(state));
->  
-> +	if (dev->bus->self)
-> +		pcie_aspm_pm_state_change(dev->bus->self);
-> +
->  	return 0;
->  }
->  
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 5ecbcf041179..f43873049d52 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -569,10 +569,12 @@ int pcie_retrain_link(struct pci_dev *pdev, bool use_lt);
->  #ifdef CONFIG_PCIEASPM
->  void pcie_aspm_init_link_state(struct pci_dev *pdev);
->  void pcie_aspm_exit_link_state(struct pci_dev *pdev);
-> +void pcie_aspm_pm_state_change(struct pci_dev *pdev);
->  void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
->  #else
->  static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
->  static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
-> +static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
->  static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
->  #endif
->  
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index 50b04ae5c394..8715e951c491 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -1008,6 +1008,25 @@ void pcie_aspm_exit_link_state(struct pci_dev *pdev)
->  	up_read(&pci_bus_sem);
->  }
->  
-> +/* @pdev: the root port or switch downstream port */
-> +void pcie_aspm_pm_state_change(struct pci_dev *pdev)
-> +{
-> +	struct pcie_link_state *link = pdev->link_state;
-> +
-> +	if (aspm_disabled || !link)
-> +		return;
-> +	/*
-> +	 * Devices changed PM state, we should recheck if latency
-> +	 * meets all functions' requirement
-> +	 */
-> +	down_read(&pci_bus_sem);
-> +	mutex_lock(&aspm_lock);
-> +	pcie_update_aspm_capable(link->root);
-> +	pcie_config_aspm_path(link);
-> +	mutex_unlock(&aspm_lock);
-> +	up_read(&pci_bus_sem);
-> +}
-> +
->  void pcie_aspm_powersave_config_link(struct pci_dev *pdev)
->  {
->  	struct pcie_link_state *link = pdev->link_state;
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+>  			apps_bcm_voter: bcm-voter {
+>  				compatible = "qcom,bcm-voter";
+> 
+> -- 
+> 2.43.0
+> 
 
