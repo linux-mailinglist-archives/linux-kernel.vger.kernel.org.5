@@ -1,113 +1,96 @@
-Return-Path: <linux-kernel+bounces-14505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94FE7821E0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:49:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 782D0821E29
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:56:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C89E283861
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:49:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 214401F22DA6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:56:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E0512E56;
-	Tue,  2 Jan 2024 14:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F53312E5D;
+	Tue,  2 Jan 2024 14:56:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ioPL8PoF"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=mecka.net header.i=@mecka.net header.b="OlCBZLIV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE3D125D2
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:48:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704206938; x=1735742938;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=V51w5K1EQfkD+FE5AxSfH4Xycasu1bgRbde+rYFFCpc=;
-  b=ioPL8PoFA8ax63ldzFSh8GYySPHOt0Ut1zeq6aFVGt8VF3G2UnccTLRA
-   ZqOQU8gD3ddJPOVtIL5KbX3TOQtn+A5NTv0kUtl02STqqEGSAKgGv0nmD
-   L0LJddL454G6zU8djiMvopWTv1QohM7FdK0d9zlmQDvssYkEO7MFc3rac
-   t0Y40m9gOHDMbakwwH0tF3THFouPuRydZaEZXXJGViEbNrTwtRdZPShs8
-   h6dRdwxFfHGRks1SrmxCWkKd/Ug7TGi8pkEndHPIOphjQpNwlZYluKfPV
-   asXwdtPhD7pQwy5Vh3eVUCVWbb3HNi6AYwtSjmJseOqr7aGBaJsKLqpJz
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="4223299"
-X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
-   d="scan'208";a="4223299"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 06:48:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="952942909"
-X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
-   d="scan'208";a="952942909"
-Received: from dmaryin-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.35.224])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 06:48:53 -0800
-From: Jani Nikula <jani.nikula@intel.com>
-To: Dario Binacchi <dario.binacchi@amarulasolutions.com>,
- linux-kernel@vger.kernel.org
-Cc: Dario Binacchi <dario.binacchi@amarulasolutions.com>, Daniel Vetter
- <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2] drm/debugfs: drop unneeded DEBUG_FS guard
-In-Reply-To: <20231223183301.78332-1-dario.binacchi@amarulasolutions.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231223183301.78332-1-dario.binacchi@amarulasolutions.com>
-Date: Tue, 02 Jan 2024 16:48:42 +0200
-Message-ID: <87sf3f23lh.fsf@intel.com>
+Received: from mecka.net (mecka.net [159.69.159.214])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E7D12E5A;
+	Tue,  2 Jan 2024 14:56:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mecka.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mecka.net
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mecka.net; s=2016.11;
+	t=1704206933; bh=OLsgumS1zwfIQwHwTxGsJd911hWOiA9RORKv5bCget8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OlCBZLIVeF/PoWDACRceIzqmgbYteJEJ355bQ4YJdhOXq6ILi0racCbJ6xERTAkhu
+	 vs1kNQwxNsPHgrddbFYJENfb1E53QLEp3HygJqSADaZcTljUobsfwnjTEIGTHDKB+6
+	 QpvLBUBJLYdG9s6rMh4rKRQPL+OLQ1h+DdI1Tjpg9ErMxLRbOHGhcTtqxRJBKuyUIX
+	 lMNavOXv+doYpUl7zIvJZpSkqH7by1n8OkxzTfJkF0ZO/HLUpqQtcTjVS5Cinp+wWA
+	 k/b3WUCjXkC+POgl8A32MlXHZpUPBHe90L+4TQyUTbde/H3P13qnCQFkNGvcilqhBa
+	 BqX8loGptRM0A==
+Received: from mecka.net (unknown [185.147.11.134])
+	by mecka.net (Postfix) with ESMTPSA id 8F75D377B81;
+	Tue,  2 Jan 2024 15:48:52 +0100 (CET)
+Date: Tue, 2 Jan 2024 15:48:51 +0100
+From: Manuel Traut <manut@mecka.net>
+To: Jessica Zhang <quic_jesszhan@quicinc.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>, Sandy Huang <hjc@rock-chips.com>,
+	Mark Yao <markyao0591@gmail.com>,
+	Diederik de Haas <didi.debian@cknow.org>,
+	Segfault <awarnecke002@hotmail.com>,
+	Arnaud Ferraris <aferraris@debian.org>,
+	Danct12 <danct12@riseup.net>, dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v2 2/4] drm/panel: Add driver for BOE TH101MB31IG002-28A
+ panel
+Message-ID: <ZZQiU7o9QQrm-axU@mecka.net>
+References: <20231223-pinetab2-v2-0-ec1856d0030e@mecka.net>
+ <20231223-pinetab2-v2-2-ec1856d0030e@mecka.net>
+ <342bf5a0-8454-4fd6-be45-462f1e31e606@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <342bf5a0-8454-4fd6-be45-462f1e31e606@quicinc.com>
 
-On Sat, 23 Dec 2023, Dario Binacchi <dario.binacchi@amarulasolutions.com> wrote:
-> The Makefile enables/disables the file compilation depending on
-> CONFIG_DEBUG_FS.
->
-> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-> Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+On Tue, Dec 26, 2023 at 02:56:58PM -0800, Jessica Zhang wrote:
+> 
+> 
+> On 12/23/2023 7:20 AM, Manuel Traut wrote:
+> > From: Alexander Warnecke <awarnecke002@hotmail.com>
+> > 
+> > The BOE TH101MB31IG002-28A panel is a WXGA panel.
+> > It is used in Pine64 Pinetab2 and PinetabV.
+> > 
 
-Thanks for the patch, pushed to drm-misc-next.
+> Hi Manuel,
 
-BR,
-Jani.
+Hi Jessica,
 
->
-> ---
->
-> Changes in v2:
-> - Add 'Reviewed-by' tag of Jani Nikula
->
->  drivers/gpu/drm/drm_debugfs.c | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
-> index f291fb4b359f..f80d9cf3e71a 100644
-> --- a/drivers/gpu/drm/drm_debugfs.c
-> +++ b/drivers/gpu/drm/drm_debugfs.c
-> @@ -45,8 +45,6 @@
->  #include "drm_crtc_internal.h"
->  #include "drm_internal.h"
->  
-> -#if defined(CONFIG_DEBUG_FS)
-> -
->  /***************************************************
->   * Initialization, etc.
->   **************************************************/
-> @@ -588,5 +586,3 @@ void drm_debugfs_crtc_remove(struct drm_crtc *crtc)
->  	debugfs_remove_recursive(crtc->debugfs_entry);
->  	crtc->debugfs_entry = NULL;
->  }
-> -
-> -#endif /* CONFIG_DEBUG_FS */
+> Sorry, I responded to the v1 instead of the latest version. Carrying my
+> comment over to here:
+> 
+> If I remember correctly, commit d2aacaf07395bd798373cbec6af05fff4147aff3
+> should have introduced prepared/enabled do the drm_panel struct.
 
--- 
-Jani Nikula, Intel
+thanks for the hint, I will update this in v3.
+
+Regards
+Manuel
 
