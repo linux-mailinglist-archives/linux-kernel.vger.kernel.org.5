@@ -1,100 +1,172 @@
-Return-Path: <linux-kernel+bounces-14454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17D3D821D40
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:03:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40A58821C7F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:23:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00F7E1C22244
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:03:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C23901F22745
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8992A10979;
-	Tue,  2 Jan 2024 14:03:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o+tcxqoO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFD54FBF2;
+	Tue,  2 Jan 2024 13:23:37 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84EC71094E
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d5d898162so42238185e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:03:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704204216; x=1704809016; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5qqTKJtifBPnETv7np6pfevn5UJOzWmcakMBHLMWLps=;
-        b=o+tcxqoOYcQ5HAayJnRqSm7NxdAqP2MErgQU8epSHKYVyM/c4jcC81b3Yd176KG4DS
-         9is9buQ+5aWrA1Vstbw8VmEpR+TW5x0EIzaEnOUzWKGKlHt2pDC8o31QuXCPaNCnAaYg
-         fREAZEYQLWPjKfhv094977NNmDuGdHgxllDUKqBRTbO7o4wvPfrr18FmMrPjtcTWlVmP
-         hqurUR1K9WRIvk7jcGSW+sezFZSzYApttQ5VbJFRxbDZMcT6LLZjNUQfigzswlbPLHjx
-         my4cIf89hejeyO+DSyYRLSV5+ufEdKHqv/MzVcuzKn4V2mTPSkNlcRx4VVenc/GRQfhx
-         k0Zw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE747FBE4;
+	Tue,  2 Jan 2024 13:23:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5e89ba9810aso72523867b3.2;
+        Tue, 02 Jan 2024 05:23:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704204216; x=1704809016;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5qqTKJtifBPnETv7np6pfevn5UJOzWmcakMBHLMWLps=;
-        b=auET08G7DZz3Wrs83VDle5h3p2b4fWEw8UXeJKTQUKtnXPYzAoa0nHo361h9t9wCC9
-         i+90LLEc2GhnrIpT5uNeQ7DRwupxHv5Wcyrky0Ke9HPgjyD4RvwguZZrE53IHRcuQjZ7
-         g3m57/zHTQjwWYrIn4ZPFw+jp5JdX8V7IuV5KZ79KL0c9OozT+NPikeIGd4DBg3sGh5D
-         j7srcJ1Jo3O52wVJat7hH1ClixQEJyo5VZBelhdtorvfNg/NNfIeSxuR3inlQCbYsffi
-         lE9/SKEcjozqCpNj9tGI1euoj6jdkB69xlgD9Z1KkJB2PNZZ4Qs2Oeb7rRINwjz8hUqo
-         l7aw==
-X-Gm-Message-State: AOJu0YzxIsfabj4hC7VVocOxfV3+EmbCiH0lyJjwP9c6KQL1EsCtw+9r
-	4XcGLFzZoCgXpWZGIQWYnY+57ibKvEWuGw==
-X-Google-Smtp-Source: AGHT+IHszu5kYoPxaua17Zir72G8+47MdyzOxbuqM4YiER7bIwhhZFsyR7srK6e08ANasQ0eoLbNNw==
-X-Received: by 2002:a05:600c:ca:b0:40d:376b:c640 with SMTP id u10-20020a05600c00ca00b0040d376bc640mr12050424wmm.102.1704204216035;
-        Tue, 02 Jan 2024 06:03:36 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id d17-20020adffbd1000000b0033719111458sm11777561wrs.36.2024.01.02.06.03.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 06:03:35 -0800 (PST)
-Date: Tue, 2 Jan 2024 16:22:56 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Nathan DSilva <expitau@gmail.com>
-Cc: gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
-	tdavies@darkphysics.net, error27@gmail.com,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: rtl8192e: Add blank line after declarations
-Message-ID: <213d872d-8ad0-49f5-b6ae-9a1c69ecc107@suswa.mountain>
-References: <ZXvevJ2vEEQ92rau@oatmeal.darkphysics>
- <20231215152918.532037-1-expitau@gmail.com>
+        d=1e100.net; s=20230601; t=1704201814; x=1704806614;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zySj094qMEb17HPJF6gPpK0IiBjG+tOCD5/2Q7OgQ6I=;
+        b=pLFaXGHlqruqG2I2+eFUU58prrsDpZDvns9i9Vo4JyfFm6LgN6uIN+ANg92275iJp2
+         Lt7pWs+Kl0TvYMm926OLKy6fcgmex2LVMESuR21pssVE6Lf4UFd2KRU6ImHw0mB2el0O
+         hzMWvLN1WxUxwjyasNLC99Il1QBJegKgf4qd8rPRmBMF6BxT55H7L9x3N2h9Vr3lh/rx
+         J95fM0m4VSrmYEfeJhROUDniHkUs7/PbVBM1IReajFRmtHRlHnRoXSLQcmqmbKJi+Cg0
+         djVXWBmX4K2X4lfUQlB4Hy6cCvG9soi1vQrA32TTwC4r5FbpD5UeetRimmpJKDDX3CMz
+         YFIw==
+X-Gm-Message-State: AOJu0YxDnyUCbHnr3fWb2SEm6mr7Wvu8wR+c94zycVhAzNyYvVU+xJys
+	TN8fK6+qukc6WzkbbbD/xxXMptl/ioveBw==
+X-Google-Smtp-Source: AGHT+IEAtKU6QIGl5s1hXlllmLHhj6Tu+RvssLGhXsyVygeVCSu50tOFuGeWDr0wUvI2ULTj14yNrQ==
+X-Received: by 2002:a25:6802:0:b0:dbd:a9b6:b01e with SMTP id d2-20020a256802000000b00dbda9b6b01emr9727796ybc.36.1704201813717;
+        Tue, 02 Jan 2024 05:23:33 -0800 (PST)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id a19-20020a25ae13000000b00d974c72068fsm10171381ybj.4.2024.01.02.05.23.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jan 2024 05:23:32 -0800 (PST)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5e74b4d5445so72477457b3.1;
+        Tue, 02 Jan 2024 05:23:32 -0800 (PST)
+X-Received: by 2002:a0d:dd8e:0:b0:5e2:ecfe:48e5 with SMTP id
+ g136-20020a0ddd8e000000b005e2ecfe48e5mr11185191ywe.45.1704201812539; Tue, 02
+ Jan 2024 05:23:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215152918.532037-1-expitau@gmail.com>
+References: <cover.1704168510.git.wqu@suse.com> <a56def269d7885840a19a57aca0169891f5f0f32.1704168510.git.wqu@suse.com>
+In-Reply-To: <a56def269d7885840a19a57aca0169891f5f0f32.1704168510.git.wqu@suse.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 2 Jan 2024 14:23:20 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWXRid2hyvMLcQ6f+M1fxBZUPdeSN=3e=-xXNSce4gsJg@mail.gmail.com>
+Message-ID: <CAMuHMdWXRid2hyvMLcQ6f+M1fxBZUPdeSN=3e=-xXNSce4gsJg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] kstrtox: add unit tests for memparse_safe()
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr, 
+	andriy.shevchenko@linux.intel.com, David.Laight@aculab.com, ddiss@suse.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 03:29:18PM +0000, Nathan DSilva wrote:
-> Remove a warning about line breaks after declarations found by checkpatch.
-> 
-> Signed-off-by: Nathan DSilva <expitau@gmail.com>
-> ---
-> 
-> Thank you very much for your response. I didn't realize you could select
-> multiple --to recipients, or that you could have comments not in the changelog.
-> 
+Hi Qu,
 
-This should say:
+On Tue, Jan 2, 2024 at 5:13=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+> The new tests cases for memparse_safe() include:
+>
+> - The existing test cases for kstrtoull()
+>   Including all the 3 bases (8, 10, 16), and all the ok and failure
+>   cases.
+>   Although there are something we need to verify specific for
+>   memparse_safe():
+>
+>   * @retptr and @value are not modified for failure cases
+>
+>   * return value are correct for failure cases
+>
+>   * @retptr is correct for the good cases
+>
+> - New test cases
+>   Not only testing the result value, but also the @retptr, including:
+>
+>   * good cases with extra tailing chars, but without valid prefix
+>     The @retptr should point to the first char after a valid string.
+>     3 cases for all the 3 bases.
+>
+>   * good cases with extra tailing chars, with valid prefix
+>     5 cases for all the suffixes.
+>
+>   * bad cases without any number but stray suffix
+>     Should be rejected with -EINVAL
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-v2: Fix commit message
-v3: Improve these notes about changes between versions
+Thanks for your patch!
 
-Otherwise it looks okay.
+> --- a/lib/test-kstrtox.c
+> +++ b/lib/test-kstrtox.c
+> @@ -268,6 +268,237 @@ static void __init test_kstrtoll_ok(void)
+>         TEST_OK(kstrtoll, long long, "%lld", test_ll_ok);
+>  }
+>
+> +/*
+> + * The special pattern to make sure the result is not modified for error=
+ cases.
+> + */
+> +#define ULL_PATTERN            (0xefefefef7a7a7a7aULL)
+> +#if BITS_PER_LONG =3D=3D 32
+> +#define POINTER_PATTERN                (0xefef7a7a7aUL)
 
-regards,
-dan carpenter
+This pattern needs 40 bits to fit, so it doesn't fit in a 32-bit
+unsigned long or pointer.  Probably you wanted to use 0xef7a7a7aUL
+instead?
 
+> +#else
+> +#define POINTER_PATTERN                (ULL_PATTERN)
+> +#endif
 
+Shouldn't a simple cast to uintptr_t work fine for both 32-bit and
+64-bit systems:
+
+    #define POINTER_PATTERN  ((uintptr_t)ULL_PATTERN)
+
+Or even better, incorporate the cast to a pointer:
+
+    #define POINTER_PATTERN  ((void *)(uintptr_t)ULL_PATTERN)
+
+so you can drop the extra cast when assigning/comparing retptr below.
+
+> +
+> +/* Want to include "E" suffix for full coverage. */
+> +#define MEMPARSE_TEST_SUFFIX   (MEMPARSE_SUFFIX_K | MEMPARSE_SUFFIX_M |\
+> +                                MEMPARSE_SUFFIX_G | MEMPARSE_SUFFIX_T |\
+> +                                MEMPARSE_SUFFIX_P | MEMPARSE_SUFFIX_E)
+> +
+> +static void __init test_memparse_safe_fail(void)
+> +{
+
+[...]
+
+> +       for_each_test(i, tests) {
+> +               const struct memparse_test_fail *t =3D &tests[i];
+> +               unsigned long long tmp =3D ULL_PATTERN;
+> +               char *retptr =3D (char *)POINTER_PATTERN;
+> +               int ret;
+
+[...]
+
++               if (retptr !=3D (char *)POINTER_PATTERN)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
