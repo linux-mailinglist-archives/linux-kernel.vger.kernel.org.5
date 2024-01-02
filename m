@@ -1,90 +1,136 @@
-Return-Path: <linux-kernel+bounces-14240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341A98219A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:26:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2F578219AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:28:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCF641F22527
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:26:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DEEC1F22258
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CAEDDC1;
-	Tue,  2 Jan 2024 10:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="CIoiT4SL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E65AAD2E2;
+	Tue,  2 Jan 2024 10:28:22 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7524DDBA;
-	Tue,  2 Jan 2024 10:26:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1704191166;
-	bh=RaJlaI+6zhKJ4V+dN/O223tHLNAl7Jrq0UeV5Sr8+Z8=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=CIoiT4SLj/jLoF5X0LjHIQbqIGSV9SwtR4Lf6PUnNWcstCtiud+Ksx08dxkjKdtmd
-	 /wiO0LrApX0q3lbdWiUrDOUL5fBZruVQb/yBQIqVQneXMs3nNJ0FoQWtLeMqb4l+xQ
-	 jKyZLgSIbA5H50ISH8WY93pDO3PfoWKu9Mj6Ajxo=
-Received: from [IPv6:240e:358:11a9:2200:dc73:854d:832e:3] (unknown [IPv6:240e:358:11a9:2200:dc73:854d:832e:3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 923C266C06;
-	Tue,  2 Jan 2024 05:26:00 -0500 (EST)
-Message-ID: <f6e0b3a0e08a8100fa5dc9345af8582ff664321c.camel@xry111.site>
-Subject: Re: [PATCH v2] LoongArch: Fix and simplify fcsr initialization on
- execve
-From: Xi Ruoyao <xry111@xry111.site>
-To: Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>
-Cc: Eric Biederman <ebiederm@xmission.com>, Kees Cook
- <keescook@chromium.org>,  Tiezhu Yang <yangtiezhu@loongson.cn>, Jinyang He
- <hejinyang@loongson.cn>, loongarch@lists.linux.dev,  linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Date: Tue, 02 Jan 2024 18:25:54 +0800
-In-Reply-To: <20240102101711.10872-2-xry111@xry111.site>
-References: <20240102101711.10872-2-xry111@xry111.site>
-Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
- keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0D2DD285;
+	Tue,  2 Jan 2024 10:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5edf3780534so40861667b3.0;
+        Tue, 02 Jan 2024 02:28:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704191300; x=1704796100;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SGUYue1hsQCNLrCF4HXCzjQx8nMIh5sStGYQ5m2PA10=;
+        b=IhF8XbFOtM2sbFIMTsvtFcYVn+ZhlUEbik3Am4co+9XxYgYZzesV+ymi3wrCx9/duu
+         nZRUzM/rHrRFKnetQZelKIczbYooxe2AWVbKPXNd6OMUddNChMF8EJ7+R15Geh8BzidH
+         xeaeQcuWjQ/aNSUZ/1YgVdf2sh7020PMsC/xcxHvlFyxd4gxVdYuCXzOmrKbkAgADQr5
+         YL2VZk9NQkU+9UTVwqAuRiGnUuAEAhZ48xKbQlgVgeDH3I4KPjFIUamLpYooWC0zb5LY
+         aOzJT//5uHPzUZpaaQSqaNEQBzlb0PETS+33zamkIkH3Ve+eeOEGMrt3GdlawiPfuIhl
+         1HXg==
+X-Gm-Message-State: AOJu0YwMwZSQ/i6EwHUH0Vu9X/dhihrDpwgUdAObBNsm5AOX65WSr8YY
+	7q1a1x9Dq36alrz9DPdMbugE95Wa3AVijA==
+X-Google-Smtp-Source: AGHT+IHjusxO/DvFDYCLHPOpP3POSSCoqWg5OhYM53rjTxnQmUEmkECOOX8mHPrS0QKALyCEfEBZ/Q==
+X-Received: by 2002:a05:690c:309:b0:5ef:91bd:f6f9 with SMTP id bg9-20020a05690c030900b005ef91bdf6f9mr4071978ywb.35.1704191299787;
+        Tue, 02 Jan 2024 02:28:19 -0800 (PST)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
+        by smtp.gmail.com with ESMTPSA id q2-20020a818002000000b005d3ba95d418sm11865738ywf.108.2024.01.02.02.28.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jan 2024 02:28:19 -0800 (PST)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5e7f0bf46a2so74147597b3.1;
+        Tue, 02 Jan 2024 02:28:19 -0800 (PST)
+X-Received: by 2002:a81:b661:0:b0:5f3:6024:53c with SMTP id
+ h33-20020a81b661000000b005f36024053cmr393594ywk.32.1704191299465; Tue, 02 Jan
+ 2024 02:28:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
+ <20231217071250.892867-1-mailhol.vincent@wanadoo.fr> <20231217071250.892867-2-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20231217071250.892867-2-mailhol.vincent@wanadoo.fr>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 2 Jan 2024 11:28:08 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUvqY4VLDS0mW2VbSzTmef9xt+F3FCpRj5-Mv+KeOqyXg@mail.gmail.com>
+Message-ID: <CAMuHMdUvqY4VLDS0mW2VbSzTmef9xt+F3FCpRj5-Mv+KeOqyXg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] m68k/bitops: force inlining of all bitops functions
+To: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	Yury Norov <yury.norov@gmail.com>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Douglas Anderson <dianders@chromium.org>, Kees Cook <keescook@chromium.org>, 
+	Petr Mladek <pmladek@suse.com>, Randy Dunlap <rdunlap@infradead.org>, 
+	Zhaoyang Huang <zhaoyang.huang@unisoc.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, 
+	Matthew Wilcox <willy@infradead.org>, "Paul E . McKenney" <paulmck@kernel.org>, linux-hexagon@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2024-01-02 at 18:17 +0800, Xi Ruoyao wrote:
-> The only other architecture setting FCSR in SET_PERSONALITY2 is MIPS.
-> They do this for supporting different FP flavors (NaN encodings etc).
-> which do not exist on LoongArch.=C2=A0 I'm not sure how MIPS evades the i=
-ssue
-> (or maybe it's just buggy too) but I'll investigate it later.
+Hi Vincent,
 
-Phew.  I just managed to recommission my 3A4000 and I can reproduce the
-issue as well with Linux 5.18.1 (the latest kernel release when I
-decommissioned it) and CONFIG_PREEMPT=3Dy.
+Thanks for your patch!
 
-% cat measure.c
-#include <fenv.h>
-int main() { return fetestexcept(FE_INEXACT); }
+On Sun, Dec 17, 2023 at 8:13=E2=80=AFAM Vincent Mailhol
+<mailhol.vincent@wanadoo.fr> wrote:
+> The inline keyword actually does not guarantee that the compiler will
+> inline a functions. Whenever the goal is to actually inline a
+> function, __always_inline should always be preferred instead.
+>
+> On an allyesconfig, with GCC 13.2.1, it saves roughly 5 KB.
+>
+>   $ size --format=3DGNU vmlinux.before vmlinux.after
+>         text       data        bss      total filename
+>     60449738   70975612    2288988  133714338 vmlinux.before
+>     60446534   70972412    2289596  133708542 vmlinux.after
 
-% echo $((1./3))
-0.33333333333333331
+With gcc 9.5.0-1ubuntu1~22.04, the figures are completely different
+(i.e. a size increase):
 
-% while ./a.out; do ; done
-(stopped in seconds)
+allyesconfig:
 
-I'm building the mainline kernel on the 3A4000 now, will see if the
-issue still exists...
+      text       data        bss      total filename
+  58878600   72415994    2283652  133578246 vmlinux.before
+  58882250   72419706    2284004  133585960 vmlinux.after
+
+atari_defconfig:
+
+      text       data        bss      total filename
+   4112060    1579862     151680    5843602 vmlinux-v6.7-rc8
+   4117008    1579350     151680    5848038
+vmlinux-v6.7-rc8-1-m68k-bitops-force-inlining
+
+The next patch offsets that for allyesconfig, but not for atari_defconfig.
+
+> Reference: commit 8dd5032d9c54 ("x86/asm/bitops: Force inlining of
+> test_and_set_bit and friends")
+
+Please don't split lines containing tags.
+
+> Link: https://git.kernel.org/torvalds/c/8dd5032d9c54
+>
+> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 --=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
