@@ -1,222 +1,98 @@
-Return-Path: <linux-kernel+bounces-14191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A6878218F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:35:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C379E8218F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:35:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11D2B1F22167
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:35:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E70C282BB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:35:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7775ACA7F;
-	Tue,  2 Jan 2024 09:35:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0721EC8FD;
+	Tue,  2 Jan 2024 09:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="VnPLnCPO"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="Udm2tBP4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+Received: from mout.web.de (mout.web.de [212.227.15.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F77ACA69
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 09:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CE1D324000C;
-	Tue,  2 Jan 2024 09:35:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1704188106;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f2u1ijxtzEf9eyCDKw75vOC2uuAgptQFEeMQnFDeZaw=;
-	b=VnPLnCPO1pSpAiic78DSPUogwKa7/7tz0vmrpHKLGE6YDkkiHKr7s+VPRPJV/OKR3Ps/KK
-	RpkDlNYRN0JYuUYBndVKz4DolWIjbHHT9uJ7L/Duua2rlxoV7VtWJRpTjjrTY6VVam289V
-	Wem9+h55x86lp0GlvOUUvPy/Zh6dxrfpxUTNoV0BgdK+sBZ54XjNFZPVxynNehLCEA6dhk
-	t4kPdfbPbApnKgpBHIm7InFzSDk+7rbpus10feT5R3PuhGdzar+tu+V2iV03HGPPXxfiqD
-	+/GmZZQP0Smli8kVDhAIDBMwzIOlGvhL4xPwiLghIoK+T8aiusdPzoaaQLK8tQ==
-Date: Tue, 2 Jan 2024 10:35:03 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Michael Walle <michael@walle.cc>, "Russell
- King (Oracle)" <rmk+kernel@armlinux.org.uk>, =?UTF-8?B?UmFmYcWCIE1pxYJl?=
- =?UTF-8?B?Y2tp?= <rafal@milecki.pl>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvmem: core: fix nvmem cells not being available in
- notifiers
-Message-ID: <20240102103503.5310aa4b@xps-13>
-In-Reply-To: <20231229-nvmem-cell-add-notification-v1-1-8d8b426be9f9@bootlin.com>
-References: <20231229-nvmem-cell-add-notification-v1-1-8d8b426be9f9@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A10ED2E4;
+	Tue,  2 Jan 2024 09:35:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704188118; x=1704792918; i=markus.elfring@web.de;
+	bh=tSNyrdvOrmxmScfoESQeoGJjZVGUwhPYL8i1sd6cwWM=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=Udm2tBP4J/pdhzcrUlquYZ/Ml4NaW2Z5Hka8bruypnqytiTwG7Nf8eqcwNJXe8lZ
+	 iz8dMSFTjAJpZEHCPH5Nd18iA2dYcFkq15GFaE7M2DhnXI9epg5/IfxH6hQCkAr/o
+	 5f8BS6DQrr3yCjozlTMN7EyROVMS8KoJeU3Nmu+CrcQS2ErLfRggjGW0Yf/rFjBgp
+	 bSbeN+UC/GgBQYTSdGvyDXYYvjUy0sxPN0hkOvwOt7woeBaZzwk06qPZREErcazLL
+	 swGkqMY+Ev/Bb3Y6jxBq8pVzApGH57IDcfxbXTXq7IS47mkQkz3J/wZ9ZO/uzkTmu
+	 OWqODwJ6knAT0NBCzw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MIc7N-1rPqVf0ZZl-00EZ1s; Tue, 02
+ Jan 2024 10:35:18 +0100
+Message-ID: <691350ea-39e9-4031-a066-27d7064cd9d9@web.de>
+Date: Tue, 2 Jan 2024 10:35:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [2/2] virtiofs: Improve error handling in virtio_fs_get_tree()
+Content-Language: en-GB
+To: Matthew Wilcox <willy@infradead.org>, virtualization@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Cc: Miklos Szeredi <miklos@szeredi.hu>, Stefan Hajnoczi
+ <stefanha@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <c5c14b02-660a-46e1-9eb3-1a16d7c84922@web.de>
+ <5745d81c-3c06-4871-9785-12a469870934@web.de>
+ <ZY6Iir/idOZBiREy@casper.infradead.org>
+ <54b353b6-949d-45a1-896d-bb5acb2ed4ed@web.de>
+ <ZY7V+ywWV/iKs4Hn@casper.infradead.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <ZY7V+ywWV/iKs4Hn@casper.infradead.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Provags-ID: V03:K1:WoH4l/kfnG/D1YD+yV/7PtW8vygvEXgrYZtTCzrEtR8rGb9nxd1
+ d2KCgCErE3OUiwfidxwk5zEYEyBK3fQnMJclRQNSL2tLRTtVqBWurw9IKowTgr/wKU18Lgz
+ Pyq6fdyUTgT9bnpQKXz+EtFKA1pGV1KS1Gbm91FBfLm4hyYpmn5IWu3PZt7uPZgfNin6AJF
+ 4KZy3HwzXsjySVAtkDofA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Cbq+ZiV+SZY=;Jt3xakHM8aRBkoWFImzl9NKcJMc
+ Jt61HqtLCDFYLCp0v/8MdPdAs8HNbzVdui4BKaK/9i9/8NwiMp2ciQ/uDrdLcxs4QL5AjfjaV
+ Sogs1IW0o69j9NWQPFZ5XkJfGL0oC5Pq2vWOmMFU34GT77pMbtKSKwKmrZCDOrC20ueIWJsvc
+ +GS1UM/dYfPgMCLMu+f3G2pWvYRfT+0mxEMSl4elkSydgQ3MAbcHt0Sq5i1qFb94PrFgVsNC3
+ jsd9iTcKEe02bfabtUrT2uQR+en9ZTamWsEJdCBZb3OtfruBvuFaL3C/sAQK2y3WkjPc+8gwB
+ Mb2s0xrA0gDA0BAiDij6xeTCgGDUFLe1HxkouFj5xoMlYjqEctBDMtc8JyiZCSXOJWtPqZcqr
+ 4JlwO7FPw8n/lnrLZygREIQx/ODLs3mIN75vvgFX/aXXkHEc5d2/B5wPt4envf2PVuL4O1rU7
+ P7E+EyrWBK4NXmXc6rVyVJq+0+SPRSIKqX4u4pK6+oMTtxT2sLawUlXJrYvHJwC9BAH/S1r3j
+ b/l/DSSdMzoeQ9bfnsUeqm8ab4BZKIPcRLtQIasrG5lsl/LiS0wKH21Avgi5+RpSQSna48Pq/
+ q2Rmn6anSCzcn0QohSbUXP1mmakNf8z0kTmhqPQfl4wyqoTa+u+SHZqooywxt8+IXRxCPXntL
+ ZMurQ2W5DVhHha4v+0+d7HNcLd3T507P6MNE18vEeD75hJd25FCby1WwNlzhnPLxd5d9krc1I
+ HDKHNKtvK+B6pTrsEw/pRwJ2ESrqFvL31Wlf2XZ8K7335Fe5775Hs3NVW2Rp8XAbmrkBmTF1w
+ TmaZYDZL5hAqrJt7W/X6wJBHr7faUIZBhBE2IDYnyUs/6RS3+4CjGlRhN9DhlpvB9MeeTwfvS
+ SHrnQrz3Hdo3EyW5yNYP/IBs6cIBNlM8ExDxkIZLaqkTwUZaBenMFAOr+l2c1S1AAGAj+t8HN
+ YkO4Bg==
 
-Hi Luca,
+>>> So what?  kfree(NULL) is perfectly acceptable.
+>>
+>> I suggest to reconsider the usefulness of such a special function call.
+>
+> Can you be more explicit in your suggestion?
 
-luca.ceresoli@bootlin.com wrote on Fri, 29 Dec 2023 11:26:26 +0100:
+I hope that the change acceptance can grow for the presented transformatio=
+n.
+Are you looking for an improved patch description?
 
-> With current code, when an NVMEM notifier for NVMEM_CELL_ADD is called, t=
-he
-> cell is not accessible within the notifier call function.
->=20
-
-Nice commit log :) a few minor comments below.
-
-...
-
->=20
-> Solve this by adding a flag in struct nvmem_device to block all
-> notifications before calling device_add(), and keep track of whether each
-> cell got notified or not, so that exactly one notification is sent ber
-
-								     per?
-
-> cell.
->=20
-> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-> ---
->  drivers/nvmem/core.c      | 35 +++++++++++++++++++++++++++++++++--
->  drivers/nvmem/internals.h |  2 ++
->  2 files changed, 35 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> index ba559e81f77f..42f8edbfb39c 100644
-> --- a/drivers/nvmem/core.c
-> +++ b/drivers/nvmem/core.c
-> @@ -36,6 +36,7 @@ struct nvmem_cell_entry {
->  	struct device_node	*np;
->  	struct nvmem_device	*nvmem;
->  	struct list_head	node;
-> +	atomic_t		notified_add;
->  };
-> =20
->  struct nvmem_cell {
-> @@ -520,9 +521,29 @@ static struct bus_type nvmem_bus_type =3D {
->  	.name		=3D "nvmem",
->  };
-> =20
-> +/*
-> + * Send cell add/remove notification unless it has been already sent.
-> + *
-> + * Uses and updates cell->notified_add to avoid duplicates.
-> + *
-> + * Must never be called with NVMEM_CELL_ADD after being called with
-> + * NVMEM_CELL_REMOVE.
-> + *
-> + * @cell: the cell just added or going to be removed
-> + * @event: NVMEM_CELL_ADD or NVMEM_CELL_REMOVE
-> + */
-> +static void nvmem_cell_notify(struct nvmem_cell_entry *cell, unsigned lo=
-ng event)
-> +{
-> +	int new_notified =3D (event =3D=3D NVMEM_CELL_ADD) ? 1 : 0;
-
-The ternary operator is not needed here, (event =3D=3D VAL) will return the
-correct value.
-
-Could we rename new_notified into something like "is_addition"? It took
-me a bit of time understanding what this boolean meant.
-
-> +	int was_notified =3D atomic_xchg(&cell->notified_add, new_notified);
-> +
-> +	if (new_notified !=3D was_notified)
-
-I believe what you want is (with my terms):
-
-	if ((is_addition && !was_notified) || !is_addition)
-
-> +		blocking_notifier_call_chain(&nvmem_notifier, event, cell);
-
-I believe your if condition works, but is a bit complex to read. Is
-there a reason for the following condition ?
-
-	(new_notified :=3D 0) /*removal */ !=3D (was_notified :=3D 1)
-
-I see no use to this, but I am probably over looking something.
-
-> +}
-> +
->  static void nvmem_cell_entry_drop(struct nvmem_cell_entry *cell)
->  {
-> -	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_CELL_REMOVE, cell);
-> +	nvmem_cell_notify(cell, NVMEM_CELL_REMOVE);
->  	mutex_lock(&nvmem_mutex);
->  	list_del(&cell->node);
->  	mutex_unlock(&nvmem_mutex);
-> @@ -544,7 +565,9 @@ static void nvmem_cell_entry_add(struct nvmem_cell_en=
-try *cell)
->  	mutex_lock(&nvmem_mutex);
->  	list_add_tail(&cell->node, &cell->nvmem->cells);
->  	mutex_unlock(&nvmem_mutex);
-> -	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_CELL_ADD, cell);
-> +
-> +	if (cell->nvmem->do_notify_cell_add)
-> +		nvmem_cell_notify(cell, NVMEM_CELL_ADD);
->  }
-> =20
->  static int nvmem_cell_info_to_nvmem_cell_entry_nodup(struct nvmem_device=
- *nvmem,
-> @@ -902,6 +925,7 @@ EXPORT_SYMBOL_GPL(nvmem_layout_get_match_data);
->  struct nvmem_device *nvmem_register(const struct nvmem_config *config)
->  {
->  	struct nvmem_device *nvmem;
-> +	struct nvmem_cell_entry *cell;
->  	int rval;
-> =20
->  	if (!config->dev)
-> @@ -1033,6 +1057,13 @@ struct nvmem_device *nvmem_register(const struct n=
-vmem_config *config)
-> =20
->  	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_ADD, nvmem);
-> =20
-> +	/* After device_add() it is now OK to notify of new cells */
-> +	nvmem->do_notify_cell_add =3D true;
-
-Could we rename this as well to be simpler? Like
-"notify_cell_additions" or "cells_can_be_notified"? I am actually
-asking myself whether this boolean is useful. In practice we call the
-notifier after setting this to true. On the other hand, the layouts
-will only probe after the device_add(), so they should be safe?
-
-> +
-> +	/* Notify about cells previously added but not notified */
-> +	list_for_each_entry(cell, &nvmem->cells, node)
-> +		nvmem_cell_notify(cell, NVMEM_CELL_ADD);
-> +
->  	return nvmem;
-> =20
->  #ifdef CONFIG_NVMEM_SYSFS
-> diff --git a/drivers/nvmem/internals.h b/drivers/nvmem/internals.h
-> index 18fed57270e5..3dbaa8523530 100644
-> --- a/drivers/nvmem/internals.h
-> +++ b/drivers/nvmem/internals.h
-> @@ -33,6 +33,8 @@ struct nvmem_device {
->  	struct nvmem_layout	*layout;
->  	void *priv;
->  	bool			sysfs_cells_populated;
-> +	/* Enable sending NVMEM_CELL_ADD notifications */
-> +	bool			do_notify_cell_add;
->  };
-> =20
->  #if IS_ENABLED(CONFIG_OF)
->=20
-> ---
-> base-commit: 399769c2014d2aa0463636d50f2bc6431b377331
-> change-id: 20231229-nvmem-cell-add-notification-feb857742f0a
->=20
-> Best regards,
-
-
-Thanks,
-Miqu=C3=A8l
+Regards,
+Markus
 
