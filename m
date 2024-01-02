@@ -1,391 +1,176 @@
-Return-Path: <linux-kernel+bounces-14267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8785A821A6C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:50:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1DCE821AE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:25:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87AD51C21BCB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:50:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E6BF2831BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB2ADDB6;
-	Tue,  2 Jan 2024 10:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D91E554;
+	Tue,  2 Jan 2024 11:25:25 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5CCFD515;
-	Tue,  2 Jan 2024 10:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4T48kX0bQgz4f3jJ9;
-	Tue,  2 Jan 2024 18:49:56 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 528FA1A0484;
-	Tue,  2 Jan 2024 18:49:59 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgBnahBV6pNlBUVCFQ--.58730S3;
-	Tue, 02 Jan 2024 18:49:59 +0800 (CST)
-Subject: Re: [PATCH -next RFC] block: support to account io_ticks precisely
-To: Yu Kuai <yukuai1@huaweicloud.com>, bvanassche@acm.org, hch@lst.de,
- ming.lei@redhat.com, axboe@kernel.dk
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20231205093743.1823351-1-yukuai1@huaweicloud.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <e1475e94-2026-c154-8e4d-498aca4f7ed8@huaweicloud.com>
-Date: Tue, 2 Jan 2024 18:49:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807F0DF5D;
+	Tue,  2 Jan 2024 11:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rKcQJ-0006IK-2M;
+	Tue, 02 Jan 2024 10:55:04 +0000
+Date: Tue, 2 Jan 2024 11:52:34 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: Eric Woudstra <ericwouds@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Frank Wunderlich <frank-w@public-files.de>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH RFC net-next] net: phylink: add quirk for disabling
+ in-band-status for mediatek pcs at 2500base-x
+Message-ID: <ZZPq8iMAv3eR9Gfk@pidgin.makrotopia.org>
+References: <20240102074326.1049179-1-ericwouds@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231205093743.1823351-1-yukuai1@huaweicloud.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBnahBV6pNlBUVCFQ--.58730S3
-X-Coremail-Antispam: 1UD129KBjvAXoWfJr47KF1xtw4kuF1ftFyUAwb_yoW8JrWDZo
-	Z5JFs3Z3Z3t3yxWFW7Cwn7J3Zru3yDKa18AFWUur45X3Zrtw4UuFy7Ca4rW348GFyFkFn5
-	JF9rGFyxtFs5t3s8n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUUYk7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20EY4v20xva
-	j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
-	x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8
-	Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-	xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-	0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-	n2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
-	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
-	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_
-	WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
-	IYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102074326.1049179-1-ericwouds@gmail.com>
 
-friendly ping...
-
-There used be lots of attempt to implement similiar feature, please let
-me know if this feature is still interested from mainline. The
-additional overhead can be ignored at least for HHD, and we had received
-multiple complaint that disk util becomes worse after upgrading kernel.
-We do provide additional tools like blktrace and bpftrace script to get
-precise util, but for performance and userspace complexity, most of our
-custormers prefer to keep using iostat of read /proc/diskstats.
-
-Thanks,
-Kuai
-
-ÔÚ 2023/12/05 17:37, Yu Kuai Ð´µÀ:
-> From: Yu Kuai <yukuai3@huawei.com>
+On Tue, Jan 02, 2024 at 08:43:26AM +0100, Eric Woudstra wrote:
+> In follow up to: net: pcs: pcs-mtk-lynxi: use 2500Base-X without AN
 > 
-> Currently, io_ticks is accounted based on sampling, specifically
-> update_io_ticks() will always account io_ticks by 1 jiffies from
-> bdev_start_io_acct()/blk_account_io_start(), and the result can be
-> inaccurate, for example(HZ is 250):
+> MediaTek LynxI PCS, 2500Base-X will only work without inband status due to
+> hardware limitation.
 > 
-> Test script:
-> fio -filename=/dev/sda -bs=4k -rw=write -direct=1 -name=test -thinktime=4ms
+> I understand this patch probably will not get approved as it is now, but
+> perhaps with some pointers in the correct direction to follow, I can change
+> it so it could be. It does however get the result that the rtl8221b on a
+> sfp module functions correctly, with and without (as optical sfp) the phy
+> attached and without using a quirk/ethtool to disable auto-negotiation.
 > 
-> Test result: util is about 90%, while the disk is really idle.
+> Introduce bool phylink_major_no_inband(pl,interface), a function similar to
+> bool phylink_phy_no_inband(phy). An option could be to use a function like
+> bool pcs->ops->supports_inband(interface), where if the function-pointer is
+> null, it means it is supported for all. This instead of using
+> of_device_is_compatible() inside the phylink_major_no_inband() function.
 > 
-> In order to account io_ticks precisely, update_io_ticks() must know if
-> there are IO inflight already, and this requires overhead slightly,
-> hence precise io accounting is disabled by default, and user can enable
-> it through sysfs entry.
+> Code added to phylink_major_config():
 > 
-> Noted that for rq-based devcie, part_stat_local_inc/dec() and
-> part_in_flight() is used to track inflight instead of iterating tags,
-> which is not supposed to be used in fast path because 'tags->lock' is
-> grabbed in blk_mq_find_and_get_req().
+> When there is no PHY attached, pl->pcs_neg_mode is set to
+> PHYLINK_PCS_NEG_INBAND_DISABLED.
 > 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> When there is a PHY attached, pl->cur_link_an_mode is set to MLO_AN_PHY.
+> To have the pcs function correctly with the rtl8221b, we need to do the
+> following to the in-band-status:
+> 
+> We need to disable it when interface of the pcs is set to 2500base-x,
+> but need it enable it when switched to sgmii.
+> 
+> So we get:
+> 
+> [...] mtk_soc_eth ... eth1: phy link up sgmii/1Gbps/Full/none/rx/tx
+> [...] mtk_soc_eth ... eth1: phylink_mac_config: mode=inband/sgmii/none
+>                                 adv=00,00000000,00000000,00000000 pause=03
+> 
+> [...] mtk_soc_eth ... eth1: phy link up 2500base-x/2.5Gbps/Full/none/rx/tx
+> [...] mtk_soc_eth ... eth1: phylink_mac_config: mode=phy/2500base-x/none
+>                                 adv=00,00000000,00008000,0000606f pause=03
+> 
+> Changes to be committed:
+> 	modified:   drivers/net/phy/phylink.c
+> 
+> Signed-off-by: Eric Woudstra <ericwouds@gmail.com>
 > ---
->   Documentation/ABI/stable/sysfs-block |  8 ++++--
->   block/blk-core.c                     | 17 ++++++++----
->   block/blk-mq.c                       | 18 ++++++++++---
->   block/blk-sysfs.c                    | 40 ++++++++++++++++++++++++++--
->   block/blk.h                          |  4 ++-
->   block/genhd.c                        |  6 ++---
->   include/linux/blk-mq.h               |  1 +
->   include/linux/blkdev.h               |  3 +++
->   8 files changed, 80 insertions(+), 17 deletions(-)
-> 
-> diff --git a/Documentation/ABI/stable/sysfs-block b/Documentation/ABI/stable/sysfs-block
-> index 1fe9a553c37b..e5fedecf7bdf 100644
-> --- a/Documentation/ABI/stable/sysfs-block
-> +++ b/Documentation/ABI/stable/sysfs-block
-> @@ -358,8 +358,12 @@ What:		/sys/block/<disk>/queue/iostats
->   Date:		January 2009
->   Contact:	linux-block@vger.kernel.org
->   Description:
-> -		[RW] This file is used to control (on/off) the iostats
-> -		accounting of the disk.
-> +		[RW] This file is used to control the iostats accounting of the
-> +		disk. If this value is 0, iostats accounting is disabled; If
-> +		this value is 1, iostats accounting is enabled, but io_ticks is
-> +		accounted by sampling and the result is not accurate; If this
-> +		value is 2, iostats accounting is enabled and io_ticks is
-> +		accounted precisely, but there will be slightly overhead.
->   
->   
->   What:		/sys/block/<disk>/queue/logical_block_size
-> diff --git a/block/blk-core.c b/block/blk-core.c
-> index fdf25b8d6e78..405883d606cd 100644
-> --- a/block/blk-core.c
-> +++ b/block/blk-core.c
-> @@ -935,14 +935,20 @@ int iocb_bio_iopoll(struct kiocb *kiocb, struct io_comp_batch *iob,
->   }
->   EXPORT_SYMBOL_GPL(iocb_bio_iopoll);
->   
-> -void update_io_ticks(struct block_device *part, unsigned long now, bool end)
-> +void update_io_ticks(struct block_device *part, unsigned long now, bool end,
-> +		     bool precise)
->   {
->   	unsigned long stamp;
->   again:
->   	stamp = READ_ONCE(part->bd_stamp);
-> -	if (unlikely(time_after(now, stamp))) {
-> -		if (likely(try_cmpxchg(&part->bd_stamp, &stamp, now)))
-> +	if (unlikely(time_after(now, stamp)) &&
-> +	    likely(try_cmpxchg(&part->bd_stamp, &stamp, now))) {
-> +		if (precise) {
-> +			if (end || part_in_flight(part))
-> +				__part_stat_add(part, io_ticks, now - stamp);
-> +		} else {
->   			__part_stat_add(part, io_ticks, end ? now - stamp : 1);
-> +		}
->   	}
->   	if (part->bd_partno) {
->   		part = bdev_whole(part);
-> @@ -954,7 +960,8 @@ unsigned long bdev_start_io_acct(struct block_device *bdev, enum req_op op,
->   				 unsigned long start_time)
->   {
->   	part_stat_lock();
-> -	update_io_ticks(bdev, start_time, false);
-> +	update_io_ticks(bdev, start_time, false,
-> +			blk_queue_precise_io_stat(bdev->bd_queue));
->   	part_stat_local_inc(bdev, in_flight[op_is_write(op)]);
->   	part_stat_unlock();
->   
-> @@ -982,7 +989,7 @@ void bdev_end_io_acct(struct block_device *bdev, enum req_op op,
->   	unsigned long duration = now - start_time;
->   
->   	part_stat_lock();
-> -	update_io_ticks(bdev, now, true);
-> +	update_io_ticks(bdev, now, true, true);
->   	part_stat_inc(bdev, ios[sgrp]);
->   	part_stat_add(bdev, sectors[sgrp], sectors);
->   	part_stat_add(bdev, nsecs[sgrp], jiffies_to_nsecs(duration));
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index 900c1be1fee1..84fffbdc9dc1 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -360,8 +360,11 @@ static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
->   
->   	if (data->flags & BLK_MQ_REQ_PM)
->   		data->rq_flags |= RQF_PM;
-> -	if (blk_queue_io_stat(q))
-> +	if (blk_queue_io_stat(q)) {
->   		data->rq_flags |= RQF_IO_STAT;
-> +		if (blk_queue_precise_io_stat(q))
-> +			data->rq_flags |= RQF_PRECISE_IO_STAT;
-> +	}
->   	rq->rq_flags = data->rq_flags;
->   
->   	if (data->rq_flags & RQF_SCHED_TAGS) {
-> @@ -996,17 +999,21 @@ static inline void blk_account_io_done(struct request *req, u64 now)
->   		const int sgrp = op_stat_group(req_op(req));
->   
->   		part_stat_lock();
-> -		update_io_ticks(req->part, jiffies, true);
-> +		update_io_ticks(req->part, jiffies, true, true);
->   		part_stat_inc(req->part, ios[sgrp]);
->   		part_stat_add(req->part, nsecs[sgrp], now - req->start_time_ns);
-> +		if (req->rq_flags & RQF_PRECISE_IO_STAT)
-> +			part_stat_local_dec(req->part,
-> +					in_flight[op_is_write(req_op(req))]);
->   		part_stat_unlock();
->   	}
->   }
->   
->   static inline void blk_account_io_start(struct request *req)
->   {
-> -	trace_block_io_start(req);
-> +	bool precise = req->rq_flags & RQF_PRECISE_IO_STAT;
->   
-> +	trace_block_io_start(req);
->   	if (blk_do_io_stat(req)) {
->   		/*
->   		 * All non-passthrough requests are created from a bio with one
-> @@ -1020,7 +1027,10 @@ static inline void blk_account_io_start(struct request *req)
->   			req->part = req->q->disk->part0;
->   
->   		part_stat_lock();
-> -		update_io_ticks(req->part, jiffies, false);
-> +		update_io_ticks(req->part, jiffies, false, precise);
-> +		if (precise)
-> +			part_stat_local_inc(req->part,
-> +					in_flight[op_is_write(req_op(req))]);
->   		part_stat_unlock();
->   	}
->   }
-> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-> index 63e481262336..75ddbbd1edb4 100644
-> --- a/block/blk-sysfs.c
-> +++ b/block/blk-sysfs.c
-> @@ -303,7 +303,6 @@ queue_##name##_store(struct request_queue *q, const char *page, size_t count) \
->   
->   QUEUE_SYSFS_BIT_FNS(nonrot, NONROT, 1);
->   QUEUE_SYSFS_BIT_FNS(random, ADD_RANDOM, 0);
-> -QUEUE_SYSFS_BIT_FNS(iostats, IO_STAT, 0);
->   QUEUE_SYSFS_BIT_FNS(stable_writes, STABLE_WRITES, 0);
->   #undef QUEUE_SYSFS_BIT_FNS
->   
-> @@ -473,6 +472,43 @@ static ssize_t queue_dax_show(struct request_queue *q, char *page)
->   	return queue_var_show(blk_queue_dax(q), page);
->   }
->   
-> +static ssize_t queue_iostats_show(struct request_queue *q, char *page)
-> +{
-> +	int val = 0;
-> +
-> +	if (blk_queue_io_stat(q))
-> +		val = blk_queue_precise_io_stat(q) ? 2 : 1;
-> +
-> +	return sprintf(page, "%u\n", val);
-> +}
-> +
-> +static ssize_t
-> +queue_iostats_store(struct request_queue *q, const char *page, size_t count)
-> +{
-> +	unsigned long nr;
-> +	int ret, err;
-> +
-> +	ret = queue_var_store(&nr, page, count);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (nr > 2)
-> +		return -EINVAL;
-> +
-> +	if (nr == 0) {
-> +		blk_queue_flag_clear(QUEUE_FLAG_IO_STAT, q);
-> +		blk_queue_flag_clear(QUEUE_FLAG_PRECISE_IO_STAT, q);
-> +	} else if (nr == 1) {
-> +		blk_queue_flag_set(QUEUE_FLAG_IO_STAT, q);
-> +		blk_queue_flag_clear(QUEUE_FLAG_PRECISE_IO_STAT, q);
-> +	} else {
-> +		blk_queue_flag_set(QUEUE_FLAG_IO_STAT, q);
-> +		blk_queue_flag_set(QUEUE_FLAG_PRECISE_IO_STAT, q);
-> +	}
-> +
-> +	return count;
-> +}
-> +
->   #define QUEUE_RO_ENTRY(_prefix, _name)			\
->   static struct queue_sysfs_entry _prefix##_entry = {	\
->   	.attr	= { .name = _name, .mode = 0444 },	\
-> @@ -494,6 +530,7 @@ QUEUE_RO_ENTRY(queue_max_segments, "max_segments");
->   QUEUE_RO_ENTRY(queue_max_integrity_segments, "max_integrity_segments");
->   QUEUE_RO_ENTRY(queue_max_segment_size, "max_segment_size");
->   QUEUE_RW_ENTRY(elv_iosched, "scheduler");
-> +QUEUE_RW_ENTRY(queue_iostats, "iostats");
->   
->   QUEUE_RO_ENTRY(queue_logical_block_size, "logical_block_size");
->   QUEUE_RO_ENTRY(queue_physical_block_size, "physical_block_size");
-> @@ -539,7 +576,6 @@ static struct queue_sysfs_entry queue_hw_sector_size_entry = {
->   };
->   
->   QUEUE_RW_ENTRY(queue_nonrot, "rotational");
-> -QUEUE_RW_ENTRY(queue_iostats, "iostats");
->   QUEUE_RW_ENTRY(queue_random, "add_random");
->   QUEUE_RW_ENTRY(queue_stable_writes, "stable_writes");
->   
-> diff --git a/block/blk.h b/block/blk.h
-> index 08a358bc0919..d2321709a9ce 100644
-> --- a/block/blk.h
-> +++ b/block/blk.h
-> @@ -343,7 +343,9 @@ static inline bool blk_do_io_stat(struct request *rq)
->   	return (rq->rq_flags & RQF_IO_STAT) && !blk_rq_is_passthrough(rq);
->   }
->   
-> -void update_io_ticks(struct block_device *part, unsigned long now, bool end);
-> +void update_io_ticks(struct block_device *part, unsigned long now, bool end,
-> +		     bool precise);
-> +unsigned int part_in_flight(struct block_device *part);
->   
->   static inline void req_set_nomerge(struct request_queue *q, struct request *req)
->   {
-> diff --git a/block/genhd.c b/block/genhd.c
-> index c9d06f72c587..aec651976c83 100644
-> --- a/block/genhd.c
-> +++ b/block/genhd.c
-> @@ -118,7 +118,7 @@ static void part_stat_read_all(struct block_device *part,
->   	}
->   }
->   
-> -static unsigned int part_in_flight(struct block_device *part)
-> +unsigned int part_in_flight(struct block_device *part)
->   {
->   	unsigned int inflight = 0;
->   	int cpu;
-> @@ -962,7 +962,7 @@ ssize_t part_stat_show(struct device *dev,
->   
->   	if (inflight) {
->   		part_stat_lock();
-> -		update_io_ticks(bdev, jiffies, true);
-> +		update_io_ticks(bdev, jiffies, true, true);
->   		part_stat_unlock();
->   	}
->   	part_stat_read_all(bdev, &stat);
-> @@ -1255,7 +1255,7 @@ static int diskstats_show(struct seq_file *seqf, void *v)
->   
->   		if (inflight) {
->   			part_stat_lock();
-> -			update_io_ticks(hd, jiffies, true);
-> +			update_io_ticks(hd, jiffies, true, true);
->   			part_stat_unlock();
->   		}
->   		part_stat_read_all(hd, &stat);
-> diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-> index 1ab3081c82ed..e6c7adea1b4e 100644
-> --- a/include/linux/blk-mq.h
-> +++ b/include/linux/blk-mq.h
-> @@ -44,6 +44,7 @@ typedef __u32 __bitwise req_flags_t;
->   #define RQF_QUIET		((__force req_flags_t)(1 << 11))
->   /* account into disk and partition IO statistics */
->   #define RQF_IO_STAT		((__force req_flags_t)(1 << 13))
-> +#define RQF_PRECISE_IO_STAT	((__force req_flags_t)(1 << 14))
->   /* runtime pm request */
->   #define RQF_PM			((__force req_flags_t)(1 << 15))
->   /* on IO scheduler merge hash */
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index 51fa7ffdee83..fbc7ac419288 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -534,6 +534,7 @@ struct request_queue {
->   #define QUEUE_FLAG_NONROT	6	/* non-rotational device (SSD) */
->   #define QUEUE_FLAG_VIRT		QUEUE_FLAG_NONROT /* paravirt device */
->   #define QUEUE_FLAG_IO_STAT	7	/* do disk/partitions IO accounting */
-> +#define QUEUE_FLAG_PRECISE_IO_STAT 8	/* do disk/partitions IO accounting precisely */
->   #define QUEUE_FLAG_NOXMERGES	9	/* No extended merges */
->   #define QUEUE_FLAG_ADD_RANDOM	10	/* Contributes to random pool */
->   #define QUEUE_FLAG_SYNCHRONOUS	11	/* always completes in submit context */
-> @@ -574,6 +575,8 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
->   #define blk_queue_stable_writes(q) \
->   	test_bit(QUEUE_FLAG_STABLE_WRITES, &(q)->queue_flags)
->   #define blk_queue_io_stat(q)	test_bit(QUEUE_FLAG_IO_STAT, &(q)->queue_flags)
-> +#define blk_queue_precise_io_stat(q) \
-> +	test_bit(QUEUE_FLAG_PRECISE_IO_STAT, &(q)->queue_flags)
->   #define blk_queue_add_random(q)	test_bit(QUEUE_FLAG_ADD_RANDOM, &(q)->queue_flags)
->   #define blk_queue_zone_resetall(q)	\
->   	test_bit(QUEUE_FLAG_ZONE_RESETALL, &(q)->queue_flags)
-> 
+>  drivers/net/phy/phylink.c | 31 +++++++++++++++++++++++++++++++
+>  1 file changed, 31 insertions(+)
 
+Your changes should go into mtk_eth_soc.c, you sould not need to modify
+phylink for this and as the link being up or down is still reported
+correctly by the hardware, it is also ok to have phylink believe that
+in-band-status is being used and just not set the SGMII_AN bit in the
+MediaTek LynxI hardware.
+(ie. only auto-negotiation of speed and duplex doesn't work in
+2500Base-X mode)
+
+> 
+> diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
+> index 298dfd6982a5..6e443eb8ee46 100644
+> --- a/drivers/net/phy/phylink.c
+> +++ b/drivers/net/phy/phylink.c
+> @@ -1074,6 +1074,22 @@ static void phylink_pcs_an_restart(struct phylink *pl)
+>  		pl->pcs->ops->pcs_an_restart(pl->pcs);
+>  }
+>  
+> +static bool phylink_major_no_inband(struct phylink *pl, phy_interface_t interface)
+> +{
+> +	struct device_node *node = pl->config->dev->of_node;
+> +
+> +	if (!node)
+> +		return false;
+> +
+> +	if (!of_device_is_compatible(node, "mediatek,eth-mac"))
+> +		return false;
+> +
+> +	if (interface != PHY_INTERFACE_MODE_2500BASEX)
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+>  static void phylink_major_config(struct phylink *pl, bool restart,
+>  				  const struct phylink_link_state *state)
+>  {
+> @@ -1085,10 +1101,22 @@ static void phylink_major_config(struct phylink *pl, bool restart,
+>  
+>  	phylink_dbg(pl, "major config %s\n", phy_modes(state->interface));
+>  
+> +	if (phylink_major_no_inband(pl, state->interface) && (!!pl->phydev)) {
+> +		if (pl->cur_link_an_mode == MLO_AN_INBAND)
+> +			pl->cur_link_an_mode = MLO_AN_PHY;
+> +		else
+> +			/* restore mode if it was changed before */
+> +			pl->cur_link_an_mode = pl->cfg_link_an_mode;
+> +	}
+> +
+>  	pl->pcs_neg_mode = phylink_pcs_neg_mode(pl->cur_link_an_mode,
+>  						state->interface,
+>  						state->advertising);
+>  
+> +	if (phylink_major_no_inband(pl, state->interface) && !pl->phydev &&
+> +	    pl->pcs_neg_mode == PHYLINK_PCS_NEG_INBAND_ENABLED)
+> +		pl->pcs_neg_mode = PHYLINK_PCS_NEG_INBAND_DISABLED;
+> +
+>  	if (pl->using_mac_select_pcs) {
+>  		pcs = pl->mac_ops->mac_select_pcs(pl->config, state->interface);
+>  		if (IS_ERR(pcs)) {
+> @@ -1218,6 +1246,9 @@ static void phylink_mac_pcs_get_state(struct phylink *pl,
+>  				      struct phylink_link_state *state)
+>  {
+>  	linkmode_copy(state->advertising, pl->link_config.advertising);
+> +	if (pl->pcs_neg_mode == PHYLINK_PCS_NEG_INBAND_DISABLED)
+> +		linkmode_clear_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
+> +				   state->advertising);
+>  	linkmode_zero(state->lp_advertising);
+>  	state->interface = pl->link_config.interface;
+>  	state->rate_matching = pl->link_config.rate_matching;
+> -- 
+> 2.42.1
+> 
 
