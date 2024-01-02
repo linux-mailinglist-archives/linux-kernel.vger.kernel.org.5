@@ -1,115 +1,119 @@
-Return-Path: <linux-kernel+bounces-14964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 276D1822562
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:09:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98817822566
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:10:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 458331C22B3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:09:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 353D62848AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:10:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208EF17731;
-	Tue,  2 Jan 2024 23:09:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD27E1775A;
+	Tue,  2 Jan 2024 23:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="28GPKSOM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MMgKZl3e"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCCE1772C
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 23:09:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e8e0c7f9a8so120656427b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 15:09:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704236964; x=1704841764; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VmfarTfri1+432ZBbDvSTJInqX46gfjfsyuzVGEGM+I=;
-        b=28GPKSOMOdjuD9h/tyueP0ff69ywGGnJhxZ1yQ1UQvgWYurHQsK9aegBQawrikt6xP
-         sd73obUhHCEXKCfSKHG3XAat2NQj5tuOPQ3422X2G8tvHDh89r6L80x6E++gu0M+llcc
-         gmVECCABa1QBbyMQ71coX9I7xrniQrJtbogVp4l8MV97qsA5qp6WEhIVi1EzmfpajSV6
-         FWMg28bo+mXyZjfUQ1LAxVmVb+dmGBQCIyTt1AQbLEXTVwP4DVvsG3WfZCDC9zRRDOfo
-         Iegk4u2K5evC8n7e57cR/Y6/ibbtBTqDXnhZorgmhaBYWbqN8LNS1tFHo0ywfc49K0uK
-         lU4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704236964; x=1704841764;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VmfarTfri1+432ZBbDvSTJInqX46gfjfsyuzVGEGM+I=;
-        b=sfp3S4Ub0tHBO4NxGRKaxdyrciOJaKUmjcqXs1d8WfE7DzOulO1/rUMb5loCUx25sC
-         EmZcDmGTN2KlTYaj1YW83MS9SH6G9X8Oybs/G+lzjyBvfC7cZ7Ga4ngRW7ZeWshkYve8
-         X8FhO2noevo6qA7Lft+QrzQCeVu+4REJkiEeG6CBfYVPGLKKMtQcttJu04cvDCaf81iU
-         ECKSSbjmzgzQ19UCtBArIvv1ST1GAH9cZX2BctqUqdZ15HA1nKeIkOdoVCjCqYWkCj80
-         i7ZD+ICZozucxFg4FyW6CwEOr+HutMqvcXy+xfnaj0Pk25GSYHDiU+cyZcKk0U0NNduV
-         Px6Q==
-X-Gm-Message-State: AOJu0Yyh59ZYx4O/sUqJVXuAzxV3tMKeMKy9+rpFUDrKAOTZsOBvQmzg
-	DCGVogZRe1IqQ5KyBsrSQXeSUozQfFEueuo5jQ==
-X-Google-Smtp-Source: AGHT+IHGHfDd0wPfxNtcpYgXmKZ2cyY1GdW1PZSPN3Jvr3UiQugVcTtpaaSq9eNVSBtnDRNY6MvL2mAaecQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:3a0:b0:5d6:f1d2:2e5e with SMTP id
- bh32-20020a05690c03a000b005d6f1d22e5emr117443ywb.0.1704236964270; Tue, 02 Jan
- 2024 15:09:24 -0800 (PST)
-Date: Tue, 2 Jan 2024 15:09:22 -0800
-In-Reply-To: <CABOYnLwfWmOUfP-uW9ALCxEXbzaSGVZn6GeEyfvPr-R-XdmrSQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8EF1773F;
+	Tue,  2 Jan 2024 23:10:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84F8DC4339A;
+	Tue,  2 Jan 2024 23:10:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704237025;
+	bh=cdt3nYEybKmQbfM3ySTBLTkjCOPXxwLzf6bFeEjafcI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=MMgKZl3euaIgRS/rdh3jsKLdafUBcRNE+EkY06ex3veFvlpzzUZQeHr2pi3Lp2p72
+	 70/dCGRnNy/fxoN1jEjUvsH5YYQReOflkBhLznZF+z2xAvcOXC4eJOFC5wvrnC8fuG
+	 s0gcaVOkXC1KWRsNSIDEcXwgRUXlWDHoeVzmfNHa1UjQo+5DO/PbHM4llvbRKEqqve
+	 J/t4fmsmRpc7jI40g/Ln4j3FzslxaAxtshBB1kBp9KiweeNov3w0d5K2S1CoKhJcyx
+	 80YsMwMWWJWnuumbwguUAyNwkHNODVWnZcUlJqOiG5JDsZsr8DFg14PVW6W0jx49Tp
+	 WvWeE+8UgUhRQ==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2cd10001532so13787051fa.0;
+        Tue, 02 Jan 2024 15:10:25 -0800 (PST)
+X-Gm-Message-State: AOJu0YyN4wxlin9LAoP0L1SUsiw1Zz7PKF36LaK6FT69/FXYa1AhuuXD
+	c5mYcfWaJwkdNP82JEuKSn2yXg71GBnDaVBeLE8=
+X-Google-Smtp-Source: AGHT+IGtnX18WgYlYa1vpaBEduY4eYsvnvFQfTN9PsRZW/1ElLKF2X7/aKToZAIphSI2szJV3jjgcphjxUuGyUBZdMs=
+X-Received: by 2002:a05:6512:b83:b0:50e:6909:7f68 with SMTP id
+ b3-20020a0565120b8300b0050e69097f68mr10274917lfv.117.1704237023754; Tue, 02
+ Jan 2024 15:10:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <CABOYnLwfWmOUfP-uW9ALCxEXbzaSGVZn6GeEyfvPr-R-XdmrSQ@mail.gmail.com>
-Message-ID: <ZZSXotY3NRbki_hW@google.com>
-Subject: Re: KMSAN: uninit-value in em_ret_far
-From: Sean Christopherson <seanjc@google.com>
-To: xingwei lee <xrivendell7@gmail.com>
-Cc: linux-kernel@vger.kernel.org, dave.hansen@linux.intel.com, bp@alien8.de, 
-	hpa@zytor.com, kvm@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com, 
-	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+References: <20231211045543.31741-1-khuey@kylehuey.com> <20231211045543.31741-4-khuey@kylehuey.com>
+In-Reply-To: <20231211045543.31741-4-khuey@kylehuey.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 2 Jan 2024 15:10:12 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6yhHQ1WRx5jXN3M=Bx3t=OdRY3V+DGcLFU8y-MJS3QLA@mail.gmail.com>
+Message-ID: <CAPhsuW6yhHQ1WRx5jXN3M=Bx3t=OdRY3V+DGcLFU8y-MJS3QLA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] perf/bpf: Allow a bpf program to suppress all
+ sample side effects
+To: Kyle Huey <me@kylehuey.com>
+Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, "Robert O'Callahan" <robert@ocallahan.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 25, 2023, xingwei lee wrote:
-> Hello I found a bug in latest upstream 6.7-rc7 titled "KMSAN:
-> uninit-value in em_ret_far=E2=80=9D and maybe is realted with kvm.
->=20
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: xingwei lee <xrivendell7@gmail.com>
->=20
-> kernel: mainline 861deac3b092f37b2c5e6871732f3e11486f7082
-> kernel config: https://syzkaller.appspot.com/text?tag=3DKernelConfig&x=3D=
-4a65fa9f077ead01
-> with KMSAN enabled
-> compiler: Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2=
-.40
-> run the repro.c for about 3minus and it crashed!
->=20
-> TITLE: KMSAN: uninit-value in em_ret_far
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> BUG: KMSAN: uninit-value in emulator_recalc_and_set_mode
-> arch/x86/kvm/emulate.c:797 [inline]
-> BUG: KMSAN: uninit-value in assign_eip_far arch/x86/kvm/emulate.c:833 [in=
-line]
-> BUG: KMSAN: uninit-value in em_ret_far+0x348/0x350 arch/x86/kvm/emulate.c=
-:2258
-> emulator_recalc_and_set_mode arch/x86/kvm/emulate.c:797 [inline]
-> assign_eip_far arch/x86/kvm/emulate.c:833 [inline]
+On Sun, Dec 10, 2023 at 8:56=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote:
+>
+> Returning zero from a bpf program attached to a perf event already
+> suppresses any data output. Return early from __perf_event_overflow() in
+> this case so it will also suppress event_limit accounting, SIGTRAP
+> generation, and F_ASYNC signalling.
+>
+> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 
-This is a known issue[1].  It's effectively a false positive, even though t=
-here
-is technically uninitialized data in scope.  The proposed fix[2] from Julia=
-n
-should resolve this (the patch is on my radar for 6.9).
+Acked-by: Song Liu <song@kernel.org>
 
-[1] https://lore.kernel.org/all/9362077ac7f24ec684d338543e269e83aee7c897.ca=
-mel@cyberus-technology.de
-[2] https://lore.kernel.org/all/20231009092054.556935-1-julian.stecklina@cy=
-berus-technology.de
+> ---
+>  kernel/events/core.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 54f6372d2634..d6093fe893c8 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -9541,6 +9541,11 @@ static int __perf_event_overflow(struct perf_event=
+ *event,
+>
+>         ret =3D __perf_event_account_interrupt(event, throttle);
+>
+> +#ifdef CONFIG_BPF_SYSCALL
+> +       if (event->prog && !bpf_overflow_handler(event, data, regs))
+> +               return ret;
+> +#endif
+> +
+>         /*
+>          * XXX event_limit might not quite work as expected on inherited
+>          * events
+> @@ -9590,10 +9595,7 @@ static int __perf_event_overflow(struct perf_event=
+ *event,
+>                 irq_work_queue(&event->pending_irq);
+>         }
+>
+> -#ifdef CONFIG_BPF_SYSCALL
+> -       if (!(event->prog && !bpf_overflow_handler(event, data, regs)))
+> -#endif
+> -               READ_ONCE(event->overflow_handler)(event, data, regs);
+> +       READ_ONCE(event->overflow_handler)(event, data, regs);
+>
+>         if (*perf_event_fasync(event) && event->pending_kill) {
+>                 event->pending_wakeup =3D 1;
+> --
+> 2.34.1
+>
+>
 
