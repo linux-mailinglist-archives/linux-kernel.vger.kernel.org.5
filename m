@@ -1,166 +1,120 @@
-Return-Path: <linux-kernel+bounces-14572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40CDF821F06
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:53:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21973821F6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:24:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C5C01C2234D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:53:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C41FD1F22F03
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:24:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADE2E14AB9;
-	Tue,  2 Jan 2024 15:53:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633E314F7B;
+	Tue,  2 Jan 2024 16:24:30 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from connect.vanmierlo.com (fieber.vanmierlo.com [84.243.197.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E4F14A9C
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 15:53:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
-	(envelope-from <a.fatoum@pengutronix.de>)
-	id 1rKh4q-0001xX-4T; Tue, 02 Jan 2024 16:53:12 +0100
-Message-ID: <cfb9c01a-7af6-42ff-9056-e64c8c29bfdb@pengutronix.de>
-Date: Tue, 2 Jan 2024 16:53:09 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5BDF15481;
+	Tue,  2 Jan 2024 16:24:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=vanmierlo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vanmierlo.com
+X-Footer: dmFubWllcmxvLmNvbQ==
+Received: from roundcube.vanmierlo.com ([192.168.37.37])
+	(authenticated user m.brock@vanmierlo.com)
+	by connect.vanmierlo.com (Kerio Connect 10.0.3 patch 1) with ESMTPA;
+	Tue, 2 Jan 2024 16:53:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 2/2] arm64: boot: Support Flat Image Tree
-Content-Language: en-US
-To: Masahiro Yamada <masahiroy@kernel.org>, Chen-Yu Tsai <wenst@chromium.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Simon Glass <sjg@chromium.org>, linux-arm-kernel@lists.infradead.org,
- U-Boot Mailing List <u-boot@lists.denx.de>,
- Nicolas Schier <nicolas@fjasle.eu>, Tom Rini <trini@konsulko.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Jonathan Corbet <corbet@lwn.net>,
- Nathan Chancellor <nathan@kernel.org>, Nick Terrell <terrelln@fb.com>,
- Will Deacon <will@kernel.org>, linux-doc@vger.kernel.org,
- linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
- workflows@vger.kernel.org
-References: <20231202035511.487946-1-sjg@chromium.org>
- <20231202035511.487946-3-sjg@chromium.org>
- <20231203153401.GV8402@pendragon.ideasonboard.com>
- <20231207142723.GA3187877@google.com>
- <20231207143814.GD15521@pendragon.ideasonboard.com>
- <CAGXv+5Go_0pEVAOLQmRCc_a9-YUtZEmBfXtMuBupX_nb9iqwbw@mail.gmail.com>
- <20231209152946.GC13421@pendragon.ideasonboard.com>
- <CAMuHMdVMZs6mnwWBgFwktO=8o=QzROv60cfZe085MhD6HxQjpQ@mail.gmail.com>
- <CAGXv+5Est3FL-XcEL-vB-6zVNas0mqb2cNYa==Yb7W2SQU9xVQ@mail.gmail.com>
- <CAK7LNATyD-PeNbaLTjJmU9=koqqE+V6QvFe09c2VrXopWvjpcw@mail.gmail.com>
- <CAK7LNAR7Fm-1yaZmyH78vG5yNbbW2Avjj5F63u+aST6JQoMd5A@mail.gmail.com>
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
-In-Reply-To: <CAK7LNAR7Fm-1yaZmyH78vG5yNbbW2Avjj5F63u+aST6JQoMd5A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Date: Tue, 02 Jan 2024 16:53:52 +0100
+From: Maarten Brock <m.brock@vanmierlo.com>
+To: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc: Lino Sanfilippo <l.sanfilippo@kunbus.com>, gregkh@linuxfoundation.org,
+ jirislaby@kernel.org, ilpo.jarvinen@linux.intel.com,
+ u.kleine-koenig@pengutronix.de, shawnguo@kernel.org, s.hauer@pengutronix.de,
+ mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+ cniedermaier@dh-electronics.com, hugo@hugovil.com,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, lukas@wunner.de,
+ p.rosenberger@kunbus.com, stable@vger.kernel.org, Hugo Villeneuve
+ <hvilleneuve@dimonoff.com>
+Subject: Re: [PATCH v6 1/7] serial: Do not hold the port lock when setting
+ rx-during-tx GPIO
+In-Reply-To: <988518d5-0d4f-1362-64f9-8bfeb3e3b700@gmx.de>
+References: <20231225113524.8800-1-l.sanfilippo@kunbus.com>
+ <20231225113524.8800-2-l.sanfilippo@kunbus.com>
+ <5177a7aef77a6b77a6e742a2fdd52a0e@vanmierlo.com>
+ <988518d5-0d4f-1362-64f9-8bfeb3e3b700@gmx.de>
+Message-ID: <a7f55acaba62183586422e0202fa90ef@vanmierlo.com>
+X-Sender: m.brock@vanmierlo.com
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hello Yamada-san,
+Lino Sanfilippo wrote on 2023-12-29 16:03:
+> Hi,
+> 
+> On 25.12.23 at 13:31, Maarten Brock wrote:
+>> Lino Sanfilippo wrote on 2023-12-25 12:35:
+>>> diff --git a/drivers/tty/serial/serial_core.c 
+>>> b/drivers/tty/serial/serial_core.c
+>>> +static void uart_set_rs485_rx_during_tx(struct uart_port *port,
+>>> +                    const struct serial_rs485 *rs485)
+>>> +{
+>>> +    if (!(rs485->flags & SER_RS485_ENABLED))
+>>> +        return;
+>> 
+>> How about checking port->rs485_rx_during_tx_gpio here against NULL 
+>> instead of
+>> before every call?
+> 
+> gpiod_set_value_cansleep() already checks for a NULL pointer, so doing
+> this check in the caller is not needed.
 
-On 14.12.23 08:33, Masahiro Yamada wrote:
->> The FIT spec allows the "fdt" property to list
->> multiple image nodes.
->>
->>
->> o config-1
->>  |- description = "configuration description"
->>  |- kernel = "kernel sub-node unit name"
->>  |- fdt = "fdt sub-node unit-name" [, "fdt overlay sub-node unit-name", ...]
->>  |- loadables = "loadables sub-node unit-name"
->>  |- script = "
->>  |- compatible = "vendor
-> 
-> 
-> 
-> 
-> 
-> This is a question for U-Boot (and barebox).
-> 
-> 
-> 
-> 
->    images {
->           base {
->                 ...
->           };
-> 
->           addon1 {
->                 ...
->           };
-> 
->           addon2 {
->                 ...
->           };
->     };
-> 
->     configurations {
->           ...
->           fdt = "base", "addon1", "addon2";
->     };
-> 
-> 
-> 
-> 
-> Is U-Boot's "bootm" command able to dynamically construct
-> the full DTB from "base" + "addon1" + "addon2"
-> and pass to the kernel?
+Ah, sorry, you're right.
 
-barebox can apply overlays to the DT, but doesn't do so yet from
-the extra entries in configuration fdt properties.
-
-This should be straight-forward to add though, if the need arises.
-
-> Is U-Boot able to handle FIT (includes kernel + DTs)
-> and a separate initrd?
+>>> +    gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
+>>> +                 !!(rs485->flags & SER_RS485_RX_DURING_TX));
+>>> +}
+>>> +
+>>> @@ -1457,6 +1472,7 @@ static int uart_set_rs485_config(struct
+>>> tty_struct *tty, struct uart_port *port,
+>>>          return ret;
+>>>      uart_sanitize_serial_rs485(port, &rs485);
+>>>      uart_set_rs485_termination(port, &rs485);
+>>> +    uart_set_rs485_rx_during_tx(port, &rs485);
+>>> 
+>>>      uart_port_lock_irqsave(port, &flags);
+>>>      ret = port->rs485_config(port, &tty->termios, &rs485);
+>>> @@ -1468,8 +1484,14 @@ static int uart_set_rs485_config(struct
+>>> tty_struct *tty, struct uart_port *port,
+>>>              port->ops->set_mctrl(port, port->mctrl);
+>>>      }
+>>>      uart_port_unlock_irqrestore(port, flags);
+>>> -    if (ret)
+>>> +    if (ret) {
+>>> +        /* restore old GPIO settings */
+>>> +        gpiod_set_value_cansleep(port->rs485_term_gpio,
+>>> +            !!(port->rs485.flags & SER_RS485_TERMINATE_BUS));
+>>> +        gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
+>>> +            !!(port->rs485.flags & SER_RS485_RX_DURING_TX));
+>> 
+>> This does not look like restoring.
 > 
->   # bootm  <fit-address>:<conf-name>  <ramdisk-address>
+> Hmm. The rx-during-tx and terminate-bus GPIOs may have changed before 
+> the
+> drivers rs485_config() was called. If that function fails, the GPIOs
+> are set back to the values they had before (i.e what is still stored in
+> the ports serial_rs485 struct). So what is wrong with the term 
+> "restore"?
 
-This is possible in barebox, provided that the FIT image doesn't
-already have a ramdisk and that CONFIG_BOOTM_FORCE_SIGNED_IMAGES=n:
+Oops, I missed that too that port-rs485 is not updated in this case.
 
-  bootm -r /mnt/nfs/ramdisk.gz /mnt/nfs/image.fit
-
-(Or the equivalent variables if not wanting to use the shell.)
-
-> Presumably, it would be difficult to inject initramdisk
-> into image.fit later, so I am hoping bootm would work like that,
-> but I did not delve into U-Boot code.
-> 
-> 
-> 
-> If it works, is it possible to verify the integrity of initrd?
-> The kernel and DTs inside FIT will be verified, but not sure
-> if it is possible for ramdisk.
-
-If one wants to preclude mix & match attacks, the configuration needs
-to be verified fully, so if signing is required, it's probably better to
-amend the FIT later on with the new configuration instead of signing
-the initrd separately and combining them at runtime.
-
-Cheers,
-Ahmad
-
-> 
-> 
-> 
-> 
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Kind Regards,
+Maarten Brock
 
 
