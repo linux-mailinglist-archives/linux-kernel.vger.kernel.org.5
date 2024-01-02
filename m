@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-14840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C87A822317
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:13:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 810E6822319
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:13:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A8A0284796
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:13:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FC2E2846B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:13:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8FAE18EB9;
-	Tue,  2 Jan 2024 21:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B2D418ED1;
+	Tue,  2 Jan 2024 21:09:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gPGOZCPV"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FRVfJom6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04052168B4
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DE318E1C
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:08:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7ba834684abso506386539f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:08:58 -0800 (PST)
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7bb99f77f97so50074439f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:08:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704229738; x=1704834538; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1704229739; x=1704834539; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YBXG8fkqI4E9TDywbJQDVQlGARTRe1Vl9dne1ILm/18=;
-        b=gPGOZCPVl2IIrjDodIynds27pMs1g9tjyI6RUW8c4K5irQ1QWFY02ZdmSp9dw1xXuD
-         lVXArgUDrQ1w0wwrIRF2JSKyrb2MoJmnK0jQdeXA9XfriG2gO5eaIKLgFI/l0UfGKoUS
-         ImvMVxBWqgtbgpsE3ief97V6bU0JucG9PvaZY=
+        bh=HRoMMnuwwy1ybNYQkYoJT5CIAhjtnaw7FKUhRhlzX2I=;
+        b=FRVfJom6hMAFayRvvyslNUklQnuLd0ysUghLiqfhR6iLGS1kGoXbYm6H9qGTU8wu6P
+         XfpobjuNTGE9PZlaiRo72OJoWH8vPqtqoTDC69Ld3yX3qpIlH2h/CZ2SfvcrfIrrQ08E
+         L/fRdPj+tw6Xlqa4PVQvC5kDXGmfh66BqgmGk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704229738; x=1704834538;
+        d=1e100.net; s=20230601; t=1704229739; x=1704834539;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YBXG8fkqI4E9TDywbJQDVQlGARTRe1Vl9dne1ILm/18=;
-        b=wlRizZOXCADgVzTxXqZEzSDm7Z9PcSEN39XiRl/37+ctImEKlX5IVBqJVWmMan8YvY
-         QRuTl1VALfQRgqDMMse3nGoHcC44LmaLTpEbfEBjdpcedVpN8uaqbA436mQNpvl6BQkJ
-         5uhAbahYQEFmyOl4jquZsMQ05RNw63x4rEM9gKgLylDxcX47ih7LiNFON7R0AqqLa1Qh
-         tn24Teeosw5rwpS3CVanuY+FwVSvEBLS/tJcCEkB7X3FAu5Muo3ActKoVPFeSKr/lvl1
-         aGlzuedqh8E+g+gORTPveIEi2jfR6kalQfGukwRLiAYK7FetYgmKD3NP7TG5GN8uZzDv
-         OqEg==
-X-Gm-Message-State: AOJu0YxCBMj/eBuIiC07OwodZoLD4fUlvtIKfIET8YRjw/2uxlMyL8+x
-	nNZiAB30uNlBYMREOW6PTYGA59B6hI4AL2ZMTXhst1hKngwZ
-X-Google-Smtp-Source: AGHT+IFDiPa9pElKMxmX/lH+gQE+ZfY9viPPALh0NbNdlcQ8hMR9S/3o4NKAXs823EmCxtbJutVSRw==
-X-Received: by 2002:a5d:974b:0:b0:7b7:4b32:7986 with SMTP id c11-20020a5d974b000000b007b74b327986mr22772171ioo.27.1704229738043;
+        bh=HRoMMnuwwy1ybNYQkYoJT5CIAhjtnaw7FKUhRhlzX2I=;
+        b=PPT5/yY765F/XGzEbF1q5LfLd2RQh84/MxJ+gIIOMJHdRNIg1EQb9ow8/hj2GZFMV1
+         zVJwIhhncTG2dGNsP9PAmVG+ElBWAhuXZ4ID+QDi7A1+kKnAvRwae+XvqRjzK1j1ivBV
+         gm9dZtRD0VNhOViMC3Kp5MbS6mnA52Ec3bPGP0AADcnOgHdKCTDRWCUx1waRe+LbC08d
+         v2h6CAzAkmW9ONtIVU7CtRPY+CCm5OeDBZ0w/6jfpEZm3H60tszJBdAy305yGpFRiSw3
+         K0ouUhmQ5JUBkqTBvNOXwoyY96F0wavnYb18PlYGzJ07ra+pxliQNwngIg9gPs05KHzL
+         Rfag==
+X-Gm-Message-State: AOJu0YwC2AopcYKD3/AAQ2Hy9jwRARdP860S1q06MFV3lLpfi6zs26gs
+	MYs5ytxcGRY4NfGuP/1GlBQ4jwokv4/iboErZbCXmOROZ3iu
+X-Google-Smtp-Source: AGHT+IFgjON8QaOIIt26i2gGQ8LaLRzi4hK2OMzadsvli0BLJTN6UjupAQhSNUzvjDASC8Dg4A9IRQ==
+X-Received: by 2002:a5d:83c2:0:b0:7bb:b722:63c1 with SMTP id u2-20020a5d83c2000000b007bbb72263c1mr34165ior.16.1704229738882;
         Tue, 02 Jan 2024 13:08:58 -0800 (PST)
 Received: from markhas1.lan (71-218-50-136.hlrn.qwest.net. [71.218.50.136])
-        by smtp.gmail.com with ESMTPSA id bo18-20020a056638439200b0046993034c91sm6956978jab.77.2024.01.02.13.08.57
+        by smtp.gmail.com with ESMTPSA id bo18-20020a056638439200b0046993034c91sm6956978jab.77.2024.01.02.13.08.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 13:08:57 -0800 (PST)
+        Tue, 02 Jan 2024 13:08:58 -0800 (PST)
 From: Mark Hasemeyer <markhas@chromium.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Sudeep Holla <sudeep.holla@arm.com>,
@@ -65,17 +65,16 @@ Cc: Sudeep Holla <sudeep.holla@arm.com>,
 	Raul Rangel <rrangel@chromium.org>,
 	Tzung-Bi Shih <tzungbi@kernel.org>,
 	Mark Hasemeyer <markhas@chromium.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	Bjorn Andersson <andersson@kernel.org>,
 	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Rob Herring <robh+dt@kernel.org>,
-	cros-qcom-dts-watchers@chromium.org,
 	devicetree@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: [PATCH v4 16/24] arm64: dts: qcom: sdm845: Enable cros-ec-spi as wake source
-Date: Tue,  2 Jan 2024 14:07:40 -0700
-Message-ID: <20240102140734.v4.16.I870e2c3490e7fc27a8f6bc41dba23b3dfacd2d13@changeid>
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org
+Subject: [PATCH v4 17/24] arm64: dts: rockchip: rk3399: Enable cros-ec-spi as wake source
+Date: Tue,  2 Jan 2024 14:07:41 -0700
+Message-ID: <20240102140734.v4.17.Ice617703aded22ad4c806459129e1ae693eb57af@changeid>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20240102210820.2604667-1-markhas@chromium.org>
 References: <20240102210820.2604667-1-markhas@chromium.org>
@@ -101,12 +100,10 @@ Add the wakeup-source property to all cros-ec-spi compatible device
 nodes to signify to the driver that they should still be a valid wakeup
 source.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
 Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
 ---
 
-Changes in v4:
--Add Douglas's Reviewed-by tag from v2 review
+(no changes since v3)
 
 Changes in v3:
 -Update commit message to provide details of the motivation behind the
@@ -115,21 +112,21 @@ change
 Changes in v2:
 -Split by arch/soc
 
- arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi | 1 +
+ arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-index 0ab5e8f53ac9f..e8276db9eabb2 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-@@ -852,6 +852,7 @@ cros_ec: ec@0 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
+index 789fd0dcc88ba..b5734e056aef1 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
+@@ -603,6 +603,7 @@ cros_ec: ec@0 {
  		pinctrl-names = "default";
  		pinctrl-0 = <&ec_ap_int_l>;
  		spi-max-frequency = <3000000>;
 +		wakeup-source;
  
- 		cros_ec_pwm: pwm {
- 			compatible = "google,cros-ec-pwm";
+ 		i2c_tunnel: i2c-tunnel {
+ 			compatible = "google,cros-ec-i2c-tunnel";
 -- 
 2.43.0.472.g3155946c3a-goog
 
