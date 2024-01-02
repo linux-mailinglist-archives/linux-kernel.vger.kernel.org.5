@@ -1,156 +1,171 @@
-Return-Path: <linux-kernel+bounces-14305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3B0D821B1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:39:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD703821B15
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:38:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 341B2282EA7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:39:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E42781C21E52
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6725AFBFD;
-	Tue,  2 Jan 2024 11:39:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1CCDEADA;
+	Tue,  2 Jan 2024 11:38:11 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3B8BFBEC;
-	Tue,  2 Jan 2024 11:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5f254d1a6daso9553087b3.2;
-        Tue, 02 Jan 2024 03:39:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704195576; x=1704800376;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uFi8eMSPsfOFqOHCg4hwloMdrYmzNBUBfM1xQ0dKIbA=;
-        b=PwoKqi6lndOXSnMN02Wi4fOxWcxCNJjQ/tjc/HDCcpJepMUf1FdEAZvL2Z/tX2sMjK
-         z5rLDYH9MwbMUPLmOwctgzyiPdBL/4YDa3vlYYQ5o+W3EBiUvN7bF5rD9zaroNTfpSL1
-         GgtVnMIAqcc9pavEmH84MhIL8TtGpoBLbIvy7kUi7qjb81v/qXlTO/ofcsCkgF3GZ+7i
-         owV7srOaHO8c+cKkPsvSlKiJ+m2ChMr7R+hnOZO+hFstxrM7t4xBE7uUqzv/jT1fYN9E
-         HnuwTGZOabFiTuKkrUmEoS4Dbxs9IwSD9J+bQpfff+ZYmZ0BDeasycWzfMgNB+CdiysF
-         FBlw==
-X-Gm-Message-State: AOJu0YyJfMuQcc0pSe3pDq/hJouxW8y7dXlXWFzrRiJz3svGGyKbChr6
-	GzWUV8VthhqsoMjqw5H5DMRisjxNx1bwxw==
-X-Google-Smtp-Source: AGHT+IGXq1AARTnEfk2PH5xz+CvZUSKTjqgCiCyt+CEGGi4Gik9hnPXj5+RYuZc1mkpEjUxkoFtTBw==
-X-Received: by 2002:a81:5784:0:b0:5ee:7d0f:4458 with SMTP id l126-20020a815784000000b005ee7d0f4458mr4336249ywb.56.1704195576581;
-        Tue, 02 Jan 2024 03:39:36 -0800 (PST)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id k28-20020a81ac1c000000b005ee999d3941sm5957031ywh.26.2024.01.02.03.39.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 03:39:35 -0800 (PST)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbdacafe012so5830521276.1;
-        Tue, 02 Jan 2024 03:39:35 -0800 (PST)
-X-Received: by 2002:a05:6902:e08:b0:da0:5370:fdce with SMTP id
- df8-20020a0569020e0800b00da05370fdcemr9471148ybb.19.1704195574941; Tue, 02
- Jan 2024 03:39:34 -0800 (PST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16584F4F7;
+	Tue,  2 Jan 2024 11:38:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C661C15;
+	Tue,  2 Jan 2024 03:38:54 -0800 (PST)
+Received: from [10.57.86.61] (unknown [10.57.86.61])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D48573F7A6;
+	Tue,  2 Jan 2024 03:38:05 -0800 (PST)
+Message-ID: <47c72c07-aafe-4f94-864b-53f9e45857db@arm.com>
+Date: Tue, 2 Jan 2024 11:39:23 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
- <20231216033552.3553579-1-kent.overstreet@linux.dev> <20231216033552.3553579-7-kent.overstreet@linux.dev>
- <CAMuHMdW29dAQh+j3s4Af1kMAFKSr2yz7M2L-fWd1uZfL7mEY1Q@mail.gmail.com> <20231220213957.zbslehrx4zkkbabq@moria.home.lan>
-In-Reply-To: <20231220213957.zbslehrx4zkkbabq@moria.home.lan>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 2 Jan 2024 12:39:23 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXsxh23cv-m3G+_9GxXy9wN5vJDp8C0x43KMLEQXy5SDg@mail.gmail.com>
-Message-ID: <CAMuHMdXsxh23cv-m3G+_9GxXy9wN5vJDp8C0x43KMLEQXy5SDg@mail.gmail.com>
-Subject: Re: [PATCH 50/50] Kill sched.h dependency on rcupdate.h
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-fsdevel@vger.kernel.org, tglx@linutronix.de, x86@kernel.org, 
-	tj@kernel.org, peterz@infradead.org, mathieu.desnoyers@efficios.com, 
-	paulmck@kernel.org, keescook@chromium.org, dave.hansen@linux.intel.com, 
-	mingo@redhat.com, will@kernel.org, longman@redhat.com, boqun.feng@gmail.com, 
-	brauner@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 14/23] PM: EM: Support late CPUs booting and capacity
+ adjustment
+Content-Language: en-US
+To: Qais Yousef <qyousef@layalina.io>
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+ rafael@kernel.org, dietmar.eggemann@arm.com, rui.zhang@intel.com,
+ amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+ daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
+ pavel@ucw.cz, mhiramat@kernel.org, wvw@google.com
+References: <20231129110853.94344-1-lukasz.luba@arm.com>
+ <20231129110853.94344-15-lukasz.luba@arm.com>
+ <20231217180038.vcyaaoni3nvmlf6f@airbuntu>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20231217180038.vcyaaoni3nvmlf6f@airbuntu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Kent,
 
-On Wed, Dec 20, 2023 at 10:40=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
-> On Wed, Dec 20, 2023 at 12:59:44PM +0100, Geert Uytterhoeven wrote:
-> > On Sat, Dec 16, 2023 at 4:39=E2=80=AFAM Kent Overstreet
-> > <kent.overstreet@linux.dev> wrote:
-> > > by moving cond_resched_rcu() to rcupdate.h, we can kill another big
-> > > sched.h dependency.
-> > >
-> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> >
-> > Thanks for your patch, which is now commit dc00f26faea81dc0 ("Kill
-> > sched.h dependency on rcupdate.h") in next-20231220.
-> >
-> > Reported-by: noreply@ellerman.id.au
-> >
-> > $ make ARCH=3Dm68k defconfig arch/m68k/kernel/asm-offsets.i
-> > *** Default configuration is based on 'multi_defconfig'
-> > #
-> > # No change to .config
-> > #
-> >   UPD     include/config/kernel.release
-> >   UPD     include/generated/utsrelease.h
-> >   CC      arch/m68k/kernel/asm-offsets.s
-> > In file included from ./include/asm-generic/bug.h:7,
-> >                  from ./arch/m68k/include/asm/bug.h:32,
-> >                  from ./include/linux/bug.h:5,
-> >                  from ./include/linux/thread_info.h:13,
-> >                  from ./arch/m68k/include/asm/processor.h:11,
-> >                  from ./include/linux/sched.h:13,
-> >                  from arch/m68k/kernel/asm-offsets.c:15:
-> > ./arch/m68k/include/asm/processor.h: In function =E2=80=98set_fc=E2=80=
-=99:
-> > ./arch/m68k/include/asm/processor.h:91:15: error: implicit declaration
-> > of function =E2=80=98in_interrupt=E2=80=99 [-Werror=3Dimplicit-function=
--declaration]
-> >    91 |  WARN_ON_ONCE(in_interrupt());
-> >       |               ^~~~~~~~~~~~
-> > ./include/linux/once_lite.h:28:27: note: in definition of macro
-> > =E2=80=98DO_ONCE_LITE_IF=E2=80=99
-> >    28 |   bool __ret_do_once =3D !!(condition);   \
-> >       |                           ^~~~~~~~~
-> > ./arch/m68k/include/asm/processor.h:91:2: note: in expansion of macro
-> > =E2=80=98WARN_ON_ONCE=E2=80=99
-> >    91 |  WARN_ON_ONCE(in_interrupt());
-> >       |  ^~~~~~~~~~~~
-> > cc1: some warnings being treated as errors
-> > make[3]: *** [scripts/Makefile.build:116:
-> > arch/m68k/kernel/asm-offsets.s] Error 1
-> > make[2]: *** [Makefile:1191: prepare0] Error 2
-> > make[1]: *** [Makefile:350: __build_one_by_one] Error 2
-> > make: *** [Makefile:234: __sub-make] Error 2
->
-> Applying this fix:
->
-> commit 0d7bdfe9726b275c7e9398047763a144c790b575
-> Author: Kent Overstreet <kent.overstreet@linux.dev>
-> Date:   Wed Dec 20 16:39:21 2023 -0500
->
->     m68k: Fix missing include
->
->     Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-LGTM.
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On 12/17/23 18:00, Qais Yousef wrote:
+> On 11/29/23 11:08, Lukasz Luba wrote:
+>> The patch adds needed infrastructure to handle the late CPUs boot, which
+>> might change the previous CPUs capacity values. With this changes the new
+>> CPUs which try to register EM will trigger the needed re-calculations for
+>> other CPUs EMs. Thanks to that the em_per_state::performance values will
+>> be aligned with the CPU capacity information after all CPUs finish the
+>> boot and EM registrations.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   kernel/power/energy_model.c | 121 ++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 121 insertions(+)
+>>
+>> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+>> index b5016afe6a19..d3fa5a77de80 100644
+>> --- a/kernel/power/energy_model.c
+>> +++ b/kernel/power/energy_model.c
+>> @@ -25,6 +25,9 @@ static DEFINE_MUTEX(em_pd_mutex);
+>>   
+>>   static void em_cpufreq_update_efficiencies(struct device *dev,
+>>   					   struct em_perf_state *table);
+>> +static void em_check_capacity_update(void);
+>> +static void em_update_workfn(struct work_struct *work);
+>> +static DECLARE_DELAYED_WORK(em_update_work, em_update_workfn);
+>>   
+>>   static bool _is_cpu_device(struct device *dev)
+>>   {
+>> @@ -596,6 +599,10 @@ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
+>>   
+>>   unlock:
+>>   	mutex_unlock(&em_pd_mutex);
+>> +
+>> +	if (_is_cpu_device(dev))
+>> +		em_check_capacity_update();
+>> +
+>>   	return ret;
+>>   }
+>>   EXPORT_SYMBOL_GPL(em_dev_register_perf_domain);
+>> @@ -631,3 +638,117 @@ void em_dev_unregister_perf_domain(struct device *dev)
+>>   	mutex_unlock(&em_pd_mutex);
+>>   }
+>>   EXPORT_SYMBOL_GPL(em_dev_unregister_perf_domain);
+>> +
+>> +/*
+>> + * Adjustment of CPU performance values after boot, when all CPUs capacites
+>> + * are correctly calculated.
+>> + */
+>> +static void em_adjust_new_capacity(struct device *dev,
+>> +				   struct em_perf_domain *pd,
+>> +				   u64 max_cap)
+>> +{
+>> +	struct em_perf_table __rcu *runtime_table;
+>> +	struct em_perf_state *table, *new_table;
+>> +	int ret, table_size;
+>> +
+>> +	runtime_table = em_allocate_table(pd);
+>> +	if (!runtime_table) {
+>> +		dev_warn(dev, "EM: allocation failed\n");
+>> +		return;
+>> +	}
+>> +
+>> +	new_table = runtime_table->state;
+>> +
+>> +	table = em_get_table(pd);
+>> +	/* Initialize data based on older runtime table */
+>> +	table_size = sizeof(struct em_perf_state) * pd->nr_perf_states;
+>> +	memcpy(new_table, table, table_size);
+>> +
+>> +	em_put_table();
+>> +
+>> +	em_init_performance(dev, pd, new_table, pd->nr_perf_states);
+>> +	ret = em_compute_costs(dev, new_table, NULL, pd->nr_perf_states,
+>> +			       pd->flags);
+>> +	if (ret) {
+>> +		em_free_table(runtime_table);
+>> +		return;
+>> +	}
+>> +
+>> +	ret = em_dev_update_perf_domain(dev, runtime_table);
+>> +	if (ret)
+>> +		dev_warn(dev, "EM: update failed %d\n", ret);
+>> +
+>> +	/*
+>> +	 * This is one-time-update, so give up the ownership in this updater.
+>> +	 * The EM fwk will keep the reference and free the memory when needed.
+>> +	 */
+>> +	em_free_table(runtime_table);
+>> +}
+>> +
+>> +static void em_check_capacity_update(void)
+>> +{
+>> +	cpumask_var_t cpu_done_mask;
+>> +	struct em_perf_state *table;
+>> +	struct em_perf_domain *pd;
+>> +	unsigned long cpu_capacity;
+>> +	int cpu;
+>> +
+>> +	if (!zalloc_cpumask_var(&cpu_done_mask, GFP_KERNEL)) {
+>> +		pr_warn("no free memory\n");
+>> +		return;
+>> +	}
+>> +
+>> +	/* Check if CPUs capacity has changed than update EM */
+>> +	for_each_possible_cpu(cpu) {
+> 
+> Can't we instead hook into cpufreq_online/offline() to check if we need to
+> do any em related update for this policy?
+> 
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+I think it would be a bit over-engineering. We know the moment when
+there is a need for this check - it's when new EM is registered.
+Also, for the cpu hotplug, not always the capacity would change,
+which would confuse in such code. Not mentioning, that it will create
+an extra everhead for that hotplug notification chain, for not good
+reason.
 
