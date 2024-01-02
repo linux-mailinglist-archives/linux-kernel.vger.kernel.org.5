@@ -1,179 +1,126 @@
-Return-Path: <linux-kernel+bounces-14498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35A03821DF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:42:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 295AC821DFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:43:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BE471C22376
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:42:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0756B22242
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:43:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E8A5168AA;
-	Tue,  2 Jan 2024 14:38:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9F3512E59;
+	Tue,  2 Jan 2024 14:39:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lI4MKSKK"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="NEFPA7vn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE66815AEA
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:38:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dbe78430946so1080635276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:38:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704206327; x=1704811127; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jy0uRx2JMKC7IT4IrT6DQeOOAvtEVqpfbBhM8k6y5YU=;
-        b=lI4MKSKK0DT9T/8CHJPTLjXGtC2VQyQIeo0slFWaSUBLQN4POb17ew1naXivDDu/dH
-         1PGocvTFj7iEoIepWOWsnw8K6DvpBxTfYnnpVNPrFssj2uTKAdqRTr4sKpgzrtPxcQ9N
-         sQGG8BVCoe7bHpGNdA2rNyWCsM8zaAy7wPX4w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704206327; x=1704811127;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jy0uRx2JMKC7IT4IrT6DQeOOAvtEVqpfbBhM8k6y5YU=;
-        b=ml2O5o5g3GWHIaoAoPzxZ/WvCZ+tXHbUEQ71qnWkGsxlhQb03tgU+/B73Dkxu9sZ8W
-         JN350NJ9BEsvXNizryGD4Gq7mDBei5NiTNjNBeHFrVWya8V0GmBg5Gop1gRe89k1w9Wv
-         HXErTnKaiy3mGWz3YXeeDYT7a+mUigyMZiwMVsOq0xJmguP+rMP6TXrA0pHjnBcsbLUN
-         MJHGgVxWuVEiVtUNfKikm5lJWO+3yqChx5Nn2OFNP/tbqpArveU72tBiN6m3kTSAYuKA
-         /6Nod7xKboYk0AEZcYRk0ifGpB6s/B8TSqO8t0uvVwZocOEKg4cA9Np64okzDW+HpLqk
-         TSsQ==
-X-Gm-Message-State: AOJu0YxiqE+/xozay8Oxklssio6sZF0EudHZ31q+HpajdUfw1obM5gbW
-	eEqYDXD1+muNhXv0Q0ljNpn2zZit4PGrt52I99OLWmLqeUppZc8=
-X-Google-Smtp-Source: AGHT+IF2VmlnzA7AgDC3KwlEUuCIE5PgevZGdecadVjf9tfvv09O27NfPI3ZsHc2De/o71n4pxcOUQ==
-X-Received: by 2002:a25:aa2d:0:b0:dbd:5cd5:4d53 with SMTP id s42-20020a25aa2d000000b00dbd5cd54d53mr7126352ybi.96.1704206327096;
-        Tue, 02 Jan 2024 06:38:47 -0800 (PST)
-Received: from denia.c.googlers.com (204.246.236.35.bc.googleusercontent.com. [35.236.246.204])
-        by smtp.gmail.com with ESMTPSA id p13-20020ad451cd000000b00680b34d52f8sm1463586qvq.13.2024.01.02.06.38.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 06:38:46 -0800 (PST)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Tue, 02 Jan 2024 14:38:45 +0000
-Subject: [PATCH v3] media: ucvideo: Add quirk for Logitech Rally Bar
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985B71773D;
+	Tue,  2 Jan 2024 14:39:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 402DrFMW030277;
+	Tue, 2 Jan 2024 14:38:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=nMN2ZiX5fBPheidUVHXBOQeJqaVq22NMKNPrKMlBIko=;
+ b=NEFPA7vnFk6X9GPS8sFiMjJAtY75cGHdTmLvGSk5Je/YgLCupxWV3EUPGvxEjAbwoHDY
+ 2dNEsUwhGblerqNvLaMvmeUEQ53Rr8YqQ0pMonFpTK2h4KBBAsdpiRvxVEbUFUx+TQTl
+ ++kGJyjvu2hhBlWp4nLtYsEVgK5HgZX2Au/OE9F4SQ6VR1fgeb68Nb+Be5hJdbAIAaO/
+ 24wHoBOFAagWfY9KvHEyIaV1f4DMBkFN9/tG3Sz1LpCEf4YqUckChANqIFBDNXfnOMiw
+ kInuz6kiV3cOO+1BB2Cvmikp7gS70EPKXaUHn9fQZbBf3MrVtuXCNYr6918cSDP6DRCl YA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vckrss3mg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 14:38:55 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 402ESQmP022837;
+	Tue, 2 Jan 2024 14:38:54 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vckrss3kq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 14:38:54 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 402CCo8h018138;
+	Tue, 2 Jan 2024 14:38:53 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vayrkd0gw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 14:38:53 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 402Eco3o12387020
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 2 Jan 2024 14:38:50 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6D9C32004E;
+	Tue,  2 Jan 2024 14:38:50 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3108320067;
+	Tue,  2 Jan 2024 14:38:49 +0000 (GMT)
+Received: from osiris (unknown [9.171.22.30])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue,  2 Jan 2024 14:38:49 +0000 (GMT)
+Date: Tue, 2 Jan 2024 15:38:47 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: [PATCH v3 24/34] s390/cpumf: Unpoison STCCTM output buffer
+Message-ID: <20240102143847.6306-B-hca@linux.ibm.com>
+References: <20231213233605.661251-1-iii@linux.ibm.com>
+ <20231213233605.661251-25-iii@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240102-rallybar-v3-1-0ab197ce4aa2@chromium.org>
-X-B4-Tracking: v=1; b=H4sIAPUflGUC/3WMwQ6CMBAFf4X0bA27LQ148j+Mh9IWaALUbLWRE
- P7dwtHocV7ezMqiI+8iuxQrI5d89GHOIE4FM4Oee8e9zcywRAGIyEmP49Jq4tAYVxolbeUUy/c
- Huc6/j9Ttnnnw8RloOcoJ9vVHJAEHXmOLWloBpequZqAw+dd0DtSzvZPwn4vZrWrZWIW6qUB+u
- du2fQDDhAwd3wAAAA==
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Alan Stern <stern@rowland.harvard.edu>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-media@vger.kernel.org, stable@vger.kernel.org, 
- Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213233605.661251-25-iii@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: tigr5Z3z0BxX2AirZXNHzagI1bfeH5jj
+X-Proofpoint-ORIG-GUID: qfT-irTXYoFc-48gwcgYv32GP9D1i41z
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-02_04,2024-01-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 malwarescore=0 bulkscore=0 spamscore=0 phishscore=0
+ mlxlogscore=623 priorityscore=1501 suspectscore=0 clxscore=1015 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401020112
 
-Logitech Rally Bar devices, despite behaving as UVC cameras, have a
-different power management system that the other cameras from Logitech.
+On Thu, Dec 14, 2023 at 12:24:44AM +0100, Ilya Leoshkevich wrote:
+> stcctm() uses the "Q" constraint for dest, therefore KMSAN does not
+> understand that it fills multiple doublewords pointed to by dest, not
+> just one. This results in false positives.
+> 
+> Unpoison the whole dest manually with kmsan_unpoison_memory().
+> 
+> Reported-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  arch/s390/include/asm/cpu_mf.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-USB_QUIRK_RESET_RESUME is applied to all the UVC cameras from Logitech
-at the usb core. Unfortunately, USB_QUIRK_RESET_RESUME causes undesired
-USB disconnects, that make them completely unusable.
-
-Instead of creating a list for this family of devices in the core, let's
-create a quirk in the UVC driver.
-
-Fixes: e387ef5c47dd ("usb: Add USB_QUIRK_RESET_RESUME for all Logitech UVC webcams")
-Cc: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
-Tested with a Rallybar Mini with an Acer Chromebook Spin 513
----
-Changes in v3:
-- Move quirk to uvc driver
-- Link to v2: https://lore.kernel.org/r/20231222-rallybar-v2-1-5849d62a9514@chromium.org
-
-Changes in v2:
-- Add Fixes tag
-- Add UVC maintainer as Cc
-- Link to v1: https://lore.kernel.org/r/20231222-rallybar-v1-1-82b2a4d3106f@chromium.org
----
- drivers/media/usb/uvc/uvc_driver.c | 21 +++++++++++++++++++++
- drivers/media/usb/uvc/uvcvideo.h   |  1 +
- 2 files changed, 22 insertions(+)
-
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 08fcd2ffa727..77c1932c29ca 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -14,6 +14,7 @@
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/usb.h>
-+#include <linux/usb/quirks.h>
- #include <linux/usb/uvc.h>
- #include <linux/videodev2.h>
- #include <linux/vmalloc.h>
-@@ -2233,6 +2234,8 @@ static int uvc_probe(struct usb_interface *intf,
- 	}
- 
- 	uvc_dbg(dev, PROBE, "UVC device initialized\n");
-+	if (dev->quirks & UVC_QUIRK_FORCE_RESUME)
-+		udev->quirks &= ~USB_QUIRK_RESET_RESUME;
- 	usb_enable_autosuspend(udev);
- 	return 0;
- 
-@@ -2574,6 +2577,24 @@ static const struct usb_device_id uvc_ids[] = {
- 	  .bInterfaceSubClass	= 1,
- 	  .bInterfaceProtocol	= 0,
- 	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
-+	/* Logitech Rally Bar */
-+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-+				| USB_DEVICE_ID_MATCH_INT_INFO,
-+	  .idVendor		= 0x046d,
-+	  .idProduct		= 0x089b,
-+	  .bInterfaceClass	= USB_CLASS_VIDEO,
-+	  .bInterfaceSubClass	= 1,
-+	  .bInterfaceProtocol	= 0,
-+	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_FORCE_RESUME) },
-+	/* Logitech Rally Bar */
-+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-+				| USB_DEVICE_ID_MATCH_INT_INFO,
-+	  .idVendor		= 0x046d,
-+	  .idProduct		= 0x08d3,
-+	  .bInterfaceClass	= USB_CLASS_VIDEO,
-+	  .bInterfaceSubClass	= 1,
-+	  .bInterfaceProtocol	= 0,
-+	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_FORCE_RESUME) },
- 	/* Chicony CNF7129 (Asus EEE 100HE) */
- 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
- 				| USB_DEVICE_ID_MATCH_INT_INFO,
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index 6fb0a78b1b00..fa59a21d2a28 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -73,6 +73,7 @@
- #define UVC_QUIRK_FORCE_Y8		0x00000800
- #define UVC_QUIRK_FORCE_BPP		0x00001000
- #define UVC_QUIRK_WAKE_AUTOSUSPEND	0x00002000
-+#define UVC_QUIRK_FORCE_RESUME		0x00004000
- 
- /* Format flags */
- #define UVC_FMT_FLAG_COMPRESSED		0x00000001
-
----
-base-commit: c0f65a7c112b3cfa691cead54bcf24d6cc2182b5
-change-id: 20231222-rallybar-19ce0c64d5e6
-
-Best regards,
--- 
-Ricardo Ribalda <ribalda@chromium.org>
-
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
 
