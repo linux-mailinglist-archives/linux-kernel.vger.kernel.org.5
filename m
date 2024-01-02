@@ -1,235 +1,401 @@
-Return-Path: <linux-kernel+bounces-14155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20D89821881
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:45:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 075F6821887
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:48:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A93702829DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:45:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F329280D9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:48:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0198C5677;
-	Tue,  2 Jan 2024 08:44:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HV4RtWW3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C9F5695;
+	Tue,  2 Jan 2024 08:48:04 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB5563A6;
-	Tue,  2 Jan 2024 08:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704185089; x=1735721089;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=UvmgInCVS3LhauRxpvGYGqfhEKWYPGEDg6KPf7j+yCc=;
-  b=HV4RtWW3zbgsrg7xsd+HrGGdyb8HJTqDUD67gM6K7KSgE8iYYgBrfNWB
-   12VNThHGdcAeyvYYkH9WfLZ4uZhsbOTBT1FFrIDTDcb3Qeqrjyn2RAnwD
-   c+lOs9WPxbfDVybQQVjNuqc0fyopk7dDdiHrB9jeRZ1bv+94+s+RxcTcd
-   UMLBB+hi0ntDi9Im6jSEG584jmCojHq7wu+JE+Ha4FAZIeM0xg6RjHJCt
-   MLHj3M4ueAZGzuOgKLSEdkB3kES1Fp9lHcqVobepfg/uAf+ytD8tu7HE8
-   sVixbqV0SxLJc+2mrrgbqja78KQM67zVenEUxJtXvlWmkuBLk+IO51qwt
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="4189864"
-X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
-   d="scan'208";a="4189864"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 00:44:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="779632795"
-X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
-   d="scan'208";a="779632795"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 00:44:41 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Gregory Price <gregory.price@memverge.com>
-Cc: Gregory Price <gourry.memverge@gmail.com>,  <linux-mm@kvack.org>,
-  <linux-doc@vger.kernel.org>,  <linux-fsdevel@vger.kernel.org>,
-  <linux-kernel@vger.kernel.org>,  <linux-api@vger.kernel.org>,
-  <x86@kernel.org>,  <akpm@linux-foundation.org>,  <arnd@arndb.de>,
-  <tglx@linutronix.de>,  <luto@kernel.org>,  <mingo@redhat.com>,
-  <bp@alien8.de>,  <dave.hansen@linux.intel.com>,  <hpa@zytor.com>,
-  <mhocko@kernel.org>,  <tj@kernel.org>,  <corbet@lwn.net>,
-  <rakie.kim@sk.com>,  <hyeongtak.ji@sk.com>,  <honggyu.kim@sk.com>,
-  <vtavarespetr@micron.com>,  <peterz@infradead.org>,
-  <jgroves@micron.com>,  <ravis.opensrc@micron.com>,
-  <sthanneeru@micron.com>,  <emirakhur@micron.com>,  <Hasan.Maruf@amd.com>,
-  <seungjun.ha@samsung.com>,  Srinivasulu Thanneeru
- <sthanneeru.opensrc@micron.com>
-Subject: Re: [PATCH v5 02/11] mm/mempolicy: introduce
- MPOL_WEIGHTED_INTERLEAVE for weighted interleaving
-In-Reply-To: <ZYp6ZRLZQVtTHest@memverge.com> (Gregory Price's message of "Tue,
-	26 Dec 2023 02:01:57 -0500")
-References: <20231223181101.1954-1-gregory.price@memverge.com>
-	<20231223181101.1954-3-gregory.price@memverge.com>
-	<8734vof3kq.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZYp6ZRLZQVtTHest@memverge.com>
-Date: Tue, 02 Jan 2024 16:42:42 +0800
-Message-ID: <878r58dt31.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF42B53AF
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 08:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rKaR9-0004UX-8C; Tue, 02 Jan 2024 09:47:47 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rKaR5-0038oO-JY; Tue, 02 Jan 2024 09:47:44 +0100
+Received: from mfe by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rKaR6-009tC8-J4; Tue, 02 Jan 2024 09:47:44 +0100
+Date: Tue, 2 Jan 2024 09:47:44 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: krzysztof.kozlowski@linaro.org, devicetree@vger.kernel.org,
+	conor+dt@kernel.org, hongxing.zhu@nxp.com,
+	krzysztof.kozlowski+dt@linaro.org, imx@lists.linux.dev,
+	linux-pci@vger.kernel.org, lpieralisi@kernel.org,
+	linux-kernel@vger.kernel.org, s.hauer@pengutronix.de,
+	helgaas@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de,
+	manivannan.sadhasivam@linaro.org, bhelgaas@google.com,
+	shawnguo@kernel.org, kw@linux.com, festevam@gmail.com,
+	robh@kernel.org, linux-arm-kernel@lists.infradead.org,
+	l.stach@pengutronix.de
+Subject: Re: [PATCH v7 01/16] PCI: imx6: Simplify clock handling by using
+ bulk_clk_*() function
+Message-ID: <20240102084744.tyquwp6hkb36tfxg@pengutronix.de>
+References: <20231227182727.1747435-1-Frank.Li@nxp.com>
+ <20231227182727.1747435-2-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231227182727.1747435-2-Frank.Li@nxp.com>
+User-Agent: NeoMutt/20180716
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Gregory Price <gregory.price@memverge.com> writes:
+Hi Frank,
 
-> On Wed, Dec 27, 2023 at 04:32:37PM +0800, Huang, Ying wrote:
->> Gregory Price <gourry.memverge@gmail.com> writes:
->> 
->> > +static unsigned int weighted_interleave_nid(struct mempolicy *pol, pgoff_t ilx)
->> > +{
->> > +	nodemask_t nodemask = pol->nodes;
->> > +	unsigned int target, weight_total = 0;
->> > +	int nid;
->> > +	unsigned char weights[MAX_NUMNODES];
->> 
->> MAX_NUMNODSE could be as large as 1024.  1KB stack space may be too
->> large?
->> 
->
-> I've been struggling with a good solution to this.  We need a local copy
-> of weights to prevent weights from changing out from under us during
-> allocation (which may take quite some time), but it seemed unwise to
-> to allocate 1KB heap in this particular path.
->
-> Is my concern unfounded?  If so, I can go ahead and add the allocation
-> code.
+On 23-12-27, Frank Li wrote:
+> Refactors the clock handling logic. Adds clk_names[] define in drvdata.
+> Using clk_bulk*() api simplifies the code.
 
-Please take a look at NODEMASK_ALLOC().
+does this influence the clock enable/disable sequence ordering? Just
+asking to avoid regressions on older platforms which may require some
+sort of order (e.g. require clock-a before clock-b).
 
->> > +	unsigned char weight;
->> > +
->> > +	barrier();
->> 
->> Memory barrier needs comments.
->> 
->
-> Barrier is to stabilize nodemask on the stack, but yes i'll carry the
-> comment from interleave_nid into this barrier as well.
+Regards,
+  Marco
 
-Please see below.
-
->> > +
->> > +	/* first ensure we have a valid nodemask */
->> > +	nid = first_node(nodemask);
->> > +	if (nid == MAX_NUMNODES)
->> > +		return nid;
->> 
->> It appears that this isn't necessary, because we can check whether
->> weight_total == 0 after the next loop.
->> 
->
-> fair, will snip.
->
->> > +
->> > +	/* Then collect weights on stack and calculate totals */
->> > +	for_each_node_mask(nid, nodemask) {
->> > +		weight = iw_table[nid];
->> > +		weight_total += weight;
->> > +		weights[nid] = weight;
->> > +	}
->> > +
->> > +	/* Finally, calculate the node offset based on totals */
->> > +	target = (unsigned int)ilx % weight_total;
->> 
->> Why use type casting?
->> 
->
-> Artifact of old prototypes, snipped.
->
->> > +
->> > +	/* Stabilize the nodemask on the stack */
->> > +	barrier();
->> 
->> I don't think barrier() is needed to wait for memory operations for
->> stack.  It's usually used for cross-processor memory order.
->>
->
-> This is present in the old interleave code.  To the best of my
-> understanding, the concern is for mempolicy->nodemask rebinding that can
-> occur when cgroups.cpusets.mems_allowed changes.
->
-> so we can't iterate over (mempolicy->nodemask), we have to take a local
-> copy.
->
-> My *best* understanding of the barrier here is to prevent the compiler
-> from reordering operations such that it attempts to optimize out the
-> local copy (or do lazy-fetch).
->
-> It is present in the original interleave code, so I pulled it forward to
-> this, but I have not tested whether this is a bit paranoid or not.
->
-> from `interleave_nid`:
->
->  /*
->   * The barrier will stabilize the nodemask in a register or on
->   * the stack so that it will stop changing under the code.
->   *
->   * Between first_node() and next_node(), pol->nodes could be changed
->   * by other threads. So we put pol->nodes in a local stack.
->   */
->  barrier();
-
-Got it.  This is kind of READ_ONCE() for nodemask.  To avoid to add
-comments all over the place.  Can we implement a wrapper for it?  For
-example, memcpy_once().  __read_once_size() in
-tools/include/linux/compiler.h can be used as reference.
-
-Because node_weights[] may be changed simultaneously too.  We may need
-to consider similar issue for it too.  But RCU seems more appropriate
-for node_weights[].
-
->> > +		/* Otherwise we adjust nr_pages down, and continue from there */
->> > +		rem_pages -= pol->wil.cur_weight;
->> > +		pol->wil.cur_weight = 0;
->> > +		prev_node = node;
->> 
->> If pol->wil.cur_weight == 0, prev_node will be used without being
->> initialized below.
->> 
->
-> pol->wil.cur_weight is not used below.
->
->> > +	}
->> > +
->> > +	/* Now we can continue allocating as if from 0 instead of an offset */
->> > +	rounds = rem_pages / weight_total;
->> > +	delta = rem_pages % weight_total;
->> > +	for (i = 0; i < nnodes; i++) {
->> > +		node = next_node_in(prev_node, nodes);
->> > +		weight = weights[node];
->> > +		node_pages = weight * rounds;
->> > +		if (delta) {
->> > +			if (delta > weight) {
->> > +				node_pages += weight;
->> > +				delta -= weight;
->> > +			} else {
->> > +				node_pages += delta;
->> > +				delta = 0;
->> > +			}
->> > +		}
->> > +		/* We may not make it all the way around */
->> > +		if (!node_pages)
->> > +			break;
->> > +		/* If an over-allocation would occur, floor it */
->> > +		if (node_pages + total_allocated > nr_pages) {
->> 
->> Why is this possible?
->> 
->
-> this may have been a paranoid artifact from an early prototype, will
-> snip and validate.
-
---
-Best Regards,
-Huang, Ying
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+> 
+> Notes:
+>     Change from v4 to v5
+>     - update commit message
+>     - direct using clk name list, instead of macro
+>     - still keep caculate clk list count because sizeof return pre allocated
+>     array size.
+>     
+>     Change from v3 to v4
+>     - using clk_bulk_*() API
+>     Change from v1 to v3
+>     - none
+> 
+>  drivers/pci/controller/dwc/pci-imx6.c | 125 ++++++++------------------
+>  1 file changed, 35 insertions(+), 90 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 74703362aeec7..50d9faaa17f71 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -61,12 +61,15 @@ enum imx6_pcie_variants {
+>  #define IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE	BIT(1)
+>  #define IMX6_PCIE_FLAG_SUPPORTS_SUSPEND		BIT(2)
+>  
+> +#define IMX6_PCIE_MAX_CLKS       6
+> +
+>  struct imx6_pcie_drvdata {
+>  	enum imx6_pcie_variants variant;
+>  	enum dw_pcie_device_mode mode;
+>  	u32 flags;
+>  	int dbi_length;
+>  	const char *gpr;
+> +	const char *clk_names[IMX6_PCIE_MAX_CLKS];
+>  };
+>  
+>  struct imx6_pcie {
+> @@ -74,11 +77,8 @@ struct imx6_pcie {
+>  	int			reset_gpio;
+>  	bool			gpio_active_high;
+>  	bool			link_is_up;
+> -	struct clk		*pcie_bus;
+> -	struct clk		*pcie_phy;
+> -	struct clk		*pcie_inbound_axi;
+> -	struct clk		*pcie;
+> -	struct clk		*pcie_aux;
+> +	struct clk_bulk_data	clks[IMX6_PCIE_MAX_CLKS];
+> +	u32			clks_cnt;
+>  	struct regmap		*iomuxc_gpr;
+>  	u16			msi_ctrl;
+>  	u32			controller_id;
+> @@ -407,13 +407,18 @@ static void imx7d_pcie_wait_for_phy_pll_lock(struct imx6_pcie *imx6_pcie)
+>  
+>  static int imx6_setup_phy_mpll(struct imx6_pcie *imx6_pcie)
+>  {
+> -	unsigned long phy_rate = clk_get_rate(imx6_pcie->pcie_phy);
+> +	unsigned long phy_rate = 0;
+>  	int mult, div;
+>  	u16 val;
+> +	int i;
+>  
+>  	if (!(imx6_pcie->drvdata->flags & IMX6_PCIE_FLAG_IMX6_PHY))
+>  		return 0;
+>  
+> +	for (i = 0; i < imx6_pcie->clks_cnt; i++)
+> +		if (strncmp(imx6_pcie->clks[i].id, "pcie_phy", 8) == 0)
+> +			phy_rate = clk_get_rate(imx6_pcie->clks[i].clk);
+> +
+>  	switch (phy_rate) {
+>  	case 125000000:
+>  		/*
+> @@ -550,19 +555,11 @@ static int imx6_pcie_attach_pd(struct device *dev)
+>  
+>  static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
+>  {
+> -	struct dw_pcie *pci = imx6_pcie->pci;
+> -	struct device *dev = pci->dev;
+>  	unsigned int offset;
+>  	int ret = 0;
+>  
+>  	switch (imx6_pcie->drvdata->variant) {
+>  	case IMX6SX:
+> -		ret = clk_prepare_enable(imx6_pcie->pcie_inbound_axi);
+> -		if (ret) {
+> -			dev_err(dev, "unable to enable pcie_axi clock\n");
+> -			break;
+> -		}
+> -
+>  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+>  				   IMX6SX_GPR12_PCIE_TEST_POWERDOWN, 0);
+>  		break;
+> @@ -589,12 +586,6 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
+>  	case IMX8MQ_EP:
+>  	case IMX8MP:
+>  	case IMX8MP_EP:
+> -		ret = clk_prepare_enable(imx6_pcie->pcie_aux);
+> -		if (ret) {
+> -			dev_err(dev, "unable to enable pcie_aux clock\n");
+> -			break;
+> -		}
+> -
+>  		offset = imx6_pcie_grp_offset(imx6_pcie);
+>  		/*
+>  		 * Set the over ride low and enabled
+> @@ -615,9 +606,6 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
+>  static void imx6_pcie_disable_ref_clk(struct imx6_pcie *imx6_pcie)
+>  {
+>  	switch (imx6_pcie->drvdata->variant) {
+> -	case IMX6SX:
+> -		clk_disable_unprepare(imx6_pcie->pcie_inbound_axi);
+> -		break;
+>  	case IMX6QP:
+>  	case IMX6Q:
+>  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR1,
+> @@ -631,14 +619,6 @@ static void imx6_pcie_disable_ref_clk(struct imx6_pcie *imx6_pcie)
+>  				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL,
+>  				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL);
+>  		break;
+> -	case IMX8MM:
+> -	case IMX8MM_EP:
+> -	case IMX8MQ:
+> -	case IMX8MQ_EP:
+> -	case IMX8MP:
+> -	case IMX8MP_EP:
+> -		clk_disable_unprepare(imx6_pcie->pcie_aux);
+> -		break;
+>  	default:
+>  		break;
+>  	}
+> @@ -650,23 +630,9 @@ static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie)
+>  	struct device *dev = pci->dev;
+>  	int ret;
+>  
+> -	ret = clk_prepare_enable(imx6_pcie->pcie_phy);
+> -	if (ret) {
+> -		dev_err(dev, "unable to enable pcie_phy clock\n");
+> +	ret =  clk_bulk_prepare_enable(imx6_pcie->clks_cnt, imx6_pcie->clks);
+> +	if (ret)
+>  		return ret;
+> -	}
+> -
+> -	ret = clk_prepare_enable(imx6_pcie->pcie_bus);
+> -	if (ret) {
+> -		dev_err(dev, "unable to enable pcie_bus clock\n");
+> -		goto err_pcie_bus;
+> -	}
+> -
+> -	ret = clk_prepare_enable(imx6_pcie->pcie);
+> -	if (ret) {
+> -		dev_err(dev, "unable to enable pcie clock\n");
+> -		goto err_pcie;
+> -	}
+>  
+>  	ret = imx6_pcie_enable_ref_clk(imx6_pcie);
+>  	if (ret) {
+> @@ -679,11 +645,7 @@ static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie)
+>  	return 0;
+>  
+>  err_ref_clk:
+> -	clk_disable_unprepare(imx6_pcie->pcie);
+> -err_pcie:
+> -	clk_disable_unprepare(imx6_pcie->pcie_bus);
+> -err_pcie_bus:
+> -	clk_disable_unprepare(imx6_pcie->pcie_phy);
+> +	clk_bulk_disable_unprepare(imx6_pcie->clks_cnt, imx6_pcie->clks);
+>  
+>  	return ret;
+>  }
+> @@ -691,9 +653,7 @@ static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie)
+>  static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie)
+>  {
+>  	imx6_pcie_disable_ref_clk(imx6_pcie);
+> -	clk_disable_unprepare(imx6_pcie->pcie);
+> -	clk_disable_unprepare(imx6_pcie->pcie_bus);
+> -	clk_disable_unprepare(imx6_pcie->pcie_phy);
+> +	clk_bulk_disable_unprepare(imx6_pcie->clks_cnt, imx6_pcie->clks);
+>  }
+>  
+>  static void imx6_pcie_assert_core_reset(struct imx6_pcie *imx6_pcie)
+> @@ -1305,32 +1265,19 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+>  		return imx6_pcie->reset_gpio;
+>  	}
+>  
+> -	/* Fetch clocks */
+> -	imx6_pcie->pcie_bus = devm_clk_get(dev, "pcie_bus");
+> -	if (IS_ERR(imx6_pcie->pcie_bus))
+> -		return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_bus),
+> -				     "pcie_bus clock source missing or invalid\n");
+> +	while (imx6_pcie->drvdata->clk_names[imx6_pcie->clks_cnt]) {
+> +		int i = imx6_pcie->clks_cnt;
+> +
+> +		imx6_pcie->clks[i].id = imx6_pcie->drvdata->clk_names[i];
+> +		imx6_pcie->clks_cnt++;
+> +	}
+>  
+> -	imx6_pcie->pcie = devm_clk_get(dev, "pcie");
+> -	if (IS_ERR(imx6_pcie->pcie))
+> -		return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie),
+> -				     "pcie clock source missing or invalid\n");
+> +	/* Fetch clocks */
+> +	ret = devm_clk_bulk_get(dev, imx6_pcie->clks_cnt, imx6_pcie->clks);
+> +	if (ret)
+> +		return ret;
+>  
+>  	switch (imx6_pcie->drvdata->variant) {
+> -	case IMX6SX:
+> -		imx6_pcie->pcie_inbound_axi = devm_clk_get(dev,
+> -							   "pcie_inbound_axi");
+> -		if (IS_ERR(imx6_pcie->pcie_inbound_axi))
+> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_inbound_axi),
+> -					     "pcie_inbound_axi clock missing or invalid\n");
+> -		break;
+> -	case IMX8MQ:
+> -	case IMX8MQ_EP:
+> -		imx6_pcie->pcie_aux = devm_clk_get(dev, "pcie_aux");
+> -		if (IS_ERR(imx6_pcie->pcie_aux))
+> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_aux),
+> -					     "pcie_aux clock source missing or invalid\n");
+> -		fallthrough;
+>  	case IMX7D:
+>  		if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
+>  			imx6_pcie->controller_id = 1;
+> @@ -1353,10 +1300,6 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+>  	case IMX8MM_EP:
+>  	case IMX8MP:
+>  	case IMX8MP_EP:
+> -		imx6_pcie->pcie_aux = devm_clk_get(dev, "pcie_aux");
+> -		if (IS_ERR(imx6_pcie->pcie_aux))
+> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_aux),
+> -					     "pcie_aux clock source missing or invalid\n");
+>  		imx6_pcie->apps_reset = devm_reset_control_get_exclusive(dev,
+>  									 "apps");
+>  		if (IS_ERR(imx6_pcie->apps_reset))
+> @@ -1372,14 +1315,6 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+>  	default:
+>  		break;
+>  	}
+> -	/* Don't fetch the pcie_phy clock, if it has abstract PHY driver */
+> -	if (imx6_pcie->phy == NULL) {
+> -		imx6_pcie->pcie_phy = devm_clk_get(dev, "pcie_phy");
+> -		if (IS_ERR(imx6_pcie->pcie_phy))
+> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_phy),
+> -					     "pcie_phy clock source missing or invalid\n");
+> -	}
+> -
+>  
+>  	/* Grab turnoff reset */
+>  	imx6_pcie->turnoff_reset = devm_reset_control_get_optional_exclusive(dev, "turnoff");
+> @@ -1477,6 +1412,7 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  			 IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE,
+>  		.dbi_length = 0x200,
+>  		.gpr = "fsl,imx6q-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
+>  	},
+>  	[IMX6SX] = {
+>  		.variant = IMX6SX,
+> @@ -1484,6 +1420,7 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  			 IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE |
+>  			 IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
+>  		.gpr = "fsl,imx6q-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_inbound_axi"},
+>  	},
+>  	[IMX6QP] = {
+>  		.variant = IMX6QP,
+> @@ -1492,40 +1429,48 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  			 IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
+>  		.dbi_length = 0x200,
+>  		.gpr = "fsl,imx6q-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
+>  	},
+>  	[IMX7D] = {
+>  		.variant = IMX7D,
+>  		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
+>  		.gpr = "fsl,imx7d-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
+>  	},
+>  	[IMX8MQ] = {
+>  		.variant = IMX8MQ,
+>  		.gpr = "fsl,imx8mq-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_aux"},
+>  	},
+>  	[IMX8MM] = {
+>  		.variant = IMX8MM,
+>  		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
+>  		.gpr = "fsl,imx8mm-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
+>  	},
+>  	[IMX8MP] = {
+>  		.variant = IMX8MP,
+>  		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
+>  		.gpr = "fsl,imx8mp-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
+>  	},
+>  	[IMX8MQ_EP] = {
+>  		.variant = IMX8MQ_EP,
+>  		.mode = DW_PCIE_EP_TYPE,
+>  		.gpr = "fsl,imx8mq-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_aux"},
+>  	},
+>  	[IMX8MM_EP] = {
+>  		.variant = IMX8MM_EP,
+>  		.mode = DW_PCIE_EP_TYPE,
+>  		.gpr = "fsl,imx8mm-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
+>  	},
+>  	[IMX8MP_EP] = {
+>  		.variant = IMX8MP_EP,
+>  		.mode = DW_PCIE_EP_TYPE,
+>  		.gpr = "fsl,imx8mp-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
+>  	},
+>  };
+>  
+> -- 
+> 2.34.1
+> 
+> 
+> 
 
