@@ -1,65 +1,59 @@
-Return-Path: <linux-kernel+bounces-14354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B215821BCE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7007D821BBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:38:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0B341C21F56
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:42:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 817661C21232
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14375FBFF;
-	Tue,  2 Jan 2024 12:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E25FEFBEA;
+	Tue,  2 Jan 2024 12:38:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="p5Ru6ZUz"
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="BTgilUQ6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out203-205-221-155.mail.qq.com (out203-205-221-155.mail.qq.com [203.205.221.155])
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2227AFBF0;
-	Tue,  2 Jan 2024 12:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1704199013; bh=KccDZNyBw07ctq/DN3VElW8F3A1ia8xExihctND/oh4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=p5Ru6ZUzBdYcgAA/DvsG1qV+UwFHpVhC425WNXaVRjEB7bjlSWzJuSFfOqKovE6AU
-	 sxWNT+b/YY3bDE0VsX/qthI0XeFtJT6+/qevhbgXswmwchMG0b1OxKalQplqKGoXUM
-	 DcQI+u/SwjokXggvgUP57hbbab6wrAt0G+62F+Nk=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id 93334A1C; Tue, 02 Jan 2024 20:36:51 +0800
-X-QQ-mid: xmsmtpt1704199011tmjb9ifyq
-Message-ID: <tencent_8C1ACE487B4E6C302EE56D8C95C0E8E2EF0A@qq.com>
-X-QQ-XMAILINFO: N7h1OCCDntujvVtpMWdxaTVHmbrXzaCl4eDQp1ppMvKr1B3sZmiP2rPKkpDVT2
-	 Wx22gtapO0SWIPeDdMHzM/pDsl7mOzDQP48b0kIWc35lT2+9r8zpfTFP+HKYPUWHHLByu0/s4Ae0
-	 x2ApYkcNEvsVXDZKfqJgLcAJayxcTN+XUyts0x5OPOhqCceFUC12mZy6McngXf/2DnTK2mJyqfHZ
-	 l4H37h5XXIRzXAclsR/47rr3lL7/VuUJ6P8siruJeUdyXbUcAiNoLnHGViUaJ6/3dTelzTVjJ7hB
-	 NYTEMxUu3l3pBaqkXHKRstFYz4tgRIIdBOWlePjNYSSTqHKnWlI39YU1FY1yFPopiTLtrK2vmg+t
-	 vfcpNz5u0lmRkF7vfwfPjxx5+t25QGqtcgwXuPRFxLLD5xpXmyoV8zwqMhpsoeGblOFxun5x8Ce+
-	 btmdSKb2dNRV9GLxSZp/csIEVUlDim/DeIg8fJeVS1CV4EVn7Us8wR/7z7Yyjry2sk2tbSOKk/d0
-	 fxG9ock9UqKE62M9ivXdHKIuIecQlcLBzO4xkgn3bUHCTAsmhS0VZ40mfCFKSCw5aNQ68M6PTCWt
-	 ZnRmLqFfNPSN4HHf/OF208uflBXEP6+3EYF8nGxWTfvL6OjPtcqlXPIZCtbcnMDs4JOdgrpmlXTW
-	 HPvnyHjAkVnBD6G/FofN95KWRnoadgUqQxN1yU5NjG8Iy5emIANXUeUhPrM7AvvzrwDhXky7Awnk
-	 DB7S8uapn1593i1VneE+x5cFU7zZa3A8nknRZ/OU02fTEoZ4gP2Fnpacypdcda/WpR0yk3YpdM6Z
-	 LHR6yjY+sqSrSkJt8p7VRL7YTgbVGLJ487OwXJ6++h9QKYOBgF4ca++/iIvq7Hu7fyKgVbdFzY2n
-	 0Uz9Uk3y5OkUo1Uy4d+p+9cZ6V8ZsGwSr/H/58X2mmXGGANpazBfPYieixh0XEAbrHW4iiYF/zhK
-	 zH6adJif8=
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+41a88b825a315aac2254@syzkaller.appspotmail.com
-Cc: linux-fsdevel@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4671FBF8;
+	Tue,  2 Jan 2024 12:38:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1704199077;
+	bh=ei3L/hMRlfNY7Sz9SmZ4DfXD98IpAmHi1yZnfBh/zq8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BTgilUQ6d6Nhlffji4EuRffpQbwj5zKUAVdh1QrfJBokQNNr263l+XmZ3oloR5grM
+	 szxThG4GcKMu1GQxiYesEcu0yZhL4SlgbrAnlckyk6byN3iVvXlst4LYk9BnGp7Rbf
+	 OAl17T5daR/pwWCkvEGxbuX28lsp318dr11H3CdE=
+Received: from stargazer.. (unknown [113.200.174.68])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id C76556707D;
+	Tue,  2 Jan 2024 07:37:52 -0500 (EST)
+From: Xi Ruoyao <xry111@xry111.site>
+To: Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Eric Biederman <ebiederm@xmission.com>,
+	Kees Cook <keescook@chromium.org>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	Jinyang He <hejinyang@loongson.cn>,
+	loongarch@lists.linux.dev,
+	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	willy@infradead.org
-Subject: [PATCH] hfs: fix deadlock in hfs_extend_file
-Date: Tue,  2 Jan 2024 20:36:51 +0800
-X-OQ-MSGID: <20240102123651.1582577-2-eadavis@qq.com>
+	Xi Ruoyao <xry111@xry111.site>,
+	stable@vger.kernel.org,
+	linux-mips@vger.kernel.org
+Subject: [PATCH v3] LoongArch: Fix and simplify fcsr initialization on execve
+Date: Tue,  2 Jan 2024 20:37:07 +0800
+Message-ID: <20240102123706.6099-2-xry111@xry111.site>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000004efa57060def87be@google.com>
-References: <0000000000004efa57060def87be@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,58 +62,130 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-[syz report]
-syz-executor279/5059 is trying to acquire lock:
-ffff888079c100f8 (&HFS_I(tree->inode)->extents_lock){+.+.}-{3:3}, at: hfs_extend_file+0xa2/0xb10 fs/hfs/extent.c:397
+There has been a lingering bug in LoongArch Linux systems causing some
+GCC tests to intermittently fail (see Closes link).  I've made a minimal
+reproducer:
 
-but task is already holding lock:
-ffff888079c10778 (&HFS_I(tree->inode)->extents_lock){+.+.}-{3:3}, at: hfs_extend_file+0xa2/0xb10 fs/hfs/extent.c:397
+    zsh% cat measure.s
+    .align 4
+    .globl _start
+    _start:
+        movfcsr2gr  $a0, $fcsr0
+        bstrpick.w  $a0, $a0, 16, 16
+        beqz        $a0, .ok
+        break       0
+    .ok:
+        li.w        $a7, 93
+        syscall     0
+    zsh% cc mesaure.s -o measure -nostdlib
+    zsh% echo $((1.0/3))
+    0.33333333333333331
+    zsh% while ./measure; do ; done
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+This while loop should not stop as POSIX is clear that execve must set
+fenv to the default, where FCSR should be zero.  But in fact it will
+just stop after running for a while (normally less than 30 seconds).
+Note that "$((1.0/3))" is needed to reproduce the issue because it
+raises FE_INVALID and makes fcsr0 non-zero.
 
-       CPU0
-       ----
-  lock(&HFS_I(tree->inode)->extents_lock);
-  lock(&HFS_I(tree->inode)->extents_lock);
+The problem is we are relying on SET_PERSONALITY2 to reset
+current->thread.fpu.fcsr.  But SET_PERSONALITY2 is executed before
+start_thread which calls lose_fpu(0).  We can see if kernel preempt is
+enabled, we may switch to another thread after SET_PERSONALITY2 but
+before lose_fpu(0).  Then bad thing happens: during the thread switch
+the value of the fcsr0 register is stored into current->thread.fpu.fcsr,
+making it dirty again.
 
- *** DEADLOCK ***
-[Analysis] 
- hfs_extend_file()->
-   hfs_ext_read_extent()->
-     __hfs_ext_cache_extent()->
-       __hfs_ext_write_extent()->
-         hfs_bmap_reserve()->
-           hfs_extend_file()->
+The issue can be fixed by setting current->thread.fpu.fcsr after
+lose_fpu(0) because lose_fpu clears TIF_USEDFPU, then the thread
+switch won't touch current->thread.fpu.fcsr.
 
-When an inode has both the HFS_FLG_EXT_DIRTY and HFS_FLG_EXT_NEW flags, it will
-enter the above loop and trigger a deadlock.
+The only other architecture setting FCSR in SET_PERSONALITY2 is MIPS.
+I've ran a similar test on MIPS with mainline kernel and it turns out
+MIPS is buggy too.  Anyway MIPS do this for supporting different FP
+flavors (NaN encodings etc.) which do not exist on LoongArch.  So for
+LoongArch, we can simply remove the current->thread.fpu.fcsr setting
+from SET_PERSONALITY2 and do it in start_thread, after lose_fpu(0).
+I'll leave the job to fix MIPS for MIPS maintainers.
 
-[Fix]
-In hfs_ext_read_extent(), check if the above two flags exist simultaneously, 
-and exit the subsequent process when the conditions are met.
+The while loop failing with the mainline kernel has survived one hour
+after this change on LoongArch.
 
-Reported-and-tested-by: syzbot+41a88b825a315aac2254@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Closes: https://github.com/loongson-community/discussions/issues/7
+Fixes: 803b0fc5c3f2 ("LoongArch: Add process management")
+Link: https://lore.kernel.org/linux-mips/7a6aa1bbdbbe2e63ae96ff163fab0349f58f1b9e.camel@xry111.site/
+Cc: stable@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+Signed-off-by: Xi Ruoyao <xry111@xry111.site>
 ---
- fs/hfs/extent.c | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/fs/hfs/extent.c b/fs/hfs/extent.c
-index 6d1878b99b30..1b02c7b6a10c 100644
---- a/fs/hfs/extent.c
-+++ b/fs/hfs/extent.c
-@@ -197,6 +197,10 @@ static int hfs_ext_read_extent(struct inode *inode, u16 block)
- 	    block < HFS_I(inode)->cached_start + HFS_I(inode)->cached_blocks)
- 		return 0;
+v2 -> v3:
+- Update the commit message to mention MIPS is buggy too.
+- Replace tabs in the commit message with whitespaces.
+- No code change.
+
+v1 -> v2:
+- Still set current->thread.fpu.fcsr to boot_cpu_data.fpu_csr0 instead
+  of constant 0.
+
+ arch/loongarch/include/asm/elf.h | 5 -----
+ arch/loongarch/kernel/elf.c      | 5 -----
+ arch/loongarch/kernel/process.c  | 1 +
+ 3 files changed, 1 insertion(+), 10 deletions(-)
+
+diff --git a/arch/loongarch/include/asm/elf.h b/arch/loongarch/include/asm/elf.h
+index 9b16a3b8e706..f16bd42456e4 100644
+--- a/arch/loongarch/include/asm/elf.h
++++ b/arch/loongarch/include/asm/elf.h
+@@ -241,8 +241,6 @@ void loongarch_dump_regs64(u64 *uregs, const struct pt_regs *regs);
+ do {									\
+ 	current->thread.vdso = &vdso_info;				\
+ 									\
+-	loongarch_set_personality_fcsr(state);				\
+-									\
+ 	if (personality(current->personality) != PER_LINUX)		\
+ 		set_personality(PER_LINUX);				\
+ } while (0)
+@@ -259,7 +257,6 @@ do {									\
+ 	clear_thread_flag(TIF_32BIT_ADDR);				\
+ 									\
+ 	current->thread.vdso = &vdso_info;				\
+-	loongarch_set_personality_fcsr(state);				\
+ 									\
+ 	p = personality(current->personality);				\
+ 	if (p != PER_LINUX32 && p != PER_LINUX)				\
+@@ -340,6 +337,4 @@ extern int arch_elf_pt_proc(void *ehdr, void *phdr, struct file *elf,
+ extern int arch_check_elf(void *ehdr, bool has_interpreter, void *interp_ehdr,
+ 			  struct arch_elf_state *state);
  
-+	if (HFS_I(inode)->flags & HFS_FLG_EXT_DIRTY && 
-+	    HFS_I(inode)->flags & HFS_FLG_EXT_NEW) 
-+		return -ENOENT;
-+
- 	res = hfs_find_init(HFS_SB(inode->i_sb)->ext_tree, &fd);
- 	if (!res) {
- 		res = __hfs_ext_cache_extent(&fd, inode, block);
+-extern void loongarch_set_personality_fcsr(struct arch_elf_state *state);
+-
+ #endif /* _ASM_ELF_H */
+diff --git a/arch/loongarch/kernel/elf.c b/arch/loongarch/kernel/elf.c
+index 183e94fc9c69..0fa81ced28dc 100644
+--- a/arch/loongarch/kernel/elf.c
++++ b/arch/loongarch/kernel/elf.c
+@@ -23,8 +23,3 @@ int arch_check_elf(void *_ehdr, bool has_interpreter, void *_interp_ehdr,
+ {
+ 	return 0;
+ }
+-
+-void loongarch_set_personality_fcsr(struct arch_elf_state *state)
+-{
+-	current->thread.fpu.fcsr = boot_cpu_data.fpu_csr0;
+-}
+diff --git a/arch/loongarch/kernel/process.c b/arch/loongarch/kernel/process.c
+index 767d94cce0de..3f9cae615f52 100644
+--- a/arch/loongarch/kernel/process.c
++++ b/arch/loongarch/kernel/process.c
+@@ -92,6 +92,7 @@ void start_thread(struct pt_regs *regs, unsigned long pc, unsigned long sp)
+ 	clear_used_math();
+ 	regs->csr_era = pc;
+ 	regs->regs[3] = sp;
++	current->thread.fpu.fcsr = boot_cpu_data.fpu_csr0;
+ }
+ 
+ void flush_thread(void)
 -- 
 2.43.0
 
