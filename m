@@ -1,114 +1,94 @@
-Return-Path: <linux-kernel+bounces-14311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA295821B32
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:50:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 690EA821B36
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AD261F2289B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:50:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18DCA2831BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013CAEAFF;
-	Tue,  2 Jan 2024 11:50:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="nhQYPxq8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33D67EAF6;
+	Tue,  2 Jan 2024 11:51:42 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7833EAD6;
-	Tue,  2 Jan 2024 11:50:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704196212; x=1704801012; i=markus.elfring@web.de;
-	bh=c4TSuFiFOOo9FkY+Aknv57saIRU7nXw1AKJdpOYp6bU=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=nhQYPxq8uh/DsiJfbSD/ZPWYUxY5BYviPSL00BaXEsbLfe7JvmJMOMkj9OcILX15
-	 817sRbxkylDOgrszH8R0ws/p6HMkxVdnjGaV/bOVB1m/JLMoNVI31OPkzay9QX+Oh
-	 o19QLFZWeE7/QckgWesRsXK7stwrom1UVU1LRn8MJGSFNIeafjFfzfJYmCTSYvi1O
-	 svgQpGrWYdJ9mz01AEJOLQ8zCvbDIkpHRT++oJQ7jiSCjVc3oS3mii7tTjfbI5VEm
-	 4jKjLPYOor5vOfHWmmZnX7k7B8ZBh1pngSrguVXGpIDDrmu8KNPTdZ3cuU7s6qNBq
-	 7sEFUbkO1Irof+6Tkg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MbCE0-1qnUOS0Qfo-00bkVR; Tue, 02
- Jan 2024 12:50:12 +0100
-Message-ID: <96b9d2b8-3f44-4880-a33d-dc281ca70161@web.de>
-Date: Tue, 2 Jan 2024 12:50:10 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED49EAC5;
+	Tue,  2 Jan 2024 11:51:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-556ab8b85e3so150395a12.1;
+        Tue, 02 Jan 2024 03:51:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704196298; x=1704801098;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=adTWx/k62Y91HsuyX07Wlly10Dmf3/XSYSsNAhC+0/U=;
+        b=qacc61Gl+1cFvsIYzdEqprrfDBi0h3ahy+HVaa68fUvyJpuJOa4YEmY6kV9jzVh4Ij
+         Qpcvoq5iS6/PIUaKoebZzSv9SbfiZtbr+4i6VnLItrnu8qZF93warpcgGxbRzDiWa9Df
+         8gxmGIM0ZrwTHOTCDZPWIh7hAIv0quJ6Cps4Qgtgc40HP7v7HGTJYYh85xyOp6y+uXXY
+         OvYg4K5q9IF1sZ8+tyJ5SFUaNYtEh0F4Z2ZmILx/+P3RB8hAsZp5DM8BXAyiqKwnzXGF
+         eAD55MZGhEakSBZ69/7BJg+n7pdgk/359f3np2cIgNvfzujvdfSI+p6G6dIhEGTLTnPS
+         fnVw==
+X-Gm-Message-State: AOJu0YxDo0+QZLEPVb2el76IqClyaZdiUW+o0VTjmlLhy3uaAho1sL7J
+	9TG0gCOy6Tc/qwSbcj2PwS8=
+X-Google-Smtp-Source: AGHT+IFiHnZQw5f9kufoiu227wpzclOWRnjx7lrgamOWqUaVv2Z7fhZNctIWtYPNIEARRU0kbFocpw==
+X-Received: by 2002:a50:c042:0:b0:555:9bd7:a4f0 with SMTP id u2-20020a50c042000000b005559bd7a4f0mr7800834edd.36.1704196298081;
+        Tue, 02 Jan 2024 03:51:38 -0800 (PST)
+Received: from gmail.com (fwdproxy-cln-002.fbsv.net. [2a03:2880:31ff:2::face:b00c])
+        by smtp.gmail.com with ESMTPSA id u18-20020aa7db92000000b00554d6b46a3dsm11058289edt.46.2024.01.02.03.51.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 03:51:37 -0800 (PST)
+Date: Tue, 2 Jan 2024 03:51:35 -0800
+From: Breno Leitao <leitao@debian.org>
+To: Simon Horman <horms@kernel.org>, vegard.nossum@oracle.com
+Cc: Vegard Nossum <vegard.nossum@oracle.com>,
+	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	"David S . Miller" <davem@davemloft.net>,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH net-next] Documentation: add pyyaml to requirements.txt
+Message-ID: <ZZP4x7oSbLdugeDL@gmail.com>
+References: <20231222133628.3010641-1-vegard.nossum@oracle.com>
+ <20231224164620.GB228041@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [0/2] net/smc: Adjustments for two function implementations
-Content-Language: en-GB
-To: Wen Gu <guwen@linux.alibaba.com>, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, "D. Wythe"
- <alibuda@linux.alibaba.com>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Jan Karcher <jaka@linux.ibm.com>,
- Paolo Abeni <pabeni@redhat.com>, Tony Lu <tonylu@linux.alibaba.com>,
- Wenjia Zhang <wenjia@linux.ibm.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <8ba404fd-7f41-44a9-9869-84f3af18fb46@web.de>
- <93033352-4b9c-bf52-1920-6ccf07926a21@linux.alibaba.com>
- <46fe66f7-dc3b-4863-96e8-7a855316e8bd@web.de>
- <b2ee4680-72e9-56a1-e0dd-9cbbe64a7dac@linux.alibaba.com>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <b2ee4680-72e9-56a1-e0dd-9cbbe64a7dac@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:fL22ir/94IlqNcjBk73dNW87D7iDSGg7z9ik73BWj7mqMtrTvxh
- j+V9tmvjN/oBHQTcXKjyUlbz3eVckEpzjzWYSCgCStu4IH79TjDwOhFqMshus/jKKTSgGIY
- rqXC07CnQD7oPULw0+ZLswbR+d/b/VBPwTupByi9JreZXuUA3i3T0dGgOyA8KXB+bawOhJ4
- RrrxHyhx+OYjJU0q/VPqQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Bon9xkLkqc8=;BnGmEViRLyUtFIXl3mCxKGATLqw
- pg2MakC/MQKfjCQ+3t0bzwv7sHnRbqUIiozRqCB8o86tq4YWYnIgcWMcpyk15T0OBMDVrlZ2w
- llH6+NCrXeDIIE/GdpEcPZKnFL3zW8EfGWLhDB202qTStn3fb5IyThYL0pUkurRXSwceT4gzl
- K2I6YaCW1L/ydJCsYcSHFUbMIrTIlemhKQyJR9pD0PX///iXL92dE8g0Wxu3pZhzdzfcURp7q
- MZ53REf/aWHcI5jlyk8qoPseJBR9x3Ayp9zl+ptbHBKLJR2uYq4HmroOW+dYBX62RGlOp656t
- W+P8ZadbS1FViPLO/hw/vOcYQShrMo/meWOLTk689yhtzOq2LcRe2YzsIRnMNM/uXm46BGjIU
- 5DjzCqTcElqHEeTNBKLrVmp/7W44TuBW8iheLNgMyCeY3cxfrCGhAC0a+Z+a9tLm8c40dNjn2
- +n14/PePywSVpsEhKAef0Pfu9kwnizTnTlPVklgnbQePWpMjO5wNMfdN9NqZcOKG+KUOw6GF0
- rE7ps+C0dKhKjbePgohzTtTbL9A369WIvUaVRCIQ2v9xDO/aoHVaG8Zm1PWTCRNiDhibr1td2
- Z+Kc/pfIqKUdH0tIr5SRnZaqjpqLwMEplazIJfjAlpwKWTUfFR79mhD1XmSXS/W56+ZTbLP8s
- jg6O3r/TT41is4GxocTX1xL/SadkD9Ty063dQX8yZBE7rHYtG0HR82t5Ht+9V6W8Scpu2QdYK
- BEDmZbaUZy1OrFJvjvojzS91W9cPfVj3bLOlFJ9CxnLwBYSdpz596XdttJdO5fezssb5UL0nY
- ckjjslAnhdvWJDRy5DG+Y0gh3kcyZUN/eC5h5+HuZOK0wAAWSTf/tpXM1nKx3ctaHuSvCmiUG
- 39J0FlLtvb75LZm9jRRhrMCQLPeNh/gsg2crET3gd7RJXKoBf9hkFGpKW1eZhMJKHWeAeneAu
- jbHFQIvsIoCsgrAWxOMBCZ+1u88=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231224164620.GB228041@kernel.org>
 
-> But it is not very attractive to me since the calls occur on low-frequency paths
-> or unlikely condition, resulting in limited performance loss and the current
-> kfree() usage is fine and common.
+Hello Vegard,
 
-The prioritisation of development activities influences progress in related areas.
+On Fri, Dec 22, 2023 at 02:36:28PM +0100, Vegard Nossum wrote:
+> Commit f061c9f7d058 ("Documentation: Document each netlink family") added
+> a new Python script that is invoked during 'make htmldocs' and which reads
+> the netlink YAML spec files.
+> 
+> Using the virtualenv from scripts/sphinx-pre-install, we get this new
+> error wen running 'make htmldocs':
 
+The commit doesn't depend on sphinx. This is a standalone script now.
+The requirements file is at tools/net/ynl/requirements.txt not in sphinx
 
-> So what is the benfit?
+> Note: This was somehow present in the original patch submission:
+> <https://lore.kernel.org/all/20231103135622.250314-1-leitao@debian.org/>
+> I'm not sure why the pyyaml requirement disappeared in the meantime.
 
-* Source code clarity
+It disapperared because the original patch version was a sphinx module,
+thus, pyaml was not at sphinx dependency.
 
-* Nicer run time characteristics
+In the commit final form, the script is a standalone script inside
+'tools/net/ynl', and PyYAML is already tracked in
+`tools/net/ynl/requirements.txt`.
 
-
-See also:
-https://wiki.sei.cmu.edu/confluence/display/c/MEM12-C.+Consider+using+a+goto+chain+when+leaving+a+function+on+error+when+using+and+releasing+resources
-
-
-> I noticed that some other discussions are on-going. It seems like you are trying
-> to change other similiar places.
-
-I would appreciate if improvements can be achieved also for similarly affected
-software components.
-
-Regards,
-Markus
+That said, can you try to install `tools/net/ynl/requirements.txt` and
+see if you are able to reproduce the problem?
 
