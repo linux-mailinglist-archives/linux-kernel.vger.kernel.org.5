@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-14737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E051822151
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:48:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58B34822150
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:47:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28B1A28454E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:48:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 714061C229CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:47:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5AB168CC;
-	Tue,  2 Jan 2024 18:46:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEEF7168C1;
+	Tue,  2 Jan 2024 18:46:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gVYvPRCJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mD/HtqhK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B6E15EBF
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 18:46:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FEF716415
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 18:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50e7c76897dso6612588e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 10:46:43 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50e7af5f618so6917304e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 10:46:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1704221202; x=1704826002; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=W/i8ZfJzhOkgwpvB6heisf6dptNqD+Kyc9OPs5waPNM=;
-        b=gVYvPRCJDEf9ckww0mLZ4FpWF4/pTHnlf7W2ZVYuAEafpgYZ9v1vKFMDdLBACv2bmr
-         hzchWlQLU61auRhlCofw6eAE/KhZnSvngHLhVsqEeFw7N207/U8TaJ7COI2mgEeO0Awv
-         UlzvG2nVIyui8eJuQVLqRb1kSs785XktKbLWGihz3SiCZUjzHnFtbLtglR4EWqFQa3ji
-         wn8J/HNFuaRhvXrlrZSHssYIaZUMLoBTmSaJymK9CT8MNypEi5tLN5idqGCtPHYLntkH
-         jT+w8h8wTwo2Y3LrN0vnzKYVHIw4fE+iLQdTHi2HFFHWSeZCseb+OxFn8FbxL2i5js6M
-         9Kxg==
+        bh=Y7TPXqOPL1FAObBiwLOLjtzw+Q8CAhI3CaP8/RlkErk=;
+        b=mD/HtqhKcLOIVSwYq82R5UvmnJaImogH9T6pCBJ2GYBKoA4ZvO8DqsTMA9qmdWM8f3
+         y7XkQNOjwVyvWGhZkDcUkhvYs1zYFADq9qnHfJzG6Y8gqiGHUqTLlyNEOzJ8XDGiLgLK
+         fAEEojTXrg2l1NsLo6JLNSwZpulNRLYZRhgiGDaE+2c0gofFrxbpc828tH4CqFEk5HFj
+         LgDxCv3xqFMm7Yc1O35MJSd7l3062oY3tKgWEN3rRutCrSG/RSgDWfkrq+tCzHBcyLnJ
+         7JOxsvFf5vERnlPYAZpCdc+XjgqC6C6cLNICwXVM2mIo2HlyZ6LI6tGPYE/HwNrLHWcG
+         AKMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1704221202; x=1704826002;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=W/i8ZfJzhOkgwpvB6heisf6dptNqD+Kyc9OPs5waPNM=;
-        b=I0CnXPi8D8uK87pd2jz9q9y7vVVMGElknyZBgy5QwbDsqh33IGybidQkGevb9KQiJu
-         3univqlhwnOm6sprREgqFAdlyxzAw+WsBKpDtLw840i6CewmqPbGIPk4UdYIg5S5PZgR
-         uLTiaNc01s6yH3PKiqQuwLdRRnona4xbAsy+BdNK/CCtJagNLrmQz7By8l1ayQGKYJ5V
-         9EhwtW6sCDtCBjotAlET4UK4Ed3JtcaE/FWKg4lHwloqLqf44TbggvpoDWlAU1Uo9euj
-         EUg/HCTR1sQo/lPrei3jvT2Pll54/BSzPpSaaTCNk2JxDLTSJtgNa8XRlzInaqJH/LY/
-         NQ5w==
-X-Gm-Message-State: AOJu0Yxd4JS0jJ37pXvVDltG7SPsbR7Wlwz8E8MI8kG7Ceqjb3ksqP2P
-	PEmv2oZf1ppCpjYgjIyEgY4=
-X-Google-Smtp-Source: AGHT+IEsu7Urp6TRXfcpo6ncKQnZwNhBJ5A87G0DxmsMgN27G74Ggz2BQ1tsbpUPmeUAXXarv+DFCQ==
-X-Received: by 2002:a05:6512:5d5:b0:50e:7b70:b9cb with SMTP id o21-20020a05651205d500b0050e7b70b9cbmr2003145lfo.218.1704221201423;
-        Tue, 02 Jan 2024 10:46:41 -0800 (PST)
+        bh=Y7TPXqOPL1FAObBiwLOLjtzw+Q8CAhI3CaP8/RlkErk=;
+        b=QASfy4hdtbPZEcOimN2BKvPOZE8ZKFxYnZ5yyklkFOqcxStX1Arn3Dj4eCsl+vRTP8
+         ipqzqTxrFjRQmAceMvew8CIqiWKHqkGPXYdl+d9yO9/qblPYwLWE5njHHb4+iXreqYQj
+         CpBWGw0U3bc8WeAC0go1ExjEecJxOYlDE00jGDxDsA98WotIPbE1joTOAgvOA5Ln938a
+         6AjIjBMmm0fIvTnHgau3hgi18Fkr+YAcrOfGc+nwPD/wuWTr5nfQsVwcdBTtm7ECeO2a
+         vXlShqwF1Yp/BWASjXfkZFJchLEBzSX4MsTkWgzjwE281ICrEeGVpcb+vK6Z3jRtx4BO
+         Kvvw==
+X-Gm-Message-State: AOJu0YxifunKo92rBPVfkbVV6hO9REjwAfeMj3rC1nAVES/oTrY/5fve
+	mI5RkxXLDfFnEfYIimrPDlQ=
+X-Google-Smtp-Source: AGHT+IEqmNEBRY+67JLEN5/lqBW0cHGCcx7d8OHSSEsbnprrKpdCdH45LWYpuY7EtQcmCYTMyqhKag==
+X-Received: by 2002:a05:6512:1581:b0:50e:902d:b48 with SMTP id bp1-20020a056512158100b0050e902d0b48mr3325679lfb.64.1704221202399;
+        Tue, 02 Jan 2024 10:46:42 -0800 (PST)
 Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id q1-20020ac246e1000000b0050e7be886d9sm2592656lfo.56.2024.01.02.10.46.40
+        by smtp.gmail.com with ESMTPSA id q1-20020ac246e1000000b0050e7be886d9sm2592656lfo.56.2024.01.02.10.46.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 10:46:41 -0800 (PST)
+        Tue, 02 Jan 2024 10:46:42 -0800 (PST)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To: linux-mm@kvack.org,
 	Andrew Morton <akpm@linux-foundation.org>
@@ -71,9 +71,9 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH v3 05/11] mm/vmalloc: remove vmap_area_list
-Date: Tue,  2 Jan 2024 19:46:27 +0100
-Message-Id: <20240102184633.748113-6-urezki@gmail.com>
+Subject: [PATCH v3 06/11] mm: vmalloc: Remove global purge_vmap_area_root rb-tree
+Date: Tue,  2 Jan 2024 19:46:28 +0100
+Message-Id: <20240102184633.748113-7-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240102184633.748113-1-urezki@gmail.com>
 References: <20240102184633.748113-1-urezki@gmail.com>
@@ -85,141 +85,237 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Baoquan He <bhe@redhat.com>
+Similar to busy VA, lazily-freed area is stored to a node
+it belongs to. Such approach does not require any global
+locking primitive, instead an access becomes scalable what
+mitigates a contention.
 
-Earlier, vmap_area_list is exported to vmcoreinfo so that makedumpfile
-get the base address of vmalloc area. Now, vmap_area_list is empty, so
-export VMALLOC_START to vmcoreinfo instead, and remove vmap_area_list.
+This patch removes a global purge-lock, global purge-tree
+and global purge list.
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
+Reviewed-by: Baoquan He <bhe@redhat.com>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- Documentation/admin-guide/kdump/vmcoreinfo.rst | 8 ++++----
- arch/arm64/kernel/crash_core.c                 | 1 -
- arch/riscv/kernel/crash_core.c                 | 1 -
- include/linux/vmalloc.h                        | 1 -
- kernel/crash_core.c                            | 4 +---
- kernel/kallsyms_selftest.c                     | 1 -
- mm/nommu.c                                     | 2 --
- mm/vmalloc.c                                   | 2 --
- 8 files changed, 5 insertions(+), 15 deletions(-)
+ mm/vmalloc.c | 135 +++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 82 insertions(+), 53 deletions(-)
 
-diff --git a/Documentation/admin-guide/kdump/vmcoreinfo.rst b/Documentation/admin-guide/kdump/vmcoreinfo.rst
-index 78e4d2e7ba14..df54fbeaaa16 100644
---- a/Documentation/admin-guide/kdump/vmcoreinfo.rst
-+++ b/Documentation/admin-guide/kdump/vmcoreinfo.rst
-@@ -65,11 +65,11 @@ Defines the beginning of the text section. In general, _stext indicates
- the kernel start address. Used to convert a virtual address from the
- direct kernel map to a physical address.
- 
--vmap_area_list
----------------
-+VMALLOC_START
-+-------------
- 
--Stores the virtual area list. makedumpfile gets the vmalloc start value
--from this variable and its value is necessary for vmalloc translation.
-+Stores the base address of vmalloc area. makedumpfile gets this value
-+since is necessary for vmalloc translation.
- 
- mem_map
- -------
-diff --git a/arch/arm64/kernel/crash_core.c b/arch/arm64/kernel/crash_core.c
-index 66cde752cd74..2a24199a9b81 100644
---- a/arch/arm64/kernel/crash_core.c
-+++ b/arch/arm64/kernel/crash_core.c
-@@ -23,7 +23,6 @@ void arch_crash_save_vmcoreinfo(void)
- 	/* Please note VMCOREINFO_NUMBER() uses "%d", not "%x" */
- 	vmcoreinfo_append_str("NUMBER(MODULES_VADDR)=0x%lx\n", MODULES_VADDR);
- 	vmcoreinfo_append_str("NUMBER(MODULES_END)=0x%lx\n", MODULES_END);
--	vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
- 	vmcoreinfo_append_str("NUMBER(VMALLOC_END)=0x%lx\n", VMALLOC_END);
- 	vmcoreinfo_append_str("NUMBER(VMEMMAP_START)=0x%lx\n", VMEMMAP_START);
- 	vmcoreinfo_append_str("NUMBER(VMEMMAP_END)=0x%lx\n", VMEMMAP_END);
-diff --git a/arch/riscv/kernel/crash_core.c b/arch/riscv/kernel/crash_core.c
-index 8706736fd4e2..d18d529fd9b9 100644
---- a/arch/riscv/kernel/crash_core.c
-+++ b/arch/riscv/kernel/crash_core.c
-@@ -8,7 +8,6 @@ void arch_crash_save_vmcoreinfo(void)
- 	VMCOREINFO_NUMBER(phys_ram_base);
- 
- 	vmcoreinfo_append_str("NUMBER(PAGE_OFFSET)=0x%lx\n", PAGE_OFFSET);
--	vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
- 	vmcoreinfo_append_str("NUMBER(VMALLOC_END)=0x%lx\n", VMALLOC_END);
- #ifdef CONFIG_MMU
- 	VMCOREINFO_NUMBER(VA_BITS);
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index c720be70c8dd..91810b4e9510 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -253,7 +253,6 @@ extern long vread_iter(struct iov_iter *iter, const char *addr, size_t count);
- /*
-  *	Internals.  Don't use..
-  */
--extern struct list_head vmap_area_list;
- extern __init void vm_area_add_early(struct vm_struct *vm);
- extern __init void vm_area_register_early(struct vm_struct *vm, size_t align);
- 
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index d4313b53837e..b427f4a3b156 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -759,7 +759,7 @@ static int __init crash_save_vmcoreinfo_init(void)
- 	VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
- #endif
- 	VMCOREINFO_SYMBOL(_stext);
--	VMCOREINFO_SYMBOL(vmap_area_list);
-+	vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
- 
- #ifndef CONFIG_NUMA
- 	VMCOREINFO_SYMBOL(mem_map);
-@@ -800,8 +800,6 @@ static int __init crash_save_vmcoreinfo_init(void)
- 	VMCOREINFO_OFFSET(free_area, free_list);
- 	VMCOREINFO_OFFSET(list_head, next);
- 	VMCOREINFO_OFFSET(list_head, prev);
--	VMCOREINFO_OFFSET(vmap_area, va_start);
--	VMCOREINFO_OFFSET(vmap_area, list);
- 	VMCOREINFO_LENGTH(zone.free_area, MAX_ORDER + 1);
- 	log_buf_vmcoreinfo_setup();
- 	VMCOREINFO_LENGTH(free_area.free_list, MIGRATE_TYPES);
-diff --git a/kernel/kallsyms_selftest.c b/kernel/kallsyms_selftest.c
-index b4cac76ea5e9..8a689b4ff4f9 100644
---- a/kernel/kallsyms_selftest.c
-+++ b/kernel/kallsyms_selftest.c
-@@ -89,7 +89,6 @@ static struct test_item test_items[] = {
- 	ITEM_DATA(kallsyms_test_var_data_static),
- 	ITEM_DATA(kallsyms_test_var_bss),
- 	ITEM_DATA(kallsyms_test_var_data),
--	ITEM_DATA(vmap_area_list),
- #endif
- };
- 
-diff --git a/mm/nommu.c b/mm/nommu.c
-index b6dc558d3144..5ec8f44e7ce9 100644
---- a/mm/nommu.c
-+++ b/mm/nommu.c
-@@ -131,8 +131,6 @@ int follow_pfn(struct vm_area_struct *vma, unsigned long address,
- }
- EXPORT_SYMBOL(follow_pfn);
- 
--LIST_HEAD(vmap_area_list);
--
- void vfree(const void *addr)
- {
- 	kfree(addr);
 diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 786ecb18ae22..8c01f2225ef7 100644
+index 8c01f2225ef7..9b2f1b0cac9d 100644
 --- a/mm/vmalloc.c
 +++ b/mm/vmalloc.c
-@@ -729,8 +729,6 @@ EXPORT_SYMBOL(vmalloc_to_pfn);
- 
- 
+@@ -731,10 +731,6 @@ EXPORT_SYMBOL(vmalloc_to_pfn);
  static DEFINE_SPINLOCK(free_vmap_area_lock);
--/* Export for kexec only */
--LIST_HEAD(vmap_area_list);
  static bool vmap_initialized __read_mostly;
  
- static struct rb_root purge_vmap_area_root = RB_ROOT;
+-static struct rb_root purge_vmap_area_root = RB_ROOT;
+-static LIST_HEAD(purge_vmap_area_list);
+-static DEFINE_SPINLOCK(purge_vmap_area_lock);
+-
+ /*
+  * This kmem_cache is used for vmap_area objects. Instead of
+  * allocating from slab we reuse an object from this cache to
+@@ -782,6 +778,12 @@ struct rb_list {
+ static struct vmap_node {
+ 	/* Bookkeeping data of this node. */
+ 	struct rb_list busy;
++	struct rb_list lazy;
++
++	/*
++	 * Ready-to-free areas.
++	 */
++	struct list_head purge_list;
+ } single;
+ 
+ static struct vmap_node *vmap_nodes = &single;
+@@ -1766,40 +1768,22 @@ static DEFINE_MUTEX(vmap_purge_lock);
+ 
+ /* for per-CPU blocks */
+ static void purge_fragmented_blocks_allcpus(void);
++static cpumask_t purge_nodes;
+ 
+ /*
+  * Purges all lazily-freed vmap areas.
+  */
+-static bool __purge_vmap_area_lazy(unsigned long start, unsigned long end)
++static unsigned long
++purge_vmap_node(struct vmap_node *vn)
+ {
+-	unsigned long resched_threshold;
+-	unsigned int num_purged_areas = 0;
+-	struct list_head local_purge_list;
++	unsigned long num_purged_areas = 0;
+ 	struct vmap_area *va, *n_va;
+ 
+-	lockdep_assert_held(&vmap_purge_lock);
+-
+-	spin_lock(&purge_vmap_area_lock);
+-	purge_vmap_area_root = RB_ROOT;
+-	list_replace_init(&purge_vmap_area_list, &local_purge_list);
+-	spin_unlock(&purge_vmap_area_lock);
+-
+-	if (unlikely(list_empty(&local_purge_list)))
+-		goto out;
+-
+-	start = min(start,
+-		list_first_entry(&local_purge_list,
+-			struct vmap_area, list)->va_start);
+-
+-	end = max(end,
+-		list_last_entry(&local_purge_list,
+-			struct vmap_area, list)->va_end);
+-
+-	flush_tlb_kernel_range(start, end);
+-	resched_threshold = lazy_max_pages() << 1;
++	if (list_empty(&vn->purge_list))
++		return 0;
+ 
+ 	spin_lock(&free_vmap_area_lock);
+-	list_for_each_entry_safe(va, n_va, &local_purge_list, list) {
++	list_for_each_entry_safe(va, n_va, &vn->purge_list, list) {
+ 		unsigned long nr = (va->va_end - va->va_start) >> PAGE_SHIFT;
+ 		unsigned long orig_start = va->va_start;
+ 		unsigned long orig_end = va->va_end;
+@@ -1821,13 +1805,55 @@ static bool __purge_vmap_area_lazy(unsigned long start, unsigned long end)
+ 
+ 		atomic_long_sub(nr, &vmap_lazy_nr);
+ 		num_purged_areas++;
+-
+-		if (atomic_long_read(&vmap_lazy_nr) < resched_threshold)
+-			cond_resched_lock(&free_vmap_area_lock);
+ 	}
+ 	spin_unlock(&free_vmap_area_lock);
+ 
+-out:
++	return num_purged_areas;
++}
++
++/*
++ * Purges all lazily-freed vmap areas.
++ */
++static bool __purge_vmap_area_lazy(unsigned long start, unsigned long end)
++{
++	unsigned long num_purged_areas = 0;
++	struct vmap_node *vn;
++	int i;
++
++	lockdep_assert_held(&vmap_purge_lock);
++	purge_nodes = CPU_MASK_NONE;
++
++	for (i = 0; i < nr_vmap_nodes; i++) {
++		vn = &vmap_nodes[i];
++
++		INIT_LIST_HEAD(&vn->purge_list);
++
++		if (RB_EMPTY_ROOT(&vn->lazy.root))
++			continue;
++
++		spin_lock(&vn->lazy.lock);
++		WRITE_ONCE(vn->lazy.root.rb_node, NULL);
++		list_replace_init(&vn->lazy.head, &vn->purge_list);
++		spin_unlock(&vn->lazy.lock);
++
++		start = min(start, list_first_entry(&vn->purge_list,
++			struct vmap_area, list)->va_start);
++
++		end = max(end, list_last_entry(&vn->purge_list,
++			struct vmap_area, list)->va_end);
++
++		cpumask_set_cpu(i, &purge_nodes);
++	}
++
++	if (cpumask_weight(&purge_nodes) > 0) {
++		flush_tlb_kernel_range(start, end);
++
++		for_each_cpu(i, &purge_nodes) {
++			vn = &nodes[i];
++			num_purged_areas += purge_vmap_node(vn);
++		}
++	}
++
+ 	trace_purge_vmap_area_lazy(start, end, num_purged_areas);
+ 	return num_purged_areas > 0;
+ }
+@@ -1846,16 +1872,9 @@ static void reclaim_and_purge_vmap_areas(void)
+ 
+ static void drain_vmap_area_work(struct work_struct *work)
+ {
+-	unsigned long nr_lazy;
+-
+-	do {
+-		mutex_lock(&vmap_purge_lock);
+-		__purge_vmap_area_lazy(ULONG_MAX, 0);
+-		mutex_unlock(&vmap_purge_lock);
+-
+-		/* Recheck if further work is required. */
+-		nr_lazy = atomic_long_read(&vmap_lazy_nr);
+-	} while (nr_lazy > lazy_max_pages());
++	mutex_lock(&vmap_purge_lock);
++	__purge_vmap_area_lazy(ULONG_MAX, 0);
++	mutex_unlock(&vmap_purge_lock);
+ }
+ 
+ /*
+@@ -1865,6 +1884,7 @@ static void drain_vmap_area_work(struct work_struct *work)
+  */
+ static void free_vmap_area_noflush(struct vmap_area *va)
+ {
++	struct vmap_node *vn = addr_to_node(va->va_start);
+ 	unsigned long nr_lazy_max = lazy_max_pages();
+ 	unsigned long va_start = va->va_start;
+ 	unsigned long nr_lazy;
+@@ -1878,10 +1898,9 @@ static void free_vmap_area_noflush(struct vmap_area *va)
+ 	/*
+ 	 * Merge or place it to the purge tree/list.
+ 	 */
+-	spin_lock(&purge_vmap_area_lock);
+-	merge_or_add_vmap_area(va,
+-		&purge_vmap_area_root, &purge_vmap_area_list);
+-	spin_unlock(&purge_vmap_area_lock);
++	spin_lock(&vn->lazy.lock);
++	merge_or_add_vmap_area(va, &vn->lazy.root, &vn->lazy.head);
++	spin_unlock(&vn->lazy.lock);
+ 
+ 	trace_free_vmap_area_noflush(va_start, nr_lazy, nr_lazy_max);
+ 
+@@ -4411,15 +4430,21 @@ static void show_numa_info(struct seq_file *m, struct vm_struct *v)
+ 
+ static void show_purge_info(struct seq_file *m)
+ {
++	struct vmap_node *vn;
+ 	struct vmap_area *va;
++	int i;
+ 
+-	spin_lock(&purge_vmap_area_lock);
+-	list_for_each_entry(va, &purge_vmap_area_list, list) {
+-		seq_printf(m, "0x%pK-0x%pK %7ld unpurged vm_area\n",
+-			(void *)va->va_start, (void *)va->va_end,
+-			va->va_end - va->va_start);
++	for (i = 0; i < nr_vmap_nodes; i++) {
++		vn = &vmap_nodes[i];
++
++		spin_lock(&vn->lazy.lock);
++		list_for_each_entry(va, &vn->lazy.head, list) {
++			seq_printf(m, "0x%pK-0x%pK %7ld unpurged vm_area\n",
++				(void *)va->va_start, (void *)va->va_end,
++				va->va_end - va->va_start);
++		}
++		spin_unlock(&vn->lazy.lock);
+ 	}
+-	spin_unlock(&purge_vmap_area_lock);
+ }
+ 
+ static int s_show(struct seq_file *m, void *p)
+@@ -4558,6 +4583,10 @@ static void vmap_init_nodes(void)
+ 		vn->busy.root = RB_ROOT;
+ 		INIT_LIST_HEAD(&vn->busy.head);
+ 		spin_lock_init(&vn->busy.lock);
++
++		vn->lazy.root = RB_ROOT;
++		INIT_LIST_HEAD(&vn->lazy.head);
++		spin_lock_init(&vn->lazy.lock);
+ 	}
+ }
+ 
 -- 
 2.39.2
 
