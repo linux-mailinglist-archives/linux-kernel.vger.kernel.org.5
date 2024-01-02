@@ -1,129 +1,151 @@
-Return-Path: <linux-kernel+bounces-14535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A95C821E5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D20F6821E6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:12:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA3862813D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:10:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 826F1283155
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C70C134D0;
-	Tue,  2 Jan 2024 15:09:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644041428C;
+	Tue,  2 Jan 2024 15:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PARfsgOa"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gbaKQEvx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E4814F61
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 15:09:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704208185; x=1735744185;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=mGV8n8qUGRSbJeFC+7guJT/ck5cMQBUkKlRBuzXfyY8=;
-  b=PARfsgOaXkPUAWRwmGdv1xGnSNNO052SJ3H33H2KozxR7fexpIx174fB
-   v1+WDltarLbLmEA5h1rbEy6CXJW5QdkTzbQR7R5AEahZdg+cO6Ulk9kM2
-   fuCnzY4ep0QstydIHRDzIbkXQuOx+BLkxlVf+95a1uxKXD3J85h01UbIH
-   nmCzjiEplxxHcnO2u12TXyIyS+WqEk+CqsoZMtj6jlmtyqwESvCoju0M+
-   2LGuclMZgipMlZx0sW2IUA6uCL/G3G/qljmTWus49qebaZTgAkjP+OuxC
-   4ACSLUbezR3hlTcSmofCS8u+IIrg53LzMEQDFK5o9dbIm1KdmStGcv7Am
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="395768700"
-X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
-   d="scan'208";a="395768700"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 07:09:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
-   d="scan'208";a="28084700"
-Received: from issamoha-mobl1.amr.corp.intel.com (HELO [10.251.10.81]) ([10.251.10.81])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 07:09:43 -0800
-Message-ID: <83431857-7182-471a-9ff1-9dac37e5a02f@intel.com>
-Date: Tue, 2 Jan 2024 07:09:42 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6E912E7A
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 15:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704208223;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZHtqiuFv0NX2cWrksYXkoFkjpAn1pYFyXkkX4b7K2+g=;
+	b=gbaKQEvxQ4Aj8Wu1To4I29MQVyuNfuLWlKPi1qMFOvJtsXpMwQ8oxRKxYPTncl8hjjHCPR
+	+mfk/giIbivEEiyFMlOOgg/x4VJDd0/BMJAuTSOkm5bsuT51tCdb532YsUm0nNh/KoD/nu
+	geYMgJbo04ZeW9Jz7wxwSsTZaWTR8zM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-310-ZI4YbdCQOISs_CZvDVPhjg-1; Tue, 02 Jan 2024 10:10:18 -0500
+X-MC-Unique: ZI4YbdCQOISs_CZvDVPhjg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3F839832EDA;
+	Tue,  2 Jan 2024 15:10:17 +0000 (UTC)
+Received: from RHTPC1VM0NT (unknown [10.22.16.200])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id B97BF492BC6;
+	Tue,  2 Jan 2024 15:10:15 +0000 (UTC)
+From: Aaron Conole <aconole@redhat.com>
+To: Simon Horman <horms@kernel.org>
+Cc: Brad Cowie <brad@faucet.nz>,  netdev@vger.kernel.org,
+  dev@openvswitch.org,  fw@strlen.de,  linux-kernel@vger.kernel.org,
+  kadlec@netfilter.org,  edumazet@google.com,
+  netfilter-devel@vger.kernel.org,  kuba@kernel.org,  pabeni@redhat.com,
+  davem@davemloft.net,  pablo@netfilter.org,  Xin Long
+ <lucien.xin@gmail.com>,  coreteam@netfilter.org
+Subject: Re: [PATCH net] netfilter: nf_nat: fix action not being set for all
+ ct states
+References: <20231221224311.130319-1-brad@faucet.nz>
+	<20231223211306.GA215659@kernel.org>
+Date: Tue, 02 Jan 2024 10:10:15 -0500
+In-Reply-To: <20231223211306.GA215659@kernel.org> (Simon Horman's message of
+	"Sat, 23 Dec 2023 21:13:06 +0000")
+Message-ID: <f7tle97eppk.fsf@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.3 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] x86: intel_epb: Add earlyparam option to keep bias at
- performance
-Content-Language: en-US
-To: Jack Allister <jalliste@amazon.com>
-Cc: bp@alien8.de, dave.hansen@linux.intel.com, hdegoede@redhat.com,
- hpa@zytor.com, juew@amazon.com, len.brown@intel.com,
- linux-kernel@vger.kernel.org, mingo@redhat.com, pdurrant@amazon.com,
- peterz@infradead.org, rafael.j.wysocki@intel.com, rafael@kernel.org,
- tglx@linutronix.de, usama.arif@bytedance.com, x86@kernel.org
-References: <bcd1b113-94b7-41a9-a3f6-fde1dd54fc74@intel.com>
- <20240102144646.44355-1-jalliste@amazon.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
- LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
- lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
- MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
- IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
- aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
- I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
- E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
- F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
- CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
- P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
- 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
- GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
- MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
- Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
- lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
- 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
- qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
- BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
- 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
- vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
- FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
- l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
- yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
- +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
- asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
- WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
- sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
- KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
- MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
- hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
- vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
-In-Reply-To: <20240102144646.44355-1-jalliste@amazon.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-On 1/2/24 06:46, Jack Allister wrote:
-> With the suggestion above you mentioned implementing this, if this was to be implemented
-> do you think keeping it `intel_epb_restore_default` as a bool is still worth it? e.g:
-...
-> Or do you think it would be worth actually removing `intel_epb_no_override` and creating
-> a module variable `intel_epb_restore_default` which is an enum of the performance values.
-> 
-> Doing so would then allow for expansability in the future which you had already alluded to
-> e.g setting to other values such as EPB_INDEX_BALANCE_POWERSAVE/PERFORMANCE.
+Simon Horman <horms@kernel.org> writes:
 
-You should leave 'intel_epb_restore_default' as a bool unless there is
-some compelling reason to change it.  A _possible_ future need for more
-settings isn't compelling.
+> + Xin Long <lucien.xin@gmail.com>
+>   Aaron Conole <aconole@redhat.com>
+>   coreteam@netfilter.org
+>
+> On Fri, Dec 22, 2023 at 11:43:11AM +1300, Brad Cowie wrote:
+>> This fixes openvswitch's handling of nat packets in the related state.
+>> 
+>> In nf_ct_nat_execute(), which is called from nf_ct_nat(), ICMP/ICMPv6
+>> packets in the IP_CT_RELATED or IP_CT_RELATED_REPLY state, which have
+>> not been dropped, will follow the goto, however the placement of the
+>> goto label means that updating the action bit field will be bypassed.
+>> 
+>> This causes ovs_nat_update_key() to not be called from ovs_ct_nat()
+>> which means the openvswitch match key for the ICMP/ICMPv6 packet is not
+>> updated and the pre-nat value will be retained for the key, which will
+>> result in the wrong openflow rule being matched for that packet.
+>> 
+>> Move the goto label above where the action bit field is being set so
+>> that it is updated in all cases where the packet is accepted.
+>> 
+>> Fixes: ebddb1404900 ("net: move the nat function to nf_nat_ovs for ovs and tc")
+>> Signed-off-by: Brad Cowie <brad@faucet.nz>
+>
+> Thanks Brad,
+>
+> I agree with your analysis and that the problem appears to
+> have been introduced by the cited commit.
+>
+> I am curious to know what use case triggers this /
+> why it when unnoticed for a year.
+>
+> But in any case, this fix looks good to me.
+>
+> Reviewed-by: Simon Horman <horms@kernel.org>
+>
+>> ---
+
+LGTM.  I guess we should try to codify the specific flows that were used
+to flag this into the ovs selftest - we clearly have a missing case
+after NAT lookup.
+
+I'll add it to my (ever growing) list.
+
+Meanwhile,
+
+Acked-by: Aaron Conole <aconole@redhat.com>
+
+>>  net/netfilter/nf_nat_ovs.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/net/netfilter/nf_nat_ovs.c b/net/netfilter/nf_nat_ovs.c
+>> index 551abd2da614..0f9a559f6207 100644
+>> --- a/net/netfilter/nf_nat_ovs.c
+>> +++ b/net/netfilter/nf_nat_ovs.c
+>> @@ -75,9 +75,10 @@ static int nf_ct_nat_execute(struct sk_buff *skb, struct nf_conn *ct,
+>>  	}
+>>  
+>>  	err = nf_nat_packet(ct, ctinfo, hooknum, skb);
+>> +out:
+>>  	if (err == NF_ACCEPT)
+>>  		*action |= BIT(maniptype);
+>> -out:
+>> +
+>>  	return err;
+>>  }
+>>  
+>> -- 
+>> 2.34.1
+>> 
+>> _______________________________________________
+>> dev mailing list
+>> dev@openvswitch.org
+>> https://mail.openvswitch.org/mailman/listinfo/ovs-dev
+>> 
+
 
