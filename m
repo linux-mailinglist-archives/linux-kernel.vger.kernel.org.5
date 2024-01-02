@@ -1,128 +1,100 @@
-Return-Path: <linux-kernel+bounces-14134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7117B82183B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:14:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 282E082183C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:16:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7C2F2820A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:14:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1F531F21F7F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:16:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F6353AF;
-	Tue,  2 Jan 2024 08:14:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UOX/T3ze"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CB064693;
+	Tue,  2 Jan 2024 08:16:38 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3396D46B6
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 08:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5cdfa676fa3so4584054a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 00:14:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704183254; x=1704788054; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PajgPkTBW3iluxw6UIGchSAnGs+6/xnB8PBfDDEr3ic=;
-        b=UOX/T3zeZhd3vSpEjbWqh6OQTR++KLfbmdeqNnQoPNG/Mr9Mv7wU0cxf9Qaaj/yO3g
-         D+EmrEP6OfXr4q5KNlzW+bN/b0azjkkkq3GKdqmduUIIwUipVxmVDWz4ShhJpqAc4ccc
-         LpIBpKxuaMaXyH/9ExwmDKNxHwP2vCIr+s9pc=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30FD44431
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 08:16:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5e7f0bf46a2so73363927b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 00:16:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704183254; x=1704788054;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1704183395; x=1704788195;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PajgPkTBW3iluxw6UIGchSAnGs+6/xnB8PBfDDEr3ic=;
-        b=lElkTpCAqHpamwX+QgHz3JfKod9MOSaVcqO5pCbuhq8uMPIafm4A4FkQ0X90fH83/V
-         YesNLtJeOwLVq7aVccFOPYrLj35+IV7bYn+ZSzmWqZ/LABiovXHOLK4LYVoGszrgfvAK
-         x0n9Rd6YidJwTDDXq+d2/Xy8iXqqoexBHpiTo8j4ZpSSqvvlKGmlRXohbS007imBko7C
-         6Nrq0ZGgGd+EWi8RPU6ZAoVqurysQRwQZf2sVVEPHlNt8mwRyDbjwSpmrjItDTcRQNjj
-         ETBdOxEcCDLFxy6BaI4rzS5yJEGHp9v0EyLm+QVWQ5gXvZ5fnDYjeZyhhJyzBtb5KTCd
-         ZAPQ==
-X-Gm-Message-State: AOJu0YzJI1IaObzqsDvXmMqdoyUvcR+CyDocNPonf1LqqUAtlOxHij7w
-	kKpSoF87uiSGE9Osfm1li5llS0vdBqmh
-X-Google-Smtp-Source: AGHT+IHM8m/BePVX0/O3CWysvzAhUtnB/CIoZmU5nwbrD+ulhjtycO32Co8Ei+LLUe/a9ppmi+uE8A==
-X-Received: by 2002:a17:90a:1506:b0:28b:efda:98da with SMTP id l6-20020a17090a150600b0028befda98damr20446795pja.17.1704183254545;
-        Tue, 02 Jan 2024 00:14:14 -0800 (PST)
-Received: from treapking.tpe.corp.google.com ([2401:fa00:1:10:232c:f04:85bb:a34c])
-        by smtp.gmail.com with ESMTPSA id f3-20020a17090a638300b0028c8149ac6esm12640074pjj.42.2024.01.02.00.14.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 00:14:14 -0800 (PST)
-From: Pin-yen Lin <treapking@chromium.org>
-To: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Pin-yen Lin <treapking@chromium.org>,
-	Chen-Yu Tsai <wenst@chromium.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Weiyi Lu <weiyi.lu@mediatek.com>,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 2/2] clk: mediatek: mt8183: Enable need_runtime_pm on mt8183-mfgcfg
-Date: Tue,  2 Jan 2024 16:12:53 +0800
-Message-ID: <20240102081402.1226795-2-treapking@chromium.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-In-Reply-To: <20240102081402.1226795-1-treapking@chromium.org>
-References: <20240102081402.1226795-1-treapking@chromium.org>
+        bh=vG6YMET/rAdhYaAa0Ujzpcr2MAAod3ZbBY1wyg426ig=;
+        b=ixRKADhhs3AQJPiM+rSeDRGhx26d9JNgONPKe4vY7xK3ndKDZ9OCLj/Fv0s7KrrqYv
+         yAWO3rA+hQsreT0XEugRWuAPQNQGtwMMDulqSYOyhORl3dUN8pe1PNKzP3/s5iMjDDTn
+         Y40bjwK2P8bHZaT4yrf1d4Wg3cwFgjSQFpyjqO/k0or6cot5wGKWByum3XDyV4ASBwPV
+         I5wlNiCs7pKPIWvocs64SbDGCeiAH23/dP/pQ6x7lkP0im6jwFWCoIjgymVkkmX4PGgr
+         v4pinE2qVjrw2qPNdEavXjSL1gE6BHZWeMiwK9vuOhyOSV6bMG3XLEsQpUj434j/MIXj
+         sD9A==
+X-Gm-Message-State: AOJu0Yxj3yQrgW+JmIWEmN4t4peehIHttfZqWDRlztJHHWL2US5CNcEZ
+	tMpk5LZvR6e4tk1H/Fk/nzOxZb9baAx/gg==
+X-Google-Smtp-Source: AGHT+IH4+CXrr/i0sVSbw0nR9NrUEixVMoH1fdThFcvDd9cDYwyYFdetwm3igJJFoq57bp7rgYC1tA==
+X-Received: by 2002:a81:df0a:0:b0:5e8:c696:a756 with SMTP id c10-20020a81df0a000000b005e8c696a756mr10641467ywn.102.1704183394968;
+        Tue, 02 Jan 2024 00:16:34 -0800 (PST)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id z4-20020a0df004000000b005e8fa7114dbsm11949523ywe.71.2024.01.02.00.16.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jan 2024 00:16:34 -0800 (PST)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5edf3780534so40064347b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 00:16:34 -0800 (PST)
+X-Received: by 2002:a81:df0a:0:b0:5e8:c696:a756 with SMTP id
+ c10-20020a81df0a000000b005e8c696a756mr10641455ywn.102.1704183394483; Tue, 02
+ Jan 2024 00:16:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <2023121940-enlarged-editor-c9a8@gregkh>
+In-Reply-To: <2023121940-enlarged-editor-c9a8@gregkh>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 2 Jan 2024 09:16:23 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWHnfwcdXrD6JrcdfxEop1oeMyN3hrvf+iEJQi-xM7pmw@mail.gmail.com>
+Message-ID: <CAMuHMdWHnfwcdXrD6JrcdfxEop1oeMyN3hrvf+iEJQi-xM7pmw@mail.gmail.com>
+Subject: Re: [PATCH] nubus: make nubus_bus_type static and constant
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: fthain@linux-m68k.org, linux-kernel@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-mt8183-mfgcfg has a mutual dependency with genpd during the probing
-stage, so enable need_runtim_pm to prevent a deadlock in the following
-call stack:
+On Tue, Dec 19, 2023 at 4:48=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the nubus_bus_type variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
+>
+> It's also never used outside of drivers/nubus/bus.c so make it static
+> and don't export it as no one is using it.
+>
+> Cc: Finn Thain <fthain@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-CPU0:  genpd_lock --> clk_prepare_lock
-genpd_power_off_work_fn()
- genpd_lock()
- generic_pm_domain::power_off()
-    clk_unprepare()
-      clk_prepare_lock()
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v6.8 branch.
 
-CPU1: clk_prepare_lock --> genpd_lock
-clk_register()
-  __clk_core_init()
-    clk_prepare_lock()
-    clk_pm_runtime_get()
-      genpd_lock()
+Gr{oetje,eeting}s,
 
-Do a runtime PM get at the probe function to make sure clk_register()
-won't acquire the genpd lock.
+                        Geert
 
-Fixes: acddfc2c261b ("clk: mediatek: Add MT8183 clock support")
-Signed-off-by: Pin-yen Lin <treapking@chromium.org>
----
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-(no changes since v1)
-
- drivers/clk/mediatek/clk-mt8183-mfgcfg.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/clk/mediatek/clk-mt8183-mfgcfg.c b/drivers/clk/mediatek/clk-mt8183-mfgcfg.c
-index ba504e19d420..62d876e150e1 100644
---- a/drivers/clk/mediatek/clk-mt8183-mfgcfg.c
-+++ b/drivers/clk/mediatek/clk-mt8183-mfgcfg.c
-@@ -29,6 +29,7 @@ static const struct mtk_gate mfg_clks[] = {
- static const struct mtk_clk_desc mfg_desc = {
- 	.clks = mfg_clks,
- 	.num_clks = ARRAY_SIZE(mfg_clks),
-+	.need_runtime_pm = true,
- };
- 
- static const struct of_device_id of_match_clk_mt8183_mfg[] = {
--- 
-2.43.0.472.g3155946c3a-goog
-
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
