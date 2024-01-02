@@ -1,175 +1,280 @@
-Return-Path: <linux-kernel+bounces-14783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11E33822249
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:52:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B5AF82224C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:53:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF064284709
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:52:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B44B41F23360
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:53:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC89E15EBE;
-	Tue,  2 Jan 2024 19:52:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D0915EBD;
+	Tue,  2 Jan 2024 19:53:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="5rnPWRPz"
+	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="NEKMyD8I"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061.outbound.protection.outlook.com [40.107.93.61])
+Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99A3A15E9B;
-	Tue,  2 Jan 2024 19:52:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ov+jdq6+aYem8p7JIdfOHvUz4frmMIWVGi6qrnmpaXMCsQLw04difkSslumHYmVpKm0Pw4D4Qzx74ari51lVl55Tc7DEqYG8E27njS94vYUN/gF5qJLHIphV56V6nsaBcqCy7hUZrt0E8mjlkB552NVoSAozxf8j35zfp6hyd4OvZks6Ui8YdREvk02GLU9FzkBjF8aZ2dv4SQNc0lPEtNLOWBV2gTaN6AY2mPBUK8f0afcmkrCQUzLdNuQEVrNBJkvqoFF+vI36sGmslZK2jfbPyBhyZzP3T3SyG4QeOPaof3qJcQVJaxoSdUs5xPn0QxqyOPGglu6+SM+jQbJkYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5kEm1cvUnSFuuf5Uv9HnrNhwrPAh1jZ5+FdZIvaYYEI=;
- b=FpMu7AMhwegjknyhE9gF7bWG+KqTnqN3sLkds0T3hMDda5zqGgxijiuFDupdO8QxRc2eHx6AnfDev2gDULSKEyFjI4CJuTT3xMw3G8v9CAnKvAoM4JwFNpG7ZP9S025gXOEwz23Kr2vB2oqerqF40OaEsO/NsVfevE38TxAPKeZqlJbFzyVGlwb3DxyRvHrRIHRoSARKt91/OuXCtzzGWNi6nMdu1kbvL/6hQoNzvv9KPqAQ/XQw+qBUFuRxTBAKG2aDcSb54v+vh5cPDX8sjzTJq1i+JJgPttCTtoNsFw6GTH61Dwi6KEwxTfCOOKgknm113Zj3V0LtupdB/Aq50Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5kEm1cvUnSFuuf5Uv9HnrNhwrPAh1jZ5+FdZIvaYYEI=;
- b=5rnPWRPzFIgitpzu2mOM9+wvopLT2zq5T3OMMHa6JWNOoammDrB+RyEP7wwROm8fgDlxcZUBuxsYAX7aOXorHuHP87VEmGb0+oT3n/INUUfWlfOR62Fgn7waK4xXFmFiCQIxFWpP1iZVoZL6wYTRZgAx40/+Gbr9qyjGbxZXjNo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
- by MW4PR12MB7483.namprd12.prod.outlook.com (2603:10b6:303:212::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Tue, 2 Jan
- 2024 19:52:31 +0000
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::1549:8c93:8585:ca1b]) by MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::1549:8c93:8585:ca1b%5]) with mapi id 15.20.7135.026; Tue, 2 Jan 2024
- 19:52:31 +0000
-Message-ID: <78494d57-40cf-4604-b1b6-8d94ca1c9973@amd.com>
-Date: Tue, 2 Jan 2024 13:52:27 -0600
-User-Agent: Mozilla Thunderbird
-Reply-To: babu.moger@amd.com
-Subject: Re: [PATCH v2 1/2] x86/resctrl: Remove hard-coded memory bandwidth
- limit
-To: Reinette Chatre <reinette.chatre@intel.com>, corbet@lwn.net,
- fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com
-Cc: x86@kernel.org, hpa@zytor.com, paulmck@kernel.org, rdunlap@infradead.org,
- tj@kernel.org, peterz@infradead.org, seanjc@google.com,
- kim.phillips@amd.com, jmattson@google.com, ilpo.jarvinen@linux.intel.com,
- jithu.joseph@intel.com, kan.liang@linux.intel.com, nikunj@amd.com,
- daniel.sneddon@linux.intel.com, pbonzini@redhat.com,
- rick.p.edgecombe@intel.com, rppt@kernel.org,
- maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, eranian@google.com, peternewman@google.com,
- dhagiani@amd.com
-References: <20231201005720.235639-1-babu.moger@amd.com>
- <170240413801.760665.7930294172146734221.stgit@bmoger-ubuntu>
- <70b27d47-fdd8-46e3-a5d8-6bd9c1ca95fe@intel.com>
-Content-Language: en-US
-From: "Moger, Babu" <babu.moger@amd.com>
-In-Reply-To: <70b27d47-fdd8-46e3-a5d8-6bd9c1ca95fe@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA9PR13CA0055.namprd13.prod.outlook.com
- (2603:10b6:806:22::30) To MW3PR12MB4553.namprd12.prod.outlook.com
- (2603:10b6:303:2c::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E753115EA3
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 19:53:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:To:From:Cc:Sender;
+	bh=ry5FtHp9KdCzZFfH2yaJs2qqRv4eGjPod+PeIP9cMyQ=; b=NEKMyD8IHvpbpM2qxO/gZUV38q
+	LMN4C4VRyaGfb2ucj/s4JtrGes6B1+0TMRUXMkwUOjMvJaF7CfpfJKflvIawcavIyv0Zsce6+K7bT
+	eUz4lraSeC4r/dMCS/xfXmFK0QIcwPAxM8WRbAJcR+5wguFEqjN7mK5+47oAFj7J/WUr22VXaZCCd
+	PDxoldU+uNABKJPBa9bh34BhH7X93vb3Q68xB4a7mAvC44Eth5yCmkhfumMdATIAU26OVtAVHGpRk
+	r5n8bWwFYgNOUoMaRQa3LxJuC5OqksKtFGDm3Q1b3JuBA9AHUHsXNEFr7P37fpDXMuvoO4McrnF+d
+	vBHGmAnA==;
+Received: from [10.69.139.8] (helo=uriel.localnet)
+	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <zfigura@codeweavers.com>)
+	id 1rKkpO-009RyD-2i;
+	Tue, 02 Jan 2024 13:53:31 -0600
+From: Elizabeth Figura <zfigura@codeweavers.com>
+To: x86@kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Ricardo Neri <ricardo.neri-calderon@linux.intel.com>, wine-devel@winehq.org,
+ "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: x86 SGDT emulation for Wine
+Date: Tue, 02 Jan 2024 13:53:26 -0600
+Message-ID: <3207569.5fSG56mABF@uriel>
+In-Reply-To: <868D3980-3323-4E4A-8A7A-B9C26F123A1E@zytor.com>
+References:
+ <2285758.taCxCBeP46@uriel> <868D3980-3323-4E4A-8A7A-B9C26F123A1E@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|MW4PR12MB7483:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5c9e6fea-26ab-4209-0e54-08dc0bcc5b0f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Btt5GY0YP+fFVxDdpmT0V8iB7Ajd5Fx6qqJL8Rtv9xSCsPIbKSx/5F/MDkIynftw6DV4chJdMUeSw/JsUMy36XNCtl44ObLak9BBB4MvVI+6bK9bG0j1UW1tJHKI66DC01NBdMXaU/yui1lhqRq55xbxaMLwEufZHXB9G6Ztq38BFUK5LyAAFXgXjHKrzRciNkS+MuF26jGjdgWxHja7tj0FcQBPnO3pKoOvzJqQ0znj2ZXa3rjM6bUJBI2bx17c2604AS9O/BYEZ7ZODhb02mg5jaM6BXRqteWTAug2acKm1I0qMLTBUWTRREM9h1a8DmeOLxLfiJVyo9tYRPL7p9U5PQ9dejOZEO7Hi9/HxQIW6P42gTFbRIIw/CMCIch7p6evD8kiihFaS0LgG+HTuy6jf60Hx62aA2ewwh47F3sEwsIoWVJWv3IofQjKFUCQhpuRdGdt1XG+9KvHaR0eoYm/5C3nYJeccT26ovXzt3yK51ZZRc2I3TOfgZrjc+bn1afMcwjExegx5xuOtR2ZL+Ky8n/ePN+gB+D85aX+yjDADgBB+DUnveMrT9ZUUfWDMgpz1BShzx+Dx6mLRvocTvRn6cFjJL5D76u6mfJm5JzEhHrAQvzhFrPRDNre/ba3kVV422Ed5HWEHEQkuFq3mA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(346002)(396003)(39860400002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(31686004)(6506007)(6512007)(6666004)(966005)(53546011)(6486002)(478600001)(38100700002)(86362001)(31696002)(36756003)(83380400001)(3450700001)(7416002)(41300700001)(2906002)(2616005)(26005)(66556008)(66476007)(8936002)(5660300002)(316002)(66946007)(4326008)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?L1NKWkp3L3pVZ1k1aWovV1QyU1Y2ZmFYUU0rc2t5cVFUejRVOTdSZEZUanNU?=
- =?utf-8?B?Z3JKc1Vjd1lXWitXeDZIektzanBmUXV5ZUZaMjZMT3RrOEx3TnNybW42WW1P?=
- =?utf-8?B?K3Q0YTF2OGxYdHJ5MWx4YWZYTVZyaHFTZ2F6NTQ2azJNeExvSE43citoV2V1?=
- =?utf-8?B?RW5NbHRhaHFhaEVzT2xLU3lVVFdaSlNlNE42TmMzK0pDVnFIVGtuMTBjeWV2?=
- =?utf-8?B?bUVRNGM5OGtkOUxIeDAyaDVGeE9DaCsxM2lpUXhLbWVWRkthTzd4Z1B2Wjl1?=
- =?utf-8?B?eW1LallHTGFySGtSY0kveUxQVVJxWHVrVWxNMVdZck0vd3oxblV0M2hYVGgw?=
- =?utf-8?B?UnZmWHB4MGRMUXg3RGtkaUhYREs1SkZRcytaNTVTcTVXRFM1WmdIWXNncHYr?=
- =?utf-8?B?bGM0NG0vZ3I1WjNGL3BLbU0wUXFWbngwMkdXV0lzSWVmQzU4R0pRR1I1UHh4?=
- =?utf-8?B?VktOM242NlB6NlpBRHJtczNMdnByMWR1WklDQ0doT3VZOUxqdW5pbTVML2hv?=
- =?utf-8?B?T2d5YjdhZ2FuQ3U1TXFOM1V0ejE4RC9TY0ZRSFJpaHppL1NzTjFXbDcvMHpl?=
- =?utf-8?B?STJsWCsrMDc2dTIybTZrQjlkUXlCRXlxTm1TeERybnJzUTFHRUE2ajBLUDFN?=
- =?utf-8?B?Rms0VTNQL3p5NU5hKzBoUWtvaW8wV3NOUjQxek1QR0lsZmFXQloyYUNyV1RY?=
- =?utf-8?B?bDZET1RJRWN4NUcxSFQvSzA0Zm5xTGZRQkFZUGl4VkpuSnhQZDFMMG5XK1p4?=
- =?utf-8?B?bkRSYllSWTJGUkt1RUNxWmhKdGVrK1I5cWpPVUVwcngrZFFNdkxNVjdZUnNn?=
- =?utf-8?B?bzNiM0lJOStCOE4waldpcFZ0NHN4TUh5RWg2Mkh5d2RlODVJS2FyOU9PaVhL?=
- =?utf-8?B?TkpxNUc0VEV2OHRRdnVqQkw3TnNncVN4eTVtMWJwMmJCYkVJR0xVbWpHN1hn?=
- =?utf-8?B?Vm9zc3pKcjhNS1Q1RXd0bzM0cWtLaGdEcUt1QlRwZHBCUkU4anRxNkc4MGg3?=
- =?utf-8?B?cndoWlpDUlhmekhpbTIvQzNTT2ltT3Z1YkxjSG5ZdGh1bm9LcVA3SWMxWG9r?=
- =?utf-8?B?b0RwbVVRVmR1MEUyQWRxS3hCbDVHT2tGN0gwSHI0NXFjR1A3TXk2ZmYzV0J4?=
- =?utf-8?B?N2JyUDhPS0liK3Fvam13ZmVIMzd3UGJrSGdZS2Q5dzNNWlRhL0N5TGgzOHJs?=
- =?utf-8?B?d3Jad2cvUDJMdUQ1NXd6WERlaXk3czNDNlN4aXRZMFZDYW1sM1FVOElaU3Vo?=
- =?utf-8?B?azBVQWtnU2J5MXRjSDc2aHJ1MERIN1hLRk16L3FHd3dGT2xpUnBjVjVGaEtE?=
- =?utf-8?B?TVdLdGxPNXUxRGVHOEppdWNnbHhKS1o3QlNiRmNOU3VZdWZjL2lFNFJpai9o?=
- =?utf-8?B?elptSXJMUkhXQTRpdDlFVjloQytRMU91ckdzWG1BdmR2eldEYzc0ZDNkTkF5?=
- =?utf-8?B?Y1ZoRCtKVzh0bFNkNE1tcXdlSEFSSXR0QUdzbG5vbWx5M0dYNjFDZ0N2NUJ5?=
- =?utf-8?B?RURHRWFFcHhlSU1ZMy9oNmtkYUthSlg2TVB5UzR3a0RTREI4QWhSN0VvN2F2?=
- =?utf-8?B?M2RDaGZleVdjZ3VBV1ZQQ3gwMmhodkxtajF2ZFBDY0Y5Y1B5QVFETVBNUHVV?=
- =?utf-8?B?bzZsRTRrMGJUVEFsMjYvRWFFSjZUcXB0ajNYcW0vdHVVSE95OEEyaVpQODU4?=
- =?utf-8?B?T25SMHJHQVU5Wlp0VUU1MDBPQ0poVlFjQ1JPQXg4NDh3cEJMUzg3QTQ0aUx1?=
- =?utf-8?B?WjUvVzNzRTRVclo2M3dtQkRNNS9YTlNIWER3emZNTXAzTE96NzFyZnY5eU5k?=
- =?utf-8?B?dDVwYlJmWFovNkU3TTNxMjVTWUZtM1MydTFodDU4Nm4yZDh1aTVCQWVGTkNK?=
- =?utf-8?B?aE45UUZSUU9xYThCMHE1bURWOWFncDB4QUFWWWY3SUZQSFJvaUxmdTV3RWxt?=
- =?utf-8?B?dG1BMUNiSWwyajBGVlRlVXFmTzFoblM3SFNhcitOblFBU3ZQekcxOEVVUkxJ?=
- =?utf-8?B?eDBmN2d4UmNQUDc4TVVFUlJZa0Q4OTFIcDNqUklqTjVGQlI5SmR2dE1OOEc0?=
- =?utf-8?B?VS85ejhsajFaeUNkZTc1K1B6WldiaFVFSVg1ejFyZlcxem1TWTFyd2lLZC9j?=
- =?utf-8?Q?Nbxg=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c9e6fea-26ab-4209-0e54-08dc0bcc5b0f
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2024 19:52:31.0741
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 40pm7v6AKFtgRY4WWMxxOc1UvpOVDRaVeUsQyeRiT8iJuitaSzICwWPNC6MZAQx7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7483
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Reinette,
+On Wednesday, December 27, 2023 5:58:19 PM CST H. Peter Anvin wrote:
+> On December 27, 2023 2:20:37 PM PST, Elizabeth Figura=20
+<zfigura@codeweavers.com> wrote:
+> >Hello all,
+> >
+> >There is a Windows 98 program, a game called Nuclear Strike, which wants=
+ to
+> >do some amount of direct VGA access. Part of this is port I/O, which
+> >naturally throws SIGILL that we can trivially catch and emulate in Wine.
+> >The other part is direct access to the video memory at 0xa0000, which in
+> >general isn't a problem to catch and virtualize as well.
+> >
+> >However, this program is a bit creative about how it accesses that memor=
+y;
+> >instead of just writing to 0xa0000 directly, it looks up a segment
+> >descriptor whose base is at 0xa0000 and then uses the %es override to
+> >write bytes. In pseudo-C, what it does is:
+> >
+> >int get_vga_selector()
+> >{
+> >
+> >    sgdt(&gdt_size, &gdt_ptr);
+> >    sldt(&ldt_segment);
+> >    ++gdt_size;
+> >    descriptor =3D gdt_ptr;
+> >    while (descriptor->base !=3D 0xa0000)
+> >    {
+> >   =20
+> >        ++descriptor;
+> >        gdt_size -=3D sizeof(*descriptor);
+> >        if (!gdt_size)
+> >       =20
+> >            break;
+> >   =20
+> >    }
+> >   =20
+> >    if (gdt_size)
+> >   =20
+> >        return (descriptor - gdt_ptr) << 3;
+> >   =20
+> >    descriptor =3D gdt_ptr[ldt_segment >> 3]->base;
+> >    ldt_size =3D gdt_ptr[ldt_segment >> 3]->limit + 1;
+> >    while (descriptor->base !=3D 0xa0000)
+> >    {
+> >   =20
+> >        ++descriptor;
+> >        ldt_size -=3D sizeof(*descriptor);
+> >        if (!ldt_size)
+> >       =20
+> >            break;
+> >   =20
+> >    }
+> >   =20
+> >    if (ldt_size)
+> >   =20
+> >        return (descriptor - ldt_ptr) << 3;
+> >   =20
+> >    return 0;
+> >
+> >}
+> >
+> >
+> >Currently we emulate IDT access. On a read fault, we execute sidt
+> >ourselves, check if the read address falls within the IDT, and return so=
+me
+> >dummy data from the exception handler if it does [1]. We can easily enou=
+gh
+> >implement GDT access as well this way, and there is even an out-of-tree
+> >patch written some years ago that does this, and helps the game run.
+> >
+> >However, there are two problems that I have observed or anticipated:
+> >
+> >(1) On systems with UMIP, the kernel emulates sgdt instructions and retu=
+rns
+> >a consistent address which we can guarantee is invalid. However, it also
+> >returns a size of zero. The program doesn't expect this (cf. the way the
+> >loop is written above) and I believe will effectively loop forever in th=
+at
+> >case, or until it finds the VGA selector or hits invalid memory.
+> >
+> >    I see two obvious ways to fix this: either adjust the size of the fa=
+ke
+> >
+> >kernel GDT, or provide a switch to stop emulating and let Wine handle it.
+> >The latter may very well a more sustainable option in the long term
+> >(although I'll admit I can't immediately come up with a reason why, other
+> >than "we might need to raise the size yet again".)
+> >
+> >    Does anyone have opinions on this particular topic? I can look into
+> >
+> >writing a patch but I'm not sure what the best approach is.
+> >
+> >(2) On 64-bit systems without UMIP, sgdt returns a truncated address when
+> >in 32-bit mode. This truncated address in practice might point anywhere =
+in
+> >the address space, including to valid memory.
+> >
+> >    In order to fix this, we would need the kernel to guarantee that the
+> >    GDT
+> >
+> >base points to an address whose bottom 32 bits we can guarantee are
+> >inaccessible. This is relatively easy to achieve ourselves by simply
+> >mapping those pages as noaccess, but it also means that those pages can't
+> >overlap something we need; we already go to pains to make sure that
+> >certain parts of the address space are free. Broadly anything above the =
+2G
+> >boundary *should* be okay though. Is this feasible?
+> >
+> >    We could also just decide we don't care about systems without UMIP, =
+but
+> >
+> >that seems a bit unfortunate; it's not that old of a feature. But I also
+> >have no idea how hard it would be to make this kind of a guarantee on the
+> >kernel side.
+> >
+> >    This is also, theoretically, a problem for the IDT, except that on t=
+he
+> >
+> >machines I've tested, the IDT is always at 0xfffffe0000000000. That's not
+> >great either (it's certainly caused some weirdness and confusion when
+> >debugging, when we unexpectedly catch an unrelated null pointer access) =
+but
+> >it seems to work in practice.
+> >
+> >--Zeb
+> >
+> >[1] https://source.winehq.org/git/wine.git/blob/HEAD:/dlls/krnl386.exe16/
+> >instr.c#l702
+>=20
+> A prctl() to set the UMIP-emulated return values or disable it (giving
+> SIGILL) would be easy enough.
+>=20
+> For the non-UMIP case, and probably for a lot of other corner cases like
+> relying on certain magic selector values and what not, the best option
+> really would be to wrap the code in a lightweight KVM container. I do *no=
+t*
+> mean running the Qemu user space part of KVM; instead have Wine interface
+> with /dev/kvm directly.
+>=20
+> Non-KVM-capable hardware is basically historic at this point.
 
-On 12/14/23 20:20, Reinette Chatre wrote:
-> Hi Babu,
-> 
-> On 12/12/2023 10:02 AM, Babu Moger wrote:
->> The QOS Memory Bandwidth Enforcement Limit is reported by
->> CPUID_Fn80000020_EAX_x01 and CPUID_Fn80000020_EAX_x02.
->> Bits Description
->> 31:0 BW_LEN: Size of the QOS Memory Bandwidth Enforcement Limit.
->>
->> Newer processors can support higher bandwidth limit than the current
->> hard-coded value. Remove the hard-coded value and detect using CPUID
->> command. Also update the register variables eax and edx to match the
->> AMD CPUID definition.
->>
->> The CPUID details are documentation in the PPR listed below [1].
->> [1] Processor Programming Reference (PPR) Vol 1.1 for AMD Family 19h Model
->> 11h B1 - 55901 Rev 0.25.
->>
->> Fixes: 4d05bf71f157 ("x86/resctrl: Introduce AMD QOS feature")
->> Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
->> Signed-off-by: Babu Moger <babu.moger@amd.com>
->>
->> ---
-> 
-> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Sorry for the late response=E2=80=94I've been trying to do research on what=
+ would be=20
+necessary to use KVM (plus I made the poor choice of sending this during th=
+e=20
+holiday season...)
 
-Thank You
-Babu Moger
+I'm concerned that KVM is going to be difficult or even intractable. Here a=
+re=20
+some of the problems that I (perhaps incorrectly) understand:
+
+* As I am led to understand, there can only be one hypervisor on the machin=
+e=20
+at a time, and KVM has a hard limit on the number of vCPUs.
+
+  The obvious way to use KVM for Wine is to make each (guest) thread a vCPU=
+=2E=20
+That will, at the very least, run into the thread limit. In order to avoid=
+=20
+that we'd need to ship a whole scheduler, which is concerning. That's a hug=
+e=20
+component to ship and a huge burden to keep updated. It also means we need =
+to=20
+hoist *all* of the ipc and sync code into the guest, which will take an=20
+enormous amount of work.
+
+  Moreover, because there can only be one hypervisor, and Wine is a multi-
+process beast, that means that we suddenly need to throw every process into=
+=20
+the same VM. That has unfortunate implications regarding isolation (it's be=
+en=20
+a dream for years that we'd be able to share a single wine "VM" between=20
+multiple users), it complicates memory management (though perhaps not=20
+terribly?). And it means you can only have one Wine VM at a time, and can't=
+=20
+use Wine at the same time as a "real" VM, neither of which are restrictions=
+=20
+that currently exist.
+
+  And it's not even like we can refactor=E2=80=94we'd have to rewrite tons =
+of code to=20
+work inside a VM, but also keep the old code around for the cases where we=
+=20
+don't have a VM and want to delegate scheduling to the host OS.
+
+* Besides scheduling, we need to exit the VM every time we would normally c=
+all=20
+into Unix code, which in practice is every time that the application does a=
+n=20
+NT syscall, or uses a library which we delegate to the host (including e.g.=
+=20
+GPU, multimedia, audio...)
+
+  I'm concerned that this will be very expensive. Most VM users don't need =
+to=20
+exit on every syscall. While I haven't tested KVM, I think some other Wine=
+=20
+developers actually did a similar experiment using a hypervisor to solve so=
+me=20
+other problem (related to 32-bit support on Mac OS), and exiting the=20
+hypervisor was prohibitively slow.
+
+  Alternatively we ship *more* components to reimplement these things insid=
+e=20
+the VM (e.g. virgl/venus for GPU hardware, other virtio bits for interactin=
+g=20
+with e.g. multimedia hardware? enough of a cache to make block I/O reasonab=
+ly=20
+fast, a few layers of networking code...), which looks more and more ugly.
+
+If nothing else, it's a huge hammer to fix this one problem for an applicat=
+ion=20
+which doesn't even currently work in Wine, *and* which isn't even a problem=
+ on=20
+sufficiently new hardware (and to fix other GDT problems which are only=20
+theoretical at this point.)
+
+=2D-Zeb
+
+
 
