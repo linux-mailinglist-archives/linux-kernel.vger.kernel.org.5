@@ -1,94 +1,97 @@
-Return-Path: <linux-kernel+bounces-14693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CBA48220C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:09:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7451E8220C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:10:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 017ED284041
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:09:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 877291C21F48
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F52156E8;
-	Tue,  2 Jan 2024 18:08:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8199B156DF;
+	Tue,  2 Jan 2024 18:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="B17v+BgF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KVIyP+y+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049F3156D4;
-	Tue,  2 Jan 2024 18:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 89AA440E0197;
-	Tue,  2 Jan 2024 18:08:47 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id q0k_IJQCGsqP; Tue,  2 Jan 2024 18:08:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704218924; bh=v3NyClcomG1/HfmBt2wrCT5atHNkOtucru3CNjcR+L0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B17v+BgF7jrid9KeVpHKGGK4IiKoC/E/PhSWWtzqcD8mDzMZTqGF0Rz65KP82KAHT
-	 TYWhwLBCFMOE0LfYXpbyOfwlqHHI1XHuC6iy9w1FjktxuZuLyU+GVObBl5DMIuqoMN
-	 lp18la9IQ34hd3L5SyMvcjugql+zJshB1J5t8GnWGSELCtMSm/MHd0VBaFoyaClFN5
-	 wQnlI5ohMuhGvxgqfA97GXBx1jmTZIH3RbUfpLKDeWyv1V/UjktRT7NglFHaC0dKan
-	 CO9OrK7++zH8ItOgP3WKqgTcCrzz/qFNEqJof3HsWWiM6IRnkSZTYBAMdzWgC9quCz
-	 C/PafimLnhiJVJCJQyUzI7/xtBrIO+Uv6u20p2+ghXtmsqluSyVx8p3xo1Cu3ZFHAG
-	 NHT5Iu23Csdk/yQK+xfcw6olzGG+sfwRbpPyMz7RE/WQ9WsBbGkY9Hmu+O5zvcoQz3
-	 O6CiTpqLEuRbRawCQWphlJ2tYYlINOA8GRqW7SqIifFIMaGy3+N3D8aC1+6/Y1OwLO
-	 JMDJmtyqk+8Ik0TgjcRgCALjWymOj8ivQk/DPEf1Rfp3PZVIn/JDFPq0pQfF2JZyQk
-	 /34Jc8+Rmws5xmY3ijTeWahef1sLlrIrVaSu6K+zL7v7vzc/P6lJ/dEllbKrL9cBG3
-	 4MoJ3260kJxOOyOaAd5Ee5a8=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6C32F40E00C7;
-	Tue,  2 Jan 2024 18:08:38 +0000 (UTC)
-Date: Tue, 2 Jan 2024 19:08:33 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Luck, Tony" <tony.luck@intel.com>
-Cc: "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
-	Aristeu Rozanski <aris@redhat.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] EDAC/skx_common: Filter out the invalid address
-Message-ID: <20240102180833.GHZZRRIWAHmLW6eqrF@fat_crate.local>
-References: <20231207014512.78564-1-qiuxu.zhuo@intel.com>
- <SJ1PR11MB6083F4553DE16D2B7878C94FFC61A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBCB8156D2;
+	Tue,  2 Jan 2024 18:09:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C3F4C433C7;
+	Tue,  2 Jan 2024 18:09:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704218996;
+	bh=0B4MGO3nEzwJGG528F5URY4URve6DriUG1N7zW1et+Q=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=KVIyP+y+D2TBQ3d2+wAIcHBatKMgGdadyoZYeoCJP0by22tFPtnlUYXL7SGhlM4O8
+	 2K5u9HFuPnaLO2o4dwgQn49aR4UFRRwR4V+R/NOKZxnvapnPreVFV2MMq1b1PVXIel
+	 fhiayKYC3YcNYUJoIPlRbXXDWOJvVP+7ijwwAKdmpnPN/J/+wd8DeW5eUjuhLkUbKQ
+	 JHd5TDDCbD7p0Dj0y/2CoKNLxyoOC0aUEozbbsmWw0/vZf7yPENtcGjIiFX96Pt1MY
+	 mtDtJ6CVy0V/4/5bmbPG7X6i4nezHdQr3AXvI4MsOwZPdxkMXR1OGxd6GAkH7s7FsQ
+	 i3re/XN3rSd4Q==
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cceb5f0918so36575831fa.2;
+        Tue, 02 Jan 2024 10:09:56 -0800 (PST)
+X-Gm-Message-State: AOJu0YyL3dWnjEJygco+o/zqDgtZB4fNjKv9LGl5vNEJ+smyRCF56Uh0
+	6IOiv7KFIolgkfnCMREnXDXucCxOqPL7dJG/IQ==
+X-Google-Smtp-Source: AGHT+IGXIEZJi6VHeuPZatY3dAslENz6hJgEbGz8cu14HmNSVOac5JR58tclYtJVnkMf8XqtqCxeUECRx+eShgwuYwo=
+X-Received: by 2002:a05:651c:1a10:b0:2cc:cbd9:b3d7 with SMTP id
+ by16-20020a05651c1a1000b002cccbd9b3d7mr5115618ljb.28.1704218994526; Tue, 02
+ Jan 2024 10:09:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <SJ1PR11MB6083F4553DE16D2B7878C94FFC61A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+References: <20231209171612.250868-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231209171612.250868-1-krzysztof.kozlowski@linaro.org>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Tue, 2 Jan 2024 11:09:42 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqKogbT_4DPd1n94xqeHaU_J8ve5K09WOyVsRX3jxxUW3w@mail.gmail.com>
+Message-ID: <CAL_JsqKogbT_4DPd1n94xqeHaU_J8ve5K09WOyVsRX3jxxUW3w@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: juno: align thermal zone names with bindings
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Liviu Dudau <liviu.dudau@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 02, 2024 at 05:37:20PM +0000, Luck, Tony wrote:
-> > Decoding an invalid address with certain firmware decoders could
-> > cause a #PF (Page Fault) in the EFI runtime context, which could
-> > subsequently hang the system. To make {i10nm,skx}_edac more robust
-> > against such bogus firmware decoders, filter out invalid addresses
-> > before allowing the firmware decoder to process them.
-> 
-> Applied. Thanks.
-> 
-> [Boris: This one with a "Link:" tag]
+On Sat, Dec 9, 2023 at 10:16=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> Thermal bindings require thermal zone node names to match
+> certain patterns:
+>
+>   juno.dtb: thermal-zones: 'big-cluster', 'gpu0', 'gpu1', 'little-cluster=
+', 'pmic', 'soc'
+>     do not match any of the regexes: '^[a-zA-Z][a-zA-Z0-9\\-]{1,12}-therm=
+al$', 'pinctrl-[0-9]+'
 
-Thanks! :)
+You've just traded this warning for these:
 
--- 
-Regards/Gruss,
-    Boris.
+      6  thermal-zones: 'little-cluster-thermal' does not match any of
+the regexes: '^[a-zA-Z][a-zA-Z0-9\\-]{1,12}-thermal$',
+'pinctrl-[0-9]+'
+      4  thermal-zones: gpu1-thermal: 'trips' is a required property
+      4  thermal-zones: gpu0-thermal: 'trips' is a required property
+      4  thermal-zones: big-cluster-thermal: 'trips' is a required property
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Last I checked this, it looked like the length of the child names was
+limited because the thermal subsys uses the node names for its naming
+which is limited to 20 chars (with null). Though the regex here allows
+for 21 chars without nul. Looks like a double off by one error.
+
+The thought I had at the time was to make the kernel drop '-thermal'
+from its names. Might be an (Linux) ABI issue if userspace cares (I
+think it shouldn't). Also, I'm not sure how the kernel handles the
+names overflowing. Maybe it is fine and we can just extend the length
+in the schema from 12 to 18 (plus the 1 starting char).
+
+Rob
 
