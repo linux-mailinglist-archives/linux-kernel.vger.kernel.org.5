@@ -1,164 +1,151 @@
-Return-Path: <linux-kernel+bounces-14642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 699C4822018
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3596382201B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:10:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DADA1F237C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:10:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB0CF1F23B12
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B38D154A7;
-	Tue,  2 Jan 2024 17:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HOoj0bTU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED025154B0;
+	Tue,  2 Jan 2024 17:10:00 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A5816401;
-	Tue,  2 Jan 2024 17:09:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cdc159034eso3100419a12.0;
-        Tue, 02 Jan 2024 09:09:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704215354; x=1704820154; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vcUsAzPUG+M3E2aYd59xb5UnEJS/MFzlJwMjKILMSKY=;
-        b=HOoj0bTUbQGdtDnY2Pzkd02Pr1yBuGZY2CL5Yi0HCVoyrKAE416XDGit9hLXKNp6Nq
-         sZKQ6JzG7suUs9OEkgtD/ZJVDZ9bBNTXWFhY9KhOpsPhtaVONqJBMIkM35R7Oi7uvAdf
-         KLLXNyoKwMaxNS1nFSnlahCIzzqIKT7Zr9y4YIlcnTapzVcqoD7AN+cXRjRuypKce0MU
-         duQH8XQ6Qt6h6gp7HgAFbePBtfIcXyKtqsA5p7Iro77cCadKooH9MauQaQBuhKpigZSe
-         fyfMlloeX3QXBab42msksseRELZgxcud2jK1SwNRXv/gWl/NsmtV/jyF1s5oRcGcTIN4
-         HqWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704215354; x=1704820154;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vcUsAzPUG+M3E2aYd59xb5UnEJS/MFzlJwMjKILMSKY=;
-        b=AUz5NFcuPZHJNda1WbpPWlBq/Vi6t3V4YBpyeWpKMin3/s9Og2Vi5yK15SWKwtiC8X
-         31MQkYoF1XM6yABB6aJplt/j4Ngg/gKTKcfgYjRf4h70bVLaJa98ynrfmVD8+EACfvg+
-         V7NzgDy40xsETa1Tyz6twKgYb8uyM1okhoJ7V40fYQ3yDvWZpqHUfjxICzx0X6dGiX9i
-         Ck+6w5wVXXamjRuYDGXmWgAS4BgAYnVaJNwvkp+o+KHuIZRTw0IO7vyTPpwUZSgR0bCj
-         LmsTedt/w73XjleepTEPyt98qlyCwCjhoRo+GFOXsGj/pWNan5fiQvJitkgD210BytcX
-         ncsQ==
-X-Gm-Message-State: AOJu0Yw2E2BWlDESTAN1ihWbzyCeetJ+AVaC0KO0NdC9NtN+TGNZblJq
-	G6HWdlx9lgS2G7kAkiZGSrSFM/bNA20=
-X-Google-Smtp-Source: AGHT+IHHx0cl0TxNJ4JnFBMLIWlu2tuK1IcLRSXIlR/eimKHEXIJ0nvFXMp8tfQi6e1pxF0qg/1x2w==
-X-Received: by 2002:a17:903:2292:b0:1d4:bd0c:207d with SMTP id b18-20020a170903229200b001d4bd0c207dmr1247817plh.66.1704215353591;
-        Tue, 02 Jan 2024 09:09:13 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g24-20020a170902fe1800b001d0c41b1d03sm22198693plj.32.2024.01.02.09.09.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 09:09:12 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Tue, 2 Jan 2024 09:09:12 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Suniel Mahesh <sunil@amarulasolutions.com>,
-	Kyle Tso <kyletso@google.com>,
-	Jagan Teki <jagan@amarulasolutions.com>,
-	USB list <linux-usb@vger.kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: USB PD TYPEC - FUSB302B port controller hard reset issue
-Message-ID: <5458c2f4-b212-4e35-b870-f15fb724f41a@roeck-us.net>
-References: <CAM+7aWvGerEdUnsKboUg9+EoL=66k3nULHCnQgHyxsWQhUwmpw@mail.gmail.com>
- <ZZPbeUbMM3J4pH/K@kuha.fi.intel.com>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE7471549C
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 17:09:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 265C4C15;
+	Tue,  2 Jan 2024 09:10:43 -0800 (PST)
+Received: from [10.34.100.129] (e126645.nice.arm.com [10.34.100.129])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1859F3F64C;
+	Tue,  2 Jan 2024 09:09:55 -0800 (PST)
+Message-ID: <8e2263b7-e33b-43e1-b0df-92b560b8fa25@arm.com>
+Date: Tue, 2 Jan 2024 18:09:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZPbeUbMM3J4pH/K@kuha.fi.intel.com>
+User-Agent: Mozilla Thunderbird
+From: Pierre Gondois <pierre.gondois@arm.com>
+Subject: Re: [PATCH v3 2/2] sched/topology: Sort asym_cap_list in descending
+ order
+To: Qais Yousef <qyousef@layalina.io>, Ingo Molnar <mingo@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: linux-kernel@vger.kernel.org
+References: <20231231175218.510721-1-qyousef@layalina.io>
+ <20231231175218.510721-3-qyousef@layalina.io>
+Content-Language: en-US
+In-Reply-To: <20231231175218.510721-3-qyousef@layalina.io>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 02, 2024 at 11:46:34AM +0200, Heikki Krogerus wrote:
-> Hi Suniel,
-> 
-> On Tue, Dec 26, 2023 at 04:14:48PM +0530, Suniel Mahesh wrote:
-> > Hi Guenter Roeck / Heikki Krogerus and all,
-> > 
-> > 1.
-> > I am testing USB TYPEC PD on a Rockchip Rk3399 SOC based target which has a
-> > FUSB302B TYPEC port controller.
-> > 
-> > 2.
-> > My source is a wall charger which is based on Gallium Nitride (GaN II)
-> > technology and has four ports as follows:
-> > 
-> > USB-C1: 100W PD3.0, 5V/3A, 9V/3A, 12V/3A, 15V/3A. 20V/5A. PPS: 3.3V-11V/4A
-> > USB-C2: 100W PD3.0. 5V/3A. 9V/3A. 12V/3A, 15V/3A. 20V/5A PPS:3.3-11V/4A
-> > USB-C3: 20W PD3.0, 5V/3A, 9V/2.22A, 12V/1.67A
-> > USB-A: 18W QC3.0. 5V/3A, 9V/2A, 12V/1.5A
-> > 
-> > 3.
-> > i am using latest linux-next and enabled all the relevant configs,
-> > especially:
-> > CONFIG_TYPEC=y
-> > CONFIG_TYPEC_TCPM=y
-> > CONFIG_TYPEC_FUSB302=y
-> 
-> Which kernel version?
-> 
-> > 4.
-> > DT node is as follows when i use USB-C1 of wall charger:
-> > 
-> >  connector {
-> >                         compatible = "usb-c-connector";
-> >                         label = "USB-C";
-> >                         data-role = "dual";
-> >                         power-role = "sink";
-> >                         try-power-role = "sink";
-> >                         op-sink-microwatt = <1000000>;
-> >                         sink-pdos = <PDO_FIXED(5000, 3000,
-> > PDO_FIXED_USB_COMM)
-> >                                     PDO_FIXED(12000, 3000,
-> > PDO_FIXED_USB_COMM)>;
-> >                 };
-> 
-> What do you mean by "when i use USB-C1..."? Why is the above valid
-> only then and not with the other PD contracts?
-> 
-> > Issue:
-> > The board power well most of the time, but may be in 1 out of 5 cold boots,
-> > FUSB302B is getting a hard reset, as
-> > FUSB302B INTERRUPTA register bit I_HARDRST is getting set.
-> > 
-> > After some digging, found out that the above behaviour is accounted to when
-> > something is wrong with the CRC of
-> > the received packet (SOP - Start of Packet)
-> 
-> How did you determine that the problem is a bad CRC?
-> 
-> > This behaviour is seen i.e. FUSB302B getting a hard reset more on the
-> > USB-C3 port.
-> > 
-> > Any pointers on how to solve this issue.
-> 
-> Guenter, do you have time to take a look at this?
-> 
+Hello Qais,
+I just have some comments regarding the commit message/comments,
+otherwise the code (of the 2 patches) looks good to me,
 
-As far as I can see, the bit means that a hard reset request has been
-received from the charger. What else can the code do but to execute
-that hard reset ? On a higher level, if there is a communication problem
-due to bad CRC (i.e., a bad communication link) between the wall charger
-and the development system, I am not sure if there is anything we can do
-in software to remedy the problem.
+Regards,
+Pierre
 
-Secondary question: Is this a regression ? The original e-mail states
-that it was seen with the "latest linux-next". If it is a regression, it
-should be possible to bisect it. However, the only recent commit which
-might affect reset behavior is a6fe37f428c1 ("usb: typec: tcpm: Skip hard
-reset when in error recovery"). If anything I would assume that this
-commit would improve the situation, not make it worse.
+On 12/31/23 18:52, Qais Yousef wrote:
+> So that searches always start from biggest CPU which would help misfit
+> detection logic to be more efficient.
+> 
+> I see the following when adding trace_printks() during add and del
+> operations
+> 
+>              init-1       [000] .....     0.058128: asym_cpu_capacity_update_data: Added new capacity 250. Capacity list order:
+>              init-1       [000] .....     0.058132: asym_cpu_capacity_update_data: -- 250
+>              init-1       [000] .....     0.058135: asym_cpu_capacity_update_data: Added new capacity 620. Capacity list order:
+>              init-1       [000] .....     0.058136: asym_cpu_capacity_update_data: -- 620
+>              init-1       [000] .....     0.058137: asym_cpu_capacity_update_data: -- 250
+>              init-1       [000] .....     0.058139: asym_cpu_capacity_update_data: Added new capacity 1024. Capacity list order:
+>              init-1       [000] .....     0.058140: asym_cpu_capacity_update_data: -- 1024
+>              init-1       [000] .....     0.058141: asym_cpu_capacity_update_data: -- 620
+>              init-1       [000] .....     0.058142: asym_cpu_capacity_update_data: -- 250
+>              init-1       [000] .....     0.058143: asym_cpu_capacity_scan: Final capacity list order:
+>              init-1       [000] .....     0.058145: asym_cpu_capacity_scan: -- 1024
+>              init-1       [000] .....     0.058145: asym_cpu_capacity_scan: -- 620
+>              init-1       [000] .....     0.058146: asym_cpu_capacity_scan: -- 250
+>             <...>-244     [007] .....     1.959174: asym_cpu_capacity_update_data: Added new capacity 160. Capacity list order:
+>             <...>-244     [007] .....     1.959175: asym_cpu_capacity_update_data: -- 1024
+>             <...>-244     [007] .....     1.959176: asym_cpu_capacity_update_data: -- 620
+>             <...>-244     [007] .....     1.959176: asym_cpu_capacity_update_data: -- 250
+>             <...>-244     [007] .....     1.959176: asym_cpu_capacity_update_data: -- 160
+>             <...>-244     [007] .....     1.959183: asym_cpu_capacity_update_data: Added new capacity 498. Capacity list order:
+>             <...>-244     [007] .....     1.959184: asym_cpu_capacity_update_data: -- 1024
+>             <...>-244     [007] .....     1.959184: asym_cpu_capacity_update_data: -- 620
+>             <...>-244     [007] .....     1.959185: asym_cpu_capacity_update_data: -- 498
+>             <...>-244     [007] .....     1.959185: asym_cpu_capacity_update_data: -- 250
+>             <...>-244     [007] .....     1.959186: asym_cpu_capacity_update_data: -- 160
+>             <...>-244     [007] .....     1.959204: asym_cpu_capacity_scan: Deleted capacity 620
+>             <...>-244     [007] .....     1.959208: asym_cpu_capacity_scan: Deleted capacity 250
+>             <...>-244     [007] .....     1.959209: asym_cpu_capacity_scan: Final capacity list order:
+>             <...>-244     [007] .....     1.959209: asym_cpu_capacity_scan: -- 1024
+>             <...>-244     [007] .....     1.959210: asym_cpu_capacity_scan: -- 498
+>             <...>-244     [007] .....     1.959210: asym_cpu_capacity_scan: -- 160
+>           rcuop/7-66      [001] b....     1.968114: free_asym_cap_entry: Freeing capacity 620
+>           rcuop/7-66      [001] b....     1.968118: free_asym_cap_entry: Freeing capacity 250
 
-Thanks,
-Guenter
+IMO the trace is not necessary.
+
+> 
+> Suggested-by: Pierre Gondois <pierre.gondois@arm.com>
+> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> ---
+>   kernel/sched/topology.c | 16 ++++++++++++++--
+>   1 file changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index ba4a0b18ae25..1505677e4247 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -1384,18 +1384,30 @@ static void free_asym_cap_entry(struct rcu_head *head)
+>   static inline void asym_cpu_capacity_update_data(int cpu)
+>   {
+>   	unsigned long capacity = arch_scale_cpu_capacity(cpu);
+> -	struct asym_cap_data *entry = NULL;
+> +	struct asym_cap_data *insert_entry = NULL;
+> +	struct asym_cap_data *entry;
+>   
+> +	/*
+> +	 * Search if capacity already exits. If not, track which the entry
+> +	 * where we should insert to keep the list ordered descendingly.
+> +	 */
+
+IMO just a small comment like the one suggested below should be enough,
+but this is just a suggestion.
+
+>   	list_for_each_entry(entry, &asym_cap_list, link) {
+>   		if (capacity == entry->capacity)
+>   			goto done;
+> +		else if (!insert_entry && capacity > entry->capacity)
+> +			insert_entry = list_prev_entry(entry, link);
+>   	}
+>   
+>   	entry = kzalloc(sizeof(*entry) + cpumask_size(), GFP_KERNEL);
+>   	if (WARN_ONCE(!entry, "Failed to allocate memory for asymmetry data\n"))
+>   		return;
+>   	entry->capacity = capacity;
+> -	list_add_rcu(&entry->link, &asym_cap_list);
+> +
+> +	/* If NULL then the new capacity is the smallest, add last. */
+
+(something like):
+	/* asym_cap_list is sorted by descending order. */
+> +	if (!insert_entry)
+> +		list_add_tail_rcu(&entry->link, &asym_cap_list);
+> +	else
+> +		list_add_rcu(&entry->link, &insert_entry->link);
+>   done:
+>   	__cpumask_set_cpu(cpu, cpu_capacity_span(entry));
+>   }
 
