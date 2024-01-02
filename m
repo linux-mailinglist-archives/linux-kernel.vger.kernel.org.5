@@ -1,94 +1,74 @@
-Return-Path: <linux-kernel+bounces-14312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 690EA821B36
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:51:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13D03821B38
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:52:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18DCA2831BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:51:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98013B21DE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:52:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33D67EAF6;
-	Tue,  2 Jan 2024 11:51:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9808BF9DF;
+	Tue,  2 Jan 2024 11:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="tCYWBjpU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED49EAC5;
-	Tue,  2 Jan 2024 11:51:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-556ab8b85e3so150395a12.1;
-        Tue, 02 Jan 2024 03:51:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704196298; x=1704801098;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=adTWx/k62Y91HsuyX07Wlly10Dmf3/XSYSsNAhC+0/U=;
-        b=qacc61Gl+1cFvsIYzdEqprrfDBi0h3ahy+HVaa68fUvyJpuJOa4YEmY6kV9jzVh4Ij
-         Qpcvoq5iS6/PIUaKoebZzSv9SbfiZtbr+4i6VnLItrnu8qZF93warpcgGxbRzDiWa9Df
-         8gxmGIM0ZrwTHOTCDZPWIh7hAIv0quJ6Cps4Qgtgc40HP7v7HGTJYYh85xyOp6y+uXXY
-         OvYg4K5q9IF1sZ8+tyJ5SFUaNYtEh0F4Z2ZmILx/+P3RB8hAsZp5DM8BXAyiqKwnzXGF
-         eAD55MZGhEakSBZ69/7BJg+n7pdgk/359f3np2cIgNvfzujvdfSI+p6G6dIhEGTLTnPS
-         fnVw==
-X-Gm-Message-State: AOJu0YxDo0+QZLEPVb2el76IqClyaZdiUW+o0VTjmlLhy3uaAho1sL7J
-	9TG0gCOy6Tc/qwSbcj2PwS8=
-X-Google-Smtp-Source: AGHT+IFiHnZQw5f9kufoiu227wpzclOWRnjx7lrgamOWqUaVv2Z7fhZNctIWtYPNIEARRU0kbFocpw==
-X-Received: by 2002:a50:c042:0:b0:555:9bd7:a4f0 with SMTP id u2-20020a50c042000000b005559bd7a4f0mr7800834edd.36.1704196298081;
-        Tue, 02 Jan 2024 03:51:38 -0800 (PST)
-Received: from gmail.com (fwdproxy-cln-002.fbsv.net. [2a03:2880:31ff:2::face:b00c])
-        by smtp.gmail.com with ESMTPSA id u18-20020aa7db92000000b00554d6b46a3dsm11058289edt.46.2024.01.02.03.51.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 03:51:37 -0800 (PST)
-Date: Tue, 2 Jan 2024 03:51:35 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Simon Horman <horms@kernel.org>, vegard.nossum@oracle.com
-Cc: Vegard Nossum <vegard.nossum@oracle.com>,
-	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"David S . Miller" <davem@davemloft.net>,
-	Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH net-next] Documentation: add pyyaml to requirements.txt
-Message-ID: <ZZP4x7oSbLdugeDL@gmail.com>
-References: <20231222133628.3010641-1-vegard.nossum@oracle.com>
- <20231224164620.GB228041@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52D9F9D6;
+	Tue,  2 Jan 2024 11:51:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C438CC433CA;
+	Tue,  2 Jan 2024 11:51:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1704196303;
+	bh=7fkeBiP+TEUkDqsp/rCPTtcoASRwZlnzRxpDI+DWABE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tCYWBjpUo9bbzyzm91kRqX9kmucLKjrQEfbMIpoSCEcKuQ0EX5MO1Sr1IB++DlLAJ
+	 fC9ACgwsYhndj+nD73eUOHRDl2TA6jN61hJV6iK3iS2LuoohxhI2O+MHaJJ17GuM0v
+	 UR9JyhWdHIirSt8g3DJm6tj6c1/guWiKHkIxCVZc=
+Date: Tue, 2 Jan 2024 12:51:40 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: =?utf-8?B?5a2f5pWs5ae/?= <mengjingzi@iie.ac.cn>
+Cc: jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: Re: inappropriate capability checks in tty_ioctl()
+Message-ID: <2024010247-polio-brittle-1b23@gregkh>
+References: <19ed91a4.10d80.18cc9f7d2ea.Coremail.mengjingzi@iie.ac.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231224164620.GB228041@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <19ed91a4.10d80.18cc9f7d2ea.Coremail.mengjingzi@iie.ac.cn>
 
-Hello Vegard,
-
-On Fri, Dec 22, 2023 at 02:36:28PM +0100, Vegard Nossum wrote:
-> Commit f061c9f7d058 ("Documentation: Document each netlink family") added
-> a new Python script that is invoked during 'make htmldocs' and which reads
-> the netlink YAML spec files.
+On Tue, Jan 02, 2024 at 07:38:31PM +0800, 孟敬姿 wrote:
+> Hi!
 > 
-> Using the virtualenv from scripts/sphinx-pre-install, we get this new
-> error wen running 'make htmldocs':
+> We would like to propose an adjustment to the capability checks in the tty_ioctl() function. Currently, the function uses CAP_SYS_ADMIN to protect three subcommands: TIOCCONS, TIOCSTI and TIOCVHANGUP. We propose updating this to use CAP_SYS_TTY_CONFIG instead for the following reasons:
+> 
+> (1) CAP_SYS_TTY_CONFIG is more relevant to the functions: The three subcommands are responsible for tty-related functions: redirecting console output (TIOCCONS), faking input to a terminal (TIOCSTI), and making the terminal be hung up (TIOCVHANGUP). As the definitions in the capability manual page[1], CAP_SYS_TTY_CONFIG is specifically designed for "employing various privileged ioctl(2) operations on virtual terminals." This aligns more closely with the intended usage scenario compared to CAP_SYS_ADMIN.
+> 
+> (2) Consistency: CAP_SYS_TTY_CONFIG is already employed in other parts of the kernel to protect TIOCVHANGUP-like functionality. For instance, in tty_ioctl() CAP_SYS_ADMIN is used before tty_vhangup(), while in SYSCALL_DEFINE0(vhangup), which located in fs/open.c, the check is done with CAP_SYS_TTY_CONFIG before tty_vhangup().
+> 
+> (3) Maintaining Least Privilege: CAP_SYS_ASMIN is already overloaded and known as the new "root"[2]. According to the manual page[1] “don't choose CAP_SYS_ADMIN if you can possibly avoid it”, switching to CAP_SYS_TTY_CONFIG could be helpful for standardizing the use of capabilities and implementing least privileges. 
+> 
+> This issue exists in several kernel versions and we have checked it on the latest stable release(Linux 6.6.9). We would appreciate your thoughts and feedback on this proposal. Thank you for your time and consideration.
 
-The commit doesn't depend on sphinx. This is a standalone script now.
-The requirements file is at tools/net/ynl/requirements.txt not in sphinx
+What would break if you made such a change?  Have you tried it and
+tested it out?
 
-> Note: This was somehow present in the original patch submission:
-> <https://lore.kernel.org/all/20231103135622.250314-1-leitao@debian.org/>
-> I'm not sure why the pyyaml requirement disappeared in the meantime.
+Also, if you wish to have a change accepted, we need an actual patch to
+apply, that shows you did the work and research to ensure that it will
+work properly.
 
-It disapperared because the original patch version was a sphinx module,
-thus, pyaml was not at sphinx dependency.
+thanks,
 
-In the commit final form, the script is a standalone script inside
-'tools/net/ynl', and PyYAML is already tracked in
-`tools/net/ynl/requirements.txt`.
-
-That said, can you try to install `tools/net/ynl/requirements.txt` and
-see if you are able to reproduce the problem?
+greg k-h
 
