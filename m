@@ -1,127 +1,222 @@
-Return-Path: <linux-kernel+bounces-14967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8672F82256D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:16:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23F31822573
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:22:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78D5C1C22B20
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:16:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C16942848C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:22:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563C31774F;
-	Tue,  2 Jan 2024 23:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838F017754;
+	Tue,  2 Jan 2024 23:21:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="n7U12ke9"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="lLHQn/Bf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2040.outbound.protection.outlook.com [40.107.244.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45151773D
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 23:16:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5e784ce9bb8so74554387b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 15:16:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704237394; x=1704842194; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W9VsReBQkICOIEczr/aBz2S0AWm3omPhTa+sgYDFysE=;
-        b=n7U12ke9HUlf9h9JIl4Hr4vTl35sGXHRFMUgb0qxklXMMaAXtpchclYkN9V5/aUTEl
-         Tr+qgAczELBPYnbHzYrM0+3gFdEDFDtoO4vEaRIUxgUQ1qF2AcB5wFnuhKA0ns+ZuYJY
-         V6ZvLt2PtpBTCrbg+9RgWIms6P5JcQDd22XEI7HCgmpV+hjmECCUX2U+6ilocGPbSpzv
-         jZc10ZpGudzYXnBg3WhZ2ITPdYtunH+Jt8XWEV4k444EEbqZ8gBgZxFEgLJLFEht3sA/
-         DyfYjkWmuVp9mjOQ/184BWYsOQdG/a9KSLWXv/ZUXjGxdK7X7brrHc060NlcRki7zmK8
-         vCrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704237394; x=1704842194;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W9VsReBQkICOIEczr/aBz2S0AWm3omPhTa+sgYDFysE=;
-        b=LaihvGiPy2QKsoNNj2KJ6l6PKnunfetFABc+JZCP9Q30WX1bTRvlV7DaKinR/ciZfN
-         ZctZVc+lUXNNjchVvUIqakooLEsbd26nil9if5KoHH/9MAEIX0kWOsWehbli5BIs5DKI
-         OJ6Gqz56bA5O0bgKaXZOS/0T+lAuapZs72NPXWAgPHg26Sn2jMgXrdovcCc3ZBwvmaR1
-         TjVagB6v6MlkxGt3l/32+TOH9YTfjyitVGIVGd9NOpfDENUhWDn5oFbaau4tuyCd60iR
-         L/+JE8WVui/aFadbFR2sMg54pJhBHcmEzBvqMmlEs7/uVKog8bC8A+UwZfVJ81ixkWbv
-         ++fg==
-X-Gm-Message-State: AOJu0YzObujLMqX8SaK1Ik2TtLFHgrtZb5bOrGA2UZQFEgkM8eI4qCj5
-	ebytUBk37tXeuA6cU/DGuF5QGeEDK6Gk/edPPfCAoBVcQ+Ev
-X-Google-Smtp-Source: AGHT+IE8Ax7U2bqyqO1lsnqmhbIiZe0ibMeQxiHn/HbCQlPrEjVBV5+vDgfgYKVCj0YEiEECTa6N9nL3Qu/E0E5RKYw=
-X-Received: by 2002:a81:574d:0:b0:5d3:dacc:63bd with SMTP id
- l74-20020a81574d000000b005d3dacc63bdmr108135ywb.19.1704237393551; Tue, 02 Jan
- 2024 15:16:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E321773F;
+	Tue,  2 Jan 2024 23:21:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=drrXFiIjpSaq9otzGtlZ9SwtgLAwjh7pmnzhyjIh7NLpXYdPe+jXi59EMNLErQ7AUT3lYu6QYEWIZgjAEdtDOKzPQUXXjO+YXKR0Ok6lgn2iqNZRbB5EpYU298XEDtFeIyXBNLZgxwNIAdYWCF9nqC155jrIAumPC3qxciUnHeHiA8VzHldMBkX93Gps50FWqReO6vEo7v3Kjw75HZqK2ndLH2XH6viGf7LbmxLU8Y2FTaIbbTs3uJesSxmtqtba+CYniQ4H23UUtZDPz/1X1FB20FEn/MQfXXGGrxNL9vSQC6+xIyn7d+z9xJmeLWSym6NByPwKp8L/L9GU/VoIpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cx1KCH4vzCYjZr/dJQJAt9v3mDo5m2kpsLg5RRyXb8I=;
+ b=I4/HR5KKMLtAskiYVNkufKttjpmk5EKc5mfLVqmu7pmCQN1MFgJe8VwwL2/p4aT7do7vBYJxjjpjRTznA5I4aSdIYK8ecp+IqIrUmw/LkRN261m/xQAkmWjBaaEyBPJYxtXWbl/LtZzaemxQFIdUe3V43Ef8hrTY/NBhhrW4hKHK5Y5qlrkcBFMNiZVKXdojg/2Y9VLt/qifn4K+nBUC7nowIauc1/E3ZJETj64Ntjdh5cM6HTt1gCt15f9Y5E5m4CDTsn8Rx8yOKm9e6qM23ROd5giCDQMOJwSXaW449WZUJ8tXwelngRN0G5YhsG96RFfMyaRedwirlH+D5s6U9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cx1KCH4vzCYjZr/dJQJAt9v3mDo5m2kpsLg5RRyXb8I=;
+ b=lLHQn/BfgEYVkNHVXcNlvpB2qM5BH0oFWC6149yzCbk4Tt5mBB2SD+ydw+T7awyuaDw6awvNsYvnnVtLZoxokmpbowC6y6TlVVaD3SpAhuM/zgHFcZq1NzgykitdDLewjCzd37Sx8pXJbsQAgdEfyjliCcRs+Af7WuEc9cpuMkY=
+Received: from DS7PR03CA0356.namprd03.prod.outlook.com (2603:10b6:8:55::22) by
+ BL1PR12MB5270.namprd12.prod.outlook.com (2603:10b6:208:31e::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7159.13; Tue, 2 Jan 2024 23:21:48 +0000
+Received: from DS2PEPF0000343F.namprd02.prod.outlook.com
+ (2603:10b6:8:55:cafe::a1) by DS7PR03CA0356.outlook.office365.com
+ (2603:10b6:8:55::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.23 via Frontend
+ Transport; Tue, 2 Jan 2024 23:21:48 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS2PEPF0000343F.mail.protection.outlook.com (10.167.18.42) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7159.9 via Frontend Transport; Tue, 2 Jan 2024 23:21:48 +0000
+Received: from purico-ed09host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 2 Jan
+ 2024 17:21:46 -0600
+From: Ashish Kalra <Ashish.Kalra@amd.com>
+To: <pbonzini@redhat.com>
+CC: <seanjc@google.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+	<bp@alien8.de>, <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+	<hpa@zytor.com>, <thomas.lendacky@amd.com>, <kvm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <joro@8bytes.org>
+Subject: [PATCH] x86/sev: Add support for allowing zero SEV ASIDs.
+Date: Tue, 2 Jan 2024 23:21:36 +0000
+Message-ID: <20240102232136.38778-1-Ashish.Kalra@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231230025607.2476912-1-surenb@google.com> <ZZPQjO91fvB66z1s@x1n>
- <CAJuCfpF8h4aPAvFQv4NjX=DRWTZ1P5DcO16DfT-Sot1cGucjJQ@mail.gmail.com>
-In-Reply-To: <CAJuCfpF8h4aPAvFQv4NjX=DRWTZ1P5DcO16DfT-Sot1cGucjJQ@mail.gmail.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Tue, 2 Jan 2024 15:16:20 -0800
-Message-ID: <CAJuCfpG4tSPADrSpUCubsymoT_FWO4mONFODb2_sK4f-5RTY-A@mail.gmail.com>
-Subject: Re: [PATCH 1/1] userfaultfd: fix move_pages_pte() splitting folio
- under RCU read lock
-To: Peter Xu <peterx@redhat.com>
-Cc: akpm@linux-foundation.org, viro@zeniv.linux.org.uk, brauner@kernel.org, 
-	shuah@kernel.org, aarcange@redhat.com, lokeshgidra@google.com, 
-	david@redhat.com, ryan.roberts@arm.com, hughd@google.com, mhocko@suse.com, 
-	axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org, 
-	Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com, 
-	bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com, 
-	jdduke@google.com, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF0000343F:EE_|BL1PR12MB5270:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2448efd4-ea16-4695-4a09-08dc0be997da
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	z3tNTV6mLoxI7qBcPl62QPTp7mDv4H5JGDNeKlehUZ3nDkeSRaJpUa/LyfuIb682q8Qteggh0IT3EBbORzE1nwHgXFan+9T9q80MuFBvXch4XAd0OknNH9rZ5fKBHSyrFqchcFTcickAd6fRFLeOGB1wTcF9wrJwqlxxCS11/OcMpdaIY48KYOPpujeCOm9y4qUhhpMwg6UmDi5K5Q/5ru+sd+oCbu/DMwqkiTrrIrZ7QsP/cpa4k6Ewy/9xBQRU9uQwJ9DrNW17loitdEQyR+LKIF0t1Y+N63epqg/vbOOglB1KXZxZINutXvBQUrMrLqXEiIfEwNULBDPqFJn0kIWFU/H19QohjH2f1mx6Iu2IvIah4fYV6jgNfQAvGomR8aZ1K/0a/G0EJ54M3jQBFnCeHHHtxmguuaIhfWF0DOSBN9UluReTmM/cQD+y4AqMG1uOs7wd42ByQqCj2g1FaC/zsNX1SFddco+62z5bOPMxlFGYzv2cc3kl0//XyCiqrV9NzpnIxbjgdjihfAdOfVLtNbxhxGPutMOjdtWdVe7mmKjjz58DYmYlbCLtlqtz5r6ipc4hLpf0Kfd2T6XiYLhIi+sWnmazBSzCjDhJgSFWmOewDaeCJ74pkuXt7dh+EqB/o3nRV6TIhIfie975UxXItZB8eoplJieP2ySbJ+uSSjfXqrdDQxsutuCvuNLEUWh3Jhw1iKBPicn9N6UsOEPJfmBeVtwGrl00TNM29s0qyhR8vFL0vbB+/Ed/zQXlSqxNNkFBtnBXONY3Wb+5FQ==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39860400002)(136003)(376002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(82310400011)(40470700004)(36840700001)(46966006)(2906002)(26005)(2616005)(47076005)(83380400001)(41300700001)(336012)(356005)(81166007)(16526019)(1076003)(426003)(82740400003)(36860700001)(316002)(8676002)(8936002)(54906003)(7416002)(4326008)(5660300002)(478600001)(70206006)(6666004)(6916009)(70586007)(7696005)(86362001)(36756003)(40460700003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2024 23:21:48.1937
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2448efd4-ea16-4695-4a09-08dc0be997da
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS2PEPF0000343F.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5270
 
-On Tue, Jan 2, 2024 at 8:58=E2=80=AFAM Suren Baghdasaryan <surenb@google.co=
-m> wrote:
->
-> On Tue, Jan 2, 2024 at 1:00=E2=80=AFAM Peter Xu <peterx@redhat.com> wrote=
-:
-> >
-> > On Fri, Dec 29, 2023 at 06:56:07PM -0800, Suren Baghdasaryan wrote:
-> > > @@ -1078,9 +1078,14 @@ static int move_pages_pte(struct mm_struct *mm=
-, pmd_t *dst_pmd, pmd_t *src_pmd,
-> > >
-> > >               /* at this point we have src_folio locked */
-> > >               if (folio_test_large(src_folio)) {
-> > > +                     /* split_folio() can block */
-> > > +                     pte_unmap(&orig_src_pte);
-> > > +                     pte_unmap(&orig_dst_pte);
-> > > +                     src_pte =3D dst_pte =3D NULL;
-> > >                       err =3D split_folio(src_folio);
-> > >                       if (err)
-> > >                               goto out;
-> > > +                     goto retry;
-> > >               }
-> >
-> > Do we also need to clear src_folio and src_folio_pte?  If the folio is =
-a
-> > thp, I think it means it's pte mapped here. Then after the split we may
-> > want to fetch the small folio after the split, not the head one?
->
-> I think we need to re-fetch the src_folio only if the src_addr falls
-> into a non-head page. Looking at the __split_huge_page(), the head
-> page is skipped in the last loop, so I think it should stay valid.
-> That said, maybe it's just an implementation detail of the
-> __split_huge_page() and I should not rely on that and refetch anyway?
+From: Ashish Kalra <ashish.kalra@amd.com>
 
-I'll post a v2 with this fix and re-fetching the folio
-unconditionally. We also don't need to reset src_folio_pte value
-because it's used only if src_folio is not NULL.
-Thanks for catching this, Peter!
+Some BIOSes allow the end user to set the minimum SEV ASID value
+(CPUID 0x8000001F_EDX) to be greater than the maximum number of
+encrypted guests, or maximum SEV ASID value (CPUID 0x8000001F_ECX)
+in order to dedicate all the SEV ASIDs to SEV-ES or SEV-SNP.
 
->
-> >
-> > --
-> > Peter Xu
-> >
+The SEV support, as coded, does not handle the case where the minimum
+SEV ASID value can be greater than the maximum SEV ASID value.
+As a result, the following confusing message is issued:
+
+[   30.715724] kvm_amd: SEV enabled (ASIDs 1007 - 1006)
+
+Fix the support to properly handle this case.
+
+Fixes: 916391a2d1dc ("KVM: SVM: Add support for SEV-ES capability in KVM")
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+Cc: stable@vger.kernel.org
+---
+ arch/x86/kvm/svm/sev.c | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 4900c078045a..ad41008ca0d9 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -59,10 +59,14 @@ module_param_named(sev_es, sev_es_enabled, bool, 0444);
+ /* enable/disable SEV-ES DebugSwap support */
+ static bool sev_es_debug_swap_enabled = true;
+ module_param_named(debug_swap, sev_es_debug_swap_enabled, bool, 0444);
++
++/* When true, at least one type of SEV guest is enabled to run */
++static bool sev_guests_enabled;
+ #else
+ #define sev_enabled false
+ #define sev_es_enabled false
+ #define sev_es_debug_swap_enabled false
++#define sev_guests_enabled false
+ #endif /* CONFIG_KVM_AMD_SEV */
+ 
+ static u8 sev_enc_bit;
+@@ -1854,7 +1858,7 @@ int sev_mem_enc_ioctl(struct kvm *kvm, void __user *argp)
+ 	struct kvm_sev_cmd sev_cmd;
+ 	int r;
+ 
+-	if (!sev_enabled)
++	if (!sev_guests_enabled)
+ 		return -ENOTTY;
+ 
+ 	if (!argp)
+@@ -2172,8 +2176,10 @@ void sev_vm_destroy(struct kvm *kvm)
+ 
+ void __init sev_set_cpu_caps(void)
+ {
+-	if (!sev_enabled)
++	if (!sev_guests_enabled) {
+ 		kvm_cpu_cap_clear(X86_FEATURE_SEV);
++		return;
++	}
+ 	if (!sev_es_enabled)
+ 		kvm_cpu_cap_clear(X86_FEATURE_SEV_ES);
+ }
+@@ -2229,9 +2235,11 @@ void __init sev_hardware_setup(void)
+ 		goto out;
+ 	}
+ 
+-	sev_asid_count = max_sev_asid - min_sev_asid + 1;
+-	WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV, sev_asid_count));
+-	sev_supported = true;
++	if (min_sev_asid <= max_sev_asid) {
++		sev_asid_count = max_sev_asid - min_sev_asid + 1;
++		WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV, sev_asid_count));
++		sev_supported = true;
++	}
+ 
+ 	/* SEV-ES support requested? */
+ 	if (!sev_es_enabled)
+@@ -2262,7 +2270,8 @@ void __init sev_hardware_setup(void)
+ 	if (boot_cpu_has(X86_FEATURE_SEV))
+ 		pr_info("SEV %s (ASIDs %u - %u)\n",
+ 			sev_supported ? "enabled" : "disabled",
+-			min_sev_asid, max_sev_asid);
++			sev_supported ? min_sev_asid : 0,
++			sev_supported ? max_sev_asid : 0);
+ 	if (boot_cpu_has(X86_FEATURE_SEV_ES))
+ 		pr_info("SEV-ES %s (ASIDs %u - %u)\n",
+ 			sev_es_supported ? "enabled" : "disabled",
+@@ -2270,6 +2279,7 @@ void __init sev_hardware_setup(void)
+ 
+ 	sev_enabled = sev_supported;
+ 	sev_es_enabled = sev_es_supported;
++	sev_guests_enabled = sev_enabled || sev_es_enabled;
+ 	if (!sev_es_enabled || !cpu_feature_enabled(X86_FEATURE_DEBUG_SWAP) ||
+ 	    !cpu_feature_enabled(X86_FEATURE_NO_NESTED_DATA_BP))
+ 		sev_es_debug_swap_enabled = false;
+@@ -2278,7 +2288,7 @@ void __init sev_hardware_setup(void)
+ 
+ void sev_hardware_unsetup(void)
+ {
+-	if (!sev_enabled)
++	if (!sev_guests_enabled)
+ 		return;
+ 
+ 	/* No need to take sev_bitmap_lock, all VMs have been destroyed. */
+@@ -2293,7 +2303,7 @@ void sev_hardware_unsetup(void)
+ 
+ int sev_cpu_init(struct svm_cpu_data *sd)
+ {
+-	if (!sev_enabled)
++	if (!sev_guests_enabled)
+ 		return 0;
+ 
+ 	sd->sev_vmcbs = kcalloc(nr_asids, sizeof(void *), GFP_KERNEL);
+-- 
+2.34.1
+
 
