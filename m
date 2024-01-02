@@ -1,123 +1,145 @@
-Return-Path: <linux-kernel+bounces-14217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D51482194B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:58:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D2CB821953
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:00:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E81F4282DD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:58:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C0FA1F22492
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6CECD266;
-	Tue,  2 Jan 2024 09:58:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BFF6D267;
+	Tue,  2 Jan 2024 10:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="PTjZT+yn"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ccsuBQIb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E85ACA64;
-	Tue,  2 Jan 2024 09:58:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=hHKFbUEIS5ipHE53Wsnge1tw3F+Oty8Rlp/6KIyJ0SM=; b=PTjZT+ynysR242Cz+a5gDo6Ug6
-	vxfDl4l640h+U1q2VFbFKeuf86sURKmW73H8d15Qkn0/7Bsd6oXmu6vvrOpK2Vv8Dkhb3oHRzNU1O
-	3HvBChhvWIyTe8Dw0bHzjAbMdF1/76379C2QtzPoBH528P2iBWNoxJuFA1XEMIRoY63PM55QF/DfL
-	YL3xMQnMaelYjmhh2hz1Yf3zSHgh4HZriT2ziwBeBmLuWm47C07oskPy+VvfDv1LaMv19ntO3WSNO
-	+a7nBcGi5aGRY5sIuKIvUrqhThMA9kRc9gVx4LZDofSfFmu0JiIbf42uI4wuVA039WlaUznPAYtdu
-	egnlxz/Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37522)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rKbWu-0006Ku-1v;
-	Tue, 02 Jan 2024 09:57:48 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rKbWu-00059k-UX; Tue, 02 Jan 2024 09:57:48 +0000
-Date: Tue, 2 Jan 2024 09:57:48 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Jie Luo <quic_luoj@quicinc.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	hkallweit1@gmail.com, corbet@lwn.net, p.zabel@pengutronix.de,
-	f.fainelli@gmail.com, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, Christian Marangi <ansuelsmth@gmail.com>
-Subject: Re: [PATCH v8 14/14] dt-bindings: net: ar803x: add qca8084 PHY
- properties
-Message-ID: <ZZPeHJJU96y1kdlZ@shell.armlinux.org.uk>
-References: <20231215074005.26976-15-quic_luoj@quicinc.com>
- <60b9081c-76fa-4122-b7ae-5c3dcf7229f9@lunn.ch>
- <a65ad12d-b990-4439-b196-903f4a5f096a@quicinc.com>
- <f5c5cbce-c36e-498a-97e2-35f06d927d74@lunn.ch>
- <a9798333-3105-422f-8033-76c0b1d4f439@quicinc.com>
- <7c05b08a-bb6d-4fa1-8cee-c1051badc9d9@lunn.ch>
- <ZX2rU5OFcZFyBmGl@shell.armlinux.org.uk>
- <6abe5d6f-9d00-445f-8c81-9c89b9da3e0a@quicinc.com>
- <ZX3LqN8DSdKXqsYc@shell.armlinux.org.uk>
- <1bddd434-024c-45ff-9866-92951a3f555f@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83726CA6F
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 10:00:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704189628;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=41ZHkYLIzXdzlI467/3yvpKL+LfhtQ/UVRwyY0aP7do=;
+	b=ccsuBQIb8ysJvI+AcxNtyDAMQeK0IXmV050w+4fOtNDtG5vcEBp5tLS4fYF6cHvtj75gtC
+	2WM6g/geJwdPikxJSiVXr/cZAulTJkN+ODLNbCaoO3O50XQwKRH+eZy1FbK5949G7PFvP9
+	WkbaMigDHqBxAv6Jdb6Kl7+GE4CUPug=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-651-kdCAdpLBNHaMbaGdv_k4jQ-1; Tue, 02 Jan 2024 05:00:26 -0500
+X-MC-Unique: kdCAdpLBNHaMbaGdv_k4jQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40d6045090cso30124165e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 02:00:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704189626; x=1704794426;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=41ZHkYLIzXdzlI467/3yvpKL+LfhtQ/UVRwyY0aP7do=;
+        b=aMJvdq4u2bRBAO8EfEWJfAi37osHkG+VpPeoRX6oHYvBuIFf1G1iVswT0AtmhpxDAD
+         pe6jbVMSqgLlL46BNz6DP9GKjwiLIfsfElYA1+OYjuf++zmg+J1Ww62QQ3XtLKKF/MtM
+         rT58aOWOUjqUSdf46Va+AX68JB9vzfUuzyRITJq4l0WNHMIXM3afR4SPslT3CH9O/F//
+         l0YoEP6wPsmGAXhDoxuW9Ys1PsQC+CxKi4+UhvAc8rY+BTY7b1+zxYkABGy01NsJten1
+         vkRDtF/LQAkl5cNq14UBDlsWHNroQoKXLX85a87NPWpuk4rRpnhMnhexSHgB96y6YKsw
+         16mw==
+X-Gm-Message-State: AOJu0YzoDDa6cifAvugM1nYJawMmQe4orfBTAdg/CjwQd/y/4PXIuBVk
+	nVYkkcBiSfzooueu2zOlEEP9JjHGUpg+qEitH+s51BLjmiCgnSudD4Kvbe7yIyDa5AWkSAxzDLq
+	03473UbavYJBUlQNfrYq0uXnDXibyU42e
+X-Received: by 2002:a05:600c:19c8:b0:40d:4da9:db82 with SMTP id u8-20020a05600c19c800b0040d4da9db82mr9938202wmq.45.1704189625786;
+        Tue, 02 Jan 2024 02:00:25 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE3Agx/gwP+fFgW2C3mmhZgnjPwndajkXWg4EnlVYuLP0ev7FiqSWkpu0/oR90z1A1crbSQvQ==
+X-Received: by 2002:a05:600c:19c8:b0:40d:4da9:db82 with SMTP id u8-20020a05600c19c800b0040d4da9db82mr9938186wmq.45.1704189625439;
+        Tue, 02 Jan 2024 02:00:25 -0800 (PST)
+Received: from sgarzare-redhat ([5.179.173.123])
+        by smtp.gmail.com with ESMTPSA id q17-20020a05600c46d100b0040d802a7619sm13228741wmo.38.2024.01.02.02.00.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 02:00:24 -0800 (PST)
+Date: Tue, 2 Jan 2024 11:00:12 +0100
+From: Stefano Garzarella <sgarzare@redhat.com>
+To: Mina Almasry <almasrymina@google.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	kvm@vger.kernel.org, virtualization@lists.linux.dev, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Stefan Hajnoczi <stefanha@redhat.com>, David Howells <dhowells@redhat.com>, 
+	Jason Gunthorpe <jgg@nvidia.com>, Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>, 
+	Shakeel Butt <shakeelb@google.com>, Yunsheng Lin <linyunsheng@huawei.com>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Subject: Re: [PATCH net-next v3 1/3] vsock/virtio: use skb_frag_*() helpers
+Message-ID: <ezudlfnvquoxnb7jsd6u4vkyu6hd4waofum6u5s3fhm2cihjqx@5lfgbk7pmm75>
+References: <20231220214505.2303297-1-almasrymina@google.com>
+ <20231220214505.2303297-2-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <1bddd434-024c-45ff-9866-92951a3f555f@quicinc.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20231220214505.2303297-2-almasrymina@google.com>
 
-On Mon, Dec 18, 2023 at 11:01:03AM +0800, Jie Luo wrote:
-> 
-> 
-> On 12/17/2023 12:09 AM, Russell King (Oracle) wrote:
-> > On Sat, Dec 16, 2023 at 10:41:28PM +0800, Jie Luo wrote:
-> > > 
-> > > 
-> > > On 12/16/2023 9:51 PM, Russell King (Oracle) wrote:
-> > > > On Sat, Dec 16, 2023 at 11:21:53AM +0100, Andrew Lunn wrote:
-> > > > > > The following is the chip package, the chip can work on the switch mode
-> > > > > > like the existed upstream code qca8k, where PHY1-PHY4 is connected with
-> > > > > > MAC1-MAC4 directly;
-> > > > > 
-> > > > > Ah, that is new information, and has a big effect on the design.
-> > > > 
-> > > > This QCA8084 that's being proposed in these patches is not a PHY in
-> > > > itself, but is a SoC. I came across this:
-> > > > 
-> > > >    https://www.rt-rk.com/android-tv-solution-tv-in-smartphone-pantsstb-based-on-qualcomm-soc-design/
-> > > 
-> > > The chip mentioned in the link you mentioned is SoC, which is not the
-> > > chip that the qca8084 driver work for.
-> > 
-> > So there's two chips called QCA8084 both produced by Qualcomm? I find
-> > that hard to believe.
-> > 
-> 
-> The SoC mentioned in the link you provided is the APQ8084 that is introduced
-> in the link below:
-> https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-processors-805
+On Wed, Dec 20, 2023 at 01:45:00PM -0800, Mina Almasry wrote:
+>Minor fix for virtio: code wanting to access the fields inside an skb
+>frag should use the skb_frag_*() helpers, instead of accessing the
+>fields directly. This allows for extensions where the underlying
+>memory is not a page.
+>
+>Signed-off-by: Mina Almasry <almasrymina@google.com>
+>
+>---
+>
+>v2:
+>
+>- Also fix skb_frag_off() + skb_frag_size() (David)
+>- Did not apply the reviewed-by from Stefano since the patch changed
+>relatively much.
 
-So the one mentioned in the rt-rk article and a load of CVEs is _not_
-QCA8084 but is APQ8084. Sounds like a lot of people are getting stuff
-wrong - which is hardly surprising as there are people that seem to
-_enjoy_ getting the technical details wrong. I haven't worked out if
-it's intentional malace, or they're just fundamentally lazy individuals
-who just like to screw with other people.
+Sorry for the delay, I was off.
 
-Sigh.
+LGTM!
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Acked-by: Stefano Garzarella <sgarzare@redhat.com>
+
+Possibly we can also send this patch alone if the series is still under
+discussion because it's definitely an improvement to the current code.
+
+Thanks,
+Stefano
+
+>
+>---
+> net/vmw_vsock/virtio_transport.c | 6 +++---
+> 1 file changed, 3 insertions(+), 3 deletions(-)
+>
+>diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+>index f495b9e5186b..1748268e0694 100644
+>--- a/net/vmw_vsock/virtio_transport.c
+>+++ b/net/vmw_vsock/virtio_transport.c
+>@@ -153,10 +153,10 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+> 				 * 'virt_to_phys()' later to fill the buffer descriptor.
+> 				 * We don't touch memory at "virtual" address of this page.
+> 				 */
+>-				va = page_to_virt(skb_frag->bv_page);
+>+				va = page_to_virt(skb_frag_page(skb_frag));
+> 				sg_init_one(sgs[out_sg],
+>-					    va + skb_frag->bv_offset,
+>-					    skb_frag->bv_len);
+>+					    va + skb_frag_off(skb_frag),
+>+					    skb_frag_size(skb_frag));
+> 				out_sg++;
+> 			}
+> 		}
+>-- 
+>2.43.0.472.g3155946c3a-goog
+>
+
 
