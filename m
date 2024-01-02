@@ -1,172 +1,100 @@
-Return-Path: <linux-kernel+bounces-14396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D9E821C7E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:21:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17D3D821D40
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:03:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BAE8B21842
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:21:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00F7E1C22244
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:03:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CA5EFBED;
-	Tue,  2 Jan 2024 13:21:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8992A10979;
+	Tue,  2 Jan 2024 14:03:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ih3D4CVK"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o+tcxqoO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5F81F9EB;
-	Tue,  2 Jan 2024 13:21:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33679c49fe5so8174511f8f.3;
-        Tue, 02 Jan 2024 05:21:03 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84EC71094E
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:03:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d5d898162so42238185e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:03:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704201662; x=1704806462; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:to:from:subject
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=j5PNTurghlPI/wU+fXieHZ4gaYw2koYqIseDXj5bnCo=;
-        b=ih3D4CVKHytliUvNDPFK4SOlu0n3djAwJpOO1shEhTQBKvPTLtLQgQSs9HWIxNCSnf
-         TU4p6PlqnR5APTuS4vKNeEi7X5JyqlpIaldDR6zlKLII80U9f5lEE+Bh4bOudKik7Gm2
-         iwHU09tSJC4Jlo1ItAfzVqj/BNiVaEKX/hfRYETGGzkIAwH/4PYCvz1sTL1+VlSesM47
-         kMxfzFbmKCvBCz1lwFi9QskHipaEm9yLaaE22ZuntJ74JhBjcFzAU1lFn9NdJbruXUva
-         sjOnuVSztFBKXlkVVChzjCYZ2lD98w7wJg7RzJ6LDlxZdqnkPAgJyJQ4zc44+wpcbDjp
-         QO7Q==
+        d=linaro.org; s=google; t=1704204216; x=1704809016; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5qqTKJtifBPnETv7np6pfevn5UJOzWmcakMBHLMWLps=;
+        b=o+tcxqoOYcQ5HAayJnRqSm7NxdAqP2MErgQU8epSHKYVyM/c4jcC81b3Yd176KG4DS
+         9is9buQ+5aWrA1Vstbw8VmEpR+TW5x0EIzaEnOUzWKGKlHt2pDC8o31QuXCPaNCnAaYg
+         fREAZEYQLWPjKfhv094977NNmDuGdHgxllDUKqBRTbO7o4wvPfrr18FmMrPjtcTWlVmP
+         hqurUR1K9WRIvk7jcGSW+sezFZSzYApttQ5VbJFRxbDZMcT6LLZjNUQfigzswlbPLHjx
+         my4cIf89hejeyO+DSyYRLSV5+ufEdKHqv/MzVcuzKn4V2mTPSkNlcRx4VVenc/GRQfhx
+         k0Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704201662; x=1704806462;
-        h=content-transfer-encoding:in-reply-to:references:to:from:subject
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=j5PNTurghlPI/wU+fXieHZ4gaYw2koYqIseDXj5bnCo=;
-        b=BPHKLjc4PNsqAzprxrA64mKDLXvwrz4K4fjEzYDyn43bJMyBmIxPpRSOVlI0t76OHm
-         S67VFAEt7s8/xfuYDarO/VmubbdERW3x3/W2rbji7hyPPa839nLQOd5PYlOhUUs9E4bp
-         0DgmCJWIGOzj4poiFYRrizIe6KMkM79KbWa698LbpqwC5YC2nxkmBVhKvH+4dsZJAiQc
-         0UkWQXtEoUuu96RhQhDw+JxNSqhji4HlkFB4ukVr1n22YH7etusQHpEsGM8F3zs+sc7i
-         1OE6obnahH+8tvhIhYL0KMfJhU3F6oQ7LTOsrHg2z5YabEYeosFTqeJmGuMd8Mt5OnNu
-         CcMw==
-X-Gm-Message-State: AOJu0YxYQ43VWcrCfQDICPrDjz8A+ooHXbwMf9y1fs3RAn97P0vR/dsq
-	eNkiDCLIonRYTOrqpiwxMCQkrE9pcGRY4IzJ
-X-Google-Smtp-Source: AGHT+IFLlUav8GWe5NG2HjLMQrfHBduQLQfTxbhgX8wDmq3p883iCjfMT51YVL92baFsVky4mXKolQ==
-X-Received: by 2002:a5d:4482:0:b0:336:7f81:d825 with SMTP id j2-20020a5d4482000000b003367f81d825mr9192600wrq.56.1704201662000;
-        Tue, 02 Jan 2024 05:21:02 -0800 (PST)
-Received: from debian ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id r8-20020a5d4948000000b003367a5b6b69sm28254743wrs.106.2024.01.02.05.20.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 05:21:01 -0800 (PST)
-Message-ID: <27d4cc21-1ce5-4417-bd0c-6dd43a92e4aa@gmail.com>
-Date: Tue, 2 Jan 2024 14:20:55 +0100
+        d=1e100.net; s=20230601; t=1704204216; x=1704809016;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5qqTKJtifBPnETv7np6pfevn5UJOzWmcakMBHLMWLps=;
+        b=auET08G7DZz3Wrs83VDle5h3p2b4fWEw8UXeJKTQUKtnXPYzAoa0nHo361h9t9wCC9
+         i+90LLEc2GhnrIpT5uNeQ7DRwupxHv5Wcyrky0Ke9HPgjyD4RvwguZZrE53IHRcuQjZ7
+         g3m57/zHTQjwWYrIn4ZPFw+jp5JdX8V7IuV5KZ79KL0c9OozT+NPikeIGd4DBg3sGh5D
+         j7srcJ1Jo3O52wVJat7hH1ClixQEJyo5VZBelhdtorvfNg/NNfIeSxuR3inlQCbYsffi
+         lE9/SKEcjozqCpNj9tGI1euoj6jdkB69xlgD9Z1KkJB2PNZZ4Qs2Oeb7rRINwjz8hUqo
+         l7aw==
+X-Gm-Message-State: AOJu0YzxIsfabj4hC7VVocOxfV3+EmbCiH0lyJjwP9c6KQL1EsCtw+9r
+	4XcGLFzZoCgXpWZGIQWYnY+57ibKvEWuGw==
+X-Google-Smtp-Source: AGHT+IHszu5kYoPxaua17Zir72G8+47MdyzOxbuqM4YiER7bIwhhZFsyR7srK6e08ANasQ0eoLbNNw==
+X-Received: by 2002:a05:600c:ca:b0:40d:376b:c640 with SMTP id u10-20020a05600c00ca00b0040d376bc640mr12050424wmm.102.1704204216035;
+        Tue, 02 Jan 2024 06:03:36 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id d17-20020adffbd1000000b0033719111458sm11777561wrs.36.2024.01.02.06.03.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 06:03:35 -0800 (PST)
+Date: Tue, 2 Jan 2024 16:22:56 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Nathan DSilva <expitau@gmail.com>
+Cc: gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
+	tdavies@darkphysics.net, error27@gmail.com,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: rtl8192e: Add blank line after declarations
+Message-ID: <213d872d-8ad0-49f5-b6ae-9a1c69ecc107@suswa.mountain>
+References: <ZXvevJ2vEEQ92rau@oatmeal.darkphysics>
+ <20231215152918.532037-1-expitau@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: [PATCH net-next v2 1/3] net: gso: add HBH extension header offload
- support
-From: Richard Gobert <richardbgobert@gmail.com>
-To: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <127b8199-1cd4-42d7-9b2b-875abaad93fe@gmail.com>
-In-Reply-To: <127b8199-1cd4-42d7-9b2b-875abaad93fe@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215152918.532037-1-expitau@gmail.com>
 
-This commit adds net_offload to IPv6 Hop-by-Hop extension headers (as it
-is done for routing and dstopts) since it is supported in GSO and GRO.
-This allows to remove specific HBH conditionals in GSO and GRO when
-pulling and parsing an incoming packet.
+On Fri, Dec 15, 2023 at 03:29:18PM +0000, Nathan DSilva wrote:
+> Remove a warning about line breaks after declarations found by checkpatch.
+> 
+> Signed-off-by: Nathan DSilva <expitau@gmail.com>
+> ---
+> 
+> Thank you very much for your response. I didn't realize you could select
+> multiple --to recipients, or that you could have comments not in the changelog.
+> 
 
-Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
----
- net/ipv6/exthdrs_offload.c | 11 +++++++++++
- net/ipv6/ip6_offload.c     | 25 +++++++++++--------------
- 2 files changed, 22 insertions(+), 14 deletions(-)
+This should say:
 
-diff --git a/net/ipv6/exthdrs_offload.c b/net/ipv6/exthdrs_offload.c
-index 06750d65d480..4c00398f4dca 100644
---- a/net/ipv6/exthdrs_offload.c
-+++ b/net/ipv6/exthdrs_offload.c
-@@ -16,6 +16,10 @@ static const struct net_offload dstopt_offload = {
- 	.flags		=	INET6_PROTO_GSO_EXTHDR,
- };
- 
-+static const struct net_offload hbh_offload = {
-+	.flags		=	INET6_PROTO_GSO_EXTHDR,
-+};
-+
- int __init ipv6_exthdrs_offload_init(void)
- {
- 	int ret;
-@@ -28,9 +32,16 @@ int __init ipv6_exthdrs_offload_init(void)
- 	if (ret)
- 		goto out_rt;
- 
-+	ret = inet6_add_offload(&hbh_offload, IPPROTO_HOPOPTS);
-+	if (ret)
-+		goto out_dstopts;
-+
- out:
- 	return ret;
- 
-+out_dstopts:
-+	inet6_del_offload(&dstopt_offload, IPPROTO_DSTOPTS);
-+
- out_rt:
- 	inet6_del_offload(&rthdr_offload, IPPROTO_ROUTING);
- 	goto out;
-diff --git a/net/ipv6/ip6_offload.c b/net/ipv6/ip6_offload.c
-index d6314287338d..0e0b5fed0995 100644
---- a/net/ipv6/ip6_offload.c
-+++ b/net/ipv6/ip6_offload.c
-@@ -45,15 +45,13 @@ static int ipv6_gso_pull_exthdrs(struct sk_buff *skb, int proto)
- 		struct ipv6_opt_hdr *opth;
- 		int len;
- 
--		if (proto != NEXTHDR_HOP) {
--			ops = rcu_dereference(inet6_offloads[proto]);
-+		ops = rcu_dereference(inet6_offloads[proto]);
- 
--			if (unlikely(!ops))
--				break;
-+		if (unlikely(!ops))
-+			break;
- 
--			if (!(ops->flags & INET6_PROTO_GSO_EXTHDR))
--				break;
--		}
-+		if (!(ops->flags & INET6_PROTO_GSO_EXTHDR))
-+			break;
- 
- 		if (unlikely(!pskb_may_pull(skb, 8)))
- 			break;
-@@ -171,13 +169,12 @@ static int ipv6_exthdrs_len(struct ipv6hdr *iph,
- 
- 	proto = iph->nexthdr;
- 	for (;;) {
--		if (proto != NEXTHDR_HOP) {
--			*opps = rcu_dereference(inet6_offloads[proto]);
--			if (unlikely(!(*opps)))
--				break;
--			if (!((*opps)->flags & INET6_PROTO_GSO_EXTHDR))
--				break;
--		}
-+		*opps = rcu_dereference(inet6_offloads[proto]);
-+		if (unlikely(!(*opps)))
-+			break;
-+		if (!((*opps)->flags & INET6_PROTO_GSO_EXTHDR))
-+			break;
-+
- 		opth = (void *)opth + optlen;
- 		optlen = ipv6_optlen(opth);
- 		len += optlen;
--- 
-2.36.1
+v2: Fix commit message
+v3: Improve these notes about changes between versions
+
+Otherwise it looks okay.
+
+regards,
+dan carpenter
+
 
 
