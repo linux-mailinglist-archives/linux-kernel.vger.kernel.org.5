@@ -1,298 +1,372 @@
-Return-Path: <linux-kernel+bounces-14474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD20D821D85
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:19:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D69C0821D86
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:19:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B53D91C22257
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:19:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 813B8283376
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56AF810A0D;
-	Tue,  2 Jan 2024 14:19:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2053C12B91;
+	Tue,  2 Jan 2024 14:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="ZL2oYNxE"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="O1tcSs+j";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ihUiKeJo";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="O1tcSs+j";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ihUiKeJo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1880810955
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3367a304091so9229599f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:18:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704205135; x=1704809935; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wMN809tankXeln0SghaIn8Kql+3yxJkVpIyb/WVy4mE=;
-        b=ZL2oYNxEgoFgGfqkfcePcK1+vdZ6nB1GpLlyiLN5LeIZpL8C+cMtE0/KuKrYt9yTW+
-         yy+BkmJIf7CwOcGmNw1xQjtMt/MfbJRfM1pQHJ5mLCVcc2fRweij8Fv4mboA2L8FS4/K
-         drsRn7J3arxF3YwbVrApNrKEV5WPTXpBeX83K/6LFznqfd53Nto5AGDqjV0XQbiZLIPu
-         DC8Sy2Bqpsf/ia4dmrsMJ6+Hz8i/+sgtzB2ooEIO9739ysW3eKbw+Vq/lVDJU5THPKXB
-         Es8mNXmVQhTg1ujlI0J5lxdhl3K9p4RpTop5a5JAHIZdLBCKnynKSGHm5IKRQ2qAdMbT
-         hdcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704205135; x=1704809935;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wMN809tankXeln0SghaIn8Kql+3yxJkVpIyb/WVy4mE=;
-        b=ZJh7AszkKm1zItJ7kMKoE6ikIkSaQBqSVZtloUQgvA5H7jk9ibgTwyp+LgWMRYwWij
-         LWn9s7NcCOIrgLDeoQUSpblPWGvGy0X7xg+n9etvA6K4YcvjeChoCNFKZbmWtx+ghzQN
-         4+8j619X5NaWZS3I3yhYKjJnqww4bfh3eFcHmZEwp1IJaaAE+PmmFhEuqyocTWVGyl2l
-         2fd9FLK57hX/qA+icFHBC14c1AkTGNHP1iT7ArMstq0Uk/Q9SWCOTHjutt6zGSy+w/3b
-         74Avy9njYd2HSJlNwa15/OMroxnBa90uwS2ziYU+9Or4PygvRjyXNjC/ohApC1bFdDGJ
-         Z6/w==
-X-Gm-Message-State: AOJu0Yw0Qy0SZ7Ffo+zm1j7EoG2Hpey2nUiWo623vh/whYbVM4TS/rFH
-	QD0aeWS8l2SHju/mWOgTScTZrLqM6rlnwg==
-X-Google-Smtp-Source: AGHT+IHuu8YHzUPNDkHHX9vez11aS4PONT163xT3HgL6zasNPiQtGDoJ4rm+KyN+vnhxYydK/VbwAw==
-X-Received: by 2002:adf:eb0c:0:b0:336:d9cc:3050 with SMTP id s12-20020adfeb0c000000b00336d9cc3050mr4083761wrn.126.1704205134756;
-        Tue, 02 Jan 2024 06:18:54 -0800 (PST)
-Received: from localhost.localdomain (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id b14-20020adff90e000000b003373fe3d345sm5412159wrr.65.2024.01.02.06.18.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 06:18:54 -0800 (PST)
-From: Alexandre Ghiti <alexghiti@rivosinc.com>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: [PATCH] riscv: Add support for BATCHED_UNMAP_TLB_FLUSH
-Date: Tue,  2 Jan 2024 15:18:51 +0100
-Message-Id: <20240102141851.105144-1-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9464011C8A;
+	Tue,  2 Jan 2024 14:19:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8987921CE8;
+	Tue,  2 Jan 2024 14:19:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704205157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xw1oH03+8xSWxb6Z0KzsDNFf/QYm77f29ZK366NLK9Q=;
+	b=O1tcSs+jwGAy0axqHw8fs0DX2IaNJCZWfooGX/11HgzPjsxLuSYQeFwOGasMvxMj4M60Gz
+	PxPTvOIdNqgn+FW94imhXML9n+kBagOhMRk2xwZobvURzj4WeWLEtxTt6Vlc6PjyihOYdH
+	PEBCg/v5CNmYpSk2NpE/iIkWaL3aa24=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704205157;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xw1oH03+8xSWxb6Z0KzsDNFf/QYm77f29ZK366NLK9Q=;
+	b=ihUiKeJohIgFtxkpWa2CS+4ytyG4JAVjF31G7l200VRk4806Ak5QdpLoLD4dPQ6aIOv6dG
+	13YoCSas95RnRHAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704205157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xw1oH03+8xSWxb6Z0KzsDNFf/QYm77f29ZK366NLK9Q=;
+	b=O1tcSs+jwGAy0axqHw8fs0DX2IaNJCZWfooGX/11HgzPjsxLuSYQeFwOGasMvxMj4M60Gz
+	PxPTvOIdNqgn+FW94imhXML9n+kBagOhMRk2xwZobvURzj4WeWLEtxTt6Vlc6PjyihOYdH
+	PEBCg/v5CNmYpSk2NpE/iIkWaL3aa24=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704205157;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xw1oH03+8xSWxb6Z0KzsDNFf/QYm77f29ZK366NLK9Q=;
+	b=ihUiKeJohIgFtxkpWa2CS+4ytyG4JAVjF31G7l200VRk4806Ak5QdpLoLD4dPQ6aIOv6dG
+	13YoCSas95RnRHAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 958EB1340C;
+	Tue,  2 Jan 2024 14:19:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id plgqEWIblGVcXgAAD6G6ig
+	(envelope-from <ddiss@suse.de>); Tue, 02 Jan 2024 14:19:14 +0000
+Date: Wed, 3 Jan 2024 01:19:08 +1100
+From: David Disseldorp <ddiss@suse.de>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
+ andriy.shevchenko@linux.intel.com, David.Laight@ACULAB.COM
+Subject: Re: [PATCH v2 2/4] kstrtox: introduce a safer version of memparse()
+Message-ID: <20240103011908.3a25c567@echidna>
+In-Reply-To: <12f3cbc956800709b2d5e1072bd22edc5720cbae.1704168510.git.wqu@suse.com>
+References: <cover.1704168510.git.wqu@suse.com>
+	<12f3cbc956800709b2d5e1072bd22edc5720cbae.1704168510.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=O1tcSs+j;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ihUiKeJo
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-6.01 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 NEURAL_HAM_SHORT(-0.20)[-0.999];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.de:dkim,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,linux-foundation.org,wanadoo.fr,linux.intel.com,ACULAB.COM];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -6.01
+X-Rspamd-Queue-Id: 8987921CE8
+X-Spam-Flag: NO
 
-Allow to defer the flushing of the TLB when unmapping pges, which allows
-to reduce the numbers of IPI and the number of sfence.vma.
+On Tue,  2 Jan 2024 14:42:12 +1030, Qu Wenruo wrote:
 
-The ubenchmarch used in commit 43b3dfdd0455 ("arm64: support
-batched/deferred tlb shootdown during page reclamation/migration") shows
-good performance improvement and perf reports an important decrease in
-time spent flushing the tlb (results come from qemu):
+> [BUGS]
+> Function memparse() lacks error handling:
+> 
+> - If no valid number string at all
+>   In that case @retptr would just be updated and return value would be
+>   zero.
+> 
+> - No overflown detection
+>   This applies to both the number string part, and the suffixes part.
+>   And since we have no way to indicate errors, we can get weird results
+>   like:
+> 
+>   	"25E" -> 10376293541461622784 (9E)
+> 
+>   This is due to the fact that for "E" suffix, there is only 4 bits
+>   left, and 25 with 60 bits left shift would lead to overflow.
+> 
+> [CAUSE]
+> The root cause is already mentioned in the comments of the function, the
+> usage of simple_strtoull() is the source of evil.
+> Furthermore the function prototype is no good either, just returning an
+> unsigned long long gives us no way to indicate an error.
+> 
+> [FIX]
+> Due to the prototype limits, we can not have a drop-in replacement for
+> memparse().
+> 
+> This patch can only help by introduce a new helper, memparse_safe(), and
+> mark the old memparse() deprecated.
+> 
+> The new memparse_safe() has the following improvement:
+> 
+> - Invalid string detection
+>   If no number string can be detected at all, -EINVAL would be returned.
+> 
+> - Better overflow detection
+>   Both the string part and the extra left shift would have overflow
+>   detection.
+>   Any overflow would result -ERANGE.
+> 
+> - Safer default suffix selection
+>   The helper allows the caller to choose the suffixes that they want to
+>   use.
+>   But only "KMGTP" are recommended by default since the "E" leaves only
+>   4 bits before overflow.
+>   For those callers really know what they are doing, they can still
+>   manually to include all suffixes.
+> 
+> Due to the prototype change, callers should migrate to the new one and
+> change their code and add extra error handling.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  include/linux/kernel.h  |  8 +++-
+>  include/linux/kstrtox.h | 15 +++++++
+>  lib/cmdline.c           |  5 ++-
+>  lib/kstrtox.c           | 96 +++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 122 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> index d9ad21058eed..b1b6da60ea43 100644
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@ -201,7 +201,13 @@ void do_exit(long error_code) __noreturn;
+>  
+>  extern int get_option(char **str, int *pint);
+>  extern char *get_options(const char *str, int nints, int *ints);
+> -extern unsigned long long memparse(const char *ptr, char **retptr);
+> +
+> +/*
+> + * DEPRECATED, lack of any kind of error handling.
+> + *
+> + * Use memparse_safe() from lib/kstrtox.c instead.
+> + */
+> +extern __deprecated unsigned long long memparse(const char *ptr, char **retptr);
+>  extern bool parse_option_str(const char *str, const char *option);
+>  extern char *next_arg(char *args, char **param, char **val);
+>  
+> diff --git a/include/linux/kstrtox.h b/include/linux/kstrtox.h
+> index 7fcf29a4e0de..53a1e059dd31 100644
+> --- a/include/linux/kstrtox.h
+> +++ b/include/linux/kstrtox.h
+> @@ -9,6 +9,21 @@
+>  int __must_check _kstrtoul(const char *s, unsigned int base, unsigned long *res);
+>  int __must_check _kstrtol(const char *s, unsigned int base, long *res);
+>  
+> +enum memparse_suffix {
+> +	MEMPARSE_SUFFIX_K = 1 << 0,
+> +	MEMPARSE_SUFFIX_M = 1 << 1,
+> +	MEMPARSE_SUFFIX_G = 1 << 2,
+> +	MEMPARSE_SUFFIX_T = 1 << 3,
+> +	MEMPARSE_SUFFIX_P = 1 << 4,
+> +	MEMPARSE_SUFFIX_E = 1 << 5,
+> +};
+> +
+> +#define MEMPARSE_SUFFIXES_DEFAULT (MEMPARSE_SUFFIX_K | MEMPARSE_SUFFIX_M |\
+> +				   MEMPARSE_SUFFIX_G | MEMPARSE_SUFFIX_T |\
+> +				   MEMPARSE_SUFFIX_P)
+> +
+> +int __must_check memparse_safe(const char *s, enum memparse_suffix suffixes,
+> +			       unsigned long long *res, char **retptr);
+>  int __must_check kstrtoull(const char *s, unsigned int base, unsigned long long *res);
+>  int __must_check kstrtoll(const char *s, unsigned int base, long long *res);
+>  
+> diff --git a/lib/cmdline.c b/lib/cmdline.c
+> index 90ed997d9570..d379157de349 100644
+> --- a/lib/cmdline.c
+> +++ b/lib/cmdline.c
+> @@ -139,12 +139,15 @@ char *get_options(const char *str, int nints, int *ints)
+>  EXPORT_SYMBOL(get_options);
+>  
+>  /**
+> - *	memparse - parse a string with mem suffixes into a number
+> + *	memparse - DEPRECATED, parse a string with mem suffixes into a number
+>   *	@ptr: Where parse begins
+>   *	@retptr: (output) Optional pointer to next char after parse completes
+>   *
+> + *	There is no way to handle errors, and no overflown detection and string
+> + *	sanity checks.
+>   *	Parses a string into a number.  The number stored at @ptr is
+>   *	potentially suffixed with K, M, G, T, P, E.
+> + *
+>   */
+>  
+>  unsigned long long memparse(const char *ptr, char **retptr)
+> diff --git a/lib/kstrtox.c b/lib/kstrtox.c
+> index 41c9a499bbf3..a1e4279f52b3 100644
+> --- a/lib/kstrtox.c
+> +++ b/lib/kstrtox.c
+> @@ -113,6 +113,102 @@ static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
+>  	return 0;
+>  }
+>  
+> +/**
+> + * memparse_safe - convert a string to an unsigned long long, safer version of
+> + * memparse()
+> + *
+> + * @s:		The start of the string. Must be null-terminated.
+> + *		The base would be determined automatically, if it starts with
+> + *		"0x" the base would be 16, if it starts with "0" the base
+> + *		would be 8, otherwise the base would be 10.
+> + *		After a valid number string, there can be at most one
+> + *		case-insensive suffix character, specified by the @suffixes
+> + *		parameter.
+> + *
+> + * @suffixes:	The suffixes which should be parsed. Use logical ORed
+> + *		memparse_suffix enum to indicate the supported suffixes.
+> + *		The suffixes are case-insensive, all 2 ^ 10 based.
+> + *		Supported ones are "KMGPTE".
+> + *		NOTE: If one suffix out of the supported one is hit, it would
+> + *		end the parse normally, with @retptr pointed to the unsupported
+> + *		suffix.
+> + *
+> + * @res:	Where to write the result.
+> + *
+> + * @retptr:	(output) Optional pointer to the next char after parse completes.
+> + *
+> + * Return 0 if any valid numberic string can be parsed, and @retptr updated.
+> + * Return -INVALID if no valid number string can be found.
+> + * Return -ERANGE if the number overflows.
+> + * For minus return values, @retptr would not be updated.
+> + */
+> +noinline int memparse_safe(const char *s, enum memparse_suffix suffixes,
+> +			   unsigned long long *res, char **retptr)
+> +{
+> +	unsigned long long value;
+> +	unsigned int rv;
+> +	int shift = 0;
+> +	int base = 0;
+> +
+> +	s = _parse_integer_fixup_radix(s, &base);
+> +	rv = _parse_integer(s, base, &value);
+> +	if (rv & KSTRTOX_OVERFLOW)
+> +		return -ERANGE;
+> +	if (rv == 0)
+> +		return -EINVAL;
+> +
+> +	s += rv;
+> +	switch (*s) {
+> +	case 'K':
+> +	case 'k':
+> +		if (!(suffixes & MEMPARSE_SUFFIX_K))
+> +			break;
+> +		shift = 10;
+> +		break;
+> +	case 'M':
+> +	case 'm':
+> +		if (!(suffixes & MEMPARSE_SUFFIX_M))
+> +			break;
+> +		shift = 20;
+> +		break;
+> +	case 'G':
+> +	case 'g':
+> +		if (!(suffixes & MEMPARSE_SUFFIX_G))
+> +			break;
+> +		shift = 30;
+> +		break;
+> +	case 'T':
+> +	case 't':
+> +		if (!(suffixes & MEMPARSE_SUFFIX_T))
+> +			break;
+> +		shift = 40;
+> +		break;
+> +	case 'P':
+> +	case 'p':
+> +		if (!(suffixes & MEMPARSE_SUFFIX_P))
+> +			break;
+> +		shift = 50;
+> +		break;
+> +	case 'E':
+> +	case 'e':
+> +		if (!(suffixes & MEMPARSE_SUFFIX_E))
+> +			break;
+> +		shift = 60;
+> +		break;
+> +	}
+> +	if (shift) {
+> +		s++;
+> +		if (value >> (64 - shift))
+> +			return -ERANGE;
+> +		value <<= shift;
+> +	}
+> +	*res = value;
+> +	if (retptr)
+> +		*retptr = (char *)s;
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(memparse_safe);
+> +
+>  /**
+>   * kstrtoull - convert a string to an unsigned long long
+>   * @s: The start of the string. The string must be null-terminated, and may also
 
-Before this patch:
-
-real	2m1.135s
-user	0m0.980s
-sys	2m0.096s
-
-4.83%  batch_tlb  [kernel.kallsyms]            [k] __flush_tlb_range
-
-After this patch:
-
-real	1m0.543s
-user	0m1.059s
-sys	0m59.489s
-
-0.14%  batch_tlb  [kernel.kallsyms]            [k] __flush_tlb_range
-
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
----
- arch/riscv/Kconfig                |  1 +
- arch/riscv/include/asm/tlbbatch.h | 15 +++++++
- arch/riscv/include/asm/tlbflush.h | 10 +++++
- arch/riscv/mm/tlbflush.c          | 71 ++++++++++++++++++++++---------
- 4 files changed, 77 insertions(+), 20 deletions(-)
- create mode 100644 arch/riscv/include/asm/tlbbatch.h
-
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 7603bd8ab333..aa07bd43b138 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -53,6 +53,7 @@ config RISCV
- 	select ARCH_USE_MEMTEST
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USES_CFI_TRAPS if CFI_CLANG
-+	select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH if SMP && MMU
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
- 	select ARCH_WANT_FRAME_POINTERS
- 	select ARCH_WANT_GENERAL_HUGETLB if !RISCV_ISA_SVNAPOT
-diff --git a/arch/riscv/include/asm/tlbbatch.h b/arch/riscv/include/asm/tlbbatch.h
-new file mode 100644
-index 000000000000..46014f70b9da
---- /dev/null
-+++ b/arch/riscv/include/asm/tlbbatch.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+#ifndef _ASM_RISCV_TLBBATCH_H
-+#define _ASM_RISCV_TLBBATCH_H
-+
-+#include <linux/cpumask.h>
-+
-+struct arch_tlbflush_unmap_batch {
-+	struct cpumask cpumask;
-+};
-+
-+#endif /* _ASM_RISCV_TLBBATCH_H */
-diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-index 8f3418c5f172..f0b731ccc0c2 100644
---- a/arch/riscv/include/asm/tlbflush.h
-+++ b/arch/riscv/include/asm/tlbflush.h
-@@ -46,6 +46,16 @@ void flush_tlb_kernel_range(unsigned long start, unsigned long end);
- void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
- 			unsigned long end);
- #endif
-+
-+#ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
-+bool arch_tlbbatch_should_defer(struct mm_struct *mm);
-+void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *batch,
-+			       struct mm_struct *mm,
-+			       unsigned long uaddr);
-+void arch_flush_tlb_batched_pending(struct mm_struct *mm);
-+void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
-+#endif /* CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
-+
- #else /* CONFIG_SMP && CONFIG_MMU */
- 
- #define flush_tlb_all() local_flush_tlb_all()
-diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index e6659d7368b3..bb623bca0a7d 100644
---- a/arch/riscv/mm/tlbflush.c
-+++ b/arch/riscv/mm/tlbflush.c
-@@ -93,29 +93,23 @@ static void __ipi_flush_tlb_range_asid(void *info)
- 	local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid);
- }
- 
--static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
--			      unsigned long size, unsigned long stride)
-+static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
-+			      unsigned long start, unsigned long size,
-+			      unsigned long stride)
- {
- 	struct flush_tlb_range_data ftd;
--	const struct cpumask *cmask;
--	unsigned long asid = FLUSH_TLB_NO_ASID;
- 	bool broadcast;
- 
--	if (mm) {
--		unsigned int cpuid;
-+	if (cpumask_empty(cmask))
-+		return;
- 
--		cmask = mm_cpumask(mm);
--		if (cpumask_empty(cmask))
--			return;
-+	if (cmask != cpu_online_mask) {
-+		unsigned int cpuid;
- 
- 		cpuid = get_cpu();
- 		/* check if the tlbflush needs to be sent to other CPUs */
- 		broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
--
--		if (static_branch_unlikely(&use_asid_allocator))
--			asid = atomic_long_read(&mm->context.id) & asid_mask;
- 	} else {
--		cmask = cpu_online_mask;
- 		broadcast = true;
- 	}
- 
-@@ -135,25 +129,34 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
- 		local_flush_tlb_range_asid(start, size, stride, asid);
- 	}
- 
--	if (mm)
-+	if (cmask != cpu_online_mask)
- 		put_cpu();
- }
- 
-+static inline unsigned long get_mm_asid(struct mm_struct *mm)
-+{
-+	return static_branch_unlikely(&use_asid_allocator) ?
-+			atomic_long_read(&mm->context.id) & asid_mask : FLUSH_TLB_NO_ASID;
-+}
-+
- void flush_tlb_mm(struct mm_struct *mm)
- {
--	__flush_tlb_range(mm, 0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
-+	__flush_tlb_range(mm_cpumask(mm), get_mm_asid(mm),
-+			  0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
- }
- 
- void flush_tlb_mm_range(struct mm_struct *mm,
- 			unsigned long start, unsigned long end,
- 			unsigned int page_size)
- {
--	__flush_tlb_range(mm, start, end - start, page_size);
-+	__flush_tlb_range(mm_cpumask(mm), get_mm_asid(mm),
-+			  start, end - start, page_size);
- }
- 
- void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
- {
--	__flush_tlb_range(vma->vm_mm, addr, PAGE_SIZE, PAGE_SIZE);
-+	__flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
-+			  addr, PAGE_SIZE, PAGE_SIZE);
- }
- 
- void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
-@@ -185,18 +188,46 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
- 		}
- 	}
- 
--	__flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
-+	__flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
-+			  start, end - start, stride_size);
- }
- 
- void flush_tlb_kernel_range(unsigned long start, unsigned long end)
- {
--	__flush_tlb_range(NULL, start, end - start, PAGE_SIZE);
-+	__flush_tlb_range((struct cpumask *)cpu_online_mask, FLUSH_TLB_NO_ASID,
-+			  start, end - start, PAGE_SIZE);
- }
- 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
- 			unsigned long end)
- {
--	__flush_tlb_range(vma->vm_mm, start, end - start, PMD_SIZE);
-+	__flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
-+			  start, end - start, PMD_SIZE);
- }
- #endif
-+
-+#ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
-+bool arch_tlbbatch_should_defer(struct mm_struct *mm)
-+{
-+	return true;
-+}
-+
-+void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *batch,
-+			       struct mm_struct *mm,
-+			       unsigned long uaddr)
-+{
-+	cpumask_or(&batch->cpumask, &batch->cpumask, mm_cpumask(mm));
-+}
-+
-+void arch_flush_tlb_batched_pending(struct mm_struct *mm)
-+{
-+	flush_tlb_mm(mm);
-+}
-+
-+void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
-+{
-+	__flush_tlb_range(&batch->cpumask, FLUSH_TLB_NO_ASID, 0,
-+			  FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
-+}
-+#endif /* CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
--- 
-2.39.2
-
+Still not a fan of the MEMPARSE_SUFFIXES_DEFAULT naming, but won't
+bikeshed on that further. Looks good otherwise.
+Reviewed-by: David Disseldorp <ddiss@suse.de>
 
