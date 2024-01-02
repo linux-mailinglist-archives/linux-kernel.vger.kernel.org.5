@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-14669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73ABB822085
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:41:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CB82822084
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:41:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 865651C226AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:41:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34629283E9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:41:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C56156F7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1285156F5;
 	Tue,  2 Jan 2024 17:40:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o6fbfPPs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KaQDTxtU"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E7E154AF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E4A154AC;
 	Tue,  2 Jan 2024 17:40:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7EE3FC433C8;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 90048C433CA;
 	Tue,  2 Jan 2024 17:40:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1704217253;
-	bh=mx0UU3WfKxc1FkUQRkEoQjqspsD2Wn4DLF/ciceKu5A=;
+	bh=VxMdNNMyuaTRdjeIZFjpLo8mLdtWd29apFbxWK+iGZ8=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=o6fbfPPsVjnOZBfLuTngotOd8uBYySvgdIBmNvKr6S3vSZaCIJELacF6tNK+HBqpI
-	 T3C/IEaamIzSD1pBFattiIPwul7EsDsNzbnMv4nmVk1J50ZZ61rVMukmdSQ0lSI8lx
-	 vz1X9vutwP0x9wJj6Grgcqxeb27Mh/wn3HhQTbwwRhlBGEinUuFSJ654DGz7SSUXEO
-	 5cK1niUNSceqB/0Jvdgec4BtPb4hg9PrlPnrG3id3b94y2NUEn+vFRmbSWrgxZPVyc
-	 mPXwqtrHojuIeT4hm5Vnx8wEJM4+39hGWmZFqIpROsgzOjBq71psBfzavcdBEsWPRE
-	 mxm2Mw7qzmUJA==
+	b=KaQDTxtU4W5zlUE8qXxhIYqROI2R47Kg47jVO7aPUkQ7tk474W66F8xHPwNq3dZf+
+	 Yw2KriWTxJgheWNW2W/0FAiqqakdJ37XB4s3CDTdLzx2E4Xz+tIQV+bZealKQUb/t9
+	 IyYpNFcLj5yNidlo+75jMj8PBA0zQprEWStsp4rOVNuavNf+j+Y7OQ3lUVvsTdejY/
+	 adhiVdkPJkgyBE1ttG9ffPBk6inMfv8dY5G1hPtl/TFqpatyYu0zhqib+oQk7+4GUH
+	 zeflEWJwvSyP8iTVmjwd6Dd277h8POoBmC0w7HS2ar2iJtIMPoz3+RmL79ttFZPQoJ
+	 uP+ZkIQPdoeWQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 55EB7DCB6D1;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6EAAADCB6D0;
 	Tue,  2 Jan 2024 17:40:53 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -43,39 +43,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] Bluetooth: hci_bcm4377: do not mark valid bd_addr as invalid
+Subject: Re: [PATCH v2] Bluetooth: btrtl: Add the support for
+ RTL8852BT/RTL8852BE-VT
 From: patchwork-bot+bluetooth@kernel.org
 Message-Id: 
- <170421725334.27590.14473748225344409245.git-patchwork-notify@kernel.org>
+ <170421725344.27590.6759141188493326496.git-patchwork-notify@kernel.org>
 Date: Tue, 02 Jan 2024 17:40:53 +0000
-References: <20231227101003.10534-1-johan+linaro@kernel.org>
-In-Reply-To: <20231227101003.10534-1-johan+linaro@kernel.org>
-To: Johan Hovold <johan+linaro@kernel.org>
-Cc: luiz.dentz@gmail.com, marcel@holtmann.org, johan.hedberg@gmail.com,
- marcan@marcan.st, sven@svenpeter.dev, alyssa@rosenzweig.io,
- asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+References: <20231226114518.5395-1-max.chou@realtek.com>
+In-Reply-To: <20231226114518.5395-1-max.chou@realtek.com>
+To: Max Chou <max.chou@realtek.com>
+Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
  linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, mrman@mrman314.tech
+ alex_lu@realsil.com.cn, hildawu@realtek.com, karenhsu@realtek.com
 
 Hello:
 
 This patch was applied to bluetooth/bluetooth-next.git (master)
 by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-On Wed, 27 Dec 2023 11:10:03 +0100 you wrote:
-> A recent commit restored the original (and still documented) semantics
-> for the HCI_QUIRK_USE_BDADDR_PROPERTY quirk so that the device address
-> is considered invalid unless an address is provided by firmware.
+On Tue, 26 Dec 2023 19:45:17 +0800 you wrote:
+> From: Max Chou <max.chou@realtek.com>
 > 
-> This specifically means that this flag must only be set for devices with
-> invalid addresses, but the Broadcom BCM4377 driver has so far been
-> setting this flag unconditionally.
+> Add the support for RTL8852BT/RTL8852BE-VT BT controller on USB interface.
+> The necessary firmware will be submitted to linux-firmware project.
+> 
+> The device info from /sys/kernel/debug/usb/devices as below.
 > 
 > [...]
 
 Here is the summary with links:
-  - Bluetooth: hci_bcm4377: do not mark valid bd_addr as invalid
-    https://git.kernel.org/bluetooth/bluetooth-next/c/cceb1ba62823
+  - [v2] Bluetooth: btrtl: Add the support for RTL8852BT/RTL8852BE-VT
+    https://git.kernel.org/bluetooth/bluetooth-next/c/8f9bb7a1b81b
 
 You are awesome, thank you!
 -- 
