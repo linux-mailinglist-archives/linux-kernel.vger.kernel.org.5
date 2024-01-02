@@ -1,113 +1,116 @@
-Return-Path: <linux-kernel+bounces-14778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 559A1822213
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:34:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED3D1822214
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:34:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9F752846D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:34:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B3991F2363F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:34:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E5DE16422;
-	Tue,  2 Jan 2024 19:33:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD6E515E9B;
+	Tue,  2 Jan 2024 19:34:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BmXQ5TsW"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YnFrFJaw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6CF516413;
-	Tue,  2 Jan 2024 19:33:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d3f8af8297so34447305ad.2;
-        Tue, 02 Jan 2024 11:33:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A487015E97
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 19:34:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50e70d8273fso368e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 11:34:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704224033; x=1704828833; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=luPtVbWA4WkeKb/ML1jEiRoj2bd2p8W6YJcqHctkuXs=;
-        b=BmXQ5TsWx1kJbhQHVWvMQ8aDyNwWx38soRIDLmNJRh58nxx/7Sc7jWXmHGXMr7dZna
-         kQZ9B/X9uYp7Vw39iLQe+2FZ5LiCrjqAolMohhXxOBlXx1NWwjxNe7pgcnPZLW7Ho7wx
-         TJNLRCHO7PDzmMMvTHT7ERTmrCISZoKW3oEJQjxnAsafJ5OsbpvLUDTqmQqoXccsx4HE
-         mzV2/jw6KHeBs4S8s+g1MubDx7CkfrXtGK+hD2jfbL9pm/+J3g+im16OSu4be4st0wko
-         M2GxaHP7sbuk/fk10yJgs0/szP5g+PjA1dZ84RwMztOax/KoqzJ4xkBWpO1acSm4YtPw
-         iNXw==
+        d=google.com; s=20230601; t=1704224055; x=1704828855; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Un5GyHZQ4WSWEA7P5VD9SJRg2P6RBD31ou6ndsq25Jg=;
+        b=YnFrFJawr0V3ZjIDkrq3v6Zty0EFOLf2hP/E13iPEU2xBwkCAdbhKFzKdksP2DrFdU
+         4B/5Vue1OdfVRBDL9JXbdT/7mNqDXd3SkQn8jYEvreUtIsHRbuBjpl8K+lOxpGowNSFd
+         y7TdEfk+FHTtOX5WXivKWBqdQPnHRZpIqvR0R9vrTIpTFfpTur6c4ok76VrgdNr2ryQL
+         W+GJzAj4fLMwHLM324v7tAF72+XUrmXMyt61NOux4NEJQU0PEIfK+qGh6zkxwsWS2W5y
+         Ab7ZtYScbka5ZoegQk+hvHdB4/7NroLapBBP4mMLV5ROgUjmflYLFP9r37n0boOVaMkU
+         Ak/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704224033; x=1704828833;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=luPtVbWA4WkeKb/ML1jEiRoj2bd2p8W6YJcqHctkuXs=;
-        b=F5A8smEvwHo2PVqSVp26XdhBARMdF7rZDq5hN07tMF4YDB2f3Q1ZIwkq3Wdi5bU18G
-         +YtXURSVT6OE+EXCnVjooIq1T/Zc4HYnfs6YzCvQf33Wtp+6bMZ+WE1THL1886qX+7K+
-         mHvh0Es+pLI4AP1eo/Ks4GJ2cwi/Uv/3hlX6qEkfOltwPC/qfZ5aO22uz3ZzzT9Ho2ku
-         /GEsaOZF21eZSoN8YPG82vquqtWAFgn9umyYJ0EJBIRJikAi9LEIHSYHDBENXdJ+MiSh
-         9KOeZNCIDB//GWHWKV6mTja8OCr1Pse2S1ea5DMf/jWYXnVb8D7pxb/6jvj2Ebu8tOsq
-         mzbg==
-X-Gm-Message-State: AOJu0YzCtlvo30IqDstobudc+C/GZeMdrHUM4leIGjD1S+vUxH2GcNLI
-	yV6g6up57LRgQP7ZIhhTv2g=
-X-Google-Smtp-Source: AGHT+IFhwzQzpZlwnGPVfu0XEYA8BSoSkhH6CurSOcH7BLHojR2bA2a6+ZxoT09Eb80mmHaTQ/2xXQ==
-X-Received: by 2002:a17:902:daca:b0:1d4:3797:f829 with SMTP id q10-20020a170902daca00b001d43797f829mr8680675plx.5.1704224032869;
-        Tue, 02 Jan 2024 11:33:52 -0800 (PST)
-Received: from localhost ([2a00:79e1:2e00:1301:e1c5:6354:b45d:8ffc])
-        by smtp.gmail.com with ESMTPSA id d14-20020a170902654e00b001d3563c87a6sm22863074pln.281.2024.01.02.11.33.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 11:33:52 -0800 (PST)
-From: Rob Clark <robdclark@gmail.com>
-To: dri-devel@lists.freedesktop.org
-Cc: freedreno@lists.freedesktop.org,
-	linux-arm-msm@vger.kernel.org,
-	Rob Clark <robdclark@chromium.org>,
-	Rob Clark <robdclark@gmail.com>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Sean Paul <sean@poorly.run>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Akhil P Oommen <quic_akhilpo@quicinc.com>,
-	Danylo Piliaiev <dpiliaiev@igalia.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm/a7xx: Fix LLC typo
-Date: Tue,  2 Jan 2024 11:33:45 -0800
-Message-ID: <20240102193348.250917-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1704224055; x=1704828855;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Un5GyHZQ4WSWEA7P5VD9SJRg2P6RBD31ou6ndsq25Jg=;
+        b=liERCeT93hKCZ3lO4UCj6sMUsEINvSBj/9kBpcBJ1/cGP48VKKO3b5N/Kx9x5cPrWE
+         X03ApR0uF6gag7o4Je7AUQMNe5Nc1v0sbh+rC9OuyGXDCsZGrYSiNq/iJe3nBFf9hBAI
+         WrTmgKZMFLKyd6OnSEwE45Ymow9URJJYc+blsi1B7XnPRAEEPT5CYWzGlA7nXvWhYvJu
+         upp6g0jk+AIIEcz70Blav5ZsKqX1W8Zw7A6d+imrC1OeKdlo6uBYexGwngFGTw1s5DF5
+         y98twDNdbXda8snRGoIYopJVtbSagj32Rj2mZpE7wCayR3lJDHf3w3sXJINrLlHi/8FS
+         167Q==
+X-Gm-Message-State: AOJu0Yy7/sd9Gd7cjsdphoHqjE6kBDql3B5u/aeD+DeyehoPvy67ibsq
+	LXajNXUj7sO68a6phtI8apGptMSTBWhdH/xtajIHJALpHqIr
+X-Google-Smtp-Source: AGHT+IFxjYsaOeK5XhU1uu7IppfCk2WA4+/o1h1EcG10m4jwKG838oN7yXVRSx6u7d+yF1SReZInyj/CB4cJp6xZtd0=
+X-Received: by 2002:a05:6512:3f08:b0:50e:84b4:2bdc with SMTP id
+ y8-20020a0565123f0800b0050e84b42bdcmr5113lfa.2.1704224054555; Tue, 02 Jan
+ 2024 11:34:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231211181242.1721059-1-irogers@google.com>
+In-Reply-To: <20231211181242.1721059-1-irogers@google.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 2 Jan 2024 11:34:03 -0800
+Message-ID: <CAP-5=fVWZ7etZq7YBU1HGMnyJ6wsZ3zok9JuS7eWQsTKuqzrAA@mail.gmail.com>
+Subject: Re: [PATCH v1] perf stat: Fix hard coded ll miss units
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	John Garry <john.g.garry@oracle.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Guillaume Endignoux <guillaumee@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Rob Clark <robdclark@chromium.org>
+On Mon, Dec 11, 2023 at 10:13=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> Copy-paste error where LL cache misses are reported as l1i.
+>
+> Suggested-by: Guillaume Endignoux <guillaumee@google.com>
+> Fixes: 0a57b910807a ("perf stat: Use counts rather than saved_value")
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-We'd miss actually activating LLC.
+Ping. Trivial 1 character fix but no reviews :-(
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Ian
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index a5660d63535b..54dc5eb37f70 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -1646,7 +1646,7 @@ static int a6xx_gmu_pm_resume(struct msm_gpu *gpu)
- 
- 	msm_devfreq_resume(gpu);
- 
--	adreno_is_a7xx(adreno_gpu) ? a7xx_llc_activate : a6xx_llc_activate(a6xx_gpu);
-+	adreno_is_a7xx(adreno_gpu) ? a7xx_llc_activate(a6xx_gpu) : a6xx_llc_activate(a6xx_gpu);
- 
- 	return ret;
- }
--- 
-2.43.0
-
+> ---
+>  tools/perf/util/stat-shadow.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.=
+c
+> index 1c5c3eeba4cf..e31426167852 100644
+> --- a/tools/perf/util/stat-shadow.c
+> +++ b/tools/perf/util/stat-shadow.c
+> @@ -264,7 +264,7 @@ static void print_ll_miss(struct perf_stat_config *co=
+nfig,
+>         static const double color_ratios[3] =3D {20.0, 10.0, 5.0};
+>
+>         print_ratio(config, evsel, aggr_idx, misses, out, STAT_LL_CACHE, =
+color_ratios,
+> -                   "of all L1-icache accesses");
+> +                   "of all LL-cache accesses");
+>  }
+>
+>  static void print_dtlb_miss(struct perf_stat_config *config,
+> --
+> 2.43.0.472.g3155946c3a-goog
+>
 
