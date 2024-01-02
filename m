@@ -1,156 +1,124 @@
-Return-Path: <linux-kernel+bounces-14525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44B34821E47
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:06:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9814821E52
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:07:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A9191C2241A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:06:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75B791F22BD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:07:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A8814AB5;
-	Tue,  2 Jan 2024 15:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C95A13AF4;
+	Tue,  2 Jan 2024 15:07:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fy1WfJXo"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="K8s/TXnn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01B7214A9C
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 15:06:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6d98f6e8de1so2813974b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 07:06:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704207979; x=1704812779; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nwt7CszV/J46V/JfrZ4yi4aU/mOorO6zMh2f6qpUKyY=;
-        b=fy1WfJXonc+xySrGW8ly6KHOYwIdtq0JGyJmjdVkQ/IANyF/SZUGK8XACq0U38ObrN
-         /E2dmwJav26EsCj0YL4ARrOIZAzEK3Gn6Fh+zYWBHyygfEmWKmA0gHuMEeiIAMbqRi8q
-         eGNLjyWe9/uXnO/UgEtvJOsCfrhR6GN1wozLLDnvdhH9IBOyShitlt2/QfkozNzop4w+
-         6LL9ehuZ/WtBFGex+1/HwZ5exoFl5C15GkD/zcRG4g3fI8KCas+U7Sci0YdEvuxod/2e
-         YLNh+oWu374ruxV0ejiIrzt/nSUHXCUtpBpxcytXZTd9JSWQ7xCqgF4j4jaO3Nq3ELhd
-         KKEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704207979; x=1704812779;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nwt7CszV/J46V/JfrZ4yi4aU/mOorO6zMh2f6qpUKyY=;
-        b=JldU4ukVgGpJjDlgfR3OLyAZiYMfW4On1tKVaGNbALZcdFfqA7AX1N/hJqGjP4z0Wr
-         j3C5Q5yGWMmSBWbQqNNjRFQBdHyWTWWv0OZ5c2r5Y8ur1XBFZlaw5E8CL1fAWNrJZibv
-         7PM/xE8xDyBvqB4EwByGBYOTKA7Zk5sXhrQWcY8IFaRPG+VYYuXVNwmUxhCpDKUhGyUv
-         Z80lx5X/zzC/letXQtcrShHapYWDlhtkGN1xROMUuljWioqOoOOTyNT5pLW+nxwUamJe
-         CQ7wYQT4SqM1r7W0c9qz8GBYgsIs1YUGdG7YJKVfIY85P/+S5n5SRfrMp3Wlhz2JzW2X
-         alqA==
-X-Gm-Message-State: AOJu0Yx2Rm3JCazAby9CLbiHMsqyhnUt0acT/VKycQxGJ/cL2brdZRyT
-	LunnyxsUONVDw7JWiMBSpiE=
-X-Google-Smtp-Source: AGHT+IHE48un0LDnENnIvmj49RY3BQYS/qjj1IT4T8V/k7ITKJInhKWS1Armej+LFz9LzsQqfAVA5A==
-X-Received: by 2002:a05:6a20:9784:b0:186:bd68:facc with SMTP id hx4-20020a056a20978400b00186bd68faccmr7802964pzc.28.1704207979190;
-        Tue, 02 Jan 2024 07:06:19 -0800 (PST)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id e12-20020a63500c000000b005ce998b9391sm2884851pgb.67.2024.01.02.07.06.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 07:06:19 -0800 (PST)
-From: Yuntao Wang <ytcoode@gmail.com>
-To: bhe@redhat.com
-Cc: akpm@linux-foundation.org,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	dyoung@redhat.com,
-	eric.devolder@oracle.com,
-	hbathini@linux.ibm.com,
-	hpa@zytor.com,
-	kexec@lists.infradead.org,
-	lijiang@redhat.com,
-	linux-kernel@vger.kernel.org,
-	mingo@redhat.com,
-	seanjc@google.com,
-	sourabhjain@linux.ibm.com,
-	tglx@linutronix.de,
-	tiwai@suse.de,
-	vgoyal@redhat.com,
-	x86@kernel.org,
-	ytcoode@gmail.com
-Subject: Re: [PATCH 3/3] crash_core: fix and simplify the logic of crash_exclude_mem_range()
-Date: Tue,  2 Jan 2024 23:06:05 +0800
-Message-ID: <20240102150605.111256-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <ZZPMLextp0n3lwbD@MiWiFi-R3L-srv>
-References: <ZZPMLextp0n3lwbD@MiWiFi-R3L-srv>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD2E14F73;
+	Tue,  2 Jan 2024 15:07:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 402EI2Yt031896;
+	Tue, 2 Jan 2024 15:06:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Oonp123cOdkP40iNRTSGS2eTt70BPLYr/b5oy9HIOrE=;
+ b=K8s/TXnnvnjYH/i63M4IJ8zJHQCU3LU4xpar5nz7GGtGeZerOuyW34Cj8fL58lx5Iit8
+ WnB6PXZkhxtXAeZi0CY7TRzm0EDR6AUQ3xJW29Bvo4gJHUe7CWUe8gMRy3CB73Cgm3WR
+ ZQ5Oo6ATzTFGZOeX/cXmPHTHsFNBKPuF0+nfL9EhIeUh8aguAoalQ/EorSBwwNdFa4UI
+ sMHsrO6BPYG7ripsJhjLkD66corKHhJjusWg/wT3VosjoIRVboLScyPTpOrPdvrF9zXN
+ Ys/N65xahMlVsqJiA5J2+C3VjzzpdhlzdRphqbtC/Tow93pb1wtpqDfHc+BP5aE1H9yD OQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcm4k9a60-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 15:06:46 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 402ETn6Y004810;
+	Tue, 2 Jan 2024 15:06:46 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcm4k9a5g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 15:06:46 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 402DoQfs017830;
+	Tue, 2 Jan 2024 15:06:45 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vawwynmw4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 15:06:45 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 402F6g4R22020754
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 2 Jan 2024 15:06:42 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4D94B20040;
+	Tue,  2 Jan 2024 15:06:42 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EA9552004D;
+	Tue,  2 Jan 2024 15:06:40 +0000 (GMT)
+Received: from osiris (unknown [9.171.22.30])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue,  2 Jan 2024 15:06:40 +0000 (GMT)
+Date: Tue, 2 Jan 2024 16:06:39 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: [PATCH v3 30/34] s390/traps: Unpoison the
+ kernel_stack_overflow()'s pt_regs
+Message-ID: <20240102150639.6306-H-hca@linux.ibm.com>
+References: <20231213233605.661251-1-iii@linux.ibm.com>
+ <20231213233605.661251-31-iii@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213233605.661251-31-iii@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: leYrbA6vtAty3KAE9ah14tjkk5Bn0Uhc
+X-Proofpoint-ORIG-GUID: utJWxtGOYHGAv9Kk1hnF_c8f7r1ax0vb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-02_04,2024-01-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
+ mlxlogscore=933 bulkscore=0 phishscore=0 adultscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401020115
 
-On Tue, 2 Jan 2024 16:41:17 +0800, Baoquan He <bhe@redhat.com> wrote:
+On Thu, Dec 14, 2023 at 12:24:50AM +0100, Ilya Leoshkevich wrote:
+> This is normally done by the generic entry code, but the
+> kernel_stack_overflow() flow bypasses it.
+> 
+> Reviewed-by: Alexander Potapenko <glider@google.com>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  arch/s390/kernel/traps.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-> Hi Yuntao,
-> 
-> On 12/30/23 at 06:16pm, Baoquan He wrote:
-> > On 12/29/23 at 12:10pm, Andrew Morton wrote:
-> > > On Sat, 16 Dec 2023 11:31:04 +0800 Baoquan He <bhe@redhat.com> wrote:
-> > > 
-> > > > > > Imagine we have a crashkernel region 256M reserved under 4G, say [2G, 2G+256M].
-> > > > > > Then after excluding the 256M from a region, it should stop. But now, this patch
-> > > > > > will make it continue scanning. Not sure if it's all in my mind.
-> > > > > 
-> > > > > Hi Baoquan,
-> > > > > 
-> > > > > Thank you for such a detailed reply. Now I finally understand why the code is
-> > > > > written this way.
-> > > > > 
-> > > > > However, if we can guarantee its correctness, wouldn't it be better to use the
-> > > > > generic region removing logic? At least it is more concise and clear, and other
-> > > > > people reading this code for the first time wouldn't get confused like me.
-> > > > > 
-> > > > > As for your concern about the while loop, I think it wouldn't affect performance
-> > > > > much because the total number of loops is small.
-> > > > 
-> > > > Well, see below kexec-tools commit, you wouldn't say that. And when you
-> > > > understand the code, you will feel a little uncomfortable about the
-> > > > sustaining useless scanning. At least, we should stop scanning after
-> > > > needed exluding is done.
-> > > > 
-> > > > Or, we may need add a generic region removing function so that it
-> > > > can be shared, e.g e820 memory region removing, memblock region removing.
-> > > > Otherwise, I can't see why a specific region excluding need a generic 
-> > > > region removing function.
-> > > 
-> > > So where do we now stand on this patchset?
-> > 
-> > The patch 1 and 2 are good clean up. The patch 3 plus below one, the
-> > entire is a good code improvement patch.
-> > 
-> > [PATCH] crash_core: optimize crash_exclude_mem_range()
-> > https://lore.kernel.org/all/20231219163418.108591-1-ytcoode@gmail.com/T/#u
-> 
-> Can you repost this patchset with some updating, e.g adding ack in patch
-> 1 and 2, and squash below patch into patch 3? This will be easier for
-> patch merging.
-> 
-> [PATCH] crash_core: optimize crash_exclude_mem_range()
-> https://lore.kernel.org/all/20231219163418.108591-1-ytcoode@gmail.com/T/#u
-> 
-> And, you may need to drop below patchset since patch 2 conflicts with
-> this patchset, and patch 1 is conflicting with fuqiang's patch.
-> 
-> [PATCH 0/2] crash: fix potential cmem->ranges array overflow
-> 
-> Thanks
-> Baoquan
-
-Hi Baoquan,
-
-I've reposted this patchset, the link to the v2 version of this patchset is:
-
-https://lore.kernel.org/lkml/20240102144905.110047-1-ytcoode@gmail.com/t/#u
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
 
