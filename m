@@ -1,137 +1,100 @@
-Return-Path: <linux-kernel+bounces-14665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 984F182207A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 07CB882207B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:39:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BD7F2816CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:38:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96C20283512
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:39:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0375A154BD;
-	Tue,  2 Jan 2024 17:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 986F6156CB;
+	Tue,  2 Jan 2024 17:39:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MoVk4T9P"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A45154A9;
-	Tue,  2 Jan 2024 17:38:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dominikbrodowski.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dominikbrodowski.net
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-Received: from shine.dominikbrodowski.net (shine.brodo.linta [10.2.0.112])
-	by isilmar-4.linta.de (Postfix) with ESMTPSA id 2AAD42002EC;
-	Tue,  2 Jan 2024 17:38:32 +0000 (UTC)
-Received: by shine.dominikbrodowski.net (Postfix, from userid 1000)
-	id E6FCBA0083; Tue,  2 Jan 2024 18:37:45 +0100 (CET)
-Date: Tue, 2 Jan 2024 18:37:45 +0100
-From: Dominik Brodowski <linux@dominikbrodowski.net>
-To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
-	lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
-	ranjani.sridharan@linux.intel.com, linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev
-Subject: Re: Oops in hdac_hda_dev_probe (6.7-rc7)
-Message-ID: <ZZRJ6VNJlQ97bnjF@shine.dominikbrodowski.net>
-References: <ZYvUIxtrqBQZbNlC@shine.dominikbrodowski.net>
- <87sf3lxiet.wl-tiwai@suse.de>
- <ZY7kosArPqhlCfOA@shine.dominikbrodowski.net>
- <874jg1x7ao.wl-tiwai@suse.de>
- <ZY_Gb8-rncuOjRq-@shine.dominikbrodowski.net>
- <87plyovwg7.wl-tiwai@suse.de>
- <3260e806-a708-4462-9d4e-346e54143a65@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C0E2156C1;
+	Tue,  2 Jan 2024 17:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=jNvpvta8GOOXzK79HPGCC2uzyjG2iqLPj19fEAMpJlk=; b=MoVk4T9PPX+/W6v4NNlFrShtnY
+	t++vAxX/BomhcaoZRJx5+MCX+sjrzAC4iY1e/7jSs5ncKzONUP4/Eb2g1XE/G0ZHndL3mtf6pNbyv
+	rYKvSqFfy9FArD5JbAIfbCwY49pEp977qTqhStvOr0OPmJ3QTL1L2o+1OdZ9WfnrR0SXYrTHVcCtP
+	Qt5B6WM1wMfq/sBmzQynfFMcdKpEn2MBS0IW3FInuwHjRtP5+O/SC4GiwRzp1LuC3Lewio7RtGkac
+	wHHE7ltWngAO5atrT3j6awSIrk741fTiBMuFEk/tqKhrOVJPb3HtuhCgykzMP2UjvlV0foVzTKy4N
+	FWXnqRPA==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rKijV-008caA-2i;
+	Tue, 02 Jan 2024 17:39:18 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Fan Ni <fan.ni@samsung.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Ira Weiny <ira.weiny@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	linux-cxl@vger.kernel.org
+Subject: [PATCH] cxl/region: use %pap format to print resource_size_t
+Date: Tue,  2 Jan 2024 09:39:17 -0800
+Message-ID: <20240102173917.19718-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3260e806-a708-4462-9d4e-346e54143a65@linux.intel.com>
 
-Am Tue, Jan 02, 2024 at 11:08:47AM +0200 schrieb Péter Ujfalusi:
-> 
-> 
-> On 30/12/2023 12:03, Takashi Iwai wrote:
-> > On Sat, 30 Dec 2023 08:27:43 +0100,
-> > Dominik Brodowski wrote:
-> >>
-> >> Am Fri, Dec 29, 2023 at 06:11:43PM +0100 schrieb Takashi Iwai:
-> >>> On Fri, 29 Dec 2023 16:24:18 +0100,
-> >>> Dominik Brodowski wrote:
-> >>>>
-> >>>> Hi Takashi,
-> >>>>
-> >>>> many thanks for your response. Your patch helps half-way: the oops goes
-> >>>> away, but so does the sound... With your patch, the decisive lines in dmesg
-> >>>> are:
-> >>>>
-> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> >>>> 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> >>>> 	sof_sdw sof_sdw: snd_soc_register_card failed -517
-> >>>> 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> >>>> 	sof_sdw sof_sdw: snd_soc_register_card failed -517
-> >>>> 	platform sof_sdw: deferred probe pending
-> >>>>
-> >>>> With a revert of the a0575b4add21, it is:
-> >>>>
-> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Topology: ABI 3:22:1 Kernel ABI 3:23:0
-> >>>> 	sof_sdw sof_sdw: ASoC: Parent card not yet available, widget card binding deferred
-> >>>> 	sof_sdw sof_sdw: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 3
-> >>>> 	input: sof-soundwire HDMI/DP,pcm=5 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input14
-> >>>> 	input: sof-soundwire HDMI/DP,pcm=6 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input15
-> >>>> 	input: sof-soundwire HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input16
-> >>>>
-> >>>> Maybe this helps a bit further?
-> >>>
-> >>> Thanks for quick testing.
-> >>> It shows at least that my guess wasn't wrong.
-> >>>
-> >>> The problem could be the initialization order in the caller side.
-> >>> Can the patch below work instead?
-> >>
-> >> Unfortunately, no:
-> >>
-> >> sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> >> sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> >> sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> >> sof_sdw sof_sdw: snd_soc_register_card failed -517
-> >> sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> >> sof_sdw sof_sdw: snd_soc_register_card failed -517
-> >> platform sof_sdw: deferred probe pending
-> > 
-> > Hm, then it might be the logical failure of that commit.
-> > Peter?
-> > 
-> > Without a fix in the next few days, we'll have to revert it before
-> > 6.7.
-> 
-> The fix for this was sent early December:
-> https://lore.kernel.org/linux-sound/20231207095425.19597-1-peter.ujfalusi@linux.intel.com/
+Use "%pap" to print a resource_size_t (phys_addr_t derived type)
+to prevent build warnings on 32-bit arches (seen on i386 and
+riscv-32).
 
-Yes, that patch fixes the issue (all built-in here).
+../drivers/cxl/core/region.c: In function 'alloc_hpa':
+../drivers/cxl/core/region.c:556:25: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 5 has type 'resource_size_t' {aka 'unsigned int'} [-Wformat=]
+  556 |                         "HPA allocation error (%ld) for size:%#llx in %s %pr\n",
 
-Thanks,
-	Dominik
+Fixes: 7984d22f1315 ("cxl/region: Add dev_dbg() detail on failure to allocate HPA space")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Fan Ni <fan.ni@samsung.com>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Alison Schofield <alison.schofield@intel.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: linux-cxl@vger.kernel.org
+---
+ drivers/cxl/core/region.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff -- a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+--- a/drivers/cxl/core/region.c
++++ b/drivers/cxl/core/region.c
+@@ -553,8 +553,8 @@ static int alloc_hpa(struct cxl_region *
+ 				    dev_name(&cxlr->dev));
+ 	if (IS_ERR(res)) {
+ 		dev_dbg(&cxlr->dev,
+-			"HPA allocation error (%ld) for size:%#llx in %s %pr\n",
+-			PTR_ERR(res), size, cxlrd->res->name, cxlrd->res);
++			"HPA allocation error (%ld) for size:%pap in %s %pr\n",
++			PTR_ERR(res), &size, cxlrd->res->name, cxlrd->res);
+ 		return PTR_ERR(res);
+ 	}
+ 
 
