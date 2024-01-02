@@ -1,150 +1,187 @@
-Return-Path: <linux-kernel+bounces-14931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3379982249E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:16:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B361822457
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:02:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A8271C22BCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:16:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2894B23112
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 867BF171CB;
-	Tue,  2 Jan 2024 22:16:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22884171BA;
+	Tue,  2 Jan 2024 21:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brun.one header.i=@brun.one header.b="E2npxgfi"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QUWKjXf+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx.dolansoft.org (s2.dolansoft.org [212.51.146.245])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F12E171B6;
-	Tue,  2 Jan 2024 22:15:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=brun.one
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=brun.one
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=brun.one;
-	s=s1; h=MIME-Version:Message-ID:Date:Subject:Cc:To:From:In-Reply-To:
-	References:From:To:Subject:Date:Message-ID:Reply-To;
-	bh=tk05/deGlS4tuw8pDhigIISVFF8G63ZmEtVtmgFP+ks=; b=E2npxgfi8/c4idsH1/Hnvcq0ax
-	l7IuT51xDlloC1d+wTulBhV6qiDkBEf/+BzNDF+RWbqHBZe89s5aOgWu2foYq/9Ubt2D7ajNQMADZ
-	kb2/YsJ+iV4k8Yb2eyY7YDAAqpKSR3yDX1vFQHxgDfmX59XDq2Sxgo9N+M6XNUWJPwDtJ7S8tahd/
-	QRMyLP6fed+t06iymK5hahb4B+dG/9UV1+kMbmKbvRd5zL1Brp7j4yx6U1fP8J5N2W9Xuun2tZdf4
-	u9qNXfySN5EQrkJCd1UZleR7BMuw3mgwvK72KGs56fde0PSu3Xq/I7P17dbUt4z7qsg0V6+Gt7/bK
-	u9C/TkRg==;
-Received: from [212.51.153.89] (helo=blacklava.cluster.local)
-	by mx.dolansoft.org with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <lorenz@dolansoft.org>)
-	id 1rKmca-001AiL-2O;
-	Tue, 02 Jan 2024 21:48:24 +0000
-From: Lorenz Brun <lorenz@brun.one>
-To: Stefan Binding <sbinding@opensource.cirrus.com>,
-	James Schulman <james.schulman@cirrus.com>,
-	David Rhodes <david.rhodes@cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] ALSA: hda: cs35l41: Support more HP models without _DSD
-Date: Tue,  2 Jan 2024 22:48:20 +0100
-Message-ID: <20240102214821.3394810-1-lorenz@brun.one>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56030171C1
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:49:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704232187;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NfIqhioGhHP/wJG1PyBueewTz4bWCmx/gOhAGW5jQdE=;
+	b=QUWKjXf+aRDgQhp3TIg9Y+Yg4l9az3kXaVGm9ov7ONI68KV+7LU00Q/FRhYCqnIYsajOVh
+	GYfWDE7Mhb9A96eD5yDmVnMg4T+x/MPu2ki812XT6tEDLj5JeGv6i5teF6lgr+cas8Iwal
+	uc17Y4vx0onfbXIZOK+VWo+rowlrK0k=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-53-fjvlDl11PWuF-0vej4x9hg-1; Tue, 02 Jan 2024 16:49:43 -0500
+X-MC-Unique: fjvlDl11PWuF-0vej4x9hg-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C03CB86D4D5;
+	Tue,  2 Jan 2024 21:49:42 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.68])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 9617D492BE6;
+	Tue,  2 Jan 2024 21:49:39 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20231221132400.1601991-41-dhowells@redhat.com>
+References: <20231221132400.1601991-41-dhowells@redhat.com> <20231221132400.1601991-1-dhowells@redhat.com>
+To: Dominique Martinet <asmadeus@codewreck.org>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Latchesar Ionkov <lucho@ionkov.net>
+Cc: dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
+    Steve French <smfrench@gmail.com>,
+    Matthew Wilcox <willy@infradead.org>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Ilya Dryomov <idryomov@gmail.com>,
+    Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org,
+    Christian Schoenebeck <linux_oss@crudebyte.com>
+Subject: [PATCH] 9p: Fix initialisation of netfs_inode for 9p
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: lorenz@dolansoft.org
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <292836.1704232179.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 02 Jan 2024 21:49:39 +0000
+Message-ID: <292837.1704232179@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-This adds overrides for a series of notebooks using a common config
-taken from HP's proprietary Windows driver.
+This needs a fix that I would fold in.  Somehow it gets through xfstests
+without it, but it seems problems can be caused with executables.
 
-This has been tested on a HP 15-ey0xxxx device (subsystem 103C8A31)
-together with another Realtek quirk and the calibration files from the
-proprietary driver.
-
-Signed-off-by: Lorenz Brun <lorenz@brun.one>
+David
 ---
-Changes in v2:
- - Use newly-introduced config table instead of function
- - Change boost cap value from 10uF to 24uF after cross-referencing my
-   sources with the preexisting 103C89C6 entry.
+9p: Fix initialisation of netfs_inode for 9p
 
-Changes in v3:
- - Rebase onto sound/for-next
- - Sorted model table
- - Updated commit message
+The 9p filesystem is calling netfs_inode_init() in v9fs_init_inode() -
+before the struct inode fields have been initialised from the obtained fil=
+e
+stats (ie. after v9fs_stat2inode*() has been called), but netfslib wants t=
+o
+set a couple of its fields from i_size.
 
- sound/pci/hda/cs35l41_hda_property.c | 44 ++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+Reported-by: Marc Dionne <marc.dionne@auristor.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Tested-by: Marc Dionne <marc.dionne@auristor.com>
+cc: Eric Van Hensbergen <ericvh@kernel.org>
+cc: Latchesar Ionkov <lucho@ionkov.net>
+cc: Dominique Martinet <asmadeus@codewreck.org>
+cc: Christian Schoenebeck <linux_oss@crudebyte.com>
+cc: v9fs@lists.linux.dev
+cc: linux-cachefs@redhat.com
+cc: linux-fsdevel@vger.kernel.org
+---
+ fs/9p/v9fs_vfs.h       |    1 +
+ fs/9p/vfs_inode.c      |    6 +++---
+ fs/9p/vfs_inode_dotl.c |    1 +
+ 3 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index 52820ca9c603..fcc605be51cf 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -42,6 +42,28 @@ static const struct cs35l41_config cs35l41_config_table[] = {
-  * in the ACPI. The Reset GPIO is also valid, so we can use the Reset defined in _DSD.
+diff --git a/fs/9p/v9fs_vfs.h b/fs/9p/v9fs_vfs.h
+index 731e3d14b67d..0e8418066a48 100644
+--- a/fs/9p/v9fs_vfs.h
++++ b/fs/9p/v9fs_vfs.h
+@@ -42,6 +42,7 @@ struct inode *v9fs_alloc_inode(struct super_block *sb);
+ void v9fs_free_inode(struct inode *inode);
+ struct inode *v9fs_get_inode(struct super_block *sb, umode_t mode,
+ 			     dev_t rdev);
++void v9fs_set_netfs_context(struct inode *inode);
+ int v9fs_init_inode(struct v9fs_session_info *v9ses,
+ 		    struct inode *inode, umode_t mode, dev_t rdev);
+ void v9fs_evict_inode(struct inode *inode);
+diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
+index b66466e97459..32572982f72e 100644
+--- a/fs/9p/vfs_inode.c
++++ b/fs/9p/vfs_inode.c
+@@ -246,7 +246,7 @@ void v9fs_free_inode(struct inode *inode)
+ /*
+  * Set parameters for the netfs library
   */
- 	{ "103C89C6", 2, INTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, -1, -1, -1, 1000, 4500, 24 },
-+	{ "103C8A28", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A29", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A2A", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A2B", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A2C", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A2D", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A2E", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A30", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A31", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BB3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BB4", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BDF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE0", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE1", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE2", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE9", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BDD", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BDE", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE5", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE6", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8B3A", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
- 	{ "104312AF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
- 	{ "10431433", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
- 	{ "10431463", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-@@ -356,6 +378,28 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CSC3551", "10280BEB", generic_dsd_config },
- 	{ "CSC3551", "10280C4D", generic_dsd_config },
- 	{ "CSC3551", "103C89C6", generic_dsd_config },
-+	{ "CSC3551", "103C8A28", generic_dsd_config },
-+	{ "CSC3551", "103C8A29", generic_dsd_config },
-+	{ "CSC3551", "103C8A2A", generic_dsd_config },
-+	{ "CSC3551", "103C8A2B", generic_dsd_config },
-+	{ "CSC3551", "103C8A2C", generic_dsd_config },
-+	{ "CSC3551", "103C8A2D", generic_dsd_config },
-+	{ "CSC3551", "103C8A2E", generic_dsd_config },
-+	{ "CSC3551", "103C8A30", generic_dsd_config },
-+	{ "CSC3551", "103C8A31", generic_dsd_config },
-+	{ "CSC3551", "103C8BB3", generic_dsd_config },
-+	{ "CSC3551", "103C8BB4", generic_dsd_config },
-+	{ "CSC3551", "103C8BDF", generic_dsd_config },
-+	{ "CSC3551", "103C8BE0", generic_dsd_config },
-+	{ "CSC3551", "103C8BE1", generic_dsd_config },
-+	{ "CSC3551", "103C8BE2", generic_dsd_config },
-+	{ "CSC3551", "103C8BE9", generic_dsd_config },
-+	{ "CSC3551", "103C8BDD", generic_dsd_config },
-+	{ "CSC3551", "103C8BDE", generic_dsd_config },
-+	{ "CSC3551", "103C8BE3", generic_dsd_config },
-+	{ "CSC3551", "103C8BE5", generic_dsd_config },
-+	{ "CSC3551", "103C8BE6", generic_dsd_config },
-+	{ "CSC3551", "103C8B3A", generic_dsd_config },
- 	{ "CSC3551", "104312AF", generic_dsd_config },
- 	{ "CSC3551", "10431433", generic_dsd_config },
- 	{ "CSC3551", "10431463", generic_dsd_config },
--- 
-2.42.0
+-static void v9fs_set_netfs_context(struct inode *inode)
++void v9fs_set_netfs_context(struct inode *inode)
+ {
+ 	struct v9fs_inode *v9inode =3D V9FS_I(inode);
+ 	netfs_inode_init(&v9inode->netfs, &v9fs_req_ops, true);
+@@ -326,8 +326,6 @@ int v9fs_init_inode(struct v9fs_session_info *v9ses,
+ 		err =3D -EINVAL;
+ 		goto error;
+ 	}
+-
+-	v9fs_set_netfs_context(inode);
+ error:
+ 	return err;
+ =
+
+@@ -359,6 +357,7 @@ struct inode *v9fs_get_inode(struct super_block *sb, u=
+mode_t mode, dev_t rdev)
+ 		iput(inode);
+ 		return ERR_PTR(err);
+ 	}
++	v9fs_set_netfs_context(inode);
+ 	return inode;
+ }
+ =
+
+@@ -461,6 +460,7 @@ static struct inode *v9fs_qid_iget(struct super_block =
+*sb,
+ 		goto error;
+ =
+
+ 	v9fs_stat2inode(st, inode, sb, 0);
++	v9fs_set_netfs_context(inode);
+ 	v9fs_cache_inode_get_cookie(inode);
+ 	unlock_new_inode(inode);
+ 	return inode;
+diff --git a/fs/9p/vfs_inode_dotl.c b/fs/9p/vfs_inode_dotl.c
+index e25fbc988f09..3505227e1704 100644
+--- a/fs/9p/vfs_inode_dotl.c
++++ b/fs/9p/vfs_inode_dotl.c
+@@ -128,6 +128,7 @@ static struct inode *v9fs_qid_iget_dotl(struct super_b=
+lock *sb,
+ 		goto error;
+ =
+
+ 	v9fs_stat2inode_dotl(st, inode, 0);
++	v9fs_set_netfs_context(inode);
+ 	v9fs_cache_inode_get_cookie(inode);
+ 	retval =3D v9fs_get_acl(inode, fid);
+ 	if (retval)
 
 
