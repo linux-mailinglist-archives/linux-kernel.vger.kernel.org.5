@@ -1,217 +1,150 @@
-Return-Path: <linux-kernel+bounces-14013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D01EB8216D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 05:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A1B978216DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 05:14:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C9FA1F2192D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 04:14:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 355F71F21A21
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 04:14:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5675D304;
-	Tue,  2 Jan 2024 04:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C83D10F8;
+	Tue,  2 Jan 2024 04:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lX7r6j6r";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uBvf6HeW"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="F+hD3Sct"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C33C8F5;
-	Tue,  2 Jan 2024 04:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7E0ECB;
+	Tue,  2 Jan 2024 04:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1704168813;
+	bh=nzjB48cCE5VSIzRwROBH6itfJxdakHetauGeOCGlZUQ=;
+	h=Date:From:To:Cc:Subject:From;
+	b=F+hD3SctfdecCH+JptjFhCzUgVmxxW375fljX4auBlQk5z5uqJMa/dlCg5j1SktBe
+	 N1VUvhdeO1C+DM4flBZyXe2IP0oDQWVSUgTTaV2d794tNsIlBO7nOg48pnTYX7B5RI
+	 cbdxYcv/TyhssTXnmqIYuuGp0Y+DL8Ov8utgqwae37NlhPJrjH2UhZ/w8vHyX9SKFW
+	 SgdFMgv+ajOy5mxkPpAD0xCgkolyDJiNBA7lKO7RC7k8PIVij0KIzdXORmOCtscOlm
+	 HO6SVgflewncTorvwM13S2ax+YTy3IxRLfbU5Cnypx8mJMkx2k8uXqams8Q2cNfJiz
+	 nOnWBL8l35bdA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E25FE21E95;
-	Tue,  2 Jan 2024 04:12:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704168778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SYSOONXMVgPEycKwvBPu1abrQtkqdF3VIp134lU1tnc=;
-	b=lX7r6j6rdp5YdZLwov4YOKJNf9q/CYe4iTn4uYlDkXBxn/hep7secxFmqlkltNSB6Hd/Hu
-	TK6kLWp2q9qi00C+Otw7v+xdt+yF6b2GsTsopjdZpi1dQitRVrIzJfXBayOLjgnEUaTaE+
-	TJ3co8EMgojp3Rbfj8seRcQWLPTwMUM=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704168777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SYSOONXMVgPEycKwvBPu1abrQtkqdF3VIp134lU1tnc=;
-	b=uBvf6HeWx+uUgCG2aVjtgde31tHUWrYubE+oy+aoJQep8rAgNzv+XDY7BuMgtr/WlXYS57
-	ttXTkKUiO0+C4Dg2UlVrT+SIvRzeFfzWQhl2+K1XKv9GPAGOTpMFr3h3RbKqihKDDEDdEr
-	t9DySxG746ptIOLp8EdwPstRKjIeifE=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 74A8C136D1;
-	Tue,  2 Jan 2024 04:12:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id aH+9BUaNk2UHQQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Tue, 02 Jan 2024 04:12:54 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org,
-	christophe.jaillet@wanadoo.fr,
-	andriy.shevchenko@linux.intel.com,
-	David.Laight@ACULAB.COM,
-	ddiss@suse.de
-Subject: [PATCH v2 4/4] btrfs: migrate to the newer memparse_safe() helper
-Date: Tue,  2 Jan 2024 14:42:14 +1030
-Message-ID: <04b551a30763f776303c7ca8b0d0ffc0ed665e2a.1704168510.git.wqu@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1704168510.git.wqu@suse.com>
-References: <cover.1704168510.git.wqu@suse.com>
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T3zx94417z4wcM;
+	Tue,  2 Jan 2024 15:13:33 +1100 (AEDT)
+Date: Tue, 2 Jan 2024 15:13:32 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Vlastimil Babka <vbabka@suse.cz>, Andrew Morton
+ <akpm@linux-foundation.org>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>, Andrey Konovalov
+ <andreyknvl@google.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the slab tree with the mm-stable, mm
+ trees
+Message-ID: <20240102151332.48a87d86@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: *
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=uBvf6HeW
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.00 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_DN_NONE(0.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 NEURAL_HAM_SHORT(-0.19)[-0.962];
-	 FREEMAIL_TO(0.00)[vger.kernel.org,linux-foundation.org,wanadoo.fr,linux.intel.com,ACULAB.COM,suse.de];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -1.00
-X-Rspamd-Queue-Id: E25FE21E95
-X-Spam-Flag: NO
+Content-Type: multipart/signed; boundary="Sig_/wfB=MU5Q0Sr7Y2VG9iIw_Sa";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-The new helper has better error report and correct overflow detection,
-furthermore the old @retptr behavior is also kept, thus there should be
-no behavior change.
+--Sig_/wfB=MU5Q0Sr7Y2VG9iIw_Sa
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ioctl.c |  6 +++++-
- fs/btrfs/super.c |  9 ++++++++-
- fs/btrfs/sysfs.c | 14 +++++++++++---
- 3 files changed, 24 insertions(+), 5 deletions(-)
+Hi all,
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 4e50b62db2a8..cb63f50a2078 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1175,7 +1175,11 @@ static noinline int btrfs_ioctl_resize(struct file *file,
- 			mod = 1;
- 			sizestr++;
- 		}
--		new_size = memparse(sizestr, &retptr);
-+
-+		ret = memparse_safe(sizestr, MEMPARSE_SUFFIXES_DEFAULT,
-+				    &new_size, &retptr);
-+		if (ret < 0)
-+			goto out_finish;
- 		if (*retptr != '\0' || new_size == 0) {
- 			ret = -EINVAL;
- 			goto out_finish;
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 3a677b808f0f..0f29fd692e0f 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -263,6 +263,8 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
- {
- 	struct btrfs_fs_context *ctx = fc->fs_private;
- 	struct fs_parse_result result;
-+	/* Only for memparse_safe() caller. */
-+	int ret;
- 	int opt;
- 
- 	opt = fs_parse(fc, btrfs_fs_parameters, param, &result);
-@@ -400,7 +402,12 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 		ctx->thread_pool_size = result.uint_32;
- 		break;
- 	case Opt_max_inline:
--		ctx->max_inline = memparse(param->string, NULL);
-+		ret = memparse_safe(param->string, MEMPARSE_SUFFIXES_DEFAULT,
-+				    &ctx->max_inline, NULL);
-+		if (ret < 0) {
-+			btrfs_err(NULL, "invalid string \"%s\"", param->string);
-+			return ret;
-+		}
- 		break;
- 	case Opt_acl:
- 		if (result.negated) {
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 84c05246ffd8..6846572496a6 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -762,6 +762,7 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
- 	struct btrfs_fs_info *fs_info = to_fs_info(get_btrfs_kobj(kobj));
- 	char *retptr;
- 	u64 val;
-+	int ret;
- 
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
-@@ -776,7 +777,10 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
- 	if (space_info->flags & BTRFS_BLOCK_GROUP_SYSTEM)
- 		return -EPERM;
- 
--	val = memparse(buf, &retptr);
-+	ret = memparse_safe(buf, MEMPARSE_SUFFIXES_DEFAULT, &val, &retptr);
-+	if (ret < 0)
-+		return ret;
-+
- 	/* There could be trailing '\n', also catch any typos after the value */
- 	retptr = skip_spaces(retptr);
- 	if (*retptr != 0 || val == 0)
-@@ -1779,10 +1783,14 @@ static ssize_t btrfs_devinfo_scrub_speed_max_store(struct kobject *kobj,
- {
- 	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
- 						   devid_kobj);
--	char *endptr;
- 	unsigned long long limit;
-+	char *endptr;
-+	int ret;
-+
-+	ret = memparse_safe(buf, MEMPARSE_SUFFIXES_DEFAULT, &limit, &endptr);
-+	if (ret < 0)
-+		return ret;
- 
--	limit = memparse(buf, &endptr);
- 	/* There could be trailing '\n', also catch any typos after the value. */
- 	endptr = skip_spaces(endptr);
- 	if (*endptr != 0)
--- 
-2.43.0
+Today's linux-next merge of the slab tree got a conflict in:
 
+  mm/kasan/quarantine.c
+
+between commits:
+
+  773688a6cb24 ("kasan: use stack_depot_put for Generic mode")
+  435736586ddc ("kasan: stop leaking stack trace handles")
+
+from the mm-stable, mm trees and commit:
+
+  72786c0a3dc5 ("KASAN: remove code paths guarded by CONFIG_SLAB")
+
+from the slab tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc mm/kasan/quarantine.c
+index 8afa77bc5d3b,138c57b836f2..000000000000
+--- a/mm/kasan/quarantine.c
++++ b/mm/kasan/quarantine.c
+@@@ -143,10 -143,7 +143,9 @@@ static void *qlink_to_object(struct qli
+  static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
+  {
+  	void *object =3D qlink_to_object(qlink, cache);
+ -	struct kasan_free_meta *meta =3D kasan_get_free_meta(cache, object);
+ +	struct kasan_free_meta *free_meta =3D kasan_get_free_meta(cache, object);
+- 	unsigned long flags;
+ +
+ +	kasan_release_object_meta(cache, object);
+ =20
+  	/*
+  	 * If init_on_free is enabled and KASAN's free metadata is stored in
+@@@ -156,15 -153,15 +155,9 @@@
+  	 */
+  	if (slab_want_init_on_free(cache) &&
+  	    cache->kasan_info.free_meta_offset =3D=3D 0)
+ -		memzero_explicit(meta, sizeof(*meta));
+ -
+ -	/*
+ -	 * As the object now gets freed from the quarantine, assume that its
+ -	 * free track is no longer valid.
+ -	 */
+ -	*(u8 *)kasan_mem_to_shadow(object) =3D KASAN_SLAB_FREE;
+ +		memzero_explicit(free_meta, sizeof(*free_meta));
+ =20
+- 	if (IS_ENABLED(CONFIG_SLAB))
+- 		local_irq_save(flags);
+-=20
+  	___cache_free(cache, object, _THIS_IP_);
+-=20
+- 	if (IS_ENABLED(CONFIG_SLAB))
+- 		local_irq_restore(flags);
+  }
+ =20
+  static void qlist_free_all(struct qlist_head *q, struct kmem_cache *cache)
+
+--Sig_/wfB=MU5Q0Sr7Y2VG9iIw_Sa
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWTjWwACgkQAVBC80lX
+0Gy4/Af/cL43FDP9ZkJ03TvRNhUmSZ6igR6ZwynFZcTGx0PzE/F+8zWZNL02iGWy
+LrQ6npksmc6H6xGkUfzh4YUIh3rsgjXp7EVEeDQz+nWQu8mc6i5mUsUfa5nxmafX
+DO/9c5UjfAEvCqlV4hpP5lyaB6PrubPY9xWs7uNn992kCcpQXVHZhrPpT5kkIjKb
+n0SW4HWapBha/ojZuTudzjQxP4AJeR+ofxg/788AYY2D83OnEheYVNbGS+9OEyOy
+RMtDQeFrKWI+nJF8GmNB5KfEc1lMHQklfShGiYsHwbLtEhZHcKyoHLHAJRQHH3yg
+FsbdXGYTJqEPCIIi3lIBXcRGGNZkqg==
+=7QH2
+-----END PGP SIGNATURE-----
+
+--Sig_/wfB=MU5Q0Sr7Y2VG9iIw_Sa--
 
