@@ -1,64 +1,77 @@
-Return-Path: <linux-kernel+bounces-14849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC17F822329
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 95F6182232C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:16:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2551C1F236C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:15:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34D061F227D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:16:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D952D168C8;
-	Tue,  2 Jan 2024 21:10:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39B89171A5;
+	Tue,  2 Jan 2024 21:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XyJziKOS"
+	dkim=pass (2048-bit key) header.d=corelatus.se header.i=@corelatus.se header.b="hDl49Nbd";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="faazUGM3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BA7F168B0
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:10:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a2330a92ae6so1079462166b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:10:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704229842; x=1704834642; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BaHYHUWobcXQie/ag5w6XPmRSgJVSfJQtfkEK9bsvgY=;
-        b=XyJziKOSdBUJPhPvXywFWD/daiPr2Z7yJ0pplXBRTmsplwD87a5FCLZCs8F7NsBeo6
-         sW0SR6LxezGM2WDSXnbS8WTW5HNUdXlBH6v5GovLiJF2r4z8xEAajmxdAxp843GvJT4r
-         LdCjsh1E1unspdHNXMp/XL32/HFElRUOyahZne8+HXYE7IqbvXLX8ZL0YPx9akDT4UkR
-         vLxed3LviqvpVk5iIfbuCZfkU3Ef4luzHNspDrHR/+QRaIl5MvnDmA5m3WAI3dDNKwSb
-         89umftlPo0u+WxDm4cpj9WXQPcQ/kYJ4LPEjnBVV34ZQ0rSViphyTgbRmL2ThZ/kIQKf
-         EUcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704229842; x=1704834642;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BaHYHUWobcXQie/ag5w6XPmRSgJVSfJQtfkEK9bsvgY=;
-        b=ECgDkI8n+txT9DSxpHRAKG/En2uFLlW0B62O/bpCFltHgW7hD+QpEwAadbp8kdeVip
-         mWvgJVR/l+A8pDkpLQxuPZnZJIcule/YFogy6uN91MzNJuP6QX1MJnT082S08LC/vglF
-         FxaJwt2GRqCBq5t+LB8b2ieh5lBN0cxDuwxC0kmk9PK5jEDGhPrrEdF7+u3vIvkNXJRS
-         Okjqrgh300KZ1VryhuorXsQQIu7LJKEsl47YAco+i+P55RfvL6mJZkwqCzxMjT610VIx
-         P5d6tEEKhuE2JJoLpKp/jtP9NBaXmPD5WwzlTNQ/nzOdZNauhG+kvIOF/tLSaBb4o636
-         yLDQ==
-X-Gm-Message-State: AOJu0YymFssHEJeayaQrtxLdaCJRTruSHpykSaAF/J6dXOtwYCz2mHeq
-	aqMYmb+hMRBknZ39aM/wSCIzq/bl2sEYng==
-X-Google-Smtp-Source: AGHT+IEYFYoM04vnPqWa8qCsO2QZLiy304Qe4hkj0IqLjYuGzChSqt80LIUYpcCtQyGgw+NQ+JNzbA==
-X-Received: by 2002:a17:907:5010:b0:a27:a80a:917b with SMTP id fw16-20020a170907501000b00a27a80a917bmr1822693ejc.109.1704229841804;
-        Tue, 02 Jan 2024 13:10:41 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id se24-20020a170906ce5800b00a27cfc17785sm3059171ejb.127.2024.01.02.13.10.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 13:10:41 -0800 (PST)
-Message-ID: <ac1519a9-ae6b-4bba-8ce4-d9d3616d34e7@linaro.org>
-Date: Tue, 2 Jan 2024 22:10:39 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151E8168AF;
+	Tue,  2 Jan 2024 21:13:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=corelatus.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=corelatus.se
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id E4BEF5C04D0;
+	Tue,  2 Jan 2024 16:13:53 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 02 Jan 2024 16:13:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=corelatus.se; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:message-id:mime-version:reply-to
+	:subject:subject:to:to; s=fm1; t=1704230033; x=1704316433; bh=/Z
+	5C3JxfHNpoAjvvAcHhDmbyTXDu4B/UNHLYNTCyyOE=; b=hDl49Nbd/OzY8EIQVu
+	ONP1QvA/NC2ZCgHHRSQKI2cy4CdYQcYkvncWPOwsrOVbef9mnMaJ1AixNAwoVyEH
+	m8FOkWH2axI/Zy5W/wHj+nuqTrM3O9MbRdxOEjRBzDkHN8pSFIc0Colo+wtQwTTJ
+	Jd0c/uHinTSzdnn/mRxHvaaeQbRbVowIHupNe2wOzoIWXYcDKzgFK59K+t3VBQdP
+	WXp/lquDmLEhf2ZtHgxIF+E6ugPk6mVt2yA8bsMv++v8JNBCDZ0h2xo3X1CL7Zxe
+	OE50N7LCoPWJcKCsdK9bu2MhPsWlJxlgIY5ffcC9mcSVSd9B4QsFj4T3gfQByn7k
+	xJqw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:message-id:mime-version:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1704230033; x=1704316433; bh=/Z5C3JxfHNpoA
+	jvvAcHhDmbyTXDu4B/UNHLYNTCyyOE=; b=faazUGM3y1V24Od/hOTQgt+sO92Jj
+	XiyFoVrt7zFfvyN8aYjaqxX29gZzGIo3XOoauCSYsJa2lh3Huu6eALjH6KtnIcGW
+	i+ECVqw96mHXuuoZHbleSTUzUdiUe/1I/sRIEdfK1VQpqADQNLsNzAEVphIPSmwj
+	whvrhDztR+VS+YA4npiFUT8xU+NB+zvajF2narq5WtuoPJIIFCAR++KZlEL/xzSJ
+	xFPlS53QMMiieX4Agu6S8JVJ07pFoUSSsc+1OktHtaBiYZLDr6A1dS9DsPSp2USS
+	Ek3ILgsdaTVmoQMUzsRBkJfthH6FpW8iTgBqTrfKewRCrZeKCOeD+TOvQ==
+X-ME-Sender: <xms:kXyUZZKfszaGVZdPnyxVOU8rZfELIwNJueaexja2Th-WeLd6ageztQ>
+    <xme:kXyUZVI5ZqrnnbBOxZH52eySj-XZ-N0jV5GNL0ifa_LL-vaRWVKGc-2kC-tfgXw15
+    fteu7MpB3p8goxT1A>
+X-ME-Received: <xmr:kXyUZRts_k8ffx8D4lVKJi3iNETxzWz-PiHDW5oA7n2hUMgLXf3xrM4v9EuFQbk->
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegfedgjeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefkffggfgfhufevvfgtgfesthejre
+    dttddvjeenucfhrhhomhepvfhhohhmrghsucfnrghnghgvuceothhhohhmrghssegtohhr
+    vghlrghtuhhsrdhsvgeqnecuggftrfgrthhtvghrnhepfeeikeffueffiefggfehvdeuff
+    dtffevgedvleelhffgjedvtdetkeegtddvveelnecuffhomhgrihhnpehkvghrnhgvlhdr
+    ohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hthhhomhgrshestghorhgvlhgrthhushdrshgv
+X-ME-Proxy: <xmx:kXyUZaa1O_zZ1-embXhdOGkDBapxXFXCouOboLHSAu4FJHJ8_lfw6w>
+    <xmx:kXyUZQZA669006KxNKAxngP5q-AdLG6sDG8xJAZs9w3xhsaCSd3qeQ>
+    <xmx:kXyUZeBCHv1q5yoDbQLjlbfi1iOI5Vd3Q0R3haitw7s-R21MStvjjA>
+    <xmx:kXyUZemL4S6U5AXsACJyh1j9mEQyK84rWLIoOpn3g24jEXovq1i6ew>
+Feedback-ID: ia69946ac:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 2 Jan 2024 16:13:51 -0500 (EST)
+Message-ID: <d1ce6aba-1b10-471c-ba60-10effa1dac10@corelatus.se>
+Date: Tue, 2 Jan 2024 22:13:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,111 +79,40 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/8] dt-bindings: nt35510: add compatible for FRIDA
- FRD400B25025-A-CTK
 Content-Language: en-US
-To: Dario Binacchi <dario.binacchi@amarulasolutions.com>,
- linux-kernel@vger.kernel.org
-Cc: linux-amarula@amarulasolutions.com,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Conor Dooley <conor+dt@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
- David Airlie <airlied@gmail.com>, Jessica Zhang <quic_jesszhan@quicinc.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>,
- Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring
- <robh+dt@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, devicetree@vger.kernel.org,
- dri-devel@lists.freedesktop.org
-References: <20240101161601.2232247-1-dario.binacchi@amarulasolutions.com>
- <20240101161601.2232247-6-dario.binacchi@amarulasolutions.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240101161601.2232247-6-dario.binacchi@amarulasolutions.com>
-Content-Type: text/plain; charset=UTF-8
+From: Thomas Lange <thomas@corelatus.se>
+Subject: [PATCH net] net: Implement missing SO_TIMESTAMPING_NEW cmsg support
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ jthinz@mailbox.tu-berlin.de, arnd@arndb.de, deepa.kernel@gmail.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 01/01/2024 17:15, Dario Binacchi wrote:
-> The patch adds the FRIDA FRD400B25025-A-CTK panel, which belongs to the
-> Novatek NT35510-based panel family.
-> 
-> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-> 
-> ---
-> 
-> Changes in v2:
-> - Add a dash in front of each "items:"
-> 
->  .../bindings/display/panel/novatek,nt35510.yaml        | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
-> index bc92928c805b..8e69446e00e0 100644
-> --- a/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
-> @@ -14,9 +14,13 @@ allOf:
->  
->  properties:
->    compatible:
-> -    items:
-> -      - const: hydis,hva40wv1
-> -      - const: novatek,nt35510
-> +    oneOf:
-> +      - items:
-> +          - const: hydis,hva40wv1
-> +          - const: novatek,nt35510
-> +      - items:
-> +          - const: frida,frd400b25025
-> +          - const: novatek,nt35510
+Commit 9718475e6908 ("socket: Add SO_TIMESTAMPING_NEW") added the new
+socket option SO_TIMESTAMPING_NEW. However, it was never implemented in
+__sock_cmsg_send thus breaking SO_TIMESTAMPING cmsg for platforms using
+SO_TIMESTAMPING_NEW.
 
-If fallback compatibles are the same, just make  the first item as enum.
-Less code.
+Fixes: 9718475e6908 ("socket: Add SO_TIMESTAMPING_NEW")
+Link: https://lore.kernel.org/netdev/6a7281bf-bc4a-4f75-bb88-7011908ae471@app.fastmail.com/
+Signed-off-by: Thomas Lange <thomas@corelatus.se>
+---
+  net/core/sock.c | 1 +
+  1 file changed, 1 insertion(+)
 
-Best regards,
-Krzysztof
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 51d52859e942..d02534c77413 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2813,6 +2813,7 @@ int __sock_cmsg_send(struct sock *sk, struct cmsghdr *cmsg,
+  		sockc->mark = *(u32 *)CMSG_DATA(cmsg);
+  		break;
+  	case SO_TIMESTAMPING_OLD:
++	case SO_TIMESTAMPING_NEW:
+  		if (cmsg->cmsg_len != CMSG_LEN(sizeof(u32)))
+  			return -EINVAL;
 
+--
+2.39.2
 
