@@ -1,200 +1,149 @@
-Return-Path: <linux-kernel+bounces-14284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 415DC821AD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:21:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DB99821AE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:28:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 446211C21D9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:21:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E55D283196
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:28:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD2D1E55F;
-	Tue,  2 Jan 2024 11:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4193EAC0;
+	Tue,  2 Jan 2024 11:28:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N0JA/F8q"
+	dkim=pass (1024-bit key) header.d=narfation.org header.i=@narfation.org header.b="Ma1AcYdF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dvalin.narfation.org (dvalin.narfation.org [213.160.73.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE7DDDBA;
-	Tue,  2 Jan 2024 11:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e741123acso7153552e87.0;
-        Tue, 02 Jan 2024 03:21:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704194484; x=1704799284; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SY7LUg56tvTFSaFBHTNp1V6mBZmx4SnZ2FbjggsvgvY=;
-        b=N0JA/F8qO6gxnTGrRsV4JSh4ejWwjAgq0/zwFWSNHZ5MTOeESfTLqyLLQlhlCcJGqS
-         bjX2dLs3XrY4w5cWH3TdQE/lN/WJLItclDy0hOmoE8lG4Pp7Wq4knA4XQPi1LYWvOJzI
-         hPy3QimmhStz2FhwaoX/k+nnwlNFTZfFvbAGLE8gmFqv72krkVH0MlcJCJrRjnQXj31h
-         QJYIVkSMYSInuhPV8J4qhY1KZMxuZvksbzWBMyrN6zFNQl9HN5OrGCk1wQ+JqeSBOwnn
-         nHpebRKlHr87sMajgSg+0SDcb9svmLdLzNSSwb6wmjsHSLA4gJnHmvRkgNoYFDUkm4aC
-         Y8PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704194484; x=1704799284;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SY7LUg56tvTFSaFBHTNp1V6mBZmx4SnZ2FbjggsvgvY=;
-        b=NSJ3EMWQo1aYxHHyLr2sv3iLcxg7PR0pkJOZSVNG5AWEmp7PxPKPTONiHK1hkRU90n
-         eJiVYESBvkGikQngDBNb7NFeVwSj5BrW3utdkOpNrgDjz3j245FPYMSUSKnAxm8bMZHw
-         ckuvssWhdSIjnRwBm/CsdbKMcuahrKBPPBsgU0L3YIT1F7JhPbOFaQ8+dSAGPrsBWL0n
-         4J3jwdgcAWi8xt1IsJjf8XqrKERXB3xcg9wpnxfRy4tX9WWquEvGdrlTVDNQE6oyN2QU
-         jSKdODQFnJfZ5y08kv41SEOUS37qMGUEDBxrgpKQi11NHvW18iso39S6BtODx7Ep2BtK
-         xz4w==
-X-Gm-Message-State: AOJu0YzSpGmIieI6oy7Z1sg+QoFZtcl6XBKYPokXzPeB5vJEdQ8SICMN
-	0lsD+SENg95qrY9C43QpL0o=
-X-Google-Smtp-Source: AGHT+IGEK8RCGYQjtIfn/mm010mDWz7wcv6lTyuy80R7BsXUN4a9fsIrzKvFz6UmS3dybTgBW3PieQ==
-X-Received: by 2002:ac2:5ec1:0:b0:50e:7bbb:55c with SMTP id d1-20020ac25ec1000000b0050e7bbb055cmr4491926lfq.139.1704194484066;
-        Tue, 02 Jan 2024 03:21:24 -0800 (PST)
-Received: from ?IPV6:2a02:8389:41cf:e200:f280:eb5b:2b83:dc35? (2a02-8389-41cf-e200-f280-eb5b-2b83-dc35.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:f280:eb5b:2b83:dc35])
-        by smtp.gmail.com with ESMTPSA id su14-20020a17090703ce00b00a235b1e81b4sm11533461ejb.114.2024.01.02.03.21.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 03:21:23 -0800 (PST)
-Message-ID: <03f469ca-c5f4-4255-90f4-6715a1455e0d@gmail.com>
-Date: Tue, 2 Jan 2024 12:21:21 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B39DF6A;
+	Tue,  2 Jan 2024 11:28:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=narfation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=narfation.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+	s=20121; t=1704194540;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IKJCpy+cXuzjprgjg+Of6HIRqe2chRqAQCoAEdEUmLc=;
+	b=Ma1AcYdF6RGml4NMC2wYnGW8Vy7bjxkIzK37EUrf2SOtuanqn/FetHnrbA82SaaooQe92G
+	Mhnjmwbsq85AfOHyz7iQ0XHuHmEeytkzWWUp4MladgBss0XUVBDLqt6+JL42CIWfs/dW8/
+	/64eblXjavruLl8t+a/CvRTjviKw6ao=
+From: Sven Eckelmann <sven@narfation.org>
+To: b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Antonio Quartulli <a@unstable.cc>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Marek Lindner <mareklindner@neomailbox.ch>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Wunderlich <sw@simonwunderlich.de>,
+ Markus Elfring <Markus.Elfring@web.de>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Subject:
+ Re: [PATCH 1/2] batman-adv: Return directly after a failed
+ batadv_dat_select_candidates() in batadv_dat_forward_data()
+Date: Tue, 02 Jan 2024 12:22:16 +0100
+Message-ID: <12355496.O9o76ZdvQC@sven-l14>
+In-Reply-To: <54dc53f8-5f08-4f1d-938a-c845c8ec0d44@web.de>
+References:
+ <8588cafe-3c61-40a6-b071-0877632a2a1e@web.de>
+ <54dc53f8-5f08-4f1d-938a-c845c8ec0d44@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] io: light: as73211: add support for as7331
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Christian Eggers <ceggers@arri.de>, Lars-Peter Clausen <lars@metafoo.de>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231220-as7331-v1-0-745b73c27703@gmail.com>
- <20231220-as7331-v1-2-745b73c27703@gmail.com>
- <20231226161414.47d5171e@jic23-huawei>
-Content-Language: en-US
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <20231226161414.47d5171e@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="nextPart5744289.DvuYhMxLoT";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-On 26.12.23 17:14, Jonathan Cameron wrote:
->> Add a new device-specific data structure to account for the device
->> differences: channel types and scale of LSB per channel.
-> A may not be worth doing it in this case, but usual approach to refactoring
-> a driver to allow support of additional devices is to do it in two steps.
-> 1) Refactor with no new support - so should be no operational changes.
-> 2) Add the new device support.
-> 
-I considered that in the first place, but the "refactoring" was so
-simple that the modification was just adding a pointer to an empty
-struct (you don't know what is chip-specific until you have another
-chip) and the patch alone had no real value (otherwise it could be
-applied to all drivers that only support one device, just in case).
+--nextPart5744289.DvuYhMxLoT
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Sven Eckelmann <sven@narfation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Date: Tue, 02 Jan 2024 12:22:16 +0100
+Message-ID: <12355496.O9o76ZdvQC@sven-l14>
+In-Reply-To: <54dc53f8-5f08-4f1d-938a-c845c8ec0d44@web.de>
+MIME-Version: 1.0
 
-As you said, it may not be worth it in this case, but thank you for the
-clarification.
+On Tuesday, 2 January 2024 08:11:47 CET Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Tue, 2 Jan 2024 07:27:45 +0100
+>=20
+> The kfree() function was called in one case by
+> the batadv_dat_forward_data() function during error handling
+> even if the passed variable contained a null pointer.
+> This issue was detected by using the Coccinelle software.
+>=20
+> * Thus return directly after a batadv_dat_select_candidates() call failed
+>   at the beginning.
+>=20
+> * Delete the label =E2=80=9Cout=E2=80=9D which became unnecessary with th=
+is refactoring.
+>=20
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
->> +static int as73211_intensity_scale(struct as73211_data *data, int chan, int *val, int *val2)
->> +{
->> +	unsigned int scale;
->> +
->> +	switch (chan) {
->> +	case IIO_MOD_X:
->> +		scale = AS73211_SCALE_X;
->> +		break;
->> +	case IIO_MOD_Y:
->> +		scale = AS73211_SCALE_Y;
->> +		break;
->> +	case IIO_MOD_Z:
->> +		scale = AS73211_SCALE_Z;
->> +		break;
->> +	default:
->> +		return -EINVAL;
->> +	}
->> +	scale /= as73211_gain(data);
->> +	scale /= as73211_integration_time_1024cyc(data);
->> +	*val = scale;
->> +
->> +	return IIO_VAL_INT;
-> 
-> Obviously it's really a question about the original code but why not
-> use IIO_VAL_FRACTIONAL here as well as below? Superficially looks
-> like it should work in a similar fashion.
-> 
-> If not, perhaps a comment here somewhere?
-> 
-You are right, the use of IIO_VAL_INT comes from the original
-implementation. I did not modify that because the expected precision
-(according to the datasheet is 3 decimal places) is guaranteed with the
-use of nW/m^2 instead of nW/cm^2 (the units used in the datasheet).
+Acked-by: Sven Eckelmann <sven@narfation.org>
 
-I think the best approach would have been using IIO_VAL_FRACTIONAL and
-the units provided in the datasheet, but changing units now could cause
-problems to current users. We could still use IIO_VAL_FRACTIONAL unless
-that might affect current users in any way. Otherwise I will add a
-comment as suggested.
+> ---
+>  net/batman-adv/distributed-arp-table.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>=20
+> diff --git a/net/batman-adv/distributed-arp-table.c b/net/batman-adv/dist=
+ributed-arp-table.c
+> index 28a939d56090..4c7e85534324 100644
+> --- a/net/batman-adv/distributed-arp-table.c
+> +++ b/net/batman-adv/distributed-arp-table.c
+> @@ -684,7 +684,7 @@ static bool batadv_dat_forward_data(struct batadv_pri=
+v *bat_priv,
+>=20
+>  	cand =3D batadv_dat_select_candidates(bat_priv, ip, vid);
+>  	if (!cand)
+> -		goto out;
+> +		return ret;
+>=20
+>  	batadv_dbg(BATADV_DBG_DAT, bat_priv, "DHT_SEND for %pI4\n", &ip);
+>=20
+> @@ -728,7 +728,6 @@ static bool batadv_dat_forward_data(struct batadv_pri=
+v *bat_priv,
+>  		batadv_orig_node_put(cand[i].orig_node);
+>  	}
+>=20
+> -out:
+>  	kfree(cand);
+>  	return ret;
+>  }
+> --
+> 2.43.0
+>=20
+>=20
 
->> @@ -355,30 +444,12 @@ static int as73211_read_raw(struct iio_dev *indio_dev, struct iio_chan_spec cons
->>  			*val2 = AS73211_SCALE_TEMP_MICRO;
->>  			return IIO_VAL_INT_PLUS_MICRO;
->>  
->> -		case IIO_INTENSITY: {
->> -			unsigned int scale;
->> -
->> -			switch (chan->channel2) {
->> -			case IIO_MOD_X:
->> -				scale = AS73211_SCALE_X;
->> -				break;
->> -			case IIO_MOD_Y:
->> -				scale = AS73211_SCALE_Y;
->> -				break;
->> -			case IIO_MOD_Z:
->> -				scale = AS73211_SCALE_Z;
->> -				break;
->> -			default:
->> -				return -EINVAL;
->> -			}
->> -			scale /= as73211_gain(data);
->> -			scale /= as73211_integration_time_1024cyc(data);
->> -			*val = scale;
->> -			return IIO_VAL_INT;
->> +		case IIO_INTENSITY:
->> +			return data->spec_dev->intensity_scale(data, chan->channel2, val, val2);
-> Where it doesn't hurt readability, I'd prefer we stayed as close to 80 chars or below
-> as reasonably possible.  So here wrap so val, val2); is on the next line.
-> 
-In order to meet the 80-char rule, three lines will be required
-(wrapping val, val2 is not enough; chan->channel2 must have its own
-line). It looks a bit weird, but I have nothing against it.
 
-On the other hand, the original code did not always follow the 80-char
-rule (up to 99 chars per line are used), so using two lines with a first
-one of 84 chars could be an option.
+--nextPart5744289.DvuYhMxLoT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
->> +	if (dev_fwnode(dev))
->> +		data->spec_dev = device_get_match_data(dev);
->> +	else
->> +		data->spec_dev = i2c_get_match_data(client);
-> 
-> Take a look at how i2c_get_match_data() is defined...
-> https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-core-base.c#L117
-> and in particular what it calls first..
-> 
-Oops! I missed that one. I will simplify the code to a simple call to
-i2c_get_match_data() and error check:
+-----BEGIN PGP SIGNATURE-----
 
-        data->spec_dev = i2c_get_match_data(client);
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmWT8ekACgkQXYcKB8Em
+e0Zezg/+P9PfejkVp+OoIyYjl/JOvoFqwplYaSBqhuTzvIVSx8fGZmzS0eBHploL
+kIPHLR9UoxD4ghhd0JX1Vu/e2bWMQUFJGmzX92xFcXxMrx/FJ3DfMRM9rPSkd/FX
+Z4QFQp5BkQuqWk1tICiOSP+GeGtiXY9UZnrYFEKmJG601RaziFMGXC8va/zmaBBD
+7+YTYyJwPxO5jF+KLIEMJjCT1b4+o9fneoGdwpoyvk0JyC9FbYbiOPeeB+37PczD
+X1YGGNnAmF8cPFU89J/8XXplraK8HAOaivzAsTDPnBOu4SP/spQKWefX/LgqkFWx
+5c0l02CzZapL6szJEk1ZbqTfXrRbDjnqFxxIV7HBbtnx6hkSbPvNcubB+B1k56AA
+l+2EY9gPnIUe/a5C11LUYc4zfNF5Z+k8ZgtrRiTiR+CstKtjBdiGytyRN4Lj/7ax
+YmhnVkAKY/Dr79Frc76jP+sGNnCzHna9AhHUyHBtHRdr6/vx8ggEPtylrxjsVll0
+VCZuKAM23pJ8fKdEiexVon9pX5UXq+nqIBc/iZvU0+i/QE8GK/DAd1lWVoDpFDvA
+25O42/MbEUefcd4VHksZdNLOqxKwyFJunUZmS5piyt7VO2RhRUQQVCeWDvETpZ+/
+oyV9q09FlZRIYbRioLqmv2jNV7WoUSw3DWOrh7GUe1vsWzYhzmM=
+=QSP4
+-----END PGP SIGNATURE-----
 
-        if (!data->spec_dev)
+--nextPart5744289.DvuYhMxLoT--
 
-                return -EINVAL;
 
-> 
-Thanks for your review and best regards,
-Javier Carrasco
+
 
