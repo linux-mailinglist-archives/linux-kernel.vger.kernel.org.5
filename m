@@ -1,56 +1,49 @@
-Return-Path: <linux-kernel+bounces-14057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 866DE821771
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:40:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BDD782177B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:45:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 879541C212AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 05:40:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8B421F22936
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 05:45:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E2B1366;
-	Tue,  2 Jan 2024 05:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="whSikbQ4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1ED04435;
+	Tue,  2 Jan 2024 05:44:51 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC46257C;
-	Tue,  2 Jan 2024 05:40:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704174008;
-	bh=z6qn03b6LeS1LR8vScT4yPeTy8AttWujLJP3TbJX0Vw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=whSikbQ41Fkmk4oTuvRCSAHHiZgyXRal1tLdj4xqOMH2SvWKPFQuxBSnI+uK4u8fS
-	 sOC1yGTVaDpdMee+w00DPVirYc8EzYNrShQ6Mu8EbxZPKlJBcJZ9AH7EvhjGm6s4Ox
-	 v9A/gJGT2v5dkXNxGAps9I1dpKJFHl0f6tRYTDzJCO9dBBd9EHVsv+VYoavGRqYWHf
-	 3TAioQSAxXhTxF2twGpgxmqDzYP9LHjtC/UoVQk+hiigpnpLDNsKIYG0caIQxaILsK
-	 6WZPXDJHLTVs7y1wICaZLsrMv18WBtTMk/BlnLyiVO2dr/FnZ9Jipm1qf0yqtPy1+h
-	 RAsZZoYMidT6g==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A5C0A3780FC7;
-	Tue,  2 Jan 2024 05:40:06 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	kernel@collabora.com,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.237.72.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7532583;
+	Tue,  2 Jan 2024 05:44:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from luzhipeng.223.5.5.5 (unknown [115.200.224.203])
+	by mail-app4 (Coremail) with SMTP id cS_KCgCXn58bopNlTqUlAA--.40716S2;
+	Tue, 02 Jan 2024 13:41:48 +0800 (CST)
+From: Zhipeng Lu <alexious@zju.edu.cn>
+To: alexious@zju.edu.cn
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Neil Brown <neilb@suse.de>,
+	Olga Kornievskaia <kolga@netapp.com>,
+	Dai Ngo <Dai.Ngo@oracle.com>,
+	Tom Talpey <tom@talpey.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	"J. Bruce Fields" <bfields@fieldses.org>,
+	Simo Sorce <simo@redhat.com>,
+	linux-nfs@vger.kernel.org,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [Patch v2] selftests/mm: gup_test: conform test to TAP format output
-Date: Tue,  2 Jan 2024 10:38:06 +0500
-Message-ID: <20240102053807.2114200-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.42.0
+Subject: [PATCH] [v3] SUNRPC: fix some memleaks in gssx_dec_option_array
+Date: Tue,  2 Jan 2024 13:38:13 +0800
+Message-Id: <20240102053815.3611872-1-alexious@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,153 +51,103 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cS_KCgCXn58bopNlTqUlAA--.40716S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar48AFWkWw48uw43Aw15CFg_yoW8ZF13pF
+	Z3Kr9xAF10qr1xXF1ayw4Fvw1YyFs5trW7Wry2ka13Zw1fJr1F9w40kryj9Fy2yrZ3Ww1U
+	ZF1j9ry8u3Z0y3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCY02Avz4vE14v_GrWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+	0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+	17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+	C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
+	6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+	73UjIFyTuYvjfUYDGYDUUUU
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
 
-Conform the layout, informational and status messages to TAP. No
-functional change is intended other than the layout of output messages.
+The creds and oa->data need to be freed in the error-handling paths after
+there allocation. So this patch add these deallocations in the
+corresponding paths.
 
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Fixes: 1d658336b05f ("SUNRPC: Add RPC based upcall mechanism for RPCGSS auth")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
 ---
-Changes since v1:
-- Fix typo
-- Update subject
----
- tools/testing/selftests/mm/gup_test.c | 65 ++++++++++++++-------------
- 1 file changed, 33 insertions(+), 32 deletions(-)
+Changelog:
 
-diff --git a/tools/testing/selftests/mm/gup_test.c b/tools/testing/selftests/mm/gup_test.c
-index ec2229136384..cbe99594d319 100644
---- a/tools/testing/selftests/mm/gup_test.c
-+++ b/tools/testing/selftests/mm/gup_test.c
-@@ -50,39 +50,41 @@ static char *cmd_to_str(unsigned long cmd)
- void *gup_thread(void *data)
- {
- 	struct gup_test gup = *(struct gup_test *)data;
--	int i;
-+	int i, status;
+v2: correct some syntactic problems.
+v3: delete unused label err.
+---
+ net/sunrpc/auth_gss/gss_rpc_xdr.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
+
+diff --git a/net/sunrpc/auth_gss/gss_rpc_xdr.c b/net/sunrpc/auth_gss/gss_rpc_xdr.c
+index d79f12c2550a..cb32ab9a8395 100644
+--- a/net/sunrpc/auth_gss/gss_rpc_xdr.c
++++ b/net/sunrpc/auth_gss/gss_rpc_xdr.c
+@@ -250,8 +250,8 @@ static int gssx_dec_option_array(struct xdr_stream *xdr,
  
- 	/* Only report timing information on the *_BENCHMARK commands: */
- 	if ((cmd == PIN_FAST_BENCHMARK) || (cmd == GUP_FAST_BENCHMARK) ||
- 	     (cmd == PIN_LONGTERM_BENCHMARK)) {
- 		for (i = 0; i < repeats; i++) {
- 			gup.size = size;
--			if (ioctl(gup_fd, cmd, &gup))
--				perror("ioctl"), exit(1);
-+			status = ioctl(gup_fd, cmd, &gup);
-+			if (status)
-+				break;
- 
- 			pthread_mutex_lock(&print_mutex);
--			printf("%s: Time: get:%lld put:%lld us",
--			       cmd_to_str(cmd), gup.get_delta_usec,
--			       gup.put_delta_usec);
-+			ksft_print_msg("%s: Time: get:%lld put:%lld us",
-+				       cmd_to_str(cmd), gup.get_delta_usec,
-+				       gup.put_delta_usec);
- 			if (gup.size != size)
--				printf(", truncated (size: %lld)", gup.size);
--			printf("\n");
-+				ksft_print_msg(", truncated (size: %lld)", gup.size);
-+			ksft_print_msg("\n");
- 			pthread_mutex_unlock(&print_mutex);
- 		}
- 	} else {
- 		gup.size = size;
--		if (ioctl(gup_fd, cmd, &gup)) {
--			perror("ioctl");
--			exit(1);
--		}
-+		status = ioctl(gup_fd, cmd, &gup);
-+		if (status)
-+			goto return_;
- 
- 		pthread_mutex_lock(&print_mutex);
--		printf("%s: done\n", cmd_to_str(cmd));
-+		ksft_print_msg("%s: done\n", cmd_to_str(cmd));
- 		if (gup.size != size)
--			printf("Truncated (size: %lld)\n", gup.size);
-+			ksft_print_msg("Truncated (size: %lld)\n", gup.size);
- 		pthread_mutex_unlock(&print_mutex);
+ 	creds = kzalloc(sizeof(struct svc_cred), GFP_KERNEL);
+ 	if (!creds) {
+-		kfree(oa->data);
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto free_oa;
  	}
  
-+return_:
-+	ksft_test_result(!status, "ioctl status %d\n", status);
- 	return NULL;
+ 	oa->data[0].option.data = CREDS_VALUE;
+@@ -265,29 +265,40 @@ static int gssx_dec_option_array(struct xdr_stream *xdr,
+ 
+ 		/* option buffer */
+ 		p = xdr_inline_decode(xdr, 4);
+-		if (unlikely(p == NULL))
+-			return -ENOSPC;
++		if (unlikely(p == NULL)) {
++			err = -ENOSPC;
++			goto free_creds;
++		}
+ 
+ 		length = be32_to_cpup(p);
+ 		p = xdr_inline_decode(xdr, length);
+-		if (unlikely(p == NULL))
+-			return -ENOSPC;
++		if (unlikely(p == NULL)) {
++			err = -ENOSPC;
++			goto free_creds;
++		}
+ 
+ 		if (length == sizeof(CREDS_VALUE) &&
+ 		    memcmp(p, CREDS_VALUE, sizeof(CREDS_VALUE)) == 0) {
+ 			/* We have creds here. parse them */
+ 			err = gssx_dec_linux_creds(xdr, creds);
+ 			if (err)
+-				return err;
++				goto free_creds;
+ 			oa->data[0].value.len = 1; /* presence */
+ 		} else {
+ 			/* consume uninteresting buffer */
+ 			err = gssx_dec_buffer(xdr, &dummy);
+ 			if (err)
+-				return err;
++				goto free_creds;
+ 		}
+ 	}
+ 	return 0;
++
++free_creds:
++	kfree(creds);
++free_oa:
++	kfree(oa->data);
++	oa->data = NULL;
++	return err;
  }
  
-@@ -170,7 +172,7 @@ int main(int argc, char **argv)
- 			touch = 1;
- 			break;
- 		default:
--			return -1;
-+			ksft_exit_fail_msg("Wrong argument\n");
- 		}
- 	}
- 
-@@ -198,11 +200,12 @@ int main(int argc, char **argv)
- 		}
- 	}
- 
-+	ksft_print_header();
-+	ksft_set_plan(nthreads);
-+
- 	filed = open(file, O_RDWR|O_CREAT);
--	if (filed < 0) {
--		perror("open");
--		exit(filed);
--	}
-+	if (filed < 0)
-+		ksft_exit_fail_msg("Unable to open %s: %s\n", file, strerror(errno));
- 
- 	gup.nr_pages_per_call = nr_pages;
- 	if (write)
-@@ -213,27 +216,24 @@ int main(int argc, char **argv)
- 		switch (errno) {
- 		case EACCES:
- 			if (getuid())
--				printf("Please run this test as root\n");
-+				ksft_print_msg("Please run this test as root\n");
- 			break;
- 		case ENOENT:
--			if (opendir("/sys/kernel/debug") == NULL) {
--				printf("mount debugfs at /sys/kernel/debug\n");
--				break;
--			}
--			printf("check if CONFIG_GUP_TEST is enabled in kernel config\n");
-+			if (opendir("/sys/kernel/debug") == NULL)
-+				ksft_print_msg("mount debugfs at /sys/kernel/debug\n");
-+			ksft_print_msg("check if CONFIG_GUP_TEST is enabled in kernel config\n");
- 			break;
- 		default:
--			perror("failed to open " GUP_TEST_FILE);
-+			ksft_print_msg("failed to open %s: %s\n", GUP_TEST_FILE, strerror(errno));
- 			break;
- 		}
--		exit(KSFT_SKIP);
-+		ksft_test_result_skip("Please run this test as root\n");
-+		return ksft_exit_pass();
- 	}
- 
- 	p = mmap(NULL, size, PROT_READ | PROT_WRITE, flags, filed, 0);
--	if (p == MAP_FAILED) {
--		perror("mmap");
--		exit(1);
--	}
-+	if (p == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap: %s\n", strerror(errno));
- 	gup.addr = (unsigned long)p;
- 
- 	if (thp == 1)
-@@ -264,7 +264,8 @@ int main(int argc, char **argv)
- 		ret = pthread_join(tid[i], NULL);
- 		assert(ret == 0);
- 	}
-+
- 	free(tid);
- 
--	return 0;
-+	return ksft_exit_pass();
- }
+ static int gssx_dec_status(struct xdr_stream *xdr,
 -- 
-2.42.0
+2.34.1
 
 
