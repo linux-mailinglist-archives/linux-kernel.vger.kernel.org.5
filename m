@@ -1,93 +1,145 @@
-Return-Path: <linux-kernel+bounces-14002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C8868216BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 04:46:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 919B98216BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 04:49:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 267E91C21095
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 03:46:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DADF1F218A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 03:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E0123CD;
-	Tue,  2 Jan 2024 03:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 671AC10E1;
+	Tue,  2 Jan 2024 03:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="0yxUKDia"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="MSH5f8Dt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F52020E0;
-	Tue,  2 Jan 2024 03:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=jPtuUmC93Yea48T6TTFZ4KmQu493//SKPkPtQ7A9VWM=; b=0yxUKDiaV3c/muWhadgd5rj+rS
-	+xOoSFfSXoi9ElsyNcJPD0yiyavFaHdlIgSAvC0EBCnxrOTWB2EJlJTXXbKeLylzobnJBii78mZpt
-	/wR4/X3eFyf1+zN6HKQR1ZT58ng2cTumpext5jnRXnVZJwO4HSGfgyuyxPJ6ji9GPhmGLr5v8vT6K
-	K6hd8qxm33R7LehxYNFaXfsAL7x+TZ8SjwK0rWimroEwhRF86ae5ma4mj8n3s5TKzsVE8qUo4UUKa
-	pBrXT2Fg/S21z3c90lQx8CJep/lLZgP9XRv7djcKGKcPs9pnF5lDIFWGZ/oSVSPHz4FRttiS4aUC/
-	RlTNjFig==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rKVjG-0072Fo-1F;
-	Tue, 02 Jan 2024 03:46:10 +0000
-Message-ID: <8b0ad2bb-df2e-4f0c-940c-e2cfbc8fa207@infradead.org>
-Date: Mon, 1 Jan 2024 19:46:09 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F00EBF;
+	Tue,  2 Jan 2024 03:49:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1704167367;
+	bh=fHH2oL5nwatjdyOgNtoiTqFaYGBo4OoqMQjSZLVF+N8=;
+	h=Date:From:To:Cc:Subject:From;
+	b=MSH5f8DtAwJHOoRk1DPqduTTJeF/Xi4jsKsBhsoW/i3fEs/aBNKK6AVpeWxcc+iKV
+	 I2UIs0/oSe5yE18b722exYGgudFhIYW8TDtQKFftE8Dn81d4MRphXKNHekMZyUlKUv
+	 hSqiun8yL48o18f0r+NUlHaRN/zhKZMDRmdnL3qmZCyI1Ub8m6LZR+ljVH8zqPHKQn
+	 jIopWmPOwBOTkJEZWj9vZRrHziA5dhs7De3oMxOSnlYOf2BzGBOrFa4cH0SQ4BAU7A
+	 FMzXrd7rg7r0Y7FI8vqoGaXWhFdv2x000cS9wZjbM22IOZL+RbhG5+UW4JFq0RNAZb
+	 FyMdXwfhfxtOw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T3zPL2C8kz4wxX;
+	Tue,  2 Jan 2024 14:49:26 +1100 (AEDT)
+Date: Tue, 2 Jan 2024 14:49:24 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Dan Williams <dan.j.williams@intel.com>, "Rafael J. Wysocki"
+ <rjw@rjwysocki.net>
+Cc: Dave Jiang <dave.jiang@intel.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, "Rafael J. Wysocki"
+ <rafael.j.wysocki@intel.com>
+Subject: linux-next: manual merge of the cxl tree with the pm tree
+Message-ID: <20240102144924.1fdfa044@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] scsi: qedf: fix spelling typo in comment
-Content-Language: en-US
-To: zheng tan <tanzheng@kylinos.cn>, skashyap@marvell.com,
- jhasan@marvell.com, GR-QLogic-Storage-Upstream@marvell.com
-Cc: jejb@linux.ibm.com, martin.petersen@oracle.com,
- linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
- k2ci <kernel-bot@kylinos.cn>
-References: <20240102022448.3970501-1-tanzheng@kylinos.cn>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240102022448.3970501-1-tanzheng@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/f6bH5xUlDv/hJA7yK.XU.zQ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/f6bH5xUlDv/hJA7yK.XU.zQ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 1/1/24 18:24, zheng tan wrote:
-> From: Zheng tan <tanzheng@kylinos.cn> 
-> 
-> fix spelling typo in comment.
-> 
-> Reported-by: k2ci <kernel-bot@kylinos.cn>
-> Signed-off-by: Zheng tan <tanzheng@kylinos.cn>
-> ---
->  drivers/scsi/qedf/qedf_hsi.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/qedf/qedf_hsi.h b/drivers/scsi/qedf/qedf_hsi.h
-> index ecd5cb53b750..2df2165e4356 100644
-> --- a/drivers/scsi/qedf/qedf_hsi.h
-> +++ b/drivers/scsi/qedf/qedf_hsi.h
-> @@ -300,7 +300,7 @@ struct fcoe_respqe {
->  /* PARAM that is located in the FCP_RSP FC header */
->  #define FCOE_RESPQE_PARAM_MASK            0xFFFFFF
->  #define FCOE_RESPQE_PARAM_SHIFT           0
-> -/* Indication whther its Target-auto-rsp mode or not */
-> +/* Indication wether its Target-auto-rsp mode or not */
+Today's linux-next merge of the cxl tree got a conflict in:
 
-                 whether
+  include/linux/acpi.h
 
->  #define FCOE_RESPQE_TARGET_AUTO_RSP_MASK  0xFF
->  #define FCOE_RESPQE_TARGET_AUTO_RSP_SHIFT 24
->  };
+between commit:
 
--- 
-#Randy
+  f47507988145 ("thermal: ACPI: Move the ACPI thermal library to drivers/ac=
+pi/")
+
+from the pm tree and commit:
+
+  ca53543d8e34 ("acpi: numa: Add helper function to retrieve the performanc=
+e attributes")
+
+from the cxl tree.
+
+Dan, thanks for the heads up.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/acpi.h
+index 118a18b7ff84,8b0761c682f9..000000000000
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@@ -424,13 -425,16 +425,23 @@@ extern int acpi_blacklisted(void)
+  extern void acpi_osi_setup(char *str);
+  extern bool acpi_osi_is_win8(void);
+ =20
+ +#ifdef CONFIG_ACPI_THERMAL_LIB
+ +int thermal_acpi_active_trip_temp(struct acpi_device *adev, int id, int *=
+ret_temp);
+ +int thermal_acpi_passive_trip_temp(struct acpi_device *adev, int *ret_tem=
+p);
+ +int thermal_acpi_hot_trip_temp(struct acpi_device *adev, int *ret_temp);
+ +int thermal_acpi_critical_trip_temp(struct acpi_device *adev, int *ret_te=
+mp);
+ +#endif
+ +
++ #ifdef CONFIG_ACPI_HMAT
++ int acpi_get_genport_coordinates(u32 uid, struct access_coordinate *coord=
+);
++ #else
++ static inline int acpi_get_genport_coordinates(u32 uid,
++ 					       struct access_coordinate *coord)
++ {
++ 	return -EOPNOTSUPP;
++ }
++ #endif
++=20
+  #ifdef CONFIG_ACPI_NUMA
+  int acpi_map_pxm_to_node(int pxm);
+  int acpi_get_node(acpi_handle handle);
+
+--Sig_/f6bH5xUlDv/hJA7yK.XU.zQ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWTh8QACgkQAVBC80lX
+0GxdPAgAhA+s3BHKsaU1OvdOYJ4rEh13P2Xvl3m1AR36VmgCbDO6QtLramQl5dW8
+V7dpjHs5wJbifzj2HLfhsL/jHFgykZOMvdkBK8N/ZDmW3TQ5xNKbrKWFx7HCSdkg
+BgH3OAHkYJI2y5glhMFm4UyBy0uGr7kqzpRzFA21/35q1BRCzlcwJI7qT9tB8Dn1
+gyNVfDt0wZrI20cg7EizQyVbraTPzq43xWX3FsnJjyh8XWi4kgR4mp7Q3llJhRld
+4UkExckcrVBK2YPAcovWDY1RGVoO5nHlQVgSg8xk5Q91RvdNYmRXqU0tR/WNg9mc
+cb1MeiKVjgq9Nuny8pt0WjYsSZbAkQ==
+=OyXZ
+-----END PGP SIGNATURE-----
+
+--Sig_/f6bH5xUlDv/hJA7yK.XU.zQ--
 
