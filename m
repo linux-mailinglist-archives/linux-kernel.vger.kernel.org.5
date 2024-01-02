@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-14847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC68F822325
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90C28822326
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:15:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95BF0283213
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:15:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C99A280F28
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 612761A59A;
-	Tue,  2 Jan 2024 21:09:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B9791A5BE;
+	Tue,  2 Jan 2024 21:09:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UfHrPRyq"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PAfFIwoc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B1E119BAF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B2E1A27D
 	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:09:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7b7a9f90f34so534023839f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:09:04 -0800 (PST)
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7ba903342c2so711978739f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:09:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704229744; x=1704834544; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1704229745; x=1704834545; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/Hw1xlFNdgkxULgKG3GwEV3Tvyifb1Pre98NYX4zJtY=;
-        b=UfHrPRyq1K9c0fjROBFDROpkjVV6Z50HJqMAJpG8fOpr/uhXpbzrD1pKOfcXkEQa+s
-         mm2PgWG4g6H+26K96NqcZttpagvkW34EJW8+cbLAZQEo6MA35vUcGEwSUvQ/cWX/+oJ7
-         Sl3uYn4dTikDMei4/omb3FJyPq5XSGvZRlgZQ=
+        bh=+gYVKYJQzeswl0d2/E7tMkWp3ZqYQjIB7uAjyZVlcw4=;
+        b=PAfFIwocWHybLVBVF3+pQWecm7obgM9gBARpFcuydHBhTwMegiEn/TSeOryKURawSN
+         pOo6iyAsT+RsEpJ+nvuQ1JoMuNfsH5ny7QrkENStE3bVViI0pCcZUCftQFNfDx/9/rWn
+         lx7k6pgCzbZ078uPHvFt3AJlScXJgOQ5xJn+o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704229744; x=1704834544;
+        d=1e100.net; s=20230601; t=1704229745; x=1704834545;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/Hw1xlFNdgkxULgKG3GwEV3Tvyifb1Pre98NYX4zJtY=;
-        b=qSwaUCEJrqk34CarG6D4Oa9tRxvHE5+ujsjzR5rpIH9PrkoZaa+J70gviA3eINNykg
-         nlA67Oj4TAp3qySeX0TlZwgSDWgzHaElA2qt0q9NPXyoORtlBnmrP76b6yMEcJsRtz/7
-         JMx7PVzu2rHH16UtLYmN5HvPkJQxPxs7+NF4mjurIEnXdez6YsaK9er2PrsKwX6maQ6r
-         e5bm6tk55aMQsVaSmwGPqNy4A1cLOTE/WQnrgFgzGbUdH5f6R371g9qqEJmTVjKznOhm
-         Fdyj2LOTTVWSix+jATnY89o9Cx/JpV8ciM75fSAPY7WAUEc3Xz/U+s+mYVha082gpPCk
-         NLtA==
-X-Gm-Message-State: AOJu0YyRax78fdLRSFPSEo/wn3lpF1fIQeJ3QoGgvgHPLizGVUMZzUDO
-	1yLgP1hwO0CRsvuLm0CqDQHNzYIgM5JneTUMwQ/WKNj0uuJ1
-X-Google-Smtp-Source: AGHT+IGAcEK3EYkLyXzYhh0D70uGgywH+FK/tVqwGL/00V/2ysJdiNcQHdqv0vUPAVh1zNTtSWFZiw==
-X-Received: by 2002:a05:6602:e03:b0:7ba:a232:30fe with SMTP id gp3-20020a0566020e0300b007baa23230femr13087873iob.20.1704229744185;
-        Tue, 02 Jan 2024 13:09:04 -0800 (PST)
+        bh=+gYVKYJQzeswl0d2/E7tMkWp3ZqYQjIB7uAjyZVlcw4=;
+        b=Sw8pQfu0C16PW1GlKdjU/IY3YvlBfEc/UDjER77dk2QxTPn9+z3hccuhcmYNmX+xuL
+         AhpQEfPc9zozLIrioWyCxsfgqaF2p5ADKLoJl5f6rLzW7EFDyr+7Ky8L+N/u0PtFr1cg
+         XkdZrpc9LZ7b7j93t8V6LhawKqOdR+YjhaC9k3PEuKCPNGigMowxHONxwE9PSoQazYCO
+         P+frsrtp7p5IJ7yoDlGvijKp6E5nEa69blhYiAC7fIAGpuMeE7kBEU7PQpvI0bGtuIH1
+         HpWN2W4Ga7ScQdfKJI8pPT6YPBy0N/8I6X+l/SlM28i//D2ICVY46P/192wLbC4nJY8T
+         QCqA==
+X-Gm-Message-State: AOJu0YwZJjC314jb1hh5WIkWJ/OVq9NrAFbjkTTOMeUZy6wFLyRLbSaX
+	YhRGv4NajC9KcNZPI9IoJLb6e9Bof0FN5Gy2kSgLPgLAYJIH
+X-Google-Smtp-Source: AGHT+IFpMHUTbdSYjgTU7VYDGXbneJXB8oWhsCE6H0YwNdwQa4e5a0gLz60xS9+mXFMJ6HitoHxZdg==
+X-Received: by 2002:a05:6602:2985:b0:7ba:ccbb:750d with SMTP id o5-20020a056602298500b007baccbb750dmr18015759ior.12.1704229745012;
+        Tue, 02 Jan 2024 13:09:05 -0800 (PST)
 Received: from markhas1.lan (71-218-50-136.hlrn.qwest.net. [71.218.50.136])
-        by smtp.gmail.com with ESMTPSA id bo18-20020a056638439200b0046993034c91sm6956978jab.77.2024.01.02.13.09.03
+        by smtp.gmail.com with ESMTPSA id bo18-20020a056638439200b0046993034c91sm6956978jab.77.2024.01.02.13.09.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 13:09:03 -0800 (PST)
+        Tue, 02 Jan 2024 13:09:04 -0800 (PST)
 From: Mark Hasemeyer <markhas@chromium.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Sudeep Holla <sudeep.holla@arm.com>,
@@ -65,15 +65,17 @@ Cc: Sudeep Holla <sudeep.holla@arm.com>,
 	Raul Rangel <rrangel@chromium.org>,
 	Tzung-Bi Shih <tzungbi@kernel.org>,
 	Mark Hasemeyer <markhas@chromium.org>,
-	David Gow <davidgow@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Mark Brown <broonie@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Takashi Iwai <tiwai@suse.de>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH v4 23/24] platform: Modify platform_get_irq_optional() to use resource
-Date: Tue,  2 Jan 2024 14:07:47 -0700
-Message-ID: <20240102140734.v4.23.Ife9ebad2bbfbab3a05e90040f344d750aa0aac7e@changeid>
+	Benson Leung <bleung@chromium.org>,
+	Bhanu Prakash Maiya <bhanumaiya@chromium.org>,
+	Chen-Yu Tsai <wenst@chromium.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	Prashant Malani <pmalani@chromium.org>,
+	Rob Barnes <robbarnes@google.com>,
+	Stephen Boyd <swboyd@chromium.org>,
+	chrome-platform@lists.linux.dev
+Subject: [PATCH v4 24/24] platform/chrome: cros_ec: Use PM subsystem to manage wakeirq
+Date: Tue,  2 Jan 2024 14:07:48 -0700
+Message-ID: <20240102140734.v4.24.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20240102210820.2604667-1-markhas@chromium.org>
 References: <20240102210820.2604667-1-markhas@chromium.org>
@@ -85,213 +87,392 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Unify handling of ACPI, GPIO, devictree, and platform resource
-interrupts in platform_get_irq_optional(). Each of these subsystems
-provide their own APIs which provide IRQ information as a struct
-resource. This simplifies the logic of the function and allows callers
-to get more information about the IRQ by looking at the resource flags.
-For example, whether or not an IRQ is wake capable.
+The cros ec driver is manually managing the wake IRQ by calling
+enable_irq_wake()/disable_irq_wake() during suspend/resume.
 
+Modify the driver to use the power management subsystem to manage the
+wakeirq.
+
+Rather than assuming that the IRQ is wake capable, use the underlying
+firmware/device tree to determine whether or not to enable it as a wake
+source. Some Chromebooks rely solely on the ec_sync pin to wake the AP
+but do not specify the interrupt as wake capable in the ACPI _CRS. For
+LPC/ACPI based systems a DMI quirk is introduced listing boards whose
+firmware should not be trusted to provide correct wake capable values.
+For device tree base systems, it is not an issue as the relevant device
+tree entries have been updated and DTS is built from source for each
+ChromeOS update.
+
+Acked-by: Tzung-Bi Shih <tzungbi@kernel.org>
 Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
 ---
 
 Changes in v4:
--platform_get_irq_optional() returns 0 on success
+-Rebase on linux-next
+-See each patch for patch specific changes
+-Add Tzung-Bi's Ack tag
+-Drop dev_err() during cros_ec_uart_probe()
+-Initalize struct resource on stack
+-Update error handling for platform_get_irq_resource_optional()
 
 Changes in v3:
--Remove PTR_ERR check
--Move platform_res assignment
--Check for irq == 0 to trigger WARN msg
--Refactor error handling of acpi_dev_get_gpio_irq_resource() to be
-consistent with fwnode_irq_get_resource()
--Remove extra blank lines
--Initialize struct resource on stack
+-Rebase on linux-next
+-See each patch for patch specific changes
+-Remove MODULE_DEVICE_TABLE
+-Drop "cros_ec _" prefix from should_force_irq_wake_capable()
+-Drop use of dev_err_probe() to be consistent with existing conventions
+in the driver
+-Drop *spi argument from cros_ec_spi_dt_probe()
+-Drop null device_node check from cros_ec_spi_dt_probe()
+-Add trailing commas to DMI table
+-Drop redundant "!= NULL" in should_force_irq_wake_capable()
+-Use str_yes_no() to print irq wake capability
+-Move irqwake handling from the interface specific modules to cros_ec.c
 
 Changes in v2:
--irq->IRQ
--Remove cast to struct resource
--Conform to get_optional() function naming
--Revert move of irq_get_irq_data()
--Add NULL check on struct resource*
--Use fwnode to retrieve IRQ for DT/ACPI
+-Rebase on linux-next
+-Add cover letter
+-See each patch for patch specific changes
+-Look for 'wakeup-source' property in cros_ec_spi.c
 
- drivers/base/platform.c         | 90 +++++++++++++++++++++------------
- include/linux/platform_device.h |  3 ++
- 2 files changed, 61 insertions(+), 32 deletions(-)
+ drivers/platform/chrome/cros_ec.c           | 48 +++++++++++++++++----
+ drivers/platform/chrome/cros_ec_lpc.c       | 40 ++++++++++++++---
+ drivers/platform/chrome/cros_ec_spi.c       | 15 ++++---
+ drivers/platform/chrome/cros_ec_uart.c      | 14 ++++--
+ include/linux/platform_data/cros_ec_proto.h |  4 +-
+ 5 files changed, 94 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index 10c5779634182..8a42b48922e68 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -151,50 +151,45 @@ EXPORT_SYMBOL_GPL(devm_platform_ioremap_resource_byname);
- #endif /* CONFIG_HAS_IOMEM */
+diff --git a/drivers/platform/chrome/cros_ec.c b/drivers/platform/chrome/cros_ec.c
+index badc68bbae8cc..080b479f39a94 100644
+--- a/drivers/platform/chrome/cros_ec.c
++++ b/drivers/platform/chrome/cros_ec.c
+@@ -15,6 +15,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/platform_data/cros_ec_commands.h>
+ #include <linux/platform_data/cros_ec_proto.h>
++#include <linux/pm_wakeirq.h>
+ #include <linux/slab.h>
+ #include <linux/suspend.h>
  
- /**
-- * platform_get_irq_optional - get an optional IRQ for a device
-+ * platform_get_irq_resource_optional - get an optional IRQ for a device and
-+ *					populate the resource struct
-  * @dev: platform device
-  * @num: IRQ number index
-+ * @r: pointer to resource to populate with IRQ information.
-  *
-  * Gets an IRQ for a platform device. Device drivers should check the return
-- * value for errors so as to not pass a negative integer value to the
-- * request_irq() APIs. This is the same as platform_get_irq(), except that it
-- * does not print an error message if an IRQ can not be obtained.
-+ * value for errors. If no error is returned, the IRQ can be found in r->start.
-  *
-  * For example::
-  *
-- *		int irq = platform_get_irq_optional(pdev, 0);
-- *		if (irq < 0)
-- *			return irq;
-+ *		int res = platform_get_irq_resource_optional(pdev, 0, &res);
-+ *		if (!res)
-+ *			return res.start;
-  *
-- * Return: non-zero IRQ number on success, negative error number on failure.
-+ * Return: 0 on success, negative error number on failure.
-  */
--int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
-+int platform_get_irq_resource_optional(struct platform_device *dev,
-+				       unsigned int num, struct resource *r)
- {
- 	int ret;
-+
-+	if (!r)
-+		return -EINVAL;
-+
- #ifdef CONFIG_SPARC
- 	/* sparc does not have irqs represented as IORESOURCE_IRQ resources */
- 	if (!dev || num >= dev->archdata.num_irqs)
- 		goto out_not_found;
--	ret = dev->archdata.irqs[num];
-+	*r = DEFINE_RES_IRQ(dev->archdata.irqs[num]);
-+	ret = 0;
- 	goto out;
- #else
- 	struct fwnode_handle *fwnode = dev_fwnode(&dev->dev);
--	struct resource *r;
- 
--	if (is_of_node(fwnode)) {
--		ret = of_irq_get(to_of_node(fwnode), num);
--		if (ret > 0 || ret == -EPROBE_DEFER)
--			goto out;
--	}
--
--	r = platform_get_resource(dev, IORESOURCE_IRQ, num);
--	if (is_acpi_device_node(fwnode)) {
--		if (r && r->flags & IORESOURCE_DISABLED) {
--			ret = acpi_irq_get(ACPI_HANDLE_FWNODE(fwnode), num, r);
--			if (ret)
--				goto out;
--		}
--	}
-+	ret = fwnode_irq_get_resource(fwnode, num, r);
-+	ret = ret < 0 ? ret : 0;
-+	if (!ret || ret == -EPROBE_DEFER)
-+		goto out;
- 
- 	/*
- 	 * The resources may pass trigger flags to the irqs that need
-@@ -202,7 +197,9 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
- 	 * IORESOURCE_BITS correspond 1-to-1 to the IRQF_TRIGGER*
- 	 * settings.
- 	 */
--	if (r && r->flags & IORESOURCE_BITS) {
-+	struct resource *platform_res = platform_get_resource(dev, IORESOURCE_IRQ, num);
-+
-+	if (platform_res && platform_res->flags & IORESOURCE_BITS) {
- 		struct irq_data *irqd;
- 
- 		irqd = irq_get_irq_data(r->start);
-@@ -211,8 +208,9 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
- 		irqd_set_trigger_type(irqd, r->flags & IORESOURCE_BITS);
- 	}
- 
--	if (r) {
--		ret = r->start;
-+	if (platform_res) {
-+		*r = *platform_res;
-+		ret = 0;
- 		goto out;
- 	}
- 
-@@ -224,9 +222,9 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
- 	 * allows a common code path across either kind of resource.
- 	 */
- 	if (num == 0 && is_acpi_device_node(fwnode)) {
--		ret = acpi_dev_gpio_irq_get(to_acpi_device_node(fwnode), num);
-+		ret = acpi_dev_get_gpio_irq_resource(to_acpi_device_node(fwnode), NULL, num, r);
- 		/* Our callers expect -ENXIO for missing IRQs. */
--		if (ret >= 0 || ret == -EPROBE_DEFER)
-+		if (!ret || ret == -EPROBE_DEFER)
- 			goto out;
- 	}
- 
-@@ -234,11 +232,11 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
- out_not_found:
- 	ret = -ENXIO;
- out:
--	if (WARN(!ret, "0 is an invalid IRQ number\n"))
-+	if (WARN(!ret && !r->start, "0 is an invalid IRQ number\n"))
- 		return -EINVAL;
- 	return ret;
+@@ -168,6 +169,35 @@ static int cros_ec_ready_event(struct notifier_block *nb,
+ 	return NOTIFY_DONE;
  }
--EXPORT_SYMBOL_GPL(platform_get_irq_optional);
-+EXPORT_SYMBOL_GPL(platform_get_irq_resource_optional);
  
- /**
-  * platform_get_irq - get an IRQ for a device
-@@ -270,6 +268,34 @@ int platform_get_irq(struct platform_device *dev, unsigned int num)
- }
- EXPORT_SYMBOL_GPL(platform_get_irq);
- 
-+/**
-+ * platform_get_irq_optional - get an optional IRQ for a device
-+ * @dev: platform device
-+ * @num: IRQ number index
-+ *
-+ * Gets an IRQ for a platform device. Device drivers should check the return
-+ * value for errors so as to not pass a negative integer value to the
-+ * request_irq() APIs. This is the same as platform_get_irq(), except that it
-+ * does not print an error message if an IRQ can not be obtained.
-+ *
-+ * For example::
-+ *
-+ *		int irq = platform_get_irq_optional(pdev, 0);
-+ *		if (irq < 0)
-+ *			return irq;
-+ *
-+ * Return: non-zero IRQ number on success, negative error number on failure.
-+ */
-+int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
++static int enable_irq_for_wake(struct cros_ec_device *ec_dev)
++{
++	struct device *dev = ec_dev->dev;
++	int ret = device_init_wakeup(dev, true);
++
++	if (ret) {
++		dev_err(dev, "Failed to enable device for wakeup");
++		return ret;
++	}
++	ret = dev_pm_set_wake_irq(dev, ec_dev->irq);
++	if (ret)
++		device_init_wakeup(dev, false);
++
++	return ret;
++}
++
++static int disable_irq_for_wake(struct cros_ec_device *ec_dev)
 +{
 +	int ret;
-+	struct resource r = {};
++	struct device *dev = ec_dev->dev;
 +
-+	ret = platform_get_irq_resource_optional(dev, num, &r);
-+	return ret ?: r.start;
++	dev_pm_clear_wake_irq(dev);
++	ret = device_init_wakeup(dev, false);
++	if (ret)
++		dev_err(dev, "Failed to disable device for wakeup");
++
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(platform_get_irq_optional);
 +
  /**
-  * platform_irq_count - Count the number of IRQs a platform device uses
-  * @dev: platform device
-diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
-index 7a41c72c19591..2117f817d9c9c 100644
---- a/include/linux/platform_device.h
-+++ b/include/linux/platform_device.h
-@@ -102,6 +102,9 @@ devm_platform_ioremap_resource_byname(struct platform_device *pdev,
+  * cros_ec_register() - Register a new ChromeOS EC, using the provided info.
+  * @ec_dev: Device to register.
+@@ -221,6 +251,13 @@ int cros_ec_register(struct cros_ec_device *ec_dev)
+ 				ec_dev->irq, err);
+ 			goto exit;
+ 		}
++		dev_dbg(dev, "IRQ: %i, wake_capable: %s\n", ec_dev->irq,
++			str_yes_no(ec_dev->irq_wake));
++		if (ec_dev->irq_wake) {
++			err = enable_irq_for_wake(ec_dev);
++			if (err)
++				goto exit;
++		}
+ 	}
  
- extern int platform_get_irq(struct platform_device *, unsigned int);
- extern int platform_get_irq_optional(struct platform_device *, unsigned int);
-+extern int platform_get_irq_resource_optional(struct platform_device *dev,
-+					      unsigned int num,
-+					      struct resource *r);
- extern int platform_irq_count(struct platform_device *);
- extern int devm_platform_get_irqs_affinity(struct platform_device *dev,
- 					   struct irq_affinity *affd,
+ 	/* Register a platform device for the main EC instance */
+@@ -313,6 +350,8 @@ EXPORT_SYMBOL(cros_ec_register);
+  */
+ void cros_ec_unregister(struct cros_ec_device *ec_dev)
+ {
++	if (ec_dev->irq_wake)
++		disable_irq_for_wake(ec_dev);
+ 	platform_device_unregister(ec_dev->pd);
+ 	platform_device_unregister(ec_dev->ec);
+ 	mutex_destroy(&ec_dev->lock);
+@@ -353,12 +392,6 @@ EXPORT_SYMBOL(cros_ec_suspend_prepare);
+ 
+ static void cros_ec_disable_irq(struct cros_ec_device *ec_dev)
+ {
+-	struct device *dev = ec_dev->dev;
+-	if (device_may_wakeup(dev))
+-		ec_dev->wake_enabled = !enable_irq_wake(ec_dev->irq);
+-	else
+-		ec_dev->wake_enabled = false;
+-
+ 	disable_irq(ec_dev->irq);
+ 	ec_dev->suspended = true;
+ }
+@@ -440,9 +473,6 @@ static void cros_ec_enable_irq(struct cros_ec_device *ec_dev)
+ 	ec_dev->suspended = false;
+ 	enable_irq(ec_dev->irq);
+ 
+-	if (ec_dev->wake_enabled)
+-		disable_irq_wake(ec_dev->irq);
+-
+ 	/*
+ 	 * Let the mfd devices know about events that occur during
+ 	 * suspend. This way the clients know what to do with them.
+diff --git a/drivers/platform/chrome/cros_ec_lpc.c b/drivers/platform/chrome/cros_ec_lpc.c
+index f0f3d3d561572..0204593d7b1c9 100644
+--- a/drivers/platform/chrome/cros_ec_lpc.c
++++ b/drivers/platform/chrome/cros_ec_lpc.c
+@@ -48,6 +48,27 @@ struct lpc_driver_ops {
+ 
+ static struct lpc_driver_ops cros_ec_lpc_ops = { };
+ 
++static const struct dmi_system_id untrusted_fw_irq_wake_capable[] = {
++	{
++		.ident = "Brya",
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brya"),
++		},
++	},
++	{
++		.ident = "Brask",
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brask"),
++		},
++	},
++	{ }
++};
++
++static bool should_force_irq_wake_capable(void)
++{
++	return dmi_first_match(untrusted_fw_irq_wake_capable);
++}
++
+ /*
+  * A generic instance of the read function of struct lpc_driver_ops, used for
+  * the LPC EC.
+@@ -353,8 +374,9 @@ static int cros_ec_lpc_probe(struct platform_device *pdev)
+ 	struct acpi_device *adev;
+ 	acpi_status status;
+ 	struct cros_ec_device *ec_dev;
++	struct resource r = {};
+ 	u8 buf[2] = {};
+-	int irq, ret;
++	int ret;
+ 
+ 	/*
+ 	 * The Framework Laptop (and possibly other non-ChromeOS devices)
+@@ -428,12 +450,16 @@ static int cros_ec_lpc_probe(struct platform_device *pdev)
+ 	 * Some boards do not have an IRQ allotted for cros_ec_lpc,
+ 	 * which makes ENXIO an expected (and safe) scenario.
+ 	 */
+-	irq = platform_get_irq_optional(pdev, 0);
+-	if (irq > 0)
+-		ec_dev->irq = irq;
+-	else if (irq != -ENXIO) {
+-		dev_err(dev, "couldn't retrieve IRQ number (%d)\n", irq);
+-		return irq;
++	ret = platform_get_irq_resource_optional(pdev, 0, &r);
++	if (!ret) {
++		ec_dev->irq = r.start;
++		if (should_force_irq_wake_capable())
++			ec_dev->irq_wake = true;
++		else
++			ec_dev->irq_wake = r.flags & IORESOURCE_IRQ_WAKECAPABLE;
++	} else if (ret != -ENXIO) {
++		dev_err(dev, "couldn't retrieve IRQ number (%d)\n", ret);
++		return ret;
+ 	}
+ 
+ 	ret = cros_ec_register(ec_dev);
+diff --git a/drivers/platform/chrome/cros_ec_spi.c b/drivers/platform/chrome/cros_ec_spi.c
+index 3e88cc92e8192..102cdc3d1956d 100644
+--- a/drivers/platform/chrome/cros_ec_spi.c
++++ b/drivers/platform/chrome/cros_ec_spi.c
+@@ -7,6 +7,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
++#include <linux/of_irq.h>
+ #include <linux/platform_data/cros_ec_commands.h>
+ #include <linux/platform_data/cros_ec_proto.h>
+ #include <linux/platform_device.h>
+@@ -70,6 +71,7 @@
+  * @end_of_msg_delay: used to set the delay_usecs on the spi_transfer that
+  *      is sent when we want to turn off CS at the end of a transaction.
+  * @high_pri_worker: Used to schedule high priority work.
++ * @irq_wake: Whether or not irq assertion should wake the system.
+  */
+ struct cros_ec_spi {
+ 	struct spi_device *spi;
+@@ -77,6 +79,7 @@ struct cros_ec_spi {
+ 	unsigned int start_of_msg_delay;
+ 	unsigned int end_of_msg_delay;
+ 	struct kthread_worker *high_pri_worker;
++	bool irq_wake;
+ };
+ 
+ typedef int (*cros_ec_xfer_fn_t) (struct cros_ec_device *ec_dev,
+@@ -689,9 +692,10 @@ static int cros_ec_cmd_xfer_spi(struct cros_ec_device *ec_dev,
+ 	return cros_ec_xfer_high_pri(ec_dev, ec_msg, do_cros_ec_cmd_xfer_spi);
+ }
+ 
+-static void cros_ec_spi_dt_probe(struct cros_ec_spi *ec_spi, struct device *dev)
++static void cros_ec_spi_dt_probe(struct cros_ec_spi *ec_spi)
+ {
+-	struct device_node *np = dev->of_node;
++	struct spi_device *spi = ec_spi->spi;
++	struct device_node *np = spi->dev.of_node;
+ 	u32 val;
+ 	int ret;
+ 
+@@ -702,6 +706,8 @@ static void cros_ec_spi_dt_probe(struct cros_ec_spi *ec_spi, struct device *dev)
+ 	ret = of_property_read_u32(np, "google,cros-ec-spi-msg-delay", &val);
+ 	if (!ret)
+ 		ec_spi->end_of_msg_delay = val;
++
++	ec_spi->irq_wake = spi->irq > 0 && of_property_present(np, "wakeup-source");
+ }
+ 
+ static void cros_ec_spi_high_pri_release(void *worker)
+@@ -754,12 +760,13 @@ static int cros_ec_spi_probe(struct spi_device *spi)
+ 		return -ENOMEM;
+ 
+ 	/* Check for any DT properties */
+-	cros_ec_spi_dt_probe(ec_spi, dev);
++	cros_ec_spi_dt_probe(ec_spi);
+ 
+ 	spi_set_drvdata(spi, ec_dev);
+ 	ec_dev->dev = dev;
+ 	ec_dev->priv = ec_spi;
+ 	ec_dev->irq = spi->irq;
++	ec_dev->irq_wake = ec_spi->irq_wake;
+ 	ec_dev->cmd_xfer = cros_ec_cmd_xfer_spi;
+ 	ec_dev->pkt_xfer = cros_ec_pkt_xfer_spi;
+ 	ec_dev->phys_name = dev_name(&ec_spi->spi->dev);
+@@ -780,8 +787,6 @@ static int cros_ec_spi_probe(struct spi_device *spi)
+ 		return err;
+ 	}
+ 
+-	device_init_wakeup(&spi->dev, true);
+-
+ 	return 0;
+ }
+ 
+diff --git a/drivers/platform/chrome/cros_ec_uart.c b/drivers/platform/chrome/cros_ec_uart.c
+index 68d80559fddc2..5de346a078745 100644
+--- a/drivers/platform/chrome/cros_ec_uart.c
++++ b/drivers/platform/chrome/cros_ec_uart.c
+@@ -69,6 +69,7 @@ struct response_info {
+  * @serdev:		serdev uart device we are connected to.
+  * @baudrate:		UART baudrate of attached EC device.
+  * @flowcontrol:	UART flowcontrol of attached device.
++ * @irq_wake:		Whether or not irq assertion should wake the system.
+  * @irq:		Linux IRQ number of associated serial device.
+  * @response:		Response info passing between cros_ec_uart_pkt_xfer()
+  *			and cros_ec_uart_rx_bytes()
+@@ -77,6 +78,7 @@ struct cros_ec_uart {
+ 	struct serdev_device *serdev;
+ 	u32 baudrate;
+ 	u8 flowcontrol;
++	bool irq_wake;
+ 	u32 irq;
+ 	struct response_info response;
+ };
+@@ -224,8 +226,10 @@ static int cros_ec_uart_resource(struct acpi_resource *ares, void *data)
+ static int cros_ec_uart_acpi_probe(struct cros_ec_uart *ec_uart)
+ {
+ 	int ret;
++	struct resource irqres;
+ 	LIST_HEAD(resources);
+-	struct acpi_device *adev = ACPI_COMPANION(&ec_uart->serdev->dev);
++	struct device *dev = &ec_uart->serdev->dev;
++	struct acpi_device *adev = ACPI_COMPANION(dev);
+ 
+ 	ret = acpi_dev_get_resources(adev, &resources, cros_ec_uart_resource, ec_uart);
+ 	if (ret < 0)
+@@ -234,12 +238,12 @@ static int cros_ec_uart_acpi_probe(struct cros_ec_uart *ec_uart)
+ 	acpi_dev_free_resource_list(&resources);
+ 
+ 	/* Retrieve GpioInt and translate it to Linux IRQ number */
+-	ret = acpi_dev_gpio_irq_get(adev, 0);
++	ret = acpi_dev_get_gpio_irq_resource(adev, NULL, 0, &irqres);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ec_uart->irq = ret;
+-	dev_dbg(&ec_uart->serdev->dev, "IRQ number %d\n", ec_uart->irq);
++	ec_uart->irq = irqres.start;
++	ec_uart->irq_wake = irqres.flags & IORESOURCE_IRQ_WAKECAPABLE;
+ 
+ 	return 0;
+ }
+@@ -293,6 +297,7 @@ static int cros_ec_uart_probe(struct serdev_device *serdev)
+ 	ec_dev->dev = dev;
+ 	ec_dev->priv = ec_uart;
+ 	ec_dev->irq = ec_uart->irq;
++	ec_dev->irq_wake = ec_uart->irq_wake;
+ 	ec_dev->cmd_xfer = NULL;
+ 	ec_dev->pkt_xfer = cros_ec_uart_pkt_xfer;
+ 	ec_dev->din_size = sizeof(struct ec_host_response) +
+@@ -301,6 +306,7 @@ static int cros_ec_uart_probe(struct serdev_device *serdev)
+ 
+ 	serdev_device_set_client_ops(serdev, &cros_ec_uart_client_ops);
+ 
++	/* Register a new cros_ec device */
+ 	return cros_ec_register(ec_dev);
+ }
+ 
+diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
+index 8865e350c12a5..0fb2781b602d6 100644
+--- a/include/linux/platform_data/cros_ec_proto.h
++++ b/include/linux/platform_data/cros_ec_proto.h
+@@ -100,6 +100,7 @@ struct cros_ec_command {
+  * @proto_version: The protocol version used for this device.
+  * @priv: Private data.
+  * @irq: Interrupt to use.
++ * @irq_wake: Whether or not irq assertion should wake the system.
+  * @id: Device id.
+  * @din: Input buffer (for data from EC). This buffer will always be
+  *       dword-aligned and include enough space for up to 7 word-alignment
+@@ -115,7 +116,6 @@ struct cros_ec_command {
+  *        performance advantage to using dword.
+  * @din_size: Size of din buffer to allocate (zero to use static din).
+  * @dout_size: Size of dout buffer to allocate (zero to use static dout).
+- * @wake_enabled: True if this device can wake the system from sleep.
+  * @suspended: True if this device had been suspended.
+  * @cmd_xfer: Send command to EC and get response.
+  *            Returns the number of bytes received if the communication
+@@ -169,11 +169,11 @@ struct cros_ec_device {
+ 	u16 proto_version;
+ 	void *priv;
+ 	int irq;
++	bool irq_wake;
+ 	u8 *din;
+ 	u8 *dout;
+ 	int din_size;
+ 	int dout_size;
+-	bool wake_enabled;
+ 	bool suspended;
+ 	int (*cmd_xfer)(struct cros_ec_device *ec,
+ 			struct cros_ec_command *msg);
 -- 
 2.43.0.472.g3155946c3a-goog
 
