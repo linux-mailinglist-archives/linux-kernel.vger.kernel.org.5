@@ -1,127 +1,138 @@
-Return-Path: <linux-kernel+bounces-14345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79362821BA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:32:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE739821BA1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:31:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E23A1F229A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:32:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D806282AB0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:31:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22561FC08;
-	Tue,  2 Jan 2024 12:31:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970D6F9F3;
+	Tue,  2 Jan 2024 12:30:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DvdeHMIc"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MvWAYpJW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08692FBEB;
-	Tue,  2 Jan 2024 12:31:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55569b59f81so5038530a12.1;
-        Tue, 02 Jan 2024 04:31:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704198681; x=1704803481; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=IHPc3b2HWDj64ive1dxruS27O95C6egAy0HbP5aoRrw=;
-        b=DvdeHMIc4wrZkr7gWFy6/OQkuTGVtI9nKIAPbNdbqCKp4MD1ENgmy4rMd9oxonKkxt
-         tUxTbZ87Gj45sYV2VGKi+4zkAQjxgk+VkPLgS53/xqGh4ihtPnPO9y2MWiW22dlL55xo
-         Ad+CKttGp4qygdpqHk+uFwtz0puizCMXHfDz9NKFYOP8g6W4u/P3nGaIW4cfj1xZNNTI
-         mfu8Nr+HDpyfo26MI9bmakYBmm9UOx0EKVsIV06SIbtEn5xsfFfkJPOtoSYXCFP1Oak3
-         rEmCc3IKm8FOqtsUpQzmuXcaGIwEtwDD4MDTaRmsJwSYhjrh+K7gbyNUzEchmmxT++en
-         IrOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704198681; x=1704803481;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IHPc3b2HWDj64ive1dxruS27O95C6egAy0HbP5aoRrw=;
-        b=aCnmdQEk28vtb8Y9oPd9SwfWDOw2VFRlA7XoUuzlmApKD9EiMM2Uu990cqizoYpjxj
-         nKSDfLUdczSOmoSDyDlKa96BOCKiyhGg/yQ545GExsMaVT3aeY7cwe6E7ks76pbX5A0T
-         GyGkJNIBK7ya1fMNYugTp6L95LOcy9xOJfW1j4tHI5EkJ1cCHHkBNkDHwL0X1YdRuxbJ
-         n7SgOHTIarkpgVf56Ys37ImS3NNRIC6cAMyyysy2We26pp5z03NPnjUc03K21f0eDc8L
-         7DvFP8ZZSb+Gkfg+qJ3ULWdEs0HHqZzCIko92LbdoGcGUWXyg8jWqSWhuquy1FXa/2d5
-         OkBQ==
-X-Gm-Message-State: AOJu0YyWHRxdWOS2ei1zde9YwvHxP/bxdIuUoc9FkNToBcTQxS1iEV6j
-	aSEFc7+ZwCeE3qSsd79dS7Y=
-X-Google-Smtp-Source: AGHT+IE5nNxiH4N4H3XYyngTXfeHYH+ZvpvSr+ySRPH/c+vEoh8xCXMubbqgN3AcbmawlQeXuAC8Xg==
-X-Received: by 2002:a50:d01a:0:b0:555:485:4e32 with SMTP id j26-20020a50d01a000000b0055504854e32mr7006623edf.10.1704198681288;
-        Tue, 02 Jan 2024 04:31:21 -0800 (PST)
-Received: from [127.0.0.1] ([89.205.132.224])
-        by smtp.gmail.com with ESMTPSA id dg24-20020a0564021d1800b00552cf686df3sm16033923edb.52.2024.01.02.04.31.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 04:31:20 -0800 (PST)
-Date: Tue, 02 Jan 2024 13:31:21 +0100
-From: Eric Woudstra <ericwouds@gmail.com>
-To: Daniel Golle <daniel@makrotopia.org>
-CC: Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Frank Wunderlich <frank-w@public-files.de>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_RFC_net-next=5D_ne?= =?US-ASCII?Q?t=3A_phylink=3A_add_quirk_for_d?= =?US-ASCII?Q?isabling_in-band-status_for_mediatek_pcs_at_2500base-x?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <ZZPq8iMAv3eR9Gfk@pidgin.makrotopia.org>
-References: <20240102074326.1049179-1-ericwouds@gmail.com> <ZZPq8iMAv3eR9Gfk@pidgin.makrotopia.org>
-Message-ID: <D80A9D3C-6A86-4004-B575-46A980D8BA3B@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347C1F9D2;
+	Tue,  2 Jan 2024 12:30:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704198648; x=1735734648;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=rtM5doXFq2NWibzp7OwFSY3PvLEqNSMtMBZ+d5jeVxk=;
+  b=MvWAYpJWQAdH/qOacLAHCdqaMVKIj7KJaBhg4kL/AmJKEAqSkRDIAnk7
+   lAw0umOyzh4ZhIPuVaOZibPIm/OPgYBKSxhhzEODHYcRtaVgMBg0+6WuE
+   5cW/ZuAjouaQgUpafQy1LqHUQ3854XdKaBX1bVok3Fy6KKJ47BPZuIhkN
+   fzEYZOu6TD0BnrnzU0bE+8G5HvuArtVlsqToTZvDaJVgQiXNODpMPZKbU
+   Etop6uBeQH0vZ/gpSvAdwQVifzAMHBOSroZJDnrIWqIj15t4slTL+SiG7
+   dTtmIeuAzXA6fZVJOUmtUz5CTxhfq5U1ozQp+7MR2/yBS6rq2N3I7DjTM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="377030763"
+X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
+   d="scan'208";a="377030763"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 04:30:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="1111033434"
+X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
+   d="scan'208";a="1111033434"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by fmsmga005.fm.intel.com with ESMTP; 02 Jan 2024 04:30:45 -0800
+Message-ID: <b88a9573-6ab5-ed86-dabc-dd07875f88f3@linux.intel.com>
+Date: Tue, 2 Jan 2024 14:32:11 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Content-Language: en-US
+To: Prashanth K <quic_prashk@quicinc.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+ Mathias Nyman <mathias.nyman@intel.com>, linux-kernel@vger.kernel.org,
+ linux-usb@vger.kernel.org, stable@vger.kernel.org
+References: <20231212112521.3774610-1-quic_prashk@quicinc.com>
+ <20231212112521.3774610-2-quic_prashk@quicinc.com>
+ <2023121518-uncharted-riddance-7c58@gregkh>
+ <849d0ea9-d4f7-c568-968c-88835f64fadf@quicinc.com>
+ <2023122212-stellar-handlebar-2f70@gregkh>
+ <43ff1971-aeb1-21e1-4700-9ee84cd5aede@quicinc.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH v2 1/2] usb: dwc3: host: Set XHCI_SG_TRB_CACHE_SIZE_QUIRK
+In-Reply-To: <43ff1971-aeb1-21e1-4700-9ee84cd5aede@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Sorry,  I'm on Android for now and have trouble find a suitable cli=C3=ABnt=
-=2E This should have no http=2E
+On 26.12.2023 7.24, Prashanth K wrote:
+> 
+> 
+> On 22-12-23 11:40 am, Greg Kroah-Hartman wrote:
+>> On Fri, Dec 22, 2023 at 11:29:01AM +0530, Prashanth K wrote:
+>>> On 15-12-23 06:12 pm, Greg Kroah-Hartman wrote:
+>>>> On Tue, Dec 12, 2023 at 04:55:20PM +0530, Prashanth K wrote:
+>>>>> Upstream commit bac1ec551434 ("usb: xhci: Set quirk for
+>>>>> XHCI_SG_TRB_CACHE_SIZE_QUIRK") introduced a new quirk in XHCI
+>>>>> which fixes XHC timeout, which was seen on synopsys XHCs while
+>>>>> using SG buffers. But the support for this quirk isn't present
+>>>>> in the DWC3 layer.
+>>>>>
+>>>>> We will encounter this XHCI timeout/hung issue if we run iperf
+>>>>> loopback tests using RTL8156 ethernet adaptor on DWC3 targets
+>>>>> with scatter-gather enabled. This gets resolved after enabling
+>>>>> the XHCI_SG_TRB_CACHE_SIZE_QUIRK. This patch enables it using
+>>>>> the xhci device property since its needed for DWC3 controller.
+>>>>>
+>>>>> In Synopsys DWC3 databook,
+>>>>> Table 9-3: xHCI Debug Capability Limitations
+>>>>> Chained TRBs greater than TRB cache size: The debug capability
+>>>>> driver must not create a multi-TRB TD that describes smaller
+>>>>> than a 1K packet that spreads across 8 or more TRBs on either
+>>>>> the IN TR or the OUT TR.
+>>>>>
+>>>>> Cc: <stable@vger.kernel.org>
+>>>>> Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+>>>>
+>>>> What commit id does this fix?
+>>>>
+>>> This doesn't fix any commit as such, but adds the support for
+>>> XHCI_SG_TRB_CACHE_SIZE_QUIRK (which is present in XHCI layer) to DWC3 layer.
+>>
+>> So this is a new feature?
+>>
+>> How does this fit into the stable kernel rules?
+> 
+> This isn't a new feature. To give some background, upstream commit bac1ec551434 ("usb: xhci: Set quirk for XHCI_SG_TRB_CACHE_SIZE_QUIRK")
+> added a XHCI quirk which converts SG lists to CMA buffers/URBS if certain conditions aren't met. But they never enabled this xhci quirk
+> since no issues were hit at that time. So, the support for the above mentioned quirk is added from 5.11 kernel onwards, but was never enabled anywhere.
 
+I remember this now.
+  
+Original series had three patches, two adding the feature to xhci, and one for dwc3 enabling it.
+The xhci patches were fine and got in.
 
-Anyway, I see now, I had another version which I should have send:
+https://marc.info/?l=linux-usb&m=160570849625065&w=2
 
+The last dwc3 patch had issues and never apparently got in
 
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0if (phylink_major_no_inband(pl, state->interfa=
-ce) && (!!pl->phydev)) {
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (pl->cur_link_a=
-n_mode =3D=3D MLO_AN_INBAND)
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0pl->cur_link_an_mode =3D MLO_AN_PHY;
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0}
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0else
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 /* restore mode if it wa=
-s changed before */
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 pl->cur_link_an_mode =3D=
- pl->cfg_link_an_mode;
+https://marc.info/?l=linux-usb&m=161008968009766&w=2
 
+As this feature hasn't been enabled and code not widely run I think it would be  better
+to skip stable for now. Stable can be added later once this has been successfully running
+in upstream for a while.
 
+Thanks
+Mathias
 
-To prevent it from toggling all the time=2E So I do need to spend some mor=
-e
-attention to this part, cause this also may not be 100% ok, if changing=C2=
-=A0
-phylink core would be done=2E
-
-
-
-
-The reason I do it in phylink, because of changing to MLO_AN_PHY when
-there is a PHY attached=2E mtk_eth_soc would not=2E Be aware of PHY attach=
-ed=2E
-
-So that's why I've opened the rfc=2E
-
-See which way to go with this in an acceptable way, preferably using MLO_A=
-N_PHY=2E
 
 
