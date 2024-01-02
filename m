@@ -1,125 +1,112 @@
-Return-Path: <linux-kernel+bounces-14184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E96EF8218DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:26:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 406BB8218E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:27:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97AB0283098
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:26:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4D7DB21AFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:27:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88ABAD27F;
-	Tue,  2 Jan 2024 09:26:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7680679E5;
+	Tue,  2 Jan 2024 09:26:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="JwsCzyxC";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="74SXa/MK"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="VgRSL4Cz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1518DD266
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 09:26:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 1255F3200B30;
-	Tue,  2 Jan 2024 04:26:00 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 02 Jan 2024 04:26:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1704187560; x=1704273960; bh=ViLgRlnLWu
-	ci24k/dFf7bBBJBPAedmBrtbXTtjEH0X0=; b=JwsCzyxClajDiO4m4iB52Av3uy
-	c8eXztBEeTLkyvpN5mryM79Cgv21cJ4caGeW764iSBQbAN5AiohpjxpJYuZ6wJsa
-	M5NccVn+G/0zw6YxGjESsnNU6FXT0DCJR7go2wEkAEpDw8lBVLjTHqqkBib+0xoh
-	Q2BPMeTV317b1Dh538zJUQYAs+NzfGMcYZqyI0ablbyXwqO6me7/IvX+jlrqr92b
-	Dh75kAY0vse3JON7m+8FYTkUlyudcr2QOlnCl3BYp69BPGEhKkKXAvBdFyttXAiz
-	csjhsf+dPtF8/5gE0dwvEBAkkGupdysgo3SoPFDTrSa+W7miekedIqUwAveA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704187560; x=1704273960; bh=ViLgRlnLWuci24k/dFf7bBBJBPAe
-	dmBrtbXTtjEH0X0=; b=74SXa/MKxNy9XDyRnCdFhN9np/nleql+t3mEgFrNJ5Hq
-	9DSDiHpqtz8B0BUzizOFNqIUlUkfpH0+UfCu+Y7mHrMd0GQNIssPIrpYqdbtDoiT
-	0hbvn/6zoedjcrhX6/nlOrDdabHSxYpzzSD3/1LXFJKfRkZ/HMzPbp5SZpVOFqar
-	WGErKihLl38OYRZVDFZ14o7Yo3JaBxv1oZwFIV6xzLcME7AWKLKeqn6uEjbrld6o
-	HRup/C/vPydL9U3emXvhWVUdUOBqmNKojQehCgKXVaj/d4OqaGqAU5udsmHjtQCt
-	ZhXE/01KDErD7J3LnC4nFJv+0/vHscTluMipbKst5w==
-X-ME-Sender: <xms:p9aTZXpz1cRa3DClnb0s6CSlNcG791SnoEHGE7ohvineH6x3SoLriw>
-    <xme:p9aTZRrjDx2cbX66Ig4Thla9W9aQSAaseMxjuv5M6agyE2wr4m7yzQA1LmwugrGtE
-    f9nPgzcNo-aX3JwD-c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegvddgtddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:p9aTZUNmJYVmuPcnamhbzO-zlUkLAJ44WbP7HkAf-_qcswkYovLb4A>
-    <xmx:p9aTZa4odO-EN-l2lrbvMfYx_ZW0dLbdkt_HbfATy6GlcdjNH8exYg>
-    <xmx:p9aTZW5qrfHvEQrzol92uUAkbas2SPSqt8Tb-kitEYS9ojG6vlndlw>
-    <xmx:qNaTZfHQvICUFvyS7W0Erii5bh4QFZYIxV1GSsTTkE5JNt-sS9JFNw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id C2FE9B6008D; Tue,  2 Jan 2024 04:25:59 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A422EDF5D;
+	Tue,  2 Jan 2024 09:26:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704187576; x=1704792376; i=markus.elfring@web.de;
+	bh=hm9XvsB8Hc+GdCwiF3RHaf2+W9Sx9+rzWWOPBtlg8U0=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=VgRSL4Czpr9uuX6BZvWm6E0gbIKeKF81KU2N7arwbRFR5No28HHwxGXvX3eL0/xX
+	 ADPm6qFgZ+PJjFjBABOeiQq/yOmmzoq1UjKm44h7B86l+W5O/BJrpgAXE9Bp7tOzk
+	 xkmSrYbwevpo0ANCoT5mOcvTi6xDfDAn/fwDvE+3qtKiFiQjJDPbD6mwVQBuiEPi7
+	 fCrjUwMhDHmUKSDAJEtzdmjHevc8Y3Xm3tWr2JLFBF0dSZ4NbpAl1s0DCJhosWR4L
+	 QdoWKZ2iRFuS2nozEF2jHLBumDA+/BPsb29VkO/d7FRJu++S3khtFR8kzBqlAWvO5
+	 8eukZlFUxjOAWTODNA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1N0Zns-1qzTBD0WHs-00wanB; Tue, 02
+ Jan 2024 10:26:15 +0100
+Message-ID: <f96d8343-e7b3-491d-b191-f2ddb4ba5269@web.de>
+Date: Tue, 2 Jan 2024 10:26:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <eb2fa9be-8ef1-4ebf-a8c0-ede082bbe1a4@app.fastmail.com>
-In-Reply-To: <aaeb97f1-075e-44b9-874d-f66763ef8866@linaro.org>
-References: <20231218134532.50599-1-krzysztof.kozlowski@linaro.org>
- <24e92cfc-8dc8-47b8-b379-ed8b1b776fba@app.fastmail.com>
- <aaeb97f1-075e-44b9-874d-f66763ef8866@linaro.org>
-Date: Tue, 02 Jan 2024 10:25:32 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- arm <arm@kernel.org>, soc@kernel.org, "Olof Johansson" <olof@lixom.net>
-Cc: "Lennert Buytenhek" <kernel@wantstofly.org>,
- "Steve Sakoman" <sakoman@gmail.com>,
- "Mark F . Brown" <mark.brown314@gmail.com>,
- "Robert Jarzmik" <robert.jarzmik@free.fr>,
- "Florian Fainelli" <florian@openwrt.org>,
- "Simtec Linux Team" <linux@simtec.co.uk>
-Subject: Re: [PATCH] ARM: MAINTAINERS: drop empty entries for removed boards
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sunrpc: Improve exception handling in krb5_etm_checksum()
+Content-Language: en-GB
+To: Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org,
+ netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
+Cc: Anna Schumaker <anna@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+ Dai Ngo <Dai.Ngo@oracle.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Herbert Xu
+ <herbert@gondor.apana.org.au>, Jakub Kicinski <kuba@kernel.org>,
+ Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+ Olga Kornievskaia <kolga@netapp.com>, Paolo Abeni <pabeni@redhat.com>,
+ Simo Sorce <simo@redhat.com>, Tom Talpey <tom@talpey.com>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <9561c78e-49a2-430c-a611-52806c0cdf25@web.de>
+ <ZZIhEJK68Sapos2t@tissot.1015granger.net>
+ <4307bce9-ccbd-4bc5-aa8e-b618a1664cbe@web.de>
+ <ZZLuaRwSZI16EKdP@tissot.1015granger.net>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <ZZLuaRwSZI16EKdP@tissot.1015granger.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:fHraEXCZs9bFHLtOOPd8xSkwRa+bWUmDA46Cp6Cx+X+wgYf5Du9
+ kWjIIkrOvlTarY4rBGy9eMpWqFRSmflO8KGY2pJiVlfFYYnbRCXVMXZR4G79TElPx1ek8yi
+ 0ZPOUb32uwUl3TE2JjWkw99MUtTGbQtMol7sDX7byJhEsqJE+3Y8UPaerVS1DdeV2c/N8Xb
+ G7kAL10sJ7zGV86fLOdSQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:fOO4Nl2obn4=;zj++G77n+wQ4X6DGe67n4Af16x/
+ BnxbsJbuio2eixsTb/MVEc0LnPGtsEU0hDvLoOhNCfqMd7Dd13yjijAJ8kxPmLJNwKLmbU+9g
+ GTolCHXPMbY/Fb1mF5CbvSORa/KRBEaHJWhfb/4WMwRJuQwOoOWYeXR1TpZSbbzKzk7LewqFN
+ 7kteIP6AgATwYi17wcLWY1vD5T9gPjz3X+iAXtRdZ0yDP64EzpYXzm6LXVsz92xpbVcKqLzzv
+ Hvtn/gxVx39NSfMEIp6r3L2V3ZWwSwkl+4OEj5VAiHBbZ+yH53hqwyOCkfmSKcgEz8RviyJ1V
+ 5jQN984jOSpSA2gGVZS9cj6t04UvaG0wyD56HlFkzqtMMr6MVPTj66Rd7mb1fD20vsZVixyVR
+ 8fgs5YqgdPyan4BxcLC6QJ4WRNMYoPq9rd76GF5kkaKZ7Ku+KQusyxUCoD+8wfObSpAERXFbY
+ AGQaJPGz4xsdieT3b7tU0hlZlRLfUelGl/lXlpo7ByhI9sBpXS2RTaP7nfU45mREQjoLeNUt9
+ 8m39WxYJ/yqV3TZe5ya/sIAX7zJYXOaHJe0y7u/6webrFvce621s/Wts162oEq6jPgTwx0lgU
+ hds8POQUd39R+xuQqijLrIX9uV1L3peqvWQ0ewkULKfYaAGzn5ICa+JOp46cuBKeFggicAB7C
+ maQcifEoTsdkGlPVgMN+MQoedwh2aq3FjAL4TuvpXXPRFtJHKuwzVnuoAoFWUkL4CJEf6EO2Q
+ CVda/bE9wfp3N1S68w8ZirbZhP0DZM1oCJjI7sd3oV6aH3kbagluVHtvRnIjm5uwKMEeM6KQ/
+ qUOSCegDKHcIqxgQnkbePreeh4ehreXnLvBRHjgrdnTae7B7m/5p6mZLqPpcI7M/xzD5NQpOq
+ JF+JiTG4++QKzdjT/h7YW1G1qrD6hndR32dUK4msLr/io/C8guszxK/7TMZ+0BodcrdZC7N59
+ 7Y3h44frkfzqJfKJrthHeA8l8BM=
 
-On Mon, Dec 18, 2023, at 15:39, Krzysztof Kozlowski wrote:
-> On 18/12/2023 15:21, Arnd Bergmann wrote:
->> On Mon, Dec 18, 2023, at 13:45, Krzysztof Kozlowski wrote:
->> 
->> drivers/mmc/host/pxamci.c and drivers/rtc/rtc-pxa.c
->> are still in use.
+=E2=80=A6
+> +++ b/net/sunrpc/auth_gss/gss_krb5_crypto.c
+=E2=80=A6
+> @@ -970,8 +969,7 @@ u32 krb5_etm_checksum(struct crypto_sync_skcipher *c=
+ipher,
 >
-> MMCI does not have maintainer.
->
-> For the RTC, I guess the intention of 57f63bc8fe79 ("rtc: update
-> maintainership of pxa rtc driver") was to maintain the driver.
->
-> The actual problem is that all of these entries (and R-321X below) come
-> from the times people were not putting any file paths to MAINTAINERS.
-> They stayed like this for 15-17 years, thus being effectively noop.
->
-> Let's maybe wait till any of Cc-ed people respond and confirm they want
-> to grow the maintainer entry to cover the files? If they don't come, I
-> propose to remove them.
+>  out_free_ahash:
+>  	ahash_request_free(req);
+> -out_free_mem:
+> -	kfree(iv);
+> +out_free_cksumdata:
+>  	kfree_sensitive(checksumdata);
+>  	return err ? GSS_S_FAILURE : GSS_S_COMPLETE;
+>  }
+=E2=80=A6
 
-Nobody else replied now, so for the moment, I applied a partial
-patch removing the EDB9315A, TS7250, TETON and CATS entries that
-are for files that were removed or are in the process.
+How do you think about to use the identifier =E2=80=9Cout_free_checksumdat=
+a=E2=80=9D?
 
-For the other ones, I would still prefer to just list the files.
-
-   Arnd
+Regards,
+Markus
 
