@@ -1,120 +1,124 @@
-Return-Path: <linux-kernel+bounces-14533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 942BC821E59
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:09:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 274F4821E6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:11:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 458B11F22EE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:09:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF327B222E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:11:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1815513FF4;
-	Tue,  2 Jan 2024 15:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B257F14A8A;
+	Tue,  2 Jan 2024 15:10:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mBGP0+KB"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="svD4su6l"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2163212E6B;
-	Tue,  2 Jan 2024 15:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-67f9fac086bso72766526d6.3;
-        Tue, 02 Jan 2024 07:09:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704208150; x=1704812950; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FMS55Vzekx4T3pQgk1uVM7+XggMIpgc3xmmxIF8jTeY=;
-        b=mBGP0+KBZZ5RVjbTox05T7TLZeWMS5Mah6/1rkZVpVHcgaTbl5HrzlL/9aKUOAadXx
-         MzpiIKsw9nBqTf80bjtnMTP7qR02WbxaCxyvFbf4GFiQcid7r1MvpCcpluQ1hUKV+XrG
-         S8S0FWWQifdnKIx8y/vNQ/66FwP316x7GRO/i5998wEsB0Tbg2BfC/brUIL8lR5h9qxm
-         f2zUbJb43Uc4CM/vMnPB4GAZfSV0K45Ro499Zn1s9GJuwQVQOduhDg9HS6Wofz1r4c3s
-         n4aMY+37TKhYnw2K/eG7xSlwu1/v7l8Gxcv35iEm8wEYZMaKAsgEQ8kr2L1DwSRUBgLU
-         OeRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704208150; x=1704812950;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FMS55Vzekx4T3pQgk1uVM7+XggMIpgc3xmmxIF8jTeY=;
-        b=kT5Hic3wDvIZMnaka5cjIxpfJZefBBQQ/cDy2c8/DpfJzmeMo7iVzLEFXpcx4Z3svh
-         MuTBqO3XQYKit7SQGJavOyNTZwFEJbBUypmnBCIlV8H2lDzeNmy2atrjfOTpt9MffiFu
-         dhI6JYA1Bibu+X804/qi6HEAwpoE85FBSnW0mk7dSnosSkIU8LKGT8rN7AdMrYxe2XUj
-         frrfuX2+FnrTrSgztqOhN08/FxoGz7Vz4srfSIsDfTcz0rcLJIRJTxArCrL3TCS6FomE
-         W7U/3+8+/1ZKOi3McR54IoaMHM5inEJZRa4yk3IIShbjwxzd0mPkpj8WfJ4F5C4MWz3J
-         bXqA==
-X-Gm-Message-State: AOJu0YxvhlSMjIuS0XC0EInWGnGV5x8cE1py/lI9Fvh2Qrby0ZQ9ZZH2
-	T53yR7wMkp2Z8YDaDhh8fbs=
-X-Google-Smtp-Source: AGHT+IGWbSLusYM73Mvn3tf3GQ41JzvUWrvoogxoINH6YdIWkyWIMUa/huqymo1ygkFfvYp485HL0A==
-X-Received: by 2002:a05:6214:e8c:b0:67f:8dfb:b6b1 with SMTP id hf12-20020a0562140e8c00b0067f8dfbb6b1mr28230780qvb.5.1704208149845;
-        Tue, 02 Jan 2024 07:09:09 -0800 (PST)
-Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
-        by smtp.gmail.com with ESMTPSA id n5-20020a0ce945000000b0067fa1179b57sm8875424qvo.131.2024.01.02.07.09.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 07:09:09 -0800 (PST)
-Date: Tue, 02 Jan 2024 10:09:09 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Richard Gobert <richardbgobert@gmail.com>, 
- davem@davemloft.net, 
- dsahern@kernel.org, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- shuah@kernel.org, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, 
- lixiaoyan@google.com
-Message-ID: <659427152812e_2907a12946f@willemb.c.googlers.com.notmuch>
-In-Reply-To: <5bd9a1c7-63e8-4f5e-a749-c7eeeaed3c42@gmail.com>
-References: <127b8199-1cd4-42d7-9b2b-875abaad93fe@gmail.com>
- <5bd9a1c7-63e8-4f5e-a749-c7eeeaed3c42@gmail.com>
-Subject: Re: [PATCH net-next v2 3/3] selftests/net: fix GRO coalesce test and
- add ext header coalesce tests
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C2E15AD3;
+	Tue,  2 Jan 2024 15:09:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 402CRVvJ007618;
+	Tue, 2 Jan 2024 15:09:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Z16gIvE6o/oyg7pKiGRgBezqdCKIKpf4AGEXuLsxRFw=;
+ b=svD4su6l/twu+Zu2qoE0Qtzc2tJbxOj/21Pxy3greVvKpkioWAWCsLUbw1JSvcpIJ1AG
+ 2PLbkB/D1Hcmp2UAVq3HHtelivWEgMRk9MOi5EcqcNupuCD7mH6rfg4VcMmig0ox5L8e
+ z4funDZikQnB/ApbXAUzG5HHAmGxM5qn8nu7yIM7g4jdJc1UAqIpAmdpZrm8y4VB6qjc
+ C0sAis8oUvaictM8VH3r4w3cQXUkVusrr/1G9FiB+zWhysS3SOTvXFyKvQSq9EKmB/SA
+ h72VMSwYOdaVKPHcGpvajT1xHoQ952aP5IkHkFT7JDByszskj5K2OsgJbHFJl/30qSaN Ug== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcjghkfsn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 15:09:34 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 402EKo8H022188;
+	Tue, 2 Jan 2024 15:09:34 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcjghkfs7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 15:09:34 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 402Ds1wG017834;
+	Tue, 2 Jan 2024 15:09:32 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vawwynnak-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 15:09:32 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 402F9TLH19726960
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 2 Jan 2024 15:09:29 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5DA132004E;
+	Tue,  2 Jan 2024 15:09:29 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1E7A720040;
+	Tue,  2 Jan 2024 15:09:28 +0000 (GMT)
+Received: from osiris (unknown [9.171.22.30])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue,  2 Jan 2024 15:09:28 +0000 (GMT)
+Date: Tue, 2 Jan 2024 16:09:26 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: [PATCH v3 32/34] s390/unwind: Disable KMSAN checks
+Message-ID: <20240102150926.6306-I-hca@linux.ibm.com>
+References: <20231213233605.661251-1-iii@linux.ibm.com>
+ <20231213233605.661251-33-iii@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213233605.661251-33-iii@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: exHf4oBJB85XIi_IDJ_Zx4a73A6HiVoO
+X-Proofpoint-ORIG-GUID: 2sCBYVkslnYpbOQdpV7tqP0ZF1S161uX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-02_04,2024-01-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=425 lowpriorityscore=0 spamscore=0 mlxscore=0 impostorscore=0
+ phishscore=0 adultscore=0 clxscore=1015 suspectscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401020116
 
-Richard Gobert wrote:
-> Currently there is no test which checks that IPv6 extension header packets
-> successfully coalesce. This commit adds a test, which verifies two IPv6
-> packets with HBH extension headers do coalesce, and another test which
-> checks that packets with different extension header data do not coalesce
-> in GRO.
+On Thu, Dec 14, 2023 at 12:24:52AM +0100, Ilya Leoshkevich wrote:
+> The unwind code can read uninitialized frames. Furthermore, even in
+> the good case, KMSAN does not emit shadow for backchains. Therefore
+> disable it for the unwinding functions.
 > 
-> I changed the receive socket filter to accept a packet with one extension
-> header. This change exposed a bug in the fragment test -- the old BPF did
-> not accept the fragment packet. I updated correct_num_packets in the
-> fragment test accordingly.
-> 
-> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
+> Reviewed-by: Alexander Potapenko <glider@google.com>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  arch/s390/kernel/unwind_bc.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-
-Thanks for adding the second test.
-
-> +static void add_ipv6_exthdr(void *buf, void *optpkt, __u8 exthdr_type, char *ext_payload)
-> +{
-> +	struct ipv6_opt_hdr *exthdr = (struct ipv6_opt_hdr *)(optpkt + tcp_offset);
-> +	struct ipv6hdr *iph = (struct ipv6hdr *)(optpkt + ETH_HLEN);
-> +	char *exthdr_payload_start = (char *)(exthdr + 1);
-> +
-> +	exthdr->hdrlen = 0;
-> +	exthdr->nexthdr = IPPROTO_TCP;
-> +
-> +	if (ext_payload)
-> +		memcpy(exthdr_payload_start, ext_payload, MIN_EXTHDR_SIZE - sizeof(*exthdr));
-
-minor nit, in case this gets respun: ext_payload is always true.
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
 
