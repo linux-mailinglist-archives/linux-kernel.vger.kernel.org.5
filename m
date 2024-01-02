@@ -1,152 +1,220 @@
-Return-Path: <linux-kernel+bounces-14725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCF4D82213E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:43:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECFAE822140
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:43:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 573D72838BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:43:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 989D2283B3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:43:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8351615AD8;
-	Tue,  2 Jan 2024 18:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09E3E15AFE;
+	Tue,  2 Jan 2024 18:43:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jZC5r718"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F9A15AC3;
-	Tue,  2 Jan 2024 18:43:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.104] (31.173.80.188) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 2 Jan
- 2024 21:43:15 +0300
-Subject: Re: [PATCH net v3 1/1] net: ravb: Wait for operating mode to be
- applied
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <mitsuhiro.kimura.kc@renesas.com>, <netdev@vger.kernel.org>,
-	<linux-renesas-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Claudiu
- Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240102110116.4005187-1-claudiu.beznea.uj@bp.renesas.com>
- <20240102110116.4005187-2-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <df73cd5f-4185-233d-eada-7b5598a070fc@omp.ru>
-Date: Tue, 2 Jan 2024 21:43:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B62915AD2
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 18:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6d9bec20980so2152883b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 10:43:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704221009; x=1704825809; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TaONoZrD0ZXDI3Lt3Dsqe7USkZEV330FXykpfUE9/Tc=;
+        b=jZC5r7183hT5R//7RoN7lIv6Yr/F2fM1ijLnRbjlQ8qslmTnvvwx1kXGbcFsTopHvg
+         DeX1WVGfb60CvONygifD5Jcigsk30/0KJheqkzs2LOTkUeVK/9fof7yb9DIJ/6Lxr3PB
+         Gd45FfdUa9P9S0Srm8Q2hqMcXxVuVotJZFalQNgN+/ICiObC6QDldrFcNX8+gl/DMLel
+         nBXP09xp25MwED4aHEmdc9eqUj1B+rK2K0zXxyW2lb+BI29VG48+umFWPZddj4eCo+9M
+         nVz8R+Eff/q6x6Vq+U4ByKTpn5PrUHFVeguQ+m36ClDFGTLZVNpndbXzB/6C3IaexmE4
+         D31Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704221009; x=1704825809;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TaONoZrD0ZXDI3Lt3Dsqe7USkZEV330FXykpfUE9/Tc=;
+        b=gfb8iWAAUQbnMxnQrEQM2uA5tWzxRP7+QyfHQ9xWunycwQDRn62GC/WdwQK7xZL7ZO
+         2A2co8NE6qPu61m6W76ZTIc+AfZLsa4GUKYF5G254ccjHYqA3cwf+eQ6UD/x3QB72S09
+         xNp/7dhVrFyL5ZqZNr5G4qgszqZwzPS3ARF6s1HtP7qXHkSZpUt4fskqnH1uHfzMLMqI
+         AVJ6mT6Bn7nWY+TBrqgRTEJnreTNT1BEKqUnds4bWhlaXgbCvu+9yCRbqlfmwC08ky+4
+         glzjb++cK4nKCvFTHYy9DiRFIWZle/IWUGUIbM9Yh4v9BZMig+J/YVNBRpbNG44s2SL7
+         u2xw==
+X-Gm-Message-State: AOJu0YyGb7o4W7xyDDAlCb7mevL8OcZohT3+6rjcebdtMPUEmLaOQsR7
+	H5siMho6tuuS9FCRILfXWB+XtACbbylGQQ==
+X-Google-Smtp-Source: AGHT+IGUmDLn4EONUunNPGVyYG1zJzUtuOfZAY6a+sBXNVDTo1Xft0+IBiIrvaOI3awoalBXquOHtg==
+X-Received: by 2002:a05:6a20:244a:b0:196:82d2:4e6a with SMTP id t10-20020a056a20244a00b0019682d24e6amr2764622pzc.74.1704221009668;
+        Tue, 02 Jan 2024 10:43:29 -0800 (PST)
+Received: from p14s ([2604:3d09:148c:c800:2dba:4fab:fb9:7d99])
+        by smtp.gmail.com with ESMTPSA id x2-20020aa784c2000000b006d99cbe22f5sm17477199pfn.217.2024.01.02.10.43.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 10:43:29 -0800 (PST)
+Date: Tue, 2 Jan 2024 11:43:27 -0700
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+To: Tanmay Shah <tanmay.shah@amd.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Ben Levinsky <ben.levinsky@amd.com>
+Subject: Re: [RESEND PATCH v3 1/2] remoteproc: Make rproc_get_by_phandle()
+ work for clusters
+Message-ID: <ZZRZT8Dtg10oZcJQ@p14s>
+References: <20231014231548.637303-1-tanmay.shah@amd.com>
+ <20231014231548.637303-2-tanmay.shah@amd.com>
+ <dznmvir337tb455usswkrvovf34urgyejkrt7rduscbepd2wg3@7atos56utizw>
+ <CANLsYky+6=tvAHE408pGg_=YTUM4eH6ovwn--h2iuaNMGwRF+Q@mail.gmail.com>
+ <d491221f-1911-432f-9afb-45c4ac5287b4@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240102110116.4005187-2-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/02/2024 18:31:01
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182449 [Jan 02 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.80.188 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.80.188 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.80.188
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/02/2024 18:35:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/2/2024 5:17:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d491221f-1911-432f-9afb-45c4ac5287b4@amd.com>
 
-On 1/2/24 2:01 PM, Claudiu wrote:
-
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On Wed, Dec 20, 2023 at 08:47:19AM -0600, Tanmay Shah wrote:
 > 
-> CSR.OPS bits specify the current operating mode and (according to
-> documentation) they are updated by HW when the operating mode change
-> request is processed. To comply with this check CSR.OPS before proceeding.
+> On 11/14/23 10:23 AM, Mathieu Poirier wrote:
+> > On Tue, 14 Nov 2023 at 08:22, Bjorn Andersson <andersson@kernel.org> wrote:
+> > >
+> > > On Sat, Oct 14, 2023 at 04:15:47PM -0700, Tanmay Shah wrote:
+> > > > From: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > >
+> > > > Multi-cluster remoteproc designs typically have the following DT
+> > > > declaration:
+> > > >
+> > > >       remoteproc_cluster {
+> > > >               compatible = "soc,remoteproc-cluster";
+> > > >
+> > > >                 core0: core0 {
+> > > >                       compatible = "soc,remoteproc-core"
+> > > >                         memory-region;
+> > > >                         sram;
+> > > >                 };
+> > > >
+> > > >                 core1: core1 {
+> > > >                       compatible = "soc,remoteproc-core"
+> > > >                         memory-region;
+> > > >                         sram;
+> > > >                 }
+> > > >         };
+> > > >
+> > > > A driver exists for the cluster rather than the individual cores
+> > > > themselves so that operation mode and HW specific configurations
+> > > > applicable to the cluster can be made.
+> > > >
+> > > > Because the driver exists at the cluster level and not the individual
+> > > > core level, function rproc_get_by_phandle() fails to return the
+> > > > remoteproc associated with the phandled it is called for.
+> > > >
+> > > > This patch enhances rproc_get_by_phandle() by looking for the cluster's
+> > > > driver when the driver for the immediate remoteproc's parent is not
+> > > > found.
+> > > >
+> > > > Reported-by: Ben Levinsky <ben.levinsky@xilinx.com>
+> > > > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > > Tested-by: Ben Levinsky <ben.levinsky@amd.com>
+> > > > ---
+> > > >  drivers/remoteproc/remoteproc_core.c | 28 +++++++++++++++++++++++++++-
+> > > >  1 file changed, 27 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> > > > index 695cce218e8c..3a8191803885 100644
+> > > > --- a/drivers/remoteproc/remoteproc_core.c
+> > > > +++ b/drivers/remoteproc/remoteproc_core.c
+> > > > @@ -33,6 +33,7 @@
+> > > >  #include <linux/idr.h>
+> > > >  #include <linux/elf.h>
+> > > >  #include <linux/crc32.h>
+> > > > +#include <linux/of_platform.h>
+> > > >  #include <linux/of_reserved_mem.h>
+> > > >  #include <linux/virtio_ids.h>
+> > > >  #include <linux/virtio_ring.h>
+> > > > @@ -2111,7 +2112,9 @@ EXPORT_SYMBOL(rproc_detach);
+> > > >  #ifdef CONFIG_OF
+> > > >  struct rproc *rproc_get_by_phandle(phandle phandle)
+> > > >  {
+> > > > +     struct platform_device *cluster_pdev;
+> > > >       struct rproc *rproc = NULL, *r;
+> > > > +     struct device_driver *driver;
+> > > >       struct device_node *np;
+> > > >
+> > > >       np = of_find_node_by_phandle(phandle);
+> > > > @@ -2122,7 +2125,30 @@ struct rproc *rproc_get_by_phandle(phandle phandle)
+> > > >       list_for_each_entry_rcu(r, &rproc_list, node) {
+> > > >               if (r->dev.parent && device_match_of_node(r->dev.parent, np)) {
+> > > >                       /* prevent underlying implementation from being removed */
+> > > > -                     if (!try_module_get(r->dev.parent->driver->owner)) {
+> > > > +
+> > > > +                     /*
+> > > > +                      * If the remoteproc's parent has a driver, the
+> > > > +                      * remoteproc is not part of a cluster and we can use
+> > > > +                      * that driver.
+> > > > +                      */
+> > > > +                     driver = r->dev.parent->driver;
+> > > > +
+> > > > +                     /*
+> > > > +                      * If the remoteproc's parent does not have a driver,
+> > > > +                      * look for the driver associated with the cluster.
+> > > > +                      */
+> > > > +                     if (!driver) {
+> > > > +                             cluster_pdev = of_find_device_by_node(np->parent);
+> > >
+> > > Both the Ti and Xilinx drivers are using of_platform_populate(), so
+> > > their r->dev.parent should have a parent reference to the cluster
+> > > device.
+> > >
+> >
+> > So you are proposing to get the cluster's driver using something like
+> > r->dev.parent->parent->driver?
+> >
+> > I will have to verify the parent/child relationship is set up properly
+> > through the of_platform_populate().  If it is, following the pointer
+> > trail is an equally valid approach and I will respin this set.
 > 
-> Commit introduces ravb_set_opmode() that does all the necessities for
-> setting the operating mode (set CCC.OPC (and CCC.GAC, CCC.CSEL, if any) and
-> wait for CSR.OPS) and call it where needed. This should comply with all the
-> HW manuals requirements as different manual variants specify that different
-> modes need to be checked in CSR.OPS when setting CCC.OPC.
 > 
-> In case of platforms with GAC, if GAC needs to be enabled, the CCC.GAC and
-
-   Better to spell it out, I think: in case of platforms that support gPTP
-while in the config[uration] mode..
-
-> CCC.CSEL needs to be configured along with CCC.OPC. For this,
-> ravb_set_opmode() allows passing GAC and CSEL as part of opmode and the
-> function updates accordingly CCC register.
+> Hi Mathieu,
 > 
-> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> I addressed Bjorn's comments and verified on ZynqMP hardware that it's working.
+> 
+> Let me know if you would like to see v4 with suggested changes.
+>
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Yes, please send a V4 with the proposed changes.
 
-[...]
-
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c> index 664eda4b5a11..9835d18a7adf 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -66,16 +66,23 @@ int ravb_wait(struct net_device *ndev, enum ravb_reg reg, u32 mask, u32 value)
->  	return -ETIMEDOUT;
->  }
->  
-> -static int ravb_config(struct net_device *ndev)
-> +static int ravb_set_opmode(struct net_device *ndev, u32 opmode)
->  {
-> +	u32 csr_ops = 1U << (opmode & CCC_OPC);
-> +	u32 ccc_mask = CCC_OPC;
->  	int error;
->  
-> -	/* Set config mode */
-> -	ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_CONFIG);
-> -	/* Check if the operating mode is changed to the config mode */
-> -	error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_CONFIG);
-> -	if (error)
-> -		netdev_err(ndev, "failed to switch device to config mode\n");
-> +	if (opmode & CCC_GAC)
-
-   Worth a comment?
-
-> +		ccc_mask |= CCC_GAC | CCC_CSEL;
-
-   Adding CCC.GAC to the mask not strictly necessary but OK...
-
-[...]
-
-MBR, Sergey
+> 
+> Thanks,
+> 
+> Tanmay
+> 
+> > > Unless I'm reading the code wrong, I think we should follow that
+> > > pointer, rather than taking the detour in the DeviceTree data.
+> > >
+> > > Regards,
+> > > Bjorn
+> > >
+> > > > +                             if (!cluster_pdev) {
+> > > > +                                     dev_err(&r->dev, "can't get parent\n");
+> > > > +                                     break;
+> > > > +                             }
+> > > > +
+> > > > +                             driver = cluster_pdev->dev.driver;
+> > > > +                             put_device(&cluster_pdev->dev);
+> > > > +                     }
+> > > > +
+> > > > +                     if (!try_module_get(driver->owner)) {
+> > > >                               dev_err(&r->dev, "can't get owner\n");
+> > > >                               break;
+> > > >                       }
+> > > > --
+> > > > 2.25.1
+> > > >
 
