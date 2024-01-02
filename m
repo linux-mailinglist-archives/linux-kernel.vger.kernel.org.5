@@ -1,121 +1,365 @@
-Return-Path: <linux-kernel+bounces-14549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77DCB821E85
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:15:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7291C821E91
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EC021C2245E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:15:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E261F283B50
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0063613FE2;
-	Tue,  2 Jan 2024 15:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="AZeaP+FE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7377914A8A;
+	Tue,  2 Jan 2024 15:17:01 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE1F14A82;
-	Tue,  2 Jan 2024 15:15:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 402EQJKE007842;
-	Tue, 2 Jan 2024 15:15:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=ZePuaqf95Nzl9ilTMV/3DOU+O4S5focb2gIDtdxHQS8=;
- b=AZeaP+FExx6ESyAvSvahGbX236PIgBQ9F85bjM2GhXjAZ/P37B76tO9S3HzAAs+hYAmP
- PxQqzZVB9lGz/ZgDR44OY3eE2ALubLrfPxmruICUjcRG+mAvkcNF9Bp5YFIgUz8oVK4f
- VZwXeXZEg098ycn6pkEBepci/NzdtcfR2/36W1qIunxbSMTlu5k2i/2/vWUHHjSLuB4i
- 0Pi7LPPzfhR33NtyWGabgbXVOkLD+om9YjI5LmZnAfQHrMsjzswg448I6Jj3+rjvcJ9j
- 6CK+CR5fXFu7+Fv6bWotMEBSlIJzVgxKnM/h0wgYg6MMfyyE6nxRaaBuEJZJ75W1zHFs YQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcf2j7xb6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 15:15:24 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 402EoHY2028745;
-	Tue, 2 Jan 2024 15:15:23 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcf2j7xap-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 15:15:23 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 402Ds10Q017834;
-	Tue, 2 Jan 2024 15:15:22 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vawwynpdr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 15:15:21 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 402FFIDY19726886
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 2 Jan 2024 15:15:18 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id AF6FC20040;
-	Tue,  2 Jan 2024 15:15:18 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 578BE2004B;
-	Tue,  2 Jan 2024 15:15:17 +0000 (GMT)
-Received: from osiris (unknown [9.171.22.30])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue,  2 Jan 2024 15:15:17 +0000 (GMT)
-Date: Tue, 2 Jan 2024 16:15:15 +0100
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: [PATCH v3 34/34] kmsan: Enable on s390
-Message-ID: <20240102151515.6306-K-hca@linux.ibm.com>
-References: <20231213233605.661251-1-iii@linux.ibm.com>
- <20231213233605.661251-35-iii@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4735113FFE;
+	Tue,  2 Jan 2024 15:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T4GcK60VXz67Ct9;
+	Tue,  2 Jan 2024 23:14:57 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7F95D140AE5;
+	Tue,  2 Jan 2024 23:16:54 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 2 Jan
+ 2024 15:16:53 +0000
+Date: Tue, 2 Jan 2024 15:16:52 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Jose Marinho <Jose.Marinho@arm.com>
+CC: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-riscv@lists.infradead.org"
+	<linux-riscv@lists.infradead.org>, "kvmarm@lists.linux.dev"
+	<kvmarm@lists.linux.dev>, "x86@kernel.org" <x86@kernel.org>,
+	"acpica-devel@lists.linuxfoundation.org"
+	<acpica-devel@lists.linuxfoundation.org>, "linux-csky@vger.kernel.org"
+	<linux-csky@vger.kernel.org>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, "linux-ia64@vger.kernel.org"
+	<linux-ia64@vger.kernel.org>, "linux-parisc@vger.kernel.org"
+	<linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, Jianyong Wu
+	<Jianyong.Wu@arm.com>, Justin He <Justin.He@arm.com>, James Morse
+	<James.Morse@arm.com>, Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+	nd <nd@arm.com>, Kangkang Shen <kangkang.shen@futurewei.com>
+Subject: Re: [PATCH RFC v3 20/21] ACPI: Add _OSC bits to advertise OS
+ support for toggling CPU present/enabled
+Message-ID: <20240102151652.00001b3c@Huawei.com>
+In-Reply-To: <DBBPR08MB60121770239F324D877847E18861A@DBBPR08MB6012.eurprd08.prod.outlook.com>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOhS-00Dvla-7i@rmk-PC.armlinux.org.uk>
+	<20231215171227.00006550@Huawei.com>
+	<DBBPR08MB60121770239F324D877847E18861A@DBBPR08MB6012.eurprd08.prod.outlook.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213233605.661251-35-iii@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: X2M9AhYJh0LDYXS1OWAtColsS1LRacgj
-X-Proofpoint-ORIG-GUID: AlwpV_5Ls8uTkbHHOYGbse9PLYlauG5U
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-02_04,2024-01-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0
- malwarescore=0 spamscore=0 mlxlogscore=444 clxscore=1015 suspectscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401020117
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Thu, Dec 14, 2023 at 12:24:54AM +0100, Ilya Leoshkevich wrote:
-> Now that everything else is in place, enable KMSAN in Kconfig.
+On Tue, 2 Jan 2024 13:07:25 +0000
+Jose Marinho <Jose.Marinho@arm.com> wrote:
+
+> Hi Jonathan,
 > 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  arch/s390/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+> > -----Original Message-----
+> > From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+> > Sent: Friday, December 15, 2023 5:12 PM
+> > To: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > Cc: linux-pm@vger.kernel.org; loongarch@lists.linux.dev; linux-
+> > acpi@vger.kernel.org; linux-arch@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
+> > riscv@lists.infradead.org; kvmarm@lists.linux.dev; x86@kernel.org; acpica-
+> > devel@lists.linuxfoundation.org; linux-csky@vger.kernel.org; linux-
+> > doc@vger.kernel.org; linux-ia64@vger.kernel.org; linux-
+> > parisc@vger.kernel.org; Salil Mehta <salil.mehta@huawei.com>; Jean-Philippe
+> > Brucker <jean-philippe@linaro.org>; Jianyong Wu <Jianyong.Wu@arm.com>;
+> > Justin He <Justin.He@arm.com>; James Morse <James.Morse@arm.com>;
+> > Jose Marinho <Jose.Marinho@arm.com>; Samer El-Haj-Mahmoud <Samer.El-
+> > Haj-Mahmoud@arm.com>
+> > Subject: Re: [PATCH RFC v3 20/21] ACPI: Add _OSC bits to advertise OS
+> > support for toggling CPU present/enabled
+> > 
+> > On Wed, 13 Dec 2023 12:50:54 +0000
+> > Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+> >   
+> > > From: James Morse <james.morse@arm.com>
+> > >
+> > > Platform firmware can disabled a CPU, or make it not-present by making
+> > > an eject-request notification, then waiting for the os to make it
+> > > offline  
+> > OS
+> >   
+> > > and call _EJx. After the firmware updates _STA with the new status.
+> > >
+> > > Not all operating systems support this. For arm64 making CPUs
+> > > not-present has never been supported. For all ACPI architectures,
+> > > making CPUs disabled has recently been added. Firmware can't know what  
+> > the OS has support for.  
+> > >
+> > > Add two new _OSC bits to advertise whether the OS supports the _STA
+> > > enabled or present bits being toggled for CPUs. This will be important
+> > > for arm64 if systems that support physical CPU hotplug ever appear as
+> > > arm64 linux doesn't currently support this, so firmware shouldn't try.
+> > >
+> > > Advertising this support to firmware is useful for cloud orchestrators
+> > > to know whether they can scale a particular VM by adding CPUs.
+> > >
+> > > Signed-off-by: James Morse <james.morse@arm.com>
+> > > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> > > Tested-by: Jianyong Wu <jianyong.wu@arm.com>  
+> > 
+> > I'm very much in favor of this _OSC but it hasn't been accepted yet I think...
+> > https://bugzilla.tianocore.org/show_bug.cgi?id=4481
+> > 
+> > Jose? Github suggests you are the proposer on this.  
+> 
+> The addition of these _OSC bits was proposed by us on the forum in question.
+> The forum opted to pause the definition until additional practical information could be provided on the use-cases.
+> 
+> If anyone is interested in progressing the _OSC bit definition, you are invited to express that interest in the Bugzilla ticket.
 
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+I've poked around a bit and can't find any reference to how to actually get a bugzilla account
+bugzilla.tianocore.org. Any pointers?  I'm sure I had one at one stage, but
+trying every plausible email address and the forgotten password link got me nowhere.
+
+> Information that you should provide to increase the chances of the ticket being reopened:
+> - use-case for the new _OSC bits,
+
+Really annoying without it as a hypervisor can't query if a guest can do anything useful
+if the host does virtual CPU hotplug via this newly added route.
+Given this is new functionality and there is non trivial effort required by the
+host to instantiate such a CPU it would be nice to be able to find out if the
+feature is supported by the Guest OS without having to basically suck it an see
+with hypervisors having to do a trial hotplug just to see if it 'might' work.
+
+> - what breaks (if anything) without the proposed _OSC bits.
+
+Nothing breaks - you can merrily poke in hotplugged CPUs with the attendant creation
+of resources in the host and have them disappear into a black hole.
+That's ugly but not broken as such. Hopefully a hypervisor will not keep trying
+until the first attempt either succeeds or fails.
+
+> 
+> We did receive additional comments:
+> - the proposed _OSC bits are not generic: the bits simply convey whether the guest OS understands CPU hot-plug, but it says nothing about the number of CPUs that the OS supports.
+
+If a guest says it supports this feature, you would hope it supports it for the
+number of CPUs that have the present bit set but the enabled not.
+I'd clarify that in the text rather than provide a means of querying the number of CPUs supported.
+Number wouldn't be sufficient anyway as it wouldn't indicate 'which' CPUs are supported.
+Nothing says they have to be contiguous or lowest IDs etc.
+
+> - There could be alternate schemes that do not rely on spec changes. E.g. there could be a hypervisor IMPDEF mechanism to describe if an OS image supports CPU hot-plug.
+
+Sigh. Yes, that could be done at the cost of every guest having to be made aware of every
+hypervisor impdef mechanism.  Trying to avoid that mess is why I think an _OSC makes sense
+as then everyone can use the same control.
+
+No particular reason we should use ACPI at all for VMs :)
+
+> 
+> > 
+> > btw v4 looks ok but v5 in the tianocore github seems to have lost the actual
+> > OSC part.  
+> 
+> Agree that, if we do progress with this spec change, v4 is the correct formulation we should adopt. 
+> 
+Thanks for the update.
+
+Overall this is a question we need to resolve soon.  If this code otherwise goes in linux
+without the OSC we will always need to support the 'suck it and see' approach as we'll never
+know if the guest fell down the hole. Thus if not added soon we might as well not add it at
+all and we'll all be looking at the code and thinking "that's ugly and shouldn't
+have been necessary" for years to come.
+
++CC Kangkang as he might be able to help get this started again.
+
+Jonathan
+
+> Regards,
+> Jose
+> 
+> > 
+> > Jonathan
+> >   
+> > > ---
+> > > I'm assuming Loongarch machines do not support physical CPU hotplug.
+> > >
+> > > Changes since RFC v3:
+> > >  * Drop ia64 changes
+> > >  * Update James' comment below "---" to remove reference to ia64
+> > >
+> > > Outstanding comment:
+> > >  https://lore.kernel.org/r/20230914175021.000018fd@Huawei.com  
+> > 
+> > 
+> >   
+> > > ---
+> > >  arch/x86/Kconfig              |  1 +
+> > >  drivers/acpi/Kconfig          |  9 +++++++++
+> > >  drivers/acpi/acpi_processor.c | 14 +++++++++++++-
+> > >  drivers/acpi/bus.c            | 16 ++++++++++++++++
+> > >  include/linux/acpi.h          |  4 ++++
+> > >  5 files changed, 43 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig index
+> > > 64fc7c475ab0..33fc4dcd950c 100644
+> > > --- a/arch/x86/Kconfig
+> > > +++ b/arch/x86/Kconfig
+> > > @@ -60,6 +60,7 @@ config X86
+> > >  	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
+> > >  	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
+> > >  	select ACPI_HOTPLUG_PRESENT_CPU		if ACPI_PROCESSOR  
+> > && HOTPLUG_CPU  
+> > > +	select ACPI_HOTPLUG_IGNORE_OSC		if ACPI &&  
+> > HOTPLUG_CPU  
+> > >  	select ARCH_32BIT_OFF_T			if X86_32
+> > >  	select ARCH_CLOCKSOURCE_INIT
+> > >  	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
+> > > diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig index
+> > > 9c5a43d0aff4..020e7c0ab985 100644
+> > > --- a/drivers/acpi/Kconfig
+> > > +++ b/drivers/acpi/Kconfig
+> > > @@ -311,6 +311,15 @@ config ACPI_HOTPLUG_PRESENT_CPU
+> > >  	depends on ACPI_PROCESSOR && HOTPLUG_CPU
+> > >  	select ACPI_CONTAINER
+> > >
+> > > +config ACPI_HOTPLUG_IGNORE_OSC
+> > > +	bool
+> > > +	depends on ACPI_HOTPLUG_PRESENT_CPU
+> > > +	help
+> > > +	  Ignore whether firmware acknowledged support for toggling the CPU
+> > > +	  present bit in _STA. Some architectures predate the _OSC bits, so
+> > > +	  firmware doesn't know to do this.
+> > > +
+> > > +
+> > >  config ACPI_PROCESSOR_AGGREGATOR
+> > >  	tristate "Processor Aggregator"
+> > >  	depends on ACPI_PROCESSOR
+> > > diff --git a/drivers/acpi/acpi_processor.c
+> > > b/drivers/acpi/acpi_processor.c index ea12e70dfd39..5bb207a7a1dd
+> > > 100644
+> > > --- a/drivers/acpi/acpi_processor.c
+> > > +++ b/drivers/acpi/acpi_processor.c
+> > > @@ -182,6 +182,18 @@ static void __init acpi_pcc_cpufreq_init(void)
+> > > static void __init acpi_pcc_cpufreq_init(void) {}  #endif /*
+> > > CONFIG_X86 */
+> > >
+> > > +static bool acpi_processor_hotplug_present_supported(void)
+> > > +{
+> > > +	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
+> > > +		return false;
+> > > +
+> > > +	/* x86 systems pre-date the _OSC bit */
+> > > +	if (IS_ENABLED(CONFIG_ACPI_HOTPLUG_IGNORE_OSC))
+> > > +		return true;
+> > > +
+> > > +	return osc_sb_hotplug_present_support_acked;
+> > > +}
+> > > +
+> > >  /* Initialization */
+> > >  static int acpi_processor_make_present(struct acpi_processor *pr)  {
+> > > @@ -189,7 +201,7 @@ static int acpi_processor_make_present(struct  
+> > acpi_processor *pr)  
+> > >  	acpi_status status;
+> > >  	int ret;
+> > >
+> > > -	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU)) {
+> > > +	if (!acpi_processor_hotplug_present_supported()) {
+> > >  		pr_err_once("Changing CPU present bit is not supported\n");
+> > >  		return -ENODEV;
+> > >  	}
+> > > diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c index
+> > > 72e64c0718c9..7122450739d6 100644
+> > > --- a/drivers/acpi/bus.c
+> > > +++ b/drivers/acpi/bus.c
+> > > @@ -298,6 +298,13 @@
+> > > EXPORT_SYMBOL_GPL(osc_sb_native_usb4_support_confirmed);
+> > >
+> > >  bool osc_sb_cppc2_support_acked;
+> > >
+> > > +/*
+> > > + * ACPI 6.? Proposed Operating System Capabilities for modifying CPU
+> > > + * present/enable.
+> > > + */
+> > > +bool osc_sb_hotplug_enabled_support_acked;
+> > > +bool osc_sb_hotplug_present_support_acked;
+> > > +
+> > >  static u8 sb_uuid_str[] = "0811B06E-4A27-44F9-8D60-3CBBC22E7B48";
+> > >  static void acpi_bus_osc_negotiate_platform_control(void)
+> > >  {
+> > > @@ -346,6 +353,11 @@ static void
+> > > acpi_bus_osc_negotiate_platform_control(void)
+> > >
+> > >  	if (!ghes_disable)
+> > >  		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_APEI_SUPPORT;
+> > > +
+> > > +	capbuf[OSC_SUPPORT_DWORD] |=  
+> > OSC_SB_HOTPLUG_ENABLED_SUPPORT;  
+> > > +	if (IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
+> > > +		capbuf[OSC_SUPPORT_DWORD] |=  
+> > OSC_SB_HOTPLUG_PRESENT_SUPPORT;  
+> > > +
+> > >  	if (ACPI_FAILURE(acpi_get_handle(NULL, "\\_SB", &handle)))
+> > >  		return;
+> > >
+> > > @@ -383,6 +395,10 @@ static void  
+> > acpi_bus_osc_negotiate_platform_control(void)  
+> > >  			capbuf_ret[OSC_SUPPORT_DWORD] &  
+> > OSC_SB_NATIVE_USB4_SUPPORT;  
+> > >  		osc_cpc_flexible_adr_space_confirmed =
+> > >  			capbuf_ret[OSC_SUPPORT_DWORD] &  
+> > OSC_SB_CPC_FLEXIBLE_ADR_SPACE;  
+> > > +		osc_sb_hotplug_enabled_support_acked =
+> > > +			capbuf_ret[OSC_SUPPORT_DWORD] &  
+> > OSC_SB_HOTPLUG_ENABLED_SUPPORT;  
+> > > +		osc_sb_hotplug_present_support_acked =
+> > > +			capbuf_ret[OSC_SUPPORT_DWORD] &  
+> > OSC_SB_HOTPLUG_PRESENT_SUPPORT;  
+> > >  	}
+> > >
+> > >  	kfree(context.ret.pointer);
+> > > diff --git a/include/linux/acpi.h b/include/linux/acpi.h index
+> > > 00be66683505..c572abac803c 100644
+> > > --- a/include/linux/acpi.h
+> > > +++ b/include/linux/acpi.h
+> > > @@ -559,12 +559,16 @@ acpi_status acpi_run_osc(acpi_handle handle,  
+> > struct acpi_osc_context *context);  
+> > >  #define OSC_SB_NATIVE_USB4_SUPPORT		0x00040000
+> > >  #define OSC_SB_PRM_SUPPORT			0x00200000
+> > >  #define OSC_SB_FFH_OPR_SUPPORT			0x00400000
+> > > +#define OSC_SB_HOTPLUG_ENABLED_SUPPORT		0x00800000
+> > > +#define OSC_SB_HOTPLUG_PRESENT_SUPPORT		0x01000000
+> > >
+> > >  extern bool osc_sb_apei_support_acked;  extern bool
+> > > osc_pc_lpi_support_confirmed;  extern bool
+> > > osc_sb_native_usb4_support_confirmed;
+> > >  extern bool osc_sb_cppc2_support_acked;  extern bool
+> > > osc_cpc_flexible_adr_space_confirmed;
+> > > +extern bool osc_sb_hotplug_enabled_support_acked;
+> > > +extern bool osc_sb_hotplug_present_support_acked;
+> > >
+> > >  /* USB4 Capabilities */
+> > >  #define OSC_USB_USB3_TUNNELING			0x00000001  
+> 
+
 
