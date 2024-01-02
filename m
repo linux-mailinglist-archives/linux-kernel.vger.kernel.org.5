@@ -1,97 +1,122 @@
-Return-Path: <linux-kernel+bounces-14176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D0A28218C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:14:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A748C8218CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:15:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2FFA1F22222
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:14:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45F5E1F22228
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:15:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE4ECCA78;
-	Tue,  2 Jan 2024 09:14:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0433DD291;
+	Tue,  2 Jan 2024 09:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qbjbK+L5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73534CA6F
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 09:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-285-KxmtTKFzMXWzLQ9SE7vhdg-1; Tue, 02 Jan 2024 09:14:30 +0000
-X-MC-Unique: KxmtTKFzMXWzLQ9SE7vhdg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 2 Jan
- 2024 09:14:15 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 2 Jan 2024 09:14:15 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Guoxin Pu' <pugokushin@gmail.com>, "axboe@kernel.dk" <axboe@kernel.dk>
-CC: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] block: fix length of strscpy()
-Thread-Topic: [PATCH] block: fix length of strscpy()
-Thread-Index: AQHaPNtiMZZ0F2vqTUGoSDgTJCHi3bDFesXAgABTFoCAAG/DAA==
-Date: Tue, 2 Jan 2024 09:14:15 +0000
-Message-ID: <25655037ca3e404e9111341ea423f5ce@AcuMS.aculab.com>
-References: <20240101175051.38479-2-pugokushin@gmail.com>
- <ed0b9dd45fca4f6e910a9e1ffa756180@AcuMS.aculab.com>
- <c7e29d85-277d-46ae-87ae-bb77dd423652@gmail.com>
-In-Reply-To: <c7e29d85-277d-46ae-87ae-bb77dd423652@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3B2CA69;
+	Tue,  2 Jan 2024 09:15:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=tlEfMQFt5gK7xTvm4OYyFW6oyrGcWRnYRgh3+dnfWXQ=; b=qbjbK+L5aYe/lDZscjtenI5cjW
+	dZL/n71TVQj2zphfxq3RZ+cNggYEWOSaYIL6eYvVx5t5XbeQtXC5MfvkPEbeyWhD7ffyRT3M3U/Vd
+	VVSFZvNRo70tslTpjdD38Sg+/jUCGJ+dlQkKzla59Tw98eiFplHqpLYGh8x1cESshIjA8i2C7Sn5M
+	muL2EGVBlVq2u1U2wLBjpcL4+E4cCtxzD6oY/ijyD7c2z9wI6Hy3ySQPY+FZTT4GhfgPtObTsn+Mf
+	4GMgFwlfji7YX5rkT/+U0nnZrO6GArNuSqp3UnB6eP/3Dq/eakRRSpeSc0fIN9D8KevfYWMzxiVW4
+	BH4OtoIw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rKaqw-009pns-In; Tue, 02 Jan 2024 09:14:26 +0000
+Date: Tue, 2 Jan 2024 09:14:26 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+	Hillf Danton <hdanton@sina.com>, kernel@quicinc.com,
+	quic_pkondeti@quicinc.com, keescook@chromium.or,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, oleg@redhat.com,
+	dhowells@redhat.com, jarkko@kernel.org, paul@paul-moore.com,
+	jmorris@namei.org, serge@hallyn.com, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] kernel: Introduce a write lock/unlock wrapper for
+ tasklist_lock
+Message-ID: <ZZPT8hMiuT1pCBP7@casper.infradead.org>
+References: <20231213101745.4526-1-quic_aiquny@quicinc.com>
+ <ZXnaNSrtaWbS2ivU@casper.infradead.org>
+ <87o7eu7ybq.fsf@email.froward.int.ebiederm.org>
+ <ZY30k7OCtxrdR9oP@casper.infradead.org>
+ <cd0f6613-9aa9-4698-bebe-0f61286d7552@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cd0f6613-9aa9-4698-bebe-0f61286d7552@quicinc.com>
 
-RnJvbTogR3VveGluIFB1IA0KPiBTZW50OiAwMiBKYW51YXJ5IDIwMjQgMDI6MzENCj4gDQo+IFRo
-YW5rIHlvdSBmb3IgdGhlIHJldmlldy4gU29ycnkgaWYgdGhpcyBpcyB0aGUgZHVwbGljYXRlZCBy
-ZXBseSwgYXMgSQ0KPiBkaWRuJ3QgY29uZmlndXJlIG15IG1haWwgY2xpZW50IHRvIHNlbmQgdGV4
-dC1vbmx5IG1lc3NhZ2UgYW5kIHRoZQ0KPiBwcmV2aW91cyBtYWlsIHdhcyByZWplY3RlZCBieSB0
-aGUgbGlzdC4NCj4gDQo+IE9uIDAyLzAxLzIwMjQgMDU6NDcsIERhdmlkIExhaWdodCB3cm90ZToN
-Cj4gPj4gQEAgLTc5LDggKzc5LDggQEAgc3RhdGljIGludCBwYXJzZV9zdWJwYXJ0KHN0cnVjdCBj
-bWRsaW5lX3N1YnBhcnQgKipzdWJwYXJ0LCBjaGFyICpwYXJ0ZGVmKQ0KPiA+PiAgIAkJCWdvdG8g
-ZmFpbDsNCj4gPj4gICAJCX0NCj4gPj4NCj4gPj4gLQkJbGVuZ3RoID0gbWluX3QoaW50LCBuZXh0
-IC0gcGFydGRlZiwNCj4gPj4gLQkJCSAgICAgICBzaXplb2YobmV3X3N1YnBhcnQtPm5hbWUpIC0g
-MSk7DQo+ID4+ICsJCWxlbmd0aCA9IG1pbl90KGludCwgbmV4dCAtIHBhcnRkZWYgKyAxLA0KPiA+
-PiArCQkJICAgICAgIHNpemVvZihuZXdfc3VicGFydC0+bmFtZSkpOw0KPiA+PiAgIAkJc3Ryc2Nw
-eShuZXdfc3VicGFydC0+bmFtZSwgcGFydGRlZiwgbGVuZ3RoKTsNCj4gPiBTaG91bGRuJ3QgdGhh
-dCBiZSBhIG1lbWNweSgpIHdpdGggdGhlIG9yaWdpbmFsIGxlbmd0aD8NCj4gPiBTaW5jZSBpdCBs
-b29rcyBhcyB0aG91Z2ggdGhlcmUgaXMgc29tZXRoaW5nIGVxdWl2YWxlbnQgdG86DQo+ID4gCQlu
-ZXh0ID0gc3RyY2hyKHBhcnRkZWYsICcsJyk7DQo+ID4ganVzdCBhYm92ZT8NCj4gPiBNYXliZSB3
-aXRoOg0KPiA+IAkJbmV3X3N1YnBhcnQtPm5hbWVbbGVuZ3RoXSA9ICdcMCc7DQo+ID4gaWYgdGhl
-IHRhcmdldCBpc24ndCB6ZXJvIGZpbGxlZCAod2hpY2ggdGhlIHN0cm5jcHkoKSBwcm9iYWJseQ0K
-PiA+IHJlbGllZCBvbi4pDQo+IA0KPiBZZXMgdGhhdCB3b3VsZCBiZSBiZXR0ZXIuIEJ1dCBzaW5j
-ZSBJJ20gZml4aW5nIHRoZSBpc3N1ZSBjYXVzZWQgYnkgdGhlDQo+IG1lbnRpb25lZCBjb21taXQs
-IHdoaWNoIHdhcyBhbiBhY2NlcHRlZCBjaGFuZ2UgdG8gdXNlIHN0cnNjcHkgaW5zdGVhZCBvZg0K
-PiBzdHJuY3B5IGFuZCBzZWVtcyBhIHBhcnQgb2YgYSBzZXJpZXMgb2YgY2hhbmdlcyB0byBkbyB0
-aGF0LCBJIHRoaW5rDQo+IHRoZXJlIG1pZ2h0IGJlIGEgcmVhc29uIHRoZSBtYWludGFpbmVycyBw
-cmVmZXJyZWQgc3Ryc2NweSBvdmVyIHN0cm5jcHkNCj4gb3ZlciBtZW1jcHk/IE90aGVyd2lzZSB3
-ZSBjb3VsZCBqdXN0IHJldmVydCB0aGF0IGNvbW1pdCBhbmQga2VlcCB1c2luZw0KPiB0aGUgb3Jp
-Z2luYWwgc3RybmNweSArIHNldHRpbmcgTlVMTCBtZXRob2QsIGFuZCB0aGVuIHBvdGVudGlhbGx5
-IHN3YXANCj4gc3RybmNweSB3aXRoIG1lbWNweS4NCg0KSSBzdXNwZWN0IHRoZXkgYWNjZXB0ZWQg
-dGhlIGNoYW5nZSB3aXRob3V0IHJlYWxpc2luZyBqdXN0IGhvdw0KY3JlYXRpdmUgc29tZSBvZiB0
-aGUgc3RybmNweSgpIGNhbGxzIGFyZS4NCldoaWxlIHN0cnNjcHkoKSBpcyBhIGJldHRlciBmdW5j
-dGlvbiB0aGFuIHN0cm5jcHkoKSAob3Igc3RybGNweSgpKQ0KZXh0cmVtZSBjYXJlIGhhcyB0byBi
-ZSB0YWtlbiB0byBhdm9pZCBhZGRpbmcgYnVncyB0byBjb2RlIHRoYXQNCndhcyBhY3R1YWxseSBm
-aW5lLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5
-IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRp
-b24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Tue, Jan 02, 2024 at 10:19:47AM +0800, Aiqun Yu (Maria) wrote:
+> On 12/29/2023 6:20 AM, Matthew Wilcox wrote:
+> > On Wed, Dec 13, 2023 at 12:27:05PM -0600, Eric W. Biederman wrote:
+> > > Matthew Wilcox <willy@infradead.org> writes:
+> > > > I think the right way to fix this is to pass a boolean flag to
+> > > > queued_write_lock_slowpath() to let it know whether it can re-enable
+> > > > interrupts while checking whether _QW_WAITING is set.
+> > > 
+> > > Yes.  It seems to make sense to distinguish between write_lock_irq and
+> > > write_lock_irqsave and fix this for all of write_lock_irq.
+> > 
+> > I wasn't planning on doing anything here, but Hillf kind of pushed me into
+> > it.  I think it needs to be something like this.  Compile tested only.
+> > If it ends up getting used,
+> Happy new year!
+
+Thank you!  I know your new year is a few weeks away still ;-)
+
+> > -void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock)
+> > +void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock, bool irq)
+> >   {
+> >   	int cnts;
+> > @@ -82,7 +83,11 @@ void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock)
+> Also a new state showed up after the current design:
+> 1. locked flag with _QW_WAITING, while irq enabled.
+> 2. And this state will be only in interrupt context.
+> 3. lock->wait_lock is hold by the write waiter.
+> So per my understanding, a different behavior also needed to be done in
+> queued_write_lock_slowpath:
+>   when (unlikely(in_interrupt())) , get the lock directly.
+
+I don't think so.  Remember that write_lock_irq() can only be called in
+process context, and when interrupts are enabled.
+
+> So needed to be done in release path. This is to address Hillf's concern on
+> possibility of deadlock.
+
+Hillf's concern is invalid.
+
+> >   	/* When no more readers or writers, set the locked flag */
+> >   	do {
+> > +		if (irq)
+> > +			local_irq_enable();
+> I think write_lock_irqsave also needs to be take account. So
+> loal_irq_save(flags) should be take into account here.
+
+If we did want to support the same kind of spinning with interrupts
+enabled for write_lock_irqsave(), we'd want to pass the flags in
+and do local_irq_restore(), but I don't know how we'd support
+write_lock_irq() if we did that -- can we rely on passing in 0 for flags
+meaning "reenable" on all architectures?  And ~0 meaning "don't
+reenable" on all architectures?
+
+That all seems complicated, so I didn't do that.
 
 
