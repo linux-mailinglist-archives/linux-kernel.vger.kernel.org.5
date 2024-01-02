@@ -1,166 +1,148 @@
-Return-Path: <linux-kernel+bounces-14025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E8AA82170F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:11:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 14BFA821718
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:17:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B682C28219A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 05:11:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B20042821BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 05:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BBFE1118;
-	Tue,  2 Jan 2024 05:11:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD57710F3;
+	Tue,  2 Jan 2024 05:17:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="d57lkx+u"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B24ED4
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 05:11:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7baae0a27efso521178039f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 21:11:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF4FED6
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 05:17:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5c1f8b0c149so2149015a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 21:17:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1704172620; x=1704777420; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y0+e9jXb1APHsr8+SSFKuSYagZvt9QzyAw+8MedzV9k=;
+        b=d57lkx+u8DPZTyQ8PYYKSW17kBEU23T7rg/NVa/PDzZIMyd1RDdGBPdUtwBm5TB8XR
+         jcoupajoOZ4YxxgqIEJ7XAtticgg/EDWSGhKR3NzXLmc4ao/zBzFb479qS6AuJZOAZWi
+         /XWrqEb2g14EzpthImr8Wxd0V8m32mhfEJ8bcQKi9rcZWw5uI39EVkm6WRBjesGuIy4i
+         ewrVZeWqTZCaSOfj/HMfI1EvxCwOkuaZWtMc9AfglGuFy4MRBZHmIchpWdjdGqryONro
+         2NJMd1bgWayHKHpWzUn393LTPgKLGBENxKACeWjJOFY6T7S/lVT4L5JRSoLXVCMEs9/Q
+         dO8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704172278; x=1704777078;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cVe+cydX2QovZEBdgwMrlF6BxalR+VmGg5udIFEWvfM=;
-        b=fmqf6o1Keh0vrNosHqLvk6yPo3YkD+Y7owGMmjAJjIBqzL1bdLZQJKyHySZQ88D0xq
-         Gdm3kQVTUsg/yNVg+RMstYFsyj7kv65zp2Lml6Io3hii4wpd+cKgZ9ix6aOBKngHH0/e
-         0CgU1zg6Hf/OiI27LJI0RPgPwaQilgrP9oLzSWtHer1M41Pobbsl9+37y+lt808IpNur
-         tqZ9pgAbMgx9HBNNfGpmTLj/gngBHwJBQVcJP64W1NNHnZtm932bDl95WS9F+zAiY7D7
-         sKAPaGaeGya9NvFwnV+65A2sC/caywOJudXw7bWlv0TZuve6eD+34nfQIFhROeDb4VJt
-         MEhg==
-X-Gm-Message-State: AOJu0YyNjSdVp7GR9DnCrhxs+xnhQWyp/mYZgckpkF/lXOHBvVuT4c+L
-	oLdED1hMrI/pUgdgGUdqx8Kl1xtgdCBfIfmHAGPmdBHD97g4
-X-Google-Smtp-Source: AGHT+IEl1EXDVpJ7uc2J2iIM3JgcYrO6OpxfupKtTr/omz7Oem4Ls9bHdMhoP2tuSCrqsofNsCEYP39zQfJ5aPtqUBX4zReQQXdp
+        d=1e100.net; s=20230601; t=1704172620; x=1704777420;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y0+e9jXb1APHsr8+SSFKuSYagZvt9QzyAw+8MedzV9k=;
+        b=HMMgWfoTSF12HpgTUqOI3rr/r/xIpRnYedLnjSyJvfqKX+BmTEGiDFCkYWTWezm2kc
+         pGrUdait3llJnaF5i+2xOE5eR25f4fQfNZ6hr8HVR5dLZiTR3ukZZcLL04qa436ziCL5
+         pLIqRhom5k8ZIwONEzZ/ZpgL4Ng7Uz4CTKeHMVoxHF6MDtS7SW1kqV7f2i9qJVBzMZV4
+         68RMvLK9oSPrZjz9vFbfFvlkZ+DBDov3PqFMBrMtrjJR/T4EW1cDVk3DyRntPClsrMr7
+         asTkkc7IkKvj9t9wdD9WgpOnHWvcr0OSRuUeUygU5ewajy2NfO7XP/nXv+QYu29Op+T8
+         mJhw==
+X-Gm-Message-State: AOJu0Yzu7t1wKLy9d5+tqSTHxwydVxGiXR96YaD1F1h4H7+hhfd9clml
+	+wnrMnPTO8zR/0TT38FgkaLUuOXb1przWg==
+X-Google-Smtp-Source: AGHT+IG1JRqn+7/ZW5uKjjHFyDuCLIb0RjG51YBmpY/IphE+PQuOa/LY7hCZn9t+tAnGTUHZvtHBUw==
+X-Received: by 2002:a17:902:f814:b0:1d4:58eb:d901 with SMTP id ix20-20020a170902f81400b001d458ebd901mr5578770plb.41.1704172620140;
+        Mon, 01 Jan 2024 21:17:00 -0800 (PST)
+Received: from ?IPv6:2402:7500:5d5:d389:6cac:304c:13db:9f1b? ([2402:7500:5d5:d389:6cac:304c:13db:9f1b])
+        by smtp.gmail.com with ESMTPSA id iw19-20020a170903045300b001d077da4ac4sm21114907plb.212.2024.01.01.21.16.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Jan 2024 21:16:59 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:174e:b0:35f:cca8:cd54 with SMTP id
- y14-20020a056e02174e00b0035fcca8cd54mr2929191ill.2.1704172278706; Mon, 01 Jan
- 2024 21:11:18 -0800 (PST)
-Date: Mon, 01 Jan 2024 21:11:18 -0800
-In-Reply-To: <000000000000d95cf9060c5038e3@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004efa57060def87be@google.com>
-Subject: Re: [syzbot] [hfs?] possible deadlock in hfs_extend_file (2)
-From: syzbot <syzbot+41a88b825a315aac2254@syzkaller.appspotmail.com>
-To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
+Subject: Re: [PATCH v3 00/12] RISC-V: provide some accelerated cryptography
+ implementations using vector extensions
+From: Jerry Shih <jerry.shih@sifive.com>
+In-Reply-To: <20231230035112.GC770@quark.localdomain>
+Date: Tue, 2 Jan 2024 13:16:54 +0800
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>,
+ herbert@gondor.apana.org.au,
+ davem@davemloft.net,
+ conor.dooley@microchip.com,
+ ardb@kernel.org,
+ conor@kernel.org,
+ heiko@sntech.de,
+ phoebe.chen@sifive.com,
+ hongrong.hsu@sifive.com,
+ linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ linux-crypto@vger.kernel.org,
+ Andy Chiu <andy.chiu@sifive.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <EED7F0DA-5619-411B-82A2-7926155E9B73@sifive.com>
+References: <20231205092801.1335-1-jerry.shih@sifive.com>
+ <20231222054827.GE52600@quark.localdomain>
+ <20231230035112.GC770@quark.localdomain>
+To: Eric Biggers <ebiggers@kernel.org>
+X-Mailer: Apple Mail (2.3445.9.7)
 
-syzbot has found a reproducer for the following issue on:
+On Dec 30, 2023, at 11:51, Eric Biggers <ebiggers@kernel.org> wrote:
+> Hi Jerry,
+> On Thu, Dec 21, 2023 at 11:48:27PM -0600, Eric Biggers wrote:
+>> Hi Jerry,
+>>=20
+>> On Tue, Dec 05, 2023 at 05:27:49PM +0800, Jerry Shih wrote:
+>>> Changelog v2:
+>>> - Turn to use simd skcipher interface for AES-CBC/CTR/ECB/XTS and
+>>>   Chacha20.
+>>=20
+>> If I understand correctly, the RISC-V kernel-mode vector support now =
+seems to be
+>> heading down the path of supporting softirq context, as I had =
+suggested
+>> originally.  With patches 1-2 of Andy Chiu's latest patchset
+>> "[v7, 00/10] riscv: support kernel-mode Vector"
+>> =
+(https://lore.kernel.org/linux-riscv/20231221134318.28105-1-andy.chiu@sifi=
+ve.com).
+>> applied, the kernel has basic support for kernel-mode vector, =
+including in
+>> softirq context.
+>>=20
+>> With that being the case, "skcipher" algorithms can just use the =
+RISC-V vector
+>> unit unconditionally, given that skcipher only supports task and =
+softirq
+>> context.  Therefore, can you consider undoing your change that added =
+fallbacks
+>> using the simd helper (crypto/simd.c)?  Thanks!
+>>=20
+>=20
+> I had a go at incorporating my suggestions into your patchset, and =
+rebasing the
+> patchset onto riscv/for-next plus the first two patches of "[v9, =
+00/10] riscv:
+> support kernel-mode Vector".  You can get the result from branch =
+"riscv-crypto"
+> of https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git.
+> Everything seems to work (tested in QEMU, as usual).
+>=20
+> Please consider using it when you send out v4; thanks!  I can even =
+send it out
+> myself, if you want, but I assume you're still "owning" the patchset.
+>=20
+> - Eric
 
-HEAD commit:    610a9b8f49fb Linux 6.7-rc8
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16d7c48de80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=247b5a935d307ee5
-dashboard link: https://syzkaller.appspot.com/bug?extid=41a88b825a315aac2254
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1552fe19e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1419bcade80000
+Thank you. I sent the v4 patch.
+Link: =
+https://lore.kernel.org/all/20231231152743.6304-1-jerry.shih@sifive.com/
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e174ec82158f/disk-610a9b8f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/4bed5e1c1c26/vmlinux-610a9b8f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4fd13b65ecb5/bzImage-610a9b8f.xz
-mounted in repro #1: https://storage.googleapis.com/syzbot-assets/19a994dad52e/mount_0.gz
-mounted in repro #2: https://storage.googleapis.com/syzbot-assets/8c8468d1fd79/mount_1.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+41a88b825a315aac2254@syzkaller.appspotmail.com
-
-loop0: detected capacity change from 0 to 64
-============================================
-WARNING: possible recursive locking detected
-6.7.0-rc8-syzkaller #0 Not tainted
---------------------------------------------
-syz-executor279/5059 is trying to acquire lock:
-ffff888079c100f8 (&HFS_I(tree->inode)->extents_lock){+.+.}-{3:3}, at: hfs_extend_file+0xa2/0xb10 fs/hfs/extent.c:397
-
-but task is already holding lock:
-ffff888079c10778 (&HFS_I(tree->inode)->extents_lock){+.+.}-{3:3}, at: hfs_extend_file+0xa2/0xb10 fs/hfs/extent.c:397
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&HFS_I(tree->inode)->extents_lock);
-  lock(&HFS_I(tree->inode)->extents_lock);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-5 locks held by syz-executor279/5059:
- #0: ffff88807a160418 (sb_writers#9){.+.+}-{0:0}, at: open_last_lookups fs/namei.c:3535 [inline]
- #0: ffff88807a160418 (sb_writers#9){.+.+}-{0:0}, at: path_openat+0x19f6/0x2c50 fs/namei.c:3776
- #1: ffff888079c10fa8 (&type->i_mutex_dir_key#6){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:802 [inline]
- #1: ffff888079c10fa8 (&type->i_mutex_dir_key#6){+.+.}-{3:3}, at: open_last_lookups fs/namei.c:3543 [inline]
- #1: ffff888079c10fa8 (&type->i_mutex_dir_key#6){+.+.}-{3:3}, at: path_openat+0x8bd/0x2c50 fs/namei.c:3776
- #2: ffff88807a1640b0 (&tree->tree_lock){+.+.}-{3:3}, at: hfs_find_init+0x1b6/0x220 fs/hfs/bfind.c:30
- #3: ffff888079c10778 (&HFS_I(tree->inode)->extents_lock){+.+.}-{3:3}, at: hfs_extend_file+0xa2/0xb10 fs/hfs/extent.c:397
- #4: ffff88807a1620b0 (&tree->tree_lock/1){+.+.}-{3:3}, at: hfs_find_init+0x17f/0x220 fs/hfs/bfind.c:33
-
-stack backtrace:
-CPU: 0 PID: 5059 Comm: syz-executor279 Not tainted 6.7.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- check_deadlock kernel/locking/lockdep.c:3062 [inline]
- validate_chain kernel/locking/lockdep.c:3856 [inline]
- __lock_acquire+0x20f8/0x3b20 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1ae/0x520 kernel/locking/lockdep.c:5719
- __mutex_lock_common kernel/locking/mutex.c:603 [inline]
- __mutex_lock+0x175/0x9d0 kernel/locking/mutex.c:747
- hfs_extend_file+0xa2/0xb10 fs/hfs/extent.c:397
- hfs_bmap_reserve+0x29c/0x370 fs/hfs/btree.c:234
- __hfs_ext_write_extent+0x3cb/0x520 fs/hfs/extent.c:121
- __hfs_ext_cache_extent fs/hfs/extent.c:174 [inline]
- hfs_ext_read_extent+0x805/0x9d0 fs/hfs/extent.c:202
- hfs_extend_file+0x4e0/0xb10 fs/hfs/extent.c:401
- hfs_bmap_reserve+0x29c/0x370 fs/hfs/btree.c:234
- hfs_cat_create+0x227/0x810 fs/hfs/catalog.c:104
- hfs_create+0x67/0xe0 fs/hfs/dir.c:202
- lookup_open.isra.0+0x1095/0x13b0 fs/namei.c:3477
- open_last_lookups fs/namei.c:3546 [inline]
- path_openat+0x922/0x2c50 fs/namei.c:3776
- do_filp_open+0x1de/0x430 fs/namei.c:3809
- do_sys_openat2+0x176/0x1e0 fs/open.c:1437
- do_sys_open fs/open.c:1452 [inline]
- __do_sys_openat fs/open.c:1468 [inline]
- __se_sys_openat fs/open.c:1463 [inline]
- __x64_sys_openat+0x175/0x210 fs/open.c:1463
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f776291b759
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f77628d7168 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 00007f77629a46c8 RCX: 00007f776291b759
-RDX: 000000000000275a RSI: 0000000020000000 RDI: 00000000ffffff9c
-RBP: 00007f77629a46c0 R08: 00007f77629a46c0 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f77629a46cc
-R13: 0000000000000006 R14: 00007ffd59ba19f0 R15: 00007ffd59ba1ad8
- </TASK>
-hfs: request for non-existent node 16777216 in B*Tree
-hfs: request for non-existent node 16777216 in B*Tree
-hfs: inconsistency in B*Tree (5,0,1,0,1)
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+-Jerry=
 
