@@ -1,76 +1,137 @@
-Return-Path: <linux-kernel+bounces-14164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0272C8218A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:57:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DF6C8218A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:58:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88A48B21862
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:56:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E73EBB213D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57B275697;
-	Tue,  2 Jan 2024 08:56:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A267D6110;
+	Tue,  2 Jan 2024 08:58:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iowOJE9K"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LG6FTr8a"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A4D5663
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 08:56:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704185810;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=mazOSbOiodJMTqfGsLxXYf0xfPTI8tO7drLObG3CBf4=;
-	b=iowOJE9K0yJ/efBTT4e6Hs4NEXTZ2h+fslRY31xHBuG9vmH+E50Wkl5DZIQGFTJvdFiTeO
-	ikkpVKcUAcV4Yqp6bJQaD4ZacoVjcDgHk8fpKRfmSqyyXhI9EzU1AyKtC/A5RjKhhbWft8
-	piaWlLcFrkTRERSLpU5VoqIafJ8z2BU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-661-EwCIza7jPTW1lhbi1HBPBA-1; Tue, 02 Jan 2024 03:56:48 -0500
-X-MC-Unique: EwCIza7jPTW1lhbi1HBPBA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 60B51807F56;
-	Tue,  2 Jan 2024 08:56:48 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 636C81121312;
-	Tue,  2 Jan 2024 08:56:47 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-To: Christoph Hellwig <hch@lst.de>, Matthew Wilcox <willy@infradead.org>
-cc: dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-    linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: bio_vec, bv_page and folios
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF23353BA;
+	Tue,  2 Jan 2024 08:58:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46848C433C7;
+	Tue,  2 Jan 2024 08:58:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704185898;
+	bh=mgDLuKTiRK0fcEwuAINoY+MKZtrYC/YrQ/tRrnrWiO8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LG6FTr8agk7bZXldCG9mlpFOSBl5YUPabX2gi451OhzE9OEPLQJ9B1Y++z+iM51IA
+	 cDGbkE3t9rJyRAWCzmqWKgp+9Fcvk3BImfEYeJEpfQmo3gdVPcxbmf59SaLUiwmrYA
+	 EFCEjeKHc9noMHC/5C43Ojp453A9Mu6Z6Ad49OmSI9/iuWu3aPv8heYQfCbmt31+Bf
+	 sUzgv1DW4ttdo77EEF1dcguVjFsogjtEfnu4uoK6oQ251l5c+dXfuhFfPOoQuILbEP
+	 wPMEzNGMaXpTQ/VrMGSPMoxmMHPZUTXp1jXV0IyGxyJSd76ktt/VrUzdEWdnOWw6X/
+	 GkgmgRfWxQ6Vg==
+Date: Tue, 2 Jan 2024 10:58:14 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Shifeng Li <lishifeng@sangfor.com.cn>
+Cc: jgg@ziepe.ca, wenglianfa@huawei.com, gustavoars@kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Shifeng Li <lishifeng1992@126.com>
+Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
+ init
+Message-ID: <20240102085814.GD6361@unreal>
+References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3490947.1704185806.1@warthog.procyon.org.uk>
-Date: Tue, 02 Jan 2024 08:56:46 +0000
-Message-ID: <3490948.1704185806@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
 
-Hi Christoph, Willy,
+On Mon, Jan 01, 2024 at 07:43:35PM -0800, Shifeng Li wrote:
+> The mad_client will be initialized in enable_device_and_get(), while the
+> devices_rwsem will be downgraded to a read semaphore. There is a window
+> that leads to the failed initialization for cm_client, since it can not
+> get matched mad port from ib_mad_port_list, and the matched mad port will
+> be added to the list after that.
+> 
+>     mad_client    |                       cm_client
+> ------------------|--------------------------------------------------------
+> ib_register_device|
+> enable_device_and_get
+> down_write(&devices_rwsem)
+> xa_set_mark(&devices, DEVICE_REGISTERED)
+> downgrade_write(&devices_rwsem)
+>                   |
+>                   |ib_cm_init
+>                   |ib_register_client(&cm_client)
+>                   |down_read(&devices_rwsem)
+>                   |xa_for_each_marked (&devices, DEVICE_REGISTERED)
+>                   |add_client_context
+>                   |cm_add_one
+>                   |ib_register_mad_agent
+>                   |ib_get_mad_port
+>                   |__ib_get_mad_port
+>                   |list_for_each_entry(entry, &ib_mad_port_list, port_list)
+>                   |return NULL
+>                   |up_read(&devices_rwsem)
+>                   |
+> add_client_context|
+> ib_mad_init_device|
+> ib_mad_port_open  |
+> list_add_tail(&port_priv->port_list, &ib_mad_port_list)
+> up_read(&devices_rwsem)
+>                   |
 
-Will bv_page in struct bio_vec ever become a folio pointer rather than I page
-pointer?  I'm guessing not as it still presumably needs to be able to point to
-non-folio pages.
+How is this stack possible?
 
-David
+ib_register_device() is called by drivers and happens much later than ib_cm_init().
 
+Thanks
+
+> 
+> Fix it by using the devices_rwsem write semaphore to protect the mad_client
+> init flow in enable_device_and_get().
+> 
+> Fixes: d0899892edd0 ("RDMA/device: Provide APIs from the core code to help unregistration")
+> Cc: Shifeng Li <lishifeng1992@126.com>
+> Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
+> ---
+>  drivers/infiniband/core/device.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> index 67bcea7a153c..85782786993d 100644
+> --- a/drivers/infiniband/core/device.c
+> +++ b/drivers/infiniband/core/device.c
+> @@ -1315,12 +1315,6 @@ static int enable_device_and_get(struct ib_device *device)
+>  	down_write(&devices_rwsem);
+>  	xa_set_mark(&devices, device->index, DEVICE_REGISTERED);
+>  
+> -	/*
+> -	 * By using downgrade_write() we ensure that no other thread can clear
+> -	 * DEVICE_REGISTERED while we are completing the client setup.
+> -	 */
+> -	downgrade_write(&devices_rwsem);
+> -
+>  	if (device->ops.enable_driver) {
+>  		ret = device->ops.enable_driver(device);
+>  		if (ret)
+> @@ -1337,7 +1331,7 @@ static int enable_device_and_get(struct ib_device *device)
+>  	if (!ret)
+>  		ret = add_compat_devs(device);
+>  out:
+> -	up_read(&devices_rwsem);
+> +	up_write(&devices_rwsem);
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.25.1
+> 
+> 
 
