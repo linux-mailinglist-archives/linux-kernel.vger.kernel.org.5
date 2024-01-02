@@ -1,96 +1,124 @@
-Return-Path: <linux-kernel+bounces-14565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C946821EC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CCAC821EC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:35:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F71B1C224A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:35:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40A931C22468
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:34:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE9514A9C;
-	Tue,  2 Jan 2024 15:35:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6ADB14F6B;
+	Tue,  2 Jan 2024 15:34:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="d8TtmPOA"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Hn8fH/uP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7609B14F60;
-	Tue,  2 Jan 2024 15:35:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8709340E0171;
-	Tue,  2 Jan 2024 15:34:57 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id E4pJd0VlcEXb; Tue,  2 Jan 2024 15:34:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704209694; bh=AFlNAs1eTyy0BO95pQ2N7wyFVzTaEas2yI1v/Adat8k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d8TtmPOAiItQ4yR0tJO0GMvu0OoyPQwEUd5BFlrnpX8H7UdXl82/LACGiyqsrOsPP
-	 HG4wHYqNoXUWPAZ02jeYSaysgqwVHotJBk4GL954LxUvMd8aty8Bx0Z18h+mQkFCom
-	 WfqPrMr+rDCFaZjkU3Va3Ig0rdHwEe1FS/C/WURxOJZCnPNqcKeHB510oyqWEY1e1q
-	 DF7uPwIfh8Qb7wnzAaGaWLRCgDetMJKMaeS71XEcFxH9eOwyYNH9XTn1YKCzzHKEVE
-	 gicvKn8vIBGHvBCkU8aQ5IiHWdbSsUBym1NzBrExwAt3xxSi7PUvtP/e1KlMOhfeEg
-	 cGD71cet6qH2D8gjTMdwtK3i29cI71MVQCa2P/F/hKf/KjhG9pYs51oai7RYWAcVLg
-	 Jks2gnt/TFS17V/nUewsNAAbrepP0EZBfAmsoMopLzFQUdxsn6kAsRhb+mUI0rFp2y
-	 T8ioePBl5ZQq0MkZS8KIb6b7acGAMzigjd9xu5x+P1/LCXGnfBS9vnDQBSPpygAWFZ
-	 G8ywQ9Ez+SvCBQcHqYoBE4VxV1yYRd1nJktrtxaVPBpiaOY3p5wNRsi+bo33MuQnJd
-	 VjGqKbCIrCBdsphTPg0PiCGge+AkwjuGqyujKUXD6Mk/1GqTjnUxre6DtuWbmZvusm
-	 b6tfbgHO44zTLM5K+pBI+cvM=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B277C14F60
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 15:34:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704209690;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=l7cJAVtsGBwI8CAm3+P2nm6XZa7AWaTasxy0hzTbhJY=;
+	b=Hn8fH/uPSFTLHy8DLdt3yIPXQfjCkMhyazzbiVZo/F1trUlAW8TXr6nc+vRQ5uJtEG4QvF
+	7k9RaSyl8UcoA5pup6DQQ4iXy+FyV3JzmL8VHlW0FvMOSYtPnl8AmmZ8GWayr009yOVZp4
+	d00kTF4BXroIYDhep6UtmB94z3aVphQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-631-_no57yUUN92YAbajRY0xaw-1; Tue, 02 Jan 2024 10:34:49 -0500
+X-MC-Unique: _no57yUUN92YAbajRY0xaw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 661D840E0191;
-	Tue,  2 Jan 2024 15:34:31 +0000 (UTC)
-Date: Tue, 2 Jan 2024 16:34:26 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Xin Li <xin3.li@intel.com>
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, luto@kernel.org, pbonzini@redhat.com,
-	seanjc@google.com, peterz@infradead.org, jgross@suse.com,
-	ravi.v.shankar@intel.com, mhiramat@kernel.org,
-	andrew.cooper3@citrix.com, jiangshanlai@gmail.com,
-	nik.borisov@suse.com, shan.kang@intel.com
-Subject: Re: [PATCH v13 01/35] x86/cpufeatures,opcode,msr: Add the WRMSRNS
- instruction support
-Message-ID: <20240102153426.GBZZQtAiWSdGAgKoIL@fat_crate.local>
-References: <20231205105030.8698-1-xin3.li@intel.com>
- <20231205105030.8698-2-xin3.li@intel.com>
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CC7AA881F07;
+	Tue,  2 Jan 2024 15:34:48 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.22.16.87])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 9C9D02026F96;
+	Tue,  2 Jan 2024 15:34:48 +0000 (UTC)
+From: Chris von Recklinghausen <crecklin@redhat.com>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	linux-kernel@vger.kernel.org
+Cc: crecklin@redhat.com
+Subject: [PATCH] don't record leak information on allocations done between kmemleak_init and kmemleak_late_init
+Date: Tue,  2 Jan 2024 10:34:28 -0500
+Message-ID: <20240102153428.139984-1-crecklin@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231205105030.8698-2-xin3.li@intel.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Tue, Dec 05, 2023 at 02:49:50AM -0800, Xin Li wrote:
+If an object is allocated after kmemleak_init is called but before
+kmemleak_late_init is called, calls to kmemleak_not_leak or
+kmemleak_ignore on the object don't prevent a scan from reporting the
+object as a leak.
 
-> Subject: Re: [PATCH v13 01/35] x86/cpufeatures,opcode,msr: Add the WRMSRNS instruction support
+Avoid this situation by only registering objects in kmemleak_alloc when
+kmemleak_initialized is set.
 
-Or simply "x86/fred: Add ... "
+Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
+---
+ mm/kmemleak.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Other than that,
-
-Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
-
+diff --git a/mm/kmemleak.c b/mm/kmemleak.c
+index 5501363d6b31..0c8a5f456874 100644
+--- a/mm/kmemleak.c
++++ b/mm/kmemleak.c
+@@ -1117,7 +1117,8 @@ void __ref kmemleak_free_part(const void *ptr, size_t size)
+ {
+ 	pr_debug("%s(0x%px)\n", __func__, ptr);
+ 
+-	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
++	if (kmemleak_enabled && kmemleak_late_initialized && ptr &&
++		!IS_ERR(ptr))
+ 		delete_object_part((unsigned long)ptr, size, false);
+ }
+ EXPORT_SYMBOL_GPL(kmemleak_free_part);
+@@ -1135,7 +1136,8 @@ void __ref kmemleak_free_percpu(const void __percpu *ptr)
+ 
+ 	pr_debug("%s(0x%px)\n", __func__, ptr);
+ 
+-	if (kmemleak_free_enabled && ptr && !IS_ERR(ptr))
++	if (kmemleak_free_enabled && kmemleak_late_initialized && ptr &&
++		!IS_ERR(ptr))
+ 		for_each_possible_cpu(cpu)
+ 			delete_object_full((unsigned long)per_cpu_ptr(ptr,
+ 								      cpu));
+@@ -1189,7 +1191,8 @@ void __ref kmemleak_not_leak(const void *ptr)
+ {
+ 	pr_debug("%s(0x%px)\n", __func__, ptr);
+ 
+-	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
++	if (kmemleak_enabled && kmamleak_late_initialized && ptr &&
++		!IS_ERR(ptr))
+ 		make_gray_object((unsigned long)ptr);
+ }
+ EXPORT_SYMBOL(kmemleak_not_leak);
+@@ -1207,7 +1210,8 @@ void __ref kmemleak_ignore(const void *ptr)
+ {
+ 	pr_debug("%s(0x%px)\n", __func__, ptr);
+ 
+-	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
++	if (kmemleak_enabled && kmamleak_late_initialized && ptr &&
++		!IS_ERR(ptr))
+ 		make_black_object((unsigned long)ptr, false);
+ }
+ EXPORT_SYMBOL(kmemleak_ignore);
 -- 
-Regards/Gruss,
-    Boris.
+2.43.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
