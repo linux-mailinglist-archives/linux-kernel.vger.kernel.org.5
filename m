@@ -1,122 +1,284 @@
-Return-Path: <linux-kernel+bounces-14294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 299DE821AFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:32:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06D04821B00
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:33:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC9F71F213EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:32:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F72E1C21E2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:33:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD27EAD3;
-	Tue,  2 Jan 2024 11:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4CCBE574;
+	Tue,  2 Jan 2024 11:33:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XryoqP6M"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AC/Omkwl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8E6E56B
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 11:32:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-427eabbaf25so35676701cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 03:32:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704195128; x=1704799928; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4CTXYQjDTx9MjNeWmQMbnj/JJ7KlKNb5ez8YnAlEmuU=;
-        b=XryoqP6MDCAM1W1boSMn8ZBw8f+60nmm1oSpqP0kth0iGwh8i5ExfZgjnH1O9A1dqO
-         H8jD6zUY6iOUe7pEuMt0M4MXSgAxbABixjJs5ByoVpRifB5O6qsiN9nHRQYMVDXhszCs
-         aRJoUzFow+6QMg6R0KTpKWw+ZIxKWfPPBW1OU=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB20E554
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 11:33:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704195183;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XWxHimkeFDNjn6YSxYvmBLIqeHTwIpJqYoBnohM5/0g=;
+	b=AC/OmkwldzTXxsI+S2ORdov2xbVVq9phIAhsIYCRAMCpUGnOSV0OemWF3xLRvkcdmEsDNB
+	dBAZBge2wPNzL+7Fs1/NFQ/7eyXhen2VrPoonEe9ZH7s8odMqtcuAnRwdA0eMhD0i3ibWr
+	extYYtwmH+Zm5QRdq2wChpYJvLTKAeM=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-223-3NqWAxs-NQiJO6K6mSJUag-1; Tue, 02 Jan 2024 06:33:02 -0500
+X-MC-Unique: 3NqWAxs-NQiJO6K6mSJUag-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40d45be1ce2so44172025e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 03:33:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704195128; x=1704799928;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4CTXYQjDTx9MjNeWmQMbnj/JJ7KlKNb5ez8YnAlEmuU=;
-        b=SsEoAjtLkmxa19IslDec89klwsuTl7h994pmrsKW9Expad2Kd2NPh+Ow7MmjQ0Brtb
-         7tRqTbhPtww4Qi8mrBY2F0mg8Ei5hGJW1qnnVQZV6EPQD748+HZSOyrmcBVTcrS3JL9D
-         8Kn8qHv+ceF1FDdY/AjesZz1uDETahFWJBf2lmngpGVJ4YHK/9lG48U7BjjCB+LCVrbi
-         SKgCd4Xjw5ilO/KUIUggvR/bZ02BJxK1F0gCCRM5X1xQW7wukDv4o0wRozrGU4o59b0Q
-         IRXlviYFz91DRTAHoTSL6WpMIQxzkK2pQzPqmibKMVRHfZCF6ePJ5t9ZU70Vt3VlCYHJ
-         tDGQ==
-X-Gm-Message-State: AOJu0Yw64P8TytD3ux9qMYrHmxfGfX3yTKrkUrW6H8BVc3pgYubJfEtC
-	LNyK4iv19DtqhcwTTXav1FRyBGaMlrw8PVRaiS4lJM+trw==
-X-Google-Smtp-Source: AGHT+IGl8gkYnbJVfwh0+84KWgrjG9yKZkYUZ0ULe+WjvwW6W8LZFxMW1T6sIu8w5NXBTKHOFj9ARQ==
-X-Received: by 2002:ac8:7dc1:0:b0:428:24c0:92cc with SMTP id c1-20020ac87dc1000000b0042824c092ccmr3210382qte.38.1704195128096;
-        Tue, 02 Jan 2024 03:32:08 -0800 (PST)
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com. [209.85.219.42])
-        by smtp.gmail.com with ESMTPSA id cc17-20020a05622a411100b00427f3b9e60dsm5763219qtb.60.2024.01.02.03.32.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 03:32:07 -0800 (PST)
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-680861506afso25006946d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 03:32:07 -0800 (PST)
-X-Received: by 2002:a05:6214:2a85:b0:67f:67de:5d32 with SMTP id
- jr5-20020a0562142a8500b0067f67de5d32mr26610741qvb.41.1704195126792; Tue, 02
- Jan 2024 03:32:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704195181; x=1704799981;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XWxHimkeFDNjn6YSxYvmBLIqeHTwIpJqYoBnohM5/0g=;
+        b=VkgitDQXIcnmEaEOGxnIFW92aSneqtMWuZtpOAs+zxbrKmxUkuj2EEiXsfO4/pDUwA
+         IqhAOJZnvtoV43LehKxm2CVt270pTXCx2GBiF4klK75zV+gyRzzXZg8d5JuHw8NM2poo
+         7MR0i5MwW5dRNMbwMXLucEd+Gf9phPDI2g61sQlbeodDWNyD1m/gIW/juvRO4JVBp3R/
+         ewiiyDmkW4E5hijz07fUdRVgTFXBDFi3J57ChBATfUpyttNDGz56Y91olSqTJ/05bUH6
+         XiA+jY3A/c7pLdx2RB+QDWt3XErJh5wlLg5ratlQkZ/YL58p8pMEy/d0zu5YLC3fmqt/
+         KEhw==
+X-Gm-Message-State: AOJu0YymErWQOgkATDbPbjQ8wGIfVQ7T9CpaDrtUHts3U2N4w4kEFLZM
+	WNY4whv1615ykgxO7dgKKPH4fs1vodkmuNgfOG9l/1UfIzo3l6SxBjs5CAMXCrr5rWVcNCluYdU
+	7eK29AmdcAC9ZP1e74dlzf28lVsvPOTOb
+X-Received: by 2002:a05:600c:2255:b0:40d:80a1:867 with SMTP id a21-20020a05600c225500b0040d80a10867mr2701902wmm.146.1704195180969;
+        Tue, 02 Jan 2024 03:33:00 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEmH97otICNik6jF5g8bpqPEue2LDedjKabzLVwMIouA4GG3UCE1rYraye49W7NVZJ+THP9GQ==
+X-Received: by 2002:a05:600c:2255:b0:40d:80a1:867 with SMTP id a21-20020a05600c225500b0040d80a10867mr2701899wmm.146.1704195180607;
+        Tue, 02 Jan 2024 03:33:00 -0800 (PST)
+Received: from debian (2a01cb058918ce008532542fb9fcf433.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:8532:542f:b9fc:f433])
+        by smtp.gmail.com with ESMTPSA id t18-20020a5d49d2000000b00336751cd4ebsm28311844wrs.72.2024.01.02.03.32.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 03:33:00 -0800 (PST)
+Date: Tue, 2 Jan 2024 12:32:58 +0100
+From: Guillaume Nault <gnault@redhat.com>
+To: Yujie Liu <yujie.liu@intel.com>
+Cc: netdev@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+	Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	lkp@intel.com, kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v2 net-next] selftests/net: change shebang to bash to
+ support "source"
+Message-ID: <ZZP0akFff+nzFhc0@debian>
+References: <20231229131931.3961150-1-yujie.liu@intel.com>
+ <ZZFbxyQeHgf3UQrN@debian>
+ <ZZPHQF6wL95oSGzK@yujie-X299>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231222-rallybar-v2-1-5849d62a9514@chromium.org> <82bf432c-2a78-4b9c-88ab-ef4f0888e9aa@rowland.harvard.edu>
-In-Reply-To: <82bf432c-2a78-4b9c-88ab-ef4f0888e9aa@rowland.harvard.edu>
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Tue, 2 Jan 2024 12:31:53 +0100
-X-Gmail-Original-Message-ID: <CANiDSCtd4-pQDdf03cBZz6deUe=b4ufiQ4WR=ddwjubOoxAQ1w@mail.gmail.com>
-Message-ID: <CANiDSCtd4-pQDdf03cBZz6deUe=b4ufiQ4WR=ddwjubOoxAQ1w@mail.gmail.com>
-Subject: Re: [PATCH v2] usb: core: Add quirk for Logitech Rallybar
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, linux-usb@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZPHQF6wL95oSGzK@yujie-X299>
 
-Hi Alan
+On Tue, Jan 02, 2024 at 04:20:16PM +0800, Yujie Liu wrote:
+> On Sun, Dec 31, 2023 at 01:17:11PM +0100, Guillaume Nault wrote:
+> > On Fri, Dec 29, 2023 at 09:19:31PM +0800, Yujie Liu wrote:
+> > > The patch set [1] added a general lib.sh in net selftests, and converted
+> > > several test scripts to source the lib.sh.
+> > > 
+> > > unicast_extensions.sh (converted in [1]) and pmtu.sh (converted in [2])
+> > > have a /bin/sh shebang which may point to various shells in different
+> > > distributions, but "source" is only available in some of them. For
+> > > example, "source" is a built-it function in bash, but it cannot be
+> > > used in dash.
+> > > 
+> > > Refer to other scripts that were converted together, simply change the
+> > > shebang to bash to fix the following issues when the default /bin/sh
+> > > points to other shells.
+> > 
+> > Looks like it'd be simpler to just replace the "source" commands with
+> > "." and leave the shebang as is (unless there are other bash-specific
+> > constructs in these scripts of course).
+> > 
+> > Generally speaking, I think we should avoid madating a specific shell,
+> > unless that really simplifies the test script (which is not the case
+> > here).
+> 
+> Hi Guillaume,
+> 
+> Thanks for the comments. Actually I also considered replacing "source"
+> with "." at first, but finally decided to change the shebang in
+> consideration of being consistent with other scripts. We can see that
+> there are 140+ scripts in net selftests that have "source lib.sh" and
+> "bash" shebang, but none of the selftests has ". lib.sh". If we replace
+> "source" with "." and keep the "sh" shebang specifically for
+> unicast_extensions.sh and pmtu.sh, we will get only 2 scripts using
+> "sh and ." while most other scripts using "bash and source". Maybe it
+> would be nice to keep the consistency by changing the shebang as well?
+> What do you think? :)
 
-On Sat, 23 Dec 2023 at 21:01, Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Fri, Dec 22, 2023 at 10:55:49PM +0000, Ricardo Ribalda wrote:
-> > Logitech Rallybar devices, despite behaving as UVC camera, they have a
-> > different power management system than the rest of the other Logitech
-> > cameras.
-> >
-> > USB_QUIRK_RESET_RESUME causes undesired USB disconnects, that make the
-> > device unusable.
-> >
-> > These are the only two devices that have this behavior, and we do not
-> > have the list of devices that require USB_QUIRK_RESET_RESUME, so lets
-> > create a new lit for them that un-apply the USB_QUIRK_RESET_RESUME
-> > quirk.
-> >
-> > Fixes: e387ef5c47dd ("usb: Add USB_QUIRK_RESET_RESUME for all Logitech UVC webcams")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
->
-> Would it make more sense to do this inside the uvc driver instead of
-> creating a new single-purpose list in the core?
+The use of "source" instead of "." is clearly an overlook. Consistency
+is desirable only when it brings better quality code.
 
-I can try to move it to the uvc driver. But maybe it is better to keep it here:
+And it should be easy enough to convert the remaining "source lib.sh"
+in a followup patch to make the other shell scripts consistent.
 
-The same vid:pid also has other functionality, not only uvc: Sync
-agent interface, UPD Interface, ADB interface.
-If we apply the quirk to the uvc driver, and the uvc driver is not
-loaded, the other functionality will still be broken....
 
-I expect to see more devices from Logitech not needing the
-RESET_RESUME quirk... so this list will eventually grow.
+> linux/tools/testing/selftests/net$ grep -rl "source lib.sh" . | xargs grep -F '#!/bin/'
+> ./test_vxlan_under_vrf.sh:#!/bin/bash
+> ./test_vxlan_nolocalbypass.sh:#!/bin/bash
+> ./xfrm_policy.sh:#!/bin/bash
+> ./test_vxlan_mdb.sh:#!/bin/bash
+> ./test_bridge_backup_port.sh:#!/bin/bash
+> ./vrf_route_leaking.sh:#!/bin/bash
+> ./l2tp.sh:#!/bin/bash
+> ./netns-name.sh:#!/bin/bash
+> ./rtnetlink.sh:#!/bin/bash
+> ./ioam6.sh:#!/bin/bash
+> ./drop_monitor_tests.sh:#!/bin/bash
+> ./test_vxlan_vnifiltering.sh:#!/bin/bash
+> ./icmp.sh:#!/bin/bash
+> ./gre_gso.sh:#!/bin/bash
+> ./fib_nexthop_multiprefix.sh:#!/bin/bash
+> ./icmp_redirect.sh:#!/bin/bash
+> ./vrf-xfrm-tests.sh:#!/bin/bash
+> ./vrf_strict_mode_test.sh:#!/bin/bash
+> ./fcnal-test.sh:#!/bin/bash
+> ./stress_reuseport_listen.sh:#!/bin/bash
+> ./srv6_end_dt4_l3vpn_test.sh:#!/bin/bash
+> ./test_bridge_neigh_suppress.sh:#!/bin/bash
+> ./cmsg_ipv6.sh:#!/bin/bash
+> ./arp_ndisc_evict_nocarrier.sh:#!/bin/bash
+> ./fib_rule_tests.sh:#!/bin/bash
+> ./srv6_end_dt6_l3vpn_test.sh:#!/bin/bash
+> ./forwarding/custom_multipath_hash.sh:#!/bin/bash
+> ./forwarding/gre_inner_v4_multipath.sh:#!/bin/bash
+> ./forwarding/tc_tunnel_key.sh:#!/bin/bash
+> ./forwarding/tc_shblocks.sh:#!/bin/bash
+> ./forwarding/router_nh.sh:#!/bin/bash
+> ./forwarding/skbedit_priority.sh:#!/bin/bash
+> ./forwarding/tc_mpls_l2vpn.sh:#!/bin/bash
+> ./forwarding/gre_inner_v6_multipath.sh:#!/bin/bash
+> ./forwarding/vxlan_symmetric.sh:#!/bin/bash
+> ./forwarding/bridge_mdb.sh:#!/bin/bash
+> ./forwarding/no_forwarding.sh:#!/bin/bash
+> ./forwarding/router_bridge_1d.sh:#!/bin/bash
+> ./forwarding/tc_flower_port_range.sh:#!/bin/bash
+> ./forwarding/router_multicast.sh:#!/bin/bash
+> ./forwarding/bridge_locked_port.sh:#!/bin/bash
+> ./forwarding/vxlan_asymmetric_ipv6.sh:#!/bin/bash
+> ./forwarding/dual_vxlan_bridge.sh:#!/bin/bash
+> ./forwarding/bridge_port_isolation.sh:#!/bin/bash
+> ./forwarding/local_termination.sh:#!/bin/bash
+> ./forwarding/ipip_flat_gre_keys.sh:#!/bin/bash
+> ./forwarding/gre_multipath_nh_res.sh:#!/bin/bash
+> ./forwarding/gre_multipath.sh:#!/bin/bash
+> ./forwarding/vxlan_bridge_1d_ipv6.sh:#!/bin/bash
+> ./forwarding/ip6gre_flat_keys.sh:#!/bin/bash
+> ./forwarding/gre_multipath_nh.sh:#!/bin/bash
+> ./forwarding/bridge_mld.sh:#!/bin/bash
+> ./forwarding/ip6gre_inner_v6_multipath.sh:#!/bin/bash
+> ./forwarding/ip6gre_flat_key.sh:#!/bin/bash
+> ./forwarding/vxlan_asymmetric.sh:#!/bin/bash
+> ./forwarding/tc_flower_router.sh:#!/bin/bash
+> ./forwarding/router_bridge_vlan_upper_pvid.sh:#!/bin/bash
+> ./forwarding/mirror_gre_vlan_bridge_1q.sh:#!/bin/bash
+> ./forwarding/q_in_vni_ipv6.sh:#!/bin/bash
+> ./forwarding/mirror_gre_lag_lacp.sh:#!/bin/bash
+> ./forwarding/ip6gre_custom_multipath_hash.sh:#!/bin/bash
+> ./forwarding/vxlan_bridge_1d.sh:#!/bin/bash
+> ./forwarding/ip6gre_hier_key.sh:#!/bin/bash
+> ./forwarding/gre_custom_multipath_hash.sh:#!/bin/bash
+> ./forwarding/ipip_flat_gre_key.sh:#!/bin/bash
+> ./forwarding/mirror_gre_flower.sh:#!/bin/bash
+> ./forwarding/router_bridge.sh:#!/bin/bash
+> ./forwarding/vxlan_symmetric_ipv6.sh:#!/bin/bash
+> ./forwarding/mirror_gre_bridge_1q.sh:#!/bin/bash
+> ./forwarding/router_multipath.sh:#!/bin/bash
+> ./forwarding/tc_vlan_modify.sh:#!/bin/bash
+> ./forwarding/vxlan_bridge_1q.sh:#!/bin/bash
+> ./forwarding/bridge_mdb_port_down.sh:#!/bin/bash
+> ./forwarding/tc_flower.sh:#!/bin/bash
+> ./forwarding/tc_flower_cfm.sh:#!/bin/bash
+> ./forwarding/mirror_gre_neigh.sh:#!/bin/bash
+> ./forwarding/ethtool_rmon.sh:#!/bin/bash
+> ./forwarding/hw_stats_l3_gre.sh:#!/bin/bash
+> ./forwarding/router.sh:#!/bin/bash
+> ./forwarding/ipip_hier_gre_key.sh:#!/bin/bash
+> ./forwarding/tc_police.sh:#!/bin/bash
+> ./forwarding/pedit_ip.sh:#!/bin/bash
+> ./forwarding/ip6_forward_instats_vrf.sh:#!/bin/bash
+> ./forwarding/router_mpath_nh_res.sh:#!/bin/bash
+> ./forwarding/mirror_gre_changes.sh:#!/bin/bash
+> ./forwarding/hw_stats_l3.sh:#!/bin/bash
+> ./forwarding/ipip_hier_gre.sh:#!/bin/bash
+> ./forwarding/q_in_vni.sh:#!/bin/bash
+> ./forwarding/ip6gre_flat.sh:#!/bin/bash
+> ./forwarding/router_bridge_vlan_upper.sh:#!/bin/bash
+> ./forwarding/bridge_igmp.sh:#!/bin/bash
+> ./forwarding/mirror_gre_nh.sh:#!/bin/bash
+> ./forwarding/bridge_mdb_host.sh:#!/bin/bash
+> ./forwarding/ipip_hier_gre_keys.sh:#!/bin/bash
+> ./forwarding/pedit_dsfield.sh:#!/bin/bash
+> ./forwarding/bridge_vlan_mcast.sh:#!/bin/bash
+> ./forwarding/mirror_gre_bridge_1d_vlan.sh:#!/bin/bash
+> ./forwarding/router_bridge_1d_lag.sh:#!/bin/bash
+> ./forwarding/router_bridge_pvid_vlan_upper.sh:#!/bin/bash
+> ./forwarding/mirror_gre_bound.sh:#!/bin/bash
+> ./forwarding/ip6gre_hier.sh:#!/bin/bash
+> ./forwarding/ip6gre_hier_keys.sh:#!/bin/bash
+> ./forwarding/ethtool_extended_state.sh:#!/bin/bash
+> ./forwarding/router_mpath_nh.sh:#!/bin/bash
+> ./forwarding/tc_flower_l2_miss.sh:#!/bin/bash
+> ./forwarding/bridge_vlan_unaware.sh:#!/bin/bash
+> ./forwarding/router_broadcast.sh:#!/bin/bash
+> ./forwarding/bridge_fdb_learning_limit.sh:#!/bin/bash
+> ./forwarding/ipip_lib.sh:#!/bin/bash
+> ./forwarding/ip6gre_inner_v4_multipath.sh:#!/bin/bash
+> ./forwarding/router_vid_1.sh:#!/bin/bash
+> ./forwarding/mirror_gre.sh:#!/bin/bash
+> ./forwarding/router_bridge_vlan.sh:#!/bin/bash
+> ./forwarding/bridge_vlan_aware.sh:#!/bin/bash
+> ./forwarding/ethtool.sh:#!/bin/bash
+> ./forwarding/loopback.sh:#!/bin/bash
+> ./forwarding/bridge_sticky_fdb.sh:#!/bin/bash
+> ./forwarding/bridge_mdb_max.sh:#!/bin/bash
+> ./forwarding/pedit_l4port.sh:#!/bin/bash
+> ./forwarding/tc_actions.sh:#!/bin/bash
+> ./forwarding/mirror_vlan.sh:#!/bin/bash
+> ./forwarding/sch_red.sh:#!/bin/bash
+> ./forwarding/ipip_flat_gre.sh:#!/bin/bash
+> ./forwarding/mirror_gre_bridge_1d.sh:#!/bin/bash
+> ./forwarding/lib.sh:#!/bin/bash
+> ./forwarding/mirror_gre_vlan.sh:#!/bin/bash
+> ./forwarding/mirror_gre_bridge_1q_lag.sh:#!/bin/bash
+> ./forwarding/ethtool_mm.sh:#!/bin/bash
+> ./forwarding/vxlan_bridge_1q_ipv6.sh:#!/bin/bash
+> ./forwarding/tc_chains.sh:#!/bin/bash
+> ./forwarding/ip6gre_lib.sh:#!/bin/bash
+> ./fib_nexthop_nongw.sh:#!/bin/bash
+> ./srv6_end_dt46_l3vpn_test.sh:#!/bin/bash
+> ./cmsg_so_mark.sh:#!/bin/bash
+> ./sctp_vrf.sh:#!/bin/bash
+> ./fdb_flush.sh:#!/bin/bash
+> ./ndisc_unsolicited_na_test.sh:#!/bin/bash
+> ./traceroute.sh:#!/bin/bash
+> ./fib-onlink-tests.sh:#!/bin/bash
+> ./fib_tests.sh:#!/bin/bash
+> ./cmsg_time.sh:#!/bin/bash
+> ./arp_ndisc_untracked_subnets.sh:#!/bin/bash
+> ./fib_nexthops.sh:#!/bin/bash
+> 
+> linux/tools/testing/selftests/net$ grep -rF ". lib.sh"
+> <-- nothing
+> 
+> Thanks,
+> Yujie
+> 
 
-Setting/useting RESET_RESUME in two different locations, can make the
-code difficult to follow.
-
-What do you think?
-
-Regards!
 
