@@ -1,97 +1,63 @@
-Return-Path: <linux-kernel+bounces-14485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9B91821DAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:31:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EC60821DAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:31:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D85E1F21388
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:31:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 710BA1C22280
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E561E12E79;
-	Tue,  2 Jan 2024 14:31:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D69311708;
+	Tue,  2 Jan 2024 14:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="fpZGWbVe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lDTVqxY6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30C1712E5E;
-	Tue,  2 Jan 2024 14:31:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7F57A40E0197;
-	Tue,  2 Jan 2024 14:31:25 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id jqDK2FPNrzIb; Tue,  2 Jan 2024 14:31:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704205882; bh=3RAVNM7LYaoLfzaXssXlRtBXH/zpslXjygklhi3m5ng=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fpZGWbVemrzkfBr14FKIUKe0YrNibM1g2Dp/r7Dh4PSJHoN72qdY75JFcRFMgJUk+
-	 ThO/GAn6S8t6qiGapDNjq6+V6LApHghQYnY9/f1DDpwdXeLpEJ9QgMgTiZdnEXFfoE
-	 sgxyTakmuxY8nKEEzwOd+p9yNiSyAXaaEMXaffexrsvXvznhr7/W8zMTlzXoRs02nQ
-	 296fp6dbsk43cr/3+DE5z++eC2RyY73USRx86Q6WP/h/sotEtQsXlvvZRvnyUa54V6
-	 TeM8/cnRVqJAwDGJYO/4C4+csL/SL41YnfgBRppkAY6vyJEbytCYrG7owiG5J/xFUR
-	 hhurvQeiaKXshQh7FfNc2pQWNloWf74yU0gKhKfkqX8TT69ry0h55L3fQ2UnkgVTXd
-	 u4U6uO4VpI/RNRe2dq/0HWOPmrYh+8gvIoLUxnvK1bqQviukgWChzQ4WPR0btY8VbU
-	 ZoEfUJFQpmOiHncXWwLnODEhgXW78QnS9AMAZTQTIHVE8GCwf4v7ENvyIKNh4AuCP/
-	 6EQgytnms6kPduZTCsilXmNUrsRZRnSGHAAGr/YZJzb8MCRlg4buKKn5WiZzgVClo2
-	 C8p9xxRsPrPd4TlEcaq3U6BVr7fFW5Fm5csDJoUApsMZ3Ftle4f7AiJjn8TcXgCxrc
-	 A7gKpmmmtennf/PjkFjHHGls=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 757F440E0193;
-	Tue,  2 Jan 2024 14:31:10 +0000 (UTC)
-Date: Tue, 2 Jan 2024 15:31:04 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/sev: Fix SEV check in sev_map_percpu_data()
-Message-ID: <20240102143104.GCZZQeKLNY1NJ78uVR@fat_crate.local>
-References: <20240102133747.27053-1-kirill.shutemov@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAED21171B;
+	Tue,  2 Jan 2024 14:31:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C300C433C8;
+	Tue,  2 Jan 2024 14:31:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704205881;
+	bh=ppOaBt0nrxUHlSNRMZ7HMYb/m9Qv65WWZBMvgTCv6tQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lDTVqxY6zGzv+IqoKKpclzUd+3gWQOsOYzlAzHi+KI4Io36sxjLr86wBrdgrnXqCd
+	 zg5vVLxaV/jxQeIosWR0/+59bC5VInOilfMV3ZMQVVVGNdoWkGcJZ9XB4Ma3gVbzrf
+	 gY9LbcmnBebmZN607dDBMeAmOhSocGzhldwfu0HH90d6kDVbYvWntaWKuUcuYe/Udx
+	 6bptlGJWk8DTYoFUpcUfICh7a7WVyyXYBpbbTqof1YKPIKiAIuSjuzRUK/S6XaDBK9
+	 1BcQXttBg9Kl+6jZTPjC11Yc/9lFdBoBI1iIs+VA16KfzA+N+hG1eM1CoNgVUsJMyV
+	 s7SEv2BNsl71A==
+Date: Tue, 2 Jan 2024 06:31:20 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Min Li <lnimi@hotmail.com>
+Cc: richardcochran@gmail.com, lee@kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, Min Li <min.li.xe@renesas.com>
+Subject: Re: [PATCH net-next v7 1/5] ptp: clockmatrix: support 32-bit
+ address space
+Message-ID: <20240102063120.63f9d3c4@kernel.org>
+In-Reply-To: <PH7PR03MB706457106BF922439573DF38A08CA@PH7PR03MB7064.namprd03.prod.outlook.com>
+References: <PH7PR03MB706457106BF922439573DF38A08CA@PH7PR03MB7064.namprd03.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240102133747.27053-1-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 02, 2024 at 04:37:47PM +0300, Kirill A. Shutemov wrote:
-> The function sev_map_percpu_data() checks if it is running on an SEV
-> platform by checking the CC_ATTR_GUEST_MEM_ENCRYPT attribute. However,
-> this attribute is also defined for TDX.
+On Thu, 14 Dec 2023 10:24:11 -0500 Min Li wrote:
+> From: Min Li <min.li.xe@renesas.com>
 > 
-> To avoid false positives, add a cc_vendor check.
-> 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> We used to assume 0x2010xxxx address. Now that
+> we need to access 0x2011xxxx address, we need
+> to support read/write the whole 32-bit address space.
 
-Fixes: 4d96f9109109 ("x86/sev: Replace occurrences of sev_active() with cc_platform_has()")
-Suggested-by: Borislav Petkov (AMD) <bp@alien8.de>
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Not entirely clear to me why but this submission was marked
+as Changes Requested in patchwork. Please repost.
 
