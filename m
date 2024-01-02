@@ -1,133 +1,217 @@
-Return-Path: <linux-kernel+bounces-14341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5789821B9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:30:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39BC2821BA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:31:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B8611F22573
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:30:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2FFE282CBA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:31:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45C88EEDA;
-	Tue,  2 Jan 2024 12:30:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Rcn669GB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9882F510;
+	Tue,  2 Jan 2024 12:31:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from mail-m127167.xmail.ntesmail.com (mail-m127167.xmail.ntesmail.com [115.236.127.167])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF313EED7
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 12:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 08B4040E01FF;
-	Tue,  2 Jan 2024 12:30:35 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id xm12y3_UOTav; Tue,  2 Jan 2024 12:30:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704198632; bh=IxuDw30cS9iEm0QSFSWt71QB0CzS/3Wfbj0oTK5OV4Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Rcn669GBfctS/JFjWfVBK/s7XNaUC4VNkYor5MT4uHuL1ujgRNw2ZxwwlcSzZkCV1
-	 WWPhMG4JoAv2UBpsmm59QNg0EZsnOGiJy7jpsHj3c96E8Q3bEluyorZ7DcDfYWB0Hb
-	 yLGMJBHZwQbvhJoSFtUiJmxS//mCT1NnclylnoMgIlrCRjNC9KHhudVrfvYDF5oiaK
-	 Dw3LOPiyxrCe8GBA5Iq0QaehTtCfslmVB0Nzr9JWqsT7NXwiC6UcN/tcn3NpoE5NeL
-	 Sav7G3r2XMWG24uKg7kD5GwK5QAgpqR6vs3oQCIRez7a1dZ+ugTPAHw6U8QGNdWc4G
-	 wfEUekJjPAYrdxbr3c2GpgeJ+1W2MFHEdUVoG6vdcyNpqnmjddRap+873ktydmNXga
-	 Uq9T7tYc4qaVaxkUv9OJ/j9e4oxn3ra6/KpMChrsFlqL4gqIfCLSpkMy3ohwalqAMB
-	 8yrxQKxB2lJ5X0qpJ0YNmFxMFsxA6XwwB47PwA1jUwmGuXhBpVQlNPQ4CDe2JS3anW
-	 lgR5jmkhcDZD8Xz5zjnclbRqpswwdVted36YCnuKiGhJOnjRmfUYx31ABifz8WOqsG
-	 TYYbJNGtJllRnXYF7uRzpQ0UlxvtSLfn+AWgPBvYfe1M9sNf73DJCYEVVWEuDo74jx
-	 cAHm2ZkB16qbRwyiB8ol32Vw=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A43F240E0193;
-	Tue,  2 Jan 2024 12:30:23 +0000 (UTC)
-Date: Tue, 2 Jan 2024 13:30:18 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/coco, x86/sev: Use cpu_feature_enabled() to detect
- SEV guest flavor
-Message-ID: <20240102123018.GBZZQB2gLjDs9QknQS@fat_crate.local>
-References: <20231205150012.6lma2wzcellr7pz7@box.shutemov.name>
- <20231205150648.GDZW88iAjBzYoIJ0+o@fat_crate.local>
- <20231205151437.aqmuydosfmnq3zr4@box.shutemov.name>
- <20231205160035.GEZW9JI8eKENXBo6EO@fat_crate.local>
- <20231205171643.zg7fwxjyccab53kf@box.shutemov.name>
- <20231205172436.GFZW9c1EaCaguGhglb@fat_crate.local>
- <20231205180813.phbxg5jdumfovshz@box.shutemov.name>
- <20231205185241.GGZW9xeTtiG6sORMTr@fat_crate.local>
- <20231205203337.GKZW+JIe9m2/QVi7Xl@fat_crate.local>
- <20240102122233.fng76fdmq5xsqkhi@box.shutemov.name>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89500F4EE;
+	Tue,  2 Jan 2024 12:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
+Received: from [172.23.69.7] (unknown [121.32.254.147])
+	by mail-m12750.qiye.163.com (Hmail) with ESMTPA id 18AAEF20682;
+	Tue,  2 Jan 2024 20:30:50 +0800 (CST)
+Message-ID: <37318dfc-f296-4662-b3a9-cd42fbb7eba5@sangfor.com.cn>
+Date: Tue, 2 Jan 2024 20:30:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240102122233.fng76fdmq5xsqkhi@box.shutemov.name>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
+ init
+To: Leon Romanovsky <leon@kernel.org>
+Cc: jgg@ziepe.ca, wenglianfa@huawei.com, gustavoars@kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Shifeng Li <lishifeng1992@126.com>
+References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
+ <20240102085814.GD6361@unreal>
+ <61e69337-c32e-4df7-a31c-faf112f36466@sangfor.com.cn>
+ <20240102115806.GH6361@unreal>
+From: Shifeng Li <lishifeng@sangfor.com.cn>
+In-Reply-To: <20240102115806.GH6361@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkZGUsYVh1OHhlISE1JGEpMS1UTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpJSlVISVVJTk9VSk9MWVdZFhoPEhUdFFlBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg
+	++
+X-HM-Tid: 0a8cca27b9fcb21dkuuu18aaef20682
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NxQ6Ggw6SDw8K08aAUMqGRcy
+	KT5PC1ZVSlVKTEtPSkJDTU5LQ0NPVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
+	C1lBWUpJSlVISVVJTk9VSk9MWVdZCAFZQUNJTk03Bg++
 
-On Tue, Jan 02, 2024 at 03:22:33PM +0300, Kirill A. Shutemov wrote:
-> On Tue, Dec 05, 2023 at 09:33:37PM +0100, Borislav Petkov wrote:
-> > On Tue, Dec 05, 2023 at 07:52:41PM +0100, Borislav Petkov wrote:
-> > > So yes, we will fix your issue, no worries. I'm figuring out the
-> > > details as we speak.
-> > 
-> > So you can do for the short term:
-> > 
-> > ---
-> > diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> > index c461c1a4b6af..f8999f6d1b00 100644
-> > --- a/arch/x86/kernel/kvm.c
-> > +++ b/arch/x86/kernel/kvm.c
-> > @@ -434,7 +434,7 @@ static void __init sev_map_percpu_data(void)
-> >  {
-> >  	int cpu;
-> >  
-> > -	if (!cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
-> > +	if (cc_vendor != CC_VENDOR_AMD || !cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
-> >  		return;
-> >  
-> >  	for_each_possible_cpu(cpu) {
-> > ---
-> > 
-> > until we've sorted out the bigger picture.
+On 2024/1/2 19:58, Leon Romanovsky wrote:
+> On Tue, Jan 02, 2024 at 07:33:41PM +0800, Shifeng Li wrote:
+>> On 2024/1/2 16:58, Leon Romanovsky wrote:
+>>> On Mon, Jan 01, 2024 at 07:43:35PM -0800, Shifeng Li wrote:
+>>>> The mad_client will be initialized in enable_device_and_get(), while the
+>>>> devices_rwsem will be downgraded to a read semaphore. There is a window
+>>>> that leads to the failed initialization for cm_client, since it can not
+>>>> get matched mad port from ib_mad_port_list, and the matched mad port will
+>>>> be added to the list after that.
+>>>>
+>>>>       mad_client    |                       cm_client
+>>>> ------------------|--------------------------------------------------------
+>>>> ib_register_device|
+>>>> enable_device_and_get
+>>>> down_write(&devices_rwsem)
+>>>> xa_set_mark(&devices, DEVICE_REGISTERED)
+>>>> downgrade_write(&devices_rwsem)
+>>>>                     |
+>>>>                     |ib_cm_init
+>>>>                     |ib_register_client(&cm_client)
+>>>>                     |down_read(&devices_rwsem)
+>>>>                     |xa_for_each_marked (&devices, DEVICE_REGISTERED)
+>>>>                     |add_client_context
+>>>>                     |cm_add_one
+>>>>                     |ib_register_mad_agent
+>>>>                     |ib_get_mad_port
+>>>>                     |__ib_get_mad_port
+>>>>                     |list_for_each_entry(entry, &ib_mad_port_list, port_list)
+>>>>                     |return NULL
+>>>>                     |up_read(&devices_rwsem)
+>>>>                     |
+>>>> add_client_context|
+>>>> ib_mad_init_device|
+>>>> ib_mad_port_open  |
+>>>> list_add_tail(&port_priv->port_list, &ib_mad_port_list)
+>>>> up_read(&devices_rwsem)
+>>>>                     |
+>>>
+>>> How is this stack possible?
+>>>
+>>> ib_register_device() is called by drivers and happens much later than ib_cm_init().
+>>>
+>>
+>> I've caught the stack and err log as follows, ib_mad_init_device() called after
 > 
-> So, there seems no movement on the issue.
 > 
-> Borislav, could you share your view on the bigger picture. I can try to
-> implement it.
+> ib_mad_init_device != ib_register_device
+> 
+> You mentioned ib_register_device() in your callstack, while you caught ib_mad_init_device().
+> 
 
-cc_platform_has() gets used in arch-agnostic code.
+ib_register_device() is called by mlx5_ib driver, and then ib_register_device()
+calls ib_mad_init_device().
 
-x86 code can use cc_platform_has() or X86_FEATURE as TDX already does.
-In the AMD case, cc_platform_has() makes more sense because we need
-sev_status which is much earlier there than X86_FEATURE.
+Thanks
 
-So the only thing to "implement" is to check vendor in
-sev_map_percpu_data() as mentioned above.
+> Thanks
+> 
+>> cm_add_one().
+>>
+>> [   98.281786] CPU: 18 PID: 30079 Comm: modprobe Kdump: loaded
+>> [   98.281787] Call Trace:
+>> [   98.281790]  dump_stack+0x71/0xab
+>> [   98.281805]  ib_register_mad_agent+0x1c6/0x27f0 [ib_core]
+>> [   98.281840]  cm_add_one+0x4b0/0x9d0 [ib_cm]
+>> [   98.281865]  add_client_context+0x2b9/0x380 [ib_core]
+>> [   98.281890]  ib_register_client+0x22a/0x2a0 [ib_core]
+>> [   98.281908]  __init_backport+0x12f/0x1000 [ib_cm]
+>> [   98.281912]  do_one_initcall+0x87/0x2e2
+>> [   98.281926]  do_init_module+0x1c3/0x5f7
+>> [   98.281928]  load_module+0x4fe0/0x68d0
+>> [   98.281945]  __do_sys_finit_module+0x14d/0x180
+>> [   98.281952]  do_syscall_64+0xa0/0x370
+>> [   98.281957]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+>> [   98.281958] RIP: 0033:0x7f51d3a4373d
+>> [   98.281961] RSP: 002b:00007ffceb925938 EFLAGS: 00000202 ORIG_RAX: 0000000000000139
+>> [   98.281964] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f51d3a4373d
+>> [   98.281965] RDX: 0000000000000000 RSI: 0000000001636b70 RDI: 0000000000000003
+>> [   98.281966] RBP: 00007ffceb925950 R08: 0000000000000000 R09: 0000000001636b70
+>> [   98.281967] R10: 0000000000000003 R11: 0000000000000202 R12: 0000000000402410
+>> [   98.281968] R13: 00007ffceb926e60 R14: 0000000000000000 R15: 0000000000000000
+>>
+>> [   98.281977] infiniband mlx5_1: ib_register_mad_agent: Invalid port 1
+>>
+>> [   98.349040] CPU: 38 PID: 29896 Comm: modprobe Kdump: loaded
+>> [   98.349043] Call Trace:
+>> [   98.349053]  dump_stack+0x71/0xab
+>> [   98.349076]  ib_register_mad_agent+0x1c6/0x27f0 [ib_core]
+>> [   98.349149]  ib_agent_port_open+0xe2/0x2d0 [ib_core]
+>> [   98.349164]  ib_mad_init_device+0x818/0x1d70 [ib_core]
+>> [   98.349197]  add_client_context+0x2b9/0x380 [ib_core]
+>> [   98.349221]  enable_device_and_get+0x1ab/0x340 [ib_core]
+>> [   98.349292]  ib_register_device+0xcbf/0xfd0 [ib_core]
+>> [   98.349355]  __mlx5_ib_add+0x44/0xf0 [mlx5_ib]
+>> [   98.349404]  mlx5_add_device+0xc3/0x280 [mlx5_core]
+>> [   98.349434]  mlx5_register_interface+0x109/0x190 [mlx5_core]
+>> [   98.349442]  do_one_initcall+0x87/0x2e2
+>> [   98.349460]  do_init_module+0x1c3/0x5f7
+>> [   98.349462]  load_module+0x4fe0/0x68d0
+>> [   98.349481]  __do_sys_init_module+0x1f9/0x220
+>> [   98.349486]  do_syscall_64+0xa0/0x370
+>> [   98.349492]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+>> [   98.349494] RIP: 0033:0x7fbc327faa7a
+>> [   98.349500] RSP: 002b:00007fff890df7f8 EFLAGS: 00000202 ORIG_RAX: 00000000000000af
+>> [   98.349502] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fbc327faa7a
+>> [   98.349503] RDX: 00000000004250c0 RSI: 00000000001b0230 RDI: 00007fbc31919010
+>> [   98.349505] RBP: 00007fff890df860 R08: 00000000025045b0 R09: 0000000000000000
+>> [   98.349506] R10: 00000000001b0230 R11: 0000000000000202 R12: 0000000000402410
+>> [   98.349507] R13: 00007fff890e0cf0 R14: 0000000000000000 R15: 0000000000000000
+>>
+>> Thanks
+>>
+>>> Thanks
+>>>
+>>>>
+>>>> Fix it by using the devices_rwsem write semaphore to protect the mad_client
+>>>> init flow in enable_device_and_get().
+>>>>
+>>>> Fixes: d0899892edd0 ("RDMA/device: Provide APIs from the core code to help unregistration")
+>>>> Cc: Shifeng Li <lishifeng1992@126.com>
+>>>> Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
+>>>> ---
+>>>>    drivers/infiniband/core/device.c | 8 +-------
+>>>>    1 file changed, 1 insertion(+), 7 deletions(-)
+>>>>
+>>>> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+>>>> index 67bcea7a153c..85782786993d 100644
+>>>> --- a/drivers/infiniband/core/device.c
+>>>> +++ b/drivers/infiniband/core/device.c
+>>>> @@ -1315,12 +1315,6 @@ static int enable_device_and_get(struct ib_device *device)
+>>>>    	down_write(&devices_rwsem);
+>>>>    	xa_set_mark(&devices, device->index, DEVICE_REGISTERED);
+>>>> -	/*
+>>>> -	 * By using downgrade_write() we ensure that no other thread can clear
+>>>> -	 * DEVICE_REGISTERED while we are completing the client setup.
+>>>> -	 */
+>>>> -	downgrade_write(&devices_rwsem);
+>>>> -
+>>>>    	if (device->ops.enable_driver) {
+>>>>    		ret = device->ops.enable_driver(device);
+>>>>    		if (ret)
+>>>> @@ -1337,7 +1331,7 @@ static int enable_device_and_get(struct ib_device *device)
+>>>>    	if (!ret)
+>>>>    		ret = add_compat_devs(device);
+>>>>    out:
+>>>> -	up_read(&devices_rwsem);
+>>>> +	up_write(&devices_rwsem);
+>>>>    	return ret;
+>>>>    }
+>>>> -- 
+>>>> 2.25.1
+>>>>
+>>>>
+>>>
+>>
+>>
+> 
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
