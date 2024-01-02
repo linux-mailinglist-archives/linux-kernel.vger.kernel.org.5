@@ -1,81 +1,81 @@
-Return-Path: <linux-kernel+bounces-14940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C9928224C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:33:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73EE08224C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:33:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F12151C22D13
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:33:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC9CA2846AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8947B1772F;
-	Tue,  2 Jan 2024 22:33:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8949B1799F;
+	Tue,  2 Jan 2024 22:33:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dx0KaHAe"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="drZpLk1E"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78E9B17722
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 22:33:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E251798E
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 22:33:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704234782;
+	s=mimecast20190719; t=1704234796;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=292EYekmNs4JFV4FXHbDVJ2CzL6/2QZNvmkFFwcUOVs=;
-	b=dx0KaHAeZnvuUSN88tPI+Z1VC+PTGAv45yt3uCHp06sxfHiwhh/tPBT90lJBOAq17qX+EK
-	hhx8c0zO9JzcMsejixKfmfFliUeDCG3M6MbrfTWv4/TN+sDscflTEji05hUNorZTWEA+ES
-	O6MqKOFKXkHgwwnBi025fJVJJDMJsOo=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=InpOfT2E7Tqmz/iJUFZq/GV7WFjIogIQCOUR5Q83uaQ=;
+	b=drZpLk1Eqy9naXLC9bMTsEYaZ0FHL+5+jMnguk6sNH3FH4v1TpdH5eW2l4KJA1V8uSJmuf
+	DtDQRMBjG55/hyIgVCmF7eKbvQ+Rs3VMieqieov6lge+UdBULhj2YFjl+KDPRbNQyIQHeU
+	c6Axzco6SByeM+PqPiM4tKzSz+/B/no=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-685-RNAbnuK4MAi4rH_0Yfxh2g-1; Tue, 02 Jan 2024 17:33:00 -0500
-X-MC-Unique: RNAbnuK4MAi4rH_0Yfxh2g-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3368c707b03so6657028f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 14:33:00 -0800 (PST)
+ us-mta-516-XdNZTOH0MriiI6NNVO1_iQ-1; Tue, 02 Jan 2024 17:33:12 -0500
+X-MC-Unique: XdNZTOH0MriiI6NNVO1_iQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40d3c533083so95665435e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 14:33:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704234779; x=1704839579;
+        d=1e100.net; s=20230601; t=1704234790; x=1704839590;
         h=content-transfer-encoding:mime-version:user-agent:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=292EYekmNs4JFV4FXHbDVJ2CzL6/2QZNvmkFFwcUOVs=;
-        b=rkV2PM/SvmQ3Nn4VYJkBr7ZjcLTGOvvThz3oVGCYyMCxg2ivFpW2g78zw/DgA6cR1J
-         HivGfG/n1TEFcPty9IqQHJqBWmjd0kMBUu1OZgzl0KRYQeZvpG97ffA9Lp/yQFFZWZJg
-         5KLN3FB0z8XW2sFd9E9IE92fYSKnOkH6XbIkf651O8uMXY9hvUB9rXEwV40jUcrxUMKy
-         la4BCAqdjDyqeyrvG5NPoH/Qi19SNwpZEGRGzxR6UdBmrBX/CJ/Q9qC9xWP2bZ4eB1PO
-         8GJKllHSioIXl/J8FUxVLxbox+huYGvl2KsRw6qqBEecskHXR+ksH7wiM7TVeRX49AFK
-         Ky5w==
-X-Gm-Message-State: AOJu0YxPM3WE45tUBFk6U4eghgxqTV9KTPqoJxAHQWNWkk2mXrBlucQl
-	xby/gSoUNH1UACQXB/LW2XMssbbUrq74WfEc8Wz9qeyyzdngXCg/t+LhzzptyrG6eyQ7sKKmkoo
-	yEql9JzeEzm20I4v7uUmY0aHycAkDVReA
-X-Received: by 2002:a5d:40c8:0:b0:336:6eba:b0ff with SMTP id b8-20020a5d40c8000000b003366ebab0ffmr9052061wrq.94.1704234779559;
-        Tue, 02 Jan 2024 14:32:59 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHGnt3hTwcUmqBp3itxNA3pVpP/rkblmR2Q8SKgX/qEhxCsTHHbd5/xN8eNOIoUVll5LtIx0g==
-X-Received: by 2002:a5d:40c8:0:b0:336:6eba:b0ff with SMTP id b8-20020a5d40c8000000b003366ebab0ffmr9052052wrq.94.1704234779204;
-        Tue, 02 Jan 2024 14:32:59 -0800 (PST)
+        bh=InpOfT2E7Tqmz/iJUFZq/GV7WFjIogIQCOUR5Q83uaQ=;
+        b=jxIuxONOb/ba7cltelgE4bcfWWDXOFAfuQWt6L6M/jeaK4YQe3aurRp0LvFeJl0+hf
+         Le2XUCsKzrziBruelYlbZCf95e5W5Z1jyW6Z226pusTDsR4MCfiV3/3/fgMd/7qfphXW
+         8r2p3z6pbIx8Oo7AwPM8oSo7YdAT8TZRr8LgUsdrgFzXyaMoHzNq6PpQM/QRAlLNHl3i
+         vO0VbVi+o8WOp8IOmulgQsSZM92Vq6mHgsYIB24W9epQbx+h2AHLKvF4MKQzncGlOTmw
+         HVKTd6KH00Gk13qCmYHBITchs0VBRAFaB2t5U8T726UhW9IYxasEB7ocYEqFJ+btue+E
+         w2vA==
+X-Gm-Message-State: AOJu0YxFW1z8upV9mC7Ge4xgYxJtd44xosBXPwlldaBdlT+W7caARitr
+	wMNoJ/0STWagsx2ZdVjmQ3WbjfD7qH+b9pSRV6EMSD4Qdd/gpwBieG9GhwFqfc0TxJFyE3EEYUC
+	1npoPYRJwDfCMv/OVdftA/O/OlTLPoEh7
+X-Received: by 2002:a05:600c:ce:b0:40d:87c6:5e9c with SMTP id u14-20020a05600c00ce00b0040d87c65e9cmr1987518wmm.181.1704234790129;
+        Tue, 02 Jan 2024 14:33:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFoRoaDqBAgyBHODiEey6e4bbsAjQYmWR5eN6/aHsnYO/Lfx5lRPxLMrx6jq8/V3SSd+YzUqQ==
+X-Received: by 2002:a05:600c:ce:b0:40d:87c6:5e9c with SMTP id u14-20020a05600c00ce00b0040d87c65e9cmr1987513wmm.181.1704234789917;
+        Tue, 02 Jan 2024 14:33:09 -0800 (PST)
 Received: from starship ([147.235.223.38])
-        by smtp.gmail.com with ESMTPSA id q28-20020adfab1c000000b0033690139ea5sm27133785wrc.44.2024.01.02.14.32.58
+        by smtp.gmail.com with ESMTPSA id m1-20020a05600c4f4100b0040d5b849f38sm370659wmq.0.2024.01.02.14.33.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 14:32:58 -0800 (PST)
-Message-ID: <a49438920b228a98ef65b6136b3cb93faf144636.camel@redhat.com>
-Subject: Re: [PATCH v8 06/26] x86/fpu/xstate: Create guest fpstate with
- guest specific config
+        Tue, 02 Jan 2024 14:33:09 -0800 (PST)
+Message-ID: <55f330aee9267a0ab7bb7dfbbd9ca0f41e59eaae.camel@redhat.com>
+Subject: Re: [PATCH v8 07/26] x86/fpu/xstate: Warn if kernel dynamic
+ xfeatures detected in normal fpstate
 From: Maxim Levitsky <mlevitsk@redhat.com>
 To: Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com, 
 	pbonzini@redhat.com, dave.hansen@intel.com, kvm@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
 Cc: peterz@infradead.org, chao.gao@intel.com, rick.p.edgecombe@intel.com, 
 	john.allen@amd.com
-Date: Wed, 03 Jan 2024 00:32:57 +0200
-In-Reply-To: <20231221140239.4349-7-weijiang.yang@intel.com>
+Date: Wed, 03 Jan 2024 00:33:07 +0200
+In-Reply-To: <20231221140239.4349-8-weijiang.yang@intel.com>
 References: <20231221140239.4349-1-weijiang.yang@intel.com>
-	 <20231221140239.4349-7-weijiang.yang@intel.com>
+	 <20231221140239.4349-8-weijiang.yang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 Precedence: bulk
@@ -87,111 +87,39 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
 On Thu, 2023-12-21 at 09:02 -0500, Yang Weijiang wrote:
-> Use fpu_guest_cfg to calculate guest fpstate settings, open code for
-> __fpstate_reset() to avoid using kernel FPU config.
+> Kernel dynamic xfeatures now are __ONLY__ enabled for guest fpstate, i.e.,
+> never for normal kernel fpstate. The bits are added when guest FPU config
+> is initialized. Guest fpstate is allocated with fpstate->is_guest set to
+> %true.
 > 
-> Below configuration steps are currently enforced to get guest fpstate:
-> 1) Kernel sets up guest FPU settings in fpu__init_system_xstate().
-> 2) User space sets vCPU thread group xstate permits via arch_prctl().
-> 3) User space creates guest fpstate via __fpu_alloc_init_guest_fpstate()
->    for vcpu thread.
-> 4) User space enables guest dynamic xfeatures and re-allocate guest
->    fpstate.
-> 
-> By adding kernel dynamic xfeatures in above #1 and #2, guest xstate area
-> size is expanded to hold (fpu_kernel_cfg.default_features | kernel dynamic
-> xfeatures | user dynamic xfeatures), then host xsaves/xrstors can operate
-> for all guest xfeatures.
-> 
-> The user_* fields remain unchanged for compatibility with KVM uAPIs.
+> For normal fpstate, the bits should have been removed when initializes
+> kernel FPU config settings, WARN_ONCE() if kernel detects normal fpstate
+> xfeatures contains kernel dynamic xfeatures before executes xsaves.
 > 
 > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 > ---
->  arch/x86/kernel/fpu/core.c | 47 ++++++++++++++++++++++++++++++--------
->  1 file changed, 37 insertions(+), 10 deletions(-)
+>  arch/x86/kernel/fpu/xstate.h | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-> index 976f519721e2..0e0bf151418f 100644
-> --- a/arch/x86/kernel/fpu/core.c
-> +++ b/arch/x86/kernel/fpu/core.c
-> @@ -250,8 +250,6 @@ void fpu_reset_from_exception_fixup(void)
->  }
+> diff --git a/arch/x86/kernel/fpu/xstate.h b/arch/x86/kernel/fpu/xstate.h
+> index 3518fb26d06b..83ebf1e1cbb4 100644
+> --- a/arch/x86/kernel/fpu/xstate.h
+> +++ b/arch/x86/kernel/fpu/xstate.h
+> @@ -185,6 +185,9 @@ static inline void os_xsave(struct fpstate *fpstate)
+>  	WARN_ON_FPU(!alternatives_patched);
+>  	xfd_validate_state(fpstate, mask, false);
 >  
->  #if IS_ENABLED(CONFIG_KVM)
-> -static void __fpstate_reset(struct fpstate *fpstate, u64 xfd);
-> -
->  static void fpu_init_guest_permissions(struct fpu_guest *gfpu)
->  {
->  	struct fpu_state_perm *fpuperm;
-> @@ -272,25 +270,54 @@ static void fpu_init_guest_permissions(struct fpu_guest *gfpu)
->  	gfpu->perm = perm & ~FPU_GUEST_PERM_LOCKED;
->  }
->  
-> -bool fpu_alloc_guest_fpstate(struct fpu_guest *gfpu)
-> +static struct fpstate *__fpu_alloc_init_guest_fpstate(struct fpu_guest *gfpu)
->  {
-> +	bool compacted = cpu_feature_enabled(X86_FEATURE_XCOMPACTED);
-> +	unsigned int gfpstate_size, size;
->  	struct fpstate *fpstate;
-> -	unsigned int size;
->  
-> -	size = fpu_user_cfg.default_size + ALIGN(offsetof(struct fpstate, regs), 64);
-> +	/*
-> +	 * fpu_guest_cfg.default_size is initialized to hold all enabled
-> +	 * xfeatures except the user dynamic xfeatures. If the user dynamic
-> +	 * xfeatures are enabled, the guest fpstate will be re-allocated to
-> +	 * hold all guest enabled xfeatures, so omit user dynamic xfeatures
-> +	 * here.
-> +	 */
-> +	size = fpu_guest_cfg.default_size +
-> +	       ALIGN(offsetof(struct fpstate, regs), 64);
+> +	WARN_ON_FPU(!fpstate->is_guest &&
+> +		    (mask & XFEATURE_MASK_KERNEL_DYNAMIC));
 > +
->  	fpstate = vzalloc(size);
->  	if (!fpstate)
-> -		return false;
-> +		return NULL;
-> +	/*
-> +	 * Initialize sizes and feature masks, use fpu_user_cfg.*
-> +	 * for user_* settings for compatibility of exiting uAPIs.
-> +	 */
-> +	fpstate->size		= gfpstate_size;
-> +	fpstate->xfeatures	= fpu_guest_cfg.default_features;
-> +	fpstate->user_size	= fpu_user_cfg.default_size;
-> +	fpstate->user_xfeatures	= fpu_user_cfg.default_features;
-> +	fpstate->xfd		= 0;
+>  	XSTATE_XSAVE(&fpstate->regs.xsave, lmask, hmask, err);
 >  
-> -	/* Leave xfd to 0 (the reset value defined by spec) */
-> -	__fpstate_reset(fpstate, 0);
->  	fpstate_init_user(fpstate);
->  	fpstate->is_valloc	= true;
->  	fpstate->is_guest	= true;
->  
->  	gfpu->fpstate		= fpstate;
-> -	gfpu->xfeatures		= fpu_user_cfg.default_features;
-> -	gfpu->perm		= fpu_user_cfg.default_features;
-> +	gfpu->xfeatures		= fpu_guest_cfg.default_features;
-> +	gfpu->perm		= fpu_guest_cfg.default_features;
-> +
-> +	return fpstate;
-> +}
-> +
-> +bool fpu_alloc_guest_fpstate(struct fpu_guest *gfpu)
-> +{
-> +	struct fpstate *fpstate;
-> +
-> +	fpstate = __fpu_alloc_init_guest_fpstate(gfpu);
-> +
-> +	if (!fpstate)
-> +		return false;
->  
->  	/*
->  	 * KVM sets the FP+SSE bits in the XSAVE header when copying FPU state
+>  	/* We should never fault when copying to a kernel buffer: */
 
 Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
 Best regards,
 	Maxim Levitsky
-
-
 
 
