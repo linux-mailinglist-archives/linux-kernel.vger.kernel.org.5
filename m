@@ -1,81 +1,84 @@
-Return-Path: <linux-kernel+bounces-14423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F833821CD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:39:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A44F9821CD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:39:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAD50B21E07
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:39:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C88221C221A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09063101D5;
-	Tue,  2 Jan 2024 13:35:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5578014010;
+	Tue,  2 Jan 2024 13:36:30 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AC6CFBF6
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 13:35:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9215212E60
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 13:36:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b7fef9ef2aso1203400539f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 05:35:17 -0800 (PST)
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bad62322f0so897107439f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 05:36:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704202516; x=1704807316;
+        d=1e100.net; s=20230601; t=1704202587; x=1704807387;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=hEPAjr2Ytd+XVdWmKta/TmOX+0CoWkrwQ31hsDPS7O8=;
-        b=cGciW9DvU6XF/IyQtfTvwd1JvrzbpKLhKUDP+SziHvEC81DMNnt90sbLgcFTGCZJLQ
-         y+r0bq9Q5USOMGG0hZn+5Xo39YTTobXbBRtiDxpmWmAwDgSUMr4/LY8JoUZlzM2qznys
-         P0e8vHu4FYWc84rnuCnJQReaJtsm6kMiTj9he7LMDbYX0z5uxBHj+Q60WJBgGdpfh+dw
-         TOeQvLQ93GgA9Lh2VP3k3AuUyquUyO0gCzl33JQn7WrgZ3ZVqXFOuFw7p3ZCAGsCT0ou
-         T7Zc6U+jshyUPuDdJiILvQJg9KYOMUhmzqcz/5taa/FZEVpsFkDtjrJdjog21mtwrDju
-         zgqw==
-X-Gm-Message-State: AOJu0YwKCbE/tPc1Jfz5QASOcb+0ckHDOYTL3r9t6YHRbHv4aHkEPAhd
-	r/HI6WJynzn9nnXy9abXELeIbwAVtu3ovmX738zTO4yzhIMS
-X-Google-Smtp-Source: AGHT+IFgPKX0w7t+hcn0UpaleoH/hrZqqyklAqoisSpD6EBcrA4ukjJOBHKHPP89RSoNw8w3udtMT7TB3j5Fp5qCRLlrkr6yMx0U
+        bh=NGViDqpHpM/PgMAM6SCNiKxlip1nc59Qmx/Gy1A7u2s=;
+        b=npTnGfbk01YV9o0dmp3oGAlErkvRpCtxS505dMDi3uR2QW+14xoRCRfoF0YaFvn/QX
+         9+veGri27246JjbhQjkdHupA18R80utMI93tQSpshlFnLJJgmWHUlxkYY4Sy9vfT4R95
+         cylhez+w7iqlE1Ca2uvdRIigPlnTaZLK7Cdq0g2YSF/rqPLg4g5IFVZ30W0+szfHlroC
+         3ScQ6CCo6kmL6Ir6aDmkXjLKo+eNqq3LP5u6wGZ3w9QGBALG1wL8fZ/TjFzGc0A32Oco
+         Sdvev2atBmzrnl1csD8XWaAZvjJxZHuuaUy+bQ9EHuFtQ+5qZ5wCfMSwNby5DbVsCgdH
+         YFGA==
+X-Gm-Message-State: AOJu0YxRgZEZSNwgbFL7/Erv9EuOGTTi5YVs6euFeYXT12Ulf84IPiKh
+	xlZLDxw1qyZkMkn1cTNfNAp6ZPQGbLywD22g+71hF7qo/OcR
+X-Google-Smtp-Source: AGHT+IGO5cZ49DcsJTUMBX/0mmakCAVYPbZh16J2Cupgyu97CAh2ZeWEzifLqxwh03tXNJ5lL+PspKorGPR+blyQZ/5Ct7CJmfJf
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2a44:b0:7ba:9c66:6d11 with SMTP id
- k4-20020a0566022a4400b007ba9c666d11mr734766iov.1.1704202516630; Tue, 02 Jan
- 2024 05:35:16 -0800 (PST)
-Date: Tue, 02 Jan 2024 05:35:16 -0800
+X-Received: by 2002:a05:6e02:1aa6:b0:35f:535a:9c64 with SMTP id
+ l6-20020a056e021aa600b0035f535a9c64mr2057692ilv.3.1704202587794; Tue, 02 Jan
+ 2024 05:36:27 -0800 (PST)
+Date: Tue, 02 Jan 2024 05:36:27 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a11763060df691a7@google.com>
-Subject: [syzbot] Monthly nilfs report (Jan 2024)
-From: syzbot <syzbot+list18d7edf8faff313be6b2@syzkaller.appspotmail.com>
-To: konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000def411060df69549@google.com>
+Subject: [syzbot] Monthly kernfs report (Jan 2024)
+From: syzbot <syzbot+list417f71c53317b3ba7ddd@syzkaller.appspotmail.com>
+To: gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Hello nilfs maintainers/developers,
+Hello kernfs maintainers/developers,
 
-This is a 31-day syzbot report for the nilfs subsystem.
+This is a 31-day syzbot report for the kernfs subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/nilfs
+https://syzkaller.appspot.com/upstream/s/kernfs
 
-During the period, 1 new issues were detected and 1 were fixed.
-In total, 7 issues are still open and 37 have been fixed so far.
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 10 issues are still open and 20 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref Crashes Repro Title
-<1> 444     Yes   kernel BUG at fs/buffer.c:LINE!
-                  https://syzkaller.appspot.com/bug?extid=cfed5b56649bddf80d6e
-<2> 15      No    KMSAN: uninit-value in nilfs_add_checksums_on_logs (2)
-                  https://syzkaller.appspot.com/bug?extid=47a017c46edb25eff048
-<3> 6       Yes   kernel BUG in end_buffer_async_write
-                  https://syzkaller.appspot.com/bug?extid=5c04210f7c7f897c1e7f
-<4> 1       No    possible deadlock in nilfs_dirty_inode (2)
-                  https://syzkaller.appspot.com/bug?extid=903350d47ddb4cbb7f6f
+<1> 1669    Yes   possible deadlock in input_event (2)
+                  https://syzkaller.appspot.com/bug?extid=d4c06e848a1c1f9f726f
+<2> 212     Yes   WARNING in kernfs_remove_by_name_ns (3)
+                  https://syzkaller.appspot.com/bug?extid=93cbdd0ab421adc5275d
+<3> 50      Yes   KASAN: use-after-free Read in kernfs_next_descendant_post (2)
+                  https://syzkaller.appspot.com/bug?extid=6bc35f3913193fe7f0d3
+<4> 37      Yes   KASAN: use-after-free Read in kernfs_add_one
+                  https://syzkaller.appspot.com/bug?extid=ef17b5b364116518fd65
+<5> 31      No    possible deadlock in lookup_slow (3)
+                  https://syzkaller.appspot.com/bug?extid=65459fd3b61877d717a3
+<6> 3       Yes   stack segment fault in __stack_depot_save
+                  https://syzkaller.appspot.com/bug?extid=1f564413055af2023f17
 
 ---
 This report is generated by a bot. It may contain errors.
