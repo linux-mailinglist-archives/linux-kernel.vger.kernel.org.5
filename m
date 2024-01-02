@@ -1,135 +1,107 @@
-Return-Path: <linux-kernel+bounces-14755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FAD682219D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:01:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A6D28221A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:02:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 350971F23196
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:01:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30EA71C2061D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:02:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD6817738;
-	Tue,  2 Jan 2024 18:59:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6571A15AF8;
+	Tue,  2 Jan 2024 19:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=grimler.se header.i=@grimler.se header.b="ZJazA1ZU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC09D168DF;
-	Tue,  2 Jan 2024 18:59:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=v0yd.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=v0yd.nl
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4T4Mbg1nPPz9sp4;
-	Tue,  2 Jan 2024 19:59:43 +0100 (CET)
-From: =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
-To: Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-	linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH 5/5] Bluetooth: hci_event: Try reconnecting on more kinds of errors
-Date: Tue,  2 Jan 2024 19:59:32 +0100
-Message-ID: <20240102185933.64179-6-verdre@v0yd.nl>
-In-Reply-To: <20240102185933.64179-1-verdre@v0yd.nl>
-References: <20240102185933.64179-1-verdre@v0yd.nl>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B997915AE7
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 19:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=grimler.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=grimler.se
+Date: Tue, 2 Jan 2024 20:00:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=grimler.se; s=key1;
+	t=1704222035;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Mwds48W+uJe8Gd27h04WTqGUpgnvUXE+fjmem6lYAIc=;
+	b=ZJazA1ZUjzhiIVOoE+8pTI06pd63mmujMW2bwuVQG7tbVARXW34rYlgc74XIvED+6dJXH3
+	ViNQIr1Kdt5T2zfYPYOiCb95Q9dnaQjQ68GSQFWvwr527nfSDmo/a8Lqt+Kjsz0AuuFh3r
+	OwJFKpqlwjZndyeH2fbol0Y0Upa/7c8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Henrik Grimler <henrik@grimler.se>
+To: Artur Weber <aweber.kernel@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 2/2] drm/panel: samsung-s6d7aa0: drop
+ DRM_BUS_FLAG_DE_HIGH for lsl080al02
+Message-ID: <20240102190029.GA89325@grimlerstat.localdomain>
+References: <20240101-tab3-display-fixes-v1-0-887ba4dbd16b@gmail.com>
+ <20240101-tab3-display-fixes-v1-2-887ba4dbd16b@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4T4Mbg1nPPz9sp4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240101-tab3-display-fixes-v1-2-887ba4dbd16b@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-While some hardware seems to return "HCI Command Disallowed" errors when
-trying to connect to too many devices at once, other hardware (eg. the
-BCM4378 found in M1 macbooks) returns "HCI Hardware Failure" in this case.
+Hi Artur,
 
-And the Marvell 88W8897 in various Microsoft Surface devices behaves
-different again: Here the "HCI Create Connection" succeeds, but later
-a "HCI Connection Complete" event with status "Rejected Limited Resources"
-comes in.
+On Mon, Jan 01, 2024 at 10:00:16PM +0100, Artur Weber wrote:
+> It turns out that I had misconfigured the device I was using the panel
+> with; the bus data polarity is not high for this panel, I had to change
+> the config on the display controller's side.
+> 
+> Fix the panel config to properly reflect its accurate settings.
+> 
+> Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
 
-Handle all these cases as expected by userspace and reuse the existing
-BT_CONNECT2 logic to try "HCI Create Connection" again after the ongoing
-connection attempts have been completed.
+I guess it deserves a Fixes tag:
+Fixes: 6810bb390282 ("drm/panel: Add Samsung S6D7AA0 panel controller driver")
 
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
----
- include/net/bluetooth/hci.h |  1 +
- net/bluetooth/hci_event.c   | 26 +++++++++++++++++++++++---
- 2 files changed, 24 insertions(+), 3 deletions(-)
+Best regards,
+Henrik Grimler
 
-diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-index fef723afd..23890f53e 100644
---- a/include/net/bluetooth/hci.h
-+++ b/include/net/bluetooth/hci.h
-@@ -637,6 +637,7 @@ enum {
- 
- /* ---- HCI Error Codes ---- */
- #define HCI_ERROR_UNKNOWN_CONN_ID	0x02
-+#define HCI_ERROR_HARDWARE_FAILURE	0x03
- #define HCI_ERROR_AUTH_FAILURE		0x05
- #define HCI_ERROR_PIN_OR_KEY_MISSING	0x06
- #define HCI_ERROR_MEMORY_EXCEEDED	0x07
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 1376092c5..46b6d7e27 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -2323,13 +2323,14 @@ static void hci_cs_create_conn(struct hci_dev *hdev, __u8 status)
- 
- 	if (status) {
- 		if (conn && conn->state == BT_CONNECT) {
--			/* If the request failed with "Command Disallowed", the
-+			/* If the request failed with a certain status, the
- 			 * card is either using all its available "slots" for
- 			 * attempting new connections, or it's currently
- 			 * doing an HCI Inquiry. In these cases we'll try to
- 			 * do the "Create Connection" request again later.
- 			 */
--			if (status == HCI_ERROR_COMMAND_DISALLOWED) {
-+			if (status == HCI_ERROR_COMMAND_DISALLOWED ||
-+			    status == HCI_ERROR_HARDWARE_FAILURE) {
- 				conn->state = BT_CONNECT2;
- 
- 				if (!hci_conn_hash_lookup_state(hdev, ACL_LINK, BT_CONNECT) &&
-@@ -3254,7 +3255,26 @@ static void hci_conn_complete_evt(struct hci_dev *hdev, void *data,
- 
- done:
- 	if (status) {
--		hci_conn_failed(conn, status);
-+		if (status == HCI_ERROR_REJ_LIMITED_RESOURCES) {
-+			conn->state = BT_CONNECT2;
-+
-+			if (!hci_conn_hash_lookup_state(hdev, ACL_LINK, BT_CONNECT) &&
-+			    !test_bit(HCI_INQUIRY, &hdev->flags)) {
-+				bt_dev_err(hdev,
-+					   "\"Connect Complete\" event with error "
-+					   "(0x%2.2x) indicating to try again, but "
-+					   "there's no concurrent \"Create "
-+					   "Connection\" nor an ongoing inquiry",
-+					   status);
-+
-+				hci_conn_failed(conn, status);
-+			}
-+
-+			hci_dev_unlock(hdev);
-+			return;
-+		} else {
-+			hci_conn_failed(conn, status);
-+		}
- 	} else if (ev->link_type == SCO_LINK) {
- 		switch (conn->setting & SCO_AIRMODE_MASK) {
- 		case SCO_AIRMODE_CVSD:
--- 
-2.43.0
-
+> ---
+>  drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c b/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c
+> index ea5a85779382..f23d8832a1ad 100644
+> --- a/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c
+> +++ b/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c
+> @@ -309,7 +309,7 @@ static const struct s6d7aa0_panel_desc s6d7aa0_lsl080al02_desc = {
+>  	.off_func = s6d7aa0_lsl080al02_off,
+>  	.drm_mode = &s6d7aa0_lsl080al02_mode,
+>  	.mode_flags = MIPI_DSI_MODE_VSYNC_FLUSH | MIPI_DSI_MODE_VIDEO_NO_HFP,
+> -	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
+> +	.bus_flags = 0,
+>  
+>  	.has_backlight = false,
+>  	.use_passwd3 = false,
+> 
+> -- 
+> 2.43.0
+> 
+> 
 
