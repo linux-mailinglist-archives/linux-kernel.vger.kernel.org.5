@@ -1,126 +1,127 @@
-Return-Path: <linux-kernel+bounces-14344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90093821BA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:31:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 79362821BA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:32:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BFC61F210D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:31:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E23A1F229A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A6EBFBE1;
-	Tue,  2 Jan 2024 12:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22561FC08;
+	Tue,  2 Jan 2024 12:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZJgMbwiw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DvdeHMIc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4037AF9E6
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 12:31:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704198678;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3pXm1eo2+cSSlRCUx7/WK9p72yxfZPBKBwAhmbPJUMo=;
-	b=ZJgMbwiwzYaqmDId4sEwhwIXsPt/MRZ8Tl/TXPRhJhFQ3r/xVCr8eYHaNeFqnGgL4L3IaY
-	drl5/OQaB19Re2A0XBFrPWOQ9QjVdMJgNt7ixHrsa0MD8DqxecDBqUpaBNvaJtSVDOs942
-	V6AWp1NOU0cBlEnt/URL+F2C8QoqiRw=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-529-cI-2yqs1PzuesBmpV0-kTw-1; Tue, 02 Jan 2024 07:31:15 -0500
-X-MC-Unique: cI-2yqs1PzuesBmpV0-kTw-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a23365478e5so508925666b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 04:31:15 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08692FBEB;
+	Tue,  2 Jan 2024 12:31:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55569b59f81so5038530a12.1;
+        Tue, 02 Jan 2024 04:31:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704198681; x=1704803481; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IHPc3b2HWDj64ive1dxruS27O95C6egAy0HbP5aoRrw=;
+        b=DvdeHMIc4wrZkr7gWFy6/OQkuTGVtI9nKIAPbNdbqCKp4MD1ENgmy4rMd9oxonKkxt
+         tUxTbZ87Gj45sYV2VGKi+4zkAQjxgk+VkPLgS53/xqGh4ihtPnPO9y2MWiW22dlL55xo
+         Ad+CKttGp4qygdpqHk+uFwtz0puizCMXHfDz9NKFYOP8g6W4u/P3nGaIW4cfj1xZNNTI
+         mfu8Nr+HDpyfo26MI9bmakYBmm9UOx0EKVsIV06SIbtEn5xsfFfkJPOtoSYXCFP1Oak3
+         rEmCc3IKm8FOqtsUpQzmuXcaGIwEtwDD4MDTaRmsJwSYhjrh+K7gbyNUzEchmmxT++en
+         IrOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704198674; x=1704803474;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3pXm1eo2+cSSlRCUx7/WK9p72yxfZPBKBwAhmbPJUMo=;
-        b=Ko/sEeN4Bm7fWKp7Tabm5IswKGpWFD1L8ftF+wc0DmjIC5Tq43xKNzeChldLWhtPrF
-         XvXgItGN0e2nwQkov3SRGF6EzF0Ab2wMYbyOQCTT7BteqlMohPZReriZF0TdbE/2tlUn
-         FiTSbPg/lTTpJV/HhztiRaRJl1BV0MPkaHbSz4dGolstEOhzkbcKYllTa4bkUEbrg2aD
-         STjVyv+ddHanJqleVfxmEPFYVc/Mlk2B36s+93AZoXO75N3iC0hS8R/iHES2Kr6nBL7m
-         5EWiD7DdH1vSJW8dXp/11/hJVnknadZfQelvWFQJePBaGCNiN6Vf4ifWmVlak8jitPxD
-         KIAg==
-X-Gm-Message-State: AOJu0YxoYOKCWe+2iL8kG2PeAOXP+QQgkovRH7XxiiaA0I9VLep35jQx
-	K38SGGVPF9XXe3CFEktD41Iyb06SyJvHSg2Vcr2cTNRBPOFGfi4Qc3yTH+z7U0T8yQsRLknBFwy
-	oGZvExHO8y7CYw288DPDw7Tq9MtV+O5kDJdmRwXls
-X-Received: by 2002:a17:906:dffa:b0:a23:2762:e48b with SMTP id lc26-20020a170906dffa00b00a232762e48bmr7639238ejc.63.1704198674254;
-        Tue, 02 Jan 2024 04:31:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEQhmw/eDGvMUU+jSkGHAZ4e48rrwX5KtU/Tq6ha27grzHEuI2uh2bIV/ZGDpq8JjxvpIlOgg==
-X-Received: by 2002:a17:906:dffa:b0:a23:2762:e48b with SMTP id lc26-20020a170906dffa00b00a232762e48bmr7639233ejc.63.1704198673994;
-        Tue, 02 Jan 2024 04:31:13 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id i3-20020a1709061cc300b00a26a9593a68sm11169117ejh.76.2024.01.02.04.31.13
+        d=1e100.net; s=20230601; t=1704198681; x=1704803481;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IHPc3b2HWDj64ive1dxruS27O95C6egAy0HbP5aoRrw=;
+        b=aCnmdQEk28vtb8Y9oPd9SwfWDOw2VFRlA7XoUuzlmApKD9EiMM2Uu990cqizoYpjxj
+         nKSDfLUdczSOmoSDyDlKa96BOCKiyhGg/yQ545GExsMaVT3aeY7cwe6E7ks76pbX5A0T
+         GyGkJNIBK7ya1fMNYugTp6L95LOcy9xOJfW1j4tHI5EkJ1cCHHkBNkDHwL0X1YdRuxbJ
+         n7SgOHTIarkpgVf56Ys37ImS3NNRIC6cAMyyysy2We26pp5z03NPnjUc03K21f0eDc8L
+         7DvFP8ZZSb+Gkfg+qJ3ULWdEs0HHqZzCIko92LbdoGcGUWXyg8jWqSWhuquy1FXa/2d5
+         OkBQ==
+X-Gm-Message-State: AOJu0YyWHRxdWOS2ei1zde9YwvHxP/bxdIuUoc9FkNToBcTQxS1iEV6j
+	aSEFc7+ZwCeE3qSsd79dS7Y=
+X-Google-Smtp-Source: AGHT+IE5nNxiH4N4H3XYyngTXfeHYH+ZvpvSr+ySRPH/c+vEoh8xCXMubbqgN3AcbmawlQeXuAC8Xg==
+X-Received: by 2002:a50:d01a:0:b0:555:485:4e32 with SMTP id j26-20020a50d01a000000b0055504854e32mr7006623edf.10.1704198681288;
+        Tue, 02 Jan 2024 04:31:21 -0800 (PST)
+Received: from [127.0.0.1] ([89.205.132.224])
+        by smtp.gmail.com with ESMTPSA id dg24-20020a0564021d1800b00552cf686df3sm16033923edb.52.2024.01.02.04.31.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 04:31:13 -0800 (PST)
-Message-ID: <f572489d-cdd7-4582-a355-ba0a917cf1f8@redhat.com>
-Date: Tue, 2 Jan 2024 13:31:12 +0100
+        Tue, 02 Jan 2024 04:31:20 -0800 (PST)
+Date: Tue, 02 Jan 2024 13:31:21 +0100
+From: Eric Woudstra <ericwouds@gmail.com>
+To: Daniel Golle <daniel@makrotopia.org>
+CC: Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+ Heiner Kallweit <hkallweit1@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Frank Wunderlich <frank-w@public-files.de>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_RFC_net-next=5D_ne?= =?US-ASCII?Q?t=3A_phylink=3A_add_quirk_for_d?= =?US-ASCII?Q?isabling_in-band-status_for_mediatek_pcs_at_2500base-x?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <ZZPq8iMAv3eR9Gfk@pidgin.makrotopia.org>
+References: <20240102074326.1049179-1-ericwouds@gmail.com> <ZZPq8iMAv3eR9Gfk@pidgin.makrotopia.org>
+Message-ID: <D80A9D3C-6A86-4004-B575-46A980D8BA3B@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86/intel/pmc: make lnl_d3_fixup static
-Content-Language: en-US, nl
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, irenic.rajneesh@gmail.com
-Cc: david.e.box@intel.com, ilpo.jarvinen@linux.intel.com,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
- Abaci Robot <abaci@linux.alibaba.com>
-References: <20231229020808.55840-1-jiapeng.chong@linux.alibaba.com>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20231229020808.55840-1-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Jiapeng,
-
-On 12/29/23 03:08, Jiapeng Chong wrote:
-> The lnl_d3_fixup are not used outside the file lnl.c, so the
-> modification is defined as static.
-> 
-> drivers/platform/x86/intel/pmc/lnl.c:503:6: warning: no previous prototype for ‘lnl_d3_fixup’.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7811
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-
-Thank you for your patch, but this has already been fixed
-in the current version of the code, see:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/tree/?h=for-next
+Sorry,  I'm on Android for now and have trouble find a suitable cli=C3=ABnt=
+=2E This should have no http=2E
 
 
-Regards,
+Anyway, I see now, I had another version which I should have send:
 
-Hans
 
-> ---
->  drivers/platform/x86/intel/pmc/lnl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/intel/pmc/lnl.c b/drivers/platform/x86/intel/pmc/lnl.c
-> index 88b35931f5df..f18fdc68fd94 100644
-> --- a/drivers/platform/x86/intel/pmc/lnl.c
-> +++ b/drivers/platform/x86/intel/pmc/lnl.c
-> @@ -500,7 +500,7 @@ const struct pmc_reg_map lnl_socm_reg_map = {
->   * Set power state of select devices that do not have drivers to D3
->   * so that they do not block Package C entry.
->   */
-> -void lnl_d3_fixup(void)
-> +static void lnl_d3_fixup(void)
->  {
->  	pmc_core_set_device_d3(LNL_IPU_PCI_DEV);
->  	pmc_core_set_device_d3(LNL_NPU_PCI_DEV);
++=C2=A0 =C2=A0 =C2=A0 =C2=A0if (phylink_major_no_inband(pl, state->interfa=
+ce) && (!!pl->phydev)) {
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (pl->cur_link_a=
+n_mode =3D=3D MLO_AN_INBAND)
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0pl->cur_link_an_mode =3D MLO_AN_PHY;
++=C2=A0 =C2=A0 =C2=A0 =C2=A0}
++=C2=A0 =C2=A0 =C2=A0 =C2=A0else
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 /* restore mode if it wa=
+s changed before */
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 pl->cur_link_an_mode =3D=
+ pl->cfg_link_an_mode;
+
+
+
+To prevent it from toggling all the time=2E So I do need to spend some mor=
+e
+attention to this part, cause this also may not be 100% ok, if changing=C2=
+=A0
+phylink core would be done=2E
+
+
+
+
+The reason I do it in phylink, because of changing to MLO_AN_PHY when
+there is a PHY attached=2E mtk_eth_soc would not=2E Be aware of PHY attach=
+ed=2E
+
+So that's why I've opened the rfc=2E
+
+See which way to go with this in an acceptable way, preferably using MLO_A=
+N_PHY=2E
 
 
