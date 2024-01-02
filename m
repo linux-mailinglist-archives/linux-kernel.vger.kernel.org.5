@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-14071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03396821792
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C0A3B821793
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:05:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60EC7B21506
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:03:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CE31B21448
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3567E15D0;
-	Tue,  2 Jan 2024 06:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F88F15D5;
+	Tue,  2 Jan 2024 06:05:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="gZLGT/mW"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="J9A/j9Gz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2077.outbound.protection.outlook.com [40.107.223.77])
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2069.outbound.protection.outlook.com [40.107.220.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1268D15BD;
-	Tue,  2 Jan 2024 06:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB9A615C5;
+	Tue,  2 Jan 2024 06:04:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CAkCP7sv9fZZvAAXgnv59JXcTQ/Zo1cXqRsS6pMDbT6z6KrKq3pkY7S3O6q6yGTh1VMxhWLwCZdCpBKH8ATM7dzOSgtA01D69kz51TzBKDdQshHovrMjnCH7jnyxDCy0jwVPAXh+7IPYAoWI0MR95CP1scPs2OXBz7ba8aQE3n/+nW5lVeCiaWIQRimhmP1343PGZx6b1E9nqAZHd4ybLf8Qq1I9+wt59f0Fc50u6+J06J0Vsg448c5f+oO6tbGCvzVFx5u3jcupAZwOPAfMwSOUpJHTUJXFVqdQQDM4lZwyoWNf+kfk9rZ+qULEwM4hU2UYI7Mp/65AwKkt6uqzgw==
+ b=PcLmK6g4/TINLZrBaV73TzeOexHq0EyWUiXchE7hE4e1YOyaM6zor3XlkNwfuyjSsc5fWisLWHk4frqnQ0zWBdnisdEAMMMt97qzvS3xOXYuxI9WQ4qHMSN6jOK6fyoHHcwnFBGEa/2W9kum/tM1Cq6RG7/A0BBBg6kQGYfqP94DRmdVMH8CVyO1K5ygZ17ZSQkopJNV7NrehxPLKqO98eX/txlzFe1y9Nmn+GBrqywRQ1pm+ZKByzvUCvrO0qMqX3jT45JpLC7xyH2HhVnBeDXHHMxGbh4Tk8bmcGM9cJU+PNbopSw0a5ULjjQOCpjTDteWVOW1X8DliMUjWHpvNQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vQLMv0TBjQm7us/LaGvFyZIRMe1q+hi8pizCeO6Dmy8=;
- b=aYtlNX+Xn850APnpDzNhyMPQ+mP5Ggvxdatl7AUPPX9WgoAxfOCe8RR9ah/zrMf5/pru/EskhBjJYBxnYeRc9UH3+iQf1BZuyrDu9H/q9GSWjQFEDrR0oFKC5wPLl6gZ5QTIK95HjpNwk3fGPpz1MI3SONCXuJ6Z8Nxx9YtHzDKqbD/VbQEU5ZwisDveHuL/LGMgE3+XWshhkIYkyJrLQi+eOgTbwmm1XkPPyJYqAjXXHx5ikwVN/l3yXKgc8SKfAmI6EKVmQw3qhHlDZT0RtBgbJezg6YFeKPKmiozibSDyuWf60/wj6yjT8NYyxC45ZfXRfzmD9/P41p/tW11c1A==
+ bh=VPMy8QQOvVtzv+5yS5UcoCje3KI+shnpnly5qLELA8w=;
+ b=DJAxZBmGHrdF8jG8sezkXAxwpL6H7Tq8S0iy/hVcVUqDD626VTGDxlBuAVcf+TPzM5lc9CNZG/8LUH4qjnKp7kHjvWkyELwEPGVhjCWnwet4mp/5+n20NyyMsb+ImOK2JBAGKb76llPuXEulVRKod7bn+j1U+i2QBZwQvPbHiGUksPoM0XBC7G/KAq/vSpzJFGvSDAg8AykFDigUeFxXAiXSGqEsEg29ilqhPtos1Pv07yWxOOfqmBXJo1k5VMYD/TL+MlWBzY09bvo6Ko93DInKoeKG0ZlavpUetelE023f+seSfmrx9KpbDVH/KxQdd24J+i4hj6U5sJDmA31hXw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vQLMv0TBjQm7us/LaGvFyZIRMe1q+hi8pizCeO6Dmy8=;
- b=gZLGT/mWOrOniGHVPKJbkmgLIusjrYO4hVd+MNyetlXkRXMU2iBM2kLE8cHO5gh8nDnYqJg+Zo1Ec9OA22GcanXJ7wl1aT1u06CQHpgG/p0tqwCbNvxTpl3d+dJ/7loH2o+ggWDfC95fFbmsLhi9qXeL/lmb4LF+0H6RppoVnAk=
-Received: from MW4P222CA0002.NAMP222.PROD.OUTLOOK.COM (2603:10b6:303:114::7)
- by CYXPR12MB9425.namprd12.prod.outlook.com (2603:10b6:930:dc::5) with
+ bh=VPMy8QQOvVtzv+5yS5UcoCje3KI+shnpnly5qLELA8w=;
+ b=J9A/j9GzD52ZQguzBvp/cHlliiV1CDOwH0/iFwnKYQl2AvUTx/qIzPESfqaiXBpaBJFiwqsGZVklBRBuk7ts2wznnzo7L3btTGpJ6KiXKN5dQnY5eOmHXKLbCW+Hd7Sfjz+w9UBANDxlfQlPq7c9scXbDjO6VgEaJEPXC7qtIzw=
+Received: from MW4PR03CA0181.namprd03.prod.outlook.com (2603:10b6:303:b8::6)
+ by IA1PR12MB6260.namprd12.prod.outlook.com (2603:10b6:208:3e4::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Tue, 2 Jan
- 2024 06:03:37 +0000
-Received: from CO1PEPF000044FD.namprd21.prod.outlook.com
- (2603:10b6:303:114:cafe::16) by MW4P222CA0002.outlook.office365.com
- (2603:10b6:303:114::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.20 via Frontend
- Transport; Tue, 2 Jan 2024 06:03:37 +0000
+ 2024 06:04:55 +0000
+Received: from CO1PEPF000044F9.namprd21.prod.outlook.com
+ (2603:10b6:303:b8:cafe::fa) by MW4PR03CA0181.outlook.office365.com
+ (2603:10b6:303:b8::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25 via Frontend
+ Transport; Tue, 2 Jan 2024 06:04:55 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -54,13 +54,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044FD.mail.protection.outlook.com (10.167.241.203) with Microsoft
+ CO1PEPF000044F9.mail.protection.outlook.com (10.167.241.199) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.1 via Frontend Transport; Tue, 2 Jan 2024 06:03:36 +0000
+ 15.20.7181.1 via Frontend Transport; Tue, 2 Jan 2024 06:04:54 +0000
 Received: from sindhu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 2 Jan
- 2024 00:03:30 -0600
+ 2024 00:04:18 -0600
 From: Sandipan Das <sandipan.das@amd.com>
 To: <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC: <x86@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
@@ -70,9 +70,9 @@ CC: <x86@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
 	<bp@alien8.de>, <eranian@google.com>, <irogers@google.com>,
 	<mario.limonciello@amd.com>, <ravi.bangoria@amd.com>,
 	<ananth.narayan@amd.com>, <sandipan.das@amd.com>
-Subject: [PATCH v2 2/3] perf/x86/amd/lbr: Discard erroneous branch entries
-Date: Tue, 2 Jan 2024 11:31:29 +0530
-Message-ID: <030248bbb58b8657b98e38117947352de29001d8.1704103399.git.sandipan.das@amd.com>
+Subject: [PATCH v2 3/3] perf/x86/amd/core: Avoid register reset when CPU is dead
+Date: Tue, 2 Jan 2024 11:31:30 +0530
+Message-ID: <69e89600fe5ebb2d4e870d1bb7f1ac6d7954d259.1704103399.git.sandipan.das@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1704103399.git.sandipan.das@amd.com>
 References: <cover.1704103399.git.sandipan.das@amd.com>
@@ -88,59 +88,54 @@ X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FD:EE_|CYXPR12MB9425:EE_
-X-MS-Office365-Filtering-Correlation-Id: 34bd0abe-6c51-4c0f-14a7-08dc0b588f71
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044F9:EE_|IA1PR12MB6260:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8f7f9fd0-e90a-433c-97cd-08dc0b58bde8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	UYScb3Z2XabSyNj0WlgqmY68X6EsvnnA2oaZBTLv8okCpPM0HgC6UUsgfLm4rbh3oPFZcwX7eEXYg2dOi/I3kYYfqo/KyJduKOSw77C8evgWIvCFOJNzXx02mYEKHMo07+w7cZNupD+7bdJKZIPz1eLOwU/qz6fBoPgpje2DnR7KJatlB3y77mV1Nh5wSLNKqexOT7BhLujnRTVCsvbjWWmNh8hVnuX2kO+EDC4/bb1QgoyvgE0xGmxQYhqAaAJVVf0Ejj8nw6KKnERtxa/rCZfUlHlUQqq4laWL7iyaGzTfetgwVXwpTvt+cFJP/tLo37AP2g9Mix72TfvLdQhLTycSK6JuxfmFe1QMoiEot2dionOeGzkmgqcxhfhaKWddTyVnDKNfANy2RxQFsRKnTQcA+FvrGuNpmmBpRCkCXYZIyRTvUd7273VOzkDyv48a1MXDq77EB6idOVFg4nr7u7dDuhZ/YyfROLCCFmpjFKpGSfLoCxau9vk6GDCcrpvkd3pNsFwCVgwnegomOsEBtqDkNa9BgcpzMCj41VkefLtTeM/ZSaa9IOQmuafG9Dw6ex9cuLWTzX6XsVK/RH2fDGNU19nGgVx7q8oo/l8kHRA4cgo7dyP1HXsL54p7i1o6y0tnevQyXcbA2w8Ihealfyh6H+q4ZUbp9Gq1meldnfXIC/fZ7jx+HvTEpzK6DkDILQ8cE0JXU6OGfMYcdc9WlsOrKPFB4rq4lS0WDerYule4L89KzhBaZIws6iDP8259
+	DUyk4QnJUKDC4BKNUPnwhcuVBLwAd5vFG5ncnDFjSPW6VBwFABNLYrucqECsGCazt55KTjkKH1wWT9cHnVr2iyKeKjuSruL40MTZ4eoStOve+YWPFaz6XBpuiGVUzVio+/oyJbfhHmknJMufncXBdVQSlOuWjEnfmATB+q4otnpZhbl5i5OQOlGM+/Xx8g0r5nniG7Rh7Ly958DY7RiE6eFHFYcmIBcH9lzYeoHjhr26Xacw8yTOy4iN7MIcvXAseF3uc7tXfOQcPF+YLf82tMb7xrxPB+KA6UBblpprg8f7T3mepJGobxuiZTV1JmmtmJ2a5bvKeOZyeIKTjzyO21MiVztyF5DxAJ1vOpKlTrgEG5JTYgwyfM3usMEvNYPpsdaBZ2PL5lmC7MbnEpife9qDcMe9GlvKdccyDshu9Ym3h2RL0WNIT5HelizMXW3jOBu2GQxFAvYLoBqwFvoOMoTyzkfCT0kUxbzK6ubyqWE0T5T6ENjjt4WnQsXFdMDsqWLSUfNKEpTS2B4ZMLetR6LY2yYK4cJp7cSFDXwn3xBQCmWW/HWfoV+HG92QcfVNevFKaS73550tfOk9K0OsmzfVNr5zZl2quEIg7oV+PgVvFUKhRoWfj5eTX3svXNeKPT47OcWKzRJxZPu5oAVG1zxMuPR0ERUERHMeo1bKxdG+mCCgX83AYKKJ6NA7725AtJwpQ1sfiUi42eWJzDIJhjaNbYkYRiT7IQVGl4iho3AjoQ1PZ07Amd8eO2LbdCPEOQjiJOFh0zCht4jna4CXtQ==
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(396003)(346002)(39860400002)(230922051799003)(82310400011)(451199024)(186009)(64100799003)(1800799012)(36840700001)(40470700004)(46966006)(5660300002)(2906002)(7416002)(4326008)(8676002)(8936002)(44832011)(36756003)(316002)(54906003)(86362001)(966005)(478600001)(40480700001)(40460700003)(41300700001)(7696005)(16526019)(426003)(26005)(2616005)(336012)(356005)(83380400001)(81166007)(47076005)(70206006)(70586007)(110136005)(82740400003)(36860700001)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(136003)(346002)(230922051799003)(186009)(64100799003)(82310400011)(1800799012)(451199024)(40470700004)(46966006)(36840700001)(40480700001)(40460700003)(41300700001)(2906002)(7416002)(44832011)(5660300002)(8676002)(4326008)(316002)(110136005)(54906003)(70586007)(70206006)(8936002)(36756003)(82740400003)(81166007)(356005)(478600001)(966005)(7696005)(86362001)(6666004)(47076005)(36860700001)(336012)(426003)(26005)(2616005)(16526019)(83380400001)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2024 06:03:36.9941
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2024 06:04:54.9526
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34bd0abe-6c51-4c0f-14a7-08dc0b588f71
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f7f9fd0-e90a-433c-97cd-08dc0b58bde8
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044FD.namprd21.prod.outlook.com
+	CO1PEPF000044F9.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR12MB9425
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6260
 
-The Revision Guide for AMD Family 19h Model 10-1Fh processors, found at
-the link below, declares Erratum 1452 which states that non-branch
-entries may erroneously be recorded in the Last Branch Record (LBR)
-stack with the valid and spec bits set. Such entries can be recognized
-by inspecting bit 61 of the corresponding LastBranchStackToIp register.
-This bit is currently reserved but if found to be set, the associated
-branch entry should be discarded.
+When bringing a CPU online, some of the PMC and LBR related registers
+are reset. The same is done when a CPU is taken offline although that
+is unnecessary. This currently happens in the "cpu_dead" callback which
+is also incorrect as the callback runs on a control CPU instead of the
+one that is being taken offline. This also affects hibernation and
+suspend to RAM on some platforms as reported in the link below.
 
-Link: https://bugzilla.kernel.org/attachment.cgi?id=305518
+Link: https://lore.kernel.org/all/20231026170330.4657-3-mario.limonciello@amd.com/
+Reported-by: Mario Limonciello <mario.limonciello@amd.com>
+Fixes: 21d59e3e2c40 ("perf/x86/amd/core: Detect PerfMonV2 support")
 Signed-off-by: Sandipan Das <sandipan.das@amd.com>
 ---
- arch/x86/events/amd/lbr.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/x86/events/amd/core.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/x86/events/amd/lbr.c b/arch/x86/events/amd/lbr.c
-index 110e34c59643..43bf2dbcdb82 100644
---- a/arch/x86/events/amd/lbr.c
-+++ b/arch/x86/events/amd/lbr.c
-@@ -173,9 +173,11 @@ void amd_pmu_lbr_read(void)
+diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
+index ffdfaee08b08..63514c311f44 100644
+--- a/arch/x86/events/amd/core.c
++++ b/arch/x86/events/amd/core.c
+@@ -604,7 +604,6 @@ static void amd_pmu_cpu_dead(int cpu)
  
- 		/*
- 		 * Check if a branch has been logged; if valid = 0, spec = 0
--		 * then no branch was recorded
-+		 * then no branch was recorded; if reserved = 1 then an
-+		 * erroneous branch was recorded (see erratum 1452)
- 		 */
--		if (!entry.to.split.valid && !entry.to.split.spec)
-+		if ((!entry.to.split.valid && !entry.to.split.spec) ||
-+		    entry.to.split.reserved)
- 			continue;
+ 	kfree(cpuhw->lbr_sel);
+ 	cpuhw->lbr_sel = NULL;
+-	amd_pmu_cpu_reset(cpu);
  
- 		perf_clear_branch_entry_bitfields(br + out);
+ 	if (!x86_pmu.amd_nb_constraints)
+ 		return;
 -- 
 2.34.1
 
