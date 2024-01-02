@@ -1,182 +1,211 @@
-Return-Path: <linux-kernel+bounces-14333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D7CA821B8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:21:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9746E821B8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:22:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE5BE1C21814
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:21:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 045FD1F22710
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E32F510;
-	Tue,  2 Jan 2024 12:21:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC01FBEA;
+	Tue,  2 Jan 2024 12:22:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o6Pnu8tb"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZYgqSlEA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D920F4F2;
-	Tue,  2 Jan 2024 12:21:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68BC3C433C7;
-	Tue,  2 Jan 2024 12:21:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704198070;
-	bh=vQv1f+Php0cWB9KLjYNv0YlDWbsApg3u1Zg0uonTTP8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=o6Pnu8tb/b6BkKvwKRyZg03sI23WqFc3OabZZrlcKFYmy7eowWjZf4pkHCYLNmFK8
-	 iyEIA6jhFe0psI7nS4kKWu7AlfnuDPRSQovwijopXhWJvkD9VkyRtoLSvcLnIc5e9S
-	 5hZsijjvmaaNQIKD15srPDWy0ME3pyZQYiucWemNobjCEP6ueQ6QFpE21r84x8xySg
-	 t2h71fVfTROjRjCMnUJ10FWqQPWZu/AqdEAzWWScYodSy9PNNDl3o+5N8jCYt69ud8
-	 imJG/P6ZffgeI7aOWMc/lmKM4kMoRaV6HFR5KaHW4T04aDyIxaIv7QDFY96jIcmkLX
-	 4/kBUb32514KA==
-Date: Tue, 2 Jan 2024 14:21:06 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Chengchang Tang <tangchengchang@huawei.com>
-Cc: Stephen Hemminger <stephen@networkplumber.org>,
-	Junxian Huang <huangjunxian6@hisilicon.com>, jgg@ziepe.ca,
-	dsahern@gmail.com, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH iproute2-rc 1/2] rdma: Fix core dump when pretty is used
-Message-ID: <20240102122106.GI6361@unreal>
-References: <20231229065241.554726-1-huangjunxian6@hisilicon.com>
- <20231229065241.554726-2-huangjunxian6@hisilicon.com>
- <20231229092129.25a526c4@hermes.local>
- <30d8c237-953a-8794-9baa-e21b31d4d88c@huawei.com>
- <20240102083257.GB6361@unreal>
- <29146463-6d0e-21c5-af42-217cee760b3f@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E18FBE7
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 12:22:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704198137;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=5aXs8fUOsfgSo7g4FENf0GEgJl7/TE420KVs2VRDTFk=;
+	b=ZYgqSlEAx91KUrF65ejZlCVF6MZozKckfYHiGvIouWpWzP0sEZAqkD6j+2Fkoulx6IWWHj
+	rMQpIGpkhwmKkr47lp1y7e668BDr7BHYkMWXnw0nMbF+G9EYolmGTBaH0HO8WoaEv5MAjj
+	1AJC8hLOF+butRAZbqp+tcWYslg012o=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-439-Rg4wQkEKOSCpXSc9xsn4NQ-1; Tue, 02 Jan 2024 07:22:16 -0500
+X-MC-Unique: Rg4wQkEKOSCpXSc9xsn4NQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-336937b3cf5so5917198f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 04:22:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704198134; x=1704802934;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5aXs8fUOsfgSo7g4FENf0GEgJl7/TE420KVs2VRDTFk=;
+        b=soDxyFNbnw7fffGPPhRmxsCRdP6FeZVYLt0pEd4Nzfr4k/jcCc1PY76zRF8v6kq5jj
+         aHT2FZ1xCSOx5RmJzS/oJ28GHVcGl6GE67OY5mdkZcmWm5Zg/3C4NE6mP2yMItdSUll/
+         261gv00siCsqeH1q3/f0MKqU/SFEIAp4+dTXwLL7i/A3RIX33XSVcG2Ihx6evqt0YOxV
+         bVVv8N9EhRO8WO+kEAE+b7FzRgzeet07JXVE0M0i6A+9A+ibEOTrjUjARVahkCVIH3AS
+         aTRW27e++Trw0uHFoBnvXJkzIgDZQlFoDZ731LErOn8AOx0Syn82RblXUQjFTtxipRd2
+         y36w==
+X-Gm-Message-State: AOJu0YxRAu5vxSNrLQo/WbkVU0mmjht/k3N2HpeQBh7ryy4XO7od2Bzw
+	xxLspg5hz9ka1fiG4Pp1kSh39DkbO/DtByL+zuYBuT2erklHV2vJ7Ppa2McO5ldzr49oeggLnkN
+	9KMKVX4Ix3HlCczSFvRz1xBU/D0zF8702Ht81tyIle6pJuYLk7kdcu28KK9WZO7NVdhd/DeCLxo
+	xI3jWN0/lS9NAMuy/tCA==
+X-Received: by 2002:adf:f58d:0:b0:336:ded0:a21e with SMTP id f13-20020adff58d000000b00336ded0a21emr3259647wro.21.1704198134216;
+        Tue, 02 Jan 2024 04:22:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGRzyq3ECGhE9uzQkndDD77jnVmiC48z9vPhud+jf0jfsJN08yinyqi/3Ri/Y5bqogVnlgMHA==
+X-Received: by 2002:adf:f58d:0:b0:336:ded0:a21e with SMTP id f13-20020adff58d000000b00336ded0a21emr3259636wro.21.1704198133875;
+        Tue, 02 Jan 2024 04:22:13 -0800 (PST)
+Received: from localhost (red-hat-inc.vlan560.asr1.mad1.gblx.net. [159.63.51.90])
+        by smtp.gmail.com with ESMTPSA id q5-20020a056000136500b003372c080acasm9421283wrz.2.2024.01.02.04.22.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 04:22:13 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: Jani Nikula <jani.nikula@intel.com>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH v2] drm: Move drm_set_preferred_mode() helper from drm_edid to drm_modes
+Date: Tue,  2 Jan 2024 13:21:58 +0100
+Message-ID: <20240102122208.3103597-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <29146463-6d0e-21c5-af42-217cee760b3f@huawei.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 02, 2024 at 08:06:19PM +0800, Chengchang Tang wrote:
-> 
-> 
-> On 2024/1/2 16:32, Leon Romanovsky wrote:
-> > On Tue, Jan 02, 2024 at 03:44:29PM +0800, Chengchang Tang wrote:
-> > > 
-> > > On 2023/12/30 1:21, Stephen Hemminger wrote:
-> > > > On Fri, 29 Dec 2023 14:52:40 +0800
-> > > > Junxian Huang <huangjunxian6@hisilicon.com> wrote:
-> > > > 
-> > > > > From: Chengchang Tang <tangchengchang@huawei.com>
-> > > > > 
-> > > > > There will be a core dump when pretty is used as the JSON object
-> > > > > hasn't been opened and closed properly.
-> > > > > 
-> > > > > Before:
-> > > > > $ rdma res show qp -jp -dd
-> > > > > [ {
-> > > > >       "ifindex": 1,
-> > > > >       "ifname": "hns_1",
-> > > > >       "port": 1,
-> > > > >       "lqpn": 1,
-> > > > >       "type": "GSI",
-> > > > >       "state": "RTS",
-> > > > >       "sq-psn": 0,
-> > > > >       "comm": "ib_core"
-> > > > > },
-> > > > > "drv_sq_wqe_cnt": 128,
-> > > > > "drv_sq_max_gs": 2,
-> > > > > "drv_rq_wqe_cnt": 512,
-> > > > > "drv_rq_max_gs": 1,
-> > > > > rdma: json_writer.c:130: jsonw_end: Assertion `self->depth > 0' failed.
-> > > > > Aborted (core dumped)
-> > > > > 
-> > > > > After:
-> > > > > $ rdma res show qp -jp -dd
-> > > > > [ {
-> > > > >           "ifindex": 2,
-> > > > >           "ifname": "hns_2",
-> > > > >           "port": 1,
-> > > > >           "lqpn": 1,
-> > > > >           "type": "GSI",
-> > > > >           "state": "RTS",
-> > > > >           "sq-psn": 0,
-> > > > >           "comm": "ib_core",{
-> > > > >               "drv_sq_wqe_cnt": 128,
-> > > > >               "drv_sq_max_gs": 2,
-> > > > >               "drv_rq_wqe_cnt": 512,
-> > > > >               "drv_rq_max_gs": 1,
-> > > > >               "drv_ext_sge_sge_cnt": 256
-> > > > >           }
-> > > > >       } ]
-> > > > > 
-> > > > > Fixes: 331152752a97 ("rdma: print driver resource attributes")
-> > > > > Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-> > > > > Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
-> > > > This code in rdma seems to be miking json and newline functionality
-> > > > which creates bug traps.
-> > > > 
-> > > > Also the json should have same effective output in pretty and non-pretty mode.
-> > > > It looks like since pretty mode add extra object layer, the nesting of {} would be
-> > > > different.
-> > > > 
-> > > > The conversion to json_print() was done but it isn't using same conventions
-> > > > as ip or tc.
-> > > > 
-> > > > The correct fix needs to go deeper and hit other things.
-> > > > 
-> > > Hi, Stephen,
-> > > 
-> > > The root cause of this issue is that close_json_object() is being called in
-> > > newline_indent(), resulting in a mismatch
-> > > of {}.
-> > > 
-> > > When fixing this problem, I was unsure why a newline() is needed in pretty
-> > > mode, so I simply kept this logic and
-> > > solved the issue of open_json_object() and close_json_object() not matching.
-> > > However, If the output of pretty mode
-> > > and not-pretty mode should be the same, then this problem can be resolved by
-> > > deleting this newline_indent().
-> > Stephen didn't say that output of pretty and not-pretty should be the
-> > same, but he said that JSON logic should be the same.
-> > 
-> > Thanks
-> 
-> Hi, Leon,
-> 
-> Thank you for your reply. But I'm not sure what you mean by JSON logic? I
-> understand that
-> pretty and not-pretty JSON should have the same content, but just difference
-> display effects.
-> Do you mean that they only need to have the same structure?
-> 
-> Or, let's get back to this question. In the JSON format output, the
-> newline() here seems
-> unnecessary, because json_print() can solve the line break problems during
-> printing.
-> So I think the newline() here can be removed at least when outputting in
-> JSON format.
+The helper is generic, it doesn't use the opaque EDID type struct drm_edid
+and is also used by drivers that only support non-probeable displays such
+as fixed panels.
 
-I think that your original patch is correct way to fix the mismatch as
-it is not related to pretty/non-pretty.
+These drivers add a list of modes using drm_mode_probed_add() and then set
+a preferred mode using the drm_set_preferred_mode() helper.
 
-Thanks
+It seems more logical to have the helper definition in drm_modes.o instead
+of drm_edid.o, since the former contains modes helper while the latter has
+helpers to manage the EDID information.
 
-> 
-> Thanks,
-> Chengchang Tang
-> > 
-> > > I believe the original developer may not have realized that
-> > > close_json_object() is being called in newline(), which leads
-> > > to this problem. To improve the code's readability, I would try to strip out
-> > > close_json_obejct() from newline().
-> > > 
-> > > Thanks,
-> > > Chengchang Tang
-> > > 
-> > .
-> > 
-> 
-> 
+Since both drm_edid.o and drm_modes.o object files are built-in the drm.o
+object, there are no functional changes. But besides being a more logical
+place for this helper, it could also allow to eventually make drm_edid.o
+optional and not included in drm.o if only fixed panels must be supported
+in a given system.
+
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+---
+
+Changes in v2:
+- Drop unnecessary drm_modes.h header include in drm_edid.c (Jani Nikula).
+- Add Jani Nikula's Reviewed-by tag.
+
+ drivers/gpu/drm/drm_edid.c  | 22 ----------------------
+ drivers/gpu/drm/drm_modes.c | 22 ++++++++++++++++++++++
+ include/drm/drm_edid.h      |  2 --
+ include/drm/drm_modes.h     |  2 ++
+ 4 files changed, 24 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+index cb4031d5dcbb..e677dc8eb7a9 100644
+--- a/drivers/gpu/drm/drm_edid.c
++++ b/drivers/gpu/drm/drm_edid.c
+@@ -6989,28 +6989,6 @@ int drm_add_modes_noedid(struct drm_connector *connector,
+ }
+ EXPORT_SYMBOL(drm_add_modes_noedid);
+ 
+-/**
+- * drm_set_preferred_mode - Sets the preferred mode of a connector
+- * @connector: connector whose mode list should be processed
+- * @hpref: horizontal resolution of preferred mode
+- * @vpref: vertical resolution of preferred mode
+- *
+- * Marks a mode as preferred if it matches the resolution specified by @hpref
+- * and @vpref.
+- */
+-void drm_set_preferred_mode(struct drm_connector *connector,
+-			   int hpref, int vpref)
+-{
+-	struct drm_display_mode *mode;
+-
+-	list_for_each_entry(mode, &connector->probed_modes, head) {
+-		if (mode->hdisplay == hpref &&
+-		    mode->vdisplay == vpref)
+-			mode->type |= DRM_MODE_TYPE_PREFERRED;
+-	}
+-}
+-EXPORT_SYMBOL(drm_set_preferred_mode);
+-
+ static bool is_hdmi2_sink(const struct drm_connector *connector)
+ {
+ 	/*
+diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
+index ac9a406250c5..01aa44e87534 100644
+--- a/drivers/gpu/drm/drm_modes.c
++++ b/drivers/gpu/drm/drm_modes.c
+@@ -2754,3 +2754,25 @@ bool drm_mode_is_420(const struct drm_display_info *display,
+ 		drm_mode_is_420_also(display, mode);
+ }
+ EXPORT_SYMBOL(drm_mode_is_420);
++
++/**
++ * drm_set_preferred_mode - Sets the preferred mode of a connector
++ * @connector: connector whose mode list should be processed
++ * @hpref: horizontal resolution of preferred mode
++ * @vpref: vertical resolution of preferred mode
++ *
++ * Marks a mode as preferred if it matches the resolution specified by @hpref
++ * and @vpref.
++ */
++void drm_set_preferred_mode(struct drm_connector *connector,
++			   int hpref, int vpref)
++{
++	struct drm_display_mode *mode;
++
++	list_for_each_entry(mode, &connector->probed_modes, head) {
++		if (mode->hdisplay == hpref &&
++		    mode->vdisplay == vpref)
++			mode->type |= DRM_MODE_TYPE_PREFERRED;
++	}
++}
++EXPORT_SYMBOL(drm_set_preferred_mode);
+diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
+index 54cc6f04a708..5bd6b6eb6c57 100644
+--- a/include/drm/drm_edid.h
++++ b/include/drm/drm_edid.h
+@@ -426,8 +426,6 @@ enum hdmi_quantization_range
+ drm_default_rgb_quant_range(const struct drm_display_mode *mode);
+ int drm_add_modes_noedid(struct drm_connector *connector,
+ 			 int hdisplay, int vdisplay);
+-void drm_set_preferred_mode(struct drm_connector *connector,
+-			    int hpref, int vpref);
+ 
+ int drm_edid_header_is_valid(const void *edid);
+ bool drm_edid_block_valid(u8 *raw_edid, int block, bool print_bad_edid,
+diff --git a/include/drm/drm_modes.h b/include/drm/drm_modes.h
+index c613f0abe9dc..b9bb92e4b029 100644
+--- a/include/drm/drm_modes.h
++++ b/include/drm/drm_modes.h
+@@ -467,6 +467,8 @@ bool drm_mode_is_420_also(const struct drm_display_info *display,
+ 			  const struct drm_display_mode *mode);
+ bool drm_mode_is_420(const struct drm_display_info *display,
+ 		     const struct drm_display_mode *mode);
++void drm_set_preferred_mode(struct drm_connector *connector,
++			    int hpref, int vpref);
+ 
+ struct drm_display_mode *drm_analog_tv_mode(struct drm_device *dev,
+ 					    enum drm_connector_tv_mode mode,
+-- 
+2.43.0
+
 
