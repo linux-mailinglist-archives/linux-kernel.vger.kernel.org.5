@@ -1,92 +1,88 @@
-Return-Path: <linux-kernel+bounces-14658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32AE8822064
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:27:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BF4182206C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:31:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A90A6283EAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:27:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0231B21F4C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:31:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2419154B1;
-	Tue,  2 Jan 2024 17:27:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A42C9154B9;
+	Tue,  2 Jan 2024 17:31:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nwKms2rI"
+	dkim=pass (2048-bit key) header.d=email.cz header.i=@email.cz header.b="Tp8hY5eW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+Received: from mxe.seznam.cz (mxe.seznam.cz [77.75.78.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2E415AC0;
-	Tue,  2 Jan 2024 17:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704216431; x=1735752431;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=P/W8NmfXSUPg8X+gbwPNv1aFNN6rCN+8ZpEpptPdyh8=;
-  b=nwKms2rIOzTyU/OTP1SuG4HA1XMAwq+F3ZiHTrQ0VVDffwKMTkinrFuP
-   /LDTlYVl7EOutrO7OMzQPQSmuZl9oyDk35G4Fs9pXK2C2E7JXi6XRFriW
-   hXHdGr4n+voCbYatrXoyfcYdOl0/hJ6mLJHhJVuFiVr/5ZlX7jqtmOOVL
-   kPM9uK640ZHsJw9eorO9zqK0K5S3VhXduIrNcnCsD6WpZohYrqdP7QBog
-   2BBDlZKHiq5raWWwAT5fEppJYrnJT3DcS1Au3p+K0a52ZnGlZzfiuDBN3
-   TTR47X2oh+ztyvJZg6x8TBQdY5jjHYuMH2bUkRKGyTurQcqCcKkVZ0kv8
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="396631325"
-X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
-   d="scan'208";a="396631325"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 09:27:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="813992428"
-X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
-   d="scan'208";a="813992428"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.252.17])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 09:27:08 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 1/1] PCI: 64GT/s uses 1b/1b encoding
-Date: Tue,  2 Jan 2024 19:27:00 +0200
-Message-Id: <20240102172701.65501-1-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20A22154AA;
+	Tue,  2 Jan 2024 17:31:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=email.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=email.cz
+Received: from email.seznam.cz
+	by smtpc-mxe-54579945bb-28bjw
+	(smtpc-mxe-54579945bb-28bjw [2a02:598:64:8a00::1000:563])
+	id 069d608cf869d2260613ee94;
+	Tue, 02 Jan 2024 18:31:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cz;
+	s=szn20221014; t=1704216680;
+	bh=VPqVL0dmRjTnHtTSRbX4H2e8aFz/9nWPxdm6mZwDmT0=;
+	h=Received:From:To:Subject:Date:Message-Id:Mime-Version:X-Mailer:
+	 Content-Type:Content-Transfer-Encoding;
+	b=Tp8hY5eW+82f6gAezw1QR3CBQ6zv6KuUk9zU+pdLrTMG2r3vDJ8Z7sfdRx8GUVWG7
+	 lA+EjGaJiGjcZlu/2LGHD7gMuODv98Kj3GLiXdaLukFuKF+tZ4ns9hfc1/J0rI+lJl
+	 PItTZaRzoZzLoJTOtiNUErJZMj/d+dln/NcSQsLUgqN5spHkubeWqJNWRnQhG8ykjS
+	 W2lZS8e3vuAtomIopYgCYfoihqdVzlCiveWsrMRwt/Hzh55G2hjG15vk3yONE4K5ms
+	 /v+oKe4jTjf5d70JjvgrHdQ4JVApfTkiKV0Fu3lcOB+xgrnOEYrCZCsAlPXgMr4Ma5
+	 0LkBoUROMHTxA==
+Received: from 184-143.gtt-net.cz (184-143.gtt-net.cz [82.144.143.184])
+	by email.seznam.cz (szn-UNKNOWN-unknown) with HTTP;
+	Tue, 02 Jan 2024 18:29:59 +0100 (CET)
+From: "Tomas Paukrt" <tomaspaukrt@email.cz>
+To: "Kalle Valo" <kvalo@kernel.org>,
+	"Jeff Johnson" <quic_jjohnson@quicinc.com>,
+	<ath10k@lists.infradead.org>,
+	<linux-wireless@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: ath10k: add USB device ID for Atheros QCA9377-7
+Date: Tue, 02 Jan 2024 18:29:59 +0100 (CET)
+Message-Id: <BBh.ZZQj.57mzV1Mb9h2.1bb4WN@seznam.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (szn-mime-2.1.33)
+X-Mailer: szn-UNKNOWN-unknown
+Content-Type: text/plain;
+	charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-PCIe 64GT/s Data Rate uses 1b/1b encoding, not 128b/130b (PCIe r6.1 sec
-1.2, Table 1-1).
+Add USB device ID for modules based of Atheros QCA9377-7 chipset.
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Tomas Paukrt <tomaspaukrt@email.cz>
 ---
- drivers/pci/pci.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/usb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 5ecbcf041179..d9132029d658 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -272,7 +272,7 @@ void pci_bus_put(struct pci_bus *bus);
+diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/=
+ath/ath10k/usb.c
+index 3c482ba..5d5cc0c 100644
+--- a/drivers/net/wireless/ath/ath10k/usb.c
++++ b/drivers/net/wireless/ath/ath10k/usb.c
+@@ -1106,6 +1106,7 @@ static int ath10k_usb_pm_resume(struct usb_interface=
+ *interface)
  
- /* PCIe speed to Mb/s reduced by encoding overhead */
- #define PCIE_SPEED2MBS_ENC(speed) \
--	((speed) == PCIE_SPEED_64_0GT ? 64000*128/130 : \
-+	((speed) == PCIE_SPEED_64_0GT ? 64000*1/1 : \
- 	 (speed) == PCIE_SPEED_32_0GT ? 32000*128/130 : \
- 	 (speed) == PCIE_SPEED_16_0GT ? 16000*128/130 : \
- 	 (speed) == PCIE_SPEED_8_0GT  ?  8000*128/130 : \
+ /* table of devices that work with this driver */
+ static struct usb_device_id ath10k_usb_ids[] =3D {
++	{USB_DEVICE(0x0cf3, 0x9378)}, /* Atheros QCA9377-7 */
+ 	{USB_DEVICE(0x13b1, 0x0042)}, /* Linksys WUSB6100M */
+ 	{ /* Terminating entry */ },
+ };
 -- 
-2.39.2
+2.7.4
 
 
