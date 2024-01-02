@@ -1,317 +1,108 @@
-Return-Path: <linux-kernel+bounces-13965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30749821619
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 02:09:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DD6982161E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 02:18:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 488421C20E92
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 01:09:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B3C92816A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 01:18:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85DF9A48;
-	Tue,  2 Jan 2024 01:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68D3BA38;
+	Tue,  2 Jan 2024 01:18:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EbE2JiAj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A87238F;
-	Tue,  2 Jan 2024 01:09:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4T3vrG2VwjzsV2R;
-	Tue,  2 Jan 2024 09:09:02 +0800 (CST)
-Received: from dggpeml500026.china.huawei.com (unknown [7.185.36.106])
-	by mail.maildlp.com (Postfix) with ESMTPS id D747914011A;
-	Tue,  2 Jan 2024 09:09:35 +0800 (CST)
-Received: from [10.174.178.66] (10.174.178.66) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 2 Jan 2024 09:09:35 +0800
-Message-ID: <fee3ec1c-5af6-aad2-c0d0-843de59494a7@huawei.com>
-Date: Tue, 2 Jan 2024 09:09:34 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91EDC390
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 01:18:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d420aaa2abso30483835ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 17:18:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704158316; x=1704763116; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zRWE3E5XMrumruVdwn+4Yp8n2CImJBlUHIVxV/N3g8o=;
+        b=EbE2JiAjcRZefpwwQV36HgERWZ90KV74QcoUVCzayDpOgJUJnXkZxGavMLbStDBQAZ
+         A/AYWfQhz6dVybZ/1vVpc6xUPtHyGqQF/L6ycKBzUcfdKs5sunfJmuS3HDxbncKT7yxi
+         X+vipx+kkpwfafiUPCARKAIcSBXkNMFDQFsSY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704158316; x=1704763116;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zRWE3E5XMrumruVdwn+4Yp8n2CImJBlUHIVxV/N3g8o=;
+        b=bv7pyA5TZvG6DK9Do7SY6BDQJZJYAtBJ5cM/JnYF/5O6XFFzliIBcmTyBAYXFOTK/x
+         BDPqo+BU9BCPpwhSgc1272lK4S4Dj6teiDTZYlMTG7bs36JHwCjrPZLo+gzfVxzb/86m
+         tJ+jMHQGwWdCkN3/NF6HqtzY6vuM+5lNW5zmMfhod55piGvg9pnD/DLr3ivdBGyIUKs0
+         pvMcc6lpJrG0Jo7oqfmj22Y1oHhoNJfZ6EQBzvHR/tvCQgfg3qcSMePjKcm8eKkupwwj
+         su7O7FA3d+QbDOwrm1pUljpCcOAWZ/yNjvq1fnEIKogap/Ox5Ka7tFfWUhiqk/e8eeIh
+         F54A==
+X-Gm-Message-State: AOJu0YxzAiXuhngas3DHc9nQ9NxtwK2sNJzOaPVPE+vObuFtjIBFXGPP
+	xVADQWDRbTSLlSPy6uDOigNtf4HYK7T+
+X-Google-Smtp-Source: AGHT+IG/0/8JPP8Sqc/3WIgIkW3oddIth292cDOhlF/c6lDdjIIuS/fk+/h37aIq3zXL9fPkYf+8Rw==
+X-Received: by 2002:a05:6a20:7495:b0:196:dff9:3989 with SMTP id p21-20020a056a20749500b00196dff93989mr730269pzd.64.1704158315944;
+        Mon, 01 Jan 2024 17:18:35 -0800 (PST)
+Received: from google.com (KD124209171220.ppp-bb.dion.ne.jp. [124.209.171.220])
+        by smtp.gmail.com with ESMTPSA id p18-20020a170902ead200b001d4bb7cdc11sm1924886pld.88.2024.01.01.17.18.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jan 2024 17:18:35 -0800 (PST)
+Date: Tue, 2 Jan 2024 10:18:30 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Patrick Georgi <pgeorgi@google.com>, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Stefan Reinauer <reinauer@google.com>
+Subject: Re: [PATCH] kconfig: WERROR unmet symbol dependency
+Message-ID: <20240102011830.GB21409@google.com>
+References: <20231122034753.1446513-1-senozhatsky@chromium.org>
+ <20231128053443.GA6525@google.com>
+ <CAK7LNAT_Z4TeNzngMskEoNdSTWUH5gGzYm5MfO6C_H8rFcF6ng@mail.gmail.com>
+ <20231129041307.GB6525@google.com>
+ <CAK7LNAS8q9eDerwVRbPbqd+AKjNVkEKLOW+NAKaD4duP-gViqw@mail.gmail.com>
+ <20231222025701.GA3568309@google.com>
+ <CAK7LNARa3WrRp5vmX5M3tTkS-jdno-vFe8WLPXjF8+hHxVUmFA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [PATCH v2] ipc/mqueue: fix potential sleeping issue in
- mqueue_flush_file
-To: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <brauner@kernel.org>, <dchinner@redhat.com>,
-	<jlayton@kernel.org>, <jack@suse.cz>, <riel@surriel.com>,
-	<weiyongjun1@huawei.com>, <yuehaibing@huawei.com>
-References: <20231220021208.2634523-1-shaozhengchao@huawei.com>
-From: shaozhengchao <shaozhengchao@huawei.com>
-In-Reply-To: <20231220021208.2634523-1-shaozhengchao@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500026.china.huawei.com (7.185.36.106)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNARa3WrRp5vmX5M3tTkS-jdno-vFe8WLPXjF8+hHxVUmFA@mail.gmail.com>
 
-+ping
+On (23/12/29 22:41), Masahiro Yamada wrote:
+> > > > We do exit(1) for KCONFIG_WARN_UNKNOWN_SYMBOLS in conf_read().
+> > > >
+> > > > I can introduce two new helpers that will tell if confdata.c and symbol.c
+> > > > triggered any warnings and if KCONFIG_WERROR is set. And then different
+> > > > code paths can call them and handle exit gracefully, depending on the
+> > > > context (ncurses, menu, etc.).
+> > > >
+> > > > Something like this
+> > >
+> > >
+> > > I do not want to patch warnings one by one.
+> > >
+> > >
+> > > I will take some time to think about it.
+> >
+> > Gentle ping on this.
+> >
+> > We are not concerned with every possible warning at the moment, however,
+> > we do want the critical ones from CI and (semi)automated continuous uprev
+> > PoV to be covered by WERROR. We do experience real life problems with
+> > "missing direct dependency" not being a terminal condition under WERROR.
+> 
+> 
+> Applied to linux-kbuild.
 
-Does anyone have ideas with this patch?
-
-On 2023/12/20 10:12, Zhengchao Shao wrote:
-> I analyze the potential sleeping issue of the following processes:
-> Thread A                                Thread B
-> ...                                     netlink_create  //ref = 1
-> do_mq_notify                            ...
->    sock = netlink_getsockbyfilp          ...     //ref = 2
->    info->notify_sock = sock;             ...
-> ...                                     netlink_sendmsg
-> ...                                       skb = netlink_alloc_large_skb  //skb->head is vmalloced
-> ...                                       netlink_unicast
-> ...                                         sk = netlink_getsockbyportid //ref = 3
-> ...                                         netlink_sendskb
-> ...                                           __netlink_sendskb
-> ...                                             skb_queue_tail //put skb to sk_receive_queue
-> ...                                         sock_put //ref = 2
-> ...                                     ...
-> ...                                     netlink_release
-> ...                                       deferred_put_nlk_sk //ref = 1
-> mqueue_flush_file
->    spin_lock
->    remove_notification
->      netlink_sendskb
->        sock_put  //ref = 0
->          sk_free
->            ...
->            __sk_destruct
->              netlink_sock_destruct
->                skb_queue_purge  //get skb from sk_receive_queue
->                  ...
->                  __skb_queue_purge_reason
->                    kfree_skb_reason
->                      __kfree_skb
->                      ...
->                      skb_release_all
->                        skb_release_head_state
->                          netlink_skb_destructor
->                            vfree(skb->head)  //sleeping while holding spinlock
-> 
-> In netlink_sendmsg, if the memory pointed to by skb->head is allocated by
-> vmalloc, and is put to sk_receive_queue queue, also the skb is not freed.
-> When the mqueue executes flush, the sleeping bug will occur. Use mutex
-> lock instead of spin lock in mqueue_flush_file.
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-> ---
-> v2: CCed some networking maintainer & netdev list
-> ---
->   ipc/mqueue.c | 48 ++++++++++++++++++++++++------------------------
->   1 file changed, 24 insertions(+), 24 deletions(-)
-> 
-> diff --git a/ipc/mqueue.c b/ipc/mqueue.c
-> index 5eea4dc0509e..f6f92e3f82e4 100644
-> --- a/ipc/mqueue.c
-> +++ b/ipc/mqueue.c
-> @@ -118,9 +118,9 @@ struct posix_msg_tree_node {
->    * Solution: use _release and _acquire barriers.
->    *
->    * 3) There is intentionally no barrier when setting current->state
-> - *    to TASK_INTERRUPTIBLE: spin_unlock(&info->lock) provides the
-> + *    to TASK_INTERRUPTIBLE: mutex_unlock(&info->lock) provides the
->    *    release memory barrier, and the wakeup is triggered when holding
-> - *    info->lock, i.e. spin_lock(&info->lock) provided a pairing
-> + *    info->lock, i.e. mutex_lock(&info->lock) provided a pairing
->    *    acquire memory barrier.
->    */
->   
-> @@ -132,7 +132,7 @@ struct ext_wait_queue {		/* queue of sleeping tasks */
->   };
->   
->   struct mqueue_inode_info {
-> -	spinlock_t lock;
-> +	struct mutex lock;
->   	struct inode vfs_inode;
->   	wait_queue_head_t wait_q;
->   
-> @@ -312,7 +312,7 @@ static struct inode *mqueue_get_inode(struct super_block *sb,
->   		inode->i_size = FILENT_SIZE;
->   		/* mqueue specific info */
->   		info = MQUEUE_I(inode);
-> -		spin_lock_init(&info->lock);
-> +		mutex_init(&info->lock);
->   		init_waitqueue_head(&info->wait_q);
->   		INIT_LIST_HEAD(&info->e_wait_q[0].list);
->   		INIT_LIST_HEAD(&info->e_wait_q[1].list);
-> @@ -523,11 +523,11 @@ static void mqueue_evict_inode(struct inode *inode)
->   
->   	ipc_ns = get_ns_from_inode(inode);
->   	info = MQUEUE_I(inode);
-> -	spin_lock(&info->lock);
-> +	mutex_lock(&info->lock);
->   	while ((msg = msg_get(info)) != NULL)
->   		list_add_tail(&msg->m_list, &tmp_msg);
->   	kfree(info->node_cache);
-> -	spin_unlock(&info->lock);
-> +	mutex_unlock(&info->lock);
->   
->   	list_for_each_entry_safe(msg, nmsg, &tmp_msg, m_list) {
->   		list_del(&msg->m_list);
-> @@ -640,7 +640,7 @@ static ssize_t mqueue_read_file(struct file *filp, char __user *u_data,
->   	char buffer[FILENT_SIZE];
->   	ssize_t ret;
->   
-> -	spin_lock(&info->lock);
-> +	mutex_lock(&info->lock);
->   	snprintf(buffer, sizeof(buffer),
->   			"QSIZE:%-10lu NOTIFY:%-5d SIGNO:%-5d NOTIFY_PID:%-6d\n",
->   			info->qsize,
-> @@ -649,7 +649,7 @@ static ssize_t mqueue_read_file(struct file *filp, char __user *u_data,
->   			 info->notify.sigev_notify == SIGEV_SIGNAL) ?
->   				info->notify.sigev_signo : 0,
->   			pid_vnr(info->notify_owner));
-> -	spin_unlock(&info->lock);
-> +	mutex_unlock(&info->lock);
->   	buffer[sizeof(buffer)-1] = '\0';
->   
->   	ret = simple_read_from_buffer(u_data, count, off, buffer,
-> @@ -665,11 +665,11 @@ static int mqueue_flush_file(struct file *filp, fl_owner_t id)
->   {
->   	struct mqueue_inode_info *info = MQUEUE_I(file_inode(filp));
->   
-> -	spin_lock(&info->lock);
-> +	mutex_lock(&info->lock);
->   	if (task_tgid(current) == info->notify_owner)
->   		remove_notification(info);
->   
-> -	spin_unlock(&info->lock);
-> +	mutex_unlock(&info->lock);
->   	return 0;
->   }
->   
-> @@ -680,13 +680,13 @@ static __poll_t mqueue_poll_file(struct file *filp, struct poll_table_struct *po
->   
->   	poll_wait(filp, &info->wait_q, poll_tab);
->   
-> -	spin_lock(&info->lock);
-> +	mutex_lock(&info->lock);
->   	if (info->attr.mq_curmsgs)
->   		retval = EPOLLIN | EPOLLRDNORM;
->   
->   	if (info->attr.mq_curmsgs < info->attr.mq_maxmsg)
->   		retval |= EPOLLOUT | EPOLLWRNORM;
-> -	spin_unlock(&info->lock);
-> +	mutex_unlock(&info->lock);
->   
->   	return retval;
->   }
-> @@ -724,7 +724,7 @@ static int wq_sleep(struct mqueue_inode_info *info, int sr,
->   		/* memory barrier not required, we hold info->lock */
->   		__set_current_state(TASK_INTERRUPTIBLE);
->   
-> -		spin_unlock(&info->lock);
-> +		mutex_unlock(&info->lock);
->   		time = schedule_hrtimeout_range_clock(timeout, 0,
->   			HRTIMER_MODE_ABS, CLOCK_REALTIME);
->   
-> @@ -734,7 +734,7 @@ static int wq_sleep(struct mqueue_inode_info *info, int sr,
->   			retval = 0;
->   			goto out;
->   		}
-> -		spin_lock(&info->lock);
-> +		mutex_lock(&info->lock);
->   
->   		/* we hold info->lock, so no memory barrier required */
->   		if (READ_ONCE(ewp->state) == STATE_READY) {
-> @@ -752,7 +752,7 @@ static int wq_sleep(struct mqueue_inode_info *info, int sr,
->   	}
->   	list_del(&ewp->list);
->   out_unlock:
-> -	spin_unlock(&info->lock);
-> +	mutex_unlock(&info->lock);
->   out:
->   	return retval;
->   }
-> @@ -1125,7 +1125,7 @@ static int do_mq_timedsend(mqd_t mqdes, const char __user *u_msg_ptr,
->   	if (!info->node_cache)
->   		new_leaf = kmalloc(sizeof(*new_leaf), GFP_KERNEL);
->   
-> -	spin_lock(&info->lock);
-> +	mutex_lock(&info->lock);
->   
->   	if (!info->node_cache && new_leaf) {
->   		/* Save our speculative allocation into the cache */
-> @@ -1166,7 +1166,7 @@ static int do_mq_timedsend(mqd_t mqdes, const char __user *u_msg_ptr,
->   		simple_inode_init_ts(inode);
->   	}
->   out_unlock:
-> -	spin_unlock(&info->lock);
-> +	mutex_unlock(&info->lock);
->   	wake_up_q(&wake_q);
->   out_free:
->   	if (ret)
-> @@ -1230,7 +1230,7 @@ static int do_mq_timedreceive(mqd_t mqdes, char __user *u_msg_ptr,
->   	if (!info->node_cache)
->   		new_leaf = kmalloc(sizeof(*new_leaf), GFP_KERNEL);
->   
-> -	spin_lock(&info->lock);
-> +	mutex_lock(&info->lock);
->   
->   	if (!info->node_cache && new_leaf) {
->   		/* Save our speculative allocation into the cache */
-> @@ -1242,7 +1242,7 @@ static int do_mq_timedreceive(mqd_t mqdes, char __user *u_msg_ptr,
->   
->   	if (info->attr.mq_curmsgs == 0) {
->   		if (f.file->f_flags & O_NONBLOCK) {
-> -			spin_unlock(&info->lock);
-> +			mutex_unlock(&info->lock);
->   			ret = -EAGAIN;
->   		} else {
->   			wait.task = current;
-> @@ -1261,7 +1261,7 @@ static int do_mq_timedreceive(mqd_t mqdes, char __user *u_msg_ptr,
->   
->   		/* There is now free space in queue. */
->   		pipelined_receive(&wake_q, info);
-> -		spin_unlock(&info->lock);
-> +		mutex_unlock(&info->lock);
->   		wake_up_q(&wake_q);
->   		ret = 0;
->   	}
-> @@ -1391,7 +1391,7 @@ static int do_mq_notify(mqd_t mqdes, const struct sigevent *notification)
->   	info = MQUEUE_I(inode);
->   
->   	ret = 0;
-> -	spin_lock(&info->lock);
-> +	mutex_lock(&info->lock);
->   	if (notification == NULL) {
->   		if (info->notify_owner == task_tgid(current)) {
->   			remove_notification(info);
-> @@ -1424,7 +1424,7 @@ static int do_mq_notify(mqd_t mqdes, const struct sigevent *notification)
->   		info->notify_user_ns = get_user_ns(current_user_ns());
->   		inode_set_atime_to_ts(inode, inode_set_ctime_current(inode));
->   	}
-> -	spin_unlock(&info->lock);
-> +	mutex_unlock(&info->lock);
->   out_fput:
->   	fdput(f);
->   out:
-> @@ -1470,7 +1470,7 @@ static int do_mq_getsetattr(int mqdes, struct mq_attr *new, struct mq_attr *old)
->   	inode = file_inode(f.file);
->   	info = MQUEUE_I(inode);
->   
-> -	spin_lock(&info->lock);
-> +	mutex_lock(&info->lock);
->   
->   	if (old) {
->   		*old = info->attr;
-> @@ -1488,7 +1488,7 @@ static int do_mq_getsetattr(int mqdes, struct mq_attr *new, struct mq_attr *old)
->   		inode_set_atime_to_ts(inode, inode_set_ctime_current(inode));
->   	}
->   
-> -	spin_unlock(&info->lock);
-> +	mutex_unlock(&info->lock);
->   	fdput(f);
->   	return 0;
->   }
+Thanks!
 
