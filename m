@@ -1,204 +1,140 @@
-Return-Path: <linux-kernel+bounces-14590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2EF7821F4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5E47821F58
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:16:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78DE028135D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:14:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60DBF2823A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:16:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3007714F7A;
-	Tue,  2 Jan 2024 16:14:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DAC914F9B;
+	Tue,  2 Jan 2024 16:15:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nsYpGk6k"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=mecka.net header.i=@mecka.net header.b="Wf2zKLMs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFA6314F63
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 16:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-556996d52e5so785406a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 08:14:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704212070; x=1704816870; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hd2aplMCet1ULWImTVMnDRzK7TL9hZ+ZX0uPlm9Tbpc=;
-        b=nsYpGk6kupUKR1Qxd4pt+MtzmA3B1XsadgguFFYG5Nk6G6jsf/0sK0dla4la28IPYe
-         J68Sc+IIkxrem44lkKnwnmdNtv54oCHSz3aOaOydM9a6va5CTA1yQyUoOR0fP4coORcf
-         9wCr9dU92Is4MmJNTvkRhNwRAWNCmcwWkBoOfYczAQjx6GnmxK4xwW779G0DNVwAj+++
-         IaZVzjDcjTxPfmhZJtPS1LmbdfgCD+CQoRrALapZcFfl4wTyO+QnAgdVdlUatSejh6zU
-         In+nuSkIJBwFiSS9NYQ4k0BHLGW7PJzWhuqalMZw0OgsP9yxxJmX1z5hoNzdOMB1LI8L
-         RLUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704212070; x=1704816870;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hd2aplMCet1ULWImTVMnDRzK7TL9hZ+ZX0uPlm9Tbpc=;
-        b=amOZEH18RgaSj+OvEaqPDLP5Ki7xyj4aHG0NNsJ+mKmuFaMpKTSJBMUFV4Mn2rGXRR
-         uhSPi+hBdW4wW9Of0e61E2GazM45OktFFgqR2cb+T3rK5Yx/m5iHinBRKtvmH9TxwHhu
-         zEK+h2FPMuAu4uLHGkmD1zsLewqEydLEWK33QcL27plAWX/4mjtJBnX+JSAZVW8pxCwR
-         YToDBInVehBiwo4bdLojOgmN752PeEdR+1xqf9maqtr5t/iuqqm35BuPkGqzBLjchkwe
-         SnMceOD8iVS8M3NjL03tLu3qxbEuJE3PyrePZQjf8VwXbKBSSdQac6YzonCwckHhYPa9
-         TYpg==
-X-Gm-Message-State: AOJu0YzDKemseeQt2/dIdEIZYkolmulJDbrX9QRdRRW1JbwsOEcHKHuu
-	5aICYuYR8qV/PpiB8QqFEqAEDfA/5tVsdXC1k333NcyxSi/Y
-X-Google-Smtp-Source: AGHT+IFJ3xiAnAAHviNNi+mEA9xiSIWfCXxzkbkl9TWLLiupNuy3YZ8o9IKmk26LnKZQwIZ/I/z3OiIAFQuWEIa3Vgs=
-X-Received: by 2002:a17:906:6a18:b0:a27:4725:6e4f with SMTP id
- qw24-20020a1709066a1800b00a2747256e4fmr6049949ejc.144.1704212069959; Tue, 02
- Jan 2024 08:14:29 -0800 (PST)
+Received: from mecka.net (mecka.net [159.69.159.214])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53F5414F61;
+	Tue,  2 Jan 2024 16:15:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mecka.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mecka.net
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mecka.net; s=2016.11;
+	t=1704212151; bh=/yn+BnszyZ+KRHVcYDAKoJNyr3kCxWnTqCINmt8R93U=;
+	h=From:Subject:Date:To:Cc:From;
+	b=Wf2zKLMsn4n0KvBqpBNjqoFONc95QW5n6P8pkUnUfJyBoDgdy3x0bc737NqQHZMz4
+	 K+bYV2R4xA4XmDF/mILdboHU5RMASwJGvDOZGyRs1Kgd5f2c1/6p9h0+i9kAR7A/e6
+	 TbHI6JxjB5M7Ob1BT2dD1+6jrQ9I6o2m92qtlJE2KZwR15kvDOqKmwxOaAdR8QWAFo
+	 9DAZWeE9FtGOHkDGT1hO4KmwpuYeYIF3Dj+qQmcVa4tpcUW0+TjtfbDrhlGECMi3a2
+	 NinS2pGGaclfiZeg7QkmbkMw4kxZ+Nr974Ul63QWbm6Uc396Yw2ZgVS4OqWMUH6dlH
+	 nPq32xyOlE/lQ==
+Received: from arthur.fritz.box (unknown [185.147.11.134])
+	by mecka.net (Postfix) with ESMTPSA id 5904A377C52;
+	Tue,  2 Jan 2024 17:15:51 +0100 (CET)
+From: Manuel Traut <manut@mecka.net>
+Subject: [PATCH v3 0/4] arm64: rockchip: Pine64 PineTab2 support
+Date: Tue, 02 Jan 2024 17:15:43 +0100
+Message-Id: <20240102-pinetab2-v3-0-cb1aa69f8c30@mecka.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214020530.2267499-1-almasrymina@google.com>
- <20231214020530.2267499-5-almasrymina@google.com> <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
- <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
- <20231215021114.ipvdx2bwtxckrfdg@google.com> <20231215190126.1040fa12@kernel.org>
- <CALvZod5myy2SvuCMNmqjjYeNONqSArV+8y8mrkfnNeog8WLjng@mail.gmail.com>
- <CAHS8izOLBtjHOqbTS_PiTNe+rTE=jboDWDM9zS108B57vVNcwA@mail.gmail.com>
- <CAHS8izMkCwv3jak9KUHeDUrkwBNNpdYk4voEX7Cbp7mTpNAQdA@mail.gmail.com>
- <54f226ef-df2d-9f32-fa3f-e846d6510758@huawei.com> <CAHS8izP63wXGH+Q3y1H=ycT=AHYnhGveBnuyF_rYioAjZ=Hn=g@mail.gmail.com>
- <7c6d35e3-165f-5883-1c1b-fce82c976028@huawei.com>
-In-Reply-To: <7c6d35e3-165f-5883-1c1b-fce82c976028@huawei.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Tue, 2 Jan 2024 08:14:17 -0800
-Message-ID: <CAHS8izNqeiK1tq=48LMbbqq5B4d2mhgbuKRvnFtiBngf73jXZg@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
- of struct page in API
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: Shakeel Butt <shakeelb@google.com>, Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Michael Chan <michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Wei Fang <wei.fang@nxp.com>, 
-	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
-	NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
-	Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, 
-	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, 
-	Russell King <linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, 
-	Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, 
-	hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>, 
-	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
-	Dexuan Cui <decui@microsoft.com>, Jassi Brar <jaswinder.singh@linaro.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Siddharth Vadapalli <s-vadapalli@ti.com>, 
-	Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, 
-	Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, 
-	Ronak Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
-	Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, 
-	Kalle Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>, 
-	Stefano Stabellini <sstabellini@kernel.org>, 
-	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Stefan Hajnoczi <stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan <shuah@kernel.org>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAK82lGUC/22MQQ6CMBBFr0JmbU1nqkBccQ/jotCpTIxAWtJoC
+ He3sGLh8s389xaIHIQj3IoFAieJMg4ZzKmArrfDk5W4zECaDBKRmmTg2bakvLVVxRpdW3rI8ym
+ wl8+euj8y9xLnMXz3csLt+ieSUGnFeKlt5UtsHTZv7l72nN+wRRIdRXMQaRM7rK+l09poPorru
+ v4AlRdRPdkAAAA=
+To: Neil Armstrong <neil.armstrong@linaro.org>, 
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
+ Sandy Huang <hjc@rock-chips.com>, Mark Yao <markyao0591@gmail.com>, 
+ Diederik de Haas <didi.debian@cknow.org>, 
+ Segfault <awarnecke002@hotmail.com>, Arnaud Ferraris <aferraris@debian.org>, 
+ Danct12 <danct12@riseup.net>, Ondrej Jirman <megi@xff.cz>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-rockchip@lists.infradead.org, Manuel Traut <manut@mecka.net>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.4
 
-On Thu, Dec 21, 2023 at 10:42=E2=80=AFPM Yunsheng Lin <linyunsheng@huawei.c=
-om> wrote:
->
-> On 2023/12/22 5:22, Mina Almasry wrote:
-> > On Thu, Dec 21, 2023 at 3:32=E2=80=AFAM Yunsheng Lin <linyunsheng@huawe=
-i.com> wrote:
-> >>
-> >> On 2023/12/20 11:01, Mina Almasry wrote:
-> >>
-> >> ...
-> >>
-> >>>>>> Perhaps we should aim to not export netmem_to_page(),
-> >>>>>> prevent modules from accessing it directly.
-> >>>>>
-> >>>>> +1.
-> >>>>
-> >>>
-> >>> I looked into this, but it turns out it's a slightly bigger change
-> >>> that needs some refactoring to make it work. There are few places
-> >>> where I believe I need to add netmem_to_page() that are exposed to th=
-e
-> >>> drivers via inline helpers, these are:
-> >>>
-> >>> - skb_frag_page(), which returns NULL if the netmem is not a page, bu=
-t
-> >>> needs to do a netmem_to_page() to return the page otherwise.
-> >>
-> >> Is it possible to introduce something like skb_frag_netmem() for
-> >> netmem? so that we can keep most existing users of skb_frag_page()
-> >> unchanged and avoid adding additional checking overhead for existing
-> >> users.
-> >>
-> >
-> > In my experience most current skb_frag_page() users need specifically
-> > the struct page*. Example is illegal_highdma() which
-> > PageHighMem(skb_frag_page())
->
-> For illegal_highdma() case, is it possible to use something like
-> skb_readabe_frag() checking to avoid calling skb_frag_page() for netmem?
->
+This adds support for the BOE TH101MB31IG002 LCD Panel used in PineTab2 [1] and
+PineTab-V [2] as well as the devictrees for the PineTab2 v0.1 and v2.0.
 
-Not teh skb_readable_frag() check I think, because illegal_highdma()
-is not trying to read the SKB per se.
+The BOE LCD Panel patch was retrieved from [3]. The function-name prefix has
+been adapted and the LCD init section was simplified.
 
-But I agree with your general point, and that should be handled
-correctly in this patch which adds devmem support:
+The PineTab2 devicetree patch was retrieved from [4]. Some renaming was needed
+to pass the dtb-checks, the brightness-levels are specified as range and steps
+instead of a list of values.
 
-https://patchwork.kernel.org/project/netdevbpf/patch/20231218024024.3516870=
--10-almasrymina@google.com/
+[5] and [6] was also used as source for this queue.
 
-The idea being that skb_frag_page() can return NULL if the frag is not
-paged, and the relevant callers are modified to handle that.
+[1] https://wiki.pine64.org/wiki/PineTab2
+[2] https://wiki.pine64.org/wiki/PineTab-V
+[3] https://salsa.debian.org/Mobian-team/devices/kernels/rockchip-linux/-/blob/mobian-6.6/debian/patches/display/0018-drm-panel-add-BOE-TH101MB31IG002-28A-driver.patch?ref_type=heads
+[4] https://salsa.debian.org/Mobian-team/devices/kernels/rockchip-linux/-/blob/mobian-6.6/debian/patches/device-tree/0134-arch-arm64-add-Pine64-PineTab2-device-trees.patch?ref_type=heads
+[5] https://github.com/dreemurrs-embedded/linux-pinetab2/tree/v6.6.7-danctnix1
+[6] https://xff.cz/git/linux?h=pt2-6.7
 
-> >
-> > But RFC v5 adds skb_frag_netmem() for callsites that want a netmem and
-> > don't care about specifically a page:
-> >
-> > https://patchwork.kernel.org/project/netdevbpf/patch/20231218024024.351=
-6870-10-almasrymina@google.com/
-> >
-> >>> - The helpers inside skb_add_rx_frag(), which needs to do a
-> >>> netmem_to_page() to set skb->pfmemalloc.
-> >>
-> >> Similar as above, perhaps introduce something like skb_add_rx_netmem_f=
-rag()?
-> >>
-> >
-> > Yes, v3 of this series adds skb_add_rx_frag_netmem():
-> >
-> > https://patchwork.kernel.org/project/netdevbpf/patch/20231220214505.230=
-3297-4-almasrymina@google.com/
+Signed-off-by: Manuel Traut <manut@mecka.net>
+---
+Changes in v3:
+- PineTab2 dts:
+    * Remove useless regulator-state-mem nodes for fixed regulators
+    * Swap mmc0 and mmc1, so mmc0 is now the internal eMMC
+- BOE TH101MB31IG002 LCD Panel:
+    * Remove enabled/prepared checks since they are done in core.
+- Use consistent naming (PineTab2 and PineTab-V) in commit messages.
+- Link to v2: https://lore.kernel.org/r/20231223-pinetab2-v2-0-ec1856d0030e@mecka.net
 
+Changes in v2:
+- Removed dtb-checker fixups, cause I am not sure if they are correct
+- Applied review comments for dt bindings
+- pinetab2 dts:
+    * Remove unverified WLAN entries, as in [5]
+    * Simplify flash LED definition, as in [5]
+    * Fix headphone detection and sound routing, as in [5]
+    * Fix CRU clock configuration
+- BOE TH101MB31IG002 LCD Panel:
+    * Reworked prepare/enable unprepare/disable, as in [5]
+- Replaced nicknames by realnames in author and signed-offs
 
+- Link to v1: https://lore.kernel.org/r/20231222-pinetab2-v1-0-e148a7f61bd1@mecka.net
 
---=20
-Thanks,
-Mina
+---
+Alexander Warnecke (2):
+      drm/panel: Add driver for BOE TH101MB31IG002-28A panel
+      arm64: dts: rockchip: Add devicetree for Pine64 PineTab2
+
+Manuel Traut (2):
+      dt-bindings: display: panel: Add BOE TH101MB31IG002-28A panel
+      dt-bindings: arm64: rockchip: Add Pine64 PineTab2
+
+ .../devicetree/bindings/arm/rockchip.yaml          |   8 +
+ .../display/panel/boe,th101mb31ig002-28a.yaml      |  58 ++
+ arch/arm64/boot/dts/rockchip/Makefile              |   2 +
+ .../boot/dts/rockchip/rk3566-pinetab2-v0.1.dts     |  26 +
+ .../boot/dts/rockchip/rk3566-pinetab2-v2.0.dts     |  46 +
+ arch/arm64/boot/dts/rockchip/rk3566-pinetab2.dtsi  | 959 +++++++++++++++++++++
+ drivers/gpu/drm/panel/Kconfig                      |  11 +
+ drivers/gpu/drm/panel/Makefile                     |   1 +
+ .../gpu/drm/panel/panel-boe-th101mb31ig002-28a.c   | 322 +++++++
+ 9 files changed, 1433 insertions(+)
+---
+base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
+change-id: 20231222-pinetab2-faa77e01db6f
+
+Best regards,
+-- 
+Manuel Traut <manut@mecka.net>
+
 
