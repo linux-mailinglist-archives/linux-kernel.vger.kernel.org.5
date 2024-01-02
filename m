@@ -1,119 +1,118 @@
-Return-Path: <linux-kernel+bounces-14816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09E878222C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:59:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AFB28222CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:00:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 282901C22668
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:59:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35CC4B20EE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C94B16435;
-	Tue,  2 Jan 2024 20:59:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC0DE16432;
+	Tue,  2 Jan 2024 20:59:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3l33vppm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QgLktwFg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8456168B1
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 20:59:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e898eb4432so131710947b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 12:59:09 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D2C1641B;
+	Tue,  2 Jan 2024 20:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a26f73732c5so650378766b.3;
+        Tue, 02 Jan 2024 12:59:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704229149; x=1704833949; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6OrdrWvBDxOQfJ4vcbx726UKsh13Gg6rlqSW8b/m6AQ=;
-        b=3l33vppma/IgX8GqZ/OsBLNrTC+DQFRaN8jbjBtjZFbVKVfGtg+mZUxwgVjiSHhedx
-         JEwM1UbU8arnhvayONYV+yWeB5FSVbH0mN28LW7y7tH5blJ7WnhqRSfgqyZeqe3VI9WO
-         QngELDGoSrrvJGNJFYKmMam1ONjONDCWi6qe4Oh8ZZWjZVEEiy084wqA0zyyCeZxlccP
-         LqjxccfJY6/xw1mr0evvSYTmNiV/qoBJxbST7bWPtUholNL5UrLoIAfY+U0Zvomht6Vm
-         g+LsMJp0jeJy/c2K5G/nfAu4cDDJjaOL2PXpxx9C5IxvuCOlb3JPssl8GdrHo16RIz3/
-         xH4Q==
+        d=gmail.com; s=20230601; t=1704229189; x=1704833989; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jlB0PUG7evATLc0OuzKEpt6MawbG9iqAg7BGZuj7pfo=;
+        b=QgLktwFgVcUMbmLOrroJ7i4iOOQuZigCS1YeCiZ8FfI1VQTEMrmU321o6a7E4t0tSY
+         cztEqSWn01E0dF+Tn1B07tia/9y8dJ7MvAg73V5EVtKQgFDu0Sg7o1hYv1VgozEhR5qx
+         vAspTFCIim3294Yd4wDgmOeordUiGhSr7JKyN+uU+9lLOrDNganT1zrTR1DhnCxkApU+
+         sGTNm87cnWcpJ1fqE8uFMKg/TCOroQDVChj0o6rsyGiIhPXW0L9UbSX1RXkniI0nH/Dj
+         VUdyMyXMiZGSWNczTDOMsCIObh6J6ZJsh/69/U4zo1j4eATAoBNCP2LEma7gfyLMx7vQ
+         hclg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704229149; x=1704833949;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6OrdrWvBDxOQfJ4vcbx726UKsh13Gg6rlqSW8b/m6AQ=;
-        b=Um7VO8irPC5v097I0k969hc4k8d0c5h7rxUpGMREg7NnvwHLk8oqUe7MKGB3YeegFq
-         rX+9eRWNNzed8fGKynzwfuGgebGXhCWkN/EDETLQp2pb9HALnZ357CmLYmfKPZr4dWJf
-         FzNbmFA4emW8dwDVl0GTt6WVFPNj37oLjhpBGB3iGzgQHE5COCZ4xL/nZWVubL7pHMIt
-         feXnXbPz4UkdUImytj0ZGhz9AwnVnMOYu8f6CWa2cJY18ob2dWbOOP8KIeHQdxR+SBsC
-         K7oBpI9rCWZ80/YO2MjJgqJboxVSGpRNqDTLUiGZdQ0Cft+lCf4eLrqrtmQFps94tqUY
-         NyGg==
-X-Gm-Message-State: AOJu0YwSHFMnGbUCPAD2finqz6KKkGU03WZWfcrgLlpRLeeBC1DkjuFg
-	hiNtGqp6Zuwoib075VPOPCLtbcJ+M9bxtoYUZ1rQ6drE
-X-Google-Smtp-Source: AGHT+IEYBVWVkGFDvnDDwSh8ZR1uFwBIdUhOiKNQJdQm7yNcrBncdU6lu+BqxXTaSudF2V5VYA6E0+s7Hmgg6J64Ng==
-X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2c4:200:9a04:c262:c978:d762])
- (user=almasrymina job=sendgmr) by 2002:a25:b9c1:0:b0:dbd:b7cb:8a6b with SMTP
- id y1-20020a25b9c1000000b00dbdb7cb8a6bmr513742ybj.1.1704229148829; Tue, 02
- Jan 2024 12:59:08 -0800 (PST)
-Date: Tue,  2 Jan 2024 12:59:04 -0800
+        d=1e100.net; s=20230601; t=1704229189; x=1704833989;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jlB0PUG7evATLc0OuzKEpt6MawbG9iqAg7BGZuj7pfo=;
+        b=gjrKnG9PpCS4gYDAtzp4Dj5K63UT4icw7w+BTgnhZ844eQ0bAoZZxzg1/49PPsflqW
+         TP1wcZCifPIUXUQtEKQCK4qgZtYvnQZDabokr30++7LN1X5LjpHQqOElQNPj+18tAY4V
+         NtXI3V5Tew2DQLNscpY8uS2HGekSL57RkY/rQhtI+zCsPEdlw+RRLn0QiOMByEzP6Sf9
+         ScwC87s9gFxbxG6xwt7p0VOi7c3f3FSBBxBUVUXhyMUVvyWuYG21sR4ak9Fio28VRNSA
+         7PtCfIK2WoK3Zc5c/DYZfzYIAUCaXc9gwj+Gdzw84d67406o6+yUz95OBrmuFTz+Tf3h
+         VnPQ==
+X-Gm-Message-State: AOJu0Ywp32lSvZqmMlhiXjFlhnRP3j4FlzwZcy/jGw1MEayXtai3dMF+
+	yRjjsXrayePkARuXf0ythQE=
+X-Google-Smtp-Source: AGHT+IEZDtyjr3TDGl71MjIXeUnjOYvve+ifXX/rtGtFSzaJ2n4S8WtkBLuo7hGh0LPIgO2MSMlsUw==
+X-Received: by 2002:a17:906:3987:b0:a28:2374:f39d with SMTP id h7-20020a170906398700b00a282374f39dmr1156014eje.50.1704229188691;
+        Tue, 02 Jan 2024 12:59:48 -0800 (PST)
+Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.gmail.com with ESMTPSA id f15-20020a17090660cf00b00a26f66ce72fsm7941200ejk.83.2024.01.02.12.59.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 12:59:48 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Daniel Golle <daniel@makrotopia.org>,
+	Hsin-Yi Wang <hsinyi@chromium.org>,
+	=?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= <nfraprado@collabora.com>,
+	jason-ch chen <Jason-ch.Chen@mediatek.com>,
+	Macpaul Lin <macpaul.lin@mediatek.com>,
+	=?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH 1/2] dt-bindings: arm64: mediatek: Add MT7988A and BPI-R4
+Date: Tue,  2 Jan 2024 21:59:40 +0100
+Message-Id: <20240102205941.29654-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240102205905.793738-1-almasrymina@google.com>
-Subject: [PATCH net-next v3] vsock/virtio: use skb_frag_*() helpers
-From: Mina Almasry <almasrymina@google.com>
-To: kvm@vger.kernel.org, virtualization@lists.linux.dev, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Mina Almasry <almasrymina@google.com>, Stefan Hajnoczi <stefanha@redhat.com>, 
-	Stefano Garzarella <sgarzare@redhat.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Minor fix for virtio: code wanting to access the fields inside an skb
-frag should use the skb_frag_*() helpers, instead of accessing the
-fields directly. This allows for extensions where the underlying
-memory is not a page.
+From: Rafał Miłecki <rafal@milecki.pl>
 
-Acked-by: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: Mina Almasry <almasrymina@google.com>
+MT7988A is another MediaTek's SoC with just 1 device available right
+now: Banana Pi BPI-R4.
 
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 ---
+ Documentation/devicetree/bindings/arm/mediatek.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-v3:
-- Applied Stefano's Acked-by.
-- Forked this patch from 'Abstract page from net stack'.
-
-v2:
-
-- Also fix skb_frag_off() + skb_frag_size() (David)
-- Did not apply the reviewed-by from Stefano since the patch changed
-relatively much.
-
----
- net/vmw_vsock/virtio_transport.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-index f495b9e5186b..1748268e0694 100644
---- a/net/vmw_vsock/virtio_transport.c
-+++ b/net/vmw_vsock/virtio_transport.c
-@@ -153,10 +153,10 @@ virtio_transport_send_pkt_work(struct work_struct *work)
- 				 * 'virt_to_phys()' later to fill the buffer descriptor.
- 				 * We don't touch memory at "virtual" address of this page.
- 				 */
--				va = page_to_virt(skb_frag->bv_page);
-+				va = page_to_virt(skb_frag_page(skb_frag));
- 				sg_init_one(sgs[out_sg],
--					    va + skb_frag->bv_offset,
--					    skb_frag->bv_len);
-+					    va + skb_frag_off(skb_frag),
-+					    skb_frag_size(skb_frag));
- 				out_sg++;
- 			}
- 		}
+diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+index 6f2f64ae76fc..92dbfb862757 100644
+--- a/Documentation/devicetree/bindings/arm/mediatek.yaml
++++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+@@ -91,6 +91,10 @@ properties:
+           - enum:
+               - mediatek,mt7986b-rfb
+           - const: mediatek,mt7986b
++      - items:
++          - enum:
++              - bananapi,bpi-r4
++          - const: mediatek,mt7988a
+       - items:
+           - enum:
+               - mediatek,mt8127-moose
 -- 
-2.43.0.472.g3155946c3a-goog
+2.35.3
 
 
