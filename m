@@ -1,91 +1,119 @@
-Return-Path: <linux-kernel+bounces-14707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0949C8220F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:27:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED70F8220FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:30:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 189FB1C22969
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:27:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03B28B226A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:30:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 068CD156FC;
-	Tue,  2 Jan 2024 18:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DCEB15AC5;
+	Tue,  2 Jan 2024 18:30:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VeHJCx+X"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TXZ58djF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D08156D9
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 18:27:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d42ed4cdc7so10225ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 10:27:37 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E9D156FD
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 18:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a2335397e64so1061933866b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 10:30:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704220056; x=1704824856; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=b1iJ/PC7NOmh51+I0K/ABUi5e6j/sV3yKrMrNMnzSm4=;
-        b=VeHJCx+XC6NsVNtSDdq4nzwvE5QLApzOSD3LC6QAiks6l6hgrneosAL3sAgaVMOOES
-         8xHWKo0JZEBjfYgcBsaMy18H6oySwAleAgY7IswYQH3DVw8G/rgTtuBvHFgIXevnakL8
-         Qd4GsIICEk5UyprNbn3nuuHBuQXPl61VEtIa9I251HIvtMjat5Qwr3gR01Rthlg5aDvh
-         MP5KZel/e8SAM18eXoS8BJRvF1FGpaxrOQTBQfJCpget5NIcUAVfH7w8J8uDBQQ+YFlL
-         ZrpYAe6VmpVu2quIXJu4qJCrc55WTmabsdBasWnxEXpkc1U+mX6eexIkTmv+biC7oYl7
-         K4Kg==
+        d=linaro.org; s=google; t=1704220206; x=1704825006; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wrmBZACBBkgQtz1wQzBg7mU9m8qYCsgsxMH5h6qIB00=;
+        b=TXZ58djFyjfXlGHRpN5wmujv/V8nrMkt5eGF4LjGMZNZutff5n+CEThH6vWlDUmSSs
+         2hf8fnZD+g8MzXbMUbSq6lnjyGFAtS003DLcNaBasptwQqXF4UZXA/u5YYXo8+K7eB3s
+         x1vsCgjFi21QyeCWacSK0LhFaYlToD9i35Oy9nZ0Cd02n2GiN39uqYrHTBj1Qk/GUn4o
+         wHyaJ5yXTP7+SAlWdR368AxlpawmAP/BIP9+PsY5DmXbYiMolAnp0Yn8y9xDzT+SHqpn
+         diIc4kQ5GaPxgAEIclSPy89GudJxQwYqj339ZcS620uoRZ1XeBV2+UwzmsstjirKy2Ae
+         HacA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704220056; x=1704824856;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b1iJ/PC7NOmh51+I0K/ABUi5e6j/sV3yKrMrNMnzSm4=;
-        b=rzkBM2ZHo3dsm12BjV2VdTsYBjT1JXyxfh9Z4JZzUgckI5RDFLMyWxCE1BL7wazk3r
-         raXWVUC86UUlI9nJDvfrxPAR6BJ+LXOJERCrqiCHXkKu9NoUUitOqGJw091PLOG/Y7mX
-         SiUHVkgeLuyKA6W9ecduqgk2qJC3Gj3/a23/1NbH81NV6clj+eb8V0mjJR0fOOJZiX/Z
-         RyrYUNT3lHeSvgrbqsRju39DeoDUgzLuEb4TTgvC6T06pyPzZQb5fFKD7Q3Y1WguHbQk
-         UMjU5gy6MYcIiKmIzqtH+V++/ZDI7hJec2qOZoFYRc4GbRmhRy2q7ixggp/JmBTw1DML
-         sRDw==
-X-Gm-Message-State: AOJu0YwnriBNEuMvJXvpOjNABuaxNn932HUuaNbBPJIjZ3i1p6PGocIW
-	7ar6+uvOrQ0NkgnkNNr1etj7isXBt2Gv
-X-Google-Smtp-Source: AGHT+IHOMqzyTbLqQB4plEq+ftykwfP/uDMXWaZhiDtsDLQcXDc5u4n5HeAdTpYbKpwo+95Zpg48bg==
-X-Received: by 2002:a17:903:1106:b0:1d3:6f65:e332 with SMTP id n6-20020a170903110600b001d36f65e332mr1173410plh.27.1704220056231;
-        Tue, 02 Jan 2024 10:27:36 -0800 (PST)
-Received: from [2620:0:1008:15:c73b:7876:89ec:9102] ([2620:0:1008:15:c73b:7876:89ec:9102])
-        by smtp.gmail.com with ESMTPSA id b24-20020a17090acc1800b0028ce507cd7dsm878217pju.55.2024.01.02.10.27.35
+        d=1e100.net; s=20230601; t=1704220206; x=1704825006;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wrmBZACBBkgQtz1wQzBg7mU9m8qYCsgsxMH5h6qIB00=;
+        b=BkQuLOLgqXpDhMQReIf3OIvWhNQhdZdz7ecIJ4FlFouMYk1JT6OPy3hsDkYDfot/+k
+         woqwC/FSZxx5j/OQEp2tqNGJ3sgfOWPUCarELs7VDWeaRoyKYA3noJmkRvbOUTxRzps5
+         XwgyVvl9a38NQx1Q6JgGJzb2A0b3+egOIJ2No4btdnaVM1/Rl7zWjCUngkHwWqA4L69Y
+         1o6AqOO7n3KoB/30FyKxpu8tpddLXMPvWCmxXo5hIeUeaw5dkgEjypq5kR4WLGt0XAeO
+         72RSCkwI1Y7Ob8mMx42wrywMKZWmviRCegHc9qd5PPq8pjHIrghpi7n1Jyt+/+AmagxG
+         xpzQ==
+X-Gm-Message-State: AOJu0YwH2KpuAmvYEUXv3Gwc3PNkTasN/axIjlHuzFtjuH90jrBa5Xpw
+	fBdmnKvGo5jo8reHTEzDCnBfJa24vJygUQ==
+X-Google-Smtp-Source: AGHT+IG9IvUpGldKB4PaNtlMH7wBLVfuild8l90gv+1TvAK/xA0LqNk+HVAOCRIu2yA1EOjBv6+nSQ==
+X-Received: by 2002:a17:906:10dc:b0:a27:45a7:1b39 with SMTP id v28-20020a17090610dc00b00a2745a71b39mr5629778ejv.35.1704220206057;
+        Tue, 02 Jan 2024 10:30:06 -0800 (PST)
+Received: from [10.167.154.1] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
+        by smtp.gmail.com with ESMTPSA id et10-20020a170907294a00b00a2699a54888sm11968835ejc.64.2024.01.02.10.30.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 10:27:35 -0800 (PST)
-Date: Tue, 2 Jan 2024 10:27:34 -0800 (PST)
-From: David Rientjes <rientjes@google.com>
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-cc: Paolo Bonzini <pbonzini@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, 
-    Vitaly Kuznetsov <vkuznets@redhat.com>, 
-    Sean Christopherson <seanjc@google.com>, 
-    Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-    Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-    Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org, 
-    kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/sev: Fix SEV check in sev_map_percpu_data()
-In-Reply-To: <20240102133747.27053-1-kirill.shutemov@linux.intel.com>
-Message-ID: <cb702fe9-11a6-8a0c-925a-179cb3f6c516@google.com>
-References: <20240102133747.27053-1-kirill.shutemov@linux.intel.com>
+        Tue, 02 Jan 2024 10:30:04 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 0/4] X Elite fixups
+Date: Tue, 02 Jan 2024 19:29:46 +0100
+Message-Id: <20240102-topic-x1e_fixes-v1-0-70723e08d5f6@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABpWlGUC/x2L0QqDMAwAf0XybKAt6sZ+ZchIa9SAVGmcCOK/L
+ +zxjrsLlIuwwqu6oPAhKms28HUFaaY8McpgDMGFxnkXcF83SXh6/oxysiJ1YXiOLfn4aMGuSMo
+ YC+U025e/y2JyK/yvzbz7+/4BKbcZxnYAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Georgi Djakov <djakov@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Rajendra Nayak <quic_rjendra@quicinc.com>, 
+ Sibi Sankar <quic_sibis@quicinc.com>, Abel Vesa <abel.vesa@linaro.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704220203; l=906;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=ujsRm5mcuT51iwbkbeM9ZXk2gxBgeFkoemJbUcYdSDg=;
+ b=6OenUz16unWK/pE/hAVmesAzNt+Wh8TGFZFgu0ZUGY+6k4twaIlYIRD0jPxJikYp4kyOk4Yjk
+ /j9YFBPv/mxB9/CngICqybERI0UKiyeyUVWkcrJZhEhnqRnbYK06CMP
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-On Tue, 2 Jan 2024, Kirill A. Shutemov wrote:
+Just a couple of "usual" fixups that slipped through introduction
+reviews..
 
-> The function sev_map_percpu_data() checks if it is running on an SEV
-> platform by checking the CC_ATTR_GUEST_MEM_ENCRYPT attribute. However,
-> this attribute is also defined for TDX.
-> 
-> To avoid false positives, add a cc_vendor check.
-> 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+p1-2 for icc
+p3-4 for qcom
 
-Acked-by: David Rientjes <rientjes@google.com>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Konrad Dybcio (4):
+      interconnect: qcom: x1e80100: Remove bogus per-RSC BCMs and nodes
+      dt-bindings: interconnect: Remove bogus interconnect nodes
+      arm64: dts: qcom: x1e80100: Add missing system-wide PSCI power domain
+      arm64: dts: qcom: x1e80100: Flush RSC sleep & wake votes
+
+ arch/arm64/boot/dts/qcom/x1e80100.dtsi             |   9 +
+ drivers/interconnect/qcom/x1e80100.c               | 315 ---------------------
+ .../dt-bindings/interconnect/qcom,x1e80100-rpmh.h  |  24 --
+ 3 files changed, 9 insertions(+), 339 deletions(-)
+---
+base-commit: ab0b3e6ef50d305278b1971891cf1d82ab050b35
+change-id: 20240102-topic-x1e_fixes-a62d8f5a1b75
+
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
 
