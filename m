@@ -1,191 +1,156 @@
-Return-Path: <linux-kernel+bounces-14304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD710821B1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:39:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3B0D821B1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:39:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1DB21C21E7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:39:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 341B2282EA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFEEFF9DF;
-	Tue,  2 Jan 2024 11:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="K5kxsNkc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6725AFBFD;
+	Tue,  2 Jan 2024 11:39:40 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF87F9CF
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 11:39:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50e7b51b0ceso5751554e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 03:39:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1704195552; x=1704800352; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+xrexN7AjIT8/bBjygEtpkIwY//a4OJyt2takyL4czo=;
-        b=K5kxsNkcQhB6FLLt5bshi1c1n/NaJpOEuwdt2n/HBpcBMeRst4eoM+cvlVluugNjEy
-         Vt4kKnK0NMYx3R3lgG9xfahj/+0LIIXID5aGEWTqdx2Hakr0cl1169iGRAM/NGit/e7v
-         VHWy+dQyY/Nb4cLowFRfU5zNrbvCnjn8yfxXwhfcfbaXZO0qn4R4wPD8UUOhqpWzpTuf
-         JV3Idfijyd3PiXsJ93uuyR6HbSSLjOyX/CStw08a1EvIaAmMEYAp6yH1+WD2HNIVvnFm
-         sNGsxHsKcJ+A2v0sOG8AiYgPWGnqT50m8YeATD6CiJXAUbCR1hmimo0H09LBpV6wiuW0
-         LpPg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3B8BFBEC;
+	Tue,  2 Jan 2024 11:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5f254d1a6daso9553087b3.2;
+        Tue, 02 Jan 2024 03:39:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704195552; x=1704800352;
+        d=1e100.net; s=20230601; t=1704195576; x=1704800376;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+xrexN7AjIT8/bBjygEtpkIwY//a4OJyt2takyL4czo=;
-        b=RsddpDCM9jKFzWgBzSSniFb35Mlrls2asBF4U5g5WmrmNflUKoY1GgOD/GIx9AAUYP
-         R8HoKcimvxExtysdD+M+7eAXag3R+hrGJ9kbFTNhxNHpd47zQP/Df84koTt8oiZTu2di
-         Gj3/wUlEGwVz7PjJ7nRLQbwgbIH+NS9B9XboPrhs6mXTltmYkdSqY73+YiIiwm4Qa8iA
-         e/DXKF9YagMZfGwFt/iGDl0hx/fRPVXSSyJkYuSqBt/cmHyujprPPxJV2veb0079FR4p
-         7jfNiQh5JwEpmiwU378u12pV11IdkGemLXZS7nhQ5p4ITKw9jQNiyshdruFZ4CKXsTJi
-         hmCw==
-X-Gm-Message-State: AOJu0YxUF89QnQbe/fxgRgFTcbBmGunWeKHTfUPtM2kY6FMYTTUFngYI
-	45sGjoBD6P5KpIAv7xxBUxrhGn4GB+srd5dHoDb41gzb6dbORg==
-X-Google-Smtp-Source: AGHT+IFbko5i8RH8Vg0vZ4pxb7kzTc7ul8NUW8obTIRqTyaRi54CPtExu7HRi7nRM5xXeMBBJcX0lgK8wbOWkXJVzio=
-X-Received: by 2002:a05:6512:1254:b0:50e:754c:84ff with SMTP id
- fb20-20020a056512125400b0050e754c84ffmr8987199lfb.11.1704195552502; Tue, 02
- Jan 2024 03:39:12 -0800 (PST)
+        bh=uFi8eMSPsfOFqOHCg4hwloMdrYmzNBUBfM1xQ0dKIbA=;
+        b=PwoKqi6lndOXSnMN02Wi4fOxWcxCNJjQ/tjc/HDCcpJepMUf1FdEAZvL2Z/tX2sMjK
+         z5rLDYH9MwbMUPLmOwctgzyiPdBL/4YDa3vlYYQ5o+W3EBiUvN7bF5rD9zaroNTfpSL1
+         GgtVnMIAqcc9pavEmH84MhIL8TtGpoBLbIvy7kUi7qjb81v/qXlTO/ofcsCkgF3GZ+7i
+         owV7srOaHO8c+cKkPsvSlKiJ+m2ChMr7R+hnOZO+hFstxrM7t4xBE7uUqzv/jT1fYN9E
+         HnuwTGZOabFiTuKkrUmEoS4Dbxs9IwSD9J+bQpfff+ZYmZ0BDeasycWzfMgNB+CdiysF
+         FBlw==
+X-Gm-Message-State: AOJu0YyJfMuQcc0pSe3pDq/hJouxW8y7dXlXWFzrRiJz3svGGyKbChr6
+	GzWUV8VthhqsoMjqw5H5DMRisjxNx1bwxw==
+X-Google-Smtp-Source: AGHT+IGXq1AARTnEfk2PH5xz+CvZUSKTjqgCiCyt+CEGGi4Gik9hnPXj5+RYuZc1mkpEjUxkoFtTBw==
+X-Received: by 2002:a81:5784:0:b0:5ee:7d0f:4458 with SMTP id l126-20020a815784000000b005ee7d0f4458mr4336249ywb.56.1704195576581;
+        Tue, 02 Jan 2024 03:39:36 -0800 (PST)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id k28-20020a81ac1c000000b005ee999d3941sm5957031ywh.26.2024.01.02.03.39.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jan 2024 03:39:35 -0800 (PST)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbdacafe012so5830521276.1;
+        Tue, 02 Jan 2024 03:39:35 -0800 (PST)
+X-Received: by 2002:a05:6902:e08:b0:da0:5370:fdce with SMTP id
+ df8-20020a0569020e0800b00da05370fdcemr9471148ybb.19.1704195574941; Tue, 02
+ Jan 2024 03:39:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231024142706.195517-1-hezhongkun.hzk@bytedance.com> <CAKEwX=OiNB+pPhb-3Tf7O=F7psKE3EOpwmbPSeLSOyuHpj3i+Q@mail.gmail.com>
-In-Reply-To: <CAKEwX=OiNB+pPhb-3Tf7O=F7psKE3EOpwmbPSeLSOyuHpj3i+Q@mail.gmail.com>
-From: Zhongkun He <hezhongkun.hzk@bytedance.com>
-Date: Tue, 2 Jan 2024 19:39:00 +0800
-Message-ID: <CACSyD1P6HmH9tSvONnNxYv8P+am_hH2dK3UJQd9_+o6EWkPsXA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: zswap: fix the lack of page lru flag
- in zswap_writeback_entry
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, yosryahmed@google.com, 
-	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
+ <20231216033552.3553579-1-kent.overstreet@linux.dev> <20231216033552.3553579-7-kent.overstreet@linux.dev>
+ <CAMuHMdW29dAQh+j3s4Af1kMAFKSr2yz7M2L-fWd1uZfL7mEY1Q@mail.gmail.com> <20231220213957.zbslehrx4zkkbabq@moria.home.lan>
+In-Reply-To: <20231220213957.zbslehrx4zkkbabq@moria.home.lan>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 2 Jan 2024 12:39:23 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXsxh23cv-m3G+_9GxXy9wN5vJDp8C0x43KMLEQXy5SDg@mail.gmail.com>
+Message-ID: <CAMuHMdXsxh23cv-m3G+_9GxXy9wN5vJDp8C0x43KMLEQXy5SDg@mail.gmail.com>
+Subject: Re: [PATCH 50/50] Kill sched.h dependency on rcupdate.h
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, tglx@linutronix.de, x86@kernel.org, 
+	tj@kernel.org, peterz@infradead.org, mathieu.desnoyers@efficios.com, 
+	paulmck@kernel.org, keescook@chromium.org, dave.hansen@linux.intel.com, 
+	mingo@redhat.com, will@kernel.org, longman@redhat.com, boqun.feng@gmail.com, 
+	brauner@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 30, 2023 at 10:09=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrot=
-e:
->
-> On Tue, Oct 24, 2023 at 7:27=E2=80=AFAM Zhongkun He
-> <hezhongkun.hzk@bytedance.com> wrote:
+Hi Kent,
+
+On Wed, Dec 20, 2023 at 10:40=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+> On Wed, Dec 20, 2023 at 12:59:44PM +0100, Geert Uytterhoeven wrote:
+> > On Sat, Dec 16, 2023 at 4:39=E2=80=AFAM Kent Overstreet
+> > <kent.overstreet@linux.dev> wrote:
+> > > by moving cond_resched_rcu() to rcupdate.h, we can kill another big
+> > > sched.h dependency.
+> > >
+> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 > >
->
-> My apologies for the delayed response. I have a couple of questions.
->
-> > The zswap_writeback_entry() will add a page to the swap cache, decompre=
-ss
-> > the entry data into the page, and issue a bio write to write the page b=
-ack
-> > to the swap device. Move the page to the tail of lru list  through
-> > SetPageReclaim(page) and folio_rotate_reclaimable().
+> > Thanks for your patch, which is now commit dc00f26faea81dc0 ("Kill
+> > sched.h dependency on rcupdate.h") in next-20231220.
 > >
-> > Currently, about half of the pages will fail to move to the tail of lru
->
-> May I ask what's the downstream effect of this? i.e so what if it
-> fails? And yes, as Andrew pointed out, it'd be nice if the patch
-> changelog spells out any observable or measurable change from the
-> user's POV.
->
-
-The swap cache page used to decompress zswap_entry should be
-moved  to the tail of the inactive list after end_writeback, We can release
-them in time.Just like the following code in zswap_writeback_entry().
-
-   /* move it to the tail of the inactive list after end_writeback */
-   SetPageReclaim(page);
-
-After the writeback is over, the function of
-folio_rotate_reclaimable() will fail
-because the page is not in the LRU list but in some of the cpu folio batche=
-s.
-Therefore we did not achieve the goal of setting SetPageReclaim(page), and
-the pages could not be free in time.
-
-> > list because there is no LRU flag in page which is not in the LRU list =
-but
-> > the cpu_fbatches. So fix it.
->
-> This sentence is a bit confusing to me. Does this mean the page
-> currently being processed for writeback is not in the LRU list
-> (!PageLRU(page)), but IN one of the cpu folio batches? Which makes
-> folio_rotate_reclaimable() fails on this page later on in the
-> _swap_writepage() path? (hence the necessity of lru_add_drain()?)
->
-
-Yes, exactly.
-
-> Let me know if I'm misunderstanding the intention of this patch. I
-> know it's a bit pedantic, but spelling things out (ideally in the
-> changelog itself) will help the reviewers, as well as future
-> contributors who want to study the codebase and make changes to it.
->
-
-Sorry,my bad.
-
+> > Reported-by: noreply@ellerman.id.au
 > >
-> > Signed-off-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
+> > $ make ARCH=3Dm68k defconfig arch/m68k/kernel/asm-offsets.i
+> > *** Default configuration is based on 'multi_defconfig'
+> > #
+> > # No change to .config
+> > #
+> >   UPD     include/config/kernel.release
+> >   UPD     include/generated/utsrelease.h
+> >   CC      arch/m68k/kernel/asm-offsets.s
+> > In file included from ./include/asm-generic/bug.h:7,
+> >                  from ./arch/m68k/include/asm/bug.h:32,
+> >                  from ./include/linux/bug.h:5,
+> >                  from ./include/linux/thread_info.h:13,
+> >                  from ./arch/m68k/include/asm/processor.h:11,
+> >                  from ./include/linux/sched.h:13,
+> >                  from arch/m68k/kernel/asm-offsets.c:15:
+> > ./arch/m68k/include/asm/processor.h: In function =E2=80=98set_fc=E2=80=
+=99:
+> > ./arch/m68k/include/asm/processor.h:91:15: error: implicit declaration
+> > of function =E2=80=98in_interrupt=E2=80=99 [-Werror=3Dimplicit-function=
+-declaration]
+> >    91 |  WARN_ON_ONCE(in_interrupt());
+> >       |               ^~~~~~~~~~~~
+> > ./include/linux/once_lite.h:28:27: note: in definition of macro
+> > =E2=80=98DO_ONCE_LITE_IF=E2=80=99
+> >    28 |   bool __ret_do_once =3D !!(condition);   \
+> >       |                           ^~~~~~~~~
+> > ./arch/m68k/include/asm/processor.h:91:2: note: in expansion of macro
+> > =E2=80=98WARN_ON_ONCE=E2=80=99
+> >    91 |  WARN_ON_ONCE(in_interrupt());
+> >       |  ^~~~~~~~~~~~
+> > cc1: some warnings being treated as errors
+> > make[3]: *** [scripts/Makefile.build:116:
+> > arch/m68k/kernel/asm-offsets.s] Error 1
+> > make[2]: *** [Makefile:1191: prepare0] Error 2
+> > make[1]: *** [Makefile:350: __build_one_by_one] Error 2
+> > make: *** [Makefile:234: __sub-make] Error 2
 >
-> Thanks and look forward to your response,
-> Nhat
+> Applying this fix:
 >
-> P/S: Have a nice holiday season and happy new year!
+> commit 0d7bdfe9726b275c7e9398047763a144c790b575
+> Author: Kent Overstreet <kent.overstreet@linux.dev>
+> Date:   Wed Dec 20 16:39:21 2023 -0500
+>
+>     m68k: Fix missing include
+>
+>     Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-Here are the steps and results of the performance test=EF=BC=9A
-1:zswap+ zram (simplified model with on IO)
-2:disabel zswap/parameters/same_filled_pages_enabled (stress have same page=
-s)
-3:stress --vm 1 --vm-bytes 2g --vm-hang 0   (2Gi anon pages)
-4: In order to quickly release zswap_entry, I used the previous
-     patch (I will send it again later).
-https://lore.kernel.org/all/20231025095248.458789-1-hezhongkun.hzk@bytedanc=
-e.com/
+LGTM.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Performance result=EF=BC=9A
-   reclaim 1Gi zswap_entry
+Gr{oetje,eeting}s,
 
-time echo 1 > writeback_time_threshold
-(will release the zswap_entry,  not been accessed for more than 1 seconds )
+                        Geert
 
-Base                                 With this patch
-real    0m1.015s               real    0m1.043s
-user    0m0.000s              user    0m0.001s
-sys     0m1.013s               sys     0m1.040s
-So no obvious performance regression was found.
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-After writeback, we perform the following steps to release the memory again
-echo 1g > memory.reclaim
-
-Base:
-                     total        used        recalim        total        u=
-sed
-Mem:           38Gi       2.5Gi       ---->             38Gi       1.5Gi
-Swap:         5.0Gi       1.0Gi       ---->              5Gi        1.5Gi
-used memory  -1G   swap +0.5g
-It means that  half of the pages are failed to move to the tail of lru list=
-,
-So we need to release an additional 0.5Gi anon pages to swap space.
-
-With this patch:
-                     total        used        recalim        total        u=
-sed
-Mem:           38Gi       2.6Gi       ---->             38Gi       1.6Gi
-Swap:         5.0Gi       1.0Gi       ---->              5Gi        1Gi
-
-used memory  -1Gi,  swap +0Gi
-It means that we release all the pages which have been add to the tail of
-lru list in zswap_writeback_entry() and folio_rotate_reclaimable().
-
-
-Thanks for your time Nhat and Andrew. Happy New Year!
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
