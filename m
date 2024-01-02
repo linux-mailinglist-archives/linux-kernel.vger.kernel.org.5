@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-14082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B95EA8217B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:30:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 782708217B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:31:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65D9F1F21CA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:30:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 255462824C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:31:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F232101;
-	Tue,  2 Jan 2024 06:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F9746B7;
+	Tue,  2 Jan 2024 06:31:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qmR26i0D"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="o38+Omru"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE9B1879
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 06:30:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F126468C
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 06:31:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Content-Type: text/plain;
 	charset=us-ascii
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704177036;
+	t=1704177059;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jogtFHqhtts+BmygiI65vHy3Sj9utOue/9xvsVCOd+4=;
-	b=qmR26i0D49H8PdwABxnbTA/6T904fWdmEzd6KXl0wQjHSIy3X5dP4pqW+94RX26mni1cHM
-	zLdOEu9mc1bcFwLhhpZo4RoOBAfeSKwJqgOB6pBH35ufB+EB7ejL7hIrrJnPQxw9YsHs3+
-	RCHR/4odGFPxiCJ2mnjlJCWZAb9aI3E=
+	bh=xwM83SlsLb1lbvo4JCqZZv0h8wT6KPgcWS/HAwN04/0=;
+	b=o38+Omrur7cm8Q/e0nLnXqBIsWvLMDkbm5ptAnn/ZlZWQiCVmcDjZtwoEs60A94RgcAauv
+	E132opwWBTvCsPeDzfzlh9A4yzPTIVTPtHNC/5L0+b6GA84IBDoYN0L7I27E5LuYL9UL8A
+	OyzbfsSDRORVadxA5D4C39d8zPUzD98=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Subject: Re: [PATCH 05/13] mm: Introduce vma_pgtable_walk_{begin|end}()
+Subject: Re: [PATCH 03/13] mm: Provide generic pmd_thp_or_huge()
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <ZZOhlB-KK4hF3PgY@x1n>
-Date: Tue, 2 Jan 2024 14:29:56 +0800
+In-Reply-To: <ZZOhCuuozrBscdRC@x1n>
+Date: Tue, 2 Jan 2024 14:30:25 +0800
 Cc: LKML <linux-kernel@vger.kernel.org>,
  Linux-MM <linux-mm@kvack.org>,
  Matthew Wilcox <willy@infradead.org>,
@@ -70,29 +70,54 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
  Jason Gunthorpe <jgg@nvidia.com>,
  Andrea Arcangeli <aarcange@redhat.com>,
  Axel Rasmussen <axelrasmussen@google.com>
-Content-Transfer-Encoding: 7bit
-Message-Id: <B82206E4-2C43-40EE-8337-0DC9FF37F7E9@linux.dev>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4B38660D-3AC2-4F96-9DD1-2D8CAA55E7E4@linux.dev>
 References: <20231219075538.414708-1-peterx@redhat.com>
- <20231219075538.414708-6-peterx@redhat.com>
- <0D9E28F4-AFA8-479C-8311-093DAFD9DF41@linux.dev> <ZZOhlB-KK4hF3PgY@x1n>
+ <20231219075538.414708-4-peterx@redhat.com>
+ <135b3189-f459-4b57-9861-bb8acb999d91@linux.dev> <ZZOhCuuozrBscdRC@x1n>
 To: Peter Xu <peterx@redhat.com>
 X-Migadu-Flow: FLOW_OUT
 
 
 
-> On Jan 2, 2024, at 13:39, Peter Xu <peterx@redhat.com> wrote:
-> 
-> On Mon, Dec 25, 2023 at 02:34:48PM +0800, Muchun Song wrote:
->> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-> 
-> You're using the old email address here.  Do you want me to also use the
-> linux.dev one that you suggested me to use?
+> On Jan 2, 2024, at 13:37, Peter Xu <peterx@redhat.com> wrote:
+>=20
+> On Mon, Dec 25, 2023 at 02:29:53PM +0800, Muchun Song wrote:
+>>> @@ -1355,6 +1355,10 @@ static inline int pmd_write(pmd_t pmd)
+>>>  #endif /* pmd_write */
+>>>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>>> +#ifndef pmd_thp_or_huge
+>>=20
+>> I think it may be the time to rename to pmd_thp_or_hugetlb,
+>> the "huge" is really confusing. thp is not huge? Actually,
+>> it is huge. It is better to make it more specific from now on, like
+>> "hugetlb".
+>=20
+> The rename will need to touch ARM code, which I wanted to avoid, see:
 
-Either is OK for the RB tag.
+I see.
 
-> 
-> -- 
+>=20
+> arch/arm64/include/asm/pgtable.h:#define pmd_thp_or_huge(pmd)   =
+(pmd_huge(pmd) || pmd_trans_huge(pmd))
+>=20
+> So far this series only touches generic code.  Would you mind I keep =
+this
+> patch as-is, and leave renaming to later?
+
+OK.
+
+THanks.
+
+>=20
+>>=20
+>> BTW, please cc me via the new email (muchun.song@linux.dev) next =
+edition.
+>=20
+> Sure.  Thanks for taking a look.
+>=20
+> --=20
 > Peter Xu
-> 
+>=20
 
 
