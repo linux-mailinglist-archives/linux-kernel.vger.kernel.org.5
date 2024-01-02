@@ -1,121 +1,317 @@
-Return-Path: <linux-kernel+bounces-13964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87EF5821617
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 02:07:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30749821619
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 02:09:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44B671F21821
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 01:07:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 488421C20E92
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 01:09:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9F481C;
-	Tue,  2 Jan 2024 01:07:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i+LU5KJO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85DF9A48;
+	Tue,  2 Jan 2024 01:09:47 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 878EA381;
-	Tue,  2 Jan 2024 01:07:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6d9b51093a0so4912001b3a.0;
-        Mon, 01 Jan 2024 17:07:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704157644; x=1704762444; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GFYxP6M9En/LfjFXyPIaCGUIynVC1Pp2AH5m72mqAtU=;
-        b=i+LU5KJO6lcJxqi+1GnTiDl/OHjo4BM+ZObBsQRvk1Kg+jG1Ko+45Shr8IuMvjym27
-         ukUJCW5Fue4ka1QM+q3McHG9CeOLAtJ6qcsVU0FkNJwXJbSUm3PP3uEykUXkHZFdqSHe
-         caVj+U7uX6UGF9ziXfuTs9swNqW2EbcpH4BHQnNXyA0JgpKOA2IKwO4jvYhl8zgb8iHH
-         U0vMxssTWzPHhmWHNwZQI5g+2WabNz6D+7FDaY/ANzpwCf+92hVnxIxoAxEaDDi0qbJq
-         pZCokvpF29sL3FuGQSKCfcwQlZd9WBBaM6A/wBfeV5l/s/GOXcdrjKRvI1LtDWtWEa/o
-         J8Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704157644; x=1704762444;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GFYxP6M9En/LfjFXyPIaCGUIynVC1Pp2AH5m72mqAtU=;
-        b=YzgrW4QmdpM9FTezNqOBbYdqKFXdEMmtuZD7H/yXnU9+5f6/5T5C0gL4oeCl6qkLCK
-         P+2l09tqV8bWMEL49eDrzkFOlI90XxkmEsUCSkgUk1uP7uOVdos4wOb24y0u82lj8tfI
-         X8LCfFFJmPR+NBi73XXrY0kGoABcV6dI1De023eM24KiKcjny9FCIMLxu0JRNmoOzKl4
-         YuhH0JcOl/UKT7h5YkbcqbMVwUMPdrbjJfAj025mWz326yze657bIg5ZLgZyUh+aSFkM
-         1LW4SeJSVmk0wlflj33NRj4LO1/hl6BJ+nZixvkRHKMgc2RZvSN02TPee96jI5q+mICz
-         4A6Q==
-X-Gm-Message-State: AOJu0YxsQs/4Ymoc0VbmQSzVW1B+2qs/NBHn5XxXo+DNIfXpIuWSXnzV
-	dqWvOJY395E4iFbHqXjmV6Q=
-X-Google-Smtp-Source: AGHT+IEwDQrHgQiO6pKxQDDsPGcTu7RQuqbVcDql4OP0li7dx9jXakhzOM3VndS0qvM01NB+tLh45w==
-X-Received: by 2002:a05:6a20:13cd:b0:190:8b2b:1959 with SMTP id ho13-20020a056a2013cd00b001908b2b1959mr17538719pzc.46.1704157643615;
-        Mon, 01 Jan 2024 17:07:23 -0800 (PST)
-Received: from localhost.localdomain ([154.220.3.115])
-        by smtp.gmail.com with ESMTPSA id b1-20020aa78101000000b006d9ecb8e956sm11591683pfi.173.2024.01.01.17.07.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Jan 2024 17:07:23 -0800 (PST)
-From: zhouzhouyi@gmail.com
-To: songqiang1304521@gmail.com,
-	jic23@kernel.org,
-	lars@metafoo.de,
-	linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: "zhili.liu" <zhili.liu@ucas.com.cn>
-Subject: [PATCH v3] iio: magnetometer: rm3100: add boundary check for the value read from RM3100_REG_TMRC
-Date: Tue,  2 Jan 2024 09:07:11 +0800
-Message-Id: <1704157631-3814-1-git-send-email-zhouzhouyi@gmail.com>
-X-Mailer: git-send-email 1.7.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A87238F;
+	Tue,  2 Jan 2024 01:09:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4T3vrG2VwjzsV2R;
+	Tue,  2 Jan 2024 09:09:02 +0800 (CST)
+Received: from dggpeml500026.china.huawei.com (unknown [7.185.36.106])
+	by mail.maildlp.com (Postfix) with ESMTPS id D747914011A;
+	Tue,  2 Jan 2024 09:09:35 +0800 (CST)
+Received: from [10.174.178.66] (10.174.178.66) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 2 Jan 2024 09:09:35 +0800
+Message-ID: <fee3ec1c-5af6-aad2-c0d0-843de59494a7@huawei.com>
+Date: Tue, 2 Jan 2024 09:09:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [PATCH v2] ipc/mqueue: fix potential sleeping issue in
+ mqueue_flush_file
+To: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <brauner@kernel.org>, <dchinner@redhat.com>,
+	<jlayton@kernel.org>, <jack@suse.cz>, <riel@surriel.com>,
+	<weiyongjun1@huawei.com>, <yuehaibing@huawei.com>
+References: <20231220021208.2634523-1-shaozhengchao@huawei.com>
+From: shaozhengchao <shaozhengchao@huawei.com>
+In-Reply-To: <20231220021208.2634523-1-shaozhengchao@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
 
-From: "zhili.liu" <zhili.liu@ucas.com.cn>
++ping
 
-Recently, we encounter kernel crash in function rm3100_common_probe
-caused by out of bound access of array rm3100_samp_rates (because of
-underlying hardware failures). Add boundary check to prevent out of
-bound access.
+Does anyone have ideas with this patch?
 
-Fixes: 121354b2eceb ("iio: magnetometer: Add driver support for PNI RM3100")
-
-Suggested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Signed-off-by: zhili.liu <zhili.liu@ucas.com.cn>
----
- drivers/iio/magnetometer/rm3100-core.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/iio/magnetometer/rm3100-core.c b/drivers/iio/magnetometer/rm3100-core.c
-index 69938204456f..12c2e3b0aeb6 100644
---- a/drivers/iio/magnetometer/rm3100-core.c
-+++ b/drivers/iio/magnetometer/rm3100-core.c
-@@ -530,6 +530,7 @@ int rm3100_common_probe(struct device *dev, struct regmap *regmap, int irq)
- 	struct rm3100_data *data;
- 	unsigned int tmp;
- 	int ret;
-+	int samp_rate_index;
- 
- 	indio_dev = devm_iio_device_alloc(dev, sizeof(*data));
- 	if (!indio_dev)
-@@ -586,8 +587,14 @@ int rm3100_common_probe(struct device *dev, struct regmap *regmap, int irq)
- 	ret = regmap_read(regmap, RM3100_REG_TMRC, &tmp);
- 	if (ret < 0)
- 		return ret;
-+
-+	samp_rate_index = tmp - RM3100_TMRC_OFFSET;
-+	if (samp_rate_index < 0 || samp_rate_index >=  RM3100_SAMP_NUM) {
-+		dev_err(dev, "The value read from RM3100_REG_TMRC is invalid!\n");
-+		return -EINVAL;
-+	}
- 	/* Initializing max wait time, which is double conversion time. */
--	data->conversion_time = rm3100_samp_rates[tmp - RM3100_TMRC_OFFSET][2]
-+	data->conversion_time = rm3100_samp_rates[samp_rate_index][2]
- 				* 2;
- 
- 	/* Cycle count values may not be what we want. */
--- 
-2.34.1
-
+On 2023/12/20 10:12, Zhengchao Shao wrote:
+> I analyze the potential sleeping issue of the following processes:
+> Thread A                                Thread B
+> ...                                     netlink_create  //ref = 1
+> do_mq_notify                            ...
+>    sock = netlink_getsockbyfilp          ...     //ref = 2
+>    info->notify_sock = sock;             ...
+> ...                                     netlink_sendmsg
+> ...                                       skb = netlink_alloc_large_skb  //skb->head is vmalloced
+> ...                                       netlink_unicast
+> ...                                         sk = netlink_getsockbyportid //ref = 3
+> ...                                         netlink_sendskb
+> ...                                           __netlink_sendskb
+> ...                                             skb_queue_tail //put skb to sk_receive_queue
+> ...                                         sock_put //ref = 2
+> ...                                     ...
+> ...                                     netlink_release
+> ...                                       deferred_put_nlk_sk //ref = 1
+> mqueue_flush_file
+>    spin_lock
+>    remove_notification
+>      netlink_sendskb
+>        sock_put  //ref = 0
+>          sk_free
+>            ...
+>            __sk_destruct
+>              netlink_sock_destruct
+>                skb_queue_purge  //get skb from sk_receive_queue
+>                  ...
+>                  __skb_queue_purge_reason
+>                    kfree_skb_reason
+>                      __kfree_skb
+>                      ...
+>                      skb_release_all
+>                        skb_release_head_state
+>                          netlink_skb_destructor
+>                            vfree(skb->head)  //sleeping while holding spinlock
+> 
+> In netlink_sendmsg, if the memory pointed to by skb->head is allocated by
+> vmalloc, and is put to sk_receive_queue queue, also the skb is not freed.
+> When the mqueue executes flush, the sleeping bug will occur. Use mutex
+> lock instead of spin lock in mqueue_flush_file.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+> ---
+> v2: CCed some networking maintainer & netdev list
+> ---
+>   ipc/mqueue.c | 48 ++++++++++++++++++++++++------------------------
+>   1 file changed, 24 insertions(+), 24 deletions(-)
+> 
+> diff --git a/ipc/mqueue.c b/ipc/mqueue.c
+> index 5eea4dc0509e..f6f92e3f82e4 100644
+> --- a/ipc/mqueue.c
+> +++ b/ipc/mqueue.c
+> @@ -118,9 +118,9 @@ struct posix_msg_tree_node {
+>    * Solution: use _release and _acquire barriers.
+>    *
+>    * 3) There is intentionally no barrier when setting current->state
+> - *    to TASK_INTERRUPTIBLE: spin_unlock(&info->lock) provides the
+> + *    to TASK_INTERRUPTIBLE: mutex_unlock(&info->lock) provides the
+>    *    release memory barrier, and the wakeup is triggered when holding
+> - *    info->lock, i.e. spin_lock(&info->lock) provided a pairing
+> + *    info->lock, i.e. mutex_lock(&info->lock) provided a pairing
+>    *    acquire memory barrier.
+>    */
+>   
+> @@ -132,7 +132,7 @@ struct ext_wait_queue {		/* queue of sleeping tasks */
+>   };
+>   
+>   struct mqueue_inode_info {
+> -	spinlock_t lock;
+> +	struct mutex lock;
+>   	struct inode vfs_inode;
+>   	wait_queue_head_t wait_q;
+>   
+> @@ -312,7 +312,7 @@ static struct inode *mqueue_get_inode(struct super_block *sb,
+>   		inode->i_size = FILENT_SIZE;
+>   		/* mqueue specific info */
+>   		info = MQUEUE_I(inode);
+> -		spin_lock_init(&info->lock);
+> +		mutex_init(&info->lock);
+>   		init_waitqueue_head(&info->wait_q);
+>   		INIT_LIST_HEAD(&info->e_wait_q[0].list);
+>   		INIT_LIST_HEAD(&info->e_wait_q[1].list);
+> @@ -523,11 +523,11 @@ static void mqueue_evict_inode(struct inode *inode)
+>   
+>   	ipc_ns = get_ns_from_inode(inode);
+>   	info = MQUEUE_I(inode);
+> -	spin_lock(&info->lock);
+> +	mutex_lock(&info->lock);
+>   	while ((msg = msg_get(info)) != NULL)
+>   		list_add_tail(&msg->m_list, &tmp_msg);
+>   	kfree(info->node_cache);
+> -	spin_unlock(&info->lock);
+> +	mutex_unlock(&info->lock);
+>   
+>   	list_for_each_entry_safe(msg, nmsg, &tmp_msg, m_list) {
+>   		list_del(&msg->m_list);
+> @@ -640,7 +640,7 @@ static ssize_t mqueue_read_file(struct file *filp, char __user *u_data,
+>   	char buffer[FILENT_SIZE];
+>   	ssize_t ret;
+>   
+> -	spin_lock(&info->lock);
+> +	mutex_lock(&info->lock);
+>   	snprintf(buffer, sizeof(buffer),
+>   			"QSIZE:%-10lu NOTIFY:%-5d SIGNO:%-5d NOTIFY_PID:%-6d\n",
+>   			info->qsize,
+> @@ -649,7 +649,7 @@ static ssize_t mqueue_read_file(struct file *filp, char __user *u_data,
+>   			 info->notify.sigev_notify == SIGEV_SIGNAL) ?
+>   				info->notify.sigev_signo : 0,
+>   			pid_vnr(info->notify_owner));
+> -	spin_unlock(&info->lock);
+> +	mutex_unlock(&info->lock);
+>   	buffer[sizeof(buffer)-1] = '\0';
+>   
+>   	ret = simple_read_from_buffer(u_data, count, off, buffer,
+> @@ -665,11 +665,11 @@ static int mqueue_flush_file(struct file *filp, fl_owner_t id)
+>   {
+>   	struct mqueue_inode_info *info = MQUEUE_I(file_inode(filp));
+>   
+> -	spin_lock(&info->lock);
+> +	mutex_lock(&info->lock);
+>   	if (task_tgid(current) == info->notify_owner)
+>   		remove_notification(info);
+>   
+> -	spin_unlock(&info->lock);
+> +	mutex_unlock(&info->lock);
+>   	return 0;
+>   }
+>   
+> @@ -680,13 +680,13 @@ static __poll_t mqueue_poll_file(struct file *filp, struct poll_table_struct *po
+>   
+>   	poll_wait(filp, &info->wait_q, poll_tab);
+>   
+> -	spin_lock(&info->lock);
+> +	mutex_lock(&info->lock);
+>   	if (info->attr.mq_curmsgs)
+>   		retval = EPOLLIN | EPOLLRDNORM;
+>   
+>   	if (info->attr.mq_curmsgs < info->attr.mq_maxmsg)
+>   		retval |= EPOLLOUT | EPOLLWRNORM;
+> -	spin_unlock(&info->lock);
+> +	mutex_unlock(&info->lock);
+>   
+>   	return retval;
+>   }
+> @@ -724,7 +724,7 @@ static int wq_sleep(struct mqueue_inode_info *info, int sr,
+>   		/* memory barrier not required, we hold info->lock */
+>   		__set_current_state(TASK_INTERRUPTIBLE);
+>   
+> -		spin_unlock(&info->lock);
+> +		mutex_unlock(&info->lock);
+>   		time = schedule_hrtimeout_range_clock(timeout, 0,
+>   			HRTIMER_MODE_ABS, CLOCK_REALTIME);
+>   
+> @@ -734,7 +734,7 @@ static int wq_sleep(struct mqueue_inode_info *info, int sr,
+>   			retval = 0;
+>   			goto out;
+>   		}
+> -		spin_lock(&info->lock);
+> +		mutex_lock(&info->lock);
+>   
+>   		/* we hold info->lock, so no memory barrier required */
+>   		if (READ_ONCE(ewp->state) == STATE_READY) {
+> @@ -752,7 +752,7 @@ static int wq_sleep(struct mqueue_inode_info *info, int sr,
+>   	}
+>   	list_del(&ewp->list);
+>   out_unlock:
+> -	spin_unlock(&info->lock);
+> +	mutex_unlock(&info->lock);
+>   out:
+>   	return retval;
+>   }
+> @@ -1125,7 +1125,7 @@ static int do_mq_timedsend(mqd_t mqdes, const char __user *u_msg_ptr,
+>   	if (!info->node_cache)
+>   		new_leaf = kmalloc(sizeof(*new_leaf), GFP_KERNEL);
+>   
+> -	spin_lock(&info->lock);
+> +	mutex_lock(&info->lock);
+>   
+>   	if (!info->node_cache && new_leaf) {
+>   		/* Save our speculative allocation into the cache */
+> @@ -1166,7 +1166,7 @@ static int do_mq_timedsend(mqd_t mqdes, const char __user *u_msg_ptr,
+>   		simple_inode_init_ts(inode);
+>   	}
+>   out_unlock:
+> -	spin_unlock(&info->lock);
+> +	mutex_unlock(&info->lock);
+>   	wake_up_q(&wake_q);
+>   out_free:
+>   	if (ret)
+> @@ -1230,7 +1230,7 @@ static int do_mq_timedreceive(mqd_t mqdes, char __user *u_msg_ptr,
+>   	if (!info->node_cache)
+>   		new_leaf = kmalloc(sizeof(*new_leaf), GFP_KERNEL);
+>   
+> -	spin_lock(&info->lock);
+> +	mutex_lock(&info->lock);
+>   
+>   	if (!info->node_cache && new_leaf) {
+>   		/* Save our speculative allocation into the cache */
+> @@ -1242,7 +1242,7 @@ static int do_mq_timedreceive(mqd_t mqdes, char __user *u_msg_ptr,
+>   
+>   	if (info->attr.mq_curmsgs == 0) {
+>   		if (f.file->f_flags & O_NONBLOCK) {
+> -			spin_unlock(&info->lock);
+> +			mutex_unlock(&info->lock);
+>   			ret = -EAGAIN;
+>   		} else {
+>   			wait.task = current;
+> @@ -1261,7 +1261,7 @@ static int do_mq_timedreceive(mqd_t mqdes, char __user *u_msg_ptr,
+>   
+>   		/* There is now free space in queue. */
+>   		pipelined_receive(&wake_q, info);
+> -		spin_unlock(&info->lock);
+> +		mutex_unlock(&info->lock);
+>   		wake_up_q(&wake_q);
+>   		ret = 0;
+>   	}
+> @@ -1391,7 +1391,7 @@ static int do_mq_notify(mqd_t mqdes, const struct sigevent *notification)
+>   	info = MQUEUE_I(inode);
+>   
+>   	ret = 0;
+> -	spin_lock(&info->lock);
+> +	mutex_lock(&info->lock);
+>   	if (notification == NULL) {
+>   		if (info->notify_owner == task_tgid(current)) {
+>   			remove_notification(info);
+> @@ -1424,7 +1424,7 @@ static int do_mq_notify(mqd_t mqdes, const struct sigevent *notification)
+>   		info->notify_user_ns = get_user_ns(current_user_ns());
+>   		inode_set_atime_to_ts(inode, inode_set_ctime_current(inode));
+>   	}
+> -	spin_unlock(&info->lock);
+> +	mutex_unlock(&info->lock);
+>   out_fput:
+>   	fdput(f);
+>   out:
+> @@ -1470,7 +1470,7 @@ static int do_mq_getsetattr(int mqdes, struct mq_attr *new, struct mq_attr *old)
+>   	inode = file_inode(f.file);
+>   	info = MQUEUE_I(inode);
+>   
+> -	spin_lock(&info->lock);
+> +	mutex_lock(&info->lock);
+>   
+>   	if (old) {
+>   		*old = info->attr;
+> @@ -1488,7 +1488,7 @@ static int do_mq_getsetattr(int mqdes, struct mq_attr *new, struct mq_attr *old)
+>   		inode_set_atime_to_ts(inode, inode_set_ctime_current(inode));
+>   	}
+>   
+> -	spin_unlock(&info->lock);
+> +	mutex_unlock(&info->lock);
+>   	fdput(f);
+>   	return 0;
+>   }
 
