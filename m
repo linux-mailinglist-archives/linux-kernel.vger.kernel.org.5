@@ -1,135 +1,122 @@
-Return-Path: <linux-kernel+bounces-14293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77FD1821AFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:31:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 299DE821AFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:32:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27C0528324B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:31:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC9F71F213EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98158EAD7;
-	Tue,  2 Jan 2024 11:31:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD27EAD3;
+	Tue,  2 Jan 2024 11:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="d+FVtQhM"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XryoqP6M"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5404BE544;
-	Tue,  2 Jan 2024 11:31:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=jI2+mSjyP3+sg9ERDBog/JWSHEnygreZvEgS5CoygT0=; b=d+FVtQhMbRhOqhtPjPcymM0/4V
-	NEZF5QOL1M/Uy7wapNoAU28VJvz2wkk/bQLg2B7A0/DnzU1C2ZX0a2tv8/kdA/ATbATJL1pfl874C
-	BBvZqqnQfmbEcvhXEzu+n/qL76BW/QB9MnNwiYWwkMVn2sk0FsEfFXsEO1RrnVv9Igwq1DmefpxTN
-	0ApCWN4JswB2HF/8v4N4PvqjFHcSylGk3CHo/1g3rYSXElkcuZzLYKrh9YSRXOW7j1523OC+gm9FW
-	UO48rXiHxXf/LxRB6gpccR00M8JC/O86Ud8a4y0ZbP1Vt5Cvb03ssT1kqrZO3KlN8690Fel2KezwV
-	1EcunSLQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:40982)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rKcyz-0006T8-3D;
-	Tue, 02 Jan 2024 11:30:54 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rKcyx-0005Ep-7l; Tue, 02 Jan 2024 11:30:51 +0000
-Date: Tue, 2 Jan 2024 11:30:51 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, wens@csie.org, samuel@sholland.org,
-	andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: Re: [PATCH v5 1/3] phy: handle optional regulator for PHY
-Message-ID: <ZZPz6+LETeF4PRDW@shell.armlinux.org.uk>
-References: <20231220203537.83479-1-jernej.skrabec@gmail.com>
- <20231220203537.83479-2-jernej.skrabec@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8E6E56B
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 11:32:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-427eabbaf25so35676701cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 03:32:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704195128; x=1704799928; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4CTXYQjDTx9MjNeWmQMbnj/JJ7KlKNb5ez8YnAlEmuU=;
+        b=XryoqP6MDCAM1W1boSMn8ZBw8f+60nmm1oSpqP0kth0iGwh8i5ExfZgjnH1O9A1dqO
+         H8jD6zUY6iOUe7pEuMt0M4MXSgAxbABixjJs5ByoVpRifB5O6qsiN9nHRQYMVDXhszCs
+         aRJoUzFow+6QMg6R0KTpKWw+ZIxKWfPPBW1OU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704195128; x=1704799928;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4CTXYQjDTx9MjNeWmQMbnj/JJ7KlKNb5ez8YnAlEmuU=;
+        b=SsEoAjtLkmxa19IslDec89klwsuTl7h994pmrsKW9Expad2Kd2NPh+Ow7MmjQ0Brtb
+         7tRqTbhPtww4Qi8mrBY2F0mg8Ei5hGJW1qnnVQZV6EPQD748+HZSOyrmcBVTcrS3JL9D
+         8Kn8qHv+ceF1FDdY/AjesZz1uDETahFWJBf2lmngpGVJ4YHK/9lG48U7BjjCB+LCVrbi
+         SKgCd4Xjw5ilO/KUIUggvR/bZ02BJxK1F0gCCRM5X1xQW7wukDv4o0wRozrGU4o59b0Q
+         IRXlviYFz91DRTAHoTSL6WpMIQxzkK2pQzPqmibKMVRHfZCF6ePJ5t9ZU70Vt3VlCYHJ
+         tDGQ==
+X-Gm-Message-State: AOJu0Yw64P8TytD3ux9qMYrHmxfGfX3yTKrkUrW6H8BVc3pgYubJfEtC
+	LNyK4iv19DtqhcwTTXav1FRyBGaMlrw8PVRaiS4lJM+trw==
+X-Google-Smtp-Source: AGHT+IGl8gkYnbJVfwh0+84KWgrjG9yKZkYUZ0ULe+WjvwW6W8LZFxMW1T6sIu8w5NXBTKHOFj9ARQ==
+X-Received: by 2002:ac8:7dc1:0:b0:428:24c0:92cc with SMTP id c1-20020ac87dc1000000b0042824c092ccmr3210382qte.38.1704195128096;
+        Tue, 02 Jan 2024 03:32:08 -0800 (PST)
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com. [209.85.219.42])
+        by smtp.gmail.com with ESMTPSA id cc17-20020a05622a411100b00427f3b9e60dsm5763219qtb.60.2024.01.02.03.32.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jan 2024 03:32:07 -0800 (PST)
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-680861506afso25006946d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 03:32:07 -0800 (PST)
+X-Received: by 2002:a05:6214:2a85:b0:67f:67de:5d32 with SMTP id
+ jr5-20020a0562142a8500b0067f67de5d32mr26610741qvb.41.1704195126792; Tue, 02
+ Jan 2024 03:32:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220203537.83479-2-jernej.skrabec@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20231222-rallybar-v2-1-5849d62a9514@chromium.org> <82bf432c-2a78-4b9c-88ab-ef4f0888e9aa@rowland.harvard.edu>
+In-Reply-To: <82bf432c-2a78-4b9c-88ab-ef4f0888e9aa@rowland.harvard.edu>
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Tue, 2 Jan 2024 12:31:53 +0100
+X-Gmail-Original-Message-ID: <CANiDSCtd4-pQDdf03cBZz6deUe=b4ufiQ4WR=ddwjubOoxAQ1w@mail.gmail.com>
+Message-ID: <CANiDSCtd4-pQDdf03cBZz6deUe=b4ufiQ4WR=ddwjubOoxAQ1w@mail.gmail.com>
+Subject: Re: [PATCH v2] usb: core: Add quirk for Logitech Rallybar
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, linux-usb@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Dec 20, 2023 at 09:35:35PM +0100, Jernej Skrabec wrote:
-> From: Corentin Labbe <clabbe.montjoie@gmail.com>
-> 
-> Add handling of optional regulators for PHY.
-> 
-> Regulators need to be enabled before PHY scanning, so MDIO bus
-> initiate this task.
-> 
-> Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> ---
->  drivers/net/mdio/fwnode_mdio.c | 53 ++++++++++++++++++++++++++++++++--
->  drivers/net/phy/phy_device.c   |  6 ++++
->  include/linux/phy.h            |  3 ++
->  3 files changed, 60 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/mdio/fwnode_mdio.c b/drivers/net/mdio/fwnode_mdio.c
-> index fd02f5cbc853..bd5a27eaf40c 100644
-> --- a/drivers/net/mdio/fwnode_mdio.c
-> +++ b/drivers/net/mdio/fwnode_mdio.c
-> @@ -11,6 +11,7 @@
->  #include <linux/of.h>
->  #include <linux/phy.h>
->  #include <linux/pse-pd/pse.h>
-> +#include <linux/regulator/consumer.h>
->  
->  MODULE_AUTHOR("Calvin Johnson <calvin.johnson@oss.nxp.com>");
->  MODULE_LICENSE("GPL");
-> @@ -58,6 +59,40 @@ fwnode_find_mii_timestamper(struct fwnode_handle *fwnode)
->  	return register_mii_timestamper(arg.np, arg.args[0]);
->  }
->  
-> +static int
-> +fwnode_regulator_get_bulk_enabled(struct device *dev,
-> +				  struct fwnode_handle *fwnode,
-> +				  struct regulator_bulk_data **consumers)
+Hi Alan
 
-This seems to be a bad name for something living in fwnode_mdio.c - it
-looks like something the regulator core should be providing.
+On Sat, 23 Dec 2023 at 21:01, Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Fri, Dec 22, 2023 at 10:55:49PM +0000, Ricardo Ribalda wrote:
+> > Logitech Rallybar devices, despite behaving as UVC camera, they have a
+> > different power management system than the rest of the other Logitech
+> > cameras.
+> >
+> > USB_QUIRK_RESET_RESUME causes undesired USB disconnects, that make the
+> > device unusable.
+> >
+> > These are the only two devices that have this behavior, and we do not
+> > have the list of devices that require USB_QUIRK_RESET_RESUME, so lets
+> > create a new lit for them that un-apply the USB_QUIRK_RESET_RESUME
+> > quirk.
+> >
+> > Fixes: e387ef5c47dd ("usb: Add USB_QUIRK_RESET_RESUME for all Logitech UVC webcams")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+>
+> Would it make more sense to do this inside the uvc driver instead of
+> creating a new single-purpose list in the core?
 
-> +clean_regulators:
-> +	if (reg_cnt > 0)
-> +		regulator_bulk_disable(reg_cnt, consumers);
-> +	kfree(consumers);
+I can try to move it to the uvc driver. But maybe it is better to keep it here:
 
-and there really should be a function that undoes the effects of
-fwnode_regulator_get_bulk_enabled() rather than having it open-coded,
-especially as:
+The same vid:pid also has other functionality, not only uvc: Sync
+agent interface, UPD Interface, ADB interface.
+If we apply the quirk to the uvc driver, and the uvc driver is not
+loaded, the other functionality will still be broken....
 
-> @@ -3400,6 +3401,11 @@ static int phy_remove(struct device *dev)
->  
->  	phydev->drv = NULL;
->  
-> +	if (phydev->regulator_cnt > 0)
-> +		regulator_bulk_disable(phydev->regulator_cnt, phydev->consumers);
-> +
-> +	kfree(phydev->consumers);
-> +
+I expect to see more devices from Logitech not needing the
+RESET_RESUME quirk... so this list will eventually grow.
 
-it also appears here.
+Setting/useting RESET_RESUME in two different locations, can make the
+code difficult to follow.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+What do you think?
+
+Regards!
 
