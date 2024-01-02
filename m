@@ -1,182 +1,200 @@
-Return-Path: <linux-kernel+bounces-14670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 564C1822088
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:44:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 939FF822092
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:46:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07D5E1F23160
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:44:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28696283F7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:46:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C2C8156D2;
-	Tue,  2 Jan 2024 17:43:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC089156F6;
+	Tue,  2 Jan 2024 17:45:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VOiN84Ux"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dgoP3kcJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F185156C6;
-	Tue,  2 Jan 2024 17:43:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3ba14203a34so9435014b6e.1;
-        Tue, 02 Jan 2024 09:43:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704217432; x=1704822232; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oFAXfoSqedernbiWEjd/3knzaFCGGb+zuLCr9vWqgk4=;
-        b=VOiN84UxslOPnST1uF8yuuaZMaZY0rUIIYnQeqsSglW96kxtLiZO0eos081mZc4gUr
-         QZtvusJYn81jE7Qh2ytWaM+A1qPoNKdGOK9xO5bcPYVH0jE279entbrA9zltayxa40/e
-         dtLzKy9A8ZcPMy0SE3Lek8kZLQhBTBPI2mWH3UlYr7jq7scYY39id07xhkoS6GuY0D0h
-         qaBiBIFJBTRWZqvzWKmnQwMPx5mlqSJMAjXUnNzXHLVNqT14Pp7SIWLoEisxfyZlZ3AA
-         r9jbHMguaHJ5r4/V+rqdgvx+rLsxyDtKZmu/IV0PPbyXH3A7HK5fvwfjYcre2DTMBTVr
-         ZXBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704217432; x=1704822232;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oFAXfoSqedernbiWEjd/3knzaFCGGb+zuLCr9vWqgk4=;
-        b=CpGcU+QsGC+f4afZU2G+Ng/om1PLb1v7C0N1Fbjyr6OPkZ9JulURAWoiJ60Fy4+GHB
-         rvwDyYfGfSRTniKREAIB6+mUooxc5bn6MWgn5sIznHtVMnYPbSETBAzobhrWtmQE/APl
-         kAgSRcnKmw1HKa0Gj1PkY719Bzh1riiF8oiByy/Cd9+iC0Wb5k6oxGhxfQ42oyV7NS4Q
-         21PLxnFG5XUvtY6UPzx/2n21/VO6UTLg2+sMRZXHFpsNw4UNtjM5B9q4bd485Hr3dZ2E
-         hyLdWycVx7lqxUnksGXOG68O2agHC8K6APaSuxAmf/2nJJ9gPULFW/nPDOChj93Hv2uq
-         2r8Q==
-X-Gm-Message-State: AOJu0YwcXIPrt8vzAdaxrE6zoPV6lU0xTDbPcsf/3y9xMzuMg5Evqkhs
-	2/I5nryDEDxRpir8KcGDPWkMfD9jrBgP5A==
-X-Google-Smtp-Source: AGHT+IHl/019xddMgz9dzwdw//SCPvoCIFqs7YXU8Oot7eKHFac5tM8u9C/Ua4cEkhMMQP3o/7gPlg==
-X-Received: by 2002:a05:6808:3c4d:b0:3bb:cdd5:17c4 with SMTP id gl13-20020a0568083c4d00b003bbcdd517c4mr15552274oib.83.1704217432358;
-        Tue, 02 Jan 2024 09:43:52 -0800 (PST)
-Received: from dschatzberg-fedora-PF3DHTBV ([2620:10d:c091:500::7:7ce3])
-        by smtp.gmail.com with ESMTPSA id dm6-20020ad44e26000000b0067f6ec98ae9sm10239578qvb.32.2024.01.02.09.43.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 09:43:51 -0800 (PST)
-Date: Tue, 2 Jan 2024 12:43:49 -0500
-From: Dan Schatzberg <schatzberg.dan@gmail.com>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	SeongJae Park <sj@kernel.org>,
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-	Nhat Pham <nphamcs@gmail.com>, Yue Zhao <findns94@gmail.com>
-Subject: Re: [PATCH v5 2/2] mm: add swapiness= arg to memory.reclaim
-Message-ID: <ZZRLVYeTjljn0dO5@dschatzberg-fedora-PF3DHTBV>
-References: <20231220152653.3273778-1-schatzberg.dan@gmail.com>
- <20231220152653.3273778-3-schatzberg.dan@gmail.com>
- <ZYQFlynE7CU_Fjoc@tiehlicka>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1654D156EC;
+	Tue,  2 Jan 2024 17:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 402HI09n019616;
+	Tue, 2 Jan 2024 17:44:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=y42mo2JnJSDN9WOIeW8Q048HnRpueulusig05FfdHSc=;
+ b=dgoP3kcJoBgDCM9LrG2PGDCQO/22Bz5HCVjjcGaCW2HD1d78czChL9JN0t8UI/BTCRA6
+ nQc7vUnm2EFfMkazXQ/6je+MhIFtH5XXoT6cIt5REwXEUrAsI1T/u6LhWPo1R9o2+1fq
+ WR43NDCuqemyLlU9YWC8+9/pR/U1v5HQQFTMqRF1Lvxk7cHS/mCTPr56WOay9HDj3fCn
+ V19+gZPAukXreGvyxZ07WKgq4LrTp45CCS6Cy9qpAIydAyuZJuy3PmxMIjeXl0hWdR92
+ wnUUH4PSpI0t1p1yDjicQYtPocb4IT+hNdbDuEJfW33Bozg7zhfKHO1l0s4zuIaWpFsb 4Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcprx8hgq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 17:44:21 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 402HJEQj023759;
+	Tue, 2 Jan 2024 17:44:20 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcprx8hgc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 17:44:20 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 402Gn5st007335;
+	Tue, 2 Jan 2024 17:44:19 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vaxhnxatc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 17:44:19 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 402HiILQ3736236
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 2 Jan 2024 17:44:18 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5C62F58056;
+	Tue,  2 Jan 2024 17:44:18 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C239858052;
+	Tue,  2 Jan 2024 17:44:16 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.135.171])
+	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  2 Jan 2024 17:44:16 +0000 (GMT)
+Message-ID: <08e90ff7754aad45785ab05576f308a7aaae3438.camel@linux.ibm.com>
+Subject: Re: [PATCH v8 21/24] evm: Move to LSM infrastructure
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Roberto Sassu
+	 <roberto.sassu@huawei.com>
+Date: Tue, 02 Jan 2024 12:44:16 -0500
+In-Reply-To: <42911719-547d-443a-b2f2-07b0cfb11f7a@huaweicloud.com>
+References: <20231214170834.3324559-1-roberto.sassu@huaweicloud.com>
+	 <20231214170834.3324559-22-roberto.sassu@huaweicloud.com>
+	 <b03e68e9fa1803d6b2cc7a2c0260f78a05a4d88e.camel@linux.ibm.com>
+	 <42911719-547d-443a-b2f2-07b0cfb11f7a@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZYQFlynE7CU_Fjoc@tiehlicka>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: VtIxUobX29if44MZAZlKTPViebn08Xdu
+X-Proofpoint-ORIG-GUID: 4wNfWCza0Tzp9fc5Zi2QfysG-XW8l4q-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-02_06,2024-01-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 bulkscore=0 mlxlogscore=926 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 adultscore=0 phishscore=0 mlxscore=0
+ spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401020133
 
-On Thu, Dec 21, 2023 at 10:29:59AM +0100, Michal Hocko wrote:
-> On Wed 20-12-23 07:26:51, Dan Schatzberg wrote:
-> >  ...
+On Tue, 2024-01-02 at 12:56 +0100, Roberto Sassu wrote:
+> On 12/26/2023 11:13 PM, Mimi Zohar wrote:
+> > On Thu, 2023-12-14 at 18:08 +0100, Roberto Sassu wrote:
+> >> From: Roberto Sassu <roberto.sassu@huawei.com>
+> >>
+> >> As for IMA, move hardcoded EVM function calls from various places in the
+> >> kernel to the LSM infrastructure, by introducing a new LSM named 'evm'
+> >> (last and always enabled like 'ima'). The order in the Makefile ensures
+> >> that 'evm' hooks are executed after 'ima' ones.
+> >>
+> >> Make EVM functions as static (except for evm_inode_init_security(), which
+> >> is exported), and register them as hook implementations in init_evm_lsm().
+> >>
+> >> Unlike before (see commit to move IMA to the LSM infrastructure),
+> >> evm_inode_post_setattr(), evm_inode_post_set_acl(),
+> >> evm_inode_post_remove_acl(), and evm_inode_post_removexattr() are not
+> >> executed for private inodes.
+> >>
+> > 
+> > Missing is a comment on moving the inline function definitions -
+> > evm_inode_remove_acl(), evm_inode_post_remove_acl(), and
+> > evm_inode_post_set_acl() - to evm_main.c.
 > 
-> LGTM
-> Acked-by: Michal Hocko <mhocko@suse.com.
+> Ok.
 > 
-> Just one minor thing. It would be really great to prevent from potential
-> incorrect use of mem_cgroup_swappiness. This should be internal function
-> to memcg. Now, having scan_control internal to vmscan.c makes that
-> harder and moving it out to swap.h or internal.h sounds overreaching.
+> >> Finally, add the LSM_ID_EVM case in lsm_list_modules_test.c
+> >>
+> >> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> >> ---
+> > 
+> > [...]
+> >> @@ -2307,9 +2299,7 @@ int security_inode_setxattr(struct mnt_idmap *idmap,
+> >>   
+> >>   	if (ret == 1)
+> >>   		ret = cap_inode_setxattr(dentry, name, value, size, flags);
+> >> -	if (ret)
+> >> -		return ret;
+> >> -	return evm_inode_setxattr(idmap, dentry, name, value, size, flags);
+> >> +	return ret;
+> >>   }
+> > 
+> > Even though capability will be called after EVM, it doesn't make a
+> > difference in this instance.
+> > 
+> > [...]
+> > 
+> >>   /**
+> >> @@ -2493,9 +2472,7 @@ int security_inode_removexattr(struct mnt_idmap *idmap,
+> >>   	ret = call_int_hook(inode_removexattr, 1, idmap, dentry, name);
+> >>   	if (ret == 1)
+> >>   		ret = cap_inode_removexattr(idmap, dentry, name);
+> >> -	if (ret)
+> >> -		return ret;
+> >> -	return evm_inode_removexattr(idmap, dentry, name);
+> >> +	return ret;
+> >>   }
+> > 
+> > 'security.capability' is one of the EVM protected xattrs.  As
+> > capability isn't an LSM, it will now be called after EVM, which is a
+> > problem.
 > 
-> We could do this at least to reduce those mistakes. I can make it a
-> proper patch if this seems reasonable or you can fold it into your patch
-> directly.
-> --- 
+> Uhm, according to this comment in security_inode_removexattr() and 
+> security_inode_setxattr():
 > 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index f98dff23b758..5f3a182e9515 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -92,8 +92,10 @@ struct scan_control {
->  	unsigned long	anon_cost;
->  	unsigned long	file_cost;
->  
-> -	/* Swappiness value for reclaim. NULL will fall back to per-memcg/global value */
-> +#ifdef CONFIG_MEMCG
-> +	/* Swappiness value for reclaim. Always use sc_swappiness()! */
->  	int *swappiness;
-> +#endif
->  
->  	/* Can active folios be deactivated as part of reclaim? */
->  #define DEACTIVATE_ANON 1
-> @@ -230,6 +232,13 @@ static bool writeback_throttling_sane(struct scan_control *sc)
->  #endif
->  	return false;
->  }
-> +
-> +static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *memcg)
-> +{
-> +	if (sc->swappiness)
-> +		return *sc->swappiness;
-> +	return mem_cgroup_swappiness(memcg);
-> +}
->  #else
->  static bool cgroup_reclaim(struct scan_control *sc)
->  {
-> @@ -245,6 +254,10 @@ static bool writeback_throttling_sane(struct scan_control *sc)
->  {
->  	return true;
->  }
-> +static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *memcg)
-> +{
-> +	return READ_ONCE(vm_swappiness);
-> +}
->  #endif
->  
->  static void set_task_reclaim_state(struct task_struct *task,
-> @@ -2330,8 +2343,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
->  	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->  	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
->  	unsigned long anon_cost, file_cost, total_cost;
-> -	int swappiness = sc->swappiness ?
-> -		*sc->swappiness : mem_cgroup_swappiness(memcg);
-> +	int swappiness = sc_swappiness(sc, memcg);
->  	u64 fraction[ANON_AND_FILE];
->  	u64 denominator = 0;	/* gcc */
->  	enum scan_balance scan_balance;
-> @@ -2612,10 +2624,7 @@ static int get_swappiness(struct lruvec *lruvec, struct scan_control *sc)
->  	    mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
->  		return 0;
->  
-> -	if (sc->swappiness)
-> -		return *sc->swappiness;
-> -
-> -	return mem_cgroup_swappiness(memcg);
-> +	return sc_swappiness(sc, memcg);
->  }
->  
->  static int get_nr_gens(struct lruvec *lruvec, int type)
-> -- 
-> Michal Hocko
-> SUSE Labs
+> 	/*
+> 	 * SELinux and Smack integrate the cap call,
+> 	 * so assume that all LSMs supplying this call do so.
+> 	 */
+> 
+> We can add the call to IMA and EVM as well, to be compliant.
 
-Thanks for the review Michal and sorry for the delayed response. Your
-patch looks reasonable to me but I'm a bit unclear about the need for
-#ifdef - mem_cgroup_swappiness already works correctly regardless of
-CONFIG_MEMCG or not - why not make sc->swappiness and sc_swappiness()
-unconditional?
+SELinux and Smack are the only current LSMs that register the
+security_inode_removexattr hook.  Both enforce mandatory access
+control,
+so their calling capabilities to enforce DAC kind of makes sense.  I'm
+not sure it makes sense for IMA and EVM to call capability directly,
+just because of the comment.
 
-Happy to roll that into the next version of my patch.
+> However, I'm missing why the two cases are different. It seems 
+> cap_inode_set/removexattr() are doing just checks.
+
+Both IMA and EVM require CAP_SYS_ADMIN to write/remove security.ima and
+security.evm respectively.  In addition, EVM must recalculate
+security.evm if any protected security xattrs are set or
+removed.   However, security.evm is updated on
+security_inode_post_setxattr, not security_inode_setxattr.
+
+Mimi
+
 
