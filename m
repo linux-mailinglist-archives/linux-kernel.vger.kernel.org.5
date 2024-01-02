@@ -1,124 +1,149 @@
-Return-Path: <linux-kernel+bounces-14813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDFC88222BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:57:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E5D18222BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:57:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F821B221AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:57:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 303C91F234A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:57:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF2C16424;
-	Tue,  2 Jan 2024 20:56:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DAD3168B3;
+	Tue,  2 Jan 2024 20:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b="DaH0KB+5"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="c8sJ+WWb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2113168A4
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 20:56:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
- h=Content-Transfer-Encoding: Content-Type: In-Reply-To: From: References:
- To: Subject: MIME-Version: Date: Message-ID; q=dns/txt; s=fe-e1b5cab7be;
- t=1704228988; bh=ccZgqPCrJ4T9GeS8WnNP4L0gon1xZyOTx7zhUGDzNNc=;
- b=DaH0KB+5QYKAOAnRy5h6rDe5fjTgNdsmF4lFOcqxdsv3vpukMlnHOv9ESNFhq+KfIwTeEKjXk
- 2e0KzMSn/FK6IZOrohCBq/jCd4TuUYAG9537LgfPP+JlRDIicnd0BEfneaXY3FbPeGGH5G3uPT3
- PWqOEyLrX/S5lF8VUuLcQRWjen8bSmSxMlTH/cBvzOGFx+lXlK5Y8DkoIRrCyyNhD744o4kIY/K
- 56xbC4S1K5Ay/0LwhOpghd94srR0A79K/xSildlCid/akMIkCE1rD3e+MpoiaJL94eRnmWvq4aL
- 0vADC7dkPJOL8y3mshEqBZdKpAphrV424solT5lwvJlQ==
-Message-ID: <903e9d0c-a00c-4214-9f0e-dd676b13b428@kwiboo.se>
-Date: Tue, 2 Jan 2024 21:56:20 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B3C3168AD
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 20:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5534180f0e9so240a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 12:57:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704229024; x=1704833824; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=69LArWSUroy5YqmK5YMwHPfYEDKw0sz24l9A6OuFmIw=;
+        b=c8sJ+WWb+B0pixL0ZvD4Eodpu9CnJ/2+VRZXmSUxm0bokRG/UuaHh3n6uDASQ//33S
+         7Fe2IYk4f+uRCNCud2t3u18rNVS0KaJKhAX2QPmatTMsLuIR+v76WAxgmUBOLyBZQMh9
+         /G5eXgS/B12YgXFqR/68kb5n2zzfqkRSU4HQt+z8Fde0HpEVtu2QkjHuJRwFBcZDAbFI
+         PqqpnghYt1foT3zRTeBoVDGFPr/WsSxZlCJd38bbxu4CJqJFqIACqRIYjmRsc6IaTFxX
+         1Z9hNjE4v97SC9507dALObGpXHt0yuzvN5pv/EdIvlR80OBDzgTOYfE0BTPGSqCctjT8
+         GGUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704229024; x=1704833824;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=69LArWSUroy5YqmK5YMwHPfYEDKw0sz24l9A6OuFmIw=;
+        b=E0q3uGfAAx4yKvdLHhZV/QUNyyqSEYt31X9XP8b0k6re1etTbiphP7WtwCtVifs2GE
+         EWVUEl8vIW7QVCmZUiP4eO/NXKkibQr6My+r2OVrih3XEonZznS7tp8G3JsUkEjfzbeK
+         v5TsaL+JX7cvxuw7O1FdHwfdCXqUBhy+OCgWF6SUogVNiNngBCQfZ36mVobjQpOYe+hM
+         dBe53ewmN2laXSx273aIJBeJxWwnONI2fbQQMDfkZRUWresfak6jBL2dJKqJUwSs0Nih
+         aafqHKqF7hTNUOtLkj6hjIItfQDyIkuLohhQO9DhdqvPyo6X3B8/k8cL7Zwctu8e9cqZ
+         7Tpw==
+X-Gm-Message-State: AOJu0Ywt9sCp8i2vXF7njgvHVdTO/P6WQyun0e21bWNw4kGjcYidhZs4
+	bqUZhKdJU9DPXnb5PN8yhbSqVstRxAt5jHcTjQgUPEJM1h9U
+X-Google-Smtp-Source: AGHT+IHneABEyNwgaIzKWWAAFye7HasjLAQgnTB87qYrI3m6yIScQ0WsFJI/oi3ByMeT0zUcdenq7GkK1hIHcnQOaHg=
+X-Received: by 2002:a05:6402:395:b0:54c:f4fd:3427 with SMTP id
+ o21-20020a056402039500b0054cf4fd3427mr10748edv.7.1704229024235; Tue, 02 Jan
+ 2024 12:57:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] arm64: dts: rockchip: Add devicetree for Pine64
- PineTab2
-Content-Language: en-US
-To: "=?UTF-8?Q?Ond=C5=99ej_Jirman?=" <megi@xff.cz>, Manuel Traut
- <manut@mecka.net>, Neil Armstrong <neil.armstrong@linaro.org>, Jessica
- Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David
- Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Heiko Stuebner <heiko@sntech.de>, Sandy Huang <hjc@rock-chips.com>, Mark
- Yao <markyao0591@gmail.com>, Diederik de Haas <didi.debian@cknow.org>,
- Segfault <awarnecke002@hotmail.com>, Arnaud Ferraris
- <aferraris@debian.org>, Danct12 <danct12@riseup.net>,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org
-References: <20240102-pinetab2-v3-0-cb1aa69f8c30@mecka.net>
- <20240102-pinetab2-v3-4-cb1aa69f8c30@mecka.net>
- <775vjfucu2g2s6zzeutj7f7tapx3q2geccpxvv4ppcms4hxbq7@cbrdmlu2ryzp>
-From: Jonas Karlman <jonas@kwiboo.se>
-In-Reply-To: <775vjfucu2g2s6zzeutj7f7tapx3q2geccpxvv4ppcms4hxbq7@cbrdmlu2ryzp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Report-Abuse-To: abuse@forwardemail.net
-X-Report-Abuse: abuse@forwardemail.net
-X-Complaints-To: abuse@forwardemail.net
-X-ForwardEmail-Version: 0.4.40
-X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
- 149.28.215.223
-X-ForwardEmail-ID: 6594787c1cdb56bea851e248
+References: <CALzBnUG_8d-PLdhpHb4=mWUZ4oUguBqj3hBnE_HBHgdX1WoyVg@mail.gmail.com>
+ <20240102192948.42392-1-lk@c--e.de>
+In-Reply-To: <20240102192948.42392-1-lk@c--e.de>
+From: RD Babiera <rdbabiera@google.com>
+Date: Tue, 2 Jan 2024 12:56:52 -0800
+Message-ID: <CALzBnUHRN7-hLJRX4i7PZNSBF+J8aXDcEWP+iKEMVVeNFmeVtw@mail.gmail.com>
+Subject: Re: [PATCH] usb: typec: Fix double free in typec_altmode_put_partner
+To: "Christian A. Ehrhardt" <lk@c--e.de>
+Cc: linux-kernel@vger.kernel.org, 
+	Chris Bainbridge <chris.bainbridge@gmail.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Manuel and Ondřej,
+Hi Christian,
 
-On 2024-01-02 19:07, Ondřej Jirman wrote:
-> Hello Manuel,
+I believe commit 9c6b789e954fae73c548f39332bcc56bdf0d4373 would
+need to be reverted to apply this patch, but I'm not sure if that's preferr=
+ed
+over submitting a new version of the problematic patch that combines this
+solution instead. Regardless I was able to verify the refcount on my setup.
 
-[...]
+On Tue, Jan 2, 2024 at 11:30=E2=80=AFAM Christian A. Ehrhardt <lk@c--e.de> =
+wrote:
+>
+> The altmode device nodes of a port partner and of cable
+> plugs hold a reference to the altmode of a port. The port's
+> altmode contains various back pointers but these do not
+> contribute to the reference count.
+>
+> Thus, free the port's altmode device instead of doing a
+> double free on ourself.
+>
+> Reported-By: Chris Bainbridge <chris.bainbridge@gmail.com>
+> Fixes: b17b7fe6dd5c (usb: typec: class: fix typec_altmode_put_partner to =
+put plugs)
+> Cc: RD Babiera <rdbabiera@google.com>
+> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
 
->> +
->> +&sfc {
->> +	pinctrl-names = "default";
->> +	pinctrl-0 = <&fspi_dual_io_pins>;
->> +	status = "okay";
->> +	#address-cells = <1>;
->> +	#size-cells = <0>;
->> +
->> +	flash@0 {
->> +		compatible = "jedec,spi-nor";
->> +		reg = <0>;
->> +		spi-max-frequency = <24000000>;
-> 
-> That's a bit on the low side. The flash chip should work for all commands up to
-> 80MHz https://megous.com/dl/tmp/b428ad9b85ac4633.png and SGM3157YC6 switch
-> for the FSPI-CLK should have high enough bandwidth, too.
+Tested-by: RD Babiera <rdbabiera@google.com>
 
-I agree that this is a little bit on the low side, it was a safe rate
-that I used for U-Boot. U-Boot required an exact rate of the supported
-sfc clk rates: 24, 50, 75, 100, 125 or 150 MHz.
+> ---
+>  drivers/usb/typec/class.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+> index 16a670828dde..2da19feacd91 100644
+> --- a/drivers/usb/typec/class.c
+> +++ b/drivers/usb/typec/class.c
+> @@ -263,11 +263,13 @@ static void typec_altmode_put_partner(struct altmod=
+e *altmode)
+>  {
+>         struct altmode *partner =3D altmode->partner;
+>         struct typec_altmode *adev;
+> +       struct typec_altmode *partner_adev;
+>
+>         if (!partner)
+>                 return;
+>
+>         adev =3D &altmode->adev;
+> +       partner_adev =3D &partner->adev;
+>
+>         if (is_typec_plug(adev->dev.parent)) {
+>                 struct typec_plug *plug =3D to_typec_plug(adev->dev.paren=
+t);
+> @@ -276,7 +278,7 @@ static void typec_altmode_put_partner(struct altmode =
+*altmode)
+>         } else {
+>                 partner->partner =3D NULL;
+>         }
+> -       put_device(&adev->dev);
+> +       put_device(&partner_adev->dev);
+>  }
+>
+>  /**
+> --
+> 2.40.1
+>
 
-Please also note that the SPI NOR flash chip used in PineTab2 is not a
-GigaDevice GD25LQ128E, it should be a SiliconKaiser SK25LP128, same as
-found in the Pine64 PinePhone Pro.
-
-> 
->> +		spi-rx-bus-width = <2>;
-> 
-> GD25LQ128E supports quad I/O. Maybe try 4 if it will work.
-
-The schematic only shows fspi D0 and D1 connected, and use the D2 line
-for eMMC_RSTn, so spi-rx-bus-width = <2> should be correct.
-
-> 
->> +		spi-tx-bus-width = <1>;
->> +	};
->> +};
->> +
-
-Regards,
-Jonas
+Thanks,
+---
+rd
 
