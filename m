@@ -1,87 +1,77 @@
-Return-Path: <linux-kernel+bounces-14403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D16F821C95
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:30:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63EA8821C9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:33:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11E291F22AF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:30:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6D8EB2199D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:33:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A04F6FC1A;
-	Tue,  2 Jan 2024 13:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jkcYUec3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B4A6101C3;
+	Tue,  2 Jan 2024 13:33:28 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E793CFBF8;
-	Tue,  2 Jan 2024 13:30:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7AF1FC433C7;
-	Tue,  2 Jan 2024 13:30:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704202228;
-	bh=K9JcRmV8/t3li0JpOvM7C9MUh83KIAuq7YYQ80apTPQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=jkcYUec3NDMLFG2LNozfG1EOKlu3QnQwIYf7LTQK4+TAgr3CZ8WLfJYTbWmpziE2n
-	 6QrlUfL7pRbXi02BGaTKD+Oup1UJiagEAjTUQ6u9xs+2PidaMg0VxAk/GEK5L1bYuE
-	 v08DKbTkl7vsWQW93ly80z2qAZxDsMGVaaR+TZf91B96OkfnGgli1GDl4ux+7ib6lv
-	 P6yKs17VmKN87i9+W8Cst/OQJCy5jUAW8dtCJjO0DlZZPQt6zW3iBNN3tEjhrwr6KO
-	 zAVZYg4+sK1AyE5GLh++hi5QzNffK5Qtt0Qv1UMJqUbtP1Vmp2yxV4OYEkGpaNzEPD
-	 HFftmtUYfTT2w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 66802C395F8;
-	Tue,  2 Jan 2024 13:30:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9632AFBE7;
+	Tue,  2 Jan 2024 13:33:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=v0yd.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=v0yd.nl
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4T4DLz07j3z9t1C;
+	Tue,  2 Jan 2024 14:33:15 +0100 (CET)
+From: =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
+To: Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+	asahi@lists.linux.dev,
+	linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH 0/4] Power off HCI devices before rfkilling them
+Date: Tue,  2 Jan 2024 14:33:06 +0100
+Message-ID: <20240102133311.6712-1-verdre@v0yd.nl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] selftest/net: Some more TCP-AO selftest
- post-merge fixups
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170420222841.17440.2782571129678540998.git-patchwork-notify@kernel.org>
-Date: Tue, 02 Jan 2024 13:30:28 +0000
-References: <20231222-selftests-tcp-ao-fixups-v1-0-39c73817c372@arista.com>
-In-Reply-To: <20231222-selftests-tcp-ao-fixups-v1-0-39c73817c372@arista.com>
-To: Dmitry Safonov <dima@arista.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- 0x7f454c46@gmail.com, liuhangbin@gmail.com
+X-Rspamd-Queue-Id: 4T4DLz07j3z9t1C
 
-Hello:
+In theory the firmware is supposed to power off the bluetooth card
+when we use rfkill to block it. This doesn't work on a lot of laptops
+though, leading to weird issues after turning off bluetooth, like the
+connection timing out on the peripherals which were connected, and
+bluetooth not connecting properly when the adapter is turned on again
+quickly after rfkilling.
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+This series hooks into the rfkill driver from the bluetooth subsystem
+to send a HCI_POWER_OFF command to the adapter before actually submitting
+the rfkill to the firmware and killing the HCI connection.
 
-On Fri, 22 Dec 2023 01:59:05 +0000 you wrote:
-> Note that there's another post-merge fix for TCP-AO selftests, but that
-> doesn't conflict with these, so I don't resend that:
-> 
-> https://lore.kernel.org/all/20231219-b4-tcp-ao-selftests-out-of-tree-v1-1-0fff92d26eac@arista.com/T/#u
-> 
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
-> 
-> [...]
+Jonas Dreßler (4):
+  Bluetooth: HCI: Remove HCI_POWER_OFF_TIMEOUT
+  Bluetooth: mgmt: Remove leftover queuing of power_off work
+  Bluetooth: HCI: Add new state HCI_POWERING_DOWN
+  hci: Queue a HCI power-off command before rfkilling adapters
 
-Here is the summary with links:
-  - [net-next,1/2] selftest/tcp-ao: Set routes in a proper VRF table id
-    https://git.kernel.org/netdev/net-next/c/72cd9f8d5a99
-  - [net-next,2/2] selftest/tcp-ao: Work on namespace-ified sysctl_optmem_max
-    https://git.kernel.org/netdev/net-next/c/80057b2080a8
+ include/net/bluetooth/hci.h |  2 +-
+ net/bluetooth/hci_core.c    | 33 ++++++++++++++++++++++++++++++---
+ net/bluetooth/hci_sync.c    | 16 +++++++++++-----
+ net/bluetooth/mgmt.c        | 30 ++++++++++++++----------------
+ 4 files changed, 56 insertions(+), 25 deletions(-)
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.43.0
 
 
