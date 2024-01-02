@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-14336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F15E821B91
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:24:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DBCA821B93
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F9941C21EC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:24:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6344282EA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6103F4EE;
-	Tue,  2 Jan 2024 12:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0AA7F9C8;
+	Tue,  2 Jan 2024 12:24:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aWrHjbwm"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Crr0UGsm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6CD8EECC
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 12:24:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83D4EF4F2
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 12:24:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704198254;
+	s=mimecast20190719; t=1704198277;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=D1z2FIWF5xXoGle2BmUiqa1khMnkaoG7BkJVaJgp0ig=;
-	b=aWrHjbwmAw7h7Uw+d5AVc0+Mdl/XNq8ujETzj1e89L1fnUp1B58mWOh/K24IKW7v+Rvsux
-	jTNuyyKunkMuBe/Xp3uG24V/AYZKxwjog8TlNRFWbftJDvRJa6oBD1daXobahxJuMJkh98
-	DEkc8HkfcaugYwWqZwsPVjSUdOMH19E=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=8a8p/tz4/wo9Xo5tNF2/PSDKzKkEQri0kDPWt5RPsQM=;
+	b=Crr0UGsmP2/COevqPJNfdfBnoh6BzMkDtqYIPq6p/NMFw7zSt2GvXN1u74cPu47ozs9bD6
+	nWypK3hs6q94ZLlTo0ZBHX7A/wO5e/I209gL1IY/UnMuZq3mAOydyrbOBD+iJZKPGUIhjD
+	kge4gLKcBBEYrOIHB37322XlbKb1GKo=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-68-2JP-zeiGOf-z7_xud_ksgg-1; Tue, 02 Jan 2024 07:24:13 -0500
-X-MC-Unique: 2JP-zeiGOf-z7_xud_ksgg-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-5551f8ec1c8so3231818a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 04:24:13 -0800 (PST)
+ us-mta-449-Bz6Pw6yjPFaxhCAY5bCWKg-1; Tue, 02 Jan 2024 07:24:26 -0500
+X-MC-Unique: Bz6Pw6yjPFaxhCAY5bCWKg-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-556a28dfb41so139362a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 04:24:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704198252; x=1704803052;
+        d=1e100.net; s=20230601; t=1704198265; x=1704803065;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D1z2FIWF5xXoGle2BmUiqa1khMnkaoG7BkJVaJgp0ig=;
-        b=h67FHW/bWa5Hzx5OyqWveAl1IIs9rB/+WBlgS4AVDPePpFHth+0K7rnZUeFJqRtWbF
-         ZwXMaPymccuOPqPtOw7w4a3mb1mys57fdFwi9jzgwZgNYdutZPla8dl3jLduuekA06fh
-         UJxhJP7WvD1hCGUYVqGnoDnhBwZKGgVjTXxqXuG6IPQySruIqlcBhW4Ij++KFpF2C1jz
-         178CYbVXuos/aT8wLbb3rQ4wQPnquiYC46UXTacH0XCElaijzywJqK0HxVOPDI9M/r8J
-         zZM4x/f9BZMsCbjnV790ruZCjKwYcs/NSqhIHO2QJN41zYZieWj/VZwrxH3Pcb42vdEd
-         V0rA==
-X-Gm-Message-State: AOJu0YyDfOG6WXdvw1En9W0xrWB2ZcSmeat3S2RU8aMn2iVKozy3EGKE
-	L355KEO78aeprS9re1sE1m5MpodtgTErGuZKmkNhRoGeVzy+h/5siMlALkqbYRcuJaNpLK/kYTr
-	ZKVlXV0Nw+9/5gfVpOOIpzOxjMGp8SwDO
-X-Received: by 2002:a50:cd56:0:b0:553:5dc1:47b3 with SMTP id d22-20020a50cd56000000b005535dc147b3mr10881340edj.26.1704198252213;
-        Tue, 02 Jan 2024 04:24:12 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHcripK3yS9e5YPfqQZdip7JgLSB+/48Vn7C8t0uzx9y9cLJqbSIvhtgkrFotZ0UPDSQB1SCA==
-X-Received: by 2002:a50:cd56:0:b0:553:5dc1:47b3 with SMTP id d22-20020a50cd56000000b005535dc147b3mr10881331edj.26.1704198251904;
-        Tue, 02 Jan 2024 04:24:11 -0800 (PST)
+        bh=8a8p/tz4/wo9Xo5tNF2/PSDKzKkEQri0kDPWt5RPsQM=;
+        b=j+g8qRjCe/exoelNDrD/GboyYGCNJdigZlPrUgXxbDBnohBA9j7kJaYIUzj+sGAk8v
+         VPHcTwpsumo1xOahZsnCHm0WsAm8+tJlS1si5NtV6x5udjgYN7qy6hctJmElm/Fh2Uwd
+         Z8a4Wzf74ITz5AepGHJAtsjY9OhR2f7GYmh/6JDp4p3zfu1jNbvDWe72Pw0AeUouahp/
+         trAHn24c6BBCX/lmY/ds/j41EUcFEOdi1KGMEBHVw/02BXnO9M4/2yLbV0gEv72alube
+         jCJyUQU8NVGuUAMC8LgcLsRO85JY/sj/K7cgrP8S4Z7/6klyu/91KsIPdyTI9jzM6JkK
+         dCgA==
+X-Gm-Message-State: AOJu0YyMpsE4pp1XlZWZvE0hqeUn7ff+rPZrb1E3fKj9p+hcnPgk7fob
+	sHgNirnEQI96ENLjWdbwEFGd4UvvaCt2xAVV9+I+xbSpbnT687JucvyxpmvUMVZzwY8GToTmqx+
+	nYqHLoQu1ERz3HAW6qyChwJcu9d7yNw4J
+X-Received: by 2002:a05:6402:8d3:b0:555:f8d6:3958 with SMTP id d19-20020a05640208d300b00555f8d63958mr3238862edz.55.1704198265350;
+        Tue, 02 Jan 2024 04:24:25 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHQ6k4T2HeIqC2SuJg3ax/+d7LV51poDPZuTi2eYjdajjCqMNVS1Pc1vq+BSfDYOrxgp8tOUQ==
+X-Received: by 2002:a05:6402:8d3:b0:555:f8d6:3958 with SMTP id d19-20020a05640208d300b00555f8d63958mr3238854edz.55.1704198265086;
+        Tue, 02 Jan 2024 04:24:25 -0800 (PST)
 Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id ez9-20020a056402450900b0055504002a5fsm9824333edb.72.2024.01.02.04.24.11
+        by smtp.gmail.com with ESMTPSA id ez9-20020a056402450900b0055504002a5fsm9824333edb.72.2024.01.02.04.24.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 04:24:11 -0800 (PST)
-Message-ID: <099d762f-6802-4646-865e-b61a85d04bb1@redhat.com>
-Date: Tue, 2 Jan 2024 13:24:10 +0100
+        Tue, 02 Jan 2024 04:24:24 -0800 (PST)
+Message-ID: <37160e32-49ec-4977-aab0-4bb340335055@redhat.com>
+Date: Tue, 2 Jan 2024 13:24:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,32 +72,28 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] platform/x86: Remove "X86 PLATFORM DRIVERS - ARCH"
- from MAINTAINERS
+Subject: Re: [PATCH] platform/x86: intel-uncore-freq: Add additional client
+ processors
 Content-Language: en-US, nl
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Cc: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Darren Hart <dvhart@infradead.org>
-References: <20231222144453.2888706-1-andriy.shevchenko@linux.intel.com>
+To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ markgross@kernel.org, ilpo.jarvinen@linux.intel.com,
+ andriy.shevchenko@linux.intel.com
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231222203957.1348043-1-srinivas.pandruvada@linux.intel.com>
 From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20231222144453.2888706-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231222203957.1348043-1-srinivas.pandruvada@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 Hi,
 
-On 12/22/23 15:44, Andy Shevchenko wrote:
-> It seems traffic there is quite low and changes are often not related
-> to PDx86 anyhow. Besides that I have a lot of other stuff to do, I'm
-> rearly pay attention on these emails. Doesn't seem Daren to be active
-> either. With this in mind, remove (stale) section.
+On 12/22/23 21:39, Srinivas Pandruvada wrote:
+> Add support for client processors starting from Kaby Lake.
 > 
-> Note, it might be make sense to actually move that folder under PDx86
-> umbrella (in MAINTAINERS) if people find it suitable. That will reduce
-> burden on arch/x86 maintenance.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> ---
+> Rebased on top of review-hans branch. The processors are ordered based
+> on their release similiar to intel-family.h.
 
 Thank you for your patch, I've applied this patch to my review-hans 
 branch:
@@ -118,29 +114,40 @@ Hans
 
 
 
-> ---
->  MAINTAINERS | 9 ---------
->  1 file changed, 9 deletions(-)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index da022945e184..33d15e089ccb 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -23820,15 +23820,6 @@ F:	drivers/platform/olpc/
->  F:	drivers/platform/x86/
->  F:	include/linux/platform_data/x86/
->  
-> -X86 PLATFORM DRIVERS - ARCH
-> -R:	Darren Hart <dvhart@infradead.org>
-> -R:	Andy Shevchenko <andy@infradead.org>
-> -L:	platform-driver-x86@vger.kernel.org
-> -L:	x86@kernel.org
-> -S:	Maintained
-> -T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-> -F:	arch/x86/platform
-> -
->  X86 PLATFORM UV HPE SUPERDOME FLEX
->  M:	Steve Wahl <steve.wahl@hpe.com>
->  R:	Justin Ernst <justin.ernst@hpe.com>
+>  .../x86/intel/uncore-frequency/uncore-frequency.c   | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/drivers/platform/x86/intel/uncore-frequency/uncore-frequency.c b/drivers/platform/x86/intel/uncore-frequency/uncore-frequency.c
+> index a3b25253b6fd..a5e0f5c22179 100644
+> --- a/drivers/platform/x86/intel/uncore-frequency/uncore-frequency.c
+> +++ b/drivers/platform/x86/intel/uncore-frequency/uncore-frequency.c
+> @@ -205,6 +205,16 @@ static const struct x86_cpu_id intel_uncore_cpu_ids[] = {
+>  	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,	NULL),
+>  	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X, NULL),
+>  	X86_MATCH_INTEL_FAM6_MODEL(EMERALDRAPIDS_X, NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE, NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE_L, NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE, NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L, NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(CANNONLAKE_L, NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE, NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L, NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(ROCKETLAKE, NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE, NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L, NULL),
+>  	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE, NULL),
+>  	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L, NULL),
+>  	X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE, NULL),
+> @@ -212,6 +222,9 @@ static const struct x86_cpu_id intel_uncore_cpu_ids[] = {
+>  	X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE_S, NULL),
+>  	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE, NULL),
+>  	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE_L, NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(ARROWLAKE, NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(ARROWLAKE_H, NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(LUNARLAKE_M, NULL),
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(x86cpu, intel_uncore_cpu_ids);
 
 
