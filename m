@@ -1,150 +1,112 @@
-Return-Path: <linux-kernel+bounces-14118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CEB6821805
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:38:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0783882180A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:39:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1209D1F21D84
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:38:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F1121C2156F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:39:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B365211A;
-	Tue,  2 Jan 2024 07:38:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7977523C3;
+	Tue,  2 Jan 2024 07:38:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="DAo3I87Q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A0120F9
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 07:38:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35fe9fa7f4fso87339555ab.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 23:38:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704181103; x=1704785903;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=el8vPOGgwAF2an2KLr95NydshHh+8ikKQzj5kluS6RU=;
-        b=vJQHDkSQ5nKmgWGsgML9awcOwY5cr8xmF68ynZCIAOH14v/Bk8trGziqAfwznA+LxN
-         y/7YxnkWfxCjzRmUlbX1AXNdHutCZtC8nRsGxIghf9h4vWwVJuCVfNwEU3nHolOJuDNy
-         yuEvDyvlhtchoNhYbVMs2FCvcQSCl0G8revL2x1NrgCyexEGrBMW50OZFzV2eYOD1Qr+
-         yQvnVjMwrR3jzNZwocOXIGDT5UtSfhWeO/b7dqjFLImp2ocLWAvg3ZEJEgu8ZY4Wobd1
-         pyjfHzA8vNUOm9VkkPMCyT8dxg2OSPwqK+3BnsUU5hADhSsOtpc1v2lrLiJItGgBkBN1
-         QkCg==
-X-Gm-Message-State: AOJu0YzNiOdC9Dd9vfsl8y9fSx2q5H6N2G0Jg5UT5Cx+57T7CMnkBgFo
-	dOLxDJTKoLvdUYlYOpA2R+Mp7uY9ZgM9w1YtWbI2DoBmWht7DzQ=
-X-Google-Smtp-Source: AGHT+IHui55/5ozWk42Z5MZV9NaQ1S9NYtGYT0dserHttlgb0FB1ktvSYLCNEdB8i6lUX5b5hADNwLE5QMv6xzTpamcEFgAFoJI/
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942FD20F8;
+	Tue,  2 Jan 2024 07:38:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704181113; x=1704785913; i=markus.elfring@web.de;
+	bh=4njice7TZkWFEO2ORipwga62AkVl5tLjIIrG5yvHNOw=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=DAo3I87Qcp6nkZVpLswU4ZBX8RZfBSPwittpiQmcr8H9YN9aaF4VHZeIxP4i+uNh
+	 ky5xiIarNI62pcOpcDtGzO8vwRcYfNRvw1GUuSGEhPG9NpRv+obqCvt+cy7F4iVH/
+	 iJZ5D6beXX97Tr7zj8DClx5ZCDICq+7MQ6RPluj4wc+KF7a5f4ETaYS/a4NDiYoSN
+	 uB5PoDsrgod2U6DQuluudB0UvxmhTgk8x9MfmeO6P+ZPQsgQpie7cuJwEMcID6uxW
+	 Ds1Pe4WxzsJ/3Y1IWhxqjpBvSkevIplZsTQJuaH2H3lJrnYIBuqHeLu1SvlTuetnZ
+	 NJEqxBWiB0STyZkZGA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1M43KW-1rKZM83i1g-000R6n; Tue, 02
+ Jan 2024 08:38:32 +0100
+Message-ID: <8123a895-c7dd-4a75-94bc-6f61639621eb@web.de>
+Date: Tue, 2 Jan 2024 08:38:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d85:b0:35f:eae9:3f61 with SMTP id
- h5-20020a056e021d8500b0035feae93f61mr1864212ila.6.1704181103701; Mon, 01 Jan
- 2024 23:38:23 -0800 (PST)
-Date: Mon, 01 Jan 2024 23:38:23 -0800
-In-Reply-To: <000000000000fd588e060de27ef4@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000051b61f060df1952d@google.com>
-Subject: Re: [syzbot] Re: [syzbot] [virtualization?] KMSAN: uninit-value in
- virtqueue_add (4)
-From: syzbot <syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] net/iucv: Improve unlocking in iucv_enable()
+Content-Language: en-GB
+To: Suman Ghosh <sumang@marvell.com>,
+ "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+ Alexandra Winter <wintera@linux.ibm.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Wenjia Zhang <wenjia@linux.ibm.com>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <cde82080-c715-473c-97ac-6ef66bba6d64@web.de>
+ <81f7db31-a258-4dc8-b6e1-c1ef1844a9d2@web.de>
+ <SJ0PR18MB5216C27127E46490951A1E5DDB61A@SJ0PR18MB5216.namprd18.prod.outlook.com>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <SJ0PR18MB5216C27127E46490951A1E5DDB61A@SJ0PR18MB5216.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:cqHRG7UKZQaS0q8IliuDG48Y4tyhs8cnh4prGvo1r0odVrIpBGf
+ O7yRr+9J/cgQIS9CL+gr2lonIkMhKzk7qoIcf395+5e4U1VedHkNmUIyfeJgKmD4Bcz46IC
+ 1xU26WW3PBtELuZQ9sYN6eV1r7ovhNYn2Ctqgl3Ku1yPKaYe1OI0qDrNekJxYXZZcrEw2gk
+ WcxJWadYNVpBeTgg2/YZA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:p3uLdUUnCn4=;QP+s2+l1t3HNNqicb2JuvNRmosA
+ Pkj9/fzolJkqBMMHCsfnJk8JnOGt71C2ip8+RuUntITroyW8MCOZima5CfdbGToDrcBRImEs+
+ G3cGpRyN6erza4HqN4VvhLRrSxGd8hMMEMZ3IX3UT4KEr3SyXTIBCOc4pmW/KVCS1SlOy+CiM
+ AXzfzaeTR9TjkmQaCqZvG0XGX7hI2eMKlD4b7D1oDtGCYe14sQ8nN/EDwVGHGnprL+D/oblAP
+ SUGCrjo3VBilR/0TYfWeVuq5HmysVi7V0RFG9qaqcPL1oZlCzGdB4+EaOgJHl8Ohlt6rmFcRw
+ z0GOvYUJL7B2nA8cBl+9XuhnKhw+eik7xlzj1pYllwGeCiNCehA02oHTWUzzj8ttYiJ5obLQ0
+ 8Vd3bnaedbhtKDcUzNrL8zzFuzaLWBb2lYh3lBAvqecJ58kEDDSvYtfZCJ75Nerh2mLuDZKzu
+ WwbdNTMRHWr9bfPa3bIpyocyWYPLsyawIacZ2AeS5oIf1I03i+sEF0gXuy/YdFeOLKDvMf0xD
+ PUyVtHhoke9gGQdQP5sNIbX+SsJy3oiG36MK5ydKzkLaTr7Y1HBtiLIDvdyeNVamyqlDTaQpc
+ Xr1kWM8g0yhdl/ujzfD7AcRRyxSxhu+DbUyGQiLgfxZkuLLhQW4p3ZqcNs8Ro25F8bNMqOHdX
+ XyLGf2o9ZEMy9yxuIOkjD42njHup6PAnBGu+ByzZs+xdhacsHqGXR+iJE9p247DD9fVNtNGlR
+ AlLEkwh8P2Skphc/Wn3S3dkoOa0wbQQpm74xhuP5/HWIrdWiJBSmoy27XEC6lhH2BWLjTbI2m
+ ytbfDvrydfB6ln7+wCBtQOhaagt9pqWsxnaZczjEsG7mbvLOcMoxzPhIpylx0+d/8OcKAvdYZ
+ Fo8j+F81xtx1ogVZ28FjssyMeZJW1Yde4SQvlRTgbmku9lwqsPIKJiDui2EXXIOeg5inp6r7E
+ LgczCg==
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+> @@ -555,13 +555,16 @@ static int iucv_enable(void)
+>> 	if (cpumask_empty(&iucv_buffer_cpumask))
+>> 		/* No cpu could declare an iucv buffer. */
+>> 		goto out;
+>> +
+>> +	rc = 0;
+>> +unlock:
+>> 	cpus_read_unlock();
+>> -	return 0;
+>> +	return rc;
+>> +
+>> out:
+>> 	kfree(iucv_path_table);
+>> 	iucv_path_table = NULL;
+>> -	cpus_read_unlock();
+>> -	return rc;
+>> +	goto unlock;
+> [Suman] This looks confusing. What is the issue with retaining the original change?
 
-***
+I propose to reduce the number of cpus_read_unlock() calls
+(in the source code).
 
-Subject: Re: [syzbot] [virtualization?] KMSAN: uninit-value in virtqueue_add (4)
-Author: penguin-kernel@i-love.sakura.ne.jp
-
-#syz set subsystems: mm
-
-On 2024/01/01 22:38, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    fbafc3e621c3 Merge tag 'for_linus' of git://git.kernel.org..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=173df3e9e80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7078a6b901aa3
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d7521c1e3841ed075a42
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1300b4a1e80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=130b0379e80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/1520f7b6daa4/disk-fbafc3e6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/8b490af009d5/vmlinux-fbafc3e6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/202ca200f4a4/bzImage-fbafc3e6.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com
-> 
-> =====================================================
-> BUG: KMSAN: uninit-value in vring_map_one_sg drivers/virtio/virtio_ring.c:380 [inline]
-> BUG: KMSAN: uninit-value in virtqueue_add_split drivers/virtio/virtio_ring.c:614 [inline]
-> BUG: KMSAN: uninit-value in virtqueue_add+0x21c6/0x6530 drivers/virtio/virtio_ring.c:2210
->  vring_map_one_sg drivers/virtio/virtio_ring.c:380 [inline]
->  virtqueue_add_split drivers/virtio/virtio_ring.c:614 [inline]
->  virtqueue_add+0x21c6/0x6530 drivers/virtio/virtio_ring.c:2210
->  virtqueue_add_sgs+0x186/0x1a0 drivers/virtio/virtio_ring.c:2244
->  __virtscsi_add_cmd drivers/scsi/virtio_scsi.c:467 [inline]
->  virtscsi_add_cmd+0x838/0xad0 drivers/scsi/virtio_scsi.c:501
->  virtscsi_queuecommand+0x896/0xa60 drivers/scsi/virtio_scsi.c:598
->  scsi_dispatch_cmd drivers/scsi/scsi_lib.c:1516 [inline]
->  scsi_queue_rq+0x4874/0x5790 drivers/scsi/scsi_lib.c:1758
->  blk_mq_dispatch_rq_list+0x13f8/0x3600 block/blk-mq.c:2049
->  __blk_mq_do_dispatch_sched block/blk-mq-sched.c:170 [inline]
->  blk_mq_do_dispatch_sched block/blk-mq-sched.c:184 [inline]
->  __blk_mq_sched_dispatch_requests+0x10af/0x2500 block/blk-mq-sched.c:309
->  blk_mq_sched_dispatch_requests+0x160/0x2d0 block/blk-mq-sched.c:333
->  blk_mq_run_work_fn+0xd0/0x280 block/blk-mq.c:2434
->  process_one_work kernel/workqueue.c:2627 [inline]
->  process_scheduled_works+0x104e/0x1e70 kernel/workqueue.c:2700
->  worker_thread+0xf45/0x1490 kernel/workqueue.c:2781
->  kthread+0x3ed/0x540 kernel/kthread.c:388
->  ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-> 
-> Uninit was created at:
->  __alloc_pages+0x9a4/0xe00 mm/page_alloc.c:4591
->  alloc_pages_mpol+0x62b/0x9d0 mm/mempolicy.c:2133
->  alloc_pages mm/mempolicy.c:2204 [inline]
->  folio_alloc+0x1da/0x380 mm/mempolicy.c:2211
->  filemap_alloc_folio+0xa5/0x430 mm/filemap.c:974
->  __filemap_get_folio+0xa5a/0x1760 mm/filemap.c:1918
->  ext4_da_write_begin+0x7f8/0xec0 fs/ext4/inode.c:2891
->  generic_perform_write+0x3f5/0xc40 mm/filemap.c:3918
->  ext4_buffered_write_iter+0x564/0xaa0 fs/ext4/file.c:299
->  ext4_file_write_iter+0x20f/0x3460
->  __kernel_write_iter+0x329/0x930 fs/read_write.c:517
->  dump_emit_page fs/coredump.c:888 [inline]
->  dump_user_range+0x593/0xcd0 fs/coredump.c:915
->  elf_core_dump+0x528d/0x5a40 fs/binfmt_elf.c:2077
->  do_coredump+0x32c9/0x4920 fs/coredump.c:764
->  get_signal+0x2185/0x2d10 kernel/signal.c:2890
->  arch_do_signal_or_restart+0x53/0xca0 arch/x86/kernel/signal.c:309
->  exit_to_user_mode_loop+0xe8/0x320 kernel/entry/common.c:168
->  exit_to_user_mode_prepare+0x163/0x220 kernel/entry/common.c:204
->  irqentry_exit_to_user_mode+0xd/0x30 kernel/entry/common.c:309
->  irqentry_exit+0x16/0x40 kernel/entry/common.c:412
->  exc_page_fault+0x246/0x6f0 arch/x86/mm/fault.c:1564
->  asm_exc_page_fault+0x2b/0x30 arch/x86/include/asm/idtentry.h:570
-> 
-> Bytes 0-4095 of 4096 are uninitialized
-> Memory access of size 4096 starts at ffff88812c79c000
-> 
-> CPU: 0 PID: 997 Comm: kworker/0:1H Not tainted 6.7.0-rc7-syzkaller-00003-gfbafc3e621c3 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-> Workqueue: kblockd blk_mq_run_work_fn
-> =====================================================
-
+Regards,
+Markus
 
