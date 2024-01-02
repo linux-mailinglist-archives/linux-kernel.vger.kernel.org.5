@@ -1,266 +1,195 @@
-Return-Path: <linux-kernel+bounces-14401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F028821C90
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:29:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC282821D4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:05:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D50E0B20CD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:29:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52999B22594
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:05:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88259101C3;
-	Tue,  2 Jan 2024 13:28:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30CC711C93;
+	Tue,  2 Jan 2024 14:03:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C0tgEh8e"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jBAKOIba"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30BB0FBEA;
-	Tue,  2 Jan 2024 13:28:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40d2376db79so86574255e9.0;
-        Tue, 02 Jan 2024 05:28:54 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5554156DC
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:03:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3367f8f8cb0so9675965f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:03:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704202133; x=1704806933; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:to:from:subject
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gJRNxnF+WLiIGDb5Im1idfj6YK0TMnBxnPcw8gR9Uak=;
-        b=C0tgEh8eMdKLOS2pBoAI0phPoqoXwEqNdXqXEiMpFAoz9cxqjsT7bf+lSd86Z7558X
-         Ce9dmwKvt2e4MpHtpuC64UQFagAx6y0SXCHZCjEWmuZoREq3tBYDTX44AdrJtaeEiKPT
-         zNutQ/DyPwTAZJz8VN3F6F1Erh/O1Wjz5LHyirTKvaQHb/nLMU6xdw1TYbxArvkkGYIz
-         PeBIX+fDKneQhFnsQfdWGinl/z4VKdOL0aoRVDORQpJngnkJ9kr+qjAfrKPqlmuk5fBp
-         uAEf671MECaqaGEhjqFbMbGiwoVfKQc53WQBC7YfGIuQYf0qHRKEYbRpcH//aBmBZJ/7
-         Ogug==
+        d=linaro.org; s=google; t=1704204227; x=1704809027; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GeJuJizoWeAs29loa6MRIjI0gunccegFhfT3lI/DWIs=;
+        b=jBAKOIba/xIr+7nD78XhYRVDqnsegy2GBhdvfeFgQsHKgF2I974MshoM8DtnyAFOIu
+         KU8JsFE1Q9CmjjiLpLFZ0AzfC5oibDyIsvgN2MvLuGSDqLO+SR5xX1sAbgYLFOhkACE7
+         IsQb5ZfeX7C9jTzARBmmNWP74Lgt1YQl7wTwlqvK0NfRGKK2oJtF6EzfciDD6XexbNsh
+         tpgh4KhH7EXfIFcHx3Z2TOi1Q7fTZqBmPeTatbwIwijtYpC2Z44uBuZ2XYwQhjKrZo4g
+         ujyMKcMjs4jwiTShNM1KrRSXE2if/ODf+vXiN/lEKthv1dGgzE5kxwCgnsyfJNlefz7o
+         PDEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704202133; x=1704806933;
-        h=content-transfer-encoding:in-reply-to:references:to:from:subject
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gJRNxnF+WLiIGDb5Im1idfj6YK0TMnBxnPcw8gR9Uak=;
-        b=gyQ5SOHO+wadZgPXqOy/TQrE/2V/HCd3nWSM9FKJ8UapTHTuEZIAgzn6D54bxAqwtI
-         FsbKmf+OWCGk3NkqaaxNYtH2qs7ECepfi0sBV0S5P4PfX0UTKR6IyHWY4PL7n9SC2By+
-         gN9qq58EI6Pw55cyzJwA3pYHlXAhjESW/Myr4EFi+Cw8VW3l67rGM5UPXTzc8s//nJO8
-         MgZ+duvFLDz6CJvpG6cnQbNQZKPz8emGHdOePwCiu+AGLOd8xZaCeCkhkUAVENg8SNai
-         2DEayWExLs9mSzAvR5qllSvLtg2tqHVpxIMf8ed1x24kCnnUplOABs4L09xncWqEnXUr
-         GuHQ==
-X-Gm-Message-State: AOJu0YzW95Shkf7GZOOkd70A+jYBuG9kgHAeOCpzamCZ4Dyqpwjeejl1
-	0x5pgpNFs4vUo88U+hlkSXM=
-X-Google-Smtp-Source: AGHT+IH9k7PMqAbFjsje2v1Mpw93of8/XyvdDhLtaJDNE4JR+ZGaVLdvYPs65hHcJgjJgrR8TXak2Q==
-X-Received: by 2002:a05:600c:5190:b0:40d:889c:f213 with SMTP id fa16-20020a05600c519000b0040d889cf213mr1857724wmb.98.1704202133310;
-        Tue, 02 Jan 2024 05:28:53 -0800 (PST)
-Received: from debian ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id q5-20020a056000136500b003372c080acasm9561900wrz.2.2024.01.02.05.28.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 05:28:53 -0800 (PST)
-Message-ID: <5bd9a1c7-63e8-4f5e-a749-c7eeeaed3c42@gmail.com>
-Date: Tue, 2 Jan 2024 14:28:46 +0100
+        d=1e100.net; s=20230601; t=1704204227; x=1704809027;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GeJuJizoWeAs29loa6MRIjI0gunccegFhfT3lI/DWIs=;
+        b=MvA5odxPW+ggVO2SmDt8x+h0Gy7/vOG215acPKzeIsdcvOpptlAJkS6Ykjk564iuSw
+         tklk7e0sdLMnXbdvXNv2+DOr1tjcUISt1/mhlUf0bg5nYdUNrc7vriwd/Ow5PmN8o91p
+         1oHby30+l81uxH9EGhywKty2kqxjLTLK/XCHIEBvHBiLeJw1Ua66SuRb6EFUxGtq6LjG
+         VdP2+XSDUGFhgCIxL4BXdEXEePCoLnaBSVgZSSU8+BZ2Hs/3cNyB1Y12jPrNxCNIEzAf
+         LwNaX9GX/o0Gw9RZNASATQQaaIj27nzq4bgqS7uL4S9cW3zQC4vCsa28goCQ5aR4wEbU
+         +LFQ==
+X-Gm-Message-State: AOJu0Yxa21Xv3OxCEWyP3NaTlxYCmRooeex4L5Ao7fpEYS1yxu5tbzfV
+	KD9aCSW2XD8wa2KcDwNdk/y/uVUCaaqKY9xEyiMxN635KaY=
+X-Google-Smtp-Source: AGHT+IE/lxBI2psr/eyrLZFMSVyOi8+3ecJpLXDxAYrw3nUMQDDIqSUNcdGH6FQb1H0HxA0PUgdCHw==
+X-Received: by 2002:a5d:5145:0:b0:336:7f03:4af with SMTP id u5-20020a5d5145000000b003367f0304afmr10379008wrt.123.1704204226988;
+        Tue, 02 Jan 2024 06:03:46 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id q17-20020adfcd91000000b003362d0eefd3sm28380018wrj.20.2024.01.02.06.03.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 06:03:46 -0800 (PST)
+Date: Tue, 2 Jan 2024 16:29:12 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev, Edward Adam Davis <eadavis@qq.com>,
+	syzbot+553d90297e6d2f50dbc7@syzkaller.appspotmail.com
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+	jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, shaggy@kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] jfs: fix array-index-out-of-bounds in diNewExt
+Message-ID: <828db1e9-9b98-4797-bd23-08fbae1260d3@suswa.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: [PATCH net-next v2 3/3] selftests/net: fix GRO coalesce test and add
- ext header coalesce tests
-From: Richard Gobert <richardbgobert@gmail.com>
-To: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <127b8199-1cd4-42d7-9b2b-875abaad93fe@gmail.com>
-In-Reply-To: <127b8199-1cd4-42d7-9b2b-875abaad93fe@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_B86ECD2ECECC92A7ED86EF92D0064A499206@qq.com>
 
-Currently there is no test which checks that IPv6 extension header packets
-successfully coalesce. This commit adds a test, which verifies two IPv6
-packets with HBH extension headers do coalesce, and another test which
-checks that packets with different extension header data do not coalesce
-in GRO.
+Hi Edward,
 
-I changed the receive socket filter to accept a packet with one extension
-header. This change exposed a bug in the fragment test -- the old BPF did
-not accept the fragment packet. I updated correct_num_packets in the
-fragment test accordingly.
+kernel test robot noticed the following build warnings:
 
-Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
----
- tools/testing/selftests/net/gro.c | 94 +++++++++++++++++++++++++++++--
- 1 file changed, 88 insertions(+), 6 deletions(-)
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/tools/testing/selftests/net/gro.c b/tools/testing/selftests/net/gro.c
-index 30024d0ed373..6dbba8ec53a1 100644
---- a/tools/testing/selftests/net/gro.c
-+++ b/tools/testing/selftests/net/gro.c
-@@ -71,6 +71,12 @@
- #define MAX_PAYLOAD (IP_MAXPACKET - sizeof(struct tcphdr) - sizeof(struct ipv6hdr))
- #define NUM_LARGE_PKT (MAX_PAYLOAD / MSS)
- #define MAX_HDR_LEN (ETH_HLEN + sizeof(struct ipv6hdr) + sizeof(struct tcphdr))
-+#define MIN_EXTHDR_SIZE 8
-+#define EXT_PAYLOAD_1 "\x00\x00\x00\x00\x00\x00"
-+#define EXT_PAYLOAD_2 "\x11\x11\x11\x11\x11\x11"
-+
-+#define ipv6_optlen(p)  (((p)->hdrlen+1) << 3) /* calculate IPv6 extension header len */
-+#define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
- 
- static const char *addr6_src = "fdaa::2";
- static const char *addr6_dst = "fdaa::1";
-@@ -104,7 +110,7 @@ static void setup_sock_filter(int fd)
- 	const int dport_off = tcp_offset + offsetof(struct tcphdr, dest);
- 	const int ethproto_off = offsetof(struct ethhdr, h_proto);
- 	int optlen = 0;
--	int ipproto_off;
-+	int ipproto_off, opt_ipproto_off;
- 	int next_off;
- 
- 	if (proto == PF_INET)
-@@ -116,14 +122,30 @@ static void setup_sock_filter(int fd)
- 	if (strcmp(testname, "ip") == 0) {
- 		if (proto == PF_INET)
- 			optlen = sizeof(struct ip_timestamp);
--		else
--			optlen = sizeof(struct ip6_frag);
-+		else {
-+			BUILD_BUG_ON(sizeof(struct ip6_hbh) > MIN_EXTHDR_SIZE);
-+			BUILD_BUG_ON(sizeof(struct ip6_dest) > MIN_EXTHDR_SIZE);
-+			BUILD_BUG_ON(sizeof(struct ip6_frag) > MIN_EXTHDR_SIZE);
-+
-+			/* same size for HBH and Fragment extension header types */
-+			optlen = MIN_EXTHDR_SIZE;
-+			opt_ipproto_off = ETH_HLEN + sizeof(struct ipv6hdr)
-+				+ offsetof(struct ip6_ext, ip6e_nxt);
-+		}
- 	}
- 
-+	/* this filter validates the following:
-+	 *	- packet is IPv4/IPv6 according to the running test.
-+	 *	- packet is TCP. Also handles the case of one extension header and then TCP.
-+	 *	- checks the packet tcp dport equals to DPORT. Also handles the case of one
-+	 *	  extension header and then TCP.
-+	 */
- 	struct sock_filter filter[] = {
- 			BPF_STMT(BPF_LD  + BPF_H   + BPF_ABS, ethproto_off),
--			BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, ntohs(ethhdr_proto), 0, 7),
-+			BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, ntohs(ethhdr_proto), 0, 9),
- 			BPF_STMT(BPF_LD  + BPF_B   + BPF_ABS, ipproto_off),
-+			BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, IPPROTO_TCP, 2, 0),
-+			BPF_STMT(BPF_LD  + BPF_B   + BPF_ABS, opt_ipproto_off),
- 			BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, IPPROTO_TCP, 0, 5),
- 			BPF_STMT(BPF_LD  + BPF_H   + BPF_ABS, dport_off),
- 			BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, DPORT, 2, 0),
-@@ -576,6 +598,40 @@ static void add_ipv4_ts_option(void *buf, void *optpkt)
- 	iph->check = checksum_fold(iph, sizeof(struct iphdr) + optlen, 0);
- }
- 
-+static void add_ipv6_exthdr(void *buf, void *optpkt, __u8 exthdr_type, char *ext_payload)
-+{
-+	struct ipv6_opt_hdr *exthdr = (struct ipv6_opt_hdr *)(optpkt + tcp_offset);
-+	struct ipv6hdr *iph = (struct ipv6hdr *)(optpkt + ETH_HLEN);
-+	char *exthdr_payload_start = (char *)(exthdr + 1);
-+
-+	exthdr->hdrlen = 0;
-+	exthdr->nexthdr = IPPROTO_TCP;
-+
-+	if (ext_payload)
-+		memcpy(exthdr_payload_start, ext_payload, MIN_EXTHDR_SIZE - sizeof(*exthdr));
-+
-+	memcpy(optpkt, buf, tcp_offset);
-+	memcpy(optpkt + tcp_offset + MIN_EXTHDR_SIZE, buf + tcp_offset,
-+		sizeof(struct tcphdr) + PAYLOAD_LEN);
-+
-+	iph->nexthdr = exthdr_type;
-+	iph->payload_len = htons(ntohs(iph->payload_len) + MIN_EXTHDR_SIZE);
-+}
-+
-+static void send_ipv6_exthdr(int fd, struct sockaddr_ll *daddr, char *ext_data1, char *ext_data2)
-+{
-+	static char buf[MAX_HDR_LEN + PAYLOAD_LEN];
-+	static char exthdr_pck[sizeof(buf) + MIN_EXTHDR_SIZE];
-+
-+	create_packet(buf, 0, 0, PAYLOAD_LEN, 0);
-+	add_ipv6_exthdr(buf, exthdr_pck, IPPROTO_HOPOPTS, ext_data1);
-+	write_packet(fd, exthdr_pck, total_hdr_len + PAYLOAD_LEN + MIN_EXTHDR_SIZE, daddr);
-+
-+	create_packet(buf, PAYLOAD_LEN * 1, 0, PAYLOAD_LEN, 0);
-+	add_ipv6_exthdr(buf, exthdr_pck, IPPROTO_HOPOPTS, ext_data2);
-+	write_packet(fd, exthdr_pck, total_hdr_len + PAYLOAD_LEN + MIN_EXTHDR_SIZE, daddr);
-+}
-+
- /* IPv4 options shouldn't coalesce */
- static void send_ip_options(int fd, struct sockaddr_ll *daddr)
- {
-@@ -697,7 +753,7 @@ static void send_fragment6(int fd, struct sockaddr_ll *daddr)
- 		create_packet(buf, PAYLOAD_LEN * i, 0, PAYLOAD_LEN, 0);
- 		write_packet(fd, buf, bufpkt_len, daddr);
- 	}
--
-+	sleep(1);
- 	create_packet(buf, PAYLOAD_LEN * 2, 0, PAYLOAD_LEN, 0);
- 	memset(extpkt, 0, extpkt_len);
- 
-@@ -760,6 +816,7 @@ static void check_recv_pkts(int fd, int *correct_payload,
- 	vlog("}, Total %d packets\nReceived {", correct_num_pkts);
- 
- 	while (1) {
-+		ip_ext_len = 0;
- 		pkt_size = recv(fd, buffer, IP_MAXPACKET + ETH_HLEN + 1, 0);
- 		if (pkt_size < 0)
- 			error(1, errno, "could not receive");
-@@ -767,7 +824,7 @@ static void check_recv_pkts(int fd, int *correct_payload,
- 		if (iph->version == 4)
- 			ip_ext_len = (iph->ihl - 5) * 4;
- 		else if (ip6h->version == 6 && ip6h->nexthdr != IPPROTO_TCP)
--			ip_ext_len = sizeof(struct ip6_frag);
-+			ip_ext_len = MIN_EXTHDR_SIZE;
- 
- 		tcph = (struct tcphdr *)(buffer + tcp_offset + ip_ext_len);
- 
-@@ -880,7 +937,21 @@ static void gro_sender(void)
- 			sleep(1);
- 			write_packet(txfd, fin_pkt, total_hdr_len, &daddr);
- 		} else if (proto == PF_INET6) {
-+			sleep(1);
- 			send_fragment6(txfd, &daddr);
-+			sleep(1);
-+			write_packet(txfd, fin_pkt, total_hdr_len, &daddr);
-+
-+			sleep(1);
-+			/* send IPv6 packets with ext header with same payload */
-+			send_ipv6_exthdr(txfd, &daddr, EXT_PAYLOAD_1, EXT_PAYLOAD_1);
-+			sleep(1);
-+			write_packet(txfd, fin_pkt, total_hdr_len, &daddr);
-+
-+			sleep(1);
-+			/* send IPv6 packets with ext header with different payload */
-+			send_ipv6_exthdr(txfd, &daddr, EXT_PAYLOAD_1, EXT_PAYLOAD_2);
-+			sleep(1);
- 			write_packet(txfd, fin_pkt, total_hdr_len, &daddr);
- 		}
- 	} else if (strcmp(testname, "large") == 0) {
-@@ -997,6 +1068,17 @@ static void gro_receiver(void)
- 			 */
- 			printf("fragmented ip6 doesn't coalesce: ");
- 			correct_payload[0] = PAYLOAD_LEN * 2;
-+			correct_payload[1] = PAYLOAD_LEN;
-+			correct_payload[2] = PAYLOAD_LEN;
-+			check_recv_pkts(rxfd, correct_payload, 3);
-+
-+			printf("ipv6 with ext header does coalesce: ");
-+			correct_payload[0] = PAYLOAD_LEN * 2;
-+			check_recv_pkts(rxfd, correct_payload, 1);
-+
-+			printf("ipv6 with ext header with different payloads doesn't coalesce: ");
-+			correct_payload[0] = PAYLOAD_LEN;
-+			correct_payload[1] = PAYLOAD_LEN;
- 			check_recv_pkts(rxfd, correct_payload, 2);
- 		}
- 	} else if (strcmp(testname, "large") == 0) {
+url:    https://github.com/intel-lab-lkp/linux/commits/Edward-Adam-Davis/jfs-fix-array-index-out-of-bounds-in-diNewExt/20231212-095530
+base:   https://github.com/kleikamp/linux-shaggy jfs-next
+patch link:    https://lore.kernel.org/r/tencent_B86ECD2ECECC92A7ED86EF92D0064A499206%40qq.com
+patch subject: [PATCH] jfs: fix array-index-out-of-bounds in diNewExt
+config: i386-randconfig-141-20231212 (https://download.01.org/0day-ci/archive/20231214/202312142348.6HRZtXTB-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce: (https://download.01.org/0day-ci/archive/20231214/202312142348.6HRZtXTB-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202312142348.6HRZtXTB-lkp@intel.com/
+
+New smatch warnings:
+fs/jfs/jfs_imap.c:2213 diNewExt() error: buffer overflow 'imap->im_imap.in_agctl' 128 <= 128
+
+Old smatch warnings:
+fs/jfs/jfs_imap.c:2229 diNewExt() error: buffer overflow 'imap->im_imap.in_agctl' 128 <= 128
+fs/jfs/jfs_imap.c:2304 diNewExt() error: buffer overflow 'imap->im_imap.in_agctl' 128 <= 128
+fs/jfs/jfs_imap.c:2318 diNewExt() error: buffer overflow 'imap->im_imap.in_agctl' 128 <= 128
+fs/jfs/jfs_imap.c:2330 diNewExt() error: buffer overflow 'imap->im_imap.in_agctl' 128 <= 128
+fs/jfs/jfs_imap.c:2332 diNewExt() error: buffer overflow 'imap->im_imap.in_agctl' 128 <= 128
+fs/jfs/jfs_imap.c:2363 diNewExt() error: buffer overflow 'imap->im_imap.in_agctl' 128 <= 128
+fs/jfs/jfs_imap.c:2364 diNewExt() error: buffer overflow 'imap->im_imap.in_agctl' 128 <= 128
+
+vim +2213 fs/jfs/jfs_imap.c
+
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2152  static int diNewExt(struct inomap * imap, struct iag * iagp, int extno)
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2153  {
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2154  	int agno, iagno, fwd, back, freei = 0, sword, rc;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2155  	struct iag *aiagp = NULL, *biagp = NULL, *ciagp = NULL;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2156  	struct metapage *amp, *bmp, *cmp, *dmp;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2157  	struct inode *ipimap;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2158  	s64 blkno, hint;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2159  	int i, j;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2160  	u32 mask;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2161  	ino_t ino;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2162  	struct dinode *dp;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2163  	struct jfs_sb_info *sbi;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2164  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2165  	/* better have free extents.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2166  	 */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2167  	if (!iagp->nfreeexts) {
+eb8630d7d2fd13 Joe Perches       2013-06-04  2168  		jfs_error(imap->im_ipimap->i_sb, "no free extents\n");
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2169  		return -EIO;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2170  	}
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2171  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2172  	/* get the inode map inode.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2173  	 */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2174  	ipimap = imap->im_ipimap;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2175  	sbi = JFS_SBI(ipimap->i_sb);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2176  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2177  	amp = bmp = cmp = NULL;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2178  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2179  	/* get the ag and iag numbers for this iag.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2180  	 */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2181  	agno = BLKTOAG(le64_to_cpu(iagp->agstart), sbi);
+f93b91b82fcf16 Edward Adam Davis 2023-12-12  2182  	if (agno > MAXAG || agno < 0)
+
+The commit introduces this agno > MAXAG comparison.  But Smatch says
+that it should be agno >= MAXAG.
+
+f93b91b82fcf16 Edward Adam Davis 2023-12-12  2183  		return -EIO;
+f93b91b82fcf16 Edward Adam Davis 2023-12-12  2184  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2185  	iagno = le32_to_cpu(iagp->iagnum);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2186  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2187  	/* check if this is the last free extent within the
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2188  	 * iag.  if so, the iag must be removed from the ag
+25985edcedea63 Lucas De Marchi   2011-03-30  2189  	 * free extent list, so get the iags preceding and
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2190  	 * following the iag on this list.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2191  	 */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2192  	if (iagp->nfreeexts == cpu_to_le32(1)) {
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2193  		if ((fwd = le32_to_cpu(iagp->extfreefwd)) >= 0) {
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2194  			if ((rc = diIAGRead(imap, fwd, &amp)))
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2195  				return (rc);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2196  			aiagp = (struct iag *) amp->data;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2197  		}
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2198  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2199  		if ((back = le32_to_cpu(iagp->extfreeback)) >= 0) {
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2200  			if ((rc = diIAGRead(imap, back, &bmp)))
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2201  				goto error_out;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2202  			biagp = (struct iag *) bmp->data;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2203  		}
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2204  	} else {
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2205  		/* the iag has free extents.  if all extents are free
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2206  		 * (as is the case for a newly allocated iag), the iag
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2207  		 * must be added to the ag free extent list, so get
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2208  		 * the iag at the head of the list in preparation for
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2209  		 * adding this iag to this list.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2210  		 */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2211  		fwd = back = -1;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2212  		if (iagp->nfreeexts == cpu_to_le32(EXTSPERIAG)) {
+^1da177e4c3f41 Linus Torvalds    2005-04-16 @2213  			if ((fwd = imap->im_agctl[agno].extfree) >= 0) {
+
+If agno == MAXAG then we're out of bounds here.
+
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2214  				if ((rc = diIAGRead(imap, fwd, &amp)))
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2215  					goto error_out;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2216  				aiagp = (struct iag *) amp->data;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2217  			}
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2218  		}
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2219  	}
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2220  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  2221  	/* check if the iag has no free inodes.  if so, the iag
+
 -- 
-2.36.1
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
