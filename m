@@ -1,143 +1,105 @@
-Return-Path: <linux-kernel+bounces-14922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A83822479
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:07:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B63DD822469
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:04:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59FB1B2419E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:07:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 452FD1F23836
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:04:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A131A599;
-	Tue,  2 Jan 2024 22:01:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF90D1864B;
+	Tue,  2 Jan 2024 22:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="S+xnwffw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X/TvCjBQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0070199DF
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 22:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-28ce6eeb4easo310365a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 14:01:49 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019F218646;
+	Tue,  2 Jan 2024 22:01:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3bbbdf0b859so5291183b6e.3;
+        Tue, 02 Jan 2024 14:01:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1704232909; x=1704837709; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1704232894; x=1704837694; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ntXY1BdgwMpYCVbC/qFvmg3dz3t/ZzKIeqKl93B+ekg=;
-        b=S+xnwffwYxZ2FpgRDUEM5aG5lh6apSSIe8QE1YEuvg5HNZl2uvXS5xB3I4h68PXJtp
-         gDoasIZL+E6vJDxsAlaAz2qiuZGnidTBKhLbKUVB9MCqyezHINS1vk9XB1P8QhCeQ/Gk
-         1F3vkO36JKmC6wu3aDyGwRtHq/T4uIGYQI8W7lwNy99bF6j1+kb6RN8jomX5tdXoDy0z
-         vv5Imvd5qeKtPNXykUn7nqE3fbpEknvZSukERFlYHljwch8UPjc169Yq0S62vKZRE1+2
-         +sL6iybOEqjROZIlxUaOrgJTurzWQkqGwTWUSYMSkJZ+grzlapuwMTGlafSeAc4TDLZ5
-         juuw==
+        bh=mqI9o54z9qRSDIMHvl1bUrXAFI07BELIcpmN1oqYEIU=;
+        b=X/TvCjBQswBhArHn8iAvqZQn+LS4Umi5sN1okgyimPa06RfzVL5AI9SG/dHlXJwYtP
+         Oi4jPo+OMYgMqV/UCoFC4ievTPN1Y8p95t0tNQCopYzv1KqdRD/CFu0+JPO3Yzb0shUy
+         IXTdAiJmM0k0DD53xsNMOkLj+RcEGZ0YzmS8EGg89Ntxn8b6e7xGXSrcgZWeqHp+djTM
+         X5i5XPAAGFxpXRw/vX87UWAN5MycCYb7MJSXH60q3fRuWrkk/S8TRTc6cn3Tz+F7vrAU
+         AN/NWRq9f02keRl7rcG1B5sLAAwpZsYn83BHA4ZlVNqArO8kP63ycAtxIJ4fBggf+joW
+         k4Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704232909; x=1704837709;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ntXY1BdgwMpYCVbC/qFvmg3dz3t/ZzKIeqKl93B+ekg=;
-        b=wUFzXaOKgPQ6bpVNRdd3sXVSphJIgLT4XAs1Hg6wuk8igZ47iWWsJfoBFkPc2rw7HU
-         X6YbehGy/PwEp08QENOlEm7ESgzXRzWS1JJeNE1CZaOwAhGYpB6+bnR7bXzt46K+FwRp
-         LjFjU8YANW+/tBaQqBl3m9hziCm5Qn6SZooUnlwIeIiSRqXnIpRwHCaYnVbXv3toXfVv
-         mTyRX/e6VWaw2o5Yju0ChSbfl4ZCqIHPoLZgVcO/oI3bta1WQHrxooAabJjpIJNm1bg3
-         ADqN3DVVKGxgOJnxIx7nssthW7NIKhsH1Z6AhZeaCqssk69jT27puFZ1AOz2WwKD0tLg
-         bENA==
-X-Gm-Message-State: AOJu0Yxjvt/cT1av97KCBOP0oJOF7Cfc0U7dZzR3wCqymxwaSWrUni1I
-	yuHESkk5hUG5ZAfGWnlSFpzncjCxxtwGQw==
-X-Google-Smtp-Source: AGHT+IE6m2P6rWzQ+Gmcf0Ghh7A4crRVy8Bq5ePskuN3Kp4kY6ZC52OLPfUohVtqOdFfc+/yJvJ6pQ==
-X-Received: by 2002:a17:90a:bc46:b0:28b:31f5:9668 with SMTP id t6-20020a17090abc4600b0028b31f59668mr5241043pjv.30.1704232909372;
-        Tue, 02 Jan 2024 14:01:49 -0800 (PST)
-Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id r59-20020a17090a43c100b0028ce507cd7dsm101724pjg.55.2024.01.02.14.01.48
+        d=1e100.net; s=20230601; t=1704232894; x=1704837694;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mqI9o54z9qRSDIMHvl1bUrXAFI07BELIcpmN1oqYEIU=;
+        b=g08vc57XNX+hVEJSpdEtzlpcDpMy1JyWmjWQvoVok4epaLiV2RwiClHenp1Y1/SryN
+         UsIlA3s11E0l1BKeFJshfW5CWPRE/ZeoXT2mLggon5+6efWi2MBEto3SCfouOcn52a/7
+         mVeQJfZxkuMDVRiG+1XiF8V2jdkBfw8Ql1LWorLfB2VSbdJ4Tzm+xDtejZQlsoZlMv8l
+         BygJXm0Vc0dEG6oUEaUmJ+hboK923b/JDlQy7LeN4sdmhBiNjn/stb+G6Bb1VDfoQXLj
+         FBLYtFoxyKWGBE3xpHqCSaR3ZVoZ+QyxV/4yEBWQbzNA+VlWOd+Q1cQ+4biMYq0gSIyx
+         Pf0Q==
+X-Gm-Message-State: AOJu0Yz2Ae6AgnEJJj1reQBumN6oigjK1lyyHplLTSlC2xkhu87gaEKM
+	k7Ovaej0sewzbW79UCZqB/wbK/6SSTg=
+X-Google-Smtp-Source: AGHT+IHZJgB/+lNjtSFxLat8Tr18hFlaFdVfpMJks0gtk8aynOT14d4JPagPUed58Sicz/NncFP23Q==
+X-Received: by 2002:a05:6808:1708:b0:3b9:e2bf:c24e with SMTP id bc8-20020a056808170800b003b9e2bfc24emr24064815oib.15.1704232894093;
+        Tue, 02 Jan 2024 14:01:34 -0800 (PST)
+Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
+        by smtp.gmail.com with ESMTPSA id p13-20020a0cfacd000000b0067f678747ffsm9148761qvo.50.2024.01.02.14.01.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 14:01:49 -0800 (PST)
-From: Samuel Holland <samuel.holland@sifive.com>
-To: Palmer Dabbelt <palmer@dabbelt.com>,
-	linux-riscv@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH v4 12/12] riscv: mm: Always use an ASID to flush mm contexts
-Date: Tue,  2 Jan 2024 14:00:49 -0800
-Message-ID: <20240102220134.3229156-13-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240102220134.3229156-1-samuel.holland@sifive.com>
-References: <20240102220134.3229156-1-samuel.holland@sifive.com>
+        Tue, 02 Jan 2024 14:01:33 -0800 (PST)
+Date: Tue, 02 Jan 2024 17:01:33 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>, 
+ Thomas Lange <thomas@corelatus.se>, 
+ Netdev <netdev@vger.kernel.org>, 
+ linux-kernel@vger.kernel.org
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ =?UTF-8?B?SsO2cm4tVGhvcmJlbiBIaW56?= <jthinz@mailbox.tu-berlin.de>, 
+ Deepa Dinamani <deepa.kernel@gmail.com>, 
+ "David S . Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>
+Message-ID: <659487bd95ff6_2aa3c62948e@willemb.c.googlers.com.notmuch>
+In-Reply-To: <fb69e804-6a9d-4052-a96e-40f8a20c189a@app.fastmail.com>
+References: <d1ce6aba-1b10-471c-ba60-10effa1dac10@corelatus.se>
+ <fb69e804-6a9d-4052-a96e-40f8a20c189a@app.fastmail.com>
+Subject: Re: [PATCH net] net: Implement missing SO_TIMESTAMPING_NEW cmsg
+ support
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Even if multiple ASIDs are not supported, using the single-ASID variant
-of the sfence.vma instruction preserves TLB entries for global (kernel)
-pages. So it is always more efficient to use the single-ASID code path.
+Arnd Bergmann wrote:
+> On Tue, Jan 2, 2024, at 22:13, Thomas Lange wrote:
+> > Commit 9718475e6908 ("socket: Add SO_TIMESTAMPING_NEW") added the new
+> > socket option SO_TIMESTAMPING_NEW. However, it was never implemented in
+> > __sock_cmsg_send thus breaking SO_TIMESTAMPING cmsg for platforms using
+> > SO_TIMESTAMPING_NEW.
+> >
+> > Fixes: 9718475e6908 ("socket: Add SO_TIMESTAMPING_NEW")
+> > Link: 
+> > https://lore.kernel.org/netdev/6a7281bf-bc4a-4f75-bb88-7011908ae471@app.fastmail.com/
+> > Signed-off-by: Thomas Lange <thomas@corelatus.se>
+> 
+> Cc: stable@vger.kernel.org
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
-
-Changes in v4:
- - There is now only one copy of __flush_tlb_range()
-
-Changes in v2:
- - Update both copies of __flush_tlb_range()
-
- arch/riscv/include/asm/mmu_context.h | 2 --
- arch/riscv/mm/context.c              | 3 +--
- arch/riscv/mm/tlbflush.c             | 3 +--
- 3 files changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/arch/riscv/include/asm/mmu_context.h b/arch/riscv/include/asm/mmu_context.h
-index 7030837adc1a..b0659413a080 100644
---- a/arch/riscv/include/asm/mmu_context.h
-+++ b/arch/riscv/include/asm/mmu_context.h
-@@ -33,8 +33,6 @@ static inline int init_new_context(struct task_struct *tsk,
- 	return 0;
- }
- 
--DECLARE_STATIC_KEY_FALSE(use_asid_allocator);
--
- #include <asm-generic/mmu_context.h>
- 
- #endif /* _ASM_RISCV_MMU_CONTEXT_H */
-diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-index 3ca9b653df7d..20057085ab8a 100644
---- a/arch/riscv/mm/context.c
-+++ b/arch/riscv/mm/context.c
-@@ -18,8 +18,7 @@
- 
- #ifdef CONFIG_MMU
- 
--DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
--
-+static DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
- static unsigned long num_asids;
- 
- static atomic_long_t current_version;
-diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index 5ec621545c69..39d80f56d292 100644
---- a/arch/riscv/mm/tlbflush.c
-+++ b/arch/riscv/mm/tlbflush.c
-@@ -84,8 +84,7 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
- 		if (cpumask_empty(cmask))
- 			return;
- 
--		if (static_branch_unlikely(&use_asid_allocator))
--			asid = cntx2asid(atomic_long_read(&mm->context.id));
-+		asid = cntx2asid(atomic_long_read(&mm->context.id));
- 	} else {
- 		cmask = cpu_online_mask;
- 	}
--- 
-2.42.0
-
+Reviewed-by: Willem de Bruijn <willemb@google.com>
 
