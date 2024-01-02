@@ -1,228 +1,175 @@
-Return-Path: <linux-kernel+bounces-14481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9E9F821D9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:28:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6329E821D9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:27:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE2F41C21F2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:28:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67F3B1C20C1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:27:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E68D511708;
-	Tue,  2 Jan 2024 14:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F49111719;
+	Tue,  2 Jan 2024 14:27:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="q+hiFzRa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01on2040.outbound.protection.outlook.com [40.107.239.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE0C612E4C;
-	Tue,  2 Jan 2024 14:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=siliconsignals.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siliconsignals.io
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h2qUcSAptY3b0zBM+Nv64H9XsY6Dk7kZnCFWmMiO3Y+Nu32NBS6WNvt7QUjYiTuAiiWuhZF+ypeIcW70QnYzPIvQTBEvg4wQd1+CR5Xc0vKPN9273jbAeSrBZS7UV3LdsZJRd73fAYF+nMRv5wdVeHYfNODzev0ar7e8UAHIgfxlZyU2k9LBG9JO9bytoiy0eqK7IDt283MByxN7JjRmQoPp6gGgvk7OeafMGNoThqstvZ9N0dmQ/E+nkBlqQ2EjkefgtT26r6MS/AAuaaEkswCMoSCcB44HqLg7OQVEjKEp0f6OljC/oM8z+9ASVw3OHLmvsvqGRkGNe8XiEhiGKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Hw+ZMfeXpfA9wyHP9iUGLuEgZaEXTvU038rMq1+iCig=;
- b=O9Xg4QFFTw2j9X0+VF/h8psGOJ+iZToaAokfh5RvHganuGIxo6/KfrYtvAdKWBebJ8zoPWd+iqMf9Z5/C/5kI2N//XyoeEm9H43svncbNEHP82Ts7Np0MsaAI7MkGzt18JmyWjY1mjwWOck5dwEySTLuqTFfBbN/jDflW71tETfeO9SQhdk4FBYpKtfkVxbthhoSVBVq5BkoGD9+dmNo65V8rKbqsVv7mpdP2BYpvCdwGyjrirKklWBkwP1LTpujJd8zrjk5fmldfUV+yaP5u9OxNkvpGNUYJQ66LXaOxjoBz25IL6f/DHuhuwcmnSbPCuXMOycGHd3uDYp6bOzYDg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siliconsignals.io; dmarc=pass action=none
- header.from=siliconsignals.io; dkim=pass header.d=siliconsignals.io; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siliconsignals.io;
-Received: from MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a01:42::6)
- by PN0PR01MB9723.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:149::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Tue, 2 Jan
- 2024 14:28:02 +0000
-Received: from MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::c1b:b2aa:7fc0:6532]) by MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::c1b:b2aa:7fc0:6532%7]) with mapi id 15.20.7135.023; Tue, 2 Jan 2024
- 14:28:02 +0000
-From: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
-To: mchehab@kernel.org,
-	kieran.bingham@ideasonboard.com
-Cc: bhavin.sharma@siliconsignals.io,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] media: adv7180: Fix cppcheck warnings
-Date: Tue,  2 Jan 2024 19:57:29 +0530
-Message-Id: <20240102142729.1743421-1-bhavin.sharma@siliconsignals.io>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BMXPR01CA0087.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:54::27) To MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:42::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0316D11708
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e67f70f34so8115950e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:27:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704205652; x=1704810452; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NFaHotn2cJmn9bSUZqN8YKUiA/IurWzWG53AtgwJCMk=;
+        b=q+hiFzRaXYYyF89J1GOudz2n+ARL7JEAdtYT5pf/A3OD5CmymprB4tf+uvdzv7uWSq
+         ZaDbWIZNnYght6IeZDAsgs0IYQ7FLwNWGI9F6KqEHcSh2HypXc82hbU3Pb9j0oJwfSzB
+         Fs7+RSxdwXlO8aSlfTVQW2UEDkr+WzcIu2NaLkGIQfDT2JUm0iPnoqyVosb+sK3dPqs4
+         99F7U29ur93vfZI9zLmoOeAJU9BW/EgWgsPocH1hfrWCmWsNv7G9Rieq/lU3i24NR7o+
+         RiQbAl095YVrEW8q/l2QfFdS1Zly0SbUiwwzmRDnqOUohKCHidNrgTomheeCwyd8c5a7
+         6a/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704205652; x=1704810452;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NFaHotn2cJmn9bSUZqN8YKUiA/IurWzWG53AtgwJCMk=;
+        b=cOqudxrxbOXfKDPzU63AbNcq/jPiqmLgnmfYJBpmZiyLa43UGWQeIPc2jS2NMVHGPv
+         sBb5q/Ln3+4ZrSRz6gVaBUrJ/CXUZDSG+LvZvMdHw0yYX0Ob8BQII0H2BypJx5K3OtOV
+         5CXfhgNfRre9gxEj7k3T/SGOdCw/ebE/RNjZHRhcPas66mV1XKPHQABi38fA0Vlf7L9H
+         gwUY6MuXHtqpAAdgYIITaAW4nHLj0fSDsZDaCZskBohKpWe/gI5VXoePxcOkNm28lyI4
+         BK6vcODgt2MlrUrc//JGYX+XwEJnDhx0ReNuEqXXu3I9QIXP1mrg38Jy50/srcs1gOBf
+         BPPw==
+X-Gm-Message-State: AOJu0Yw9MOXptg5kMLRdc/rQek3a6tP/TjcHuluh3jT3zerI5JfshiQm
+	Fr/2MNPRn5N/2xG/qdNoerLqduDNfoP9Yg==
+X-Google-Smtp-Source: AGHT+IG0DqgpsdZCuWAexDRCxSamRyVlM3Yf8OX2pliD+8Tvo0ksw10OtMaBn7DKGWpFLCew9BRXRg==
+X-Received: by 2002:ac2:47e6:0:b0:50e:7702:a18d with SMTP id b6-20020ac247e6000000b0050e7702a18dmr4756560lfp.36.1704205652109;
+        Tue, 02 Jan 2024 06:27:32 -0800 (PST)
+Received: from [192.168.199.125] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
+        by smtp.gmail.com with ESMTPSA id t15-20020a056402020f00b005534057c72dsm15858756edv.18.2024.01.02.06.27.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jan 2024 06:27:31 -0800 (PST)
+Message-ID: <90749db5-a803-4bf0-8543-f049249b1df0@linaro.org>
+Date: Tue, 2 Jan 2024 15:27:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MAZPR01MB6957:EE_|PN0PR01MB9723:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1159943e-68b9-4f90-7b34-08dc0b9f0713
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	PJkxEviak0j2xGqieyzmNyn5i0MZ4wuO8dHzZQPpJ4+CcPUiIvmz/hKAwvgQXyb90mZlM6VX1b+j5swpV9ENxZkghRoigMjyUjY4ct2bsWpZWQoSvr2DmM21le8GOoAf/79UJ+El7k0ih+QLsB1EBE/CtodfC390fthBd6gXtc3TUX8i5wzYm3d8WfVkmn6N2DUVXIfG4n+dkLjMom4J0M0APaJ47xtdpPfE52cucXRvC3fG0B3GbXsbjsKqNDJByDjNZJfKUow9O7WJwdNCALAnDARA/d9oFSGG6ma9RA6JVXLmN3icBtN5SUmGsQFUXZsFurXZ8DvcodVA12473lAjBBq46eefU2VCu9Y6Qu5YXSJlh3WJsUhqGr+ytbPK76hI2g5sjf3BN5NIwAkUnA6w7Yy3h3CH0LT9f/IKGzW2fmaa4/wusDSnNpp5BU+LNZD4AxljglnfEUVNxwH/qmuRIFjf+3f8QDhpwC2nX37rbU4SCTWcHDXIrKth1/IXdmXbARTXd4mWWNn7YI6Ce7DocZ2fl57PlgMriPIGLIFJHAhoioOOryQKPAHnLztHXYtbFH6RPmFn6AgyRmT8ab/Zx4n3viyL4tL1GywXegzpwA+UgZte3Cpq4FXABQ968bqniJJ+Y4/lpQPKAe4sCy6MOdN3ppF9c9DrJWunpJk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(39830400003)(396003)(346002)(376002)(366004)(230173577357003)(230922051799003)(230273577357003)(1800799012)(451199024)(64100799003)(186009)(83380400001)(2616005)(26005)(1076003)(38100700002)(41300700001)(8936002)(8676002)(316002)(4326008)(5660300002)(2906002)(6666004)(44832011)(478600001)(6506007)(6512007)(52116002)(66556008)(66946007)(6486002)(66476007)(38350700005)(86362001)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?pzzECu0HdDpx48bMLq5+ScYKcmYQzdvnfzh96haP/DRqZSMIkiloyfyZ56oh?=
- =?us-ascii?Q?RWqBeiCuV/ANaGpW/3InrzmkFE8oiXjsgvtXhoa5BYHsag/utJe343jJ92j6?=
- =?us-ascii?Q?Fa2shhIWwKxiy7dUed/fMIjqNrhEdtveGr2SBJJtgMMR8Y3Ul6beVbXHwp9Q?=
- =?us-ascii?Q?0IFu8z0Dprhe+6IwZ6gyYKmOSVSt+qcXK/Zc7t8/51P1JaQlAMtFGRSy3ucs?=
- =?us-ascii?Q?3xpDSPpFw1x41yes6sjxur8ut1CT+wFOLnGVRtss9Nd0gMAgRkP5YZzRYt6C?=
- =?us-ascii?Q?inMiLBWyOQGcdyN4BOV6NpiNDm7eD6RJZzDDldFfJMMCI0MztWPrKfRhHDs7?=
- =?us-ascii?Q?poy/w2RVSFnD4WdXXJVY6vI0utMKI9JaYAMPQWELsPkA+EPgDfv5OfbJysrE?=
- =?us-ascii?Q?xxHjVR0UQrAa840H1X+1H9w4mbOdxVTsioQcVG4aUrftZDqBLjuJqrVtEqwb?=
- =?us-ascii?Q?VPbaitOI29p97wQTPglekipZKJqemtq6jX4HYqRdOLFVIuSIqPwS5yz3z+vQ?=
- =?us-ascii?Q?nmpv4HQEpTrcJ7uejb7uz+SCjQJR7q1qIpHFBl5FE5v7Ok/GQ7BoPXH4/LR5?=
- =?us-ascii?Q?TD+5eT7D3ORf46kdKqP9nmP7ycLuIDhGZ8S6GFoYrMYMDTbEXK01Vli9hyhZ?=
- =?us-ascii?Q?kSg9LWteGbidWJgnPr5T7Bt6csrzH0EDe7TucNv2YdTPNZs9i8U2mXI0PywD?=
- =?us-ascii?Q?cxXU1H4IbVO7gkA2kln/bMTDqt4LJGP0ivHA1N9o80ZJgJX4OqobyKRK85TW?=
- =?us-ascii?Q?WlMDpg9pMlsm6USxgpm/32gVOEV7E/4WKejTY+NMukXGYTJaD3GqdgnAgr9O?=
- =?us-ascii?Q?utaHwt+P5qkGMPOb+AyJYzZR3A6mSf0nrQupV3l2HIgFPZzIWx2E7XG24Tpy?=
- =?us-ascii?Q?x55OaHr2iI1mTI2zM1qFWSDVl3yPjwLsAx2ZvEeYFFdFEWv52fwOvvurJtNm?=
- =?us-ascii?Q?cnel5qw6vuBXj7sOoQl62DUp/hI7cVxy5S1YynokIVAE5oMn+BS5nHE4+bJs?=
- =?us-ascii?Q?PXRHdMrERwiA2JpxVqxs26yQkowgYYHSLONHs2KVGkxWqqBYj/3u60SQd8Ul?=
- =?us-ascii?Q?7Krq72vZSnY1/5cNY3LsLTUIXTHrwytQa4VJhsQXPE7qyD4rA1wyqjEbjOrg?=
- =?us-ascii?Q?z8N23L1+WrT5Gu3yh1TQAXZl4oH8M0Mm3vr6HmrEj6t86Zc+piDDs0ELZ6Wi?=
- =?us-ascii?Q?Oy3GnTLiynifp8SJpTjPfAQdWC+V2jPBrs60Mb8NAbkbG04ABFVMcIhNAnYO?=
- =?us-ascii?Q?tQ8qRUU7ICbLqtxHi6AebkFmAL+1DjtkpFqBtxHbog4QDsq0760JIw9P9rom?=
- =?us-ascii?Q?BRrgr2g854vY5Ob8lKzO4AWWGR9/o679HTt3ghfIr3i/IxFOpNejPTd2Q9nG?=
- =?us-ascii?Q?OhZRv8h+GXWrwsurR1A2/ucDRyF6PHPq7UWFnkiVmjbp7gITVLPUsrvh2URx?=
- =?us-ascii?Q?sLFgL1SShQG6HP5Dau7AWGCCTut/O8Ra9y1aDd307M1Mo2ZEanwfSu5R9A25?=
- =?us-ascii?Q?LoWga+lvOyoCqn77gDiyDXy8pgOdAvJvDE7rlZwBdOxvxb6g6f0IF+xiNCce?=
- =?us-ascii?Q?q8cx3xjq+j+2/eH8W1f225zMw4EKQgkrd0naSQcwUe1jkT4UUaw/oI+OwVge?=
- =?us-ascii?Q?QJ6KVGOOGYbhWIgt0kjgAiY=3D?=
-X-OriginatorOrg: siliconsignals.io
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1159943e-68b9-4f90-7b34-08dc0b9f0713
-X-MS-Exchange-CrossTenant-AuthSource: MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2024 14:28:02.7227
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 7ec5089e-a433-4bd1-a638-82ee62e21d37
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3WyOjNtAdzEVhK1G/2huPuaDxapL5ledk3quuXFsrGUM2lOWxzAK97EmylaOS0yEh/We4TlbwTyGfo4WYxAKMIrAaUGbUrB+TtPTbZtjdDo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN0PR01MB9723
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 02/12] clk: qcom: Use qcom_branch_set_clk_en()
+Content-Language: en-US
+To: Johan Hovold <johan@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Andy Gross <agross@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+References: <20230717-topic-branch_aon_cleanup-v4-0-32c293ded915@linaro.org>
+ <20230717-topic-branch_aon_cleanup-v4-2-32c293ded915@linaro.org>
+ <ZZPnAvXB8oqds4KM@hovoldconsulting.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <ZZPnAvXB8oqds4KM@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-WARNING: Missing a blank line after declarations
+On 2.01.2024 11:35, Johan Hovold wrote:
+> On Sat, Dec 30, 2023 at 02:04:04PM +0100, Konrad Dybcio wrote:
+>> Instead of magically poking at the bit0 of branch clocks' CBCR, use
+>> the newly introduced helper.
+>>
+>> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> ---
+> 
+>> diff --git a/drivers/clk/qcom/camcc-sc8280xp.c b/drivers/clk/qcom/camcc-sc8280xp.c
+>> index 3dcd79b01515..94db130b85e2 100644
+>> --- a/drivers/clk/qcom/camcc-sc8280xp.c
+>> +++ b/drivers/clk/qcom/camcc-sc8280xp.c
+>> @@ -3010,10 +3010,8 @@ static int camcc_sc8280xp_probe(struct platform_device *pdev)
+>>  	clk_lucid_pll_configure(&camcc_pll6, regmap, &camcc_pll6_config);
+>>  	clk_lucid_pll_configure(&camcc_pll7, regmap, &camcc_pll7_config);
+>>  
+>> -	/*
+>> -	 * Keep camcc_gdsc_clk always enabled:
+>> -	 */
+>> -	regmap_update_bits(regmap, 0xc1e4, BIT(0), 1);
+>> +	/* Keep the critical clocks always-on */
+>> +	qcom_branch_set_clk_en(regmap, 0xc1e4); /* CAMCC_GDSC_CLK */
+> 
+> I still think something along the lines of
+> 
+> 	/* Keep some clocks always on */
+> 
+> is preferred as it is far from obvious why a camera clock would be
+> considered "critical".
+> 
+> Or perhaps you can come up with a better description of why we've
+> decided not to model these clocks and just leave them ungated.
+Technically they're not really super critical if the hardware is
+not in use.. It's just that at one point Qualcomm decided to take
+the lazy decision to keep them always-on downstream and we seem to
+have agreed on going with that, instead of pm_clk (remember my old
+attempt at getting rid of this on dispcc-sc8280xp?)..
 
-Signed-off-by: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
----
- drivers/media/i2c/adv7180.c | 27 ++++++++++++++++++---------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+For now, I was just trying to clean this up a bit before looking
+into a better solution for this (probably a whole lot of pm_clks
+with some clever handle-getting due to different ways of grabbing
+clock sources.. by-name vs by-index vs global lookup that we've
+accumulated over the years).
 
-diff --git a/drivers/media/i2c/adv7180.c b/drivers/media/i2c/adv7180.c
-index 54134473186b..0023a546b3c9 100644
---- a/drivers/media/i2c/adv7180.c
-+++ b/drivers/media/i2c/adv7180.c
-@@ -335,8 +335,9 @@ static u32 adv7180_status_to_v4l2(u8 status1)
- static int __adv7180_status(struct adv7180_state *state, u32 *status,
- 			    v4l2_std_id *std)
- {
--	int status1 = adv7180_read(state, ADV7180_REG_STATUS1);
-+	int status1;
- 
-+	status1 = adv7180_read(state, ADV7180_REG_STATUS1);
- 	if (status1 < 0)
- 		return status1;
- 
-@@ -356,7 +357,9 @@ static inline struct adv7180_state *to_state(struct v4l2_subdev *sd)
- static int adv7180_querystd(struct v4l2_subdev *sd, v4l2_std_id *std)
- {
- 	struct adv7180_state *state = to_state(sd);
--	int err = mutex_lock_interruptible(&state->mutex);
-+	int err;
-+
-+	err = mutex_lock_interruptible(&state->mutex);
- 	if (err)
- 		return err;
- 
-@@ -388,8 +391,9 @@ static int adv7180_s_routing(struct v4l2_subdev *sd, u32 input,
- 			     u32 output, u32 config)
- {
- 	struct adv7180_state *state = to_state(sd);
--	int ret = mutex_lock_interruptible(&state->mutex);
-+	int ret;
- 
-+	ret = mutex_lock_interruptible(&state->mutex);
- 	if (ret)
- 		return ret;
- 
-@@ -399,7 +403,6 @@ static int adv7180_s_routing(struct v4l2_subdev *sd, u32 input,
- 	}
- 
- 	ret = state->chip_info->select_input(state, input);
--
- 	if (ret == 0)
- 		state->input = input;
- out:
-@@ -410,7 +413,9 @@ static int adv7180_s_routing(struct v4l2_subdev *sd, u32 input,
- static int adv7180_g_input_status(struct v4l2_subdev *sd, u32 *status)
- {
- 	struct adv7180_state *state = to_state(sd);
--	int ret = mutex_lock_interruptible(&state->mutex);
-+	int ret;
-+
-+	ret = mutex_lock_interruptible(&state->mutex);
- 	if (ret)
- 		return ret;
- 
-@@ -436,8 +441,9 @@ static int adv7180_program_std(struct adv7180_state *state)
- static int adv7180_s_std(struct v4l2_subdev *sd, v4l2_std_id std)
- {
- 	struct adv7180_state *state = to_state(sd);
--	int ret = mutex_lock_interruptible(&state->mutex);
-+	int ret;
- 
-+	ret = mutex_lock_interruptible(&state->mutex);
- 	if (ret)
- 		return ret;
- 
-@@ -466,8 +472,9 @@ static int adv7180_g_std(struct v4l2_subdev *sd, v4l2_std_id *norm)
- static int adv7180_g_frame_interval(struct v4l2_subdev *sd,
- 				    struct v4l2_subdev_frame_interval *fi)
- {
--	struct adv7180_state *state = to_state(sd);
-+	struct adv7180_state *state;
- 
-+	state = to_state(sd);
- 	if (state->curr_norm & V4L2_STD_525_60) {
- 		fi->interval.numerator = 1001;
- 		fi->interval.denominator = 30000;
-@@ -828,8 +835,9 @@ static int adv7180_get_mbus_config(struct v4l2_subdev *sd,
- 				   unsigned int pad,
- 				   struct v4l2_mbus_config *cfg)
- {
--	struct adv7180_state *state = to_state(sd);
-+	struct adv7180_state *state;
- 
-+	state = to_state(sd);
- 	if (state->chip_info->flags & ADV7180_FLAG_MIPI_CSI2) {
- 		cfg->type = V4L2_MBUS_CSI2_DPHY;
- 		cfg->bus.mipi_csi2.num_data_lanes = 1;
-@@ -857,8 +865,9 @@ static int adv7180_get_skip_frames(struct v4l2_subdev *sd, u32 *frames)
- 
- static int adv7180_g_pixelaspect(struct v4l2_subdev *sd, struct v4l2_fract *aspect)
- {
--	struct adv7180_state *state = to_state(sd);
-+	struct adv7180_state *state;
- 
-+	state = to_state(sd);
- 	if (state->curr_norm & V4L2_STD_525_60) {
- 		aspect->numerator = 11;
- 		aspect->denominator = 10;
--- 
-2.25.1
+Some clock drivers do expose clocks that are related to the CPU
+subsystem access and keep them always-on for obvious reasons,
+but on newer socs they're not even controlled from Linux, so
+perhaps we can just unregister these (read: delete from the driver)
 
+Konrad
 
