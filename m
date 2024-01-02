@@ -1,178 +1,173 @@
-Return-Path: <linux-kernel+bounces-14446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8FB9821D29
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:55:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F210821D2A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:56:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C19741C22210
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:55:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3C9B1C2217B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 299E010979;
-	Tue,  2 Jan 2024 13:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC419125BE;
+	Tue,  2 Jan 2024 13:56:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="pH77WpVf";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uYPM/HH2";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="pH77WpVf";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uYPM/HH2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60216FC0A
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 13:55:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7b89d5c71dcso1320922739f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 05:55:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704203719; x=1704808519;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XHgT/7dzE/CRHUEYKAyqVtxx1vbF4LkNYh6Yolsca50=;
-        b=YzlXX1yvhu11G/HS7XYzm9/Gt2idrf6l1gddt20LVOl9JCvZ3mlMFAyMaDnouHySQ2
-         iME6dIZ6X15aXucuPPQOPQkMH5r0nxu5lE4/Bv03e56gha9dvIkXl4pv2W7dEfsaal8y
-         jpI+8LZ/ZDfb0oLPNBjkdC+Tg9lfg3r2KTkC/gHPYDvidpS+4h8/ST/5cNgUtpq1ddLF
-         8722omECa3CA4Gjokkz6wmCA3mCY69VSbFobil4xGvfh22Q4oLSg/fcrNqnDz+nP5tef
-         Eo85vxfGRHXzQvvTNElETdkFoPCoPls1fQRjFEUcltZwvB2iRVptahyqseikThxXSCq7
-         nOuw==
-X-Gm-Message-State: AOJu0YwXFA5XeeQhaDKkDLRywhCKqbQZRP4qB2y3s61cbQq4hXAsq1dH
-	j0MjrBUOKeDFk82UqUPU6ZhCtUnVaqXs26fw9fWN+m1loKdr
-X-Google-Smtp-Source: AGHT+IGvVaADsw+rLv6nwp6HYruKTYPQAtnI+Adc3Md/R0JsR3M8yj+pCedF6Ui72GlixQm1OK4smaQFlKULoNlgfFQfz5smHMvy
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5CD411C8A
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 13:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A1E281FCFA;
+	Tue,  2 Jan 2024 13:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704203781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SxQTooAvGuSW0JmLCmpxf2XqjJdjSqsHNMv553fBvHQ=;
+	b=pH77WpVfdmQXScvCkEeKH8q0Q/P3MwuY3idduUqyLYEME5jHYZksWmsjclNJPOBxYk1VQ5
+	ivg5G249mRORmFkqwchTqXlcHiYKCNxLF1LmxHE+yDrEiUbNXr7NOyacNGutlleup79xhs
+	DzwUavcTYZISQIdtj3OaIRVs4K/9ayY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704203781;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SxQTooAvGuSW0JmLCmpxf2XqjJdjSqsHNMv553fBvHQ=;
+	b=uYPM/HH2YszJrNw4uTNJcHWPijKTbeaYzbdxfPVZr8W0UWqoux2s3/qgUqloDmcA8WLcgo
+	nZTcsuPRb/lFG9Bw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704203781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SxQTooAvGuSW0JmLCmpxf2XqjJdjSqsHNMv553fBvHQ=;
+	b=pH77WpVfdmQXScvCkEeKH8q0Q/P3MwuY3idduUqyLYEME5jHYZksWmsjclNJPOBxYk1VQ5
+	ivg5G249mRORmFkqwchTqXlcHiYKCNxLF1LmxHE+yDrEiUbNXr7NOyacNGutlleup79xhs
+	DzwUavcTYZISQIdtj3OaIRVs4K/9ayY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704203781;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SxQTooAvGuSW0JmLCmpxf2XqjJdjSqsHNMv553fBvHQ=;
+	b=uYPM/HH2YszJrNw4uTNJcHWPijKTbeaYzbdxfPVZr8W0UWqoux2s3/qgUqloDmcA8WLcgo
+	nZTcsuPRb/lFG9Bw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8AF1613AC6;
+	Tue,  2 Jan 2024 13:56:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zcejIQUWlGXcVwAAD6G6ig
+	(envelope-from <jwiesner@suse.de>); Tue, 02 Jan 2024 13:56:21 +0000
+Received: by incl.suse.cz (Postfix, from userid 1000)
+	id 267D19BAD3; Tue,  2 Jan 2024 14:56:20 +0100 (CET)
+Date: Tue, 2 Jan 2024 14:56:20 +0100
+From: Jiri Wiesner <jwiesner@suse.de>
+To: Feng Tang <feng.tang@intel.com>
+Cc: linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH] clocksource: Use proportional clocksource skew threshold
+Message-ID: <20240102135620.GB3303@incl>
+References: <20231221160517.GA22919@incl>
+ <ZYrgQUTB3ayTtMqK@feng-clx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2b05:b0:46c:dcd2:64a0 with SMTP id
- fm5-20020a0566382b0500b0046cdcd264a0mr553035jab.3.1704203718249; Tue, 02 Jan
- 2024 05:55:18 -0800 (PST)
-Date: Tue, 02 Jan 2024 05:55:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000405425060df6d9f3@google.com>
-Subject: [syzbot] [mm?] KMSAN: uninit-value in shrinker_alloc
-From: syzbot <syzbot+1e0ed05798af62917464@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYrgQUTB3ayTtMqK@feng-clx>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=pH77WpVf;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="uYPM/HH2"
+X-Spam-Score: -2.81
+X-Rspamd-Queue-Id: A1E281FCFA
 
-Hello,
+On Tue, Dec 26, 2023 at 10:16:33PM +0800, Feng Tang wrote:
+> We've seen similar reports on LKML that the watchdog timer was delayed
+> for a very long time (some was 100+ seconds). As you said, the
+> scheduling issue should be addressed.
 
-syzbot found the following issue on:
+CFS was the scheduling policy when the delays happened. Hopefully, EEVDF 
+will prove to be an improvement in this area.
 
-HEAD commit:    d2da77f431ac Merge tag 'parisc-for-6.7-rc3' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16aec608e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e32016b84cf917ca
-dashboard link: https://syzkaller.appspot.com/bug?extid=1e0ed05798af62917464
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1712ebc8e80000
+> Meanwhile, instead of adding new complex logic to clocksource watchdog
+> code, can we just printk_once a warning message and skip the current
+> watchdog check if the duration is too long. ACPI_PM timer only has a
+> 24 bit counter which will wrap around every 3~4 seconds, when the
+> duration is too long, like 14.5 seconds here, the check is already
+> meaningless.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/4c6f2e6a124d/disk-d2da77f4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c53690e51338/vmlinux-d2da77f4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c0799b7d74db/bzImage-d2da77f4.xz
+Skipping the current watchdog check would solve the issue. It has also the 
+advantage that clocksources would not get marked unstable on account of 
+increased scheduling delays and the clocksource or watchdog counter 
+wrapping around. With the CONFIG_CLOCKSOURCE_VALIDATE_LAST_CYCLE option 
+enabled, the maximum clocksource_delta is only be half of the whole range 
+(4.68 -> 2.34 secs for acpi_pm and 179.0 -> 89.5 secs for the HPET), which 
+makes acpi_pm getting marked unstable even more probable.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1e0ed05798af62917464@syzkaller.appspotmail.com
+Skipping the current watchdog check will require a threshold for evaluting 
+watchdog intervals. I guess WATCHDOG_INTERVAL + (WATCHDOG_INTERVAL >> 1) 
+would not be completely amiss. Depending on how tight a threshold is 
+chosen, the printk_once message might become commonplace on busy systems. 
+It would attract attention of customers, which is not necessarily a bad 
+thing because the vendor would learn about the cases where the scheduling 
+policy does not perform well.
 
-RBP: 00007f43defc4120 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
-R13: 000000000000000b R14: 00007f43de39bf80 R15: 00007f43de4bfa48
- </TASK>
-=====================================================
-BUG: KMSAN: uninit-value in shrinker_unit_free mm/shrinker.c:33 [inline]
-BUG: KMSAN: uninit-value in shrinker_unit_alloc mm/shrinker.c:52 [inline]
-BUG: KMSAN: uninit-value in expand_one_shrinker_info mm/shrinker.c:136 [inline]
-BUG: KMSAN: uninit-value in expand_shrinker_info mm/shrinker.c:165 [inline]
-BUG: KMSAN: uninit-value in shrinker_memcg_alloc mm/shrinker.c:227 [inline]
-BUG: KMSAN: uninit-value in shrinker_alloc+0xd7c/0x1100 mm/shrinker.c:697
- shrinker_unit_free mm/shrinker.c:33 [inline]
- shrinker_unit_alloc mm/shrinker.c:52 [inline]
- expand_one_shrinker_info mm/shrinker.c:136 [inline]
- expand_shrinker_info mm/shrinker.c:165 [inline]
- shrinker_memcg_alloc mm/shrinker.c:227 [inline]
- shrinker_alloc+0xd7c/0x1100 mm/shrinker.c:697
- alloc_super+0x9a6/0xf00 fs/super.c:386
- sget_fc+0x36b/0xf80 fs/super.c:797
- vfs_get_super fs/super.c:1333 [inline]
- get_tree_nodev+0x48/0x340 fs/super.c:1357
- mqueue_get_tree+0xff/0x1c0 ipc/mqueue.c:435
- vfs_get_tree+0xa5/0x520 fs/super.c:1771
- fc_mount+0x33/0x110 fs/namespace.c:1114
- mq_create_mount ipc/mqueue.c:485 [inline]
- mq_init_ns+0x51c/0x760 ipc/mqueue.c:1700
- create_ipc_ns ipc/namespace.c:73 [inline]
- copy_ipcs+0x4b3/0xa40 ipc/namespace.c:112
- create_new_namespaces+0x3ad/0xdb0 kernel/nsproxy.c:90
- unshare_nsproxy_namespaces+0x17a/0x2b0 kernel/nsproxy.c:228
- ksys_unshare+0x8fa/0x1340 kernel/fork.c:3433
- __do_sys_unshare kernel/fork.c:3504 [inline]
- __se_sys_unshare kernel/fork.c:3502 [inline]
- __x64_sys_unshare+0x48/0x70 kernel/fork.c:3502
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Uninit was created at:
- slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
- slab_alloc_node mm/slub.c:3478 [inline]
- __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1006 [inline]
- __kmalloc_node+0x11c/0x3c0 mm/slab_common.c:1014
- kmalloc_node include/linux/slab.h:620 [inline]
- kvmalloc_node+0xc0/0x2d0 mm/util.c:617
- expand_one_shrinker_info mm/shrinker.c:129 [inline]
- expand_shrinker_info mm/shrinker.c:165 [inline]
- shrinker_memcg_alloc mm/shrinker.c:227 [inline]
- shrinker_alloc+0x606/0x1100 mm/shrinker.c:697
- alloc_super+0x9a6/0xf00 fs/super.c:386
- sget_fc+0x36b/0xf80 fs/super.c:797
- vfs_get_super fs/super.c:1333 [inline]
- get_tree_nodev+0x48/0x340 fs/super.c:1357
- mqueue_get_tree+0xff/0x1c0 ipc/mqueue.c:435
- vfs_get_tree+0xa5/0x520 fs/super.c:1771
- fc_mount+0x33/0x110 fs/namespace.c:1114
- mq_create_mount ipc/mqueue.c:485 [inline]
- mq_init_ns+0x51c/0x760 ipc/mqueue.c:1700
- create_ipc_ns ipc/namespace.c:73 [inline]
- copy_ipcs+0x4b3/0xa40 ipc/namespace.c:112
- create_new_namespaces+0x3ad/0xdb0 kernel/nsproxy.c:90
- unshare_nsproxy_namespaces+0x17a/0x2b0 kernel/nsproxy.c:228
- ksys_unshare+0x8fa/0x1340 kernel/fork.c:3433
- __do_sys_unshare kernel/fork.c:3504 [inline]
- __se_sys_unshare kernel/fork.c:3502 [inline]
- __x64_sys_unshare+0x48/0x70 kernel/fork.c:3502
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-CPU: 1 PID: 5127 Comm: syz-executor.1 Not tainted 6.7.0-rc2-syzkaller-00265-gd2da77f431ac #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+I am not sure how much of a problem is the fact that stricter limits on 
+skews will be imposed for watchdog intervals that are close to the 
+threshold. The reality of production system is that the corner case that 
+causes the watchdog interval to get stretched is not uncommon. Considering 
+the proposed threshold, WATCHDOG_INTERVAL + (WATCHDOG_INTERVAL >> 1), the 
+current uncertainty margins (of the TSC and HPET) correspond to 333 ppm 
+(microseconds of skew per second). So, I am still in favour of scaling the 
+margins proportionally to the watchdog interval. I am going send a new 
+patch implementing skipping the current watchdog check. I could send a 
+modified version of the margin scaling patch later if there was interest.
+-- 
+Jiri Wiesner
+SUSE Labs
 
