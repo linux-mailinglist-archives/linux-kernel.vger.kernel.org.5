@@ -1,149 +1,135 @@
-Return-Path: <linux-kernel+bounces-14224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95523821966
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:06:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ED2F82196C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:08:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7C641C21BE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:06:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BCEEB2096E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:08:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA26D282;
-	Tue,  2 Jan 2024 10:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gPneWhKz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5716AD27E;
+	Tue,  2 Jan 2024 10:08:25 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71B2CA7D
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 10:06:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5534180f0e9so93926a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 02:06:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704189977; x=1704794777; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gaBFQhgGMCNl0CKoyiieJpbOY1dp0lCjQtKd7lErKQk=;
-        b=gPneWhKze7bY55R1oklDs5SrtNt+7wCcxcxtFgJWFBrWwEx8Iqj26s3wgsQPVlfE1k
-         V0vmFyTCkBAd7j6a1xuLABS/PLwWpuFnK1OCJJ8oyN0+nujQSIIKBiaMNjBg2xrtmUEu
-         7I1OB9jnxo991DUfGt6xZL2Y95f1S4pSOd4i7gDaIfEJpxtvKAyuH4o+ulIJV1JsfV03
-         py6FQ9szDG5oMpSbaCZq2lEVC1K31vFwhaALm6KZqBcVSTR3KC3E9WyE4rGMEdnVxEVl
-         prEOqpyNV2R/4X+XKvji07Uo3daTf/CW9LOgxTJXsHug0JaWnMuBWBdXYVLeyyeX8DVh
-         ZPqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704189977; x=1704794777;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gaBFQhgGMCNl0CKoyiieJpbOY1dp0lCjQtKd7lErKQk=;
-        b=sOkIeLlBYQdnKCgo+7prb0lUlsKX+oO33AyDp9YmSQAItivL5HVVsLNG3iTTNRwo0y
-         kROWocD1uVGUfJyQQqmYBMvQ4VmftbcFRYTopuVKtZnvQaYl3Z74wCFl81Gk0PB9Cd4h
-         LyqTMbXjki4sDc0h3u6GaLliCPl3sDiqtvZ87ikVuxPeVc9aCh6+KwmI9KVl9G2YEG/r
-         XXx6IOdJ42/LfDa14hEOyddhWSFjWEnNGTcep6ohloobTjsAp5KUgtcu/bq7Hj5mqT5P
-         Zk3cmaW2+B1eZmUpWVWel+4vnj3BPqLjPlAwthUcqNMzm0kGWa5IWKAKMK56w6+eqsCs
-         JUtw==
-X-Gm-Message-State: AOJu0YxQ1FZS2hnF8MaKhsJ4bBbTrIlFe3DVPa1s23RrwmYZEv1gX93v
-	8gpvwFOHIz7NqkRa+KDyt0l+Hwqnvkc6T1opHwvdgtJyZbyw
-X-Google-Smtp-Source: AGHT+IHfeBarGiDK3r6PPvb6mDuBpyt7wTIW58KV3ZsWFRLsg712Ke/PyIEnebgkH0oDh8qG+p/cywKdVMPMcVyOMPo=
-X-Received: by 2002:a50:d705:0:b0:553:62b4:5063 with SMTP id
- t5-20020a50d705000000b0055362b45063mr1057944edi.4.1704189976931; Tue, 02 Jan
- 2024 02:06:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B217ECA78
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 10:08:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4T47nq0DhKzMl5r;
+	Tue,  2 Jan 2024 18:07:43 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 1A982180075;
+	Tue,  2 Jan 2024 18:08:12 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 2 Jan 2024 18:08:11 +0800
+Subject: Re: [PATCH RFC 00/17] ubifs: Add filesystem repair support
+To: Richard Weinberger <richard@nod.at>
+CC: david oberhollenzer <david.oberhollenzer@sigma-star.at>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Sascha Hauer <s.hauer@pengutronix.de>, Tudor
+ Ambarus <Tudor.Ambarus@linaro.org>, linux-kernel
+	<linux-kernel@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>
+References: <20231228014112.2836317-1-chengzhihao1@huawei.com>
+ <1145531757.175508.1703844362355.JavaMail.zimbra@nod.at>
+ <13b259ca-b32f-a8d6-5e11-8bb38df72f5c@huawei.com>
+ <642239519.177270.1703884138999.JavaMail.zimbra@nod.at>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <a145fc68-9b0a-9794-48d2-b7ad79116833@huawei.com>
+Date: Tue, 2 Jan 2024 18:08:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <MN2PR12MB44863139E562A59329E89DBEB982A@MN2PR12MB4486.namprd12.prod.outlook.com>
- <CANn89iKvG5cTNROyBF32958BzATfXysh4zLk5nRR6fgi08vumA@mail.gmail.com>
- <MN2PR12MB4486457FC77205D246FC834AB98BA@MN2PR12MB4486.namprd12.prod.outlook.com>
- <CANn89i+e2TcvSU1EgrVZRUoEmZ5NDauXd3=kEkjpsGjmaypHOw@mail.gmail.com>
- <cdf72778-a314-467d-8ac8-163d2007fd70@leemhuis.info> <20231227083339.GA6849@unreal>
- <CANn89iK_Q38g1ieEb1MVvmVgiKQxmv9Hzngu_pCcXcwGs7cPLQ@mail.gmail.com> <20240102095529.GE6361@unreal>
-In-Reply-To: <20240102095529.GE6361@unreal>
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 2 Jan 2024 11:06:05 +0100
-Message-ID: <CANn89iLp_xeGScTWnQA50zGPo+eo7=GFcqGxCrSLRteYONtc8A@mail.gmail.com>
-Subject: Re: Bug report connect to VM with Vagrant
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>, Shachar Kagan <skagan@nvidia.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "kuba@kernel.org" <kuba@kernel.org>, 
-	Jason Gunthorpe <jgg@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>, Ido Kalir <idok@nvidia.com>, 
-	Topaz Uliel <topazu@nvidia.com>, Shirly Ohnona <shirlyo@nvidia.com>, 
-	Ziyad Atiyyeh <ziyadat@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <642239519.177270.1703884138999.JavaMail.zimbra@nod.at>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 
-On Tue, Jan 2, 2024 at 10:55=E2=80=AFAM Leon Romanovsky <leon@kernel.org> w=
-rote:
->
-> On Tue, Jan 02, 2024 at 10:49:58AM +0100, Eric Dumazet wrote:
-> > On Wed, Dec 27, 2023 at 9:33=E2=80=AFAM Leon Romanovsky <leon@kernel.or=
-g> wrote:
-> > >
-> > > On Fri, Dec 15, 2023 at 10:55:05AM +0100, Linux regression tracking (=
-Thorsten Leemhuis) wrote:
-> > > > On 08.12.23 11:49, Eric Dumazet wrote:
-> > > > > On Thu, Dec 7, 2023 at 2:03=E2=80=AFPM Shachar Kagan <skagan@nvid=
-ia.com> wrote:
-> > > > >>>> On Thu, Nov 30, 2023 at 2:55=E2=80=AFPM Shachar Kagan <skagan@=
-nvidia.com> wrote:
-> > > > >>>>
-> > > > >>>> I have an issue that bisection pointed at this patch:
-> > > > >>>> commit 0a8de364ff7a14558e9676f424283148110384d6
-> > > > >>>> tcp: no longer abort SYN_SENT when receiving some ICMP
-> > > > >>>
-> > > > >>> Please provide tcpdump/pcap captures.
-> > > > >>>
-> > > > >>>  It is hard to say what is going on just by looking at some app=
-lication logs.
-> > > > >>
-> > > > >> I managed to capture the tcpdump of =E2=80=98Vagrant up=E2=80=99=
- step over old kernel and new kernel where this step fails. Both captures a=
-re attached.
-> > > > >> The tcpdump is filtered by given IP of the nested VM.
-> > > > >
-> > > > > I do not see any ICMP messages in these files, can you get them ?
-> > > > >
-> > > > > Feel free to continue this exchange privately, no need to send MB
-> > > > > email to various lists.
-> > > >
-> > > > Here this thread died, so I assume this turned out to be not a
-> > > > regression at all or something like that? If not please speak up!
-> > >
-> > > No, it wasn't fixed and/or reverted. Right now, Vagrant is broken and
-> > > all our regressions around nested VM functionality doesn't run.
-> > >
-> > > Eric, can you please revert the bisected patch while you are continui=
-ng
-> > > your offline discussion with Shachar?
-> > >
-> >
-> > This is not how things work.
-> >
-> > I have not received any evidence yet, only partial packet dumps with
-> > no ICMP messages that could be related to the 'Vagrant issue'
->
-> Revert of the original patch worked, so it is strong enough evidence to d=
-o
-> not break very popular orchestration software.
->
-> >
-> > Patch is adhering to the RFC.
-> >
-> > If an application wants to have fast reaction to ICMP, it must use
-> > appropriate socket options instead of relying on a prior
-> > implementation detail.
->
-> Maybe yes, maybe not. Right now, Vagrant is broken.
+在 2023/12/30 5:08, Richard Weinberger 写道:
+>> Second, you concern odd/incomplete files are recovered just like I
+>> metioned in documentation(Limitations section), which still make
+>> application failed because the recovered file lost data or deleted file
+>> is recovered. So you suggested me that make a userspace fsck tool, and
+>> fsck can telll user which file is data lost, which file is recovered
+>> after deletion.
+>>
+>> The difficulty comes from second point,  how does fsck know a file is
+>> recovered incomplete or old. Whether the node is existing, it is judged
+>> by TNC, but TNC could be damaged like I descibed in above. Do you have
+>> any ideas?
+> That's the problem what all fsck tools have in common.
+> The best we can do is offering safe and dangerous repair modes
+> plus a good repair report.
+> 
 
-Maybe, but after one month, I still have not received any evidence of the i=
-ssue.
+I come up with another way to implement fsck.ubifs:
+
+There are three modes:
+
+1. common mode(no options): Ask user whether to fix as long as a problem 
+is detected.
+
+2. safe mode(-a option): Auto repair as long as no data/files lost(eg. 
+nlink, isize, xattr_cnt, which can be corrected without dropping nodes), 
+otherwise returns error code.
+
+3. dangerous mode(-y option): Fix is always successful, unless 
+superblock is corrupted. There are 2 situations:
+
+   a) TNC is valid: fsck will print which file is dropped and which 
+file's data is dropped
+
+   b) TNC is invalid: fsck will scan all nodes without referencing TNC, 
+same as this patchset does
+
+
+Q1: How do you think of this method?
+
+Q2: Mode 1, 2 and 3(a) depend on journal replaying, I found 
+xfs_repair[1] should be used after mounting/unmounting xfs (Let kernel 
+replay journal), if UBIFS does so, there is no need to copy recovery 
+subsystem into userspace, but user has to mount/unmount before doing 
+fsck. I found e2fsck has copied recovery code into userspace, so it can 
+do fsck without mounting/unmounting. If UBIFS does so, journal replaying 
+will update TNC and LPT, please reference Q3(1). Which method do you 
+suggest?
+
+Q3: If fsck drops or updates a node(eg. dentry lost inode, corrected 
+inode) in mode 1,2 and 3(a), TNC/LPT should be updated. There are two 
+ways updating TNC and LPT:
+
+   1) Like kernel does, which means that mark dirty TNC/LPT for 
+corresponding branches and do_commit(). It will copy much code into 
+userspace, eg. tnc.c, lpt.c, tnc_commit.c,
+lpt_commit.c. I fear there exists risks. For example, there is no space 
+left for new index nodes, gc should be performed? If so, gc/lpt gc code 
+should be copied too.
+
+   2) Rebuild new TNC/LPT based on valid nodes. This way is simple, but 
+old good TNC could be corrupted, it means that powercut during fsck may 
+let UBIFS image must be repaired in mode 3(b) but it could be repaired 
+in mode 2\3(a) before invoking fsck.
+
+Which way is better?
+
+
+[1] 
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/managing_file_systems/checking-and-repairing-a-file-system__managing-file-systems#proc_repairing-an-xfs-file-system-with-xfs_repair_checking-and-repairing-a-file-system
+
+> Long story short, I'm not opposed to the idea, I just want to make
+> sure that this new tool or feature is not used blindly, since
+> it cannot do magic.
+
 
