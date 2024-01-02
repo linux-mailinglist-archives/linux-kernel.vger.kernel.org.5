@@ -1,133 +1,113 @@
-Return-Path: <linux-kernel+bounces-14504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40C14821E08
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:47:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94FE7821E0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:49:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDB9D283945
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:47:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C89E283861
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9980014A9E;
-	Tue,  2 Jan 2024 14:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E0512E56;
+	Tue,  2 Jan 2024 14:49:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ioPL8PoF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8533E14278;
-	Tue,  2 Jan 2024 14:47:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dbd5b96b12eso6941852276.2;
-        Tue, 02 Jan 2024 06:47:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704206843; x=1704811643;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ekkdo/2BplW5G1QGE0ZikpIwpoAMXqmEuZbikDyIFz0=;
-        b=eEDV/TA+yDi9rzS4d29cEX3zzSXoVNRJNzDoGuysOuxpEJEowFV5cGTWrhRu0xSwW7
-         QmWsoZyMIPschgscJszqoLfeFv4XxDsQ33aYgdPlJTgwqfu/+P9iYiXq9nLvE23SUxjP
-         6+mZklDokedEVLK27xGuVT5AxW9BFLVnTR+WwMsxh6nMFNhhcxyy/OTE2Tdre5Se8lYg
-         eMBCvW4SaKM/FgtRDz9wSMTVLUeyEWS3Sy8oTfK86uJPkK2CqNlwiZ6jMxeWVVlqQPOc
-         UaGQ9f4KBe+mmtAs1xlOxh8Z68/X5u6T4GHo94+9jIEidX7pkyPfVZAQwp6j3Jo5j6J9
-         +f3Q==
-X-Gm-Message-State: AOJu0Yzhr/YDWPmrTX0sCNouEozaAkf4LJCFWStKzeAr5UYUD9pvUhtU
-	ubOspSxvGMPYz8VSy0cSmsHGrHuA3WY+Dg==
-X-Google-Smtp-Source: AGHT+IHPLkt35W4v1MnRFFxzaqNEdOiSs5acLz4CQokv3q6zjgT8/l430U6zonddl1yPA24q8/ZR8Q==
-X-Received: by 2002:a5b:752:0:b0:dbd:bc3e:55e3 with SMTP id s18-20020a5b0752000000b00dbdbc3e55e3mr8097056ybq.69.1704206843323;
-        Tue, 02 Jan 2024 06:47:23 -0800 (PST)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
-        by smtp.gmail.com with ESMTPSA id 204-20020a2501d5000000b00dbdb03e146bsm10210496ybb.51.2024.01.02.06.47.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 06:47:23 -0800 (PST)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5e7bb1e0db8so73378307b3.0;
-        Tue, 02 Jan 2024 06:47:23 -0800 (PST)
-X-Received: by 2002:a0d:f6c2:0:b0:5e2:5d71:56c with SMTP id
- g185-20020a0df6c2000000b005e25d71056cmr12772287ywf.32.1704206843051; Tue, 02
- Jan 2024 06:47:23 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE3D125D2
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:48:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704206938; x=1735742938;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=V51w5K1EQfkD+FE5AxSfH4Xycasu1bgRbde+rYFFCpc=;
+  b=ioPL8PoFA8ax63ldzFSh8GYySPHOt0Ut1zeq6aFVGt8VF3G2UnccTLRA
+   ZqOQU8gD3ddJPOVtIL5KbX3TOQtn+A5NTv0kUtl02STqqEGSAKgGv0nmD
+   L0LJddL454G6zU8djiMvopWTv1QohM7FdK0d9zlmQDvssYkEO7MFc3rac
+   t0Y40m9gOHDMbakwwH0tF3THFouPuRydZaEZXXJGViEbNrTwtRdZPShs8
+   h6dRdwxFfHGRks1SrmxCWkKd/Ug7TGi8pkEndHPIOphjQpNwlZYluKfPV
+   asXwdtPhD7pQwy5Vh3eVUCVWbb3HNi6AYwtSjmJseOqr7aGBaJsKLqpJz
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="4223299"
+X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
+   d="scan'208";a="4223299"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 06:48:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="952942909"
+X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
+   d="scan'208";a="952942909"
+Received: from dmaryin-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.35.224])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 06:48:53 -0800
+From: Jani Nikula <jani.nikula@intel.com>
+To: Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+ linux-kernel@vger.kernel.org
+Cc: Dario Binacchi <dario.binacchi@amarulasolutions.com>, Daniel Vetter
+ <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2] drm/debugfs: drop unneeded DEBUG_FS guard
+In-Reply-To: <20231223183301.78332-1-dario.binacchi@amarulasolutions.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231223183301.78332-1-dario.binacchi@amarulasolutions.com>
+Date: Tue, 02 Jan 2024 16:48:42 +0200
+Message-ID: <87sf3f23lh.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231223181101.1954-1-gregory.price@memverge.com> <20231223181101.1954-11-gregory.price@memverge.com>
-In-Reply-To: <20231223181101.1954-11-gregory.price@memverge.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 2 Jan 2024 15:47:12 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXgteq4FSM-ugahDtZq_swM_jFMMonB=K4+A1VjTansLA@mail.gmail.com>
-Message-ID: <CAMuHMdXgteq4FSM-ugahDtZq_swM_jFMMonB=K4+A1VjTansLA@mail.gmail.com>
-Subject: Re: [PATCH v5 10/11] mm/mempolicy: add the mbind2 syscall
-To: Gregory Price <gourry.memverge@gmail.com>
-Cc: linux-mm@kvack.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-api@vger.kernel.org, x86@kernel.org, akpm@linux-foundation.org, 
-	arnd@arndb.de, tglx@linutronix.de, luto@kernel.org, mingo@redhat.com, 
-	bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com, mhocko@kernel.org, 
-	tj@kernel.org, ying.huang@intel.com, gregory.price@memverge.com, 
-	corbet@lwn.net, rakie.kim@sk.com, hyeongtak.ji@sk.com, honggyu.kim@sk.com, 
-	vtavarespetr@micron.com, peterz@infradead.org, jgroves@micron.com, 
-	ravis.opensrc@micron.com, sthanneeru@micron.com, emirakhur@micron.com, 
-	Hasan.Maruf@amd.com, seungjun.ha@samsung.com, Michal Hocko <mhocko@suse.com>, 
-	Frank van der Linden <fvdl@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Sat, Dec 23, 2023 at 7:14=E2=80=AFPM Gregory Price <gourry.memverge@gmai=
-l.com> wrote:
-> mbind2 is an extensible mbind interface which allows a user to
-> set the mempolicy for one or more address ranges.
+On Sat, 23 Dec 2023, Dario Binacchi <dario.binacchi@amarulasolutions.com> wrote:
+> The Makefile enables/disables the file compilation depending on
+> CONFIG_DEBUG_FS.
 >
-> Defined as:
->
-> mbind2(unsigned long addr, unsigned long len, struct mpol_args *args,
->        size_t size, unsigned long flags)
->
-> addr:         address of the memory range to operate on
-> len:          length of the memory range
-> flags:        MPOL_MF_HOME_NODE + original mbind() flags
->
-> Input values include the following fields of mpol_args:
->
-> mode:         The MPOL_* policy (DEFAULT, INTERLEAVE, etc.)
-> mode_flags:   The MPOL_F_* flags that were previously passed in or'd
->               into the mode.  This was split to hopefully allow future
->               extensions additional mode/flag space.
-> home_node:    if (flags & MPOL_MF_HOME_NODE), set home node of policy
->               to this otherwise it is ignored.
-> pol_maxnodes: The max number of nodes described by pol_nodes
-> pol_nodes:    the nodemask to apply for the memory policy
->
-> The semantics are otherwise the same as mbind(), except that
-> the home_node can be set.
->
-> Suggested-by: Michal Hocko <mhocko@suse.com>
-> Suggested-by: Frank van der Linden <fvdl@google.com>
-> Suggested-by: Vinicius Tavares Petrucci <vtavarespetr@micron.com>
-> Suggested-by: Rakie Kim <rakie.kim@sk.com>
-> Suggested-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
-> Suggested-by: Honggyu Kim <honggyu.kim@sk.com>
-> Signed-off-by: Gregory Price <gregory.price@memverge.com>
-> Co-developed-by: Vinicius Tavares Petrucci <vtavarespetr@micron.com>
+> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+> Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 
->  arch/m68k/kernel/syscalls/syscall.tbl         |  1 +
+Thanks for the patch, pushed to drm-misc-next.
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+BR,
+Jani.
 
-Gr{oetje,eeting}s,
+>
+> ---
+>
+> Changes in v2:
+> - Add 'Reviewed-by' tag of Jani Nikula
+>
+>  drivers/gpu/drm/drm_debugfs.c | 4 ----
+>  1 file changed, 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
+> index f291fb4b359f..f80d9cf3e71a 100644
+> --- a/drivers/gpu/drm/drm_debugfs.c
+> +++ b/drivers/gpu/drm/drm_debugfs.c
+> @@ -45,8 +45,6 @@
+>  #include "drm_crtc_internal.h"
+>  #include "drm_internal.h"
+>  
+> -#if defined(CONFIG_DEBUG_FS)
+> -
+>  /***************************************************
+>   * Initialization, etc.
+>   **************************************************/
+> @@ -588,5 +586,3 @@ void drm_debugfs_crtc_remove(struct drm_crtc *crtc)
+>  	debugfs_remove_recursive(crtc->debugfs_entry);
+>  	crtc->debugfs_entry = NULL;
+>  }
+> -
+> -#endif /* CONFIG_DEBUG_FS */
 
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+-- 
+Jani Nikula, Intel
 
