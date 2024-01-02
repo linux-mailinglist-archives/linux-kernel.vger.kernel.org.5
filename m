@@ -1,123 +1,188 @@
-Return-Path: <linux-kernel+bounces-14712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0189982210D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:31:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 542CD822114
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:32:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16D7A2843E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:31:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4514FB22744
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C42516424;
-	Tue,  2 Jan 2024 18:30:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC5115AC5;
+	Tue,  2 Jan 2024 18:32:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vWcnYTO1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F2KEs8x0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B32A15EB0
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 18:30:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5553f251e3cso4150720a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 10:30:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BCCD156EA;
+	Tue,  2 Jan 2024 18:32:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2ccae380df2so81798011fa.1;
+        Tue, 02 Jan 2024 10:32:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704220213; x=1704825013; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cp5GNYs8COIpVS3xr0MHdRdJQ4iBxaqmuCTnKQzb9HQ=;
-        b=vWcnYTO1HYUYJviMjPW/Omttgckm6yu/65N/K/836mrO/+6fo5Vg6ZSXbV4GcRtDah
-         0AFYeoLi3J/YIzfEyQtRvWpoDB/giitUw9ln9w1T4duMJbqxQeHgRioLbA2oZOwIkk6D
-         iJOJfBFIy/PR57nwxHTHH8xj86R8X1KUZ1FOUcKITx0ctMD4VXmSKTxIHwg2mZ5deUQF
-         YphfV+nN3cS+pBTDYxTZlD48yLKlDq/1IM1rvcG3ISlvGei5COmuvfs8FrXdCpjRDFwy
-         v3EUpGd9Kj9JSnEbrm3xsFR1J/g5wbU6SBG1V3KKYptKzH1ai7911xxG7CuwDMDpPHOY
-         v17w==
+        d=gmail.com; s=20230601; t=1704220328; x=1704825128; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=meV8SzFKE9ByJNsnfBulTLpQ7dcVBr4I/UuViUtYF6s=;
+        b=F2KEs8x0NepTVaVopEtrTMTw9qETrF2sNGmOgNRBQS8sSgWY4kMgkXsyeWGW2nJWoC
+         o+JqXVtSULXtPWA06IfPZGe8YSycPo1e6AbQJyzx7zsA0uJSzWlJizwLgV+NqoCl3oQN
+         br9vhEsgijKWQoffVahIYJMliDEU0KpoUHHRL+QkeYPwpF+CjIkk7uJLGjtTfI+Eo2DM
+         S0Fw1PipEBRoEineI0C1PFgBEFk/Bcxzft6wfNiv6Dm0eaaK35hmBrEOeIYYBGOLMP3Z
+         vj6SPiupsVsJw/x5EvUNcNgkeOv1PEkHIEBcML/rEdSgR19HWCNDxWTo/fYNUjQ9AqFN
+         A0ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704220213; x=1704825013;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1704220328; x=1704825128;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cp5GNYs8COIpVS3xr0MHdRdJQ4iBxaqmuCTnKQzb9HQ=;
-        b=DOVJ0pNqGAXDkIVgxkTQrUlWcPHcDE8g8lfXRGJnxsufzkwA2xvxkK1Dfrj7tBAmbf
-         JhcjQQT6R1E3QSt4Ar3uh1pTHP2Q/dqwemuGRGt0LCmq23R3j5VCzk3fVtw+fpBJuqwY
-         s7FkCOMokeUg/k+AicKSpLfqMCn+JpTIPSCo2PaOQJ2BAsx1HX/GNp3QnNqEoHNz2/ya
-         l/9F2I0sESSUgME494c8EFal3Nsv+iU/+Uh9Mk5CkCCwTvq3aDTem1O177YefbEBMgVH
-         /6tLN8szY1GxbLSTScUoBMUOuCRTDXFdQkdT/8hwJDa0Ax//A9hqnP2kdV2oXTfNQMOR
-         bJrA==
-X-Gm-Message-State: AOJu0Yz4pV2XlcjW0fsYpj5fkbY9o5mmqDzxs0XsGNf3d6sLs3a093tN
-	/ClD8Aj0QkJ8obIafGAFKePjOxb6LhFkM8rCbCI4rvXzCKg=
-X-Google-Smtp-Source: AGHT+IEtrEeyMfPqrNLa3Jtqiv9w2sKozdJ2TbgYHjpAJW+k52RxgM/5dlUFCx+gNLIZkLr24Jpv+w==
-X-Received: by 2002:a17:906:413:b0:a28:2165:7c74 with SMTP id d19-20020a170906041300b00a2821657c74mr1307851eja.13.1704220212903;
-        Tue, 02 Jan 2024 10:30:12 -0800 (PST)
-Received: from [10.167.154.1] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
-        by smtp.gmail.com with ESMTPSA id et10-20020a170907294a00b00a2699a54888sm11968835ejc.64.2024.01.02.10.30.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 10:30:12 -0800 (PST)
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Tue, 02 Jan 2024 19:29:50 +0100
-Subject: [PATCH 4/4] arm64: dts: qcom: x1e80100: Flush RSC sleep & wake
- votes
+        bh=meV8SzFKE9ByJNsnfBulTLpQ7dcVBr4I/UuViUtYF6s=;
+        b=c9P5TuJ4/HD+b1yuMXdGYl6s4xtm2Utut28zta03fvbtzEk4rTnWWYYfC/+DWatPe7
+         q3sVYZpnGoI78fsQIjNVRMXHgRJZNZGBln61KBLc/j+lBuOnD0G3VZUzmPXPaMXIRCtt
+         Hm8DEUqDGsXpA3fFF0LDpqK0Dq7zhWaxPXyHxG6nVjtrfqrJfgn7hb8NG9TKtwoMzR39
+         h09zc2ZokTENkhi+RU5VDzAxBzjBxVTYYQBDwbAxPSCEM013O63RcV3jh6TRx4rt0Nq5
+         pECyCK6+20qXMTsfGFXZevNDcfWlHQ+XEVXT/8uISgjw+5FH8RH/fSayVplLflJe1Xao
+         76aA==
+X-Gm-Message-State: AOJu0YzBoUgswhWOuWstLQd1B6TICC8cGaNnrbba5K2TKXvBx9yFpfra
+	8Z1kQsY1eQp3wwKv0O200myHY+TwRS9GwWHNorSkGZMLnFk=
+X-Google-Smtp-Source: AGHT+IH0qHC6wDOX3mtYQS9oQ3DnnXzvTNQhF+EeEK75UmAg65xMQhJEfRmiKwCMFnLOnG9ZyOOjvlZZ6ldGpcw3Z5o=
+X-Received: by 2002:a05:651c:210a:b0:2cc:bfdb:f089 with SMTP id
+ a10-20020a05651c210a00b002ccbfdbf089mr7052613ljq.61.1704220327737; Tue, 02
+ Jan 2024 10:32:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240102-topic-x1e_fixes-v1-4-70723e08d5f6@linaro.org>
-References: <20240102-topic-x1e_fixes-v1-0-70723e08d5f6@linaro.org>
-In-Reply-To: <20240102-topic-x1e_fixes-v1-0-70723e08d5f6@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Georgi Djakov <djakov@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Rajendra Nayak <quic_rjendra@quicinc.com>, 
- Sibi Sankar <quic_sibis@quicinc.com>, Abel Vesa <abel.vesa@linaro.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
- linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
- Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1704220203; l=982;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=ZMHte+R+v5WQ2x6Ng6sIhmvNpiEdoapaHW4wE0VSFZ4=;
- b=7um3uB/1kZ41KjjEu9/1KhmrD49Zm4CmzwAHeG/8u+R44ad6kRC5yv6KeqQ8a44EBZeBZKKAG
- sZ5DqheX/UACWzaZr8mqKzg6SQO0/ZNgd/wLY4Ks6b0ACbRoShImT3b
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+References: <20240102181946.57288-1-verdre@v0yd.nl> <20240102181946.57288-5-verdre@v0yd.nl>
+In-Reply-To: <20240102181946.57288-5-verdre@v0yd.nl>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Tue, 2 Jan 2024 13:31:55 -0500
+Message-ID: <CABBYNZ+uy50g2CSJ37DL63ycSJc96Xegdjcr6N2weJfCiGO_Aw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] Bluetooth: Queue a HCI power-off command before
+ rfkilling adapters
+To: =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, asahi@lists.linux.dev, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The RPMh driver will cache sleep and wake votes until the cluster
-power-domain is about to enter idle, to avoid unnecessary writes. So
-associate the apps_rsc with the cluster pd, so that it can be notified
-about this event.
+Hi Jonas,
 
-Without this, only AMC votes are being committed.
+On Tue, Jan 2, 2024 at 1:19=E2=80=AFPM Jonas Dre=C3=9Fler <verdre@v0yd.nl> =
+wrote:
+>
+> On a lot of platforms (at least the MS Surface devices, M1 macbooks, and
+> a few ThinkPads) firmware doesn't do its job when rfkilling a device
+> and the bluetooth adapter is not actually shut down on rfkill. This leads
+> to connected devices remaining in connected state and the bluetooth
+> connection eventually timing out after rfkilling an adapter.
+>
+> Use the rfkill hook in the HCI driver to actually power the device off
+> before rfkilling it.
+>
+> Note that the wifi subsystem is doing something similar by calling
+> cfg80211_shutdown_all_interfaces()
+> in it's rfkill set_block callback (see cfg80211_rfkill_set_block).
 
-Fixes: af16b00578a7 ("arm64: dts: qcom: Add base X1E80100 dtsi and the QCP dts")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- arch/arm64/boot/dts/qcom/x1e80100.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+So the rfkill is supposed to be wait for cleanup, not a forceful
+shutdown of RF traffic? I assume it would be the later since to do a
+proper cleanup that could cause more RF traffic while the current
+assumption was to stop all traffic and then call hdev->shutdown to
+ensure the driver does shutdown the RF traffic, perhaps this
+assumption has changed over time since interrupting the RF traffic may
+cause what you just described because the remote end will have to rely
+on link-loss logic to detect the connection has been terminated.
 
-diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-index fc164b9b3ef1..2a14e8e39b3b 100644
---- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-+++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-@@ -3334,6 +3334,7 @@ apps_rsc: rsc@17500000 {
- 					  <WAKE_TCS      2>, <CONTROL_TCS   0>;
- 
- 			label = "apps_rsc";
-+			power-domains = <&SYSTEM_PD>;
- 
- 			apps_bcm_voter: bcm-voter {
- 				compatible = "qcom,bcm-voter";
+> Signed-off-by: Jonas Dre=C3=9Fler <verdre@v0yd.nl>
+> ---
+>  net/bluetooth/hci_core.c | 33 ++++++++++++++++++++++++++++++---
+>  1 file changed, 30 insertions(+), 3 deletions(-)
+>
+> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> index 1ec83985f..1c91d02f7 100644
+> --- a/net/bluetooth/hci_core.c
+> +++ b/net/bluetooth/hci_core.c
+> @@ -543,6 +543,23 @@ int hci_dev_open(__u16 dev)
+>         return err;
+>  }
+>
+> +static int set_powered_off_sync(struct hci_dev *hdev, void *data)
+> +{
+> +       return hci_set_powered_sync(hdev, false);
+> +}
+> +
+> +static void set_powered_off_sync_complete(struct hci_dev *hdev, void *da=
+ta, int err)
+> +{
+> +       if (err)
+> +               bt_dev_err(hdev, "Powering HCI device off before rfkillin=
+g failed (%d)", err);
+> +}
+> +
+> +static int hci_dev_do_poweroff(struct hci_dev *hdev)
+> +{
+> +       return hci_cmd_sync_queue(hdev, set_powered_off_sync,
+> +                                 NULL, set_powered_off_sync_complete);
+> +}
+> +
+>  int hci_dev_do_close(struct hci_dev *hdev)
+>  {
+>         int err;
+> @@ -943,17 +960,27 @@ int hci_get_dev_info(void __user *arg)
+>  static int hci_rfkill_set_block(void *data, bool blocked)
+>  {
+>         struct hci_dev *hdev =3D data;
+> +       int err;
+>
+>         BT_DBG("%p name %s blocked %d", hdev, hdev->name, blocked);
+>
+>         if (hci_dev_test_flag(hdev, HCI_USER_CHANNEL))
+>                 return -EBUSY;
+>
+> +       if (blocked =3D=3D hci_dev_test_flag(hdev, HCI_RFKILLED))
+> +               return 0;
+> +
+>         if (blocked) {
+> -               hci_dev_set_flag(hdev, HCI_RFKILLED);
+>                 if (!hci_dev_test_flag(hdev, HCI_SETUP) &&
+> -                   !hci_dev_test_flag(hdev, HCI_CONFIG))
+> -                       hci_dev_do_close(hdev);
+> +                   !hci_dev_test_flag(hdev, HCI_CONFIG)) {
+> +                       err =3D hci_dev_do_poweroff(hdev);
+> +                       if (err) {
+> +                               bt_dev_err(hdev, "Powering off device bef=
+ore rfkilling failed (%d)",
+> +                                          err);
+> +                       }
 
--- 
-2.43.0
+You already have the error printed on set_powered_off_sync_complete
+not sure why you have it here as well.
 
+> +               }
+> +
+> +               hci_dev_set_flag(hdev, HCI_RFKILLED);
+
+Before we used to set the HCI_RFKILLED beforehand, is this change
+really intended or not? I think we should keep doing it ahead of power
+off sequence since we can probably use it to ignore if there are any
+errors on the cleanup, etc.
+
+>         } else {
+>                 hci_dev_clear_flag(hdev, HCI_RFKILLED);
+>         }
+> --
+> 2.43.0
+>
+
+
+--=20
+Luiz Augusto von Dentz
 
