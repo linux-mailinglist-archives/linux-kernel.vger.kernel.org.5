@@ -1,124 +1,134 @@
-Return-Path: <linux-kernel+bounces-14541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 274F4821E6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:11:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE767821E61
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:10:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF327B222E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:11:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5871F281126
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:10:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B257F14A8A;
-	Tue,  2 Jan 2024 15:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 435BE14F7B;
+	Tue,  2 Jan 2024 15:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="svD4su6l"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="VDgPd76j"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2070.outbound.protection.outlook.com [40.107.243.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C2E15AD3;
-	Tue,  2 Jan 2024 15:09:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 402CRVvJ007618;
-	Tue, 2 Jan 2024 15:09:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=Z16gIvE6o/oyg7pKiGRgBezqdCKIKpf4AGEXuLsxRFw=;
- b=svD4su6l/twu+Zu2qoE0Qtzc2tJbxOj/21Pxy3greVvKpkioWAWCsLUbw1JSvcpIJ1AG
- 2PLbkB/D1Hcmp2UAVq3HHtelivWEgMRk9MOi5EcqcNupuCD7mH6rfg4VcMmig0ox5L8e
- z4funDZikQnB/ApbXAUzG5HHAmGxM5qn8nu7yIM7g4jdJc1UAqIpAmdpZrm8y4VB6qjc
- C0sAis8oUvaictM8VH3r4w3cQXUkVusrr/1G9FiB+zWhysS3SOTvXFyKvQSq9EKmB/SA
- h72VMSwYOdaVKPHcGpvajT1xHoQ952aP5IkHkFT7JDByszskj5K2OsgJbHFJl/30qSaN Ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcjghkfsn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 15:09:34 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 402EKo8H022188;
-	Tue, 2 Jan 2024 15:09:34 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcjghkfs7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 15:09:34 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 402Ds1wG017834;
-	Tue, 2 Jan 2024 15:09:32 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vawwynnak-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 15:09:32 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 402F9TLH19726960
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 2 Jan 2024 15:09:29 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5DA132004E;
-	Tue,  2 Jan 2024 15:09:29 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1E7A720040;
-	Tue,  2 Jan 2024 15:09:28 +0000 (GMT)
-Received: from osiris (unknown [9.171.22.30])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue,  2 Jan 2024 15:09:28 +0000 (GMT)
-Date: Tue, 2 Jan 2024 16:09:26 +0100
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: [PATCH v3 32/34] s390/unwind: Disable KMSAN checks
-Message-ID: <20240102150926.6306-I-hca@linux.ibm.com>
-References: <20231213233605.661251-1-iii@linux.ibm.com>
- <20231213233605.661251-33-iii@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E19EE13FF4;
+	Tue,  2 Jan 2024 15:09:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BS7PopijizYniOcuHsdMjgxfLb8pD+13B8d7hRm/oWuO7lhRIj2fVN/GeXv2INApk+juzuABrPHOwfvCkepJFhZUcmK9nmhHAYfADN1kbQIw7YBtaUjOsGHFjDeXe8Ykyrgqw5NWOcfmmTt/1fNDjeJz00QV4tPW3kJYfTBiysphA3d93tTkqF1mMsuz/uI4+L0BSwijOrHD66yeTCwXBwPUgAfdPOw1Wnbu/TAnkN79zaf5x9/eqafVxOwwsxvOtFTY/pRJt+50WrzAvrffLXrMbBvN/71Oe3AgCdQ6on0xHpHdPsMrQ+CtXpy6wbvZr3uN46ZJ52STs4SSTMrPMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hrRTEe2QfuROLsMOjgmdBEJJF0cyaIww9z0gIjgksRg=;
+ b=Oeg8mKvZWpdaNSu166Lnpr6VFUZ1EKihPXU+E96zW4QSGihX2KYWt0nDhACtBd784azhLMqlg5JA9yufumppDVLti6llkSxI9BCZZYi+0I7OEMs5bYuvPZ3B7uXj/Q2leKC5JhtolVb5kl5yHBMS8KhIjPYIrnZxS02HV7nNU+KiJcRXQ7Bb5q+SFhgWNJTsM9vmrABivlmw3WK5apasCb4e5cTVFoVzXxdtcy2iloSA1+3SixO56QYdsrMWvvOdx5F5fy+ksqSHmdaqbSEvs94/fUnT79fHRSO2BfVqGVrlPTITeRuYAJEi6/qh4glDPJFHXfqbBg3Ib54sxIpEuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hrRTEe2QfuROLsMOjgmdBEJJF0cyaIww9z0gIjgksRg=;
+ b=VDgPd76jXFaeyk5rFAnadCBRBpNxSmHwbccGNU5F4/8E1rVDcDDeQl8H1Hr98tkIXisJxn4F//GU3LrCjekOspLUEKR3zbCMdX7xC+CSemWlLCof16Et1MKeMcQmE0rtwPQ++5LXh9gtOeuzxtQHRxpxcjUWSmi/afZ15RLh/DA=
+Received: from BY5PR03CA0017.namprd03.prod.outlook.com (2603:10b6:a03:1e0::27)
+ by BL1PR12MB5063.namprd12.prod.outlook.com (2603:10b6:208:31a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Tue, 2 Jan
+ 2024 15:09:46 +0000
+Received: from SJ1PEPF00001CDE.namprd05.prod.outlook.com
+ (2603:10b6:a03:1e0:cafe::96) by BY5PR03CA0017.outlook.office365.com
+ (2603:10b6:a03:1e0::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.21 via Frontend
+ Transport; Tue, 2 Jan 2024 15:09:45 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ1PEPF00001CDE.mail.protection.outlook.com (10.167.242.6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7159.9 via Frontend Transport; Tue, 2 Jan 2024 15:09:45 +0000
+Received: from ethanolx50f7host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 2 Jan
+ 2024 09:09:44 -0600
+From: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+To: <linux-efi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>
+CC: Ard Biesheuvel <ardb@kernel.org>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, "Ira
+ Weiny" <ira.weiny@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Yazen Ghannam
+	<yazen.ghannam@amd.com>, Smita Koralahalli
+	<Smita.KoralahalliChannabasappa@amd.com>
+Subject: [PATCH 0/4] acpi/ghes, cper, cxl: Trace FW-First CXL Protocol Errors
+Date: Tue, 2 Jan 2024 15:09:29 +0000
+Message-ID: <20240102150933.161009-1-Smita.KoralahalliChannabasappa@amd.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213233605.661251-33-iii@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: exHf4oBJB85XIi_IDJ_Zx4a73A6HiVoO
-X-Proofpoint-ORIG-GUID: 2sCBYVkslnYpbOQdpV7tqP0ZF1S161uX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-02_04,2024-01-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=425 lowpriorityscore=0 spamscore=0 mlxscore=0 impostorscore=0
- phishscore=0 adultscore=0 clxscore=1015 suspectscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401020116
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CDE:EE_|BL1PR12MB5063:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1045f04d-f522-4244-b4ac-08dc0ba4db1d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	VbB6E+kUlKyLTKEUMYNtn8zpeZOXsQKxQ3AlNx/zwWjtEXGBwIAyuhwEB/7yBmHptiHg/MNGyclbosL03Q+oS339sSXhywkw/+l7SxiM6eYP7k5n5V93LdGNTZwxrvJ9NO8eeWl6/nutnlvZ06ptZ8KMmPUVdzjs9+Fjg+L1P4iRDvHDPff1xnrUk3ue281M3/npaJtGLSiwo6Mbz6oDZxKkswkY1HaJRqtuohJbWlzr6v/0vHq5wirZvw7bTzqJUtApFHALISBHI9x6DG82jpSWfqDr5R2TSYHAgwexH4TPjt6/hgbfIC+Nx8Sdr3ggYyfUemLuqXVpeolE0cRtLKD+84UFtYjHysAh1/7tsH1RhLqDHiI0oEcRBFwr59xmAMKmLENzuFaSb9hRB+fkvT4g5+jCs774268jc83R+AhWUAEZ++M3hxbmK/cLV7ta07x076Db2Wpzz1zZDLGJ5o7ljj0eizlv7yzXgCFKgHEv63ve6iCkvmfup49EGwal8AiEciY+/9gBcGT/lYl0f4QjhtK4cEw+U3RowFVM9QV3RaYbvQLtKLjLxml0H1tykOhkctxCTBeFvm/Vh6jKhTaPRhA4xs1bOJ7tWLCxNThUM/CvektR6wMs6XjI8KV5F2+5mvMrBczSSjk76OSDULveYqVePpXx+ExVriUaS1dH+5X/yyioYOGo95U9gkYrunw3S5gX4rTwy+uB4W4nZXBliz2tqEgDHCOANQE15oFZyVunIzPTBWPV1HXbBxx7
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(396003)(376002)(346002)(230922051799003)(64100799003)(451199024)(1800799012)(82310400011)(186009)(36840700001)(46966006)(40470700004)(40480700001)(40460700003)(36756003)(6666004)(70586007)(70206006)(7696005)(86362001)(356005)(336012)(16526019)(426003)(81166007)(1076003)(83380400001)(2616005)(26005)(41300700001)(47076005)(2906002)(4744005)(5660300002)(4326008)(966005)(478600001)(36860700001)(82740400003)(110136005)(54906003)(316002)(8936002)(8676002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2024 15:09:45.7217
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1045f04d-f522-4244-b4ac-08dc0ba4db1d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00001CDE.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5063
 
-On Thu, Dec 14, 2023 at 12:24:52AM +0100, Ilya Leoshkevich wrote:
-> The unwind code can read uninitialized frames. Furthermore, even in
-> the good case, KMSAN does not emit shadow for backchains. Therefore
-> disable it for the unwinding functions.
-> 
-> Reviewed-by: Alexander Potapenko <glider@google.com>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  arch/s390/kernel/unwind_bc.c | 4 ++++
->  1 file changed, 4 insertions(+)
+This patchset adds trace event support for FW-First Protocol Errors.
 
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+This series depends on:
+https://lore.kernel.org/linux-cxl/20231220-cxl-cper-v5-0-1bb8a4ca2c7a@intel.com
+
+Smita Koralahalli (4):
+  acpi/ghes, cxl: Create a common CXL struct to handle different CXL
+    CPER records
+  efi/cper, cxl: Make definitions and structures global
+  acpi/ghes, efi/cper: Recognize and process CXL Protocol Errors.
+  acpi/ghes, cxl/pci: Trace FW-First CXL Protocol Errors
+
+ drivers/acpi/apei/ghes.c        | 26 +++++++++++++-
+ drivers/cxl/core/pci.c          | 46 ++++++++++++++++++++++++
+ drivers/cxl/cxlpci.h            |  3 ++
+ drivers/cxl/pci.c               | 13 ++++---
+ drivers/firmware/efi/cper_cxl.c | 63 +++++++++++++++++++++++++++------
+ drivers/firmware/efi/cper_cxl.h |  7 ++--
+ include/linux/cper.h            |  4 +++
+ include/linux/cxl-event.h       | 24 ++++++++++++-
+ 8 files changed, 164 insertions(+), 22 deletions(-)
+
+-- 
+2.17.1
+
 
