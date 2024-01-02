@@ -1,116 +1,109 @@
-Return-Path: <linux-kernel+bounces-14171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3734E8218B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:12:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 759A18218B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:12:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AB711C20BE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:12:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18E4DB216CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3F4BCA66;
-	Tue,  2 Jan 2024 09:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21206AA7;
+	Tue,  2 Jan 2024 09:12:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Dgpv6VQH"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bPKWtbpt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DAE15697;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90B3C568D;
 	Tue,  2 Jan 2024 09:12:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704186724; x=1735722724;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=ZUUp125/reT7Tq22vhlJmnu5Uponk8HjKBT4ndhBEac=;
-  b=Dgpv6VQHu3RhxV2FCj+bDXw6/JYN7kFKFDMw0VLe/GyMXKXFjx37NFx7
-   K9LSIovE6Kw0NbY45E3ewL/LVCkqSyc9vFtY1zRkrucuSevmp03Kc/Gx1
-   BUskTf+QwAQ6jFEv6rLxIqVPtsHfb2FCSpEFmeVw4FpbaU9QBSO6fu8o7
-   vJ4faPt4aPjLfcwkRYZQsHcs3dRTVN24NQnIjwBRKkLqXJwsDq+k6jmwp
-   KeqHyEX9IxdYradK1IKV6CkTcDimj7gFxy9LrhNxQRe77zX/U0mjJI8rc
-   ovixFAUDkMUn7cSwNt1lPuELuYUJAYBckThS03ByJ5n3gR3GoGmotY0ON
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="428020231"
+  t=1704186723; x=1735722723;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=NyvPMiWn3WT/oZc8EH+SNeHjU8WnY+nEsLSZKALA/ow=;
+  b=bPKWtbptAPui07c3URUxb4MdOZTEVwLrCn7bpqavfXnLSzI1qHTW9M5Q
+   9t1haV9KH71skJ+Di4mes4yuIgb8wTJ4KnRpz7cie3w4UfXam1Fp+WFvm
+   KkNU/hXMNKcUcO8ppAorKrluSarOJEDgZd1jFJ3O65WXKxQWqlrlyvQAW
+   SfHHbLiJRjQ1TcukWOQfqzFD398G2J4Ox7K93cjv5nZhI6DhIHY9hhBmz
+   HMzNolRoHhPHhwgPfEODqj28+LU/W6IlHG54vAG3rvuvCidIgq4Rtdc+7
+   BGreGo7j1iFdvP5va39hhC6Vp+1zeESzgWxzJtXXWe/3bomigrxoEUJeN
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="463258977"
 X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
-   d="scan'208";a="428020231"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 01:12:01 -0800
+   d="scan'208";a="463258977"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 01:11:46 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="755861313"
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="923172841"
 X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
-   d="scan'208";a="755861313"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 01:11:53 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Gregory Price <gregory.price@memverge.com>
-Cc: Gregory Price <gourry.memverge@gmail.com>,  <linux-mm@kvack.org>,
-  <linux-doc@vger.kernel.org>,  <linux-fsdevel@vger.kernel.org>,
-  <linux-kernel@vger.kernel.org>,  <linux-api@vger.kernel.org>,
-  <x86@kernel.org>,  <akpm@linux-foundation.org>,  <arnd@arndb.de>,
-  <tglx@linutronix.de>,  <luto@kernel.org>,  <mingo@redhat.com>,
-  <bp@alien8.de>,  <dave.hansen@linux.intel.com>,  <hpa@zytor.com>,
-  <mhocko@kernel.org>,  <tj@kernel.org>,  <corbet@lwn.net>,
-  <rakie.kim@sk.com>,  <hyeongtak.ji@sk.com>,  <honggyu.kim@sk.com>,
-  <vtavarespetr@micron.com>,  <peterz@infradead.org>,
-  <jgroves@micron.com>,  <ravis.opensrc@micron.com>,
-  <sthanneeru@micron.com>,  <emirakhur@micron.com>,  <Hasan.Maruf@amd.com>,
-  <seungjun.ha@samsung.com>
-Subject: Re: [PATCH v5 03/11] mm/mempolicy: refactor sanitize_mpol_flags for
- reuse
-In-Reply-To: <ZYq9klTts4yg8RhG@memverge.com> (Gregory Price's message of "Tue,
-	26 Dec 2023 06:48:34 -0500")
-References: <20231223181101.1954-1-gregory.price@memverge.com>
-	<20231223181101.1954-4-gregory.price@memverge.com>
-	<87y1dgdoou.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZYp7P1fH8nvkr4o0@memverge.com> <ZYq9klTts4yg8RhG@memverge.com>
-Date: Tue, 02 Jan 2024 17:09:55 +0800
-Message-ID: <871qb0drto.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+   d="scan'208";a="923172841"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 02 Jan 2024 01:11:43 -0800
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	RD Babiera <rdbabiera@google.com>,
+	Chris Bainbridge <chris.bainbridge@gmail.com>
+Subject: [PATCH] Revert "usb: typec: class: fix typec_altmode_put_partner to put plugs"
+Date: Tue,  2 Jan 2024 11:11:41 +0200
+Message-ID: <20240102091142.2136472-1-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
 
-Gregory Price <gregory.price@memverge.com> writes:
+This reverts commit b17b7fe6dd5c6ff74b38b0758ca799cdbb79e26e.
 
-> On Tue, Dec 26, 2023 at 02:05:35AM -0500, Gregory Price wrote:
->> On Wed, Dec 27, 2023 at 04:39:29PM +0800, Huang, Ying wrote:
->> > Gregory Price <gourry.memverge@gmail.com> writes:
->> > 
->> > > +	unsigned short mode = (*mode_arg & ~MPOL_MODE_FLAGS);
->> > > +
->> > > +	*flags = *mode_arg & MPOL_MODE_FLAGS;
->> > > +	*mode_arg = mode;
->> > 
->> > It appears that it's unnecessary to introduce a local variable to split
->> > mode/flags.  Just reuse the original code?
->> > 
->
-> Revisiting during fixes: Note the change from int to short.
->
-> I chose to make this explicit because validate_mpol_flags takes a short.
->
-> I'm fairly sure changing it back throws a truncation warning.
+That commit messed up the reference counting, so it needs to
+be rethought.
 
-Why something like below doesn't work?
+Fixes: b17b7fe6dd5c ("usb: typec: class: fix typec_altmode_put_partner to put plugs")
+Cc: stable@vger.kernel.org
+Cc: RD Babiera <rdbabiera@google.com>
+Reported-by: Chris Bainbridge <chris.bainbridge@gmail.com>
+Closes: https://lore.kernel.org/lkml/CAP-bSRb3SXpgo_BEdqZB-p1K5625fMegRZ17ZkPE1J8ZYgEHDg@mail.gmail.com/
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+---
+ drivers/usb/typec/class.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-int sanitize_mpol_flags(int *mode, unsigned short *flags)
-{
-        *flags = *mode & MPOL_MODE_FLAGS;
-        *mode &= ~MPOL_MODE_FLAGS;
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index aeae8009b9e3..4d11f2b536fa 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -267,7 +267,7 @@ static void typec_altmode_put_partner(struct altmode *altmode)
+ 	if (!partner)
+ 		return;
+ 
+-	adev = &altmode->adev;
++	adev = &partner->adev;
+ 
+ 	if (is_typec_plug(adev->dev.parent)) {
+ 		struct typec_plug *plug = to_typec_plug(adev->dev.parent);
+@@ -497,8 +497,7 @@ static void typec_altmode_release(struct device *dev)
+ {
+ 	struct altmode *alt = to_altmode(to_typec_altmode(dev));
+ 
+-	if (!is_typec_port(dev->parent))
+-		typec_altmode_put_partner(alt);
++	typec_altmode_put_partner(alt);
+ 
+ 	altmode_id_remove(alt->adev.dev.parent, alt->id);
+ 	kfree(alt);
+-- 
+2.43.0
 
-        return validate_mpol_flags(*mode, flags);
-}
-
---
-Best Regards,
-Huang, Ying
 
