@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-14254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5887E821A05
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:38:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27B24821A09
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:38:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04D021F226E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:38:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B98D71F226DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:38:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8104FDDA7;
-	Tue,  2 Jan 2024 10:38:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F64AE544;
+	Tue,  2 Jan 2024 10:38:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="M6FRHFMn"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ZTKcvSZS"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B716D507;
-	Tue,  2 Jan 2024 10:38:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79D3BD298;
+	Tue,  2 Jan 2024 10:38:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704191886;
-	bh=M7Xvx7dEYV5/Uj992gYqxQaLymoVlWi/PbPy7cgkjUQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=M6FRHFMnNf101tyVbQwluru0ACn738DHhwyLERK/KmF+dRrs3xYWo9tKuyPw82ufs
-	 hLrbXcwc6ZO6rSlEITpP1N7DgnlNSPTLjG4V15Hxsf8bvtwVvrzYPaZOvDDgdkIonl
-	 3j8wFrj8yUD6dwdebN/gQU0zLXcD/7eQuI2cbEF7jvfbSYT1dw9hTPr7QD3wl7J0lI
-	 tySu70fkNZN/s0cTU6TjsuNAOd24aJmBSfpH6vGb82ImrZGVxIaQ+F432LnfhGz3jz
-	 y6GnyphNK7onHffNSkBT5ncqUVx0cMVgxsRfUM6it7WLur1Gu1NaM9lWAibZNII945
-	 lD4i5HpdeyuOw==
+	s=mail; t=1704191887;
+	bh=cm7tGZegvFx11DaYuyNUHAKQJUZbqThwfuueF4e2NcA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ZTKcvSZSPhwE9At3kqI+V7j+jbxAhit57MypSrzuU18aebz35/DRLJSDNsZihDq8o
+	 xMwPz52VEjaPjvZP+8wyoQK0TAKilLm0LRRuz/heeCRpyburW0hWXtsqVeFpJczkeq
+	 QuPPi5wj8Bqyva+XW675cXItJ5/N/UpUC/if8gjgD4L86bFaoGjEaFWtM94iLVZ0oI
+	 GIqCTQqJO5F4p1f1nNyKoNBd0eeyb8J77tKtrE1V3nLFpTa4XA0lCB8lHgpndhaGhW
+	 RfWe7Exr0Zqae57XiMOiWFjGXzkBQ26nOlplwlDuVlQd6fzDAUxPMzkNEPDBC7al42
+	 hII9I30piTpSw==
 Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id BD17D3781FFA;
-	Tue,  2 Jan 2024 10:38:05 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B25BE3780FC7;
+	Tue,  2 Jan 2024 10:38:06 +0000 (UTC)
 From: Eugen Hristev <eugen.hristev@collabora.com>
 To: linux-media@vger.kernel.org,
 	devicetree@vger.kernel.org,
@@ -49,11 +49,17 @@ Cc: linux-kernel@vger.kernel.org,
 	angelogioacchino.delregno@collabora.com,
 	kernel@collabora.com,
 	eugen.hristev@collabora.com,
-	matthias.bgg@gmail.com
-Subject: [PATCH v2 1/2] dt-bindings: media: mediatek-jpeg-encoder: change max iommus count
-Date: Tue,  2 Jan 2024 12:38:00 +0200
-Message-Id: <20240102103801.268647-1-eugen.hristev@collabora.com>
+	matthias.bgg@gmail.com,
+	Allen-KH Cheng <allen-kh.cheng@mediatek.com>,
+	Hsin-Yi Wang <hsinyi@chromium.org>,
+	Max Staudt <mstaudt@chromium.org>,
+	Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH v2 2/2] arm64: dts: mediatek: mt8186: Add jpgenc node
+Date: Tue,  2 Jan 2024 12:38:01 +0200
+Message-Id: <20240102103801.268647-2-eugen.hristev@collabora.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240102103801.268647-1-eugen.hristev@collabora.com>
+References: <20240102103801.268647-1-eugen.hristev@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,34 +68,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-MT8186 has 4 iommus in the list, to cope with this situation, adjust
-the maxItems to 4 (instead of previous 2).
-Add also minItems as 1 since iommus are mandatory, to avoid warning
-on the example.
+From: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
 
+Add JPEG encoder node.
+
+Signed-off-by: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
+Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: Max Staudt <mstaudt@chromium.org>
+Tested-by: Max Staudt <mstaudt@chromium.org>
+Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
+[eugen.hristev@collabora.com: minor cleanup]
 Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
 Changes in v2:
-fixed typo in subject
+- renamed node
+- reordered props
 
- .../devicetree/bindings/media/mediatek-jpeg-encoder.yaml       | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt8186.dtsi | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
-index 37800e1908cc..60c75b9312e8 100644
---- a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
-+++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
-@@ -38,7 +38,8 @@ properties:
-     maxItems: 1
+diff --git a/arch/arm64/boot/dts/mediatek/mt8186.dtsi b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
+index e451b6c8cd9e..8e57a7be67ad 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8186.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
+@@ -2054,6 +2054,19 @@ venc: video-encoder@17020000 {
+ 			mediatek,scp = <&scp>;
+ 		};
  
-   iommus:
--    maxItems: 2
-+    minItems: 1
-+    maxItems: 4
-     description: |
-       Points to the respective IOMMU block with master port as argument, see
-       Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml for details.
++		jpgenc: jpeg-encoder@17030000 {
++			compatible = "mediatek,mt8186-jpgenc", "mediatek,mtk-jpgenc";
++			reg = <0 0x17030000 0 0x10000>;
++			interrupts = <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH 0>;
++			clocks = <&vencsys CLK_VENC_CKE2_JPGENC>;
++			clock-names = "jpgenc";
++			iommus = <&iommu_mm IOMMU_PORT_L7_JPGENC_Y_RDMA>,
++				 <&iommu_mm IOMMU_PORT_L7_JPGENC_C_RDMA>,
++				 <&iommu_mm IOMMU_PORT_L7_JPGENC_Q_TABLE>,
++				 <&iommu_mm IOMMU_PORT_L7_JPGENC_BSDMA>;
++			power-domains = <&spm MT8186_POWER_DOMAIN_VENC>;
++		};
++
+ 		camsys: clock-controller@1a000000 {
+ 			compatible = "mediatek,mt8186-camsys";
+ 			reg = <0 0x1a000000 0 0x1000>;
 -- 
 2.34.1
 
