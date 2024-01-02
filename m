@@ -1,98 +1,158 @@
-Return-Path: <linux-kernel+bounces-14132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 061B2821833
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:09:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02E8B821838
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:14:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F12541C21526
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:09:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ED9828256F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4BA468C;
-	Tue,  2 Jan 2024 08:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3473469F;
+	Tue,  2 Jan 2024 08:14:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="VkxwVMqd"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UWfqcvH2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1554D2116;
-	Tue,  2 Jan 2024 08:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1704182949;
-	bh=rfgD7wZxYb3q3Dx3Za3Q0wUzALNwOb57oBPgRsgGEhg=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=VkxwVMqdveqAGWhyd+OVaZM8AZENzYgSY/np/cKWR/nmvD0l8poLVV4Xsh3p6yvUO
-	 VjncBlXIdtzeQp+9FKVTutNAiCq1wOXwpV458UztG/CuQQwnLVA4hs1wY9SWH0D3kn
-	 sj/5k2Bszg9lJwNZ+SZPdHij4UebdjlOybIsVWMQ=
-Received: from [IPv6:240e:358:11a9:2200:dc73:854d:832e:3] (unknown [IPv6:240e:358:11a9:2200:dc73:854d:832e:3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 392B366963;
-	Tue,  2 Jan 2024 03:09:04 -0500 (EST)
-Message-ID: <22af410fe1f60e7fc04cafbe03cfc50b36b53ae3.camel@xry111.site>
-Subject: Re: [PATCH] LoongArch: Fix and simplify fcsr initialization on
- execve
-From: Xi Ruoyao <xry111@xry111.site>
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: WANG Xuerui <kernel@xen0n.name>, Eric Biederman <ebiederm@xmission.com>,
-  Kees Cook <keescook@chromium.org>, Tiezhu Yang <yangtiezhu@loongson.cn>,
- Jinyang He <hejinyang@loongson.cn>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
- loongarch@lists.linux.dev, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org,  stable@vger.kernel.org
-Date: Tue, 02 Jan 2024 16:09:00 +0800
-In-Reply-To: <CAAhV-H6dJtc3ZpEBnJzKdh691KQck771KOR0Lj41VLZ-Rc1ZwQ@mail.gmail.com>
-References: <20240101172143.14530-2-xry111@xry111.site>
-	 <CAAhV-H6dJtc3ZpEBnJzKdh691KQck771KOR0Lj41VLZ-Rc1ZwQ@mail.gmail.com>
-Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
- keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4462441F
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 08:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-28c7c422ad9so4097925a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 00:14:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704183252; x=1704788052; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ewhpw6ZAnNzCIn1VG/yRZaJv/xa5pFyIuSfBXvMExEo=;
+        b=UWfqcvH2rXPgDdlsxakoo+g8+UPCMBhJqtK4bcTHu/HiM7wpnyy5dvgaaehQYQyRVB
+         jKWcv4Nz5O3yn+YrsxXBKe3g5GC5IrfWbyBwluJClCxHa6F1iEvm+klSG0zBCtBRFX4a
+         9xrBUESVc3ukYP1afY1/LuEcdfpc7QRKU90Vc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704183252; x=1704788052;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ewhpw6ZAnNzCIn1VG/yRZaJv/xa5pFyIuSfBXvMExEo=;
+        b=EcGFwEl/Ah0KICPiWHIyyp82gPfeSC/bU7GZcVksubqB2pCD3SKtFuFREReMm7ph1+
+         EOYENfdLjoRfWhxHZSfZctQmxnUnJyNMED+pe10miD4duOpYIFG5oYJJbygJ0Z8xXrJC
+         C9MOHKUGnrBbYvMYbG6FVDurotacky3bMy+gP3hgFfQAQMdPld6/LQYDuQmauoXVmM7J
+         dExNyor7+x2lwk6krzCkGy+CwcCUYOi8k0+X4sr1qEeYiuTXVvz1eV6yzoYYNUTYzQCS
+         85/qBA6t0VuGTKiSeD5jupe3Pd9nhuNI79y4bzzf7l7vBE3hG5TzRCrTILjE0i7o6wgB
+         nNRw==
+X-Gm-Message-State: AOJu0Ywtwcr/7wAVagQ2tFgOhhBpbxSgmEMWabd5G7PYwRYP5AvaEAuy
+	4uLbhrQOnfJ4xnBYyf5ht+wa7Fs1bk31
+X-Google-Smtp-Source: AGHT+IEZy7xdt3Zuu7m2G7MMoLHQEboW6KOxEkZD0l5bHyMFOempt/8HuzkEt7JOM2A6v2c4UhVBmQ==
+X-Received: by 2002:a17:90a:7023:b0:28b:96ba:806a with SMTP id f32-20020a17090a702300b0028b96ba806amr7610238pjk.88.1704183252177;
+        Tue, 02 Jan 2024 00:14:12 -0800 (PST)
+Received: from treapking.tpe.corp.google.com ([2401:fa00:1:10:232c:f04:85bb:a34c])
+        by smtp.gmail.com with ESMTPSA id f3-20020a17090a638300b0028c8149ac6esm12640074pjj.42.2024.01.02.00.14.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 00:14:11 -0800 (PST)
+From: Pin-yen Lin <treapking@chromium.org>
+To: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Pin-yen Lin <treapking@chromium.org>,
+	Chen-Yu Tsai <wenst@chromium.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Weiyi Lu <weiyi.lu@mediatek.com>,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 1/2] clk: mediatek: Introduce need_pm_runtime to mtk_clk_desc
+Date: Tue,  2 Jan 2024 16:12:52 +0800
+Message-ID: <20240102081402.1226795-1-treapking@chromium.org>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2024-01-02 at 10:35 +0800, Huacai Chen wrote:
+Introduce a new need_pm_runtime variable to mtk_clk_desc to indicate
+this clock needs a runtime PM get on the clock controller during the
+probing stage.
 
-/* snip */
+Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+---
 
-> > The only other architecture setting FCSR in SET_PERSONALITY2 is MIPS.
-> > They do this for supporting different FP flavors (NaN encodings etc).
-> > which do not exist on LoongArch.=C2=A0 I'm not sure how MIPS evades the=
- issue
-> > (or maybe it's just buggy too) as I don't have a running MIPS hardware
-> > now.
-> I think you can use QEMU. :)
+Changes in v2:
+- Fix the order of error handling
+- Update the commit message and add a comment before the runtime PM call
 
-I'll investigate it later.
+ drivers/clk/mediatek/clk-mtk.c | 15 +++++++++++++++
+ drivers/clk/mediatek/clk-mtk.h |  2 ++
+ 2 files changed, 17 insertions(+)
 
-> > So for LoongArch, just remove the current->thread.fpu.fcsr setting from
-> > SET_PERSONALITY2 and do it in start_thread, after lose_fpu(0).=C2=A0 An=
-d we
-> > just set it to 0, instead of boot_cpu_data.fpu_csr0 (because we should
-> > provide the userspace a consistent configuration, no matter how hardwar=
-e
-> > and firmware behave).
-> I still prefer to set fcsr to boot_cpu_data.fpu_csr0, because we will
-> add LoongArch32 later, not sure whether something will change.
+diff --git a/drivers/clk/mediatek/clk-mtk.c b/drivers/clk/mediatek/clk-mtk.c
+index 2e55368dc4d8..c31e535909c8 100644
+--- a/drivers/clk/mediatek/clk-mtk.c
++++ b/drivers/clk/mediatek/clk-mtk.c
+@@ -13,6 +13,7 @@
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/slab.h>
+ 
+ #include "clk-mtk.h"
+@@ -494,6 +495,14 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
+ 			return IS_ERR(base) ? PTR_ERR(base) : -ENOMEM;
+ 	}
+ 
++
++	if (mcd->need_runtime_pm) {
++		devm_pm_runtime_enable(&pdev->dev);
++		r = pm_runtime_resume_and_get(&pdev->dev);
++		if (r)
++			return r;
++	}
++
+ 	/* Calculate how many clk_hw_onecell_data entries to allocate */
+ 	num_clks = mcd->num_clks + mcd->num_composite_clks;
+ 	num_clks += mcd->num_fixed_clks + mcd->num_factor_clks;
+@@ -574,6 +583,9 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
+ 			goto unregister_clks;
+ 	}
+ 
++	if (mcd->need_runtime_pm)
++		pm_runtime_put(&pdev->dev);
++
+ 	return r;
+ 
+ unregister_clks:
+@@ -604,6 +616,9 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
+ free_base:
+ 	if (mcd->shared_io && base)
+ 		iounmap(base);
++
++	if (mcd->need_runtime_pm)
++		pm_runtime_put(&pdev->dev);
+ 	return r;
+ }
+ 
+diff --git a/drivers/clk/mediatek/clk-mtk.h b/drivers/clk/mediatek/clk-mtk.h
+index 22096501a60a..c17fe1c2d732 100644
+--- a/drivers/clk/mediatek/clk-mtk.h
++++ b/drivers/clk/mediatek/clk-mtk.h
+@@ -237,6 +237,8 @@ struct mtk_clk_desc {
+ 
+ 	int (*clk_notifier_func)(struct device *dev, struct clk *clk);
+ 	unsigned int mfg_clk_idx;
++
++	bool need_runtime_pm;
+ };
+ 
+ int mtk_clk_pdev_probe(struct platform_device *pdev);
+-- 
+2.43.0.472.g3155946c3a-goog
 
-I just seen fpu_csr0 is initialized to FPU_CSR_RN which is just 0 for
-LA64, so my concern about firmware & hardware leaving non-zero FCSR is
-not valid.  I'll send v2 to keep using boot_cpu_data.fpu_csr0 then.
-
->=20
->=20
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
 
