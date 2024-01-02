@@ -1,158 +1,199 @@
-Return-Path: <linux-kernel+bounces-14356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0397B821C09
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:49:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB95C821C0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:51:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A0902830ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:49:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B8691F22B40
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:51:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F39DFBFA;
-	Tue,  2 Jan 2024 12:48:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="XXEYOoS/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A68F9CC;
+	Tue,  2 Jan 2024 12:51:47 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13246F9FA;
-	Tue,  2 Jan 2024 12:48:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 45689010a96d11ee9e680517dc993faa-20240102
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=3ntL+5uaAV9DSRO6KwCdZOXUOQstLPvq7hVMkRfPMeA=;
-	b=XXEYOoS/ZjG/xZFVlcVJMsKMSJap/aoIwLyFQabUOkOyoCKhg3eKl9NmOohlvNDZtHOBA3kTlaUwDu2hKXbSv/3xql2bgRSMfHEBSLVvnjyyAEcFzlVRL41mXLvALMl57JVPqHtSe5M6F7OWXYtZOr5liGMXPe3E2KUDY3/xqSk=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:f9b2f338-6813-4c83-aec6-b5e5503cecc9,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:5d391d7,CLOUDID:9ac5ce8d-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-	DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 45689010a96d11ee9e680517dc993faa-20240102
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-	(envelope-from <hao.qin@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1842662143; Tue, 02 Jan 2024 20:48:47 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 2 Jan 2024 20:48:46 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 2 Jan 2024 20:48:45 +0800
-From: Hao Qin <hao.qin@mediatek.com>
-To: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
-	<johan.hedberg@gmail.com>, Luiz Von Dentz <luiz.dentz@gmail.com>
-CC: Sean Wang <sean.wang@mediatek.com>, Deren Wu <deren.Wu@mediatek.com>,
-	Aaron Hou <aaron.hou@mediatek.com>, Chris Lu <chris.lu@mediatek.com>, Steve
- Lee <steve.lee@mediatek.com>, linux-bluetooth
-	<linux-bluetooth@vger.kernel.org>, linux-kernel
-	<linux-kernel@vger.kernel.org>, linux-mediatek
-	<linux-mediatek@lists.infradead.org>, hao.qin <hao.qin@mediatek.com>
-Subject: [PATCH v2 2/2] Bluetooth: btusb: mediatek: add a recovery method for MT7922 and MT7925
-Date: Tue, 2 Jan 2024 20:47:47 +0800
-Message-ID: <20240102124747.21644-2-hao.qin@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20240102124747.21644-1-hao.qin@mediatek.com>
-References: <20240102124747.21644-1-hao.qin@mediatek.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D570EF9C3;
+	Tue,  2 Jan 2024 12:51:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-593f182f263so2143166eaf.0;
+        Tue, 02 Jan 2024 04:51:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704199905; x=1704804705;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nWJpsSWjAqvITEmiBbPlA7D2pwFtpr6ooxh4CXH4Kz0=;
+        b=tznP7T7VPmbrUuI5dtZ5+eHzqsXCeqo4rn41G4Yh7+g54ra4WRARLZZqgGBwZ5p17x
+         i9P3rzqYXV1BWX5P6dexwe3ZmFhhk+rDQqAXuXEgKvdaoozKW1ub8S+UmJTW/lVcU7CB
+         78OYEWaGfwz6bJuH4qeq/f+mfuhdYsKI0lA2KwWQmmOKq9iW/xNURdNH4t6K2rEPAp1D
+         d4TdXQaDTed8vUH5vfj0Zxix+LwcHeauehzHHQ0XBSHYWCORR+tTxKnsdCanbDMaKs4x
+         e2xL8ET5NswydAaL4ibi8HnR3atKKQ+L9lATJkVDjnQPOscExoVmbB4Azx+ZwX07K5q2
+         sJzA==
+X-Gm-Message-State: AOJu0YxkjLnd4QWNyGj0H5jlTxMVveBTNMGxGSUVE5a/nycJ7U5pZVeJ
+	WwssnVsnssNvyfqgveXl0Ro9Q67hI2nxtmemmhU=
+X-Google-Smtp-Source: AGHT+IHDBkPRU3mIu++qRAviLkA1G9ucIWm/FarTZFV8d7+KkDNR01/7Qq4GsvhtAKiAsdHVwmDKcrB/OTPSpgWRFWY=
+X-Received: by 2002:a4a:c719:0:b0:594:c433:66e6 with SMTP id
+ n25-20020a4ac719000000b00594c43366e6mr13646877ooq.0.1704199904988; Tue, 02
+ Jan 2024 04:51:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <7163da4d-3f73-490c-a387-04d82e8bee1b@free.fr>
+In-Reply-To: <7163da4d-3f73-490c-a387-04d82e8bee1b@free.fr>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 2 Jan 2024 13:51:29 +0100
+Message-ID: <CAJZ5v0iX=E-4T87_mUjToj+oRDqkek_iu_L05z0zzrR66xZSmg@mail.gmail.com>
+Subject: Re: [GIT PULL] thermal material for v6.8-rc1
+To: Daniel Lezcano <daniel.lezcano@free.fr>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux PM mailing list <linux-pm@vger.kernel.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
+	Binbin Zhou <zhoubb.aaron@gmail.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Fabio Estevam <festevam@denx.de>, Johan Hovold <johan+linaro@kernel.org>, 
+	Florian Eckert <fe@dev.tdt.de>, Mateusz Majewski <m.majewski2@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: "hao.qin" <hao.qin@mediatek.com>
+Hi Daniel,
 
-For MT7922 and MT7925, add USB reset retry to recover from patch
-download failure, and perform a reset before patch download to
-avoid unexpected problems caused by unkonwn status of dongle.
+On Tue, Jan 2, 2024 at 10:25=E2=80=AFAM Daniel Lezcano <daniel.lezcano@free=
+.fr> wrote:
+>
+>
+> Hi Rafael,
+>
+> happy new year 2024!
+>
+> Please consider pulling these thermal changes.
+>
+> Thanks
+>
+>    -- Daniel
+>
+> The following changes since commit 5f70413a85056db04050604a76b52e3f39a37f=
+21:
+>
+>    thermal: cpuidle_cooling: fix kernel-doc warning and a spello
+> (2023-12-21 12:05:48 +0100)
+>
+> are available in the Git repository at:
+>
+>
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
+> tags/thermal-v6.8-rc1
+>
+> for you to fetch changes up to 5314b1543787e6cd5d248186fcfd5c5fc4ca2146:
+>
+>    thermal/drivers/exynos: Use set_trips ops (2024-01-02 09:33:19 +0100)
+>
+> ----------------------------------------------------------------
+> - Converted Mediatek Thermal to the json-schema (Rafa=C5=82 Mi=C5=82ecki)
+>
+> - Fixed DT bindings issue on Loongson (Binbin Zhou)
+>
+> - Fixed returning NULL instead of -ENODEV on Loogsoo (Binbin Zhou)
+>
+> - Added the DT binding for the tsens on SM8650 platform (Neil Armstrong)
+>
+> - Added a reboot on critical option feature (Fabio Estevam)
+>
+> - Made usage of DEFINE_SIMPLE_DEV_PM_OPS on AmLogic (Uwe Kleine-K=C3=B6ni=
+g)
+>
+> - Added the D1/T113s THS controller support on Sun8i (Maxim Kiselev)
+>
+> - Fixed example in the DT binding for QCom SPMI (Johan Hovold)
+>
+> - Fixed compilation warning for the tmon utility (Florian Eckert)
+>
+> - Added interrupt based configuration on Exynos along with a set of
+>    related cleanups (Mateusz Majewski)
+>
+> ----------------------------------------------------------------
+> Binbin Zhou (2):
+>        dt-bindings: thermal: loongson,ls2k-thermal: Fix binding check iss=
+ues
+>        drivers/thermal/loongson2_thermal: Fix incorrect PTR_ERR() judgmen=
+t
+>
+> Fabio Estevam (4):
+>        dt-bindings: thermal-zones: Document critical-action
+>        thermal/core: Prepare for introduction of thermal reboot
+>        reboot: Introduce thermal_zone_device_critical_reboot()
+>        thermal/thermal_of: Allow rebooting after critical temp
+>
+> Florian Eckert (1):
+>        tools/thermal/tmon: Fix compilation warning for wrong format
+>
+> Johan Hovold (2):
+>        dt-bindings: thermal: qcom-spmi-adc-tm5/hc: Fix example node names
+>        dt-bindings: thermal: qcom-spmi-adc-tm5/hc: Clean up examples
+>
+> Mateusz Majewski (9):
+>        thermal/drivers/exynos: Remove an unnecessary field description
+>        thermal/drivers/exynos: Drop id field
+>        thermal/drivers/exynos: Wwitch from workqueue-driven interrupt
+> handling to threaded interrupts
+>        thermal/drivers/exynos: Handle devm_regulator_get_optional return
+> value correctly
+>        thermal/drivers/exynos: Simplify regulator (de)initialization
+>        thermal/drivers/exynos: Stop using the threshold mechanism on
+> Exynos 4210
+>        thermal/drivers/exynos: Split initialization of TMU and the
+> thermal zone
+>        thermal/drivers/exynos: Use BIT wherever possible
+>        thermal/drivers/exynos: Use set_trips ops
+>
+> Maxim Kiselev (2):
+>        dt-bindings: thermal: sun8i: Add binding for D1/T113s THS controll=
+er
+>        thermal/drivers/sun8i: Add D1/T113s THS controller support
+>
+> Neil Armstrong (1):
+>        dt-bindings: thermal: qcom-tsens: document the SM8650 Temperature
+> Sensor
+>
+> Rafa=C5=82 Mi=C5=82ecki (1):
+>        dt-bindings: thermal: convert Mediatek Thermal to the json-schema
+>
+> Uwe Kleine-K=C3=B6nig (2):
+>        thermal: amlogic: Make amlogic_thermal_disable() return void
+>        thermal: amlogic: Use DEFINE_SIMPLE_DEV_PM_OPS for PM functions
+>
+>   .../bindings/thermal/allwinner,sun8i-a83t-ths.yaml |   7 +-
+>   .../bindings/thermal/loongson,ls2k-thermal.yaml    |  10 +-
+>   .../bindings/thermal/mediatek,thermal.yaml         |  99 ++++
+>   .../bindings/thermal/mediatek-thermal.txt          |  52 --
+>   .../bindings/thermal/qcom-spmi-adc-tm-hc.yaml      |   8 +-
+>   .../bindings/thermal/qcom-spmi-adc-tm5.yaml        |  16 +-
+>   .../devicetree/bindings/thermal/qcom-tsens.yaml    |   1 +
+>   .../devicetree/bindings/thermal/thermal-zones.yaml |  16 +
+>   drivers/thermal/amlogic_thermal.c                  |  19 +-
+>   drivers/thermal/loongson2_thermal.c                |   2 +-
+>   drivers/thermal/samsung/exynos_tmu.c               | 529
+> +++++++++++----------
+>   drivers/thermal/sun8i_thermal.c                    |  13 +
+>   drivers/thermal/thermal_core.c                     |  21 +-
+>   drivers/thermal/thermal_core.h                     |   1 +
+>   drivers/thermal/thermal_of.c                       |   6 +
+>   include/linux/reboot.h                             |  12 +-
+>   kernel/reboot.c                                    |  34 +-
+>   tools/thermal/tmon/tui.c                           |   2 +-
+>   18 files changed, 491 insertions(+), 357 deletions(-)
+>   create mode 100644
+> Documentation/devicetree/bindings/thermal/mediatek,thermal.yaml
+>   delete mode 100644
+> Documentation/devicetree/bindings/thermal/mediatek-thermal.txt
 
-Signed-off-by: hao.qin <hao.qin@mediatek.com>
----
- drivers/bluetooth/btusb.c | 29 ++++++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
+Pulled and added to the thermal branch in linux-pm.git.
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index abefcd1a089d..26ad4864d06c 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3000,17 +3000,26 @@ static int btusb_mtk_subsys_reset(struct hci_dev *hdev, u32 dev_id)
- 	u32 val;
- 	int err;
- 
--	if (dev_id == 0x7925) {
-+	if (dev_id == 0x7922) {
-+		btusb_mtk_uhw_reg_read(data, MTK_BT_SUBSYS_RST, &val);
-+		val |= 0x00002020;
-+		btusb_mtk_uhw_reg_write(data, MTK_BT_SUBSYS_RST, val);
-+		btusb_mtk_uhw_reg_write(data, MTK_EP_RST_OPT, 0x00010001);
-+		btusb_mtk_uhw_reg_read(data, MTK_BT_SUBSYS_RST, &val);
-+		val |= BIT(0);
-+		btusb_mtk_uhw_reg_write(data, MTK_BT_SUBSYS_RST, val);
-+		msleep(100);
-+	} else if (dev_id == 0x7925) {
- 		btusb_mtk_uhw_reg_read(data, MTK_BT_RESET_REG_CONNV3, &val);
--		val |= (1 << 5);
-+		val |= BIT(5);
- 		btusb_mtk_uhw_reg_write(data, MTK_BT_RESET_REG_CONNV3, val);
- 		btusb_mtk_uhw_reg_read(data, MTK_BT_RESET_REG_CONNV3, &val);
- 		val &= 0xFFFF00FF;
--		val |= (1 << 13);
-+		val |= BIT(13);
- 		btusb_mtk_uhw_reg_write(data, MTK_BT_RESET_REG_CONNV3, val);
- 		btusb_mtk_uhw_reg_write(data, MTK_EP_RST_OPT, 0x00010001);
- 		btusb_mtk_uhw_reg_read(data, MTK_BT_RESET_REG_CONNV3, &val);
--		val |= (1 << 0);
-+		val |= BIT(0);
- 		btusb_mtk_uhw_reg_write(data, MTK_BT_RESET_REG_CONNV3, val);
- 		btusb_mtk_uhw_reg_write(data, MTK_UDMA_INT_STA_BT, 0x000000FF);
- 		btusb_mtk_uhw_reg_read(data, MTK_UDMA_INT_STA_BT, &val);
-@@ -3040,6 +3049,9 @@ static int btusb_mtk_subsys_reset(struct hci_dev *hdev, u32 dev_id)
- 	if (err < 0)
- 		bt_dev_err(hdev, "Reset timeout");
- 
-+	if (dev_id == 0x7922)
-+		btusb_mtk_uhw_reg_write(data, MTK_UDMA_INT_STA_BT, 0x000000FF);
-+
- 	btusb_mtk_id_get(data, 0x70010200, &val);
- 	if (!val)
- 		bt_dev_err(hdev, "Can't get device id, subsys reset fail.");
-@@ -3128,8 +3140,10 @@ static int btusb_mtk_setup(struct hci_dev *hdev)
- 		fwname = FIRMWARE_MT7668;
- 		break;
- 	case 0x7922:
--	case 0x7961:
- 	case 0x7925:
-+		btusb_mtk_subsys_reset(hdev, dev_id);
-+		fallthrough;
-+	case 0x7961:
- 		if (dev_id == 0x7925)
- 			snprintf(fw_bin_name, sizeof(fw_bin_name),
- 				 "mediatek/mt%04x/BT_RAM_CODE_MT%04x_1_%x_hdr.bin",
-@@ -3143,6 +3157,11 @@ static int btusb_mtk_setup(struct hci_dev *hdev)
- 						btusb_mtk_hci_wmt_sync);
- 		if (err < 0) {
- 			bt_dev_err(hdev, "Failed to set up firmware (%d)", err);
-+			if (dev_id == 0x7922 || dev_id == 0x7925) {
-+				btusb_stop_traffic(data);
-+				usb_kill_anchored_urbs(&data->tx_anchor);
-+				usb_queue_reset_device(data->intf);
-+			}
- 			return err;
- 		}
- 
--- 
-2.18.0
-
+Thanks!
 
