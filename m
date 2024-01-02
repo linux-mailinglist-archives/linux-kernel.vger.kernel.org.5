@@ -1,78 +1,64 @@
-Return-Path: <linux-kernel+bounces-14126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70C4582181D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:46:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11AE1821820
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:47:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04207B21051
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:46:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E10451C21538
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:47:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFB546B1;
-	Tue,  2 Jan 2024 07:46:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C07D4429;
+	Tue,  2 Jan 2024 07:47:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="N1DVmgA3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qx56niNx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3ABE2108
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 07:46:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40d88f9e602so10639555e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 23:46:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704181563; x=1704786363; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iHhD+e+1GG2LR5Q+uwUPWMKjzXneKZEYPGVrdDS3Exk=;
-        b=N1DVmgA3QG20HYFe8fWTDKWrDtgi2M2/gb+rQdRhJ1T5H1beql8jG6H4UOqTti/7MX
-         sOQeko1606byMN1KGo5kz24RAYGdrTwBDga773ky2w+lcge60ZtwGXrUUgwNeI/GMKlJ
-         emZDJELz+Dl1SOsUS+Z9sRfwxZYfZDkcGOx+d0y0W0IzJHEw/BjBtPn3KR5PoD66hJet
-         0sJ8Nrq6lBBKXfk3CZ5NUcCyZ+1VsSDTPBVkYsC0rESpLM7SsJsPOY93akY3CrDGcK3z
-         x/22GYF0d3JczPn95Oi8V9OqfLyPpVmTLQ5mGjaBxEni5Rw3tOU0MbjDRQkvZIJFQrkq
-         J0/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704181563; x=1704786363;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iHhD+e+1GG2LR5Q+uwUPWMKjzXneKZEYPGVrdDS3Exk=;
-        b=GUfn7i3DuUvb9wsveYv70iZCdYxJCrxTsHwEeMK1A2sDyNforYquxj58EUBCPBpZW2
-         qfzW+m+YNr8p7HAVqlojW7t0lJCGGrS80LFSsXmvXUU6eOLKmyUi8aIMX0BLnNHyuW3q
-         sY/9l1Pb6N/+K1dHbBNTwjzzITJjfousFR36iy5dCEnZ7IK1tbUBibr7Ak9UEfiUAm6V
-         EmqPHk3aW7IjmG67geMR+YWJk05KPOXCsLQKybpgZH1LyXpDdal7OJy94EtTWOtlZ+Gf
-         cj65NUQuQelXsU33DLQ6euxTQcZR5SJF69T4ov6KmVRpmQzOoyXPHHcHYEUzy2W/RquN
-         wyxw==
-X-Gm-Message-State: AOJu0YyC7puN334fSTa2EmjUU0JXcnOrGrVkpcN87iGN0GET4dOPi8KA
-	ESyWWHFo1NiNimArYu9I58NnLmXm2fXCiQ==
-X-Google-Smtp-Source: AGHT+IHZM9WS+upGseBJPvyCFjM81kkTRQxUR0kQ5A933R//MIPNKfDQsQzf7os5FOBCXJA8CoAPxg==
-X-Received: by 2002:a05:600c:1987:b0:40d:5798:1797 with SMTP id t7-20020a05600c198700b0040d57981797mr6118743wmq.63.1704181562764;
-        Mon, 01 Jan 2024 23:46:02 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id o20-20020a05600c4fd400b004094d4292aesm43262533wmq.18.2024.01.01.23.46.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jan 2024 23:46:02 -0800 (PST)
-Date: Tue, 2 Jan 2024 10:45:59 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>
-Cc: Shuah Khan <shuah@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, kernelci@lists.linux.dev,
-	kernel@collabora.com, Tim Bird <Tim.Bird@sony.com>,
-	linux-pci@vger.kernel.org, David Gow <davidgow@google.com>,
-	linux-kselftest@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-	Doug Anderson <dianders@chromium.org>, linux-usb@vger.kernel.org,
-	Saravana Kannan <saravanak@google.com>,
-	Guenter Roeck <groeck@chromium.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 0/3] Add test to verify probe of devices from
- discoverable busses
-Message-ID: <3271d300-74c9-4ef3-b993-a8ddeda6076c@suswa.mountain>
-References: <20231227123643.52348-1-nfraprado@collabora.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C79020F5;
+	Tue,  2 Jan 2024 07:47:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704181658; x=1735717658;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EAl8v2EMp7z1bYG6wZjJbmelzzdeOCO0ej64a3nJYLU=;
+  b=Qx56niNx+KUVB0B3whPzlprWbVp5NiwyMCD1v6spH9Q7zzZITUjfMpMW
+   hUI3n9AXzrufVvJAaKQcEdkhHFeKTBvHVklS+o/XPvWWgcCs3gnmMgkb6
+   DKAex+3RUhgDGtJRDCIpqnsXmjnbjPHuzLXxng6e+ZPjHKuJOV5buPyVM
+   leYhzbyEOXKVeGZgzRdy8s8Tk/v1UoVKckLdqoK26fBGo+ESLAU8fGyuR
+   Vp82FA2Z5SBZpxHbTEaRkl3uyW0SxX9/BEUCANeUKcBNSXQgiDd+qgSK5
+   Jd4tvSewF888XO19RWlH9ma/KgA5W3glh/l3I8ep6AGW5Xlf9MXImwbBB
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="4183748"
+X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
+   d="scan'208";a="4183748"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2024 23:47:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="772765494"
+X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
+   d="scan'208";a="772765494"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orsmga007.jf.intel.com with SMTP; 01 Jan 2024 23:47:33 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 02 Jan 2024 09:47:32 +0200
+Date: Tue, 2 Jan 2024 09:47:32 +0200
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: "Christian A. Ehrhardt" <lk@c--e.de>
+Cc: RD Babiera <rdbabiera@google.com>, gregkh@linuxfoundation.org,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+	badhri@google.com, stable@vger.kernel.org,
+	Chris Bainbridge <chris.bainbridge@gmail.com>
+Subject: Re: [PATCH v1] usb: typec: class: fix typec_altmode_put_partner to
+ put plugs
+Message-ID: <ZZO+HZjR6O1eSyjv@kuha.fi.intel.com>
+References: <20231121203954.173364-2-rdbabiera@google.com>
+ <ZY7mgMkoaZDZGua4@cae.in-ulm.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,15 +67,96 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231227123643.52348-1-nfraprado@collabora.com>
+In-Reply-To: <ZY7mgMkoaZDZGua4@cae.in-ulm.de>
 
-Life hack: Don't put RFC in the subject.  Especially if it's a v2 or
-higher.  No one reads RFC patches.
+Hi Christian,
 
-This patchset seems like a low risk patch to apply.
+On Fri, Dec 29, 2023 at 04:32:16PM +0100, Christian A. Ehrhardt wrote:
+> 
+> Hi,
+> 
+> I found this mail in the archives after looking at a bug report
+> that was bisected to the change that resulted from the following
+> analysis:
+> 
+> https://lore.kernel.org/all/CAP-bSRb3SXpgo_BEdqZB-p1K5625fMegRZ17ZkPE1J8ZYgEHDg@mail.gmail.com/
+> 
+> AFAICS the analysis below is partially flawed
+> 
+> On Tue, Nov 21, 2023 at 08:39:55PM +0000, RD Babiera wrote:
+> > When releasing an Alt Mode, typec_altmode_release called by a plug device
+> > will not release the plug Alt Mode, meaning that a port will hold a
+> > reference to a plug Alt Mode even if the port partner is unregistered.
+> > As a result, typec_altmode_get_plug() can return an old plug altmode.
+> > 
+> > Currently, typec_altmode_put_partner does not raise issues
+> > when unregistering a partner altmode. Looking at the current
+> > implementation:
+> > 
+> > > static void typec_altmode_put_partner(struct altmode *altmode)
+> > > {
+> > >	struct altmode *partner = altmode->partner;
+> > 
+> > When called by the partner Alt Mode, then partner evaluates to the port's
+> > Alt Mode. When called by the plug Alt Mode, this also evaluates to the
+> > port's Alt Mode.
+> > 
+> > >	struct typec_altmode *adev;
+> > >
+> > >	if (!partner)
+> > >		return;
+> > >
+> > >	adev = &partner->adev;
+> > 
+> > This always evaluates to the port's typec_altmode
+> > 
+> > >	if (is_typec_plug(adev->dev.parent)) {
+> > >		struct typec_plug *plug = to_typec_plug(adev->dev.parent);
+> > >
+> > >		partner->plug[plug->index] = NULL;
+> > 
+> > If the routine is called to put the plug's Alt mode and altmode refers to
+> > the plug, then adev referring to the port can never be a typec_plug. If
+> > altmode refers to the port, adev will always refer to the port partner,
+> > which runs the block below.
+> > 
+> > >	} else {
+> > >		partner->partner = NULL;
+> > >	}
+> > >	put_device(&adev->dev);
+> > > }
+> 
+> So far everything is fine.
+> 
+> > When calling typec_altmode_set_partner, a registration always calls
+> > get_device() on the port partner or the plug being registered,
+> 
+> This is wrong. It is the altmode of the plug or partner
+> that holds a reference to the altmode of the port not the other
+> way around. The port's altmode has (back) pointers to the altmodes
+> of its partner and the cable plugs but these are weak references that
+> do not contribute to the refcount.
+> 
+> > therefore
+> > typec_altmode_put_partner should put_device() the same device. By changing
+> 
+> Thus this conclusion is wrong. The put_device() used to be correct.
+> 
+> > adev to altmode->adev, we make sure to put the correct device and properly
+> > unregister plugs. The reason port partners are always properly
+> > unregistered is because even when adev refers to the port, the port
+> > partner gets nullified in the else block. The port device currently gets
+> > put().
+> 
+> Please correct me if I missed something.
 
-regards,
-dan carpenter
+Thanks for checking this. Your analysis sounds correct to me.
 
+RD, I think we need to revert the commmit. If you still see the original
+problem, please prepare a new patch.
 
+thanks,
+
+-- 
+heikki
 
