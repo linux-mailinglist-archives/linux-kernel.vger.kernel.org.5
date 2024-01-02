@@ -1,95 +1,103 @@
-Return-Path: <linux-kernel+bounces-14655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95B3B82205E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:25:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAFB8822060
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:26:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3603CB21E9A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:25:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B95741C2265A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:26:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FCBB156C7;
-	Tue,  2 Jan 2024 17:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E810C154B8;
+	Tue,  2 Jan 2024 17:26:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MzoXn5+c"
+	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="cDvGAaI9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E20515499;
-	Tue,  2 Jan 2024 17:25:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AE0DC433CC;
-	Tue,  2 Jan 2024 17:25:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704216338;
-	bh=Yk2WvWStKrh59dnz6K0iqdbE5KuKw/M+bXYxLDQ6XNA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=MzoXn5+czOwiwpIP4OmHi77HXaHlRjgNOzeyvMucJ8/29jK5+1Ylh64F4BqlVHSzE
-	 0ToF+JcH3nlS0UH4M8Cja0L264d3WmHtxLSp716tXdFaTK9+mriccMiy7ZfWCnsNG3
-	 lC0tG1kymlIXGHAVG09REvbrhwbNs1axKiNMcJ2jg+XISphn80bpqz03Htqblm2brN
-	 G8Js3Jv3DgJm5QoFq6fcr3ZWUAnM5FboGXuk8WTnwq3yAet/KIHYHBzCVLvoVM5nZn
-	 ItC+BWokeKYSGaY91jUiD5MrceBbydVgEgeW8VBTMju318sQQxr45mv+XvgUQajXz8
-	 2DjysgDc61CAQ==
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cce6c719caso44780761fa.2;
-        Tue, 02 Jan 2024 09:25:37 -0800 (PST)
-X-Gm-Message-State: AOJu0YzsP8jxtgTc+iMytXFDWdlRvPpv4tKHaO6fS6ZueY2zcYAR/s5/
-	nwuSpOIqKMA1ndE7PY3jcATPnNwzpM079U01fRU=
-X-Google-Smtp-Source: AGHT+IHfuPNVzd2ZDem2x58G2jeY3n6dgOHiGPMnVZyOqMge6oBAw/znigjup7FlcLmpGOW4aKT0WazvluZ3+xcqBh8=
-X-Received: by 2002:a05:6512:3d01:b0:50e:76e0:a51f with SMTP id
- d1-20020a0565123d0100b0050e76e0a51fmr8185878lfv.100.1704216336217; Tue, 02
- Jan 2024 09:25:36 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F93D15499;
+	Tue,  2 Jan 2024 17:26:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
+Received: from [192.168.42.20] (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
+	(Authenticated sender: wse@tuxedocomputers.com)
+	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 403FB2FC006B;
+	Tue,  2 Jan 2024 18:26:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+	s=default; t=1704216380;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a74/zz8HrsjKCFeCoszDWgapalrYzqiYG2QXRna7kd0=;
+	b=cDvGAaI9rnohgD/XRDF3DHd8vv74QTjXjkaK1ecurETnAs0IpIi1OIv4PpTgxC3udBq+oh
+	MCRbDDJt0w6LPXmRldV2xNnXI2bdzHKeyIV2t3prbacDzyEvdnmOpZZQvxkvhYGzabiNuR
+	p4FrZtdWEojK+bSHfCTYGey7CH6HN88=
+Authentication-Results: mail.tuxedocomputers.com;
+	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
+Message-ID: <ab2f9e55-8bdb-444a-b559-dc09c813af9c@tuxedocomputers.com>
+Date: Tue, 2 Jan 2024 18:26:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <7011cdcc-4287-4e63-8bfa-f08710f670b1@web.de> <CAADnVQLq7RKV+RBJm02HwfXujaUwFXsD77BqJK6ZpLQ-BObCdA@mail.gmail.com>
- <dc0a1c9d-ceca-473d-9ad5-89b59e6af2e7@web.de>
-In-Reply-To: <dc0a1c9d-ceca-473d-9ad5-89b59e6af2e7@web.de>
-From: Song Liu <song@kernel.org>
-Date: Tue, 2 Jan 2024 09:25:24 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4J1+ZijLQ5d9+ZnNUHLCAG+0nwwcLkmGb9df-ioac7Nw@mail.gmail.com>
-Message-ID: <CAPhsuW4J1+ZijLQ5d9+ZnNUHLCAG+0nwwcLkmGb9df-ioac7Nw@mail.gmail.com>
-Subject: Re: [PATCH 0/5] bpf: Adjustments for four function implementations
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev <sdf@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] i8042: Use new forcenorestore quirk to replace old
+ buggy quirk combination
+Content-Language: en-US
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Hans de Goede <hdegoede@redhat.com>
+References: <20240102172356.78978-1-wse@tuxedocomputers.com>
+ <20240102172356.78978-2-wse@tuxedocomputers.com>
+From: Werner Sembach <wse@tuxedocomputers.com>
+In-Reply-To: <20240102172356.78978-2-wse@tuxedocomputers.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 1, 2024 at 1:10=E2=80=AFAM Markus Elfring <Markus.Elfring@web.d=
-e> wrote:
->
-> >> A few update suggestions were taken into account
-> >> from static source code analysis.
-> >
-> > Auto Nack.
-> > Pls don't send such patches. You were told multiple
-> > times that such kfree usage is fine.
->
-> Some implementation details are improvable.
-> Can you find an update step (like the following) helpful?
->
-> [PATCH 2/5] bpf: Move an assignment for the variable =E2=80=9Cst_map=E2=
-=80=9D in bpf_struct_ops_link_create()
-> https://lore.kernel.org/bpf/ed2f5323-390f-4c9d-919d-df43ba1cad2b@web.de/
+Forgot to add Hans again for git send-email to adding him again after initial send.
 
-This change is not helpful at all. The use of "st_map" in current code as-i=
-s
-doesn't cause any confusion, i.e., it is always struct bpf_struct_ops_map *=
-.
-OTOH, this patch will make it harder for folks who use git-blame. Therefore=
-,
-it adds negative value to the code base.
-
-Thanks,
-Song
+Am 02.01.24 um 18:23 schrieb Werner Sembach:
+> The old quirk combination sometimes cause a laggy keyboard after boot. With
+> the new quirk the initial issue of an unresponsive keyboard after s3 resume
+> is also fixed, but it doesn't have the negative side effect of the
+> sometimes laggy keyboard.
+>
+> v2: Fix typo in commit message
+>
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> Cc: stable@vger.kernel.org
+> ---
+>   drivers/input/serio/i8042-acpipnpio.h | 10 +---------
+>   1 file changed, 1 insertion(+), 9 deletions(-)
+>
+> diff --git a/drivers/input/serio/i8042-acpipnpio.h b/drivers/input/serio/i8042-acpipnpio.h
+> index 10ec4534e5e14..e631a26394e92 100644
+> --- a/drivers/input/serio/i8042-acpipnpio.h
+> +++ b/drivers/input/serio/i8042-acpipnpio.h
+> @@ -1142,18 +1142,10 @@ static const struct dmi_system_id i8042_dmi_quirk_table[] __initconst = {
+>   					SERIO_QUIRK_NOLOOP | SERIO_QUIRK_NOPNP)
+>   	},
+>   	{
+> -		/*
+> -		 * Setting SERIO_QUIRK_NOMUX or SERIO_QUIRK_RESET_ALWAYS makes
+> -		 * the keyboard very laggy for ~5 seconds after boot and
+> -		 * sometimes also after resume.
+> -		 * However both are required for the keyboard to not fail
+> -		 * completely sometimes after boot or resume.
+> -		 */
+>   		.matches = {
+>   			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
+>   		},
+> -		.driver_data = (void *)(SERIO_QUIRK_NOMUX | SERIO_QUIRK_RESET_ALWAYS |
+> -					SERIO_QUIRK_NOLOOP | SERIO_QUIRK_NOPNP)
+> +		.driver_data = (void *)(SERIO_QUIRK_FORCENORESTORE)
+>   	},
+>   	{
+>   		.matches = {
 
