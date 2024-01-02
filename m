@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-14382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5472A821C58
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AE41821C5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:13:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 617731C22050
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:13:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A6871C2203D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:13:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05889FC14;
-	Tue,  2 Jan 2024 13:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67FF107A9;
+	Tue,  2 Jan 2024 13:13:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wXNKNFN5"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="B9yLyBVp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411B7FBEF
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 13:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0065E101C5
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 13:13:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704201199;
+	t=1704201204;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5jUJr4R6zMb6dInOd1l8MHQjoDUi83oQkc19tydUOUM=;
-	b=wXNKNFN5V2QUIIEBJ0cDhA/1XejAaQRMJMF38Uej4HkKHGocMOKkJyR8FJHUYIBh8b/xd0
-	hARFT4JBoor5YBUOWh0h26mYqSlEI0jo+wKgsAE/hBQ5trdzV5u88ffrxWuDT82wCOF+uR
-	okbyj35zpon6VTuBdHmYdXzMfgwdPIQ=
+	bh=ETU4P5ZGwiSCKQ/C0kQ3RzHFu60VRj1ek3R3KqiB2x4=;
+	b=B9yLyBVpFwjem6cRBg02/FU+9CM9GKbsl9V80HrvKR7Xo4obGT9RZP65pcS01nZHOo+QLL
+	BoVk6IqxBdZxgvPUdD0cIMvaqetNp8gkUYHpG9SIv8mtTQz6dO7kMQJ+yIvKDYa1e8VSDa
+	7Rb5Vl4PpfwdO3JiDeI+0+ONiRDKJa8=
 From: Gang Li <gang.li@linux.dev>
 To: David Hildenbrand <david@redhat.com>,
 	David Rientjes <rientjes@google.com>,
@@ -44,9 +44,9 @@ Cc: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	ligang.bdlg@bytedance.com,
 	Gang Li <gang.li@linux.dev>
-Subject: [PATCH v3 1/7] hugetlb: code clean for hugetlb_hstate_alloc_pages
-Date: Tue,  2 Jan 2024 21:12:43 +0800
-Message-Id: <20240102131249.76622-2-gang.li@linux.dev>
+Subject: [PATCH v3 2/7] hugetlb: split hugetlb_hstate_alloc_pages
+Date: Tue,  2 Jan 2024 21:12:44 +0800
+Message-Id: <20240102131249.76622-3-gang.li@linux.dev>
 In-Reply-To: <20240102131249.76622-1-gang.li@linux.dev>
 References: <20240102131249.76622-1-gang.li@linux.dev>
 Precedence: bulk
@@ -58,100 +58,132 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-The readability of `hugetlb_hstate_alloc_pages` is poor. By cleaning the
-code, its readability can be improved, facilitating future modifications.
+1G and 2M huge pages have different allocation and initialization logic,
+which leads to subtle differences in parallelization. Therefore, it is
+appropriate to split hugetlb_hstate_alloc_pages into gigantic and
+non-gigantic.
 
-This patch extracts two functions to reduce the complexity of
-`hugetlb_hstate_alloc_pages` and has no functional changes.
-
-- hugetlb_hstate_alloc_pages_node_specific() to handle iterates through
-  each online node and performs allocation if necessary.
-- hugetlb_hstate_alloc_pages_report() report error during allocation.
-  And the value of h->max_huge_pages is updated accordingly.
+This patch has no functional changes.
 
 Signed-off-by: Gang Li <gang.li@linux.dev>
 ---
- mm/hugetlb.c | 46 +++++++++++++++++++++++++++++-----------------
- 1 file changed, 29 insertions(+), 17 deletions(-)
+ mm/hugetlb.c | 86 +++++++++++++++++++++++++++-------------------------
+ 1 file changed, 45 insertions(+), 41 deletions(-)
 
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index ed1581b670d42..2606135ec55e6 100644
+index 2606135ec55e6..92448e747991d 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -3482,6 +3482,33 @@ static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
- 	h->max_huge_pages_node[nid] = i;
+@@ -3509,6 +3509,47 @@ static void __init hugetlb_hstate_alloc_pages_report(unsigned long allocated, st
+ 	}
  }
  
-+static bool __init hugetlb_hstate_alloc_pages_node_specific(struct hstate *h)
++static unsigned long __init hugetlb_hstate_alloc_pages_gigantic(struct hstate *h)
 +{
-+	int i;
-+	bool node_specific_alloc = false;
++	unsigned long i;
 +
-+	for_each_online_node(i) {
-+		if (h->max_huge_pages_node[i] > 0) {
-+			hugetlb_hstate_alloc_pages_onenode(h, i);
-+			node_specific_alloc = true;
-+		}
++	for (i = 0; i < h->max_huge_pages; ++i) {
++		/*
++		 * gigantic pages not added to list as they are not
++		 * added to pools now.
++		 */
++		if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
++			break;
++		cond_resched();
 +	}
 +
-+	return node_specific_alloc;
++	return i;
 +}
 +
-+static void __init hugetlb_hstate_alloc_pages_report(unsigned long allocated, struct hstate *h)
++static unsigned long __init hugetlb_hstate_alloc_pages_non_gigantic(struct hstate *h)
 +{
-+	if (allocated < h->max_huge_pages) {
-+		char buf[32];
++	unsigned long i;
++	struct folio *folio;
++	LIST_HEAD(folio_list);
++	nodemask_t node_alloc_noretry;
 +
-+		string_get_size(huge_page_size(h), 1, STRING_UNITS_2, buf, 32);
-+		pr_warn("HugeTLB: allocating %lu of page size %s failed.  Only allocated %lu hugepages.\n",
-+			h->max_huge_pages, buf, allocated);
-+		h->max_huge_pages = allocated;
++	/* Bit mask controlling how hard we retry per-node allocations.*/
++	nodes_clear(node_alloc_noretry);
++
++	for (i = 0; i < h->max_huge_pages; ++i) {
++		folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
++						&node_alloc_noretry);
++		if (!folio)
++			break;
++		list_add(&folio->lru, &folio_list);
++		cond_resched();
 +	}
++
++	prep_and_add_allocated_folios(h, &folio_list);
++
++	return i;
 +}
 +
  /*
   * NOTE: this routine is called in different contexts for gigantic and
   * non-gigantic pages.
-@@ -3499,7 +3526,6 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- 	struct folio *folio;
- 	LIST_HEAD(folio_list);
- 	nodemask_t *node_alloc_noretry;
--	bool node_specific_alloc = false;
+@@ -3522,10 +3563,7 @@ static void __init hugetlb_hstate_alloc_pages_report(unsigned long allocated, st
+  */
+ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ {
+-	unsigned long i;
+-	struct folio *folio;
+-	LIST_HEAD(folio_list);
+-	nodemask_t *node_alloc_noretry;
++	unsigned long allocated;
  
  	/* skip gigantic hugepages allocation if hugetlb_cma enabled */
  	if (hstate_is_gigantic(h) && hugetlb_cma_size) {
-@@ -3508,14 +3534,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- 	}
- 
- 	/* do node specific alloc */
--	for_each_online_node(i) {
--		if (h->max_huge_pages_node[i] > 0) {
--			hugetlb_hstate_alloc_pages_onenode(h, i);
--			node_specific_alloc = true;
--		}
--	}
--
--	if (node_specific_alloc)
-+	if (hugetlb_hstate_alloc_pages_node_specific(h))
- 		return;
+@@ -3539,46 +3577,12 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
  
  	/* below will do all node balanced alloc */
-@@ -3558,14 +3577,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- 	/* list will be empty if hstate_is_gigantic */
- 	prep_and_add_allocated_folios(h, &folio_list);
- 
--	if (i < h->max_huge_pages) {
--		char buf[32];
--
--		string_get_size(huge_page_size(h), 1, STRING_UNITS_2, buf, 32);
--		pr_warn("HugeTLB: allocating %lu of page size %s failed.  Only allocated %lu hugepages.\n",
--			h->max_huge_pages, buf, i);
--		h->max_huge_pages = i;
+ 	if (!hstate_is_gigantic(h)) {
+-		/*
+-		 * Bit mask controlling how hard we retry per-node allocations.
+-		 * Ignore errors as lower level routines can deal with
+-		 * node_alloc_noretry == NULL.  If this kmalloc fails at boot
+-		 * time, we are likely in bigger trouble.
+-		 */
+-		node_alloc_noretry = kmalloc(sizeof(*node_alloc_noretry),
+-						GFP_KERNEL);
++		allocated = hugetlb_hstate_alloc_pages_non_gigantic(h);
+ 	} else {
+-		/* allocations done at boot time */
+-		node_alloc_noretry = NULL;
 -	}
-+	hugetlb_hstate_alloc_pages_report(i, h);
- 	kfree(node_alloc_noretry);
+-
+-	/* bit mask controlling how hard we retry per-node allocations */
+-	if (node_alloc_noretry)
+-		nodes_clear(*node_alloc_noretry);
+-
+-	for (i = 0; i < h->max_huge_pages; ++i) {
+-		if (hstate_is_gigantic(h)) {
+-			/*
+-			 * gigantic pages not added to list as they are not
+-			 * added to pools now.
+-			 */
+-			if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
+-				break;
+-		} else {
+-			folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
+-							node_alloc_noretry);
+-			if (!folio)
+-				break;
+-			list_add(&folio->lru, &folio_list);
+-		}
+-		cond_resched();
++		allocated = hugetlb_hstate_alloc_pages_gigantic(h);
+ 	}
+ 
+-	/* list will be empty if hstate_is_gigantic */
+-	prep_and_add_allocated_folios(h, &folio_list);
+-
+-	hugetlb_hstate_alloc_pages_report(i, h);
+-	kfree(node_alloc_noretry);
++	hugetlb_hstate_alloc_pages_report(allocated, h);
  }
  
+ static void __init hugetlb_init_hstates(void)
 -- 
 2.20.1
 
