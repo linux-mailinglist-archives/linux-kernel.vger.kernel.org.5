@@ -1,224 +1,115 @@
-Return-Path: <linux-kernel+bounces-14963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92E5D82255F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:05:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 276D1822562
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:09:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1EC1B22481
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:05:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 458331C22B3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:09:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D488E1772B;
-	Tue,  2 Jan 2024 23:05:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208EF17731;
+	Tue,  2 Jan 2024 23:09:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XtCoocYz"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="28GPKSOM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 255FA1772C;
-	Tue,  2 Jan 2024 23:05:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A43A7C433C7;
-	Tue,  2 Jan 2024 23:05:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704236742;
-	bh=T6cXZag/Xy65XNlKPdc4AWtqQPyk9JHRqhKUCxsZsBY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=XtCoocYzHvo//7+EA3mfYWOHX9EIE0xClVk2Hh8KjUCHbOLySkNh6Uli8DsDZbysb
-	 EYpN0fOqylv/K4teNG//cP1FVP4ZEozs8Zj7yP16QW+2uI7CvZix9wK0q3R/63nWSd
-	 NEoEss9ZMalFTjKSc+FsPEYoj/+STjn7LQqgw3+tCVlJuMGLGKnqw7cMgUI6yAepE1
-	 OcWo/a/qwYxQdmKR4icMTeHUCFY4Wgs9MalwiErq8eDF4OBEWxEz9KO/1LQjdXDFBE
-	 KcWg/z5bcH7ni5qjF+OT6/QNKrEjIm1W8PxpLojC4XsUa47Zhf+xzFbmenLnGUyfPc
-	 bgZIM7QBjH+xA==
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e9e5c97e1so1450898e87.0;
-        Tue, 02 Jan 2024 15:05:42 -0800 (PST)
-X-Gm-Message-State: AOJu0YyVQaBkLUBenTsZJq95GpUeYbAz65nNzwVui+0R3hZxt/uzoRX1
-	XDunK48UHcQDhKJLJm/yibKW3uilSGJxEIznBKc=
-X-Google-Smtp-Source: AGHT+IGBq5Wx9cuhkjxZD5vLlZHMjMLTYjOlb1oTEXQMYX/3bSwNfoIGP73Iy73kkhNHntatC/YNWTBCF4ehZeIdWZc=
-X-Received: by 2002:a05:6512:3ba5:b0:50e:7d6b:b5b2 with SMTP id
- g37-20020a0565123ba500b0050e7d6bb5b2mr6487931lfv.6.1704236740865; Tue, 02 Jan
- 2024 15:05:40 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCCE1772C
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 23:09:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e8e0c7f9a8so120656427b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 15:09:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704236964; x=1704841764; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VmfarTfri1+432ZBbDvSTJInqX46gfjfsyuzVGEGM+I=;
+        b=28GPKSOMOdjuD9h/tyueP0ff69ywGGnJhxZ1yQ1UQvgWYurHQsK9aegBQawrikt6xP
+         sd73obUhHCEXKCfSKHG3XAat2NQj5tuOPQ3422X2G8tvHDh89r6L80x6E++gu0M+llcc
+         gmVECCABa1QBbyMQ71coX9I7xrniQrJtbogVp4l8MV97qsA5qp6WEhIVi1EzmfpajSV6
+         FWMg28bo+mXyZjfUQ1LAxVmVb+dmGBQCIyTt1AQbLEXTVwP4DVvsG3WfZCDC9zRRDOfo
+         Iegk4u2K5evC8n7e57cR/Y6/ibbtBTqDXnhZorgmhaBYWbqN8LNS1tFHo0ywfc49K0uK
+         lU4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704236964; x=1704841764;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=VmfarTfri1+432ZBbDvSTJInqX46gfjfsyuzVGEGM+I=;
+        b=sfp3S4Ub0tHBO4NxGRKaxdyrciOJaKUmjcqXs1d8WfE7DzOulO1/rUMb5loCUx25sC
+         EmZcDmGTN2KlTYaj1YW83MS9SH6G9X8Oybs/G+lzjyBvfC7cZ7Ga4ngRW7ZeWshkYve8
+         X8FhO2noevo6qA7Lft+QrzQCeVu+4REJkiEeG6CBfYVPGLKKMtQcttJu04cvDCaf81iU
+         ECKSSbjmzgzQ19UCtBArIvv1ST1GAH9cZX2BctqUqdZ15HA1nKeIkOdoVCjCqYWkCj80
+         i7ZD+ICZozucxFg4FyW6CwEOr+HutMqvcXy+xfnaj0Pk25GSYHDiU+cyZcKk0U0NNduV
+         Px6Q==
+X-Gm-Message-State: AOJu0Yyh59ZYx4O/sUqJVXuAzxV3tMKeMKy9+rpFUDrKAOTZsOBvQmzg
+	DCGVogZRe1IqQ5KyBsrSQXeSUozQfFEueuo5jQ==
+X-Google-Smtp-Source: AGHT+IHGHfDd0wPfxNtcpYgXmKZ2cyY1GdW1PZSPN3Jvr3UiQugVcTtpaaSq9eNVSBtnDRNY6MvL2mAaecQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:3a0:b0:5d6:f1d2:2e5e with SMTP id
+ bh32-20020a05690c03a000b005d6f1d22e5emr117443ywb.0.1704236964270; Tue, 02 Jan
+ 2024 15:09:24 -0800 (PST)
+Date: Tue, 2 Jan 2024 15:09:22 -0800
+In-Reply-To: <CABOYnLwfWmOUfP-uW9ALCxEXbzaSGVZn6GeEyfvPr-R-XdmrSQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231211045543.31741-1-khuey@kylehuey.com> <20231211045543.31741-2-khuey@kylehuey.com>
-In-Reply-To: <20231211045543.31741-2-khuey@kylehuey.com>
-From: Song Liu <song@kernel.org>
-Date: Tue, 2 Jan 2024 15:05:29 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4s5ZaZB0kFz8CWK-NvS4KrE7w90Fzz-wF5WgUMC7dPog@mail.gmail.com>
-Message-ID: <CAPhsuW4s5ZaZB0kFz8CWK-NvS4KrE7w90Fzz-wF5WgUMC7dPog@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] perf/bpf: Call bpf handler directly, not through
- overflow machinery
-To: Kyle Huey <me@kylehuey.com>
-Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, "Robert O'Callahan" <robert@ocallahan.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <CABOYnLwfWmOUfP-uW9ALCxEXbzaSGVZn6GeEyfvPr-R-XdmrSQ@mail.gmail.com>
+Message-ID: <ZZSXotY3NRbki_hW@google.com>
+Subject: Re: KMSAN: uninit-value in em_ret_far
+From: Sean Christopherson <seanjc@google.com>
+To: xingwei lee <xrivendell7@gmail.com>
+Cc: linux-kernel@vger.kernel.org, dave.hansen@linux.intel.com, bp@alien8.de, 
+	hpa@zytor.com, kvm@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com, 
+	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Dec 10, 2023 at 8:55=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote:
->
-> To ultimately allow bpf programs attached to perf events to completely
-> suppress all of the effects of a perf event overflow (rather than just th=
-e
-> sample output, as they do today), call bpf_overflow_handler() from
-> __perf_event_overflow() directly rather than modifying struct perf_event'=
-s
-> overflow_handler. Return the bpf program's return value from
-> bpf_overflow_handler() so that __perf_event_overflow() knows how to
-> proceed. Remove the now unnecessary orig_overflow_handler from struct
-> perf_event.
->
-> This patch is solely a refactoring and results in no behavior change.
->
-> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> Suggested-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  include/linux/perf_event.h |  6 +-----
->  kernel/events/core.c       | 28 +++++++++++++++-------------
->  2 files changed, 16 insertions(+), 18 deletions(-)
->
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index 5547ba68e6e4..312b9f31442c 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -810,7 +810,6 @@ struct perf_event {
->         perf_overflow_handler_t         overflow_handler;
->         void                            *overflow_handler_context;
->  #ifdef CONFIG_BPF_SYSCALL
-> -       perf_overflow_handler_t         orig_overflow_handler;
->         struct bpf_prog                 *prog;
->         u64                             bpf_cookie;
->  #endif
-> @@ -1337,10 +1336,7 @@ __is_default_overflow_handler(perf_overflow_handle=
-r_t overflow_handler)
->  #ifdef CONFIG_BPF_SYSCALL
->  static inline bool uses_default_overflow_handler(struct perf_event *even=
-t)
->  {
-> -       if (likely(is_default_overflow_handler(event)))
-> -               return true;
-> -
-> -       return __is_default_overflow_handler(event->orig_overflow_handler=
-);
-> +       return is_default_overflow_handler(event);
->  }
->  #else
->  #define uses_default_overflow_handler(event) \
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index b704d83a28b2..54f6372d2634 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -9515,6 +9515,12 @@ static inline bool sample_is_allowed(struct perf_e=
-vent *event, struct pt_regs *r
->         return true;
->  }
->
-> +#ifdef CONFIG_BPF_SYSCALL
-> +static int bpf_overflow_handler(struct perf_event *event,
-> +                               struct perf_sample_data *data,
-> +                               struct pt_regs *regs);
-> +#endif
-> +
->  /*
->   * Generic event overflow handling, sampling.
->   */
-> @@ -9584,7 +9590,10 @@ static int __perf_event_overflow(struct perf_event=
- *event,
->                 irq_work_queue(&event->pending_irq);
->         }
->
-> -       READ_ONCE(event->overflow_handler)(event, data, regs);
-> +#ifdef CONFIG_BPF_SYSCALL
-> +       if (!(event->prog && !bpf_overflow_handler(event, data, regs)))
+On Mon, Dec 25, 2023, xingwei lee wrote:
+> Hello I found a bug in latest upstream 6.7-rc7 titled "KMSAN:
+> uninit-value in em_ret_far=E2=80=9D and maybe is realted with kvm.
+>=20
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: xingwei lee <xrivendell7@gmail.com>
+>=20
+> kernel: mainline 861deac3b092f37b2c5e6871732f3e11486f7082
+> kernel config: https://syzkaller.appspot.com/text?tag=3DKernelConfig&x=3D=
+4a65fa9f077ead01
+> with KMSAN enabled
+> compiler: Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2=
+.40
+> run the repro.c for about 3minus and it crashed!
+>=20
+> TITLE: KMSAN: uninit-value in em_ret_far
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> BUG: KMSAN: uninit-value in emulator_recalc_and_set_mode
+> arch/x86/kvm/emulate.c:797 [inline]
+> BUG: KMSAN: uninit-value in assign_eip_far arch/x86/kvm/emulate.c:833 [in=
+line]
+> BUG: KMSAN: uninit-value in em_ret_far+0x348/0x350 arch/x86/kvm/emulate.c=
+:2258
+> emulator_recalc_and_set_mode arch/x86/kvm/emulate.c:797 [inline]
+> assign_eip_far arch/x86/kvm/emulate.c:833 [inline]
 
-This condition is hard to follow. Please consider simplifying it.
+This is a known issue[1].  It's effectively a false positive, even though t=
+here
+is technically uninitialized data in scope.  The proposed fix[2] from Julia=
+n
+should resolve this (the patch is on my radar for 6.9).
 
-Thanks,
-Song
-
-> +#endif
-> +               READ_ONCE(event->overflow_handler)(event, data, regs);
->
->         if (*perf_event_fasync(event) && event->pending_kill) {
->                 event->pending_wakeup =3D 1;
-> @@ -10394,9 +10403,9 @@ static void perf_event_free_filter(struct perf_ev=
-ent *event)
->  }
->
->  #ifdef CONFIG_BPF_SYSCALL
-> -static void bpf_overflow_handler(struct perf_event *event,
-> -                                struct perf_sample_data *data,
-> -                                struct pt_regs *regs)
-> +static int bpf_overflow_handler(struct perf_event *event,
-> +                               struct perf_sample_data *data,
-> +                               struct pt_regs *regs)
->  {
->         struct bpf_perf_event_data_kern ctx =3D {
->                 .data =3D data,
-> @@ -10417,10 +10426,8 @@ static void bpf_overflow_handler(struct perf_eve=
-nt *event,
->         rcu_read_unlock();
->  out:
->         __this_cpu_dec(bpf_prog_active);
-> -       if (!ret)
-> -               return;
->
-> -       event->orig_overflow_handler(event, data, regs);
-> +       return ret;
->  }
->
->  static int perf_event_set_bpf_handler(struct perf_event *event,
-> @@ -10456,8 +10463,6 @@ static int perf_event_set_bpf_handler(struct perf=
-_event *event,
->
->         event->prog =3D prog;
->         event->bpf_cookie =3D bpf_cookie;
-> -       event->orig_overflow_handler =3D READ_ONCE(event->overflow_handle=
-r);
-> -       WRITE_ONCE(event->overflow_handler, bpf_overflow_handler);
->         return 0;
->  }
->
-> @@ -10468,7 +10473,6 @@ static void perf_event_free_bpf_handler(struct pe=
-rf_event *event)
->         if (!prog)
->                 return;
->
-> -       WRITE_ONCE(event->overflow_handler, event->orig_overflow_handler)=
-;
->         event->prog =3D NULL;
->         bpf_prog_put(prog);
->  }
-> @@ -11928,13 +11932,11 @@ perf_event_alloc(struct perf_event_attr *attr, =
-int cpu,
->                 overflow_handler =3D parent_event->overflow_handler;
->                 context =3D parent_event->overflow_handler_context;
->  #if defined(CONFIG_BPF_SYSCALL) && defined(CONFIG_EVENT_TRACING)
-> -               if (overflow_handler =3D=3D bpf_overflow_handler) {
-> +               if (parent_event->prog) {
->                         struct bpf_prog *prog =3D parent_event->prog;
->
->                         bpf_prog_inc(prog);
->                         event->prog =3D prog;
-> -                       event->orig_overflow_handler =3D
-> -                               parent_event->orig_overflow_handler;
->                 }
->  #endif
->         }
-> --
-> 2.34.1
->
->
+[1] https://lore.kernel.org/all/9362077ac7f24ec684d338543e269e83aee7c897.ca=
+mel@cyberus-technology.de
+[2] https://lore.kernel.org/all/20231009092054.556935-1-julian.stecklina@cy=
+berus-technology.de
 
