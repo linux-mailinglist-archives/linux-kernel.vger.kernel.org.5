@@ -1,239 +1,131 @@
-Return-Path: <linux-kernel+bounces-14933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE2328224A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:22:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71C048224AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:22:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D432B21586
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:22:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2A57B2150B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:22:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57F47171D6;
-	Tue,  2 Jan 2024 22:21:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F0C2171DF;
+	Tue,  2 Jan 2024 22:22:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OFw+aqMg"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="S+um1whB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90469171BB
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 22:21:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704234114;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RshiW/YYDsnsJFyUGAY3lZJunQEflUHgqX3fmfeIPig=;
-	b=OFw+aqMgPiJ+PdzsXosLmlauazCgwsu1urt2PJd9oS9vc9BknKT01zn6N7L8DGIa8awogi
-	HhDeYaqbvYhx5TyYHSCMqgW/zCZGlpA61gaNck/Mjybap844Wk53Zmlb648E5kohScy1/z
-	UWf2oR5J9yN1c5q3fGpS4qFNyxh/O+o=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-240-HwQH1ykqPnmhPBBZ9fdsgA-1; Tue, 02 Jan 2024 17:21:53 -0500
-X-MC-Unique: HwQH1ykqPnmhPBBZ9fdsgA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-336a41f0cc3so5942382f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 14:21:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEC8317985
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 22:22:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1d410cccfc2so36006305ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 14:22:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704234141; x=1704838941; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=VoYBcyeMcOUsOKM5LbFmoG1rNiNhP0xj5K+Ym6ZJNQw=;
+        b=S+um1whBxsvYBaRtrLrkkjesCTD6femhXZ7TnwNeyZXKB1jfxu0Dqa2J+TcMNsBNix
+         SWkzea6fbYrmKR50AkZ7OlLdxIi4RdAGPT51h6GNjjjrIOLZb6vANqeluB9IGhPvVcBU
+         8Vwv3/5KI8m4Fai2r0SXe3L6xR3Gv4isG6R9WvJKUa6fgybiDyY+iePo6CIvcRy8IvbL
+         Pap+VBdukbO69AGl6ERtgjn+US/80wc4M9AOUoOdyEB2wwIngPayf3+uCIf5USGtorNC
+         AB39NRKV/gYrpGjprcxBmpSuaxEuQ73cX8J01eSNprwDHqdBZWX1JL+TGVFhG1AVmBSj
+         0iqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704234112; x=1704838912;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=1e100.net; s=20230601; t=1704234141; x=1704838941;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=RshiW/YYDsnsJFyUGAY3lZJunQEflUHgqX3fmfeIPig=;
-        b=Y8O7LUQMTS94GXThmyjQLwaCthT5fWcAhuTHaTPEhtHctDMpy10PwykgmAetKc2kMm
-         V8GytQE9hqox+8SDaUUcGdRsbggbz0Etek9Wy1uoiOnJwfz8WnTS81tiq2MUdsXdeqMJ
-         duLzALf1h3/1WSFD1VZkPusXt0uQZueTG6w+SjDq3QmxBDfsZs8sqj1jT++WmmOZhwkZ
-         75Cr2PgMsnW3YS6pEn4hsZCX+VXotwP/8x69KUiBVqAsyFEiSB7dz2XEZPSbKSdJ5GCq
-         NHq9ZUwoSjg8l4JbXJ7wYAQZcCsSdbuGBlC7HaW2DnBzoZQNuVs6YgirU4Onq572ATwL
-         uEpQ==
-X-Gm-Message-State: AOJu0YyUj2c7gE6DzzBV9yL3+FcwIVzifBBJlz0Y8mt6KpBDIinDfkRg
-	Ly77dIvn6DD/k6uiKvqMR9J3S3f2erMSDDHXfYRooOUAHVjb6g7PZQXdyGRTqsNPJAlhXMTYPt1
-	SRuqOLvgmFsZjrjboitGrlp0T2Tp9SnFF
-X-Received: by 2002:a05:600c:348b:b0:40d:900a:73fb with SMTP id a11-20020a05600c348b00b0040d900a73fbmr46500wmq.65.1704234112070;
-        Tue, 02 Jan 2024 14:21:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHttI9eUM+Qn9TcD1hg1dJMoZ4pPtRP0PZJy071YvTYKD1xOPdFR2WiqYRxkhiRo/VCjHX3oQ==
-X-Received: by 2002:a05:600c:348b:b0:40d:900a:73fb with SMTP id a11-20020a05600c348b00b0040d900a73fbmr46498wmq.65.1704234111753;
-        Tue, 02 Jan 2024 14:21:51 -0800 (PST)
-Received: from starship ([147.235.223.38])
-        by smtp.gmail.com with ESMTPSA id l26-20020a1c791a000000b0040d839de5c2sm303457wme.33.2024.01.02.14.21.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 14:21:51 -0800 (PST)
-Message-ID: <481be19e33915804c855a55181c310dd8071b546.camel@redhat.com>
-Subject: Re: RFC: NTP adjustments interfere with KVM emulation of TSC
- deadline timers
-From: Maxim Levitsky <mlevitsk@redhat.com>
-To: Jim Mattson <jmattson@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, Paolo Bonzini
- <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, Marc
- Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Vitaly
- Kuznetsov <vkuznets@redhat.com>
-Date: Wed, 03 Jan 2024 00:21:49 +0200
-In-Reply-To: <CALMp9eSy2r+iUzqHV+V2mbPaPWfn=Y=a1aM+9C65PGtE0=nGqA@mail.gmail.com>
-References: <20c9c21619aa44363c2c7503db1581cb816a1c0f.camel@redhat.com>
-	 <CALMp9eSy2r+iUzqHV+V2mbPaPWfn=Y=a1aM+9C65PGtE0=nGqA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        bh=VoYBcyeMcOUsOKM5LbFmoG1rNiNhP0xj5K+Ym6ZJNQw=;
+        b=erGY1FbT8XM2vYUSzrzwRpwGArOPUXEYXKJamofTqJqnhr/mt2pAlkBNfmRYNctgbJ
+         Qz1SDP3w/LtTc/szL3DvHhj7VtV/kGjC7VKDGFod+8tU2aF1xt17oNqvJom0MxrtKaHB
+         2l8t2pw+RkK/Zbmu19gGV4H7Cjw7x+QJP1G/5P2P4GYpC2TsIT03pVtF2wK6gG+xW8PT
+         RZe0JkB39Z3YvjezQOP8cXayRRhglVwmTA/mo5H0irjcwLJ47LZRXZTUBWYbWkzVLlPq
+         UANBQUp3ungfYoeeHYNOPAh7lQf1qWoFsiAh/jaiD1TZ1mdb95D6ceokb18Kh1HJvGRO
+         9Nsw==
+X-Gm-Message-State: AOJu0Yywd+A6O7vimJJDIYkXgaP041BHHTL/fSxxSpMhrFaM8d3rF33O
+	XI4vP2K0xZZq61lHa9gELIYHsE9ExQ2kE5vbZ9M=
+X-Google-Smtp-Source: AGHT+IGibMrtSNs0B7J5A+QWM85xhUBg0GKDxizl0OkdWX1k1ttpJocQ5P4XooSKRH4vL9aHfM71x73t1FOt
+X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
+ (user=tanzirh job=sendgmr) by 2002:a17:903:120f:b0:1d3:f056:bd5e with SMTP id
+ l15-20020a170903120f00b001d3f056bd5emr622882plh.8.1704234141148; Tue, 02 Jan
+ 2024 14:22:21 -0800 (PST)
+Date: Tue, 02 Jan 2024 22:22:18 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAJqMlGUC/13MQQrCMBCF4auUWRvJTKCIK+8hXcRkkg5oI4kEp
+ eTuTbt0+T8e3wqFs3CB67BC5ipF0tKDTgO42S6RlfjeQJoMEo2qcn4UZfRF69GgNwGhf9+Zg3w P5z71nqV8Uv4dbMV9/RcqKlTGkmMXEG3wt5hSfPLZpRdMrbUNIDPSdJsAAAA=
+X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704234139; l=1390;
+ i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
+ bh=DUB/ZV2zVOe/Hx7a/jPXLV+v75gZ6+Z01V5aE00rj50=; b=qe5pL7e035Zo4B16XWqHVxTumHn9sOyTDK/Y5RdiNEozypVYZV9EWUD5PpPY5hk9hItu8K1yE
+ Xte40bFcZT6CVwbEGb5iSw5YFR6ub90ZUa+g5JlAcdt91FJWgTgeqh8
+X-Mailer: b4 0.12.4
+Message-ID: <20240102-verbs-v2-1-710de1867c77@google.com>
+Subject: [PATCH v2] xprtrdma: removed asm-generic headers from verbs.c
+From: Tanzir Hasan <tanzirh@google.com>
+To: Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, 
+	Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+	Tom Talpey <tom@talpey.com>, Trond Myklebust <trond.myklebust@hammerspace.com>, 
+	Anna Schumaker <anna@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: linux-nfs@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Nick Desaulniers <nnn@google.com>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Tanzir Hasan <tanzirh@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-On Thu, 2023-12-21 at 11:09 -0800, Jim Mattson wrote:
-> On Thu, Dec 21, 2023 at 8:52 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
-> > 
-> > Hi!
-> > 
-> > Recently I was tasked with triage of the failures of 'vmx_preemption_timer'
-> > that happen in our kernel CI pipeline.
-> > 
-> > 
-> > The test usually fails because L2 observes TSC after the
-> > preemption timer deadline, before the VM exit happens.
-> > 
-> > This happens because KVM emulates nested preemption timer with HR timers,
-> > so it converts the preemption timer value to nanoseconds, taking in account
-> > tsc scaling and host tsc frequency, and sets HR timer.
-> > 
-> > HR timer however as I found out the hard way is bound to CLOCK_MONOTONIC,
-> > and thus its rate can be adjusted by NTP, which means that it can run slower or
-> > faster than KVM expects, which can result in the interrupt arriving earlier,
-> > or late, which is what is happening.
-> > 
-> > This is how you can reproduce it on an Intel machine:
-> > 
-> > 
-> > 1. stop the NTP daemon:
-> >       sudo systemctl stop chronyd.service
-> > 2. introduce a small error in the system time:
-> >       sudo date -s "$(date)"
-> > 
-> > 3. start NTP daemon:
-> >       sudo chronyd -d -n  (for debug) or start the systemd service again
-> > 
-> > 4. run the vmx_preemption_timer test a few times until it fails:
-> > 
-> > 
-> > I did some research and it looks like I am not the first to encounter this:
-> > 
-> > From the ARM side there was an attempt to support CLOCK_MONOTONIC_RAW with
-> > timer subsystem which was even merged but then reverted due to issues:
-> > 
-> > https://lore.kernel.org/all/1452879670-16133-3-git-send-email-marc.zyngier@arm.com/T/#u
-> > 
-> > It looks like this issue was later worked around in the ARM code:
-> > 
-> > 
-> > commit 1c5631c73fc2261a5df64a72c155cb53dcdc0c45
-> > Author: Marc Zyngier <maz@kernel.org>
-> > Date:   Wed Apr 6 09:37:22 2016 +0100
-> > 
-> >     KVM: arm/arm64: Handle forward time correction gracefully
-> > 
-> >     On a host that runs NTP, corrections can have a direct impact on
-> >     the background timer that we program on the behalf of a vcpu.
-> > 
-> >     In particular, NTP performing a forward correction will result in
-> >     a timer expiring sooner than expected from a guest point of view.
-> >     Not a big deal, we kick the vcpu anyway.
-> > 
-> >     But on wake-up, the vcpu thread is going to perform a check to
-> >     find out whether or not it should block. And at that point, the
-> >     timer check is going to say "timer has not expired yet, go back
-> >     to sleep". This results in the timer event being lost forever.
-> > 
-> >     There are multiple ways to handle this. One would be record that
-> >     the timer has expired and let kvm_cpu_has_pending_timer return
-> >     true in that case, but that would be fairly invasive. Another is
-> >     to check for the "short sleep" condition in the hrtimer callback,
-> >     and restart the timer for the remaining time when the condition
-> >     is detected.
-> > 
-> >     This patch implements the latter, with a bit of refactoring in
-> >     order to avoid too much code duplication.
-> > 
-> >     Cc: <stable@vger.kernel.org>
-> >     Reported-by: Alexander Graf <agraf@suse.de>
-> >     Reviewed-by: Alexander Graf <agraf@suse.de>
-> >     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-> >     Signed-off-by: Christoffer Dall <christoffer.dall@linaro.org>
-> > 
-> > 
-> > So to solve this issue there are two options:
-> > 
-> > 
-> > 1. Have another go at implementing support for CLOCK_MONOTONIC_RAW timers.
-> >    I don't know if that is feasible and I would be very happy to hear a feedback from you.
-> > 
-> > 2. Also work this around in KVM. KVM does listen to changes in the timekeeping system
-> >   (kernel calls its update_pvclock_gtod), and it even notes rates of both regular and raw clocks.
-> > 
-> >   When starting a HR timer I can adjust its period for the difference in rates, which will in most
-> >   cases produce more correct result that what we have now, but will still fail if the rate
-> >   is changed at the same time the timer is started or before it expires.
-> > 
-> >   Or I can also restart the timer, although that might cause more harm than
-> >   good to the accuracy.
-> > 
-> > 
-> > What do you think?
-> 
-> Is this what the "adaptive tuning" in the local APIC TSC_DEADLINE
-> timer is all about (lapic_timer_advance_ns = -1)?
+asm-generic/barrier.h and asm/bitops.h are already brought into the
+file through the header linux/sunrpc/svc_rdma.h and the file can
+still be built with their removal. They have been replaced with the
+preferred linux/bitops.h and asm/barrier.h to remove the need for the
+asm-generic header.
 
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+---
+Changes in v2:
+- Added asm/barrier.h and linux/bitops.h to not conflict with rule 1 of
+  submit-checklist
+- Link to v1: https://lore.kernel.org/r/20231226-verbs-v1-1-3a2cecf11afd@google.com
+---
+ net/sunrpc/xprtrdma/verbs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Hi,
+diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
+index 28c0771c4e8c..b4c1d874fc7e 100644
+--- a/net/sunrpc/xprtrdma/verbs.c
++++ b/net/sunrpc/xprtrdma/verbs.c
+@@ -49,14 +49,14 @@
+  *  o buffer memory
+  */
+ 
++#include <linux/bitops.h>
+ #include <linux/interrupt.h>
+ #include <linux/slab.h>
+ #include <linux/sunrpc/addr.h>
+ #include <linux/sunrpc/svc_rdma.h>
+ #include <linux/log2.h>
+ 
+-#include <asm-generic/barrier.h>
+-#include <asm/bitops.h>
++#include <asm/barrier.h>
+ 
+ #include <rdma/ib_cm.h>
+ 
 
-I don't think that 'lapic_timer_advance' is designed for that but it does
-mask this problem somewhat.
-
-The goal of 'lapic_timer_advance' is to decrease time between deadline passing and start
-of guest timer irq routine by making the deadline happen a bit earlier (by timer_advance_ns), and then busy-waiting 
-(hopefully only a bit) until the deadline passes, and then immediately do the VM entry.
-
-This way instead of overhead of VM exit and VM entry that both happen after the deadline,
-only the VM entry happens after the deadline.
-
-
-In relation to NTP interference: If the deadline happens earlier than expected, then
-KVM will busy wait and decrease the 'timer_advance_ns', and next time the deadline
-will happen a bit later thus adopting for the NTP adjustment somewhat.
-
-Note though that 'timer_advance_ns' variable is unsigned and adjust_lapic_timer_advance can underflow
-it, which can be fixed.
-
-Now if the deadline happens later than expected, then the guest will see this happen, 
-but at least adjust_lapic_timer_advance should increase the 'timer_advance_ns' so next
-time the deadline will happen earlier which will also eventually hide the problem.
-
-So overall I do think that implementing the 'lapic_timer_advance' for nested VMX preemption timer
-is a good idea, especially since this feature is not really nested in some sense - the timer is
-just delivered as a VM exit but it is always delivered to L1, so VMX preemption timer can 
-be seen as just an extra L1's deadline timer.
-
-I do think that nested VMX preemption timer should use its own value of timer_advance_ns, thus
-we need to extract the common code and make both timers use it. Does this make sense?
+---
+base-commit: fbafc3e621c3f4ded43720fdb1d6ce1728ec664e
+change-id: 20231226-verbs-30800631d3f1
 
 Best regards,
-	Maxim Levitsky
-
-
->  If so, can we
-> leverage that for the VMX-preemption timer as well?
-> > Best regards,
-> >         Maxim Levitsky
-> > 
-> > 
-> > 
-
-
-
+-- 
+Tanzir Hasan <tanzirh@google.com>
 
 
