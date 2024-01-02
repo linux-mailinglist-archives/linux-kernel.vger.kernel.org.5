@@ -1,112 +1,103 @@
-Return-Path: <linux-kernel+bounces-14251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DD528219F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:35:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BC678219F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:36:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBC3F282F5E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:35:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7F19B21CBB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:36:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F26D2FD;
-	Tue,  2 Jan 2024 10:35:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5334D52C;
+	Tue,  2 Jan 2024 10:35:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Uzl7Zo5R"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ahrD8bll"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E47DD28D;
-	Tue,  2 Jan 2024 10:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id DD99540E00C9;
-	Tue,  2 Jan 2024 10:34:50 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id mxpEbl6mtL9g; Tue,  2 Jan 2024 10:34:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704191688; bh=qmzzjq3k0ZYuRvdQFFKTodBxJQM9E/DweoyCy+/wM74=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DECC8D2E5;
+	Tue,  2 Jan 2024 10:35:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3277BC433C9;
+	Tue,  2 Jan 2024 10:35:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704191755;
+	bh=+qEKOHUuvaeqbMv2dZKawxfqy3gZZ8r/eu72eL7McOQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Uzl7Zo5ROy5ZjJo+SRSbo7Jv+rAmFH2RAMynkUlNu2MHLgqEcn5u54yIRhd+KrvzN
-	 6rH+GM5G8yVYLYO+HqnEwIgxT7EtO5jYtV2kIhN3G+/jftTquh3tnfN8YIUt5sMi35
-	 1smnU700J/W1hP7FO9y50JKT6Xu6ZfEWZDV3GtjQxgqzyceow5SCsmYr9vs3J1ii77
-	 JyuLgCLFJXxMIlwS16uiu9e5nfE1wWh6PD6Wjq4z9EttthrAao7Twt/KKyNSWoYsPC
-	 Xqj9hIfrGlj0n/LOfT6OD55NVdDoS57TlCfrRjizoMyiWidJrDWcAenHzCcrCBJEzn
-	 dwcbOdyHFvdYJE84P1vKJgszRZPejPDQDDXMefBSy2tkYcZZAX9C/VQlPf+mB93kyy
-	 MdkNmSh06lo4CxeR2pvgUXbOOV7IHli3y2dYayP2eAstBKACbIVpiPZ4E6f/9nb9u5
-	 eollM0gTXfrHNyO4+WOPaJrfdJm4qSqEnxnAl49rZiXCMeeo7fO8FbpQuLMdU2/rzI
-	 bxdFRwkxMiYjKfxm/4jSKI/WvETSjDWsIqhBP1dTmLrh7jI8RH+G4+5cbl357LxMOR
-	 PRuvhYtAAUSyJodRPf4Y/KbPvsTTA91/Wp4u85mFB7njsCen7Fmr0N+k3alI8X3gLl
-	 Kyzmd4BalADYoOOcwPlzKLFc=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C878040E016D;
-	Tue,  2 Jan 2024 10:34:29 +0000 (UTC)
-Date: Tue, 2 Jan 2024 11:34:24 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Sandipan Das <sandipan.das@amd.com>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	x86@kernel.org, peterz@infradead.org, mingo@redhat.com,
-	acme@kernel.org, mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-	namhyung@kernel.org, adrian.hunter@intel.com, tglx@linutronix.de,
-	eranian@google.com, irogers@google.com, mario.limonciello@amd.com,
-	ravi.bangoria@amd.com, ananth.narayan@amd.com
-Subject: Re: [PATCH v2 1/3] perf/x86/amd/lbr: Use freeze based on availability
-Message-ID: <20240102103424.GAZZPmsDsrSF9WZVl+@fat_crate.local>
-References: <cover.1704103399.git.sandipan.das@amd.com>
- <d75c92b6bfdd536ad8186afaea6fb7819c64ab28.1704103399.git.sandipan.das@amd.com>
+	b=ahrD8bll+9T4w+l6KytnHTr1qvj782jwU07/e5AujwKXmZSyG5Kbz2K5No5U6AwVx
+	 F5/c4lVQW3yPYiklQPsMMX3mirNZDPPZt68zEmkCzlqgWFYGYcTLVGLDVVQqBs+hKo
+	 ZYRnkJG7OntiLNGotlSGToorNfbtzScB4R0P8Cfd+A3a+xlzzohiEEp3b2G1GcS2Bo
+	 bvDmeJehj97YPD57LRSIoq/1MVqA10hUO7elWepSOYQhLcC1/mpnEsReJele3BFHcG
+	 czxOtPSs/dcuSWjSESee5/bZzfYaecy0bqZU902SWXiVUu52ZelIVjCoXi9kczhh3w
+	 98BWUb6tgzQ9w==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan@kernel.org>)
+	id 1rKc7e-0002Im-1g;
+	Tue, 02 Jan 2024 11:35:46 +0100
+Date: Tue, 2 Jan 2024 11:35:46 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Andy Gross <agross@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: Re: [PATCH v4 02/12] clk: qcom: Use qcom_branch_set_clk_en()
+Message-ID: <ZZPnAvXB8oqds4KM@hovoldconsulting.com>
+References: <20230717-topic-branch_aon_cleanup-v4-0-32c293ded915@linaro.org>
+ <20230717-topic-branch_aon_cleanup-v4-2-32c293ded915@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d75c92b6bfdd536ad8186afaea6fb7819c64ab28.1704103399.git.sandipan.das@amd.com>
+In-Reply-To: <20230717-topic-branch_aon_cleanup-v4-2-32c293ded915@linaro.org>
 
-On Tue, Jan 02, 2024 at 11:31:28AM +0530, Sandipan Das wrote:
-> Currently, it is assumed that LBR Freeze is supported on all processors
-> which have CPUID leaf 0x80000022[EAX] bit 1 set. This is incorrect as
-> the feature availability is additionally dependent on CPUID leaf
-> 0x80000022[EAX] bit 2 being set which may not be set for all Zen 4
-> processors. Define a new feature bit for LBR and PMC freeze and set the
-> freeze enable bit (FLBRI) in DebugCtl (MSR 0x1d9) conditionally.
+On Sat, Dec 30, 2023 at 02:04:04PM +0100, Konrad Dybcio wrote:
+> Instead of magically poking at the bit0 of branch clocks' CBCR, use
+> the newly introduced helper.
 > 
-> It should still be possible to use LBR without freeze for profile-guided
-> optimization of user programs by using an user-only branch filter during
-> profiling. When the user-only filter is enabled, branches are no longer
-> recorded after the transition to CPL 0 upon PMI arrival. When branch
-> entries are read in the PMI handler, the branch stack does not change.
-> 
-> E.g.
-> 
->   $ perf record -j any,u -e ex_ret_brn_tkn ./workload
-> 
-> Fixes: ca5b7c0d9621 ("perf/x86/amd/lbr: Add LbrExtV2 branch record support")
-> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
+> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
 
-Whoever ends up committing this, please add to the commit message the
-reason why X86_FEATURE_AMD_LBR_PMC_FREEZE is left visible in
-/proc/cpuinfo:
+> diff --git a/drivers/clk/qcom/camcc-sc8280xp.c b/drivers/clk/qcom/camcc-sc8280xp.c
+> index 3dcd79b01515..94db130b85e2 100644
+> --- a/drivers/clk/qcom/camcc-sc8280xp.c
+> +++ b/drivers/clk/qcom/camcc-sc8280xp.c
+> @@ -3010,10 +3010,8 @@ static int camcc_sc8280xp_probe(struct platform_device *pdev)
+>  	clk_lucid_pll_configure(&camcc_pll6, regmap, &camcc_pll6_config);
+>  	clk_lucid_pll_configure(&camcc_pll7, regmap, &camcc_pll7_config);
+>  
+> -	/*
+> -	 * Keep camcc_gdsc_clk always enabled:
+> -	 */
+> -	regmap_update_bits(regmap, 0xc1e4, BIT(0), 1);
+> +	/* Keep the critical clocks always-on */
+> +	qcom_branch_set_clk_en(regmap, 0xc1e4); /* CAMCC_GDSC_CLK */
 
-https://lore.kernel.org/all/CABPqkBQ0Zn_orR_9FnHA7Y1pNHAzG0E=86MkdMjOtGfKXDp29g@mail.gmail.com/
+I still think something along the lines of
 
-Thx.
+	/* Keep some clocks always on */
 
--- 
-Regards/Gruss,
-    Boris.
+is preferred as it is far from obvious why a camera clock would be
+considered "critical".
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Or perhaps you can come up with a better description of why we've
+decided not to model these clocks and just leave them ungated.
+
+>  
+>  	ret = qcom_cc_really_probe(pdev, &camcc_sc8280xp_desc, regmap);
+>  	if (ret)
+
+Johan
 
