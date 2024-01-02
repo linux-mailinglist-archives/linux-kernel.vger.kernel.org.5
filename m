@@ -1,195 +1,187 @@
-Return-Path: <linux-kernel+bounces-14990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A8BA8225C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:02:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0D7582258B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:34:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27FD328405D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:02:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAFAD1C2180D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:34:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E69BE1379;
-	Wed,  3 Jan 2024 00:01:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8563C1775E;
+	Tue,  2 Jan 2024 23:33:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=illinois.edu header.i=@illinois.edu header.b="qJ9O3oKd"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T0PE5hAi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-00007101.pphosted.com (mx0a-00007101.pphosted.com [148.163.135.28])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB85917981;
-	Wed,  3 Jan 2024 00:01:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=illinois.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=illinois.edu
-Received: from pps.filterd (m0166255.ppops.net [127.0.0.1])
-	by mx0a-00007101.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 402M7WoH002510;
-	Tue, 2 Jan 2024 23:33:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=illinois.edu; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=campusrelays; bh=PNAXEVDPlhm0R+pNAiIOsKYB1T82k0GvvKP4VSUOez8=;
- b=qJ9O3oKdZiRL5EPnsWCs8jzMuGbVqo906W7aX16Cz9BWMppmvxbfojkruKzqftPOsIIJ
- N2uYvqSboPJG4zAxIemUtUfcCCGrmP+A1U6aEYGJ1y37mYAJ3rKC/MQ8hNvVca0eHwhl
- AcWmrV6PTBNCr1JeFpoK34+mI+1IFpPeDAZReVJ8WvG3y3TN/pA/WPcZNRa2bxq2p69W
- 7H+NrDLxZYZEwQRHaNtFjU8cfg2Icfj9IqT0TeZ5NNzl4TXrSmRAHlvuGBy1vnMyE0Th
- 0ABZUszEyRoium8LPnxVBw/CkxhWWCrNiBc6GWjrvRZo3yD+XxIa/B6AFnvDgcRWTHLa gw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-00007101.pphosted.com (PPS) with ESMTPS id 3vaw8v8y4g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 02 Jan 2024 23:33:49 +0000
-Received: from m0166255.ppops.net (m0166255.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 402NXne4031700;
-	Tue, 2 Jan 2024 23:33:49 GMT
-Received: from localhost.localdomain (oasis.cs.illinois.edu [130.126.137.13])
-	by mx0a-00007101.pphosted.com (PPS) with ESMTP id 3vaw8v8y49-1;
-	Tue, 02 Jan 2024 23:33:49 +0000
-From: Jinghao Jia <jinghao7@illinois.edu>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jinghao Jia <jinghao7@illinois.edu>
-Subject: [PATCH] x86/kprobes: fix incorrect return address calculation in kprobe_emulate_call_indirect
-Date: Tue,  2 Jan 2024 17:33:45 -0600
-Message-ID: <20240102233345.385475-1-jinghao7@illinois.edu>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 465CE17982;
+	Tue,  2 Jan 2024 23:33:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704238434; x=1735774434;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=hmnREbkJ1spni6quDzIEHXCaQXW3TktM92/lBSG23sI=;
+  b=T0PE5hAiC4Xewm3C6culXzxpzHV4YvDgFq+hdbaV96FzOPk8/5HG2Iqn
+   wvVF3Jb/0vjfdd/96jASXHAO1UFuk4jk/rFOE2OOOsiMOHc9SlE6Oik+v
+   TzGS1yxcd8RXTc+/6i8ZJZK7ZyxMEqVssL9aEo412uRSyeCRCUYF7xB18
+   FiECVJZ+1uWX2KwazMLLoqJDmZ4L7Jm4KP3KZ0bw3zuuSKcTXc0vQrT/a
+   d20aWBLYm8gWam0iYuTBcHGmbFbl0pvUY/NvZExfny7yB6Ae+yPQii8Pn
+   /wVvNTojt/jWFmFeoB36NceFxnZ3uM3t2ZlY4Q03k8IxiXL7boRdnlrQ0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="3769991"
+X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
+   d="scan'208";a="3769991"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 15:33:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="1111182255"
+X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
+   d="scan'208";a="1111182255"
+Received: from keithj1-mobl2.amr.corp.intel.com (HELO [10.209.44.31]) ([10.209.44.31])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 15:33:51 -0800
+Message-ID: <20cd835e-f84c-4c43-812e-6706f7266150@linux.intel.com>
+Date: Tue, 2 Jan 2024 15:33:51 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: a8lA9fk9GDWEgIRHPjcPkxg72g1XigGY
-X-Proofpoint-GUID: ex6Pls5fZa6oQfqb-EdPF9PJu01ecIuO
-X-Spam-Details: rule=cautious_plus_nq_notspam policy=cautious_plus_nq score=0
- lowpriorityscore=0 bulkscore=0 mlxscore=0 phishscore=0 clxscore=1011
- impostorscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=997
- adultscore=0 spamscore=0 suspectscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401020176
-X-Spam-Score: 0
-X-Spam-OrigSender: jinghao7@illinois.edu
-X-Spam-Bar: 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Revert "PCI/ASPM: Remove pcie_aspm_pm_state_change()"
+Content-Language: en-US
+To: Bjorn Helgaas <helgaas@kernel.org>, Michael Schaller
+ <michael@5challer.de>, Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ regressions@lists.linux.dev, "Maciej W . Rozycki" <macro@orcam.me.uk>,
+ Ajay Agarwal <ajayagarwal@google.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Heiner Kallweit <hkallweit1@gmail.com>,
+ Johan Hovold <johan+linaro@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ stable@vger.kernel.org
+References: <76c61361-b8b4-435f-a9f1-32b716763d62@5challer.de>
+ <20240102232550.1751655-1-helgaas@kernel.org>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240102232550.1751655-1-helgaas@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-kprobe_emulate_call_indirect currently uses int3_emulate_call to emulate
-indirect calls. However, int3_emulate_call always assumes the size of
-the call to be 5 bytes when calculating the return address. This is
-incorrect for register-based indirect calls in x86, which can be either
-2 or 3 bytes depending on whether REX prefix is used. At kprobe runtime,
-the incorrect return address causes control flow to land onto the wrong
-place after return -- possibly not a valid instruction boundary. This
-can lead to a panic like the following:
 
-[    7.308204][    C1] BUG: unable to handle page fault for address: 000000000002b4d8
-[    7.308883][    C1] #PF: supervisor read access in kernel mode
-[    7.309168][    C1] #PF: error_code(0x0000) - not-present page
-[    7.309461][    C1] PGD 0 P4D 0
-[    7.309652][    C1] Oops: 0000 [#1] SMP
-[    7.309929][    C1] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.7.0-rc5-trace-for-next #6
-[    7.310397][    C1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-20220807_005459-localhost 04/01/2014
-[    7.311068][    C1] RIP: 0010:__common_interrupt+0x52/0xc0
-[    7.311349][    C1] Code: 01 00 4d 85 f6 74 39 49 81 fe 00 f0 ff ff 77 30 4c 89 f7 4d 8b 5e 68 41 ba 91 76 d8 42 45 03 53 fc 74 02 0f 0b cc ff d3 65 48 <8b> 05 30 c7 ff 7e 65 4c 89 3d 28 c7 ff 7e 5b 41 5c 41 5e 41 5f c3
-[    7.312512][    C1] RSP: 0018:ffffc900000e0fd0 EFLAGS: 00010046
-[    7.312899][    C1] RAX: 0000000000000001 RBX: 0000000000000023 RCX: 0000000000000001
-[    7.313334][    C1] RDX: 00000000000003cd RSI: 0000000000000001 RDI: ffff888100d302a4
-[    7.313702][    C1] RBP: 0000000000000001 R08: 0ef439818636191f R09: b1621ff338a3b482
-[    7.314146][    C1] R10: ffffffff81e5127b R11: ffffffff81059810 R12: 0000000000000023
-[    7.314509][    C1] R13: 0000000000000000 R14: ffff888100d30200 R15: 0000000000000000
-[    7.314951][    C1] FS:  0000000000000000(0000) GS:ffff88813bc80000(0000) knlGS:0000000000000000
-[    7.315396][    C1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    7.315691][    C1] CR2: 000000000002b4d8 CR3: 0000000003028003 CR4: 0000000000370ef0
-[    7.316153][    C1] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    7.316508][    C1] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    7.316948][    C1] Call Trace:
-[    7.317123][    C1]  <IRQ>
-[    7.317279][    C1]  ? __die_body+0x64/0xb0
-[    7.317482][    C1]  ? page_fault_oops+0x248/0x370
-[    7.317712][    C1]  ? __wake_up+0x96/0xb0
-[    7.317964][    C1]  ? exc_page_fault+0x62/0x130
-[    7.318211][    C1]  ? asm_exc_page_fault+0x22/0x30
-[    7.318444][    C1]  ? __cfi_native_send_call_func_single_ipi+0x10/0x10
-[    7.318860][    C1]  ? default_idle+0xb/0x10
-[    7.319063][    C1]  ? __common_interrupt+0x52/0xc0
-[    7.319330][    C1]  common_interrupt+0x78/0x90
-[    7.319546][    C1]  </IRQ>
-[    7.319679][    C1]  <TASK>
-[    7.319854][    C1]  asm_common_interrupt+0x22/0x40
-[    7.320082][    C1] RIP: 0010:default_idle+0xb/0x10
-[    7.320309][    C1] Code: 4c 01 c7 4c 29 c2 e9 72 ff ff ff cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90 b8 0c 67 40 a5 66 90 0f 00 2d 09 b9 3b 00 fb f4 <fa> c3 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 b8 0c 67 40 a5 e9
-[    7.321449][    C1] RSP: 0018:ffffc9000009bee8 EFLAGS: 00000256
-[    7.321808][    C1] RAX: ffff88813bca8b68 RBX: 0000000000000001 RCX: 000000000001ef0c
-[    7.322227][    C1] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 000000000001ef0c
-[    7.322656][    C1] RBP: ffffc9000009bef8 R08: 8000000000000000 R09: 00000000000008c2
-[    7.323083][    C1] R10: 0000000000000000 R11: ffffffff81058e70 R12: 0000000000000000
-[    7.323530][    C1] R13: ffff8881002b30c0 R14: 0000000000000000 R15: 0000000000000000
-[    7.323948][    C1]  ? __cfi_lapic_next_deadline+0x10/0x10
-[    7.324239][    C1]  default_idle_call+0x31/0x50
-[    7.324464][    C1]  do_idle+0xd3/0x240
-[    7.324690][    C1]  cpu_startup_entry+0x25/0x30
-[    7.324983][    C1]  start_secondary+0xb4/0xc0
-[    7.325217][    C1]  secondary_startup_64_no_verify+0x179/0x17b
-[    7.325498][    C1]  </TASK>
-[    7.325641][    C1] Modules linked in:
-[    7.325906][    C1] CR2: 000000000002b4d8
-[    7.326104][    C1] ---[ end trace 0000000000000000 ]---
-[    7.326354][    C1] RIP: 0010:__common_interrupt+0x52/0xc0
-[    7.326614][    C1] Code: 01 00 4d 85 f6 74 39 49 81 fe 00 f0 ff ff 77 30 4c 89 f7 4d 8b 5e 68 41 ba 91 76 d8 42 45 03 53 fc 74 02 0f 0b cc ff d3 65 48 <8b> 05 30 c7 ff 7e 65 4c 89 3d 28 c7 ff 7e 5b 41 5c 41 5e 41 5f c3
-[    7.327570][    C1] RSP: 0018:ffffc900000e0fd0 EFLAGS: 00010046
-[    7.327910][    C1] RAX: 0000000000000001 RBX: 0000000000000023 RCX: 0000000000000001
-[    7.328273][    C1] RDX: 00000000000003cd RSI: 0000000000000001 RDI: ffff888100d302a4
-[    7.328632][    C1] RBP: 0000000000000001 R08: 0ef439818636191f R09: b1621ff338a3b482
-[    7.329223][    C1] R10: ffffffff81e5127b R11: ffffffff81059810 R12: 0000000000000023
-[    7.329780][    C1] R13: 0000000000000000 R14: ffff888100d30200 R15: 0000000000000000
-[    7.330193][    C1] FS:  0000000000000000(0000) GS:ffff88813bc80000(0000) knlGS:0000000000000000
-[    7.330632][    C1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    7.331050][    C1] CR2: 000000000002b4d8 CR3: 0000000003028003 CR4: 0000000000370ef0
-[    7.331454][    C1] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    7.331854][    C1] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    7.332236][    C1] Kernel panic - not syncing: Fatal exception in interrupt
-[    7.332730][    C1] Kernel Offset: disabled
-[    7.333044][    C1] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
 
-The relevant assembly code is (from objdump, faulting address
-highlighted):
+On 1/2/2024 3:25 PM, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> This reverts commit 08d0cc5f34265d1a1e3031f319f594bd1970976c.
+> 
+> Michael reported that when attempting to resume from suspend to RAM on ASUS
+> mini PC PN51-BB757MDE1 (DMI model: MINIPC PN51-E1), 08d0cc5f3426
+> ("PCI/ASPM: Remove pcie_aspm_pm_state_change()") caused a 12-second delay
+> with no output, followed by a reboot.
+> 
+> Workarounds include:
+> 
+>   - Reverting 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()")
+>   - Booting with "pcie_aspm=off"
+>   - Booting with "pcie_aspm.policy=performance"
+>   - "echo 0 | sudo tee /sys/bus/pci/devices/0000:03:00.0/link/l1_aspm"
+>     before suspending
+>   - Connecting a USB flash drive
+> 
 
-ffffffff8102ed9d:       41 ff d3                  call   *%r11
-ffffffff8102eda0:       65 48 <8b> 05 30 c7 ff    mov    %gs:0x7effc730(%rip),%rax
+Did you find the root cause? Is this issue specific to that particular
+device? If yes, can we do a quirk?
 
-The emulation incorrectly sets the return address to be ffffffff8102ed9d
-+ 0x5 = ffffffff8102eda2, which is the 8b byte in the middle of the next
-mov. This in turn causes incorrect subsequent instruction decoding and
-eventually triggers the page fault above.
+> Fixes: 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()")
+> Reported-by: Michael Schaller <michael@5challer.de>
+> Link: https://lore.kernel.org/r/76c61361-b8b4-435f-a9f1-32b716763d62@5challer.de
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: <stable@vger.kernel.org>
+> ---
+>  drivers/pci/pci.c       |  6 ++++++
+>  drivers/pci/pci.h       |  2 ++
+>  drivers/pci/pcie/aspm.c | 19 +++++++++++++++++++
+>  3 files changed, 27 insertions(+)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 55bc3576a985..bdbf8a94b4d0 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -1335,6 +1335,9 @@ static int pci_set_full_power_state(struct pci_dev *dev)
+>  		pci_restore_bars(dev);
+>  	}
+>  
+> +	if (dev->bus->self)
+> +		pcie_aspm_pm_state_change(dev->bus->self);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -1429,6 +1432,9 @@ static int pci_set_low_power_state(struct pci_dev *dev, pci_power_t state)
+>  				     pci_power_name(dev->current_state),
+>  				     pci_power_name(state));
+>  
+> +	if (dev->bus->self)
+> +		pcie_aspm_pm_state_change(dev->bus->self);
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 5ecbcf041179..f43873049d52 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -569,10 +569,12 @@ int pcie_retrain_link(struct pci_dev *pdev, bool use_lt);
+>  #ifdef CONFIG_PCIEASPM
+>  void pcie_aspm_init_link_state(struct pci_dev *pdev);
+>  void pcie_aspm_exit_link_state(struct pci_dev *pdev);
+> +void pcie_aspm_pm_state_change(struct pci_dev *pdev);
+>  void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
+>  #else
+>  static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
+>  static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
+> +static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
+>  static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
+>  #endif
+>  
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index 50b04ae5c394..8715e951c491 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -1008,6 +1008,25 @@ void pcie_aspm_exit_link_state(struct pci_dev *pdev)
+>  	up_read(&pci_bus_sem);
+>  }
+>  
+> +/* @pdev: the root port or switch downstream port */
+> +void pcie_aspm_pm_state_change(struct pci_dev *pdev)
+> +{
+> +	struct pcie_link_state *link = pdev->link_state;
+> +
+> +	if (aspm_disabled || !link)
+> +		return;
+> +	/*
+> +	 * Devices changed PM state, we should recheck if latency
+> +	 * meets all functions' requirement
+> +	 */
+> +	down_read(&pci_bus_sem);
+> +	mutex_lock(&aspm_lock);
+> +	pcie_update_aspm_capable(link->root);
+> +	pcie_config_aspm_path(link);
+> +	mutex_unlock(&aspm_lock);
+> +	up_read(&pci_bus_sem);
+> +}
+> +
+>  void pcie_aspm_powersave_config_link(struct pci_dev *pdev)
+>  {
+>  	struct pcie_link_state *link = pdev->link_state;
 
-Instead of invoking int3_emulate_call, perform push and jmp emulation
-directly in kprobe_emulate_call_indirect. At this point we can obtain
-the instruction size from p->ainsn.size so that we can calculate the
-correct return address.
-
-Fixes: 6256e668b7af ("x86/kprobes: Use int3 instead of debug trap for single-step")
-Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
----
- arch/x86/kernel/kprobes/core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index e8babebad7b8..a0ce46c0a2d8 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -576,7 +576,8 @@ static void kprobe_emulate_call_indirect(struct kprobe *p, struct pt_regs *regs)
- {
- 	unsigned long offs = addrmode_regoffs[p->ainsn.indirect.reg];
- 
--	int3_emulate_call(regs, regs_get_register(regs, offs));
-+	int3_emulate_push(regs, regs->ip - INT3_INSN_SIZE + p->ainsn.size);
-+	int3_emulate_jmp(regs, regs_get_register(regs, offs));
- }
- NOKPROBE_SYMBOL(kprobe_emulate_call_indirect);
- 
 -- 
-2.43.0
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
