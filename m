@@ -1,132 +1,168 @@
-Return-Path: <linux-kernel+bounces-14640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFC0B822014
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:09:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A045822015
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:09:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36AE1B224C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:09:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BE021C2262B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:09:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD1A15AFD;
-	Tue,  2 Jan 2024 17:08:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D6A116412;
+	Tue,  2 Jan 2024 17:09:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="j2eYprnf"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="WJJEiEDU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2080.outbound.protection.outlook.com [40.107.100.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D179F156C9
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 17:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-556ba709dc7so144706a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 09:08:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704215298; x=1704820098; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=27QiV7eW4gDqhHy5Klg0CL+X90XyxyUpYzr0KRiSuD4=;
-        b=j2eYprnfzlfnfxAiN/LI4gTMT3Ceo2/uyfB2ahG5ZF5sJ35owzqcUBRYFwnsoq1xpL
-         TBQ+Hq6SapF8qWKd54jZ95ZW6fNxmk03Qw6qjBIQdOGXX0pSYRQnO7H1GQM2o8MO50X7
-         aIyRDxUpW9EH70BU4NgrLYpLioBCU7p+o184cKQYSIIXDXr7Bxeyuww8TIDJBcVMuTU4
-         Pfix+AyWjl4hAJD0OuSD+3vJKN5cs0aImjHGW/egCmq7Xp/CofTSeKYyBLaskk/c04tQ
-         m2sKcedlIKG3V6ixE/DghZJ8gM44xsedRDeFIoGf1kSri+VG/o3+wZGQwUNniuIvRbzQ
-         vZvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704215298; x=1704820098;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=27QiV7eW4gDqhHy5Klg0CL+X90XyxyUpYzr0KRiSuD4=;
-        b=qtCuN/exFCblozHEch4KPB1vE10cV2MvKeUE6joSbRVNC70s4AMRk29aosErl6feQE
-         zAInvgjFVTSvsHVHIFlW24Bz3ex4+U+vEFUqDcvt+FWZq6HbmIqRSKaiKCcJktJrj2+N
-         ZU4mWVcF+PcQ2jOiXKnUcAG/Vbag2b6RVAKJdvUjCwL8tlpohRkLN8c0FHyjU/dGp/bG
-         7phR/YjZvtuZEbe3oLkJA5Q0ecblc6CoffY0JnSS2ypPyMUJ2/N6/J0I0WyVe9f2Kf9e
-         csyW+HsLyPQikm8g48sdFGHKyHXgtVx08pE3j+P5teHsZNGUtcwGB1Rkmdiz+4PtHELk
-         YxkQ==
-X-Gm-Message-State: AOJu0Yy/fx0OHuEdmNrxT2Ja4/LA9sZ9vUQ26fohWxg9v8On1zAlGnmU
-	jn+VD3lpNHiD9YOEiQ/wKUkBu+fuqM8szg==
-X-Google-Smtp-Source: AGHT+IGmSy2ru9aQIGRuyoVfjr59RClHpVuVRKHZHoyCx0Uqikn37lz1gz4iqM+0i+3cqRTX5cC6JA==
-X-Received: by 2002:a17:907:ca2:b0:a27:a2ee:ce78 with SMTP id gi34-20020a1709070ca200b00a27a2eece78mr925519ejc.162.1704215297908;
-        Tue, 02 Jan 2024 09:08:17 -0800 (PST)
-Received: from [192.168.199.125] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
-        by smtp.gmail.com with ESMTPSA id ex18-20020a170907955200b00a26abea03bbsm11543368ejc.141.2024.01.02.09.08.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 09:08:17 -0800 (PST)
-Message-ID: <e1f79efd-357e-4b58-afe9-1d66a8978690@linaro.org>
-Date: Tue, 2 Jan 2024 18:08:16 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C87A616407;
+	Tue,  2 Jan 2024 17:09:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GGDmDpWdgFD2KzlgkcvBrwzvr1Euuc4hu+R2CbfsH+HlY6ZxkUuuXyMwXKBtlf0pdU8qBcHN1GtphwZsHG4waESzlg5JPjndg3DS1T27SdYt7i5kKBdh2F1isUODJOCkVSNC1griSvA+h6yDs375PKrEpvoI0XCSQKMhLgRlo1EENbQuC4qFzheQSNP9tanGgk8IqsawX3uBhGAUoN6EPJRKdBwvstgxJx+WwzJq4VqYMhE0f7qbMsrtGTDI7IYNceUTUyQqMbIzaMm9zXkAl/mdoda99EOEdCNXQ1laIbPI1hdVXifrtL6/1irP0YpwsJHIV2rBBNt0Ypr/CaQHgw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SaeMPThzjsXQhyQhHTjT5LOmTU89XdTuetaU7ll8RpI=;
+ b=BbSDSHY5tIjCrS0qFuLqeax2+lPx4hLkWFgD6C+2Bx+IaBqfwBl8OsQ0FO4YlC4/GsM39GzT9I/SlDEmF7YBuPbb1KWLvJtId+EQipbfsZMnx6CPd/clUP9iaoRq7misvfdi6Q6sOLNo3Hkfbs2AnS++CNiaCT3J/UDWft1IL9UAymhjqB6Gm8TtNzntQVSmcRnzD36Dw/7dINVaQo2P0wOLrKxRZ5rrDBHrQnqrLdobu9Nms4Jozh5qCMmdCdzhmsUwo4YUyn52k6lFGMYPOFmo631zmn/Hcai1tfU5qK4MrQdfo+Bvu6Xlzw50c3wVbJ74Ct/BJKAHVj+9FtV2vQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SaeMPThzjsXQhyQhHTjT5LOmTU89XdTuetaU7ll8RpI=;
+ b=WJJEiEDUK9E7Jmkx516Zd9AsXpdmHgN6biKcgm4trgR9ogEnUESFpSWo5p45mod0dTbhtp0M0pi1kDBTIZy3IcQXnSrsI3u/vB5Bvj1chjTVBYEo8d7PQCNkbJy/5w8N4MFAyZa3qADjV3+aKZ5ICNL9+zTgGUPsHBNAP4bKOvR6dR1Bi+jWZOtjVGFdlfZ79TrJ3vM/fmudHubvkorJvEVKXNVQNGT+z7EYA7b0mWwMtsduZp5lq3aZsgJZ2VhiaJ8dYBHhPe7s4jPXqh018QLiMEgRNiFKSf9nkmC6qsoSslVf/6Za9/r3xdwRBamQD7ZgbPlZn82AZDSx9kI91w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SA0PR12MB4512.namprd12.prod.outlook.com (2603:10b6:806:71::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Tue, 2 Jan
+ 2024 17:09:09 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7135.023; Tue, 2 Jan 2024
+ 17:09:09 +0000
+Date: Tue, 2 Jan 2024 13:09:08 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Oliver Upton <oliver.upton@linux.dev>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, ankita@nvidia.com,
+	maz@kernel.org, suzuki.poulose@arm.com, yuzenghui@huawei.com,
+	will@kernel.org, alex.williamson@redhat.com, kevin.tian@intel.com,
+	yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org,
+	gshan@redhat.com, linux-mm@kvack.org, aniketa@nvidia.com,
+	cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
+	vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
+	jhubbard@nvidia.com, danw@nvidia.com, mochs@nvidia.com,
+	kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	james.morse@arm.com
+Subject: Re: [PATCH v3 2/2] kvm: arm64: set io memory s2 pte as normalnc for
+ vfio pci devices
+Message-ID: <20240102170908.GG50406@nvidia.com>
+References: <20231208164709.23101-1-ankita@nvidia.com>
+ <20231208164709.23101-3-ankita@nvidia.com>
+ <ZXicemDzXm8NShs1@arm.com>
+ <20231212181156.GO3014157@nvidia.com>
+ <ZXoOieQN7rBiLL4A@linux.dev>
+ <ZXsjv+svp44YjMmh@lpieralisi>
+ <ZXszoQ48pZ7FnQNV@linux.dev>
+ <ZYQ7VjApH1v1QwTW@arm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYQ7VjApH1v1QwTW@arm.com>
+X-ClientProxiedBy: MN2PR16CA0039.namprd16.prod.outlook.com
+ (2603:10b6:208:234::8) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 16/22] ARM: dts: qcom: ipq8064: rename SAW nodes to
- power-manager
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Andy Gross <agross@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org
-References: <20240102-saw2-spm-regulator-v7-0-0472ec237f49@linaro.org>
- <20240102-saw2-spm-regulator-v7-16-0472ec237f49@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240102-saw2-spm-regulator-v7-16-0472ec237f49@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA0PR12MB4512:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6de4bb8a-1139-4cd6-a05a-08dc0bb588d3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	efzWhFQtMa+oMUpN0ruK2+54sA2yUI2AkVzpw1qDLAcfjLP7RyozdBm3xn4myDN2JtiGX0Iw6Oik9Zs02rbCPRuKHVDDKBj8fQcJ6VkTz+dgMraf6kPB8NkRMvNuJOYEPESd6oA7yqbSKGCUW583j3w2Rzyd7sKhfwlsG3pre5QUskLXjM0wKeMU6A83b3CiajVtEKkyDgp3Bb0IpPNdQ3bhdCc5tiwKGvhePsN4A1ejpzA7L0O00uhSnPrZkmf4LpNJF6aBnBlGs4yAnt6B5cAFQ7s5qx+PQeQJdPfaExytR0bFUO7eTyLKNgO3ZgIScSYxASC7YHbXiqZa+8PHBZMENaXoIAY99f9FUzjNK+wf4h3kztZ3Jphw2XLNJw3m1gZiL3m+lOLNDsZB4+my2EVwA6AXQ41gaJq3KqqEq/QH6L82Bk4P4rAhXihnJM3ijSF5j6Xh7ahRQuCZ51mh8FybNIM1sgdEEyiaHbrUgb54y8ZPcj4GrUdMd/4WB6VuxcX7j5akiboHzjiLpfvoIKbgXJk0S4Lr2RvpjjzzND+OrDjwGwgOjzOnO3APP85P
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(39860400002)(376002)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(2616005)(83380400001)(1076003)(26005)(38100700002)(41300700001)(8936002)(8676002)(316002)(54906003)(5660300002)(2906002)(7416002)(4326008)(478600001)(66476007)(66556008)(66946007)(6506007)(6512007)(6916009)(6486002)(86362001)(33656002)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?TtBvKvohDDZNz0Vwtl3KxYxOSkw+Q7ZOm8HRc/PzlAqkgVkFMwjQE/VJ7tGz?=
+ =?us-ascii?Q?QswMtmjNq1ai1rCMsTqQV03MkXqAcwMUMVRNijruYEDOYEm0pfD4YJLXUqxk?=
+ =?us-ascii?Q?5KH/59vwRfvdDzM3gMU7BEG/vsAfDgX/RxhfFXa/wshGO1jqwmQnWoTVm3nl?=
+ =?us-ascii?Q?QV0XAv4R9UMYdAtaaeCmKJXR9HC31bjEDKMttvezIoojYkqbqd4uQytbXJL0?=
+ =?us-ascii?Q?sUVhkT+Lq4OLwsIRcrcsCc5Whjwk/RiFZ9doEXVj4jwdicAP8wEcEc6/Mfli?=
+ =?us-ascii?Q?DH9qcinereDOiBuuN3FUJQ2izCO1PQQkFRvN4JmY6zFUvE61oKHdDpxfyPGx?=
+ =?us-ascii?Q?4Rl76lKdcPfbsq9a9Pf0D3FrqW2gj9v81CJx608bEcRvxde70Sv5Y6s6Uaod?=
+ =?us-ascii?Q?9JbjRTczBuppdYpbiCuROTsp7Bdwco5HLRFKdTReFsxzCnNGsJaSFx5SyMYy?=
+ =?us-ascii?Q?bRSnW4+Uw5xWEnmB2cEn+DOiO0VyRWAzJ9EFpZLVFwPumGaABeh3ISVMnlUO?=
+ =?us-ascii?Q?aIfFkIdYQcKwuss354ehL9ASulYX1EQXbWjE3VN15vw1nXXY30ApGDbWzk54?=
+ =?us-ascii?Q?LuAH0GQVjtWiKhFm+ydBSwfI7g+L65TCUUYCCxWDfISJUnsrbn+tFTKamUvA?=
+ =?us-ascii?Q?rJry/juZ1bwrGAIAsFWkNYEinPB/eXsRZxp2iYlFMu4c/vlA9kARSiRKt9jC?=
+ =?us-ascii?Q?OAtGnUhGDlnhlFtEZ1k8oY4ltnaaHmaGVMMBQAoDec1S5MFK9JbdEp07jbLI?=
+ =?us-ascii?Q?TqY8D/TslL+/16yKYFiwevK4hhR7my4uU7f7+L51Bx1gWdMTvTsakCseKIdG?=
+ =?us-ascii?Q?8RJuIPnrI1GKp+NPN4aUsyLtISRtZKOLe84tMpPUFdsgrKXUdVkoRpfUZT7P?=
+ =?us-ascii?Q?LNBwxFVX6dukyoUI1PPlJXo7rBK+YS9GftE8m5FS2SviC4BMVRkM6qFMyT7T?=
+ =?us-ascii?Q?kO6f+d5vVJKgqcNsgosRHB/KK6ln/VdcH2epqAmurFiTMWBri32JieNhO9rB?=
+ =?us-ascii?Q?JU2E+upnRt6lhfcQLeu1FvS91GzE+LAIXaTWbSHQHreaSpj8MEHq6gDiK4Ow?=
+ =?us-ascii?Q?3Zn4u4uHuE6tyrSS/0D7ymOG1aaxxqv2BF7kHLq4I7nfdKuM//9JB0cjBNnV?=
+ =?us-ascii?Q?5Z58BUdijP3freysxvrg0vgGRimwuXEEu6PPyNqFX2DFDzYLLut3bM9IIxgZ?=
+ =?us-ascii?Q?iHnMCEGnG0J19gnrMDfEwyINAOlaNmrwgqoVLIyA0Tzjdrz9VO0WFWshwbcT?=
+ =?us-ascii?Q?wTgk8xMzolSCmJNCHRZZYR8g4Dbah1xnouHYDPXet9Npcu+qnGcHpm68DTid?=
+ =?us-ascii?Q?p3n44A9IZBCdjEtTOrrZErK3Bww0+5GsltXAPlIJSYXTb0ZABCiNiOT2ukJQ?=
+ =?us-ascii?Q?zolN07osXhZoG2Ux6k+7z9BudPK/eicTEVHuDSOqxgS3oI1Zh1I7wnGLKpK7?=
+ =?us-ascii?Q?DXEZ8sSY7Cj24m2+HpRm09/6qlzJccQ6gATd3yRMF81nnh/akbefrjN9j8Gv?=
+ =?us-ascii?Q?XHe2UGh7JJ+jMr9omcs+tI0EOWMwQGjKIjm6TvgP0LAgYE2GYt+2HcHuTKmg?=
+ =?us-ascii?Q?VPJihSB3WihC3MmR9zU=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6de4bb8a-1139-4cd6-a05a-08dc0bb588d3
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2024 17:09:09.4941
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jORWB1Olaraj4ndpLWDuiT3ZQC+XSvFD92Wa/Ta9VO5aFzBs4zR4GIk+9i7oTwzq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4512
 
-On 2.01.2024 06:17, Dmitry Baryshkov wrote:
-> The SAW2 device is not a regulator. It is a frontend to the PMIC, which
-> handles voltage control, automatic voltage scaling and low-power states,
-> Rename SAW2 nodes to 'power-manager', the name which is suggested by
-> qcom,saw2.yaml
+On Thu, Dec 21, 2023 at 01:19:18PM +0000, Catalin Marinas wrote:
+
+> If we really want to avoid any aliases (though I think we are spending
+> too many cycles on something that's not a real issue), the only way is
+> to have fd-based mappings in KVM so that there's no VMM alias. After
+> that we need to choose between (2) and (3) since the VMM may no longer
+> be able to probe the device and figure out which ranges need what
+> attributes.
+
+If we use a FD then KVM will be invoking some API on the FD to get the
+physical memory addreses and we can have that API also return
+information on the allowed memory types.
+
+> > Kinda stinks to make the VMM aware of the device, but IMO it is a
+> > fundamental limitation of the way we back memslots right now.
 > 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> As I mentioned above, the limitation may be more complex if the
+> intra-BAR attributes are not something readily available in the device
+> documentation. Maybe Jason or Ankit can shed some light here: are those
+> intra-BAR ranges configurable by the (guest) driver or they are already
+> pre-configured by firmware and the driver only needs to probe them?
 
-Konrad
+Configured by the guest on the fly, on a page by page basis.
+
+There is no way for the VMM to pre-predict what memory type the VM
+will need. The VM must be in control of this.
+
+Jason
 
