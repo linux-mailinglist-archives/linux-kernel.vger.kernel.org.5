@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-14857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63CFA822342
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:27:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFF7B822344
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:28:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8986F1C2174E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:27:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 249F81F23712
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:28:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48D4171B5;
-	Tue,  2 Jan 2024 21:27:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CA3B171DA;
+	Tue,  2 Jan 2024 21:27:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MNL4EceK"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yOn+S7iv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A990B168D2
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:27:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46FE171B7
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:27:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5e898eb4432so132116677b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:27:23 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e795672280so163480667b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:27:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704230842; x=1704835642; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704230845; x=1704835645; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ua1kNBJ+w+Y3Am0MQe4kWPDeg8Cx+E0rh5th4nzq7c=;
-        b=MNL4EceK0xE1DtiTd6UXEb+JAYB1pom/TSH9H1tgEXHrOvUweoBtJhNVXDoxkFUXom
-         sTPXfZB4P7UweEJMp7oLfNyHlww2pRRUKZ14Sa24LAIqHszarlAanMXnP1Umg/YYvwAX
-         /www+Dt7sUoO1uQfppmZv/3C5Q9NT0eiQLDZJEJ938scB2cueT0wF2hGF3XvFkLMgn0h
-         mYLHMDsOz6F0wdXb0LPSVs0DV0fxrRZQLxjJEDpc85JobdJ15pJ0y7qQnJ9jR4zu0Chy
-         YNi0YvsXvHcLvuaTkdmdODvfyoaNi5Dn0lOTbjGBWeqCpOtfg89o2Vk43jsU1T/CnuwA
-         Yy7g==
+        bh=jgVYCBj2SQa/BLt9GsDPIfhrRAEPBA4vQsRk9ouGbJA=;
+        b=yOn+S7ivb8JWRjxvrlJ0fHFXZf00OKWcgOvWIRJgimQQtYIBDiBtKuIkmF0BVCGwAv
+         NMMUHPnrjkj7zUxsA+KTbEG9UiUVN/wqylFEzg39So/eeF0jVr+oK0eIKig71SJT4dWO
+         Lgr3rnd+JcYuRuZnQuYuiIDhjMto2zq/HHToqIWV6ZWNAT8KTisYSQHMmdYEN0FxuoyT
+         YiTxPJFYuYf/VckLM4nl0X6wC3+gq5LcTAV1TvIP8TmBlVTuSzOefiuDfnnbvN3s/nWV
+         EvewDKCXaERiZSTgTSvVPiUr4XMN0OXoUTcUfa/NqaWOXsDqGzVTpT+09Ifn0Y5hQlw0
+         N8nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704230842; x=1704835642;
+        d=1e100.net; s=20230601; t=1704230845; x=1704835645;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ua1kNBJ+w+Y3Am0MQe4kWPDeg8Cx+E0rh5th4nzq7c=;
-        b=oaB5CGsEy8Jc5iknPKB2mhOsylnb71XEexY3wK1hCYGbMa+LeIqWRzzJ2/0sqMLJPQ
-         CQ5chmOVh7dA4658uQme/K0KKVkkFyWZ19C17Ea+KbBvJ18MyjpgITe+ThNCYt/CDWo/
-         1LHkvKnrS7UYxGWr0pzIPTHCfUzKWcRhltTfI4Jh+OIB6Ajv3vp1gCM39rIubhEF6b1o
-         1lp/0gJcer4SFYPQzhEcYcPi2Lc0yi5Ki2pe1ogqjyDTwQxKe/m2I0Nz3VtL+Kr411Qs
-         +C7WkvolMnUjqyzqg7ZTMLQ1q1HfOTwM+2ii4fQgJwlk0WqFJE9DYnytF6oX+PD9wO71
-         93Dg==
-X-Gm-Message-State: AOJu0YwVeJ6jDRFU6xwbsFH7MkInyC6/h4jwUEqgmz7gUZqDC6Q4ov6T
-	1+m46rSBmK2N8kOFxcMoJuxAXH6rk74XKUzogkFmAZLph/m01cEQWpZiADqUhrjZ6j28goHnx/H
-	FbA0SK/AAIF9EhDXkQ5tLuuETTJ5K7nImx1NY6NpFEJBswQYh390+14n4tuvyFnlY4wI4h7AT4g
-	eyM1mRX7biqqUeOw==
-X-Google-Smtp-Source: AGHT+IFfsq9rzU5qbwwpNbrjG4PnHnpfMmz0iSjvUCZ3agkQwNiVtOi+CeRAKraq69yDp7uCH/p+XQ2tyujR5vbThQ==
+        bh=jgVYCBj2SQa/BLt9GsDPIfhrRAEPBA4vQsRk9ouGbJA=;
+        b=fcgWaMJYJPMu71G5JqBJdOGh+9VCEQQjtMb84HotfHxx9VRdHfjG5cnS08l3mM0txw
+         wgqalfx3X+IIK3oNzdea1NsEGafwvEIkLLeAy5RT5pLoJ82ySwRvtULBF3okGqkKI3Nu
+         nNtUzqZzEyAxPSUWfK13PV8A/vl1ew8zU3kWD7UVAF3s/BfFBtppgsCZTp958SIuk0xT
+         a/0cQ1uhcGg9sXZ6HH4dB6fCySuEDvZew9E3g0k1nORECT9HTQxuTkK01QzwRI24Bc0+
+         7AaQXqQfXsMlUNHTQIwmL1fjoJxoIOhNYw//+DlYe+OJlJUg/aSdHD841tLoeFNP6HiV
+         TcFw==
+X-Gm-Message-State: AOJu0YwJgZc9fv3ojpwnG2591IGZVSfHn0y50ptT9CGcGTDw+0oKZ983
+	KFDpCDg1B0k6q60Extqohfl/EG4/eZt4fhSiIA7FHY2KoSublVNj4WyMXqi9lv5nUbCGLXqmsJz
+	wwLkUSZIGevmDvVXFr9+52/umybdcdKMsXuCldL3+jvyBnnluRL4KX4r/T42w7vM4RzetuJPOFz
+	YrOhCOzvOz295CtQ==
+X-Google-Smtp-Source: AGHT+IHVa9oc+71GJfhVF3dvoBxV6gTtYYiXkHI4wsp1aBAOk3UIs3nid988Jbt35CCqziguZJ8tW/Byh79TE+AVGw==
 X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2c4:200:9a04:c262:c978:d762])
- (user=almasrymina job=sendgmr) by 2002:a81:4c04:0:b0:5f4:393:2a46 with SMTP
- id z4-20020a814c04000000b005f403932a46mr314782ywa.10.1704230842596; Tue, 02
- Jan 2024 13:27:22 -0800 (PST)
-Date: Tue,  2 Jan 2024 13:27:14 -0800
+ (user=almasrymina job=sendgmr) by 2002:a25:8004:0:b0:db5:f536:17d4 with SMTP
+ id m4-20020a258004000000b00db5f53617d4mr7202663ybk.11.1704230844608; Tue, 02
+ Jan 2024 13:27:24 -0800 (PST)
+Date: Tue,  2 Jan 2024 13:27:15 -0800
 In-Reply-To: <20240102212716.810731-1-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -65,8 +65,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240102212716.810731-1-almasrymina@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240102212716.810731-2-almasrymina@google.com>
-Subject: [RFC PATCH net-next v4 1/2] net: introduce abstraction for network memory
+Message-ID: <20240102212716.810731-3-almasrymina@google.com>
+Subject: [RFC PATCH net-next v4 2/2] net: add netmem to skb_frag_t
 From: Mina Almasry <almasrymina@google.com>
 To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Cc: Mina Almasry <almasrymina@google.com>, "David S. Miller" <davem@davemloft.net>, 
@@ -76,113 +76,354 @@ Cc: Mina Almasry <almasrymina@google.com>, "David S. Miller" <davem@davemloft.ne
 	Yunsheng Lin <linyunsheng@huawei.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Add the netmem_ref type, an abstraction for network memory.
+Use struct netmem* instead of page in skb_frag_t. Currently struct
+netmem* is always a struct page underneath, but the abstraction
+allows efforts to add support for skb frags not backed by pages.
 
-To add support for new memory types to the net stack, we must first
-abstract the current memory type. Currently parts of the net stack
-use struct page directly:
+There is unfortunately 1 instance where the skb_frag_t is assumed to be
+a exactly a bio_vec in kcm. For this case, WARN_ON_ONCE and return error
+before doing a cast.
 
-- page_pool
-- drivers
-- skb_frag_t
-
-Originally the plan was to reuse struct page* for the new memory types,
-and to set the LSB on the page* to indicate it's not really a page.
-However, for compiler type checking we need to introduce a new type.
-
-netmem_ref is introduced to abstract the underlying memory type. Currently
-it's a no-op abstraction that is always a struct page underneath. In
-parallel there is an undergoing effort to add support for devmem to the
-net stack:
-
-https://lore.kernel.org/netdev/20231208005250.2910004-1-almasrymina@google.com/
+Add skb[_frag]_fill_netmem_*() and skb_add_rx_frag_netmem() helpers so
+that the API can be used to create netmem skbs.
 
 Signed-off-by: Mina Almasry <almasrymina@google.com>
 
 ---
 
 v4:
-- use 'struct netmem;' instead of 'typedef void *__bitwise netmem_ref;'
-
-  Using __bitwise with a non-integer type was wrong and triggered many
-  patchwork bot errors/warnings.
-
-  Using an integer type causes the compiler to warn when casting NULL to
-  the integer type.
-
-  Attempt to use an empty struct for our opaque network memory.
+- Handle error in kcm_write_msgs() instead of only warning (Willem)
 
 v3:
-
-- Modify struct netmem from a union of struct page + new types to an opaque
-  netmem_ref type.  I went with:
-
-  +typedef void *__bitwise netmem_ref;
-
-  rather than this that Jakub recommended:
-
-  +typedef unsigned long __bitwise netmem_ref;
-
-  Because with the latter the compiler issues warnings to cast NULL to
-  netmem_ref. I hope that's ok.
-
-- Add some function docs.
+- Renamed the fields in skb_frag_t.
 
 v2:
+- Add skb frag filling helpers.
 
-- Use container_of instead of a type cast (David).
 ---
- include/net/netmem.h | 41 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
- create mode 100644 include/net/netmem.h
+ include/linux/skbuff.h | 92 +++++++++++++++++++++++++++++-------------
+ net/core/skbuff.c      | 22 +++++++---
+ net/kcm/kcmsock.c      |  9 ++++-
+ 3 files changed, 88 insertions(+), 35 deletions(-)
 
-diff --git a/include/net/netmem.h b/include/net/netmem.h
-new file mode 100644
-index 000000000000..d821fe0f8147
---- /dev/null
-+++ b/include/net/netmem.h
-@@ -0,0 +1,41 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ *	Network memory
-+ *
-+ *	Author:	Mina Almasry <almasrymina@google.com>
-+ */
-+
-+#ifndef _NET_NETMEM_H
-+#define _NET_NETMEM_H
-+
-+/**
-+ * struct netmem - a nonexistent type marking a reference to generic network
-+ * memory.
-+ *
-+ * A struct netmem* currently is always a reference to a struct page. This
-+ * abstraction is introduced so support for new memory types can be added.
-+ *
-+ * Use the supplied helpers to obtain the underlying memory pointer and fields.
-+ */
-+struct netmem;
-+
-+/* This conversion fails (returns NULL) if the struct netmem* is not struct page
-+ * backed.
-+ *
-+ * Currently struct page is the only possible netmem, and this helper never
-+ * fails.
-+ */
-+static inline struct page *netmem_to_page(struct netmem *netmem)
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index a5ae952454c8..ad2172a889e2 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -37,6 +37,7 @@
+ #endif
+ #include <net/net_debug.h>
+ #include <net/dropreason-core.h>
++#include <net/netmem.h>
+ 
+ /**
+  * DOC: skb checksums
+@@ -359,7 +360,11 @@ extern int sysctl_max_skb_frags;
+  */
+ #define GSO_BY_FRAGS	0xFFFF
+ 
+-typedef struct bio_vec skb_frag_t;
++typedef struct skb_frag {
++	struct netmem *netmem;
++	unsigned int len;
++	unsigned int offset;
++} skb_frag_t;
+ 
+ /**
+  * skb_frag_size() - Returns the size of a skb fragment
+@@ -367,7 +372,7 @@ typedef struct bio_vec skb_frag_t;
+  */
+ static inline unsigned int skb_frag_size(const skb_frag_t *frag)
+ {
+-	return frag->bv_len;
++	return frag->len;
+ }
+ 
+ /**
+@@ -377,7 +382,7 @@ static inline unsigned int skb_frag_size(const skb_frag_t *frag)
+  */
+ static inline void skb_frag_size_set(skb_frag_t *frag, unsigned int size)
+ {
+-	frag->bv_len = size;
++	frag->len = size;
+ }
+ 
+ /**
+@@ -387,7 +392,7 @@ static inline void skb_frag_size_set(skb_frag_t *frag, unsigned int size)
+  */
+ static inline void skb_frag_size_add(skb_frag_t *frag, int delta)
+ {
+-	frag->bv_len += delta;
++	frag->len += delta;
+ }
+ 
+ /**
+@@ -397,7 +402,7 @@ static inline void skb_frag_size_add(skb_frag_t *frag, int delta)
+  */
+ static inline void skb_frag_size_sub(skb_frag_t *frag, int delta)
+ {
+-	frag->bv_len -= delta;
++	frag->len -= delta;
+ }
+ 
+ /**
+@@ -417,7 +422,7 @@ static inline bool skb_frag_must_loop(struct page *p)
+  *	skb_frag_foreach_page - loop over pages in a fragment
+  *
+  *	@f:		skb frag to operate on
+- *	@f_off:		offset from start of f->bv_page
++ *	@f_off:		offset from start of f->netmem
+  *	@f_len:		length from f_off to loop over
+  *	@p:		(temp var) current page
+  *	@p_off:		(temp var) offset from start of current page,
+@@ -2429,22 +2434,37 @@ static inline unsigned int skb_pagelen(const struct sk_buff *skb)
+ 	return skb_headlen(skb) + __skb_pagelen(skb);
+ }
+ 
++static inline void skb_frag_fill_netmem_desc(skb_frag_t *frag,
++					     struct netmem *netmem, int off,
++					     int size)
 +{
-+	return (struct page *)netmem;
++	frag->netmem = netmem;
++	frag->offset = off;
++	skb_frag_size_set(frag, size);
 +}
 +
-+/* Converting from page to netmem is always safe, because a page can always be
-+ * a netmem.
-+ */
-+static inline struct netmem *page_to_netmem(struct page *page)
-+{
-+	return (struct netmem *)page;
+ static inline void skb_frag_fill_page_desc(skb_frag_t *frag,
+ 					   struct page *page,
+ 					   int off, int size)
+ {
+-	frag->bv_page = page;
+-	frag->bv_offset = off;
+-	skb_frag_size_set(frag, size);
++	skb_frag_fill_netmem_desc(frag, page_to_netmem(page), off, size);
 +}
 +
-+#endif /* _NET_NETMEM_H */
++static inline void __skb_fill_netmem_desc_noacc(struct skb_shared_info *shinfo,
++						int i, struct netmem *netmem,
++						int off, int size)
++{
++	skb_frag_t *frag = &shinfo->frags[i];
++
++	skb_frag_fill_netmem_desc(frag, netmem, off, size);
+ }
+ 
+ static inline void __skb_fill_page_desc_noacc(struct skb_shared_info *shinfo,
+ 					      int i, struct page *page,
+ 					      int off, int size)
+ {
+-	skb_frag_t *frag = &shinfo->frags[i];
+-
+-	skb_frag_fill_page_desc(frag, page, off, size);
++	__skb_fill_netmem_desc_noacc(shinfo, i, page_to_netmem(page), off,
++				     size);
+ }
+ 
+ /**
+@@ -2460,10 +2480,10 @@ static inline void skb_len_add(struct sk_buff *skb, int delta)
+ }
+ 
+ /**
+- * __skb_fill_page_desc - initialise a paged fragment in an skb
++ * __skb_fill_netmem_desc - initialise a fragment in an skb
+  * @skb: buffer containing fragment to be initialised
+- * @i: paged fragment index to initialise
+- * @page: the page to use for this fragment
++ * @i: fragment index to initialise
++ * @netmem: the netmem to use for this fragment
+  * @off: the offset to the data with @page
+  * @size: the length of the data
+  *
+@@ -2472,10 +2492,13 @@ static inline void skb_len_add(struct sk_buff *skb, int delta)
+  *
+  * Does not take any additional reference on the fragment.
+  */
+-static inline void __skb_fill_page_desc(struct sk_buff *skb, int i,
+-					struct page *page, int off, int size)
++static inline void __skb_fill_netmem_desc(struct sk_buff *skb, int i,
++					  struct netmem *netmem, int off,
++					  int size)
+ {
+-	__skb_fill_page_desc_noacc(skb_shinfo(skb), i, page, off, size);
++	struct page *page = netmem_to_page(netmem);
++
++	__skb_fill_netmem_desc_noacc(skb_shinfo(skb), i, netmem, off, size);
+ 
+ 	/* Propagate page pfmemalloc to the skb if we can. The problem is
+ 	 * that not all callers have unique ownership of the page but rely
+@@ -2483,7 +2506,21 @@ static inline void __skb_fill_page_desc(struct sk_buff *skb, int i,
+ 	 */
+ 	page = compound_head(page);
+ 	if (page_is_pfmemalloc(page))
+-		skb->pfmemalloc	= true;
++		skb->pfmemalloc = true;
++}
++
++static inline void __skb_fill_page_desc(struct sk_buff *skb, int i,
++					struct page *page, int off, int size)
++{
++	__skb_fill_netmem_desc(skb, i, page_to_netmem(page), off, size);
++}
++
++static inline void skb_fill_netmem_desc(struct sk_buff *skb, int i,
++					struct netmem *netmem, int off,
++					int size)
++{
++	__skb_fill_netmem_desc(skb, i, netmem, off, size);
++	skb_shinfo(skb)->nr_frags = i + 1;
+ }
+ 
+ /**
+@@ -2503,8 +2540,7 @@ static inline void __skb_fill_page_desc(struct sk_buff *skb, int i,
+ static inline void skb_fill_page_desc(struct sk_buff *skb, int i,
+ 				      struct page *page, int off, int size)
+ {
+-	__skb_fill_page_desc(skb, i, page, off, size);
+-	skb_shinfo(skb)->nr_frags = i + 1;
++	skb_fill_netmem_desc(skb, i, page_to_netmem(page), off, size);
+ }
+ 
+ /**
+@@ -2530,6 +2566,8 @@ static inline void skb_fill_page_desc_noacc(struct sk_buff *skb, int i,
+ 
+ void skb_add_rx_frag(struct sk_buff *skb, int i, struct page *page, int off,
+ 		     int size, unsigned int truesize);
++void skb_add_rx_frag_netmem(struct sk_buff *skb, int i, struct netmem *netmem,
++			    int off, int size, unsigned int truesize);
+ 
+ void skb_coalesce_rx_frag(struct sk_buff *skb, int i, int size,
+ 			  unsigned int truesize);
+@@ -3378,7 +3416,7 @@ static inline void skb_propagate_pfmemalloc(const struct page *page,
+  */
+ static inline unsigned int skb_frag_off(const skb_frag_t *frag)
+ {
+-	return frag->bv_offset;
++	return frag->offset;
+ }
+ 
+ /**
+@@ -3388,7 +3426,7 @@ static inline unsigned int skb_frag_off(const skb_frag_t *frag)
+  */
+ static inline void skb_frag_off_add(skb_frag_t *frag, int delta)
+ {
+-	frag->bv_offset += delta;
++	frag->offset += delta;
+ }
+ 
+ /**
+@@ -3398,7 +3436,7 @@ static inline void skb_frag_off_add(skb_frag_t *frag, int delta)
+  */
+ static inline void skb_frag_off_set(skb_frag_t *frag, unsigned int offset)
+ {
+-	frag->bv_offset = offset;
++	frag->offset = offset;
+ }
+ 
+ /**
+@@ -3409,7 +3447,7 @@ static inline void skb_frag_off_set(skb_frag_t *frag, unsigned int offset)
+ static inline void skb_frag_off_copy(skb_frag_t *fragto,
+ 				     const skb_frag_t *fragfrom)
+ {
+-	fragto->bv_offset = fragfrom->bv_offset;
++	fragto->offset = fragfrom->offset;
+ }
+ 
+ /**
+@@ -3420,7 +3458,7 @@ static inline void skb_frag_off_copy(skb_frag_t *fragto,
+  */
+ static inline struct page *skb_frag_page(const skb_frag_t *frag)
+ {
+-	return frag->bv_page;
++	return netmem_to_page(frag->netmem);
+ }
+ 
+ /**
+@@ -3524,7 +3562,7 @@ static inline void *skb_frag_address_safe(const skb_frag_t *frag)
+ static inline void skb_frag_page_copy(skb_frag_t *fragto,
+ 				      const skb_frag_t *fragfrom)
+ {
+-	fragto->bv_page = fragfrom->bv_page;
++	fragto->netmem = fragfrom->netmem;
+ }
+ 
+ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t prio);
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 12d22c0b8551..4ba626d018e5 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -845,16 +845,24 @@ struct sk_buff *__napi_alloc_skb(struct napi_struct *napi, unsigned int len,
+ }
+ EXPORT_SYMBOL(__napi_alloc_skb);
+ 
+-void skb_add_rx_frag(struct sk_buff *skb, int i, struct page *page, int off,
+-		     int size, unsigned int truesize)
++void skb_add_rx_frag_netmem(struct sk_buff *skb, int i, struct netmem *netmem,
++			    int off, int size, unsigned int truesize)
+ {
+ 	DEBUG_NET_WARN_ON_ONCE(size > truesize);
+ 
+-	skb_fill_page_desc(skb, i, page, off, size);
++	skb_fill_netmem_desc(skb, i, netmem, off, size);
+ 	skb->len += size;
+ 	skb->data_len += size;
+ 	skb->truesize += truesize;
+ }
++EXPORT_SYMBOL(skb_add_rx_frag_netmem);
++
++void skb_add_rx_frag(struct sk_buff *skb, int i, struct page *page, int off,
++		     int size, unsigned int truesize)
++{
++	skb_add_rx_frag_netmem(skb, i, page_to_netmem(page), off, size,
++			       truesize);
++}
+ EXPORT_SYMBOL(skb_add_rx_frag);
+ 
+ void skb_coalesce_rx_frag(struct sk_buff *skb, int i, int size,
+@@ -1904,10 +1912,11 @@ int skb_copy_ubufs(struct sk_buff *skb, gfp_t gfp_mask)
+ 
+ 	/* skb frags point to kernel buffers */
+ 	for (i = 0; i < new_frags - 1; i++) {
+-		__skb_fill_page_desc(skb, i, head, 0, psize);
++		__skb_fill_netmem_desc(skb, i, page_to_netmem(head), 0, psize);
+ 		head = (struct page *)page_private(head);
+ 	}
+-	__skb_fill_page_desc(skb, new_frags - 1, head, 0, d_off);
++	__skb_fill_netmem_desc(skb, new_frags - 1, page_to_netmem(head), 0,
++			       d_off);
+ 	skb_shinfo(skb)->nr_frags = new_frags;
+ 
+ release:
+@@ -3645,7 +3654,8 @@ skb_zerocopy(struct sk_buff *to, struct sk_buff *from, int len, int hlen)
+ 		if (plen) {
+ 			page = virt_to_head_page(from->head);
+ 			offset = from->data - (unsigned char *)page_address(page);
+-			__skb_fill_page_desc(to, 0, page, offset, plen);
++			__skb_fill_netmem_desc(to, 0, page_to_netmem(page),
++					       offset, plen);
+ 			get_page(page);
+ 			j = 1;
+ 			len -= plen;
+diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
+index 1184d40167b8..145ef22b2b35 100644
+--- a/net/kcm/kcmsock.c
++++ b/net/kcm/kcmsock.c
+@@ -636,9 +636,14 @@ static int kcm_write_msgs(struct kcm_sock *kcm)
+ 		for (i = 0; i < skb_shinfo(skb)->nr_frags; i++)
+ 			msize += skb_frag_size(&skb_shinfo(skb)->frags[i]);
+ 
++		if (WARN_ON_ONCE(!skb_frag_page(&skb_shinfo(skb)->frags[0]))) {
++			ret = -EINVAL;
++			goto out;
++		}
++
+ 		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE,
+-			      skb_shinfo(skb)->frags, skb_shinfo(skb)->nr_frags,
+-			      msize);
++			      (const struct bio_vec *)skb_shinfo(skb)->frags,
++			      skb_shinfo(skb)->nr_frags, msize);
+ 		iov_iter_advance(&msg.msg_iter, txm->frag_offset);
+ 
+ 		do {
 -- 
 2.43.0.472.g3155946c3a-goog
 
