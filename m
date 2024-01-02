@@ -1,428 +1,298 @@
-Return-Path: <linux-kernel+bounces-14473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45E8B821D84
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:17:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD20D821D85
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:19:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B04FAB20CB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:17:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B53D91C22257
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:19:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1827114290;
-	Tue,  2 Jan 2024 14:17:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56AF810A0D;
+	Tue,  2 Jan 2024 14:19:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="pbAkvJyh";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8MIkLS4K";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="pbAkvJyh";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8MIkLS4K"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="ZL2oYNxE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37D6D13AE9;
-	Tue,  2 Jan 2024 14:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1C28121CE8;
-	Tue,  2 Jan 2024 14:17:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704205031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NDb2Ne+ljxvNZ4THtkSmNI9AMQQEwXoJz9dtg15FflA=;
-	b=pbAkvJyhaKIJFAhpNqVqvL32F8WbWt6krQhjvtgQz5QjDIyfdbt5+xzXU72CIGJVR1N2ig
-	/c67HP+74aXcGaL+tC416a9XMtyEqeHt1VCggvtM/yBte0hNIoC1cDbyWPHTMvmQsI2WPC
-	nnTiSQ74EKJRKOW4GHjScENF4rNrruQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704205031;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NDb2Ne+ljxvNZ4THtkSmNI9AMQQEwXoJz9dtg15FflA=;
-	b=8MIkLS4KSQsJJG1rYN+vhm/V0zdmpaEqKcBHiogFRaDhtBJv4A9K30NfHSXvBy1Ub0EIPB
-	jpNPSzi18yY0fKCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704205031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NDb2Ne+ljxvNZ4THtkSmNI9AMQQEwXoJz9dtg15FflA=;
-	b=pbAkvJyhaKIJFAhpNqVqvL32F8WbWt6krQhjvtgQz5QjDIyfdbt5+xzXU72CIGJVR1N2ig
-	/c67HP+74aXcGaL+tC416a9XMtyEqeHt1VCggvtM/yBte0hNIoC1cDbyWPHTMvmQsI2WPC
-	nnTiSQ74EKJRKOW4GHjScENF4rNrruQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704205031;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NDb2Ne+ljxvNZ4THtkSmNI9AMQQEwXoJz9dtg15FflA=;
-	b=8MIkLS4KSQsJJG1rYN+vhm/V0zdmpaEqKcBHiogFRaDhtBJv4A9K30NfHSXvBy1Ub0EIPB
-	jpNPSzi18yY0fKCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2387B1340C;
-	Tue,  2 Jan 2024 14:17:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id J+mFMOMalGW5XQAAD6G6ig
-	(envelope-from <ddiss@suse.de>); Tue, 02 Jan 2024 14:17:07 +0000
-Date: Wed, 3 Jan 2024 01:17:00 +1100
-From: David Disseldorp <ddiss@suse.de>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
- andriy.shevchenko@linux.intel.com, David.Laight@ACULAB.COM
-Subject: Re: [PATCH v2 3/4] kstrtox: add unit tests for memparse_safe()
-Message-ID: <20240103011700.222b2b5c@echidna>
-In-Reply-To: <a56def269d7885840a19a57aca0169891f5f0f32.1704168510.git.wqu@suse.com>
-References: <cover.1704168510.git.wqu@suse.com>
-	<a56def269d7885840a19a57aca0169891f5f0f32.1704168510.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1880810955
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:18:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3367a304091so9229599f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:18:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704205135; x=1704809935; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wMN809tankXeln0SghaIn8Kql+3yxJkVpIyb/WVy4mE=;
+        b=ZL2oYNxEgoFgGfqkfcePcK1+vdZ6nB1GpLlyiLN5LeIZpL8C+cMtE0/KuKrYt9yTW+
+         yy+BkmJIf7CwOcGmNw1xQjtMt/MfbJRfM1pQHJ5mLCVcc2fRweij8Fv4mboA2L8FS4/K
+         drsRn7J3arxF3YwbVrApNrKEV5WPTXpBeX83K/6LFznqfd53Nto5AGDqjV0XQbiZLIPu
+         DC8Sy2Bqpsf/ia4dmrsMJ6+Hz8i/+sgtzB2ooEIO9739ysW3eKbw+Vq/lVDJU5THPKXB
+         Es8mNXmVQhTg1ujlI0J5lxdhl3K9p4RpTop5a5JAHIZdLBCKnynKSGHm5IKRQ2qAdMbT
+         hdcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704205135; x=1704809935;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wMN809tankXeln0SghaIn8Kql+3yxJkVpIyb/WVy4mE=;
+        b=ZJh7AszkKm1zItJ7kMKoE6ikIkSaQBqSVZtloUQgvA5H7jk9ibgTwyp+LgWMRYwWij
+         LWn9s7NcCOIrgLDeoQUSpblPWGvGy0X7xg+n9etvA6K4YcvjeChoCNFKZbmWtx+ghzQN
+         4+8j619X5NaWZS3I3yhYKjJnqww4bfh3eFcHmZEwp1IJaaAE+PmmFhEuqyocTWVGyl2l
+         2fd9FLK57hX/qA+icFHBC14c1AkTGNHP1iT7ArMstq0Uk/Q9SWCOTHjutt6zGSy+w/3b
+         74Avy9njYd2HSJlNwa15/OMroxnBa90uwS2ziYU+9Or4PygvRjyXNjC/ohApC1bFdDGJ
+         Z6/w==
+X-Gm-Message-State: AOJu0Yw0Qy0SZ7Ffo+zm1j7EoG2Hpey2nUiWo623vh/whYbVM4TS/rFH
+	QD0aeWS8l2SHju/mWOgTScTZrLqM6rlnwg==
+X-Google-Smtp-Source: AGHT+IHuu8YHzUPNDkHHX9vez11aS4PONT163xT3HgL6zasNPiQtGDoJ4rm+KyN+vnhxYydK/VbwAw==
+X-Received: by 2002:adf:eb0c:0:b0:336:d9cc:3050 with SMTP id s12-20020adfeb0c000000b00336d9cc3050mr4083761wrn.126.1704205134756;
+        Tue, 02 Jan 2024 06:18:54 -0800 (PST)
+Received: from localhost.localdomain (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
+        by smtp.gmail.com with ESMTPSA id b14-20020adff90e000000b003373fe3d345sm5412159wrr.65.2024.01.02.06.18.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 06:18:54 -0800 (PST)
+From: Alexandre Ghiti <alexghiti@rivosinc.com>
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: [PATCH] riscv: Add support for BATCHED_UNMAP_TLB_FLUSH
+Date: Tue,  2 Jan 2024 15:18:51 +0100
+Message-Id: <20240102141851.105144-1-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,linux-foundation.org,wanadoo.fr,linux.intel.com,ACULAB.COM];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-On Tue,  2 Jan 2024 14:42:13 +1030, Qu Wenruo wrote:
+Allow to defer the flushing of the TLB when unmapping pges, which allows
+to reduce the numbers of IPI and the number of sfence.vma.
 
-> The new tests cases for memparse_safe() include:
-> 
-> - The existing test cases for kstrtoull()
->   Including all the 3 bases (8, 10, 16), and all the ok and failure
->   cases.
->   Although there are something we need to verify specific for
->   memparse_safe():
-> 
->   * @retptr and @value are not modified for failure cases
-> 
->   * return value are correct for failure cases
-> 
->   * @retptr is correct for the good cases
-> 
-> - New test cases
->   Not only testing the result value, but also the @retptr, including:
-> 
->   * good cases with extra tailing chars, but without valid prefix
->     The @retptr should point to the first char after a valid string.
->     3 cases for all the 3 bases.
-> 
->   * good cases with extra tailing chars, with valid prefix
->     5 cases for all the suffixes.
-> 
->   * bad cases without any number but stray suffix
->     Should be rejected with -EINVAL
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  lib/test-kstrtox.c | 235 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 235 insertions(+)
-> 
-> diff --git a/lib/test-kstrtox.c b/lib/test-kstrtox.c
-> index f355f67169b6..97c2f65a16cb 100644
-> --- a/lib/test-kstrtox.c
-> +++ b/lib/test-kstrtox.c
-> @@ -268,6 +268,237 @@ static void __init test_kstrtoll_ok(void)
->  	TEST_OK(kstrtoll, long long, "%lld", test_ll_ok);
->  }
->  
-> +/*
-> + * The special pattern to make sure the result is not modified for error cases.
-> + */
-> +#define ULL_PATTERN		(0xefefefef7a7a7a7aULL)
-> +#if BITS_PER_LONG == 32
-> +#define POINTER_PATTERN		(0xefef7a7a7aUL)
-> +#else
-> +#define POINTER_PATTERN		(ULL_PATTERN)
-> +#endif
-> +
-> +/* Want to include "E" suffix for full coverage. */
-> +#define MEMPARSE_TEST_SUFFIX	(MEMPARSE_SUFFIX_K | MEMPARSE_SUFFIX_M |\
-> +				 MEMPARSE_SUFFIX_G | MEMPARSE_SUFFIX_T |\
-> +				 MEMPARSE_SUFFIX_P | MEMPARSE_SUFFIX_E)
-> +
-> +static void __init test_memparse_safe_fail(void)
-> +{
-> +	struct memparse_test_fail {
-> +		const char *str;
-> +		/* Expected error number, either -EINVAL or -ERANGE. */
-> +		unsigned int expected_ret;
-> +	};
-> +	static const struct memparse_test_fail tests[] __initconst = {
-> +		/* No valid string can be found at all. */
-> +		{"", -EINVAL},
-> +		{"\n", -EINVAL},
-> +		{"\n0", -EINVAL},
-> +		{"+", -EINVAL},
-> +		{"-", -EINVAL},
-> +
-> +		/* Only hex prefix, but no valid string. */
-> +		{"0x", -EINVAL},
-> +		{"0X", -EINVAL},
-> +
-> +		/* Only hex prefix, with suffix but still no valid string. */
-> +		{"0xK", -EINVAL},
-> +		{"0xM", -EINVAL},
-> +		{"0xG", -EINVAL},
-> +
-> +		/* Only hex prefix, with invalid chars. */
-> +		{"0xH", -EINVAL},
-> +		{"0xy", -EINVAL},
-> +
-> +		/*
-> +		 * No support for any leading "+-" chars, even followed by a valid
-> +		 * number.
-> +		 */
-> +		{"-0", -EINVAL},
-> +		{"+0", -EINVAL},
-> +		{"-1", -EINVAL},
-> +		{"+1", -EINVAL},
-> +
-> +		/* Stray suffix would also be rejected. */
-> +		{"K", -EINVAL},
-> +		{"P", -EINVAL},
-> +
-> +		/* Overflow in the string itself*/
-> +		{"18446744073709551616", -ERANGE},
-> +		{"02000000000000000000000", -ERANGE},
-> +		{"0x10000000000000000",	-ERANGE},
-nit:                                   ^ whitespace damage
-> +
-> +		/*
-> +		 * Good string but would overflow with suffix.
-> +		 *
-> +		 * Note, for "E" suffix, one should not use with hex, or "0x1E"
-> +		 * would be treated as 0x1e (30 in decimal), not 0x1 and "E" suffix.
-> +		 * Another reason "E" suffix is cursed.
-> +		 */
-> +		{"16E", -ERANGE},
-> +		{"020E", -ERANGE},
-> +		{"16384P", -ERANGE},
-> +		{"040000P", -ERANGE},
-> +		{"16777216T", -ERANGE},
-> +		{"0100000000T", -ERANGE},
-> +		{"17179869184G", -ERANGE},
-> +		{"0200000000000G", -ERANGE},
-> +		{"17592186044416M", -ERANGE},
-> +		{"0400000000000000M", -ERANGE},
-> +		{"18014398509481984K", -ERANGE},
-> +		{"01000000000000000000K", -ERANGE},
-> +	};
-> +	unsigned int i;
-> +
-> +	for_each_test(i, tests) {
-> +		const struct memparse_test_fail *t = &tests[i];
-> +		unsigned long long tmp = ULL_PATTERN;
-> +		char *retptr = (char *)POINTER_PATTERN;
-> +		int ret;
-> +
-> +		ret = memparse_safe(t->str, MEMPARSE_TEST_SUFFIX, &tmp, &retptr);
-> +		if (ret != t->expected_ret) {
-> +			WARN(1, "str '%s', expected ret %d got %d\n", t->str,
-> +			     t->expected_ret, ret);
-> +			continue;
-> +		}
-> +		if (tmp != ULL_PATTERN)
-> +			WARN(1, "str '%s' failed as expected, but result got modified",
-> +			     t->str);
-> +		if (retptr != (char *)POINTER_PATTERN)
-> +			WARN(1, "str '%s' failed as expected, but pointer got modified",
-> +			     t->str);
-> +	}
-> +}
-> +
-> +static void __init test_memparse_safe_ok(void)
-> +{
-> +	struct memparse_test_ok {
-> +		const char *str;
-> +		unsigned long long expected_value;
-> +		/* How many bytes the @retptr pointer should be moved forward. */
-> +		unsigned int retptr_off;
-> +	};
-> +	static DEFINE_TEST_OK(struct memparse_test_ok, tests) = {
-> +		/*
-> +		 * The same pattern of kstrtoull, just with extra @retptr
-> +		 * verification.
-> +		 */
-> +		{"0",			0ULL,			1},
-> +		{"1",			1ULL,			1},
-> +		{"127",			127ULL,			3},
-> +		{"128",			128ULL,			3},
-> +		{"129",			129ULL,			3},
-> +		{"255",			255ULL,			3},
-> +		{"256",			256ULL,			3},
-> +		{"257",			257ULL,			3},
-> +		{"32767",		32767ULL,		5},
-> +		{"32768",		32768ULL,		5},
-> +		{"32769",		32769ULL,		5},
-> +		{"65535",		65535ULL,		5},
-> +		{"65536",		65536ULL,		5},
-> +		{"65537",		65537ULL,		5},
-> +		{"2147483647",		2147483647ULL,		10},
-> +		{"2147483648",		2147483648ULL,		10},
-> +		{"2147483649",		2147483649ULL,		10},
-> +		{"4294967295",		4294967295ULL,		10},
-> +		{"4294967296",		4294967296ULL,		10},
-> +		{"4294967297",		4294967297ULL,		10},
-> +		{"9223372036854775807",	9223372036854775807ULL,	19},
-> +		{"9223372036854775808",	9223372036854775808ULL,	19},
-> +		{"9223372036854775809",	9223372036854775809ULL,	19},
-> +		{"18446744073709551614", 18446744073709551614ULL, 20},
-> +		{"18446744073709551615", 18446744073709551615ULL, 20},
-> +
-> +		{"00",				00ULL,		2},
-> +		{"01",				01ULL,		2},
-> +		{"0177",			0177ULL,	4},
-> +		{"0200",			0200ULL,	4},
-> +		{"0201",			0201ULL,	4},
-> +		{"0377",			0377ULL,	4},
-> +		{"0400",			0400ULL,	4},
-> +		{"0401",			0401ULL,	4},
-> +		{"077777",			077777ULL,	6},
-> +		{"0100000",			0100000ULL,	7},
-> +		{"0100001",			0100001ULL,	7},
-> +		{"0177777",			0177777ULL,	7},
-> +		{"0200000",			0200000ULL,	7},
-> +		{"0200001",			0200001ULL,	7},
-> +		{"017777777777",		017777777777ULL,	12},
-> +		{"020000000000",		020000000000ULL,	12},
-> +		{"020000000001",		020000000001ULL,	12},
-> +		{"037777777777",		037777777777ULL,	12},
-> +		{"040000000000",		040000000000ULL,	12},
-> +		{"040000000001",		040000000001ULL,	12},
-> +		{"0777777777777777777777",	0777777777777777777777ULL, 22},
-> +		{"01000000000000000000000",	01000000000000000000000ULL, 23},
-> +		{"01000000000000000000001",	01000000000000000000001ULL, 23},
-> +		{"01777777777777777777776",	01777777777777777777776ULL, 23},
-> +		{"01777777777777777777777",	01777777777777777777777ULL, 23},
-> +
-> +		{"0x0",			0x0ULL,			3},
-> +		{"0x1",			0x1ULL,			3},
-> +		{"0x7f",		0x7fULL,		4},
-> +		{"0x80",		0x80ULL,		4},
-> +		{"0x81",		0x81ULL,		4},
-> +		{"0xff",		0xffULL,		4},
-> +		{"0x100",		0x100ULL,		5},
-> +		{"0x101",		0x101ULL,		5},
-> +		{"0x7fff",		0x7fffULL,		6},
-> +		{"0x8000",		0x8000ULL,		6},
-> +		{"0x8001",		0x8001ULL,		6},
-> +		{"0xffff",		0xffffULL,		6},
-> +		{"0x10000",		0x10000ULL,		7},
-> +		{"0x10001",		0x10001ULL,		7},
-> +		{"0x7fffffff",		0x7fffffffULL,		10},
-> +		{"0x80000000",		0x80000000ULL,		10},
-> +		{"0x80000001",		0x80000001ULL,		10},
-> +		{"0xffffffff",		0xffffffffULL,		10},
-> +		{"0x100000000",		0x100000000ULL,		11},
-> +		{"0x100000001",		0x100000001ULL,		11},
-> +		{"0x7fffffffffffffff",	0x7fffffffffffffffULL,	18},
-> +		{"0x8000000000000000",	0x8000000000000000ULL,	18},
-> +		{"0x8000000000000001",	0x8000000000000001ULL,	18},
-> +		{"0xfffffffffffffffe",	0xfffffffffffffffeULL,	18},
-> +		{"0xffffffffffffffff",	0xffffffffffffffffULL,	18},
-> +
-> +		/* Now with extra non-suffix chars to test @retptr update. */
-> +		{"1q84",		1,			1},
-> +		{"02o45",		2,			2},
-> +		{"0xffvii",		0xff,			4},
-> +
-> +		/*
-> +		 * Finally one suffix then tailing chars, to test the @retptr
-> +		 * behavior.
-> +		 */
-> +		{"68k ",		69632,			3},
-> +		{"8MS",			8388608,		2},
-> +		{"0xaeGis",		0x2b80000000,		5},
-> +		{"0xaTx",		0xa0000000000,		4},
-> +		{"3E8",			0x3000000000000000,	2},
+The ubenchmarch used in commit 43b3dfdd0455 ("arm64: support
+batched/deferred tlb shootdown during page reclamation/migration") shows
+good performance improvement and perf reports an important decrease in
+time spent flushing the tlb (results come from qemu):
 
-In future it'd be good to get some coverage for non-MEMPARSE_TEST_SUFFIX
-use cases, e.g.:
-  /* supported suffix, but not provided with @suffixes */
-  {"7K", (MEMPARSE_SUFFIX_M |\
-          MEMPARSE_SUFFIX_G | MEMPARSE_SUFFIX_T |\
-          MEMPARSE_SUFFIX_P | MEMPARSE_SUFFIX_E), 7, 1},
+Before this patch:
 
-> +	};
-> +	unsigned int i;
-> +
-> +	for_each_test(i, tests) {
-> +		const struct memparse_test_ok *t = &tests[i];
-> +		unsigned long long tmp;
-> +		char *retptr;
-> +		int ret;
-> +
-> +		ret = memparse_safe(t->str, MEMPARSE_TEST_SUFFIX, &tmp, &retptr);
-> +		if (ret != 0) {
-> +			WARN(1, "str '%s', expected ret 0 got %d\n", t->str, ret);
-> +			continue;
-> +		}
-> +		if (tmp != t->expected_value)
-> +			WARN(1, "str '%s' incorrect result, expected %llu got %llu",
-> +			     t->str, t->expected_value, tmp);
-> +		if (retptr != t->str + t->retptr_off)
-> +			WARN(1, "str '%s' incorrect endptr, expected %u got %zu",
-> +			     t->str, t->retptr_off, retptr - t->str);
-> +	}
-> +}
->  static void __init test_kstrtoll_fail(void)
->  {
->  	static DEFINE_TEST_FAIL(test_ll_fail) = {
-> @@ -710,6 +941,10 @@ static int __init test_kstrtox_init(void)
->  	test_kstrtoll_ok();
->  	test_kstrtoll_fail();
->  
-> +	test_memparse_safe_ok();
-> +	test_memparse_safe_fail();
-> +
-> +
-nit: whitespace ^
+real	2m1.135s
+user	0m0.980s
+sys	2m0.096s
 
->  	test_kstrtou64_ok();
->  	test_kstrtou64_fail();
->  	test_kstrtos64_ok();
+4.83%  batch_tlb  [kernel.kallsyms]            [k] __flush_tlb_range
 
-With Geert's comments addressed:
-Reviewed-by: David Disseldorp <ddiss@suse.de>
+After this patch:
+
+real	1m0.543s
+user	0m1.059s
+sys	0m59.489s
+
+0.14%  batch_tlb  [kernel.kallsyms]            [k] __flush_tlb_range
+
+Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+---
+ arch/riscv/Kconfig                |  1 +
+ arch/riscv/include/asm/tlbbatch.h | 15 +++++++
+ arch/riscv/include/asm/tlbflush.h | 10 +++++
+ arch/riscv/mm/tlbflush.c          | 71 ++++++++++++++++++++++---------
+ 4 files changed, 77 insertions(+), 20 deletions(-)
+ create mode 100644 arch/riscv/include/asm/tlbbatch.h
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 7603bd8ab333..aa07bd43b138 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -53,6 +53,7 @@ config RISCV
+ 	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USES_CFI_TRAPS if CFI_CLANG
++	select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH if SMP && MMU
+ 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+ 	select ARCH_WANT_FRAME_POINTERS
+ 	select ARCH_WANT_GENERAL_HUGETLB if !RISCV_ISA_SVNAPOT
+diff --git a/arch/riscv/include/asm/tlbbatch.h b/arch/riscv/include/asm/tlbbatch.h
+new file mode 100644
+index 000000000000..46014f70b9da
+--- /dev/null
++++ b/arch/riscv/include/asm/tlbbatch.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2023 Rivos Inc.
++ */
++
++#ifndef _ASM_RISCV_TLBBATCH_H
++#define _ASM_RISCV_TLBBATCH_H
++
++#include <linux/cpumask.h>
++
++struct arch_tlbflush_unmap_batch {
++	struct cpumask cpumask;
++};
++
++#endif /* _ASM_RISCV_TLBBATCH_H */
+diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
+index 8f3418c5f172..f0b731ccc0c2 100644
+--- a/arch/riscv/include/asm/tlbflush.h
++++ b/arch/riscv/include/asm/tlbflush.h
+@@ -46,6 +46,16 @@ void flush_tlb_kernel_range(unsigned long start, unsigned long end);
+ void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ 			unsigned long end);
+ #endif
++
++#ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
++bool arch_tlbbatch_should_defer(struct mm_struct *mm);
++void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *batch,
++			       struct mm_struct *mm,
++			       unsigned long uaddr);
++void arch_flush_tlb_batched_pending(struct mm_struct *mm);
++void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
++#endif /* CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
++
+ #else /* CONFIG_SMP && CONFIG_MMU */
+ 
+ #define flush_tlb_all() local_flush_tlb_all()
+diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+index e6659d7368b3..bb623bca0a7d 100644
+--- a/arch/riscv/mm/tlbflush.c
++++ b/arch/riscv/mm/tlbflush.c
+@@ -93,29 +93,23 @@ static void __ipi_flush_tlb_range_asid(void *info)
+ 	local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid);
+ }
+ 
+-static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
+-			      unsigned long size, unsigned long stride)
++static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
++			      unsigned long start, unsigned long size,
++			      unsigned long stride)
+ {
+ 	struct flush_tlb_range_data ftd;
+-	const struct cpumask *cmask;
+-	unsigned long asid = FLUSH_TLB_NO_ASID;
+ 	bool broadcast;
+ 
+-	if (mm) {
+-		unsigned int cpuid;
++	if (cpumask_empty(cmask))
++		return;
+ 
+-		cmask = mm_cpumask(mm);
+-		if (cpumask_empty(cmask))
+-			return;
++	if (cmask != cpu_online_mask) {
++		unsigned int cpuid;
+ 
+ 		cpuid = get_cpu();
+ 		/* check if the tlbflush needs to be sent to other CPUs */
+ 		broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
+-
+-		if (static_branch_unlikely(&use_asid_allocator))
+-			asid = atomic_long_read(&mm->context.id) & asid_mask;
+ 	} else {
+-		cmask = cpu_online_mask;
+ 		broadcast = true;
+ 	}
+ 
+@@ -135,25 +129,34 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
+ 		local_flush_tlb_range_asid(start, size, stride, asid);
+ 	}
+ 
+-	if (mm)
++	if (cmask != cpu_online_mask)
+ 		put_cpu();
+ }
+ 
++static inline unsigned long get_mm_asid(struct mm_struct *mm)
++{
++	return static_branch_unlikely(&use_asid_allocator) ?
++			atomic_long_read(&mm->context.id) & asid_mask : FLUSH_TLB_NO_ASID;
++}
++
+ void flush_tlb_mm(struct mm_struct *mm)
+ {
+-	__flush_tlb_range(mm, 0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
++	__flush_tlb_range(mm_cpumask(mm), get_mm_asid(mm),
++			  0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
+ }
+ 
+ void flush_tlb_mm_range(struct mm_struct *mm,
+ 			unsigned long start, unsigned long end,
+ 			unsigned int page_size)
+ {
+-	__flush_tlb_range(mm, start, end - start, page_size);
++	__flush_tlb_range(mm_cpumask(mm), get_mm_asid(mm),
++			  start, end - start, page_size);
+ }
+ 
+ void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+ {
+-	__flush_tlb_range(vma->vm_mm, addr, PAGE_SIZE, PAGE_SIZE);
++	__flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
++			  addr, PAGE_SIZE, PAGE_SIZE);
+ }
+ 
+ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+@@ -185,18 +188,46 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ 		}
+ 	}
+ 
+-	__flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
++	__flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
++			  start, end - start, stride_size);
+ }
+ 
+ void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+ {
+-	__flush_tlb_range(NULL, start, end - start, PAGE_SIZE);
++	__flush_tlb_range((struct cpumask *)cpu_online_mask, FLUSH_TLB_NO_ASID,
++			  start, end - start, PAGE_SIZE);
+ }
+ 
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ 			unsigned long end)
+ {
+-	__flush_tlb_range(vma->vm_mm, start, end - start, PMD_SIZE);
++	__flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
++			  start, end - start, PMD_SIZE);
+ }
+ #endif
++
++#ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
++bool arch_tlbbatch_should_defer(struct mm_struct *mm)
++{
++	return true;
++}
++
++void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *batch,
++			       struct mm_struct *mm,
++			       unsigned long uaddr)
++{
++	cpumask_or(&batch->cpumask, &batch->cpumask, mm_cpumask(mm));
++}
++
++void arch_flush_tlb_batched_pending(struct mm_struct *mm)
++{
++	flush_tlb_mm(mm);
++}
++
++void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
++{
++	__flush_tlb_range(&batch->cpumask, FLUSH_TLB_NO_ASID, 0,
++			  FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
++}
++#endif /* CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
+-- 
+2.39.2
+
 
