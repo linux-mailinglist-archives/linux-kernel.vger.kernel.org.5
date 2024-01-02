@@ -1,86 +1,76 @@
-Return-Path: <linux-kernel+bounces-14610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7CF4821F98
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:34:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B587821FA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:43:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5E711C225E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:34:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B8911C216F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:43:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5AE014F90;
-	Tue,  2 Jan 2024 16:33:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5B7F14F9A;
+	Tue,  2 Jan 2024 16:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gPkXFcxL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o7Yj3Lp5"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 396C414F81;
-	Tue,  2 Jan 2024 16:33:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5069BC433C8;
-	Tue,  2 Jan 2024 16:33:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1791914F83;
+	Tue,  2 Jan 2024 16:43:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 013BBC433C8;
+	Tue,  2 Jan 2024 16:43:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704213234;
-	bh=ccMdA92CK8ykTFXqfbZF1lWT1GVhqrcdf167LJsJX48=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=gPkXFcxLcRwxTJGg18yG5kwUTtPCMbXlR9nIfxl0xRdpeieROGL6kWnkjGrFBT3Lc
-	 /3WpFNfOGHZEC6N1zgxKUpAqo2EcU+Axo832hhhOq/XlIKDYj0VJ6OSWIR8pSp3o/v
-	 40LQ9WVcVYzOdeZbhNZcGjNzZzi8yqI9f5O+Hx6TLx4tXOuUkDGIJqrg8FNaCiC1kw
-	 Ww8I1HU6BBA8gIvGY7RixIKOZ6ecb+5cFrpX6IA8wZfFhzS1zbKPQ4/DhA3ErO0Kbm
-	 uDAoYdB20MooeFGawRTP5gtwOKqHZFKAZoBC0S+7SZXpHrTIfJJTXpAMv4xTzostkE
-	 imWacBLWbaQoQ==
-Message-ID: <09a33544-c9b5-49a4-9276-727e2eb8e521@kernel.org>
-Date: Tue, 2 Jan 2024 09:33:53 -0700
+	s=k20201202; t=1704213785;
+	bh=g7wHRyWwJkr3NEQCvhHzxxKyjX6X4R5nqKlvMKpRH3E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=o7Yj3Lp5wAW/2RccH39yN4dCX0GZmNG5YUfYaKtA2TfR3aiOY81ofEqB9U2UCx1nj
+	 YHW3sYOgXfIeW7UU/4Gi1HrUmQbPj+5KMHJq5vhv/2xwu4iJt3IYbOu3H/2dcFV0qE
+	 IwNshNqG3P9JySMI77GlgHqDVEgTHHuzyQAmf2a8Vb7UbQPUMBnnuGO/taa4xOhG+a
+	 JbXPK96gN3SsyMEvL12zTCu6G0IgqdzDDsIPxxnGMwLWF677tK8Ze3/tI8r0oymL6m
+	 KGCyK+5pJxrguhE/9Z42pOc/6iXjreOBxZSDkfjINEzCEIe/srxrHZK2ZY52SknkHP
+	 5majKLuPIh6pA==
+Received: (nullmailer pid 2980110 invoked by uid 1000);
+	Tue, 02 Jan 2024 16:39:21 -0000
+Date: Tue, 2 Jan 2024 09:39:21 -0700
+From: Rob Herring <robh@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Aakarsh Jain <aakarsh.jain@samsung.com>, linux-media@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH v2] media: dt-bindings: samsung,s5p-mfc: Fix iommu
+ properties schemas
+Message-ID: <170421310662.2970284.2901924887435555463.robh@kernel.org>
+References: <20231214195553.862920-1-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 2/3] net: gro: parse ipv6 ext headers without
- frag0 invalidation
-Content-Language: en-US
-To: Richard Gobert <richardbgobert@gmail.com>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <127b8199-1cd4-42d7-9b2b-875abaad93fe@gmail.com>
- <90117449-1f4a-47d7-baf4-2ed6540bc436@gmail.com>
-From: David Ahern <dsahern@kernel.org>
-In-Reply-To: <90117449-1f4a-47d7-baf4-2ed6540bc436@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214195553.862920-1-robh@kernel.org>
 
-On 1/2/24 6:24 AM, Richard Gobert wrote:
-> The existing code always pulls the IPv6 header and sets the transport
-> offset initially. Then optionally again pulls any extension headers in
-> ipv6_gso_pull_exthdrs and sets the transport offset again on return from
-> that call. skb->data is set at the start of the first extension header
-> before calling ipv6_gso_pull_exthdrs, and must disable the frag0
-> optimization because that function uses pskb_may_pull/pskb_pull instead of
-> skb_gro_ helpers. It sets the GRO offset to the TCP header with
-> skb_gro_pull and sets the transport header. Then returns skb->data to its
-> position before this block.
+
+On Thu, 14 Dec 2023 13:55:52 -0600, Rob Herring wrote:
+> The iommus and iommu-names property schemas have several issues. First,
+> 'iommus-names' in the if/then schemas is the wrong name. As all the names
+> are the same, they can be defined at the top level instead. Then the
+> if/then schemas just need to define how many entries. The iommus if/then
+> schemas are also redundant. Best I can tell, the desire was to require 2
+> entries for "samsung,exynos5433-mfc", "samsung,mfc-v5", "samsung,mfc-v6",
+> and "samsung,mfc-v8".
 > 
-> This commit introduces a new helper function - ipv6_gro_pull_exthdrs -
-> which is used in ipv6_gro_receive to pull ipv6 ext headers instead of
-> ipv6_gso_pull_exthdrs. Thus, there is no modification of skb->data, all
-> operations use skb_gro_* helpers, and the frag0 fast path can be taken for
-> IPv6 packets with ext headers.
-> 
-> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
-> Reviewed-by: Willem de Bruijn <willemb@google.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  include/net/ipv6.h     |  1 +
->  net/ipv6/ip6_offload.c | 51 +++++++++++++++++++++++++++++++++---------
->  2 files changed, 42 insertions(+), 10 deletions(-)
+> v2:
+>  - Fix some more cases of iommus-names
+> ---
+>  .../bindings/media/samsung,s5p-mfc.yaml       | 33 ++++++++-----------
+>  1 file changed, 13 insertions(+), 20 deletions(-)
 > 
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
-
+Applied, thanks!
 
 
