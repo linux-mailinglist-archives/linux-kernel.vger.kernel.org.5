@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-14507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEA28821E0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:50:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CA0E821E0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:50:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DC2A1F22DFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:50:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA84F2838C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6732314AAA;
-	Tue,  2 Jan 2024 14:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2722614F73;
+	Tue,  2 Jan 2024 14:50:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IpjT9yYl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K9+gvbW8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7871914A92
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 516B514F67
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso1884001a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:50:11 -0800 (PST)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-28c467446f0so4159082a91.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:50:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704207010; x=1704811810; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704207019; x=1704811819; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gvEmLr+UaTr62j3UG+52tMfBhddUI6/cULZMLMKbxpo=;
-        b=IpjT9yYl6bKZX6tRvqhFWK/37Jm7ejB4R0mFwTe+r1zBExaVCHU6YoX5wSrlh13frC
-         u9jGyWwT1QZFv+LiLhaAOgQvlZutpAKLUITlpyx32FbTdGXk9JADZz4FoGahz4Fno+53
-         Lpr0dsRWJtYeRB57KNWCg0oO8lJqda5xlEadFCxHlOuZElNuJ1cTlMXT1oS8QT6FTmDS
-         yojeRyMDXnb1iNU9kK8+vIcuSl/VZ0c4ikIqpx1fm775jWK5w9DkJRYwJ7YI+kPxHyOV
-         AHfeaIJ4c7ECBOZtS36a0kx0u09ifeRzD9iH33Ty5qheohjyMfToDyC2IxXHBlyGX8gt
-         O/TQ==
+        bh=nx9emZL9ku/A2bkH8s+Myg+EcmBlTQ3WIwd3hli5Dao=;
+        b=K9+gvbW8XwHe079jSn5gCAvnEQ2XmA19vVTdGS1SZmIBvxnSYwtvmOtoxvnDdYXsxW
+         bvGjlDeDpXPp/zMzvZZvcJcSOUspOFB9eIrQmQMnPJwU6mtJmaSv1wqbeAq3AMeqsArM
+         ItoDxaidzPjMWjxpMw3LfFfvYLtxXf8B4XzrI8McHr503FcpQaPebBI4ujVlWph1vWQj
+         kYlEVC6pJcARsJmt9NyD3hnhb808RDiz6xJd0Guv2dSE3464QfmglRut6H3e6hgaCwdM
+         RvP2EQqm+7yMPhaIv6mMQRUWLAaaRmTECKh00j7UxdjHgh7NWvG5bWsjCDIF2y/9e44k
+         hf8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704207010; x=1704811810;
+        d=1e100.net; s=20230601; t=1704207019; x=1704811819;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gvEmLr+UaTr62j3UG+52tMfBhddUI6/cULZMLMKbxpo=;
-        b=W2QFIVwG30ueJ0IJnNd0tyN5A0ARD70WxFTwoLUYAOAcAFwnoW+vUDcF/BnISBME03
-         nWsNOA8FRdMlK96cY06bNsamx5YZR6QqfHWmNC29s9j5HfqNeEGZrQrMoFnYmtqydlf3
-         o7xhk7jXZPFGAen9rOHL/LEhatBhrKDGItKvzlww5+smRVIcFJZVBYtxNEJVammpsv8G
-         8w1ImUCxhmcqyE2i1cGX6BI1uCxizooOAWlQ+aM4lqBXcSGQHKEA/rqBdvHrON/MLqo2
-         KDC09Z/OduIfimGT2kq3xNFmXNandWT3+4Kn1hWgNen4702GbCA9YltCjrNw0DWNIvex
-         wA5Q==
-X-Gm-Message-State: AOJu0YywLfGicw8+lqBPT9Ry+o34Dvba7CXgaGmDU29ujZRM8axzA0S8
-	7CCKyTtfWp7pMnG37mTQLUqcc5l0uNqffg==
-X-Google-Smtp-Source: AGHT+IFNmn5V6rq7TK2Nmxo31rOyhLq839u1k8G5xOyK4HuBoRPhSjdEBFSmj7nj+1BJk9QdvNEOGw==
-X-Received: by 2002:a05:6a20:37a5:b0:197:22c2:2c3 with SMTP id q37-20020a056a2037a500b0019722c202c3mr783310pze.38.1704207010538;
-        Tue, 02 Jan 2024 06:50:10 -0800 (PST)
+        bh=nx9emZL9ku/A2bkH8s+Myg+EcmBlTQ3WIwd3hli5Dao=;
+        b=YET1OPTpwjrMIYj3LASJumK+W0NJwNYRx8SjKm4FxGX4iNzClfRp8ST0U8K3Tqci9P
+         F4+/u6O5VPIMIDhfKgQOjCDeOaoxVUKolr723+J+UfBZ53KCC7QZLyhT3z6OC9gENANA
+         WKy/MCeULV+ZkJRUHZfFUEGH3RbwixDiRgfKM+B33cWD4cAorznK8EYr+WCYR49h4SJr
+         KoBHUmfTedOsGn8gd0UP4DS3lHTsrBoQnhAgTo2FFbIoPqLeZkLQ3a167gmkK4lgjXdA
+         LlFYDqQq8VcGG8vVgFHndg5Dq36HW9J0bDqhVvx2/yXYicJlFFJ1on3IbevKsCd5oqGE
+         O9MQ==
+X-Gm-Message-State: AOJu0YxR2OFPv5oiW8QJDkmF0JrbTnIPbsVQZII2qDfphW79uTozf4Sc
+	T4R4v/jRpFrDwRZtRcqG95eGebrilbuLog==
+X-Google-Smtp-Source: AGHT+IH1AtANcoTpV/1fg7LaSPtmB+gncYnvxJC4l0K9bGliRbPQf3qOvwE+k/EciIKWd+fgvtLnfw==
+X-Received: by 2002:a17:90b:3781:b0:28b:d31d:bca5 with SMTP id mz1-20020a17090b378100b0028bd31dbca5mr21613623pjb.32.1704207019429;
+        Tue, 02 Jan 2024 06:50:19 -0800 (PST)
 Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id 19-20020a17090a005300b0028be216595csm25836878pjb.4.2024.01.02.06.50.04
+        by smtp.gmail.com with ESMTPSA id 19-20020a17090a005300b0028be216595csm25836878pjb.4.2024.01.02.06.50.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 06:50:10 -0800 (PST)
+        Tue, 02 Jan 2024 06:50:19 -0800 (PST)
 From: Yuntao Wang <ytcoode@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	kexec@lists.infradead.org,
@@ -74,9 +74,9 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Sourabh Jain <sourabhjain@linux.ibm.com>,
 	Takashi Iwai <tiwai@suse.de>,
 	Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH v2 1/3] x86/crash: remove the unused image parameter from prepare_elf_headers()
-Date: Tue,  2 Jan 2024 22:49:03 +0800
-Message-ID: <20240102144905.110047-2-ytcoode@gmail.com>
+Subject: [PATCH v2 2/3] x86/crash: use SZ_1M macro instead of hardcoded value
+Date: Tue,  2 Jan 2024 22:49:04 +0800
+Message-ID: <20240102144905.110047-3-ytcoode@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240102144905.110047-1-ytcoode@gmail.com>
 References: <20240102144905.110047-1-ytcoode@gmail.com>
@@ -88,57 +88,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The image parameter is no longer in use, remove it. Also, tidy up the code
-formatting.
+Use SZ_1M macro instead of hardcoded 1<<20 to make code more readable.
 
 Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 Acked-by: Baoquan He <bhe@redhat.com>
 ---
- arch/x86/kernel/crash.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/kernel/crash.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index c92d88680dbf..792231a56d11 100644
+index 792231a56d11..249b5876e7ec 100644
 --- a/arch/x86/kernel/crash.c
 +++ b/arch/x86/kernel/crash.c
-@@ -198,8 +198,8 @@ static int prepare_elf64_ram_headers_callback(struct resource *res, void *arg)
- }
+@@ -170,7 +170,7 @@ static int elf_header_exclude_ranges(struct crash_mem *cmem)
+ 	int ret = 0;
  
- /* Prepare elf headers. Return addr and size */
--static int prepare_elf_headers(struct kimage *image, void **addr,
--					unsigned long *sz, unsigned long *nr_mem_ranges)
-+static int prepare_elf_headers(void **addr, unsigned long *sz,
-+			       unsigned long *nr_mem_ranges)
- {
- 	struct crash_mem *cmem;
- 	int ret;
-@@ -221,7 +221,7 @@ static int prepare_elf_headers(struct kimage *image, void **addr,
- 	*nr_mem_ranges = cmem->nr_ranges;
- 
- 	/* By default prepare 64bit headers */
--	ret =  crash_prepare_elf64_headers(cmem, IS_ENABLED(CONFIG_X86_64), addr, sz);
-+	ret = crash_prepare_elf64_headers(cmem, IS_ENABLED(CONFIG_X86_64), addr, sz);
- 
- out:
- 	vfree(cmem);
-@@ -349,7 +349,7 @@ int crash_load_segments(struct kimage *image)
- 				  .buf_max = ULONG_MAX, .top_down = false };
- 
- 	/* Prepare elf headers and add a segment */
--	ret = prepare_elf_headers(image, &kbuf.buffer, &kbuf.bufsz, &pnum);
-+	ret = prepare_elf_headers(&kbuf.buffer, &kbuf.bufsz, &pnum);
+ 	/* Exclude the low 1M because it is always reserved */
+-	ret = crash_exclude_mem_range(cmem, 0, (1<<20)-1);
++	ret = crash_exclude_mem_range(cmem, 0, SZ_1M - 1);
  	if (ret)
  		return ret;
  
-@@ -452,7 +452,7 @@ void arch_crash_handle_hotplug_event(struct kimage *image)
- 	 * Create the new elfcorehdr reflecting the changes to CPU and/or
- 	 * memory resources.
- 	 */
--	if (prepare_elf_headers(image, &elfbuf, &elfsz, &nr_mem_ranges)) {
-+	if (prepare_elf_headers(&elfbuf, &elfsz, &nr_mem_ranges)) {
- 		pr_err("unable to create new elfcorehdr");
- 		goto out;
- 	}
 -- 
 2.43.0
 
