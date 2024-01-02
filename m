@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-14873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 259458223A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:50:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DCA6822403
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:55:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E651C1C22A0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:50:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E479283410
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A121C1944E;
-	Tue,  2 Jan 2024 21:46:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C626D1DDDA;
+	Tue,  2 Jan 2024 21:46:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MfN7nYLP"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="cMFWgU1r"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5DDA1803F;
-	Tue,  2 Jan 2024 21:46:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 605AF1CF8F;
+	Tue,  2 Jan 2024 21:46:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 402KfG3Z013656;
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 402JU40E007927;
 	Tue, 2 Jan 2024 21:46:25 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=E7ozCBUEd5eMhyDHRgWt
-	lAvFMDO6aFPFBgk1S/Zoj9c=; b=MfN7nYLP45pB9qTdhf46XgOJuyNNiatjVY87
-	zQ0xriAjOg+i/WB33/JGSl3bziBgyNoK6RiaTOKFZYpPi74RBg3Yhs+0N2NzWW8j
-	fKvQgtWRZagM4b80Vtilpq50apgL93p6c99VzcxfsUpl6ieEfHObNaAVBh3QD8rT
-	QUdQL8AzTusn6Bui4KSnCx5IwoGUYNnmUh8Wmv5UHCM6Pc2dTIWUQxckwcR+4Uqe
-	8sfEvvCs+SpAYUPFoEaegmN7pfticT1sC4mVRzIXOY4coQgPc4jyXRS8ilTYBws2
-	6ktvbJ8kC84DjuFzKG712tS6qPEY/ygG+9Y8ZJK4SNyviLlAww==
+	:mime-version:content-type; s=qcppdkim1; bh=As/LdtUmbbB5siySloFf
+	0kGunSrAkzqtvS8hEof3Hjw=; b=cMFWgU1rsNPFzg0pKPg9uIjD5vCqXMjy/VAU
+	2k4vvokrCIy8iDdslxGq3vZOZTnLBLSfQhuQ8BgPuN6gU1KFJm93Gr6Jnz7eVA2X
+	mGl+aqYQtP8Ckj16fu5FOELTCxjJ0FGaLMrT33++fAEZb0EFNSvffcoYd9IG4XtT
+	HZ+W2SBYk4rg5Liabjd4162dg8W20C7iY7HGMrYg2sb/OoEGgGIDWIzTGFhqScxd
+	0KR9obSfbZ/Ndwvh9Ay/vsUnZuiBrd50l1qF92g2qF08EVwuzrkb8Fo/NppkJpLR
+	o+EuhbLkm52WQe6VsB87CEIY2TkTi2lMxOW0hLOWMJJCZMHjnA==
 Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vcgub98m0-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vbsyk2yb0-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 21:46:24 +0000 (GMT)
+	Tue, 02 Jan 2024 21:46:25 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 402LkOPG003246
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 402LkOPA003251
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 2 Jan 2024 21:46:24 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
@@ -58,9 +58,9 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v12 20/41] ALSA: usb-audio: Check for support for requested audio format
-Date: Tue, 2 Jan 2024 13:45:28 -0800
-Message-ID: <20240102214549.22498-21-quic_wcheng@quicinc.com>
+Subject: [PATCH v12 21/41] ASoC: usb: Add PCM format check API for USB backend
+Date: Tue, 2 Jan 2024 13:45:29 -0800
+Message-ID: <20240102214549.22498-22-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240102214549.22498-1-quic_wcheng@quicinc.com>
 References: <20240102214549.22498-1-quic_wcheng@quicinc.com>
@@ -75,96 +75,75 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Hv9Z3CG5-qY2wVJBzrcPuK8btiheKgIp
-X-Proofpoint-GUID: Hv9Z3CG5-qY2wVJBzrcPuK8btiheKgIp
+X-Proofpoint-ORIG-GUID: KnPDFzMt07AOILiz33GmyoyJysan74Ex
+X-Proofpoint-GUID: KnPDFzMt07AOILiz33GmyoyJysan74Ex
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 phishscore=0 priorityscore=1501 clxscore=1015
- mlxlogscore=999 impostorscore=0 adultscore=0 spamscore=0 mlxscore=0
- bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
+ bulkscore=0 mlxlogscore=999 spamscore=0 suspectscore=0 clxscore=1015
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2401020161
 
-Allow for checks on a specific USB audio device to see if a requested PCM
-format is supported.  This is needed for support when playback is
-initiated by the ASoC USB backend path.
+Introduce a helper to check if a particular PCM format is supported by the
+USB audio device connected.  If the USB audio device does not have an
+audio profile which can support the requested format, then notify the USB
+backend.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/usb/card.c | 40 ++++++++++++++++++++++++++++++++++++++++
- sound/usb/card.h | 11 +++++++++++
- 2 files changed, 51 insertions(+)
+ include/sound/soc-usb.h |  2 ++
+ sound/soc/soc-usb.c     | 25 +++++++++++++++++++++++++
+ 2 files changed, 27 insertions(+)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index c0b312e264bf..11b827b7a2a5 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -162,6 +162,46 @@ int snd_usb_unregister_platform_ops(void)
+diff --git a/include/sound/soc-usb.h b/include/sound/soc-usb.h
+index c0c6b5abacdf..d9fc83180c56 100644
+--- a/include/sound/soc-usb.h
++++ b/include/sound/soc-usb.h
+@@ -38,6 +38,8 @@ struct snd_soc_usb {
+ };
+ 
+ const char *snd_soc_usb_get_components_tag(bool playback);
++int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
++			int direction);
+ 
+ int snd_soc_usb_connect(struct device *usbdev, struct snd_soc_usb_device *sdev);
+ int snd_soc_usb_disconnect(struct device *usbdev, struct snd_soc_usb_device *sdev);
+diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
+index 5b127141f0a1..cad8e1d798e4 100644
+--- a/sound/soc/soc-usb.c
++++ b/sound/soc/soc-usb.c
+@@ -80,6 +80,31 @@ void *snd_soc_usb_find_priv_data(struct device *dev)
  }
- EXPORT_SYMBOL_GPL(snd_usb_unregister_platform_ops);
+ EXPORT_SYMBOL_GPL(snd_soc_usb_find_priv_data);
  
-+/*
-+ * Checks to see if requested audio profile, i.e sample rate, # of
-+ * channels, etc... is supported by the substream associated to the
-+ * USB audio device.
++/**
++ * snd_soc_usb_find_format() - Check if audio format is supported
++ * @card_idx: USB sound chip array index
++ * @params: PCM parameters
++ * @direction: capture or playback
++ *
++ * Ensure that a requested audio profile from the ASoC side is able to be
++ * supported by the USB device.
++ *
++ * Return 0 on success, negative on error.
++ *
 + */
-+struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
-+			struct snd_pcm_hw_params *params, int direction)
++int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
++			int direction)
 +{
-+	struct snd_usb_audio *chip;
-+	struct snd_usb_substream *subs;
 +	struct snd_usb_stream *as;
-+	const struct audioformat *fmt;
 +
-+	/*
-+	 * Register mutex is held when populating and clearing usb_chip
-+	 * array.
-+	 */
-+	mutex_lock(&register_mutex);
-+	chip = usb_chip[card_idx];
-+	if (!chip) {
-+		mutex_unlock(&register_mutex);
-+		return NULL;
-+	}
++	as = snd_usb_find_suppported_substream(card_idx, params, direction);
++	if (!as)
++		return -EOPNOTSUPP;
 +
-+	if (enable[card_idx]) {
-+		list_for_each_entry(as, &chip->pcm_list, list) {
-+			subs = &as->substream[direction];
-+			fmt = snd_usb_find_substream_format(subs, params);
-+			if (fmt) {
-+				mutex_unlock(&register_mutex);
-+				return as;
-+			}
-+		}
-+	}
-+	mutex_unlock(&register_mutex);
-+
-+	return NULL;
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
++EXPORT_SYMBOL_GPL(snd_soc_usb_find_format);
 +
- /*
-  * disconnect streams
-  * called from usb_audio_disconnect()
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index 02e4ea898db5..ed4a664e24e5 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -217,4 +217,15 @@ struct snd_usb_platform_ops {
- 
- int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops);
- int snd_usb_unregister_platform_ops(void);
-+
-+#if IS_ENABLED(CONFIG_SND_USB_AUDIO)
-+struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
-+			struct snd_pcm_hw_params *params, int direction);
-+#else
-+static struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
-+			struct snd_pcm_hw_params *params, int direction)
-+{
-+	return NULL;
-+}
-+#endif /* IS_ENABLED(CONFIG_SND_USB_AUDIO) */
- #endif /* __USBAUDIO_CARD_H */
+ /**
+  * snd_soc_usb_allocate_port() - allocate a SOC USB device
+  * @component: USB DPCM backend DAI component
 
