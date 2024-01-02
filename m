@@ -1,457 +1,377 @@
-Return-Path: <linux-kernel+bounces-14510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEAB0821E14
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:51:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92AA0821E1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:52:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 007F71C223AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:51:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD3E8B21FA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:52:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B0EE12E69;
-	Tue,  2 Jan 2024 14:50:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XjR67zPA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77FEE1401B;
+	Tue,  2 Jan 2024 14:52:17 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0D612E5A;
-	Tue,  2 Jan 2024 14:50:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704207042; x=1735743042;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=hN1CwoPtfBRUluNxA/QRtbAkzFGBllkbFdxbPxtm2F4=;
-  b=XjR67zPAu8vlzzStYuKHn7XIaePE/FUN/1gMzGX++Ur7/5o/fmdo6Ikb
-   GxQ7SDFlj29kEWD0zbyq9EsL5e+MgU92IyELcMTTpgAbU/lFeF8eEUC53
-   wUwlzOyoIIN2+ppNVSO6Vo27G81Va53swaksrgckBrbUvBzFA4/hz+COt
-   rfOSe0tKo6/1oTG9JIL5Mu+KX4GEhhN4djFVYssUP9rDr3cZv7oJcmEEG
-   zpn6CfOrUqM8kh36c5AxhuU9qq5MrcPGPJAIygm+crxS/2P0RBNt7oeAB
-   vD4Nw0k+DfoF6+eLgLKbtBBSQwHnZPKoI0VIWYaDx+vxn58ULimhzwXGA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="4222451"
-X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
-   d="scan'208";a="4222451"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 06:50:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="898552448"
-X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
-   d="scan'208";a="898552448"
-Received: from yuyang-mobl2.amr.corp.intel.com (HELO vcostago-mobl3) ([10.209.129.41])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 06:50:34 -0800
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To: Song Yoong Siang <yoong.siang.song@intel.com>, Jesse Brandeburg
- <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
- "David S . Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Richard Cochran <richardcochran@gmail.com>,
- Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@google.com>, Florian
- Bezdeka <florian.bezdeka@siemens.com>
-Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- xdp-hints@xdp-project.net
-Subject: Re: [PATCH iwl-next,v1 1/1] igc: Add Tx hardware timestamp request
- for AF_XDP zero-copy packet
-In-Reply-To: <20231215162158.951925-1-yoong.siang.song@intel.com>
-References: <20231215162158.951925-1-yoong.siang.song@intel.com>
-Date: Tue, 02 Jan 2024 11:50:32 -0300
-Message-ID: <87il4b6b7r.fsf@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EBB1428C
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:52:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5f2d4aaa2fdso9495827b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:52:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704207133; x=1704811933;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=L8pjdrgOfn17LwehQh5LTsjEMS1V1KEh0t8kBUAgLKU=;
+        b=WnZOI4+inKJ+tuYQy6U4/q+ZH5eQXJaqI2KGlFMGBOkkcChqpNPy5Vmab7z77W5nlS
+         atd0JSfX4QrOzyVw4lf1TS70g+pyROLOibHS8EcQkRpdeFME4eAdp20sGQZBze+pXcCx
+         uvksnl2JC9zXvhHmrhzt/CO96SP7yQbUtx7ZKiToh2iwL8OezBZZo1Wg8TYeklZH1s7l
+         DnaFE8Rc1ilCiDK888AReGwILL/mZBN0OTtMkZGAMsIJrXc1W0quYAaCmuAOxNrefJc0
+         Gn6qPtvunwS9HmJq+V7f6qQJEZeFQgYZznzOER6w5gPDfY8ow4VgwXO30Hx+tzCjAQ5y
+         2SEw==
+X-Gm-Message-State: AOJu0YzUY7D9yF1ozaBAKSXo393SjMVkS8pLoeJeiYYOdpf8x7B5GaLK
+	L8JlizcaMHOUp/6fMW2RtZBSAAukcFqh4w==
+X-Google-Smtp-Source: AGHT+IG75C7kMGvqnFfGi1KBdK0Dhyis3IGi6nqwf19dl6UWe7MIMbSfaioJ/V488+ItnD2GY1jO3w==
+X-Received: by 2002:a81:5b8a:0:b0:5d7:1940:f3e9 with SMTP id p132-20020a815b8a000000b005d71940f3e9mr11915203ywb.81.1704207133589;
+        Tue, 02 Jan 2024 06:52:13 -0800 (PST)
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com. [209.85.128.180])
+        by smtp.gmail.com with ESMTPSA id o124-20020a817382000000b005e77ca15d73sm12226003ywc.88.2024.01.02.06.52.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jan 2024 06:52:13 -0800 (PST)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5f3da7ba2bfso3640367b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:52:13 -0800 (PST)
+X-Received: by 2002:a81:a006:0:b0:5e7:bbdf:2eb9 with SMTP id
+ x6-20020a81a006000000b005e7bbdf2eb9mr11273308ywg.28.1704207132759; Tue, 02
+ Jan 2024 06:52:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <8b1bc7f4-f83f-413d-9fa9-3ee68577750d@suswa.mountain>
+In-Reply-To: <8b1bc7f4-f83f-413d-9fa9-3ee68577750d@suswa.mountain>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 2 Jan 2024 15:52:01 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVFBFDj0B+1E1Bj3ZOyftg=mi8uwQt2Z2bs2vZbgn5YRw@mail.gmail.com>
+Message-ID: <CAMuHMdVFBFDj0B+1E1Bj3ZOyftg=mi8uwQt2Z2bs2vZbgn5YRw@mail.gmail.com>
+Subject: Re: drivers/phy/renesas/phy-rcar-gen3-usb2.c:747 rcar_gen3_phy_usb2_probe()
+ warn: missing error code 'ret'
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: oe-kbuild@lists.linux.dev, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, lkp@intel.com, 
+	oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	Conor Dooley <conor.dooley@microchip.com>, Guo Ren <guoren@kernel.org>, 
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Song Yoong Siang <yoong.siang.song@intel.com> writes:
+CC Shimoda-san,
 
-> This patch adds support to per-packet Tx hardware timestamp request to
-> AF_XDP zero-copy packet via XDP Tx metadata framework. Please note that
-> user needs to enable Tx HW timestamp capability via igc_ioctl() with
-> SIOCSHWTSTAMP cmd before sending xsk Tx timestamp request.
+On Tue, Jan 2, 2024 at 3:03=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro.=
+org> wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   3bd7d748816927202268cb335921f7f68b3ca723
+> commit: 8292493c22c8e28b6e67a01e0f5c6db1cf231eb1 riscv: Kconfig.socs: Add=
+ ARCH_RENESAS kconfig option
+
+Wrong commit
+
+Fixes: 441a681b8843474c ("phy: rcar-gen3-usb2: fix implementation for
+runtime PM")
+
+> config: riscv-randconfig-r081-20231216 (https://download.01.org/0day-ci/a=
+rchive/20231216/202312161021.gOLDl48K-lkp@intel.com/config)
+> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git =
+4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
 >
-> Same as implementation in RX timestamp XDP hints kfunc metadata, Timer 0
-> (adjustable clock) is used in xsk Tx hardware timestamp. i225/i226 have
-> four sets of timestamping registers. A pointer named "xsk_pending_ts"
-> is introduced to indicate the timestamping register is already occupied.
-> Furthermore, the mentioned pointer also being used to hold the transmit
-> completion until the tx hardware timestamp is ready. This is because for
-> i225/i226, the timestamp notification comes some time after the transmit
-> completion event. The driver will retrigger hardware irq to clean the
-> packet after retrieve the tx hardware timestamp.
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> | Closes: https://lore.kernel.org/r/202312161021.gOLDl48K-lkp@intel.com/
 >
-> Besides, a pointer named "xsk_meta" is added into igc_tx_timestamp_request
-> structure as a hook to the metadata location of the transmit packet. When
-> a Tx timestamp interrupt happens, the interrupt handler will copy the
-> value of Tx timestamp into metadata via xsk_tx_metadata_complete().
+> smatch warnings:
+> drivers/phy/renesas/phy-rcar-gen3-usb2.c:747 rcar_gen3_phy_usb2_probe() w=
+arn: missing error code 'ret'
 >
-> This patch is tested with tools/testing/selftests/bpf/xdp_hw_metadata
-> on Intel ADL-S platform. Below are the test steps and results.
+> vim +/ret +747 drivers/phy/renesas/phy-rcar-gen3-usb2.c
 >
-> Command on DUT:
-> sudo ./xdp_hw_metadata <interface name>
-> sudo hwstamp_ctl -i <interface name> -t 1 -r 1
-> sudo ./testptp -d /dev/ptp0 -s
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  652  static int rcar_gen3_phy_usb2_probe(struct platform_devic=
+e *pdev)
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  653  {
+> b0512a6ec0cd6d drivers/phy/renesas/phy-rcar-gen3-usb2.c Biju Das         =
+ 2021-07-27  654       const struct rcar_gen3_phy_drv_data *phy_data;
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  655       struct device *dev =3D &pdev->dev;
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  656       struct rcar_gen3_chan *channel;
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  657       struct phy_provider *provider;
+> 08b0ad375ca661 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2020-07-17  658       int ret =3D 0, i;
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  659
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  660       if (!dev->of_node) {
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  661               dev_err(dev, "This driver needs device tree\=
+n");
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  662               return -EINVAL;
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  663       }
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  664
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  665       channel =3D devm_kzalloc(dev, sizeof(*channel), GFP_=
+KERNEL);
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  666       if (!channel)
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  667               return -ENOMEM;
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  668
+> 0b5604affbec02 drivers/phy/renesas/phy-rcar-gen3-usb2.c Chunfeng Yun     =
+ 2020-11-06  669       channel->base =3D devm_platform_ioremap_resource(pde=
+v, 0);
+> 801a69c787812f drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-03-03  670       if (IS_ERR(channel->base))
+> 801a69c787812f drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-03-03  671               return PTR_ERR(channel->base);
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  672
+> b0512a6ec0cd6d drivers/phy/renesas/phy-rcar-gen3-usb2.c Biju Das         =
+ 2021-07-27  673       channel->obint_enable_bits =3D USB2_OBINT_BITS;
+> 08b0ad375ca661 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2020-07-17  674       /* get irq number here and request_irq for OTG in ph=
+y_init */
+> 08b0ad375ca661 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2020-07-17  675       channel->irq =3D platform_get_irq_optional(pdev, 0);
+> 549b6b55b00558 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2019-04-11  676       channel->dr_mode =3D rcar_gen3_get_dr_mode(dev->of_n=
+ode);
+> 73801b90a38ff1 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2018-09-21  677       if (channel->dr_mode !=3D USB_DR_MODE_UNKNOWN) {
+> 7e0540f41332cb drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2017-10-12  678               int ret;
 >
-> Command on Link Partner:
-> echo -n xdp | nc -u -q1 <destination IPv4 addr> 9091
+> I would delete this "ret" declaration.
+
+Agreed.
+
 >
-> Result:
-> xsk_ring_cons__peek: 1
-> 0x555b112ae958: rx_desc[6]->addr=86110 addr=86110 comp_addr=86110 EoP
-> rx_hash: 0xBFDEC36E with RSS type:0x1
-> HW RX-time:   1677762429190040955 (sec:1677762429.1900) delta to User RX-time sec:0.0001 (100.124 usec)
-> XDP RX-time:   1677762429190123163 (sec:1677762429.1901) delta to User RX-time sec:0.0000 (17.916 usec)
-> 0x555b112ae958: ping-pong with csum=404e (want c59e) csum_start=34 csum_offset=6
-> 0x555b112ae958: complete tx idx=6 addr=6010
-> HW TX-complete-time:   1677762429190173323 (sec:1677762429.1902) delta to User TX-complete-time sec:0.0100 (10035.884 usec)
-> XDP RX-time:   1677762429190123163 (sec:1677762429.1901) delta to User TX-complete-time sec:0.0101 (10086.044 usec)
-> HW RX-time:   1677762429190040955 (sec:1677762429.1900) delta to HW TX-complete-time sec:0.0001 (132.368 usec)
-> 0x555b112ae958: complete rx idx=134 addr=86110
+> 7e0540f41332cb drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2017-10-12  679
+> 979b519c7a1bff drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2018-09-21  680               channel->is_otg_channel =3D true;
+> 8dde0008ffc9e2 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2018-09-21  681               channel->uses_otg_pins =3D !of_property_read=
+_bool(dev->of_node,
+> 8dde0008ffc9e2 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2018-09-21  682                                                       "ren=
+esas,no-otg-pins");
+> 2b38543c8db1c7 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-04-29  683               channel->extcon =3D devm_extcon_dev_allocate=
+(dev,
+> 2b38543c8db1c7 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-04-29  684                                                       rcar=
+_gen3_phy_cable);
+> 2b38543c8db1c7 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-04-29  685               if (IS_ERR(channel->extcon))
+> 2b38543c8db1c7 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-04-29  686                       return PTR_ERR(channel->extcon);
+> 2b38543c8db1c7 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-04-29  687
+> 2b38543c8db1c7 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-04-29  688               ret =3D devm_extcon_dev_register(dev, channe=
+l->extcon);
+> 2b38543c8db1c7 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-04-29  689               if (ret < 0) {
+> 2b38543c8db1c7 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-04-29  690                       dev_err(dev, "Failed to register ext=
+con\n");
+> 2b38543c8db1c7 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-04-29  691                       return ret;
+> 2b38543c8db1c7 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-04-29  692               }
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  693       }
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  694
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  695       /*
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  696        * devm_phy_create() will call pm_runtime_enable(&ph=
+y->dev);
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  697        * And then, phy-core will manage runtime pm for thi=
+s device.
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  698        */
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  699       pm_runtime_enable(dev);
+> b0512a6ec0cd6d drivers/phy/renesas/phy-rcar-gen3-usb2.c Biju Das         =
+ 2021-07-27  700
+> b0512a6ec0cd6d drivers/phy/renesas/phy-rcar-gen3-usb2.c Biju Das         =
+ 2021-07-27  701       phy_data =3D of_device_get_match_data(dev);
+> b0512a6ec0cd6d drivers/phy/renesas/phy-rcar-gen3-usb2.c Biju Das         =
+ 2021-07-27  702       if (!phy_data) {
+> 51e339deab1e51 drivers/phy/renesas/phy-rcar-gen3-usb2.c Wang Li          =
+ 2020-11-26  703               ret =3D -EINVAL;
+> 51e339deab1e51 drivers/phy/renesas/phy-rcar-gen3-usb2.c Wang Li          =
+ 2020-11-26  704               goto error;
+> 51e339deab1e51 drivers/phy/renesas/phy-rcar-gen3-usb2.c Wang Li          =
+ 2020-11-26  705       }
+> 5d8042e95fd471 drivers/phy/renesas/phy-rcar-gen3-usb2.c Biju Das         =
+ 2019-04-10  706
+> b0512a6ec0cd6d drivers/phy/renesas/phy-rcar-gen3-usb2.c Biju Das         =
+ 2021-07-27  707       channel->soc_no_adp_ctrl =3D phy_data->no_adp_ctrl;
+> b0512a6ec0cd6d drivers/phy/renesas/phy-rcar-gen3-usb2.c Biju Das         =
+ 2021-07-27  708       if (phy_data->no_adp_ctrl)
+> b0512a6ec0cd6d drivers/phy/renesas/phy-rcar-gen3-usb2.c Biju Das         =
+ 2021-07-27  709               channel->obint_enable_bits =3D USB2_OBINT_ID=
+CHG_EN;
+> b0512a6ec0cd6d drivers/phy/renesas/phy-rcar-gen3-usb2.c Biju Das         =
+ 2021-07-27  710
+> 5c9dc6379f539c drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2019-06-10  711       mutex_init(&channel->lock);
+> 549b6b55b00558 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2019-04-11  712       for (i =3D 0; i < NUM_OF_PHYS; i++) {
+> 549b6b55b00558 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2019-04-11  713               channel->rphys[i].phy =3D devm_phy_create(de=
+v, NULL,
+> b0512a6ec0cd6d drivers/phy/renesas/phy-rcar-gen3-usb2.c Biju Das         =
+ 2021-07-27  714                                                       phy_=
+data->phy_usb2_ops);
+> 549b6b55b00558 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2019-04-11  715               if (IS_ERR(channel->rphys[i].phy)) {
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  716                       dev_err(dev, "Failed to create USB2 =
+PHY\n");
+> 549b6b55b00558 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2019-04-11  717                       ret =3D PTR_ERR(channel->rphys[i].ph=
+y);
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  718                       goto error;
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  719               }
+> 549b6b55b00558 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2019-04-11  720               channel->rphys[i].ch =3D channel;
+> 549b6b55b00558 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2019-04-11  721               channel->rphys[i].int_enable_bits =3D rcar_g=
+en3_int_enable[i];
+> 549b6b55b00558 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2019-04-11  722               phy_set_drvdata(channel->rphys[i].phy, &chan=
+nel->rphys[i]);
+> 549b6b55b00558 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2019-04-11  723       }
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  724
+> 6dcfd7c300bf35 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-03-03  725       channel->vbus =3D devm_regulator_get_optional(dev, "=
+vbus");
+> 6dcfd7c300bf35 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-03-03  726       if (IS_ERR(channel->vbus)) {
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  727               if (PTR_ERR(channel->vbus) =3D=3D -EPROBE_DE=
+FER) {
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  728                       ret =3D PTR_ERR(channel->vbus);
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  729                       goto error;
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  730               }
+> 6dcfd7c300bf35 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-03-03  731               channel->vbus =3D NULL;
+> 6dcfd7c300bf35 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-03-03  732       }
+> 6dcfd7c300bf35 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-03-03  733
+> 9bb86777fb71ee drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-11-09  734       platform_set_drvdata(pdev, channel);
+> 92fec1c27caa7b drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2019-04-11  735       channel->dev =3D dev;
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  736
+> 549b6b55b00558 drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2019-04-11  737       provider =3D devm_of_phy_provider_register(dev, rcar=
+_gen3_phy_usb2_xlate);
+> 9bb86777fb71ee drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-11-09  738       if (IS_ERR(provider)) {
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  739               dev_err(dev, "Failed to register PHY provide=
+r\n");
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  740               ret =3D PTR_ERR(provider);
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  741               goto error;
+> 979b519c7a1bff drivers/phy/renesas/phy-rcar-gen3-usb2.c Yoshihiro Shimoda=
+ 2018-09-21  742       } else if (channel->is_otg_channel) {
+> 9bb86777fb71ee drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-11-09  743               int ret;
 >
-> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
-> ---
->  drivers/net/ethernet/intel/igc/igc.h      | 15 ++++
->  drivers/net/ethernet/intel/igc/igc_main.c | 88 ++++++++++++++++++++++-
->  drivers/net/ethernet/intel/igc/igc_ptp.c  | 42 ++++++++---
->  3 files changed, 134 insertions(+), 11 deletions(-)
+> Shadow ret declaration.
 >
-> diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-> index ac7c861e83a0..c831dde01662 100644
-> --- a/drivers/net/ethernet/intel/igc/igc.h
-> +++ b/drivers/net/ethernet/intel/igc/igc.h
-> @@ -79,6 +79,9 @@ struct igc_tx_timestamp_request {
->  	u32 regl;              /* which TXSTMPL_{X} register should be used */
->  	u32 regh;              /* which TXSTMPH_{X} register should be used */
->  	u32 flags;             /* flags that should be added to the tx_buffer */
-> +	u8 xsk_queue_index;    /* Tx queue which requesting timestamp */
-> +	bool *xsk_pending_ts;  /* ref to tx ring for waiting timestamp event */
-
-I think that this indirection level to xsk_pending_ts in the tx_buffer is a
-bit too hard to follow. What I am thinking is keeping a pointer to
-tx_buffer here in igc_tx_timestamp_request, perhaps even in a union with
-the skb, and use a similar logic, if that pointer is valid the timestamp
-request is in use.
-
-Do you think it could work?
-
-(Perhaps we would need to also store the buffer type in the request, but
-I don't think that would be too weird)
-
-> +	struct xsk_tx_metadata_compl xsk_meta;	/* ref to xsk Tx metadata */
->  };
->  
->  struct igc_inline_rx_tstamps {
-> @@ -319,6 +322,9 @@ void igc_disable_tx_ring(struct igc_ring *ring);
->  void igc_enable_tx_ring(struct igc_ring *ring);
->  int igc_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags);
->  
-> +/* AF_XDP TX metadata operations */
-> +extern const struct xsk_tx_metadata_ops igc_xsk_tx_metadata_ops;
-> +
->  /* igc_dump declarations */
->  void igc_rings_dump(struct igc_adapter *adapter);
->  void igc_regs_dump(struct igc_adapter *adapter);
-> @@ -528,6 +534,7 @@ struct igc_tx_buffer {
->  	DEFINE_DMA_UNMAP_ADDR(dma);
->  	DEFINE_DMA_UNMAP_LEN(len);
->  	u32 tx_flags;
-> +	bool xsk_pending_ts;
->  };
->  
->  struct igc_rx_buffer {
-> @@ -553,6 +560,14 @@ struct igc_xdp_buff {
->  	struct igc_inline_rx_tstamps *rx_ts; /* data indication bit IGC_RXDADV_STAT_TSIP */
->  };
->  
-> +struct igc_metadata_request {
-> +	struct xsk_tx_metadata *meta;
-> +	struct igc_adapter *adapter;
-
-If you have access to the tx_ring, you have access to the adapter, no
-need to have it here.
-
-> +	struct igc_ring *tx_ring;
-> +	bool *xsk_pending_ts;
-> +	u32 *cmd_type;
-
-I think this also would be clearer if here you had a pointer to the
-tx_buffer instead of only 'xsk_pending_ts'.
-
-I guess for cmd_type, no need for it to be a pointer, we can affort the
-extra copy.
-
-> +};
-> +
->  struct igc_q_vector {
->  	struct igc_adapter *adapter;    /* backlink */
->  	void __iomem *itr_register;
-> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-> index 61db1d3bfa0b..311c85f2d82d 100644
-> --- a/drivers/net/ethernet/intel/igc/igc_main.c
-> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
-> @@ -1553,7 +1553,7 @@ static bool igc_request_tx_tstamp(struct igc_adapter *adapter, struct sk_buff *s
->  	for (i = 0; i < IGC_MAX_TX_TSTAMP_REGS; i++) {
->  		struct igc_tx_timestamp_request *tstamp = &adapter->tx_tstamp[i];
->  
-> -		if (tstamp->skb)
-> +		if (tstamp->skb || tstamp->xsk_pending_ts)
->  			continue;
->  
->  		tstamp->skb = skb_get(skb);
-> @@ -2878,6 +2878,71 @@ static void igc_update_tx_stats(struct igc_q_vector *q_vector,
->  	q_vector->tx.total_packets += packets;
->  }
->  
-> +static void igc_xsk_request_timestamp(void *_priv)
-> +{
-> +	struct igc_metadata_request *meta_req = _priv;
-> +	struct igc_ring *tx_ring = meta_req->tx_ring;
-> +	struct igc_tx_timestamp_request *tstamp;
-> +	u32 *cmd_type = meta_req->cmd_type;
-> +	u32 tx_flags = IGC_TX_FLAGS_TSTAMP;
-> +	struct igc_adapter *adapter;
-> +	unsigned long lock_flags;
-> +	bool found = 0;
-> +	int i;
-> +
-> +	if (test_bit(IGC_RING_FLAG_TX_HWTSTAMP, &tx_ring->flags)) {
-> +		adapter = meta_req->adapter;
-> +
-> +		spin_lock_irqsave(&adapter->ptp_tx_lock, lock_flags);
-> +
-> +		for (i = 0; i < IGC_MAX_TX_TSTAMP_REGS; i++) {
-> +			tstamp = &adapter->tx_tstamp[i];
-> +
-> +			if (tstamp->skb || tstamp->xsk_pending_ts)
-> +				continue;
-> +
-> +			found = 1;
-
-nitpick: found is a bool, 'true' would read better.
-
-> +			break;
-> +		}
-> +
-> +		if (!found) {
-> +			adapter->tx_hwtstamp_skipped++;
-
-I think this is one those cases, that an early return or a goto would
-make the code easier to understand.
-
-> +		} else {
-> +			tstamp->start = jiffies;
-> +			tstamp->xsk_queue_index = tx_ring->queue_index;
-> +
-> +			tstamp->xsk_pending_ts = meta_req->xsk_pending_ts;
-> +			*tstamp->xsk_pending_ts = true;
-> +
-> +			xsk_tx_metadata_to_compl(meta_req->meta,
-> +						 &tstamp->xsk_meta);
-> +
-> +			/* set timestamp bit based on the _TSTAMP(_X) bit. */
-> +			tx_flags |= tstamp->flags;
-> +			*cmd_type |= IGC_SET_FLAG(tx_flags, IGC_TX_FLAGS_TSTAMP,
-> +						  (IGC_ADVTXD_MAC_TSTAMP));
-> +			*cmd_type |= IGC_SET_FLAG(tx_flags, IGC_TX_FLAGS_TSTAMP_1,
-> +						  (IGC_ADVTXD_TSTAMP_REG_1));
-> +			*cmd_type |= IGC_SET_FLAG(tx_flags, IGC_TX_FLAGS_TSTAMP_2,
-> +						  (IGC_ADVTXD_TSTAMP_REG_2));
-> +			*cmd_type |= IGC_SET_FLAG(tx_flags, IGC_TX_FLAGS_TSTAMP_3,
-> +						  (IGC_ADVTXD_TSTAMP_REG_3));
-> +		}
-> +
-> +		spin_unlock_irqrestore(&adapter->ptp_tx_lock, lock_flags);
-> +	}
-> +}
-> +
-> +static u64 igc_xsk_fill_timestamp(void *_priv)
-> +{
-> +	return *(u64 *)_priv;
-> +}
-> +
-> +const struct xsk_tx_metadata_ops igc_xsk_tx_metadata_ops = {
-> +	.tmo_request_timestamp		= igc_xsk_request_timestamp,
-> +	.tmo_fill_timestamp		= igc_xsk_fill_timestamp,
-> +};
-> +
->  static void igc_xdp_xmit_zc(struct igc_ring *ring)
->  {
->  	struct xsk_buff_pool *pool = ring->xsk_pool;
-> @@ -2899,6 +2964,8 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
->  	budget = igc_desc_unused(ring);
->  
->  	while (xsk_tx_peek_desc(pool, &xdp_desc) && budget--) {
-> +		struct igc_metadata_request meta_req;
-> +		struct xsk_tx_metadata *meta = NULL;
->  		u32 cmd_type, olinfo_status;
->  		struct igc_tx_buffer *bi;
->  		dma_addr_t dma;
-> @@ -2909,14 +2976,23 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
->  		olinfo_status = xdp_desc.len << IGC_ADVTXD_PAYLEN_SHIFT;
->  
->  		dma = xsk_buff_raw_get_dma(pool, xdp_desc.addr);
-> +		meta = xsk_buff_get_metadata(pool, xdp_desc.addr);
->  		xsk_buff_raw_dma_sync_for_device(pool, dma, xdp_desc.len);
-> +		bi = &ring->tx_buffer_info[ntu];
-> +
-> +		meta_req.adapter = netdev_priv(ring->netdev);
-> +		meta_req.tx_ring = ring;
-> +		meta_req.meta = meta;
-> +		meta_req.cmd_type = &cmd_type;
-> +		meta_req.xsk_pending_ts = &bi->xsk_pending_ts;
-> +		xsk_tx_metadata_request(meta, &igc_xsk_tx_metadata_ops,
-> +					&meta_req);
->  
->  		tx_desc = IGC_TX_DESC(ring, ntu);
->  		tx_desc->read.cmd_type_len = cpu_to_le32(cmd_type);
->  		tx_desc->read.olinfo_status = cpu_to_le32(olinfo_status);
->  		tx_desc->read.buffer_addr = cpu_to_le64(dma);
->  
-> -		bi = &ring->tx_buffer_info[ntu];
->  		bi->type = IGC_TX_BUFFER_TYPE_XSK;
->  		bi->protocol = 0;
->  		bi->bytecount = xdp_desc.len;
-> @@ -2979,6 +3055,13 @@ static bool igc_clean_tx_irq(struct igc_q_vector *q_vector, int napi_budget)
->  		if (!(eop_desc->wb.status & cpu_to_le32(IGC_TXD_STAT_DD)))
->  			break;
->  
-> +		/* Hold the completions while there's a pending tx hardware
-> +		 * timestamp request from XDP Tx metadata.
-> +		 */
-> +		if (tx_buffer->type == IGC_TX_BUFFER_TYPE_XSK &&
-> +		    tx_buffer->xsk_pending_ts)
-> +			break;
-> +
-
-One scenario that I am worried about the completion part is when tstamp
-and non-tstamp packets are mixed in the same queue.
-
-For example, when the user sends a 1 tstamp packet followed by 1
-non-tstamp packet. Some other ratios might be interesting to test as
-well, 1:10 for example. I guess a simple bandwith test would be enough,
-comparing "non-tstamp only" with mixed traffic.
-
-Perhaps are some bad recollections from the past, but I remember that
-the hardware takes a bit of time when generating the timestamp
-interrupts, and so those types of mixed traffic would have wasted
-bandwidth.
-
->  		/* clear next_to_watch to prevent false hangs */
->  		tx_buffer->next_to_watch = NULL;
->  
-> @@ -6819,6 +6902,7 @@ static int igc_probe(struct pci_dev *pdev,
->  
->  	netdev->netdev_ops = &igc_netdev_ops;
->  	netdev->xdp_metadata_ops = &igc_xdp_metadata_ops;
-> +	netdev->xsk_tx_metadata_ops = &igc_xsk_tx_metadata_ops;
->  	igc_ethtool_set_ops(netdev);
->  	netdev->watchdog_timeo = 5 * HZ;
->  
-> diff --git a/drivers/net/ethernet/intel/igc/igc_ptp.c b/drivers/net/ethernet/intel/igc/igc_ptp.c
-> index 885faaa7b9de..b722bca40309 100644
-> --- a/drivers/net/ethernet/intel/igc/igc_ptp.c
-> +++ b/drivers/net/ethernet/intel/igc/igc_ptp.c
-> @@ -11,6 +11,7 @@
->  #include <linux/ktime.h>
->  #include <linux/delay.h>
->  #include <linux/iopoll.h>
-> +#include <net/xdp_sock.h>
->  
->  #define INCVALUE_MASK		0x7fffffff
->  #define ISGN			0x80000000
-> @@ -555,8 +556,15 @@ static void igc_ptp_clear_tx_tstamp(struct igc_adapter *adapter)
->  	for (i = 0; i < IGC_MAX_TX_TSTAMP_REGS; i++) {
->  		struct igc_tx_timestamp_request *tstamp = &adapter->tx_tstamp[i];
->  
-> -		dev_kfree_skb_any(tstamp->skb);
-> -		tstamp->skb = NULL;
-> +		if (tstamp->skb) {
-> +			dev_kfree_skb_any(tstamp->skb);
-> +			tstamp->skb = NULL;
-> +		} else if (tstamp->xsk_pending_ts) {
-> +			*tstamp->xsk_pending_ts = false;
-> +			tstamp->xsk_pending_ts = NULL;
-> +			igc_xsk_wakeup(adapter->netdev, tstamp->xsk_queue_index,
-> +				       0);
-> +		}
->  	}
->  
->  	spin_unlock_irqrestore(&adapter->ptp_tx_lock, flags);
-> @@ -657,8 +665,15 @@ static int igc_ptp_set_timestamp_mode(struct igc_adapter *adapter,
->  static void igc_ptp_tx_timeout(struct igc_adapter *adapter,
->  			       struct igc_tx_timestamp_request *tstamp)
->  {
-> -	dev_kfree_skb_any(tstamp->skb);
-> -	tstamp->skb = NULL;
-> +	if (tstamp->skb) {
-> +		dev_kfree_skb_any(tstamp->skb);
-> +		tstamp->skb = NULL;
-> +	} else if (tstamp->xsk_pending_ts) {
-> +		*tstamp->xsk_pending_ts = false;
-> +		tstamp->xsk_pending_ts = NULL;
-> +		igc_xsk_wakeup(adapter->netdev, tstamp->xsk_queue_index, 0);
-> +	}
-> +
->  	adapter->tx_hwtstamp_timeouts++;
->  
->  	netdev_warn(adapter->netdev, "Tx timestamp timeout\n");
-> @@ -677,7 +692,7 @@ void igc_ptp_tx_hang(struct igc_adapter *adapter)
->  	for (i = 0; i < IGC_MAX_TX_TSTAMP_REGS; i++) {
->  		tstamp = &adapter->tx_tstamp[i];
->  
-> -		if (!tstamp->skb)
-> +		if (!tstamp->skb && !tstamp->xsk_pending_ts)
->  			continue;
->  
->  		if (time_is_after_jiffies(tstamp->start + IGC_PTP_TX_TIMEOUT))
-> @@ -705,7 +720,7 @@ static void igc_ptp_tx_reg_to_stamp(struct igc_adapter *adapter,
->  	int adjust = 0;
->  
->  	skb = tstamp->skb;
-> -	if (!skb)
-> +	if (!skb && !tstamp->xsk_pending_ts)
->  		return;
->  
->  	if (igc_ptp_systim_to_hwtstamp(adapter, &shhwtstamps, regval))
-> @@ -729,10 +744,19 @@ static void igc_ptp_tx_reg_to_stamp(struct igc_adapter *adapter,
->  	shhwtstamps.hwtstamp =
->  		ktime_add_ns(shhwtstamps.hwtstamp, adjust);
->  
-> -	tstamp->skb = NULL;
-> +	if (skb) {
-> +		tstamp->skb = NULL;
-> +		skb_tstamp_tx(skb, &shhwtstamps);
-> +		dev_kfree_skb_any(skb);
-> +	} else {
-> +		xsk_tx_metadata_complete(&tstamp->xsk_meta,
-> +					 &igc_xsk_tx_metadata_ops,
-> +					 &shhwtstamps.hwtstamp);
->  
-> -	skb_tstamp_tx(skb, &shhwtstamps);
-> -	dev_kfree_skb_any(skb);
-> +		*tstamp->xsk_pending_ts = false;
-> +		tstamp->xsk_pending_ts = NULL;
-> +		igc_xsk_wakeup(adapter->netdev, tstamp->xsk_queue_index, 0);
-> +	}
->  }
->  
->  /**
-> -- 
-> 2.34.1
+> 9bb86777fb71ee drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-11-09  744
+> 9bb86777fb71ee drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-11-09  745               ret =3D device_create_file(dev, &dev_attr_ro=
+le);
+> 9bb86777fb71ee drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-11-09  746               if (ret < 0)
 >
+> The "ret" here is the shadow ret so we end up returning success.
 
--- 
-Vinicius
+Oops...
+
+>
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14 @747                       goto error;
+> 9bb86777fb71ee drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2016-11-09  748       }
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  749
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  750       return 0;
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  751
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  752  error:
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  753       pm_runtime_disable(dev);
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  754
+> 441a681b884347 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2017-03-14  755       return ret;
+> f3b5a8d9b50d71 drivers/phy/phy-rcar-gen3-usb2.c         Yoshihiro Shimoda=
+ 2015-11-30  756  }
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
