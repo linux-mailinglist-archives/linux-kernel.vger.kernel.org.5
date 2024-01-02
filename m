@@ -1,187 +1,150 @@
-Return-Path: <linux-kernel+bounces-14763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 784418221E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:17:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA0C58221E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:18:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AB561C22A0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:17:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F8AD1F22CEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:18:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDEE615AF8;
-	Tue,  2 Jan 2024 19:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B935415AFB;
+	Tue,  2 Jan 2024 19:18:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NDtzNQg0"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Qt7Yn9am"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2052.outbound.protection.outlook.com [40.107.93.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D01115E95;
-	Tue,  2 Jan 2024 19:17:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 355BAC433C8;
-	Tue,  2 Jan 2024 19:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704223025;
-	bh=Jk/Wjw6hVbQ2lA3lct5hPUB5efjonhc5P9IQLikWlwk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NDtzNQg09PssYylDTe8XVEKIPUHr4S04K6voB3AKVcCLkTtVOFuSZ0dHYCzszil4N
-	 Bl++mc91mGzyfs6BZ/s2CX1Y51ymputeTqcFn2slSVgsi35EO6aUFL0ncl6j4y6zza
-	 IjivUG/3RX4Ehq8p2hT5MSfHIwzb6p6afPiw/Zajy6GmSIGj/rGYhtH5/eZDyl+t17
-	 WqxKGuk+AAaim63PzLn9ap6Sux43/CTGSS9I4yHS19gHmwoUiZMUsxGZtQBfvWLb91
-	 7OzCKKgkG5LxBvwMaYXqcyoE2GyjTrFxUg+yYOQHNHPfTCYmYKXP6bRPcjJ9MXBt6g
-	 TEPONhMU7oMyA==
-Date: Tue, 2 Jan 2024 21:17:01 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Stephen Hemminger <stephen@networkplumber.org>
-Cc: Chengchang Tang <tangchengchang@huawei.com>,
-	Junxian Huang <huangjunxian6@hisilicon.com>, jgg@ziepe.ca,
-	dsahern@gmail.com, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH iproute2-rc 1/2] rdma: Fix core dump when pretty is used
-Message-ID: <20240102191701.GC5160@unreal>
-References: <20231229065241.554726-1-huangjunxian6@hisilicon.com>
- <20231229065241.554726-2-huangjunxian6@hisilicon.com>
- <20231229092129.25a526c4@hermes.local>
- <30d8c237-953a-8794-9baa-e21b31d4d88c@huawei.com>
- <20240102083257.GB6361@unreal>
- <29146463-6d0e-21c5-af42-217cee760b3f@huawei.com>
- <20240102122106.GI6361@unreal>
- <20240102082746.651ff7cf@hermes.local>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8081215E90;
+	Tue,  2 Jan 2024 19:18:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nn+KBMsxRu5K2v0sZouO7LgFQ3BWGUAbTlqV22NkNAuxB7JTjx/UZTCrlANtoCq2U5lplmWYYooxtcJlV/WsoN9VU9vKLSqPDKP+DWi/i6IiOK6GgHv0tg1chCQ7kG1fIIw+7P/Nq1I5JAMm6Fsv8sYhY22gepq2s7jC5YSBf3a9aotUJZevbLcdO7zruw6gtAL84Mq5kAaK0qgsW9h1IstKqC7eOcq1yD80oFMn+N1yH02wiPxzmjIz9iv5iG6Tt05Dorvfw7E0KiyuiBCtwii58QRMJu5WzYTw/CASiEDAqp4qqz6pBdE5fhHkKOmRh0zyti5biOaotTVAQ2kHOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pNUABVWxYIxsQdxnZtcViriWPqq+JyOuFyMKtn3cqbI=;
+ b=ZDy047ZMXPAi3BH0iXaxmYEiJtwWVZjj7xZvk6449VF9XJqJmCYybDICQYb2LnrMrZTqiGf0M/LWA7/6119wNpwY3NpCs+ChtNBBniSYugxQY59URB8SItCfcKahUMhcixaY/gIQLk1HrNRfTQQ+5mU9tqIO1nvt30sUOB25lQhkExxWY0HdWeQjJXWyQ+m+IwNwq7KvonOdnIdCrYVs6Qdar+8zwwp2IvN/qi/fVmRPHVtMTBxbxyV3yPJoxtc22oO0va2pq4bTPot30LfMAno1W7gehS+lNo5F/XjrcgXlr65GVZpp0SzJOaWUisfjk8TCXp0jfBx5vpBMpufGIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pNUABVWxYIxsQdxnZtcViriWPqq+JyOuFyMKtn3cqbI=;
+ b=Qt7Yn9am77bAa53Fep/wXrzyJPzavzk1Bxgw7j8llAvo4eSvbQDwJv2kc/7IsUDGI3DKHLu0xpHTk09MJWfOG4TeEyD/MuaBrSIqZ27tnN4nhK5GpmI+QtL2GwpUbl1YR/eyniG5pHiP4gylaX6VFQ1w4FPoTJBAMrfNtK57gPhLGT4AmHzaU+7da4i6b70v7zqyNjg6i7xsqHvL/8/TUV6SA/Cf/M95o3yCg8aZJiaqbLVa3N+XZK24Gp2xJ/Br5HFSHHLMyTQrF00t6JP/wv8FynfcsCf+yhRkEx6m3QRXxZPClncbCsVkcLEzlWoiSN8yUCZS8rGJBDOwRgtkEw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by IA0PR12MB9045.namprd12.prod.outlook.com (2603:10b6:208:406::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Tue, 2 Jan
+ 2024 19:17:58 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7135.023; Tue, 2 Jan 2024
+ 19:17:58 +0000
+Date: Tue, 2 Jan 2024 15:17:57 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Yi Liu <yi.l.liu@intel.com>
+Cc: joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
+	robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
+	eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
+	mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
+	yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
+	shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+	suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
+	xin.zeng@intel.com, yan.y.zhao@intel.com, j.granados@samsung.com
+Subject: Re: [PATCH v10 00/10] Add iommufd nesting (part 2/2)
+Message-ID: <20240102191757.GJ50406@nvidia.com>
+References: <20240102143834.146165-1-yi.l.liu@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102143834.146165-1-yi.l.liu@intel.com>
+X-ClientProxiedBy: BL0PR02CA0051.namprd02.prod.outlook.com
+ (2603:10b6:207:3d::28) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240102082746.651ff7cf@hermes.local>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|IA0PR12MB9045:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5bb4d856-fa2c-4bce-2b9a-08dc0bc787a7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ug6HvyNTE6DDWiUUPlMFygM9MBPGa9rYTbMQxaxjvyMlQKEsHYnM/a8ow2PL7fN3G2rSxJdNX1RfjRyaGEwLFWfzKm/6BpFmxmdYFr4GDsLXcNeMYtvGQQD5F+pmTXfdedW9iLy2x2bbJGh0s7k23WX/fYrijG7Y4JtrzqgyEbRw5ZFmjd66QV0lrEaIk978gYMobbpTCQ0UEgIuvrAqzr5xYnJk06gE2JozrhXTj2cTF+diL+uq2bAk+UiN1TGpURgPUrVXGXFbSbbeRhpMAtTcG8/IzRqiOz32WQFUghB4QoyRBWrtpSzK/EDbkLdmqoTde9STChaIW8Kc0PbJX6A4Ze89x4ZKNd/kZM/ywBbf/V5RGGSWnuJlPZ4CQ9NP3iqBl5uBHPotRx1t3ZFpQ7pPd/k3bxx6jmh4Yb7XPK5pZygkRP6sZp65u3QMBCXf0WWSTvdRgpfhBKtStKAkFxTbj/kaoyS8+oMWQGGewipbWSbtMzlSTyscv30HUv1TgRt1Z1k+QWVxSNB6nbajuEYptu9KZuSTqioMb6fTXUVzO8hmMV07yu99mukizE8u
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39860400002)(366004)(346002)(396003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(83380400001)(316002)(6916009)(66556008)(478600001)(66946007)(6486002)(66476007)(5660300002)(2906002)(4744005)(7416002)(4326008)(8936002)(8676002)(1076003)(26005)(2616005)(41300700001)(6512007)(6506007)(86362001)(38100700002)(36756003)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?rnfhdK1AqTUVCWfzYLmlQbYBd37Leoz48M8HFYuy9GsaPsTFxEe1H4IRygCO?=
+ =?us-ascii?Q?FOPNgWbKe2tktymOvpM0u3yFvjCyXjEP99wnSF9z6K5K79ymLNIA6hJpBdXY?=
+ =?us-ascii?Q?H8lvYC9SW6z89B8QkZ3MQmgHcV5d/njToIUaWO5hdcHXekgOCspUv2eLHtVP?=
+ =?us-ascii?Q?I5LEznmVYUtBsfWDJWUkehHWfqkce6b36xHbtiUV+2LlBm2E/8x4unQKg0V1?=
+ =?us-ascii?Q?YIywJn7cXKkOY34BHvk37hGZ6Lp1vQhh27O4576Z7beuiArCV3vXNF87fR3L?=
+ =?us-ascii?Q?px6Fthvoddw4mMKlA91iSweCdo0z482JTnfPWOSyXKJYUOvPrC6/WwTRGYSw?=
+ =?us-ascii?Q?Jp0MfSttI7bAPtNew/ual7z1IPR2/EG17qZ7lQcKU2gL4eVlrlZSSspb37Bv?=
+ =?us-ascii?Q?o6FWAeFmNB3iuSW21Ep2F1FmH7ZsO6BnzmEhndXd6qWU41qN1PQfFC+EUahZ?=
+ =?us-ascii?Q?Vd2f0nYB09ZSpSXH6ylscZ/4kGQs+CigWPdjuzEvwgipcwQMOdOMzykjrTN+?=
+ =?us-ascii?Q?DEd+684W3/K6S36Sx6FYPEZRMDYzcN3DcOq1x0YGN5gMJgubUi8+afrovJzg?=
+ =?us-ascii?Q?egQFFpKzqipZP9tSnxw0ukZiVg2x0ILmPHz/HmhSGmd4XC5mVln+F9NTZeSr?=
+ =?us-ascii?Q?UZ955zMZvl+iugBcyURyaJEU4xk1YC0vS0piHDWEvTPAzzide8lYYMVrVN1M?=
+ =?us-ascii?Q?9nwPmJ4wg6C+7gZNHpDsfV86zYgDHK7xnTxVbJEa0MRFCg9fhH+zRfA4F0TE?=
+ =?us-ascii?Q?y1SG1ME8OeKBwef8ZjrlS6CYonwvyBbyTPSYVuVfrWUf0SOklWsb3Lb2mzB/?=
+ =?us-ascii?Q?P2TT4pU8LUohBQAMTeeJwi0XtjOPfOVw3jl96gMdg81DM0iN90JXK5RVdmi2?=
+ =?us-ascii?Q?VdNQKI+ZGw82G4JSVk4FsYGLisin6a5veX4s/acZpCnvzPDvzZwQU/xXljFe?=
+ =?us-ascii?Q?dmurHAEIfuHlwOB9ed2GZsqsB4WkAqsV4OhMFtitAsWcSJljyiaznU1BuuIR?=
+ =?us-ascii?Q?zKmpEBrf9MoEINdl9RLC13jzkIynCs/n7+p3K+LTLK8l2sow+R5Y5+uFljpj?=
+ =?us-ascii?Q?8hQB8Kh3uYNtQX9i/5zsyA8InFeHGJGvu/07q+KNUSDhvanCojgm1O6qbXx6?=
+ =?us-ascii?Q?qcvcbZmHeO+xpQCEPBlgxVj9CJw/Li8gFzrfSFhwm9nf+O3eVmIx7VqW/XTE?=
+ =?us-ascii?Q?oJqTWLdrSZqJCXveP1g10jl/HcbxWkYzYv+GnO6LRzJlzYRIRhK9xelUq6yt?=
+ =?us-ascii?Q?UZHP9W8g5783uTrCPN+LGS9rRqHIknyfcEigDbbQ11q1BQJOSAXj9FyE0T4d?=
+ =?us-ascii?Q?LWFM4TIwzZIGfrBIhvSn5hrIeBgg1nPRv/oqKT38QpZoNhHAT4hF7HyUFkDw?=
+ =?us-ascii?Q?np8aa86y7sgN06DyIPQsCXI62vf07Pa7vhiMQCRnkrxURWwcQgnKB5A6zkHQ?=
+ =?us-ascii?Q?TfP8VMGUfs6Cx33+k1hH1V3ZHIRiWP5vgM4w3GY4oKil/NT6NzJJKpGJszVy?=
+ =?us-ascii?Q?e/smXLVEi6+HJS8Sjv4yXUEzxcC4OLoLQn02MTDe5BNEsA6KPySR0H1cRgvQ?=
+ =?us-ascii?Q?d9Nq0DcG49nciqeT0F1HKOTo2UJZb+/+wGNolrJw?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5bb4d856-fa2c-4bce-2b9a-08dc0bc787a7
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2024 19:17:58.4024
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y4lFgz4P3M4FJopkX52N2RzZzPg+wLA373WwjebvWzzOWgb25h2E/mmuM67jePpU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB9045
 
-On Tue, Jan 02, 2024 at 08:27:46AM -0800, Stephen Hemminger wrote:
-> On Tue, 2 Jan 2024 14:21:06 +0200
-> Leon Romanovsky <leon@kernel.org> wrote:
+On Tue, Jan 02, 2024 at 06:38:24AM -0800, Yi Liu wrote:
+> Lu Baolu (4):
+>   iommu: Add cache_invalidate_user op
+>   iommu/vt-d: Allow qi_submit_sync() to return the QI faults
+>   iommu/vt-d: Convert stage-1 cache invalidation to return QI fault
+>   iommu/vt-d: Add iotlb flush for nested domain
 > 
-> > On Tue, Jan 02, 2024 at 08:06:19PM +0800, Chengchang Tang wrote:
-> > > 
-> > > 
-> > > On 2024/1/2 16:32, Leon Romanovsky wrote:  
-> > > > On Tue, Jan 02, 2024 at 03:44:29PM +0800, Chengchang Tang wrote:  
-> > > > > 
-> > > > > On 2023/12/30 1:21, Stephen Hemminger wrote:  
-> > > > > > On Fri, 29 Dec 2023 14:52:40 +0800
-> > > > > > Junxian Huang <huangjunxian6@hisilicon.com> wrote:
-> > > > > >   
-> > > > > > > From: Chengchang Tang <tangchengchang@huawei.com>
-> > > > > > > 
-> > > > > > > There will be a core dump when pretty is used as the JSON object
-> > > > > > > hasn't been opened and closed properly.
-> > > > > > > 
-> > > > > > > Before:
-> > > > > > > $ rdma res show qp -jp -dd
-> > > > > > > [ {
-> > > > > > >       "ifindex": 1,
-> > > > > > >       "ifname": "hns_1",
-> > > > > > >       "port": 1,
-> > > > > > >       "lqpn": 1,
-> > > > > > >       "type": "GSI",
-> > > > > > >       "state": "RTS",
-> > > > > > >       "sq-psn": 0,
-> > > > > > >       "comm": "ib_core"
-> > > > > > > },
-> > > > > > > "drv_sq_wqe_cnt": 128,
-> > > > > > > "drv_sq_max_gs": 2,
-> > > > > > > "drv_rq_wqe_cnt": 512,
-> > > > > > > "drv_rq_max_gs": 1,
-> > > > > > > rdma: json_writer.c:130: jsonw_end: Assertion `self->depth > 0' failed.
-> > > > > > > Aborted (core dumped)
-> > > > > > > 
-> > > > > > > After:
-> > > > > > > $ rdma res show qp -jp -dd
-> > > > > > > [ {
-> > > > > > >           "ifindex": 2,
-> > > > > > >           "ifname": "hns_2",
-> > > > > > >           "port": 1,
-> > > > > > >           "lqpn": 1,
-> > > > > > >           "type": "GSI",
-> > > > > > >           "state": "RTS",
-> > > > > > >           "sq-psn": 0,
-> > > > > > >           "comm": "ib_core",{
-> > > > > > >               "drv_sq_wqe_cnt": 128,
-> > > > > > >               "drv_sq_max_gs": 2,
-> > > > > > >               "drv_rq_wqe_cnt": 512,
-> > > > > > >               "drv_rq_max_gs": 1,
-> > > > > > >               "drv_ext_sge_sge_cnt": 256
-> > > > > > >           }
-> > > > > > >       } ]
-> > > > > > > 
-> > > > > > > Fixes: 331152752a97 ("rdma: print driver resource attributes")
-> > > > > > > Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-> > > > > > > Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>  
-> > > > > > This code in rdma seems to be miking json and newline functionality
-> > > > > > which creates bug traps.
-> > > > > > 
-> > > > > > Also the json should have same effective output in pretty and non-pretty mode.
-> > > > > > It looks like since pretty mode add extra object layer, the nesting of {} would be
-> > > > > > different.
-> > > > > > 
-> > > > > > The conversion to json_print() was done but it isn't using same conventions
-> > > > > > as ip or tc.
-> > > > > > 
-> > > > > > The correct fix needs to go deeper and hit other things.
-> > > > > >   
-> > > > > Hi, Stephen,
-> > > > > 
-> > > > > The root cause of this issue is that close_json_object() is being called in
-> > > > > newline_indent(), resulting in a mismatch
-> > > > > of {}.
-> > > > > 
-> > > > > When fixing this problem, I was unsure why a newline() is needed in pretty
-> > > > > mode, so I simply kept this logic and
-> > > > > solved the issue of open_json_object() and close_json_object() not matching.
-> > > > > However, If the output of pretty mode
-> > > > > and not-pretty mode should be the same, then this problem can be resolved by
-> > > > > deleting this newline_indent().  
-> > > > Stephen didn't say that output of pretty and not-pretty should be the
-> > > > same, but he said that JSON logic should be the same.
-> > > > 
-> > > > Thanks  
-> > > 
-> > > Hi, Leon,
-> > > 
-> > > Thank you for your reply. But I'm not sure what you mean by JSON logic? I
-> > > understand that
-> > > pretty and not-pretty JSON should have the same content, but just difference
-> > > display effects.
-> > > Do you mean that they only need to have the same structure?
-> > > 
-> > > Or, let's get back to this question. In the JSON format output, the
-> > > newline() here seems
-> > > unnecessary, because json_print() can solve the line break problems during
-> > > printing.
-> > > So I think the newline() here can be removed at least when outputting in
-> > > JSON format.  
-> > 
-> > I think that your original patch is correct way to fix the mismatch as
-> > it is not related to pretty/non-pretty.
-> > 
-> > Thanks
+> Nicolin Chen (4):
+>   iommu: Add iommu_copy_struct_from_user_array helper
+>   iommufd/selftest: Add mock_domain_cache_invalidate_user support
+>   iommufd/selftest: Add IOMMU_TEST_OP_MD_CHECK_IOTLB test op
+>   iommufd/selftest: Add coverage for IOMMU_HWPT_INVALIDATE ioctl
 > 
-> Part of the problem is the meaning of pretty mode is different in rdma
-> than all of the other commands. The meaning of the flags should be the
-> same across ip, devlink, tc, and rdma; therefore pretty should mean
-> nothing unless json is enabled.
+> Yi Liu (2):
+>   iommufd: Add IOMMU_HWPT_INVALIDATE
+>   iommufd: Add data structure for Intel VT-d stage-1 cache invalidation
 
-I was very inspired by devlink when wrote rdmatool. It is supposed to
-behave the same. :)
+Applied to for-next, thanks
 
-> 
-> I can do some of the rework here, but don't have any rdma hardware
-> to test on.
-
-We will test it for you.
-
-Thanks
+Jason
 
