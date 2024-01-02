@@ -1,149 +1,114 @@
-Return-Path: <linux-kernel+bounces-14471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4D17821D7D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:16:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F733821D7F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:17:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79A3B1F22AAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:16:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E5301C222F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:17:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CFBF10A0D;
-	Tue,  2 Jan 2024 14:16:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="cNdkDTx+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F235112B76;
+	Tue,  2 Jan 2024 14:16:43 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36FAE10785;
-	Tue,  2 Jan 2024 14:16:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704204996;
-	bh=FShN6Yxi9g1ih4M05TksRobciGeTbu+YjfYSPWSxjL4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=cNdkDTx+B33wt206oH7WpK7uXAgVfgcYPmGM9szkyu11u2P8NRU/20/dJY3PytdXA
-	 zYzp56m5DDleZsXrPHy8oTSaIZ/m2pNMQLm2VvTvjsLpUlQgc2jL6KSeKDqCd2L+x0
-	 mh0m5h8AORik8OZKsiQlani5S6W1zMKos/RVU1r4YqCiLec++BeJJ1eGs1wvcywr5A
-	 YmN1Ks/P1pCwZO13kl98CAWqyn04OzLNU3Cxdv2z62tlh7hXjLVGHWlzPNEEOUsj/z
-	 jLcQv0bT6AYYXhDh2zkN34/avpZ5j0+hG8ye3iYFpUZSadhA39zz61s4eWviIHS9zd
-	 zTzWJi8rGfj/g==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2526211722;
+	Tue,  2 Jan 2024 14:16:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: laura.nao)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 735433781FDF;
-	Tue,  2 Jan 2024 14:16:35 +0000 (UTC)
-From: Laura Nao <laura.nao@collabora.com>
-To: Shuah Khan <shuah@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>,
-	"Nicolas F . R . A . Prado" <nfraprado@collabora.com>,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	kernel@collabora.com,
-	Laura Nao <laura.nao@collabora.com>
-Subject: [PATCH] selftests: Move KTAP bash helpers to selftests common folder
-Date: Tue,  2 Jan 2024 15:15:28 +0100
-Message-Id: <20240102141528.169947-1-laura.nao@collabora.com>
-X-Mailer: git-send-email 2.30.2
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 478D81FD60;
+	Tue,  2 Jan 2024 14:16:40 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 24A201340C;
+	Tue,  2 Jan 2024 14:16:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 86yjMMQalGWUXQAAD6G6ig
+	(envelope-from <ddiss@suse.de>); Tue, 02 Jan 2024 14:16:36 +0000
+Date: Wed, 3 Jan 2024 01:16:22 +1100
+From: David Disseldorp <ddiss@suse.de>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
+ andriy.shevchenko@linux.intel.com, David.Laight@ACULAB.COM
+Subject: Re: [PATCH v2 1/4] kstrtox: always skip the leading "0x" even if no
+ more valid chars
+Message-ID: <20240103011622.144d62d0@echidna>
+In-Reply-To: <f905131c211685efa59dfa43ffb3a619a283f914.1704168510.git.wqu@suse.com>
+References: <cover.1704168510.git.wqu@suse.com>
+	<f905131c211685efa59dfa43ffb3a619a283f914.1704168510.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: 478D81FD60
 
-Move bash helpers for outputting in KTAP format to the common selftests
-folder. This allows kselftests other than the dt one to source the file
-and make use of the helper functions.
-Define pass, fail and skip codes in the same file too.
+On Tue,  2 Jan 2024 14:42:11 +1030, Qu Wenruo wrote:
 
-Signed-off-by: Laura Nao <laura.nao@collabora.com>
----
- tools/testing/selftests/Makefile                          | 1 +
- tools/testing/selftests/dt/Makefile                       | 2 +-
- tools/testing/selftests/dt/test_unprobed_devices.sh       | 6 +-----
- tools/testing/selftests/{dt => kselftest}/ktap_helpers.sh | 6 ++++++
- 4 files changed, 9 insertions(+), 6 deletions(-)
- rename tools/testing/selftests/{dt => kselftest}/ktap_helpers.sh (94%)
+> Currently the invalid string "0x" (only hex prefix, no valid chars
+> followed) would make _parse_integer_fixup_radix() to treat it as octal.
+> 
+> This is due to the fact that the function would only auto-detect hex if
+> and only if there is any valid hex char after "0x".
+> Or it would only go octal instead.
+> 
+> Thankfully this won't affect our unit test, as "0x" would still be
+> treated as failure.
+> Since we treat the result as octal, the result value would be 0, leaving
+> "x" as the tailing char and still fail kstrtox() functions.
+> 
+> But for the incoming memparse_safe(), the remaining string would still
+> be consumed by the caller, and we need to properly treat "0x" as an
+> invalid string.
+> 
+> So this patch would make _parse_integer_fixup_radix() to forcefully go
+> hex no matter if there is any valid char following.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  lib/kstrtox.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/kstrtox.c b/lib/kstrtox.c
+> index d586e6af5e5a..41c9a499bbf3 100644
+> --- a/lib/kstrtox.c
+> +++ b/lib/kstrtox.c
+> @@ -27,7 +27,7 @@ const char *_parse_integer_fixup_radix(const char *s, unsigned int *base)
+>  {
+>  	if (*base == 0) {
+>  		if (s[0] == '0') {
+> -			if (_tolower(s[1]) == 'x' && isxdigit(s[2]))
+> +			if (_tolower(s[1]) == 'x')
+>  				*base = 16;
+>  			else
+>  				*base = 8;
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 3b2061d1c1a5..976e96013c91 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -251,6 +251,7 @@ ifdef INSTALL_PATH
- 	install -m 744 kselftest/module.sh $(INSTALL_PATH)/kselftest/
- 	install -m 744 kselftest/runner.sh $(INSTALL_PATH)/kselftest/
- 	install -m 744 kselftest/prefix.pl $(INSTALL_PATH)/kselftest/
-+	install -m 744 kselftest/ktap_helpers.sh $(INSTALL_PATH)/kselftest/
- 	install -m 744 run_kselftest.sh $(INSTALL_PATH)/
- 	rm -f $(TEST_LIST)
- 	@ret=1;	\
-diff --git a/tools/testing/selftests/dt/Makefile b/tools/testing/selftests/dt/Makefile
-index 62dc00ee4978..2d33ee9e9b71 100644
---- a/tools/testing/selftests/dt/Makefile
-+++ b/tools/testing/selftests/dt/Makefile
-@@ -4,7 +4,7 @@ ifneq ($(PY3),)
- 
- TEST_PROGS := test_unprobed_devices.sh
- TEST_GEN_FILES := compatible_list
--TEST_FILES := compatible_ignore_list ktap_helpers.sh
-+TEST_FILES := compatible_ignore_list
- 
- include ../lib.mk
- 
-diff --git a/tools/testing/selftests/dt/test_unprobed_devices.sh b/tools/testing/selftests/dt/test_unprobed_devices.sh
-index b07af2a4c4de..f2307ee443a6 100755
---- a/tools/testing/selftests/dt/test_unprobed_devices.sh
-+++ b/tools/testing/selftests/dt/test_unprobed_devices.sh
-@@ -15,16 +15,12 @@
- 
- DIR="$(dirname $(readlink -f "$0"))"
- 
--source "${DIR}"/ktap_helpers.sh
-+source "${DIR}"/../kselftest/ktap_helpers.sh
- 
- PDT=/proc/device-tree/
- COMPAT_LIST="${DIR}"/compatible_list
- IGNORE_LIST="${DIR}"/compatible_ignore_list
- 
--KSFT_PASS=0
--KSFT_FAIL=1
--KSFT_SKIP=4
--
- ktap_print_header
- 
- if [[ ! -d "${PDT}" ]]; then
-diff --git a/tools/testing/selftests/dt/ktap_helpers.sh b/tools/testing/selftests/kselftest/ktap_helpers.sh
-similarity index 94%
-rename from tools/testing/selftests/dt/ktap_helpers.sh
-rename to tools/testing/selftests/kselftest/ktap_helpers.sh
-index 8dfae51bb4e2..dd79d96f3b5a 100644
---- a/tools/testing/selftests/dt/ktap_helpers.sh
-+++ b/tools/testing/selftests/kselftest/ktap_helpers.sh
-@@ -9,6 +9,12 @@ KTAP_CNT_PASS=0
- KTAP_CNT_FAIL=0
- KTAP_CNT_SKIP=0
- 
-+KSFT_PASS=0
-+KSFT_FAIL=1
-+KSFT_XFAIL=2
-+KSFT_XPASS=3
-+KSFT_SKIP=4
-+
- ktap_print_header() {
- 	echo "TAP version 13"
- }
--- 
-2.30.2
-
+There's a copy of this function in arch/x86/boot/string.c which should
+probably remain consistent (or be removed). Aside from that, this looks
+good to me:
+Reviewed-by: David Disseldorp <ddiss@suse.de>
 
