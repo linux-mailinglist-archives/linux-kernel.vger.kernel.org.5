@@ -1,61 +1,55 @@
-Return-Path: <linux-kernel+bounces-14762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62C3D8221DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 784418221E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:17:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 742E81C22A1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:14:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AB561C22A0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:17:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9240C15AEE;
-	Tue,  2 Jan 2024 19:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDEE615AF8;
+	Tue,  2 Jan 2024 19:17:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=merlins.org header.i=@merlins.org header.b="U8YF6nH4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NDtzNQg0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E60B15E90;
-	Tue,  2 Jan 2024 19:14:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=merlins.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=merlins.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=merlins.org
-	; s=key; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=FOkFG3JsQO68vefg2PdTIP5MphkMJlbl6dquQ/8fPr4=; b=U8YF6nH4qKNdYQfs4dkCcZqT2A
-	BJAnyDcBFHPYpA9PtnSRnf94RJZLBZ6hNjuf3cToFBMyRfLLemFGVqrCpZUrvk17409lU+2rAmUZl
-	x+dEGbN9yOuBI7HQwckj/ZL7K39+U2aO4Y4olW2ioVZibvLkIXPMdGUleRDm+xnV+bIuXPBYFa9Xq
-	hgZexS241MTCaPvskDp9rE1yxcYARdGQ3pSFuPOLrzy4uAg5jOQtf9Qie2XXakkKXhct6+dcTSpf0
-	uA8hGYEF9MlFzDjQDTnSNUP+4Zftrc/SDdZ4uk8/POCEjVMxKkfNdgP1P2R2ggAvUuqns0CvcRIf3
-	u0waflwA==;
-Received: from lfbn-idf3-1-20-89.w81-249.abo.wanadoo.fr ([81.249.147.89]:59766 helo=sauron.svh.merlins.org)
-	by mail1.merlins.org with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-	id 1rKkDh-0003nt-BH by authid <merlins.org> with srv_auth_plain; Tue, 02 Jan 2024 11:14:33 -0800
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.96)
-	(envelope-from <marc@merlins.org>)
-	id 1rKkDf-005z1P-2b;
-	Tue, 02 Jan 2024 11:14:31 -0800
-Date: Tue, 2 Jan 2024 11:14:31 -0800
-From: Marc MERLIN <marc@merlins.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Rander Wang <rander.wang@intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D01115E95;
+	Tue,  2 Jan 2024 19:17:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 355BAC433C8;
+	Tue,  2 Jan 2024 19:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704223025;
+	bh=Jk/Wjw6hVbQ2lA3lct5hPUB5efjonhc5P9IQLikWlwk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NDtzNQg09PssYylDTe8XVEKIPUHr4S04K6voB3AKVcCLkTtVOFuSZ0dHYCzszil4N
+	 Bl++mc91mGzyfs6BZ/s2CX1Y51ymputeTqcFn2slSVgsi35EO6aUFL0ncl6j4y6zza
+	 IjivUG/3RX4Ehq8p2hT5MSfHIwzb6p6afPiw/Zajy6GmSIGj/rGYhtH5/eZDyl+t17
+	 WqxKGuk+AAaim63PzLn9ap6Sux43/CTGSS9I4yHS19gHmwoUiZMUsxGZtQBfvWLb91
+	 7OzCKKgkG5LxBvwMaYXqcyoE2GyjTrFxUg+yYOQHNHPfTCYmYKXP6bRPcjJ9MXBt6g
+	 TEPONhMU7oMyA==
+Date: Tue, 2 Jan 2024 21:17:01 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Stephen Hemminger <stephen@networkplumber.org>
+Cc: Chengchang Tang <tangchengchang@huawei.com>,
+	Junxian Huang <huangjunxian6@hisilicon.com>, jgg@ziepe.ca,
+	dsahern@gmail.com, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linuxarm@huawei.com,
 	linux-kernel@vger.kernel.org
-Subject: Re: sof-audio-pci-intel-tgl/soundwire 6.6.8 kernel outputs no sound
- on speakers but works on headphones => missing alsa-ucm-conf
-Message-ID: <ZZRgl9HOLHEnSTmR@merlins.org>
-References: <20231223234430.GA11359@merlins.org>
- <alpine.DEB.2.22.394.2401021117370.14041@eliteleevi.tm.intel.com>
- <ZZRP8RqT83cE-S5m@merlins.org>
+Subject: Re: [PATCH iproute2-rc 1/2] rdma: Fix core dump when pretty is used
+Message-ID: <20240102191701.GC5160@unreal>
+References: <20231229065241.554726-1-huangjunxian6@hisilicon.com>
+ <20231229065241.554726-2-huangjunxian6@hisilicon.com>
+ <20231229092129.25a526c4@hermes.local>
+ <30d8c237-953a-8794-9baa-e21b31d4d88c@huawei.com>
+ <20240102083257.GB6361@unreal>
+ <29146463-6d0e-21c5-af42-217cee760b3f@huawei.com>
+ <20240102122106.GI6361@unreal>
+ <20240102082746.651ff7cf@hermes.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,47 +58,130 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZZRP8RqT83cE-S5m@merlins.org>
-X-Sysadmin: BOFH
-X-URL: http://marc.merlins.org/
-X-SA-Exim-Connect-IP: 81.249.147.89
-X-SA-Exim-Mail-From: marc@merlins.org
+In-Reply-To: <20240102082746.651ff7cf@hermes.local>
 
-On Tue, Jan 02, 2024 at 10:03:29AM -0800, Marc MERLIN wrote:
-> First, a big thanks for the quick reply and help.
-> For the benefit of archives and the next potential person looking for
-> this, my debian system was lacking 
-> alsa-ucm-conf
-> which for this soundcare is not optional at all. 
+On Tue, Jan 02, 2024 at 08:27:46AM -0800, Stephen Hemminger wrote:
+> On Tue, 2 Jan 2024 14:21:06 +0200
+> Leon Romanovsky <leon@kernel.org> wrote:
+> 
+> > On Tue, Jan 02, 2024 at 08:06:19PM +0800, Chengchang Tang wrote:
+> > > 
+> > > 
+> > > On 2024/1/2 16:32, Leon Romanovsky wrote:  
+> > > > On Tue, Jan 02, 2024 at 03:44:29PM +0800, Chengchang Tang wrote:  
+> > > > > 
+> > > > > On 2023/12/30 1:21, Stephen Hemminger wrote:  
+> > > > > > On Fri, 29 Dec 2023 14:52:40 +0800
+> > > > > > Junxian Huang <huangjunxian6@hisilicon.com> wrote:
+> > > > > >   
+> > > > > > > From: Chengchang Tang <tangchengchang@huawei.com>
+> > > > > > > 
+> > > > > > > There will be a core dump when pretty is used as the JSON object
+> > > > > > > hasn't been opened and closed properly.
+> > > > > > > 
+> > > > > > > Before:
+> > > > > > > $ rdma res show qp -jp -dd
+> > > > > > > [ {
+> > > > > > >       "ifindex": 1,
+> > > > > > >       "ifname": "hns_1",
+> > > > > > >       "port": 1,
+> > > > > > >       "lqpn": 1,
+> > > > > > >       "type": "GSI",
+> > > > > > >       "state": "RTS",
+> > > > > > >       "sq-psn": 0,
+> > > > > > >       "comm": "ib_core"
+> > > > > > > },
+> > > > > > > "drv_sq_wqe_cnt": 128,
+> > > > > > > "drv_sq_max_gs": 2,
+> > > > > > > "drv_rq_wqe_cnt": 512,
+> > > > > > > "drv_rq_max_gs": 1,
+> > > > > > > rdma: json_writer.c:130: jsonw_end: Assertion `self->depth > 0' failed.
+> > > > > > > Aborted (core dumped)
+> > > > > > > 
+> > > > > > > After:
+> > > > > > > $ rdma res show qp -jp -dd
+> > > > > > > [ {
+> > > > > > >           "ifindex": 2,
+> > > > > > >           "ifname": "hns_2",
+> > > > > > >           "port": 1,
+> > > > > > >           "lqpn": 1,
+> > > > > > >           "type": "GSI",
+> > > > > > >           "state": "RTS",
+> > > > > > >           "sq-psn": 0,
+> > > > > > >           "comm": "ib_core",{
+> > > > > > >               "drv_sq_wqe_cnt": 128,
+> > > > > > >               "drv_sq_max_gs": 2,
+> > > > > > >               "drv_rq_wqe_cnt": 512,
+> > > > > > >               "drv_rq_max_gs": 1,
+> > > > > > >               "drv_ext_sge_sge_cnt": 256
+> > > > > > >           }
+> > > > > > >       } ]
+> > > > > > > 
+> > > > > > > Fixes: 331152752a97 ("rdma: print driver resource attributes")
+> > > > > > > Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+> > > > > > > Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>  
+> > > > > > This code in rdma seems to be miking json and newline functionality
+> > > > > > which creates bug traps.
+> > > > > > 
+> > > > > > Also the json should have same effective output in pretty and non-pretty mode.
+> > > > > > It looks like since pretty mode add extra object layer, the nesting of {} would be
+> > > > > > different.
+> > > > > > 
+> > > > > > The conversion to json_print() was done but it isn't using same conventions
+> > > > > > as ip or tc.
+> > > > > > 
+> > > > > > The correct fix needs to go deeper and hit other things.
+> > > > > >   
+> > > > > Hi, Stephen,
+> > > > > 
+> > > > > The root cause of this issue is that close_json_object() is being called in
+> > > > > newline_indent(), resulting in a mismatch
+> > > > > of {}.
+> > > > > 
+> > > > > When fixing this problem, I was unsure why a newline() is needed in pretty
+> > > > > mode, so I simply kept this logic and
+> > > > > solved the issue of open_json_object() and close_json_object() not matching.
+> > > > > However, If the output of pretty mode
+> > > > > and not-pretty mode should be the same, then this problem can be resolved by
+> > > > > deleting this newline_indent().  
+> > > > Stephen didn't say that output of pretty and not-pretty should be the
+> > > > same, but he said that JSON logic should be the same.
+> > > > 
+> > > > Thanks  
+> > > 
+> > > Hi, Leon,
+> > > 
+> > > Thank you for your reply. But I'm not sure what you mean by JSON logic? I
+> > > understand that
+> > > pretty and not-pretty JSON should have the same content, but just difference
+> > > display effects.
+> > > Do you mean that they only need to have the same structure?
+> > > 
+> > > Or, let's get back to this question. In the JSON format output, the
+> > > newline() here seems
+> > > unnecessary, because json_print() can solve the line break problems during
+> > > printing.
+> > > So I think the newline() here can be removed at least when outputting in
+> > > JSON format.  
+> > 
+> > I think that your original patch is correct way to fix the mismatch as
+> > it is not related to pretty/non-pretty.
+> > 
+> > Thanks
+> 
+> Part of the problem is the meaning of pretty mode is different in rdma
+> than all of the other commands. The meaning of the flags should be the
+> same across ip, devlink, tc, and rdma; therefore pretty should mean
+> nothing unless json is enabled.
 
-For debian users, the other problem is that a lot of firmware is missing
-0000:00:1f.3: Direct firmware load for intel/sof-tplg/sof-hda-generic-2ch.tplg failed with error -2
-0000:00:1f.3: error: tplg request firmware intel/sof-tplg/sof-hda-generic-2ch.tplg failed err: -2
-0000:00:1f.3: you may need to download the firmware from https://github.com/thesofproject/sof-bin/
+I was very inspired by devlink when wrote rdmatool. It is supposed to
+behave the same. :)
 
-merlin:~# aptitude search '?broken-reverse-recommends(?installed)' > /tmp/missing
-merlin:~# grep firmware /tmp/missing
-p  firmware-ath9k-htc - firmware for AR7010 and AR9271 USB wireless adapters
-p  fwupd-amd64-signed - Tools to manage UEFI firmware updates (signed)
-merlin:~# grep sof /tmp/missing
-merlin:~#
+> 
+> I can do some of the rework here, but don't have any rdma hardware
+> to test on.
 
-This means there are no relevant packages with 'sof' or 'firmware' that
-were recommended, and I had to find this:
+We will test it for you.
 
-merlin:~# apt-get install -t unstable firmware-sof-signed
-
-That package was also missing and not suggested by any package is seems,
-but it was easier to find thanks to kernel dmesg. That said I had to
-look in ubuntu to see what package those files came from as the package
-was installed in that test ubuntu image I used and missing from my
-debian12
-
-You know this, I'm sure just adding it to the thread for google indexing.
-
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+Thanks
 
