@@ -1,119 +1,126 @@
-Return-Path: <linux-kernel+bounces-14765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C63B88221EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CA59A8221F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:23:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79F561F22A15
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:22:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DB201F21B22
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:23:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0095A15AF9;
-	Tue,  2 Jan 2024 19:22:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9AFD15AFB;
+	Tue,  2 Jan 2024 19:23:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PBlwKhCy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9617015AD4;
-	Tue,  2 Jan 2024 19:22:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4862CC433C8;
-	Tue,  2 Jan 2024 19:22:10 +0000 (UTC)
-Date: Tue, 2 Jan 2024 14:23:11 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- "Ubisectech Sirius" <bugreport@ubisectech.com>
-Subject: [PATCH] tracefs: Check for dentry->d_inode exists in set_gid()
-Message-ID: <20240102142311.5670813d@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4F016405;
+	Tue,  2 Jan 2024 19:23:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704223391; x=1735759391;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Pi4zx7xRM7AxSQNbCyQOKolzB32nwlVky/j9CjcIrT4=;
+  b=PBlwKhCyg6lR07E0Xltt/78lZW0zYPGgjffeCfHSQXunxrDPbvgWSlA8
+   yJWcYZTLOncEEl4bvpzhhN7SOS/FHDE812joDCcS1IkzKQY0iTkPpbGiT
+   OaCrnK3nfrKtFvYtEFc9of0lx4G7c4e8P9YA0cmKRM4nNS+cEx9ht7DaP
+   mtMtoRXvmDhw9VC7yF0m9u7ND7mcvsGT9whtHUSOfgC9oVmY0U1/DSbFx
+   SuuY/WESlAfo9xrwbG8C2N+WQU2oTrNTKzAA8fwxgOtNNqnOhqa0Tl5sZ
+   T9kHyNRS1tr0funlVtn7tbE1fqtwpkBz8HF9xJvqKTUBQbn87QmlZ1OL1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="428078531"
+X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
+   d="scan'208";a="428078531"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 11:23:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="1111132084"
+X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
+   d="scan'208";a="1111132084"
+Received: from keithj1-mobl2.amr.corp.intel.com (HELO [10.209.44.31]) ([10.209.44.31])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 11:23:10 -0800
+Message-ID: <cd9e4397-1110-40a5-891a-56e6288bbf91@linux.intel.com>
+Date: Tue, 2 Jan 2024 11:23:11 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] PCI/AER: Use 'Correctable' and 'Uncorrectable' spec
+ terms for errors
+Content-Language: en-US
+To: Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org
+Cc: Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+ Oliver O'Halloran <oohall@gmail.com>, Robert Richter <rrichter@amd.com>,
+ Terry Bowman <terry.bowman@amd.com>,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+References: <20231206224231.732765-1-helgaas@kernel.org>
+ <20231206224231.732765-2-helgaas@kernel.org>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20231206224231.732765-2-helgaas@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-If a getdents() is called on the tracefs directory but does not get all
-the files, it can leave a "cursor" dentry in the d_subdirs list of tracefs
-dentry. This cursor dentry does not have a d_inode for it. Before
-referencing tracefs_inode from the dentry, the d_inode must first be
-checked if it has content. If not, then it's not a tracefs_inode and can
-be ignored.
 
-The following caused a crash:
+On 12/6/2023 2:42 PM, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> The PCIe spec classifies errors as either "Correctable" or "Uncorrectable".
+> Previously we printed these as "Corrected" or "Uncorrected".  To avoid
+> confusion, use the same terms as the spec.
+> 
+> One confusing situation is when one agent detects an error, but another
+> agent is responsible for recovery, e.g., by re-attempting the operation.
+> The first agent may log a "correctable" error but it has not yet been
+> corrected.  The recovery agent must report an uncorrectable error if it is
+> unable to recover.  If we print the first agent's error as "Corrected", it
+> gives the false impression that it has already been resolved.
+> 
+> Sample message change:
+> 
+>   - pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
+>   + pcieport 0000:00:1c.5: AER: Correctable error received: 0000:00:1c.5
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
 
- #define getdents64(fd, dirp, count) syscall(SYS_getdents64, fd, dirp, count)
- #define BUF_SIZE 256
- #define TDIR "/tmp/file0"
+Looks good to me.
 
- int main(void)
- {
-	char buf[BUF_SIZE];
-	int fd;
-       	int n;
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-       	mkdir(TDIR, 0777);
-	mount(NULL, TDIR, "tracefs", 0, NULL);
-       	fd = openat(AT_FDCWD, TDIR, O_RDONLY);
-       	n = getdents64(fd, buf, BUF_SIZE);
-       	ret = mount(NULL, TDIR, NULL, MS_NOSUID|MS_REMOUNT|MS_RELATIME|MS_LAZYTIME,
-		    "gid=1000");
-	return 0;
- }
+>  drivers/pci/pcie/aer.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index 42a3bd35a3e1..20db80018b5d 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -436,9 +436,9 @@ void pci_aer_exit(struct pci_dev *dev)
+>   * AER error strings
+>   */
+>  static const char *aer_error_severity_string[] = {
+> -	"Uncorrected (Non-Fatal)",
+> -	"Uncorrected (Fatal)",
+> -	"Corrected"
+> +	"Uncorrectable (Non-Fatal)",
+> +	"Uncorrectable (Fatal)",
+> +	"Correctable"
+>  };
+>  
+>  static const char *aer_error_layer[] = {
 
-That's because the 256 BUF_SIZE was not big enough to read all the
-dentries of the tracefs file system and it left a "cursor" dentry in the
-subdirs of the tracefs root inode. Then on remounting with "gid=1000",
-it would cause an iteration of all dentries which hit:
-
-	ti = get_tracefs(dentry->d_inode);
-	if (ti && (ti->flags & TRACEFS_EVENT_INODE))
-		eventfs_update_gid(dentry, gid);
-
-Which crashed because of the dereference of the cursor dentry which had a NULL
-d_inode.
-
-Link: https://lore.kernel.org/all/20240102135637.3a21fb10@gandalf.local.home/
-
-Cc: stable@vger.kernel.org
-Fixes: 7e8358edf503e ("eventfs: Fix file and directory uid and gid ownership")
-Reported-by: "Ubisectech Sirius" <bugreport@ubisectech.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- fs/tracefs/inode.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-index 62524b20964e..c29387a36bc8 100644
---- a/fs/tracefs/inode.c
-+++ b/fs/tracefs/inode.c
-@@ -219,10 +219,13 @@ static void set_gid(struct dentry *parent, kgid_t gid)
- 
- 		change_gid(dentry, gid);
- 
--		/* If this is the events directory, update that too */
--		ti = get_tracefs(dentry->d_inode);
--		if (ti && (ti->flags & TRACEFS_EVENT_INODE))
--			eventfs_update_gid(dentry, gid);
-+		/* Note, getdents() can add a cursor dentry with no inode */
-+		if (dentry->d_inode) {
-+			/* If this is the events directory, update that too */
-+			ti = get_tracefs(dentry->d_inode);
-+			if (ti && (ti->flags & TRACEFS_EVENT_INODE))
-+				eventfs_update_gid(dentry, gid);
-+		}
- 
- 		if (!list_empty(&dentry->d_subdirs)) {
- 			spin_unlock(&this_parent->d_lock);
 -- 
-2.42.0
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
