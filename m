@@ -1,127 +1,235 @@
-Return-Path: <linux-kernel+bounces-14153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70AE1821875
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:42:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20D89821881
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:45:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FF5A1F21C8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:42:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A93702829DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:45:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59E5053A9;
-	Tue,  2 Jan 2024 08:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0198C5677;
+	Tue,  2 Jan 2024 08:44:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lYvx74rG"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HV4RtWW3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 378A5C8C7;
-	Tue,  2 Jan 2024 08:42:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a28271c5eb5so2105466b.0;
-        Tue, 02 Jan 2024 00:42:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704184934; x=1704789734; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u8CwfhciTLcDiE7Z2boNc1lfBQV0c29+edCvxD3xhxw=;
-        b=lYvx74rGS2+xGM6c3Z//l6T6BeTRAXsOucdNZtAad71mDcYYZHVgn5bDTHarAKzd7U
-         kL6Ha/dSDjFPRHEqE//0yCptVED61e/1VHkgQzhKct61aIOeP3A2scPTZCvJGgazNB+x
-         8XPk5hkPE+BuhexrPLV5+gMnoLMM+XjlcWBfhX3A3b8lU0hILFc08FKcz8joLx0oFPSv
-         x+Y96yroBBmNMyQk7fXG3odjBWrbH0ie7Ck79uYg57LsTyLqYoUvIzLXdJbo/FsBSFzy
-         lmNxuZRWHjlAFnf30+YfJgLKKsKCpnlkpkct3hrV3RL8JKcYp38P/ivrECqj/wnoGs7E
-         2qDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704184934; x=1704789734;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u8CwfhciTLcDiE7Z2boNc1lfBQV0c29+edCvxD3xhxw=;
-        b=PX64XSVLKMKnPA3AeQD7yjpyqxAr4liK8XsZ6sxn1zypA70EqOEMGTSG71c89lYA8t
-         NJbB+4ZGUeD9ds67Ixiww7KNVP0AEoPwlAaplOaIj5ANOctrS62CWcXnaV1sPwT0h9dt
-         Yzt92bM/E2oPARClI64d6ZHexH4+EY544AcHPdwVebwWYzrA6ZsVzDXMqzfrhhcXPlYW
-         5Ekf0EmR/4eTkysSyEVY3GcD3YNXyfQwqaGb7RqUNe/eigIySVeEbrvHYoS1e8qacgdt
-         37DfP4ry7LaGei2SmE7zJau6F7EiIURpa+W5Ma5f8cPQYch16RD4snKFthEU1fACdHYg
-         8cuA==
-X-Gm-Message-State: AOJu0YyGQ32RVYbC9xOcv9W4sibmLXDenOGqyP3TdOI5aHq841ih+BqD
-	vGYCsyRxNQpp2HQZsazIm951PztFtK+VBX2XIb8=
-X-Google-Smtp-Source: AGHT+IF0Je5njR/YwKTdhQb9U6w8Kntqq0Wc5pbJCaNzaq6nIzQOU8CyuYjXOabufWuRIbCfNLe74OjYjOZXwN3njYY=
-X-Received: by 2002:a17:906:3a4b:b0:a23:5914:9c6c with SMTP id
- a11-20020a1709063a4b00b00a2359149c6cmr16249150ejf.1.1704184934176; Tue, 02
- Jan 2024 00:42:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB5563A6;
+	Tue,  2 Jan 2024 08:44:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704185089; x=1735721089;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=UvmgInCVS3LhauRxpvGYGqfhEKWYPGEDg6KPf7j+yCc=;
+  b=HV4RtWW3zbgsrg7xsd+HrGGdyb8HJTqDUD67gM6K7KSgE8iYYgBrfNWB
+   12VNThHGdcAeyvYYkH9WfLZ4uZhsbOTBT1FFrIDTDcb3Qeqrjyn2RAnwD
+   c+lOs9WPxbfDVybQQVjNuqc0fyopk7dDdiHrB9jeRZ1bv+94+s+RxcTcd
+   UMLBB+hi0ntDi9Im6jSEG584jmCojHq7wu+JE+Ha4FAZIeM0xg6RjHJCt
+   MLHj3M4ueAZGzuOgKLSEdkB3kES1Fp9lHcqVobepfg/uAf+ytD8tu7HE8
+   sVixbqV0SxLJc+2mrrgbqja78KQM67zVenEUxJtXvlWmkuBLk+IO51qwt
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="4189864"
+X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
+   d="scan'208";a="4189864"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 00:44:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="779632795"
+X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
+   d="scan'208";a="779632795"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 00:44:41 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gregory.price@memverge.com>
+Cc: Gregory Price <gourry.memverge@gmail.com>,  <linux-mm@kvack.org>,
+  <linux-doc@vger.kernel.org>,  <linux-fsdevel@vger.kernel.org>,
+  <linux-kernel@vger.kernel.org>,  <linux-api@vger.kernel.org>,
+  <x86@kernel.org>,  <akpm@linux-foundation.org>,  <arnd@arndb.de>,
+  <tglx@linutronix.de>,  <luto@kernel.org>,  <mingo@redhat.com>,
+  <bp@alien8.de>,  <dave.hansen@linux.intel.com>,  <hpa@zytor.com>,
+  <mhocko@kernel.org>,  <tj@kernel.org>,  <corbet@lwn.net>,
+  <rakie.kim@sk.com>,  <hyeongtak.ji@sk.com>,  <honggyu.kim@sk.com>,
+  <vtavarespetr@micron.com>,  <peterz@infradead.org>,
+  <jgroves@micron.com>,  <ravis.opensrc@micron.com>,
+  <sthanneeru@micron.com>,  <emirakhur@micron.com>,  <Hasan.Maruf@amd.com>,
+  <seungjun.ha@samsung.com>,  Srinivasulu Thanneeru
+ <sthanneeru.opensrc@micron.com>
+Subject: Re: [PATCH v5 02/11] mm/mempolicy: introduce
+ MPOL_WEIGHTED_INTERLEAVE for weighted interleaving
+In-Reply-To: <ZYp6ZRLZQVtTHest@memverge.com> (Gregory Price's message of "Tue,
+	26 Dec 2023 02:01:57 -0500")
+References: <20231223181101.1954-1-gregory.price@memverge.com>
+	<20231223181101.1954-3-gregory.price@memverge.com>
+	<8734vof3kq.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZYp6ZRLZQVtTHest@memverge.com>
+Date: Tue, 02 Jan 2024 16:42:42 +0800
+Message-ID: <878r58dt31.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230921090027.11136-1-Wenhua.Lin@unisoc.com> <20230921090027.11136-2-Wenhua.Lin@unisoc.com>
- <c8b9fef7-e27c-6760-52a8-04045dcdc0ec@linux.alibaba.com>
-In-Reply-To: <c8b9fef7-e27c-6760-52a8-04045dcdc0ec@linux.alibaba.com>
-From: wenhua lin <wenhua.lin1994@gmail.com>
-Date: Tue, 2 Jan 2024 16:42:02 +0800
-Message-ID: <CAB9BWhdFgEfgPZ4wcz8RZmyqDGQDYKvk+Rt2LSfz4aPd1_u1dA@mail.gmail.com>
-Subject: Re: [PATCH V2 1/4] gpio: sprd: In the sleep state, the eic debounce
- clk must be forced open
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: Wenhua Lin <Wenhua.Lin@unisoc.com>, Linus Walleij <linus.walleij@linaro.org>, 
-	Andy Shevchenko <andy@kernel.org>, Bartosz Golaszewski <brgl@bgdev.pl>, Orson Zhai <orsonzhai@gmail.com>, 
-	Chunyan Zhang <zhang.lyra@gmail.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ascii
 
-On Wed, Sep 27, 2023 at 5:08=E2=80=AFPM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
->
->
->
-> On 9/21/2023 5:00 PM, Wenhua Lin wrote:
-> > In the sleep state, Eic debounce has no clock and the clk of
-> > debounce needs to be forced open, so that eic can wake up normally.
-> >
-> > Fixes: 2788938b7946 ("gpio: eic-sprd: Make the irqchip immutable")
->
-> Are you sure this is the right Fixes tag? This commit did not change EIC
-> debounce logics.
->
-> The changes look good to me.
+Gregory Price <gregory.price@memverge.com> writes:
 
-This modification turns on the debounce clock, and we will modify the
-submission
-description on patch v3. Thank you for your review.
-
+> On Wed, Dec 27, 2023 at 04:32:37PM +0800, Huang, Ying wrote:
+>> Gregory Price <gourry.memverge@gmail.com> writes:
+>> 
+>> > +static unsigned int weighted_interleave_nid(struct mempolicy *pol, pgoff_t ilx)
+>> > +{
+>> > +	nodemask_t nodemask = pol->nodes;
+>> > +	unsigned int target, weight_total = 0;
+>> > +	int nid;
+>> > +	unsigned char weights[MAX_NUMNODES];
+>> 
+>> MAX_NUMNODSE could be as large as 1024.  1KB stack space may be too
+>> large?
+>> 
 >
-> > Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> > ---
-> >   drivers/gpio/gpio-eic-sprd.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.=
-c
-> > index 84352a6f4973..bfa8a4c7515a 100644
-> > --- a/drivers/gpio/gpio-eic-sprd.c
-> > +++ b/drivers/gpio/gpio-eic-sprd.c
-> > @@ -23,6 +23,7 @@
-> >   #define SPRD_EIC_DBNC_IC            0x24
-> >   #define SPRD_EIC_DBNC_TRIG          0x28
-> >   #define SPRD_EIC_DBNC_CTRL0         0x40
-> > +#define SPRD_EIC_DBNC_FORCE_CLK              0x8000
-> >
-> >   #define SPRD_EIC_LATCH_INTEN                0x0
-> >   #define SPRD_EIC_LATCH_INTRAW               0x4
-> > @@ -214,6 +215,7 @@ static int sprd_eic_set_debounce(struct gpio_chip *=
-chip, unsigned int offset,
-> >       u32 value =3D readl_relaxed(base + reg) & ~SPRD_EIC_DBNC_MASK;
-> >
-> >       value |=3D (debounce / 1000) & SPRD_EIC_DBNC_MASK;
-> > +     value |=3D SPRD_EIC_DBNC_FORCE_CLK;
-> >       writel_relaxed(value, base + reg);
-> >
-> >       return 0;
+> I've been struggling with a good solution to this.  We need a local copy
+> of weights to prevent weights from changing out from under us during
+> allocation (which may take quite some time), but it seemed unwise to
+> to allocate 1KB heap in this particular path.
+>
+> Is my concern unfounded?  If so, I can go ahead and add the allocation
+> code.
+
+Please take a look at NODEMASK_ALLOC().
+
+>> > +	unsigned char weight;
+>> > +
+>> > +	barrier();
+>> 
+>> Memory barrier needs comments.
+>> 
+>
+> Barrier is to stabilize nodemask on the stack, but yes i'll carry the
+> comment from interleave_nid into this barrier as well.
+
+Please see below.
+
+>> > +
+>> > +	/* first ensure we have a valid nodemask */
+>> > +	nid = first_node(nodemask);
+>> > +	if (nid == MAX_NUMNODES)
+>> > +		return nid;
+>> 
+>> It appears that this isn't necessary, because we can check whether
+>> weight_total == 0 after the next loop.
+>> 
+>
+> fair, will snip.
+>
+>> > +
+>> > +	/* Then collect weights on stack and calculate totals */
+>> > +	for_each_node_mask(nid, nodemask) {
+>> > +		weight = iw_table[nid];
+>> > +		weight_total += weight;
+>> > +		weights[nid] = weight;
+>> > +	}
+>> > +
+>> > +	/* Finally, calculate the node offset based on totals */
+>> > +	target = (unsigned int)ilx % weight_total;
+>> 
+>> Why use type casting?
+>> 
+>
+> Artifact of old prototypes, snipped.
+>
+>> > +
+>> > +	/* Stabilize the nodemask on the stack */
+>> > +	barrier();
+>> 
+>> I don't think barrier() is needed to wait for memory operations for
+>> stack.  It's usually used for cross-processor memory order.
+>>
+>
+> This is present in the old interleave code.  To the best of my
+> understanding, the concern is for mempolicy->nodemask rebinding that can
+> occur when cgroups.cpusets.mems_allowed changes.
+>
+> so we can't iterate over (mempolicy->nodemask), we have to take a local
+> copy.
+>
+> My *best* understanding of the barrier here is to prevent the compiler
+> from reordering operations such that it attempts to optimize out the
+> local copy (or do lazy-fetch).
+>
+> It is present in the original interleave code, so I pulled it forward to
+> this, but I have not tested whether this is a bit paranoid or not.
+>
+> from `interleave_nid`:
+>
+>  /*
+>   * The barrier will stabilize the nodemask in a register or on
+>   * the stack so that it will stop changing under the code.
+>   *
+>   * Between first_node() and next_node(), pol->nodes could be changed
+>   * by other threads. So we put pol->nodes in a local stack.
+>   */
+>  barrier();
+
+Got it.  This is kind of READ_ONCE() for nodemask.  To avoid to add
+comments all over the place.  Can we implement a wrapper for it?  For
+example, memcpy_once().  __read_once_size() in
+tools/include/linux/compiler.h can be used as reference.
+
+Because node_weights[] may be changed simultaneously too.  We may need
+to consider similar issue for it too.  But RCU seems more appropriate
+for node_weights[].
+
+>> > +		/* Otherwise we adjust nr_pages down, and continue from there */
+>> > +		rem_pages -= pol->wil.cur_weight;
+>> > +		pol->wil.cur_weight = 0;
+>> > +		prev_node = node;
+>> 
+>> If pol->wil.cur_weight == 0, prev_node will be used without being
+>> initialized below.
+>> 
+>
+> pol->wil.cur_weight is not used below.
+>
+>> > +	}
+>> > +
+>> > +	/* Now we can continue allocating as if from 0 instead of an offset */
+>> > +	rounds = rem_pages / weight_total;
+>> > +	delta = rem_pages % weight_total;
+>> > +	for (i = 0; i < nnodes; i++) {
+>> > +		node = next_node_in(prev_node, nodes);
+>> > +		weight = weights[node];
+>> > +		node_pages = weight * rounds;
+>> > +		if (delta) {
+>> > +			if (delta > weight) {
+>> > +				node_pages += weight;
+>> > +				delta -= weight;
+>> > +			} else {
+>> > +				node_pages += delta;
+>> > +				delta = 0;
+>> > +			}
+>> > +		}
+>> > +		/* We may not make it all the way around */
+>> > +		if (!node_pages)
+>> > +			break;
+>> > +		/* If an over-allocation would occur, floor it */
+>> > +		if (node_pages + total_allocated > nr_pages) {
+>> 
+>> Why is this possible?
+>> 
+>
+> this may have been a paranoid artifact from an early prototype, will
+> snip and validate.
+
+--
+Best Regards,
+Huang, Ying
 
