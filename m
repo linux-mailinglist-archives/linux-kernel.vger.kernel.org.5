@@ -1,132 +1,158 @@
-Return-Path: <linux-kernel+bounces-14049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ED7082175F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:23:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 275FB821763
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:32:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A05682822E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 05:23:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92DB61F21C09
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 05:32:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3941156F4;
-	Tue,  2 Jan 2024 05:17:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFE1111E;
+	Tue,  2 Jan 2024 05:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sEzUY8rC"
+	dkim=pass (1024-bit key) header.d=moxa.com header.i=@moxa.com header.b="f/RdV6sS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2057.outbound.protection.outlook.com [40.107.117.57])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7617614F70
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 05:17:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e68e93be1so8121945e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 21:17:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704172662; x=1704777462; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/67mFt+DQzgEgVk8LHksOClPhmMVu3rW/7JJmw5wVxs=;
-        b=sEzUY8rCQQ4PaXALh1TmB/xdW7x1od0H66hLKTSUJMKBZ7jj/KyjIFuEZKnu5ri9lW
-         Oy5H4PxXygRe1YjeAh9zGMYJUYG7CNJ/2JIvYs9uACD5DXj/qywTI+XtoaFJ3v9MUVry
-         03Ky61lLalxKPndPIs/0tIcE8PervkF2NU1Sy2CXCvMxtvLYoLKG2tcwHUBwoKaytjbd
-         8uUOEfsdbkFJiC+jKJhtXvBzNF5Y8fTw3mjJRt8s1mj2tTvJUdTp9eAnNglK/0cDp6hp
-         Yhca8pUBYDEb1ZtljUF/YKeDTLWemItvaZgWyWpi7NLGTa6jjGpUq+L2DDPWcA2hcYl0
-         +QUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704172662; x=1704777462;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/67mFt+DQzgEgVk8LHksOClPhmMVu3rW/7JJmw5wVxs=;
-        b=Rs1TTCcbCsiaJKgX33YfAxOJARrENcr+6D5lASoUE7P/ULCAAEHEJfgHuUVYlg2wzn
-         iRJNmCCfoAk5g7pVFCcDGdqTQ8iw+ykB5rx7aX/nbPUFMVgToRDRfhONM+nLzsviCH9p
-         xPQ4Jnl3w7Z46AYGkLUH/ts1aV3cFdU8YOrE8bw1eoskA0ZHGPiVaIlNAGV39ueR3MT7
-         aWUcSb8kr03/0lTpv48GlOpoPoKF5R56zA8EvCMdnR8qRPwldiDI5J+XltuK0SXfbDof
-         NGH4YkUM69Uj0138ui3uhpmvZvevPMdAPK6ycK54q+r0BEbTjKfPmG90bPGWYrdO4WVT
-         AlOw==
-X-Gm-Message-State: AOJu0YyjnavcTcIxYwJMiBtgk877z1XiXDSibROUD+3fcEfHubzv61yx
-	d7+YDfbiKbvuc/ZNNuXwUqESDjoRxufKaA==
-X-Google-Smtp-Source: AGHT+IGgbBWBd+EXVLRU/DWSnbndkP5M0hjw4NyoNwWY0H6TVt6qsoSl+YVyYN5o47a8/UnCC7OkZA==
-X-Received: by 2002:a05:6512:2205:b0:50e:8d02:72d3 with SMTP id h5-20020a056512220500b0050e8d0272d3mr3103621lfu.79.1704172661836;
-        Mon, 01 Jan 2024 21:17:41 -0800 (PST)
-Received: from umbar.lan ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id r25-20020ac252b9000000b0050e810689e5sm2081827lfm.33.2024.01.01.21.17.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jan 2024 21:17:41 -0800 (PST)
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 02 Jan 2024 07:17:42 +0200
-Subject: [PATCH v7 22/22] ARM: dts: qcom: ipq8064: drop 'regulator'
- property from SAW2 devices
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CF4310E1;
+	Tue,  2 Jan 2024 05:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=moxa.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=moxa.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=esQf0wxnpqqfWq3xCEwgjyhnexl/kilkLB2aryUEIyXCktppTqxv6i4k9oJND5XzpG4+Mx/ZJxLArmHL+luIOFH5FwU0YTkg5fPW+HjH9lmDm3V4AVNrF6dHMO86tQmVfv4cbJr/80wHkZo1VPy2n3E4Fxe1bh91n07Qop100JSLhtV1tt9nyfq8MB7sYvTaj0UnmikQm89JLS/sesmKN6t4NVGHLyNfUzM8NJr00ZtH+jwZRkgI+kxxdr1HyD+LHZGrrbqW+Zn80cYGhzxKCS53CyqLjt1V4JFXlVi5iVdf4IOUjtJLLYqNSwKRN4gDPtA5EV569QjzsdJKT/wJZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OVabQsMq5V3nbSVJMY+zDD6yHUidUIOIb0s34QMjpRM=;
+ b=OzFaYSRDGSaBwpo48DkszUj1ZqqkR3MnoxOL2Sj1Rc9zQu12JgKs7g/SWxSl4DT6VzJokpZVbZFRISwHRLx6pcTO6TWJLmovmeAJU6nKl7eCY7DpH8DGAsB2FsD/bf2M1lZW0Wrd0Gu4L9uHJ+LXXgXd1R20GMeiDkupEgR3Q0YLUzikHzREgQQ0SRFddxPteabY4fPlI0peI6KuCLf4f+mkebxC3++9mSoITGE44e1dzdNo19VfJJlYgjl9L37yHwB5KxpalErFB67ETHSSPJeYVHH4YD9DpNgqpGUNRqzVlNb70utjTkhX26XVV/5ZJbFBXS4RfgNd9EAFvON6sg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
+ dkim=pass header.d=moxa.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OVabQsMq5V3nbSVJMY+zDD6yHUidUIOIb0s34QMjpRM=;
+ b=f/RdV6sSIiCw1UGzm1+uMtAYPmywzRb5cx89vgPFhmLbRc6dIMM3IyiLKg7e3biHh15IDiVfrjgn7FVYknwnsKbOnPCuxc/BKUtzMHqrAMKRzTc2Z3aAR9tZq5ynXIldOINejs8aMq7Ni4Xpv6w4TCT3QLLfw0hRFj2ZfaxjcrQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=moxa.com;
+Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:115::14) by TYZPR01MB3806.apcprd01.prod.exchangelabs.com
+ (2603:1096:400:3f::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Tue, 2 Jan
+ 2024 05:31:55 +0000
+Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ ([fe80::1023:2132:c05e:ea6b]) by PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ ([fe80::1023:2132:c05e:ea6b%2]) with mapi id 15.20.7135.023; Tue, 2 Jan 2024
+ 05:31:55 +0000
+From: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+Subject: [PATCH] tty: serial: 8250: Set RS232 as default for Moxa PCIe board initialization
+Date: Tue,  2 Jan 2024 13:31:33 +0800
+Message-Id: <20240102053133.9795-1-crescentcy.hsieh@moxa.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYCP301CA0019.JPNP301.PROD.OUTLOOK.COM
+ (2603:1096:400:381::6) To PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:115::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240102-saw2-spm-regulator-v7-22-0472ec237f49@linaro.org>
-References: <20240102-saw2-spm-regulator-v7-0-0472ec237f49@linaro.org>
-In-Reply-To: <20240102-saw2-spm-regulator-v7-0-0472ec237f49@linaro.org>
-To: Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Andy Gross <agross@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1234;
- i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=YpeawRcLYR7ZI5q4HIcJ9e0JzMmiL7QMmrYvpwUTlT4=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBlk5xme/VAvuNw1xhSCUPMgP9oj/zqqecQbieKP
- 1t/8scUZbeJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZZOcZgAKCRCLPIo+Aiko
- 1U4nB/kBMKPAQEDflvTBkWlR0RBvC0//as913ErvRA0/FL1iYlwKM6yYcKO91fVsngq6qWUBm/b
- yFKMa480fvrZu0f/1CHBWRYGC8FxG3JeRSRmompdJsJCLkSff8R19x54VaqXmymu1SzC+cqLtBS
- xDtPcAngwbzMLWEV+L1HinNyPgaNQ8Wznaz7Kv++ZFMDEpHS0K7qYN/aJwvAW+b6S8PrDzyfHux
- HYTPHW0kW1F0XTREy8zwL1WYus9+7exJYpt9fA6GYSaByr6NnIVzEEJu5oIOKM/f3z8u5z+FRA4
- 4CBhJUJhtQaAl4alKXGqnV/YF3LEdA5KwLlwvcHMM812FGJ0
-X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
- fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR01MB5405:EE_|TYZPR01MB3806:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3d6d7644-68f7-4bee-c149-08dc0b5421f2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	F+GtFYhIj+OoBSc5F9EwSditsEHT7SSxtN8HolU2vHux0lRf0pJgHAQv543bIdQMmZ0Z6BrucObOT/oxYwn1bgLgS4avzGr4YNsoXJ4Vl+BPb1/2BUHbEzhebl/x7FBcprYcncCuSe74fRsn57zx0svV+4kK/Bd61qsweWxAAGpeerhsXNEug8hfGtKRVX2GKLN0ZyzITmYV6+dMcZ891i89Wi0XNizPQzJmsZJoIqECi+rxbWXwCEh5FmYpZIXzvCrHQdV6aeKepi415OQfifM0jcvnEtMkYaLlv+oO0eeGcG/3YlMufmEO+msW/Hc/0vU1A0/KFO1GyslEzIen24YP8vQ4UvKZEutAbijNUnzxX69ps/QwscXeJ33yjEIcusHKMQ5K7WQGMQHn2FePL+wChpI2CNYZtL8hqe51JqGoFWf6+Sd/etk6daMzwhmfbfjyjx0CPn5j9Hchv4iCW2i8X1Bji4pv7vTqiJ8EqPsdfiqyncNM6G7KTtroJckbHLkHhOCXAAihixxVKDGsMejfc7WTLOz8E1S+pe+okawIrqUYZIE8B7V+Nwr3CLm9+HFlbAcguaagPAQfQ1yMsYbcIVwzZ/7gLUeufJi0iUtGxjKxNkMp+oiOwKAr+res
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR01MB5405.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(366004)(376002)(39850400004)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(2616005)(107886003)(26005)(1076003)(83380400001)(38100700002)(41300700001)(8676002)(5660300002)(8936002)(316002)(110136005)(4326008)(2906002)(6666004)(6506007)(6512007)(52116002)(66476007)(66946007)(6486002)(478600001)(66556008)(38350700005)(86362001)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?/Y8UvGIADKRfdco8ZNmiR2wYmFyAFweyzwUKfZpIVWMH1nH1HKEqC+fkBq/t?=
+ =?us-ascii?Q?sv9Jeyw13FFiHw71W9BbKslj5cHaWlWaCHY16qeSPvCJio1TFZr3TjUG0ijH?=
+ =?us-ascii?Q?VfjM+Fkhvt8EULqMBZJxb3upTxb8w5SNXIBSH0MnAf+YQM3FBdFSZ1HA1bpD?=
+ =?us-ascii?Q?bPumkpVnVOKtwGARPtzyQTj+QqeK8NeojM2JJ2bGz8ZGz6U0ApHr8ekr1XMj?=
+ =?us-ascii?Q?p2TzZU2Y/tSbHztcrSwpDxrjH7TbMgL+j/cJP9NFx3MRiRmf7UUJmEr9Hogm?=
+ =?us-ascii?Q?WhegIAK84qjyhHObw+73yVE6bBSBlqAiRneJpM4xvygmAkA9rA+ZX7c+uglE?=
+ =?us-ascii?Q?UECMIujccUIDJKCIyRNHqyM51xaqQEdYRsGvniero44VGj5Wh8JjJnC3AL0E?=
+ =?us-ascii?Q?2XIwHSLOlmkwnugvh9Wpy1UIqEWbjy5wXigxcpTkNEXcqCSCqW6ZELlscd6A?=
+ =?us-ascii?Q?T0+2IMSkCiIOLfQ/V05YI9oeX6ivAklVSucy0tJA1kvufVsQxZ16NuihKp0W?=
+ =?us-ascii?Q?/aLHWtzHWskAHB3INPGQ0xhlr2XKJfhF2wsO1WP9vEhpcfaTCX5BVDw+BUGZ?=
+ =?us-ascii?Q?6uFxbgbxBPZ82xK4cqQ9Zngq0cUxfKrRrdmjo9VlQVZprR7cSiEZumXhnsDT?=
+ =?us-ascii?Q?IWRDYamYZ1JNZcUv1sg9alUm7FFTeJheq6VDUxfMvtYLLe+Z43VHNS6WRtKt?=
+ =?us-ascii?Q?yi+MH/9+2HeQzrDw0YE8wasJEbu7HfnYQKgw7TvnOE4Eshn38EKSHJ6yRx+x?=
+ =?us-ascii?Q?VFVf5PM+5JDJlRBtpBoYcItgo2gTmwA65JfRJYOu+9y0bW5EuaZoriNz03hm?=
+ =?us-ascii?Q?+W5i4HkpH2GxmDnjK3Wpzd6+brRLd1MFkt8Vjk57nPTyN40Qg758ZJ7LzAyA?=
+ =?us-ascii?Q?1UY7VSOcCzxX2fzH09Ackqo0uqsYQkIQsOL3fPguGIZfuQUVAA63g97Mucrp?=
+ =?us-ascii?Q?qCdzloUBZ3mDQk2NPqavx+d2Oc/4twIIOrBHG3fVx3ZtWkzhnMCVOMbIVWNB?=
+ =?us-ascii?Q?lDV7i8JCBJkaQicTnquHZZ36zCbyriPsKXbq8wWaoAOisOf61YWhnDO8jHz5?=
+ =?us-ascii?Q?PSjsJGVDtwiIhBg2zREjtKwJcrTNKYTF9oF4jdVpS0vmqIRnR5xDIoljNIeA?=
+ =?us-ascii?Q?7u9g75NWOQ2Y/VtRslhgZ1qRd6SUfLckkK/jJNVXqU60fAg0v2R3NeY8Odse?=
+ =?us-ascii?Q?sWWjFUJ5T5uZEeg4rUMvNTp2G3V+sEEByCLmymtfXFyKjIMyaDR97LnRJw4l?=
+ =?us-ascii?Q?JDSWBfqwu905y9EdWa05A6MPjrt+KfaIxpubW4Ri/2IwaatBWpFqQ9fzNt/j?=
+ =?us-ascii?Q?JI+4WSxfoCn/l/5z7NZ1xJHfu0KdTLJFu5sxTpRy6yJ4iebbMLoyT9cvmaEo?=
+ =?us-ascii?Q?eFCOvtyazvOQvfGHrfXcK/wklCraQju+UO+BQ7I6YAX3dKLF/G6CMoPpAk+P?=
+ =?us-ascii?Q?BRzMDrg0y4Hr2BHx37tt4egclWIt7Lrp8NmzFGpwx3beF3Ohy1jstrjqY+EO?=
+ =?us-ascii?Q?29TTq1cMDaaoOGuaFNfWEDx0D8jhFsy+7FKaZ8NfMcUpHOGkXOgvnI6Q12wA?=
+ =?us-ascii?Q?c6XkALpebTjwCKGwIcEzuFflIgxPbaBocnJMUY11/ncyerFi1aM2lIAXw8eT?=
+ =?us-ascii?Q?wA=3D=3D?=
+X-OriginatorOrg: moxa.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d6d7644-68f7-4bee-c149-08dc0b5421f2
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2024 05:31:55.6556
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZhTZJq2b4LbJExI7RwCL46Kq1XZONc1uOYzNlEaUVn1PCOKDS/lk8/sRUwB3U/ZumgyWiEkQXLOuie/qWO6huCqvuLgxkxdvrn80Nv3LdJc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR01MB3806
 
-The SAW2 device should describe the regulator constraints rather than
-just declaring that it has the regulator.
+After switching the serial interface of the Moxa RS232 PCIe boards, it
+fails to reset to RS232 when attempting to reload 8250_pci driver.
 
-Drop the 'regulator' property. If/when CPU voltage scaling is
-implemented for this platform, proper regulator nodes show be added
-instead.
+This patch set RS232 as the default setting during the initialization of
+Moxa PCIe board.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
 ---
- arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/tty/serial/8250/8250_pci.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi
-index 4b35b1fd4b58..eb0eb2af6041 100644
---- a/arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi
-@@ -589,7 +589,6 @@ acc0: clock-controller@2088000 {
- 		saw0: power-manager@2089000 {
- 			compatible = "qcom,ipq8064-saw2-cpu", "qcom,saw2";
- 			reg = <0x02089000 0x1000>, <0x02009000 0x1000>;
--			regulator;
- 		};
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+index 8ccf691935b7..0d35c77fad9e 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -2039,12 +2039,13 @@ static int pci_moxa_init(struct pci_dev *dev)
+ 	unsigned short device = dev->device;
+ 	resource_size_t iobar_addr = pci_resource_start(dev, 2);
+ 	unsigned int num_ports = (device & 0x00F0) >> 4, i;
+-	u8 val;
++	u8 val, init_mode = MOXA_RS232;
  
- 		acc1: clock-controller@2098000 {
-@@ -604,7 +603,6 @@ acc1: clock-controller@2098000 {
- 		saw1: power-manager@2099000 {
- 			compatible = "qcom,ipq8064-saw2-cpu", "qcom,saw2";
- 			reg = <0x02099000 0x1000>, <0x02009000 0x1000>;
--			regulator;
- 		};
+ 	if (!(pci_moxa_supported_rs(dev) & MOXA_SUPP_RS232)) {
+-		for (i = 0; i < num_ports; ++i)
+-			pci_moxa_set_interface(dev, i, MOXA_RS422);
++		init_mode = MOXA_RS422;
+ 	}
++	for (i = 0; i < num_ports; ++i)
++		pci_moxa_set_interface(dev, i, init_mode);
  
- 		nss_common: syscon@3000000 {
-
+ 	/*
+ 	 * Enable hardware buffer to prevent break signal output when system boots up.
 -- 
-2.39.2
+2.34.1
 
 
