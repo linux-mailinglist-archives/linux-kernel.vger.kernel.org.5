@@ -1,50 +1,48 @@
-Return-Path: <linux-kernel+bounces-14579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16CC5821F1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4601B821F1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:01:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A410728474B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:01:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFFA4284A39
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:01:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E890F14F68;
-	Tue,  2 Jan 2024 16:01:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 580A114F68;
+	Tue,  2 Jan 2024 16:01:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q6rPSluQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OWW+ktHL"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FEC214F61;
-	Tue,  2 Jan 2024 16:01:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECA56C433C9;
-	Tue,  2 Jan 2024 16:01:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A87C514F62;
+	Tue,  2 Jan 2024 16:01:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B0D1C433C8;
+	Tue,  2 Jan 2024 16:01:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704211266;
-	bh=/2AN/VWXr8ksHc3PGhRXX0U2bsA62YQAqBV3Ee3tcCc=;
+	s=k20201202; t=1704211309;
+	bh=EKxAVuaNMTNcXkXewVpa9TOANWnXDrtM+9hkMCPMgdE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Q6rPSluQQs4jETa5jmcpafOX8fA7CoEva5d76AKvP23rY77Ax1SJ/eFo/0Ej9tEIy
-	 pFlTJ3CWEoMXUcCyuyyiO7suKNbtZi+K2oErrnc1mlldU9rBCMJUl03Z38lqP7VRbT
-	 QgH1pZDywRxE4mQ43aPD/LbomzAp70wJpy0F1do8sM5aVUWSJHuxzCcq0UZadcgN9l
-	 bkM7ZhLBETwSri2ZhFA6IapMqjGNP8/CTfn3UqB/tNSOEcdWn4BxoKMwhkAvmgO7c0
-	 k3xvr2NKBvIWUvHgXiyfQEUN1iuu6bvLsGxVvB61V4ylYGc+ImIbBumMBFO91LVYsZ
-	 AFTyYjP4VmQfQ==
-Received: (nullmailer pid 2922887 invoked by uid 1000);
-	Tue, 02 Jan 2024 16:01:04 -0000
-Date: Tue, 2 Jan 2024 09:01:04 -0700
+	b=OWW+ktHLreDhaySNF6kc2W2X19bMnX5W/x4xA3aAqn+n1Lu/WvK3axum8q75CfhaP
+	 d+dat0RsiBA/JDB74ZmHmXpEXBVFW+o9iAhltvwvJm/vxvR8eSFIZqc07GrLrtjajC
+	 M51+uK1zT+xXefXgslZ9jQoKHdYBEIYs3kWd4cK6lG05ufhNkdiO5je23SmMTsAnM5
+	 4Bd2X3wNw+zay0gfgcZH3YHgiklyj53AHC2iA/1PQMTmrmBuMkNgdg8R3w/pTqsa7d
+	 6eQiSMAvzswZgRZsgbgwPl+WZK3oOCeQCd6m0bcd9byWe37qPVzntC5+A8CK1G9R9i
+	 5SzO2FRWSZ9Eg==
+Received: (nullmailer pid 2924825 invoked by uid 1000);
+	Tue, 02 Jan 2024 16:01:46 -0000
+Date: Tue, 2 Jan 2024 09:01:46 -0700
 From: Rob Herring <robh@kernel.org>
 To: Mark Hasemeyer <markhas@chromium.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Sudeep Holla <sudeep.holla@arm.com>, Raul Rangel <rrangel@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Raul Rangel <rrangel@chromium.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Sudeep Holla <sudeep.holla@arm.com>, Frank Rowand <frowand.list@gmail.com>, Andy Shevchenko <andriy.shevchenko@intel.com>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, LKML <linux-kernel@vger.kernel.org>, Tzung-Bi Shih <tzungbi@kernel.org>
 Subject: Re: [PATCH v3 18/24] of: irq: add wake capable bit to
  of_irq_resource()
-Message-ID: <20240102160104.GA2915145-robh@kernel.org>
+Message-ID: <170421130510.2924738.11783263909956971432.robh@kernel.org>
 References: <20231226192149.1830592-1-markhas@chromium.org>
  <20231226122113.v3.18.I29b26a7f3b80fac0a618707446a10b6cc974fdaf@changeid>
- <ZYxcvSLL8yWW-URu@smile.fi.intel.com>
- <CANg-bXCrR2FKSi6ik7LZBqTQz9=HDW=0cy7GZN0yaB0PsKKjkQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,26 +51,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANg-bXCrR2FKSi6ik7LZBqTQz9=HDW=0cy7GZN0yaB0PsKKjkQ@mail.gmail.com>
+In-Reply-To: <20231226122113.v3.18.I29b26a7f3b80fac0a618707446a10b6cc974fdaf@changeid>
 
-On Wed, Dec 27, 2023 at 11:21:14AM -0700, Mark Hasemeyer wrote:
-> >
-> > > +             u32 irq_flags;
-> > >               const char *name = NULL;
-> >
-> > Don't know if OF style requires reversed xmas tree order. If so, this should be
-> >
-> >                 const char *name = NULL;
-> >                 u32 irq_flags;
-> >
+
+On Tue, 26 Dec 2023 12:21:22 -0700, Mark Hasemeyer wrote:
+> Add wake capability information to the IRQ resource. Wake capability is
+> assumed based on conventions provided in the devicetree wakeup-source
+> binding documentation. An interrupt is considered wake capable if the
+> following are true:
+> 1. A wakeup-source property exits in the same device node as the
+>    interrupt.
+> 2. The IRQ is marked as dedicated by setting its interrupt-name to
+>    "wakeup".
 > 
-> I see both methods used. For example, of_irq_init() uses normal xmas
-> tree order. I'll leave it unless Rob says otherwise.
-> It is Christmas time, so I do want to honor the Christmas trees appropriately!
+> The wakeup-source documentation states that dedicated interrupts can use
+> device specific interrupt names and device drivers are still welcome to
+> use their own naming schemes. This API is provided as a helper if one is
+> willing to conform to the above conventions.
+> 
+> The ACPI subsystems already provides similar APIs that allow one to
+> query the wake capability of an IRQ. This brings closer feature parity
+> to the devicetree.
+> 
+> Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
+> ---
+> 
+> Changes in v3:
+> -Use DEFINE_RES_IRQ_NAMED_FLAGS macro
+> 
+> Changes in v2:
+> -Update logic to return true only if wakeup-source property and
+>  "wakeup" interrupt-name are defined
+> -irq->IRQ, api->API
+> 
+>  drivers/of/irq.c | 39 +++++++++++++++++++++++++++++++++++----
+>  1 file changed, 35 insertions(+), 4 deletions(-)
+> 
 
-DT requires sideways Christmas tree because we're special. You'll have 
-to add a 3rd variable. ;)
-
-Rob
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 
