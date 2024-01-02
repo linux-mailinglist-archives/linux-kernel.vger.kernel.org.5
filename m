@@ -1,118 +1,202 @@
-Return-Path: <linux-kernel+bounces-14850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95F6182232C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:16:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A62A82233B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:26:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34D061F227D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:16:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF242281E4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39B89171A5;
-	Tue,  2 Jan 2024 21:13:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=corelatus.se header.i=@corelatus.se header.b="hDl49Nbd";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="faazUGM3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C02168B4;
+	Tue,  2 Jan 2024 21:26:43 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [5.144.164.165])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151E8168AF;
-	Tue,  2 Jan 2024 21:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=corelatus.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=corelatus.se
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id E4BEF5C04D0;
-	Tue,  2 Jan 2024 16:13:53 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Tue, 02 Jan 2024 16:13:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=corelatus.se; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:message-id:mime-version:reply-to
-	:subject:subject:to:to; s=fm1; t=1704230033; x=1704316433; bh=/Z
-	5C3JxfHNpoAjvvAcHhDmbyTXDu4B/UNHLYNTCyyOE=; b=hDl49Nbd/OzY8EIQVu
-	ONP1QvA/NC2ZCgHHRSQKI2cy4CdYQcYkvncWPOwsrOVbef9mnMaJ1AixNAwoVyEH
-	m8FOkWH2axI/Zy5W/wHj+nuqTrM3O9MbRdxOEjRBzDkHN8pSFIc0Colo+wtQwTTJ
-	Jd0c/uHinTSzdnn/mRxHvaaeQbRbVowIHupNe2wOzoIWXYcDKzgFK59K+t3VBQdP
-	WXp/lquDmLEhf2ZtHgxIF+E6ugPk6mVt2yA8bsMv++v8JNBCDZ0h2xo3X1CL7Zxe
-	OE50N7LCoPWJcKCsdK9bu2MhPsWlJxlgIY5ffcC9mcSVSd9B4QsFj4T3gfQByn7k
-	xJqw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:message-id:mime-version:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1704230033; x=1704316433; bh=/Z5C3JxfHNpoA
-	jvvAcHhDmbyTXDu4B/UNHLYNTCyyOE=; b=faazUGM3y1V24Od/hOTQgt+sO92Jj
-	XiyFoVrt7zFfvyN8aYjaqxX29gZzGIo3XOoauCSYsJa2lh3Huu6eALjH6KtnIcGW
-	i+ECVqw96mHXuuoZHbleSTUzUdiUe/1I/sRIEdfK1VQpqADQNLsNzAEVphIPSmwj
-	whvrhDztR+VS+YA4npiFUT8xU+NB+zvajF2narq5WtuoPJIIFCAR++KZlEL/xzSJ
-	xFPlS53QMMiieX4Agu6S8JVJ07pFoUSSsc+1OktHtaBiYZLDr6A1dS9DsPSp2USS
-	Ek3ILgsdaTVmoQMUzsRBkJfthH6FpW8iTgBqTrfKewRCrZeKCOeD+TOvQ==
-X-ME-Sender: <xms:kXyUZZKfszaGVZdPnyxVOU8rZfELIwNJueaexja2Th-WeLd6ageztQ>
-    <xme:kXyUZVI5ZqrnnbBOxZH52eySj-XZ-N0jV5GNL0ifa_LL-vaRWVKGc-2kC-tfgXw15
-    fteu7MpB3p8goxT1A>
-X-ME-Received: <xmr:kXyUZRts_k8ffx8D4lVKJi3iNETxzWz-PiHDW5oA7n2hUMgLXf3xrM4v9EuFQbk->
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegfedgjeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefkffggfgfhufevvfgtgfesthejre
-    dttddvjeenucfhrhhomhepvfhhohhmrghsucfnrghnghgvuceothhhohhmrghssegtohhr
-    vghlrghtuhhsrdhsvgeqnecuggftrfgrthhtvghrnhepfeeikeffueffiefggfehvdeuff
-    dtffevgedvleelhffgjedvtdetkeegtddvveelnecuffhomhgrihhnpehkvghrnhgvlhdr
-    ohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hthhhomhgrshestghorhgvlhgrthhushdrshgv
-X-ME-Proxy: <xmx:kXyUZaa1O_zZ1-embXhdOGkDBapxXFXCouOboLHSAu4FJHJ8_lfw6w>
-    <xmx:kXyUZQZA669006KxNKAxngP5q-AdLG6sDG8xJAZs9w3xhsaCSd3qeQ>
-    <xmx:kXyUZeBCHv1q5yoDbQLjlbfi1iOI5Vd3Q0R3haitw7s-R21MStvjjA>
-    <xmx:kXyUZemL4S6U5AXsACJyh1j9mEQyK84rWLIoOpn3g24jEXovq1i6ew>
-Feedback-ID: ia69946ac:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 2 Jan 2024 16:13:51 -0500 (EST)
-Message-ID: <d1ce6aba-1b10-471c-ba60-10effa1dac10@corelatus.se>
-Date: Tue, 2 Jan 2024 22:13:50 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C795168A6
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
+Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by m-r1.th.seeweb.it (Postfix) with ESMTPSA id B6E5820145;
+	Tue,  2 Jan 2024 22:17:46 +0100 (CET)
+Date: Tue, 2 Jan 2024 22:17:45 +0100
+From: Marijn Suijten <marijn.suijten@somainline.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Mathieu Poirier <mathieu.poirier@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Sibi Sankar <quic_sibis@quicinc.com>, 
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, 
+	Joerg Roedel <joro@8bytes.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Wesley Cheng <quic_wcheng@quicinc.com>, Alexey Minnekhanov <alexeymin@postmarketos.org>, 
+	linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev, 
+	linux-usb@vger.kernel.org, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH v2 06/14] arm64: dts: qcom: sdm630: Drop RPM bus clocks
+Message-ID: <6b3eetuyhg6y6wgqgxn2ruovjfrg24dbwsictlryealtwtnq6t@xk6nm3mxwbeh>
+References: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
+ <20230721-topic-rpm_clk_cleanup-v2-6-1e506593b1bd@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-From: Thomas Lange <thomas@corelatus.se>
-Subject: [PATCH net] net: Implement missing SO_TIMESTAMPING_NEW cmsg support
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- jthinz@mailbox.tu-berlin.de, arnd@arndb.de, deepa.kernel@gmail.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721-topic-rpm_clk_cleanup-v2-6-1e506593b1bd@linaro.org>
 
-Commit 9718475e6908 ("socket: Add SO_TIMESTAMPING_NEW") added the new
-socket option SO_TIMESTAMPING_NEW. However, it was never implemented in
-__sock_cmsg_send thus breaking SO_TIMESTAMPING cmsg for platforms using
-SO_TIMESTAMPING_NEW.
+On 2023-09-12 15:31:44, Konrad Dybcio wrote:
+> These clocks are now handled from within the icc framework and are
+> no longer registered from within the CCF. Remove them.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Fixes: 9718475e6908 ("socket: Add SO_TIMESTAMPING_NEW")
-Link: https://lore.kernel.org/netdev/6a7281bf-bc4a-4f75-bb88-7011908ae471@app.fastmail.com/
-Signed-off-by: Thomas Lange <thomas@corelatus.se>
----
-  net/core/sock.c | 1 +
-  1 file changed, 1 insertion(+)
+This makes the USB and IOMMUs probe again on SDM630 devices like the Sony Xperia
+XA2 Ultra.  Thanks!
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 51d52859e942..d02534c77413 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -2813,6 +2813,7 @@ int __sock_cmsg_send(struct sock *sk, struct cmsghdr *cmsg,
-  		sockc->mark = *(u32 *)CMSG_DATA(cmsg);
-  		break;
-  	case SO_TIMESTAMPING_OLD:
-+	case SO_TIMESTAMPING_NEW:
-  		if (cmsg->cmsg_len != CMSG_LEN(sizeof(u32)))
-  			return -EINVAL;
+Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
 
---
-2.39.2
++cc Dmitry who was talking to me about this SoC.
+
+> ---
+>  arch/arm64/boot/dts/qcom/sdm630.dtsi | 49 +++++++-----------------------------
+>  1 file changed, 9 insertions(+), 40 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+> index ec6003212c4d..f11d2a07508c 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+> @@ -605,9 +605,6 @@ bimc: interconnect@1008000 {
+>  			compatible = "qcom,sdm660-bimc";
+>  			reg = <0x01008000 0x78000>;
+>  			#interconnect-cells = <1>;
+> -			clock-names = "bus", "bus_a";
+> -			clocks = <&rpmcc RPM_SMD_BIMC_CLK>,
+> -				 <&rpmcc RPM_SMD_BIMC_A_CLK>;
+>  		};
+>  
+>  		restart@10ac000 {
+> @@ -619,28 +616,17 @@ cnoc: interconnect@1500000 {
+>  			compatible = "qcom,sdm660-cnoc";
+>  			reg = <0x01500000 0x10000>;
+>  			#interconnect-cells = <1>;
+> -			clock-names = "bus", "bus_a";
+> -			clocks = <&rpmcc RPM_SMD_CNOC_CLK>,
+> -				 <&rpmcc RPM_SMD_CNOC_A_CLK>;
+>  		};
+>  
+>  		snoc: interconnect@1626000 {
+>  			compatible = "qcom,sdm660-snoc";
+>  			reg = <0x01626000 0x7090>;
+>  			#interconnect-cells = <1>;
+> -			clock-names = "bus", "bus_a";
+> -			clocks = <&rpmcc RPM_SMD_SNOC_CLK>,
+> -				 <&rpmcc RPM_SMD_SNOC_A_CLK>;
+>  		};
+>  
+>  		anoc2_smmu: iommu@16c0000 {
+>  			compatible = "qcom,sdm630-smmu-v2", "qcom,smmu-v2";
+>  			reg = <0x016c0000 0x40000>;
+> -
+> -			assigned-clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
+> -			assigned-clock-rates = <1000>;
+> -			clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
+> -			clock-names = "bus";
+>  			#global-interrupts = <2>;
+>  			#iommu-cells = <1>;
+>  
+> @@ -685,16 +671,12 @@ a2noc: interconnect@1704000 {
+>  			compatible = "qcom,sdm660-a2noc";
+>  			reg = <0x01704000 0xc100>;
+>  			#interconnect-cells = <1>;
+> -			clock-names = "bus",
+> -				      "bus_a",
+> -				      "ipa",
+> +			clock-names = "ipa",
+>  				      "ufs_axi",
+>  				      "aggre2_ufs_axi",
+>  				      "aggre2_usb3_axi",
+>  				      "cfg_noc_usb2_axi";
+> -			clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>,
+> -				 <&rpmcc RPM_SMD_AGGR2_NOC_A_CLK>,
+> -				 <&rpmcc RPM_SMD_IPA_CLK>,
+> +			clocks = <&rpmcc RPM_SMD_IPA_CLK>,
+>  				 <&gcc GCC_UFS_AXI_CLK>,
+>  				 <&gcc GCC_AGGRE2_UFS_AXI_CLK>,
+>  				 <&gcc GCC_AGGRE2_USB3_AXI_CLK>,
+> @@ -705,10 +687,8 @@ mnoc: interconnect@1745000 {
+>  			compatible = "qcom,sdm660-mnoc";
+>  			reg = <0x01745000 0xa010>;
+>  			#interconnect-cells = <1>;
+> -			clock-names = "bus", "bus_a", "iface";
+> -			clocks = <&rpmcc RPM_SMD_MMSSNOC_AXI_CLK>,
+> -				 <&rpmcc RPM_SMD_MMSSNOC_AXI_CLK_A>,
+> -				 <&mmcc AHB_CLK_SRC>;
+> +			clock-names = "iface";
+> +			clocks = <&mmcc AHB_CLK_SRC>;
+>  		};
+>  
+>  		tsens: thermal-sensor@10ae000 {
+> @@ -1228,20 +1208,16 @@ usb3: usb@a8f8800 {
+>  				 <&gcc GCC_USB30_MASTER_CLK>,
+>  				 <&gcc GCC_AGGRE2_USB3_AXI_CLK>,
+>  				 <&gcc GCC_USB30_SLEEP_CLK>,
+> -				 <&gcc GCC_USB30_MOCK_UTMI_CLK>,
+> -				 <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
+> +				 <&gcc GCC_USB30_MOCK_UTMI_CLK>;
+>  			clock-names = "cfg_noc",
+>  				      "core",
+>  				      "iface",
+>  				      "sleep",
+> -				      "mock_utmi",
+> -				      "bus";
+> +				      "mock_utmi";
+>  
+>  			assigned-clocks = <&gcc GCC_USB30_MOCK_UTMI_CLK>,
+> -					  <&gcc GCC_USB30_MASTER_CLK>,
+> -					  <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
+> -			assigned-clock-rates = <19200000>, <120000000>,
+> -					       <19200000>;
+> +					  <&gcc GCC_USB30_MASTER_CLK>;
+> +			assigned-clock-rates = <19200000>, <120000000>;
+>  
+>  			interrupts = <GIC_SPI 347 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <GIC_SPI 243 IRQ_TYPE_LEVEL_HIGH>;
+> @@ -2144,10 +2120,9 @@ mmss_smmu: iommu@cd00000 {
+>  
+>  			clocks = <&mmcc MNOC_AHB_CLK>,
+>  				 <&mmcc BIMC_SMMU_AHB_CLK>,
+> -				 <&rpmcc RPM_SMD_MMSSNOC_AXI_CLK>,
+>  				 <&mmcc BIMC_SMMU_AXI_CLK>;
+>  			clock-names = "iface-mm", "iface-smmu",
+> -				      "bus-mm", "bus-smmu";
+> +				      "bus-smmu";
+>  			#global-interrupts = <2>;
+>  			#iommu-cells = <1>;
+>  
+> @@ -2264,12 +2239,6 @@ gnoc: interconnect@17900000 {
+>  			compatible = "qcom,sdm660-gnoc";
+>  			reg = <0x17900000 0xe000>;
+>  			#interconnect-cells = <1>;
+> -			/*
+> -			 * This one apparently features no clocks,
+> -			 * so let's not mess with the driver needlessly
+> -			 */
+> -			clock-names = "bus", "bus_a";
+> -			clocks = <&xo_board>, <&xo_board>;
+>  		};
+>  
+>  		apcs_glb: mailbox@17911000 {
+> 
+> -- 
+> 2.42.0
+> 
 
