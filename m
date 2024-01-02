@@ -1,49 +1,50 @@
-Return-Path: <linux-kernel+bounces-14955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F48A8224FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:53:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C0A728224FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:54:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AF5028185D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:53:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C9CA283128
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7464F1772E;
-	Tue,  2 Jan 2024 22:53:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ADB61772E;
+	Tue,  2 Jan 2024 22:54:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gM9f7rxm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rXIgUSAJ"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A1F17725;
-	Tue,  2 Jan 2024 22:53:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09423C433C8;
-	Tue,  2 Jan 2024 22:53:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68EC617728
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 22:54:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF529C433C8;
+	Tue,  2 Jan 2024 22:54:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704236009;
-	bh=y3QfViECwSvCP5PWgn4nsZ+h/meHzbUW3g8chYX9B0s=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=gM9f7rxmbf2g4oOEk1jl2tI131isEWELUlX7/IufEKlJuj1ctmz2DmV49+mQkbav7
-	 vSmBOFtfgQIqB0bEK177Rnhyv+OULwu5PTMKXyuyAFRnoFq/QovTzreVkhlfsjrXLO
-	 FZQSLgfHwaHqRy8yPBddoekFb4bGYM0suXf9R5XEmbUIAgQ3R65oaKrLljFn0ENrG7
-	 3ukR9SjQZzl87BzqPYHaaTnlpm8x7Btiq5eT6LQj9kYr4uBg2t8YagZ2bLdQRBWpzF
-	 ZIj0Bq3WCa5cIx3YJ8/HYQE9kkmWqdR/XLyuwxLd3S/RnjVqcPcuNlhX+JNz8fkf/G
-	 0Fs/sQpdYeaFg==
-Date: Tue, 2 Jan 2024 16:53:27 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: linux-pci@vger.kernel.org, Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-	Oliver O'Halloran <oohall@gmail.com>,
-	Robert Richter <rrichter@amd.com>,
-	Terry Bowman <terry.bowman@amd.com>,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 2/3] PCI/AER: Decode Requester ID when no error info found
-Message-ID: <20240102225327.GA1739520@bhelgaas>
+	s=k20201202; t=1704236072;
+	bh=BDXXal94Su2uaDJCUkGS/5w9XDeM8Wk9XYBMyM7Nyy8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rXIgUSAJIPast68Xs9QUwtAwEb5+BSCr0TB1o421tQFL8+5pnfBL1zyQa6b9v9egD
+	 3OtmvJtck58DraxnNCz4+sbVzG/n/crMV/TeApm0tS+7MBFBEFhe+6FV7+YERN5ggb
+	 O9duCK94c/aiKjVE6EmgUCFcthIM8pEVIdrObN/JBVT9qMjkwqs3Ml1jA2A+0k5pK7
+	 136xGm69qonnce23kOtiZjXXbpGHVSx8sLEzkGGbaLRKERbD0b19NarsLRDaogT3qI
+	 +Qdv7c6W59mlzJuzA0TsDff2dBCHdGWSVKuFgVCleyCQo6S0gxFNuPGDshRh5Qsvo/
+	 FSVgUYqNGJ8XA==
+Date: Tue, 2 Jan 2024 14:54:31 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Chao Yu <chao@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] f2fs: fix to restrict condition of compress inode
+ conversion
+Message-ID: <ZZSUJxtwahorNVj5@google.com>
+References: <20231210113547.3412782-1-chao@kernel.org>
+ <20231210113547.3412782-5-chao@kernel.org>
+ <ZXeJKCNrxcit0eTC@google.com>
+ <5884e300-5384-4a49-9f8d-8cced50f4e6d@kernel.org>
+ <ZXjc_I6__dijbwvN@google.com>
+ <19a1340f-0a0d-40a0-9d00-0faf171480f2@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,80 +53,104 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6cc6adf0-e82d-4429-9e76-5fef7dda2d95@linux.intel.com>
+In-Reply-To: <19a1340f-0a0d-40a0-9d00-0faf171480f2@kernel.org>
 
-On Tue, Jan 02, 2024 at 11:22:53AM -0800, Kuppuswamy Sathyanarayanan wrote:
-> On 12/6/2023 2:42 PM, Bjorn Helgaas wrote:
-> > From: Bjorn Helgaas <bhelgaas@google.com>
+On 12/28, Chao Yu wrote:
+> On 2023/12/13 6:21, Jaegeuk Kim wrote:
+> > On 12/12, Chao Yu wrote:
+> > > On 2023/12/12 6:11, Jaegeuk Kim wrote:
+> > > > On 12/10, Chao Yu wrote:
+> > > > > This patch adds i_size check during compress inode conversion in order
+> > > > > to avoid .page_mkwrite races w/ conversion.
+> > > > 
+> > > > Which race condition do you see?
+> > > 
+> > > Something like:
+> > > 
+> > > - f2fs_setflags_common
+> > >   - check S_ISREG && F2FS_HAS_BLOCKS
+> > > 					- mkwrite
+> > > 					 - f2fs_get_block_locked
+> > > 					  : update metadata in old inode's disk layout
 > > 
-> > When a device with AER detects an error, it logs error information in its
-> > own AER Error Status registers.  It may send an Error Message to the Root
-> > Port (RCEC in the case of an RCiEP), which logs the fact that an Error
-> > Message was received (Root Error Status) and the Requester ID of the
-> > message source (Error Source Identification).
-> > 
-> > aer_print_port_info() prints the Requester ID from the Root Port Error
-> > Source in the usual Linux "bb:dd.f" format, but when find_source_device()
-> > finds no error details in the hierarchy below the Root Port, it printed the
-> > raw Requester ID without decoding it.
-> > 
-> > Decode the Requester ID in the usual Linux format so it matches other
-> > messages.
-> > 
-> > Sample message changes:
-> > 
-> >   - pcieport 0000:00:1c.5: AER: Correctable error received: 0000:00:1c.5
-> >   - pcieport 0000:00:1c.5: AER: can't find device of ID00e5
-> >   + pcieport 0000:00:1c.5: AER: Correctable error message received from 0000:00:1c.5
-> >   + pcieport 0000:00:1c.5: AER: found no error details for 0000:00:1c.5
-> > 
-> > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> > Don't we need to prevent setting this for mmapped file?
 > 
-> Except for the suggestion given below, it looks good to me.
+> Oh, we have used i_sem lock to prevent such race case, however
+> we missed f2fs_disable_compressed_file():
 > 
-> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> - f2fs_disable_compressed_file
+>  - check inode_has_data
+> 						- f2fs_file_mmap
+> 						- mkwrite
+> 						 - f2fs_get_block_locked
+> 						 : update metadata in compressed
+> 						   inode's disk layout
+>  - fi->i_flags &= ~F2FS_COMPR_FL
+>  - clear_inode_flag(inode, FI_COMPRESSED_FILE);
 
-Thanks for taking a look!
+So, needing i_sem for disabling it on mmapped file? It seems i_size would not
+be enough?
 
-> > @@ -740,7 +740,7 @@ static void aer_print_port_info(struct pci_dev *dev, struct aer_err_info *info)
-> >  	u8 bus = info->id >> 8;
-> >  	u8 devfn = info->id & 0xff;
-> >  
-> > -	pci_info(dev, "%s%s error received: %04x:%02x:%02x.%d\n",
-> > +	pci_info(dev, "%s%s error message received from %04x:%02x:%02x.%d\n",
-> >  		 info->multi_error_valid ? "Multiple " : "",
-> >  		 aer_error_severity_string[info->severity],
-> >  		 pci_domain_nr(dev->bus), bus, PCI_SLOT(devfn),
-> > @@ -929,7 +929,12 @@ static bool find_source_device(struct pci_dev *parent,
-> >  		pci_walk_bus(parent->subordinate, find_device_iter, e_info);
-> >  
-> >  	if (!e_info->error_dev_num) {
-> > -		pci_info(parent, "can't find device of ID%04x\n", e_info->id);
-> > +		u8 bus = e_info->id >> 8;
-> > +		u8 devfn = e_info->id & 0xff;
 > 
-> You can use PCI_BUS_NUM(e_info->id) for getting bus number.  Since
-> you are extracting this info in more than one place, maybe you can
-> also define a macro PCI_DEVFN(id) (following PCI_BUS_NUM()).
-
-Thanks, both good ideas.
-
-We already have a PCI_DEVFN() that *combines* slot + func into devfn,
-so we'd have to come up with a different name.
-
-I'll add a patch to use PCI_BUS_NUM() in the two places here and in
-pme.c.
-
-I think I'll wait with these until after the v6.7 release.
-
-> > +		pci_info(parent, "found no error details for %04x:%02x:%02x.%d\n",
-> > +			 pci_domain_nr(parent->bus), bus, PCI_SLOT(devfn),
-> > +			 PCI_FUNC(devfn));
-> >  		return false;
-> >  	}
-> >  	return true;
+> Thanks,
 > 
-> -- 
-> Sathyanarayanan Kuppuswamy
-> Linux Kernel Developer
+> > 
+> > >   - set_compress_context
+> > > 
+> > > Thanks,
+> > > 
+> > > > 
+> > > > > 
+> > > > > Fixes: 4c8ff7095bef ("f2fs: support data compression")
+> > > > > Signed-off-by: Chao Yu <chao@kernel.org>
+> > > > > ---
+> > > > >    fs/f2fs/f2fs.h | 8 +++++++-
+> > > > >    fs/f2fs/file.c | 5 ++---
+> > > > >    2 files changed, 9 insertions(+), 4 deletions(-)
+> > > > > 
+> > > > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > > > > index 65294e3b0bef..c9b8a1953913 100644
+> > > > > --- a/fs/f2fs/f2fs.h
+> > > > > +++ b/fs/f2fs/f2fs.h
+> > > > > @@ -4397,13 +4397,19 @@ static inline int set_compress_context(struct inode *inode)
+> > > > >    #endif
+> > > > >    }
+> > > > > +static inline bool inode_has_data(struct inode *inode)
+> > > > > +{
+> > > > > +	return (S_ISREG(inode->i_mode) &&
+> > > > > +		(F2FS_HAS_BLOCKS(inode) || i_size_read(inode)));
+> > > > > +}
+> > > > > +
+> > > > >    static inline bool f2fs_disable_compressed_file(struct inode *inode)
+> > > > >    {
+> > > > >    	struct f2fs_inode_info *fi = F2FS_I(inode);
+> > > > >    	if (!f2fs_compressed_file(inode))
+> > > > >    		return true;
+> > > > > -	if (S_ISREG(inode->i_mode) && F2FS_HAS_BLOCKS(inode))
+> > > > > +	if (inode_has_data(inode))
+> > > > >    		return false;
+> > > > >    	fi->i_flags &= ~F2FS_COMPR_FL;
+> > > > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> > > > > index 1a3c29a9a6a0..8af4b29c3e1a 100644
+> > > > > --- a/fs/f2fs/file.c
+> > > > > +++ b/fs/f2fs/file.c
+> > > > > @@ -1922,8 +1922,7 @@ static int f2fs_setflags_common(struct inode *inode, u32 iflags, u32 mask)
+> > > > >    			f2fs_down_write(&F2FS_I(inode)->i_sem);
+> > > > >    			if (!f2fs_may_compress(inode) ||
+> > > > > -					(S_ISREG(inode->i_mode) &&
+> > > > > -					F2FS_HAS_BLOCKS(inode))) {
+> > > > > +					inode_has_data(inode)) {
+> > > > >    				f2fs_up_write(&F2FS_I(inode)->i_sem);
+> > > > >    				return -EINVAL;
+> > > > >    			}
+> > > > > @@ -3996,7 +3995,7 @@ static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+> > > > >    		goto out;
+> > > > >    	}
+> > > > > -	if (F2FS_HAS_BLOCKS(inode)) {
+> > > > > +	if (inode_has_data(inode)) {
+> > > > >    		ret = -EFBIG;
+> > > > >    		goto out;
+> > > > >    	}
+> > > > > -- 
+> > > > > 2.40.1
 
