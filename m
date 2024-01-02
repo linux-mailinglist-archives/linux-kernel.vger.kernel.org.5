@@ -1,184 +1,108 @@
-Return-Path: <linux-kernel+bounces-14183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB1BD8218DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:25:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 835B28218D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:20:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A3C51C2175F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:25:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0AADFB2150B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E015A6AD7;
-	Tue,  2 Jan 2024 09:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C24B6ADE;
+	Tue,  2 Jan 2024 09:20:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="rt4YQJaf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YRpDWh8T"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtpfb2-g21.free.fr (smtpfb2-g21.free.fr [212.27.42.10])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0A163A6;
-	Tue,  2 Jan 2024 09:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
-Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
-	by smtpfb2-g21.free.fr (Postfix) with ESMTP id 8A7384CEFB;
-	Tue,  2 Jan 2024 10:19:17 +0100 (CET)
-Received: from [192.168.10.46] (unknown [130.180.211.218])
-	(Authenticated sender: daniel.lezcano@free.fr)
-	by smtp1-g21.free.fr (Postfix) with ESMTPA id 214A8B00579;
-	Tue,  2 Jan 2024 10:18:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1704187150;
-	bh=YRUoYjKW8wgPvfkaSvYp4j0kKMDfeM6Fj+lD91OGM74=;
-	h=Date:To:Cc:From:Subject:From;
-	b=rt4YQJafE5g+ceEXg/ahxqubhvkCht+UuaL0/xhW5s2ysQg8jFDATA8HRC6TmbjTR
-	 OF3nUO3aQguhBNf9gDT/oehdw4t1pT0wu+Za1cj0JLJqZ6Whw7Kr9OSrxss74i/5Mv
-	 bAVyJULvhuQj76KT0jrXr6PoQ55B6p7uGe9wkh35ck1XPDkP0bQeNCydYKV4bm4WWq
-	 kFY4UInNuClPDQzNAfp9MlB3OxnltdJvdai2DIfZHMp2gdtsoDjiqYwcinka7e1R6W
-	 WepBMnDoJs/nEYPh2k/tthkbuhtHzjj0Hnr6So6P5F0n+R0LYlUaHwP20mtE3A2KXw
-	 2NnaRryztU/2Q==
-Message-ID: <7163da4d-3f73-490c-a387-04d82e8bee1b@free.fr>
-Date: Tue, 2 Jan 2024 10:18:59 +0100
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497946AAB;
+	Tue,  2 Jan 2024 09:20:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40d87df95ddso14350475e9.0;
+        Tue, 02 Jan 2024 01:20:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704187217; x=1704792017; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RiTUNZ10k6wQcCp803CcT029DnaSpcGHPPSc1r2WfXA=;
+        b=YRpDWh8TO+EGwvwor/shnHwjGmovh9vqxQiqr8qVwJHluyZn62jC81eSc85+3kxpNt
+         Y0W264auWsrTBc3E9zP94YPS4j4p1m5VYqfRH2N3nabG8I8KJNt8LWHrWlISbcqPXoGx
+         AlMwq7LSIlF7MfcDhpf5+CRnYdstUGUtKjZ1TBGJxO3iAqkOuMSktNnb3992XsrsTe9M
+         d+ygAxqOVnoel8cYeL66f+2D3BluYLZ688MPr6xQ5+7rzs1FlDwPsAeDkiK0A5uchrCH
+         kNok9yMk3jL1SNpZRYmWP8qFJu/sy8RwgXasPaP5h4sbzSQvNldj6WjsIZeZ9fY1MQgk
+         cv7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704187217; x=1704792017;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RiTUNZ10k6wQcCp803CcT029DnaSpcGHPPSc1r2WfXA=;
+        b=vg+6QTUrgTqVsaLcH+ZgRZS6E8RT2RSXBVP9is+UX3SgEPAZXlMUct/ZJufPPywUTY
+         D89yFlH3vZrsPRuhBRkv9od0eqXQCQ/8ieEcQKOyIjt8Sdz7S11iAl5nmZ2ym9MJyyfF
+         Jo9ZEn7/90r/PHgwtcgnz1zJ9Q6sz2TiLauoQ9jj04RnpI17EBZBt0jjfjSIXhywVEJK
+         /BXvMtG6nUs/tEbHi24PhVXRTIB43kC85EcSFW6w8F1Bwkqg6679n63pFaf2kHOaAh5R
+         d7EyVuF68wR4Pt8vsTH5GOF3rwe4l/xg1SDnTPCt2IfJq02B2YfLBBxZEVJIE28w+uzw
+         INtg==
+X-Gm-Message-State: AOJu0YzbK7UyijDnXKrgEQY4LFRuDC+JEiZ9jfsVsJjwCuhesBtiFucO
+	gOn2W40ORLnD/iK4+8izIXM=
+X-Google-Smtp-Source: AGHT+IGsByEPoucSmW84vcGQlZDBldsoqIytSqU80ojmxB3JqT27shPf0a4zX0slvmtrE8yDClVpeQ==
+X-Received: by 2002:a05:600c:1910:b0:40c:24b1:8d07 with SMTP id j16-20020a05600c191000b0040c24b18d07mr4674540wmq.192.1704187217232;
+        Tue, 02 Jan 2024 01:20:17 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id g17-20020a05600c001100b0040d44dcf233sm38266096wmc.12.2024.01.02.01.20.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 01:20:16 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Lucas De Marchi <lucas.demarchi@intel.com>,
+	Oded Gabbay <ogabbay@kernel.org>,
+	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	intel-xe@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/xe: Fix spelling mistake "gueue" -> "queue"
+Date: Tue,  2 Jan 2024 09:20:14 +0000
+Message-Id: <20240102092014.3347566-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux PM mailing list <linux-pm@vger.kernel.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- Binbin Zhou <zhoubb.aaron@gmail.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Fabio Estevam
- <festevam@denx.de>, Johan Hovold <johan+linaro@kernel.org>,
- Florian Eckert <fe@dev.tdt.de>, Mateusz Majewski <m.majewski2@samsung.com>
-From: Daniel Lezcano <daniel.lezcano@free.fr>
-Subject: [GIT PULL] thermal material for v6.8-rc1
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
+There is a spelling mistake in a drm_info message. Fix it.
 
-Hi Rafael,
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/gpu/drm/xe/xe_wait_user_fence.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-happy new year 2024!
-
-Please consider pulling these thermal changes.
-
-Thanks
-
-   -- Daniel
-
-The following changes since commit 5f70413a85056db04050604a76b52e3f39a37f21:
-
-   thermal: cpuidle_cooling: fix kernel-doc warning and a spello 
-(2023-12-21 12:05:48 +0100)
-
-are available in the Git repository at:
-
+diff --git a/drivers/gpu/drm/xe/xe_wait_user_fence.c b/drivers/gpu/drm/xe/xe_wait_user_fence.c
+index b0a7896f7fcb..b3ccdcf40557 100644
+--- a/drivers/gpu/drm/xe/xe_wait_user_fence.c
++++ b/drivers/gpu/drm/xe/xe_wait_user_fence.c
+@@ -147,7 +147,7 @@ int xe_wait_user_fence_ioctl(struct drm_device *dev, void *data,
  
-ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git 
-tags/thermal-v6.8-rc1
-
-for you to fetch changes up to 5314b1543787e6cd5d248186fcfd5c5fc4ca2146:
-
-   thermal/drivers/exynos: Use set_trips ops (2024-01-02 09:33:19 +0100)
-
-----------------------------------------------------------------
-- Converted Mediatek Thermal to the json-schema (Rafał Miłecki)
-
-- Fixed DT bindings issue on Loongson (Binbin Zhou)
-
-- Fixed returning NULL instead of -ENODEV on Loogsoo (Binbin Zhou)
-
-- Added the DT binding for the tsens on SM8650 platform (Neil Armstrong)
-
-- Added a reboot on critical option feature (Fabio Estevam)
-
-- Made usage of DEFINE_SIMPLE_DEV_PM_OPS on AmLogic (Uwe Kleine-König)
-
-- Added the D1/T113s THS controller support on Sun8i (Maxim Kiselev)
-
-- Fixed example in the DT binding for QCom SPMI (Johan Hovold)
-
-- Fixed compilation warning for the tmon utility (Florian Eckert)
-
-- Added interrupt based configuration on Exynos along with a set of
-   related cleanups (Mateusz Majewski)
-
-----------------------------------------------------------------
-Binbin Zhou (2):
-       dt-bindings: thermal: loongson,ls2k-thermal: Fix binding check issues
-       drivers/thermal/loongson2_thermal: Fix incorrect PTR_ERR() judgment
-
-Fabio Estevam (4):
-       dt-bindings: thermal-zones: Document critical-action
-       thermal/core: Prepare for introduction of thermal reboot
-       reboot: Introduce thermal_zone_device_critical_reboot()
-       thermal/thermal_of: Allow rebooting after critical temp
-
-Florian Eckert (1):
-       tools/thermal/tmon: Fix compilation warning for wrong format
-
-Johan Hovold (2):
-       dt-bindings: thermal: qcom-spmi-adc-tm5/hc: Fix example node names
-       dt-bindings: thermal: qcom-spmi-adc-tm5/hc: Clean up examples
-
-Mateusz Majewski (9):
-       thermal/drivers/exynos: Remove an unnecessary field description
-       thermal/drivers/exynos: Drop id field
-       thermal/drivers/exynos: Wwitch from workqueue-driven interrupt 
-handling to threaded interrupts
-       thermal/drivers/exynos: Handle devm_regulator_get_optional return 
-value correctly
-       thermal/drivers/exynos: Simplify regulator (de)initialization
-       thermal/drivers/exynos: Stop using the threshold mechanism on 
-Exynos 4210
-       thermal/drivers/exynos: Split initialization of TMU and the 
-thermal zone
-       thermal/drivers/exynos: Use BIT wherever possible
-       thermal/drivers/exynos: Use set_trips ops
-
-Maxim Kiselev (2):
-       dt-bindings: thermal: sun8i: Add binding for D1/T113s THS controller
-       thermal/drivers/sun8i: Add D1/T113s THS controller support
-
-Neil Armstrong (1):
-       dt-bindings: thermal: qcom-tsens: document the SM8650 Temperature 
-Sensor
-
-Rafał Miłecki (1):
-       dt-bindings: thermal: convert Mediatek Thermal to the json-schema
-
-Uwe Kleine-König (2):
-       thermal: amlogic: Make amlogic_thermal_disable() return void
-       thermal: amlogic: Use DEFINE_SIMPLE_DEV_PM_OPS for PM functions
-
-  .../bindings/thermal/allwinner,sun8i-a83t-ths.yaml |   7 +-
-  .../bindings/thermal/loongson,ls2k-thermal.yaml    |  10 +-
-  .../bindings/thermal/mediatek,thermal.yaml         |  99 ++++
-  .../bindings/thermal/mediatek-thermal.txt          |  52 --
-  .../bindings/thermal/qcom-spmi-adc-tm-hc.yaml      |   8 +-
-  .../bindings/thermal/qcom-spmi-adc-tm5.yaml        |  16 +-
-  .../devicetree/bindings/thermal/qcom-tsens.yaml    |   1 +
-  .../devicetree/bindings/thermal/thermal-zones.yaml |  16 +
-  drivers/thermal/amlogic_thermal.c                  |  19 +-
-  drivers/thermal/loongson2_thermal.c                |   2 +-
-  drivers/thermal/samsung/exynos_tmu.c               | 529 
-+++++++++++----------
-  drivers/thermal/sun8i_thermal.c                    |  13 +
-  drivers/thermal/thermal_core.c                     |  21 +-
-  drivers/thermal/thermal_core.h                     |   1 +
-  drivers/thermal/thermal_of.c                       |   6 +
-  include/linux/reboot.h                             |  12 +-
-  kernel/reboot.c                                    |  34 +-
-  tools/thermal/tmon/tui.c                           |   2 +-
-  18 files changed, 491 insertions(+), 357 deletions(-)
-  create mode 100644 
-Documentation/devicetree/bindings/thermal/mediatek,thermal.yaml
-  delete mode 100644 
-Documentation/devicetree/bindings/thermal/mediatek-thermal.txt
+ 		if (q) {
+ 			if (q->ops->reset_status(q)) {
+-				drm_info(&xe->drm, "exec gueue reset detected\n");
++				drm_info(&xe->drm, "exec queue reset detected\n");
+ 				err = -EIO;
+ 				break;
+ 			}
+-- 
+2.39.2
 
 
