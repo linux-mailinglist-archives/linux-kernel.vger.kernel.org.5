@@ -1,125 +1,99 @@
-Return-Path: <linux-kernel+bounces-14106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 666AA8217E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:10:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EF6C8217EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:10:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBD88B2156D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:10:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A33671C2152B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDC4820E0;
-	Tue,  2 Jan 2024 07:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5F5211A;
+	Tue,  2 Jan 2024 07:10:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BOVCy3nJ"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="oU7/h1Ts"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D95920F9;
-	Tue,  2 Jan 2024 07:09:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704179397; x=1735715397;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=dlIRxW0Xk4qGNOKcqqw/6GoKOIDxzXJKtBnvvXlwhBE=;
-  b=BOVCy3nJHatSezuNIyqXnP+y9rA4AsA5DNxoUrbG43pF4gHHBLKFTx3B
-   dyb/Q2RzFMAcZcZmM2L6nzarc6pnzzD6KjFU+qqfCuEhCydc/sOv3ulOc
-   tlmaqdPQSiINAwzWt06vBiOU1qSo0LDMVUp6oeOCHcfrvTOeOrGx02Riz
-   fLgzekmdNCkosZuTFzrbgVKVAUOxI0WD8alf/pgcfjWRddv22DLBZZD9M
-   ivF+XGFhGdHOumknMZYU3SqbH6tBUbsCwoMM4Gxo5LsWNWzA+zcqV6d2n
-   cpXhErlo/IgOlPAIkiZEbmtopoM3uEbYglUvJDVh4BlqChz8xLebDSqTO
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="376337968"
-X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
-   d="scan'208";a="376337968"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2024 23:09:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="729421414"
-X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
-   d="scan'208";a="729421414"
-Received: from oshragax-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.35.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2024 23:09:53 -0800
-Date: Tue, 2 Jan 2024 08:09:51 +0100
-From: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-	Greg KH <gregkh@linuxfoundation.org>, linux-pm@vger.kernel.org,
-	Youngmin Nam <youngmin.nam@samsung.com>,
-	linux-kernel@vger.kernel.org, d7271.choe@samsung.com,
-	janghyuck.kim@samsung.com, hyesoo.yu@samsung.com,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v1 2/3] async: Introduce async_schedule_dev_nocall()
-Message-ID: <ZZO2v0lQSZLxNV3c@linux.intel.com>
-References: <CGME20231227084252epcas2p3b063f7852f81f82cd0a31afd7f404db4@epcas2p3.samsung.com>
- <5754861.DvuYhMxLoT@kreacher>
- <6019796.lOV4Wx5bFT@kreacher>
- <4874693.GXAFRqVoOG@kreacher>
- <ZY3auVvVzxwTmAX8@linux.intel.com>
- <CAJZ5v0gns5zeLEk39NGwjLy40wzHAHDWYBYapWwQWcJ9jrF-3Q@mail.gmail.com>
- <ZY44KH2wGIUyIZp6@linux.intel.com>
- <CAJZ5v0jWSH_+wC7P=bBV8uKNp1PBUjkE06Ec6HR1Zd5as8GQ2g@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90EAD1FBC;
+	Tue,  2 Jan 2024 07:10:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704179423; x=1704784223; i=markus.elfring@web.de;
+	bh=+oOe7aQXVFDEA8GxbsOClVRjPhvOe9G1UBb6+O2NWYw=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=oU7/h1TspkEFOW8+Hod9XKSOJtApfMPSHOv7GUHOkpswCKJk+VsJ8jaKFepDxDlU
+	 1hoUzei7YYIaMtE+xhGXfjjT34Leps4XjAzsM2I+a0ujb3vKvp565S4Tj93T4lynD
+	 8JXBL178Brqh4ULtsXlzO3+ghtCoJ4uHxFwkUGEsyXnqZ2kGftR+kC0D+Pawa46q0
+	 s07FWRmsC7kHCBJWJM8xZlnHrAEE5xiybogUxIdSbSHYdH1azOdYI6WEemEXWloeu
+	 9sSFAv3vUGJgjYKn5Cl0885SJ9G7xhvNXafx8j/K+tDS+UMFegi/3He0VLQDn7sYb
+	 WmOnBhPZBq59D30GSg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MrOdf-1qpqP22139-00o628; Tue, 02
+ Jan 2024 08:10:23 +0100
+Message-ID: <8588cafe-3c61-40a6-b071-0877632a2a1e@web.de>
+Date: Tue, 2 Jan 2024 08:10:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jWSH_+wC7P=bBV8uKNp1PBUjkE06Ec6HR1Zd5as8GQ2g@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+To: b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Antonio Quartulli <a@unstable.cc>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Marek Lindner
+ <mareklindner@neomailbox.ch>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Wunderlich <sw@simonwunderlich.de>, Sven Eckelmann <sven@narfation.org>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH 0/2] batman-adv: Adjustments for two function implementations
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Pe43pbVj+FZe008alYHs/UTidvEHq4TOe9TdlOrp0SDV1gHoWHb
+ gHcT9bU34jYd9R6LGyABnsvrY7utTKEw58pCebzS56R39SLef1N53v8wJIFe1XdbOrqVgc0
+ MF513B13BaPakCYUjoAbH6kuLoo3lPzUYOgWzd9Oyc30a6uX+4kBeNpPbZrHeodQE2OwT4G
+ PQtprNkYACrrAAU9wQ1xQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:4i8QK8fmuMA=;hwwufTI10zuOfk9lJDHrRPRXSdi
+ FnD4xoPtN1iznXnnhKx5qjz1NfwC6xqnBId3wNs5tpC6XzpAMTU7KAu9z+gb1sE4C4vwK5QIP
+ JVv+Brqo29wsLW9w+tw0Y289llLAzuUhGfmNblyTOjCv9hFgpWpliAYlweZPBq1Chg6i8Y6I0
+ dUt0aPeZC4O88OK5mI0p3DH5klcCaoApA7ZxWwFOIxUA6q2016gJq5rbRJC3xSZ/lHRs/4fM+
+ uoSTWMUR8wkdF9Op1aF1IYRR0inZxgCTdOQC9z9T/J5hd2E6MkwlYeVxjjflZYxKqd9yYdVva
+ luZ1fZLPFMUCWb6zk1HrQD/kRdaqZ7IH9OTwGEZDFpeJo3uMCTkBAlINIx0Vogq+YQztBO/fm
+ PwWgi/mRpAR+jwBW8auPXdL6u5QQc9vT8SsYSa4fMJtLSdpK+ONdXcZSex3FGTivJ3MOt4SCK
+ h9BKL5exM0d2MNSelmnRSuOGfMREoZCt7Ht8rttKf1JgyLEUp3+be37UMoYDd+qcffEzooA9P
+ Q65OOuKs8IwZ3G1c0fx68gVsMP7rR9Yz+tGlRp8+9qjQIBOavAqW1FGzpkV9QfP6NNegewkVS
+ exc3mDJjYf6oL4/35Fn/7hZf66/ZUZ/L6EBPepioYI4bFrYRTv6sUfN1IarPB7qoinX3QxwBN
+ LYHiYjYhHcKe6j/K9QWN7UBMAWwt1v2p4EV7YqEKPDzH72/bVjxJrg3UuiyYyM3wOwnaEAkLi
+ 3OJ1mNlHmfclWJ1Da3MwsIgPHmR3s/OGDBBG0iL6UKJeaakzF4DdjjZXoCgskRe+H6H2DBnE2
+ c0M6rd6C02YCmCjdvx87rCfrAPJhZnROUHmX8gvX0GqE35ptBiX9a4j3UoYDlOgZCaImh6eHJ
+ 0kAB3uJLh63aQJlNOTPyi5V6Q4wC0Pnpta0aP9hOB4wQCB43Kj2ZV+XeLdhnhDlBV1PiVKB3f
+ saAdRQ==
 
-On Fri, Dec 29, 2023 at 05:36:01PM +0100, Rafael J. Wysocki wrote:
-> On Fri, Dec 29, 2023 at 3:54 PM Stanislaw Gruszka
-> <stanislaw.gruszka@linux.intel.com> wrote:
-> >
-> > On Fri, Dec 29, 2023 at 02:37:36PM +0100, Rafael J. Wysocki wrote:
-> > > > > +bool async_schedule_dev_nocall(async_func_t func, struct device *dev)
-> > > > > +{
-> > > > > +     struct async_entry *entry;
-> > > > > +
-> > > > > +     entry = kzalloc(sizeof(struct async_entry), GFP_KERNEL);
-> > > >
-> > > > Is GFP_KERNEL intended here ?
-> > >
-> > > Yes, it is.
-> > >
-> > > PM will be the only user of this, at least for now, and it all runs in
-> > > process context.
-> > >
-> > > > I think it's not safe since will
-> > > > be called from device_resume_noirq() .
-> > >
-> > > device_resume_noirq() runs in process context too.
-> > >
-> > > The name is somewhat confusing (sorry about that) and it means that
-> > > hardirq handlers (for the majority of IRQs) don't run in that resume
-> > > phase, but interrupts are enabled locally on all CPUs (this is
-> > > required for wakeup handling, among other things).
-> >
-> > Then my concern would be: if among devices with disabled IRQs are
-> > disk devices? Seems there are disk devices as well, and because
-> > GFP_KERNEL can start reclaiming memory by doing disk IO (write
-> > dirty pages for example), with disk driver interrupts disabled
-> > reclaiming process can not finish.
-> >
-> > I do not see how such possible infinite waiting for disk IO
-> > scenario is prevented here, did I miss something?
-> 
-> Well, it is not a concern, because the suspend code already prevents
-> the mm subsystem from trying too hard to find free memory.  See the
-> pm_restrict_gfp_mask() call in enter_state().
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Tue, 2 Jan 2024 08:02:01 +0100
 
-So that I missed :-) Thanks for explanations.
+A few update suggestions were taken into account
+from static source code analysis.
 
-Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com> for the series.
+Markus Elfring (2):
+  Return directly after a failed batadv_dat_select_candidates()
+    in batadv_dat_forward_data()
+  Improve exception handling in batadv_throw_uevent()
+
+ net/batman-adv/distributed-arp-table.c |  3 +--
+ net/batman-adv/main.c                  | 14 ++++++++------
+ 2 files changed, 9 insertions(+), 8 deletions(-)
+
+=2D-
+2.43.0
 
 
