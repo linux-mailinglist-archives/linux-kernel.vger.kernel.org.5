@@ -1,181 +1,169 @@
-Return-Path: <linux-kernel+bounces-14523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58618821E43
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:04:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18FEB821E46
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:06:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC109B21FDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:04:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C1201C2236D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7FE13FFE;
-	Tue,  2 Jan 2024 15:03:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E945A13ADA;
+	Tue,  2 Jan 2024 15:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bgzhe2H3"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ieo1go8j"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24B3F12E69;
-	Tue,  2 Jan 2024 15:03:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEAE8C433C7;
-	Tue,  2 Jan 2024 15:03:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704207838;
-	bh=aAclt0B+OSjENNYBjj9U19v0PFhS/aJa+mB6Qz5/pfY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Bgzhe2H3J4eljcl+IJ8gS2QwDzge1N+6/3/KTfrX7nT2XFEZiGdHYyUwjZ5j28MbP
-	 mUCpqPJBc68LBW2UdMeVl/rrrG+ytlf0sBv28Hvy927HBFnSYQSeyobrdzjySZRi4h
-	 eB6QH7Gd6zlpcs/J2chdu+1XoOFeCggI8bO9LM9z2jL59wxCKCDkTD6hcgfXt590Pr
-	 DSltxYFLQOUOpQAeBymvie+c7Ewky3a0uDpDMfOe8brn9M4PZjGiew6R7ByFxL1fz3
-	 T8G636rdv+SFU2d8LdhQOk7/U76UQNUsv5Aq0uYx4LHr+wEaxVICONizhpJX91/fYg
-	 RAyXuZqAbGhDA==
-From: Michael Walle <mwalle@kernel.org>
-To: bbara93@gmail.com
-Cc: benjamin.bara@skidata.com,
-	dmitry.osipenko@collabora.com,
-	jonathanh@nvidia.com,
-	lee@kernel.org,
-	linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-tegra@vger.kernel.org,
-	nm@ti.com,
-	peterz@infradead.org,
-	rafael.j.wysocki@intel.com,
-	richard.leitner@linux.dev,
-	stable@vger.kernel.org,
-	treding@nvidia.com,
-	wsa+renesas@sang-engineering.com,
-	wsa@kernel.org,
-	Michael Walle <mwalle@kernel.org>
-Subject: [PATCH v7 2/5] Re: i2c: core: run atomic i2c xfer when !preemptible
-Date: Tue,  2 Jan 2024 16:03:50 +0100
-Message-Id: <20240102150350.3180741-1-mwalle@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230327-tegra-pmic-reboot-v7-2-18699d5dcd76@skidata.com>
-References: <20230327-tegra-pmic-reboot-v7-2-18699d5dcd76@skidata.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C5912E6B;
+	Tue,  2 Jan 2024 15:06:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 402EQJ9x007842;
+	Tue, 2 Jan 2024 15:05:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=yAUmslGfmAn/v408/JnMAl0laE6kfhNSkhNgHmtKlnU=;
+ b=ieo1go8j8kWEwJEEg5WO5vqKGg10aSk8+UtbSP/lq+gTsFu7bhHsL8dk9O0Pyb0xCOka
+ lPLOwNHlS9mVhlub+fQfuNPYrAWqE8+/bDNkHm5Q9D7TzRwMTeu5kykgM+1BePfhuD1d
+ bug+utmcst7Ol4gcDORK8Ef0cc3TKi8JQRta/VDfWlwG3ew14GeKqaAua9l1mZ0PA1hQ
+ mUIi1/Jzr+5ZsiOa0DzBH6/YlbWvNkGhPSOtOISnyCmuxhS6/kasesUkVii/tMHZo41/
+ z1Vqzjuhvyg+bSK0KKIf+g5RQmO0VCUI9bJlbs+7wqXcWnTPgM3XZ4MPDebT/fHaG7et GA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcf2j7s58-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 15:05:38 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 402EurZf010225;
+	Tue, 2 Jan 2024 15:05:38 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcf2j7s4t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 15:05:38 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 402CNLmp017971;
+	Tue, 2 Jan 2024 15:05:36 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vayrkd7fk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 15:05:36 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 402F5Xi514680808
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 2 Jan 2024 15:05:33 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A82E120043;
+	Tue,  2 Jan 2024 15:05:33 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8E97820040;
+	Tue,  2 Jan 2024 15:05:32 +0000 (GMT)
+Received: from osiris (unknown [9.171.22.30])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue,  2 Jan 2024 15:05:32 +0000 (GMT)
+Date: Tue, 2 Jan 2024 16:05:31 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: [PATCH v3 28/34] s390/mm: Define KMSAN metadata for vmalloc and
+ modules
+Message-ID: <20240102150531.6306-F-hca@linux.ibm.com>
+References: <20231213233605.661251-1-iii@linux.ibm.com>
+ <20231213233605.661251-29-iii@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213233605.661251-29-iii@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Ha6_F5y1dtYwlryom_EL-MOezepsJYos
+X-Proofpoint-ORIG-GUID: YUgncFyGNiUc-bIEjUnn1fILOqO8p_p-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-02_04,2024-01-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0
+ malwarescore=0 spamscore=0 mlxlogscore=925 clxscore=1015 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401020115
 
-Hi,
-
-> Since bae1d3a05a8b, i2c transfers are non-atomic if preemption is
-> disabled. However, non-atomic i2c transfers require preemption (e.g. in
-> wait_for_completion() while waiting for the DMA).
+On Thu, Dec 14, 2023 at 12:24:48AM +0100, Ilya Leoshkevich wrote:
+> The pages for the KMSAN metadata associated with most kernel mappings
+> are taken from memblock by the common code. However, vmalloc and module
+> metadata needs to be defined by the architectures.
 > 
-> panic() calls preempt_disable_notrace() before calling
-> emergency_restart(). Therefore, if an i2c device is used for the
-> restart, the xfer should be atomic. This avoids warnings like:
+> Be a little bit more careful than x86: allocate exactly MODULES_LEN
+> for the module shadow and origins, and then take 2/3 of vmalloc for
+> the vmalloc shadow and origins. This ensures that users passing small
+> vmalloc= values on the command line do not cause module metadata
+> collisions.
 > 
-> [   12.667612] WARNING: CPU: 1 PID: 1 at kernel/rcu/tree_plugin.h:318 rcu_note_context_switch+0x33c/0x6b0
-> [   12.676926] Voluntary context switch within RCU read-side critical section!
-> ...
-> [   12.742376]  schedule_timeout from wait_for_completion_timeout+0x90/0x114
-> [   12.749179]  wait_for_completion_timeout from tegra_i2c_wait_completion+0x40/0x70
-> ...
-> [   12.994527]  atomic_notifier_call_chain from machine_restart+0x34/0x58
-> [   13.001050]  machine_restart from panic+0x2a8/0x32c
-> 
-> Use !preemptible() instead, which is basically the same check as
-> pre-v5.2.
-> 
-> Fixes: bae1d3a05a8b ("i2c: core: remove use of in_atomic()")
-> Cc: stable@vger.kernel.org # v5.2+
-> Suggested-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> Acked-by: Wolfram Sang <wsa@kernel.org>
-> Reviewed-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> Tested-by: Nishanth Menon <nm@ti.com>
-> Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
+> Reviewed-by: Alexander Potapenko <glider@google.com>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > ---
->  drivers/i2c/i2c-core.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/s390/boot/startup.c        |  8 ++++++++
+>  arch/s390/include/asm/pgtable.h | 10 ++++++++++
+>  2 files changed, 18 insertions(+)
 > 
-> diff --git a/drivers/i2c/i2c-core.h b/drivers/i2c/i2c-core.h
-> index 1247e6e6e975..05b8b8dfa9bd 100644
-> --- a/drivers/i2c/i2c-core.h
-> +++ b/drivers/i2c/i2c-core.h
-> @@ -29,7 +29,7 @@ int i2c_dev_irq_from_resources(const struct resource *resources,
->   */
->  static inline bool i2c_in_atomic_xfer_mode(void)
->  {
-> -	return system_state > SYSTEM_RUNNING && irqs_disabled();
-> +	return system_state > SYSTEM_RUNNING && !preemptible();
+> diff --git a/arch/s390/boot/startup.c b/arch/s390/boot/startup.c
+> index 8104e0e3d188..e37e7ffda430 100644
+> --- a/arch/s390/boot/startup.c
+> +++ b/arch/s390/boot/startup.c
+> @@ -253,9 +253,17 @@ static unsigned long setup_kernel_memory_layout(void)
+>  	MODULES_END = round_down(__abs_lowcore, _SEGMENT_SIZE);
+>  	MODULES_VADDR = MODULES_END - MODULES_LEN;
+>  	VMALLOC_END = MODULES_VADDR;
+> +#ifdef CONFIG_KMSAN
+> +	VMALLOC_END -= MODULES_LEN * 2;
+> +#endif
+>  
+>  	/* allow vmalloc area to occupy up to about 1/2 of the rest virtual space left */
+>  	vmalloc_size = min(vmalloc_size, round_down(VMALLOC_END / 2, _REGION3_SIZE));
+> +#ifdef CONFIG_KMSAN
+> +	/* take 2/3 of vmalloc area for KMSAN shadow and origins */
+> +	vmalloc_size = round_down(vmalloc_size / 3, _REGION3_SIZE);
+> +	VMALLOC_END -= vmalloc_size * 2;
+> +#endif
 
-With preemption disabled, this boils down to
-  return system_state > SYSTEM_RUNNING (&& !0)
+Please use
 
-and will then generate a backtrace splash on each reboot on our
-board:
+	if (IS_ENABLED(CONFIG_KMSAN))
 
-# reboot -f
-[   12.687169] No atomic I2C transfer handler for 'i2c-0'
-[   12.692313] WARNING: CPU: 6 PID: 275 at drivers/i2c/i2c-core.h:40 i2c_smbus_xfer+0x100/0x118
-[   12.700745] Modules linked in:
-[   12.703788] CPU: 6 PID: 275 Comm: reboot Not tainted 6.7.0-rc6-next-20231222+ #2494
-[   12.711431] Hardware name: Kontron 3.5"-SBC-i1200 (DT)
-[   12.716555] pstate: 60400009 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[   12.723504] pc : i2c_smbus_xfer+0x100/0x118
-[   12.727674] lr : i2c_smbus_xfer+0x100/0x118
-[   12.731844] sp : ffff80008389b7c0
-[   12.735146] x29: ffff80008389b7c0 x28: ffff0000c561b4c0 x27: ffff0000c2b06400
-[   12.742268] x26: ffff0000c65aec4a x25: 000000000000000b x24: 0000000000000001
-[   12.749389] x23: 0000000000000000 x22: 0000000000000064 x21: 0000000000000008
-[   12.756510] x20: ffff80008389b836 x19: ffff0000c2dda080 x18: ffffffffffffffff
-[   12.763631] x17: ffff800080813f48 x16: ffff80008081bd38 x15: 0730072d07630732
-[   12.770752] x14: 0769072707200772 x13: 0730072d07630732 x12: 0769072707200772
-[   12.777873] x11: 0720072007200720 x10: ffff8000827dc828 x9 : ffff80008012e154
-[   12.784994] x8 : 00000000ffffefff x7 : ffff8000827dc828 x6 : 80000000fffff000
-[   12.792116] x5 : 000000000000bff4 x4 : 0000000000000000 x3 : 0000000000000000
-[   12.799236] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff0000c561b4c0
-[   12.806359] Call trace:
-[   12.808793]  i2c_smbus_xfer+0x100/0x118
-[   12.812616]  i2c_smbus_read_i2c_block_data+0x60/0xb0
-[   12.817569]  mt6360_regmap_read+0xa4/0x1b8
-[   12.821654]  _regmap_raw_read+0xfc/0x270
-[   12.825566]  _regmap_bus_read+0x4c/0x90
-[   12.829389]  _regmap_read+0x6c/0x168
-[   12.832953]  _regmap_update_bits+0xf8/0x150
-[   12.837124]  regmap_update_bits_base+0x6c/0xa8
-[   12.841555]  regulator_disable_regmap+0x48/0x68
-[   12.846073]  _regulator_do_disable+0x130/0x1e8
-[   12.850504]  _regulator_disable+0x154/0x1d8
-[   12.854676]  regulator_disable+0x44/0x90
-[   12.858587]  mmc_regulator_set_ocr+0x8c/0x118
-[   12.862933]  msdc_ops_set_ios+0x3f4/0x938
-[   12.866932]  mmc_set_initial_state+0x90/0xa8
-[   12.871191]  mmc_power_off+0x40/0x68
-[   12.874754]  _mmc_sd_suspend+0x5c/0x190
-[   12.878577]  mmc_sd_suspend+0x20/0x78
-[   12.882227]  mmc_bus_shutdown+0x48/0x90
-[   12.886051]  device_shutdown+0x134/0x298
-[   12.889961]  kernel_restart+0x48/0xd0
-[   12.893613]  __do_sys_reboot+0x1e0/0x278
-[   12.897523]  __arm64_sys_reboot+0x2c/0x40
-[   12.901519]  invoke_syscall+0x50/0x128
-[   12.905257]  el0_svc_common.constprop.0+0x48/0xf0
-[   12.909950]  do_el0_svc+0x24/0x38
-[   12.913253]  el0_svc+0x38/0xd8
-[   12.916296]  el0t_64_sync_handler+0x100/0x130
-[   12.920639]  el0t_64_sync+0x1a4/0x1a8
-[   12.924289] ---[ end trace 0000000000000000 ]---
-...
+above, since this way we get more compile time checks.
 
-I'm not sure if this is now the expected behavior or not. There will be
-no backtraces, if I build a preemptible kernel, nor will there be
-backtraces if I revert this patch.
+> +#ifdef CONFIG_KMSAN
+> +#define KMSAN_VMALLOC_SIZE (VMALLOC_END - VMALLOC_START)
+> +#define KMSAN_VMALLOC_SHADOW_START VMALLOC_END
+> +#define KMSAN_VMALLOC_ORIGIN_START (KMSAN_VMALLOC_SHADOW_START + \
+> +				    KMSAN_VMALLOC_SIZE)
+> +#define KMSAN_MODULES_SHADOW_START (KMSAN_VMALLOC_ORIGIN_START + \
+> +				    KMSAN_VMALLOC_SIZE)
 
-OTOH, the driver I'm using (drivers/i2c/busses/i2c-mt65xx.c) has no
-*_atomic(). So the warning is correct. There is also [1], which seems to
-be the same issue I'm facing.
+Long single lines for these, please :)
 
--michael
-
-[1] https://lore.kernel.org/linux-i2c/13271b9b-4132-46ef-abf8-2c311967bb46@mailbox.org/
+With that, and Alexander Gordeev's comments addressed:
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
 
