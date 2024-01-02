@@ -1,307 +1,195 @@
-Return-Path: <linux-kernel+bounces-14247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B0418219E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:33:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 991E58219E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:33:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 008BA1F222A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:33:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E25E1F220EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC900DF63;
-	Tue,  2 Jan 2024 10:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B53C6D2FA;
+	Tue,  2 Jan 2024 10:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="Y8QmCM26"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="SYn1pykk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C920DF51
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 10:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a27cc66d67eso200718766b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 02:32:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1704191566; x=1704796366; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G+7moNHT/OR4dO2qTIN/UmqI4y92lVkHCwR4Iet1xro=;
-        b=Y8QmCM26bGQYgxbxzLvyYauxNrVTHczX1m+6+DLhMjPMBZE11Sx291A7a9UkAiTdED
-         fgRrKOUnw3Uwk63AbD4O7m8woTJugh8T+ufVZ+oh8HLqMPKm3x/IWyBXabVZUv0Sgkb1
-         XU2PlgRRz0bOzY6Expkw6E6AQGzsnx0EFj3cDN5TxVYAdvqAGOo9xRF/otP/rXc4mf4s
-         LVj45VMGWszZzpPltMe9oqt64BqAzVBhsWTg0bZM9xTj2GJfg91bZ4RsLzj3uqXdE9Wp
-         po74jYbe9yqyg3+sqMWaMble4fstQ+Afo8asgIj1Ga5fVDHoKsYb0JMQqPP1yKQNEaEd
-         ccsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704191566; x=1704796366;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G+7moNHT/OR4dO2qTIN/UmqI4y92lVkHCwR4Iet1xro=;
-        b=MqLUK6tlvLruIWMaLC/2QktYr6uK2UWfbezTmxiVt3b3B9Oym/ujc5Jj9tWTroHe0e
-         Z20LeYY7sshAbDnAyJ4CMuumKLeLFuQAr+sEe2woW+/YNFM+HTJjh0me8bByspTHxsSq
-         eHYCBWRe+Cf7aaQcH/5rpYQ4FSzI11aACNaSnIIR2GrN54iVOhqW8JCHmj/TmFdRJyv1
-         e8FdCtcw//rxX3+d96QwA13y/2tUJh3KjVnw+7sj0fT+/fRH8UIq9XYXnsnGT6vUcZo2
-         cBbMX3psUNFFVn9bLyVFYBRYJfZd+qAlHmpShC6rj+JeJU2iTqI1eKTBV0x4Hw/9/Fpp
-         bHYw==
-X-Gm-Message-State: AOJu0YyCfl5+n649DJCp7LM+prk7FLMYZ0euPBNWgBQrEvcuD5KLV0oS
-	UHHP8FZ2IREqxueJVaEn2JoNB6jNpVqgPUkRO/xUnXmv2Dg=
-X-Google-Smtp-Source: AGHT+IEtbbo3Y4eGqAi+tt7jMzv/FB7oFX6ON5NL7+kP5V4R1nwFSNRLvIkCvtNjXWYeta53DswsnA==
-X-Received: by 2002:a17:906:6891:b0:a28:2084:edec with SMTP id n17-20020a170906689100b00a282084edecmr840102ejr.126.1704191566243;
-        Tue, 02 Jan 2024 02:32:46 -0800 (PST)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id ka24-20020a170907921800b00a26abf393d0sm11066460ejb.138.2024.01.02.02.32.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 02:32:45 -0800 (PST)
-Date: Tue, 2 Jan 2024 11:32:44 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: guoren@kernel.org
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	panqinglin2020@iscas.ac.cn, bjorn@rivosinc.com, conor.dooley@microchip.com, 
-	leobras@redhat.com, peterz@infradead.org, keescook@chromium.org, 
-	wuwei2016@iscas.ac.cn, xiaoguang.xing@sophgo.com, chao.wei@sophgo.com, 
-	unicorn_wang@outlook.com, uwu@icenowy.me, jszhang@kernel.org, wefu@redhat.com, 
-	atishp@atishpatra.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: [PATCH V2 1/3] riscv: Add Zicbop instruction definitions &
- cpufeature
-Message-ID: <20240102-4f12393de3c6313650a24c17@orel>
-References: <20231231082955.16516-1-guoren@kernel.org>
- <20231231082955.16516-2-guoren@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4072BEACE;
+	Tue,  2 Jan 2024 10:33:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 402AXGpr062512;
+	Tue, 2 Jan 2024 04:33:16 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1704191596;
+	bh=BxYuu9G3Hpb/Bs5A+un9uQi+qqPTeusWxKQoqmwv1vk=;
+	h=Date:CC:Subject:To:References:From:In-Reply-To;
+	b=SYn1pykkwzhGWSGWpw6AbAOWRWX0h1Rs6+HwHanHThwzKhu2VZ32qDq0Tj0r5RcRm
+	 Nw8HYVth98SnG7xEQ1tb4CmbLTeeLcZ2h0fQjuRQ7mT0gMLAKRD0Fh4jMswRjN/nNs
+	 R4l9fIG8ZR366xUEFNGCkgva0CXihIt/LOAO8lz0=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 402AXGjM106382
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 2 Jan 2024 04:33:16 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 2
+ Jan 2024 04:33:15 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 2 Jan 2024 04:33:15 -0600
+Received: from [10.249.131.186] ([10.249.131.186])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 402AXCks027081;
+	Tue, 2 Jan 2024 04:33:13 -0600
+Message-ID: <162e12c7-c7c1-3bf9-48ec-05ee3c30e784@ti.com>
+Date: Tue, 2 Jan 2024 16:03:11 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231231082955.16516-2-guoren@kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+CC: "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com"
+	<edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        <s-vadapalli@ti.com>
+Subject: Re: [PATCH 3/3] net: ethernet: ti: am65-cpsw: Add device tree
+ property to set max MTU
+Content-Language: en-US
+To: =?UTF-8?B?U2FuanXDoW4gR2FyY8OtYSwgSm9yZ2U=?=
+	<Jorge.SanjuanGarcia@duagon.com>
+References: <20240102081825.14635-1-jorge.sanjuangarcia@duagon.com>
+ <c025f2f9-ca2c-4fdb-adb1-803745fded0c.a613f387-0b3b-49fd-9401-3a0ed0c1f80e.20d242d9-3999-48e2-8a9e-cd0f9ba3351c@emailsignatures365.codetwo.com>
+ <20240102081825.14635-4-jorge.sanjuangarcia@duagon.com>
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <20240102081825.14635-4-jorge.sanjuangarcia@duagon.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Sun, Dec 31, 2023 at 03:29:51AM -0500, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
+Hello,
+
+On 02-01-2024 13:49, Sanjuán García, Jorge wrote:
+> The switch supports ethernet frame sizes between 64 and 2024 bytes
+> (including VLAN) as stated in the technical reference manual.
+
+Could you please share the source for the "2024 bytes" mentioned above?
+In J7200 SoC's TRM, I see support for up to 9604 bytes (including VLAN)
+in the "CPSW_PN_RX_MAXLEN_REG_k" register description for CPSW5G
+instance of CPSW.
+
 > 
-> Cache-block prefetch instructions are HINTs to the hardware to
-> indicate that software intends to perform a particular type of
-> memory access in the near future. This patch adds prefetch.i,
-> prefetch.r and prefetch.w instruction definitions by
-> RISCV_ISA_EXT_ZICBOP cpufeature.
+> This patch adds a new devicetree property so the switch ports can
+> be configured with an MTU higher than the standar 1500 bytes, making
 
-It also adds S-type instruction encoding support which isn't mentioned.
-Actually, it'd probably be best to put the new instruction encoding in
-its own separate patch.
+nitpick: standar/standard.
 
+> the max frame length configured on the registers and the max_mtu
+> advertised on the network device consistent.
 > 
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Signed-off-by: Guo Ren <guoren@kernel.org>
+> Signed-off-by: Jorge Sanjuan Garcia <jorge.sanjuangarcia@duagon.com>
 > ---
->  arch/riscv/Kconfig                | 15 ++++++++
->  arch/riscv/include/asm/hwcap.h    |  1 +
->  arch/riscv/include/asm/insn-def.h | 60 +++++++++++++++++++++++++++++++
->  arch/riscv/kernel/cpufeature.c    |  1 +
->  4 files changed, 77 insertions(+)
+
+For patches which add new features, please use the subject prefix
+[PATCH net-next].
+
+>   drivers/net/ethernet/ti/am65-cpsw-nuss.c | 18 ++++++++++++++----
+>   drivers/net/ethernet/ti/am65-cpsw-nuss.h |  1 +
+>   2 files changed, 15 insertions(+), 4 deletions(-)
 > 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 24c1799e2ec4..fcbd417d65ea 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -579,6 +579,21 @@ config RISCV_ISA_ZICBOZ
->  
->  	   If you don't know what to do here, say Y.
->  
-> +config RISCV_ISA_ZICBOP
-> +	bool "Zicbop extension support for cache block prefetch"
-> +	depends on MMU
-> +	depends on RISCV_ALTERNATIVE
-> +	default y
-> +	help
-> +	  Adds support to dynamically detect the presence of the ZICBOP
-> +	  extension (Cache Block Prefetch Operations) and enable its
-> +	  usage.
-> +
-> +	  The Zicbop extension can be used to prefetch cache block for
+> diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c 
+> b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> index a920146d7a60..6a5c8b6e03f4 100644
+> --- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> +++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> @@ -56,7 +56,7 @@
+>   #define AM65_CPSW_MAX_PORTS     8
+> 
+>   #define AM65_CPSW_MIN_PACKET_SIZE       VLAN_ETH_ZLEN
+> -#define AM65_CPSW_MAX_PACKET_SIZE      (VLAN_ETH_FRAME_LEN + ETH_FCS_LEN)
+> +#define AM65_CPSW_MAX_PACKET_SIZE      2024
+> 
+>   #define AM65_CPSW_REG_CTL               0x004
+>   #define AM65_CPSW_REG_STAT_PORT_EN      0x014
+> @@ -2198,8 +2198,7 @@ am65_cpsw_nuss_init_port_ndev(struct am65_cpsw_common 
+> *common, u32 port_idx)
+>           eth_hw_addr_set(port->ndev, port->slave.mac_addr);
+> 
+>           port->ndev->min_mtu = AM65_CPSW_MIN_PACKET_SIZE;
+> -       port->ndev->max_mtu = common->rx_packet_max -
+> -                             (VLAN_ETH_HLEN + ETH_FCS_LEN);
+> +       port->ndev->max_mtu = common->max_mtu;
 
-blocks
+This seems to be modifying what was added in just the previous patch.
+Isn't it better to merge these changes into a single patch?
 
-> +	  read/write fetch.
-> +
-> +	  If you don't know what to do here, say Y.
-> +
->  config TOOLCHAIN_HAS_ZIHINTPAUSE
->  	bool
->  	default y
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
-> index 06d30526ef3b..77d3b6ee25ab 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -57,6 +57,7 @@
->  #define RISCV_ISA_EXT_ZIHPM		42
->  #define RISCV_ISA_EXT_SMSTATEEN		43
->  #define RISCV_ISA_EXT_ZICOND		44
-> +#define RISCV_ISA_EXT_ZICBOP		45
->  
->  #define RISCV_ISA_EXT_MAX		64
->  
-> diff --git a/arch/riscv/include/asm/insn-def.h b/arch/riscv/include/asm/insn-def.h
-> index e27179b26086..bbda350a63bf 100644
-> --- a/arch/riscv/include/asm/insn-def.h
-> +++ b/arch/riscv/include/asm/insn-def.h
-> @@ -18,6 +18,13 @@
->  #define INSN_I_RD_SHIFT			 7
->  #define INSN_I_OPCODE_SHIFT		 0
->  
-> +#define INSN_S_SIMM7_SHIFT		25
-> +#define INSN_S_RS2_SHIFT		20
-> +#define INSN_S_RS1_SHIFT		15
-> +#define INSN_S_FUNC3_SHIFT		12
-> +#define INSN_S_SIMM5_SHIFT		 7
-> +#define INSN_S_OPCODE_SHIFT		 0
-> +
->  #ifdef __ASSEMBLY__
->  
->  #ifdef CONFIG_AS_HAS_INSN
-> @@ -30,6 +37,10 @@
->  	.insn	i \opcode, \func3, \rd, \rs1, \simm12
->  	.endm
->  
-> +	.macro insn_s, opcode, func3, rs2, simm12, rs1
-> +	.insn	s \opcode, \func3, \rs2, \simm12(\rs1)
-> +	.endm
-> +
->  #else
->  
->  #include <asm/gpr-num.h>
-> @@ -51,10 +62,20 @@
->  		 (\simm12 << INSN_I_SIMM12_SHIFT))
->  	.endm
->  
-> +	.macro insn_s, opcode, func3, rs2, simm12, rs1
-> +	.4byte	((\opcode << INSN_S_OPCODE_SHIFT) |		\
-> +		 (\func3 << INSN_S_FUNC3_SHIFT) |		\
-> +		 (.L__gpr_num_\rs2 << INSN_S_RS2_SHIFT) |	\
-> +		 (.L__gpr_num_\rs1 << INSN_S_RS1_SHIFT) |	\
-> +		 ((\simm12 & 0x1f) << INSN_S_SIMM5_SHIFT) |	\
-> +		 (((\simm12 >> 5) & 0x7f) << INSN_S_SIMM7_SHIFT))
-> +	.endm
-> +
->  #endif
->  
->  #define __INSN_R(...)	insn_r __VA_ARGS__
->  #define __INSN_I(...)	insn_i __VA_ARGS__
-> +#define __INSN_S(...)	insn_s __VA_ARGS__
->  
->  #else /* ! __ASSEMBLY__ */
->  
-> @@ -66,6 +87,9 @@
->  #define __INSN_I(opcode, func3, rd, rs1, simm12)	\
->  	".insn	i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n"
->  
-> +#define __INSN_S(opcode, func3, rs2, simm12, rs1)	\
-> +	".insn	s " opcode ", " func3 ", " rs2 ", " simm12 "(" rs1 ")\n"
-> +
->  #else
->  
->  #include <linux/stringify.h>
-> @@ -92,12 +116,26 @@
->  "		 (\\simm12 << " __stringify(INSN_I_SIMM12_SHIFT) "))\n"	\
->  "	.endm\n"
->  
-> +#define DEFINE_INSN_S							\
-> +	__DEFINE_ASM_GPR_NUMS						\
-> +"	.macro insn_s, opcode, func3, rs2, simm12, rs1\n"		\
-> +"	.4byte	((\\opcode << " __stringify(INSN_S_OPCODE_SHIFT) ") |"	\
-> +"		 (\\func3 << " __stringify(INSN_S_FUNC3_SHIFT) ") |"	\
-> +"		 (.L__gpr_num_\\rs2 << " __stringify(INSN_S_RS2_SHIFT) ") |" \
-> +"		 (.L__gpr_num_\\rs1 << " __stringify(INSN_S_RS1_SHIFT) ") |" \
-> +"		 ((\\simm12 & 0x1f) << " __stringify(INSN_S_SIMM5_SHIFT) ") |" \
-> +"		 (((\\simm12 >> 5) & 0x7f) << " __stringify(INSN_S_SIMM7_SHIFT) "))\n" \
-> +"	.endm\n"
-> +
->  #define UNDEFINE_INSN_R							\
->  "	.purgem insn_r\n"
->  
->  #define UNDEFINE_INSN_I							\
->  "	.purgem insn_i\n"
->  
-> +#define UNDEFINE_INSN_S							\
-> +"	.purgem insn_s\n"
-> +
->  #define __INSN_R(opcode, func3, func7, rd, rs1, rs2)			\
->  	DEFINE_INSN_R							\
->  	"insn_r " opcode ", " func3 ", " func7 ", " rd ", " rs1 ", " rs2 "\n" \
-> @@ -108,6 +146,11 @@
->  	"insn_i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n" \
->  	UNDEFINE_INSN_I
->  
-> +#define __INSN_S(opcode, func3, rs2, simm12, rs1)			\
-> +	DEFINE_INSN_S							\
-> +	"insn_s " opcode ", " func3 ", " rs2 ", " simm12 ", " rs1 "\n"	\
-> +	UNDEFINE_INSN_S
-> +
->  #endif
->  
->  #endif /* ! __ASSEMBLY__ */
-> @@ -120,6 +163,10 @@
->  	__INSN_I(RV_##opcode, RV_##func3, RV_##rd,		\
->  		 RV_##rs1, RV_##simm12)
->  
-> +#define INSN_S(opcode, func3, rs2, simm12, rs1)			\
-> +	__INSN_S(RV_##opcode, RV_##func3, RV_##rs2,		\
-> +		 RV_##simm12, RV_##rs1)
-> +
->  #define RV_OPCODE(v)		__ASM_STR(v)
->  #define RV_FUNC3(v)		__ASM_STR(v)
->  #define RV_FUNC7(v)		__ASM_STR(v)
-> @@ -133,6 +180,7 @@
->  #define RV___RS2(v)		__RV_REG(v)
->  
->  #define RV_OPCODE_MISC_MEM	RV_OPCODE(15)
-> +#define RV_OPCODE_OP_IMM	RV_OPCODE(19)
->  #define RV_OPCODE_SYSTEM	RV_OPCODE(115)
->  
->  #define HFENCE_VVMA(vaddr, asid)				\
-> @@ -196,4 +244,16 @@
->  	INSN_I(OPCODE_MISC_MEM, FUNC3(2), __RD(0),		\
->  	       RS1(base), SIMM12(4))
->  
-> +#define CBO_PREFETCH_I(base, offset)				\
-> +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(0),		\
-> +	       SIMM12(offset), RS1(base))
-> +
-> +#define CBO_PREFETCH_R(base, offset)				\
-> +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(1),		\
-> +	       SIMM12(offset), RS1(base))
-> +
-> +#define CBO_PREFETCH_W(base, offset)				\
-> +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3),		\
-> +	       SIMM12(offset), RS1(base))
+>           port->ndev->hw_features = NETIF_F_SG |
+>                                     NETIF_F_RXCSUM |
+>                                     NETIF_F_HW_CSUM |
+> @@ -2927,8 +2926,19 @@ static int am65_cpsw_nuss_probe(struct platform_device *pdev)
+>           if (common->port_num < 1 || common->port_num > AM65_CPSW_MAX_PORTS)
+>                   return -ENOENT;
+> 
+> +       common->max_mtu = VLAN_ETH_DATA_LEN;
+> +       of_property_read_u32(dev->of_node, "max-frame-size", &common->max_mtu);
 
-Shouldn't we ensure the lower 5-bits of offset are zero by masking it?
+The device-tree property "max-frame-size" is a port-specific property.
+Therefore, it is wrong to expect the property to be present at the CPSW
+node level instead of being present within each port in the
+"ethernet-ports" node. This section should be moved into the function:
+am65_cpsw_nuss_init_slave_ports()
+which parses the device-tree nodes for each port. The "max-frame-size"
+property can be stored there on a per-port basis within a newly added
+member in "struct am65_cpsw_port" as mentioned in my previous mail for
+patch 2/3.
 
 > +
->  #endif /* __ASM_INSN_DEF_H */
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index b3785ffc1570..bdb02b066041 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -168,6 +168,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
->  	__RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
->  	__RISCV_ISA_EXT_DATA(zicboz, RISCV_ISA_EXT_ZICBOZ),
-> +	__RISCV_ISA_EXT_DATA(zicbop, RISCV_ISA_EXT_ZICBOP),
+> +       common->rx_packet_max = common->max_mtu + VLAN_ETH_HLEN + ETH_FCS_LEN;
+> +       if (common->rx_packet_max > AM65_CPSW_MAX_PACKET_SIZE) {
+> +               common->rx_packet_max = AM65_CPSW_MAX_PACKET_SIZE;
+> +               common->max_mtu = AM65_CPSW_MAX_PACKET_SIZE -
+> +                                 (VLAN_ETH_HLEN + ETH_FCS_LEN);
+> +       }
+> +
+> +       dev_info(common->dev, "Max RX packet size set to %d\n", 
+> common->rx_packet_max);
+> +
+>           common->rx_flow_id_base = -1;
+> -       common->rx_packet_max = AM65_CPSW_MAX_PACKET_SIZE;
+>           init_completion(&common->tdown_complete);
+>           common->tx_ch_num = AM65_CPSW_DEFAULT_TX_CHNS;
+>           common->pf_p0_rx_ptype_rrobin = false;
+> diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.h 
+> b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
+> index 141160223d73..3bb0ff94a46a 100644
+> --- a/drivers/net/ethernet/ti/am65-cpsw-nuss.h
+> +++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
+> @@ -130,6 +130,7 @@ struct am65_cpsw_common {
+>           u32                     tx_ch_rate_msk;
+>           u32                     rx_flow_id_base;
+> 
+> +       int                     max_mtu;
+>           int                     rx_packet_max;
+> 
+>           struct am65_cpsw_tx_chn tx_chns[AM65_CPSW_MAX_TX_QUEUES];
 
-zicbop should be above zicboz (alphabetical)
+...
 
->  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
->  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
->  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
-> -- 
-> 2.40.1
->
-
-Thanks,
-drew
+-- 
+Regards,
+Siddharth.
 
