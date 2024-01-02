@@ -1,176 +1,145 @@
-Return-Path: <linux-kernel+bounces-14330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 683A5821B78
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:15:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DE19821B85
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:17:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57A701C21439
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:15:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11D291C21EB6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:17:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE027F517;
-	Tue,  2 Jan 2024 12:15:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F478EEDB;
+	Tue,  2 Jan 2024 12:16:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rVfdmq1r";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SV6DFXVz";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JSvxxO/q";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HnAFj7MG"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XZb8FQ3H"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8532CEED2;
-	Tue,  2 Jan 2024 12:15:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 49FD01FD5E;
-	Tue,  2 Jan 2024 12:14:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704197701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47479EEC6
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 12:16:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704197811;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=yzteoYRrFuNlezpMdhomW2MOjO8HHbS2clXQHZdwoPI=;
-	b=rVfdmq1rDvgD7b4d1mF2ZCEBTZ+3ArKL958WQrnXGtgwaqj7DYXVivSIouvlQWFmEODG++
-	8LOL1fg5CZ/04IpI6xQNy9MKa3/rZb7FOz0uZIASHNFFSp0VwW3+JIxJTxFsQ9eXP5TfbQ
-	c2LS0a8wITbyz6A7J4aaQ3g+ntg5sIo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704197701;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yzteoYRrFuNlezpMdhomW2MOjO8HHbS2clXQHZdwoPI=;
-	b=SV6DFXVzlTFJxIWbgtrSlwhih/Zxvim1Tj7HPNfde+D0780UzoNLx9CmfZAMHgNivmAI0c
-	m8jlTTyd8AVpOYDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704197699; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yzteoYRrFuNlezpMdhomW2MOjO8HHbS2clXQHZdwoPI=;
-	b=JSvxxO/qXOCtnLRV+LIUGhAvLal1X95hYtx4VBVun3A4jsLFswEEfEIQOEuzPSW3e/NKIU
-	5co3Dn9NR2YS3UxNHYPx5U1Cot9c5vdbgnVnmHuupC1J1qsfDEpJ11Mf2YYdWyJ/BtdZP8
-	jMzocNegQ2W5++gY62vbJXg2d+juORI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704197699;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yzteoYRrFuNlezpMdhomW2MOjO8HHbS2clXQHZdwoPI=;
-	b=HnAFj7MGtLTikRyJ7PpC/vBIkYW0P/An0eCjfGKLQ5fmEsF3ZMrXgSSBeYPUNLsGXEFplO
-	1WZQB5FJhjN+PaBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 358961340C;
-	Tue,  2 Jan 2024 12:14:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gn4FDUP+k2VVPAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 02 Jan 2024 12:14:59 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id C74D8A07EF; Tue,  2 Jan 2024 13:14:58 +0100 (CET)
-Date: Tue, 2 Jan 2024 13:14:58 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+062317ea1d0a6d5e29e7@syzkaller.appspotmail.com>
-Cc: Christian Brauner <brauner@kernel.org>, axboe@kernel.dk,
-	chao@kernel.org, christian@brauner.io, daniel.vetter@ffwll.ch,
-	hch@lst.de, hdanton@sina.com, jack@suse.cz, jaegeuk@kernel.org,
-	jinpu.wang@ionos.com, linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mairacanal@riseup.net, mcanal@igalia.com,
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	terrelln@fb.com, willy@infradead.org, yukuai3@huawei.com
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in super_lock
-Message-ID: <20240102121458.bcnwj3g4hr6xhimt@quack3>
-References: <0000000000001825ce06047bf2a6@google.com>
- <00000000000007d6a9060d441adc@google.com>
- <20231228-arterien-nachmachen-d74aec52820e@brauner>
+	bh=DPlLEBXfhLSd7sMzVTM760zSh1zEAP22oRkr84xyyqI=;
+	b=XZb8FQ3HHrMvOJEtsLIxQvGSirAGsr9l5SfZnqH84+3XK2wiysFk8aa5sBJ7pTbK1/PgYe
+	fcYlxaMbXaB+KCD590CBwD7ol/3RYWugBumKEktNgcl/8bFE9l+5/jNwEoWUsNtBFiqVYi
+	4uCCSPokhZkgInHzPjfXFuoeqd+K3ZQ=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-474-fHBa-TNVOY-M2IThzyzP9g-1; Tue, 02 Jan 2024 07:16:44 -0500
+X-MC-Unique: fHBa-TNVOY-M2IThzyzP9g-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40d890b4536so11598085e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 04:16:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704197803; x=1704802603;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DPlLEBXfhLSd7sMzVTM760zSh1zEAP22oRkr84xyyqI=;
+        b=Z1Wl9kaYpJ7iCNt90j22UajI3eXu0eXWraFm0cdIgoSb/dFq6KiyK3n2lYd72SvE7T
+         rVzz6FxZATSEYAPgfdlfDAMSH1XKr2B4GgBamVoUjzFMAI0BOUMcUOYIo+hYHyNtef86
+         yrcZ80EvHmnVx/LmjYxOT7Z2fdCYAGBgfP27CSymgIQk22WhTvGC+PqFTXAsVk42P3BY
+         1Hi+ZROScXo+BasPynWYjIF0xxAFmEbjfBHpPA/ycYtaP3Gl1RIAHmM50LIt9/4vancs
+         6M5GUA2W1I+ROvOENHNMYeo8hbc3c4Xdp8DLnvx/1vd0IZRkds6h49h/tTZS75ZKgbqU
+         oYeQ==
+X-Gm-Message-State: AOJu0Yx5T4Nw/75S2wekm06CLUKTtfUiEVCMheqhBuuwwoL1uU3kQO3t
+	q6MXDrOG0dU8o9ZUvGJ3FpUp0hzP5qKQKyrrczIOMasC8lGFcGd5BviX4gBmmeQJ3whm7kbxLBT
+	iN7O8HZJ12vdbwyCjZD890kGkceDcwpF+3uguQKzKIcc=
+X-Received: by 2002:a05:600c:c0b:b0:40d:8cd1:736a with SMTP id fm11-20020a05600c0c0b00b0040d8cd1736amr380538wmb.50.1704197803225;
+        Tue, 02 Jan 2024 04:16:43 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGU2XMn1J/fN1Ic3hG9b7blPM6E9SLaxWfy6C+aTMS068vBjt/ls9arEBPcmBeFFxfKG97ZJA==
+X-Received: by 2002:a05:600c:c0b:b0:40d:8cd1:736a with SMTP id fm11-20020a05600c0c0b00b0040d8cd1736amr380535wmb.50.1704197802896;
+        Tue, 02 Jan 2024 04:16:42 -0800 (PST)
+Received: from localhost (red-hat-inc.vlan560.asr1.mad1.gblx.net. [159.63.51.90])
+        by smtp.gmail.com with ESMTPSA id fa8-20020a05600c518800b0040d87c5dfe1sm8469244wmb.8.2024.01.02.04.16.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 04:16:42 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Jani Nikula <jani.nikula@linux.intel.com>, linux-kernel@vger.kernel.org
+Cc: Thomas Zimmermann <tzimmermann@suse.de>, Maxime Ripard
+ <mripard@kernel.org>, dri-devel@lists.freedesktop.org, David Airlie
+ <airlied@gmail.com>
+Subject: Re: [PATCH] drm: Move drm_set_preferred_mode() helper from drm_edid
+ to drm_modes
+In-Reply-To: <87y1d80x3l.fsf@intel.com>
+References: <20240102111921.3057255-1-javierm@redhat.com>
+ <87y1d80x3l.fsf@intel.com>
+Date: Tue, 02 Jan 2024 13:16:42 +0100
+Message-ID: <87o7e43p79.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231228-arterien-nachmachen-d74aec52820e@brauner>
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 2.53
-X-Spamd-Bar: ++
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [2.53 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLqzkqenty6h5wkt76cn81i3yg)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.16)[69.10%];
-	 SUBJECT_HAS_QUESTION(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[sina.com];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=710dc49bece494df];
-	 TAGGED_RCPT(0.00)[062317ea1d0a6d5e29e7];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[21];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,goo.gl:url,suse.com:email,syzkaller.appspot.com:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[kernel.org,kernel.dk,brauner.io,ffwll.ch,lst.de,sina.com,suse.cz,ionos.com,lists.sourceforge.net,vger.kernel.org,riseup.net,igalia.com,googlegroups.com,fb.com,infradead.org,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="JSvxxO/q";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=HnAFj7MG
-X-Spam-Level: **
-X-Rspamd-Queue-Id: 49FD01FD5E
+Content-Type: text/plain
 
-On Thu 28-12-23 11:50:32, Christian Brauner wrote:
-> On Sun, Dec 24, 2023 at 08:40:05AM -0800, syzbot wrote:
-> > syzbot suspects this issue was fixed by commit:
-> > 
-> > commit fd1464105cb37a3b50a72c1d2902e97a71950af8
-> > Author: Jan Kara <jack@suse.cz>
-> > Date:   Wed Oct 18 15:29:24 2023 +0000
-> > 
-> >     fs: Avoid grabbing sb->s_umount under bdev->bd_holder_lock
-> > 
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14639595e80000
-> > start commit:   2cf0f7156238 Merge tag 'nfs-for-6.6-2' of git://git.linux-..
-> > git tree:       upstream
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=710dc49bece494df
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=062317ea1d0a6d5e29e7
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=107e9518680000
-> > 
-> > If the result looks correct, please mark the issue as fixed by replying with:
-> > 
-> > #syz fix: fs: Avoid grabbing sb->s_umount under bdev->bd_holder_lock
-> > 
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> 
-> Fwiw, this was always a false-positive. But we also reworked the locking
-> that even the false-positive cannot be triggered anymore. So yay!
+Jani Nikula <jani.nikula@linux.intel.com> writes:
 
-Yup, nice. I think you need to start the line with syz command so:
+Hello Jani,
 
-#syz fix: fs: Avoid grabbing sb->s_umount under bdev->bd_holder_lock
+> On Tue, 02 Jan 2024, Javier Martinez Canillas <javierm@redhat.com> wrote:
+>> The helper is generic and doesn't use the opaque EDID type struct drm_edid
+>> and is also used by drivers that only support non-probeable displays, such
+>> as fixed panels.
+>>
+>> These drivers add a list of modes using drm_mode_probed_add() and then set
+>> a preferred mode using the drm_set_preferred_mode() helper.
+>>
+>> It seems more logical to have the helper definition in drm_modes.o instead
+>> of drm_edid.o, since the former contains modes helper while the latter has
+>> helpers to manage the EDID information.
+>>
+>> Since both drm_edid.o and drm_modes.o object files are built-in the drm.o
+>> object, there are no functional changes. But besides being a more logical
+>> place for this helper, it could also allow to eventually make drm_edid.o
+>> optional and not included in drm.o if only fixed panels must be supported
+>> in a given system.
+>>
+>> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+>> ---
+>>
+>>  drivers/gpu/drm/drm_edid.c  | 23 +----------------------
+>>  drivers/gpu/drm/drm_modes.c | 22 ++++++++++++++++++++++
+>>  include/drm/drm_edid.h      |  2 --
+>>  include/drm/drm_modes.h     |  2 ++
+>>  4 files changed, 25 insertions(+), 24 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+>> index cb4031d5dcbb..48dd2a0a0395 100644
+>> --- a/drivers/gpu/drm/drm_edid.c
+>> +++ b/drivers/gpu/drm/drm_edid.c
+>> @@ -43,6 +43,7 @@
+>>  #include <drm/drm_edid.h>
+>>  #include <drm/drm_eld.h>
+>>  #include <drm/drm_encoder.h>
+>> +#include <drm/drm_modes.h>
+>
+> Unnecessary.
+>
 
-								Honza
+Indeed. I could swear that saw drm_set_preferred_mode() being called
+somewhere in drm_edid.c but looking again I see that's not the case.
+
+> Other than that,
+>
+> Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+>
+
+Thanks. I'll post a v2 that drops the unnecessary header include.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
 
