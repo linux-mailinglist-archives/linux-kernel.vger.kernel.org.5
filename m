@@ -1,194 +1,156 @@
-Return-Path: <linux-kernel+bounces-14555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B778821EA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:21:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B932F821EA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:22:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AECBE1F22E9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:21:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEF441C224EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:22:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1ADC13AF4;
-	Tue,  2 Jan 2024 15:21:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D45914F62;
+	Tue,  2 Jan 2024 15:21:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RAE3Bp/T"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OWGD1kOA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F5A14A92
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 15:21:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704208904;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=sHnSR+QFwKpo7oWGjVdLyDfof+xSfbIp/ziX7RP5aB4=;
-	b=RAE3Bp/TwT/jyrEcWV+C8H7ocSVtRC8f4kFsuUOkNKLHGdB+kd4k7fRqVE7/NPeZCKwefu
-	7fdXPCtraGP6VEe9s1DncX01mrGUq6uqojxgOtpnIq6tEdIkii9gcSSAvSfA7U9jSQItlo
-	GxuJDsE2dZfO7MpKuyrdABAdrAazL9g=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-141-fpG_uLV2MBefcKkUYRoVag-1; Tue,
- 02 Jan 2024 10:21:41 -0500
-X-MC-Unique: fpG_uLV2MBefcKkUYRoVag-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CDC013C1E9C6;
-	Tue,  2 Jan 2024 15:21:40 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.68])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id D6615492BC6;
-	Tue,  2 Jan 2024 15:21:39 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-To: Jeffrey Altman <jaltman@auristor.com>
-cc: dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
-    linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-    linux-kernel@vger.kernel.org
-Subject: [PATCH] afs: Fix error handling with lookup via FS.InlineBulkStatus
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CCA14A82;
+	Tue,  2 Jan 2024 15:21:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3bbc648bed4so4365347b6e.3;
+        Tue, 02 Jan 2024 07:21:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704208906; x=1704813706; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8mXfI+Pa+/2538bxiWOCU5JAZ3tBBfS6VdnJQwfuuiQ=;
+        b=OWGD1kOAup3AS7HYb/6FhsaHVh3Rc6wH7q8FYC5ChOToAKzlVCaxaQA7L8B5uiT2pI
+         0jKxOEgHKq0VCWg30VL/wCDQQk1y28FYrKNRKiRQNLspdMqdO0YP5xSG4XPit3M9q3fV
+         SlwMtpvwV/w4OsBdGWvtLXlblqcFafpu4B1NfMGSgUAeuUDyDXnCca5/W/6fEeo2J3ve
+         dyhZqxXyAt6BFq7qRZWhT/Npo1ZS9ghhlOUUhFhWzMAjwwjnc/s9nB7/szLknoglWhDs
+         We4SSz7rJvnNvCiZVCCpiHSwLrbMCpe+M3tZk1WaPEHD1DUHYP85UzXL4rFiOkFSZh7Q
+         VJyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704208906; x=1704813706;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8mXfI+Pa+/2538bxiWOCU5JAZ3tBBfS6VdnJQwfuuiQ=;
+        b=iah4LG9N8rIO1C5ctV2nhhtm9BiwGTFYqcp+wvpoTjt5HkRaLQkKrRKr411q3djI0G
+         m/lz3M/rXAx0sJOCqnKmc/W8Y554FqEXy4g2wGerOLLN/s3NQEgk26xlPUoY3JMev/dH
+         Un1e9j9bX5lbjQw8Auuvg9RYfWXSrHO3z7nLx5UHk4EPYqZcac+nYZ6LjbfqMCggB8vS
+         cOJUguNvsegpEb38aXrKSF28VH2Ig+wzLeHg3QID6B0wIbk+l4j4Couj1Muymjg6yYSu
+         b8g/DPY6JtNOHKV+f4byeyFxXb4o1gsQwOLoMEtk6udNcG2UwRW8C65NoHie11JFijGW
+         MEhA==
+X-Gm-Message-State: AOJu0Yyq2/jl+tbIYjMSYMuolJiZuw9du9qJjbQab4qrEidZESghAncW
+	/oj3q4ZOX/LC6rFWEalp5os=
+X-Google-Smtp-Source: AGHT+IEDEQZBgWCakwkRkT8r55noIAFs0Ef/ABSeweIOPhM7RCXjN0/RfoYrRDsN3OZm2jx3zJoOqw==
+X-Received: by 2002:a05:6808:318e:b0:3bb:d768:b776 with SMTP id cd14-20020a056808318e00b003bbd768b776mr11448221oib.109.1704208906563;
+        Tue, 02 Jan 2024 07:21:46 -0800 (PST)
+Received: from dschatzberg-fedora-PF3DHTBV ([2620:10d:c091:500::7:66d9])
+        by smtp.gmail.com with ESMTPSA id da7-20020a05621408c700b0067f2c03d4adsm10072029qvb.100.2024.01.02.07.21.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 07:21:46 -0800 (PST)
+Date: Tue, 2 Jan 2024 10:21:44 -0500
+From: Dan Schatzberg <schatzberg.dan@gmail.com>
+To: Yu Zhao <yuzhao@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	SeongJae Park <sj@kernel.org>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Nhat Pham <nphamcs@gmail.com>, Yue Zhao <findns94@gmail.com>
+Subject: Re: [PATCH v5 2/2] mm: add swapiness= arg to memory.reclaim
+Message-ID: <ZZQqCHmocwUFvuTz@dschatzberg-fedora-PF3DHTBV>
+References: <20231220152653.3273778-1-schatzberg.dan@gmail.com>
+ <20231220152653.3273778-3-schatzberg.dan@gmail.com>
+ <CAOUHufYwPzZ7k=ecFkxaw+26hUkiTODEnmKM8b3=Lk=n+bm29w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <140430.1704208899.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 02 Jan 2024 15:21:39 +0000
-Message-ID: <140431.1704208899@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOUHufYwPzZ7k=ecFkxaw+26hUkiTODEnmKM8b3=Lk=n+bm29w@mail.gmail.com>
 
-When afs does a lookup, it tries to use FS.InlineBulkStatus to preemptivel=
-y
-look up a bunch of files in the parent directory and cache this locally, o=
-n
-the basis that we might want to look at them too (for example if someone
-does an ls on a directory, they may want want to then stat every file
-listed).
+Hi Yu Zhao,
 
-FS.InlineBulkStatus can be considered a compound op with the normal abort
-code applying to the compound as a whole.  Each status fetch within the
-compound is then given its own individual abort code - but assuming no
-error that prevents the bulk fetch from returning the compound result will
-be 0, even if all the constituent status fetches failed.
+Thanks for the feedback, sorry for the delayed response.
 
-At the conclusion of afs_do_lookup(), we should use the abort code from th=
-e
-appropriate status to determine the error to return, if any - but instead
-it is assumed that we were successful if the op as a whole succeeded and w=
-e
-return an incompletely initialised inode, resulting in ENOENT, no matter
-the actual reason.  In the particular instance reported, a vnode with no
-permission granted to be accessed is being given a UAEACCES abort code
-which should be reported as EACCES, but is instead being reported as
-ENOENT.
+On Thu, Dec 21, 2023 at 10:31:59PM -0700, Yu Zhao wrote:
+> On Wed, Dec 20, 2023 at 8:27 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
+> >
+> > ...
+> 
+> The cover letter says:
+> "Previously, this exact interface addition was proposed by Yosry[3]."
+> 
+> So I think it should be acknowledged with a Suggested-by, based on:
+> "A Suggested-by: tag indicates that the patch idea is suggested by the
+> person named and ensures credit to the person for the idea."
+> from
+> https://docs.kernel.org/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
 
-Fix this by abandoning the inode (which will be cleaned up with the op) if
-file[1] has an abort code indicated and turn that abort code into an error
-instead.
+Sure, will do.
 
-Whilst we're at it, add a tracepoint so that the abort codes of the
-individual subrequests of FS.InlineBulkStatus can be logged.  At the momen=
-t
-only the container abort code can be 0.
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index d91963e2d47f..aa5666842c49 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -92,6 +92,9 @@ struct scan_control {
+> >         unsigned long   anon_cost;
+> >         unsigned long   file_cost;
+> >
+> > +       /* Swappiness value for reclaim. NULL will fall back to per-memcg/global value */
+> > +       int *swappiness;
+> 
+> Using a pointer to indicate whether the type it points to is
+> overridden isn't really a good practice.
+> 
+> A better alternative was suggested during the v2:
+> "Perhaps the negative to avoid unnecessary dereferences."
+> https://lore.kernel.org/linux-mm/dhhjw4h22q4ngwtxmhuyifv32zjd6z2relrcjgnxsw6zys3mod@o6dh5dy53ae3/
 
-Fixes: e49c7b2f6de7 ("afs: Build an abstraction around an "operation" conc=
-ept")
-Reported-by: Jeffrey Altman <jaltman@auristor.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
----
- fs/afs/dir.c               |   12 +++++++++---
- include/trace/events/afs.h |   25 +++++++++++++++++++++++++
- 2 files changed, 34 insertions(+), 3 deletions(-)
+I did have a couple versions with a negative but it creates
+initialization issues where every instantiation of scan_control needs
+to make sure to initialize swappiness or else it will behave as if
+swappiness is 0. That's pretty error prone so using the pointer seemed
+the better approach.
 
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index c14533ef108f..ae563d2a914e 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -708,6 +708,8 @@ static void afs_do_lookup_success(struct afs_operation=
- *op)
- 			break;
- 		}
- =
+> Since only proactive reclaim can override swappiness, meaning it only
+> happens if sc->proactive is true, I think the best way to make it work
+> without spending much effort is create a helper as Michal suggest but
+> it should look like:
+> 
+> sc_swappiness()
+> {
+>   return sc->proactive ? sc->swappiness : mem_cgroup_swappiness(memcg);
+> }
+> 
+> In this patchset, sc->swappiness really means
+> sc->proactive_swappiness. So it should be renamed accordingly.
 
-+		if (vp->scb.status.abort_code)
-+			trace_afs_bulkstat_error(op, &vp->fid, i, vp->scb.status.abort_code);
- 		if (!vp->scb.have_status && !vp->scb.have_error)
- 			continue;
- =
-
-@@ -897,12 +899,16 @@ static struct inode *afs_do_lookup(struct inode *dir=
-, struct dentry *dentry,
- 		afs_begin_vnode_operation(op);
- 		afs_wait_for_operation(op);
- 	}
--	inode =3D ERR_PTR(afs_op_error(op));
- =
-
- out_op:
- 	if (!afs_op_error(op)) {
--		inode =3D &op->file[1].vnode->netfs.inode;
--		op->file[1].vnode =3D NULL;
-+		if (op->file[1].scb.status.abort_code) {
-+			afs_op_accumulate_error(op, -ECONNABORTED,
-+						op->file[1].scb.status.abort_code);
-+		} else {
-+			inode =3D &op->file[1].vnode->netfs.inode;
-+			op->file[1].vnode =3D NULL;
-+		}
- 	}
- =
-
- 	if (op->file[0].scb.have_status)
-diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
-index 5194b7e6dc8d..ce865ea678d3 100644
---- a/include/trace/events/afs.h
-+++ b/include/trace/events/afs.h
-@@ -1102,6 +1102,31 @@ TRACE_EVENT(afs_file_error,
- 		      __print_symbolic(__entry->where, afs_file_errors))
- 	    );
- =
-
-+TRACE_EVENT(afs_bulkstat_error,
-+	    TP_PROTO(struct afs_operation *op, struct afs_fid *fid, unsigned int=
- index, s32 abort),
-+
-+	    TP_ARGS(op, fid, index, abort),
-+
-+	    TP_STRUCT__entry(
-+		    __field_struct(struct afs_fid,	fid)
-+		    __field(unsigned int,		op)
-+		    __field(unsigned int,		index)
-+		    __field(s32,			abort)
-+			     ),
-+
-+	    TP_fast_assign(
-+		    __entry->op =3D op->debug_id;
-+		    __entry->fid =3D *fid;
-+		    __entry->index =3D index;
-+		    __entry->abort =3D abort;
-+			   ),
-+
-+	    TP_printk("OP=3D%08x[%02x] %llx:%llx:%x a=3D%d",
-+		      __entry->op, __entry->index,
-+		      __entry->fid.vid, __entry->fid.vnode, __entry->fid.unique,
-+		      __entry->abort)
-+	    );
-+
- TRACE_EVENT(afs_cm_no_server,
- 	    TP_PROTO(struct afs_call *call, struct sockaddr_rxrpc *srx),
- =
-
+Helper aside, I disagree with this point about coupling with the
+proactive flag. The fact that the only user currently is proactive
+reclaim doesn't imply to me that the interface (in scan_control)
+should be coupled to the use-case. It's easier to reason about a
+swappiness field that overrides swappiness for all scans that set it
+regardless of the users.
 
