@@ -1,152 +1,156 @@
-Return-Path: <linux-kernel+bounces-13989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFD7182168C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 03:42:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A49D821690
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 03:54:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 718631C20F81
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 02:42:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96E5CB21065
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 02:54:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82684ECB;
-	Tue,  2 Jan 2024 02:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 091A523C3;
+	Tue,  2 Jan 2024 02:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dgcb7+aA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cyJf3ixC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766D646A3;
-	Tue,  2 Jan 2024 02:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d45f182fa2so42783265ad.3;
-        Mon, 01 Jan 2024 18:42:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704163327; x=1704768127; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IfOHaDOQFWCjFE5eYECAufdGX/M8ENRMe8BdoJQwdrM=;
-        b=dgcb7+aAMoauuTzvh8Nau8kLSePNZJYoHi3AkeNl8se+Cw6TIjRVVaKMoFNAnEMEuL
-         PElVf5uImFZ3ErbOc7D1VzSEmOyedcATKhRxmy1moWexiM2+EZ/I1MUDACj4j+OHj1fx
-         +YGgZRJdtX1Tn7vbXwjfR54z+OlfD9Qu8pjpC4ZBvxGZZZMI1yySTM47cGqcXBKt/TD3
-         LmCpOMDE72qQQfxPpkRdMEd2Y0WS3EZhutpB4M9c/gUn1kVzZyYrQ/Mx9QUgcGW0sBiB
-         rmEJYmaYpwH2f8okSsAEym46Jf+Vk+ZxKZUU4mqjLGmijiG1w/V8q56B+WPHOXXN5rIs
-         WWsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704163327; x=1704768127;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IfOHaDOQFWCjFE5eYECAufdGX/M8ENRMe8BdoJQwdrM=;
-        b=iBTA1d4dtLHmjOoieydFu3kXxgtEM52T3CGJVfjf2U96IrSLtApZ2hXYkdzkgMR0kf
-         uxQwBSjtCcyDULVVxTNaUijyWccx2415UP+uGch2KX1QiR8QGdSGdkvvf6GlqcGBpadP
-         mqhpVYKVB0yg9y0RRtGSY2+mSN9QcMthhV8SJouy1bJ5UgMeBIfWUAhvbgJRevcXeeAh
-         OB21wlxf/liCgQtrVo8cWI92LbAbClWufbWneoU1/mvO7rNlaL8/5U0nnmhzOWfzlqMf
-         7f1K+VYgFP4iDFdu6Mm6xjF+hz371DvEWtvEbK7Gvq9BPCov4VTh25NQpUde5Ken2N5l
-         0b9w==
-X-Gm-Message-State: AOJu0YxEupkK/OaBmbGGDSAMvAaKgRQx3qb+XvleIEu8cOv7UeYNkjhD
-	DAamdKKhsw0CZMLzUN1M/d4=
-X-Google-Smtp-Source: AGHT+IGBlPFEg45SFGKot3B9Qmhip+YFNIfepomX4SLuIrjxOfMELCEVoF3xRzLbgD7feppLDqQifw==
-X-Received: by 2002:a17:902:e88d:b0:1d4:be70:21c0 with SMTP id w13-20020a170902e88d00b001d4be7021c0mr2015443plg.16.1704163326602;
-        Mon, 01 Jan 2024 18:42:06 -0800 (PST)
-Received: from localhost.localdomain (45.78.55.121.16clouds.com. [45.78.55.121])
-        by smtp.gmail.com with ESMTPSA id a4-20020a170902ecc400b001d1d1ef8be5sm20895643plh.173.2024.01.01.18.42.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jan 2024 18:42:06 -0800 (PST)
-From: Guoxin Pu <pugokushin@gmail.com>
-To: axboe@kernel.dk
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Guoxin Pu <pugokushin@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2] block: fix length of strscpy()
-Date: Tue,  2 Jan 2024 10:41:15 +0800
-Message-ID: <20240102024115.4395-1-pugokushin@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5314020F9;
+	Tue,  2 Jan 2024 02:54:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47A37C433C8;
+	Tue,  2 Jan 2024 02:54:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704164065;
+	bh=11z9yjbOWrH6tSiyWTkbin1v0ZP1GSqeHEVZ1qpwWW4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cyJf3ixCiPi9UvwUkSVUpOmKCh2ropGCL0NBDwtKRDYXQBHVLgzbEDPcu3Fja3YJG
+	 jSZs8VQEgmsEJFXxqzyDTpXLIyEvLGB9gRcZcYNrAM16lNkkiVRzm+TveG0nnUdsDO
+	 Cz9Xw1AdV6g9B3vuf+hPBycNosrLD86ng+fYciVOev6XLcgrRF4jz70RQMH5NzMvdv
+	 pcsyHKuZwX9hcMrpv5EtGFEKrqiVHYWwXPKdQhUADat9VR8ZW3EnNoQU9k4MY3EztT
+	 7r9FaoDjSiOJIV8ph/7zp97UKkY4ISTBuOqOvwxFU52/3up2s1I2mMBs9cjS3+GXOv
+	 b0gUGT9N0gE1A==
+Date: Tue, 2 Jan 2024 10:41:40 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Nadav Amit <nadav.amit@broadcom.com>
+Cc: Will Deacon <will@kernel.org>,
+	"Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Nick Piggin <npiggin@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>,
+	linux-arch@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+	linux-arm-kernel@lists.infradead.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-riscv@lists.infradead.org, Nadav Amit <namit@vmware.com>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>, Yu Zhao <yuzhao@google.com>,
+	the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [PATCH 1/2] mm/tlb: fix fullmm semantics
+Message-ID: <ZZN35DTJTNExCNXW@xhacker>
+References: <20231228084642.1765-1-jszhang@kernel.org>
+ <20231228084642.1765-2-jszhang@kernel.org>
+ <204B6410-2EFA-462B-9DF7-64CC5F1D3AD2@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <204B6410-2EFA-462B-9DF7-64CC5F1D3AD2@broadcom.com>
 
-In commit 146afeb235ccec10c17ad8ea26327c0c79dbd968 ("block: use strscpy()
-to instead of strncpy()") , the length that should now represent the length
-of the string with the terminating NULL was not updated alongside the
-change.
+On Sat, Dec 30, 2023 at 11:54:02AM +0200, Nadav Amit wrote:
+> 
+> 
+> > On Dec 28, 2023, at 10:46 AM, Jisheng Zhang <jszhang@kernel.org> wrote:
+> > 
+> > From: Nadav Amit <namit@vmware.com>
+> > 
+> > fullmm in mmu_gather is supposed to indicate that the mm is torn-down
+> > (e.g., on process exit) and can therefore allow certain optimizations.
+> > However, tlb_finish_mmu() sets fullmm, when in fact it want to say that
+> > the TLB should be fully flushed.
+> > 
+> > Change tlb_finish_mmu() to set need_flush_all and check this flag in
+> > tlb_flush_mmu_tlbonly() when deciding whether a flush is needed.
+> > 
+> > At the same time, bring the arm64 fullmm on process exit optimization back.
+> > 
+> > Signed-off-by: Nadav Amit <namit@vmware.com>
+> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > Cc: Andrea Arcangeli <aarcange@redhat.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Andy Lutomirski <luto@kernel.org>
+> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Yu Zhao <yuzhao@google.com>
+> > Cc: Nick Piggin <npiggin@gmail.com>
+> > Cc: x86@kernel.org
+> > ---
+> > arch/arm64/include/asm/tlb.h | 5 ++++-
+> > include/asm-generic/tlb.h    | 2 +-
+> > mm/mmu_gather.c              | 2 +-
+> > 3 files changed, 6 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/tlb.h b/arch/arm64/include/asm/tlb.h
+> > index 846c563689a8..6164c5f3b78f 100644
+> > --- a/arch/arm64/include/asm/tlb.h
+> > +++ b/arch/arm64/include/asm/tlb.h
+> > @@ -62,7 +62,10 @@ static inline void tlb_flush(struct mmu_gather *tlb)
+> > 	 * invalidating the walk-cache, since the ASID allocator won't
+> > 	 * reallocate our ASID without invalidating the entire TLB.
+> > 	 */
+> > -	if (tlb->fullmm) {
+> > +	if (tlb->fullmm)
+> > +		return;
+> > +
+> > +	if (tlb->need_flush_all) {
+> > 		if (!last_level)
+> > 			flush_tlb_mm(tlb->mm);
+> > 		return;
+> > 
+> 
+> Thanks for pulling my patch out of the abyss, but the chunk above
+> did not come from my old patch.
 
-This has caused blkdevparts= definition on kernel cmdline to be not
-correctly recognized and partitions not correctly initialized, breaking any
-device relying on such partitions to boot, on stable releases since 6.6
+I stated this in cover letter msg ;) IMHO, current arm64 uses fullmm as
+need_flush_all, so I think we need at least the need_flush_all line.
 
-This patch fixes the lengths to contain the terminating NULL.
+I'd like to see comments from arm64 experts.
 
-Fixes: 146afeb235cc ("block: use strscpy() to instead of strncpy()")
-Cc: stable@vger.kernel.org # 6.6.x
-Signed-off-by: Guoxin Pu <pugokushin@gmail.com>
----
- block/partitions/cmdline.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+> 
+> My knowledge of arm64 is a bit limited, but the code does not seem
+> to match the comment, so if it is correct (which I strongly doubt),
+> the comment should be updated.
 
-diff --git a/block/partitions/cmdline.c b/block/partitions/cmdline.c
-index c03bc105e575..4657704c3e37 100644
---- a/block/partitions/cmdline.c
-+++ b/block/partitions/cmdline.c
-@@ -79,8 +79,8 @@ static int parse_subpart(struct cmdline_subpart **subpart, char *partdef)
- 			goto fail;
- 		}
- 
--		length = min_t(int, next - partdef,
--			       sizeof(new_subpart->name) - 1);
-+		length = min_t(int, next - partdef + 1,
-+			       sizeof(new_subpart->name));
- 		strscpy(new_subpart->name, partdef, length);
- 
- 		partdef = ++next;
-@@ -138,7 +138,7 @@ static int parse_parts(struct cmdline_parts **parts, const char *bdevdef)
- 		goto fail;
- 	}
- 
--	length = min_t(int, next - bdevdef, sizeof(newparts->name) - 1);
-+	length = min_t(int, next - bdevdef + 1, sizeof(newparts->name));
- 	strscpy(newparts->name, bdevdef, length);
- 	newparts->nr_subparts = 0;
- 
-@@ -148,8 +148,8 @@ static int parse_parts(struct cmdline_parts **parts, const char *bdevdef)
- 		bdevdef = next;
- 		next = strchr(bdevdef, ',');
- 
--		length = (!next) ? (sizeof(buf) - 1) :
--			min_t(int, next - bdevdef, sizeof(buf) - 1);
-+		length = (!next) ? sizeof(buf) :
-+			min_t(int, next - bdevdef + 1, sizeof(buf));
- 
- 		strscpy(buf, bdevdef, length);
- 
-@@ -250,7 +250,6 @@ static struct cmdline_parts *bdev_parts;
- static int add_part(int slot, struct cmdline_subpart *subpart,
- 		struct parsed_partitions *state)
- {
--	int label_min;
- 	struct partition_meta_info *info;
- 	char tmp[sizeof(info->volname) + 4];
- 
-@@ -262,9 +261,7 @@ static int add_part(int slot, struct cmdline_subpart *subpart,
- 
- 	info = &state->parts[slot].info;
- 
--	label_min = min_t(int, sizeof(info->volname) - 1,
--			  sizeof(subpart->name));
--	strscpy(info->volname, subpart->name, label_min);
-+	strscpy(info->volname, subpart->name, sizeof(info->volname));
- 
- 	snprintf(tmp, sizeof(tmp), "(%s)", info->volname);
- 	strlcat(state->pp_buf, tmp, PAGE_SIZE);
--- 
-2.43.0
+will do if the above change is accepted by arm64
 
+> 
+> [1] https://lore.kernel.org/all/20210131001132.3368247-2-namit@vmware.com/
+> 
+> 
+> -- 
+> This electronic communication and the information and any files transmitted 
+> with it, or attached to it, are confidential and are intended solely for 
+> the use of the individual or entity to whom it is addressed and may contain 
+> information that is confidential, legally privileged, protected by privacy 
+> laws, or otherwise restricted from disclosure to anyone else. If you are 
+> not the intended recipient or the person responsible for delivering the 
+> e-mail to the intended recipient, you are hereby notified that any use, 
+> copying, distributing, dissemination, forwarding, printing, or copying of 
+> this e-mail is strictly prohibited. If you received this e-mail in error, 
+> please return the e-mail to the sender, delete it from your computer, and 
+> destroy any printed copy of it.
 
