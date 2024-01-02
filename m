@@ -1,146 +1,99 @@
-Return-Path: <linux-kernel+bounces-14261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0480821A43
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:45:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51861821A57
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:48:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53BC41F22713
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:45:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F22DF282FC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:48:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14948DDA7;
-	Tue,  2 Jan 2024 10:45:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90D5DDBA;
+	Tue,  2 Jan 2024 10:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="IbMn7H6j"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="AKGWWcpN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA3DD2FA
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 10:45:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-555aa7fd668so3518269a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 02:45:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1704192310; x=1704797110; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=A9aUIH6joDAn7FCueUrn26yQ88JnL3adYdiN3aOGRS0=;
-        b=IbMn7H6jTCBXxmxVdTOhsMoi0Pg2MpYoAxeAPweJCVwui8bB/mtSy3yCYJgVMBezf0
-         KMUnLpuNgWU36DoV+pEesFx/ygrSZY6S5b8D9TC/VKASvrRXNqV3gQRia40JdkXpm+sM
-         pw+J7LbLLCO1KOZi2KvXM0818H7fHEQWeHMJ3n4bmSRolSMi/gwzpNj1AeRHEAY409hp
-         wEr3AcnAxNq+iyefJSxcuGuPn+6okWzbQqifjgJsTd+ch1YV4JJepn9fd4tfU2knllZw
-         +cXwgzA6NQYd7NUSSNUllzOylnztGNZ6kR/ot+yQl/JbHXZ3947NB4iuBBFxZ2M4ibdf
-         pW5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704192310; x=1704797110;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A9aUIH6joDAn7FCueUrn26yQ88JnL3adYdiN3aOGRS0=;
-        b=LGOyVjH7ziKLieRKv8lSmbTe+Ku0jkXQtim5XLu6yT0lzJW4Ic6RJs8uy0xvXAuWdg
-         vBfVwjg5VsyDNdqi+nsnAbGZm9KJXXd19gVbT3UYViU1My8TmMmeh5Ar8LlwCxzm9vp5
-         4iJT3O6FrfWTiQhvo5Whn7gCdRAcrHNXBd6txGzug8ePBZFAmLrumw46V/Q2bIVuiDpn
-         v2y+L+k1eaDyAXOSeIOor2S7LwYpcRKXB9oz1ZtHsQNX1dLbPfo6gOjQuK7M0C0hzyyQ
-         cB6WLdPG3iWNgV5DIiVlt7jW7mycD8RGcKnvCR3rByS4/R5fyGFzlO26xrP6rZpUQcJQ
-         aRsA==
-X-Gm-Message-State: AOJu0YydbjNxBUICmxf+6QrAAfE8TMWzANxk361pD0ujfmRYr92JEpXR
-	i+kV4ZQVKzXw/rhsbWCuwaEhULhcGQ8sGA==
-X-Google-Smtp-Source: AGHT+IHY9T5LH9nupqPCh6LPcY8T090GtaEOvzBuU/t6qszMQfPHzhWt7PIWk2kTHJi3C8h7IolBGg==
-X-Received: by 2002:a50:871a:0:b0:553:738a:655f with SMTP id i26-20020a50871a000000b00553738a655fmr11239178edb.9.1704192310006;
-        Tue, 02 Jan 2024 02:45:10 -0800 (PST)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id eg14-20020a056402288e00b00556aa0b342csm110085edb.55.2024.01.02.02.45.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 02:45:09 -0800 (PST)
-Date: Tue, 2 Jan 2024 11:45:08 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: guoren@kernel.org
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	panqinglin2020@iscas.ac.cn, bjorn@rivosinc.com, conor.dooley@microchip.com, 
-	leobras@redhat.com, peterz@infradead.org, keescook@chromium.org, 
-	wuwei2016@iscas.ac.cn, xiaoguang.xing@sophgo.com, chao.wei@sophgo.com, 
-	unicorn_wang@outlook.com, uwu@icenowy.me, jszhang@kernel.org, wefu@redhat.com, 
-	atishp@atishpatra.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: [PATCH V2 2/3] riscv: Add ARCH_HAS_PRETCHW support with Zibop
-Message-ID: <20240102-7e62facbd8322db4dee4b0dd@orel>
-References: <20231231082955.16516-1-guoren@kernel.org>
- <20231231082955.16516-3-guoren@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B9CDDA8;
+	Tue,  2 Jan 2024 10:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704192459; x=1704797259; i=markus.elfring@web.de;
+	bh=7lTu++jE80Y5lovMDkufPLLBPIN7e6g+jmCCUacF2ck=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=AKGWWcpNiDEpb0arZ5Nal3G8mmlaaX3bo9gtdFy6OW3hzdrQuMDEOKrxYKXIBmrd
+	 TGXyO8WkWsyPTZyJs0d0+/o2/nTjvCY+fQjZ3YUeDE3uTpbv0yhwOZ85kl/oTHM86
+	 UDhvX2nKRYT4reA8JWdS9u0xzQAF9pdYlhFs9HItK8M7KDIzTlmZ7HAkxwRu7J6l6
+	 IRbyk/95VXrN85nBMkaPSLtOKrZIbpmzwcnkZUEsCahUVMdVhZpblbdsiRp/uYL4w
+	 foHsjSBU5GidQBfbgyvg2mKJhmLM12br5zycW6lEtIE9k+3yeWlGkE5oZmDY+KLj4
+	 VMoStzynGEgjp50w0Q==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1Md6tr-1qkSPQ07MJ-00Zljr; Tue, 02
+ Jan 2024 11:47:39 +0100
+Message-ID: <9b27d89d-c410-4898-b801-00d2a00fb693@web.de>
+Date: Tue, 2 Jan 2024 11:47:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231231082955.16516-3-guoren@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [2/2] virtiofs: Improve error handling in virtio_fs_get_tree()
+Content-Language: en-GB
+To: Matthew Wilcox <willy@infradead.org>, virtualization@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Cc: Miklos Szeredi <miklos@szeredi.hu>, Stefan Hajnoczi
+ <stefanha@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <c5c14b02-660a-46e1-9eb3-1a16d7c84922@web.de>
+ <5745d81c-3c06-4871-9785-12a469870934@web.de>
+ <ZY6Iir/idOZBiREy@casper.infradead.org>
+ <54b353b6-949d-45a1-896d-bb5acb2ed4ed@web.de>
+ <ZY7V+ywWV/iKs4Hn@casper.infradead.org>
+ <691350ea-39e9-4031-a066-27d7064cd9d9@web.de>
+ <ZZPisBFGvF/qp2eB@casper.infradead.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <ZZPisBFGvF/qp2eB@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:NQrjPEtu2sclqHgtnO1i2502o/Vpbe3+O2LyKYUhPOToDQSfBRU
+ DI7rOJ28yLd4ISEiJ6VGRXezMOWtTYdlCfi3HKfG6pQurU9eHidjkB+YGEo/y7tuhxed0TK
+ MAF3cmCrLZYeDdu8sMoqpeiHuINlr7Z1BtBN9gerO9LspTa045EJ4gsRJE973KOusC0izMn
+ IDcGgK5pYDpGmLri1V2Ow==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:058r1Zkd6zE=;lsl9C7ejOmkA9cjgumy9I5v+6DC
+ RSt/fHu53q4wobmXYl1Vk0Xj/ahyq2AmpyUp6n1WYP1wly5YCN8AeAzXFT70txPNHfCZGns13
+ LYnRyKzroh9oxMHMcrQ5DbDxq3ei7atfbpa4n20DpqpH+C5G4YyXRgT9dVp3X3rLHti7jsjNY
+ hBTsiBn5W9C1EZfYXVwqUB4v50UlsTcb9i9sNfk2alFWJzlZhuHssI81YOHkburO//smyYeOX
+ vEkUuqmOAMPnooFQGJkQyVe+4QXckuIArX1t9TaZJ/nUNdofBT1FlzKn7aMG2NW9DTmwqIbSV
+ KDSZs/l9iCRl7CxrrL0PWM079oGp+s861fPWJr0pQSRghz5/52+3OR/M/DL2QwseGdYAsdkSj
+ vEHt0ZcMe7UrVNghavaM1SznURVQOCFh6olp1JBzjeoPEvmgOuskjvV6OqILZUI9aNenNTqks
+ 6BEalOiQpLuK/8FnpruTmq4Q9ch2hjI7TYjLLGWpBMgRp71Hgqmo376AgJ7cxrcn1jRFwhRDN
+ sBiy8vt18HsnYDF9OddtKQq7twPkVMwi/G5xVE3Ph0iLl4Xx/0sU13qbp0siwGqWsyL+3U+Ce
+ LPrbMNt3Q2bt5K6oW/74uWTPwkBcNEiJM7ewOdBqNEOe3f2Q95iBjF2vpOYfRwswajPTjl8mH
+ rovEqYQiasPlkUZ6jjjzCV5qkiB7MRgHPP8pWzTJMHc3a1P/SRR8AFZ9JhMtSUmWUukl1+U3w
+ u9Cr1HpbZLU2F641+E4VYmbpxxnOxxJHAwcYw+uaaXVX/fwV790jjA6w2C04+H6ePwgckhZNq
+ DA3sOkMbgVP0T4bTVgPVL37o+wHrkAIG+dKntNCbJBUNVghTWN4hnFihiGb6JFVjTmx1Rvr7J
+ nfLavYLCGojkqZ4wr3ivvqBukyfdc3SDQsCbKA77gW6nGDZQ/wSOFjwL/haycAdppYYxYRp4Z
+ Rt3kRg==
 
+> Do you consider more clarity in your argumentation?
 
-s/Zibop/Zicbop/ <<<$SUBJECT
+It is probably clear that the function call =E2=80=9Ckfree(NULL)=E2=80=9D =
+does not perform
+data processing which is really useful for the caller.
+Such a call is kept in some cases because programmers did not like to inve=
+st
+development resources for its avoidance.
 
-On Sun, Dec 31, 2023 at 03:29:52AM -0500, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
-> 
-> Enable Linux prefetchw primitive with Zibop cpufeature, which preloads
-
-Also s/Zibop/Zicbop/ here
-
-> cache line into L1 cache for the next write operation.
-> 
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Signed-off-by: Guo Ren <guoren@kernel.org>
-> ---
->  arch/riscv/include/asm/processor.h | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-> index f19f861cda54..8d3a2ab37678 100644
-> --- a/arch/riscv/include/asm/processor.h
-> +++ b/arch/riscv/include/asm/processor.h
-> @@ -13,6 +13,9 @@
->  #include <vdso/processor.h>
->  
->  #include <asm/ptrace.h>
-> +#include <asm/insn-def.h>
-> +#include <asm/alternative-macros.h>
-> +#include <asm/hwcap.h>
->  
->  #ifdef CONFIG_64BIT
->  #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
-> @@ -106,6 +109,19 @@ static inline void arch_thread_struct_whitelist(unsigned long *offset,
->  #define KSTK_EIP(tsk)		(task_pt_regs(tsk)->epc)
->  #define KSTK_ESP(tsk)		(task_pt_regs(tsk)->sp)
->  
-> +#ifdef CONFIG_RISCV_ISA_ZICBOP
-> +#define ARCH_HAS_PREFETCHW
-> +
-> +#define PREFETCHW_ASM(x)						\
-> +	ALTERNATIVE(__nops(1), CBO_PREFETCH_W(x, 0), 0,			\
-> +		    RISCV_ISA_EXT_ZICBOP, CONFIG_RISCV_ISA_ZICBOP)
-> +
-> +
-> +static inline void prefetchw(const void *x)
-> +{
-> +	__asm__ __volatile__(PREFETCHW_ASM(%0) : : "r" (x) : "memory");
-> +}
-
-Shouldn't we create an interface which exposes the offset input of
-the instruction, allowing a sequence of calls to be unrolled? But
-I guess that could be put off until there's a need for it.
-
-> +#endif /* CONFIG_RISCV_ISA_ZICBOP */
->  
->  /* Do necessary setup to start up a newly executed thread. */
->  extern void start_thread(struct pt_regs *regs,
-> -- 
-> 2.40.1
-> 
-
-Thanks,
-drew
+Regards,
+Markus
 
