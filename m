@@ -1,168 +1,164 @@
-Return-Path: <linux-kernel+bounces-14641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A045822015
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:09:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 699C4822018
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:10:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BE021C2262B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:09:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DADA1F237C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D6A116412;
-	Tue,  2 Jan 2024 17:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B38D154A7;
+	Tue,  2 Jan 2024 17:09:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="WJJEiEDU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HOoj0bTU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2080.outbound.protection.outlook.com [40.107.100.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C87A616407;
-	Tue,  2 Jan 2024 17:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GGDmDpWdgFD2KzlgkcvBrwzvr1Euuc4hu+R2CbfsH+HlY6ZxkUuuXyMwXKBtlf0pdU8qBcHN1GtphwZsHG4waESzlg5JPjndg3DS1T27SdYt7i5kKBdh2F1isUODJOCkVSNC1griSvA+h6yDs375PKrEpvoI0XCSQKMhLgRlo1EENbQuC4qFzheQSNP9tanGgk8IqsawX3uBhGAUoN6EPJRKdBwvstgxJx+WwzJq4VqYMhE0f7qbMsrtGTDI7IYNceUTUyQqMbIzaMm9zXkAl/mdoda99EOEdCNXQ1laIbPI1hdVXifrtL6/1irP0YpwsJHIV2rBBNt0Ypr/CaQHgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SaeMPThzjsXQhyQhHTjT5LOmTU89XdTuetaU7ll8RpI=;
- b=BbSDSHY5tIjCrS0qFuLqeax2+lPx4hLkWFgD6C+2Bx+IaBqfwBl8OsQ0FO4YlC4/GsM39GzT9I/SlDEmF7YBuPbb1KWLvJtId+EQipbfsZMnx6CPd/clUP9iaoRq7misvfdi6Q6sOLNo3Hkfbs2AnS++CNiaCT3J/UDWft1IL9UAymhjqB6Gm8TtNzntQVSmcRnzD36Dw/7dINVaQo2P0wOLrKxRZ5rrDBHrQnqrLdobu9Nms4Jozh5qCMmdCdzhmsUwo4YUyn52k6lFGMYPOFmo631zmn/Hcai1tfU5qK4MrQdfo+Bvu6Xlzw50c3wVbJ74Ct/BJKAHVj+9FtV2vQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SaeMPThzjsXQhyQhHTjT5LOmTU89XdTuetaU7ll8RpI=;
- b=WJJEiEDUK9E7Jmkx516Zd9AsXpdmHgN6biKcgm4trgR9ogEnUESFpSWo5p45mod0dTbhtp0M0pi1kDBTIZy3IcQXnSrsI3u/vB5Bvj1chjTVBYEo8d7PQCNkbJy/5w8N4MFAyZa3qADjV3+aKZ5ICNL9+zTgGUPsHBNAP4bKOvR6dR1Bi+jWZOtjVGFdlfZ79TrJ3vM/fmudHubvkorJvEVKXNVQNGT+z7EYA7b0mWwMtsduZp5lq3aZsgJZ2VhiaJ8dYBHhPe7s4jPXqh018QLiMEgRNiFKSf9nkmC6qsoSslVf/6Za9/r3xdwRBamQD7ZgbPlZn82AZDSx9kI91w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SA0PR12MB4512.namprd12.prod.outlook.com (2603:10b6:806:71::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Tue, 2 Jan
- 2024 17:09:09 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7135.023; Tue, 2 Jan 2024
- 17:09:09 +0000
-Date: Tue, 2 Jan 2024 13:09:08 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Oliver Upton <oliver.upton@linux.dev>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, ankita@nvidia.com,
-	maz@kernel.org, suzuki.poulose@arm.com, yuzenghui@huawei.com,
-	will@kernel.org, alex.williamson@redhat.com, kevin.tian@intel.com,
-	yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org,
-	gshan@redhat.com, linux-mm@kvack.org, aniketa@nvidia.com,
-	cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
-	vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
-	jhubbard@nvidia.com, danw@nvidia.com, mochs@nvidia.com,
-	kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	james.morse@arm.com
-Subject: Re: [PATCH v3 2/2] kvm: arm64: set io memory s2 pte as normalnc for
- vfio pci devices
-Message-ID: <20240102170908.GG50406@nvidia.com>
-References: <20231208164709.23101-1-ankita@nvidia.com>
- <20231208164709.23101-3-ankita@nvidia.com>
- <ZXicemDzXm8NShs1@arm.com>
- <20231212181156.GO3014157@nvidia.com>
- <ZXoOieQN7rBiLL4A@linux.dev>
- <ZXsjv+svp44YjMmh@lpieralisi>
- <ZXszoQ48pZ7FnQNV@linux.dev>
- <ZYQ7VjApH1v1QwTW@arm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZYQ7VjApH1v1QwTW@arm.com>
-X-ClientProxiedBy: MN2PR16CA0039.namprd16.prod.outlook.com
- (2603:10b6:208:234::8) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A5816401;
+	Tue,  2 Jan 2024 17:09:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cdc159034eso3100419a12.0;
+        Tue, 02 Jan 2024 09:09:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704215354; x=1704820154; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vcUsAzPUG+M3E2aYd59xb5UnEJS/MFzlJwMjKILMSKY=;
+        b=HOoj0bTUbQGdtDnY2Pzkd02Pr1yBuGZY2CL5Yi0HCVoyrKAE416XDGit9hLXKNp6Nq
+         sZKQ6JzG7suUs9OEkgtD/ZJVDZ9bBNTXWFhY9KhOpsPhtaVONqJBMIkM35R7Oi7uvAdf
+         KLLXNyoKwMaxNS1nFSnlahCIzzqIKT7Zr9y4YIlcnTapzVcqoD7AN+cXRjRuypKce0MU
+         duQH8XQ6Qt6h6gp7HgAFbePBtfIcXyKtqsA5p7Iro77cCadKooH9MauQaQBuhKpigZSe
+         fyfMlloeX3QXBab42msksseRELZgxcud2jK1SwNRXv/gWl/NsmtV/jyF1s5oRcGcTIN4
+         HqWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704215354; x=1704820154;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vcUsAzPUG+M3E2aYd59xb5UnEJS/MFzlJwMjKILMSKY=;
+        b=AUz5NFcuPZHJNda1WbpPWlBq/Vi6t3V4YBpyeWpKMin3/s9Og2Vi5yK15SWKwtiC8X
+         31MQkYoF1XM6yABB6aJplt/j4Ngg/gKTKcfgYjRf4h70bVLaJa98ynrfmVD8+EACfvg+
+         V7NzgDy40xsETa1Tyz6twKgYb8uyM1okhoJ7V40fYQ3yDvWZpqHUfjxICzx0X6dGiX9i
+         Ck+6w5wVXXamjRuYDGXmWgAS4BgAYnVaJNwvkp+o+KHuIZRTw0IO7vyTPpwUZSgR0bCj
+         LmsTedt/w73XjleepTEPyt98qlyCwCjhoRo+GFOXsGj/pWNan5fiQvJitkgD210BytcX
+         ncsQ==
+X-Gm-Message-State: AOJu0Yw2E2BWlDESTAN1ihWbzyCeetJ+AVaC0KO0NdC9NtN+TGNZblJq
+	G6HWdlx9lgS2G7kAkiZGSrSFM/bNA20=
+X-Google-Smtp-Source: AGHT+IHHx0cl0TxNJ4JnFBMLIWlu2tuK1IcLRSXIlR/eimKHEXIJ0nvFXMp8tfQi6e1pxF0qg/1x2w==
+X-Received: by 2002:a17:903:2292:b0:1d4:bd0c:207d with SMTP id b18-20020a170903229200b001d4bd0c207dmr1247817plh.66.1704215353591;
+        Tue, 02 Jan 2024 09:09:13 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g24-20020a170902fe1800b001d0c41b1d03sm22198693plj.32.2024.01.02.09.09.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 09:09:12 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Tue, 2 Jan 2024 09:09:12 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Suniel Mahesh <sunil@amarulasolutions.com>,
+	Kyle Tso <kyletso@google.com>,
+	Jagan Teki <jagan@amarulasolutions.com>,
+	USB list <linux-usb@vger.kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: USB PD TYPEC - FUSB302B port controller hard reset issue
+Message-ID: <5458c2f4-b212-4e35-b870-f15fb724f41a@roeck-us.net>
+References: <CAM+7aWvGerEdUnsKboUg9+EoL=66k3nULHCnQgHyxsWQhUwmpw@mail.gmail.com>
+ <ZZPbeUbMM3J4pH/K@kuha.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA0PR12MB4512:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6de4bb8a-1139-4cd6-a05a-08dc0bb588d3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	efzWhFQtMa+oMUpN0ruK2+54sA2yUI2AkVzpw1qDLAcfjLP7RyozdBm3xn4myDN2JtiGX0Iw6Oik9Zs02rbCPRuKHVDDKBj8fQcJ6VkTz+dgMraf6kPB8NkRMvNuJOYEPESd6oA7yqbSKGCUW583j3w2Rzyd7sKhfwlsG3pre5QUskLXjM0wKeMU6A83b3CiajVtEKkyDgp3Bb0IpPNdQ3bhdCc5tiwKGvhePsN4A1ejpzA7L0O00uhSnPrZkmf4LpNJF6aBnBlGs4yAnt6B5cAFQ7s5qx+PQeQJdPfaExytR0bFUO7eTyLKNgO3ZgIScSYxASC7YHbXiqZa+8PHBZMENaXoIAY99f9FUzjNK+wf4h3kztZ3Jphw2XLNJw3m1gZiL3m+lOLNDsZB4+my2EVwA6AXQ41gaJq3KqqEq/QH6L82Bk4P4rAhXihnJM3ijSF5j6Xh7ahRQuCZ51mh8FybNIM1sgdEEyiaHbrUgb54y8ZPcj4GrUdMd/4WB6VuxcX7j5akiboHzjiLpfvoIKbgXJk0S4Lr2RvpjjzzND+OrDjwGwgOjzOnO3APP85P
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(39860400002)(376002)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(2616005)(83380400001)(1076003)(26005)(38100700002)(41300700001)(8936002)(8676002)(316002)(54906003)(5660300002)(2906002)(7416002)(4326008)(478600001)(66476007)(66556008)(66946007)(6506007)(6512007)(6916009)(6486002)(86362001)(33656002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?TtBvKvohDDZNz0Vwtl3KxYxOSkw+Q7ZOm8HRc/PzlAqkgVkFMwjQE/VJ7tGz?=
- =?us-ascii?Q?QswMtmjNq1ai1rCMsTqQV03MkXqAcwMUMVRNijruYEDOYEm0pfD4YJLXUqxk?=
- =?us-ascii?Q?5KH/59vwRfvdDzM3gMU7BEG/vsAfDgX/RxhfFXa/wshGO1jqwmQnWoTVm3nl?=
- =?us-ascii?Q?QV0XAv4R9UMYdAtaaeCmKJXR9HC31bjEDKMttvezIoojYkqbqd4uQytbXJL0?=
- =?us-ascii?Q?sUVhkT+Lq4OLwsIRcrcsCc5Whjwk/RiFZ9doEXVj4jwdicAP8wEcEc6/Mfli?=
- =?us-ascii?Q?DH9qcinereDOiBuuN3FUJQ2izCO1PQQkFRvN4JmY6zFUvE61oKHdDpxfyPGx?=
- =?us-ascii?Q?4Rl76lKdcPfbsq9a9Pf0D3FrqW2gj9v81CJx608bEcRvxde70Sv5Y6s6Uaod?=
- =?us-ascii?Q?9JbjRTczBuppdYpbiCuROTsp7Bdwco5HLRFKdTReFsxzCnNGsJaSFx5SyMYy?=
- =?us-ascii?Q?bRSnW4+Uw5xWEnmB2cEn+DOiO0VyRWAzJ9EFpZLVFwPumGaABeh3ISVMnlUO?=
- =?us-ascii?Q?aIfFkIdYQcKwuss354ehL9ASulYX1EQXbWjE3VN15vw1nXXY30ApGDbWzk54?=
- =?us-ascii?Q?LuAH0GQVjtWiKhFm+ydBSwfI7g+L65TCUUYCCxWDfISJUnsrbn+tFTKamUvA?=
- =?us-ascii?Q?rJry/juZ1bwrGAIAsFWkNYEinPB/eXsRZxp2iYlFMu4c/vlA9kARSiRKt9jC?=
- =?us-ascii?Q?OAtGnUhGDlnhlFtEZ1k8oY4ltnaaHmaGVMMBQAoDec1S5MFK9JbdEp07jbLI?=
- =?us-ascii?Q?TqY8D/TslL+/16yKYFiwevK4hhR7my4uU7f7+L51Bx1gWdMTvTsakCseKIdG?=
- =?us-ascii?Q?8RJuIPnrI1GKp+NPN4aUsyLtISRtZKOLe84tMpPUFdsgrKXUdVkoRpfUZT7P?=
- =?us-ascii?Q?LNBwxFVX6dukyoUI1PPlJXo7rBK+YS9GftE8m5FS2SviC4BMVRkM6qFMyT7T?=
- =?us-ascii?Q?kO6f+d5vVJKgqcNsgosRHB/KK6ln/VdcH2epqAmurFiTMWBri32JieNhO9rB?=
- =?us-ascii?Q?JU2E+upnRt6lhfcQLeu1FvS91GzE+LAIXaTWbSHQHreaSpj8MEHq6gDiK4Ow?=
- =?us-ascii?Q?3Zn4u4uHuE6tyrSS/0D7ymOG1aaxxqv2BF7kHLq4I7nfdKuM//9JB0cjBNnV?=
- =?us-ascii?Q?5Z58BUdijP3freysxvrg0vgGRimwuXEEu6PPyNqFX2DFDzYLLut3bM9IIxgZ?=
- =?us-ascii?Q?iHnMCEGnG0J19gnrMDfEwyINAOlaNmrwgqoVLIyA0Tzjdrz9VO0WFWshwbcT?=
- =?us-ascii?Q?wTgk8xMzolSCmJNCHRZZYR8g4Dbah1xnouHYDPXet9Npcu+qnGcHpm68DTid?=
- =?us-ascii?Q?p3n44A9IZBCdjEtTOrrZErK3Bww0+5GsltXAPlIJSYXTb0ZABCiNiOT2ukJQ?=
- =?us-ascii?Q?zolN07osXhZoG2Ux6k+7z9BudPK/eicTEVHuDSOqxgS3oI1Zh1I7wnGLKpK7?=
- =?us-ascii?Q?DXEZ8sSY7Cj24m2+HpRm09/6qlzJccQ6gATd3yRMF81nnh/akbefrjN9j8Gv?=
- =?us-ascii?Q?XHe2UGh7JJ+jMr9omcs+tI0EOWMwQGjKIjm6TvgP0LAgYE2GYt+2HcHuTKmg?=
- =?us-ascii?Q?VPJihSB3WihC3MmR9zU=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6de4bb8a-1139-4cd6-a05a-08dc0bb588d3
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2024 17:09:09.4941
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jORWB1Olaraj4ndpLWDuiT3ZQC+XSvFD92Wa/Ta9VO5aFzBs4zR4GIk+9i7oTwzq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4512
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZPbeUbMM3J4pH/K@kuha.fi.intel.com>
 
-On Thu, Dec 21, 2023 at 01:19:18PM +0000, Catalin Marinas wrote:
-
-> If we really want to avoid any aliases (though I think we are spending
-> too many cycles on something that's not a real issue), the only way is
-> to have fd-based mappings in KVM so that there's no VMM alias. After
-> that we need to choose between (2) and (3) since the VMM may no longer
-> be able to probe the device and figure out which ranges need what
-> attributes.
-
-If we use a FD then KVM will be invoking some API on the FD to get the
-physical memory addreses and we can have that API also return
-information on the allowed memory types.
-
-> > Kinda stinks to make the VMM aware of the device, but IMO it is a
-> > fundamental limitation of the way we back memslots right now.
+On Tue, Jan 02, 2024 at 11:46:34AM +0200, Heikki Krogerus wrote:
+> Hi Suniel,
 > 
-> As I mentioned above, the limitation may be more complex if the
-> intra-BAR attributes are not something readily available in the device
-> documentation. Maybe Jason or Ankit can shed some light here: are those
-> intra-BAR ranges configurable by the (guest) driver or they are already
-> pre-configured by firmware and the driver only needs to probe them?
+> On Tue, Dec 26, 2023 at 04:14:48PM +0530, Suniel Mahesh wrote:
+> > Hi Guenter Roeck / Heikki Krogerus and all,
+> > 
+> > 1.
+> > I am testing USB TYPEC PD on a Rockchip Rk3399 SOC based target which has a
+> > FUSB302B TYPEC port controller.
+> > 
+> > 2.
+> > My source is a wall charger which is based on Gallium Nitride (GaN II)
+> > technology and has four ports as follows:
+> > 
+> > USB-C1: 100W PD3.0, 5V/3A, 9V/3A, 12V/3A, 15V/3A. 20V/5A. PPS: 3.3V-11V/4A
+> > USB-C2: 100W PD3.0. 5V/3A. 9V/3A. 12V/3A, 15V/3A. 20V/5A PPS:3.3-11V/4A
+> > USB-C3: 20W PD3.0, 5V/3A, 9V/2.22A, 12V/1.67A
+> > USB-A: 18W QC3.0. 5V/3A, 9V/2A, 12V/1.5A
+> > 
+> > 3.
+> > i am using latest linux-next and enabled all the relevant configs,
+> > especially:
+> > CONFIG_TYPEC=y
+> > CONFIG_TYPEC_TCPM=y
+> > CONFIG_TYPEC_FUSB302=y
+> 
+> Which kernel version?
+> 
+> > 4.
+> > DT node is as follows when i use USB-C1 of wall charger:
+> > 
+> >  connector {
+> >                         compatible = "usb-c-connector";
+> >                         label = "USB-C";
+> >                         data-role = "dual";
+> >                         power-role = "sink";
+> >                         try-power-role = "sink";
+> >                         op-sink-microwatt = <1000000>;
+> >                         sink-pdos = <PDO_FIXED(5000, 3000,
+> > PDO_FIXED_USB_COMM)
+> >                                     PDO_FIXED(12000, 3000,
+> > PDO_FIXED_USB_COMM)>;
+> >                 };
+> 
+> What do you mean by "when i use USB-C1..."? Why is the above valid
+> only then and not with the other PD contracts?
+> 
+> > Issue:
+> > The board power well most of the time, but may be in 1 out of 5 cold boots,
+> > FUSB302B is getting a hard reset, as
+> > FUSB302B INTERRUPTA register bit I_HARDRST is getting set.
+> > 
+> > After some digging, found out that the above behaviour is accounted to when
+> > something is wrong with the CRC of
+> > the received packet (SOP - Start of Packet)
+> 
+> How did you determine that the problem is a bad CRC?
+> 
+> > This behaviour is seen i.e. FUSB302B getting a hard reset more on the
+> > USB-C3 port.
+> > 
+> > Any pointers on how to solve this issue.
+> 
+> Guenter, do you have time to take a look at this?
+> 
 
-Configured by the guest on the fly, on a page by page basis.
+As far as I can see, the bit means that a hard reset request has been
+received from the charger. What else can the code do but to execute
+that hard reset ? On a higher level, if there is a communication problem
+due to bad CRC (i.e., a bad communication link) between the wall charger
+and the development system, I am not sure if there is anything we can do
+in software to remedy the problem.
 
-There is no way for the VMM to pre-predict what memory type the VM
-will need. The VM must be in control of this.
+Secondary question: Is this a regression ? The original e-mail states
+that it was seen with the "latest linux-next". If it is a regression, it
+should be possible to bisect it. However, the only recent commit which
+might affect reset behavior is a6fe37f428c1 ("usb: typec: tcpm: Skip hard
+reset when in error recovery"). If anything I would assume that this
+commit would improve the situation, not make it worse.
 
-Jason
+Thanks,
+Guenter
 
