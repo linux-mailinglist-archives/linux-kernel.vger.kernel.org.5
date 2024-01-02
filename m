@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-14838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B57A822311
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:12:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ECB4822314
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:12:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E19E81F21B28
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:12:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40F8F1C2252F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:12:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F15A518647;
-	Tue,  2 Jan 2024 21:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2B5618E2A;
+	Tue,  2 Jan 2024 21:08:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DqgZYr4s"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="G/dP0i3f"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BDD18AFA
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:08:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0857E18C07
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:08:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7b7fbe3db16so507816539f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:08:56 -0800 (PST)
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7ba8f139522so493859439f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:08:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704229736; x=1704834536; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1704229737; x=1704834537; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ASVoJVcd+TT62Fgbp6rK6yB+IeWHJc5zYIDcydTnCh8=;
-        b=DqgZYr4s3hSliN6FFFZaaGj74rg0u+PKQ1gTCVl99wqo4J+y870TQTIqaDrLDd/TzA
-         IybtfT638ChuMEOSvh8m1OL/HOeSwCZUVK0vYTxkluiEZDWtcCcavssrYXdS7znuMpop
-         e48pWg80Kd4vg6POS7V8Vk2nIpVzTckgE1a+c=
+        bh=17sTLQMT2wthv6A1NoR1+c8v3q9aB7n6ZqwH4HJJEV0=;
+        b=G/dP0i3fJD0GauZiZhHTIMDLCqWdj0PmuwNf+pRtfpGVkOOxze1QGiQHgR8CJXkzQ0
+         M1eOOs20S4ff2isiJd9MsA1GwnWU0ZaMmDK6mVPekj7tWiRLCYxMiGDsFQg1tacsJCqK
+         7IJ10o14ZlZJ7KSVfc6p/qi8iz7hntt+wkNKM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704229736; x=1704834536;
+        d=1e100.net; s=20230601; t=1704229737; x=1704834537;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ASVoJVcd+TT62Fgbp6rK6yB+IeWHJc5zYIDcydTnCh8=;
-        b=owjQYf/5SiSu89gMNXDhYiIWxG5KFIK+gKVkoui/ioMytACv3RxhHaGrtgLejtayou
-         8v2gp6+XQhelw78YZwIltuUqrRUIDvkI6IS//Re7x46b5XsWS896jalXjPkcOuP8+eWo
-         83/acjAPGCANc1ae31/ew8ozJKZcvZHr5qBcU49pxdyPlVEgjrngrd0eXejkO3YD9G45
-         K3dxaIZqy9ihdNjNyJxUba4T3p2dxMMHVsTf8WqPkDi0bzWGvWXl+Q+K/99N38vAG6aI
-         QgoBp2/Re3RplY0WZjRDGwKNJBbuePz5ucwPmRD8pdRCo6aQRBhFdShKoeP5FwlKZ+Up
-         UjIg==
-X-Gm-Message-State: AOJu0YwcBrmu2h5rsvL20qeXHTa2mOMndR2RoTqTpuF7gYs10pnutzL8
-	Vpqd2mNaJHDuZ3Ujemgpmhngq+fLh9OSI1vHUns7VicAR63v
-X-Google-Smtp-Source: AGHT+IFfB2E9EzwO+I1teXfZzVOtZVKaH/8eX07388HbCZbdRd+yWGht2HftqPyzTSf0/1SlFl/Oyg==
-X-Received: by 2002:a5d:9358:0:b0:7ba:e1c5:7b47 with SMTP id i24-20020a5d9358000000b007bae1c57b47mr15402309ioo.33.1704229736202;
-        Tue, 02 Jan 2024 13:08:56 -0800 (PST)
+        bh=17sTLQMT2wthv6A1NoR1+c8v3q9aB7n6ZqwH4HJJEV0=;
+        b=aLIqPqdsgdrJJ0YU0oKY7Gdou0Fjuwdf+OYFjZC6CSZ7kNxXLHd75KQbFCBLfyky2W
+         RVJjaqGtlLgpRpgVcgeGBU9iC29tImMpa6RI7LKtXjVM3afH4RprdsnQkgCMJcmbpHkQ
+         qw9VM1aZybyA7YmPZI4JHeahdXsQomIao34WtizGKcc7dyyh+XJRWIXCr3yzXaZ03eBl
+         zWApVXSF9RkK6iinKGroLb8G3hVEtZgtVNZWfqukyyJoKzO/r4XoCsIKWHwITH2z8/ic
+         xB9y7DqyqhtpI21oDL+oycmne8Rz1uf191oIpdi8lQ+aAC9itJnY8uBpqk8xLqkxctpO
+         2hzw==
+X-Gm-Message-State: AOJu0YyyYOCDvH0JC0SVxCu/fqnXwT65mcHuHQwuIt/WmtsDTeKhSbcg
+	nJy+rDYVP7UezXnA3Tv0I4kTRdaoQ1dwy1jfnwnr/pXL+feI
+X-Google-Smtp-Source: AGHT+IG15JicEnj5m9+AYHheVx6jq8nHGYdtkF3GHDFBR8wkn+8r3oGMHOzGhdudxknyHLeWlKuuSA==
+X-Received: by 2002:a05:6602:19cf:b0:7ba:8706:3413 with SMTP id ba15-20020a05660219cf00b007ba87063413mr23570133iob.41.1704229737084;
+        Tue, 02 Jan 2024 13:08:57 -0800 (PST)
 Received: from markhas1.lan (71-218-50-136.hlrn.qwest.net. [71.218.50.136])
-        by smtp.gmail.com with ESMTPSA id bo18-20020a056638439200b0046993034c91sm6956978jab.77.2024.01.02.13.08.55
+        by smtp.gmail.com with ESMTPSA id bo18-20020a056638439200b0046993034c91sm6956978jab.77.2024.01.02.13.08.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 13:08:55 -0800 (PST)
+        Tue, 02 Jan 2024 13:08:56 -0800 (PST)
 From: Mark Hasemeyer <markhas@chromium.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Sudeep Holla <sudeep.holla@arm.com>,
@@ -73,9 +73,9 @@ Cc: Sudeep Holla <sudeep.holla@arm.com>,
 	cros-qcom-dts-watchers@chromium.org,
 	devicetree@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org
-Subject: [PATCH v4 14/24] arm64: dts: qcom: sc7180: Enable cros-ec-spi as wake source
-Date: Tue,  2 Jan 2024 14:07:38 -0700
-Message-ID: <20240102140734.v4.14.I2ee94aede9e25932f656c2bdb832be3199fa1291@changeid>
+Subject: [PATCH v4 15/24] arm64: dts: qcom: sc7280: Enable cros-ec-spi as wake source
+Date: Tue,  2 Jan 2024 14:07:39 -0700
+Message-ID: <20240102140734.v4.15.I7ea3f53272c9b7cd77633adfd18058ba443eed96@changeid>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20240102210820.2604667-1-markhas@chromium.org>
 References: <20240102210820.2604667-1-markhas@chromium.org>
@@ -115,14 +115,27 @@ change
 Changes in v2:
 -Split by arch/soc
 
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi | 1 +
+ arch/arm64/boot/dts/qcom/sc7280-idp-ec-h1.dtsi | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 46aaeba286047..f3a6da8b28901 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -649,6 +649,7 @@ cros_ec: ec@0 {
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi b/arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi
+index 9ea6636125ad9..2ba4ea60cb147 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi
+@@ -548,6 +548,7 @@ cros_ec: ec@0 {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&ap_ec_int_l>;
+ 		spi-max-frequency = <3000000>;
++		wakeup-source;
+ 
+ 		cros_ec_pwm: pwm {
+ 			compatible = "google,cros-ec-pwm";
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp-ec-h1.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp-ec-h1.dtsi
+index ebae545c587c4..fbfac7534d3c6 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-idp-ec-h1.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280-idp-ec-h1.dtsi
+@@ -19,6 +19,7 @@ cros_ec: ec@0 {
  		pinctrl-names = "default";
  		pinctrl-0 = <&ap_ec_int_l>;
  		spi-max-frequency = <3000000>;
