@@ -1,134 +1,463 @@
-Return-Path: <linux-kernel+bounces-14443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1159821D20
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:53:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3438B821D25
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:54:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23FA8B21F98
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:53:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADFA21F21145
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:54:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECA32101CF;
-	Tue,  2 Jan 2024 13:53:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="F/ehNzKq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4774FC1D;
+	Tue,  2 Jan 2024 13:54:13 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F64C1119C;
-	Tue,  2 Jan 2024 13:53:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB4A9C433C7;
-	Tue,  2 Jan 2024 13:53:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1704203587;
-	bh=GjOKiW0xtneKjT+iVjyAoNrxX77mFm1Dq2j6C8liY9I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F/ehNzKqswC0ZnX/TtOamWQ/36hQN7FbZuWjYAjJR0QS3T/FjDAT5Y6aTuRKDwPqa
-	 LwEmdEMrrxEtmtRpxpV7uCja0xh4KW0U3GcZ6oKts53vJrJccrgGDYVjSK1kUokGkq
-	 qhEDN7rgiVeeOS1XCNQCCmdTBGW7BZIz+z3GDAQU=
-Date: Tue, 2 Jan 2024 14:53:04 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Luca Weiss <luca.weiss@fairphone.com>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	cros-qcom-dts-watchers@chromium.org,
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 0/3] Fairphone 5 PMIC-GLINK support (USB-C, charger, fuel
- gauge)
-Message-ID: <2024010205-placidly-expire-221c@gregkh>
-References: <20231220-fp5-pmic-glink-v1-0-2a1f8e3c661c@fairphone.com>
- <8d042095-1e09-45cc-9762-909fe8d663a9@linaro.org>
- <CXTU5MLN0YDS.29PPV8KZF8G9R@fairphone.com>
- <CAA8EJpoD3x=kVLu4x2yLtAqCp=wmGSU4ssq5Oj_SD5VQ=GyAYQ@mail.gmail.com>
- <d2007240-2779-4881-8e9d-1c4f5daa55e5@linaro.org>
- <CXU22OZNAH2H.24YIQWBA4KE3C@fairphone.com>
- <2024010227-darn-litmus-4ddf@gregkh>
- <CY49JOEDOEZX.1KNYT91GHL3MX@fairphone.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEEA3FC0A;
+	Tue,  2 Jan 2024 13:54:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6dbb09061c0so933974a34.0;
+        Tue, 02 Jan 2024 05:54:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704203650; x=1704808450;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A63uk52zyqFjYh0llvOCPkiWnPoFw1GC3tZKy5XNsMo=;
+        b=MW0IAeRygRq5dqTocG91zY+MczuwXvsfMzH4blgJ3wR3mQXfzjbs8xowFEcjH1CNgw
+         hMkLHrkeHkp6oxXkC8Y9/Fc0pCDL3l240vXAupYgY3LCn4XW5hYnR0tnaulJ7sYG03Jf
+         ZbcdU2D9BWYpyHDybI0fTsxFLfW4R9amgZLtdmt3vVKqtovpGXjQNZnjzo00v9TLBo27
+         58WRyNOo3zSMDZVprsfQB+HMUwEl63uZBdi8PDm4YsVa+eVTQ8CW6282IzRunE5L/Km9
+         XhGikFPEWSm/Q8gCq4urtAO8Ouq0kSZQbPIIlKq1HExTqg+fC7KQlpGCsXfxeyBH3t3p
+         VbgQ==
+X-Gm-Message-State: AOJu0Yx5eyRDC3ivZh/HQwzDxSR/qt77azz55Y7tXMhr/JNzX5Gmannp
+	rbPgu61PHLSdSItIIwmn21ywMTOW82T+B+WtNZk=
+X-Google-Smtp-Source: AGHT+IE5oQ8Yj0vxAv+YNy2oM4BXp12oVCkG/KKn+KB4ZFH+qy2RF0Sby8ynlTh5t48MFdiywgiEO0IRgIMaOpjRyzI=
+X-Received: by 2002:a4a:b38c:0:b0:595:6024:c4f8 with SMTP id
+ p12-20020a4ab38c000000b005956024c4f8mr5220413ooo.1.1704203650666; Tue, 02 Jan
+ 2024 05:54:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY49JOEDOEZX.1KNYT91GHL3MX@fairphone.com>
+References: <CGME20231227084252epcas2p3b063f7852f81f82cd0a31afd7f404db4@epcas2p3.samsung.com>
+ <5754861.DvuYhMxLoT@kreacher> <6019796.lOV4Wx5bFT@kreacher>
+ <13435856.uLZWGnKmhe@kreacher> <CAPDyKFohQjDzpYpm0QQLM4eTzGOzGfDNKUGHHC-niPBOrtR8BQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFohQjDzpYpm0QQLM4eTzGOzGfDNKUGHHC-niPBOrtR8BQ@mail.gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 2 Jan 2024 14:53:59 +0100
+Message-ID: <CAJZ5v0jPtYFk=pPE63CGGL0kuc+N_bZqKdgBMC=PMrwqzHBDTg@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] PM: sleep: Fix possible deadlocks in core
+ system-wide PM code
+To: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Greg KH <gregkh@linuxfoundation.org>, 
+	linux-pm@vger.kernel.org, Youngmin Nam <youngmin.nam@samsung.com>, rafael@kernel.org, 
+	linux-kernel@vger.kernel.org, d7271.choe@samsung.com, 
+	janghyuck.kim@samsung.com, hyesoo.yu@samsung.com, 
+	Alan Stern <stern@rowland.harvard.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 02, 2024 at 02:43:24PM +0100, Luca Weiss wrote:
-> On Tue Jan 2, 2024 at 2:36 PM CET, Greg Kroah-Hartman wrote:
-> > On Thu, Dec 21, 2023 at 02:45:26PM +0100, Luca Weiss wrote:
-> > > On Thu Dec 21, 2023 at 1:53 PM CET, Konrad Dybcio wrote:
-> > > > On 21.12.2023 11:34, Dmitry Baryshkov wrote:
-> > > > > On Thu, 21 Dec 2023 at 09:33, Luca Weiss <luca.weiss@fairphone.com> wrote:
-> > > > >>
-> > > > >> On Wed Dec 20, 2023 at 1:32 PM CET, Konrad Dybcio wrote:
-> > > > >>> On 20.12.2023 11:02, Luca Weiss wrote:
-> > > > >>>> This series adds all the necessary bits to enable USB-C role switching,
-> > > > >>>> charger and fuel gauge (all via pmic-glink) on Fairphone 5.
-> > > > >>>>
-> > > > >>>> One thing that could be made different is the pmic-glink compatible.
-> > > > >>>> I've chosen to use qcm6490 compatible for it and not sc7280 since
-> > > > >>>> there's plenty of firmware variety on sc7280-based platforms and they
-> > > > >>>> might require different quirks in the future, so limit this PDOS quirk
-> > > > >>>> to just qcm6490 for now.
-> > > > >>>>
-> > > > >>>> If someone thinks it should be qcom,sc7280-pmic-glink, please let me
-> > > > >>>> know :)
-> > > > >>> IMO it's best to continue using the "base soc" (which just so happened
-> > > > >>> to fall onto sc7280 this time around) for all compatibles, unless the
-> > > > >>> derivatives actually had changes
-> > > > >>
-> > > > >> Hi Konrad,
-> > > > >>
-> > > > >> I think at some point I asked Dmitry what he thought and he mentioned
-> > > > >> qcm6490. Even found the message again:
-> > > > >>
-> > > > >>> well, since it is a firmware thing, you might want to emphasise that.
-> > > > >>> So from my POV qcm6490 makes more sense
-> > > > >>
-> > > > >> But yeah since it's likely that sc7280 firmware behaves the same as
-> > > > >> qcm6490 firmware it's probably okay to use sc7280 compatible, worst case
-> > > > >> we change it later :) I'll send a v2 with those changes.
-> > > > > 
-> > > > > Worst case we end up with sc7280 which has yet another slightly
-> > > > > different UCSI / PMIC GLINK implementation, but the compatible string
-> > > > > is already taken.
-> > > > > I still suppose that this should be a qcm6490-related string.
-> > > > Right, let's keep qcm then
-> > > 
-> > > Ack from my side also. Thanks for the feedback!
+On Tue, Jan 2, 2024 at 2:35=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.org>=
+ wrote:
+>
+> On Wed, 27 Dec 2023 at 21:41, Rafael J. Wysocki <rjw@rjwysocki.net> wrote=
+:
 > >
-> > This doesn't apply to my tree, where should it be going through?
-> 
-> As far as I can see the dependency for the driver commit 1d103d6af241
-> ("usb: typec: ucsi: fix UCSI on buggy Qualcomm devices") was applied to
-> Bjorn's qcom tree, so 2/3 should also go there then.
-> 
-> Patch 3/3 (arm64 dts) definitely also Bjorn's qcom tree.
-> 
-> So that leaves patch 1/3 which Bjorn can probably pick up as well but
-> looking at git log you also picked up some for that file in the past,
-> dunno.
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > It is reported that in low-memory situations the system-wide resume cor=
+e
+> > code deadlocks, because async_schedule_dev() executes its argument
+> > function synchronously if it cannot allocate memory (an not only then)
+> > and that function attempts to acquire a mutex that is already held.
+> >
+> > Address this by changing the code in question to use
+> > async_schedule_dev_nocall() for scheduling the asynchronous
+> > execution of device suspend and resume functions and to directly
+> > run them synchronously if async_schedule_dev_nocall() returns false.
+> >
+> > Fixes: 09beebd8f93b ("PM: sleep: core: Switch back to async_schedule_de=
+v()")
+> > Link: https://lore.kernel.org/linux-pm/ZYvjiqX6EsL15moe@perf/
+> > Reported-by: Youngmin Nam <youngmin.nam@samsung.com>
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >
+> > The commit pointed to by the Fixes: tag is the last one that modified
+> > the code in question, even though the bug had been there already before=
+.
+> >
+> > Still, the fix will not apply to the code before that commit.
+>
+> An option could be to just do "Cc: stable@vger.kernel.org # v5.7+"
+> instead of pointing to a commit with a Fixes tag.
 
-Ok, for any remaining ones that want to be merged before 6.8-rc1 is out,
-feel free to add my:
+Right, but one can argue that every commit with a "Cc: stable" tag is
+a fix, so it should carry a Fixes: tag too anyway.
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >
+> > ---
+> >  drivers/base/power/main.c |  148 +++++++++++++++++++++----------------=
+---------
+> >  1 file changed, 68 insertions(+), 80 deletions(-)
+> >
+> > Index: linux-pm/drivers/base/power/main.c
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > --- linux-pm.orig/drivers/base/power/main.c
+> > +++ linux-pm/drivers/base/power/main.c
+> > @@ -579,7 +579,7 @@ bool dev_pm_skip_resume(struct device *d
+> >  }
+> >
+> >  /**
+> > - * device_resume_noirq - Execute a "noirq resume" callback for given d=
+evice.
+> > + * __device_resume_noirq - Execute a "noirq resume" callback for given=
+ device.
+> >   * @dev: Device to handle.
+> >   * @state: PM transition of the system being carried out.
+> >   * @async: If true, the device is being resumed asynchronously.
+> > @@ -587,7 +587,7 @@ bool dev_pm_skip_resume(struct device *d
+> >   * The driver of @dev will not receive interrupts while this function =
+is being
+> >   * executed.
+> >   */
+> > -static int device_resume_noirq(struct device *dev, pm_message_t state,=
+ bool async)
+> > +static void __device_resume_noirq(struct device *dev, pm_message_t sta=
+te, bool async)
+> >  {
+> >         pm_callback_t callback =3D NULL;
+> >         const char *info =3D NULL;
+> > @@ -655,7 +655,13 @@ Skip:
+> >  Out:
+> >         complete_all(&dev->power.completion);
+> >         TRACE_RESUME(error);
+> > -       return error;
+> > +
+> > +       if (error) {
+> > +               suspend_stats.failed_resume_noirq++;
+> > +               dpm_save_failed_step(SUSPEND_RESUME_NOIRQ);
+> > +               dpm_save_failed_dev(dev_name(dev));
+> > +               pm_dev_err(dev, state, async ? " async noirq" : " noirq=
+", error);
+> > +       }
+> >  }
+> >
+> >  static bool is_async(struct device *dev)
+> > @@ -668,11 +674,15 @@ static bool dpm_async_fn(struct device *
+> >  {
+> >         reinit_completion(&dev->power.completion);
+> >
+> > -       if (is_async(dev)) {
+> > -               get_device(dev);
+> > -               async_schedule_dev(func, dev);
+> > +       if (!is_async(dev))
+> > +               return false;
+> > +
+> > +       get_device(dev);
+> > +
+> > +       if (async_schedule_dev_nocall(func, dev))
+> >                 return true;
+> > -       }
+> > +
+> > +       put_device(dev);
+> >
+> >         return false;
+> >  }
+> > @@ -680,15 +690,19 @@ static bool dpm_async_fn(struct device *
+> >  static void async_resume_noirq(void *data, async_cookie_t cookie)
+> >  {
+> >         struct device *dev =3D data;
+> > -       int error;
+> > -
+> > -       error =3D device_resume_noirq(dev, pm_transition, true);
+> > -       if (error)
+> > -               pm_dev_err(dev, pm_transition, " async", error);
+> >
+> > +       __device_resume_noirq(dev, pm_transition, true);
+> >         put_device(dev);
+> >  }
+> >
+> > +static void device_resume_noirq(struct device *dev)
+> > +{
+> > +       if (dpm_async_fn(dev, async_resume_noirq))
+> > +               return;
+> > +
+> > +       __device_resume_noirq(dev, pm_transition, false);
+> > +}
+> > +
+> >  static void dpm_noirq_resume_devices(pm_message_t state)
+> >  {
+> >         struct device *dev;
+> > @@ -698,14 +712,6 @@ static void dpm_noirq_resume_devices(pm_
+> >         mutex_lock(&dpm_list_mtx);
+> >         pm_transition =3D state;
+> >
+> > -       /*
+> > -        * Advanced the async threads upfront,
+> > -        * in case the starting of async threads is
+> > -        * delayed by non-async resuming devices.
+> > -        */
+> > -       list_for_each_entry(dev, &dpm_noirq_list, power.entry)
+> > -               dpm_async_fn(dev, async_resume_noirq);
+> > -
+>
+> If I understand correctly, this means that we are no longer going to
+> run the async devices upfront, right?
 
-If they don't get picked up by 6.8-rc1, feel free to rebase and send it
-for me to take through my tree.
+Right.
 
-thanks,
+> Depending on how devices get ordered in the dpm_noirq_list, it sounds
+> like the above could have a negative impact on the total resume time!?
 
-greg k-h
+It could, but it is unclear at this time whether or not it will.
+
+> Of course, if all devices would be async capable this wouldn't be a
+> problem...
+
+Sure.
+
+So the existing behavior can be restored with the help of an
+additional device flag, but I didn't decide to add such a flag just
+yet.
+
+I'll probably do it in 6.9, unless the performance impact is serious
+enough, in which case it can be added earlier.
+
+I still would prefer to get to a point at which the suspend and resume
+paths are analogous (from the async POV) and that's what happens after
+this patch, so I'd say that IMO it is better to address any
+performance regressions on top of it.
+
+> >         while (!list_empty(&dpm_noirq_list)) {
+> >                 dev =3D to_device(dpm_noirq_list.next);
+> >                 get_device(dev);
+> > @@ -713,17 +719,7 @@ static void dpm_noirq_resume_devices(pm_
+> >
+> >                 mutex_unlock(&dpm_list_mtx);
+> >
+> > -               if (!is_async(dev)) {
+> > -                       int error;
+> > -
+> > -                       error =3D device_resume_noirq(dev, state, false=
+);
+> > -                       if (error) {
+> > -                               suspend_stats.failed_resume_noirq++;
+> > -                               dpm_save_failed_step(SUSPEND_RESUME_NOI=
+RQ);
+> > -                               dpm_save_failed_dev(dev_name(dev));
+> > -                               pm_dev_err(dev, state, " noirq", error)=
+;
+> > -                       }
+> > -               }
+> > +               device_resume_noirq(dev);
+> >
+> >                 put_device(dev);
+> >
+> > @@ -751,14 +747,14 @@ void dpm_resume_noirq(pm_message_t state
+> >  }
+> >
+> >  /**
+> > - * device_resume_early - Execute an "early resume" callback for given =
+device.
+> > + * __device_resume_early - Execute an "early resume" callback for give=
+n device.
+> >   * @dev: Device to handle.
+> >   * @state: PM transition of the system being carried out.
+> >   * @async: If true, the device is being resumed asynchronously.
+> >   *
+> >   * Runtime PM is disabled for @dev while this function is being execut=
+ed.
+> >   */
+> > -static int device_resume_early(struct device *dev, pm_message_t state,=
+ bool async)
+> > +static void __device_resume_early(struct device *dev, pm_message_t sta=
+te, bool async)
+> >  {
+> >         pm_callback_t callback =3D NULL;
+> >         const char *info =3D NULL;
+> > @@ -811,21 +807,31 @@ Out:
+> >
+> >         pm_runtime_enable(dev);
+> >         complete_all(&dev->power.completion);
+> > -       return error;
+> > +
+> > +       if (error) {
+> > +               suspend_stats.failed_resume_early++;
+> > +               dpm_save_failed_step(SUSPEND_RESUME_EARLY);
+> > +               dpm_save_failed_dev(dev_name(dev));
+> > +               pm_dev_err(dev, state, async ? " async early" : " early=
+", error);
+> > +       }
+> >  }
+> >
+> >  static void async_resume_early(void *data, async_cookie_t cookie)
+> >  {
+> >         struct device *dev =3D data;
+> > -       int error;
+> > -
+> > -       error =3D device_resume_early(dev, pm_transition, true);
+> > -       if (error)
+> > -               pm_dev_err(dev, pm_transition, " async", error);
+> >
+> > +       __device_resume_early(dev, pm_transition, true);
+> >         put_device(dev);
+> >  }
+> >
+> > +static void device_resume_early(struct device *dev)
+> > +{
+> > +       if (dpm_async_fn(dev, async_resume_early))
+> > +               return;
+> > +
+> > +       __device_resume_early(dev, pm_transition, false);
+> > +}
+> > +
+> >  /**
+> >   * dpm_resume_early - Execute "early resume" callbacks for all devices=
+.
+> >   * @state: PM transition of the system being carried out.
+> > @@ -839,14 +845,6 @@ void dpm_resume_early(pm_message_t state
+> >         mutex_lock(&dpm_list_mtx);
+> >         pm_transition =3D state;
+> >
+> > -       /*
+> > -        * Advanced the async threads upfront,
+> > -        * in case the starting of async threads is
+> > -        * delayed by non-async resuming devices.
+> > -        */
+> > -       list_for_each_entry(dev, &dpm_late_early_list, power.entry)
+> > -               dpm_async_fn(dev, async_resume_early);
+> > -
+>
+> Ditto.
+>
+> >         while (!list_empty(&dpm_late_early_list)) {
+> >                 dev =3D to_device(dpm_late_early_list.next);
+> >                 get_device(dev);
+> > @@ -854,17 +852,7 @@ void dpm_resume_early(pm_message_t state
+> >
+> >                 mutex_unlock(&dpm_list_mtx);
+> >
+> > -               if (!is_async(dev)) {
+> > -                       int error;
+> > -
+> > -                       error =3D device_resume_early(dev, state, false=
+);
+> > -                       if (error) {
+> > -                               suspend_stats.failed_resume_early++;
+> > -                               dpm_save_failed_step(SUSPEND_RESUME_EAR=
+LY);
+> > -                               dpm_save_failed_dev(dev_name(dev));
+> > -                               pm_dev_err(dev, state, " early", error)=
+;
+> > -                       }
+> > -               }
+> > +               device_resume_early(dev);
+> >
+> >                 put_device(dev);
+> >
+> > @@ -888,12 +876,12 @@ void dpm_resume_start(pm_message_t state
+> >  EXPORT_SYMBOL_GPL(dpm_resume_start);
+> >
+> >  /**
+> > - * device_resume - Execute "resume" callbacks for given device.
+> > + * __device_resume - Execute "resume" callbacks for given device.
+> >   * @dev: Device to handle.
+> >   * @state: PM transition of the system being carried out.
+> >   * @async: If true, the device is being resumed asynchronously.
+> >   */
+> > -static int device_resume(struct device *dev, pm_message_t state, bool =
+async)
+> > +static void __device_resume(struct device *dev, pm_message_t state, bo=
+ol async)
+> >  {
+> >         pm_callback_t callback =3D NULL;
+> >         const char *info =3D NULL;
+> > @@ -975,20 +963,30 @@ static int device_resume(struct device *
+> >
+> >         TRACE_RESUME(error);
+> >
+> > -       return error;
+> > +       if (error) {
+> > +               suspend_stats.failed_resume++;
+> > +               dpm_save_failed_step(SUSPEND_RESUME);
+> > +               dpm_save_failed_dev(dev_name(dev));
+> > +               pm_dev_err(dev, state, async ? " async" : "", error);
+> > +       }
+> >  }
+> >
+> >  static void async_resume(void *data, async_cookie_t cookie)
+> >  {
+> >         struct device *dev =3D data;
+> > -       int error;
+> >
+> > -       error =3D device_resume(dev, pm_transition, true);
+> > -       if (error)
+> > -               pm_dev_err(dev, pm_transition, " async", error);
+> > +       __device_resume(dev, pm_transition, true);
+> >         put_device(dev);
+> >  }
+> >
+> > +static void device_resume(struct device *dev)
+> > +{
+> > +       if (dpm_async_fn(dev, async_resume))
+> > +               return;
+> > +
+> > +       __device_resume(dev, pm_transition, false);
+> > +}
+> > +
+> >  /**
+> >   * dpm_resume - Execute "resume" callbacks for non-sysdev devices.
+> >   * @state: PM transition of the system being carried out.
+> > @@ -1008,27 +1006,17 @@ void dpm_resume(pm_message_t state)
+> >         pm_transition =3D state;
+> >         async_error =3D 0;
+> >
+> > -       list_for_each_entry(dev, &dpm_suspended_list, power.entry)
+> > -               dpm_async_fn(dev, async_resume);
+> > -
+>
+> Ditto.
+>
+> >         while (!list_empty(&dpm_suspended_list)) {
+> >                 dev =3D to_device(dpm_suspended_list.next);
+> > +
+> >                 get_device(dev);
+> > -               if (!is_async(dev)) {
+> > -                       int error;
+> >
+> > -                       mutex_unlock(&dpm_list_mtx);
+> > +               mutex_unlock(&dpm_list_mtx);
+> >
+> > -                       error =3D device_resume(dev, state, false);
+> > -                       if (error) {
+> > -                               suspend_stats.failed_resume++;
+> > -                               dpm_save_failed_step(SUSPEND_RESUME);
+> > -                               dpm_save_failed_dev(dev_name(dev));
+> > -                               pm_dev_err(dev, state, "", error);
+> > -                       }
+> > +               device_resume(dev);
+> > +
+> > +               mutex_lock(&dpm_list_mtx);
+> >
+> > -                       mutex_lock(&dpm_list_mtx);
+> > -               }
+> >                 if (!list_empty(&dev->power.entry))
+> >                         list_move_tail(&dev->power.entry, &dpm_prepared=
+_list);
+> >
+>
+> Other than the potential issue I pointed out, the code as such looks good=
+ to me!
+
+Thank you!
 
