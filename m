@@ -1,133 +1,130 @@
-Return-Path: <linux-kernel+bounces-14406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1013821CA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:34:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3282B821CA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:35:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F1152835A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:34:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B11201F22B39
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:35:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A9B11C8A;
-	Tue,  2 Jan 2024 13:33:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22CA010A2F;
+	Tue,  2 Jan 2024 13:34:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bun7XMr0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1B711C85;
-	Tue,  2 Jan 2024 13:33:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=v0yd.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=v0yd.nl
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4T4DMD1n5Qz9sWC;
-	Tue,  2 Jan 2024 14:33:28 +0100 (CET)
-From: =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
-To: Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-	asahi@lists.linux.dev,
-	linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH 4/4] hci: Queue a HCI power-off command before rfkilling adapters
-Date: Tue,  2 Jan 2024 14:33:10 +0100
-Message-ID: <20240102133311.6712-5-verdre@v0yd.nl>
-In-Reply-To: <20240102133311.6712-1-verdre@v0yd.nl>
-References: <20240102133311.6712-1-verdre@v0yd.nl>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5040C10785
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 13:34:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a27db7d85c7so164264166b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 05:34:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704202459; x=1704807259; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wuoEJSWwfzteBKTnr2vmlGDQ9FisX2m34oTdwWC5S9s=;
+        b=bun7XMr0b++V6l8s1liY/Oe/QjsSW6lYkDUJs393ehSC+9fV6JKbPomfojI83PHHBB
+         qMmJFsKs7SKecg4kk89bibU/c20chYLkctD4DZBQL3VBUKS9YPHngmaxPLfHNLPbw01j
+         BTtgcS5FTbG5H+JBhWrDF7LexENrJETDngIAugLYAc+I0b8eyAR58sIp1sylsWMHonxa
+         WIdpuNeVpOyxhr9b9bjyXDgWU7lqEJVTGNjra3oIQU940C3+YjnerqreW1eyZ0jjJ9Em
+         Sluu2dyB8ckErzwpz7atPw+TQZitMt7rzo/suuuVslVGjkQJ+zZDCPvsmRpwIH48ZIRV
+         lPeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704202459; x=1704807259;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wuoEJSWwfzteBKTnr2vmlGDQ9FisX2m34oTdwWC5S9s=;
+        b=Wqe2lutysZTqpyZvvn5MrKZOXtt8sN97ooh8/QAZVVTL7ThY11wkVaeDNnEamr0Z6i
+         9fBRLYObSdSz8tckry4MU5teGzj/qZZCAp6oG7FnIuZ4qdJ3uwIKkKJvOpWRkbdZQh6e
+         1h8L8OTuQPmsS/sZVxLGk5bDHjmza0MpZxic5Uzt35//Z4iic8gQDxWe+sdi0r21MHqn
+         Qe9cd37fGNGJ3ThKZ9ROpYTzUcWfgg37QXXEZxSn9fOvOwaGo6UHRv6yLAvyaYeOzLF7
+         E2lMtR0DAHQFyokc8im5X0La6FF8ZdsP8zNz9wMQQfqyANmUnThP1n4Bypbl58kLNoJL
+         Fccw==
+X-Gm-Message-State: AOJu0YwwFBZc3GEbA1q/GCjAHe1qpUlLc8jXdWy/M8MpC1gXK1UPFmBo
+	pRr5K+p77EbFZA7baEhTz9Lz+V92ZxeQwg==
+X-Google-Smtp-Source: AGHT+IEHYZ75cpzIphUtCjKwfgwxchy4tlmdfx8je2CFeJ0ftCRdyy+Y4vqBBumYMULOGhUKk4JgtA==
+X-Received: by 2002:a17:906:80d1:b0:a26:88d4:b477 with SMTP id a17-20020a17090680d100b00a2688d4b477mr7612906ejx.111.1704202459486;
+        Tue, 02 Jan 2024 05:34:19 -0800 (PST)
+Received: from [10.167.154.1] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
+        by smtp.gmail.com with ESMTPSA id u23-20020a170906109700b00a26af5717e9sm10950923eju.42.2024.01.02.05.34.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 05:34:19 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 00/12] Hook up GPU cooling on most qcom arm64 platforms
+Date: Tue, 02 Jan 2024 14:34:04 +0100
+Message-Id: <20240102-topic-gpu_cooling-v1-0-fda30c57e353@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4T4DMD1n5Qz9sWC
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAM0QlGUC/x2NywrDIBAAfyXsuQsqesmvlFJ8bMyCrKJNCYT8e
+ 6XHGRjmgkGdacC6XNDpy4OrTNCPBeLuJRNymgxGGau0MvipjSPmdrxjrYUlo3Yu2WSDcppgdsE
+ PwtC9xH2WcpQyZeu08fkfPV/3/QMlVyb5eAAAAA==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704202458; l=1877;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=53vSZT1Dd/Mxvm/Bn+OuQbRaGVINCbyj46vPqA4scLI=;
+ b=qoeCWR7dyWsqsQ36X3iVKL9MGM04ERuZIxBsvvFakKdb1maRQHCpgbgF80an0kn1+A62pIQTR
+ OtS6ufKn6tTDx+SjmD2hZIxKoYHqpTf3V3vpYWyhExrIIDS35nsH9vu
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-On a lot of platforms (at least the MS Surface devices, M1 macbooks, and
-a few ThinkPads) firmware doesn't do its job when rfkilling a device
-and the bluetooth adapter is not actually shut down on rfkill. This leads
-to connected devices remaining in connected state and the bluetooth
-connection eventually timing out after rfkilling an adapter.
+It's been years since Adreno has been registered as a cooling device,
+yet only so many platforms had the correct DT setup for it. This series
+attempts to hook it up on most supported snapdragons.
 
-Use the rfkill hook in the HCI driver to actually power the device off
-before rfkilling it.
-
-Note that the wifi subsystem is doing something similar by calling
-cfg80211_shutdown_all_interfaces()
-in it's rfkill set_block callback (see cfg80211_rfkill_set_block).
-
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- net/bluetooth/hci_core.c | 33 ++++++++++++++++++++++++++++++---
- 1 file changed, 30 insertions(+), 3 deletions(-)
+Konrad Dybcio (12):
+      arm64: dts: qcom: msm8916: Hook up GPU cooling device
+      arm64: dts: qcom: msm8939: Hook up GPU cooling device
+      arm64: dts: qcom: sc8180x: Hook up GPU cooling device
+      arm64: dts: qcom: sdm845: Hook up GPU cooling device
+      arm64: dts: qcom: sm6115: Hook up GPU cooling device
+      arm64: dts: qcom: sm6115: Mark GPU @ 125C critical
+      arm64: dts: qcom: sm8150: Hook up GPU cooling device
+      arm64: dts: qcom: sm8250: Hook up GPU cooling device
+      arm64: dts: qcom: sm8350: Hook up GPU cooling device
+      arm64: dts: qcom: sm8450: Hook up GPU cooling device
+      arm64: dts: qcom: sm8550: Hook up GPU cooling device
+      arm64: dts: qcom: sdm630: Hook up GPU cooling device
 
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 1ec83985f..1c91d02f7 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -543,6 +543,23 @@ int hci_dev_open(__u16 dev)
- 	return err;
- }
- 
-+static int set_powered_off_sync(struct hci_dev *hdev, void *data)
-+{
-+	return hci_set_powered_sync(hdev, false);
-+}
-+
-+static void set_powered_off_sync_complete(struct hci_dev *hdev, void *data, int err)
-+{
-+	if (err)
-+		bt_dev_err(hdev, "Powering HCI device off before rfkilling failed (%d)", err);
-+}
-+
-+static int hci_dev_do_poweroff(struct hci_dev *hdev)
-+{
-+	return hci_cmd_sync_queue(hdev, set_powered_off_sync,
-+				  NULL, set_powered_off_sync_complete);
-+}
-+
- int hci_dev_do_close(struct hci_dev *hdev)
- {
- 	int err;
-@@ -943,17 +960,27 @@ int hci_get_dev_info(void __user *arg)
- static int hci_rfkill_set_block(void *data, bool blocked)
- {
- 	struct hci_dev *hdev = data;
-+	int err;
- 
- 	BT_DBG("%p name %s blocked %d", hdev, hdev->name, blocked);
- 
- 	if (hci_dev_test_flag(hdev, HCI_USER_CHANNEL))
- 		return -EBUSY;
- 
-+	if (blocked == hci_dev_test_flag(hdev, HCI_RFKILLED))
-+		return 0;
-+
- 	if (blocked) {
--		hci_dev_set_flag(hdev, HCI_RFKILLED);
- 		if (!hci_dev_test_flag(hdev, HCI_SETUP) &&
--		    !hci_dev_test_flag(hdev, HCI_CONFIG))
--			hci_dev_do_close(hdev);
-+		    !hci_dev_test_flag(hdev, HCI_CONFIG)) {
-+			err = hci_dev_do_poweroff(hdev);
-+			if (err) {
-+				bt_dev_err(hdev, "Powering off device before rfkilling failed (%d)",
-+					   err);
-+			}
-+		}
-+
-+		hci_dev_set_flag(hdev, HCI_RFKILLED);
- 	} else {
- 		hci_dev_clear_flag(hdev, HCI_RFKILLED);
- 	}
+ arch/arm64/boot/dts/qcom/msm8916.dtsi |  9 ++++++
+ arch/arm64/boot/dts/qcom/msm8939.dtsi |  9 ++++++
+ arch/arm64/boot/dts/qcom/sc8180x.dtsi | 20 ++++++++++--
+ arch/arm64/boot/dts/qcom/sdm630.dtsi  |  9 ++++++
+ arch/arm64/boot/dts/qcom/sdm845.dtsi  | 19 ++++++++++--
+ arch/arm64/boot/dts/qcom/sm6115.dtsi  | 13 ++++++--
+ arch/arm64/boot/dts/qcom/sm8150.dtsi  | 19 ++++++++++--
+ arch/arm64/boot/dts/qcom/sm8250.dtsi  | 19 ++++++++++--
+ arch/arm64/boot/dts/qcom/sm8350.dtsi  | 19 ++++++++++--
+ arch/arm64/boot/dts/qcom/sm8450.dtsi  | 19 ++++++++++--
+ arch/arm64/boot/dts/qcom/sm8550.dtsi  | 57 +++++++++++++++++++++++++++++++++++
+ 11 files changed, 198 insertions(+), 14 deletions(-)
+---
+base-commit: ab0b3e6ef50d305278b1971891cf1d82ab050b35
+change-id: 20240102-topic-gpu_cooling-155d4d4b051e
+
+Best regards,
 -- 
-2.43.0
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
 
