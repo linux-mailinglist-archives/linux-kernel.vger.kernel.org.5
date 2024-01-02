@@ -1,66 +1,98 @@
-Return-Path: <linux-kernel+bounces-14081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC47E8217B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:28:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B95EA8217B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:30:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5088C2824B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:28:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65D9F1F21CA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:30:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C9C1858;
-	Tue,  2 Jan 2024 06:28:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F232101;
+	Tue,  2 Jan 2024 06:30:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="ljOwPJPe"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qmR26i0D"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtplqs-out42.aruba.it (smtplqs-out42.aruba.it [62.149.158.82])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F1015CF
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 06:28:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=calabriaorizzonti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=calabriaorizzonti.com
-Received: from webxc230s04.ad.aruba.it ([89.46.105.133])
-	by Aruba Outgoing Smtp  with ESMTP
-	id KYE8rUjX4DPJEKYE8rrYn1; Tue, 02 Jan 2024 07:26:12 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1704176772; bh=+LbVxlSmZjzsR24Z5AmnEepItQBhXHJCG1U67g7eybo=;
-	h=To:Subject:Date:From:MIME-Version:Content-Type;
-	b=ljOwPJPeZClGedAIcBpq8d/DxqK9+BYF2XZNf+/z1bXKShIm+DEHHonCMF3woHKP/
-	 9J+I9qqgCb6eXZqgtcvyVoJF4lDzBr3O7CFClkls7RQIs3ks5lgJlPHbEDIe0A/kT2
-	 LlOr8QFGNfXa5n2HqAtq+rjkGF5Mdqu5yxXaOaI1PaNNxUNp6NnYJhYYPlVnEA7HW9
-	 Gbg8QJM++rNtBA6cSsqoRHeHlbrnJlXc15IK1OiJ9xEo1DIAd4C3nSvyB4Zt8NS4+n
-	 dcbNFAEP85sLwEzrCsQz6A6etuYOIx+QbmuEdWErIBi5AGYxO6c8VdqL2NsJ45WjAF
-	 ZkwEZSNuMeh9A==
-Received: by webxc230s04.ad.aruba.it (Postfix, from userid 19070205)
-	id 45C145E; Tue,  2 Jan 2024 07:26:12 +0100 (CET)
-To: linux-kernel@vger.kernel.org
-Subject: Dettagli account per Get 76 DOLLARS for signing up HERE https://malko9.page.link/L3AC su Calabria orizzonti
-X-PHP-Originating-Script: 19070205:class.phpmailer.php
-Date: Tue, 2 Jan 2024 07:26:12 +0100
-From: Redazione Calabria orizzonti <redazione@calabriaorizzonti.com>
-Message-ID: <52c2357e9aa6e44b40a6b4b588e1bf5a@www.calabriaorizzonti.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE9B1879
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 06:30:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1704177036;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jogtFHqhtts+BmygiI65vHy3Sj9utOue/9xvsVCOd+4=;
+	b=qmR26i0D49H8PdwABxnbTA/6T904fWdmEzd6KXl0wQjHSIy3X5dP4pqW+94RX26mni1cHM
+	zLdOEu9mc1bcFwLhhpZo4RoOBAfeSKwJqgOB6pBH35ufB+EB7ejL7hIrrJnPQxw9YsHs3+
+	RCHR/4odGFPxiCJ2mnjlJCWZAb9aI3E=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfDtIheR9xX4RwT9cLvAAgVXEsj9uqiLaTx69nA9DWC9PI9CxNuHo+g1tJlkgqOlNP11nD5yPMLOc4qVoXrRgZNE1CUhU57XH31OQR10xUBqry/BbDrU4
- HnNUGd5ydgUL0xwshh8b1o/ux6MsOXAAf+nL1eChsc1lV5bPTrU7W2ziM41eoWuPFKr88aQU4qXfmSs6Sozve/LDJbEDPSSnOtTvwsTCf1mNe6qtYh1OZkrG
+Mime-Version: 1.0
+Subject: Re: [PATCH 05/13] mm: Introduce vma_pgtable_walk_{begin|end}()
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <ZZOhlB-KK4hF3PgY@x1n>
+Date: Tue, 2 Jan 2024 14:29:56 +0800
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Linux-MM <linux-mm@kvack.org>,
+ Matthew Wilcox <willy@infradead.org>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Lorenzo Stoakes <lstoakes@gmail.com>,
+ David Hildenbrand <david@redhat.com>,
+ Vlastimil Babka <vbabka@suse.cz>,
+ Mike Kravetz <mike.kravetz@oracle.com>,
+ Mike Rapoport <rppt@kernel.org>,
+ Christoph Hellwig <hch@infradead.org>,
+ John Hubbard <jhubbard@nvidia.com>,
+ Andrew Jones <andrew.jones@linux.dev>,
+ linux-arm-kernel@lists.infradead.org,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ "Kirill A . Shutemov" <kirill@shutemov.name>,
+ linuxppc-dev@lists.ozlabs.org,
+ Rik van Riel <riel@surriel.com>,
+ linux-riscv@lists.infradead.org,
+ Yang Shi <shy828301@gmail.com>,
+ James Houghton <jthoughton@google.com>,
+ "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Jason Gunthorpe <jgg@nvidia.com>,
+ Andrea Arcangeli <aarcange@redhat.com>,
+ Axel Rasmussen <axelrasmussen@google.com>
+Content-Transfer-Encoding: 7bit
+Message-Id: <B82206E4-2C43-40EE-8337-0DC9FF37F7E9@linux.dev>
+References: <20231219075538.414708-1-peterx@redhat.com>
+ <20231219075538.414708-6-peterx@redhat.com>
+ <0D9E28F4-AFA8-479C-8311-093DAFD9DF41@linux.dev> <ZZOhlB-KK4hF3PgY@x1n>
+To: Peter Xu <peterx@redhat.com>
+X-Migadu-Flow: FLOW_OUT
 
-Salve Get 76 DOLLARS for signing up HERE https://malko9.page.link/L3AC,
 
-Grazie per la tua registrazione su Calabria orizzonti. Il tuo account è stato creato e deve essere attivato prima che tu possa utilizzarlo.
-Per attivarlo clicca sul link seguente o fai un copia e incolla nel tuo browser:
-http://www.calabriaorizzonti.com/index.php/component/users/?task=registration.activate&token=01dfca77020a31faf5d1a83ed0a3b954&Itemid=435 
 
-Dopo averlo attivato, potrai accedere all'area riservata di http://www.calabriaorizzonti.com/ usando le seguenti username e password che hai inserito durante la registrazione:
+> On Jan 2, 2024, at 13:39, Peter Xu <peterx@redhat.com> wrote:
+> 
+> On Mon, Dec 25, 2023 at 02:34:48PM +0800, Muchun Song wrote:
+>> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> 
+> You're using the old email address here.  Do you want me to also use the
+> linux.dev one that you suggested me to use?
 
-Nome utente: Get 76 DOLLARS for signing up HERE https://malko9.page.link/L3AC
+Either is OK for the RB tag.
+
+> 
+> -- 
+> Peter Xu
+> 
 
 
