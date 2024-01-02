@@ -1,163 +1,194 @@
-Return-Path: <linux-kernel+bounces-14554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F55A821E9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:21:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B778821EA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:21:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ADDC283C55
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:21:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AECBE1F22E9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:21:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45EB614F6B;
-	Tue,  2 Jan 2024 15:21:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1ADC13AF4;
+	Tue,  2 Jan 2024 15:21:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CiOporqN"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RAE3Bp/T"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E3D814F62
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 15:20:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d480c6342dso34030815ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 07:20:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704208859; x=1704813659; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AC8zZpW88JATTyPu75m9EIR8gbeNaY6Wy3+vSQqo4pc=;
-        b=CiOporqNLSBQruaI3KZmqTYpEIaUvNJ9i5iL2XXWlpb1oP3eESWhTyFKUDtO+Q0kfB
-         4vQ/eG6+7dhUsOjwTFskSaNUlY/QzKR+9euJGDq99cbDxFObxLS+PYLR/lCVA2AVuymc
-         i/ueAYb3PnWUi3POTrdpDbiq6dWUxVR6MWKZQyM9Rk6RM5OCh9skgSSTeCK4otU0kb3a
-         pohvEEYP6/4bkILCcoMcXMBVhCNn2DBaZFHikn5YElrKYjm0lnPpjkLB381I/Eh4DLVg
-         Ob39JJQp+NF2xvLJLFEjXOkV1jQib1ksXrroWOuZZAPZlxEAqNFacLVlB0GH84szcF8F
-         UdRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704208859; x=1704813659;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AC8zZpW88JATTyPu75m9EIR8gbeNaY6Wy3+vSQqo4pc=;
-        b=up6+o39vauZOerYFJK6HPZm7voPm+BV2dYT5D8YSkhB4v3VXHqokRdYUlYEaIjpSTJ
-         vTPZ7U1BFbGIovuNUyFk7ffxovGXm1ialHRBsvvhbeUw3mqxjVbeBuiYrMF6SVd+U/Be
-         d/Wp6SVU0y36GpSvb/IVM0FfM4N9BUG3x/djrBS+Us8Xfc/fWlVXwwXVq4hDvEqRzdRG
-         FBPcOgsDVyNcN+HAn8i+930NIL+u0r+1fBDLYm+7FJIKLnzGHaB6B+nmaqZ0fcsM7Fht
-         AU4XRec0iZJD/pf1wwvIlJZ42DdTulPVxKwpNOlZ81srtTHWgumS/Nd1g8p7n8qp854r
-         +F+w==
-X-Gm-Message-State: AOJu0YzZMT9lcLD5U7dF3vgm7jZosHcfN/DZ+Sjarp1/2vBSmwLbyKDz
-	Lo8RSffRecl8GYyhfwYgD/oChgJ87iDmgw==
-X-Google-Smtp-Source: AGHT+IFM4gcGnxZgIt3nx6IqoNlCeiNV7/WpfyDiCmnxC7Me+8kboX3wHN6544VVey8RQv1Hn6uBvQ==
-X-Received: by 2002:a17:90a:6fe3:b0:28c:5391:7683 with SMTP id e90-20020a17090a6fe300b0028c53917683mr6307876pjk.65.1704208858728;
-        Tue, 02 Jan 2024 07:20:58 -0800 (PST)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id fh16-20020a17090b035000b0028bf79ad453sm22365618pjb.21.2024.01.02.07.20.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 07:20:58 -0800 (PST)
-From: Yuntao Wang <ytcoode@gmail.com>
-To: bhe@redhat.com
-Cc: akpm@linux-foundation.org,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	dyoung@redhat.com,
-	hbathini@linux.ibm.com,
-	hpa@zytor.com,
-	kexec@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	mingo@redhat.com,
-	seanjc@google.com,
-	tglx@linutronix.de,
-	tiwai@suse.de,
-	vgoyal@redhat.com,
-	x86@kernel.org,
-	ytcoode@gmail.com
-Subject: Re: [PATCH] crash_core: optimize crash_exclude_mem_range()
-Date: Tue,  2 Jan 2024 23:20:46 +0800
-Message-ID: <20240102152046.111961-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <ZY/wtvltzGR0CokV@MiWiFi-R3L-srv>
-References: <ZY/wtvltzGR0CokV@MiWiFi-R3L-srv>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F5A14A92
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 15:21:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704208904;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=sHnSR+QFwKpo7oWGjVdLyDfof+xSfbIp/ziX7RP5aB4=;
+	b=RAE3Bp/TwT/jyrEcWV+C8H7ocSVtRC8f4kFsuUOkNKLHGdB+kd4k7fRqVE7/NPeZCKwefu
+	7fdXPCtraGP6VEe9s1DncX01mrGUq6uqojxgOtpnIq6tEdIkii9gcSSAvSfA7U9jSQItlo
+	GxuJDsE2dZfO7MpKuyrdABAdrAazL9g=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-141-fpG_uLV2MBefcKkUYRoVag-1; Tue,
+ 02 Jan 2024 10:21:41 -0500
+X-MC-Unique: fpG_uLV2MBefcKkUYRoVag-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CDC013C1E9C6;
+	Tue,  2 Jan 2024 15:21:40 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.68])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D6615492BC6;
+	Tue,  2 Jan 2024 15:21:39 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+To: Jeffrey Altman <jaltman@auristor.com>
+cc: dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
+    linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: [PATCH] afs: Fix error handling with lookup via FS.InlineBulkStatus
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <140430.1704208899.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 02 Jan 2024 15:21:39 +0000
+Message-ID: <140431.1704208899@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-On Sat, 30 Dec 2023 18:28:06 +0800, Baoquan He <bhe@redhat.com> wrote:
+When afs does a lookup, it tries to use FS.InlineBulkStatus to preemptivel=
+y
+look up a bunch of files in the parent directory and cache this locally, o=
+n
+the basis that we might want to look at them too (for example if someone
+does an ls on a directory, they may want want to then stat every file
+listed).
 
-> On 12/29/23 at 12:10pm, Andrew Morton wrote:
-> > On Wed, 20 Dec 2023 00:34:18 +0800 Yuntao Wang <ytcoode@gmail.com> wrote:
-> > 
-> > > Because memory ranges in mem->ranges are stored in ascending order, when we
-> > > detect `p_end < start`, we can break the for loop early, as the subsequent
-> > > memory ranges must also be outside the range we are looking for.
-> > > 
-> > > Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-> > > ---
-> > > Hi Andrew,
-> > > 
-> > > Patch "[PATCH 2/2] crash_core: fix out-of-bounds access check in
-> > > crash_exclude_mem_range()" can be ignored, use this patch instead.
-> > > 
-> > 
-> > Some reviewer input on this would be helpful please?
-> 
-> 
-> I suggested this in below discussion thread:
-> https://lore.kernel.org/all/ZYEOshALGbDKwSdc@MiWiFi-R3L-srv/T/#u
-> 
-> So it would be good if squashing this into patch 3 of another patch
-> thread you are asking:
-> [PATCH 3/3] crash_core: fix and simplify the logic of crash_exclude_mem_range()
->
+FS.InlineBulkStatus can be considered a compound op with the normal abort
+code applying to the compound as a whole.  Each status fetch within the
+compound is then given its own individual abort code - but assuming no
+error that prevents the bulk fetch from returning the compound result will
+be 0, even if all the constituent status fetches failed.
 
-Hi all,
+At the conclusion of afs_do_lookup(), we should use the abort code from th=
+e
+appropriate status to determine the error to return, if any - but instead
+it is assumed that we were successful if the op as a whole succeeded and w=
+e
+return an incompletely initialised inode, resulting in ENOENT, no matter
+the actual reason.  In the particular instance reported, a vnode with no
+permission granted to be accessed is being given a UAEACCES abort code
+which should be reported as EACCES, but is instead being reported as
+ENOENT.
 
-I've squashed this patch into the patch:
+Fix this by abandoning the inode (which will be cleaned up with the op) if
+file[1] has an abort code indicated and turn that abort code into an error
+instead.
 
-[PATCH 3/3] crash_core: fix and simplify the logic of crash_exclude_mem_range()
+Whilst we're at it, add a tracepoint so that the abort codes of the
+individual subrequests of FS.InlineBulkStatus can be logged.  At the momen=
+t
+only the container abort code can be 0.
 
-The link to the new patch is:
+Fixes: e49c7b2f6de7 ("afs: Build an abstraction around an "operation" conc=
+ept")
+Reported-by: Jeffrey Altman <jaltman@auristor.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: linux-afs@lists.infradead.org
+---
+ fs/afs/dir.c               |   12 +++++++++---
+ include/trace/events/afs.h |   25 +++++++++++++++++++++++++
+ 2 files changed, 34 insertions(+), 3 deletions(-)
 
-https://lore.kernel.org/lkml/20240102144905.110047-1-ytcoode@gmail.com/t/#m255d0d26148f2b384f6b7ab77eb38edf3f1bc0df
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index c14533ef108f..ae563d2a914e 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -708,6 +708,8 @@ static void afs_do_lookup_success(struct afs_operation=
+ *op)
+ 			break;
+ 		}
+ =
 
-> And I would suggest withdrawing Yuntao's below patch on your
-> mm-nonmm-unstable branch.
-> 
-> 961c69e9f1bf x86/crash: fix potential cmem->ranges array overflow
-> 
-> Becase there's better one to fix the potential oob from fuqiang,
-> although fuqiang need improve his patch log.
-> 
-> [PATCH v3] x86/kexec: fix potential cmem->ranges out of bounds
-> https://lore.kernel.org/all/20231222121855.148215-1-fuqiang.wang@easystack.cn/T/#u
->
++		if (vp->scb.status.abort_code)
++			trace_afs_bulkstat_error(op, &vp->fid, i, vp->scb.status.abort_code);
+ 		if (!vp->scb.have_status && !vp->scb.have_error)
+ 			continue;
+ =
 
-I'm okay with that.
+@@ -897,12 +899,16 @@ static struct inode *afs_do_lookup(struct inode *dir=
+, struct dentry *dentry,
+ 		afs_begin_vnode_operation(op);
+ 		afs_wait_for_operation(op);
+ 	}
+-	inode =3D ERR_PTR(afs_op_error(op));
+ =
 
-> > 
-> > > --- a/kernel/crash_core.c
-> > > +++ b/kernel/crash_core.c
-> > > @@ -575,9 +575,12 @@ int crash_exclude_mem_range(struct crash_mem *mem,
-> > >  		p_start = mstart;
-> > >  		p_end = mend;
-> > >  
-> > > -		if (p_start > end || p_end < start)
-> > > +		if (p_start > end)
-> > >  			continue;
-> > >  
-> > > +		if (p_end < start)
-> > > +			break;
-> > > +
-> > >  		/* Truncate any area outside of range */
-> > >  		if (p_start < start)
-> > >  			p_start = start;
-> > > -- 
-> > > 2.43.0
-> > 
+ out_op:
+ 	if (!afs_op_error(op)) {
+-		inode =3D &op->file[1].vnode->netfs.inode;
+-		op->file[1].vnode =3D NULL;
++		if (op->file[1].scb.status.abort_code) {
++			afs_op_accumulate_error(op, -ECONNABORTED,
++						op->file[1].scb.status.abort_code);
++		} else {
++			inode =3D &op->file[1].vnode->netfs.inode;
++			op->file[1].vnode =3D NULL;
++		}
+ 	}
+ =
+
+ 	if (op->file[0].scb.have_status)
+diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
+index 5194b7e6dc8d..ce865ea678d3 100644
+--- a/include/trace/events/afs.h
++++ b/include/trace/events/afs.h
+@@ -1102,6 +1102,31 @@ TRACE_EVENT(afs_file_error,
+ 		      __print_symbolic(__entry->where, afs_file_errors))
+ 	    );
+ =
+
++TRACE_EVENT(afs_bulkstat_error,
++	    TP_PROTO(struct afs_operation *op, struct afs_fid *fid, unsigned int=
+ index, s32 abort),
++
++	    TP_ARGS(op, fid, index, abort),
++
++	    TP_STRUCT__entry(
++		    __field_struct(struct afs_fid,	fid)
++		    __field(unsigned int,		op)
++		    __field(unsigned int,		index)
++		    __field(s32,			abort)
++			     ),
++
++	    TP_fast_assign(
++		    __entry->op =3D op->debug_id;
++		    __entry->fid =3D *fid;
++		    __entry->index =3D index;
++		    __entry->abort =3D abort;
++			   ),
++
++	    TP_printk("OP=3D%08x[%02x] %llx:%llx:%x a=3D%d",
++		      __entry->op, __entry->index,
++		      __entry->fid.vid, __entry->fid.vnode, __entry->fid.unique,
++		      __entry->abort)
++	    );
++
+ TRACE_EVENT(afs_cm_no_server,
+ 	    TP_PROTO(struct afs_call *call, struct sockaddr_rxrpc *srx),
+ =
+
 
