@@ -1,103 +1,97 @@
-Return-Path: <linux-kernel+bounces-14483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74FEC821DA9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:30:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9B91821DAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:31:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B7491C21F8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:30:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D85E1F21388
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:31:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0828C12E4D;
-	Tue,  2 Jan 2024 14:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E561E12E79;
+	Tue,  2 Jan 2024 14:31:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aQqlvHyj"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="fpZGWbVe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529181172D;
-	Tue,  2 Jan 2024 14:30:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F18E2C43397;
-	Tue,  2 Jan 2024 14:30:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704205830;
-	bh=a9sodbYm9U5Bqtf3uHkJyJDa6FhSRtb8xw31TmUxp/U=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=aQqlvHyjM2hN1amemHEt3rEyPGMYjW2MxedaJKyoawn4jQSp50aqO7tsTSxx7O9TQ
-	 F2vNMdZcrgqxn1k1kRcBrxlCK8uK2i6ub1SkajcsHAZVt4LdN0fGvzqwiNeevFS1O8
-	 L4Cjio6YgtCeo2r2GzxiXInJim6YMRzdq6J71zfUYHotPIA0O70NPRLr6gtwqPfj6/
-	 F6yvp/aDRDjNulV7lvrc0jnmkWZl/Z8Cooaj3esUT71yuqq/oIXMloBJo3wv64ozFg
-	 Pul48tJL1Pwu8Ib/hRfHU7x3D1yMfruZVwWRsJnlX5tRkK59DqdtSbaHfW17+RelGn
-	 DeeoW1YEOcFig==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D45FBC395C5;
-	Tue,  2 Jan 2024 14:30:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30C1712E5E;
+	Tue,  2 Jan 2024 14:31:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7F57A40E0197;
+	Tue,  2 Jan 2024 14:31:25 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id jqDK2FPNrzIb; Tue,  2 Jan 2024 14:31:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704205882; bh=3RAVNM7LYaoLfzaXssXlRtBXH/zpslXjygklhi3m5ng=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fpZGWbVemrzkfBr14FKIUKe0YrNibM1g2Dp/r7Dh4PSJHoN72qdY75JFcRFMgJUk+
+	 ThO/GAn6S8t6qiGapDNjq6+V6LApHghQYnY9/f1DDpwdXeLpEJ9QgMgTiZdnEXFfoE
+	 sgxyTakmuxY8nKEEzwOd+p9yNiSyAXaaEMXaffexrsvXvznhr7/W8zMTlzXoRs02nQ
+	 296fp6dbsk43cr/3+DE5z++eC2RyY73USRx86Q6WP/h/sotEtQsXlvvZRvnyUa54V6
+	 TeM8/cnRVqJAwDGJYO/4C4+csL/SL41YnfgBRppkAY6vyJEbytCYrG7owiG5J/xFUR
+	 hhurvQeiaKXshQh7FfNc2pQWNloWf74yU0gKhKfkqX8TT69ry0h55L3fQ2UnkgVTXd
+	 u4U6uO4VpI/RNRe2dq/0HWOPmrYh+8gvIoLUxnvK1bqQviukgWChzQ4WPR0btY8VbU
+	 ZoEfUJFQpmOiHncXWwLnODEhgXW78QnS9AMAZTQTIHVE8GCwf4v7ENvyIKNh4AuCP/
+	 6EQgytnms6kPduZTCsilXmNUrsRZRnSGHAAGr/YZJzb8MCRlg4buKKn5WiZzgVClo2
+	 C8p9xxRsPrPd4TlEcaq3U6BVr7fFW5Fm5csDJoUApsMZ3Ftle4f7AiJjn8TcXgCxrc
+	 A7gKpmmmtennf/PjkFjHHGls=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 757F440E0193;
+	Tue,  2 Jan 2024 14:31:10 +0000 (UTC)
+Date: Tue, 2 Jan 2024 15:31:04 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sev: Fix SEV check in sev_map_percpu_data()
+Message-ID: <20240102143104.GCZZQeKLNY1NJ78uVR@fat_crate.local>
+References: <20240102133747.27053-1-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/8] add octeon_ep_vf driver
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170420582986.19051.12786293440170247050.git-patchwork-notify@kernel.org>
-Date: Tue, 02 Jan 2024 14:30:29 +0000
-References: <20231223134000.2906144-1-srasheed@marvell.com>
-In-Reply-To: <20231223134000.2906144-1-srasheed@marvell.com>
-To: Shinas Rasheed <srasheed@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, hgani@marvell.com,
- vimleshk@marvell.com, sedara@marvell.com, egallen@redhat.com,
- mschmidt@redhat.com, pabeni@redhat.com, kuba@kernel.org, horms@kernel.org,
- wizhao@redhat.com, kheib@redhat.com, konguyen@redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240102133747.27053-1-kirill.shutemov@linux.intel.com>
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Sat, 23 Dec 2023 05:39:52 -0800 you wrote:
-> This driver implements networking functionality of Marvell's Octeon
-> PCI Endpoint NIC VF.
+On Tue, Jan 02, 2024 at 04:37:47PM +0300, Kirill A. Shutemov wrote:
+> The function sev_map_percpu_data() checks if it is running on an SEV
+> platform by checking the CC_ATTR_GUEST_MEM_ENCRYPT attribute. However,
+> this attribute is also defined for TDX.
 > 
-> This driver support following devices:
->  * Network controller: Cavium, Inc. Device b203
->  * Network controller: Cavium, Inc. Device b403
->  * Network controller: Cavium, Inc. Device b103
->  * Network controller: Cavium, Inc. Device b903
->  * Network controller: Cavium, Inc. Device ba03
->  * Network controller: Cavium, Inc. Device bc03
->  * Network controller: Cavium, Inc. Device bd03
+> To avoid false positives, add a cc_vendor check.
 > 
-> [...]
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-Here is the summary with links:
-  - [net-next,v2,1/8] octeon_ep_vf: Add driver framework and device initialization
-    https://git.kernel.org/netdev/net-next/c/ebdc193b2ce2
-  - [net-next,v2,2/8] octeon_ep_vf: add hardware configuration APIs
-    https://git.kernel.org/netdev/net-next/c/5f8c64c2344c
-  - [net-next,v2,3/8] octeon_ep_vf: add VF-PF mailbox communication.
-    https://git.kernel.org/netdev/net-next/c/db468f92c3b9
-  - [net-next,v2,4/8] octeon_ep_vf: add Tx/Rx ring resource setup and cleanup
-    https://git.kernel.org/netdev/net-next/c/6ca7b5486ebd
-  - [net-next,v2,5/8] octeon_ep_vf: add support for ndo ops
-    https://git.kernel.org/netdev/net-next/c/8f8d322bc47c
-  - [net-next,v2,6/8] octeon_ep_vf: add Tx/Rx processing and interrupt support
-    https://git.kernel.org/netdev/net-next/c/77cef1e02104
-  - [net-next,v2,7/8] octeon_ep_vf: add ethtool support
-    https://git.kernel.org/netdev/net-next/c/50648968b3e3
-  - [net-next,v2,8/8] octeon_ep_vf: update MAINTAINERS
-    https://git.kernel.org/netdev/net-next/c/c902ba322cfd
+Fixes: 4d96f9109109 ("x86/sev: Replace occurrences of sev_active() with cc_platform_has()")
+Suggested-by: Borislav Petkov (AMD) <bp@alien8.de>
 
-You are awesome, thank you!
+Thx.
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Regards/Gruss,
+    Boris.
 
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
