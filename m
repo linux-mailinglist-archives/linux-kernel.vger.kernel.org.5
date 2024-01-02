@@ -1,160 +1,239 @@
-Return-Path: <linux-kernel+bounces-14934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9DC48224A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:22:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE2328224A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:22:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C71321C22B5B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:22:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D432B21586
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:22:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F327D1773D;
-	Tue,  2 Jan 2024 22:22:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57F47171D6;
+	Tue,  2 Jan 2024 22:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rl0TtHe0"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OFw+aqMg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD9ED171BA;
-	Tue,  2 Jan 2024 22:21:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6d9ac5bd128so2475813b3a.0;
-        Tue, 02 Jan 2024 14:21:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704234117; x=1704838917; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e31awxvnUFU2mzL1bStxukrBXES4Vp8ekijyPrTWOWY=;
-        b=Rl0TtHe06kkTcmVCV9mQKpAMeESgJL9FtPq5CzhQPgFQUvv1gbaU8uccg4OtMdR6mI
-         VfRX7StpWxF8va5/2fPQh1LKFBgRsiR009J1uqf95uEhDghS4OZHk8bDqJKBJ2AISz5S
-         6GBR+wyVaoLAuGlf0QE8A3oKMt0rLS50Sxgiizt1wi60LhmNN2h93JD+HxNd5rWF35uN
-         vEEwlGYizSBhkij8JvyenvfocdT8n4NQYq2pCVahPHSaEyO4/DZLOvhksXeMf8f2yTSz
-         j0bTtKwxCLY7pFtP1AiQAfmT45Hb4+sXptRUC/gKjBv9HVYvRAWBmHlukyAL/Rd0674f
-         PNVQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90469171BB
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 22:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704234114;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RshiW/YYDsnsJFyUGAY3lZJunQEflUHgqX3fmfeIPig=;
+	b=OFw+aqMgPiJ+PdzsXosLmlauazCgwsu1urt2PJd9oS9vc9BknKT01zn6N7L8DGIa8awogi
+	HhDeYaqbvYhx5TyYHSCMqgW/zCZGlpA61gaNck/Mjybap844Wk53Zmlb648E5kohScy1/z
+	UWf2oR5J9yN1c5q3fGpS4qFNyxh/O+o=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-240-HwQH1ykqPnmhPBBZ9fdsgA-1; Tue, 02 Jan 2024 17:21:53 -0500
+X-MC-Unique: HwQH1ykqPnmhPBBZ9fdsgA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-336a41f0cc3so5942382f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 14:21:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704234117; x=1704838917;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e31awxvnUFU2mzL1bStxukrBXES4Vp8ekijyPrTWOWY=;
-        b=nm4d+2s17uPDO1twkQpvmuL5TAPgOVj0tEb1DS6CRrzcUpOM7A/uxACYGQ5EwMr9rp
-         l8kPs3A8erZLmIIjRrNTImu7VPnrSKL1wxy9e4rjtHvC7uB1QifP97+m7ML6myP7nSzh
-         ukYdK5+CAdzrr1e4G5Y4dUIu055BPO2BQSe7VBDS/6J84Tp2/GoC4cr+lHgX8ObcAb/5
-         QqFQ3Ja+IFGZZdNoxFC4jsgygmrjF6t6p0PJfjKgyhdEPimjqG9I72puOW2/12S9pNFc
-         bRMbnlqyKY9zbtWPsC72VA5g4SqL3ApZ/fMWitHGmO7vCRlVN0GMkxhGVW9hGTFWWlBU
-         WvuQ==
-X-Gm-Message-State: AOJu0YzVhxxW1LYg89nsDXyU8dg62E8YMzl2D3m/JsjBmYxzWHZNZ+IB
-	scrS37Za1jypXXFPWqDyasBvRt/IaI4zdg7TRJM96n3NnSJFMg==
-X-Google-Smtp-Source: AGHT+IF4q554b9sLQVLtVZ08bE6rxFhxwopWzqxMSE3grwFwt2Kc5KyI/G+0Qjk7LBoyfe8cXL6WefeuxRmg9a+xtXQ=
-X-Received: by 2002:a05:6a20:f9f:b0:18f:97c:8263 with SMTP id
- ga31-20020a056a200f9f00b0018f097c8263mr6190446pzb.109.1704234117108; Tue, 02
- Jan 2024 14:21:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704234112; x=1704838912;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RshiW/YYDsnsJFyUGAY3lZJunQEflUHgqX3fmfeIPig=;
+        b=Y8O7LUQMTS94GXThmyjQLwaCthT5fWcAhuTHaTPEhtHctDMpy10PwykgmAetKc2kMm
+         V8GytQE9hqox+8SDaUUcGdRsbggbz0Etek9Wy1uoiOnJwfz8WnTS81tiq2MUdsXdeqMJ
+         duLzALf1h3/1WSFD1VZkPusXt0uQZueTG6w+SjDq3QmxBDfsZs8sqj1jT++WmmOZhwkZ
+         75Cr2PgMsnW3YS6pEn4hsZCX+VXotwP/8x69KUiBVqAsyFEiSB7dz2XEZPSbKSdJ5GCq
+         NHq9ZUwoSjg8l4JbXJ7wYAQZcCsSdbuGBlC7HaW2DnBzoZQNuVs6YgirU4Onq572ATwL
+         uEpQ==
+X-Gm-Message-State: AOJu0YyUj2c7gE6DzzBV9yL3+FcwIVzifBBJlz0Y8mt6KpBDIinDfkRg
+	Ly77dIvn6DD/k6uiKvqMR9J3S3f2erMSDDHXfYRooOUAHVjb6g7PZQXdyGRTqsNPJAlhXMTYPt1
+	SRuqOLvgmFsZjrjboitGrlp0T2Tp9SnFF
+X-Received: by 2002:a05:600c:348b:b0:40d:900a:73fb with SMTP id a11-20020a05600c348b00b0040d900a73fbmr46500wmq.65.1704234112070;
+        Tue, 02 Jan 2024 14:21:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHttI9eUM+Qn9TcD1hg1dJMoZ4pPtRP0PZJy071YvTYKD1xOPdFR2WiqYRxkhiRo/VCjHX3oQ==
+X-Received: by 2002:a05:600c:348b:b0:40d:900a:73fb with SMTP id a11-20020a05600c348b00b0040d900a73fbmr46498wmq.65.1704234111753;
+        Tue, 02 Jan 2024 14:21:51 -0800 (PST)
+Received: from starship ([147.235.223.38])
+        by smtp.gmail.com with ESMTPSA id l26-20020a1c791a000000b0040d839de5c2sm303457wme.33.2024.01.02.14.21.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 14:21:51 -0800 (PST)
+Message-ID: <481be19e33915804c855a55181c310dd8071b546.camel@redhat.com>
+Subject: Re: RFC: NTP adjustments interfere with KVM emulation of TSC
+ deadline timers
+From: Maxim Levitsky <mlevitsk@redhat.com>
+To: Jim Mattson <jmattson@google.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, Paolo Bonzini
+ <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, Marc
+ Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Vitaly
+ Kuznetsov <vkuznets@redhat.com>
+Date: Wed, 03 Jan 2024 00:21:49 +0200
+In-Reply-To: <CALMp9eSy2r+iUzqHV+V2mbPaPWfn=Y=a1aM+9C65PGtE0=nGqA@mail.gmail.com>
+References: <20c9c21619aa44363c2c7503db1581cb816a1c0f.camel@redhat.com>
+	 <CALMp9eSy2r+iUzqHV+V2mbPaPWfn=Y=a1aM+9C65PGtE0=nGqA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1704157631-3814-1-git-send-email-zhouzhouyi@gmail.com> <20240102194209.39dac963@jic23-huawei>
-In-Reply-To: <20240102194209.39dac963@jic23-huawei>
-From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date: Wed, 3 Jan 2024 06:21:46 +0800
-Message-ID: <CAABZP2y1ptNm2KMQ7tGttMgFFCMPS0=CjyfxYJkR8P1thEWA9Q@mail.gmail.com>
-Subject: Re: [PATCH v3] iio: magnetometer: rm3100: add boundary check for the
- value read from RM3100_REG_TMRC
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: songqiang1304521@gmail.com, lars@metafoo.de, linux-iio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, "zhili.liu" <zhili.liu@ucas.com.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 3, 2024 at 3:42=E2=80=AFAM Jonathan Cameron <jic23@kernel.org> =
-wrote:
->
-> On Tue,  2 Jan 2024 09:07:11 +0800
-> zhouzhouyi@gmail.com wrote:
->
-> > From: "zhili.liu" <zhili.liu@ucas.com.cn>
-> >
-> > Recently, we encounter kernel crash in function rm3100_common_probe
-> > caused by out of bound access of array rm3100_samp_rates (because of
-> > underlying hardware failures). Add boundary check to prevent out of
-> > bound access.
-> >
-> > Fixes: 121354b2eceb ("iio: magnetometer: Add driver support for PNI RM3=
-100")
-> Fixes is a formal tag so needs to be part of the main tags block
-> (i.e. No blank line here!)
->
-> I'll fix that whilst applying.
-Thank you for helping us modify the patch, I learned a lot during this
-process, thanks
->
-> >
-> > Suggested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > Signed-off-by: zhili.liu <zhili.liu@ucas.com.cn>
-> > ---
-> >  drivers/iio/magnetometer/rm3100-core.c | 9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/iio/magnetometer/rm3100-core.c b/drivers/iio/magne=
-tometer/rm3100-core.c
-> > index 69938204456f..12c2e3b0aeb6 100644
-> > --- a/drivers/iio/magnetometer/rm3100-core.c
-> > +++ b/drivers/iio/magnetometer/rm3100-core.c
-> > @@ -530,6 +530,7 @@ int rm3100_common_probe(struct device *dev, struct =
-regmap *regmap, int irq)
-> >       struct rm3100_data *data;
-> >       unsigned int tmp;
-> >       int ret;
-> > +     int samp_rate_index;
-> >
-> >       indio_dev =3D devm_iio_device_alloc(dev, sizeof(*data));
-> >       if (!indio_dev)
-> > @@ -586,8 +587,14 @@ int rm3100_common_probe(struct device *dev, struct=
- regmap *regmap, int irq)
-> >       ret =3D regmap_read(regmap, RM3100_REG_TMRC, &tmp);
-> >       if (ret < 0)
-> >               return ret;
-> > +
-> > +     samp_rate_index =3D tmp - RM3100_TMRC_OFFSET;
-> > +     if (samp_rate_index < 0 || samp_rate_index >=3D  RM3100_SAMP_NUM)=
- {
-> > +             dev_err(dev, "The value read from RM3100_REG_TMRC is inva=
-lid!\n");
-> > +             return -EINVAL;
-> > +     }
-> >       /* Initializing max wait time, which is double conversion time. *=
-/
-> > -     data->conversion_time =3D rm3100_samp_rates[tmp - RM3100_TMRC_OFF=
-SET][2]
-> > +     data->conversion_time =3D rm3100_samp_rates[samp_rate_index][2]
-> >                               * 2;
-> I've rewrapped this to be on one line whilst applying. Make sure to check=
- for
-> side effects like this when updating code.  If we don't tidy it up at the=
- time
-> we end up with gradually worse formatting over a long period!
-Thank you for fixing that for us.
->
-> Applied to the fixes-togreg branch of iio.git and marked for stable.
-I saw the commit on the fixes-togreg branch of iio.git, exciting!
-I learned a lot from it ;-)
+On Thu, 2023-12-21 at 11:09 -0800, Jim Mattson wrote:
+> On Thu, Dec 21, 2023 at 8:52 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
+> > 
+> > Hi!
+> > 
+> > Recently I was tasked with triage of the failures of 'vmx_preemption_timer'
+> > that happen in our kernel CI pipeline.
+> > 
+> > 
+> > The test usually fails because L2 observes TSC after the
+> > preemption timer deadline, before the VM exit happens.
+> > 
+> > This happens because KVM emulates nested preemption timer with HR timers,
+> > so it converts the preemption timer value to nanoseconds, taking in account
+> > tsc scaling and host tsc frequency, and sets HR timer.
+> > 
+> > HR timer however as I found out the hard way is bound to CLOCK_MONOTONIC,
+> > and thus its rate can be adjusted by NTP, which means that it can run slower or
+> > faster than KVM expects, which can result in the interrupt arriving earlier,
+> > or late, which is what is happening.
+> > 
+> > This is how you can reproduce it on an Intel machine:
+> > 
+> > 
+> > 1. stop the NTP daemon:
+> >       sudo systemctl stop chronyd.service
+> > 2. introduce a small error in the system time:
+> >       sudo date -s "$(date)"
+> > 
+> > 3. start NTP daemon:
+> >       sudo chronyd -d -n  (for debug) or start the systemd service again
+> > 
+> > 4. run the vmx_preemption_timer test a few times until it fails:
+> > 
+> > 
+> > I did some research and it looks like I am not the first to encounter this:
+> > 
+> > From the ARM side there was an attempt to support CLOCK_MONOTONIC_RAW with
+> > timer subsystem which was even merged but then reverted due to issues:
+> > 
+> > https://lore.kernel.org/all/1452879670-16133-3-git-send-email-marc.zyngier@arm.com/T/#u
+> > 
+> > It looks like this issue was later worked around in the ARM code:
+> > 
+> > 
+> > commit 1c5631c73fc2261a5df64a72c155cb53dcdc0c45
+> > Author: Marc Zyngier <maz@kernel.org>
+> > Date:   Wed Apr 6 09:37:22 2016 +0100
+> > 
+> >     KVM: arm/arm64: Handle forward time correction gracefully
+> > 
+> >     On a host that runs NTP, corrections can have a direct impact on
+> >     the background timer that we program on the behalf of a vcpu.
+> > 
+> >     In particular, NTP performing a forward correction will result in
+> >     a timer expiring sooner than expected from a guest point of view.
+> >     Not a big deal, we kick the vcpu anyway.
+> > 
+> >     But on wake-up, the vcpu thread is going to perform a check to
+> >     find out whether or not it should block. And at that point, the
+> >     timer check is going to say "timer has not expired yet, go back
+> >     to sleep". This results in the timer event being lost forever.
+> > 
+> >     There are multiple ways to handle this. One would be record that
+> >     the timer has expired and let kvm_cpu_has_pending_timer return
+> >     true in that case, but that would be fairly invasive. Another is
+> >     to check for the "short sleep" condition in the hrtimer callback,
+> >     and restart the timer for the remaining time when the condition
+> >     is detected.
+> > 
+> >     This patch implements the latter, with a bit of refactoring in
+> >     order to avoid too much code duplication.
+> > 
+> >     Cc: <stable@vger.kernel.org>
+> >     Reported-by: Alexander Graf <agraf@suse.de>
+> >     Reviewed-by: Alexander Graf <agraf@suse.de>
+> >     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+> >     Signed-off-by: Christoffer Dall <christoffer.dall@linaro.org>
+> > 
+> > 
+> > So to solve this issue there are two options:
+> > 
+> > 
+> > 1. Have another go at implementing support for CLOCK_MONOTONIC_RAW timers.
+> >    I don't know if that is feasible and I would be very happy to hear a feedback from you.
+> > 
+> > 2. Also work this around in KVM. KVM does listen to changes in the timekeeping system
+> >   (kernel calls its update_pvclock_gtod), and it even notes rates of both regular and raw clocks.
+> > 
+> >   When starting a HR timer I can adjust its period for the difference in rates, which will in most
+> >   cases produce more correct result that what we have now, but will still fail if the rate
+> >   is changed at the same time the timer is started or before it expires.
+> > 
+> >   Or I can also restart the timer, although that might cause more harm than
+> >   good to the accuracy.
+> > 
+> > 
+> > What do you think?
+> 
+> Is this what the "adaptive tuning" in the local APIC TSC_DEADLINE
+> timer is all about (lapic_timer_advance_ns = -1)?
 
-Thanks again
-Thanks,
-Zhouyi
->
-> Thanks,
->
-> Jonathan
->
-> >
-> >       /* Cycle count values may not be what we want. */
->
+
+Hi,
+
+I don't think that 'lapic_timer_advance' is designed for that but it does
+mask this problem somewhat.
+
+The goal of 'lapic_timer_advance' is to decrease time between deadline passing and start
+of guest timer irq routine by making the deadline happen a bit earlier (by timer_advance_ns), and then busy-waiting 
+(hopefully only a bit) until the deadline passes, and then immediately do the VM entry.
+
+This way instead of overhead of VM exit and VM entry that both happen after the deadline,
+only the VM entry happens after the deadline.
+
+
+In relation to NTP interference: If the deadline happens earlier than expected, then
+KVM will busy wait and decrease the 'timer_advance_ns', and next time the deadline
+will happen a bit later thus adopting for the NTP adjustment somewhat.
+
+Note though that 'timer_advance_ns' variable is unsigned and adjust_lapic_timer_advance can underflow
+it, which can be fixed.
+
+Now if the deadline happens later than expected, then the guest will see this happen, 
+but at least adjust_lapic_timer_advance should increase the 'timer_advance_ns' so next
+time the deadline will happen earlier which will also eventually hide the problem.
+
+So overall I do think that implementing the 'lapic_timer_advance' for nested VMX preemption timer
+is a good idea, especially since this feature is not really nested in some sense - the timer is
+just delivered as a VM exit but it is always delivered to L1, so VMX preemption timer can 
+be seen as just an extra L1's deadline timer.
+
+I do think that nested VMX preemption timer should use its own value of timer_advance_ns, thus
+we need to extract the common code and make both timers use it. Does this make sense?
+
+Best regards,
+	Maxim Levitsky
+
+
+>  If so, can we
+> leverage that for the VMX-preemption timer as well?
+> > Best regards,
+> >         Maxim Levitsky
+> > 
+> > 
+> > 
+
+
+
+
 
