@@ -1,152 +1,146 @@
-Return-Path: <linux-kernel+bounces-14906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67215822463
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:03:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0792822467
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:04:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3E8F283D2C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:03:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25E4C1F23800
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52FFC1803D;
-	Tue,  2 Jan 2024 21:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1E3182BF;
+	Tue,  2 Jan 2024 21:58:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ERCXYkmD"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oMGifK9S"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15DA81802D;
-	Tue,  2 Jan 2024 21:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2ccec119587so39886251fa.0;
-        Tue, 02 Jan 2024 13:57:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C21F18629
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a26fa294e56so630673566b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:58:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704232669; x=1704837469; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZrAMhCdZp/DH6n9t5/40nGjHO+BryyqAdvgXAu3yxZg=;
-        b=ERCXYkmD0SYi/uUaACZWyOsk163y6DC0yQsSzONhZelq8wu5oOtPOfr+n12vBnWjiP
-         w3mJ6qC5PAGao6C+8cEgG4zz0e9bRjpYzG9RCacT8R+IjZYxR52gJmhV3X8T0cWKM/b/
-         KPf23vrHbBtGJbVoVGl9DYZSznt9kjYKHPu6YhDx34wrnq4Z+9v762zeM3S8N1LngSf0
-         e0bxDG8qtm5rESA76khYforZC5VtqfmLASL/h3Kme/mNh9PuMgjOHP0e0YpVc5CBDB2/
-         KMbiJft/H6K0VFy5OGvagLGc49tU9j7pn+K/kWXV4a5aG0cPKEFDowbRaH12YGFfkkue
-         p+VQ==
+        d=linaro.org; s=google; t=1704232729; x=1704837529; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=lHJy85+7TLRzk/78Sps6i5Kou/fAYiZr6UV6VpAliiQ=;
+        b=oMGifK9SD5ehvV/0aXTjuv0Ylfh/CPqzxvK/gf+oNBeVt8dkqpxNnRD6LvlQ9fNHLj
+         6mhLdpsQv/vpS6FoqyjHqopG1pnPsLTjFRosMfR364dSFXWTLWHeibRC2Jp5OVUT/saE
+         vzVhJ6aMYTNp8ezoBAiG3CFsc0slEi7SVmvJNJDe9EZKaa/MYDbcOjaksFNa7lNZvIZa
+         Ntx6rdm2L3zo2yIb2nhzt6nkLGHoo6qyviuBlbRCm8gavJjS3jhmTurZBPa/fwrJ+/4X
+         5oKgAIxEVVBz1p5abgSN+N1BVMriXWRTe6eEg4EoKiyRh9sNKlZ1BO8KkmkuD653AMBk
+         eG5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704232669; x=1704837469;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZrAMhCdZp/DH6n9t5/40nGjHO+BryyqAdvgXAu3yxZg=;
-        b=MQrKBgmk1eXok/pqVET80cxO39Q+z+FtIdbiwlDkrcy77Kk+odzr8UrhZFhGpQH3G1
-         5clNYviXt/QV9tvGPJc8ctVYHyw3IdSq6N+znaVPK9ChRoyI+E2WV2CTi6uGBIpt7sIq
-         VUZeH19rvcMclfvGQOwRIR8QzecwhdzQUgAa/4wYYZFUH5M2sJVGTquBvZnDBv6ElvUd
-         VIw6OrqIsLhTAwTjWNFvoyRx3+j9v72qsDSNSsh5Tw4zqEHA6WRCWVXsV/I15VXPnc9x
-         whmUC+6CVVC6I2UXeHEjznx71306V4yByp+yJ2NjWY9EWLU5s8SFud4QwQ7jZxGjQ8mI
-         fqow==
-X-Gm-Message-State: AOJu0YyDIYE/Kh92FwxQ5gbkyCE/vI2ZHhivcUX6s1Y3nsZ61ai1Fmjn
-	6nD+G4dWINcuEP89uTh4D6t4xHbb1dvPQJ3+c1Q=
-X-Google-Smtp-Source: AGHT+IHzUSZtz+OUNX8UQoqMyVVgg5FAvazfZuxlzjRw+s9gJSPpVl5k2CigK3FMR7t54xPqnkPKcDa140v/KOzYRe0=
-X-Received: by 2002:a2e:8902:0:b0:2cc:5780:6915 with SMTP id
- d2-20020a2e8902000000b002cc57806915mr8428433lji.10.1704232668610; Tue, 02 Jan
- 2024 13:57:48 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704232729; x=1704837529;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lHJy85+7TLRzk/78Sps6i5Kou/fAYiZr6UV6VpAliiQ=;
+        b=sdLIXf66ZfxnOpeTPxN2vcqfo4SFvSKScP0XApJBcO5lwQ2tAry6IymMlINt2c8QGQ
+         jyruzsMY6D+zOZ0ahOTR+dIe/HsHzbMnRTckrRm28kFgkim5CtxFn1UUpn1Qxf8NWm8H
+         uGoIc2pyinE1yZxg7FQNjX2ePx/w2bFmDUkUup05SBtE6ASStZN7zQ+dhXEm2mzOjXiu
+         pNFZAcYvEvXxRDzsOwos3gGPimy/ZJxNnZR8PEBaZwVow6EgZrN4kiGsp9ChUe985q80
+         QiNawY8azRge1fhTKNGi8lemdVET1VW1S0uoZfETUhHE0cr21tRPvSogkO5ZwnZKHhxL
+         RQhQ==
+X-Gm-Message-State: AOJu0YwAF5T+ueawWI1yrusDiOXH57z5faXw3FLD3hFVwVpRdDcFXZ9m
+	pkhCzaI2OzUaz3Qz493FZQQaVG2Ivh3mVw==
+X-Google-Smtp-Source: AGHT+IFIHQe3frel2Y84wxUwyRKTsbeBBr4IW+wot2CBsPnws8SbyytPBldCKAcr2B0L/MKfUeQdnw==
+X-Received: by 2002:a17:906:3389:b0:a27:e17a:8858 with SMTP id v9-20020a170906338900b00a27e17a8858mr2135106eja.108.1704232728832;
+        Tue, 02 Jan 2024 13:58:48 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id q23-20020a170906771700b00a26f1f36708sm8165521ejm.78.2024.01.02.13.58.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jan 2024 13:58:48 -0800 (PST)
+Message-ID: <a780d27e-194d-44ca-b6cf-f9c43f47b557@linaro.org>
+Date: Tue, 2 Jan 2024 22:58:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220045228.27079-2-luizluca@gmail.com> <ZZPtUIRerqTI2/yh@shell.armlinux.org.uk>
-In-Reply-To: <ZZPtUIRerqTI2/yh@shell.armlinux.org.uk>
-From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Date: Tue, 2 Jan 2024 18:57:35 -0300
-Message-ID: <CAJq09z61JRNOBy6zLJ+D2pOVP-FCkofLjNghHSOkFJ=5q=6utQ@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: mdio: get/put device node during (un)registration
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: netdev@vger.kernel.org, andrew@lunn.ch, hkallweit1@gmail.com, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 02/22] dt-bindings: soc: qcom: qcom,saw2: add missing
+ compatible strings
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Andy Gross <agross@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org
+References: <20240102-saw2-spm-regulator-v7-0-0472ec237f49@linaro.org>
+ <20240102-saw2-spm-regulator-v7-2-0472ec237f49@linaro.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240102-saw2-spm-regulator-v7-2-0472ec237f49@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> On Wed, Dec 20, 2023 at 01:52:29AM -0300, Luiz Angelo Daros de Luca wrote:
-> > The __of_mdiobus_register() function was storing the device node in
-> > dev.of_node without increasing its reference count. It implicitly relied
-> > on the caller to maintain the allocated node until the mdiobus was
-> > unregistered.
-> >
-> > Now, __of_mdiobus_register() will acquire the node before assigning it,
-> > and of_mdiobus_unregister_callback() will be called at the end of
-> > mdio_unregister().
-> >
-> > Drivers can now release the node immediately after MDIO registration.
-> > Some of them are already doing that even before this patch.
-> >
-> > Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
->
-> I don't like this, certainly not the use of a method prefixed by a
-> double-underscore, and neither the conditional nature of "putting"
-> this. That alone seems to point to there being more issues.
+On 02/01/2024 06:17, Dmitry Baryshkov wrote:
+> Define compatible strings for SAW2 units present on MSM8960, IPQ4019
+> and IPQ8064.  There is no need to include SAW version into the compat
+> string, so just use the SoC and SAW2 kind.
+> 
+> Also add missing L2 SAW2 compatibles for MSM8974 and APQ8084, they
+> follow the existing CPU SAW2 strings.
+> 
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Thanks Russel.
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-At least one driver (bcm_sf2_mdio_register) is writing directly to the
-mii_bus->dev.of_node and not using of_mdiobus_register(). We should
-not put a node in the MDIO bus if the bus didn't get it before. That's
-the reason for the conditional putting the node.
+Best regards,
+Krzysztof
 
-I wasn't sure about the names. What would be an appropriate name? The
-same without the prefix? In order to put the node only when the bus
-was registered by __of_mdiobus_register, I opted for a callback but it
-might be a better approach.
-
-> I also notice that netdev have applied this without *any* review from
-> phylib maintainers. Grr.
-
-Some reviews are required. Should we revert it?
-
-> Indeed there are more issues with the refcounting here. If one looks at
-> drivers/net/phy/mdio_bus.c::of_mdiobus_link_mdiodev(), we find this:
->
->                 if (addr == mdiodev->addr) {
->                         device_set_node(dev, of_fwnode_handle(child));
->                         /* The refcount on "child" is passed to the mdio
->                          * device. Do _not_ use of_node_put(child) here.
->                          */
->                         return;
->
-> but there is nowhere that this refcount is dropped.
-
-The same file where we have the get should also contain the put,
-ideally in a reverse function like register/unregister. It is too easy
-to miss a put that should happen in a different context.
-fixed_phy_unregister seems to be one case where it put that node after
-phy_device_remove() but I didn't investigate it further if that was
-related to a different of_node_get. mdiobus_unregister_device might be
-a nice place to fit that put but I'm not an expert in MDIO API.
-
-> Really, the patch should be addressing the problem rather than putting
-> a sticky-plaster over just one instance of it.
-
-I'm trying to address an issue I ran into while modifying a DSA
-driver. We have drivers putting the node passed to of_mdiobus_register
-just after it returns. In my option, it feels more natural and this
-patch fixes that scenario.
-Other drivers keep that reference until the driver is removed, which
-might still be too soon without this patch. I guess putting the node
-should happen between mdiobus_unregister and mdiobus_free. If the
-driver uses devm variants, it does not control the code between those
-two methods and it should just hope that it is enough to put the node
-as its last step.
-
-I issue that the child node you pointed to should also be addressed.
-However, I think they are two different but related issues. Any place
-we see a device_set_node(), we should see a of_node_get before and a
-of_node_put when the device is gone.
-
-Regards,
-
-Luiz
 
