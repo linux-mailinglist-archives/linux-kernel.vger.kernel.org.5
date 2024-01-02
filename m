@@ -1,148 +1,162 @@
-Return-Path: <linux-kernel+bounces-14026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14BFA821718
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:17:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9B8E82171C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:17:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B20042821BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 05:17:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5CC81C21128
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 05:17:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD57710F3;
-	Tue,  2 Jan 2024 05:17:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D37D0110C;
+	Tue,  2 Jan 2024 05:17:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="d57lkx+u"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YLzeU8jd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF4FED6
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 05:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5c1f8b0c149so2149015a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 21:17:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6743720F5
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 05:17:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50e6ee8e911so7390389e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 21:17:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1704172620; x=1704777420; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y0+e9jXb1APHsr8+SSFKuSYagZvt9QzyAw+8MedzV9k=;
-        b=d57lkx+u8DPZTyQ8PYYKSW17kBEU23T7rg/NVa/PDzZIMyd1RDdGBPdUtwBm5TB8XR
-         jcoupajoOZ4YxxgqIEJ7XAtticgg/EDWSGhKR3NzXLmc4ao/zBzFb479qS6AuJZOAZWi
-         /XWrqEb2g14EzpthImr8Wxd0V8m32mhfEJ8bcQKi9rcZWw5uI39EVkm6WRBjesGuIy4i
-         ewrVZeWqTZCaSOfj/HMfI1EvxCwOkuaZWtMc9AfglGuFy4MRBZHmIchpWdjdGqryONro
-         2NJMd1bgWayHKHpWzUn393LTPgKLGBENxKACeWjJOFY6T7S/lVT4L5JRSoLXVCMEs9/Q
-         dO8Q==
+        d=linaro.org; s=google; t=1704172648; x=1704777448; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oKdUrJNCReC9eOhzNwa7lHUNCx2+g7VDaGVelraoPhQ=;
+        b=YLzeU8jdrsWivVFLipzgSmp+OICTbp3MH5vsAIiwYXRARuqGZenbxBfAi7KOJV7e2T
+         DyorTE6IXLXvOgrUgLpvidIJAby8cwsDnx7UcYYOurBr+yu4w9HPRbfogQUy0S3hxhik
+         ohY39IbuLt7pVZzEOS/HnTqRhfYx/0dRBoXQwxE68sVppmd5KlyByIsqpkLXW2sor62j
+         JNYqwXNE/Ho3eB8jtnp/z4AN15K/cY6njIXtC7D493JRPSRtXXKs3hXlJyD3YApNv0Os
+         v/VF6xiRdAhr5H4tcAibS4oJRWWLnwb80CJ8LpeDv1DQtoyHCF5UEbp2ZSpt4OsATWTn
+         gofg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704172620; x=1704777420;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y0+e9jXb1APHsr8+SSFKuSYagZvt9QzyAw+8MedzV9k=;
-        b=HMMgWfoTSF12HpgTUqOI3rr/r/xIpRnYedLnjSyJvfqKX+BmTEGiDFCkYWTWezm2kc
-         pGrUdait3llJnaF5i+2xOE5eR25f4fQfNZ6hr8HVR5dLZiTR3ukZZcLL04qa436ziCL5
-         pLIqRhom5k8ZIwONEzZ/ZpgL4Ng7Uz4CTKeHMVoxHF6MDtS7SW1kqV7f2i9qJVBzMZV4
-         68RMvLK9oSPrZjz9vFbfFvlkZ+DBDov3PqFMBrMtrjJR/T4EW1cDVk3DyRntPClsrMr7
-         asTkkc7IkKvj9t9wdD9WgpOnHWvcr0OSRuUeUygU5ewajy2NfO7XP/nXv+QYu29Op+T8
-         mJhw==
-X-Gm-Message-State: AOJu0Yzu7t1wKLy9d5+tqSTHxwydVxGiXR96YaD1F1h4H7+hhfd9clml
-	+wnrMnPTO8zR/0TT38FgkaLUuOXb1przWg==
-X-Google-Smtp-Source: AGHT+IG1JRqn+7/ZW5uKjjHFyDuCLIb0RjG51YBmpY/IphE+PQuOa/LY7hCZn9t+tAnGTUHZvtHBUw==
-X-Received: by 2002:a17:902:f814:b0:1d4:58eb:d901 with SMTP id ix20-20020a170902f81400b001d458ebd901mr5578770plb.41.1704172620140;
-        Mon, 01 Jan 2024 21:17:00 -0800 (PST)
-Received: from ?IPv6:2402:7500:5d5:d389:6cac:304c:13db:9f1b? ([2402:7500:5d5:d389:6cac:304c:13db:9f1b])
-        by smtp.gmail.com with ESMTPSA id iw19-20020a170903045300b001d077da4ac4sm21114907plb.212.2024.01.01.21.16.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Jan 2024 21:16:59 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+        d=1e100.net; s=20230601; t=1704172648; x=1704777448;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oKdUrJNCReC9eOhzNwa7lHUNCx2+g7VDaGVelraoPhQ=;
+        b=el/KnHX7heXi12pGTcPAapOZsfVZOtz59BZUhO2+PHzwcBnEeAsD+CuD9EeXGS36Ad
+         xc+Tq23gng+y8GXjWAj3f+b4+Xi5rSOGfgYrxKfQIIJIu3ecZrO4L8cFitEGsxypjdno
+         CNUpLu0gOHjlUXJhJ4diP3IwPURrVkg5e43XwFVMr09XXkn5jtjoAyuarR9RuG2ZqONa
+         j+hO5QK6I80YOVI/KM8ixL2Xw9kWTM3HOXOMpqif6ay4u4/+gH911BZjjZcxXVoZ3XHr
+         7kJWJCONZytVeSETPQjg9VXIS8LcepUFiwEDpiI84glAx6hsgT8pUDWe/yV/iWxQlEtA
+         mUXg==
+X-Gm-Message-State: AOJu0YzH7eBYc0d/S9sh5CjMjDKNW+iPnUp79hHQC9J6AfmgunJwCv5E
+	nBROV7ZyiDHneNA8U2rljIRQw07M6/9PVA==
+X-Google-Smtp-Source: AGHT+IH9Ux8fGS3Kjpth3HOJrmmqp91o+F0uRMGNzThcSjvbmBy78jjYmKqmwlAc2rflwCcfe9Z0iQ==
+X-Received: by 2002:ac2:5e6a:0:b0:50e:935a:ca83 with SMTP id a10-20020ac25e6a000000b0050e935aca83mr1785675lfr.91.1704172647723;
+        Mon, 01 Jan 2024 21:17:27 -0800 (PST)
+Received: from umbar.lan ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id r25-20020ac252b9000000b0050e810689e5sm2081827lfm.33.2024.01.01.21.17.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jan 2024 21:17:27 -0800 (PST)
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: [PATCH v7 00/22] soc: qcom: spm: add support for SPM regulator
+Date: Tue, 02 Jan 2024 07:17:20 +0200
+Message-Id: <20240102-saw2-spm-regulator-v7-0-0472ec237f49@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
-Subject: Re: [PATCH v3 00/12] RISC-V: provide some accelerated cryptography
- implementations using vector extensions
-From: Jerry Shih <jerry.shih@sifive.com>
-In-Reply-To: <20231230035112.GC770@quark.localdomain>
-Date: Tue, 2 Jan 2024 13:16:54 +0800
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>,
- herbert@gondor.apana.org.au,
- davem@davemloft.net,
- conor.dooley@microchip.com,
- ardb@kernel.org,
- conor@kernel.org,
- heiko@sntech.de,
- phoebe.chen@sifive.com,
- hongrong.hsu@sifive.com,
- linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- linux-crypto@vger.kernel.org,
- Andy Chiu <andy.chiu@sifive.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <EED7F0DA-5619-411B-82A2-7926155E9B73@sifive.com>
-References: <20231205092801.1335-1-jerry.shih@sifive.com>
- <20231222054827.GE52600@quark.localdomain>
- <20231230035112.GC770@quark.localdomain>
-To: Eric Biggers <ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3445.9.7)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAGGck2UC/zXMTQ6CMBBA4auQrh3SHwzgynsYF2OZQiNQMq0oI
+ dzdxsTlt3hvF5HYUxSXYhdMq48+zBn1qRB2wLkn8F220FJXUkkFEd8a4jIBU/8aMQUGdNI1yqq
+ z7azI4cLk/Oc3vd2zHYcJ0sCE/5VRWjZSVpWqS2Nao9sWFHSTT7yVD+QtDs+wXkc/I4cycC+O4
+ wvl1xotqwAAAA==
+To: Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Andy Gross <agross@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, Rob Herring <robh@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3455;
+ i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
+ bh=jUUzlvlRe6+nOTsn7j/oEccAvSac6S7/LU+ktDHJNQQ=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBlk5xiIQpi6N5Sy/VOojLvbNYdI3w/mOqEiHAIw
+ kDGq+AlkEOJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZZOcYgAKCRCLPIo+Aiko
+ 1SpjB/0UnyaxoVFryguBxKe6lprIw23jO7C1eesEx9lxYCZqM7Mz7juGdjas2fbCRO2fY9ejfY8
+ 0VGupbo8WaMsMEX+tQFjWcO91FIE29Pau1fI12HjUyCtfPkxyUZNtbqKSPV3GwqX20goXoBmMtr
+ iacLgWAtu1UbcHIQSTb3BnIh98iasGmvm3CoNg2XcID5mwmYbggA2UL8R5oFqka0aarMv/H+i/s
+ gqXMy67Z6WuKQhRlqU4OpNjmg5ARO/fFJGXv3ZMCpm8v5vntps3yRNlLoBt1a7mJMXUwOWfZpM5
+ o+k7cjmKRQSWn5e7DqITAnCkNScCApjkRrZZ/1qg1Vs7Oyhp
+X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
+ fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-On Dec 30, 2023, at 11:51, Eric Biggers <ebiggers@kernel.org> wrote:
-> Hi Jerry,
-> On Thu, Dec 21, 2023 at 11:48:27PM -0600, Eric Biggers wrote:
->> Hi Jerry,
->>=20
->> On Tue, Dec 05, 2023 at 05:27:49PM +0800, Jerry Shih wrote:
->>> Changelog v2:
->>> - Turn to use simd skcipher interface for AES-CBC/CTR/ECB/XTS and
->>>   Chacha20.
->>=20
->> If I understand correctly, the RISC-V kernel-mode vector support now =
-seems to be
->> heading down the path of supporting softirq context, as I had =
-suggested
->> originally.  With patches 1-2 of Andy Chiu's latest patchset
->> "[v7, 00/10] riscv: support kernel-mode Vector"
->> =
-(https://lore.kernel.org/linux-riscv/20231221134318.28105-1-andy.chiu@sifi=
-ve.com).
->> applied, the kernel has basic support for kernel-mode vector, =
-including in
->> softirq context.
->>=20
->> With that being the case, "skcipher" algorithms can just use the =
-RISC-V vector
->> unit unconditionally, given that skcipher only supports task and =
-softirq
->> context.  Therefore, can you consider undoing your change that added =
-fallbacks
->> using the simd helper (crypto/simd.c)?  Thanks!
->>=20
->=20
-> I had a go at incorporating my suggestions into your patchset, and =
-rebasing the
-> patchset onto riscv/for-next plus the first two patches of "[v9, =
-00/10] riscv:
-> support kernel-mode Vector".  You can get the result from branch =
-"riscv-crypto"
-> of https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git.
-> Everything seems to work (tested in QEMU, as usual).
->=20
-> Please consider using it when you send out v4; thanks!  I can even =
-send it out
-> myself, if you want, but I assume you're still "owning" the patchset.
->=20
-> - Eric
+The apq8064 rework to use cacheinfo takes more than expected, so I've
+spanwed this series. It is an excerpt of the APQ8064 cpufreq series
+[1], so it it continues the version numbering for those patches.
 
-Thank you. I sent the v4 patch.
-Link: =
-https://lore.kernel.org/all/20231231152743.6304-1-jerry.shih@sifive.com/
+The Subsystem Power Manager (SPM) / SPM AutoVoltageScaling Wrapper2
+(SAW2) are hardware blocks used on some of Qualcomm platforms to handle
+the voltage rails. It does this by bypassing RPM and directly
+interfacing the PMIC. Extend current SPM driver to export this
+regulator.
 
--Jerry=
+[1] https://lore.kernel.org/linux-arm-msm/20230827115033.935089-1-dmitry.baryshkov@linaro.org/
+
+Changes since v6:
+- Added SoC-specific compat strings on MSM8960, IPQ4019, IPQ8064
+  platforms (Luca)
+- Fixed saw2 node names on few remaining platforms.
+
+Changes since v5:
+- Added patch that moves SPM structs out of the header file
+- Removed support for L2 SAW regulator (Stephan Gerhold).
+  msm8960/apq8064 do not use this SAW2 to manage this regulator and
+  other platforms will need changes anyway.
+
+---
+Dmitry Baryshkov (22):
+      dt-bindings: soc: qcom: merge qcom,saw2.txt into qcom,spm.yaml
+      dt-bindings: soc: qcom: qcom,saw2: add missing compatible strings
+      dt-bindings: soc: qcom: qcom,saw2: define optional regulator node
+      soc: qcom: spm: remove driver-internal structures from the driver API
+      soc: qcom: spm: add support for voltage regulator
+      ARM: dts: qcom: apq8084: use new compat string for L2 SAW2 unit
+      ARM: dts: qcom: msm8974: use new compat string for L2 SAW2 unit
+      ARM: dts: qcom: msm8960: use SoC-specific compatibles for SAW2 devices
+      ARM: dts: qcom: ipq4019: use SoC-specific compatibles for SAW2 devices
+      ARM: dts: qcom: ipq8064: use SoC-specific compatibles for SAW2 devices
+      ARM: dts: qcom: apq8064: rename SAW nodes to power-manager
+      ARM: dts: qcom: apq8084: rename SAW nodes to power-manager
+      ARM: dts: qcom: msm8960: rename SAW nodes to power-manager
+      ARM: dts: qcom: msm8974: rename SAW nodes to power-manager
+      ARM: dts: qcom: ipq4019: rename SAW nodes to power-manager
+      ARM: dts: qcom: ipq8064: rename SAW nodes to power-manager
+      ARM: dts: qcom: apq8064: declare SAW2 regulators
+      ARM: dts: qcom: msm8960: declare SAW2 regulators
+      ARM: dts: qcom: apq8084: drop 'regulator' property from SAW2 device
+      ARM: dts: qcom: msm8974: drop 'regulator' property from SAW2 device
+      ARM: dts: qcom: ipq4019: drop 'regulator' property from SAW2 devices
+      ARM: dts: qcom: ipq8064: drop 'regulator' property from SAW2 devices
+
+ .../devicetree/bindings/arm/msm/qcom,saw2.txt      |  58 -----
+ .../soc/qcom/{qcom,spm.yaml => qcom,saw2.yaml}     |  45 +++-
+ arch/arm/boot/dts/qcom/qcom-apq8064.dtsi           |  32 ++-
+ arch/arm/boot/dts/qcom/qcom-apq8084.dtsi           |  13 +-
+ arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi           |  25 +-
+ arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi           |  10 +-
+ arch/arm/boot/dts/qcom/qcom-msm8960.dtsi           |  20 +-
+ arch/arm/boot/dts/qcom/qcom-msm8974.dtsi           |  13 +-
+ drivers/soc/qcom/spm.c                             | 254 ++++++++++++++++++++-
+ include/soc/qcom/spm.h                             |  23 +-
+ 10 files changed, 353 insertions(+), 140 deletions(-)
+---
+base-commit: 39676dfe52331dba909c617f213fdb21015c8d10
+change-id: 20240101-saw2-spm-regulator-af0f81c15cdc
+
+Best regards,
+-- 
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
 
