@@ -1,120 +1,115 @@
-Return-Path: <linux-kernel+bounces-14624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BD94821FCE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:58:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CDB2821FD1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:59:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B8011C2256B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:58:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C48801F22D1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:59:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0209515AF7;
-	Tue,  2 Jan 2024 16:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48D81548B;
+	Tue,  2 Jan 2024 16:58:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sTbeuXO7"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IjW4QxnT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C6915AED
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 16:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5ef7c6f4cfcso26525467b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 08:57:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB45114F93
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 16:58:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5f07f9d57b9so22344447b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 08:58:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704214670; x=1704819470; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4472QStNp6Zr1RLAldtMI7Jne10bfsy1ti/c3TxR+2Y=;
-        b=sTbeuXO7zin5KluO+qE6w4bhCBqDWrpbyu71ZjYVZQ61Q/uU/0tolijSQ0xX0oAyX7
-         Ky3rjocPVD0ge5LkVDOxmeTnybINYQB1rbABbfhjOeDeYAkix0CWxp8vXjjwDLvQznWT
-         IZdbnndQRTHFX0GdIxxjsIhjS5OLOYnP3PgU+teCuXiLFOorhnaSxrD1xUUIGRN7luuh
-         FntnnnKBrhKkGum0TPVlKuiBSQY1LbDhLgiCcKqhwmwGdGMmcZPW1PVLsY1OtsKPGrz4
-         sPQQHqcFYQjvgIva/RF5UGbiSlBgMWvwi0QNlAgACNOueLs9CGaIjP8uU3WW4e+fEn3i
-         kIOQ==
+        d=google.com; s=20230601; t=1704214726; x=1704819526; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/kfSvqUQhDDQeZ7w9vi8u82O1MW4zk5hhfYcLpsRKrM=;
+        b=IjW4QxnTXys2dTHJsWz38eoLZWSaTE6apxTe+eRi13iJVSEIpVTfydtj6hFTLJQWk9
+         hKhWJ1i5+qzO2M6z78Mzpbcugv6JUEw/jgsggi/7zhARANmBS77lJj0qXZuquQCuziKk
+         fa8uy3t65HJs8x7QkOWfra5YfWOW5A3YJi36R1JWFJNKLrNSfX9SNikxKyFwtmWIomHA
+         BXbxTyx0Pe7+hAur9pIVN2EKygtbHh1G/zdgXvveQb5sxW8tp17fYMl/PtLN7kiKgn/u
+         YsTl7QNjZwME/8YRVEVWJ2mt4pI1NHwWqOVzfshJoKE7GhTwQ7HpXZ8ggVVqY9bea06T
+         LK0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704214670; x=1704819470;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4472QStNp6Zr1RLAldtMI7Jne10bfsy1ti/c3TxR+2Y=;
-        b=h5dr3U1xCE13WffNhOyxHyUdS8wtjb99lz76FK5Wficv/U6zSqdh0bXG6EQhuqLwE9
-         5r5P2ckwStEZgIjsdQ9pvDLPDxoRBEj2NQIBqzDoX3VJKT2oOWMN0PLHLoiJ8yK1Cf17
-         p4I/cX8STn+QQpVFCqkbOQO3sUwuNT+ryEcVbHf56Ifc4sdfgfUsniWr8iliN6Mza1yH
-         Pr/9wd80TtdTJt81G2KzAFfu2EA0rwozAFBpaxDd9+y347DpfVs3tX7DTZgPHiFWPbIG
-         LBAv1RoVg5X7iTgxsF7OFZnOw4u+D0Fp2miXoI0F5v+Z37h8Q2MpiqIpWw7v2TwEyL5G
-         xMbg==
-X-Gm-Message-State: AOJu0Yykvtaw7O0y8+oCahHQBArqrt3GEoHrPaZuXgG/f5lhilTlBv8E
-	bff48vQOXZLfWyVXrcUHHjhkoeW/bNT2gyIUpK0j/BfzeI9i+v5jnKk1JjPo
-X-Google-Smtp-Source: AGHT+IGaie7llkC0WY/ixF26z8u+KlGBuJcMXc/mTXO9lJk5lRRKNK+aRovxY0vGl7k6LwgOSjGmAgsCULdJSRRqxi8=
-X-Received: by 2002:a25:b2a2:0:b0:dbd:9bd9:2159 with SMTP id
- k34-20020a25b2a2000000b00dbd9bd92159mr10842360ybj.45.1704214669983; Tue, 02
- Jan 2024 08:57:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704214726; x=1704819526;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/kfSvqUQhDDQeZ7w9vi8u82O1MW4zk5hhfYcLpsRKrM=;
+        b=UT+7aZasBtsU38h7kX0Fh1YUJ4aS9hnqM0gRUGTw96rggSkwvKzDKbXemT+QfrjHFb
+         JP30AoGbtILI1whog1tOOnlUEh9b04h37/fT3xhCMSAYIfvKyFvhmEbiqo1kIZrunuBQ
+         FhTAwxfzX+tHH25zzf1eSeGnM9cQRRHOdYTvm8gt8Acw1hYSIUNjDXdnCXv5kdgLdejI
+         v7swOX5fiUAJTheeNCSYudCgInkxOmhmY+snyg+RDoS4cjtsnbkOIiGXG5mipfucLmIH
+         hLctTbLSe6QjdGCTVFannyBeRo0mVm2zHobCg51ekzdCD5KgAxL8a8nKFJSpe5oPXEE0
+         xkIQ==
+X-Gm-Message-State: AOJu0YwystjEOsDRpRfznj1NulUhEViiN4Xgw0uAw/k43zR0tuJUWrlK
+	jMET5vAwF3kUYL/86Y3nmcfUU77QhL7nOcxTdAo2BPnSpYfT
+X-Google-Smtp-Source: AGHT+IEiET7hC1eLxq7vY+dYnw1pivEcf25fOPa47AK6Yo5ywRpiE2S/bGFSeiyw7FCc/mlNNgWDk+kcawue6+1X1eM=
+X-Received: by 2002:a0d:d2c6:0:b0:5e7:cd6d:b6da with SMTP id
+ u189-20020a0dd2c6000000b005e7cd6db6damr11272113ywd.47.1704214725685; Tue, 02
+ Jan 2024 08:58:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231225093839.22931-1-mengqi.zhang@mediatek.com> <20231225093839.22931-2-mengqi.zhang@mediatek.com>
-In-Reply-To: <20231225093839.22931-2-mengqi.zhang@mediatek.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Tue, 2 Jan 2024 17:57:14 +0100
-Message-ID: <CAPDyKFpJYKLCrrb0-dPLNGcaLRjevWkrrXpJY70rbwjsUJdYug@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] mmc: core: Add HS400 tuning in HS400es initialization
-To: Mengqi Zhang <mengqi.zhang@mediatek.com>
-Cc: chaotian.jing@mediatek.com, matthias.bgg@gmail.com, 
-	wenbin.mei@mediatek.com, yangyingliang@huawei.com, adrian.hunter@intel.com, 
-	avri.altman@wdc.com, vincent.whitchurch@axis.com, linux-mmc@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
+References: <20231230025607.2476912-1-surenb@google.com> <ZZPQjO91fvB66z1s@x1n>
+In-Reply-To: <ZZPQjO91fvB66z1s@x1n>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 2 Jan 2024 08:58:33 -0800
+Message-ID: <CAJuCfpF8h4aPAvFQv4NjX=DRWTZ1P5DcO16DfT-Sot1cGucjJQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] userfaultfd: fix move_pages_pte() splitting folio
+ under RCU read lock
+To: Peter Xu <peterx@redhat.com>
+Cc: akpm@linux-foundation.org, viro@zeniv.linux.org.uk, brauner@kernel.org, 
+	shuah@kernel.org, aarcange@redhat.com, lokeshgidra@google.com, 
+	david@redhat.com, ryan.roberts@arm.com, hughd@google.com, mhocko@suse.com, 
+	axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org, 
+	Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com, 
+	bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com, 
+	jdduke@google.com, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 25 Dec 2023 at 10:39, Mengqi Zhang <mengqi.zhang@mediatek.com> wrote:
+On Tue, Jan 2, 2024 at 1:00=E2=80=AFAM Peter Xu <peterx@redhat.com> wrote:
 >
-> During the initialization to HS400es stage, add hs400 tuning flow as an
-> optional process. For Mediatek IP, HS00es mode requires a specific
-> tuning to ensure the correct HS400 timing setting.
+> On Fri, Dec 29, 2023 at 06:56:07PM -0800, Suren Baghdasaryan wrote:
+> > @@ -1078,9 +1078,14 @@ static int move_pages_pte(struct mm_struct *mm, =
+pmd_t *dst_pmd, pmd_t *src_pmd,
+> >
+> >               /* at this point we have src_folio locked */
+> >               if (folio_test_large(src_folio)) {
+> > +                     /* split_folio() can block */
+> > +                     pte_unmap(&orig_src_pte);
+> > +                     pte_unmap(&orig_dst_pte);
+> > +                     src_pte =3D dst_pte =3D NULL;
+> >                       err =3D split_folio(src_folio);
+> >                       if (err)
+> >                               goto out;
+> > +                     goto retry;
+> >               }
 >
-> Signed-off-by: Mengqi Zhang <mengqi.zhang@mediatek.com>
+> Do we also need to clear src_folio and src_folio_pte?  If the folio is a
+> thp, I think it means it's pte mapped here. Then after the split we may
+> want to fetch the small folio after the split, not the head one?
 
-Applied for next, thanks!
+I think we need to re-fetch the src_folio only if the src_addr falls
+into a non-head page. Looking at the __split_huge_page(), the head
+page is skipped in the last loop, so I think it should stay valid.
+That said, maybe it's just an implementation detail of the
+__split_huge_page() and I should not rely on that and refetch anyway?
 
-Kind regards
-Uffe
-
-
-> ---
-> v1 https://patchwork.kernel.org/project/linux-mediatek/patch/20231201030547.11553-1-mengqi.zhang@mediatek.com/
-> v2 https://patchwork.kernel.org/project/linux-mediatek/patch/20231222062236.26370-1-mengqi.zhang@mediatek.com/
-> ---
->  drivers/mmc/core/mmc.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-> index 705942edacc6..d5173a9bb4b0 100644
-> --- a/drivers/mmc/core/mmc.c
-> +++ b/drivers/mmc/core/mmc.c
-> @@ -1822,8 +1822,13 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
->
->                 if (err)
->                         goto free_card;
-> -
-> -       } else if (!mmc_card_hs400es(card)) {
-> +       } else if (mmc_card_hs400es(card)) {
-> +               if (host->ops->execute_hs400_tuning) {
-> +                       err = host->ops->execute_hs400_tuning(host, card);
-> +                       if (err)
-> +                               goto free_card;
-> +               }
-> +       } else {
->                 /* Select the desired bus width optionally */
->                 err = mmc_select_bus_width(card);
->                 if (err > 0 && mmc_card_hs(card)) {
 > --
-> 2.25.1
+> Peter Xu
 >
 
