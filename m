@@ -1,272 +1,165 @@
-Return-Path: <linux-kernel+bounces-14285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9689A821AD9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:23:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC760821ADF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:24:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A53A28317B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:23:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9B461C21DE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACE55EADA;
-	Tue,  2 Jan 2024 11:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F7CE56B;
+	Tue,  2 Jan 2024 11:24:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="C6TahE28"
+	dkim=pass (1024-bit key) header.d=narfation.org header.i=@narfation.org header.b="eGmXqasC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dvalin.narfation.org (dvalin.narfation.org [213.160.73.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52ABAEAD6
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 11:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so97104a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 03:22:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704194574; x=1704799374; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EfTbWWodBrX6f385mu9rEzF4b+5J7/G71pSZWTjDapw=;
-        b=C6TahE28RAzqM6v2tCJUDX7OJT0YBRecjiAufds6vp10OXjjusDkyxKEFY5VuTjLHR
-         aE2SSRhdUtyjRgvPy9pUIV5oBuQfGMz5ilmiS3HNqRw2l+bel1tqBWEQbfXX8Ktk+4dW
-         ChWJCj+WCyzjrIWbQwe+bI0X9GpR2JCgvepMxXzV/ROWunSsac2O7XJXgp8kIBXgLO/o
-         vSGVP/XKGyOeE+tZ1OfkiHZ/GrOguBHpdMUFdF84aGNHcv16gTkn7xtu7zXwLG97Hq9a
-         HXQIKuCqwJXRKHF88f4TjrO3QeANcKUt3ET/73NkgA0k2iLjxM8Gu98euiY1dEMob7Zm
-         Gndg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704194574; x=1704799374;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EfTbWWodBrX6f385mu9rEzF4b+5J7/G71pSZWTjDapw=;
-        b=VWO1T6OKkEveADu4vcfeOAuLLnrKafC/tFKdWP5d5RQRTr0QXOsvgFaf89haWx4z7L
-         PPuGgauot9QZSnwXZbIDnw6fo1YFDDOpqjP0g8SGIcMsnICuyQFG/ymdwo6VIBSQQUfj
-         6KGloB5W+pPMRAAWKAehNPDxLdrVeaY/OzLr+Y+xm5VyXUX3gPbuJNlyB/QtteyWS4wv
-         zCTxC5eiyyxnV1n9301kv7xeFwQdFEnXbZBBIVhhgZSzLM8f210gJ3Kz/NtLit5ganiM
-         s751lMdRgzxTQBc9/H5kveM6jZeQZNhkx8ReAHbRMdvMiKDW8A4mcf+5kLtTptjDAFfQ
-         uTnQ==
-X-Gm-Message-State: AOJu0YzEZmCqLcSXO8x1f9D/YZMAQlttWshf6XZZOKIg/Ul/uukFDpUR
-	OOg7LO59HjYZeXINh7gUWZ+Ro+M7Iw9sSsfvU8I3DsFzGeWT
-X-Google-Smtp-Source: AGHT+IEQFWe3iDRxjzX8K2gba7QF3ubT/1Zm2rboow+XsJquXNsprTpYNC75y1IuLrc/d4+32gbBPOLPbkWCBFbO8RM=
-X-Received: by 2002:a50:cd8a:0:b0:553:9d94:9f6a with SMTP id
- p10-20020a50cd8a000000b005539d949f6amr1153795edi.7.1704194574433; Tue, 02 Jan
- 2024 03:22:54 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B4BEAC0;
+	Tue,  2 Jan 2024 11:24:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=narfation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=narfation.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+	s=20121; t=1704194648;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RL4p8JTgWtUMp+LSFYGDq2LgzfnsXq2WPu5q9VKoeO4=;
+	b=eGmXqasCdYtT4c3TgAwsOFFN82HooJbJOEvq++G/iC28O2BLpcbK4C+wGyfC2Uje+tvntd
+	igtbeTIfHijeeGG1K3Uvr2hCEc582bPn5wk6RwrpaV27ttveqgQ8I4h1ScyWFnXRODeP9x
+	KHo/8w0IfIJoqNIIEkj1/w8h0E/tm5Y=
+From: Sven Eckelmann <sven@narfation.org>
+To: b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Antonio Quartulli <a@unstable.cc>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Marek Lindner <mareklindner@neomailbox.ch>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Wunderlich <sw@simonwunderlich.de>,
+ Markus Elfring <Markus.Elfring@web.de>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Subject:
+ Re: [PATCH 2/2] batman-adv: Improve exception handling in
+ batadv_throw_uevent()
+Date: Tue, 02 Jan 2024 12:24:05 +0100
+Message-ID: <4889340.31r3eYUQgx@sven-l14>
+In-Reply-To: <d2ce9337-e1a4-4213-ad6f-926c085dc17f@web.de>
+References:
+ <8588cafe-3c61-40a6-b071-0877632a2a1e@web.de>
+ <d2ce9337-e1a4-4213-ad6f-926c085dc17f@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102055143.3889-1-quic_kriskura@quicinc.com>
- <CANP3RGeirg+f8cBbw_3YR5AvuB1ZxJC_9-wcn+Tb-GXf1ESKCQ@mail.gmail.com> <ad60f399-5c6a-4f16-8c28-f4d4e0fde1ff@quicinc.com>
-In-Reply-To: <ad60f399-5c6a-4f16-8c28-f4d4e0fde1ff@quicinc.com>
-From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date: Tue, 2 Jan 2024 03:22:42 -0800
-Message-ID: <CANP3RGf5dg14DNuKOn9pqWd4oSBDsPhwwBB7AJ0c3qHbDT0sBQ@mail.gmail.com>
-Subject: Re: [PATCH] usb: gadget: ncm: Avoid dropping datagrams of properly
- parsed NTBs
-To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hardik Gajjar <hgajjar@de.adit-jv.com>, 
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	quic_ppratap@quicinc.com, quic_wcheng@quicinc.com, quic_jackp@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="nextPart4538693.LvFx2qVVIh";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-On Tue, Jan 2, 2024 at 2:48=E2=80=AFAM Krishna Kurapati PSSNV
-<quic_kriskura@quicinc.com> wrote:
->
->
-> >> It is observed sometimes when tethering is used over NCM with Windows =
-11
-> >> as host, at some instances, the gadget_giveback has one byte appended =
-at
-> >> the end of a proper NTB. When the NTB is parsed, unwrap call looks for
-> >> any leftover bytes in SKB provided by u_ether and if there are any pen=
-ding
-> >> bytes, it treats them as a separate NTB and parses it. But in case the
-> >> second NTB (as per unwrap call) is faulty/corrupt, all the datagrams t=
-hat
-> >> were parsed properly in the first NTB and saved in rx_list are dropped=
-.
-> >
-> > I think this is likely Windows trying to avoid generating 0 length fram=
-es.
-> >
-> > (usb max single datagram [frame?] size is 1024 bytes).
-> >
-> > My guess is this extra byte will only ever happen at the end of a
-> > multiple of 1024 bytes,
-> > and it will always be exactly one byte, and it will likely be a '0' pad=
- byte.
-> >
->
-> You are right. This happens only with packet sizes of 1024/2048/3072
-> etc., and it is 0x00 only.
->
-> > Could you check if a more specific test of this sort would make sense?
-> > (ie. fix the problem)
-> >
-> > Something like
-> >
-> > if (to_process =3D=3D 1) && (current_offset & 1023 =3D=3D 0) && (*paylo=
-ad =3D=3D 0)
-> >    // extra 1 zero byte pad to prevent multiple of 1024 sized packet
-> >    return
-> > }
-> >
->
-> The above might work. But just wanted to check why this 1 byte would
-> come actually ? Any reason for this ? ZLP must not give a 1 byte packet
-> of 1 byte AFAIK.
+--nextPart4538693.LvFx2qVVIh
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Sven Eckelmann <sven@narfation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Date: Tue, 02 Jan 2024 12:24:05 +0100
+Message-ID: <4889340.31r3eYUQgx@sven-l14>
+In-Reply-To: <d2ce9337-e1a4-4213-ad6f-926c085dc17f@web.de>
+MIME-Version: 1.0
 
-I'm not a USB expert, but... my (possibly wrong) understanding is:
-(note I may be using bad terminology... also the 1024/16384 constants
-are USB3 specific, USB2 has afaik max 512 not 1024, I think USB1 is
-even 64, but it's likely too old to matter, etc.)
+On Tuesday, 2 January 2024 08:12:56 CET Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Tue, 2 Jan 2024 07:52:21 +0100
+> 
+> The kfree() function was called in up to three cases by
+> the batadv_throw_uevent() function during error handling
+> even if the passed variable contained a null pointer.
+> This issue was detected by using the Coccinelle software.
+> 
+> * Thus adjust jump targets.
+> 
+> * Reorder kfree() calls at the end.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
-USB3 payloads can be up to 16384 bytes in size,
-on the wire they are split up into packets of between 0 and 1024 bytes.
-[a Zero Length Packet is a ZLP]
-A usb payload is terminated with a usb packet of < 1024 bytes.
+Acked-by: Sven Eckelmann <sven@narfation.org>
 
-So a 1524 byte payload would be sent as 2 packets 1024 + 500.
-While a 2048 byte payload would be sent as 3 packets 1024 + 1024 + 0 (ie. Z=
-LP)
+> ---
+>  net/batman-adv/main.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/net/batman-adv/main.c b/net/batman-adv/main.c
+> index 5fc754b0b3f7..75119f1ffccc 100644
+> --- a/net/batman-adv/main.c
+> +++ b/net/batman-adv/main.c
+> @@ -691,29 +691,31 @@ int batadv_throw_uevent(struct batadv_priv *bat_priv, enum batadv_uev_type type,
+>  				  "%s%s", BATADV_UEV_TYPE_VAR,
+>  				  batadv_uev_type_str[type]);
+>  	if (!uevent_env[0])
+> -		goto out;
+> +		goto report_error;
+> 
+>  	uevent_env[1] = kasprintf(GFP_ATOMIC,
+>  				  "%s%s", BATADV_UEV_ACTION_VAR,
+>  				  batadv_uev_action_str[action]);
+>  	if (!uevent_env[1])
+> -		goto out;
+> +		goto free_first_env;
+> 
+>  	/* If the event is DEL, ignore the data field */
+>  	if (action != BATADV_UEV_DEL) {
+>  		uevent_env[2] = kasprintf(GFP_ATOMIC,
+>  					  "%s%s", BATADV_UEV_DATA_VAR, data);
+>  		if (!uevent_env[2])
+> -			goto out;
+> +			goto free_second_env;
+>  	}
+> 
+>  	ret = kobject_uevent_env(bat_kobj, KOBJ_CHANGE, uevent_env);
+> -out:
+> -	kfree(uevent_env[0]);
+> -	kfree(uevent_env[1]);
+>  	kfree(uevent_env[2]);
+> +free_second_env:
+> +	kfree(uevent_env[1]);
+> +free_first_env:
+> +	kfree(uevent_env[0]);
+> 
+>  	if (ret)
+> +report_error:
+>  		batadv_dbg(BATADV_DBG_BATMAN, bat_priv,
+>  			   "Impossible to send uevent for (%s,%s,%s) event (err: %d)\n",
+>  			   batadv_uev_type_str[type],
+> --
+> 2.43.0
+> 
+> 
 
-A 16384 byte payload could be sent as 16 * 1024 + ZLP,
-but since 16384 is the max you might be able to get away with just 16
-* 1024 and skip the ZLP...
 
-I think this is why the Linux usb code base has ZLP / NO_ZLP quirks.
-[but do note I may be wrong, I haven't gone looking at what exactly
-the zlp quirks do,
-not even sure if they're receive or transmit side... or both]
+--nextPart4538693.LvFx2qVVIh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-Different hardware/usb chipsets/etc have different behaviour wrt. ZLPs.
+-----BEGIN PGP SIGNATURE-----
 
-In general it seems like what needs to happen is much clearer if you
-just avoid the need for ZLPs entirely.
-I think that's what windows is trying to do here: avoid ever sending a
-usb payload with a multiple of 1024 bytes,
-so it never has to send ZLPs. This seems easy enough to do...
-limit max to 16383 (not 16384) and add 1 byte of zero pad if the
-payload ends up being a multiple of 1024.
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmWT8lUACgkQXYcKB8Em
+e0ZtIA//eZtvK8xgUCk7KXnL6m/xB/Hnlsa817um4kK3xG+JO1hmlgxNsNJfu0HT
+VIP0Ca/QY7GRewIOz2fT60YCffgVQeht30bVdI3D7U6du5/nd6Q3JRzw8WaFuDxo
+MBIvVoqtNCK3YNBjKhYILq1X/lmxgvE+4J/1n94/QQWlJ9lgZthE2JWVwbMfDa+Q
+USyZI6ftogWsk9TKrt5cgWuQRrps3qtjnHUmgBNFXfWjwsRQUtjWzE960Y6au2tH
+fAqTrBW7M18RE+yDKQUjnmlpETnwBLCCcudS2cZBmx9EZL4TQEdJ4T+Ka8e9iPwV
+M37MJh/h+mwbxKIhv0vPnuvpBHZzQ+3opNCgIGTpS5YExATFMCIVXMeuN+kjVfC3
+X1iHjqRagGxcqpQtzaUcgYsZ4/elr5ODM4GH2VzH5phqb5iS0u64K+lmuWqO/Bsx
+hi7klW9+mKcrVgyeM5r83VcP9Ea+wS/3vhQBTPK4X3da71oqPq0X+2/qOYlzreBq
+LIpWu9BdpkKp5NHoAL7yyxOfm8hIjGCY1EXWUsKyb9Zs08Etqr4thHJtxxTNzhM1
+2ulCCmn8NNK/PzvguYQxIbXiJiK9U7bfzZoKbYSPRTEvd2xM2RxMrgZH94swmFYD
+SNNMTa3ccaynMy/E/KB0/uD2ktF1PHs6739YdB6ivv7VIZTKqRI=
+=sz9M
+-----END PGP SIGNATURE-----
 
-> > It seems a little dangerous to just blindly ignore arbitrary amounts
-> > of trailing garbage...
->
-> Yes. I agree, which is why I put a note in comment section of patch
-> stating that this doesn't cover all cases, just the ones found in the
-> testing so far. But the code suggestion you provided might actually work
-> out. So something like the following ?
->
-> if (to_process =3D=3D 1) && (block_len%1024 =3D=3D 0) && (*payload =3D=3D=
- 0)
+--nextPart4538693.LvFx2qVVIh--
 
-Assuming it compiles and works ;-) I wrote this without looking at the code=
-.
 
-I'm guessing this needs to be %512 for usb2...
-Do we know if we're connected via usb2 or usb3?
-[mayhaps there's some field that already stores this 1024 constant...]
-If not... should we just check for %512 instead to support both usb2 and us=
-b3?
 
->      // extra 1 zero byte pad to prevent multiple of 1024 sized packet
->      return
-> } else if (to_process > 1) {
-
-this should likely continue to be !=3D 0 or > 0
-
->      goto parse_ntb;
-> }
->
-> Just modified in current_offset with block_len and checked it with
-> %1024. Let me know if it is fine and I will give the change to testing
-> team. The issue is easily reproducible.
->
-> Regards,
-> Krishna,
->
-> >>
-> >> Adding a few custom traces showed the following:
-> >>
-> >> [002] d..1  7828.532866: dwc3_gadget_giveback: ep1out:
-> >> req 000000003868811a length 1025/16384 zsI =3D=3D> 0
-> >> [002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb toprocess: =
-1025
-> >> [002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 175199=
-9342
-> >> [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb seq: 0xce67
-> >> [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0x=
-400
-> >> [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb ndp_len: 0x=
-10
-> >> [002] d..1  7828.532869: ncm_unwrap_ntb: K: Parsed NTB with 1 frames
-> >>
-> >> In this case, the giveback is of 1025 bytes and block length is 1024.
-> >> The rest 1 byte (which is 0x00) won't be parsed resulting in drop of
-> >> all datagrams in rx_list.
-> >>
-> >> Same is case with packets of size 2048:
-> >> [002] d..1  7828.557948: dwc3_gadget_giveback: ep1out:
-> >> req 0000000011dfd96e length 2049/16384 zsI =3D=3D> 0
-> >> [002] d..1  7828.557949: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 175199=
-9342
-> >> [002] d..1  7828.557950: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0x=
-800
-> >>
-> >> Lecroy shows one byte coming in extra confirming that the byte is comi=
-ng
-> >> in from PC:
-> >>
-> >> Transfer 2959 - Bytes Transferred(1025)  Timestamp((18.524 843 590)
-> >> - Transaction 8391 - Data(1025 bytes) Timestamp(18.524 843 590)
-> >> --- Packet 4063861
-> >>        Data(1024 bytes)
-> >>        Duration(2.117us) Idle(14.700ns) Timestamp(18.524 843 590)
-> >> --- Packet 4063863
-> >>        Data(1 byte)
-> >>        Duration(66.160ns) Time(282.000ns) Timestamp(18.524 845 722)
-> >>
-> >> Fix this by checking if the leftover bytes before parsing next NTB is =
-of
-> >> size more than the expected header.
-> >>
-> >> Fixes: 427694cfaafa ("usb: gadget: ncm: Handle decoding of multiple NT=
-B's in unwrap call")
-> >> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> >> ---
-> >> There could probably be cases where the first NTB is proper and the se=
-cond
-> >> NTB's header is proper but the NDP is corrupt, and in those cases too,=
- all
-> >> the datagrams are dropped. But I haven't seen such case practically.
-> >>
-> >>   drivers/usb/gadget/function/f_ncm.c | 2 +-
-> >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/=
-function/f_ncm.c
-> >> index cc0ed29a4adc..a75b6dc8b0cb 100644
-> >> --- a/drivers/usb/gadget/function/f_ncm.c
-> >> +++ b/drivers/usb/gadget/function/f_ncm.c
-> >> @@ -1325,7 +1325,7 @@ static int ncm_unwrap_ntb(struct gether *port,
-> >>               "Parsed NTB with %d frames\n", dgram_counter);
-> >>
-> >>          to_process -=3D block_len;
-> >> -       if (to_process !=3D 0) {
-> >> +       if (to_process > opts->nth_size) {
-> >
-> > shouldn't this check actually be >=3D not > ?
-> >
->
-> Yes. But what is header is present and no data further ? Just to fix
-> another harmless corner case, I added the "=3D".
->
-> Regards,
-> Krishna,
 
