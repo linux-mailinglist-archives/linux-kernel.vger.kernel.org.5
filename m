@@ -1,104 +1,130 @@
-Return-Path: <linux-kernel+bounces-14772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD83A822201
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:30:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79DB6822203
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:31:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BF721F235AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:30:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 514641C22A3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:31:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8D2815E9F;
-	Tue,  2 Jan 2024 19:30:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5CE216403;
+	Tue,  2 Jan 2024 19:30:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eSQFzGzb"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uksCHxKr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D2915AF6;
-	Tue,  2 Jan 2024 19:30:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-35fd902c6b5so82044345ab.3;
-        Tue, 02 Jan 2024 11:30:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B34016402
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 19:30:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5534180f0e9so1999a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 11:30:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704223800; x=1704828600; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3dLzJTPxirZd6kW8WXj95cv8++GN7i41+6PgBQongBc=;
-        b=eSQFzGzbZg6tROrl+Qcqzu9qjGwH5tA4deBoyWW6GmyJEyQBR34tW2m2Snli5Fyiw1
-         th4IR22f1xitbeiNQ9oCXhOmqva+ykEfmp2yR0Fq+Za1tKsp4rSkH8iBZEIGyy6uM7Hs
-         1BsKoN8ZRGqarr3PzI68qdnpKG0SZ4/D6P4iB7u1HidftP8LqN9IgXSHc0f5YSUHpQmU
-         fbeCJI1mkV3cafYoY2y5zv0St+zYRfY3CmVe1caZ2NRVpNRTtixKa972iY7f2fEk7Ijv
-         zRB2HEwOeDANCiPs+CAVLRIhU0gxQVXR+wlzRkGyulZ/wyxWRdOEHFuEESOMl9BtWF6p
-         WiwQ==
+        d=google.com; s=20230601; t=1704223852; x=1704828652; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KOYTEsOV9lTiIGnRFctHuQqBGe69F0YWFLoKuRVOe74=;
+        b=uksCHxKr0hZihpngARh1CH39gUTfHNLhA4cbu5pGAfdRlQqU4beXtPy9gSEeGjS35I
+         RzZAqTsu8/ByiZkB6jhpRU2Z6skD4DyBOmTiVCGR9ToKLrx5c/0kMPB0Lb25quxQJNFp
+         XBTeUrvtxBcdINpVJJI7GUSFjV12mNo9SrGG7k7h6YWNLZ96F1wq6g/o3rCAoV/0fBz1
+         LuALXzMaqO4EpEU70TEU1tFC61bI5ScUymGikTJA5hwcvpSo/6w4C9TPntx3sjYqQcc+
+         sxApoy12sGA7jRisdYbQSRiKXiljlYLffmyQe2cHXw3VHUv7HETIaQ1NZUXi855DZFhK
+         dOGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704223800; x=1704828600;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3dLzJTPxirZd6kW8WXj95cv8++GN7i41+6PgBQongBc=;
-        b=jfPGIRvEq2a7L8y3kSp01sTUol0ib8Kc3D3Ex6Fne8Fx79iUW7xs2fFjAp/Q1KJ7gx
-         OGiKuCpGxfv5T3Hary2FhliDkL7qyxaBmfxOo1A7HtqYH/Mxt7jn4+qdw/kOdgrjXm2P
-         PAlNKGjuuIgqp3QqtXTlnGOL4AEt7Rbqqj7+7ZPsD7XWtNxO0z5Me9OJQxorIsFj5q52
-         23gpvZSb5NhaLotoJu2QwVaL4GYeG2AksIIv9WaPw/kJYs4pLK59ktTsh7X82zHNTRH+
-         ht5H2uMKj0h6BHnWDVnSZSLLM9f+LJKV2CQkdXh8+RRXeJHWeUcK0c9EPkbt2bLRyjSi
-         4apg==
-X-Gm-Message-State: AOJu0Yz6KrRy3a9EO773vIkQMpApO8tX956a7W3S0dzAombIAip4jF+I
-	m9LKBWUEmg3rpQY9BjrE9f0=
-X-Google-Smtp-Source: AGHT+IHZfduyvxdowlAgFeALh+0JD54971ApQGhLj0NNcRFVRfJq3vCoS/FL3GlTSK7oZkhyaqnWew==
-X-Received: by 2002:a05:6e02:1521:b0:360:fe1:8abb with SMTP id i1-20020a056e02152100b003600fe18abbmr17508304ilu.119.1704223800080;
-        Tue, 02 Jan 2024 11:30:00 -0800 (PST)
-Received: from ?IPV6:2601:282:1e82:2350:5017:6182:740b:2f80? ([2601:282:1e82:2350:5017:6182:740b:2f80])
-        by smtp.googlemail.com with ESMTPSA id bf12-20020a056e02308c00b0035fec699584sm6772857ilb.13.2024.01.02.11.29.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 11:29:59 -0800 (PST)
-Message-ID: <17a2c694-2c48-46dc-b028-68793a31a984@gmail.com>
-Date: Tue, 2 Jan 2024 12:29:58 -0700
+        d=1e100.net; s=20230601; t=1704223852; x=1704828652;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KOYTEsOV9lTiIGnRFctHuQqBGe69F0YWFLoKuRVOe74=;
+        b=oS/tXwbyPUq1dziYU5qv6KdkUqFV2zXXlzHasIu0uQ6RFmyA8j2u/2j+MLV2G/Nfma
+         3RoQbtOaObwLarC9/BOyup2VjTFvtvvAjbSoBaWDANcncPN+3xwSjFKyVFv3x052JiGq
+         RRnEgLBV4GWoHVx2Ak5xY3sr0nurJHZ9VEvOnf6hUA9usVZZBr4F/UUDTUKCZy7N6zGF
+         Mt4/m6ztiNvxEDk3hpipobkj50u2Uait0CE7yln42vh/9I+ZjqHxcbgSPC5sI8yi5Efu
+         dWnhV5jXw0ptvrq0XJT/WjokTr6T6XvRwtLSAJ993mP27+AC8mcrfn1tFNQ6HYUqDFxu
+         qZfw==
+X-Gm-Message-State: AOJu0YyFAR+YwD0SlfuX9yaJbufPmWk5gR5TDoLLR0cKVSiS8OeRo+Tf
+	Dqg1Ch9qk8ImYr/IHgQHnKn0fqWd141L1Iu3JsGipJlplRIe
+X-Google-Smtp-Source: AGHT+IFxkEp53qfdvKXchSLSayawO65q7whtBRhMEQhKEn3q2M+ar5ghgojFLixiM/BGo5c47KunMgRuv1alQVvLjgY=
+X-Received: by 2002:a50:8d4e:0:b0:554:98aa:f75c with SMTP id
+ t14-20020a508d4e000000b0055498aaf75cmr2425edt.5.1704223852224; Tue, 02 Jan
+ 2024 11:30:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH iproute2-rc 1/2] rdma: Fix core dump when pretty is used
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>,
- Stephen Hemminger <stephen@networkplumber.org>
-Cc: Chengchang Tang <tangchengchang@huawei.com>,
- Junxian Huang <huangjunxian6@hisilicon.com>, jgg@ziepe.ca,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
- linux-kernel@vger.kernel.org
-References: <20231229065241.554726-1-huangjunxian6@hisilicon.com>
- <20231229065241.554726-2-huangjunxian6@hisilicon.com>
- <20231229092129.25a526c4@hermes.local>
- <30d8c237-953a-8794-9baa-e21b31d4d88c@huawei.com>
- <20240102083257.GB6361@unreal>
- <29146463-6d0e-21c5-af42-217cee760b3f@huawei.com>
- <20240102122106.GI6361@unreal> <20240102082746.651ff7cf@hermes.local>
- <20240102191701.GC5160@unreal>
-From: David Ahern <dsahern@gmail.com>
-In-Reply-To: <20240102191701.GC5160@unreal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231208000515.1693746-1-irogers@google.com>
+In-Reply-To: <20231208000515.1693746-1-irogers@google.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 2 Jan 2024 11:30:39 -0800
+Message-ID: <CAP-5=fVQfqS6gu9Ua3Exijc_ZaBzrt2=1PMopgdoyC_6R_cnaQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] lib subcmd: Fix memory leak in uniq
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Chenyuan Mi <cymi20@fudan.edu.cn>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/2/24 12:17 PM, Leon Romanovsky wrote:
->>
->> Part of the problem is the meaning of pretty mode is different in rdma
->> than all of the other commands. The meaning of the flags should be the
->> same across ip, devlink, tc, and rdma; therefore pretty should mean
->> nothing unless json is enabled.
-> 
-> I was very inspired by devlink when wrote rdmatool. It is supposed to
-> behave the same. :)
+On Thu, Dec 7, 2023 at 4:05=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> uniq will write one command name over another causing the overwritten
+> string to be leaked. Fix by doing a pass that removes duplicates and a
+> second that removes the holes.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-You need better inspirations :-)
+Ping for this series, no comments since sent.
 
-It was a mistake to merge devlink source code into iproute2 without a
-commitment to bring it inline with other iproute2 commands.
+Thanks,
+Ian
+
+> ---
+>  tools/lib/subcmd/help.c | 18 ++++++++++++++----
+>  1 file changed, 14 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/lib/subcmd/help.c b/tools/lib/subcmd/help.c
+> index adfbae27dc36..8561b0f01a24 100644
+> --- a/tools/lib/subcmd/help.c
+> +++ b/tools/lib/subcmd/help.c
+> @@ -52,11 +52,21 @@ void uniq(struct cmdnames *cmds)
+>         if (!cmds->cnt)
+>                 return;
+>
+> -       for (i =3D j =3D 1; i < cmds->cnt; i++)
+> -               if (strcmp(cmds->names[i]->name, cmds->names[i-1]->name))
+> -                       cmds->names[j++] =3D cmds->names[i];
+> -
+> +       for (i =3D 1; i < cmds->cnt; i++) {
+> +               if (!strcmp(cmds->names[i]->name, cmds->names[i-1]->name)=
+)
+> +                       zfree(&cmds->names[i - 1]);
+> +       }
+> +       for (i =3D 0, j =3D 0; i < cmds->cnt; i++) {
+> +               if (cmds->names[i]) {
+> +                       if (i =3D=3D j)
+> +                               j++;
+> +                       else
+> +                               cmds->names[j++] =3D cmds->names[i];
+> +               }
+> +       }
+>         cmds->cnt =3D j;
+> +       while (j < i)
+> +               cmds->names[j++] =3D NULL;
+>  }
+>
+>  void exclude_cmds(struct cmdnames *cmds, struct cmdnames *excludes)
+> --
+> 2.43.0.472.g3155946c3a-goog
+>
 
