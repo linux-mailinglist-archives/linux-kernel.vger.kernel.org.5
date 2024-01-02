@@ -1,87 +1,199 @@
-Return-Path: <linux-kernel+bounces-14459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C67FC821D4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:05:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78883821C88
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:25:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5C4C1C222E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:05:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D21A1F224F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07EAD14F9C;
-	Tue,  2 Jan 2024 14:03:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0231AFBF0;
+	Tue,  2 Jan 2024 13:25:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r40Mf/JQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wdl2jTYv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC73414AB6
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 14:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40d76923ec4so33209105e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 06:03:42 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C735AFBE5;
+	Tue,  2 Jan 2024 13:25:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-336897b6bd6so9267405f8f.2;
+        Tue, 02 Jan 2024 05:25:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704204221; x=1704809021; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6jx4kCirWEKyRJhRB+hSiaSLY7KMEDa3xsSh/eHvycU=;
-        b=r40Mf/JQ8+S9anS0pEeiVcybfeGVCYdlQc6lmRl02KSPCvVbP82gGDkmJ4hNOXYLxV
-         p5cFAjatbjLmRQFD61ElP0Dy7QDZeWNhyE+HmcB47801L+bz2YodaCmfxIg8PzLe7Tkf
-         4hgPu+njE8Dup8uUKhviNERAEg+VB6aNjy2Lqs7Z/cEiyhXKvtdozU+vD8zolBIiuI0G
-         /w7K+6nBYQAaK7sf1qptFSfU/XRxoemRC7SK07i9Kh0ECv/yKsSd5qNdbyHQDJ2TDhhH
-         wUo+ZU6bofGlkF+E8GgnjpfUiG3shUxdoKLN9uBV0esjmMeWrqA2/M0i1KtOXxiPUyb+
-         1KLQ==
+        d=gmail.com; s=20230601; t=1704201904; x=1704806704; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:to:from:subject
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B6O9NOwtuteIYyicF8P0HuZgF44ilFnB7nwaX+Y1Si4=;
+        b=Wdl2jTYv5SVXCDyZRPuTGJ87iDvWpzGLugZFQrhtzIIp+yZlCMtQT1amqsDFfXBU7R
+         2pdXcy/ctCXX1mOu1OzHmcnKDS0JurhG2uVzEvwPqmLHWp5EDX/eWqpGJXOo8Dh2owPB
+         /E5phEb/mOp+fJ++yGevE8WW4pDQzVwa3q9edzLe0nzDVMCeyFKipqDYaM9LLTbDhKDZ
+         o+fXSkv27cjGVfB0d1UzcXYvhbyTgBnUD40WRezaJbbs7qMg6l07EBG6T+hUte0Hme5K
+         zrmSkfJM/Yx4pDSIW0n6UBpXRlbsFM09xQwwl5n+nEOWKxFbfZs/EOrX6HB/tFexNILo
+         CoPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704204221; x=1704809021;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6jx4kCirWEKyRJhRB+hSiaSLY7KMEDa3xsSh/eHvycU=;
-        b=ibI7/xHaWhEiHUJsk98aaa70mQrJ+trmX3jub6+CDvcSsfJc3chrQTYM4iUnZDABcL
-         mI9F2VWfL4UnbeqCJKgzw3OL6Ow/HpKWM8mh5Fe9yhKZ8EjdCmW6mN1r3YGN/JGAXtA+
-         tCVZXvQE/I8xe1imRTKbxninSn0UrwSRiMLpsUuBt4ItWK3GHMFeP93M5mjqEdABm/0f
-         EBAV6tLw91Eax9BdYGv27bFl9GTOdSNJbYHSYjHrTUDCJy1hY9MTC3WmRyz2wmozLoBm
-         oWHwSCZjhAuCrpv50mXJN2YQ8WGMb2fNztqgwxwyTtpsXQrcMmYn05n4soxIwPKKFBqq
-         7Z/A==
-X-Gm-Message-State: AOJu0Yw+Np4ndkeEvDJJbrxlMc6MIa9otuaVn35i1aV0yJsTnOgQa+FP
-	2fLorXHLJq62YtVDFLOdOHTlVLjRP01Zew==
-X-Google-Smtp-Source: AGHT+IGWYIKvLFu7hD6N6JHD2l27CY/uzIzKJYH+mrqppO697Hszjxa8CpubpAtiUgM0X6ER68IsQA==
-X-Received: by 2002:a05:600c:538e:b0:40d:7a8e:3476 with SMTP id hg14-20020a05600c538e00b0040d7a8e3476mr3382517wmb.20.1704204221326;
-        Tue, 02 Jan 2024 06:03:41 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id q17-20020a05600c46d100b0040d802a7619sm13969451wmo.38.2024.01.02.06.03.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 06:03:41 -0800 (PST)
-Date: Tue, 2 Jan 2024 16:24:29 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Nathan DSilva <expitau@gmail.com>
-Cc: gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
-	tdavies@darkphysics.net, error27@gmail.com,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: rtl8192e: Add blank line after declarations
-Message-ID: <556cb2ae-4402-4f69-ba41-fa212deb2c78@suswa.mountain>
-References: <ZXvevJ2vEEQ92rau@oatmeal.darkphysics>
- <20231215152918.532037-1-expitau@gmail.com>
+        d=1e100.net; s=20230601; t=1704201904; x=1704806704;
+        h=content-transfer-encoding:in-reply-to:references:to:from:subject
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=B6O9NOwtuteIYyicF8P0HuZgF44ilFnB7nwaX+Y1Si4=;
+        b=AMnJv+rMZ7Z23wRqevRB7ufJbW1YXnauJI6jb6f6+or8aI51yluUOyXcl3atptdm7Y
+         RALvJP8vIARo/f8A6R/I0mxJ5Gf7YY7/Hzkswlub1R2jYT5tsDtHQToe+D6BKkAKJFSD
+         v6sF29GZtCwF8ftTUVXxymNrmFn6niRW3edNqwz2KgyO26OHRrhEKLfZLppcdZsBAQvT
+         kvgnzUmWItEIPG0/CSC5UOuBye9Ftuj5BidYzWL1rUlAK7TjaihMtWetMj6KBfSJAEii
+         Mtd/o03i0y0JXfULOFktgUQ4X8c2cDCiRmhQk5fjGS//dg4CABYJreazMEvoQG64uccg
+         NXaQ==
+X-Gm-Message-State: AOJu0YzyuQ+9jMAW5fzBBQAHumqDM3j2eWfpgJmOIq7+YRnin1KWLIfp
+	zeKilBNK3KHEXVGbZ2KyQDU=
+X-Google-Smtp-Source: AGHT+IHU+SO7b1fE1+XwQKpCy3gbwCpuSRN0P+3842bCNi2SaBuDV3wfdru03iIEALag45tVPEGY+A==
+X-Received: by 2002:adf:efc5:0:b0:336:b52d:30cf with SMTP id i5-20020adfefc5000000b00336b52d30cfmr8039000wrp.61.1704201903880;
+        Tue, 02 Jan 2024 05:25:03 -0800 (PST)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id x13-20020a5d650d000000b00336b702af06sm22777821wru.16.2024.01.02.05.24.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jan 2024 05:25:03 -0800 (PST)
+Message-ID: <90117449-1f4a-47d7-baf4-2ed6540bc436@gmail.com>
+Date: Tue, 2 Jan 2024 14:24:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215152918.532037-1-expitau@gmail.com>
+Subject: [PATCH net-next v2 2/3] net: gro: parse ipv6 ext headers without
+ frag0 invalidation
+From: Richard Gobert <richardbgobert@gmail.com>
+To: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <127b8199-1cd4-42d7-9b2b-875abaad93fe@gmail.com>
+In-Reply-To: <127b8199-1cd4-42d7-9b2b-875abaad93fe@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Also send the v3 as a new thread.  See my blog for more details?
+The existing code always pulls the IPv6 header and sets the transport
+offset initially. Then optionally again pulls any extension headers in
+ipv6_gso_pull_exthdrs and sets the transport offset again on return from
+that call. skb->data is set at the start of the first extension header
+before calling ipv6_gso_pull_exthdrs, and must disable the frag0
+optimization because that function uses pskb_may_pull/pskb_pull instead of
+skb_gro_ helpers. It sets the GRO offset to the TCP header with
+skb_gro_pull and sets the transport header. Then returns skb->data to its
+position before this block.
 
-https://staticthinking.wordpress.com/2022/07/27/how-to-send-a-v2-patch
+This commit introduces a new helper function - ipv6_gro_pull_exthdrs -
+which is used in ipv6_gro_receive to pull ipv6 ext headers instead of
+ipv6_gso_pull_exthdrs. Thus, there is no modification of skb->data, all
+operations use skb_gro_* helpers, and the frag0 fast path can be taken for
+IPv6 packets with ext headers.
 
-regards,
-dan carpenter
+Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
+Reviewed-by: Willem de Bruijn <willemb@google.com>
+---
+ include/net/ipv6.h     |  1 +
+ net/ipv6/ip6_offload.c | 51 +++++++++++++++++++++++++++++++++---------
+ 2 files changed, 42 insertions(+), 10 deletions(-)
 
+diff --git a/include/net/ipv6.h b/include/net/ipv6.h
+index 78d38dd88aba..217240efa182 100644
+--- a/include/net/ipv6.h
++++ b/include/net/ipv6.h
+@@ -26,6 +26,7 @@ struct ip_tunnel_info;
+ #define SIN6_LEN_RFC2133	24
+ 
+ #define IPV6_MAXPLEN		65535
++#define IPV6_MIN_EXTHDR_LEN	8
+ 
+ /*
+  *	NextHeader field of IPv6 header
+diff --git a/net/ipv6/ip6_offload.c b/net/ipv6/ip6_offload.c
+index 0e0b5fed0995..c07111d8f56a 100644
+--- a/net/ipv6/ip6_offload.c
++++ b/net/ipv6/ip6_offload.c
+@@ -37,6 +37,40 @@
+ 		INDIRECT_CALL_L4(cb, f2, f1, head, skb);	\
+ })
+ 
++static int ipv6_gro_pull_exthdrs(struct sk_buff *skb, int off, int proto)
++{
++	const struct net_offload *ops = NULL;
++	struct ipv6_opt_hdr *opth;
++
++	for (;;) {
++		int len;
++
++		ops = rcu_dereference(inet6_offloads[proto]);
++
++		if (unlikely(!ops))
++			break;
++
++		if (!(ops->flags & INET6_PROTO_GSO_EXTHDR))
++			break;
++
++		opth = skb_gro_header(skb, off + IPV6_MIN_EXTHDR_LEN, off);
++		if (unlikely(!opth))
++			break;
++
++		len = ipv6_optlen(opth);
++
++		opth = skb_gro_header(skb, off + len, off);
++		if (unlikely(!opth))
++			break;
++		proto = opth->nexthdr;
++
++		off += len;
++	}
++
++	skb_gro_pull(skb, off - skb_network_offset(skb));
++	return proto;
++}
++
+ static int ipv6_gso_pull_exthdrs(struct sk_buff *skb, int proto)
+ {
+ 	const struct net_offload *ops = NULL;
+@@ -203,28 +237,25 @@ INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_receive(struct list_head *head,
+ 		goto out;
+ 
+ 	skb_set_network_header(skb, off);
+-	skb_gro_pull(skb, sizeof(*iph));
+-	skb_set_transport_header(skb, skb_gro_offset(skb));
+ 
+-	flush += ntohs(iph->payload_len) != skb_gro_len(skb);
++	flush += ntohs(iph->payload_len) != skb->len - hlen;
+ 
+ 	proto = iph->nexthdr;
+ 	ops = rcu_dereference(inet6_offloads[proto]);
+ 	if (!ops || !ops->callbacks.gro_receive) {
+-		pskb_pull(skb, skb_gro_offset(skb));
+-		skb_gro_frag0_invalidate(skb);
+-		proto = ipv6_gso_pull_exthdrs(skb, proto);
+-		skb_gro_pull(skb, -skb_transport_offset(skb));
+-		skb_reset_transport_header(skb);
+-		__skb_push(skb, skb_gro_offset(skb));
++		proto = ipv6_gro_pull_exthdrs(skb, hlen, proto);
+ 
+ 		ops = rcu_dereference(inet6_offloads[proto]);
+ 		if (!ops || !ops->callbacks.gro_receive)
+ 			goto out;
+ 
+-		iph = ipv6_hdr(skb);
++		iph = skb_gro_network_header(skb);
++	} else {
++		skb_gro_pull(skb, sizeof(*iph));
+ 	}
+ 
++	skb_set_transport_header(skb, skb_gro_offset(skb));
++
+ 	NAPI_GRO_CB(skb)->proto = proto;
+ 
+ 	flush--;
+-- 
+2.36.1
 
 
