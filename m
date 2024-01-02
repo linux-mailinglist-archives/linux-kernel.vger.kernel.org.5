@@ -1,123 +1,107 @@
-Return-Path: <linux-kernel+bounces-14550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FA2F821E87
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:16:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CA25821E9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:20:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C61C51C2248F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:16:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50D301C22277
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:20:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D79A13AF4;
-	Tue,  2 Jan 2024 15:16:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA66E14A98;
+	Tue,  2 Jan 2024 15:20:01 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC87813FE2;
-	Tue,  2 Jan 2024 15:16:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8D46C433C8;
-	Tue,  2 Jan 2024 15:16:12 +0000 (UTC)
-Date: Tue, 2 Jan 2024 10:17:12 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>, Alexander Potapenko
- <glider@google.com>, Andrew Morton <akpm@linux-foundation.org>, Christoph
- Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>, Heiko
- Carstens <hca@linux.ibm.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, Marco
- Elver <elver@google.com>, Masami Hiramatsu <mhiramat@kernel.org>, Pekka
- Enberg <penberg@kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, Vlastimil
- Babka <vbabka@suse.cz>, Christian Borntraeger <borntraeger@linux.ibm.com>,
- Dmitry Vyukov <dvyukov@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux-s390@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
- Roman Gushchin <roman.gushchin@linux.dev>, Sven Schnelle
- <svens@linux.ibm.com>
-Subject: Re: [PATCH v3 01/34] ftrace: Unpoison ftrace_regs in
- ftrace_ops_list_func()
-Message-ID: <20240102101712.515e0fe3@gandalf.local.home>
-In-Reply-To: <20231213233605.661251-2-iii@linux.ibm.com>
-References: <20231213233605.661251-1-iii@linux.ibm.com>
-	<20231213233605.661251-2-iii@linux.ibm.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 577771400D;
+	Tue,  2 Jan 2024 15:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T4GhS49QKz6K622;
+	Tue,  2 Jan 2024 23:18:32 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 434FD1400DB;
+	Tue,  2 Jan 2024 23:19:56 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 2 Jan
+ 2024 15:19:55 +0000
+Date: Tue, 2 Jan 2024 15:19:53 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 21/21] cpumask: Add enabled cpumask for present
+ CPUs that can be brought online
+Message-ID: <20240102151953.00001949@Huawei.com>
+In-Reply-To: <ZYA3lmPOwIOJq/iY@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOhX-00Dvlg-Ci@rmk-PC.armlinux.org.uk>
+	<20231215171831.00004a19@Huawei.com>
+	<ZYA3lmPOwIOJq/iY@shell.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Thu, 14 Dec 2023 00:24:21 +0100
-Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+On Mon, 18 Dec 2023 12:14:14 +0000
+"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
 
-> Architectures use assembly code to initialize ftrace_regs and call
-> ftrace_ops_list_func(). Therefore, from the KMSAN's point of view,
-> ftrace_regs is poisoned on ftrace_ops_list_func entry(). This causes
-> KMSAN warnings when running the ftrace testsuite.
-
-BTW, why is this only a problem for s390 and no other architectures?
-
-If it is only a s390 thing, then we should do this instead:
-
-in include/linux/ftrace.h:
-
-/* Add a comment here to why this is needed */
-#ifndef ftrace_list_func_unpoison
-# define ftrace_list_func_unpoison(fregs) do { } while(0)
-#endif
-
-In arch/s390/include/asm/ftrace.h:
-
-/* Add a comment to why s390 is special */
-# define ftrace_list_func_unpoison(fregs) kmsan_unpoison_memory(fregs, sizeof(*fregs))
-
+> On Fri, Dec 15, 2023 at 05:18:31PM +0000, Jonathan Cameron wrote:
+> > On Wed, 13 Dec 2023 12:50:59 +0000
+> > Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+> >   
+> > > From: James Morse <james.morse@arm.com>
+> > > 
+> > > The 'offline' file in sysfs shows all offline CPUs, including those
+> > > that aren't present. User-space is expected to remove not-present CPUs
+> > > from this list to learn which CPUs could be brought online.
+> > > 
+> > > CPUs can be present but not-enabled. These CPUs can't be brought online
+> > > until the firmware policy changes, which comes with an ACPI notification
+> > > that will register the CPUs.
+> > > 
+> > > With only the offline and present files, user-space is unable to
+> > > determine which CPUs it can try to bring online. Add a new CPU mask
+> > > that shows this based on all the registered CPUs.
+> > > 
+> > > Signed-off-by: James Morse <james.morse@arm.com>
+> > > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> > > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> > > ---  
+> > 
+> > Needs docs
+> > Documentation/ABI/testing/sysfs-devices-system-cpu
+> > seems to have the rest of the similar entries.  
 > 
-> Fix by trusting the architecture-specific assembly code and always
-> unpoisoning ftrace_regs in ftrace_ops_list_func.
+> Any ideas what I put in there as "Date" ? It seems to me that we have
+> little idea when this might be merged.. I could use the date of the
+> commit (Nov 2022).
 > 
-> Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-I'm taking my ack away for this change in favor of what I'm suggesting now.
+That's always a guess at best.  Hopefully whoever picks this up
+fixes the date up or asks for a new version with it fixed just before
+they do.
 
-> Reviewed-by: Alexander Potapenko <glider@google.com>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  kernel/trace/ftrace.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 8de8bec5f366..dfb8b26966aa 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -7399,6 +7399,7 @@ __ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
->  void arch_ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
->  			       struct ftrace_ops *op, struct ftrace_regs *fregs)
->  {
-> +	kmsan_unpoison_memory(fregs, sizeof(*fregs));
-
-And here have:
-
-	ftrace_list_func_unpoison(fregs);
-
-That way we only do it for archs that really need it, and do not affect
-archs that do not.
-
-
-I want to know why this only affects s390, because if we are just doing
-this because "it works", it could be just covering up a symptom of
-something else and not actually doing the "right thing".
-
-
--- Steve
-
-
->  	__ftrace_ops_list_func(ip, parent_ip, NULL, fregs);
->  }
->  #else
-
+J
 
