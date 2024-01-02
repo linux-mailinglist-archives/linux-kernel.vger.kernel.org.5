@@ -1,135 +1,69 @@
-Return-Path: <linux-kernel+bounces-14976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E073822593
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:35:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D81A2822595
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:35:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FC411C21A8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:35:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3E981C22B20
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:35:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A0C17756;
-	Tue,  2 Jan 2024 23:35:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB8C417982;
+	Tue,  2 Jan 2024 23:35:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TbOeiDBt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BqOgyMUV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA01E1774B
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 23:35:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dbdb8e032f7so7548030276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 15:35:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704238499; x=1704843299; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fEeHN1tMa7cbdkZt1wLkdCjR844Pa9tAzIQcAD+DKkg=;
-        b=TbOeiDBtMM3VQzjCTx+vQzqEIsYMMdfafBnQb4OL9mNorkV5EVEzF/E6NRsVum344u
-         FH/bSMVREJ8A5uDjwuyQ/bdSS9fP/umdMFtbn8uWhQfIshTaW2YnOlpM3pciFbN/CPv9
-         iFkwuyFKJbQoTfnTez2h7ICI1niZtRTCBExGwMLtqxOSEAkW2P0Ce9kEcLmjAnCrXxCj
-         yc2w31Tg7r/gYkQBS8bIzdev1VnKLZS7Mlcvp3I79+7CSdCLwFTwlmXGXDM6hDrDBGlu
-         rcGZVs2jQ6Lsa5urffJeSOnr1kFc2iMX9k0pUEwipPkTragdetDOcF8QIc4SnGOiFF+K
-         l+Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704238499; x=1704843299;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fEeHN1tMa7cbdkZt1wLkdCjR844Pa9tAzIQcAD+DKkg=;
-        b=jTFdeDGALkojQwqxFqZC2uEdn2aYyojbVqEN+58XOiQGKrpgbPovOuyrQvlSm9kXV4
-         ZSlqLm+BxDiRavmdff7JI1JatrQPtIl3reS6IxvBQzAOAaK/4Jf3sYrssMFcFhDiXr2L
-         dmXvHqOca7LFysimW9qMb4FSa5IPEmgopLAuncjBBC+IHkpFgDNKVNpg1ygyYTNu826X
-         SJX5aak4iep2UdfpaI+fpxNh8kiM543x0J2vytx1AYXYhn+ZzJeQedc9O+SAYqnVSHYh
-         aLKgEWWbfTckWGfVt3lGiRdztLGOHYDmA+EHwVVKzqoLJ17RPk2CuKiAbyQib4sJ0iMu
-         26Kw==
-X-Gm-Message-State: AOJu0YzzhmjPqEmCDFZ13GSJXVhd9raXWhIt475JIY3nUkBBndWEsWYt
-	+lFA7nMkD3IZ4fVTox0DfXMnPxsV8FybOiVOZY3AZfJZvxd4
-X-Google-Smtp-Source: AGHT+IGU6yh4YTmF3G9jvMQhRAMuGZOpnj42Na+/PAXUmwKui2qn2ADQ4/SQ2umSN0+5z8f+hfJb4rX5XjLhNFsGcAA=
-X-Received: by 2002:a5b:7c3:0:b0:db5:4ec5:6f2f with SMTP id
- t3-20020a5b07c3000000b00db54ec56f2fmr129240ybq.20.1704238499402; Tue, 02 Jan
- 2024 15:34:59 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37BF517980;
+	Tue,  2 Jan 2024 23:35:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47A8FC433C8;
+	Tue,  2 Jan 2024 23:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704238548;
+	bh=hPu6xGK4IX3QhKTJdbUzW4NhfenDBEDddhD2itm8rE4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=BqOgyMUV8ZKFmw42r/kPMmuUgOGQrEkBFgDc8WE8vjdWmoeGdCAFRlCDEnwh+uZd9
+	 7yc62NTPyEEf6s2JivYwkJjJXM9oGMS2Gm8m+cpIBzqtOYQ/ALCWJodPdiHT8TFbbc
+	 JrDeeKVkq8KShE0hJ3fAPnkerYgtPAhbUheU0T0MgkuaOa7XK9FA1nMLdetrEputKk
+	 L87ZymlWhxS3qBqTG/IVibNaI7PVK9AifnkHRSmLoewOHSgeNKKfL7gO7IdtOjG3yO
+	 6IVDF+QIOmzAT49BhQL30M+CZfG/ccd4MCFTX3mwrtd/6dTkHnj0hmhQoGgPXePpa+
+	 yw5vpFGfQNNGA==
+Date: Tue, 2 Jan 2024 15:35:47 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc: netdev@vger.kernel.org, linyunsheng@huawei.com, Jesper Dangaard Brouer
+ <hawk@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2] page_pool: Rename frag_users to
+ pagecnt_bias
+Message-ID: <20240102153547.58b23d35@kernel.org>
+In-Reply-To: <20231220080147.740134-1-ilias.apalodimas@linaro.org>
+References: <20231220080147.740134-1-ilias.apalodimas@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231230025607.2476912-1-surenb@google.com> <ZZPQjO91fvB66z1s@x1n>
- <CAJuCfpF8h4aPAvFQv4NjX=DRWTZ1P5DcO16DfT-Sot1cGucjJQ@mail.gmail.com> <CAJuCfpG4tSPADrSpUCubsymoT_FWO4mONFODb2_sK4f-5RTY-A@mail.gmail.com>
-In-Reply-To: <CAJuCfpG4tSPADrSpUCubsymoT_FWO4mONFODb2_sK4f-5RTY-A@mail.gmail.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Tue, 2 Jan 2024 15:34:46 -0800
-Message-ID: <CAJuCfpExJHNmNPhy1X1CioDT2OrnaQqf=awoj5Vkhr1msBsCDQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] userfaultfd: fix move_pages_pte() splitting folio
- under RCU read lock
-To: Peter Xu <peterx@redhat.com>
-Cc: akpm@linux-foundation.org, viro@zeniv.linux.org.uk, brauner@kernel.org, 
-	shuah@kernel.org, aarcange@redhat.com, lokeshgidra@google.com, 
-	david@redhat.com, ryan.roberts@arm.com, hughd@google.com, mhocko@suse.com, 
-	axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org, 
-	Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com, 
-	bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com, 
-	jdduke@google.com, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 2, 2024 at 3:16=E2=80=AFPM Suren Baghdasaryan <surenb@google.co=
-m> wrote:
->
-> On Tue, Jan 2, 2024 at 8:58=E2=80=AFAM Suren Baghdasaryan <surenb@google.=
-com> wrote:
-> >
-> > On Tue, Jan 2, 2024 at 1:00=E2=80=AFAM Peter Xu <peterx@redhat.com> wro=
-te:
-> > >
-> > > On Fri, Dec 29, 2023 at 06:56:07PM -0800, Suren Baghdasaryan wrote:
-> > > > @@ -1078,9 +1078,14 @@ static int move_pages_pte(struct mm_struct *=
-mm, pmd_t *dst_pmd, pmd_t *src_pmd,
-> > > >
-> > > >               /* at this point we have src_folio locked */
-> > > >               if (folio_test_large(src_folio)) {
-> > > > +                     /* split_folio() can block */
-> > > > +                     pte_unmap(&orig_src_pte);
-> > > > +                     pte_unmap(&orig_dst_pte);
-> > > > +                     src_pte =3D dst_pte =3D NULL;
-> > > >                       err =3D split_folio(src_folio);
-> > > >                       if (err)
-> > > >                               goto out;
-> > > > +                     goto retry;
-> > > >               }
-> > >
-> > > Do we also need to clear src_folio and src_folio_pte?  If the folio i=
-s a
-> > > thp, I think it means it's pte mapped here. Then after the split we m=
-ay
-> > > want to fetch the small folio after the split, not the head one?
-> >
-> > I think we need to re-fetch the src_folio only if the src_addr falls
-> > into a non-head page. Looking at the __split_huge_page(), the head
-> > page is skipped in the last loop, so I think it should stay valid.
-> > That said, maybe it's just an implementation detail of the
-> > __split_huge_page() and I should not rely on that and refetch anyway?
->
-> I'll post a v2 with this fix and re-fetching the folio
-> unconditionally. We also don't need to reset src_folio_pte value
-> because it's used only if src_folio is not NULL.
+On Wed, 20 Dec 2023 10:01:46 +0200 Ilias Apalodimas wrote:
+> -	long frag_users;
+> +	long pagecnt_bias;
 
-Posted at https://lore.kernel.org/all/20240102233256.1077959-1-surenb@googl=
-e.com/
+IDK :(
 
-> Thanks for catching this, Peter!
->
-> >
-> > >
-> > > --
-> > > Peter Xu
-> > >
+pagecnt to mean suggests this is related to page refcount,
+not page pool specific refcount.
+
+More importantly bias is the large number by which we increment.
+This counter counts how many of the bias references we actually
+consumed. So how about bias_consumed? bias_used? bias_issued?
+frags_alloced?
 
