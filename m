@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-14827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCB1A8222F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:09:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A143F8222F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C22E1F2353A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:09:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 550771F235AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:09:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5839F171CE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6B1E1772B;
 	Tue,  2 Jan 2024 21:08:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YKh0zhED"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mxlR/JRm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EB2168BD
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:08:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD699168CE
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:08:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7ba8f139522so493850539f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:08:46 -0800 (PST)
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7ba8c218fe1so522823739f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:08:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704229726; x=1704834526; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1704229727; x=1704834527; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hoCMzkIH2SpwplBXEvrmILCCJUolIXwuArK291Rg4jU=;
-        b=YKh0zhEDmK54BHzoeo1B7L58bAiJbmnxlRLuDKlcG9MRRE9FrY0D6FPo5K7HnTp5ng
-         lLAo7p5C7ZiDzRdyaMPC5jhfxvKXlrkcaeBZfKLFWXx6kcr+0/XelLpNJHEXjV3eiyjo
-         slLK0pw0Je9fwJqgWh/23sJhKeXyso91DprWI=
+        bh=WvEk8+CF0e0obxZ9GfqxQDlPWDurZBaCRVB9kdh79UY=;
+        b=mxlR/JRmwEzQ24gQbrDuASfLAvbvVtviILTojV9tH+legi9uf4b7ADzWQF5EqQddIX
+         xT6pNgZodzRXQHKsKbDQwzJoHjqoQgx2e8tm8tSVI049sJzPbI2KiAidhangrsB5MK5I
+         4w9xwxX7r/qLSQrGz9oBndIzZwjj3vIDlt9Ls=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704229726; x=1704834526;
+        d=1e100.net; s=20230601; t=1704229727; x=1704834527;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hoCMzkIH2SpwplBXEvrmILCCJUolIXwuArK291Rg4jU=;
-        b=wbVWangZEsEgnmbIFYmvUD/WqUblJyjR2uvYWN2qnOPq6vJDsRmEuBIFzxTR+jsyQV
-         209ah6fjcTIi+Ti5L+lZEGBcutzCD/uUR2lzYDsYPLeKUd8yyczWoSTb+GiKGV6iBBnU
-         3X88VNb8FSVt1Go2p9XTEXz1VzsyWhrHAdX5aoNSFOX8MCYcFbVkxRPoUmGOGpQAQTjx
-         wy9XbKD8TIqXzK3srQ0QGJUvgU5Kof7tpdpOWwfwC+9ftQEH57m+ttvkNQ9HsxYmQy4O
-         dOG4lAWr+kJU46H6zrvKBKrtv2MPhNgHfoKkpILzjm0D3BSpfG4sMAhbYZxhSy2tXFzN
-         BCqQ==
-X-Gm-Message-State: AOJu0YysbLxFlq74w93+xB9QnbuTWT0fHiQB1vkPOlrKLip527zsCHLa
-	Nf9iOyqNvbEBAUEpoKDL/bjDUQsLsjZkZm63E9+C9ocRzNne
-X-Google-Smtp-Source: AGHT+IHyW2JhwMXCAKVq1niGr8GJA1kMcgBCBAAnnHH0R6mCkxCxIMO5xnsrfrNzmrhhBaVXIKjATA==
-X-Received: by 2002:a05:6602:683:b0:7bb:aa7e:6d1d with SMTP id dp3-20020a056602068300b007bbaa7e6d1dmr3857804iob.10.1704229726099;
+        bh=WvEk8+CF0e0obxZ9GfqxQDlPWDurZBaCRVB9kdh79UY=;
+        b=LRJfQIkwSrxdwEU6EwcDCOIapDE3q0xotBFrNGejOWRJwUwJYSdTtTT2MdgbXH9L16
+         BT0t7gRFMokCI22gOnYr7HORiseIt/MgAI/hm7oJ2nic9l6uzWYO0MgVEdpvsDcnOs/e
+         B/jKcLd2oEGmZesz+/q/u4YWX5sfeBK/37GzWUr45OrQPCOhhmdl2CWnwC6TaZ8yXQKN
+         ntby6M0cTIa//M5GNcRtfOrBIe5WYzhPAqP1j41Q5RWgvdSDvg/Cgcx2v5YImEspj8cz
+         Wm650xQ8cox4fyzTRAp7O8xgW6tcl55Ch3IftVp0w7ReDBAGks0m+XGAcxujc8xQYnoQ
+         aelQ==
+X-Gm-Message-State: AOJu0YzAHu7NBfQJgfmIBeRxWSdEQKF9vWbsMzJpljqLdsxY75u194G1
+	yXipm9+k/H4FNgM3IIOlzZHBnWl2sEkQ8QKTZ8zU7r3lC7wx
+X-Google-Smtp-Source: AGHT+IHI75xAGPFlil09eKYafdEG2aev9jD01DbjIlsGjx+6zXyEPaBuo+v0kDgukm1xT+F/6TUdeA==
+X-Received: by 2002:a6b:500e:0:b0:7ba:af56:55b4 with SMTP id e14-20020a6b500e000000b007baaf5655b4mr12329868iob.3.1704229726966;
         Tue, 02 Jan 2024 13:08:46 -0800 (PST)
 Received: from markhas1.lan (71-218-50-136.hlrn.qwest.net. [71.218.50.136])
-        by smtp.gmail.com with ESMTPSA id bo18-20020a056638439200b0046993034c91sm6956978jab.77.2024.01.02.13.08.45
+        by smtp.gmail.com with ESMTPSA id bo18-20020a056638439200b0046993034c91sm6956978jab.77.2024.01.02.13.08.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 13:08:45 -0800 (PST)
+        Tue, 02 Jan 2024 13:08:46 -0800 (PST)
 From: Mark Hasemeyer <markhas@chromium.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Sudeep Holla <sudeep.holla@arm.com>,
@@ -65,14 +65,13 @@ Cc: Sudeep Holla <sudeep.holla@arm.com>,
 	Raul Rangel <rrangel@chromium.org>,
 	Tzung-Bi Shih <tzungbi@kernel.org>,
 	Mark Hasemeyer <markhas@chromium.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Wolfram Sang <wsa@kernel.org>,
-	linux-acpi@vger.kernel.org,
-	linux-i2c@vger.kernel.org
-Subject: [PATCH v4 03/24] i2c: acpi: Modify i2c_acpi_get_irq() to use resource
-Date: Tue,  2 Jan 2024 14:07:27 -0700
-Message-ID: <20240102140734.v4.3.Ib65096357993ff602e7dd0000dd59a36571c48d8@changeid>
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	devicetree@vger.kernel.org
+Subject: [PATCH v4 04/24] dt-bindings: power: Clarify wording for wakeup-source property
+Date: Tue,  2 Jan 2024 14:07:28 -0700
+Message-ID: <20240102140734.v4.4.I1016a45ac9e8daf8a9ebc9854ab90ec3542e7c30@changeid>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20240102210820.2604667-1-markhas@chromium.org>
 References: <20240102210820.2604667-1-markhas@chromium.org>
@@ -84,172 +83,63 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The i2c_acpi_irq_context structure provides redundant information that
-can be provided with struct resource.
+The wording in the current documentation is a little strong. The
+intention was not to fix any particular interrupt as wakeup capable but
+leave those details to the device. It wasn't intended to enforce any
+rules as what can be or can't be a wakeup interrupt.
 
-Refactor i2c_acpi_get_irq() to use struct resource instead of struct
-i2c_acpi_irq_context.
+Soften the wording to not mandate that the 'wakeup-source' property be
+used, and clarify what it means when an interrupt is marked (or not
+marked) for wakeup.
 
-Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/all/ZYAjxxHcCOgDVMTQ@bogus/
+Link: https://lore.kernel.org/all/CAL_Jsq+MYwOG40X26cYmO9EkZ9xqWrXDi03MaRfxnV-+VGkXWQ@mail.gmail.com/
 Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
 ---
 
-Changes in v4:
--Use Andy's @linux.intel.com email
--Remove blank line in commit message
--More error handling refactoring in i2c_acpi_get_irq()
--Remove struct i2c_acpi_irq_context as it's unused
+(no changes since v3)
 
 Changes in v3:
--Add Suggested-by
--Check resource flags for valid irq
--Drop error pointer check
--Invert error checking logic in i2c_acpi_get_irq()
--Drop redundant 0 in struct resource init
--Drop unnecessary check for irq > 0 when setting I2C_CLIENT_WAKE
+-Update commit title prefixes
 
 Changes in v2:
 -New patch
 
- drivers/i2c/i2c-core-acpi.c | 49 +++++++++++++------------------------
- drivers/i2c/i2c-core-base.c |  6 ++---
- drivers/i2c/i2c-core.h      |  4 +--
- 3 files changed, 22 insertions(+), 37 deletions(-)
+ .../bindings/power/wakeup-source.txt           | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/i2c/i2c-core-acpi.c b/drivers/i2c/i2c-core-acpi.c
-index 8126a87baf3d4..4c3df540c2f4b 100644
---- a/drivers/i2c/i2c-core-acpi.c
-+++ b/drivers/i2c/i2c-core-acpi.c
-@@ -137,11 +137,6 @@ static const struct acpi_device_id i2c_acpi_ignored_device_ids[] = {
- 	{}
- };
+diff --git a/Documentation/devicetree/bindings/power/wakeup-source.txt b/Documentation/devicetree/bindings/power/wakeup-source.txt
+index 697333a56d5e2..75bc20b95688f 100644
+--- a/Documentation/devicetree/bindings/power/wakeup-source.txt
++++ b/Documentation/devicetree/bindings/power/wakeup-source.txt
+@@ -3,16 +3,20 @@ Specifying wakeup capability for devices
  
--struct i2c_acpi_irq_context {
--	int irq;
--	bool wake_capable;
--};
--
- static int i2c_acpi_do_lookup(struct acpi_device *adev,
- 			      struct i2c_acpi_lookup *lookup)
- {
-@@ -175,64 +170,54 @@ static int i2c_acpi_do_lookup(struct acpi_device *adev,
+ Any device nodes
+ ----------------
+-Nodes that describe devices which has wakeup capability must contain an
++Nodes that describe devices which have wakeup capability may contain a
+ "wakeup-source" boolean property.
  
- static int i2c_acpi_add_irq_resource(struct acpi_resource *ares, void *data)
- {
--	struct i2c_acpi_irq_context *irq_ctx = data;
--	struct resource r;
-+	struct resource *r = data;
+-Also, if device is marked as a wakeup source, then all the primary
+-interrupt(s) can be used as wakeup interrupt(s).
++If the device is marked as a wakeup-source, interrupt wake capability depends
++on the device specific "interrupt-names" property. If no interrupts are labeled
++as wake capable, then it is up to the device to determine which interrupts can
++wake the system.
  
--	if (irq_ctx->irq > 0)
-+	if (r->flags)
- 		return 1;
- 
--	if (!acpi_dev_resource_interrupt(ares, 0, &r))
-+	if (!acpi_dev_resource_interrupt(ares, 0, r))
- 		return 1;
- 
--	irq_ctx->irq = i2c_dev_irq_from_resources(&r, 1);
--	irq_ctx->wake_capable = r.flags & IORESOURCE_IRQ_WAKECAPABLE;
-+	i2c_dev_irq_from_resources(r, 1);
- 
- 	return 1; /* No need to add resource to the list */
- }
- 
- /**
-- * i2c_acpi_get_irq - get device IRQ number from ACPI
-+ * i2c_acpi_get_irq - get device IRQ number from ACPI and populate resource
-  * @client: Pointer to the I2C client device
-- * @wake_capable: Set to true if the IRQ is wake capable
-+ * @r: resource with populated IRQ information
-  *
-  * Find the IRQ number used by a specific client device.
-  *
-  * Return: The IRQ number or an error code.
-  */
--int i2c_acpi_get_irq(struct i2c_client *client, bool *wake_capable)
-+int i2c_acpi_get_irq(struct i2c_client *client, struct resource *r)
- {
- 	struct acpi_device *adev = ACPI_COMPANION(&client->dev);
- 	struct list_head resource_list;
--	struct resource irqres;
--	struct i2c_acpi_irq_context irq_ctx = {
--		.irq = -ENOENT,
--	};
- 	int ret;
- 
-+	if (!r)
-+		return -EINVAL;
+-However if the devices have dedicated interrupt as the wakeup source
+-then they need to specify/identify the same using device specific
+-interrupt name. In such cases only that interrupt can be used as wakeup
+-interrupt.
++However if a device has a dedicated interrupt as the wakeup source, then it
++needs to specify/identify it using a device specific interrupt name. In such
++cases only that interrupt can be used as a wakeup interrupt.
 +
- 	INIT_LIST_HEAD(&resource_list);
++While various legacy interrupt names exist, new devices should use "wakeup" as
++the canonical interrupt name.
  
- 	ret = acpi_dev_get_resources(adev, &resource_list,
--				     i2c_acpi_add_irq_resource, &irq_ctx);
-+				     i2c_acpi_add_irq_resource, r);
- 	if (ret < 0)
- 		return ret;
- 
- 	acpi_dev_free_resource_list(&resource_list);
- 
--	if (irq_ctx.irq == -ENOENT) {
--		ret = acpi_dev_get_gpio_irq_resource(adev, NULL, 0, &irqres);
--		if (ret)
--			return ret;
--		irq_ctx.irq = irqres.start;
--		irq_ctx.wake_capable = irqres.flags & IORESOURCE_IRQ_WAKECAPABLE;
--	}
-+	if (r->flags)
-+		return r->start;
- 
--	if (irq_ctx.irq < 0)
--		return irq_ctx.irq;
-+	ret = acpi_dev_get_gpio_irq_resource(adev, NULL, 0, r);
-+	if (ret)
-+		return ret;
- 
--	if (wake_capable)
--		*wake_capable = irq_ctx.wake_capable;
--
--	return irq_ctx.irq;
-+	return r->start;
- }
- 
- static int i2c_acpi_get_info(struct acpi_device *adev,
-diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-index 3bd48d4b6318f..0339c298ba50b 100644
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -513,10 +513,10 @@ static int i2c_device_probe(struct device *dev)
- 			if (irq == -EINVAL || irq == -ENODATA)
- 				irq = of_irq_get(dev->of_node, 0);
- 		} else if (ACPI_COMPANION(dev)) {
--			bool wake_capable;
-+			struct resource r = {};
- 
--			irq = i2c_acpi_get_irq(client, &wake_capable);
--			if (irq > 0 && wake_capable)
-+			irq = i2c_acpi_get_irq(client, &r);
-+			if (r.flags & IORESOURCE_IRQ_WAKECAPABLE)
- 				client->flags |= I2C_CLIENT_WAKE;
- 		}
- 		if (irq == -EPROBE_DEFER) {
-diff --git a/drivers/i2c/i2c-core.h b/drivers/i2c/i2c-core.h
-index 05b8b8dfa9bdd..b5dc559c49d11 100644
---- a/drivers/i2c/i2c-core.h
-+++ b/drivers/i2c/i2c-core.h
-@@ -61,11 +61,11 @@ static inline int __i2c_check_suspended(struct i2c_adapter *adap)
- #ifdef CONFIG_ACPI
- void i2c_acpi_register_devices(struct i2c_adapter *adap);
- 
--int i2c_acpi_get_irq(struct i2c_client *client, bool *wake_capable);
-+int i2c_acpi_get_irq(struct i2c_client *client, struct resource *r);
- #else /* CONFIG_ACPI */
- static inline void i2c_acpi_register_devices(struct i2c_adapter *adap) { }
- 
--static inline int i2c_acpi_get_irq(struct i2c_client *client, bool *wake_capable)
-+static inline int i2c_acpi_get_irq(struct i2c_client *client, struct resource *r)
- {
- 	return 0;
- }
+ List of legacy properties and respective binding document
+ ---------------------------------------------------------
 -- 
 2.43.0.472.g3155946c3a-goog
 
