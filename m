@@ -1,97 +1,211 @@
-Return-Path: <linux-kernel+bounces-13984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD19082167C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 03:32:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C40A821683
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 03:36:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A5681F218DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 02:32:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 247F1281D29
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 02:36:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDEEC10EC;
-	Tue,  2 Jan 2024 02:32:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E89A3EC0;
+	Tue,  2 Jan 2024 02:35:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iAq+UmQU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BEE6EBC;
-	Tue,  2 Jan 2024 02:32:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 2c410ea93b3e4cacba85cfabb0418f34-20240102
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:ae92b39a-53f3-4113-b068-2fdf06733a69,IP:25,
-	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:15
-X-CID-INFO: VERSION:1.1.35,REQID:ae92b39a-53f3-4113-b068-2fdf06733a69,IP:25,UR
-	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:15
-X-CID-META: VersionHash:5d391d7,CLOUDID:a4efe17e-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:240102103214JQ1WJQQO,BulkQuantity:0,Recheck:0,SF:24|72|19|44|66|38|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FSD
-X-UUID: 2c410ea93b3e4cacba85cfabb0418f34-20240102
-Received: from node4.com.cn [(39.156.73.12)] by mailgw
-	(envelope-from <tanzheng@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1289491454; Tue, 02 Jan 2024 10:32:11 +0800
-Received: from node4.com.cn (localhost [127.0.0.1])
-	by node4.com.cn (NSMail) with SMTP id A298816001CD7;
-	Tue,  2 Jan 2024 10:32:11 +0800 (CST)
-X-ns-mid: postfix-659375AB-484940367
-Received: from localhost.localdomain (unknown [172.20.40.222])
-	by node4.com.cn (NSMail) with ESMTPA id CB81716001CD9;
-	Tue,  2 Jan 2024 02:32:10 +0000 (UTC)
-From: zheng tan <tanzheng@kylinos.cn>
-To: gotom@debian.or.jp,
-	yokota@netlab.is.tsukuba.ac.jp
-Cc: jejb@linux.ibm.com,
-	martin.petersen@oracle.com,
-	linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Zheng tan <tanzheng@kylinos.cn>,
-	k2ci <kernel-bot@kylinos.cn>
-Subject: [PATCH 5/5] scsi: nsp32: fix spelling typo in comment
-Date: Tue,  2 Jan 2024 10:32:09 +0800
-Message-Id: <20240102023209.4107281-1-tanzheng@kylinos.cn>
-X-Mailer: git-send-email 2.27.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F18820FA;
+	Tue,  2 Jan 2024 02:35:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98914C433C7;
+	Tue,  2 Jan 2024 02:35:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704162954;
+	bh=ZhAg8cEhA9V7L/7YYOZ6JdvIjt4Ry3wwoHqVbwQfZWQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=iAq+UmQUrSx9rQnSm+xqSvRleqSTxUMuo3yht6ib8b62Ar9qgWFwJYN3qekQY8Buo
+	 Ei1jZm6flswE7Z4NDY6yb6Z3WyXvMc0+r8ew6GjVZ9Xzpl8c3MmEGApxIrF88PxnpH
+	 I1sBRhqvgLuG979h9on3nSck+rfgK3TA0tECaePe4AQE+mlehSRsS6XMKbgEuhxIzn
+	 B86aCbS4fhsH3jbW7+5elzW3nLjRYnia5jngU6iy5Gll5zSswTyF1bnivZ2DKmTvY7
+	 TemtdX3q+goj01pdLNhUYoTEZF/YOd3fqb7OURMvpf6Mv5hKcLJCuLMz+lCxWN4zaK
+	 hJfb/WI6K6tLA==
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55642663ac4so982096a12.1;
+        Mon, 01 Jan 2024 18:35:54 -0800 (PST)
+X-Gm-Message-State: AOJu0Ywt0/Q0KjRapDI6b7GGVN+cdibu8creF9Z0+DbutuHUWYfOQ61o
+	CRBSmiv2nJC1Bp5KJUjeny4DQuEuUwwsQ6Di9DA=
+X-Google-Smtp-Source: AGHT+IFAVD2FH+f4K3Xyk11X3m3CIqFMlFJ3wxkjaKJ9zKWxklVWjtclPRzUdnr8ou7wWDNJe5KOmAg1SEYP0qatG+g=
+X-Received: by 2002:a17:906:190a:b0:a28:7b6:db55 with SMTP id
+ a10-20020a170906190a00b00a2807b6db55mr793940eje.78.1704162953028; Mon, 01 Jan
+ 2024 18:35:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240101172143.14530-2-xry111@xry111.site>
+In-Reply-To: <20240101172143.14530-2-xry111@xry111.site>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Tue, 2 Jan 2024 10:35:45 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6dJtc3ZpEBnJzKdh691KQck771KOR0Lj41VLZ-Rc1ZwQ@mail.gmail.com>
+Message-ID: <CAAhV-H6dJtc3ZpEBnJzKdh691KQck771KOR0Lj41VLZ-Rc1ZwQ@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Fix and simplify fcsr initialization on execve
+To: Xi Ruoyao <xry111@xry111.site>
+Cc: WANG Xuerui <kernel@xen0n.name>, Eric Biederman <ebiederm@xmission.com>, 
+	Kees Cook <keescook@chromium.org>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
+	Jinyang He <hejinyang@loongson.cn>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
+	loongarch@lists.linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-From: Zheng tan <tanzheng@kylinos.cn>=20
+Hi, Ruoyao,
 
-fix spelling typo in comment.
+On Tue, Jan 2, 2024 at 1:23=E2=80=AFAM Xi Ruoyao <xry111@xry111.site> wrote=
+:
+>
+> There has been a lingering bug in LoongArch Linux systems causing some
+> GCC tests to intermittently fail (see Closes link).  I've made a minimal
+> reproducer:
+>
+>     zsh% cat measure.s
+>     .align 4
+>     .globl _start
+>     _start:
+>         movfcsr2gr  $a0, $fcsr0
+>         bstrpick.w  $a0, $a0, 16, 16
+>         beqz        $a0, .ok
+>         break       0
+>     .ok:
+>         li.w        $a7, 93
+>         syscall     0
+>     zsh% cc mesaure.s -o measure -nostdlib
+>     zsh% echo $((1.0/3))
+>     0.33333333333333331
+>     zsh% while ./measure; do ; done
+>
+> This while loop should not stop as POSIX is clear that execve must set
+> fenv to the default, where FCSR should be zero.  But in fact it will
+> just stop after running for a while (normally less than 30 seconds).
+> Note that "$((1.0/3))" is needed to reproduce the issue because it
+> raises FE_INVALID and makes fcsr0 non-zero.
+>
+> The problem is we are relying on SET_PERSONALITY2 to reset
+> current->thread.fpu.fcsr.  But SET_PERSONALITY2 is executed before
+> start_thread which calls lose_fpu(0).  We can see if kernel preempt is
+> enabled, we may switch to another thread after SET_PERSONALITY2 but
+> before lose_fpu(0).  Then bad thing happens: during the thread switch
+> the value of the fcsr0 register is stored into current->thread.fpu.fcsr,
+> making it dirty again.
+>
+> The issue can be fixed by setting current->thread.fpu.fcsr after
+> lose_fpu(0) because lose_fpu clears TIF_USEDFPU, then the thread
+> switch won't touch current->thread.fpu.fcsr.
+>
+> The only other architecture setting FCSR in SET_PERSONALITY2 is MIPS.
+> They do this for supporting different FP flavors (NaN encodings etc).
+> which do not exist on LoongArch.  I'm not sure how MIPS evades the issue
+> (or maybe it's just buggy too) as I don't have a running MIPS hardware
+> now.
+I think you can use QEMU. :)
 
-Reported-by: k2ci <kernel-bot@kylinos.cn>
-Signed-off-by: Zheng tan <tanzheng@kylinos.cn>
----
- drivers/scsi/nsp32.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> So for LoongArch, just remove the current->thread.fpu.fcsr setting from
+> SET_PERSONALITY2 and do it in start_thread, after lose_fpu(0).  And we
+> just set it to 0, instead of boot_cpu_data.fpu_csr0 (because we should
+> provide the userspace a consistent configuration, no matter how hardware
+> and firmware behave).
+I still prefer to set fcsr to boot_cpu_data.fpu_csr0, because we will
+add LoongArch32 later, not sure whether something will change.
 
-diff --git a/drivers/scsi/nsp32.h b/drivers/scsi/nsp32.h
-index 924889f8bd37..47993d123a6f 100644
---- a/drivers/scsi/nsp32.h
-+++ b/drivers/scsi/nsp32.h
-@@ -520,7 +520,7 @@ typedef struct _nsp32_sync_table {
- #define SDTR_TARGET	  BIT(1)    /* sending SDTR from target           */
- #define SDTR_DONE	  BIT(2)    /* exchanging SDTR has been processed */
-=20
--/* syncronous period value for nsp32_target.config_max */
-+/* synchronous period value for nsp32_target.config_max */
- #define FAST5M			0x32
- #define FAST10M			0x19
- #define ULTRA20M		0x0c
---=20
-2.34.1
+Huacai
 
+>
+> The while loop failing with the mainline kernel has survived one hour
+> after this change.
+>
+> Closes: https://github.com/loongson-community/discussions/issues/7
+> Fixes: 803b0fc5c3f2 ("LoongArch: Add process management")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Xi Ruoyao <xry111@xry111.site>
+> ---
+>  arch/loongarch/include/asm/elf.h | 5 -----
+>  arch/loongarch/kernel/elf.c      | 5 -----
+>  arch/loongarch/kernel/process.c  | 1 +
+>  3 files changed, 1 insertion(+), 10 deletions(-)
+>
+> diff --git a/arch/loongarch/include/asm/elf.h b/arch/loongarch/include/as=
+m/elf.h
+> index 9b16a3b8e706..f16bd42456e4 100644
+> --- a/arch/loongarch/include/asm/elf.h
+> +++ b/arch/loongarch/include/asm/elf.h
+> @@ -241,8 +241,6 @@ void loongarch_dump_regs64(u64 *uregs, const struct p=
+t_regs *regs);
+>  do {                                                                   \
+>         current->thread.vdso =3D &vdso_info;                             =
+ \
+>                                                                         \
+> -       loongarch_set_personality_fcsr(state);                          \
+> -                                                                       \
+>         if (personality(current->personality) !=3D PER_LINUX)            =
+ \
+>                 set_personality(PER_LINUX);                             \
+>  } while (0)
+> @@ -259,7 +257,6 @@ do {                                                 =
+                       \
+>         clear_thread_flag(TIF_32BIT_ADDR);                              \
+>                                                                         \
+>         current->thread.vdso =3D &vdso_info;                             =
+ \
+> -       loongarch_set_personality_fcsr(state);                          \
+>                                                                         \
+>         p =3D personality(current->personality);                         =
+ \
+>         if (p !=3D PER_LINUX32 && p !=3D PER_LINUX)                      =
+   \
+> @@ -340,6 +337,4 @@ extern int arch_elf_pt_proc(void *ehdr, void *phdr, s=
+truct file *elf,
+>  extern int arch_check_elf(void *ehdr, bool has_interpreter, void *interp=
+_ehdr,
+>                           struct arch_elf_state *state);
+>
+> -extern void loongarch_set_personality_fcsr(struct arch_elf_state *state)=
+;
+> -
+>  #endif /* _ASM_ELF_H */
+> diff --git a/arch/loongarch/kernel/elf.c b/arch/loongarch/kernel/elf.c
+> index 183e94fc9c69..0fa81ced28dc 100644
+> --- a/arch/loongarch/kernel/elf.c
+> +++ b/arch/loongarch/kernel/elf.c
+> @@ -23,8 +23,3 @@ int arch_check_elf(void *_ehdr, bool has_interpreter, v=
+oid *_interp_ehdr,
+>  {
+>         return 0;
+>  }
+> -
+> -void loongarch_set_personality_fcsr(struct arch_elf_state *state)
+> -{
+> -       current->thread.fpu.fcsr =3D boot_cpu_data.fpu_csr0;
+> -}
+> diff --git a/arch/loongarch/kernel/process.c b/arch/loongarch/kernel/proc=
+ess.c
+> index 767d94cce0de..caed58770650 100644
+> --- a/arch/loongarch/kernel/process.c
+> +++ b/arch/loongarch/kernel/process.c
+> @@ -92,6 +92,7 @@ void start_thread(struct pt_regs *regs, unsigned long p=
+c, unsigned long sp)
+>         clear_used_math();
+>         regs->csr_era =3D pc;
+>         regs->regs[3] =3D sp;
+> +       current->thread.fpu.fcsr =3D 0;
+>  }
+>
+>  void flush_thread(void)
+> --
+> 2.43.0
+>
+>
 
