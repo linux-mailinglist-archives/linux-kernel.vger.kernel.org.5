@@ -1,64 +1,60 @@
-Return-Path: <linux-kernel+bounces-14807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B03AA8222B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:42:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 616648222B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40271B2263D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:42:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 554DEB2274E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A571F16439;
-	Tue,  2 Jan 2024 20:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21325168AC;
+	Tue,  2 Jan 2024 20:54:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HVcH99P3"
+	dkim=permerror (0-bit key) header.d=nerdbynature.de header.i=@nerdbynature.de header.b="T43T4vEG";
+	dkim=pass (2048-bit key) header.d=nerdbynature.de header.i=@nerdbynature.de header.b="EFP/QkiJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from trent.utfs.org (trent.utfs.org [94.185.90.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A3616414
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 20:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704228124;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UbAgTltj/0phRLhEdJ+tD7nQJLUShjq5nTzZeX6dGnA=;
-	b=HVcH99P3S/CFUZggVrK7NWL6Ym1EdCHqzLJ7lpU8kD6RRICYUCpD2wf6iXvRP709OErnO6
-	DY6Pk9tWs7KTh4b50wVEhNHsjb/3NZB2TFJeafWZMk1d85BBE64kWDrdYKG/pNzsCvs2cN
-	27WzzyGJ8FlCGiyndePMh1Yarg+nLis=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-461-w-0h2nGVNXaaWUPgwAeXig-1; Tue,
- 02 Jan 2024 15:42:01 -0500
-X-MC-Unique: w-0h2nGVNXaaWUPgwAeXig-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C60D6168A4
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 20:54:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nerdbynature.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nerdbynature.de
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/simple;
+ d=nerdbynature.de; i=@nerdbynature.de; q=dns/txt; s=key1;
+ t=1704228306; h=date : from : to : cc : subject : in-reply-to :
+ message-id : references : mime-version : content-type :
+ content-transfer-encoding : from;
+ bh=GnZF4mIISpOEIwEtlw5zMtgawqrnFodCwR1ogQWF28w=;
+ b=T43T4vEGgdzhL7UWt2vl5V3A0GYfMugfnwFF6XSCAWvIkL6cabCkovPNEPEYTC5xxKF4Q
+ D+RWSUmpUhagO4zBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nerdbynature.de;
+ i=@nerdbynature.de; q=dns/txt; s=key0; t=1704228306; h=date : from :
+ to : cc : subject : in-reply-to : message-id : references :
+ mime-version : content-type : content-transfer-encoding : from;
+ bh=GnZF4mIISpOEIwEtlw5zMtgawqrnFodCwR1ogQWF28w=;
+ b=EFP/QkiJcK14ic0W28pv62q3/LzPoMolj0RsZxQ4bbr/F9dwIHGx1Kkp45T1OYJOSeJ7C
+ ml2z4+vJ145k0g8WKyLgdBqv/8GKpD6qyvdYWQ++hDI3wHDB07Fww+9KgskMcdVPhPc7GVQ
+ 5CBTdbTBMANulost8IgXlhjOZ/g68+VY3OPM/fDyDeSN0M7kETkNigwqO1S50N3Gqu3lRkF
+ 0XfkmHIbdTvR/ViIrcahvYhkRDtRLMIZmqEe+HvgRruoCLdyHa238epSZvEBZJutJhjutIL
+ vSPOdcMhR1QKhCn4RtZ9XXWIeLDdEIqpjycspDJv3BaqyUKzDGVZfgfCrHPQ==
+Received: from localhost (localhost [IPv6:::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EED5938116E3;
-	Tue,  2 Jan 2024 20:42:00 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.22.16.212])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4008F2166B31;
-	Tue,  2 Jan 2024 20:42:00 +0000 (UTC)
-Received: by fedora.redhat.com (Postfix, from userid 1000)
-	id C273D28C5EF; Tue,  2 Jan 2024 15:41:59 -0500 (EST)
-Date: Tue, 2 Jan 2024 15:41:59 -0500
-From: Vivek Goyal <vgoyal@redhat.com>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: virtualization@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-	Stefan Hajnoczi <stefanha@redhat.com>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] virtiofs: Improve three size determinations
-Message-ID: <ZZR1FxR4cUzuDzLK@redhat.com>
-References: <c5c14b02-660a-46e1-9eb3-1a16d7c84922@web.de>
- <02fe18da-55f5-47c5-a297-58411edbb78b@web.de>
+	by trent.utfs.org (Postfix) with ESMTPS id 652AB5FEDC;
+	Tue,  2 Jan 2024 21:45:06 +0100 (CET)
+Date: Tue, 2 Jan 2024 21:45:06 +0100 (CET)
+From: Christian Kujau <lists@nerdbynature.de>
+To: =?utf-8?Q?Luis_Mu=C3=B1oz_Fuente?= <luis.munoz.edu@juntadeandalucia.es>
+cc: linux-kernel@vger.kernel.org
+Subject: Re: I can't activate term(e) and kill(i) magic SysRq key
+In-Reply-To: <002cc4da-e502-4c79-97bd-0a8b6cb2630c@juntadeandalucia.es>
+Message-ID: <464f7af8-d83d-d2e3-c635-772ed6a3cb54@nerdbynature.de>
+References: <002cc4da-e502-4c79-97bd-0a8b6cb2630c@juntadeandalucia.es>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,69 +62,22 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <02fe18da-55f5-47c5-a297-58411edbb78b@web.de>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Transfer-Encoding: 8BIT
 
-On Fri, Dec 29, 2023 at 09:36:36AM +0100, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Fri, 29 Dec 2023 08:42:04 +0100
-> 
-> Replace the specification of data structures by pointer dereferences
-> as the parameter for the operator “sizeof” to make the corresponding size
-> determination a bit safer according to the Linux coding style convention.
+On Mon, 1 Jan 2024, Luis Muñoz Fuente wrote:
+> I try to activate all magic SysRq key options according to:
+> https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html
+> but I can't activate term(e) and kill(i) option, is this option
+> disabled?
 
-I had a look at coding-style.rst and it does say that dereferencing the
-pointer is preferred form. Primary argument seems to be that somebody
-might change the pointer variable type but not the corresponding type
-passed to sizeof().
+Maybe. Some distributions choose to disable certain sysrq functions. See 
+the page you cited, on the very top: what does "sysctl kernel.sysrq" say? 
+If it's anything but "1", certain or all sysrq functions are disabled.
 
-There is some value to the argument. I don't feel strongly about it.
+HTH,
+C.
+-- 
+BOFH excuse #264:
 
-Miklos, if you like this change, feel free to apply. 
-
-Thanks
-Vivek
-  
-> 
-> This issue was detected by using the Coccinelle software.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->  fs/fuse/virtio_fs.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-> index 5f1be1da92ce..2f8ba9254c1e 100644
-> --- a/fs/fuse/virtio_fs.c
-> +++ b/fs/fuse/virtio_fs.c
-> @@ -1435,11 +1435,11 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
->  		goto out_err;
-> 
->  	err = -ENOMEM;
-> -	fc = kzalloc(sizeof(struct fuse_conn), GFP_KERNEL);
-> +	fc = kzalloc(sizeof(*fc), GFP_KERNEL);
->  	if (!fc)
->  		goto out_err;
-> 
-> -	fm = kzalloc(sizeof(struct fuse_mount), GFP_KERNEL);
-> +	fm = kzalloc(sizeof(*fm), GFP_KERNEL);
->  	if (!fm)
->  		goto out_err;
-> 
-> @@ -1495,7 +1495,7 @@ static int virtio_fs_init_fs_context(struct fs_context *fsc)
->  	if (fsc->purpose == FS_CONTEXT_FOR_SUBMOUNT)
->  		return fuse_init_fs_context_submount(fsc);
-> 
-> -	ctx = kzalloc(sizeof(struct fuse_fs_context), GFP_KERNEL);
-> +	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
->  	if (!ctx)
->  		return -ENOMEM;
->  	fsc->fs_private = ctx;
-> --
-> 2.43.0
-> 
-> 
-
+Your modem doesn't speak English.
 
