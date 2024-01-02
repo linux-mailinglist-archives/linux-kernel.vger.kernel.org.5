@@ -1,110 +1,82 @@
-Return-Path: <linux-kernel+bounces-14695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 602778220CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:11:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DBC78220D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:14:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1512B1F2341E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:11:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D59A51F23016
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:14:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88664156D9;
-	Tue,  2 Jan 2024 18:11:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9B9156E3;
+	Tue,  2 Jan 2024 18:14:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mG5t1Rdr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sgTqxqKu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE7B5156D0
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 18:11:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6d9b75a2bdaso2458117b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 10:11:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704219096; x=1704823896; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=STqN8+id8xOXR4JwigzV6hothyUF9kt5Ue3l3saivJk=;
-        b=mG5t1RdrgEsvW/Qmbq/ajTipvpvJH8Oi+6JVCTce5jjh+EdOvism/VZs/ZZJqwSKce
-         PweFHc4zEQGqfJj+5RF/5Lq5/LE8QbgF7KQB4oHY9uo+wN6J50eNzHYAG84J6OatE6Sq
-         5neS++ul/EpwllclTdd/2xrYgqi7StU/I6lDNGJhgBrqy1+WqAvJR+nig1PVPe9fU7ES
-         gS0GNyz+D2EEiz6l8t6y2Y98gsADqO988f4RKy9BOm+Wb6rT9YewXFVkOyFY1IXOsAbw
-         lCbMb3geiz9N0AwvV0XgZato4+SQvJE1pRvPYPuHQGJtXq+RDi/1xTrvDLXKP6K8Hv3l
-         7HoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704219096; x=1704823896;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=STqN8+id8xOXR4JwigzV6hothyUF9kt5Ue3l3saivJk=;
-        b=KhNkI+J2tWhH7OHZ1P/0tTcfueclKY6gd1lKz5N7BR/HP3Ex84V6RYsUxQyVGUZ/Bw
-         K9fyGPqa9FGcx3T/G3wdv0/DK/sEv8UyDsJHYMTlJsJJZwGJBtdUqv1AXVm3Y4XYJ2Uo
-         O+ciH9xafhIyAy4ZFDztXUutfgJYW8AB3DeTVZnGNIza5hHAO0WnCMSkfpmuy44fIa+m
-         iOCHPDi27mhVCEFDKm4iXZuNUveI/N44RB/E2ErAE840wOwNqfzZIwpzNGppSY7Z6FZd
-         8qIbPhmdWt0Dlg2PaXHXrnsWVAeHXt7qVARvgzM1ynkBlNc8dCn9e0iAG5a1rNs+nZD2
-         Opkg==
-X-Gm-Message-State: AOJu0YxLYG6Yvo2nlpbx7+A/wktUMtkIYik1glGCLZqpKztknt9LOuFA
-	lBLCVfdgBYPbeHlRNpFdbV2cQ2FanO20iQ==
-X-Google-Smtp-Source: AGHT+IHqCmrQAH9xo58u1x9kh7B6PHS2ZFO8CBoaFvnThto2SDCZ8vSUwhXdAgmrJW7OvtNBqeJZsaw=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:114f:b0:6da:b362:34bf with SMTP id
- b15-20020a056a00114f00b006dab36234bfmr538pfm.1.1704219095942; Tue, 02 Jan
- 2024 10:11:35 -0800 (PST)
-Date: Tue, 2 Jan 2024 10:11:34 -0800
-In-Reply-To: <20231229081409.1276386-1-menglong8.dong@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C42BE156CB;
+	Tue,  2 Jan 2024 18:14:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DCDAC433C8;
+	Tue,  2 Jan 2024 18:14:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704219257;
+	bh=8DwCqHqW6C3w7MqerTe/WE6rP9haUcotBb/k6Jw1nYM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=sgTqxqKuYX7Sh4UtRU+MMle3rriKJGsRKHgQ8RlyavtI8uFhvUiN+TxQgml+wJvPY
+	 m6X5eU8bW4yAojCY6JG16YvfBKK7eLiwojjJhvaeK8j26FyQ79B7EBIumpSkgA8s3P
+	 69rJaJVsSgA73b9CePQ3YmQvNbFqNRKNXOe8sDVn2dXErgpb9X10vDZyslYouIn9/l
+	 l6NAY5ti1ApxXLFAE56CJTLAr6mGheDCD8U6vvKa408fVJ3ejT8y7eVrXLdTocq2Gu
+	 lCYZBlm5oNvLB3Azb1gxn98aGXDsnqv+7KuZkoBhFj4HwAlV1I20zjrYJSJr8AVFJx
+	 EaEjZvDLzVrLQ==
+Date: Tue, 2 Jan 2024 12:14:15 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc: Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] PCI: 64GT/s uses 1b/1b encoding
+Message-ID: <20240102181415.GA1732470@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231229081409.1276386-1-menglong8.dong@gmail.com>
-Message-ID: <ZZRR1q1JrJMD1lAy@google.com>
-Subject: Re: [PATCH bpf-next 0/2] bpf: add csum/ip_summed fields to __sk_buff
-From: Stanislav Fomichev <sdf@google.com>
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, mykolal@fb.com, shuah@kernel.org, horms@kernel.org, 
-	dhowells@redhat.com, linyunsheng@huawei.com, aleksander.lobakin@intel.com, 
-	joannelkoong@gmail.com, laoar.shao@gmail.com, kuifeng@meta.com, 
-	bjorn@rivosinc.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240102172701.65501-1-ilpo.jarvinen@linux.intel.com>
 
-On 12/29, Menglong Dong wrote:
-> For now, we have to call some helpers when we need to update the csum,
-> such as bpf_l4_csum_replace, bpf_l3_csum_replace, etc. These helpers are
-> not inlined, which causes poor performance.
+On Tue, Jan 02, 2024 at 07:27:00PM +0200, Ilpo Järvinen wrote:
+> PCIe 64GT/s Data Rate uses 1b/1b encoding, not 128b/130b (PCIe r6.1 sec
+> 1.2, Table 1-1).
 > 
-> In fact, we can define our own csum update functions in BPF program
-> instead of bpf_l3_csum_replace, which is totally inlined and efficient.
-> However, we can't do this for bpf_l4_csum_replace for now, as we can't
-> update skb->csum, which can cause skb->csum invalid in the rx path with
-> CHECKSUM_COMPLETE mode.
-> 
-> What's more, we can't use the direct data access and have to use
-> skb_store_bytes() with the BPF_F_RECOMPUTE_CSUM flag in some case, such
-> as modifing the vni in the vxlan header and the underlay udp header has
-> no checksum.
-> 
-> In the first patch, we make skb->csum readable and writable, and we make
-> skb->ip_summed readable. For now, for tc only. With these 2 fields, we
-> don't need to call bpf helpers for csum update any more.
-> 
-> In the second patch, we add some testcases for the read/write testing for
-> skb->csum and skb->ip_summed.
-> 
-> If this series is acceptable, we can define the inlined functions for csum
-> update in libbpf in the next step.
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-One downside of exposing those as __sk_buff fields is that all this
-skb internal csum stuff now becomes a UAPI. And I'm not sure we want
-that :-) Should we add a lightweight kfunc to reset the fields instead?
-Or will it still have an unacceptable overhead?
+Applied to pci/enumeration for v6.8, thanks!
+
+> ---
+>  drivers/pci/pci.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 5ecbcf041179..d9132029d658 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -272,7 +272,7 @@ void pci_bus_put(struct pci_bus *bus);
+>  
+>  /* PCIe speed to Mb/s reduced by encoding overhead */
+>  #define PCIE_SPEED2MBS_ENC(speed) \
+> -	((speed) == PCIE_SPEED_64_0GT ? 64000*128/130 : \
+> +	((speed) == PCIE_SPEED_64_0GT ? 64000*1/1 : \
+>  	 (speed) == PCIE_SPEED_32_0GT ? 32000*128/130 : \
+>  	 (speed) == PCIE_SPEED_16_0GT ? 16000*128/130 : \
+>  	 (speed) == PCIE_SPEED_8_0GT  ?  8000*128/130 : \
+> -- 
+> 2.39.2
+> 
 
