@@ -1,156 +1,119 @@
-Return-Path: <linux-kernel+bounces-14556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B932F821EA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:22:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80366821EA9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:25:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEF441C224EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:22:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 845C6B221E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D45914F62;
-	Tue,  2 Jan 2024 15:21:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 115FE1428C;
+	Tue,  2 Jan 2024 15:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OWGD1kOA"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="JWvtEVP8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CCA14A82;
-	Tue,  2 Jan 2024 15:21:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3bbc648bed4so4365347b6e.3;
-        Tue, 02 Jan 2024 07:21:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704208906; x=1704813706; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8mXfI+Pa+/2538bxiWOCU5JAZ3tBBfS6VdnJQwfuuiQ=;
-        b=OWGD1kOAup3AS7HYb/6FhsaHVh3Rc6wH7q8FYC5ChOToAKzlVCaxaQA7L8B5uiT2pI
-         0jKxOEgHKq0VCWg30VL/wCDQQk1y28FYrKNRKiRQNLspdMqdO0YP5xSG4XPit3M9q3fV
-         SlwMtpvwV/w4OsBdGWvtLXlblqcFafpu4B1NfMGSgUAeuUDyDXnCca5/W/6fEeo2J3ve
-         dyhZqxXyAt6BFq7qRZWhT/Npo1ZS9ghhlOUUhFhWzMAjwwjnc/s9nB7/szLknoglWhDs
-         We4SSz7rJvnNvCiZVCCpiHSwLrbMCpe+M3tZk1WaPEHD1DUHYP85UzXL4rFiOkFSZh7Q
-         VJyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704208906; x=1704813706;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8mXfI+Pa+/2538bxiWOCU5JAZ3tBBfS6VdnJQwfuuiQ=;
-        b=iah4LG9N8rIO1C5ctV2nhhtm9BiwGTFYqcp+wvpoTjt5HkRaLQkKrRKr411q3djI0G
-         m/lz3M/rXAx0sJOCqnKmc/W8Y554FqEXy4g2wGerOLLN/s3NQEgk26xlPUoY3JMev/dH
-         Un1e9j9bX5lbjQw8Auuvg9RYfWXSrHO3z7nLx5UHk4EPYqZcac+nYZ6LjbfqMCggB8vS
-         cOJUguNvsegpEb38aXrKSF28VH2Ig+wzLeHg3QID6B0wIbk+l4j4Couj1Muymjg6yYSu
-         b8g/DPY6JtNOHKV+f4byeyFxXb4o1gsQwOLoMEtk6udNcG2UwRW8C65NoHie11JFijGW
-         MEhA==
-X-Gm-Message-State: AOJu0Yyq2/jl+tbIYjMSYMuolJiZuw9du9qJjbQab4qrEidZESghAncW
-	/oj3q4ZOX/LC6rFWEalp5os=
-X-Google-Smtp-Source: AGHT+IEDEQZBgWCakwkRkT8r55noIAFs0Ef/ABSeweIOPhM7RCXjN0/RfoYrRDsN3OZm2jx3zJoOqw==
-X-Received: by 2002:a05:6808:318e:b0:3bb:d768:b776 with SMTP id cd14-20020a056808318e00b003bbd768b776mr11448221oib.109.1704208906563;
-        Tue, 02 Jan 2024 07:21:46 -0800 (PST)
-Received: from dschatzberg-fedora-PF3DHTBV ([2620:10d:c091:500::7:66d9])
-        by smtp.gmail.com with ESMTPSA id da7-20020a05621408c700b0067f2c03d4adsm10072029qvb.100.2024.01.02.07.21.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 07:21:46 -0800 (PST)
-Date: Tue, 2 Jan 2024 10:21:44 -0500
-From: Dan Schatzberg <schatzberg.dan@gmail.com>
-To: Yu Zhao <yuzhao@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	SeongJae Park <sj@kernel.org>,
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-	Nhat Pham <nphamcs@gmail.com>, Yue Zhao <findns94@gmail.com>
-Subject: Re: [PATCH v5 2/2] mm: add swapiness= arg to memory.reclaim
-Message-ID: <ZZQqCHmocwUFvuTz@dschatzberg-fedora-PF3DHTBV>
-References: <20231220152653.3273778-1-schatzberg.dan@gmail.com>
- <20231220152653.3273778-3-schatzberg.dan@gmail.com>
- <CAOUHufYwPzZ7k=ecFkxaw+26hUkiTODEnmKM8b3=Lk=n+bm29w@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E361214A9A;
+	Tue,  2 Jan 2024 15:24:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 402FOd2W026524;
+	Tue, 2 Jan 2024 15:24:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=znCV/hOQIXm2Tq1dKd06kIRkS9zB+gSlfWugTnieSPM=; b=JW
+	vtEVP8UpS4r2RkaQXaDE8WpDkKq0RwSk7XI7zI9ibQh0UL8NJ1t9EKJM5rmhlGMt
+	OVw1lLRSKk7sHDDbhMgikWJb9GuiF4xOhpP/py0RsYc32d0Rc0/1XbTDU7aE27dk
+	Ryk7GfAtmu6mLlteKE8tP+PBS/sntlwnvu8lwIJmsZTCB1PUKourI31jkDBF1ME4
+	SS53N1+xTTB9XeWsAPNhDZ4XZLLq88hpHiVWK4cpwL7K+7jyOTH86cPyKEA011Ts
+	KLyjLcnZgrFY6ttfNqssTqyWn1rn/+zaYQTX92qLDPvoLOAOLgJWDPU3jmHFQujC
+	IcqqPZddmuLyyg0xMshA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vcg418k1n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 15:24:38 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 402FOclH002978
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 2 Jan 2024 15:24:38 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 2 Jan
+ 2024 07:24:37 -0800
+Message-ID: <bd7ef073-99c3-5d38-ca5b-236ac0415fe3@quicinc.com>
+Date: Tue, 2 Jan 2024 08:24:36 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOUHufYwPzZ7k=ecFkxaw+26hUkiTODEnmKM8b3=Lk=n+bm29w@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: linux-next: manual merge of the drm tree with the mm tree
+Content-Language: en-US
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Dave Airlie <airlied@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC: DRI <dri-devel@lists.freedesktop.org>,
+        "Kirill A. Shutemov"
+	<kirill.shutemov@linux.intel.com>,
+        Linux Kernel Mailing List
+	<linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List
+	<linux-next@vger.kernel.org>
+References: <20240102105223.7634699d@canb.auug.org.au>
+From: Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <20240102105223.7634699d@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: HG0nRJiN0Ssj6wclFH0SkvqQ7EE_1HUa
+X-Proofpoint-ORIG-GUID: HG0nRJiN0Ssj6wclFH0SkvqQ7EE_1HUa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ phishscore=0 spamscore=0 bulkscore=0 adultscore=0 priorityscore=1501
+ impostorscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401020118
 
-Hi Yu Zhao,
-
-Thanks for the feedback, sorry for the delayed response.
-
-On Thu, Dec 21, 2023 at 10:31:59PM -0700, Yu Zhao wrote:
-> On Wed, Dec 20, 2023 at 8:27 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
-> >
-> > ...
+On 1/1/2024 4:52 PM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> The cover letter says:
-> "Previously, this exact interface addition was proposed by Yosry[3]."
+> Today's linux-next merge of the drm tree got a conflict in:
 > 
-> So I think it should be acknowledged with a Suggested-by, based on:
-> "A Suggested-by: tag indicates that the patch idea is suggested by the
-> person named and ensures credit to the person for the idea."
-> from
-> https://docs.kernel.org/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
-
-Sure, will do.
-
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index d91963e2d47f..aa5666842c49 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -92,6 +92,9 @@ struct scan_control {
-> >         unsigned long   anon_cost;
-> >         unsigned long   file_cost;
-> >
-> > +       /* Swappiness value for reclaim. NULL will fall back to per-memcg/global value */
-> > +       int *swappiness;
+>    drivers/accel/qaic/qaic_data.c
 > 
-> Using a pointer to indicate whether the type it points to is
-> overridden isn't really a good practice.
+> between commit:
 > 
-> A better alternative was suggested during the v2:
-> "Perhaps the negative to avoid unnecessary dereferences."
-> https://lore.kernel.org/linux-mm/dhhjw4h22q4ngwtxmhuyifv32zjd6z2relrcjgnxsw6zys3mod@o6dh5dy53ae3/
-
-I did have a couple versions with a negative but it creates
-initialization issues where every instantiation of scan_control needs
-to make sure to initialize swappiness or else it will behave as if
-swappiness is 0. That's pretty error prone so using the pointer seemed
-the better approach.
-
-> Since only proactive reclaim can override swappiness, meaning it only
-> happens if sc->proactive is true, I think the best way to make it work
-> without spending much effort is create a helper as Michal suggest but
-> it should look like:
+>    78f5d33f3dd4 ("mm, treewide: rename MAX_ORDER to MAX_PAGE_ORDER")
 > 
-> sc_swappiness()
-> {
->   return sc->proactive ? sc->swappiness : mem_cgroup_swappiness(memcg);
-> }
+> from the mm tree and commit:
 > 
-> In this patchset, sc->swappiness really means
-> sc->proactive_swappiness. So it should be renamed accordingly.
+>    47fbee5f27ed ("accel/qaic: Update MAX_ORDER use to be inclusive")
+> 
+> from the drm tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
 
-Helper aside, I disagree with this point about coupling with the
-proactive flag. The fact that the only user currently is proactive
-reclaim doesn't imply to me that the interface (in scan_control)
-should be coupled to the use-case. It's easier to reason about a
-swappiness field that overrides swappiness for all scans that set it
-regardless of the users.
+Thanks Stephen.  Your fixup is correct.
+
+-Jeff
 
