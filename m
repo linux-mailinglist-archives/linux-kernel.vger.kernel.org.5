@@ -1,94 +1,157 @@
-Return-Path: <linux-kernel+bounces-14854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26C2A82233A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B2ED5822340
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:27:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA0541F23154
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:24:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5207B1F23105
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:27:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 768A3168B1;
-	Tue,  2 Jan 2024 21:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26102168BF;
+	Tue,  2 Jan 2024 21:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=merlins.org header.i=@merlins.org header.b="g7KAkPF0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QTq0Bdpo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE5A168A2;
-	Tue,  2 Jan 2024 21:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=merlins.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=merlins.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=merlins.org
-	; s=key; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=jEUidlbRkh+sRXZoW4h6WobGnL5gbYzACItvfn2hM+U=; b=g7KAkPF0qoG7mLFbqBmO2qi8CY
-	XpyiPHFPcaiIiXMIViLFIM+WNYJHmwua303AS7aMg1KHF4DMdYXD6xESS3N4ATwfEPu1PRnZj6+fN
-	SnM4ymPxRALtu1lCSvsW6fgA8xCvv7GudddxcUDqp7vr4quYnB60M+Tgeo5FBGOmTQg7woxqDsRy7
-	sDy0DM3Wf4lKYEo67R6NrCY5EtIdoZQXJswZ636VHtt5OqUHmyWQtwA6dTq/SnMZf0vKuQo7Yy4LM
-	PTpFe6T5h2ses5bisb3e0rXOWUG7m6/zhDvxbPh70CXCaNXZHiqFZMI83l3ppVfpf4ORZ2Vuo0XXz
-	pTXkFU0A==;
-Received: from lfbn-idf3-1-20-89.w81-249.abo.wanadoo.fr ([81.249.147.89]:54622 helo=sauron.svh.merlins.org)
-	by mail1.merlins.org with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-	id 1rKmFY-00062a-7h by authid <merlins.org> with srv_auth_plain; Tue, 02 Jan 2024 13:24:36 -0800
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.96)
-	(envelope-from <marc@merlins.org>)
-	id 1rKmFW-0063xS-18;
-	Tue, 02 Jan 2024 13:24:34 -0800
-Date: Tue, 2 Jan 2024 13:24:34 -0800
-From: Marc MERLIN <marc@merlins.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Rander Wang <rander.wang@intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: sof-audio-pci-intel-tgl/soundwire 6.6.8 kernel outputs no sound
- on speakers but works on headphones => missing alsa-ucm-conf
-Message-ID: <ZZR_Et3vvv-bmQ0H@merlins.org>
-References: <20231223234430.GA11359@merlins.org>
- <alpine.DEB.2.22.394.2401021117370.14041@eliteleevi.tm.intel.com>
- <ZZRP8RqT83cE-S5m@merlins.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 141E8168A7
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbd7389572dso12612444276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:27:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704230839; x=1704835639; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=b9mb89vCm3BKTU0DU+/TGy4Hk6L4CQ4i3DlNwc7INoo=;
+        b=QTq0Bdpo60Ekqq2oYrLPhrRJXYQNZ4E2Yt6/noM/M+HB+sNtRh7ignNo9Cy3hIlekX
+         mIWrMX9TIu+lqVnTmg2Ar22FQs/81LYhG5wd3I12E1oGKPsAOg9B3RaNoyj6dZBV2xNR
+         cQbm94zUt6LPqNquQWih+umpryX8HK1QvDZ84f/pvZAMSc9ieZAoIJV5g2vEwfQ1fMu1
+         Rtcuw6Z0fdR2Vyp7B+yxYkSmNetKobhTvewX+uqHyAs8Y4Vaij4LMnQHi5GDrRidkOBX
+         GYkERIWBo6qnB8Lzxqz3qU7Req5wRfw3hhhfTTYDc/n6emJWdCrFXAMm0PR/rDhVX9Lw
+         /kUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704230839; x=1704835639;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b9mb89vCm3BKTU0DU+/TGy4Hk6L4CQ4i3DlNwc7INoo=;
+        b=MPqSG2QaNuvY0JqbtiKNQQzUqL0Shj0q6K1c14DpAunS+sj3sGeg0nxudbFTdARGi/
+         doc04hwOHLuNtoR4iP7tNSk/y7xxRsV3hWj/8n4+BR0HMYmfbM81IgWHWYnqhiCxfixp
+         U7ZpI2k5dCSh4Bp7dpj5gEiolYKk72qHTdsHERz4aonFtPuiXIwLrAWc+stcGH8W15cx
+         H/Q5c7XtxcWwYT8ID3kw7EbjD2SUQZ2VdGfQBVPvKKTZRpTWJFaGcm3XIysBG2k7jhsE
+         VaRGnvtiMdHgYYipzhX/U/IArYbu7D+xzu6vOCxbr3q77gJThoktbXoFh3JxGcCan+aM
+         uhSg==
+X-Gm-Message-State: AOJu0Yxx0DivGLD4fLampE5Y1+TYThwpOtj6ZW/mv8Uck5aEgqJTCJb5
+	29bIxzPDVihZALX1IxsRR4+DP/FxJJnCEslvM7TVIy0QxMDZZsIrv7YZpTvAZRXTXV6VH3Zz2XC
+	KpZpsuMsaNmOzL2r6sReQHvmf3fwfNt96bInWPjM05A96kBS7nHDO965i4t1oHEZxgBjN8vih8K
+	PS7AXOwaEZ7Qk17A==
+X-Google-Smtp-Source: AGHT+IHi1x1vNvCy7nh5qrPZXCz13gCpMzojuxdWNRARprBd5bnr1TBEGPjAqihkEYX2n51UbHfc4n0C/Tpy/M+g4g==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2c4:200:9a04:c262:c978:d762])
+ (user=almasrymina job=sendgmr) by 2002:a25:8181:0:b0:dbd:2c5a:6c53 with SMTP
+ id p1-20020a258181000000b00dbd2c5a6c53mr21581ybk.6.1704230838915; Tue, 02 Jan
+ 2024 13:27:18 -0800 (PST)
+Date: Tue,  2 Jan 2024 13:27:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZRP8RqT83cE-S5m@merlins.org>
-X-Sysadmin: BOFH
-X-URL: http://marc.merlins.org/
-X-SA-Exim-Connect-IP: 81.249.147.89
-X-SA-Exim-Mail-From: marc@merlins.org
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20240102212716.810731-1-almasrymina@google.com>
+Subject: [RFC PATCH net-next v4 0/2] Abstract page from net stack
+From: Mina Almasry <almasrymina@google.com>
+To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc: Mina Almasry <almasrymina@google.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jason Gunthorpe <jgg@nvidia.com>, 
+	"=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>, Shakeel Butt <shakeelb@google.com>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 02, 2024 at 10:03:29AM -0800, Marc MERLIN wrote:
-> 1) for sure, debian package alsa-ucm-conf should be required, not
-> recommended. It's not big, people who can't keep track of everything
-> that changes all the time, have no idea that they need it, and really
-> need it installed by default if their hardware requires it.
-> I've filed a couple of bugs with them, including on the package
-> description that gives little clue that the package can be so essential
+Changes in v4:
+- Forked off the trivial fixes to skb_frag_t field access to their own
+  patches and changed this to RFC that depends on these fixes:
 
-Done:
+https://lore.kernel.org/netdev/20240102205905.793738-1-almasrymina@google.c=
+om/T/#u
+https://lore.kernel.org/netdev/20240102205959.794513-1-almasrymina@google.c=
+om/T/#u
 
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1059871
-alsa-ucm-conf should be a required package by libasound2-data, it's essential on some sound hardware
+- Use an empty struct for netmem instead of void* __bitwise as that's
+  not a correct use of __bitwise.
 
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1059872
-alsa-ucm-conf should be a required package, it's essential on some sound hardware
+-----------
 
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+Changes in v3:
+
+- Replaced the struct netmem union with an opaque netmem_ref type.
+- Added func docs to the netmem helpers and type.
+- Renamed the skb_frag_t fields since it's no longer a bio_vec
+
+-----------
+
+Changes in v2:
+- Reverted changes to the page_pool. The page pool now retains the same
+  API, so that we don't have to touch many existing drivers. The devmem
+  TCP series will include the changes to the page pool.
+
+- Addressed comments.
+
+This series is a prerequisite to the devmem TCP series. For a full
+snapshot of the code which includes these changes, feel free to check:
+
+https://github.com/mina/linux/commits/tcpdevmem-rfcv5/
+
+-----------
+
+Currently these components in the net stack use the struct page
+directly:
+
+1. Drivers.
+2. Page pool.
+3. skb_frag_t.
+
+To add support for new (non struct page) memory types to the net stack, we
+must first abstract the current memory type.
+
+Originally the plan was to reuse struct page* for the new memory types,
+and to set the LSB on the page* to indicate it's not really a page.
+However, for safe compiler type checking we need to introduce a new type.
+
+struct netmem is introduced to abstract the underlying memory type.
+Currently it's a no-op abstraction that is always a struct page underneath.
+In parallel there is an undergoing effort to add support for devmem to the
+net stack:
+
+https://lore.kernel.org/netdev/20231208005250.2910004-1-almasrymina@google.=
+com/
+
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+
+Mina Almasry (2):
+  net: introduce abstraction for network memory
+  net: add netmem to skb_frag_t
+
+ include/linux/skbuff.h | 92 +++++++++++++++++++++++++++++-------------
+ include/net/netmem.h   | 41 +++++++++++++++++++
+ net/core/skbuff.c      | 22 +++++++---
+ net/kcm/kcmsock.c      |  9 ++++-
+ 4 files changed, 129 insertions(+), 35 deletions(-)
+ create mode 100644 include/net/netmem.h
+
+--=20
+2.43.0.472.g3155946c3a-goog
+
 
