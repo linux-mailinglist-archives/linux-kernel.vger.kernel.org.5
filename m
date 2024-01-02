@@ -1,202 +1,144 @@
-Return-Path: <linux-kernel+bounces-14855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A62A82233B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:26:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6130822330
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:19:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF242281E4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:26:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E9D1B20B68
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:19:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C02168B4;
-	Tue,  2 Jan 2024 21:26:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC0E7168AD;
+	Tue,  2 Jan 2024 21:18:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="Fi02OVej"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [5.144.164.165])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C795168A6
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:26:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
-Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by m-r1.th.seeweb.it (Postfix) with ESMTPSA id B6E5820145;
-	Tue,  2 Jan 2024 22:17:46 +0100 (CET)
-Date: Tue, 2 Jan 2024 22:17:45 +0100
-From: Marijn Suijten <marijn.suijten@somainline.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Mathieu Poirier <mathieu.poirier@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Sibi Sankar <quic_sibis@quicinc.com>, 
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, 
-	Joerg Roedel <joro@8bytes.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Wesley Cheng <quic_wcheng@quicinc.com>, Alexey Minnekhanov <alexeymin@postmarketos.org>, 
-	linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev, 
-	linux-usb@vger.kernel.org, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: Re: [PATCH v2 06/14] arm64: dts: qcom: sdm630: Drop RPM bus clocks
-Message-ID: <6b3eetuyhg6y6wgqgxn2ruovjfrg24dbwsictlryealtwtnq6t@xk6nm3mxwbeh>
-References: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
- <20230721-topic-rpm_clk_cleanup-v2-6-1e506593b1bd@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF7B816439;
+	Tue,  2 Jan 2024 21:18:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1704230330; bh=NkgNNWrU5A+qrlyuoridyMA0T+gww6nA9Sf4hu63gmI=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=Fi02OVej7qHAlyYnp+pT6vaLbwXZjF/w4bjtOyReDOlrriSZqpWmfDA2KgpkXwriC
+	 L8prIzUKpNvdjwZg3bEywTq+VGwN3nVUNanL4DcEnx9xMHrMCbuzzRo8NkpTxFhUJw
+	 GglC0TZWR+N0WyOOckCsdRESaRUwgzH1WTQZLBbg=
+Date: Tue, 2 Jan 2024 22:18:48 +0100
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Jonas Karlman <jonas@kwiboo.se>
+Cc: Manuel Traut <manut@mecka.net>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
+	Sandy Huang <hjc@rock-chips.com>, Mark Yao <markyao0591@gmail.com>, 
+	Diederik de Haas <didi.debian@cknow.org>, Segfault <awarnecke002@hotmail.com>, 
+	Arnaud Ferraris <aferraris@debian.org>, Danct12 <danct12@riseup.net>, dri-devel@lists.freedesktop.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v3 4/4] arm64: dts: rockchip: Add devicetree for Pine64
+ PineTab2
+Message-ID: <qwndrkppuctp2mybnibbf6fppp6abzimqs4hirrwjauig34why@gawjwsbauffm>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Jonas Karlman <jonas@kwiboo.se>, Manuel Traut <manut@mecka.net>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
+	Sandy Huang <hjc@rock-chips.com>, Mark Yao <markyao0591@gmail.com>, 
+	Diederik de Haas <didi.debian@cknow.org>, Segfault <awarnecke002@hotmail.com>, 
+	Arnaud Ferraris <aferraris@debian.org>, Danct12 <danct12@riseup.net>, dri-devel@lists.freedesktop.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20240102-pinetab2-v3-0-cb1aa69f8c30@mecka.net>
+ <20240102-pinetab2-v3-4-cb1aa69f8c30@mecka.net>
+ <775vjfucu2g2s6zzeutj7f7tapx3q2geccpxvv4ppcms4hxbq7@cbrdmlu2ryzp>
+ <903e9d0c-a00c-4214-9f0e-dd676b13b428@kwiboo.se>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230721-topic-rpm_clk_cleanup-v2-6-1e506593b1bd@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <903e9d0c-a00c-4214-9f0e-dd676b13b428@kwiboo.se>
 
-On 2023-09-12 15:31:44, Konrad Dybcio wrote:
-> These clocks are now handled from within the icc framework and are
-> no longer registered from within the CCF. Remove them.
+On Tue, Jan 02, 2024 at 09:56:20PM +0100, Jonas Karlman wrote:
+> Hi Manuel and Ondřej,
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-This makes the USB and IOMMUs probe again on SDM630 devices like the Sony Xperia
-XA2 Ultra.  Thanks!
-
-Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
-
-+cc Dmitry who was talking to me about this SoC.
-
-> ---
->  arch/arm64/boot/dts/qcom/sdm630.dtsi | 49 +++++++-----------------------------
->  1 file changed, 9 insertions(+), 40 deletions(-)
+> On 2024-01-02 19:07, Ondřej Jirman wrote:
+> > Hello Manuel,
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-> index ec6003212c4d..f11d2a07508c 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-> @@ -605,9 +605,6 @@ bimc: interconnect@1008000 {
->  			compatible = "qcom,sdm660-bimc";
->  			reg = <0x01008000 0x78000>;
->  			#interconnect-cells = <1>;
-> -			clock-names = "bus", "bus_a";
-> -			clocks = <&rpmcc RPM_SMD_BIMC_CLK>,
-> -				 <&rpmcc RPM_SMD_BIMC_A_CLK>;
->  		};
->  
->  		restart@10ac000 {
-> @@ -619,28 +616,17 @@ cnoc: interconnect@1500000 {
->  			compatible = "qcom,sdm660-cnoc";
->  			reg = <0x01500000 0x10000>;
->  			#interconnect-cells = <1>;
-> -			clock-names = "bus", "bus_a";
-> -			clocks = <&rpmcc RPM_SMD_CNOC_CLK>,
-> -				 <&rpmcc RPM_SMD_CNOC_A_CLK>;
->  		};
->  
->  		snoc: interconnect@1626000 {
->  			compatible = "qcom,sdm660-snoc";
->  			reg = <0x01626000 0x7090>;
->  			#interconnect-cells = <1>;
-> -			clock-names = "bus", "bus_a";
-> -			clocks = <&rpmcc RPM_SMD_SNOC_CLK>,
-> -				 <&rpmcc RPM_SMD_SNOC_A_CLK>;
->  		};
->  
->  		anoc2_smmu: iommu@16c0000 {
->  			compatible = "qcom,sdm630-smmu-v2", "qcom,smmu-v2";
->  			reg = <0x016c0000 0x40000>;
-> -
-> -			assigned-clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
-> -			assigned-clock-rates = <1000>;
-> -			clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
-> -			clock-names = "bus";
->  			#global-interrupts = <2>;
->  			#iommu-cells = <1>;
->  
-> @@ -685,16 +671,12 @@ a2noc: interconnect@1704000 {
->  			compatible = "qcom,sdm660-a2noc";
->  			reg = <0x01704000 0xc100>;
->  			#interconnect-cells = <1>;
-> -			clock-names = "bus",
-> -				      "bus_a",
-> -				      "ipa",
-> +			clock-names = "ipa",
->  				      "ufs_axi",
->  				      "aggre2_ufs_axi",
->  				      "aggre2_usb3_axi",
->  				      "cfg_noc_usb2_axi";
-> -			clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>,
-> -				 <&rpmcc RPM_SMD_AGGR2_NOC_A_CLK>,
-> -				 <&rpmcc RPM_SMD_IPA_CLK>,
-> +			clocks = <&rpmcc RPM_SMD_IPA_CLK>,
->  				 <&gcc GCC_UFS_AXI_CLK>,
->  				 <&gcc GCC_AGGRE2_UFS_AXI_CLK>,
->  				 <&gcc GCC_AGGRE2_USB3_AXI_CLK>,
-> @@ -705,10 +687,8 @@ mnoc: interconnect@1745000 {
->  			compatible = "qcom,sdm660-mnoc";
->  			reg = <0x01745000 0xa010>;
->  			#interconnect-cells = <1>;
-> -			clock-names = "bus", "bus_a", "iface";
-> -			clocks = <&rpmcc RPM_SMD_MMSSNOC_AXI_CLK>,
-> -				 <&rpmcc RPM_SMD_MMSSNOC_AXI_CLK_A>,
-> -				 <&mmcc AHB_CLK_SRC>;
-> +			clock-names = "iface";
-> +			clocks = <&mmcc AHB_CLK_SRC>;
->  		};
->  
->  		tsens: thermal-sensor@10ae000 {
-> @@ -1228,20 +1208,16 @@ usb3: usb@a8f8800 {
->  				 <&gcc GCC_USB30_MASTER_CLK>,
->  				 <&gcc GCC_AGGRE2_USB3_AXI_CLK>,
->  				 <&gcc GCC_USB30_SLEEP_CLK>,
-> -				 <&gcc GCC_USB30_MOCK_UTMI_CLK>,
-> -				 <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
-> +				 <&gcc GCC_USB30_MOCK_UTMI_CLK>;
->  			clock-names = "cfg_noc",
->  				      "core",
->  				      "iface",
->  				      "sleep",
-> -				      "mock_utmi",
-> -				      "bus";
-> +				      "mock_utmi";
->  
->  			assigned-clocks = <&gcc GCC_USB30_MOCK_UTMI_CLK>,
-> -					  <&gcc GCC_USB30_MASTER_CLK>,
-> -					  <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
-> -			assigned-clock-rates = <19200000>, <120000000>,
-> -					       <19200000>;
-> +					  <&gcc GCC_USB30_MASTER_CLK>;
-> +			assigned-clock-rates = <19200000>, <120000000>;
->  
->  			interrupts = <GIC_SPI 347 IRQ_TYPE_LEVEL_HIGH>,
->  				     <GIC_SPI 243 IRQ_TYPE_LEVEL_HIGH>;
-> @@ -2144,10 +2120,9 @@ mmss_smmu: iommu@cd00000 {
->  
->  			clocks = <&mmcc MNOC_AHB_CLK>,
->  				 <&mmcc BIMC_SMMU_AHB_CLK>,
-> -				 <&rpmcc RPM_SMD_MMSSNOC_AXI_CLK>,
->  				 <&mmcc BIMC_SMMU_AXI_CLK>;
->  			clock-names = "iface-mm", "iface-smmu",
-> -				      "bus-mm", "bus-smmu";
-> +				      "bus-smmu";
->  			#global-interrupts = <2>;
->  			#iommu-cells = <1>;
->  
-> @@ -2264,12 +2239,6 @@ gnoc: interconnect@17900000 {
->  			compatible = "qcom,sdm660-gnoc";
->  			reg = <0x17900000 0xe000>;
->  			#interconnect-cells = <1>;
-> -			/*
-> -			 * This one apparently features no clocks,
-> -			 * so let's not mess with the driver needlessly
-> -			 */
-> -			clock-names = "bus", "bus_a";
-> -			clocks = <&xo_board>, <&xo_board>;
->  		};
->  
->  		apcs_glb: mailbox@17911000 {
+> [...]
 > 
-> -- 
-> 2.42.0
+> >> +
+> >> +&sfc {
+> >> +	pinctrl-names = "default";
+> >> +	pinctrl-0 = <&fspi_dual_io_pins>;
+> >> +	status = "okay";
+> >> +	#address-cells = <1>;
+> >> +	#size-cells = <0>;
+> >> +
+> >> +	flash@0 {
+> >> +		compatible = "jedec,spi-nor";
+> >> +		reg = <0>;
+> >> +		spi-max-frequency = <24000000>;
+> > 
+> > That's a bit on the low side. The flash chip should work for all commands up to
+> > 80MHz https://megous.com/dl/tmp/b428ad9b85ac4633.png and SGM3157YC6 switch
+> > for the FSPI-CLK should have high enough bandwidth, too.
 > 
+> I agree that this is a little bit on the low side, it was a safe rate
+> that I used for U-Boot. U-Boot required an exact rate of the supported
+> sfc clk rates: 24, 50, 75, 100, 125 or 150 MHz.
+> 
+> Please also note that the SPI NOR flash chip used in PineTab2 is not a
+> GigaDevice GD25LQ128E, it should be a SiliconKaiser SK25LP128, same as
+> found in the Pine64 PinePhone Pro.
+
+According to this http://en.siliconkaiser.com/pro/  it should maybe go up to
+133MHz. No idea what's the difference between LP vs LE variant. So it may work
+with 100 MHz.
+
+On Pinephone Pro variants with nerfed SPI CLK signal integrity (any variant with
+RE instead of a RESET button - so all production batches), anything above 10 MHz
+has real trouble working. But this should not be the case here with PT2, looking
+at the schematic...
+
+Anyway, it's a nice to have.
+
+> > 
+> >> +		spi-rx-bus-width = <2>;
+> > 
+> > GD25LQ128E supports quad I/O. Maybe try 4 if it will work.
+> 
+> The schematic only shows fspi D0 and D1 connected, and use the D2 line
+> for eMMC_RSTn, so spi-rx-bus-width = <2> should be correct.
+
+Ah, I see.
+
+regards,
+	o.
+
+> > 
+> >> +		spi-tx-bus-width = <1>;
+> >> +	};
+> >> +};
+> >> +
+> 
+> Regards,
+> Jonas
 
