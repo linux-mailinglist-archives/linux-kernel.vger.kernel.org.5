@@ -1,177 +1,237 @@
-Return-Path: <linux-kernel+bounces-14258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21B27821A18
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:39:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C504E821A22
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:41:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A102D1F22707
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:39:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 411B6B21A6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:41:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC9B7EAE8;
-	Tue,  2 Jan 2024 10:39:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACB6ADF4F;
+	Tue,  2 Jan 2024 10:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=foundries.io header.i=@foundries.io header.b="O2Ph709A"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BFFBEACE
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 10:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b7f4024988so1183640339f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 02:39:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B122DDBC
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 10:41:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=foundries.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foundries.io
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3368d1c7b23so8106224f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 02:41:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries.io; s=google; t=1704192070; x=1704796870; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2MAPFTi+4S5JKfd2/tApv6PVoH1Mz3Cadap0S8Gv4lM=;
+        b=O2Ph709AGEi4GDcY94/DqfXTX6VBkzrzyrCy6twkIMiZ/aPFYR9eRA759Hl9C8RQ3e
+         qRPjvKrylJJRUdewRLYxc4zccixsM2P16LaDqjERrwC62hgtWyFS12EljKfn3qc9s2hU
+         u6fIpXZl+z/GKLtwsnY8V/7FqCXrq2TsQxEKQrYmdDghA87op0fYNtY0njCbdaxTR8Nr
+         nTV0Cu+4S3sUXrF65JITjIrv463kUp+h8iB5UWx+CGGP+gmfLcOv/wPkXiUY1hPSzg6J
+         ywdaZEHJaS1Y8zyrIi9vNIMMRIHCMMgire3ZsnYQ0SL3oJnW9JEfJWzJal0+g5MrgJdY
+         RYtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704191963; x=1704796763;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tQ4pJPlxSR7eGp+w8N5DMR7Ntm+XldcehR4x424Ja1o=;
-        b=tyPnG5exQMSyoMR437K6KvAhQxQ6zK3Z3hgggdQ6hu+ZNwxr4eSJsgiRxYLyKOr6zt
-         u+IX4F2lWoZ1M1StB14WKcoBu4LlhudTn0C/MUWfhbwXvpBpwm1jFZ/Hw7w0ROjfAFAn
-         Bc+pTUXTIQEahdLDQpUQ7c3ZNLnEBVIemlAykFyIBpZ0+WvIt/wZW2O+y9OniG8cE1mu
-         UtK4dJBAKMDi6/ZyZsc2zMQJk49j4KBbBJ+ok4u7gL1hID+VlNb9kTrDDA1twCIxv2aK
-         vXRCjrmRU3bfUmE//JQ0jyUWcZFuF6lP042639oq2Zu6VCIKP8/g8Ro5ehrvIN23VF5c
-         syhQ==
-X-Gm-Message-State: AOJu0YzHD6nkCSLBKO+yoOuj8UISnxvmi9a+088wMkBEijFRTrVxkAd+
-	rQ+opzaCeIewG3Pn42VburRR5kEZKbrso4jh3RP7tCFF6lRy
-X-Google-Smtp-Source: AGHT+IEqqXpZ4VR1B82LUp72LjJMBcPpwlfnPcE9O+hg+slO6ah9n2qqeASy+wrdAuVa/fWPYjS1ue1zcwYaQxostL8f+2B1SHYn
+        d=1e100.net; s=20230601; t=1704192070; x=1704796870;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2MAPFTi+4S5JKfd2/tApv6PVoH1Mz3Cadap0S8Gv4lM=;
+        b=Q6uit1DyhFdLInRWBeVNZCbm10l13goTzhBnMHFllBE4t/R8cxcMFGP5c/Gsjgl93r
+         tgrWzQ2ggISSWFYA9d4HJnxpcL6DLF0SVeoeaHCoTHppj08zZAymelUVtjNavMn316fM
+         puCvrjbzg9ZxkCs395zLPIAaUh+O9ADzevGoyUfwE75OMUWm9gvi38XrfFde4HiGRpxk
+         VFxZOjRk/7wmtgZcIKzdLya4C5K5JosWz5G1upt95vscajDW2v4Bg/cknZjU1UuRLOaZ
+         nB20re1Ug2LX498i2reXSn4oNa6aDfGUb4q1vR+BoFW1ZBaUurAjAC2lg7CcOperHZKy
+         jy9w==
+X-Gm-Message-State: AOJu0Ywgm7fzln089lZHbhUd42DxbCTsjFrzf2bLr5n+/aQcIJpAMjPN
+	BSUZEYhXJzTZq9X42RFJ5arXInoa4VcPRQ==
+X-Google-Smtp-Source: AGHT+IGRdbBJpMBVIUdY41oJKUR9S3ADStW53prFLTDwSdYjXW1RIsTNb/k5Rrws8JiTmSIIqXhOiw==
+X-Received: by 2002:a5d:52cd:0:b0:336:c9ac:3518 with SMTP id r13-20020a5d52cd000000b00336c9ac3518mr5467756wrv.106.1704192070425;
+        Tue, 02 Jan 2024 02:41:10 -0800 (PST)
+Received: from trax (96.red-79-144-190.dynamicip.rima-tde.net. [79.144.190.96])
+        by smtp.gmail.com with ESMTPSA id q17-20020adfcd91000000b003362d0eefd3sm27946268wrj.20.2024.01.02.02.41.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 02:41:09 -0800 (PST)
+From: "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
+Date: Tue, 2 Jan 2024 11:41:08 +0100
+To: "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+Cc: Avri Altman <Avri.Altman@wdc.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+	"christian.loehle@arm.com" <christian.loehle@arm.com>,
+	"jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
+	"axboe@kernel.dk" <axboe@kernel.dk>,
+	"beanhuo@micron.com" <beanhuo@micron.com>,
+	"yibin.ding@unisoc.com" <yibin.ding@unisoc.com>,
+	"victor.shih@genesyslogic.com.tw" <victor.shih@genesyslogic.com.tw>,
+	"asuk4.q@gmail.com" <asuk4.q@gmail.com>,
+	"hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+	"yangyingliang@huawei.com" <yangyingliang@huawei.com>,
+	"yebin10@huawei.com" <yebin10@huawei.com>,
+	"linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mmc: rpmb: do not force a retune before RPMB switch
+Message-ID: <ZZPoRPxdWXuT+cEo@trax>
+References: <20231204150111.3320071-1-jorge@foundries.io>
+ <f83933d3-6426-425c-903e-abbd2691e84a@intel.com>
+ <DM6PR04MB6575A30D162378E82B4D7DDEFC84A@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <ZXBGTxS7sUSILtLs@trax>
+ <ZXbBhjZIn5sj6EYO@trax>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2182:b0:35f:eceb:fc42 with SMTP id
- j2-20020a056e02218200b0035fecebfc42mr2251682ila.3.1704191963513; Tue, 02 Jan
- 2024 02:39:23 -0800 (PST)
-Date: Tue, 02 Jan 2024 02:39:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009d4b80060df41cf8@google.com>
-Subject: [syzbot] [reiserfs?] general protection fault in reiserfs_xattr_set
-From: syzbot <syzbot+74dce9511a59ad67a492@syzkaller.appspotmail.com>
-To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZXbBhjZIn5sj6EYO@trax>
 
-Hello,
+On 11/12/23 09:00:06, Jorge Ramirez-Ortiz, Foundries wrote:
+> On 06/12/23 11:00:47, Jorge Ramirez-Ortiz, Foundries wrote:
+> > On 06/12/23 07:02:43, Avri Altman wrote:
+> > > >
+> > > > On 4/12/23 17:01, Jorge Ramirez-Ortiz wrote:
+> > > > > Requesting a retune before switching to the RPMB partition has been
+> > > > > observed to cause CRC errors on the RPMB reads (-EILSEQ).
+> > > >
+> > > > There are still 2 concerns:
+> > > > 1) We don't really know the root cause.  Have you determined if here are
+> > > > CRC errors in the main partition also?
+> >
+> > right, and I don't disagree with that.
+> >
+> > As a test I created a 4GB file from /dev/random which I then copied
+> > several times (dd if= ....)
+> >
+> > root@uz3cg-dwg-sec:/sys/kernel/debug/mmc0# cat err_stats
+> > # Command Timeout Occurred:      0
+> > # Command CRC Errors Occurred:   0
+> > # Data Timeout Occurred:         0
+> > # Data CRC Errors Occurred:      0
+> > # Auto-Cmd Error Occurred:       0
+> > # ADMA Error Occurred:   0
+> > # Tuning Error Occurred:         0
+> > # CMDQ RED Errors:       0
+> > # CMDQ GCE Errors:       0
+> > # CMDQ ICCE Errors:      0
+> > # Request Timedout:      0
+> > # CMDQ Request Timedout:         0
+> > # ICE Config Errors:     0
+> > # Controller Timedout errors:    0
+> > # Unexpected IRQ errors:         0
+> >
+> > However as soon as I access RPMB and fails (it takes just a few tries) I see:
+> >
+> > I/TC: RPMB: Using generated key
+> > [   86.902118] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
+> > E/TC:? 0
+> > E/TC:? 0 TA panicked with code 0xffff0000
+> > E/LD:  Status of TA 22250a54-0bf1-48fe-8002-7b20f1c9c9b1
+> > E/LD:   arch: aarch64
+> > E/LD:  region  0: va 0xc0004000 pa 0x7e200000 size 0x002000 flags rw-s (ldelf)
+> > E/LD:  region  1: va 0xc0006000 pa 0x7e202000 size 0x008000 flags r-xs (ldelf)
+> > E/LD:  region  2: va 0xc000e000 pa 0x7e20a000 size 0x001000 flags rw-s (ldelf)
+> > E/LD:  region  3: va 0xc000f000 pa 0x7e20b000 size 0x004000 flags rw-s (ldelf)
+> > E/LD:  region  4: va 0xc0013000 pa 0x7e20f000 size 0x001000 flags r--s
+> > E/LD:  region  5: va 0xc0014000 pa 0x7e22c000 size 0x005000 flags rw-s (stack)
+> > E/LD:  region  6: va 0xc0019000 pa 0x818ea9ba8 size 0x002000 flags rw-- (param)
+> > E/LD:  region  7: va 0xc001b000 pa 0x818e97ba8 size 0x001000 flags rw-- (param)
+> > E/LD:  region  8: va 0xc004f000 pa 0x00001000 size 0x014000 flags r-xs [0]
+> > E/LD:  region  9: va 0xc0063000 pa 0x00015000 size 0x008000 flags rw-s [0]
+> > E/LD:   [0] 22250a54-0bf1-48fe-8002-7b20f1c9c9b1 @ 0xc004f000
+> > E/LD:  Call stack:
+> > E/LD:   0xc0051a14
+> > E/LD:   0xc004f31c
+> > E/LD:   0xc0052d40
+> > E/LD:   0xc004f624
+> >
+> > root@uz3cg-dwg-sec:/var/rootdirs/home/fio# cat /sys/kernel/debug/mmc0/err_stats
+> > # Command Timeout Occurred:      0
+> > # Command CRC Errors Occurred:   0
+> > # Data Timeout Occurred:         0
+> > # Data CRC Errors Occurred:      1
+> > # Auto-Cmd Error Occurred:       0
+> > # ADMA Error Occurred:   0
+> > # Tuning Error Occurred:         0
+> > # CMDQ RED Errors:       0
+> > # CMDQ GCE Errors:       0
+> > # CMDQ ICCE Errors:      0
+> > # Request Timedout:      0
+> > # CMDQ Request Timedout:         0
+> > # ICE Config Errors:     0
+> > # Controller Timedout errors:    0
+> > # Unexpected IRQ errors:         0
+> >
+> > > > 2) Forcing this on everyone
+> > > >
+> > > > The original idea was that because re-tuning cannot be done in RPMB, the
+> > > > need to re-rune in RPMB could be avoided by always re-tuning before
+> > > > switching to RPMB and then switching straight back. IIRC re-tuning should
+> > > > guarantee at least 4MB more I/O without issue.
+> > > Performance is hardly an issue in the context of RPMB access -
+> > > For most cases it’s a single frame.
+> >
+> > Yes, the security use case typically stores hashes, variables
+> > (bootcount, upgrade_available, versions, that sort of thing) and
+> > certificates in RPMB.
+> >
+> > Since you mentioned, I am seeing that tuning before switching to RPMB
+> > has an impact on performance. As a practical test, just reading a 6 byte
+> > variable incurs in 50ms penalty in kernel space due to the need to
+> > retune 5 times. Not great since the request is coming from a Trusted
+> > Application via OP-TEE through the supplicant meaning this TEE thread
+> > (they are statically allocated CFG_NUM_THREADS) will be reserved for
+> > quite a bit of time.
+> >
+> > Roughly:
+> > TA --> OP-TEE (core) --> TEE-supplicant --> Kernel (>50ms) --> OP-TEE --> TA
+>
+> To add more detail to the timing above, when using RPMB, OP-TEE stores
+> the secure filesystem on RPMB as well, so accessing one of the variables
+> stored in the filesystem consists on a number (~5) of individual RPMB
+> requests (each one forcing a retune, each retune taking around 10ms).
 
-syzbot found the following issue on:
+Adrian, please could you comment on the above.
 
-HEAD commit:    453f5db0619e Merge tag 'trace-v6.7-rc7' of git://git.kerne..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=172207cee80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c7bcb8f62f1e2c3e
-dashboard link: https://syzkaller.appspot.com/bug?extid=74dce9511a59ad67a492
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1534af31e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1512b9a1e80000
+The current code is a performance drag for systems that implement their
+secure filesystems on RPMB (i.e: OP-TEE) causing each read operation (of
+variables consisting of a few bytes stored in such a filesystem) to
+perform 5 consecutive retune requests.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1d4df4c41f20/disk-453f5db0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e858c1c82b6d/vmlinux-453f5db0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/39c3d125719d/bzImage-453f5db0.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/519b891d4149/mount_0.gz
+I am just thinking whether the original use case that forces a call to
+retune prior to processing the RPMB request remains valid.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+74dce9511a59ad67a492@syzkaller.appspotmail.com
+Independently of the fact that not doing so fixes the problem I was
+working on - and with the information I have - I dont think RPMB is
+generally used to store larger files (maybe you have more information
+about the average use case? are you aware of systems using RPMB to store
+binaries or images?)
 
-general protection fault, probably for non-canonical address 0xdffffc000000000d: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000068-0x000000000000006f]
-CPU: 0 PID: 6365 Comm: syz-executor145 Not tainted 6.7.0-rc7-syzkaller-00049-g453f5db0619e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-RIP: 0010:d_really_is_negative include/linux/dcache.h:467 [inline]
-RIP: 0010:reiserfs_xattr_jcreate_nblocks fs/reiserfs/xattr.h:79 [inline]
-RIP: 0010:reiserfs_xattr_set+0x2d4/0x5c0 fs/reiserfs/xattr.c:626
-Code: e9 03 80 3c 11 00 0f 85 e0 02 00 00 4d 8b a4 24 a0 05 00 00 48 ba 00 00 00 00 00 fc ff df 49 8d 7c 24 68 48 89 f9 48 c1 e9 03 <80> 3c 11 00 0f 85 cc 02 00 00 49 83 7c 24 68 00 0f 84 eb 01 00 00
-RSP: 0018:ffffc9000a22f8f0 EFLAGS: 00010212
-RAX: 000000000000006c RBX: ffff88805d650190 RCX: 000000000000000d
-RDX: dffffc0000000000 RSI: ffffffff822cd9af RDI: 0000000000000068
-RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000002 R12: 0000000000000000
-R13: ffff88801c4e0000 R14: ffff88805d6501b8 R15: 0000000000000036
-FS:  00007fd868e9f6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd868e9fd58 CR3: 0000000079dbb000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- security_set+0x85/0xb0 fs/reiserfs/xattr_security.c:32
- __vfs_setxattr+0x173/0x1d0 fs/xattr.c:201
- __vfs_setxattr_noperm+0x127/0x5e0 fs/xattr.c:235
- __vfs_setxattr_locked+0x17e/0x250 fs/xattr.c:296
- vfs_setxattr+0x146/0x350 fs/xattr.c:322
- do_setxattr+0x142/0x170 fs/xattr.c:630
- setxattr+0x159/0x170 fs/xattr.c:653
- __do_sys_fsetxattr fs/xattr.c:709 [inline]
- __se_sys_fsetxattr fs/xattr.c:698 [inline]
- __x64_sys_fsetxattr+0x25e/0x310 fs/xattr.c:698
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fd868f03e99
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd868e9f228 EFLAGS: 00000246 ORIG_RAX: 00000000000000be
-RAX: ffffffffffffffda RBX: 00007fd868f8c6d8 RCX: 00007fd868f03e99
-RDX: 0000000020000400 RSI: 00000000200003c0 RDI: 0000000000000004
-RBP: 00007fd868f8c6d0 R08: 0000000000000000 R09: 00007fd868e9f6c0
-R10: 0000000000000002 R11: 0000000000000246 R12: 00007fd868f58073
-R13: 00007fd868f5806b R14: 3404af7c435ebb98 R15: 00007ffd907624e8
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:d_really_is_negative include/linux/dcache.h:467 [inline]
-RIP: 0010:reiserfs_xattr_jcreate_nblocks fs/reiserfs/xattr.h:79 [inline]
-RIP: 0010:reiserfs_xattr_set+0x2d4/0x5c0 fs/reiserfs/xattr.c:626
-Code: e9 03 80 3c 11 00 0f 85 e0 02 00 00 4d 8b a4 24 a0 05 00 00 48 ba 00 00 00 00 00 fc ff df 49 8d 7c 24 68 48 89 f9 48 c1 e9 03 <80> 3c 11 00 0f 85 cc 02 00 00 49 83 7c 24 68 00 0f 84 eb 01 00 00
-RSP: 0018:ffffc9000a22f8f0 EFLAGS: 00010212
-RAX: 000000000000006c RBX: ffff88805d650190 RCX: 000000000000000d
-RDX: dffffc0000000000 RSI: ffffffff822cd9af RDI: 0000000000000068
-RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000002 R12: 0000000000000000
-R13: ffff88801c4e0000 R14: ffff88805d6501b8 R15: 0000000000000036
-FS:  00007fd868e9f6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd860e9f000 CR3: 0000000079dbb000 CR4: 0000000000350ef0
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	80 3c 11 00          	cmpb   $0x0,(%rcx,%rdx,1)
-   4:	0f 85 e0 02 00 00    	jne    0x2ea
-   a:	4d 8b a4 24 a0 05 00 	mov    0x5a0(%r12),%r12
-  11:	00
-  12:	48 ba 00 00 00 00 00 	movabs $0xdffffc0000000000,%rdx
-  19:	fc ff df
-  1c:	49 8d 7c 24 68       	lea    0x68(%r12),%rdi
-  21:	48 89 f9             	mov    %rdi,%rcx
-  24:	48 c1 e9 03          	shr    $0x3,%rcx
-* 28:	80 3c 11 00          	cmpb   $0x0,(%rcx,%rdx,1) <-- trapping instruction
-  2c:	0f 85 cc 02 00 00    	jne    0x2fe
-  32:	49 83 7c 24 68 00    	cmpq   $0x0,0x68(%r12)
-  38:	0f 84 eb 01 00 00    	je     0x229
+I still I have to execute the test you shared some weeks ago. Bit of a
+pain to NFS boot this system...will try to do it this week.
 
+TIA
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+>
+> BTW, I also tried delaying the timing between those consecutive retunes
+> (up to 1 second), but the issue still persisted.
+>
+> >
+> > Adrian, I couldn't find the original performance justification for
+> > enabling this feature globally. At which point do you think it becomes
+> > beneficial to retune before accessing RPMB?
+>
+> How should we proceed with this patch then? can it be merged as I
+> proposed? should I rewrite it differently? not sure what is next
+>
+> TIA
+> Jorge
 
