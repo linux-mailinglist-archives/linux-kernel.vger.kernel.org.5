@@ -1,156 +1,191 @@
-Return-Path: <linux-kernel+bounces-14245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 317BC8219D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 528B88219DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:32:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48D6E1C21CE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:32:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65C8A1C21C2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BBCDD507;
-	Tue,  2 Jan 2024 10:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A109D2FA;
+	Tue,  2 Jan 2024 10:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="UvbnHLHE"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Rv7lsR1g"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB6FDDAD;
-	Tue,  2 Jan 2024 10:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704191496; x=1704796296; i=markus.elfring@web.de;
-	bh=byLjICH9kZFXAhhR7l1uz0KXqLkgIwDGVOFiUikXwjw=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=UvbnHLHE18UZfNoQinmJ5WClJpEmsnAxcznti26bUEb4k/E/6paOYmFB8aSKz/xG
-	 GIcohZH93ewA8ql7aafpXZG+/Q9As8dU558NPrg+Nj5Ub/Pv/EfQxF7rM43r1+pmp
-	 CaVX7o18hFfmmtuugXiXfUE8hNzYfc+pUOo5uFRmtlADn3JVqlU26PLVDuCYrb95U
-	 vDaHh2gjjc0U76o70y2YRE0Fynd6B8eFwtQMB+rCVXuW3JF1Mg2Mj1Z12aWrF6Lis
-	 +a0gyJ3xkxoKj4e7nTuln7FyT4lyLFzVApgfGhWMhzT0rRiu4ZRIcrGieY0h50IkL
-	 D/GkH1p1YzwEULNr4w==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1N3ouq-1rBZdI2IAy-00zyNb; Tue, 02
- Jan 2024 11:31:36 +0100
-Message-ID: <d2e5c263-c0aa-4297-b446-f013af7eb80f@web.de>
-Date: Tue, 2 Jan 2024 11:31:35 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07BE6D292
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 10:32:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-553e36acfbaso97137a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 02:32:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704191551; x=1704796351; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HSbiLYKQuNUg3Symi8jeoNTl6wqkNimVRtpbCFf2qgI=;
+        b=Rv7lsR1gG62julUQaGsQtGLRYqM/3EZgQYuKJlYIvxyIfbFCKExpu0C0dPKH9Za3Ka
+         lBlBfbxVCRccmc+QwclZU8VwraK5b4hjSJ90LCltnPMt0ePsIYn7jrvR9YfBJipfDPFM
+         F8f4KGeDfGETvNtirtVdB6eDopuToHgMAIU7PGwDyYOWHBnfe3z2GlsDiRtEf1sXP2O2
+         CCBUDRmJtmt0xkGcXxYDqnwvJgTlD4N3sn+MiY1ohlZKzRCbJImncb7Mfp6wQBv/+xoT
+         wPQivSzKaFPo6CfcCOzAN9QpP6jxMGnQ5/4oU7b72dXXrPHNd4o/N2jgomZGccukp/GH
+         G1rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704191551; x=1704796351;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HSbiLYKQuNUg3Symi8jeoNTl6wqkNimVRtpbCFf2qgI=;
+        b=SMBRoVL+TdCjh9eUGDudQiyTry7vFreix0qpP0i5ZBWWGeBJ5HdebyrglPYCIQfGGd
+         Sk9sXZ+nKBSa77vEH2NZwjFcB0VPZYWanGUoKGoqka2SIuE5Z9ANdgMYtm9GwWqGFyUq
+         6ieuLXt7GQflObz+rgdhCph+lEqY3aL97GY/tH6oVG8fsxGMSQdLsSueecemf1ZHIHg2
+         5rXBv/MeENcTAgdiyYTxe0bVt1EIyG2y9R9juTHrChsJkdL+7p1kRHQEvuFizs0BkgRE
+         1arDAxYqF4tZDUh4PylsaflpXDGqQTwc+MlRErzI3RI2GDNqFi9PgdZTRG5/AFhdPhwy
+         H2jQ==
+X-Gm-Message-State: AOJu0YxN6RpnPiVbit+iq5WEoCGBJzFfexylxaC7TF75DIEIKlpCtc4e
+	D+onbBPe8HJZQ+eDsF8PG27gNrga35+LRqPLuFIsZreZ+Dqh
+X-Google-Smtp-Source: AGHT+IEHJ050ZkVyFQMuNNxFerFqoPsTBz0VjtbcI0vImsZMCNKZCem3K80QxcV7thIIOXPTtSorSvAixgle/z3oK20=
+X-Received: by 2002:a50:9b51:0:b0:554:1b1c:72c4 with SMTP id
+ a17-20020a509b51000000b005541b1c72c4mr646520edj.1.1704191551125; Tue, 02 Jan
+ 2024 02:32:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] net/iucv: Improve unlocking in iucv_enable()
-Content-Language: en-GB
-To: Alexandra Winter <wintera@linux.ibm.com>, Suman Ghosh
- <sumang@marvell.com>, "linux-s390@vger.kernel.org"
- <linux-s390@vger.kernel.org>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>,
- "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Wenjia Zhang <wenjia@linux.ibm.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <cde82080-c715-473c-97ac-6ef66bba6d64@web.de>
- <81f7db31-a258-4dc8-b6e1-c1ef1844a9d2@web.de>
- <SJ0PR18MB5216C27127E46490951A1E5DDB61A@SJ0PR18MB5216.namprd18.prod.outlook.com>
- <8123a895-c7dd-4a75-94bc-6f61639621eb@web.de>
- <SJ0PR18MB52168AC4B874C0B99BD37039DB61A@SJ0PR18MB5216.namprd18.prod.outlook.com>
- <2bf1b0cb-86af-4e00-a0aa-23e3944617a2@linux.ibm.com>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <2bf1b0cb-86af-4e00-a0aa-23e3944617a2@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
+References: <20240102055143.3889-1-quic_kriskura@quicinc.com>
+In-Reply-To: <20240102055143.3889-1-quic_kriskura@quicinc.com>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date: Tue, 2 Jan 2024 02:32:16 -0800
+Message-ID: <CANP3RGeirg+f8cBbw_3YR5AvuB1ZxJC_9-wcn+Tb-GXf1ESKCQ@mail.gmail.com>
+Subject: Re: [PATCH] usb: gadget: ncm: Avoid dropping datagrams of properly
+ parsed NTBs
+To: Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hardik Gajjar <hgajjar@de.adit-jv.com>, 
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	quic_ppratap@quicinc.com, quic_wcheng@quicinc.com, quic_jackp@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vwvz92Bt8HT7eNV3Wmw65q6wPiFzhtMoY5oZu8ovAx9ruR5aR/u
- +tP5/8TYnDV6TukFkGVK5FHlNA22DelulzoEZ4HDvAoIbdgX2BdHUXHnILdX1b5ZXqgqglj
- 2752rA2H4yNc8SQFEC8O7e6onYHBLEmIgsIptaG8+Vx2PzcLuv3KyBsmJPeRPDYWH5FIRAd
- 9TnVWIvwtsxF7m2J4alNw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:N+sZX2iAzmM=;yViQHahgU4NVsBOTP6sDp3nZcfO
- 5oYUrWBM77Aet6jAwMVrgn81lJyL1DXbUrttOuRcVw359powYsbjEk8O1jZ+c8sfi961W2PZ8
- x9xQ+iaYA3KjEPYrvbdGmUnz1X5ffXGFVY1p9NptMTtwfCFg4Qsfmhvr1DSYLpgxXsv+jQQnz
- 2Wqi3TLx+ZszNN37nuK7ChIPOpUDYpiTUn2/j3lEifMBKjygFkCQRMde6vY6+8tdzaijEY6OR
- zcbAQYOi8YEQNUNvJEr9G5kdtoQv+3tAA3enqPjdQebe3RunU3nGwWT3slutmeI0+nQAHNIdi
- oropFxKVTPI38zpaQdofHwTFa2wtsE3nXIElxTcyZl7Lv/ZCC1vrc31lHTdmyAPNG2Gjq7cOe
- 3rj7sUQDGE9pUYc5mSczL81A2jCmI5hxeGAPqKk16aTZBCviJX1bKqQeXXKCvbLTZSNuD8GTA
- EyRwcn9GI0Z0v1PqcdMB5ZuAt+3FABNMIfhfrw/qvVqG0a4D90b2zXEhJ8k6ExtgLV80IDFUx
- vGIvEfaBSWilCrXirD+PT9kjn+J12MrSqpsVvppW93oGcw0E3ZtLQfhJPhvH5VDYSp+B5hYWi
- F9oKQ4spKIuiRKEejNNWUxEtp+e9TQXRvE5WrGa7tUOZA/7JcM9TPRVEVTviB1XB2zT1upa6Z
- jLHQlrJlzwXQH3RlFyiqpGkA06aKeYGNp0DPJK7h6ipbQl+HQjPDnDHT2uXgD2E600tS6DljB
- wDrpHoJ2p9uA1vs62VGjP0qJ3PIKl0uyytsNLNxtPnkmdoi2PhfGz3T1EOg45QIbFe8BcowOg
- KP5SEtlRrrQZKbycwwiHbGAenCBfiowz7LgFx57cBOeAceeTrJEDIXlV+G1H/icMMwMmnkXSg
- JArFpi8UAIeCs/Vtab7nAJObPhw16zi3467zLOB1/aLen15nyZpXdGqxqgf6rzrGm64bSoTUj
- ITVFcw==
 
-> I share Suman's concern that jumping backwards goto is confusing.
-> But I think the Coccinelle finding of freeing a null-pointer should be a=
-ddressed (see patch 2/2)
-> Thank you Markus for reporting it.
+en
+
+On Mon, Jan 1, 2024 at 9:52=E2=80=AFPM Krishna Kurapati
+<quic_kriskura@quicinc.com> wrote:
 >
-> The allocation does require holding the cpus_read_lock.
+> It is observed sometimes when tethering is used over NCM with Windows 11
+> as host, at some instances, the gadget_giveback has one byte appended at
+> the end of a proper NTB. When the NTB is parsed, unwrap call looks for
+> any leftover bytes in SKB provided by u_ether and if there are any pendin=
+g
+> bytes, it treats them as a separate NTB and parses it. But in case the
+> second NTB (as per unwrap call) is faulty/corrupt, all the datagrams that
+> were parsed properly in the first NTB and saved in rx_list are dropped.
 
-How does this information fit to your following suggestion to adjust the l=
-ock scope?
+I think this is likely Windows trying to avoid generating 0 length frames.
 
+(usb max single datagram [frame?] size is 1024 bytes).
 
-> For some reason Markus wants to reduce the number of cpus_read_unlock() =
-calls (why?),
+My guess is this extra byte will only ever happen at the end of a
+multiple of 1024 bytes,
+and it will always be exactly one byte, and it will likely be a '0' pad byt=
+e.
 
-One cpus_read_unlock() call is required here.
-Would you like to benefit more from a smaller executable code size?
+Could you check if a more specific test of this sort would make sense?
+(ie. fix the problem)
 
+Something like
 
-> so what about something like this for both issues:
+if (to_process =3D=3D 1) && (current_offset & 1023 =3D=3D 0) && (*payload =
+=3D=3D 0)
+  // extra 1 zero byte pad to prevent multiple of 1024 sized packet
+  return
+}
+
+It seems a little dangerous to just blindly ignore arbitrary amounts
+of trailing garbage...
+
 >
-> diff --git a/net/iucv/iucv.c b/net/iucv/iucv.c
-> index 0ed6e34d6edd..1030403b826b 100644
-> --- a/net/iucv/iucv.c
-> +++ b/net/iucv/iucv.c
-> @@ -542,24 +542,22 @@ static int iucv_enable(void)
->         size_t alloc_size;
->         int cpu, rc;
+> Adding a few custom traces showed the following:
 >
-> -       cpus_read_lock();
-> -       rc =3D -ENOMEM;
->         alloc_size =3D iucv_max_pathid * sizeof(struct iucv_path);
->         iucv_path_table =3D kzalloc(alloc_size, GFP_KERNEL);
->         if (!iucv_path_table)
-> -               goto out;
-> +               return -ENOMEM;
->         /* Declare per cpu buffers. */
-> -       rc =3D -EIO;
-> +       cpus_read_lock();
->         for_each_online_cpu(cpu)
->                 smp_call_function_single(cpu, iucv_declare_cpu, NULL, 1)=
-;
-> -       if (cpumask_empty(&iucv_buffer_cpumask))
-> +       if (cpumask_empty(&iucv_buffer_cpumask)) {
->                 /* No cpu could declare an iucv buffer. */
-> -               goto out;
-> -       cpus_read_unlock();
-> -       return 0;
-> -out:
-> -       kfree(iucv_path_table);
-> -       iucv_path_table =3D NULL;
-> +               kfree(iucv_path_table);
-> +               iucv_path_table =3D NULL;
-> +               rc =3D -EIO;
-> +       } else {
-> +               rc =3D 0;
-> +       }
->         cpus_read_unlock();
->         return rc;
->  }
+> [002] d..1  7828.532866: dwc3_gadget_giveback: ep1out:
+> req 000000003868811a length 1025/16384 zsI =3D=3D> 0
+> [002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb toprocess: 102=
+5
+> [002] d..1  7828.532867: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 175199934=
+2
+> [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb seq: 0xce67
+> [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0x400
+> [002] d..1  7828.532868: ncm_unwrap_ntb: K: ncm_unwrap_ntb ndp_len: 0x10
+> [002] d..1  7828.532869: ncm_unwrap_ntb: K: Parsed NTB with 1 frames
+>
+> In this case, the giveback is of 1025 bytes and block length is 1024.
+> The rest 1 byte (which is 0x00) won't be parsed resulting in drop of
+> all datagrams in rx_list.
+>
+> Same is case with packets of size 2048:
+> [002] d..1  7828.557948: dwc3_gadget_giveback: ep1out:
+> req 0000000011dfd96e length 2049/16384 zsI =3D=3D> 0
+> [002] d..1  7828.557949: ncm_unwrap_ntb: K: ncm_unwrap_ntb nth: 175199934=
+2
+> [002] d..1  7828.557950: ncm_unwrap_ntb: K: ncm_unwrap_ntb blk_len: 0x800
+>
+> Lecroy shows one byte coming in extra confirming that the byte is coming
+> in from PC:
+>
+> Transfer 2959 - Bytes Transferred(1025)  Timestamp((18.524 843 590)
+> - Transaction 8391 - Data(1025 bytes) Timestamp(18.524 843 590)
+> --- Packet 4063861
+>       Data(1024 bytes)
+>       Duration(2.117us) Idle(14.700ns) Timestamp(18.524 843 590)
+> --- Packet 4063863
+>       Data(1 byte)
+>       Duration(66.160ns) Time(282.000ns) Timestamp(18.524 845 722)
+>
+> Fix this by checking if the leftover bytes before parsing next NTB is of
+> size more than the expected header.
+>
+> Fixes: 427694cfaafa ("usb: gadget: ncm: Handle decoding of multiple NTB's=
+ in unwrap call")
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> ---
+> There could probably be cases where the first NTB is proper and the secon=
+d
+> NTB's header is proper but the NDP is corrupt, and in those cases too, al=
+l
+> the datagrams are dropped. But I haven't seen such case practically.
+>
+>  drivers/usb/gadget/function/f_ncm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/fun=
+ction/f_ncm.c
+> index cc0ed29a4adc..a75b6dc8b0cb 100644
+> --- a/drivers/usb/gadget/function/f_ncm.c
+> +++ b/drivers/usb/gadget/function/f_ncm.c
+> @@ -1325,7 +1325,7 @@ static int ncm_unwrap_ntb(struct gether *port,
+>              "Parsed NTB with %d frames\n", dgram_counter);
+>
+>         to_process -=3D block_len;
+> -       if (to_process !=3D 0) {
+> +       if (to_process > opts->nth_size) {
+
+shouldn't this check actually be >=3D not > ?
+
+>                 ntb_ptr =3D (unsigned char *)(ntb_ptr + block_len);
+>                 goto parse_ntb;
+>         }
+> --
+> 2.42.0
+>
 
 
-I suggest to reconsider patch squashing a bit more.
-
-Regards,
-Markus
+--
+Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
 
