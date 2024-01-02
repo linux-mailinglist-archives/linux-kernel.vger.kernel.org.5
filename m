@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-14582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDFE9821F23
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:02:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DE8B821F2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:03:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85889B22095
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:02:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 449E81C22519
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 16:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B58C14F6B;
-	Tue,  2 Jan 2024 16:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDA3014F6F;
+	Tue,  2 Jan 2024 16:03:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q++PqW+D"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jmwhRPPG"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8CAE14F60;
-	Tue,  2 Jan 2024 16:02:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54F99C433C8;
-	Tue,  2 Jan 2024 16:02:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD1514F61;
+	Tue,  2 Jan 2024 16:03:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 195D6C433C8;
+	Tue,  2 Jan 2024 16:03:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704211362;
-	bh=1WCpt4WMSN+7nb/VCtM29y9fDFeJOuj/TwxVBcmMSeA=;
+	s=k20201202; t=1704211419;
+	bh=K5Bh1a2M7J3iuoSs7ojMvA0kVanXRsbXh9Zs0nxwx4o=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Q++PqW+DLdK8rkggKBBNJJxu56dzpDJ6vhoL7bAOt9uQnzVby6DreF6yfT7hKrlKm
-	 4yvY3ZcwpUkzoK/7rcsT6VyuYJiITABJQlZj0eKT2ADhgFzfZ3onC1BThNRiFX6i04
-	 zE/rfa5kboGt3l/tzAT6IdQoekAPI23ZvtSUlAWCI2vGfqMOa+SSTvy+njqhKH8ZlR
-	 4oyxN3iUdVZ+eInmBND2fPMiyZwD8SLbfcgd9FlNYsXfgS+B+22yKP60gowx4uwJMK
-	 BfMOnK2i4mCmKxNIvvBd0iU0Nukit1ZQfkDfwrHCONgqAPaY1o+vwXE2KPM3fSJ+iz
-	 8O7HYxZ4fjBhA==
-Received: (nullmailer pid 2928996 invoked by uid 1000);
-	Tue, 02 Jan 2024 16:02:40 -0000
-Date: Tue, 2 Jan 2024 09:02:40 -0700
+	b=jmwhRPPGEIOUFzvE25wPosnJAk8xylcp39KZRM1TQK3/RBofHE+XYTyQ4B2xUbmA1
+	 5Tnn7cVjpcMcU62PGnn79JA38VbvarObQCg0ZAXhQQeqp7UP1cefVBpjWD70889SCS
+	 pEaitvZuP9DDvhdZBz9FJxSXe3QJ5M/7+3a6YrsS5L45NBa7amNHeXc3SzhGif2HYQ
+	 vs0nsInbvWCBe5E1V2dvKMAwsEKw5bFHu0YlQUcUmFVBm1S+rBujmrAccMIfitU39l
+	 RmWOIoOcr0Ll+8Ud3jaAD4NMvRzgGEBdS4gy48JzVnel1DDnGO/p6CGBXfT/56QxCS
+	 PiCM7npGIt1FQ==
+Received: (nullmailer pid 2930655 invoked by uid 1000);
+	Tue, 02 Jan 2024 16:03:36 -0000
+Date: Tue, 2 Jan 2024 09:03:36 -0700
 From: Rob Herring <robh@kernel.org>
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Sudeep Holla <sudeep.holla@arm.com>, Raul Rangel <rrangel@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Andy Shevchenko <andriy.shevchenko@intel.com>, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v3 20/24] of: irq: Remove extern from function
- declarations
-Message-ID: <170421133956.2927980.11503215748681788966.robh@kernel.org>
-References: <20231226192149.1830592-1-markhas@chromium.org>
- <20231226122113.v3.20.I319e781c11e6352eb5b6c408dc20bd54a720edbf@changeid>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: linux-kernel@vger.kernel.org, helgaas@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org, hongxing.zhu@nxp.com, festevam@gmail.com, linux-pci@vger.kernel.org, kw@linux.com, bhelgaas@google.com, linux-arm-kernel@lists.infradead.org, s.hauer@pengutronix.de, linux-imx@nxp.com, manivannan.sadhasivam@linaro.org, shawnguo@kernel.org, kernel@pengutronix.de, l.stach@pengutronix.de, lpieralisi@kernel.org, imx@lists.linux.dev
+Subject: Re: [PATCH v7 11/16] dt-bindings: imx6q-pcie: Add imx95 pcie
+ compatible string
+Message-ID: <170421141637.2930587.8260068596502480735.robh@kernel.org>
+References: <20231227182727.1747435-1-Frank.Li@nxp.com>
+ <20231227182727.1747435-12-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,36 +51,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231226122113.v3.20.I319e781c11e6352eb5b6c408dc20bd54a720edbf@changeid>
+In-Reply-To: <20231227182727.1747435-12-Frank.Li@nxp.com>
 
 
-On Tue, 26 Dec 2023 12:21:24 -0700, Mark Hasemeyer wrote:
-> The extern keyword is implicit for function declarations.
-> Remove it where possible and adjust the line wrapping accordingly.
+On Wed, 27 Dec 2023 13:27:22 -0500, Frank Li wrote:
+> From: Richard Zhu <hongxing.zhu@nxp.com>
 > 
-> Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
+> Add i.MX95 PCIe "fsl,imx95-pcie" compatible string.
+> Add "atu" and "app" to reg-names.
+> 
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 > ---
 > 
-> (no changes since v2)
+> Notes:
+>     Change from v6 to v7
+>     - Added my sign off
 > 
-> Changes in v2:
-> -New patch
+>     Change from v5 to v6
+>     - move atu and app after config
 > 
->  include/linux/of_irq.h | 35 +++++++++++++++++------------------
->  1 file changed, 17 insertions(+), 18 deletions(-)
+>     Change from v2 to v3
+>     - Remove krzy's ACK tag
+>     - Add condition check for imx95, which required more reg-names then old
+>     platform, so need Krzy review again,
+> 
+>     Change from v1 to v2
+>     - add Krzy's ACK tag
+> 
+>  .../bindings/pci/fsl,imx6q-pcie-common.yaml   |  1 +
+>  .../bindings/pci/fsl,imx6q-pcie.yaml          | 19 +++++++++++++++++++
+>  2 files changed, 20 insertions(+)
 > 
 
-
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
-
-If a tag was not added on purpose, please state why and what changed.
-
-Missing tags:
-
-Acked-by: Rob Herring <robh@kernel.org>
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 
