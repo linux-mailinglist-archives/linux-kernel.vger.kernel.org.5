@@ -1,204 +1,202 @@
-Return-Path: <linux-kernel+bounces-14671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5704F82208A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:45:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30B7A822095
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:47:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0805B1F2310A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:45:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93A7E1F2315D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:46:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA75156CD;
-	Tue,  2 Jan 2024 17:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55F80156D6;
+	Tue,  2 Jan 2024 17:46:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TvsB1H5r"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="BtT/bkPn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2040.outbound.protection.outlook.com [40.107.96.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11066154A9
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 17:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704217523;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qpYK3XlrSVzoiQg06tW9BiOzquqDi+TLEnPuE5AD4b8=;
-	b=TvsB1H5rfaFNNbvOPg480gDpdlPbBCP+9Q4tFXiFtnZnuHtdxfMZEH1gGhnfHubjwel2Na
-	+2X4/lAkAZUZExUiq/zav0ta9ujiv/+7Kvqfl7Ldf/CzpaDRX/GF72iwRsb1ChJVv0hCt2
-	Qqi3Z/+xWnKp5PbY0bQV5kcmXN+qhhA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-680-ms8k78quM8idEC82V53Hmg-1; Tue, 02 Jan 2024 12:45:18 -0500
-X-MC-Unique: ms8k78quM8idEC82V53Hmg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2A1F285A589;
-	Tue,  2 Jan 2024 17:45:18 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.68])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 3B6441121313;
-	Tue,  2 Jan 2024 17:45:17 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <140431.1704208899@warthog.procyon.org.uk>
-References: <140431.1704208899@warthog.procyon.org.uk>
-To: Jeffrey Altman <jaltman@auristor.com>
-Cc: dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
-    linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] afs: Fix error handling with lookup via FS.InlineBulkStatus
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 276E5154B2;
+	Tue,  2 Jan 2024 17:46:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GbwIJA4jjOXJjxgFPWM1YpJKQljBXNaRoSR+jNy4dFxeye3SG1BObyknjg+639wc7RzRD4IC5/DsZFoTf1LKo9xWCwgBYgutzc5hqd0N/a1iawSOuv2P7Ls+20xMDL8QtjPbVlWrEcSqsmGfzgji/DzOERyojcMza29ZTJm2hH04Ii6eo4XgR+qLOrIQgcoYFuXWWVxszUIpB4zkef9Xo+X4tfGqsPLG6wNyVgI5kJtRND84mv2OwQW6YOtf4PJhN6fUuuoo7qRLHkKHlTbjV6JI0O6bDs2D56tqoj38t55rEiVhUYx2mCxZKn1SnCQQw7MfjKbYwIJ04wZJ0YJMwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eUKDGRnFIPSJ0LRN9R4WG3OzHsTXLIeocX8kxVP6t0g=;
+ b=M0p1c7KVRIAOyTHO0Q63PNMO7V1HHkGjdpTRYZHx85mnekugWkrUnl2d2q+6zVdZMOSqzdNwFtM4lXdOQDZLTe4Tq7ehYcQOnKZfZUlPfDJDtkINIOlbxcPaLdc1LEB1R69zuJDArpjy6gf75rC/HLwpagAyElepzKe7j1OxL8KyAY4Fy+CUfoHdAAxJ9ZEXENjs8RIg9fA43v7gfREzFQ46vl90cWcRK2a72BzyjujjVoJpOFlIaB10ojWSuOKxPvfWc/E6YTFplihAz4kqult4u1UFIEvYvMjYcRAV2eVIDBo25M+zP+wxzaU58w4EkfTs7XqKUDyVmCV94T05cA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eUKDGRnFIPSJ0LRN9R4WG3OzHsTXLIeocX8kxVP6t0g=;
+ b=BtT/bkPnKyzugicjUg2ecLBfYAxGluOZkMyJik3GTBLMHoEDOAT+qn80lTXh9pRGsZds5AK2CIeZmVoYiFi6hGsSOuDEXaG+Jkqys1izs41JgzJwm4uNLNbWgQ4pCtASsqU37Az6tO/DMjrqGMzEvgt+O1+vIsCJOKxNyW8Lrs4JgASYQ4jfTU52m7jUDo9+Mmies21YLER5NWL52c2ZgViHxfDriryxTxq344M+NgAvUmEQA3V8d0IOVv+SiRqIMJ5Bfl/tbIHy3q0h3jiiitMcyY4OF85sAOk3VrMHZPHZ1N63sgzITncxSEMki6H16i94UfW46gRsyF1KZo2mgQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SJ0PR12MB5405.namprd12.prod.outlook.com (2603:10b6:a03:3af::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Tue, 2 Jan
+ 2024 17:46:41 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7135.023; Tue, 2 Jan 2024
+ 17:46:41 +0000
+Date: Tue, 2 Jan 2024 13:46:40 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: "Tian, Kevin" <kevin.tian@intel.com>
+Cc: "Liu, Yi L" <yi.l.liu@intel.com>, "joro@8bytes.org" <joro@8bytes.org>,
+	"alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+	"robin.murphy@arm.com" <robin.murphy@arm.com>,
+	"baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+	"cohuck@redhat.com" <cohuck@redhat.com>,
+	"eric.auger@redhat.com" <eric.auger@redhat.com>,
+	"nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+	"chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+	"yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+	"peterx@redhat.com" <peterx@redhat.com>,
+	"jasowang@redhat.com" <jasowang@redhat.com>,
+	"shameerali.kolothum.thodi@huawei.com" <shameerali.kolothum.thodi@huawei.com>,
+	"lulu@redhat.com" <lulu@redhat.com>,
+	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+	"joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+	"Zeng, Xin" <xin.zeng@intel.com>,
+	"Zhao, Yan Y" <yan.y.zhao@intel.com>
+Subject: Re: [PATCH v7 1/3] iommufd: Add data structure for Intel VT-d
+ stage-1 cache invalidation
+Message-ID: <20240102174640.GA171005@nvidia.com>
+References: <20231117131816.24359-1-yi.l.liu@intel.com>
+ <20231117131816.24359-2-yi.l.liu@intel.com>
+ <c967e716-9112-4d1a-b6f7-9a005e28202d@intel.com>
+ <BN9PR11MB5276D14D2A7FF60B41A6A7B48C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB5276D14D2A7FF60B41A6A7B48C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-ClientProxiedBy: BL1PR13CA0338.namprd13.prod.outlook.com
+ (2603:10b6:208:2c6::13) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <238256.1704217516.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 02 Jan 2024 17:45:16 +0000
-Message-ID: <238257.1704217516@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ0PR12MB5405:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5c802ba9-64e4-4ed9-200f-08dc0bbac74f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	MABMqP9OROM1UWOalIBn347H0uS0J/lOQC9lJIHoHbSm1KTzNxyibZmsvfrwTfNYPvmQxwGTqpPiYIhB97mBKoM53cZ1MrrdplSN45VBMKFajPjghEfv7Rpr7uJBbNlpYgZOCowb8r+AV3ajS0rNFvJLuUWD3fqxVnZ9dt+ptyuS7LrWaCW+1jkjK4+/X59cj4Vf36rhuPQCpeUWtDT40rT84fUAgTp9WwEONkzdcTvf283XoI+J/9RjkqLgPBqRDLTkZOZucZGJ1Y3MDObEeRVDQTFrvfJ8n5Da6AnOCpXiz+WIguA/z5PzTlTPBJX4BQJiZMyWTHD1feD7SONo7B5hFL9sSQht5tVu+u/6/EO416tIFmmvNaWFf5JE0eP9EZ4rKLZOkB1pv/jlkwLKhRMkqRD0Yb4ikkENdMWK5w5fRSlf9eXWCmXADx8YFNcMn/1qY49OWWE5MA0vIohKOtwAEhN4n2aTlt4R+B8JbRJJ1JkChYu6RH7KVTwbeWo/+nOy2uFcfR34o0xjOsyB2vE9PLerQnUTpj5jIVD6PN8MjxVWFintzQB360Ob/7yZJgOxiVhEki9EWAWhH0aHt941YAiyoD5CNDvzv7+yuFaEq2gbvmY7BU1Ia7DSaGJF
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(376002)(396003)(39860400002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(33656002)(83380400001)(2616005)(1076003)(26005)(6512007)(6506007)(478600001)(6486002)(41300700001)(66556008)(316002)(6916009)(66476007)(86362001)(54906003)(66946007)(8936002)(36756003)(4326008)(8676002)(38100700002)(2906002)(7416002)(5660300002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?IzjYOORsvPkkzDpdoRD+Kgi8Q9pD1fyEEsSDGT6YBzIzMfvndtiHLHy/heKN?=
+ =?us-ascii?Q?gj7beS8jRUic5AOny8+FbzerLXjoTJHmnxp8kbwLUFqoNXcl626bNCZV1T1v?=
+ =?us-ascii?Q?XBEsnVBSK7E2IEWhQk1wbPub1IKkRL7nVZ/dm9bzyzqUIVP0ihl7uLkmyKdG?=
+ =?us-ascii?Q?1qEbJTPFFC9B7kmFdPPUmXZpa+D/rgjLSakXNlX66mK+DWQ8e8Sosi7yM3qi?=
+ =?us-ascii?Q?pCF47oGHknTgEn0j3kxjYZpA62xxIAyrq7e7TT31wfeYncxQGjK4WOdkU5US?=
+ =?us-ascii?Q?BcvdWlVRn4JewIiPo8aEGwA/JTccckWOjwuoS/7UDi8Z+n6VE1FDjLZ33vNp?=
+ =?us-ascii?Q?JkZKs6hyc+puDqAMQZKDFUBmPzdwxPwbdO6TbViGbaaHVU2ufyQLQenFVY6T?=
+ =?us-ascii?Q?cyonCVU7nzzGIcspjAzTg7Z+0pcx7/dEaBK6Im0U2GFGKCLBjtg5dmgsceYK?=
+ =?us-ascii?Q?n63LBrpB0d864l3wafgcpU52oBo5c9yfPMW1oElrlncnUPOf00XiMlbw0K2o?=
+ =?us-ascii?Q?pp3YpWFwsuAMegMNhZP/4u7y6Ixax6IBfAT77RdvM9p51ZxoDLN9nlqPFbIu?=
+ =?us-ascii?Q?yP3CbslvLhsn1eU3h8ANkHHDis0WtCWFMseADnaSRWuwbDI84xZ8BAMw8xuY?=
+ =?us-ascii?Q?YXfht/91EbsyZE3mKzayvNm4T1SCw5q0Q6i4M19UMAMygInvjjuQyayPeUcK?=
+ =?us-ascii?Q?AT8cSKvh6mMvZNGxmDpW246uJ1d7LVArpIrGNxpadZ1BJRLrGnWe+S0QzDqX?=
+ =?us-ascii?Q?9j06i06HOMaTkJpOy7LMR+EYtFp2hBsBYQuIPmek9Wk6xihy2izuBLGrKXai?=
+ =?us-ascii?Q?V1xITc9cF6dwqSTmcVn4SNxuIGiT4tvBT3dUYWx6yOYJHGoOkbLZyf0rYtxL?=
+ =?us-ascii?Q?cUCyFF40m/97fVkfTCuJYz8z7Xzhi/qJrrg/5ExIx9k6Z15AEYAR0xuFRxFs?=
+ =?us-ascii?Q?YvP1jzVQAfmmA18Q2KArgPz//s1PSLf36Q4VXQOjuFjPbwoAKzFw1sVdDQwa?=
+ =?us-ascii?Q?wn6e4ySqzdsban3eAUZtAkLE2zmDZoD+XtTJv6S62C++QMfuRvmc+JNwCXOo?=
+ =?us-ascii?Q?FG3OhRjXVD3d6S6sXFo22SbGVEItK6HSfDC6eGiPPOvAWoMa/e11iak/5lPc?=
+ =?us-ascii?Q?AavctH2B8h8r98I5hR94vFSXf+x85WMCu2jPu221MiAfw0Q61aZlGncEz1nN?=
+ =?us-ascii?Q?izvo7xyuG2bLVgy8OGwdu4VxLJCancUO+rW7z2MjtIQtK6FwAlRFl4/6aFYt?=
+ =?us-ascii?Q?uApUOXUETDxFVNGcd2PLkaIbvLGLXhqYEkAgCK/nK3dV7pSNqHhg88BQzwZP?=
+ =?us-ascii?Q?kXG5sz9Es2lV0Ba2qCZ6HLjE55kKAoxLcel8pHdhB2ICXX4jHBounzjJbBHv?=
+ =?us-ascii?Q?7aYpSXDqVk5SbIVBBfimYRTUvaazbVZ5WxxU4W4zF45BYWO5uDPMlCPTROtj?=
+ =?us-ascii?Q?n6Wo0YUBaFzI9C6mcgxLXNnjOM5ArWog2uLcNmIhCwCDVbISlp3hrfikANb/?=
+ =?us-ascii?Q?ZBTvtvIYWt3d7TGNRdvpMkACzslAoUbwHGy/uRaZQF0V0d+JWs5Enns3Ss6P?=
+ =?us-ascii?Q?6hgsNlepFQ1lz05fPeE=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c802ba9-64e4-4ed9-200f-08dc0bbac74f
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2024 17:46:41.7249
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: htsGWAgAth3edLmxdFo3T680mJ/nP+lfCBoa0juL/3I3f2iitjSfdjuVg9vOpz6m
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5405
 
-Here's a version of the patch against v6.7-rc7 rather than my afs-fix-rota=
-tion
-branch.
+On Fri, Dec 15, 2023 at 01:50:07AM +0000, Tian, Kevin wrote:
 
----
-afs: Fix error handling with lookup via FS.InlineBulkStatus
+> > - Reuse Nicolin's vRID->pRID mapping. If thevRID->pRID mapping is
+> > maintained, then intel iommu can report a vRID back to user. But intel
+> > iommu driver does not have viommu context, no place to hold the vRID-
+> > >pRID
+> > mapping. TBH. It may require other reasons to introduce it other than the
+> > error reporting need. Anyhow, this requires more thinking and also has
+> > dependency even if it is doable in intel side.
+> 
+> this sounds like a cleaner way to inject knowledge which iommu driver
+> requires to find out the user tag. but yes it's a bit weird to introduce
+> viommu awareness in intel iommu driver when there is no such thing
+> in real hardware.
+> 
+> and for this error reporting case what we actually require is the
+> reverse map i.e. pRID->vRID. Not sure whether we can leverage the
+> same RID mapping uAPI as for ARM/AMD but ignore viommu_id
+> and then store vRID under device_domain_info. a bit tricky on
+> life cycle management and also incompatible with SIOV...
+> 
+> let's see whether Jason has a better idea here.
 
-When afs does a lookup, it tries to use FS.InlineBulkStatus to preemptivel=
-y
-look up a bunch of files in the parent directory and cache this locally, o=
-n
-the basis that we might want to look at them too (for example if someone
-does an ls on a directory, they may want want to then stat every file
-listed).
+I think v10 is OK
 
-FS.InlineBulkStatus can be considered a compound op with the normal abort
-code applying to the compound as a whole.  Each status fetch within the
-compound is then given its own individual abort code - but assuming no
-error that prevents the bulk fetch from returning the compound result will
-be 0, even if all the constituent status fetches failed.
+struct iommu_hwpt_invalidate {
+	__u32 size;
+	__u32 hwpt_id;
+	__aligned_u64 data_uptr;
+	__u32 data_type;
+	__u32 entry_len;
+	__u32 entry_num;
+	__u32 __reserved;
+};
 
-At the conclusion of afs_do_lookup(), we should use the abort code from th=
-e
-appropriate status to determine the error to return, if any - but instead
-it is assumed that we were successful if the op as a whole succeeded and w=
-e
-return an incompletely initialised inode, resulting in ENOENT, no matter
-the actual reason.  In the particular instance reported, a vnode with no
-permission granted to be accessed is being given a UAEACCES abort code
-which should be reported as EACCES, but is instead being reported as
-ENOENT.
+Sends the invalidation to the HWPT which matches what Intel wanted
+where the entire HWPT and all its associated devices are
+invalidated. No seperate per-device invalidation.
 
-Fix this by abandoning the inode (which will be cleaned up with the op) if
-file[1] has an abort code indicated and turn that abort code into an error
-instead.
+For error and event reporting they should be returned to userspace
+with the IOMMU dev_id indicating the originating PCI function.
 
-Whilst we're at it, add a tracepoint so that the abort codes of the
-individual subrequests of FS.InlineBulkStatus can be logged.  At the momen=
-t
-only the container abort code can be 0.
+The VMM would have to convert dev_id into vRID according to the vIOMMU
+instance that the device is hooked up.
 
-Fixes: e49c7b2f6de7 ("afs: Build an abstraction around an "operation" conc=
-ept")
-Reported-by: Jeffrey Altman <jaltman@auristor.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
----
- fs/afs/dir.c               |   11 ++++++++---
- include/trace/events/afs.h |   25 +++++++++++++++++++++++++
- 2 files changed, 33 insertions(+), 3 deletions(-)
+In iommu land we should never have a "RID" but always some kind of
+device-specific "device ID" which is the index into the particular HW
+table, and that ID is naturally scoped to within the IOMMU instance
+that owns the table - so it is very much not a global ID that can be
+used alone in any of the uAPI.
 
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index 5219182e52e1..a9dcb9d994e4 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -707,6 +707,8 @@ static void afs_do_lookup_success(struct afs_operation=
- *op)
- 			break;
- 		}
- =
+The uAPI should use the iommufd device ID to refer to specific
+devices.
 
-+		if (vp->scb.status.abort_code)
-+			trace_afs_bulkstat_error(op, &vp->fid, i, vp->scb.status.abort_code);
- 		if (!vp->scb.have_status && !vp->scb.have_error)
- 			continue;
- =
-
-@@ -895,12 +897,15 @@ static struct inode *afs_do_lookup(struct inode *dir=
-, struct dentry *dentry,
- 		afs_begin_vnode_operation(op);
- 		afs_wait_for_operation(op);
- 	}
--	inode =3D ERR_PTR(op->error);
- =
-
- out_op:
- 	if (op->error =3D=3D 0) {
--		inode =3D &op->file[1].vnode->netfs.inode;
--		op->file[1].vnode =3D NULL;
-+		if (op->file[1].scb.status.abort_code) {
-+			op->error =3D afs_abort_to_error(op->file[1].scb.status.abort_code);
-+		} else {
-+			inode =3D &op->file[1].vnode->netfs.inode;
-+			op->file[1].vnode =3D NULL;
-+		}
- 	}
- =
-
- 	if (op->file[0].scb.have_status)
-diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
-index e9d412d19dbb..caec276515dc 100644
---- a/include/trace/events/afs.h
-+++ b/include/trace/events/afs.h
-@@ -1216,6 +1216,31 @@ TRACE_EVENT(afs_file_error,
- 		      __print_symbolic(__entry->where, afs_file_errors))
- 	    );
- =
-
-+TRACE_EVENT(afs_bulkstat_error,
-+	    TP_PROTO(struct afs_operation *op, struct afs_fid *fid, unsigned int=
- index, s32 abort),
-+
-+	    TP_ARGS(op, fid, index, abort),
-+
-+	    TP_STRUCT__entry(
-+		    __field_struct(struct afs_fid,	fid)
-+		    __field(unsigned int,		op)
-+		    __field(unsigned int,		index)
-+		    __field(s32,			abort)
-+			     ),
-+
-+	    TP_fast_assign(
-+		    __entry->op =3D op->debug_id;
-+		    __entry->fid =3D *fid;
-+		    __entry->index =3D index;
-+		    __entry->abort =3D abort;
-+			   ),
-+
-+	    TP_printk("OP=3D%08x[%02x] %llx:%llx:%x a=3D%d",
-+		      __entry->op, __entry->index,
-+		      __entry->fid.vid, __entry->fid.vnode, __entry->fid.unique,
-+		      __entry->abort)
-+	    );
-+
- TRACE_EVENT(afs_cm_no_server,
- 	    TP_PROTO(struct afs_call *call, struct sockaddr_rxrpc *srx),
- =
-
-
+Jason
 
