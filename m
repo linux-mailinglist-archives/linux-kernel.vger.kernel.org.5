@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-14383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AE41821C5D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:13:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF6E5821C5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A6871C2203D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:13:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D825283625
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67FF107A9;
-	Tue,  2 Jan 2024 13:13:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC31111708;
+	Tue,  2 Jan 2024 13:13:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="B9yLyBVp"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Eko96B8O"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0065E101C5
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 13:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182BC10A0D
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 13:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704201204;
+	t=1704201208;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ETU4P5ZGwiSCKQ/C0kQ3RzHFu60VRj1ek3R3KqiB2x4=;
-	b=B9yLyBVpFwjem6cRBg02/FU+9CM9GKbsl9V80HrvKR7Xo4obGT9RZP65pcS01nZHOo+QLL
-	BoVk6IqxBdZxgvPUdD0cIMvaqetNp8gkUYHpG9SIv8mtTQz6dO7kMQJ+yIvKDYa1e8VSDa
-	7Rb5Vl4PpfwdO3JiDeI+0+ONiRDKJa8=
+	bh=0BwxzTkbv6fMj2IlVqqVSI+5ecpQCg7jHconULcXMhU=;
+	b=Eko96B8OaBJVKkDyhD/UM2q4AYrrNykiYUCYNcfOZ1A32BsBy/zQcEdL/Y94CQ0FhNyARP
+	ty7rzZ3ZddQ0yUhcxHQr6aLFHRTzuQy4e+fg9Mn0btG4rccV9gwgX3Wz1I1oA73vy9Mlfb
+	eNChOv/zhRPqCB0SpDniNhAQ6XPQGOE=
 From: Gang Li <gang.li@linux.dev>
 To: David Hildenbrand <david@redhat.com>,
 	David Rientjes <rientjes@google.com>,
@@ -44,9 +44,9 @@ Cc: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	ligang.bdlg@bytedance.com,
 	Gang Li <gang.li@linux.dev>
-Subject: [PATCH v3 2/7] hugetlb: split hugetlb_hstate_alloc_pages
-Date: Tue,  2 Jan 2024 21:12:44 +0800
-Message-Id: <20240102131249.76622-3-gang.li@linux.dev>
+Subject: [PATCH v3 3/7] padata: dispatch works on different nodes
+Date: Tue,  2 Jan 2024 21:12:45 +0800
+Message-Id: <20240102131249.76622-4-gang.li@linux.dev>
 In-Reply-To: <20240102131249.76622-1-gang.li@linux.dev>
 References: <20240102131249.76622-1-gang.li@linux.dev>
 Precedence: bulk
@@ -58,132 +58,79 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-1G and 2M huge pages have different allocation and initialization logic,
-which leads to subtle differences in parallelization. Therefore, it is
-appropriate to split hugetlb_hstate_alloc_pages into gigantic and
-non-gigantic.
+When a group of tasks that access different nodes are scheduled on the
+same node, they may encounter bandwidth bottlenecks and access latency.
 
-This patch has no functional changes.
+Thus, numa_aware flag is introduced here, allowing tasks to be
+distributed across different nodes to fully utilize the advantage of
+multi-node systems.
 
 Signed-off-by: Gang Li <gang.li@linux.dev>
 ---
- mm/hugetlb.c | 86 +++++++++++++++++++++++++++-------------------------
- 1 file changed, 45 insertions(+), 41 deletions(-)
+ include/linux/padata.h | 3 +++
+ kernel/padata.c        | 8 ++++++--
+ mm/mm_init.c           | 1 +
+ 3 files changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 2606135ec55e6..92448e747991d 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3509,6 +3509,47 @@ static void __init hugetlb_hstate_alloc_pages_report(unsigned long allocated, st
- 	}
- }
- 
-+static unsigned long __init hugetlb_hstate_alloc_pages_gigantic(struct hstate *h)
-+{
-+	unsigned long i;
-+
-+	for (i = 0; i < h->max_huge_pages; ++i) {
-+		/*
-+		 * gigantic pages not added to list as they are not
-+		 * added to pools now.
-+		 */
-+		if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
-+			break;
-+		cond_resched();
-+	}
-+
-+	return i;
-+}
-+
-+static unsigned long __init hugetlb_hstate_alloc_pages_non_gigantic(struct hstate *h)
-+{
-+	unsigned long i;
-+	struct folio *folio;
-+	LIST_HEAD(folio_list);
-+	nodemask_t node_alloc_noretry;
-+
-+	/* Bit mask controlling how hard we retry per-node allocations.*/
-+	nodes_clear(node_alloc_noretry);
-+
-+	for (i = 0; i < h->max_huge_pages; ++i) {
-+		folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
-+						&node_alloc_noretry);
-+		if (!folio)
-+			break;
-+		list_add(&folio->lru, &folio_list);
-+		cond_resched();
-+	}
-+
-+	prep_and_add_allocated_folios(h, &folio_list);
-+
-+	return i;
-+}
-+
- /*
-  * NOTE: this routine is called in different contexts for gigantic and
-  * non-gigantic pages.
-@@ -3522,10 +3563,7 @@ static void __init hugetlb_hstate_alloc_pages_report(unsigned long allocated, st
+diff --git a/include/linux/padata.h b/include/linux/padata.h
+index 495b16b6b4d72..f79ccd50e7f40 100644
+--- a/include/linux/padata.h
++++ b/include/linux/padata.h
+@@ -137,6 +137,8 @@ struct padata_shell {
+  *             appropriate for one worker thread to do at once.
+  * @max_threads: Max threads to use for the job, actual number may be less
+  *               depending on task size and minimum chunk size.
++ * @numa_aware: Dispatch jobs to different nodes. If a node only has memory but
++ *              no CPU, dispatch its jobs to a random CPU.
   */
- static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- {
--	unsigned long i;
--	struct folio *folio;
--	LIST_HEAD(folio_list);
--	nodemask_t *node_alloc_noretry;
-+	unsigned long allocated;
+ struct padata_mt_job {
+ 	void (*thread_fn)(unsigned long start, unsigned long end, void *arg);
+@@ -146,6 +148,7 @@ struct padata_mt_job {
+ 	unsigned long		align;
+ 	unsigned long		min_chunk;
+ 	int			max_threads;
++	bool			numa_aware;
+ };
  
- 	/* skip gigantic hugepages allocation if hugetlb_cma enabled */
- 	if (hstate_is_gigantic(h) && hugetlb_cma_size) {
-@@ -3539,46 +3577,12 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ /**
+diff --git a/kernel/padata.c b/kernel/padata.c
+index 179fb1518070c..1c2b3a337479e 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -485,7 +485,7 @@ void __init padata_do_multithreaded(struct padata_mt_job *job)
+ 	struct padata_work my_work, *pw;
+ 	struct padata_mt_job_state ps;
+ 	LIST_HEAD(works);
+-	int nworks;
++	int nworks, nid = 0;
  
- 	/* below will do all node balanced alloc */
- 	if (!hstate_is_gigantic(h)) {
--		/*
--		 * Bit mask controlling how hard we retry per-node allocations.
--		 * Ignore errors as lower level routines can deal with
--		 * node_alloc_noretry == NULL.  If this kmalloc fails at boot
--		 * time, we are likely in bigger trouble.
--		 */
--		node_alloc_noretry = kmalloc(sizeof(*node_alloc_noretry),
--						GFP_KERNEL);
-+		allocated = hugetlb_hstate_alloc_pages_non_gigantic(h);
- 	} else {
--		/* allocations done at boot time */
--		node_alloc_noretry = NULL;
--	}
--
--	/* bit mask controlling how hard we retry per-node allocations */
--	if (node_alloc_noretry)
--		nodes_clear(*node_alloc_noretry);
--
--	for (i = 0; i < h->max_huge_pages; ++i) {
--		if (hstate_is_gigantic(h)) {
--			/*
--			 * gigantic pages not added to list as they are not
--			 * added to pools now.
--			 */
--			if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
--				break;
--		} else {
--			folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
--							node_alloc_noretry);
--			if (!folio)
--				break;
--			list_add(&folio->lru, &folio_list);
--		}
--		cond_resched();
-+		allocated = hugetlb_hstate_alloc_pages_gigantic(h);
- 	}
+ 	if (job->size == 0)
+ 		return;
+@@ -517,7 +517,11 @@ void __init padata_do_multithreaded(struct padata_mt_job *job)
+ 	ps.chunk_size = roundup(ps.chunk_size, job->align);
  
--	/* list will be empty if hstate_is_gigantic */
--	prep_and_add_allocated_folios(h, &folio_list);
--
--	hugetlb_hstate_alloc_pages_report(i, h);
--	kfree(node_alloc_noretry);
-+	hugetlb_hstate_alloc_pages_report(allocated, h);
- }
+ 	list_for_each_entry(pw, &works, pw_list)
+-		queue_work(system_unbound_wq, &pw->pw_work);
++		if (job->numa_aware)
++			queue_work_node((++nid % num_node_state(N_MEMORY)),
++					system_unbound_wq, &pw->pw_work);
++		else
++			queue_work(system_unbound_wq, &pw->pw_work);
  
- static void __init hugetlb_init_hstates(void)
+ 	/* Use the current thread, which saves starting a workqueue worker. */
+ 	padata_work_init(&my_work, padata_mt_helper, &ps, PADATA_WORK_ONSTACK);
+diff --git a/mm/mm_init.c b/mm/mm_init.c
+index 89dc29f1e6c6f..59fcffddf65a3 100644
+--- a/mm/mm_init.c
++++ b/mm/mm_init.c
+@@ -2225,6 +2225,7 @@ static int __init deferred_init_memmap(void *data)
+ 			.align       = PAGES_PER_SECTION,
+ 			.min_chunk   = PAGES_PER_SECTION,
+ 			.max_threads = max_threads,
++			.numa_aware  = false,
+ 		};
+ 
+ 		padata_do_multithreaded(&job);
 -- 
 2.20.1
 
