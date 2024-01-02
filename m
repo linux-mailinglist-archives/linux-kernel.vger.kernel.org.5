@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-14093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 499A88217CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:51:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D9708217CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:51:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 470371C21441
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:51:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 306B7B2170B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90D6ACA7D;
-	Tue,  2 Jan 2024 06:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424D3D507;
+	Tue,  2 Jan 2024 06:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LekdIHCl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sxdSmTFr"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCBDCC8C4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E2B6D298;
+	Tue,  2 Jan 2024 06:50:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFBB7C433CC;
 	Tue,  2 Jan 2024 06:50:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE451C433C7;
-	Tue,  2 Jan 2024 06:50:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704178223;
-	bh=27H198mfFlg5dXLC/oksp1mcpXEcuJokQDeBYx0aQoY=;
+	s=k20201202; t=1704178226;
+	bh=4LDaa8miGX63GOCzm8SPiKzDeUQSHDxUGMUaV7Nkuco=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LekdIHClfL7jGei4zMmYx7yDpqNzFa2vP41Ce7SFYItp8gfUQdUpWnX2Npp2Y14Vj
-	 NAFhqo1z54zhnN5Kt4cEkBdD1kg18yjObC/MLNDPAAQIb38m/5leZdC81QjrARzgSi
-	 49HQ+EbrqW8Q4WBk2mDbdf5IshVRs1h9CW4ecEz4rpll99jfFaRrOoRerFKKRbZve7
-	 wnSCF+q7X3scrxXMaoR/7qSlT6AyxL3uyr4ZEUg4r9/madgi7jvNX+L5hK/UO37lG6
-	 8s4wJK67VNVruoC2b3k3jO1oQ2lGVK/wt/JnAlvQLfyuuzTz9STtkqZ2h4hGxrBKKs
-	 k0mt6rGUOIu1w==
+	b=sxdSmTFrm9Xl4hfb9Rj5yaTAeLll/pSJ03NiplnrB6f8quiDI98TGCrSWBaEKH7/E
+	 XoxAmn0Z/FOYZyPEAZXeDBYr3StoGhzK8qSEoRVQoVs7oOj+X9FKXrDBCtVEbEWyAg
+	 x5HI6wm9ql+D/bO9MLHah+9ytmSkChINqoR6uuGRGAyKDljE8ERj6XG+EstHHc4m+0
+	 786bVMAbSHJADyW+UB8KaJh2OybdAy63u/L1hNmMiffoE2taGlXZfPE9VyhsXt0nce
+	 lRZzTY/bR6S6Y1OLG2RW0Ttyklhm7DaSn0OIp4G/MVL0Hqo1eJTbBXpa6pxzEe1ejO
+	 uAYqOfkLEtksQ==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org,
 	linux-riscv@lists.infradead.org,
@@ -44,10 +44,11 @@ Cc: linux-kernel@vger.kernel.org,
 	Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Albert Ou <aou@eecs.berkeley.edu>,
-	Andy Chiu <andy.chiu@sifive.com>
-Subject: [RFC PATCH 04/13] RISC-V: add TOOLCHAIN_HAS_VECTOR_CRYPTO
-Date: Tue,  2 Jan 2024 00:47:30 -0600
-Message-ID: <20240102064743.220490-5-ebiggers@kernel.org>
+	Andy Chiu <andy.chiu@sifive.com>,
+	Heiko Stuebner <heiko.stuebner@vrull.eu>
+Subject: [RFC PATCH 05/13] RISC-V: hook new crypto subdir into build-system
+Date: Tue,  2 Jan 2024 00:47:31 -0600
+Message-ID: <20240102064743.220490-6-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240102064743.220490-1-ebiggers@kernel.org>
 References: <20240102064743.220490-1-ebiggers@kernel.org>
@@ -59,48 +60,90 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Eric Biggers <ebiggers@google.com>
+From: Heiko Stuebner <heiko.stuebner@vrull.eu>
 
-Add a kconfig symbol that indicates whether the toolchain supports the
-vector crypto extensions.  This is needed by the RISC-V crypto code.
+Create a crypto subdirectory for added accelerated cryptography routines
+and hook it into the riscv Kbuild and the main crypto Kconfig.
 
+Signed-off-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/riscv/Kconfig | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/riscv/Kbuild          | 1 +
+ arch/riscv/crypto/Kconfig  | 5 +++++
+ arch/riscv/crypto/Makefile | 4 ++++
+ crypto/Kconfig             | 3 +++
+ 4 files changed, 13 insertions(+)
+ create mode 100644 arch/riscv/crypto/Kconfig
+ create mode 100644 arch/riscv/crypto/Makefile
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 95a2a06acc6a6..bf275a713b1b5 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -526,20 +526,27 @@ config RISCV_ISA_V_DEFAULT_ENABLE
- 	  If you don't know what to do here, say Y.
+diff --git a/arch/riscv/Kbuild b/arch/riscv/Kbuild
+index d25ad1c19f881..2c585f7a0b6ef 100644
+--- a/arch/riscv/Kbuild
++++ b/arch/riscv/Kbuild
+@@ -1,11 +1,12 @@
+ # SPDX-License-Identifier: GPL-2.0-only
  
- config TOOLCHAIN_HAS_ZBB
- 	bool
- 	default y
- 	depends on !64BIT || $(cc-option,-mabi=lp64 -march=rv64ima_zbb)
- 	depends on !32BIT || $(cc-option,-mabi=ilp32 -march=rv32ima_zbb)
- 	depends on LLD_VERSION >= 150000 || LD_VERSION >= 23900
- 	depends on AS_HAS_OPTION_ARCH
+ obj-y += kernel/ mm/ net/
+ obj-$(CONFIG_BUILTIN_DTB) += boot/dts/
++obj-$(CONFIG_CRYPTO) += crypto/
+ obj-y += errata/
+ obj-$(CONFIG_KVM) += kvm/
  
-+# This symbol indicates that the toolchain supports all v1.0 vector crypto
-+# extensions, including Zvk*, Zvbb, and Zvbc.  LLVM added all of these at once.
-+# binutils added all except Zvkb, then added Zvkb.  So we just check for Zvkb.
-+config TOOLCHAIN_HAS_VECTOR_CRYPTO
-+	def_bool $(as-instr, .option arch$(comma) +zvkb)
-+	depends on AS_HAS_OPTION_ARCH
+ obj-$(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) += purgatory/
+ 
+ # for cleaning
+ subdir- += boot
+diff --git a/arch/riscv/crypto/Kconfig b/arch/riscv/crypto/Kconfig
+new file mode 100644
+index 0000000000000..10d60edc0110a
+--- /dev/null
++++ b/arch/riscv/crypto/Kconfig
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0
 +
- config RISCV_ISA_ZBB
- 	bool "Zbb extension support for bit manipulation instructions"
- 	depends on TOOLCHAIN_HAS_ZBB
- 	depends on MMU
- 	depends on RISCV_ALTERNATIVE
- 	default y
- 	help
- 	   Adds support to dynamically detect the presence of the ZBB
- 	   extension (basic bit manipulation) and enable its usage.
- 
++menu "Accelerated Cryptographic Algorithms for CPU (riscv)"
++
++endmenu
+diff --git a/arch/riscv/crypto/Makefile b/arch/riscv/crypto/Makefile
+new file mode 100644
+index 0000000000000..b3b6332c9f6d0
+--- /dev/null
++++ b/arch/riscv/crypto/Makefile
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# linux/arch/riscv/crypto/Makefile
++#
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 70661f58ee41c..c8fd2b83e589b 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -1512,20 +1512,23 @@ source "arch/arm64/crypto/Kconfig"
+ endif
+ if LOONGARCH
+ source "arch/loongarch/crypto/Kconfig"
+ endif
+ if MIPS
+ source "arch/mips/crypto/Kconfig"
+ endif
+ if PPC
+ source "arch/powerpc/crypto/Kconfig"
+ endif
++if RISCV
++source "arch/riscv/crypto/Kconfig"
++endif
+ if S390
+ source "arch/s390/crypto/Kconfig"
+ endif
+ if SPARC
+ source "arch/sparc/crypto/Kconfig"
+ endif
+ if X86
+ source "arch/x86/crypto/Kconfig"
+ endif
+ endif
 -- 
 2.43.0
 
