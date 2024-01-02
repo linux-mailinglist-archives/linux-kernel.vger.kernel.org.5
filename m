@@ -1,76 +1,178 @@
-Return-Path: <linux-kernel+bounces-14329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 296D6821B71
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:12:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9009821B67
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:06:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC9B01F228D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:12:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB0FB1C21F58
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E45DEED2;
-	Tue,  2 Jan 2024 12:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LueyfKT3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B10EED9;
+	Tue,  2 Jan 2024 12:06:41 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FFBBF9C4;
-	Tue,  2 Jan 2024 12:12:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704197532; x=1735733532;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NAXdnv7wxx/86Nl5GgSJyrQJ/CbWX3F7vF2KMB17XcU=;
-  b=LueyfKT3c5hw5lW4dsuvxlIOBvf2yAwivXUk7X0CEHk7DMoWfPQn7vjQ
-   BP336a55USl6TwUte0sAKWr2Sl6zsTNm/ac1qB/tkPZxvDxOncoLUO+qN
-   lcnNUBKGCvtMV0dfHCxq/1Ycc5MfWR5aFaRaJGQ2ACtXZt2R/16nwesm2
-   8SLdOUGfxZCjenjAsOb3DNhmzi+aQVAa7VWY4O1XtFtTDqbdDjtGN851z
-   gK8hhh2CYIBPX7Jdue7i2/yzQK58zUTSm1eor/s+28R0DCe1dGEYZQE81
-   NRbnGTcZc1SwyJbw+62b8iokqk01dTdkBdO5cn0IyySgrAyloUdERO03K
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="4210089"
-X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
-   d="scan'208";a="4210089"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 04:12:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="898517234"
-X-IronPort-AV: E=Sophos;i="6.04,325,1695711600"; 
-   d="scan'208";a="898517234"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 02 Jan 2024 04:12:10 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id C340224D; Tue,  2 Jan 2024 14:05:44 +0200 (EET)
-Date: Tue, 2 Jan 2024 14:05:44 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Raag Jadav <raag.jadav@intel.com>
-Cc: ilpo.jarvinen@linux.intel.com, andriy.shevchenko@linux.intel.com,
-	gregkh@linuxfoundation.org, jirislaby@kernel.org,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v1] serial: 8250_lpss: copy dma_param using devm_kmemdup()
-Message-ID: <20240102120544.GJ2543524@black.fi.intel.com>
-References: <20240102055006.27256-1-raag.jadav@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 430C0F9CC;
+	Tue,  2 Jan 2024 12:06:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4T4BQk51JVz1vrQt;
+	Tue,  2 Jan 2024 20:06:22 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (unknown [7.185.36.219])
+	by mail.maildlp.com (Postfix) with ESMTPS id 510671A0195;
+	Tue,  2 Jan 2024 20:06:20 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 2 Jan 2024 20:06:20 +0800
+Received: from [10.67.121.229] (10.67.121.229) by
+ dggpemm500007.china.huawei.com (7.185.36.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 2 Jan 2024 20:06:19 +0800
+Subject: Re: [PATCH iproute2-rc 1/2] rdma: Fix core dump when pretty is used
+To: Leon Romanovsky <leon@kernel.org>
+References: <20231229065241.554726-1-huangjunxian6@hisilicon.com>
+ <20231229065241.554726-2-huangjunxian6@hisilicon.com>
+ <20231229092129.25a526c4@hermes.local>
+ <30d8c237-953a-8794-9baa-e21b31d4d88c@huawei.com>
+ <20240102083257.GB6361@unreal>
+CC: Stephen Hemminger <stephen@networkplumber.org>, Junxian Huang
+	<huangjunxian6@hisilicon.com>, <jgg@ziepe.ca>, <dsahern@gmail.com>,
+	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
+From: Chengchang Tang <tangchengchang@huawei.com>
+Message-ID: <29146463-6d0e-21c5-af42-217cee760b3f@huawei.com>
+Date: Tue, 2 Jan 2024 20:06:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240102055006.27256-1-raag.jadav@intel.com>
+In-Reply-To: <20240102083257.GB6361@unreal>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500007.china.huawei.com (7.185.36.183)
 
-On Tue, Jan 02, 2024 at 11:20:06AM +0530, Raag Jadav wrote:
-> Use devm_kmemdup() helper to copy dma_param instead of doing it manually.
-> 
-> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+
+On 2024/1/2 16:32, Leon Romanovsky wrote:
+> On Tue, Jan 02, 2024 at 03:44:29PM +0800, Chengchang Tang wrote:
+>>
+>> On 2023/12/30 1:21, Stephen Hemminger wrote:
+>>> On Fri, 29 Dec 2023 14:52:40 +0800
+>>> Junxian Huang <huangjunxian6@hisilicon.com> wrote:
+>>>
+>>>> From: Chengchang Tang <tangchengchang@huawei.com>
+>>>>
+>>>> There will be a core dump when pretty is used as the JSON object
+>>>> hasn't been opened and closed properly.
+>>>>
+>>>> Before:
+>>>> $ rdma res show qp -jp -dd
+>>>> [ {
+>>>>       "ifindex": 1,
+>>>>       "ifname": "hns_1",
+>>>>       "port": 1,
+>>>>       "lqpn": 1,
+>>>>       "type": "GSI",
+>>>>       "state": "RTS",
+>>>>       "sq-psn": 0,
+>>>>       "comm": "ib_core"
+>>>> },
+>>>> "drv_sq_wqe_cnt": 128,
+>>>> "drv_sq_max_gs": 2,
+>>>> "drv_rq_wqe_cnt": 512,
+>>>> "drv_rq_max_gs": 1,
+>>>> rdma: json_writer.c:130: jsonw_end: Assertion `self->depth > 0' failed.
+>>>> Aborted (core dumped)
+>>>>
+>>>> After:
+>>>> $ rdma res show qp -jp -dd
+>>>> [ {
+>>>>           "ifindex": 2,
+>>>>           "ifname": "hns_2",
+>>>>           "port": 1,
+>>>>           "lqpn": 1,
+>>>>           "type": "GSI",
+>>>>           "state": "RTS",
+>>>>           "sq-psn": 0,
+>>>>           "comm": "ib_core",{
+>>>>               "drv_sq_wqe_cnt": 128,
+>>>>               "drv_sq_max_gs": 2,
+>>>>               "drv_rq_wqe_cnt": 512,
+>>>>               "drv_rq_max_gs": 1,
+>>>>               "drv_ext_sge_sge_cnt": 256
+>>>>           }
+>>>>       } ]
+>>>>
+>>>> Fixes: 331152752a97 ("rdma: print driver resource attributes")
+>>>> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+>>>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+>>> This code in rdma seems to be miking json and newline functionality
+>>> which creates bug traps.
+>>>
+>>> Also the json should have same effective output in pretty and non-pretty mode.
+>>> It looks like since pretty mode add extra object layer, the nesting of {} would be
+>>> different.
+>>>
+>>> The conversion to json_print() was done but it isn't using same conventions
+>>> as ip or tc.
+>>>
+>>> The correct fix needs to go deeper and hit other things.
+>>>
+>> Hi, Stephen,
+>>
+>> The root cause of this issue is that close_json_object() is being called in
+>> newline_indent(), resulting in a mismatch
+>> of {}.
+>>
+>> When fixing this problem, I was unsure why a newline() is needed in pretty
+>> mode, so I simply kept this logic and
+>> solved the issue of open_json_object() and close_json_object() not matching.
+>> However, If the output of pretty mode
+>> and not-pretty mode should be the same, then this problem can be resolved by
+>> deleting this newline_indent().
+> Stephen didn't say that output of pretty and not-pretty should be the
+> same, but he said that JSON logic should be the same.
+>
+> Thanks
+
+Hi, Leon,
+
+Thank you for your reply. But I'm not sure what you mean by JSON logic? 
+I understand that
+pretty and not-pretty JSON should have the same content, but just 
+difference display effects.
+Do you mean that they only need to have the same structure?
+
+Or, let's get back to this question. In the JSON format output, the 
+newline() here seems
+unnecessary, because json_print() can solve the line break problems 
+during printing.
+So I think the newline() here can be removed at least when outputting in 
+JSON format.
+
+Thanks,
+Chengchang Tang
+>
+>> I believe the original developer may not have realized that
+>> close_json_object() is being called in newline(), which leads
+>> to this problem. To improve the code's readability, I would try to strip out
+>> close_json_obejct() from newline().
+>>
+>> Thanks,
+>> Chengchang Tang
+>>
+> .
+>
+
 
