@@ -1,98 +1,66 @@
-Return-Path: <linux-kernel+bounces-14080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EEB08217B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:26:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC47E8217B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:28:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E9251F21050
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:26:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5088C2824B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:28:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9A82108;
-	Tue,  2 Jan 2024 06:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C9C1858;
+	Tue,  2 Jan 2024 06:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CFrbBfB5"
+	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="ljOwPJPe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtplqs-out42.aruba.it (smtplqs-out42.aruba.it [62.149.158.82])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D76B915CF
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 06:25:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d40eec5e12so63618005ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jan 2024 22:25:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704176749; x=1704781549; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ezudi6jLM5VLjqPu4bAcNVcTI26aFcnMsqxplzeyERA=;
-        b=CFrbBfB5juUneDuMDK3SFQLkOgv09nlYK4RqNcvcWxKCsopRt5Y6pNrcjfkLJhJ/fq
-         1pHOYvsBYOqC+0VBbMp/zL8jsIKCGlMnU7mEn8e4gQ+JdqOzwN8kmB1WBO76UL9QiI+Q
-         7wkoCxA7pZ5cJzFThOeGkLMl3jZTPrOUwEyxOzqy0n7DkmyNPZ3hiDiftPRvTYDgHdv2
-         j8R8kUcEJb7iwFRpgzQqDCuuNJ170XaLQpQR+uHA/CEnHO3K+hvk9wKM6+NC4Vj4bWy4
-         KdCg1PyYK1vFO1ucQLJ7KHAq9peiwZhvhNzebsT1T/1GGdqB8Y6WNsHnIv4W3tgx9Zka
-         h40w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704176749; x=1704781549;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ezudi6jLM5VLjqPu4bAcNVcTI26aFcnMsqxplzeyERA=;
-        b=gKVN5DVs6uIEKGbHcLm6/CrqOjFhg1GdrGjxuQlJjMUB+d8YV8NL0/U8GxiL7tkq8x
-         jzSD68RKKPYE4dQHWteJ0NLzMq60y6hYLZPRkuVg3H3dM0FrgQXvGUqdoakgeI+70rHE
-         fT3F+7C4gew7ocAkUmP4VQzukku68ltoZecrPdDqLSotu2KPFxVZuGGt4qLjj42/ivOW
-         yCIhPwx+opLIu8KUUbVdIm5ZHw0nw0L/0WtnIj7UCx+pJizSfF1HSgveRW11Y8WRLYB9
-         g0W3IMNWRF51NDSXd6eeJn+WplYtFv8tIvWTPbaC8SaJ+1kmaF2hfnh83McXdYznFpXa
-         pwaw==
-X-Gm-Message-State: AOJu0YwC6HPuD/GmoseWT9iP9nnMriApX0zW8HIxq6Wrypp4og4QwRzK
-	d7CRFj6uf7fRkV7j+xEPY2cvW5Cr0qeJUA==
-X-Google-Smtp-Source: AGHT+IG8RoUn2lOLhQxfuWS6czwFFzvzj+yq/w7xBIIrrresiaj7KS/ia9C2eRfGtjuKKFWio60WGQ==
-X-Received: by 2002:a17:902:c652:b0:1d3:d27f:77c9 with SMTP id s18-20020a170902c65200b001d3d27f77c9mr14807221pls.14.1704176749072;
-        Mon, 01 Jan 2024 22:25:49 -0800 (PST)
-Received: from localhost ([122.172.86.168])
-        by smtp.gmail.com with ESMTPSA id ay5-20020a1709028b8500b001d4ac8ac969sm4371115plb.275.2024.01.01.22.25.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jan 2024 22:25:48 -0800 (PST)
-Date: Tue, 2 Jan 2024 11:55:46 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-pm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-	Kevin Hilman <khilman@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Nikunj Kela <nkela@quicinc.com>,
-	Prasad Sodagudi <psodagud@quicinc.com>,
-	Stephan Gerhold <stephan@gerhold.net>,
-	Ben Horgan <Ben.Horgan@arm.com>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-remoteproc@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH 0/5] PM: domains: Add helpers for multi PM domains to
- avoid open-coding
-Message-ID: <20240102062546.qhd6rfp4l53ubfrv@vireshk-i7>
-References: <20231228114157.104822-1-ulf.hansson@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F1015CF
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 06:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=calabriaorizzonti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=calabriaorizzonti.com
+Received: from webxc230s04.ad.aruba.it ([89.46.105.133])
+	by Aruba Outgoing Smtp  with ESMTP
+	id KYE8rUjX4DPJEKYE8rrYn1; Tue, 02 Jan 2024 07:26:12 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+	t=1704176772; bh=+LbVxlSmZjzsR24Z5AmnEepItQBhXHJCG1U67g7eybo=;
+	h=To:Subject:Date:From:MIME-Version:Content-Type;
+	b=ljOwPJPeZClGedAIcBpq8d/DxqK9+BYF2XZNf+/z1bXKShIm+DEHHonCMF3woHKP/
+	 9J+I9qqgCb6eXZqgtcvyVoJF4lDzBr3O7CFClkls7RQIs3ks5lgJlPHbEDIe0A/kT2
+	 LlOr8QFGNfXa5n2HqAtq+rjkGF5Mdqu5yxXaOaI1PaNNxUNp6NnYJhYYPlVnEA7HW9
+	 Gbg8QJM++rNtBA6cSsqoRHeHlbrnJlXc15IK1OiJ9xEo1DIAd4C3nSvyB4Zt8NS4+n
+	 dcbNFAEP85sLwEzrCsQz6A6etuYOIx+QbmuEdWErIBi5AGYxO6c8VdqL2NsJ45WjAF
+	 ZkwEZSNuMeh9A==
+Received: by webxc230s04.ad.aruba.it (Postfix, from userid 19070205)
+	id 45C145E; Tue,  2 Jan 2024 07:26:12 +0100 (CET)
+To: linux-kernel@vger.kernel.org
+Subject: Dettagli account per Get 76 DOLLARS for signing up HERE https://malko9.page.link/L3AC su Calabria orizzonti
+X-PHP-Originating-Script: 19070205:class.phpmailer.php
+Date: Tue, 2 Jan 2024 07:26:12 +0100
+From: Redazione Calabria orizzonti <redazione@calabriaorizzonti.com>
+Message-ID: <52c2357e9aa6e44b40a6b4b588e1bf5a@www.calabriaorizzonti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231228114157.104822-1-ulf.hansson@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfDtIheR9xX4RwT9cLvAAgVXEsj9uqiLaTx69nA9DWC9PI9CxNuHo+g1tJlkgqOlNP11nD5yPMLOc4qVoXrRgZNE1CUhU57XH31OQR10xUBqry/BbDrU4
+ HnNUGd5ydgUL0xwshh8b1o/ux6MsOXAAf+nL1eChsc1lV5bPTrU7W2ziM41eoWuPFKr88aQU4qXfmSs6Sozve/LDJbEDPSSnOtTvwsTCf1mNe6qtYh1OZkrG
 
-On 28-12-23, 12:41, Ulf Hansson wrote:
-> For OPP integration, as a follow up I am striving to make the
-> dev_pm_opp_attach_genpd() redundant. Instead I think we should move towards
-> using dev_pm_opp_set_config()->_opp_set_required_devs(), which would allow us to
-> use the helpers that $subject series is adding.
+Salve Get 76 DOLLARS for signing up HERE https://malko9.page.link/L3AC,
 
-Big thanks for that :)
+Grazie per la tua registrazione su Calabria orizzonti. Il tuo account è stato creato e deve essere attivato prima che tu possa utilizzarlo.
+Per attivarlo clicca sul link seguente o fai un copia e incolla nel tuo browser:
+http://www.calabriaorizzonti.com/index.php/component/users/?task=registration.activate&token=01dfca77020a31faf5d1a83ed0a3b954&Itemid=435 
 
--- 
-viresh
+Dopo averlo attivato, potrai accedere all'area riservata di http://www.calabriaorizzonti.com/ usando le seguenti username e password che hai inserito durante la registrazione:
+
+Nome utente: Get 76 DOLLARS for signing up HERE https://malko9.page.link/L3AC
+
 
