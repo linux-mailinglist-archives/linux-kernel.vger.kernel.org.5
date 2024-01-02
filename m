@@ -1,84 +1,90 @@
-Return-Path: <linux-kernel+bounces-14426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A44F9821CD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:39:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37E82821CD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:39:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C88221C221A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:39:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BB461C2031E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5578014010;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EEFC134DD;
 	Tue,  2 Jan 2024 13:36:30 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9215212E60
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602BC12E61
 	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 13:36:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bad62322f0so897107439f.3
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-35ff5a2fb06so102719615ab.3
         for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 05:36:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1704202587; x=1704807387;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=NGViDqpHpM/PgMAM6SCNiKxlip1nc59Qmx/Gy1A7u2s=;
-        b=npTnGfbk01YV9o0dmp3oGAlErkvRpCtxS505dMDi3uR2QW+14xoRCRfoF0YaFvn/QX
-         9+veGri27246JjbhQjkdHupA18R80utMI93tQSpshlFnLJJgmWHUlxkYY4Sy9vfT4R95
-         cylhez+w7iqlE1Ca2uvdRIigPlnTaZLK7Cdq0g2YSF/rqPLg4g5IFVZ30W0+szfHlroC
-         3ScQ6CCo6kmL6Ir6aDmkXjLKo+eNqq3LP5u6wGZ3w9QGBALG1wL8fZ/TjFzGc0A32Oco
-         Sdvev2atBmzrnl1csD8XWaAZvjJxZHuuaUy+bQ9EHuFtQ+5qZ5wCfMSwNby5DbVsCgdH
-         YFGA==
-X-Gm-Message-State: AOJu0YxRgZEZSNwgbFL7/Erv9EuOGTTi5YVs6euFeYXT12Ulf84IPiKh
-	xlZLDxw1qyZkMkn1cTNfNAp6ZPQGbLywD22g+71hF7qo/OcR
-X-Google-Smtp-Source: AGHT+IGO5cZ49DcsJTUMBX/0mmakCAVYPbZh16J2Cupgyu97CAh2ZeWEzifLqxwh03tXNJ5lL+PspKorGPR+blyQZ/5Ct7CJmfJf
+        bh=sQDx8ihcPKO+A1LQq9lBiIrWnZPzFKNw4YHTLJ2gqCM=;
+        b=sdbdU8K88/rJCiKP6vsJ55Fd9EZS2Ax/HEKT7ELp9MsZPbAraqAzw1p93fG48cGzyh
+         EvxVDpNcKPeIPEKk654HqXvzLVspsIvmVaKRUzmeqy5eOR5i1zs/gqK0kBWRvYxtkLgr
+         Q+9bfa2vw1UeCAOsIo9CTP8sCUMKVmTkb81oiGYUim4UwLshsrl5ZfmssDuclH9eri7Z
+         gRfCssD4RZB/rfqnvz1irMwjpsTa29MjYpcO/z50NcADRnhpPFfDJ1pLGlRFZAhaXX3t
+         bEcsq/5ho90KfBFAEvhriHwv546/rz1msP3xI6W1MoqrLR65E2RcQE1PGiHUet+VlzFI
+         r6xA==
+X-Gm-Message-State: AOJu0YxfCE60Z105OOWKoDZ8eInK/MsNUY1+nvUbAi/rzyHtyV79Re9f
+	tvTMCNo3FR2mB4tTqAAjnxFDNKu1wNFW0jahyZkvb8WZlhdv
+X-Google-Smtp-Source: AGHT+IHRrLGfk7SofeveRJrU3nPffiFbYPxfX2Y+0DwLZyMWhxyZwoNEQdHQRQR5yFTeLaHClNpaJjZfb9lw3PnuXdDL3SWphLKg
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aa6:b0:35f:535a:9c64 with SMTP id
- l6-20020a056e021aa600b0035f535a9c64mr2057692ilv.3.1704202587794; Tue, 02 Jan
+X-Received: by 2002:a05:6e02:154e:b0:35f:f683:f769 with SMTP id
+ j14-20020a056e02154e00b0035ff683f769mr2541033ilu.5.1704202587586; Tue, 02 Jan
  2024 05:36:27 -0800 (PST)
 Date: Tue, 02 Jan 2024 05:36:27 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000def411060df69549@google.com>
-Subject: [syzbot] Monthly kernfs report (Jan 2024)
-From: syzbot <syzbot+list417f71c53317b3ba7ddd@syzkaller.appspotmail.com>
-To: gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org
+Message-ID: <000000000000dbc946060df695ea@google.com>
+Subject: [syzbot] Monthly dri report (Jan 2024)
+From: syzbot <syzbot+list680700f3ccca9aabd1af@syzkaller.appspotmail.com>
+To: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-Hello kernfs maintainers/developers,
+Hello dri maintainers/developers,
 
-This is a 31-day syzbot report for the kernfs subsystem.
+This is a 31-day syzbot report for the dri subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/kernfs
+https://syzkaller.appspot.com/upstream/s/dri
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 10 issues are still open and 20 have been fixed so far.
+During the period, 4 new issues were detected and 0 were fixed.
+In total, 18 issues are still open and 31 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref Crashes Repro Title
-<1> 1669    Yes   possible deadlock in input_event (2)
-                  https://syzkaller.appspot.com/bug?extid=d4c06e848a1c1f9f726f
-<2> 212     Yes   WARNING in kernfs_remove_by_name_ns (3)
-                  https://syzkaller.appspot.com/bug?extid=93cbdd0ab421adc5275d
-<3> 50      Yes   KASAN: use-after-free Read in kernfs_next_descendant_post (2)
-                  https://syzkaller.appspot.com/bug?extid=6bc35f3913193fe7f0d3
-<4> 37      Yes   KASAN: use-after-free Read in kernfs_add_one
-                  https://syzkaller.appspot.com/bug?extid=ef17b5b364116518fd65
-<5> 31      No    possible deadlock in lookup_slow (3)
-                  https://syzkaller.appspot.com/bug?extid=65459fd3b61877d717a3
-<6> 3       Yes   stack segment fault in __stack_depot_save
-                  https://syzkaller.appspot.com/bug?extid=1f564413055af2023f17
+<1> 375     Yes   WARNING in drm_wait_one_vblank
+                  https://syzkaller.appspot.com/bug?extid=6f7fe2dbc479dca0ed17
+<2> 147     Yes   WARNING in vkms_get_vblank_timestamp (2)
+                  https://syzkaller.appspot.com/bug?extid=93bd128a383695391534
+<3> 143     Yes   WARNING in drm_syncobj_array_find
+                  https://syzkaller.appspot.com/bug?extid=95416f957d84e858b377
+<4> 94      Yes   inconsistent lock state in sync_timeline_debug_remove
+                  https://syzkaller.appspot.com/bug?extid=7dcd254b8987a29f6450
+<5> 54      Yes   inconsistent lock state in sync_info_debugfs_show
+                  https://syzkaller.appspot.com/bug?extid=007bfe0f3330f6e1e7d1
+<6> 9       Yes   kernel BUG in vmf_insert_pfn_prot (2)
+                  https://syzkaller.appspot.com/bug?extid=398e17b61dab22cc56bc
+<7> 6       Yes   WARNING in drm_gem_prime_fd_to_handle
+                  https://syzkaller.appspot.com/bug?extid=268d319a7bfd92f4ae01
+<8> 5       Yes   divide error in drm_mode_vrefresh
+                  https://syzkaller.appspot.com/bug?extid=622bba18029bcde672e1
+<9> 1       Yes   divide error in drm_mode_debug_printmodeline
+                  https://syzkaller.appspot.com/bug?extid=2e93e6fb36e6fdc56574
 
 ---
 This report is generated by a bot. It may contain errors.
