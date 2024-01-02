@@ -1,80 +1,179 @@
-Return-Path: <linux-kernel+bounces-14088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BFD78217C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:47:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CBE18217C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 07:50:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A30F1F21C6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:47:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42A201C21262
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 06:50:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58EA82108;
-	Tue,  2 Jan 2024 06:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4D623C3;
+	Tue,  2 Jan 2024 06:50:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="PGFmoVed"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YaaGec9u"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.avm.de (mail.avm.de [212.42.244.119])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C1920F8
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 06:47:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
-Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
-	by mail.avm.de (Postfix) with ESMTPS;
-	Tue,  2 Jan 2024 07:46:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-	t=1704178015; bh=vg6BjqTzvncnfAzQH0ToV2hPVqpimnYQjISNlAadLsA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PGFmoVedAJuF8eeSp4FIpKCg7n7bPEV/yulY/xszmc6h1pUBdVi4XK/ELTbSqjuSl
-	 +dMmpdKDBy+OerSX5ZQzBG+MtWenJ/UFvPx6l637amc0sXRL3x9WKVsF4NSxDZiJRY
-	 8WZUpcBaf68Vea+k1q0pJWy/uYKK4v+3BGf0epc4=
-Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
-	by mail-auth.avm.de (Postfix) with ESMTPA id D98F5805A6;
-	Tue,  2 Jan 2024 07:46:55 +0100 (CET)
-Received: by buildd.core.avm.de (Postfix, from userid 1000)
-	id D50271830A6; Tue,  2 Jan 2024 07:46:55 +0100 (CET)
-Date: Tue, 2 Jan 2024 07:46:55 +0100
-From: Nicolas Schier <n.schier@avm.de>
-To: Kevin Martin <kevinmbecause@gmail.com>
-Cc: Luis Chamberlain <mcgrof@kernel.org>,
-	Russ Weight <russ.weight@linux.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] firmware_loader: Enable compressed files in
- EXTRA_FIRMWARE
-Message-ID: <ZZOxXw7ZrmumszkO@buildd.core.avm.de>
-References: <cover.1703042081.git.kevinmbecause@gmail.com>
- <cd370037f8c21dc851a2a33a07250459c9c98708.1703042082.git.kevinmbecause@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EFC920F5;
+	Tue,  2 Jan 2024 06:50:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8CB4C433C8;
+	Tue,  2 Jan 2024 06:50:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704178211;
+	bh=FRVLdcULfQJ6wzht7zYhA2uTw6fe/0FkHYlgCcy8QM8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=YaaGec9u7t15mBgJohV8I9Yvkcb1tSj0v21P62RlzL9oWigQfDFiepXYsUfUpuqwO
+	 gggl+bz7dGJ+tF5D+oqbchmSLKoQ65/TcnQKFgRTE5LMCwb2VqjkpPHx1k8tjmoS6m
+	 uGaq/drBxtmADSdFFXbZZ1EO083tJ6Wrif7Uxsr7Rm32rXp5KVjLdGxSC3jshMGczh
+	 i7QggYhAuqW48W4Hm+6pkKeHmdCXe1CchvN21KxktDM7RarwZVXgbPIelr+D8stJxr
+	 Aj+nDYGO9YNkFHsHcUuKZf0AAtsvA8A3g657BsYk9DuJrkqmNYKjzC755EDHUwprR4
+	 qPF/hOTJFQ6qw==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Jerry Shih <jerry.shih@sifive.com>
+Cc: linux-kernel@vger.kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Phoebe Chen <phoebe.chen@sifive.com>,
+	hongrong.hsu@sifive.com,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Andy Chiu <andy.chiu@sifive.com>
+Subject: [RFC PATCH 00/13] RISC-V crypto with reworked asm files
+Date: Tue,  2 Jan 2024 00:47:26 -0600
+Message-ID: <20240102064743.220490-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cd370037f8c21dc851a2a33a07250459c9c98708.1703042082.git.kevinmbecause@gmail.com>
-Organization: AVM GmbH
-X-purgate-ID: 149429::1704178015-ABEE65FF-6294A09D/0/0
-X-purgate-type: clean
-X-purgate-size: 551
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 20, 2023 at 05:29:33AM -0500, Kevin Martin wrote:
-> The linux-firmware packages on Gentoo, Fedora, Arch, and others compress
-> the firmware files. This works well with CONFIG_FW_LOADER_COMPRESS, but
-> does not work with CONFIG_EXTRA_FIRMWARE. This patch allows the build
-> system to decompress firmware files specified by CONFIG_EXTRA_FIRMWARE.
-> Uncompressed files are used first, then the compressed files are used.
-> 
-> Signed-off-by: Kevin Martin <kevinmbecause@gmail.com>
-> ---
+As discussed previously, the proposed use of the so-called perlasm for
+the RISC-V crypto assembly files makes them difficult to read, and these
+files have some other issues such extensively duplicating source code
+for the different AES key lengths and for the unrolled hash functions.
+There is/was a desire to share code with OpenSSL, but many of the files
+have already diverged significantly; also, for most of the algorithms
+the source code can be quite short anyway, due to the native support for
+them in the RISC-V vector crypto extensions combined with the way the
+RISC-V vector extension naturally scales to arbitrary vector lengths.
 
-Tested-by: Nicolas Schier <n.schier@avm.de>
+Since we're still waiting for prerequisite patches to be merged anyway,
+we have a bit more time to get this cleaned up properly.  So I've had a
+go at cleaning up the patchset to use standard .S files, with the code
+duplication fixed.  I also made some tweaks to make the different
+algorithms consistent with each other and with what exists in the kernel
+already for other architectures, and tried to improve comments.
+
+The result is this series, which passes all tests and is about 2400
+lines shorter than the latest version with the perlasm
+(https://lore.kernel.org/linux-crypto/20231231152743.6304-1-jerry.shih@sifive.com/).
+All the same functionality and general optimizations are still included,
+except for some minor optimizations in XTS that I dropped since it's not
+clear they are worth the complexity.  (Note that almost all users of XTS
+in the kernel only use it with block-aligned messages, so it's not very
+important to optimize the ciphertext stealing case.)
+
+I'd appreciate people's thoughts on this series.  Jerry, I hope I'm not
+stepping on your toes too much here, but I think there are some big
+improvements here.
+
+This series is based on riscv/for-next
+(https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/log/?h=for-next)
+commit f352a28cc2fb4ee8d08c6a6362c9a861fcc84236, and for convenience
+I've included the prerequisite patches too.
+
+Andy Chiu (1):
+  riscv: vector: make Vector always available for softirq context
+
+Eric Biggers (1):
+  RISC-V: add TOOLCHAIN_HAS_VECTOR_CRYPTO
+
+Greentime Hu (1):
+  riscv: Add support for kernel mode vector
+
+Heiko Stuebner (2):
+  RISC-V: add helper function to read the vector VLEN
+  RISC-V: hook new crypto subdir into build-system
+
+Jerry Shih (8):
+  crypto: riscv - add vector crypto accelerated AES
+  crypto: riscv - add vector crypto accelerated AES-{ECB,CBC,CTR,XTS}
+  crypto: riscv - add vector crypto accelerated ChaCha20
+  crypto: riscv - add vector crypto accelerated GHASH
+  crypto: riscv - add vector crypto accelerated SHA-{256,224}
+  crypto: riscv - add vector crypto accelerated SHA-{512,384}
+  crypto: riscv - add vector crypto accelerated SM3
+  crypto: riscv - add vector crypto accelerated SM4
+
+ arch/riscv/Kbuild                             |   1 +
+ arch/riscv/Kconfig                            |   7 +
+ arch/riscv/crypto/Kconfig                     | 108 +++++
+ arch/riscv/crypto/Makefile                    |  28 ++
+ arch/riscv/crypto/aes-macros.S                | 156 +++++++
+ .../crypto/aes-riscv64-block-mode-glue.c      | 435 ++++++++++++++++++
+ arch/riscv/crypto/aes-riscv64-glue.c          | 123 +++++
+ arch/riscv/crypto/aes-riscv64-glue.h          |  15 +
+ .../crypto/aes-riscv64-zvkned-zvbb-zvkg.S     | 300 ++++++++++++
+ arch/riscv/crypto/aes-riscv64-zvkned-zvkb.S   | 146 ++++++
+ arch/riscv/crypto/aes-riscv64-zvkned.S        | 180 ++++++++
+ arch/riscv/crypto/chacha-riscv64-glue.c       | 101 ++++
+ arch/riscv/crypto/chacha-riscv64-zvkb.S       | 294 ++++++++++++
+ arch/riscv/crypto/ghash-riscv64-glue.c        | 170 +++++++
+ arch/riscv/crypto/ghash-riscv64-zvkg.S        |  72 +++
+ arch/riscv/crypto/sha256-riscv64-glue.c       | 137 ++++++
+ .../sha256-riscv64-zvknha_or_zvknhb-zvkb.S    | 225 +++++++++
+ arch/riscv/crypto/sha512-riscv64-glue.c       | 133 ++++++
+ .../riscv/crypto/sha512-riscv64-zvknhb-zvkb.S | 203 ++++++++
+ arch/riscv/crypto/sm3-riscv64-glue.c          | 112 +++++
+ arch/riscv/crypto/sm3-riscv64-zvksh-zvkb.S    | 123 +++++
+ arch/riscv/crypto/sm4-riscv64-glue.c          | 109 +++++
+ arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S   | 117 +++++
+ arch/riscv/include/asm/processor.h            |  14 +-
+ arch/riscv/include/asm/simd.h                 |  48 ++
+ arch/riscv/include/asm/vector.h               |  20 +
+ arch/riscv/kernel/Makefile                    |   1 +
+ arch/riscv/kernel/kernel_mode_vector.c        | 126 +++++
+ arch/riscv/kernel/process.c                   |   1 +
+ crypto/Kconfig                                |   3 +
+ 30 files changed, 3507 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/crypto/Kconfig
+ create mode 100644 arch/riscv/crypto/Makefile
+ create mode 100644 arch/riscv/crypto/aes-macros.S
+ create mode 100644 arch/riscv/crypto/aes-riscv64-block-mode-glue.c
+ create mode 100644 arch/riscv/crypto/aes-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/aes-riscv64-glue.h
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned-zvbb-zvkg.S
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned-zvkb.S
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned.S
+ create mode 100644 arch/riscv/crypto/chacha-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/chacha-riscv64-zvkb.S
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-zvkg.S
+ create mode 100644 arch/riscv/crypto/sha256-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sha256-riscv64-zvknha_or_zvknhb-zvkb.S
+ create mode 100644 arch/riscv/crypto/sha512-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sha512-riscv64-zvknhb-zvkb.S
+ create mode 100644 arch/riscv/crypto/sm3-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sm3-riscv64-zvksh-zvkb.S
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S
+ create mode 100644 arch/riscv/include/asm/simd.h
+ create mode 100644 arch/riscv/kernel/kernel_mode_vector.c
+
+
+base-commit: f352a28cc2fb4ee8d08c6a6362c9a861fcc84236
+-- 
+2.43.0
+
 
