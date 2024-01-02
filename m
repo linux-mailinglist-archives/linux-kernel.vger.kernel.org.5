@@ -1,157 +1,254 @@
-Return-Path: <linux-kernel+bounces-14821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07CFD8222D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:01:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D5978222DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:02:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A710C28203E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:01:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 439211C22A78
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:02:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62BF61642D;
-	Tue,  2 Jan 2024 21:01:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C8216438;
+	Tue,  2 Jan 2024 21:02:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LKTUzykS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LbqmuC5u"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F6401642B
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40d5aefcc2fso58284035e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 13:01:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04C4168A2;
+	Tue,  2 Jan 2024 21:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5537114380bso7667877a12.3;
+        Tue, 02 Jan 2024 13:02:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704229264; x=1704834064; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=dstAtoDhSyAt9Ec6YxAr7xXLaqmXSKwXbZxFdyWhN30=;
-        b=LKTUzykSY0J/6pugrhNIxol79TNuqsI872SrAzA+IHKraf8tsaK2ermhd/BxjpH7aC
-         YaHRtlmEGswcVnMdnUbVmtrYWk6P6WNIdylWSvJAY0DhWf5jTTCdxdZIXDjMkObQOgdI
-         WIJNjKKCr9Aac6ftiBfTM2I07SxvU9C33/P9X4PwR7IRkY/IA70gucl/YVT1Tp7dChwl
-         Iwtl5x6hYMDxifgXxLiINUXppoVjrlUAtIH/AAJGFmCOmdcczQ1zFVaC0o2MiNI94QEn
-         5kqD840NaoKzG7Pw1J2MmuP0eQn/5sHQBTlU5AISpoyqlJzFuLfEG0Lj0muajc08/Ugv
-         ARqQ==
+        d=gmail.com; s=20230601; t=1704229335; x=1704834135; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pl2sKqyXIKOm6mYqJIAawBojqHAiFXnTSzlfYOxfUAg=;
+        b=LbqmuC5u4HxexuMPrl7VovjiSkU0jP1pYwGzeqaD6guex5BCPwYgBkNHdC9EKBgKmo
+         xcaSqSOsWhpS4KnivTXJ4hIrrKr4kYMvt3Uwk4PMrQdZzI0XtQcqz3x8kp4Y3inVE+BS
+         tkCfSpZAJtzhUYKv6rh4pSrK1x28K/YBe4NndJU46h8KBLobikL9sF4Wa7b3cqJXW0N2
+         opKZem4VrcBIn2476i1lff5uWL1uD89JcL492q19IZI8onNCfVh6Z7kvOHj9o1H1Thau
+         PFKRcZ2I62Lt4krWES1fpyxKtAcvC6etjNqO9Qops5404CcHusAsN6Ar2R6/aL/kH6pt
+         iWHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704229264; x=1704834064;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dstAtoDhSyAt9Ec6YxAr7xXLaqmXSKwXbZxFdyWhN30=;
-        b=sFUG64ii4m/Hap2mxR7nR/It8V/TgV0iDfp4eMzYmxTRcbetUlXns0EMl3JdLOe4Bb
-         MRrD+cbamH+QYx3Kb+WdZT8IHr6r3z/ZnjPvwtwX8yb4tj527ThrIGGvN/a3pAeaGjPU
-         itOv8K/SSofq4XlBvMHGQMfPxrXKY54nRdsrl5DkkyrVv7zZLKKMQtQKWPQImRVL7Zb+
-         3pDjrkSZ8c5Xk5vKA2+UDGSYPZ6qRBy8+jcOzuZngmjrgaQMD8sSwzOcuewILYchuGr3
-         ZiekTIGsrTJVKZclbNQCK29P/z6C9RQH5bEjKBk5KfneriAbQgs0qF7WI6aur3muCxC4
-         A5dQ==
-X-Gm-Message-State: AOJu0YxmlVY+m1xMVtOlUgEhYg5g6GHyrp5tDYNipuKi+pmUe7mltrMx
-	tQKFA9lWQQyztzJsrh8IGGs6pG3kMu9+cA==
-X-Google-Smtp-Source: AGHT+IHvYwQImOhlq5Jp5m7IRZTN6U6G0Gn2nqnXfeZK6+8tzjH/oqKq0tXr+YROcRTWiW8zh4HCSQ==
-X-Received: by 2002:a05:600c:4ed0:b0:40d:878d:6f81 with SMTP id g16-20020a05600c4ed000b0040d878d6f81mr2090256wmq.146.1704229264433;
-        Tue, 02 Jan 2024 13:01:04 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id v10-20020a05600c470a00b0040d839e7bb3sm134119wmo.19.2024.01.02.13.01.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 13:01:03 -0800 (PST)
-Message-ID: <e9ce1ead-d78b-4a89-b330-0f17cd57decc@linaro.org>
-Date: Tue, 2 Jan 2024 22:00:57 +0100
+        d=1e100.net; s=20230601; t=1704229335; x=1704834135;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pl2sKqyXIKOm6mYqJIAawBojqHAiFXnTSzlfYOxfUAg=;
+        b=qCAgI/OVMbI+xInu8FLuFdicujl0e/zgqg5MLd4kbXNq6f2ys1YrKxx/3mnAE539Mk
+         MshqqpXeNmtqgg+b0lyjYebxRB86PNkoRun3TNvuKSorFSEmv/BihW6iWfk4SBzCPRvU
+         sA4Yxu6AxAGgJwyLZuXu9MRYJn9ANjGcCiAUD1eCEOvGqVRNnxjj7xJPNTlBFkN4NV3+
+         n6HtdO5B9/bjALDy83eXN0j+GkT2DfMZVEkeLRnMGidCYGoV42fH3IQfjpzbbTQooJgc
+         wlAx2pD+M/pqFd+sKw+Fn0uY2iTrEmXRt0Vo4qcmG1Sf1VRLwDmKUmljGUwkZ5InBVD2
+         Cqqw==
+X-Gm-Message-State: AOJu0Yy+SRglO2u4VrUTMTelSpTQ0jIr59cme7hZTL8LdqcHVO9T7Kfe
+	61yoHdEc3epfpPpQrppKGGRgvpvWWXmeZis2kPYkLLdwjZY=
+X-Google-Smtp-Source: AGHT+IELFOf9PwgDsb7X5rgou83wT8RUNJY+CXNEk02T21FgF4UfcBPZMB4T2lRYNuDe4p0oOvJMeyIVcq1BBVh/cnI=
+X-Received: by 2002:a50:a687:0:b0:554:4dde:4ca6 with SMTP id
+ e7-20020a50a687000000b005544dde4ca6mr13807600edc.4.1704229334942; Tue, 02 Jan
+ 2024 13:02:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] dt-bindings: interconnect: Remove bogus interconnect
- nodes
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Georgi Djakov <djakov@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Rajendra Nayak
- <quic_rjendra@quicinc.com>, Sibi Sankar <quic_sibis@quicinc.com>,
- Abel Vesa <abel.vesa@linaro.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20240102-topic-x1e_fixes-v1-0-70723e08d5f6@linaro.org>
- <20240102-topic-x1e_fixes-v1-2-70723e08d5f6@linaro.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240102-topic-x1e_fixes-v1-2-70723e08d5f6@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230327-tegra-pmic-reboot-v7-2-18699d5dcd76@skidata.com> <20240102150350.3180741-1-mwalle@kernel.org>
+In-Reply-To: <20240102150350.3180741-1-mwalle@kernel.org>
+From: Benjamin Bara <bbara93@gmail.com>
+Date: Tue, 2 Jan 2024 22:02:02 +0100
+Message-ID: <CAJpcXm7W2vckakdFYiT4jssea-AzrZMsjHijfa+QpfzDVL+E3A@mail.gmail.com>
+Subject: Re: [PATCH v7 2/5] Re: i2c: core: run atomic i2c xfer when !preemptible
+To: Michael Walle <mwalle@kernel.org>
+Cc: benjamin.bara@skidata.com, dmitry.osipenko@collabora.com, 
+	jonathanh@nvidia.com, lee@kernel.org, linux-i2c@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, nm@ti.com, 
+	peterz@infradead.org, rafael.j.wysocki@intel.com, richard.leitner@linux.dev, 
+	stable@vger.kernel.org, treding@nvidia.com, wsa+renesas@sang-engineering.com, 
+	wsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 02/01/2024 19:29, Konrad Dybcio wrote:
-> The downstream kernel has infrastructure for passing votes from different
-> interconnect nodes onto different RPMh RSCs. This neither implemented, not
-> is going to be implemented upstream (in favor of a different solution
-> using ICC tags through the same node).
-> 
-> Unfortunately, as it happens, meaningless (in the upstream context) parts
-> of the vendor driver were copied, ending up causing havoc - since all
-> "per-RSC" (in quotes because they all point to the main APPS one) BCMs
-> defined within the driver overwrite the value in RPMh on every
-> aggregation.
-> 
-> To both avoid keeping bogus code around and possibly introducing
-> impossible-to-track-down bugs (busses shutting down for no reason), get
-> rid of the duplicated ICC node definitions.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Hi Michael,
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Tue, 2 Jan 2024 at 16:03, Michael Walle <mwalle@kernel.org> wrote:
+> With preemption disabled, this boils down to
+>   return system_state > SYSTEM_RUNNING (&& !0)
+>
+> and will then generate a backtrace splash on each reboot on our
+> board:
+>
+> # reboot -f
+> [   12.687169] No atomic I2C transfer handler for 'i2c-0'
+> ...
+> [   12.806359] Call trace:
+> [   12.808793]  i2c_smbus_xfer+0x100/0x118
+> ...
+>
+> I'm not sure if this is now the expected behavior or not. There will be
+> no backtraces, if I build a preemptible kernel, nor will there be
+> backtraces if I revert this patch.
 
-Best regards,
-Krzysztof
 
+thanks for the report.
+
+In your case, the warning comes from shutting down a regulator during
+device_shutdown(), so nothing really problematic here. However, later in
+the "restart sequence", IRQs are disabled before the restart handlers
+are called. If the reboot handlers would rely on irq-based
+("non-atomic") i2c transfer, they might not work properly.
+
+> OTOH, the driver I'm using (drivers/i2c/busses/i2c-mt65xx.c) has no
+> *_atomic(). So the warning is correct. There is also [1], which seems to
+> be the same issue I'm facing.
+>
+> -michael
+>
+> [1] https://lore.kernel.org/linux-i2c/13271b9b-4132-46ef-abf8-2c311967bb46@mailbox.org/
+
+
+I tried to implement an atomic handler for the mt65xx, but I don't have
+the respective hardware available to test it. I decided to use a similar
+approach as done in drivers/i2c/busses/i2c-rk3x.c, which calls the IRQ
+handler in a while loop if an atomic xfer is requested. IMHO, this
+should work with IRQs enabled and disabled, but I am not sure if this is
+the best approach...
+
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index a8b5719c3372..3c18305e6059 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -16,6 +16,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/iopoll.h>
++#include <linux/jiffies.h>
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
+ #include <linux/module.h>
+@@ -307,6 +308,8 @@ struct mtk_i2c {
+     bool ignore_restart_irq;
+     struct mtk_i2c_ac_timing ac_timing;
+     const struct mtk_i2c_compatible *dev_comp;
++    bool atomic_xfer;
++    bool xfer_complete;
+ };
+
+ /**
+@@ -994,6 +997,20 @@ static void i2c_dump_register(struct mtk_i2c *i2c)
+         readl(i2c->pdmabase + OFFSET_RX_4G_MODE));
+ }
+
++static irqreturn_t mtk_i2c_irq(int irqno, void *dev_id);
++
++static int mtk_i2c_wait_xfer_atomic(struct mtk_i2c *i2c)
++{
++    unsigned long timeout = jiffies + i2c->adap.timeout;
++
++    do {
++        udelay(10);
++        mtk_i2c_irq(0, i2c);
++    } while (!i2c->xfer_complete && time_before(jiffies, timeout));
++
++    return i2c->xfer_complete;
++}
++
+ static int mtk_i2c_do_transfer(struct mtk_i2c *i2c, struct i2c_msg *msgs,
+                   int num, int left_num)
+ {
+@@ -1015,7 +1032,10 @@ static int mtk_i2c_do_transfer(struct mtk_i2c
+*i2c, struct i2c_msg *msgs,
+     if (i2c->auto_restart)
+         restart_flag = I2C_RS_TRANSFER;
+
+-    reinit_completion(&i2c->msg_complete);
++    if (i2c->atomic_xfer)
++        i2c->xfer_complete = false;
++    else
++        reinit_completion(&i2c->msg_complete);
+
+     if (i2c->dev_comp->apdma_sync &&
+        i2c->op != I2C_MASTER_WRRD && num > 1) {
+@@ -1195,8 +1215,12 @@ static int mtk_i2c_do_transfer(struct mtk_i2c
+*i2c, struct i2c_msg *msgs,
+     }
+     mtk_i2c_writew(i2c, start_reg, OFFSET_START);
+
+-    ret = wait_for_completion_timeout(&i2c->msg_complete,
+-                     i2c->adap.timeout);
++    if (i2c->atomic_xfer)
++        /* We can't rely on wait_for_completion* calls in atomic mode. */
++        ret = mtk_i2c_wait_xfer_atomic(i2c);
++    else
++        ret = wait_for_completion_timeout(&i2c->msg_complete,
++                         i2c->adap.timeout);
+
+     /* Clear interrupt mask */
+     mtk_i2c_writew(i2c, ~(restart_flag | I2C_HS_NACKERR | I2C_ACKERR |
+@@ -1238,8 +1262,8 @@ static int mtk_i2c_do_transfer(struct mtk_i2c
+*i2c, struct i2c_msg *msgs,
+     return 0;
+ }
+
+-static int mtk_i2c_transfer(struct i2c_adapter *adap,
+-               struct i2c_msg msgs[], int num)
++static int mtk_i2c_transfer_common(struct i2c_adapter *adap,
++                  struct i2c_msg msgs[], int num, bool atomic)
+ {
+     int ret;
+     int left_num = num;
+@@ -1249,6 +1273,7 @@ static int mtk_i2c_transfer(struct i2c_adapter *adap,
+     if (ret)
+         return ret;
+
++    i2c->atomic_xfer = atomic;
+     i2c->auto_restart = i2c->dev_comp->auto_restart;
+
+     /* checking if we can skip restart and optimize using WRRD mode */
+@@ -1303,6 +1328,18 @@ static int mtk_i2c_transfer(struct i2c_adapter *adap,
+     return ret;
+ }
+
++static int mtk_i2c_transfer(struct i2c_adapter *adap,
++               struct i2c_msg msgs[], int num)
++{
++    return mtk_i2c_transfer_common(adap, msgs, num, false);
++}
++
++static int mtk_i2c_transfer_atomic(struct i2c_adapter *adap,
++                  struct i2c_msg msgs[], int num)
++{
++    return mtk_i2c_transfer_common(adap, msgs, num, true);
++}
++
+ static irqreturn_t mtk_i2c_irq(int irqno, void *dev_id)
+ {
+     struct mtk_i2c *i2c = dev_id;
+@@ -1328,8 +1365,12 @@ static irqreturn_t mtk_i2c_irq(int irqno, void *dev_id)
+         mtk_i2c_writew(i2c, I2C_RS_MUL_CNFG | I2C_RS_MUL_TRIG |
+                    I2C_TRANSAC_START, OFFSET_START);
+     } else {
+-        if (i2c->irq_stat & (I2C_TRANSAC_COMP | restart_flag))
+-            complete(&i2c->msg_complete);
++        if (i2c->irq_stat & (I2C_TRANSAC_COMP | restart_flag)) {
++            if (i2c->atomic_xfer)
++                i2c->xfer_complete = true;
++            else
++                complete(&i2c->msg_complete);
++        }
+     }
+
+     return IRQ_HANDLED;
+@@ -1346,6 +1387,7 @@ static u32 mtk_i2c_functionality(struct i2c_adapter *adap)
+
+ static const struct i2c_algorithm mtk_i2c_algorithm = {
+     .master_xfer = mtk_i2c_transfer,
++    .master_xfer_atomic = mtk_i2c_transfer_atomic,
+     .functionality = mtk_i2c_functionality,
+ };
 
