@@ -1,286 +1,184 @@
-Return-Path: <linux-kernel+bounces-14180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A6EA8218D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:19:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB1BD8218DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:25:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAC87284095
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:19:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A3C51C2175F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:25:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF4567470;
-	Tue,  2 Jan 2024 09:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E015A6AD7;
+	Tue,  2 Jan 2024 09:25:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dXm5gASL"
+	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="rt4YQJaf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69FBB6AAB;
-	Tue,  2 Jan 2024 09:19:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40d87df95ddso14343815e9.0;
-        Tue, 02 Jan 2024 01:19:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704187142; x=1704791942; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cJtkm4EXw3sNC6xVwUMHZ+TIthpOJy/4hNIkSK0zIGE=;
-        b=dXm5gASLRjCFsIXcf8UP52iXmlY5jAsGYfEWwrjllkigjSkWEhR1L9fSxXUJlk7bEG
-         ytDOfqirPEpGZhR56lPww0Oq5qk99O2YQOnlz70zZ0QYEbqO60C1AgEQ96cAFgs+NxG5
-         QDrMXPQ0bsqWRLs6LQBlf1d09JYDNPdXGcifugyN0bTl4bVS59g1LRDzsOT5b5h7upb1
-         DJyTq7Ts7nCO8L1q+8MpQlu2GFfv42wp6DSImOZ7KBDrX03Xe2k/4VeER41u++r70J2T
-         ViQLCM9w3gPZs/8roPsef8KY+N7Ov9p4Z8D0dWAHkPfK/7lq+Kb0/eB7psBe2Xw150zC
-         voQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704187142; x=1704791942;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cJtkm4EXw3sNC6xVwUMHZ+TIthpOJy/4hNIkSK0zIGE=;
-        b=qlUs33vr5y4DP4Byx0FHwEbNjhhQJOVU2nC6DqbfXeema8OocXiCiS103NC/aBtnd4
-         +xdNIKEAodS+LhztjQv4lULDpYpV9VgzwGIvXIfwtg0Wq8YP/YyEm/xQrp5fPVefovUm
-         7S5CRqfiFDXv8RZcL62jK56Z2rZSQY1DPSseddFri88P9yZ1zSHflFIYZe30yowknmlc
-         Pd4GGAUqlEp9Sda6HCpTqpYkWeMNTn4Nm1erEuDT/V2VEv1R0UioOcFj8nxStaaF+a9+
-         G6KMw4j5NjF/iyOXVQAKG1oK1dC5vrhldRvlTIlyyyyP5qlpYF46SdcuFE+P17czvtpc
-         iJ6w==
-X-Gm-Message-State: AOJu0YzKVUPFrTrsA7G15P2FYYjP87XYwDcreR6uUNOUfPTUGM86T+B/
-	TYLOFMmZ6sEwfPjNaSB8pbk=
-X-Google-Smtp-Source: AGHT+IH5pC1w3L/Msv/w4SqF5tDEWT/1ehbAn+768EIBJqFn5JQqYha9fIPeZiFTlGdv9N8FH1uo3w==
-X-Received: by 2002:a05:600c:4393:b0:40d:3cdb:5dca with SMTP id e19-20020a05600c439300b0040d3cdb5dcamr5316702wmn.316.1704187142276;
-        Tue, 02 Jan 2024 01:19:02 -0800 (PST)
-Received: from ran.advaoptical.com ([82.166.23.19])
-        by smtp.gmail.com with ESMTPSA id l17-20020a05600c4f1100b0040d85a304desm9284313wmq.35.2024.01.02.01.18.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 01:19:01 -0800 (PST)
-From: Sagi Maimon <maimon.sagi@gmail.com>
-To: richardcochran@gmail.com,
-	luto@kernel.org,
-	datglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	arnd@arndb.de,
-	geert@linux-m68k.org,
-	peterz@infradead.org,
-	hannes@cmpxchg.org,
-	sohil.mehta@intel.com,
-	rick.p.edgecombe@intel.com,
-	nphamcs@gmail.com,
-	palmer@sifive.com,
-	maimon.sagi@gmail.com,
-	keescook@chromium.org,
-	legion@kernel.org,
-	mark.rutland@arm.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH v5] posix-timers: add multi_clock_gettime system call
-Date: Tue,  2 Jan 2024 11:18:55 +0200
-Message-Id: <20240102091855.70418-1-maimon.sagi@gmail.com>
-X-Mailer: git-send-email 2.26.3
+Received: from smtpfb2-g21.free.fr (smtpfb2-g21.free.fr [212.27.42.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0A163A6;
+	Tue,  2 Jan 2024 09:25:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
+Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
+	by smtpfb2-g21.free.fr (Postfix) with ESMTP id 8A7384CEFB;
+	Tue,  2 Jan 2024 10:19:17 +0100 (CET)
+Received: from [192.168.10.46] (unknown [130.180.211.218])
+	(Authenticated sender: daniel.lezcano@free.fr)
+	by smtp1-g21.free.fr (Postfix) with ESMTPA id 214A8B00579;
+	Tue,  2 Jan 2024 10:18:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
+	s=smtp-20201208; t=1704187150;
+	bh=YRUoYjKW8wgPvfkaSvYp4j0kKMDfeM6Fj+lD91OGM74=;
+	h=Date:To:Cc:From:Subject:From;
+	b=rt4YQJafE5g+ceEXg/ahxqubhvkCht+UuaL0/xhW5s2ysQg8jFDATA8HRC6TmbjTR
+	 OF3nUO3aQguhBNf9gDT/oehdw4t1pT0wu+Za1cj0JLJqZ6Whw7Kr9OSrxss74i/5Mv
+	 bAVyJULvhuQj76KT0jrXr6PoQ55B6p7uGe9wkh35ck1XPDkP0bQeNCydYKV4bm4WWq
+	 kFY4UInNuClPDQzNAfp9MlB3OxnltdJvdai2DIfZHMp2gdtsoDjiqYwcinka7e1R6W
+	 WepBMnDoJs/nEYPh2k/tthkbuhtHzjj0Hnr6So6P5F0n+R0LYlUaHwP20mtE3A2KXw
+	 2NnaRryztU/2Q==
+Message-ID: <7163da4d-3f73-490c-a387-04d82e8bee1b@free.fr>
+Date: Tue, 2 Jan 2024 10:18:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux PM mailing list <linux-pm@vger.kernel.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Binbin Zhou <zhoubb.aaron@gmail.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Fabio Estevam
+ <festevam@denx.de>, Johan Hovold <johan+linaro@kernel.org>,
+ Florian Eckert <fe@dev.tdt.de>, Mateusz Majewski <m.majewski2@samsung.com>
+From: Daniel Lezcano <daniel.lezcano@free.fr>
+Subject: [GIT PULL] thermal material for v6.8-rc1
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Some user space applications need to read some clocks.
-Each read requires moving from user space to kernel space.
-The syscall overhead causes unpredictable delay between N clocks reads
-Removing this delay causes better synchronization between N clocks.
 
-Introduce a new system call multi_clock_gettime, which can be used to measure
-the offset between multiple clocks, from variety of types: PHC, virtual PHC
-and various system clocks (CLOCK_REALTIME, CLOCK_MONOTONIC, etc).
-The offset includes the total time that the driver needs to read the clock
-timestamp.
+Hi Rafael,
 
-New system call allows the reading of a list of clocks - up to PTP_MAX_CLOCKS.
-Supported clocks IDs: PHC, virtual PHC and various system clocks.
-Up to PTP_MAX_SAMPLES times (per clock) in a single system call read.
-The system call returns n_clocks timestamps for each measurement:
-- clock 0 timestamp
-- ...
-- clock n timestamp
+happy new year 2024!
 
-Signed-off-by: Sagi Maimon <maimon.sagi@gmail.com>
----
- Changes since version 4:
- - fix error  : 'struct __ptp_multi_clock_get' declared inside parameter list 
-   will not be visible outside of this definition or declaration
+Please consider pulling these thermal changes.
 
- arch/x86/entry/syscalls/syscall_64.tbl |  1 +
- include/linux/syscalls.h               |  3 +-
- include/uapi/asm-generic/unistd.h      |  4 +-
- include/uapi/linux/multi_clock.h       | 21 +++++++++
- kernel/time/posix-timers.c             | 59 ++++++++++++++++++++++++++
- 5 files changed, 86 insertions(+), 2 deletions(-)
- create mode 100644 include/uapi/linux/multi_clock.h
+Thanks
 
-diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-index 8cb8bf68721c..9cdeb0bf49db 100644
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -378,6 +378,7 @@
- 454	common	futex_wake		sys_futex_wake
- 455	common	futex_wait		sys_futex_wait
- 456	common	futex_requeue		sys_futex_requeue
-+457	common	multi_clock_gettime	sys_multi_clock_gettime
+   -- Daniel
+
+The following changes since commit 5f70413a85056db04050604a76b52e3f39a37f21:
+
+   thermal: cpuidle_cooling: fix kernel-doc warning and a spello 
+(2023-12-21 12:05:48 +0100)
+
+are available in the Git repository at:
+
  
- #
- # Due to a historical design error, certain syscalls are numbered differently
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index fd9d12de7e92..bde7dec493fd 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -74,6 +74,7 @@ struct landlock_ruleset_attr;
- enum landlock_rule_type;
- struct cachestat_range;
- struct cachestat;
-+struct __ptp_multi_clock_get;
- 
- #include <linux/types.h>
- #include <linux/aio_abi.h>
-@@ -1161,7 +1162,7 @@ asmlinkage long sys_mmap_pgoff(unsigned long addr, unsigned long len,
- 			unsigned long prot, unsigned long flags,
- 			unsigned long fd, unsigned long pgoff);
- asmlinkage long sys_old_mmap(struct mmap_arg_struct __user *arg);
--
-+asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
- 
- /*
-  * Not a real system call, but a placeholder for syscalls which are
-diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-index 756b013fb832..beb3e0052d3c 100644
---- a/include/uapi/asm-generic/unistd.h
-+++ b/include/uapi/asm-generic/unistd.h
-@@ -828,9 +828,11 @@ __SYSCALL(__NR_futex_wake, sys_futex_wake)
- __SYSCALL(__NR_futex_wait, sys_futex_wait)
- #define __NR_futex_requeue 456
- __SYSCALL(__NR_futex_requeue, sys_futex_requeue)
-+#define __NR_multi_clock_gettime 457
-+__SYSCALL(__NR_multi_clock_gettime, sys_multi_clock_gettime)
- 
- #undef __NR_syscalls
--#define __NR_syscalls 457
-+#define __NR_syscalls 458
- 
- /*
-  * 32 bit systems traditionally used different
-diff --git a/include/uapi/linux/multi_clock.h b/include/uapi/linux/multi_clock.h
-new file mode 100644
-index 000000000000..5e78dac3a533
---- /dev/null
-+++ b/include/uapi/linux/multi_clock.h
-@@ -0,0 +1,21 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _UAPI_MULTI_CLOCK_H
-+#define _UAPI_MULTI_CLOCK_H
-+
-+#include <linux/types.h>
-+#include <linux/time_types.h>
-+
-+#define MULTI_PTP_MAX_CLOCKS 32 /* Max number of clocks */
-+#define MULTI_PTP_MAX_SAMPLES 32 /* Max allowed offset measurement samples. */
-+
-+struct __ptp_multi_clock_get {
-+	unsigned int n_clocks; /* Desired number of clocks. */
-+	unsigned int n_samples; /* Desired number of measurements per clock. */
-+	clockid_t clkid_arr[MULTI_PTP_MAX_CLOCKS]; /* list of clock IDs */
-+	/*
-+	 * Array of list of n_clocks clocks time samples n_samples times.
-+	 */
-+	struct  __kernel_timespec ts[MULTI_PTP_MAX_SAMPLES][MULTI_PTP_MAX_CLOCKS];
-+};
-+
-+#endif /* _UAPI_MULTI_CLOCK_H */
-diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
-index b924f0f096fa..1d321dc56a25 100644
---- a/kernel/time/posix-timers.c
-+++ b/kernel/time/posix-timers.c
-@@ -31,6 +31,8 @@
- #include <linux/compat.h>
- #include <linux/nospec.h>
- #include <linux/time_namespace.h>
-+#include <linux/multi_clock.h>
-+#include <linux/slab.h>
- 
- #include "timekeeping.h"
- #include "posix-timers.h"
-@@ -1426,6 +1428,63 @@ SYSCALL_DEFINE4(clock_nanosleep_time32, clockid_t, which_clock, int, flags,
- 
- #endif
- 
-+SYSCALL_DEFINE1(multi_clock_gettime, struct __ptp_multi_clock_get __user *, ptp_multi_clk_get)
-+{
-+	const struct k_clock *kc;
-+	struct timespec64 *kernel_tp;
-+	struct timespec64 *kernel_tp_base;
-+	unsigned int n_clocks; /* Desired number of clocks. */
-+	unsigned int n_samples; /* Desired number of measurements per clock. */
-+	unsigned int i, j;
-+	clockid_t clkid_arr[MULTI_PTP_MAX_CLOCKS]; /* list of clock IDs */
-+	int error = 0;
-+
-+	if (copy_from_user(&n_clocks, &ptp_multi_clk_get->n_clocks, sizeof(n_clocks)))
-+		return -EFAULT;
-+	if (copy_from_user(&n_samples, &ptp_multi_clk_get->n_samples, sizeof(n_samples)))
-+		return -EFAULT;
-+	if (n_samples > MULTI_PTP_MAX_SAMPLES)
-+		return -EINVAL;
-+	if (n_clocks > MULTI_PTP_MAX_CLOCKS)
-+		return -EINVAL;
-+	if (copy_from_user(clkid_arr, &ptp_multi_clk_get->clkid_arr,
-+			   sizeof(clockid_t) * n_clocks))
-+		return -EFAULT;
-+
-+	kernel_tp_base = kmalloc_array(n_clocks * n_samples,
-+				       sizeof(struct timespec64), GFP_KERNEL);
-+	if (!kernel_tp_base)
-+		return -ENOMEM;
-+
-+	kernel_tp = kernel_tp_base;
-+	for (j = 0; j < n_samples; j++) {
-+		for (i = 0; i < n_clocks; i++) {
-+			kc = clockid_to_kclock(clkid_arr[i]);
-+			if (!kc) {
-+				error = -EINVAL;
-+				goto out;
-+			}
-+			error = kc->clock_get_timespec(clkid_arr[i], kernel_tp++);
-+			if (error)
-+				goto out;
-+		}
-+	}
-+
-+	kernel_tp = kernel_tp_base;
-+	for (j = 0; j < n_samples; j++) {
-+		for (i = 0; i < n_clocks; i++) {
-+			if (put_timespec64(kernel_tp++, (struct __kernel_timespec __user *)
-+					&ptp_multi_clk_get->ts[j][i])) {
-+				error = -EFAULT;
-+				goto out;
-+			}
-+		}
-+	}
-+out:
-+	kfree(kernel_tp_base);
-+	return error;
-+}
-+
- static const struct k_clock clock_realtime = {
- 	.clock_getres		= posix_get_hrtimer_res,
- 	.clock_get_timespec	= posix_get_realtime_timespec,
--- 
-2.26.3
+ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git 
+tags/thermal-v6.8-rc1
+
+for you to fetch changes up to 5314b1543787e6cd5d248186fcfd5c5fc4ca2146:
+
+   thermal/drivers/exynos: Use set_trips ops (2024-01-02 09:33:19 +0100)
+
+----------------------------------------------------------------
+- Converted Mediatek Thermal to the json-schema (Rafał Miłecki)
+
+- Fixed DT bindings issue on Loongson (Binbin Zhou)
+
+- Fixed returning NULL instead of -ENODEV on Loogsoo (Binbin Zhou)
+
+- Added the DT binding for the tsens on SM8650 platform (Neil Armstrong)
+
+- Added a reboot on critical option feature (Fabio Estevam)
+
+- Made usage of DEFINE_SIMPLE_DEV_PM_OPS on AmLogic (Uwe Kleine-König)
+
+- Added the D1/T113s THS controller support on Sun8i (Maxim Kiselev)
+
+- Fixed example in the DT binding for QCom SPMI (Johan Hovold)
+
+- Fixed compilation warning for the tmon utility (Florian Eckert)
+
+- Added interrupt based configuration on Exynos along with a set of
+   related cleanups (Mateusz Majewski)
+
+----------------------------------------------------------------
+Binbin Zhou (2):
+       dt-bindings: thermal: loongson,ls2k-thermal: Fix binding check issues
+       drivers/thermal/loongson2_thermal: Fix incorrect PTR_ERR() judgment
+
+Fabio Estevam (4):
+       dt-bindings: thermal-zones: Document critical-action
+       thermal/core: Prepare for introduction of thermal reboot
+       reboot: Introduce thermal_zone_device_critical_reboot()
+       thermal/thermal_of: Allow rebooting after critical temp
+
+Florian Eckert (1):
+       tools/thermal/tmon: Fix compilation warning for wrong format
+
+Johan Hovold (2):
+       dt-bindings: thermal: qcom-spmi-adc-tm5/hc: Fix example node names
+       dt-bindings: thermal: qcom-spmi-adc-tm5/hc: Clean up examples
+
+Mateusz Majewski (9):
+       thermal/drivers/exynos: Remove an unnecessary field description
+       thermal/drivers/exynos: Drop id field
+       thermal/drivers/exynos: Wwitch from workqueue-driven interrupt 
+handling to threaded interrupts
+       thermal/drivers/exynos: Handle devm_regulator_get_optional return 
+value correctly
+       thermal/drivers/exynos: Simplify regulator (de)initialization
+       thermal/drivers/exynos: Stop using the threshold mechanism on 
+Exynos 4210
+       thermal/drivers/exynos: Split initialization of TMU and the 
+thermal zone
+       thermal/drivers/exynos: Use BIT wherever possible
+       thermal/drivers/exynos: Use set_trips ops
+
+Maxim Kiselev (2):
+       dt-bindings: thermal: sun8i: Add binding for D1/T113s THS controller
+       thermal/drivers/sun8i: Add D1/T113s THS controller support
+
+Neil Armstrong (1):
+       dt-bindings: thermal: qcom-tsens: document the SM8650 Temperature 
+Sensor
+
+Rafał Miłecki (1):
+       dt-bindings: thermal: convert Mediatek Thermal to the json-schema
+
+Uwe Kleine-König (2):
+       thermal: amlogic: Make amlogic_thermal_disable() return void
+       thermal: amlogic: Use DEFINE_SIMPLE_DEV_PM_OPS for PM functions
+
+  .../bindings/thermal/allwinner,sun8i-a83t-ths.yaml |   7 +-
+  .../bindings/thermal/loongson,ls2k-thermal.yaml    |  10 +-
+  .../bindings/thermal/mediatek,thermal.yaml         |  99 ++++
+  .../bindings/thermal/mediatek-thermal.txt          |  52 --
+  .../bindings/thermal/qcom-spmi-adc-tm-hc.yaml      |   8 +-
+  .../bindings/thermal/qcom-spmi-adc-tm5.yaml        |  16 +-
+  .../devicetree/bindings/thermal/qcom-tsens.yaml    |   1 +
+  .../devicetree/bindings/thermal/thermal-zones.yaml |  16 +
+  drivers/thermal/amlogic_thermal.c                  |  19 +-
+  drivers/thermal/loongson2_thermal.c                |   2 +-
+  drivers/thermal/samsung/exynos_tmu.c               | 529 
++++++++++++----------
+  drivers/thermal/sun8i_thermal.c                    |  13 +
+  drivers/thermal/thermal_core.c                     |  21 +-
+  drivers/thermal/thermal_core.h                     |   1 +
+  drivers/thermal/thermal_of.c                       |   6 +
+  include/linux/reboot.h                             |  12 +-
+  kernel/reboot.c                                    |  34 +-
+  tools/thermal/tmon/tui.c                           |   2 +-
+  18 files changed, 491 insertions(+), 357 deletions(-)
+  create mode 100644 
+Documentation/devicetree/bindings/thermal/mediatek,thermal.yaml
+  delete mode 100644 
+Documentation/devicetree/bindings/thermal/mediatek-thermal.txt
 
 
