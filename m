@@ -1,124 +1,107 @@
-Return-Path: <linux-kernel+bounces-14282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77D80821ACE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:20:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0A5B821AD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:21:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F95C1C2012C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:20:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 539091F227AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:21:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96852DF57;
-	Tue,  2 Jan 2024 11:19:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88697EAC0;
+	Tue,  2 Jan 2024 11:21:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tz32HQYQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GeDzh8jA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B5AEDDBA
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 11:19:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5ef7c6f4cfcso24040637b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 03:19:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704194393; x=1704799193; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RoCKJmLNypuO4iV/d5JKlLOsOW1MONyGLn7Yes5k0vo=;
-        b=tz32HQYQVbZ2HN3UzqvYXbOK0zZi2Z3DXTWybMhheUxmbYx1KStvWRQwLwFxROwxHQ
-         vGhTcbpbckGF8UonS12mCk4GZ3RvUVcZ7ejavo906iJLrLyz5Ey6LqzCgh+j26M2oArT
-         C7xdS0Y0B0KT/p/Rrdzn0nqJM84KOCC81qYX0jKAYqenKKgf6oUPXevzOzlKLf40R0Kb
-         zp1RbnbRD5yjquSc3pIwtU6PnqXKBvWk8lQSA6ct3PDoIPKZp56T/p21j7cVXRukxWru
-         NL+g/v/jNTY6zBw1QSgPG+2UiK2whREekej1W7+qvnkwZviag41NwT/ajOuZOWf9sXHR
-         B/YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704194393; x=1704799193;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RoCKJmLNypuO4iV/d5JKlLOsOW1MONyGLn7Yes5k0vo=;
-        b=V+gSS0QrbdloyJmPBgDgsu11cTDIvisdbGrkOAobRSLKD9LjiMIGp2XiDYl6GA1A/p
-         AMAWY9+057pYGhXoTvgdzAvGIH5B3qxg9cEQ4EelunKoJWbuzU8lJuwAbGsuDucAYAIL
-         N2L4Mk8pUX3oAUd/usDV/vWYMR+ukyytpnBA/lse5gDrw9DPuEFgdnx6B6ZhE9yXIZvT
-         vC3dMQNrONMvirxejwpi71CZqDNQZic4bbPlHBsvYjBWJoEGsdQWoxjonrWSNoXqMiZa
-         5fx9huEXLxJLIviScS+zVTDTCJ0TMXvRAMB9V2QtDfve1NG+TqXicLDwaZm2EYch5yc0
-         5tqA==
-X-Gm-Message-State: AOJu0YziBM/o9g4gj8sd6FtsHVNEvxwgBByOqXc0EGZpboFRZ631jZw8
-	dpzugjlIlaNAN+xqoXw6EK5YWVOZ0UDBei8V/Thdrcdxh+fOQw==
-X-Google-Smtp-Source: AGHT+IFrAuQNhlzlRQsyHyk5pUdcHgqhtVaR49+5kjXKeJirtWfRLQHeIOnR8NY/b/Nj/rCyLUP0Qobi4YuaFwRqXoI=
-X-Received: by 2002:a81:5fc1:0:b0:5d3:66ad:f8f6 with SMTP id
- t184-20020a815fc1000000b005d366adf8f6mr11600270ywb.24.1704194393450; Tue, 02
- Jan 2024 03:19:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1A7CE544;
+	Tue,  2 Jan 2024 11:21:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60B48C433C7;
+	Tue,  2 Jan 2024 11:21:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704194465;
+	bh=9BxRzEOBTvR+ppxG806EdQKoWFFjbUS/+GzPU/AwX9g=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=GeDzh8jA6WHp/CxKP0OUKid/aof8nCv7fI6c2Z6/esAnHXjkaYY5h9T5qBYA9bGhq
+	 F55tRn31n4Ja8nd0kjwpooY0qXEZqPg8h1XltOwsqwEkCHWla6jI1W+mpSOniWCRIO
+	 cTyHNZY3uVgxbGTuAFKDeJwSGtCFDksU0Z+GPvAzFL5FBR55w5FH6CZgbi9tFUZsPn
+	 k2ABDr0oG0AhvA7h+BD/cjpRdlJgEyEx15b8i2C4yiSrz5fsFFUjSIiLUzFggCeJGR
+	 YlQ9eFU/CVl4LE6PzYCHykNQPZyO+jrzwfwt0NvBg/RPWeZq4aZfX8orOhWYPBGycq
+	 yqEI3TKmy0F+w==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a282cb36d37so75148066b.3;
+        Tue, 02 Jan 2024 03:21:05 -0800 (PST)
+X-Gm-Message-State: AOJu0YyWpCIG103YPc8b5oIQIClbz88SxTAoa/UhK5vyt6aEtwCLFmbc
+	z4rhouJ53e5A1cnU1v5mpHAvitB4Nn1b6StRhRQ=
+X-Google-Smtp-Source: AGHT+IFlsPq24WCd2yxgqmcSvJkW3nbzdQEW3v5ivSTAT0THQwBtZN9+rL4w0A9AFZUm25f69rf/1O7XVxbOBueUL+0=
+X-Received: by 2002:a17:906:7399:b0:a23:68ec:a863 with SMTP id
+ f25-20020a170906739900b00a2368eca863mr7697697ejl.87.1704194463900; Tue, 02
+ Jan 2024 03:21:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231229121504.3479594-1-himanshu.bhavani@siliconsignals.io>
-In-Reply-To: <20231229121504.3479594-1-himanshu.bhavani@siliconsignals.io>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 2 Jan 2024 13:19:42 +0200
-Message-ID: <CAA8EJpp7XOxk3xuUzzuF+omMaQXUeeL_gm7ipFEwv+bfHdONMA@mail.gmail.com>
-Subject: Re: [PATCH] media: venus: use div64_u64() instead of do_div()
-To: Himanshu Bhavani <himanshu.bhavani@siliconsignals.io>
-Cc: stanimir.k.varbanov@gmail.com, quic_vgarodia@quicinc.com, 
-	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, 
-	mchehab@kernel.org, "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>, 
-	linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20240102101711.10872-2-xry111@xry111.site> <f6e0b3a0e08a8100fa5dc9345af8582ff664321c.camel@xry111.site>
+ <7a6aa1bbdbbe2e63ae96ff163fab0349f58f1b9e.camel@xry111.site>
+In-Reply-To: <7a6aa1bbdbbe2e63ae96ff163fab0349f58f1b9e.camel@xry111.site>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Tue, 2 Jan 2024 19:20:57 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7oMB62mSL1O4QPdUNW5z1_12G3L5QAm81KsSwDv_GsEg@mail.gmail.com>
+Message-ID: <CAAhV-H7oMB62mSL1O4QPdUNW5z1_12G3L5QAm81KsSwDv_GsEg@mail.gmail.com>
+Subject: Re: MIPS: fcsr31 may be dirty after execve when kernel preempt is
+ enabled (was: Re: [PATCH v2] LoongArch: Fix and simplify fcsr initialization
+ on execve)
+To: Xi Ruoyao <xry111@xry111.site>
+Cc: WANG Xuerui <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
+	Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>, 
+	Tiezhu Yang <yangtiezhu@loongson.cn>, Jinyang He <hejinyang@loongson.cn>, 
+	loongarch@lists.linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	stable@vger.kernel.org, linux-mips@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 29 Dec 2023 at 14:16, Himanshu Bhavani
-<himanshu.bhavani@siliconsignals.io> wrote:
+On Tue, Jan 2, 2024 at 6:48=E2=80=AFPM Xi Ruoyao <xry111@xry111.site> wrote=
+:
 >
-> do_div() does a 64-by-32 division.
-> When the divisor is u64, do_div() truncates it to 32 bits, this means it
-> can test non-zero and be truncated to zero for division.
+> On Tue, 2024-01-02 at 18:25 +0800, Xi Ruoyao wrote:
+> > On Tue, 2024-01-02 at 18:17 +0800, Xi Ruoyao wrote:
+> > > The only other architecture setting FCSR in SET_PERSONALITY2 is MIPS.
+> > > They do this for supporting different FP flavors (NaN encodings etc).
+> > > which do not exist on LoongArch.  I'm not sure how MIPS evades the is=
+sue
+> > > (or maybe it's just buggy too) but I'll investigate it later.
+> >
+> > Phew.  I just managed to recommission my 3A4000 and I can reproduce the
+> > issue as well with Linux 5.18.1 (the latest kernel release when I
+> > decommissioned it) and CONFIG_PREEMPT=3Dy.
+> >
+> > % cat measure.c
+> > #include <fenv.h>
+> > int main() { return fetestexcept(FE_INEXACT); }
+> >
+> > % echo $((1./3))
+> > 0.33333333333333331
+> >
+> > % while ./a.out; do ; done
+> > (stopped in seconds)
+> >
+> > I'm building the mainline kernel on the 3A4000 now, will see if the
+> > issue still exists...
 >
-> fix do_div.cocci warning:
-> do_div() does a 64-by-32 division, please consider using div64_u64 instead.
->
-> Signed-off-by: Himanshu Bhavani <himanshu.bhavani@siliconsignals.io>
->
-> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-> index 44b13696cf82..81853eb2993a 100644
-> --- a/drivers/media/platform/qcom/venus/venc.c
-> +++ b/drivers/media/platform/qcom/venus/venc.c
-> @@ -409,13 +409,13 @@ static int venc_s_parm(struct file *file, void *fh, struct v4l2_streamparm *a)
->         out->capability = V4L2_CAP_TIMEPERFRAME;
->
->         us_per_frame = timeperframe->numerator * (u64)USEC_PER_SEC;
-> -       do_div(us_per_frame, timeperframe->denominator);
-> +       div64_u64(us_per_frame, timeperframe->denominator);
+> Still happening with 6.7.0-rc8.  I'm not sure how to fix it for MIPS.
+> Maybe lose_fpu in SET_PERSONALITY2? But to me doing so will be really
+> nasty.  Anyway I'll leave this for MIPS maintainers.
+Disable preemption in SET_PERSONALITY2 and enable in START_THREAD?
 
-NAK! This is completely incorrect. do_div() is a macro and it changes
-the first argument. div64_u64 is a function, which returns the result
-instead of changing the first argument.
-
-Please consider checking the code before sending a patch.
+Huacai
 
 >
->         if (!us_per_frame)
->                 return -EINVAL;
->
->         fps = (u64)USEC_PER_SEC;
-> -       do_div(fps, us_per_frame);
-> +       div64_u64(fps, us_per_frame);
->
->         inst->timeperframe = *timeperframe;
->         inst->fps = fps;
 > --
-> 2.25.1
->
->
-
-
--- 
-With best wishes
-Dmitry
+> Xi Ruoyao <xry111@xry111.site>
+> School of Aerospace Science and Technology, Xidian University
 
