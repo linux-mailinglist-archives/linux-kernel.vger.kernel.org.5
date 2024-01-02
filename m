@@ -1,95 +1,90 @@
-Return-Path: <linux-kernel+bounces-14393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B7F3821C72
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:16:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E2DA821C74
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:17:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D41731F228F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:16:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CFE92816B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E697AFBE7;
-	Tue,  2 Jan 2024 13:16:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FF78F9FC;
+	Tue,  2 Jan 2024 13:17:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DCyy2/ST"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="w/zioODx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D12ECDF63;
-	Tue,  2 Jan 2024 13:16:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5534dcfdd61so16006082a12.0;
-        Tue, 02 Jan 2024 05:16:15 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52EDF9EF
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 13:17:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-4b3288df490so1137049e0c.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 05:17:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704201374; x=1704806174; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ymg1RUEbhaahilNTpT76VrpoWo6TTp5cRA3gjAaiXis=;
-        b=DCyy2/STQPFP5336+P1FTgcizPJocVBrFMoUWlwpEKyo5IDYQBw7yyd+5CIlPU0pUe
-         9AmgS3vvxfavOtd3gV0jI+asrwtHbaJ1ffgspx0tnzH6WQTtkVx289/1IcYMq8HsWP7b
-         bVXYMXAiuHiDLz9SYwS9KePLlI6QH+lYEyGBbBi1OMLnEGwv+D7SeMYBmfy+JPW6Y+yL
-         4UnrfmEDa4X7Kkyq1imrHZnx/DAS3PoDJAc4wzz7+BCRrK8BpmPjDpOeUKTvzLbvn4SA
-         9hWLvasaR64qgQF+tI1DedjHnzvqMbZOGhcV84hWzWB4AwHoWyX9KOxarE+x7PSkQbP/
-         Zcbw==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1704201422; x=1704806222; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KptT4kcLxqTUxKQoDuDLhTdKZCzvVtebQ5eypGHMHPE=;
+        b=w/zioODx+TFNd4J11IoNH2+B74JRzkxpplZ+Yithb4GBKiJGyqAh9sr4JV+XnlKx4O
+         0bpghXze4nvupYdrcw9TP2VbxFa4SI0abKXh2pLOgFSFsmfEgHp2QUpIfoAbupcgfZxU
+         /zMaY9NlBI36IPKKi8G7Q7g9pEqRtbZ5IgVn2hRy7Hk85Sp72gKJnGUMFNnxYpcQA0tr
+         a6BBKOv+yGlhsiT6c09RylxYKFkKuvGMFL1H19Wyeae5Pvev+cgtAbncVnk7mgtNYSNe
+         PLgro3vMqmhZVisFoWMBksLTV8eE+kwtbyTRfgCigoU40jZ/Ch8ghnomV0vOtaDeZ0Wo
+         XiuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704201374; x=1704806174;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ymg1RUEbhaahilNTpT76VrpoWo6TTp5cRA3gjAaiXis=;
-        b=P/UhkvPA/7OFuAuj9pDCmyr67E60EpRG1t98bSKJoOn5zxVDCr5/cfNU6wC3SwentX
-         5azMJc52Agd8dKPqXdcX56sh4F7u6aXPJ1VZxQoFGXOtQbxRRU6+qR1K3tx0CVWCqDso
-         gQ3URKSNAqrSCfQ4Ij1o/jwYM1Gqtxv48RGKrnBzkto5JplaJ1RspOjq78atrBNztRrv
-         BKnInSyg90AD9OKJkUY0qAYWouXHBB4HDf3UWmc4DUM6BQdjag9qyWoVW46r+ve6/kyb
-         6JfpQ3Qf8lP2VatXx6D3JkmKNBUR+UGzTxYLhxRmivysosOBvCTjp2vSmO3+CH2ALcGO
-         b00Q==
-X-Gm-Message-State: AOJu0YwPDTglbUzOaeAjMPPwu5bHxYGSba53zt8a250L5SRLIAj+Wjjw
-	S4LIzujNLz3p6OkSESvscNA=
-X-Google-Smtp-Source: AGHT+IG6FQg0SPLjELmusCQ1pxaKN/Jc2EfCRw64reeXapXoPt86R09+3G6WZl7C8LMxW86E2RUbhQ==
-X-Received: by 2002:a05:6402:268b:b0:554:c9af:a66e with SMTP id w11-20020a056402268b00b00554c9afa66emr13601900edd.9.1704201373893;
-        Tue, 02 Jan 2024 05:16:13 -0800 (PST)
-Received: from [127.0.0.1] ([89.205.132.224])
-        by smtp.gmail.com with ESMTPSA id g20-20020a056402091400b005551b2f66f0sm9627874edz.43.2024.01.02.05.16.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 05:16:13 -0800 (PST)
-Date: Tue, 02 Jan 2024 14:16:14 +0100
-From: Eric Woudstra <ericwouds@gmail.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Daniel Golle <daniel@makrotopia.org>,
- Frank Wunderlich <frank-w@public-files.de>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_RFC_net-next=5D_ne?= =?US-ASCII?Q?t=3A_phylink=3A_add_quirk_for_d?= =?US-ASCII?Q?isabling_in-band-status_for_mediatek_pcs_at_2500base-x?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <ZZQDWzYlxAKl0JxI@shell.armlinux.org.uk>
-References: <20240102074326.1049179-1-ericwouds@gmail.com> <ZZQDWzYlxAKl0JxI@shell.armlinux.org.uk>
-Message-ID: <A660847B-FEFF-4AE1-809B-F0A6EBE2A52C@gmail.com>
+        d=1e100.net; s=20230601; t=1704201422; x=1704806222;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KptT4kcLxqTUxKQoDuDLhTdKZCzvVtebQ5eypGHMHPE=;
+        b=CbImzE+wpEDpc0t8sDb9qQ6H7IgjXq0DpcTN/4nhc52tCrwF3mteUM1kcQPY4NioVt
+         oZcHSv5y5CFKvs8Bg/lPr2VLf3DL2GVvWaLJMWcH2HL99DOYwGLG0OI+GsODGkUELR1+
+         x25AIzRisMfbFxY2Cf4SLoxvyhiQP5h+iKVzfe9pf7PxlYNqbRfKPn5ulx5WWusJ0Z28
+         k7uAIWEoc9m6swvnn+J7bkUILjG4zhEbmmAzKlr8e6hwl3sF0F0GMUzSNsQd+t2/RTr9
+         Z/DeQPTC1FUIyWduUL4EAQ+677ZLfEJBL6WrULQHQh1QSmj7OnoVhPx6ijob2b05nLCf
+         3ceQ==
+X-Gm-Message-State: AOJu0YxioMoJhMMpIW/OCPcfhgXUHv/9u4PLr4WL/aFDE3rm43CHm7Uy
+	mdf2Sgz0r2HnfIuTupykLpLS3GuYL7Ql5pRmoMSNR59Wf1ShQQ==
+X-Google-Smtp-Source: AGHT+IGAtC+6ICEBlvwZh78ZTUBEh3sVxOyQsJP6iMx0W8ZsVrOpEX9NxYclkYz1oOes1H8wpHAb9PTbhBCsbKAt0g8=
+X-Received: by 2002:a1f:1483:0:b0:4b7:8e59:4df3 with SMTP id
+ 125-20020a1f1483000000b004b78e594df3mr456085vku.21.1704201421030; Tue, 02 Jan
+ 2024 05:17:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20231229130758.84214-1-emil.renner.berthing@canonical.com>
+In-Reply-To: <20231229130758.84214-1-emil.renner.berthing@canonical.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Tue, 2 Jan 2024 14:16:50 +0100
+Message-ID: <CAMRc=Me5fs0+L0_K5EhfKe9rQ-ZOvmBqy2=Dktvd6L5bDqksQA@mail.gmail.com>
+Subject: Re: [PATCH v1] gpio: dwapb: Use generic request, free and set_config
+To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Hoan Tran <hoan@os.amperecomputing.com>, Serge Semin <fancer.lancer@gmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Andy Shevchenko <andy@kernel.org>, 
+	Jisheng Zhang <jszhang@kernel.org>, Drew Fustini <dfustini@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Since using compatible is not an option and in and 2500base-x is hardware d=
-ependant, then I was thinking this would be useful=2E
+On Fri, Dec 29, 2023 at 2:08=E2=80=AFPM Emil Renner Berthing
+<emil.renner.berthing@canonical.com> wrote:
+>
+> This way GPIO will be denied on pins already claimed by other devices
+> and basic pin configuration (pull-up, pull-down etc.) can be done
+> through the userspace GPIO API.
+>
+> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> ---
 
-bool pcs->ops->supports_inband(interface)
+Applied, thanks!
 
-I'll be happy to invest some time in this, but I'll need to know which way=
- to go, before I invest more time in something that would not be accepted=
-=2E
+Bart
 
