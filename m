@@ -1,30 +1,54 @@
-Return-Path: <linux-kernel+bounces-14314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EB26821B3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:53:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B4FBB821B08
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:34:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D4821C21EA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:53:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C79561C21DD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:34:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81A89EAE5;
-	Tue,  2 Jan 2024 11:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECDF1EAD7;
+	Tue,  2 Jan 2024 11:34:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Fo3EJ1db"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-m118102.qiye.163.com (mail-m118102.qiye.163.com [115.236.118.102])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010B6EAD7;
-	Tue,  2 Jan 2024 11:53:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
-Received: from [172.23.69.7] (unknown [121.32.254.147])
-	by mail-m12750.qiye.163.com (Hmail) with ESMTPA id DE9D7F201DA;
-	Tue,  2 Jan 2024 19:33:41 +0800 (CST)
-Message-ID: <61e69337-c32e-4df7-a31c-faf112f36466@sangfor.com.cn>
-Date: Tue, 2 Jan 2024 19:33:41 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B132EE56E;
+	Tue,  2 Jan 2024 11:34:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 402AUxoa023229;
+	Tue, 2 Jan 2024 11:34:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Y/2fdTPEe2sPzCEy2WILmWKM60PXcxjYTVJBAsJLWI8=; b=Fo
+	3EJ1dbR/5LUJi6NLMRVjg397U1GEgCPZStX3InDM+f03CbAtf4nM9YsFDhYEBvqv
+	oDt3oo8j+RAjFQuqEAPi3jkekEVqp5KyYo/3rrGBOP6mKPcwkoa+jwKtaLwBFuNM
+	nHwijtf9GF2KNRR3GiKgPvO7TzLTBq11qibVkiR60VAVLyBx0SrZHfy3loZKE+M6
+	uB+b12YMRlJix8dJfseq2wLf9jy4Kidiw3pMbb7S1N5vxmLdhFNjmHKeQL/iKK86
+	s9wwVNaSR5yt6Gz+3ni/aFob/qIU8el+CUfew6luy3tQ51Ptb4g6a718irOH2KtI
+	P0ZH0O7qDc3hEIckRwHw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vcets8a60-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Jan 2024 11:34:08 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 402BY8rv020937
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 2 Jan 2024 11:34:08 GMT
+Received: from [10.216.52.214] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 2 Jan
+ 2024 03:34:04 -0800
+Message-ID: <572c21f8-e642-4d30-84aa-673051be6bb4@quicinc.com>
+Date: Tue, 2 Jan 2024 17:04:01 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -32,167 +56,114 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
- init
-To: Leon Romanovsky <leon@kernel.org>
-Cc: jgg@ziepe.ca, wenglianfa@huawei.com, gustavoars@kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- Shifeng Li <lishifeng1992@126.com>
-References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
- <20240102085814.GD6361@unreal>
-From: Shifeng Li <lishifeng@sangfor.com.cn>
-In-Reply-To: <20240102085814.GD6361@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH] usb: gadget: ncm: Avoid dropping datagrams of properly
+ parsed NTBs
+To: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hardik Gajjar
+	<hgajjar@de.adit-jv.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
+        <quic_wcheng@quicinc.com>, <quic_jackp@quicinc.com>
+References: <20240102055143.3889-1-quic_kriskura@quicinc.com>
+ <CANP3RGeirg+f8cBbw_3YR5AvuB1ZxJC_9-wcn+Tb-GXf1ESKCQ@mail.gmail.com>
+ <ad60f399-5c6a-4f16-8c28-f4d4e0fde1ff@quicinc.com>
+ <CANP3RGf5dg14DNuKOn9pqWd4oSBDsPhwwBB7AJ0c3qHbDT0sBQ@mail.gmail.com>
+Content-Language: en-US
+From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <CANP3RGf5dg14DNuKOn9pqWd4oSBDsPhwwBB7AJ0c3qHbDT0sBQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCT0weVkweHRhDThlDT0IfGlUTARMWGhIXJBQOD1
-	lXWRgSC1lBWUpJSlVISVVJTk9VSk9MWVdZFhoPEhUdFFlBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg
-	++
-X-HM-Tid: 0a8cc9f36a96b21dkuuude9d7f201da
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nxg6CCo4UTw*P08jOBIfUUkt
-	LSIaChVVSlVKTEtPSkJOSUlJTU1PVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
-	C1lBWUpJSlVISVVJTk9VSk9MWVdZCAFZQUxISE83Bg++
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: _32YhLGxJidW16K72xpi2hapLS1OR2Kv
+X-Proofpoint-GUID: _32YhLGxJidW16K72xpi2hapLS1OR2Kv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 bulkscore=0 clxscore=1015 priorityscore=1501 spamscore=0
+ lowpriorityscore=0 phishscore=0 malwarescore=0 mlxlogscore=913
+ adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401020088
 
-On 2024/1/2 16:58, Leon Romanovsky wrote:
-> On Mon, Jan 01, 2024 at 07:43:35PM -0800, Shifeng Li wrote:
->> The mad_client will be initialized in enable_device_and_get(), while the
->> devices_rwsem will be downgraded to a read semaphore. There is a window
->> that leads to the failed initialization for cm_client, since it can not
->> get matched mad port from ib_mad_port_list, and the matched mad port will
->> be added to the list after that.
->>
->>      mad_client    |                       cm_client
->> ------------------|--------------------------------------------------------
->> ib_register_device|
->> enable_device_and_get
->> down_write(&devices_rwsem)
->> xa_set_mark(&devices, DEVICE_REGISTERED)
->> downgrade_write(&devices_rwsem)
->>                    |
->>                    |ib_cm_init
->>                    |ib_register_client(&cm_client)
->>                    |down_read(&devices_rwsem)
->>                    |xa_for_each_marked (&devices, DEVICE_REGISTERED)
->>                    |add_client_context
->>                    |cm_add_one
->>                    |ib_register_mad_agent
->>                    |ib_get_mad_port
->>                    |__ib_get_mad_port
->>                    |list_for_each_entry(entry, &ib_mad_port_list, port_list)
->>                    |return NULL
->>                    |up_read(&devices_rwsem)
->>                    |
->> add_client_context|
->> ib_mad_init_device|
->> ib_mad_port_open  |
->> list_add_tail(&port_priv->port_list, &ib_mad_port_list)
->> up_read(&devices_rwsem)
->>                    |
+
+
+>> The above might work. But just wanted to check why this 1 byte would
+>> come actually ? Any reason for this ? ZLP must not give a 1 byte packet
+>> of 1 byte AFAIK.
 > 
-> How is this stack possible?
+> I'm not a USB expert, but... my (possibly wrong) understanding is:
+> (note I may be using bad terminology... also the 1024/16384 constants
+> are USB3 specific, USB2 has afaik max 512 not 1024, I think USB1 is
+> even 64, but it's likely too old to matter, etc.)
 > 
-> ib_register_device() is called by drivers and happens much later than ib_cm_init().
+> USB3 payloads can be up to 16384 bytes in size,
+> on the wire they are split up into packets of between 0 and 1024 bytes.
+> [a Zero Length Packet is a ZLP]
+> A usb payload is terminated with a usb packet of < 1024 bytes.
 > 
-
-I've caught the stack and err log as follows, ib_mad_init_device() called after
-cm_add_one().
-
-[   98.281786] CPU: 18 PID: 30079 Comm: modprobe Kdump: loaded
-[   98.281787] Call Trace:
-[   98.281790]  dump_stack+0x71/0xab
-[   98.281805]  ib_register_mad_agent+0x1c6/0x27f0 [ib_core]
-[   98.281840]  cm_add_one+0x4b0/0x9d0 [ib_cm]
-[   98.281865]  add_client_context+0x2b9/0x380 [ib_core]
-[   98.281890]  ib_register_client+0x22a/0x2a0 [ib_core]
-[   98.281908]  __init_backport+0x12f/0x1000 [ib_cm]
-[   98.281912]  do_one_initcall+0x87/0x2e2
-[   98.281926]  do_init_module+0x1c3/0x5f7
-[   98.281928]  load_module+0x4fe0/0x68d0
-[   98.281945]  __do_sys_finit_module+0x14d/0x180
-[   98.281952]  do_syscall_64+0xa0/0x370
-[   98.281957]  entry_SYSCALL_64_after_hwframe+0x65/0xca
-[   98.281958] RIP: 0033:0x7f51d3a4373d
-[   98.281961] RSP: 002b:00007ffceb925938 EFLAGS: 00000202 ORIG_RAX: 0000000000000139
-[   98.281964] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f51d3a4373d
-[   98.281965] RDX: 0000000000000000 RSI: 0000000001636b70 RDI: 0000000000000003
-[   98.281966] RBP: 00007ffceb925950 R08: 0000000000000000 R09: 0000000001636b70
-[   98.281967] R10: 0000000000000003 R11: 0000000000000202 R12: 0000000000402410
-[   98.281968] R13: 00007ffceb926e60 R14: 0000000000000000 R15: 0000000000000000
-
-[   98.281977] infiniband mlx5_1: ib_register_mad_agent: Invalid port 1
-
-[   98.349040] CPU: 38 PID: 29896 Comm: modprobe Kdump: loaded
-[   98.349043] Call Trace:
-[   98.349053]  dump_stack+0x71/0xab
-[   98.349076]  ib_register_mad_agent+0x1c6/0x27f0 [ib_core]
-[   98.349149]  ib_agent_port_open+0xe2/0x2d0 [ib_core]
-[   98.349164]  ib_mad_init_device+0x818/0x1d70 [ib_core]
-[   98.349197]  add_client_context+0x2b9/0x380 [ib_core]
-[   98.349221]  enable_device_and_get+0x1ab/0x340 [ib_core]
-[   98.349292]  ib_register_device+0xcbf/0xfd0 [ib_core]
-[   98.349355]  __mlx5_ib_add+0x44/0xf0 [mlx5_ib]
-[   98.349404]  mlx5_add_device+0xc3/0x280 [mlx5_core]
-[   98.349434]  mlx5_register_interface+0x109/0x190 [mlx5_core]
-[   98.349442]  do_one_initcall+0x87/0x2e2
-[   98.349460]  do_init_module+0x1c3/0x5f7
-[   98.349462]  load_module+0x4fe0/0x68d0
-[   98.349481]  __do_sys_init_module+0x1f9/0x220
-[   98.349486]  do_syscall_64+0xa0/0x370
-[   98.349492]  entry_SYSCALL_64_after_hwframe+0x65/0xca
-[   98.349494] RIP: 0033:0x7fbc327faa7a
-[   98.349500] RSP: 002b:00007fff890df7f8 EFLAGS: 00000202 ORIG_RAX: 00000000000000af
-[   98.349502] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fbc327faa7a
-[   98.349503] RDX: 00000000004250c0 RSI: 00000000001b0230 RDI: 00007fbc31919010
-[   98.349505] RBP: 00007fff890df860 R08: 00000000025045b0 R09: 0000000000000000
-[   98.349506] R10: 00000000001b0230 R11: 0000000000000202 R12: 0000000000402410
-[   98.349507] R13: 00007fff890e0cf0 R14: 0000000000000000 R15: 0000000000000000
-
-Thanks
-
-> Thanks
+> So a 1524 byte payload would be sent as 2 packets 1024 + 500.
+> While a 2048 byte payload would be sent as 3 packets 1024 + 1024 + 0 (ie. ZLP)
 > 
->>
->> Fix it by using the devices_rwsem write semaphore to protect the mad_client
->> init flow in enable_device_and_get().
->>
->> Fixes: d0899892edd0 ("RDMA/device: Provide APIs from the core code to help unregistration")
->> Cc: Shifeng Li <lishifeng1992@126.com>
->> Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
->> ---
->>   drivers/infiniband/core/device.c | 8 +-------
->>   1 file changed, 1 insertion(+), 7 deletions(-)
->>
->> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
->> index 67bcea7a153c..85782786993d 100644
->> --- a/drivers/infiniband/core/device.c
->> +++ b/drivers/infiniband/core/device.c
->> @@ -1315,12 +1315,6 @@ static int enable_device_and_get(struct ib_device *device)
->>   	down_write(&devices_rwsem);
->>   	xa_set_mark(&devices, device->index, DEVICE_REGISTERED);
->>   
->> -	/*
->> -	 * By using downgrade_write() we ensure that no other thread can clear
->> -	 * DEVICE_REGISTERED while we are completing the client setup.
->> -	 */
->> -	downgrade_write(&devices_rwsem);
->> -
->>   	if (device->ops.enable_driver) {
->>   		ret = device->ops.enable_driver(device);
->>   		if (ret)
->> @@ -1337,7 +1331,7 @@ static int enable_device_and_get(struct ib_device *device)
->>   	if (!ret)
->>   		ret = add_compat_devs(device);
->>   out:
->> -	up_read(&devices_rwsem);
->> +	up_write(&devices_rwsem);
->>   	return ret;
->>   }
->>   
->> -- 
->> 2.25.1
->>
->>
+> A 16384 byte payload could be sent as 16 * 1024 + ZLP,
+> but since 16384 is the max you might be able to get away with just 16
+> * 1024 and skip the ZLP...
+> 
+> I think this is why the Linux usb code base has ZLP / NO_ZLP quirks.
+> [but do note I may be wrong, I haven't gone looking at what exactly
+> the zlp quirks do,
+> not even sure if they're receive or transmit side... or both]
+> 
+> Different hardware/usb chipsets/etc have different behaviour wrt. ZLPs.
+> 
+> In general it seems like what needs to happen is much clearer if you
+> just avoid the need for ZLPs entirely.
+> I think that's what windows is trying to do here: avoid ever sending a
+> usb payload with a multiple of 1024 bytes,
+> so it never has to send ZLPs. This seems easy enough to do...
+> limit max to 16383 (not 16384) and add 1 byte of zero pad if the
+> payload ends up being a multiple of 1024.
 > 
 
+Got it. Thanks for the explanation. Atleast this gives me an insight 
+into what might be the problem.
+
+>>> It seems a little dangerous to just blindly ignore arbitrary amounts
+>>> of trailing garbage...
+>>
+>> Yes. I agree, which is why I put a note in comment section of patch
+>> stating that this doesn't cover all cases, just the ones found in the
+>> testing so far. But the code suggestion you provided might actually work
+>> out. So something like the following ?
+>>
+>> if (to_process == 1) && (block_len%1024 == 0) && (*payload == 0)
+> 
+> Assuming it compiles and works ;-) I wrote this without looking at the code. >
+
+I will check and put a v2 with the proper check.
+
+> I'm guessing this needs to be %512 for usb2...
+> Do we know if we're connected via usb2 or usb3?
+> [mayhaps there's some field that already stores this 1024 constant...]
+> If not... should we just check for %512 instead to support both usb2 and usb3?
+> 
+>>       // extra 1 zero byte pad to prevent multiple of 1024 sized packet
+>>       return
+>> } else if (to_process > 1) {
+> 
+> this should likely continue to be != 0 or > 0
+> 
+>>       goto parse_ntb;
+>> }
+Ok, will make it (> 0)
+
+BTW, Totally, off the conversation, can you also review: 
+https://lore.kernel.org/all/20231221153216.18657-1-quic_kriskura@quicinc.com/
+
+I made changes in this v2 as per comments on v1.
+
+Regards,
+Krishna,
 
