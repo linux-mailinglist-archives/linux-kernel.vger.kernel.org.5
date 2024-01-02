@@ -1,187 +1,104 @@
-Return-Path: <linux-kernel+bounces-14903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B361822457
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:02:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6DBB82245C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:02:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2894B23112
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:02:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48F98B2331F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:02:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22884171BA;
-	Tue,  2 Jan 2024 21:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 770C717996;
+	Tue,  2 Jan 2024 21:51:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QUWKjXf+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TTK06OR8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56030171C1
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 21:49:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704232187;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NfIqhioGhHP/wJG1PyBueewTz4bWCmx/gOhAGW5jQdE=;
-	b=QUWKjXf+aRDgQhp3TIg9Y+Yg4l9az3kXaVGm9ov7ONI68KV+7LU00Q/FRhYCqnIYsajOVh
-	GYfWDE7Mhb9A96eD5yDmVnMg4T+x/MPu2ki812XT6tEDLj5JeGv6i5teF6lgr+cas8Iwal
-	uc17Y4vx0onfbXIZOK+VWo+rowlrK0k=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-53-fjvlDl11PWuF-0vej4x9hg-1; Tue, 02 Jan 2024 16:49:43 -0500
-X-MC-Unique: fjvlDl11PWuF-0vej4x9hg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C03CB86D4D5;
-	Tue,  2 Jan 2024 21:49:42 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.68])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 9617D492BE6;
-	Tue,  2 Jan 2024 21:49:39 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20231221132400.1601991-41-dhowells@redhat.com>
-References: <20231221132400.1601991-41-dhowells@redhat.com> <20231221132400.1601991-1-dhowells@redhat.com>
-To: Dominique Martinet <asmadeus@codewreck.org>,
-    Eric Van Hensbergen <ericvh@kernel.org>,
-    Latchesar Ionkov <lucho@ionkov.net>
-Cc: dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
-    Steve French <smfrench@gmail.com>,
-    Matthew Wilcox <willy@infradead.org>,
-    Marc Dionne <marc.dionne@auristor.com>,
-    Paulo Alcantara <pc@manguebit.com>,
-    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-    Ilya Dryomov <idryomov@gmail.com>,
-    Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
-    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-    linux-mm@kvack.org, netdev@vger.kernel.org,
-    linux-kernel@vger.kernel.org,
-    Christian Schoenebeck <linux_oss@crudebyte.com>
-Subject: [PATCH] 9p: Fix initialisation of netfs_inode for 9p
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9825D17982;
+	Tue,  2 Jan 2024 21:51:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so7693319a12.1;
+        Tue, 02 Jan 2024 13:51:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704232281; x=1704837081; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MsTHcO9Y5JVcsmfDaLhOfpZInAyHoz2K8KWwCnlqA74=;
+        b=TTK06OR8+dB14S1ekOvvi07PpfoJE1QG9nVvLOwQW6I61dcT4EUWptyAoGg9zruIqF
+         8M1Ziz66RqAyTJF0jdrwCQZJk5Fi0vmrvekl4vOPpw0s7QrSYdHAuuaAjnwf5mT+ZrNC
+         zNgBpWYcT8IZ+3U70kEORFAt7RtyXIzBcULl9ocAj9bOQprG6I/kpAoS8xbGAlAVfqHz
+         AE9EzNyVnD5Ym+uM8dVsOhSglDrqDDWlxzcNxgYrUjSNDWMO+VxSadUUDGIdUtutHmd8
+         4pgFvMHk4xbvGWzf43difrfDd9N9Rijru7v8QjXKNM3uWQBdiuCj8GSRpCTy2Jd71Mh2
+         9ZLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704232281; x=1704837081;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MsTHcO9Y5JVcsmfDaLhOfpZInAyHoz2K8KWwCnlqA74=;
+        b=FAfofU07Y7q7fXstx+hibkHcU3r/lxfjyz9ucwT5sdRkkZrFEnp42lkUxDOiy6sCHF
+         Vb8cXdllnwBXf05SnyyAOAh7fK6ndCf0R+jK1sHbikDAyJ7JFnWJOz+R/CY4hPZcwkuK
+         dki0sK/WTObBZjdOKGKQTIMK/Gh72vQUnyfIC0YpjGBBun7gxSCduWkHVTTK6MmgQzlK
+         N4d3Zph8I9UZN+BWvep9vh2kQonvEZVJaEkfkeXQsghTXgwjH16UldV7YEoizJbeAUtK
+         qcfmlCVxzIpAHi4c7nFadDrsqwxVOrZi+PnIYTAqkZHQEnrgaUhf8I9iq3SBfgmV3jep
+         d/sg==
+X-Gm-Message-State: AOJu0YwBDPfvM2YN8vD8TAIbSwzemXPh0UCHdsSmtkPimGykwkvP1Nsj
+	DH9bymqAkz3Ah4PTz3bzazM=
+X-Google-Smtp-Source: AGHT+IF4LnL5q2ASVk0f7a7NnEXHJkQow5McuAKWHQuQKCloTJ95bLjkdhs6onVHBbM8aixG9I+4vA==
+X-Received: by 2002:a05:6a20:b920:b0:195:f99f:d46 with SMTP id fe32-20020a056a20b92000b00195f99f0d46mr10468670pzb.119.1704232280845;
+        Tue, 02 Jan 2024 13:51:20 -0800 (PST)
+Received: from changyuanl-desktop.svl.corp.google.com ([2620:15c:2a3:200:38ca:1992:d2e1:472a])
+        by smtp.gmail.com with ESMTPSA id q36-20020a635c24000000b005ce979b861dsm3374286pgb.84.2024.01.02.13.51.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 13:51:20 -0800 (PST)
+From: Changyuan Lyu <changyuan.lv@gmail.com>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>
+Cc: kvm@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Changyuan Lyu <changyuan.lv@gmail.com>
+Subject: [PATCH v1] docs: kvm: x86: document EAGAIN in KVM_RUN
+Date: Tue,  2 Jan 2024 13:50:53 -0800
+Message-ID: <20240102215053.32829-1-changyuan.lv@gmail.com>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <292836.1704232179.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 02 Jan 2024 21:49:39 +0000
-Message-ID: <292837.1704232179@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Content-Transfer-Encoding: 8bit
 
-This needs a fix that I would fold in.  Somehow it gets through xfstests
-without it, but it seems problems can be caused with executables.
+The EAGAIN errno is returned when an application processor was
+blocked because of an uninitialized MP state [1].
 
-David
+[1] commit c5ec153402b6 ("KVM: enable in-kernel APIC INIT/SIPI handling")
+
+Signed-off-by: Changyuan Lyu <changyuan.lv@gmail.com>
 ---
-9p: Fix initialisation of netfs_inode for 9p
+ Documentation/virt/kvm/api.rst | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The 9p filesystem is calling netfs_inode_init() in v9fs_init_inode() -
-before the struct inode fields have been initialised from the obtained fil=
-e
-stats (ie. after v9fs_stat2inode*() has been called), but netfslib wants t=
-o
-set a couple of its fields from i_size.
-
-Reported-by: Marc Dionne <marc.dionne@auristor.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Tested-by: Marc Dionne <marc.dionne@auristor.com>
-cc: Eric Van Hensbergen <ericvh@kernel.org>
-cc: Latchesar Ionkov <lucho@ionkov.net>
-cc: Dominique Martinet <asmadeus@codewreck.org>
-cc: Christian Schoenebeck <linux_oss@crudebyte.com>
-cc: v9fs@lists.linux.dev
-cc: linux-cachefs@redhat.com
-cc: linux-fsdevel@vger.kernel.org
----
- fs/9p/v9fs_vfs.h       |    1 +
- fs/9p/vfs_inode.c      |    6 +++---
- fs/9p/vfs_inode_dotl.c |    1 +
- 3 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/fs/9p/v9fs_vfs.h b/fs/9p/v9fs_vfs.h
-index 731e3d14b67d..0e8418066a48 100644
---- a/fs/9p/v9fs_vfs.h
-+++ b/fs/9p/v9fs_vfs.h
-@@ -42,6 +42,7 @@ struct inode *v9fs_alloc_inode(struct super_block *sb);
- void v9fs_free_inode(struct inode *inode);
- struct inode *v9fs_get_inode(struct super_block *sb, umode_t mode,
- 			     dev_t rdev);
-+void v9fs_set_netfs_context(struct inode *inode);
- int v9fs_init_inode(struct v9fs_session_info *v9ses,
- 		    struct inode *inode, umode_t mode, dev_t rdev);
- void v9fs_evict_inode(struct inode *inode);
-diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
-index b66466e97459..32572982f72e 100644
---- a/fs/9p/vfs_inode.c
-+++ b/fs/9p/vfs_inode.c
-@@ -246,7 +246,7 @@ void v9fs_free_inode(struct inode *inode)
- /*
-  * Set parameters for the netfs library
-  */
--static void v9fs_set_netfs_context(struct inode *inode)
-+void v9fs_set_netfs_context(struct inode *inode)
- {
- 	struct v9fs_inode *v9inode =3D V9FS_I(inode);
- 	netfs_inode_init(&v9inode->netfs, &v9fs_req_ops, true);
-@@ -326,8 +326,6 @@ int v9fs_init_inode(struct v9fs_session_info *v9ses,
- 		err =3D -EINVAL;
- 		goto error;
- 	}
--
--	v9fs_set_netfs_context(inode);
- error:
- 	return err;
- =
-
-@@ -359,6 +357,7 @@ struct inode *v9fs_get_inode(struct super_block *sb, u=
-mode_t mode, dev_t rdev)
- 		iput(inode);
- 		return ERR_PTR(err);
- 	}
-+	v9fs_set_netfs_context(inode);
- 	return inode;
- }
- =
-
-@@ -461,6 +460,7 @@ static struct inode *v9fs_qid_iget(struct super_block =
-*sb,
- 		goto error;
- =
-
- 	v9fs_stat2inode(st, inode, sb, 0);
-+	v9fs_set_netfs_context(inode);
- 	v9fs_cache_inode_get_cookie(inode);
- 	unlock_new_inode(inode);
- 	return inode;
-diff --git a/fs/9p/vfs_inode_dotl.c b/fs/9p/vfs_inode_dotl.c
-index e25fbc988f09..3505227e1704 100644
---- a/fs/9p/vfs_inode_dotl.c
-+++ b/fs/9p/vfs_inode_dotl.c
-@@ -128,6 +128,7 @@ static struct inode *v9fs_qid_iget_dotl(struct super_b=
-lock *sb,
- 		goto error;
- =
-
- 	v9fs_stat2inode_dotl(st, inode, 0);
-+	v9fs_set_netfs_context(inode);
- 	v9fs_cache_inode_get_cookie(inode);
- 	retval =3D v9fs_get_acl(inode, fid);
- 	if (retval)
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index 7025b3751027..fccdbb366770 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -370,6 +370,8 @@ Errors:
+ 
+   =======    ==============================================================
+   EINTR      an unmasked signal is pending
++  EAGAIN     the vcpu is an application processor (AP) and had not received
++             an INIT signal [x86]
+   ENOEXEC    the vcpu hasn't been initialized or the guest tried to execute
+              instructions from device memory (arm64)
+   ENOSYS     data abort outside memslots with no syndrome info and
+-- 
+2.43.0.472.g3155946c3a-goog
 
 
