@@ -1,432 +1,293 @@
-Return-Path: <linux-kernel+bounces-14953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A2018224E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:42:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1C298224F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:49:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A72641F237B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:42:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7FA31C21814
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:49:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B15717729;
-	Tue,  2 Jan 2024 22:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90EFB17728;
+	Tue,  2 Jan 2024 22:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VCL5Eel8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GABLzOHT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBB0317722;
-	Tue,  2 Jan 2024 22:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7b7f6caf047so468739339f.3;
-        Tue, 02 Jan 2024 14:42:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704235346; x=1704840146; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CmHr3OHt7MPw9x5AVtozF2YFFmQZ/QVzunb0U9o/+5w=;
-        b=VCL5Eel8AMqxxyfMb+ixyKA3PhzAADRObA2syklfbyGHMtrpAKWTX9Pa4R86eQPENm
-         QsLJ3ZSST3m0HRyCLEr0GGEDUUcqKaNC1rrcsazM/o3oHoQZFnRANu+pAKugRPPtBqE8
-         mI9OUYeSOpvQ1/igWGbgiMQLL/t5D6LR2kJnuqHGb7XINVBzkKeJq0O+jRfSGsx8zIUD
-         yPepcz0Bxa5Ig4MXnafZsb15uLngd+hJMIPrqwwYBWRjjBx0E9NdyRd2PCVgIA4issf9
-         Xhpx8K/I+r+1fvsqNDqA36+EpORNO4gHFQgGWKe/Dtuqni3OpJNVnoiv6P3hP4RW9Edz
-         dQQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704235346; x=1704840146;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CmHr3OHt7MPw9x5AVtozF2YFFmQZ/QVzunb0U9o/+5w=;
-        b=HgpS7R4572dBYJC5euidOX4IwDhyJIAvG1V89rD2oLva2UqoxDJyhtsTQws/ECoD8b
-         MYri7V6kfr7awOR/eheqfpKR9T7GFkYsDAxasMClwUKQxmwrPm7HKb2Ns/Dt+Xr7Ob8Z
-         ZmnypPbHby9bZWcvAdoFkTCCbVTHsjgTRjD9D/nvQJyp2qMg1uPnFTOspI0snD9ITLms
-         D3RsSLVmWxm7io/vrqUOAQA/g6jUSfnEBT6K5FUPp4J+yyFHXsGrTrmeXkTbafdZ/3ay
-         DdgjFIdP3SNuDtC2ioah9Q4H+S1teVdX5f3t9THPEsBcEwlSquaj65IByLclP1/djiM1
-         8faQ==
-X-Gm-Message-State: AOJu0YzY9HRJ5OUyJgGXv0WFSCEb9u1GzqlXsGTCOGid3CyR6i/m4X1b
-	nPlHmbgCMpNLSF3zAY0X7d5Aw5j3dov/mWRJ2z8=
-X-Google-Smtp-Source: AGHT+IHXcpJn/BhKjBO+se6/n7iotyTXbqg5g4oLMShcPjlSf3ZjTCI5Hja/UzMHl1c6oGr4wdnHOaQY7rJiRX0+JCI=
-X-Received: by 2002:a6b:e00c:0:b0:7b7:f9ef:37b6 with SMTP id
- z12-20020a6be00c000000b007b7f9ef37b6mr21622934iog.15.1704235345662; Tue, 02
- Jan 2024 14:42:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D87DD17725;
+	Tue,  2 Jan 2024 22:49:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EDBAC433C9;
+	Tue,  2 Jan 2024 22:49:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704235767;
+	bh=T55WCsDDBMdV44KiSumuwswipm/mouhybrbqOhV7kkU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=GABLzOHTEGGqdIiCGunbjc+duSdiwfQMRPKVlMit9ewdi3H+HlL/Kw/sbaR4FAMkY
+	 AF4FFcpa2skkuxiGHI7HOHf/kW/O+CM6hPLvPpQOZ+5i6utTUl4wdl5oPqXUSLLLYY
+	 CGQfPnmQLLWMWoM2nWjIf8YoufUCISHlPF+x7F7yY1SfFinwZ31zxzN3SxH7Volg+V
+	 +iHwhQgvoVZ9OrakOgl/Q4GTqj4zpGTXFJ+iK7gQ7wuHzro27L17bt1fkryw+UfMrG
+	 ImxbP2fWoROXbtZCPU/Vx1wqHDimLRR41Xfn1144wl5YFsSOak2SL5RHg+BbR0yqZv
+	 GGbyaf2VG5z9g==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50e7aed08f4so6375751e87.0;
+        Tue, 02 Jan 2024 14:49:27 -0800 (PST)
+X-Gm-Message-State: AOJu0YywjJGIapn3Kl8qbv/9z98UGtP+JD0FwP7Vp1m/GqKsoVatUgkw
+	vrahiyCe/jlEvChU/7QlOsUDjC/qZvY2J2wqv9c=
+X-Google-Smtp-Source: AGHT+IE4onFQu2m3/yigoFFipvmSg5RKz59Ta3rrI6N6ihY71iQrMqWiWYr7mDijLk2toIJ6FkK8bbsppHiFhIs1/Po=
+X-Received: by 2002:a05:6512:398a:b0:50e:15d4:7f8c with SMTP id
+ j10-20020a056512398a00b0050e15d47f8cmr86449lfu.27.1704235765634; Tue, 02 Jan
+ 2024 14:49:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220152653.3273778-1-schatzberg.dan@gmail.com> <20231220152653.3273778-3-schatzberg.dan@gmail.com>
-In-Reply-To: <20231220152653.3273778-3-schatzberg.dan@gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 2 Jan 2024 14:42:14 -0800
-Message-ID: <CAKEwX=P7MVYc2jYCZG4BfawgBfJNcd-rLkDka5_tCrm8RSay9Q@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] mm: add swapiness= arg to memory.reclaim
-To: Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, 
-	Zefan Li <lizefan.x@bytedance.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Kefeng Wang <wangkefeng.wang@huawei.com>, SeongJae Park <sj@kernel.org>, 
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>, Yue Zhao <findns94@gmail.com>
+References: <20231211045543.31741-1-khuey@kylehuey.com> <20231211045543.31741-5-khuey@kylehuey.com>
+In-Reply-To: <20231211045543.31741-5-khuey@kylehuey.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 2 Jan 2024 14:49:14 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7EU0nJq3fF_DqB3o7+5fuGZgs-W1jN1e4F4VHVjgj8Cg@mail.gmail.com>
+Message-ID: <CAPhsuW7EU0nJq3fF_DqB3o7+5fuGZgs-W1jN1e4F4VHVjgj8Cg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] selftest/bpf: Test a perf bpf program that
+ suppresses side effects.
+To: Kyle Huey <me@kylehuey.com>
+Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, "Robert O'Callahan" <robert@ocallahan.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 20, 2023 at 7:27=E2=80=AFAM Dan Schatzberg <schatzberg.dan@gmai=
-l.com> wrote:
+On Sun, Dec 10, 2023 at 8:56=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote:
 >
-> Allow proactive reclaimers to submit an additional swappiness=3D<val>
-> argument to memory.reclaim. This overrides the global or per-memcg
-> swappiness setting for that reclaim attempt.
+> The test sets a hardware breakpoint and uses a bpf program to suppress th=
+e
+> side effects of a perf event sample, including I/O availability signals,
+> SIGTRAPs, and decrementing the event counter limit, if the ip matches the
+> expected value. Then the function with the breakpoint is executed multipl=
+e
+> times to test that all effects behave as expected.
 >
-> For example:
->
-> echo "2M swappiness=3D0" > /sys/fs/cgroup/memory.reclaim
->
-> will perform reclaim on the rootcg with a swappiness setting of 0 (no
-> swap) regardless of the vm.swappiness sysctl setting.
->
-> Userspace proactive reclaimers use the memory.reclaim interface to
-> trigger reclaim. The memory.reclaim interface does not allow for any way
-> to effect the balance of file vs anon during proactive reclaim. The only
-> approach is to adjust the vm.swappiness setting. However, there are a
-> few reasons we look to control the balance of file vs anon during
-> proactive reclaim, separately from reactive reclaim:
->
-> * Swapout should be limited to manage SSD write endurance. In near-OOM
-> situations we are fine with lots of swap-out to avoid OOMs. As these are
-> typically rare events, they have relatively little impact on write
-> endurance. However, proactive reclaim runs continuously and so its
-> impact on SSD write endurance is more significant. Therefore it is
-> desireable to control swap-out for proactive reclaim separately from
-> reactive reclaim
->
-> * Some userspace OOM killers like systemd-oomd[1] support OOM killing on
-> swap exhaustion. This makes sense if the swap exhaustion is triggered
-> due to reactive reclaim but less so if it is triggered due to proactive
-> reclaim (e.g. one could see OOMs when free memory is ample but anon is
-> just particularly cold). Therefore, it's desireable to have proactive
-> reclaim reduce or stop swap-out before the threshold at which OOM
-> killing occurs.
->
-> In the case of Meta's Senpai proactive reclaimer, we adjust
-> vm.swappiness before writes to memory.reclaim[2]. This has been in
-> production for nearly two years and has addressed our needs to control
-> proactive vs reactive reclaim behavior but is still not ideal for a
-> number of reasons:
->
-> * vm.swappiness is a global setting, adjusting it can race/interfere
-> with other system administration that wishes to control vm.swappiness.
-> In our case, we need to disable Senpai before adjusting vm.swappiness.
->
-> * vm.swappiness is stateful - so a crash or restart of Senpai can leave
-> a misconfigured setting. This requires some additional management to
-> record the "desired" setting and ensure Senpai always adjusts to it.
->
-> With this patch, we avoid these downsides of adjusting vm.swappiness
-> globally.
->
-> [1]https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.s=
-ervice.html
-> [2]https://github.com/facebookincubator/oomd/blob/main/src/oomd/plugins/S=
-enpai.cpp#L585-L598
->
-> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 > ---
->  Documentation/admin-guide/cgroup-v2.rst | 18 ++++----
->  include/linux/swap.h                    |  3 +-
->  mm/memcontrol.c                         | 56 ++++++++++++++++++++-----
->  mm/vmscan.c                             | 13 +++++-
->  4 files changed, 69 insertions(+), 21 deletions(-)
+>  .../selftests/bpf/prog_tests/perf_skip.c      | 140 ++++++++++++++++++
+>  .../selftests/bpf/progs/test_perf_skip.c      |  15 ++
+>  2 files changed, 155 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
 >
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
-n-guide/cgroup-v2.rst
-> index 3f85254f3cef..ee42f74e0765 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1282,17 +1282,10 @@ PAGE_SIZE multiple when read back.
->         This is a simple interface to trigger memory reclaim in the
->         target cgroup.
->
-> -       This file accepts a single key, the number of bytes to reclaim.
-> -       No nested keys are currently supported.
-> -
->         Example::
->
->           echo "1G" > memory.reclaim
->
-> -       The interface can be later extended with nested keys to
-> -       configure the reclaim behavior. For example, specify the
-> -       type of memory to reclaim from (anon, file, ..).
-> -
->         Please note that the kernel can over or under reclaim from
->         the target cgroup. If less bytes are reclaimed than the
->         specified amount, -EAGAIN is returned.
-> @@ -1304,6 +1297,17 @@ PAGE_SIZE multiple when read back.
->         This means that the networking layer will not adapt based on
->         reclaim induced by memory.reclaim.
->
-> +The following nested keys are defined.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/t=
+esting/selftests/bpf/prog_tests/perf_skip.c
+> new file mode 100644
+> index 000000000000..0200736a8baf
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> @@ -0,0 +1,140 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#define _GNU_SOURCE
 > +
-> +         =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D            =3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +         swappiness            Swappiness value to reclaim with
-> +         =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D            =3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +#include <test_progs.h>
+> +#include "test_perf_skip.skel.h"
+> +#include <linux/compiler.h>
+> +#include <linux/hw_breakpoint.h>
+> +#include <sys/mman.h>
 > +
-> +       Specifying a swappiness value instructs the kernel to perform
-> +       the reclaim with that swappiness value. Note that this has the
-> +       same semantics as vm.swappiness applied to memcg reclaim with
-> +       all the existing limitations and potential future extensions.
+> +#ifndef TRAP_PERF
+> +#define TRAP_PERF 6
+> +#endif
 > +
->    memory.peak
->         A read-only single value file which exists on non-root
->         cgroups.
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index e2ab76c25b4a..8afdec40efe3 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -412,7 +412,8 @@ extern unsigned long try_to_free_pages(struct zonelis=
-t *zonelist, int order,
->  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *mem=
-cg,
->                                                   unsigned long nr_pages,
->                                                   gfp_t gfp_mask,
-> -                                                 unsigned int reclaim_op=
-tions);
-> +                                                 unsigned int reclaim_op=
-tions,
-> +                                                 int *swappiness);
->  extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
->                                                 gfp_t gfp_mask, bool nosw=
-ap,
->                                                 pg_data_t *pgdat,
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index fbe9f02dd206..6d627a754851 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -52,6 +52,7 @@
->  #include <linux/sort.h>
->  #include <linux/fs.h>
->  #include <linux/seq_file.h>
-> +#include <linux/parser.h>
->  #include <linux/vmpressure.h>
->  #include <linux/memremap.h>
->  #include <linux/mm_inline.h>
-> @@ -2449,7 +2450,8 @@ static unsigned long reclaim_high(struct mem_cgroup=
- *memcg,
->                 psi_memstall_enter(&pflags);
->                 nr_reclaimed +=3D try_to_free_mem_cgroup_pages(memcg, nr_=
-pages,
->                                                         gfp_mask,
-> -                                                       MEMCG_RECLAIM_MAY=
-_SWAP);
-> +                                                       MEMCG_RECLAIM_MAY=
-_SWAP,
-> +                                                       NULL);
->                 psi_memstall_leave(&pflags);
->         } while ((memcg =3D parent_mem_cgroup(memcg)) &&
->                  !mem_cgroup_is_root(memcg));
-> @@ -2740,7 +2742,7 @@ static int try_charge_memcg(struct mem_cgroup *memc=
-g, gfp_t gfp_mask,
->
->         psi_memstall_enter(&pflags);
->         nr_reclaimed =3D try_to_free_mem_cgroup_pages(mem_over_limit, nr_=
-pages,
-> -                                                   gfp_mask, reclaim_opt=
-ions);
-> +                                                   gfp_mask, reclaim_opt=
-ions, NULL);
->         psi_memstall_leave(&pflags);
->
->         if (mem_cgroup_margin(mem_over_limit) >=3D nr_pages)
-> @@ -3660,7 +3662,7 @@ static int mem_cgroup_resize_max(struct mem_cgroup =
-*memcg,
->                 }
->
->                 if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
-> -                                       memsw ? 0 : MEMCG_RECLAIM_MAY_SWA=
-P)) {
-> +                                       memsw ? 0 : MEMCG_RECLAIM_MAY_SWA=
-P, NULL)) {
->                         ret =3D -EBUSY;
->                         break;
->                 }
-> @@ -3774,7 +3776,7 @@ static int mem_cgroup_force_empty(struct mem_cgroup=
- *memcg)
->                         return -EINTR;
->
->                 if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
-> -                                                 MEMCG_RECLAIM_MAY_SWAP)=
-)
-> +                                                 MEMCG_RECLAIM_MAY_SWAP,=
- NULL))
->                         nr_retries--;
->         }
->
-> @@ -6720,7 +6722,7 @@ static ssize_t memory_high_write(struct kernfs_open=
-_file *of,
->                 }
->
->                 reclaimed =3D try_to_free_mem_cgroup_pages(memcg, nr_page=
-s - high,
-> -                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
-P);
-> +                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
-P, NULL);
->
->                 if (!reclaimed && !nr_retries--)
->                         break;
-> @@ -6769,7 +6771,7 @@ static ssize_t memory_max_write(struct kernfs_open_=
-file *of,
->
->                 if (nr_reclaims) {
->                         if (!try_to_free_mem_cgroup_pages(memcg, nr_pages=
- - max,
-> -                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
-P))
-> +                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
-P, NULL))
->                                 nr_reclaims--;
->                         continue;
->                 }
-> @@ -6895,19 +6897,50 @@ static ssize_t memory_oom_group_write(struct kern=
-fs_open_file *of,
->         return nbytes;
->  }
->
-> +enum {
-> +       MEMORY_RECLAIM_SWAPPINESS =3D 0,
-> +       MEMORY_RECLAIM_NULL,
-> +};
+> +int signals_unexpected =3D 1;
+> +int sigio_count, sigtrap_count;
 > +
-> +static const match_table_t tokens =3D {
-> +       { MEMORY_RECLAIM_SWAPPINESS, "swappiness=3D%d"},
-> +       { MEMORY_RECLAIM_NULL, NULL },
-> +};
-> +
->  static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
->                               size_t nbytes, loff_t off)
->  {
->         struct mem_cgroup *memcg =3D mem_cgroup_from_css(of_css(of));
->         unsigned int nr_retries =3D MAX_RECLAIM_RETRIES;
->         unsigned long nr_to_reclaim, nr_reclaimed =3D 0;
-> +       int swappiness =3D -1;
->         unsigned int reclaim_options;
-> -       int err;
-> +       char *old_buf, *start;
-> +       substring_t args[MAX_OPT_ARGS];
->
->         buf =3D strstrip(buf);
-> -       err =3D page_counter_memparse(buf, "", &nr_to_reclaim);
-> -       if (err)
-> -               return err;
-> +
-> +       old_buf =3D buf;
-> +       nr_to_reclaim =3D memparse(buf, &buf) / PAGE_SIZE;
-> +       if (buf =3D=3D old_buf)
-> +               return -EINVAL;
-> +
-> +       buf =3D strstrip(buf);
-> +
-> +       while ((start =3D strsep(&buf, " ")) !=3D NULL) {
-> +               if (!strlen(start))
-> +                       continue;
-> +               switch (match_token(start, tokens, args)) {
-> +               case MEMORY_RECLAIM_SWAPPINESS:
-> +                       if (match_int(&args[0], &swappiness))
-> +                               return -EINVAL;
-> +                       if (swappiness < MIN_SWAPPINESS || swappiness > M=
-AX_SWAPPINESS)
-> +                               return -EINVAL;
-> +                       break;
-> +               default:
-> +                       return -EINVAL;
-> +               }
-> +       }
->
->         reclaim_options =3D MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACT=
-IVE;
->         while (nr_reclaimed < nr_to_reclaim) {
-> @@ -6926,7 +6959,8 @@ static ssize_t memory_reclaim(struct kernfs_open_fi=
-le *of, char *buf,
->
->                 reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
->                                         min(nr_to_reclaim - nr_reclaimed,=
- SWAP_CLUSTER_MAX),
-> -                                       GFP_KERNEL, reclaim_options);
-> +                                       GFP_KERNEL, reclaim_options,
-> +                                       swappiness =3D=3D -1 ? NULL : &sw=
-appiness);
->
->                 if (!reclaimed && !nr_retries--)
->                         return -EAGAIN;
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index d91963e2d47f..aa5666842c49 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -92,6 +92,9 @@ struct scan_control {
->         unsigned long   anon_cost;
->         unsigned long   file_cost;
->
-> +       /* Swappiness value for reclaim. NULL will fall back to per-memcg=
-/global value */
-> +       int *swappiness;
-> +
->         /* Can active folios be deactivated as part of reclaim? */
->  #define DEACTIVATE_ANON 1
->  #define DEACTIVATE_FILE 2
-> @@ -2327,7 +2330,8 @@ static void get_scan_count(struct lruvec *lruvec, s=
-truct scan_control *sc,
->         struct pglist_data *pgdat =3D lruvec_pgdat(lruvec);
->         struct mem_cgroup *memcg =3D lruvec_memcg(lruvec);
->         unsigned long anon_cost, file_cost, total_cost;
-> -       int swappiness =3D mem_cgroup_swappiness(memcg);
-> +       int swappiness =3D sc->swappiness ?
-> +               *sc->swappiness : mem_cgroup_swappiness(memcg);
->         u64 fraction[ANON_AND_FILE];
->         u64 denominator =3D 0;    /* gcc */
->         enum scan_balance scan_balance;
-> @@ -2608,6 +2612,9 @@ static int get_swappiness(struct lruvec *lruvec, st=
-ruct scan_control *sc)
->             mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
->                 return 0;
->
-> +       if (sc->swappiness)
-> +               return *sc->swappiness;
-> +
->         return mem_cgroup_swappiness(memcg);
->  }
->
-> @@ -6463,12 +6470,14 @@ unsigned long mem_cgroup_shrink_node(struct mem_c=
-group *memcg,
->  unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
->                                            unsigned long nr_pages,
->                                            gfp_t gfp_mask,
-> -                                          unsigned int reclaim_options)
-> +                                          unsigned int reclaim_options,
-> +                                          int *swappiness)
->  {
->         unsigned long nr_reclaimed;
->         unsigned int noreclaim_flag;
->         struct scan_control sc =3D {
->                 .nr_to_reclaim =3D max(nr_pages, SWAP_CLUSTER_MAX),
-> +               .swappiness =3D swappiness,
->                 .gfp_mask =3D (current_gfp_context(gfp_mask) & GFP_RECLAI=
-M_MASK) |
->                                 (GFP_HIGHUSER_MOVABLE & ~GFP_RECLAIM_MASK=
-),
->                 .reclaim_idx =3D MAX_NR_ZONES - 1,
-> --
-> 2.39.3
->
+> +static void handle_sigio(int sig __always_unused)
+> +{
+> +       ASSERT_OK(signals_unexpected, "perf event not skipped");
 
-The swappiness =3D -1 part seems a bit awkward, but other LGTM.
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+ASSERT_OK is a little confusing. Maybe do something like:
+
+static int signals_expected;
+static void handle_sigio(int sig __always_unused)
+{
+    ASSERT_EQ(signals_expected, 1, "expected sig_io");
+}
+serial_test_perf_skip()
+{
+...
+signals_expected =3D 1;
+}
+
+> +       ++sigio_count;
+> +}
+> +
+> +static void handle_sigtrap(int signum __always_unused,
+> +                          siginfo_t *info,
+> +                          void *ucontext __always_unused)
+> +{
+> +       ASSERT_OK(signals_unexpected, "perf event not skipped");
+ditto
+
+> +       ASSERT_EQ(info->si_code, TRAP_PERF, "wrong si_code");
+> +       ++sigtrap_count;
+> +}
+> +
+> +static noinline int test_function(void)
+> +{
+> +       asm volatile ("");
+> +       return 0;
+> +}
+> +
+> +void serial_test_perf_skip(void)
+> +{
+> +       struct sigaction action =3D {};
+> +       struct sigaction previous_sigtrap;
+> +       sighandler_t previous_sigio;
+> +       struct test_perf_skip *skel =3D NULL;
+> +       struct perf_event_attr attr =3D {};
+> +       int perf_fd =3D -1;
+> +       int err;
+> +       struct f_owner_ex owner;
+> +       struct bpf_link *prog_link =3D NULL;
+> +
+> +       action.sa_flags =3D SA_SIGINFO | SA_NODEFER;
+> +       action.sa_sigaction =3D handle_sigtrap;
+> +       sigemptyset(&action.sa_mask);
+> +       if (!ASSERT_OK(sigaction(SIGTRAP, &action, &previous_sigtrap), "s=
+igaction"))
+> +               return;
+> +
+> +       previous_sigio =3D signal(SIGIO, handle_sigio);
+
+handle signal() errors here?
+
+> +
+> +       skel =3D test_perf_skip__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "skel_load"))
+> +               goto cleanup;
+> +
+> +       attr.type =3D PERF_TYPE_BREAKPOINT;
+> +       attr.size =3D sizeof(attr);
+> +       attr.bp_type =3D HW_BREAKPOINT_X;
+> +       attr.bp_addr =3D (uintptr_t)test_function;
+> +       attr.bp_len =3D sizeof(long);
+> +       attr.sample_period =3D 1;
+> +       attr.sample_type =3D PERF_SAMPLE_IP;
+> +       attr.pinned =3D 1;
+> +       attr.exclude_kernel =3D 1;
+> +       attr.exclude_hv =3D 1;
+> +       attr.precise_ip =3D 3;
+> +       attr.sigtrap =3D 1;
+> +       attr.remove_on_exec =3D 1;
+> +
+> +       perf_fd =3D syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
+> +       if (perf_fd < 0 && (errno =3D=3D ENOENT || errno =3D=3D EOPNOTSUP=
+P)) {
+> +               printf("SKIP:no PERF_TYPE_BREAKPOINT/HW_BREAKPOINT_X\n");
+> +               test__skip();
+> +               goto cleanup;
+> +       }
+> +       if (!ASSERT_OK(perf_fd < 0, "perf_event_open"))
+> +               goto cleanup;
+> +
+> +       /* Configure the perf event to signal on sample. */
+> +       err =3D fcntl(perf_fd, F_SETFL, O_ASYNC);
+> +       if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
+> +               goto cleanup;
+> +
+> +       owner.type =3D F_OWNER_TID;
+> +       owner.pid =3D syscall(__NR_gettid);
+> +       err =3D fcntl(perf_fd, F_SETOWN_EX, &owner);
+> +       if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
+> +               goto cleanup;
+> +
+> +       /*
+> +        * Allow at most one sample. A sample rejected by bpf should
+> +        * not count against this.
+> +        */
+
+Multi-line comment style should be like
+
+        /* Allow at most one sample. A sample rejected by bpf should
+        * not count against this.
+        */
+
+> +       err =3D ioctl(perf_fd, PERF_EVENT_IOC_REFRESH, 1);
+> +       if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_REFRESH)"))
+> +               goto cleanup;
+> +
+> +       prog_link =3D bpf_program__attach_perf_event(skel->progs.handler,=
+ perf_fd);
+> +       if (!ASSERT_OK_PTR(prog_link, "bpf_program__attach_perf_event"))
+> +               goto cleanup;
+> +
+> +       /* Configure the bpf program to suppress the sample. */
+> +       skel->bss->ip =3D (uintptr_t)test_function;
+> +       test_function();
+> +
+> +       ASSERT_EQ(sigio_count, 0, "sigio_count");
+> +       ASSERT_EQ(sigtrap_count, 0, "sigtrap_count");
+> +
+> +       /* Configure the bpf program to allow the sample. */
+> +       skel->bss->ip =3D 0;
+> +       signals_unexpected =3D 0;
+> +       test_function();
+> +
+> +       ASSERT_EQ(sigio_count, 1, "sigio_count");
+> +       ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
+> +
+> +       /*
+> +        * Test that the sample above is the only one allowed (by perf, n=
+ot
+> +        * by bpf)
+> +        */
+
+ditto.
+
+> +       test_function();
+> +
+> +       ASSERT_EQ(sigio_count, 1, "sigio_count");
+> +       ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
+> +
+> +cleanup:
+> +       bpf_link__destroy(prog_link);
+> +       if (perf_fd >=3D 0)
+> +               close(perf_fd);
+> +       test_perf_skip__destroy(skel);
+> +
+> +       signal(SIGIO, previous_sigio);
+> +       sigaction(SIGTRAP, &previous_sigtrap, NULL);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools/t=
+esting/selftests/bpf/progs/test_perf_skip.c
+> new file mode 100644
+> index 000000000000..7eb8b6de7a57
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
+> @@ -0,0 +1,15 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +uintptr_t ip;
+> +
+> +SEC("perf_event")
+> +int handler(struct bpf_perf_event_data *data)
+> +{
+> +       /* Skip events that have the correct ip. */
+> +       return ip !=3D PT_REGS_IP(&data->regs);
+> +}
+> +
+> +char _license[] SEC("license") =3D "GPL";
+> --
+> 2.34.1
+>
 
