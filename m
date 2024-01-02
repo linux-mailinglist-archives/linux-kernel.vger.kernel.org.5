@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-14739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A1A6822153
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:48:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0A7D822154
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:48:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4BD41F21BCB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:48:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2453328458B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0093171D8;
-	Tue,  2 Jan 2024 18:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C529617735;
+	Tue,  2 Jan 2024 18:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FY6pwNo1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pz0PdIuB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DFA7171AB
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 18:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C26171C8
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 18:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e7e55c0f6so6464776e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 10:47:16 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50ea226bda8so574963e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 10:47:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1704221235; x=1704826035; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QZAvt7CkxqIe5cgK0fSSW+F0xApr58BOh4APGf1P6Lc=;
-        b=FY6pwNo1H8WB+3cPzzwrc4urNP/9S3hQMHbQzgGC+zilS+ybIAbRohqzbwW1+8Kpo+
-         mWnB5z+cwIpvFA+R5Klm2bOtiLWocJO713gWJ+L12TJakTfozai0erqNoPPSpL09gLzz
-         NohyRAclPYHbNEax6rwrCaPZfDFoHebuQ23zTUAzqn+Sk0BsbHNg+OsK+OFEI10TJjw9
-         TnP4oSvU7oMVeslq1ZXjk6ge6tpjwjT5NkkuvP6D6XuD2UxgYBdF5uu+ZyWhkjXl12hf
-         8ePwPoYaD8qOs9SrAkUb5l7xBeS1RHCk5otyUVg+20kKgG/FX6nSQDSr0z+po2/GRDgd
-         UErw==
+        bh=cMaatDyVMtexg7cRa9eaEuAm/eowYR09uugeWui4AYQ=;
+        b=Pz0PdIuBjcbRTVOympFkruZ117s0tB/fGYZCU5oIHYXArAd3mvmxGFtUJQ10vPEUNR
+         ccwQ7VZnHK/rlaNIft/CMY3QsK0A8LwxT14Vi9Q9Azg8e5mtR7RyArQNmEIhkTxy5Ksq
+         9YQlINWpGmdh4A8gxgs5w6d2oRJV69lJhfaEhwqY1E7iqgmTFpMLp0FX1U/NptFNm/sl
+         Kh+EsLdclrnU/NbI83C0B8HKaNvIdDxgSLsJF7HXpdz++eeLthv9Hgjxers0/5NRYjdM
+         SG7DREt4zpMHyNmPLOoaSWPdFs/XO1J3YhvvfFSRkXT5d9+ROUypgsiUmdJ56elPrQIA
+         aRAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1704221235; x=1704826035;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QZAvt7CkxqIe5cgK0fSSW+F0xApr58BOh4APGf1P6Lc=;
-        b=pELx/uhrkylsAVql7LAuPk/bgLIFWXbJtzpTtFgPocVE7cSPpkx+1koWZ2O3RpZgZt
-         sNdEcU5fESXHgfYNCY0vCtK83E1pYlgItkoq4pnCb5zjngy28UOBGoIlAIi2XMTzF5Al
-         zOQ9ow6XrTloB0cRVITeCV5N6WX8VFeBuS2geK+ngMT2s2nezfIHeFiaHOyQmLYEV3iP
-         dHzUviWeEYmki4he+S6+5Q1tySRTHcx7B/YiqknLzQjwm1nqyOrGCEg7cVBJUwxMdTM5
-         aYiAc+ry4YG6/BLJmk5H7lQ58HcvZPtwXUUW31hgSteL6H0O4gciF/LsqapAA63LMLBo
-         ao+g==
-X-Gm-Message-State: AOJu0YzmNwkr3RBea6CTzOG6mHWJMAKYawex+4dxr7WE1/i1f8p+OO93
-	sZ4bRgRjjE9CAQMiPGyoT3JXXJ1P67kcVQ==
-X-Google-Smtp-Source: AGHT+IG2+hyU4AcsC7fH/iKMYGpwIo7u9xULgZSVpY4T2CGFn4/x55AJtPvIKYTpeIpe7us9O7g2tw==
-X-Received: by 2002:ac2:520b:0:b0:50e:9a53:c22c with SMTP id a11-20020ac2520b000000b0050e9a53c22cmr794413lfl.126.1704221234559;
-        Tue, 02 Jan 2024 10:47:14 -0800 (PST)
+        bh=cMaatDyVMtexg7cRa9eaEuAm/eowYR09uugeWui4AYQ=;
+        b=kiQ3kPhpYoSkZXjDaw3QCqS5KbiPC2XZf5OdbKuUY3zbeC+uqWjUBh2i6agfW92Vei
+         yCbFFHo5GsqCoMYyWdY7hqPH6wEXpU1cl4iKffaVFD790Ijywgz/Bl6DdgyjMCnpUMdc
+         rMjUPjvk5m2S7d2ohIPemhv5Wi+OoSolGWBu/M6Q61tJlooflUqV8bV1ZXjyr1EXCTL5
+         KYEHGYEOLcqSLNUHI+XLrudae3HnHH68dGP24eHR1deOptTrXgdnzzPv6Lvj0RJJKjPj
+         tJF6SJa9B4cSr6yzzAWC6Ir1wjgcSxZDwOyDpF7s3rXSrQzCoaRzNluW1H65guLP4eNN
+         1I9Q==
+X-Gm-Message-State: AOJu0YyTzO5i8hg5mCc2FyhDmVSb6pD37MXaN39GPa3LDwjHGw9VBHeW
+	hSJXpz4gE3jSe22p6HsTmz0=
+X-Google-Smtp-Source: AGHT+IHL4Wmy2w8EjWfxM2Ec6BVxhpJGK0/FEzXHtHxP7HAyn5/e0Ve12sc1nQgdeQE352aAG5a4ag==
+X-Received: by 2002:a05:6512:3d07:b0:50e:73ac:a179 with SMTP id d7-20020a0565123d0700b0050e73aca179mr7225341lfv.91.1704221235497;
+        Tue, 02 Jan 2024 10:47:15 -0800 (PST)
 Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id q1-20020ac246e1000000b0050e7be886d9sm2592656lfo.56.2024.01.02.10.47.13
+        by smtp.gmail.com with ESMTPSA id q1-20020ac246e1000000b0050e7be886d9sm2592656lfo.56.2024.01.02.10.47.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 10:47:14 -0800 (PST)
+        Tue, 02 Jan 2024 10:47:15 -0800 (PST)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To: linux-mm@kvack.org,
 	Andrew Morton <akpm@linux-foundation.org>
@@ -71,9 +71,9 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH v3 08/11] mm: vmalloc: Support multiple nodes in vread_iter
-Date: Tue,  2 Jan 2024 19:46:30 +0100
-Message-Id: <20240102184633.748113-9-urezki@gmail.com>
+Subject: [PATCH v3 09/11] mm: vmalloc: Support multiple nodes in vmallocinfo
+Date: Tue,  2 Jan 2024 19:46:31 +0100
+Message-Id: <20240102184633.748113-10-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240102184633.748113-1-urezki@gmail.com>
 References: <20240102184633.748113-1-urezki@gmail.com>
@@ -85,151 +85,182 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Extend the vread_iter() to be able to perform a sequential
-reading of VAs which are spread among multiple nodes. So a
-data read over the /dev/kmem correctly reflects a vmalloc
-memory layout.
+Allocated areas are spread among nodes, it implies that
+the scanning has to be performed individually of each node
+in order to dump all existing VAs.
 
-Reviewed-by: Baoquan He <bhe@redhat.com>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- mm/vmalloc.c | 67 +++++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 53 insertions(+), 14 deletions(-)
+ mm/vmalloc.c | 120 ++++++++++++++++++++-------------------------------
+ 1 file changed, 47 insertions(+), 73 deletions(-)
 
 diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index fa4ab2bbbc5b..594ed003d44d 100644
+index 594ed003d44d..0c671cb96151 100644
 --- a/mm/vmalloc.c
 +++ b/mm/vmalloc.c
-@@ -906,7 +906,7 @@ unsigned long vmalloc_nr_pages(void)
+@@ -4709,30 +4709,6 @@ bool vmalloc_dump_obj(void *object)
+ #endif
  
- /* Look up the first VA which satisfies addr < va_end, NULL if none. */
- static struct vmap_area *
--find_vmap_area_exceed_addr(unsigned long addr, struct rb_root *root)
-+__find_vmap_area_exceed_addr(unsigned long addr, struct rb_root *root)
+ #ifdef CONFIG_PROC_FS
+-static void *s_start(struct seq_file *m, loff_t *pos)
+-{
+-	struct vmap_node *vn = addr_to_node(0);
+-
+-	mutex_lock(&vmap_purge_lock);
+-	spin_lock(&vn->busy.lock);
+-
+-	return seq_list_start(&vn->busy.head, *pos);
+-}
+-
+-static void *s_next(struct seq_file *m, void *p, loff_t *pos)
+-{
+-	struct vmap_node *vn = addr_to_node(0);
+-	return seq_list_next(p, &vn->busy.head, pos);
+-}
+-
+-static void s_stop(struct seq_file *m, void *p)
+-{
+-	struct vmap_node *vn = addr_to_node(0);
+-
+-	spin_unlock(&vn->busy.lock);
+-	mutex_unlock(&vmap_purge_lock);
+-}
+-
+ static void show_numa_info(struct seq_file *m, struct vm_struct *v)
  {
- 	struct vmap_area *va = NULL;
- 	struct rb_node *n = root->rb_node;
-@@ -930,6 +930,41 @@ find_vmap_area_exceed_addr(unsigned long addr, struct rb_root *root)
- 	return va;
+ 	if (IS_ENABLED(CONFIG_NUMA)) {
+@@ -4776,84 +4752,82 @@ static void show_purge_info(struct seq_file *m)
+ 	}
  }
  
-+/*
-+ * Returns a node where a first VA, that satisfies addr < va_end, resides.
-+ * If success, a node is locked. A user is responsible to unlock it when a
-+ * VA is no longer needed to be accessed.
-+ *
-+ * Returns NULL if nothing found.
-+ */
-+static struct vmap_node *
-+find_vmap_area_exceed_addr_lock(unsigned long addr, struct vmap_area **va)
-+{
-+	struct vmap_node *vn, *va_node = NULL;
-+	struct vmap_area *va_lowest;
+-static int s_show(struct seq_file *m, void *p)
++static int vmalloc_info_show(struct seq_file *m, void *p)
+ {
+ 	struct vmap_node *vn;
+ 	struct vmap_area *va;
+ 	struct vm_struct *v;
 +	int i;
-+
+ 
+-	vn = addr_to_node(0);
+-	va = list_entry(p, struct vmap_area, list);
 +	for (i = 0; i < nr_vmap_nodes; i++) {
 +		vn = &vmap_nodes[i];
-+
+ 
+-	if (!va->vm) {
+-		if (va->flags & VMAP_RAM)
+-			seq_printf(m, "0x%pK-0x%pK %7ld vm_map_ram\n",
+-				(void *)va->va_start, (void *)va->va_end,
+-				va->va_end - va->va_start);
 +		spin_lock(&vn->busy.lock);
-+		va_lowest = __find_vmap_area_exceed_addr(addr, &vn->busy.root);
-+		if (va_lowest) {
-+			if (!va_node || va_lowest->va_start < (*va)->va_start) {
-+				if (va_node)
-+					spin_unlock(&va_node->busy.lock);
-+
-+				*va = va_lowest;
-+				va_node = vn;
++		list_for_each_entry(va, &vn->busy.head, list) {
++			if (!va->vm) {
++				if (va->flags & VMAP_RAM)
++					seq_printf(m, "0x%pK-0x%pK %7ld vm_map_ram\n",
++						(void *)va->va_start, (void *)va->va_end,
++						va->va_end - va->va_start);
+ 
+-		goto final;
+-	}
 +				continue;
 +			}
+ 
+-	v = va->vm;
++			v = va->vm;
+ 
+-	seq_printf(m, "0x%pK-0x%pK %7ld",
+-		v->addr, v->addr + v->size, v->size);
++			seq_printf(m, "0x%pK-0x%pK %7ld",
++				v->addr, v->addr + v->size, v->size);
+ 
+-	if (v->caller)
+-		seq_printf(m, " %pS", v->caller);
++			if (v->caller)
++				seq_printf(m, " %pS", v->caller);
+ 
+-	if (v->nr_pages)
+-		seq_printf(m, " pages=%d", v->nr_pages);
++			if (v->nr_pages)
++				seq_printf(m, " pages=%d", v->nr_pages);
+ 
+-	if (v->phys_addr)
+-		seq_printf(m, " phys=%pa", &v->phys_addr);
++			if (v->phys_addr)
++				seq_printf(m, " phys=%pa", &v->phys_addr);
+ 
+-	if (v->flags & VM_IOREMAP)
+-		seq_puts(m, " ioremap");
++			if (v->flags & VM_IOREMAP)
++				seq_puts(m, " ioremap");
+ 
+-	if (v->flags & VM_ALLOC)
+-		seq_puts(m, " vmalloc");
++			if (v->flags & VM_ALLOC)
++				seq_puts(m, " vmalloc");
+ 
+-	if (v->flags & VM_MAP)
+-		seq_puts(m, " vmap");
++			if (v->flags & VM_MAP)
++				seq_puts(m, " vmap");
+ 
+-	if (v->flags & VM_USERMAP)
+-		seq_puts(m, " user");
++			if (v->flags & VM_USERMAP)
++				seq_puts(m, " user");
+ 
+-	if (v->flags & VM_DMA_COHERENT)
+-		seq_puts(m, " dma-coherent");
++			if (v->flags & VM_DMA_COHERENT)
++				seq_puts(m, " dma-coherent");
+ 
+-	if (is_vmalloc_addr(v->pages))
+-		seq_puts(m, " vpages");
++			if (is_vmalloc_addr(v->pages))
++				seq_puts(m, " vpages");
+ 
+-	show_numa_info(m, v);
+-	seq_putc(m, '\n');
++			show_numa_info(m, v);
++			seq_putc(m, '\n');
 +		}
 +		spin_unlock(&vn->busy.lock);
 +	}
-+
-+	return va_node;
-+}
-+
- static struct vmap_area *__find_vmap_area(unsigned long addr, struct rb_root *root)
- {
- 	struct rb_node *n = root->rb_node;
-@@ -4102,6 +4137,7 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
- 	struct vm_struct *vm;
- 	char *vaddr;
- 	size_t n, size, flags, remains;
-+	unsigned long next;
  
- 	addr = kasan_reset_tag(addr);
- 
-@@ -4111,19 +4147,15 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
- 
- 	remains = count;
- 
--	/* Hooked to node_0 so far. */
--	vn = addr_to_node(0);
--	spin_lock(&vn->busy.lock);
+ 	/*
+ 	 * As a final step, dump "unpurged" areas.
+ 	 */
+-final:
+-	if (list_is_last(&va->list, &vn->busy.head))
+-		show_purge_info(m);
 -
--	va = find_vmap_area_exceed_addr((unsigned long)addr, &vn->busy.root);
--	if (!va)
-+	vn = find_vmap_area_exceed_addr_lock((unsigned long) addr, &va);
-+	if (!vn)
- 		goto finished_zero;
- 
- 	/* no intersects with alive vmap_area */
- 	if ((unsigned long)addr + remains <= va->va_start)
- 		goto finished_zero;
- 
--	list_for_each_entry_from(va, &vn->busy.head, list) {
-+	do {
- 		size_t copied;
- 
- 		if (remains == 0)
-@@ -4138,10 +4170,10 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
- 		WARN_ON(flags == VMAP_BLOCK);
- 
- 		if (!vm && !flags)
--			continue;
-+			goto next_va;
- 
- 		if (vm && (vm->flags & VM_UNINITIALIZED))
--			continue;
-+			goto next_va;
- 
- 		/* Pair with smp_wmb() in clear_vm_uninitialized_flag() */
- 		smp_rmb();
-@@ -4150,7 +4182,7 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
- 		size = vm ? get_vm_area_size(vm) : va_size(va);
- 
- 		if (addr >= vaddr + size)
--			continue;
-+			goto next_va;
- 
- 		if (addr < vaddr) {
- 			size_t to_zero = min_t(size_t, vaddr - addr, remains);
-@@ -4179,15 +4211,22 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
- 
- 		if (copied != n)
- 			goto finished;
--	}
-+
-+	next_va:
-+		next = va->va_end;
-+		spin_unlock(&vn->busy.lock);
-+	} while ((vn = find_vmap_area_exceed_addr_lock(next, &va)));
- 
- finished_zero:
--	spin_unlock(&vn->busy.lock);
-+	if (vn)
-+		spin_unlock(&vn->busy.lock);
-+
- 	/* zero-fill memory holes */
- 	return count - remains + zero_iter(iter, remains);
- finished:
- 	/* Nothing remains, or We couldn't copy/zero everything. */
--	spin_unlock(&vn->busy.lock);
-+	if (vn)
-+		spin_unlock(&vn->busy.lock);
- 
- 	return count - remains;
++	show_purge_info(m);
+ 	return 0;
  }
+ 
+-static const struct seq_operations vmalloc_op = {
+-	.start = s_start,
+-	.next = s_next,
+-	.stop = s_stop,
+-	.show = s_show,
+-};
+-
+ static int __init proc_vmalloc_init(void)
+ {
++	void *priv_data = NULL;
++
+ 	if (IS_ENABLED(CONFIG_NUMA))
+-		proc_create_seq_private("vmallocinfo", 0400, NULL,
+-				&vmalloc_op,
+-				nr_node_ids * sizeof(unsigned int), NULL);
+-	else
+-		proc_create_seq("vmallocinfo", 0400, NULL, &vmalloc_op);
++		priv_data = kmalloc(nr_node_ids * sizeof(unsigned int), GFP_KERNEL);
++
++	proc_create_single_data("vmallocinfo",
++		0400, NULL, vmalloc_info_show, priv_data);
++
+ 	return 0;
+ }
+ module_init(proc_vmalloc_init);
 -- 
 2.39.2
 
