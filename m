@@ -1,401 +1,136 @@
-Return-Path: <linux-kernel+bounces-14156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 075F6821887
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:48:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B32C821889
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:48:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F329280D9A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:48:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA55E1F2202F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 08:48:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C9F5695;
-	Tue,  2 Jan 2024 08:48:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1767C8F5;
+	Tue,  2 Jan 2024 08:48:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF42B53AF
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 08:48:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rKaR9-0004UX-8C; Tue, 02 Jan 2024 09:47:47 +0100
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rKaR5-0038oO-JY; Tue, 02 Jan 2024 09:47:44 +0100
-Received: from mfe by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rKaR6-009tC8-J4; Tue, 02 Jan 2024 09:47:44 +0100
-Date: Tue, 2 Jan 2024 09:47:44 +0100
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: krzysztof.kozlowski@linaro.org, devicetree@vger.kernel.org,
-	conor+dt@kernel.org, hongxing.zhu@nxp.com,
-	krzysztof.kozlowski+dt@linaro.org, imx@lists.linux.dev,
-	linux-pci@vger.kernel.org, lpieralisi@kernel.org,
-	linux-kernel@vger.kernel.org, s.hauer@pengutronix.de,
-	helgaas@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de,
-	manivannan.sadhasivam@linaro.org, bhelgaas@google.com,
-	shawnguo@kernel.org, kw@linux.com, festevam@gmail.com,
-	robh@kernel.org, linux-arm-kernel@lists.infradead.org,
-	l.stach@pengutronix.de
-Subject: Re: [PATCH v7 01/16] PCI: imx6: Simplify clock handling by using
- bulk_clk_*() function
-Message-ID: <20240102084744.tyquwp6hkb36tfxg@pengutronix.de>
-References: <20231227182727.1747435-1-Frank.Li@nxp.com>
- <20231227182727.1747435-2-Frank.Li@nxp.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FD816AA7;
+	Tue,  2 Jan 2024 08:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5ed10316e22so47449257b3.3;
+        Tue, 02 Jan 2024 00:48:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704185284; x=1704790084;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fznygzUD7eBbAPtHsNQrcNeZZd6ceLfwc79V8Fm28m4=;
+        b=G1wbpQfKaHxJlHybzeWB83/NCY8tAmKqw2RCPGiyePIP/c2ySKvO89MIlgGqloQJ8M
+         8WwgQZBGLPYO/GrNz9dUc+ZaGi3LAL1g3RNe3/IIjoMNOw1mIyNYcxcH4sYOYddv/Cmi
+         YCahPQZFj2RQHniGPFwcqaiCqcxK155zA37Yugj/cLmoXTOR+1mIL/tzrLURIaGKA0Ev
+         Ce9cLUCleelEga5ksm4+ZwWQjfxbPReaHbhi1KXVuKfGOWKR9dVpS7Hldf8kyRUPhoYb
+         IifKZLqYg0q2SjVT783WdoAICDCBWZET9oC90kVkkpenJTEEMBuQV5bXNsEpm6OzirQ2
+         SGWA==
+X-Gm-Message-State: AOJu0YxNF+nRyZ+k2l9ohL41cl39wwMm6P8d/xcje+3zT6wugRRQqC27
+	ONE9XKDrABkGKcBCm/HY2XJF13S3HBSzSw==
+X-Google-Smtp-Source: AGHT+IEes6m6y0dkBIa+RP4EnHgfQsn76oC0iu4atlmk8tIV8aQVUBmIDSkOVVNNwgDoMjGfRDWLZg==
+X-Received: by 2002:a05:6902:1b0d:b0:dbd:55d1:3d63 with SMTP id eh13-20020a0569021b0d00b00dbd55d13d63mr7557109ybb.129.1704185284149;
+        Tue, 02 Jan 2024 00:48:04 -0800 (PST)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
+        by smtp.gmail.com with ESMTPSA id b19-20020a25ae93000000b00dbdb2966f67sm9991260ybj.24.2024.01.02.00.48.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jan 2024 00:48:03 -0800 (PST)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5e745891a69so74043937b3.2;
+        Tue, 02 Jan 2024 00:48:03 -0800 (PST)
+X-Received: by 2002:a81:5b46:0:b0:5d8:d93:f02f with SMTP id
+ p67-20020a815b46000000b005d80d93f02fmr10057429ywb.87.1704185282827; Tue, 02
+ Jan 2024 00:48:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231227182727.1747435-2-Frank.Li@nxp.com>
-User-Agent: NeoMutt/20180716
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
+ <20231216033300.3553457-1-kent.overstreet@linux.dev> <20231216033300.3553457-10-kent.overstreet@linux.dev>
+ <CAMuHMdVRDQQmeO0ggyW-O+de45abyktwYH3ZFF1=mqd2iQXE1Q@mail.gmail.com> <20231220213913.gptbcbpwb4q3prtf@moria.home.lan>
+In-Reply-To: <20231220213913.gptbcbpwb4q3prtf@moria.home.lan>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 2 Jan 2024 09:47:51 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWrwqOEmZ=v3Fou5OgcBxzPrP01hycV6PVN3EP3FHuocQ@mail.gmail.com>
+Message-ID: <CAMuHMdWrwqOEmZ=v3Fou5OgcBxzPrP01hycV6PVN3EP3FHuocQ@mail.gmail.com>
+Subject: Re: [PATCH 42/50] sem: Split out sem_types.h
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, tglx@linutronix.de, x86@kernel.org, 
+	tj@kernel.org, peterz@infradead.org, mathieu.desnoyers@efficios.com, 
+	paulmck@kernel.org, keescook@chromium.org, dave.hansen@linux.intel.com, 
+	mingo@redhat.com, will@kernel.org, longman@redhat.com, boqun.feng@gmail.com, 
+	brauner@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Frank,
+Hi Kent,
 
-On 23-12-27, Frank Li wrote:
-> Refactors the clock handling logic. Adds clk_names[] define in drvdata.
-> Using clk_bulk*() api simplifies the code.
+On Wed, Dec 20, 2023 at 10:39=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+> On Wed, Dec 20, 2023 at 12:53:46PM +0100, Geert Uytterhoeven wrote:
+> > On Sat, Dec 16, 2023 at 4:37=E2=80=AFAM Kent Overstreet
+> > <kent.overstreet@linux.dev> wrote:
+> > > More sched.h dependency pruning.
+> > >
+> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> >
+> > Thanks for your patch, which is now commit eb72d60ccaed883a ("sem:
+> > Split out sem_types.h") in next-20231220.
+> >
+> > $ make ARCH=3Dm68k defconfig arch/m68k/kernel/asm-offsets.i
+> > *** Default configuration is based on 'multi_defconfig'
+> > #
+> > # No change to .config
+> > #
+> >   UPD     include/config/kernel.release
+> >   UPD     include/generated/utsrelease.h
+> >   CC      arch/m68k/kernel/asm-offsets.s
+> > In file included from arch/m68k/kernel/asm-offsets.c:15:
+> > ./include/linux/sched.h:551:3: error: conflicting types for
+> > =E2=80=98____cacheline_aligned=E2=80=99
+> >   551 | } ____cacheline_aligned;
+> >       |   ^~~~~~~~~~~~~~~~~~~~~
+> > ./include/linux/sched.h:509:3: note: previous declaration of
+> > =E2=80=98____cacheline_aligned=E2=80=99 was here
+> >   509 | } ____cacheline_aligned;
+> >       |   ^~~~~~~~~~~~~~~~~~~~~
+> > make[3]: *** [scripts/Makefile.build:116:
+> > arch/m68k/kernel/asm-offsets.s] Error 1
+> > make[2]: *** [Makefile:1191: prepare0] Error 2
+> > make[1]: *** [Makefile:350: __build_one_by_one] Error 2
+> > make: *** [Makefile:234: __sub-make] Error 2
+>
+> Is this a build failure on linux-next, or that specific commit?
 
-does this influence the clock enable/disable sequence ordering? Just
-asking to avoid regressions on older platforms which may require some
-sort of order (e.g. require clock-a before clock-b).
+On this specific commit.
 
-Regards,
-  Marco
+> It looks like this should be fixed in a later commit that includes
+> cache.h in sched.h; I'll move that include back to this patch.
 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
-> 
-> Notes:
->     Change from v4 to v5
->     - update commit message
->     - direct using clk name list, instead of macro
->     - still keep caculate clk list count because sizeof return pre allocated
->     array size.
->     
->     Change from v3 to v4
->     - using clk_bulk_*() API
->     Change from v1 to v3
->     - none
-> 
->  drivers/pci/controller/dwc/pci-imx6.c | 125 ++++++++------------------
->  1 file changed, 35 insertions(+), 90 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 74703362aeec7..50d9faaa17f71 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -61,12 +61,15 @@ enum imx6_pcie_variants {
->  #define IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE	BIT(1)
->  #define IMX6_PCIE_FLAG_SUPPORTS_SUSPEND		BIT(2)
->  
-> +#define IMX6_PCIE_MAX_CLKS       6
-> +
->  struct imx6_pcie_drvdata {
->  	enum imx6_pcie_variants variant;
->  	enum dw_pcie_device_mode mode;
->  	u32 flags;
->  	int dbi_length;
->  	const char *gpr;
-> +	const char *clk_names[IMX6_PCIE_MAX_CLKS];
->  };
->  
->  struct imx6_pcie {
-> @@ -74,11 +77,8 @@ struct imx6_pcie {
->  	int			reset_gpio;
->  	bool			gpio_active_high;
->  	bool			link_is_up;
-> -	struct clk		*pcie_bus;
-> -	struct clk		*pcie_phy;
-> -	struct clk		*pcie_inbound_axi;
-> -	struct clk		*pcie;
-> -	struct clk		*pcie_aux;
-> +	struct clk_bulk_data	clks[IMX6_PCIE_MAX_CLKS];
-> +	u32			clks_cnt;
->  	struct regmap		*iomuxc_gpr;
->  	u16			msi_ctrl;
->  	u32			controller_id;
-> @@ -407,13 +407,18 @@ static void imx7d_pcie_wait_for_phy_pll_lock(struct imx6_pcie *imx6_pcie)
->  
->  static int imx6_setup_phy_mpll(struct imx6_pcie *imx6_pcie)
->  {
-> -	unsigned long phy_rate = clk_get_rate(imx6_pcie->pcie_phy);
-> +	unsigned long phy_rate = 0;
->  	int mult, div;
->  	u16 val;
-> +	int i;
->  
->  	if (!(imx6_pcie->drvdata->flags & IMX6_PCIE_FLAG_IMX6_PHY))
->  		return 0;
->  
-> +	for (i = 0; i < imx6_pcie->clks_cnt; i++)
-> +		if (strncmp(imx6_pcie->clks[i].id, "pcie_phy", 8) == 0)
-> +			phy_rate = clk_get_rate(imx6_pcie->clks[i].clk);
-> +
->  	switch (phy_rate) {
->  	case 125000000:
->  		/*
-> @@ -550,19 +555,11 @@ static int imx6_pcie_attach_pd(struct device *dev)
->  
->  static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
->  {
-> -	struct dw_pcie *pci = imx6_pcie->pci;
-> -	struct device *dev = pci->dev;
->  	unsigned int offset;
->  	int ret = 0;
->  
->  	switch (imx6_pcie->drvdata->variant) {
->  	case IMX6SX:
-> -		ret = clk_prepare_enable(imx6_pcie->pcie_inbound_axi);
-> -		if (ret) {
-> -			dev_err(dev, "unable to enable pcie_axi clock\n");
-> -			break;
-> -		}
-> -
->  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
->  				   IMX6SX_GPR12_PCIE_TEST_POWERDOWN, 0);
->  		break;
-> @@ -589,12 +586,6 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
->  	case IMX8MQ_EP:
->  	case IMX8MP:
->  	case IMX8MP_EP:
-> -		ret = clk_prepare_enable(imx6_pcie->pcie_aux);
-> -		if (ret) {
-> -			dev_err(dev, "unable to enable pcie_aux clock\n");
-> -			break;
-> -		}
-> -
->  		offset = imx6_pcie_grp_offset(imx6_pcie);
->  		/*
->  		 * Set the over ride low and enabled
-> @@ -615,9 +606,6 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
->  static void imx6_pcie_disable_ref_clk(struct imx6_pcie *imx6_pcie)
->  {
->  	switch (imx6_pcie->drvdata->variant) {
-> -	case IMX6SX:
-> -		clk_disable_unprepare(imx6_pcie->pcie_inbound_axi);
-> -		break;
->  	case IMX6QP:
->  	case IMX6Q:
->  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR1,
-> @@ -631,14 +619,6 @@ static void imx6_pcie_disable_ref_clk(struct imx6_pcie *imx6_pcie)
->  				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL,
->  				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL);
->  		break;
-> -	case IMX8MM:
-> -	case IMX8MM_EP:
-> -	case IMX8MQ:
-> -	case IMX8MQ_EP:
-> -	case IMX8MP:
-> -	case IMX8MP_EP:
-> -		clk_disable_unprepare(imx6_pcie->pcie_aux);
-> -		break;
->  	default:
->  		break;
->  	}
-> @@ -650,23 +630,9 @@ static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie)
->  	struct device *dev = pci->dev;
->  	int ret;
->  
-> -	ret = clk_prepare_enable(imx6_pcie->pcie_phy);
-> -	if (ret) {
-> -		dev_err(dev, "unable to enable pcie_phy clock\n");
-> +	ret =  clk_bulk_prepare_enable(imx6_pcie->clks_cnt, imx6_pcie->clks);
-> +	if (ret)
->  		return ret;
-> -	}
-> -
-> -	ret = clk_prepare_enable(imx6_pcie->pcie_bus);
-> -	if (ret) {
-> -		dev_err(dev, "unable to enable pcie_bus clock\n");
-> -		goto err_pcie_bus;
-> -	}
-> -
-> -	ret = clk_prepare_enable(imx6_pcie->pcie);
-> -	if (ret) {
-> -		dev_err(dev, "unable to enable pcie clock\n");
-> -		goto err_pcie;
-> -	}
->  
->  	ret = imx6_pcie_enable_ref_clk(imx6_pcie);
->  	if (ret) {
-> @@ -679,11 +645,7 @@ static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie)
->  	return 0;
->  
->  err_ref_clk:
-> -	clk_disable_unprepare(imx6_pcie->pcie);
-> -err_pcie:
-> -	clk_disable_unprepare(imx6_pcie->pcie_bus);
-> -err_pcie_bus:
-> -	clk_disable_unprepare(imx6_pcie->pcie_phy);
-> +	clk_bulk_disable_unprepare(imx6_pcie->clks_cnt, imx6_pcie->clks);
->  
->  	return ret;
->  }
-> @@ -691,9 +653,7 @@ static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie)
->  static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie)
->  {
->  	imx6_pcie_disable_ref_clk(imx6_pcie);
-> -	clk_disable_unprepare(imx6_pcie->pcie);
-> -	clk_disable_unprepare(imx6_pcie->pcie_bus);
-> -	clk_disable_unprepare(imx6_pcie->pcie_phy);
-> +	clk_bulk_disable_unprepare(imx6_pcie->clks_cnt, imx6_pcie->clks);
->  }
->  
->  static void imx6_pcie_assert_core_reset(struct imx6_pcie *imx6_pcie)
-> @@ -1305,32 +1265,19 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  		return imx6_pcie->reset_gpio;
->  	}
->  
-> -	/* Fetch clocks */
-> -	imx6_pcie->pcie_bus = devm_clk_get(dev, "pcie_bus");
-> -	if (IS_ERR(imx6_pcie->pcie_bus))
-> -		return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_bus),
-> -				     "pcie_bus clock source missing or invalid\n");
-> +	while (imx6_pcie->drvdata->clk_names[imx6_pcie->clks_cnt]) {
-> +		int i = imx6_pcie->clks_cnt;
-> +
-> +		imx6_pcie->clks[i].id = imx6_pcie->drvdata->clk_names[i];
-> +		imx6_pcie->clks_cnt++;
-> +	}
->  
-> -	imx6_pcie->pcie = devm_clk_get(dev, "pcie");
-> -	if (IS_ERR(imx6_pcie->pcie))
-> -		return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie),
-> -				     "pcie clock source missing or invalid\n");
-> +	/* Fetch clocks */
-> +	ret = devm_clk_bulk_get(dev, imx6_pcie->clks_cnt, imx6_pcie->clks);
-> +	if (ret)
-> +		return ret;
->  
->  	switch (imx6_pcie->drvdata->variant) {
-> -	case IMX6SX:
-> -		imx6_pcie->pcie_inbound_axi = devm_clk_get(dev,
-> -							   "pcie_inbound_axi");
-> -		if (IS_ERR(imx6_pcie->pcie_inbound_axi))
-> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_inbound_axi),
-> -					     "pcie_inbound_axi clock missing or invalid\n");
-> -		break;
-> -	case IMX8MQ:
-> -	case IMX8MQ_EP:
-> -		imx6_pcie->pcie_aux = devm_clk_get(dev, "pcie_aux");
-> -		if (IS_ERR(imx6_pcie->pcie_aux))
-> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_aux),
-> -					     "pcie_aux clock source missing or invalid\n");
-> -		fallthrough;
->  	case IMX7D:
->  		if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
->  			imx6_pcie->controller_id = 1;
-> @@ -1353,10 +1300,6 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  	case IMX8MM_EP:
->  	case IMX8MP:
->  	case IMX8MP_EP:
-> -		imx6_pcie->pcie_aux = devm_clk_get(dev, "pcie_aux");
-> -		if (IS_ERR(imx6_pcie->pcie_aux))
-> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_aux),
-> -					     "pcie_aux clock source missing or invalid\n");
->  		imx6_pcie->apps_reset = devm_reset_control_get_exclusive(dev,
->  									 "apps");
->  		if (IS_ERR(imx6_pcie->apps_reset))
-> @@ -1372,14 +1315,6 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  	default:
->  		break;
->  	}
-> -	/* Don't fetch the pcie_phy clock, if it has abstract PHY driver */
-> -	if (imx6_pcie->phy == NULL) {
-> -		imx6_pcie->pcie_phy = devm_clk_get(dev, "pcie_phy");
-> -		if (IS_ERR(imx6_pcie->pcie_phy))
-> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_phy),
-> -					     "pcie_phy clock source missing or invalid\n");
-> -	}
-> -
->  
->  	/* Grab turnoff reset */
->  	imx6_pcie->turnoff_reset = devm_reset_control_get_optional_exclusive(dev, "turnoff");
-> @@ -1477,6 +1412,7 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->  			 IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE,
->  		.dbi_length = 0x200,
->  		.gpr = "fsl,imx6q-iomuxc-gpr",
-> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
->  	},
->  	[IMX6SX] = {
->  		.variant = IMX6SX,
-> @@ -1484,6 +1420,7 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->  			 IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE |
->  			 IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
->  		.gpr = "fsl,imx6q-iomuxc-gpr",
-> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_inbound_axi"},
->  	},
->  	[IMX6QP] = {
->  		.variant = IMX6QP,
-> @@ -1492,40 +1429,48 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->  			 IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
->  		.dbi_length = 0x200,
->  		.gpr = "fsl,imx6q-iomuxc-gpr",
-> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
->  	},
->  	[IMX7D] = {
->  		.variant = IMX7D,
->  		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
->  		.gpr = "fsl,imx7d-iomuxc-gpr",
-> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
->  	},
->  	[IMX8MQ] = {
->  		.variant = IMX8MQ,
->  		.gpr = "fsl,imx8mq-iomuxc-gpr",
-> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_aux"},
->  	},
->  	[IMX8MM] = {
->  		.variant = IMX8MM,
->  		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
->  		.gpr = "fsl,imx8mm-iomuxc-gpr",
-> +		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
->  	},
->  	[IMX8MP] = {
->  		.variant = IMX8MP,
->  		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
->  		.gpr = "fsl,imx8mp-iomuxc-gpr",
-> +		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
->  	},
->  	[IMX8MQ_EP] = {
->  		.variant = IMX8MQ_EP,
->  		.mode = DW_PCIE_EP_TYPE,
->  		.gpr = "fsl,imx8mq-iomuxc-gpr",
-> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_aux"},
->  	},
->  	[IMX8MM_EP] = {
->  		.variant = IMX8MM_EP,
->  		.mode = DW_PCIE_EP_TYPE,
->  		.gpr = "fsl,imx8mm-iomuxc-gpr",
-> +		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
->  	},
->  	[IMX8MP_EP] = {
->  		.variant = IMX8MP_EP,
->  		.mode = DW_PCIE_EP_TYPE,
->  		.gpr = "fsl,imx8mp-iomuxc-gpr",
-> +		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
->  	},
->  };
->  
-> -- 
-> 2.34.1
-> 
-> 
-> 
+Indeed. The robots reported a build failure, and bisection arrived
+at this (different) build failure first.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
