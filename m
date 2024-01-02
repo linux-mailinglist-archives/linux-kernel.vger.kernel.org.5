@@ -1,108 +1,94 @@
-Return-Path: <linux-kernel+bounces-14853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EC66822336
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:22:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26C2A82233A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:24:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28AE7B20BAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:22:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA0541F23154
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EE1E168B4;
-	Tue,  2 Jan 2024 21:21:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 768A3168B1;
+	Tue,  2 Jan 2024 21:24:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="FQzzBiLq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QbIJ6/Qo"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=merlins.org header.i=@merlins.org header.b="g7KAkPF0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65F73168A2;
-	Tue,  2 Jan 2024 21:21:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 37DF85C0545;
-	Tue,  2 Jan 2024 16:21:54 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 02 Jan 2024 16:21:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1704230514; x=1704316914; bh=f48AgWcFEp
-	gF/0dIz78P2eBfvCrK498VxBEFdpVW/rM=; b=FQzzBiLq5QUbTq1IZJ0HkCziBk
-	JsoKK0Jr4k1HUdqKWl9KoDqL4KG09C6julFyTt+kVrdMqdqKiW9HuB3aKQcB1Dni
-	RM7N9eQofxupW5FLjmtoWpCNmcN/mcdcs8ZP4Tnpj4nia3szOI1JLoSg6Jgrqt0p
-	2pLJhFeH74QgrDqvRtYIMCKjOW8I1Bi3NovwmJEtyjWdPg3XXOpg36twEtQogO0U
-	tsatLo1KDyZObUqq0Tpa03mc8O8fR35RID1xz6spujZ+Ps5zaPbIL+aCY+/YmOSm
-	QCFMUry4U1Do4yoz5gVw+NWNDOeCY4POEyKTXnCfOr0QIu8iteE8oRTxffVg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704230514; x=1704316914; bh=f48AgWcFEpgF/0dIz78P2eBfvCrK
-	498VxBEFdpVW/rM=; b=QbIJ6/QoXywQtwSe+5dh10lXAJ83JBHqoG4WF59ypa1T
-	/22VVdNsWpPPKRSL+TnF7CSidnW3ONE7odkNkMtWdXc97jdRlNfAX+66Mm0THCxH
-	KG9fNZKBX50WiGT8Yo/MEAN/riJIx97j8j63bWhy71BkPlzGw3GQvjNCrU8gXYBC
-	CxGoJllZmf62dkf5ad4WqZPHrZP/Xqu3RsJN4rZZEEBNCyEz0asR+xWyzHHWDhRl
-	KBFtzoirvB/zxSDj/o9TfNNGM8JM7Bm1fBrNsBPFxeVQa5xAJ33r5202HZ3CfzbQ
-	VuTt0zIvMEUYwy68SS8YldC9p1go2yur3uExhtGMtA==
-X-ME-Sender: <xms:cn6UZZudzgM_xiTPPs5s7-WKrTF8113mXEQ1abPKk9VTMS3z3aWhsA>
-    <xme:cn6UZSd5bD2ds1yu4kq5KTnV5A0S1CdobdV0m3yQipfmA1K9T_xDzusWta3E_F6qH
-    7hl_tVB69Hu8DqaS-A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegfedgjeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
-    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:cn6UZcz3XBVK1YSXLXIzypeVFTsiJHbub1dnyoCOIZbHxVy2W4tHVA>
-    <xmx:cn6UZQM2KjwdiioUTigneXkBZtxjL8ekB0uqfXNSO_PnLI2Pr7mhvA>
-    <xmx:cn6UZZ91hyuFntkw5wnrFiLrKYTubwn79lQDZoCICLexKsBEn3tW-Q>
-    <xmx:cn6UZSObkumm59_nmBy5_qbBhHepVu_bC-zmWiWfrcvnEZKoHt_GrA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id EEC21B6008D; Tue,  2 Jan 2024 16:21:53 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE5A168A2;
+	Tue,  2 Jan 2024 21:24:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=merlins.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=merlins.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=merlins.org
+	; s=key; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=jEUidlbRkh+sRXZoW4h6WobGnL5gbYzACItvfn2hM+U=; b=g7KAkPF0qoG7mLFbqBmO2qi8CY
+	XpyiPHFPcaiIiXMIViLFIM+WNYJHmwua303AS7aMg1KHF4DMdYXD6xESS3N4ATwfEPu1PRnZj6+fN
+	SnM4ymPxRALtu1lCSvsW6fgA8xCvv7GudddxcUDqp7vr4quYnB60M+Tgeo5FBGOmTQg7woxqDsRy7
+	sDy0DM3Wf4lKYEo67R6NrCY5EtIdoZQXJswZ636VHtt5OqUHmyWQtwA6dTq/SnMZf0vKuQo7Yy4LM
+	PTpFe6T5h2ses5bisb3e0rXOWUG7m6/zhDvxbPh70CXCaNXZHiqFZMI83l3ppVfpf4ORZ2Vuo0XXz
+	pTXkFU0A==;
+Received: from lfbn-idf3-1-20-89.w81-249.abo.wanadoo.fr ([81.249.147.89]:54622 helo=sauron.svh.merlins.org)
+	by mail1.merlins.org with esmtpsa 
+	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
+	id 1rKmFY-00062a-7h by authid <merlins.org> with srv_auth_plain; Tue, 02 Jan 2024 13:24:36 -0800
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.96)
+	(envelope-from <marc@merlins.org>)
+	id 1rKmFW-0063xS-18;
+	Tue, 02 Jan 2024 13:24:34 -0800
+Date: Tue, 2 Jan 2024 13:24:34 -0800
+From: Marc MERLIN <marc@merlins.org>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Rander Wang <rander.wang@intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: sof-audio-pci-intel-tgl/soundwire 6.6.8 kernel outputs no sound
+ on speakers but works on headphones => missing alsa-ucm-conf
+Message-ID: <ZZR_Et3vvv-bmQ0H@merlins.org>
+References: <20231223234430.GA11359@merlins.org>
+ <alpine.DEB.2.22.394.2401021117370.14041@eliteleevi.tm.intel.com>
+ <ZZRP8RqT83cE-S5m@merlins.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <fb69e804-6a9d-4052-a96e-40f8a20c189a@app.fastmail.com>
-In-Reply-To: <d1ce6aba-1b10-471c-ba60-10effa1dac10@corelatus.se>
-References: <d1ce6aba-1b10-471c-ba60-10effa1dac10@corelatus.se>
-Date: Tue, 02 Jan 2024 22:21:33 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Thomas Lange" <thomas@corelatus.se>, Netdev <netdev@vger.kernel.org>,
- linux-kernel@vger.kernel.org
-Cc: "Willem de Bruijn" <willemdebruijn.kernel@gmail.com>,
- =?UTF-8?Q?J=C3=B6rn-Thorben_Hinz?= <jthinz@mailbox.tu-berlin.de>,
- "Deepa Dinamani" <deepa.kernel@gmail.com>,
- "David S . Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>
-Subject: Re: [PATCH net] net: Implement missing SO_TIMESTAMPING_NEW cmsg support
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZRP8RqT83cE-S5m@merlins.org>
+X-Sysadmin: BOFH
+X-URL: http://marc.merlins.org/
+X-SA-Exim-Connect-IP: 81.249.147.89
+X-SA-Exim-Mail-From: marc@merlins.org
 
-On Tue, Jan 2, 2024, at 22:13, Thomas Lange wrote:
-> Commit 9718475e6908 ("socket: Add SO_TIMESTAMPING_NEW") added the new
-> socket option SO_TIMESTAMPING_NEW. However, it was never implemented in
-> __sock_cmsg_send thus breaking SO_TIMESTAMPING cmsg for platforms using
-> SO_TIMESTAMPING_NEW.
->
-> Fixes: 9718475e6908 ("socket: Add SO_TIMESTAMPING_NEW")
-> Link: 
-> https://lore.kernel.org/netdev/6a7281bf-bc4a-4f75-bb88-7011908ae471@app.fastmail.com/
-> Signed-off-by: Thomas Lange <thomas@corelatus.se>
+On Tue, Jan 02, 2024 at 10:03:29AM -0800, Marc MERLIN wrote:
+> 1) for sure, debian package alsa-ucm-conf should be required, not
+> recommended. It's not big, people who can't keep track of everything
+> that changes all the time, have no idea that they need it, and really
+> need it installed by default if their hardware requires it.
+> I've filed a couple of bugs with them, including on the package
+> description that gives little clue that the package can be so essential
 
-Cc: stable@vger.kernel.org
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Done:
+
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1059871
+alsa-ucm-conf should be a required package by libasound2-data, it's essential on some sound hardware
+
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1059872
+alsa-ucm-conf should be a required package, it's essential on some sound hardware
+
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
 
