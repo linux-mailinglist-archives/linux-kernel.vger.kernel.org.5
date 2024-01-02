@@ -1,130 +1,82 @@
-Return-Path: <linux-kernel+bounces-14301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF6CC821B13
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:38:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A02E8821B2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:46:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFB731C21DF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:38:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2682E282EA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:46:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFAE0EADD;
-	Tue,  2 Jan 2024 11:37:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b="HfBx0L9S"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7842CEAE3;
+	Tue,  2 Jan 2024 11:46:29 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [208.88.110.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from cstnet.cn (smtp37.cstnet.cn [159.226.251.37])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 415BAEAC2;
-	Tue,  2 Jan 2024 11:37:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=savoirfairelinux.com
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id DFB4E9C0888;
-	Tue,  2 Jan 2024 06:37:40 -0500 (EST)
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id oH47By21Q_s9; Tue,  2 Jan 2024 06:37:40 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 50F959C0957;
-	Tue,  2 Jan 2024 06:37:40 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 50F959C0957
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
-	t=1704195460; bh=bAsNfTDPGcy9UE/qR8q9C/MYhrYIBcUMKG2G3Oi4VLE=;
-	h=Date:From:To:Message-ID:MIME-Version;
-	b=HfBx0L9SYhFxNTXnatyaVVD/0MKoxKv1DkFPwS4FhP21ZdGhZFAP2Yw2hgXG5W1+t
-	 DG22L6dYlNdqI/yA4nolhiQbAYRMk3Yvd1vhj35YZTZ1keQ1XC+emTImMoQmjgdIjh
-	 alA58hoYPXIYl8/8523fTVCfrQVCNMBqb6qPyKUQ1uoRLrwWFtxWeVm73HyoV71weA
-	 Vcvll8Fbldw/DCB9WQCaUVbMMf9+FXj0uatTbgq9RGC183UtRM5ockSfi6AD3jQlfV
-	 NlAXW2vSrvxzA0K2KrHkaWWkgrrQsn+4DCiJZlStF1JhWW5TYl6ACLELjZgkVicaEV
-	 5OCMfpqr9RX7g==
-X-Virus-Scanned: amavis at mail.savoirfairelinux.com
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id 20Ly5X62OB9G; Tue,  2 Jan 2024 06:37:40 -0500 (EST)
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [192.168.48.237])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 1AD139C0888;
-	Tue,  2 Jan 2024 06:37:40 -0500 (EST)
-Date: Tue, 2 Jan 2024 06:37:39 -0500 (EST)
-From: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, 
-	shengjiu wang <shengjiu.wang@gmail.com>, 
-	Xiubo Lee <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, 
-	Nicolin Chen <nicoleotsuka@gmail.com>, 
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	linux-sound <linux-sound@vger.kernel.org>, 
-	devicetree <devicetree@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	alsa-devel <alsa-devel@alsa-project.org>, 
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, 
-	Philip-Dylan Gleonec <philip-dylan.gleonec@savoirfairelinux.com>
-Message-ID: <1300509761.24764.1704195459987.JavaMail.zimbra@savoirfairelinux.com>
-In-Reply-To: <20231220222550.GA1232936-robh@kernel.org>
-References: <20231218124058.2047167-1-elinor.montmasson@savoirfairelinux.com> <20231218124058.2047167-11-elinor.montmasson@savoirfairelinux.com> <20231220222550.GA1232936-robh@kernel.org>
-Subject: Re: [PATCHv3 RESEND 10/10] ASoC: dt-bindings: fsl-asoc-card: add
- compatible for generic codec
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE70FEAD3;
+	Tue,  2 Jan 2024 11:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iie.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iie.ac.cn
+Received: from mengjingzi$iie.ac.cn ( [121.195.114.118] ) by
+ ajax-webmail-APP-12 (Coremail) ; Tue, 2 Jan 2024 19:38:31 +0800 (GMT+08:00)
+Date: Tue, 2 Jan 2024 19:38:31 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: =?UTF-8?B?5a2f5pWs5ae/?= <mengjingzi@iie.ac.cn>
+To: gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: inappropriate capability checks in tty_ioctl()
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.15 build 20230921(8ad33efc)
+ Copyright (c) 2002-2024 www.mailtech.cn cnic.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: Zimbra 8.8.15_GA_4581 (ZimbraWebClient - GC112 (Linux)/8.8.15_GA_4581)
-Thread-Topic: ASoC: dt-bindings: fsl-asoc-card: add compatible for generic codec
-Thread-Index: r/qDupTL/n3XOuEH8yE+GIqg/zABBQ==
+Message-ID: <19ed91a4.10d80.18cc9f7d2ea.Coremail.mengjingzi@iie.ac.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:tgCowADXTs+39ZNlWUMCAA--.21635W
+X-CM-SenderInfo: pphqwyxlqj6xo6llvhldfou0/1tbiBwAEE2WTyAWMFwAAsw
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW3Jw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-Hello,
-
-On Wednesday, 20 December, 2023 23:25:50, Rob Herring wrote:
-> On Mon, Dec 18, 2023 at 01:40:58PM +0100, Elinor Montmasson wrote: 
-> > +Optional, relevant only with the "fsl,imx-audio-generic" compatible: 
-> > + 
-> > + - cpu-slot-width : Indicates a specific TDM slot width in bits. 
-> > + - cpu-slot-num : Indicates a specific number of TDM slots per frame. 
-> 
-> Pretty sure I've seen other bindings with TDM slot properties. A sign we 
-> need something common if we don't already have something. 
-
-That's right, "tdm-slot.txt" already defines TDM bindings, I will
-use them with the utility function snd_soc_of_parse_tdm_slot().
-
-> > + - cpu-sysclk-freq-rx : Frequency of the CPU DAI sys clock for Rx. 
-> > + - cpu-sysclk-freq-tx : Frequency of the CPU DAI sys clock for Tx. 
-> > + 
-> > + - cpu-sysclk-dir-rx-out : Boolean property. Specifies sys clock direction 
-> > + as 'out' on initialization for Rx. 
-> > + If not set, default direction is 'in'. 
-> > + - cpu-sysclk-dir-tx-out : Boolean property. Specifies sys clock direction 
-> > + as 'out' on initialization for Tx. 
-> > + If not set, default direction is 'in'. 
-> 
-> Looks like clock stuff. Use the clock binding. 
-
-simple-card defines similar properties at the dai level:
-"system-clock-frequency" and "system-clock-direction-out".
-The first is used if no "clocks" binding is specified for the dai node.
-
-Maybe I could use a similar logic with fsl-asoc-card ?
-* adding a "clock-cpu" phandle property which should be the cpu clock.
-It will be used to retreive the frequency for both RX and TX.
-* keeping "cpu-sysclk-freq-rx"/"cpu-sysclk-freq-tx", which are used if
-no clock is provided, like "system-clock-frequency" in simple-card.
-* keep using "cpu-sysclk-dir-rx-out"/"cpu-sysclk-dir-tx-out", like
-"system-clock-direction-out" in simple card.
-
-Also, maybe I could rename my new properties:
-cpu-system-clock-frequency-tx, cpu-system-clock-direction-out-rx, ...
-It would better match those in simple-card as they do the same thing.
-
-Best regards,
-Elinor Montmasson
+SGkhCgpXZSB3b3VsZCBsaWtlIHRvIHByb3Bvc2UgYW4gYWRqdXN0bWVudCB0byB0aGUgY2FwYWJp
+bGl0eSBjaGVja3MgaW4gdGhlIHR0eV9pb2N0bCgpIGZ1bmN0aW9uLiBDdXJyZW50bHksIHRoZSBm
+dW5jdGlvbiB1c2VzIENBUF9TWVNfQURNSU4gdG8gcHJvdGVjdCB0aHJlZSBzdWJjb21tYW5kczog
+VElPQ0NPTlMsIFRJT0NTVEkgYW5kIFRJT0NWSEFOR1VQLiBXZSBwcm9wb3NlIHVwZGF0aW5nIHRo
+aXMgdG8gdXNlIENBUF9TWVNfVFRZX0NPTkZJRyBpbnN0ZWFkIGZvciB0aGUgZm9sbG93aW5nIHJl
+YXNvbnM6CgooMSkgQ0FQX1NZU19UVFlfQ09ORklHIGlzIG1vcmUgcmVsZXZhbnQgdG8gdGhlIGZ1
+bmN0aW9uczogVGhlIHRocmVlIHN1YmNvbW1hbmRzIGFyZSByZXNwb25zaWJsZSBmb3IgdHR5LXJl
+bGF0ZWQgZnVuY3Rpb25zOiByZWRpcmVjdGluZyBjb25zb2xlIG91dHB1dCAoVElPQ0NPTlMpLCBm
+YWtpbmcgaW5wdXQgdG8gYSB0ZXJtaW5hbCAoVElPQ1NUSSksIGFuZCBtYWtpbmcgdGhlIHRlcm1p
+bmFsIGJlIGh1bmcgdXAgKFRJT0NWSEFOR1VQKS4gQXMgdGhlIGRlZmluaXRpb25zIGluIHRoZSBj
+YXBhYmlsaXR5IG1hbnVhbCBwYWdlWzFdLCBDQVBfU1lTX1RUWV9DT05GSUcgaXMgc3BlY2lmaWNh
+bGx5IGRlc2lnbmVkIGZvciAiZW1wbG95aW5nIHZhcmlvdXMgcHJpdmlsZWdlZCBpb2N0bCgyKSBv
+cGVyYXRpb25zIG9uIHZpcnR1YWwgdGVybWluYWxzLiIgVGhpcyBhbGlnbnMgbW9yZSBjbG9zZWx5
+IHdpdGggdGhlIGludGVuZGVkIHVzYWdlIHNjZW5hcmlvIGNvbXBhcmVkIHRvIENBUF9TWVNfQURN
+SU4uCgooMikgQ29uc2lzdGVuY3k6IENBUF9TWVNfVFRZX0NPTkZJRyBpcyBhbHJlYWR5IGVtcGxv
+eWVkIGluIG90aGVyIHBhcnRzIG9mIHRoZSBrZXJuZWwgdG8gcHJvdGVjdCBUSU9DVkhBTkdVUC1s
+aWtlIGZ1bmN0aW9uYWxpdHkuIEZvciBpbnN0YW5jZSwgaW4gdHR5X2lvY3RsKCkgQ0FQX1NZU19B
+RE1JTiBpcyB1c2VkIGJlZm9yZSB0dHlfdmhhbmd1cCgpLCB3aGlsZSBpbiBTWVNDQUxMX0RFRklO
+RTAodmhhbmd1cCksIHdoaWNoIGxvY2F0ZWQgaW4gZnMvb3Blbi5jLCB0aGUgY2hlY2sgaXMgZG9u
+ZSB3aXRoIENBUF9TWVNfVFRZX0NPTkZJRyBiZWZvcmUgdHR5X3ZoYW5ndXAoKS4KCigzKSBNYWlu
+dGFpbmluZyBMZWFzdCBQcml2aWxlZ2U6IENBUF9TWVNfQVNNSU4gaXMgYWxyZWFkeSBvdmVybG9h
+ZGVkIGFuZCBrbm93biBhcyB0aGUgbmV3ICJyb290IlsyXS4gQWNjb3JkaW5nIHRvIHRoZSBtYW51
+YWwgcGFnZVsxXSDigJxkb24ndCBjaG9vc2UgQ0FQX1NZU19BRE1JTiBpZiB5b3UgY2FuIHBvc3Np
+Ymx5IGF2b2lkIGl04oCdLCBzd2l0Y2hpbmcgdG8gQ0FQX1NZU19UVFlfQ09ORklHIGNvdWxkIGJl
+IGhlbHBmdWwgZm9yIHN0YW5kYXJkaXppbmcgdGhlIHVzZSBvZiBjYXBhYmlsaXRpZXMgYW5kIGlt
+cGxlbWVudGluZyBsZWFzdCBwcml2aWxlZ2VzLiAKClRoaXMgaXNzdWUgZXhpc3RzIGluIHNldmVy
+YWwga2VybmVsIHZlcnNpb25zIGFuZCB3ZSBoYXZlIGNoZWNrZWQgaXQgb24gdGhlIGxhdGVzdCBz
+dGFibGUgcmVsZWFzZShMaW51eCA2LjYuOSkuIFdlIHdvdWxkIGFwcHJlY2lhdGUgeW91ciB0aG91
+Z2h0cyBhbmQgZmVlZGJhY2sgb24gdGhpcyBwcm9wb3NhbC4gVGhhbmsgeW91IGZvciB5b3VyIHRp
+bWUgYW5kIGNvbnNpZGVyYXRpb24uCgpCZXN0IHJlZ2FyZHMsCkppbmd6aQoKcmVmZXJlbmNlOgpb
+MV0gaHR0cHM6Ly93d3cubWFuNy5vcmcvbGludXgvbWFuLXBhZ2VzL21hbjcvY2FwYWJpbGl0aWVz
+LjcuaHRtbApbMl0gaHR0cHM6Ly9sd24ubmV0L0FydGljbGVzLzQ4NjMwNi8K
 
