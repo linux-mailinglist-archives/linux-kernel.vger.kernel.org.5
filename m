@@ -1,125 +1,106 @@
-Return-Path: <linux-kernel+bounces-14929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFB6A822499
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD38D82249D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 23:14:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6888A2878DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:13:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46B322878BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 22:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F1A61772F;
-	Tue,  2 Jan 2024 22:13:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E29171D4;
+	Tue,  2 Jan 2024 22:14:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QaFV9zW1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SaP6DsUn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F6017727;
-	Tue,  2 Jan 2024 22:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 402M0sHD000831;
-	Tue, 2 Jan 2024 22:13:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=81lbXW4HImZGl+eDhFTN5fAxXcaost06Oz288uO0jaQ=; b=Qa
-	FV9zW1EoWOM4jG3lejXyWdFpZnkFxrocibQp4TXCDJd2uJ/yWd8KWGLT43mARpfL
-	szlezZMPE61NDiMWrpw2+i4Tdy2AOJjpSNldman6yV9XAHZuKQXR3aw3mbmEH+q9
-	u2bX9SCy5QPMCF8EWQzq0YpeHSQkJpQYr0R+29g80syJy1LDmTibr+D17L9spQfH
-	6vNP6RwzDYo98Keuzhv5YifL1u3KHfstdRaCyy99AP+iCY00kiuinpX1zrMlL9YK
-	x0G6M4hTfUndSLfFC1PtQJGH3tA1TcRlQyvut84kEN9AedpsCtdq2LKsguyzBQQO
-	3GWKdHlVRAiuZ1IB0Xqw==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vch7n98pr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 22:13:17 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 402MDGMm013272
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 2 Jan 2024 22:13:16 GMT
-Received: from [10.71.111.96] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 2 Jan
- 2024 14:13:16 -0800
-Message-ID: <48e19422-77ba-a876-4552-783d54ac9bf6@quicinc.com>
-Date: Tue, 2 Jan 2024 14:13:15 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD68F171BF;
+	Tue,  2 Jan 2024 22:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-555aa7fd668so4189942a12.0;
+        Tue, 02 Jan 2024 14:14:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704233639; x=1704838439; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=nNtKRKHLT7GbRif0IHQKXzEMZSVRXKy9jF4fRiR/VhE=;
+        b=SaP6DsUnX1LOjT0yIHrbFmUGha0kBq/ZHP+ACS9ItNsrH8C7bxiLkM7vho1nFO3BtV
+         lStjvErkAXMco3DvgKz+BhBjq5vWeYOK8c7XtH5UcOE6J79HLx7oNepHR9w45TP4rfwH
+         cjCDgydCG3+oSuKzX+hq4Yw9mXF7kRwCoQOxMxVKu8jFzt49gxdSpS33xvg+JIEokbwO
+         yEev1IyUTxn4lFs3irQLPVUl3v32b8UbX6sICQJbaRnZuRUmSImwvTmaEs4EUA1GvNJY
+         7NAFjGQt3DKam9tMREkWA00ArsqHykIglbibVUboe+/t1m97BWmaGhyiIAM3MLpNo7nX
+         dRMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704233639; x=1704838439;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nNtKRKHLT7GbRif0IHQKXzEMZSVRXKy9jF4fRiR/VhE=;
+        b=nWwuyCJpC3C+sQAxBBTG0yG/eTKw3oD7c0v/485dOW9Bsp0jRdex/2QABGQs/EUgma
+         bWlYFWcdrfZroDXRRSnf7+VmtiZQu5s49eDctOzEejnZlR8Rsv1CU/Y2ws8lKqPN2ZvY
+         9hd0DWz52Y11cWWlKaQYDFRzashaq201vyKL4IoxvGHcXvB1UTv0tw9e0YEqCG0QJD6a
+         H0bixnvkcpas7lG88qu3IRU6BQINeVME3bmcNGyogc6McbqauN7foRIOtwEXIw0IOoPT
+         Rq8JrH6VNx97ZkE5LJE7305VgTM6MXMBkAWZLMUyarAI+V5LleVhB1LvBwp38RxtX6yw
+         mupw==
+X-Gm-Message-State: AOJu0YzQF/aY+bYKHHyX3iDiZqD7SyyERFlOpn8YfXq2ScGevBn55oZM
+	2ZGzT7MJl/M4izk/44NKEcM=
+X-Google-Smtp-Source: AGHT+IEt2lfwKc8ud/gUjAY0071TQZcjd/zfGADvdh0gXWS/csgwq/BmpisH8laLc0/X9noGpGIzpg==
+X-Received: by 2002:a17:906:74d3:b0:a27:ec73:7a89 with SMTP id z19-20020a17090674d300b00a27ec737a89mr1604424ejl.68.1704233638915;
+        Tue, 02 Jan 2024 14:13:58 -0800 (PST)
+Received: from [127.0.0.1] ([89.205.132.224])
+        by smtp.gmail.com with ESMTPSA id l1-20020a170907914100b00a27741ca951sm4950747ejs.108.2024.01.02.14.13.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jan 2024 14:13:58 -0800 (PST)
+Date: Tue, 02 Jan 2024 23:13:58 +0100
+From: Eric Woudstra <ericwouds@gmail.com>
+To: Daniel Golle <daniel@makrotopia.org>
+CC: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+ Alexander Couzens <lynxis@fe80.eu>, Andrew Lunn <andrew@lunn.ch>,
+ Heiner Kallweit <hkallweit1@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Frank Wunderlich <frank-w@public-files.de>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_RFC_net-next=5D_net=3A_pcs=3A_pcs-mtk-lyn?= =?US-ASCII?Q?xi_fix_mtk=5Fpcs=5Flynxi=5Fget=5Fstate=28=29_for_2500base-x?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <ZZRrk85SCDmo76NJ@pidgin.makrotopia.org>
+References: <20240102074408.1049203-1-ericwouds@gmail.com> <ZZP9GR15ufDbjGAJ@shell.armlinux.org.uk> <92190426-3614-4774-9E9F-18F121622788@gmail.com> <74223164-ab50-4d6d-a4f4-561b0a70d396@gmail.com> <ZZRrk85SCDmo76NJ@pidgin.makrotopia.org>
+Message-ID: <6666EB36-984E-4898-A41A-2D9713DE4DB0@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] drm/msm/dpu: fix kernel-doc warnings
-Content-Language: en-US
-To: Randy Dunlap <rdunlap@infradead.org>, <linux-kernel@vger.kernel.org>
-CC: <freedreno@lists.freedesktop.org>,
-        Vegard Nossum
-	<vegard.nossum@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>, <linux-arm-msm@vger.kernel.org>,
-        Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>,
-        Abhinav Kumar
-	<quic_abhinavk@quicinc.com>,
-        <dri-devel@lists.freedesktop.org>, Rob Clark
-	<robdclark@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann
-	<tzimmermann@suse.de>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        "Marijn Suijten" <marijn.suijten@somainline.org>,
-        Sean Paul <sean@poorly.run>
-References: <20231231060823.1934-1-rdunlap@infradead.org>
-From: Paloma Arellano <quic_parellan@quicinc.com>
-In-Reply-To: <20231231060823.1934-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: vVOOCgP4NBmMg3iT98FJWBz6hEU1c1Q9
-X-Proofpoint-ORIG-GUID: vVOOCgP4NBmMg3iT98FJWBz6hEU1c1Q9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 spamscore=0 clxscore=1011
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401020165
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+I believe the general idea is that phylink should be aware wether to use in=
+band or outband negotiation in order to setup the hardware correctly=2E Spe=
+aking of a situation where there is a PHY attached=2E
 
-On 12/30/2023 10:08 PM, Randy Dunlap wrote:
-> Correct all kernel-doc warnings in dpu_encoder.c and dpu_rm.c:
+On January 2, 2024 9:01:23 PM GMT+01:00, Daniel Golle <daniel@makrotopia=
+=2Eorg> wrote:
+>On Tue, Jan 02, 2024 at 08:33:32PM +0100, Eric Woudstra wrote:
+>> [=2E=2E=2E]
+>>=20
+>> So if phylink_mii_c22_pcs_decode_state() should not set the speed, then=
+ it is not correctly set somewhere else=2E
 >
-> dpu_encoder.c:212: warning: Excess struct member 'crtc_kickoff_cb' description in 'dpu_encoder_virt'
-> dpu_encoder.c:212: warning: Excess struct member 'crtc_kickoff_cb_data' description in 'dpu_encoder_virt'
-> dpu_encoder.c:212: warning: Excess struct member 'debugfs_root' description in 'dpu_encoder_virt'
+>Yes, but the fix should go to pcs-mtk-lynxi=2Ec and you don't need to
+>change phylink for it to work=2E
+>This should be enough:
+>https://patchwork=2Ekernel=2Eorg/project/netdevbpf/patch/091e466912f1333b=
+b76d23e95dc6019c9b71645f=2E1699565880=2Egit=2Edaniel@makrotopia=2Eorg/
 >
-> dpu_rm.c:35: warning: Excess struct member 'hw_res' description in 'dpu_rm_requirements'
-> dpu_rm.c:208: warning: No description found for return value of '_dpu_rm_get_lm_peer'
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reviewed-by: Paloma Arellano <quic_parellan@quicinc.com>
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Cc: Sean Paul <sean@poorly.run>
-> Cc: Marijn Suijten <marijn.suijten@somainline.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: freedreno@lists.freedesktop.org
-> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Vegard Nossum <vegard.nossum@oracle.com>
 
