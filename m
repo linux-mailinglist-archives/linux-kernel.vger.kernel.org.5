@@ -1,37 +1,38 @@
-Return-Path: <linux-kernel+bounces-14381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 325DE821C54
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:13:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5472A821C58
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:13:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5798282932
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:13:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 617731C22050
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:13:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D6B6FBED;
-	Tue,  2 Jan 2024 13:13:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05889FC14;
+	Tue,  2 Jan 2024 13:13:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nUUoJdqW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wXNKNFN5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3035FBE5
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 13:13:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411B7FBEF
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 13:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704201194;
+	t=1704201199;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=daO+8Vo0jNlvzwLRDw/Wt7KlxBb2Rk5joGViCE+fZW4=;
-	b=nUUoJdqW8b8LoXHm6jHb9AQoY7w7usMJmtiAEiG2xDm2XoFPm+hkRBm6Jl/cdjHsWd+4Nr
-	kezQIcH7hHdzuHg5+e9JelcznloIelv+/ZeX/+J885tGp/WhFMipVKmKMQiLZVYg0eD2hM
-	gsnUdbwcikV11Key7utkhN+Cmo9mvXs=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5jUJr4R6zMb6dInOd1l8MHQjoDUi83oQkc19tydUOUM=;
+	b=wXNKNFN5V2QUIIEBJ0cDhA/1XejAaQRMJMF38Uej4HkKHGocMOKkJyR8FJHUYIBh8b/xd0
+	hARFT4JBoor5YBUOWh0h26mYqSlEI0jo+wKgsAE/hBQ5trdzV5u88ffrxWuDT82wCOF+uR
+	okbyj35zpon6VTuBdHmYdXzMfgwdPIQ=
 From: Gang Li <gang.li@linux.dev>
 To: David Hildenbrand <david@redhat.com>,
 	David Rientjes <rientjes@google.com>,
@@ -43,9 +44,11 @@ Cc: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	ligang.bdlg@bytedance.com,
 	Gang Li <gang.li@linux.dev>
-Subject: [PATCH v3 0/7] hugetlb: parallelize hugetlb page init on boot
-Date: Tue,  2 Jan 2024 21:12:42 +0800
-Message-Id: <20240102131249.76622-1-gang.li@linux.dev>
+Subject: [PATCH v3 1/7] hugetlb: code clean for hugetlb_hstate_alloc_pages
+Date: Tue,  2 Jan 2024 21:12:43 +0800
+Message-Id: <20240102131249.76622-2-gang.li@linux.dev>
+In-Reply-To: <20240102131249.76622-1-gang.li@linux.dev>
+References: <20240102131249.76622-1-gang.li@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,79 +58,100 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Hi all, hugetlb init parallelization has now been updated to v3.
+The readability of `hugetlb_hstate_alloc_pages` is poor. By cleaning the
+code, its readability can be improved, facilitating future modifications.
 
-This series is tested on next-20240102 and can not be applied to v6.7-rc8.
+This patch extracts two functions to reduce the complexity of
+`hugetlb_hstate_alloc_pages` and has no functional changes.
 
-Update Summary:
-- Select CONFIG_PADATA as we use padata_do_multithreaded
-- Fix a race condition in h->next_nid_to_alloc
-- Fix local variable initialization issues
-- Remove RFC tag
+- hugetlb_hstate_alloc_pages_node_specific() to handle iterates through
+  each online node and performs allocation if necessary.
+- hugetlb_hstate_alloc_pages_report() report error during allocation.
+  And the value of h->max_huge_pages is updated accordingly.
 
-Thanks to the testing by David Rientjes, we now know that this patch reduce
-hugetlb 1G initialization time from 77s to 18.3s on a 12T machine[4].
+Signed-off-by: Gang Li <gang.li@linux.dev>
+---
+ mm/hugetlb.c | 46 +++++++++++++++++++++++++++++-----------------
+ 1 file changed, 29 insertions(+), 17 deletions(-)
 
-# Introduction
-Hugetlb initialization during boot takes up a considerable amount of time.
-For instance, on a 2TB system, initializing 1,800 1GB huge pages takes 1-2
-seconds out of 10 seconds. Initializing 11,776 1GB pages on a 12TB Intel
-host takes more than 1 minute[1]. This is a noteworthy figure.
-
-Inspired by [2] and [3], hugetlb initialization can also be accelerated
-through parallelization. Kernel already has infrastructure like
-padata_do_multithreaded, this patch uses it to achieve effective results
-by minimal modifications.
-
-[1] https://lore.kernel.org/all/783f8bac-55b8-5b95-eb6a-11a583675000@google.com/
-[2] https://lore.kernel.org/all/20200527173608.2885243-1-daniel.m.jordan@oracle.com/
-[3] https://lore.kernel.org/all/20230906112605.2286994-1-usama.arif@bytedance.com/
-[4] https://lore.kernel.org/all/76becfc1-e609-e3e8-2966-4053143170b6@google.com/
-
-# Test result
-        test          no patch(ms)   patched(ms)   saved   
- ------------------- -------------- ------------- -------- 
-  256c2t(4 node) 1G           4745          2024   57.34%
-  128c1t(2 node) 1G           3358          1712   49.02%
-      12t        1G          77000         18300   76.23%
-
-  256c2t(4 node) 2M           3336          1051   68.52%
-  128c1t(2 node) 2M           1943           716   63.15%
-
-# Change log
-Changes in v3:
-- Select CONFIG_PADATA as we use padata_do_multithreaded
-- Fix a race condition in h->next_nid_to_alloc
-- Fix local variable initialization issues
-- Remove RFC tag
-
-Changes in v2:
-- https://lore.kernel.org/all/20231208025240.4744-1-gang.li@linux.dev/
-- Reduce complexity with `padata_do_multithreaded`
-- Support 1G hugetlb
-
-v1:
-- https://lore.kernel.org/all/20231123133036.68540-1-gang.li@linux.dev/
-- parallelize 2M hugetlb initialization with workqueue
-
-Gang Li (7):
-  hugetlb: code clean for hugetlb_hstate_alloc_pages
-  hugetlb: split hugetlb_hstate_alloc_pages
-  padata: dispatch works on different nodes
-  hugetlb: pass *next_nid_to_alloc directly to
-    for_each_node_mask_to_alloc
-  hugetlb: have CONFIG_HUGETLBFS select CONFIG_PADATA
-  hugetlb: parallelize 2M hugetlb allocation and initialization
-  hugetlb: parallelize 1G hugetlb initialization
-
- fs/Kconfig              |   1 +
- include/linux/hugetlb.h |   2 +-
- include/linux/padata.h  |   3 +
- kernel/padata.c         |   8 +-
- mm/hugetlb.c            | 224 +++++++++++++++++++++++++++-------------
- mm/mm_init.c            |   1 +
- 6 files changed, 163 insertions(+), 76 deletions(-)
-
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index ed1581b670d42..2606135ec55e6 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3482,6 +3482,33 @@ static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
+ 	h->max_huge_pages_node[nid] = i;
+ }
+ 
++static bool __init hugetlb_hstate_alloc_pages_node_specific(struct hstate *h)
++{
++	int i;
++	bool node_specific_alloc = false;
++
++	for_each_online_node(i) {
++		if (h->max_huge_pages_node[i] > 0) {
++			hugetlb_hstate_alloc_pages_onenode(h, i);
++			node_specific_alloc = true;
++		}
++	}
++
++	return node_specific_alloc;
++}
++
++static void __init hugetlb_hstate_alloc_pages_report(unsigned long allocated, struct hstate *h)
++{
++	if (allocated < h->max_huge_pages) {
++		char buf[32];
++
++		string_get_size(huge_page_size(h), 1, STRING_UNITS_2, buf, 32);
++		pr_warn("HugeTLB: allocating %lu of page size %s failed.  Only allocated %lu hugepages.\n",
++			h->max_huge_pages, buf, allocated);
++		h->max_huge_pages = allocated;
++	}
++}
++
+ /*
+  * NOTE: this routine is called in different contexts for gigantic and
+  * non-gigantic pages.
+@@ -3499,7 +3526,6 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ 	struct folio *folio;
+ 	LIST_HEAD(folio_list);
+ 	nodemask_t *node_alloc_noretry;
+-	bool node_specific_alloc = false;
+ 
+ 	/* skip gigantic hugepages allocation if hugetlb_cma enabled */
+ 	if (hstate_is_gigantic(h) && hugetlb_cma_size) {
+@@ -3508,14 +3534,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ 	}
+ 
+ 	/* do node specific alloc */
+-	for_each_online_node(i) {
+-		if (h->max_huge_pages_node[i] > 0) {
+-			hugetlb_hstate_alloc_pages_onenode(h, i);
+-			node_specific_alloc = true;
+-		}
+-	}
+-
+-	if (node_specific_alloc)
++	if (hugetlb_hstate_alloc_pages_node_specific(h))
+ 		return;
+ 
+ 	/* below will do all node balanced alloc */
+@@ -3558,14 +3577,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ 	/* list will be empty if hstate_is_gigantic */
+ 	prep_and_add_allocated_folios(h, &folio_list);
+ 
+-	if (i < h->max_huge_pages) {
+-		char buf[32];
+-
+-		string_get_size(huge_page_size(h), 1, STRING_UNITS_2, buf, 32);
+-		pr_warn("HugeTLB: allocating %lu of page size %s failed.  Only allocated %lu hugepages.\n",
+-			h->max_huge_pages, buf, i);
+-		h->max_huge_pages = i;
+-	}
++	hugetlb_hstate_alloc_pages_report(i, h);
+ 	kfree(node_alloc_noretry);
+ }
+ 
 -- 
 2.20.1
 
