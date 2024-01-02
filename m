@@ -1,150 +1,133 @@
-Return-Path: <linux-kernel+bounces-14014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1B978216DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 05:14:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7807F8216DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 05:25:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 355F71F21A21
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 04:14:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7146FB2106D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 04:25:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C83D10F8;
-	Tue,  2 Jan 2024 04:13:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0AB610EC;
+	Tue,  2 Jan 2024 04:25:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="F+hD3Sct"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gLLJDVSW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7E0ECB;
-	Tue,  2 Jan 2024 04:13:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1704168813;
-	bh=nzjB48cCE5VSIzRwROBH6itfJxdakHetauGeOCGlZUQ=;
-	h=Date:From:To:Cc:Subject:From;
-	b=F+hD3SctfdecCH+JptjFhCzUgVmxxW375fljX4auBlQk5z5uqJMa/dlCg5j1SktBe
-	 N1VUvhdeO1C+DM4flBZyXe2IP0oDQWVSUgTTaV2d794tNsIlBO7nOg48pnTYX7B5RI
-	 cbdxYcv/TyhssTXnmqIYuuGp0Y+DL8Ov8utgqwae37NlhPJrjH2UhZ/w8vHyX9SKFW
-	 SgdFMgv+ajOy5mxkPpAD0xCgkolyDJiNBA7lKO7RC7k8PIVij0KIzdXORmOCtscOlm
-	 HO6SVgflewncTorvwM13S2ax+YTy3IxRLfbU5Cnypx8mJMkx2k8uXqams8Q2cNfJiz
-	 nOnWBL8l35bdA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T3zx94417z4wcM;
-	Tue,  2 Jan 2024 15:13:33 +1100 (AEDT)
-Date: Tue, 2 Jan 2024 15:13:32 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Vlastimil Babka <vbabka@suse.cz>, Andrew Morton
- <akpm@linux-foundation.org>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>, Andrey Konovalov
- <andreyknvl@google.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the slab tree with the mm-stable, mm
- trees
-Message-ID: <20240102151332.48a87d86@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC87EC6;
+	Tue,  2 Jan 2024 04:25:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-35fd902c6b5so79052905ab.3;
+        Mon, 01 Jan 2024 20:25:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704169540; x=1704774340; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bgu+L4a+/WjpDzPChrb4wmpOc+fKr17SKFK+8wM2uf0=;
+        b=gLLJDVSWAC5aoSmCG/cb+sRKwWEp0fIZgphSAZJS7tuKgcGyX5EDQ5PYYeO05J53Xo
+         3dNu1g2aAa2clTMI4visJln4BY4kdmpyksOrXyL7m+jc8whE6dyZjEsbTUXnvyI+kgH9
+         RZ6hykBXBILvj1xWxmOLP0evfBWFSRrbMFPSCXhkhtGqav19RfhoV+eoTZkuYnESi4Vn
+         uBTN9ja5Z6XYxUtzkX77WJPi1nmqf3taAWEYPDHjukwJm0j9Xp2FIS+DTz/0jP0fYwnM
+         td3MOrqENXaROuYhiyh2RB0vv3MN6OtbNvurG80Q9wn3UnzANlzsEfSkjobxDC+6FOLY
+         pTiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704169540; x=1704774340;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Bgu+L4a+/WjpDzPChrb4wmpOc+fKr17SKFK+8wM2uf0=;
+        b=LFFyLloN2wc3djoQ604+4dYCDaES8HMc9XJ6c3HmnUoT/GEgxCAi34PuTUNZATVMYG
+         QTNpCAQKYT4dyqdjsxA32fqcj6wvYt/xckaE23MPgHcCO1bIDyXtGspwOA6TXKA2jywJ
+         NMReYQaeGfRfxamocp+mkdUmygBBKjiOJoS+ZDQKwmAnOxpVnTuq5T9zH03fJ+BF4jdS
+         +sC/Me7df/ZwqUqxSO8OgQsyelnngN8ecOaf20UeA9JgQrdgenqK0w86zwbM13yXC/fz
+         Rd4Qr1KRtRKbLbV8namvbXX9oUh52V4oXwW2xfryZv5s6LF6mMUYzhlJW6F00ZOCepWD
+         ZkOg==
+X-Gm-Message-State: AOJu0YwPR1jdc+Iadi4Es4vUkVVgS+75/wVoAudQ6/5sT/3kCn7AG7/9
+	Kl1BSH/I1X+DHVC02VQgjGI=
+X-Google-Smtp-Source: AGHT+IFWqjQSfHgcTGsot6wD9z4gdmFYaUUekqZrAob7I8yMqCSxqoX7FH4fPJY6HQWE6FjdSNi42g==
+X-Received: by 2002:a05:6e02:1d13:b0:35f:ccab:360e with SMTP id i19-20020a056e021d1300b0035fccab360emr26472618ila.1.1704169540585;
+        Mon, 01 Jan 2024 20:25:40 -0800 (PST)
+Received: from geday ([189.115.92.220])
+        by smtp.gmail.com with ESMTPSA id jd19-20020a170903261300b001d4ca3087dfsm44726plb.234.2024.01.01.20.25.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jan 2024 20:25:39 -0800 (PST)
+Date: Tue, 2 Jan 2024 01:26:18 -0300
+From: Geraldo Nascimento <geraldogabriel@gmail.com>
+To: Andy Chi <andy.chi@canonical.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Stefan Binding <sbinding@opensource.cirrus.com>,
+	Kailang Yang <kailang@realtek.com>,
+	"Luke D. Jones" <luke@ljones.dev>,
+	Shenghao Ding <shenghao-ding@ti.com>,
+	Matthew Anderson <ruinairas1992@gmail.com>,
+	Luka Guzenko <l.guzenko@web.de>, Yuchi Yang <yangyuchi66@gmail.com>,
+	Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for a HP ZBook
+Message-ID: <ZZOQamQsHUR7eEPd@geday>
+References: <20240102024916.19093-1-andy.chi@canonical.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wfB=MU5Q0Sr7Y2VG9iIw_Sa";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102024916.19093-1-andy.chi@canonical.com>
 
---Sig_/wfB=MU5Q0Sr7Y2VG9iIw_Sa
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jan 02, 2024 at 10:49:15AM +0800, Andy Chi wrote:
+> There is a HP ZBook which using ALC236 codec and need the
+> ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF quirk to make mute LED
+> and micmute LED work.
 
-Hi all,
+Hi Andy,
 
-Today's linux-next merge of the slab tree got a conflict in:
+I know Takashi in the name of smooth operation usually takes this kind
+of simple patch, quickly, since it's a simple bugfix, unless there are
+any objections, so I must raise one.
 
-  mm/kasan/quarantine.c
+Which HP ZBook? Which model?
 
-between commits:
+Is this a still unreleased model Canonical has had access under a NDA
+for example? Or perhaps there is some other reason why you cannot name
+the model yet?
 
-  773688a6cb24 ("kasan: use stack_depot_put for Generic mode")
-  435736586ddc ("kasan: stop leaking stack trace handles")
+Either way, there is a need to publicly know the reason for the missing
+model information.
 
-from the mm-stable, mm trees and commit:
+> 
+> Signed-off-by: Andy Chi <andy.chi@canonical.com>
+> ---
+>  sound/pci/hda/patch_realtek.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 7e9d8c1cedfc..1c8d5b58eb64 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -9939,6 +9939,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>  	SND_PCI_QUIRK(0x103c, 0x8c70, "HP EliteBook 835 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
+>  	SND_PCI_QUIRK(0x103c, 0x8c71, "HP EliteBook 845 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
+>  	SND_PCI_QUIRK(0x103c, 0x8c72, "HP EliteBook 865 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
+> +	SND_PCI_QUIRK(0x103c, 0x8c96, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
 
-  72786c0a3dc5 ("KASAN: remove code paths guarded by CONFIG_SLAB")
+Same questioning as above. "HP" is IMHO unacceptable without a clear
+reason for the missing model information.
 
-from the slab tree.
+Thanks,
+Geraldo Nascimento
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc mm/kasan/quarantine.c
-index 8afa77bc5d3b,138c57b836f2..000000000000
---- a/mm/kasan/quarantine.c
-+++ b/mm/kasan/quarantine.c
-@@@ -143,10 -143,7 +143,9 @@@ static void *qlink_to_object(struct qli
-  static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
-  {
-  	void *object =3D qlink_to_object(qlink, cache);
- -	struct kasan_free_meta *meta =3D kasan_get_free_meta(cache, object);
- +	struct kasan_free_meta *free_meta =3D kasan_get_free_meta(cache, object);
-- 	unsigned long flags;
- +
- +	kasan_release_object_meta(cache, object);
- =20
-  	/*
-  	 * If init_on_free is enabled and KASAN's free metadata is stored in
-@@@ -156,15 -153,15 +155,9 @@@
-  	 */
-  	if (slab_want_init_on_free(cache) &&
-  	    cache->kasan_info.free_meta_offset =3D=3D 0)
- -		memzero_explicit(meta, sizeof(*meta));
- -
- -	/*
- -	 * As the object now gets freed from the quarantine, assume that its
- -	 * free track is no longer valid.
- -	 */
- -	*(u8 *)kasan_mem_to_shadow(object) =3D KASAN_SLAB_FREE;
- +		memzero_explicit(free_meta, sizeof(*free_meta));
- =20
-- 	if (IS_ENABLED(CONFIG_SLAB))
-- 		local_irq_save(flags);
--=20
-  	___cache_free(cache, object, _THIS_IP_);
--=20
-- 	if (IS_ENABLED(CONFIG_SLAB))
-- 		local_irq_restore(flags);
-  }
- =20
-  static void qlist_free_all(struct qlist_head *q, struct kmem_cache *cache)
-
---Sig_/wfB=MU5Q0Sr7Y2VG9iIw_Sa
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWTjWwACgkQAVBC80lX
-0Gy4/Af/cL43FDP9ZkJ03TvRNhUmSZ6igR6ZwynFZcTGx0PzE/F+8zWZNL02iGWy
-LrQ6npksmc6H6xGkUfzh4YUIh3rsgjXp7EVEeDQz+nWQu8mc6i5mUsUfa5nxmafX
-DO/9c5UjfAEvCqlV4hpP5lyaB6PrubPY9xWs7uNn992kCcpQXVHZhrPpT5kkIjKb
-n0SW4HWapBha/ojZuTudzjQxP4AJeR+ofxg/788AYY2D83OnEheYVNbGS+9OEyOy
-RMtDQeFrKWI+nJF8GmNB5KfEc1lMHQklfShGiYsHwbLtEhZHcKyoHLHAJRQHH3yg
-FsbdXGYTJqEPCIIi3lIBXcRGGNZkqg==
-=7QH2
------END PGP SIGNATURE-----
-
---Sig_/wfB=MU5Q0Sr7Y2VG9iIw_Sa--
+>  	SND_PCI_QUIRK(0x103c, 0x8ca4, "HP ZBook Fury", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+>  	SND_PCI_QUIRK(0x103c, 0x8ca7, "HP ZBook Fury", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+>  	SND_PCI_QUIRK(0x103c, 0x8cf5, "HP ZBook Studio 16", ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
+> -- 
+> 2.34.1
+> 
+> 
 
