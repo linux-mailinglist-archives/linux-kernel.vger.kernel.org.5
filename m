@@ -1,237 +1,336 @@
-Return-Path: <linux-kernel+bounces-14787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F2D8822259
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:57:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 909A682225F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 21:01:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A233EB2263B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 19:57:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24CE028474B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 20:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CABAF16413;
-	Tue,  2 Jan 2024 19:57:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292551640A;
+	Tue,  2 Jan 2024 20:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jRF0FN1+"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="1GRMpiSX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2041.outbound.protection.outlook.com [40.107.93.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3F515EB0
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 19:57:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-28c0420e177so10638078a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 11:57:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704225448; x=1704830248; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=njEQfqTDOHQ3mkpR7k6hSJp5zE0iqNyPNbquK5SNR0M=;
-        b=jRF0FN1+n7OYxeI4urt0nckVd0Sd5gPWACQthoTLXglvIZ0D5iNtaKdyUlFi2IvIOo
-         XIQMwSS1xP2LUpcp0crit6GeqI8SBgdaapjPGtOMHWt11bfatEtK8qD4X36tX/o5qSF/
-         /Y85IWQcG6qJqQaf43cfRrTmUfnhX6RJHmt8bzaF0Bqui3uSY3jXk3aSbQyVkzCWmgmg
-         Hsf5OnRRNLN768LOBt27Nar1/omUq3pPtUpSpUBEMYHhZ9duuwdbn4VYOtl1t4suxw8m
-         0vi4E72pRv/Y/dhaHUcWrt3bDd8jyGhFPsRevsEWaPK9nF7zbAqS+vBbPkk9DS0+pk9u
-         lRfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704225448; x=1704830248;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=njEQfqTDOHQ3mkpR7k6hSJp5zE0iqNyPNbquK5SNR0M=;
-        b=NCPWPgR3YBNW4VY6f5Xokwb9PGQk2iVzZuDOENrm8EdFg3EBQrEV36V3vCNIJMvLav
-         Qc0hANXa2ZhncBbK6/GgyZzrrrXvkY5ALiW9saz43zo7K8jHTqMG4cJorXsbZxgXBjtF
-         G+5rboYbpd61+PLGMyJWw2b34X0bKX+hnXDZ9fW6ar2OfBqXwasd/S2hUuIBkbgHhq51
-         bkv212A5p5Dpo8aMzJ9VFEjV7C0YhmBg3JBfTuibXQlmV0aGdI5CEkAKioRrPVhN3Oak
-         L7tNZrfbVaarlTL76FvQ7RKBebyy2hQSfKGYA2Zg77tRZ+Yai53BayaMR4xruvKenxZe
-         bOgg==
-X-Gm-Message-State: AOJu0Yz+7VOytNIvj6g5sl63E6g2nGW2caaXb2iqNmT4LxNRoHoLh4T9
-	BzTnSZtnDXInEkgYnQWxxPdDwdih5EbF5P2ivg==
-X-Google-Smtp-Source: AGHT+IGuhjA01z4TN9JTlkEmlpyR3sMUEKJHAX1bgmdEw+wKMeoNbZ9BP5KroeMd81uY2oVB5AwC5p7d2k8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:86c7:b0:28c:59d:843a with SMTP id
- y7-20020a17090a86c700b0028c059d843amr1587931pjv.7.1704225448034; Tue, 02 Jan
- 2024 11:57:28 -0800 (PST)
-Date: Tue, 2 Jan 2024 11:57:26 -0800
-In-Reply-To: <20231222164543.918037-1-michal.wilczynski@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D77F16400;
+	Tue,  2 Jan 2024 20:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Uxx3rn1NwOstL1+64m7wLOfGe5prhN2bjxKswaWCPslXc7a0e3atZhKHsYVihBJfcWdx4qa0nCENIaY5jjhB2MdjPdia6DhWw5ER5vcVZ04UHLG7clHHyt0lxa74Srp0TjGy7sMFI/qhrf/39q03PEKekHnAMFgizQ5uTJEl1agA1nlQGtSY6/as8+yZQ4VW0YlJtS4k1/IyLypsqEXJIJBoXs8AG2uB3ku2UYlh8D5idOTTT0QZqjo2Yufwk60AhfnHR3cix4zgg2whILZ3DWOeVl3gdQAZX5e42s/GUUpRdWDbGwRkprWa+zwCmP5utXZajGcXnIP4i+S03bataA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EnI/JPjUibh8SwGpBtrG+8mCnycq7ZVQR2idCUagzuM=;
+ b=jU4SswQGUY+MIp3deBVLUBJRiSki0jsaXukqpAddUs/9a/kJZpgtx/+BM7QRnYY9mASwtfKn7tz/ykjNB2u6RE41PbxKag4EplAgjsTLScDXMNkmJvz/6q5IIDTmo1jor/OGMmRBDuTMq0Sprmxq6oILClGgwmC0oOaXhoGTYFeLe7/4sB6V1KLsOpclBFHnCJj81X8lOH07hbhAGB8wM3ICFHHMFl2iIE+Fb0DRpNEMecbQTM7S+VavKjsZRMsbnEEvRPhK+R943uBdvdVg/1kqQXxx1tKD8swLmoXGdfieKZS51wiwqTgvfehTa1TzyoNYyXiKVpOh82Nebi7+Ug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EnI/JPjUibh8SwGpBtrG+8mCnycq7ZVQR2idCUagzuM=;
+ b=1GRMpiSXPmdvmLbeGzHJBqxoe5m7x6/W50kc2wlakIk2L9JLkqXK6lXyz0zrnA0CK5QZzH5SmBYZ99W3vSZzhtlGuZLFbVk7lH/KPDPGKXzAKwvPQc9xR3wvVAu8beLvrDkdHauoIzw1O11Kv8toSAv8//UQaEiBiEPbsQhxS9E=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by CO6PR12MB5460.namprd12.prod.outlook.com (2603:10b6:5:357::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Tue, 2 Jan
+ 2024 20:01:00 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::1549:8c93:8585:ca1b]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::1549:8c93:8585:ca1b%5]) with mapi id 15.20.7135.026; Tue, 2 Jan 2024
+ 20:00:59 +0000
+Message-ID: <978719d8-8492-47f8-afdf-09e7c997b0b3@amd.com>
+Date: Tue, 2 Jan 2024 14:00:56 -0600
+User-Agent: Mozilla Thunderbird
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH v2 2/2] x86/resctrl: Remove hard-coded memory bandwidth
+ event configuration
+Content-Language: en-US
+To: Reinette Chatre <reinette.chatre@intel.com>, corbet@lwn.net,
+ fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com
+Cc: x86@kernel.org, hpa@zytor.com, paulmck@kernel.org, rdunlap@infradead.org,
+ tj@kernel.org, peterz@infradead.org, seanjc@google.com,
+ kim.phillips@amd.com, jmattson@google.com, ilpo.jarvinen@linux.intel.com,
+ jithu.joseph@intel.com, kan.liang@linux.intel.com, nikunj@amd.com,
+ daniel.sneddon@linux.intel.com, pbonzini@redhat.com,
+ rick.p.edgecombe@intel.com, rppt@kernel.org,
+ maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, eranian@google.com, peternewman@google.com,
+ dhagiani@amd.com
+References: <20231201005720.235639-1-babu.moger@amd.com>
+ <170240414535.760665.1609957728181418569.stgit@bmoger-ubuntu>
+ <d9f3d23d-aba7-4229-bddb-5d6801b22f27@intel.com>
+From: "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <d9f3d23d-aba7-4229-bddb-5d6801b22f27@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DS7PR05CA0086.namprd05.prod.outlook.com (2603:10b6:8:56::7)
+ To MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231222164543.918037-1-michal.wilczynski@intel.com>
-Message-ID: <ZZRqptOaukCb7rO_@google.com>
-Subject: Re: [PATCH v1] KVM: nVMX: Fix handling triple fault on RSM instruction
-From: Sean Christopherson <seanjc@google.com>
-To: Michal Wilczynski <michal.wilczynski@intel.com>
-Cc: pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, zhi.a.wang@intel.com, 
-	artem.bityutskiy@linux.intel.com, yuan.yao@intel.com, 
-	Zheyu Ma <zheyuma97@gmail.com>, Maxim Levitsky <mlevitsk@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|CO6PR12MB5460:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8029bbda-f912-4c87-6e38-08dc0bcd8a5b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	VsNpidebJSoS6jKF4SZtFFntkx6jYWyjfb2IcjH1f7TAnrARmJfgW1gaRoqikQVj3hR0DqDrAYwg8QCW/XYYTLZedvAg2C6Hj4MhVeEWmD00lnLmuUYi9qtuJsEdbDK6mKOPh6Cc8LjbB/f3hCHv4Uc4e+GNjSUviN9SLc/NpAU1Ijbkers4g9Eo98WENucjmHgzwisUurafS/e5FCHpBGoA7TVjwqNtXwyuE9gAXXdycW/C1S+n7eo1t0R5XGj8RB7N6xvi18DkAoCevJZoR1imQ7uMWHAHsQx6MQfDZF57eZHgeUhF86S53MpSvzjtxxth+4udkqZAKybvzf05OMc54wfI4nxB4bbVZKEUMmsi5pP+KhfWxY7p3KK75VA7fNoH3W6LCVxjWSSCLmH0gyEtK1mn5/yoRqYXSPiiXr7taciJWd0o/f2pxe3PJ1jCUDbO8z0KyKPdGeoonm2YvGACFNVyAgpzAhQbxVS6fYqeKfVd9PMCctWAbJafwzeRlhSUG1QZ9MzFDtugAwzeUUKQFXl1fj9YsCpbZGKcr4Xy/Xjli0eH4H9MA7CdLhvlnuoGLgRtYyyzUJ+VXJaP04AQ0/vYupNPkydJQr9vyx2IHQoVjHGbjOcgGdsUFdW65E6EkCsDlzKGOprPi2Tt+w==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(346002)(366004)(136003)(39860400002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(6506007)(26005)(2616005)(83380400001)(6512007)(6666004)(53546011)(5660300002)(7416002)(4326008)(41300700001)(3450700001)(478600001)(2906002)(66946007)(966005)(6486002)(316002)(8676002)(8936002)(66476007)(66556008)(86362001)(31696002)(38100700002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Z3pxakpsZy84ZWtqWjhJd2dhTmpYdWRDWTR3aFZHNXhnNlQxRzM1Zmc0RFZt?=
+ =?utf-8?B?RHJNN1dNWXJRZmM1OHV4YmI0NTdQK042bXRrb21ad2libVY0Z3E2bStkMk9y?=
+ =?utf-8?B?dXNhUEJTZFp4NXVwSHJ0WG0wblhsZFBVczh4OHFsQmtXVnczamJ5cjR5V056?=
+ =?utf-8?B?UEd0MlN1azBxdDRVcWQ0TkRLVGxqRHEzYUlCRGkzSXdJcGd0RWtBY0tLSHVn?=
+ =?utf-8?B?K2Q1MlFWc0lDL1c5OEUzRWJrWVQ1K0NtMjFKSVlwY1RPQnBCeEJUV3NJMWtz?=
+ =?utf-8?B?eGhjQzAycmtPMEdacU96SnBLRGZabE9ZK3dBT1lkNHNmUjMvU0dlNTg1aGY3?=
+ =?utf-8?B?dUZPUENNUm1uWGxma2FDbjc3NmFxN2tlZ0MzdUdvUFVnL0Jzd0syUkNkRWpU?=
+ =?utf-8?B?ZVJMNWViVmlxQkkzQWZvSTc1QlpYUkJxdm9hUzJPbTdEeG9kSW5TY1RTVTI5?=
+ =?utf-8?B?ZTVaUkxOYjNjMVdBd3JYOExvWklaRDBXVVFEa0MxcFhFR1p1S0VzSXZEWEFm?=
+ =?utf-8?B?NUJlR0tsOEIwUDBRM2FlTkhsQmFXaTRON2prdk9kMkxMKy9EY0FDOENWVWo4?=
+ =?utf-8?B?L2R2NFNZRGNrZ25uSnRMbXdoN3pQUmtJWlVOOGFhekx1aStZTnozemZRNlJk?=
+ =?utf-8?B?S0NjNTRxTGlweERQTHFkTlNySHMrN1pNVm1SdUt1K3RWaXFWT0hsT2FoQlR1?=
+ =?utf-8?B?YUx0VFpLRWZHSDA5OHd1blc4eEZtTUpBT0FsV0RLMXBKUWhtRUpmc1k1Y3BF?=
+ =?utf-8?B?YU5XdG5mdi9hQmhFYXdUeHEwMllzUGl4aEVmZzlvcS9PbVJPdjB2LzNhb0lW?=
+ =?utf-8?B?dE5kTU8zY3R0eUdVZGhETkhxSXRnNXY1NzR3UmJxekIvaFQvMllSaW0wMEhq?=
+ =?utf-8?B?UWcxeXQvQmFCaFQxNzF5QU03eFJDQU4xQTFlL2g5NzdMTzBpSXprcUNWNXdZ?=
+ =?utf-8?B?SVZjbjE4MmliT09DZXJkNlNCcENqc2NwaHIyY1VBZEl0eDZTVnRlYU15eTZ5?=
+ =?utf-8?B?UUd1UHNrRHp5dkQ3UU9HQ3ZBYTUrS29IUUJiMWg4VlFMV2JZWWpLa3crUTRE?=
+ =?utf-8?B?YjMzUnVVZzBSUVZOUm5mL2pvb3RVZm1aQ3M0NGlXT0hGQ21hMkpCY2RPbXBo?=
+ =?utf-8?B?eEE5UUZiSW1QWmk3Z1EwcVBqUWZiSlROZjVaVkkxWUVjOUpBSU5Wdm12eXB5?=
+ =?utf-8?B?RGp5UzlRR0VRQ0tTajFBSEhmT2FmeUVwRlRZT2QraGYveWpNQ3h6c0FjZjUv?=
+ =?utf-8?B?Qm1DQ3pzcEpwR2I3OWZnY0lpdnoyZ09sTXlWZ01oWERCcTdtekpTbk01L2pq?=
+ =?utf-8?B?cStjalNMT3U5VnBmVjBrWHF6TW8zRDhCRGgxTTFMM1FuMXVUMmJsRFpqSDlY?=
+ =?utf-8?B?NWh5WStoUkJISzFZOC93OHhnRGhOdGZuSmI0OEFQZEpNNGMvSUh3UFdmMHVw?=
+ =?utf-8?B?VGhRVDdTSVV3Ti9aSUYyM0ZKTVRoU2xYOG9lZUJLSGovemFGY0dPRkxCdXND?=
+ =?utf-8?B?TCtrNzdmbmFwL1FSYmRmMXhCdlBGRVY0NHdFTk1TYjV0MEJJR0xQWFhmaVF1?=
+ =?utf-8?B?cThPeEdvcFB2c256VGxqRitqOEJkeUoxV1FVWlVQaVVtUUxyWmxzbUc3TllS?=
+ =?utf-8?B?UzJ2MnBSSGV0NmZ3YlBuWkhRbDNWT3RtZUpWYnRkTi9QaTNiNWcwQW1PajNM?=
+ =?utf-8?B?aDZUUUxCeStwcWJpOEo0T1hGYVk5UXpWcEZwRFV1MlBudDh3Y0N4WjVYcllh?=
+ =?utf-8?B?QTVnT3JrYXptMlVueTZqWE5zeVdKZkF2L05XTkFQMVNxN1Z0a2VhQkZ1NGJ5?=
+ =?utf-8?B?aHN5OW1iZVYwckVGWWwvVnFyaTNIalZNM1N0dHYyM0IvcVhBQVc3WnNzK2w0?=
+ =?utf-8?B?U0NYaWNhcEJPVzVSN21rWE1VMXY5OFF5encwZmhkTUhPTEpwM3BTRkE1cVVQ?=
+ =?utf-8?B?aWptaTlFa0F4RkdQbXh6NjdpSzZxdmh0ODhmVTM4WGRIN2VQOHY0RVZoaVU2?=
+ =?utf-8?B?bHVLMzd4VjdyZlgzYko0NmNpc1NnTVVmNFZqWGY0RjBGSGpONXBuRXhRYklI?=
+ =?utf-8?B?SHlZU0FGc2dOMFF5c1E3L2dxcmd5MnJyb2U3Z3A4N2tFdlIxcjZ3bzJqMDI0?=
+ =?utf-8?Q?mpCI=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8029bbda-f912-4c87-6e38-08dc0bcd8a5b
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2024 20:00:59.9140
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ac40uE/swvDowo9qoBYJimOirIJcmoPqRenzQ4/RB1B5marHCyDWeuty19ysT9gJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5460
 
-+Maxim
+Hi Reinette,
 
-On Fri, Dec 22, 2023, Michal Wilczynski wrote:
-> Syzkaller found a warning triggered in nested_vmx_vmexit().
-> vmx->nested.nested_run_pending is non-zero, even though we're in
-> nested_vmx_vmexit(). Generally, trying  to cancel a pending entry is
-> considered a bug. However in this particular scenario, the kernel
-> behavior seems correct.
+Sorry for late response. I was out of office for couple of weeks.
+
+On 12/14/23 19:24, Reinette Chatre wrote:
+> Hi Babu,
 > 
-> Syzkaller scenario:
-> 1) Set up VCPU's
-> 2) Run some code with KVM_RUN in L2 as a nested guest
-> 3) Return from KVM_RUN
-> 4) Inject KVM_SMI into the VCPU
-> 5) Change the EFER register with KVM_SET_SREGS to value 0x2501
-> 6) Run some code on the VCPU using KVM_RUN
-> 7) Observe following behavior:
+> On 12/12/2023 10:02 AM, Babu Moger wrote:
+>> If the BMEC (Bandwidth Monitoring Event Configuration) feature is
+>> supported, the bandwidth events can be configured. The maximum supported
+>> bandwidth bitmask can be determined by following CPUID command.
+>>
+>> CPUID_Fn80000020_ECX_x03 [Platform QoS Monitoring Bandwidth Event
+>> Configuration] Read-only. Reset: 0000_007Fh.
+>> Bits	Description
+>> 31:7	Reserved
+>>  6:0	Identifies the bandwidth sources that can be tracked.
+>>
+>> The bandwidth sources can change with the processor generations.
+>> Currently, this information is hard-coded. Remove the hard-coded value
+>> and detect using CPUID command. Also print the valid bitmask when the
+>> user tries to configure invalid value.
+>>
+>> The CPUID details are documentation in the PPR listed below [1].
+>> [1] Processor Programming Reference (PPR) Vol 1.1 for AMD Family 19h Model
+>> 11h B1 - 55901 Rev 0.25.
+>>
+>> Fixes: dc2a3e857981 ("x86/resctrl: Add interface to read mbm_total_bytes_config")
+>> Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+>> Signed-off-by: Babu Moger <babu.moger@amd.com>
+>>
+>> ---
+>> v2: Earlier Sent as a part of ABMC feature.
+>>     https://lore.kernel.org/lkml/20231201005720.235639-1-babu.moger@amd.com/
+>>     But this is not related to ABMC. Sending it separate now.
+>>     Removed the global resctrl_max_evt_bitmask. Added event_mask as part of
+>>     the resource.
+>> ---
+>>  arch/x86/kernel/cpu/resctrl/internal.h |    5 ++---
+>>  arch/x86/kernel/cpu/resctrl/monitor.c  |    6 ++++++
+>>  arch/x86/kernel/cpu/resctrl/rdtgroup.c |   18 ++++++++++--------
+>>  3 files changed, 18 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+>> index d2979748fae4..3e2f505614d8 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/internal.h
+>> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+>> @@ -50,9 +50,6 @@
+>>  /* Dirty Victims to All Types of Memory */
+>>  #define DIRTY_VICTIMS_TO_ALL_MEM	BIT(6)
+>>  
+>> -/* Max event bits supported */
+>> -#define MAX_EVT_CONFIG_BITS		GENMASK(6, 0)
+>> -
+>>  struct rdt_fs_context {
+>>  	struct kernfs_fs_context	kfc;
+>>  	bool				enable_cdpl2;
+>> @@ -394,6 +391,7 @@ struct rdt_parse_data {
+>>   * @msr_update:		Function pointer to update QOS MSRs
+>>   * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
+>>   * @mbm_width:		Monitor width, to detect and correct for overflow.
+>> + * @event_mask:		Max supported event bitmask.
 > 
-> kvm_smm_transition: vcpu 0: entering SMM, smbase 0x30000
-> kvm_entry: vcpu 0, rip 0x8000
-> kvm_entry: vcpu 0, rip 0x8000
-> kvm_entry: vcpu 0, rip 0x8002
-> kvm_smm_transition: vcpu 0: leaving SMM, smbase 0x30000
-> kvm_nested_vmenter: rip: 0x0000000000008002 vmcs: 0x0000000000007000
->                     nested_rip: 0x0000000000000000 int_ctl: 0x00000000
-> 		    event_inj: 0x00000000 nested_ept=n guest
-> 		    cr3: 0x0000000000002000
-> kvm_nested_vmexit_inject: reason: TRIPLE_FAULT ext_inf1: 0x0000000000000000
->                           ext_inf2: 0x0000000000000000 ext_int: 0x00000000
-> 			  ext_int_err: 0x00000000
+> This is a very generic name and description for this feature. Note that in
+> resctrl monitoring an "event" is already clear (see members of enum resctrl_event_id)
+> so a generic type of "event_mask" can easily cause confusion with existing
+> concept of events. How about "mbm_cfg_mask"? Please also make the description
+
+That should be fine.
+
+> more detailed - it could include that this is unique to BMEC. 
+
+Sure.
+
 > 
-> What happened here is an SMI was injected immediately and the handler was
-> called at address 0x8000; all is good. Later, an RSM instruction is
-> executed in an emulator to return to the nested VM. em_rsm() is called,
-> which leads to emulator_leave_smm(). A part of this function calls VMX/SVM
-> callback, in this case vmx_leave_smm(). It attempts to set up a pending
-> reentry to guest VM by calling nested_vmx_enter_non_root_mode() and sets
-> vmx->nested.nested_run_pending to one. Unfortunately, later in
-> emulator_leave_smm(), rsm_load_state_64() fails to write invalid EFER to
-> the MSR. This results in em_rsm() calling triple_fault callback. At this
-> point it's clear that the KVM should call the vmexit, but
-> vmx->nested.nested_run_pending is left set to 1. To fix this reset the
-> vmx->nested.nested_run_pending flag in triple_fault handler.
+>>   * @cdp_enabled:	CDP state of this resource
+>>   *
+>>   * Members of this structure are either private to the architecture
+>> @@ -408,6 +406,7 @@ struct rdt_hw_resource {
+>>  				 struct rdt_resource *r);
+>>  	unsigned int		mon_scale;
+>>  	unsigned int		mbm_width;
+>> +	unsigned int		event_mask;
+>>  	bool			cdp_enabled;
+>>  };
+>>  
+>> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> index f136ac046851..30bf919edfda 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+>> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> @@ -813,6 +813,12 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
+>>  		return ret;
+>>  
+>>  	if (rdt_cpu_has(X86_FEATURE_BMEC)) {
+>> +		u32 eax, ebx, ecx, edx;
+>> +
+>> +		/* Detect list of bandwidth sources that can be tracked */
+>> +		cpuid_count(0x80000020, 3, &eax, &ebx, &ecx, &edx);
+>> +		hw_res->event_mask = ecx;
+>> +
 > 
-> TL;DR (courtesy of Yuan Yao)
-> Clear nested_run_pending in case of RSM failure on return from L2 SMM.
+> This has the same issue as I mentioned in V1. Note that this treats
+> reserved bits as valid values. I think this is a risky thing to do. For example
+> when this code is run on future hardware the currently reserved bits may have
+> values with different meaning than what this code uses it for.
 
-KVM doesn't emulate SMM for L2.  On an injected SMI, KVM forces a syntethic nested
-VM-Exit to get from L2 to L1, and then emulates SMM in the context of L1.
+Sure. Will use the mask MAX_EVT_CONFIG_BITS.
+              hw_res->mbm_cfg_mask = ecx &  MAX_EVT_CONFIG_BITS;
 
-> The pending VMENTRY to L2 should be cancelled due to such failure leads
-> to triple fault which should be injected to L1.
 > 
-> Possible alternative approach:
-> While the proposed approach works, the concern is that it would be
-> simpler, and more readable to cancel the nested_run_pending in em_rsm().
-> This would, however, require introducing new callback e.g,
-> post_leave_smm(), that would cancel nested_run_pending in case of a
-> failure to resume from SMM.
+>>  		if (rdt_cpu_has(X86_FEATURE_CQM_MBM_TOTAL)) {
+>>  			mbm_total_event.configurable = true;
+>>  			mbm_config_rftype_init("mbm_total_bytes_config");
+>> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>> index 69a1de92384a..8a1e9fdab974 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>> @@ -1537,17 +1537,14 @@ static void mon_event_config_read(void *info)
+>>  {
+>>  	struct mon_config_info *mon_info = info;
+>>  	unsigned int index;
+>> -	u64 msrval;
+>> +	u32 h;
+>>  
+>>  	index = mon_event_config_index_get(mon_info->evtid);
+>>  	if (index == INVALID_CONFIG_INDEX) {
+>>  		pr_warn_once("Invalid event id %d\n", mon_info->evtid);
+>>  		return;
+>>  	}
+>> -	rdmsrl(MSR_IA32_EVT_CFG_BASE + index, msrval);
+>> -
+>> -	/* Report only the valid event configuration bits */
+>> -	mon_info->mon_config = msrval & MAX_EVT_CONFIG_BITS;
+>> +	rdmsr(MSR_IA32_EVT_CFG_BASE + index, mon_info->mon_config, h);
 > 
-> Additionally, while the proposed code fixes VMX specific issue, SVM also
-> might suffer from similar problem as it also uses it's own
-> nested_run_pending variable.
+> I do not think this code needed to be changed. We do not want to treat
+> reserved bits as valid values. 
+
+The logic is still the same. We don't have access to rdt_hw_resource in
+this function. So, I just moved the masking to mbm_config_show while printing.
+
+Thanks
+Babu
+
 > 
-> Reported-by: Zheyu Ma <zheyuma97@gmail.com>
-> Closes: https://lore.kernel.org/all/CAMhUBjmXMYsEoVYw_M8hSZjBMHh24i88QYm-RY6HDta5YZ7Wgw@mail.gmail.com
-
-Fixes: 759cbd59674a ("KVM: x86: nSVM/nVMX: set nested_run_pending on VM entry which is a result of RSM")
-
-> Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
-> ---
->  arch/x86/kvm/vmx/nested.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+>>  }
+>>  
+>>  static void mondata_config_read(struct rdt_domain *d, struct mon_config_info *mon_info)
+>> @@ -1557,6 +1554,7 @@ static void mondata_config_read(struct rdt_domain *d, struct mon_config_info *mo
+>>  
+>>  static int mbm_config_show(struct seq_file *s, struct rdt_resource *r, u32 evtid)
+>>  {
+>> +	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
+>>  	struct mon_config_info mon_info = {0};
+>>  	struct rdt_domain *dom;
+>>  	bool sep = false;
+>> @@ -1571,7 +1569,9 @@ static int mbm_config_show(struct seq_file *s, struct rdt_resource *r, u32 evtid
+>>  		mon_info.evtid = evtid;
+>>  		mondata_config_read(dom, &mon_info);
+>>  
+>> -		seq_printf(s, "%d=0x%02x", dom->id, mon_info.mon_config);
+>> +		/* Report only the valid event configuration bits */
+>> +		seq_printf(s, "%d=0x%02x", dom->id,
+>> +			   mon_info.mon_config & hw_res->event_mask);
+>>  		sep = true;
+>>  	}
+>>  	seq_puts(s, "\n");
+>> @@ -1617,12 +1617,14 @@ static void mon_event_config_write(void *info)
+>>  static int mbm_config_write_domain(struct rdt_resource *r,
+>>  				   struct rdt_domain *d, u32 evtid, u32 val)
+>>  {
+>> +	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
+>>  	struct mon_config_info mon_info = {0};
+>>  	int ret = 0;
+>>  
+>>  	/* mon_config cannot be more than the supported set of events */
+>> -	if (val > MAX_EVT_CONFIG_BITS) {
+>> -		rdt_last_cmd_puts("Invalid event configuration\n");
+>> +	if ((val & hw_res->event_mask) != val) {
+>> +		rdt_last_cmd_printf("Invalid input: The maximum valid bitmask is 0x%02x\n",
+>> +				    hw_res->event_mask);
+>>  		return -EINVAL;
+>>  	}
+>>  
+>>
+>>
 > 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index c5ec0ef51ff7..44432e19eea6 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -4904,7 +4904,16 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
->  
->  static void nested_vmx_triple_fault(struct kvm_vcpu *vcpu)
->  {
-> +	struct vcpu_vmx *vmx = to_vmx(vcpu);
-> +
->  	kvm_clear_request(KVM_REQ_TRIPLE_FAULT, vcpu);
-> +
-> +	/* In case of a triple fault, cancel the nested reentry. This may occur
+> Reinette
 
-	/*
-	 * Multi-line comments should look like this.  Blah blah blab blah blah
-	 * blah blah blah blah.
-	 */
-
-> +	 * when the RSM instruction fails while attempting to restore the state
-> +	 * from SMRAM.
-> +	 */
-> +	vmx->nested.nested_run_pending = 0;
-
-Argh.  KVM's handling of SMIs while L2 is active is complete garbage.  As explained
-by the comment in vmx_enter_smm(), the L2<->SMM transitions should have a completely
-custom flow and not piggyback/usurp nested VM-Exit/VM-Entry.
-
-	/*
-	 * TODO: Implement custom flows for forcing the vCPU out/in of L2 on
-	 * SMI and RSM.  Using the common VM-Exit + VM-Enter routines is wrong
-	 * SMI and RSM only modify state that is saved and restored via SMRAM.
-	 * E.g. most MSRs are left untouched, but many are modified by VM-Exit
-	 * and VM-Enter, and thus L2's values may be corrupted on SMI+RSM.
-	 */
-
-The Fixes: commit above added a hack on top of the hack.  But it's not entirely
-clear from the changelog exactly what was being fixed.
-
-    While RSM induced VM entries are not full VM entries,
-    they still need to be followed by actual VM entry to complete it,
-    unlike setting the nested state.
-    
-    This patch fixes boot of hyperv and SMM enabled
-    windows VM running nested on KVM, which fail due
-    to this issue combined with lack of dirty bit setting.
-
-My first guess would be event injection, but that shouldn't be relevant to RSM.
-Architecturally, events (SMIs, NMIs, IRQs, etc.) are recognized at instruction
-boundaries, but except for SMIs (see below), KVM naturally defers injection until
-an instruction boundary by virtue of delivering events via the VMCS/VMCB, i.e. by
-waiting to deliver events until successfully re-entering the guest.
-
-Nested VM-Enter is a special snowflake because KVM needs to finish injecting events
-from vmcs12 before injecting any synthetic events, i.e. nested_run_pending ensures
-that KVM wouldn't clobber/override an L2 event coming from L1.  In other words,
-nested_run_pending is much more specific than just needing to wait for an instruction
-boundary.
-
-So while the "wait until the CPU is at an instruction boundary" applies to RSM,
-it's not immediately obvious to me why setting nested_run_pending is necessary.
-And setting nested_run_pending *after* calling nested_vmx_enter_non_root_mode()
-is nasty.  nested_vmx_enter_non_root_mode() and its helpers use nested_run_pending
-to determine whether or not to enforce various consistency checks and other
-behaviors.  And a more minor issue is that stat.nested_run will be incorrectly
-incremented.
-
-As a stop gap, something like this patch is not awful, though I would strongly
-prefer to be more precise and not clear it on all triple faults.  We've had KVM
-bugs where KVM prematurely synthesizes triple fault on an actual nested VM-Enter,
-and those would be covered up by this fix.
-
-But due to nested_run_pending being (unnecessarily) buried in vendor structs, it
-might actually be easier to do a cleaner fix.  E.g. add yet another flag to track
-that a hardware VM-Enter needs to be completed in order to complete instruction
-emulation.
-
-And as alluded to above, there's another bug lurking.  Events that are *emulated*
-by KVM must not be emulated until KVM knows the vCPU is at an instruction boundary.
-Specifically, enter_smm() shouldn't be invoked while KVM is in the middle of
-instruction emulation (even if "emulation" is just setting registers and skipping
-the instruction).  Theoretically, that could be fixed by honoring the existing
-at_instruction_boundary flag for SMIs, but that'd be a rather large change and
-at_instruction_boundary is nowhere near accurate enough to use right now.
-
-Anyways, before we do anything, I'd like to get Maxim's input on what exactly was
-addressed by 759cbd59674a.
+-- 
+Thanks
+Babu Moger
 
