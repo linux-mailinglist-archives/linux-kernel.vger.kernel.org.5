@@ -1,131 +1,147 @@
-Return-Path: <linux-kernel+bounces-14167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74AE48218AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:06:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53B668218AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:08:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80D401C21687
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:06:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBA7F1F22147
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E2963A9;
-	Tue,  2 Jan 2024 09:06:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D4F8611E;
+	Tue,  2 Jan 2024 09:08:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kDUxrUCm"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VxvC1E0L"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC325672;
-	Tue,  2 Jan 2024 09:06:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5821C433C8;
-	Tue,  2 Jan 2024 09:06:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704186360;
-	bh=L2uJ+bAvmhIK5Q/e3x9A1mvcDooM9dY7ZfhWFQ8inSM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kDUxrUCmByrDI8zmdaiiRee5gx5PTGLC2S8azQkvEa9Pg9TgByQ01GjwEi/JTAETj
-	 O3g/DgzRr27BysH9R5q06LIWZQqfkj7hBr6qdjhgxjLkZ9+EalR1UDtRUdB+Y4PVsJ
-	 blgin1UhmZjTVHgComZEtdkrytNfC+tI3sUtiAod/+zNEVYsDBwVigOrQri7g6ns4n
-	 kcL1JUGSywFl/NS8Rl6a9O+qU7AMBgMt0L8pfLvaoRxzlmmlXS8ykjKP+i8D/qj4YK
-	 EvxVHhRXJJRNscAfIi2jXnL3NGLNk4ox1IxezApwLDhnIXZG6gS4SxC29jw0p03T7I
-	 OmOJ1tSfNxWgA==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rKaid-00053V-27;
-	Tue, 02 Jan 2024 10:05:51 +0100
-Date: Tue, 2 Jan 2024 10:05:51 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Konrad Dybcio <konrad.dybcio@somainline.org>
-Subject: Re: [PATCH 1/3] arm64: dts: qcom: sc8280xp: Fix PCIe PHY
- power-domains
-Message-ID: <ZZPR793E3SoIplLw@hovoldconsulting.com>
-References: <20231227-topic-8280_pcie_dts-v1-0-13d12b1698ff@linaro.org>
- <20231227-topic-8280_pcie_dts-v1-1-13d12b1698ff@linaro.org>
- <ZY6sh8nlEUyEfL0u@hovoldconsulting.com>
- <20231229170334.GA9098@thinkpad>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D0BFCA64;
+	Tue,  2 Jan 2024 09:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704186479; x=1735722479;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ilO5IzhQ3Hwvx3JB2WQjM6kgLpNd1YFCiNdkM3lmNDU=;
+  b=VxvC1E0LDFpmnAAo975IjzJ+4JWxPweMKF1a5zAKP8nY/vBjFAR78/dz
+   hYxYo59mNqz4mtPUmo5Te4wBaReUmAlD5Rh4iYbyGRvSPUen5kt2lffnG
+   5tYCgxfq3AXAJlCcSDgYqoZpmFcMfWBErGeg21DvlfpeaoX+sTWtXYrps
+   6z+ExnV0JOos/ykCbA4AD6LoyQ9jpxqGmHF/X9RrHI7aSmb4/Wdf2O6Gl
+   1b5izKSUfbxhu35YZcQPpN2q9/ni/mKBMMr1aWzGD4whfXU1o/xaALCHk
+   0GBYuIMboarg4sGlDZBPquqfrLWzDYe7jSHPw6HgxX+0KVnftVoGI8xr+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="4192271"
+X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
+   d="scan'208";a="4192271"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 01:07:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="772784129"
+X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
+   d="scan'208";a="772784129"
+Received: from jomolloy-mobl.ger.corp.intel.com (HELO [10.252.51.93]) ([10.252.51.93])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 01:07:54 -0800
+Message-ID: <3260e806-a708-4462-9d4e-346e54143a65@linux.intel.com>
+Date: Tue, 2 Jan 2024 11:08:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231229170334.GA9098@thinkpad>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Oops in hdac_hda_dev_probe (6.7-rc7)
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Mark Brown <broonie@kernel.org>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, linux-kernel@vger.kernel.org,
+ regressions@lists.linux.dev
+References: <ZYvUIxtrqBQZbNlC@shine.dominikbrodowski.net>
+ <87sf3lxiet.wl-tiwai@suse.de> <ZY7kosArPqhlCfOA@shine.dominikbrodowski.net>
+ <874jg1x7ao.wl-tiwai@suse.de> <ZY_Gb8-rncuOjRq-@shine.dominikbrodowski.net>
+ <87plyovwg7.wl-tiwai@suse.de>
+From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <87plyovwg7.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 29, 2023 at 10:33:34PM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Dec 29, 2023 at 12:24:55PM +0100, Johan Hovold wrote:
-> > On Wed, Dec 27, 2023 at 11:28:26PM +0100, Konrad Dybcio wrote:
-> > > The PCIe GDSCs are only related to the RCs. The PCIe PHYs on the other
-> > > hand, are powered by VDD_MX and their specific VDDA_PHY/PLL regulators.
-> > 
-> > No, that does not seem to be entirely correct. I added the power-domains
-> > here precisely because they were needed to enable the PHYs.
-> > 
-> > This is something I stumbled over when trying to figure out how to
-> > add support for the second lane pair (i.e. four-lane mode), and I just
-> > went back and confirmed that this is still the case.
-> > 
-> > If you try to enable one of these PHYs without the corresponding GDSC
-> > being enabled, you end up with:
-> > 
-> > [   37.709324] ------------[ cut here ]------------
-> > [   37.718196] gcc_pcie_3b_aux_clk status stuck at 'off'
-> > [   37.718205] WARNING: CPU: 4 PID: 482 at drivers/clk/qcom/clk-branch.c:86 clk_branch_wait+0x144/0x15c
-> > 	
+
+
+On 30/12/2023 12:03, Takashi Iwai wrote:
+> On Sat, 30 Dec 2023 08:27:43 +0100,
+> Dominik Brodowski wrote:
+>>
+>> Am Fri, Dec 29, 2023 at 06:11:43PM +0100 schrieb Takashi Iwai:
+>>> On Fri, 29 Dec 2023 16:24:18 +0100,
+>>> Dominik Brodowski wrote:
+>>>>
+>>>> Hi Takashi,
+>>>>
+>>>> many thanks for your response. Your patch helps half-way: the oops goes
+>>>> away, but so does the sound... With your patch, the decisive lines in dmesg
+>>>> are:
+>>>>
+>>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
+>>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
+>>>> 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
+>>>> 	sof_sdw sof_sdw: snd_soc_register_card failed -517
+>>>> 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
+>>>> 	sof_sdw sof_sdw: snd_soc_register_card failed -517
+>>>> 	platform sof_sdw: deferred probe pending
+>>>>
+>>>> With a revert of the a0575b4add21, it is:
+>>>>
+>>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
+>>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
+>>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Topology: ABI 3:22:1 Kernel ABI 3:23:0
+>>>> 	sof_sdw sof_sdw: ASoC: Parent card not yet available, widget card binding deferred
+>>>> 	sof_sdw sof_sdw: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 3
+>>>> 	input: sof-soundwire HDMI/DP,pcm=5 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input14
+>>>> 	input: sof-soundwire HDMI/DP,pcm=6 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input15
+>>>> 	input: sof-soundwire HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input16
+>>>>
+>>>> Maybe this helps a bit further?
+>>>
+>>> Thanks for quick testing.
+>>> It shows at least that my guess wasn't wrong.
+>>>
+>>> The problem could be the initialization order in the caller side.
+>>> Can the patch below work instead?
+>>
+>> Unfortunately, no:
+>>
+>> sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
+>> sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
+>> sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
+>> sof_sdw sof_sdw: snd_soc_register_card failed -517
+>> sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
+>> sof_sdw sof_sdw: snd_soc_register_card failed -517
+>> platform sof_sdw: deferred probe pending
 > 
-> Technically this patch is correct. PHYs are backed by MX domain only and not
-> GDSCs. Only the controllers (PCIe, UFS, USB) are backed by GDSCs. The fact that
-> you are seeing issue with PCIe Aux clock suggests me that this clock may not be
-> applicable to the PHY but it needs to be enabled for working of the PHY somehow.
-> I'll try to find the details on how exactly it is needed.
-
-Sounds good, thanks.
-
-> But if I get the answer like, "This clock is also sourced to PHY directly", then
-> we may need to add dual power domain for PHY (both GDSC and MX).
-
-Right.
- 
-> > Now, you may or may not want to describe the above in the devicetree,
-> > but this makes it sound like you're trying to work around an issue with
-> > the current Linux implementation.
-> > 
+> Hm, then it might be the logical failure of that commit.
+> Peter?
 > 
-> Adding MX domain to PHY in devicetree is definitely not a workaround.
+> Without a fix in the next few days, we'll have to revert it before
+> 6.7.
 
-I was referring to the fact that the GDSC domain also appears to be
-needed even if that may possible get in the way when trying to implement
-suspend.
+The fix for this was sent early December:
+https://lore.kernel.org/linux-sound/20231207095425.19597-1-peter.ujfalusi@linux.intel.com/
 
-> It is the
-> actual hardware representation. MX is the always on domain, and when CX collapse
-> happens during suspend state, it will ensure that all the analog components
-> (like PHY) are kept powered on. Otherwise, we will see link down issues.
+It had the correct Fixes tag but it did not made it to 6.7-rc while
+a0575b4add21 did made it.
 
-But if it's an always-on domain as you say, it should not be shut down,
-right? Perhaps you still want it described in DT for some other reason.
- 
-> But, I heard from Qcom that _only_ on this platform, MX is not backing the PCIe
-> PHY. I can correlate that with my encounter with PCIe issues after forcing CX
-> power collapse.
+Mark, Takashi, can you pick the fix for 6.7 (it is in -next)? I think we
+might have time for it to land?
 
-Ok, but that seems to imply that this patch is definitely *not* correct
-(for sc8280xp)?
-
-Johan
+-- 
+Péter
 
