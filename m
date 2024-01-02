@@ -1,219 +1,97 @@
-Return-Path: <linux-kernel+bounces-14661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DB1F822071
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:34:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36CAE822076
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 18:35:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DFD7B21EE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:34:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D93B7281D30
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 17:35:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D65D5154BD;
-	Tue,  2 Jan 2024 17:34:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9481156C9;
+	Tue,  2 Jan 2024 17:34:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eIKxHN22"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="lX8vRVOl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B943154AA
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 17:34:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55679552710so14157a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 09:34:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704216850; x=1704821650; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O4H4STx0XR17w8qdB0s8hsPN6AziBcrpsvvrusepEl8=;
-        b=eIKxHN22uF4ipZEbLfODcakewE4ub9/F+bb1dYH9tupsBPW2YIaKE4oiYgqJCz1ZBm
-         ijN0/H2iRO7BrSt2f1+40qumD5oTf4Or9wps8rQfOnBnxqHB6+wd873X3BkMRIO0Bn9r
-         6ug04rSW23EUlK3iDBodaERaDBEjyo8EY9/olsXcRuysdcAIMN3rKt7ARAQ57zryxuV3
-         NNdApwgtGobV9WKWympscfUXdcTlnFu3JG6gHFOWwkTU40Y7kkVUkXC5qXnUwgggk4LR
-         phEN/r8G6RuCG8veF9m6NKn7+E0a6OcBBehZ2OW9SqhwWTrJ2TmCoCGHvRElERarsJg7
-         xPsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704216850; x=1704821650;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O4H4STx0XR17w8qdB0s8hsPN6AziBcrpsvvrusepEl8=;
-        b=g1GChVU1qTjeiNKNwSfxPXRPqHHSuyDrAKBuHHXPoHPJWabq14Q7ZiztdMjNlZrmSb
-         62BwSkOWteJCSsnHSMJeGK+zSO41exvqNdQ0bpuABty76Z+p42jPuTQEb0NcIP9mrEMO
-         xRLvt4wuKi8/kSZ2Vmfz0xtqW2WppK4je+GWxjH/7Vx+QsLBYACZ/vR3i7hG73objWWO
-         yKZ1Go53ZSe3YZ9IyJqjWZA4farxyr/tAA0A4PSJrDGSoFa06QkTfY2nkZTL+S1IPf7Z
-         2ta//TUy97AORD+1nTIBuumO102LxSd2MnmDO5B++8YH7wFjJzuNH5VGOiwFWuW7M8Xk
-         yfuw==
-X-Gm-Message-State: AOJu0YyfVyKXm4e5rCxA62a4j9/Lk0CUVA8nLRl0d/1XYQ9Afw73ydhy
-	OS6zC0C9p1AJjsLjVgikCgLG7ezG/eCvCQ4hOOQQo4AXtYQ/
-X-Google-Smtp-Source: AGHT+IFvEcIrqZ9aUSnNEmLKXBrUPXMwi6f7bv82qceodEBrqeWWCV70ozR3PyflHs50XEz9U6Tm24vgKfbfCzlUAAY=
-X-Received: by 2002:a50:ba8e:0:b0:554:228f:4b8e with SMTP id
- x14-20020a50ba8e000000b00554228f4b8emr1136022ede.2.1704216849665; Tue, 02 Jan
- 2024 09:34:09 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87478156C8;
+	Tue,  2 Jan 2024 17:34:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=88r7GWZg9xFdEciPBDZ+JiD1krfoRUPpwddSStVgxfI=; b=lX8vRVOlpuM7hDdD6K2fvkbOZd
+	VPP1QhUFJ4aS6XuiyBU0+LaB5nF8+uXuDtdGI6avGTcWrZ/BL8p7az1o7FPvyNdZipjGK2ah5ynfz
+	TG2AteKgS+BoCTpBZmmMTQhzrrZ9b8WMT3dpxn+sl2zLSyjzteRW/mgRNvCOCwBK8WZ2SgB0XUEkm
+	DSPk6qJSzoeTwUKbcGMN1b2pv7lC1HKOqCx5vtRrmjZagAwnDWZXQZCQ9MvJynlJcC9C0lTjOQ0YW
+	llhPsiBz3W6zNEhp9vCe6BDndWXdRk+ey1c1ieFBY8koLAz80NK8Aql1GaYPRKFlcNgOzTIxKjdEo
+	3JHPgw8g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:58516)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rKiey-0006lm-0p;
+	Tue, 02 Jan 2024 17:34:36 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rKif0-0005VF-Bu; Tue, 02 Jan 2024 17:34:38 +0000
+Date: Tue, 2 Jan 2024 17:34:38 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Yajun Deng <yajun.deng@linux.dev>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, andrew@lunn.ch, olteanv@gmail.com,
+	hkallweit1@gmail.com, kabel@kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
+Subject: Re: [PATCH net-next] net: phy: Cleanup struct mdio_driver_common
+Message-ID: <ZZRJLg6U0G5CNRQ0@shell.armlinux.org.uk>
+References: <20231228072350.1294425-1-yajun.deng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <127b8199-1cd4-42d7-9b2b-875abaad93fe@gmail.com> <90117449-1f4a-47d7-baf4-2ed6540bc436@gmail.com>
-In-Reply-To: <90117449-1f4a-47d7-baf4-2ed6540bc436@gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 2 Jan 2024 18:33:58 +0100
-Message-ID: <CANn89i+GJOgcDWK=C0+vmomt2ShotrOKyLiXzFkfT1W8vpJv1Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 2/3] net: gro: parse ipv6 ext headers without
- frag0 invalidation
-To: Richard Gobert <richardbgobert@gmail.com>
-Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, 
-	pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231228072350.1294425-1-yajun.deng@linux.dev>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Tue, Jan 2, 2024 at 2:25=E2=80=AFPM Richard Gobert <richardbgobert@gmail=
-.com> wrote:
->
-> The existing code always pulls the IPv6 header and sets the transport
-> offset initially. Then optionally again pulls any extension headers in
-> ipv6_gso_pull_exthdrs and sets the transport offset again on return from
-> that call. skb->data is set at the start of the first extension header
-> before calling ipv6_gso_pull_exthdrs, and must disable the frag0
-> optimization because that function uses pskb_may_pull/pskb_pull instead o=
-f
-> skb_gro_ helpers. It sets the GRO offset to the TCP header with
-> skb_gro_pull and sets the transport header. Then returns skb->data to its
-> position before this block.
->
-> This commit introduces a new helper function - ipv6_gro_pull_exthdrs -
-> which is used in ipv6_gro_receive to pull ipv6 ext headers instead of
-> ipv6_gso_pull_exthdrs. Thus, there is no modification of skb->data, all
-> operations use skb_gro_* helpers, and the frag0 fast path can be taken fo=
-r
-> IPv6 packets with ext headers.
->
-> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
-> Reviewed-by: Willem de Bruijn <willemb@google.com>
-> ---
->  include/net/ipv6.h     |  1 +
->  net/ipv6/ip6_offload.c | 51 +++++++++++++++++++++++++++++++++---------
->  2 files changed, 42 insertions(+), 10 deletions(-)
->
-> diff --git a/include/net/ipv6.h b/include/net/ipv6.h
-> index 78d38dd88aba..217240efa182 100644
-> --- a/include/net/ipv6.h
-> +++ b/include/net/ipv6.h
-> @@ -26,6 +26,7 @@ struct ip_tunnel_info;
->  #define SIN6_LEN_RFC2133       24
->
->  #define IPV6_MAXPLEN           65535
-> +#define IPV6_MIN_EXTHDR_LEN    8
+On Thu, Dec 28, 2023 at 03:23:50PM +0800, Yajun Deng wrote:
+> The struct mdio_driver_common is a wrapper for driver-model structure,
+> it contains device_driver and flags. There are only struct phy_driver
+> and mdio_driver that use it. The flags is used to distinguish between
+> struct phy_driver and mdio_driver.
+> 
+> We can test that if probe of device_driver is equal to phy_probe. This
+> way, the struct mdio_driver_common is no longer needed, and struct
+> phy_driver and usb_mdio_driver will be consistent with other driver
+> structs.
 
-// Hmm see my following comment.
+usb_mdio_driver?
 
->
->  /*
->   *     NextHeader field of IPv6 header
-> diff --git a/net/ipv6/ip6_offload.c b/net/ipv6/ip6_offload.c
-> index 0e0b5fed0995..c07111d8f56a 100644
-> --- a/net/ipv6/ip6_offload.c
-> +++ b/net/ipv6/ip6_offload.c
-> @@ -37,6 +37,40 @@
->                 INDIRECT_CALL_L4(cb, f2, f1, head, skb);        \
->  })
->
-> +static int ipv6_gro_pull_exthdrs(struct sk_buff *skb, int off, int proto=
-)
+I'm not sure why this consistency is even desired, the commit message
+doesn't properly say _why_ this change is being proposed.
+
+> +bool is_phy_driver(struct device_driver *driver)
 > +{
-> +       const struct net_offload *ops =3D NULL;
-> +       struct ipv6_opt_hdr *opth;
-> +
-> +       for (;;) {
-> +               int len;
-> +
-> +               ops =3D rcu_dereference(inet6_offloads[proto]);
-> +
-> +               if (unlikely(!ops))
-> +                       break;
-> +
-> +               if (!(ops->flags & INET6_PROTO_GSO_EXTHDR))
-> +                       break;
-> +
-> +               opth =3D skb_gro_header(skb, off + IPV6_MIN_EXTHDR_LEN, o=
-ff);
-
-I do not see a compelling reason for adding yet another constant here.
-
-I would stick to
-
-   opth =3D skb_gro_header(skb, off + sizeof(*opth), off);
-
-Consistency with similar helpers is desirable.
-
-> +               if (unlikely(!opth))
-> +                       break;
-> +
-> +               len =3D ipv6_optlen(opth);
-> +
-> +               opth =3D skb_gro_header(skb, off + len, off);
-
-Note this call will take care of precise pull.
-
-> +               if (unlikely(!opth))
-> +                       break;
-> +               proto =3D opth->nexthdr;
-> +
-> +               off +=3D len;
-> +       }
-> +
-> +       skb_gro_pull(skb, off - skb_network_offset(skb));
-> +       return proto;
+> +	return driver->probe == phy_probe;
 > +}
-> +
->  static int ipv6_gso_pull_exthdrs(struct sk_buff *skb, int proto)
->  {
->         const struct net_offload *ops =3D NULL;
-> @@ -203,28 +237,25 @@ INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_re=
-ceive(struct list_head *head,
->                 goto out;
->
->         skb_set_network_header(skb, off);
-> -       skb_gro_pull(skb, sizeof(*iph));
-> -       skb_set_transport_header(skb, skb_gro_offset(skb));
->
-> -       flush +=3D ntohs(iph->payload_len) !=3D skb_gro_len(skb);
-> +       flush +=3D ntohs(iph->payload_len) !=3D skb->len - hlen;
->
->         proto =3D iph->nexthdr;
->         ops =3D rcu_dereference(inet6_offloads[proto]);
->         if (!ops || !ops->callbacks.gro_receive) {
-> -               pskb_pull(skb, skb_gro_offset(skb));
-> -               skb_gro_frag0_invalidate(skb);
-> -               proto =3D ipv6_gso_pull_exthdrs(skb, proto);
-> -               skb_gro_pull(skb, -skb_transport_offset(skb));
-> -               skb_reset_transport_header(skb);
-> -               __skb_push(skb, skb_gro_offset(skb));
-> +               proto =3D ipv6_gro_pull_exthdrs(skb, hlen, proto);
->
->                 ops =3D rcu_dereference(inet6_offloads[proto]);
->                 if (!ops || !ops->callbacks.gro_receive)
->                         goto out;
->
-> -               iph =3D ipv6_hdr(skb);
-> +               iph =3D skb_gro_network_header(skb);
-> +       } else {
-> +               skb_gro_pull(skb, sizeof(*iph));
->         }
->
-> +       skb_set_transport_header(skb, skb_gro_offset(skb));
-> +
->         NAPI_GRO_CB(skb)->proto =3D proto;
->
->         flush--;
-> --
-> 2.36.1
->
+> +EXPORT_SYMBOL_GPL(is_phy_driver);
+
+Do we really need this exported? It doesn't seem like something anything
+other than core MDIO/phylib code should know about, and all that becomes
+a single module when building it in a modular way - phylib can't be a
+separate module from mdio stuff.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
