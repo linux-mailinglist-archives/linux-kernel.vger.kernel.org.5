@@ -1,112 +1,103 @@
-Return-Path: <linux-kernel+bounces-14186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 406BB8218E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:27:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 236A98218E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:26:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4D7DB21AFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:27:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3AD01F2213D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:26:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7680679E5;
-	Tue,  2 Jan 2024 09:26:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 757F7D534;
+	Tue,  2 Jan 2024 09:26:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="VgRSL4Cz"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I/1cHtG5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.14])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A422EDF5D;
-	Tue,  2 Jan 2024 09:26:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704187576; x=1704792376; i=markus.elfring@web.de;
-	bh=hm9XvsB8Hc+GdCwiF3RHaf2+W9Sx9+rzWWOPBtlg8U0=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=VgRSL4Czpr9uuX6BZvWm6E0gbIKeKF81KU2N7arwbRFR5No28HHwxGXvX3eL0/xX
-	 ADPm6qFgZ+PJjFjBABOeiQq/yOmmzoq1UjKm44h7B86l+W5O/BJrpgAXE9Bp7tOzk
-	 xkmSrYbwevpo0ANCoT5mOcvTi6xDfDAn/fwDvE+3qtKiFiQjJDPbD6mwVQBuiEPi7
-	 fCrjUwMhDHmUKSDAJEtzdmjHevc8Y3Xm3tWr2JLFBF0dSZ4NbpAl1s0DCJhosWR4L
-	 QdoWKZ2iRFuS2nozEF2jHLBumDA+/BPsb29VkO/d7FRJu++S3khtFR8kzBqlAWvO5
-	 8eukZlFUxjOAWTODNA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1N0Zns-1qzTBD0WHs-00wanB; Tue, 02
- Jan 2024 10:26:15 +0100
-Message-ID: <f96d8343-e7b3-491d-b191-f2ddb4ba5269@web.de>
-Date: Tue, 2 Jan 2024 10:26:12 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB95D515
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 09:26:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704187591; x=1735723591;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=pv0siwkhM5WJdMGPEhHf+oy6L8ddnKkuRveKNn3okG4=;
+  b=I/1cHtG5mW6yhu+7g9371ys+GFQ3s1U23DrQfjnNCWFjDuRfnQltkaQ0
+   eQLMLwRjQqjAUPTt/qNANo4IwQCr8VJBgP5oiij9xACPJ+X7hWvTCa+8q
+   eZKI8hucDtb83B5rUVbKxKFN75BgONUq4FR4fMSCbG0g5K+Yp0v1YRqd6
+   tgWSis8lHDKDH7XQ386YGzilzORTlM6NSgjjPoMoYYUDN0XpHwaUvPsBq
+   s+pMqOlU+tsyRjAPy/jstnqK+Vp2YfsYeRny1ETKiC9eFlepAzuVhPAOi
+   ql3zADHfq3VqbJo1wVR3/zzf5G+noTELk8hjxCGLuY+TOIvDQRwTkEg0z
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="376351536"
+X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
+   d="scan'208";a="376351536"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 01:26:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10940"; a="1026727348"
+X-IronPort-AV: E=Sophos;i="6.04,324,1695711600"; 
+   d="scan'208";a="1026727348"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 01:26:28 -0800
+Date: Tue, 2 Jan 2024 11:26:18 +0200 (EET)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Marc MERLIN <marc@merlins.org>
+cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
+    Rander Wang <rander.wang@intel.com>, 
+    Bard Liao <yung-chuan.liao@linux.intel.com>, alsa-devel@alsa-project.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: sof-audio-pci-intel-tgl/soundwire 6.6.8 kernel outputs no sound
+ on speakers but works on headphones
+In-Reply-To: <20231223234430.GA11359@merlins.org>
+Message-ID: <alpine.DEB.2.22.394.2401021117370.14041@eliteleevi.tm.intel.com>
+References: <20231223234430.GA11359@merlins.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sunrpc: Improve exception handling in krb5_etm_checksum()
-Content-Language: en-GB
-To: Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org,
- netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
-Cc: Anna Schumaker <anna@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
- Dai Ngo <Dai.Ngo@oracle.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, Jakub Kicinski <kuba@kernel.org>,
- Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
- Olga Kornievskaia <kolga@netapp.com>, Paolo Abeni <pabeni@redhat.com>,
- Simo Sorce <simo@redhat.com>, Tom Talpey <tom@talpey.com>,
- Trond Myklebust <trond.myklebust@hammerspace.com>,
- LKML <linux-kernel@vger.kernel.org>
-References: <9561c78e-49a2-430c-a611-52806c0cdf25@web.de>
- <ZZIhEJK68Sapos2t@tissot.1015granger.net>
- <4307bce9-ccbd-4bc5-aa8e-b618a1664cbe@web.de>
- <ZZLuaRwSZI16EKdP@tissot.1015granger.net>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <ZZLuaRwSZI16EKdP@tissot.1015granger.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fHraEXCZs9bFHLtOOPd8xSkwRa+bWUmDA46Cp6Cx+X+wgYf5Du9
- kWjIIkrOvlTarY4rBGy9eMpWqFRSmflO8KGY2pJiVlfFYYnbRCXVMXZR4G79TElPx1ek8yi
- 0ZPOUb32uwUl3TE2JjWkw99MUtTGbQtMol7sDX7byJhEsqJE+3Y8UPaerVS1DdeV2c/N8Xb
- G7kAL10sJ7zGV86fLOdSQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:fOO4Nl2obn4=;zj++G77n+wQ4X6DGe67n4Af16x/
- BnxbsJbuio2eixsTb/MVEc0LnPGtsEU0hDvLoOhNCfqMd7Dd13yjijAJ8kxPmLJNwKLmbU+9g
- GTolCHXPMbY/Fb1mF5CbvSORa/KRBEaHJWhfb/4WMwRJuQwOoOWYeXR1TpZSbbzKzk7LewqFN
- 7kteIP6AgATwYi17wcLWY1vD5T9gPjz3X+iAXtRdZ0yDP64EzpYXzm6LXVsz92xpbVcKqLzzv
- Hvtn/gxVx39NSfMEIp6r3L2V3ZWwSwkl+4OEj5VAiHBbZ+yH53hqwyOCkfmSKcgEz8RviyJ1V
- 5jQN984jOSpSA2gGVZS9cj6t04UvaG0wyD56HlFkzqtMMr6MVPTj66Rd7mb1fD20vsZVixyVR
- 8fgs5YqgdPyan4BxcLC6QJ4WRNMYoPq9rd76GF5kkaKZ7Ku+KQusyxUCoD+8wfObSpAERXFbY
- AGQaJPGz4xsdieT3b7tU0hlZlRLfUelGl/lXlpo7ByhI9sBpXS2RTaP7nfU45mREQjoLeNUt9
- 8m39WxYJ/yqV3TZe5ya/sIAX7zJYXOaHJe0y7u/6webrFvce621s/Wts162oEq6jPgTwx0lgU
- hds8POQUd39R+xuQqijLrIX9uV1L3peqvWQ0ewkULKfYaAGzn5ICa+JOp46cuBKeFggicAB7C
- maQcifEoTsdkGlPVgMN+MQoedwh2aq3FjAL4TuvpXXPRFtJHKuwzVnuoAoFWUkL4CJEf6EO2Q
- CVda/bE9wfp3N1S68w8ZirbZhP0DZM1oCJjI7sd3oV6aH3kbagluVHtvRnIjm5uwKMEeM6KQ/
- qUOSCegDKHcIqxgQnkbePreeh4ehreXnLvBRHjgrdnTae7B7m/5p6mZLqPpcI7M/xzD5NQpOq
- JF+JiTG4++QKzdjT/h7YW1G1qrD6hndR32dUK4msLr/io/C8guszxK/7TMZ+0BodcrdZC7N59
- 7Y3h44frkfzqJfKJrthHeA8l8BM=
+Content-Type: text/plain; charset=US-ASCII
 
-=E2=80=A6
-> +++ b/net/sunrpc/auth_gss/gss_krb5_crypto.c
-=E2=80=A6
-> @@ -970,8 +969,7 @@ u32 krb5_etm_checksum(struct crypto_sync_skcipher *c=
-ipher,
->
->  out_free_ahash:
->  	ahash_request_free(req);
-> -out_free_mem:
-> -	kfree(iv);
-> +out_free_cksumdata:
->  	kfree_sensitive(checksumdata);
->  	return err ? GSS_S_FAILURE : GSS_S_COMPLETE;
->  }
-=E2=80=A6
+Hi,
 
-How do you think about to use the identifier =E2=80=9Cout_free_checksumdat=
-a=E2=80=9D?
+On Sat, 23 Dec 2023, Marc MERLIN wrote:
 
-Regards,
-Markus
+> Howdy,
+> 
+> First, apologies if I'm not sending this to the right place, I could not
+> find an approrpriate soundwire/sof mailing list, please redirect me as
+> needed (I had to find an old soundwire message for reference)
+> 
+> laptop; Dell XPS 17 9730
+> 
+> merlin:~# lspci | grep -i audio
+> 0000:00:1f.3 Multimedia audio controller: Intel Corporation Device 51ca (rev 01)
+> 
+> stock mainline 6.6.8 shows the device, but no sound comes out, as if it
+> were muted, but I do not see anyting muted in alsamixer. If I plug in
+
+we'd need a bit more info, especially alsa-info output, to figure out 
+whether this is an issue with the mixer settings and/or the drivers. 
+Instructions how to get alsa-info output availbale at 
+https://thesofproject.github.io/latest/getting_started/intel_debug/suggestions.html
+
+Please file a bug at 
+https://github.com/thesofproject/linux/issues
+
+There was one bug affecting 9730 variants, but I don't think your case
+is the the same:
+https://github.com/thesofproject/linux/issues/4380
+
+Br, Kai
 
