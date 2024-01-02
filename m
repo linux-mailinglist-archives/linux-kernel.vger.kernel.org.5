@@ -1,158 +1,112 @@
-Return-Path: <linux-kernel+bounces-14250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7A168219EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:34:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DD528219F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:35:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D126B20F47
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:34:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBC3F282F5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:35:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35FE0D2F3;
-	Tue,  2 Jan 2024 10:34:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F26D2FD;
+	Tue,  2 Jan 2024 10:35:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aa91J/KS"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Uzl7Zo5R"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5369EAE3
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 10:34:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40d3ae326f6so100702185e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 02:34:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704191647; x=1704796447; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nCERMpooYaZKMcdn9+yhylHTyfqm8d7HEzDVi0qPotE=;
-        b=aa91J/KSNkc5Gwwr9hjtGk09wfzZ49LH9/hB7Pxob/K/Lx4bvNn1JYizectNFsA7Ss
-         mielFnyRxJl5SjePW3uJxg4fs3VVkcOLRzL1c1rHGi4F3War6Eo1eIeeuraCiPYX4dtY
-         9xD8rxR6JH+9mc6H9GOEhLOlHfKpGlhGt3thS1bdMkIVasZl98HPrbvULgBlyt2LMiHz
-         rVruuX5scIW8JbfB0gXPv3++eFaGQbvlSSQt1l9vLGGQVyhCyU5kVccfOahENuRsLnrE
-         fV7+asCEAthKv9o2EydQekZdpO5rxTERYNC8DWKgZrgxPOjY/+5TyZb84iG1x8gFvEDs
-         bjKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704191647; x=1704796447;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nCERMpooYaZKMcdn9+yhylHTyfqm8d7HEzDVi0qPotE=;
-        b=KhA62RacEktiUWih2jDGubsh3phi6od0me0nm1ASh/u38efZ75yTC+WVZolxYyo7TW
-         UdOWjZ+HRZGSeb3Pjs2/TNvTMtoYkZYnVKgxXUz3+XMuOVwKQKjPkv0vmOnC/j+omhE3
-         gSWV5dnLo0esBglwOYBH4A7KVBAdtopum5EkZS2Cx+fLG5zTEmKwTMCYm6SCqzQer+Aa
-         nU6ktRZC8F4GiG880jByR5WN1fvEVbhkZy4BEPO92HG5RIhKfRtJYcl9HBCDjwsVYFCe
-         1w+Zge3gGaApPdSR/kXKOv8fLpcWJxm7d5EhfQTripR3Bx6rCavjntquvqvHiBGrihh9
-         wypw==
-X-Gm-Message-State: AOJu0YzkcjAQjnz7Ua/JKf4fhkeo1dg6SBeNibQPDd5/yhZik3tJJBIj
-	w4XdpUo6KNCQ5KiGFsiAVrA6vIH59f/snQ==
-X-Google-Smtp-Source: AGHT+IFdK44S6KvSjk9sNFQvkc/GGLwTwKhnyG/jyTL4RpC77b0I0K9NzhC0SmkqCHfW4C0Vm7ZAPQ==
-X-Received: by 2002:a05:600c:2201:b0:40d:3bd2:a1b3 with SMTP id z1-20020a05600c220100b0040d3bd2a1b3mr8836070wml.120.1704191647096;
-        Tue, 02 Jan 2024 02:34:07 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id p4-20020a05600c358400b0040d5471f7acsm32323004wmq.13.2024.01.02.02.34.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 02:34:05 -0800 (PST)
-Message-ID: <c165c485-661b-4a5d-8a19-4dce166dfae4@linaro.org>
-Date: Tue, 2 Jan 2024 11:34:02 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E47DD28D;
+	Tue,  2 Jan 2024 10:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id DD99540E00C9;
+	Tue,  2 Jan 2024 10:34:50 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id mxpEbl6mtL9g; Tue,  2 Jan 2024 10:34:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704191688; bh=qmzzjq3k0ZYuRvdQFFKTodBxJQM9E/DweoyCy+/wM74=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Uzl7Zo5ROy5ZjJo+SRSbo7Jv+rAmFH2RAMynkUlNu2MHLgqEcn5u54yIRhd+KrvzN
+	 6rH+GM5G8yVYLYO+HqnEwIgxT7EtO5jYtV2kIhN3G+/jftTquh3tnfN8YIUt5sMi35
+	 1smnU700J/W1hP7FO9y50JKT6Xu6ZfEWZDV3GtjQxgqzyceow5SCsmYr9vs3J1ii77
+	 JyuLgCLFJXxMIlwS16uiu9e5nfE1wWh6PD6Wjq4z9EttthrAao7Twt/KKyNSWoYsPC
+	 Xqj9hIfrGlj0n/LOfT6OD55NVdDoS57TlCfrRjizoMyiWidJrDWcAenHzCcrCBJEzn
+	 dwcbOdyHFvdYJE84P1vKJgszRZPejPDQDDXMefBSy2tkYcZZAX9C/VQlPf+mB93kyy
+	 MdkNmSh06lo4CxeR2pvgUXbOOV7IHli3y2dYayP2eAstBKACbIVpiPZ4E6f/9nb9u5
+	 eollM0gTXfrHNyO4+WOPaJrfdJm4qSqEnxnAl49rZiXCMeeo7fO8FbpQuLMdU2/rzI
+	 bxdFRwkxMiYjKfxm/4jSKI/WvETSjDWsIqhBP1dTmLrh7jI8RH+G4+5cbl357LxMOR
+	 PRuvhYtAAUSyJodRPf4Y/KbPvsTTA91/Wp4u85mFB7njsCen7Fmr0N+k3alI8X3gLl
+	 Kyzmd4BalADYoOOcwPlzKLFc=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C878040E016D;
+	Tue,  2 Jan 2024 10:34:29 +0000 (UTC)
+Date: Tue, 2 Jan 2024 11:34:24 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Sandipan Das <sandipan.das@amd.com>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	x86@kernel.org, peterz@infradead.org, mingo@redhat.com,
+	acme@kernel.org, mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+	namhyung@kernel.org, adrian.hunter@intel.com, tglx@linutronix.de,
+	eranian@google.com, irogers@google.com, mario.limonciello@amd.com,
+	ravi.bangoria@amd.com, ananth.narayan@amd.com
+Subject: Re: [PATCH v2 1/3] perf/x86/amd/lbr: Use freeze based on availability
+Message-ID: <20240102103424.GAZZPmsDsrSF9WZVl+@fat_crate.local>
+References: <cover.1704103399.git.sandipan.das@amd.com>
+ <d75c92b6bfdd536ad8186afaea6fb7819c64ab28.1704103399.git.sandipan.das@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] dt-bindings: arm: rockchip: Add NanoPi R6 series
- boards
-Content-Language: en-US
-To: efectn@6tel.net, linux-rockchip@lists.infradead.org
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, heiko@sntech.de,
- sebastian.reichel@collabora.com, jonas@kwiboo.se, inindev@gmail.com,
- Muhammed Efe Cetin <efectn@protonmail.com>
-References: <cover.1703934548.git.efectn@protonmail.com>
- <30c1c7eac02cd32b76edb77572523f6ad8de89fb.1703934548.git.efectn@protonmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <30c1c7eac02cd32b76edb77572523f6ad8de89fb.1703934548.git.efectn@protonmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <d75c92b6bfdd536ad8186afaea6fb7819c64ab28.1704103399.git.sandipan.das@amd.com>
 
-On 30/12/2023 12:17, efectn@6tel.net wrote:
-> From: Muhammed Efe Cetin <efectn@protonmail.com>
+On Tue, Jan 02, 2024 at 11:31:28AM +0530, Sandipan Das wrote:
+> Currently, it is assumed that LBR Freeze is supported on all processors
+> which have CPUID leaf 0x80000022[EAX] bit 1 set. This is incorrect as
+> the feature availability is additionally dependent on CPUID leaf
+> 0x80000022[EAX] bit 2 being set which may not be set for all Zen 4
+> processors. Define a new feature bit for LBR and PMC freeze and set the
+> freeze enable bit (FLBRI) in DebugCtl (MSR 0x1d9) conditionally.
 > 
-> Add support for NanoPi R6 series boards that based on RK3588S.
+> It should still be possible to use LBR without freeze for profile-guided
+> optimization of user programs by using an user-only branch filter during
+> profiling. When the user-only filter is enabled, branches are no longer
+> recorded after the transition to CPL 0 upon PMI arrival. When branch
+> entries are read in the PMI handler, the branch stack does not change.
 > 
+> E.g.
+> 
+>   $ perf record -j any,u -e ex_ret_brn_tkn ./workload
+> 
+> Fixes: ca5b7c0d9621 ("perf/x86/amd/lbr: Add LbrExtV2 branch record support")
+> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
 
+Whoever ends up committing this, please add to the commit message the
+reason why X86_FEATURE_AMD_LBR_PMC_FREEZE is left visible in
+/proc/cpuinfo:
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+https://lore.kernel.org/all/CABPqkBQ0Zn_orR_9FnHA7Y1pNHAzG0E=86MkdMjOtGfKXDp29g@mail.gmail.com/
 
+Thx.
 
----
+-- 
+Regards/Gruss,
+    Boris.
 
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
-
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
-
-Best regards,
-Krzysztof
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
