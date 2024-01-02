@@ -1,54 +1,62 @@
-Return-Path: <linux-kernel+bounces-13990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-13993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65E8F82168D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 03:51:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4F6F821695
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 04:00:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03F891F214AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 02:51:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8250F281ECB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 03:00:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C78ED2;
-	Tue,  2 Jan 2024 02:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDE21ED6;
+	Tue,  2 Jan 2024 03:00:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="ls3Hry8I"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54973EBF
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 02:51:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp86t1704163871tg2dwz8o
-Received: from HX09040029.powercore.com.cn ( [58.34.117.194])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Tue, 02 Jan 2024 10:51:08 +0800 (CST)
-X-QQ-SSF: 01400000000000501000000A0000000
-X-QQ-FEAT: rl11S5XfjRM+K3CqE9NA/KtuXDvLJOQfrtCOe0koMm/1vBAqueAkA7GnGVg2I
-	dG1G/I7guyUw2o4+QG4+GhbeGQENG0yVmHDeLzIc8BRM12PyohldUKV6Zj8eGlvwgGxXWtL
-	PBVxilW6Zml17i9A3deKmr1VsUtH/9FQjOw8y5Nw+aAo5SdwNWaKUGkfWfJuQ0KDaDlARaX
-	v5258o8OlDsIsiiNKE4tXF27fnUSkh8ekcoxu+azBxF6NWtI0wPM2RDKiEo+n2GKMoauAQy
-	nHU/djWhxOkqBX5sJf81axsHA+X5m+uBIfdehPO3azt3fbrKz8C1hSHFq+pn9q0a6haWMYy
-	swpqgJBPLmAAdA37BQ5pwzgdMsNNFWPy2P1iuOSM7CnC7a0v124UE2Lt9CxxszHHZ3VhDj3
-	SxIKePjwiW8=
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 9632030453733915372
-From: Luming Yu <luming.yu@shingroup.cn>
-To: linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org,
-	mpe@ellerman.id.au,
-	npiggin@gmail.com,
-	christophe.leroy@csgroup.eu
-Cc: luming.yu@gmail.com,
-	ke.zhao@shingroup.cn,
-	dawei.li@shingroup.cn,
-	shenghui.qu@shingroup.cn,
-	Luming Yu <luming.yu@shingroup.cn>
-Subject: [PATCH v1 1/1] powerpc/powernv: fix up kernel compile issues
-Date: Tue,  2 Jan 2024 10:48:35 +0800
-Message-ID: <9D8FEE1731685D9B+20240102024834.1276-2-luming.yu@shingroup.cn>
-X-Mailer: git-send-email 2.42.0.windows.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B397EBC;
+	Tue,  2 Jan 2024 03:00:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from localhost.localdomain (unknown [10.101.197.31])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 872E83F2AE;
+	Tue,  2 Jan 2024 02:50:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1704163818;
+	bh=EWkKSm+nN6fBmS9JU50EaFN7HE3LdA/HGHMNIUbvCq4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+	b=ls3Hry8IzfVXSA836/9OxoK9XjBXgHxcKgvwcyT9rXghBgKEeSH0SFBaaNY4J0+J5
+	 Uc0RmnN85cpCRc03ffP40NkY6h/EMqvYxvfVnWVu8XxHarQ+J6vnq3Gnk/hZJqWIxO
+	 czP7CaM8W65GAWDhTSm/2LnDUGIuUU+cbi42AnzkLWq9LEx4O/iiqvbUnwebzySr0n
+	 enZmEn9pfiHhl3xyFT2m/lHKPaw/vYw9btu4XDjaBNHr3qD162sdXlsa76pm/0XXIm
+	 B9g2ZryVXVWxrqV8JgWy21NB3UachkNE0sP0LO3qw+NhJPsveQ4deX4MNiU6J4it9l
+	 fLqsxjtIY03lA==
+From: Andy Chi <andy.chi@canonical.com>
+To: 
+Cc: andy.chi@canonical.com,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Stefan Binding <sbinding@opensource.cirrus.com>,
+	Kailang Yang <kailang@realtek.com>,
+	"Luke D. Jones" <luke@ljones.dev>,
+	Shenghao Ding <shenghao-ding@ti.com>,
+	Matthew Anderson <ruinairas1992@gmail.com>,
+	Luka Guzenko <l.guzenko@web.de>,
+	Yuchi Yang <yangyuchi66@gmail.com>,
+	Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for a HP ZBook
+Date: Tue,  2 Jan 2024 10:49:15 +0800
+Message-Id: <20240102024916.19093-1-andy.chi@canonical.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,127 +64,29 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-up kernel is quite useful to silicon validation, despite
-it is rare to be found in server productions. the fixes are
-obvious. Not like IBM pSeries, it may be not necessary
-to have powernv SMP forced. It is difficult to compile a
-up kernel for pSerises as I've tried.
+There is a HP ZBook which using ALC236 codec and need the
+ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF quirk to make mute LED
+and micmute LED work.
 
-Signed-off-by: Luming Yu <luming.yu@shingroup.cn>
+Signed-off-by: Andy Chi <andy.chi@canonical.com>
 ---
-v0->v1: solve powernv vas up kernel compile issues found by lkp bot.
----
- arch/powerpc/platforms/powernv/Kconfig    | 1 -
- arch/powerpc/platforms/powernv/opal-imc.c | 1 +
- arch/powerpc/platforms/powernv/vas.c      | 1 +
- arch/powerpc/platforms/powernv/vas.h      | 1 +
- arch/powerpc/sysdev/xive/common.c         | 2 ++
- arch/powerpc/sysdev/xive/spapr.c          | 5 ++++-
- 6 files changed, 9 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/platforms/powernv/Kconfig b/arch/powerpc/platforms/powernv/Kconfig
-index 70a46acc70d6..40b1a49379de 100644
---- a/arch/powerpc/platforms/powernv/Kconfig
-+++ b/arch/powerpc/platforms/powernv/Kconfig
-@@ -15,7 +15,6 @@ config PPC_POWERNV
- 	select CPU_FREQ
- 	select PPC_DOORBELL
- 	select MMU_NOTIFIER
--	select FORCE_SMP
- 	select ARCH_SUPPORTS_PER_VMA_LOCK
- 	default y
- 
-diff --git a/arch/powerpc/platforms/powernv/opal-imc.c b/arch/powerpc/platforms/powernv/opal-imc.c
-index 828fc4d88471..6e9e2b0a5bdc 100644
---- a/arch/powerpc/platforms/powernv/opal-imc.c
-+++ b/arch/powerpc/platforms/powernv/opal-imc.c
-@@ -13,6 +13,7 @@
- #include <linux/of_address.h>
- #include <linux/crash_dump.h>
- #include <linux/debugfs.h>
-+#include <asm/smp.h>
- #include <asm/opal.h>
- #include <asm/io.h>
- #include <asm/imc-pmu.h>
-diff --git a/arch/powerpc/platforms/powernv/vas.c b/arch/powerpc/platforms/powernv/vas.c
-index b65256a63e87..c1759135aca5 100644
---- a/arch/powerpc/platforms/powernv/vas.c
-+++ b/arch/powerpc/platforms/powernv/vas.c
-@@ -18,6 +18,7 @@
- #include <linux/interrupt.h>
- #include <asm/prom.h>
- #include <asm/xive.h>
-+#include <asm/smp.h>
- 
- #include "vas.h"
- 
-diff --git a/arch/powerpc/platforms/powernv/vas.h b/arch/powerpc/platforms/powernv/vas.h
-index 08d9d3d5a22b..313a8f2c8c7d 100644
---- a/arch/powerpc/platforms/powernv/vas.h
-+++ b/arch/powerpc/platforms/powernv/vas.h
-@@ -12,6 +12,7 @@
- #include <linux/dcache.h>
- #include <linux/mutex.h>
- #include <linux/stringify.h>
-+#include <linux/interrupt.h>
- 
- /*
-  * Overview of Virtual Accelerator Switchboard (VAS).
-diff --git a/arch/powerpc/sysdev/xive/common.c b/arch/powerpc/sysdev/xive/common.c
-index a289cb97c1d7..d49b12809c10 100644
---- a/arch/powerpc/sysdev/xive/common.c
-+++ b/arch/powerpc/sysdev/xive/common.c
-@@ -1497,7 +1497,9 @@ static int xive_prepare_cpu(unsigned int cpu)
- 				  GFP_KERNEL, cpu_to_node(cpu));
- 		if (!xc)
- 			return -ENOMEM;
-+#ifdef CONFIG_SMP
- 		xc->hw_ipi = XIVE_BAD_IRQ;
-+#endif
- 		xc->chip_id = XIVE_INVALID_CHIP_ID;
- 		if (xive_ops->prepare_cpu)
- 			xive_ops->prepare_cpu(cpu, xc);
-diff --git a/arch/powerpc/sysdev/xive/spapr.c b/arch/powerpc/sysdev/xive/spapr.c
-index e45419264391..7298f57f8416 100644
---- a/arch/powerpc/sysdev/xive/spapr.c
-+++ b/arch/powerpc/sysdev/xive/spapr.c
-@@ -81,6 +81,7 @@ static void xive_irq_bitmap_remove_all(void)
- 	}
- }
- 
-+#ifdef CONFIG_SMP
- static int __xive_irq_bitmap_alloc(struct xive_irq_bitmap *xibm)
- {
- 	int irq;
-@@ -126,7 +127,7 @@ static void xive_irq_bitmap_free(int irq)
- 		}
- 	}
- }
--
-+#endif 
- 
- /* Based on the similar routines in RTAS */
- static unsigned int plpar_busy_delay_time(long rc)
-@@ -663,6 +664,7 @@ static void xive_spapr_sync_source(u32 hw_irq)
- 	plpar_int_sync(0, hw_irq);
- }
- 
-+#ifdef CONFIG_SMP
- static int xive_spapr_debug_show(struct seq_file *m, void *private)
- {
- 	struct xive_irq_bitmap *xibm;
-@@ -680,6 +682,7 @@ static int xive_spapr_debug_show(struct seq_file *m, void *private)
- 
- 	return 0;
- }
-+#endif
- 
- static const struct xive_ops xive_spapr_ops = {
- 	.populate_irq_data	= xive_spapr_populate_irq_data,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 7e9d8c1cedfc..1c8d5b58eb64 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9939,6 +9939,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8c70, "HP EliteBook 835 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8c71, "HP EliteBook 845 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8c72, "HP EliteBook 865 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8c96, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x8ca4, "HP ZBook Fury", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8ca7, "HP ZBook Fury", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8cf5, "HP ZBook Studio 16", ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
 -- 
-2.42.0.windows.2
+2.34.1
 
 
