@@ -1,283 +1,273 @@
-Return-Path: <linux-kernel+bounces-14322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FAB0821B57
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:04:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C06B0821B5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 13:05:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9F1BB21DEC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:04:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A7F9282353
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D0BEAF6;
-	Tue,  2 Jan 2024 12:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A01EED2;
+	Tue,  2 Jan 2024 12:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y67F9vST"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iRzhq4E5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1F4EAEA
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 12:04:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88751F9C8
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Jan 2024 12:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6da47688fd9so553961b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 04:04:41 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dbd721384c0so7523818276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 04:05:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704197081; x=1704801881; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704197120; x=1704801920; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=N76OjKLOgBDpHQZl6Q0vBRfZ3upph3nCrsYFs7Cd9m8=;
-        b=Y67F9vSTmO4dvCOpTTm2s4rfFMMUN1CCAoef9Y9GnFNQ/ZFwAloE5oIgmxvcf3DkmY
-         TcGFcQnp7z1yieSYabOnGgI9LGdwemSH8RdTmmGXWNV++YtBFlvE5UOjHUZIZ0V/rkpO
-         EQlmX0w+CzXbTxS9DwblyQHysfIGTaFCItK20m8ZeOEXH23Y48IRZFkQvlKyUVlTYOTn
-         WYJ1zUtC/D3Io9ZN8GKowF8TuUqMo4REjn1sMEzFl7HYM1KjZN+c6pGz5Bsxp11vb/FC
-         xuf1M6SkrOa8YeOMw3P2lxOtn3L+AQJbzyXmBvMqvl/4qLNk2aIsr2mWAXvZyvZ5QvxQ
-         b7vA==
+        bh=r7dyv4CcIU9mcvBuepSVkLmk0uNvBhGYSbHRwghn+UA=;
+        b=iRzhq4E5qXsvFK2f52/mzrj8tkI/EnoNYTeVhNIs2CEZObhBI5z0Ep0NLleuFSHh30
+         M2ILvdX3fnKw79aZm0v9owhF/a7Fr1qOhdTPGqfCuoYP6NfEZcTOWxxQew4pZno5+2U+
+         cnNk2PdYqDAAEIURo9v00MdVJVuli8nHntMF9qT0nrhHEXvB0cXguAbacxudBnC7cyR7
+         gv+/I5+6qtFS4JiMF7YRyqpiI/C9/o3MLCikM+uvEjaKXGs3SHH5kM4ApUf+OG2JnOND
+         iSR2HIeEw+dXG6NFXCE8MgRbV3VH50O/JDX4EYQOlBAtZBXvwk1gQjKkbNI32dpPsTOa
+         JLZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704197081; x=1704801881;
+        d=1e100.net; s=20230601; t=1704197120; x=1704801920;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=N76OjKLOgBDpHQZl6Q0vBRfZ3upph3nCrsYFs7Cd9m8=;
-        b=Y8TNaVuGtIBKIziTW50glp0G2gjQlM8VWMDZet/8da7Vic2oNtzYo4bxa9dm1hlplE
-         L0s7wqLw5IaJURc83Er/7eHxULEfnidryXD1GOaG+MplVytBSHpra9znRnbkaVXlgmiq
-         2/KpazHk043XpU773wpWyJDoIObpgRoMnzZHUbYAU5Yje1LmBqJ2/V4iZ2UhQ05BL+5E
-         P3FFB8SatF/chX+w9qNfa47wZ/dX7QJQUKsS8AkyAY0g14Bh0vU3TRZYCKs9TI7tlwx4
-         Cl5c2rRKt18aC+ESRgmpQb0bq1/gH0iZZJ0AOQftHzMAztcNjuJCKoTvkP46VIoagru0
-         65sw==
-X-Gm-Message-State: AOJu0Yywk+DhGolQV4lFgSSodex6tLhR9zd4vjsDg+uO82WJfyA1lPKh
-	Z0+KxwvJ7reW6Cy4vV+uxpUcpf06puKRORmTso+R4m5Sk2umfA==
-X-Google-Smtp-Source: AGHT+IEj8/MeJc6HIYq1FfB5T22NdbVaEpyPDqxtITGxOgk+wa/CS1OG2MvJd2fh+DCi0d0/v4YDh7LCmUKpEjM3f9E=
-X-Received: by 2002:a62:e717:0:b0:6d9:9de5:d121 with SMTP id
- s23-20020a62e717000000b006d99de5d121mr5349441pfh.27.1704197080752; Tue, 02
- Jan 2024 04:04:40 -0800 (PST)
+        bh=r7dyv4CcIU9mcvBuepSVkLmk0uNvBhGYSbHRwghn+UA=;
+        b=YjNz3lsFb5f2g/lL0o8/sTw1+9WRZb3HZrzwQ0Cf2B0kV6JY2lUXCOktHzcKWx0QDM
+         2zOSFxTkX+DSs9ZxZdzgEwY/eyqCFPdo5f7vmutzAsVm2Rxoya6YOA3xzfXK+aV5zqcb
+         +APDSwvZVFNfSPLJl+7/imXwp51WkDGKXFUrb3MrxvxmkGxhxJjJv4e5U9qzrEs2tB8M
+         4fVPu1KwjRumTndGUMB+r690DcZDAb89co9eHmPa8+EsOsQrZFNd+9zn0xVCZuUMMb3U
+         32sb2VQJcdJb3FIDKb+9jC8jC6ervjLbULf8r8dVZFDnLyC6bi2WsWj6mgHY7yGjP1nv
+         6X9A==
+X-Gm-Message-State: AOJu0YzYZ12DB22/FcL8ykuQpF9xAHJGkOCEqU7lSJgPdOr5ah80WTiG
+	cEP6ljdpfC/wGiiOv5pyQVQOASp/5lpArV6CpUkWuxawrdj/2w==
+X-Google-Smtp-Source: AGHT+IEeXcgSMZejIaCJRLPq2x5vR0P7iAZihrqFzc//NjqYOvq4btaXpo77KUSX72yNiNFkRjmDTr0E4xzqSgpOy28=
+X-Received: by 2002:a25:b310:0:b0:dbd:986e:2e9f with SMTP id
+ l16-20020a25b310000000b00dbd986e2e9fmr8149442ybj.91.1704197120329; Tue, 02
+ Jan 2024 04:05:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228093321.5522-1-quic_jinlmao@quicinc.com> <12ce6e5d-6e4d-fb99-eb82-dece97423bfb@arm.com>
-In-Reply-To: <12ce6e5d-6e4d-fb99-eb82-dece97423bfb@arm.com>
-From: Mike Leach <mike.leach@linaro.org>
-Date: Tue, 2 Jan 2024 12:04:29 +0000
-Message-ID: <CAJ9a7Vgi=ELOhXNF97KrBtV5ef8khwWqzWKevrYW2RtBBtsppw@mail.gmail.com>
-Subject: Re: [PATCH] coresight: Add coresight name support
-To: James Clark <james.clark@arm.com>
-Cc: Mao Jinlong <quic_jinlmao@quicinc.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	Tingwei Zhang <quic_tingweiz@quicinc.com>, Yuanfang Zhang <quic_yuanfang@quicinc.com>, 
-	Tao Zhang <quic_taozha@quicinc.com>, Leo Yan <leo.yan@linaro.org>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>
+References: <20231231-hfpll-yaml-v1-0-359d44a4e194@z3ntu.xyz> <20231231-hfpll-yaml-v1-1-359d44a4e194@z3ntu.xyz>
+In-Reply-To: <20231231-hfpll-yaml-v1-1-359d44a4e194@z3ntu.xyz>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 2 Jan 2024 14:05:09 +0200
+Message-ID: <CAA8EJpqF=3n8vUrEzrGGLc4JtQ-s4EcOOr_NKC0rknwE0tuShw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: clock: qcom,hfpll: Convert to YAML
+To: Luca Weiss <luca@z3ntu.xyz>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-As James mentions this is clearly a V2 of a previous patch - please
-mark as such in future.
+On Sun, 31 Dec 2023 at 16:49, Luca Weiss <luca@z3ntu.xyz> wrote:
+>
+> Convert the .txt documentation to .yaml.
+>
+> Take the liberty to change the compatibles for ipq8064, apq8064, msm8974
+> and msm8960 to follow the updated naming schema. These compatibles are
+> not used upstream yet.
+>
+> Also add a compatible for QCS404 since that SoC upstream already uses
+> qcom,hfpll compatible but without an SoC-specific string.
+>
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> ---
+>  .../devicetree/bindings/clock/qcom,hfpll.txt       | 63 -----------------
+>  .../devicetree/bindings/clock/qcom,hfpll.yaml      | 82 ++++++++++++++++++++++
+>  2 files changed, 82 insertions(+), 63 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,hfpll.txt b/Documentation/devicetree/bindings/clock/qcom,hfpll.txt
+> deleted file mode 100644
+> index 5769cbbe76be..000000000000
+> --- a/Documentation/devicetree/bindings/clock/qcom,hfpll.txt
+> +++ /dev/null
+> @@ -1,63 +0,0 @@
+> -High-Frequency PLL (HFPLL)
+> -
+> -PROPERTIES
+> -
+> -- compatible:
+> -       Usage: required
+> -       Value type: <string>:
+> -               shall contain only one of the following. The generic
+> -               compatible "qcom,hfpll" should be also included.
+> -
+> -                        "qcom,hfpll-ipq8064", "qcom,hfpll"
+> -                        "qcom,hfpll-apq8064", "qcom,hfpll"
+> -                        "qcom,hfpll-msm8974", "qcom,hfpll"
+> -                        "qcom,hfpll-msm8960", "qcom,hfpll"
+> -                        "qcom,msm8976-hfpll-a53", "qcom,hfpll"
+> -                        "qcom,msm8976-hfpll-a72", "qcom,hfpll"
+> -                        "qcom,msm8976-hfpll-cci", "qcom,hfpll"
+> -
+> -- reg:
+> -       Usage: required
+> -       Value type: <prop-encoded-array>
+> -       Definition: address and size of HPLL registers. An optional second
+> -                   element specifies the address and size of the alias
+> -                   register region.
+> -
+> -- clocks:
+> -       Usage: required
+> -       Value type: <prop-encoded-array>
+> -       Definition: reference to the xo clock.
+> -
+> -- clock-names:
+> -       Usage: required
+> -       Value type: <stringlist>
+> -       Definition: must be "xo".
+> -
+> -- clock-output-names:
+> -       Usage: required
+> -       Value type: <string>
+> -       Definition: Name of the PLL. Typically hfpllX where X is a CPU number
+> -                   starting at 0. Otherwise hfpll_Y where Y is more specific
+> -                   such as "l2".
+> -
+> -Example:
+> -
+> -1) An HFPLL for the L2 cache.
+> -
+> -       clock-controller@f9016000 {
+> -               compatible = "qcom,hfpll-ipq8064", "qcom,hfpll";
+> -               reg = <0xf9016000 0x30>;
+> -               clocks = <&xo_board>;
+> -               clock-names = "xo";
+> -               clock-output-names = "hfpll_l2";
+> -       };
+> -
+> -2) An HFPLL for CPU0. This HFPLL has the alias register region.
+> -
+> -       clock-controller@f908a000 {
+> -               compatible = "qcom,hfpll-ipq8064", "qcom,hfpll";
+> -               reg = <0xf908a000 0x30>, <0xf900a000 0x30>;
+> -               clocks = <&xo_board>;
+> -               clock-names = "xo";
+> -               clock-output-names = "hfpll0";
+> -       };
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,hfpll.yaml b/Documentation/devicetree/bindings/clock/qcom,hfpll.yaml
+> new file mode 100644
+> index 000000000000..2cb4098012bc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/qcom,hfpll.yaml
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/qcom,hfpll.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm High-Frequency PLL
+> +
+> +maintainers:
+> +  - Bjorn Andersson <andersson@kernel.org>
+> +
+> +description:
+> +  The HFPLL is used as CPU PLL on various Qualcomm SoCs.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - qcom,apq8064-hfpll
+> +          - qcom,ipq8064-hfpll
+> +          - qcom,msm8960-hfpll
 
-Adding to what James has already said:-
+I think we should drop these entries. On msm8960 / apq8064 / ipq8064
+the HFPLLs are a part of GCC, so there is no need for a separate
+compat entry.
 
-1) Mapping between the canonical names used in the drivers and the
-information as to the precise device is as easy as running 'ls' on
-/sys/bus/coresight/devices:-
+> +          - qcom,msm8974-hfpll
 
-root@linaro-developer:/home/linaro/cs-mods# ls -al /sys/bus/coresight/devices/
-total 0
-drwxr-xr-x 2 root root 0 Jan  2 11:27 .
-drwxr-xr-x 4 root root 0 Jan  2 11:27 ..
-lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu0 ->
-../../../devices/platform/soc@0/858000.cti/cti_cpu0
-lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu1 ->
-../../../devices/platform/soc@0/859000.cti/cti_cpu1
-lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu2 ->
-../../../devices/platform/soc@0/85a000.cti/cti_cpu2
-lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu3 ->
-../../../devices/platform/soc@0/85b000.cti/cti_cpu3
-lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_sys0 ->
-../../../devices/platform/soc@0/810000.cti/cti_sys0
-lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_sys1 ->
-../../../devices/platform/soc@0/811000.cti/cti_sys1
-lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm0 ->
-../../../devices/platform/soc@0/85c000.etm/etm0
-lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm1 ->
-../../../devices/platform/soc@0/85d000.etm/etm1
-lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm2 ->
-../../../devices/platform/soc@0/85e000.etm/etm2
-lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm3 ->
-../../../devices/platform/soc@0/85f000.etm/etm3
-lrwxrwxrwx 1 root root 0 Jan  2 11:42 funnel0 ->
-../../../devices/platform/soc@0/821000.funnel/funnel0
-lrwxrwxrwx 1 root root 0 Jan  2 11:42 funnel1 ->
-../../../devices/platform/soc@0/841000.funnel/funnel1
-lrwxrwxrwx 1 root root 0 Jan  2 11:42 replicator0 ->
-../../../devices/platform/soc@0/824000.replicator/replicator0
-lrwxrwxrwx 1 root root 0 Jan  2 11:42 tmc_etf0 ->
-../../../devices/platform/soc@0/825000.etf/tmc_etf0
-lrwxrwxrwx 1 root root 0 Jan  2 11:42 tmc_etr0 ->
-../../../devices/platform/soc@0/826000.etr/tmc_etr0
+This one is good, the HFPLL is separate, next to the acc / saw
 
+> +          - qcom,msm8976-hfpll-a53
+> +          - qcom,msm8976-hfpll-a72
+> +          - qcom,msm8976-hfpll-cci
 
-2) The patch set must contain the usage and specification in the .yaml
- file(s) of the property used.
+Ok.
 
-However, there was a standard property called 'name' which is
-deprecated - see
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html
-section 2.3.11. I do not believe that adding another 'name' property
-would be accepted by the DT maintainers.
-
-3) the 'device_node' structure has a 'name' field that contains the
-node name in the DT approved "node-name@unit-address" format.This
-contains whatever node names you used in the dt.  Why not use this if
-a change has to be made and find some conditional to activate it.
-
-However, given point 1) above, the problem is solved and the patch
-adds no new information not already available.
-
-Regards
-
-Mike
-
-On Thu, 28 Dec 2023 at 11:26, James Clark <james.clark@arm.com> wrote:
+> +          - qcom,qcs404-hfpll
+> +      - const: qcom,hfpll
+> +
+> +  reg:
+> +    items:
+> +      - description: Base address and size of the register region
+> +      - description: Optional base address and size of the alias register region
+> +    minItems: 1
+> +
+> +  '#clock-cells':
+> +    const: 0
+> +
+> +  clocks:
+> +    items:
+> +      - description: board XO clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: xo
+> +
+> +  clock-output-names:
+> +    description:
+> +      Name of the PLL. Typically hfpllX where X is a CPU number starting at 0.
+> +      Otherwise hfpll_Y where Y is more specific such as "l2".
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#clock-cells'
+> +  - clocks
+> +  - clock-names
+> +  - clock-output-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  # Example 1 - HFPLL for L2 cache
+> +  - |
+> +    clock-controller@f9016000 {
+> +        compatible = "qcom,ipq8064-hfpll", "qcom,hfpll";
+> +        reg = <0xf9016000 0x30>;
+> +        clocks = <&xo_board>;
+> +        clock-names = "xo";
+> +        clock-output-names = "hfpll_l2";
+> +        #clock-cells = <0>;
+> +    };
+> +  # Example 2 - HFPLL for CPU0
+> +  - |
+> +    clock-controller@f908a000 {
+> +        compatible = "qcom,ipq8064-hfpll", "qcom,hfpll";
+> +        reg = <0xf908a000 0x30>, <0xf900a000 0x30>;
+> +        clocks = <&xo_board>;
+> +        clock-names = "xo";
+> +        clock-output-names = "hfpll0";
+> +        #clock-cells = <0>;
+> +    };
+>
+> --
+> 2.43.0
 >
 >
->
-> On 28/12/2023 09:33, Mao Jinlong wrote:
-> > Add coresight name support for custom names which will be
-> > easy to identify the device by the name.
-> >
->
-> I suppose this is more of a V2 because the subject is the same as the
-> one sent earlier this year. But it looks like the discussion on the
-> previous one wasn't resolved.
->
-> With the main issues to solve being:
->
->  * It would be nice to use the existing root node name instead of adding
->    a new property. But at the same time DT nodes are supposed to have
->    generic names.
->
->  * This only works for DT and not ACPI
->
-> To me it seems like adding the new property is just a "cheat" to get
-> around not being allowed to have a specific name for the root node. But
-> if we admit that we need a name I don't see the benefit of not putting
-> the name where the node is already named.
->
-> Using the root node name at this point would also undo the hard coded
-> per-cpu naming of the CTI and ETM devices, so maybe it would be nice,
-> but it's just too late. That means that a new field is necessary.
-> Although that field could be a boolean like "use-root-name-for-display"
-> or something like that. In the end it probably doesn't really make a
-> difference whether it's that or a name string.
->
-> And maybe the answer to the ACPI question is just that if anyone needs
-> it, they can add it in the future. It doesn't seem like it would
-> conflict with anything we do here.
->
-> > Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
-> > ---
-> >  .../hwtracing/coresight/coresight-cti-core.c  | 20 ++++++++------
-> >  drivers/hwtracing/coresight/coresight-dummy.c | 10 ++++---
-> >  .../hwtracing/coresight/coresight-platform.c  | 27 +++++++++++++++++++
-> >  drivers/hwtracing/coresight/coresight-tpdm.c  | 10 ++++---
-> >  include/linux/coresight.h                     |  1 +
-> >  5 files changed, 53 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
-> > index 3999d0a2cb60..60a1e76064a9 100644
-> > --- a/drivers/hwtracing/coresight/coresight-cti-core.c
-> > +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
-> > @@ -902,14 +902,18 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
-> >       /* default to powered - could change on PM notifications */
-> >       drvdata->config.hw_powered = true;
-> >
-> > -     /* set up device name - will depend if cpu bound or otherwise */
-> > -     if (drvdata->ctidev.cpu >= 0)
-> > -             cti_desc.name = devm_kasprintf(dev, GFP_KERNEL, "cti_cpu%d",
-> > -                                            drvdata->ctidev.cpu);
-> > -     else
-> > -             cti_desc.name = coresight_alloc_device_name(&cti_sys_devs, dev);
->
-> Can we put the new name stuff inside coresight_alloc_device_name()? Then
-> it happens by default for every device.
->
-> I know Suzuki said previously to do it per-device, but the new DT
-> property is just "coresight-name", so it's generic. Rather than being
-> specific like "cti-name". So I don't see the benefit of duplicating the
-> code at this point if we do decide to do it.
->
-> > -     if (!cti_desc.name)
-> > -             return -ENOMEM;
-> > +     cti_desc.name = coresight_get_device_name(dev);
-> > +     if (!cti_desc.name) {
-> > +             /* set up device name - will depend if cpu bound or otherwise */
-> > +             if (drvdata->ctidev.cpu >= 0)
-> > +                     cti_desc.name = devm_kasprintf(dev, GFP_KERNEL, "cti_cpu%d",
-> > +                                                    drvdata->ctidev.cpu);
-> > +             else {
-> > +                     cti_desc.name = coresight_alloc_device_name(&cti_sys_devs, dev);
-> > +                     if (!cti_desc.name)
-> > +                             return -ENOMEM;
-> > +             }
-> > +     }
->
-> >
-> >       /* setup CPU power management handling for CPU bound CTI devices. */
-> >       ret = cti_pm_setup(drvdata);
-> > diff --git a/drivers/hwtracing/coresight/coresight-dummy.c b/drivers/hwtracing/coresight/coresight-dummy.c
-> > index e4deafae7bc2..b19cd400df79 100644
-> > --- a/drivers/hwtracing/coresight/coresight-dummy.c
-> > +++ b/drivers/hwtracing/coresight/coresight-dummy.c
-> > @@ -76,10 +76,12 @@ static int dummy_probe(struct platform_device *pdev)
-> >       struct coresight_desc desc = { 0 };
-> >
-> >       if (of_device_is_compatible(node, "arm,coresight-dummy-source")) {
-> > -
-> > -             desc.name = coresight_alloc_device_name(&source_devs, dev);
-> > -             if (!desc.name)
-> > -                     return -ENOMEM;
-> > +             desc.name = coresight_get_device_name(dev);
-> > +             if (!desc.name) {
-> > +                     desc.name = coresight_alloc_device_name(&source_devs, dev);
-> > +                     if (!desc.name)
-> > +                             return -ENOMEM;
-> > +             }
-> >
-> >               desc.type = CORESIGHT_DEV_TYPE_SOURCE;
-> >               desc.subtype.source_subtype =
-> > diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
-> > index 9d550f5697fa..284aa22a06b7 100644
-> > --- a/drivers/hwtracing/coresight/coresight-platform.c
-> > +++ b/drivers/hwtracing/coresight/coresight-platform.c
-> > @@ -183,6 +183,18 @@ static int of_coresight_get_cpu(struct device *dev)
-> >       return cpu;
-> >  }
-> >
-> > +static const char *of_coresight_get_device_name(struct device *dev)
-> > +{
-> > +     const char *name = NULL;
-> > +
-> > +     if (!dev->of_node)
-> > +             return NULL;
-> > +
-> > +     of_property_read_string(dev->of_node, "coresight-name", &name);
->
-> Do you need to update the binding docs with this new property?
->
-> Also a minor nit: Maybe "display-name" is better? "Coresight" is
-> implied, and the node is already named, although that node name isn't
-> used for display purposes, but this one is.
->
-> Thanks
-> James
-
 
 
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+With best wishes
+Dmitry
 
