@@ -1,85 +1,91 @@
-Return-Path: <linux-kernel+bounces-14308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E63F1821B27
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:45:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C970F821B2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 12:45:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3225B218C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:45:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63EB4282E6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 11:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 847F5EAE5;
-	Tue,  2 Jan 2024 11:45:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="ZdOQTpa0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A0AEAE3;
+	Tue,  2 Jan 2024 11:45:49 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1DEFEAC2;
-	Tue,  2 Jan 2024 11:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=UklajQ9JTXYubmhmdHvvtB1U0jcrFHuCHpiOoKk95LQ=; b=ZdOQTpa00hDTiVvIqU4tks9+c7
-	/FHOBxaNXJJpQD1EGgZx6nfIlvksPzg/sy3fpbWsr2VC0Qj9elsV4KVFVMtrfUnteJuUKfzNcDfwc
-	Y/jtbbudJ0UnY7NNWz5A+guAXFf/kWRVMli5aQRy9J1j1HKQhorA25WWj/RhjDToHkB+2m22G+1Iv
-	xq3Vd4uJ9/4K3yPr8gi6KUgeMNA5pP9zb36etoM3D6ukmUfnp7jd6tXBU/mX+o3a/d8ZAVWNHf55D
-	QcKnQ2tPJ1t4UYf86rIPupkcdmNsMyFT2P/dhkKNnCXE0Oy4p0KbdkUuDNdfQjxdRkFancp3XZxDR
-	4nbGC6uA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46158)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rKdCg-0006Ul-0x;
-	Tue, 02 Jan 2024 11:45:02 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rKdCi-0005G8-OG; Tue, 02 Jan 2024 11:45:04 +0000
-Date: Tue, 2 Jan 2024 11:45:04 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org
-Subject: Re: [PATCH] net: phy: linux/phy.h: fix Excess kernel-doc description
- warning
-Message-ID: <ZZP3QHTfUUmBve6w@shell.armlinux.org.uk>
-References: <20231223050613.13978-1-rdunlap@infradead.org>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD36FEAD6;
+	Tue,  2 Jan 2024 11:45:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 37011C15;
+	Tue,  2 Jan 2024 03:46:33 -0800 (PST)
+Received: from [10.57.86.61] (unknown [10.57.86.61])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BE0083F7A6;
+	Tue,  2 Jan 2024 03:45:44 -0800 (PST)
+Message-ID: <d9bea2d0-3869-4f08-8eb8-0ca33ce525ea@arm.com>
+Date: Tue, 2 Jan 2024 11:47:02 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231223050613.13978-1-rdunlap@infradead.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 15/23] PM: EM: Optimize em_cpu_energy() and remove
+ division
+Content-Language: en-US
+To: Qais Yousef <qyousef@layalina.io>
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+ rafael@kernel.org, dietmar.eggemann@arm.com, rui.zhang@intel.com,
+ amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+ daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
+ pavel@ucw.cz, mhiramat@kernel.org, wvw@google.com
+References: <20231129110853.94344-1-lukasz.luba@arm.com>
+ <20231129110853.94344-16-lukasz.luba@arm.com>
+ <20231228180647.rwz4u7ebk5p2hjcr@airbuntu>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20231228180647.rwz4u7ebk5p2hjcr@airbuntu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Dec 22, 2023 at 09:06:13PM -0800, Randy Dunlap wrote:
-> Remove the @phy_timer: line to prevent the kernel-doc warning:
+
+
+On 12/28/23 18:06, Qais Yousef wrote:
+> On 11/29/23 11:08, Lukasz Luba wrote:
 > 
-> include/linux/phy.h:768: warning: Excess struct member 'phy_timer' description in 'phy_device'
+>> @@ -220,8 +218,9 @@ static int em_compute_costs(struct device *dev, struct em_perf_state *table,
+>>   				return -EINVAL;
+>>   			}
+>>   		} else {
+>> -			power_res = table[i].power;
+>> -			cost = div64_u64(fmax * power_res, table[i].frequency);
+>> +			/* increase resolution of 'cost' precision */
+>> +			power_res = table[i].power * 10;
 > 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: Heiner Kallweit <hkallweit1@gmail.com>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: netdev@vger.kernel.org
-> ---
+> Power is in uW, right? You're just taking advantage here that everything will
+> use this new cost field so you can add as many 0s to improve resolution without
+> impact elsewhere that care to compare using the same units?
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+This code doesn't overwrite the 'power' field value. The 'cost' value is
+only used in EAS, so yes I just want to increase resolution there.
 
-Thanks!
+I think you mixed 'power' and 'cost' fields. We don't compare 'cost'
+anywhere. We just use 'cost' in one place em_cpu_energy() and we
+multiply it (not compare it).
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> 
+> Did you see a problem or just being extra cautious here?
+
+There is no problem, 'cost' is a private coefficient for EAS only.
+
+> 
+>> +			cost = power_res / table[i].performance;
+>>   		}
+>>   
+>>   		table[i].cost = cost;
+>> -- 
+>> 2.25.1
+>>
 
