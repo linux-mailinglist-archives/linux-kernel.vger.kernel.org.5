@@ -1,93 +1,68 @@
-Return-Path: <linux-kernel+bounces-14486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72B78821DC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:35:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D79F821DC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 15:37:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64DDC1C222B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:35:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16D8D283887
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 14:37:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D33A511733;
-	Tue,  2 Jan 2024 14:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76DE11CB8;
+	Tue,  2 Jan 2024 14:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="j98rMTP6"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="lfgaEX2s"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB88110955;
-	Tue,  2 Jan 2024 14:35:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 402DiZWY028458;
-	Tue, 2 Jan 2024 14:34:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=Zy1qZMqGOpyHSQ3Wj0sp9M6cSL2hJ07Te9b4OYnhiyU=;
- b=j98rMTP644v3QpH4PtJtDsxKIjMDKID9A6Qqd4yaFJ66XKUgaFlk5kgcWssGXdDm/6rl
- Bb4R7mwIXa/vI63pZ6CQWm1avWqfjvknl03wbeoY3a863UzFnFu2rx+HJyJNN5Sv8/X1
- r/1Fb9E2tdsHPgc3mTNnt931cm8h4Csm7nFbCC+04QfghGz7L8MDcCFZSUg8mA7ya5BJ
- RNLl7XMIRRgvyXrtuzAW00PMka2C4yTxjD3y7k0xZznqfc7wXiNnlhQpFFzJkZ35K+OS
- 2Dh/LKHLkbMqsrAo6x/cQxqHnZybQE2v66533GBTYrsUks6foRQAckD0eMZA5msTc5od Zg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcjqutbc9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 14:34:38 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 402DilXq030037;
-	Tue, 2 Jan 2024 14:34:37 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vcjqutbbb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 14:34:37 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 402Bv3NY017981;
-	Tue, 2 Jan 2024 14:34:36 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vayrkcyv4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 14:34:36 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 402EYXeW24904366
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 2 Jan 2024 14:34:33 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 53F3E2004B;
-	Tue,  2 Jan 2024 14:34:33 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 102A520043;
-	Tue,  2 Jan 2024 14:34:32 +0000 (GMT)
-Received: from osiris (unknown [9.171.22.30])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue,  2 Jan 2024 14:34:31 +0000 (GMT)
-Date: Tue, 2 Jan 2024 15:34:30 +0100
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: [PATCH v3 23/34] s390/cpacf: Unpoison the results of cpacf_trng()
-Message-ID: <20240102143430.6306-A-hca@linux.ibm.com>
-References: <20231213233605.661251-1-iii@linux.ibm.com>
- <20231213233605.661251-24-iii@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A5EE11718;
+	Tue,  2 Jan 2024 14:37:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=48D5ez891FudRMbUkCpyIcvWPCkUK4OLFoyn+5uchAY=; b=lfgaEX2seQe9mVXAoSTI4GKqlq
+	MRrU9EAevBhXJQpQoP7OaiygAKM0NvD9dpIY843iS9DOMA3cu5eYpt7DRJp6E2c2LUnB240Gnsq4F
+	JR0bJB8PqfeiUzHohSMhoWgK2x46EdK9TRKAWSZLAXmnHeRYg/9vg+9DDvtG/5BZg0XM7S5etDhuv
+	TCDqERzbmrNv70uHW63W2wuxMN3zxskRF499ZgPC0sfEjWskKdAf6DsQVAR3JDVsZxUXRMNR2AVDE
+	pztgBmJtZv7Eke3AapFRbq5ZfpTrIlk2M9kUqLMFyq4OMQAteDbOMeeoXMb+dxwiP6eRSVqM4s1oQ
+	d3tSNxzQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46986)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rKftK-0006co-0x;
+	Tue, 02 Jan 2024 14:37:14 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rKftL-0005NH-O5; Tue, 02 Jan 2024 14:37:15 +0000
+Date: Tue, 2 Jan 2024 14:37:15 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: Jie Luo <quic_luoj@quicinc.com>,
+	Maxime Chevallier <maxime.chevallier@bootlin.com>, andrew@lunn.ch,
+	hkallweit1@gmail.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] net: phy: at803x: add QCA8084 ethernet phy support
+Message-ID: <ZZQfm98HrjRdXJEq@shell.armlinux.org.uk>
+References: <20231109101618.009efb45@fedora>
+ <0898312d-4796-c142-6401-c9d802d19ff4@quicinc.com>
+ <46d61a29-96bf-868b-22b9-a31e48576803@quicinc.com>
+ <20231110103328.0bc3d28f@fedora>
+ <3dd470a9-257e-e2c7-c71a-0c216cf7db88@quicinc.com>
+ <20231111225441.vpcosrowzcudb5jg@skbuf>
+ <39a8341f-04df-4eba-9cc2-433e9e6a798e@quicinc.com>
+ <20231112235852.k36lpxw66nt7wh2e@skbuf>
+ <ZVInvOqh6QAvNJtw@shell.armlinux.org.uk>
+ <20231113195120.44k6hhth7y53df53@skbuf>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -96,29 +71,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231213233605.661251-24-iii@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: kTqZ1PRN-hTiLoJIQyYlJCXg5MKH4SKE
-X-Proofpoint-ORIG-GUID: z1yxLgfbHQruE14JYN0FnEq3ruYg6F5g
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-02_04,2024-01-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
- mlxlogscore=483 suspectscore=0 adultscore=0 priorityscore=1501
- impostorscore=0 spamscore=0 bulkscore=0 mlxscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401020111
+In-Reply-To: <20231113195120.44k6hhth7y53df53@skbuf>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Thu, Dec 14, 2023 at 12:24:43AM +0100, Ilya Leoshkevich wrote:
-> Prevent KMSAN from complaining about buffers filled by cpacf_trng()
-> being uninitialized.
+On Mon, Nov 13, 2023 at 09:51:20PM +0200, Vladimir Oltean wrote:
+> On Mon, Nov 13, 2023 at 01:42:20PM +0000, Russell King (Oracle) wrote:
+> > On Mon, Nov 13, 2023 at 01:58:52AM +0200, Vladimir Oltean wrote:
+> > > From 17fd68123d78f39a971f800de6da66522f71dc71 Mon Sep 17 00:00:00 2001
+> > > From: Vladimir Oltean <vladimir.oltean@nxp.com>
+> > > Date: Tue, 3 Oct 2023 22:16:25 +0300
+> > > Subject: [PATCH 1/2] net: phylink: move phylink_pcs_neg_mode() to phylink.c
+> > > 
+> > > Russell points out that there is no user of phylink_pcs_neg_mode()
+> > > outside of phylink.c, nor is there planned to be any, so we can just
+> > > move it there.
+> > 
+> > Looks familiar...
+> > 
+> > http://git.armlinux.org.uk/cgit/linux-arm.git/commit/?h=net-queue&id=c2aa9d3846c218d28a8a3457b0447998b0d84c5d
 > 
-> Tested-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> Reviewed-by: Alexander Potapenko <glider@google.com>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  arch/s390/include/asm/cpacf.h | 3 +++
->  1 file changed, 3 insertions(+)
+> Well, yeah, I did mention that the patch was written at your suggestion,
+> and there aren't that many options in which that patch can be written.
+> I didn't look at your trees, and I made that change as part of a much
+> larger effort which involves phylink, which I will email you separately
+> about.
+> 
+> I will gladly drop my ownership on the first patch and ask Luo Jie to
+> pick your version instead, if this is what you're implying from the 2
+> word reply.
 
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+The reason that I hadn't submitted it was because I didn't want to move
+the function out of the header file until the next LTS was released.
+
+It seems 6.6 was announced as a LTS on the 17th November, so I'm happier
+to now proceed with moving this into phylink.c.
+
+as phylink_pcs_neg_mode() was merged in 6.5-rc1, it will have had three
+kernel cycles - including one each side of the LTS release which I think
+is reasonable.
+
+I will send my patch hopefully sometime this week so it's in 6.8
+depending on pressures.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
