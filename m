@@ -1,123 +1,162 @@
-Return-Path: <linux-kernel+bounces-14195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B6BF8218FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:38:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C80F78218FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 10:39:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A81B1F2215E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:38:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D872C1C21437
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jan 2024 09:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4689979E5;
-	Tue,  2 Jan 2024 09:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B525FD266;
+	Tue,  2 Jan 2024 09:39:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vVwIFhjD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aSrVRgSr";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vVwIFhjD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aSrVRgSr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08C26AD7;
-	Tue,  2 Jan 2024 09:38:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0FF7BC15;
-	Tue,  2 Jan 2024 01:38:58 -0800 (PST)
-Received: from [10.57.86.61] (unknown [10.57.86.61])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DBFEA3F7A6;
-	Tue,  2 Jan 2024 01:38:10 -0800 (PST)
-Message-ID: <39ee9af7-7301-4b29-a928-a848756e205d@arm.com>
-Date: Tue, 2 Jan 2024 09:39:30 +0000
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E345BCA64;
+	Tue,  2 Jan 2024 09:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 22BEC1FCEE;
+	Tue,  2 Jan 2024 09:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704188383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6HV5HJpG1KKudNCL8oIywmvIrREkaLBolbe1DzJoFAg=;
+	b=vVwIFhjDTTO4c0zm4tHaOvX6OEHGLAgz9YRcYQIvKp+gx57R76BaNzVciF7VFg2prfEBP5
+	TBehobeTh9R7bzU69TdBM21gy0zT6ISn5Cs136j8WPJ7zsS+qUxcYIxyo2k9bsxriX9PmS
+	oIBjXrOlQTOx2ImxSdTt7TXfLW2aNdg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704188383;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6HV5HJpG1KKudNCL8oIywmvIrREkaLBolbe1DzJoFAg=;
+	b=aSrVRgSr6MVxcpTyo9eLtVgG8cHXTVP7vfKFyckc7DgOOl5KA4BylcoZrXMUL+GGID0QWV
+	xhopyGNO694mXBAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704188383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6HV5HJpG1KKudNCL8oIywmvIrREkaLBolbe1DzJoFAg=;
+	b=vVwIFhjDTTO4c0zm4tHaOvX6OEHGLAgz9YRcYQIvKp+gx57R76BaNzVciF7VFg2prfEBP5
+	TBehobeTh9R7bzU69TdBM21gy0zT6ISn5Cs136j8WPJ7zsS+qUxcYIxyo2k9bsxriX9PmS
+	oIBjXrOlQTOx2ImxSdTt7TXfLW2aNdg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704188383;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6HV5HJpG1KKudNCL8oIywmvIrREkaLBolbe1DzJoFAg=;
+	b=aSrVRgSr6MVxcpTyo9eLtVgG8cHXTVP7vfKFyckc7DgOOl5KA4BylcoZrXMUL+GGID0QWV
+	xhopyGNO694mXBAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1369413AC6;
+	Tue,  2 Jan 2024 09:39:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XRFSBN/Zk2U7DwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 02 Jan 2024 09:39:43 +0000
+Message-ID: <0d98192e-f9ac-cc49-fd7e-3551c7af1881@suse.cz>
+Date: Tue, 2 Jan 2024 10:39:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/9] Add callback for cooling list update to speed-up
- IPA
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: linux-next: manual merge of the rcu tree with the jc_docs tree
 Content-Language: en-US
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
- daniel.lezcano@linaro.org, rui.zhang@intel.com
-References: <20231220231753.1824364-1-lukasz.luba@arm.com>
- <CAJZ5v0gxdV4rUtcYM+c9eo9vA_=cW7Sn-Yk2Mo4ssjTMF0t-uQ@mail.gmail.com>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <CAJZ5v0gxdV4rUtcYM+c9eo9vA_=cW7Sn-Yk2Mo4ssjTMF0t-uQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Jonathan Corbet <corbet@lwn.net>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20231218142537.3b74c770@canb.auug.org.au>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231218142537.3b74c770@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.31
+X-Spamd-Result: default: False [-1.31 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.02)[51.97%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 TO_DN_ALL(0.00)[];
+	 NEURAL_HAM_SHORT(-0.19)[-0.960];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Flag: NO
+
+On 12/18/23 04:25, Stephen Rothwell wrote:
+> Hi all,
+
+Hi,
 
 
-
-On 12/29/23 17:15, Rafael J. Wysocki wrote:
-> On Thu, Dec 21, 2023 at 12:16 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> Hi all,
->>
->> The patch set adds a new callback for thermal governors and implementation for
->> Intelligent Power Allocator.
->>
->> The goal is to move some heavy operations like the memory allocations and heavy
->> computations (multiplications) out of throttle() callback hot path.
->>
->> The new callback is generic enough to handle other important update events.
->> It re-uses existing thermal_notify_event definitions.
->>
->> In addition there are some small clean-ups for IPA code.
->>
->> The patch set is based on current pm/bleeding-edge branch (20 Dec).
->>
->> changes:
->> v3:
->> - changed helper name to thermal_governor_update_tz() with also
->>    "reason" argument (Rafael)
->> - added thermal_governor_update_tz() to thermal_core.h for use from sysfs
->>    functions
->> - changed names of the events (THERMAL_TZ_BIND_CDEV) (Rafael)
->> - patch 2/9 changed header and comment for function (Rafael)
->> - patch 3/9: used unsigned types for num_actors, buffer_size (Rafael)
->> - changed trace functions and added new patch 4/9 to be prepare tracing for
->>    different internal IPA array; it also drops dynamic array inside trace event
->> - used new structure power_actor and changed the code in patch 5/9 (Rafael)
->> - keept the local num_actors variable (Rafael)
->> - patch 6/9 skipped redundant parens and changed the header desc. (Rafael)
->> - patch 7/9 changed header and used instance->tz->lock (Rafael)
->> - patch 8/9 removed handle_weight_update() and renamed new event to
->>    THERMAL_INSTANCE_WEIGHT_CHANGE (Rafael)
->> - patch 9/9 aliged to use THERMAL_INSTANCE_WEIGHT_CHANGE is switch (Rafael)
->>
->> v2 can be found here [1]
->>
->> Regards,
->> Lukasz
->>
->> [1] https://lore.kernel.org/lkml/20231212134844.1213381-1-lukasz.luba@arm.com/
->>
->> Lukasz Luba (9):
->>    thermal: core: Add governor callback for thermal zone change
->>    thermal: gov_power_allocator: Refactor check_power_actors()
->>    thermal: gov_power_allocator: Refactor checks in divvy_up_power()
->>    thermal: gov_power_allocator: Change trace functions
->>    thermal: gov_power_allocator: Move memory allocation out of throttle()
->>    thermal: gov_power_allocator: Simplify checks for valid power actor
->>    thermal/sysfs: Update instance->weight under tz lock
->>    thermal/sysfs: Update governors when the 'weight' has changed
->>    thermal: gov_power_allocator: Support new update callback of weights
->>
->>   drivers/thermal/gov_power_allocator.c | 269 ++++++++++++++++----------
->>   drivers/thermal/thermal_core.c        |  14 ++
->>   drivers/thermal/thermal_core.h        |   2 +
->>   drivers/thermal/thermal_sysfs.c       |   7 +
->>   drivers/thermal/thermal_trace_ipa.h   |  50 +++--
->>   include/linux/thermal.h               |   7 +
->>   6 files changed, 226 insertions(+), 123 deletions(-)
->>
->> --
+> Today's linux-next merge of the rcu tree got a conflict in:
 > 
-> All patches in the series applied as 6.8 material, with minor white
-> space adjustment in patch [8/9].
+>   Documentation/admin-guide/kernel-parameters.txt
 > 
-> Thanks!
+> between commit:
+> 
+>   a3a27827452f ("Documentation, mm/unaccepted: document accept_memory kernel parameter")
+> 
+> from the jc_docs tree and commit:
+> 
+>   801f246637ed ("doc: Add EARLY flag to early-parsed kernel boot parameters")
+
+in light of that commit, the accept_memory should now have:
+
+ +	accept_memory=  [MM,EARLY]
+
+Jon, can you update it still, or want a followup patch, or perhaps will
+suggest Linus to do that as part of the merge?
+
+> 
+> from the rcu tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 > 
 
-Thank you Rafael!
 
