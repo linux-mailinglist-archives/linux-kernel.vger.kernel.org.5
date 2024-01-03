@@ -1,184 +1,119 @@
-Return-Path: <linux-kernel+bounces-15879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7BEE8234E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AEC5A8234E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:49:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 891EF1F25683
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:48:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61C6A1F256BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:49:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E06A1CA85;
-	Wed,  3 Jan 2024 18:48:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589651CA93;
+	Wed,  3 Jan 2024 18:49:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="LmiPGfC+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BeI406Dh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9138C1CA86
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dbeac174e29so245792276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 10:48:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1301CA84;
+	Wed,  3 Jan 2024 18:49:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cca5d81826so129221071fa.2;
+        Wed, 03 Jan 2024 10:49:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1704307686; x=1704912486; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FhPl6n+gaHRZqX878lSuSjjHaJIqMMwAsnd88hKX+7k=;
-        b=LmiPGfC+MKvX6Fgcq0PEdfR/GO8u7NK9swKzUJAyJFbyg4kOlbrbN+j3ioyjfUu0Pr
-         dZLOJ7PylQLsdTnuyW7bHi0mG5UF2uf6SZwAnLoZ7v0Vp5heXF6dp76rpE2qTp5v9lqU
-         vMo89V+1Z3ZZeMECWOk9mi6y+kxBCqpLhzliZIV1FBaMXsgXIgP1xnhb0fPbfDUCopak
-         RlZYt96xqfhCuFCKGrSk7EosEz/dzPguegK3fpqj9i5zqAUwhCkRMKLZQqZyhZ2MyLG4
-         GDHSNQz3AzTGx+sV9qfTvXFh3AFiPrinHAfh7Iea4kirKE0+RHUUJXv6ANeBhvX7EtTW
-         KQ9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704307686; x=1704912486;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1704307749; x=1704912549; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FhPl6n+gaHRZqX878lSuSjjHaJIqMMwAsnd88hKX+7k=;
-        b=X7sgBzdX3xGj7QnUzigomU6nOLcQ8kOZqCyD3X6WQ5pPgKn6Mpi09BlQN41eFZ3Q1q
-         Ac6gKLlGw8Ol2PWknsQO8K1/cXwEWp1wvYZLLFL/dqO2fcrFZnvpIgAInxvaVZFpcDWf
-         BjbOb1eVZ7oO89ImPmKsRaV7MLbIXNJsmO0mBCFHAfCjESGUyYjcW6xHtE0KAapOdGn8
-         WF0QVimlvrczciSBygmPVan2i6cDfnzPsScTs+gsjyrMIit/MhWkqFXEhwGVRm8nVtmF
-         IIJIgw0nNpTotkt7kSsT/1M88ld0eJ5qUdtDCTNjNJmVuhsZdciy8xQWSTOtIbRSRxOz
-         ghMw==
-X-Gm-Message-State: AOJu0Yx9jWNw/8M3volS7Ghz2RoKwVUwQGVV2bc9Xe/30zqk7ZPUfeoa
-	P/uvRdwN+dlvrZ8Gda7svKxwrxbSvurl4/WdhoQjGhhgCFY=
-X-Google-Smtp-Source: AGHT+IHKWGLvLZUPJL8bZ4+1PfDyD4XSImEoClSZMSeMX+NcmH91Do12c+kWsJ2zb3rFDLDm/c6U0A==
-X-Received: by 2002:a5b:810:0:b0:dbe:82bc:5676 with SMTP id x16-20020a5b0810000000b00dbe82bc5676mr2344620ybp.11.1704307686377;
-        Wed, 03 Jan 2024 10:48:06 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id cq5-20020a05622a424500b004181e5a724csm14393361qtb.88.2024.01.03.10.48.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 10:48:05 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rL6Hc-0013gY-Hm;
-	Wed, 03 Jan 2024 14:48:04 -0400
-Date: Wed, 3 Jan 2024 14:48:04 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Shifeng Li <lishifeng@sangfor.com.cn>
-Cc: leon@kernel.org, wenglianfa@huawei.com, gustavoars@kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Shifeng Li <lishifeng1992@126.com>
-Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
- init
-Message-ID: <20240103184804.GB50608@ziepe.ca>
-References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
+        bh=HSwdtsY61fYy46M5QE5KizBE3QaiBoSxLHAq5Tnp4Uw=;
+        b=BeI406DhtL43bJdoswKGH9lYnxQg8I2S8m+gN/oP0d+Bts86WkJnjKvkHR3Zup7Bpl
+         XNPzQr183n8N9soX/l+KKUg7kMjIZHouuPzJQ8WKvE3xKlCqBoEunD8anjRLyP1aa+Ve
+         ro9Y9YVqqrcqSKI8EOFPC/YdqNMen6+EuHRcUGZE/11DgpoVSM7JfQgW78PP9RsfhHla
+         WnJdgXrq9kmPOE687UxbLz+g6Pwupc+3Vdl6o7oiay8rlaTWPg3gdBWtQu0uAc0wW8vd
+         fJDnDjM1xxXDKe2LtdEsr7b/7kRh00ccNhzfhsB6fuudYayeytqwYuggv/DRNEQU7UCV
+         BfsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704307749; x=1704912549;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HSwdtsY61fYy46M5QE5KizBE3QaiBoSxLHAq5Tnp4Uw=;
+        b=bMatfZnjyly7FG+XvvFanyGEQFrLTvTvkh7KjYo8aMFZ9Ew7o28o/c+Y9iOFSFhf4J
+         OWXfAcRJYP3FxiaHMPRlBVFEVNc1m4FaLROG8/ZhMe1NQeKwEq8pTDxC+IHg194zGbic
+         UIDl+2R/oaUGPPEyCO8/F0w1e+sRqaHxfWXC7lw0BbIVV8HNg3nMgjhjidZj2PVa0a7e
+         /4skkTh2JDrMLm++E33TGpnSSH06pE57aLEE7qzyRcYGKTiry/5nx2dtDUtUQel3zCNE
+         qxiD9mXEXkTDV3DED25xfy69ih3e0otxfmextHJSbiYzCwG6HCnQ/aF7RtEippyVttf1
+         /wDQ==
+X-Gm-Message-State: AOJu0Yx+n3aDalVLWEAypzDhd0WTFrX0BDNEYjWdFbdcYy//r0NtrQH5
+	giKzD5zQXDLVMBvsbhp/MrzPQOpLzMorxfzJ5I0=
+X-Google-Smtp-Source: AGHT+IG+OC/fH5CHJHM4KYYgGuSRIAloVFSbQRrYKWlazIMzUbmSodkBi162LLgz+u6vZOa9YXsBO0vakCfp0mrOPbY=
+X-Received: by 2002:a05:651c:4c6:b0:2cd:dfe:74bb with SMTP id
+ e6-20020a05651c04c600b002cd0dfe74bbmr2277411lji.49.1704307748788; Wed, 03 Jan
+ 2024 10:49:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
+References: <20240102193348.250917-1-robdclark@gmail.com> <fd88a067-63f6-4467-9787-989890287083@linaro.org>
+In-Reply-To: <fd88a067-63f6-4467-9787-989890287083@linaro.org>
+From: Rob Clark <robdclark@gmail.com>
+Date: Wed, 3 Jan 2024 10:48:56 -0800
+Message-ID: <CAF6AEGtk7qS5hPYDGKVnrcEfcQEkr1J4=UTL7sikVJB3AvDBFQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/a7xx: Fix LLC typo
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+	linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>, 
+	Abhinav Kumar <quic_abhinavk@quicinc.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Akhil P Oommen <quic_akhilpo@quicinc.com>, Danylo Piliaiev <dpiliaiev@igalia.com>, 
+	Bjorn Andersson <andersson@kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 01, 2024 at 07:43:35PM -0800, Shifeng Li wrote:
-> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> index 67bcea7a153c..85782786993d 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -1315,12 +1315,6 @@ static int enable_device_and_get(struct ib_device *device)
->  	down_write(&devices_rwsem);
->  	xa_set_mark(&devices, device->index, DEVICE_REGISTERED);
->  
-> -	/*
-> -	 * By using downgrade_write() we ensure that no other thread can clear
-> -	 * DEVICE_REGISTERED while we are completing the client setup.
-> -	 */
-> -	downgrade_write(&devices_rwsem);
-> -
->  	if (device->ops.enable_driver) {
->  		ret = device->ops.enable_driver(device);
->  		if (ret)
-> @@ -1337,7 +1331,7 @@ static int enable_device_and_get(struct ib_device *device)
->  	if (!ret)
->  		ret = add_compat_devs(device);
->  out:
-> -	up_read(&devices_rwsem);
-> +	up_write(&devices_rwsem);
->  	return ret;
->  }
+On Tue, Jan 2, 2024 at 12:12=E2=80=AFPM Konrad Dybcio <konrad.dybcio@linaro=
+.org> wrote:
+>
+> On 2.01.2024 20:33, Rob Clark wrote:
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > We'd miss actually activating LLC.
+> >
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > ---
+> >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/ms=
+m/adreno/a6xx_gpu.c
+> > index a5660d63535b..54dc5eb37f70 100644
+> > --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> > +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> > @@ -1646,7 +1646,7 @@ static int a6xx_gmu_pm_resume(struct msm_gpu *gpu=
+)
+> >
+> >       msm_devfreq_resume(gpu);
+> >
+> > -     adreno_is_a7xx(adreno_gpu) ? a7xx_llc_activate : a6xx_llc_activat=
+e(a6xx_gpu);
+> > +     adreno_is_a7xx(adreno_gpu) ? a7xx_llc_activate(a6xx_gpu) : a6xx_l=
+lc_activate(a6xx_gpu);
+>
+> /me cleans glasses
+>
+> oh..
+>
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-I don't think messing with the devices_rwsem here is a great idea, it
-would be better to address this on the clients_rwsem side like:
+I suppose I should also add,
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 67bcea7a153c6a..b956c9f8e62d34 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -1730,7 +1730,7 @@ static int assign_client_id(struct ib_client *client)
- {
- 	int ret;
- 
--	down_write(&clients_rwsem);
-+	lockdep_assert_held(&clients_rwsem);
- 	/*
- 	 * The add/remove callbacks must be called in FIFO/LIFO order. To
- 	 * achieve this we assign client_ids so they are sorted in
-@@ -1739,14 +1739,11 @@ static int assign_client_id(struct ib_client *client)
- 	client->client_id = highest_client_id;
- 	ret = xa_insert(&clients, client->client_id, client, GFP_KERNEL);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	highest_client_id++;
- 	xa_set_mark(&clients, client->client_id, CLIENT_REGISTERED);
--
--out:
--	up_write(&clients_rwsem);
--	return ret;
-+	return 0;
- }
- 
- static void remove_client_id(struct ib_client *client)
-@@ -1776,25 +1773,31 @@ int ib_register_client(struct ib_client *client)
- {
- 	struct ib_device *device;
- 	unsigned long index;
-+	bool need_unreg = false;
- 	int ret;
- 
- 	refcount_set(&client->uses, 1);
- 	init_completion(&client->uses_zero);
--	ret = assign_client_id(client);
--	if (ret)
--		return ret;
- 
- 	down_read(&devices_rwsem);
-+	down_write(&clients_rwsem);
-+	ret = assign_client_id(client);
-+	if (ret)
-+		goto out;
-+
-+	need_unreg = true;
- 	xa_for_each_marked (&devices, index, device, DEVICE_REGISTERED) {
- 		ret = add_client_context(device, client);
--		if (ret) {
--			up_read(&devices_rwsem);
--			ib_unregister_client(client);
--			return ret;
--		}
-+		if (ret)
-+			goto out;
- 	}
-+	ret = 0;
-+out:
-+	up_write(&clients_rwsem);
- 	up_read(&devices_rwsem);
--	return 0;
-+	if (need_unreg && ret)
-+		ib_unregister_client(client);
-+	return ret;
- }
- EXPORT_SYMBOL(ib_register_client);
- 
+Fixes: af66706accdf ("drm/msm/a6xx: Add skeleton A7xx support")
+
+> Konrad
 
