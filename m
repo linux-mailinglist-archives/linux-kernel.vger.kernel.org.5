@@ -1,161 +1,283 @@
-Return-Path: <linux-kernel+bounces-15406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0908F822B96
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:48:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0D6D822B99
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:48:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 961932853DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:48:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 650961C228F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:48:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2640A18C3A;
-	Wed,  3 Jan 2024 10:47:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73F2B18C24;
+	Wed,  3 Jan 2024 10:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="aMVSUKwr";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="LXjTni6i";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="L3Dr+y52";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="fMD2WkQk"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Xjai7+k5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F6518C19;
-	Wed,  3 Jan 2024 10:47:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CF8151FD0D;
-	Wed,  3 Jan 2024 10:47:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704278863; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rg5KRAwo0AFVwbHMpXUMvMXUGfmIiWah+X+scYHvmWs=;
-	b=aMVSUKwrNxKsDAtUhf83urZiLbahRA7dJv4iQjHxUh+linKRV+pUcXJCCPGFN5u7AcGhI1
-	IOB2tFAsBrKF2NBPp15LiB0cuBZyeaT/VJDg11OJt8LZwI2Ejd4J6+COUcAKcnuyIcshls
-	0dZb93UyC28ht4DE29UksYuO/1CbnCw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704278863;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rg5KRAwo0AFVwbHMpXUMvMXUGfmIiWah+X+scYHvmWs=;
-	b=LXjTni6iQ+fTVuHvu61vqthFR6yFRCHGPc6Iui8mFt3NrYCEYaflXhh31Ku5oBrWZGx+87
-	QomT+jNovuQZIHBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704278862; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rg5KRAwo0AFVwbHMpXUMvMXUGfmIiWah+X+scYHvmWs=;
-	b=L3Dr+y526qc0FBu3bqQMGQ50XpMSEiO9d48DUvXIryxfDurx0LPNjmoVRTq7MYo1gxiNuE
-	jX0g8s/bdQnRhG/MNMgYwVfHa4gJBNtd10MHTqDE2Av/ptZMTGLHE2DgXBexnbZzjQ4S0m
-	5kD7ZobGVDaNTjudjPftmhoqDP6h6sw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704278862;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rg5KRAwo0AFVwbHMpXUMvMXUGfmIiWah+X+scYHvmWs=;
-	b=fMD2WkQkqIdPqohQoq1TdjD3GDNhi5RWUkxKZwFRbthol1/6FrTA6vZ6NMqrhsl4zy+wKJ
-	SGLbUpRyweJynqBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8A3E41340C;
-	Wed,  3 Jan 2024 10:47:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2AVoIE47lWXuBgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Wed, 03 Jan 2024 10:47:42 +0000
-Date: Wed, 03 Jan 2024 11:47:42 +0100
-Message-ID: <87cyuibsmp.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Yu Liao <liaoyu15@huawei.com>,
-	Dawei Li <set_pte_at@outlook.com>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: ac97: fix build regression
-In-Reply-To: <20240103102544.3715055-1-arnd@kernel.org>
-References: <20240103102544.3715055-1-arnd@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4355918C19
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 10:48:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d3f29fea66so41650805ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 02:48:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704278904; x=1704883704; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pdPU059J9ZVWznV8an692mayob38PCXn1K2je3VxOtQ=;
+        b=Xjai7+k5VtQKzf7LA/eVAKNTdK5PaEGp+RJS0s8tEczECFIeq4sHN1bRTCyrNRSvTH
+         HzjWUV8v3oP/MIgelm1Yc/mnDLqCouyguWsANLDhcd7a04K5TelP14m+dNGRGpSIDkrl
+         xFUCt8fnOKBPEPrRHHBln4CjX1EGi/a/8Lknyayu1bVwqXU0ayNQPwQX2jEWd9GiZFai
+         8YpEmYqmSoUFBAGj6ENaI3qq5i0MTwFxn1FbGLFdRO/iEM7RfzDkvFEgEELBJkUarbwn
+         sHJteICa4PT1bmW3Hhgj7Mx+Ql4bmSDrRjsRlOUD3+06+tPK9e09jEcHVGCCDh//yyE/
+         el6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704278904; x=1704883704;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pdPU059J9ZVWznV8an692mayob38PCXn1K2je3VxOtQ=;
+        b=RN8pUPWc2rtZu3g0/whDTavjNTyY2FYEfJkdTGWHTOJ0zuobY0TCcmEFlyin9Zz8Ts
+         ahFly6BzpOzwxl/aUjfI3AwDbgyV34y38NqmI/1ilBGBJokUNA4wLdNtwJZDLPN2KoaN
+         EyUGlXRzjZtJjif+c8Z2QMtYh7lIK+TgAPIZPmie9Btmw0kgl1PqUMeu0yvl8jtjXFp6
+         MsMJlBZRSWQ9jf1vURSag9W62iBdk8z9mOU/y5AmKFV6QbPNBvpmiWUqqNIa3jgXrqsC
+         J4vifxB03QYNJfhE77CZbvTJQWPT1XVe7eN/RWWynHXToMJr3DlMDlLj5hVQbu6LrBG5
+         7B9A==
+X-Gm-Message-State: AOJu0YxJ0/wBnWArptWWrLETc4BEK36QJygxdrN2INXvg5HYA3hJuvh7
+	g0GfUa9HtUfwHJ4iyS7HKz3QZWj7qsaZsA==
+X-Google-Smtp-Source: AGHT+IGiwlRazKmwSv9SQEFS3/AG7SEW3FZuxDqnkmfBlfZ6Y+vxPON78qJPQ3mDacfO3RhGKwzv5g==
+X-Received: by 2002:a17:902:da81:b0:1d4:c2ad:8ff8 with SMTP id j1-20020a170902da8100b001d4c2ad8ff8mr1891688plx.34.1704278904539;
+        Wed, 03 Jan 2024 02:48:24 -0800 (PST)
+Received: from localhost ([122.172.86.168])
+        by smtp.gmail.com with ESMTPSA id z20-20020a170902ee1400b001d3a9676973sm23495578plb.111.2024.01.03.02.48.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 02:48:24 -0800 (PST)
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Dmitry Osipenko <digetx@gmail.com>,
+	MyungJoo Ham <myungjoo.ham@samsung.com>,
+	Kyungmin Park <kyungmin.park@samsung.com>,
+	Chanwoo Choi <cw00.choi@samsung.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Viresh Kumar <vireshk@kernel.org>,
+	Nishanth Menon <nm@ti.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Avri Altman <avri.altman@wdc.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>,
+	linux-pm@vger.kernel.org,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-scsi@vger.kernel.org
+Subject: [PATCH] OPP: Remove the unused argument to config_clks_t
+Date: Wed,  3 Jan 2024 16:18:18 +0530
+Message-Id: <f24f32f1213b4b9e9ff2b4a36922f8d6e3abac51.1704278832.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=L3Dr+y52;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=fMD2WkQk
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.07 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[outlook.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,arndb.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_CC(0.00)[perex.cz,suse.com,linuxfoundation.org,arndb.de,huawei.com,outlook.com,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.56)[92.15%]
-X-Spam-Score: -2.07
-X-Rspamd-Queue-Id: CF8151FD0D
-X-Spam-Flag: NO
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Wed, 03 Jan 2024 11:25:38 +0100,
-Arnd Bergmann wrote:
-> 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The ac97_bus_type structure is no longer declared in this file:
-> 
-> sound/ac97/bus.c: In function 'ac97_codec_add':
-> sound/ac97/bus.c:112:27: error: 'ac97_bus_type' undeclared (first use in this function); did you mean 'bus_type'?
->   112 |         codec->dev.bus = &ac97_bus_type;
->       |                           ^~~~~~~~~~~~~
->       |                           bus_type
-> sound/ac97/bus.c:112:27: note: each undeclared identifier is reported only once for each function it appears in
-> sound/ac97/bus.c: In function 'snd_ac97_codec_driver_register':
-> sound/ac97/bus.c:191:28: error: 'ac97_bus_type' undeclared (first use in this function); did you mean 'ac97_bus_reset'?
->   191 |         drv->driver.bus = &ac97_bus_type;
-> 
-> Include the header that contains the declaration and make sure the definition
-> is const but not static.
-> 
-> Fixes: 66e82d219924 ("ALSA: mark all struct bus_type as const")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+The OPP core needs to take care of a special case, where the OPPs aren't
+available for a device, but in order to keep the same unified interface
+for the driver, the same OPP core API must take care of performing a
+simple clk_set_rate() for the device.
 
-Thanks, applied now.
+This required the extra argument, but that is used only within the OPP
+core and the drivers don't need to take care of that.
 
+Simplify the external API and handle it differently within the OPP core.
 
-Takashi
+This shouldn't result in any functional change.
+
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+I will be taking this through the PM tree for the upcoming merge window.
+Hopefully this won't create any issues for the ufs and devfreq driver as there
+is no functional change for them.
+
+ drivers/devfreq/tegra30-devfreq.c |  2 +-
+ drivers/opp/core.c                | 37 +++++++++++++------------------
+ drivers/ufs/core/ufshcd.c         |  3 +--
+ include/linux/pm_opp.h            |  5 ++---
+ include/ufs/ufshcd.h              |  3 +--
+ 5 files changed, 20 insertions(+), 30 deletions(-)
+
+diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
+index 4a4f0106ab9d..730c6618abc5 100644
+--- a/drivers/devfreq/tegra30-devfreq.c
++++ b/drivers/devfreq/tegra30-devfreq.c
+@@ -823,7 +823,7 @@ static int devm_tegra_devfreq_init_hw(struct device *dev,
+ 
+ static int tegra_devfreq_config_clks_nop(struct device *dev,
+ 					 struct opp_table *opp_table,
+-					 struct dev_pm_opp *opp, void *data,
++					 struct dev_pm_opp *opp,
+ 					 bool scaling_down)
+ {
+ 	/* We want to skip clk configuration via dev_pm_opp_set_opp() */
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 29f8160c3e38..ba5f692e2161 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -940,24 +940,11 @@ static int _set_opp_voltage(struct device *dev, struct regulator *reg,
+ 	return ret;
+ }
+ 
+-static int
+-_opp_config_clk_single(struct device *dev, struct opp_table *opp_table,
+-		       struct dev_pm_opp *opp, void *data, bool scaling_down)
++static int _opp_clk_set_rate(struct device *dev, struct opp_table *opp_table,
++			     unsigned long freq)
+ {
+-	unsigned long *target = data;
+-	unsigned long freq;
+ 	int ret;
+ 
+-	/* One of target and opp must be available */
+-	if (target) {
+-		freq = *target;
+-	} else if (opp) {
+-		freq = opp->rates[0];
+-	} else {
+-		WARN_ON(1);
+-		return -EINVAL;
+-	}
+-
+ 	ret = clk_set_rate(opp_table->clk, freq);
+ 	if (ret) {
+ 		dev_err(dev, "%s: failed to set clock rate: %d\n", __func__,
+@@ -969,12 +956,19 @@ _opp_config_clk_single(struct device *dev, struct opp_table *opp_table,
+ 	return ret;
+ }
+ 
++static int
++_opp_config_clk_single(struct device *dev, struct opp_table *opp_table,
++		       struct dev_pm_opp *opp, bool scaling_down)
++{
++	return _opp_clk_set_rate(dev, opp_table, opp->rates[0]);
++}
++
+ /*
+  * Simple implementation for configuring multiple clocks. Configure clocks in
+  * the order in which they are present in the array while scaling up.
+  */
+ int dev_pm_opp_config_clks_simple(struct device *dev,
+-		struct opp_table *opp_table, struct dev_pm_opp *opp, void *data,
++		struct opp_table *opp_table, struct dev_pm_opp *opp,
+ 		bool scaling_down)
+ {
+ 	int ret, i;
+@@ -1183,7 +1177,7 @@ static int _disable_opp_table(struct device *dev, struct opp_table *opp_table)
+ }
+ 
+ static int _set_opp(struct device *dev, struct opp_table *opp_table,
+-		    struct dev_pm_opp *opp, void *clk_data, bool forced)
++		    struct dev_pm_opp *opp, bool forced)
+ {
+ 	struct dev_pm_opp *old_opp;
+ 	int scaling_down, ret;
+@@ -1243,7 +1237,7 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
+ 	}
+ 
+ 	if (opp_table->config_clks) {
+-		ret = opp_table->config_clks(dev, opp_table, opp, clk_data, scaling_down);
++		ret = opp_table->config_clks(dev, opp_table, opp, scaling_down);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -1322,8 +1316,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 		 * equivalent to a clk_set_rate()
+ 		 */
+ 		if (!_get_opp_count(opp_table)) {
+-			ret = opp_table->config_clks(dev, opp_table, NULL,
+-						     &target_freq, false);
++			ret = _opp_clk_set_rate(dev, opp_table, target_freq);
+ 			goto put_opp_table;
+ 		}
+ 
+@@ -1355,7 +1348,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 		forced = opp_table->rate_clk_single != target_freq;
+ 	}
+ 
+-	ret = _set_opp(dev, opp_table, opp, &target_freq, forced);
++	ret = _set_opp(dev, opp_table, opp, forced);
+ 
+ 	if (target_freq)
+ 		dev_pm_opp_put(opp);
+@@ -1387,7 +1380,7 @@ int dev_pm_opp_set_opp(struct device *dev, struct dev_pm_opp *opp)
+ 		return PTR_ERR(opp_table);
+ 	}
+ 
+-	ret = _set_opp(dev, opp_table, opp, NULL, false);
++	ret = _set_opp(dev, opp_table, opp, false);
+ 	dev_pm_opp_put_opp_table(opp_table);
+ 
+ 	return ret;
+diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+index bce0d2a9a7f3..51d6c8567189 100644
+--- a/drivers/ufs/core/ufshcd.c
++++ b/drivers/ufs/core/ufshcd.c
+@@ -1064,8 +1064,7 @@ static int ufshcd_set_clk_freq(struct ufs_hba *hba, bool scale_up)
+ }
+ 
+ int ufshcd_opp_config_clks(struct device *dev, struct opp_table *opp_table,
+-			   struct dev_pm_opp *opp, void *data,
+-			   bool scaling_down)
++			   struct dev_pm_opp *opp, bool scaling_down)
+ {
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
+ 	struct list_head *head = &hba->clk_list_head;
+diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+index 76dcb7f37bcd..c99a66e88e78 100644
+--- a/include/linux/pm_opp.h
++++ b/include/linux/pm_opp.h
+@@ -50,7 +50,7 @@ typedef int (*config_regulators_t)(struct device *dev,
+ 			struct regulator **regulators, unsigned int count);
+ 
+ typedef int (*config_clks_t)(struct device *dev, struct opp_table *opp_table,
+-			struct dev_pm_opp *opp, void *data, bool scaling_down);
++			struct dev_pm_opp *opp, bool scaling_down);
+ 
+ /**
+  * struct dev_pm_opp_config - Device OPP configuration values
+@@ -181,8 +181,7 @@ int dev_pm_opp_set_config(struct device *dev, struct dev_pm_opp_config *config);
+ int devm_pm_opp_set_config(struct device *dev, struct dev_pm_opp_config *config);
+ void dev_pm_opp_clear_config(int token);
+ int dev_pm_opp_config_clks_simple(struct device *dev,
+-		struct opp_table *opp_table, struct dev_pm_opp *opp, void *data,
+-		bool scaling_down);
++		struct opp_table *opp_table, struct dev_pm_opp *opp, bool scaling_down);
+ 
+ struct dev_pm_opp *dev_pm_opp_xlate_required_opp(struct opp_table *src_table, struct opp_table *dst_table, struct dev_pm_opp *src_opp);
+ int dev_pm_opp_xlate_performance_state(struct opp_table *src_table, struct opp_table *dst_table, unsigned int pstate);
+diff --git a/include/ufs/ufshcd.h b/include/ufs/ufshcd.h
+index 7f0b2c5599cd..156e47dd4d9c 100644
+--- a/include/ufs/ufshcd.h
++++ b/include/ufs/ufshcd.h
+@@ -1255,8 +1255,7 @@ void ufshcd_mcq_enable_esi(struct ufs_hba *hba);
+ void ufshcd_mcq_config_esi(struct ufs_hba *hba, struct msi_msg *msg);
+ 
+ int ufshcd_opp_config_clks(struct device *dev, struct opp_table *opp_table,
+-			   struct dev_pm_opp *opp, void *data,
+-			   bool scaling_down);
++			   struct dev_pm_opp *opp, bool scaling_down);
+ /**
+  * ufshcd_set_variant - set variant specific data to the hba
+  * @hba: per adapter instance
+-- 
+2.31.1.272.g89b43f80a514
+
 
