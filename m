@@ -1,387 +1,143 @@
-Return-Path: <linux-kernel+bounces-15230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79E448228CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:16:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 885D98228D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:17:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DA2F2848AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 07:16:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8CD4B22E85
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 07:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34C5A18035;
-	Wed,  3 Jan 2024 07:16:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0686718627;
+	Wed,  3 Jan 2024 07:16:27 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 068EF18021;
-	Wed,  3 Jan 2024 07:16:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=starfivetech.com
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-	by ex01.ufhost.com (Postfix) with ESMTP id 7F5F224E276;
-	Wed,  3 Jan 2024 15:15:33 +0800 (CST)
-Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 3 Jan
- 2024 15:15:33 +0800
-Received: from [192.168.120.47] (171.223.208.138) by EXMBX068.cuchost.com
- (172.16.6.68) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 3 Jan
- 2024 15:15:32 +0800
-Message-ID: <b1a44192-4e7d-46c2-b9cf-969795208839@starfivetech.com>
-Date: Wed, 3 Jan 2024 15:15:31 +0800
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09B1518049;
+	Wed,  3 Jan 2024 07:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.2.5.213])
+	by gateway (Coremail) with SMTP id _____8DxvuvACZVlwnIBAA--.5773S3;
+	Wed, 03 Jan 2024 15:16:16 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.213])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxqb2_CZVlm1EYAA--.43800S2;
+	Wed, 03 Jan 2024 15:16:15 +0800 (CST)
+From: Bibo Mao <maobibo@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>,
+	Juergen Gross <jgross@suse.com>
+Cc: loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	kvm@vger.kernel.org
+Subject: [PATCH 0/5] LoongArch: Add pv ipi support on LoongArch VM
+Date: Wed,  3 Jan 2024 15:16:10 +0800
+Message-Id: <20240103071615.3422264-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 2/4] pwm: opencores: Add PWM driver support
-Content-Language: en-US
-To: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, <linux-pwm@vger.kernel.org>
-CC: Emil Renner Berthing <kernel@esmil.dk>, Rob Herring <robh+dt@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>, Philipp Zabel
-	<p.zabel@pengutronix.de>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	=?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Hal Feng
-	<hal.feng@starfivetech.com>, Paul Walmsley <paul.walmsley@sifive.com>,
-	"Palmer Dabbelt" <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
-References: <20231222094548.54103-1-william.qiu@starfivetech.com>
- <20231222094548.54103-3-william.qiu@starfivetech.com>
-From: William Qiu <william.qiu@starfivetech.com>
-In-Reply-To: <20231222094548.54103-3-william.qiu@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX068.cuchost.com
- (172.16.6.68)
-X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8Dxqb2_CZVlm1EYAA--.43800S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxCw4rGw1kAF48Jr18WF1xJFc_yoWrJF4xpF
+	y3Crn3Gr4UGrn3Ars3t345Wr98Jr97Gw1aga1ay392kFZFvF1UZr4kGFWkAFyvqayrtF40
+	qr1rG342ga1UJwcCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1q6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv
+	67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
+	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+	kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUoxR6UUUUU
+
+This patchset adds pv ipi support for VM. On physical machine, ipi HW
+uses IOCSR registers, however there will be trap into hypervisor with
+IOCSR registers access. This patch uses SWI interrupt for IPI
+notification. During ipi sending with hypercall method, there is still
+one trap; however with SWI interrupt handler there is no trap.
+
+This patch passes to runltp testcases, and unixbench score is 99% of
+that on physical machine on 3C5000 single way machine. Here is unixbench
+score with 16 cores on 3C5000 single way machine.
+
+----------------UnixBench score on 3C5000 machine with 16 cores --------
+Dhrystone 2 using register variables         116700.0  339749961.8  29113.1
+Double-Precision Whetstone                       55.0      57716.9  10494.0
+Execl Throughput                                 43.0      33563.4   7805.4
+File Copy 1024 bufsize 2000 maxblocks          3960.0    1017912.5   2570.5
+File Copy 256 bufsize 500 maxblocks            1655.0     260061.4   1571.4
+File Copy 4096 bufsize 8000 maxblocks          5800.0    3216109.4   5545.0
+Pipe Throughput                               12440.0   18404312.0  14794.5
+Pipe-based Context Switching                   4000.0    3395856.2   8489.6
+Process Creation                                126.0      55684.8   4419.4
+Shell Scripts (1 concurrent)                     42.4      55901.8  13184.4
+Shell Scripts (8 concurrent)                      6.0       7396.5  12327.5
+System Call Overhead                          15000.0    6997351.4   4664.9
+System Benchmarks Index Score                                        7288.6
+
+----------------UnixBench score on VM with 16 cores -----------------
+Dhrystone 2 using register variables         116700.0  341649555.5  29275.9
+Double-Precision Whetstone                       55.0      57490.9  10452.9
+Execl Throughput                                 43.0      33663.8   7828.8
+File Copy 1024 bufsize 2000 maxblocks          3960.0    1047631.2   2645.5
+File Copy 256 bufsize 500 maxblocks            1655.0     286671.0   1732.2
+File Copy 4096 bufsize 8000 maxblocks          5800.0    3243588.2   5592.4
+Pipe Throughput                               12440.0   16353087.8  13145.6
+Pipe-based Context Switching                   4000.0    3100690.0   7751.7
+Process Creation                                126.0      51502.1   4087.5
+Shell Scripts (1 concurrent)                     42.4      56665.3  13364.4
+Shell Scripts (8 concurrent)                      6.0       7412.1  12353.4
+System Call Overhead                          15000.0    6962239.6   4641.5
+System Benchmarks Index Score                                        7205.8
+
+Bibo Mao (5):
+  LoongArch: KVM: Add hypercall instruction emulation support
+  LoongArch: KVM: Add cpucfg area for kvm hypervisor
+  LoongArch/smp: Refine ipi ops on LoongArch platform
+  LoongArch: Add paravirt interface for guest kernel
+  LoongArch: Add pv ipi support on LoongArch system
+
+ arch/loongarch/Kconfig                        |   7 +
+ arch/loongarch/include/asm/Kbuild             |   1 -
+ arch/loongarch/include/asm/hardirq.h          |   5 +
+ arch/loongarch/include/asm/inst.h             |   1 +
+ arch/loongarch/include/asm/irq.h              |  10 +-
+ arch/loongarch/include/asm/kvm_para.h         | 157 ++++++++++++++++++
+ arch/loongarch/include/asm/loongarch.h        |  10 ++
+ arch/loongarch/include/asm/paravirt.h         |  27 +++
+ .../include/asm/paravirt_api_clock.h          |   1 +
+ arch/loongarch/include/asm/smp.h              |  31 ++--
+ arch/loongarch/include/uapi/asm/Kbuild        |   2 -
+ arch/loongarch/kernel/Makefile                |   1 +
+ arch/loongarch/kernel/irq.c                   |  24 +--
+ arch/loongarch/kernel/paravirt.c              | 144 ++++++++++++++++
+ arch/loongarch/kernel/perf_event.c            |  14 +-
+ arch/loongarch/kernel/setup.c                 |   2 +
+ arch/loongarch/kernel/smp.c                   |  61 ++++---
+ arch/loongarch/kernel/time.c                  |  12 +-
+ arch/loongarch/kvm/exit.c                     | 118 +++++++++++--
+ 19 files changed, 527 insertions(+), 101 deletions(-)
+ create mode 100644 arch/loongarch/include/asm/kvm_para.h
+ create mode 100644 arch/loongarch/include/asm/paravirt.h
+ create mode 100644 arch/loongarch/include/asm/paravirt_api_clock.h
+ delete mode 100644 arch/loongarch/include/uapi/asm/Kbuild
+ create mode 100644 arch/loongarch/kernel/paravirt.c
 
 
+base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
+-- 
+2.39.3
 
-On 2023/12/22 17:45, William Qiu wrote:
-> Add driver for OpenCores PWM Controller. And add compatibility code
-> which based on StarFive SoC.
-> 
-> Co-developed-by: Hal Feng <hal.feng@starfivetech.com>
-> Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
-> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
-> ---
->  MAINTAINERS              |   7 ++
->  drivers/pwm/Kconfig      |  12 ++
->  drivers/pwm/Makefile     |   1 +
->  drivers/pwm/pwm-ocores.c | 233 +++++++++++++++++++++++++++++++++++++++
->  4 files changed, 253 insertions(+)
->  create mode 100644 drivers/pwm/pwm-ocores.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 9104430e148e..6a6c355150e7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -16145,6 +16145,13 @@ F:	Documentation/i2c/busses/i2c-ocores.rst
->  F:	drivers/i2c/busses/i2c-ocores.c
->  F:	include/linux/platform_data/i2c-ocores.h
-> 
-> +OPENCORES PWM DRIVER
-> +M:	William Qiu <william.qiu@starfivetech.com>
-> +M:	Hal Feng <hal.feng@starfivetech.com>
-> +S:	Supported
-> +F:	Documentation/devicetree/bindings/pwm/opencores,pwm.yaml
-> +F:	drivers/pwm/pwm-ocores.c
-> +
->  OPENRISC ARCHITECTURE
->  M:	Jonas Bonn <jonas@southpole.se>
->  M:	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-> index 4b956d661755..d87e1bb350ba 100644
-> --- a/drivers/pwm/Kconfig
-> +++ b/drivers/pwm/Kconfig
-> @@ -444,6 +444,18 @@ config PWM_NTXEC
->  	  controller found in certain e-book readers designed by the original
->  	  design manufacturer Netronix.
-> 
-> +config PWM_OCORES
-> +	tristate "OpenCores PWM support"
-> +	depends on HAS_IOMEM && OF
-> +	depends on COMMON_CLK
-> +	depends on ARCH_STARFIVE || COMPILE_TEST
-> +	help
-> +	  If you say yes to this option, support will be included for the
-> +	  OpenCores PWM. For details see https://opencores.org/projects/ptc.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called pwm-ocores.
-> +
->  config PWM_OMAP_DMTIMER
->  	tristate "OMAP Dual-Mode Timer PWM support"
->  	depends on OF
-> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-> index c5ec9e168ee7..517c4f643058 100644
-> --- a/drivers/pwm/Makefile
-> +++ b/drivers/pwm/Makefile
-> @@ -40,6 +40,7 @@ obj-$(CONFIG_PWM_MICROCHIP_CORE)	+= pwm-microchip-core.o
->  obj-$(CONFIG_PWM_MTK_DISP)	+= pwm-mtk-disp.o
->  obj-$(CONFIG_PWM_MXS)		+= pwm-mxs.o
->  obj-$(CONFIG_PWM_NTXEC)		+= pwm-ntxec.o
-> +obj-$(CONFIG_PWM_OCORES)	+= pwm-ocores.o
->  obj-$(CONFIG_PWM_OMAP_DMTIMER)	+= pwm-omap-dmtimer.o
->  obj-$(CONFIG_PWM_PCA9685)	+= pwm-pca9685.o
->  obj-$(CONFIG_PWM_PXA)		+= pwm-pxa.o
-> diff --git a/drivers/pwm/pwm-ocores.c b/drivers/pwm/pwm-ocores.c
-> new file mode 100644
-> index 000000000000..dfb5a186da71
-> --- /dev/null
-> +++ b/drivers/pwm/pwm-ocores.c
-> @@ -0,0 +1,233 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * OpenCores PWM Driver
-> + *
-> + * https://opencores.org/projects/ptc
-> + *
-> + * Copyright (C) 2018-2023 StarFive Technology Co., Ltd.
-> + *
-> + * Limitations:
-> + * - The hardware only do inverted polarity.
-> + * - The hardware minimum period / duty_cycle is (1 / pwm_apb clock frequency) ns.
-> + * - The hardware maximum period / duty_cycle is (U32_MAX / pwm_apb clock frequency) ns.
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pwm.h>
-> +#include <linux/reset.h>
-> +#include <linux/slab.h>
-> +
-> +/* OCPWM_CTRL register bits*/
-> +#define REG_OCPWM_EN      BIT(0)
-> +#define REG_OCPWM_ECLK    BIT(1)
-> +#define REG_OCPWM_NEC     BIT(2)
-> +#define REG_OCPWM_OE      BIT(3)
-> +#define REG_OCPWM_SIGNLE  BIT(4)
-> +#define REG_OCPWM_INTE    BIT(5)
-> +#define REG_OCPWM_INT     BIT(6)
-> +#define REG_OCPWM_CNTRRST BIT(7)
-> +#define REG_OCPWM_CAPTE   BIT(8)
-> +
-> +struct ocores_pwm_device {
-> +	struct pwm_chip chip;
-> +	struct clk *clk;
-> +	struct reset_control *rst;
-> +	const struct ocores_pwm_data *data;
-> +	void __iomem *regs;
-> +	u32 clk_rate; /* PWM APB clock frequency */
-> +};
-> +
-> +struct ocores_pwm_data {
-> +	void __iomem *(*get_ch_base)(void __iomem *base, unsigned int channel);
-> +};
-> +
-> +static inline u32 ocores_readl(struct ocores_pwm_device *ddata,
-> +			       unsigned int channel,
-> +			       unsigned int offset)
-> +{
-> +	void __iomem *base = ddata->data->get_ch_base ?
-> +			     ddata->data->get_ch_base(ddata->regs, channel) : ddata->regs;
-> +
-> +	return readl(base + offset);
-> +}
-> +
-> +static inline void ocores_writel(struct ocores_pwm_device *ddata,
-> +				 unsigned int channel,
-> +				 unsigned int offset, u32 val)
-> +{
-> +	void __iomem *base = ddata->data->get_ch_base ?
-> +			     ddata->data->get_ch_base(ddata->regs, channel) : ddata->regs;
-> +
-> +	writel(val, base + offset);
-> +}
-> +
-> +static inline struct ocores_pwm_device *chip_to_ocores(struct pwm_chip *chip)
-> +{
-> +	return container_of(chip, struct ocores_pwm_device, chip);
-> +}
-> +
-> +static void __iomem *starfive_jh71x0_get_ch_base(void __iomem *base,
-> +						 unsigned int channel)
-> +{
-> +	unsigned int offset = (channel > 3 ? 1 << 15 : 0) + (channel & 3) * 0x10;
-> +
-> +	return base + offset;
-> +}
-> +
-> +static int ocores_pwm_get_state(struct pwm_chip *chip,
-> +				struct pwm_device *pwm,
-> +				struct pwm_state *state)
-> +{
-> +	struct ocores_pwm_device *ddata = chip_to_ocores(chip);
-> +	u32 period_data, duty_data, ctrl_data;
-> +
-> +	period_data = ocores_readl(ddata, pwm->hwpwm, 0x8);
-> +	duty_data = ocores_readl(ddata, pwm->hwpwm, 0x4);
-> +	ctrl_data = ocores_readl(ddata, pwm->hwpwm, 0xC);
-> +
-> +	state->period = DIV_ROUND_UP_ULL((u64)period_data * NSEC_PER_SEC, ddata->clk_rate);
-> +	state->duty_cycle = DIV_ROUND_UP_ULL((u64)duty_data * NSEC_PER_SEC, ddata->clk_rate);
-> +	state->polarity = PWM_POLARITY_INVERSED;
-> +	state->enabled = (ctrl_data & REG_OCPWM_EN) ? true : false;
-> +
-> +	return 0;
-> +}
-> +
-> +static int ocores_pwm_apply(struct pwm_chip *chip,
-> +			    struct pwm_device *pwm,
-> +			    const struct pwm_state *state)
-> +{
-> +	struct ocores_pwm_device *ddata = chip_to_ocores(chip);
-> +	u32 ctrl_data = 0;
-> +	u64 period_data, duty_data;
-> +
-> +	if (state->polarity != PWM_POLARITY_INVERSED)
-> +		return -EINVAL;
-> +
-> +	ctrl_data = ocores_readl(ddata, pwm->hwpwm, 0xC);
-> +	ocores_writel(ddata, pwm->hwpwm, 0xC, 0);
-> +
-> +	period_data = DIV_ROUND_DOWN_ULL(state->period * ddata->clk_rate, NSEC_PER_SEC);
-> +	if (period_data <= U32_MAX)
-> +		ocores_writel(ddata, pwm->hwpwm, 0x8, (u32)period_data);
-> +	else
-> +		return -EINVAL;
-> +
-> +	duty_data = DIV_ROUND_DOWN_ULL(state->duty_cycle * ddata->clk_rate, NSEC_PER_SEC);
-> +	if (duty_data <= U32_MAX)
-> +		ocores_writel(ddata, pwm->hwpwm, 0x4, (u32)duty_data);
-> +	else
-> +		return -EINVAL;
-> +
-> +	ocores_writel(ddata, pwm->hwpwm, 0xC, 0);
-> +
-> +	if (state->enabled) {
-> +		ctrl_data = ocores_readl(ddata, pwm->hwpwm, 0xC);
-> +		ocores_writel(ddata, pwm->hwpwm, 0xC, ctrl_data | REG_OCPWM_EN | REG_OCPWM_OE);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct pwm_ops ocores_pwm_ops = {
-> +	.get_state	= ocores_pwm_get_state,
-> +	.apply		= ocores_pwm_apply,
-> +};
-> +
-> +static const struct ocores_pwm_data jh7100_pwm_data = {
-> +	.get_ch_base = starfive_jh71x0_get_ch_base,
-> +};
-> +
-> +static const struct ocores_pwm_data jh7110_pwm_data = {
-> +	.get_ch_base = starfive_jh71x0_get_ch_base,
-> +};
-> +
-> +static const struct of_device_id ocores_pwm_of_match[] = {
-> +	{ .compatible = "opencores,pwm-v1" },
-> +	{ .compatible = "starfive,jh7100-pwm", .data = &jh7100_pwm_data},
-> +	{ .compatible = "starfive,jh7110-pwm", .data = &jh7110_pwm_data},
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, ocores_pwm_of_match);
-> +
-> +static void ocores_reset_control_assert(void *data)
-> +{
-> +	reset_control_assert(data);
-> +}
-> +
-> +static int ocores_pwm_probe(struct platform_device *pdev)
-> +{
-> +	const struct of_device_id *id;
-> +	struct device *dev = &pdev->dev;
-> +	struct ocores_pwm_device *ddata;
-> +	struct pwm_chip *chip;
-> +	int ret;
-> +
-> +	id = of_match_device(ocores_pwm_of_match, dev);
-> +	if (!id)
-> +		return -EINVAL;
-> +
-> +	ddata = devm_kzalloc(dev, sizeof(*ddata), GFP_KERNEL);
-> +	if (!ddata)
-> +		return -ENOMEM;
-> +
-> +	ddata->data = id->data;
-> +	chip = &ddata->chip;
-> +	chip->dev = dev;
-> +	chip->ops = &ocores_pwm_ops;
-> +	chip->npwm = 8;
-> +	chip->of_pwm_n_cells = 3;
-> +
-> +	ddata->regs = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(ddata->regs))
-> +		return dev_err_probe(dev, PTR_ERR(ddata->regs),
-> +				     "Unable to map IO resources\n");
-> +
-> +	ddata->clk = devm_clk_get_enabled(dev, NULL);
-> +	if (IS_ERR(ddata->clk))
-> +		return dev_err_probe(dev, PTR_ERR(ddata->clk),
-> +				     "Unable to get pwm's clock\n");
-> +
-> +	ddata->rst = devm_reset_control_get_optional_exclusive(dev, NULL);
-> +	if (IS_ERR(ddata->rst))
-> +		return dev_err_probe(dev, PTR_ERR(ddata->rst),
-> +				     "Unable to get pwm's reset\n");
-> +
-> +	reset_control_deassert(ddata->rst);
-> +
-> +	ret = devm_add_action_or_reset(dev, ocores_reset_control_assert, ddata->rst);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ddata->clk_rate = clk_get_rate(ddata->clk);
-> +	if (ddata->clk_rate <= 0)
-> +		return dev_err_probe(dev, ddata->clk_rate,
-> +				     "Unable to get clock's rate\n");
-> +
-> +	ret = devm_pwmchip_add(dev, chip);
-> +	if (ret < 0)
-> +		return dev_err_probe(dev, ret, "Could not register PWM chip\n");
-> +
-> +	platform_set_drvdata(pdev, ddata);
-> +
-> +	return ret;
-> +}
-> +
-> +static struct platform_driver ocores_pwm_driver = {
-> +	.probe = ocores_pwm_probe,
-> +	.driver = {
-> +		.name = "ocores-pwm",
-> +		.of_match_table = ocores_pwm_of_match,
-> +	},
-> +};
-> +module_platform_driver(ocores_pwm_driver);
-> +
-> +MODULE_AUTHOR("Jieqin Chen");
-> +MODULE_AUTHOR("Hal Feng <hal.feng@starfivetech.com>");
-> +MODULE_DESCRIPTION("OpenCores PWM PTC driver");
-> +MODULE_LICENSE("GPL");
-> --
-> 2.34.1
-> 
-
-
-Hi Thierry Reding,
-
-Could you please help me review this patch series to see if there is
-anything that needs to be modified? If not, could you help me integrate
-this patch into the main line? Thanks.
-Thanks for taking time to review this patch series.
- 
-Best Regards,
-William
 
