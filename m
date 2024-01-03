@@ -1,104 +1,91 @@
-Return-Path: <linux-kernel+bounces-15003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B2EF8225FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:34:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19F4082260A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:40:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD3861F20EE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:34:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B15CCB22924
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:40:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52B667F2;
-	Wed,  3 Jan 2024 00:34:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="T4vFW9ip"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF538806;
+	Wed,  3 Jan 2024 00:40:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A348562A;
-	Wed,  3 Jan 2024 00:34:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from HP-EliteBook-x360-830-G8-Notebook-PC.. (unknown [10.101.196.174])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 9AC47413B9;
-	Wed,  3 Jan 2024 00:34:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1704242044;
-	bh=bdVOXVR9HgLgK32tp5+AqJGgXa6fNQRmR9sP0YJC1wo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-	b=T4vFW9ipd4QRFCmHAXmnf3xZO6GxdI1lBgC4Xo5Bni4kAzbyu0ytm0VpNmO3WSaaR
-	 5xHN6SQYixmJtyU8WPGXqRdL42n6cetIP/WsP6Odchdfswd/xg9fdgg6291yjIIt6Q
-	 FAH7U/altV3TOrJF9op3cibL6Z48YhNt7L+ycbUeG2avWgc+78/LDr7b/VwwXXQN0e
-	 DDTTD+AHWU+lH2ClFAg0xI3xWMcXACHLqNVIDXJsZmG69qaMz+OQu7pKPDqhLOK0vj
-	 OH2m08quqJgMTYbz5sSFEius7xtxDB+2GkRpTyBt3Dx63pR0l1Bn5dhCD1b9TJuJdr
-	 cEzg6uHQYFcdQ==
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-To: jikos@kernel.org,
-	benjamin.tissoires@redhat.com
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	Douglas Anderson <dianders@chromium.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: i2c-hid: Remove SET_POWER SLEEP on system suspend
-Date: Wed,  3 Jan 2024 08:33:53 +0800
-Message-Id: <20240103003355.747335-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A79862D
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 00:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35ffb5723e9so88671815ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 16:40:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704242405; x=1704847205;
+        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
+         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RJf7vSGa/mloGWPSH35KgZw/pf1sF+YVSpzDDB0QvDE=;
+        b=cFAQyoY3SuMDR5s/0HErIGBGN0lTMHfJnsrX7UITi4Uxa3rp9eolEzuJ/opZoE2lFx
+         YA2g6MW9ADBfm3Jz5JTnJO9IBtXPQnszRUdnLfpNJE3kPSJ4f8MDE/cls2TF749rO3UZ
+         BhUXjDfk9th6BzSqkKGKMsotLq6pIBdKEoFI3ydJu9diZlKVzdJRUjjlS+D0WU1r6zdj
+         riMt6NPO68RRiprEqjO8k4wgf7tZQPL3t1paUGahKJ7CrGbj5jI0SNjFqetqPV63TBL2
+         07vkOkZdgHJvH4fpHIg56w5LKTfXtqX6KteJ3V4TpWHKaj21q+wscRL27iIqrJwWe3rW
+         nj4Q==
+X-Gm-Message-State: AOJu0YymeJnH12NFnbuH7hYYq/FOhtoDeGSAmMWQPWrI8PVo6CXzzu1M
+	xSUJA8Uf3RKgtPfvwui9gAFomdBw55dkHtN1V8p0nVAXUgId
+X-Google-Smtp-Source: AGHT+IFmE5GI0godAPqNQyN2YPspMWWMHHYp0iA22IQDb1vdWvkwnmx2bQyjOI0TqH6so35dd1UY/Pedg5CWPbdkZdiUH4mIgEBa
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1543:b0:35f:ff56:c0fe with SMTP id
+ j3-20020a056e02154300b0035fff56c0femr2296142ilu.1.1704242405290; Tue, 02 Jan
+ 2024 16:40:05 -0800 (PST)
+Date: Tue, 02 Jan 2024 16:40:05 -0800
+In-Reply-To: <000000000000d95cf9060c5038e3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002dbc50060dffdba0@google.com>
+Subject: Re: [syzbot] [hfs?] possible deadlock in hfs_extend_file (2)
+From: syzbot <syzbot+41a88b825a315aac2254@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, eadavis@qq.com, ernesto.mnd.fernandez@gmail.com, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org, 
+	willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There's a Cirque touchpad that wakes system up without anything touched
-the touchpad. The input report is empty when this happens.
-The reason is stated in HID over I2C spec, 7.2.8.2:
-"If the DEVICE wishes to wake the HOST from its low power state, it can
-issue a wake by asserting the interrupt."
+syzbot has bisected this issue to:
 
-This is fine if OS can put system back to suspend by identifying input
-wakeup count stays the same on resume, like Chrome OS Dark Resume [0].
-But for regular distro such policy is lacking.
+commit 54640c7502e5ed41fbf4eedd499e85f9acc9698f
+Author: Ernesto A. Fern=C3=A1ndez <ernesto.mnd.fernandez@gmail.com>
+Date:   Tue Oct 30 22:06:17 2018 +0000
 
-According to commit d9f448e3d71f ("HID: i2c-hid: set power sleep before
-shutdown"), SLEEP is required for shutdown, in addition to that, commit
-67b18dfb8cfc ("HID: i2c-hid: Remove runtime power management") didn't
-notice any power comsumption reduction from SET_POWER SLEEP, so also
-remove that to avoid the device asserting the interrupt.
+    hfs: prevent btree data loss on ENOSPC
 
-[0] https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/power_manager/docs/dark_resume.md
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1121e49ae800=
+00
+start commit:   610a9b8f49fb Linux 6.7-rc8
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D1321e49ae800=
+00
+console output: https://syzkaller.appspot.com/x/log.txt?x=3D1521e49ae80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3D247b5a935d307ee=
+5
+dashboard link: https://syzkaller.appspot.com/bug?extid=3D41a88b825a315aac2=
+254
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1552fe19e8000=
+0
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1419bcade80000
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/hid/i2c-hid/i2c-hid-core.c | 3 ---
- 1 file changed, 3 deletions(-)
+Reported-by: syzbot+41a88b825a315aac2254@syzkaller.appspotmail.com
+Fixes: 54640c7502e5 ("hfs: prevent btree data loss on ENOSPC")
 
-diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-index 2735cd585af0..dd513dc75cb9 100644
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -957,9 +957,6 @@ static int i2c_hid_core_suspend(struct i2c_hid *ihid, bool force_poweroff)
- 	if (ret < 0)
- 		return ret;
- 
--	/* Save some power */
--	i2c_hid_set_power(ihid, I2C_HID_PWR_SLEEP);
--
- 	disable_irq(client->irq);
- 
- 	if (force_poweroff || !device_may_wakeup(&client->dev))
--- 
-2.34.1
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisectio=
+n
 
