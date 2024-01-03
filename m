@@ -1,198 +1,212 @@
-Return-Path: <linux-kernel+bounces-15545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12AB0822DE9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:00:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A4CB822DF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:00:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D25EB2158F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:00:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 681F61F215DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 301281947B;
-	Wed,  3 Jan 2024 13:00:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2919D199B8;
+	Wed,  3 Jan 2024 13:00:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JRN0qJR0"
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="Hf1lP5Nh";
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="4AiBjprU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A5D1944F;
-	Wed,  3 Jan 2024 13:00:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5e734d6cbe4so81648257b3.3;
-        Wed, 03 Jan 2024 05:00:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704286805; x=1704891605; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T7i+8MOEKjuPGnNZAwLyrfk1/htpJtDKIJboRJ8BNRw=;
-        b=JRN0qJR0+he2iO4E+cmj2irMEFVUzfJE+ux7EcxfrlRZCKGfQT71A+uEONYui22I7/
-         tlMjZNWG2+VLDPOnPQTHokhyT4mURZ9aZsA0UXj6KKhz5e2b3klYF0g3nRRDgWoIFjIy
-         8wCl21rMEGZ9KXkQcbDuid+u0lt+vRvka6bqIVtxIBCYbnqwBa58ZvHzGlStHvy5606c
-         LFLLqk2xqFjbZNkrLKAliK3m3XkJTtAk29eg4jr8VuvnC+GTQTWqKP8XEoQjMn2Euh1g
-         ovtyjOVNPR5oCpQwBC/v+UR9sFq0LBHO6NIvPPiDvlXJsUHdKxGeZqWMuOWz6jgzoc4D
-         iSwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704286805; x=1704891605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T7i+8MOEKjuPGnNZAwLyrfk1/htpJtDKIJboRJ8BNRw=;
-        b=Pq09Fxv09Qntl8yyZMc9LE/mGlXz5wqvRfQpXU+bpS/1dRLREi7jxb065f4Zu906Vn
-         GIfgK5vyjs1k6c1X9NshVLQrv2I8zS2rO8lsagt0ZrfgZ42FdA5yafvjvLlc1RHQlQJS
-         4A4+m5jLfR2I3DMPYa08NxhBaagj//OqhrG6uBkNEEKMZNrr7oT//PZQrejaX2XIXqf4
-         9UrcNGuh49GuctnEZpV4gCzahjK1Awui+wNQbe9QaraHxRn98mIpu2grx+y1hqcejIZT
-         pDbV2EkebWYlpbUeG9k6YawpAehHuEdi3qyA0yuNL+kZfKUPpUicELja3J+IhMOYH07i
-         hEKA==
-X-Gm-Message-State: AOJu0YwHyKKDsOvgXyTKHuZSuLXUsM6MewgL4Aob2gExmo1HBXwN+0n4
-	OzVi4p6p02LWKFDtx/DRYOvO/F2+UII46IIvKdk=
-X-Google-Smtp-Source: AGHT+IGJmHL5mhcQjzvp8qz99imIe8rGleTfl85avDtM7nLrtho2mwL2xBJcVqPaQr7D9agYfqaHXi7cXkm96p1JIxo=
-X-Received: by 2002:a81:84ce:0:b0:5de:a99e:17af with SMTP id
- u197-20020a8184ce000000b005dea99e17afmr11538761ywf.3.1704286804769; Wed, 03
- Jan 2024 05:00:04 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D17A19471;
+	Wed,  3 Jan 2024 13:00:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: by nautica.notk.org (Postfix, from userid 108)
+	id 09C89C026; Wed,  3 Jan 2024 14:00:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1704286830; bh=M9MVRJ/IOq68RjnYFcSXCjl3WBemBARgVfqAaYYq2bU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Hf1lP5NhCpbpjvJbYi29b7G+LHrpUL/KnvCIjHjG5Lgxvkicn25xAFIPrdESQN9w4
+	 xDw0Y/OZqEfCEgETP56SNd3g7x0BqY8WnKh1JvAec6xboi82O3A263TR30rPa8eqkD
+	 HQQ2w/+Vtd3xbTjSP9+fPEStUnb3ZilGW+o2ypRNbxEQghMjWVpb5HPq9PK0KmkMj+
+	 sHo/rlOCspeu0ymb3Xc9eULCUjje2jx84j9ZHjZbozZ9Xkr2HWTVBGJjUAubbzld5m
+	 0hYvYzZITVELx0dk9Hplrr2VXB8xZWIkmjJMG9E5UqSoBOuBUbzXB2OB/jXC0WfCX9
+	 3RDT/15Wuxevw==
+X-Spam-Level: 
+Received: from gaia (localhost [127.0.0.1])
+	by nautica.notk.org (Postfix) with ESMTPS id C3C5DC009;
+	Wed,  3 Jan 2024 14:00:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1704286828; bh=M9MVRJ/IOq68RjnYFcSXCjl3WBemBARgVfqAaYYq2bU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=4AiBjprUNXrqU3zwYpywyL3jd+SefRgEQ0LitNyZbaCbkJABDGm+1uVTVbFh7u4Eb
+	 U82ANNe4mKUhzMSta94yKyXND+fzKyvpqFdCLn9a7UjnvEjdop7jxDsasrVnP+qxgi
+	 wZeEpsE4ZCdUj1/HSviuG7djlA7fGo7ODJQKtNfKXSkkSjFUf2QxuzmjQSeUhJQ58P
+	 kKZ2y7CZvt1mOp6hJBUR34+jt64lDp9p2FiUPTlL/yKOslM0yOFoDXfyIdC8kMuUMs
+	 1IIsLCN0iO14LaRP68hQ6P5k46JP32PsH56gy9vyr5FyEDZn2pnuxCIRYku7lF1ywb
+	 6cIfPLs+CCkTw==
+Received: from localhost (gaia [local])
+	by gaia (OpenSMTPD) with ESMTPA id f04d2000;
+	Wed, 3 Jan 2024 13:00:18 +0000 (UTC)
+Date: Wed, 3 Jan 2024 22:00:03 +0900
+From: Dominique Martinet <asmadeus@codewreck.org>
+To: David Howells <dhowells@redhat.com>
+Cc: Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Latchesar Ionkov <lucho@ionkov.net>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>
+Subject: Re: [PATCH v5 40/40] 9p: Use netfslib read/write_iter
+Message-ID: <ZZVaU_vI90WcV_jl@codewreck.org>
+References: <ZZULNQAZ0n0WQv7p@codewreck.org>
+ <20231221132400.1601991-1-dhowells@redhat.com>
+ <20231221132400.1601991-41-dhowells@redhat.com>
+ <355430.1704285574@warthog.procyon.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102091855.70418-1-maimon.sagi@gmail.com> <86fcb951-67e0-4f1d-a441-f3b4bcce8210@app.fastmail.com>
-In-Reply-To: <86fcb951-67e0-4f1d-a441-f3b4bcce8210@app.fastmail.com>
-From: Sagi Maimon <maimon.sagi@gmail.com>
-Date: Wed, 3 Jan 2024 14:59:53 +0200
-Message-ID: <CAMuE1bEN61aFL7dMDqF-v1Htt0K37w7OVwmYNQuPt5QSWUphXQ@mail.gmail.com>
-Subject: Re: [PATCH v5] posix-timers: add multi_clock_gettime system call
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Richard Cochran <richardcochran@gmail.com>, Andy Lutomirski <luto@kernel.org>, datglx@linutronix.de, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Sohil Mehta <sohil.mehta@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Palmer Dabbelt <palmer@sifive.com>, Kees Cook <keescook@chromium.org>, 
-	Alexey Gladkov <legion@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-api@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>, 
-	Netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <355430.1704285574@warthog.procyon.org.uk>
 
-On Tue, Jan 2, 2024 at 12:22=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote=
-:
->
-> On Tue, Jan 2, 2024, at 10:18, Sagi Maimon wrote:
-> > Some user space applications need to read some clocks.
-> > Each read requires moving from user space to kernel space.
-> > The syscall overhead causes unpredictable delay between N clocks reads
-> > Removing this delay causes better synchronization between N clocks.
-> >
-> > Introduce a new system call multi_clock_gettime, which can be used to m=
-easure
-> > the offset between multiple clocks, from variety of types: PHC, virtual=
- PHC
-> > and various system clocks (CLOCK_REALTIME, CLOCK_MONOTONIC, etc).
-> > The offset includes the total time that the driver needs to read the cl=
-ock
-> > timestamp.
-> >
-> > New system call allows the reading of a list of clocks - up to PTP_MAX_=
-CLOCKS.
-> > Supported clocks IDs: PHC, virtual PHC and various system clocks.
-> > Up to PTP_MAX_SAMPLES times (per clock) in a single system call read.
-> > The system call returns n_clocks timestamps for each measurement:
-> > - clock 0 timestamp
-> > - ...
-> > - clock n timestamp
-> >
-> > Signed-off-by: Sagi Maimon <maimon.sagi@gmail.com>
-> > ---
-> >  Changes since version 4:
-> >  - fix error  : 'struct __ptp_multi_clock_get' declared inside paramete=
-r list
-> >    will not be visible outside of this definition or declaration
->
-> I usually put all the changes for previous versions in a
-> list here, it helps reviewers.
->
-Will be done on patch V6.
-> The changes you made for previous versions all look good
-> to me, but I think there is still a few things worth
-> considering. I'll also follow up on the earlier threads.
->
-> > +#define MULTI_PTP_MAX_CLOCKS 32 /* Max number of clocks */
-> > +#define MULTI_PTP_MAX_SAMPLES 32 /* Max allowed offset measurement sam=
-ples. */
-> > +
-> > +struct __ptp_multi_clock_get {
-> > +     unsigned int n_clocks; /* Desired number of clocks. */
-> > +     unsigned int n_samples; /* Desired number of measurements per clo=
-ck. */
-> > +     clockid_t clkid_arr[MULTI_PTP_MAX_CLOCKS]; /* list of clock IDs *=
-/
-> > +     /*
-> > +      * Array of list of n_clocks clocks time samples n_samples times.
-> > +      */
-> > +     struct  __kernel_timespec ts[MULTI_PTP_MAX_SAMPLES][MULTI_PTP_MAX=
-_CLOCKS];
-> > +};
->
-> Since you now access each member individually, I think it
-> makes more sense here to just pass these as four
-> register arguments. It helps with argument introspection,
-> avoids a couple of get_user(), and lets you remove the fixed
-> array dimensions.
->
-I prefer the use of  get_user(), I will use it to remove  the fixed
-array dimensions.
-which will be done on patch V6.
-> > +SYSCALL_DEFINE1(multi_clock_gettime, struct __ptp_multi_clock_get
-> > __user *, ptp_multi_clk_get)
-> > +{
-> > +     const struct k_clock *kc;
-> > +     struct timespec64 *kernel_tp;
-> > +     struct timespec64 *kernel_tp_base;
-> > +     unsigned int n_clocks; /* Desired number of clocks. */
-> > +     unsigned int n_samples; /* Desired number of measurements per clo=
-ck.
-> > */
-> > +     unsigned int i, j;
-> > +     clockid_t clkid_arr[MULTI_PTP_MAX_CLOCKS]; /* list of clock IDs *=
-/
-> > +     int error =3D 0;
-> > +
-> > +     if (copy_from_user(&n_clocks, &ptp_multi_clk_get->n_clocks,
-> > sizeof(n_clocks)))
-> > +             return -EFAULT;
-> > +     if (copy_from_user(&n_samples, &ptp_multi_clk_get->n_samples,
-> > sizeof(n_samples)))
->
-> If these remain as struct members rather than register arguments,
-> you should use get_user() instead of copy_from_user().
->
-Will be done on patch V6
-> > +     kernel_tp_base =3D kmalloc_array(n_clocks * n_samples,
-> > +                                    sizeof(struct timespec64), GFP_KER=
-NEL);
-> > +     if (!kernel_tp_base)
-> > +             return -ENOMEM;
->
-> To be on the safe side regarding possible data leak, maybe use
-> kcalloc() instead of kmalloc_array() here.
->
-Will be done on patch V6.
-> > +     kernel_tp =3D kernel_tp_base;
-> > +     for (j =3D 0; j < n_samples; j++) {
-> > +             for (i =3D 0; i < n_clocks; i++) {
-> > +                     if (put_timespec64(kernel_tp++, (struct __kernel_=
-timespec __user *)
-> > +                                     &ptp_multi_clk_get->ts[j][i])) {
->
-> I think the typecast here can be removed.
->
-You are right, will be fixed on patch V6.
->       Arnd
-Thanks for your Notes.
+David Howells wrote on Wed, Jan 03, 2024 at 12:39:34PM +0000:
+> > p9_client_write return value should always be subreq->len, but I believe
+> > we should use it unless err is set.
+> > (It's also possible for partial writes to happen, e.g. p9_client_write
+> > looped a few times and then failed, at which point the size returned
+> > would be the amount that actually got through -- we probably should do
+> > something with that?)
+> 
+> How about something like:
+> 
+> -	int err;
+> +	int err, len;
+>  
+>  	trace_netfs_sreq(subreq, netfs_sreq_trace_submit);
+> -	p9_client_write(fid, subreq->start, &subreq->io_iter, &err);
+> -	netfs_write_subrequest_terminated(subreq, err < 0 ? err : subreq->len,
+> -					  false);
+> +	len = p9_client_write(fid, subreq->start, &subreq->io_iter, &err);
+> +	netfs_write_subrequest_terminated(subreq, len ?: err, false);
+
+I think that'll be fine; plain write() syscall works like this when an
+error happens after some data has been flushed, and I assume there'll be
+some retry if this happpened on something like a flush dirty and it got
+a partial write reported?
+
+> > > +	if (file) {
+> > > +		fid = file->private_data;
+> > > +		BUG_ON(!fid);
+> > 
+> > This probably should be WARN + return EINVAL like find by inode?
+> > It's certainly a huge problem, but we should avoid BUG if possible...
+> 
+> Sure.  The BUG_ON() was already there, but I can turn it into a WARN+error.
+
+Thanks.
+
+> > nit: not sure what's cleaner?
+> > Since there's a message that makes for a bit awkward if...
+> > 
+> > if (WARN_ONCE(!fid, "folio expected an open fid inode->i_private=%p\n",
+> > 	      rreq->inode->i_private))
+> > 	return -EINVAL;
+> > 
+> > (as a side note, I'm not sure what to make of this i_private pointer
+> > here, but if that'll help you figure something out sure..)
+> 
+> Um.  9p is using i_private.  But perhaps i_ino would be a better choice:
+> 
+> 	if (file) {
+> 		fid = file->private_data;
+> 		if (!fid)
+> 			goto no_fid;
+> 		p9_fid_get(fid);
+> 	} else {
+> 		fid = v9fs_fid_find_inode(rreq->inode, writing, INVALID_UID, true);
+> 		if (!fid)
+> 			goto no_fid;
+> 	}
+> 
+> 	...
+> 
+> no_fid:
+> 	WARN_ONCE(1, "folio expected an open fid inode->i_ino=%lx\n",
+> 		  rreq->inode->i_ino);
+> 	return -EINVAL;
+
+Might be useful to track down if this came frm a file without private
+data or lookup failing, but given this was a bug I guess we can deal
+with that when that happens -- ack.
+
+> > This is as follow on your netfs-lib branch:
+> > -       WARN_ON(rreq->origin == NETFS_READ_FOR_WRITE &&
+> > -                       !(fid->mode & P9_ORDWR));
+> > -
+> > -       p9_fid_get(fid);
+> > +       WARN_ON(rreq->origin == NETFS_READ_FOR_WRITE && !(fid->mode & P9_ORDWR));
+> > 
+> > So the WARN_ON has been reverted back with only indentation changed;
+> > I guess there were patterns that were writing despite the fid not having
+> > been open as RDWR?
+> > Do you still have details about these?
+> 
+> The condition in the WARN_ON() here got changed.  It was:
+> 
+> 	WARN_ON(writing && ...
+> 
+> at one point, but that caused a bunch of incorrect warning to appear because
+> only NETFS_READ_FOR_WRITE requires read-access as well as write-access.  All
+> the others:
+> 
+> 	bool writing = (rreq->origin == NETFS_READ_FOR_WRITE ||
+> 			rreq->origin == NETFS_WRITEBACK ||
+> 			rreq->origin == NETFS_WRITETHROUGH ||
+> 			rreq->origin == NETFS_LAUNDER_WRITE ||
+> 			rreq->origin == NETFS_UNBUFFERED_WRITE ||
+> 			rreq->origin == NETFS_DIO_WRITE);
+> 
+> only require write-access.
+
+Thanks for clarifying
+
+> > If a file has been open without the write bit it might not go through,
+> > and it's incredibly difficult to get such users back to userspace in
+> > async cases (e.g. mmap flushes), so would like to understand that.
+> 
+> The VFS/VM should prevent writing to files that aren't open O_WRONLY or
+> O_RDWR, so I don't think we should be called in otherwise.
+
+Historically this check was more about finding a fid that wasn't opened
+properly than the VFS doing something weird (e.g. by calling mprotect
+after mmap and us missing that -- would need to check if that works
+actually...)
+
+> > > +	return netfs_page_mkwrite(vmf, NULL);
+> > 
+> > (I guess there's no helper that could be used directly in .page_mkwrite
+> > op?)
+> 
+> I could provide a helper that just supplies NULL as the second argument.  I
+> think only 9p will use it, but that's fine.
+
+If we're the only user I guess we shouldn't bother with it at this
+point, we can come back to it if this ever becomes common.
+
+-- 
+Dominique Martinet | Asmadeus
 
