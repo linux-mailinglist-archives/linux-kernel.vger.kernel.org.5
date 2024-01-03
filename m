@@ -1,192 +1,200 @@
-Return-Path: <linux-kernel+bounces-15821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12EC38233DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8650F8233DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:52:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12FC31C23BDE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:52:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41EBD1C23C11
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:52:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3B171C2BE;
-	Wed,  3 Jan 2024 17:52:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A8F11C2B3;
+	Wed,  3 Jan 2024 17:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="uZliAbw1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RJBpSxEA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2054.outbound.protection.outlook.com [40.107.244.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BD581C295;
-	Wed,  3 Jan 2024 17:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X5KKa6J0ctcjtPVxjQj/xDUb32zN7o7dUJScZDZ3lP3Ffx0JHYZEXCjy2B+2nqQiSixHZIlPponY5oV6HPtGTt6izG1g6AL2SLr7sqVGsTdz25SOmn4ePmlSuXDxnYSaVpIDCP0vDP+Nhsi1yN24EbpbkDwUodX4H6Ga61fgd7tH/Dt49XKU8ugkyh/6cfsWYcktsunTWR5JVCjddK74icYv8k+p9Wku5KhguDlkQeEJYR91jritMs7pp2BxXAGT/+MFlzISCKpkS0Y1tWlUsQ1PQYc0sIoxHtSwfsObia/16k8te6iQJ/RMrlhCEqqjDfp808xe69Z7PYhEDYJhBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=suPc+tBWeaNugrLcXXo1ZjAD+XZi7zwZ1E2Uyi3Wo3M=;
- b=C1JB3SzJTfLfS9cWe8SGX334hKVR6mDEq/HR2AmOsEkb0+gRN7hwIp/wzH5121g6oXPOUglLlefEh8FODPl6q1+GU/vNW3keOjgV7korRPv5mV3ViEOBTTGyBxIRFqMICf6PtMbJE+4Q+THtIlrsBl8yILlJilZEQoPS7EFsA45eSF3BR0dzIrWZdtcelX8FSAPChQuTXSM3Qhpf6t3lZgF8Fe72rhaOLm3VdRn8gwv8U0Sg/w4q8Fn0t7MZbAb1COnq0G2HUwyWYemBLTDSu9RG6icztuOk6EinAnCedNnJerZhLsOU+kYOxAIJW0+Pcd9rwdX0LZFjfMaiANlNIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=suPc+tBWeaNugrLcXXo1ZjAD+XZi7zwZ1E2Uyi3Wo3M=;
- b=uZliAbw1szg8WDSrZIG2oTfW4ALuGDYcni1R5kboufIyFXFRE4jfEtLPauBoriqlfNFTFlVGbevCTthiZllek/FSAp+P0GSLFjFEguHdBiF3tt+kyNsknh/etDz09mUe0vUeNahWGCYjOY++8vOQ6BwVm8o82HSRlrCxRi97gmbTOQqc/lx9lBo08CDaRHEeV6lm6KFpwPaL00y4hg2nlPtZJAc4FiXqzfAXlRTqKJngtp4cCdkBAQEyoOMxf8uvYOzl/x32LslsI7oyyHXOhNDl5MCubLqAQ+n1ykBhcpf01e8t1NhFvMiT4pG8B8sXAKnJk1pz2sx/KV83Noohyw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by LV3PR12MB9355.namprd12.prod.outlook.com (2603:10b6:408:216::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Wed, 3 Jan
- 2024 17:52:02 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7135.023; Wed, 3 Jan 2024
- 17:52:02 +0000
-Date: Wed, 3 Jan 2024 13:52:02 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Nicolin Chen <nicolinc@nvidia.com>
-Cc: Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
-	"joro@8bytes.org" <joro@8bytes.org>,
-	"alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-	"robin.murphy@arm.com" <robin.murphy@arm.com>,
-	"baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-	"cohuck@redhat.com" <cohuck@redhat.com>,
-	"eric.auger@redhat.com" <eric.auger@redhat.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-	"chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-	"yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-	"peterx@redhat.com" <peterx@redhat.com>,
-	"jasowang@redhat.com" <jasowang@redhat.com>,
-	"shameerali.kolothum.thodi@huawei.com" <shameerali.kolothum.thodi@huawei.com>,
-	"lulu@redhat.com" <lulu@redhat.com>,
-	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-	"joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-	"Zeng, Xin" <xin.zeng@intel.com>,
-	"Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH v7 1/3] iommufd: Add data structure for Intel VT-d
- stage-1 cache invalidation
-Message-ID: <20240103175202.GT50406@nvidia.com>
-References: <ZXu5whlIGfiq16wF@Asurada-Nvidia>
- <BN9PR11MB52766D7F774510E0181CC89B8C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZXvI2IiXwwuHRE8V@Asurada-Nvidia>
- <7c398efc-8a2f-479d-bcff-ded8cc1ef3d0@intel.com>
- <20240102233849.GK50406@nvidia.com>
- <c59a780d-4030-4815-a34b-fb2e2f902ab3@intel.com>
- <20240103160108.GP50406@nvidia.com>
- <ZZWP7iBqUtbTRb3s@Asurada-Nvidia>
- <20240103165848.GR50406@nvidia.com>
- <ZZWUD+lCw3mRc/15@Asurada-Nvidia>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZWUD+lCw3mRc/15@Asurada-Nvidia>
-X-ClientProxiedBy: MN2PR18CA0021.namprd18.prod.outlook.com
- (2603:10b6:208:23c::26) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A911C680;
+	Wed,  3 Jan 2024 17:52:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d3f3ee00a2so40042935ad.3;
+        Wed, 03 Jan 2024 09:52:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704304340; x=1704909140; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c1u+y8thQpwuQt5r3QOSdLTyH/3CCtpM+csiirjZfe8=;
+        b=RJBpSxEAwP7g/gMhc8FryRXDTGR3Ay9QT0Et9M9Rn6g7wTpKLAvTGYWFn+LjzLinBz
+         9RK3/C27suYj1Ir0G9/hnEaymjrHwqaEZ63I2FGgjvz6a3/wVryzO7+jFjpjGGvZK23C
+         zWgrsRrVgMojtnM2By9KE7tsD5ClO3pTCHYIVmDbf+ewPDbYe8GOQM46uwIqn9oROpX8
+         5MgOaheFc6cyTkovmnGMrgdNwX2Ox9ZFuRGUG9hOs9U/X5LQaA6d+OmbbCvw/upM9TC7
+         8caClk6nBaksf4XYTKQj+bJOOYzQUEdUQm72eQn8l2dfyE0Une4or7O0NsqiQ+Ig08Gi
+         VvsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704304340; x=1704909140;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=c1u+y8thQpwuQt5r3QOSdLTyH/3CCtpM+csiirjZfe8=;
+        b=AThDDugukD92LawujO9Pu3bwvWyh7d9QoYEOEVRbtM8B5lgWHAkZvYtx3cse+Q/SUy
+         8pu6pF8V41CXqtF08wY89VL1S29u1KxPRoWklCqn37qogWFmjAj58b30JD4NlF1YNGLo
+         OVxZtSOMK6q0Jwlqe73qBVyyIwniZ51WIpwSAO8DMzB0Ra3enCV2SDb4mN8o4z5bx+4J
+         HIR5zIUq5tyijqEGzdP3OA4tEAAqUqjDVUEmkxdW6av55+M5526WlR6GGki7yLf+YwG2
+         tRrDjQq3BshoeF0ApmPsJmuVpDjL4Y4YVLodE9ppeyynCmj0Nq0GdOY9V0471PluYTNk
+         IVDw==
+X-Gm-Message-State: AOJu0YxMHuXdl6kVBfJO3/ErRHAmzG3uD6/JsdDvZeryAhbnDS43KfM/
+	gDUaOppJAjq5+A9hBAneH2w=
+X-Google-Smtp-Source: AGHT+IGPI4IYkJpmKzd/vlE3pMbbzTO/+YgqjMtRcr9CXG2OJtYN798ILdz85NK5WgyY8279XJidWg==
+X-Received: by 2002:a17:902:d545:b0:1d4:a81b:9cc with SMTP id z5-20020a170902d54500b001d4a81b09ccmr4067078plf.90.1704304339755;
+        Wed, 03 Jan 2024 09:52:19 -0800 (PST)
+Received: from localhost ([98.97.37.198])
+        by smtp.gmail.com with ESMTPSA id z21-20020a1709028f9500b001d46d9953a3sm15702643plo.241.2024.01.03.09.52.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 09:52:18 -0800 (PST)
+Date: Wed, 03 Jan 2024 09:52:17 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Barret Rhoden <brho@google.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>
+Cc: mattbobrowski@google.com, 
+ bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+Message-ID: <65959ed1b9e86_2384720818@john.notmuch>
+In-Reply-To: <20240103153307.553838-3-brho@google.com>
+References: <20240103153307.553838-1-brho@google.com>
+ <20240103153307.553838-3-brho@google.com>
+Subject: RE: [PATCH bpf-next 2/2] selftests/bpf: add inline assembly helpers
+ to access array elements
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|LV3PR12MB9355:EE_
-X-MS-Office365-Filtering-Correlation-Id: ececa460-de5d-4585-38db-08dc0c84b111
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	+3c2LA8o8wbTkXBW8S7ody/4kdrn1d9JZk5PakzPBv8l6koWxCCDN0rEuylcbD9+FrGJ7QTc3ZWQTt6oPqboSVRDsiWV//h/wHT31N4pEeHtf5BH/sqntduXLMLewp/7MlDopK/PbEV2KJ/uJyNvo1j2O0gEH5lPRagKoJYNP96Hrgv5Im6sP6bn3Q/xrndopyTDuuVZiPhxMaeyx2vuDdrsFyv7ChKk+NhsRm7w9dYFwhdAIIa2guRZU4Muvz8AR4ULFuVaLckEuiNhwE5LvCVn23QNBzc9sQiBLcZlcse53hCZLLFc0jUT8+bWoU6PrCyusmpJWG54qkpgqze1Es7wQRiBHYZULicxjHrTDC3cdBCgcwA9Te3ZhRx8O1Q2Rm95w7qUfu2QDDZO/VIppUZDUF4VvGCAFm0rCe/JG7GEJuDCcjC+BftdpdKo12ooqY2W2eDOSKzvIgqBns96JMlBT/6mEKaPHskVbfEq2ssPIaL9Ur+UV8qmoy/LmIwkRCGC8FXPRx5qI9loLIBEqXBV++iKW0hDIUUVka6BHc94dZ84GzftxiJDNFZomNlS
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(346002)(39860400002)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(4326008)(66476007)(66946007)(66556008)(6862004)(6486002)(8676002)(54906003)(6636002)(478600001)(316002)(8936002)(37006003)(83380400001)(6506007)(6512007)(1076003)(26005)(2616005)(7416002)(5660300002)(2906002)(41300700001)(33656002)(36756003)(38100700002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?OZPLm9c/cLv964gmLrzEONBk2+JhCey2sBCNGeqxny7IE3PovwEUgOQwCJMk?=
- =?us-ascii?Q?zTnCVxCtuj3aIlTcMoxMTD6LruweyQJAQoxn37B8FuCWgmj+A6DdPHn18Ug5?=
- =?us-ascii?Q?QUaPbWEN5d2UmR4lgGW+ZJAimWdLqkA9Ikw1H+TdbePR3lkkuj6/5UKkBPP6?=
- =?us-ascii?Q?qaV3wT3XcMmNi2iWzOyRB6Rq0vKd0S4aUEha7CwoH1iCrNrfWj1dpNCMMdwU?=
- =?us-ascii?Q?osZgl+2a1vaxNq6cUJsvySmZWw9jzwUBsaNd4H0xoIDFUhKpGb6p7mHDqogl?=
- =?us-ascii?Q?bd6AlOL8yqoVMwD/iqJTbuXw1IUbMFzpfUU1zH48N7Xbyd6RbW80Qs1zwjXb?=
- =?us-ascii?Q?yVE5YMzACS2Ax7HhnWWtSdP3vyv6k7oXvynOMGTYvnqzAylOVkKub66tAwGl?=
- =?us-ascii?Q?2PFgJXtZkpAhGp0ckH43lEdYUegRwNp5yEFdX8TzqQJJWUF1zLavFaGZuyAF?=
- =?us-ascii?Q?lBmQeFygD9UY5G6B/6eVgrj244st4C3lj0flg4SLjSHgCaV9EYCNuQzVsDNV?=
- =?us-ascii?Q?W5JBiYLSsUKh/jQo0RtEQMFiOZwUGhiiVUUQu4pUYT08xwCngoiukVignUDr?=
- =?us-ascii?Q?2ksAGVUhamjWDkewdO2nuO3vOUIrNNd+3AMHAqPMEPIb7F8L/YBwUUw4wIj0?=
- =?us-ascii?Q?kf+iNbN9xHNZRef1MPjhvFl4nLyVl7yovwHPdUoR3s0epRg5YT+f5GtA84fW?=
- =?us-ascii?Q?kJ1igOwMmyNxO7j0pMZ/Le6uI1VoX1m389E8InlsjBj5vi5PlNqXseopXWYb?=
- =?us-ascii?Q?I43P+LkKrPcK+UxF1K1vE+AJ16ijbvCjMKrwgjCuXkL7ILdmgwIt7LTnfLfT?=
- =?us-ascii?Q?EYKAtf/vCMbsLR79oVe5iveXNR2Rlh6IPta4m+izFMy4k/pD/4ykI5SvwhQU?=
- =?us-ascii?Q?CgRUnHojcIgYzBV04hv6E4OtbmBh6epkA/3IT2PzBtX+Wr5FEjTGaafun5VR?=
- =?us-ascii?Q?QunUw2cUcrpdX/cZxkp/hcPhFdIQZQDiE5bjOCVOwZ4fXRLOfaFtAHPKVGwb?=
- =?us-ascii?Q?Pe9aKnpD60vs/02MG+04WAEdrKmVAcwzI8FKnWQq6oNETla4uCmR7Ia71mYH?=
- =?us-ascii?Q?Rf/Dtp8e9X5V2TjJ8ht5zrCfzTSLyMDxiKCeh7TsyzTCb/ePwGhQyp/S+SuA?=
- =?us-ascii?Q?oINth03uSSlp3DOdBwqRCoh38aTVE/3zNiBUk7bV7bnvPyRQlvlaRjegq6o/?=
- =?us-ascii?Q?AWtiM3194jl2jt4Gxoruzx7lRh0bJjSzE0Ev3YRIb/RoXI/zf7Djm/lI9mux?=
- =?us-ascii?Q?+5VWG1Rlba+KLcB0AmhlIgzr7Qo/lSxRUryWQwLIoi0pN193v0zQ8EOrAI8h?=
- =?us-ascii?Q?hUrico2uj7T59jkn9yyOPUTMDZwVjL9Nl1u1No597r2/ZcPIWcyX/KHr6Bvi?=
- =?us-ascii?Q?dfVp9OBmBofevxPzEtelarMXxUQoNvxAPyNavUIHptzEZSr9UGeIZCZtebxG?=
- =?us-ascii?Q?7vQKhcO6fgeY2r2sUbQUhAE43Tq1+wiXn3ym/TcaDYHXWvZvbGEdoCcF15T4?=
- =?us-ascii?Q?8hvUE7PAS/Bc5Srqu8ht7u8gt1YM6VCOFSAeDhVTgin7E1vjFYuSQGnj/ywz?=
- =?us-ascii?Q?NuUslN+Pz2iBtQNPi3Rc6XQy+3Z2mmoUmeuuJ1rl?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ececa460-de5d-4585-38db-08dc0c84b111
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2024 17:52:02.7874
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jFoPtjlpt7n9Pc2gefnnXgoUHHIWZBMlp7aHpVXJMKoAg4YVzZoYzItdbXU0hmBH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9355
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 03, 2024 at 09:06:23AM -0800, Nicolin Chen wrote:
-> On Wed, Jan 03, 2024 at 12:58:48PM -0400, Jason Gunthorpe wrote:
-> > On Wed, Jan 03, 2024 at 08:48:46AM -0800, Nicolin Chen wrote:
-> > > > You can pass the ctx to the invalidate op, it is already implied
-> > > > because the passed iommu_domain is linked to a single iommufd ctx.
-> > > 
-> > > The device virtual id lookup API needs something similar, yet it
-> > > likely needs a viommu pointer (or its id) instead? As the table
-> > > is attached to a viommu while an ictx can have multiple viommus,
-> > > right?
-> > 
-> > Yes, when we get to an API for that it will have to be some op
-> > 'invalidate_viommu(..)' and it can get the necessary pointers.
+Barret Rhoden wrote:
+> When accessing an array, even if you insert your own bounds check,
+> sometimes the compiler will remove the check, or modify it such that the
+> verifier no longer knows your access is within bounds.
 > 
-> OK! I will try that first.
+> The compiler is even free to make a copy of a register, check the copy,
+> and use the original to access the array.  The verifier knows the *copy*
+> is within bounds, but not the original register!
 > 
-> > The viommu object will have to be some driver object like the
-> > iommu_domain.
+> Signed-off-by: Barret Rhoden <brho@google.com>
+> ---
+>  tools/testing/selftests/bpf/Makefile          |   2 +-
+>  .../bpf/prog_tests/test_array_elem.c          | 112 ++++++++++
+>  .../selftests/bpf/progs/array_elem_test.c     | 195 ++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/bpf_misc.h  |  43 ++++
+>  4 files changed, 351 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_array_elem.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/array_elem_test.c
 > 
-> I drafted something like this, linking it to struct iommu_device:
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 617ae55c3bb5..651d4663cc78 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -34,7 +34,7 @@ LIBELF_CFLAGS	:= $(shell $(PKG_CONFIG) libelf --cflags 2>/dev/null)
+>  LIBELF_LIBS	:= $(shell $(PKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
+>  
+>  CFLAGS += -g $(OPT_FLAGS) -rdynamic					\
+> -	  -Wall -Werror 						\
+> +	  -dicks -Wall -Werror 						\
+>  	  $(GENFLAGS) $(SAN_CFLAGS) $(LIBELF_CFLAGS)			\
+>  	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
+>  	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_array_elem.c b/tools/testing/selftests/bpf/prog_tests/test_array_elem.c
+> new file mode 100644
+> index 000000000000..c953636f07c9
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_array_elem.c
+> @@ -0,0 +1,112 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2024 Google LLC. */
+> +#include <test_progs.h>
+> +#include "array_elem_test.skel.h"
+> +
+> +#define NR_MAP_ELEMS 100
+
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+> index 2fd59970c43a..002bab44cde2 100644
+> --- a/tools/testing/selftests/bpf/progs/bpf_misc.h
+> +++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+> @@ -135,4 +135,47 @@
+>  /* make it look to compiler like value is read and written */
+>  #define __sink(expr) asm volatile("" : "+g"(expr))
+>  
+> +/*
+> + * Access an array element within a bound, such that the verifier knows the
+> + * access is safe.
+> + *
+> + * This macro asm is the equivalent of:
+> + *
+> + *	if (!arr)
+> + *		return NULL;
+> + *	if (idx >= arr_sz)
+> + *		return NULL;
+> + *	return &arr[idx];
+> + *
+> + * The index (___idx below) needs to be a u64, at least for certain versions of
+> + * the BPF ISA, since there aren't u32 conditional jumps.
+> + */
+
+This is nice, but in practice what we've been doing is making
+our maps power of 2 and then just masking them as needed. I think
+this is more efficient if you care about performance.
+
+FWIW I'm not opposed to having this though.
+
+> +#define bpf_array_elem(arr, arr_sz, idx) ({				\
+> +	typeof(&(arr)[0]) ___arr = arr;					\
+> +	__u64 ___idx = idx;						\
+> +	if (___arr) {							\
+> +		asm volatile("if %[__idx] >= %[__bound] goto 1f;	\
+> +			      %[__idx] *= %[__size];		\
+> +			      %[__arr] += %[__idx];		\
+> +			      goto 2f;				\
+
++1 for using asm goto :)
+
+> +			      1:;				\
+> +			      %[__arr] = 0;			\
+> +			      2:				\
+> +			      "						\
+> +			     : [__arr]"+r"(___arr), [__idx]"+r"(___idx)	\
+> +			     : [__bound]"r"((arr_sz)),		        \
+> +			       [__size]"i"(sizeof(typeof((arr)[0])))	\
+> +			     : "cc");					\
+> +	}								\
+> +	___arr;								\
+> +})
+> +
+> +/*
+> + * Convenience wrapper for bpf_array_elem(), where we compute the size of the
+> + * array.  Be sure to use an actual array, and not a pointer, just like with the
+> + * ARRAY_SIZE macro.
+> + */
+> +#define bpf_array_sz_elem(arr, idx) \
+> +	bpf_array_elem(arr, sizeof(arr) / sizeof((arr)[0]), idx)
+> +
+>  #endif
+> -- 
+> 2.43.0.472.g3155946c3a-goog
 > 
-> +struct iommufd_viommu {
-> +       struct iommufd_object obj;
-> +       struct iommufd_ctx *ictx;
-> +       struct iommu_device *iommu_dev;
-> +       struct iommufd_hwpt_paging *hwpt;
-> +       /* array of struct iommufd_device, indexed by device virtual id */
-> +       struct xarray device_ids;
-> +};
-
-The driver would have to create it and there would be some driver
-specific enclosing struct to go with it
-
-Perhaps device_ids goes in the driver specific struct, I don't know.
-
-Not sure it should have hwpt at all, probably vmid should come from
-the driver specific struct in some driver specific way
-
-Jason
+> 
 
