@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-15103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBDAA822744
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:58:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20002822746
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:58:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD1CE284BE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:58:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B27EF1F22A01
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:58:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AAC34A31;
-	Wed,  3 Jan 2024 02:58:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D7016406;
+	Wed,  3 Jan 2024 02:58:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z8jxNEjL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZOic/KjS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59ECA3D6A;
-	Wed,  3 Jan 2024 02:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC064A3B;
+	Wed,  3 Jan 2024 02:58:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-2046b2cd2d3so6655698fac.0;
-        Tue, 02 Jan 2024 18:58:17 -0800 (PST)
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5cdfa676fa3so35930a12.1;
+        Tue, 02 Jan 2024 18:58:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704250696; x=1704855496; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704250703; x=1704855503; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NIIzA7fbS8s/FhcBsRrFPB1nSchgGWmbbp2yPMvhK/E=;
-        b=Z8jxNEjLZb3IUGGLhfOnGxAi/J6EAdWcyPV2U8lkmWauTyM9C4fkcD5Ol3B7Ez4Pai
-         Dhe3G9EYRPFARHzP0aG6RZANTMMQQMTzqwu96u9of3BdDgVGcmFA80euxjuiTw2zDGwE
-         Of9XANPiJyiCJ2R2yWWKbsfIFO9LpFSSh1ijtxTm06uBpBWtvoU0AYNRrMXsSdTsJm9y
-         EdY+zKLEXkVl9XVZDjt5oQUJYVH7vfb2WiGsHId/SNJQ61Jiub1feldW2FsqYWk5R19+
-         AwyUbxT5tTxBaK/xMgXGWY648pFI0/OPBjk0vHE5i+25u0cDYE1AXujyN3xLxhti0e+Y
-         gYvw==
+        bh=Ro8Y0j0Jt26z5Mz6Dk1T+PNwiPxDyxcm45d9joAfXn8=;
+        b=ZOic/KjSNCc7P18PRT39Lc29QHs4x43NpAsrOCUVt7q6t5OfJskYU+DFIaIL5Yguir
+         EW+nYFoSRIAWI6JrtQ9NtU+H9Py2JOXkKMN/6zyE2QyP9pX+AHhX1PNbhhs5+3cW7lyM
+         VE0UOunB/JlQi/5MAkNwGlM4NK2lRYDid/+sgk0EyzHoPkyGDq5rinKWiGj5PtCz/dQW
+         zQEVggwXYUnoIC2KHoEldrHvWcgwLEdzuiDAvGYyYlZa2kjAuNRY0+6jIyQUPKgoSIHh
+         smmZioJhqYzgmOkJ+fYZ3uTSdq/oSEhNLnjp+HAmFKGowg8CESeVJRqjMEEkWbO3ttDS
+         mtsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704250696; x=1704855496;
+        d=1e100.net; s=20230601; t=1704250703; x=1704855503;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NIIzA7fbS8s/FhcBsRrFPB1nSchgGWmbbp2yPMvhK/E=;
-        b=qQyQWLdieq5VyZKGk0iZwntnLf7oICKmbzt2LYGY8MswHEE5oq6RstYoPEoJIxl3P0
-         O00X/5PTRLy/w3BPyReUPnCnSHJgwNCEJS8s273iqqdpbN944uUT0D/0Vt+q/S5+x3tn
-         4glYNTkBatcutZ1CdpJnwurorhQiMo+z5OazXGj/sPre/tBlmdmk/5KFe8wDphER9VgK
-         iueY+253UQpVZMsmcCv+pe9bg4ha7hbnDecxlDpVC4Td13+kML/be2jfzj6wAk4eQNMe
-         UM49OMGS4JFGls77MugGbZvFcXMMP/tfxiyp7T2Fm6hA0I48f4IYuKogaxmkUH+YGB/q
-         RjNQ==
-X-Gm-Message-State: AOJu0Yws1La4jDqdnAxzY7WaQMqK0ngVSyzx+08X/TJ6k8Oz2MTL9OzC
-	ShpbFuzctViXWwUE8VWZgUg=
-X-Google-Smtp-Source: AGHT+IH4gkLqk3A49fXuIeNbtthqeFpcn7JnphMh82PHSJ+6uaZVY858IfbtgwvP6EPPGlBkrzHNJw==
-X-Received: by 2002:a05:6870:ad0f:b0:204:9c06:fa91 with SMTP id nt15-20020a056870ad0f00b002049c06fa91mr19005485oab.110.1704250696495;
-        Tue, 02 Jan 2024 18:58:16 -0800 (PST)
+        bh=Ro8Y0j0Jt26z5Mz6Dk1T+PNwiPxDyxcm45d9joAfXn8=;
+        b=l9czeXcaWuL2tpvXHDixxlxY+f1s9nIiaf1UtowyMaen2qEHjSyqMW6sTJVJn1b66B
+         icG4xDxH4i4MwEj9sbAteDmyn06HRInsUPbcOdmn7T70YyF5/xlXXRGlblXRLnPKcqdj
+         6aGrtn8P7Cw2HHC7xdR4GjccM7qPmYAB3mYmZQMBCThx4A5s3kiAj2qSrk1npGeBbW14
+         4581qrJNyNQrx/hE9gyhWH33oEKtRg/fCCY+kY5egV3tNM9hqevrQIvwt6kT+B+cOokG
+         OhKPPPk7ssiIFNGqhetqLn3L8/2xyTwWkcRngQHVfg9QiWUH0UqaO1X/C4fiiNshohjw
+         QH8w==
+X-Gm-Message-State: AOJu0YxpmnDG26qusKeblCBMfRqvVRTjtUeZjYOfC/HR2sU7S2pO6qtC
+	rF5itL7D1ZG7cu3HmzpUABA=
+X-Google-Smtp-Source: AGHT+IHg0kL0VkhfiKjZqGlDkvzVw6ytZtdeJvrtTSssilg7C2zxj//va2NtexTtk2eArS6S4PPYUQ==
+X-Received: by 2002:a05:6a20:2443:b0:196:c543:abaf with SMTP id t3-20020a056a20244300b00196c543abafmr513723pzc.38.1704250702826;
+        Tue, 02 Jan 2024 18:58:22 -0800 (PST)
 Received: from barry-desktop.hub ([2407:7000:8942:5500:a7d6:f37a:9130:cd96])
-        by smtp.gmail.com with ESMTPSA id d6-20020a63fd06000000b005cd8ada89e5sm21168572pgh.70.2024.01.02.18.58.10
+        by smtp.gmail.com with ESMTPSA id d6-20020a63fd06000000b005cd8ada89e5sm21168572pgh.70.2024.01.02.18.58.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 18:58:16 -0800 (PST)
+        Tue, 02 Jan 2024 18:58:22 -0800 (PST)
 From: Barry Song <21cnbao@gmail.com>
 To: herbert@gondor.apana.org.au,
 	davem@davemloft.net,
@@ -74,12 +74,13 @@ To: herbert@gondor.apana.org.au,
 Cc: linux-kernel@vger.kernel.org,
 	linux-crypto@vger.kernel.org,
 	Barry Song <v-songbaohua@oppo.com>
-Subject: [PATCH RFC 1/2] crypto: introduce acomp_is_async to expose if a acomp has a scomp backend
-Date: Wed,  3 Jan 2024 15:57:57 +1300
-Message-Id: <20240103025759.523120-1-21cnbao@gmail.com>
+Subject: [PATCH RFC 2/2] mm/zswap: remove the memcpy if acomp is not asynchronous
+Date: Wed,  3 Jan 2024 15:57:58 +1300
+Message-Id: <20240103025759.523120-2-21cnbao@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <ZY1EnEefZsRTGYnP@gondor.apana.org.au>
+In-Reply-To: <20240103025759.523120-1-21cnbao@gmail.com>
 References: <ZY1EnEefZsRTGYnP@gondor.apana.org.au>
+ <20240103025759.523120-1-21cnbao@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,59 +91,53 @@ Content-Transfer-Encoding: 8bit
 
 From: Barry Song <v-songbaohua@oppo.com>
 
-Almost all CPU-based compressors/decompressors are actually synchronous
-though they support acomp APIs. While some chips have hardware-based
-accelerators to offload CPU's work such as hisilicon and intel/qat/,
-their drivers are working in async mode.
-Letting acomp's users know exactly if the acomp is really async will
-help users know if the compression and decompression procedure can
-sleep and make their decisions accordingly.
+Most compressors are actually CPU-based, they won't sleep during
+decompression. we should be able to remove the redundant memcpy
+for them.
 
 Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 ---
- crypto/acompress.c         | 8 ++++++++
- include/crypto/acompress.h | 9 +++++++++
- 2 files changed, 17 insertions(+)
+ mm/zswap.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/crypto/acompress.c b/crypto/acompress.c
-index 1c682810a484..99118e879a4a 100644
---- a/crypto/acompress.c
-+++ b/crypto/acompress.c
-@@ -152,6 +152,14 @@ struct crypto_acomp *crypto_alloc_acomp_node(const char *alg_name, u32 type,
+diff --git a/mm/zswap.c b/mm/zswap.c
+index ca25b676048e..36898614ebcc 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -168,6 +168,7 @@ struct crypto_acomp_ctx {
+ 	struct crypto_wait wait;
+ 	u8 *buffer;
+ 	struct mutex mutex;
++	bool is_async; /* if acomp can sleep */
+ };
+ 
+ /*
+@@ -716,6 +717,7 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
+ 		goto acomp_fail;
+ 	}
+ 	acomp_ctx->acomp = acomp;
++	acomp_ctx->is_async = acomp_is_async(acomp);
+ 
+ 	req = acomp_request_alloc(acomp_ctx->acomp);
+ 	if (!req) {
+@@ -1370,7 +1372,7 @@ static void __zswap_load(struct zswap_entry *entry, struct page *page)
+ 	mutex_lock(&acomp_ctx->mutex);
+ 
+ 	src = zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
+-	if (!zpool_can_sleep_mapped(zpool)) {
++	if (acomp_ctx->is_async && !zpool_can_sleep_mapped(zpool)) {
+ 		memcpy(acomp_ctx->buffer, src, entry->length);
+ 		src = acomp_ctx->buffer;
+ 		zpool_unmap_handle(zpool, entry->handle);
+@@ -1384,7 +1386,7 @@ static void __zswap_load(struct zswap_entry *entry, struct page *page)
+ 	BUG_ON(acomp_ctx->req->dlen != PAGE_SIZE);
+ 	mutex_unlock(&acomp_ctx->mutex);
+ 
+-	if (zpool_can_sleep_mapped(zpool))
++	if (!acomp_ctx->is_async || zpool_can_sleep_mapped(zpool))
+ 		zpool_unmap_handle(zpool, entry->handle);
  }
- EXPORT_SYMBOL_GPL(crypto_alloc_acomp_node);
  
-+bool acomp_is_async(struct crypto_acomp *acomp)
-+{
-+	struct crypto_tfm *tfm = crypto_acomp_tfm(acomp);
-+
-+	return tfm->__crt_alg->cra_type == &crypto_acomp_type;
-+}
-+EXPORT_SYMBOL_GPL(acomp_is_async);
-+
- struct acomp_req *acomp_request_alloc(struct crypto_acomp *acomp)
- {
- 	struct crypto_tfm *tfm = crypto_acomp_tfm(acomp);
-diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
-index 574cffc90730..5831080479e9 100644
---- a/include/crypto/acompress.h
-+++ b/include/crypto/acompress.h
-@@ -195,6 +195,15 @@ static inline int crypto_has_acomp(const char *alg_name, u32 type, u32 mask)
-  */
- struct acomp_req *acomp_request_alloc(struct crypto_acomp *tfm);
- 
-+/**
-+ * acomp_is_async() -- check if an acomp is asynchronous(can sleep)
-+ *
-+ * @tfm:	ACOMPRESS tfm handle allocated with crypto_alloc_acomp()
-+ *
-+ * Return:	true if the acomp is asynchronous, otherwise, false
-+ */
-+bool acomp_is_async(struct crypto_acomp *tfm);
-+
- /**
-  * acomp_request_free() -- zeroize and free asynchronous (de)compression
-  *			   request as well as the output buffer if allocated
 -- 
 2.34.1
 
