@@ -1,576 +1,139 @@
-Return-Path: <linux-kernel+bounces-15978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 392EA823683
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:23:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7ECF823687
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:24:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CEDEB22F83
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:23:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65496286152
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 513951D556;
-	Wed,  3 Jan 2024 20:23:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391951DA39;
+	Wed,  3 Jan 2024 20:23:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b="gm00G3eX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BLH2wcCX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eggs.gnu.org (eggs.gnu.org [209.51.188.92])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBB461EB4B;
-	Wed,  3 Jan 2024 20:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnu.org
-Received: from fencepost.gnu.org ([2001:470:142:3::e])
-	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.90_1)
-	(envelope-from <othacehe@gnu.org>)
-	id 1rL7lU-0005XD-Td; Wed, 03 Jan 2024 15:23:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
-	s=fencepost-gnu-org; h=MIME-Version:References:In-Reply-To:Date:Subject:To:
-	From; bh=CjQ24EM2gdfZePXkLIapIOlJ1Qul/W52E/oOdcOti1Q=; b=gm00G3eXup6xizJPeb5W
-	S0v7FakB5+8BmB553Rtbym2l7r57Pgm3y9rNSsuB1ApXZroFnGrINYrb0VRNEPKo7Ak1h+QRWs6lf
-	T86JGm9eeWy5nj0uN/dJFFQbnZkrnnHdbrHC8Lp98S9HX+T0J2EVBZMakK0TsxWeOepyr0LnZUU2t
-	2NrUpZ7S7NtCK6fkZuroJVZpM2IXl85HcCdERPa7j94Mg0XOYzcObrrUyeU4MWJHtOdohm4bsR3OF
-	4vqmhQu+DCu0yrlg7wQqL05wDT9EO9H/jgk6RoGra6d2bOZcSSK1EaITZVHDgRmZkm8Si/TlTfN4v
-	muh4AC9HFoES9g==;
-From: Mathieu Othacehe <othacehe@gnu.org>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Li Yang <leoyang.li@nxp.com>,
-	Stefan Wahren <wahrenst@gmx.net>
-Cc: devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Mathieu Othacehe <othacehe@gnu.org>
-Subject: [PATCH v6 2/2] arm64: dts: imx93-var-som: Add Variscite VAR-SOM-MX93
-Date: Wed,  3 Jan 2024 21:22:42 +0100
-Message-ID: <20240103202243.26994-3-othacehe@gnu.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20240103202243.26994-1-othacehe@gnu.org>
-References: <20240103202243.26994-1-othacehe@gnu.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE441DA50;
+	Wed,  3 Jan 2024 20:23:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF902C433C7;
+	Wed,  3 Jan 2024 20:23:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704313388;
+	bh=/1wi2elESu3qA3ymnpBhXxm3Cm+EGVj4BLX3l9jDeR4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=BLH2wcCXsSl2DovBkC7X1OYo1n2t+AVRmYKhft/A+OqHrwxapT4fJZm2g5gGobnQe
+	 uO5JM6ufEggqRjmBTKVvIxwG5XLviwmeZ/AZLV9AMtIVPxNZwE2g6JXG9P+1EQfaTU
+	 IFRHlrkoEv2QUfQeASwRkwcfM4QqEklPW1/Lhw/SkKSJEuwTO5ObThdkYq2gRG3Gw8
+	 ua0kVLNPAn9E67u+OUEhegv69kgs47HPCj35fqOQCZIrT0BFTl/Xz9T9buqi3pzXMU
+	 8tIyCNLx/F+7CSNWOKpFKjeXFH/lBNvgXJZreUupf4tUc0Z82iD0N8+GY+fVRJlcLJ
+	 iQahrI1SeoUsA==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cca5e7b390so110391391fa.3;
+        Wed, 03 Jan 2024 12:23:07 -0800 (PST)
+X-Gm-Message-State: AOJu0YyYfXwCsecXYbmxrP6O1PG+yYuuWdQIa847aQt9wIY5okSU2RWf
+	yP1Ei/uq/ZAZ7auRD90h8cxOMYOcOX8t+3+B6g==
+X-Google-Smtp-Source: AGHT+IEuSajsLar5BZfyKxFsEncrEL3hHHCChs5bYkTvb/M8kfLvaIglHefhLNG4QxD4FygqIsE6WgfNNyRsASBkyD0=
+X-Received: by 2002:a2e:9684:0:b0:2cc:7d41:548c with SMTP id
+ q4-20020a2e9684000000b002cc7d41548cmr8632506lji.54.1704313386193; Wed, 03 Jan
+ 2024 12:23:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <9d7e85914eb1cdb313b28cb019093a84dd9b4773.1703167505.git.michal.simek@amd.com>
+ <de6370c5-5cd1-409a-8716-99dd7738d30d@linaro.org> <08546f36-9f88-4fd9-ba4e-5d6ee21cd60f@amd.com>
+In-Reply-To: <08546f36-9f88-4fd9-ba4e-5d6ee21cd60f@amd.com>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Wed, 3 Jan 2024 13:22:43 -0700
+X-Gmail-Original-Message-ID: <CAL_Jsq+yPHT3VRVzNh1NY03KUoKvN41zzQKtqYvxxGjvv754Zw@mail.gmail.com>
+Message-ID: <CAL_Jsq+yPHT3VRVzNh1NY03KUoKvN41zzQKtqYvxxGjvv754Zw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: serial: Describe ARM dcc interface
+To: Michal Simek <michal.simek@amd.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, linux-kernel@vger.kernel.org, 
+	monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com, 
+	Conor Dooley <conor+dt@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org, 
+	linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add DTSI for Variscite VAR-SOM-MX93 System on Module and DTS for Variscite
-VAR-SOM-MX93 on Symphony evaluation board.
+On Tue, Jan 2, 2024 at 8:32=E2=80=AFAM Michal Simek <michal.simek@amd.com> =
+wrote:
+>
+>
+>
+> On 12/22/23 09:20, Krzysztof Kozlowski wrote:
+> > On 21/12/2023 15:05, Michal Simek wrote:
+> >> Debug Communication Channel (DCC) provides the way how to pass data be=
+tween
+> >> target CPU and host via JTAG interface. Every CPU has own interface fo=
+r
+> >> communication via dbgdtrtx_el0 and dbgdtrrx_el0 registers.
+> >>
+> >> Signed-off-by: Michal Simek <michal.simek@amd.com>
+> >> ---
+> >>
+> >> This communication interface is used for flash programming on Xilinx
+> >> SOCs from U-Boot.
+> >> https://source.denx.de/u-boot/u-boot/-/blob/master/drivers/serial/arm_=
+dcc.c
+> >>
+> >> ---
+> >>   .../devicetree/bindings/serial/arm,dcc.yaml   | 30 +++++++++++++++++=
+++
+> >>   1 file changed, 30 insertions(+)
+> >>   create mode 100644 Documentation/devicetree/bindings/serial/arm,dcc.=
+yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/serial/arm,dcc.yaml b/D=
+ocumentation/devicetree/bindings/serial/arm,dcc.yaml
+> >> new file mode 100644
+> >> index 000000000000..fd0589356617
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/serial/arm,dcc.yaml
+> >> @@ -0,0 +1,30 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/serial/arm,dcc.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: ARM DCC (Data communication channel) serial emulation
+> >> +
+> >> +maintainers:
+> >> +  - Michal Simek <michal.simek@amd.com>
+> >> +
+> >> +description: |
+> >> +  ARM DCC (Data communication channel) serial emulation interface ava=
+ilable
+> >> +  via JTAG can be also used as one of serial line tightly coupled wit=
+h every
+> >> +  ARM CPU available in the system.
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    const: arm,dcc
+> >> +
+> >> +required:
+> >> +  - compatible
+> >
+> > no allOf: with $ref to serial.yaml? Does it differ somehow?
+>
+> Valid one could be only nodename format and maybe label.
+> Others are not relevant. But if that's fine I can also add it.
 
-This version comes with:
-- NXP i.MX 93 Dual, 1.7GHz, Cortex-A55 + Cortex-M33
-- 2 GB of RAM
-- 16GB eMMC
-- 802.11ax/ac/a/b/g/n WiFi with 5.3 Bluetooth
-- CAN bus
-- Audio codec
+Yeah, I think serial.yaml mostly doesn't apply here. Not really worth
+including for just the node name.
 
-Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
----
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../dts/freescale/imx93-var-som-symphony.dts  | 351 ++++++++++++++++++
- .../boot/dts/freescale/imx93-var-som.dtsi     | 111 ++++++
- 3 files changed, 463 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts
- create mode 100644 arch/arm64/boot/dts/freescale/imx93-var-som.dtsi
+Greg may have already processed this, so you might want to resend. Or
+wait a few days and I'll just apply it.
 
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 2e027675d7bb..a6f1700961e3 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -203,6 +203,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxca.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx93-var-som-symphony.dtb
- 
- imx8mm-venice-gw72xx-0x-imx219-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-imx219.dtbo
- imx8mm-venice-gw72xx-0x-rpidsi-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-rpidsi.dtbo
-diff --git a/arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts
-new file mode 100644
-index 000000000000..3ee2f4402b6d
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts
-@@ -0,0 +1,351 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2021 NXP
-+ * Copyright 2023 Variscite Ltd.
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/leds/common.h>
-+#include "imx93-var-som.dtsi"
-+
-+/{
-+	model = "Variscite VAR-SOM-MX93 on Symphony evaluation board";
-+	compatible = "variscite,var-som-mx93-symphony",
-+		     "variscite,var-som-mx93", "fsl,imx93";
-+
-+	aliases {
-+		ethernet0 = &eqos;
-+		ethernet1 = &fec;
-+	};
-+
-+	chosen {
-+		stdout-path = &lpuart1;
-+	};
-+
-+	/*
-+	 * Needed only for Symphony <= v1.5
-+	 */
-+	reg_fec_phy: regulator-fec-phy {
-+		compatible = "regulator-fixed";
-+		regulator-name = "fec-phy";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-enable-ramp-delay = <20000>;
-+		gpio = <&pca9534 7 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		regulator-always-on;
-+	};
-+
-+	reg_usdhc2_vmmc: regulator-usdhc2 {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_usdhc2_vmmc>;
-+		regulator-name = "VSD_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&gpio2 18 GPIO_ACTIVE_HIGH>;
-+		off-on-delay-us = <20000>;
-+		enable-active-high;
-+	};
-+
-+	reg_vref_1v8: regulator-adc-vref {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vref_1v8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+	};
-+
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		ethosu_mem: ethosu-region@88000000 {
-+			compatible = "shared-dma-pool";
-+			reusable;
-+			reg = <0x0 0x88000000 0x0 0x8000000>;
-+		};
-+
-+		vdev0vring0: vdev0vring0@87ee0000 {
-+			reg = <0 0x87ee0000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev0vring1: vdev0vring1@87ee8000 {
-+			reg = <0 0x87ee8000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev1vring0: vdev1vring0@87ef0000 {
-+			reg = <0 0x87ef0000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev1vring1: vdev1vring1@87ef8000 {
-+			reg = <0 0x87ef8000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		rsc_table: rsc-table@2021f000 {
-+			reg = <0 0x2021f000 0 0x1000>;
-+			no-map;
-+		};
-+
-+		vdevbuffer: vdevbuffer@87f00000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0 0x87f00000 0 0x100000>;
-+			no-map;
-+		};
-+
-+		ele_reserved: ele-reserved@87de0000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0 0x87de0000 0 0x100000>;
-+			no-map;
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		key-back {
-+			label = "Back";
-+			gpios = <&pca9534 1 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_BACK>;
-+		};
-+
-+		key-home {
-+			label = "Home";
-+			gpios = <&pca9534 2 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_HOME>;
-+		};
-+
-+		key-menu {
-+			label = "Menu";
-+			gpios = <&pca9534 3 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_MENU>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-0 {
-+			function = LED_FUNCTION_STATUS;
-+			color = <LED_COLOR_ID_GREEN>;
-+			gpios = <&pca9534 0 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
-+};
-+
-+/* Use external instead of internal RTC*/
-+&bbnsm_rtc {
-+	status = "disabled";
-+};
-+
-+&eqos {
-+	mdio {
-+		ethphy1: ethernet-phy@5 {
-+			compatible = "ethernet-phy-ieee802.3-c22";
-+			reg = <5>;
-+			qca,disable-smarteee;
-+			eee-broken-1000t;
-+			reset-gpios = <&pca9534 5 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <10000>;
-+			reset-deassert-us = <20000>;
-+			vddio-supply = <&vddio1>;
-+
-+			vddio1: vddio-regulator {
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+			};
-+		};
-+	};
-+};
-+
-+&fec {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_fec>;
-+	phy-mode = "rgmii";
-+	phy-handle = <&ethphy1>;
-+	phy-supply = <&reg_fec_phy>;
-+	status = "okay";
-+};
-+
-+&flexcan1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexcan1>;
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl_fec: fecgrp {
-+		fsl,pins = <
-+			MX93_PAD_ENET2_RD0__ENET1_RGMII_RD0		0x57e
-+			MX93_PAD_ENET2_RD1__ENET1_RGMII_RD1		0x57e
-+			MX93_PAD_ENET2_RD2__ENET1_RGMII_RD2		0x57e
-+			MX93_PAD_ENET2_RD3__ENET1_RGMII_RD3		0x57e
-+			MX93_PAD_ENET2_RXC__ENET1_RGMII_RXC		0x5fe
-+			MX93_PAD_ENET2_RX_CTL__ENET1_RGMII_RX_CTL	0x57e
-+			MX93_PAD_ENET2_TD0__ENET1_RGMII_TD0		0x57e
-+			MX93_PAD_ENET2_TD1__ENET1_RGMII_TD1		0x57e
-+			MX93_PAD_ENET2_TD2__ENET1_RGMII_TD2		0x57e
-+			MX93_PAD_ENET2_TD3__ENET1_RGMII_TD3		0x57e
-+			MX93_PAD_ENET2_TXC__ENET1_RGMII_TXC		0x5fe
-+			MX93_PAD_ENET2_TX_CTL__ENET1_RGMII_TX_CTL	0x57e
-+		>;
-+	};
-+
-+	pinctrl_flexcan1: flexcan1grp {
-+		fsl,pins = <
-+			MX93_PAD_PDM_CLK__CAN1_TX                       0x139e
-+			MX93_PAD_PDM_BIT_STREAM0__CAN1_RX               0x139e
-+		>;
-+	};
-+
-+	pinctrl_lpi2c1: lpi2c1grp {
-+		fsl,pins = <
-+			MX93_PAD_I2C1_SCL__LPI2C1_SCL			0x40000b9e
-+			MX93_PAD_I2C1_SDA__LPI2C1_SDA			0x40000b9e
-+		>;
-+	};
-+
-+	pinctrl_lpi2c1_gpio: lpi2c1gpiogrp {
-+		fsl,pins = <
-+			MX93_PAD_I2C1_SCL__GPIO1_IO00			0x31e
-+			MX93_PAD_I2C1_SDA__GPIO1_IO01			0x31e
-+		>;
-+	};
-+
-+	pinctrl_lpi2c5: lpi2c5grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO23__LPI2C5_SCL			0x40000b9e
-+			MX93_PAD_GPIO_IO22__LPI2C5_SDA			0x40000b9e
-+		>;
-+	};
-+
-+	pinctrl_lpi2c5_gpio: lpi2c5gpiogrp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO23__GPIO2_IO23			0x31e
-+			MX93_PAD_GPIO_IO22__GPIO2_IO22			0x31e
-+		>;
-+	};
-+
-+	pinctrl_pca9534: pca9534grp {
-+		fsl,pins = <
-+			MX93_PAD_CCM_CLKO1__GPIO3_IO26		0x31e
-+		>;
-+	};
-+
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX93_PAD_UART1_RXD__LPUART1_RX			0x31e
-+			MX93_PAD_UART1_TXD__LPUART1_TX			0x31e
-+		>;
-+	};
-+
-+	pinctrl_uart6: uart6grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO05__LPUART6_RX			0x31e
-+			MX93_PAD_GPIO_IO04__LPUART6_TX			0x31e
-+		>;
-+	};
-+
-+	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO18__GPIO2_IO18		0x31e
-+		>;
-+	};
-+
-+	pinctrl_usdhc2: usdhc2grp {
-+		fsl,pins = <
-+			MX93_PAD_SD2_CLK__USDHC2_CLK		0x15fe
-+			MX93_PAD_SD2_CMD__USDHC2_CMD		0x13fe
-+			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x13fe
-+			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x13fe
-+			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x13fe
-+			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x13fe
-+			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
-+		>;
-+	};
-+
-+	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
-+		fsl,pins = <
-+			MX93_PAD_SD2_CD_B__GPIO3_IO00		0x31e
-+		>;
-+	};
-+};
-+
-+&lpi2c1 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default", "sleep", "gpio";
-+	pinctrl-0 = <&pinctrl_lpi2c1>;
-+	pinctrl-1 = <&pinctrl_lpi2c1_gpio>;
-+	pinctrl-2 = <&pinctrl_lpi2c1_gpio>;
-+	scl-gpios = <&gpio1 0 GPIO_ACTIVE_HIGH>;
-+	sda-gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
-+	status = "okay";
-+
-+	/* DS1337 RTC module */
-+	rtc@68 {
-+		compatible = "dallas,ds1337";
-+		reg = <0x68>;
-+	};
-+};
-+
-+&lpi2c5 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default", "sleep", "gpio";
-+	pinctrl-0 = <&pinctrl_lpi2c5>;
-+	pinctrl-1 = <&pinctrl_lpi2c5_gpio>;
-+	pinctrl-2 = <&pinctrl_lpi2c5_gpio>;
-+	scl-gpios = <&gpio2 23 GPIO_ACTIVE_HIGH>;
-+	sda-gpios = <&gpio2 22 GPIO_ACTIVE_HIGH>;
-+	status = "okay";
-+
-+	pca9534: gpio@20 {
-+		compatible = "nxp,pca9534";
-+		reg = <0x20>;
-+		gpio-controller;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_pca9534>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <26 IRQ_TYPE_EDGE_FALLING>;
-+		#gpio-cells = <2>;
-+		wakeup-source;
-+	};
-+};
-+
-+/* Console */
-+&lpuart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	status = "okay";
-+};
-+
-+/* J18.7, J18.9 */
-+&lpuart6 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart6>;
-+	status = "okay";
-+};
-+
-+/* SD */
-+&usdhc2 {
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-+	pinctrl-1 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-+	pinctrl-2 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-+	cd-gpios = <&gpio3 00 GPIO_ACTIVE_LOW>;
-+	vmmc-supply = <&reg_usdhc2_vmmc>;
-+	bus-width = <4>;
-+	status = "okay";
-+	no-sdio;
-+	no-mmc;
-+};
-+
-+/* Watchdog */
-+&wdog3 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/freescale/imx93-var-som.dtsi b/arch/arm64/boot/dts/freescale/imx93-var-som.dtsi
-new file mode 100644
-index 000000000000..6c77b886666b
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx93-var-som.dtsi
-@@ -0,0 +1,111 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2022 NXP
-+ * Copyright 2023 Variscite Ltd.
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx93.dtsi"
-+
-+/{
-+	model = "Variscite VAR-SOM-MX93 module";
-+	compatible = "variscite,var-som-mx93", "fsl,imx93";
-+
-+	mmc_pwrseq: mmc-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		post-power-on-delay-ms = <100>;
-+		power-off-delay-us = <10000>;
-+		reset-gpios = <&gpio4 14 GPIO_ACTIVE_LOW>,	/* WIFI_RESET */
-+			      <&gpio3 7 GPIO_ACTIVE_LOW>;	/* WIFI_PWR_EN */
-+	};
-+
-+	reg_eqos_phy: regulator-eqos-phy {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_eqos_phy>;
-+		regulator-name = "eth_phy_pwr";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&gpio1 7 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		startup-delay-us = <100000>;
-+		regulator-always-on;
-+	};
-+};
-+
-+&eqos {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_eqos>;
-+	phy-mode = "rgmii";
-+	phy-handle = <&ethphy0>;
-+	phy-supply = <&reg_eqos_phy>;
-+	status = "okay";
-+
-+	mdio {
-+		compatible = "snps,dwmac-mdio";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		clock-frequency = <1000000>;
-+
-+		ethphy0: ethernet-phy@0 {
-+			compatible = "ethernet-phy-ieee802.3-c22";
-+			reg = <0>;
-+			eee-broken-1000t;
-+		};
-+	};
-+};
-+
-+&iomuxc {
-+	pinctrl_eqos: eqosgrp {
-+		fsl,pins = <
-+			MX93_PAD_ENET1_MDC__ENET_QOS_MDC			0x57e
-+			MX93_PAD_ENET1_MDIO__ENET_QOS_MDIO			0x57e
-+			MX93_PAD_ENET1_RD0__ENET_QOS_RGMII_RD0			0x57e
-+			MX93_PAD_ENET1_RD1__ENET_QOS_RGMII_RD1			0x57e
-+			MX93_PAD_ENET1_RD2__ENET_QOS_RGMII_RD2			0x57e
-+			MX93_PAD_ENET1_RD3__ENET_QOS_RGMII_RD3			0x57e
-+			MX93_PAD_ENET1_RXC__CCM_ENET_QOS_CLOCK_GENERATE_RX_CLK	0x5fe
-+			MX93_PAD_ENET1_RX_CTL__ENET_QOS_RGMII_RX_CTL		0x57e
-+			MX93_PAD_ENET1_TD0__ENET_QOS_RGMII_TD0			0x57e
-+			MX93_PAD_ENET1_TD1__ENET_QOS_RGMII_TD1			0x57e
-+			MX93_PAD_ENET1_TD2__ENET_QOS_RGMII_TD2			0x57e
-+			MX93_PAD_ENET1_TD3__ENET_QOS_RGMII_TD3			0x57e
-+			MX93_PAD_ENET1_TXC__CCM_ENET_QOS_CLOCK_GENERATE_TX_CLK	0x5fe
-+			MX93_PAD_ENET1_TX_CTL__ENET_QOS_RGMII_TX_CTL		0x57e
-+		>;
-+	};
-+
-+	pinctrl_reg_eqos_phy: regeqosgrp {
-+		fsl,pins = <
-+			MX93_PAD_UART2_TXD__GPIO1_IO07			0x51e
-+		>;
-+	};
-+
-+	pinctrl_usdhc1: usdhc1grp {
-+		fsl,pins = <
-+			MX93_PAD_SD1_CLK__USDHC1_CLK		0x15fe
-+			MX93_PAD_SD1_CMD__USDHC1_CMD		0x13fe
-+			MX93_PAD_SD1_DATA0__USDHC1_DATA0	0x13fe
-+			MX93_PAD_SD1_DATA1__USDHC1_DATA1	0x13fe
-+			MX93_PAD_SD1_DATA2__USDHC1_DATA2	0x13fe
-+			MX93_PAD_SD1_DATA3__USDHC1_DATA3	0x13fe
-+			MX93_PAD_SD1_DATA4__USDHC1_DATA4	0x13fe
-+			MX93_PAD_SD1_DATA5__USDHC1_DATA5	0x13fe
-+			MX93_PAD_SD1_DATA6__USDHC1_DATA6	0x13fe
-+			MX93_PAD_SD1_DATA7__USDHC1_DATA7	0x13fe
-+			MX93_PAD_SD1_STROBE__USDHC1_STROBE	0x15fe
-+		>;
-+	};
-+};
-+
-+/* eMMC */
-+&usdhc1 {
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&pinctrl_usdhc1>;
-+	pinctrl-1 = <&pinctrl_usdhc1>;
-+	pinctrl-2 = <&pinctrl_usdhc1>;
-+	bus-width = <8>;
-+	non-removable;
-+	status = "okay";
-+};
--- 
-2.41.0
-
+Rob
 
