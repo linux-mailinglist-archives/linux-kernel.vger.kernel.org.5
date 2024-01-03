@@ -1,305 +1,178 @@
-Return-Path: <linux-kernel+bounces-15791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 531CC8232F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:14:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C0878231A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:57:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 210731C23C61
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:13:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E43CE1F24BC5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:57:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B4FB1C298;
-	Wed,  3 Jan 2024 17:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AFFA1C2A5;
+	Wed,  3 Jan 2024 16:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="fTvHvCgk"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="N60pYn0x"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A66A91BDEC;
-	Wed,  3 Jan 2024 17:13:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6530AC433C7;
-	Wed,  3 Jan 2024 17:13:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1704302030;
-	bh=EioX0AUTWUdeEWIVw4qvIAjmfJF5FH7ueR1brcr2ctQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=fTvHvCgkCuFJAwPRw0H8s9BH0cbKJtyZB/bbtr/Ph8Vn8hh+geudb1Cfqpk+AAh+3
-	 X82PUz6LDPrvq7JjwHcNkpUC0RMllFKvRg3Iu4BvAW6IEW1OK9Xk64mcb9oEUg+iUO
-	 XfG20pwXRGuIVfZZQyhj150bq1V8a+daVQ5zVMO0=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com
-Subject: [PATCH 6.6 00/49] 6.6.10-rc1 review
-Date: Wed,  3 Jan 2024 17:55:20 +0100
-Message-ID: <20240103164834.970234661@linuxfoundation.org>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246431BDF3
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 16:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5534dcfdd61so1182763a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 08:57:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1704301024; x=1704905824; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zl+pWuGvkr3PepNBGmYX9s8KhmGr6FwIy7+RDKXY6n4=;
+        b=N60pYn0xKlIe3QRk7fGNOCGPifK4ILpu2hGcgU4S9LN9MMjn+ITaqQPBrlyDcuS17o
+         5cgYmssinHHR/gfsETw0+41gHgXBVJf29CzUHeEwrXQyoo081pu0r/cXgxe8eod04+Gd
+         ZxvzYaosIFWFE1eib8nR68KHjrjheWQck6wog=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704301024; x=1704905824;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zl+pWuGvkr3PepNBGmYX9s8KhmGr6FwIy7+RDKXY6n4=;
+        b=GDb4PLmCSR05pip+kCckhGjAwOqNwS0nuaKOqRLdaxdODxYJcbe4oI+oHTw/GtFvgQ
+         ekvLR7HjihJivaz76xAcq5W7coyXUR2EBkL5zY5P7j8+YQFQBX0kZSWb54DnFGX6TZBS
+         D5+Fv/9G+61dqcItWKfhTFDNmUW8rWhurbMhqKDrw7VjHr5t3tqj/TWQWXUDmEWr6XDK
+         B0br9ARTsluEfPJF4h61DBSer6IGlSPI3lMVImJtl5gLfhkVjkgQWK9Vs42qzZ6s3u9x
+         fJBeF97QbcSF8j8H/2mNFTGIBGFS+YoioJqQE6Va3Az7hOXk81JV/lF0qpIql2/pD2x6
+         66oA==
+X-Gm-Message-State: AOJu0YyqSN9VpiLCWJO33/TElb3pcAM6+4gjd31goa1eWpFGouW76PU6
+	bsAYWlOEOj08izK7+hcofl2lomSMk+eDbM+m1nfXjvrM2fVQ
+X-Google-Smtp-Source: AGHT+IFPeKx7jODK0kMzxV/DmpTGdk9maEceY+oHSFiLcS1z2xZaA2JXxbJ3TyoLQexNnKiKPydRhjj6DYIbSCCEljs=
+X-Received: by 2002:a05:6402:4306:b0:556:cd93:3acb with SMTP id
+ m6-20020a056402430600b00556cd933acbmr1096806edc.3.1704301024237; Wed, 03 Jan
+ 2024 08:57:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.10-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-6.6.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 6.6.10-rc1
-X-KernelTest-Deadline: 2024-01-05T16:48+00:00
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240103102332.3642417-1-arnd@kernel.org> <ZZWBS5EugvO2dBp0@C02YVCJELVCG.dhcp.broadcom.net>
+ <557cfaec-6721-4409-83c9-6a60742a5021@app.fastmail.com>
+In-Reply-To: <557cfaec-6721-4409-83c9-6a60742a5021@app.fastmail.com>
+From: Michael Chan <michael.chan@broadcom.com>
+Date: Wed, 3 Jan 2024 08:56:51 -0800
+Message-ID: <CACKFLikiU6WC3EfPaNBrPsf3wAQU=8XbabA2nhVUUOBihQ29FA@mail.gmail.com>
+Subject: Re: [PATCH] bnxt: fix building without CONFIG_RFS_ACCEL
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>, Arnd Bergmann <arnd@kernel.org>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Pavan Chebbi <pavan.chebbi@broadcom.com>, Somnath Kotur <somnath.kotur@broadcom.com>, 
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, 
+	Randy Schacher <stuart.schacher@broadcom.com>, 
+	Vasundhara Volam <vasundhara-v.volam@broadcom.com>, Netdev <netdev@vger.kernel.org>, 
+	linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000002a9cb4060e0d8170"
 
-This is the start of the stable review cycle for the 6.6.10 release.
-There are 49 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+--0000000000002a9cb4060e0d8170
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Responses should be made by Fri, 05 Jan 2024 16:47:49 +0000.
-Anything received after that time might be too late.
+On Wed, Jan 3, 2024 at 8:01=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Wed, Jan 3, 2024, at 16:46, Andy Gospodarek wrote:
+> > There is a good oppportunity to clean this up a little better.  When
+> > CONFIG_RFS_ACCEL is not set there is no reason to even have
+> > bnxt_cfg_ntp_filters included in the driver build.
+> >
+> > I'll talk to Michael and we will post a fix for this.
+>
+> Ok, thanks!
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.10-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-and the diffstat can be found below.
+Yes, we can clean this up better.  User configured ntuple filters are
+directly added and don't go through bnxt_cfg_ntp_filters() by way of
+the workqueue.  I'll post the fix later today.  Thanks.
 
-thanks,
+--0000000000002a9cb4060e0d8170
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 6.6.10-rc1
-
-Pablo Neira Ayuso <pablo@netfilter.org>
-    netfilter: nf_tables: skip set commit for deleted/destroyed sets
-
-Léo Lam <leo@leolam.fr>
-    wifi: nl80211: fix deadlock in nl80211_set_cqm_rssi (6.6.x)
-
-Johannes Berg <johannes.berg@intel.com>
-    wifi: cfg80211: fix CQM for non-range use
-
-Steven Rostedt (Google) <rostedt@goodmis.org>
-    tracing: Fix blocked reader of snapshot buffer
-
-Steven Rostedt (Google) <rostedt@goodmis.org>
-    ftrace: Fix modification of direct_function hash while in use
-
-Steven Rostedt (Google) <rostedt@goodmis.org>
-    ring-buffer: Fix wake ups when buffer_percent is set to 100
-
-Keith Busch <kbusch@kernel.org>
-    Revert "nvme-fc: fix race between error recovery and creating association"
-
-Matthew Wilcox (Oracle) <willy@infradead.org>
-    mm/memory-failure: check the mapcount of the precise page
-
-Matthew Wilcox (Oracle) <willy@infradead.org>
-    mm/memory-failure: cast index to loff_t before shifting it
-
-Charan Teja Kalla <quic_charante@quicinc.com>
-    mm: migrate high-order folios in swap cache correctly
-
-Baokun Li <libaokun1@huawei.com>
-    mm/filemap: avoid buffered read/write race to read inconsistent data
-
-Muhammad Usama Anjum <usama.anjum@collabora.com>
-    selftests: secretmem: floor the memory size to the multiple of page_size
-
-Sidhartha Kumar <sidhartha.kumar@oracle.com>
-    maple_tree: do not preallocate nodes for slot stores
-
-Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-    platform/x86: p2sb: Allow p2sb_bar() calls during PCI device probe
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: fix slab-out-of-bounds in smb_strndup_from_utf16()
-
-David E. Box <david.e.box@linux.intel.com>
-    platform/x86/intel/pmc: Move GBE LTR ignore to suspend callback
-
-David E. Box <david.e.box@linux.intel.com>
-    platform/x86/intel/pmc: Allow reenabling LTRs
-
-David E. Box <david.e.box@linux.intel.com>
-    platform/x86/intel/pmc: Add suspend callback
-
-Christoph Hellwig <hch@lst.de>
-    block: renumber QUEUE_FLAG_HW_WC
-
-Paolo Abeni <pabeni@redhat.com>
-    mptcp: fix inconsistent state on fastopen race
-
-Paolo Abeni <pabeni@redhat.com>
-    mptcp: fix possible NULL pointer dereference on close
-
-Paolo Abeni <pabeni@redhat.com>
-    mptcp: refactor sndbuf auto-tuning
-
-Helge Deller <deller@gmx.de>
-    linux/export: Ensure natural alignment of kcrctab array
-
-Helge Deller <deller@gmx.de>
-    linux/export: Fix alignment for 64-bit ksymtab entries
-
-Arnd Bergmann <arnd@arndb.de>
-    kexec: select CRYPTO from KEXEC_FILE instead of depending on it
-
-Arnd Bergmann <arnd@arndb.de>
-    kexec: fix KEXEC_FILE dependencies
-
-Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-    virtio_ring: fix syncs DMA memory with different direction
-
-Zizhi Wo <wozizhi@huawei.com>
-    fs: cifs: Fix atime update check
-
-Jeff Layton <jlayton@kernel.org>
-    client: convert to new timestamp accessors
-
-Jeff Layton <jlayton@kernel.org>
-    fs: new accessor methods for atime and mtime
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: avoid duplicate opinfo_put() call on error of smb21_lease_break_ack()
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: lazy v2 lease break on smb2_write()
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: send v2 lease break notification for directory
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: downgrade RWH lease caching state to RH for directory
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: set v2 lease capability
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: set epoch in create context v2 lease
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: don't update ->op_state as OPLOCK_STATE_NONE on error
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: move setting SMB2_FLAGS_ASYNC_COMMAND and AsyncId
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: release interim response after sending status pending response
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: move oplock handling after unlock parent dir
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: separately allocate ci per dentry
-
-Zongmin Zhou <zhouzongmin@kylinos.cn>
-    ksmbd: prevent memory leak on error return
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: fix kernel-doc comment of ksmbd_vfs_kern_path_locked()
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: no need to wait for binded connection termination at logoff
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: add support for surrogate pair conversion
-
-Kangjing Huang <huangkangjing@gmail.com>
-    ksmbd: fix missing RDMA-capable flag for IPoIB device in ksmbd_rdma_capable_netdev()
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: fix kernel-doc comment of ksmbd_vfs_setxattr()
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: reorganize ksmbd_iov_pin_rsp()
-
-Cheng-Han Wu <hank20010209@gmail.com>
-    ksmbd: Remove unused field in ksmbd_user struct
-
-
--------------
-
-Diffstat:
-
- Makefile                                  |   4 +-
- arch/powerpc/Kconfig                      |   4 +-
- arch/riscv/Kconfig                        |   4 +-
- arch/s390/Kconfig                         |   4 +-
- arch/x86/Kconfig                          |   4 +-
- drivers/nvme/host/fc.c                    |  21 +--
- drivers/platform/x86/intel/pmc/adl.c      |   9 +-
- drivers/platform/x86/intel/pmc/cnp.c      |  26 ++-
- drivers/platform/x86/intel/pmc/core.c     |  12 +-
- drivers/platform/x86/intel/pmc/core.h     |   7 +-
- drivers/platform/x86/intel/pmc/mtl.c      |   9 +-
- drivers/platform/x86/intel/pmc/tgl.c      |   9 +-
- drivers/platform/x86/p2sb.c               | 178 ++++++++++++++++-----
- drivers/virtio/virtio_ring.c              |   6 +-
- fs/libfs.c                                |  41 +++--
- fs/smb/client/file.c                      |  18 ++-
- fs/smb/client/fscache.h                   |   6 +-
- fs/smb/client/inode.c                     |  17 +-
- fs/smb/client/smb2ops.c                   |   6 +-
- fs/smb/common/smb2pdu.h                   |   1 +
- fs/smb/server/connection.c                |  16 --
- fs/smb/server/ksmbd_work.c                |  51 +++---
- fs/smb/server/mgmt/user_config.h          |   1 -
- fs/smb/server/oplock.c                    | 118 ++++++++++++--
- fs/smb/server/oplock.h                    |   8 +-
- fs/smb/server/smb2misc.c                  |  15 +-
- fs/smb/server/smb2ops.c                   |   9 +-
- fs/smb/server/smb2pdu.c                   | 258 ++++++++++++++++--------------
- fs/smb/server/transport_rdma.c            |  40 +++--
- fs/smb/server/unicode.c                   | 187 ++++++++++++++++------
- fs/smb/server/vfs.c                       |  14 +-
- fs/smb/server/vfs_cache.c                 |  30 ++--
- fs/smb/server/vfs_cache.h                 |   9 +-
- include/linux/blkdev.h                    |   2 +-
- include/linux/export-internal.h           |   6 +-
- include/linux/fs.h                        |  85 ++++++++--
- kernel/Kconfig.kexec                      |   2 +
- kernel/trace/ftrace.c                     | 100 ++++++------
- kernel/trace/ring_buffer.c                |  12 +-
- kernel/trace/trace.c                      |  20 ++-
- lib/maple_tree.c                          |  11 ++
- mm/filemap.c                              |   9 ++
- mm/memory-failure.c                       |   8 +-
- mm/migrate.c                              |   9 +-
- net/mptcp/protocol.c                      |  27 +++-
- net/mptcp/protocol.h                      |  63 +++++++-
- net/mptcp/sockopt.c                       |   5 +-
- net/mptcp/subflow.c                       |  29 ++--
- net/netfilter/nf_tables_api.c             |   2 +-
- net/wireless/core.h                       |   1 +
- net/wireless/nl80211.c                    |  56 ++++---
- tools/testing/radix-tree/maple.c          |   2 +-
- tools/testing/selftests/mm/memfd_secret.c |   3 +
- 53 files changed, 1070 insertions(+), 524 deletions(-)
-
-
+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
+OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
+/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
+BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
+HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
+L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
+kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
+5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
+hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
+E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
+aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
+EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFd7DwdAFcI6QRZfTSaZUfZWW2k2+Hjm
+zBpA9MlGNixoMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDEw
+MzE2NTcwNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
+ATANBgkqhkiG9w0BAQEFAASCAQAs2tBEKsO1cKmSF5Q/erwxjgYCQA09zhKiktsYDcxWijSqdKKR
+aHgnFFW1laeLz0BKnSZjh/xpBRA4icUOmLV1BuWqPQUcnT/aOC70hmJtAPYGAdgywEoemRoMoRSJ
+V1eubderhusyNW6FDAN/3JTviiqZtwcn++jBcM4utFem0mRPG9mBr4eNRR0w4W+Dzvs7nsX29i3A
+slKPLzkBd/7zPlvkPSDJXkyVRECbNSlWh1H6KlNxgs2xsyJHuk/sxhlk7g+1wAsk8SgZYJMvzehY
+1LH7rm8qvcLcLTEJwkGaUg8JXjzvtYk8PxfwN5ayb3ce9cEPiF46PBIWCKluUMJK
+--0000000000002a9cb4060e0d8170--
 
