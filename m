@@ -1,213 +1,336 @@
-Return-Path: <linux-kernel+bounces-15413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51687822BA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:53:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4651A822BAB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:54:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF69AB21AFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:53:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DDB01C22781
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE9518C3F;
-	Wed,  3 Jan 2024 10:53:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8043D18E10;
+	Wed,  3 Jan 2024 10:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GCDg9s1h"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cjf5vdhJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5952718C2E
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 10:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5e7c1012a42so84687877b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 02:53:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704279194; x=1704883994; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=m9p1RoQ2GuousKXYelQZcSQ3NaizCREhdBpOhRo7feA=;
-        b=GCDg9s1hIIN0SfrXq+ieugM7UFhPXsEyHm95qJVTcKKdjJ3aJ8cixy1uSIWL1/8IHE
-         zs9rdmM1QilBdZAsOPhgQMWQhGLWMF1XWuZtMPlcU1TY9C9nAXx2AHTDufJOmXNSNbWO
-         UenBAcZ8Pne4VehgNeF0coLGiG5meHM9iTAyCfjEFCICR1m3nGajtTP+xWT47oclFAqs
-         2MGn4+pH2DksTcE9qwhn85iVf6ZTfoXwurdFw48mXHyeLaTvcnvc0MhvGKtAoUZrQlML
-         5NP8IjTTZOVuwabKJCvWVx7avmKdUzoeua8ZMehzn32hh3tLhWAKIk0OMf4y6NJ3Zkj8
-         7T1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704279194; x=1704883994;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m9p1RoQ2GuousKXYelQZcSQ3NaizCREhdBpOhRo7feA=;
-        b=Zj/XPvVPUsCT4y7YhB6aj8tgjhVNmQdTUSfwu8FKI88yjGEzZ/Saqj3A+Uh5RXZVsj
-         9ynyFbNPpWgsTqHqeSWkMPlOWVijRiBPJYGl3ybcUiEfAO7vc71GnRVGefNvY91hiUkh
-         ny/rGLW1nUmS8ifY3w8PpQqBy15vgWcfQx7JIBqRyHr56/yksl880BQvbhjTDHhsetZR
-         9G+83OFjKgREf1AKZHMNfC6V8h3bjmBC22vP80TXclKKCvo/P2RX+B7bpn0cPRNisZX7
-         pQKw263E2E7JUpvJKZz9OKya2AVssCZBI0Q5H7yBbeC8keppdNxdAX6TkZvRSDLOrhvr
-         ZPCw==
-X-Gm-Message-State: AOJu0YyghC2teKv5AsSxPa90jPf36JBd7DCfiNfNhm38pFJBcEasYHjX
-	4QYHwoFmyBud3FTMzsU2wPpSTS5jaM/33OOfvaIDGBiqY1mOEA==
-X-Google-Smtp-Source: AGHT+IFX8PwLJ/Mp4X59qcsHRT4TXjjQz+F9r1yQR3sV+ge6DyXZ8XPFMZnyX5InkRHegr0XXVCLhkjok1+pyJZX+vo=
-X-Received: by 2002:a81:98d4:0:b0:5ee:f221:3266 with SMTP id
- p203-20020a8198d4000000b005eef2213266mr4992867ywg.70.1704279194162; Wed, 03
- Jan 2024 02:53:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A7D418E06
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 10:54:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704279261; x=1735815261;
+  h=date:from:to:cc:subject:message-id;
+  bh=06y4//2HCvOaoJM5B7IanewZNCVyOStotoMtfbw/fpc=;
+  b=Cjf5vdhJ1QjJ0a32RHuaN0OHrX5rtptRL4VwgYhkE0gfhH4RrW919Y9N
+   Bw0MHbbSNHSF28tlsmkwNG0Jj7KiXbOJ5aDInIz3dg9CPs3+s0VqIduSI
+   tOTcCfudcP8Rc39+NbackwOcMVtHc8VWmstqSeakQck35kA7snOTjJASz
+   nahnWWX7ND8kwAQZ5rWWiYNOJLPrPXlgpbDcV+AIodc0dAOroncY/9/T+
+   TSSlyPAf+ahFAVj6+Uh/BUUYJW8e2gSlsN+lEW73wdNMxXH2mDeao2hvV
+   zpiP5Isw2YL9KCq+/iatMurDs+BmX3c8mbmfKbbl5nbPfQum9rCe1Wdnd
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="4345889"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="4345889"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 02:54:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="808804000"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="808804000"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 03 Jan 2024 02:54:19 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rKyt6-000LzM-2V;
+	Wed, 03 Jan 2024 10:54:16 +0000
+Date: Wed, 03 Jan 2024 18:53:38 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:locking/core] BUILD SUCCESS
+ 67a1723344cfe05430977483d6d3c7a999480143
+Message-ID: <202401031834.jH6PzwpX-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231221032147.434647-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20231221032147.434647-1-kai.heng.feng@canonical.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Wed, 3 Jan 2024 11:52:37 +0100
-Message-ID: <CAPDyKFo6SGV=Zsqmq=dO09tGNsJAURXuvXfbzLwf-4J3KUsC+w@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: GL975x: Mask rootport's replay
- timer timeout during suspend
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: adrian.hunter@intel.com, Victor Shih <victor.shih@genesyslogic.com.tw>, 
-	Ben Chuang <benchuanggli@gmail.com>, linux-mmc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 21 Dec 2023 at 04:23, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
->
-> Spamming `lspci -vv` can still observe the replay timer timeout error
-> even after commit 015c9cbcf0ad ("mmc: sdhci-pci-gli: GL9750: Mask the
-> replay timer timeout of AER"), albeit with a lower reproduce rate.
->
-> Such AER interrupt can still prevent the system from suspending, so let
-> root port mask and unmask replay timer timeout during suspend and
-> resume, respectively.
->
-> Cc: Victor Shih <victor.shih@genesyslogic.com.tw>
-> Cc: Ben Chuang <benchuanggli@gmail.com>
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
-> v2:
->  - Change subject to reflect it works on GL9750 & GL9755
->  - Fix when aer_cap is missing
->
->  drivers/mmc/host/sdhci-pci-core.c |  2 +-
->  drivers/mmc/host/sdhci-pci-gli.c  | 55 +++++++++++++++++++++++++++++--
->  drivers/mmc/host/sdhci-pci.h      |  1 +
->  3 files changed, 55 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
-> index 025b31aa712c..59ae4da72974 100644
-> --- a/drivers/mmc/host/sdhci-pci-core.c
-> +++ b/drivers/mmc/host/sdhci-pci-core.c
-> @@ -68,7 +68,7 @@ static int sdhci_pci_init_wakeup(struct sdhci_pci_chip *chip)
->         return 0;
->  }
->
-> -static int sdhci_pci_suspend_host(struct sdhci_pci_chip *chip)
-> +int sdhci_pci_suspend_host(struct sdhci_pci_chip *chip)
->  {
->         int i, ret;
->
-> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-> index 77911a57b12c..54943e9df835 100644
-> --- a/drivers/mmc/host/sdhci-pci-gli.c
-> +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> @@ -1429,6 +1429,55 @@ static int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
->         return sdhci_pci_resume_host(chip);
->  }
->
-> +#ifdef CONFIG_PCIEAER
-> +static void mask_replay_timer_timeout(struct pci_dev *pdev)
-> +{
-> +       struct pci_dev *parent = pci_upstream_bridge(pdev);
-> +       u32 val;
-> +
-> +       if (!parent || !parent->aer_cap)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
+branch HEAD: 67a1723344cfe05430977483d6d3c7a999480143  Merge tag 'v6.7-rc8' into locking/core, to pick up dependent changes
 
-Wouldn't it be more correct to use pci_aer_available(), rather than
-just checking the aer_cap?
+elapsed time: 1469m
 
-If pci_aer_available() can be used, we wouldn't even need the stubs as
-the is already stubs for pci_aer_available().
+configs tested: 254
+configs skipped: 2
 
-> +               return;
-> +
-> +       pci_read_config_dword(parent, parent->aer_cap + PCI_ERR_COR_MASK, &val);
-> +       val |= PCI_ERR_COR_REP_TIMER;
-> +       pci_write_config_dword(parent, parent->aer_cap + PCI_ERR_COR_MASK, val);
-> +}
-> +
-> +static void unmask_replay_timer_timeout(struct pci_dev *pdev)
-> +{
-> +       struct pci_dev *parent = pci_upstream_bridge(pdev);
-> +       u32 val;
-> +
-> +       if (!parent || !parent->aer_cap)
-> +               return;
-> +
-> +       pci_read_config_dword(pdev, parent->aer_cap + PCI_ERR_COR_MASK, &val);
-> +       val &= ~PCI_ERR_COR_REP_TIMER;
-> +       pci_write_config_dword(pdev, parent->aer_cap + PCI_ERR_COR_MASK, val);
-> +}
-> +#else
-> +static inline void mask_replay_timer_timeout(struct pci_dev *pdev) { }
-> +static inline void unmask_replay_timer_timeout(struct pci_dev *pdev) {  }
-> +#endif
-> +
-> +static int sdhci_pci_gl975x_suspend(struct sdhci_pci_chip *chip)
-> +{
-> +       mask_replay_timer_timeout(chip->pdev);
-> +
-> +       return sdhci_pci_suspend_host(chip);
-> +}
-> +
-> +static int sdhci_pci_gl975x_resume(struct sdhci_pci_chip *chip)
-> +{
-> +       int ret;
-> +
-> +       ret = sdhci_pci_gli_resume(chip);
-> +
-> +       unmask_replay_timer_timeout(chip->pdev);
-> +
-> +       return ret;
-> +}
-> +
->  static int gl9763e_resume(struct sdhci_pci_chip *chip)
->  {
->         struct sdhci_pci_slot *slot = chip->slots[0];
-> @@ -1547,7 +1596,8 @@ const struct sdhci_pci_fixes sdhci_gl9755 = {
->         .probe_slot     = gli_probe_slot_gl9755,
->         .ops            = &sdhci_gl9755_ops,
->  #ifdef CONFIG_PM_SLEEP
-> -       .resume         = sdhci_pci_gli_resume,
-> +       .suspend        = sdhci_pci_gl975x_suspend,
-> +       .resume         = sdhci_pci_gl975x_resume,
->  #endif
->  };
->
-> @@ -1570,7 +1620,8 @@ const struct sdhci_pci_fixes sdhci_gl9750 = {
->         .probe_slot     = gli_probe_slot_gl9750,
->         .ops            = &sdhci_gl9750_ops,
->  #ifdef CONFIG_PM_SLEEP
-> -       .resume         = sdhci_pci_gli_resume,
-> +       .suspend        = sdhci_pci_gl975x_suspend,
-> +       .resume         = sdhci_pci_gl975x_resume,
->  #endif
->  };
->
-> diff --git a/drivers/mmc/host/sdhci-pci.h b/drivers/mmc/host/sdhci-pci.h
-> index 153704f812ed..19253dce687d 100644
-> --- a/drivers/mmc/host/sdhci-pci.h
-> +++ b/drivers/mmc/host/sdhci-pci.h
-> @@ -190,6 +190,7 @@ static inline void *sdhci_pci_priv(struct sdhci_pci_slot *slot)
->  }
->
->  #ifdef CONFIG_PM_SLEEP
-> +int sdhci_pci_suspend_host(struct sdhci_pci_chip *chip);
->  int sdhci_pci_resume_host(struct sdhci_pci_chip *chip);
->  #endif
->  int sdhci_pci_enable_dma(struct sdhci_host *host);
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Kind regards
-Uffe
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              alldefconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                      axs103_smp_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                     haps_hs_smp_defconfig   gcc  
+arc                     nsimosci_hs_defconfig   gcc  
+arc                   randconfig-001-20240102   gcc  
+arc                   randconfig-001-20240103   gcc  
+arc                   randconfig-002-20240102   gcc  
+arc                   randconfig-002-20240103   gcc  
+arc                           tb10x_defconfig   gcc  
+arc                    vdk_hs38_smp_defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                         assabet_defconfig   gcc  
+arm                        clps711x_defconfig   gcc  
+arm                          collie_defconfig   clang
+arm                                 defconfig   clang
+arm                      jornada720_defconfig   gcc  
+arm                       multi_v4t_defconfig   gcc  
+arm                        mvebu_v5_defconfig   clang
+arm                             pxa_defconfig   gcc  
+arm                   randconfig-001-20240102   gcc  
+arm                   randconfig-002-20240102   gcc  
+arm                   randconfig-003-20240102   gcc  
+arm                   randconfig-004-20240102   gcc  
+arm                             rpc_defconfig   gcc  
+arm                         vf610m4_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240102   gcc  
+arm64                 randconfig-002-20240102   gcc  
+arm64                 randconfig-003-20240102   gcc  
+arm64                 randconfig-004-20240102   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240102   gcc  
+csky                  randconfig-001-20240103   gcc  
+csky                  randconfig-002-20240102   gcc  
+csky                  randconfig-002-20240103   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240102   clang
+hexagon               randconfig-002-20240102   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20240102   gcc  
+i386         buildonly-randconfig-001-20240103   clang
+i386         buildonly-randconfig-002-20240102   gcc  
+i386         buildonly-randconfig-002-20240103   clang
+i386         buildonly-randconfig-003-20240102   gcc  
+i386         buildonly-randconfig-003-20240103   clang
+i386         buildonly-randconfig-004-20240102   gcc  
+i386         buildonly-randconfig-004-20240103   clang
+i386         buildonly-randconfig-005-20240102   gcc  
+i386         buildonly-randconfig-005-20240103   clang
+i386         buildonly-randconfig-006-20240102   gcc  
+i386         buildonly-randconfig-006-20240103   clang
+i386                                defconfig   gcc  
+i386                  randconfig-001-20240102   gcc  
+i386                  randconfig-001-20240103   clang
+i386                  randconfig-002-20240102   gcc  
+i386                  randconfig-002-20240103   clang
+i386                  randconfig-003-20240102   gcc  
+i386                  randconfig-003-20240103   clang
+i386                  randconfig-004-20240102   gcc  
+i386                  randconfig-004-20240103   clang
+i386                  randconfig-005-20240102   gcc  
+i386                  randconfig-005-20240103   clang
+i386                  randconfig-006-20240102   gcc  
+i386                  randconfig-006-20240103   clang
+i386                  randconfig-011-20240102   clang
+i386                  randconfig-011-20240103   gcc  
+i386                  randconfig-012-20240103   gcc  
+i386                  randconfig-013-20240103   gcc  
+i386                  randconfig-014-20240103   gcc  
+i386                  randconfig-015-20240103   gcc  
+i386                  randconfig-016-20240103   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch                 loongson3_defconfig   gcc  
+loongarch             randconfig-001-20240102   gcc  
+loongarch             randconfig-001-20240103   gcc  
+loongarch             randconfig-002-20240102   gcc  
+loongarch             randconfig-002-20240103   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                       bvme6000_defconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                          hp300_defconfig   gcc  
+m68k                       m5208evb_defconfig   gcc  
+m68k                          sun3x_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+microblaze                      mmu_defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+mips                         cobalt_defconfig   gcc  
+mips                         db1xxx_defconfig   gcc  
+mips                      fuloong2e_defconfig   gcc  
+mips                           ip27_defconfig   gcc  
+mips                       lemote2f_defconfig   gcc  
+mips                           mtx1_defconfig   clang
+mips                          rm200_defconfig   gcc  
+mips                         rt305x_defconfig   gcc  
+mips                           xway_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240102   gcc  
+nios2                 randconfig-001-20240103   gcc  
+nios2                 randconfig-002-20240102   gcc  
+nios2                 randconfig-002-20240103   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240102   gcc  
+parisc                randconfig-001-20240103   gcc  
+parisc                randconfig-002-20240102   gcc  
+parisc                randconfig-002-20240103   gcc  
+parisc64                            defconfig   gcc  
+powerpc                    adder875_defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                    amigaone_defconfig   gcc  
+powerpc                     asp8347_defconfig   gcc  
+powerpc                   currituck_defconfig   gcc  
+powerpc                       eiger_defconfig   gcc  
+powerpc                     ksi8560_defconfig   gcc  
+powerpc               randconfig-001-20240102   gcc  
+powerpc               randconfig-002-20240102   gcc  
+powerpc               randconfig-003-20240102   gcc  
+powerpc                     stx_gp3_defconfig   gcc  
+powerpc                     tqm5200_defconfig   clang
+powerpc64             randconfig-001-20240102   gcc  
+powerpc64             randconfig-002-20240102   gcc  
+powerpc64             randconfig-003-20240102   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                    nommu_k210_defconfig   gcc  
+riscv                 randconfig-001-20240102   gcc  
+riscv                 randconfig-002-20240102   gcc  
+riscv                          rv32_defconfig   clang
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20240102   clang
+s390                  randconfig-001-20240103   gcc  
+s390                  randconfig-002-20240102   clang
+s390                  randconfig-002-20240103   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                            hp6xx_defconfig   gcc  
+sh                          lboxre2_defconfig   gcc  
+sh                    randconfig-001-20240102   gcc  
+sh                    randconfig-001-20240103   gcc  
+sh                    randconfig-002-20240102   gcc  
+sh                    randconfig-002-20240103   gcc  
+sh                          sdk7780_defconfig   gcc  
+sh                          sdk7786_defconfig   gcc  
+sh                           se7724_defconfig   gcc  
+sh                           sh2007_defconfig   gcc  
+sh                  sh7785lcr_32bit_defconfig   gcc  
+sh                        sh7785lcr_defconfig   gcc  
+sh                             shx3_defconfig   gcc  
+sh                            titan_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                       sparc64_defconfig   gcc  
+sparc64                          alldefconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240102   gcc  
+sparc64               randconfig-001-20240103   gcc  
+sparc64               randconfig-002-20240102   gcc  
+sparc64               randconfig-002-20240103   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240102   gcc  
+um                    randconfig-002-20240102   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240103   clang
+x86_64       buildonly-randconfig-002-20240103   clang
+x86_64       buildonly-randconfig-003-20240103   clang
+x86_64       buildonly-randconfig-004-20240103   clang
+x86_64       buildonly-randconfig-005-20240103   clang
+x86_64       buildonly-randconfig-006-20240103   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-001-20240103   gcc  
+x86_64                randconfig-002-20240103   gcc  
+x86_64                randconfig-003-20240103   gcc  
+x86_64                randconfig-004-20240103   gcc  
+x86_64                randconfig-005-20240103   gcc  
+x86_64                randconfig-006-20240103   gcc  
+x86_64                randconfig-011-20240103   clang
+x86_64                randconfig-012-20240103   clang
+x86_64                randconfig-013-20240103   clang
+x86_64                randconfig-014-20240103   clang
+x86_64                randconfig-015-20240103   clang
+x86_64                randconfig-016-20240103   clang
+x86_64                randconfig-071-20240103   clang
+x86_64                randconfig-072-20240103   clang
+x86_64                randconfig-073-20240103   clang
+x86_64                randconfig-074-20240103   clang
+x86_64                randconfig-075-20240103   clang
+x86_64                randconfig-076-20240103   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                          iss_defconfig   gcc  
+xtensa                  nommu_kc705_defconfig   gcc  
+xtensa                randconfig-001-20240102   gcc  
+xtensa                randconfig-001-20240103   gcc  
+xtensa                randconfig-002-20240102   gcc  
+xtensa                randconfig-002-20240103   gcc  
+xtensa                    xip_kc705_defconfig   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
