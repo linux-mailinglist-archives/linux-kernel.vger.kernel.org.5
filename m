@@ -1,209 +1,205 @@
-Return-Path: <linux-kernel+bounces-15954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48ECC823632
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:09:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4882482362B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:09:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D243F282A92
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:09:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C3A21C2443A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D28DC1D525;
-	Wed,  3 Jan 2024 20:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C1F81D544;
+	Wed,  3 Jan 2024 20:08:54 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAAE91D692;
-	Wed,  3 Jan 2024 20:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-594363b4783so347704eaf.1;
-        Wed, 03 Jan 2024 12:09:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704312580; x=1704917380;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MZOqC+vh8nhBkqQBS+jkEHlXm5GbUXDC2IWE5XgtUcw=;
-        b=W4yZCJtrMnIEAwJiRbxeRibdxJNLSbttUrq4IhtLOBnihFvFL01XHmClBUlMsoWNyW
-         zqk6b0tlizWQXuccc8TRMagKEjyan8h+n8BSzBgAPi8wmYrw2i5RsAveKxo3GqRkOoL7
-         ZZCkE+z/4XFGHqttPBTrESoBPzJMMlbJHgChN+avqZ8TnE9BfIT1bcNicf9iYuE3Yauz
-         /z9lloxYog6RNCnPl3wMz4AMxnfmcE+FYVmLgul19/bunqrYvXFyObt9qmPlDhVYyDxb
-         L9Y8SdgEz3sx3HajPJN39uHFd3Pd2iXmws13IA/q72Z2oeOkFTuyK6YiAX+Bildvr5FO
-         8lLg==
-X-Gm-Message-State: AOJu0YxXORmARHd3FlvIzSExmxOe27tpObmUW9gFT12aljdh57m60lK/
-	NZHIeeRSQbpqAdlebrhgrzUlMRN+atofS9ulDcY=
-X-Google-Smtp-Source: AGHT+IFGRBo6mDTu/6Go6p6Xvr+1jM4RYFUjBFAq+gr8WyiRnKRMQs1ciEaJ9M3mqO4WwE5lS20MjnN9DH9qyoi1XlE=
-X-Received: by 2002:a05:6820:2e01:b0:594:35b4:8a with SMTP id
- ec1-20020a0568202e0100b0059435b4008amr27264639oob.0.1704312579904; Wed, 03
- Jan 2024 12:09:39 -0800 (PST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4259A1CFBD;
+	Wed,  3 Jan 2024 20:08:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A5F5C15;
+	Wed,  3 Jan 2024 12:09:37 -0800 (PST)
+Received: from [10.57.85.107] (unknown [10.57.85.107])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B9103F64C;
+	Wed,  3 Jan 2024 12:08:50 -0800 (PST)
+Message-ID: <314e5b15-de28-4336-8a0f-f3c08183a6b1@arm.com>
+Date: Wed, 3 Jan 2024 20:10:07 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <4556052.LvFx2qVVIh@kreacher> <2938222.e9J7NaK4W3@kreacher> <24822e06-1e5e-41e8-9f68-8fa82b1b11d4@arm.com>
-In-Reply-To: <24822e06-1e5e-41e8-9f68-8fa82b1b11d4@arm.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 3 Jan 2024 21:09:28 +0100
-Message-ID: <CAJZ5v0jcC=Apc8U3G6qKAXBHOJ2Q0RF4DE8dvgtE8jozRzg7cg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/6] thermal: netlink: Pass pointers to thermal_notify_tz_trip_change()
-To: Lukasz Luba <lukasz.luba@arm.com>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Linux PM <linux-pm@vger.kernel.org>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
-	Linux ACPI <linux-acpi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 6/6] thermal: netlink: Rework cdev-related notify API
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Linux PM <linux-pm@vger.kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>,
+ Linux ACPI <linux-acpi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <4556052.LvFx2qVVIh@kreacher> <7628882.EvYhyI6sBW@kreacher>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <7628882.EvYhyI6sBW@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 3, 2024 at 8:57=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> wr=
-ote:
->
->
->
-> On 12/15/23 19:56, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Instead of requiring the caller of thermal_notify_tz_trip_change() to
-> > provide specific values needed to populate struct param in it, make it
-> > extract those values from objects passed to it by the caller via const
-> > pointers.
-> >
-> > No intentional functional impact.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >   drivers/thermal/thermal_netlink.c |   12 +++++++-----
-> >   drivers/thermal/thermal_netlink.h |    8 ++++----
-> >   drivers/thermal/thermal_trip.c    |    8 ++------
-> >   3 files changed, 13 insertions(+), 15 deletions(-)
-> >
-> > Index: linux-pm/drivers/thermal/thermal_netlink.c
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > --- linux-pm.orig/drivers/thermal/thermal_netlink.c
-> > +++ linux-pm/drivers/thermal/thermal_netlink.c
-> > @@ -361,12 +361,14 @@ int thermal_notify_tz_trip_delete(int tz
-> >       return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_DELETE,=
- &p);
-> >   }
-> >
-> > -int thermal_notify_tz_trip_change(int tz_id, int trip_id, int trip_typ=
-e,
-> > -                               int trip_temp, int trip_hyst)
-> > +int thermal_notify_tz_trip_change(const struct thermal_zone_device *tz=
-,
-> > +                               const struct thermal_trip *trip)
-> >   {
-> > -     struct param p =3D { .tz_id =3D tz_id, .trip_id =3D trip_id,
-> > -                        .trip_type =3D trip_type, .trip_temp =3D trip_=
-temp,
-> > -                        .trip_hyst =3D trip_hyst };
-> > +     struct param p =3D { .tz_id =3D tz->id,
-> > +                        .trip_id =3D thermal_zone_trip_id(tz, trip),
-> > +                        .trip_type =3D trip->type,
-> > +                        .trip_temp =3D trip->temperature,
-> > +                        .trip_hyst =3D trip->hysteresis };
-> >
-> >       return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_CHANGE,=
- &p);
-> >   }
-> > Index: linux-pm/drivers/thermal/thermal_netlink.h
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > --- linux-pm.orig/drivers/thermal/thermal_netlink.h
-> > +++ linux-pm/drivers/thermal/thermal_netlink.h
-> > @@ -23,8 +23,8 @@ int thermal_notify_tz_trip_up(int tz_id,
-> >   int thermal_notify_tz_trip_delete(int tz_id, int id);
-> >   int thermal_notify_tz_trip_add(int tz_id, int id, int type,
-> >                              int temp, int hyst);
-> > -int thermal_notify_tz_trip_change(int tz_id, int id, int type,
-> > -                               int temp, int hyst);
-> > +int thermal_notify_tz_trip_change(const struct thermal_zone_device *tz=
-,
-> > +                               const struct thermal_trip *trip);
-> >   int thermal_notify_cdev_state_update(int cdev_id, int state);
-> >   int thermal_notify_cdev_add(int cdev_id, const char *name, int max_st=
-ate);
-> >   int thermal_notify_cdev_delete(int cdev_id);
-> > @@ -79,8 +79,8 @@ static inline int thermal_notify_tz_trip
-> >       return 0;
-> >   }
-> >
-> > -static inline int thermal_notify_tz_trip_change(int tz_id, int id, int=
- type,
-> > -                                             int temp, int hyst)
-> > +static inline int thermal_notify_tz_trip_change(const struct thermal_z=
-one_device *tz,
->
-> I was wondering if it's not too long line, but I can see it's common
-> in that header file. Shouldn't we break such lines like:
->
-> static inline
-> int thermal_notify_tz_trip_change(const struct thermal_zone_device *tz,
->                                 const struct thermal_trip *trip)
->
-> ?
 
-IMO the additional line break doesn't really make it easier to read.
 
-And note that it is OK now to have code lines longer than 80 chars (as
-long as they are not longer than 100 chars IIRC), although it is still
-recommended (but not required any more) to observe the "old" 80 chars
-length limit.
+On 12/15/23 20:02, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> The only actually used thermal netlink notification routine related
+> to cooling devices is thermal_notify_cdev_state_update().  The other
+> two, thermal_notify_cdev_add() and thermal_notify_cdev_delete(), are
+> never used.
+> 
+> So as to get rid of dead code, drop thermal_notify_cdev_add/delete(),
+> which can be added back if they turn out to be ever needed, along with
+> the related code.
+> 
+> In analogy with the previous thermal netlink API changes, redefine
+> thermal_notify_cdev_state_update() to take a const cdev pointer as its
+> first argument and let it extract the requisite information from there
+> by itself.
+> 
+> No intentional functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>   drivers/thermal/thermal_helpers.c |    2 -
+>   drivers/thermal/thermal_netlink.c |   43 ++------------------------------------
+>   drivers/thermal/thermal_netlink.h |   19 +++-------------
+>   3 files changed, 8 insertions(+), 56 deletions(-)
+> 
+> Index: linux-pm/drivers/thermal/thermal_netlink.h
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_netlink.h
+> +++ linux-pm/drivers/thermal/thermal_netlink.h
+> @@ -24,9 +24,8 @@ int thermal_notify_tz_trip_up(const stru
+>   			      const struct thermal_trip *trip);
+>   int thermal_notify_tz_trip_change(const struct thermal_zone_device *tz,
+>   				  const struct thermal_trip *trip);
+> -int thermal_notify_cdev_state_update(int cdev_id, int state);
+> -int thermal_notify_cdev_add(int cdev_id, const char *name, int max_state);
+> -int thermal_notify_cdev_delete(int cdev_id);
+> +int thermal_notify_cdev_state_update(const struct thermal_cooling_device *cdev,
+> +				     int state);
+>   int thermal_notify_tz_gov_change(const struct thermal_zone_device *tz,
+>   				 const char *name);
+>   int thermal_genl_sampling_temp(int id, int temp);
+> @@ -76,18 +75,8 @@ static inline int thermal_notify_tz_trip
+>   	return 0;
+>   }
+>   
+> -static inline int thermal_notify_cdev_state_update(int cdev_id, int state)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline int thermal_notify_cdev_add(int cdev_id, const char *name,
+> -					  int max_state)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline int thermal_notify_cdev_delete(int cdev_id)
+> +static inline int thermal_notify_cdev_state_update(const struct thermal_cooling_device *cdev,
+> +						   int state)
+>   {
+>   	return 0;
+>   }
+> Index: linux-pm/drivers/thermal/thermal_helpers.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_helpers.c
+> +++ linux-pm/drivers/thermal/thermal_helpers.c
+> @@ -152,7 +152,7 @@ static void thermal_cdev_set_cur_state(s
+>   	if (cdev->ops->set_cur_state(cdev, target))
+>   		return;
+>   
+> -	thermal_notify_cdev_state_update(cdev->id, target);
+> +	thermal_notify_cdev_state_update(cdev, target);
+>   	thermal_cooling_device_stats_update(cdev, target);
+>   }
+>   
+> Index: linux-pm/drivers/thermal/thermal_netlink.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_netlink.c
+> +++ linux-pm/drivers/thermal/thermal_netlink.c
+> @@ -147,27 +147,6 @@ static int thermal_genl_event_tz_trip_ch
+>   	return 0;
+>   }
+>   
+> -static int thermal_genl_event_cdev_add(struct param *p)
+> -{
+> -	if (nla_put_string(p->msg, THERMAL_GENL_ATTR_CDEV_NAME,
+> -			   p->name) ||
+> -	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_CDEV_ID,
+> -			p->cdev_id) ||
+> -	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_CDEV_MAX_STATE,
+> -			p->cdev_max_state))
+> -		return -EMSGSIZE;
+> -
+> -	return 0;
+> -}
+> -
+> -static int thermal_genl_event_cdev_delete(struct param *p)
+> -{
+> -	if (nla_put_u32(p->msg, THERMAL_GENL_ATTR_CDEV_ID, p->cdev_id))
+> -		return -EMSGSIZE;
+> -
+> -	return 0;
+> -}
+> -
+>   static int thermal_genl_event_cdev_state_update(struct param *p)
+>   {
+>   	if (nla_put_u32(p->msg, THERMAL_GENL_ATTR_CDEV_ID,
+> @@ -244,8 +223,6 @@ static cb_t event_cb[] = {
+>   	[THERMAL_GENL_EVENT_TZ_TRIP_UP]		= thermal_genl_event_tz_trip_up,
+>   	[THERMAL_GENL_EVENT_TZ_TRIP_DOWN]	= thermal_genl_event_tz_trip_down,
+>   	[THERMAL_GENL_EVENT_TZ_TRIP_CHANGE]	= thermal_genl_event_tz_trip_change,
+> -	[THERMAL_GENL_EVENT_CDEV_ADD]		= thermal_genl_event_cdev_add,
+> -	[THERMAL_GENL_EVENT_CDEV_DELETE]	= thermal_genl_event_cdev_delete,
+>   	[THERMAL_GENL_EVENT_CDEV_STATE_UPDATE]	= thermal_genl_event_cdev_state_update,
+>   	[THERMAL_GENL_EVENT_TZ_GOV_CHANGE]	= thermal_genl_event_gov_change,
+>   	[THERMAL_GENL_EVENT_CPU_CAPABILITY_CHANGE] = thermal_genl_event_cpu_capability_change,
+> @@ -348,28 +325,14 @@ int thermal_notify_tz_trip_change(const
+>   	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_CHANGE, &p);
+>   }
+>   
+> -int thermal_notify_cdev_state_update(int cdev_id, int cdev_state)
+> +int thermal_notify_cdev_state_update(const struct thermal_cooling_device *cdev,
+> +				     int state)
+>   {
+> -	struct param p = { .cdev_id = cdev_id, .cdev_state = cdev_state };
+> +	struct param p = { .cdev_id = cdev->id, .cdev_state = state };
+>   
+>   	return thermal_genl_send_event(THERMAL_GENL_EVENT_CDEV_STATE_UPDATE, &p);
+>   }
+>   
+> -int thermal_notify_cdev_add(int cdev_id, const char *name, int cdev_max_state)
+> -{
+> -	struct param p = { .cdev_id = cdev_id, .name = name,
+> -			   .cdev_max_state = cdev_max_state };
+> -
+> -	return thermal_genl_send_event(THERMAL_GENL_EVENT_CDEV_ADD, &p);
+> -}
+> -
+> -int thermal_notify_cdev_delete(int cdev_id)
+> -{
+> -	struct param p = { .cdev_id = cdev_id };
+> -
+> -	return thermal_genl_send_event(THERMAL_GENL_EVENT_CDEV_DELETE, &p);
+> -}
+> -
+>   int thermal_notify_tz_gov_change(const struct thermal_zone_device *tz,
+>   				 const char *name)
+>   {
+> 
+> 
+> 
 
-> Although, it would apply to all other long lines in that header, so not
-> particularly to this $subject.
-
-Well, right.
-
-> > +                                             const struct thermal_trip=
- *trip)
-> >   {
-> >       return 0;
-> >   }
-> > Index: linux-pm/drivers/thermal/thermal_trip.c
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > --- linux-pm.orig/drivers/thermal/thermal_trip.c
-> > +++ linux-pm/drivers/thermal/thermal_trip.c
-> > @@ -155,9 +155,7 @@ int thermal_zone_trip_id(const struct th
-> >   void thermal_zone_trip_updated(struct thermal_zone_device *tz,
-> >                              const struct thermal_trip *trip)
-> >   {
-> > -     thermal_notify_tz_trip_change(tz->id, thermal_zone_trip_id(tz, tr=
-ip),
-> > -                                   trip->type, trip->temperature,
-> > -                                   trip->hysteresis);
-> > +     thermal_notify_tz_trip_change(tz, trip);
-> >       __thermal_zone_device_update(tz, THERMAL_TRIP_CHANGED);
-> >   }
-> >
-> > @@ -168,8 +166,6 @@ void thermal_zone_set_trip_temp(struct t
-> >               return;
-> >
-> >       trip->temperature =3D temp;
-> > -     thermal_notify_tz_trip_change(tz->id, thermal_zone_trip_id(tz, tr=
-ip),
-> > -                                   trip->type, trip->temperature,
-> > -                                   trip->hysteresis);
-> > +     thermal_notify_tz_trip_change(tz, trip);
-> >   }
-> >   EXPORT_SYMBOL_GPL(thermal_zone_set_trip_temp);
-> >
-> >
-> >
->
-> Other than the comment above, LGTM.
->
-> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-
-Thanks!
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
