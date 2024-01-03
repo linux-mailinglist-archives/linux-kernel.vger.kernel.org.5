@@ -1,161 +1,180 @@
-Return-Path: <linux-kernel+bounces-15433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71BD2822BEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:15:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D2BA822BF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:16:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A78DBB231CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:15:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 501FC1C21336
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4BA918E17;
-	Wed,  3 Jan 2024 11:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414F318E29;
+	Wed,  3 Jan 2024 11:16:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="bPxO51dz"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Owqi6S63"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2057.outbound.protection.outlook.com [40.107.9.57])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54EB018657
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 11:14:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K/1BQ2LkED6ZB4J6itpPUPDi8h0fmUoBpUSCdE4JJl9u2hbzfDFYNTAu1XrGyHQnSXIhoEFGkZLYuRDF9sUTeTe+Qzj1dyr0BZsv4ZmE5sx88/n7PjBd/De/sYGKPZ0g8gIKZuQeMDsD7gQz4DTVxAUbIPfBRlj9cf0iVNcaZbB0ttqxw8HRSQxu28PqbivRokO9w0L1N+A2/yP1Gyj9yr6ahyOxPh55UjgT5Qs/OaRe8UF4471JJsrmrHq7xRlyYBkMqO5rGeq9UU9PzHQrfgVWTrMPXNgtnwesiHVJj5bcZNbxMItgN+cYDleiF9aEdpJxHmw8g6FDuAO5w8I0PQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=61W9i2elWY4cDzcH9AfBgmc9NhqXytNr91CX1w8ccDA=;
- b=ND27t8LF1CFL7SOPNrmIU32qB2WfAnX2ujkRwiZ6PjMxpztxD9uAfv1zvmRw55jAAm8MEivb1Y1SzWOmxPT2pHn4PdoxBU3ex1O0y+3dmPilxDWicHaUMdNvigralowDrKIwfr2DSUq8yCBCKOoBXqpmJjrvFqCsdtWD3++L9el2X/Ah8gWHvTDqvxY0s9zCqrCA7QYWMI/EPalbQ9wG0kmQVDE7N99LMocEnPvmmhf2RAG9R5wu32y7d9lWszfjVoYPbX/cDxmsax6uJVaVqSQVYhxsEtVm9eycLKpj/GweUT/aVYrm7352btj5wd+se2DXH9PvisRmbWgPvIPiYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=61W9i2elWY4cDzcH9AfBgmc9NhqXytNr91CX1w8ccDA=;
- b=bPxO51dz2KfAYd8fNowOhBosMPSfaBVKhaVF1hCsC5IOTY7eEohA/FmH7zGkMzUa+4DITjP1B7uRliLPWqc2RcqiHs/qvOysw6m7vlm3/Bu3HbUvZC+J0UciZxgA+nR+snIUQVyYUzqD8E0XQrJOq6l5gO8C3VWSIYmUW8+tyVfauCXWxsVcsIQxynvLR54z/bLnTjV4faSlFMbihC/9sfMlBsGFLQpIptiWg/DKFbbq1choi+4wnnJxdUIXe0mjXVEMbOFuyZ6vI5t/jrn4tpZssNN6CC3aik7JPhIaNgYwKtVh3rFuQtRmeNAj2FxrXYsyqriXd8mY9rYFDr1FIg==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR1P264MB1438.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1d::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Wed, 3 Jan
- 2024 11:14:54 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264%7]) with mapi id 15.20.7135.023; Wed, 3 Jan 2024
- 11:14:54 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: "peterx@redhat.com" <peterx@redhat.com>, "linux-mm@kvack.org"
-	<linux-mm@kvack.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-CC: James Houghton <jthoughton@google.com>, David Hildenbrand
-	<david@redhat.com>, "Kirill A . Shutemov" <kirill@shutemov.name>, Yang Shi
-	<shy828301@gmail.com>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, Andrew Morton <akpm@linux-foundation.org>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>, Rik van Riel
-	<riel@surriel.com>, Andrea Arcangeli <aarcange@redhat.com>, Axel Rasmussen
-	<axelrasmussen@google.com>, Mike Rapoport <rppt@kernel.org>, John Hubbard
-	<jhubbard@nvidia.com>, Vlastimil Babka <vbabka@suse.cz>, Michael Ellerman
-	<mpe@ellerman.id.au>, Andrew Jones <andrew.jones@linux.dev>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Mike Kravetz
-	<mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, Jason Gunthorpe <jgg@nvidia.com>,
-	Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes <lstoakes@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v2 00/13] mm/gup: Unify hugetlb, part 2
-Thread-Topic: [PATCH v2 00/13] mm/gup: Unify hugetlb, part 2
-Thread-Index: AQHaPiVMR3zGhecV+0qUMoop8MTeWbDH79wA
-Date: Wed, 3 Jan 2024 11:14:54 +0000
-Message-ID: <591c59d6-dedb-4399-8a6f-c574fd2ad9cc@csgroup.eu>
-References: <20240103091423.400294-1-peterx@redhat.com>
-In-Reply-To: <20240103091423.400294-1-peterx@redhat.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR1P264MB1438:EE_
-x-ms-office365-filtering-correlation-id: a46ab680-8c26-4864-caae-08dc0c4d368e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 206BXAmyCBTV/6DPmDDl7TdD2SOVaG7S9Kq64plErT6hscH+EZn1mQSWp2Fq3orAaWVJpPPKVPXeZWvqpGoVGikBqiuHTVwodponlrwlMfMobcUhKZzvgXX5NGDs9zdpURmSuKE7x+EDPMhOYFWh+HV7vSfhoiWK09PsRIe3z7UfSMsO2YEj4FBUoQoCFaHEjJxcLBjOQ63FoJXZ3axAezfY2P9YK4+42w2W/WnxOnjuoeh2le0rusBvxqwdoo2/5ZEN8k+pDGw6k0lTyYQ2Nxe3FIldMAlMJMqTfhqBZusyCsp1U7+TL2fCdZHQy8ZhrrmIeYtghx/maSaKbweW+rhBYjeLY6UwhbmMoYtFLOgE971G6rna/ITJiFSNJyGe34TOPNVLeRi5Qs/ayKC1QjmcRRHUI0IM624sHzJo8V3dHQg8H6vjcjz0zDw4kqPLr5IoIQ7ycxdw/9xd99Fy3oOUXt3Zd7gsOYMM6M2ErzqgfPSVmH1siEzyG+2AIQDhiyIZDADEfipzf2u1As72mkfXa0i0RVY9MY1QiTxt4yAd7lrFkC6vYTN1fObJ6h/BAZfUDzh8IlTJMOXNquecc7OWw+8uSQyImrwis0oF8+qwOI/xRUHf3N5SqJ6Aw8Rv/QhtJ04chOr6rXNNahVsouG8rDqSlSjvGy3f1xZYgd0Po63wKbJoQAHglwWDKVUQ
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39850400004)(396003)(136003)(346002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(38100700002)(122000001)(38070700009)(36756003)(31686004)(31696002)(86362001)(26005)(6506007)(6512007)(71200400001)(54906003)(4326008)(6486002)(316002)(8936002)(478600001)(8676002)(66446008)(66946007)(76116006)(66556008)(91956017)(66476007)(110136005)(64756008)(2616005)(41300700001)(44832011)(5660300002)(4744005)(7416002)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?eko1WmdKcG56ZjhDL3B6YmNsY2l4aVFKUGlxN0ZYenlja0xTNjM4VjlNaDhC?=
- =?utf-8?B?N1JObUdydGFWcEJlWERPRjVoUDJlcUF6bi9mZUtqdzZCeGRMUE9JcmJhc29y?=
- =?utf-8?B?TFZ1WE1NN21jZU85bHBacnEwVm1vVUpBLzU2K0JLc3h3NDd2V1lvckVLWW1k?=
- =?utf-8?B?dVh0L0VkVE9WYUlaWXpINUpGYjQ2SHQ1MGF0cXBQdW42VkRpc0liUkkwYlIw?=
- =?utf-8?B?ZkZ3Ly9HQW1WTU1wWklHMTNGUXJMN0hnZlpROWZaK2h0YXRnQjVXZFlTdWg1?=
- =?utf-8?B?TjhUVm5aR2NLbjhTNWxwYSsxRDMvTy9hcjZpNjRUaHFsMzIvRGxUQThYSTFJ?=
- =?utf-8?B?QUtCcXhHb2FpL1pldWJsUERxVDFiTHJWbEphTVMyWFZkUkliR0FRSUhiRWFR?=
- =?utf-8?B?S1VqUm5xaUhKa0swVEo1UnA0SFhDbXhkTU1CVTVCTzh6N0JoNlN5bEhWbCtD?=
- =?utf-8?B?UXNXbzQvN0U3emdZVEVZdjBYZ0tBb0NXdVIzQVRWN0ZlMElQWElXZmF4N0VY?=
- =?utf-8?B?ejdDblltMGZCblZsK3RtU1NIV3UzcE1XaXZCRFR5NVN4dURwL0lBaWJYcjZw?=
- =?utf-8?B?bU1abXYrNVZQbjdsUHZuZTNEOEZYb25Cclo3bUVvekd4TVYyWUFTVXpkaFRD?=
- =?utf-8?B?Q2sxOXJhdVhUMkMyZlg2TWtEMDljSFd4WlBXeUYyRktzaDVMa05oQkFTSFRo?=
- =?utf-8?B?VDh0OE9CM3lqWm1PbktvZDIwUVZVMmNqY2h6SDFDYUhveTg2cGJhVUR2ZWNY?=
- =?utf-8?B?MGpPQkpWMVFOa2ZPZjdrKzRBK2lZZzBzNVYvUkUwdmk5aVUrTmNxZndXRVVa?=
- =?utf-8?B?blk2cU14YXMvenp6MmhJN3VzQWJ3RUIzdmlLZ3hOTjZjZTBmU0FEYnorVWJU?=
- =?utf-8?B?VGdzN29TTXJnaVQ4dURQSGFyRDN0SVExN2tmcE5LM1pycitkWS8rRU9wZkNn?=
- =?utf-8?B?QXM3WnRGcXJWVE5EU09aYVZ1N1dTUVpZUms0L3hLTnVkcDA1dEJFaFVYd3Va?=
- =?utf-8?B?anByOGM1RnlmYzBwSWlxMG5jbDNnOTM1dUNaQnFNL2RYbzFLeEErZlNOWUJr?=
- =?utf-8?B?b0xzblp4SGZoUHZHejdwbkhGUWE1TXdiNDR2Z0M4NytHUFE0bUxzcnJ4Tjli?=
- =?utf-8?B?QURnbW03c01pUi9sNDJuU2t5MFVHVXM4TzM3YlQzN0o5OVNoL0VseFh5blQw?=
- =?utf-8?B?REl5VEl4Z3l4MThrb1pxWWQ1VDN4ZVlxMURHaW8vcEdCdDNRQWdrTWNLeXo0?=
- =?utf-8?B?OTd5N2hYQWY3Rys2eEZLeFdzZHNOd2RndVVXQmlZME5wV0tiWTF4WVhxVERN?=
- =?utf-8?B?Wi9QRzJqT1g4N3pvdU5YR3JVb0o1c3dtYkF5TGNZVDJLampaMHU5cjhqa1V3?=
- =?utf-8?B?YmdKMUxkU0F0ZG9QMzJnZkdQZHZsSTJGbTdMVlU2Qjhoallmem1OY29rZkJX?=
- =?utf-8?B?RjQ0d3FvZFIyTUo5blNieWhMVGg1WXluQis1U05NYXhRQW5BS0FETGlFcExG?=
- =?utf-8?B?NDMxZkl3QnR4NjlMTllyTHlOVzhFMGZqVWlFMFA5cVVUNzNGNGdxT3ZnVlJ6?=
- =?utf-8?B?Mml3TmlhdkVaM2M5VVoxWkZiNFp1NnhDeUJBSTducjhXWFVBZXBtUFhqS214?=
- =?utf-8?B?ckJsL1J0OHZxWk9JK25vR1hCVVEybGVRVkZ6WDFyODdQckU0MDlBbzVlWmpr?=
- =?utf-8?B?aWtqYVNxQ0RaL0Z4ZzZrS1lhT2M2bXRqRHdESERzMzUzZjRZV1NDRXZ2Rkln?=
- =?utf-8?B?YmJZOEdwTVZ2R3ZjT1JhaWxrOWhEODYzQ0thcVJUM2Z3VmVNS0gxTG9memdK?=
- =?utf-8?B?MXFmeVdTM0hpZFhpSDNwR2U3bFFaUy9hcmVoU1FKdTAvRjJQMVFtK0pnclZi?=
- =?utf-8?B?UW5SU2UzR0hYT3A5cnAxT3I1VjJsSGYzcFZVSFZrbFE3ZlhNT2N4b1BtZ0xa?=
- =?utf-8?B?YW15NjhrcGJmdmNEeTNFNGdRU0FNeWhocy94MXE2MUNqQ3FRTTJNQy9PNVZD?=
- =?utf-8?B?dURYQ2l1RHNMWDdSa0hXVk9aSFl3NGtya0lTUXpETnlKbEgvU2hKKzcvQVZs?=
- =?utf-8?B?V1pLUlhES1NjYVFQbzdlZ3VHU25LdE1kWXo1czYwZmdLNHBBMndnd1NWbGtN?=
- =?utf-8?Q?CdhuWEYtVRTHjWy6h1uit1GuH?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <734BDE7BB8D75B4788D78F6935B9A2E5@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEB9118EA6
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 11:16:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a27cc46d40bso326993766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 03:16:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704280584; x=1704885384; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BrSPjHgdnH+nXilbqn4FMcNgLITuz+LIFPl1XscWIj4=;
+        b=Owqi6S63H5T1K+L6BI7Dv7ZwecRAfXL1UsHgQWwjJ6hsyuauuBHqAhTljxSn9Ulz9B
+         XBG8J2e0fE3tUEitcZflTKGL+oA7+oBPj3YAhLSunPKz9JsMoyFVQh7g+5tMdCNZ91cm
+         ZRaXf18HKuL/zNMCYIEkzOKwTqetP64hKbXxavmwdn/GRNIu78cawCg9KV3QVn5DAzC1
+         6cbf/vFxrrqcVlt9niH2YkqSNpgvOszeY0AIhTH//8/XHPirkx95UlQvB5IWSDKBUkfi
+         ZSkrzcjqGRzqTA5ThQTdic4SIXuHPzzYriAdgdDup6VOusf4Q//puPvatV9xN0TkUgYD
+         sdFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704280584; x=1704885384;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BrSPjHgdnH+nXilbqn4FMcNgLITuz+LIFPl1XscWIj4=;
+        b=OgtqQ2ElV4PsA5qM0pamow1eK80nQuG3fHhMqHAMmj2oyydT7HLA61xY9HTXzADIyy
+         JYkqkfkZoRLEqLjfTaVB5vqmJvLWQX5vuNBIADN6fiARBxDaHW/crh6QsaBIfPTeQnp9
+         fP3Qvs7bEjjpfd0wZMpLjmJFV3scLHADCtQHIWcmK6FZSz7Lrm2EewPJioULIipXtJwP
+         sx2LgR5M3yjXgzY8B78Kap8/vdct+lptEuzD3ZROh+Kk+oSjgKyAWIdwEgWCKsoRFn+V
+         nNg1N7FCE9ZjBnCI9C3dLa29QIBkk5n+k6Bnbp7hqdoK00YrvuPV+IyMcSbpJKww597S
+         9BIw==
+X-Gm-Message-State: AOJu0YymRcIq/WpXmtVds912e+Ks2RW7oX9SGuQJOcCH6cDQQcWxCn1j
+	m0SKk8WH7G73fi89f4WFqdW76pyvO4ovdQ==
+X-Google-Smtp-Source: AGHT+IFBs8+CfUnkn5KZED57Ux5CruC7jlDlvcBky02qrjRW+1r7HJfy+cjUpFsYHGo5VhV+D6rBwQ==
+X-Received: by 2002:a17:906:3858:b0:a27:9e2d:a453 with SMTP id w24-20020a170906385800b00a279e2da453mr2449018ejc.108.1704280583894;
+        Wed, 03 Jan 2024 03:16:23 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id fi8-20020a1709073ac800b00a272de16f52sm7268505ejc.112.2024.01.03.03.16.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 03:16:23 -0800 (PST)
+Date: Wed, 3 Jan 2024 14:16:20 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev, Gregory Price <gourry.memverge@gmail.com>,
+	linux-mm@kvack.org
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org, x86@kernel.org,
+	akpm@linux-foundation.org, arnd@arndb.de, tglx@linutronix.de,
+	luto@kernel.org, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, mhocko@kernel.org,
+	tj@kernel.org, ying.huang@intel.com, gregory.price@memverge.com,
+	corbet@lwn.net, rakie.kim@sk.com, hyeongtak.ji@sk.com,
+	honggyu.kim@sk.com, vtavarespetr@micron.com, peterz@infradead.org,
+	jgroves@micron.com, ravis.opensrc@micron.com, sthanneeru@micron.com,
+	emirakhur@micron.com, Hasan.Maruf@amd.com, seungjun.ha@samsung.com
+Subject: Re: [PATCH v4 11/11] mm/mempolicy: extend set_mempolicy2 and mbind2
+ to support weighted interleave
+Message-ID: <94405fba-8539-425b-b21a-3016cdd7be91@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: a46ab680-8c26-4864-caae-08dc0c4d368e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jan 2024 11:14:54.6602
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NvPDBpNJ3tco9JeVbuzj/9gCNGcjUrPiOk6BQaHknYZY8OIitU8Lglv5C7XoVmPUM/ebk0qnZX9KIOmuiMXMYWApTEcc46ynxDpg/+Fqbmg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB1438
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231218194631.21667-12-gregory.price@memverge.com>
 
-DQoNCkxlIDAzLzAxLzIwMjQgw6AgMTA6MTQsIHBldGVyeEByZWRoYXQuY29tIGEgw6ljcml0wqA6
-DQo+IEZyb206IFBldGVyIFh1IDxwZXRlcnhAcmVkaGF0LmNvbT4NCj4gDQo+IA0KPiBUZXN0IERv
-bmUNCj4gPT09PT09PT09DQo+IA0KPiBUaGlzIHYxIHdlbnQgdGhyb3VnaCB0aGUgbm9ybWFsIEdV
-UCBzbW9rZSB0ZXN0cyBvdmVyIGRpZmZlcmVudCBtZW1vcnkNCj4gdHlwZXMgb24gYXJjaHMgKHVz
-aW5nIFZNIGluc3RhbmNlcyk6IHg4Nl82NCwgYWFyY2g2NCwgcHBjNjRsZS4gIEZvcg0KPiBhYXJj
-aDY0LCB0ZXN0ZWQgb3ZlciA2NEtCIGNvbnRfcHRlIGh1Z2UgcGFnZXMuICBGb3IgcHBjNjRsZSwg
-dGVzdGVkIG92ZXINCj4gMTZNQiBodWdlcGQgZW50cmllcyAoUG93ZXI4IGhhc2ggTU1VIG9uIDRL
-IGJhc2UgcGFnZSBzaXplKS4NCj4gDQoNCkNhbiB5b3UgdGVsbCBob3cgeW91IHRlc3QgPw0KDQpJ
-J20gd2lsbGluZyB0byB0ZXN0IHRoaXMgc2VyaWVzIG9uIHBvd2VycGMgOHh4IChQUEMzMikuDQoN
-CkNocmlzdG9waGUNCg==
+Hi Gregory,
+
+kernel test robot noticed the following build warnings:
+
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Gregory-Price/mm-mempolicy-implement-the-sysfs-based-weighted_interleave-interface/20231219-074837
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git perf-tools
+patch link:    https://lore.kernel.org/r/20231218194631.21667-12-gregory.price%40memverge.com
+patch subject: [PATCH v4 11/11] mm/mempolicy: extend set_mempolicy2 and mbind2 to support weighted interleave
+config: x86_64-randconfig-161-20231219 (https://download.01.org/0day-ci/archive/20231220/202312200223.7X9rUFgu-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202312200223.7X9rUFgu-lkp@intel.com/
+
+smatch warnings:
+mm/mempolicy.c:2044 __do_sys_get_mempolicy2() warn: maybe return -EFAULT instead of the bytes remaining?
+mm/mempolicy.c:2044 __do_sys_get_mempolicy2() warn: maybe return -EFAULT instead of the bytes remaining?
+
+vim +2044 mm/mempolicy.c
+
+a2af87404eb73e Gregory Price     2023-12-18  1992  SYSCALL_DEFINE4(get_mempolicy2, struct mpol_args __user *, uargs, size_t, usize,
+a2af87404eb73e Gregory Price     2023-12-18  1993  		unsigned long, addr, unsigned long, flags)
+a2af87404eb73e Gregory Price     2023-12-18  1994  {
+a2af87404eb73e Gregory Price     2023-12-18  1995  	struct mpol_args kargs;
+a2af87404eb73e Gregory Price     2023-12-18  1996  	struct mempolicy_args margs;
+a2af87404eb73e Gregory Price     2023-12-18  1997  	int err;
+a2af87404eb73e Gregory Price     2023-12-18  1998  	nodemask_t policy_nodemask;
+a2af87404eb73e Gregory Price     2023-12-18  1999  	unsigned long __user *nodes_ptr;
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2000  	unsigned char __user *weights_ptr;
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2001  	unsigned char weights[MAX_NUMNODES];
+a2af87404eb73e Gregory Price     2023-12-18  2002  
+a2af87404eb73e Gregory Price     2023-12-18  2003  	if (flags & ~(MPOL_F_ADDR))
+a2af87404eb73e Gregory Price     2023-12-18  2004  		return -EINVAL;
+a2af87404eb73e Gregory Price     2023-12-18  2005  
+a2af87404eb73e Gregory Price     2023-12-18  2006  	/* initialize any memory liable to be copied to userland */
+a2af87404eb73e Gregory Price     2023-12-18  2007  	memset(&margs, 0, sizeof(margs));
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2008  	memset(weights, 0, sizeof(weights));
+a2af87404eb73e Gregory Price     2023-12-18  2009  
+a2af87404eb73e Gregory Price     2023-12-18  2010  	err = copy_struct_from_user(&kargs, sizeof(kargs), uargs, usize);
+a2af87404eb73e Gregory Price     2023-12-18  2011  	if (err)
+a2af87404eb73e Gregory Price     2023-12-18  2012  		return -EINVAL;
+a2af87404eb73e Gregory Price     2023-12-18  2013  
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2014  	if (kargs.il_weights)
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2015  		margs.il_weights = weights;
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2016  	else
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2017  		margs.il_weights = NULL;
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2018  
+a2af87404eb73e Gregory Price     2023-12-18  2019  	margs.policy_nodes = kargs.pol_nodes ? &policy_nodemask : NULL;
+a2af87404eb73e Gregory Price     2023-12-18  2020  	if (flags & MPOL_F_ADDR)
+a2af87404eb73e Gregory Price     2023-12-18  2021  		err = do_get_vma_mempolicy(untagged_addr(addr), NULL, &margs);
+a2af87404eb73e Gregory Price     2023-12-18  2022  	else
+a2af87404eb73e Gregory Price     2023-12-18  2023  		err = do_get_task_mempolicy(&margs);
+a2af87404eb73e Gregory Price     2023-12-18  2024  
+a2af87404eb73e Gregory Price     2023-12-18  2025  	if (err)
+a2af87404eb73e Gregory Price     2023-12-18  2026  		return err;
+a2af87404eb73e Gregory Price     2023-12-18  2027  
+a2af87404eb73e Gregory Price     2023-12-18  2028  	kargs.mode = margs.mode;
+a2af87404eb73e Gregory Price     2023-12-18  2029  	kargs.mode_flags = margs.mode_flags;
+a2af87404eb73e Gregory Price     2023-12-18  2030  	kargs.policy_node = margs.policy_node;
+a2af87404eb73e Gregory Price     2023-12-18  2031  	kargs.home_node = margs.home_node;
+a2af87404eb73e Gregory Price     2023-12-18  2032  	if (kargs.pol_nodes) {
+a2af87404eb73e Gregory Price     2023-12-18  2033  		nodes_ptr = u64_to_user_ptr(kargs.pol_nodes);
+a2af87404eb73e Gregory Price     2023-12-18  2034  		err = copy_nodes_to_user(nodes_ptr, kargs.pol_maxnodes,
+a2af87404eb73e Gregory Price     2023-12-18  2035  					 margs.policy_nodes);
+a2af87404eb73e Gregory Price     2023-12-18  2036  		if (err)
+a2af87404eb73e Gregory Price     2023-12-18  2037  			return err;
+
+This looks wrong as well.
+
+a2af87404eb73e Gregory Price     2023-12-18  2038  	}
+a2af87404eb73e Gregory Price     2023-12-18  2039  
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2040  	if (kargs.mode == MPOL_WEIGHTED_INTERLEAVE && kargs.il_weights) {
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2041  		weights_ptr = u64_to_user_ptr(kargs.il_weights);
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2042  		err = copy_to_user(weights_ptr, weights, kargs.pol_maxnodes);
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2043  		if (err)
+8bfd7ddc0dd439 Gregory Price     2023-12-18 @2044  			return err;
+
+This should return -EFAULT same as the copy_to_user() on the next line.
+
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2045  	}
+8bfd7ddc0dd439 Gregory Price     2023-12-18  2046  
+a2af87404eb73e Gregory Price     2023-12-18  2047  	return copy_to_user(uargs, &kargs, usize) ? -EFAULT : 0;
+a2af87404eb73e Gregory Price     2023-12-18  2048  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
 
