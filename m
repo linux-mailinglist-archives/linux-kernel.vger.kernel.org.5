@@ -1,229 +1,121 @@
-Return-Path: <linux-kernel+bounces-15831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 856CB82340E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 909C3823412
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:03:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F065FB23309
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:00:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 342D4B23534
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117241C69C;
-	Wed,  3 Jan 2024 18:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11DA81C68E;
+	Wed,  3 Jan 2024 18:03:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dV5N1pWn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tfggN9kK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0E51C691
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:00:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704304826;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=q48P5QWzofCocco3NZ1i12qdR2cjUhLN4nZ2fO8zD3Y=;
-	b=dV5N1pWnMf5X8erpqDbpudhcuLXKxwQN+T4O8vHTzWS3iSDUrA9YIaICQ3fYad0afsbWDY
-	vf22IPKJfNT9v/pZmEvBrKEbu5X2iTTTnCia1VmaHL8rOWJg0DPf9pq3zfyyZjdf4YUuqP
-	b3NlAaSaH3hqjyoT0+waZd8fmHRWlOc=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-191-zaabMKSCPmWAECXwcCX5fQ-1; Wed, 03 Jan 2024 13:00:20 -0500
-X-MC-Unique: zaabMKSCPmWAECXwcCX5fQ-1
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6dbdbe8bf36so9609630a34.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 10:00:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704304819; x=1704909619;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q48P5QWzofCocco3NZ1i12qdR2cjUhLN4nZ2fO8zD3Y=;
-        b=kXuUEUdapMhhzQVKGQWFWIl1fhCFByR3pAwuJw8omMw4Eou8cV6hcQtk/SynPLaP8A
-         mfWP5iUdeu5tMGssI00V+2hLmFoFJfwq8q8FRi18lqjSdCoTK0ERH38NqZGEfEvcxi2w
-         Ozd1G1aYERzhpL7/hvYAqF8omENdW/YpkMwc/C9ZeEFs7KV4ITqHvROfHemiEsYjZPIW
-         eSx/Qku+ztG/J8Y9JyafMe2EiKlZYDFAINp6CDyKObsVV0dE48zNzkmNadFJj/ajpM4F
-         c1ikIKm9hpzVtrpi1L17yNTpACEZWZTxKgOqfomw2jiL4+csooQB03gs1rtgunLtFW1S
-         f+7w==
-X-Gm-Message-State: AOJu0YwA6SvqsZNsZeYRACP/oQWZfA0bkUC3vvfRZBs8OgEanUAhy8h5
-	mH9jdYtP0UQQgUKlSZ9QTH+BrtUJXP4/R/fY9Z9X8LEzvv6QJfKleaqUdavM+2uTDDu3dy5UoH7
-	XKs5YlO5UFETjtluG7VKh2HS+7pho4s0J
-X-Received: by 2002:a05:6830:349e:b0:6dc:3c65:2a7f with SMTP id c30-20020a056830349e00b006dc3c652a7fmr6003218otu.63.1704304819634;
-        Wed, 03 Jan 2024 10:00:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEEnrcYn02XEmEIDEKFS5J+2ENvYFdJ67qmKLK8qDffDVVpRpUZ5pkWF9XzX4EQRd6bhSNjaQ==
-X-Received: by 2002:a05:6830:349e:b0:6dc:3c65:2a7f with SMTP id c30-20020a056830349e00b006dc3c652a7fmr6003182otu.63.1704304819321;
-        Wed, 03 Jan 2024 10:00:19 -0800 (PST)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id w5-20020a9d6385000000b006dc0363d57csm2371548otk.6.2024.01.03.10.00.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 10:00:18 -0800 (PST)
-Date: Wed, 3 Jan 2024 11:00:16 -0700
-From: Alex Williamson <alex.williamson@redhat.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Ankit Agrawal <ankita@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
- "shameerali.kolothum.thodi@huawei.com"
- <shameerali.kolothum.thodi@huawei.com>, "kevin.tian@intel.com"
- <kevin.tian@intel.com>, "eric.auger@redhat.com" <eric.auger@redhat.com>,
- "brett.creeley@amd.com" <brett.creeley@amd.com>, "horms@kernel.org"
- <horms@kernel.org>, Aniket Agashe <aniketa@nvidia.com>, Neo Jia
- <cjia@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>, "Tarun Gupta
- (SW-GPU)" <targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>, Andy
- Currid <acurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>, John
- Hubbard <jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>, "Anuj
- Aggarwal (SW-GPU)" <anuaggarwal@nvidia.com>, Matt Ochs <mochs@nvidia.com>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v15 1/1] vfio/nvgrace-gpu: Add vfio pci variant module
- for grace hopper
-Message-ID: <20240103110016.5067b42e.alex.williamson@redhat.com>
-In-Reply-To: <20240103165727.GQ50406@nvidia.com>
-References: <20231217191031.19476-1-ankita@nvidia.com>
-	<20231218151717.169f80aa.alex.williamson@redhat.com>
-	<BY5PR12MB3763179CAC0406420AB0C9BAB095A@BY5PR12MB3763.namprd12.prod.outlook.com>
-	<20240102091001.5fcc8736.alex.williamson@redhat.com>
-	<20240103165727.GQ50406@nvidia.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A8B1C683
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:03:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDC7EC433C7;
+	Wed,  3 Jan 2024 18:03:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704305025;
+	bh=a4K2VWj3u7JRyre9+JlkYDAmdFDWh8WsCwWxtjZX3EE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tfggN9kKCCLmoYM1LxFFq3RTJlHyHMKvJ8uzJsguFuJ4PruSBKBnOL4zdKAOtXXL1
+	 wC68zN9NlaDYvnFn5RnZngtLidlv8wmesljjdox5jeKSIrZMDySP4GJdL22LZd8gha
+	 NX6Gvr0K0pUOJ6+HkkpT4O5Ru7DmU2fmOt14yXrntkVnmoBExCkV7e6HJPwmrYlsCI
+	 zMnplHFBdeuXNIR9JZlQR2uDcWX7VWS8+WD9s5Z4k47kCLzPRt7bzV4on7aQddH+Bp
+	 xOrZL8YgxJXbysh3m8Ek1rpcbRRPlQ7EUDmGqRoOzzwjmj645pTfKrtnDUE/AzIo1q
+	 W+RWi+1sCfJ/g==
+Date: Wed, 3 Jan 2024 18:03:41 +0000
+From: Will Deacon <will@kernel.org>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH] arch/arm64: Fix typos
+Message-ID: <20240103180341.GA6200@willie-the-truck>
+References: <20240103004059.1758712-1-helgaas@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240103004059.1758712-1-helgaas@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Wed, 3 Jan 2024 12:57:27 -0400
-Jason Gunthorpe <jgg@nvidia.com> wrote:
+Hey Bjorn,
 
-> On Tue, Jan 02, 2024 at 09:10:01AM -0700, Alex Williamson wrote:
+On Tue, Jan 02, 2024 at 06:40:59PM -0600, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
 > 
-> > Yes, it's possible to add support that these ranges honor the memory
-> > enable bit, but it's not trivial and unfortunately even vfio-pci isn't
-> > a great example of this.  
+> Fix typos, most reported by "codespell arch/arm64".  Only touches comments,
+> no code changes.
 > 
-> We talked about this already, the HW architects here confirm there is
-> no issue with reset and memory enable. You will get all 1's on read
-> and NOP on write. It doesn't need to implement VMA zap.
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  arch/arm64/Kconfig                                         | 2 +-
+>  arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts | 2 +-
+>  arch/arm64/boot/dts/apm/apm-shadowcat.dtsi                 | 2 +-
+>  arch/arm64/boot/dts/apm/apm-storm.dtsi                     | 2 +-
+>  arch/arm64/boot/dts/exynos/exynos7.dtsi                    | 2 +-
+>  arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi             | 2 +-
+>  arch/arm64/boot/dts/freescale/fsl-ls1088a-ten64.dts        | 2 +-
+>  arch/arm64/boot/dts/freescale/imx8x-colibri.dtsi           | 2 +-
+>  arch/arm64/boot/dts/qcom/msm8916.dtsi                      | 4 ++--
+>  arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi   | 2 +-
+>  arch/arm64/boot/dts/qcom/sa8155p.dtsi                      | 2 +-
+>  arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi                 | 4 ++--
+>  arch/arm64/boot/dts/qcom/sdm670-google-sargo.dts           | 2 +-
+>  arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi      | 2 +-
+>  arch/arm64/boot/dts/renesas/draak.dtsi                     | 2 +-
+>  arch/arm64/boot/dts/rockchip/rk3399-roc-pc-plus.dts        | 2 +-
+>  arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi                 | 2 +-
+>  arch/arm64/include/asm/assembler.h                         | 4 ++--
+>  arch/arm64/include/asm/cpufeature.h                        | 4 ++--
+>  arch/arm64/include/asm/kvm_hyp.h                           | 2 +-
+>  arch/arm64/include/asm/pgtable.h                           | 2 +-
+>  arch/arm64/include/asm/suspend.h                           | 2 +-
+>  arch/arm64/include/asm/traps.h                             | 4 ++--
+>  arch/arm64/kernel/acpi.c                                   | 2 +-
+>  arch/arm64/kernel/cpufeature.c                             | 6 +++---
+>  arch/arm64/kernel/entry-common.c                           | 2 +-
+>  arch/arm64/kernel/entry-ftrace.S                           | 2 +-
+>  arch/arm64/kernel/entry.S                                  | 2 +-
+>  arch/arm64/kernel/ftrace.c                                 | 2 +-
+>  arch/arm64/kernel/machine_kexec.c                          | 2 +-
+>  arch/arm64/kernel/probes/uprobes.c                         | 2 +-
+>  arch/arm64/kernel/sdei.c                                   | 2 +-
+>  arch/arm64/kernel/smp.c                                    | 2 +-
+>  arch/arm64/kernel/traps.c                                  | 2 +-
+>  arch/arm64/kvm/arch_timer.c                                | 2 +-
+>  arch/arm64/kvm/fpsimd.c                                    | 2 +-
+>  arch/arm64/kvm/hyp/nvhe/host.S                             | 2 +-
+>  arch/arm64/kvm/hyp/nvhe/mm.c                               | 4 ++--
+>  arch/arm64/kvm/inject_fault.c                              | 2 +-
+>  arch/arm64/kvm/vgic/vgic-init.c                            | 2 +-
+>  arch/arm64/kvm/vgic/vgic-its.c                             | 4 ++--
+>  41 files changed, 50 insertions(+), 50 deletions(-)
 
-We talked about reset, I don't recall that we discussed that coherent
-and uncached memory ranges masquerading as PCI BARs here honor the
-memory enable bit in the command register.
+The maintenance of stuff under arch/arm64/ is distributed between a few
+different trees, so I think you'll need to split this into separate
+patches if you want to see it merged. Otherwise, it's going to lead to
+painful cross-tree conflicts and I suspect it would just get dropped
+seeing as it's not critical functionality.
 
-> > around device reset or relative to the PCI command register.  The
-> > variant driver becomes a trivial implementation that masks BARs 2 & 4
-> > and exposes the ACPI range as a device specific region with only mmap
-> > support.  QEMU can then map the device specific region into VM memory
-> > and create an equivalent ACPI table for the guest.  
-> 
-> Well, no, probably not. There is an NVIDIA specification for how the
-> vPCI function should be setup within the VM and it uses the BAR
-> method, not the ACPI.
+The good news is that scripts/get_maintainer.pl knows about these trees
+and, looking quickly at this diffstat, you probably just want
+devicetree, kvmarm and me+Catalin.
 
-Is this specification available?  It's a shame we've gotten this far
-without a reference to it.
+Cheers,
 
-> There are a lot of VMMs and OSs this needs to support so it must all
-> be consistent. For better or worse the decision was taken for the vPCI
-> spec to use BAR not ACPI, in part due to feedback from the broader VMM
-> ecosystem, and informed by future product plans.
-> 
-> So, if vfio does special regions then qemu and everyone else has to
-> fix it to meet the spec.
-
-Great, this is the sort of justification and transparency that had not
-been previously provided.  It is curious that only within the past
-couple months the device ABI changed by adding the uncached BAR, so
-this hasn't felt like a firm design.  Also I believe it's been stated
-that the driver supports both the bare metal representation of the
-device and this model where the coherent memory is mapped as a BAR, so
-I'm not sure what obstacles remain or how we're positioned for future
-products if take the bare metal approach.
-
-> > I know Jason had described this device as effectively pre-CXL to
-> > justify the coherent memory mapping, but it seems like there's still a
-> > gap here that we can't simply hand wave that this PCI BAR follows a
-> > different set of semantics.    
-> 
-> I thought all the meaningful differences are fixed now?
-> 
-> The main remaining issue seems to be around the config space
-> emulation?
-
-In the development of the virtio-vfio-pci variant driver we noted that
-r/w access to the IO BAR didn't honor the IO bit in the command
-register, which was quickly remedied and now returns -EIO if accessed
-while disabled.  We were already adding r/w support to the coherent BAR
-at the time as vfio doesn't have a means to express a region as only
-having mmap support and precedent exists that BAR regions must support
-these accesses.  So it was suggested that r/w accesses should also
-honor the command register memory enable bit, but of course memory BARs
-also support mmap, which snowballs into a much more complicated problem
-than we have in the case of the virtio IO BAR.
-
-So where do we go?  Do we continue down the path of emulating full PCI
-semantics relative to these emulated BARs?  Does hardware take into
-account the memory enable bit of the command register?  Do we
-re-evaluate the BAR model for a device specific region?
-
-> > We don't typically endorse complexity in the kernel only for the
-> > purpose of avoiding work in userspace.  The absolute minimum should
-> > be some justification of the design decision and analysis relative
-> > to standard PCI behavior.  Thanks,  
-> 
-> If we strictly took that view in VFIO a lot of stuff wouldn't be here
-> :)
-> 
-> I've made this argument before and gave up - the ecosystem wants to
-> support multiple VMMs and the sanest path to do that is via VFIO
-> kernel drivers that plug into existing vfio-pci support in the VMM
-> ecosystem.
-> 
-> From a HW supplier perspective it is quite vexing to have to support
-> all these different (and often proprietary!) VMM implementations. It
-> is not just top of tree qemu.
-> 
-> If we instead did complex userspace drivers and userspace emulation of
-> config space and so on then things like the IDXD SIOV support would
-> look *very* different and not use VFIO at all. That would probably be
-> somewhat better for security, but I was convinced it is a long and
-> technically complex road.
-> 
-> At least with this approach the only VMM issue is the NUMA nodes, and
-> as we have discussed that hackery is to make up for current Linux
-> kernel SW limitations, not actually reflecting anything about the
-> HW. If some other OS or future Linux doesn't require the ACPI NUMA
-> nodes to create an OS visible NUMA object then the VMM will not
-> require any changes.
-
-Yes, I'm satisfied with where we've landed for the NUMA nodes and
-generic initiator object.  It's an annoying constraint for management
-tools but it's better than the original proposal where nodes
-automatically popped into existence based on a vfio-pci device. 
-
-There's certainly a balancing game of complexity in the driver vs
-deferring the work to userspace.  From my perspective, I don't have a
-good justification for why we're on the emulated BAR path when another
-path looks a lot easier.  With the apparent increasing complexity of
-emulating the memory enable semantics, I felt we needed to get a better
-story there and really look at whether those semantics are worthwhile,
-or perhaps as alluded, HW takes this into account (though I'm not sure
-how).
-
-I'd suggest we take a look at whether we need to continue to pursue
-honoring the memory enable bit for these BARs and make a conscious and
-documented decision if we choose to ignore it.  Ideally we could also
-make this shared spec that we're implementing to available to the
-community to justify the design decisions here.  In the case of
-GPUDirect Cliques we had permission to post the spec to the list so it
-could be archived to provide a stable link for future reference.
-Thanks,
-
-Alex
-
+Will
 
