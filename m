@@ -1,130 +1,85 @@
-Return-Path: <linux-kernel+bounces-16057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9239B82378E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:13:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70E40823791
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:13:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4B851C24694
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:13:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E88502840E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:13:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262011DA4E;
-	Wed,  3 Jan 2024 22:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 037A11DA47;
+	Wed,  3 Jan 2024 22:13:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TQgtpQwW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c9olP2E3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 247681DA3B;
-	Wed,  3 Jan 2024 22:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=fHwQ56i97OHIXttecD026MYSyAw2rlXnCq/U+o4NtQU=; b=TQgtpQwWC4q+uBbxLsGIu9TdMR
-	A1JMSyXBnIMP0z1jFR3+80MOnElOPNCfoV8Ar1xrBtaxE+GR50TysDT35s7Nv7qkGPpp554QbQ5ji
-	2Ce0EEGf8NBuN4a+FbV5WgaGxPPuCtDqVDreR2Cf0tR9okTRrwkB8mNrGeCA1UPV3EOS+vpiyLt/O
-	uJ+lMmAbXQgb1x6wPtzGmoInRuhGw1fEhoATgHtY3EGDH3cPt876igUx0ae0/BDzdBUkxk+Tv17vp
-	uioPCfzrK1NVkArGYtNJL5Fw7NSFc6bbEoU+p+UJuyVCmy3sjBhDyajVDQR7PchvBGVwEpBSBu2A6
-	9vTL2mOw==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rL9U9-00CEYx-2Y;
-	Wed, 03 Jan 2024 22:13:13 +0000
-Message-ID: <3466355c-dc30-4638-9bbe-a7433477340c@infradead.org>
-Date: Wed, 3 Jan 2024 14:13:12 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE7F1EB24;
+	Wed,  3 Jan 2024 22:13:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C224C433C7;
+	Wed,  3 Jan 2024 22:13:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704320017;
+	bh=V7DVqz33iZVLnVsQtvtvNxjFPOP/crTz1Uh3hrjDO9k=;
+	h=Date:From:To:Cc:Subject:From;
+	b=c9olP2E3k0C9trWd988eMBR+lQRNq7Pnh2r8sJONOjTxb1uls/DYwJr2nQbgKUvgI
+	 GdFfPXFS1WOc0LsYKUCic89oJwTcriSK/eJwMqw8e1F5WUMMp+liTRdELl+DvmiSGI
+	 rxFslI8QGMoGBA9TlPkPeDf6OtObKSEZEmYswwo6ejPonEUhMaO2fLY4HcMJbeN15l
+	 WG96BMNsz74tIEI+xbTkbPXEjEypnLEsZtu1UylndLU95wZ+OkA4FiuDczAjHjoecl
+	 az9OIzQj0N7WNidxi3Dyjn6ASGR3TGLdftE2hrA5jdo++tWcbX1ytCNSxX/o8TDGfF
+	 C5u2l7R46m0cg==
+Date: Wed, 3 Jan 2024 16:13:35 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	Tom Joseph <tjoseph@cadence.com>,
+	Michael Schaller <michael@5challer.de>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [GIT PULL] PCI fixes for v6.7
+Message-ID: <20240103221335.GA1797305@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 10/11] Documentation: driver-api: pps: Add Intel
- Timed I/O PPS generator
-Content-Language: en-US
-To: lakshmi.sowjanya.d@intel.com, tglx@linutronix.de, jstultz@google.com,
- giometti@enneenne.com, corbet@lwn.net, linux-kernel@vger.kernel.org
-Cc: x86@kernel.org, netdev@vger.kernel.org, linux-doc@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, andriy.shevchenko@linux.intel.com,
- eddie.dong@intel.com, christopher.s.hall@intel.com,
- jesse.brandeburg@intel.com, davem@davemloft.net,
- alexandre.torgue@foss.st.com, joabreu@synopsys.com,
- mcoquelin.stm32@gmail.com, perex@perex.cz, linux-sound@vger.kernel.org,
- anthony.l.nguyen@intel.com, pandith.n@intel.com,
- mallikarjunappa.sangannavar@intel.com, thejesh.reddy.t.r@intel.com
-References: <20240103115602.19044-1-lakshmi.sowjanya.d@intel.com>
- <20240103115602.19044-11-lakshmi.sowjanya.d@intel.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240103115602.19044-11-lakshmi.sowjanya.d@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-On 1/3/24 03:56, lakshmi.sowjanya.d@intel.com wrote:
-> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-> 
-> Add Intel Timed I/O PPS usage instructions.
-> 
-> Co-developed-by: Pandith N <pandith.n@intel.com>
-> Signed-off-by: Pandith N <pandith.n@intel.com>
-> Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  Documentation/driver-api/pps.rst | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/Documentation/driver-api/pps.rst b/Documentation/driver-api/pps.rst
-> index 78dded03e5d8..cb1e4d814d37 100644
-> --- a/Documentation/driver-api/pps.rst
-> +++ b/Documentation/driver-api/pps.rst
-> @@ -246,3 +246,25 @@ delay between assert and clear edge as small as possible to reduce system
->  latencies. But if it is too small slave won't be able to capture clear edge
->  transition. The default of 30us should be good enough in most situations.
->  The delay can be selected using 'delay' pps_gen_parport module parameter.
-> +
-> +
-> +Intel Timed I/O PPS signal generator
-> +------------------------------------
-> +
-> +Intel Timed I/O is a high precision device, present on 2019 and newer Intel
-> +CPUs, that can generate PPS signal.
+are available in the Git repository at:
 
-              can generate a PPS signal.
-or
-              can generate PPS signals.
+  git://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git tags/pci-v6.7-fixes-2
 
-> +
-> +Timed I/O and system time are both driven by same hardware clock, The signal
+for you to fetch changes up to 0ee2030af4e3e0a9cd26dfaa8c2f935beffa91d1:
 
-                                                              clock. The signal is
+  MAINTAINERS: Orphan Cadence PCIe IP (2024-01-02 17:29:38 -0600)
 
-> +generated with a precision of ~20 nanoseconds. The generated PPS signal
-> +is used to synchronize an external device with system clock. For example,
-> +Share your clock with a device that receives PPS signal, generated by
+----------------------------------------------------------------
+- Revert an ASPM patch that caused an unintended reboot when resuming
+  after suspend (Bjorn Helgaas)
 
-   share
+- Orphan Cadence PCIe IP (Bjorn Helgaas)
 
-> +Timed I/O device. There are dedicated Timed I/O pins to deliver PPS signal
+----------------------------------------------------------------
+Bjorn Helgaas (2):
+      Revert "PCI/ASPM: Remove pcie_aspm_pm_state_change()"
+      MAINTAINERS: Orphan Cadence PCIe IP
 
-maybe:                                                  to deliver the PPS signal
-
-> +to an external device.
-> +
-> +Usage of Intel Timed I/O as PPS generator:
-> +
-> +Start generating PPS signal::
-> +        $echo 1 > /sys/devices/platform/INTCxxxx\:00/enable
-> +
-> +Stop generating PPS signal::
-> +        $echo 0 > /sys/devices/platform/INTCxxxx\:00/enable
-
--- 
-#Randy
+ CREDITS                 |  4 ++++
+ MAINTAINERS             |  5 ++---
+ drivers/pci/pci.c       |  6 ++++++
+ drivers/pci/pci.h       |  2 ++
+ drivers/pci/pcie/aspm.c | 19 +++++++++++++++++++
+ 5 files changed, 33 insertions(+), 3 deletions(-)
 
