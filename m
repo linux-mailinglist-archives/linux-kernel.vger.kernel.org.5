@@ -1,92 +1,117 @@
-Return-Path: <linux-kernel+bounces-16004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 941028236E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:07:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 989308236E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:07:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79BE31C245D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:07:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CA852878A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:07:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478991D681;
-	Wed,  3 Jan 2024 21:07:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71ECB1D691;
+	Wed,  3 Jan 2024 21:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d60WAT0g"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="FI8w5b/m"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7181D55C
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 21:07:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d4a7f0c4dso102148725e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 13:07:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704316022; x=1704920822; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XopGBTIxwh37vdjMibvYLI8oJTlpwpMZAFmHsoe3mMQ=;
-        b=d60WAT0gmtfFzQsFtKNQaM/U3NNPrN+UjZfs75DPiXpRh19ysEJocPh8ha9bnfvLRB
-         kdWL091IQPvVUNvxFs0a+2+8jZVBOJrkZixzsOGtcXtXB+s5HonGUSyp2KhyXYiNJ146
-         PoGFMlcxHDud61eMiQbHmviM12LcIbYnUc6Vgy/JmpcQzhFMcRfPek0B6l6E2tbOUNdj
-         +XL2T5IrP5rI/DZ1lesr6u+uRPKa5Ir3WJKxzJhE2fIwMxIHKFd1s67p51kHhkdeeAVb
-         fyVqo8oQ4gmSeg9/5JacIo7cnR+6LN13jv/E8YcFIfZSzaj3np2hwIy/3sXM61/CwMg9
-         5vrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704316022; x=1704920822;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XopGBTIxwh37vdjMibvYLI8oJTlpwpMZAFmHsoe3mMQ=;
-        b=Ez2O03upBXRRHXDxfUpWHf11+CAUrhFTtpPk1C2N1ZysRlaDElUW+PkzrAA0INPOju
-         X+lOazkNQe+ADCEMxjhF3YXxfGPWM5A5zBX9gEqkRrQLjvrqiPaPf1ftl/CZX/EA5/oF
-         QexrYW7LxKRKZNdWoEvEGK1VUIc8jKkVkyI+Ff0gM0MY9T6lewXMzUIrlZDQP7B8ykmk
-         F6ZV921Fgrf+95G7o/zsXb3Zwv3GwWEHG6Bp0SizH6xf15mtj2/pKyiFEaXKOBrxp0CM
-         WnOWM82oMesrTx27Bj7Gh716QV3AhHIA7KzZ5UdtG3dhzNZ37DckSdISUc8D6mvswyK1
-         Jtrg==
-X-Gm-Message-State: AOJu0YzQOjg47sj4ZMimbMpF5DzcrXIJDED2NdgmCq4FT6YL1hk3AgXn
-	Ah5Ljwhv3zJSYhaZicMdhmHGnYzTKAhOZA==
-X-Google-Smtp-Source: AGHT+IFXIzcZX+k44lLg3C/fTb+FV0k77refuR6e+ayuL/TfA6/NW/mvIU/5pQTTtSvctGLbRqBjPg==
-X-Received: by 2002:a05:600c:3f97:b0:40d:899a:7cf7 with SMTP id fs23-20020a05600c3f9700b0040d899a7cf7mr2458006wmb.8.1704316022237;
-        Wed, 03 Jan 2024 13:07:02 -0800 (PST)
-Received: from ?IPV6:2001:8a0:6cc7:ad00:405d:cdcd:8747:287c? ([2001:8a0:6cc7:ad00:405d:cdcd:8747:287c])
-        by smtp.gmail.com with ESMTPSA id n19-20020a05600c4f9300b0040d8d023760sm3428415wmq.5.2024.01.03.13.07.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 13:07:01 -0800 (PST)
-Message-ID: <49b058fb-4900-4c5d-8f63-db781408bd18@gmail.com>
-Date: Wed, 3 Jan 2024 21:07:00 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F1491D697;
+	Wed,  3 Jan 2024 21:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6D7A6D52;
+	Wed,  3 Jan 2024 22:06:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1704315985;
+	bh=SodjiVnFsVemtH8EJ+pL/zZCwg/O4PbVNowZr4W9viQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FI8w5b/mATBLfPR6CmjGREnHYyvrik9RzhcjoVrVWHft4V6isL2zNSRjoSqpGLCaQ
+	 +1Dg1Bd6xQvdh/21nnAdGq/5wXYrZjk17hdq8OXV+EuaGBnXuEdaz9MDswnOdTlWIa
+	 zv7qG9fE2qpviu38eOB+RfcIE6MC6pJDN3yHnRZo=
+Date: Wed, 3 Jan 2024 23:07:34 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Arnd Bergmann <arnd@kernel.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Paul Elder <paul.elder@ideasonboard.com>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Arnd Bergmann <arnd@arndb.de>, Hans de Goede <hdegoede@redhat.com>,
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Alain Volmat <alain.volmat@foss.st.com>,
+	Mehdi Djait <mehdi.djait@bootlin.com>, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: i2c: thp7312: select CONFIG_FW_LOADER
+Message-ID: <20240103210734.GC17142@pendragon.ideasonboard.com>
+References: <20240103155811.4092035-1-arnd@kernel.org>
+ <20240103174820.GA17142@pendragon.ideasonboard.com>
+ <775efa9b-0917-4e89-abc5-470c9f4506db@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-kernel@vger.kernel.org
-From: =?UTF-8?Q?Andr=C3=A9_Coelho?= <andrealbergaria@gmail.com>
-Subject: argv
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <775efa9b-0917-4e89-abc5-470c9f4506db@infradead.org>
 
-How is argv contents..say "hello abc" is put into stack?
+On Wed, Jan 03, 2024 at 12:06:33PM -0800, Randy Dunlap wrote:
+> On 1/3/24 09:48, Laurent Pinchart wrote:
+> > On Wed, Jan 03, 2024 at 04:58:05PM +0100, Arnd Bergmann wrote:
+> >> From: Arnd Bergmann <arnd@arndb.de>
+> >>
+> >> The recently added driver uses the firmware loader mechanism but causes
+> >> a link failure when that is in a loadable module while thp7312 itself
+> >> is built-in:
+> >>
+> >> arm-linux-gnueabi-ld: drivers/media/i2c/thp7312.o: in function `thp7312_probe':
+> >> thp7312.c:(.text+0x4164): undefined reference to `firmware_upload_register'
+> >>
+> >> Select the required Kconfig symbol. Note that the driver specifically
+> >> needs the firmware upload interface that is controlled by CONFIG_FW_UPLOAD,
+> >> but there is no link failure when that is disabled because the interfaces
+> >> are stubbed out here.
+> >>
+> >> Fixes: 7a52ab415b43 ("media: i2c: Add driver for THine THP7312")
+> >> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > I've posted a similar fix yesterday, see
+> > https://lore.kernel.org/linux-media/20240102074518.24968-1-laurent.pinchart@ideasonboard.com
+> > 
+> > What approach do you think is best ?
+> 
+> By far the dominant use of FW_LOADER is to select it instead of depend on it,
+> so I prefer Arnd's patch.
 
-push "hell"
+The alternative could save space, but I expect that to be an uncommon
+use case, as FW_LOADER will likely be selected for other reasons anyway. 
 
-push"o ab"
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-push "c" ?!?!
-
-
-thanks...
+> >> ---
+> >>  drivers/media/i2c/Kconfig | 1 +
+> >>  1 file changed, 1 insertion(+)
+> >>
+> >> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+> >> index 78a87331686e..4c3435921f19 100644
+> >> --- a/drivers/media/i2c/Kconfig
+> >> +++ b/drivers/media/i2c/Kconfig
+> >> @@ -674,6 +674,7 @@ menu "Camera ISPs"
+> >>  config VIDEO_THP7312
+> >>  	tristate "THine THP7312 support"
+> >>  	depends on I2C
+> >> +	select FW_LOADER
+> >>  	select MEDIA_CONTROLLER
+> >>  	select V4L2_CCI_I2C
+> >>  	select V4L2_FWNODE
 
 -- 
-André Albergaria Coelho
-andrealbergaria@gmail.com
+Regards,
 
+Laurent Pinchart
 
