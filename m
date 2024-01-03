@@ -1,178 +1,221 @@
-Return-Path: <linux-kernel+bounces-15132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9A5D822789
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:19:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 596A182278C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:22:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64709B2184F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:18:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C9881C22E00
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:22:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9FED4A33;
-	Wed,  3 Jan 2024 03:18:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B4ECA71;
+	Wed,  3 Jan 2024 03:22:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=stwcx.xyz header.i=@stwcx.xyz header.b="quwu6wqF";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fBJcxNxI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CAC94A16
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 03:18:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T4ZZw3PHnz1FHX7;
-	Wed,  3 Jan 2024 11:14:48 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id F3CD1140136;
-	Wed,  3 Jan 2024 11:18:46 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 3 Jan 2024 11:18:46 +0800
-Subject: Re: [PATCH RFC 00/17] ubifs: Add filesystem repair support
-To: Richard Weinberger <richard@nod.at>
-CC: david oberhollenzer <david.oberhollenzer@sigma-star.at>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Sascha Hauer <s.hauer@pengutronix.de>, Tudor
- Ambarus <Tudor.Ambarus@linaro.org>, linux-kernel
-	<linux-kernel@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>
-References: <20231228014112.2836317-1-chengzhihao1@huawei.com>
- <1145531757.175508.1703844362355.JavaMail.zimbra@nod.at>
- <13b259ca-b32f-a8d6-5e11-8bb38df72f5c@huawei.com>
- <642239519.177270.1703884138999.JavaMail.zimbra@nod.at>
- <a145fc68-9b0a-9794-48d2-b7ad79116833@huawei.com>
- <535616666.192239.1704228332389.JavaMail.zimbra@nod.at>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <460eb02e-8937-282c-62c5-6ea606324b0e@huawei.com>
-Date: Wed, 3 Jan 2024 11:18:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2554017981;
+	Wed,  3 Jan 2024 03:21:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stwcx.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stwcx.xyz
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.west.internal (Postfix) with ESMTP id F022B3200B3E;
+	Tue,  2 Jan 2024 22:21:57 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 02 Jan 2024 22:21:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1704252117; x=1704338517; bh=Vx7gAZqcX1
+	T28qVZAMMb06W1dpVHsSeRGs3le6ELFdI=; b=quwu6wqF765KNAVZVnVssxC5zd
+	Qk1Cfum5IF8R1thR8YdxV9m4bmNqYIQ5Adjp3+cWBjC3tbOxLB4kbKeaa9eZqcGc
+	IwPg4+B+1fbXeyCvkb9Hz4w8WcNGZZgxfq/+2lF80wzmntWV1YRmXl+XytOoS2EK
+	CVWLa/HDNaJSLtpVFnLJVMNLZMnDDoYn3pb2jx+S5UxtMsLoVKqjZ9c7JtsGXcrp
+	I/qxsP9ICw6GEoGq5oiL/bzgRMPZxFNRcx9IYjSexJW4U5geu7WibHIxrDWMWIBX
+	2Gs7KF4Ey23xy2RL0fc3lKm93Ph4v/zRKHNIucFmjFvrHUhi0W8FyiOGY/IQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704252117; x=1704338517; bh=Vx7gAZqcX1T28qVZAMMb06W1dpVH
+	sSeRGs3le6ELFdI=; b=fBJcxNxI6skA8Mx1ZH3B5eSODxHn4LqIoY9cGHIf44Hg
+	lUvQIJBcsqIfWZoLduLlC+PiuKa9LRubVMXPjlSDlAXOZ8hxp+B7KHQehBuWIllD
+	SaBLFI0R02NGg5CZdW6PEeC8TN+Vi5pBpehqglLf2x1iBE+zvYQcr4pnjF41W08D
+	20jT3wLk9J7GVC7BLybGWs4VHpb7xo9F+UhHCzgZ6j/Jxrwrwhhyl9pol/Oe6MeJ
+	KipFStQ12rgvuJpDq3nnXpGHHN6O0ODbN8/scwdWil9sS29nuiPQh0bYXmeIK9ry
+	FH2T0cecfU535sOodZDC0ztTVovSyzijfOU+DBw+EQ==
+X-ME-Sender: <xms:1NKUZWPdTBMosocJoVlGBa_taJHJLWlS9wa4nROkNID7eOzD9Kw8nw>
+    <xme:1NKUZU9R23_x1rNxd8S9KhDHp8-2by5lYZktXFNBB4xY-rU6_fQnn-IzGNWK5bGrR
+    8mIJjC2oi9sa7E_uvg>
+X-ME-Received: <xmr:1NKUZdTwouk9KjrO6OAvYtOoiScr7lEMAsYZYEE3TvVQzXA3XLqoEU3AlyE6TGbMBdemleqaXKQCx6h3Wyt1W7KoEQvfhQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeggedgheelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdludejmdenucfjughrpeffhffvvefukfhfgggtuggjsehgtderredt
+    tddvnecuhfhrohhmpefrrghtrhhitghkucghihhllhhirghmshcuoehprghtrhhitghkse
+    hsthiftgigrdighiiiqeenucggtffrrghtthgvrhhnpeelkeehhfffjeffhefhueehfeef
+    keeuteetudfhuefgveduveehheeiuefhjeevjeenucffohhmrghinhepkhgvrhhnvghlrd
+    horhhgpdhgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
+    mhepmhgrihhlfhhrohhmpehprghtrhhitghksehsthiftgigrdighiii
+X-ME-Proxy: <xmx:1NKUZWtuEv9y7xpfc8LOhtMkpzJ2Jvsk-aDBS1VxECWIu9foRuC0Gw>
+    <xmx:1NKUZefp9PqVPc_eBuvRVM4THRFQx-oRbv_1lyUut-UOv2ZZ6ay_Kg>
+    <xmx:1NKUZa29R1gVvKjEd1--O2uDw29jVXlvPM81AJlBPS6PxQQxsdQH9g>
+    <xmx:1dKUZa2VrAoim_rD-ofdb5Q1xCKZwAXwYgCBQU1niV1ZE8S8yWl8RQ>
+Feedback-ID: i68a1478a:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 2 Jan 2024 22:21:55 -0500 (EST)
+Date: Tue, 2 Jan 2024 21:21:54 -0600
+From: Patrick Williams <patrick@stwcx.xyz>
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Howard Chiu <howard10703049@gmail.com>, robh+dt@kernel.org,
+	joel@jms.id.au, andrew@aj.id.au, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org, potin.lai@quantatw.com,
+	Howard Chiu <howard.chiu@quantatw.com>,
+	linux-integrity@vger.kernel.org, rentao.bupt@gmail.com
+Subject: Re: [PATCH v8] ARM: dts: aspeed: Adding Facebook Bletchley BMC
+Message-ID: <ZZTS0p1hdAchIbKp@heinlein.vulture-banana.ts.net>
+References: <20231220080733.GA30641@wunner.de>
+ <F444BFCC-1D44-4AF6-A0E1-B153A217FFE3@stwcx.xyz>
+ <20231220170012.GA10387@wunner.de>
+ <ZYYP1C0h4ms9kEjA@heinlein.vulture-banana.ts.net>
+ <20231223083623.GA17734@wunner.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <535616666.192239.1704228332389.JavaMail.zimbra@nod.at>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hwM5F1OEC+dSLR9t"
+Content-Disposition: inline
+In-Reply-To: <20231223083623.GA17734@wunner.de>
 
-在 2024/1/3 4:45, Richard Weinberger 写道:
-> ----- Ursprüngliche Mail -----
->> Von: "chengzhihao1" <chengzhihao1@huawei.com>
->> I come up with another way to implement fsck.ubifs:
->>
->> There are three modes:
->>
->> 1. common mode(no options): Ask user whether to fix as long as a problem
->> is detected.
-> 
-> Makes sense.
-> 
->> 2. safe mode(-a option): Auto repair as long as no data/files lost(eg.
->> nlink, isize, xattr_cnt, which can be corrected without dropping nodes),
->> otherwise returns error code.
-> 
-> Makes sense.
->   
->> 3. dangerous mode(-y option): Fix is always successful, unless
->> superblock is corrupted. There are 2 situations:
-> 
-> Please not use "-y". Usually "-y" stands for "answer yes to all questions".
-> But selecting names for command line flags is currently my least concern.
->   
->>    a) TNC is valid: fsck will print which file is dropped and which
->> file's data is dropped
-> 
-> Sounds also good.
->   
->>    b) TNC is invalid: fsck will scan all nodes without referencing TNC,
->> same as this patchset does
-> 
-> I'd make this a distinct mode.
-> It can be used to rebuild index and LEB property trees.
-> This is basically a "drop trees and rebuild" mode.
-> 
 
-OK, then fsck will have four modes.
+--hwM5F1OEC+dSLR9t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->>
->> Q1: How do you think of this method?
-> 
-> Sounds good so far.
->   
->> Q2: Mode 1, 2 and 3(a) depend on journal replaying, I found
->> xfs_repair[1] should be used after mounting/unmounting xfs (Let kernel
->> replay journal), if UBIFS does so, there is no need to copy recovery
->> subsystem into userspace, but user has to mount/unmount before doing
->> fsck. I found e2fsck has copied recovery code into userspace, so it can
->> do fsck without mounting/unmounting. If UBIFS does so, journal replaying
->> will update TNC and LPT, please reference Q3(1). Which method do you
->> suggest?
-> 
-> UBIFS is a little special regarding the journal.
-> 
-> 1. The journal is not an add-on like it is on many other file systems,
-> you have to replay it to get a consistent file system.
-> 2. Journal replay is also needed after a clean umount. The reason is that
-> UBIFS does no commit at umount time.
+On Sat, Dec 23, 2023 at 09:36:23AM +0100, Lukas Wunner wrote:
+> On Fri, Dec 22, 2023 at 04:38:12PM -0600, Patrick Williams wrote:
+> > On Wed, Dec 20, 2023 at 06:00:12PM +0100, Lukas Wunner wrote:
+> > > If chips are dual-sourced or triple-sourced, as you say, and they
+> > > behave identically, then I think it is fine to specify all of their
+> > > compatible strings plus the generic compatible. =20
+> >=20
+> > This has explicitly been rejected before; having multiple incompatible
+> > chips listed in the same compatible.  I've tried to search lore but I
+> > can't find a reference unfortunately.
+>=20
+> I'll let devicetree maintainers comment on that.
+>=20
+>=20
+> > Furthermore, what you're suggesting does not jive with what is in the
+> > devicetree binding documentation for tpm_tis-spi [2]:
+> >=20
+> > - compatible: should be **one** of the following (emphasis mine)
+>=20
+> That's superseded by:
+>=20
+> https://lore.kernel.org/all/cover.1702806810.git.lukas@wunner.de/
+>=20
+> I don't really have a dog in this fight, I merely stepped up to
+> convert TPM DT bindings to YAML.  There have been multiple attempts
+> to convert them in the past but none of them have been pursued into
+> mainline.
 
-I agree, there exists one situation that UBIFS replays journal even 
-after clean umount.
-     P1      ubifs_bgt      umount
-   mkdir
-          run_bg_commit
-           c->cmt_state = COMMIT_RUNNING_BACKGROUND
-           do_commit
-            ubifs_log_start_commit(c, &new_ltail_lnum) // log start
-            up_write(&c->commit_sem)
-   touch
-    ubifs_jnl_update // new buds added
-                          cleanup_mnt
-                           deactivate_super
-                            fs->kill_sb
-                             generic_shutdown_super
-                              sync_filesystem
-                               ubifs_sync_fs
-                                ubifs_run_commit
-                                 wait_for_commit // wait bg commit, 
-'touch' won't be commited, it will be replayed in next mount
+Thank you for the effort and context.  I wasn't aware of this pending
+change.
 
-> 
-> So IMHO you need to have journal replay code in your tool in any case.
-> You can copy it from the kernel implementation and add more checks.
-> While the kernel code also tries to be fast, fsck should be more paranoid.
-> Ideally the outcome is a libubifs or such which can be derived from the
-> kernel source while building mtd-utils.
+> I looked at compatible string usage in arch/arm{,64}/boot/dts
+> and was under the impression that the majority of devicetrees
+> use a combo matching this pattern:
+> "vendor,chip", "tcg,tpm[_-]tis-{spi,i2c,mmio}"
+>=20
+> So that's what I went for in the conversion.  It would be inconsistent
+> to enforce a generic compatible for i2c and mmio, but not for spi.
+>=20
+> I ran the validator against all arm/arm64 devicetrees and there are
+> four devicetrees which only use a generic compatible and not a
+> "vendor,chip" compatible:
+> arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-bletchley.dts
+> arch/arm/boot/dts/ast2600-facebook-netbmc-common.dtsi
+> arch/arm/boot/dts/aspeed-bmc-facebook-wedge400.dts
+> arch/arm/boot/dts/am335x-moxa-uc-2100-common.dtsi
 
-All right, sounds like a huge copy work.
+After some investigation, it should be safe to use "infineon,slb9670"
+for all of the facebook systems.  If you want to add that to your patch
+set you can cc me and Tao Ren (rentao.bupt@gmail.com) and I will at
+least give my Reviewed-by.
 
-> 
->> Q3: If fsck drops or updates a node(eg. dentry lost inode, corrected
->> inode) in mode 1,2 and 3(a), TNC/LPT should be updated. There are two
->> ways updating TNC and LPT:
->>
->>    1) Like kernel does, which means that mark dirty TNC/LPT for
->> corresponding branches and do_commit(). It will copy much code into
->> userspace, eg. tnc.c, lpt.c, tnc_commit.c,
->> lpt_commit.c. I fear there exists risks. For example, there is no space
->> left for new index nodes, gc should be performed? If so, gc/lpt gc code
->> should be copied too.
->>
->>    2) Rebuild new TNC/LPT based on valid nodes. This way is simple, but
->> old good TNC could be corrupted, it means that powercut during fsck may
->> let UBIFS image must be repaired in mode 3(b) but it could be repaired
->> in mode 2\3(a) before invoking fsck.
->>
->> Which way is better?
-> 
-> Since you need to do a full journal replay anyway and power-cut awareness
-> is one of your requirements, I fear the only option is 1). >
-> Thanks,
-> //richard
-> .
-> 
+> So, three Aspeed Facebook and one Moxa.  There's a fifth case (phyTEC)
+> but the devicetree author clarified it's an Infineon SLB9670.
+> The authors of the other four devicetrees listed above did not respond.
+>=20
+> Patches to fix up schema violations are here:
+> https://github.com/l1k/linux/commit/7813a455ed15393df7d9d353173635b98ae23=
+387
+> https://github.com/l1k/linux/commit/a958be44952b1de170100be1007780a72ce7d=
+861
+>=20
+>=20
+> > As I said,
+> > these are pluggable modules and not simply second-source builds.  There
+> > are a collection of modules that can all be plugged into the same heade=
+r.
+> > They might not even be shipped with the device...
+>=20
+> If those TPM modules might not even be plugged in or are interchangeable,
+> I think they ought to be represented as DT overlays.
 
+I still don't think DT overlays are appropriate for TPMs as it
+effectively extends the attack surface for the kernel PCRs all the way
+until you can run enough code to load the appropriate DT overlay,
+which is likely somewhere in userspace.  This seriously diminishes the
+value of measured boot.
+
+> Honestly I'm wondering how common the scenario you're describing is.
+> If it's an edge case, it might not be worth holding up the YAML
+> conversion because of it.  The missing YAML conversion is a constant
+> cause of pain for a lot of people.
+
+Understood.
+
+Since any of the chips we might be using are currently equivalent from a
+driver perspective with the generic TCG spec (and the infineon,slb9670
+compatible) we should be fine.  If there becomes an incompatibility in
+the future with the tpm_tis_spi code we'll cross that bridge at that
+time.
+
+--=20
+Patrick Williams
+
+--hwM5F1OEC+dSLR9t
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAmWU0tAACgkQqwNHzC0A
+wRldVw/9F9/Ybs0KhE/j89cPIXbUTw5eqIFIv9vbH83SoCUDpD2ZQS6DvHA1JTC8
+osLolgZpMQSZbk80qnDLwd6xZyedkCzXAIuWFB/HWCB2HMVhLCHSfWG6Em5rNH+A
+cChn24384cGoKr2gv+HKW+rjOut7rjus8+7zdRJoRXOtvovDRT6p86fqn+mlJjh8
+Eo1b50oaoW3+IEN+P7sdpIn9ryLTK/MF8bnKT6gwijyXigGo3EV5CJ0TRkd53XaH
+IrUpQZKKMZ0uTp9FMO1FTH68FWqKQ9/8cN6uL5kdDw3CnxI4ImfQWnVyKuK7w18m
+dA0GdGKp5ew5pSmuhixkjufMQJwP+tTNAAHlBAXiEtNaXncJqn7gVkF0v3dmdkXV
+6pAh68Zs59ob8hgPu1X85ndS7l9miuezALJ2tSZcKK/ZiaPB72N2LeGIQPdwAhBn
+aBPay31GF+/ew6IB1eJoPXcKGOKgUdebafsHnXLXpajBHW2L4txIz5QLPXBxopbn
+zvGTmb9xH6mCnAmA0zjUv5ddzhzO00V0kll8fmnVFZ/KVj2D9xh/5KKBkcjKvp23
+GW18pHYbSxEPDWjosf30+qzW3pnbnTTnhXD79PlqPx8Bpi16CQd1rcaIoKbYMYCv
+suW4zaGjWhTyGCISp8dujMdDdWMGWdHUy3BL5iK0STfI7BDY4jI=
+=inLs
+-----END PGP SIGNATURE-----
+
+--hwM5F1OEC+dSLR9t--
 
