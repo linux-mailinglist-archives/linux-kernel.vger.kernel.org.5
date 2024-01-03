@@ -1,128 +1,124 @@
-Return-Path: <linux-kernel+bounces-15552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10993822E05
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:11:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 853A5822E0D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:12:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62437B230B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:11:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D0752854C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:12:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F00E4199B7;
-	Wed,  3 Jan 2024 13:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8162F199A4;
+	Wed,  3 Jan 2024 13:11:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="DSU2cI4s";
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="alfUp47L"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YjiXUhhX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D59DC199A1;
-	Wed,  3 Jan 2024 13:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
-Received: by nautica.notk.org (Postfix, from userid 108)
-	id 6E37AC026; Wed,  3 Jan 2024 14:10:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1704287439; bh=nNLSz3IQyDfOhUPqR/BsW6lP6xUFuUzC9P2KcyoDIGM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DSU2cI4sZf90qwRfnaXnznL7jIlbzmSuznoRXPqYlvafbrPQAEpuqVf2EctFivLL6
-	 EqQN+rDFO5kMoPHxJsvZDTAz+FJnuG+NOehkLZUbpCJ0tUKQkB28Zcwxm9l8ssujoS
-	 fcA25Qoqq4QAUxL+lAcgNB9Sx3uClqJlcs8e3viPQhl3m7Dq4oc/c1qVCCzJ0KfxLs
-	 ZqQs6Cabvh5jwJE20Pl5v9/8uuZxvuSewqEme5RfqMfM0x7Ec3a29K9sH3O92lMCvt
-	 /X30sNmyGkn+YL/BiQ2P2XJBodDL6HyR4c3vIyS+H7XbWYfYTW2Ni9mPC9/JdzWIbv
-	 qNaDmmKbdA6bQ==
-X-Spam-Level: 
-Received: from gaia (localhost [127.0.0.1])
-	by nautica.notk.org (Postfix) with ESMTPS id A1D64C009;
-	Wed,  3 Jan 2024 14:10:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1704287438; bh=nNLSz3IQyDfOhUPqR/BsW6lP6xUFuUzC9P2KcyoDIGM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=alfUp47LcXS8Qn3+pM3575baz2IlmljGvcJijYZ9Gud9tjALEz1+mys8tps/nOpEs
-	 3l1lyYmuJdM0qPObSIEky+UOMT/TorZQ56huXodWvki8aQnQXO7yZ0uBLQSa7pOD1t
-	 5SyVGBURpK+D8S7dKO9j2yjtif7k4yrKlPi7+9WDUwkil5dcygJciP5lVbS/leQz6d
-	 Lg/0Ri3BlT4O7FYFqnkqSzJ6nN8gMb65wTuW8kwop7fUFl3eXZM/I4SkkKSKowIeJB
-	 a9FdxA4xJ9MPVFG92oNtP53beEe2cJg9l6m92bTZnVgUcigZLYpFkHAU6WrBAXePZb
-	 04dlr6Z5i13vw==
-Received: from localhost (gaia [local])
-	by gaia (OpenSMTPD) with ESMTPA id 861cbe98;
-	Wed, 3 Jan 2024 13:10:29 +0000 (UTC)
-Date: Wed, 3 Jan 2024 22:10:14 +0900
-From: Dominique Martinet <asmadeus@codewreck.org>
-To: David Howells <dhowells@redhat.com>
-Cc: Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Paulo Alcantara <pc@manguebit.com>,
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
-	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-	linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-	v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Christian Schoenebeck <linux_oss@crudebyte.com>
-Subject: Re: [PATCH] 9p: Fix initialisation of netfs_inode for 9p
-Message-ID: <ZZVctju5TEjS218p@codewreck.org>
-References: <20231221132400.1601991-41-dhowells@redhat.com>
- <20231221132400.1601991-1-dhowells@redhat.com>
- <292837.1704232179@warthog.procyon.org.uk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B901F1945C;
+	Wed,  3 Jan 2024 13:11:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47A78C433C7;
+	Wed,  3 Jan 2024 13:11:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704287514;
+	bh=qIhmbs4q19ce2u3+/p/L4uydu2guvXDqASx18xBCCcw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=YjiXUhhXpqumwXKQPMqpkdB4wPrRMy0bOzR1kahYVY1+qE5n7Z4haXZSfzT55IAI1
+	 ynnt4aDFeWwdn3Bmo5Bfg3xsBbD4VmuDjTgmQqqSG0Dix3Qw+sRw31WGG1TTPzsztY
+	 xEBVl2pFbuK9dXt2+f5UHWoEFd+owy0H5XKrkZJgan6ykecKAc0NlQ3PixVapEOMsh
+	 WZaVatHDS9M7AbWzldR9FtJbZ8YV4Nj0WtHrYRV+9O+mPx3NBqug+uWnuoXIFfBHdv
+	 wIXZQatu7fvlr03zk4kPyj4OlIeIKc3RW7eL39FEqzhdIH8rP99VcvF/HkLUMW9Uyc
+	 e/qinOLQAN2uw==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e766937ddso8433219e87.3;
+        Wed, 03 Jan 2024 05:11:54 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw7x6HLmhqYQWyCD4Ng8AH0hEZWtJfvJPFXxVvQYICwYEqdc8pj
+	k1ASIwzd6P/jUQdMzKHIwexv7bnN81u+UYHAWIU=
+X-Google-Smtp-Source: AGHT+IH2AecowZ+aHnkLeMgGIy725oLMF333U21alEK2Fc5uT7O22wyPK+unkG3ON5Ldu0WACaHrxvakM17+AqJ7PHk=
+X-Received: by 2002:ac2:5190:0:b0:50e:aa04:b2e9 with SMTP id
+ u16-20020ac25190000000b0050eaa04b2e9mr24496lfi.39.1704287512452; Wed, 03 Jan
+ 2024 05:11:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <292837.1704232179@warthog.procyon.org.uk>
+References: <20231215122614.5481-1-tzimmermann@suse.de> <20231215122614.5481-3-tzimmermann@suse.de>
+ <CAMj1kXHrn-PxpMGnR4VoHv7kHvQYyf8SS9i1irm9Gi_uBseciw@mail.gmail.com> <97f118fc-b38f-4bcc-83d3-4d3c13edf7a0@suse.de>
+In-Reply-To: <97f118fc-b38f-4bcc-83d3-4d3c13edf7a0@suse.de>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Wed, 3 Jan 2024 14:11:40 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF-1TXYzheS-e_rGKnV+6FrkZe+e2sfCixyUzxSQE7X6w@mail.gmail.com>
+Message-ID: <CAMj1kXF-1TXYzheS-e_rGKnV+6FrkZe+e2sfCixyUzxSQE7X6w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] arch/x86: Add <asm/ima-efi.h> for arch_ima_efi_boot_mode
+To: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	bhelgaas@google.com, arnd@arndb.de, zohar@linux.ibm.com, 
+	dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org, 
+	serge@hallyn.com, javierm@redhat.com, linux-arch@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pci@vger.kernel.org, linux-integrity@vger.kernel.org, 
+	linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-David Howells wrote on Tue, Jan 02, 2024 at 09:49:39PM +0000:
-> This needs a fix that I would fold in.  Somehow it gets through xfstests
-> without it, but it seems problems can be caused with executables.
+On Tue, 2 Jan 2024 at 15:07, Thomas Zimmermann <tzimmermann@suse.de> wrote:
+>
+> Hii Ard
+>
+> Am 19.12.23 um 12:38 schrieb Ard Biesheuvel:
+> > Hi Thomas,
+> >
+> > On Fri, 15 Dec 2023 at 13:26, Thomas Zimmermann <tzimmermann@suse.de> wrote:
+> >>
+> >> The header file <asm/efi.h> contains the macro arch_ima_efi_boot_mode,
+> >> which expands to use struct boot_params from <asm/bootparams.h>. Many
+> >> drivers include <linux/efi.h>, but do not use boot parameters. Changes
+> >> to bootparam.h or its included headers can easily trigger large,
+> >> unnessary rebuilds of the kernel.
+> >>
+> >> Moving x86's arch_ima_efi_boot_mode to <asm/ima-efi.h> and including
+> >> <asm/setup.h> separates that dependency from the rest of the EFI
+> >> interfaces. The only user is in ima_efi.c. As the file already declares
+> >> a default value for arch_ima_efi_boot_mode, move this define into
+> >> asm-generic for all other architectures.
+> >>
+> >> With arch_ima_efi_boot_mode removed from efi.h, <asm/bootparam.h> can
+> >> later be removed from further x86 header files.
+> >>
+> >
+> > Apologies if I missed this in v1 but is the new asm-generic header
+> > really necessary? Could we instead turn arch_ima_efi_boot_mode into a
+> > function that is a static inline { return unset; } by default, but can
+> > be emitted out of line in one of the x86/platform/efi.c source files,
+> > where referring to boot_params is fine?
+>
+> I cannot figure out how to do this without *something* in asm-generic or
+> adding if-CONFIG_X86 guards in ima-efi.c.
+>
+> But I noticed that linux/efi.h already contains 2 or 3 ifdef branches
+> for x86. Would it be an option to move this code into asm/efi.h
+> (including a header file in asm-generic for the non-x86 variants) and
+> add the arch_ima_efi_boot_mode() helper there as well?  At least that
+> wouldn't be a header for only a single define.
+>
 
-Looking at a file without that patch we seem to be reading just zeroes
-off pre-existing files; I'm surprised xfstest doesn't have a write
-something/umount/mount/check content is identical test...
+Could we just move the x86 implementation out of line?
 
-(You're probably aware of this, but note for others this breaks with the
-rest of the patch series even if the big 9p patch isn't applied -- this
-is the main reason I'd rather just get the patch in this cycle, as the
-new patches got more tests with the full series than with the 9p writes
-patch dropped.)
+So something like this in arch/x86/include/asm/efi.h
 
+enum efi_secureboot_mode x86_ima_efi_boot_mode(void);
+#define arch_ima_efi_boot_mode x86_ima_efi_boot_mode()
 
-> 9p: Fix initialisation of netfs_inode for 9p
-> 
-> The 9p filesystem is calling netfs_inode_init() in v9fs_init_inode() -
-> before the struct inode fields have been initialised from the obtained file
-> stats (ie. after v9fs_stat2inode*() has been called), but netfslib wants to
-> set a couple of its fields from i_size.
+and an implementation in one of the related .c files:
 
-Would it make sense to just always update netfs's ctx->remote_i_size in
-the various stat2inode calls instead?
-We don't have any cache coherency so if a file changes beneath us
-through an edit on the server (or through another client) hell will
-break loose anyway, but stat would update the inode's i_size so it'll
-likely be weird that the remote_i_size doesn't get updated.
+enum efi_secureboot_mode x86_ima_efi_boot_mode(void)
+{
+    return boot_params.secure_boot;
+}
 
-
-> Reported-by: Marc Dionne <marc.dionne@auristor.com>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> Tested-by: Marc Dionne <marc.dionne@auristor.com>
-> cc: Eric Van Hensbergen <ericvh@kernel.org>
-> cc: Latchesar Ionkov <lucho@ionkov.net>
-> cc: Dominique Martinet <asmadeus@codewreck.org>
-
-With that being said, it seems to do the immediate job:
-Acked-by: Dominique Martinet <asmadeus@codewreck.org>
-
--- 
-Dominique Martinet | Asmadeus
+?
 
