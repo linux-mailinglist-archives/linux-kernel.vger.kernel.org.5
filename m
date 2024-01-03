@@ -1,175 +1,502 @@
-Return-Path: <linux-kernel+bounces-15987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78C3C82369B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:32:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF01482369D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:34:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0255C1F2481B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:32:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6728B2874FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:34:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7FD1D54C;
-	Wed,  3 Jan 2024 20:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBAD51D699;
+	Wed,  3 Jan 2024 20:34:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DOMAPm6p"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BDJykAeI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E78551D522;
-	Wed,  3 Jan 2024 20:32:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704313939; x=1735849939;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=aJ6yuVTh3H3by5p/p+sDcofL+Q+0ZobIhIaT2afdsbw=;
-  b=DOMAPm6pSoOw55NfhUPNVmI9Al3kkPjmvfmOO3h2MhfTss39P40nNjOE
-   fgbB71P6jAgXnt1pt3086gWDjI7q+fxXaSIbkTGRxGBYh6AztRUnRuyO3
-   gr8rIW3c2GxFMvzsaERUkg8xMH+ydelQo49HFVXtl57NFagEXXKy6FBAo
-   N+lU0Aq/r5cFTmIVKBd5e7hqjhcv4jT0OSBMfAdM0C9CFgtfQVZz6x052
-   H5AyM1byaXBVVsHw+D8R2XkLQ1/ZrZjO9U5WphU0xClyOV2/ZjXaEuZp1
-   4OXNjGsd7CEhbN557xmto5vylyug4hfM+8P6E+ooYFknQpYvV1g9lk8qT
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="483241767"
-X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
-   d="scan'208";a="483241767"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 12:32:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
-   d="scan'208";a="14600044"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Jan 2024 12:32:18 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 3 Jan 2024 12:32:17 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 3 Jan 2024 12:32:17 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 3 Jan 2024 12:32:17 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 3 Jan 2024 12:32:17 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=inwY0i67aMsJaIvfGNnjK79Qi67fEi+88n9FKewpn3ZVk31GWinbsH+P62uS0qjEVt3sayJ6Q55BNCoxEWaImBUt/L0zv1YV7wnQD6ru8UR371rtMe4pH8Wfs7YyDp6oPDS8wcHA5N4a9EMBPZsYTGV0KLmeobOnPzVcThZeF9QlBeYm7r6cuS+WM+irPZhfAv1y5mD3WrNIHGAkgKDFyic6QHvdQw2+h0njSuOGkmDUsTBJ7glzuy17LgT5mFlzM8l7ReRlqQB9MSebTBRlPj3PB8W5JYY1Fj+wmSDFq/Q8hn6pulxHNO4vyKVUeyWbArBk0SjYDG+hrASXWPeoPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lkpmrUy6ojMI2vN7RphmLrlPjyLALiug3l00Z+bY4j4=;
- b=jJVmPhkFcJtP1kc2Qp43fI31Lvzl6Lf3H90baGgLYby2r24ivv4KuuS5FirLRQlU9FiYe6WOcJjquQM0qX3r8oPBGetnUDONG4atil9VIgouzid34D+6fvEFsBvIkSI5sPo2lLr1WDwTxemYUBpqQtt0iP54V0HSRvobfnu/h854V6SmWqe2+HwAaCUHcA/QVzAy810KYZCLuGVvIm3UrdtUpoKR3GwX0XS4FVtxFwwLJlot2GWm7R4AOoFksiL6D/3XPXx01MLQZcWKx23lZKyG1XOQu1X1gQYUynukN4i08lQpvzAuYZpG+PELfuWeMh4/HolJrLTDPUhVBSAxfg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by PH8PR11MB8013.namprd11.prod.outlook.com (2603:10b6:510:239::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Wed, 3 Jan
- 2024 20:32:15 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7159.013; Wed, 3 Jan 2024
- 20:32:15 +0000
-Date: Wed, 3 Jan 2024 12:32:12 -0800
-From: Ira Weiny <ira.weiny@intel.com>
-To: Dan Williams <dan.j.williams@intel.com>, Stephen Rothwell
-	<sfr@canb.auug.org.au>
-CC: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Linux Next
- Mailing List" <linux-next@vger.kernel.org>, <ira.weiny@intel.com>
-Subject: RE: linux-next: duplicate patch in the nvdimm tree
-Message-ID: <6595c44c75d7e_230829493@iweiny-mobl.notmuch>
-References: <20240103152345.116ce8c7@canb.auug.org.au>
- <6595b5dca6bfc_8dc68294c7@dwillia2-xfh.jf.intel.com.notmuch>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <6595b5dca6bfc_8dc68294c7@dwillia2-xfh.jf.intel.com.notmuch>
-X-ClientProxiedBy: SJ0PR05CA0191.namprd05.prod.outlook.com
- (2603:10b6:a03:330::16) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A48A1D687
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 20:34:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704314046;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RiyTNg7lQj2mSX9lkM7av7VSsRqTM7vaccZZfAfdzko=;
+	b=BDJykAeIF6AI+jjdHjXM5oEjUqsK4DV9eDBhYGfDfy/+9WFD60aufT8O8tGSy8IrbLFCaz
+	NVL9nAyuBsXO+3TduKWx8zmV7Px6sa44l8TO8bG7pYvygcYzqKCojVrt72Tb61bQthuU5n
+	pvJTZgOqj4PGcJNonShtAcK1Sh+HLUU=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-209-EILLpAmUOQi5MoXx47hYeA-1; Wed, 03 Jan 2024 15:33:59 -0500
+X-MC-Unique: EILLpAmUOQi5MoXx47hYeA-1
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5cda0492c8eso10918740a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 12:33:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704314037; x=1704918837;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RiyTNg7lQj2mSX9lkM7av7VSsRqTM7vaccZZfAfdzko=;
+        b=W1wCydx7kMtgtFgKTYqaN/TuF0Wz/KEucxETqT+RdKIheEenjiFVG/gEy/UamBEZe7
+         oTgytUU5j8rzrysoiFwNsRFO3l0ATJiknPlzu8uRrQM5Luux3IfLRZj+vaqednrgyMnS
+         8ECiAGd5xZvcjo40Wjmb9zqPEbAswbPVitFoBVQvFNVm8eRaR8CYWg5gB/TbRWxMnlu3
+         58BrG03WzXMXntsTVvtGjocCP9A2FtIar75SAs8qgfryyBbAixNEA0JVR2iRSk4sbGl6
+         EQRc4pHodmL/V78GyM+Kyyx0t18y65/aowSJgM5Nii6tLwMGTQmp8FP4rq+J+82ZEwfI
+         deBw==
+X-Gm-Message-State: AOJu0YzD5Dag3pAW3vSDGDNJgHG5AOJ/Uh+msHOthONevA3yiEPXPonH
+	Vb9ub2IlZOYOdi7J11KFMj6IxywFTUlsliEvMdpnqhwem8pW9H9mJrgy6EYYqYd4cVYLrOgaMpt
+	+8roNbESYaS9DJGjOwoxBjD1JYAdrvXtw
+X-Received: by 2002:a17:90a:dac5:b0:286:a089:c3dd with SMTP id g5-20020a17090adac500b00286a089c3ddmr9275223pjx.62.1704314036296;
+        Wed, 03 Jan 2024 12:33:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF8X8i3kQcpaSWYIpQAU++VuDtDMojXfqoGLD4LA3XFTDH8r7UjCIYqHBkM9rKo5cgz+OX3pQ==
+X-Received: by 2002:a17:90a:dac5:b0:286:a089:c3dd with SMTP id g5-20020a17090adac500b00286a089c3ddmr9275209pjx.62.1704314035277;
+        Wed, 03 Jan 2024 12:33:55 -0800 (PST)
+Received: from localhost.localdomain ([2804:431:c7ec:911:6911:ca60:846:eb46])
+        by smtp.gmail.com with ESMTPSA id m11-20020a17090b068b00b0028658c6209dsm2186521pjz.2.2024.01.03.12.33.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 12:33:54 -0800 (PST)
+From: Leonardo Bras <leobras@redhat.com>
+To: Andrew Jones <ajones@ventanamicro.com>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	guoren@kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	panqinglin2020@iscas.ac.cn,
+	bjorn@rivosinc.com,
+	conor.dooley@microchip.com,
+	peterz@infradead.org,
+	keescook@chromium.org,
+	wuwei2016@iscas.ac.cn,
+	xiaoguang.xing@sophgo.com,
+	chao.wei@sophgo.com,
+	unicorn_wang@outlook.com,
+	uwu@icenowy.me,
+	jszhang@kernel.org,
+	wefu@redhat.com,
+	atishp@atishpatra.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: Re: [PATCH V2 1/3] riscv: Add Zicbop instruction definitions & cpufeature
+Date: Wed,  3 Jan 2024 17:33:41 -0300
+Message-ID: <ZZXEpU-JzsvD2UDW@LeoBras>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240103-0c96ceea88523b7b946e4ba8@orel>
+References: <20231231082955.16516-1-guoren@kernel.org> <20231231082955.16516-2-guoren@kernel.org> <ZZWs0C19tz763FnH@LeoBras> <20240103-0c96ceea88523b7b946e4ba8@orel>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|PH8PR11MB8013:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2e619dee-d9de-4d1d-0db4-08dc0c9b12b6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xer0PwGeXsDT/pAD+PKWHyAMKB6lT7QkHX6sToNps47Q/vXALIGUvNuDoxeu3dOMR5S8xO/Ay37TDpteGkbBhX/2tv0oDEGwDIS3NK2oLZn9d6ClJwFtz4IPvRfC7C16OBP1WhZBpuwlaZmHmdLCHUOgcCnpNctemzR3qs9xxvsdtGHeD5XD4CPczO9VsXse65oGaUbzHT1LcrOinRADvyIgW18TBya4ah2NASnqeYy3HmcJctSkrY30UamJWjpiwfuGDwIpBWjP5LEWQ+qekpGAD2jxQoCFq8Av36SvQytCB/Te+oFCWnJR9gFwYmS6QZIKoIcTNlo/GQUi46AwBARhWsV5b0jNJsYHCasZIFWeTjG4uTvW4+aEbVfGLVF1+x0hq8Df4dOQAOaFqDQU1qHSqPliVI/gCA5RgEnTbbkI025LZ/vBWccBegmgqXdtnFabW3QJSOk4DVLt3IUzONBEOHM3gEF0egbx/sf0joT3CGV/TlSr4pLxnVkNW/BJC4HduMpYJAEJinHRlyZhteKdg2jkt7Ysk9lOcRaYy/rJ/8nvvvE0cHZXHSUFU2ND
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(396003)(346002)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(54906003)(66946007)(66556008)(26005)(66476007)(8676002)(8936002)(107886003)(110136005)(316002)(478600001)(4744005)(5660300002)(86362001)(41300700001)(82960400001)(2906002)(44832011)(6666004)(6486002)(38100700002)(4326008)(9686003)(6506007)(6512007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Od8WDLjYR3Qup84NsvgGJHxGskVtk+FaHDKjB7T/+gSA8Zz7yI8fWvla68fI?=
- =?us-ascii?Q?W5vIZQ/lMVve6qRKPxDLUa/Gbwtf6qiJJAeAuldOeSemLJ6jZtl11ZmY9mu8?=
- =?us-ascii?Q?RhqHiXUXuyu/UPuPUu9qhH3XX6OXVZVaE+tGymAbl9icds7YjuKQSBl3bpTJ?=
- =?us-ascii?Q?lMnJtK9r2C1NSEaFQn08qB947e61vLvSNMVuIUX1Sko+Gjcz7I6Lv3xpnFjF?=
- =?us-ascii?Q?anByEBfjZ+mVCntEeGhv7ew+j0fopVOyhoBLojYRNp7OoKQp9uL0jtIxQFXl?=
- =?us-ascii?Q?wiZm7YCfNGtW77eEjN3HXyAU+a/593q+PqoQhEpL9WhINhj6oxv3mIfNNxNw?=
- =?us-ascii?Q?25undyYHoPbBLkBGj0WvEUalOX+DmXYZVkk26vQhGLm1TKIlZCo0V9ZlfAiy?=
- =?us-ascii?Q?Z96UaGxEEfTpkFglzwRIcGRF//ZjX3Kjbb2U5sbQ/9+5S689onyP8DAMcU81?=
- =?us-ascii?Q?mVW7YPuQog9JxsNXa4IkVM3B0liL517dNY0CAJEWajF5zKEcuX5D6WAij8w/?=
- =?us-ascii?Q?9kuTO2oc3nqkGihZSsx10LaN/pxl3P06zvnI63mNtIsWAk4xY1nVX5bB37Kc?=
- =?us-ascii?Q?BmrbhscLEairw6s/JmbmgL3pKnTRhvbp+vz6kJOT9zfe9Fs250pHVSR9+uRc?=
- =?us-ascii?Q?zPOuj8MkIRmJ8tMPkLSk1XRaMHDAhJulhjvK/kISn4+4JZwwt6tB5L8FmVfi?=
- =?us-ascii?Q?GZe2LV26jphb1numaXo40ASgDvj82FkboCua5BhPA5gUS3cwZYnV/Exq9L6i?=
- =?us-ascii?Q?Jbkn2re2x/iccJJaVfJpy1s7gERFYgYJqtwB8UljjLMlWKWiqqPPswTQdwFm?=
- =?us-ascii?Q?+1AUJpULTzk0xcuxFGA2IWnXgEser2hAclgdutxqODFExd6x4qrN/x3oLkk0?=
- =?us-ascii?Q?SS+1uivUX1D4EDW+Mj5+uGuLJPfzHYSS/IUoBsOJQ+xDTeMPdTOS0mhp+Tgu?=
- =?us-ascii?Q?+EJg0X9TfSOhab1PjtHGFvJnQtwlTqPgVZTTt9rBsQozK5oUlvXJMlv2FnGn?=
- =?us-ascii?Q?rIcu2oxSM4E6UIDgO3IAnRTMPLXwqabqUBZMBcuWCYNYGsqxJ8MXsBba6Da8?=
- =?us-ascii?Q?1g28ntYs/H39QV/DQRR1lPocueawXvBVTGvSLpm+GMFwg9TZk1WwlVZVjO1n?=
- =?us-ascii?Q?JHAcB11sjP10hMV660JSDrSxtDptNd4hGljt0Zeo0kdaGwIdMdC12ZpRUxJn?=
- =?us-ascii?Q?7z8trOibkATWX5KEIMZtMJrC+cTmAhnft/rSu1aN2LJ/VfGITdZeheICvuVf?=
- =?us-ascii?Q?nnTx+SVo0uAbQaJfiFA2dok4KQUAjB7b1AFaVKtcSBTeLvYJYdvzJHWjGi/Z?=
- =?us-ascii?Q?FBGSjKyfK625/yWMGHwq0xsZE0frCTFCJUSQx4/0ElZbkAW3aYqoLuKKS8Wa?=
- =?us-ascii?Q?zQtyLmoLY5j5qnSp1xBNp43uO0VtmKobSKK/pinOctxcAm5mjDUmoByYFYI3?=
- =?us-ascii?Q?bcwDGI/yNOIzUObbRkYOmK+9lePmPD5HeS9QJVZwZ0rlABsTB9nwLvrw+3X5?=
- =?us-ascii?Q?FCNv9eKBvjNDxX94jOZWv2NFDsIZuoHGjVAq6H4YUO+pl3MShceKMhxD5QNY?=
- =?us-ascii?Q?S3SB2jSI2VkSuupQDoyVMepEoQRhpO0YpkIZnTIS?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e619dee-d9de-4d1d-0db4-08dc0c9b12b6
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2024 20:32:15.5862
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: v5EDdZ7QDNG7zEwKd7djOugvNcvWKSpF2f3rcpMA5VIwm5iD2I8bzl2c+sgT8SFomJ5LXL82ORtikpCR46VbdQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB8013
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Dan Williams wrote:
-> Stephen Rothwell wrote:
-> > Hi all,
+On Wed, Jan 03, 2024 at 08:29:39PM +0100, Andrew Jones wrote:
+> On Wed, Jan 03, 2024 at 03:52:00PM -0300, Leonardo Bras wrote:
+> > On Sun, Dec 31, 2023 at 03:29:51AM -0500, guoren@kernel.org wrote:
+> > > From: Guo Ren <guoren@linux.alibaba.com>
+> > > 
+> > > Cache-block prefetch instructions are HINTs to the hardware to
+> > > indicate that software intends to perform a particular type of
+> > > memory access in the near future. This patch adds prefetch.i,
+> > > prefetch.r and prefetch.w instruction definitions by
+> > > RISCV_ISA_EXT_ZICBOP cpufeature.
 > > 
-> > The following commit is also in the char-misc tree as a different commit
-> > (but the same patch):
+> > Hi Guo Ren,
 > > 
-> >   ce2fa3e597dd ("tools/testing/nvdimm: Add compile-test coverage for ndtest")
+> > Here it would be nice to point a documentation for ZICBOP extension:
+> > https://wiki.riscv.org/display/HOME/Recently+Ratified+Extensions
 > > 
-> > This is commit
+> > or having a nice link for:
+> > https://drive.google.com/file/d/1jfzhNAk7viz4t2FLDZ5z4roA0LBggkfZ/view
 > > 
-> >   fddd9e3e4e71 ("tools/testing/nvdimm: Add compile-test coverage for ndtest")
+> > > 
+> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > Signed-off-by: Guo Ren <guoren@kernel.org>
+> > > ---
+> > >  arch/riscv/Kconfig                | 15 ++++++++
+> > >  arch/riscv/include/asm/hwcap.h    |  1 +
+> > >  arch/riscv/include/asm/insn-def.h | 60 +++++++++++++++++++++++++++++++
+> > >  arch/riscv/kernel/cpufeature.c    |  1 +
+> > >  4 files changed, 77 insertions(+)
+> > > 
+> > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > > index 24c1799e2ec4..fcbd417d65ea 100644
+> > > --- a/arch/riscv/Kconfig
+> > > +++ b/arch/riscv/Kconfig
+> > > @@ -579,6 +579,21 @@ config RISCV_ISA_ZICBOZ
+> > >  
+> > >  	   If you don't know what to do here, say Y.
+> > >  
+> > > +config RISCV_ISA_ZICBOP
+> > > +	bool "Zicbop extension support for cache block prefetch"
+> > > +	depends on MMU
+> > > +	depends on RISCV_ALTERNATIVE
+> > > +	default y
+> > > +	help
+> > > +	  Adds support to dynamically detect the presence of the ZICBOP
+> > > +	  extension (Cache Block Prefetch Operations) and enable its
+> > > +	  usage.
+> > > +
+> > > +	  The Zicbop extension can be used to prefetch cache block for
+> > > +	  read/write fetch.
+> > > +
+> > > +	  If you don't know what to do here, say Y.
+> > > +
 > > 
-> > in the char-misc tree.
+> > According to doc:
+> > "The Zicbop extension defines a set of cache-block prefetch instructions: 
+> > PREFETCH.R, PREFETCH.W, and PREFETCH.I"
+> > 
+> > So above text seems ok
+> > 
+> > 
+> > >  config TOOLCHAIN_HAS_ZIHINTPAUSE
+> > >  	bool
+> > >  	default y
+> > > diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+> > > index 06d30526ef3b..77d3b6ee25ab 100644
+> > > --- a/arch/riscv/include/asm/hwcap.h
+> > > +++ b/arch/riscv/include/asm/hwcap.h
+> > > @@ -57,6 +57,7 @@
+> > >  #define RISCV_ISA_EXT_ZIHPM		42
+> > >  #define RISCV_ISA_EXT_SMSTATEEN		43
+> > >  #define RISCV_ISA_EXT_ZICOND		44
+> > > +#define RISCV_ISA_EXT_ZICBOP		45
+> > 
+> > Is this number just in kernel code, or does it mean something in the RISC-V 
+> > documentation?
 > 
-> Thanks for the heads up, Ira can you drop ce2fa3e597dd since Greg took it already?
+> kernel
 
-Done.  Apologies for that.
+Thanks!
 
-Ira
+> 
+> > 
+> > >  
+> > >  #define RISCV_ISA_EXT_MAX		64
+> > >  
+> > > diff --git a/arch/riscv/include/asm/insn-def.h b/arch/riscv/include/asm/insn-def.h
+> > > index e27179b26086..bbda350a63bf 100644
+> > > --- a/arch/riscv/include/asm/insn-def.h
+> > > +++ b/arch/riscv/include/asm/insn-def.h
+> > > @@ -18,6 +18,13 @@
+> > >  #define INSN_I_RD_SHIFT			 7
+> > >  #define INSN_I_OPCODE_SHIFT		 0
+> > >  
+> > > +#define INSN_S_SIMM7_SHIFT		25
+> > > +#define INSN_S_RS2_SHIFT		20
+> > > +#define INSN_S_RS1_SHIFT		15
+> > > +#define INSN_S_FUNC3_SHIFT		12
+> > > +#define INSN_S_SIMM5_SHIFT		 7
+> > > +#define INSN_S_OPCODE_SHIFT		 0
+> > > +
+> > 
+> > The shifts seem correct for S-Type, but I would name the IMM defines in a 
+> > way we could understand where they fit in IMM:
+> > 
+> > 
+> > INSN_S_SIMM5_SHIFT -> INSN_S_SIMM_0_4_SHIFT
+> > INSN_S_SIMM7_SHIFT -> INSN_S_SIMM_5_11_SHIFT
+> > 
+> > What do you think?
+> 
+> I'm in favor of this suggestion, but then wonder if we don't need another
+> patch before this which renames INSN_I_SIMM12_SHIFT to
+> INSN_I_SIMM_0_11_SHIFT in order to keep things consistent.
+
+Agree. If it's ok, I can provide a patch doing the rename on top of this 
+patchset.
+
+> 
+> > 
+> > 
+> > >  #ifdef __ASSEMBLY__
+> > >  
+> > >  #ifdef CONFIG_AS_HAS_INSN
+> > > @@ -30,6 +37,10 @@
+> > >  	.insn	i \opcode, \func3, \rd, \rs1, \simm12
+> > >  	.endm
+> > >  
+> > > +	.macro insn_s, opcode, func3, rs2, simm12, rs1
+> > > +	.insn	s \opcode, \func3, \rs2, \simm12(\rs1)
+> > > +	.endm
+> > > +
+> > >  #else
+> > >  
+> > >  #include <asm/gpr-num.h>
+> > > @@ -51,10 +62,20 @@
+> > >  		 (\simm12 << INSN_I_SIMM12_SHIFT))
+> > >  	.endm
+> > >  
+> > > +	.macro insn_s, opcode, func3, rs2, simm12, rs1
+> > > +	.4byte	((\opcode << INSN_S_OPCODE_SHIFT) |		\
+> > > +		 (\func3 << INSN_S_FUNC3_SHIFT) |		\
+> > > +		 (.L__gpr_num_\rs2 << INSN_S_RS2_SHIFT) |	\
+> > > +		 (.L__gpr_num_\rs1 << INSN_S_RS1_SHIFT) |	\
+> > > +		 ((\simm12 & 0x1f) << INSN_S_SIMM5_SHIFT) |	\
+> > > +		 (((\simm12 >> 5) & 0x7f) << INSN_S_SIMM7_SHIFT))
+> > > +	.endm
+> > > +
+> > >  #endif
+> > >  
+> > >  #define __INSN_R(...)	insn_r __VA_ARGS__
+> > >  #define __INSN_I(...)	insn_i __VA_ARGS__
+> > > +#define __INSN_S(...)	insn_s __VA_ARGS__
+> > 
+> > As a curiosity: It's quite odd to have prefetch.{i,r,w} to be an S-Type 
+> > instruction, given this type was supposed to be for store instructions.
+> > 
+> > On prefetch.{i,r,w}:
+> > 31	   24   	 19    14    11	  	6
+> > imm[11:5] | PREFETCH_OP | rs1 | ORI | imm[4:0] | OP_IMM
+> > 
+> > For S-Type, we have:
+> > 31	   24     19    14       11	    6
+> > imm[11:5] | rs1  | rs2 | funct3 | imm[4:0] | opcode
+> > 
+> > For I-Type, we have:
+> > 31	    19    14       11	6
+> > immm[11:0] | rs1 | funct3 | rd | opcode
+> > 
+> > I understand that there should be reasons for choosing S-type, but it 
+> > would make much more sense (as per instruction type, and as per parameters)
+> > to go with I-Type. 
+> > 
+> > (I understand this was done in HW, and in kernel code we have better choice 
+> > to encode it as S-Type, but I kind of find the S-Type choice odd)
+> 
+> My speculation is that since cache block sizes will never be less than 32
+> bytes, it made more sense to use the S-type encoding space with imm[4:0]
+> hard coded to zero, allowing the I-Type encoding space to be reserved for
+> instructions which need arbitrary 12-bit immediates.
+
+Yeah, this seems a good reason :)
+
+> 
+> > 
+> > >  
+> > >  #else /* ! __ASSEMBLY__ */
+> > >  
+> > > @@ -66,6 +87,9 @@
+> > >  #define __INSN_I(opcode, func3, rd, rs1, simm12)	\
+> > >  	".insn	i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n"
+> > >  
+> > > +#define __INSN_S(opcode, func3, rs2, simm12, rs1)	\
+> > > +	".insn	s " opcode ", " func3 ", " rs2 ", " simm12 "(" rs1 ")\n"
+> > > +
+> > >  #else
+> > >  
+> > >  #include <linux/stringify.h>
+> > > @@ -92,12 +116,26 @@
+> > >  "		 (\\simm12 << " __stringify(INSN_I_SIMM12_SHIFT) "))\n"	\
+> > >  "	.endm\n"
+> > >  
+> > > +#define DEFINE_INSN_S							\
+> > > +	__DEFINE_ASM_GPR_NUMS						\
+> > > +"	.macro insn_s, opcode, func3, rs2, simm12, rs1\n"		\
+> > > +"	.4byte	((\\opcode << " __stringify(INSN_S_OPCODE_SHIFT) ") |"	\
+> > > +"		 (\\func3 << " __stringify(INSN_S_FUNC3_SHIFT) ") |"	\
+> > > +"		 (.L__gpr_num_\\rs2 << " __stringify(INSN_S_RS2_SHIFT) ") |" \
+> > > +"		 (.L__gpr_num_\\rs1 << " __stringify(INSN_S_RS1_SHIFT) ") |" \
+> > > +"		 ((\\simm12 & 0x1f) << " __stringify(INSN_S_SIMM5_SHIFT) ") |" \
+> > > +"		 (((\\simm12 >> 5) & 0x7f) << " __stringify(INSN_S_SIMM7_SHIFT) "))\n" \
+> > > +"	.endm\n"
+> > > +
+> > >  #define UNDEFINE_INSN_R							\
+> > >  "	.purgem insn_r\n"
+> > >  
+> > >  #define UNDEFINE_INSN_I							\
+> > >  "	.purgem insn_i\n"
+> > >  
+> > > +#define UNDEFINE_INSN_S							\
+> > > +"	.purgem insn_s\n"
+> > > +
+> > >  #define __INSN_R(opcode, func3, func7, rd, rs1, rs2)			\
+> > >  	DEFINE_INSN_R							\
+> > >  	"insn_r " opcode ", " func3 ", " func7 ", " rd ", " rs1 ", " rs2 "\n" \
+> > > @@ -108,6 +146,11 @@
+> > >  	"insn_i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n" \
+> > >  	UNDEFINE_INSN_I
+> > >  
+> > > +#define __INSN_S(opcode, func3, rs2, simm12, rs1)			\
+> > > +	DEFINE_INSN_S							\
+> > > +	"insn_s " opcode ", " func3 ", " rs2 ", " simm12 ", " rs1 "\n"	\
+> > > +	UNDEFINE_INSN_S
+> > > +
+> > >  #endif
+> > >  
+> > >  #endif /* ! __ASSEMBLY__ */
+> > > @@ -120,6 +163,10 @@
+> > >  	__INSN_I(RV_##opcode, RV_##func3, RV_##rd,		\
+> > >  		 RV_##rs1, RV_##simm12)
+> > >  
+> > > +#define INSN_S(opcode, func3, rs2, simm12, rs1)			\
+> > > +	__INSN_S(RV_##opcode, RV_##func3, RV_##rs2,		\
+> > > +		 RV_##simm12, RV_##rs1)
+> > > +
+> > 
+> > The defines above seem correct, but TBH I am not very used to review
+> > .macro code.
+> > 
+> > >  #define RV_OPCODE(v)		__ASM_STR(v)
+> > >  #define RV_FUNC3(v)		__ASM_STR(v)
+> > >  #define RV_FUNC7(v)		__ASM_STR(v)
+> > > @@ -133,6 +180,7 @@
+> > >  #define RV___RS2(v)		__RV_REG(v)
+> > >  
+> > >  #define RV_OPCODE_MISC_MEM	RV_OPCODE(15)
+> > > +#define RV_OPCODE_OP_IMM	RV_OPCODE(19)
+> > 
+> > Correct.
+> > 
+> > 
+> > >  #define RV_OPCODE_SYSTEM	RV_OPCODE(115)
+> > >  
+> > >  #define HFENCE_VVMA(vaddr, asid)				\
+> > > @@ -196,4 +244,16 @@
+> > >  	INSN_I(OPCODE_MISC_MEM, FUNC3(2), __RD(0),		\
+> > >  	       RS1(base), SIMM12(4))
+> > >  
+> > > +#define CBO_PREFETCH_I(base, offset)				\
+> > > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(0),		\
+> > > +	       SIMM12(offset), RS1(base))
+> > > +
+> > > +#define CBO_PREFETCH_R(base, offset)				\
+> > > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(1),		\
+> > > +	       SIMM12(offset), RS1(base))
+> > > +
+> > > +#define CBO_PREFETCH_W(base, offset)				\
+> > > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3),		\
+> > > +	       SIMM12(offset), RS1(base))
+> > > +
+> > 
+> > For OP_IMM & FUNC3(6) we have ORI, right?
+> > For ORI, rd will be at bytes 11:7, which in PREFETCH.{i,r,w} is
+> > offset[4:0].
+> > 
+> > IIUC, when the cpu does not support ZICBOP, this should be fine as long as 
+> > rd = 0, since changes to r0 are disregarded.
+> > 
+> > In this case, we need to guarantee offset[4:0] = 0, or else we migth write 
+> > on an unrelated register. This can be noticed in ZICBOP documentation pages 
+> > 21, 22, 23, as offset[4:0] is always [0 0 0 0 0]. 
+> > (Google docs in first comment)
+> > 
+> > What we need here is something like:
+> > + enum {
+> > + 	PREFETCH_I,
+> > + 	PREFETCH_R,
+> > + 	PREFETCH_W,
+> > + }	 
+> 
+> Can't use enum. This header may be included in assembly.
+
+Oh, I suggest defines then, since it's better to make it clear instead of 
+using 0, 1, 3.
+
+> 
+> > +
+> > + #define CBO_PREFETCH(type, base, offset)                      \
+> > +     INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(type),              \
+> > +            SIMM12(offset & ~0x1f), RS1(base))
+> 
+> Yes. I suggested we mask offset as well, but ideally we'd detect a caller
+> using an offset with nonzero lower 5 bits at compile time.
+
+I would suggest the compiler would take care of this, but I am not sure 
+about the assembly, since I am not sure if it gets any optimization.
+
+I don't think we can detect a caller with non-zero offset at compile time, 
+since it will be used in locks which can be at (potentially) any place in 
+the block size. (if you have any idea though, please let me know :) )
+
+On the other hand, we could create a S-Type macro which deliberately 
+ignores imm[4:0], like  
+
++ INSN_S_TRUNCATE(OPCODE_OP_IMM, FUNC3(6), __RS2(3),               \
++                 SIMM12(offset), RS1(base))
+
+Which saves the bits 11:5 of offset  into imm[11:5], and zero-fill 
+imm[4:0], like
+
++#define DEFINE_INSN_S                                                    \
++ __DEFINE_ASM_GPR_NUMS                                           \
++"        .macro insn_s, opcode, func3, rs2, simm12, rs1\n"               \
++"        .4byte  ((\\opcode << " __stringify(INSN_S_OPCODE_SHIFT) ") |"  \
++"                 (\\func3 << " __stringify(INSN_S_FUNC3_SHIFT) ") |"    \
++"                 (.L__gpr_num_\\rs2 << " __stringify(INSN_S_RS2_SHIFT) ") |" \
++"                 (.L__gpr_num_\\rs1 << " __stringify(INSN_S_RS1_SHIFT) ") |" \
++"                 (((\\simm12 >> 5) & 0x7f) << " __stringify(INSN_S_SIMM7_SHIFT) "))\n" \
++"        .endm\n"
++
+
+Does this make sense?
+
+Thanks!
+Leo
+
+
+> 
+> Thanks,
+> drew
+> 
+> > 
+> > + #define CBO_PREFETCH_I(base, offset)				\
+> > +     CBO_PREFETCH(PREFETCH_I, base, offset)
+> > +
+> > + #define CBO_PREFETCH_R(base, offset)				\
+> > +     CBO_PREFETCH(PREFETCH_R, base, offset)
+> > +
+> > + #define CBO_PREFETCH_W(base, offset)				\
+> > +     CBO_PREFETCH(PREFETCH_W, base, offset)
+> > +
+> > 
+> > Maybe replacing 0x1f by some MASK macro, so it looks nicer.
+> > (not sure how it's acceptable in asm, though).
+> > 
+> > The above would guarantee that we would never have CBO_PREFETCH_*() to mess 
+> > up any other register due to a unnoticed (base & 0x1f) != 0
+> > 
+> > Does that make sense?
+> > 
+> > >  #endif /* __ASM_INSN_DEF_H */
+> > > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+> > > index b3785ffc1570..bdb02b066041 100644
+> > > --- a/arch/riscv/kernel/cpufeature.c
+> > > +++ b/arch/riscv/kernel/cpufeature.c
+> > > @@ -168,6 +168,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+> > >  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
+> > >  	__RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
+> > >  	__RISCV_ISA_EXT_DATA(zicboz, RISCV_ISA_EXT_ZICBOZ),
+> > > +	__RISCV_ISA_EXT_DATA(zicbop, RISCV_ISA_EXT_ZICBOP),
+> > >  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
+> > >  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
+> > >  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
+> > > -- 
+> > > 2.40.1
+> > > 
+> > 
+> > Apart from above suggestions, seems a nice change :)
+> > 
+> > I suggest splitting this patch into 2, though:
+> > - Introducing S-Type instructions (plz point docs for reference) 
+> > - Introduce ZICBOP extension.
+> > 
+> > Thanks!
+> > Leo
+> > 
+> > 
+> 
+
 
