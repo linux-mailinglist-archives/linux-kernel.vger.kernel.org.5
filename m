@@ -1,137 +1,227 @@
-Return-Path: <linux-kernel+bounces-15816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8CEA8233B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:45:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64B938233BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:47:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B5981C23CA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:45:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55D591C23C1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:47:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6058E1CA9F;
-	Wed,  3 Jan 2024 17:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5850A1C680;
+	Wed,  3 Jan 2024 17:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u2IlVFI5"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="a/Irkqzf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD0D11CA98
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 17:45:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66CF6C433C7;
-	Wed,  3 Jan 2024 17:45:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704303938;
-	bh=/4dVKaf541G+sc8duQTMeRs7/R1QzyO3O6dn3yMRbxM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=u2IlVFI57SKaomPzPJssiMq1AJk53XApMfLbYpHz22r+d5EUB698Eaos7tveBNH0M
-	 s18IXtYBuAs7LOt9cNZ/iLPRI5LsqICqh8jUVal/Ypw+8pzCEKZbwgO+BLLGAwRGH1
-	 K8HIi9PyJEfKtENqKywnPBQuhAqSEJuuoFiMedY6Knjh8X6F4Tt2nZTzsSYJGqSJ/t
-	 /8gyc5UhjVQWoXRgbm8hFgQKBJ/UIxQnkBO6DjLFd7d9lIrxjZyaZ93flP4XY90H3U
-	 aPqSawycIs0b4CvYy0VLU1yVQB8rAb2NjMGu21cAW96mfkjILf3N+SyhiLZRexg6hO
-	 GbmbeUK2YqBNg==
-Date: Wed, 3 Jan 2024 17:45:32 +0000
-From: Will Deacon <will@kernel.org>
-To: Elad Nachman <enachman@marvell.com>
-Cc: catalin.marinas@arm.com, thunder.leizhen@huawei.com, bhe@redhat.com,
-	akpm@linux-foundation.org, yajun.deng@linux.dev,
-	chris.zjh@huawei.com, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: mm: Fix SOCs with DDR starting above zero
-Message-ID: <20240103174531.GE5954@willie-the-truck>
-References: <20240103170002.1793197-1-enachman@marvell.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6C71C296
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 17:47:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dbdb8e032f7so549202276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 09:47:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704304048; x=1704908848; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RVBLFxuGTc+CJdWVVnYhZKqmQ6RkuH4h4mf4hp3TRsc=;
+        b=a/IrkqzfLHVdMZNSK6JFSEqeiM0Tc8JeBQWkaIFxl018a4KoDfKqndVPYh/mThnUJg
+         bXIglnlrvqO0ZoLOXMyM2BIS2fHYTziXLbmimANhv6sMoS2nomnPsqKViiA8v/dgGW5M
+         6IJgG5tPXtCv67cEp1I3e4qRyZifXpleDKSd8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704304048; x=1704908848;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RVBLFxuGTc+CJdWVVnYhZKqmQ6RkuH4h4mf4hp3TRsc=;
+        b=FTJDsv13ZBrgzCiWd24vvQSZzyc6DADPNWKMK0BPnkD+svCDdJDIuqsgznPyXsmG42
+         muC6PNZt6Mq30+fkJGFRSAwb9cDBGmi4L6hnUI/RTQbO276w2uEJyup3DnTLf9HTcJTl
+         2vk4FiTrYrOCpAfxbayvFYqiJNcdeTRw1JO57DzELasq7fWNlxmdB+2LenbxhYoFLw8N
+         QSnvSrVkJYIgDBu2a+bhWVV43fNqb20GiJ5BxfEbR+qjS3ShVbBxJBHgjQxDMwlG1yby
+         +3Vy5jZ7MywgHmlYiQyd9P2lUSGLG/JNs/qR/rA/se+RJ18IZ8pMA5lZacRDdRRsxQLk
+         4E5g==
+X-Gm-Message-State: AOJu0Yz2puPvpUCthvcJwNXTyT7hkNqyBAWStgjRzXvmr1W7eqFJ2s9A
+	Kzy/FU1M0NgwDugjqg+Horw6seGhPH9pjoDEjHb1HIIv3VJ4
+X-Google-Smtp-Source: AGHT+IFRuIbKnoz7RMdbYdyxgvgzIsiQXh8vVqlgSECP6teJxilGE94r+rf+Sktx73a1K2m11pLoxUEDXJHiLml5GfY=
+X-Received: by 2002:a25:8c91:0:b0:dbd:43:3e43 with SMTP id m17-20020a258c91000000b00dbd00433e43mr848903ybl.42.1704304048063;
+ Wed, 03 Jan 2024 09:47:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240103170002.1793197-1-enachman@marvell.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20240102210820.2604667-1-markhas@chromium.org>
+ <20240102140734.v4.24.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid> <CAE-0n50zkwZ8nguUJcL1gjbuavhSU_rLxfGhanxB4YA7N34hLQ@mail.gmail.com>
+In-Reply-To: <CAE-0n50zkwZ8nguUJcL1gjbuavhSU_rLxfGhanxB4YA7N34hLQ@mail.gmail.com>
+From: Mark Hasemeyer <markhas@chromium.org>
+Date: Wed, 3 Jan 2024 10:47:17 -0700
+Message-ID: <CANg-bXByhaSngW2AAG9h6DYHpiTUvh8+yw3LPU6ZQSCb62M-wg@mail.gmail.com>
+Subject: Re: [PATCH v4 24/24] platform/chrome: cros_ec: Use PM subsystem to
+ manage wakeirq
+To: Stephen Boyd <swboyd@chromium.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Rob Herring <robh@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@intel.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Raul Rangel <rrangel@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
+	Benson Leung <bleung@chromium.org>, Bhanu Prakash Maiya <bhanumaiya@chromium.org>, 
+	Chen-Yu Tsai <wenst@chromium.org>, Guenter Roeck <groeck@chromium.org>, 
+	Prashant Malani <pmalani@chromium.org>, Rob Barnes <robbarnes@google.com>, 
+	chrome-platform@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jan 03, 2024 at 07:00:02PM +0200, Elad Nachman wrote:
-> From: Elad Nachman <enachman@marvell.com>
-> 
-> Some SOCs, like the Marvell AC5/X/IM, have a combination
-> of DDR starting at 0x2_0000_0000 coupled with DMA controllers
-> limited to 31 and 32 bit of addressing.
-> This requires to properly arrange ZONE_DMA and ZONE_DMA32 for
-> these SOCs, so swiotlb and coherent DMA allocation would work
-> properly.
-> Change initialization so device tree dma zone bits are taken as
-> function of offset from DRAM start, and when calculating the
-> maximal zone physical RAM address for physical DDR starting above
-> 32-bit, combine the physical address start plus the zone mask
-> passed as parameter.
-> This creates the proper zone splitting for these SOCs:
-> 0..2GB for ZONE_DMA
-> 2GB..4GB for ZONE_DMA32
-> 4GB..8GB for ZONE_NORMAL
-> 
-> Signed-off-by: Elad Nachman <enachman@marvell.com>
-> ---
->  arch/arm64/mm/init.c | 20 +++++++++++++++-----
->  1 file changed, 15 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 74c1db8ce271..8288c778916e 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -115,20 +115,21 @@ static void __init arch_reserve_crashkernel(void)
->  
->  /*
->   * Return the maximum physical address for a zone accessible by the given bits
-> - * limit. If DRAM starts above 32-bit, expand the zone to the maximum
-> - * available memory, otherwise cap it at 32-bit.
-> + * limit. If DRAM starts above 32-bit, expand the zone to the available memory
-> + * start limited by the zone bits mask, otherwise cap it at 32-bit.
->   */
->  static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
->  {
->  	phys_addr_t zone_mask = DMA_BIT_MASK(zone_bits);
->  	phys_addr_t phys_start = memblock_start_of_DRAM();
-> +	phys_addr_t phys_end = memblock_end_of_DRAM();
->  
->  	if (phys_start > U32_MAX)
-> -		zone_mask = PHYS_ADDR_MAX;
-> +		zone_mask = phys_start | zone_mask;
->  	else if (phys_start > zone_mask)
->  		zone_mask = U32_MAX;
->  
-> -	return min(zone_mask, memblock_end_of_DRAM() - 1) + 1;
-> +	return min(zone_mask, phys_end - 1) + 1;
->  }
->  
->  static void __init zone_sizes_init(void)
-> @@ -140,7 +141,16 @@ static void __init zone_sizes_init(void)
->  
->  #ifdef CONFIG_ZONE_DMA
->  	acpi_zone_dma_bits = fls64(acpi_iort_dma_get_max_cpu_address());
-> -	dt_zone_dma_bits = fls64(of_dma_get_max_cpu_address(NULL));
-> +	/*
-> +	 * When calculating the dma zone bits from the device tree, subtract
-> +	 * the DRAM start address, in case it does not start from address
-> +	 * zero. This way. we pass only the zone size related bits to
-> +	 * max_zone_phys(), which will add them to the base of the DRAM.
-> +	 * This prevents miscalculations on arm64 SOCs which combines
-> +	 * DDR starting above 4GB with memory controllers limited to
-> +	 * 32-bits or less:
-> +	 */
-> +	dt_zone_dma_bits = fls64(of_dma_get_max_cpu_address(NULL) - memblock_start_of_DRAM());
->  	zone_dma_bits = min3(32U, dt_zone_dma_bits, acpi_zone_dma_bits);
->  	arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
->  	max_zone_pfns[ZONE_DMA] = PFN_DOWN(arm64_dma_phys_limit);
+> The DMI quirk looks to be fixing something. Most likely that should be
+> backported to stable kernels as well? Please split the DMI match table
+> part out of this so that it isn't mixed together with migrating the
+> driver to use the pm wakeirq logic.
 
-Hmm, I'm a bit worried this could regress other platforms since you seem
-to be assuming that DMA address 0 corresponds to the physical start of
-DRAM. What if that isn't the case?
+The DMI quirk is used to list boards whose IRQ should be enabled for
+wake, regardless of what their firmware says. Currently the driver
+always enables the EC IRQ for wake anyway, so there shouldn't be a
+need to backport the DMI quirk on its own. Splitting out the DMI quirk
+into its own patch would break Brya/Brask's ability to wake if they
+were to run a kernel w/o the DMI patch. I chose not to split it out to
+keep the change atomic, and avoid introducing any regressions.
 
-In any case, we should try hard to avoid different behaviour between DT
-and ACPI here.
+> > For device tree base systems, it is not an issue as the relevant device
+> > tree entries have been updated and DTS is built from source for each
+> > ChromeOS update.
+>
+> It is still sorta an issue. It means that we can't backport this patch
+> without also backporting the DTS patch to the kernel. Furthermore, DTS
+> changes go through different maintainer trees, so having this patch in
+> the kernel without the DTS patch means the bisection hole is possibly
+> quite large.
 
-Will
+Correct, this patch doesn't make sense to backport on its own. It is
+dependent on the entire patch series (more than just the DTS changes).
+I'm not super familiar with how patches flow through different
+maintainer trees. But I'd imagine this patch series makes its way to
+torvalds/master in some sort of sane manner where earlier patches land
+before later (dependent) ones?
+
+> Does using the pm wakeirq logic require the use of 'wakeup-source'
+> property in DT? A quick glance makes me believe it isn't needed, so
+> please split that part out of this patch as well.
+
+No, 'wakeup-source' is not required, it provides an indication to the
+driver that the IRQ should be used for wake, which then enables the pm
+subsystem accordingly. If 'wakup-source' is not used, we're back to
+square one of making assumptions. Specifically in this case, it would
+be assumed that all SPI based EC's are wake capable.
+
+> We should see a patch
+> for the DMI quirk, a patch to use wakeup-source (doubtful that we need
+> it at all though), and a patch to use the pm wakeirq logic instead of
+> hand rolling it again.
+
+I don't know if I'm convinced this should happen. I'm open to it, but
+see my previous comments.
+
+> > +static int enable_irq_for_wake(struct cros_ec_device *ec_dev)
+> > +{
+> > +       struct device *dev = ec_dev->dev;
+> > +       int ret = device_init_wakeup(dev, true);
+> > +
+> > +       if (ret) {
+> > +               dev_err(dev, "Failed to enable device for wakeup");
+>
+> Missing newline on printk message.
+
+Ack.
+
+>
+> > +               return ret;
+> > +       }
+> > +       ret = dev_pm_set_wake_irq(dev, ec_dev->irq);
+> > +       if (ret)
+> > +               device_init_wakeup(dev, false);
+> > +
+> > +       return ret;
+>
+> I'd rather see the code formatted like this:
+>
+>         int ret;
+>
+>         ret = device_init_wakeup(dev, true);
+>         if (ret) {
+>                 dev_err(...);
+>                 return ret;
+>         }
+>
+>         ret = dev_pm_set_wake_irq(...);
+>         if (ret)
+>                 device_init_wakeup(dev, false);
+>
+>         return ret;
+>
+> Mostly because the first 'if (ret)' requires me to hunt in the variable
+> declaration part of the function to figure out what it is set to instead
+> of looking at the line directly above.
+
+Sounds good :-)
+
+
+> [...]
+> > diff --git a/drivers/platform/chrome/cros_ec_spi.c b/drivers/platform/chrome/cros_ec_spi.c
+> >  struct cros_ec_spi {
+> >         struct spi_device *spi;
+> > @@ -77,6 +79,7 @@ struct cros_ec_spi {
+> >         unsigned int start_of_msg_delay;
+> >         unsigned int end_of_msg_delay;
+> >         struct kthread_worker *high_pri_worker;
+> > +       bool irq_wake;
+>
+> This is only used in probe. Make it a local variable instead of another
+> struct member to save memory.
+
+Ack.
+
+>
+> >  };
+> >
+> >  typedef int (*cros_ec_xfer_fn_t) (struct cros_ec_device *ec_dev,
+> > @@ -689,9 +692,10 @@ static int cros_ec_cmd_xfer_spi(struct cros_ec_device *ec_dev,
+> >         return cros_ec_xfer_high_pri(ec_dev, ec_msg, do_cros_ec_cmd_xfer_spi);
+> >  }
+> >
+> > -static void cros_ec_spi_dt_probe(struct cros_ec_spi *ec_spi, struct device *dev)
+> > +static void cros_ec_spi_dt_probe(struct cros_ec_spi *ec_spi)
+> >  {
+> > -       struct device_node *np = dev->of_node;
+> > +       struct spi_device *spi = ec_spi->spi;
+> > +       struct device_node *np = spi->dev.of_node;
+> >         u32 val;
+> >         int ret;
+> >
+> > @@ -702,6 +706,8 @@ static void cros_ec_spi_dt_probe(struct cros_ec_spi *ec_spi, struct device *dev)
+> >         ret = of_property_read_u32(np, "google,cros-ec-spi-msg-delay", &val);
+> >         if (!ret)
+> >                 ec_spi->end_of_msg_delay = val;
+> > +
+> > +       ec_spi->irq_wake = spi->irq > 0 && of_property_present(np, "wakeup-source");
+>
+> Is there any EC SPI device that doesn't want to support wakeup?
+
+I don't know for sure. If so, the EC driver doesn't currently support
+it because it assumes wake capability.
+
+> I'd
+> prefer we introduce a new property or compatible string to indicate that
+> wakeup isn't supported and otherwise always set irq_wake to true. That
+> way DT can change in parallel with the driver instead of in lockstep.
+
+We could introduce a custom binding? IMHO, using inverted logic like
+that kind of goes against the grain with how ACPI and kernel are
+currently structured. And I don't love how it would make the SPI EC
+driver inverted from the other interfaces. I'd rather go back to just
+assuming all SPI based EC's are wake capable. But even then, why
+assume? This gives us flexibility to disable wakeirqs and drops
+unnecessary assumptions. It also lays the groundwork for new boards
+that may behave differently. For example, an ACPI based SPI EC.
 
