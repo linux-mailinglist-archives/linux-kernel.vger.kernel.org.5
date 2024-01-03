@@ -1,257 +1,348 @@
-Return-Path: <linux-kernel+bounces-15228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C83A18228C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:15:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E17E58228E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:19:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F1BEB22513
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 07:15:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41001B22FF7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 07:19:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F57B1803D;
-	Wed,  3 Jan 2024 07:15:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="D9H9HQu8";
-	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="a5/nfdVx"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4CF31804D;
+	Wed,  3 Jan 2024 07:18:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74697179B5;
-	Wed,  3 Jan 2024 07:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: cde20206aa0711ee9e680517dc993faa-20240103
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=LNIIGmYVK/aAoDSPBxQSzDo5F9ii79Sa4h+twSgEJF4=;
-	b=D9H9HQu8t2LqT1KkK6/kQg7A1VskVVOmgKtTxdaaaZRcnvl4+DIl1dD3N2LZKR4DRQL3ZQR/3aNyOB30GYwKgKO0Mt4KocZNhJFTqw6ioeDi0MpHu5vNxbsvv1dcOU35OBx69EJnIop1j7rlLKRU3xht+CNozhKQUPdiAGFQhjI=;
-X-CID-CACHE: Type:Local,Time:202401031451+08,HitQuantity:3
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:502b021c-619d-4ace-9ce2-c095ea05cdaa,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:5d391d7,CLOUDID:ec5f6f82-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-	DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: cde20206aa0711ee9e680517dc993faa-20240103
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
-	(envelope-from <jason-jh.lin@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 2013170906; Wed, 03 Jan 2024 15:14:59 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 3 Jan 2024 15:14:57 +0800
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 3 Jan 2024 15:14:57 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EcnLKjrXKXYkzGl7xEsq3Q1BOrr2WfA+EhY3llYhZFfKjtUJHmOUTkJqALmG/SSRn534xQEqnW7iqh0bUTMFXMZHU+iAnTuXoNuqmX9OSkV65Y25/JLq6HdiEHVgdxaTJWQUlc3INAPbrPj0gHGyt0VZ9mX40WrnS81cfIlEHU9RjXaldsnU7Pgzjf+Sz4I7SNonMBZqxnZ14BN5Ej0OvUb+jbw96ZId1tj1DRxrv9PM2rIjd4kAaL3fvO9+YNyNLWCXX59gYKaVNRuq4h/yER8zSGPBqLqaqUukrV8mrsEF2+HjoZ00/ANFDqdhA4Kub5pH4bsgnwbeP7C6TTj38w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LNIIGmYVK/aAoDSPBxQSzDo5F9ii79Sa4h+twSgEJF4=;
- b=i9tflvwHBfHH76HII0xJsSFNsHseNO6d9lGG6m+mk9sntI9TyMjQZfGT5nEuH3My2Lqn8hnJL7jOpVxfDMKf48QYA6Gz+781G4A22YjbaLapOF3ukEW6bFhyMOKx2M9NOw8sRJE/dFwl0OXkIBxIiyP3bnrWaAet/HpvIK7hk+2XakVU/SjEtfLj3sdQkx8bqAvBRsmurdAVb4/FMUTa2sgovQutZVtfluPtJMpARko2JXPx3D7GIrmqO+Nx5TOAlzmupezBLg/oZoWeo8imWs4SLH+Zi8yReD/DC4acXWqXbG6VqxrItcQkJt1NgsKnnPgz22IkihY3I/cqAwM1/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LNIIGmYVK/aAoDSPBxQSzDo5F9ii79Sa4h+twSgEJF4=;
- b=a5/nfdVxLFlIqwmDrfqAKCMKTg4tZ/1LQ163iKHaN5A8jdmLwBBIxnln8YWJBEs+o9HdG9j08GufxhIuHJmPqcGD7jEQwUC3j1lwi8gg99oEVuYSvx+9pRt2yOXz1NcW8UCbq7QgsVPTEjpXEESt32//gnw6IBFiGKJgQTilqOo=
-Received: from SEYPR03MB7682.apcprd03.prod.outlook.com (2603:1096:101:149::11)
- by KL1PR03MB6227.apcprd03.prod.outlook.com (2603:1096:820:8d::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Wed, 3 Jan
- 2024 07:14:54 +0000
-Received: from SEYPR03MB7682.apcprd03.prod.outlook.com
- ([fe80::d006:ec9c:ff42:ff60]) by SEYPR03MB7682.apcprd03.prod.outlook.com
- ([fe80::d006:ec9c:ff42:ff60%4]) with mapi id 15.20.7159.013; Wed, 3 Jan 2024
- 07:14:54 +0000
-From: =?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= <Jason-JH.Lin@mediatek.com>
-To: =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
-	"jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>, "robh+dt@kernel.org"
-	<robh+dt@kernel.org>, "krzysztof.kozlowski+dt@linaro.org"
-	<krzysztof.kozlowski+dt@linaro.org>, "chunkuang.hu@kernel.org"
-	<chunkuang.hu@kernel.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	=?utf-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= <Singo.Chang@mediatek.com>,
-	=?utf-8?B?Sm9obnNvbiBXYW5nICjnjovogZbpkasp?= <Johnson.Wang@mediatek.com>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	=?utf-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?=
-	<Jason-ch.Chen@mediatek.com>, =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?=
-	<Shawn.Sung@mediatek.com>, "mchehab@kernel.org" <mchehab@kernel.org>,
-	=?utf-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	Project_Global_Chrome_Upstream_Group
-	<Project_Global_Chrome_Upstream_Group@mediatek.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 8/9] mailbox: mediatek: Add CMDQ secure mailbox driver
-Thread-Topic: [PATCH v3 8/9] mailbox: mediatek: Add CMDQ secure mailbox driver
-Thread-Index: AQHaNJLdXM09BYKw50qe8M+Tbg/FILC/gxcAgAg824A=
-Date: Wed, 3 Jan 2024 07:14:54 +0000
-Message-ID: <519df4d65db2904f3c9c27f73b47b9268c9ec049.camel@mediatek.com>
-References: <20231222045228.27826-1-jason-jh.lin@mediatek.com>
-	 <20231222045228.27826-9-jason-jh.lin@mediatek.com>
-	 <1b21f5bfa561b049193742804de42a1c03500a73.camel@mediatek.com>
-In-Reply-To: <1b21f5bfa561b049193742804de42a1c03500a73.camel@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SEYPR03MB7682:EE_|KL1PR03MB6227:EE_
-x-ms-office365-filtering-correlation-id: 2dd34540-8a33-4eea-31c2-08dc0c2baf3d
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jgJKvP/x6WGZ1M97gZI/bwqp6Xc3CD371XXWR/3MmGMnA9Jo6q7yPBPVRAsMrdjgfgW+oq36BYh5WSCLdAFVJ/iVOsb6LCc6SynspJDv529grey/AtIizePldi1Bvk3ZJRJ8BfbiwgoRRStJ/JjMjl3RWqZBUy0MsQuW16VUjEhdSYYjSKajXBLMk1jMcJgMlk534jDxiYQ+2TkTRbA7J3A1ebqDPKH5VQy+FkEnhT2x+wo7Z22+eT77xD57Te4eRZ/SZ9UlY0TxKX8pd2aaouCCH4J5Sq+J0bRvspbPRB04qgaPtFQcQ1FS7GA20jHnYt+Csno5uFLsVJq2OARHSkXHG2HlgMO92XKw04dtqqaymTy1IYEzCeLZOxJtS4lFPIP0rW1aoBecQeDifXB4WiaISE66DN8zn4cEhXur7V8cfsuEpGdsx2thtC6yLP5DpfqBZ2XI/JJCQ3+NGBfsihhBjPNOCLfoSMHAUxMtBSl1sj5UTeDO3WopXIZNOrWr0fh8VFYKziVTvncOncvoDucg6QQCY/3mtvy3Mr7HsKn2W2kNUszNaOwCkanGWktI28r9qeRGQcpfIK9QgRXoaw163mmVrlmjmFh7KsAKqJWNYOBEiz59aPU2FKfwPU2PjlLTLIeV1IG3RuceIeswo9mjZG1HSuzn3iaRXApmqsg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR03MB7682.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(136003)(39860400002)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(7416002)(2906002)(4001150100001)(66446008)(66946007)(8676002)(8936002)(85182001)(41300700001)(86362001)(36756003)(38100700002)(478600001)(122000001)(4326008)(71200400001)(91956017)(83380400001)(76116006)(6506007)(6486002)(66476007)(66556008)(64756008)(110136005)(26005)(5660300002)(316002)(54906003)(2616005)(6512007)(15650500001)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a0hFOGU3Q0NPY1VjUlE2MXlTV0V4YUtSdVVZWERPUWNDKzZla0xaakpra2dL?=
- =?utf-8?B?NWcvQVo5NFBmVFBtSEM2eUpXVXZWbnJWOGt0Z0hZSjhCMENLVCtXZXlFbTVG?=
- =?utf-8?B?dmlldnQ5V2dpeUZmRWtvaEoxSzM4TCt3eGFIK3RVc2UzbG9DWUdPRmYrRThW?=
- =?utf-8?B?aEVmT3Y4eVlvL1QxMU56S05uVnVVOFNUczBSaFYrMVNiME9FU3N1UGowQkdD?=
- =?utf-8?B?dzk3dnlmYnBWa2swdHg4bUdHSWZISzlPZG45SGVidzRMVFNLSWgvdTFTMHZG?=
- =?utf-8?B?T3MwY3JBTE9zV2RueCtRelVFZ2EzaGFER25KSEdJS0FldVd6Rk00b0l2d1hi?=
- =?utf-8?B?MlB6ZTlWWSt0QmR3Qmd5ME1IYW5yR0FsNFBjeEl3TEVNOUl4WHpSc2EyNity?=
- =?utf-8?B?NDVsU3dzaTd5dGN6bm1XcTZ1OHp2TkhpYlFac0FBdk9nTHdzUTJNczcwcThB?=
- =?utf-8?B?UndHVzFENVpvOGJ2cDV3Z0JEOVVqc1Qvb0FaRldyMFBkejh0azZCVndlZG5S?=
- =?utf-8?B?akc4cmNUQXZJekVKVTRSTFlQMHI2K2haNWxkeU03aWlVdW5xaVRRVjE3aGZJ?=
- =?utf-8?B?ZGRMM25zd0k1QmpJMDRSRVlpQUQ0OTVmKzFJZTZ0d0J5UTRETWF2d29XV1Fj?=
- =?utf-8?B?Q2ZydGtRKzd3L1I3cWlVVTZKNmVXQnQxb0oyZ0tJS25qa0lDY1VGVCtKcXlD?=
- =?utf-8?B?dFBmTTRpQ0VTbEtkMU9IenlkVFB1L2dYbGR5Zk5Pa0d2aFduQTZ1dXVleEkr?=
- =?utf-8?B?U3NtT2E3Tzk1dDlqcFBhbUdYcWJQRDJuTTBRbkFQQUxsckU0OTZ6bXBOMEVw?=
- =?utf-8?B?WVpxMzBrdXMyS0N0NVd6YVpJb1F5WVBLbVZDRTQrSmJQU2wxaHFSTFRaWTVC?=
- =?utf-8?B?NEg5cHVid1c2dEtVZ0N1WWFLVjFNaDhNVmJSTmFLWGlRUElUR3V3ZEVMR3Zw?=
- =?utf-8?B?eCtvMG01MFNtRmZ0WDBqSFNhTDJCQk43YkxaVVpTeVBUSHJuenRQbW5ISkR0?=
- =?utf-8?B?TjYxdk9KU3lOVmFoNmFLWllPRlJQODdxa0hLbVVrTk00ZkcwVmhMblpWWkJ6?=
- =?utf-8?B?V3lDNHNFK1hTcHBTaGNlYmxrSElRbUxHZnlNbzhVVGRkbzZMdXpwSTFWdWRH?=
- =?utf-8?B?YVcyRFU1RG1rK1VZdFhUM1VxOHN5eG5rbVVMZUtiZDIrQ1lnSVBISFliMWkx?=
- =?utf-8?B?bEhNOWZpZVh3UnJ3YUw5UVdJUFh0bWVpTHdobHNXS0thb1JocDUxR0w0WEJk?=
- =?utf-8?B?RzAzY2dLV2FNQU03aWRlRkVVTTI3YlRsNy81R1JXQisvek5OTUpjTW11K0J0?=
- =?utf-8?B?WWJhcWgwYUYwZzYrUURBd2x6WDBlQy92emczbkpjWUFIOEZ6QmozZzBLY1Rz?=
- =?utf-8?B?TXRVOE5WQnBaV3NqNDhKSUduMko3VjY5QW5rdEVQWDRUcjAwcDdpMzBhYzN4?=
- =?utf-8?B?akpUUHR0d3VrK0YxQ0xJNStsSGwxSnNSQTV1alRVVGdSV015QmhJTHhadTFk?=
- =?utf-8?B?cENOaUZNQUxVbURLd1BMVkhvV2FPV1RJNjlkRGhlM3ZGek5pME4rYVYxWEJr?=
- =?utf-8?B?MFViaUNnVUpmNHJTdkZjZjVUMFJGdXpzNlZOSGt3LytaZXBmbXVvcVFyR0ZQ?=
- =?utf-8?B?UlNkUmgzVUdRTmJ0dzZtWDF2QzRPaVJmWHUzYjVXRXM2aVpvTTZjRzE4QjFG?=
- =?utf-8?B?QXljYlp3d2FiNjROUFpucGlvTDI2MzJHTWpLay9PZDNKM3RLT1pMd09Ld0xG?=
- =?utf-8?B?SUNmZkhrRCs5VDFnR0ZxQS9LWGZ6WEZlb21icEQrVkRFRjFvWk9KaXlZZzNv?=
- =?utf-8?B?VlZMRkdhYU5hVFBYNC9DZXNBS2o3dVo5UTRkNVNkMFZCdE9DVDFRbjRXaDM1?=
- =?utf-8?B?T3RzZVQvN0MyZW1wZVVLOE5ka2wrUmpRN1lSUzBPUWdibzJpUG1UWTRhZkwx?=
- =?utf-8?B?K2U4Q0NrRzlZT0NTR21nWEFBUURlRDI2Ym8xQmlkRG5Scy9TZFNtWDMvc0FM?=
- =?utf-8?B?YW9NN3Bmd252Mm90VkwzSDA0WEp5VWRTS1lYVmQwOTZBVk9EQ3hTVkJ3SUlv?=
- =?utf-8?B?VnVQKy8xSm1KL3lUdGw1M3g3ekVIUW1HenpWK1BpY29QNTcwSVNEdUdKK0FY?=
- =?utf-8?B?azRrN1NSbHFzaXEvc0lwS3plR3hZRXB3WnphSkRCWFVYREhsQTZlT3N1YlM0?=
- =?utf-8?B?cEE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <47C6C1683BD36A429C9986422E36D003@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A294418028;
+	Wed,  3 Jan 2024 07:18:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T4gzS3z9mz4f3jQb;
+	Wed,  3 Jan 2024 15:17:56 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 4D65B1A0914;
+	Wed,  3 Jan 2024 15:17:58 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgDn6hAkCpVliUCTFQ--.54310S4;
+	Wed, 03 Jan 2024 15:17:58 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: ming.lei@redhat.com,
+	hch@lst.de,
+	bvanassche@acm.org,
+	axboe@kernel.dk
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH for-6.8/block RFC v2] block: support to account io_ticks precisely
+Date: Wed,  3 Jan 2024 15:15:15 +0800
+Message-Id: <20240103071515.2477311-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SEYPR03MB7682.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2dd34540-8a33-4eea-31c2-08dc0c2baf3d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jan 2024 07:14:54.2739
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 63etlLMpWGdAXv2SUAgXwdSEBiUzoe8CJZ3NuyXZk+TAkvWSr4OesBE27AVkU0mFHqvxM24zc1hncNbPsTY5CmV/s7ySxFFAkLsnRg1//fY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB6227
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--20.628600-8.000000
-X-TMASE-MatchedRID: VfovoVrt/oYOwH4pD14DsPHkpkyUphL9fjJOgArMOCb3bBqxmjinTbs0
-	9RsYKeKEiUqxWFzqa/9QGF7v4Up8Fw9FV6kNYiPHbc297PAGtWaQoBr+SFneJHPBWZjlMys28ha
-	W4U9IrFpp2AbuTNMCFDjMd1TWYQcaeu/cjehQEBPRfDQgu+j+5SlayzmQ9QV0dow/ybqqTpKnXh
-	ADgppWjac5LlJnbvbUuv8Bby3ll4azOchXTgjX0bMsPmSZxbpk7yWPaQc4INQxBvTc7v9+ZyWV0
-	qXgzOhKLpw4iGWM/UudqC2fLtk9xEL9tcyTZdAsgxsfzkNRlfLdB/CxWTRRuyUIayx+Skid
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--20.628600-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	DEE1356E8D5AB2B8A9ABC6FF0107CC4F639ECBCDFB0B7D6777D4D73C80EF6A882000:8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDn6hAkCpVliUCTFQ--.54310S4
+X-Coremail-Antispam: 1UD129KBjvJXoWfJr43tw4kXFWxArW3Kw4fGrg_yoWDuF1xp3
+	yDAay7tay0gF48uFykt3W7A3WSgw4qkrW7Ar43CryYyFnrKr1fX3WvvFWFqF4xZrZ7AayU
+	Zr4kAayDu398W3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+	UdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-T24gRnJpLCAyMDIzLTEyLTI5IGF0IDAxOjI3ICswMDAwLCBDSyBIdSAo6IOh5L+K5YWJKSB3cm90
-ZToNCj4gSGksIEphc29uOg0KPiANCj4gT24gRnJpLCAyMDIzLTEyLTIyIGF0IDEyOjUyICswODAw
-LCBKYXNvbi1KSC5MaW4gd3JvdGU6DQo+ID4gVG8gc3VwcG9ydCBzZWN1cmUgdmlkZW8gcGF0aCBm
-ZWF0dXJlLCBHQ0UgaGF2ZSB0byByZWFkL3dyaXRlDQo+ID4gcmVnaXN0Z2Vycw0KPiA+IGluIHRo
-ZSBzZWN1cmUgd29ybGQuIEdDRSB3aWxsIGVuYWJsZSB0aGUgc2VjdXJlIGFjY2VzcyBwZXJtaXNz
-aW9uDQo+ID4gdG8NCj4gPiB0aGUNCj4gPiBIVyB3aG8gd2FudHMgdG8gYWNjZXNzIHRoZSBzZWN1
-cmUgY29udGVudCBidWZmZXIuDQo+ID4gDQo+ID4gQWRkIENNRFEgc2VjdXJlIG1haWxib3ggZHJp
-dmVyIHRvIG1ha2UgQ01EUSBjbGllbnQgdXNlciBpcyBhYmxlIHRvDQo+ID4gc2VuZGluZyB0aGVp
-ciBIVyBzZXR0aW5ncyB0byB0aGUgc2VjdXJlIHdvcmxkLiBTbyB0aGF0IEdDRSBjYW4NCj4gPiBl
-eGVjdXRlDQo+ID4gYWxsIGluc3RydWN0aW9ucyB0byBjb25maWd1cmUgSFcgaW4gdGhlIHNlY3Vy
-ZSB3b3JsZC4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBKYXNvbi1KSC5MaW4gPGphc29uLWpo
-LmxpbkBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+IA0KPiBbc25pcF0NCj4gDQo+ID4gKw0KPiA+
-ICtzdGF0aWMgaW50IGNtZHFfc2VjX3Nlc3Npb25fc2VuZChzdHJ1Y3QgY21kcV9zZWNfY29udGV4
-dCAqY29udGV4dCwNCj4gPiArCQkJCSBzdHJ1Y3QgY21kcV9zZWNfdGFzayAqc2VjX3Rhc2ssIGNv
-bnN0DQo+ID4gdTMyIGl3Y19jbWQsDQo+ID4gKwkJCQkgY29uc3QgdTMyIHRocmRfaWR4LCBzdHJ1
-Y3QgY21kcV9zZWMNCj4gPiAqY21kcSkNCj4gPiArew0KPiA+ICsJaW50IGVyciA9IDA7DQo+ID4g
-Kwl1NjQgY29zdDsNCj4gPiArCXN0cnVjdCBpd2NfY21kcV9tZXNzYWdlX3QgKml3Y19tc2cgPSBO
-VUxMOw0KPiA+ICsNCj4gPiArCWl3Y19tc2cgPSAoc3RydWN0IGl3Y19jbWRxX21lc3NhZ2VfdCAq
-KWNvbnRleHQtPml3Y19tc2c7DQo+ID4gKw0KPiA+ICsJbWVtc2V0KGl3Y19tc2csIDAsIHNpemVv
-ZigqaXdjX21zZykpOw0KPiA+ICsJaXdjX21zZy0+Y21kID0gaXdjX2NtZDsNCj4gPiArCWl3Y19t
-c2ctPmNtZHFfaWQgPSBjbWRxLT5wZGF0YS0+aHdpZDsNCj4gPiArCWl3Y19tc2ctPmNvbW1hbmQu
-dGhyZWFkID0gdGhyZF9pZHg7DQo+ID4gKw0KPiA+ICsJc3dpdGNoIChpd2NfY21kKSB7DQo+ID4g
-KwljYXNlIENNRF9DTURRX0lXQ19TVUJNSVRfVEFTSzoNCj4gPiArCQllcnIgPSBjbWRxX3NlY19m
-aWxsX2l3Y19tc2coY29udGV4dCwgc2VjX3Rhc2ssDQo+ID4gdGhyZF9pZHgpOw0KPiA+ICsJCWlm
-IChlcnIpDQo+ID4gKwkJCXJldHVybiBlcnI7DQo+ID4gKwkJYnJlYWs7DQo+ID4gKwljYXNlIENN
-RF9DTURRX0lXQ19DQU5DRUxfVEFTSzoNCj4gPiArCQlpd2NfbXNnLT5jYW5jZWxfdGFzay53YWl0
-X2Nvb2tpZSA9IHNlY190YXNrLQ0KPiA+ID4gd2FpdF9jb29raWU7DQo+ID4gDQo+ID4gKwkJaXdj
-X21zZy0+Y2FuY2VsX3Rhc2sudGhyZWFkID0gdGhyZF9pZHg7DQo+ID4gKwkJYnJlYWs7DQo+ID4g
-KwljYXNlIENNRF9DTURRX0lXQ19QQVRIX1JFU19BTExPQ0FURToNCj4gPiArCQlpZiAoIWNtZHEt
-PnNoYXJlZF9tZW0gfHwgIWNtZHEtPnNoYXJlZF9tZW0tPnZhKSB7DQo+ID4gKwkJCWRldl9lcnIo
-Y21kcS0+bWJveC5kZXYsICIlcyAlZDogc2hhcmVkX21lbSBpcw0KPiA+IE5VTEwiLCBfX2Z1bmNf
-XywgX19MSU5FX18pOw0KPiA+ICsJCQlyZXR1cm4gLUVGQVVMVDsNCj4gPiArCQl9DQo+ID4gKwkJ
-aXdjX21zZy0+cGF0aF9yZXNvdXJjZS5zaXplID0gY21kcS0+c2hhcmVkX21lbS0+c2l6ZTsNCj4g
-PiArCQlpd2NfbXNnLT5wYXRoX3Jlc291cmNlLnNoYXJlX21lbW95X3BhID0gY21kcS0NCj4gPiA+
-IHNoYXJlZF9tZW0tPnBhOw0KPiA+IA0KPiA+ICsJCWl3Y19tc2ctPnBhdGhfcmVzb3VyY2UudXNl
-X25vcm1hbF9pcnEgPSAxOw0KPiA+ICsJCWJyZWFrOw0KPiA+ICsJZGVmYXVsdDoNCj4gPiArCQli
-cmVhazsNCj4gPiArCX0NCj4gPiArDQo+ID4gKwljbWRxLT5zZWNfaW52b2tlID0gc2NoZWRfY2xv
-Y2soKTsNCj4gPiArCWRldl9kYmcoY21kcS0+bWJveC5kZXYsICIlcyBleGVjdXRlIGNtZHE6JXAg
-c2VjX3Rhc2s6JXANCj4gPiBjb21tYW5kOiV1IHRocmVhZDoldSBjb29raWU6JWQiLA0KPiA+ICsJ
-CV9fZnVuY19fLCBjbWRxLCBzZWNfdGFzaywgaXdjX2NtZCwgdGhyZF9pZHgsDQo+ID4gKwkJc2Vj
-X3Rhc2sgPyBzZWNfdGFzay0+d2FpdF9jb29raWUgOiAtMSk7DQo+ID4gKw0KPiA+ICsJLyogc2Vu
-ZCBtZXNzYWdlICovDQo+ID4gKwllcnIgPSBjbWRxX3NlY19leGVjdXRlX3Nlc3Npb24oJmNvbnRl
-eHQtPnRlZV9jdHgsIGl3Y19jbWQsDQo+ID4gQ01EUV9USU1FT1VUX0RFRkFVTFQpOw0KPiA+ICsN
-Cj4gPiArCWNtZHEtPnNlY19kb25lID0gc2NoZWRfY2xvY2soKTsNCj4gPiArCWNvc3QgPSBkaXZf
-dTY0KGNtZHEtPnNlY19kb25lIC0gY21kcS0+c2VjX2ludm9rZSwgMTAwMDAwMCk7DQo+ID4gKwlp
-ZiAoY29zdCA+PSBDTURRX1RJTUVPVVRfREVGQVVMVCkNCj4gDQo+IE1heWJlIGZvciBzb21lIGNs
-aWVudCBkcml2ZXIsIDEgbXMgaXMgdG9vIGxvbmcsIGFuZCBmb3Igc29tZSBjbGllbnQNCj4gZHJp
-dmVyIDEgc2Vjb25kIGlzIG5vdCBsb25nLiBTbyBJIHRoaW5rIHRoZSB0aW1lb3V0IGRldGVjdGlv
-biBzaG91bGQNCj4gYmUNCj4gZG9uZSBieSBjbGllbnQgZHJpdmVyLiBBbmQgdGhlIGV4ZWN1dGlv
-biB0aW1lIGRlcGVuZCBvbiB0aGUgY29tbWFuZA0KPiBidWZmZXIgZ2VuZXJhdGVkIGJ5IGNsaWVu
-dCBkcml2ZXIsIHNvIG9ubHkgY2xpZW50IGRyaXZlciBoYXMgdGhlDQo+IGFiaWxpdHkgdG8gZGVi
-dWcgdGhlIGNvbW1hbmQgYnVmZmVyIGl0IGdlbmVyYXRlZC4gU28gaXQncyBub3QNCj4gbmVjZXNz
-YXJ5DQo+IHRvIGRldGVjdCB0aW1lb3V0IGluIGNtZHEgZHJpdmVyLg0KPiANCj4gUmVnYXJkcywN
-Cj4gQ0sNCj4gDQoNCk9LLCBJJ2xsIHJlbW92ZSB0aGlzIHRpbWVvdXQgZGV0ZWN0aW9uIGluIGNt
-ZHEgZHJpdmVyLg0KDQpSZWdhcmRzLA0KSmFzb24tSkguTGluDQoNCj4gPiArCQlkZXZfZXJyKGNt
-ZHEtPm1ib3guZGV2LCAiJXMgZXhlY3V0ZSB0aW1lb3V0IGNtZHE6JXANCj4gPiBzZWNfdGFzazol
-cCBjb3N0OiVsbHV1cyIsDQo+ID4gKwkJCV9fZnVuY19fLCBjbWRxLCBzZWNfdGFzaywgY29zdCk7
-DQo+ID4gKwllbHNlDQo+ID4gKwkJZGV2X2RiZyhjbWRxLT5tYm94LmRldiwgIiVzIGV4ZWN1dGUg
-ZG9uZSBjbWRxOiVwDQo+ID4gc2VjX3Rhc2s6JXAgY29zdDolbGx1dXMiLA0KPiA+ICsJCQlfX2Z1
-bmNfXywgY21kcSwgc2VjX3Rhc2ssIGNvc3QpOw0KPiA+ICsNCj4gPiArCWlmIChlcnIpDQo+ID4g
-KwkJcmV0dXJuIGVycjsNCj4gPiArDQo+ID4gKwljb250ZXh0LT5zdGF0ZSA9IElXQ19TRVNfT05f
-VFJBTlNBQ1RFRDsNCj4gPiArCXJldHVybiAwOw0KPiA+ICt9DQo+ID4gKw0K
+From: Yu Kuai <yukuai3@huawei.com>
+
+Currently, io_ticks is accounted based on sampling, specifically
+update_io_ticks() will always account io_ticks by 1 jiffies from
+bdev_start_io_acct()/blk_account_io_start(), and the result can be
+inaccurate, for example(HZ is 250):
+
+Test script:
+fio -filename=/dev/sda -bs=4k -rw=write -direct=1 -name=test -thinktime=4ms
+
+Test result: util is about 90%, while the disk is really idle.
+
+In order to account io_ticks precisely, update_io_ticks() must know if
+there are IO inflight already, and this requires overhead slightly,
+hence precise io accounting is disabled by default, and user can enable
+it through sysfs entry.
+
+Noted that for rq-based devcie, part_stat_local_inc/dec() and
+part_in_flight() is used to track inflight instead of iterating tags,
+which is not supposed to be used in fast path because 'tags->lock' is
+grabbed in blk_mq_find_and_get_req().
+
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+Changes in v2:
+ - remove the new parameter for update_io_ticks();
+ - simplify update_io_ticks();
+ - use swith in queue_iostats_store();
+ - add missing part_stat_local_dec() in blk_account_io_merge_request()
+
+ Documentation/ABI/stable/sysfs-block |  8 ++++--
+ block/blk-core.c                     | 10 +++++--
+ block/blk-merge.c                    |  3 ++
+ block/blk-mq.c                       | 12 ++++++--
+ block/blk-sysfs.c                    | 42 ++++++++++++++++++++++++++--
+ block/blk.h                          |  1 +
+ block/genhd.c                        |  2 +-
+ include/linux/blk-mq.h               |  1 +
+ include/linux/blkdev.h               |  3 ++
+ 9 files changed, 72 insertions(+), 10 deletions(-)
+
+diff --git a/Documentation/ABI/stable/sysfs-block b/Documentation/ABI/stable/sysfs-block
+index 1fe9a553c37b..e5fedecf7bdf 100644
+--- a/Documentation/ABI/stable/sysfs-block
++++ b/Documentation/ABI/stable/sysfs-block
+@@ -358,8 +358,12 @@ What:		/sys/block/<disk>/queue/iostats
+ Date:		January 2009
+ Contact:	linux-block@vger.kernel.org
+ Description:
+-		[RW] This file is used to control (on/off) the iostats
+-		accounting of the disk.
++		[RW] This file is used to control the iostats accounting of the
++		disk. If this value is 0, iostats accounting is disabled; If
++		this value is 1, iostats accounting is enabled, but io_ticks is
++		accounted by sampling and the result is not accurate; If this
++		value is 2, iostats accounting is enabled and io_ticks is
++		accounted precisely, but there will be slightly overhead.
+ 
+ 
+ What:		/sys/block/<disk>/queue/logical_block_size
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 9520ccab3050..f0d347ab0f34 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -956,9 +956,13 @@ void update_io_ticks(struct block_device *part, unsigned long now, bool end)
+ 	unsigned long stamp;
+ again:
+ 	stamp = READ_ONCE(part->bd_stamp);
+-	if (unlikely(time_after(now, stamp))) {
+-		if (likely(try_cmpxchg(&part->bd_stamp, &stamp, now)))
+-			__part_stat_add(part, io_ticks, end ? now - stamp : 1);
++	if (unlikely(time_after(now, stamp)) &&
++	    likely(try_cmpxchg(&part->bd_stamp, &stamp, now))) {
++		if (end || (blk_queue_precise_io_stat(part->bd_queue) &&
++			    part_in_flight(part)))
++			__part_stat_add(part, io_ticks, now - stamp);
++		else
++			__part_stat_add(part, io_ticks, 1);
+ 	}
+ 	if (part->bd_partno) {
+ 		part = bdev_whole(part);
+diff --git a/block/blk-merge.c b/block/blk-merge.c
+index 2d470cf2173e..ea5553766f90 100644
+--- a/block/blk-merge.c
++++ b/block/blk-merge.c
+@@ -779,6 +779,9 @@ static void blk_account_io_merge_request(struct request *req)
+ 	if (blk_do_io_stat(req)) {
+ 		part_stat_lock();
+ 		part_stat_inc(req->part, merges[op_stat_group(req_op(req))]);
++		if (req->rq_flags & RQF_PRECISE_IO_STAT)
++			part_stat_local_dec(req->part,
++					in_flight[op_is_write(req_op(req))]);
+ 		part_stat_unlock();
+ 	}
+ }
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index fb29ff5cc281..0cb0e8db9dfd 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -360,8 +360,11 @@ static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
+ 
+ 	if (data->flags & BLK_MQ_REQ_PM)
+ 		data->rq_flags |= RQF_PM;
+-	if (blk_queue_io_stat(q))
++	if (blk_queue_io_stat(q)) {
+ 		data->rq_flags |= RQF_IO_STAT;
++		if (blk_queue_precise_io_stat(q))
++			data->rq_flags |= RQF_PRECISE_IO_STAT;
++	}
+ 	rq->rq_flags = data->rq_flags;
+ 
+ 	if (data->rq_flags & RQF_SCHED_TAGS) {
+@@ -999,6 +1002,9 @@ static inline void blk_account_io_done(struct request *req, u64 now)
+ 		update_io_ticks(req->part, jiffies, true);
+ 		part_stat_inc(req->part, ios[sgrp]);
+ 		part_stat_add(req->part, nsecs[sgrp], now - req->start_time_ns);
++		if (req->rq_flags & RQF_PRECISE_IO_STAT)
++			part_stat_local_dec(req->part,
++					in_flight[op_is_write(req_op(req))]);
+ 		part_stat_unlock();
+ 	}
+ }
+@@ -1006,7 +1012,6 @@ static inline void blk_account_io_done(struct request *req, u64 now)
+ static inline void blk_account_io_start(struct request *req)
+ {
+ 	trace_block_io_start(req);
+-
+ 	if (blk_do_io_stat(req)) {
+ 		/*
+ 		 * All non-passthrough requests are created from a bio with one
+@@ -1021,6 +1026,9 @@ static inline void blk_account_io_start(struct request *req)
+ 
+ 		part_stat_lock();
+ 		update_io_ticks(req->part, jiffies, false);
++		if (req->rq_flags & RQF_PRECISE_IO_STAT)
++			part_stat_local_inc(req->part,
++					in_flight[op_is_write(req_op(req))]);
+ 		part_stat_unlock();
+ 	}
+ }
+diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+index 40bab5975c56..ce22dc29b5f1 100644
+--- a/block/blk-sysfs.c
++++ b/block/blk-sysfs.c
+@@ -303,7 +303,6 @@ queue_##name##_store(struct request_queue *q, const char *page, size_t count) \
+ 
+ QUEUE_SYSFS_BIT_FNS(nonrot, NONROT, 1);
+ QUEUE_SYSFS_BIT_FNS(random, ADD_RANDOM, 0);
+-QUEUE_SYSFS_BIT_FNS(iostats, IO_STAT, 0);
+ QUEUE_SYSFS_BIT_FNS(stable_writes, STABLE_WRITES, 0);
+ #undef QUEUE_SYSFS_BIT_FNS
+ 
+@@ -468,6 +467,45 @@ static ssize_t queue_dax_show(struct request_queue *q, char *page)
+ 	return queue_var_show(blk_queue_dax(q), page);
+ }
+ 
++static ssize_t queue_iostats_show(struct request_queue *q, char *page)
++{
++	int val = 0;
++
++	if (blk_queue_io_stat(q))
++		val = blk_queue_precise_io_stat(q) ? 2 : 1;
++
++	return sprintf(page, "%u\n", val);
++}
++
++static ssize_t
++queue_iostats_store(struct request_queue *q, const char *page, size_t count)
++{
++	unsigned long nr;
++	int ret = queue_var_store(&nr, page, count);
++
++	if (ret < 0)
++		return ret;
++
++	switch (nr) {
++	case 0:
++		blk_queue_flag_clear(QUEUE_FLAG_IO_STAT, q);
++		blk_queue_flag_clear(QUEUE_FLAG_PRECISE_IO_STAT, q);
++		break;
++	case 1:
++		blk_queue_flag_set(QUEUE_FLAG_IO_STAT, q);
++		blk_queue_flag_clear(QUEUE_FLAG_PRECISE_IO_STAT, q);
++		break;
++	case 2:
++		blk_queue_flag_set(QUEUE_FLAG_IO_STAT, q);
++		blk_queue_flag_set(QUEUE_FLAG_PRECISE_IO_STAT, q);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return count;
++}
++
+ #define QUEUE_RO_ENTRY(_prefix, _name)			\
+ static struct queue_sysfs_entry _prefix##_entry = {	\
+ 	.attr	= { .name = _name, .mode = 0444 },	\
+@@ -489,6 +527,7 @@ QUEUE_RO_ENTRY(queue_max_segments, "max_segments");
+ QUEUE_RO_ENTRY(queue_max_integrity_segments, "max_integrity_segments");
+ QUEUE_RO_ENTRY(queue_max_segment_size, "max_segment_size");
+ QUEUE_RW_ENTRY(elv_iosched, "scheduler");
++QUEUE_RW_ENTRY(queue_iostats, "iostats");
+ 
+ QUEUE_RO_ENTRY(queue_logical_block_size, "logical_block_size");
+ QUEUE_RO_ENTRY(queue_physical_block_size, "physical_block_size");
+@@ -534,7 +573,6 @@ static struct queue_sysfs_entry queue_hw_sector_size_entry = {
+ };
+ 
+ QUEUE_RW_ENTRY(queue_nonrot, "rotational");
+-QUEUE_RW_ENTRY(queue_iostats, "iostats");
+ QUEUE_RW_ENTRY(queue_random, "add_random");
+ QUEUE_RW_ENTRY(queue_stable_writes, "stable_writes");
+ 
+diff --git a/block/blk.h b/block/blk.h
+index 1ef920f72e0f..1154e87a4022 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -344,6 +344,7 @@ static inline bool blk_do_io_stat(struct request *rq)
+ }
+ 
+ void update_io_ticks(struct block_device *part, unsigned long now, bool end);
++unsigned int part_in_flight(struct block_device *part);
+ 
+ static inline void req_set_nomerge(struct request_queue *q, struct request *req)
+ {
+diff --git a/block/genhd.c b/block/genhd.c
+index d74fb5b4ae68..92d03cd24c79 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -118,7 +118,7 @@ static void part_stat_read_all(struct block_device *part,
+ 	}
+ }
+ 
+-static unsigned int part_in_flight(struct block_device *part)
++unsigned int part_in_flight(struct block_device *part)
+ {
+ 	unsigned int inflight = 0;
+ 	int cpu;
+diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+index a676e116085f..bd925421bc4a 100644
+--- a/include/linux/blk-mq.h
++++ b/include/linux/blk-mq.h
+@@ -44,6 +44,7 @@ typedef __u32 __bitwise req_flags_t;
+ #define RQF_QUIET		((__force req_flags_t)(1 << 11))
+ /* account into disk and partition IO statistics */
+ #define RQF_IO_STAT		((__force req_flags_t)(1 << 13))
++#define RQF_PRECISE_IO_STAT	((__force req_flags_t)(1 << 14))
+ /* runtime pm request */
+ #define RQF_PM			((__force req_flags_t)(1 << 15))
+ /* on IO scheduler merge hash */
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 94701a63ad8a..575099f28a8e 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -517,6 +517,7 @@ struct request_queue {
+ #define QUEUE_FLAG_NONROT	6	/* non-rotational device (SSD) */
+ #define QUEUE_FLAG_VIRT		QUEUE_FLAG_NONROT /* paravirt device */
+ #define QUEUE_FLAG_IO_STAT	7	/* do disk/partitions IO accounting */
++#define QUEUE_FLAG_PRECISE_IO_STAT 8	/* do disk/partitions IO accounting precisely */
+ #define QUEUE_FLAG_NOXMERGES	9	/* No extended merges */
+ #define QUEUE_FLAG_ADD_RANDOM	10	/* Contributes to random pool */
+ #define QUEUE_FLAG_SYNCHRONOUS	11	/* always completes in submit context */
+@@ -557,6 +558,8 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
+ #define blk_queue_stable_writes(q) \
+ 	test_bit(QUEUE_FLAG_STABLE_WRITES, &(q)->queue_flags)
+ #define blk_queue_io_stat(q)	test_bit(QUEUE_FLAG_IO_STAT, &(q)->queue_flags)
++#define blk_queue_precise_io_stat(q) \
++	test_bit(QUEUE_FLAG_PRECISE_IO_STAT, &(q)->queue_flags)
+ #define blk_queue_add_random(q)	test_bit(QUEUE_FLAG_ADD_RANDOM, &(q)->queue_flags)
+ #define blk_queue_zone_resetall(q)	\
+ 	test_bit(QUEUE_FLAG_ZONE_RESETALL, &(q)->queue_flags)
+-- 
+2.39.2
+
 
