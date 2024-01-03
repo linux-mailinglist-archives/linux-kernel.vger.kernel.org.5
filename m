@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-15104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20002822746
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:58:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB9D0822748
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:59:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B27EF1F22A01
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:58:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95AAF1F22253
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:59:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D7016406;
-	Wed,  3 Jan 2024 02:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB43E179AE;
+	Wed,  3 Jan 2024 02:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZOic/KjS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mLvVffDe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC064A3B;
-	Wed,  3 Jan 2024 02:58:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B821F1799D;
+	Wed,  3 Jan 2024 02:58:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5cdfa676fa3so35930a12.1;
-        Tue, 02 Jan 2024 18:58:23 -0800 (PST)
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6dbb7d80df8so6867728a34.1;
+        Tue, 02 Jan 2024 18:58:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704250703; x=1704855503; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704250709; x=1704855509; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ro8Y0j0Jt26z5Mz6Dk1T+PNwiPxDyxcm45d9joAfXn8=;
-        b=ZOic/KjSNCc7P18PRT39Lc29QHs4x43NpAsrOCUVt7q6t5OfJskYU+DFIaIL5Yguir
-         EW+nYFoSRIAWI6JrtQ9NtU+H9Py2JOXkKMN/6zyE2QyP9pX+AHhX1PNbhhs5+3cW7lyM
-         VE0UOunB/JlQi/5MAkNwGlM4NK2lRYDid/+sgk0EyzHoPkyGDq5rinKWiGj5PtCz/dQW
-         zQEVggwXYUnoIC2KHoEldrHvWcgwLEdzuiDAvGYyYlZa2kjAuNRY0+6jIyQUPKgoSIHh
-         smmZioJhqYzgmOkJ+fYZ3uTSdq/oSEhNLnjp+HAmFKGowg8CESeVJRqjMEEkWbO3ttDS
-         mtsw==
+        bh=/a2j1/lHth7zs05WU5aYt/LfzS3M/wGNylwLFfEgkQ0=;
+        b=mLvVffDeemap8bV5CQx9LsXW+V8ed5NeSVI2IIxJe1OP8p3jyprialiBEgf6blLGS3
+         tvo2NeUmsBec6Rk+HJqUSF3Pc/m4TSlClCa+FHeFbkQvZ8s5e9XDazozjlm2S9QuaqJJ
+         EJ/9KhWXzb+e23Zf/kUEZ5w5//Lw2zccWvDGV+K2khbrbLmYYPPGyml1RHu5LjxY/+Ql
+         jJBz1H6x9VkRsTP6BlxbYnlGYKSMS+D6pEr5lN+fZi/H5he5mB9AoH66zmP1JZXGmZHn
+         plIsPF909lPuEOABWAmaSNRBbuvu5k7JJNh5UTWGqb9LapAV52mRgYri5IKC49Du2Mzu
+         nUlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704250703; x=1704855503;
+        d=1e100.net; s=20230601; t=1704250709; x=1704855509;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ro8Y0j0Jt26z5Mz6Dk1T+PNwiPxDyxcm45d9joAfXn8=;
-        b=l9czeXcaWuL2tpvXHDixxlxY+f1s9nIiaf1UtowyMaen2qEHjSyqMW6sTJVJn1b66B
-         icG4xDxH4i4MwEj9sbAteDmyn06HRInsUPbcOdmn7T70YyF5/xlXXRGlblXRLnPKcqdj
-         6aGrtn8P7Cw2HHC7xdR4GjccM7qPmYAB3mYmZQMBCThx4A5s3kiAj2qSrk1npGeBbW14
-         4581qrJNyNQrx/hE9gyhWH33oEKtRg/fCCY+kY5egV3tNM9hqevrQIvwt6kT+B+cOokG
-         OhKPPPk7ssiIFNGqhetqLn3L8/2xyTwWkcRngQHVfg9QiWUH0UqaO1X/C4fiiNshohjw
-         QH8w==
-X-Gm-Message-State: AOJu0YxpmnDG26qusKeblCBMfRqvVRTjtUeZjYOfC/HR2sU7S2pO6qtC
-	rF5itL7D1ZG7cu3HmzpUABA=
-X-Google-Smtp-Source: AGHT+IHg0kL0VkhfiKjZqGlDkvzVw6ytZtdeJvrtTSssilg7C2zxj//va2NtexTtk2eArS6S4PPYUQ==
-X-Received: by 2002:a05:6a20:2443:b0:196:c543:abaf with SMTP id t3-20020a056a20244300b00196c543abafmr513723pzc.38.1704250702826;
-        Tue, 02 Jan 2024 18:58:22 -0800 (PST)
+        bh=/a2j1/lHth7zs05WU5aYt/LfzS3M/wGNylwLFfEgkQ0=;
+        b=a1czJlaWJSzzOmT/vqP1ozmnrPpRWEXyGQHq9nMWdi4r4S0RanlHGhu2kpkGFfF0t6
+         I7PJZZJXvhDv8tw32okUecehS72Ocsf2DRIX/Gk0n4Or7dnPOQyEithgnYt4acFprW1Z
+         23AR9Az3efGjdeezhtCGUM3G5XiUVbhdJM0+Ast5eDJUJZUz4Mh+yNilq6VcB81MTqrS
+         npu7w56OTW5ySdphyy+wYbUy7PMpVkbpkH23HZxx2uNCeIxQTpDYiZafPjRpbshUpu0F
+         eoA2EGQXxUrCzObie7uAkLJ6Vw8lqadpHX2eXwra2XFuM0SVLaDygr1cg2cHVpxsU5Rz
+         H83g==
+X-Gm-Message-State: AOJu0Yxm/KUi4zQ5ILrfAG0fRYCWj5iiIn9F3/IPh7YorGJh9wRo3I5q
+	gDKcApXGUuvk1i7BlYZ2vmY=
+X-Google-Smtp-Source: AGHT+IFpg8o2SLVkvafPjMs9qtDK8eJP522pJiWlxctRpEYR82N3yz/UoeW+DRyVcdlGAEybzkOYvw==
+X-Received: by 2002:a05:6830:3:b0:6db:fd12:8e9c with SMTP id c3-20020a056830000300b006dbfd128e9cmr9353263otp.5.1704250708788;
+        Tue, 02 Jan 2024 18:58:28 -0800 (PST)
 Received: from barry-desktop.hub ([2407:7000:8942:5500:a7d6:f37a:9130:cd96])
-        by smtp.gmail.com with ESMTPSA id d6-20020a63fd06000000b005cd8ada89e5sm21168572pgh.70.2024.01.02.18.58.16
+        by smtp.gmail.com with ESMTPSA id d6-20020a63fd06000000b005cd8ada89e5sm21168572pgh.70.2024.01.02.18.58.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 18:58:22 -0800 (PST)
+        Tue, 02 Jan 2024 18:58:28 -0800 (PST)
 From: Barry Song <21cnbao@gmail.com>
 To: herbert@gondor.apana.org.au,
 	davem@davemloft.net,
@@ -72,11 +72,10 @@ To: herbert@gondor.apana.org.au,
 	yosryahmed@google.com,
 	zhouchengming@bytedance.com
 Cc: linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	Barry Song <v-songbaohua@oppo.com>
-Subject: [PATCH RFC 2/2] mm/zswap: remove the memcpy if acomp is not asynchronous
-Date: Wed,  3 Jan 2024 15:57:58 +1300
-Message-Id: <20240103025759.523120-2-21cnbao@gmail.com>
+	linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v4 2/6] mm/zswap: reuse dstmem when decompress
+Date: Wed,  3 Jan 2024 15:57:59 +1300
+Message-Id: <20240103025759.523120-3-21cnbao@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240103025759.523120-1-21cnbao@gmail.com>
 References: <ZY1EnEefZsRTGYnP@gondor.apana.org.au>
@@ -89,56 +88,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Barry Song <v-songbaohua@oppo.com>
+>>
+>> for CPU-based alg, we have completed the compr/decompr within
+>> crypto_acomp_decompress()
+>> synchronously. they won't return EINPROGRESS, EBUSY.
+>>
+>> The problem is that crypto_acomp won't expose this information to its
+>> users. if it does,
+>> we can use this info, we will totally avoid the code of copying
+>> zsmalloc's data to a tmp
+>> buffer for the most majority users of zswap.
+>>
+>> But I am not sure if we can find a way to convince Herbert(+To)  :-)
 
-Most compressors are actually CPU-based, they won't sleep during
-decompression. we should be able to remove the redundant memcpy
-for them.
+> What would you like to expose? The async status of the underlying
+> algorithm?
 
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
----
- mm/zswap.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Right. followed by a rfc patchset, please help take a look.
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index ca25b676048e..36898614ebcc 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -168,6 +168,7 @@ struct crypto_acomp_ctx {
- 	struct crypto_wait wait;
- 	u8 *buffer;
- 	struct mutex mutex;
-+	bool is_async; /* if acomp can sleep */
- };
- 
- /*
-@@ -716,6 +717,7 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
- 		goto acomp_fail;
- 	}
- 	acomp_ctx->acomp = acomp;
-+	acomp_ctx->is_async = acomp_is_async(acomp);
- 
- 	req = acomp_request_alloc(acomp_ctx->acomp);
- 	if (!req) {
-@@ -1370,7 +1372,7 @@ static void __zswap_load(struct zswap_entry *entry, struct page *page)
- 	mutex_lock(&acomp_ctx->mutex);
- 
- 	src = zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
--	if (!zpool_can_sleep_mapped(zpool)) {
-+	if (acomp_ctx->is_async && !zpool_can_sleep_mapped(zpool)) {
- 		memcpy(acomp_ctx->buffer, src, entry->length);
- 		src = acomp_ctx->buffer;
- 		zpool_unmap_handle(zpool, entry->handle);
-@@ -1384,7 +1386,7 @@ static void __zswap_load(struct zswap_entry *entry, struct page *page)
- 	BUG_ON(acomp_ctx->req->dlen != PAGE_SIZE);
- 	mutex_unlock(&acomp_ctx->mutex);
- 
--	if (zpool_can_sleep_mapped(zpool))
-+	if (!acomp_ctx->is_async || zpool_can_sleep_mapped(zpool))
- 		zpool_unmap_handle(zpool, entry->handle);
- }
- 
--- 
-2.34.1
+> 
+> We could certainly do that.  But I wonder if it might actually be
+> better for you to allocate a second sync-only algorithm for such
+> cases.  I'd like to see some real numbers.
+
+some hardware might want to use an accelerator to help offload CPU's
+work. their drivers are working in async mode, for example, hisilicon
+and intel.
+
+I don't have the exact number we can save by removing the redundant
+memcpy, nor do i have a proper hardware to test and get the number.
+As Chengming is actually working in zswap, i wonder if you can test
+my patches and post some data?
+
+> 
+> Cheers,
+> --
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+
+Thanks
+Barry
 
 
