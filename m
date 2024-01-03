@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-15577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1D7D822E5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:31:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45243822E57
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:31:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66A731F23D78
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:31:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E71C42840DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E083919BB2;
-	Wed,  3 Jan 2024 13:29:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC1231B27B;
+	Wed,  3 Jan 2024 13:29:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="JmAvE8mK"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="D5U+W56d"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D4141BDCE
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB54B199C9
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A64F93F69E
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:29:10 +0000 (UTC)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B967B3F751
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:29:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1704288550;
-	bh=Z6kJEMrEbGLyI1yj9sToUKHZA2SkNTvsj92LWdDmHKU=;
+	s=20210705; t=1704288548;
+	bh=0xlyxKFbvUzm4zLJgn5EKeObZzal+VTFR9Rg6ALS2M4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
 	 MIME-Version;
-	b=JmAvE8mKLbkDjuRxtxLM2hsONbBLT+kavAVBo+C5vZ/U31Ayvc8SgbrPnnY/B8tFE
-	 Uw0I3TJhB4xduhzRuerg4kJfNOA7BNrQkid6ydl3k+XcN+sJitL4uayfKG1/DsW+80
-	 ntTS9jRnmwzugU+Eo1dHU2brEUJgB2UVXrInrpN2ZUk6EvP9CZEuigQ8k0YiPkYMjE
-	 N8y+sHaLfbiFk2owxUlood2AMFfiE/UkzldF54A+JKjPaVaV0g9VAE10uOS7lz8agX
-	 vq/2JF61vZzcx9UcJTc7bolJrv40eMlojC7Rm0n2Sn4lH6R3Im2hZJ2SFiGePjDg4X
-	 pFjH76kjduFSw==
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-555daab7fc1so1629158a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 05:29:10 -0800 (PST)
+	b=D5U+W56dz22Sq5TDFhArSwNC6juXtPifx6+sxiRd13o2b4tsYBMEhE9DxQxqrmzQU
+	 fetYQSrjtyA93a5o+iUYptn1rzQG7t7t+8haaSOMa9lL/T5Ebpb0/Qvl3Q1gH+VY2W
+	 ta7vnJ8F4GoK7fre8LyV5Z2Gy6BqFcdzIyEWJ3HQOL2sVEUmZgdYvXCn0IZtw8tMFK
+	 IlJdCvbqfZhmtYxJ7Kfa1Y70bb3Nfgvgc5qcybtOU9I9T3Z8HFgcX0I52hLmtRGUTA
+	 OU4Nq3cORuoSopLR471qRSJW7aCbfo+aKtGAvs2vPE/3lUC1MzjvdhkaEi+WEyEXvt
+	 y3lDz2B14DRaQ==
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-50e69fc4574so6997460e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 05:29:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704288539; x=1704893339;
+        d=1e100.net; s=20230601; t=1704288541; x=1704893341;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Z6kJEMrEbGLyI1yj9sToUKHZA2SkNTvsj92LWdDmHKU=;
-        b=ioisCTekdsKQaf2w7MJipk3rztKqmvfpuyW3+xCAG5UZhXlyfU7HgkL3XxCWco3Ubs
-         /Tm5b/SN9pAqgAExolurS9GyZ0Uma3Es8cVxrVgwmFS4WNN7y6IFlC/O5/f52N8kUnzQ
-         iZLvCH70V/T1l0V4HugXbkGOWEBfQhX1sx/ZYvtlEKU+s3Uuoe19T6I52taJUNodfY9q
-         v+ZGH6FtmAM5ZRJzRL1RqVj+ia7ILOA3qguF5LK9uH6bdYan0iw3v/j6etU0zwboeuDl
-         0ega9XLDJxr+Jjm9BWtuF55JCjDOm0mbpSIE8VYTRkVrTMSB42FhC/h7HwmmAgxKLxA0
-         GieQ==
-X-Gm-Message-State: AOJu0YzHdc3g6hEUZvsKhh6Vr6qhkZfWFSaoh8xT7O7DxzaygXc5K2QQ
-	HtDVAOdRkGI7/ZdgJGfiHzQZd0Na0QQn97QKCHrbYCL57FU0MIHovTyGCu/Tt60gI/wU18I/i9C
-	cPNAba8CDWHHn8F3Wu7/wI2muZL8x/uPvcA37X7b7ClogxQ9CL3RzwTKs
-X-Received: by 2002:a17:906:3cc:b0:a28:28a3:89a6 with SMTP id c12-20020a17090603cc00b00a2828a389a6mr1880008eja.54.1704288539857;
-        Wed, 03 Jan 2024 05:28:59 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF+dUglk3qywpv3HLiAtpq5rTNNTGkv6sHrUH3Nu8K83CpFHOwrW3TADKmgsLV6w9iY21gf0A==
-X-Received: by 2002:a17:906:3cc:b0:a28:28a3:89a6 with SMTP id c12-20020a17090603cc00b00a2828a389a6mr1880002eja.54.1704288539708;
-        Wed, 03 Jan 2024 05:28:59 -0800 (PST)
+        bh=0xlyxKFbvUzm4zLJgn5EKeObZzal+VTFR9Rg6ALS2M4=;
+        b=bZeTHBJrDF8SDVJXGL0Qbu8P/Sovs6RXykBvyF2THrTODryciicEEhHyn/RnLWvOBD
+         J9IaFNDb2RpEqfk/6GNLl0ec+KvYFbpA3Fq8AKGhM5ln7LzCzDFb5bkzRQZTSEU1JsOO
+         /muMZCmjq0sUMhyDxHLbAt7Mlierv1qyqD8FvKNP3eEvFIj6/Zn5dU2au+h3N7eDR5O9
+         2tCjRvkdjr+Ykjg84nfeUNTYO0v17K98yXvwzDfm/ZbgmydcaACeeLUM+o51p4Ocyse3
+         6vp13WsXSbwgBJMc5OaRjUBfnRCyXgBjx3Aee/p/BMAiEQ0Xgg0ZBy34sjWjM1JYDDag
+         IqIw==
+X-Gm-Message-State: AOJu0YwssEz4sAIh9NXFqGGxV5P3agHwVChvn4U6oVqbKB++txTd0ZVI
+	P5fAn2SQzhfwefaua0EbA/P47MkdJc0RVspIogq+n3k6RDdu/p/uqmfAoPNGeYfvx50PL/JBtkF
+	/cCgoVSv3VOYUG16a/J5UYN7mpwhMdFexsa6U5MvTDZuxrBXcUWDuT3h8
+X-Received: by 2002:a05:6512:4d0:b0:50e:9a0d:d402 with SMTP id w16-20020a05651204d000b0050e9a0dd402mr1985093lfq.105.1704288540735;
+        Wed, 03 Jan 2024 05:29:00 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFglWpNfCSmVpHzBKEgsAU+8MjxYPm2sCoW5U4VmzTKq+1KMDXtev6vYNkRZ5n9/d/lOFNERw==
+X-Received: by 2002:a05:6512:4d0:b0:50e:9a0d:d402 with SMTP id w16-20020a05651204d000b0050e9a0dd402mr1985076lfq.105.1704288540552;
+        Wed, 03 Jan 2024 05:29:00 -0800 (PST)
 Received: from stitch.. ([2a01:4262:1ab:c:5af0:999b:bb78:7614])
-        by smtp.gmail.com with ESMTPSA id eu18-20020a170907299200b00a26e53be089sm9549873ejc.44.2024.01.03.05.28.58
+        by smtp.gmail.com with ESMTPSA id eu18-20020a170907299200b00a26e53be089sm9549873ejc.44.2024.01.03.05.28.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 05:28:58 -0800 (PST)
+        Wed, 03 Jan 2024 05:29:00 -0800 (PST)
 From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 To: linux-kernel@vger.kernel.org,
 	linux-gpio@vger.kernel.org,
@@ -80,9 +80,9 @@ Cc: Linus Walleij <linus.walleij@linaro.org>,
 	Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Drew Fustini <dfustini@baylibre.com>
-Subject: [PATCH v2 6/8] riscv: dts: thead: Add Lichee Pi 4M GPIO line names
-Date: Wed,  3 Jan 2024 14:28:43 +0100
-Message-ID: <20240103132852.298964-7-emil.renner.berthing@canonical.com>
+Subject: [PATCH v2 7/8] riscv: dts: thead: Add TH1520 pinctrl settings for UART0
+Date: Wed,  3 Jan 2024 14:28:44 +0100
+Message-ID: <20240103132852.298964-8-emil.renner.berthing@canonical.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240103132852.298964-1-emil.renner.berthing@canonical.com>
 References: <20240103132852.298964-1-emil.renner.berthing@canonical.com>
@@ -94,63 +94,89 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add names for the GPIO00-GPIO14 lines of the SO-DIMM module.
+Add pinctrl settings for UART0 used as the default debug console on
+both the Lichee Pi 4A and BeagleV Ahead boards.
 
 Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 ---
- .../dts/thead/th1520-lichee-module-4a.dtsi    | 39 +++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ .../boot/dts/thead/th1520-beaglev-ahead.dts   | 26 +++++++++++++++++++
+ .../boot/dts/thead/th1520-lichee-pi-4a.dts    | 26 +++++++++++++++++++
+ 2 files changed, 52 insertions(+)
 
-diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-index 9865925be372..f674e5acd0f9 100644
---- a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-+++ b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-@@ -37,6 +37,45 @@ &uart_sclk {
- 	clock-frequency = <100000000>;
- };
- 
-+&aogpio {
-+	gpio-line-names = "", "", "",
-+			  "GPIO00",
-+			  "GPIO04";
-+};
-+
- &dmac0 {
+diff --git a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+index f1e8eaed487c..c697a50ca9b1 100644
+--- a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
++++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+@@ -62,6 +62,32 @@ &dmac0 {
  	status = "okay";
  };
+ 
++&padctrl0_apsys {
++	uart0_pins: uart0-0 {
++		tx-pins {
++			pins = "UART0_TXD";
++			function = "uart";
++			bias-disable;
++			drive-strength = <3>;
++			input-disable;
++			input-schmitt-disable;
++			slew-rate = <0>;
++		};
 +
-+&gpio0 {
-+	gpio-line-names = "", "", "", "", "", "", "", "", "", "",
-+			  "", "", "", "", "", "", "", "", "", "",
-+			  "", "", "", "",
-+			  "GPIO07",
-+			  "GPIO08",
-+			  "",
-+			  "GPIO01",
-+			  "GPIO02";
++		rx-pins {
++			pins = "UART0_RXD";
++			function = "uart";
++			bias-disable;
++			drive-strength = <1>;
++			input-enable;
++			input-schmitt-enable;
++			slew-rate = <0>;
++		};
++	};
 +};
 +
-+&gpio1 {
-+	gpio-line-names = "", "", "",
-+			  "GPIO11",
-+			  "GPIO12",
-+			  "GPIO13",
-+			  "GPIO14",
-+			  "", "", "", "", "", "", "", "", "", "",
-+			  "", "", "", "", "",
-+			  "GPIO06";
+ &uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_pins>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts b/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
+index 0ae2c20d5641..932838c55f90 100644
+--- a/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
++++ b/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
+@@ -29,6 +29,32 @@ chosen {
+ 	};
+ };
+ 
++&padctrl0_apsys {
++	uart0_pins: uart0-0 {
++		tx-pins {
++			pins = "UART0_TXD";
++			function = "uart";
++			bias-disable;
++			drive-strength = <3>;
++			input-disable;
++			input-schmitt-disable;
++			slew-rate = <0>;
++		};
++
++		rx-pins {
++			pins = "UART0_RXD";
++			function = "uart";
++			bias-disable;
++			drive-strength = <1>;
++			input-enable;
++			input-schmitt-enable;
++			slew-rate = <0>;
++		};
++	};
 +};
 +
-+&gpio2 {
-+	gpio-line-names = "GPIO03",
-+			  "GPIO05";
-+};
-+
-+&gpio3 {
-+	gpio-line-names = "", "",
-+			  "GPIO09",
-+			  "GPIO10";
-+};
+ &uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_pins>;
+ 	status = "okay";
+ };
 -- 
 2.43.0
 
