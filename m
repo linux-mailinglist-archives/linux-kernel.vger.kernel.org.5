@@ -1,87 +1,86 @@
-Return-Path: <linux-kernel+bounces-14994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 934448225DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A63878225E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:20:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41A9828452C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:12:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5569F28467D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:20:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E49B7655;
-	Wed,  3 Jan 2024 00:12:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC85A4C;
+	Wed,  3 Jan 2024 00:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AvJqAlAB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f5qKZiw/"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E047E;
-	Wed,  3 Jan 2024 00:12:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B8BFC433C7;
-	Wed,  3 Jan 2024 00:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EAB6364;
+	Wed,  3 Jan 2024 00:20:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 05128C433C9;
+	Wed,  3 Jan 2024 00:20:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704240759;
-	bh=rTo7bHSTZscbaOSrZrDFMXX97W0sP/G2kTdUTny+Fxc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=AvJqAlABGx6tTO9tTTIkN+baamjM3G24G2UXDCrNuty4jx95zxXWVJXB3xBP5z2f2
-	 AgDmNft0zn+kkdyIxnMRgPCuPfeg1b0uq9g1pfcF/WMHb2S5cEH0CW+6E4LVfkJpic
-	 jxylJXJ1JyDQUn1cUCfZq6BeSQrD09wCvysgOV3VC4g8NO+Z+BvTuR28NHiiOzWiAP
-	 w8TYRjO58QThStISLzZGmfwdphJPBKYm6B/RNEHyjAcbJfuexKYqcCHGl0QgHzquFP
-	 0qxtlUfch2fESz3mmtylXmlM3hzZVZPEsYXeRrf9cDCfB+MuIwgS5jOICKjHZ4lEXk
-	 GvnehWXu6GBmw==
-Date: Tue, 2 Jan 2024 18:12:37 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: Michael Schaller <michael@5challer.de>,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev,
-	"Maciej W . Rozycki" <macro@orcam.me.uk>,
-	Ajay Agarwal <ajayagarwal@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] Revert "PCI/ASPM: Remove pcie_aspm_pm_state_change()"
-Message-ID: <20240103001237.GA1755171@bhelgaas>
+	s=k20201202; t=1704241225;
+	bh=m/YtIRosK7AiMzo6ZLongGReudykuxF9y3ocqvW6R7w=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=f5qKZiw/REbZx47AsPFOpYVfyQYr32QPrNhfBtyzcTaphRYlUbroehMv2hNScRNhP
+	 rxMsxFIwiSHP1yw/oMsB52n7JiwqO8s8fD7i/kYSaOPI3y+MoOEximvmH2327LC0tL
+	 RcT9II93mmm4tlh4g8bQ1oFk+Y6f9JPiN/X3iwdwexfDR6Uwdal3gOk0e9TzN4qZgk
+	 GlMi47EwYWPVAT/49vEYXz+L8avtnc3vJB2Iil7P8MlwxSjfovGFJ+fE3LOudxyqbB
+	 WH71HeARxawo+kOb8ek5gTMpf8N1kYkvKSZf1rZOJL5Kv9VXcKCrerdJ0cvixsmZ2o
+	 mn6YI6MADHfaQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DC903DCB6D1;
+	Wed,  3 Jan 2024 00:20:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20cd835e-f84c-4c43-812e-6706f7266150@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/2] mptcp: new reviewer and prevent a warning
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170424122489.12524.14018674920048838370.git-patchwork-notify@kernel.org>
+Date: Wed, 03 Jan 2024 00:20:24 +0000
+References: <20231226-upstream-net-20231226-mptcp-prevent-warn-v1-0-1404dcc431ea@kernel.org>
+In-Reply-To: <20231226-upstream-net-20231226-mptcp-prevent-warn-v1-0-1404dcc431ea@kernel.org>
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, martineau@kernel.org, geliang.tang@linux.dev,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org, stable@vger.kernel.org,
+ syzbot+5a01c3a666e726bc8752@syzkaller.appspotmail.com
 
-On Tue, Jan 02, 2024 at 03:33:51PM -0800, Kuppuswamy Sathyanarayanan wrote:
-> On 1/2/2024 3:25 PM, Bjorn Helgaas wrote:
-> > From: Bjorn Helgaas <bhelgaas@google.com>
-> > 
-> > This reverts commit 08d0cc5f34265d1a1e3031f319f594bd1970976c.
-> > 
-> > Michael reported that when attempting to resume from suspend to RAM on ASUS
-> > mini PC PN51-BB757MDE1 (DMI model: MINIPC PN51-E1), 08d0cc5f3426
-> > ("PCI/ASPM: Remove pcie_aspm_pm_state_change()") caused a 12-second delay
-> > with no output, followed by a reboot.
-> > 
-> > Workarounds include:
-> > 
-> >   - Reverting 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()")
-> >   - Booting with "pcie_aspm=off"
-> >   - Booting with "pcie_aspm.policy=performance"
-> >   - "echo 0 | sudo tee /sys/bus/pci/devices/0000:03:00.0/link/l1_aspm"
-> >     before suspending
-> >   - Connecting a USB flash drive
+Hello:
+
+This series was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 26 Dec 2023 13:10:16 +0100 you wrote:
+> Patch 1 adds MPTCP long time contributor -- Geliang Tang -- as a new
+> reviewer for the project. Thanks!
 > 
-> Did you find the root cause? Is this issue specific to that particular
-> device? If yes, can we do a quirk?
+> Patch 2 prevents a warning when TCP Diag is used to close internal MPTCP
+> listener subflows. This is a correction for a patch introduced in v6.4
+> which was fixing an issue from v5.17.
+> 
+> [...]
 
-Unfortunately we don't know the root cause yet.  Without knowing the
-root cause, I don't think we can make a good quirk.
+Here is the summary with links:
+  - [net,1/2] MAINTAINERS: add Geliang as reviewer for MPTCP
+    https://git.kernel.org/netdev/net/c/118ba479d02c
+  - [net,2/2] mptcp: prevent tcp diag from closing listener subflows
+    https://git.kernel.org/netdev/net/c/4c0288299fd0
 
-Bjorn
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
