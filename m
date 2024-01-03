@@ -1,174 +1,118 @@
-Return-Path: <linux-kernel+bounces-15246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A10C1822916
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:45:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26CA9822919
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:45:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B8BD1F23758
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 07:45:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B52A5285232
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 07:45:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A7F918050;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E7F182A1;
 	Wed,  3 Jan 2024 07:45:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NznUv0QM"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rLv1TTAQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EFFD18040
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 07:45:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e4e3323a6so177615e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 23:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704267928; x=1704872728; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qp6FcFL6ukPLR5E+VXKBAlytc1GJbe7ZjRNXKkg7yJE=;
-        b=NznUv0QM2orzzFlteTkyn1/7uH1FabGzGJRHX3M9+oy/9chgciVnqFK+Heesb0SqIw
-         ssJu0+1P9t/cVtESScNy04KtpW9rfYKAvX4jpfO2wGqmW0e8iMTOSPsmJ6+Jh7q4dSpP
-         J9WsmGB76fnhxE3qQjfeyqhmoHRmyk3Ysh/FM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704267928; x=1704872728;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qp6FcFL6ukPLR5E+VXKBAlytc1GJbe7ZjRNXKkg7yJE=;
-        b=nUyA9GaiLdaIjsz5gqTncKvwbCA2g8PWt0YwvFERQLq8lQssLX1sWgdZ7AdaaaAxEa
-         4yQlll0zhFkKailLE5UO9/tLtBtFf8XA9ra01mbz/ycd9qAkQijmtPDxEfJq8oZhADu/
-         EBfroCp0U3pkQFXe5JelKQx23hMsRbjUBknlX7aJ5i4tGwOCoYglIqjgiCPro3MpE8KN
-         0VBpBvK472NlkBFQmCFoKXyRg/1qwCWOt1fwZtjyXNpNiBwi52uLBFxJygfLM8AicC/K
-         aFGyCI8GEeiXLGY7Qwj6r7bJosTkLAzEW1nDPjS2kME3Wm9tRRfadd0a+h6LHmY9Vpm9
-         UG4g==
-X-Gm-Message-State: AOJu0YxgAT7V6P1gc/OZKrDSz58HAa+4nP3Mu/2fZjOiRrDqgbqFXrDd
-	2YgxtFH152CzvvVBf3jy0DRDkdx3d11Z4c8xmWMA5/7J5TU1
-X-Google-Smtp-Source: AGHT+IFyXu8My+izeEzyJdZ8sEntbdgwFjGfLGe2KKcFBr1ZqJrFAIQn6XWRmJwJINhZghJGH2+U4BezZsczM7OOQkw=
-X-Received: by 2002:a2e:a487:0:b0:2cd:19ba:36f0 with SMTP id
- h7-20020a2ea487000000b002cd19ba36f0mr130664lji.17.1704267928052; Tue, 02 Jan
- 2024 23:45:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CC81803D;
+	Wed,  3 Jan 2024 07:45:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=mfBmNNXCDgI/7UWz5uYsVwRwFwVSUpKpeSR1CFuUBeE=; b=rLv1TTAQA156NR6NMWeqQzjKE0
+	/sK2JNeruOswotoIFPruqmoTu1yoF11hp6opHbX7KM6wmuuzPeFI3FdSyh4gPZGzxp/hPTIChehhf
+	sSktoLdls2jHEUk5oereue4EWhsEzfLq9qcBNwg2tDdV+O8w3kM36gpA2cmoZf+ji3quMIQfigh7q
+	dlm0lg+KB7yPYExfeWbUowO+dczFs36xubHRGsPSq9f60x6KnGJakWgA2RHR0PdR1pIvJHLU+ob+O
+	k3Wg5la4H7PponKN3BFecDKXx2IhOY8iAfY6nJHw5IH4uJ49/OGCGLBMp3vVSAebQBg3DQnDz1LNJ
+	78JxD6yw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rKvwI-00CNoh-RR; Wed, 03 Jan 2024 07:45:22 +0000
+Date: Wed, 3 Jan 2024 07:45:22 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: syzbot+41a88b825a315aac2254@syzkaller.appspotmail.com,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] hfs: fix deadlock in hfs_extend_file
+Message-ID: <ZZUQkr+oHEEF8njK@casper.infradead.org>
+References: <0000000000004efa57060def87be@google.com>
+ <tencent_8C1ACE487B4E6C302EE56D8C95C0E8E2EF0A@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102081402.1226795-1-treapking@chromium.org>
-In-Reply-To: <20240102081402.1226795-1-treapking@chromium.org>
-From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Wed, 3 Jan 2024 15:45:17 +0800
-Message-ID: <CAGXv+5F1AjQYf0qVd5PwZobkvHLCczX_KcGEebNP5JvJCHb9rw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] clk: mediatek: Introduce need_pm_runtime to mtk_clk_desc
-To: Pin-yen Lin <treapking@chromium.org>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Weiyi Lu <weiyi.lu@mediatek.com>, 
-	linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_8C1ACE487B4E6C302EE56D8C95C0E8E2EF0A@qq.com>
 
-On Tue, Jan 2, 2024 at 4:14=E2=80=AFPM Pin-yen Lin <treapking@chromium.org>=
- wrote:
->
-> Introduce a new need_pm_runtime variable to mtk_clk_desc to indicate
-> this clock needs a runtime PM get on the clock controller during the
-> probing stage.
+On Tue, Jan 02, 2024 at 08:36:51PM +0800, Edward Adam Davis wrote:
+> [syz report]
+> syz-executor279/5059 is trying to acquire lock:
+> ffff888079c100f8 (&HFS_I(tree->inode)->extents_lock){+.+.}-{3:3}, at: hfs_extend_file+0xa2/0xb10 fs/hfs/extent.c:397
+> 
+> but task is already holding lock:
+> ffff888079c10778 (&HFS_I(tree->inode)->extents_lock){+.+.}-{3:3}, at: hfs_extend_file+0xa2/0xb10 fs/hfs/extent.c:397
+> 
+> other info that might help us debug this:
+>  Possible unsafe locking scenario:
+> 
+>        CPU0
+>        ----
+>   lock(&HFS_I(tree->inode)->extents_lock);
+>   lock(&HFS_I(tree->inode)->extents_lock);
+> 
+>  *** DEADLOCK ***
+> [Analysis] 
+>  hfs_extend_file()->
+>    hfs_ext_read_extent()->
+>      __hfs_ext_cache_extent()->
+>        __hfs_ext_write_extent()->
+>          hfs_bmap_reserve()->
+>            hfs_extend_file()->
+> 
+> When an inode has both the HFS_FLG_EXT_DIRTY and HFS_FLG_EXT_NEW flags, it will
+> enter the above loop and trigger a deadlock.
+> 
+> [Fix]
+> In hfs_ext_read_extent(), check if the above two flags exist simultaneously, 
+> and exit the subsequent process when the conditions are met.
 
-No. The flag indicates that the clock controller needs runtime PM
-for its operation, likely because it needs some power domain enabled.
+Why is this the correct fix?  Seems to me that returning -ENOENT here is
+going to lead to an error being reported to the user when the user has
+done nothing wrong?
 
-The runtime PM get during the probe phase is a workaround to prevent
-a deadlock in clk_register.
-
-These are two separate things. The second part also should be documented
-in the code with a comment, i.e. a comment should be placed before
-pm_runtime_resume_and_get().
-
-ChenYu
-
-> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+> Reported-and-tested-by: syzbot+41a88b825a315aac2254@syzkaller.appspotmail.com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 > ---
->
-> Changes in v2:
-> - Fix the order of error handling
-> - Update the commit message and add a comment before the runtime PM call
->
->  drivers/clk/mediatek/clk-mtk.c | 15 +++++++++++++++
->  drivers/clk/mediatek/clk-mtk.h |  2 ++
->  2 files changed, 17 insertions(+)
->
-> diff --git a/drivers/clk/mediatek/clk-mtk.c b/drivers/clk/mediatek/clk-mt=
-k.c
-> index 2e55368dc4d8..c31e535909c8 100644
-> --- a/drivers/clk/mediatek/clk-mtk.c
-> +++ b/drivers/clk/mediatek/clk-mtk.c
-> @@ -13,6 +13,7 @@
->  #include <linux/of.h>
->  #include <linux/of_address.h>
->  #include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/slab.h>
->
->  #include "clk-mtk.h"
-> @@ -494,6 +495,14 @@ static int __mtk_clk_simple_probe(struct platform_de=
-vice *pdev,
->                         return IS_ERR(base) ? PTR_ERR(base) : -ENOMEM;
->         }
->
+>  fs/hfs/extent.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/fs/hfs/extent.c b/fs/hfs/extent.c
+> index 6d1878b99b30..1b02c7b6a10c 100644
+> --- a/fs/hfs/extent.c
+> +++ b/fs/hfs/extent.c
+> @@ -197,6 +197,10 @@ static int hfs_ext_read_extent(struct inode *inode, u16 block)
+>  	    block < HFS_I(inode)->cached_start + HFS_I(inode)->cached_blocks)
+>  		return 0;
+>  
+> +	if (HFS_I(inode)->flags & HFS_FLG_EXT_DIRTY && 
+> +	    HFS_I(inode)->flags & HFS_FLG_EXT_NEW) 
+> +		return -ENOENT;
 > +
-> +       if (mcd->need_runtime_pm) {
-> +               devm_pm_runtime_enable(&pdev->dev);
-> +               r =3D pm_runtime_resume_and_get(&pdev->dev);
-> +               if (r)
-> +                       return r;
-> +       }
-> +
->         /* Calculate how many clk_hw_onecell_data entries to allocate */
->         num_clks =3D mcd->num_clks + mcd->num_composite_clks;
->         num_clks +=3D mcd->num_fixed_clks + mcd->num_factor_clks;
-> @@ -574,6 +583,9 @@ static int __mtk_clk_simple_probe(struct platform_dev=
-ice *pdev,
->                         goto unregister_clks;
->         }
->
-> +       if (mcd->need_runtime_pm)
-> +               pm_runtime_put(&pdev->dev);
-> +
->         return r;
->
->  unregister_clks:
-> @@ -604,6 +616,9 @@ static int __mtk_clk_simple_probe(struct platform_dev=
-ice *pdev,
->  free_base:
->         if (mcd->shared_io && base)
->                 iounmap(base);
-> +
-> +       if (mcd->need_runtime_pm)
-> +               pm_runtime_put(&pdev->dev);
->         return r;
->  }
->
-> diff --git a/drivers/clk/mediatek/clk-mtk.h b/drivers/clk/mediatek/clk-mt=
-k.h
-> index 22096501a60a..c17fe1c2d732 100644
-> --- a/drivers/clk/mediatek/clk-mtk.h
-> +++ b/drivers/clk/mediatek/clk-mtk.h
-> @@ -237,6 +237,8 @@ struct mtk_clk_desc {
->
->         int (*clk_notifier_func)(struct device *dev, struct clk *clk);
->         unsigned int mfg_clk_idx;
-> +
-> +       bool need_runtime_pm;
->  };
->
->  int mtk_clk_pdev_probe(struct platform_device *pdev);
-> --
-> 2.43.0.472.g3155946c3a-goog
->
+>  	res = hfs_find_init(HFS_SB(inode->i_sb)->ext_tree, &fd);
+>  	if (!res) {
+>  		res = __hfs_ext_cache_extent(&fd, inode, block);
+> -- 
+> 2.43.0
+> 
+> 
 
