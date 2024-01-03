@@ -1,110 +1,100 @@
-Return-Path: <linux-kernel+bounces-15985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75322823694
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:31:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 853A1823698
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:32:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81F061C244F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:31:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 351FA1F25ABD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:32:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D4EE1D54E;
-	Wed,  3 Jan 2024 20:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DCB1D548;
+	Wed,  3 Jan 2024 20:31:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="na6H05pt"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gwn/u0yH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA3351D53F;
-	Wed,  3 Jan 2024 20:31:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFFDEC433C7;
-	Wed,  3 Jan 2024 20:31:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704313861;
-	bh=j9zOr4MVPJ7P77EoknA6MqX7RP+EKjOV1BsLDm3LS3s=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=na6H05ptoQHv2N2mOeK7BhBfX1XY8t6VfEDsymLLtUfB4wKI/gT3RwAseRbNARMEc
-	 F3ZFZW5Z0zTDwnaN58ivBLOkZa9mFzk/Yi2gR7bJRZYbQMpLotlLQ5ZkvD0MtmV0hh
-	 cjeulpdf3iycI8bHW9SBR3hIJV0KWxZaDeCuaPz0plTjLqK+DycI59pn31GA3Ym7Vb
-	 gY2/2OPn1NCpb6WXdfPCgW+8aUxB/ZuXlXOrdz5Z3zO7SlmWfdUt2W42J5w3a93fiQ
-	 SWsUzm1jsyddGnIKga/+GlGgq3b+7a69dqGWYh2cncONZbctyT50cT85ifYdE5wB3s
-	 97AJulZQXXgCg==
-From: SeongJae Park <sj@kernel.org>
-To: SeongJae Park <sj@kernel.org>
-Cc: damon@lists.linux.dev,
-	linux-damon@amazon.com,
-	linux-damon-trial@amazon.com,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: DAMON Beer/Coffee/Tea chat series
-Date: Wed,  3 Jan 2024 12:30:59 -0800
-Message-Id: <20240103203059.49225-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231220202709.98507-1-sj@kernel.org>
-References: 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 465A71D541
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 20:31:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704313914; x=1735849914;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=YZ05VNNjcmH++LVoRCkEfx6RPzJBopest22eQyg/bbA=;
+  b=Gwn/u0yHt4H1Yl/J1kuGDX+bbrqnnKcT+eP6wFXxJ5EbAekYXtjf+f//
+   8SlWmfaHa7QVFakwee+Gns54WwZXYmXMSOhhziv2K1TE0epAFXuT4ttem
+   NcUcrKOIoHhERd1sD6MXao3wIro2dl2DhluE/b8pMMNlbGiNDJvy8T1Xl
+   oEVP+PtzDjuZJ4BVhMrshF3W53VMHyybljO65Q2WncVTWFW4GgkWLQcpx
+   E9RRH2RXL9f4ghNDFVJ4utni/+RXjk8bm+CDdCrMCkWsZssOE+8edjxU8
+   6d15hHSwwS2kELJraZsOESEf6wkDF8vsgip6IFoHIGnN/7P2vZU0B9dHO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="10458680"
+X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
+   d="scan'208";a="10458680"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 12:31:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="783611563"
+X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
+   d="scan'208";a="783611563"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 03 Jan 2024 12:31:52 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rL7u2-000MXo-05;
+	Wed, 03 Jan 2024 20:31:50 +0000
+Date: Thu, 4 Jan 2024 04:31:49 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, x86@kernel.org,
+	"Borislav Petkov (AMD)" <bp@alien8.de>
+Subject: [tip:ras/core 11/13] include/linux/ras.h:9:10: fatal error:
+ 'uapi/asm/mce.h' file not found
+Message-ID: <202401040401.z915YJoV-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hello,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ras/core
+head:   d48d30d8c358004c7b1cb2e16969a569d45953b3
+commit: 8e1d0790e0a749a62428ff039c7a9050a06e9feb [11/13] RAS: Introduce AMD Address Translation Library
+config: arm-randconfig-002-20240103 (https://download.01.org/0day-ci/archive/20240104/202401040401.z915YJoV-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240104/202401040401.z915YJoV-lkp@intel.com/reproduce)
 
-On Wed, 20 Dec 2023 20:27:09 +0000 SeongJae Park <sj@kernel.org> wrote:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401040401.z915YJoV-lkp@intel.com/
 
-> Hello,
-> 
-> On Wed, 10 Aug 2022 22:51:02 +0000 SeongJae Park <sj@kernel.org> wrote:
-> 
-> > Hello,
-> > 
-> > 
-> > In short, I'd like to start an open, regular, and informal virtual bi-weekly
-> > meeting series for DAMON community.
-> > 
-> > Important links and dates
-> > -------------------------
-> > 
-> > Location: https://meet.google.com/ndx-evoc-gbu
-> > Agenda: https://docs.google.com/document/d/1v43Kcj3ly4CYqmAkMaZzLiM2GEnWfgdGbZAH3mi2vpM/edit?usp=sharing
-> [...]
-> >
-> > When
-> > ----
-> > 
-> > The meeting will be held every two weeks for 30 minutes.  To cover as many
-> > timezones as possible, the meeting will be held once at Monday evening (18:00)
-> > PDT, and then at Tuesday morning (09:00) PDT two weeks after the previous one,
-> > and repeat.
-> 
-> Based on the above plan, our next meeting should be scheduled for 2024-01-01
-> (Mon) 18:00 PT.  Because it is a holiday for many countries, I will schedule it
-> for 2024-01-12 (Tue) 18:00 PT.
+All errors (new ones prefixed by >>):
 
-My intention was 2024-01-02, but I made a typo.  I also forgot joining the
-meeting yesterday, sorry for someone who got confused.  Let's have one instead
-on next Monday (2023-01-08) at 18:00 PT.  Hope to see you on the 2024's first
-instance of DAMON Beer/Coffee/Chat meeting :)
-
-I also updated the schedule/agendas document:
-https://docs.google.com/document/d/1v43Kcj3ly4CYqmAkMaZzLiM2GEnWfgdGbZAH3mi2vpM/edit?usp=sharing
+   In file included from drivers/ras/ras.c:10:
+>> include/linux/ras.h:9:10: fatal error: 'uapi/asm/mce.h' file not found
+   #include <uapi/asm/mce.h>
+            ^~~~~~~~~~~~~~~~
+   1 error generated.
 
 
-Thanks,
-SJ
+vim +9 include/linux/ras.h
 
-> 
-> Looking forward to meet you in the first meeting of the next year.  Happy
-> holidays DAMON community :)
-> 
-> 
-> Thanks,
-> SJ
-> 
-> [...]
+     8	
+   > 9	#include <uapi/asm/mce.h>
+    10	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
