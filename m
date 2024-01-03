@@ -1,29 +1,29 @@
-Return-Path: <linux-kernel+bounces-15542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDC26822DE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:59:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92335822DE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:59:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A4A5B20C9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:59:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30DBC1F243DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:59:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B0B9199C3;
-	Wed,  3 Jan 2024 12:56:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDCE119BBF;
+	Wed,  3 Jan 2024 12:57:00 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A6DD199A1
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 12:56:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ADDA199A9
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 12:56:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6BBA4C15;
-	Wed,  3 Jan 2024 04:57:41 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC06214BF;
+	Wed,  3 Jan 2024 04:57:43 -0800 (PST)
 Received: from e126645.nice.arm.com (e126645.nice.arm.com [10.34.100.129])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BEA443F64C;
-	Wed,  3 Jan 2024 04:56:53 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1B88B3F64C;
+	Wed,  3 Jan 2024 04:56:55 -0800 (PST)
 From: Pierre Gondois <pierre.gondois@arm.com>
 To: linux-kernel@vger.kernel.org
 Cc: Pierre Gondois <pierre.gondois@arm.com>,
@@ -37,10 +37,12 @@ Cc: Pierre Gondois <pierre.gondois@arm.com>,
 	Mel Gorman <mgorman@suse.de>,
 	Daniel Bristot de Oliveira <bristot@redhat.com>,
 	Valentin Schneider <vschneid@redhat.com>
-Subject: [PATCH 0/2] Small cleanup around sparse report
-Date: Wed,  3 Jan 2024 13:56:46 +0100
-Message-Id: <20240103125648.194516-1-pierre.gondois@arm.com>
+Subject: [PATCH 1/2] sched/topology: Annotate RCU pointers properly
+Date: Wed,  3 Jan 2024 13:56:47 +0100
+Message-Id: <20240103125648.194516-2-pierre.gondois@arm.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240103125648.194516-1-pierre.gondois@arm.com>
+References: <20240103125648.194516-1-pierre.gondois@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,18 +51,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-While checking spare's tool report, some RCU pointers appeared
-to be not annotated. In the same effort, idle_cpu_without() seemed
-to be subject to a small optimization.
+Cleanup RCU-related spare errors by annotating RCU pointers.
 
-Pierre Gondois (2):
-  sched/topology: Annotate RCU pointers properly
-  sched/fair: Use rq in idle_cpu_without()
+sched_domains_numa_distance:
+  error: incompatible types in comparison expression
+  (different address spaces):
+      int [noderef] __rcu *
+      int *
 
- kernel/sched/fair.c     | 8 +++-----
+sched_domains_numa_masks:
+  error: incompatible types in comparison expression
+  (different address spaces):
+      struct cpumask **[noderef] __rcu *
+      struct cpumask ***
+
+Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+---
  kernel/sched/topology.c | 4 ++--
- 2 files changed, 5 insertions(+), 7 deletions(-)
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 10d1391e7416..0342a4f41f09 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -1542,8 +1542,8 @@ static int			sched_domains_numa_levels;
+ static int			sched_domains_curr_level;
+ 
+ int				sched_max_numa_distance;
+-static int			*sched_domains_numa_distance;
+-static struct cpumask		***sched_domains_numa_masks;
++static int			__rcu *sched_domains_numa_distance;
++static struct cpumask		** __rcu *sched_domains_numa_masks;
+ #endif
+ 
+ /*
 -- 
 2.25.1
 
