@@ -1,125 +1,292 @@
-Return-Path: <linux-kernel+bounces-15306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C0168229F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:11:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 011B98229FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:12:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8320B1C23188
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:11:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A017728533C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:12:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1996618644;
-	Wed,  3 Jan 2024 09:10:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=buaa.edu.cn header.i=@buaa.edu.cn header.b="K7Y1+5wH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ED77182BE;
+	Wed,  3 Jan 2024 09:12:49 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from buaa.edu.cn (unknown [202.112.128.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7151862F;
-	Wed,  3 Jan 2024 09:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=buaa.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=buaa.edu.cn
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=buaa.edu.cn; s=buaa; h=Received:From:To:Cc:Subject:Date:
-	Message-Id:MIME-Version:Content-Transfer-Encoding; bh=IdLm0dxV6o
-	I2LMLY1FrqdzNKdo83LLiffenppuW1gHc=; b=K7Y1+5wHA4sLhUSlHNpBl9ezAc
-	3CzmVTpp5ClgxC+Qm7z2CFVR0gshkDcdkvyuIcDDEa0rIW+1TcHLQ0vhfG2WXGsX
-	aN+GBsHZeTD1Q0gwzB7LAlGUmZZ0YQNnu2PPPi8XrmASuL0VD765c2qoOjgUTg3u
-	sPBYcWA4LnOyzAngE=
-Received: from localhost.localdomain (unknown [10.130.147.18])
-	by coremail-app1 (Coremail) with SMTP id OCz+CgAnVliWJJVlUlKjAA--.48280S2;
-	Wed, 03 Jan 2024 17:10:46 +0800 (CST)
-From: Yuxuan Hu <20373622@buaa.edu.cn>
-To: marcel@holtmann.org,
-	johan.hedberg@gmail.com,
-	luiz.dentz@gmail.com
-Cc: linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	baijiaju1990@gmail.com,
-	sy2239101@buaa.edu.cn,
-	20373622@buaa.edu.cn,
-	pmenzel@molgen.mpg.de
-Subject: [PATCH V3] Bluetooth: rfcomm: Fix null-ptr-deref in rfcomm_check_security
-Date: Wed,  3 Jan 2024 17:10:43 +0800
-Message-Id: <20240103091043.3379363-1-20373622@buaa.edu.cn>
-X-Mailer: git-send-email 2.25.1
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3DE1182AA
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 09:12:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA3D2C15;
+	Wed,  3 Jan 2024 01:13:31 -0800 (PST)
+Received: from [10.57.74.226] (unknown [10.57.74.226])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F2D73F7A6;
+	Wed,  3 Jan 2024 01:12:43 -0800 (PST)
+Message-ID: <7acefbe0-9413-48fd-ad98-56fecc6f29da@arm.com>
+Date: Wed, 3 Jan 2024 09:12:40 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/4] Enable >0 order folio memory compaction
+Content-Language: en-GB
+To: Zi Yan <ziy@nvidia.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ "Huang, Ying" <ying.huang@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ David Hildenbrand <david@redhat.com>, "Yin, Fengwei"
+ <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
+ Vlastimil Babka <vbabka@suse.cz>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Kemeng Shi <shikemeng@huaweicloud.com>,
+ Mel Gorman <mgorman@techsingularity.net>, Rohan Puri
+ <rohan.puri15@gmail.com>, Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Adam Manzanares <a.manzanares@samsung.com>,
+ "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+References: <20231113170157.280181-1-zi.yan@sent.com>
+ <1e7cf758-ac0e-4eda-a8e2-90db5eed7f7a@arm.com>
+ <7ED1378A-AC39-48A2-8A2A-E06C7858DCE1@nvidia.com>
+ <df51bbb7-f791-4747-9077-e9f7f37e9518@arm.com>
+ <E22D7AC8-0891-4B4D-BB90-129B1CB77CB2@nvidia.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <E22D7AC8-0891-4B4D-BB90-129B1CB77CB2@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:OCz+CgAnVliWJJVlUlKjAA--.48280S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFyDGF1xXr18Zr17Kw47CFg_yoW8tFWxpF
-	W2ya4fGFn7ur15Ar97AF4kAFyrZw1v9r15Kr4kZ3yY93s5Wwn3trWSyr1jkay5CF4qk343
-	AF18X3yDJrnru3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBF1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-	IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
-	z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2vYz4IE04k24V
-	AvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xf
-	McIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7
-	v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS
-	14v26r1q6r43MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26F
-	1DJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
-	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
-	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUAxhLUUUUU=
-X-CM-SenderInfo: ysqtljawssquxxddhvlgxou0/
 
-During our fuzz testing of the connection and disconnection process at the
-RFCOMM layer, we discovered this bug. By comparing the packets from a
-normal connection and disconnection process with the testcase that
-triggered a KASAN report. We analyzed the cause of this bug as follows:
+On 02/01/2024 20:50, Zi Yan wrote:
+> On 21 Nov 2023, at 12:11, Ryan Roberts wrote:
+> 
+>> On 21/11/2023 16:45, Zi Yan wrote:
+>>> On 21 Nov 2023, at 10:46, Ryan Roberts wrote:
+>>>
+>>>>>
+>>>>> vm-scalability results
+>>>>> ===
+>>>>>
+>>>>> =========================================================================================
+>>>>> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>>>>>   gcc-13/defconfig/debian/300s/qemu-vm/mmap-xread-seq-mt/vm-scalability
+>>>>>
+>>>>> commit:
+>>>>>   6.6.0-rc4-mm-everything-2023-10-21-02-40+
+>>>>>   6.6.0-rc4-split-folio-in-compaction+
+>>>>>   6.6.0-rc4-folio-migration-in-compaction+
+>>>>>   6.6.0-rc4-folio-migration-free-page-split+
+>>>>>   6.6.0-rc4-folio-migration-free-page-split-sort-src+
+>>>>>
+>>>>> 6.6.0-rc4-mm-eve 6.6.0-rc4-split-folio-in-co 6.6.0-rc4-folio-migration-i 6.6.0-rc4-folio-migration-f 6.6.0-rc4-folio-migration-f
+>>>>> ---------------- --------------------------- --------------------------- --------------------------- ---------------------------
+>>>>>          %stddev     %change         %stddev     %change         %stddev     %change         %stddev     %change         %stddev
+>>>>>              \          |                \          |                \          |                \          |                \
+>>>>>   12896955            +2.7%   13249322            -4.0%   12385175 ±  5%      +1.1%   13033951            -0.4%   12845698        vm-scalability.throughput
+>>>>
+>>>> Hi Zi,
+>>>>
+>>>> Are you able to add any commentary to these results as I'm struggling to
+>>>> interpret them; Is a positive or negative change better (are they times or
+>>>> rates?). What are the stddev values? The title suggests percent but the values
+>>>> are huge - I'm trying to understand what the error bars look like - are the
+>>>> swings real or noise?
+>>>
+>>> The metric is vm-scalability.throughput, so the larger the better. Some %stddev
+>>> are not present since they are too small. For 6.6.0-rc4-folio-migration-in-compaction+,
+>>> %stddev is greater than %change, so the change might be noise.
+>>
+>> Ahh got it - thanks!
+>>
+>>>
+>>> Also, I talked to DavidH in last THP Cabal meeting about this. He suggested that
+>>> there are a lot of noise in vm-scalability like what I have here and I should
+>>> run more iterations and on bare metal. I am currently rerun them on a baremetal
+>>> and more iterations on the existing VM and report the results later. Please
+>>> note that the runs really take some time.
+>>
+>> Ahh ok, I'll wait for the bare metal numbers and will disregard these for now.
+>> Thanks!
+> 
+> It seems that the unexpected big mmap-pread-seq-mt perf drop came from the mistake I
+> made in patch 1. After fixing that, mmap-pread-seq-mt perf only drops 0.5%. The new
+> results on top of 6.7.0-rc1-mm-everything-2023-11-15-00-17 are at the end of the email.
 
-1. In the packets captured during a normal connection, the host sends a
-`Read Encryption Key Size` type of `HCI_CMD` packet
-(Command Opcode: 0x1408) to the controller to inquire the length of
-encryption key.After receiving this packet, the controller immediately
-replies with a Command Completepacket (Event Code: 0x0e) to return the
-Encryption Key Size.
+Good news! I don't see the results for mmap-pread-seq-mt below - perhaps you
+forgot to include it?
 
-2. In our fuzz test case, the timing of the controller's response to this
-packet was delayed to an unexpected point: after the RFCOMM and L2CAP
-layers had disconnected but before the HCI layer had disconnected.
+> 
+> I am preparing v2 and will send it out soon.
+> 
+> =========================================================================================
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/mmap-xread-seq-mt/vm-scalability
+> 
+> commit:
+>   6.7.0-rc1-mm-everything-2023-11-15-00-17+
+>   6.7.0-rc1-split-folio-in-compaction+
+>   6.7.0-rc1-folio-migration-in-compaction+
+>   6.7.0-rc1-folio-migration-free-page-split+
+>   6.7.0-rc1-folio-migration-free-page-split-sort-src+
+> 
+> 6.7.0-rc1-mm-eve 6.7.0-rc1-split-folio-in-co 6.7.0-rc1-folio-migration-i 6.7.0-rc1-folio-migration-f 6.7.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- --------------------------- ---------------------------
+>          %stddev     %change         %stddev     %change         %stddev     %change         %stddev     %change         %stddev
+>              \          |                \          |                \          |                \          |                \
+>   13041962           +16.1%   15142976            +5.0%   13690666 ±  6%      +6.7%   13920441            +5.5%   13762582        vm-scalability.throughput
 
-3. After receiving the Encryption Key Size Response at the time described
-in point 2, the host still called the rfcomm_check_security function.
-However, by this time `struct l2cap_conn *conn = l2cap_pi(sk)->chan->conn;`
-had already been released, and when the function executed
-`return hci_conn_security(conn->hcon, d->sec_level, auth_type, d->out);`,
-specifically when accessing `conn->hcon`, a null-ptr-deref error occurred.
+I'm still not sure I'm interpretting this correctly; is %change always relative
+to 6.7.0-rc1-mm-everything-2023-11-15-00-17 or is it relative to the previous
+commit?
 
-To fix this bug, check if `sk->sk_state` is BT_CLOSED before calling
-rfcomm_recv_frame in rfcomm_process_rx.
+If the former, then it looks like splitting the folios is actually faster than
+migrating them whole?
 
-Signed-off-by: Yuxuan Hu <20373622@buaa.edu.cn>
----
-V1 -> V2: Check earlier on rfcomm_process_rx
-V2 -> V3: Fixed formatting errors in the commit
 
- net/bluetooth/rfcomm/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/rfcomm/core.c b/net/bluetooth/rfcomm/core.c
-index 053ef8f25fae..1d34d8497033 100644
---- a/net/bluetooth/rfcomm/core.c
-+++ b/net/bluetooth/rfcomm/core.c
-@@ -1941,7 +1941,7 @@ static struct rfcomm_session *rfcomm_process_rx(struct rfcomm_session *s)
- 	/* Get data directly from socket receive queue without copying it. */
- 	while ((skb = skb_dequeue(&sk->sk_receive_queue))) {
- 		skb_orphan(skb);
--		if (!skb_linearize(skb)) {
-+		if (!skb_linearize(skb) && sk->sk_state != BT_CLOSED) {
- 			s = rfcomm_recv_frame(s, skb);
- 			if (!s)
- 				break;
--- 
-2.25.1
+> 
+> =========================================================================================
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/mmap-pread-seq/vm-scalability
+> 
+> commit:
+>   6.7.0-rc1-mm-everything-2023-11-15-00-17+
+>   6.7.0-rc1-split-folio-in-compaction+
+>   6.7.0-rc1-folio-migration-in-compaction+
+>   6.7.0-rc1-folio-migration-free-page-split+
+>   6.7.0-rc1-folio-migration-free-page-split-sort-src+
+> 
+> 6.7.0-rc1-mm-eve 6.7.0-rc1-split-folio-in-co 6.7.0-rc1-folio-migration-i 6.7.0-rc1-folio-migration-f 6.7.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- --------------------------- ---------------------------
+>          %stddev     %change         %stddev     %change         %stddev     %change         %stddev     %change         %stddev
+>              \          |                \          |                \          |                \          |                \
+>   14998168            -1.0%   14852803            -0.7%   14890569            -0.3%   14946766            -0.4%   14943302        vm-scalability.throughput
+> 
+> =========================================================================================
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/lru-file-readtwice/vm-scalability
+> 
+> commit:
+>   6.7.0-rc1-mm-everything-2023-11-15-00-17+
+>   6.7.0-rc1-split-folio-in-compaction+
+>   6.7.0-rc1-folio-migration-in-compaction+
+>   6.7.0-rc1-folio-migration-free-page-split+
+>   6.7.0-rc1-folio-migration-free-page-split-sort-src+
+> 
+> 6.7.0-rc1-mm-eve 6.7.0-rc1-split-folio-in-co 6.7.0-rc1-folio-migration-i 6.7.0-rc1-folio-migration-f 6.7.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- --------------------------- ---------------------------
+>          %stddev     %change         %stddev     %change         %stddev     %change         %stddev     %change         %stddev
+>              \          |                \          |                \          |                \          |                \
+>    6750930 ±  7%     +41.5%    9549570 ±  2%     +31.6%    8883545 ±  2%     +33.1%    8982606 ±  2%     +30.7%    8821667 ±  3%  vm-scalability.throughput
+> 
+> =========================================================================================
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/lru-file-mmap-read/vm-scalability
+> 
+> commit:
+>   6.7.0-rc1-mm-everything-2023-11-15-00-17+
+>   6.7.0-rc1-split-folio-in-compaction+
+>   6.7.0-rc1-folio-migration-in-compaction+
+>   6.7.0-rc1-folio-migration-free-page-split+
+>   6.7.0-rc1-folio-migration-free-page-split-sort-src+
+> 
+> 6.7.0-rc1-mm-eve 6.7.0-rc1-split-folio-in-co 6.7.0-rc1-folio-migration-i 6.7.0-rc1-folio-migration-f 6.7.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- --------------------------- ---------------------------
+>          %stddev     %change         %stddev     %change         %stddev     %change         %stddev     %change         %stddev
+>              \          |                \          |                \          |                \          |                \
+>    5818610 ± 14%     +43.1%    8329118 ±  2%     +26.0%    7331427 ±  4%     +23.2%    7170418 ±  4%     +22.8%    7147458 ±  4%  vm-scalability.throughput
+> 
+> =========================================================================================
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/anon-r-rand/vm-scalability
+> 
+> commit:
+>   6.7.0-rc1-mm-everything-2023-11-15-00-17+
+>   6.7.0-rc1-split-folio-in-compaction+
+>   6.7.0-rc1-folio-migration-in-compaction+
+>   6.7.0-rc1-folio-migration-free-page-split+
+>   6.7.0-rc1-folio-migration-free-page-split-sort-src+
+> 
+> 6.7.0-rc1-mm-eve 6.7.0-rc1-split-folio-in-co 6.7.0-rc1-folio-migration-i 6.7.0-rc1-folio-migration-f 6.7.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- --------------------------- ---------------------------
+>          %stddev     %change         %stddev     %change         %stddev     %change         %stddev     %change         %stddev
+>              \          |                \          |                \          |                \          |                \
+>    1973808            -0.2%    1969617            -0.5%    1964376            +0.3%    1979245            +1.0%    1993677        vm-scalability.throughput
+> 
+> =========================================================================================
+> compiler/kconfig/rootfs/runtime/size/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/512G/qemu-vm/anon-w-rand/vm-scalability
+> 
+> commit:
+>   6.7.0-rc1-mm-everything-2023-11-15-00-17+
+>   6.7.0-rc1-split-folio-in-compaction+
+>   6.7.0-rc1-folio-migration-in-compaction+
+>   6.7.0-rc1-folio-migration-free-page-split+
+>   6.7.0-rc1-folio-migration-free-page-split-sort-src+
+> 
+> 6.7.0-rc1-mm-eve 6.7.0-rc1-split-folio-in-co 6.7.0-rc1-folio-migration-i 6.7.0-rc1-folio-migration-f 6.7.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- --------------------------- ---------------------------
+>          %stddev     %change         %stddev     %change         %stddev     %change         %stddev     %change         %stddev
+>              \          |                \          |                \          |                \          |                \
+>     479486            +0.3%     481036            +0.0%     479580            +2.3%     490310            +1.6%     487107        vm-scalability.throughput
+> 
+> =========================================================================================
+> compiler/kconfig/rootfs/runtime/size/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/512G/qemu-vm/anon-cow-rand/vm-scalability
+> 
+> commit:
+>   6.7.0-rc1-mm-everything-2023-11-15-00-17+
+>   6.7.0-rc1-split-folio-in-compaction+
+>   6.7.0-rc1-folio-migration-in-compaction+
+>   6.7.0-rc1-folio-migration-free-page-split+
+>   6.7.0-rc1-folio-migration-free-page-split-sort-src+
+> 
+> 6.7.0-rc1-mm-eve 6.7.0-rc1-split-folio-in-co 6.7.0-rc1-folio-migration-i 6.7.0-rc1-folio-migration-f 6.7.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- --------------------------- ---------------------------
+>          %stddev     %change         %stddev     %change         %stddev     %change         %stddev     %change         %stddev
+>              \          |                \          |                \          |                \          |                \
+>     453237            +1.2%     458580            +0.5%     455455            +2.6%     464830            +2.6%     465211        vm-scalability.throughput
+> 
+> =========================================================================================
+> compiler/kconfig/rootfs/runtime/size/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/256G/qemu-vm/msync/vm-scalability
+> 
+> commit:
+>   6.7.0-rc1-mm-everything-2023-11-15-00-17+
+>   6.7.0-rc1-split-folio-in-compaction+
+>   6.7.0-rc1-folio-migration-in-compaction+
+>   6.7.0-rc1-folio-migration-free-page-split+
+>   6.7.0-rc1-folio-migration-free-page-split-sort-src+
+> 
+> 6.7.0-rc1-mm-eve 6.7.0-rc1-split-folio-in-co 6.7.0-rc1-folio-migration-i 6.7.0-rc1-folio-migration-f 6.7.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- --------------------------- ---------------------------
+>          %stddev     %change         %stddev     %change         %stddev     %change         %stddev     %change         %stddev
+>              \          |                \          |                \          |                \          |                \
+>    1074404 ±  5%     +78.7%    1920268           +78.7%    1920270           +77.2%    1903612           +78.0%    1912223        vm-scalability.throughput
+> 
+> =========================================================================================
+> compiler/kconfig/rootfs/runtime/size/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/256G/qemu-vm/msync-mt/vm-scalability
+> 
+> commit:
+>   6.7.0-rc1-mm-everything-2023-11-15-00-17+
+>   6.7.0-rc1-split-folio-in-compaction+
+>   6.7.0-rc1-folio-migration-in-compaction+
+>   6.7.0-rc1-folio-migration-free-page-split+
+>   6.7.0-rc1-folio-migration-free-page-split-sort-src+
+> 
+> 6.7.0-rc1-mm-eve 6.7.0-rc1-split-folio-in-co 6.7.0-rc1-folio-migration-i 6.7.0-rc1-folio-migration-f 6.7.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- --------------------------- ---------------------------
+>          %stddev     %change         %stddev     %change         %stddev     %change         %stddev     %change         %stddev
+>              \          |                \          |                \          |                \          |                \
+>    2568988            +5.3%    2706227            +5.3%    2706214            +6.3%    2729716            +5.3%    2704539        vm-scalability.throughput
+> 
+> 
+> --
+> Best Regards,
+> Yan, Zi
 
 
