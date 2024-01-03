@@ -1,186 +1,285 @@
-Return-Path: <linux-kernel+bounces-15737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13DC882310C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:12:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5C1F82310F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:15:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27EC01C237F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:12:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43E89B223E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:15:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45B8D1B298;
-	Wed,  3 Jan 2024 16:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB0A1B29C;
+	Wed,  3 Jan 2024 16:15:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=aiac.onmicrosoft.com header.i=@aiac.onmicrosoft.com header.b="bprK3mvc"
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="LnFBHPZv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2133.outbound.protection.outlook.com [40.107.20.133])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E201B281
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 16:12:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=allcircuits.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=allcircuits.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q7H/Z8RFJTeEV9vtgI5CKK+OBlRRSEHHXBbwOKDIa5A5ZU5zE2Gq5FSIyOABxLYye6/BeGmu87sziXJnJpmReqnjiiVTO/LfpXlfzcUHvKXTACr7wejLEzE9kt2tEiLJQ9C2vP42fldaDHy9c23n6xpMk93Yip0CFrJg3AIqtS9ys+hyX1MEf2xKBHS1gpKb9gpGsG3dysrwlqFq1/yPQxgYVCPKSpJsUL8usUqMn21nwV8Ubl6f/xczpYq+hwh4snIlRd55NlokFiVr6vG981tvD9IR59vrd/2FzREup4lvP6Ua568E+bMFGoearuTYuErjADZB0wHcRTa81x5+6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HME8mpNREfbHjIs2EwJXz5/4w40B8Td+R0ge2nkOVpA=;
- b=CgdNnUje4zyWeB0lfF5PY0BvnnlupTDdm9pPbpndTRZ13o/B8V+UH7rVulKPGDfq+LcvAp52M/lMypJAZCKOVqK47PPoKt6FJ+BT+oHqOc+MkZzAv67qMdVZ7haSBbEU9oZiP/yFarvMMG89Hc1DIezCtvBQk/XVOxww3MJIgMhS13fJRSgnm99f4cMje/MbFnuf9sCO59JgiAgdeZq4l9zDtnQmn4Rasqyzq6tTyjTuUpyQBaIDYG6K8xTiztp0w5lLbpJrQX3K4vw1kCUoXTuqJYPnIInjDWx+gt5YtQKdAxCVBeKQjnLrZd4M2e0SkhMs1lHj8ofFyflXUcQIAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=allcircuits.com; dmarc=pass action=none
- header.from=allcircuits.com; dkim=pass header.d=allcircuits.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aiac.onmicrosoft.com;
- s=selector2-aiac-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HME8mpNREfbHjIs2EwJXz5/4w40B8Td+R0ge2nkOVpA=;
- b=bprK3mvcU2/vez2znXiF6wnCZUcjpGD4LbXjCdiK9/MHdRuQ44T/iApejVPoj4TYGwB7/olV+qCPXtle1VJMnmHhoDOJdkbSd1ol8xTp+Aj3WOhxUWSqOizyCAkJTvYn6M/Xxkb3ThaiFFmg/IKRDkAyFMkaUAfPkjVDfJQbFqM=
-Received: from AS8PR07MB8941.eurprd07.prod.outlook.com (2603:10a6:20b:53f::17)
- by DB9PR07MB9600.eurprd07.prod.outlook.com (2603:10a6:10:307::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Wed, 3 Jan
- 2024 16:12:18 +0000
-Received: from AS8PR07MB8941.eurprd07.prod.outlook.com
- ([fe80::3475:f288:b512:f1e5]) by AS8PR07MB8941.eurprd07.prod.outlook.com
- ([fe80::3475:f288:b512:f1e5%5]) with mapi id 15.20.7135.023; Wed, 3 Jan 2024
- 16:12:18 +0000
-From: Anthony LOISEAU <anthony.loiseau@allcircuits.com>
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: Joe Perches <joe@perches.com>
-Subject: get_maintainer.pl: penguin chiefs, maintainers and the rest
-Thread-Topic: get_maintainer.pl: penguin chiefs, maintainers and the rest
-Thread-Index: AQHaPluD96WSFaYhV0qpYD9FfGmlbA==
-Date: Wed, 3 Jan 2024 16:12:18 +0000
-Message-ID:
- <AS8PR07MB894183C6DE3473F23D5A046FF9602@AS8PR07MB8941.eurprd07.prod.outlook.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=allcircuits.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS8PR07MB8941:EE_|DB9PR07MB9600:EE_
-x-ms-office365-filtering-correlation-id: 02761132-18a6-4f20-8496-08dc0c76c231
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- bPrtA0I/zx3C0OPTM8Rin94uuBpPV7Xc9OC2DzxJhxTEDFWmfkRzmhf7JqGdcPv4N7UFLIVp4+5xgO6PVWL+nRbVDlD6ChYV/wgQ1SPPUxCelU8Hvs7AM7MX4jUSNnOznu7lVcODDlnqMciqC2IH/SPwNJfosTgQBxlWcTGUMaIrMYNnuvV5s6ZzyLszgLxmZCkm2kAgSNu2er5yQHb8+HZMX5VGEQiq1LxRB3a6OXaR+rga42Yld07M9AuQNKjONiRQ9QIq8/1tA+D6AdT7N1IxZNpzbi3PHGHxu/SzbtI3dx2Dw8xXP+jJxxXnlbNAE+qR5heBV4xt+V0wLb9qCXi8t7oxECSaGE9VFKtMAphWcqinYMj9pnOKfLAHZrhDQuyRrvHC0yGpsgZjhV0H1EAUdQrCI3sGgJXFWyTx52IEn0p/lC/xdSS8DzEM13J6SZKVQQqx5HwOmHaVlRjq4UrSDTL3LcTdGsKmiX1t5cPQuTK3OLee+XzSP+Fua0PepP0yoBgR4/Ja35TOvBsRapo72sAFsZSYZL8RTh2u8Kz7NmMcdVCc4l5AYwHUYXrLqzvRwdeXxhZD0SUau3QqZmXFvWbNerGTT2Z6d66835670M//L8SUYuviJl2ZiDfsZJ3k4UWFfvHE0MjEMdc7PhXxKvDyrAcF6TUjSBrklofBet0KG2JCfJJ3KZOpbXI50cqjKbx8mOOq3y/WFmhZHw==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR07MB8941.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(39850400004)(366004)(396003)(230922051799003)(230173577357003)(230273577357003)(451199024)(1800799012)(64100799003)(186009)(64756008)(41300700001)(26005)(2906002)(38100700002)(122000001)(52536014)(8936002)(316002)(8676002)(5660300002)(4326008)(71200400001)(478600001)(6506007)(9686003)(66446008)(7696005)(91956017)(66556008)(66946007)(76116006)(66476007)(6916009)(86362001)(38070700009)(33656002)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?q305IgtwAUFScNyQFYMOwPMYPLXWJH81pSsTcrI7EuVZojK/NEY5NCNMCR?=
- =?iso-8859-1?Q?eFINA/qftjSNVOmUg5vHyjNuNDqCV7saiUOdXMA2vihOFoU4goQycbszTH?=
- =?iso-8859-1?Q?9BUqoaZlkBeyOqJ5ML24+WXc57OjoeH68wjItDl2pHqrWhCUb2+RRkFss2?=
- =?iso-8859-1?Q?0OE5WWLSU9CJKQoh+eY4z6QTGvhuXpvMHNfRqJBgP9nMZfUzHq9Hm4ESnr?=
- =?iso-8859-1?Q?MueMkA3C8q3TEFKwBWlwEwDTfP4F5HYN07m2cHyVosyeRUZ3BAYwPdv0HN?=
- =?iso-8859-1?Q?B41Y/yMB9q8p3FWsqPSB/HY7i4p/EF3L+1q4qb+N/xN8Q1FWV/MmdrG36i?=
- =?iso-8859-1?Q?6OwXpa6mLh1kf0yvEMrKJvoyP4Xuew6iZsYKi2gttfd/jYBCH6/lYhEpud?=
- =?iso-8859-1?Q?ZASTpT924NdL7aK4Ja+rBTrF3dFGfyhc2OdmQmL5/CTbjVdNJa7PjnlYFy?=
- =?iso-8859-1?Q?wGdVU7THTL0oBy5h7o6PTQRWLnTx5Jr5CrRT530jmES1vZIKjHRwOzRUN/?=
- =?iso-8859-1?Q?BXr8t15Qz8Oaw1OZ6u83dKmUv50UWltkOBWQXpb2WDG+0wfGRMXrR8hiyv?=
- =?iso-8859-1?Q?KcZ5JiOb5+0FIraPR3TtQGbxQn+XjnqK57BPyUDu2tgArxEl+V6MosOI7c?=
- =?iso-8859-1?Q?eesQWei572zgADbIHci1FT6URO0y8V8qpN0mK8oDoEUI09zz1Qb4JoiV8E?=
- =?iso-8859-1?Q?Ynq9uSZ6DFOXDHdeK7E124KtWlBIVb9Jm5LNpvMO6ro87zCoZ7JgmBs0aY?=
- =?iso-8859-1?Q?+R/SJhv+K/25Jydh04t1XMdZX2L0jibSzWrm6JmZ7BdMalfRVb2ayELgJH?=
- =?iso-8859-1?Q?01s6pjcKdzCxmIFm0T0WaasVgxSW5FsuOdmsUA72SgMGMh05jFVgfnIqtT?=
- =?iso-8859-1?Q?4dU87RmO52q+zjO58AlsvecbzLALRdBAsjDeDgCgNgtBbQh2abfXD+kegP?=
- =?iso-8859-1?Q?yhWx9kx+wc57WjbAc67qi+f/k1IhcXWp5JG3dwfGd/bQRKeLdDSRfzPFq8?=
- =?iso-8859-1?Q?PqfKuaqOM18AbcgElflI4LISO2p6quVNlSfoT1EwDQffuc0UaCrm23Evtl?=
- =?iso-8859-1?Q?FrMzf/rMptqu2HcoiCp/HgtXZhqxhC4Zyfm97hMNboy8DGWGEw40HXmTOF?=
- =?iso-8859-1?Q?6jVCVr9qpBesZAbs5/Ba1yf+fryMlxNZHeS5v2JGGqSOfoxmpA6QMsMovX?=
- =?iso-8859-1?Q?Y+krq9n+ZXra6ztgGKdajIggEYVCrob19J0IRvChw3gN4WimQ12IV5zgi4?=
- =?iso-8859-1?Q?YeegLN4um+G2EKth5uX9PdADGpNb2Tk+m3I0M38au0SJhdCQ3Xzzn5tDn+?=
- =?iso-8859-1?Q?Fyg4ihiQ6ydLDT13j+uUDCZDC8yaYOQxOUtq+BU9zcY0ZPb7i1yPvo3BG+?=
- =?iso-8859-1?Q?M14b0PVnxssAJ23VUaLErzf58zPpVgzxKgoxrAR9TSuKXJehbYFzlJl/wQ?=
- =?iso-8859-1?Q?4rh+S3jt9DFSsW0gexeas+m34KbXHivgO1zIW+k7cDpoJN1zJ9Cv8A6dmw?=
- =?iso-8859-1?Q?9j4f/wtJUbAg05mnABrK2lsMnx0ooMo+GbV0Iq/J6PtXCCIrlxX5t9WzpQ?=
- =?iso-8859-1?Q?bgZMTrzb9KHisSFClFLlo4qRQm+nzl/wg3R61SIZwcvQHpxxCRAAhW9ATb?=
- =?iso-8859-1?Q?RiJXRJyZx/LZ8Z44fRXHwdPB8fx7+qcNVhgvhfrlmyiiL/j4L+yoynaw?=
- =?iso-8859-1?Q?=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165851B28E;
+	Wed,  3 Jan 2024 16:15:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+	s=s31663417; t=1704298514; x=1704903314; i=wahrenst@gmx.net;
+	bh=imkSH+hwXFfzyiK1yfUX4mKbDgZe9g8ZcJZYzgf+QN0=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=LnFBHPZvNDAHvvJw7iqXyQ6bIUF1n/r/YoY1i+NMdrtudncZYAHhXl+ETV2gLbFx
+	 mz14VLFg7lFxnx4ruV3hbj8UBPAS5p7AWZYFXd5+xzdZFCTv2JP9wqf7ntzTB8TPn
+	 F3xW0GzDfNbeEYhLX+AKvmqaEhV7wsBxaJV/Tbt5rPgybWSj8PJb07GbGZpVO+sxO
+	 +YHIwPFUutPkrenqPKXpwTp8mMal7zIKIL9xCls7IoXW+/NWqSicO8kHDHkk4brsG
+	 6gpOa9T4dU8g+FabSHc2lnAdhRQsonEH4g7Nhp+5sqQ99tWPx1sdJ7iQvTPjrv7xx
+	 GuoHTZo8BO6LQZf0Mg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MK3Rm-1reNTA09fy-00LWIg; Wed, 03
+ Jan 2024 17:15:14 +0100
+Message-ID: <2a2dda53-754b-4aa4-8457-9fc37310c267@gmx.net>
+Date: Wed, 3 Jan 2024 17:15:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: allcircuits.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR07MB8941.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02761132-18a6-4f20-8496-08dc0c76c231
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jan 2024 16:12:18.2935
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b8617389-e867-4e05-8324-cbea2cda1861
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g4qLmSFjP+6cmNE+zErf9NsCL8KrqKU9o/94CgUPOAbURjAoi17sLqhRMyko/qmHjNU9I+5nSeQbTKVF7sE1urhmKtKZsfYW8Mh42+9O79M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR07MB9600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/2] arm64: dts: imx93-var-som: Add Variscite
+ VAR-SOM-MX93
+To: Mathieu Othacehe <othacehe@gnu.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Li Yang <leoyang.li@nxp.com>, Fabio Estevam <festevam@gmail.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ NXP Linux Team <linux-imx@nxp.com>
+References: <20240103143639.32280-1-othacehe@gnu.org>
+ <20240103143639.32280-3-othacehe@gnu.org>
+Content-Language: en-US
+From: Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <20240103143639.32280-3-othacehe@gnu.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:LymS0Usi2/IByK7faB7lS4yWXu/28nZy8fN6LdxyePNkl4y4Dm1
+ Uhoeyn5JYpB+HyaDt8FZt9bwX/gxFD3umRL5fyplqNv/z0gyubLMY/PEFoCNPDubqR+dVzE
+ 49c6/bfUtcVKvUAx9k33RhSVDKLiqYtKBFCjwOL+yeLavCu9S27DyTpm8bcbODYkSQXDI8p
+ sTjSKq4zzx+RBnzbE+ZAw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Yi/3E2Kk6ac=;UKVyhY9iJfUBgwQXdMGS44Wjnwo
+ CQZtMd39Qr5+1laS0Ede9k06JwNmgg/Gbcz6FZ/gXWxYylocWSeuGLYnOSQuFVYV4gaUZgy2p
+ 15VN1I2j54K99iW4CiE1ZJT/sZFpaNzDAHxWv/nPW13gerp2Gfd9HF9zXUwvNy+KQ9pu0Nip5
+ RMT/MI6h2LVbog1ZZ2t2NnJpn7bx/MqxrptqCEH8mVIsriYYn/93dDx4KdvaquiYe8/mbiyia
+ 44KvtgZvst2nfsPcNxj8+2BdGXXOdSCNTKfq7izGh1LTJDMapcOc9WVzmmcJN4oa7rxGL1OHB
+ vb/UXQYbzO9WeGKs2x82x2WuKo6VvBNM2Louw+5B/HRQWjbRKC9sHViv6jtBm8BPqvW+8gYGZ
+ F+sRTl9AVSZ5U1UU0EnvfHcPXO887RsHcjL3m0z788JNWT+c34hhmers2zJrPpnIPiIC27exC
+ R6nUx9px90S++vrCdEf3xCTYLzNhV3Eje/UJ9hQy/K0lQpc0rtzMjfuA2YzzjSA65u9K2qBf6
+ vxaFqmtaSAW0dnT5P1eMKXCU4WaEdWlCwn5bjvW9V+vIKtoM+vQZVZFVmNL1j8ZYS7r/0i+lv
+ 7KjT3XiSK/V4FkcR/6Owub2AUmWXNo94EvwP+kQGsgrekMtoD7t6GbzLc8z3EaauBbaFPG42X
+ iU27ySCGRBnbkeLmXKrDqvTWv0JsmBOd2ioUyIvUFhIUgHywGkmqpnH3JocX1zhWNKOl9pMx1
+ 7yayQOzzHOgc2UQOwL8lm5pUGd4ID19ml/lzpwi8sg1I40m+5dxnnQXlvI1yN9bS1mDt9SJCV
+ mKWPCg9FYB7xNdtzLrdCZm8BrvMvCBShK/iEgEhCcYv21b0uDR/0WWc5vL7tujKKXAWYEWG/k
+ MxTXdfr0RqJPTbDGb72h4V3wfXAjYCms6oEk51waZp7f73UVsg6JMDA+w0cchNdtltinz9C/H
+ dUh9/aVQ/S5GJFP3f5D+2qJ4P2Y=
 
-Hello,=0A=
-=0A=
-I am a little bit cluttered about a few things around get_maintainer.pl and=
- the fact that penguin chiefs may also be maintainers, at least in third pa=
-rty projects also using get_maintainer.pl script. My feeling is that get_ma=
-intainer.pl mishandles penguin chiefs without it being an issue for Linux c=
-ase, therefore a kind of silent bug. But since other projects do use get_ma=
-intainer.pl, this "bug" may matter you (upstream).=0A=
-=0A=
-Penguin chief is an hard-coded list of name:email inside get_maintainer.pl =
-script, which currently only lists Linus. When called with --git-chief-peng=
-uins, the script also outputs penguin chiefs alongside found maintainers.=
-=0A=
-=0A=
-When called with --no-git-chief-penguins (the default), the script actually=
- removes chief penguin from found maintainers. That is, if a penguin chief =
-is also a maintainer of some files within MAINTAINERS file, asking maintain=
-ers of those file will not list him/her and may list nobody if he/she was s=
-ingle maintainer for those files.=0A=
-=0A=
-Hopefully, the issue is either minor or nonexistent/feature with Linux MAIN=
-TAINERS file since Linus (hard-coded penguin chief) is only maintainer of "=
-THE REST" final catch-all section. He is the only maintainer of this sectio=
-n, therefore no maintainers at all are returned for files not covered in ot=
-her sections. Also, thanks to this bug/feature, this catch-all section bein=
-g somehow broken does not reports Linus as maintainer of every Linux files,=
- which may avoid flooding Linus.=0A=
-=0A=
-As a first sight I see several options:=0A=
-=0A=
-1. Upstream (Linux get_maintainer.pl) can be modified to not filter out chi=
-efs within found maintainers.=0A=
-2. Third-party projects can simply clear their static penguin chief list.=
-=0A=
-=0A=
-Caution: in both cases (and especially the former), "THE REST" catch-all se=
-ction will work again, listing Linus in all results, likely flooding him un=
-til all git-email --cc-cmd gists are fixed. This can be handled within scri=
-pt since the magic "Buried alive in reporters" section status makes its mai=
-ntainers getting "chief penguin" role instead of "maintainer". Script can t=
-hen properly ignore penguin chiefs only when they are referenced as such ("=
-THE REST" case) while still listing the same author when listed as a role m=
-aintainer.=0A=
-=0A=
-At the end, penguin chiefs may even be listed only in MAINTAINERS file, eit=
-her as today (special S: changing role of M:) or using a dedicated letter (=
-allowing maintainer/chief mix within a section). Script options --git-chief=
--penguins and --no-git-chief-penguins would then only parse and ignore matc=
-hing chiefs inside MAINTAINERS, and script array @penguin_chief would disap=
-pear.=0A=
-=0A=
-My feeling is that this would be the cleaner way to address this issue. Wha=
-t is you opinion?=0A=
-=0A=
-Aside note for curious readers: I actually saw this issue within U-Boot, wh=
-ere Tom Rini (hard-coded penguin chief) is also maintainer of some sections=
- for which get_maintainer.pl does now work as expected.=0A=
-=0A=
-Regards,=0A=
-Anthony=
+Hi Mathieu,
+
+Am 03.01.24 um 15:36 schrieb Mathieu Othacehe:
+> Add DTSI for Variscite VAR-SOM-MX93 System on Module and DTS for Varisci=
+te
+> VAR-SOM-MX93 on Symphony evaluation board.
+>
+> This version comes with:
+> - NXP i.MX 93 Dual, 1.7GHz, Cortex-A55 + Cortex-M33
+> - 2 GB of RAM
+> - 16GB eMMC
+> - 802.11ax/ac/a/b/g/n WiFi with 5.3 Bluetooth
+> - CAN bus
+> - Audio codec
+>
+> Reviewed-by: Fabio Estevam <festevam@gmail.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
+> ---
+>   arch/arm64/boot/dts/freescale/Makefile        |   1 +
+>   .../dts/freescale/imx93-var-som-symphony.dts  | 352 ++++++++++++++++++
+>   .../boot/dts/freescale/imx93-var-som.dtsi     | 111 ++++++
+>   3 files changed, 464 insertions(+)
+>   create mode 100644 arch/arm64/boot/dts/freescale/imx93-var-som-symphon=
+y.dts
+>   create mode 100644 arch/arm64/boot/dts/freescale/imx93-var-som.dtsi
+>
+> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dt=
+s/freescale/Makefile
+> index 2e027675d7bb..a6f1700961e3 100644
+> --- a/arch/arm64/boot/dts/freescale/Makefile
+> +++ b/arch/arm64/boot/dts/freescale/Makefile
+> @@ -203,6 +203,7 @@ dtb-$(CONFIG_ARCH_MXC) +=3D imx8ulp-evk.dtb
+>   dtb-$(CONFIG_ARCH_MXC) +=3D imx93-11x11-evk.dtb
+>   dtb-$(CONFIG_ARCH_MXC) +=3D imx93-tqma9352-mba93xxca.dtb
+>   dtb-$(CONFIG_ARCH_MXC) +=3D imx93-tqma9352-mba93xxla.dtb
+> +dtb-$(CONFIG_ARCH_MXC) +=3D imx93-var-som-symphony.dtb
+>
+>   imx8mm-venice-gw72xx-0x-imx219-dtbs	:=3D imx8mm-venice-gw72xx-0x.dtb i=
+mx8mm-venice-gw72xx-0x-imx219.dtbo
+>   imx8mm-venice-gw72xx-0x-rpidsi-dtbs	:=3D imx8mm-venice-gw72xx-0x.dtb i=
+mx8mm-venice-gw72xx-0x-rpidsi.dtbo
+> diff --git a/arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts b/=
+arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts
+> new file mode 100644
+> index 000000000000..963fa1a6d09c
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts
+> @@ -0,0 +1,352 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright 2021 NXP
+> + * Copyright 2023 Variscite Ltd.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "imx93-var-som.dtsi"
+> +
+> +/{
+> +	model =3D "Variscite VAR-SOM-MX93 on Symphony evaluation board";
+> +	compatible =3D "variscite,var-som-mx93-symphony",
+> +		     "variscite,var-som-mx93", "fsl,imx93";
+> +
+> +	aliases {
+> +		ethernet0 =3D &eqos;
+> +		ethernet1 =3D &fec;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path =3D &lpuart1;
+> +	};
+> +
+> +	/*
+> +	 * Needed only for Symphony <=3D v1.5
+> +	 */
+> +	reg_fec_phy: regulator-fec-phy {
+> +		compatible =3D "regulator-fixed";
+> +		regulator-name =3D "fec-phy";
+> +		regulator-min-microvolt =3D <1800000>;
+> +		regulator-max-microvolt =3D <1800000>;
+> +		regulator-enable-ramp-delay =3D <20000>;
+> +		gpio =3D <&pca9534 7 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +		regulator-always-on;
+> +	};
+> +
+> +	reg_usdhc2_vmmc: regulator-usdhc2 {
+> +		compatible =3D "regulator-fixed";
+> +		pinctrl-names =3D "default";
+> +		pinctrl-0 =3D <&pinctrl_reg_usdhc2_vmmc>;
+> +		regulator-name =3D "VSD_3V3";
+> +		regulator-min-microvolt =3D <3300000>;
+> +		regulator-max-microvolt =3D <3300000>;
+> +		gpio =3D <&gpio2 18 GPIO_ACTIVE_HIGH>;
+> +		off-on-delay-us =3D <20000>;
+> +		enable-active-high;
+> +	};
+> +
+> +	reg_vref_1v8: regulator-adc-vref {
+> +		compatible =3D "regulator-fixed";
+> +		regulator-name =3D "vref_1v8";
+> +		regulator-min-microvolt =3D <1800000>;
+> +		regulator-max-microvolt =3D <1800000>;
+> +	};
+> +
+> +	reserved-memory {
+> +		#address-cells =3D <2>;
+> +		#size-cells =3D <2>;
+> +		ranges;
+> +
+> +		ethosu_mem: ethosu-region@88000000 {
+> +			compatible =3D "shared-dma-pool";
+> +			reusable;
+> +			reg =3D <0x0 0x88000000 0x0 0x8000000>;
+> +		};
+> +
+> +		vdev0vring0: vdev0vring0@87ee0000 {
+> +			reg =3D <0 0x87ee0000 0 0x8000>;
+> +			no-map;
+> +		};
+> +
+> +		vdev0vring1: vdev0vring1@87ee8000 {
+> +			reg =3D <0 0x87ee8000 0 0x8000>;
+> +			no-map;
+> +		};
+> +
+> +		vdev1vring0: vdev1vring0@87ef0000 {
+> +			reg =3D <0 0x87ef0000 0 0x8000>;
+> +			no-map;
+> +		};
+> +
+> +		vdev1vring1: vdev1vring1@87ef8000 {
+> +			reg =3D <0 0x87ef8000 0 0x8000>;
+> +			no-map;
+> +		};
+> +
+> +		rsc_table: rsc-table@2021f000 {
+> +			reg =3D <0 0x2021f000 0 0x1000>;
+> +			no-map;
+> +		};
+> +
+> +		vdevbuffer: vdevbuffer@87f00000 {
+> +			compatible =3D "shared-dma-pool";
+> +			reg =3D <0 0x87f00000 0 0x100000>;
+> +			no-map;
+> +		};
+> +
+> +		ele_reserved: ele-reserved@87de0000 {
+> +			compatible =3D "shared-dma-pool";
+> +			reg =3D <0 0x87de0000 0 0x100000>;
+> +			no-map;
+> +		};
+> +	};
+> +
+> +	gpio-keys {
+> +		compatible =3D "gpio-keys";
+> +
+> +		key-back {
+> +			label =3D "Back";
+> +			gpios =3D <&pca9534 1 GPIO_ACTIVE_LOW>;
+> +			linux,code =3D <KEY_BACK>;
+> +		};
+> +
+> +		key-home {
+> +			label =3D "Home";
+> +			gpios =3D <&pca9534 2 GPIO_ACTIVE_LOW>;
+> +			linux,code =3D <KEY_HOME>;
+> +		};
+> +
+> +		key-menu {
+> +			label =3D "Menu";
+> +			gpios =3D <&pca9534 3 GPIO_ACTIVE_LOW>;
+> +			linux,code =3D <KEY_MENU>;
+> +		};
+> +	};
+> +
+> +	leds {
+> +		compatible =3D "gpio-leds";
+> +		status =3D "okay";
+> +
+> +		heartbeat {
+Please use a node name, which describe the hardware in general like "led".
+> +			label =3D "Heartbeat";
+The label property is deprecated, please use function and color instead:
+
+https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bi=
+ndings/leds/common.yaml
+
+Best regards
+> +			gpios =3D <&pca9534 0 GPIO_ACTIVE_HIGH>;
+> +			linux,default-trigger =3D "heartbeat";
+> +		};
+> +	};
+> +};
+> +
 
