@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-15147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B6988227C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 05:13:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E4288227C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 05:14:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C71B5B22AC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:13:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED8921F2395A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165DD179A4;
-	Wed,  3 Jan 2024 04:13:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C71618048;
+	Wed,  3 Jan 2024 04:13:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="im7aiPi3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y1jHi2nH"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC4A156E3;
-	Wed,  3 Jan 2024 04:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AEBA171CC;
+	Wed,  3 Jan 2024 04:13:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704255203; x=1735791203;
+  t=1704255205; x=1735791205;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=CMWiWQHsGMeXJZcs0I9WskDpudEecU/JyNdOptgKYhM=;
-  b=im7aiPi3WLW9Pc925krT2FdwOJ6GUePucUt2vFej4lASF0CG5tWyPudI
-   Ej7XAD9It1747SEyPWGdLu6fAfvOU3dDQlgGPk/ehmdiB3XmELtVRdFMD
-   n1DqqC75mdNsihd6i0sgPNXW6Hi9AU+ZQHsEkzZsVtKdGJp7/6NPMqiKw
-   VFKt8yGYEGPh5QfkZG9n9PgrQxPnb7FDNjl7pBEuihbQ0QV/WJ6b5VkHZ
-   kqBuyJHa4lbwrVn+uHTDwazM/VfUfQWwzsWvfMrM1zFWtaA/hBUYYtWXB
-   eQ0BY18W5eVWaRUnaqlPjtkyyVj6BPuM/f2qR776ch/i4Xw8RYPtie56P
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="463357397"
+  bh=GodFJtwqMnS+/ioQmjffko5s7Jn4rmDVSRk74S/bLAc=;
+  b=Y1jHi2nHzUMGGsTLtMQv3hwdADe2KKpOOWT9ZQR/DADI6mVo9zNCvJFA
+   J37akexFnknXQG+KeI9FxnZRFc0Oocb1CRK17Y0vBAcC0OYG0whc3GnVV
+   TJtZdPQ6J4TvhSvlZC4mByMJzk6OKxwNCQ7tpfd/64J/0yx9g1x+uNbB0
+   dFJvGO1UoCvCVpilmA5pN7IWW1pBEht+iCzQpopZ+73E+fQbzy541qTXA
+   9UgoWeoKa/9w0Y5CqhSOqNMl9xWJcmokNx8wKAq+RqNEHreNLi8oJ8y/x
+   nGLRc/JDn3niSUMtf8P7rqmuqWlffFB2pnp18fiRtIZ1UHj1jIGszpBWc
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="463357398"
 X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
-   d="scan'208";a="463357397"
+   d="scan'208";a="463357398"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 20:13:21 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="1026957006"
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="1026957011"
 X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
-   d="scan'208";a="1026957006"
+   d="scan'208";a="1026957011"
 Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
   by fmsmga006.fm.intel.com with ESMTP; 02 Jan 2024 20:13:21 -0800
 From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
@@ -56,9 +56,9 @@ Cc: Chen Yu <yu.c.chen@intel.com>,
 	Zhao Liu <zhao1.liu@intel.com>,
 	linux-pm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/4] thermal: intel: hfi: Enable an HFI instance from its first online CPU
-Date: Tue,  2 Jan 2024 20:14:57 -0800
-Message-Id: <20240103041459.11113-3-ricardo.neri-calderon@linux.intel.com>
+Subject: [PATCH v2 3/4] thermal: intel: hfi: Disable an HFI instance when all its CPUs go offline
+Date: Tue,  2 Jan 2024 20:14:58 -0800
+Message-Id: <20240103041459.11113-4-ricardo.neri-calderon@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240103041459.11113-1-ricardo.neri-calderon@linux.intel.com>
 References: <20240103041459.11113-1-ricardo.neri-calderon@linux.intel.com>
@@ -68,17 +68,15 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-Previously, HFI instances were never disabled once enabled. A CPU in an
-instance only had to check during boot whether another CPU had previously
-initialized the instance and its corresponding data structure.
+In preparation to support hibernation, add functionality to disable an HFI
+instance during CPU offline. The last CPU of an instance that goes offline
+will disable such instance.
 
-A subsequent changeset will add functionality to disable instances
-to support hibernation. Such change will also make possible to disable an
-HFI instance during runtime via CPU hotplug.
-
-Enable an HFI instance from the first of its CPUs that comes online. This
-covers the boot, CPU hotplug, and resume-from-suspend cases. It also covers
-systems with one or more HFI instances (i.e., packages).
+The Intel Software Development Manual states that the operating system must
+wait for the hardware to set MSR_IA32_PACKAGE_THERM_STATUS[26] after
+disabling an HFI instance to ensure that it will no longer write on the HFI
+memory. Some processors, however, do not ever set such bit. Wait a minimum
+of 2ms to give time hardware to complete any pending memory writes.
 
 Cc: Chen Yu <yu.c.chen@intel.com>
 Cc: Len Brown <len.brown@intel.com>
@@ -91,50 +89,78 @@ Cc: stable@vger.kernel.org    # 6.1
 Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 ---
 Changes since v1:
- * None
+ * Relocated here comment about not freeing the HFI pages. (Rafael)
 ---
- drivers/thermal/intel/intel_hfi.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ drivers/thermal/intel/intel_hfi.c | 35 +++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
 diff --git a/drivers/thermal/intel/intel_hfi.c b/drivers/thermal/intel/intel_hfi.c
-index 820613e293cd..713da8befd40 100644
+index 713da8befd40..22445403b520 100644
 --- a/drivers/thermal/intel/intel_hfi.c
 +++ b/drivers/thermal/intel/intel_hfi.c
-@@ -410,13 +410,12 @@ void intel_hfi_online(unsigned int cpu)
- 	/*
- 	 * Now check if the HFI instance of the package/die of @cpu has been
- 	 * initialized (by checking its header). In such case, all we have to
--	 * do is to add @cpu to this instance's cpumask.
-+	 * do is to add @cpu to this instance's cpumask and enable the instance
-+	 * if needed.
- 	 */
- 	mutex_lock(&hfi_instance_lock);
--	if (hfi_instance->hdr) {
--		cpumask_set_cpu(cpu, hfi_instance->cpus);
--		goto unlock;
--	}
-+	if (hfi_instance->hdr)
-+		goto enable;
+@@ -24,6 +24,7 @@
+ #include <linux/bitops.h>
+ #include <linux/cpufeature.h>
+ #include <linux/cpumask.h>
++#include <linux/delay.h>
+ #include <linux/gfp.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
+@@ -367,6 +368,32 @@ static void hfi_set_hw_table(struct hfi_instance *hfi_instance)
+ 	wrmsrl(MSR_IA32_HW_FEEDBACK_PTR, msr_val);
+ }
  
++/* Caller must hold hfi_instance_lock. */
++static void hfi_disable(void)
++{
++	u64 msr_val;
++	int i;
++
++	rdmsrl(MSR_IA32_HW_FEEDBACK_CONFIG, msr_val);
++	msr_val &= ~HW_FEEDBACK_CONFIG_HFI_ENABLE_BIT;
++	wrmsrl(MSR_IA32_HW_FEEDBACK_CONFIG, msr_val);
++
++	/*
++	 * Wait for hardware to acknowledge the disabling of HFI. Some
++	 * processors may not do it. Wait for ~2ms. This is a reasonable
++	 * time for hardware to complete any pending actions on the HFI
++	 * memory.
++	 */
++	for (i = 0; i < 2000; i++) {
++		rdmsrl(MSR_IA32_PACKAGE_THERM_STATUS, msr_val);
++		if (msr_val & PACKAGE_THERM_STATUS_HFI_UPDATED)
++			break;
++
++		udelay(1);
++		cpu_relax();
++	}
++}
++
+ /**
+  * intel_hfi_online() - Enable HFI on @cpu
+  * @cpu:	CPU in which the HFI will be enabled
+@@ -420,6 +447,10 @@ void intel_hfi_online(unsigned int cpu)
  	/*
  	 * Hardware is programmed with the physical address of the first page
-@@ -442,10 +441,14 @@ void intel_hfi_online(unsigned int cpu)
- 	raw_spin_lock_init(&hfi_instance->table_lock);
- 	raw_spin_lock_init(&hfi_instance->event_lock);
+ 	 * frame of the table. Hence, the allocated memory must be page-aligned.
++	 *
++	 * Some processors do not forget the initial address of the HFI table
++	 * even after having been reprogrammed. Keep using the same pages. Do
++	 * not free them.
+ 	 */
+ 	hfi_instance->hw_table = alloc_pages_exact(hfi_features.nr_table_pages,
+ 						   GFP_KERNEL | __GFP_ZERO);
+@@ -488,6 +519,10 @@ void intel_hfi_offline(unsigned int cpu)
  
-+enable:
- 	cpumask_set_cpu(cpu, hfi_instance->cpus);
- 
--	hfi_set_hw_table(hfi_instance);
--	hfi_enable();
-+	/* Enable this HFI instance if this is its first online CPU. */
-+	if (cpumask_weight(hfi_instance->cpus) == 1) {
-+		hfi_set_hw_table(hfi_instance);
-+		hfi_enable();
-+	}
- 
- unlock:
+ 	mutex_lock(&hfi_instance_lock);
+ 	cpumask_clear_cpu(cpu, hfi_instance->cpus);
++
++	if (!cpumask_weight(hfi_instance->cpus))
++		hfi_disable();
++
  	mutex_unlock(&hfi_instance_lock);
+ }
+ 
 -- 
 2.25.1
 
