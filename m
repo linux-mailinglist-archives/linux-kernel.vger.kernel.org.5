@@ -1,129 +1,178 @@
-Return-Path: <linux-kernel+bounces-15129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 815B9822781
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:16:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9A5D822789
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:19:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB4BD284B4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:16:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64709B2184F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:18:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1100B1095B;
-	Wed,  3 Jan 2024 03:16:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9FED4A33;
+	Wed,  3 Jan 2024 03:18:53 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A69F171CA;
-	Wed,  3 Jan 2024 03:16:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T4ZcT2BqHz4f3nTT;
-	Wed,  3 Jan 2024 11:16:09 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id EC08D1A017F;
-	Wed,  3 Jan 2024 11:16:14 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgD3Rg1+0ZRl7G6DFQ--.7113S3;
-	Wed, 03 Jan 2024 11:16:14 +0800 (CST)
-Subject: Re: [PATCH v3 2/2] md: don't account sync_io if iostats of the disk
- is disabled
-To: linan666@huaweicloud.com, song@kernel.org, axboe@kernel.dk
-Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-block@vger.kernel.org, yi.zhang@huawei.com, houtao1@huawei.com,
- yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20231223033703.2949831-1-linan666@huaweicloud.com>
- <20231223033703.2949831-3-linan666@huaweicloud.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <e2305cc4-dc3e-7693-9b61-33896c1b7a37@huaweicloud.com>
-Date: Wed, 3 Jan 2024 11:16:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CAC94A16
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 03:18:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T4ZZw3PHnz1FHX7;
+	Wed,  3 Jan 2024 11:14:48 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id F3CD1140136;
+	Wed,  3 Jan 2024 11:18:46 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 3 Jan 2024 11:18:46 +0800
+Subject: Re: [PATCH RFC 00/17] ubifs: Add filesystem repair support
+To: Richard Weinberger <richard@nod.at>
+CC: david oberhollenzer <david.oberhollenzer@sigma-star.at>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Sascha Hauer <s.hauer@pengutronix.de>, Tudor
+ Ambarus <Tudor.Ambarus@linaro.org>, linux-kernel
+	<linux-kernel@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>
+References: <20231228014112.2836317-1-chengzhihao1@huawei.com>
+ <1145531757.175508.1703844362355.JavaMail.zimbra@nod.at>
+ <13b259ca-b32f-a8d6-5e11-8bb38df72f5c@huawei.com>
+ <642239519.177270.1703884138999.JavaMail.zimbra@nod.at>
+ <a145fc68-9b0a-9794-48d2-b7ad79116833@huawei.com>
+ <535616666.192239.1704228332389.JavaMail.zimbra@nod.at>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <460eb02e-8937-282c-62c5-6ea606324b0e@huawei.com>
+Date: Wed, 3 Jan 2024 11:18:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231223033703.2949831-3-linan666@huaweicloud.com>
-Content-Type: text/plain; charset=gbk; format=flowed
+In-Reply-To: <535616666.192239.1704228332389.JavaMail.zimbra@nod.at>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgD3Rg1+0ZRl7G6DFQ--.7113S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tF1xCFyDtry8tryxJrW7XFb_yoW8Cr1xpa
-	ykAF9ak34UXr45WasrZ34UCa4rWw17tFW0yrW7C34fXFy3tr9xGF4Sga90qF1vgFWrWFWa
-	qw1jvFs09a10vrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-	uYvjxUOyCJDUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 
-
-
-ÔÚ 2023/12/23 11:37, linan666@huaweicloud.com Ð´µÀ:
-> From: Li Nan <linan122@huawei.com>
+åœ¨ 2024/1/3 4:45, Richard Weinberger å†™é“:
+> ----- UrsprÃ¼ngliche Mail -----
+>> Von: "chengzhihao1" <chengzhihao1@huawei.com>
+>> I come up with another way to implement fsck.ubifs:
+>>
+>> There are three modes:
+>>
+>> 1. common mode(no options): Ask user whether to fix as long as a problem
+>> is detected.
 > 
-> If iostats is disabled, disk_stats will not be updated and
-> part_stat_read_accum() only returns a constant value. In this case,
-> continuing to count sync_io and to check is_mddev_idle() is no longer
-> meaningful.
+> Makes sense.
 > 
-> Signed-off-by: Li Nan <linan122@huawei.com>
-> ---
->   drivers/md/md.h | 3 ++-
->   drivers/md/md.c | 4 ++++
->   2 files changed, 6 insertions(+), 1 deletion(-)
+>> 2. safe mode(-a option): Auto repair as long as no data/files lost(eg.
+>> nlink, isize, xattr_cnt, which can be corrected without dropping nodes),
+>> otherwise returns error code.
 > 
-> diff --git a/drivers/md/md.h b/drivers/md/md.h
-> index 1a4f976951c1..e2d03a7a858c 100644
-> --- a/drivers/md/md.h
-> +++ b/drivers/md/md.h
-> @@ -584,7 +584,8 @@ extern void mddev_unlock(struct mddev *mddev);
+> Makes sense.
 >   
->   static inline void md_sync_acct(struct block_device *bdev, unsigned long nr_sectors)
->   {
-> -	atomic64_add(nr_sectors, &bdev->bd_disk->sync_io);
-> +	if (blk_queue_io_stat(bdev->bd_disk->queue))
-> +		atomic64_add(nr_sectors, &bdev->bd_disk->sync_io);
->   }
+>> 3. dangerous mode(-y option): Fix is always successful, unless
+>> superblock is corrupted. There are 2 situations:
+> 
+> Please not use "-y". Usually "-y" stands for "answer yes to all questions".
+> But selecting names for command line flags is currently my least concern.
 >   
->   static inline void md_sync_acct_bio(struct bio *bio, unsigned long nr_sectors)
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index a6829ea5b560..b56614eae8dc 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -8502,6 +8502,10 @@ static int is_mddev_idle(struct mddev *mddev, int init)
->   	rcu_read_lock();
->   	rdev_for_each_rcu(rdev, mddev) {
->   		struct gendisk *disk = rdev->bdev->bd_disk;
-> +
-> +		if (!blk_queue_io_stat(disk->queue))
-> +			continue;
+>>    a) TNC is valid: fsck will print which file is dropped and which
+>> file's data is dropped
+> 
+> Sounds also good.
+>   
+>>    b) TNC is invalid: fsck will scan all nodes without referencing TNC,
+>> same as this patchset does
+> 
+> I'd make this a distinct mode.
+> It can be used to rebuild index and LEB property trees.
+> This is basically a "drop trees and rebuild" mode.
+> 
 
-Consider that the queue flag can be set/cleared through sysfs, let's
-keep set rdev->last_events in the case 'init'. To prevent a false
-positive(althrough highly unlikely) if iostat is enabled during
-md_do_sync().
+OK, then fsck will have four modes.
 
-Thanks,
-Kuai
+>>
+>> Q1: How do you think of this method?
+> 
+> Sounds good so far.
+>   
+>> Q2: Mode 1, 2 and 3(a) depend on journal replaying, I found
+>> xfs_repair[1] should be used after mounting/unmounting xfs (Let kernel
+>> replay journal), if UBIFS does so, there is no need to copy recovery
+>> subsystem into userspace, but user has to mount/unmount before doing
+>> fsck. I found e2fsck has copied recovery code into userspace, so it can
+>> do fsck without mounting/unmounting. If UBIFS does so, journal replaying
+>> will update TNC and LPT, please reference Q3(1). Which method do you
+>> suggest?
+> 
+> UBIFS is a little special regarding the journal.
+> 
+> 1. The journal is not an add-on like it is on many other file systems,
+> you have to replay it to get a consistent file system.
+> 2. Journal replay is also needed after a clean umount. The reason is that
+> UBIFS does no commit at umount time.
 
-> +
->   		curr_events =
->   			(long long)part_stat_read_accum(disk->part0, sectors) -
->   			atomic64_read(&disk->sync_io);
+I agree, there exists one situation that UBIFS replays journal even 
+after clean umount.
+     P1      ubifs_bgt      umount
+   mkdir
+          run_bg_commit
+           c->cmt_state = COMMIT_RUNNING_BACKGROUND
+           do_commit
+            ubifs_log_start_commit(c, &new_ltail_lnum) // log start
+            up_write(&c->commit_sem)
+   touch
+    ubifs_jnl_update // new buds added
+                          cleanup_mnt
+                           deactivate_super
+                            fs->kill_sb
+                             generic_shutdown_super
+                              sync_filesystem
+                               ubifs_sync_fs
+                                ubifs_run_commit
+                                 wait_for_commit // wait bg commit, 
+'touch' won't be commited, it will be replayed in next mount
+
+> 
+> So IMHO you need to have journal replay code in your tool in any case.
+> You can copy it from the kernel implementation and add more checks.
+> While the kernel code also tries to be fast, fsck should be more paranoid.
+> Ideally the outcome is a libubifs or such which can be derived from the
+> kernel source while building mtd-utils.
+
+All right, sounds like a huge copy work.
+
+> 
+>> Q3: If fsck drops or updates a node(eg. dentry lost inode, corrected
+>> inode) in mode 1,2 and 3(a), TNC/LPT should be updated. There are two
+>> ways updating TNC and LPT:
+>>
+>>    1) Like kernel does, which means that mark dirty TNC/LPT for
+>> corresponding branches and do_commit(). It will copy much code into
+>> userspace, eg. tnc.c, lpt.c, tnc_commit.c,
+>> lpt_commit.c. I fear there exists risks. For example, there is no space
+>> left for new index nodes, gc should be performed? If so, gc/lpt gc code
+>> should be copied too.
+>>
+>>    2) Rebuild new TNC/LPT based on valid nodes. This way is simple, but
+>> old good TNC could be corrupted, it means that powercut during fsck may
+>> let UBIFS image must be repaired in mode 3(b) but it could be repaired
+>> in mode 2\3(a) before invoking fsck.
+>>
+>> Which way is better?
+> 
+> Since you need to do a full journal replay anyway and power-cut awareness
+> is one of your requirements, I fear the only option is 1). >
+> Thanks,
+> //richard
+> .
 > 
 
 
