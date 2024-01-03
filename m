@@ -1,154 +1,464 @@
-Return-Path: <linux-kernel+bounces-15699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAF6282307C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:25:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60160823079
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:24:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A9081F2484A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:25:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07B83283AF1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326701B278;
-	Wed,  3 Jan 2024 15:25:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lOP+rSO+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4281A73F;
+	Wed,  3 Jan 2024 15:24:52 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC99D1B268;
-	Wed,  3 Jan 2024 15:25:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704295521; x=1735831521;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=lLvRN6Vgg9jzrWkSLBTHIGTCs88oK3ZBLYQBbiDRE9M=;
-  b=lOP+rSO+xauMRKgd3gQXa9Sa3gppGFPTOiUBiQPrJWcVqfneyILwzE+L
-   b1YDAgGi3TsDFzZESbqDUFjLQIVvG4SHFwR9EuNuVJo/vjFQ+dScWR2ow
-   f5lQfslug9+WrqncLDNskAT+30N+KFZeYCWnli6BqY2zqsT10RaqLM2Rt
-   hF7Pv0gL07bjQ/zH8MGHdp0xN3q0bcIJX2rnObGjBGau0V8CIeZn5v4sh
-   j4QU5IutQOduldyG5sp41OOKQtxrEhZK8QRfmYtdCEKJLCZx9INm0U0qM
-   4009paf3qWDZfi1oIkSRfe/oTo17qZL8fHQl2volS7CmuqE6KJ+uJr8NA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="377177058"
-X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
-   d="scan'208";a="377177058"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 07:25:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="923575360"
-X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
-   d="scan'208";a="923575360"
-Received: from unknown (HELO [10.237.72.158]) ([10.237.72.158])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Jan 2024 07:25:18 -0800
-Message-ID: <888da30a-c1ed-4fb0-af81-787fd868ce20@linux.intel.com>
-Date: Wed, 3 Jan 2024 17:25:17 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39F61A726;
+	Wed,  3 Jan 2024 15:24:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9DEDC433C8;
+	Wed,  3 Jan 2024 15:24:50 +0000 (UTC)
+Date: Wed, 3 Jan 2024 10:25:53 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>
+Subject: [PATCH] eventfs: Stop using dcache_readdir() for getdents()
+Message-ID: <20240103102553.17a19cea@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: i2c-designware: NULL ptr at RIP: 0010:regmap_read+0x12/0x70
-Content-Language: en-US
-To: "V, Narasimhan" <Narasimhan.V@amd.com>, Borislav Petkov <bp@alien8.de>,
- "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
-Cc: lkml <linux-kernel@vger.kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
- "Limonciello, Mario" <Mario.Limonciello@amd.com>
-References: <20231229120820.GCZY62tM7z4v2XmOAZ@fat_crate.local>
- <8169d773-f9ec-4092-b036-9e4fd59966c3@linux.intel.com>
- <DM4PR12MB508654DF49FE079D6C283D658961A@DM4PR12MB5086.namprd12.prod.outlook.com>
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <DM4PR12MB508654DF49FE079D6C283D658961A@DM4PR12MB5086.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 1/2/24 17:47, V, Narasimhan wrote:
-> [AMD Official Use Only - General]
-> 
-> 
-> No, we don't see this issue on linus' tree or on linux-next in the till 
-> the previous week
-> 
-Thanks, this indeed shows it's a regression coming from recent Andy's 
-patchset. Notes and questions below:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> [    6.245173] i2c_designware AMDI0010:00: Unknown Synopsys component type: 0xffffffff
+The eventfs creates dynamically allocated dentries and inodes. Using the
+dcache_readdir() logic for its own directory lookups requires hiding the
+cursor of the dcache logic and playing games to allow the dcache_readdir()
+to still have access to the cursor while the eventfs saved what it created
+and what it needs to release.
 
-This made me scratching my head since driver probing will fail in this 
-case with -ENODEV and I could not trigger runtime PM activity in such 
-case but perhaps this is timing specific which happens to happen in your 
-case.
+Instead, just have eventfs have its own iterate_shared callback function
+that will fill in the dent entries. This simplifies the code quite a bit.
 
-Out of curiosity do you see this same "i2c_designware AMDI0010:00: 
-Unknown Synopsys component type: 0xffffffff" error on Vanilla or is it 
-also regression in linux-next?
+Also, remove the "lookup" parameter to the create_file/dir_dentry() and
+always have it return a dentry that has its ref count incremented, and
+have the caller call the dput. This simplifies that code as well.
 
-> [    6.252683] BUG: kernel NULL pointer dereference, address: 00000000000001fc
-> [    6.256551] #PF: supervisor read access in kernel mode
-> [    6.256551] #PF: error_code(0x0000) - not-present page
-> [    6.256551] PGD 0 
-> [    6.256551] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> [    6.256551] CPU: 32 PID: 211 Comm: kworker/32:0 Not tainted 6.7.0-rc6-next-20231222-1703820640818 #1
-> [    6.256551] Workqueue: pm pm_runtime_work
-> [    6.256551] RIP: 0010:regmap_read+0x12/0x70
-> [    6.256551] Code: 00 00 00 00 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 55 48 89 e5 41 55 41 54 53 <8b> 87 fc 01 00 00 83 e8 01 85 f0 75 42 48 89 fb 41 89 f4 49 89 d5
-> [    6.256551] RSP: 0018:ff7fa5c740bcbc98 EFLAGS: 00010246
-> [    6.256551] RAX: 0000000000000000 RBX: ff38ff5c159f1028 RCX: 0000000000000008
-> [    6.256551] RDX: ff7fa5c740bcbcc4 RSI: 0000000000000034 RDI: 0000000000000000
-> [    6.256551] RBP: ff7fa5c740bcbcb0 R08: ff38ff5c02ceb8b0 R09: ff38ff5c002a4500
-> [    6.256551] R10: 0000000000000003 R11: 0000000000000003 R12: ff38ff5c159f1028
-> [    6.256551] R13: 0000000000000000 R14: 0000000000000000 R15: ff38ff5c159ed8f4
-> [    6.256551] FS:  0000000000000000(0000) GS:ff38ff6b0d200000(0000) knlGS:0000000000000000
-> [    6.256551] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    6.256551] CR2: 00000000000001fc CR3: 000000007403c001 CR4: 0000000000771ef0
-> [    6.256551] PKRU: 55555554
-> [    6.256551] Call Trace:
-> [    6.256551]  <TASK>
-> [    6.256551]  ? show_regs+0x6d/0x80
-> [    6.256551]  ? __die+0x29/0x70
-> [    6.256551]  ? page_fault_oops+0x153/0x4a0
-> [    6.256551]  ? do_user_addr_fault+0x30f/0x6c0
-> [    6.256551]  ? exc_page_fault+0x7c/0x190
-> [    6.256551]  ? asm_exc_page_fault+0x2b/0x30
-> [    6.256551]  ? regmap_read+0x12/0x70
-> [    6.256551]  ? update_load_avg+0x82/0x7d0
-> [    6.256551]  __i2c_dw_disable+0x38/0x180
-> [    6.256551]  i2c_dw_disable+0x3f/0xb0
-> [    6.256551]  i2c_dw_runtime_suspend+0x33/0x50
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ fs/tracefs/event_inode.c | 237 +++++++++++++--------------------------
+ 1 file changed, 78 insertions(+), 159 deletions(-)
 
-I think this Oops comes because of the first commit in the patchset:
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index f0677ea0ec24..53d34a4b5a2b 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -52,9 +52,7 @@ enum {
+ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ 					  struct dentry *dentry,
+ 					  unsigned int flags);
+-static int dcache_dir_open_wrapper(struct inode *inode, struct file *file);
+-static int dcache_readdir_wrapper(struct file *file, struct dir_context *ctx);
+-static int eventfs_release(struct inode *inode, struct file *file);
++static int eventfs_iterate(struct file *file, struct dir_context *ctx);
+ 
+ static void update_attr(struct eventfs_attr *attr, struct iattr *iattr)
+ {
+@@ -148,11 +146,9 @@ static const struct inode_operations eventfs_file_inode_operations = {
+ };
+ 
+ static const struct file_operations eventfs_file_operations = {
+-	.open		= dcache_dir_open_wrapper,
+ 	.read		= generic_read_dir,
+-	.iterate_shared	= dcache_readdir_wrapper,
++	.iterate_shared	= eventfs_iterate,
+ 	.llseek		= generic_file_llseek,
+-	.release	= eventfs_release,
+ };
+ 
+ /* Return the evenfs_inode of the "events" directory */
+@@ -390,16 +386,14 @@ void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
+  * @mode: The mode of the file.
+  * @data: The data to use to set the inode of the file with on open()
+  * @fops: The fops of the file to be created.
+- * @lookup: If called by the lookup routine, in which case, dput() the created dentry.
+  *
+  * Create a dentry for a file of an eventfs_inode @ei and place it into the
+- * address located at @e_dentry. If the @e_dentry already has a dentry, then
+- * just do a dget() on it and return. Otherwise create the dentry and attach it.
++ * address located at @e_dentry.
+  */
+ static struct dentry *
+ create_file_dentry(struct eventfs_inode *ei, int idx,
+ 		   struct dentry *parent, const char *name, umode_t mode, void *data,
+-		   const struct file_operations *fops, bool lookup)
++		   const struct file_operations *fops)
+ {
+ 	struct eventfs_attr *attr = NULL;
+ 	struct dentry **e_dentry = &ei->d_children[idx];
+@@ -414,9 +408,7 @@ create_file_dentry(struct eventfs_inode *ei, int idx,
+ 	}
+ 	/* If the e_dentry already has a dentry, use it */
+ 	if (*e_dentry) {
+-		/* lookup does not need to up the ref count */
+-		if (!lookup)
+-			dget(*e_dentry);
++		dget(*e_dentry);
+ 		mutex_unlock(&eventfs_mutex);
+ 		return *e_dentry;
+ 	}
+@@ -441,13 +433,12 @@ create_file_dentry(struct eventfs_inode *ei, int idx,
+ 		 * way to being freed, don't return it. If e_dentry is NULL
+ 		 * it means it was already freed.
+ 		 */
+-		if (ei->is_freed)
++		if (ei->is_freed) {
+ 			dentry = NULL;
+-		else
++		} else {
+ 			dentry = *e_dentry;
+-		/* The lookup does not need to up the dentry refcount */
+-		if (dentry && !lookup)
+ 			dget(dentry);
++		}
+ 		mutex_unlock(&eventfs_mutex);
+ 		return dentry;
+ 	}
+@@ -465,9 +456,6 @@ create_file_dentry(struct eventfs_inode *ei, int idx,
+ 	}
+ 	mutex_unlock(&eventfs_mutex);
+ 
+-	if (lookup)
+-		dput(dentry);
+-
+ 	return dentry;
+ }
+ 
+@@ -500,13 +488,12 @@ static void eventfs_post_create_dir(struct eventfs_inode *ei)
+  * @pei: The eventfs_inode parent of ei.
+  * @ei: The eventfs_inode to create the directory for
+  * @parent: The dentry of the parent of this directory
+- * @lookup: True if this is called by the lookup code
+  *
+  * This creates and attaches a directory dentry to the eventfs_inode @ei.
+  */
+ static struct dentry *
+ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
+-		  struct dentry *parent, bool lookup)
++		  struct dentry *parent)
+ {
+ 	struct dentry *dentry = NULL;
+ 
+@@ -520,9 +507,7 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
+ 	if (ei->dentry) {
+ 		/* If the dentry already has a dentry, use it */
+ 		dentry = ei->dentry;
+-		/* lookup does not need to up the ref count */
+-		if (!lookup)
+-			dget(dentry);
++		dget(dentry);
+ 		mutex_unlock(&eventfs_mutex);
+ 		return dentry;
+ 	}
+@@ -542,7 +527,7 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
+ 		 * way to being freed.
+ 		 */
+ 		dentry = ei->dentry;
+-		if (dentry && !lookup)
++		if (dentry)
+ 			dget(dentry);
+ 		mutex_unlock(&eventfs_mutex);
+ 		return dentry;
+@@ -562,9 +547,6 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
+ 	}
+ 	mutex_unlock(&eventfs_mutex);
+ 
+-	if (lookup)
+-		dput(dentry);
+-
+ 	return dentry;
+ }
+ 
+@@ -589,8 +571,8 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ 	struct eventfs_inode *ei;
+ 	struct dentry *ei_dentry = NULL;
+ 	struct dentry *ret = NULL;
++	struct dentry *d;
+ 	const char *name = dentry->d_name.name;
+-	bool created = false;
+ 	umode_t mode;
+ 	void *data;
+ 	int idx;
+@@ -626,13 +608,10 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ 		ret = simple_lookup(dir, dentry, flags);
+ 		if (IS_ERR(ret))
+ 			goto out;
+-		create_dir_dentry(ei, ei_child, ei_dentry, true);
+-		created = true;
+-		break;
+-	}
+-
+-	if (created)
++		d = create_dir_dentry(ei, ei_child, ei_dentry);
++		dput(d);
+ 		goto out;
++	}
+ 
+ 	for (i = 0; i < ei->nr_entries; i++) {
+ 		entry = &ei->entries[i];
+@@ -650,8 +629,8 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ 			ret = simple_lookup(dir, dentry, flags);
+ 			if (IS_ERR(ret))
+ 				goto out;
+-			create_file_dentry(ei, i, ei_dentry, name, mode, cdata,
+-					   fops, true);
++			d = create_file_dentry(ei, i, ei_dentry, name, mode, cdata, fops);
++			dput(d);
+ 			break;
+ 		}
+ 	}
+@@ -660,127 +639,82 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ 	return ret;
+ }
+ 
+-struct dentry_list {
+-	void			*cursor;
+-	struct dentry		**dentries;
+-};
+-
+-/**
+- * eventfs_release - called to release eventfs file/dir
+- * @inode: inode to be released
+- * @file: file to be released (not used)
+- */
+-static int eventfs_release(struct inode *inode, struct file *file)
+-{
+-	struct tracefs_inode *ti;
+-	struct dentry_list *dlist = file->private_data;
+-	void *cursor;
+-	int i;
+-
+-	ti = get_tracefs(inode);
+-	if (!(ti->flags & TRACEFS_EVENT_INODE))
+-		return -EINVAL;
+-
+-	if (WARN_ON_ONCE(!dlist))
+-		return -EINVAL;
+-
+-	for (i = 0; dlist->dentries && dlist->dentries[i]; i++) {
+-		dput(dlist->dentries[i]);
+-	}
+-
+-	cursor = dlist->cursor;
+-	kfree(dlist->dentries);
+-	kfree(dlist);
+-	file->private_data = cursor;
+-	return dcache_dir_close(inode, file);
+-}
+-
+-static int add_dentries(struct dentry ***dentries, struct dentry *d, int cnt)
+-{
+-	struct dentry **tmp;
+-
+-	tmp = krealloc(*dentries, sizeof(d) * (cnt + 2), GFP_NOFS);
+-	if (!tmp)
+-		return -1;
+-	tmp[cnt] = d;
+-	tmp[cnt + 1] = NULL;
+-	*dentries = tmp;
+-	return 0;
+-}
+-
+-/**
+- * dcache_dir_open_wrapper - eventfs open wrapper
+- * @inode: not used
+- * @file: dir to be opened (to create it's children)
+- *
+- * Used to dynamic create file/dir with-in @file, all the
+- * file/dir will be created. If already created then references
+- * will be increased
++/*
++ * Walk the children of a eventfs_inode to fill in getdents().
+  */
+-static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
++static int eventfs_iterate(struct file *file, struct dir_context *ctx)
+ {
+ 	const struct file_operations *fops;
++	struct inode *f_inode = file_inode(file);
+ 	const struct eventfs_entry *entry;
+ 	struct eventfs_inode *ei_child;
+ 	struct tracefs_inode *ti;
+ 	struct eventfs_inode *ei;
+-	struct dentry_list *dlist;
+-	struct dentry **dentries = NULL;
+-	struct dentry *parent = file_dentry(file);
+-	struct dentry *d;
+-	struct inode *f_inode = file_inode(file);
+-	const char *name = parent->d_name.name;
++	struct dentry *ei_dentry = NULL;
++	struct dentry *dentry;
++	const char *name;
+ 	umode_t mode;
+-	void *data;
+-	int cnt = 0;
+ 	int idx;
+-	int ret;
+-	int i;
+-	int r;
++	int ret = -EINVAL;
++	int ino;
++	int i, r, c;
++
++	if (!dir_emit_dots(file, ctx))
++		return 0;
+ 
+ 	ti = get_tracefs(f_inode);
+ 	if (!(ti->flags & TRACEFS_EVENT_INODE))
+ 		return -EINVAL;
+ 
+-	if (WARN_ON_ONCE(file->private_data))
+-		return -EINVAL;
++	c = ctx->pos - 2;
+ 
+ 	idx = srcu_read_lock(&eventfs_srcu);
+ 
+ 	mutex_lock(&eventfs_mutex);
+ 	ei = READ_ONCE(ti->private);
++	if (ei && !ei->is_freed)
++		ei_dentry = READ_ONCE(ei->dentry);
+ 	mutex_unlock(&eventfs_mutex);
+ 
+-	if (!ei) {
+-		srcu_read_unlock(&eventfs_srcu, idx);
+-		return -EINVAL;
+-	}
+-
+-
+-	data = ei->data;
++	if (!ei || !ei_dentry)
++		goto out;
+ 
+-	dlist = kmalloc(sizeof(*dlist), GFP_KERNEL);
+-	if (!dlist) {
+-		srcu_read_unlock(&eventfs_srcu, idx);
+-		return -ENOMEM;
+-	}
++	ret = 0;
+ 
+-	inode_lock(parent->d_inode);
++	/*
++	 * Need to create the dentries and inodes to have a consistent
++	 * inode number.
++	 */
+ 	list_for_each_entry_srcu(ei_child, &ei->children, list,
+ 				 srcu_read_lock_held(&eventfs_srcu)) {
+-		d = create_dir_dentry(ei, ei_child, parent, false);
+-		if (d) {
+-			ret = add_dentries(&dentries, d, cnt);
+-			if (ret < 0)
+-				break;
+-			cnt++;
++
++		if (ei_child->is_freed)
++			continue;
++
++		name = ei_child->name;
++
++		dentry = create_dir_dentry(ei, ei_child, ei_dentry);
++		if (!dentry)
++			goto out;
++		ino = dentry->d_inode->i_ino;
++		dput(dentry);
++
++		if (c > 0) {
++			c--;
++			continue;
+ 		}
++
++		if (!dir_emit(ctx, name, strlen(name), ino, DT_DIR))
++			goto out;
++		ctx->pos++;
+ 	}
+ 
+ 	for (i = 0; i < ei->nr_entries; i++) {
+-		void *cdata = data;
++		void *cdata = ei->data;
++
+ 		entry = &ei->entries[i];
+ 		name = entry->name;
++
+ 		mutex_lock(&eventfs_mutex);
+ 		/* If ei->is_freed, then the event itself may be too */
+ 		if (!ei->is_freed)
+@@ -790,41 +724,26 @@ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
+ 		mutex_unlock(&eventfs_mutex);
+ 		if (r <= 0)
+ 			continue;
+-		d = create_file_dentry(ei, i, parent, name, mode, cdata, fops, false);
+-		if (d) {
+-			ret = add_dentries(&dentries, d, cnt);
+-			if (ret < 0)
+-				break;
+-			cnt++;
++
++		dentry = create_file_dentry(ei, i, ei_dentry, name, mode, cdata, fops);
++		if (!dentry)
++			goto out;
++		ino = dentry->d_inode->i_ino;
++		dput(dentry);
++
++		if (c > 0) {
++			c--;
++			continue;
+ 		}
++
++		if (!dir_emit(ctx, name, strlen(name), ino, DT_REG))
++			goto out;
++		ctx->pos++;
+ 	}
+-	inode_unlock(parent->d_inode);
++	ret = 1;
++ out:
+ 	srcu_read_unlock(&eventfs_srcu, idx);
+-	ret = dcache_dir_open(inode, file);
+-
+-	/*
+-	 * dcache_dir_open() sets file->private_data to a dentry cursor.
+-	 * Need to save that but also save all the dentries that were
+-	 * opened by this function.
+-	 */
+-	dlist->cursor = file->private_data;
+-	dlist->dentries = dentries;
+-	file->private_data = dlist;
+-	return ret;
+-}
+-
+-/*
+- * This just sets the file->private_data back to the cursor and back.
+- */
+-static int dcache_readdir_wrapper(struct file *file, struct dir_context *ctx)
+-{
+-	struct dentry_list *dlist = file->private_data;
+-	int ret;
+ 
+-	file->private_data = dlist->cursor;
+-	ret = dcache_readdir(file, ctx);
+-	dlist->cursor = file->private_data;
+-	file->private_data = dlist;
+ 	return ret;
+ }
+ 
+-- 
+2.42.0
 
-bd466a892612 ("i2c: designware: Fix PM calls order in dw_i2c_plat_probe()"
-
-Do you see the issue if you test at that commit?
-
-Before that commit when the i2c_dw_probe() path fails we explicitly 
-disable the runtime PM before returning but now let the managed calls to 
-do it. Perhaps there is some time window that runtime suspending occurs 
-in parallel while drivers base is executing post probe code?
-
-dw_i2c_plat_probe
-	i2c_dw_probe
-		i2c_dw_probe_master
-			i2c_dw_init_regmap
-				-> failure and thus dev->map is not set
-
-i2c_dw_runtime_suspend
-	i2c_dw_disable
-		__i2c_dw_disable
-			regmap_read(dev->map, ...)
-				-> Oops because dev->map is NULL
-
-Other PM related commit in the patchset is commit 2347b8dc0d2e ("i2c: 
-designware: Consolidate PM ops") but I don't think that is the reason.
 
