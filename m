@@ -1,140 +1,108 @@
-Return-Path: <linux-kernel+bounces-15270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B671682296E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:20:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F45E8229A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:42:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50B4228353F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:20:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E327284EB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6917182A8;
-	Wed,  3 Jan 2024 08:20:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Fp8SPTGr";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1iBS7RE4";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Fp8SPTGr";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1iBS7RE4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E7691805E;
+	Wed,  3 Jan 2024 08:42:25 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7ED5182A4
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 08:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B6DBE21E6E;
-	Wed,  3 Jan 2024 08:20:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704270011; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HypzNisJ4hYD1dxdCae8yyBWa40JveYyCJa3YAaa4wA=;
-	b=Fp8SPTGrwk4lPX4vb6nIdaYvYXlXlIeJvMxgHV2rZFKCeiJ9lRvai2NSGlOhtKz7jmqisG
-	LCHSwkobdMJI2dE97yUv+kfbry+GJNKSQcf6M42ivdEQLZHlzOlUIy/dDw34fuV1PkZDT3
-	VkeFERoYCYvNMffPWQ3ktGIEsNJHhos=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704270011;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HypzNisJ4hYD1dxdCae8yyBWa40JveYyCJa3YAaa4wA=;
-	b=1iBS7RE4o7OcdME2O7R7Nuv+G12jTN2JTe6KSl5VF1p+K53PBb245qoGDsMUfI7hb/klJR
-	aHf9jksgb8qiK6Dg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704270011; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HypzNisJ4hYD1dxdCae8yyBWa40JveYyCJa3YAaa4wA=;
-	b=Fp8SPTGrwk4lPX4vb6nIdaYvYXlXlIeJvMxgHV2rZFKCeiJ9lRvai2NSGlOhtKz7jmqisG
-	LCHSwkobdMJI2dE97yUv+kfbry+GJNKSQcf6M42ivdEQLZHlzOlUIy/dDw34fuV1PkZDT3
-	VkeFERoYCYvNMffPWQ3ktGIEsNJHhos=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704270011;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HypzNisJ4hYD1dxdCae8yyBWa40JveYyCJa3YAaa4wA=;
-	b=1iBS7RE4o7OcdME2O7R7Nuv+G12jTN2JTe6KSl5VF1p+K53PBb245qoGDsMUfI7hb/klJR
-	aHf9jksgb8qiK6Dg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 14C7C1340C;
-	Wed,  3 Jan 2024 08:20:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id dS9bArsYlWVOXAAAD6G6ig
-	(envelope-from <osalvador@suse.de>); Wed, 03 Jan 2024 08:20:11 +0000
-Date: Wed, 3 Jan 2024 09:21:02 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: andrey.konovalov@linux.dev
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Marco Elver <elver@google.com>,
-	Alexander Potapenko <glider@google.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-	Evgenii Stepanov <eugenis@google.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: [PATCH v4 04/22] lib/stackdepot: drop valid bit from handles
-Message-ID: <ZZUY7hOGtzRNHV_r@localhost.localdomain>
-References: <cover.1700502145.git.andreyknvl@google.com>
- <34969bba2ca6e012c6ad071767197dee64dc5723.1700502145.git.andreyknvl@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F344318636;
+	Wed,  3 Jan 2024 08:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rKwVf-00042W-Un; Wed, 03 Jan 2024 09:21:55 +0100
+Message-ID: <1c65dc20-774b-4271-aa5e-3ad2c1db5b1e@leemhuis.info>
+Date: Wed, 3 Jan 2024 09:21:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <34969bba2ca6e012c6ad071767197dee64dc5723.1700502145.git.andreyknvl@google.com>
-X-Spam-Level: 
-X-Spam-Level: 
-X-Spamd-Result: default: False [-0.44 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,google.com,suse.cz,googlegroups.com,kvack.org,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.34)[76.12%]
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Score: -0.44
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Regression] [PCI/ASPM] [ASUS PN51] Reboot on resume attempt
+ (bisect done; commit found)
+Content-Language: en-US, de-DE
+To: Michael Schaller <michael@5challer.de>, Bjorn Helgaas <helgaas@kernel.org>
+Cc: bhelgaas@google.com, kai.heng.feng@canonical.com,
+ linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ regressions@lists.linux.dev, macro@orcam.me.uk, ajayagarwal@google.com,
+ sathyanarayanan.kuppuswamy@linux.intel.com, gregkh@linuxfoundation.org,
+ hkallweit1@gmail.com, michael.a.bottini@linux.intel.com,
+ johan+linaro@kernel.org
+References: <20240101221554.GA1693060@bhelgaas>
+ <5598b690-12da-4237-b2bf-c9c691c4647c@5challer.de>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <5598b690-12da-4237-b2bf-c9c691c4647c@5challer.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1704271343;69f8e9d3;
+X-HE-SMSGID: 1rKwVf-00042W-Un
 
-On Mon, Nov 20, 2023 at 06:47:02PM +0100, andrey.konovalov@linux.dev wrote:
-> From: Andrey Konovalov <andreyknvl@google.com>
+On 02.01.24 14:50, Michael Schaller wrote:
+> On 01.01.24 23:15, Bjorn Helgaas wrote:
+>> On Mon, Jan 01, 2024 at 07:57:40PM +0100, Michael Schaller wrote:
+>>> On 01.01.24 19:13, Bjorn Helgaas wrote:
+>>>> On Mon, Dec 25, 2023 at 07:29:02PM +0100, Michael Schaller wrote:
+>>>> ...
+>>
+>>>> So unless somebody has a counter-argument, I plan to queue a revert of
+>>>> 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()") for
+>>>> v6.7.
+>>>
+>>> If it helps I could also try if a partial revert of 08d0cc5f3426
+>>> would be
+>>> sufficient. This might also narrow down the issue and give more insight
+>>> where the issue originates from.
+>>
+>> We're so close to the v6.7 final release that I doubt we can figure
+>> out the problem and test a fix before v6.7.  I'm sure Kai-Heng would
+>> appreciate any additional data, but I don't think it's urgent at this
+>> point.
 > 
-> Stack depot doesn't use the valid bit in handles in any way, so drop it.
+> We're indeed close to the final v6.7 release, which in turn means that a
+> last minute revert of a 16 month old commit might cause even more
+> regressions as there have been quite a few ASPM changes afterwards and
+> there won't be much testing anymore before the final release.
 > 
-> Reviewed-by: Alexander Potapenko <glider@google.com>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Furthermore, given the age of the commit and that it has been backported
+> to kernel 5.15, the question is also if the revert would be backported
+> to the affected LTS kernels?
+> 
+> If this regression risk is acceptable then I'm all for reverting the
+> commit now and then working on a fix.
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+FWIW (just in case some of you might not be aware of this): Linus not
+that long ago said this about regressions that are somewhat older:
 
+"""
+There's obviously a time limit: if that "regression in an earlier
+release" was a year or more ago, and just took forever for people to
+notice, and it had semantic changes that now mean that fixing the
+regression could cause a _new_ regression, then that can cause me to
+go "Oh, now the new semantics are what we have to live with".
+"""
 
--- 
-Oscar Salvador
-SUSE Labs
+For full context see:
+https://lore.kernel.org/all/CAHk-=wis_qQy4oDNynNKi5b7Qhosmxtoj1jxo5wmB6SRUwQUBQ@mail.gmail.com/
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
