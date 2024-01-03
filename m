@@ -1,303 +1,106 @@
-Return-Path: <linux-kernel+bounces-15857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D0E082345C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:24:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5309C823428
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:15:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5FE31F25450
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:24:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17C5A286C88
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C02AB1D54B;
-	Wed,  3 Jan 2024 18:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05AC21C697;
+	Wed,  3 Jan 2024 18:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=siemens.com header.i=jan.kiszka@siemens.com header.b="RUcpp1MC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hgiGavpj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mta-65-227.siemens.flowmailer.net (mta-65-227.siemens.flowmailer.net [185.136.65.227])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10BF31C6B4
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
-Received: by mta-65-227.siemens.flowmailer.net with ESMTPSA id 20240103181228f06c078a53ef6cbcd8
-        for <linux-kernel@vger.kernel.org>;
-        Wed, 03 Jan 2024 19:12:28 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=jan.kiszka@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
- bh=AP2MQZj1TBCyAPH6MXRlRUevHBIT68hWqQPM8+lFeHo=;
- b=RUcpp1MCOC5UT7nQhDe281XkRe5LVeVaPpFS8Id4E6Bm32sctXg6esVW8n4GA+nfOQWkTZ
- HlKRM5UHG04xQwxT/ppCXxh2ZmnM2ATna73qEc3X+VGiLe6HY7HFQ9qHEre3mtUzD3Ay0F/q
- 6KI+qv2Qs1TywjMpzPwi8S9S6KfQI=;
-From: Jan Kiszka <jan.kiszka@siemens.com>
-To: Nishanth Menon <nm@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	Bao Cheng Su <baocheng.su@siemens.com>,
-	Chao Zeng <chao.zeng@siemens.com>,
-	Li Hua Qian <huaqian.li@siemens.com>
-Subject: [PATCH v2 7/7] arm64: dts: ti: iot2050: Support IOT2050-SM variant
-Date: Wed,  3 Jan 2024 19:12:24 +0100
-Message-Id: <7804b2d7de24532e93e54c2d2a10e2b8f4afdadd.1704305544.git.jan.kiszka@siemens.com>
-In-Reply-To: <cover.1704305544.git.jan.kiszka@siemens.com>
-References: <cover.1704305544.git.jan.kiszka@siemens.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517AE1C68A;
+	Wed,  3 Jan 2024 18:15:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AE03C433C7;
+	Wed,  3 Jan 2024 18:15:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704305744;
+	bh=AUXrWa4gez8USeQ48h8WOwSAUbB123G3JwiEuIp/YrM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hgiGavpjnyWCBS+MOW1xqN+TMQo7IoZrUXbaSExkf51Dv66D5lZxSzuU2DvD0JyoS
+	 KGY7vBvcsByvQkjkaYqD4P4Xd/QSsl8qeEjNDFm4Ru87DYlzs0VJj1g5i7lVaWMvjy
+	 2wCLrDZvwV6CNqDyih5ZpZgyo2gnzUtMuhSrHLi+eSRawL+KIV5Oiyang1guGb6Awj
+	 hsEOp66LkLFXgK9VAvRDQ9rNq9N/lUDMdFXG1G0sLczCk0mNF0xzPw4qx4Egb/DsTo
+	 bSqqXS9+WWEdDgRU4BDWGOuhX27W4dna2kmVIIyOHnau9VX2WvOkSjYnDGmht2Y/mp
+	 39wEn5K3GbyPw==
+Date: Wed, 3 Jan 2024 11:15:42 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org
+Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	patches@lists.linux.dev
+Subject: Re: [PATCH] x86/tools: objdump_reformat.awk: Skip bad instructions
+ from llvm-objdump
+Message-ID: <20240103181542.GA629234@dev-arch.thelio-3990X>
+References: <20231205-objdump_reformat-awk-handle-llvm-objdump-bad_expr-v1-1-b4a74f39396f@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-294854:519-21489:flowmailer
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205-objdump_reformat-awk-handle-llvm-objdump-bad_expr-v1-1-b4a74f39396f@kernel.org>
 
-From: Baocheng Su <baocheng.su@siemens.com>
+Ping? I am still seeing this issue.
 
-Main differences between the new variant and Advanced PG2:
-
-1. Arduino interface is removed. Instead, an new ASIC is added for
-   communicating with PLC 1200 signal modules.
-2. USB 3.0 type A connector is removed, only USB 2.0 type A connector is
-   available.
-3. DP interface is removed. Instead, to communicate with PLC 1200 signal
-   modules, a USB 3.0 type B connector is added but the signals are
-   actually not USB.
-4. DDR size is increased to 4 GB.
-5. Two sensors are added, one tilt sensor and one light sensor.
-
-The light sensor it not yet added to the DT at this stage as it depends
-on to-be-added bindings.
-
-Co-developed-by: Chao Zeng <chao.zeng@siemens.com>
-Signed-off-by: Chao Zeng <chao.zeng@siemens.com>
-Co-developed-by: Li Hua Qian <huaqian.li@siemens.com>
-Signed-off-by: Li Hua Qian <huaqian.li@siemens.com>
-Signed-off-by: Baocheng Su <baocheng.su@siemens.com>
-[Jan: rebase over dtsi refactorings, split-out light sensor, improve LEDs]
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
----
- arch/arm64/boot/dts/ti/Makefile               |   1 +
- .../dts/ti/k3-am6548-iot2050-advanced-sm.dts  | 189 ++++++++++++++++++
- 2 files changed, 190 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-sm.dts
-
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 77a347f9f47d..9b15eaad284c 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -53,6 +53,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic-pg2.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-m2.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-sm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-gp-evm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-evm.dtb
-diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-sm.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-sm.dts
-new file mode 100644
-index 000000000000..338834fda566
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-sm.dts
-@@ -0,0 +1,189 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) Siemens AG, 2023
-+ *
-+ * Authors:
-+ *   Baocheng Su <baocheng.su@siemens.com>
-+ *   Chao Zeng <chao.zeng@siemens.com>
-+ *   Huaqian Li <huaqian.li@siemens.com>
-+ *
-+ * AM6548-based (quad-core) IOT2050 SM variant, Product Generation 2
-+ * 4 GB RAM, 16 GB eMMC, USB-serial converter on connector X30
-+ *
-+ * Product homepage:
-+ * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-+ */
-+
-+/dts-v1/;
-+
-+#include "k3-am6548-iot2050-advanced-common.dtsi"
-+#include "k3-am65-iot2050-common-pg2.dtsi"
-+
-+/ {
-+	compatible = "siemens,iot2050-advanced-sm", "ti,am654";
-+	model = "SIMATIC IOT2050 Advanced SM";
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		/* 4G RAM */
-+		reg = <0x00000000 0x80000000 0x00000000 0x80000000>,
-+		      <0x00000008 0x80000000 0x00000000 0x80000000>;
-+	};
-+
-+	aliases {
-+		spi1 = &main_spi0;
-+	};
-+
-+	leds {
-+		pinctrl-0 = <&leds_pins_default>, <&user1_led_pins>;
-+
-+		led-2 {
-+			gpios = <&wkup_gpio0 52 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		led-3 {
-+			gpios = <&wkup_gpio0 53 GPIO_ACTIVE_HIGH>;
-+		};
-+	};
-+};
-+
-+&main_pmx0 {
-+	main_pcie_enable_pins_default: main-pcie-enable-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x01d8, PIN_OUTPUT, 7)  /* (AH12) GPIO1_22 */
-+		>;
-+	};
-+
-+	main_spi0_pins: main-spi0-default-pins  {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x01c4, PIN_INPUT, 0) /* (AH13) SPI0_CLK */
-+			AM65X_IOPAD(0x01c8, PIN_INPUT, 0) /* (AE13) SPI0_D0 */
-+			AM65X_IOPAD(0x01cc, PIN_INPUT, 0) /* (AD13) SPI0_D1 */
-+			AM65X_IOPAD(0x01bc, PIN_OUTPUT, 0) /* (AG13) SPI0_CS0 */
-+		>;
-+	};
-+};
-+
-+&main_pmx1 {
-+	asic_spi_mux_ctrl_pin: asic-spi-mux-ctrl-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x0010, PIN_OUTPUT, 7)  /* (D21) GPIO1_86 */
-+		>;
-+	};
-+};
-+
-+&wkup_pmx0 {
-+	user1_led_pins: user1-led-default-pins {
-+		pinctrl-single,pins = <
-+			/* (AB1) WKUP_UART0_RXD:WKUP_GPIO0_52, as USER 1 led red */
-+			AM65X_WKUP_IOPAD(0x00a0, PIN_OUTPUT, 7)
-+			/* (AB5) WKUP_UART0_TXD:WKUP_GPIO0_53, as USER 1 led green */
-+			AM65X_WKUP_IOPAD(0x00a4, PIN_OUTPUT, 7)
-+		>;
-+	};
-+
-+	soc_asic_pins: soc-asic-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_WKUP_IOPAD(0x0044, PIN_INPUT, 7)  /* (P4) WKUP_GPIO0_29 */
-+			AM65X_WKUP_IOPAD(0x0048, PIN_INPUT, 7)  /* (P5) WKUP_GPIO0_30 */
-+			AM65X_WKUP_IOPAD(0x004c, PIN_INPUT, 7)  /* (P1) WKUP_GPIO0_31 */
-+		>;
-+	};
-+};
-+
-+&main_gpio0 {
-+	gpio-line-names = "main_gpio0-base";
-+};
-+
-+&main_gpio1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 =
-+		<&cp2102n_reset_pin_default>,
-+		<&main_pcie_enable_pins_default>,
-+		<&asic_spi_mux_ctrl_pin>;
-+	gpio-line-names =
-+		/* 0..9 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 10..19 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 20..29 */
-+		"", "", "", "", "CP2102N-RESET", "", "", "", "", "",
-+		/* 30..39 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 40..49 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 50..59 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 60..69 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 70..79 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 80..86 */
-+		"", "", "", "", "", "", "ASIC-spi-mux-ctrl";
-+};
-+
-+&wkup_gpio0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 =
-+		<&push_button_pins_default>,
-+		<&db9_com_mode_pins_default>,
-+		<&soc_asic_pins>;
-+	gpio-line-names =
-+		/* 0..9 */
-+		"wkup_gpio0-base", "", "", "", "UART0-mode1", "UART0-mode0",
-+		"UART0-enable", "UART0-terminate", "", "WIFI-disable",
-+		/* 10..19 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 20..29 */
-+		"", "", "", "", "", "USER-button", "", "", "","ASIC-gpio-0",
-+		/* 30..31 */
-+		"ASIC-gpio-1", "ASIC-gpio-2";
-+};
-+
-+&main_spi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_spi0_pins>;
-+
-+	#address-cells = <1>;
-+	#size-cells= <0>;
-+};
-+
-+&mcu_spi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mcu_spi0_pins_default>;
-+};
-+
-+&main_i2c3 {
-+	accelerometer: lsm6dso@6a {
-+		compatible = "st,lsm6dso";
-+		reg = <0x6a>;
-+	};
-+};
-+
-+&dss {
-+	status = "disabled";
-+};
-+
-+&serdes0 {
-+	assigned-clocks = <&k3_clks 153 4>, <&serdes0 AM654_SERDES_CMU_REFCLK>;
-+	assigned-clock-parents = <&k3_clks 153 8>, <&k3_clks 153 4>;
-+};
-+
-+&serdes1 {
-+	status = "disabled";
-+};
-+
-+&pcie0_rc {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&minipcie_pins_default>;
-+
-+	num-lanes = <1>;
-+	phys = <&serdes0 PHY_TYPE_PCIE 1>;
-+	phy-names = "pcie-phy0";
-+	reset-gpios = <&wkup_gpio0 27 GPIO_ACTIVE_HIGH>;
-+	status = "okay";
-+};
-+
-+&pcie1_rc {
-+	status = "disabled";
-+};
--- 
-2.35.3
-
+On Tue, Dec 05, 2023 at 12:53:08PM -0700, Nathan Chancellor wrote:
+> When running the instruction decoder selftest with LLVM=1 +
+> CONFIG_PVH=y, there is a series of warnings:
+> 
+>   arch/x86/tools/insn_decoder_test: warning: Found an x86 instruction decoder bug, please report this.
+>   arch/x86/tools/insn_decoder_test: warning: ffffffff81000050     ea                      <unknown>
+>   arch/x86/tools/insn_decoder_test: warning: objdump says 1 bytes, but insn_get_length() says 7
+>   arch/x86/tools/insn_decoder_test: warning: Decoded and checked 7214721 instructions with 1 failures
+> 
+> GNU objdump outputs "(bad)" instead of "<unknown>", which is already
+> handled in the bad_expr regex, so there is no warning.
+> 
+>   $ objdump -d arch/x86/platform/pvh/head.o | grep -E '50:\s+ea'
+>   50:   ea                      (bad)
+> 
+>   $ llvm-objdump -d arch/x86/platform/pvh/head.o | grep -E '50:\s+ea'
+>         50: ea                            <unknown>
+> 
+> Add "<unknown>" to the bad_expr regex to clear up the warning, allowing
+> the instruction decoder selftest to fully pass with llvm-objdump.
+> 
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  arch/x86/tools/objdump_reformat.awk | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/tools/objdump_reformat.awk b/arch/x86/tools/objdump_reformat.awk
+> index a4120d907277..20b08a6c4d33 100644
+> --- a/arch/x86/tools/objdump_reformat.awk
+> +++ b/arch/x86/tools/objdump_reformat.awk
+> @@ -11,7 +11,7 @@ BEGIN {
+>  	prev_addr = ""
+>  	prev_hex = ""
+>  	prev_mnemonic = ""
+> -	bad_expr = "(\\(bad\\)|^rex|^.byte|^rep(z|nz)$|^lock$|^es$|^cs$|^ss$|^ds$|^fs$|^gs$|^data(16|32)$|^addr(16|32|64))"
+> +	bad_expr = "(\\(bad\\)|<unknown>|^rex|^.byte|^rep(z|nz)$|^lock$|^es$|^cs$|^ss$|^ds$|^fs$|^gs$|^data(16|32)$|^addr(16|32|64))"
+>  	fwait_expr = "^9b[ \t]*fwait"
+>  	fwait_str="9b\tfwait"
+>  }
+> 
+> ---
+> base-commit: 5225952d74d43e4c054731c74b8afd700b23a94a
+> change-id: 20231205-objdump_reformat-awk-handle-llvm-objdump-bad_expr-9e74cd2a08b5
+> 
+> Best regards,
+> -- 
+> Nathan Chancellor <nathan@kernel.org>
+> 
+> 
 
