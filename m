@@ -1,98 +1,158 @@
-Return-Path: <linux-kernel+bounces-15812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD89A8233A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:44:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B2878233AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:45:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B1D21C228B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:43:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84923B21890
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:45:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77C61C696;
-	Wed,  3 Jan 2024 17:43:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C8CA1C2AF;
+	Wed,  3 Jan 2024 17:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gFnvLmzd"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kcEU1fhC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B727A1C687;
+	Wed,  3 Jan 2024 17:44:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704303897; x=1735839897;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=FsxTGWvVPI/NoBF8Xammjod/CJ+T7B04tNBazndfAto=;
+  b=kcEU1fhC/geX/kjl1fIHQ05wumPK2OM0TCNkuRnMkawWyJOQhMPEa9hi
+   clDL5A2yKF+OWtLFyrCEwFyU11GBmi1mS4eXYniscrjiG/MlBMndjOc8J
+   A6Je16CTh/IfjoNX7YtzxkbGQ4xEuown46qAVq7DWWeOMOdJgW6JxYCbw
+   WrQZKOej8icQnV0qFraPG1LdzIuqQ7CbI26C8u+nCbqQgUCrKdYE55/tR
+   dHzFLEk2JwSsRipMQyVvbvehNhi5xoREJo8wyOHPKRB2okkwEu2JZ/PJE
+   uMpldA66Zq2/VCN+7zFvS/hLqQHHy5Cy+bWvxoyg571DWyRzAPbD0chah
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="394187368"
+X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
+   d="scan'208";a="394187368"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 09:44:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="780045017"
+X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
+   d="scan'208";a="780045017"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 09:44:56 -0800
+Received: from [10.213.174.222] (kliang2-mobl1.ccr.corp.intel.com [10.213.174.222])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E26371C688
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 17:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e763e03f4dso109994767b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 09:43:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704303827; x=1704908627; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5ch7NvB2LWYlTvgGgKo2EIdYp2sGxx+1NC8FOV8MBa8=;
-        b=gFnvLmzdI/s0DG37lEgq/rJbZiLYdRe5ELXdvUTfk22YE8/RHE+xwK02kVA5qokYbn
-         SHQGUAyLf85+LxfNLqz8vXYUR+GJN+de2HhTfAah7bR5EHbmZbnxQyuaPI52l/5sr+dw
-         4JK1CL7lXgdhjg36eELpI5uWwo35rjWaNLQ2JUSA2XJo1oGfE+sMytrd/3IPpgqbqnaM
-         WPcJADzCHMO80YTwDuJg4LyElf8+agsFWl06VANnHkG1mLmQoI1lSwc/sL3Z9lJUkHEP
-         KyQ9ay/QoSgvUepno006TOnY6H7PKyDA5ZWuzsZ/6MxS7UIPTAdOxfXI4cSMjtStdlyJ
-         tNpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704303827; x=1704908627;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5ch7NvB2LWYlTvgGgKo2EIdYp2sGxx+1NC8FOV8MBa8=;
-        b=BmtOhogfWYYKc5/99TF3CFZ9TUfsThZObLbDxlXXcuAYTrE17Iw0Pnfb99PNfuJpzO
-         m3j47U9hwAAKxTO9wiJ6bD0C82P5NPw+gBDQoHeEh1b9yvj1CilUx05mndRi3DT1/6zi
-         uFuTsswnOS7S6CXZ7afwBqGDPIxQBeSrwkstA0h9ggJwbuODne3U5K0JTcyxRM8wDh44
-         gweKva/UShHTX8rvmSJZbTads9FziUkRHm3WvTf+h1DTu8VUhULErpNcdkSq2cte5nNs
-         0SNu3Q5m7Z2ac3G5BKE0rOkYkihtjN4vA7fgkzuOLiTFl5FAb4FbaTYAzVI2KE7rGr/g
-         Yw1g==
-X-Gm-Message-State: AOJu0YzQyjGGV7UR+q9WkkmypJY5SbT+PC4CBNHS/BsffmRnpHYJek0i
-	O1I4RAdfe1qtKvwMoVKRd8YY/CteLvnP4QLCcw==
-X-Google-Smtp-Source: AGHT+IFVYbxeck6qY0stZ+gHuJMU9yrJ7fDaUy0TVY05Bz/4NTgmYhY/zjYlworFaWfsAuVE1XItsh0J6YQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:a9d:b0:5e8:f747:1cb3 with SMTP id
- ci29-20020a05690c0a9d00b005e8f7471cb3mr7073043ywb.1.1704303826874; Wed, 03
- Jan 2024 09:43:46 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Wed,  3 Jan 2024 09:43:43 -0800
+	by linux.intel.com (Postfix) with ESMTPS id 14138580DC7;
+	Wed,  3 Jan 2024 09:44:54 -0800 (PST)
+Message-ID: <555f8096-619c-46cf-bff8-0e49f03eac2a@linux.intel.com>
+Date: Wed, 3 Jan 2024 12:44:53 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240103174343.3016720-1-seanjc@google.com>
-Subject: [ANNOUNCE] PUCK Notes - 2024.01.03 - Post-copy for guest_memfd()
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Paolo Bonzini <pbonzini@redhat.com>, James Houghton <jthoughton@google.com>, 
-	Peter Xu <peterx@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
-	Oliver Upton <oliver.upton@linux.dev>, David Matlack <dmatlack@google.com>, 
-	Aaron Lewis <aaronlewis@google.com>, Isaku Yamahata <isaku.yamahata@linux.intel.com>, 
-	Yan Zhao <yan.y.zhao@intel.com>, Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] perf x86 test: Update hybrid expectations
+Content-Language: en-US
+To: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240103170159.1435753-1-irogers@google.com>
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20240103170159.1435753-1-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Recording and slides of the post-copy for guest_memfd discussion:
 
-  https://drive.google.com/corp/drive/folders/1_3bLYrR7oYZ06XvOPY_xZGUApGhq-j3W?resourcekey=0-0C1BYqhodcNvHFIqVwKMTg
 
-Key takeaways:
+On 2024-01-03 12:01 p.m., Ian Rogers wrote:
+> The legacy events cpu-cycles and instructions have sysfs event
+> equivalents on x86 (see /sys/devices/cpu_core/events). As sysfs/JSON
+> events are now higher in priority than legacy events this causes the
+> hybrid test expectations not to be met. To fix this switch to legacy
+> events that don't have sysfs versions, namely cpu-cycles becomes
+> cycles and instructions becomes branches.
+> 
+> Fixes: a24d9d9dc096 ("perf parse-events: Make legacy events lower priority than sysfs/JSON")
+> Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Closes: https://lore.kernel.org/lkml/ZYbm5L7tw7bdpDpE@kernel.org/
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
 
- - There is no known use case for tying "data invalid" to the guest_memfd
-   inode, i.e. letting each "view" (struct file / struct kvm / VM) control its
-   own behavior is acceptable, and arguably desirable as it provides userspace
-   more flexibility.
+Thanks Ian. For the series,
 
- - If the "data invalid" attribute is tied to a given view, then routing the
-   ioctl() through KVM provides a superset of functionality compared to making
-   a guest_memfd specific ioctl(), e.g. KVM can apply the attribute to any gfn
-   regardless of backing store.
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
 
- - Pursuing a fully generic file-based solution is undesirable as there are a
-   large number of questions that need answers, and there is no known use case
-   beyond KVM to drive those discussions.
-
-Feel free to chime in with anything important that I missed.
+Thanks,
+Kan
+>  tools/perf/arch/x86/tests/hybrid.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/perf/arch/x86/tests/hybrid.c b/tools/perf/arch/x86/tests/hybrid.c
+> index eb152770f148..05a5f81e8167 100644
+> --- a/tools/perf/arch/x86/tests/hybrid.c
+> +++ b/tools/perf/arch/x86/tests/hybrid.c
+> @@ -47,7 +47,7 @@ static int test__hybrid_hw_group_event(struct evlist *evlist)
+>  	evsel = evsel__next(evsel);
+>  	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+>  	TEST_ASSERT_VAL("wrong hybrid type", test_hybrid_type(evsel, PERF_TYPE_RAW));
+> -	TEST_ASSERT_VAL("wrong config", test_config(evsel, PERF_COUNT_HW_INSTRUCTIONS));
+> +	TEST_ASSERT_VAL("wrong config", test_config(evsel, PERF_COUNT_HW_BRANCH_INSTRUCTIONS));
+>  	TEST_ASSERT_VAL("wrong leader", evsel__has_leader(evsel, leader));
+>  	return TEST_OK;
+>  }
+> @@ -102,7 +102,7 @@ static int test__hybrid_group_modifier1(struct evlist *evlist)
+>  	evsel = evsel__next(evsel);
+>  	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+>  	TEST_ASSERT_VAL("wrong hybrid type", test_hybrid_type(evsel, PERF_TYPE_RAW));
+> -	TEST_ASSERT_VAL("wrong config", test_config(evsel, PERF_COUNT_HW_INSTRUCTIONS));
+> +	TEST_ASSERT_VAL("wrong config", test_config(evsel, PERF_COUNT_HW_BRANCH_INSTRUCTIONS));
+>  	TEST_ASSERT_VAL("wrong leader", evsel__has_leader(evsel, leader));
+>  	TEST_ASSERT_VAL("wrong exclude_user", !evsel->core.attr.exclude_user);
+>  	TEST_ASSERT_VAL("wrong exclude_kernel", evsel->core.attr.exclude_kernel);
+> @@ -171,27 +171,27 @@ struct evlist_test {
+>  
+>  static const struct evlist_test test__hybrid_events[] = {
+>  	{
+> -		.name  = "cpu_core/cpu-cycles/",
+> +		.name  = "cpu_core/cycles/",
+>  		.check = test__hybrid_hw_event_with_pmu,
+>  		/* 0 */
+>  	},
+>  	{
+> -		.name  = "{cpu_core/cpu-cycles/,cpu_core/instructions/}",
+> +		.name  = "{cpu_core/cycles/,cpu_core/branches/}",
+>  		.check = test__hybrid_hw_group_event,
+>  		/* 1 */
+>  	},
+>  	{
+> -		.name  = "{cpu-clock,cpu_core/cpu-cycles/}",
+> +		.name  = "{cpu-clock,cpu_core/cycles/}",
+>  		.check = test__hybrid_sw_hw_group_event,
+>  		/* 2 */
+>  	},
+>  	{
+> -		.name  = "{cpu_core/cpu-cycles/,cpu-clock}",
+> +		.name  = "{cpu_core/cycles/,cpu-clock}",
+>  		.check = test__hybrid_hw_sw_group_event,
+>  		/* 3 */
+>  	},
+>  	{
+> -		.name  = "{cpu_core/cpu-cycles/k,cpu_core/instructions/u}",
+> +		.name  = "{cpu_core/cycles/k,cpu_core/branches/u}",
+>  		.check = test__hybrid_group_modifier1,
+>  		/* 4 */
+>  	},
 
