@@ -1,370 +1,282 @@
-Return-Path: <linux-kernel+bounces-15314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFF37822A11
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A973D822A29
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:19:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73A4628103B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:15:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 433EF2831D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:19:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE8D9182C5;
-	Wed,  3 Jan 2024 09:14:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2227A1B286;
+	Wed,  3 Jan 2024 09:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AtVWzHuD";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mmNbBV2C";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AtVWzHuD";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mmNbBV2C"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eZqVB67v"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06C6C18AE8;
-	Wed,  3 Jan 2024 09:14:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 013DD21C64;
-	Wed,  3 Jan 2024 09:14:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704273290; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MRZ2aUMbqlaAIRlYGl9VBJK21WKEAOCW3XaQryG78/A=;
-	b=AtVWzHuDGz6J/vwxZq27QNZA4f5WAbMHAp4SmB9hZPYaAUcKZ8KtUrzdc4Z45r15R+hn6A
-	msS8zcd8WJntRYlRiFi3w/XhYX1rIi4qpI+uIE7rJnSnPb7mPKAN/63843fwNE4bUkpH+q
-	udn7kynxADRZI0TYIW/2rBE9Nn1Rusw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704273290;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MRZ2aUMbqlaAIRlYGl9VBJK21WKEAOCW3XaQryG78/A=;
-	b=mmNbBV2CsaewPSvhMj8jx7XDV1HqVhNpTOk8RP+Y8viSMXPirP+Z2LEl0oL8y5uJ4dNfVC
-	Dv/6j1RMIPgoKZCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704273290; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MRZ2aUMbqlaAIRlYGl9VBJK21WKEAOCW3XaQryG78/A=;
-	b=AtVWzHuDGz6J/vwxZq27QNZA4f5WAbMHAp4SmB9hZPYaAUcKZ8KtUrzdc4Z45r15R+hn6A
-	msS8zcd8WJntRYlRiFi3w/XhYX1rIi4qpI+uIE7rJnSnPb7mPKAN/63843fwNE4bUkpH+q
-	udn7kynxADRZI0TYIW/2rBE9Nn1Rusw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704273290;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MRZ2aUMbqlaAIRlYGl9VBJK21WKEAOCW3XaQryG78/A=;
-	b=mmNbBV2CsaewPSvhMj8jx7XDV1HqVhNpTOk8RP+Y8viSMXPirP+Z2LEl0oL8y5uJ4dNfVC
-	Dv/6j1RMIPgoKZCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DED2F13AA6;
-	Wed,  3 Jan 2024 09:14:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 3glkNokllWVKawAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 03 Jan 2024 09:14:49 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 7C30CA07EF; Wed,  3 Jan 2024 10:14:49 +0100 (CET)
-Date: Wed, 3 Jan 2024 10:14:49 +0100
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 8/9] ext4: remove unnecessary parameter "needed" in
- ext4_discard_preallocations
-Message-ID: <20240103091449.djg4tepqfbizi75h@quack3>
-References: <20240103102821.448134-1-shikemeng@huaweicloud.com>
- <20240103102821.448134-9-shikemeng@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB30E1B277;
+	Wed,  3 Jan 2024 09:17:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704273453; x=1735809453;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=+4Mk7DOZJE0cNUU4MwJYSCPV7vGGCUR+GK+N/4R4yuY=;
+  b=eZqVB67vToehA2vBMq6lmRtYBjfLL0rPRhxtnakYpjT+Ul6RCIldynsK
+   eGkGZYw8tH/k2YWhgqzcWI6GFgAbWLAWRP5a8jlU2HyFJA0k3/cgvwffc
+   gtmhCMECXw4UqxwOFt8UU9K6QEziIkFMyYnZkYWpp+jY2WtdK5GGdAbH2
+   4Fo/xCtsjCScJ4ppijWBqrRZEvhxFuf0/krnPsxPfMohO5Ye8wKhJXNQF
+   fVfqmu4S699tjQ9f65QrhOOPWomlWH8Yi74hBwm8r4c60W4p5f5Dnkgyi
+   KOpbhgoB36SneZvWHMf2TCMs3SheKFqARpQDnx4tcbMHE5J5SWsSrRBsO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="463387508"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="463387508"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 01:17:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="783446941"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="783446941"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Jan 2024 01:17:32 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 3 Jan 2024 01:17:31 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 3 Jan 2024 01:17:31 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 3 Jan 2024 01:17:31 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TcApZg+znUznoNF3zaFg/CWpIL9ijwNBeLO6PMsiVQIaeRHaa/4speW1Z+yUi71eh8zqeQ355wNmqMToxtIK98jzrYw0dUtCmKcEeVSHeQD4WJe81wdvznUSOHPnZ6r0cFO17rhJEHOGClq2aH0FlpA5qW6hGFj6OeXKpq3SClu9NambNarg8lcSWwbl910i10XsUQpSs705nSLBzdvVckOWyTV9kORuv8eqKd3cL5yreoNquspmONs8Idwnx/uxIsOY7xAxFHxFAC3osW4YWkWHYTIMHv04dodvLPHWcUG1BxtiRjxeZ4aMMjqlRQR6fn8VaOUq71p+5YVqcvgU3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FohPvdHvFX04imHns9gZfDuHE0O9ZRIjgPHBZ4DwdLM=;
+ b=nCKrhn2C/paaY0BKqHkN+Z1qYe2gvLtbNyVxrrs8OwQKXGFQqObvopybsI6d6HMODsQxuHsEDQ00xV05+5aWlE50SojIehU+bMSp5nYYIFPFFpvA5qFwCEwF5T6i1BQP/EmPD7ren0C/apdR1K3AD9iYKUeAa2KP7L+LhWtyU8Ra8mzEnqIa6MTTFtDOeuyAiQIoIkN3wAOWcfauvd45hG8FDXfZyXkwnPl1dBotQePMPOAsLDyH9O3ewpOWzXGi5ZHLyfoB7LOFXRRZn9NQ7TjyS0KgPJE/qHHLPuNsQS+dcWXs3I1n7V6p7qoPwQntbXewp1j1PyXfQ0MFOpAZ9A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+ by PH7PR11MB7608.namprd11.prod.outlook.com (2603:10b6:510:269::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Wed, 3 Jan
+ 2024 09:17:29 +0000
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::819:818b:9159:3af1]) by PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::819:818b:9159:3af1%3]) with mapi id 15.20.7159.013; Wed, 3 Jan 2024
+ 09:17:29 +0000
+Message-ID: <961bb6f9-1d82-44ff-b63a-d7a07e3f6bd2@intel.com>
+Date: Wed, 3 Jan 2024 17:17:18 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 05/26] x86/fpu/xstate: Introduce fpu_guest_cfg for
+ guest FPU configuration
+Content-Language: en-US
+To: Maxim Levitsky <mlevitsk@redhat.com>
+CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+	<dave.hansen@intel.com>, <pbonzini@redhat.com>, <seanjc@google.com>,
+	<peterz@infradead.org>, <chao.gao@intel.com>, <rick.p.edgecombe@intel.com>,
+	<john.allen@amd.com>
+References: <20231221140239.4349-1-weijiang.yang@intel.com>
+ <20231221140239.4349-6-weijiang.yang@intel.com>
+ <4ba9edb3f988314637052321d339e41938dfe196.camel@redhat.com>
+From: "Yang, Weijiang" <weijiang.yang@intel.com>
+In-Reply-To: <4ba9edb3f988314637052321d339e41938dfe196.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR02CA0015.apcprd02.prod.outlook.com
+ (2603:1096:4:194::16) To PH0PR11MB4965.namprd11.prod.outlook.com
+ (2603:10b6:510:34::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240103102821.448134-9-shikemeng@huaweicloud.com>
-X-Spam-Level: 
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-4.31 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email,huaweicloud.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:106:10:150:64:167:received];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=AtVWzHuD;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=mmNbBV2C
-X-Spam-Score: -4.31
-X-Rspamd-Queue-Id: 013DD21C64
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|PH7PR11MB7608:EE_
+X-MS-Office365-Filtering-Correlation-Id: d7e5a3a8-4fd9-4b57-250c-08dc0c3cceb7
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: g8RhUdrsgpn66V+C3jp0aUTFnAJ2ADp7bTyRnleZF2UewuZUwqJT0Dz8JTUAsFIT2qxCbbrJAGXfLtg6eG1KoBs8jVfcmDc3RoOsi+ZoMK4oec4ov6xpV8aCCxQ0908r7bRrEbZyNKr++ZFI8bTir93wpw/QvM4/MNqv4mobhwr6nGMtxRKbtD8X+QilT8FKCyTJ/3aPsgt//EuokL3pU076IZcbuYo/au11be1yQNhv5fHyB/W+bAUC7zFto2N00V0CzJ17zLXvcE7vo0sX1sYJmeIufB5bpXKveoZcfJCzxdUFsCulCyv7dgPfMa8e0EkZlV0nj8EpxYoroAxgD8G+CiFPawRW1HaY/aLpg1tXPsBRHBaY339kWtqHwhuZu3FBT2QxFp1UOrLF3DUE8PaFwBXqx9j8ZP7ic4dyAue0K9tMK2ptGIXiHr/wlVURSTxLwrk6EMvm16JMr/R4XexYAtHNYFn72IAcYWoFx0BKkjsiHmblH9H1kzYubbPVlLdBQLNkzfW1YH15BpZb2Ik62mzIht5l7fOuR/1Nu4TG8xfL9CCrHPkYVDml2Gg46AI8OC0TBTRWphxwxibsS15zQU+yZd5ArNfHkagHhqPTRcwabyS5PWuQc0Et4hUyi/iXmJvw5OZM7DrMvExitw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(136003)(39860400002)(376002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(26005)(4001150100001)(2616005)(82960400001)(38100700002)(8936002)(8676002)(5660300002)(316002)(2906002)(4326008)(41300700001)(6666004)(6916009)(83380400001)(6486002)(66946007)(6512007)(478600001)(66556008)(6506007)(86362001)(53546011)(66476007)(31696002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VTkxTGdkZXBWWm1SUi8wS1YwaHJRSXplWmhoUUVGMW9hbmRyWmxJcHlNQWhB?=
+ =?utf-8?B?ZU0rWlZ1L0NDYkF5eHNGWXdPMGZyTS9UWmtxNVpST1lpUTZ2SWhpWU9ReXM0?=
+ =?utf-8?B?ajB1NHpQVVRLTzk1SUtMb2p1VmVpak01TDQ2YUlUS0hYV0dCT3RXbHNBOWFn?=
+ =?utf-8?B?MVdtRVlHUVBDa2YwdWJkcUU2bzFrN0VQbFl3ZW5zZUx4alRRUUx6Z29HL2hQ?=
+ =?utf-8?B?Q3RLak9yR0FXb25Ca1Rhc0FBTFRoeDhBcUMyRHlvZzhFbEhLWkpMV25EWlRi?=
+ =?utf-8?B?bEsxbmtoMXJ0RDczNGM4YkxkdnVsM1VocDh1SDZETnM5Z2xITVMwTXJzUU90?=
+ =?utf-8?B?YlIzRUdlT0Y4R0JvVlZhejdzUUVxa2FsRU1kZDV2ck1sUmhNQWNZdU1EUTI0?=
+ =?utf-8?B?RlM4YUN1SVlPcVBydWp4alB2R3E3QXdLMVE2bzdtRHZ5NzE2M2pRS1NOWHRh?=
+ =?utf-8?B?bzVxUmxUTVpRb3JsMW04bzR0NmxTZnFHdW5HVS84YU53SkFVOXFPQVpPWWU2?=
+ =?utf-8?B?V2plS1cwRGxuRnNJYkhtNjNFOElEZldiU211aTNvY3pqSkVTb2lPTWkxbkNT?=
+ =?utf-8?B?UExkcHFMTUE5R0dDN2FpYnFHWXZVUzJQRFZmQk1BMHZBUUtpWWFUMWRqOFZG?=
+ =?utf-8?B?WWY3ZnVZR2tXNEFtN3VvUFZ3bW01am1ML1l1ZmEwZHAwSUZ1aWswSDBwbk8r?=
+ =?utf-8?B?TWdNU2R2a3pBN2IyRWV0MmNLdGY1V0YzaW84MFg3Z3J1UytucGExUzdSbmVL?=
+ =?utf-8?B?TExMQUtZQ2hlaytSZ0w5QzVER0orK0JxQ0pIeG9PUjdjekRlYkxyRHlWbEt6?=
+ =?utf-8?B?OXBQOE9KM0JXRVVNNEpIUXk5ZEpnZUF4eWxBRlVKVXlnWDdJVkMzOWpqd3o5?=
+ =?utf-8?B?alJnR2FLbDFjSlZPUFFXcVpDRGZzU1NCdjNZbGVkSGRCNEdRWU5kZkpsN0Q2?=
+ =?utf-8?B?aDVLQmN3TVhKRmJLTXFsUEZmeExyUEJxcWVxVk01NFRrc29IMHBsSTcraDB1?=
+ =?utf-8?B?RC9uUktiVUFzMG1rNXNkQmVjNm1OZGo0VlFDakpuSDBWQ3JPVXpZM3FQdTgw?=
+ =?utf-8?B?Ulc5Qm5OUkVYTHlKbTQ5dlQ1V1VMcmZxOVdxa05BbmRBS05lU0xTM3lodEEr?=
+ =?utf-8?B?cGVXbVF4MXRDWnJRQzRCSnpBVTB0U0lCcmNpRFRJTWJ6dFJjbkxIZmRWalVp?=
+ =?utf-8?B?WGdhMytjajJUQmp1QVdCQjRSRTdYOWNJSkU3cmhQZDI1VkZDU1dpT2U3dGdT?=
+ =?utf-8?B?OGRSREFma21lWldtNm0vallWVXR1bFVOd0JvZ0YzR3kyRkdVL3BPMmFyMXQ4?=
+ =?utf-8?B?NU1YOUdjN1RWbUhCejhMbXB6NEluQ3F1K3h6TWY5ZlZvNDJ3YVNYbUxzYjBj?=
+ =?utf-8?B?SVVBRG05SUxnYi9Ub1U4TlU4bXN0d24wL0liNGlNMTJyMjYvNE0vNGpJTUlW?=
+ =?utf-8?B?WWV2aUZxSkF0azFNVUxHRWdVMnRQUlMwWUYrRWVNbEhKUEg5Sk93azBCdlZQ?=
+ =?utf-8?B?eGZ3SEpzNmo0RU80QUdRb0l1Sms0cGNxSi9iRVBFWmhUdTVsSjN5UlhOQ0xM?=
+ =?utf-8?B?NlR2V0lJQk8rL3YvL09za2xtaFIxMHpjR3JPbUg1MTBtK0RjT25MQjJOQlRQ?=
+ =?utf-8?B?eE1VdERlcG16MWZ5UlFneFYzUGtmNFBkOGJtTkVyYjdWUVM2VjVzWFJpN0h1?=
+ =?utf-8?B?UmdsUGRMcWJ6VHVEZDNXSHh1ampXUDlrRHZJYWk4WU9YZ0M1bExVaUUyaWRw?=
+ =?utf-8?B?ZDNoQWhRbTRIK3BudFhSaG5kZTJxcnFHM25Xaml0L3NvY0VINXhweCtnRjBz?=
+ =?utf-8?B?aDFJWUgzUXFlNTBHZitNNUJoWXNFTTlISXpWTk9neDZFVldFK1BOSXlDOVJU?=
+ =?utf-8?B?ZGZzWCt6OWJkNThoaDFmeWZiM0RMZ0ZOVEtqWG1OVHNzZzBPZUhXY1BWTTZm?=
+ =?utf-8?B?aWVOWjd5UjFqQjZLemdjUGxhVjBBWURSLy9KV2ovbGJqLzUwSDNHSGdIazFu?=
+ =?utf-8?B?ZzFBeGpkVkVyU0FoeU9nN1pZRFhUYkVWTURFZncvbHBIcW9CTHFlNm41b3c0?=
+ =?utf-8?B?UzBPbmJOMnRCS3g2a09Uc2dUQW4zb2ZYUjl4SEFIaXlWZUpXQmJvQ0RnS0pu?=
+ =?utf-8?B?ODdMTGJyN0d6NGRzTXM0Zjd0bDNsNVJKaG5qZlJLRnRhU0VkNllCSjI4TFpP?=
+ =?utf-8?B?Mmc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d7e5a3a8-4fd9-4b57-250c-08dc0c3cceb7
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2024 09:17:28.9116
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zZc6k/HWXNd/Epnszf6xhZjhOhY7iwoFtfLqupfeGj0EsTF7Db0xZZbnrEzRNWM7bQirX8AMRS8vBmP5sXGUBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7608
+X-OriginatorOrg: intel.com
 
-On Wed 03-01-24 18:28:20, Kemeng Shi wrote:
-> The "needed" controls the number of ext4_prealloc_space to discard in
-> ext4_discard_preallocations. Function ext4_discard_preallocations is
-> supposed to discard all non-used preallocated blocks when "needed"
-> is 0 and now ext4_discard_preallocations is always called with "needed"
-> = 0. Remove unnecessary parameter "needed" and remove all non-used
-> preallocated spaces in ext4_discard_preallocations to simplify the
-> code.
-> 
-> Note: If count of non-used preallocated spaces could be more than
-> UINT_MAX, there was a memory leak as some non-used preallocated
-> spaces are left ununsed and this commit will fix it. Otherwise,
-> there is no behavior change.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+On 1/3/2024 6:32 AM, Maxim Levitsky wrote:
+> On Thu, 2023-12-21 at 09:02 -0500, Yang Weijiang wrote:
+>> Define new fpu_guest_cfg to hold all guest FPU settings so that it can
+>> differ from generic kernel FPU settings, e.g., enabling CET supervisor
+>> xstate by default for guest fpstate while it's remained disabled in
+>> kernel FPU config.
+>>
+>> The kernel dynamic xfeatures are specifically used by guest fpstate now,
+>> add the mask for guest fpstate so that guest_perm.__state_permit ==
+>> (fpu_kernel_cfg.default_xfeature | XFEATURE_MASK_KERNEL_DYNAMIC). And
+>> if guest fpstate is re-allocated to hold user dynamic xfeatures, the
+>> resulting permissions are consumed before calculate new guest fpstate.
+>>
+>> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+>> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+>> ---
+>>   arch/x86/include/asm/fpu/types.h |  2 +-
+>>   arch/x86/kernel/fpu/core.c       | 70 ++++++++++++++++++++++++++++++--
+>>   arch/x86/kernel/fpu/xstate.c     | 10 +++++
+>>   3 files changed, 78 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
+>> index c6fd13a17205..306825ad6bc0 100644
+>> --- a/arch/x86/include/asm/fpu/types.h
+>> +++ b/arch/x86/include/asm/fpu/types.h
+>> @@ -602,6 +602,6 @@ struct fpu_state_config {
+>>   };
+>>   
+>>   /* FPU state configuration information */
+>> -extern struct fpu_state_config fpu_kernel_cfg, fpu_user_cfg;
+>> +extern struct fpu_state_config fpu_kernel_cfg, fpu_user_cfg, fpu_guest_cfg;
+>>   
+>>   #endif /* _ASM_X86_FPU_H */
+>> diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+>> index a21a4d0ecc34..976f519721e2 100644
+>> --- a/arch/x86/kernel/fpu/core.c
+>> +++ b/arch/x86/kernel/fpu/core.c
+>> @@ -33,10 +33,67 @@ DEFINE_STATIC_KEY_FALSE(__fpu_state_size_dynamic);
+>>   DEFINE_PER_CPU(u64, xfd_state);
+>>   #endif
+>>   
+>> -/* The FPU state configuration data for kernel and user space */
+>> +/* The FPU state configuration data for kernel, user space and guest. */
+>> +/*
+>> + * kernel FPU config:
+>> + *
+>> + * all known and CPU supported user and supervisor features except
+>> + *  - independent kernel features (XFEATURE_LBR)
+>> + * @fpu_kernel_cfg.max_features;
+>> + *
+>> + * all known and CPU supported user and supervisor features except
+>> + *  - dynamic kernel features (CET_S)
+>> + *  - independent kernel features (XFEATURE_LBR)
+>> + *  - dynamic userspace features (AMX state)
+>> + * @fpu_kernel_cfg.default_features;
+>> + *
+>> + * size of compacted buffer with 'fpu_kernel_cfg.max_features'
+>> + * @fpu_kernel_cfg.max_size;
+>> + *
+>> + * size of compacted buffer with 'fpu_kernel_cfg.default_features'
+>> + * @fpu_kernel_cfg.default_size;
+>> + */
+>>   struct fpu_state_config	fpu_kernel_cfg __ro_after_init;
+>> +
+>> +/*
+>> + * user FPU config:
+>> + *
+>> + * all known and CPU supported user features
+>> + * @fpu_user_cfg.max_features;
+>> + *
+>> + * all known and CPU supported user features except
+>> + *  - dynamic userspace features (AMX state)
+>> + * @fpu_user_cfg.default_features;
+>> + *
+>> + * size of non-compacted buffer with 'fpu_user_cfg.max_features'
+>> + * @fpu_user_cfg.max_size;
+>> + *
+>> + * size of non-compacted buffer with 'fpu_user_cfg.default_features'
+>> + * @fpu_user_cfg.default_size;
+>> + */
+>>   struct fpu_state_config fpu_user_cfg __ro_after_init;
+>>   
+>> +/*
+>> + * guest FPU config:
+>> + *
+>> + * all known and CPU supported user and supervisor features except
+>> + *  - independent  kernel features (XFEATURE_LBR)
+>> + * @fpu_guest_cfg.max_features;
+>> + *
+>> + * all known and CPU supported user and supervisor features except
+>> + *  - independent kernel features (XFEATURE_LBR)
+>> + *  - dynamic userspace features (AMX state)
+>> + * @fpu_guest_cfg.default_features;
+>> + *
+>> + * size of compacted buffer with 'fpu_guest_cfg.max_features'
+>> + * @fpu_guest_cfg.max_size;
+>> + *
+>> + * size of compacted buffer with 'fpu_guest_cfg.default_features'
+>> + * @fpu_guest_cfg.default_size;
+>> + */
+>
+> IMHO this comment is too verbose. I didn't intend it to be copied verbatim,
+> to the kernel, but rather to explain the meaning of the fpu context fields
+> to both of us (I also keep on forgetting what each combination means...).
+>
+> At least this comment should not include examples because xfeatures
+> are subject to change.
 
-Looks good. Feel free to add:
+Yeah, I cannot find a better place to put these annotations, but feel putting them here
+is not too bad :-). How about putting them in commit log?
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+the examples inlined are just to make it clearer for audiences how the fields are used, surely
+will remove them later.
 
-								Honza
-
-> ---
->  fs/ext4/ext4.h        |  2 +-
->  fs/ext4/extents.c     | 10 +++++-----
->  fs/ext4/file.c        |  2 +-
->  fs/ext4/indirect.c    |  2 +-
->  fs/ext4/inode.c       |  6 +++---
->  fs/ext4/ioctl.c       |  2 +-
->  fs/ext4/mballoc.c     | 10 +++-------
->  fs/ext4/move_extent.c |  4 ++--
->  fs/ext4/super.c       |  2 +-
->  9 files changed, 18 insertions(+), 22 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index fb35cae16..2fd444034 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -2905,7 +2905,7 @@ extern int ext4_mb_init(struct super_block *);
->  extern void ext4_mb_release(struct super_block *);
->  extern ext4_fsblk_t ext4_mb_new_blocks(handle_t *,
->  				struct ext4_allocation_request *, int *);
-> -extern void ext4_discard_preallocations(struct inode *, unsigned int);
-> +extern void ext4_discard_preallocations(struct inode *);
->  extern int __init ext4_init_mballoc(void);
->  extern void ext4_exit_mballoc(void);
->  extern ext4_group_t ext4_mb_prefetch(struct super_block *sb,
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 880f383df..fd350889a 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -100,7 +100,7 @@ static int ext4_ext_trunc_restart_fn(struct inode *inode, int *dropped)
->  	 * i_rwsem. So we can safely drop the i_data_sem here.
->  	 */
->  	BUG_ON(EXT4_JOURNAL(inode) == NULL);
-> -	ext4_discard_preallocations(inode, 0);
-> +	ext4_discard_preallocations(inode);
->  	up_write(&EXT4_I(inode)->i_data_sem);
->  	*dropped = 1;
->  	return 0;
-> @@ -4313,7 +4313,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
->  			 * not a good idea to call discard here directly,
->  			 * but otherwise we'd need to call it every free().
->  			 */
-> -			ext4_discard_preallocations(inode, 0);
-> +			ext4_discard_preallocations(inode);
->  			if (flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE)
->  				fb_flags = EXT4_FREE_BLOCKS_NO_QUOT_UPDATE;
->  			ext4_free_blocks(handle, inode, NULL, newblock,
-> @@ -5354,7 +5354,7 @@ static int ext4_collapse_range(struct file *file, loff_t offset, loff_t len)
->  	ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_FALLOC_RANGE, handle);
->  
->  	down_write(&EXT4_I(inode)->i_data_sem);
-> -	ext4_discard_preallocations(inode, 0);
-> +	ext4_discard_preallocations(inode);
->  	ext4_es_remove_extent(inode, punch_start, EXT_MAX_BLOCKS - punch_start);
->  
->  	ret = ext4_ext_remove_space(inode, punch_start, punch_stop - 1);
-> @@ -5362,7 +5362,7 @@ static int ext4_collapse_range(struct file *file, loff_t offset, loff_t len)
->  		up_write(&EXT4_I(inode)->i_data_sem);
->  		goto out_stop;
->  	}
-> -	ext4_discard_preallocations(inode, 0);
-> +	ext4_discard_preallocations(inode);
->  
->  	ret = ext4_ext_shift_extents(inode, handle, punch_stop,
->  				     punch_stop - punch_start, SHIFT_LEFT);
-> @@ -5494,7 +5494,7 @@ static int ext4_insert_range(struct file *file, loff_t offset, loff_t len)
->  		goto out_stop;
->  
->  	down_write(&EXT4_I(inode)->i_data_sem);
-> -	ext4_discard_preallocations(inode, 0);
-> +	ext4_discard_preallocations(inode);
->  
->  	path = ext4_find_extent(inode, offset_lblk, NULL, 0);
->  	if (IS_ERR(path)) {
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 0166bb9ca..89cb28da8 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -174,7 +174,7 @@ static int ext4_release_file(struct inode *inode, struct file *filp)
->  			(atomic_read(&inode->i_writecount) == 1) &&
->  			!EXT4_I(inode)->i_reserved_data_blocks) {
->  		down_write(&EXT4_I(inode)->i_data_sem);
-> -		ext4_discard_preallocations(inode, 0);
-> +		ext4_discard_preallocations(inode);
->  		up_write(&EXT4_I(inode)->i_data_sem);
->  	}
->  	if (is_dx(inode) && filp->private_data)
-> diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
-> index a9f371611..d8ca7f64f 100644
-> --- a/fs/ext4/indirect.c
-> +++ b/fs/ext4/indirect.c
-> @@ -714,7 +714,7 @@ static int ext4_ind_trunc_restart_fn(handle_t *handle, struct inode *inode,
->  	 * i_rwsem. So we can safely drop the i_data_sem here.
->  	 */
->  	BUG_ON(EXT4_JOURNAL(inode) == NULL);
-> -	ext4_discard_preallocations(inode, 0);
-> +	ext4_discard_preallocations(inode);
->  	up_write(&EXT4_I(inode)->i_data_sem);
->  	*dropped = 1;
->  	return 0;
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index d77323204..53ed4a0ad 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -371,7 +371,7 @@ void ext4_da_update_reserve_space(struct inode *inode,
->  	 */
->  	if ((ei->i_reserved_data_blocks == 0) &&
->  	    !inode_is_open_for_write(inode))
-> -		ext4_discard_preallocations(inode, 0);
-> +		ext4_discard_preallocations(inode);
->  }
->  
->  static int __check_block_validity(struct inode *inode, const char *func,
-> @@ -4014,7 +4014,7 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
->  	if (stop_block > first_block) {
->  
->  		down_write(&EXT4_I(inode)->i_data_sem);
-> -		ext4_discard_preallocations(inode, 0);
-> +		ext4_discard_preallocations(inode);
->  
->  		ext4_es_remove_extent(inode, first_block,
->  				      stop_block - first_block);
-> @@ -4167,7 +4167,7 @@ int ext4_truncate(struct inode *inode)
->  
->  	down_write(&EXT4_I(inode)->i_data_sem);
->  
-> -	ext4_discard_preallocations(inode, 0);
-> +	ext4_discard_preallocations(inode);
->  
->  	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
->  		err = ext4_ext_truncate(handle, inode);
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index 0bfe2ce58..2e2bcd22b 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -458,7 +458,7 @@ static long swap_inode_boot_loader(struct super_block *sb,
->  	ext4_reset_inode_seed(inode);
->  	ext4_reset_inode_seed(inode_bl);
->  
-> -	ext4_discard_preallocations(inode, 0);
-> +	ext4_discard_preallocations(inode);
->  
->  	err = ext4_mark_inode_dirty(handle, inode);
->  	if (err < 0) {
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index e6561a09d..0e6beb3b4 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -5469,7 +5469,7 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
->   *
->   * FIXME!! Make sure it is valid at all the call sites
->   */
-> -void ext4_discard_preallocations(struct inode *inode, unsigned int needed)
-> +void ext4_discard_preallocations(struct inode *inode)
->  {
->  	struct ext4_inode_info *ei = EXT4_I(inode);
->  	struct super_block *sb = inode->i_sb;
-> @@ -5491,15 +5491,12 @@ void ext4_discard_preallocations(struct inode *inode, unsigned int needed)
->  	mb_debug(sb, "discard preallocation for inode %lu\n",
->  		 inode->i_ino);
->  	trace_ext4_discard_preallocations(inode,
-> -			atomic_read(&ei->i_prealloc_active), needed);
-> -
-> -	if (needed == 0)
-> -		needed = UINT_MAX;
-> +			atomic_read(&ei->i_prealloc_active), 0);
->  
->  repeat:
->  	/* first, collect all pa's in the inode */
->  	write_lock(&ei->i_prealloc_lock);
-> -	for (iter = rb_first(&ei->i_prealloc_node); iter && needed;
-> +	for (iter = rb_first(&ei->i_prealloc_node); iter;
->  	     iter = rb_next(iter)) {
->  		pa = rb_entry(iter, struct ext4_prealloc_space,
->  			      pa_node.inode_node);
-> @@ -5523,7 +5520,6 @@ void ext4_discard_preallocations(struct inode *inode, unsigned int needed)
->  			spin_unlock(&pa->pa_lock);
->  			rb_erase(&pa->pa_node.inode_node, &ei->i_prealloc_node);
->  			list_add(&pa->u.pa_tmp_list, &list);
-> -			needed--;
->  			continue;
->  		}
->  
-> diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-> index 18a9e7c47..0abfc104a 100644
-> --- a/fs/ext4/move_extent.c
-> +++ b/fs/ext4/move_extent.c
-> @@ -689,8 +689,8 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
->  
->  out:
->  	if (*moved_len) {
-> -		ext4_discard_preallocations(orig_inode, 0);
-> -		ext4_discard_preallocations(donor_inode, 0);
-> +		ext4_discard_preallocations(orig_inode);
-> +		ext4_discard_preallocations(donor_inode);
->  	}
->  
->  	ext4_free_ext_path(path);
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index d062383ea..c0cfc3e46 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1518,7 +1518,7 @@ void ext4_clear_inode(struct inode *inode)
->  	ext4_fc_del(inode);
->  	invalidate_inode_buffers(inode);
->  	clear_inode(inode);
-> -	ext4_discard_preallocations(inode, 0);
-> +	ext4_discard_preallocations(inode);
->  	ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
->  	dquot_drop(inode);
->  	if (EXT4_I(inode)->jinode) {
-> -- 
-> 2.30.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
 
