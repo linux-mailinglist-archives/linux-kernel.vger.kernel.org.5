@@ -1,119 +1,183 @@
-Return-Path: <linux-kernel+bounces-15880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEC5A8234E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:49:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E9218234EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:49:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61C6A1F256BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:49:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACEAE1F2568C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:49:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589651CA93;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0CE91CAA2;
 	Wed,  3 Jan 2024 18:49:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BeI406Dh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QWx1LZ2P"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1301CA84;
-	Wed,  3 Jan 2024 18:49:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cca5d81826so129221071fa.2;
-        Wed, 03 Jan 2024 10:49:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704307749; x=1704912549; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HSwdtsY61fYy46M5QE5KizBE3QaiBoSxLHAq5Tnp4Uw=;
-        b=BeI406DhtL43bJdoswKGH9lYnxQg8I2S8m+gN/oP0d+Bts86WkJnjKvkHR3Zup7Bpl
-         XNPzQr183n8N9soX/l+KKUg7kMjIZHouuPzJQ8WKvE3xKlCqBoEunD8anjRLyP1aa+Ve
-         ro9Y9YVqqrcqSKI8EOFPC/YdqNMen6+EuHRcUGZE/11DgpoVSM7JfQgW78PP9RsfhHla
-         WnJdgXrq9kmPOE687UxbLz+g6Pwupc+3Vdl6o7oiay8rlaTWPg3gdBWtQu0uAc0wW8vd
-         fJDnDjM1xxXDKe2LtdEsr7b/7kRh00ccNhzfhsB6fuudYayeytqwYuggv/DRNEQU7UCV
-         BfsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704307749; x=1704912549;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HSwdtsY61fYy46M5QE5KizBE3QaiBoSxLHAq5Tnp4Uw=;
-        b=bMatfZnjyly7FG+XvvFanyGEQFrLTvTvkh7KjYo8aMFZ9Ew7o28o/c+Y9iOFSFhf4J
-         OWXfAcRJYP3FxiaHMPRlBVFEVNc1m4FaLROG8/ZhMe1NQeKwEq8pTDxC+IHg194zGbic
-         UIDl+2R/oaUGPPEyCO8/F0w1e+sRqaHxfWXC7lw0BbIVV8HNg3nMgjhjidZj2PVa0a7e
-         /4skkTh2JDrMLm++E33TGpnSSH06pE57aLEE7qzyRcYGKTiry/5nx2dtDUtUQel3zCNE
-         qxiD9mXEXkTDV3DED25xfy69ih3e0otxfmextHJSbiYzCwG6HCnQ/aF7RtEippyVttf1
-         /wDQ==
-X-Gm-Message-State: AOJu0Yx+n3aDalVLWEAypzDhd0WTFrX0BDNEYjWdFbdcYy//r0NtrQH5
-	giKzD5zQXDLVMBvsbhp/MrzPQOpLzMorxfzJ5I0=
-X-Google-Smtp-Source: AGHT+IG+OC/fH5CHJHM4KYYgGuSRIAloVFSbQRrYKWlazIMzUbmSodkBi162LLgz+u6vZOa9YXsBO0vakCfp0mrOPbY=
-X-Received: by 2002:a05:651c:4c6:b0:2cd:dfe:74bb with SMTP id
- e6-20020a05651c04c600b002cd0dfe74bbmr2277411lji.49.1704307748788; Wed, 03 Jan
- 2024 10:49:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4EC1CA8E;
+	Wed,  3 Jan 2024 18:49:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E50E0C433AD;
+	Wed,  3 Jan 2024 18:49:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704307752;
+	bh=RMZCoyni1dg/u5PWGXOjNR0UmnG/FzeuF8AtWgpE53o=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=QWx1LZ2PIbiMG1XZqGmr22SPfJH41Dy22FvwvzfIv4KyUPRrF5q8WzXYnLQd9rs86
+	 yL9ePwqcN1S1rRlB/biKp0ukhEFgmop2NIjmL5EOxem1NomAWFjolJWxrSQqZzWr8x
+	 ELxW+cJ9NFuIupoCwP1JzeF0+Ju7CBhcyieXXWz28QBbjF+H9pFE7wpQi6sKHyGWLo
+	 L2y3ySPb30L7oKKU6Z2zM2pPhlsfPKq1GXfNqbTtfspFz63rKyw/qVLr48k/p6PbfD
+	 eF9JrBEGat+1z6GrQFq5ndH7z1VnyfJDiHgpQPidNftQNKdMLg38oO/rYLRh2LwOOF
+	 4/LJj9oAZ5qwg==
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cceb5f0918so48208721fa.2;
+        Wed, 03 Jan 2024 10:49:12 -0800 (PST)
+X-Gm-Message-State: AOJu0Yxry7RhlAyi3fdK7SDpv6n48GBSCsU4ayGm2xpaF+igwcPDfVUi
+	TX5ZCiYsCQBjcoEl/p0TGZQqRF4zrw9Klh/yVA==
+X-Google-Smtp-Source: AGHT+IFb3zTv3w6i/eFBsPe9r0iuXmmX/2JiP7xGNWZZFBabGYb5yb23iDV40OA8jh6BzQ1/gm/DPrOco/LCOyYOSFg=
+X-Received: by 2002:a05:651c:168f:b0:2cc:6dff:9383 with SMTP id
+ bd15-20020a05651c168f00b002cc6dff9383mr5104245ljb.83.1704307750860; Wed, 03
+ Jan 2024 10:49:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102193348.250917-1-robdclark@gmail.com> <fd88a067-63f6-4467-9787-989890287083@linaro.org>
-In-Reply-To: <fd88a067-63f6-4467-9787-989890287083@linaro.org>
-From: Rob Clark <robdclark@gmail.com>
-Date: Wed, 3 Jan 2024 10:48:56 -0800
-Message-ID: <CAF6AEGtk7qS5hPYDGKVnrcEfcQEkr1J4=UTL7sikVJB3AvDBFQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/a7xx: Fix LLC typo
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
-	linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>, 
-	Abhinav Kumar <quic_abhinavk@quicinc.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Akhil P Oommen <quic_akhilpo@quicinc.com>, Danylo Piliaiev <dpiliaiev@igalia.com>, 
-	Bjorn Andersson <andersson@kernel.org>, open list <linux-kernel@vger.kernel.org>
+References: <20231222193607.15474-1-graf@amazon.com> <20231222195144.24532-1-graf@amazon.com>
+ <20231222195144.24532-2-graf@amazon.com>
+In-Reply-To: <20231222195144.24532-2-graf@amazon.com>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Wed, 3 Jan 2024 11:48:58 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqJSYgq7BJnSxwKebEX8e9tL-FG74rT+eLJ4e32kKZC30g@mail.gmail.com>
+Message-ID: <CAL_JsqJSYgq7BJnSxwKebEX8e9tL-FG74rT+eLJ4e32kKZC30g@mail.gmail.com>
+Subject: Re: [PATCH v2 07/17] kexec: Add documentation for KHO
+To: Alexander Graf <graf@amazon.com>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, kexec@lists.infradead.org, 
+	linux-doc@vger.kernel.org, x86@kernel.org, 
+	Eric Biederman <ebiederm@xmission.com>, "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Ashish Kalra <ashish.kalra@amd.com>, 
+	James Gowans <jgowans@amazon.com>, 
+	Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>, arnd@arndb.de, pbonzini@redhat.com, 
+	madvenka@linux.microsoft.com, Anthony Yznaga <anthony.yznaga@oracle.com>, 
+	Usama Arif <usama.arif@bytedance.com>, David Woodhouse <dwmw@amazon.co.uk>, 
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 2, 2024 at 12:12=E2=80=AFPM Konrad Dybcio <konrad.dybcio@linaro=
-.org> wrote:
+On Fri, Dec 22, 2023 at 12:52=E2=80=AFPM Alexander Graf <graf@amazon.com> w=
+rote:
 >
-> On 2.01.2024 20:33, Rob Clark wrote:
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > We'd miss actually activating LLC.
-> >
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > ---
-> >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/ms=
-m/adreno/a6xx_gpu.c
-> > index a5660d63535b..54dc5eb37f70 100644
-> > --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> > +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> > @@ -1646,7 +1646,7 @@ static int a6xx_gmu_pm_resume(struct msm_gpu *gpu=
-)
-> >
-> >       msm_devfreq_resume(gpu);
-> >
-> > -     adreno_is_a7xx(adreno_gpu) ? a7xx_llc_activate : a6xx_llc_activat=
-e(a6xx_gpu);
-> > +     adreno_is_a7xx(adreno_gpu) ? a7xx_llc_activate(a6xx_gpu) : a6xx_l=
-lc_activate(a6xx_gpu);
+> With KHO in place, let's add documentation that describes what it is and
+> how to use it.
 >
-> /me cleans glasses
+> Signed-off-by: Alexander Graf <graf@amazon.com>
+> ---
+>  Documentation/kho/concepts.rst   | 88 ++++++++++++++++++++++++++++++++
+>  Documentation/kho/index.rst      | 19 +++++++
+>  Documentation/kho/usage.rst      | 57 +++++++++++++++++++++
+>  Documentation/subsystem-apis.rst |  1 +
+>  4 files changed, 165 insertions(+)
+>  create mode 100644 Documentation/kho/concepts.rst
+>  create mode 100644 Documentation/kho/index.rst
+>  create mode 100644 Documentation/kho/usage.rst
 >
-> oh..
->
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> diff --git a/Documentation/kho/concepts.rst b/Documentation/kho/concepts.=
+rst
+> new file mode 100644
+> index 000000000000..8e4fe8c57865
+> --- /dev/null
+> +++ b/Documentation/kho/concepts.rst
+> @@ -0,0 +1,88 @@
+> +.. SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +Kexec Handover Concepts
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +Kexec HandOver (KHO) is a mechanism that allows Linux to preserve state =
+-
+> +arbitrary properties as well as memory locations - across kexec.
+> +
+> +It introduces multiple concepts:
+> +
+> +KHO Device Tree
+> +---------------
+> +
+> +Every KHO kexec carries a KHO specific flattened device tree blob that
+> +describes the state of the system. Device drivers can register to KHO to
+> +serialize their state before kexec. After KHO, device drivers can read
+> +the device tree and extract previous state.
 
-I suppose I should also add,
+How does this work with kexec when there is also the FDT for the h/w?
+The h/w FDT has a /chosen property pointing to this FDT blob?
 
-Fixes: af66706accdf ("drm/msm/a6xx: Add skeleton A7xx support")
+> +
+> +KHO only uses the fdt container format and libfdt library, but does not
+> +adhere to the same property semantics that normal device trees do: Prope=
+rties
+> +are passed in native endianness and standardized properties like ``regs`=
+` and
+> +``ranges`` do not exist, hence there are no ``#...-cells`` properties.
 
-> Konrad
+I think native endianness is asking for trouble. libfdt would need
+different swap functions here than elsewhere in the kernel for example
+which wouldn't even work. So you are just crossing your fingers that
+you aren't using any libfdt functions that swap. And when I sync
+dtc/libfdt and that changes, I might break you.
+
+Also, if you want to dump the FDT and do a dtc DTB->DTS pass, it is
+not going to be too readable given that outputs swapped 32-bit values
+for anything that's a 4 byte multiple.
+
+> +
+> +KHO introduces a new concept to its device tree: ``mem`` properties. A
+> +``mem`` property can inside any subnode in the device tree. When present=
+,
+> +it contains an array of physical memory ranges that the new kernel must =
+mark
+> +as reserved on boot. It is recommended, but not required, to make these =
+ranges
+> +as physically contiguous as possible to reduce the number of array eleme=
+nts ::
+> +
+> +    struct kho_mem {
+> +            __u64 addr;
+> +            __u64 len;
+> +    };
+> +
+> +After boot, drivers can call the kho subsystem to transfer ownership of =
+memory
+> +that was reserved via a ``mem`` property to themselves to continue using=
+ memory
+> +from the previous execution.
+> +
+> +The KHO device tree follows the in-Linux schema requirements. Any elemen=
+t in
+> +the device tree is documented via device tree schema yamls that explain =
+what
+> +data gets transferred.
+
+If this is all separate, then I think the schemas should be too. And
+then from my (DT maintainer) perspective, you can do whatever you want
+here (like FIT images). The dtschema tools are pretty much only geared
+for "normal" DTs. A couple of problems come to mind. You can't exclude
+or change standard properties. The decoding of the DTB to run
+validation assumes big endian. We could probably split things up a
+bit, but you may be better off just using jsonschema directly. I'm not
+even sure running validation here would that valuable. You have 1
+source of code generating the DT and 1 consumer. Yes, there's
+different kernel versions to deal with, but it's not 100s of people
+creating 1000s of DTs with 100s of nodes.
+
+You might look at the netlink stuff which is using its own yaml syntax
+to generate code and jsonschema is used to validate the yaml.
+
+Rob
 
