@@ -1,376 +1,426 @@
-Return-Path: <linux-kernel+bounces-15886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94B4E8234FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:51:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2D58823503
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:52:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB4291C2092D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:51:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89711285EB6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:52:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E1721CA93;
-	Wed,  3 Jan 2024 18:51:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09E501CA87;
+	Wed,  3 Jan 2024 18:52:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wbGSalma"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="brjvgsAu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2087.outbound.protection.outlook.com [40.107.93.87])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD6141CA86;
-	Wed,  3 Jan 2024 18:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VP7X/qZ2IMkULgTCF9gdyWFw0E6q7lrtfJy3uyvVhgUS1/N2U3grt3ro4qP5fIWxBCXeDQY79KMqEPZp1qbzXkuXI1R4vxV3a3px6Jxt4KJnMvg2tB0jUz4KNciJVCsBsZbx3pY68KQlPqHfdubdf7tMbM3P9Hn8j69+O1g2+M+hk3KZSV0gGrsLAaWaHtrQNK3ORDxNZW7iTsCrPCYpHi20XjmOuKcaRfgZD6tSarWcK5b+iSvP9iYb2vpc/2f9TSGl8Ch0DeXOPDHES8bc4zGRBPij8bNERvWkG2WlNbvukIgAaxVINHoVMFzF1Qz3GD+osaCsnXxCOXhc6ZOUXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eCHKEIm5sl33nqqIhVG60rmG3u1vhJKt7gZDG8wzRqg=;
- b=k1tEdVrjiyTbe0lwB6BkDvraqwmI6u0aHHxvDzBAlk/B/VuJr3UPqQnJRevfJPLm438dI63GrauMYCwJ1u6gYmGJ9T9goo9UUhcBeF1qui3gPI4kly8PIiYzC31LBtTEYI8kEI3NGJ8LkZhR5dzQds4lfd5h87uR7PdnNCL3gqUTArh3+WMcNjAajOHygpHnLQEyZPUFkkWryA3TGuAQDlJs9TJYGvnSiUYP0BzCEhMYcERQgYMwbEbwBgQxtwboLQQyOVw6rpKDBdubCbfNQdQ3JnTE7hjepFTcpcLD+JAdGCNo29PM+T8TmTwYDXkUWkclH6ij1/KNaIMUyPlxEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eCHKEIm5sl33nqqIhVG60rmG3u1vhJKt7gZDG8wzRqg=;
- b=wbGSalma5sNwZ2+uT9H9DoW21TZYWDsoRAToT9+G92hG/YcwdR6r3/XqTvaynlwKSjnk4U+K9LQT0o5q39CYLPap7GqPXJ5gvfiCs/4x9NHId8wQWiOMGAojpPvu44U5BFWC+SEY4kaw3peqFa0Qgq27jnTkQOv/5bonlxqlOfE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17)
- by MN2PR12MB4344.namprd12.prod.outlook.com (2603:10b6:208:26e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Wed, 3 Jan
- 2024 18:51:43 +0000
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::6452:1eb:50fa:311d]) by BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::6452:1eb:50fa:311d%4]) with mapi id 15.20.7135.023; Wed, 3 Jan 2024
- 18:51:43 +0000
-Message-ID: <bab3e3d6-d6e6-4028-99f2-781cd811d3ce@amd.com>
-Date: Wed, 3 Jan 2024 12:51:40 -0600
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH v8 3/3] remoteproc: zynqmp: parse TCM from device tree
-Content-Language: en-US
-To: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: andersson@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- michal.simek@amd.com, ben.levinsky@amd.com,
- linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231215235725.1247350-1-tanmay.shah@amd.com>
- <20231215235725.1247350-4-tanmay.shah@amd.com> <ZZWkqYNqR2/Qq54m@p14s>
-From: Tanmay Shah <tanmay.shah@amd.com>
-In-Reply-To: <ZZWkqYNqR2/Qq54m@p14s>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DS7PR03CA0155.namprd03.prod.outlook.com
- (2603:10b6:5:3b2::10) To BL1PR12MB5874.namprd12.prod.outlook.com
- (2603:10b6:208:396::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946A91CA82
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:52:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704307940;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+deU6nLc+LcvM7HNh2qjt6eus+hmUjEZj9BMXEhc3O4=;
+	b=brjvgsAu2tSDKcQcFUrijiitzSFmRLBjH7MXQkZUaDoar0/Zm7TUzeAQfQ7arXR6sWLElo
+	HOuCdNqjCqtLMYCOc9gjhyCPQ7tSzD7AJ6DqFn7+tejH93fR5ty0cN5eXRBnXVD/dTkp3R
+	Y8bl7ZAEURMQFE5IDtBozia5685waGA=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-563-ftXop23YMgGcPFGv4iuFHw-1; Wed, 03 Jan 2024 13:52:19 -0500
+X-MC-Unique: ftXop23YMgGcPFGv4iuFHw-1
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5cd61dccd77so3712055a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 10:52:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704307935; x=1704912735;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+deU6nLc+LcvM7HNh2qjt6eus+hmUjEZj9BMXEhc3O4=;
+        b=D8FcWjQFSn7ZF1mrFVYjYHS1k/wnf5SuEz72HJJ7gN0Ny0k6QuwIpVBgs7mRNwcnr0
+         DriVdd7hE580lxRjzlOPgg/y1s5RGhE7cVchw70nKwbEhm39jcXlCezExzxD9+KPfKMk
+         BZp/vhi0GLhPyF+n1ShE/qAdxDUTDSq8GRvE0DoB6b2WiV2iFRJS93Hba/+IVQlyTJKQ
+         Wo11vJheDUMkQY+vrihjt1dXN30rTAkYvgT2kwB8qYPcRsD3UhKFz1JntibqX9PqTT4w
+         +MCdLCu53pU1Fon7hQt6BI2foVhzSmhRU1PbPlmOoxp86QjhIxo94x4+/pxDxn9pD05I
+         7gBg==
+X-Gm-Message-State: AOJu0YyHB2caQ4T4BFUaujASuSTgty/f5dkK4GH3xj5vawAwIXpRN/lp
+	b2/cwe7dkd1ViLPbdn29WdHG1zZoL+RJ9L+zHYM41OOrOwh/1VGpAokjEWTl4UWyN/dMnGUGt4J
+	xmfMzGvVSVwOgAKrulrd/2zyrZqN4ne+l
+X-Received: by 2002:a17:902:c40d:b0:1d4:a8f2:40fc with SMTP id k13-20020a170902c40d00b001d4a8f240fcmr3810474plk.45.1704307934830;
+        Wed, 03 Jan 2024 10:52:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFld9fqxbeM4JulnYE7bGd4x+azw1/t2DEqJEWqoD03h8J2JGk1gUa0QVMLimK27lhvQ+pEtg==
+X-Received: by 2002:a17:902:c40d:b0:1d4:a8f2:40fc with SMTP id k13-20020a170902c40d00b001d4a8f240fcmr3810439plk.45.1704307933163;
+        Wed, 03 Jan 2024 10:52:13 -0800 (PST)
+Received: from localhost.localdomain ([2804:431:c7ec:911:6911:ca60:846:eb46])
+        by smtp.gmail.com with ESMTPSA id v24-20020a17090331d800b001d4cac52e73sm3090464ple.131.2024.01.03.10.52.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 10:52:12 -0800 (PST)
+From: Leonardo Bras <leobras@redhat.com>
+To: guoren@kernel.org
+Cc: Leonardo Bras <leobras@redhat.com>,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	panqinglin2020@iscas.ac.cn,
+	bjorn@rivosinc.com,
+	conor.dooley@microchip.com,
+	peterz@infradead.org,
+	keescook@chromium.org,
+	wuwei2016@iscas.ac.cn,
+	xiaoguang.xing@sophgo.com,
+	chao.wei@sophgo.com,
+	unicorn_wang@outlook.com,
+	uwu@icenowy.me,
+	jszhang@kernel.org,
+	wefu@redhat.com,
+	atishp@atishpatra.org,
+	ajones@ventanamicro.com,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [PATCH V2 1/3] riscv: Add Zicbop instruction definitions & cpufeature
+Date: Wed,  3 Jan 2024 15:52:00 -0300
+Message-ID: <ZZWs0C19tz763FnH@LeoBras>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231231082955.16516-2-guoren@kernel.org>
+References: <20231231082955.16516-1-guoren@kernel.org> <20231231082955.16516-2-guoren@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5874:EE_|MN2PR12MB4344:EE_
-X-MS-Office365-Filtering-Correlation-Id: c51f31f9-01a0-4d2e-666b-08dc0c8d074c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Db8dA7NZWSzRfcxYC13ratrA7ip6sh642afbs3WydiQkUP8hgtb+XhAWwWt6p45XknfZsBGkgFjT8YSoXh6uoWEoVujYebrCN9TdnUhflmb86IuOxJlSh+e9fYx2wd4P8FfvuPmuZSbslTT/dAYqCDAlDrVFJoU02OJ/ArNq8zPRbVuofaSpCWWX9d7WSS6ezGSyUMQ79YfMfkAWDz9z+61yQ8oVdoVJuBRc3wRFLiOwYRVuVOCkQAqV0B8RBTIJSQ7qSL+aCWsbdEV4KD4uQLq5WuPbNAqqajMIB8kQ7zEBhi3YRO6MCqXfkko69Ql3LuqySNeLhd4fK3DdETSzgsw+DlIL2B7wK7wuJaAgLrWKIS93Y2E0mBfeXRqHRnM8Wkha5TRdEMp5gg2z/9AijGvLNAV26ljWU3iVHOLVsmiWkLIcmc4EGaPqv81++NN+wK9bwjbQK62nb681/YCcDQ7izub2qQ9PEe5ZDufWlkG1KKbhvzplfj5KDiPE8peXRCzyG4c4Ah3bGkbbMpiNUMugVFjfrI/F9VL8ow6EfH0u+LafLst9HQ1kJFcqvWxqFsevehlx1SJvCXTwaN0KLVSRayHOdf8CXR0eFJ0jwlOHHr5Tet3KeWTWoEuxW9lTsEytWNNwbpGJ5PoProbz/w==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5874.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(136003)(346002)(376002)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(38100700002)(36756003)(31686004)(31696002)(86362001)(2616005)(26005)(6512007)(6506007)(53546011)(4326008)(8676002)(6486002)(478600001)(316002)(8936002)(83380400001)(66899024)(66946007)(66556008)(6916009)(66476007)(41300700001)(5660300002)(44832011)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?eUhUK2k2enM4QWdjUFpTOC9udWVVUm1wWUdhOGd2dVJUMXV1d2dGbXlZNGFq?=
- =?utf-8?B?S3NtRlZ4SVRpdVJWSFlOVm95YTMrc0ZTUzJUY1ZLNUpCSXhsaWpnbkFYTUJG?=
- =?utf-8?B?ZldHNFdESWN2WXF3d1BMQzVrcTBzSDBwN0YzWnh1Wk1KRnhMcDU5aVU1aXd1?=
- =?utf-8?B?ZVpMNlB3a3FPemNSd3FwWWkzM0g3eUNIL1R0VHR2eUZGRmVLZGMyVE42WFFn?=
- =?utf-8?B?L3BKMzd1WGROa1B2YXhBQWhsMFJ5S3dDTE51SCtITW4xc2drWmkvV2szQ1lq?=
- =?utf-8?B?MHYvZUo0MUNpcE5nU3BoUGJ1NnpMUDNCY1o5RGt5SUtDMGc4b1hKVTI0dkYx?=
- =?utf-8?B?WlExMmNVUGtjSktoYlJCVFZnLzBvV2lVYVRpalRoYWJObUorVkYxQkQ0cjhs?=
- =?utf-8?B?Vy9aQVVmZ3V6QiszZG5TanlhRUJPT3gxejVleVhheUI2N1lTWDRINjByWnBO?=
- =?utf-8?B?b0JjejZuRGdVMW15eTRhN0FaVWtlTDFmYlhEYzFzZENkcU5Cby9sWmpzYmJZ?=
- =?utf-8?B?UEIrT2NaZjA0MEExcldMZ01jS3Q1Uk5PaVNXcitmWGNCdTZaUXhNYTBVRWdY?=
- =?utf-8?B?WU9ydkl1VmRsaWc0SE1OdTlyNmpNWnpqdVo3OWtqanR5Ly8rbjVrc3Ftc0xX?=
- =?utf-8?B?b0FJS3I2MUlOSXA5c2p2dmJzYVNuc3BqU3ZEMytnZjZuMmxCaFhRQzgwMG80?=
- =?utf-8?B?UUc1bTNKRGhkUStOOEltaFl2NGFyOExWcnJQSTgzNTVrNEhuS2dPRFdXS1lq?=
- =?utf-8?B?d05CUVRNUnZkRHdOaitzSXgwUjFqTXE0dlhHRmdOaXdSUGJKUTRXWjlFWWMr?=
- =?utf-8?B?N1NBQXN2M3NZaVVqS2MvMSs1THRQZjh6ajhYaE1lOWMzOTkzUU9jOENFb0p2?=
- =?utf-8?B?cG5QRnlyM2NUQVUvZXlYeXRtekxYT0xTeU5HYUdzcmVXWEliNnA2N3FDSE5G?=
- =?utf-8?B?UGJ6aTBxSWNKNEZPdUJkU0dTZVR1bUZtcUxTdGZ1WFZZaUs0elEzVXc4THcr?=
- =?utf-8?B?MTQxZUU5OXBjZmowNGUreXRMMVBQWG9SekZ4UjVGckl2Y2M3ai9HdXduVktS?=
- =?utf-8?B?ZS9Hckwyd1c5UHdseG9pYmtLZWxISTBFL3FOUHRwN0NnVUt1Q0dVR09SSXBt?=
- =?utf-8?B?N2FHdzBWRjhTVXM5K1VrYzlaSmkwTXlNZTVpbU5zK3BNTGkvRFBaNUVhMExH?=
- =?utf-8?B?cW1KVUYvRDgySHdYYWpZL296aDBna0U3SGpGTUVOenU1Y2g4UFZ5RXZVeUdi?=
- =?utf-8?B?S09wWks2REFXOFV2M0tjcFRtdlFYVUhMWEsvZHN6cURDaC9RQ1JBUk9ua21o?=
- =?utf-8?B?Q3Rkck5zM3NXVitoVHNBTUVCMUdQNmRmUWd3RjBGaU80ZWQzeVpyYll6T3lt?=
- =?utf-8?B?eVJ1ZFBaVlhOYThIc3RHYm05VXIxTkNoZzNIZ1Qwc0hlcFpKZFduVXMzdlhu?=
- =?utf-8?B?d2lMQnVSTnBDMVdmVWVSbFpjNUNBK2Y2YWNiZjVuZ1RldDdhY2JXMWVYd3F2?=
- =?utf-8?B?N3JWaUlFQWNHa3dDeUwvS05OZ0dqdXg2WHlPTVlZd09oZDFQYjVIS0V1dVdE?=
- =?utf-8?B?Sk9qY3VIRllnS3JRRDg0WnFYRERaRTVuclVNdHFPNTBkazdmM05PMXdZM0o4?=
- =?utf-8?B?cDVUMU1DSFg2aW90WFZOSjhjR2paMUUrc2w4R2hLK1dGNDJ1RWkrcVFFYVF4?=
- =?utf-8?B?Rm1hM1ptUVJ4MXFoMW81c1JnRUQvVDgvN21zUkJna1dqN3I1NUNNbE1lbXNm?=
- =?utf-8?B?QldQdDJTNFE4NzRDdlhiUUhBRmczZHBvUFhOSW5sRnVJYzR1eW1WZlFEbjIw?=
- =?utf-8?B?ZWFTSUNSMHhzWm5aQTJLODdGRVNHL0NVZ1hob0NvYWxuT2JiTndCOTdLUDZ2?=
- =?utf-8?B?MHhRN2pxeVM2TFdLNEUzREQyYmpFckJhcERQUUFZaGUzME1RNi9Ib3NoZ0NL?=
- =?utf-8?B?ekwzZTI1MkFRVldrWHZQWXNWTnB6WStDZVlyL1d6aGVHeEJEbUhtTHhrTFR5?=
- =?utf-8?B?T2RHM0ZITXhXbUVHNENXcFFURDJ3aVN4UzJPQmExcnIyVFZ1cjZTdVFGKzEz?=
- =?utf-8?B?RDNaK2VmejBvYnBQTmRTOGFqYXNpSTVDODFEMG5jWnJQVGVLVldYYnlrOEs1?=
- =?utf-8?Q?/gNVs7eLgA+M/fNpKC9oKaQ0j?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c51f31f9-01a0-4d2e-666b-08dc0c8d074c
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5874.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2024 18:51:43.3442
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tYUp+paZ7yMrP+ARu30CJkHqfIPvtr8XUbrox1x6rAkN9OkUUp3zxcKyqwWwP7rB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4344
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+
+On Sun, Dec 31, 2023 at 03:29:51AM -0500, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+> 
+> Cache-block prefetch instructions are HINTs to the hardware to
+> indicate that software intends to perform a particular type of
+> memory access in the near future. This patch adds prefetch.i,
+> prefetch.r and prefetch.w instruction definitions by
+> RISCV_ISA_EXT_ZICBOP cpufeature.
+
+Hi Guo Ren,
+
+Here it would be nice to point a documentation for ZICBOP extension:
+https://wiki.riscv.org/display/HOME/Recently+Ratified+Extensions
+
+or having a nice link for:
+https://drive.google.com/file/d/1jfzhNAk7viz4t2FLDZ5z4roA0LBggkfZ/view
+
+> 
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Signed-off-by: Guo Ren <guoren@kernel.org>
+> ---
+>  arch/riscv/Kconfig                | 15 ++++++++
+>  arch/riscv/include/asm/hwcap.h    |  1 +
+>  arch/riscv/include/asm/insn-def.h | 60 +++++++++++++++++++++++++++++++
+>  arch/riscv/kernel/cpufeature.c    |  1 +
+>  4 files changed, 77 insertions(+)
+> 
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 24c1799e2ec4..fcbd417d65ea 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -579,6 +579,21 @@ config RISCV_ISA_ZICBOZ
+>  
+>  	   If you don't know what to do here, say Y.
+>  
+> +config RISCV_ISA_ZICBOP
+> +	bool "Zicbop extension support for cache block prefetch"
+> +	depends on MMU
+> +	depends on RISCV_ALTERNATIVE
+> +	default y
+> +	help
+> +	  Adds support to dynamically detect the presence of the ZICBOP
+> +	  extension (Cache Block Prefetch Operations) and enable its
+> +	  usage.
+> +
+> +	  The Zicbop extension can be used to prefetch cache block for
+> +	  read/write fetch.
+> +
+> +	  If you don't know what to do here, say Y.
+> +
+
+According to doc:
+"The Zicbop extension defines a set of cache-block prefetch instructions: 
+PREFETCH.R, PREFETCH.W, and PREFETCH.I"
+
+So above text seems ok
 
 
-On 1/3/24 12:17 PM, Mathieu Poirier wrote:
-> On Fri, Dec 15, 2023 at 03:57:25PM -0800, Tanmay Shah wrote:
-> > ZynqMP TCM information is fixed in driver. Now ZynqMP TCM information
->
-> s/"is fixed in driver"/"was fixed in driver"
->
-> > is available in device-tree. Parse TCM information in driver
-> > as per new bindings.
-> > 
-> > Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
-> > ---
-> > 
-> > Changes in v8:
-> >   - parse power-domains property from device-tree and use EEMI calls
-> >     to power on/off TCM instead of using pm domains framework
-> >   - Remove checking of pm_domain_id validation to power on/off tcm
-> >   - Remove spurious change
-> > 
-> > Changes in v7:
-> >   - move checking of pm_domain_id from previous patch
-> >   - fix mem_bank_data memory allocation
-> > 
-> >  drivers/remoteproc/xlnx_r5_remoteproc.c | 154 +++++++++++++++++++++++-
-> >  1 file changed, 148 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/remoteproc/xlnx_r5_remoteproc.c b/drivers/remoteproc/xlnx_r5_remoteproc.c
-> > index 4395edea9a64..36d73dcd93f0 100644
-> > --- a/drivers/remoteproc/xlnx_r5_remoteproc.c
-> > +++ b/drivers/remoteproc/xlnx_r5_remoteproc.c
-> > @@ -74,8 +74,8 @@ struct mbox_info {
-> >  };
-> >  
-> >  /*
-> > - * Hardcoded TCM bank values. This will be removed once TCM bindings are
-> > - * accepted for system-dt specifications and upstreamed in linux kernel
-> > + * Hardcoded TCM bank values. This will stay in driver to maintain backward
-> > + * compatibility with device-tree that does not have TCM information.
-> >   */
-> >  static const struct mem_bank_data zynqmp_tcm_banks_split[] = {
-> >  	{0xffe00000UL, 0x0, 0x10000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 64KB each */
-> > @@ -878,6 +878,139 @@ static struct zynqmp_r5_core *zynqmp_r5_add_rproc_core(struct device *cdev)
-> >  	return ERR_PTR(ret);
-> >  }
-> >  
-> > +static int zynqmp_r5_get_tcm_node_from_dt(struct zynqmp_r5_cluster *cluster)
-> > +{
-> > +	struct of_phandle_args out_args;
-> > +	int tcm_reg_per_r5, tcm_pd_idx;
-> > +	struct zynqmp_r5_core *r5_core;
-> > +	int i, j, tcm_bank_count, ret;
-> > +	struct platform_device *cpdev;
-> > +	struct mem_bank_data *tcm;
-> > +	struct device_node *np;
-> > +	struct resource *res;
-> > +	u64 abs_addr, size;
-> > +	struct device *dev;
-> > +
-> > +	for (i = 0; i < cluster->core_count; i++) {
-> > +		r5_core = cluster->r5_cores[i];
-> > +		dev = r5_core->dev;
-> > +		np = of_node_get(dev_of_node(dev));
-> > +		tcm_pd_idx = 1;
-> > +
-> > +		/* we have address cell 2 and size cell as 2 */
-> > +		tcm_reg_per_r5 = of_property_count_elems_of_size(np, "reg",
-> > +								 4 * sizeof(u32));
-> > +		if (tcm_reg_per_r5 <= 0) {
-> > +			dev_err(dev, "can't get reg property err %d\n", tcm_reg_per_r5);
-> > +			return -EINVAL;
-> > +		}
-> > +
-> > +		/*
-> > +		 * In lockstep mode, r5 core 0 will use r5 core 1 TCM
-> > +		 * power domains as well. so allocate twice of per core TCM
->
-> Twice of what?  Please use proper english in your multi line comments, i.e a
-> capital letter for the first word and a dot at the end.  
->
-> > +		 */
-> > +		if (cluster->mode == LOCKSTEP_MODE)
-> > +			tcm_bank_count = tcm_reg_per_r5 * 2;
-> > +		else
-> > +			tcm_bank_count = tcm_reg_per_r5;
-> > +
-> > +		r5_core->tcm_banks = devm_kcalloc(dev, tcm_bank_count,
-> > +						  sizeof(struct mem_bank_data *),
-> > +						  GFP_KERNEL);
-> > +		if (!r5_core->tcm_banks)
-> > +			ret = -ENOMEM;
-> > +
-> > +		r5_core->tcm_bank_count = tcm_bank_count;
-> > +		for (j = 0; j < tcm_bank_count; j++) {
-> > +			tcm = devm_kzalloc(dev, sizeof(struct mem_bank_data),
-> > +					   GFP_KERNEL);
-> > +			if (!tcm)
-> > +				return -ENOMEM;
-> > +
-> > +			r5_core->tcm_banks[j] = tcm;
-> > +
-> > +			/*
-> > +			 * In lockstep mode, get second core's TCM power domains id
-> > +			 * after first core TCM parsing is done as
->
-> There seems to be words missing at the end of the sentence, and there is no dot.
->
-> > +			 */
-> > +			if (j == tcm_reg_per_r5) {
-> > +				/* dec first core node */
-> > +				of_node_put(np);
-> > +
-> > +				/* get second core node */
-> > +				np = of_get_next_child(cluster->dev->of_node, np);
-> > +
-> > +				/*
-> > +				 * reset index of power-domains property list
-> > +				 * for second core
-> > +				 */
-> > +				tcm_pd_idx = 1;
-> > +			}
-> > +
-> > +			/* get power-domains id of tcm */
-> > +			ret = of_parse_phandle_with_args(np, "power-domains",
-> > +							 "#power-domain-cells",
-> > +							 tcm_pd_idx,
-> > +							 &out_args);
-> > +			if (ret) {
-> > +				dev_err(r5_core->dev,
-> > +					"failed to get tcm %d pm domain, ret %d\n",
-> > +					j, ret);
-> > +				of_node_put(out_args.np);
->
-> I'm pretty sure this isn't needed in error conditions since @out_args would not
-> have been assigned.
->
-> > +				return ret;
-> > +			}
-> > +			tcm->pm_domain_id = out_args.args[0];
-> > +			of_node_put(out_args.np);
-> > +			tcm_pd_idx++;
-> > +
-> > +			/*
-> > +			 * In lockstep mode, we only need second core's power domain
-> > +			 * ids. Other information from second core isn't needed so
-> > +			 * ignore it. This forms table as zynqmp_tcm_banks_lockstep
->
-> I don't understand the last sentence of this comment and it is missing a dot at
-> the end.  Comments should be enlightening, the ones I found in this patch are
-> sowing confusion.  
->
-> > +			 */
-> > +			if (j >= tcm_reg_per_r5)
-> > +				contiue;
-> > +
->
-> This condition and the one above (j == tcm_reg_per_r5) is brittle and almost
-> guaranteed to cause maintenance problems in the future.
->
-> I understand your will to reuse as much code as possible but this is one of the
-> rare cases where duplicating code is probably better.  Please introduce two new
-> functions, i.e zynqmp_r5_get_tcm_node_from_dt_split() and
-> zynqmp_r5_get_tcm_node_from_dt_lockstep(), and do all the necessary processing
-> based on the use case.
+>  config TOOLCHAIN_HAS_ZIHINTPAUSE
+>  	bool
+>  	default y
+> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+> index 06d30526ef3b..77d3b6ee25ab 100644
+> --- a/arch/riscv/include/asm/hwcap.h
+> +++ b/arch/riscv/include/asm/hwcap.h
+> @@ -57,6 +57,7 @@
+>  #define RISCV_ISA_EXT_ZIHPM		42
+>  #define RISCV_ISA_EXT_SMSTATEEN		43
+>  #define RISCV_ISA_EXT_ZICOND		44
+> +#define RISCV_ISA_EXT_ZICBOP		45
 
-Ack will fix the documentation and tcm parsing as suggested.
+Is this number just in kernel code, or does it mean something in the RISC-V 
+documentation?
+
+>  
+>  #define RISCV_ISA_EXT_MAX		64
+>  
+> diff --git a/arch/riscv/include/asm/insn-def.h b/arch/riscv/include/asm/insn-def.h
+> index e27179b26086..bbda350a63bf 100644
+> --- a/arch/riscv/include/asm/insn-def.h
+> +++ b/arch/riscv/include/asm/insn-def.h
+> @@ -18,6 +18,13 @@
+>  #define INSN_I_RD_SHIFT			 7
+>  #define INSN_I_OPCODE_SHIFT		 0
+>  
+> +#define INSN_S_SIMM7_SHIFT		25
+> +#define INSN_S_RS2_SHIFT		20
+> +#define INSN_S_RS1_SHIFT		15
+> +#define INSN_S_FUNC3_SHIFT		12
+> +#define INSN_S_SIMM5_SHIFT		 7
+> +#define INSN_S_OPCODE_SHIFT		 0
+> +
+
+The shifts seem correct for S-Type, but I would name the IMM defines in a 
+way we could understand where they fit in IMM:
 
 
-> Thanks,
-> Mathieu
->
-> > +			/* get tcm address without translation */
-> > +			ret = of_property_read_reg(np, j, &abs_addr, &size);
-> > +			if (ret) {
-> > +				of_node_put(np);
-> > +				dev_err(dev, "failed to get reg property\n");
-> > +				return ret;
-> > +			}
-> > +
-> > +			/*
-> > +			 * remote processor can address only 32 bits
-> > +			 * so convert 64-bits into 32-bits. This will discard
-> > +			 * any unwanted upper 32-bits.
-> > +			 */
-> > +			tcm->da = (u32)abs_addr;
-> > +			tcm->size = (u32)size;
-> > +
-> > +			cpdev = to_platform_device(dev);
-> > +			res = platform_get_resource(cpdev, IORESOURCE_MEM, j);
-> > +			if (!res) {
-> > +				of_node_put(np);
-> > +				dev_err(dev, "failed to get tcm resource\n");
-> > +				return -EINVAL;
-> > +			}
-> > +
-> > +			tcm->addr = (u32)res->start;
-> > +			tcm->bank_name = (char *)res->name;
-> > +			res = devm_request_mem_region(dev, tcm->addr, tcm->size,
-> > +						      tcm->bank_name);
-> > +			if (!res) {
-> > +				dev_err(dev, "failed to request tcm resource\n");
-> > +				of_node_put(np);
-> > +				return -EINVAL;
-> > +			}
-> > +		}
-> > +	}
-> > +
-> > +	of_node_put(np);
-> > +	return 0;
-> > +}
-> > +
-> >  /**
-> >   * zynqmp_r5_get_tcm_node()
-> >   * Ideally this function should parse tcm node and store information
-> > @@ -956,10 +1089,19 @@ static int zynqmp_r5_core_init(struct zynqmp_r5_cluster *cluster,
-> >  	struct zynqmp_r5_core *r5_core;
-> >  	int ret, i;
-> >  
-> > -	ret = zynqmp_r5_get_tcm_node(cluster);
-> > -	if (ret < 0) {
-> > -		dev_err(dev, "can't get tcm node, err %d\n", ret);
-> > -		return ret;
-> > +	r5_core = cluster->r5_cores[0];
-> > +	if (of_find_property(r5_core->np, "reg", NULL)) {
-> > +		ret = zynqmp_r5_get_tcm_node_from_dt(cluster);
-> > +		if (ret) {
-> > +			dev_err(dev, "can't get tcm node from dt, err %d\n", ret);
-> > +			return ret;
-> > +		}
-> > +	} else {
-> > +		ret = zynqmp_r5_get_tcm_node(cluster);
-> > +		if (ret < 0) {
-> > +			dev_err(dev, "can't get tcm node, err %d\n", ret);
-> > +			return ret;
-> > +		}
-> >  	}
-> >  
-> >  	for (i = 0; i < cluster->core_count; i++) {
-> > -- 
-> > 2.25.1
-> > 
+INSN_S_SIMM5_SHIFT -> INSN_S_SIMM_0_4_SHIFT
+INSN_S_SIMM7_SHIFT -> INSN_S_SIMM_5_11_SHIFT
+
+What do you think?
+
+
+>  #ifdef __ASSEMBLY__
+>  
+>  #ifdef CONFIG_AS_HAS_INSN
+> @@ -30,6 +37,10 @@
+>  	.insn	i \opcode, \func3, \rd, \rs1, \simm12
+>  	.endm
+>  
+> +	.macro insn_s, opcode, func3, rs2, simm12, rs1
+> +	.insn	s \opcode, \func3, \rs2, \simm12(\rs1)
+> +	.endm
+> +
+>  #else
+>  
+>  #include <asm/gpr-num.h>
+> @@ -51,10 +62,20 @@
+>  		 (\simm12 << INSN_I_SIMM12_SHIFT))
+>  	.endm
+>  
+> +	.macro insn_s, opcode, func3, rs2, simm12, rs1
+> +	.4byte	((\opcode << INSN_S_OPCODE_SHIFT) |		\
+> +		 (\func3 << INSN_S_FUNC3_SHIFT) |		\
+> +		 (.L__gpr_num_\rs2 << INSN_S_RS2_SHIFT) |	\
+> +		 (.L__gpr_num_\rs1 << INSN_S_RS1_SHIFT) |	\
+> +		 ((\simm12 & 0x1f) << INSN_S_SIMM5_SHIFT) |	\
+> +		 (((\simm12 >> 5) & 0x7f) << INSN_S_SIMM7_SHIFT))
+> +	.endm
+> +
+>  #endif
+>  
+>  #define __INSN_R(...)	insn_r __VA_ARGS__
+>  #define __INSN_I(...)	insn_i __VA_ARGS__
+> +#define __INSN_S(...)	insn_s __VA_ARGS__
+
+As a curiosity: It's quite odd to have prefetch.{i,r,w} to be an S-Type 
+instruction, given this type was supposed to be for store instructions.
+
+On prefetch.{i,r,w}:
+31	   24   	 19    14    11	  	6
+imm[11:5] | PREFETCH_OP | rs1 | ORI | imm[4:0] | OP_IMM
+
+For S-Type, we have:
+31	   24     19    14       11	    6
+imm[11:5] | rs1  | rs2 | funct3 | imm[4:0] | opcode
+
+For I-Type, we have:
+31	    19    14       11	6
+immm[11:0] | rs1 | funct3 | rd | opcode
+
+I understand that there should be reasons for choosing S-type, but it 
+would make much more sense (as per instruction type, and as per parameters)
+to go with I-Type. 
+
+(I understand this was done in HW, and in kernel code we have better choice 
+to encode it as S-Type, but I kind of find the S-Type choice odd)
+
+>  
+>  #else /* ! __ASSEMBLY__ */
+>  
+> @@ -66,6 +87,9 @@
+>  #define __INSN_I(opcode, func3, rd, rs1, simm12)	\
+>  	".insn	i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n"
+>  
+> +#define __INSN_S(opcode, func3, rs2, simm12, rs1)	\
+> +	".insn	s " opcode ", " func3 ", " rs2 ", " simm12 "(" rs1 ")\n"
+> +
+>  #else
+>  
+>  #include <linux/stringify.h>
+> @@ -92,12 +116,26 @@
+>  "		 (\\simm12 << " __stringify(INSN_I_SIMM12_SHIFT) "))\n"	\
+>  "	.endm\n"
+>  
+> +#define DEFINE_INSN_S							\
+> +	__DEFINE_ASM_GPR_NUMS						\
+> +"	.macro insn_s, opcode, func3, rs2, simm12, rs1\n"		\
+> +"	.4byte	((\\opcode << " __stringify(INSN_S_OPCODE_SHIFT) ") |"	\
+> +"		 (\\func3 << " __stringify(INSN_S_FUNC3_SHIFT) ") |"	\
+> +"		 (.L__gpr_num_\\rs2 << " __stringify(INSN_S_RS2_SHIFT) ") |" \
+> +"		 (.L__gpr_num_\\rs1 << " __stringify(INSN_S_RS1_SHIFT) ") |" \
+> +"		 ((\\simm12 & 0x1f) << " __stringify(INSN_S_SIMM5_SHIFT) ") |" \
+> +"		 (((\\simm12 >> 5) & 0x7f) << " __stringify(INSN_S_SIMM7_SHIFT) "))\n" \
+> +"	.endm\n"
+> +
+>  #define UNDEFINE_INSN_R							\
+>  "	.purgem insn_r\n"
+>  
+>  #define UNDEFINE_INSN_I							\
+>  "	.purgem insn_i\n"
+>  
+> +#define UNDEFINE_INSN_S							\
+> +"	.purgem insn_s\n"
+> +
+>  #define __INSN_R(opcode, func3, func7, rd, rs1, rs2)			\
+>  	DEFINE_INSN_R							\
+>  	"insn_r " opcode ", " func3 ", " func7 ", " rd ", " rs1 ", " rs2 "\n" \
+> @@ -108,6 +146,11 @@
+>  	"insn_i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n" \
+>  	UNDEFINE_INSN_I
+>  
+> +#define __INSN_S(opcode, func3, rs2, simm12, rs1)			\
+> +	DEFINE_INSN_S							\
+> +	"insn_s " opcode ", " func3 ", " rs2 ", " simm12 ", " rs1 "\n"	\
+> +	UNDEFINE_INSN_S
+> +
+>  #endif
+>  
+>  #endif /* ! __ASSEMBLY__ */
+> @@ -120,6 +163,10 @@
+>  	__INSN_I(RV_##opcode, RV_##func3, RV_##rd,		\
+>  		 RV_##rs1, RV_##simm12)
+>  
+> +#define INSN_S(opcode, func3, rs2, simm12, rs1)			\
+> +	__INSN_S(RV_##opcode, RV_##func3, RV_##rs2,		\
+> +		 RV_##simm12, RV_##rs1)
+> +
+
+The defines above seem correct, but TBH I am not very used to review
+.macro code.
+
+>  #define RV_OPCODE(v)		__ASM_STR(v)
+>  #define RV_FUNC3(v)		__ASM_STR(v)
+>  #define RV_FUNC7(v)		__ASM_STR(v)
+> @@ -133,6 +180,7 @@
+>  #define RV___RS2(v)		__RV_REG(v)
+>  
+>  #define RV_OPCODE_MISC_MEM	RV_OPCODE(15)
+> +#define RV_OPCODE_OP_IMM	RV_OPCODE(19)
+
+Correct.
+
+
+>  #define RV_OPCODE_SYSTEM	RV_OPCODE(115)
+>  
+>  #define HFENCE_VVMA(vaddr, asid)				\
+> @@ -196,4 +244,16 @@
+>  	INSN_I(OPCODE_MISC_MEM, FUNC3(2), __RD(0),		\
+>  	       RS1(base), SIMM12(4))
+>  
+> +#define CBO_PREFETCH_I(base, offset)				\
+> +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(0),		\
+> +	       SIMM12(offset), RS1(base))
+> +
+> +#define CBO_PREFETCH_R(base, offset)				\
+> +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(1),		\
+> +	       SIMM12(offset), RS1(base))
+> +
+> +#define CBO_PREFETCH_W(base, offset)				\
+> +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3),		\
+> +	       SIMM12(offset), RS1(base))
+> +
+
+For OP_IMM & FUNC3(6) we have ORI, right?
+For ORI, rd will be at bytes 11:7, which in PREFETCH.{i,r,w} is
+offset[4:0].
+
+IIUC, when the cpu does not support ZICBOP, this should be fine as long as 
+rd = 0, since changes to r0 are disregarded.
+
+In this case, we need to guarantee offset[4:0] = 0, or else we migth write 
+on an unrelated register. This can be noticed in ZICBOP documentation pages 
+21, 22, 23, as offset[4:0] is always [0 0 0 0 0]. 
+(Google docs in first comment)
+
+What we need here is something like:
++ enum {
++ 	PREFETCH_I,
++ 	PREFETCH_R,
++ 	PREFETCH_W,
++ }	 
++
++ #define CBO_PREFETCH(type, base, offset)                      \
++     INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(type),              \
++            SIMM12(offset & ~0x1f), RS1(base))
+
++ #define CBO_PREFETCH_I(base, offset)				\
++     CBO_PREFETCH(PREFETCH_I, base, offset)
++
++ #define CBO_PREFETCH_R(base, offset)				\
++     CBO_PREFETCH(PREFETCH_R, base, offset)
++
++ #define CBO_PREFETCH_W(base, offset)				\
++     CBO_PREFETCH(PREFETCH_W, base, offset)
++
+
+Maybe replacing 0x1f by some MASK macro, so it looks nicer.
+(not sure how it's acceptable in asm, though).
+
+The above would guarantee that we would never have CBO_PREFETCH_*() to mess 
+up any other register due to a unnoticed (base & 0x1f) != 0
+
+Does that make sense?
+
+>  #endif /* __ASM_INSN_DEF_H */
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+> index b3785ffc1570..bdb02b066041 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -168,6 +168,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+>  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
+>  	__RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
+>  	__RISCV_ISA_EXT_DATA(zicboz, RISCV_ISA_EXT_ZICBOZ),
+> +	__RISCV_ISA_EXT_DATA(zicbop, RISCV_ISA_EXT_ZICBOP),
+>  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
+>  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
+>  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
+> -- 
+> 2.40.1
+> 
+
+Apart from above suggestions, seems a nice change :)
+
+I suggest splitting this patch into 2, though:
+- Introducing S-Type instructions (plz point docs for reference) 
+- Introduce ZICBOP extension.
+
+Thanks!
+Leo
+
+
 
