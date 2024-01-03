@@ -1,468 +1,121 @@
-Return-Path: <linux-kernel+bounces-15892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E728823516
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:54:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55C90823519
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:55:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BB021C2427D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:54:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 071B11F25769
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:55:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF351CFAD;
-	Wed,  3 Jan 2024 18:54:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 077441CA98;
+	Wed,  3 Jan 2024 18:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4pip9BVQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WsmPJ8FB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C9D1CAA1
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--brho.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbe9dacc935so980361276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 10:54:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704308048; x=1704912848; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2bcLG4z5ud00ASvT+xYfTg01O0l5cqSjV16/RoDUU1c=;
-        b=4pip9BVQCKXGbdmskl3RmVQSrG6XUU0JRey2wylYKJG9W0C/A4AcgEgc8HEtxesCsb
-         MWS/bFQKkgfWuvxPgU48tBXv/n3P/27XIEYrVWhpd7EU4BtziUMROyCdnHH76jB0wP8h
-         g/KwnTPcCCWzUxLt2hRnw3emBekvwQAn8qbS1i2GnBusTjSa5dXh6hkXg0r2fhy5D5lE
-         dTnBfLMMd/kbEDweaC4BtXelo4d4DJhSxma1g8/ouHSAbcKOixnRlQ/c4CL67p6HdMAn
-         JODN8uK6MIB7K/bTLDp4Y5l3GhIn6aK1AikbE8ObvM5gXvfvWg2AGxQanniZXOvvklyl
-         Mbdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704308048; x=1704912848;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2bcLG4z5ud00ASvT+xYfTg01O0l5cqSjV16/RoDUU1c=;
-        b=BhlZefVRTRxTslxfoELEttclUXlkOmhhphbIOIgK6b1gKX/JGKisRvPe1GgHTDagFk
-         2PTroae1+pED0OE84iryxt46TetrFbQBmoLfEW6HNlvsZnYamcOfro2izD0mm4Zkx7bS
-         /dg2vIctGvuKqeT9oW3WQNQ4aIgLFhEithGqvQi2bB7Sc5aXU06OWCwISO2eQK+Oeeqh
-         afRHzXGWieL44Djt3q/Ij4qI/w/hZ0gUVCGog/eohnAa6tSBT4tm1v2I7tcXMqhKKIk6
-         41SN6djNYPSobFsSbPLDJXJ6WHqtKvUt+n7Bm9GRcnzUgBnqQ9O3SyV+0nXXvj2mZfxg
-         XC2Q==
-X-Gm-Message-State: AOJu0YxdjiU8R1Vfg0OgVANLrGI0/Rw5J1ApO1zSu98LkO54NfIktxVo
-	SDxM1Mlwj/BITDBC/6ng1MGOuhw/vYaIo6Q=
-X-Google-Smtp-Source: AGHT+IG28PnnP7ATCARB255QRQFXcLeoT4HMWxENL9liok87DD4ZsFniPsEvotONJZ+gcKQMEfocdQPe
-X-Received: from gnomeregan.cam.corp.google.com ([2620:15c:93:4:7e71:cfbd:2031:cc52])
- (user=brho job=sendgmr) by 2002:a05:6902:100e:b0:dbe:30cd:8fcb with SMTP id
- w14-20020a056902100e00b00dbe30cd8fcbmr331668ybt.0.1704308047925; Wed, 03 Jan
- 2024 10:54:07 -0800 (PST)
-Date: Wed,  3 Jan 2024 13:53:59 -0500
-In-Reply-To: <20240103185403.610641-1-brho@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B82A1CA8B;
+	Wed,  3 Jan 2024 18:54:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 681F9C433C8;
+	Wed,  3 Jan 2024 18:54:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704308096;
+	bh=kMcZuOXg8CD8gngQ3Wr1C/1IH7h/YH1lA6fm4kGDwiI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=WsmPJ8FBfJYw7gkhZbMCNwuzSSoEznqD4d6YZqd45vrFGKvx/JfdiqPIvpZf0D964
+	 1txAq2YLfp+ePXZQGzvY/j61FJxz1lDKhABzo2G2h4tus5p6P9WVd+GHO+KN05CUPM
+	 h7a/zGj8yPaDtCc/sV+Wqg+fQOf+xCw3NSwe4UUoJMxWD7uHWA0aDUOlzYiWT9N1ca
+	 6Ohp7A7+vybBb8aPfuWUwc8/Ntud+nTPTIQ+Cx1AySe9swYG1gkimgpRWf8/aooDkY
+	 3UsRGe2DOSHIobMfSYRLKjWKk1nCS4hbN0KE6W40gilTPU3q0bde+u6F5AwdRPd1OI
+	 tx9r/cVFqX8QQ==
+From: SeongJae Park <sj@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org,
+	patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	pavel@denx.de,
+	jonathanh@nvidia.com,
+	f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net,
+	rwarsow@gmx.de,
+	conor@kernel.org,
+	allen.lkml@gmail.com,
+	damon@lists.linux.dev,
+	SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 5.15 00/95] 5.15.146-rc1 review
+Date: Wed,  3 Jan 2024 10:54:53 -0800
+Message-Id: <20240103185453.47962-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240103164853.921194838@linuxfoundation.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240103185403.610641-1-brho@google.com>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240103185403.610641-3-brho@google.com>
-Subject: [PATCH v2 bpf-next 2/2] selftests/bpf: add inline assembly helpers to
- access array elements
-From: Barret Rhoden <brho@google.com>
-To: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>
-Cc: mattbobrowski@google.com, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-When accessing an array, even if you insert your own bounds check,
-sometimes the compiler will remove the check, or modify it such that the
-verifier no longer knows your access is within bounds.
+Hello,
 
-The compiler is even free to make a copy of a register, check the copy,
-and use the original to access the array.  The verifier knows the *copy*
-is within bounds, but not the original register!
+On Wed,  3 Jan 2024 17:54:08 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-Signed-off-by: Barret Rhoden <brho@google.com>
+> This is the start of the stable review cycle for the 5.15.146 release.
+> There are 95 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 05 Jan 2024 16:47:49 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.146-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
+
+Tested-by: SeongJae Park <sj@kernel.org>
+
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] 927631a7bbf0 ("Linux 5.15.146-rc1")
+
+Thanks,
+SJ
+
+[...]
+
 ---
- .../bpf/prog_tests/test_array_elem.c          | 112 ++++++++++
- .../selftests/bpf/progs/array_elem_test.c     | 195 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/bpf_misc.h  |  43 ++++
- 3 files changed, 350 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_array_elem.c
- create mode 100644 tools/testing/selftests/bpf/progs/array_elem_test.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_array_elem.c b/tools/testing/selftests/bpf/prog_tests/test_array_elem.c
-new file mode 100644
-index 000000000000..c953636f07c9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_array_elem.c
-@@ -0,0 +1,112 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Google LLC. */
-+#include <test_progs.h>
-+#include "array_elem_test.skel.h"
-+
-+#define NR_MAP_ELEMS 100
-+
-+/*
-+ * Helper to load and run a program.
-+ * Call must define skel, map_elems, and bss_elems.
-+ * Destroy the skel when you're done.
-+ */
-+#define load_and_run(PROG) ({						\
-+	int err;							\
-+	skel = array_elem_test__open();					\
-+	if (!ASSERT_OK_PTR(skel, "array_elem_test open"))		\
-+		return;							\
-+	bpf_program__set_autoload(skel->progs.x_ ## PROG, true);	\
-+	err = array_elem_test__load(skel);				\
-+	if (!ASSERT_EQ(err, 0, "array_elem_test load")) {		\
-+		array_elem_test__destroy(skel);				\
-+		return;							\
-+	}								\
-+	err = array_elem_test__attach(skel);				\
-+	if (!ASSERT_EQ(err, 0, "array_elem_test attach")) {		\
-+		array_elem_test__destroy(skel);				\
-+		return;							\
-+	}								\
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)				\
-+		skel->bss->lookup_indexes[i] = i;			\
-+	map_elems = bpf_map__mmap(skel->maps.arraymap);			\
-+	ASSERT_OK_PTR(map_elems, "mmap");				\
-+	bss_elems = skel->bss->bss_elems;				\
-+	skel->bss->target_pid = getpid();				\
-+	usleep(1);							\
-+})
-+
-+static void test_access_all(void)
-+{
-+	struct array_elem_test *skel;
-+	int *map_elems;
-+	int *bss_elems;
-+
-+	load_and_run(access_all);
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(map_elems[i], i, "array_elem map value not written");
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(bss_elems[i], i, "array_elem bss value not written");
-+
-+	array_elem_test__destroy(skel);
-+}
-+
-+static void test_oob_access(void)
-+{
-+	struct array_elem_test *skel;
-+	int *map_elems;
-+	int *bss_elems;
-+
-+	load_and_run(oob_access);
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(map_elems[i], 0, "array_elem map value was written");
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(bss_elems[i], 0, "array_elem bss value was written");
-+
-+	array_elem_test__destroy(skel);
-+}
-+
-+static void test_access_array_map_infer_sz(void)
-+{
-+	struct array_elem_test *skel;
-+	int *map_elems;
-+	int *bss_elems __maybe_unused;
-+
-+	load_and_run(access_array_map_infer_sz);
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(map_elems[i], i, "array_elem map value not written");
-+
-+	array_elem_test__destroy(skel);
-+}
-+
-+
-+/* Test that attempting to load a bad program fails. */
-+#define test_bad(PROG) ({						\
-+	struct array_elem_test *skel;					\
-+	int err;							\
-+	skel = array_elem_test__open();					\
-+	if (!ASSERT_OK_PTR(skel, "array_elem_test open"))		\
-+		return;							\
-+	bpf_program__set_autoload(skel->progs.x_bad_ ## PROG, true); 	\
-+	err = array_elem_test__load(skel);				\
-+	ASSERT_ERR(err, "array_elem_test load " # PROG);		\
-+	array_elem_test__destroy(skel);					\
-+})
-+
-+void test_test_array_elem(void)
-+{
-+	if (test__start_subtest("array_elem_access_all"))
-+		test_access_all();
-+	if (test__start_subtest("array_elem_oob_access"))
-+		test_oob_access();
-+	if (test__start_subtest("array_elem_access_array_map_infer_sz"))
-+		test_access_array_map_infer_sz();
-+	if (test__start_subtest("array_elem_bad_map_array_access"))
-+		test_bad(map_array_access);
-+	if (test__start_subtest("array_elem_bad_bss_array_access"))
-+		test_bad(bss_array_access);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/array_elem_test.c b/tools/testing/selftests/bpf/progs/array_elem_test.c
-new file mode 100644
-index 000000000000..9d48afc933f0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/array_elem_test.c
-@@ -0,0 +1,195 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Google LLC. */
-+#include <stdbool.h>
-+#include <linux/types.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int target_pid = 0;
-+
-+#define NR_MAP_ELEMS 100
-+
-+/*
-+ * We want to test valid accesses into an array, but we also need to fool the
-+ * verifier.  If we just do for (i = 0; i < 100; i++), the verifier knows the
-+ * value of i and can tell we're inside the array.
-+ *
-+ * This "lookup" array is just the values 0, 1, 2..., such that
-+ * lookup_indexes[i] == i.  (set by userspace).  But the verifier doesn't know
-+ * that.
-+ */
-+unsigned int lookup_indexes[NR_MAP_ELEMS];
-+
-+/* Arrays can be in the BSS or inside a map element.  Make sure both work. */
-+int bss_elems[NR_MAP_ELEMS];
-+
-+struct map_array {
-+	int elems[NR_MAP_ELEMS];
-+};
-+
-+/*
-+ * This is an ARRAY_MAP of a single struct, and that struct is an array of
-+ * elements.  Userspace can mmap the map as if it was just a basic array of
-+ * elements.  Though if you make an ARRAY_MAP where the *values* are ints, don't
-+ * forget that bpf map elements are rounded up to 8 bytes.
-+ *
-+ * Once you get the pointer to the base of the inner array, you can access all
-+ * of the elements without another bpf_map_lookup_elem(), which is useful if you
-+ * are operating on multiple elements while holding a spinlock.
-+ */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, struct map_array);
-+	__uint(map_flags, BPF_F_MMAPABLE);
-+} arraymap SEC(".maps");
-+
-+static struct map_array *get_map_array(void)
-+{
-+	int zero = 0;
-+
-+	return bpf_map_lookup_elem(&arraymap, &zero);
-+}
-+
-+static int *get_map_elems(void)
-+{
-+	struct map_array *arr = get_map_array();
-+
-+	if (!arr)
-+		return NULL;
-+	return arr->elems;
-+}
-+
-+/*
-+ * Test that we can access all elements, and that we are accessing the element
-+ * we think we are accessing.
-+ */
-+static void access_all(void)
-+{
-+	int *map_elems = get_map_elems();
-+	int *x;
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++) {
-+		x = bpf_array_elem(map_elems, NR_MAP_ELEMS, lookup_indexes[i]);
-+		if (x)
-+			*x = i;
-+	}
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++) {
-+		x = bpf_array_sz_elem(bss_elems, lookup_indexes[i]);
-+		if (x)
-+			*x = i;
-+	}
-+}
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_access_all(void *ctx)
-+{
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+	access_all();
-+	return 0;
-+}
-+
-+/*
-+ * Helper for various OOB tests.  An out-of-bound access should be handled like
-+ * a lookup failure.  Specifically, the verifier should ensure we do not access
-+ * outside the array.  Userspace will check that we didn't access somewhere
-+ * inside the array.
-+ */
-+static void set_elem_to_1(long idx)
-+{
-+	int *map_elems = get_map_elems();
-+	int *x;
-+
-+	x = bpf_array_elem(map_elems, NR_MAP_ELEMS, idx);
-+	if (x)
-+		*x = 1;
-+	x = bpf_array_sz_elem(bss_elems, idx);
-+	if (x)
-+		*x = 1;
-+}
-+
-+/*
-+ * Test various out-of-bounds accesses.
-+ */
-+static void oob_access(void)
-+{
-+	set_elem_to_1(NR_MAP_ELEMS + 5);
-+	set_elem_to_1(NR_MAP_ELEMS);
-+	set_elem_to_1(-1);
-+	set_elem_to_1(~0UL);
-+}
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_oob_access(void *ctx)
-+{
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+	oob_access();
-+	return 0;
-+}
-+
-+/*
-+ * Test that we can use the ARRAY_SIZE-style helper with an array in a map.
-+ *
-+ * Note that you cannot infer the size of the array from just a pointer; you
-+ * have to use the actual elems[100].  i.e. this will fail and should fail to
-+ * compile (-Wsizeof-pointer-div):
-+ *
-+ *	int *map_elems = get_map_elems();
-+ *	x = bpf_array_sz_elem(map_elems, lookup_indexes[i]);
-+ */
-+static void access_array_map_infer_sz(void)
-+{
-+	struct map_array *arr = get_map_array();
-+	int *x;
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++) {
-+		x = bpf_array_sz_elem(arr->elems, lookup_indexes[i]);
-+		if (x)
-+			*x = i;
-+	}
-+}
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_access_array_map_infer_sz(void *ctx)
-+{
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+	access_array_map_infer_sz();
-+	return 0;
-+}
-+
-+
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_bad_map_array_access(void *ctx)
-+{
-+	int *map_elems = get_map_elems();
-+
-+	/*
-+	 * Need to check to promote map_elems from MAP_OR_NULL to MAP so that we
-+	 * fail to load below for the right reason.
-+	 */
-+	if (!map_elems)
-+		return 0;
-+	/* Fail to load: we don't prove our access is inside map_elems[] */
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		map_elems[lookup_indexes[i]] = i;
-+	return 0;
-+}
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_bad_bss_array_access(void *ctx)
-+{
-+	/* Fail to load: we don't prove our access is inside bss_elems[] */
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		bss_elems[lookup_indexes[i]] = i;
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
-index 2fd59970c43a..002bab44cde2 100644
---- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-@@ -135,4 +135,47 @@
- /* make it look to compiler like value is read and written */
- #define __sink(expr) asm volatile("" : "+g"(expr))
- 
-+/*
-+ * Access an array element within a bound, such that the verifier knows the
-+ * access is safe.
-+ *
-+ * This macro asm is the equivalent of:
-+ *
-+ *	if (!arr)
-+ *		return NULL;
-+ *	if (idx >= arr_sz)
-+ *		return NULL;
-+ *	return &arr[idx];
-+ *
-+ * The index (___idx below) needs to be a u64, at least for certain versions of
-+ * the BPF ISA, since there aren't u32 conditional jumps.
-+ */
-+#define bpf_array_elem(arr, arr_sz, idx) ({				\
-+	typeof(&(arr)[0]) ___arr = arr;					\
-+	__u64 ___idx = idx;						\
-+	if (___arr) {							\
-+		asm volatile("if %[__idx] >= %[__bound] goto 1f;	\
-+			      %[__idx] *= %[__size];		\
-+			      %[__arr] += %[__idx];		\
-+			      goto 2f;				\
-+			      1:;				\
-+			      %[__arr] = 0;			\
-+			      2:				\
-+			      "						\
-+			     : [__arr]"+r"(___arr), [__idx]"+r"(___idx)	\
-+			     : [__bound]"r"((arr_sz)),		        \
-+			       [__size]"i"(sizeof(typeof((arr)[0])))	\
-+			     : "cc");					\
-+	}								\
-+	___arr;								\
-+})
-+
-+/*
-+ * Convenience wrapper for bpf_array_elem(), where we compute the size of the
-+ * array.  Be sure to use an actual array, and not a pointer, just like with the
-+ * ARRAY_SIZE macro.
-+ */
-+#define bpf_array_sz_elem(arr, idx) \
-+	bpf_array_elem(arr, sizeof(arr) / sizeof((arr)[0]), idx)
-+
- #endif
--- 
-2.43.0.472.g3155946c3a-goog
-
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_arm64.sh
+ok 12 selftests: damon-tests: build_i386_idle_flag.sh
+ok 13 selftests: damon-tests: build_i386_highpte.sh
+ok 14 selftests: damon-tests: build_nomemcg.sh
+ [33m
+ [92mPASS [39m
 
