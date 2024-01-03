@@ -1,181 +1,284 @@
-Return-Path: <linux-kernel+bounces-15560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85C63822E20
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:20:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84D71822E26
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:22:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FE1B285D92
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:20:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA6FA1F23C4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:22:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E39199A4;
-	Wed,  3 Jan 2024 13:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B8219472;
+	Wed,  3 Jan 2024 13:22:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ifHJ2JQk"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=mecka.net header.i=@mecka.net header.b="gigy8Xom"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B5E2199A7;
-	Wed,  3 Jan 2024 13:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704288005;
-	bh=s7vTp6LFjuarM7eEnLjgpp6xTiC2/ovPwGE/gEID388=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ifHJ2JQk2Xx0eDuhX/RT6938DRzpEPREv4f71QxEvJQ2oGLjZMMBPnbsDGNTuVhOT
-	 zSkXooUUb5pOf7mRGvLPBw8auZLztlvWX61KC6ec5mlOWGlP7vVMn4VoaY2ZAeUeS7
-	 bMER8BT+AgPg46qevggFAMLCKPDh6BGvKMZgiK5COtQ+apa+3E4Vld9XOTpYJVfnNK
-	 vQybCKDEiBzlsC8eq6f5nJMzVDfK8m27JmOYYBOq0ND1YjQllFWqbkpSHnURUBUMYQ
-	 qWv9t3Z4guGa1TMRbN0w77d9wue9HJEqBG+qHhVA+WFhg0WuYU3wNo/h1Bp1l2zoww
-	 B1S/xHNL+YNCQ==
-Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B1B0037813F8;
-	Wed,  3 Jan 2024 13:20:04 +0000 (UTC)
-Message-ID: <5520e8e3-c75b-480f-b831-c40b5cca029f@collabora.com>
-Date: Wed, 3 Jan 2024 15:20:03 +0200
+Received: from mecka.net (mecka.net [159.69.159.214])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A37321947C;
+	Wed,  3 Jan 2024 13:22:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mecka.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mecka.net
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mecka.net; s=2016.11;
+	t=1704288144; bh=jI38MkiHkb6c5DZuzb+pvbd/Eze9cPlo8CmwRLCLqrM=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=gigy8Xom3an2US+AIMPH7e3W5YVhBtfs9THOE0aly9+wfI62SaVJ/wqj88fR9XBIS
+	 0Tmb/JrVpNW5zAvnZueh63ddNOkl++BCDUX1C+l061pFLEoWCfxyxhdxTaf8pqwtJ6
+	 m1nqm3jdt40GudCzGaJzCX/Re2J1mxAT8MaMEETwqzYULuld4MXtwNJKEw3a4l4ris
+	 +kgWAqHTOO+0MJeWAPqDdFoDEfHD8uxDsfzSXdxHAsscBJytq/omZpuKWmREZAwmrK
+	 Q+F2BhPk1xxBGFd1Yp1fAwnMYQDUoqZkWxudCse8wVFY3Eng2DG1uoOaTL3ePJ0PhE
+	 1Kq1COlzWtPJA==
+Received: from mecka.net (unknown [185.147.11.134])
+	by mecka.net (Postfix) with ESMTPSA id 6F475379CE7;
+	Wed,  3 Jan 2024 14:22:23 +0100 (CET)
+Date: Wed, 3 Jan 2024 14:22:22 +0100
+From: Manuel Traut <manut@mecka.net>
+To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>, Sandy Huang <hjc@rock-chips.com>,
+	Mark Yao <markyao0591@gmail.com>,
+	Diederik de Haas <didi.debian@cknow.org>,
+	Segfault <awarnecke002@hotmail.com>,
+	Arnaud Ferraris <aferraris@debian.org>,
+	Danct12 <danct12@riseup.net>, dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v3 4/4] arm64: dts: rockchip: Add devicetree for Pine64
+ PineTab2
+Message-ID: <ZZVfjpOqcoM3U5b3@mecka.net>
+References: <20240102-pinetab2-v3-0-cb1aa69f8c30@mecka.net>
+ <20240102-pinetab2-v3-4-cb1aa69f8c30@mecka.net>
+ <775vjfucu2g2s6zzeutj7f7tapx3q2geccpxvv4ppcms4hxbq7@cbrdmlu2ryzp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] clk: mediatek: Introduce need_pm_runtime to
- mtk_clk_desc
-Content-Language: en-US
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Pin-yen Lin <treapking@chromium.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Chen-Yu Tsai <wenst@chromium.org>, linux-arm-kernel@lists.infradead.org,
- linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
- Weiyi Lu <weiyi.lu@mediatek.com>, linux-mediatek@lists.infradead.org
-References: <20240102081402.1226795-1-treapking@chromium.org>
- <eed88b36-ae56-40d3-8588-0d5d75da71a6@collabora.com>
-From: Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <eed88b36-ae56-40d3-8588-0d5d75da71a6@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <775vjfucu2g2s6zzeutj7f7tapx3q2geccpxvv4ppcms4hxbq7@cbrdmlu2ryzp>
 
-On 1/3/24 14:19, AngeloGioacchino Del Regno wrote:
-> Il 02/01/24 09:12, Pin-yen Lin ha scritto:
->> Introduce a new need_pm_runtime variable to mtk_clk_desc to indicate
->> this clock needs a runtime PM get on the clock controller during the
->> probing stage.
->>
->> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
-> 
-> Hello Pin-yen,
-> 
-> We have experienced something similar, but it was really hard to reproduce after
-> some changes.
-> 
-> In an effort to try to solve this issue (but again, reproducing is really hard),
-> Eugen has sent a commit in the hope that someone else found a way to easily
-> reproduce. Please look at [1].
-> 
-> I'm also adding Eugen to the Cc's of this email.
-> 
-> Cheers,
-> Angelo
-> 
-> [1]: 
-> https://patchwork.kernel.org/project/linux-pm/patch/20231225133615.78993-1-eugen.hristev@collabora.com/
+On Tue, Jan 02, 2024 at 07:07:56PM +0100, Ondřej Jirman wrote:
+> Hello Manuel,
 
-Hello Pin-yen,
+Hello Ondřej,
 
-Can you try my patch and let me know if this changes anything for you ?
-
-If it does not change anything, can you also try this one as well ? It's another
-attempt to fix the synchronization with genpd.
-
-https://lore.kernel.org/linux-arm-kernel/20231129113120.4907-1-eugen.hristev@collabora.com/
-
-Thanks,
-Eugen
-
+> On Tue, Jan 02, 2024 at 05:15:47PM +0100, Manuel Traut wrote:
+> > From: Alexander Warnecke <awarnecke002@hotmail.com>
+> > 
+> > [...]
+> >
+> > +
+> > +	backlight: backlight {
+> > +		compatible = "pwm-backlight";
+> > +		pwms = <&pwm4 0 25000 0>;
+> > +		brightness-levels = <20 220>;
+> > +		num-interpolated-steps = <200>;
 > 
->> ---
->>
->> Changes in v2:
->> - Fix the order of error handling
->> - Update the commit message and add a comment before the runtime PM call
->>
->>   drivers/clk/mediatek/clk-mtk.c | 15 +++++++++++++++
->>   drivers/clk/mediatek/clk-mtk.h |  2 ++
->>   2 files changed, 17 insertions(+)
->>
->> diff --git a/drivers/clk/mediatek/clk-mtk.c b/drivers/clk/mediatek/clk-mtk.c
->> index 2e55368dc4d8..c31e535909c8 100644
->> --- a/drivers/clk/mediatek/clk-mtk.c
->> +++ b/drivers/clk/mediatek/clk-mtk.c
->> @@ -13,6 +13,7 @@
->>   #include <linux/of.h>
->>   #include <linux/of_address.h>
->>   #include <linux/platform_device.h>
->> +#include <linux/pm_runtime.h>
->>   #include <linux/slab.h>
->>   
->>   #include "clk-mtk.h"
->> @@ -494,6 +495,14 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
->>   			return IS_ERR(base) ? PTR_ERR(base) : -ENOMEM;
->>   	}
->>   
->> +
->> +	if (mcd->need_runtime_pm) {
->> +		devm_pm_runtime_enable(&pdev->dev);
->> +		r = pm_runtime_resume_and_get(&pdev->dev);
->> +		if (r)
->> +			return r;
->> +	}
->> +
->>   	/* Calculate how many clk_hw_onecell_data entries to allocate */
->>   	num_clks = mcd->num_clks + mcd->num_composite_clks;
->>   	num_clks += mcd->num_fixed_clks + mcd->num_factor_clks;
->> @@ -574,6 +583,9 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
->>   			goto unregister_clks;
->>   	}
->>   
->> +	if (mcd->need_runtime_pm)
->> +		pm_runtime_put(&pdev->dev);
->> +
->>   	return r;
->>   
->>   unregister_clks:
->> @@ -604,6 +616,9 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
->>   free_base:
->>   	if (mcd->shared_io && base)
->>   		iounmap(base);
->> +
->> +	if (mcd->need_runtime_pm)
->> +		pm_runtime_put(&pdev->dev);
->>   	return r;
->>   }
->>   
->> diff --git a/drivers/clk/mediatek/clk-mtk.h b/drivers/clk/mediatek/clk-mtk.h
->> index 22096501a60a..c17fe1c2d732 100644
->> --- a/drivers/clk/mediatek/clk-mtk.h
->> +++ b/drivers/clk/mediatek/clk-mtk.h
->> @@ -237,6 +237,8 @@ struct mtk_clk_desc {
->>   
->>   	int (*clk_notifier_func)(struct device *dev, struct clk *clk);
->>   	unsigned int mfg_clk_idx;
->> +
->> +	bool need_runtime_pm;
->>   };
->>   
->>   int mtk_clk_pdev_probe(struct platform_device *pdev);
+> Does this linear brightness -> PWM duty cycle mapping lead to linear
+> relationship between brighntess level and subjective brightness on this HW?
 > 
-> 
-> 
-> 
+> I doubt it a bit...
 
+I tested it with the brightness slider in phosh, for me it looks good.
+
+> > +
+> > +	hdmi-con {
+> 
+> hdmi-connector
+
+ack, changed for v4
+
+> > +		compatible = "hdmi-connector";
+> > +		type = "d";
+> > +
+> > +		port {
+> > +			hdmi_con_in: endpoint {
+> > +				remote-endpoint = <&hdmi_out_con>;
+> > +			};
+> > +		};
+> > +	};
+> > +
+> > +	leds {
+> > +		compatible = "gpio-leds";
+> > +
+> 
+> Spurious newline ^
+
+ack, changed for v4
+
+> > +	vcc_3v3: vcc-3v3 {
+> 
+> Regulator node names shoule end with -regulator suffix. The same applies for
+> all of the below nodes.
+
+ack, changed for v4
+
+> > +		compatible = "regulator-fixed";
+> > +		regulator-name = "vcc_3v3";
+> > +		regulator-always-on;
+> > +		regulator-boot-on;
+> > +		regulator-min-microvolt = <3300000>;
+> > +		regulator-max-microvolt = <3300000>;
+> > +		vin-supply = <&vcc3v3_sys>;
+> > +	};
+> > +
+> > +	vdd1v2_dvp: vdd1v2-dvp {
+> > +		compatible = "regulator-fixed";
+> > +		regulator-name = "vdd1v2_dvp";
+> > +		regulator-min-microvolt = <1200000>;
+> > +		regulator-max-microvolt = <1200000>;
+> > +		vin-supply = <&vcc_3v3>;
+> > +		/*enable-supply = <&vcc2v8_dvp>;*/
+> 
+> There's no such property. Delete this commented out line.
+
+ack, changed for v4
+
+> > +	lcd: panel@0 {
+> > +		compatible = "boe,th101mb31ig002-28a";
+> > +		reg = <0>;
+> > +		backlight = <&backlight>;
+> > +		enable-gpios = <&gpio0 RK_PC7 GPIO_ACTIVE_HIGH>;
+> > +		pinctrl-names = "default";
+> > +		pinctrl-0 = <&lcd_pwren_h &lcd0_rst_l>;
+> 
+> Re lcd0_rst_l:
+> 
+> It's a bit weird conceptually to reference from dtsi something that's only 
+> declared in dts that includes the dtsi. Maybe move pinctrl-* properties
+> to dts &lcd, too...
+
+Will be better I guess, changed for v4.
+
+> > +			vcc5v_midu: BOOST {
+> > +				regulator-always-on;
+> > +				regulator-boot-on;
+> > +				regulator-min-microvolt = <5000000>;
+> > +				regulator-max-microvolt = <5000000>;
+> > +				regulator-name = "boost";
+> > +				regulator-state-mem {
+> > +					regulator-off-in-suspend;
+> 
+> I guess this prevents remote USB wakeup by USB devices. Like wakeup via USB
+> keyboard. Probably not a bad thing, though.
+
+That is true. After 'echo mem > /sys/power/state' It is not possible to wakeup
+the device with a USB Keyboard or mouse. However if the surface like keyboard
+is used that is shipped with the device, wakeup works if the keyboard/tablet
+gets unfold. For me this behaviour is fine. Other opinions?
+
+> > +&pcie2x1 {
+> > +	pinctrl-names = "default";
+> > +	pinctrl-0 = <&pcie_reset_h>;
+> > +	reset-gpios = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
+> > +	vpcie3v3-supply = <&vcc3v3_minipcie>;
+> > +	status = "okay";
+> > +};
+> 
+> Does it make sense to enable this HW block by default, when it isn't used on
+> actual HW?
+
+There is a flat ribbon connector, if someone wants to build sth. it might be
+helpful. However I am also fine with removing it for now.
+
+> > +&pinctrl {
+> > +	bt {
+> > +		bt_wake_host_h: bt-wake-host-h {
+> > +			rockchip,pins = <0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_down>;
+> > +		};
+> > +	};
+> 
+> ^^^ unused
+
+I do not bother to removing unused pinctrls, however even if there is no user at
+the moment, if we look at a dtb as a machine parseable device description it
+is probably ok, that it is there?
+
+> > +
+> > +	camerab {
+> > +		camerab_pdn_l: camerab-pdn-l {
+> > +			rockchip,pins = <4 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;
+> > +		};
+> > +
+> > +		camerab_rst_l: camerab-rst-l {
+> > +			rockchip,pins = <4 RK_PB1 RK_FUNC_GPIO &pcfg_pull_none>;
+> > +		};
+> > +	};
+> > +
+> > +	cameraf {
+> > +		cameraf_pdn_l: cameraf-pdn-l {
+> > +			rockchip,pins = <4 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
+> > +		};
+> > +
+> > +		cameraf_rst_l: cameraf-rst-l {
+> > +			rockchip,pins = <4 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>;
+> > +		};
+> > +	};
+> 
+> ^^^ unused
+> 
+> > +	usb {
+> > +		usbcc_int_l: usbcc-int-l {
+> > +			rockchip,pins = <0 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
+> > +		};
+> 
+> ^^^ unused
+> 
+> > +	wifi {
+> > +		host_wake_wl: host-wake-wl {
+> > +			rockchip,pins = <0 RK_PB7 RK_FUNC_GPIO &pcfg_pull_none>;
+> > +		};
+> > +
+> > +		wifi_pwren: wifi-pwren {
+> > +			rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
+> > +		};
+> > +
+> > +		wifi_wake_host_h: wifi-wake-host-h {
+> > +			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_down>;
+> > +		};
+> > +	};
+> 
+> ^^^ all of this wifi stuff is unused
+> 
+> Also wifi_pwren is not really useful on actual HW. W_VBAT is routed directly
+> to wifi chip, with wifi_pwren_h signal having no effect: (short via R9664)
+> 
+>    https://megous.com/dl/tmp/b499859c1012f969.png
+
+ack, removed for v4
+
+> > +&uart1 {
+> > +	pinctrl-names = "default";
+> > +	pinctrl-0 = <&uart1m0_xfer
+> > +		     &uart1m0_ctsn
+> > +		     &uart1m0_rtsn>;
+> > +	status = "okay";
+> > +	uart-has-rtscts;
+> > +};
+> 
+> Not sure about enabling UART for bluetooth, without having the bluetooth driver
+> hooked in, somehow. UART will by default pull TX signal high, which may cause
+> current leakage into gpio/uart pin of the bluetooth chip, if it's not powered up.
+> 
+> Maybe just remove this, until bluetooth is figured out...
+
+Makes sense, removed for v4.
+
+Thanks for your feedback,
+
+Manuel
 
