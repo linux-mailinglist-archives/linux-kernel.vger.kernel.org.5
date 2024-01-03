@@ -1,48 +1,46 @@
-Return-Path: <linux-kernel+bounces-16112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3C59823916
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:18:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0C84823918
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:18:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB88D1C24987
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:18:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF5531C24931
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:18:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47BDE20B07;
-	Wed,  3 Jan 2024 23:16:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF7F520B27;
+	Wed,  3 Jan 2024 23:16:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LwZaK44J"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vj3Gb/AG"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1A41F605
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 23:16:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4C5FC433CB;
-	Wed,  3 Jan 2024 23:16:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF6E20B16;
+	Wed,  3 Jan 2024 23:16:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4A39C433C9;
+	Wed,  3 Jan 2024 23:16:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704323788;
-	bh=WZ7gAT0aNZtgc7x8Ja+TjiUlaoxGisQLVAAOOJ2bIVM=;
+	s=k20201202; t=1704323789;
+	bh=jjvAGLP6PqqccTuZF29DhBvYnfWz2MlfkrSWMP8kR3c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LwZaK44JEcHDsXSY1jV5FSOp2qFaEzVqG/Uq40YRnwU4GKg2lm7K5B0AoybLh7w+p
-	 AQz7Og7ZxQ9FA3HXlJmUlnRmW5V1lrNuvsUoFVbgQ3K5Rgz/3PikobCdBvfjaoGiUX
-	 KwZSvXnEk/YTzLHzMi741xN1/DxjHPaLwAtA05V8xVIeQ9MfqaIhKmpF7VbmR8VqbG
-	 9tL/tfbLMQczkH1feC7r9SBzyzCoFJZAI3LPJML4dHEpp3v6sY1fi8h+6t+e/4vkDN
-	 YqMwKe9KoFa9VY5UWIeO89P3ZWgP3W5e+0j3oq297LxZVdj8hXWit9Bw6ZnwbFDcIz
-	 R0dLS1OmwXqSg==
+	b=Vj3Gb/AGCNe/TM1EINPafFM59yaOj5OJZQduZK6H29qEf+ER7c8LwiS/ZMpF22N6c
+	 ibvCw+7zNaA05/qZDCrzHKiQtumRVENZHz1ZXbQyEpnN5zMPshperOatyNx1nvK2Ro
+	 d/vV5ZlfbOXr0HtpZDTXkryaQAIeh6aUZx1PSmX/aQ6wQcBBYbBAr0yWqmtJraSJzc
+	 Qk+rrvGQIQU3mt9fWvIL5xund3eF/6xUlO47pVxoVCI7kOiXhdZAZzSRPwjvzEaM8B
+	 rjLrEZmKy9+791t9ZXg9DUoZ5wFnEIjOiKytapRuhIyRkFs9Vz/sz1OkEZenLgpUr4
+	 dOq0xMpDQY5eQ==
 From: Bjorn Helgaas <helgaas@kernel.org>
-To: Michael Ellerman <mpe@ellerman.id.au>
+To: "David S . Miller" <davem@davemloft.net>
 Cc: Randy Dunlap <rdunlap@infradead.org>,
 	linux-kernel@vger.kernel.org,
 	Bjorn Helgaas <bhelgaas@google.com>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 7/8] powerpc: Fix typos
-Date: Wed,  3 Jan 2024 17:16:04 -0600
-Message-Id: <20240103231605.1801364-8-helgaas@kernel.org>
+	sparclinux@vger.kernel.org
+Subject: [PATCH 8/8] sparc: Fix typos
+Date: Wed,  3 Jan 2024 17:16:05 -0600
+Message-Id: <20240103231605.1801364-9-helgaas@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240103231605.1801364-1-helgaas@kernel.org>
 References: <20240103231605.1801364-1-helgaas@kernel.org>
@@ -56,485 +54,349 @@ Content-Transfer-Encoding: 8bit
 
 From: Bjorn Helgaas <bhelgaas@google.com>
 
-Fix typos, most reported by "codespell arch/powerpc".  Only touches
+Fix typos, most reported by "codespell arch/sparc".  Only touches
 comments, no code changes.
 
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: linuxppc-dev@lists.ozlabs.org
+Cc: sparclinux@vger.kernel.org
 ---
- arch/powerpc/boot/Makefile                   |  4 ++--
- arch/powerpc/boot/dts/acadia.dts             |  2 +-
- arch/powerpc/boot/main.c                     |  2 +-
- arch/powerpc/boot/ps3.c                      |  2 +-
- arch/powerpc/include/asm/io.h                |  2 +-
- arch/powerpc/include/asm/opal-api.h          |  4 ++--
- arch/powerpc/include/asm/pmac_feature.h      |  2 +-
- arch/powerpc/include/asm/uninorth.h          |  2 +-
- arch/powerpc/include/uapi/asm/bootx.h        |  2 +-
- arch/powerpc/kernel/eeh_pe.c                 |  2 +-
- arch/powerpc/kernel/fadump.c                 |  2 +-
- arch/powerpc/kernel/misc_64.S                |  4 ++--
- arch/powerpc/kernel/process.c                | 12 ++++++------
- arch/powerpc/kernel/ptrace/ptrace-tm.c       |  2 +-
- arch/powerpc/kernel/smp.c                    |  2 +-
- arch/powerpc/kernel/sysfs.c                  |  4 ++--
- arch/powerpc/kvm/book3s_xive.c               |  2 +-
- arch/powerpc/mm/cacheflush.c                 |  2 +-
- arch/powerpc/mm/nohash/kaslr_booke.c         |  2 +-
- arch/powerpc/platforms/512x/mpc512x_shared.c |  2 +-
- arch/powerpc/platforms/cell/spufs/sched.c    |  2 +-
- arch/powerpc/platforms/maple/pci.c           |  2 +-
- arch/powerpc/platforms/powermac/pic.c        |  2 +-
- arch/powerpc/platforms/powermac/sleep.S      |  2 +-
- arch/powerpc/platforms/powernv/pci-sriov.c   |  4 ++--
- arch/powerpc/platforms/powernv/vas-window.c  |  2 +-
- arch/powerpc/platforms/pseries/vas.c         |  2 +-
- arch/powerpc/sysdev/xive/common.c            |  4 ++--
- arch/powerpc/sysdev/xive/native.c            |  2 +-
- 29 files changed, 40 insertions(+), 40 deletions(-)
+ arch/sparc/include/asm/hypervisor.h     | 6 +++---
+ arch/sparc/include/asm/ldc.h            | 2 +-
+ arch/sparc/include/asm/mmu_context_64.h | 4 ++--
+ arch/sparc/include/asm/switch_to_64.h   | 2 +-
+ arch/sparc/kernel/irq_64.c              | 2 +-
+ arch/sparc/kernel/kprobes.c             | 2 +-
+ arch/sparc/kernel/ldc.c                 | 2 +-
+ arch/sparc/kernel/leon_pci_grpci2.c     | 2 +-
+ arch/sparc/kernel/of_device_64.c        | 2 +-
+ arch/sparc/kernel/pci.c                 | 2 +-
+ arch/sparc/kernel/pci_impl.h            | 4 ++--
+ arch/sparc/kernel/pci_schizo.c          | 4 ++--
+ arch/sparc/kernel/perf_event.c          | 2 +-
+ arch/sparc/kernel/prom_irqtrans.c       | 2 +-
+ arch/sparc/kernel/psycho_common.c       | 2 +-
+ arch/sparc/kernel/signal_32.c           | 2 +-
+ arch/sparc/kernel/signal_64.c           | 2 +-
+ arch/sparc/mm/srmmu.c                   | 2 +-
+ arch/sparc/mm/tsb.c                     | 2 +-
+ arch/sparc/net/bpf_jit_comp_32.c        | 6 +++---
+ 20 files changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/arch/powerpc/boot/Makefile b/arch/powerpc/boot/Makefile
-index 968aee2025b8..9c2b6e527ed1 100644
---- a/arch/powerpc/boot/Makefile
-+++ b/arch/powerpc/boot/Makefile
-@@ -108,8 +108,8 @@ DTC_FLAGS	?= -p 1024
- # these files into the build dir, fix up any includes and ensure that dependent
- # files are copied in the right order.
- 
--# these need to be seperate variables because they are copied out of different
--# directories in the kernel tree. Sure you COULd merge them, but it's a
-+# these need to be separate variables because they are copied out of different
-+# directories in the kernel tree. Sure you COULD merge them, but it's a
- # cure-is-worse-than-disease situation.
- zlib-decomp-$(CONFIG_KERNEL_GZIP) := decompress_inflate.c
- zlib-$(CONFIG_KERNEL_GZIP) := inffast.c inflate.c inftrees.c
-diff --git a/arch/powerpc/boot/dts/acadia.dts b/arch/powerpc/boot/dts/acadia.dts
-index deb52e41ab84..5fedda811378 100644
---- a/arch/powerpc/boot/dts/acadia.dts
-+++ b/arch/powerpc/boot/dts/acadia.dts
-@@ -172,7 +172,7 @@ ieee1588@ef602800 {
- 				reg = <0xef602800 0x60>;
- 				interrupt-parent = <&UIC0>;
- 				interrupts = <0x4 0x4>;
--				/* This thing is a bit weird.  It has it's own UIC
-+				/* This thing is a bit weird.  It has its own UIC
- 				 * that it uses to generate snapshot triggers.  We
- 				 * don't really support this device yet, and it needs
- 				 * work to figure this out.
-diff --git a/arch/powerpc/boot/main.c b/arch/powerpc/boot/main.c
-index cae31a6e8f02..2c0e2a1cab01 100644
---- a/arch/powerpc/boot/main.c
-+++ b/arch/powerpc/boot/main.c
-@@ -188,7 +188,7 @@ static inline void prep_esm_blob(struct addr_range vmlinux, void *chosen) { }
- 
- /* A buffer that may be edited by tools operating on a zImage binary so as to
-  * edit the command line passed to vmlinux (by setting /chosen/bootargs).
-- * The buffer is put in it's own section so that tools may locate it easier.
-+ * The buffer is put in its own section so that tools may locate it easier.
+diff --git a/arch/sparc/include/asm/hypervisor.h b/arch/sparc/include/asm/hypervisor.h
+index 08650d503cc2..f220edcf17c7 100644
+--- a/arch/sparc/include/asm/hypervisor.h
++++ b/arch/sparc/include/asm/hypervisor.h
+@@ -430,7 +430,7 @@ unsigned long sun4v_cpu_mondo_send(unsigned long cpu_count,
+  * ERRORS:	No errors defined.
+  *
+  * Return the hypervisor ID handle for the current CPU.  Use by a
+- * virtual CPU to discover it's own identity.
++ * virtual CPU to discover its own identity.
   */
- static char cmdline[BOOT_COMMAND_LINE_SIZE]
- 	__attribute__((__section__("__builtin_cmdline")));
-diff --git a/arch/powerpc/boot/ps3.c b/arch/powerpc/boot/ps3.c
-index f157717ae814..89ff46b8b225 100644
---- a/arch/powerpc/boot/ps3.c
-+++ b/arch/powerpc/boot/ps3.c
-@@ -25,7 +25,7 @@ BSS_STACK(4096);
+ #define HV_FAST_CPU_MYID		0x16
  
- /* A buffer that may be edited by tools operating on a zImage binary so as to
-  * edit the command line passed to vmlinux (by setting /chosen/bootargs).
-- * The buffer is put in it's own section so that tools may locate it easier.
-+ * The buffer is put in its own section so that tools may locate it easier.
-  */
+@@ -1221,7 +1221,7 @@ unsigned long sun4v_con_write(unsigned long buffer,
+  *		EBADALIGNED	software state description is not correctly
+  *				aligned
+  *
+- * This allows the guest to report it's soft state to the hypervisor.  There
++ * This allows the guest to report its soft state to the hypervisor.  There
+  * are two primary components to this state.  The first part states whether
+  * the guest software is running or not.  The second containts optional
+  * details specific to the software.
+@@ -1502,7 +1502,7 @@ struct hv_trap_trace_entry {
+  * configuration error of some sort.
+  *
+  * The dump services provide an opaque buffer into which the
+- * hypervisor can place it's internal state in order to assist in
++ * hypervisor can place its internal state in order to assist in
+  * debugging such situations.  The contents are opaque and extremely
+  * platform and hypervisor implementation specific.  The guest, during
+  * a core dump, requests that the hypervisor update any information in
+diff --git a/arch/sparc/include/asm/ldc.h b/arch/sparc/include/asm/ldc.h
+index ca973955ca86..4294738d40be 100644
+--- a/arch/sparc/include/asm/ldc.h
++++ b/arch/sparc/include/asm/ldc.h
+@@ -13,7 +13,7 @@ void ldom_power_off(void);
+  * or data becomes available on the receive side.
+  *
+  * For non-RAW links, if the LDC_EVENT_RESET event arrives the
+- * driver should reset all of it's internal state and reinvoke
++ * driver should reset all of its internal state and reinvoke
+  * ldc_connect() to try and bring the link up again.
+  *
+  * For RAW links, ldc_connect() is not used.  Instead the driver
+diff --git a/arch/sparc/include/asm/mmu_context_64.h b/arch/sparc/include/asm/mmu_context_64.h
+index 799e797c5cdd..08160bf9a0f4 100644
+--- a/arch/sparc/include/asm/mmu_context_64.h
++++ b/arch/sparc/include/asm/mmu_context_64.h
+@@ -93,7 +93,7 @@ static inline void switch_mm(struct mm_struct *old_mm, struct mm_struct *mm, str
  
- static char cmdline[BOOT_COMMAND_LINE_SIZE]
-diff --git a/arch/powerpc/include/asm/io.h b/arch/powerpc/include/asm/io.h
-index 5220274a6277..7fb001ab3109 100644
---- a/arch/powerpc/include/asm/io.h
-+++ b/arch/powerpc/include/asm/io.h
-@@ -989,7 +989,7 @@ static inline phys_addr_t page_to_phys(struct page *page)
+ 	/* We have to be extremely careful here or else we will miss
+ 	 * a TSB grow if we switch back and forth between a kernel
+-	 * thread and an address space which has it's TSB size increased
++	 * thread and an address space which has its TSB size increased
+ 	 * on another processor.
+ 	 *
+ 	 * It is possible to play some games in order to optimize the
+@@ -118,7 +118,7 @@ static inline void switch_mm(struct mm_struct *old_mm, struct mm_struct *mm, str
+ 	 *
+ 	 * At that point cpu0 continues to use a stale TSB, the one from
+ 	 * before the TSB grow performed on cpu1.  cpu1 did not cross-call
+-	 * cpu0 to update it's TSB because at that point the cpu_vm_mask
++	 * cpu0 to update its TSB because at that point the cpu_vm_mask
+ 	 * only had cpu1 set in it.
+ 	 */
+ 	tsb_context_switch_ctx(mm, CTX_HWBITS(mm->context));
+diff --git a/arch/sparc/include/asm/switch_to_64.h b/arch/sparc/include/asm/switch_to_64.h
+index 14f3c49bfdbc..d93963ff7caa 100644
+--- a/arch/sparc/include/asm/switch_to_64.h
++++ b/arch/sparc/include/asm/switch_to_64.h
+@@ -15,7 +15,7 @@ do {						\
+ 	 * for l0/l1.  It will use one for 'next' and the other to hold
+ 	 * the output value of 'last'.  'next' is not referenced again
+ 	 * past the invocation of switch_to in the scheduler, so we need
+-	 * not preserve it's value.  Hairy, but it lets us remove 2 loads
++	 * not preserve its value.  Hairy, but it lets us remove 2 loads
+ 	 * and 2 stores in this critical code path.  -DaveM
+ 	 */
+ #define switch_to(prev, next, last)					\
+diff --git a/arch/sparc/kernel/irq_64.c b/arch/sparc/kernel/irq_64.c
+index 72da2e10e255..5280e325d4d6 100644
+--- a/arch/sparc/kernel/irq_64.c
++++ b/arch/sparc/kernel/irq_64.c
+@@ -980,7 +980,7 @@ void notrace init_irqwork_curcpu(void)
+  *
+  * On SMP this gets invoked from the CPU trampoline before
+  * the cpu has fully taken over the trap table from OBP,
+- * and it's kernel stack + %g6 thread register state is
++ * and its kernel stack + %g6 thread register state is
+  * not fully cooked yet.
+  *
+  * Therefore you cannot make any OBP calls, not even prom_printf,
+diff --git a/arch/sparc/kernel/kprobes.c b/arch/sparc/kernel/kprobes.c
+index 535c7b35cb59..191bbaca9921 100644
+--- a/arch/sparc/kernel/kprobes.c
++++ b/arch/sparc/kernel/kprobes.c
+@@ -230,7 +230,7 @@ static unsigned long __kprobes relbranch_fixup(u32 insn, struct kprobe *p,
+ 	return regs->tnpc;
  }
  
- /*
-- * 32 bits still uses virt_to_bus() for it's implementation of DMA
-+ * 32 bits still uses virt_to_bus() for its implementation of DMA
-  * mappings se we have to keep it defined here. We also have some old
-  * drivers (shame shame shame) that use bus_to_virt() and haven't been
-  * fixed yet so I need to define it here.
-diff --git a/arch/powerpc/include/asm/opal-api.h b/arch/powerpc/include/asm/opal-api.h
-index a2bc4b95e703..8c9d4b26bf57 100644
---- a/arch/powerpc/include/asm/opal-api.h
-+++ b/arch/powerpc/include/asm/opal-api.h
-@@ -1027,10 +1027,10 @@ struct opal_i2c_request {
-  * The host will pass on OPAL, a buffer of length OPAL_SYSEPOW_MAX
-  * with individual elements being 16 bits wide to fetch the system
-  * wide EPOW status. Each element in the buffer will contain the
-- * EPOW status in it's bit representation for a particular EPOW sub
-+ * EPOW status in its bit representation for a particular EPOW sub
-  * class as defined here. So multiple detailed EPOW status bits
-  * specific for any sub class can be represented in a single buffer
-- * element as it's bit representation.
-+ * element as its bit representation.
+-/* If INSN is an instruction which writes it's PC location
++/* If INSN is an instruction which writes its PC location
+  * into a destination register, fix that up.
   */
+ static void __kprobes retpc_fixup(struct pt_regs *regs, u32 insn,
+diff --git a/arch/sparc/kernel/ldc.c b/arch/sparc/kernel/ldc.c
+index c0fa3ef6cf01..7f3cdb6f644d 100644
+--- a/arch/sparc/kernel/ldc.c
++++ b/arch/sparc/kernel/ldc.c
+@@ -1854,7 +1854,7 @@ static int read_nonraw(struct ldc_channel *lp, void *buf, unsigned int size)
+ 			 * This seems the best behavior because this allows
+ 			 * a user of the LDC layer to start with a small
+ 			 * RX buffer for ldc_read() calls and use -EMSGSIZE
+-			 * as a cue to enlarge it's read buffer.
++			 * as a cue to enlarge its read buffer.
+ 			 */
+ 			err = -EMSGSIZE;
+ 			break;
+diff --git a/arch/sparc/kernel/leon_pci_grpci2.c b/arch/sparc/kernel/leon_pci_grpci2.c
+index 60b6bdf7761f..282b49d496ea 100644
+--- a/arch/sparc/kernel/leon_pci_grpci2.c
++++ b/arch/sparc/kernel/leon_pci_grpci2.c
+@@ -586,7 +586,7 @@ static void grpci2_hw_init(struct grpci2_priv *priv)
+ 	REGSTORE(regs->io_map, REGLOAD(regs->io_map) & 0x0000ffff);
  
- /* System EPOW type */
-diff --git a/arch/powerpc/include/asm/pmac_feature.h b/arch/powerpc/include/asm/pmac_feature.h
-index 2495866f2e97..420e2878ae67 100644
---- a/arch/powerpc/include/asm/pmac_feature.h
-+++ b/arch/powerpc/include/asm/pmac_feature.h
-@@ -192,7 +192,7 @@ static inline long pmac_call_feature(int selector, struct device_node* node,
- 
- /* PMAC_FTR_BMAC_ENABLE		(struct device_node* node, 0, int value)
-  * enable/disable the bmac (ethernet) cell of a mac-io ASIC, also drive
-- * it's reset line
-+ * its reset line
-  */
- #define PMAC_FTR_BMAC_ENABLE		PMAC_FTR_DEF(6)
- 
-diff --git a/arch/powerpc/include/asm/uninorth.h b/arch/powerpc/include/asm/uninorth.h
-index e278299b9b37..6949b5daa37d 100644
---- a/arch/powerpc/include/asm/uninorth.h
-+++ b/arch/powerpc/include/asm/uninorth.h
-@@ -144,7 +144,7 @@
- #define UNI_N_HWINIT_STATE_SLEEPING	0x01
- #define UNI_N_HWINIT_STATE_RUNNING	0x02
- /* This last bit appear to be used by the bootROM to know the second
-- * CPU has started and will enter it's sleep loop with IP=0
-+ * CPU has started and will enter its sleep loop with IP=0
-  */
- #define UNI_N_HWINIT_STATE_CPU1_FLAG	0x10000000
- 
-diff --git a/arch/powerpc/include/uapi/asm/bootx.h b/arch/powerpc/include/uapi/asm/bootx.h
-index 6728c7e24e58..1b8c121071d9 100644
---- a/arch/powerpc/include/uapi/asm/bootx.h
-+++ b/arch/powerpc/include/uapi/asm/bootx.h
-@@ -108,7 +108,7 @@ typedef struct boot_infos
-     /* ALL BELOW NEW (vers. 4) */
- 
-     /* This defines the physical memory. Valid with BOOT_ARCH_NUBUS flag
--       (non-PCI) only. On PCI, memory is contiguous and it's size is in the
-+       (non-PCI) only. On PCI, memory is contiguous and its size is in the
-        device-tree. */
-     boot_info_map_entry_t
-     	        physMemoryMap[MAX_MEM_MAP_SIZE]; /* Where the phys memory is */
-diff --git a/arch/powerpc/kernel/eeh_pe.c b/arch/powerpc/kernel/eeh_pe.c
-index e0ce81279624..95164511fd12 100644
---- a/arch/powerpc/kernel/eeh_pe.c
-+++ b/arch/powerpc/kernel/eeh_pe.c
-@@ -527,7 +527,7 @@ EXPORT_SYMBOL_GPL(eeh_pe_state_mark);
-  * eeh_pe_mark_isolated
-  * @pe: EEH PE
-  *
-- * Record that a PE has been isolated by marking the PE and it's children as
-+ * Record that a PE has been isolated by marking the PE and its children as
-  * EEH_PE_ISOLATED (and EEH_PE_CFG_BLOCKED, if required) and their PCI devices
-  * as pci_channel_io_frozen.
-  */
-diff --git a/arch/powerpc/kernel/fadump.c b/arch/powerpc/kernel/fadump.c
-index d14eda1e8589..81c3229a6013 100644
---- a/arch/powerpc/kernel/fadump.c
-+++ b/arch/powerpc/kernel/fadump.c
-@@ -705,7 +705,7 @@ void crash_fadump(struct pt_regs *regs, const char *str)
- 	 * old_cpu == -1 means this is the first CPU which has come here,
- 	 * go ahead and trigger fadump.
+ 	/* set 1:1 mapping between AHB -> PCI memory space, for all Masters
+-	 * Each AHB master has it's own mapping registers. Max 16 AHB masters.
++	 * Each AHB master has its own mapping registers. Max 16 AHB masters.
+ 	 */
+ 	for (i = 0; i < 16; i++)
+ 		REGSTORE(regs->ahbmst_map[i], priv->pci_area);
+diff --git a/arch/sparc/kernel/of_device_64.c b/arch/sparc/kernel/of_device_64.c
+index d3842821a5a0..c350c58c7f69 100644
+--- a/arch/sparc/kernel/of_device_64.c
++++ b/arch/sparc/kernel/of_device_64.c
+@@ -560,7 +560,7 @@ static unsigned int __init build_one_device_irq(struct platform_device *op,
  	 *
--	 * old_cpu != -1 means some other CPU has already on it's way
-+	 * old_cpu != -1 means some other CPU has already on its way
- 	 * to trigger fadump, just keep looping here.
+ 	 * If we hit a bus type or situation we cannot handle, we
+ 	 * stop and assume that the original IRQ number was in a
+-	 * format which has special meaning to it's immediate parent.
++	 * format which has special meaning to its immediate parent.
  	 */
- 	this_cpu = smp_processor_id();
-diff --git a/arch/powerpc/kernel/misc_64.S b/arch/powerpc/kernel/misc_64.S
-index 1a8cdafd68e8..91123e102db4 100644
---- a/arch/powerpc/kernel/misc_64.S
-+++ b/arch/powerpc/kernel/misc_64.S
-@@ -192,7 +192,7 @@ _GLOBAL(scom970_read)
- 	xori	r0,r0,MSR_EE
- 	mtmsrd	r0,1
- 
--	/* rotate 24 bits SCOM address 8 bits left and mask out it's low 8 bits
-+	/* rotate 24 bits SCOM address 8 bits left and mask out its low 8 bits
- 	 * (including parity). On current CPUs they must be 0'd,
- 	 * and finally or in RW bit
+ 	pp = dp->parent;
+ 	ip = NULL;
+diff --git a/arch/sparc/kernel/pci.c b/arch/sparc/kernel/pci.c
+index f66005ce4cb5..50a0927a84a6 100644
+--- a/arch/sparc/kernel/pci.c
++++ b/arch/sparc/kernel/pci.c
+@@ -311,7 +311,7 @@ static struct pci_dev *of_create_pci_dev(struct pci_pbm_info *pbm,
+ 	/* We can't actually use the firmware value, we have
+ 	 * to read what is in the register right now.  One
+ 	 * reason is that in the case of IDE interfaces the
+-	 * firmware can sample the value before the the IDE
++	 * firmware can sample the value before the IDE
+ 	 * interface is programmed into native mode.
  	 */
-@@ -226,7 +226,7 @@ _GLOBAL(scom970_write)
- 	xori	r0,r0,MSR_EE
- 	mtmsrd	r0,1
- 
--	/* rotate 24 bits SCOM address 8 bits left and mask out it's low 8 bits
-+	/* rotate 24 bits SCOM address 8 bits left and mask out its low 8 bits
- 	 * (including parity). On current CPUs they must be 0'd.
- 	 */
- 
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index 392404688cec..3e738be554a4 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -1647,7 +1647,7 @@ void arch_setup_new_exec(void)
-  * cases will happen:
-  *
-  * 1. The correct thread is running, the wrong thread is not
-- * In this situation, the correct thread is woken and proceeds to pass it's
-+ * In this situation, the correct thread is woken and proceeds to pass its
-  * condition check.
-  *
-  * 2. Neither threads are running
-@@ -1657,15 +1657,15 @@ void arch_setup_new_exec(void)
-  * for the wrong thread, or they will execute the condition check immediately.
-  *
-  * 3. The wrong thread is running, the correct thread is not
-- * The wrong thread will be woken, but will fail it's condition check and
-+ * The wrong thread will be woken, but will fail its condition check and
-  * re-execute wait. The correct thread, when scheduled, will execute either
-- * it's condition check (which will pass), or wait, which returns immediately
-- * when called the first time after the thread is scheduled, followed by it's
-+ * its condition check (which will pass), or wait, which returns immediately
-+ * when called the first time after the thread is scheduled, followed by its
-  * condition check (which will pass).
-  *
-  * 4. Both threads are running
-- * Both threads will be woken. The wrong thread will fail it's condition check
-- * and execute another wait, while the correct thread will pass it's condition
-+ * Both threads will be woken. The wrong thread will fail its condition check
-+ * and execute another wait, while the correct thread will pass its condition
-  * check.
-  *
-  * @t: the task to set the thread ID for
-diff --git a/arch/powerpc/kernel/ptrace/ptrace-tm.c b/arch/powerpc/kernel/ptrace/ptrace-tm.c
-index 210ea834e603..447bff87fd21 100644
---- a/arch/powerpc/kernel/ptrace/ptrace-tm.c
-+++ b/arch/powerpc/kernel/ptrace/ptrace-tm.c
-@@ -12,7 +12,7 @@ void flush_tmregs_to_thread(struct task_struct *tsk)
- {
- 	/*
- 	 * If task is not current, it will have been flushed already to
--	 * it's thread_struct during __switch_to().
-+	 * its thread_struct during __switch_to().
- 	 *
- 	 * A reclaim flushes ALL the state or if not in TM save TM SPRs
- 	 * in the appropriate thread structures from live.
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index ab691c89d787..4e0c62897405 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -1564,7 +1564,7 @@ static void add_cpu_to_masks(int cpu)
- 
- 	/*
- 	 * This CPU will not be in the online mask yet so we need to manually
--	 * add it to it's own thread sibling mask.
-+	 * add it to its own thread sibling mask.
- 	 */
- 	map_cpu_to_node(cpu, cpu_to_node(cpu));
- 	cpumask_set_cpu(cpu, cpu_sibling_mask(cpu));
-diff --git a/arch/powerpc/kernel/sysfs.c b/arch/powerpc/kernel/sysfs.c
-index 0f39a6b84132..b842c83ab497 100644
---- a/arch/powerpc/kernel/sysfs.c
-+++ b/arch/powerpc/kernel/sysfs.c
-@@ -139,7 +139,7 @@ static unsigned long dscr_default;
-  * @val:	Returned cpu specific DSCR default value
-  *
-  * This function returns the per cpu DSCR default value
-- * for any cpu which is contained in it's PACA structure.
-+ * for any cpu which is contained in its PACA structure.
+ 	pci_read_config_dword(dev, PCI_CLASS_REVISION, &class);
+diff --git a/arch/sparc/kernel/pci_impl.h b/arch/sparc/kernel/pci_impl.h
+index f31761f51757..83718876f1d4 100644
+--- a/arch/sparc/kernel/pci_impl.h
++++ b/arch/sparc/kernel/pci_impl.h
+@@ -19,9 +19,9 @@
+  * each with one (Sabre) or two (PSYCHO/SCHIZO) PCI bus modules
+  * underneath.  Each PCI bus module uses an IOMMU (shared by both
+  * PBMs of a controller, or per-PBM), and if a streaming buffer
+- * is present, each PCI bus module has it's own. (ie. the IOMMU
++ * is present, each PCI bus module has its own. (ie. the IOMMU
+  * might be shared between PBMs, the STC is never shared)
+- * Furthermore, each PCI bus module controls it's own autonomous
++ * Furthermore, each PCI bus module controls its own autonomous
+  * PCI bus.
   */
- static void read_dscr(void *val)
- {
-@@ -152,7 +152,7 @@ static void read_dscr(void *val)
-  * @val:	New cpu specific DSCR default value to update
-  *
-  * This function updates the per cpu DSCR default value
-- * for any cpu which is contained in it's PACA structure.
-+ * for any cpu which is contained in its PACA structure.
-  */
- static void write_dscr(void *val)
- {
-diff --git a/arch/powerpc/kvm/book3s_xive.c b/arch/powerpc/kvm/book3s_xive.c
-index 29a382249770..1362c672387e 100644
---- a/arch/powerpc/kvm/book3s_xive.c
-+++ b/arch/powerpc/kvm/book3s_xive.c
-@@ -531,7 +531,7 @@ static int xive_vm_h_eoi(struct kvm_vcpu *vcpu, unsigned long xirr)
- 	xc->cppr = xive_prio_from_guest(new_cppr);
  
- 	/*
--	 * IPIs are synthetized from MFRR and thus don't need
-+	 * IPIs are synthesized from MFRR and thus don't need
- 	 * any special EOI handling. The underlying interrupt
- 	 * used to signal MFRR changes is EOId when fetched from
- 	 * the queue.
-diff --git a/arch/powerpc/mm/cacheflush.c b/arch/powerpc/mm/cacheflush.c
-index 15189592da09..7186516eca52 100644
---- a/arch/powerpc/mm/cacheflush.c
-+++ b/arch/powerpc/mm/cacheflush.c
-@@ -78,7 +78,7 @@ EXPORT_SYMBOL(flush_icache_range);
+diff --git a/arch/sparc/kernel/pci_schizo.c b/arch/sparc/kernel/pci_schizo.c
+index 23b47f7fdb1d..4104007a0256 100644
+--- a/arch/sparc/kernel/pci_schizo.c
++++ b/arch/sparc/kernel/pci_schizo.c
+@@ -142,7 +142,7 @@ static void __schizo_check_stc_error_pbm(struct pci_pbm_info *pbm,
  
- #ifdef CONFIG_HIGHMEM
- /**
-- * flush_dcache_icache_phys() - Flush a page by it's physical address
-+ * flush_dcache_icache_phys() - Flush a page by its physical address
-  * @physaddr: the physical address of the page
-  */
- static void flush_dcache_icache_phys(unsigned long physaddr)
-diff --git a/arch/powerpc/mm/nohash/kaslr_booke.c b/arch/powerpc/mm/nohash/kaslr_booke.c
-index b4f2786a7d2b..7ac97a28c1b3 100644
---- a/arch/powerpc/mm/nohash/kaslr_booke.c
-+++ b/arch/powerpc/mm/nohash/kaslr_booke.c
-@@ -376,7 +376,7 @@ notrace void __init kaslr_early_init(void *dt_ptr, phys_addr_t size)
- 		create_kaslr_tlb_entry(1, tlb_virt, tlb_phys);
- 	}
+ 	/* This is __REALLY__ dangerous.  When we put the
+ 	 * streaming buffer into diagnostic mode to probe
+-	 * it's tags and error status, we _must_ clear all
++	 * its tags and error status, we _must_ clear all
+ 	 * of the line tag valid bits before re-enabling
+ 	 * the streaming buffer.  If any dirty data lives
+ 	 * in the STC when we do this, we will end up
+@@ -272,7 +272,7 @@ static void schizo_check_iommu_error_pbm(struct pci_pbm_info *pbm,
+ 		       pbm->name, type_string);
  
--	/* Copy the kernel to it's new location and run */
-+	/* Copy the kernel to its new location and run */
- 	memcpy((void *)kernstart_virt_addr, (void *)_stext, kernel_sz);
- 	flush_icache_range(kernstart_virt_addr, kernstart_virt_addr + kernel_sz);
- 
-diff --git a/arch/powerpc/platforms/512x/mpc512x_shared.c b/arch/powerpc/platforms/512x/mpc512x_shared.c
-index 8f75e9574c27..8c1f3b629fc7 100644
---- a/arch/powerpc/platforms/512x/mpc512x_shared.c
-+++ b/arch/powerpc/platforms/512x/mpc512x_shared.c
-@@ -279,7 +279,7 @@ static void __init mpc512x_setup_diu(void)
- 	 * and so negatively affect boot time. Instead we reserve the
- 	 * already configured frame buffer area so that it won't be
- 	 * destroyed. The starting address of the area to reserve and
--	 * also it's length is passed to memblock_reserve(). It will be
-+	 * also its length is passed to memblock_reserve(). It will be
- 	 * freed later on first open of fbdev, when splash image is not
- 	 * needed any more.
- 	 */
-diff --git a/arch/powerpc/platforms/cell/spufs/sched.c b/arch/powerpc/platforms/cell/spufs/sched.c
-index 99bd027a7f7c..610ca8570682 100644
---- a/arch/powerpc/platforms/cell/spufs/sched.c
-+++ b/arch/powerpc/platforms/cell/spufs/sched.c
-@@ -868,7 +868,7 @@ static int __spu_deactivate(struct spu_context *ctx, int force, int max_prio)
- }
- 
- /**
-- * spu_deactivate - unbind a context from it's physical spu
-+ * spu_deactivate - unbind a context from its physical spu
-  * @ctx:	spu context to unbind
-  *
-  * Unbind @ctx from the physical spu it is running on and schedule
-diff --git a/arch/powerpc/platforms/maple/pci.c b/arch/powerpc/platforms/maple/pci.c
-index b911b31717cc..b9ff37c7f6f0 100644
---- a/arch/powerpc/platforms/maple/pci.c
-+++ b/arch/powerpc/platforms/maple/pci.c
-@@ -595,7 +595,7 @@ void __init maple_pci_init(void)
- 
- 	/* Probe root PCI hosts, that is on U3 the AGP host and the
- 	 * HyperTransport host. That one is actually "kept" around
--	 * and actually added last as it's resource management relies
-+	 * and actually added last as its resource management relies
- 	 * on the AGP resources to have been setup first
- 	 */
- 	root = of_find_node_by_path("/");
-diff --git a/arch/powerpc/platforms/powermac/pic.c b/arch/powerpc/platforms/powermac/pic.c
-index 7135ea1d7db6..2202bf77c7a3 100644
---- a/arch/powerpc/platforms/powermac/pic.c
-+++ b/arch/powerpc/platforms/powermac/pic.c
-@@ -2,7 +2,7 @@
- /*
-  *  Support for the interrupt controllers found on Power Macintosh,
-  *  currently Apple's "Grand Central" interrupt controller in all
-- *  it's incarnations. OpenPIC support used on newer machines is
-+ *  its incarnations. OpenPIC support used on newer machines is
-  *  in a separate file
-  *
-  *  Copyright (C) 1997 Paul Mackerras (paulus@samba.org)
-diff --git a/arch/powerpc/platforms/powermac/sleep.S b/arch/powerpc/platforms/powermac/sleep.S
-index d497a60003d2..822ed70cdcbf 100644
---- a/arch/powerpc/platforms/powermac/sleep.S
-+++ b/arch/powerpc/platforms/powermac/sleep.S
-@@ -176,7 +176,7 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
- 	 *    memory location containing the PC to resume from
- 	 *    at address 0.
- 	 *  - On Core99, we must store the wakeup vector at
--	 *    address 0x80 and eventually it's parameters
-+	 *    address 0x80 and eventually its parameters
- 	 *    at address 0x84. I've have some trouble with those
- 	 *    parameters however and I no longer use them.
- 	 */
-diff --git a/arch/powerpc/platforms/powernv/pci-sriov.c b/arch/powerpc/platforms/powernv/pci-sriov.c
-index 59882da3e742..cc7b1dd54ac6 100644
---- a/arch/powerpc/platforms/powernv/pci-sriov.c
-+++ b/arch/powerpc/platforms/powernv/pci-sriov.c
-@@ -238,7 +238,7 @@ void pnv_pci_ioda_fixup_iov(struct pci_dev *pdev)
- 	} else if (pdev->is_physfn) {
- 		/*
- 		 * For PFs adjust their allocated IOV resources to match what
--		 * the PHB can support using it's M64 BAR table.
-+		 * the PHB can support using its M64 BAR table.
- 		 */
- 		pnv_pci_ioda_fixup_iov_resources(pdev);
- 	}
-@@ -658,7 +658,7 @@ static void pnv_ioda_setup_vf_PE(struct pci_dev *pdev, u16 num_vfs)
- 		list_add_tail(&pe->list, &phb->ioda.pe_list);
- 		mutex_unlock(&phb->ioda.pe_list_mutex);
- 
--		/* associate this pe to it's pdn */
-+		/* associate this pe to its pdn */
- 		list_for_each_entry(vf_pdn, &pdn->parent->child_list, list) {
- 			if (vf_pdn->busno == vf_bus &&
- 			    vf_pdn->devfn == vf_devfn) {
-diff --git a/arch/powerpc/platforms/powernv/vas-window.c b/arch/powerpc/platforms/powernv/vas-window.c
-index b664838008c1..5147df3a18ac 100644
---- a/arch/powerpc/platforms/powernv/vas-window.c
-+++ b/arch/powerpc/platforms/powernv/vas-window.c
-@@ -1059,7 +1059,7 @@ struct vas_window *vas_tx_win_open(int vasid, enum vas_cop_type cop,
- 		}
- 	} else {
- 		/*
--		 * Interrupt hanlder or fault window setup failed. Means
-+		 * Interrupt handler or fault window setup failed. Means
- 		 * NX can not generate fault for page fault. So not
- 		 * opening for user space tx window.
- 		 */
-diff --git a/arch/powerpc/platforms/pseries/vas.c b/arch/powerpc/platforms/pseries/vas.c
-index b1f25bac280b..d8a8c4ccf051 100644
---- a/arch/powerpc/platforms/pseries/vas.c
-+++ b/arch/powerpc/platforms/pseries/vas.c
-@@ -228,7 +228,7 @@ static irqreturn_t pseries_vas_irq_handler(int irq, void *data)
- 	struct pseries_vas_window *txwin = data;
- 
- 	/*
--	 * The thread hanlder will process this interrupt if it is
-+	 * The thread handler will process this interrupt if it is
- 	 * already running.
- 	 */
- 	atomic_inc(&txwin->pending_faults);
-diff --git a/arch/powerpc/sysdev/xive/common.c b/arch/powerpc/sysdev/xive/common.c
-index a289cb97c1d7..fa01818c1972 100644
---- a/arch/powerpc/sysdev/xive/common.c
-+++ b/arch/powerpc/sysdev/xive/common.c
-@@ -383,7 +383,7 @@ static unsigned int xive_get_irq(void)
-  * CPU.
-  *
-  * If we find that there is indeed more in there, we call
-- * force_external_irq_replay() to make Linux synthetize an
-+ * force_external_irq_replay() to make Linux synthesize an
-  * external interrupt on the next call to local_irq_restore().
-  */
- static void xive_do_queue_eoi(struct xive_cpu *xc)
-@@ -874,7 +874,7 @@ static int xive_irq_set_vcpu_affinity(struct irq_data *d, void *state)
+ 		/* Put the IOMMU into diagnostic mode and probe
+-		 * it's TLB for entries with error status.
++		 * its TLB for entries with error status.
  		 *
- 		 * This also tells us that it's in flight to a host queue
- 		 * or has already been fetched but hasn't been EOIed yet
--		 * by the host. This it's potentially using up a host
-+		 * by the host. Thus it's potentially using up a host
- 		 * queue slot. This is important to know because as long
- 		 * as this is the case, we must not hard-unmask it when
- 		 * "returning" that interrupt to the host.
-diff --git a/arch/powerpc/sysdev/xive/native.c b/arch/powerpc/sysdev/xive/native.c
-index f1c0fa6ece21..517b963e3e6a 100644
---- a/arch/powerpc/sysdev/xive/native.c
-+++ b/arch/powerpc/sysdev/xive/native.c
-@@ -415,7 +415,7 @@ static void xive_native_setup_cpu(unsigned int cpu, struct xive_cpu *xc)
- 		return;
- 	}
+ 		 * It is very possible for another DVMA to occur
+ 		 * while we do this probe, and corrupt the system
+diff --git a/arch/sparc/kernel/perf_event.c b/arch/sparc/kernel/perf_event.c
+index a58ae9c42803..f02a283a8e8f 100644
+--- a/arch/sparc/kernel/perf_event.c
++++ b/arch/sparc/kernel/perf_event.c
+@@ -979,7 +979,7 @@ static void calculate_single_pcr(struct cpu_hw_events *cpuc)
  
--	/* Grab it's CAM value */
-+	/* Grab its CAM value */
- 	rc = opal_xive_get_vp_info(vp, NULL, &vp_cam_be, NULL, NULL);
- 	if (rc) {
- 		pr_err("Failed to get pool VP info CPU %d\n", cpu);
+ static void sparc_pmu_start(struct perf_event *event, int flags);
+ 
+-/* On this PMU each PIC has it's own PCR control register.  */
++/* On this PMU each PIC has its own PCR control register.  */
+ static void calculate_multiple_pcrs(struct cpu_hw_events *cpuc)
+ {
+ 	int i;
+diff --git a/arch/sparc/kernel/prom_irqtrans.c b/arch/sparc/kernel/prom_irqtrans.c
+index 426bd08cb2ab..5752bfd73ac0 100644
+--- a/arch/sparc/kernel/prom_irqtrans.c
++++ b/arch/sparc/kernel/prom_irqtrans.c
+@@ -394,7 +394,7 @@ static unsigned int schizo_irq_build(struct device_node *dp,
+ 	iclr = schizo_ino_to_iclr(pbm_regs, ino);
+ 
+ 	/* On Schizo, no inofixup occurs.  This is because each
+-	 * INO has it's own IMAP register.  On Psycho and Sabre
++	 * INO has its own IMAP register.  On Psycho and Sabre
+ 	 * there is only one IMAP register for each PCI slot even
+ 	 * though four different INOs can be generated by each
+ 	 * PCI slot.
+diff --git a/arch/sparc/kernel/psycho_common.c b/arch/sparc/kernel/psycho_common.c
+index 5ee74b4c0cf4..4557ef18f371 100644
+--- a/arch/sparc/kernel/psycho_common.c
++++ b/arch/sparc/kernel/psycho_common.c
+@@ -50,7 +50,7 @@ static void psycho_check_stc_error(struct pci_pbm_info *pbm)
+ 	spin_lock(&stc_buf_lock);
+ 
+ 	/* This is __REALLY__ dangerous.  When we put the streaming
+-	 * buffer into diagnostic mode to probe it's tags and error
++	 * buffer into diagnostic mode to probe its tags and error
+ 	 * status, we _must_ clear all of the line tag valid bits
+ 	 * before re-enabling the streaming buffer.  If any dirty data
+ 	 * lives in the STC when we do this, we will end up
+diff --git a/arch/sparc/kernel/signal_32.c b/arch/sparc/kernel/signal_32.c
+index 89b93c7136e7..478014d2e59b 100644
+--- a/arch/sparc/kernel/signal_32.c
++++ b/arch/sparc/kernel/signal_32.c
+@@ -473,7 +473,7 @@ static void do_signal(struct pt_regs *regs, unsigned long orig_i0)
+ 	 *
+ 	 * %g7 is used as the "thread register".   %g6 is not used in
+ 	 * any fixed manner.  %g6 is used as a scratch register and
+-	 * a compiler temporary, but it's value is never used across
++	 * a compiler temporary, but its value is never used across
+ 	 * a system call.  Therefore %g6 is usable for orig_i0 storage.
+ 	 */
+ 	if (pt_regs_is_syscall(regs) && (regs->psr & PSR_C))
+diff --git a/arch/sparc/kernel/signal_64.c b/arch/sparc/kernel/signal_64.c
+index b4e410976e0d..2d64566a1f88 100644
+--- a/arch/sparc/kernel/signal_64.c
++++ b/arch/sparc/kernel/signal_64.c
+@@ -494,7 +494,7 @@ static void do_signal(struct pt_regs *regs, unsigned long orig_i0)
+ 	 *
+ 	 * %g7 is used as the "thread register".   %g6 is not used in
+ 	 * any fixed manner.  %g6 is used as a scratch register and
+-	 * a compiler temporary, but it's value is never used across
++	 * a compiler temporary, but its value is never used across
+ 	 * a system call.  Therefore %g6 is usable for orig_i0 storage.
+ 	 */
+ 	if (pt_regs_is_syscall(regs) &&
+diff --git a/arch/sparc/mm/srmmu.c b/arch/sparc/mm/srmmu.c
+index 8393faa3e596..852085ada368 100644
+--- a/arch/sparc/mm/srmmu.c
++++ b/arch/sparc/mm/srmmu.c
+@@ -1513,7 +1513,7 @@ static void __init init_viking(void)
+ 
+ 		/*
+ 		 * We need this to make sure old viking takes no hits
+-		 * on it's cache for dma snoops to workaround the
++		 * on its cache for dma snoops to workaround the
+ 		 * "load from non-cacheable memory" interrupt bug.
+ 		 * This is only necessary because of the new way in
+ 		 * which we use the IOMMU.
+diff --git a/arch/sparc/mm/tsb.c b/arch/sparc/mm/tsb.c
+index 5e2931a18409..5351d4128e74 100644
+--- a/arch/sparc/mm/tsb.c
++++ b/arch/sparc/mm/tsb.c
+@@ -385,7 +385,7 @@ static unsigned long tsb_size_to_rss_limit(unsigned long new_size)
+  * will not trigger any longer.
+  *
+  * The TSB can be anywhere from 8K to 1MB in size, in increasing powers
+- * of two.  The TSB must be aligned to it's size, so f.e. a 512K TSB
++ * of two.  The TSB must be aligned to its size, so f.e. a 512K TSB
+  * must be 512K aligned.  It also must be physically contiguous, so we
+  * cannot use vmalloc().
+  *
+diff --git a/arch/sparc/net/bpf_jit_comp_32.c b/arch/sparc/net/bpf_jit_comp_32.c
+index a74e5004c6c8..da2df1e84ed4 100644
+--- a/arch/sparc/net/bpf_jit_comp_32.c
++++ b/arch/sparc/net/bpf_jit_comp_32.c
+@@ -300,7 +300,7 @@ do {	*prog++ = BR_OPC | WDISP22(OFF);		\
+  *
+  * The most common case is to emit a branch at the end of such
+  * a code sequence.  So this would be two instructions, the
+- * branch and it's delay slot.
++ * branch and its delay slot.
+  *
+  * Therefore by default the branch emitters calculate the branch
+  * offset field as:
+@@ -309,13 +309,13 @@ do {	*prog++ = BR_OPC | WDISP22(OFF);		\
+  *
+  * This "addrs[i] - 8" is the address of the branch itself or
+  * what "." would be in assembler notation.  The "8" part is
+- * how we take into consideration the branch and it's delay
++ * how we take into consideration the branch and its delay
+  * slot mentioned above.
+  *
+  * Sometimes we need to emit a branch earlier in the code
+  * sequence.  And in these situations we adjust "destination"
+  * to accommodate this difference.  For example, if we needed
+- * to emit a branch (and it's delay slot) right before the
++ * to emit a branch (and its delay slot) right before the
+  * final instruction emitted for a BPF opcode, we'd use
+  * "destination + 4" instead of just plain "destination" above.
+  *
 -- 
 2.34.1
 
