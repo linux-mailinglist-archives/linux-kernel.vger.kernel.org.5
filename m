@@ -1,99 +1,98 @@
-Return-Path: <linux-kernel+bounces-15872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0B6C82348E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:35:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7595823493
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:36:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A69A0B23C14
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:35:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 291BA285511
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:35:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93D171CFAC;
-	Wed,  3 Jan 2024 18:34:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2E431C6AE;
+	Wed,  3 Jan 2024 18:35:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mN06hYTJ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DOU+f6M4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E125B1CF9A;
-	Wed,  3 Jan 2024 18:34:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F39CCC433C8;
-	Wed,  3 Jan 2024 18:34:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704306872;
-	bh=k+wZ9DUmK1WPFz8OxLLNZ0ZWpbB8ZluB+bNJACGBqHw=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=mN06hYTJYP4vUJkzIVyJggMtNhH5bjGEC6hbcWm2nZoVDE75nJtA5usZkUEJxobtk
-	 OSbPcKja44zFBMGKrJxFfsW8cNTRIuwl5tluLRTqn7GoyXqVzych+HD8AHJOpRCxPj
-	 JR3MoBhNhf1GOqAZizk0oo89SDeoTunakH2oqAawKchZqc3WrEVgWmkzI8O9l3tjwB
-	 JffOo/wQk4Q3yO/bzmLW03GkQ96c1KPcGQSlAFQb0a1kx6Vam1tN4iBjUQx1aSHfZl
-	 GnFLAOGvT7j4bBgqej52HoM86B8nVOOnKWLhJLHVo8XnvI5rdhpFYM/ug+pxnQw8pv
-	 cia96wv1Stc6w==
-From: Mark Brown <broonie@kernel.org>
-Date: Wed, 03 Jan 2024 18:34:04 +0000
-Subject: [PATCH 4/4] ASoC: meson: g12a-tohdmitx: Fix event generation for
- S/PDIF mux
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC5B1BDCA
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704306953; x=1735842953;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=8AsYcoZAN9boEgmRr/CP4cn1XlD+s8vmE1s69sgKtnY=;
+  b=DOU+f6M4TXOI51tWmQKpNX3SyB3MYh3dIJ0EdqFe7t1sJZcAS9aXzvS8
+   xne56z9N9U8JXKoeb5duQycqQLJ0DS0BbplvrUA45YKzSctdM2ugGptd7
+   ZHHOumPOiNn9u4sTmbx+0KMiFgmH7JpCR8h6AtwaRQdIkRCkPxbKaIQAZ
+   xXU9QAIA07afBelMixhRJ6YxxxlNEriAtoZHq/8SIpgy4SBxrWbwKG8rp
+   FdpctKnpCsXv6WajeJ2fxhTOe+TleVS4uBqae5A5WnHTK3VnGRDiX0d95
+   KAzB4OxuUYS4gvCxgBu/thuUh7fboAYqBhPlcy45I7pbWn0rNx+lO3GEZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="4391823"
+X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
+   d="scan'208";a="4391823"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 10:35:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
+   d="scan'208";a="14574053"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmviesa002.fm.intel.com with ESMTP; 03 Jan 2024 10:35:47 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rL65g-000MS8-2P;
+	Wed, 03 Jan 2024 18:35:44 +0000
+Date: Thu, 4 Jan 2024 02:35:29 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	x86@kernel.org, "Borislav Petkov (AMD)" <bp@alien8.de>
+Subject: [tip:ras/core 11/13] include/linux/ras.h:9:10: fatal error:
+ uapi/asm/mce.h: No such file or directory
+Message-ID: <202401040257.NPrXuVk7-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240103-meson-enum-val-v1-4-424af7a8fb91@kernel.org>
-References: <20240103-meson-enum-val-v1-0-424af7a8fb91@kernel.org>
-In-Reply-To: <20240103-meson-enum-val-v1-0-424af7a8fb91@kernel.org>
-To: Jerome Brunet <jbrunet@baylibre.com>, 
- Liam Girdwood <lgirdwood@gmail.com>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Kevin Hilman <khilman@baylibre.com>, 
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=932; i=broonie@kernel.org;
- h=from:subject:message-id; bh=k+wZ9DUmK1WPFz8OxLLNZ0ZWpbB8ZluB+bNJACGBqHw=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBllaiofg5sZ5UECpsyDPRJXOqEZ9mf0sLO11M27
- kloJ0lo/iqJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZZWoqAAKCRAk1otyXVSH
- 0EXVB/9EPTFgsfoqfT5+k9WPYlVvILzv7DRCBrrX4Dk30LFrjy0hOPaay0t+wOgCgFgqVDUcqJI
- LwFTPUnsmA7j5yRuN+SMrAnnFfnQEyuPPV/EFxkREUXU/aCyQKFLmW7OqHmrUwS9htAziujJjrG
- Ww9xm5TT7dpYbhiOpbIFJcRfsDyY3iO2g4BHveT7FZxe4NqiHD7SuRpk6Fye1iM/aF4XgE20rxC
- 0n/ft7mDMd1x2vtbccdNl29rtTK2PZd+UwixHb7cG/mkxMcTqlM6MCCvrHnrjU3am5eW2J81emb
- EAzSaCZpR8PwygqGkgKRcUz9e2Bp2lrNwqW1bF/hhufwivfC
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-When a control changes value the return value from _put() should be 1 so
-we get events generated to userspace notifying applications of the change.
-While the I2S mux gets this right the S/PDIF mux does not, fix the return
-value.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ras/core
+head:   d48d30d8c358004c7b1cb2e16969a569d45953b3
+commit: 8e1d0790e0a749a62428ff039c7a9050a06e9feb [11/13] RAS: Introduce AMD Address Translation Library
+config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20240104/202401040257.NPrXuVk7-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240104/202401040257.NPrXuVk7-lkp@intel.com/reproduce)
 
-Fixes: c8609f3870f7 ("ASoC: meson: add g12a tohdmitx control")
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/meson/g12a-tohdmitx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401040257.NPrXuVk7-lkp@intel.com/
 
-diff --git a/sound/soc/meson/g12a-tohdmitx.c b/sound/soc/meson/g12a-tohdmitx.c
-index 51b7703e1834..b92434125fac 100644
---- a/sound/soc/meson/g12a-tohdmitx.c
-+++ b/sound/soc/meson/g12a-tohdmitx.c
-@@ -118,7 +118,7 @@ static int g12a_tohdmitx_spdif_mux_put_enum(struct snd_kcontrol *kcontrol,
- 
- 	snd_soc_dapm_mux_update_power(dapm, kcontrol, mux, e, NULL);
- 
--	return 0;
-+	return 1;
- }
- 
- static SOC_ENUM_SINGLE_DECL(g12a_tohdmitx_spdif_mux_enum, TOHDMITX_CTRL0,
+All errors (new ones prefixed by >>):
+
+   In file included from drivers/ras/ras.c:10:
+>> include/linux/ras.h:9:10: fatal error: uapi/asm/mce.h: No such file or directory
+       9 | #include <uapi/asm/mce.h>
+         |          ^~~~~~~~~~~~~~~~
+   compilation terminated.
+
+
+vim +9 include/linux/ras.h
+
+     8	
+   > 9	#include <uapi/asm/mce.h>
+    10	
 
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
