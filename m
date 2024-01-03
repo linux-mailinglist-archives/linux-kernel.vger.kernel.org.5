@@ -1,168 +1,140 @@
-Return-Path: <linux-kernel+bounces-15113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 559EE82275F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:09:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 220F1822760
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:09:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBBBE1F22457
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:09:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B60281F23866
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46067171B4;
-	Wed,  3 Jan 2024 03:08:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F207E63B7;
+	Wed,  3 Jan 2024 03:09:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TXAwqOju"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F801168DC;
-	Wed,  3 Jan 2024 03:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T4ZRn3dTCz4f3jqG;
-	Wed,  3 Jan 2024 11:08:37 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 3EE8D1A017D;
-	Wed,  3 Jan 2024 11:08:39 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgDX2xG1z5Rlt+6CFQ--.782S3;
-	Wed, 03 Jan 2024 11:08:39 +0800 (CST)
-Subject: Re: [PATCH v3 1/2] md: Fix overflow in is_mddev_idle
-To: linan666@huaweicloud.com, song@kernel.org, axboe@kernel.dk
-Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-block@vger.kernel.org, yi.zhang@huawei.com, houtao1@huawei.com,
- yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20231223033703.2949831-1-linan666@huaweicloud.com>
- <20231223033703.2949831-2-linan666@huaweicloud.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <2a26a72f-3f47-69a1-1322-d0d360f23445@huaweicloud.com>
-Date: Wed, 3 Jan 2024 11:08:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7240179A6
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 03:09:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704251346; x=1735787346;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ukwumTVACc2n4fykoIBJRlvZoqxRO3BCv1FL2RfulE4=;
+  b=TXAwqOjuQ9+mXkvVODSXXYWMVre+gWKfrV/rGvB87LjgzfsRGfGaF4iW
+   XhsDI84ksqF1fNrmdc4FZaooYY3xhTswZKuYbczdpZiTyU6apQaZOR58o
+   7HgloYnzDveKhMAe0nMobU0vnl+O+Xo4ggEeAMupj8EHaxwf3PmaRiXuf
+   ukE0WBS0xAKL1X1B1PxOgI09WoVuJuA8J3giYKZOqa0grooI9QuzOobg6
+   rQyK6ilN5RlCq0+AZAkQ7838MwRmgM//fBGYu8laJuhlURN2xumhHhyc5
+   3F6BqM8Io8FiM/yeOxMyImHqkUTa+mHIMPSHRulR19NncYkDFMXKK4d5+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="3721640"
+X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
+   d="scan'208";a="3721640"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 19:09:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="1111226564"
+X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
+   d="scan'208";a="1111226564"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 02 Jan 2024 19:09:03 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rKrcp-000Lfc-0q;
+	Wed, 03 Jan 2024 03:08:59 +0000
+Date: Wed, 3 Jan 2024 11:08:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Chris von Recklinghausen <crecklin@redhat.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, crecklin@redhat.com
+Subject: Re: [PATCH] don't record leak information on allocations done
+ between kmemleak_init and kmemleak_late_init
+Message-ID: <202401031015.xJOsS8Nv-lkp@intel.com>
+References: <20240102153428.139984-1-crecklin@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231223033703.2949831-2-linan666@huaweicloud.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDX2xG1z5Rlt+6CFQ--.782S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxur4fuFy7ZF4kCF4DXF48Crg_yoW5Cw48pF
-	WkJFyakrWUJr4Uua1UZ3yDCa4Fg34ft3ySkrW2k34fXF1fKas3KF48GFyYqF1DurW8uFW2
-	qa4UKFs0vay0qrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102153428.139984-1-crecklin@redhat.com>
 
-ÔÚ 2023/12/23 11:37, linan666@huaweicloud.com Ð´µÀ:
-> From: Li Nan <linan122@huawei.com>
-> 
-> UBSAN reports this problem:
-> 
->    UBSAN: Undefined behaviour in drivers/md/md.c:8175:15
->    signed integer overflow:
->    -2147483291 - 2072033152 cannot be represented in type 'int'
->    Call trace:
->     dump_backtrace+0x0/0x310
->     show_stack+0x28/0x38
->     dump_stack+0xec/0x15c
->     ubsan_epilogue+0x18/0x84
->     handle_overflow+0x14c/0x19c
->     __ubsan_handle_sub_overflow+0x34/0x44
->     is_mddev_idle+0x338/0x3d8
->     md_do_sync+0x1bb8/0x1cf8
->     md_thread+0x220/0x288
->     kthread+0x1d8/0x1e0
->     ret_from_fork+0x10/0x18
-> 
-> 'curr_events' will overflow when stat accum or 'sync_io' is greater than
-> INT_MAX.
-> 
-> Fix it by changing sync_io, last_events and curr_events to 64bit.
+Hi Chris,
 
-LGTM
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
-> 
-> Signed-off-by: Li Nan <linan122@huawei.com>
-> ---
->   drivers/md/md.h        | 4 ++--
->   include/linux/blkdev.h | 2 +-
->   drivers/md/md.c        | 7 ++++---
->   3 files changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/md/md.h b/drivers/md/md.h
-> index ade83af123a2..1a4f976951c1 100644
-> --- a/drivers/md/md.h
-> +++ b/drivers/md/md.h
-> @@ -50,7 +50,7 @@ struct md_rdev {
->   
->   	sector_t sectors;		/* Device size (in 512bytes sectors) */
->   	struct mddev *mddev;		/* RAID array if running */
-> -	int last_events;		/* IO event timestamp */
-> +	long long last_events;		/* IO event timestamp */
->   
->   	/*
->   	 * If meta_bdev is non-NULL, it means that a separate device is
-> @@ -584,7 +584,7 @@ extern void mddev_unlock(struct mddev *mddev);
->   
->   static inline void md_sync_acct(struct block_device *bdev, unsigned long nr_sectors)
->   {
-> -	atomic_add(nr_sectors, &bdev->bd_disk->sync_io);
-> +	atomic64_add(nr_sectors, &bdev->bd_disk->sync_io);
->   }
->   
->   static inline void md_sync_acct_bio(struct bio *bio, unsigned long nr_sectors)
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index 3f8a21cd9233..d28b98adf457 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -170,7 +170,7 @@ struct gendisk {
->   	struct list_head slave_bdevs;
->   #endif
->   	struct timer_rand_state *random;
-> -	atomic_t sync_io;		/* RAID */
-> +	atomic64_t sync_io;		/* RAID */
->   	struct disk_events *ev;
->   
->   #ifdef CONFIG_BLK_DEV_ZONED
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index c94373d64f2c..a6829ea5b560 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -8496,14 +8496,15 @@ static int is_mddev_idle(struct mddev *mddev, int init)
->   {
->   	struct md_rdev *rdev;
->   	int idle;
-> -	int curr_events;
-> +	long long curr_events;
->   
->   	idle = 1;
->   	rcu_read_lock();
->   	rdev_for_each_rcu(rdev, mddev) {
->   		struct gendisk *disk = rdev->bdev->bd_disk;
-> -		curr_events = (int)part_stat_read_accum(disk->part0, sectors) -
-> -			      atomic_read(&disk->sync_io);
-> +		curr_events =
-> +			(long long)part_stat_read_accum(disk->part0, sectors) -
-> +			atomic64_read(&disk->sync_io);
->   		/* sync IO will cause sync_io to increase before the disk_stats
->   		 * as sync_io is counted when a request starts, and
->   		 * disk_stats is counted when it completes.
-> 
+kernel test robot noticed the following build errors:
 
+[auto build test ERROR on v6.7-rc8]
+[also build test ERROR on linus/master]
+[cannot apply to akpm-mm/mm-everything next-20240102]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Chris-von-Recklinghausen/don-t-record-leak-information-on-allocations-done-between-kmemleak_init-and-kmemleak_late_init/20240102-233553
+base:   v6.7-rc8
+patch link:    https://lore.kernel.org/r/20240102153428.139984-1-crecklin%40redhat.com
+patch subject: [PATCH] don't record leak information on allocations done between kmemleak_init and kmemleak_late_init
+config: i386-randconfig-141-20240103 (https://download.01.org/0day-ci/archive/20240103/202401031015.xJOsS8Nv-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240103/202401031015.xJOsS8Nv-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401031015.xJOsS8Nv-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> mm/kmemleak.c:1194:26: error: use of undeclared identifier 'kmamleak_late_initialized'; did you mean 'kmemleak_late_initialized'?
+    1194 |         if (kmemleak_enabled && kmamleak_late_initialized && ptr &&
+         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                 kmemleak_late_initialized
+   mm/kmemleak.c:221:12: note: 'kmemleak_late_initialized' declared here
+     221 | static int kmemleak_late_initialized;
+         |            ^
+   mm/kmemleak.c:1213:26: error: use of undeclared identifier 'kmamleak_late_initialized'; did you mean 'kmemleak_late_initialized'?
+    1213 |         if (kmemleak_enabled && kmamleak_late_initialized && ptr &&
+         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                 kmemleak_late_initialized
+   mm/kmemleak.c:221:12: note: 'kmemleak_late_initialized' declared here
+     221 | static int kmemleak_late_initialized;
+         |            ^
+   2 errors generated.
+
+
+vim +1194 mm/kmemleak.c
+
+  1182	
+  1183	/**
+  1184	 * kmemleak_not_leak - mark an allocated object as false positive
+  1185	 * @ptr:	pointer to beginning of the object
+  1186	 *
+  1187	 * Calling this function on an object will cause the memory block to no longer
+  1188	 * be reported as leak and always be scanned.
+  1189	 */
+  1190	void __ref kmemleak_not_leak(const void *ptr)
+  1191	{
+  1192		pr_debug("%s(0x%px)\n", __func__, ptr);
+  1193	
+> 1194		if (kmemleak_enabled && kmamleak_late_initialized && ptr &&
+  1195			!IS_ERR(ptr))
+  1196			make_gray_object((unsigned long)ptr);
+  1197	}
+  1198	EXPORT_SYMBOL(kmemleak_not_leak);
+  1199	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
