@@ -1,257 +1,187 @@
-Return-Path: <linux-kernel+bounces-15142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 742E88227AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 05:00:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 186F68227AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 05:03:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7799284906
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:00:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B9761C21979
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A247815AE7;
-	Wed,  3 Jan 2024 03:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C948171C8;
+	Wed,  3 Jan 2024 04:03:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TtGrPA1O"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63749171C4;
-	Wed,  3 Jan 2024 03:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4T4bZF3Ky2z1Q63x;
-	Wed,  3 Jan 2024 11:59:17 +0800 (CST)
-Received: from kwepemm600004.china.huawei.com (unknown [7.193.23.242])
-	by mail.maildlp.com (Postfix) with ESMTPS id 43FFE180076;
-	Wed,  3 Jan 2024 11:59:52 +0800 (CST)
-Received: from [10.67.121.59] (10.67.121.59) by kwepemm600004.china.huawei.com
- (7.193.23.242) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 3 Jan
- 2024 11:59:51 +0800
-Message-ID: <a0fc2111-3d8e-a87b-f2cf-49ad810b11df@huawei.com>
-Date: Wed, 3 Jan 2024 11:59:47 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B85E414F6E
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 04:02:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704254577;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yNiVBcSgnS7YDhIhezexv4UQ/o2XjO1B9pVBfER0O5A=;
+	b=TtGrPA1OCgMRM1KoDM/gKw2vMlyWN+S3Lwuo2zeUJOPihJ6Z2abqMiOAVd9RxjZeHL3B3L
+	Ta/bZaEjYeHHILwBJwwIlzG07s5LD72QvWSLM6QSo+sw0MlBgMVZ9dxd9Ti4CGPFbUQrK+
+	YpkpjTI8IvQ4eYO5HU13VxO2TJXUDhs=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-345-s2T-O5voO0qFpYZX1FTeFA-1; Tue,
+ 02 Jan 2024 23:02:54 -0500
+X-MC-Unique: s2T-O5voO0qFpYZX1FTeFA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 801381C05134;
+	Wed,  3 Jan 2024 04:02:53 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.42])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id D4E8351E3;
+	Wed,  3 Jan 2024 04:02:47 +0000 (UTC)
+Date: Wed, 3 Jan 2024 12:02:43 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: bvanassche@acm.org, hch@lst.de, axboe@kernel.dk,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com,
+	ming.lei@redhat.com
+Subject: Re: [PATCH -next RFC] block: support to account io_ticks precisely
+Message-ID: <ZZTcYyveSE6Sl0Dl@fedora>
+References: <20231205093743.1823351-1-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] cpufreq: CPPC: Resolve the large frequency discrepancy
- from cpuinfo_cur_freq
-To: <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <rafael@kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
-CC: <beata.michalska@arm.com>, <sumitg@nvidia.com>, <ionela.voinescu@arm.com>,
-	<zengheng4@huawei.com>, <yang@os.amperecomputing.com>, <will@kernel.org>,
-	<sudeep.holla@arm.com>, <liuyonglong@huawei.com>, <zhanjie9@hisilicon.com>,
-	<lihuisong@huawei.com>
-References: <20231212072617.14756-1-lihuisong@huawei.com>
-From: "lihuisong (C)" <lihuisong@huawei.com>
-In-Reply-To: <20231212072617.14756-1-lihuisong@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600004.china.huawei.com (7.193.23.242)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205093743.1823351-1-yukuai1@huaweicloud.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-kindly ping for review.
+On Tue, Dec 05, 2023 at 05:37:43PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Currently, io_ticks is accounted based on sampling, specifically
+> update_io_ticks() will always account io_ticks by 1 jiffies from
+> bdev_start_io_acct()/blk_account_io_start(), and the result can be
+> inaccurate, for example(HZ is 250):
+> 
+> Test script:
+> fio -filename=/dev/sda -bs=4k -rw=write -direct=1 -name=test -thinktime=4ms
+> 
+> Test result: util is about 90%, while the disk is really idle.
+> 
+> In order to account io_ticks precisely, update_io_ticks() must know if
+> there are IO inflight already, and this requires overhead slightly,
+> hence precise io accounting is disabled by default, and user can enable
+> it through sysfs entry.
 
-在 2023/12/12 15:26, Huisong Li 写道:
-> Many developers found that the cpu current frequency is greater than
-> the maximum frequency of the platform, please see [1], [2] and [3].
->
-> In the scenarios with high memory access pressure, the patch [1] has
-> proved the significant latency of cpc_read() which is used to obtain
-> delivered and reference performance counter cause an absurd frequency.
-> The sampling interval for this counters is very critical and is expected
-> to be equal. However, the different latency of cpc_read() has a direct
-> impact on their sampling interval.
->
-> This patch adds a interface, cpc_read_arch_counters_on_cpu, to read
-> delivered and reference performance counter together. According to my
-> test[4], the discrepancy of cpu current frequency in the scenarios with
-> high memory access pressure is lower than 0.2% by stress-ng application.
->
-> [1] https://lore.kernel.org/all/20231025093847.3740104-4-zengheng4@huawei.com/
-> [2] https://lore.kernel.org/all/20230328193846.8757-1-yang@os.amperecomputing.com/
-> [3] https://lore.kernel.org/all/20230418113459.12860-7-sumitg@nvidia.com/
->
-> [4] My local test:
-> The testing platform enable SMT and include 128 logical CPU in total,
-> and CPU base frequency is 2.7GHz. Reading "cpuinfo_cur_freq" for each
-> physical core on platform during the high memory access pressure from
-> stress-ng, and the output is as follows:
->    0: 2699133     2: 2699942     4: 2698189     6: 2704347
->    8: 2704009    10: 2696277    12: 2702016    14: 2701388
->   16: 2700358    18: 2696741    20: 2700091    22: 2700122
->   24: 2701713    26: 2702025    28: 2699816    30: 2700121
->   32: 2700000    34: 2699788    36: 2698884    38: 2699109
->   40: 2704494    42: 2698350    44: 2699997    46: 2701023
->   48: 2703448    50: 2699501    52: 2700000    54: 2699999
->   56: 2702645    58: 2696923    60: 2697718    62: 2700547
->   64: 2700313    66: 2700000    68: 2699904    70: 2699259
->   72: 2699511    74: 2700644    76: 2702201    78: 2700000
->   80: 2700776    82: 2700364    84: 2702674    86: 2700255
->   88: 2699886    90: 2700359    92: 2699662    94: 2696188
->   96: 2705454    98: 2699260   100: 2701097   102: 2699630
-> 104: 2700463   106: 2698408   108: 2697766   110: 2701181
-> 112: 2699166   114: 2701804   116: 2701907   118: 2701973
-> 120: 2699584   122: 2700474   124: 2700768   126: 2701963
->
-> Signed-off-by: Huisong Li <lihuisong@huawei.com>
+Yeah, the trouble is from commit 5b18b5a73760 ("block: delete part_round_stats and
+switch to less precise counting"), and real reason is that IO inflight
+info is too expensive to maintain in fast path, and RH have got several customer
+complaint in this area too.
+
+> 
+> Noted that for rq-based devcie, part_stat_local_inc/dec() and
+> part_in_flight() is used to track inflight instead of iterating tags,
+> which is not supposed to be used in fast path because 'tags->lock' is
+> grabbed in blk_mq_find_and_get_req().
+
+You can iterate over static requests via BT_TAG_ITER_STATIC_RQS, then
+tags->lock can be bypassed, but new helper is needed.
+
+But given it is only run once for each tick, I guess percpu counting
+might be fine too even in case of big machine.
+
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > ---
->   arch/arm64/kernel/topology.c | 43 ++++++++++++++++++++++++++++++++++--
->   drivers/acpi/cppc_acpi.c     | 22 +++++++++++++++---
->   include/acpi/cppc_acpi.h     |  5 +++++
->   3 files changed, 65 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-> index 7d37e458e2f5..c3122154d738 100644
-> --- a/arch/arm64/kernel/topology.c
-> +++ b/arch/arm64/kernel/topology.c
-> @@ -299,6 +299,11 @@ core_initcall(init_amu_fie);
->   #ifdef CONFIG_ACPI_CPPC_LIB
->   #include <acpi/cppc_acpi.h>
->   
-> +struct amu_counters {
-> +	u64 corecnt;
-> +	u64 constcnt;
-> +};
-> +
->   static void cpu_read_corecnt(void *val)
->   {
->   	/*
-> @@ -322,8 +327,27 @@ static void cpu_read_constcnt(void *val)
->   		      0UL : read_constcnt();
->   }
->   
-> +static void cpu_read_amu_counters(void *data)
-> +{
-> +	struct amu_counters *cnt = (struct amu_counters *)data;
-> +
-> +	/*
-> +	 * The running time of the this_cpu_has_cap() might have a couple of
-> +	 * microseconds and is significantly increased to tens of microseconds.
-> +	 * But AMU core and constant counter need to be read togeter without any
-> +	 * time interval to reduce the calculation discrepancy using this counters.
-> +	 */
-> +	if (this_cpu_has_cap(ARM64_WORKAROUND_2457168)) {
-> +		cnt->corecnt = read_corecnt();
-> +		cnt->constcnt = 0;
-> +	} else {
-> +		cnt->corecnt = read_corecnt();
-> +		cnt->constcnt = read_constcnt();
-> +	}
-> +}
-> +
->   static inline
-> -int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
-> +int counters_read_on_cpu(int cpu, smp_call_func_t func, void *data)
->   {
->   	/*
->   	 * Abort call on counterless CPU or when interrupts are
-> @@ -335,7 +359,7 @@ int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
->   	if (WARN_ON_ONCE(irqs_disabled()))
->   		return -EPERM;
->   
-> -	smp_call_function_single(cpu, func, val, 1);
-> +	smp_call_function_single(cpu, func, data, 1);
->   
->   	return 0;
->   }
-> @@ -364,6 +388,21 @@ bool cpc_ffh_supported(void)
->   	return true;
->   }
->   
-> +int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered, u64 *reference)
-> +{
-> +	struct amu_counters cnts = {0};
-> +	int ret;
-> +
-> +	ret = counters_read_on_cpu(cpu, cpu_read_amu_counters, &cnts);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*delivered = cnts.corecnt;
-> +	*reference = cnts.constcnt;
-> +
-> +	return 0;
-> +}
-> +
->   int cpc_read_ffh(int cpu, struct cpc_reg *reg, u64 *val)
->   {
->   	int ret = -EOPNOTSUPP;
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index 7ff269a78c20..f303fabd7cfe 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -1299,6 +1299,11 @@ bool cppc_perf_ctrs_in_pcc(void)
->   }
->   EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc);
->   
-> +int __weak cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered, u64 *reference)
-> +{
-> +	return 0;
-> +}
-> +
->   /**
->    * cppc_get_perf_ctrs - Read a CPU's performance feedback counters.
->    * @cpunum: CPU from which to read counters.
-> @@ -1313,7 +1318,8 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
->   		*ref_perf_reg, *ctr_wrap_reg;
->   	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
->   	struct cppc_pcc_data *pcc_ss_data = NULL;
-> -	u64 delivered, reference, ref_perf, ctr_wrap_time;
-> +	u64 delivered = 0, reference = 0;
-> +	u64 ref_perf, ctr_wrap_time;
->   	int ret = 0, regs_in_pcc = 0;
->   
->   	if (!cpc_desc) {
-> @@ -1350,8 +1356,18 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
->   		}
->   	}
->   
-> -	cpc_read(cpunum, delivered_reg, &delivered);
-> -	cpc_read(cpunum, reference_reg, &reference);
-> +	if (cpc_ffh_supported()) {
-> +		ret = cpc_read_arch_counters_on_cpu(cpunum, &delivered, &reference);
-> +		if (ret) {
-> +			pr_debug("read arch counters failed, ret=%d.\n", ret);
-> +			ret = 0;
+>  Documentation/ABI/stable/sysfs-block |  8 ++++--
+>  block/blk-core.c                     | 17 ++++++++----
+>  block/blk-mq.c                       | 18 ++++++++++---
+>  block/blk-sysfs.c                    | 40 ++++++++++++++++++++++++++--
+>  block/blk.h                          |  4 ++-
+>  block/genhd.c                        |  6 ++---
+>  include/linux/blk-mq.h               |  1 +
+>  include/linux/blkdev.h               |  3 +++
+>  8 files changed, 80 insertions(+), 17 deletions(-)
+> 
+> diff --git a/Documentation/ABI/stable/sysfs-block b/Documentation/ABI/stable/sysfs-block
+> index 1fe9a553c37b..e5fedecf7bdf 100644
+> --- a/Documentation/ABI/stable/sysfs-block
+> +++ b/Documentation/ABI/stable/sysfs-block
+> @@ -358,8 +358,12 @@ What:		/sys/block/<disk>/queue/iostats
+>  Date:		January 2009
+>  Contact:	linux-block@vger.kernel.org
+>  Description:
+> -		[RW] This file is used to control (on/off) the iostats
+> -		accounting of the disk.
+> +		[RW] This file is used to control the iostats accounting of the
+> +		disk. If this value is 0, iostats accounting is disabled; If
+> +		this value is 1, iostats accounting is enabled, but io_ticks is
+> +		accounted by sampling and the result is not accurate; If this
+> +		value is 2, iostats accounting is enabled and io_ticks is
+> +		accounted precisely, but there will be slightly overhead.
+
+IMO, this approach looks fine.
+
+>  
+>  
+>  What:		/sys/block/<disk>/queue/logical_block_size
+> diff --git a/block/blk-core.c b/block/blk-core.c
+> index fdf25b8d6e78..405883d606cd 100644
+> --- a/block/blk-core.c
+> +++ b/block/blk-core.c
+> @@ -935,14 +935,20 @@ int iocb_bio_iopoll(struct kiocb *kiocb, struct io_comp_batch *iob,
+>  }
+>  EXPORT_SYMBOL_GPL(iocb_bio_iopoll);
+>  
+> -void update_io_ticks(struct block_device *part, unsigned long now, bool end)
+> +void update_io_ticks(struct block_device *part, unsigned long now, bool end,
+> +		     bool precise)
+>  {
+>  	unsigned long stamp;
+>  again:
+>  	stamp = READ_ONCE(part->bd_stamp);
+> -	if (unlikely(time_after(now, stamp))) {
+> -		if (likely(try_cmpxchg(&part->bd_stamp, &stamp, now)))
+> +	if (unlikely(time_after(now, stamp)) &&
+> +	    likely(try_cmpxchg(&part->bd_stamp, &stamp, now))) {
+> +		if (precise) {
+> +			if (end || part_in_flight(part))
+> +				__part_stat_add(part, io_ticks, now - stamp);
+
+Strictly speaking, `end` isn't need any more, but it can be thought
+as one optimization, given part_in_flight() is supposed to be non-zero
+in case of account_done.
+
+> +		} else {
+>  			__part_stat_add(part, io_ticks, end ? now - stamp : 1);
 > +		}
-> +	}
-> +	if (!delivered || !reference) {
-> +		cpc_read(cpunum, delivered_reg, &delivered);
-> +		cpc_read(cpunum, reference_reg, &reference);
-> +	}
-> +
->   	cpc_read(cpunum, ref_perf_reg, &ref_perf);
->   
->   	/*
-> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-> index 6126c977ece0..07d4fd82d499 100644
-> --- a/include/acpi/cppc_acpi.h
-> +++ b/include/acpi/cppc_acpi.h
-> @@ -152,6 +152,7 @@ extern bool cpc_ffh_supported(void);
->   extern bool cpc_supported_by_cpu(void);
->   extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
->   extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
-> +extern int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered, u64 *reference);
->   extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
->   extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable);
->   extern int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *perf_caps);
-> @@ -209,6 +210,10 @@ static inline int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val)
->   {
->   	return -ENOTSUPP;
->   }
-> +static inline int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered, u64 *reference)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
->   static inline int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable)
->   {
->   	return -ENOTSUPP;
+>  	}
+>  	if (part->bd_partno) {
+>  		part = bdev_whole(part);
+> @@ -954,7 +960,8 @@ unsigned long bdev_start_io_acct(struct block_device *bdev, enum req_op op,
+>  				 unsigned long start_time)
+>  {
+>  	part_stat_lock();
+> -	update_io_ticks(bdev, start_time, false);
+> +	update_io_ticks(bdev, start_time, false,
+> +			blk_queue_precise_io_stat(bdev->bd_queue));
+
+blk_queue_precise_io_stat() can be moved into update_io_ticks()
+directly, and it should be fine given it is just done once in each
+tick.
+
+Thanks,
+Ming
+
 
