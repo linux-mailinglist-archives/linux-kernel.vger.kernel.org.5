@@ -1,131 +1,184 @@
-Return-Path: <linux-kernel+bounces-15105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB9D0822748
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:59:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C623D82274D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:59:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95AAF1F22253
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:59:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F6CA284BD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:59:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB43E179AE;
-	Wed,  3 Jan 2024 02:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8846D11C8D;
+	Wed,  3 Jan 2024 02:59:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mLvVffDe"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SWPbE308"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B821F1799D;
-	Wed,  3 Jan 2024 02:58:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6dbb7d80df8so6867728a34.1;
-        Tue, 02 Jan 2024 18:58:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704250709; x=1704855509; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/a2j1/lHth7zs05WU5aYt/LfzS3M/wGNylwLFfEgkQ0=;
-        b=mLvVffDeemap8bV5CQx9LsXW+V8ed5NeSVI2IIxJe1OP8p3jyprialiBEgf6blLGS3
-         tvo2NeUmsBec6Rk+HJqUSF3Pc/m4TSlClCa+FHeFbkQvZ8s5e9XDazozjlm2S9QuaqJJ
-         EJ/9KhWXzb+e23Zf/kUEZ5w5//Lw2zccWvDGV+K2khbrbLmYYPPGyml1RHu5LjxY/+Ql
-         jJBz1H6x9VkRsTP6BlxbYnlGYKSMS+D6pEr5lN+fZi/H5he5mB9AoH66zmP1JZXGmZHn
-         plIsPF909lPuEOABWAmaSNRBbuvu5k7JJNh5UTWGqb9LapAV52mRgYri5IKC49Du2Mzu
-         nUlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704250709; x=1704855509;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/a2j1/lHth7zs05WU5aYt/LfzS3M/wGNylwLFfEgkQ0=;
-        b=a1czJlaWJSzzOmT/vqP1ozmnrPpRWEXyGQHq9nMWdi4r4S0RanlHGhu2kpkGFfF0t6
-         I7PJZZJXvhDv8tw32okUecehS72Ocsf2DRIX/Gk0n4Or7dnPOQyEithgnYt4acFprW1Z
-         23AR9Az3efGjdeezhtCGUM3G5XiUVbhdJM0+Ast5eDJUJZUz4Mh+yNilq6VcB81MTqrS
-         npu7w56OTW5ySdphyy+wYbUy7PMpVkbpkH23HZxx2uNCeIxQTpDYiZafPjRpbshUpu0F
-         eoA2EGQXxUrCzObie7uAkLJ6Vw8lqadpHX2eXwra2XFuM0SVLaDygr1cg2cHVpxsU5Rz
-         H83g==
-X-Gm-Message-State: AOJu0Yxm/KUi4zQ5ILrfAG0fRYCWj5iiIn9F3/IPh7YorGJh9wRo3I5q
-	gDKcApXGUuvk1i7BlYZ2vmY=
-X-Google-Smtp-Source: AGHT+IFpg8o2SLVkvafPjMs9qtDK8eJP522pJiWlxctRpEYR82N3yz/UoeW+DRyVcdlGAEybzkOYvw==
-X-Received: by 2002:a05:6830:3:b0:6db:fd12:8e9c with SMTP id c3-20020a056830000300b006dbfd128e9cmr9353263otp.5.1704250708788;
-        Tue, 02 Jan 2024 18:58:28 -0800 (PST)
-Received: from barry-desktop.hub ([2407:7000:8942:5500:a7d6:f37a:9130:cd96])
-        by smtp.gmail.com with ESMTPSA id d6-20020a63fd06000000b005cd8ada89e5sm21168572pgh.70.2024.01.02.18.58.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 18:58:28 -0800 (PST)
-From: Barry Song <21cnbao@gmail.com>
-To: herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	akpm@linux-foundation.org,
-	chriscli@google.com,
-	chrisl@kernel.org,
-	ddstreet@ieee.org,
-	hannes@cmpxchg.org,
-	linux-mm@kvack.org,
-	nphamcs@gmail.com,
-	sjenning@redhat.com,
-	vitaly.wool@konsulko.com,
-	yosryahmed@google.com,
-	zhouchengming@bytedance.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v4 2/6] mm/zswap: reuse dstmem when decompress
-Date: Wed,  3 Jan 2024 15:57:59 +1300
-Message-Id: <20240103025759.523120-3-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240103025759.523120-1-21cnbao@gmail.com>
-References: <ZY1EnEefZsRTGYnP@gondor.apana.org.au>
- <20240103025759.523120-1-21cnbao@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536C0171CA;
+	Wed,  3 Jan 2024 02:59:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4031rH8u024488;
+	Wed, 3 Jan 2024 02:58:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=78wPF0LpF+mCsihLbL7RxjqIwFhHSG0CJebLE27EJ7A=; b=SW
+	PbE308oFm1Ak4hQC8cEqwf2AhPJ80ppP7abzkSVekcxti4PSosah7eey0EEu/PEy
+	yfWQJzsm/7tRl39xuUt4fsdh/Wo3x/exEZEI6U+qWAtMfKd1BD1KeE6yjnWwNnLe
+	yPjSJ92bZB6O6pU8keh332ZEuT09Sr96A/C2Gz0CJZFMh1nI8zVSVohhJV/tbTaZ
+	4w0z5lwARisQ6isgho6xp9iGMbvO5u7aIJzjVaAuIekuop+B40GH3ZC9Qt8ZZ4RV
+	ycrZcfXDbUKRH4MovRH6BfvOCwlSp6J889HDfshPaWcs2NisHTLKdiqTTzELHjos
+	lmvfu/e6DlH7vJdim0GA==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vcgku9t91-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Jan 2024 02:58:46 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4032wj23031959
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 3 Jan 2024 02:58:45 GMT
+Received: from [10.239.132.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 2 Jan
+ 2024 18:58:35 -0800
+Message-ID: <99c44790-5f1b-4535-9858-c5e9c752159c@quicinc.com>
+Date: Wed, 3 Jan 2024 10:58:33 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] kernel: Introduce a write lock/unlock wrapper for
+ tasklist_lock
+Content-Language: en-US
+To: Matthew Wilcox <willy@infradead.org>
+CC: "Eric W. Biederman" <ebiederm@xmission.com>,
+        Hillf Danton
+	<hdanton@sina.com>, <kernel@quicinc.com>,
+        <quic_pkondeti@quicinc.com>, <keescook@chromium.org>,
+        <viro@zeniv.linux.org.uk>, <brauner@kernel.org>, <oleg@redhat.com>,
+        <dhowells@redhat.com>, <jarkko@kernel.org>, <paul@paul-moore.com>,
+        <jmorris@namei.org>, <serge@hallyn.com>, <linux-mm@kvack.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <keyrings@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20231213101745.4526-1-quic_aiquny@quicinc.com>
+ <ZXnaNSrtaWbS2ivU@casper.infradead.org>
+ <87o7eu7ybq.fsf@email.froward.int.ebiederm.org>
+ <ZY30k7OCtxrdR9oP@casper.infradead.org>
+ <cd0f6613-9aa9-4698-bebe-0f61286d7552@quicinc.com>
+ <ZZPT8hMiuT1pCBP7@casper.infradead.org>
+From: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
+In-Reply-To: <ZZPT8hMiuT1pCBP7@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 6nIpjVYtECWvlGZA32t55-3fW4z4m_OS
+X-Proofpoint-ORIG-GUID: 6nIpjVYtECWvlGZA32t55-3fW4z4m_OS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ malwarescore=0 adultscore=0 clxscore=1011 phishscore=0 mlxlogscore=645
+ lowpriorityscore=0 priorityscore=1501 impostorscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401030023
 
->>
->> for CPU-based alg, we have completed the compr/decompr within
->> crypto_acomp_decompress()
->> synchronously. they won't return EINPROGRESS, EBUSY.
->>
->> The problem is that crypto_acomp won't expose this information to its
->> users. if it does,
->> we can use this info, we will totally avoid the code of copying
->> zsmalloc's data to a tmp
->> buffer for the most majority users of zswap.
->>
->> But I am not sure if we can find a way to convince Herbert(+To)  :-)
 
-> What would you like to expose? The async status of the underlying
-> algorithm?
 
-Right. followed by a rfc patchset, please help take a look.
-
+On 1/2/2024 5:14 PM, Matthew Wilcox wrote:
+> On Tue, Jan 02, 2024 at 10:19:47AM +0800, Aiqun Yu (Maria) wrote:
+>> On 12/29/2023 6:20 AM, Matthew Wilcox wrote:
+>>> On Wed, Dec 13, 2023 at 12:27:05PM -0600, Eric W. Biederman wrote:
+>>>> Matthew Wilcox <willy@infradead.org> writes:
+>>>>> I think the right way to fix this is to pass a boolean flag to
+>>>>> queued_write_lock_slowpath() to let it know whether it can re-enable
+>>>>> interrupts while checking whether _QW_WAITING is set.
+>>>>
+>>>> Yes.  It seems to make sense to distinguish between write_lock_irq and
+>>>> write_lock_irqsave and fix this for all of write_lock_irq.
+>>>
+>>> I wasn't planning on doing anything here, but Hillf kind of pushed me into
+>>> it.  I think it needs to be something like this.  Compile tested only.
+>>> If it ends up getting used,
+>> Happy new year!
 > 
-> We could certainly do that.  But I wonder if it might actually be
-> better for you to allocate a second sync-only algorithm for such
-> cases.  I'd like to see some real numbers.
-
-some hardware might want to use an accelerator to help offload CPU's
-work. their drivers are working in async mode, for example, hisilicon
-and intel.
-
-I don't have the exact number we can save by removing the redundant
-memcpy, nor do i have a proper hardware to test and get the number.
-As Chengming is actually working in zswap, i wonder if you can test
-my patches and post some data?
-
+> Thank you!  I know your new year is a few weeks away still ;-)
+Yeah, Chinese new year will come about 5 weeks later. :)
 > 
-> Cheers,
-> --
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
+>>> -void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock)
+>>> +void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock, bool irq)
+>>>    {
+>>>    	int cnts;
+>>> @@ -82,7 +83,11 @@ void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock)
+>> Also a new state showed up after the current design:
+>> 1. locked flag with _QW_WAITING, while irq enabled.
+>> 2. And this state will be only in interrupt context.
+>> 3. lock->wait_lock is hold by the write waiter.
+>> So per my understanding, a different behavior also needed to be done in
+>> queued_write_lock_slowpath:
+>>    when (unlikely(in_interrupt())) , get the lock directly.
+> 
+> I don't think so.  Remember that write_lock_irq() can only be called in
+> process context, and when interrupts are enabled.
+In current kernel drivers, I can see same lock called with 
+write_lock_irq and write_lock_irqsave in different drivers.
 
-Thanks
-Barry
+And this is the scenario I am talking about:
+1. cpu0 have task run and called write_lock_irq.(Not in interrupt context)
+2. cpu0 hold the lock->wait_lock and re-enabled the interrupt.
+* this is the new state with _QW_WAITING set, lock->wait_lock locked, 
+interrupt enabled. *
+3. cpu0 in-interrupt context and want to do write_lock_irqsave.
+4. cpu0 tried to acquire lock->wait_lock again.
 
+I was thinking to support both write_lock_irq and write_lock_irqsave 
+with interrupt enabled together in queued_write_lock_slowpath.
+
+That's why I am suggesting in write_lock_irqsave when (in_interrupt()), 
+instead spin for the lock->wait_lock, spin to get the lock->cnts directly.
+> 
+>> So needed to be done in release path. This is to address Hillf's concern on
+>> possibility of deadlock.
+> 
+> Hillf's concern is invalid.
+> 
+>>>    	/* When no more readers or writers, set the locked flag */
+>>>    	do {
+>>> +		if (irq)
+>>> +			local_irq_enable();
+>> I think write_lock_irqsave also needs to be take account. So
+>> loal_irq_save(flags) should be take into account here.
+> 
+> If we did want to support the same kind of spinning with interrupts
+> enabled for write_lock_irqsave(), we'd want to pass the flags in
+> and do local_irq_restore(), but I don't know how we'd support
+> write_lock_irq() if we did that -- can we rely on passing in 0 for flags
+> meaning "reenable" on all architectures?  And ~0 meaning "don't
+> reenable" on all architectures?
+What about for all write_lock_irq, pass the real flags from 
+local_irq_save(flags) into the queued_write_lock_slowpath?
+Arch specific valid flags won't be !0 limited then.
+> 
+> That all seems complicated, so I didn't do that.
+This is complicated. Also need test verify to ensure.
+More careful design more better.
+
+Fixed previous wrong email address. ^-^!
+> 
+
+-- 
+Thx and BRs,
+Aiqun(Maria) Yu
 
