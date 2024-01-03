@@ -1,97 +1,104 @@
-Return-Path: <linux-kernel+bounces-15382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF293822B39
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:24:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 162D1822B3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:25:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8723D1F23FC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:24:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8770EB22E94
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:25:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B18A18B0D;
-	Wed,  3 Jan 2024 10:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FF6918B14;
+	Wed,  3 Jan 2024 10:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U4vF7p7q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA2D18C03;
-	Wed,  3 Jan 2024 10:24:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-594cabe74f8so342439eaf.0;
-        Wed, 03 Jan 2024 02:24:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704277464; x=1704882264;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cqvf+yrxjn7ZuAyIxhrwAMBD1FRrppXcklII58Vtq/g=;
-        b=VLwFktISnJAKXiFUPuSK+sjghmSASVhzCtMAdAYT5V262n+680JEZbNfqP9o8iiRME
-         ubnbB2eoNcFLBlrB8lzei6lKKfIzpyoYybVfT19zQzioqbK0s0ajfQM77VLN0Qlv3LC5
-         N9tEhef+RqSr2u20wW3D+zE5oRp4yGCU+DR2T9uikZETj7EqG85O4g6fRWOJQfHr0zb4
-         23sqPLxNwjN+dNV6rKQnGCEZREusYIDIeisP4QFBdWm1YVmBaE1Ug8KQYmo8Jprz71XJ
-         fxYd+PS/2z7rVsfD2w6PEcj9PJmyZEC1fWOrqsNZ3soaBZqF+PgcfdfodMoSJvgGGZdw
-         P9Iw==
-X-Gm-Message-State: AOJu0YxAmmK8qQQr0DfKCJpyQbxwvhaBybomUKNmmYqrk4nD8eZeUExf
-	pZt/wdWnu9zJLKUlz4R2Y0hGMlqM++rdQgkkB/5RR1En
-X-Google-Smtp-Source: AGHT+IExyBe6bUzYjW4DhQn85miz2Ftlb3jJzSW0DMcvpVuAG09NrGfmwPf01hFToO3AzQ8Z3o3A1i0t6Ko61ien5vk=
-X-Received: by 2002:a4a:dc96:0:b0:594:ad62:bab9 with SMTP id
- g22-20020a4adc96000000b00594ad62bab9mr19642880oou.1.1704277464554; Wed, 03
- Jan 2024 02:24:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DAD318AF6;
+	Wed,  3 Jan 2024 10:25:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AD08C433C7;
+	Wed,  3 Jan 2024 10:25:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704277505;
+	bh=5Rcik7t02gBhfvqwKpMZbmbnkEm1DrJkNCgPCnScgEk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=U4vF7p7qcZWkkoYObZ9qmo2ktv6FBoq5E+Xg7MNFl/frEzm3aIqjASJ43SafT9eKK
+	 5IpbXaxOjjl2lG+Id2vXcO69Qnn/0YAhjb84cjlPKoLCILW2XNFu2U1rcuOlq4dcoq
+	 w43AbxgDl5V+UczWqL6v4oxgftsQLFHgtEkPerbGCx8S1X/6YinQsr/yZNRC4IEyKP
+	 G0yuGTqTW1EMaW9hLA6taWKxbt8/XFwaRURbi2jLF1wbbmILn45J7uMQZtIl22ZHY6
+	 JY0gphYd0AggEXOrhAG6CljcM7VTkiKGh7focQO0U3x1GUyvy21GwKiAa+j8JWLNYm
+	 rMlwxDkzRsmkg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Jakub Kicinski <kuba@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Larysa Zaremba <larysa.zaremba@intel.com>,
+	Piotr Raczynski <piotr.raczynski@intel.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ice: fix building withouto XDP
+Date: Wed,  3 Jan 2024 11:24:45 +0100
+Message-Id: <20240103102458.3687963-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <4556052.LvFx2qVVIh@kreacher> <CAJZ5v0hRGKjwDv0VLw550CLfUuNGaVXxmvcpbFhS=PCPqY0n4A@mail.gmail.com>
- <b670b0bc-79ea-4be7-a78d-644b344be408@arm.com>
-In-Reply-To: <b670b0bc-79ea-4be7-a78d-644b344be408@arm.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 3 Jan 2024 11:24:13 +0100
-Message-ID: <CAJZ5v0jcaa8S7g+kKCC9yHHW-7BN0TLWZecOhdNMpHWYFExgHw@mail.gmail.com>
-Subject: Re: [PATCH v1 0/6] thermal: netlink: Redefine the API and drop unused code
-To: Lukasz Luba <lukasz.luba@arm.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Linux PM <linux-pm@vger.kernel.org>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
-	Linux ACPI <linux-acpi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Lukasz,
+From: Arnd Bergmann <arnd@arndb.de>
 
-On Wed, Jan 3, 2024 at 9:10=E2=80=AFAM Lukasz Luba <lukasz.luba@arm.com> wr=
-ote:
->
-> Hi Rafael,
->
-> On 1/2/24 13:24, Rafael J. Wysocki wrote:
-> > On Fri, Dec 15, 2023 at 9:02=E2=80=AFPM Rafael J. Wysocki <rjw@rjwysock=
-i.net> wrote:
-> >>
-> >> Hi Everyone,
-> >>
-> >> This patch series redefines the thermal netlink API to be somewhat mor=
-e
-> >> convenient to use on the caller side and drops some unused code from
-> >> the thermal netlink library.
-> >>
-> >> Please refer to the individual patch changelogs for details.
-> >
-> > No feedback, so this series doesn't appear to be controversial, and I
-> > would like to get it into 6.8.
-> >
-> > Tentatively queuing it up and please let me know if it is problematic.
-> >
-> > Thanks!
-> >
->
-> I agree, these are not controversial patches, so IMO queuing them is OK.
-> I took a glance at them, but I can do the proper review today if you
-> like.
+The newly added function fails to build when struct xsk_cb_desc is
+not defined:
 
-Well, if you can allocate some time for that, it would be appreciated!
+drivers/net/ethernet/intel/ice/ice_base.c: In function 'ice_xsk_pool_fill_cb':
+drivers/net/ethernet/intel/ice/ice_base.c:525:16: error: variable 'desc' has initializer but incomplete type
+
+Hide this part in the same #ifdef that controls the structure definition.
+
+Fixes: d68d707dcbbf ("ice: Support XDP hints in AF_XDP ZC mode")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ethernet/intel/ice/ice_base.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/ethernet/intel/ice/ice_base.c b/drivers/net/ethernet/intel/ice/ice_base.c
+index 6e3694145f59..0d1aeb7ca108 100644
+--- a/drivers/net/ethernet/intel/ice/ice_base.c
++++ b/drivers/net/ethernet/intel/ice/ice_base.c
+@@ -521,6 +521,7 @@ static int ice_setup_rx_ctx(struct ice_rx_ring *ring)
+ 
+ static void ice_xsk_pool_fill_cb(struct ice_rx_ring *ring)
+ {
++#ifdef CONFIG_XDP_SOCKETS
+ 	void *ctx_ptr = &ring->pkt_ctx;
+ 	struct xsk_cb_desc desc = {};
+ 
+@@ -530,6 +531,7 @@ static void ice_xsk_pool_fill_cb(struct ice_rx_ring *ring)
+ 		   sizeof(struct xdp_buff);
+ 	desc.bytes = sizeof(ctx_ptr);
+ 	xsk_pool_fill_cb(ring->xsk_pool, &desc);
++#endif
+ }
+ 
+ /**
+-- 
+2.39.2
+
 
