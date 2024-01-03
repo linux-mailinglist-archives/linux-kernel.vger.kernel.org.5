@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-16063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6C568237A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC8908237A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:19:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85989283CE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:19:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83B7D286508
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6200D1DDE4;
-	Wed,  3 Jan 2024 22:19:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 237EF1EB46;
+	Wed,  3 Jan 2024 22:19:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aaQQSsOC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YFdqC/0F"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE9871DA54;
-	Wed,  3 Jan 2024 22:19:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 85CDAC433C7;
-	Wed,  3 Jan 2024 22:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1251EB24;
+	Wed,  3 Jan 2024 22:19:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 415A1C433C8;
+	Wed,  3 Jan 2024 22:19:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704320343;
-	bh=bXkWNzbnOOxCFFVBLyN62DVYmtj5/+d1InjQMeGJ1xg=;
+	s=k20201202; t=1704320345;
+	bh=6O/Uk8aKPJQgS2gexoGKPVyyCafx/btMDUEMY3NUN1A=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=aaQQSsOC1Om+K6MJXEX9ik0s+rpmnP4VKCWGIgPqZtB99HxXl4opbLEtO7ZK02t12
-	 czQCh+PMObRViT2d0zcozV3RKopT0sBIeRmNGAWtyP9l8KkqdREl0sWCr7T6AdV6ht
-	 8L9pPvOD0CSFerYFLctTo/1tO6PX3ozxEVpOvejaebMqZClFURDRpBZCXnZB1/w67a
-	 oBrAlQerPJvhf989v9VULnw7FGhsTVf/XY+8xH8eg1CyC3DzrAch7XjZpAWjwBKBqU
-	 wxDnwYq41389nQ6i1vfvffSsSPxZ0v6BC1Hi8rDtuEboEYiMvpYHnJzwlA7gh/nYq4
-	 AkT+umgHoHVcg==
+	b=YFdqC/0FDp7/g1yjZZb1u+uIxxpbTp6gR2AmbJGlZdwDshjUgUyi0YYQO6S7mdR5I
+	 MYuW+edwfqJAQ955XIDhzGyvXxsKReqABCgVICUX1DEESvoCTaui6YZ7ZhS6SSJwBg
+	 yFRhFgZLx2Ut5Rtge3Bc4uxZNHm0D8KB0UvgHa3+QsGd3cFtmwnTv9VkS/wS0NJPFz
+	 wPku9c++87BYGPFlURhXPkGjrZoodP0kAOAEC4rR//rEU7aZFllLyzLheS0jaJN9+f
+	 Rf889Tj5RGmtfnkU975jF8mMn+U8f0BtO5WPxhVwC2dVbBuPqsb0T3K7nUVdvgSHGs
+	 C0aWfttxCN15A==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 738C2C395C5;
-	Wed,  3 Jan 2024 22:19:03 +0000 (UTC)
-Subject: Re: [GIT PULL] apparmor: Final fix for v6.7-rc8
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2812BDCB6FE;
+	Wed,  3 Jan 2024 22:19:05 +0000 (UTC)
+Subject: Re: [GIT PULL] bcachefs new years fixes for 6.7
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <94b09a9a-4e2d-43d4-9230-f72662817086@canonical.com>
-References: <94b09a9a-4e2d-43d4-9230-f72662817086@canonical.com>
-X-PR-Tracked-List-Id: <linux-security-module.vger.kernel.org>
-X-PR-Tracked-Message-Id: <94b09a9a-4e2d-43d4-9230-f72662817086@canonical.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jj/linux-apparmor tags/apparmor-pr-2024-01-03
-X-PR-Tracked-Commit-Id: 8026e40608b4d552216d2a818ca7080a4264bb44
+In-Reply-To: <o7py4ia3s75popzz7paf3c6347te6h3qms675lz3s2k5eltskl@cklacfnvxb7k>
+References: <o7py4ia3s75popzz7paf3c6347te6h3qms675lz3s2k5eltskl@cklacfnvxb7k>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <o7py4ia3s75popzz7paf3c6347te6h3qms675lz3s2k5eltskl@cklacfnvxb7k>
+X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-01-01
+X-PR-Tracked-Commit-Id: 0d72ab35a925d66b044cb62b709e53141c3f0143
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d7807d8544e56af9b5523f15eddac09ec0291b4e
-Message-Id: <170432034346.19489.3328006084247602960.pr-tracker-bot@kernel.org>
-Date: Wed, 03 Jan 2024 22:19:03 +0000
-To: John Johansen <john.johansen@canonical.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKLM <linux-kernel@vger.kernel.org>, "open list:SECURITY SUBSYSTEM" <linux-security-module@vger.kernel.org>
+X-PR-Merge-Commit-Id: 981d04137a4b5ea95133572bdb3d888c9b515850
+Message-Id: <170432034515.19489.15575432447802603893.pr-tracker-bot@kernel.org>
+Date: Wed, 03 Jan 2024 22:19:05 +0000
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Wed, 3 Jan 2024 12:26:25 -0800:
+The pull request you sent on Mon, 1 Jan 2024 11:57:04 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jj/linux-apparmor tags/apparmor-pr-2024-01-03
+> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-01-01
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d7807d8544e56af9b5523f15eddac09ec0291b4e
+https://git.kernel.org/torvalds/c/981d04137a4b5ea95133572bdb3d888c9b515850
 
 Thank you!
 
