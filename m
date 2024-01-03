@@ -1,70 +1,51 @@
-Return-Path: <linux-kernel+bounces-15126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 896BB822779
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:14:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E925C822784
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:17:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E74E1C22DAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:14:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F4F81F23BC2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:17:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B3E1A27E;
-	Wed,  3 Jan 2024 03:10:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9158CA71;
+	Wed,  3 Jan 2024 03:17:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nOQoswZ/"
+	dkim=pass (1024-bit key) header.d=buaa.edu.cn header.i=@buaa.edu.cn header.b="vDboQI1M"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from buaa.edu.cn (unknown [202.112.128.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F63E19BBA;
-	Wed,  3 Jan 2024 03:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704251410; x=1735787410;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yfYuDnLnosyafof+2dmQ1VR1lM0gJ9NDYqFf6ZR3LWc=;
-  b=nOQoswZ/XJISB+0KTz6EGPUrqXoJcFoyMF5bQxntCXKUB6D3hhWDbWax
-   A0qvZqAwZZZJvjhq5ihfGx6y+fE+4DXkSLJqiIYpk4sjS7cL4oBymtVBu
-   5Pw0Hp3ixDHWyPDGbjMZ4MHSxeqAx2EkJEFrcD/tBXLMDJ3Jyx/R9gEiJ
-   9fwcCd+qwcbwrPJ4n5h4yIJIGOOsk9YDuBXVO5czEDaU7ghVDkP+TnCsx
-   XJh4gM8X0Z7sqIvG8MQbbdHhrt+CImGPd74m13T5fH+X5+rpdd8P6Ywzg
-   rrB4BY3lZbgPvNO5E+5jOUyHIv5D0bh5C0hYyoq9ozi/YoGxlNvN12YKu
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="10343183"
-X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
-   d="scan'208";a="10343183"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 19:10:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="729666013"
-X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
-   d="scan'208";a="729666013"
-Received: from dmi-pnp-i7.sh.intel.com ([10.239.159.155])
-  by orsmga003.jf.intel.com with ESMTP; 02 Jan 2024 19:10:06 -0800
-From: Dapeng Mi <dapeng1.mi@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jim Mattson <jmattson@google.com>
-Cc: kvm@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA084A1C;
+	Wed,  3 Jan 2024 03:17:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=buaa.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=buaa.edu.cn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=buaa.edu.cn; s=buaa; h=Received:From:To:Cc:Subject:Date:
+	Message-Id:MIME-Version:Content-Transfer-Encoding; bh=ZT4f7RGcP8
+	9s2PD4GqbxF1IDMNpMzEJiOuxSzUjnO2Q=; b=vDboQI1MjVVPsWBhP8xgQM8D60
+	3axFhSUn9Z7AGSybcRhaQTvRNWYKfaJBOrMAAVvm/HBmpsW5xWTQZqfWputqsun1
+	mTlT+f/9f/9b8XYL3RNbVJ3E3AUTSK+4fva7dwsz7VR4S+ppFf9hBZpqTtskXZBI
+	rowjW0Lrf69bZthIo=
+Received: from localhost.localdomain (unknown [10.130.147.18])
+	by coremail-app1 (Coremail) with SMTP id OCz+CgAnVlgh0ZRlzISiAA--.48024S2;
+	Wed, 03 Jan 2024 11:14:41 +0800 (CST)
+From: Yuxuan Hu <20373622@buaa.edu.cn>
+To: marcel@holtmann.org,
+	johan.hedberg@gmail.com,
+	luiz.dentz@gmail.com
+Cc: linux-bluetooth@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Zhenyu Wang <zhenyuw@linux.intel.com>,
-	Zhang Xiong <xiong.y.zhang@intel.com>,
-	Mingwei Zhang <mizhang@google.com>,
-	Like Xu <like.xu.linux@gmail.com>,
-	Jinrong Liang <cloudliang@tencent.com>,
-	Dapeng Mi <dapeng1.mi@intel.com>,
-	Dapeng Mi <dapeng1.mi@linux.intel.com>
-Subject: [kvm-unit-tests Patch v3 11/11] x86: pmu: Improve branch misses event verification
-Date: Wed,  3 Jan 2024 11:14:09 +0800
-Message-Id: <20240103031409.2504051-12-dapeng1.mi@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com>
-References: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com>
+	baijiaju1990@gmail.com,
+	sy2239101@buaa.edu.cn,
+	20373622@buaa.edu.cn,
+	buaazhr@buaa.edu.cn
+Subject: [PATCH V2] Bluetooth: rfcomm: Fix null-ptr-deref in rfcomm_check_security
+Date: Wed,  3 Jan 2024 11:14:10 +0800
+Message-Id: <20240103031410.3262524-1-20373622@buaa.edu.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,39 +53,71 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:OCz+CgAnVlgh0ZRlzISiAA--.48024S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WFyDGF1xXr18Aw4UCw4rXwb_yoW8tFyfpF
+	ZFya4xGFn7ur15Arn7AF4kuFyrZr1v9r15Kw4ku3yY93s5Wwn7trWSyr1jvay5CFs0y343
+	ZF18Xw4DGrnru37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBF1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+	IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
+	z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2vYz4IE04k24V
+	AvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xf
+	McIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7
+	v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS
+	14v26r1q6r43MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26F
+	1DJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
+	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUAxhLUUUUU=
+X-CM-SenderInfo: ysqtljawssquxxddhvlgxou0/
 
-Since IBPB command is already leveraged to force one branch miss
-triggering, the lower boundary of branch misses event can be set to 1
-instead of 0 on IBPB supported processors. Thus the ambiguity from 0 can
-be eliminated.
+During our fuzz testing of the connection and disconnection process at the
+RFCOMM layer,we discovered this bug.By comparing the packetsfrom a normal
+connection and disconnection process with the testcase that triggered a
+KASAN report, we analyzed the cause of this bug as follows:
 
-Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+1. In the packets captured during a normal connection, the host sends a
+`Read Encryption Key Size` type of `HCI_CMD` packet(Command Opcode: 0x1408)
+to the controller to inquire the length of encryption key.After receiving
+this packet, the controller immediately replies with a Command Complete
+packet (Event Code: 0x0e) to return the Encryption Key Size.
+
+2. In our fuzz test case, the timing of the controller's response to this
+packet was delayed to an unexpected point: after the RFCOMM and L2CAP
+layers had disconnected but before the HCI layer had disconnected.
+
+3. After receiving the Encryption Key Size Response at the time described
+in point 2, the host still called the rfcomm_check_security function.
+However, by this time `struct l2cap_conn *conn = l2cap_pi(sk)->chan->conn;`
+had already been released, and when the function executed
+`return hci_conn_security(conn->hcon, d->sec_level, auth_type, d->out);`,
+specifically when accessing `conn->hcon`, a null-ptr-deref error occurred.
+
+To fix this bug, check if `sk->sk_state` is BT_CLOSED before calling
+rfcomm_recv_frame in rfcomm_process_rx.
+
+Signed-off-by: Yuxuan Hu <20373622@buaa.edu.cn>
 ---
- x86/pmu.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+V1 -> V2: Removed the direct check for `conn` being null in rfcomm_check_security
 
-diff --git a/x86/pmu.c b/x86/pmu.c
-index c8d4a0dcd362..d5c3fcfaa84c 100644
---- a/x86/pmu.c
-+++ b/x86/pmu.c
-@@ -172,6 +172,16 @@ static void adjust_events_range(struct pmu_event *gp_events, int branch_idx)
- 		gp_events[branch_idx].min = PRECISE_LOOP_BRANCHES;
- 		gp_events[branch_idx].max = PRECISE_LOOP_BRANCHES;
- 	}
-+
-+	/*
-+	 * If HW supports IBPB, one branch miss is forced to trigger by
-+	 * IBPB command. Thus overwrite the lower boundary of branch misses
-+	 * event to 1.
-+	 */
-+	if (has_ibpb()) {
-+		/* branch misses event */
-+		gp_events[branch_idx + 1].min = 1;
-+	}
- }
- 
- volatile uint64_t irq_received;
+ net/bluetooth/rfcomm/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/bluetooth/rfcomm/core.c b/net/bluetooth/rfcomm/core.c
+index 053ef8f25fae..1d34d8497033 100644
+--- a/net/bluetooth/rfcomm/core.c
++++ b/net/bluetooth/rfcomm/core.c
+@@ -1941,7 +1941,7 @@ static struct rfcomm_session *rfcomm_process_rx(struct rfcomm_session *s)
+ 	/* Get data directly from socket receive queue without copying it. */
+ 	while ((skb = skb_dequeue(&sk->sk_receive_queue))) {
+ 		skb_orphan(skb);
+-		if (!skb_linearize(skb)) {
++		if (!skb_linearize(skb) && sk->sk_state != BT_CLOSED) {
+ 			s = rfcomm_recv_frame(s, skb);
+ 			if (!s)
+ 				break;
 -- 
-2.34.1
+2.25.1
 
 
