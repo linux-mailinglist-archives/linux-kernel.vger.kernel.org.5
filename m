@@ -1,182 +1,110 @@
-Return-Path: <linux-kernel+bounces-15864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7798A82346F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D53282347D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:31:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BB451F2446E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:27:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EEC71F24509
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:31:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07051C6A6;
-	Wed,  3 Jan 2024 18:26:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CFA11C6A3;
+	Wed,  3 Jan 2024 18:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="etyECy0X"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 644911D52D;
-	Wed,  3 Jan 2024 18:26:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 288E3C433C8;
-	Wed,  3 Jan 2024 18:26:07 +0000 (UTC)
-Date: Wed, 3 Jan 2024 13:27:10 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] eventfs: Stop using dcache_readdir() for getdents()
-Message-ID: <20240103132710.443f227f@gandalf.local.home>
-In-Reply-To: <CAHk-=whrRobm82kcjwj625bZrdK+vvEo0B5PBzP+hVaBcHUkJA@mail.gmail.com>
-References: <20240103102553.17a19cea@gandalf.local.home>
-	<CAHk-=whrRobm82kcjwj625bZrdK+vvEo0B5PBzP+hVaBcHUkJA@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86D6F15E93;
+	Wed,  3 Jan 2024 18:31:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B131C433C7;
+	Wed,  3 Jan 2024 18:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704306667;
+	bh=hngD+IDMCG5UNcY50O5jUIC2dfyxPIe5eyQlBYdFUr8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=etyECy0X/5DzXMxH8hftxAv025gWeYUOJfvwVqvbixE3Ip4xKl1IrL0JHYCYb0wL8
+	 AyrVSvtzjBqmR61R9QiKdKoBV+G89G+s5+5kAK8CXh/KTUkZXVxAjYkHI/oSTby0Pk
+	 6O4EsOanROyzxzRa3WnoZavh5pUCjj3F0chZIPPOJau1HUexpRkAXJSPyn1KAufw4e
+	 uoyQVYA4s19TKbgQSnUXtGdMnqUjaLWc8amHNE6mYPpSbybcM0mQWw/uXObmdTtuyT
+	 Bi+DNIK/ixR1E7DO6yfYKTUlu3wgnK0QX+m/4NmsDGfr1can8EWQUkuvh0BMjrM3tW
+	 Sg6Xk/1eWQFnw==
+Date: Wed, 3 Jan 2024 18:31:02 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Dominik Brodowski <linux@dominikbrodowski.net>, lgirdwood@gmail.com,
+	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
+	kai.vehmanen@linux.intel.com, ranjani.sridharan@linux.intel.com,
+	linux-kernel@vger.kernel.org, regressions@lists.linux.dev
+Subject: Re: Oops in hdac_hda_dev_probe (6.7-rc7)
+Message-ID: <ZZWn5vWeWe0BYFfY@finisterre.sirena.org.uk>
+References: <ZYvUIxtrqBQZbNlC@shine.dominikbrodowski.net>
+ <87sf3lxiet.wl-tiwai@suse.de>
+ <ZY7kosArPqhlCfOA@shine.dominikbrodowski.net>
+ <874jg1x7ao.wl-tiwai@suse.de>
+ <ZY_Gb8-rncuOjRq-@shine.dominikbrodowski.net>
+ <87plyovwg7.wl-tiwai@suse.de>
+ <3260e806-a708-4462-9d4e-346e54143a65@linux.intel.com>
+ <87y1d8ulxv.wl-tiwai@suse.de>
+ <87o7e2a3hr.wl-tiwai@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="BfbeOu7ghkN4iRpV"
+Content-Disposition: inline
+In-Reply-To: <87o7e2a3hr.wl-tiwai@suse.de>
+X-Cookie: You might have mail.
 
-On Wed, 3 Jan 2024 10:12:08 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> On Wed, 3 Jan 2024 at 07:24, Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > Instead, just have eventfs have its own iterate_shared callback function
-> > that will fill in the dent entries. This simplifies the code quite a bit.  
-> 
-> Much better. Now eventfs looks more like a real filesystem, and less
-> like an eldritch horror monster that is parts of dcache tackled onto a
-> pseudo-filesystem.
+--BfbeOu7ghkN4iRpV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks.
+On Wed, Jan 03, 2024 at 03:36:00PM +0100, Takashi Iwai wrote:
 
-> 
-> However, one request, and one nit:
-> 
-> > Also, remove the "lookup" parameter to the create_file/dir_dentry() and
-> > always have it return a dentry that has its ref count incremented, and
-> > have the caller call the dput. This simplifies that code as well.  
-> 
-> Can you please do that as a separate patch, where the first patch just
-> cleans up the directory iteration, and the second patch then goes "now
-> there are no more callers that have the 'lookup' argument set to
-> false".
+> > > Mark, Takashi, can you pick the fix for 6.7 (it is in -next)? I think we
+> > > might have time for it to land?
 
-Yeah, I was thinking of doing it as two patches and figured I'd merge them
-into one because I deleted one of the users of it. As I was on the fence
-with doing two patches, I'm happy to change that.
+> > Oh that landed to Mark's for-next branch, i.e. only for 6.8.
+> > Mark, please cherry-pick and send a PR before 6.7 final.
 
-> 
-> Because as-is, the patch is kind of two things mixed up.
-> 
-> The small nit is this:
-> 
-> > +static int eventfs_iterate(struct file *file, struct dir_context *ctx)
-> >  {
-> > +       /*
-> > +        * Need to create the dentries and inodes to have a consistent
-> > +        * inode number.
-> > +        */
-> >         list_for_each_entry_srcu(ei_child, &ei->children, list,
-> >                                  srcu_read_lock_held(&eventfs_srcu)) {
-> > -               d = create_dir_dentry(ei, ei_child, parent, false);
-> > -               if (d) {
-> > -                       ret = add_dentries(&dentries, d, cnt);
-> > -                       if (ret < 0)
-> > -                               break;
-> > -                       cnt++;
-> > +
-> > +               if (ei_child->is_freed)
-> > +                       continue;
-> > +
-> > +               name = ei_child->name;
-> > +
-> > +               dentry = create_dir_dentry(ei, ei_child, ei_dentry);
-> > +               if (!dentry)
-> > +                       goto out;
-> > +               ino = dentry->d_inode->i_ino;
-> > +               dput(dentry);
-> > +
-> > +               if (c > 0) {
-> > +                       c--;
-> > +                       continue;
-> >                 }  
-> 
-> Just move this "is the position before this name" up to the top of the
-> loop. Even above the "is_freed" part.
-> 
-> Let's just always count all the entries in the child list.
-> 
-> And same for the ei->nr_entries loop:
-> 
-> >         for (i = 0; i < ei->nr_entries; i++) {  
-> 
-> where there's no point in creating that dentry just to look up the
-> inode number, only to then decide "Oh, we already iterated past this
-> part, so let's not do anything with it".
-> 
-> This wouldn't seem to matter much with a big enough getdents buffer
-> (which is the normal user level behavior), but it actually does,
-> because we don't keep track of "we have read to the end of the
-> directory".
-> 
-> So every readdir ends up effectively doing getdents at least twice:
-> once to read the directory entries, and then once to just be told
-> "that was all".
-> 
-> End result: you should strive very hard to *not* waste time on the
-> directory entries that have already been read, and are less than
-> 'ctx->pos'.
+If you're trying to attract my attention a comment deep in a thread
+about HDA probably isn't the way to do it, there's a very good chance
+I'm just deleting them unread given how much random HDA stuff I seem to
+get CCed on these days :/ .
 
-My patch originally did that, but then I was worried about counting something
-that doesn't exist.
+> I ended up with cherry-picking by myself now.
 
-If it is done twice, there's a good chance the dentry will still be around
-anyway, so it doesn't slow it down that much. The dput() only decrements
-the entry and doesn't free it. I added back my "show_events_dentries" file
-to test this. They sit with refcount equal to zero waiting to be reclaimed.
-But if they get referenced again, the refcount goes up again.
+> I'm going to send a PR to Linus for 6.7 final in tomorrow.
 
-That is, the first time it is called, where ctx->pos is likely zero, it
-creates the dentry, but that is also added to the list. The next time, with
-ctx->pos greater than zero, the create_dir_dentry() starts with:
+I have some critical fixes I should be posting just now and sending a PR
+for later today (unfortunately the board that's impacted has some
+ethernet issues in the bootloader which is really slowing down tests
+here).
 
-static struct dentry *
-create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
-		  struct dentry *parent)
-{
-	struct dentry *dentry = NULL;
+--BfbeOu7ghkN4iRpV
+Content-Type: application/pgp-signature; name="signature.asc"
 
-	WARN_ON_ONCE(!inode_is_locked(parent->d_inode));
+-----BEGIN PGP SIGNATURE-----
 
-	mutex_lock(&eventfs_mutex);
-	if (pei->is_freed || ei->is_freed) {
-		mutex_unlock(&eventfs_mutex);
-		return NULL;
-	}
-	if (ei->dentry) {
-		/* If the dentry already has a dentry, use it */
-		dentry = ei->dentry;
-		dget(dentry);
-		mutex_unlock(&eventfs_mutex);
-		return dentry;
-	}
-	mutex_unlock(&eventfs_mutex);
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWVp+YACgkQJNaLcl1U
+h9AAIwf/Qzap4+U79NRRmhcs4FVob+v57O/mHIzX8S6LB53NGVey9KARMwFrFV9O
+C5JKz/NVo68HRvG79ed9XP92r360aPRzdTsUaNRH/q2n7d9W8qaRJVDO9oYY0mA5
+uq517mTtY4AhMK/QodecrEySvjgwzVQNL42YS4CvUiFYXnpUJwR3p07E4WzHIcpZ
+dMa/tXPPVnHMWg1bDPyCPeOgoHwTGVuu6Wauk1ZUNvO/StRNbmX9IMVnguTkkx+7
+E5ouzPwkxmgXNyEZmfYW9LKGoLqphZ+d9kXaTWEVPO7b8xic9hjb4C+Wte9ASHYf
+JcMZrunllwufIpMXDAhlLXpphs579A==
+=IoKw
+-----END PGP SIGNATURE-----
 
-Where the already created dentry is returned. (hmm, I just noticed that
-comment should be "if the eventfs_inode already has a dentry" and not "If
-the dentry already has a dentry" :-p ).
-
-It does require taking a mutex, but that's actually quite fast too.
-
-If you don't think it will cause any inconsistencies to count something
-that perhaps doesn't exist anymore, then I can move the ctx->pos check up.
-
--- Steve
-
+--BfbeOu7ghkN4iRpV--
 
