@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-16064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC8908237A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:19:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CA268237A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:19:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83B7D286508
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:19:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CB4C1C2476D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:19:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 237EF1EB46;
-	Wed,  3 Jan 2024 22:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 447DE1F61F;
+	Wed,  3 Jan 2024 22:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YFdqC/0F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BhKFhYlo"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1251EB24;
-	Wed,  3 Jan 2024 22:19:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 415A1C433C8;
-	Wed,  3 Jan 2024 22:19:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F251F615
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 22:19:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6BD8BC433C8;
+	Wed,  3 Jan 2024 22:19:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704320345;
-	bh=6O/Uk8aKPJQgS2gexoGKPVyyCafx/btMDUEMY3NUN1A=;
+	s=k20201202; t=1704320352;
+	bh=101QkO2k65BCAMjWbc3ZNJnw8+CH2AuuahjHHtACVO4=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=YFdqC/0FDp7/g1yjZZb1u+uIxxpbTp6gR2AmbJGlZdwDshjUgUyi0YYQO6S7mdR5I
-	 MYuW+edwfqJAQ955XIDhzGyvXxsKReqABCgVICUX1DEESvoCTaui6YZ7ZhS6SSJwBg
-	 yFRhFgZLx2Ut5Rtge3Bc4uxZNHm0D8KB0UvgHa3+QsGd3cFtmwnTv9VkS/wS0NJPFz
-	 wPku9c++87BYGPFlURhXPkGjrZoodP0kAOAEC4rR//rEU7aZFllLyzLheS0jaJN9+f
-	 Rf889Tj5RGmtfnkU975jF8mMn+U8f0BtO5WPxhVwC2dVbBuPqsb0T3K7nUVdvgSHGs
-	 C0aWfttxCN15A==
+	b=BhKFhYlo1Jgep96ypj3opPQBpI4N0o14AnhWg04x33misFhs8Gluge347Aar9DcNE
+	 7vWeXxVGHyV/qH55Dd64XX2xhl4/c1VGrrQBDXj+/TI5wVr72jYR5bn6J3Z4OeNgzY
+	 5lCCvGutErULQxeFV5OfrDZytECJwW4/+uk71tUCkME032e8ufVwVu8PDzICRqQI/+
+	 +80rcKLHw7AiigeWy/MGJ+URiGQ//MJ5tCB8wHs+i7wa5UlhZ6S/6xvuXojMGtXQ7G
+	 sN7oYWec8ouPBwy4wKWgwBqhlzT5Wh9/l6sea2UVSD/NdcFz2oGjEV+y/+1MFF3lcA
+	 ligxkRTqit8ZA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2812BDCB6FE;
-	Wed,  3 Jan 2024 22:19:05 +0000 (UTC)
-Subject: Re: [GIT PULL] bcachefs new years fixes for 6.7
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5A3F0C43168;
+	Wed,  3 Jan 2024 22:19:12 +0000 (UTC)
+Subject: Re: [GIT PULL] tracing: Final fixes for v6.7
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <o7py4ia3s75popzz7paf3c6347te6h3qms675lz3s2k5eltskl@cklacfnvxb7k>
-References: <o7py4ia3s75popzz7paf3c6347te6h3qms675lz3s2k5eltskl@cklacfnvxb7k>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <o7py4ia3s75popzz7paf3c6347te6h3qms675lz3s2k5eltskl@cklacfnvxb7k>
-X-PR-Tracked-Remote: https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-01-01
-X-PR-Tracked-Commit-Id: 0d72ab35a925d66b044cb62b709e53141c3f0143
+In-Reply-To: <20240102210731.1f1c5bf5@gandalf.local.home>
+References: <20240102210731.1f1c5bf5@gandalf.local.home>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240102210731.1f1c5bf5@gandalf.local.home>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git trace-v6.7-rc8
+X-PR-Tracked-Commit-Id: fd56cd5f6d76e93356d9520cf9dabffe1e3d1aa0
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 981d04137a4b5ea95133572bdb3d888c9b515850
-Message-Id: <170432034515.19489.15575432447802603893.pr-tracker-bot@kernel.org>
-Date: Wed, 03 Jan 2024 22:19:05 +0000
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: 360f0342b2e9374298e2222c846f3fe9d0295f0d
+Message-Id: <170432035236.19489.11575939729330641498.pr-tracker-bot@kernel.org>
+Date: Wed, 03 Jan 2024 22:19:12 +0000
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Mon, 1 Jan 2024 11:57:04 -0500:
+The pull request you sent on Tue, 2 Jan 2024 21:07:31 -0500:
 
-> https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-01-01
+> git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git trace-v6.7-rc8
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/981d04137a4b5ea95133572bdb3d888c9b515850
+https://git.kernel.org/torvalds/c/360f0342b2e9374298e2222c846f3fe9d0295f0d
 
 Thank you!
 
