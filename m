@@ -1,209 +1,236 @@
-Return-Path: <linux-kernel+bounces-15779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 249218231B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:58:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EF388231BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:58:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A38071F24C01
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:58:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16311288C40
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 670851C2A9;
-	Wed,  3 Jan 2024 16:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CDC41C6B8;
+	Wed,  3 Jan 2024 16:57:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="KTB6Rayv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mEM/AUoh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2088.outbound.protection.outlook.com [40.107.96.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380051C281;
-	Wed,  3 Jan 2024 16:57:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A6q/CpLXaJ8ikbuxT336fjJqhliOtsGjeNhUOdPMWnC63AbH3Bfc8lfSgY0+EdMZkmYm5Wl/6hZAcl2vuJqkXMauhD4n3OO66TYa15EpYeL0t0qYv1onWobIjX01Styi3u4s1rILEAfbi1WLQCCHU/vq/3ggKDcjQw25zWWkQMzRw4gDSrKtarJu7+1HWOMtZlsVK2T67Cx3MTMwoWaIAi9IrrWQioPM9moLrSdVh3Yu+Gmx46W7aQBJg6tYjmjkh2otJ5KCDT2Kvpag0/XIeQtlQSvK/ESC3CSYeHrIDAcMfm+PQjriRU3dWQkEhda2v9RcjMnt2F0prz0Njwn9NQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5zWh7XXcVtHaS5YxRDKPuR+TLC/njWTKk4FtDlGOwEA=;
- b=XNNuL+T9GyzzX7IRe+JaCYWN1Z+whA2Q1GM8sGGrRP98QJTj8DMv9iGJlsUBB5dMGhyMGidD6tZ6K6sHZoP59WZ7UBoTQlyCwC7p3ARFS6wYoBeEOOU79NAzmKDrgskaDbCoggPXE4we02UdHc8cz7UJK8t2CD7XqMEIDbiEJWXxYKgsCSulBoFXi+G6Oi6bLgijnTdDVmkpvqhWsGx0fFMrkDoKYjFsgZ6OvcsKDJQjsSbS+7NYt2a+tixSFky31wB9WPIfWJzIyaxCO/ZxjuDm5cnFMHHLP1QxEwOMZKDYsb5cCbAMX6uVWJvAIOCkGkLZ8bdhFnxmpCDeMGyW7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5zWh7XXcVtHaS5YxRDKPuR+TLC/njWTKk4FtDlGOwEA=;
- b=KTB6RayvOy0eZHEF3uK1sySayF6w6TDuks/B7NJ+CJDcZNErII8V5KBEgVydoHYAr6dcgWQJAk81qTwT5Lr+4zigjPrGtp1plf8q5SvkCK0k8yTb7nNwjqkhlhVGLlLykNB7H0sCan5msf4xkiMdRikyzHpVnyZArFooXAeuvQD1NyE80nqonOavdxEiA5DghhMdd9nzdgmwwzCkvpj0BLZmV4AcAQq3yLkYJxrwVELuu6NfLV9mksK5n6tvq8X//JxTPHYBnDPwzp7J8Y0UNeafTlzOYmWNTOojfMDOQryi7arrvgbEUXz1MKsBp6vCejNWcSZjfXnbWdPmChUMEg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by PH0PR12MB5449.namprd12.prod.outlook.com (2603:10b6:510:e7::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Wed, 3 Jan
- 2024 16:57:29 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7135.023; Wed, 3 Jan 2024
- 16:57:28 +0000
-Date: Wed, 3 Jan 2024 12:57:27 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Alex Williamson <alex.williamson@redhat.com>
-Cc: Ankit Agrawal <ankita@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
-	"shameerali.kolothum.thodi@huawei.com" <shameerali.kolothum.thodi@huawei.com>,
-	"kevin.tian@intel.com" <kevin.tian@intel.com>,
-	"eric.auger@redhat.com" <eric.auger@redhat.com>,
-	"brett.creeley@amd.com" <brett.creeley@amd.com>,
-	"horms@kernel.org" <horms@kernel.org>,
-	Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
-	Kirti Wankhede <kwankhede@nvidia.com>,
-	"Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
-	Vikram Sethi <vsethi@nvidia.com>, Andy Currid <acurrid@nvidia.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	John Hubbard <jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>,
-	"Anuj Aggarwal (SW-GPU)" <anuaggarwal@nvidia.com>,
-	Matt Ochs <mochs@nvidia.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v15 1/1] vfio/nvgrace-gpu: Add vfio pci variant module
- for grace hopper
-Message-ID: <20240103165727.GQ50406@nvidia.com>
-References: <20231217191031.19476-1-ankita@nvidia.com>
- <20231218151717.169f80aa.alex.williamson@redhat.com>
- <BY5PR12MB3763179CAC0406420AB0C9BAB095A@BY5PR12MB3763.namprd12.prod.outlook.com>
- <20240102091001.5fcc8736.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240102091001.5fcc8736.alex.williamson@redhat.com>
-X-ClientProxiedBy: BL0PR0102CA0031.prod.exchangelabs.com
- (2603:10b6:207:18::44) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A1D1C68A;
+	Wed,  3 Jan 2024 16:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-3600902871fso32251825ab.2;
+        Wed, 03 Jan 2024 08:57:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704301063; x=1704905863; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2Zktb3+Qs2SqoLUYke6ed9z4x6XW8ZCraFvAIiNm+fM=;
+        b=mEM/AUohvxVPGyv9bQMWyuDGAoLSEPsDLyDaoMjQiGIAy425OnrkJGcHC3ZnTfKCm2
+         ct/3LPxXEF3JflgNrIhmoCRzqG5St0gNNLHkfJgre/YV65/iMNiBW5knzAk+NeMCiHsz
+         6fe7p/WiSMNamyKkCc1WEiaSphi4aPqjrmjrmm5LY/nZM8pQ+QHXTmcuPiOrb5Zposk3
+         EODh2t5dn6wTcsBWqCwRIkzDLG0Unx6oSDWwUbl21kDQW344XBwsN5ZxhGkhCvE6HDuh
+         z6XVz7KAZKPk7JbyaL+pcMA3ORcyPoPsbluW22PhV0X9fY48N9pO1p09lJBLsU+U9aWw
+         7avw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704301063; x=1704905863;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2Zktb3+Qs2SqoLUYke6ed9z4x6XW8ZCraFvAIiNm+fM=;
+        b=cRM5X+aMEdBv4uZjlgKhRsZAWPsUoh+nniQwOzF9pin8koARO7NF4cnQqREHO+7KnR
+         s4a3pn9ZW1B3k2ThoJqy9eeWgfEBNOeVNzktfyCugyb/kh+SC7ImtRFXDfcrW+TPWke9
+         9SKC0lBYSvZ/8clZcm4HI/cTp1Ufls3LJWgT27VucJeG3PP6zGVgwkOl3ql+2fdtbiqk
+         t2+7blQYwah7WfcVo/rWCDutLIaiPYyxrfE1REDdADQxRJKOyT+H+n+1ju2Ojbh/coYM
+         nnY63O+MIPAgfcUcG0CJTzPDLeoRYofn3VUO9bLXDI5byA2ig/PFMEgzKPC9TcYFrqbK
+         Pjww==
+X-Gm-Message-State: AOJu0YyXs82hOP1nG7wGxhV3Sia641zvHEeQBeiS3Yb+584+QQOfH68P
+	Pxm/Pc7uuPTj+OdWwjwFcaV1SwJF1aM=
+X-Google-Smtp-Source: AGHT+IHX9q+d4uOUIeL2jtln8G6aLe/9MWYxTXL8k6VY7y3MB4GVEpFMubr8CvgGH/0TQZhIuy3WtA==
+X-Received: by 2002:a05:6e02:17c5:b0:35f:e1da:e15f with SMTP id z5-20020a056e0217c500b0035fe1dae15fmr15096614ilu.73.1704301060972;
+        Wed, 03 Jan 2024 08:57:40 -0800 (PST)
+Received: from localhost ([98.97.37.198])
+        by smtp.gmail.com with ESMTPSA id f25-20020a631f19000000b0056606274e54sm22418321pgf.31.2024.01.03.08.57.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 08:57:40 -0800 (PST)
+Date: Wed, 03 Jan 2024 08:57:36 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Barret Rhoden <brho@google.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>
+Cc: mattbobrowski@google.com, 
+ bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+Message-ID: <65959200a747b_2384720814@john.notmuch>
+In-Reply-To: <20240103153307.553838-2-brho@google.com>
+References: <20240103153307.553838-1-brho@google.com>
+ <20240103153307.553838-2-brho@google.com>
+Subject: RE: [PATCH bpf-next 1/2] libbpf: add helpers for mmapping maps
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH0PR12MB5449:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2aa2d197-c267-4990-1d38-08dc0c7d1188
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ZXBev8oGZ6gDLfzrUv7nVQWScYkD6otdz+hsNKKOgXP4LGrdsHYZnwIq+Anng0quu/5ncD/RNjcMPVIN2v3BJFLHP7jtb+0yonrLsPmX/TgmRQvC55o6pj3+lf3knEGWv9QeWxEZkENhMwuodobUH3qzfmTtD2tc6xq9s4lFETW0xLDYWVeHrb3gsY/Oi69uD+d5M5TMmBmyJlSxFp6EoN8XR0ltojQJpTbpc7zH84tWGJB3gZSP0ZB0BoD+aLliWM6dstgnveZq8/KHAM7S/1cqO62oqRDqu9Wk1m5cS189pby3vwLMS7oAy8gMOtvEk/KHsN92SgUz/hAQgI6CnmZ9Cx9awhFyWnp+AXu7pkdz9JR6IkpxnJSv22U4ILKy2qlqAGdNMa0aQGhkq9DViFNMhrS/ZtsvKibf74ORLVf8YPR1Z2O05KIziG4IWAqE0StHAeXAlkP6sgJ1j1wXl/sZGofNbHg9QC+dbBD0k9Ndq6EKEAWd3nzYphYy48JeE8k3QbFLVEzftIHFU/r0OFt3dWPMxoCEvoFxVf8lvGihLvgtqT688+WxIblDgHLI
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(136003)(366004)(39860400002)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(36756003)(6916009)(6512007)(66476007)(6506007)(66556008)(66946007)(6486002)(86362001)(33656002)(38100700002)(2616005)(83380400001)(1076003)(26005)(41300700001)(2906002)(5660300002)(478600001)(4326008)(54906003)(8676002)(316002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?063HchGtR/wnIf5PV0yDiospH06j7iWCA0xRLG1PYDeRo0DgSsH9W2uTfRq1?=
- =?us-ascii?Q?63HDcdnOFJHuCN9IhmZbAA9jIh52pFTuqWHIWbxzAls2yRFnpWGR0aAtGNbC?=
- =?us-ascii?Q?cPQrbJkoO1lvEtzOXrHoA9DajM8zxpaQEtam7ttJ6X6hbrLEY/pAFYubFCdS?=
- =?us-ascii?Q?RqXB1ViHsBn3ixkH/tkwlGU1u0xe//zzxdyU9AJc3GIxKwQZaq9pXYVqImRI?=
- =?us-ascii?Q?2s5+TgX6kyN11MvALmJVVSDu0qIZzh854/EI/hbNZS/v/5sZ7h4Rht6M7WZZ?=
- =?us-ascii?Q?dz8RKCqtpMzSQKNsF6KW5NvYIw9n6TnpC5kh95iDJ6TZX2P2UZcwPF9zIr+4?=
- =?us-ascii?Q?EdPPdMsm8OoRGHMNKJ0qc/fcO6tlCQgWfhb0yt59Piv4oceX1MYlQjPUohvW?=
- =?us-ascii?Q?gjp6jsrhXhUpb6LBR9op71/A1KLYVqnr9hDlzNpMk4VhLcRXtHT2f9X5dNuG?=
- =?us-ascii?Q?1ecVjWaOK3T9LfKnctOV3oYGKEyW0zaqC+eYqkKiQDvgj3+oxbGIS8AYNnVz?=
- =?us-ascii?Q?GZqAcUV2sKvXGoZIw4U/l6bUoYKuoqDwby+s6gBKZqaYvARmMQ6XEY8bl+nw?=
- =?us-ascii?Q?kofP4/5avHNFiDw5zuZ2Y+J1FVSptHAh1aJQ70pgREPiZGPkgdXnLByDnedT?=
- =?us-ascii?Q?OVL+XonASqsHc0Hxe+R3jq0S4SlKhkuSZr3fHxgtw0LZDjwEklE1v30Y6aMT?=
- =?us-ascii?Q?D63ifgIt6rlh7WELZlHAcqQHs4/f+jZtpc0yv1My+O3tCEdYenduQo8I5hr3?=
- =?us-ascii?Q?m/x//lXZ/wGjHDr+PaUQ4YRbFse0m5cOD8oYiYfToXrG0wTTHjLlsMrtJcRF?=
- =?us-ascii?Q?GJlYwkXCbi4zBL+D7b8KzQK0ddrMqf+9C+OdiBOWYu+xod05SwDu9jhooQzU?=
- =?us-ascii?Q?sa4KqmbroY7BxsTmrKb9FmTM9QfmbXCm1pr6yZwv61OcqglATayd7EucLj+b?=
- =?us-ascii?Q?FMOYBxNhFG8TyfBeTe5Y83VVjMVDVPL+d21rulV71CWp7vWL2WjJCwETcVbC?=
- =?us-ascii?Q?iAu+b9Dcz4ajhDFpn/FrkAU5Rveu/yJnsxC0r3nDZC1cd3HcsTOG780nQ6/L?=
- =?us-ascii?Q?OOx6cOqgdFKiF5odXA8+3rc/bKWvcCYETNW3GKyxUdsrcExh/SKyV01OJaYM?=
- =?us-ascii?Q?EgLJ0UNSS+h4vr3JzwJq2IFw/ALBBf5QTVPWZiFQd41g2AaACbkltViRav/A?=
- =?us-ascii?Q?OdicXlwaNEzgmtv1DqHtZzgNCtHnCO0Cy90Ap2/rbqRdB4yAjV56PktvgZ47?=
- =?us-ascii?Q?NGC/gCsjQvb9tQxaSJ7DJpg8xSRyq+4f/3/rOTfEFrTQrSC6W3CE5cfuHxvv?=
- =?us-ascii?Q?z0ekxRpo4++gkt4Wrd4I2zW0WtZfphkEeNok/LmYUg7xPtILKfArpXtaqIHx?=
- =?us-ascii?Q?zeqIopqsyBwLnw/Nnoh8j245y5kpmIW1xG8erMUDdwur3w7gy2xLCUmJGUO3?=
- =?us-ascii?Q?hRIyKfWQ01j67RaNAtE3nlq4kj9G8Nb6k+E2RFAUKhiedd7u7lhSAugINIIs?=
- =?us-ascii?Q?onzUz/YfZibIpADB58daDynJsszrm6ipQ1NnWZKS6WMVFnBt4qcaq/6BrA1Z?=
- =?us-ascii?Q?402gESdhxcIoKQ0wAqacMgoEpxQk3b1aTR1G0Oh0?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2aa2d197-c267-4990-1d38-08dc0c7d1188
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2024 16:57:28.6461
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iHuX0ybvdn4Roq5ErHFUFXh79DDkkzLT9ibL+PLyOXYNxEV6OsWV/3aAm6v9m+oS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5449
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 02, 2024 at 09:10:01AM -0700, Alex Williamson wrote:
+Barret Rhoden wrote:
+> bpf_map__mmap_size() was internal to bpftool.  Use that to make wrappers
+> for mmap and munmap.
+> 
+> Signed-off-by: Barret Rhoden <brho@google.com>
+> ---
+>  tools/bpf/bpftool/gen.c  | 16 +++-------------
+>  tools/lib/bpf/libbpf.c   | 23 +++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.h   |  6 ++++++
+>  tools/lib/bpf/libbpf.map |  4 ++++
+>  4 files changed, 36 insertions(+), 13 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index ee3ce2b8000d..a328e960c141 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -453,16 +453,6 @@ static void print_hex(const char *data, int data_sz)
+>  	}
+>  }
+>  
+> -static size_t bpf_map_mmap_sz(const struct bpf_map *map)
+> -{
+> -	long page_sz = sysconf(_SC_PAGE_SIZE);
+> -	size_t map_sz;
+> -
+> -	map_sz = (size_t)roundup(bpf_map__value_size(map), 8) * bpf_map__max_entries(map);
+> -	map_sz = roundup(map_sz, page_sz);
+> -	return map_sz;
+> -}
+> -
+>  /* Emit type size asserts for all top-level fields in memory-mapped internal maps. */
+>  static void codegen_asserts(struct bpf_object *obj, const char *obj_name)
+>  {
+> @@ -641,7 +631,7 @@ static void codegen_destroy(struct bpf_object *obj, const char *obj_name)
+>  		if (bpf_map__is_internal(map) &&
+>  		    (bpf_map__map_flags(map) & BPF_F_MMAPABLE))
+>  			printf("\tskel_free_map_data(skel->%1$s, skel->maps.%1$s.initial_value, %2$zd);\n",
+> -			       ident, bpf_map_mmap_sz(map));
+> +			       ident, bpf_map__mmap_size(map));
+>  		codegen("\
+>  			\n\
+>  				skel_closenz(skel->maps.%1$s.map_fd);	    \n\
+> @@ -723,7 +713,7 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
+>  					goto cleanup;			    \n\
+>  				skel->maps.%1$s.initial_value = (__u64) (long) skel->%1$s;\n\
+>  			}						    \n\
+> -			", ident, bpf_map_mmap_sz(map));
+> +			", ident, bpf_map__mmap_size(map));
+>  	}
+>  	codegen("\
+>  		\n\
+> @@ -780,7 +770,7 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
+>  			if (!skel->%1$s)				    \n\
+>  				return -ENOMEM;				    \n\
+>  			",
+> -		       ident, bpf_map_mmap_sz(map), mmap_flags);
+> +		       ident, bpf_map__mmap_size(map), mmap_flags);
+>  	}
+>  	codegen("\
+>  		\n\
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index ebcfb2147fbd..171a977cb5fd 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -9830,6 +9830,29 @@ void *bpf_map__initial_value(struct bpf_map *map, size_t *psize)
+>  	return map->mmaped;
+>  }
 
-> Yes, it's possible to add support that these ranges honor the memory
-> enable bit, but it's not trivial and unfortunately even vfio-pci isn't
-> a great example of this.
+It seems libbpf.c has its own bpf_map_mmap_sz() as well.
 
-We talked about this already, the HW architects here confirm there is
-no issue with reset and memory enable. You will get all 1's on read
-and NOP on write. It doesn't need to implement VMA zap.
+ static size_t bpf_map_mmap_sz(unsigned int value_sz, unsigned int max_entries)                  
+ {                                                                                
+        const long page_sz = sysconf(_SC_PAGE_SIZE);                                         
+        size_t map_sz;                                                                                
+                                                                                    
+        map_sz = (size_t)roundup(value_sz, 8) * max_entries;
+        map_sz = roundup(map_sz, page_sz);                                                  
+        return map_sz;                                                              
+ }  
 
-> around device reset or relative to the PCI command register.  The
-> variant driver becomes a trivial implementation that masks BARs 2 & 4
-> and exposes the ACPI range as a device specific region with only mmap
-> support.  QEMU can then map the device specific region into VM memory
-> and create an equivalent ACPI table for the guest.
+Can we consolidate these a bit. Seems we don't want/need to
+have both bpf_map__mmap_size and bpf_map_mmap_sz() floating
+around. 
 
-Well, no, probably not. There is an NVIDIA specification for how the
-vPCI function should be setup within the VM and it uses the BAR
-method, not the ACPI.
+Should bpf_map__mmap_size just calls bpf_map_mmap_sz with
+the correct sz and max_entries?
 
-There are a lot of VMMs and OSs this needs to support so it must all
-be consistent. For better or worse the decision was taken for the vPCI
-spec to use BAR not ACPI, in part due to feedback from the broader VMM
-ecosystem, and informed by future product plans.
+>  
+> +size_t bpf_map__mmap_size(const struct bpf_map *map)
+> +{
+> +	long page_sz = sysconf(_SC_PAGE_SIZE);
+> +	size_t map_sz;
+> +
+> +	map_sz = (size_t)roundup(bpf_map__value_size(map), 8) *
+> +		bpf_map__max_entries(map);
+> +	map_sz = roundup(map_sz, page_sz);
+> +	return map_sz;
+> +}
+> +
+> +void *bpf_map__mmap(const struct bpf_map *map)
+> +{
+> +	return mmap(NULL, bpf_map__mmap_size(map),
+> +		    PROT_READ | PROT_WRITE, MAP_SHARED,
+> +		    bpf_map__fd(map), 0);
+> +}
+> +
+> +int bpf_map__munmap(const struct bpf_map *map, void *addr)
+> +{
+> +	return munmap(addr, bpf_map__mmap_size(map));
+> +}
+> +
+>  bool bpf_map__is_internal(const struct bpf_map *map)
+>  {
+>  	return map->libbpf_type != LIBBPF_MAP_UNSPEC;
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 6cd9c501624f..148f4c783ca7 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -996,6 +996,12 @@ LIBBPF_API int bpf_map__set_map_extra(struct bpf_map *map, __u64 map_extra);
+>  LIBBPF_API int bpf_map__set_initial_value(struct bpf_map *map,
+>  					  const void *data, size_t size);
+>  LIBBPF_API void *bpf_map__initial_value(struct bpf_map *map, size_t *psize);
+> +/* get the mmappable size of the map */
+> +LIBBPF_API size_t bpf_map__mmap_size(const struct bpf_map *map);
+> +/* mmap the map */
+> +LIBBPF_API void *bpf_map__mmap(const struct bpf_map *map);
+> +/* munmap the map at addr */
+> +LIBBPF_API int bpf_map__munmap(const struct bpf_map *map, void *addr);
+>  
+>  /**
+>   * @brief **bpf_map__is_internal()** tells the caller whether or not the
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 91c5aef7dae7..9e44de4fbf39 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -411,4 +411,8 @@ LIBBPF_1.3.0 {
+>  } LIBBPF_1.2.0;
+>  
+>  LIBBPF_1.4.0 {
+> +	global:
+> +		bpf_map__mmap_size;
+> +		bpf_map__mmap;
+> +		bpf_map__munmap;
+>  } LIBBPF_1.3.0;
+> -- 
+> 2.43.0.472.g3155946c3a-goog
+> 
+> 
 
-So, if vfio does special regions then qemu and everyone else has to
-fix it to meet the spec.
 
-> I know Jason had described this device as effectively pre-CXL to
-> justify the coherent memory mapping, but it seems like there's still a
-> gap here that we can't simply hand wave that this PCI BAR follows a
-> different set of semantics.  
-
-I thought all the meaningful differences are fixed now?
-
-The main remaining issue seems to be around the config space
-emulation?
-
-> We don't typically endorse complexity in the kernel only for the
-> purpose of avoiding work in userspace.  The absolute minimum should
-> be some justification of the design decision and analysis relative
-> to standard PCI behavior.  Thanks,
-
-If we strictly took that view in VFIO a lot of stuff wouldn't be here
-:)
-
-I've made this argument before and gave up - the ecosystem wants to
-support multiple VMMs and the sanest path to do that is via VFIO
-kernel drivers that plug into existing vfio-pci support in the VMM
-ecosystem.
-
-From a HW supplier perspective it is quite vexing to have to support
-all these different (and often proprietary!) VMM implementations. It
-is not just top of tree qemu.
-
-If we instead did complex userspace drivers and userspace emulation of
-config space and so on then things like the IDXD SIOV support would
-look *very* different and not use VFIO at all. That would probably be
-somewhat better for security, but I was convinced it is a long and
-technically complex road.
-
-At least with this approach the only VMM issue is the NUMA nodes, and
-as we have discussed that hackery is to make up for current Linux
-kernel SW limitations, not actually reflecting anything about the
-HW. If some other OS or future Linux doesn't require the ACPI NUMA
-nodes to create an OS visible NUMA object then the VMM will not
-require any changes.
-
-Jason
 
