@@ -1,46 +1,62 @@
-Return-Path: <linux-kernel+bounces-15449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E501E822C1F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:29:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BBF7822C48
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:39:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D6E1282D03
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:29:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74B801C2309E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:39:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F3B18E39;
-	Wed,  3 Jan 2024 11:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E76918EAA;
+	Wed,  3 Jan 2024 11:38:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="fMf0TWUK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C53FA18EA1
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 11:29:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R901e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=liusong@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Vzu1kGO_1704281354;
-Received: from localhost(mailfrom:liusong@linux.alibaba.com fp:SMTPD_---0Vzu1kGO_1704281354)
-          by smtp.aliyun-inc.com;
-          Wed, 03 Jan 2024 19:29:40 +0800
-From: Liu Song <liusong@linux.alibaba.com>
-To: mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	bristot@redhat.com,
-	vschneid@redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F6918EA0
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 11:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1704281627; bh=2MNHxC3wITYem7LyRgLeAtKDXtj29s2JCw6FJPu2I/4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=fMf0TWUKJ7SPXQzJ8qvLAgTRY2BCQdBUJhOs0EqYDTvnaRhGTeQhSS7gCZGQdETUf
+	 Jb5z4h2pf89cYg40pa+SwY0/MG7Dybm6v9XYHmWJH5rqq91/rTKak2TXGPs6mDwnjA
+	 ELq8GUBOVPIkWa3aMrGuaPSMTwlpTHAtSSaYXnMo=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 86D9E2D6; Wed, 03 Jan 2024 19:33:45 +0800
+X-QQ-mid: xmsmtpt1704281625t5ua0h9wy
+Message-ID: <tencent_F3421B852547BA53BB2433EE9E461BBF4B08@qq.com>
+X-QQ-XMAILINFO: N3l5ASPewLWqvQawp6YWevlEnPGkig8ccBv3AnSl0jMEpaeVUQ50gXhws9yBeU
+	 W8RM21envX3RdHZTL/N+vPieTm60QzJuS/02ul//nQvATQ2T36ypYHT995KiwZFS2r3XmpJqm6wd
+	 irUy1LlB1mtks+IFXdzuO4QHnfFPhgx967FCOJnGtTL4qWsXv05pi7uialv3yGnz9oJ23NWTYoeZ
+	 W7dTMA+fLxI7se3OMTAzWN08mDarnlyU753r4k/DEqquFYqriK3Z3E5JE34kJh43ck2ER1cgg3Ur
+	 PZnmVJW7yxGO7t+Iaz6z3tcZO9zQfCBb2taNyYWSeCnb2r+P+OMX+OM0D6l1hv9JGdrOS6YXUanL
+	 PAPERHiZvNWEG9LJl1ZdHySO5treEpR/sx+mpjhLe30kTQqmP7OLQNGaN7OeRAxeGBzPENBMNjZp
+	 /1VLIuNdouSVm9DgEixpNwBJMjm/p0CT46KhIhc+kuWBz5amaYmKmuqmjOHtGrTlA3WmHQXdlEph
+	 6Pr+rTcjoGjQKoClZOf7juS9wGFvZe3rYYw6pHXIiYNumwym+h9AsV6IMCYfA+cVNrMuMZ7UJzQn
+	 U98SXG9CHTyJS4XqssOzoVhopANLhwE3DPGdkbu1FhnmRtd1USDeAw6tdJ5xrKiU3MemIcT/zihv
+	 gIilsT2Wy/SLWIOva/nR3rsHAtq/HS52pyQc6CcOPv4aDqTpE3Fs1nMIQCPFS7ojhA1GNtTEuuvj
+	 hLChMMTK0gkzRQOnGFNlgIJpqePXBpy1EYBm42e6TIQH0rMHElNfD0g4TG3npet1/oVGChGLLqNL
+	 gYXsttaMQKUSErj5U77cfAwgsOozcZU/wGDbK4G5KCnVkUvpPNkdX1daZt+F4vfTDbcc3dzXVF4Q
+	 Vu/oc8kVoOTkH7y/PV7fU+LqrpoeJq2ThqqhuN7ush5EVLN9lZY6YG86S43zIg/A==
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+864a269c27ee06b58374@syzkaller.appspotmail.com
 Cc: linux-kernel@vger.kernel.org,
-	liusong@linux.alibaba.com
-Subject: [PATCH] sched/eevdf: remove the unused function max_vruntime and simplify the implementation of min_vruntime
-Date: Wed,  3 Jan 2024 19:29:14 +0800
-Message-Id: <20240103112914.77856-1-liusong@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [wireless?] WARNING: suspicious RCU usage in __cfg80211_bss_update
+Date: Wed,  3 Jan 2024 19:33:46 +0800
+X-OQ-MSGID: <20240103113345.2687039-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000009fa770060e089409@google.com>
+References: <0000000000009fa770060e089409@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,61 +65,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The function max_vruntime is defined but not used, and under EEVDF,
-there's no need to focus on max vruntime, so it's highly unlikely that
-the function will be used in the future. Even if it were to be used,
-max_vruntime simply returns the larger value of two vruntimes, and such
-a naming convention could easily cause confusion, leading one to
-mistakenly believe that alongside the meaningful concept of min_vruntime
-in EEVDF, there might also be a concept of max_vruntime. Therefore, the
-function should be removed.
+please test WARNING: suspicious RCU usage in __cfg80211_bss_update
 
-Furthermore, since vruntime is monotonically increasing, the
-implementation of the function min_vruntime has been simplified.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git 954fb2d2d49f
 
-Signed-off-by: Liu Song <liusong@linux.alibaba.com>
----
- kernel/sched/fair.c | 16 ++--------------
- 1 file changed, 2 insertions(+), 14 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 533547e3c90a..0370e5d0be78 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -530,19 +530,9 @@ void account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec);
-  * Scheduling class tree data structure manipulation methods:
-  */
+diff --git a/net/wireless/scan.c b/net/wireless/scan.c
+index cf2131671eb6..7cb8ae87c369 100644
+--- a/net/wireless/scan.c
++++ b/net/wireless/scan.c
+@@ -1864,7 +1864,7 @@ __cfg80211_bss_update(struct cfg80211_registered_device *rdev,
+ 					 &hidden->hidden_list);
+ 				hidden->refcount++;
  
--static inline u64 max_vruntime(u64 max_vruntime, u64 vruntime)
--{
--	s64 delta = (s64)(vruntime - max_vruntime);
--	if (delta > 0)
--		max_vruntime = vruntime;
--
--	return max_vruntime;
--}
--
- static inline u64 min_vruntime(u64 min_vruntime, u64 vruntime)
- {
--	s64 delta = (s64)(vruntime - min_vruntime);
--	if (delta < 0)
-+	if (vruntime < min_vruntime)
- 		min_vruntime = vruntime;
- 
- 	return min_vruntime;
-@@ -748,10 +738,8 @@ int entity_eligible(struct cfs_rq *cfs_rq, struct sched_entity *se)
- static u64 __update_min_vruntime(struct cfs_rq *cfs_rq, u64 vruntime)
- {
- 	u64 min_vruntime = cfs_rq->min_vruntime;
--	/*
--	 * open coded max_vruntime() to allow updating avg_vruntime
--	 */
- 	s64 delta = (s64)(vruntime - min_vruntime);
-+
- 	if (delta > 0) {
- 		avg_vruntime_update(cfs_rq, delta);
- 		min_vruntime = vruntime;
--- 
-2.19.1.6.gb485710b
+-				ies = (void *)rcu_dereference(new->pub.beacon_ies);
++				ies = (void *)rcu_access_pointer(new->pub.beacon_ies);
+ 				rcu_assign_pointer(new->pub.beacon_ies,
+ 						   hidden->pub.beacon_ies);
+ 				if (ies)
 
 
