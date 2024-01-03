@@ -1,227 +1,241 @@
-Return-Path: <linux-kernel+bounces-15897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 194A2823540
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:02:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5044823547
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:03:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65CA0284CDE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:02:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BFFDB23D81
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:03:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C581CA98;
-	Wed,  3 Jan 2024 19:02:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C49A01CAA3;
+	Wed,  3 Jan 2024 19:02:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bAUrnH6E"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OILfO9U1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9DC11CA8F;
-	Wed,  3 Jan 2024 19:02:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823BA1CA8F;
+	Wed,  3 Jan 2024 19:02:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cce70ad1a3so59867921fa.1;
-        Wed, 03 Jan 2024 11:02:05 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a28aa47bd15so85309166b.2;
+        Wed, 03 Jan 2024 11:02:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704308523; x=1704913323; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=C6gV9gr+TJBwMXljtWUtUpjPDKMLVnci1uFbN0LoDcA=;
-        b=bAUrnH6E6pcMT9KCPGjNV0TEpIHyvcJ3t2N3yRpgea9fAL3pADVvALY6ZmwQZhXGi2
-         VlP0a2osfCsct9mt9dY7Frl8yrjZWO9N+6zhfS6IDJDBNUGgVIUgeWjS5S1goUdB7PTH
-         GMKmVpsFmTqHmTyPO8dtnfPn6I/rPBzvoBNT/4KSlTxZQkO0oE4cN8b+nsYIT3KMqN/4
-         9hpM/a432RA6kPye5e5jiSe+1/Wh7rcejK0dJQNvBEUj1rNyXTJlkypGrmbWQAldcbiM
-         4vP7KALyTvm1sm/5lJKt1tUPvCObg7vCddnWh7/N/LwLDTlIR4k5aZNcXYvGOuy2Ts8R
-         O+UQ==
+        d=gmail.com; s=20230601; t=1704308570; x=1704913370; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=/MJgpoiYX2ieK9G59Tpv6u4Pnf7MXXAZFvpISXd2cjQ=;
+        b=OILfO9U1Om6jnWZ9En6zZ81AMIXP1rk3zZKbXrTpmRKx+JaCJYBWhYzilNaMRggj8N
+         OkOqzLiRhogRvK7pE3C8UCZf7CNpFWO7gBKubRCYVbY3v7JIGxMkyOs6ONkFE/y58Pqs
+         /CZ9WHZqv30QGyj70+zdxkKwFKykVzvAke/GnNzz4wYaekebsymeCmE5uKykoCcq9E2j
+         hutHmp12bHTCOq3GGErZ0MeNEid/IMWUl/DmrEjVAvYCIeGnx2EK4iA+sZjEoQz8Ty90
+         t9K2iCL28lrdKn8WXtl0EnFpzzGMfgyfwMP9gqzgBhoOjeCt9n3C3GYztvrn//AlnU04
+         Ojuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704308523; x=1704913323;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C6gV9gr+TJBwMXljtWUtUpjPDKMLVnci1uFbN0LoDcA=;
-        b=nAuwZb7w2DOXdhxzN8NTW/QIWK2pd0NplnzmLngDaNNyXgFd/E2qOxf4l+ifZ5UDBa
-         r2zFUgrpN0o6MOOYyGbAzOVGzxsQIFhW6IuUuLK0ziEe8nIM6lJbkpDztFZPjjD46gS/
-         751GJ6ykJOIJqFcGY2yXlldZcnnqaSVSMVnzWAi0umKFZja39Cyww5/HcE5d5Kh/BFhu
-         0aw4cQ6viI4P9usr3fIMZpgHshOZMivhlM9e1T3c0+eT/8xlz4ccIlzxVJXlyI2xvr6Y
-         Vk65+a8oLXYSlllueFRceS7VLZSulaU3Crdi0aSP9mntrEYM0eyNW5cgjMF5B8cuUFkB
-         958g==
-X-Gm-Message-State: AOJu0YwvACCSAfEQ4GpPwZGKcyXOIEllcCoe8vt+LH0GdzRoGylN4BNP
-	y5/DqzMv4V3Lv42rwWGwFTA=
-X-Google-Smtp-Source: AGHT+IFwDHAUUACTmBQToNSe18C8PiPjxkN1YnSkFO8OnO/mTrpoZjqaDvZ9Ak0OqtOsFuTkCcVsqg==
-X-Received: by 2002:a2e:3c06:0:b0:2cc:cecf:1df1 with SMTP id j6-20020a2e3c06000000b002cccecf1df1mr5937413lja.23.1704308523271;
-        Wed, 03 Jan 2024 11:02:03 -0800 (PST)
-Received: from pc636 (host-90-233-200-64.mobileonline.telia.com. [90.233.200.64])
-        by smtp.gmail.com with ESMTPSA id e10-20020a05651c090a00b002cce6095241sm2981599ljq.62.2024.01.03.11.02.02
+        d=1e100.net; s=20230601; t=1704308570; x=1704913370;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/MJgpoiYX2ieK9G59Tpv6u4Pnf7MXXAZFvpISXd2cjQ=;
+        b=p3GGlJSl+cybRyxihlZuGtNebsr8FswZ30f6nN7Ko/gbsLvCBaNxbb6veC86OyIQGy
+         dp8h2Pb1hLT7lSd4yA0DAvhJmzOcqwrCaI0N4jkjb/mLPEekb11U2tjlicqJ5tR00JQS
+         99/PZc8cSDjkbuvUXVxO3/eT1eaTJyyewI4rBWHaoN924qmlhoy/C0oZ/CkFS9YdEVXd
+         PSkEkIi9vW/+griINncYHgVpe1DkQLLElM9UnBmvRiRWWafgNfR8ip5l7XVJtt8MCOl8
+         mZPasWqfKNda5dcaBw24VxwuAxlPA4Mil+f1uoUjE3JGEc/OV6gxCftqcxsNh8snp2md
+         U/cg==
+X-Gm-Message-State: AOJu0YxmlBamyQYUvW+fEimIOHjoxPL7IFurc6X/NdyFf/nAn7klKPw7
+	44kzGRbs+hY94dcqzMxw0/M=
+X-Google-Smtp-Source: AGHT+IGUH8UoqdtTD6HYFLZRnvMAdGqAM2Civpr13lPO+LrJfvwYUVRvVPe9b2Z+NgdZ2JAyrQq2qw==
+X-Received: by 2002:a17:906:a1c2:b0:a26:874f:4847 with SMTP id bx2-20020a170906a1c200b00a26874f4847mr7510133ejb.65.1704308569468;
+        Wed, 03 Jan 2024 11:02:49 -0800 (PST)
+Received: from skbuf ([188.25.255.36])
+        by smtp.gmail.com with ESMTPSA id kb6-20020a170907924600b00a27a32e6502sm4939779ejb.117.2024.01.03.11.02.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 11:02:02 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Wed, 3 Jan 2024 20:02:00 +0100
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v3 4/7] rcu: Improve handling of synchronize_rcu() users
-Message-ID: <ZZWvKLy9mIOaaay4@pc636>
-References: <ZYQY8bB3zpywfBxO@pc636>
- <650554ca-17f6-4119-ab4e-42239c958c73@paulmck-laptop>
- <ZYVWjc65LzD8qkdw@pc636>
- <e20058f9-a525-4d65-b22b-7dd9cfec9737@paulmck-laptop>
- <ZZQHCrGNwjooI4kU@pc636>
- <cd45b0b5-f86b-43fb-a5f3-47d340cd4f9f@paulmck-laptop>
- <ZZVeEGTKVp7CUqtK@pc636>
- <45a15103-0302-4e7d-b522-e17e8b8ac927@paulmck-laptop>
- <ZZWa2LENLXCMUBhW@pc636>
- <d4635fdf-8ed0-452d-8bc8-0fe0e7fb1994@paulmck-laptop>
+        Wed, 03 Jan 2024 11:02:49 -0800 (PST)
+Date: Wed, 3 Jan 2024 21:02:46 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	David Bauer <mail@david-bauer.net>, mithat.guner@xeront.com,
+	erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next] net: dsa: mt7530: register OF node for internal
+ MDIO bus
+Message-ID: <20240103190246.ctyeehvfmhctpphf@skbuf>
+References: <20231220173539.59071-1-arinc.unal@arinc9.com>
+ <20231220173539.59071-1-arinc.unal@arinc9.com>
+ <20231221151607.ujobhh4aet4obxdz@skbuf>
+ <6600c6b1-2230-4963-940c-8b95a01750fd@arinc9.com>
+ <20231227191154.6jkqdlqdxciidpfw@skbuf>
+ <bdbe24b2-30f6-48fa-b6eb-a1ae3afe9076@arinc9.com>
+ <20231227200217.kdltxpmhvlp6z4cd@skbuf>
+ <d2a7cc7e-bb27-472f-8921-5579a894c71d@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d4635fdf-8ed0-452d-8bc8-0fe0e7fb1994@paulmck-laptop>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d2a7cc7e-bb27-472f-8921-5579a894c71d@arinc9.com>
 
-On Wed, Jan 03, 2024 at 09:56:42AM -0800, Paul E. McKenney wrote:
-> On Wed, Jan 03, 2024 at 06:35:20PM +0100, Uladzislau Rezki wrote:
-> > On Wed, Jan 03, 2024 at 06:47:30AM -0800, Paul E. McKenney wrote:
-> > > On Wed, Jan 03, 2024 at 02:16:00PM +0100, Uladzislau Rezki wrote:
-> > > > On Tue, Jan 02, 2024 at 11:25:13AM -0800, Paul E. McKenney wrote:
-> > > > > On Tue, Jan 02, 2024 at 01:52:26PM +0100, Uladzislau Rezki wrote:
-> > > > > > Hello, Paul!
-> > > > > > 
-> > > > > > Sorry for late answer, it is because of holidays :)
-> > > > > > 
-> > > > > > > > > > The problem is that, we are limited in number of "wait-heads" which we
-> > > > > > > > > > add as a marker node for this/current grace period. If there are more clients
-> > > > > > > > > > and there is no a wait-head available it means that a system, the deferred
-> > > > > > > > > > kworker, is slow in processing callbacks, thus all wait-nodes are in use.
-> > > > > > > > > > 
-> > > > > > > > > > That is why we need an extra grace period. Basically to repeat our try one
-> > > > > > > > > > more time, i.e. it might be that a current grace period is not able to handle
-> > > > > > > > > > users due to the fact that a system is doing really slow, but this is rather
-> > > > > > > > > > a corner case and is not a problem.
-> > > > > > > > > 
-> > > > > > > > > But in that case, the real issue is not the need for an extra grace
-> > > > > > > > > period, but rather the need for the wakeup processing to happen, correct?
-> > > > > > > > > Or am I missing something subtle here?
-> > > > > > > > > 
-> > > > > > > > Basically, yes. If we had a spare dummy-node we could process the users
-> > > > > > > > by the current GP(no need in extra). Why we may not have it - it is because
-> > > > > > > > like you pointed:
-> > > > > > > > 
-> > > > > > > > - wake-up issue, i.e. wake-up time + when we are on_cpu;
-> > > > > > > > - slow list process. For example priority. The kworker is not
-> > > > > > > >   given enough CPU time to do the progress, thus "dummy-nodes"
-> > > > > > > >   are not released in time for reuse.
-> > > > > > > > 
-> > > > > > > > Therefore, en extra GP is requested if there is a high flow of
-> > > > > > > > synchronize_rcu() users and kworker is not able to do a progress
-> > > > > > > > in time.
-> > > > > > > > 
-> > > > > > > > For example 60K+ parallel synchronize_rcu() users will trigger it.
-> > > > > > > 
-> > > > > > > OK, but what bad thing would happen if that was moved to precede the
-> > > > > > > rcu_seq_start(&rcu_state.gp_seq)?  That way, the requested grace period
-> > > > > > > would be the same as the one that is just now starting.
-> > > > > > > 
-> > > > > > > Something like this?
-> > > > > > > 
-> > > > > > > 	start_new_poll = rcu_sr_normal_gp_init();
-> > > > > > > 
-> > > > > > > 	/* Record GP times before starting GP, hence rcu_seq_start(). */
-> > > > > > > 	rcu_seq_start(&rcu_state.gp_seq);
-> > > > > > > 	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> > > > > > >
-> > > > > > I had a concern about the case when rcu_sr_normal_gp_init() handles what
-> > > > > > we currently have, in terms of requests. Right after that there is/are
-> > > > > > extra sync requests which invoke the start_poll_synchronize_rcu() but
-> > > > > > since a GP has been requested before it will not request an extra one. So
-> > > > > > "last" incoming users might not be processed.
-> > > > > > 
-> > > > > > That is why i have placed the rcu_sr_normal_gp_init() after a gp_seq is
-> > > > > > updated.
-> > > > > > 
-> > > > > > I can miss something, so please comment. Apart of that we can move it
-> > > > > > as you proposed.
-> > > > > 
-> > > > > Couldn't that possibility be handled by a check in rcu_gp_cleanup()?
-> > > > > 
-> > > > It is controlled by the caller anyway, i.e. if a new GP is needed.
-> > > > 
-> > > > I am not 100% sure it is as straightforward as it could look like to
-> > > > handle it in the rcu_sr_normal_gp_cleaup() function. At least i see
-> > > > that we need to access to the first element of llist and find out if
-> > > > it is a wait-dummy-head or not. If not we know there are extra incoming
-> > > > calls.
-> > > > 
-> > > > So that way requires extra calling of start_poll_synchronize_rcu().
-> > > 
-> > > If this is invoked early enough in rcu_gp_cleanup(), all that needs to
-> > > happen is to set the need_gp flag.  Plus you can count the number of
-> > > requests, and snapshot that number at rcu_gp_init() time and check to
-> > > see if it changed at rcu_gp_cleanup() time.  Later on, this could be
-> > > used to reduce the number of wakeups, correct?
-> > > 
-> > You mean instead of waking-up a gp-kthread just continue processing of
-> > new users if they are exist? If so, i think, we can implement it as separate
-> > patches.
+On Thu, Dec 28, 2023 at 07:58:13PM +0300, Arınç ÜNAL wrote:
+> As Daniel stated on a previous submission of this patch, being able to
+> reference the PHYs on the switch MDIO bus is mandatory on MT7988 as
+> calibration data from NVMEM for each PHY is required, so defining the MDIO
+> bus is required to support MT7988. Therefore, we should support interrupts
+> on device trees with the switch MDIO bus defined.
+
+Understood and no objection there. I was just making sure that there is
+no existing case in upstream where the internal PHYs are described in OF,
+that we'd have to preserve IRQ functionality for.
+
+> The implementation below follows this logic:
 > 
-> Agreed, this is an optimization, and thus should be a separate patch.
+> No switch MDIO bus defined: Register the MDIO bus, set the interrupts for
+> PHYs if "interrupt-controller" is defined at the switch node.
 > 
-> > > > I can add a comment about your concern and we can find the best approach
-> > > > later, if it is OK with you!
-> > > 
-> > > I agree that this should be added via a later patch, though I have not
-> > > yet given up on the possibility that this patch might be simple enough
-> > > to be later in this same series.
-> > > 
-> > Maybe there is a small misunderstanding. Please note, the rcu_sr_normal_gp_init() 
-> > function does not request any new gp, i.e. our approach does not do any extra GP
-> > requests. It happens only if there are no any dummy-wait-head available as we
-> > discussed it earlier.
+> Switch MDIO bus defined: Register the MDIO bus, set the interrupts for PHYs
+> if ["interrupt-controller" is defined at the switch node and "interrupts"
+> is defined at the PHY nodes under the switch MDIO bus node].
 > 
-> The start_poll_synchronize_rcu() added by your patch 4/7 will request
-> an additional grace period because it is invoked after rcu_seq_start()
-> is called, correct?  Or am I missing something subtle here?
+> I think this approach fits your description so I'd like to agree that this
+> should be the way for all DSA subdrivers. Please let me know what you
+> think.
 > 
-<snip>
-+       // New poll request after rnp unlock
-+       if (start_new_poll)
-+               (void) start_poll_synchronize_rcu();
-+
-<snip>
+> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> index 391c4dbdff42..bbd230a73ead 100644
+> --- a/drivers/net/dsa/mt7530.c
+> +++ b/drivers/net/dsa/mt7530.c
+> @@ -2155,15 +2155,21 @@ mt7530_setup_mdio(struct mt7530_priv *priv)
+>  {
+>  	struct dsa_switch *ds = priv->ds;
+>  	struct device *dev = priv->dev;
+> +	struct device_node *np, *mnp;
+>  	struct mii_bus *bus;
+>  	static int idx;
+>  	int ret;
+> +	np = priv->dev->of_node;
+> +	mnp = of_get_child_by_name(np, "mdio");
+> +
 
-The "start_new_poll" is set to "true" only when _this_ GP is not able
-to handle anything and there are outstanding users. It happens when the
-rcu_sr_normal_gp_init() function was not able to insert a dummy separator
-to the llist, because there were no left dummy-nodes(fixed number of them)
-due to the fact that all of them are "in-use". The reason why there are no
-dummy-nodes is because of slow progress because it is done by dedicated
-kworker.
+Empty line between variable declarations and code. Or you can initialize
+them as part of their declaration, but you need to stick to the "longest
+line first" rule.
 
-I can trigger it, i mean when we need an addition GP, start_new_pool is 1,
-only when i run 20 000 processes concurrently in a tight loop:
+Also, it would be good to also check of_device_is_available(mnp).
 
-<snip>
-while (1)
-  synchronize_rcu();
-<snip>
+>  	bus = devm_mdiobus_alloc(dev);
+>  	if (!bus)
+>  		return -ENOMEM;
+> -	ds->user_mii_bus = bus;
+> +	if (mnp == NULL)
 
-in that scenario we start to ask for an addition GP because we are not up
-to speed, i.e. a system is slow in processing callbacks and we need some
-time until wait-node/nodes is/are released for reuse.
+!mnp
 
-We need a next GP to move it forward, i.e. to repeat a try of attaching
-a dummy-node.
+> +		ds->user_mii_bus = bus;
+> +
+>  	bus->priv = priv;
+>  	bus->name = KBUILD_MODNAME "-mii";
+>  	snprintf(bus->id, MII_BUS_ID_SIZE, KBUILD_MODNAME "-%d", idx++);
+> @@ -2174,10 +2180,11 @@ mt7530_setup_mdio(struct mt7530_priv *priv)
+>  	bus->parent = dev;
+>  	bus->phy_mask = ~ds->phys_mii_mask;
+> -	if (priv->irq)
+> +	if (priv->irq && mnp == NULL)
+>  		mt7530_setup_mdio_irq(priv);
+> -	ret = devm_mdiobus_register(dev, bus);
+> +	ret = devm_of_mdiobus_register(dev, bus, mnp);
+> +	of_node_put(mnp);
 
---
-Uladzislau Rezki
+This is going to be interesting. There isn't really a correct way to
+manage the reference to "mnp", as far as I can tell. Normally, it should
+have been possible to release the reference as you did. But you need
+something along the lines of what Luiz/Russell have been discussing
+here:
+
+https://lore.kernel.org/netdev/20231220045228.27079-2-luizluca@gmail.com/
+
+In any case, the devres variant of of_mdiobus_register() seems incompatible
+with the mt7530 driver owning the "mnp" node for any longer than this,
+because it has no hook to call of_node_put() once the MDIO bus is unregistered.
+
+>  	if (ret) {
+>  		dev_err(dev, "failed to register MDIO bus: %d\n", ret);
+>  		if (priv->irq)
+> 
+> With this device tree:
+> 
+> switch {
+> 	interrupt-controller;
+> }
+> 
+> [    1.420534] mt7530-mdio mdio-bus:1f lan1 (uninitialized): PHY [mt7530-0:00] driver [MediaTek MT7530 PHY] (irq=17)
+> [    1.433224] mt7530-mdio mdio-bus:1f lan2 (uninitialized): PHY [mt7530-0:01] driver [MediaTek MT7530 PHY] (irq=18)
+> [    1.445338] mt7530-mdio mdio-bus:1f lan3 (uninitialized): PHY [mt7530-0:02] driver [MediaTek MT7530 PHY] (irq=19)
+> [    1.457472] mt7530-mdio mdio-bus:1f lan4 (uninitialized): PHY [mt7530-0:03] driver [MediaTek MT7530 PHY] (irq=20)
+> [    1.469587] mt7530-mdio mdio-bus:1f wan (uninitialized): PHY [mt7530-0:04] driver [MediaTek MT7530 PHY] (irq=21)
+> 
+> With this device tree:
+> 
+> switch {
+> 	interrupt-controller;
+> 
+> 	mdio {
+> 		phy {
+> 			reg = <0>;
+> 		}
+> 	}
+> }
+> 
+> [    1.413101] mt7530-mdio mdio-bus:1f lan1 (uninitialized): PHY [mt7530-0:00] driver [MediaTek MT7530 PHY] (irq=POLL)
+> [    1.429954] mt7530-mdio mdio-bus:1f lan2 (uninitialized): PHY [mt7530-0:01] driver [MediaTek MT7530 PHY] (irq=POLL)
+> [    1.443704] mt7530-mdio mdio-bus:1f lan3 (uninitialized): PHY [mt7530-0:02] driver [MediaTek MT7530 PHY] (irq=POLL)
+> [    1.455876] mt7530-mdio mdio-bus:1f lan4 (uninitialized): PHY [mt7530-0:03] driver [MediaTek MT7530 PHY] (irq=POLL)
+> [    1.468079] mt7530-mdio mdio-bus:1f wan (uninitialized): PHY [mt7530-0:04] driver [MediaTek MT7530 PHY] (irq=POLL)
+> 
+> With this device tree:
+> 
+> switch {
+> 	interrupt-controller;
+> 
+> 	mdio {
+> 		phy {
+> 			reg = <0>;
+> 			interrupts = <0>;
+> 		}
+> 	}
+> }
+> 
+> [    1.420534] mt7530-mdio mdio-bus:1f lan1 (uninitialized): PHY [mt7530-0:00] driver [MediaTek MT7530 PHY] (irq=17)
+> [    1.433224] mt7530-mdio mdio-bus:1f lan2 (uninitialized): PHY [mt7530-0:01] driver [MediaTek MT7530 PHY] (irq=18)
+> [    1.445338] mt7530-mdio mdio-bus:1f lan3 (uninitialized): PHY [mt7530-0:02] driver [MediaTek MT7530 PHY] (irq=19)
+> [    1.457472] mt7530-mdio mdio-bus:1f lan4 (uninitialized): PHY [mt7530-0:03] driver [MediaTek MT7530 PHY] (irq=20)
+> [    1.469587] mt7530-mdio mdio-bus:1f wan (uninitialized): PHY [mt7530-0:04] driver [MediaTek MT7530 PHY] (irq=21)
+
+Looks sane.
+
+FWIW, I found Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+where internal PHYs don't have an 'interrupts' property, yet they are
+probably still expected to use interrupts - according to ksz_irq_phy_setup().
+
+Anyway, what's done is done, but I still don't see the point of making
+the binding much more flexible than it needs to be.
 
