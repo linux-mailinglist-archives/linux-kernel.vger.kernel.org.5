@@ -1,149 +1,104 @@
-Return-Path: <linux-kernel+bounces-15702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15D4482309B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:33:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D975082309C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:33:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 277E81C2378B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:33:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 973911F2485B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:33:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D0D1B271;
-	Wed,  3 Jan 2024 15:33:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F24F1B29C;
+	Wed,  3 Jan 2024 15:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TjFlJBc9"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BPD6KnZh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE3C91A731;
-	Wed,  3 Jan 2024 15:33:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 687F6C433CA;
-	Wed,  3 Jan 2024 15:33:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704295994;
-	bh=ylV0o20b8JZnTMZTGmAwoeArfi4QzOCuKZgDMqvoNJY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=TjFlJBc9PW4t3SSg0jjMYnP7ZBZ3NSK4uPJB6zJdetNcshf9E2pzqIfC7LlJDA646
-	 nV188Fh81QBrP8XDzvxrLw4OviIkBO9S3veJ5mMD3tqFxy5ytUnn75DMyb6FQ6l7eu
-	 K7V8Am9mxJskpu73cjU118pYVg+aiYjKwDx/HhyjJzEGN8b+BXD2PRYRtRt4JZAWev
-	 WxOGjcrP8z6gyjsEQZVxtG2H/4MXauh31rItYgZx4Cf3Y6l6Z27d7nIkXrKKZCVfU1
-	 zDw9e8mIAWUvV5WWbCawodLQ9WXHWDqggu26mMQgfIIeBUqHmPZ1Y8B3volvhOBd9h
-	 /MevTp/qY7GtA==
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2ccbf8cbf3aso99906301fa.3;
-        Wed, 03 Jan 2024 07:33:14 -0800 (PST)
-X-Gm-Message-State: AOJu0YxD10vMHtmYL6rpGZCEidoRwa5l19RI10S+Oa6rSMX/28CAh4t8
-	kNy3dfFdQWeXZ677OpWqfkL3yckLBoRb5Juryg==
-X-Google-Smtp-Source: AGHT+IFY4GnGd+1pQoF79cjtNS5BvmCCQuzDPJObkUNFyaUTHvNX115fyF8pTF9dfszP7xouROLJ/yirOlqMNnu2Yn8=
-X-Received: by 2002:a05:651c:11d3:b0:2cc:eae4:b3f6 with SMTP id
- z19-20020a05651c11d300b002cceae4b3f6mr4041154ljo.44.1704295992630; Wed, 03
- Jan 2024 07:33:12 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439CB1B291
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 15:33:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--brho.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbea2ea8363so521474276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 07:33:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704295999; x=1704900799; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=prIX6rQoerVclTCgugbanH1nWOv94uG287A9f9TVpY8=;
+        b=BPD6KnZhxqBTB6YNqdD1QdQYNbMNWJyUgEwGwqtscMto1EbFaqEifnfTB6OUuP5oOa
+         Q7lIio/vR4EtQvvhHi2cEZMzx1QrOhpp4p0AuUxk7EtXY4htg3eHmDBSV7Q/O3EbMW+0
+         7RSPxPE76zn2ixX/O1A+qJ58xKx8V0pSjCcPx9Qj7BOOL/MlOey4R4hW8UD0HH8lskv0
+         /OaoVoLevOYvAc0Z63LRyMvADdyL0aMBFsr9Qehaavh7QfHWoIH4FIUlhMcwiCWtp0A5
+         YjatjCY72h4hLTMUdOhHUGMB4Vkyl1SozCrAgBGbJCpW8aLJhEtGU6HZG697zl8j2E/0
+         L0Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704295999; x=1704900799;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=prIX6rQoerVclTCgugbanH1nWOv94uG287A9f9TVpY8=;
+        b=TH2450G6cHF8zmYq1dC4CxaVmGsAvimLSxpgI1LI86lFPC4La1UjQU4nTbwQT01zrm
+         UoD16igk2j6G+7UjsltQMRVSx/abgMKZ7z9hWw85rM92sW2wIBWfLU45MdIKpcGBXeBj
+         33g8mRD8TW/511zKx5EnjbqNqMeqo8EdmRrDbjzl+eY5h/xTou2dwJKbks8W7Ret2UX8
+         MP8XjiUpZKzVeZ/V/V6v40LhUYk7ytBpDZAQXSV6xqwGkKR3kSq6E12Q1rYnHt4eU+mW
+         T5jHnboe4I06e3/MMLimTUiNThXRR9ppi2jRbbNgY34HuSRKTpiJTgFibjqnJ7Pnos0i
+         AbLQ==
+X-Gm-Message-State: AOJu0Yzi+TLsn9ySv+BQNyNQdDpvubKbFlTd3Ea3bh6uBbKXyJEO6b0T
+	c4nVGDIaDyOLWeZqL6GiDs5wwSyrqTapwWU=
+X-Google-Smtp-Source: AGHT+IG1e7Z4HI/2vQuZZv9yDVtIJ9GWGAAuthkpzlCZCZVmJL1AsEveljPgS/4qqPQRUosPjJHnrknu
+X-Received: from gnomeregan.cam.corp.google.com ([2620:15c:93:4:7e71:cfbd:2031:cc52])
+ (user=brho job=sendgmr) by 2002:a05:6902:100e:b0:dbe:30cd:8fcb with SMTP id
+ w14-20020a056902100e00b00dbe30cd8fcbmr324065ybt.0.1704295999290; Wed, 03 Jan
+ 2024 07:33:19 -0800 (PST)
+Date: Wed,  3 Jan 2024 10:33:00 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231228093321.5522-1-quic_jinlmao@quicinc.com>
- <12ce6e5d-6e4d-fb99-eb82-dece97423bfb@arm.com> <CAJ9a7Vgi=ELOhXNF97KrBtV5ef8khwWqzWKevrYW2RtBBtsppw@mail.gmail.com>
-In-Reply-To: <CAJ9a7Vgi=ELOhXNF97KrBtV5ef8khwWqzWKevrYW2RtBBtsppw@mail.gmail.com>
-From: Rob Herring <robh@kernel.org>
-Date: Wed, 3 Jan 2024 08:32:56 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqKYuqKxokDzs3xVWqYZoFfyMwMrLd17DpfCO_x7CXvRZw@mail.gmail.com>
-Message-ID: <CAL_JsqKYuqKxokDzs3xVWqYZoFfyMwMrLd17DpfCO_x7CXvRZw@mail.gmail.com>
-Subject: Re: [PATCH] coresight: Add coresight name support
-To: Mike Leach <mike.leach@linaro.org>, Mao Jinlong <quic_jinlmao@quicinc.com>
-Cc: James Clark <james.clark@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	Tingwei Zhang <quic_tingweiz@quicinc.com>, Yuanfang Zhang <quic_yuanfang@quicinc.com>, 
-	Tao Zhang <quic_taozha@quicinc.com>, Leo Yan <leo.yan@linaro.org>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20240103153307.553838-1-brho@google.com>
+Subject: [PATCH bpf-next 0/2] inline asm helpers to access array elements
+From: Barret Rhoden <brho@google.com>
+To: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>
+Cc: mattbobrowski@google.com, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 2, 2024 at 5:05=E2=80=AFAM Mike Leach <mike.leach@linaro.org> w=
-rote:
->
-> As James mentions this is clearly a V2 of a previous patch - please
-> mark as such in future.
->
-> Adding to what James has already said:-
->
-> 1) Mapping between the canonical names used in the drivers and the
-> information as to the precise device is as easy as running 'ls' on
-> /sys/bus/coresight/devices:-
->
-> root@linaro-developer:/home/linaro/cs-mods# ls -al /sys/bus/coresight/dev=
-ices/
-> total 0
-> drwxr-xr-x 2 root root 0 Jan  2 11:27 .
-> drwxr-xr-x 4 root root 0 Jan  2 11:27 ..
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu0 ->
-> ../../../devices/platform/soc@0/858000.cti/cti_cpu0
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu1 ->
-> ../../../devices/platform/soc@0/859000.cti/cti_cpu1
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu2 ->
-> ../../../devices/platform/soc@0/85a000.cti/cti_cpu2
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_cpu3 ->
-> ../../../devices/platform/soc@0/85b000.cti/cti_cpu3
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_sys0 ->
-> ../../../devices/platform/soc@0/810000.cti/cti_sys0
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 cti_sys1 ->
-> ../../../devices/platform/soc@0/811000.cti/cti_sys1
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm0 ->
-> ../../../devices/platform/soc@0/85c000.etm/etm0
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm1 ->
-> ../../../devices/platform/soc@0/85d000.etm/etm1
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm2 ->
-> ../../../devices/platform/soc@0/85e000.etm/etm2
-> lrwxrwxrwx 1 root root 0 Jan  2 11:27 etm3 ->
-> ../../../devices/platform/soc@0/85f000.etm/etm3
-> lrwxrwxrwx 1 root root 0 Jan  2 11:42 funnel0 ->
-> ../../../devices/platform/soc@0/821000.funnel/funnel0
-> lrwxrwxrwx 1 root root 0 Jan  2 11:42 funnel1 ->
-> ../../../devices/platform/soc@0/841000.funnel/funnel1
-> lrwxrwxrwx 1 root root 0 Jan  2 11:42 replicator0 ->
-> ../../../devices/platform/soc@0/824000.replicator/replicator0
-> lrwxrwxrwx 1 root root 0 Jan  2 11:42 tmc_etf0 ->
-> ../../../devices/platform/soc@0/825000.etf/tmc_etf0
-> lrwxrwxrwx 1 root root 0 Jan  2 11:42 tmc_etr0 ->
-> ../../../devices/platform/soc@0/826000.etr/tmc_etr0
->
->
-> 2) The patch set must contain the usage and specification in the .yaml
->  file(s) of the property used.
+Sorry for the delay on this.  Discussed in [1].  It's a helper for
+proving to the verifier that your access in the array is valid.  Happy
+to change names or whatever.  =)
 
-For the record, I don't like "coresight-name". I don't have another
-suggestion because "easy" is not sufficient reasoning for why this is
-needed.
+Also added a libbpf helper function for mmapping an mmappable map.
 
-> However, there was a standard property called 'name' which is
-> deprecated - see
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-device=
-tree-basics.html
-> section 2.3.11. I do not believe that adding another 'name' property
-> would be accepted by the DT maintainers.
+We've been using both in our ghost-BPF schedulers[2].
 
-"name" is just the node name for anything in the last 15 years. They
-used to be separate, but would still mostly be the same. The only case
-I found with them different was old PowerPC Macs.
+[1] https://lore.kernel.org/bpf/b4cb3423-b18d-8fad-7355-d8aa66ccfe4c@google.com/T/
+[2] https://github.com/google/ghost-userspace/blob/main/third_party/bpf/common.bpf.h#L218
 
-> 3) the 'device_node' structure has a 'name' field that contains the
-> node name in the DT approved "node-name@unit-address" format.
+Barret Rhoden (2):
+  libbpf: add helpers for mmapping maps
+  selftests/bpf: add inline assembly helpers to access array elements
 
-Actually, it is without the unit-address. full_name is with the unit-addres=
-s.
+ tools/bpf/bpftool/gen.c                       |  16 +-
+ tools/lib/bpf/libbpf.c                        |  23 +++
+ tools/lib/bpf/libbpf.h                        |   6 +
+ tools/lib/bpf/libbpf.map                      |   4 +
+ tools/testing/selftests/bpf/Makefile          |   2 +-
+ .../bpf/prog_tests/test_array_elem.c          | 112 ++++++++++
+ .../selftests/bpf/progs/array_elem_test.c     | 195 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |  43 ++++
+ 8 files changed, 387 insertions(+), 14 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_array_elem.c
+ create mode 100644 tools/testing/selftests/bpf/progs/array_elem_test.c
 
-> This
-> contains whatever node names you used in the dt.  Why not use this if
-> a change has to be made and find some conditional to activate it.
+-- 
+2.43.0.472.g3155946c3a-goog
 
-Don't go accessing "name" or "full_name" directly. I intend to get rid
-of "name" and generate it from full_name. So use the accessors and
-printk specifiers if you need node names.
-
-Rob
 
