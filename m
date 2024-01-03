@@ -1,144 +1,151 @@
-Return-Path: <linux-kernel+bounces-15732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 224CF8230FC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:05:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85477823100
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:05:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4534C1C23A9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:05:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A16E1F24D00
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB7F1B288;
-	Wed,  3 Jan 2024 16:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC3FC1BDE3;
+	Wed,  3 Jan 2024 16:05:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Br2YNMnV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gzqvguKC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508CD1B27F;
-	Wed,  3 Jan 2024 16:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BEB51B281;
+	Wed,  3 Jan 2024 16:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e9a42582aso2898598e87.2;
-        Wed, 03 Jan 2024 08:05:11 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cce6bb9b48so53708711fa.1;
+        Wed, 03 Jan 2024 08:05:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704297910; x=1704902710; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704297919; x=1704902719; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=MW1jQPu224rbEEeyM1X/QZLP/txX703VWVb2odsAfYI=;
-        b=Br2YNMnVJ9Rw3aSDVlqqiCiG3up2Sgf/agStc7CgTphCWC8YdRlm+4hoNZWINVLH3r
-         vFt8ewm81GGB3pDwfcc5lAKn1biakjqwhap3TLY7z2Dce5rdW+EKP8w+SU4IAbKi/yD9
-         gZXkD8RNn/pwRfp+jNtg8eBFnTwX8Yz3wGGr/fGMUOJWjDgq3dzZyJq6l3U8ok5pAOlP
-         1Com4cE+4maFcA/6UrRd0slZb8ibeyOInrdvtq+CQ1ZR0i9122fHVckpIrQ+pjhlg783
-         92MyFDH2ohRiVBc45C3Tg74YKbqEllEuXgHzGGek1WjJ9+qA8+bEnPjeRzfRE5ecXaKF
-         AfYg==
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+xSmaxNNRur6EQbpLrc86FJLNqnjCzsSA88jkGjqdDk=;
+        b=gzqvguKCU/DDtJNq0POQ03fdIaM7xLYUqjdovhnDX/Op5x/YhQz54e2g1lAp/AIDXO
+         yMO63unfQzYz9v3FPU4VF5GiNk89y4FLsDRoSq3FzuApCuYEHd5OIB8TL8ky3AC4ZlX6
+         EEvdU0VQxsHd1R0wFBBEVTuVgJ6nFd2jZhp4mn9XPL4sW9KLzZxVtLjgC4EFxr/SXAMz
+         TqXdwX24dapAdoTeU5iS+lGaa/SUSTZ55XOqOM/jd6DRHrUlIfOUpxcjd2GlrB1aQjn8
+         ZbalrFg/50u/HJTz77ljjM0DZWg9UJTk7y209XscHHnWIxw/M7d+as2Rpps1Ln/RMqjP
+         4XeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704297910; x=1704902710;
+        d=1e100.net; s=20230601; t=1704297919; x=1704902719;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MW1jQPu224rbEEeyM1X/QZLP/txX703VWVb2odsAfYI=;
-        b=qIllV8praLTG+EYCCnmm85AMIb2U+03sKW2cHpQZkgoUr85kT8Hh/zM4JKgHTBWOBN
-         wVWGdEzgAugOHr3eVfBN2pbqkRtcU87ubXlFzMM4G5ZG08W60CDQbJl0BOyPpVNFJ9wj
-         LIkqA4u/5aLDJTvpkp0MXRmkBkJu1Ep4Xcj1BPUg86XWOPzzG0txU2CyGecDKQkImz/K
-         HKPSDcjO++bXeLCG8iYEsKnZJhbihEH+P/uJNzHLamqAp3PqNKVssdKlFZv9YA95UHOK
-         6/ijgaD4MaY56/zt+/TJaGrzAbGLzEdXvnkNJ2oF9hu+/hkLciqRNwhtlzTq67X9AD7D
-         AGbA==
-X-Gm-Message-State: AOJu0Yy3gHXfYVSMI8ts6NXv6y8oQBEv4dkdKusWxjLnhKUYDMU9LA5H
-	qvqe3LrjQMmQwy9nvIcLicLbGcEa3BrxWphlBTo8uYmV4rU=
-X-Google-Smtp-Source: AGHT+IH86QHuT0k9Qfl7OLMI2JboD5IN0h5gjZH0IWf7JsDs6QpF5jey+HjAl8XWCh0AatV42ZMQ4vPC/vYzTByXf/g=
-X-Received: by 2002:ac2:4a67:0:b0:50e:6d96:4b28 with SMTP id
- q7-20020ac24a67000000b0050e6d964b28mr7045064lfp.137.1704297909923; Wed, 03
- Jan 2024 08:05:09 -0800 (PST)
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+xSmaxNNRur6EQbpLrc86FJLNqnjCzsSA88jkGjqdDk=;
+        b=GRShHbQKSqas2AZ/JiWbp+VLLK8Hp9VItI4fB1q0yyIJoz8K7OCTe/MzTbGv6wYo1f
+         Sb2OqKq//h2a4Xfmar1OdqvTdxi+PZPh4aNrg0m6uumMUJ16UDl4brc7UAl+q/GwKYgj
+         tLaIFuX1pZo40OT7hHrqZBJzFVPuY4y5Dk3lbgdG07VTs0av63YUXi4XD0wSkHdsrDqu
+         6g7MqHuwV8Zm3uLbn53GYy9cXWNh1m2tjjcDtYJgoi0GC/5D0+WiTMpjpcab81BEML0e
+         GuQb0jjMOjFPIrBJV8RuxoMnf0yY5ZA1CCYRXI4v9cY7Gg56bP79odWLktLybOg0IsBR
+         xVSg==
+X-Gm-Message-State: AOJu0Yw2Uf1vCihU8FAHcYU3qOQ5J1r8IfsTOKMiA/Se8gh3ypAcQrIn
+	oEdkO58gSvWkSuKYL86fDefZZB8KX1ZgbuAeWM28rrA7Am8=
+X-Google-Smtp-Source: AGHT+IFeXbNfc9PPeUFuM6/SEH6Mga7ci/PhjUGshLV+ygtgPd78rKp7oZmKPWKx3n84n1GtUKOkND5h70UMCiYlB9U=
+X-Received: by 2002:a2e:9b95:0:b0:2cc:d45a:48ea with SMTP id
+ z21-20020a2e9b95000000b002ccd45a48eamr2671783lji.56.1704297919417; Wed, 03
+ Jan 2024 08:05:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103135454.376021-1-masahiroy@kernel.org>
-In-Reply-To: <20240103135454.376021-1-masahiroy@kernel.org>
-Reply-To: sedat.dilek@gmail.com
-From: Sedat Dilek <sedat.dilek@gmail.com>
-Date: Wed, 3 Jan 2024 17:04:32 +0100
-Message-ID: <CA+icZUX77miqFC5=iH_9e4BZw5hc1Ci8A3cHL1uGPnzHw258Hw@mail.gmail.com>
-Subject: Re: [PATCH] linux/export.h: remove unneeded .balign directive
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Helge Deller <deller@gmx.de>
+References: <20240102185933.64179-1-verdre@v0yd.nl> <20240102185933.64179-4-verdre@v0yd.nl>
+In-Reply-To: <20240102185933.64179-4-verdre@v0yd.nl>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Wed, 3 Jan 2024 11:05:05 -0500
+Message-ID: <CABBYNZLoivEW=yrDtTbu5SjGauESH0zHb7NXs0YaSKSKqre5GQ@mail.gmail.com>
+Subject: Re: [PATCH 3/5] Bluetooth: hci_event: Remove limit of 2 reconnection attempts
+To: =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Happy new 2024 Masahiro,
+Hi Jonas,
 
-some small nits.
-
-What about adding links to the commits...
-
-linux/export: Fix alignment for 64-bit ksymtab entries
-[ Upstream commit f6847807c22f6944c71c981b630b9fff30801e73 ]
-
-linux/export: Ensure natural alignment of kcrctab array
-[ Upstream commit 753547de0daecbdbd1af3618987ddade325d9aaa ]
-
-^^ AFAICS in linux-stable - v6.6.10-rc1 includes both
-^^ Is yours a follow-up and makes sense for linux-stable releases?
-
-...and CC Helge Deller?
-
-Best regards,
--Sedat-
-
-Link: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-r=
-c.git/log/?h=3Dlinux-6.6.y
-
-On Wed, Jan 3, 2024 at 2:55=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.or=
-g> wrote:
+On Tue, Jan 2, 2024 at 1:59=E2=80=AFPM Jonas Dre=C3=9Fler <verdre@v0yd.nl> =
+wrote:
 >
-> The .export_symbol section is discarded by the linker script, hence
-> no alignment is needed. Simplify the code.
+> Since commit 4c67bc74f016b0d360b8573e18969c0ff7926974, we retry connectin=
+g
+> later when we get a "Command Disallowed" error returned by "Create
+> Connection".
 >
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> In this commit the intention was to retry only once, and give up if we se=
+e
+> "Command Disallowed" again on the second try.
+>
+> This made sense back then when the retry was initiated *only* from the
+> "Connect Complete" event. If we received that event, we knew that now the
+> card now must have a "free slot" for a new connection request again. Thes=
+e
+> days we call hci_conn_check_pending() from a few more places though, and
+> in these places we can't really be sure that there's a "free slot" on the
+> card, so the second try to "Create Connection" might fail again.
+>
+> Deal with this by being less strict about these retries and try again
+> every time we get "Command Disallowed" errors, removing the limitation to
+> only two attempts.
+>
+> Since this can potentially cause us to enter an endless cycle of
+> reconnection attempts, we'll add some guarding against that with the next
+> commit.
+
+Don't see where you are doing such guarding, besides you seem to
+assume HCI_ERROR_COMMAND_DISALLOWED would always means the controller
+is busy, or something like that, but it could perform the connection
+later, but that may not always be the case, thus why I think
+reconnecting just a few number of times is better, if you really need
+to keep retrying then this needs to be controlled by a policy in
+userspace not hardcoded in the kernel, well I can even argument that
+perhaps the initial number of reconnection shall be configurable so
+one don't have to recompile the kernel if that needs changing.
+
+> Signed-off-by: Jonas Dre=C3=9Fler <verdre@v0yd.nl>
 > ---
+>  net/bluetooth/hci_event.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 >
->  include/linux/export.h | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
+> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+> index e8b4a0126..e1f5b6f90 100644
+> --- a/net/bluetooth/hci_event.c
+> +++ b/net/bluetooth/hci_event.c
+> @@ -2323,12 +2323,13 @@ static void hci_cs_create_conn(struct hci_dev *hd=
+ev, __u8 status)
 >
-> diff --git a/include/linux/export.h b/include/linux/export.h
-> index 0bbd02fd351d..dff230bb5aca 100644
-> --- a/include/linux/export.h
-> +++ b/include/linux/export.h
-> @@ -15,13 +15,9 @@
->   */
->
->  #ifdef CONFIG_64BIT
-> -#define __EXPORT_SYMBOL_REF(sym)                       \
-> -       .balign 8                               ASM_NL  \
-> -       .quad sym
-> +#define __EXPORT_SYMBOL_PTR    .quad
->  #else
-> -#define __EXPORT_SYMBOL_REF(sym)                       \
-> -       .balign 4                               ASM_NL  \
-> -       .long sym
-> +#define __EXPORT_SYMBOL_PTR    .long
->  #endif
->
->  #define ___EXPORT_SYMBOL(sym, license, ns)             \
-> @@ -29,7 +25,7 @@
->         __export_symbol_##sym:                  ASM_NL  \
->                 .asciz license                  ASM_NL  \
->                 .asciz ns                       ASM_NL  \
-> -               __EXPORT_SYMBOL_REF(sym)        ASM_NL  \
-> +               __EXPORT_SYMBOL_PTR sym         ASM_NL  \
->         .previous
->
->  #if defined(__DISABLE_EXPORTS)
+>         if (status) {
+>                 if (conn && conn->state =3D=3D BT_CONNECT) {
+> -                       if (status !=3D HCI_ERROR_COMMAND_DISALLOWED || c=
+onn->attempt > 2) {
+> +                       if (status =3D=3D HCI_ERROR_COMMAND_DISALLOWED) {
+> +                               conn->state =3D BT_CONNECT2;
+> +                       } else {
+>                                 conn->state =3D BT_CLOSED;
+>                                 hci_connect_cfm(conn, status);
+>                                 hci_conn_del(conn);
+> -                       } else
+> -                               conn->state =3D BT_CONNECT2;
+> +                       }
+>                 }
+>         } else {
+>                 if (!conn) {
 > --
-> 2.40.1
+> 2.43.0
 >
->
+
+
+--=20
+Luiz Augusto von Dentz
 
