@@ -1,159 +1,120 @@
-Return-Path: <linux-kernel+bounces-15352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6156822A8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:50:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EAD5822A90
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:51:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 636B31F23FD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:50:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3252B21D96
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:51:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD13D18640;
-	Wed,  3 Jan 2024 09:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF28318C14;
+	Wed,  3 Jan 2024 09:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZNLoKv7+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nCwGbdWI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ABFB18632
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 09:50:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40d5f402571so69256045e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 01:50:04 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F092E18B1E;
+	Wed,  3 Jan 2024 09:50:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3bb9b28acb4so6928926b6e.2;
+        Wed, 03 Jan 2024 01:50:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704275403; x=1704880203; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WmKejKBf2avgLbRYliTmm8WeIicCE14MUoUVoAfYgWw=;
-        b=ZNLoKv7+EMoT5DtRHcfU+yQquPIA9y09xz7yaIroERNXk2RUCOBpu6hY8faJ8oGlJm
-         rFiRnWb3g49W4BiUQuxf936AQSLDrutkqnkwEqGXOnjiT9HFJcxMOTs99aqH+mzGt7e+
-         Wz4EtV3Zh99qL0vHCCBkcSMN6fDyNWuGL/4pzpcbB7nrQWE2/IrFOyZhFz8fAZGIxZp7
-         mzJyODs2JE8LqRSl4MJnHko15VYtO19TrwV6cehEFZrizT/xm3pmicDKNsYKZHnGDfFT
-         +u+dpYl8lxz/TsPVhnlbGJ6aYNoHt7fhqn6Ata2wxaby8XC8hiU6tPuKBF5F+vHBE1HI
-         Skwg==
+        d=gmail.com; s=20230601; t=1704275427; x=1704880227; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aEztFZJsrJ8YqCwVoGZX/9s/oSP+HNIXvJUA0ruhjFI=;
+        b=nCwGbdWIoQyzcL7T2sAM2Qj+p/0u6MENSBjLeTdyGJKS+an8VAGBqD/fN5MGau6lsH
+         neyAz8uuE4r+MZBF0UTmRIKnm0Wu6H8d0PGKpD3i/Lz2xYHfI88ChfXiMrLDd2dxGPw9
+         IYtwifNZ+I0kyVzW8yI0+KoEveZa7PUhAXx+zdaF1tvbYQnpYanZplcO68JO9O1NXZkY
+         ajq+BvmoTQJ9a7g+Ij0uBUAfend87Hp2ZF1hrFMhlcFIDU6pxQMI1bh93jhIZFmNSzHT
+         YRSoMAMj56ETaj3yJObMoEcthMWTFmuEPczTlwfWgN8qe+xMIKVWn0M9e4PsYR5Tsnf6
+         RriA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704275403; x=1704880203;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WmKejKBf2avgLbRYliTmm8WeIicCE14MUoUVoAfYgWw=;
-        b=Pbr0mDp2E2FEqDor9nRW590UZK0vloQjD74cciTBtR3W/sEyAR6KSBME5geZstdhyR
-         h6OX8435Ev/tliGvkPG9FIOgLHj/cYMHdm8D01XcRV8oIb4YmUxkb09U9PBpJey+M/wz
-         eClETRq6EN0PemNnkwocqQdTiMZOLskZK4yC5cVRJ2nAKx9QbXZpfIsbyVUc8FgcB3IA
-         XaZ0fhq8OD/8dkVdSvAJ2tpmvZLvOxocnP3+50ZGmrtWK18zuK0FKFTCPc1WhwLgiDZL
-         dGZTpSZaTYXoKxZPK+qISTJrS6AVlHkm7GyMybjCs9EnWvxXhTEGIMgKB+QbN5MeEoaq
-         wUlw==
-X-Gm-Message-State: AOJu0YzkJpdW6A3VQySMODtPhUpsug0PU4TBltRY8TQkOu7sQjn42b55
-	07wFzccQAqWpjZfk1vfJsv2SwMn4psJ9Sw==
-X-Google-Smtp-Source: AGHT+IFaqwY1UVrdPQleZW7aCPSSqLl/+7BGbnsllxdUXEuCWX011Cu7HlnTvacGgRCavuek48oo5Q==
-X-Received: by 2002:a05:600c:3c86:b0:40d:6611:aefe with SMTP id bg6-20020a05600c3c8600b0040d6611aefemr4147210wmb.168.1704275402921;
-        Wed, 03 Jan 2024 01:50:02 -0800 (PST)
-Received: from [192.168.100.86] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id n7-20020a05600c500700b0040d8eca092esm1775176wmr.47.2024.01.03.01.50.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 01:50:02 -0800 (PST)
-Message-ID: <1d7ef6cc-5c25-4a59-ad7f-38870ac132c4@linaro.org>
-Date: Wed, 3 Jan 2024 09:50:01 +0000
+        d=1e100.net; s=20230601; t=1704275427; x=1704880227;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aEztFZJsrJ8YqCwVoGZX/9s/oSP+HNIXvJUA0ruhjFI=;
+        b=H0Nnx2tzOQgNgSEX9BqpK909PWPtBYJH1yZ2BAv5nNCFbi2Aq4iEDQ8OHPs8m69PbO
+         csGunKZ1i7F+2IxaBBx+WZpeY6ri4gHIunFD8Fnn8neyqDaVb6/nD4DrhTCOc4kXJFGR
+         X23ZHxyl0wpnygfU/i0w8AwP/xkwud1MROjWAfLhk4/dNhUCB8thF1JhNzfcDpNuOonL
+         y/2zWUa3I+2SkMYn29bBj2lrio7WRMq6tY7Bz2NHFaNrqH91Em4+DlHzR4UWeisH+Nqm
+         hlrVaP91Lk1wFhDFln2kUnW5nwVH831Sqs04nQ8ILi1DWSX4CMVP+yRj1Q3mh0D0BfLA
+         zzmw==
+X-Gm-Message-State: AOJu0YxrllxB3bpHI025uHxqNOsIMQPpUql7pi8b+kquE7gRVg2gR7Ca
+	MZEUNIM5NDNuKHItBU+nQIY=
+X-Google-Smtp-Source: AGHT+IGJyT3iyh5T+AI2zkgdvra2Kul3OKNzrR2xwTy5aGqOVkM9d9B6vjs63GPMXB1xk6rIoOxtgQ==
+X-Received: by 2002:a05:6359:669a:b0:172:e402:4243 with SMTP id so26-20020a056359669a00b00172e4024243mr13698729rwb.59.1704275426915;
+        Wed, 03 Jan 2024 01:50:26 -0800 (PST)
+Received: from barry-desktop.hub ([2407:7000:8942:5500:a7d6:f37a:9130:cd96])
+        by smtp.gmail.com with ESMTPSA id a34-20020a631a22000000b005c65e82a0cbsm21823483pga.17.2024.01.03.01.50.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 01:50:26 -0800 (PST)
+From: Barry Song <21cnbao@gmail.com>
+To: herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	akpm@linux-foundation.org,
+	ddstreet@ieee.org,
+	sjenning@redhat.com,
+	vitaly.wool@konsulko.com,
+	linux-crypto@vger.kernel.org
+Cc: chriscli@google.com,
+	chrisl@kernel.org,
+	hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	nphamcs@gmail.com,
+	yosryahmed@google.com,
+	zhouchengming@bytedance.com,
+	Barry Song <v-songbaohua@oppo.com>
+Subject: [PATCH 0/3] mm/zswap & crypto/acompress: remove a couple of memcpy
+Date: Wed,  3 Jan 2024 22:50:03 +1300
+Message-Id: <20240103095006.608744-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/5] net: mdio: ipq4019: configure CMN PLL clock for
- ipq5332
-Content-Language: en-US
-To: Luo Jie <quic_luoj@quicinc.com>, agross@kernel.org, andersson@kernel.org,
- konrad.dybcio@linaro.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, andrew@lunn.ch,
- hkallweit1@gmail.com, linux@armlinux.org.uk, robert.marko@sartura.hr
-Cc: linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- quic_srichara@quicinc.com
-References: <20231225084424.30986-1-quic_luoj@quicinc.com>
- <20231225084424.30986-4-quic_luoj@quicinc.com>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20231225084424.30986-4-quic_luoj@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 25/12/2023 08:44, Luo Jie wrote:
-> The reference clock of CMN PLL block is selectable, the internal
-> 48MHZ is used by default.
-> 
-> The output clock of CMN PLL block is for providing the clock
-> source of ethernet device(such as qca8084), there are 1 * 25MHZ
-> and 3 * 50MHZ output clocks available for the ethernet devices.
-> 
-> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-> ---
->   drivers/net/mdio/mdio-ipq4019.c | 129 +++++++++++++++++++++++++++++++-
->   1 file changed, 128 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/mdio/mdio-ipq4019.c b/drivers/net/mdio/mdio-ipq4019.c
-> index e24b0e688b10..e4862ac02026 100644
-> --- a/drivers/net/mdio/mdio-ipq4019.c
-> +++ b/drivers/net/mdio/mdio-ipq4019.c
-> @@ -44,6 +44,17 @@
->   /* Maximum SOC PCS(uniphy) number on IPQ platform */
->   #define ETH_LDO_RDY_CNT				3
->   
-> +#define CMN_PLL_REFERENCE_SOURCE_SEL		0x28
-> +#define CMN_PLL_REFCLK_SOURCE_DIV		GENMASK(9, 8)
-> +
-> +#define CMN_PLL_REFERENCE_CLOCK			0x784
-> +#define CMN_PLL_REFCLK_EXTERNAL			BIT(9)
-> +#define CMN_PLL_REFCLK_DIV			GENMASK(8, 4)
-> +#define CMN_PLL_REFCLK_INDEX			GENMASK(3, 0)
-> +
-> +#define CMN_PLL_POWER_ON_AND_RESET		0x780
-> +#define CMN_ANA_EN_SW_RSTN			BIT(6)
-> +
->   enum mdio_clk_id {
->   	MDIO_CLK_MDIO_AHB,
->   	MDIO_CLK_UNIPHY0_AHB,
-> @@ -55,6 +66,7 @@ enum mdio_clk_id {
->   
->   struct ipq4019_mdio_data {
->   	void __iomem *membase;
-> +	void __iomem *cmn_membase;
->   	void __iomem *eth_ldo_rdy[ETH_LDO_RDY_CNT];
->   	struct clk *clk[MDIO_CLK_CNT];
->   };
-> @@ -227,12 +239,116 @@ static int ipq4019_mdio_write_c22(struct mii_bus *bus, int mii_id, int regnum,
->   	return 0;
->   }
->   
-> +/* For the CMN PLL block, the reference clock can be configured according to
-> + * the device tree property "qcom,cmn-ref-clock-frequency", the internal 48MHZ
-> + * is used by default.
-> + *
-> + * The output clock of CMN PLL block is provided to the ethernet devices,
-> + * threre are 4 CMN PLL output clocks (1*25MHZ + 3*50MHZ) enabled by default.
-> + *
-> + * Such as the output 50M clock for the qca8084 ethernet PHY.
-> + */
-> +static int ipq_cmn_clock_config(struct mii_bus *bus)
-> +{
-> +	struct ipq4019_mdio_data *priv;
-> +	u32 reg_val, src_sel, ref_clk;
-> +	int ret;
-> +
-> +	priv = bus->priv;
-> +	if (priv->cmn_membase) {
+From: Barry Song <v-songbaohua@oppo.com>
 
-if (!priv->cnm_membase)
-	return 0;
+The patchset removes a couple of memcpy in zswap and crypto
+to improve zswap's performance.
 
-then move the indentation here one tab left.
+Thanks for Chengming Zhou's test and perf data.
+Quote from Chengming,
+ I just tested these three patches on my server, found improvement in the
+ kernel build testcase on a tmpfs with zswap (lz4 + zsmalloc) enabled.
+ 
+         mm-stable 501a06fe8e4c  patched
+ real    1m38.028s               1m32.317s
+ user    19m11.482s              18m39.439s
+ sys     19m26.445s              17m5.646s
 
----
-bod
+The patchset is based on mm-stable.
+
+Barry Song (3):
+  crypto: introduce acomp_is_async to expose if a acomp has a scomp
+    backend
+  mm/zswap: remove the memcpy if acomp is not asynchronous
+  crypto: scompress: remove memcpy if sg_nents is 1
+
+ crypto/acompress.c         |  8 ++++++++
+ crypto/scompress.c         | 35 ++++++++++++++++++++++++++++-------
+ include/crypto/acompress.h |  9 +++++++++
+ mm/zswap.c                 |  6 ++++--
+ 4 files changed, 49 insertions(+), 9 deletions(-)
+
+-- 
+2.34.1
+
 
