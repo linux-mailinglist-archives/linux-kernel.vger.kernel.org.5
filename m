@@ -1,51 +1,50 @@
-Return-Path: <linux-kernel+bounces-15825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 218A58233E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:54:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 223308233EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:54:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA2ED1F24EF9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:54:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5287286C82
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396371C684;
-	Wed,  3 Jan 2024 17:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F2D1C6B4;
+	Wed,  3 Jan 2024 17:54:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="L1kvXiEP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ROahT/8a"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC0C31C2A3;
-	Wed,  3 Jan 2024 17:54:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=g3Q6A/OSBTzpvsA+ZueyJpCCrUPX6Gs2jbB2LOMyGZU=; b=L1kvXiEP+N+GxELX905cIpeDO/
-	Fum/7I+llgkoF6au7+5q5lD7WYxqCxjWc3lxB10+2+oQTvnGvGRGQBspPKliCu3alSezpqXATdGrF
-	YNWzJy1nz0yv7YC9tj9b7XKQvQ1YLphocwT/hY57otg/RVTsIBJj/yPZjBX6Kw5C2Z/V02yuxH3J/
-	HK2qNkSLlarydo7UesLCYKwkF4LkpIC/IeklCIgKUcoPzmQ2Ij4UI+78N9tgDkZ7m+wmbZOdzrR8e
-	wcN7B/uKTt6BZEUjw/gUYYjw/e0T9HYFGVjZbirAHs8MdhZctVx+ozf7UOu67ciQg5sjpIBfoDnYb
-	nJ7p6cvg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rL5RH-00DG5A-Jb; Wed, 03 Jan 2024 17:53:59 +0000
-Date: Wed, 3 Jan 2024 17:53:59 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Hillf Danton <hdanton@sina.com>
-Cc: Genes Lists <lists@sapience.com>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: 6.6.8 stable: crash in folio_mark_dirty
-Message-ID: <ZZWfN6ymZ50MjzuQ@casper.infradead.org>
-References: <8bb29431064fc1f70a42edef75a8788dd4a0eecc.camel@sapience.com>
- <20231231012846.2355-1-hdanton@sina.com>
- <20240101015504.2446-1-hdanton@sina.com>
- <20240101113316.2595-1-hdanton@sina.com>
- <20240103104907.2657-1-hdanton@sina.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E521C6AE;
+	Wed,  3 Jan 2024 17:54:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 718D2C433C7;
+	Wed,  3 Jan 2024 17:54:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704304467;
+	bh=bjY+TelhsJhVcAkpYhMDsUdz6i9JvN3gBf3gtTujZ1c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ROahT/8aY0QDu/FZ89Eg8rXfrfU5CK/zMWmuIs4IO9BtDTHJYEVvJ2TZylO3ELRx+
+	 nf3rGE1oyjfqSwMC+DwtjCtZMfxH6aktMcSY4QCuzCPNOd8jV/MHtHLHtx+9VavmfN
+	 UPUkYbZq49tykJj4ZUXgfo73yWqrAibYvUy0Dro9/aP5cy17x0zTPVPaAmlTQ+nYKg
+	 JndllnIxg9gw7KvLDWY66qYcd+WBXJuWXNIAXyoFpnS/bkmeTuc/lY2jGr10+PN0gQ
+	 4tqVaZhdFo9/jd1MQADboEpJ0kNYDQExoyFXPdGZxl/wN4kjAzqlkqVIfvZpHuqzLc
+	 c70ZtlQgFDw+A==
+Received: (nullmailer pid 1445325 invoked by uid 1000);
+	Wed, 03 Jan 2024 17:54:24 -0000
+Date: Wed, 3 Jan 2024 10:54:24 -0700
+From: Rob Herring <robh@kernel.org>
+To: Bryan O'Donoghue <pure.logic@nexus-software.ie>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Robert Foss <rfoss@kernel.org>, Todor Tomov <todor.too@gmail.com>, Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] media: dt-bindings: media: camss: Add
+ qcom,sc8280xp-camss binding
+Message-ID: <20240103175424.GA1440392-robh@kernel.org>
+References: <20240103-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v1-0-abacaa63a961@linaro.org>
+ <20240103-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v1-1-abacaa63a961@linaro.org>
+ <87bcff40-b5ff-41c9-a33f-95f5e80a2f22@linaro.org>
+ <62995a12-e835-40ff-966f-8522f2ab53dc@nexus-software.ie>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,31 +53,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240103104907.2657-1-hdanton@sina.com>
+In-Reply-To: <62995a12-e835-40ff-966f-8522f2ab53dc@nexus-software.ie>
 
-On Wed, Jan 03, 2024 at 06:49:07PM +0800, Hillf Danton wrote:
-> On Mon, 1 Jan 2024 14:11:02 +0000 Matthew Wilcox
+On Wed, Jan 03, 2024 at 09:40:02AM +0000, Bryan O'Donoghue wrote:
+> On 03/01/2024 07:40, Krzysztof Kozlowski wrote:
+> > On 03/01/2024 03:18, Bryan O'Donoghue wrote:
+> > > Add bindings for qcom,sc8280xp-camss in order to support the camera
+> > > subsystem for sc8280xp as found in the Lenovo x13s Laptop.
+> > > 
+> > > Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> > > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > > ---
+> > >   .../bindings/media/qcom,sc8280xp-camss.yaml        | 512 +++++++++++++++++++++
+> > >   1 file changed, 512 insertions(+)
+> > > 
 > > 
-> > From an mm point of view, what is implicit is that truncate calls
-> > unmap_mapping_folio -> unmap_mapping_range_tree ->
-> > unmap_mapping_range_vma -> zap_page_range_single -> unmap_single_vma ->
-> > unmap_page_range -> zap_p4d_range -> zap_pud_range -> zap_pmd_range ->
-> > zap_pte_range -> pte_offset_map_lock()
+> > This patch fails, as pointed out by Robot.
 > > 
-> > So a truncate will take the page lock, then spin on the pte lock
-> > until the racing munmap() has finished (ok, this was an exit(), not
-> > a munmap(), but exit() does an implicit munmap()).
+> > Best regards,
+> > Krzysztof
 > > 
-> But ptl fails to explain the warning reported, while the sequence in
-> __block_commit_write()
+> > 
 > 
-> 	mark_buffer_dirty();
-> 	folio_mark_uptodate();
+> Ah its in Bjorn's 6.8 clock pull tree.
 > 
-> hints the warning is bogus.
+> I will repost when it hits -next
 
-The folio is locked when filesystems call __block_commit_write().
+How is that helpful? It will still fail, and the media maintainers still 
+can't apply this. If you work on linux-next, you'd better be 
+aware of and explain the dependencies.
 
-Nothing explains the reported warning, IMO.  Other than data corruption,
-and I'm not sure that we've found the last data corrupter.
+Rob
 
