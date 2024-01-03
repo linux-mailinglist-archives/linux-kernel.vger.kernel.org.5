@@ -1,95 +1,89 @@
-Return-Path: <linux-kernel+bounces-15388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3847D822B4F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 99683822B51
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:27:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6B7DB22F84
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:27:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AA35B22F7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67AAB18C16;
-	Wed,  3 Jan 2024 10:26:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0970018EB1;
+	Wed,  3 Jan 2024 10:26:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b/2JdAg8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A954918C01;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A38518B08;
+	Wed,  3 Jan 2024 10:26:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20162C433C9;
 	Wed,  3 Jan 2024 10:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-593f182f263so2312966eaf.0;
-        Wed, 03 Jan 2024 02:26:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704277592; x=1704882392;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hpaaqw2etLR/hs22+qj7E5K5Xi3iMRhAz4MlAOEhsmk=;
-        b=RM6bWWYcqIUHKbmDNvPp6ykIUO99qbg/CvYHORSwJ8Ra5rjeSs3DXb9pTvDnMF28Ah
-         zO14VR6NcdwJe+faoD2Qf6rwaXESZvKhOJgsy9MM/xfOb5ZO2HOrupOCmEIwDQipBtje
-         trgWepeoUsB0l04bDbW22m6inEeKLDM1cD9RZWF+WzLFh2X204X2baiUsW3XvROnS+I2
-         nqpND/xhl9uprajVn97xJe2auXdsGvW7GmfxYYRnzAPuEWs6xeAFYavML+Z5xwCe1to5
-         slmnR7uZTCoLlNre+bc1t4mrjgCJbsZWWw4e67SkHkKlIVsq+y6YtSP8WqJmna7i3bzK
-         vZtw==
-X-Gm-Message-State: AOJu0Yzh9eLlldMAZhEoxj0KZW/YKJUKHNCo0JIF4dPOo8pw9B++CgbH
-	Hd8ou3X/VB7yxX0fmuG4iSXX0x43opsSJYmEc6yphWZL
-X-Google-Smtp-Source: AGHT+IEaAOzfO5uo/6aswMWEivSoT8Dwc+BHdKAw000gMRmZE61EPsZLFyS5wMsfS3guEJemMvXxgC+XnCkP+UdpRC0=
-X-Received: by 2002:a4a:ea4b:0:b0:595:fcca:e203 with SMTP id
- j11-20020a4aea4b000000b00595fccae203mr1588816ooe.0.1704277592793; Wed, 03 Jan
- 2024 02:26:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704277595;
+	bh=BjFdMMXze1pGXCEQZ4TAZ3lfzx5oNEM9IyQG06g4aNw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=b/2JdAg8WqBQCQQ1oDn7RhkRMmyVpfhAx2bFcr1Bfeuefz4ZzDCRM8po+DTRwygkp
+	 rxd5RXNr0oG3LVFOUR5rG4j5a7qEciNHy/qJPQ3c0sX8iTMeSaEaUYM5wmrFf4OfeJ
+	 UdK5NirPoG9Ysf9fp/gfEytjZXQQWK1UfFmQoIfkXJ029i6eJ57LPbS5HqYMhvirK5
+	 wCzpRH+c9JSUnZnq4I88LgEmQB+8eYFZtwd+5MWmsTCTjPiEZOzhokghS4uZwHiOtF
+	 p4I7oG9vDjbDb2RsualTWHAihakHc2h3Yb2BAM6knyxE9nFCTQXaufS97GgDI/yXsx
+	 Pw8EIVYrSEWBA==
+From: Arnd Bergmann <arnd@kernel.org>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] r8169: fix building with CONFIG_LEDS_CLASS=m
+Date: Wed,  3 Jan 2024 11:26:25 +0100
+Message-Id: <20240103102630.3770242-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <4556052.LvFx2qVVIh@kreacher> <CAJZ5v0hRGKjwDv0VLw550CLfUuNGaVXxmvcpbFhS=PCPqY0n4A@mail.gmail.com>
- <3c9f9a53-958e-4d6c-8fe1-6514f97fe1e0@linaro.org>
-In-Reply-To: <3c9f9a53-958e-4d6c-8fe1-6514f97fe1e0@linaro.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 3 Jan 2024 11:26:22 +0100
-Message-ID: <CAJZ5v0gVSYQBJgy1iU67dSbefGWQxOQCcz+xT+P-gLc+ZcOfTQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/6] thermal: netlink: Redefine the API and drop unused code
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Linux PM <linux-pm@vger.kernel.org>, 
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Zhang Rui <rui.zhang@intel.com>, 
-	Linux ACPI <linux-acpi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Lukasz Luba <lukasz.luba@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Daniel,
+From: Arnd Bergmann <arnd@arndb.de>
 
-On Wed, Jan 3, 2024 at 10:54=E2=80=AFAM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
->
-> Hi Rafael,
->
-> On 02/01/2024 14:24, Rafael J. Wysocki wrote:
-> > On Fri, Dec 15, 2023 at 9:02=E2=80=AFPM Rafael J. Wysocki <rjw@rjwysock=
-i.net> wrote:
-> >>
-> >> Hi Everyone,
-> >>
-> >> This patch series redefines the thermal netlink API to be somewhat mor=
-e
-> >> convenient to use on the caller side and drops some unused code from
-> >> the thermal netlink library.
-> >>
-> >> Please refer to the individual patch changelogs for details.
-> >
-> > No feedback, so this series doesn't appear to be controversial, and I
-> > would like to get it into 6.8.
-> >
-> > Tentatively queuing it up and please let me know if it is problematic.
->
-> I did not have time to review them properly and I'm OoO until next week.
-> Is it possible to wait for the next time so I can review them ?
+When r8169 is built-in but the LED support is a loadable module, the
+new code to drive the LED now causes a link failure:
 
-I can defer them a few days of course, but if Lukasz can review them
-in the meantime, I think that should be sufficient?
+ld: drivers/net/ethernet/realtek/r8169_leds.o: in function `rtl8168_init_leds':
+r8169_leds.c:(.text+0x36c): undefined reference to `devm_led_classdev_register_ext'
+
+Add a Kconfig dependency to prevent the broken configuration but still
+allow having the network code built-in as long as CONFIG_LEDS_TRIGGER_NETDEV
+is disabled, regardless of CONFIG_LEDS_CLASS.
+
+Fixes: 18764b883e15 ("r8169: add support for LED's on RTL8168/RTL8101")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ethernet/realtek/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/realtek/Kconfig b/drivers/net/ethernet/realtek/Kconfig
+index 93d9df55b361..fd3f18b328de 100644
+--- a/drivers/net/ethernet/realtek/Kconfig
++++ b/drivers/net/ethernet/realtek/Kconfig
+@@ -98,6 +98,7 @@ config 8139_OLD_RX_RESET
+ config R8169
+ 	tristate "Realtek 8169/8168/8101/8125 ethernet support"
+ 	depends on PCI
++	depends on LEDS_CLASS || !LEDS_TRIGGER_NETDEV
+ 	select FW_LOADER
+ 	select CRC32
+ 	select PHYLIB
+-- 
+2.39.2
+
 
