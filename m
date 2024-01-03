@@ -1,209 +1,137 @@
-Return-Path: <linux-kernel+bounces-15915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EB8F82359D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:33:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF7E68235A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:33:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D08ABB23C11
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:33:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF06E2845D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564A41CF90;
-	Wed,  3 Jan 2024 19:33:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A8191D543;
+	Wed,  3 Jan 2024 19:33:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DKzRaMcX"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="iUndUA2a"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FE3F1CF82;
-	Wed,  3 Jan 2024 19:33:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18211C433C8;
-	Wed,  3 Jan 2024 19:33:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704310382;
-	bh=t0YnYMxm+HhC2TvtsZ1Q/zGQO7QfmdSadDLW0VFCqTc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=DKzRaMcX5nKKy5aV/1ApoM2TZc4ltQWkjbDxQT7DgnVN4UqEQzr719sqd805BnwBq
-	 wifIqGDCMA/LKTaK7Oxwc3/3oPnym9FTy1X7cUtUoaxQYQ5a7rpV2U1XdcRDM+CkV6
-	 n5+orVCBBLfGdA3QyhZcFHr5HCZoHxHfmtNTF/pvuOTLgF+jSoHEyhdvngkyc63j+v
-	 vYPvzdTgKR1b0UUuwiOr0JhvKa+QYYMnffGEur3Zqq900eVddYeG/PR1RUMN5QciuO
-	 D0Ze41hZr2eXez9xHsOxEt5P3x9Mh3gPxn0e4K2E4InEYMSz7ZfwNHSK5uSp3rz5Xb
-	 Wo6H1IQnBmn3A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A2F25CE09BD; Wed,  3 Jan 2024 11:33:01 -0800 (PST)
-Date: Wed, 3 Jan 2024 11:33:01 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v3 4/7] rcu: Improve handling of synchronize_rcu() users
-Message-ID: <7dfb7ee8-f9a3-4c15-b3d1-b4f77602cbe1@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ZYVWjc65LzD8qkdw@pc636>
- <e20058f9-a525-4d65-b22b-7dd9cfec9737@paulmck-laptop>
- <ZZQHCrGNwjooI4kU@pc636>
- <cd45b0b5-f86b-43fb-a5f3-47d340cd4f9f@paulmck-laptop>
- <ZZVeEGTKVp7CUqtK@pc636>
- <45a15103-0302-4e7d-b522-e17e8b8ac927@paulmck-laptop>
- <ZZWa2LENLXCMUBhW@pc636>
- <d4635fdf-8ed0-452d-8bc8-0fe0e7fb1994@paulmck-laptop>
- <ZZWvKLy9mIOaaay4@pc636>
- <ZZWvbkhFA_Mbw_wH@pc636>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A891D53E
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 19:33:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 117CF40E00C7;
+	Wed,  3 Jan 2024 19:33:24 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id JJ364MEOexCW; Wed,  3 Jan 2024 19:33:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704310400; bh=LI4BoQxt9juo8GAaDe/qJjCCtPWkH2PdXrbh9USLSXY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iUndUA2aUU0N6d0Cx2P+C4dAo88NRh7/qGVWfKUuKLk371ORXQuLXGWhfcjTMQ84Y
+	 Yn644KI5biroliewtLXnYxGPK3QEhImNcttJMwS9m3RQndvHrS+jK/g9ZWNDzlI0hz
+	 x/4QLNYtTEN6wQJ/Ebtb6sQSlG5zERzDK3Q5yXilFfiUgPj3dju3UkBGSDndmkxW24
+	 L2E5XB0r1QurfW/aAJE+VnF1FjEiUUEAOaajcCHSBbtg51as1jqQwJ/0eQupCvodJi
+	 VCibOuEJgDNpaNxOtpsEFoL8GTbeqVOzCwMzwcryg5Q698bGPhJ91xDeIAiQCe/PQJ
+	 4+WxxHIFygfnc9lSzl5Tr6Ym+KcsAwzzUEaRSbSjTXRQhdb4mG6AyCb01uaLbmriZy
+	 bvxB2pYDHfYh/CP6r/aNMdH0hNQhn356Z/40w9BKaIa8TTEaaZ7RciUqceHOgz+NFC
+	 f3T7fdDXYs4EM5BXuHHCHm+XmFCSNREk2K0GZ+15GtWBuqzcXZ/x7C5MF4MhiKtu/3
+	 Z3SNtZsdWZFKjWy+j5OS7LTCMCkxkMU/JHo5Vyb3SlbuSXHRYuRLfIYO8t9hrTjJP2
+	 Qhr4Ba6STe/c5xt9GdC8qAk3EXqjKwM1E02/sfVeCvf2fdtoogA2SLh3jakzfTFixQ
+	 wvd/n0ZT1NAI0EjluRM3Rp0o=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C34F640E0198;
+	Wed,  3 Jan 2024 19:33:15 +0000 (UTC)
+Date: Wed, 3 Jan 2024 20:33:09 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: kernel test robot <lkp@intel.com>
+Cc: Yazen Ghannam <yazen.ghannam@amd.com>, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [tip:ras/core 11/13] include/linux/ras.h:9:10: fatal error:
+ uapi/asm/mce.h: No such file or directory
+Message-ID: <20240103193309.GFZZW2dehRC+K/VreB@fat_crate.local>
+References: <202401040257.NPrXuVk7-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZZWvbkhFA_Mbw_wH@pc636>
+In-Reply-To: <202401040257.NPrXuVk7-lkp@intel.com>
 
-On Wed, Jan 03, 2024 at 08:03:10PM +0100, Uladzislau Rezki wrote:
-> On Wed, Jan 03, 2024 at 08:02:00PM +0100, Uladzislau Rezki wrote:
-> > On Wed, Jan 03, 2024 at 09:56:42AM -0800, Paul E. McKenney wrote:
-> > > On Wed, Jan 03, 2024 at 06:35:20PM +0100, Uladzislau Rezki wrote:
-> > > > On Wed, Jan 03, 2024 at 06:47:30AM -0800, Paul E. McKenney wrote:
-> > > > > On Wed, Jan 03, 2024 at 02:16:00PM +0100, Uladzislau Rezki wrote:
-> > > > > > On Tue, Jan 02, 2024 at 11:25:13AM -0800, Paul E. McKenney wrote:
-> > > > > > > On Tue, Jan 02, 2024 at 01:52:26PM +0100, Uladzislau Rezki wrote:
-> > > > > > > > Hello, Paul!
-> > > > > > > > 
-> > > > > > > > Sorry for late answer, it is because of holidays :)
-> > > > > > > > 
-> > > > > > > > > > > > The problem is that, we are limited in number of "wait-heads" which we
-> > > > > > > > > > > > add as a marker node for this/current grace period. If there are more clients
-> > > > > > > > > > > > and there is no a wait-head available it means that a system, the deferred
-> > > > > > > > > > > > kworker, is slow in processing callbacks, thus all wait-nodes are in use.
-> > > > > > > > > > > > 
-> > > > > > > > > > > > That is why we need an extra grace period. Basically to repeat our try one
-> > > > > > > > > > > > more time, i.e. it might be that a current grace period is not able to handle
-> > > > > > > > > > > > users due to the fact that a system is doing really slow, but this is rather
-> > > > > > > > > > > > a corner case and is not a problem.
-> > > > > > > > > > > 
-> > > > > > > > > > > But in that case, the real issue is not the need for an extra grace
-> > > > > > > > > > > period, but rather the need for the wakeup processing to happen, correct?
-> > > > > > > > > > > Or am I missing something subtle here?
-> > > > > > > > > > > 
-> > > > > > > > > > Basically, yes. If we had a spare dummy-node we could process the users
-> > > > > > > > > > by the current GP(no need in extra). Why we may not have it - it is because
-> > > > > > > > > > like you pointed:
-> > > > > > > > > > 
-> > > > > > > > > > - wake-up issue, i.e. wake-up time + when we are on_cpu;
-> > > > > > > > > > - slow list process. For example priority. The kworker is not
-> > > > > > > > > >   given enough CPU time to do the progress, thus "dummy-nodes"
-> > > > > > > > > >   are not released in time for reuse.
-> > > > > > > > > > 
-> > > > > > > > > > Therefore, en extra GP is requested if there is a high flow of
-> > > > > > > > > > synchronize_rcu() users and kworker is not able to do a progress
-> > > > > > > > > > in time.
-> > > > > > > > > > 
-> > > > > > > > > > For example 60K+ parallel synchronize_rcu() users will trigger it.
-> > > > > > > > > 
-> > > > > > > > > OK, but what bad thing would happen if that was moved to precede the
-> > > > > > > > > rcu_seq_start(&rcu_state.gp_seq)?  That way, the requested grace period
-> > > > > > > > > would be the same as the one that is just now starting.
-> > > > > > > > > 
-> > > > > > > > > Something like this?
-> > > > > > > > > 
-> > > > > > > > > 	start_new_poll = rcu_sr_normal_gp_init();
-> > > > > > > > > 
-> > > > > > > > > 	/* Record GP times before starting GP, hence rcu_seq_start(). */
-> > > > > > > > > 	rcu_seq_start(&rcu_state.gp_seq);
-> > > > > > > > > 	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> > > > > > > > >
-> > > > > > > > I had a concern about the case when rcu_sr_normal_gp_init() handles what
-> > > > > > > > we currently have, in terms of requests. Right after that there is/are
-> > > > > > > > extra sync requests which invoke the start_poll_synchronize_rcu() but
-> > > > > > > > since a GP has been requested before it will not request an extra one. So
-> > > > > > > > "last" incoming users might not be processed.
-> > > > > > > > 
-> > > > > > > > That is why i have placed the rcu_sr_normal_gp_init() after a gp_seq is
-> > > > > > > > updated.
-> > > > > > > > 
-> > > > > > > > I can miss something, so please comment. Apart of that we can move it
-> > > > > > > > as you proposed.
-> > > > > > > 
-> > > > > > > Couldn't that possibility be handled by a check in rcu_gp_cleanup()?
-> > > > > > > 
-> > > > > > It is controlled by the caller anyway, i.e. if a new GP is needed.
-> > > > > > 
-> > > > > > I am not 100% sure it is as straightforward as it could look like to
-> > > > > > handle it in the rcu_sr_normal_gp_cleaup() function. At least i see
-> > > > > > that we need to access to the first element of llist and find out if
-> > > > > > it is a wait-dummy-head or not. If not we know there are extra incoming
-> > > > > > calls.
-> > > > > > 
-> > > > > > So that way requires extra calling of start_poll_synchronize_rcu().
-> > > > > 
-> > > > > If this is invoked early enough in rcu_gp_cleanup(), all that needs to
-> > > > > happen is to set the need_gp flag.  Plus you can count the number of
-> > > > > requests, and snapshot that number at rcu_gp_init() time and check to
-> > > > > see if it changed at rcu_gp_cleanup() time.  Later on, this could be
-> > > > > used to reduce the number of wakeups, correct?
-> > > > > 
-> > > > You mean instead of waking-up a gp-kthread just continue processing of
-> > > > new users if they are exist? If so, i think, we can implement it as separate
-> > > > patches.
-> > > 
-> > > Agreed, this is an optimization, and thus should be a separate patch.
-> > > 
-> > > > > > I can add a comment about your concern and we can find the best approach
-> > > > > > later, if it is OK with you!
-> > > > > 
-> > > > > I agree that this should be added via a later patch, though I have not
-> > > > > yet given up on the possibility that this patch might be simple enough
-> > > > > to be later in this same series.
-> > > > > 
-> > > > Maybe there is a small misunderstanding. Please note, the rcu_sr_normal_gp_init() 
-> > > > function does not request any new gp, i.e. our approach does not do any extra GP
-> > > > requests. It happens only if there are no any dummy-wait-head available as we
-> > > > discussed it earlier.
-> > > 
-> > > The start_poll_synchronize_rcu() added by your patch 4/7 will request
-> > > an additional grace period because it is invoked after rcu_seq_start()
-> > > is called, correct?  Or am I missing something subtle here?
-> > > 
-> > <snip>
-> > +       // New poll request after rnp unlock
-> > +       if (start_new_poll)
-> > +               (void) start_poll_synchronize_rcu();
-> > +
-> > <snip>
-> > 
-> > The "start_new_poll" is set to "true" only when _this_ GP is not able
-> > to handle anything and there are outstanding users. It happens when the
-> > rcu_sr_normal_gp_init() function was not able to insert a dummy separator
-> > to the llist, because there were no left dummy-nodes(fixed number of them)
-> > due to the fact that all of them are "in-use". The reason why there are no
-> > dummy-nodes is because of slow progress because it is done by dedicated
-> > kworker.
-> > 
-> > I can trigger it, i mean when we need an addition GP, start_new_pool is 1,
-> > only when i run 20 000 processes concurrently in a tight loop:
-> > 
-> > <snip>
-> > while (1)
-> >   synchronize_rcu();
-> > <snip>
-> > 
-> > in that scenario we start to ask for an addition GP because we are not up
-> > to speed, i.e. a system is slow in processing callbacks and we need some
-> > time until wait-node/nodes is/are released for reuse.
-> > 
-> > We need a next GP to move it forward, i.e. to repeat a try of attaching
-> > a dummy-node.
-> > 
-> Probably i should add a comment about it :)
+On Thu, Jan 04, 2024 at 02:35:29AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ras/core
+> head:   d48d30d8c358004c7b1cb2e16969a569d45953b3
+> commit: 8e1d0790e0a749a62428ff039c7a9050a06e9feb [11/13] RAS: Introduce AMD Address Translation Library
+> config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20240104/202401040257.NPrXuVk7-lkp@intel.com/config)
+> compiler: sh4-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240104/202401040257.NPrXuVk7-lkp@intel.com/reproduce)
 
-Sounds good, and thank you for bearing with me!
+How are you even testing this successfully?
 
-							Thanx, Paul
+I get with this compiler here:
+
+<stdin>:1519:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+{standard input}: Assembler messages:
+{standard input}:1094: Warning: end of file not at end of a line; newline inserted
+{standard input}:1095: Error: expected symbol name
+sh4-linux-gcc: internal compiler error: Segmentation fault signal terminated program cc1
+Please submit a full bug report, with preprocessed source (by using -freport-bug).
+See <https://gcc.gnu.org/bugs/> for instructions.
+make[5]: *** [scripts/Makefile.build:243: drivers/net/pcs/pcs-xpcs.o] Error 4
+make[4]: *** [scripts/Makefile.build:480: drivers/net/pcs] Error 2
+make[4]: *** Waiting for unfinished jobs....
+make[3]: *** [scripts/Makefile.build:480: drivers/net] Error 2
+make[3]: *** Waiting for unfinished jobs....
+make[2]: *** [scripts/Makefile.build:480: drivers] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/mnt/kernel/kernel/linux/Makefile:1911: .] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
+
+Anyway, this should fix it:
+
+diff --git a/include/linux/ras.h b/include/linux/ras.h
+index 829252a358b7..5d8f0e6fc03d 100644
+--- a/include/linux/ras.h
++++ b/include/linux/ras.h
+@@ -6,7 +6,9 @@
+ #include <linux/uuid.h>
+ #include <linux/cper.h>
+ 
++#ifdef CONFIG_X86_MCE
+ #include <uapi/asm/mce.h>
++#endif
+ 
+ #ifdef CONFIG_DEBUG_FS
+ int ras_userspace_consumers(void);
+@@ -38,11 +40,12 @@ static inline void
+ log_arm_hw_error(struct cper_sec_proc_arm *err) { return; }
+ #endif
+ 
+-#if IS_ENABLED(CONFIG_AMD_ATL)
++#ifdef CONFIG_AMD_ATL
+ void amd_atl_register_decoder(unsigned long (*f)(struct mce *));
+ void amd_atl_unregister_decoder(void);
+ unsigned long amd_convert_umc_mca_addr_to_sys_addr(struct mce *m);
+ #else
++struct mce;
+ static inline unsigned long amd_convert_umc_mca_addr_to_sys_addr(struct mce *m) { return -EINVAL; }
+ #endif /* CONFIG_AMD_ATL */
+ 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
