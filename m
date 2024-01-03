@@ -1,83 +1,92 @@
-Return-Path: <linux-kernel+bounces-16011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FBE58236F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:15:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 941028236E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:07:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7CF81F25B1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:15:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79BE31C245D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:07:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3B351D698;
-	Wed,  3 Jan 2024 21:15:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478991D681;
+	Wed,  3 Jan 2024 21:07:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d60WAT0g"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A8031D681
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 21:15:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id 88FFB83D74;
-	Wed,  3 Jan 2024 22:08:57 +0100 (CET)
-From: =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-To: Arnd Bergmann <arnd@arndb.de>,
-	Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-	Lubomir Rintel <lkundrak@v3.sk>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	zhang songyi <zhang.songyi@zte.com.cn>,
-	soc@kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH RFC RESEND] soc: pxa: ssp: Cast to enum pxa_ssp_type instead of int
-Date: Wed,  3 Jan 2024 22:06:03 +0100
-Message-ID: <20240103210604.16877-1-duje.mihanovic@skole.hr>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7181D55C
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 21:07:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d4a7f0c4dso102148725e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 13:07:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704316022; x=1704920822; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XopGBTIxwh37vdjMibvYLI8oJTlpwpMZAFmHsoe3mMQ=;
+        b=d60WAT0gmtfFzQsFtKNQaM/U3NNPrN+UjZfs75DPiXpRh19ysEJocPh8ha9bnfvLRB
+         kdWL091IQPvVUNvxFs0a+2+8jZVBOJrkZixzsOGtcXtXB+s5HonGUSyp2KhyXYiNJ146
+         PoGFMlcxHDud61eMiQbHmviM12LcIbYnUc6Vgy/JmpcQzhFMcRfPek0B6l6E2tbOUNdj
+         +XL2T5IrP5rI/DZ1lesr6u+uRPKa5Ir3WJKxzJhE2fIwMxIHKFd1s67p51kHhkdeeAVb
+         fyVqo8oQ4gmSeg9/5JacIo7cnR+6LN13jv/E8YcFIfZSzaj3np2hwIy/3sXM61/CwMg9
+         5vrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704316022; x=1704920822;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=XopGBTIxwh37vdjMibvYLI8oJTlpwpMZAFmHsoe3mMQ=;
+        b=Ez2O03upBXRRHXDxfUpWHf11+CAUrhFTtpPk1C2N1ZysRlaDElUW+PkzrAA0INPOju
+         X+lOazkNQe+ADCEMxjhF3YXxfGPWM5A5zBX9gEqkRrQLjvrqiPaPf1ftl/CZX/EA5/oF
+         QexrYW7LxKRKZNdWoEvEGK1VUIc8jKkVkyI+Ff0gM0MY9T6lewXMzUIrlZDQP7B8ykmk
+         F6ZV921Fgrf+95G7o/zsXb3Zwv3GwWEHG6Bp0SizH6xf15mtj2/pKyiFEaXKOBrxp0CM
+         WnOWM82oMesrTx27Bj7Gh716QV3AhHIA7KzZ5UdtG3dhzNZ37DckSdISUc8D6mvswyK1
+         Jtrg==
+X-Gm-Message-State: AOJu0YzQOjg47sj4ZMimbMpF5DzcrXIJDED2NdgmCq4FT6YL1hk3AgXn
+	Ah5Ljwhv3zJSYhaZicMdhmHGnYzTKAhOZA==
+X-Google-Smtp-Source: AGHT+IFXIzcZX+k44lLg3C/fTb+FV0k77refuR6e+ayuL/TfA6/NW/mvIU/5pQTTtSvctGLbRqBjPg==
+X-Received: by 2002:a05:600c:3f97:b0:40d:899a:7cf7 with SMTP id fs23-20020a05600c3f9700b0040d899a7cf7mr2458006wmb.8.1704316022237;
+        Wed, 03 Jan 2024 13:07:02 -0800 (PST)
+Received: from ?IPV6:2001:8a0:6cc7:ad00:405d:cdcd:8747:287c? ([2001:8a0:6cc7:ad00:405d:cdcd:8747:287c])
+        by smtp.gmail.com with ESMTPSA id n19-20020a05600c4f9300b0040d8d023760sm3428415wmq.5.2024.01.03.13.07.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jan 2024 13:07:01 -0800 (PST)
+Message-ID: <49b058fb-4900-4c5d-8f63-db781408bd18@gmail.com>
+Date: Wed, 3 Jan 2024 21:07:00 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-kernel@vger.kernel.org
+From: =?UTF-8?Q?Andr=C3=A9_Coelho?= <andrealbergaria@gmail.com>
+Subject: argv
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On ARM64 platforms, id->data is a 64-bit value and casting it to a
-32-bit integer causes build errors. Cast it to the corresponding enum
-instead.
+How is argv contents..say "hello abc" is put into stack?
 
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
----
-This patch is necessary for my Marvell PXA1908 series to compile successfully
-with allyesconfig:
-https://lore.kernel.org/all/20231102-pxa1908-lkml-v7-0-cabb1a0cb52b@skole.hr/
----
- drivers/soc/pxa/ssp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+push "hell"
 
-diff --git a/drivers/soc/pxa/ssp.c b/drivers/soc/pxa/ssp.c
-index a1e8a07f7275..e2ffd8fd7e13 100644
---- a/drivers/soc/pxa/ssp.c
-+++ b/drivers/soc/pxa/ssp.c
-@@ -152,11 +152,11 @@ static int pxa_ssp_probe(struct platform_device *pdev)
- 	if (dev->of_node) {
- 		const struct of_device_id *id =
- 			of_match_device(of_match_ptr(pxa_ssp_of_ids), dev);
--		ssp->type = (int) id->data;
-+		ssp->type = (enum pxa_ssp_type) id->data;
- 	} else {
- 		const struct platform_device_id *id =
- 			platform_get_device_id(pdev);
--		ssp->type = (int) id->driver_data;
-+		ssp->type = (enum pxa_ssp_type) id->driver_data;
- 
- 		/* PXA2xx/3xx SSP ports starts from 1 and the internal pdev->id
- 		 * starts from 0, do a translation here
+push"o ab"
+
+push "c" ?!?!
+
+
+thanks...
+
 -- 
-2.43.0
-
+André Albergaria Coelho
+andrealbergaria@gmail.com
 
 
