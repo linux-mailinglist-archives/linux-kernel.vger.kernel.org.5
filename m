@@ -1,184 +1,135 @@
-Return-Path: <linux-kernel+bounces-15107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C623D82274D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3F6B822749
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:59:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F6CA284BD0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:59:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F304284C0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:59:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8846D11C8D;
-	Wed,  3 Jan 2024 02:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB3446B7;
+	Wed,  3 Jan 2024 02:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SWPbE308"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LuldBrQE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536C0171CA;
-	Wed,  3 Jan 2024 02:59:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4031rH8u024488;
-	Wed, 3 Jan 2024 02:58:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=78wPF0LpF+mCsihLbL7RxjqIwFhHSG0CJebLE27EJ7A=; b=SW
-	PbE308oFm1Ak4hQC8cEqwf2AhPJ80ppP7abzkSVekcxti4PSosah7eey0EEu/PEy
-	yfWQJzsm/7tRl39xuUt4fsdh/Wo3x/exEZEI6U+qWAtMfKd1BD1KeE6yjnWwNnLe
-	yPjSJ92bZB6O6pU8keh332ZEuT09Sr96A/C2Gz0CJZFMh1nI8zVSVohhJV/tbTaZ
-	4w0z5lwARisQ6isgho6xp9iGMbvO5u7aIJzjVaAuIekuop+B40GH3ZC9Qt8ZZ4RV
-	ycrZcfXDbUKRH4MovRH6BfvOCwlSp6J889HDfshPaWcs2NisHTLKdiqTTzELHjos
-	lmvfu/e6DlH7vJdim0GA==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vcgku9t91-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Jan 2024 02:58:46 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4032wj23031959
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 3 Jan 2024 02:58:45 GMT
-Received: from [10.239.132.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 2 Jan
- 2024 18:58:35 -0800
-Message-ID: <99c44790-5f1b-4535-9858-c5e9c752159c@quicinc.com>
-Date: Wed, 3 Jan 2024 10:58:33 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88FD84A14
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 02:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so7139a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 18:59:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704250755; x=1704855555; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VCq1Lfb8MiGC7Na0tk2+xuLDB2WWLfolpfiM5LugPs0=;
+        b=LuldBrQE2Rmx6pPs9YcvJNagTFVOPGbbDVUAE4RkBxO3t+FfIMdO9Dgu3xn/iavF4A
+         kzsOTl4/ekYcWXG6cwc7JGAi1VyXINluwAapM1rBEyRkEN3lzE7mWFtQe0LOQuQi4d4r
+         rD5q51XPkGEbep0q5eEAIGSgTSNXMXpIyAE6M4TOI/v3F9xBuQO3ja1DzK7yab3HTs9D
+         YBU6xaPR5MvVZ6kwSKfHZ16tyNQS0tBojF4fsUEyrBkd1HBOWYHCvWgwEzaYJ0ufWqQN
+         RrReWrQo7R30D2ML6cH4k0vL3gJRkWiFlFXX0Or1U/vVnLlTNxKoPgMPO3TlZ7KXOTYD
+         Quqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704250755; x=1704855555;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VCq1Lfb8MiGC7Na0tk2+xuLDB2WWLfolpfiM5LugPs0=;
+        b=mSJZJghZD/NrWFK9UkCx5uqad7VagC+d3Ae3+t20yj1/EfRE45EiUYM0aD2oTt8M6G
+         X5K9zpvkhXAknBXd4qd8C/yPsl0NS9oIjq28NHB2Nmvl9b1YP6VER47Q/RtsU1tse/O/
+         f6VAuDmwKS+y/RSpGcfgna81K0aSfny9uOMInTVx7R5HoJ3gfdQroPrzuZPzVFLqg4Q2
+         Y5QQRFtEL/lsHyPDbzWUj+LS2j3VYsZAN7ogNDmUQgpUkaTlySBgLRLVxW7dtD2TzI9M
+         A7QVD4klb9EAzhr8kA+tesBhLgXsUoRhL5lX6YKqHSYLomh469BczOaNkwfTXzoLC1JU
+         gW6Q==
+X-Gm-Message-State: AOJu0YxEnRcfYaFlpBuOmBTH+YeM2NEZHcRe6gnsdJc5MRBC+lpMJlda
+	feQESWo8QycCmvlyFWHIBwVE/ChOMwrtEPtuNu5miFCDpVtv
+X-Google-Smtp-Source: AGHT+IHoREibGnYniTB05gP+Ptytz72pRY8BioD0lJCU/ju3PsY3jfGNtDuaQyvnSB6buBlsCSN/MexnFlRKt4BgKN8=
+X-Received: by 2002:a50:9e6c:0:b0:554:53d0:23f1 with SMTP id
+ z99-20020a509e6c000000b0055453d023f1mr79550ede.0.1704250754578; Tue, 02 Jan
+ 2024 18:59:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] kernel: Introduce a write lock/unlock wrapper for
- tasklist_lock
-Content-Language: en-US
-To: Matthew Wilcox <willy@infradead.org>
-CC: "Eric W. Biederman" <ebiederm@xmission.com>,
-        Hillf Danton
-	<hdanton@sina.com>, <kernel@quicinc.com>,
-        <quic_pkondeti@quicinc.com>, <keescook@chromium.org>,
-        <viro@zeniv.linux.org.uk>, <brauner@kernel.org>, <oleg@redhat.com>,
-        <dhowells@redhat.com>, <jarkko@kernel.org>, <paul@paul-moore.com>,
-        <jmorris@namei.org>, <serge@hallyn.com>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <keyrings@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20231213101745.4526-1-quic_aiquny@quicinc.com>
- <ZXnaNSrtaWbS2ivU@casper.infradead.org>
- <87o7eu7ybq.fsf@email.froward.int.ebiederm.org>
- <ZY30k7OCtxrdR9oP@casper.infradead.org>
- <cd0f6613-9aa9-4698-bebe-0f61286d7552@quicinc.com>
- <ZZPT8hMiuT1pCBP7@casper.infradead.org>
-From: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
-In-Reply-To: <ZZPT8hMiuT1pCBP7@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 6nIpjVYtECWvlGZA32t55-3fW4z4m_OS
-X-Proofpoint-ORIG-GUID: 6nIpjVYtECWvlGZA32t55-3fW4z4m_OS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- malwarescore=0 adultscore=0 clxscore=1011 phishscore=0 mlxlogscore=645
- lowpriorityscore=0 priorityscore=1501 impostorscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401030023
+References: <20231207021627.1322884-1-irogers@google.com>
+In-Reply-To: <20231207021627.1322884-1-irogers@google.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 2 Jan 2024 18:59:03 -0800
+Message-ID: <CAP-5=fVfddHzk_pUramFdUKACDw_buHAFt_B0y1VLY6yn9G72A@mail.gmail.com>
+Subject: Re: [PATCH v1] perf record: Reduce memory for recording lost samples event
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Dec 6, 2023 at 6:16=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> Reduce from PERF_SAMPLE_MAX_SIZE to "sizeof(*lost) +
+> session->machines.host.id_hdr_size".
+>
+> Suggested-by: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
+Ping.
 
-On 1/2/2024 5:14 PM, Matthew Wilcox wrote:
-> On Tue, Jan 02, 2024 at 10:19:47AM +0800, Aiqun Yu (Maria) wrote:
->> On 12/29/2023 6:20 AM, Matthew Wilcox wrote:
->>> On Wed, Dec 13, 2023 at 12:27:05PM -0600, Eric W. Biederman wrote:
->>>> Matthew Wilcox <willy@infradead.org> writes:
->>>>> I think the right way to fix this is to pass a boolean flag to
->>>>> queued_write_lock_slowpath() to let it know whether it can re-enable
->>>>> interrupts while checking whether _QW_WAITING is set.
->>>>
->>>> Yes.  It seems to make sense to distinguish between write_lock_irq and
->>>> write_lock_irqsave and fix this for all of write_lock_irq.
->>>
->>> I wasn't planning on doing anything here, but Hillf kind of pushed me into
->>> it.  I think it needs to be something like this.  Compile tested only.
->>> If it ends up getting used,
->> Happy new year!
-> 
-> Thank you!  I know your new year is a few weeks away still ;-)
-Yeah, Chinese new year will come about 5 weeks later. :)
-> 
->>> -void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock)
->>> +void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock, bool irq)
->>>    {
->>>    	int cnts;
->>> @@ -82,7 +83,11 @@ void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock)
->> Also a new state showed up after the current design:
->> 1. locked flag with _QW_WAITING, while irq enabled.
->> 2. And this state will be only in interrupt context.
->> 3. lock->wait_lock is hold by the write waiter.
->> So per my understanding, a different behavior also needed to be done in
->> queued_write_lock_slowpath:
->>    when (unlikely(in_interrupt())) , get the lock directly.
-> 
-> I don't think so.  Remember that write_lock_irq() can only be called in
-> process context, and when interrupts are enabled.
-In current kernel drivers, I can see same lock called with 
-write_lock_irq and write_lock_irqsave in different drivers.
+Thanks,
+Ian
 
-And this is the scenario I am talking about:
-1. cpu0 have task run and called write_lock_irq.(Not in interrupt context)
-2. cpu0 hold the lock->wait_lock and re-enabled the interrupt.
-* this is the new state with _QW_WAITING set, lock->wait_lock locked, 
-interrupt enabled. *
-3. cpu0 in-interrupt context and want to do write_lock_irqsave.
-4. cpu0 tried to acquire lock->wait_lock again.
-
-I was thinking to support both write_lock_irq and write_lock_irqsave 
-with interrupt enabled together in queued_write_lock_slowpath.
-
-That's why I am suggesting in write_lock_irqsave when (in_interrupt()), 
-instead spin for the lock->wait_lock, spin to get the lock->cnts directly.
-> 
->> So needed to be done in release path. This is to address Hillf's concern on
->> possibility of deadlock.
-> 
-> Hillf's concern is invalid.
-> 
->>>    	/* When no more readers or writers, set the locked flag */
->>>    	do {
->>> +		if (irq)
->>> +			local_irq_enable();
->> I think write_lock_irqsave also needs to be take account. So
->> loal_irq_save(flags) should be take into account here.
-> 
-> If we did want to support the same kind of spinning with interrupts
-> enabled for write_lock_irqsave(), we'd want to pass the flags in
-> and do local_irq_restore(), but I don't know how we'd support
-> write_lock_irq() if we did that -- can we rely on passing in 0 for flags
-> meaning "reenable" on all architectures?  And ~0 meaning "don't
-> reenable" on all architectures?
-What about for all write_lock_irq, pass the real flags from 
-local_irq_save(flags) into the queued_write_lock_slowpath?
-Arch specific valid flags won't be !0 limited then.
-> 
-> That all seems complicated, so I didn't do that.
-This is complicated. Also need test verify to ensure.
-More careful design more better.
-
-Fixed previous wrong email address. ^-^!
-> 
-
--- 
-Thx and BRs,
-Aiqun(Maria) Yu
+> ---
+> Suggested in:
+> https://lore.kernel.org/lkml/CAM9d7cjpYHN_Q63sW70vTCisdW=3D-SzjsrryUUJjgt=
+Z3+9jdxfA@mail.gmail.com/
+> ---
+>  tools/perf/builtin-record.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index eb5a398ddb1d..206110fc2799 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -1954,7 +1954,8 @@ static void record__read_lost_samples(struct record=
+ *rec)
+>
+>                                 if (count.lost) {
+>                                         if (!lost) {
+> -                                               lost =3D zalloc(PERF_SAMP=
+LE_MAX_SIZE);
+> +                                               lost =3D zalloc(sizeof(*l=
+ost) +
+> +                                                             session->ma=
+chines.host.id_hdr_size);
+>                                                 if (!lost) {
+>                                                         pr_debug("Memory =
+allocation failed\n");
+>                                                         return;
+> @@ -1970,7 +1971,8 @@ static void record__read_lost_samples(struct record=
+ *rec)
+>                 lost_count =3D perf_bpf_filter__lost_count(evsel);
+>                 if (lost_count) {
+>                         if (!lost) {
+> -                               lost =3D zalloc(PERF_SAMPLE_MAX_SIZE);
+> +                               lost =3D zalloc(sizeof(*lost) +
+> +                                             session->machines.host.id_h=
+dr_size);
+>                                 if (!lost) {
+>                                         pr_debug("Memory allocation faile=
+d\n");
+>                                         return;
+> --
+> 2.43.0.rc2.451.g8631bc7472-goog
+>
 
