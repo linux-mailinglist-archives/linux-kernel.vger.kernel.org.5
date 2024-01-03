@@ -1,194 +1,136 @@
-Return-Path: <linux-kernel+bounces-15349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3AE3822A83
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:49:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D018E822A86
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:50:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E1591F23F92
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:49:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54B44B22F7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:50:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22031865B;
-	Wed,  3 Jan 2024 09:49:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x8P8zG8C";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/fKllMD4";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x8P8zG8C";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/fKllMD4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13AD018C3B;
+	Wed,  3 Jan 2024 09:49:16 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F95F18C0A;
-	Wed,  3 Jan 2024 09:49:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id F2FCC1F79E;
-	Wed,  3 Jan 2024 09:49:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704275348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HnPIKVKxjrIDV5LFkirY1wff/M3w9KFC9+Wa8KZeRQ8=;
-	b=x8P8zG8C0mDJVtFSUt4Xn+/VfYundICbGSrOcYeKuK1/8iwVsbJZ2z27Nosg9Ikx4STUE3
-	x/ax8DwdtQrtDcvnV5GymvDTFSGqRXWlEJY59qTJwGFxvPkhqudV5nm5WWDi3PbFlZIWkm
-	yXQe86KBYjEO4oh9kdbftb9tuox/YhY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704275348;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HnPIKVKxjrIDV5LFkirY1wff/M3w9KFC9+Wa8KZeRQ8=;
-	b=/fKllMD4/s8PFyjOM4JLxuqYrROFv+YH9haTkG93Ue9CMuH9ua9dglRKJvk6+9S/CbFUvt
-	5jM2Ng5LWxrcHHCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704275348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HnPIKVKxjrIDV5LFkirY1wff/M3w9KFC9+Wa8KZeRQ8=;
-	b=x8P8zG8C0mDJVtFSUt4Xn+/VfYundICbGSrOcYeKuK1/8iwVsbJZ2z27Nosg9Ikx4STUE3
-	x/ax8DwdtQrtDcvnV5GymvDTFSGqRXWlEJY59qTJwGFxvPkhqudV5nm5WWDi3PbFlZIWkm
-	yXQe86KBYjEO4oh9kdbftb9tuox/YhY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704275348;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HnPIKVKxjrIDV5LFkirY1wff/M3w9KFC9+Wa8KZeRQ8=;
-	b=/fKllMD4/s8PFyjOM4JLxuqYrROFv+YH9haTkG93Ue9CMuH9ua9dglRKJvk6+9S/CbFUvt
-	5jM2Ng5LWxrcHHCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DE6F213AA6;
-	Wed,  3 Jan 2024 09:49:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qjLpNZMtlWU+dAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 03 Jan 2024 09:49:07 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 7DE3CA07EF; Wed,  3 Jan 2024 10:49:07 +0100 (CET)
-Date: Wed, 3 Jan 2024 10:49:07 +0100
-From: Jan Kara <jack@suse.cz>
-To: Zhang Yi <yi.zhang@huawei.com>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-	lkp@intel.com, linux-kernel@vger.kernel.org,
-	Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-	linux-ext4@vger.kernel.org, ying.huang@intel.com,
-	feng.tang@intel.com, fengwei.yin@intel.com, yukuai3@huawei.com
-Subject: Re: [linus:master] [jbd2] 6a3afb6ac6: fileio.latency_95th_ms 92.5%
- regression
-Message-ID: <20240103094907.iupboelwjxi243h3@quack3>
-References: <202401021525.a27b9444-oliver.sang@intel.com>
- <dcc72d34-89e1-6181-3556-a1a981256cc6@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 207ED18AE1;
+	Wed,  3 Jan 2024 09:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T4lJH4JC9z6K6Tw;
+	Wed,  3 Jan 2024 17:47:43 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id BAE5F140B2F;
+	Wed,  3 Jan 2024 17:49:09 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 3 Jan
+ 2024 09:49:09 +0000
+Date: Wed, 3 Jan 2024 09:49:08 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: ChiYuan Huang <cy_huang@richtek.com>
+CC: Jonathan Cameron <jic23@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, Uwe
+ =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	<linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] iio: adc: rtq6056: Add support for the whole
+ RTQ6056 family
+Message-ID: <20240103094908.00006baf@Huawei.com>
+In-Reply-To: <20240103010452.GA6655@linuxcarl2.richtek.com>
+References: <cover.1703762557.git.cy_huang@richtek.com>
+	<74db15583a9a68701dbff5a1a967c0d987d6dfb6.1703762557.git.cy_huang@richtek.com>
+	<20231230120347.0816bd09@jic23-huawei>
+	<20240102083042.GA13611@linuxcarl2.richtek.com>
+	<20240102193642.0d6d2007@jic23-huawei>
+	<20240103010452.GA6655@linuxcarl2.richtek.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dcc72d34-89e1-6181-3556-a1a981256cc6@huawei.com>
-X-Spam-Level: 
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-2.81 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=x8P8zG8C;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="/fKllMD4"
-X-Spam-Score: -2.81
-X-Rspamd-Queue-Id: F2FCC1F79E
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hello!
+On Wed, 3 Jan 2024 09:04:52 +0800
+ChiYuan Huang <cy_huang@richtek.com> wrote:
 
-On Wed 03-01-24 11:31:39, Zhang Yi wrote:
-> On 2024/1/2 15:31, kernel test robot wrote:
+> On Tue, Jan 02, 2024 at 07:36:42PM +0000, Jonathan Cameron wrote:
+> > On Tue, 2 Jan 2024 16:30:42 +0800
+> > ChiYuan Huang <cy_huang@richtek.com> wrote:
+> >   
+> > > Hi, Johathan:
+> > > 
+> > > Most comments are good and will be fixed in next revision.
+> > > 
+> > > Still one comment I cannot make sure.
+> > > 
+> > > Please see the comment that's below yours.
+> > > 	  
+> > Hi ChiYuan,
 > > 
+> > It's good practice to crop away all the parts where the discussion is finished.
+> > Makes it easier for people to find the bit you want discussion to continue on!
 > > 
-> > Hello,
+> > I've done so in this reply.
 > > 
-> > kernel test robot noticed a 92.5% regression of fileio.latency_95th_ms on:
+> > ...  
+> > > > > +
+> > > > >  enum {
+> > > > >  	RTQ6056_CH_VSHUNT = 0,
+> > > > >  	RTQ6056_CH_VBUS,
+> > > > > @@ -50,16 +60,29 @@ enum {
+> > > > >  enum {
+> > > > >  	F_OPMODE = 0,
+> > > > >  	F_VSHUNTCT,
+> > > > > +	F_SADC = F_VSHUNTCT,    
+> > > > 
+> > > > If the devices have different register fields, better to have different enums
+> > > > for them as well as that should result in less confusing code.
+> > > >     
+> > > Actually, this is all the same register, just the control naming difference.
+> > > If not to define the new eum, I can remain to use the same field to handle rtq6059 part.  
+> > 
+> > If the bits in the register control the same thing across both parts then
+> > add a comment alongside the enum to make that clear. 
+> > 
+> > Given the naming that seems very unlikely.  PGA and AVG would eman
+> > very different things to me for starters (oversampling vs a programmble
+> > gain amplifier on the front end)
+> >   
+> I'm also thinking how to write this difference like as comments or a seperate enum.
+> But if to define a new enum, many function about the regfield controls must be seperated
+> for 6056 and 6059.
+> > > >     
+> > > > >  	F_VBUSCT,
+> > > > > +	F_BADC = F_VBUSCT,
+> > > > >  	F_AVG,
+> > > > > +	F_PGA = F_AVG,
+> > > > >  	F_RESET,
+> > > > >  	F_MAX_FIELDS
+> > > > >  };  
 > 
-> This seems a little weird, the tests doesn't use blk-cgroup, and the patch
-> increase IO priority in WBT, so there shouldn't be any negative influence in
-> theory.
+> What if to keep the original coding, just to rename the different part like as below
+> F_SADC -> F_RTQ6059_SDAC
+> F_BADC -> F_RTQ6059_BADC
+> F_PGA -> F_RTQ6059_PGA
 
-I don't have a great explanation either but there could be some impact e.g.
-due to a different request merging of IO done by JBD2 vs the flush worker or
-something like that. Note that the throughput reduction is only 5.7% so it
-is not huge.
+That works well. It makes it clear they are different across the parts.
+So agreed this is the best option.
+> 
+> At least, the nameing already shows the difference between 6056 and 6059.
+> Only these three parts are different, others are the same like as F_OPMODE, F_RESET.
+> 
+> 
 
-> I've tested sysbench on my machine with Intel Xeon Gold 6240 CPU,
-> 400GB memory with HDD disk, and couldn't reproduce this regression.
-> 
-> ==
-> Without 6a3afb6ac6 ("jbd2: increase the journal IO's priority")
-> ==
-> 
->  $ sysbench fileio --events=0 --threads=128 --time=600 --file-test-mode=seqwr --file-total-size=68719476736 --file-io-mode=sync --file-num=1024 run
-> 
->   sysbench 1.1.0-df89d34 (using bundled LuaJIT 2.1.0-beta3)
-> 
->   Running the test with following options:
->   Number of threads: 128
->   Initializing random number generator from current time
-> 
-> 
->   Extra file open flags: (none)
->   1024 files, 64MiB each
->   64GiB total file size
->   Block size 16KiB
->   Periodic FSYNC enabled, calling fsync() each 100 requests.
->   Calling fsync() at the end of test, Enabled.
->   Using synchronous I/O mode
->   Doing sequential write (creation) test
->   Initializing worker threads...
-> 
->   Threads started!
-> 
-> 
->   Throughput:
->            read:  IOPS=0.00 0.00 MiB/s (0.00 MB/s)
->            write: IOPS=31961.19 499.39 MiB/s (523.65 MB/s)
->            fsync: IOPS=327500.24
-
-Well, your setup seems to be very different from what LKP was using. You
-are achieving ~500 MB/s (likely because all the files fit into the cache
-and more or less even within the dirty limit of the page cache) while LKP
-run achieves only ~54 MB/s (i.e., we are pretty much bound by the rather
-slow disk). I'd try running with something like 32GB of RAM to really see
-the disk speed impact...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
 
