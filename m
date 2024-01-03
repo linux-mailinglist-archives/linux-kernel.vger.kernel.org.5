@@ -1,86 +1,409 @@
-Return-Path: <linux-kernel+bounces-15795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52DC482331E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:18:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 814F1823320
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:20:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D06431F24E41
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:18:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26B4F285E0D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1A21C298;
-	Wed,  3 Jan 2024 17:18:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 983F91BDFF;
+	Wed,  3 Jan 2024 17:20:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="L5ziap7k"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Atl/xmbL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35F161C283;
-	Wed,  3 Jan 2024 17:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4T4xJD4kg8z9skm;
-	Wed,  3 Jan 2024 18:18:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1704302300;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H9Inf9KTIOOuafLHFpFPsLLmeqzoKAhBG4TxdZv4V1Q=;
-	b=L5ziap7k4Dj1fDzmrDiEP3MQtfRJkXSqW1zOihLhFoM66qmPX2GRVM2E+dCJxeryvWYusI
-	hap79P6ZYnJ/hCmd6ntFwOvpG5DHwxysEdfb7tbZdg2zKb12YhaQ9KpdQyPfN/E0qzGN73
-	WMkHOEx0p1Ko0Iyg69wKhejZSoskh/1B+qcdgNBmaH1E4B57hriS+SWOSUqXH/dxLHAPXz
-	1UYnMS/9YVQIr72bPE6mE9uMs/4UdLdV8SQbRTDz/pE3bdN4BtETzBw8I/0RNCOHM1iwXU
-	bwfeDcVZGRexCLi0axE968wmxkcusuVdqPhR+jt+wQLcvgVmoOhEqRCyVSDjlA==
-Message-ID: <dd300771-851f-4cfb-b9a2-d87d2b4399aa@mailbox.org>
-Date: Wed, 3 Jan 2024 18:18:13 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19ADC1C283
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 17:20:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40d3102d5d6so70345e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 09:20:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704302419; x=1704907219; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hb5xC6t0pn96kkmtug80GejA/Np7+9OFKKytSk7vENk=;
+        b=Atl/xmbLWu0ixoQ0qomQ+glm35ECiDbUtDkc52eEjoUCuQ45DN5CJeOP+w5KyHPpYh
+         tTn+I++i11EHfjrpRjUipAfRwej6HV769xbaIYznGFdd5Cf9Y3jH7nidqdj108Bm4qdL
+         qYAzs3Yw1mRorlbMF3Tg/GeKwUZDAlFJq9FMfqM/Z6gBqQOkHA+LPPr3Y19dKcmjmvC3
+         +E6dkIcxBgc9OwQ6BPueAtwiqGxK7QJ0cUCWr88qnv74kZmrjx49W0jrBKNJxDEk6RK4
+         QvAqXrmG0WeIbDiIZAN7BCdP2JWnM1sEcVSLarpILKsuwIptdVG0XwjLaZ9kpFZ5swPi
+         eUTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704302419; x=1704907219;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hb5xC6t0pn96kkmtug80GejA/Np7+9OFKKytSk7vENk=;
+        b=vYdj2KBTgQSOL0WDAjNpd1KGDlIXi5Or2w11iwSYEEcMfR7F5i3WMfNmRUp7oevObo
+         yPz5aG0ba1YaVjxNlyTz7CC98gPwiegMfeM7VbM8bU7/49ZCfb7AjHOkDYHx86y/Vnf8
+         eF/FjeQOi0jpv4Jm1Oz9WTbRpCzwPSEjy9u4udHOcEY/FA0aZWCAs8yNK1/5jP/oTUEV
+         38nktS4STfg3VzKrn7T34t5kIg+eRkr1Elf8Xonkg6pE2nx6exY6tNZfNycEvOCmHO+f
+         Zm80U0H0j3xEa+XkpTen1j1zrB0udI6f5OlqYMUxdvA95BbOSBkjZ6VfyMlbXAbpDLcH
+         Oe+g==
+X-Gm-Message-State: AOJu0YyyHev130XCGLssqT5drEF4gV9hQEa0VQU9J9+1Fzg2WqYNKfph
+	2/1S+K/G/oQd6iAlRU/OrJVYAiASElHisNSbijSJN5MHjAll
+X-Google-Smtp-Source: AGHT+IHqshiEzaF64yv7x29Y57uTQUHR/9YOqRhLJ4WX5tYZSEcWBmcwyF4+aQoJ1J6W74i8ZRdYAi2/NRyaDjo9O44=
+X-Received: by 2002:a05:600c:1c20:b0:40d:3ab7:86e0 with SMTP id
+ j32-20020a05600c1c2000b0040d3ab786e0mr128881wms.3.1704302419113; Wed, 03 Jan
+ 2024 09:20:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/3] drm: property: One function call less in
- drm_property_create() after error detection
-Content-Language: en-CA
-To: Markus Elfring <Markus.Elfring@web.de>, dri-devel@lists.freedesktop.org,
- kernel-janitors@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- David Airlie <airlied@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-References: <ff7ce5d0-59fa-470c-8dd6-68dbe65c18e5@web.de>
- <9b1e7330-f4f6-47f8-a568-eaea1624bb6f@web.de>
- <37647c33-7f9d-4763-8bf4-cfc5c9a811de@mailbox.org>
- <c5f1a7bf-b444-4934-a205-3c2b3a045ff7@web.de>
-From: =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>
-In-Reply-To: <c5f1a7bf-b444-4934-a205-3c2b3a045ff7@web.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-MBO-RS-ID: 51b942f4997b0e75b14
-X-MBO-RS-META: 7gkhgojj8hqinqnum7czaaskymgcguyf
+References: <20240103164841.2800183-1-schatzberg.dan@gmail.com> <20240103164841.2800183-3-schatzberg.dan@gmail.com>
+In-Reply-To: <20240103164841.2800183-3-schatzberg.dan@gmail.com>
+From: Yu Zhao <yuzhao@google.com>
+Date: Wed, 3 Jan 2024 10:19:40 -0700
+Message-ID: <CAOUHufZ-hTwdiy7eYgJWo=CHyPbdxTX60hxjPmwa9Ox6FXMYQQ@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] mm: add swapiness= arg to memory.reclaim
+To: Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	Yosry Ahmed <yosryahmed@google.com>, Michal Hocko <mhocko@suse.com>, 
+	David Rientjes <rientjes@google.com>, Chris Li <chrisl@kernel.org>, Tejun Heo <tj@kernel.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, David Hildenbrand <david@redhat.com>, 
+	Matthew Wilcox <willy@infradead.org>, Kefeng Wang <wangkefeng.wang@huawei.com>, 
+	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-01-03 17:24, Markus Elfring wrote:
-> 
->> Out of curiosity, what exactly did Coccinelle report?
-> 
-> Some SmPL scripts from my own selection tend to point questionable implementation details out.
+On Wed, Jan 3, 2024 at 9:49=E2=80=AFAM Dan Schatzberg <schatzberg.dan@gmail=
+.com> wrote:
+>
+> Allow proactive reclaimers to submit an additional swappiness=3D<val>
+> argument to memory.reclaim. This overrides the global or per-memcg
+> swappiness setting for that reclaim attempt.
+>
+> For example:
+>
+> echo "2M swappiness=3D0" > /sys/fs/cgroup/memory.reclaim
+>
+> will perform reclaim on the rootcg with a swappiness setting of 0 (no
+> swap) regardless of the vm.swappiness sysctl setting.
+>
+> Userspace proactive reclaimers use the memory.reclaim interface to
+> trigger reclaim. The memory.reclaim interface does not allow for any way
+> to effect the balance of file vs anon during proactive reclaim. The only
+> approach is to adjust the vm.swappiness setting. However, there are a
+> few reasons we look to control the balance of file vs anon during
+> proactive reclaim, separately from reactive reclaim:
+>
+> * Swapout should be limited to manage SSD write endurance. In near-OOM
+> situations we are fine with lots of swap-out to avoid OOMs. As these are
+> typically rare events, they have relatively little impact on write
+> endurance. However, proactive reclaim runs continuously and so its
+> impact on SSD write endurance is more significant. Therefore it is
+> desireable to control swap-out for proactive reclaim separately from
+> reactive reclaim
+>
+> * Some userspace OOM killers like systemd-oomd[1] support OOM killing on
+> swap exhaustion. This makes sense if the swap exhaustion is triggered
+> due to reactive reclaim but less so if it is triggered due to proactive
+> reclaim (e.g. one could see OOMs when free memory is ample but anon is
+> just particularly cold). Therefore, it's desireable to have proactive
+> reclaim reduce or stop swap-out before the threshold at which OOM
+> killing occurs.
+>
+> In the case of Meta's Senpai proactive reclaimer, we adjust
+> vm.swappiness before writes to memory.reclaim[2]. This has been in
+> production for nearly two years and has addressed our needs to control
+> proactive vs reactive reclaim behavior but is still not ideal for a
+> number of reasons:
+>
+> * vm.swappiness is a global setting, adjusting it can race/interfere
+> with other system administration that wishes to control vm.swappiness.
+> In our case, we need to disable Senpai before adjusting vm.swappiness.
+>
+> * vm.swappiness is stateful - so a crash or restart of Senpai can leave
+> a misconfigured setting. This requires some additional management to
+> record the "desired" setting and ensure Senpai always adjusts to it.
+>
+> With this patch, we avoid these downsides of adjusting vm.swappiness
+> globally.
+>
+> [1]https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.s=
+ervice.html
+> [2]https://github.com/facebookincubator/oomd/blob/main/src/oomd/plugins/S=
+enpai.cpp#L585-L598
+>
+> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+> Suggested-by: Yosry Ahmed <yosryahmed@google.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Acked-by: David Rientjes <rientjes@google.com>
+> Acked-by: Chris Li <chrisl@kernel.org>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst | 18 ++++----
+>  include/linux/swap.h                    |  3 +-
+>  mm/memcontrol.c                         | 56 ++++++++++++++++++++-----
+>  mm/vmscan.c                             | 25 +++++++++--
+>  4 files changed, 80 insertions(+), 22 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
+n-guide/cgroup-v2.rst
+> index 3f85254f3cef..ee42f74e0765 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1282,17 +1282,10 @@ PAGE_SIZE multiple when read back.
+>         This is a simple interface to trigger memory reclaim in the
+>         target cgroup.
+>
+> -       This file accepts a single key, the number of bytes to reclaim.
+> -       No nested keys are currently supported.
+> -
+>         Example::
+>
+>           echo "1G" > memory.reclaim
+>
+> -       The interface can be later extended with nested keys to
+> -       configure the reclaim behavior. For example, specify the
+> -       type of memory to reclaim from (anon, file, ..).
+> -
+>         Please note that the kernel can over or under reclaim from
+>         the target cgroup. If less bytes are reclaimed than the
+>         specified amount, -EAGAIN is returned.
+> @@ -1304,6 +1297,17 @@ PAGE_SIZE multiple when read back.
+>         This means that the networking layer will not adapt based on
+>         reclaim induced by memory.reclaim.
+>
+> +The following nested keys are defined.
+> +
+> +         =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D            =3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +         swappiness            Swappiness value to reclaim with
+> +         =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D            =3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +       Specifying a swappiness value instructs the kernel to perform
+> +       the reclaim with that swappiness value. Note that this has the
+> +       same semantics as vm.swappiness applied to memcg reclaim with
+> +       all the existing limitations and potential future extensions.
+> +
+>    memory.peak
+>         A read-only single value file which exists on non-root
+>         cgroups.
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index e2ab76c25b4a..8afdec40efe3 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -412,7 +412,8 @@ extern unsigned long try_to_free_pages(struct zonelis=
+t *zonelist, int order,
+>  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *mem=
+cg,
+>                                                   unsigned long nr_pages,
+>                                                   gfp_t gfp_mask,
+> -                                                 unsigned int reclaim_op=
+tions);
+> +                                                 unsigned int reclaim_op=
+tions,
+> +                                                 int *swappiness);
+>  extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
+>                                                 gfp_t gfp_mask, bool nosw=
+ap,
+>                                                 pg_data_t *pgdat,
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index fbe9f02dd206..6d627a754851 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -52,6 +52,7 @@
+>  #include <linux/sort.h>
+>  #include <linux/fs.h>
+>  #include <linux/seq_file.h>
+> +#include <linux/parser.h>
+>  #include <linux/vmpressure.h>
+>  #include <linux/memremap.h>
+>  #include <linux/mm_inline.h>
+> @@ -2449,7 +2450,8 @@ static unsigned long reclaim_high(struct mem_cgroup=
+ *memcg,
+>                 psi_memstall_enter(&pflags);
+>                 nr_reclaimed +=3D try_to_free_mem_cgroup_pages(memcg, nr_=
+pages,
+>                                                         gfp_mask,
+> -                                                       MEMCG_RECLAIM_MAY=
+_SWAP);
+> +                                                       MEMCG_RECLAIM_MAY=
+_SWAP,
+> +                                                       NULL);
+>                 psi_memstall_leave(&pflags);
+>         } while ((memcg =3D parent_mem_cgroup(memcg)) &&
+>                  !mem_cgroup_is_root(memcg));
+> @@ -2740,7 +2742,7 @@ static int try_charge_memcg(struct mem_cgroup *memc=
+g, gfp_t gfp_mask,
+>
+>         psi_memstall_enter(&pflags);
+>         nr_reclaimed =3D try_to_free_mem_cgroup_pages(mem_over_limit, nr_=
+pages,
+> -                                                   gfp_mask, reclaim_opt=
+ions);
+> +                                                   gfp_mask, reclaim_opt=
+ions, NULL);
+>         psi_memstall_leave(&pflags);
+>
+>         if (mem_cgroup_margin(mem_over_limit) >=3D nr_pages)
+> @@ -3660,7 +3662,7 @@ static int mem_cgroup_resize_max(struct mem_cgroup =
+*memcg,
+>                 }
+>
+>                 if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
+> -                                       memsw ? 0 : MEMCG_RECLAIM_MAY_SWA=
+P)) {
+> +                                       memsw ? 0 : MEMCG_RECLAIM_MAY_SWA=
+P, NULL)) {
+>                         ret =3D -EBUSY;
+>                         break;
+>                 }
+> @@ -3774,7 +3776,7 @@ static int mem_cgroup_force_empty(struct mem_cgroup=
+ *memcg)
+>                         return -EINTR;
+>
+>                 if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
+> -                                                 MEMCG_RECLAIM_MAY_SWAP)=
+)
+> +                                                 MEMCG_RECLAIM_MAY_SWAP,=
+ NULL))
+>                         nr_retries--;
+>         }
+>
+> @@ -6720,7 +6722,7 @@ static ssize_t memory_high_write(struct kernfs_open=
+_file *of,
+>                 }
+>
+>                 reclaimed =3D try_to_free_mem_cgroup_pages(memcg, nr_page=
+s - high,
+> -                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
+P);
+> +                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
+P, NULL);
+>
+>                 if (!reclaimed && !nr_retries--)
+>                         break;
+> @@ -6769,7 +6771,7 @@ static ssize_t memory_max_write(struct kernfs_open_=
+file *of,
+>
+>                 if (nr_reclaims) {
+>                         if (!try_to_free_mem_cgroup_pages(memcg, nr_pages=
+ - max,
+> -                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
+P))
+> +                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
+P, NULL))
+>                                 nr_reclaims--;
+>                         continue;
+>                 }
+> @@ -6895,19 +6897,50 @@ static ssize_t memory_oom_group_write(struct kern=
+fs_open_file *of,
+>         return nbytes;
+>  }
+>
+> +enum {
+> +       MEMORY_RECLAIM_SWAPPINESS =3D 0,
+> +       MEMORY_RECLAIM_NULL,
+> +};
+> +
+> +static const match_table_t tokens =3D {
+> +       { MEMORY_RECLAIM_SWAPPINESS, "swappiness=3D%d"},
+> +       { MEMORY_RECLAIM_NULL, NULL },
+> +};
+> +
+>  static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+>                               size_t nbytes, loff_t off)
+>  {
+>         struct mem_cgroup *memcg =3D mem_cgroup_from_css(of_css(of));
+>         unsigned int nr_retries =3D MAX_RECLAIM_RETRIES;
+>         unsigned long nr_to_reclaim, nr_reclaimed =3D 0;
+> +       int swappiness =3D -1;
+>         unsigned int reclaim_options;
+> -       int err;
+> +       char *old_buf, *start;
+> +       substring_t args[MAX_OPT_ARGS];
+>
+>         buf =3D strstrip(buf);
+> -       err =3D page_counter_memparse(buf, "", &nr_to_reclaim);
+> -       if (err)
+> -               return err;
+> +
+> +       old_buf =3D buf;
+> +       nr_to_reclaim =3D memparse(buf, &buf) / PAGE_SIZE;
+> +       if (buf =3D=3D old_buf)
+> +               return -EINVAL;
+> +
+> +       buf =3D strstrip(buf);
+> +
+> +       while ((start =3D strsep(&buf, " ")) !=3D NULL) {
+> +               if (!strlen(start))
+> +                       continue;
+> +               switch (match_token(start, tokens, args)) {
+> +               case MEMORY_RECLAIM_SWAPPINESS:
+> +                       if (match_int(&args[0], &swappiness))
+> +                               return -EINVAL;
+> +                       if (swappiness < MIN_SWAPPINESS || swappiness > M=
+AX_SWAPPINESS)
+> +                               return -EINVAL;
+> +                       break;
+> +               default:
+> +                       return -EINVAL;
+> +               }
+> +       }
+>
+>         reclaim_options =3D MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACT=
+IVE;
+>         while (nr_reclaimed < nr_to_reclaim) {
+> @@ -6926,7 +6959,8 @@ static ssize_t memory_reclaim(struct kernfs_open_fi=
+le *of, char *buf,
+>
+>                 reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
+>                                         min(nr_to_reclaim - nr_reclaimed,=
+ SWAP_CLUSTER_MAX),
+> -                                       GFP_KERNEL, reclaim_options);
+> +                                       GFP_KERNEL, reclaim_options,
+> +                                       swappiness =3D=3D -1 ? NULL : &sw=
+appiness);
+>
+>                 if (!reclaimed && !nr_retries--)
+>                         return -EAGAIN;
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index d91963e2d47f..394e0dd46b2e 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -92,6 +92,11 @@ struct scan_control {
+>         unsigned long   anon_cost;
+>         unsigned long   file_cost;
+>
+> +#ifdef CONFIG_MEMCG
+> +       /* Swappiness value for proactive reclaim. Always use sc_swappine=
+ss()! */
+> +       int *proactive_swappiness;
+> +#endif
 
-That doesn't answer my question.
+Why is proactive_swappiness still a pointer? The whole point of the
+previous conversation is that sc->proactive can tell whether
+sc->swappiness is valid or not, and that's less awkward than using a
+pointer.
 
-Without seeing the actual Coccinelle report, I'll assume that it didn't actually call for this change.
+Also why the #ifdef here? I don't see the point for a small stack
+variable. Otherwise wouldn't we want to do this for sc->proactive as
+well?
 
+If you really want it to be explicit, you could do
+  struct scan_control {
+    ...
+    struct {
+      bool is_set;
+      int swappiness;
+    } proactive;
+  };
 
--- 
-Earthling Michel Dänzer            |                  https://redhat.com
-Libre software enthusiast          |         Mesa and Xwayland developer
-
+But I think even this is too much.
 
