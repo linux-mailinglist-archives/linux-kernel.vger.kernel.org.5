@@ -1,207 +1,183 @@
-Return-Path: <linux-kernel+bounces-15752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E374C82314F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:32:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05326823150
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:32:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D99E283D07
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:32:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA5271F24B7E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430F01BDE4;
-	Wed,  3 Jan 2024 16:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322C21C287;
+	Wed,  3 Jan 2024 16:32:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lWTTMVk+"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JSPoeVl8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E5F61BDD7
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 16:32:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-4b77c843fbeso928097e0c.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 08:32:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704299532; x=1704904332; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MV54hHlBrsG5HCcLwNQkbjmunnaquuRgTwpjGakV+68=;
-        b=lWTTMVk+lpKlOLTZTB01iHVCmFNCtAqXPF66TWrn5iDQyAiZmD6Qm3extQl8gocxlJ
-         bM64suuPzSzqgxeIYtxW5bD6hqg9ie6NxWDeAKnIBclRAsA1c24uDs8z3boAvf72NwWf
-         yQ2UMNCbZWiIlh1oxhdhdzOQYQoCfckMZBQ6FvphSdVRb9nbtMTG7CUpGsonK17sQHcK
-         k90UPMojEWsSRXcFHxBtPzJsuWZeWjO1vL/F4Xa8ArpwljIqIVebdSHQp8KfuHFgbhcm
-         7akZ5NB8riFssb9Xqerj+a7v/fmdSQ3avsFRdrznA/vdqBbLw9Q3ZIturwQp8Max0LG2
-         OBJQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 026F01C288
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 16:32:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704299553;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=KyS8wdRUQsy10KBAC5tBoeMUxtC/5Vis4uewibneY24=;
+	b=JSPoeVl8mqo3+RLFIe1kDVL4bxfH6IilmHYkzd0ycd6/1BIU7O72k7dDRkYWd4p+PmFkNL
+	YgHvpnBa2CyYX6yrCkwNp3NlQrbBgXzFlGVbpr7MZutXpXWSSp7TGiOr+hPpIh23Rqf8LG
+	3+azwQr7jt6RhfdUC2qGW2+V8iSlTSo=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-662-OH5fqpaUOaCjhksvzSzjXg-1; Wed, 03 Jan 2024 11:32:32 -0500
+X-MC-Unique: OH5fqpaUOaCjhksvzSzjXg-1
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1d4bd86416dso10576215ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 08:32:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704299532; x=1704904332;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1704299551; x=1704904351;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=MV54hHlBrsG5HCcLwNQkbjmunnaquuRgTwpjGakV+68=;
-        b=cP2WtMeVPS3yrkl360iN4FSbXvlwQt//dFOUmUruuHNpV3aVU66iJLgQ0n3ip+jnhz
-         ow8x5I/oXgEbOAgSCL3Vy+y7yc2RYrdt+4ZyFbxdgy3rA1a5pQPz1eujEik7POFHDFFV
-         JsZwztltVVcsboV4EsXT2deCsNW0lniqUrKGqAjlleL5cU+8FNcitNiDhfcVfgiODiSk
-         +j5Q7F+qqclJuhbKmiOfli4YsO8Fij+JDBPlfD2en8yp0xMq2tI/TTr92O4hKB22AwNE
-         rVziHv9UGsr1m6CwKuT2zFYRzcB7OkbJhXVx+fBW24NKxhIPiIk0EaDeq02MiL5rXu3S
-         WjBA==
-X-Gm-Message-State: AOJu0YyLSt48qbPQZlzpC63Nsv/gCZyx/24Nh2fVF8IbmcZxI2/CIESz
-	bGyqypk1okRB1+r9vJs+zapONL+bZ78TWo7d7MTHN9G7+a9z+OTb67J3kVnQ8uU=
-X-Google-Smtp-Source: AGHT+IEmN4ihULX6lel2L0ttNUy2SanszwT+ntOj0zaoV75aDf+dIWhdqifANtd8WlrpqBUjTPRMlXSywNsMU7Ss1JY=
-X-Received: by 2002:a1f:1388:0:b0:4b6:b867:c83f with SMTP id
- 130-20020a1f1388000000b004b6b867c83fmr5726801vkt.22.1704299531712; Wed, 03
- Jan 2024 08:32:11 -0800 (PST)
+        bh=KyS8wdRUQsy10KBAC5tBoeMUxtC/5Vis4uewibneY24=;
+        b=gdRHqmZmva25wylttl0wPP/Bu7csVAQinS6gfE/ZAn9UCICiJzAoBafXOOjG1XZuOL
+         7cBkHx5yy2fY2ABoJkd63JfJti3nd9IETCN2QvL8gD2NcVgIX81SIh56MBeH4o+0sAUw
+         GOWM4sjooZcALdHRYavXkJfbtqiYQzBn9qIxVCYxQc2zLEkdyII4muUgEaTPiKHA7jcV
+         Q00HcyEY45B9tg5Ulw6oqERInCW0RCj/8n19qqRHXGyatLFazg2zCdDSoKYa+zuZHFNj
+         MVhB5DuD75cqbbF7aChVxA+wyggaLPO3RsTylbTMaIX1YJWKWObP9BI82OAJ0EYxH9pi
+         FGDw==
+X-Gm-Message-State: AOJu0YxcgTbEqFnakge+x+bhUpRuJGX5FniezMr+Ogn8s2IPe3QM80Gw
+	iVZc7DfKHaDmQPt8C6K04xtQvufkcvhTGiwdHbt13Ekf5YvVDnTisV9sESFyNKJrlkjw0TnxWyD
+	VnThZqTppj9cCGPR3yI21RWwwxDjcgPhe
+X-Received: by 2002:a17:902:db85:b0:1d3:bceb:ba88 with SMTP id m5-20020a170902db8500b001d3bcebba88mr9465701pld.11.1704299551534;
+        Wed, 03 Jan 2024 08:32:31 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH+6GSIc7+Qig8DFanxr8PlU4r2+JepKfCBXAeWKp5WEN4cGQRs5a42dQlyEupGQsh2bh8+QQ==
+X-Received: by 2002:a17:902:db85:b0:1d3:bceb:ba88 with SMTP id m5-20020a170902db8500b001d3bcebba88mr9465681pld.11.1704299551251;
+        Wed, 03 Jan 2024 08:32:31 -0800 (PST)
+Received: from localhost.localdomain ([2804:431:c7ec:911:6911:ca60:846:eb46])
+        by smtp.gmail.com with ESMTPSA id e12-20020a170902b78c00b001cfca7b8ee7sm23930425pls.99.2024.01.03.08.32.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 08:32:30 -0800 (PST)
+From: Leonardo Bras <leobras@redhat.com>
+To: Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Leonardo Bras <leobras@redhat.com>,
+	Guo Ren <guoren@kernel.org>,
+	Andrea Parri <parri.andrea@gmail.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Andrzej Hajda <andrzej.hajda@intel.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH v1 0/5] Rework & improve riscv cmpxchg.h and atomic.h
+Date: Wed,  3 Jan 2024 13:31:58 -0300
+Message-ID: <20240103163203.72768-2-leobras@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230630151842.1.If764ede23c4e09a43a842771c2ddf99608f25f8e@changeid>
-In-Reply-To: <20230630151842.1.If764ede23c4e09a43a842771c2ddf99608f25f8e@changeid>
-From: Amit Pundir <amit.pundir@linaro.org>
-Date: Wed, 3 Jan 2024 22:01:35 +0530
-Message-ID: <CAMi1Hd2V8PV6j-5GYB7KnCUecBmES+xOkEwRUePORZP+GDKnBw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Don't touch the CE interrupt registers after
- power up
-To: Douglas Anderson <dianders@chromium.org>
-Cc: ath10k@lists.infradead.org, Abhishek Kumar <kuabhs@chromium.org>, 
-	Youghandhar Chintala <quic_youghand@quicinc.com>, Kalle Valo <kvalo@kernel.org>, 
-	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Sat, 1 Jul 2023 at 03:49, Douglas Anderson <dianders@chromium.org> wrote:
->
-> As talked about in commit d66d24ac300c ("ath10k: Keep track of which
-> interrupts fired, don't poll them"),
+While studying riscv's cmpxchg.h file, I got really interested in
+understanding how RISCV asm implemented the different versions of
+{cmp,}xchg.
 
-Hi Douglas, does this fix has a dependency on the above upstream
-commit d66d24ac300c, that you refer to?
+When I understood the pattern, it made sense for me to remove the
+duplications and create macros to make it easier to understand what exactly
+changes between the versions: Instruction sufixes & barriers.
 
-Asking because this patch landed on stable v5.4.y branch recently and
-now I see RCU stalls and lockups around "ath10k_snoc 18800000.wifi:
-failed to receive control response completion, polling.." message
-during ath10k_snoc initialization/bringup on DB845c. Here is the
-relevant log https://www.irccloud.com/pastebin/raw/NjKm3mLc, with
-DB845c rebooting into USB crash dump mode eventually.
+Also, did the same kind of work on atomic.c.
 
-I wonder if commit d66d24ac300c need to be backported to v5.4.y as
-well? I tried cherry-picking it but ran into non-trivial conflicts, so
-didn't spend much time on it.
+After that, I noted both cmpxchg and xchg only accept variables of 
+size 4 and 8, compared to x86 and arm64 which do 1,2,4,8.
 
-Regards,
-Amit Pundir
+Now that deduplication is done, it is quite direct to implement them
+for variable sizes 1 and 2, so I did it. Then Guo Ren already presented
+me some possible users :)
 
-> if we access the copy engine
-> register at a bad time then ath10k can go boom. However, it's not
-> necessarily easy to know when it's safe to access them.
->
-> The ChromeOS test labs saw a crash that looked like this at
-> shutdown/reboot time (on a chromeos-5.15 kernel, but likely the
-> problem could also reproduce upstream):
->
-> Internal error: synchronous external abort: 96000010 [#1] PREEMPT SMP
-> ...
-> CPU: 4 PID: 6168 Comm: reboot Not tainted 5.15.111-lockdep-19350-g1d624fe6758f #1 010b9b233ab055c27c6dc88efb0be2f4e9e86f51
-> Hardware name: Google Kingoftown (DT)
-> ...
-> pc : ath10k_snoc_read32+0x50/0x74 [ath10k_snoc]
-> lr : ath10k_snoc_read32+0x24/0x74 [ath10k_snoc]
-> ...
-> Call trace:
-> ath10k_snoc_read32+0x50/0x74 [ath10k_snoc ...]
-> ath10k_ce_disable_interrupt+0x190/0x65c [ath10k_core ...]
-> ath10k_ce_disable_interrupts+0x8c/0x120 [ath10k_core ...]
-> ath10k_snoc_hif_stop+0x78/0x660 [ath10k_snoc ...]
-> ath10k_core_stop+0x13c/0x1ec [ath10k_core ...]
-> ath10k_halt+0x398/0x5b0 [ath10k_core ...]
-> ath10k_stop+0xfc/0x1a8 [ath10k_core ...]
-> drv_stop+0x148/0x6b4 [mac80211 ...]
-> ieee80211_stop_device+0x70/0x80 [mac80211 ...]
-> ieee80211_do_stop+0x10d8/0x15b0 [mac80211 ...]
-> ieee80211_stop+0x144/0x1a0 [mac80211 ...]
-> __dev_close_many+0x1e8/0x2c0
-> dev_close_many+0x198/0x33c
-> dev_close+0x140/0x210
-> cfg80211_shutdown_all_interfaces+0xc8/0x1e0 [cfg80211 ...]
-> ieee80211_remove_interfaces+0x118/0x5c4 [mac80211 ...]
-> ieee80211_unregister_hw+0x64/0x1f4 [mac80211 ...]
-> ath10k_mac_unregister+0x4c/0xf0 [ath10k_core ...]
-> ath10k_core_unregister+0x80/0xb0 [ath10k_core ...]
-> ath10k_snoc_free_resources+0xb8/0x1ec [ath10k_snoc ...]
-> ath10k_snoc_shutdown+0x98/0xd0 [ath10k_snoc ...]
-> platform_shutdown+0x7c/0xa0
-> device_shutdown+0x3e0/0x58c
-> kernel_restart_prepare+0x68/0xa0
-> kernel_restart+0x28/0x7c
->
-> Though there's no known way to reproduce the problem, it makes sense
-> that it would be the same issue where we're trying to access copy
-> engine registers when it's not allowed.
->
-> Let's fix this by changing how we "disable" the interrupts. Instead of
-> tweaking the copy engine registers we'll just use disable_irq() and
-> enable_irq(). Then we'll configure the interrupts once at power up
-> time.
->
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2.c10-00754-QCAHLSWMTPL-1
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->
->  drivers/net/wireless/ath/ath10k/snoc.c | 18 ++++++++++++++----
->  1 file changed, 14 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-> index 26214c00cd0d..2c39bad7ebfb 100644
-> --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> @@ -828,12 +828,20 @@ static void ath10k_snoc_hif_get_default_pipe(struct ath10k *ar,
->
->  static inline void ath10k_snoc_irq_disable(struct ath10k *ar)
->  {
-> -       ath10k_ce_disable_interrupts(ar);
-> +       struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-> +       int id;
-> +
-> +       for (id = 0; id < CE_COUNT_MAX; id++)
-> +               disable_irq(ar_snoc->ce_irqs[id].irq_line);
->  }
->
->  static inline void ath10k_snoc_irq_enable(struct ath10k *ar)
->  {
-> -       ath10k_ce_enable_interrupts(ar);
-> +       struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-> +       int id;
-> +
-> +       for (id = 0; id < CE_COUNT_MAX; id++)
-> +               enable_irq(ar_snoc->ce_irqs[id].irq_line);
->  }
->
->  static void ath10k_snoc_rx_pipe_cleanup(struct ath10k_snoc_pipe *snoc_pipe)
-> @@ -1090,6 +1098,8 @@ static int ath10k_snoc_hif_power_up(struct ath10k *ar,
->                 goto err_free_rri;
->         }
->
-> +       ath10k_ce_enable_interrupts(ar);
-> +
->         return 0;
->
->  err_free_rri:
-> @@ -1253,8 +1263,8 @@ static int ath10k_snoc_request_irq(struct ath10k *ar)
->
->         for (id = 0; id < CE_COUNT_MAX; id++) {
->                 ret = request_irq(ar_snoc->ce_irqs[id].irq_line,
-> -                                 ath10k_snoc_per_engine_handler, 0,
-> -                                 ce_name[id], ar);
-> +                                 ath10k_snoc_per_engine_handler,
-> +                                 IRQF_NO_AUTOEN, ce_name[id], ar);
->                 if (ret) {
->                         ath10k_err(ar,
->                                    "failed to register IRQ handler for CE %d: %d\n",
-> --
-> 2.41.0.255.g8b1d071c50-goog
->
+I did compare the generated asm on a test.c that contained usage for every
+changed function, and could not detect any change on patches 1 + 2 + 3 
+compared with upstream.
+
+Pathes 4 & 5 were compiled-tested, merged with guoren/qspinlock_v11 and
+booted just fine with qemu -machine virt -append "qspinlock". 
+
+(tree: https://gitlab.com/LeoBras/linux/-/commits/guo_qspinlock_v11)
+
+Latest tests happened based on this tree:
+https://github.com/guoren83/linux/tree/qspinlock_v12
+
+Thanks!
+Leo
+
+Changes since squashed cmpxchg RFCv5:
+- Resend as v1
+https://lore.kernel.org/all/20230810040349.92279-2-leobras@redhat.com/
+
+Changes since squashed cmpxchg RFCv4:
+- Added (__typeof__(*(p))) before returning from {cmp,}xchg, as done
+  in current upstream, (possibly) fixing the bug from kernel test robot
+https://lore.kernel.org/all/20230809021311.1390578-2-leobras@redhat.com/
+
+Changes since squashed cmpxchg RFCv3:
+- Fixed bug on cmpxchg macro for var size 1 & 2: now working
+- Macros for var size 1 & 2's lr.w and sc.w now are guaranteed to receive
+  input of a 32-bit aligned address
+- Renamed internal macros from _mask to _masked for patches 4 & 5
+- __rc variable on macros for var size 1 & 2 changed from register to ulong 
+https://lore.kernel.org/all/20230804084900.1135660-2-leobras@redhat.com/
+
+Changes since squashed cmpxchg RFCv2:
+- Removed rc parameter from the new macro: it can be internal to the macro
+- 2 new patches: cmpxchg size 1 and 2, xchg size 1 and 2
+https://lore.kernel.org/all/20230803051401.710236-2-leobras@redhat.com/
+
+Changes since squashed cmpxchg RFCv1:
+- Unified with atomic.c patchset
+- Rebased on top of torvalds/master (thanks Andrea Parri!)
+- Removed helper macros that were not being used elsewhere in the kernel.
+https://lore.kernel.org/all/20230419062505.257231-1-leobras@redhat.com/
+https://lore.kernel.org/all/20230406082018.70367-1-leobras@redhat.com/
+
+Changes since (cmpxchg) RFCv3:
+- Squashed the 6 original patches in 2: one for cmpxchg and one for xchg
+https://lore.kernel.org/all/20230404163741.2762165-1-leobras@redhat.com/
+
+Changes since (cmpxchg) RFCv2:
+- Fixed  macros that depend on having a local variable with a magic name
+- Previous cast to (long) is now only applied on 4-bytes cmpxchg
+https://lore.kernel.org/all/20230321074249.2221674-1-leobras@redhat.com/
+
+Changes since (cmpxchg) RFCv1:
+- Fixed patch 4/6 suffix from 'w.aqrl' to '.w.aqrl', to avoid build error
+https://lore.kernel.org/all/20230318080059.1109286-1-leobras@redhat.com/
+
+Leonardo Bras (5):
+  riscv/cmpxchg: Deduplicate xchg() asm functions
+  riscv/cmpxchg: Deduplicate cmpxchg() asm and macros
+  riscv/atomic.h : Deduplicate arch_atomic.*
+  riscv/cmpxchg: Implement cmpxchg for variables of size 1 and 2
+  riscv/cmpxchg: Implement xchg for variables of size 1 and 2
+
+ arch/riscv/include/asm/atomic.h  | 164 ++++++-------
+ arch/riscv/include/asm/cmpxchg.h | 404 ++++++++++---------------------
+ 2 files changed, 200 insertions(+), 368 deletions(-)
+
+
+base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
+-- 
+2.43.0
+
 
