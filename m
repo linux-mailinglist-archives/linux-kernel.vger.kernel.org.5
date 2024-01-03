@@ -1,428 +1,185 @@
-Return-Path: <linux-kernel+bounces-15771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2534823185
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:50:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11F2B82317F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:49:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5E141C227E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:50:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B06C5286F54
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:49:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFAF41BDF8;
-	Wed,  3 Jan 2024 16:49:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C9761C28C;
+	Wed,  3 Jan 2024 16:49:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PAK4DpB/"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="YMjtf5Ra"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2045.outbound.protection.outlook.com [40.107.243.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 564F81C6B6;
-	Wed,  3 Jan 2024 16:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-2041c292da8so5611787fac.3;
-        Wed, 03 Jan 2024 08:49:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704300560; x=1704905360; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D3Trd70tjvozyYFyAqV83nWEjrGIqqcGlRP9h5UvVDg=;
-        b=PAK4DpB/rykOxGRvha5MOOJ6NcjBGXrZwE8v5pWRrTS8xOoRECwUZ9CwdKIqhx8rAo
-         aRFxd8JO3FsZsZd8GXpCneb3fbDKJ/h+6lth5HwhDlnHE2vjQz51CcuN4JRxYKtnyzFf
-         ESXB/tsyj3Q3NCww3leAs7HAjz7nStV9OVc+xdJ1I97HGrobARwgETaSvnqYj8t626Z3
-         LRXBDIR9r/J8jwPEJS3uJrAeHQQGVIOUTEDUYZjg57hpN/0cQVXRd5gSa0xSmrXYDPee
-         QlrpEgQTI/G/wgHFaGgSzx5a/IWESjAJ+LkzpprEid0xKAAuRx0DRTj3+/NxgKpJMePZ
-         J6kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704300560; x=1704905360;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D3Trd70tjvozyYFyAqV83nWEjrGIqqcGlRP9h5UvVDg=;
-        b=roDRAGh0NKZOIB57xSZzmezCjrl2za+LZ04catF8dvup76dmYuiPuus55GS0z8grYh
-         ZFuFUd0mkG7czF27b9JqcsY393On94RjSxB1ulb+D/DPWW/RiROBYbjXiQhHRPqtIerj
-         6jEmNKozriOhuJcboPgJLVrL5MzpPpcyaVRlwQu9rjp8c1WmRduQQrsBVSpvObgFc/Js
-         VkQoO63WdjljcUH2u3ZODNjbtR3tnVMY8qbNwBg3RDYj/XSNGQRLFExkVvunTy7aU8rV
-         s+hJU8xO9cjukOpF8ii3tpa3uNHafNPGPZiQo2aXHSdqh+4ROWWIMSA49toaXjdMNJxh
-         6qYg==
-X-Gm-Message-State: AOJu0YxnTgmFyZjux+mxE0DfppJii004e1QwqzDrJrhF4RlKY5j4ZTAR
-	hTsUss45m1GIi1pj2oJjo6QmaH2mI+bv8w==
-X-Google-Smtp-Source: AGHT+IGWRB8L2IIvPf9EnZ4lUQJp6LGFWjdNsZAx9VXs2gk8qcsXnGn53Hz5bzHQNB+7UwxdKCkwhQ==
-X-Received: by 2002:a05:6870:63a0:b0:204:4926:1824 with SMTP id t32-20020a05687063a000b0020449261824mr16093129oap.80.1704300560221;
-        Wed, 03 Jan 2024 08:49:20 -0800 (PST)
-Received: from localhost ([2620:10d:c091:400::5:fcab])
-        by smtp.gmail.com with ESMTPSA id l19-20020a05620a28d300b0077d84f46d65sm10296915qkp.37.2024.01.03.08.49.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 08:49:19 -0800 (PST)
-From: Dan Schatzberg <schatzberg.dan@gmail.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	Yosry Ahmed <yosryahmed@google.com>,
-	Michal Hocko <mhocko@suse.com>,
-	David Rientjes <rientjes@google.com>,
-	Chris Li <chrisl@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	David Hildenbrand <david@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Dan Schatzberg <schatzberg.dan@gmail.com>,
-	Yue Zhao <findns94@gmail.com>,
-	Hugh Dickins <hughd@google.com>
-Subject: [PATCH v6 2/2] mm: add swapiness= arg to memory.reclaim
-Date: Wed,  3 Jan 2024 08:48:37 -0800
-Message-Id: <20240103164841.2800183-3-schatzberg.dan@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
-References: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 651441BDE3;
+	Wed,  3 Jan 2024 16:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YMTt5RAT/pWIU8vovVsY0hjUV370EB8wUEGlT1Lb4U0ajP86Cz7dZIcr+CAx4AdTx9tIDC4D+JsK99i97wVqgk18rru8TX876/bggifacxAXLeHYnJSFECQxh83G88fQAZRneVRaC2m8tAT+7+D7zDA2b7HdXoqjxuGFie+FTeGPk6WhF4+5fdhpISlNmZZ34pwjm0oW/yv+7s9UeSs48mhiK9fHAz2xQ93rO1/pcJohC9n3ORt9se/7yonof7tDcpUxgPoic9t9mRrufwV13aqchbMvzCrqQiL+xIziWCmQDaCnmoqx9M7PtXmAIuOWnK0GSM7wmuiNPZglF+N22w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BlRf0VoX2QLx7emLII3PqB7MCV2hzfQ3wXHn4xCO9ow=;
+ b=MqtFxa6hAcvtnozfHc9onWK3Ie856RhWcx8zlnONjZzayhrxGEKWzo6AawXJshb3CTSLUuD3OgT4n2vPcYJ7MNMnfPncEX4jSZi2I0yv2oqpT4vAz6aH69HTszzl1KGdulOJq6zBVMGQG8PD+m2M3TBx1bS7Bl+dJgZq2LI+VfVukwyyroHJ5pFKSt5nyQxhyGZh+J4oSg+ul90QdQeQZhrIZ2OW/7v4Y+exlCig+n43iB5YcbjgrVMfSv5Tj3Ac8ZZS+AOkNUwLO6KS5qQyi1Ae6SFE/CsGd847+tHsRcVHbaH70p5UfO/AvHUlfVzA/GywRCDhxmk+H0SB/rH7zA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=oracle.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BlRf0VoX2QLx7emLII3PqB7MCV2hzfQ3wXHn4xCO9ow=;
+ b=YMjtf5RaIeYR263nrfVwOwn4HRGIKxn4rp/cNIte3LE92ZPK8cOUtWx4LndTd7Nrqw4wJcqrCeEEfxy6bDcdLakdg4Agwevsvdp3aD57guorhZfa9hl7VtWMd1Gid8QNysgk2V8ThNg0z58p6edgTZeKs9LuapijlD8Arig6qG1tzjz8sccos9ibJHrrI1N4EKK9XsC0Y4GUdqq/EnH0zypI9hlnUhw5J7qFunDUXXwBfCJ91elDpslVO1JwfOS2qUK8/uerbOlzuQt/wljf/5QBJ/BGc2WcAa28I9NYiCqR6SxdYbCC/ZLLDpHJ0iHmgCg6LE5KSI4/sI7sQghBag==
+Received: from BYAPR02CA0013.namprd02.prod.outlook.com (2603:10b6:a02:ee::26)
+ by SN7PR12MB8146.namprd12.prod.outlook.com (2603:10b6:806:323::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.27; Wed, 3 Jan
+ 2024 16:49:05 +0000
+Received: from CO1PEPF000042A9.namprd03.prod.outlook.com
+ (2603:10b6:a02:ee:cafe::ce) by BYAPR02CA0013.outlook.office365.com
+ (2603:10b6:a02:ee::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.24 via Frontend
+ Transport; Wed, 3 Jan 2024 16:49:04 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CO1PEPF000042A9.mail.protection.outlook.com (10.167.243.38) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7159.9 via Frontend Transport; Wed, 3 Jan 2024 16:49:04 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 3 Jan 2024
+ 08:48:49 -0800
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 3 Jan 2024
+ 08:48:49 -0800
+Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com (10.129.68.10)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Wed, 3 Jan 2024 08:48:47 -0800
+Date: Wed, 3 Jan 2024 08:48:46 -0800
+From: Nicolin Chen <nicolinc@nvidia.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+CC: Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+	"joro@8bytes.org" <joro@8bytes.org>, "alex.williamson@redhat.com"
+	<alex.williamson@redhat.com>, "robin.murphy@arm.com" <robin.murphy@arm.com>,
+	"baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>, "cohuck@redhat.com"
+	<cohuck@redhat.com>, "eric.auger@redhat.com" <eric.auger@redhat.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "mjrosato@linux.ibm.com"
+	<mjrosato@linux.ibm.com>, "chao.p.peng@linux.intel.com"
+	<chao.p.peng@linux.intel.com>, "yi.y.sun@linux.intel.com"
+	<yi.y.sun@linux.intel.com>, "peterx@redhat.com" <peterx@redhat.com>,
+	"jasowang@redhat.com" <jasowang@redhat.com>,
+	"shameerali.kolothum.thodi@huawei.com"
+	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
+	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
+ Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
+	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
+	<yan.y.zhao@intel.com>
+Subject: Re: [PATCH v7 1/3] iommufd: Add data structure for Intel VT-d
+ stage-1 cache invalidation
+Message-ID: <ZZWP7iBqUtbTRb3s@Asurada-Nvidia>
+References: <20231117131816.24359-2-yi.l.liu@intel.com>
+ <c967e716-9112-4d1a-b6f7-9a005e28202d@intel.com>
+ <BN9PR11MB5276D14D2A7FF60B41A6A7B48C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZXu5whlIGfiq16wF@Asurada-Nvidia>
+ <BN9PR11MB52766D7F774510E0181CC89B8C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZXvI2IiXwwuHRE8V@Asurada-Nvidia>
+ <7c398efc-8a2f-479d-bcff-ded8cc1ef3d0@intel.com>
+ <20240102233849.GK50406@nvidia.com>
+ <c59a780d-4030-4815-a34b-fb2e2f902ab3@intel.com>
+ <20240103160108.GP50406@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240103160108.GP50406@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000042A9:EE_|SN7PR12MB8146:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3ad75a7f-f85a-449a-47c5-08dc0c7be542
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	7IBUVdaWpM0ZXrDinSO3RGGXCPblENaI0ryDzxNLqhAafUb6gyBs0mkRuRGJwRNCkjLh8o+VTN9FDL3jmRvOfu1cHYkoJVWw2QUro/JftW7tvZAtjIPjriZG1yIdls0sT4psyLbEqFWSKsXR6hHBnwBJgoQiHogAxk0drecb8RwUpkpLWzKmxAR7LLiAmWhhHQErI2xRBryTIiErlJcb0F9gRBg3fZMwhQlzYI8dlw4PGdu4EWYCjePhhklI4+5uupJEMdgsfcGWEiXirDo3rJHcAsLZOQg3sT9g+XSU04YXcffNqb20HJTeOsETabbfWBWwSuoStshParHdKUuTKnz8yYWWjbaFTm8yowT6uzpgp2oJNa1eNejctFWiEeRmOr24Z9fSDo9EiQe6+ZHyT244auHzzP8AE0FGLlqAC5WbG+oifSZLGPqRWs+uPEUGTMfBy61d2lZZ+k0hhhmATLRjYPHKdPbNREQgNzjgOLyNml0o3835wCPPsF7uXwSZXKYDJATtgjBcPn2h2420nFy1f3G4rkpocb5xFajFbd41Ef74bDZy5c6SQ/wwJ7Sa0Uu5rHbQeaeP9cHeH4rMf65LjK3t0F7VVeUAVCaJd7stVClxzQkA9NmSk5tbtCBlwwwBQXcmAY4XsQ/QkrhXhaBCqhmAiCv/DkEUYDgVQAhx69HboYJyp29CCpslj8egeECr5QRbFAf2cE283JTpIqN33n3++mTi/4kr+/VmSEM=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(396003)(136003)(376002)(230922051799003)(64100799003)(451199024)(1800799012)(82310400011)(186009)(36840700001)(46966006)(40470700004)(53546011)(55016003)(40460700003)(9686003)(40480700001)(66899024)(47076005)(4326008)(6862004)(7636003)(316002)(54906003)(5660300002)(356005)(8676002)(8936002)(36860700001)(82740400003)(7416002)(2906002)(336012)(426003)(83380400001)(86362001)(478600001)(33716001)(26005)(6636002)(70586007)(41300700001)(70206006);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2024 16:49:04.5823
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ad75a7f-f85a-449a-47c5-08dc0c7be542
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF000042A9.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8146
 
-Allow proactive reclaimers to submit an additional swappiness=<val>
-argument to memory.reclaim. This overrides the global or per-memcg
-swappiness setting for that reclaim attempt.
+On Wed, Jan 03, 2024 at 12:01:08PM -0400, Jason Gunthorpe wrote:
+> On Wed, Jan 03, 2024 at 10:24:42AM +0800, Yi Liu wrote:
+> > On 2024/1/3 07:38, Jason Gunthorpe wrote:
+> > > On Fri, Dec 15, 2023 at 12:01:19PM +0800, Yi Liu wrote:
+> > > > > I think I misread Yi's narrative: dev_id is a working approach
+> > > > > for VMM to convert to a vRID, while he is asking for a better
+> > > > > alternative :)
+> > > > 
+> > > > In concept, dev_id works, but in reality we have problem to get a dev_id
+> > > > for a given device in intel iommu driver, hence I'm asking for help here. :)
+> > > 
+> > > I think we just need to solve this one way or another.. Even if you
+> > > use a viommu object you still end up having difficult coupling to
+> > > iommufd
+> > > 
+> > > Some:
+> > >    iommufd_get_dev_id(struct iommufd_ctx *ictx, struct device *dev)
+> > > 
+> > > Callable by a driver (using the driver-callable function
+> > > infrastructure we made for dirty tracking) Is really all that is
+> > > needed here.
+> > 
+> > yep, I noticed IOMMUFD_DRIVER was selected by intel iommu driver when
+> > IOMMUFD is configed. Maybe such an API could be compiled when
+> > IOMMUFD_DRIVER is enabled as well. This does address my concern on making
+> > intel iommu driver depending on iommufd. But still need a way to pass in
+> > the iommufd_ctx pointer to intel iommu driver, and store it. Hence intel
+> > iommu driver could call the above iommufd_get_dev_id(). One possible way is
+> > passing it when attaching device to domain and clear it in detach. However,
+> > this seems not ideal as iommufd_ctx information should be static between
+> > bind_iommufd and unbind. But we don't call into intel iommu driver in the
+> > bind and unbind operations. May need to add new iommu op. Any suggestion
+> > here?
+> 
+> You can pass the ctx to the invalidate op, it is already implied
+> because the passed iommu_domain is linked to a single iommufd ctx.
 
-For example:
+The device virtual id lookup API needs something similar, yet it
+likely needs a viommu pointer (or its id) instead? As the table
+is attached to a viommu while an ictx can have multiple viommus,
+right?
 
-echo "2M swappiness=0" > /sys/fs/cgroup/memory.reclaim
-
-will perform reclaim on the rootcg with a swappiness setting of 0 (no
-swap) regardless of the vm.swappiness sysctl setting.
-
-Userspace proactive reclaimers use the memory.reclaim interface to
-trigger reclaim. The memory.reclaim interface does not allow for any way
-to effect the balance of file vs anon during proactive reclaim. The only
-approach is to adjust the vm.swappiness setting. However, there are a
-few reasons we look to control the balance of file vs anon during
-proactive reclaim, separately from reactive reclaim:
-
-* Swapout should be limited to manage SSD write endurance. In near-OOM
-situations we are fine with lots of swap-out to avoid OOMs. As these are
-typically rare events, they have relatively little impact on write
-endurance. However, proactive reclaim runs continuously and so its
-impact on SSD write endurance is more significant. Therefore it is
-desireable to control swap-out for proactive reclaim separately from
-reactive reclaim
-
-* Some userspace OOM killers like systemd-oomd[1] support OOM killing on
-swap exhaustion. This makes sense if the swap exhaustion is triggered
-due to reactive reclaim but less so if it is triggered due to proactive
-reclaim (e.g. one could see OOMs when free memory is ample but anon is
-just particularly cold). Therefore, it's desireable to have proactive
-reclaim reduce or stop swap-out before the threshold at which OOM
-killing occurs.
-
-In the case of Meta's Senpai proactive reclaimer, we adjust
-vm.swappiness before writes to memory.reclaim[2]. This has been in
-production for nearly two years and has addressed our needs to control
-proactive vs reactive reclaim behavior but is still not ideal for a
-number of reasons:
-
-* vm.swappiness is a global setting, adjusting it can race/interfere
-with other system administration that wishes to control vm.swappiness.
-In our case, we need to disable Senpai before adjusting vm.swappiness.
-
-* vm.swappiness is stateful - so a crash or restart of Senpai can leave
-a misconfigured setting. This requires some additional management to
-record the "desired" setting and ensure Senpai always adjusts to it.
-
-With this patch, we avoid these downsides of adjusting vm.swappiness
-globally.
-
-[1]https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.service.html
-[2]https://github.com/facebookincubator/oomd/blob/main/src/oomd/plugins/Senpai.cpp#L585-L598
-
-Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: David Rientjes <rientjes@google.com>
-Acked-by: Chris Li <chrisl@kernel.org>
----
- Documentation/admin-guide/cgroup-v2.rst | 18 ++++----
- include/linux/swap.h                    |  3 +-
- mm/memcontrol.c                         | 56 ++++++++++++++++++++-----
- mm/vmscan.c                             | 25 +++++++++--
- 4 files changed, 80 insertions(+), 22 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 3f85254f3cef..ee42f74e0765 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1282,17 +1282,10 @@ PAGE_SIZE multiple when read back.
- 	This is a simple interface to trigger memory reclaim in the
- 	target cgroup.
- 
--	This file accepts a single key, the number of bytes to reclaim.
--	No nested keys are currently supported.
--
- 	Example::
- 
- 	  echo "1G" > memory.reclaim
- 
--	The interface can be later extended with nested keys to
--	configure the reclaim behavior. For example, specify the
--	type of memory to reclaim from (anon, file, ..).
--
- 	Please note that the kernel can over or under reclaim from
- 	the target cgroup. If less bytes are reclaimed than the
- 	specified amount, -EAGAIN is returned.
-@@ -1304,6 +1297,17 @@ PAGE_SIZE multiple when read back.
- 	This means that the networking layer will not adapt based on
- 	reclaim induced by memory.reclaim.
- 
-+The following nested keys are defined.
-+
-+	  ==========            ================================
-+	  swappiness            Swappiness value to reclaim with
-+	  ==========            ================================
-+
-+	Specifying a swappiness value instructs the kernel to perform
-+	the reclaim with that swappiness value. Note that this has the
-+	same semantics as vm.swappiness applied to memcg reclaim with
-+	all the existing limitations and potential future extensions.
-+
-   memory.peak
- 	A read-only single value file which exists on non-root
- 	cgroups.
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index e2ab76c25b4a..8afdec40efe3 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -412,7 +412,8 @@ extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
- extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 						  unsigned long nr_pages,
- 						  gfp_t gfp_mask,
--						  unsigned int reclaim_options);
-+						  unsigned int reclaim_options,
-+						  int *swappiness);
- extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
- 						gfp_t gfp_mask, bool noswap,
- 						pg_data_t *pgdat,
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index fbe9f02dd206..6d627a754851 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -52,6 +52,7 @@
- #include <linux/sort.h>
- #include <linux/fs.h>
- #include <linux/seq_file.h>
-+#include <linux/parser.h>
- #include <linux/vmpressure.h>
- #include <linux/memremap.h>
- #include <linux/mm_inline.h>
-@@ -2449,7 +2450,8 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
- 		psi_memstall_enter(&pflags);
- 		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
- 							gfp_mask,
--							MEMCG_RECLAIM_MAY_SWAP);
-+							MEMCG_RECLAIM_MAY_SWAP,
-+							NULL);
- 		psi_memstall_leave(&pflags);
- 	} while ((memcg = parent_mem_cgroup(memcg)) &&
- 		 !mem_cgroup_is_root(memcg));
-@@ -2740,7 +2742,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 
- 	psi_memstall_enter(&pflags);
- 	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
--						    gfp_mask, reclaim_options);
-+						    gfp_mask, reclaim_options, NULL);
- 	psi_memstall_leave(&pflags);
- 
- 	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
-@@ -3660,7 +3662,7 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
- 		}
- 
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP)) {
-+					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP, NULL)) {
- 			ret = -EBUSY;
- 			break;
- 		}
-@@ -3774,7 +3776,7 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
- 			return -EINTR;
- 
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--						  MEMCG_RECLAIM_MAY_SWAP))
-+						  MEMCG_RECLAIM_MAY_SWAP, NULL))
- 			nr_retries--;
- 	}
- 
-@@ -6720,7 +6722,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- 		}
- 
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP);
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP, NULL);
- 
- 		if (!reclaimed && !nr_retries--)
- 			break;
-@@ -6769,7 +6771,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- 
- 		if (nr_reclaims) {
- 			if (!try_to_free_mem_cgroup_pages(memcg, nr_pages - max,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP))
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP, NULL))
- 				nr_reclaims--;
- 			continue;
- 		}
-@@ -6895,19 +6897,50 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
- 	return nbytes;
- }
- 
-+enum {
-+	MEMORY_RECLAIM_SWAPPINESS = 0,
-+	MEMORY_RECLAIM_NULL,
-+};
-+
-+static const match_table_t tokens = {
-+	{ MEMORY_RECLAIM_SWAPPINESS, "swappiness=%d"},
-+	{ MEMORY_RECLAIM_NULL, NULL },
-+};
-+
- static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 			      size_t nbytes, loff_t off)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
- 	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
- 	unsigned long nr_to_reclaim, nr_reclaimed = 0;
-+	int swappiness = -1;
- 	unsigned int reclaim_options;
--	int err;
-+	char *old_buf, *start;
-+	substring_t args[MAX_OPT_ARGS];
- 
- 	buf = strstrip(buf);
--	err = page_counter_memparse(buf, "", &nr_to_reclaim);
--	if (err)
--		return err;
-+
-+	old_buf = buf;
-+	nr_to_reclaim = memparse(buf, &buf) / PAGE_SIZE;
-+	if (buf == old_buf)
-+		return -EINVAL;
-+
-+	buf = strstrip(buf);
-+
-+	while ((start = strsep(&buf, " ")) != NULL) {
-+		if (!strlen(start))
-+			continue;
-+		switch (match_token(start, tokens, args)) {
-+		case MEMORY_RECLAIM_SWAPPINESS:
-+			if (match_int(&args[0], &swappiness))
-+				return -EINVAL;
-+			if (swappiness < MIN_SWAPPINESS || swappiness > MAX_SWAPPINESS)
-+				return -EINVAL;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
- 
- 	reclaim_options	= MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACTIVE;
- 	while (nr_reclaimed < nr_to_reclaim) {
-@@ -6926,7 +6959,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg,
- 					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
--					GFP_KERNEL, reclaim_options);
-+					GFP_KERNEL, reclaim_options,
-+					swappiness == -1 ? NULL : &swappiness);
- 
- 		if (!reclaimed && !nr_retries--)
- 			return -EAGAIN;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index d91963e2d47f..394e0dd46b2e 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -92,6 +92,11 @@ struct scan_control {
- 	unsigned long	anon_cost;
- 	unsigned long	file_cost;
- 
-+#ifdef CONFIG_MEMCG
-+	/* Swappiness value for proactive reclaim. Always use sc_swappiness()! */
-+	int *proactive_swappiness;
-+#endif
-+
- 	/* Can active folios be deactivated as part of reclaim? */
- #define DEACTIVATE_ANON 1
- #define DEACTIVATE_FILE 2
-@@ -227,6 +232,13 @@ static bool writeback_throttling_sane(struct scan_control *sc)
- #endif
- 	return false;
- }
-+
-+static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *memcg)
-+{
-+	if (sc->proactive && sc->proactive_swappiness)
-+		return *sc->proactive_swappiness;
-+	return mem_cgroup_swappiness(memcg);
-+}
- #else
- static bool cgroup_reclaim(struct scan_control *sc)
- {
-@@ -242,6 +254,11 @@ static bool writeback_throttling_sane(struct scan_control *sc)
- {
- 	return true;
- }
-+
-+static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *memcg)
-+{
-+	return READ_ONCE(vm_swappiness);
-+}
- #endif
- 
- static void set_task_reclaim_state(struct task_struct *task,
-@@ -2327,7 +2344,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
- 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
- 	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
- 	unsigned long anon_cost, file_cost, total_cost;
--	int swappiness = mem_cgroup_swappiness(memcg);
-+	int swappiness = sc_swappiness(sc, memcg);
- 	u64 fraction[ANON_AND_FILE];
- 	u64 denominator = 0;	/* gcc */
- 	enum scan_balance scan_balance;
-@@ -2608,7 +2625,7 @@ static int get_swappiness(struct lruvec *lruvec, struct scan_control *sc)
- 	    mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
- 		return 0;
- 
--	return mem_cgroup_swappiness(memcg);
-+	return sc_swappiness(sc, memcg);
- }
- 
- static int get_nr_gens(struct lruvec *lruvec, int type)
-@@ -6463,12 +6480,14 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
- unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 					   unsigned long nr_pages,
- 					   gfp_t gfp_mask,
--					   unsigned int reclaim_options)
-+					   unsigned int reclaim_options,
-+					   int *swappiness)
- {
- 	unsigned long nr_reclaimed;
- 	unsigned int noreclaim_flag;
- 	struct scan_control sc = {
- 		.nr_to_reclaim = max(nr_pages, SWAP_CLUSTER_MAX),
-+		.proactive_swappiness = swappiness,
- 		.gfp_mask = (current_gfp_context(gfp_mask) & GFP_RECLAIM_MASK) |
- 				(GFP_HIGHUSER_MOVABLE & ~GFP_RECLAIM_MASK),
- 		.reclaim_idx = MAX_NR_ZONES - 1,
--- 
-2.39.3
-
+Thanks
+Nic
 
