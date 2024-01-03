@@ -1,107 +1,110 @@
-Return-Path: <linux-kernel+bounces-15937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C0848235E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:52:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F29F98235F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:55:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 405CA1C243D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:52:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86ACE1C243C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:55:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6081CFAE;
-	Wed,  3 Jan 2024 19:52:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F901CFB2;
+	Wed,  3 Jan 2024 19:55:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="APEdFICj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 765221D525;
-	Wed,  3 Jan 2024 19:52:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0594C433C7;
-	Wed,  3 Jan 2024 19:52:02 +0000 (UTC)
-Date: Wed, 3 Jan 2024 14:53:06 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Al Viro <viro@ZenIV.linux.org.uk>, Christian Brauner <brauner@kernel.org>,
- linux-fsdevel@vger.kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] eventfs: Stop using dcache_readdir() for getdents()
-Message-ID: <20240103145306.51f8a4cd@gandalf.local.home>
-In-Reply-To: <CAHk-=wjVdGkjDXBbvLn2wbZnqP4UsH46E3gqJ9m7UG6DpX2+WA@mail.gmail.com>
-References: <20240103102553.17a19cea@gandalf.local.home>
-	<CAHk-=whrRobm82kcjwj625bZrdK+vvEo0B5PBzP+hVaBcHUkJA@mail.gmail.com>
-	<CAHk-=wjVdGkjDXBbvLn2wbZnqP4UsH46E3gqJ9m7UG6DpX2+WA@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 146D41CF96;
+	Wed,  3 Jan 2024 19:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5ce10b5ee01so552103a12.1;
+        Wed, 03 Jan 2024 11:55:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704311708; x=1704916508; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X3iU8aqcre6TJqNl9hYE6bRCOPELUfFdiBKR8Euu9Ys=;
+        b=APEdFICjaFmxck+mRbZCGA/1t3Duei/2eWTWzR480uRB+JXjHnYDpCYtQqTPpEw5sM
+         CazNIPTrOESeisPP+ILI22ifeUJUE1tQ6wBWJeGhR/wqzaFr4YXd5dggM+4oHgNZ5m8c
+         9XjRCDVLMZZb39d83dsHCey6iVwkq004LuZ0gdvooMxVjXMEMEtfjIpLYZMLxDO4KuNQ
+         uPcHqc+UAW8TGCQ54TRH+CVVT4+3Is39QgMN6zAzRVvB4g4fS1CpGRSERPI8NMV19WYN
+         n3Z0mKV4MogX9BincNHEQYfDk4o8jObfVbtS8/NnuFlW3SLbHTHBcOLIoabT0OwwO2oW
+         VwlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704311708; x=1704916508;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X3iU8aqcre6TJqNl9hYE6bRCOPELUfFdiBKR8Euu9Ys=;
+        b=cZZptr0Q0r3LIzlRTvCwLwa9e7EKdruosvsEgW4+DzJpjCnm2M7ENdP5n7AMF/3Hix
+         JFwLC6xXv7PMmnCfshXLdKVNgHBSME6PgeY4l2MlWL46BYdI3Fxk46hlbNKHGtGClBXm
+         G60pe5N2iYEr27X2Cd8uA0Pa3QMR3giZ5nHp7KpyZh0BobTf6ZRz5fPkP69qWTmqRmwz
+         SKTsbKTeOqyt5A1/+/1xtzAuoJSrCniUPt6iehSoLnmBPj9aMT4DLpZaQSSvx6wtKadB
+         e+GEH5J2gXidnK5DfyHdnzkjsRTnla3L4UWkr62r04f1yJkk0uPd/2kpMCqiGaYqJOgt
+         V0nw==
+X-Gm-Message-State: AOJu0YyL/8QOAXqHMB0/yHLj+4HMXzcN2Fa+Ol1B1YThOi9Ov0HBVAqb
+	qs0kUEMb8xgQjSZZd9x82GY=
+X-Google-Smtp-Source: AGHT+IGClAPCl9CbqKzsGVTXv82t4CtF/ve+Vpmn61NCHnYs+cWDY36TDd1dJAx61YoOCl3oeA27Rw==
+X-Received: by 2002:a05:6a20:4323:b0:198:fe75:5692 with SMTP id h35-20020a056a20432300b00198fe755692mr748022pzk.23.1704311708263;
+        Wed, 03 Jan 2024 11:55:08 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id w19-20020a63d753000000b005cd78f13608sm22746267pgi.13.2024.01.03.11.55.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jan 2024 11:55:07 -0800 (PST)
+Message-ID: <abd2e7c5-b1f3-4a70-8634-fb7f51080da8@gmail.com>
+Date: Wed, 3 Jan 2024 11:55:06 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 000/100] 6.1.71-rc1 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com
+References: <20240103164856.169912722@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240103164856.169912722@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Wed, 3 Jan 2024 10:38:09 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On 1/3/24 08:53, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.71 release.
+> There are 100 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 05 Jan 2024 16:47:49 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.71-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> @@ -332,10 +255,8 @@ static int tracefs_apply_options(struct super_block *sb, bool remount)
->  	if (!remount || opts->opts & BIT(Opt_uid))
->  		inode->i_uid = opts->uid;
->  
-> -	if (!remount || opts->opts & BIT(Opt_gid)) {
-> -		/* Set all the group ids to the mount option */
-> -		set_gid(sb->s_root, opts->gid);
-> -	}
-> +	if (!remount || opts->opts & BIT(Opt_gid))
-> +		inode->i_gid = opts->gid;
->  
->  	return 0;
->  }
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-This doesn't work because for tracefs (not eventfs) the dentries are
-created at boot up and before the file system is mounted. This means you
-can't even set a gid in /etc/fstab. This will cause a regression.
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-tracefs was designed after debugfs, which also ignores gid. But because
-there's users out there that want non-root accounts to have access to
-tracing, it is documented to set the gid to a group that you can then add
-users to. And that's the reason behind the set_gid() walk.
-
-Reverting that one commit won't fix things either, because it only blocked
-OTH to be read, but the creation of the files changed their mode's passed
-to block OTH as well, so all those would need to be changed too. And I
-don't think making the trace files open to OTH is a good solution, even if
-the tracefs top level directory itself blocks other. The issue was that the
-user use to just mount the top level to allow the group access to the files
-below, which allowed all users access. But this is weak control of the file
-system.
-
-Even my non-test machines have me in the tracing group so my user account
-has access to tracefs.
-
-On boot up, all the tracefs files are created via tracefs_create_file() and
-directories by tracefs_create_dir() which was copied from
-debugfs_create_file/dir(). At this moment, the dentry is created with the
-permissions set. There's no looking at the super block.
-
-So we need a way to change the permissions at mount time.
-
-The only solution I can think of that doesn't include walking the current
-dentries, is to convert all of tracefs to be more like eventfs, and have
-the dentries created on demand. But perhaps, different than eventfs, they
-do not need to be freed when they are no longer referenced, which should
-make it easier to implement. And there's not nearly as many files and
-directories, so keeping meta data around isn't as much of an issue.
-
-Instead of creating the inode and dentry in the tracefs_create_file/dir(),
-it could just create a descriptor that holds the fops, data and mode. Then
-on lookup, it would create the inodes and dentries similar to eventfs.
-
-It would need its own iterate_shared as well.
-
--- Steve
 
