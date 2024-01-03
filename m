@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-15565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 105F9822E31
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AED78822E36
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:27:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36FAA1C228C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:26:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD8AF1C20441
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:27:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6149199C7;
-	Wed,  3 Jan 2024 13:26:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B32AE199C0;
+	Wed,  3 Jan 2024 13:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RNdSTdxu"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UAR7ywbz"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9984B199A2;
-	Wed,  3 Jan 2024 13:25:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1AD4199A3;
+	Wed,  3 Jan 2024 13:27:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
 Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 403D6cW1032742;
-	Wed, 3 Jan 2024 13:25:46 GMT
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 403D59J3029045;
+	Wed, 3 Jan 2024 13:27:10 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	message-id:date:mime-version:subject:to:cc:references:from
 	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Q1OedofFFqxTrsRq2LE9w6jzniiienr/0koej1/OS34=; b=RN
-	dSTdxuduppU3UbnUsSaiOhPl2MB+Vnje/zjLjkMR//OgM9Os1EWc0xeGni+XfJgd
-	ZNKOcy1kmMn8FIfEY3kIKGLkw/6a6b+RLJAIrUa6TB3SOLtTN8CqSDDonbzdMVtX
-	MZYtknWqXw+waa4nQFc0eqeHwId0cDw7YGX5kect04C8af7c3pF06zee3q7FZudw
-	kdisFoPsfV6oH/w5uHEK7pU8uSxeXw1otUIX+GXnSR4arAIjYnbt1fmU2/HwBl1S
-	h36Il3gu8Gn8Gth/NGAU6WLAT1rqu/QTVkhEN5qZDoQS6d1CUIHteQJMimeS/XPB
-	gsgHKquY+9XGJZwvbS0g==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vd84cr1gw-1
+	qcppdkim1; bh=MLmjvccV2jC5p6zINn45B3nzwnMb9oe4KxWl8hljtmA=; b=UA
+	R7ywbzBvp2C+wiL6R5T96bEH5Rd/dN8vQGEjNlmmm8aOxlNe6sIKIN5aMKL0PNZd
+	zoTBXgy/tLjfAE8gVS50QW3oYdqQSBUMrvWESSh7UR2tI5hIvj0/pR/e9TiyUqR0
+	szfRm4bM3CNo5cdznxYuHWClmI8TQ60JyeIYsiEr0TgPn+7SiFZqy4uKt2MWBZpe
+	YTGOYP+VxOpP3AYCZgqvsM+oTCPf1mFTH/Q7VdS8AYP9ZVq9WtT4iAvwC0EQKxhE
+	E5ey/vH3fD5KjtmCN98IMKZSdtNN0DYTrZ75RyulKEhMW8alAtxlg1XeaUFlKv9Y
+	WyF+G4YPXHWG6vA5wAHQ==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vd84cr1kq-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Jan 2024 13:25:46 +0000 (GMT)
+	Wed, 03 Jan 2024 13:27:09 +0000 (GMT)
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 403DPjbh013194
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 403DR8RI032346
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 3 Jan 2024 13:25:45 GMT
+	Wed, 3 Jan 2024 13:27:08 GMT
 Received: from [10.253.72.77] (10.80.80.8) by nalasex01c.na.qualcomm.com
  (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 3 Jan
- 2024 05:25:40 -0800
-Message-ID: <06aae775-4d62-4cca-9152-f752a8f9a33a@quicinc.com>
-Date: Wed, 3 Jan 2024 21:25:40 +0800
+ 2024 05:27:03 -0800
+Message-ID: <63a7f0a7-a634-49a8-8502-abb117b6ca3c@quicinc.com>
+Date: Wed, 3 Jan 2024 21:27:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,136 +56,122 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/5] net: mdio: ipq4019: enable the SoC uniphy clocks
- for ipq5332 platform
+Subject: Re: [PATCH v4 1/5] net: mdio: ipq4019: move eth_ldo_rdy before MDIO
+ bus register
 Content-Language: en-US
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC: <agross@kernel.org>, <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
         <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
         <pabeni@redhat.com>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <robert.marko@sartura.hr>
-CC: <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <andrew@lunn.ch>, <hkallweit1@gmail.com>, <robert.marko@sartura.hr>,
+        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <quic_srichara@quicinc.com>
 References: <20231225084424.30986-1-quic_luoj@quicinc.com>
- <20231225084424.30986-3-quic_luoj@quicinc.com>
- <e0926d70-09d1-40ab-939a-7e110d718448@linaro.org>
+ <20231225084424.30986-2-quic_luoj@quicinc.com>
+ <ZZRG3eZJM5QouR9+@shell.armlinux.org.uk>
 From: Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <e0926d70-09d1-40ab-939a-7e110d718448@linaro.org>
+In-Reply-To: <ZZRG3eZJM5QouR9+@shell.armlinux.org.uk>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: lr9s0WBhR1YkKwFZdnIvUWsCgfrpvr2u
-X-Proofpoint-GUID: lr9s0WBhR1YkKwFZdnIvUWsCgfrpvr2u
+X-Proofpoint-ORIG-GUID: Ofke_IZcbAJSKmind8rdvuqCrfzHEOO2
+X-Proofpoint-GUID: Ofke_IZcbAJSKmind8rdvuqCrfzHEOO2
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=844 phishscore=0 bulkscore=0 suspectscore=0 spamscore=0
  adultscore=0 priorityscore=1501 impostorscore=0 clxscore=1015 mlxscore=0
  lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2401030110
 
 
 
-On 1/3/2024 5:48 PM, Bryan O'Donoghue wrote:
-> On 25/12/2023 08:44, Luo Jie wrote:
->> On the platform ipq5332, the related SoC uniphy GCC clocks need
->> to be enabled for making the MDIO slave devices accessible.
->>
->> These UNIPHY clocks are from the SoC platform GCC clock provider,
->> which are enabled for the connected PHY devices working.
->>
->> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
->> ---
->>   drivers/net/mdio/mdio-ipq4019.c | 75 ++++++++++++++++++++++++++++-----
->>   1 file changed, 64 insertions(+), 11 deletions(-)
->>
->> diff --git a/drivers/net/mdio/mdio-ipq4019.c 
->> b/drivers/net/mdio/mdio-ipq4019.c
->> index 5273864fabb3..e24b0e688b10 100644
->> --- a/drivers/net/mdio/mdio-ipq4019.c
->> +++ b/drivers/net/mdio/mdio-ipq4019.c
->> @@ -35,15 +35,36 @@
->>   /* MDIO clock source frequency is fixed to 100M */
->>   #define IPQ_MDIO_CLK_RATE    100000000
->> +/* SoC UNIPHY fixed clock */
->> +#define IPQ_UNIPHY_AHB_CLK_RATE    100000000
->> +#define IPQ_UNIPHY_SYS_CLK_RATE    24000000
+On 1/3/2024 1:24 AM, Russell King (Oracle) wrote:
+> On Mon, Dec 25, 2023 at 04:44:20PM +0800, Luo Jie wrote:
+>> +/* Maximum SOC PCS(uniphy) number on IPQ platform */
+>> +#define ETH_LDO_RDY_CNT				3
 >> +
->>   #define IPQ_PHY_SET_DELAY_US    100000
->>   /* Maximum SOC PCS(uniphy) number on IPQ platform */
->>   #define ETH_LDO_RDY_CNT                3
->> +enum mdio_clk_id {
->> +    MDIO_CLK_MDIO_AHB,
->> +    MDIO_CLK_UNIPHY0_AHB,
->> +    MDIO_CLK_UNIPHY0_SYS,
->> +    MDIO_CLK_UNIPHY1_AHB,
->> +    MDIO_CLK_UNIPHY1_SYS,
->> +    MDIO_CLK_CNT
->> +};
->> +
->>   struct ipq4019_mdio_data {
->>       void __iomem *membase;
->>       void __iomem *eth_ldo_rdy[ETH_LDO_RDY_CNT];
->> -    struct clk *mdio_clk;
->> +    struct clk *clk[MDIO_CLK_CNT];
->> +};
->> +
->> +static const char *const mdio_clk_name[] = {
->> +    "gcc_mdio_ahb_clk",
->> +    "uniphy0_ahb",
->> +    "uniphy0_sys",
->> +    "uniphy1_ahb",
->> +    "uniphy1_sys"
->>   };
->>   static int ipq4019_mdio_wait_busy(struct mii_bus *bus)
->> @@ -209,14 +230,43 @@ static int ipq4019_mdio_write_c22(struct mii_bus 
->> *bus, int mii_id, int regnum,
->>   static int ipq_mdio_reset(struct mii_bus *bus)
->>   {
->>       struct ipq4019_mdio_data *priv = bus->priv;
->> -    int ret;
->> +    unsigned long rate;
->> +    int ret, index;
->> -    /* Configure MDIO clock source frequency if clock is specified in 
->> the device tree */
->> -    ret = clk_set_rate(priv->mdio_clk, IPQ_MDIO_CLK_RATE);
->> -    if (ret)
->> -        return ret;
->> +    /* For the platform ipq5332, there are two SoC uniphies available
->> +     * for connecting with ethernet PHY, the SoC uniphy gcc clock
->> +     * should be enabled for resetting the connected device such
->> +     * as qca8386 switch, qca8081 PHY or other PHYs effectively.
->> +     *
->> +     * Configure MDIO/UNIPHY clock source frequency if clock instance
->> +     * is specified in the device tree.
->> +     */
->> +    for (index = MDIO_CLK_MDIO_AHB; index < MDIO_CLK_CNT; index++) {
+>>   struct ipq4019_mdio_data {
+>> -	void __iomem	*membase;
+>> -	void __iomem *eth_ldo_rdy;
+>> +	void __iomem *membase;
+>> +	void __iomem *eth_ldo_rdy[ETH_LDO_RDY_CNT];
 > 
-> you could do a
-> 
-> if (!priv->clk[index])
->      continue;
+> Do you have any plans to make use of eth_ldo_rdy other than by code that
+> you touch in this patch? If you don't, what is the point of storing
+> these points in struct ipq4019_mdio_data ? You're using devm_ioremap()
+> which will already store the pointer internally to be able to free the
+> resource at the appropriate moment, so if your only use is shortly after
+> devm_ioremap(), you can use a local variable for this... meaning this
+> becomes (in addition to the other suggestion):
 
-Thanks for the comments, will update it.
-> 
-> here and save a few cycles executing code for absent clocks. ipq6018 has 
-> just 1/5 of the clocks you are checking for here.
-> 
-> Better still capture the number of clocks you find in probe() in a 
-> variable priv->num_clocks and only step through the array
-
-Ok, thanks bod for the comments to improve the code.
+I will remove the eth_lod_rdy from the structure, which is only for
+enabling LDO shortly, will update to use the local variable for this.
+Thanks for review comments.
 
 > 
-> for (i = 0; i < priv->num_clocks; i++) {}
+>> +	/* This resource are optional */
+>> +	for (index = 0; index < ETH_LDO_RDY_CNT; index++) {
+>> +		res = platform_get_resource(pdev, IORESOURCE_MEM, index + 1);
+>> +		if (res) {
+>> +			priv->eth_ldo_rdy[index] = devm_ioremap(&pdev->dev,
+>> +								res->start,
+>> +								resource_size(res));
+>> +
+>> +			/* The ethernet LDO enable is necessary to reset PHY
+>> +			 * by GPIO, some PHY(such as qca8084) GPIO reset uses
+>> +			 * the MDIO level reset, so this function should be
+>> +			 * called before the MDIO bus register.
+>> +			 */
+>> +			if (priv->eth_ldo_rdy[index]) {
+>> +				u32 val;
+>> +
+>> +				val = readl(priv->eth_ldo_rdy[index]);
+>> +				val |= BIT(0);
+>> +				writel(val, priv->eth_ldo_rdy[index]);
+>> +				fsleep(IPQ_PHY_SET_DELAY_US);
+>> +			}
+>> +		}
 > 
-> ---
-> bod
+> 		void __iomem *eth_ldo_rdy;
+> 		u32 val;
+> 
+> 		res = platform_get_resource(pdev, IORESOURCE_MEM, index + 1);
+> 		if (!res)
+> 			break;
+> 
+> 		eth_ldo_rdy = devm_ioremap(&pdev->dev, res->start,
+> 					   resource_size(res));
+> 		if (!eth_ldo_rdy)
+> 			continue;
+> 
+> 		val = readl(eth_ldo_rdy) | BIT(0);
+> 		writel(val, eth_ldo_rdy);
+> 		... whatever sleep is deemed required ...
+> 
+> Other issues:
+> 
+> 1. if devm_ioremap() fails (returns NULL) is it right that we should
+>     just ignore that resource?
+
+Since each LDO is independent, each LDO is for controlling the
+independent Ethernet device, that should be fine to ignore the
+failed resource.
+
+> 
+> 2. Do you need to sleep after each write, or will sleeping after
+>     writing all of these do? It may be more efficient to detect when
+>     we have at least one eth_ldo_rdy and then sleep once.
+Yes, sleeping can be used after writing all of these, will update the
+code as you suggest, thanks Russell.
+
+> 
+> Thanks.
+> 
 
