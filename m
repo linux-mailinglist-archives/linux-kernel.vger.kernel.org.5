@@ -1,75 +1,52 @@
-Return-Path: <linux-kernel+bounces-14993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 762AB8225D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:11:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 934448225DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:12:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19F74B22167
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:11:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41A9828452C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57CED7E;
-	Wed,  3 Jan 2024 00:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E49B7655;
+	Wed,  3 Jan 2024 00:12:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gQhc6c1P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AvJqAlAB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6812B1841;
-	Wed,  3 Jan 2024 00:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3bbbc6bcc78so5239705b6e.1;
-        Tue, 02 Jan 2024 16:11:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704240692; x=1704845492; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vPhCoFUOrRe68PAKBuJ0XCZdiktRxtpdmXF3NphnPpo=;
-        b=gQhc6c1Pz90XKZa8s85mPmZJDT1AM73TxhN0X4PpgeYUsvYvkuQRrqwiijVDxQduNK
-         G7VNO3ozHTTTeCZjX4Tt1WBlAYAbEylndrb78LeE1N6vqdSrPaVuQ933JBQkvyBMrU4o
-         bo/Fv2lUbSGcHTXPSBUAF/DJYBuWveEdqxkkeXfcAbVO6/jQzvtCPS+K44VVGZApCVnA
-         Ubjcr+Ju4YivaWo0g1jKP8oN00EZMeMUusHatEMKPNfBHmt0qgn8TwyFYe59QlMJl0cL
-         Z7pwtj1gt9LFBumxmysBfb1fVDIuHtLtNg921MVg2yHHQ/sifHBtRc/2KbP10SqYlQDj
-         oSzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704240692; x=1704845492;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vPhCoFUOrRe68PAKBuJ0XCZdiktRxtpdmXF3NphnPpo=;
-        b=bdWJ2lvT6VGt+huk9j4qj2yvnYe9f0tnYtBHwjgL5CQlpYNb2PZARyiN0qg30icYUW
-         cSbTmjfogSoeBgrVKYovS0iD+7dBYYwY0JZhKTuhaQPRlvN401ZPCaZEcmY3ma3rL8It
-         Tq1alzYolpBe6oCmR+crWzICbPvO0lquWqpA6lENptpaILpgYVlMR9JSZ1W04Mqn/kRl
-         yRWA7atX6G71Pps9wUiqdxAuWK/Re7qLip0UlUmgHSj2ksM48gs6/jq4YOT7/gp7IXGO
-         Ldzr+tGdwecjXoC1WOojsBqCmSKepYpPek+K/jOXcJpLfNQ8JA3LWla1295ti4Fi14i7
-         leSg==
-X-Gm-Message-State: AOJu0YywhQtWpuzZSmPQRtjdFkHM3eI9eK9N0IKCfDwGWbrxexmNkLYB
-	FMMNvilY5ir6iiIeLb2FJZ8GXT54tU8rcQ==
-X-Google-Smtp-Source: AGHT+IGhE/yALeHSypQiLTPZ6IwELmr85Vhh6yAAxpExlueWQuwRyjPkDph8C0Z8fA5XSFJdnFLr4Q==
-X-Received: by 2002:a05:6358:718b:b0:175:2cec:a767 with SMTP id t11-20020a056358718b00b001752ceca767mr4225579rwt.36.1704240692039;
-        Tue, 02 Jan 2024 16:11:32 -0800 (PST)
-Received: from fedora (c-24-4-59-2.hsd1.ca.comcast.net. [24.4.59.2])
-        by smtp.gmail.com with ESMTPSA id qc8-20020a17090b288800b0028b1fce7c01sm195551pjb.37.2024.01.02.16.11.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 16:11:31 -0800 (PST)
-Date: Tue, 2 Jan 2024 16:11:28 -0800
-From: Tao Ren <rentao.bupt@gmail.com>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: devicetree@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-	Andrew Jeffery <andrew@aj.id.au>, taoren@fb.com,
-	openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 3/6] ARM: dts: aspeed: Common dtsi for Facebook
- AST2600 Network BMCs
-Message-ID: <ZZSmMJ//l972Qbxu@fedora>
-References: <20210805222818.8391-1-rentao.bupt@gmail.com>
- <20210805222818.8391-4-rentao.bupt@gmail.com>
- <20231220081402.GA3831@wunner.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E047E;
+	Wed,  3 Jan 2024 00:12:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B8BFC433C7;
+	Wed,  3 Jan 2024 00:12:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704240759;
+	bh=rTo7bHSTZscbaOSrZrDFMXX97W0sP/G2kTdUTny+Fxc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=AvJqAlABGx6tTO9tTTIkN+baamjM3G24G2UXDCrNuty4jx95zxXWVJXB3xBP5z2f2
+	 AgDmNft0zn+kkdyIxnMRgPCuPfeg1b0uq9g1pfcF/WMHb2S5cEH0CW+6E4LVfkJpic
+	 jxylJXJ1JyDQUn1cUCfZq6BeSQrD09wCvysgOV3VC4g8NO+Z+BvTuR28NHiiOzWiAP
+	 w8TYRjO58QThStISLzZGmfwdphJPBKYm6B/RNEHyjAcbJfuexKYqcCHGl0QgHzquFP
+	 0qxtlUfch2fESz3mmtylXmlM3hzZVZPEsYXeRrf9cDCfB+MuIwgS5jOICKjHZ4lEXk
+	 GvnehWXu6GBmw==
+Date: Tue, 2 Jan 2024 18:12:37 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: Michael Schaller <michael@5challer.de>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	regressions@lists.linux.dev,
+	"Maciej W . Rozycki" <macro@orcam.me.uk>,
+	Ajay Agarwal <ajayagarwal@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] Revert "PCI/ASPM: Remove pcie_aspm_pm_state_change()"
+Message-ID: <20240103001237.GA1755171@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,30 +55,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231220081402.GA3831@wunner.de>
+In-Reply-To: <20cd835e-f84c-4c43-812e-6706f7266150@linux.intel.com>
 
-Hi Lukas,
-
-On Wed, Dec 20, 2023 at 09:14:02AM +0100, Lukas Wunner wrote:
-> On Thu, Aug 05, 2021 at 03:28:15PM -0700, rentao.bupt@gmail.com wrote:
-> > This common descirption is included by all Facebook AST2600 Network BMC
-> > platforms to minimize duplicated device entries across Facebook Network
-> > BMC device trees.
-> [...]
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/ast2600-facebook-netbmc-common.dtsi
-> [...]
-> > +		tpmdev@0 {
-> > +			compatible = "tcg,tpm_tis-spi";
+On Tue, Jan 02, 2024 at 03:33:51PM -0800, Kuppuswamy Sathyanarayanan wrote:
+> On 1/2/2024 3:25 PM, Bjorn Helgaas wrote:
+> > From: Bjorn Helgaas <bhelgaas@google.com>
+> > 
+> > This reverts commit 08d0cc5f34265d1a1e3031f319f594bd1970976c.
+> > 
+> > Michael reported that when attempting to resume from suspend to RAM on ASUS
+> > mini PC PN51-BB757MDE1 (DMI model: MINIPC PN51-E1), 08d0cc5f3426
+> > ("PCI/ASPM: Remove pcie_aspm_pm_state_change()") caused a 12-second delay
+> > with no output, followed by a reboot.
+> > 
+> > Workarounds include:
+> > 
+> >   - Reverting 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()")
+> >   - Booting with "pcie_aspm=off"
+> >   - Booting with "pcie_aspm.policy=performance"
+> >   - "echo 0 | sudo tee /sys/bus/pci/devices/0000:03:00.0/link/l1_aspm"
+> >     before suspending
+> >   - Connecting a USB flash drive
 > 
-> What's the chip used on this board?  Going forward, the DT schema for TPMs
-> requires the exact chip name in addition to the generic "tcg,tpm_tis-spi".
+> Did you find the root cause? Is this issue specific to that particular
+> device? If yes, can we do a quirk?
 
-Sorry about the late response. It's "infineon,slb9670", and I will
-submit a patch for fix it soon.
+Unfortunately we don't know the root cause yet.  Without knowing the
+root cause, I don't think we can make a good quirk.
 
-
-Cheers,
-
-- Tao
+Bjorn
 
