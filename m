@@ -1,115 +1,211 @@
-Return-Path: <linux-kernel+bounces-15337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EAAC822A59
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:40:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58754822A5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:43:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1EBFB22F07
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:40:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53BCE1C231E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:43:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A80A618625;
-	Wed,  3 Jan 2024 09:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B3818622;
+	Wed,  3 Jan 2024 09:43:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nexus-software-ie.20230601.gappssmtp.com header.i=@nexus-software-ie.20230601.gappssmtp.com header.b="lqpyHhX/"
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="DWllvzcs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67474182C5
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 09:40:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexus-software.ie
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nexus-software.ie
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40d8909a6feso21924745e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 01:40:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nexus-software-ie.20230601.gappssmtp.com; s=20230601; t=1704274804; x=1704879604; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v8kV6bmv9AGmb8cbNFglMHaYDajh0jeItl9QUctLrzk=;
-        b=lqpyHhX/g/THJKmc/fspcmIf/KkDCrbr+z9EDfMcbwbeKFdDJkjKHNowT5t5TYBikI
-         vVGz0NLb5lsjHaPzgT8FSSKAVHVomR2Hs/OjkREhwN+WwbHsMjQvldvn3KzotYNCKyNp
-         IBzig/TTzK3JAAuF2L6/YoxaIp5OK5eypsN/8YRRKVawYghbfJzta6Sgr8ijD/W0V4m4
-         ExSHM7GJFj3bKS3ToFlBJ9zuJcjeCSshzqzJE81R13KeweALDE9e2f6o6qgAJao8ja3H
-         ITbVYJh1MazjVc2pak/QPgQdLcVXFaoN8tHBR1su4mRJ3/CW4lEZ280KNZfA5vERnPCR
-         sxjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704274804; x=1704879604;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v8kV6bmv9AGmb8cbNFglMHaYDajh0jeItl9QUctLrzk=;
-        b=SVUYQ/LM9jFLJZIvtLMPejaB6ksbkOZveTRFg783LcNy3seWPvYFjXLl0Tn9fykfM9
-         gt04Gt7wsh/BQeZlZJRxLKEtl3xXMv59DWQeZ3Od3CQ/gG9GU7lPgPxIzFtFWw7TPI2s
-         IETEQ5t9LwC0DaVXQN05i9EBdVUA6mlSAHZdIC2h73UuLt1QVNaIk1NdmEQdMaMAIQkB
-         V+MILuhQ1bF784p8Esdw8pj29hcqHPsO47d3vWHQaUbPJkPNoXLpPvmH8flm2QkruNhL
-         1TxC9kS0EfTMYt2jfeWBMaE+zfdeCUF7YPOAVMevPQDU0YPvE/zE6evyfJ+zYX5dHYgc
-         NlmQ==
-X-Gm-Message-State: AOJu0Yzjj1DvHwghnddZkOZUlbSvvTBluQjZfFwO+S+6G2dAIVrJlk4n
-	bgkRSA4yqv2j1Fpiyr8Wjf8PDi4pDyIeew==
-X-Google-Smtp-Source: AGHT+IFHNK2lB2OFIK/xyIhVP8vFFvnAEjuMr5JigM5mzJOMR0g/F1kIMG2j2fzjAepYxSuahtNonQ==
-X-Received: by 2002:a05:600c:4f54:b0:40d:8580:4f1a with SMTP id m20-20020a05600c4f5400b0040d85804f1amr1878780wmq.171.1704274804374;
-        Wed, 03 Jan 2024 01:40:04 -0800 (PST)
-Received: from [192.168.100.86] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id g15-20020a5d488f000000b00336e43e8e57sm18973025wrq.58.2024.01.03.01.40.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 01:40:03 -0800 (PST)
-Message-ID: <62995a12-e835-40ff-966f-8522f2ab53dc@nexus-software.ie>
-Date: Wed, 3 Jan 2024 09:40:02 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF505182A4;
+	Wed,  3 Jan 2024 09:42:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1704274974; bh=+FuXJj2iKg82sXCjmgWQQwQpfkrjPVRuS95BkQPHOsw=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=DWllvzcsi439e2+YBGopYhr7/9P4TW/n11basEqxa5WmGOsOuP9HnwC1kXB4B2o1+
+	 SbiCHP4a0BGb1mZFtaJjf3sSm54STGsn0NSLu5ZpzdrxDb3+tuGLSgdyPZpmbBYqrL
+	 7VHgotempQviHZ7yLqhZT+zg9JoMETqwqz2oaZt8=
+Date: Wed, 3 Jan 2024 10:42:54 +0100
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Manuel Traut <manut@mecka.net>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Sandy Huang <hjc@rock-chips.com>, 
+	Mark Yao <markyao0591@gmail.com>, Diederik de Haas <didi.debian@cknow.org>, 
+	Segfault <awarnecke002@hotmail.com>, Arnaud Ferraris <aferraris@debian.org>, 
+	Danct12 <danct12@riseup.net>, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v3 4/4] arm64: dts: rockchip: Add devicetree for Pine64
+ PineTab2
+Message-ID: <vj3elmkt6czisvwqouv2hhvut2va5jw6bbj5kjyxawvrnrdfwm@tlpo3dp3qcyb>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Manuel Traut <manut@mecka.net>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Sandy Huang <hjc@rock-chips.com>, 
+	Mark Yao <markyao0591@gmail.com>, Diederik de Haas <didi.debian@cknow.org>, 
+	Segfault <awarnecke002@hotmail.com>, Arnaud Ferraris <aferraris@debian.org>, 
+	Danct12 <danct12@riseup.net>, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-rockchip@lists.infradead.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20240102-pinetab2-v3-0-cb1aa69f8c30@mecka.net>
+ <20240102-pinetab2-v3-4-cb1aa69f8c30@mecka.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] media: dt-bindings: media: camss: Add
- qcom,sc8280xp-camss binding
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Robert Foss
- <rfoss@kernel.org>, Todor Tomov <todor.too@gmail.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
-Cc: linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240103-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v1-0-abacaa63a961@linaro.org>
- <20240103-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v1-1-abacaa63a961@linaro.org>
- <87bcff40-b5ff-41c9-a33f-95f5e80a2f22@linaro.org>
-From: Bryan O'Donoghue <pure.logic@nexus-software.ie>
-In-Reply-To: <87bcff40-b5ff-41c9-a33f-95f5e80a2f22@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102-pinetab2-v3-4-cb1aa69f8c30@mecka.net>
 
-On 03/01/2024 07:40, Krzysztof Kozlowski wrote:
-> On 03/01/2024 03:18, Bryan O'Donoghue wrote:
->> Add bindings for qcom,sc8280xp-camss in order to support the camera
->> subsystem for sc8280xp as found in the Lenovo x13s Laptop.
->>
->> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
->>   .../bindings/media/qcom,sc8280xp-camss.yaml        | 512 +++++++++++++++++++++
->>   1 file changed, 512 insertions(+)
->>
-> 
-> This patch fails, as pointed out by Robot.
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
+Hello Manuel,
 
-Ah its in Bjorn's 6.8 clock pull tree.
+a few more things I noticed:
 
-I will repost when it hits -next
+On Tue, Jan 02, 2024 at 05:15:47PM +0100, Manuel Traut wrote:
+> From: Alexander Warnecke <awarnecke002@hotmail.com>
+> 
+> +	leds {
+> +		compatible = "gpio-leds";
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&flash_led_en_h>;
+> +
+> +		led-0 {
+> +			gpios = <&gpio4 RK_PA5 GPIO_ACTIVE_HIGH>;
+> +			color = <LED_COLOR_ID_WHITE>;
+> +			function = LED_FUNCTION_FLASH;
+> +		};
 
----
-bod
+This LED is supplied by VCC5V_MIDU, so maybe this should be a regulator-led
+supplied by gpio (FLASH_LED_EN_H) controlled regulator-fixed named f_led which
+is in turn supplied by VCC5V_MIDU.
+
+https://megous.com/dl/tmp/9bf0d85d78946b5e.png
+
+> +	};
+> +
+> [...]
+>
+> +
+> +	speaker_amp: speaker-amplifier {
+> +		compatible = "simple-audio-amplifier";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&spk_ctl>;
+> +		enable-gpios = <&gpio4 RK_PC2 GPIO_ACTIVE_HIGH>;
+> +		sound-name-prefix = "Speaker Amplifier";
+> +		VCC-supply = <&vcc_bat>;
+> +	};
+> +
+> +	vcc_3v3: vcc-3v3 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc_3v3";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		vin-supply = <&vcc3v3_sys>;
+> +	};
+> +
+> +	vcc3v3_minipcie: vcc3v3-minipcie {
+> +		compatible = "regulator-fixed";
+> +		enable-active-high;
+> +		gpio = <&gpio4 RK_PC3 GPIO_ACTIVE_HIGH>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pcie_pwren_h>;
+> +		regulator-name = "vcc3v3_minipcie";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		vin-supply = <&vcc_sys>;
+
+This regulator is supplied by vcc_bat: https://megous.com/dl/tmp/4ec71a4a2aea9498.png
+
+> +	};
+> +
+> +	vcc3v3_sd: vcc3v3-sd {
+> +		compatible = "regulator-fixed";
+> +		gpio = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&sdmmc_pwren_l>;
+> +		regulator-name = "vcc3v3_sd";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		vin-supply = <&vcc3v3_sys>;
+> +	};
+> +
+> +	vcc5v0_usb_host0: vcc5v0-usb-host0 {
+> +		compatible = "regulator-fixed";
+> +		enable-active-high;
+> +		gpio = <&gpio4 RK_PC4 GPIO_ACTIVE_HIGH>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&usb_host_pwren1_h>;
+> +		regulator-name = "vcc5v0_usb_host0";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		vin-supply = <&vcc5v_midu>;
+> +	};
+> +
+> +	vcc5v0_usb_host2: vcc5v0-usb-host2 {
+> +		compatible = "regulator-fixed";
+> +		enable-active-high;
+> +		gpio = <&gpio4 RK_PC5 GPIO_ACTIVE_HIGH>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&usb_host_pwren2_h>;
+> +		regulator-name = "vcc5v0_usb_host2";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		vin-supply = <&vcc5v_midu>;
+> +	};
+> +
+> +	vcc_bat: vcc-bat {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc_bat";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +	};
+> +
+> +	vcc_sys: vcc-sys {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc_sys";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		vin-supply = <&vcc_bat>;
+> +	};
+> +
+> +	vdd1v2_dvp: vdd1v2-dvp {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vdd1v2_dvp";
+> +		regulator-min-microvolt = <1200000>;
+> +		regulator-max-microvolt = <1200000>;
+> +		vin-supply = <&vcc_3v3>;
+> +		/*enable-supply = <&vcc2v8_dvp>;*/
+> +	};
+
+There's no vdd1v2_dvp in the schematic on the camera sensor connector, or elsewhere:
+
+  https://megous.com/dl/tmp/fd95f003d8f3fbfb.png
+
+So I guess, you can drop this, entirely. Maybe it's VDD1V5_DVP but I don't think
+it needs to be described in DT, since it's pretty local to this camera sensor,
+and nothing else uses it.
+
+  https://megous.com/dl/tmp/7fc384e196c5428f.png
+
+regards,
+	o.
 
