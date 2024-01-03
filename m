@@ -1,142 +1,184 @@
-Return-Path: <linux-kernel+bounces-15714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DBAC8230C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:48:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63ABA8230CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:49:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1652C285CC5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:48:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E17B41F247D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58A901BDFB;
-	Wed,  3 Jan 2024 15:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E5971B284;
+	Wed,  3 Jan 2024 15:48:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I9A/EMsT"
+	dkim=pass (2048-bit key) header.d=stwcx.xyz header.i=@stwcx.xyz header.b="sL8Ab9HB";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="l52ne/j2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2320B1BDE3
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 15:47:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2cceb5f0918so46120751fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 07:47:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704296845; x=1704901645; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hhrsogcA78u+i7VN1yFSxBLITouejwykBZ4THZ1vf8s=;
-        b=I9A/EMsTKRwzLN+AkQrngzfmllaOi2wtFXuw8tcGBlTRLzqJsm35qHauSoHpTk4fh3
-         ZDfT1jigGem9DnIbkMOcAvCOggdZw0CoEaqNlJg9HhQgb4/ISywRFHvS8Bg7ALkKinim
-         eM+BBqTgosEteRSmjm7tQZ9ezxHJfc0cpm7lMxPLDP2wJZRFc915uRK726iypPoos+4K
-         jEJlgxyQ/1ptO5bh4VvDA1EbLf97LGVQgYWE/rAnkC60+pZ9JBl4NCvuN0vQL8i3dxVl
-         GqNYyrUz14vUXec3r4keePmNxLhTz8FQcYRyDpatKjz/htAtJf/ZgfzGIlG8arsmCMgh
-         E8Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704296845; x=1704901645;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hhrsogcA78u+i7VN1yFSxBLITouejwykBZ4THZ1vf8s=;
-        b=rCQ12JnofJKosiBJI2wy1vhuu5pY80CZ/ZAu9WLL1byqlzkCuItstwoPwlN77LJejx
-         HiMKrykZyiIk32SsyIiGjrAS16nWRi3W5iEXMmO411vqiNa9lqL6YNXSw70ZLH2yqvyW
-         7oab+YiwAsH6wN97um5YAEp4OuHe+C25RiMakO/9Y7WeD4ZfXDFFsoe7ayls1OZDw6y/
-         iUJaQhhheuwNECFiVo+MBdAbOwHLd8TUQnbtqpk1f5f/jVpzuxMJQLkL9oEeL7Bsw7y0
-         k+NWB2+MSeZAl0B+ySMMukD7MUQjEvO8m/C3vp9V0vHkeLa1U5+D5E15feaIv6mCnC0Z
-         8X5Q==
-X-Gm-Message-State: AOJu0YzyjOp0i/sWP7vJokJecTO8sfVv+qw6sZ1bay81i474uWxKGmQw
-	clRARwnmWbUebiquV3ns+77EMIg5uk4=
-X-Google-Smtp-Source: AGHT+IGDiz1q2l0RgIIbnA0a3DEiX6deZvkBeqr650S9Hmp7190zH254RFaKVwJ0jLkllJcG8sGeoQ==
-X-Received: by 2002:a2e:a585:0:b0:2cd:348:94a6 with SMTP id m5-20020a2ea585000000b002cd034894a6mr1551015ljp.92.1704296844737;
-        Wed, 03 Jan 2024 07:47:24 -0800 (PST)
-Received: from pc636 (host-90-233-200-64.mobileonline.telia.com. [90.233.200.64])
-        by smtp.gmail.com with ESMTPSA id s10-20020a2e81ca000000b002ccd39eeae4sm3518354ljg.100.2024.01.03.07.47.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 07:47:24 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Wed, 3 Jan 2024 16:47:22 +0100
-To: Hillf Danton <hdanton@sina.com>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v3 07/11] mm: vmalloc: Offload free_vmap_area_lock lock
-Message-ID: <ZZWBiiX69HQFkUlB@pc636>
-References: <20240102184633.748113-1-urezki@gmail.com>
- <20240103110832.2711-1-hdanton@sina.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F8371B268;
+	Wed,  3 Jan 2024 15:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stwcx.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stwcx.xyz
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.nyi.internal (Postfix) with ESMTP id 48AF25C01A4;
+	Wed,  3 Jan 2024 10:48:53 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 03 Jan 2024 10:48:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1704296933; x=1704383333; bh=t2o8Mw2ZMm
+	KTwiVDDaiNKiFCvU6VgZlkt0pKLX3ZNLA=; b=sL8Ab9HB78YPzTe3LUmU4OKfIl
+	MMNR9BmvHv0bYllciytC6z5SKiToQfV9h0f0fPTaln845B3QMnmo82yV7tPhRGe+
+	/YKinkh0xqJLYwdSBjvxI0yqyufCP8V+2diy9OvJ8cSap7i6zqKEEFSHNA3cu1Bv
+	+vS6K6SL9zKpYvV2U3X3Ra2isUAsH31VZovzRprKFerZ4RHb5grjKkyMxQnaG+Ez
+	Wt5zPqwMD7bHh5XxbLsoCTEtOsJLRnben7ySHe4eWKR+J74UtQrN0b3ATbBULALV
+	uqiHUPliCXLPPK9Ei7OEWGE/OuR9BpEadHqc51Si5F+3mGW0N6ILD2CxVA1w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704296933; x=1704383333; bh=t2o8Mw2ZMmKTwiVDDaiNKiFCvU6V
+	gZlkt0pKLX3ZNLA=; b=l52ne/j2jwEJ+wyF3epS32mmS4KSND06Z5iVkt9NlANy
+	WEsbmje+tACmpQcveIPfP9KCSYOXBVexUYfRLksr8Yge39GzsNY5QAB/fjtAKlhz
+	cvM3TyfIblSS/rcv6S/eGR2fb7cJKhwcNTaIdHeXfTrB0UrtjK5P6If5q47XFERB
+	+6QMvUq4t15JJbyJqcgZtQ5swYAL7pxFdohuQl+LuoOeIiGTc96PZFyGlE8bqyT5
+	sF80GDx6kHWcI09F0QK6Jq+aLPvgTRoHbxrgphHbo2Zsu2q9po9Ez20PDnUIsHHV
+	hgPnU1UNEYDgSkxP/LNDIAyiAAnJEUTha16qdmxrIg==
+X-ME-Sender: <xms:5IGVZa4D5qIOTA9oPZpJHhFvwEj1uHJXRO_zS_3d5_Qyp1HIRMIeYA>
+    <xme:5IGVZT4BnJOLSyPRiA_MUSfin2MRG_6pZqsUvANFFEGsGQafsfJFAxIeaSKZO3sCp
+    gDbiq659LJhgHT8_gg>
+X-ME-Received: <xmr:5IGVZZeTEuOYt9Ma9I8G-lnC1pCxenE_-qLeHJfyafOJchvcrqfODpJaWdVTxZ4bZT4S_a9hdMsbKWmvtc0F_7ahSoBX9w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeghedgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdludejmdenucfjughrpeffhffvvefukfhfgggtuggjsehgtderredt
+    tddvnecuhfhrohhmpefrrghtrhhitghkucghihhllhhirghmshcuoehprghtrhhitghkse
+    hsthiftgigrdighiiiqeenucggtffrrghtthgvrhhnpeehiedtudehvddutdejgfdufeeh
+    uddukeeltdduvdffteehhffhjeevhfdtjeevfeenucffohhmrghinhepghhithhhuhgsrd
+    gtohhmpdhkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
+    mhepmhgrihhlfhhrohhmpehprghtrhhitghksehsthiftgigrdighiii
+X-ME-Proxy: <xmx:5IGVZXLtmaXW6Kbl9BZtINmkmf7KZ3cX65sZUvOVJKoRWeO-u7NUsg>
+    <xmx:5IGVZeJJOsveBuJMvOxn-we-qgdlWmDrCqGAW8E5Nv05dy-GqYfffg>
+    <xmx:5IGVZYwdcX_jlfgulpN2tILHuCX47lPuGAS3meGfSGYEpk48nrVgIw>
+    <xmx:5YGVZbVOrbQkkvwolnPXpr7QzFTLIHgo4RAczsfRMW3g2bUoXwPbLw>
+Feedback-ID: i68a1478a:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 3 Jan 2024 10:48:52 -0500 (EST)
+Date: Wed, 3 Jan 2024 09:48:51 -0600
+From: Patrick Williams <patrick@stwcx.xyz>
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Tao Ren <rentao.bupt@gmail.com>, devicetree@vger.kernel.org,
+	linux-aspeed@lists.ozlabs.org, Andrew Jeffery <andrew@aj.id.au>,
+	taoren@fb.com, openbmc@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+	Joel Stanley <joel@jms.id.au>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 3/6] ARM: dts: aspeed: Common dtsi for Facebook
+ AST2600 Network BMCs
+Message-ID: <ZZWB4wRiAyDtlLJM@heinlein.vulture-banana.ts.net>
+References: <20210805222818.8391-1-rentao.bupt@gmail.com>
+ <20210805222818.8391-4-rentao.bupt@gmail.com>
+ <20231220081402.GA3831@wunner.de>
+ <ZZSmMJ//l972Qbxu@fedora>
+ <20240103124502.GB23899@wunner.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="okJL0W4XmHaJ4PYq"
+Content-Disposition: inline
+In-Reply-To: <20240103124502.GB23899@wunner.de>
+
+
+--okJL0W4XmHaJ4PYq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240103110832.2711-1-hdanton@sina.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 03, 2024 at 07:08:32PM +0800, Hillf Danton wrote:
-> On Tue,  2 Jan 2024 19:46:29 +0100 Uladzislau Rezki <urezki@gmail.com>
-> > +static void
-> > +decay_va_pool_node(struct vmap_node *vn, bool full_decay)
-> > +{
-> > +	struct vmap_area *va, *nva;
-> > +	struct list_head decay_list;
-> > +	struct rb_root decay_root;
-> > +	unsigned long n_decay;
-> > +	int i;
-> > +
-> > +	decay_root = RB_ROOT;
-> > +	INIT_LIST_HEAD(&decay_list);
-> > +
-> > +	for (i = 0; i < MAX_VA_SIZE_PAGES; i++) {
-> > +		struct list_head tmp_list;
-> > +
-> > +		if (list_empty(&vn->pool[i].head))
-> > +			continue;
-> > +
-> > +		INIT_LIST_HEAD(&tmp_list);
-> > +
-> > +		/* Detach the pool, so no-one can access it. */
-> > +		spin_lock(&vn->pool_lock);
-> > +		list_replace_init(&vn->pool[i].head, &tmp_list);
-> > +		spin_unlock(&vn->pool_lock);
-> > +
-> > +		if (full_decay)
-> > +			WRITE_ONCE(vn->pool[i].len, 0);
-> > +
-> > +		/* Decay a pool by ~25% out of left objects. */
-> > +		n_decay = vn->pool[i].len >> 2;
-> > +
-> > +		list_for_each_entry_safe(va, nva, &tmp_list, list) {
-> > +			list_del_init(&va->list);
-> > +			merge_or_add_vmap_area(va, &decay_root, &decay_list);
-> > +
-> > +			if (!full_decay) {
-> > +				WRITE_ONCE(vn->pool[i].len, vn->pool[i].len - 1);
-> > +
-> > +				if (!--n_decay)
-> > +					break;
-> > +			}
-> > +		}
-> > +
-> > +		/* Attach the pool back if it has been partly decayed. */
-> > +		if (!full_decay && !list_empty(&tmp_list)) {
-> > +			spin_lock(&vn->pool_lock);
-> > +			list_replace_init(&tmp_list, &vn->pool[i].head);
-> > +			spin_unlock(&vn->pool_lock);
-> > +		}
-> 
-> Failure of working out why list_splice() was not used here in case of
-> non-empty vn->pool[i].head, after staring ten minutes.
->
-The vn->pool[i].head is always empty here because we have detached it above
-and initialized. Concurrent decay and populate also is not possible because
-both is done by only one context.
+On Wed, Jan 03, 2024 at 01:45:02PM +0100, Lukas Wunner wrote:
+> On Tue, Jan 02, 2024 at 04:11:28PM -0800, Tao Ren wrote:
+> > On Wed, Dec 20, 2023 at 09:14:02AM +0100, Lukas Wunner wrote:
+> > > On Thu, Aug 05, 2021 at 03:28:15PM -0700, rentao.bupt@gmail.com wrote:
+> > > > This common descirption is included by all Facebook AST2600 Network=
+ BMC
+> > > > platforms to minimize duplicated device entries across Facebook Net=
+work
+> > > > BMC device trees.
+> > > [...]
+> > > > --- /dev/null
+> > > > +++ b/arch/arm/boot/dts/ast2600-facebook-netbmc-common.dtsi
+> > > [...]
+> > > > +		tpmdev@0 {
+> > > > +			compatible =3D "tcg,tpm_tis-spi";
+> > >=20
+> > > What's the chip used on this board?  Going forward, the DT schema for=
+ TPMs
+> > > requires the exact chip name in addition to the generic "tcg,tpm_tis-=
+spi".
+> >=20
+> > Sorry about the late response. It's "infineon,slb9670", and I will
+> > submit a patch for fix it soon.
+>=20
+> Thank you Tao and Patrick for the replies.  I've prepared two commits
+> to fix all violations of the TPM schema on this branch:
+>=20
+>   https://github.com/l1k/linux/commits/tpm-dt3
+>=20
+> The commits are named:
+>=20
+>   e95bdbc arm64: dts: Fix TPM schema violations
+>   63e5dfd ARM: dts: Fix TPM schema violations
 
---
-Uladzislau Rezki
+Feel free to add to "63e5dfd (ARM: dts: Fix TPM schema violations)":
+
+Reviewed-by: Patrick Williams <patrick@stwcx.xyz>
+
+>=20
+> I've now amended the ARM commit to use "infineon,slb9670" for:
+>=20
+>   arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-bletchley.dts
+>   arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts
+>   arch/arm/boot/dts/aspeed/ast2600-facebook-netbmc-common.dtsi
+>=20
+> I intend to submit the two commits once the TPM schema is applied
+> either to Jarkko's or Rob's tree:
+>=20
+>   https://lore.kernel.org/all/20231220160422.GA282877-robh@kernel.org/
+>=20
+> Thanks,
+>=20
+> Lukas
+
+--=20
+Patrick Williams
+
+--okJL0W4XmHaJ4PYq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAmWVgeEACgkQqwNHzC0A
+wRkvTw//T1cnJTGzg/6kFDNyAZuvtL3/7mfpjO8xbDu2rsJTZVsniLO2FOqAZEJ8
+m34ZaDfrxU6afTZ/A0vDE0gszHYchlJkalJq7jIonvB7dyJAF0jZ/JXDHvQa8H1B
+TqqjjY4lJEir0l+xTlCoGZ1/bRUJGb202H2KYxQebvrV6qOKn39hvz6CMmB2FiXB
+7iCGeQzMucKPvb0ZYe+OQvbPHwe+WF/vkjBqKaQzRBKCNF6YCIAAY28gV4QW9clo
+OCasLcIZiaUNeWF7S3GFR1y1vU/PGpiELAMvwQ5YaXj8zyDclh0RePR77uwxGUbQ
+594CoIdF9NvaTh598DRow1bHBmK6PIC4tqD5or6g29PnR2PW6OPUrmwu8o/4KsAc
+tgzJovsaCmnoCv+uKAj3QVcVP5++9Uq54oI4BC8tWNl/y5Pr0yj2H5v+WdfRJYxd
+/pE/Zm4O3S9i+a55T7e5Me9GRgf8PHnjPlfNeOtVppxTn4gqkVvLGv6eVXQPh0vf
+Ho0K5BBekzdqtK7pES3B9WPvDUQi2XqjzMFzxfsQ+qdt6Ylxb+cIPtfd1Ybpvijl
+hwqAOMDZgTFIklmT4hPDSdTPzF3ECwopGoNdjFrDeqy9Y3sHwgL3fRHeWCojwoXy
+HtjcjfNjZa9Kgpswis/r80jVGMGHgrNDhnUxcrbts8WpovGX4FI=
+=xr0d
+-----END PGP SIGNATURE-----
+
+--okJL0W4XmHaJ4PYq--
 
