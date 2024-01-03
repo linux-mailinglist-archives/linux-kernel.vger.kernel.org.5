@@ -1,91 +1,165 @@
-Return-Path: <linux-kernel+bounces-15944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF467823603
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:00:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B08A9823600
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:59:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 841211F2596C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:00:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F15C28731B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:59:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52E351CFBE;
-	Wed,  3 Jan 2024 20:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X/Jtd0Jy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F0B1CFBE;
+	Wed,  3 Jan 2024 19:59:09 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D381CF94;
-	Wed,  3 Jan 2024 20:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-556aa7fe765so1816851a12.2;
-        Wed, 03 Jan 2024 12:00:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704312030; x=1704916830; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8TZyheqiNkbw62Y0lKZ5a4PKzC93VCVktsjcoDVNmvE=;
-        b=X/Jtd0JyN+xOU39Dw1Cucg8jGdjy546nUnm45t7pWca00auwZpGEJGFcCjxtM7kM5H
-         mLXDLFW8imNgCa4CAPenf23ldQB+EjbxkvJzkMrhgRPLrY8p+ESavf5KZJWYjuMZRGdh
-         F+IxTeItwiW5XQKrXscrimsUf8YntYw6efAMReThDMYemJmIiDbY8GWqUK9IdBw5TEzl
-         nuckpnbBo1m2u0vxdKDybhrYbDk9FEc7NeqB9jZG5pTAPV0tx3P32kF2wlG+1ax+N9KM
-         h1iujI/ZwzUqGYiGPap7fs4uWWAF39RWHzZ0kjCjbAG7cNJ10jmzUvI0zCbunYuYNE1M
-         axPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704312030; x=1704916830;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8TZyheqiNkbw62Y0lKZ5a4PKzC93VCVktsjcoDVNmvE=;
-        b=R5tT4Jc8RAB+PDgOgZDyAT8MH/wSDRrZ5TpiKRAzZGB43NDvo3zo//bnNoyeOBOhZe
-         +PM+5gAMtfA5IMUInHud6yt4C7sPUze4K5SkHxzI4+XKwKsgy2dtZDwQfkIjOKPendDB
-         9/ObeKw4sXPA4pQQRj6bpKXlTo47uR0mVv/B/BMi54Fr47qdFXknBvyVe5DiVhMLvRDS
-         YKs0v4EeiB0XJyHs9H+T3nPw+AYKT9RZ6ufgf/3zT+HdAbygib1hPpbe3BQBIeaeWEqm
-         7uincB9pyHO0HlBqiQ2x/Ij3SiIeuY0szyLWcaUy41fySYUAnpBZ6m+xmpfkrULSe9c0
-         Ss5A==
-X-Gm-Message-State: AOJu0Yz2MYeLNoIOeCz90MU57WdCn+Erp6O819lL3mMrw0QiCchwzxLs
-	wh5cG+5ct34jd2aB7KxOW2EJuR4V5iN5wTst3Fc=
-X-Google-Smtp-Source: AGHT+IHaEe5+qHFmlW6FBLBtz87lTR4XmPxAift41tboK57p3YGpFsssad+fbzVcJ3TTr+HAeJnpyYdbnxY/TnOMz+s=
-X-Received: by 2002:a17:906:2309:b0:a28:15c0:4dad with SMTP id
- l9-20020a170906230900b00a2815c04dadmr2048480eja.120.1704312030511; Wed, 03
- Jan 2024 12:00:30 -0800 (PST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66F9F1CF9B;
+	Wed,  3 Jan 2024 19:59:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 61E8CC15;
+	Wed,  3 Jan 2024 11:59:51 -0800 (PST)
+Received: from [10.57.85.107] (unknown [10.57.85.107])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6723A3F64C;
+	Wed,  3 Jan 2024 11:59:04 -0800 (PST)
+Message-ID: <3a2f1955-3e43-4d20-83b4-8227468a070b@arm.com>
+Date: Wed, 3 Jan 2024 20:00:21 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103185403.610641-1-brho@google.com> <20240103185403.610641-2-brho@google.com>
- <CAEf4Bzbyn8VaMz8jWCShDDMtwif5Qt+YTEih0GEzULFeAAS2LQ@mail.gmail.com> <d2f30155-ba00-4f10-9d05-c6cba3bcb1ef@google.com>
-In-Reply-To: <d2f30155-ba00-4f10-9d05-c6cba3bcb1ef@google.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 3 Jan 2024 12:00:18 -0800
-Message-ID: <CAEf4BzbcP55H=8krt8tujFyyWZaKwJKQ0n8rB0ujpXO4WOb=NA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/2] libbpf: add helpers for mmapping maps
-To: Barret Rhoden <brho@google.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, mattbobrowski@google.com, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jan 3, 2024 at 11:45=E2=80=AFAM Barret Rhoden <brho@google.com> wro=
-te:
->
-> On 1/3/24 14:42, Andrii Nakryiko wrote:
-> > this is specifically ARRAY map's rules, it might differ for other map
-> > types (e.g., RINGBUF has different logic)
->
-> good to know.  will drop it.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/6] thermal: netlink: Pass pointers to
+ thermal_notify_tz_trip_up/down()
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Linux PM <linux-pm@vger.kernel.org>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>,
+ Linux ACPI <linux-acpi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <4556052.LvFx2qVVIh@kreacher> <3295756.44csPzL39Z@kreacher>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <3295756.44csPzL39Z@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-please give other people a bit more time to review your current
-revision, don't rapid-fire new revisions immediately after getting
-feedback
+
+On 12/15/23 19:57, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Instead of requiring the callers of thermal_notify_tz_trip_up/down() to
+> provide specific values needed to populate struct param in them, make
+> them extract those values from objects passed by the callers via const
+> pointers.
+> 
+> No intentional functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>   drivers/thermal/thermal_core.c    |    8 ++------
+>   drivers/thermal/thermal_netlink.c |   14 ++++++++++----
+>   drivers/thermal/thermal_netlink.h |   12 ++++++++----
+>   3 files changed, 20 insertions(+), 14 deletions(-)
+> 
+> Index: linux-pm/drivers/thermal/thermal_core.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_core.c
+> +++ linux-pm/drivers/thermal/thermal_core.c
+> @@ -361,9 +361,7 @@ static void handle_thermal_trip(struct t
+>   		 * the threshold and the trip temperature will be equal.
+>   		 */
+>   		if (tz->temperature >= trip->temperature) {
+> -			thermal_notify_tz_trip_up(tz->id,
+> -						  thermal_zone_trip_id(tz, trip),
+> -						  tz->temperature);
+> +			thermal_notify_tz_trip_up(tz, trip);
+>   			trip->threshold = trip->temperature - trip->hysteresis;
+>   		} else {
+>   			trip->threshold = trip->temperature;
+> @@ -380,9 +378,7 @@ static void handle_thermal_trip(struct t
+>   		 * the trip.
+>   		 */
+>   		if (tz->temperature < trip->temperature - trip->hysteresis) {
+> -			thermal_notify_tz_trip_down(tz->id,
+> -						    thermal_zone_trip_id(tz, trip),
+> -						    tz->temperature);
+> +			thermal_notify_tz_trip_down(tz, trip);
+>   			trip->threshold = trip->temperature;
+>   		} else {
+>   			trip->threshold = trip->temperature - trip->hysteresis;
+> Index: linux-pm/drivers/thermal/thermal_netlink.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_netlink.c
+> +++ linux-pm/drivers/thermal/thermal_netlink.c
+> @@ -330,16 +330,22 @@ int thermal_notify_tz_disable(int tz_id)
+>   	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_DISABLE, &p);
+>   }
+>   
+> -int thermal_notify_tz_trip_down(int tz_id, int trip_id, int temp)
+> +int thermal_notify_tz_trip_down(const struct thermal_zone_device *tz,
+> +				const struct thermal_trip *trip)
+>   {
+> -	struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
+> +	struct param p = { .tz_id = tz->id,
+> +			   .trip_id = thermal_zone_trip_id(tz, trip),
+> +			   .temp = tz->temperature };
+>   
+>   	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_DOWN, &p);
+>   }
+>   
+> -int thermal_notify_tz_trip_up(int tz_id, int trip_id, int temp)
+> +int thermal_notify_tz_trip_up(const struct thermal_zone_device *tz,
+> +			      const struct thermal_trip *trip)
+>   {
+> -	struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
+> +	struct param p = { .tz_id = tz->id,
+> +			   .trip_id = thermal_zone_trip_id(tz, trip),
+> +			   .temp = tz->temperature };
+>   
+>   	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_UP, &p);
+>   }
+> Index: linux-pm/drivers/thermal/thermal_netlink.h
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_netlink.h
+> +++ linux-pm/drivers/thermal/thermal_netlink.h
+> @@ -18,8 +18,10 @@ int thermal_notify_tz_create(int tz_id,
+>   int thermal_notify_tz_delete(int tz_id);
+>   int thermal_notify_tz_enable(int tz_id);
+>   int thermal_notify_tz_disable(int tz_id);
+> -int thermal_notify_tz_trip_down(int tz_id, int id, int temp);
+> -int thermal_notify_tz_trip_up(int tz_id, int id, int temp);
+> +int thermal_notify_tz_trip_down(const struct thermal_zone_device *tz,
+> +				const struct thermal_trip *trip);
+> +int thermal_notify_tz_trip_up(const struct thermal_zone_device *tz,
+> +			      const struct thermal_trip *trip);
+>   int thermal_notify_tz_trip_delete(int tz_id, int id);
+>   int thermal_notify_tz_trip_add(int tz_id, int id, int type,
+>   			       int temp, int hyst);
+> @@ -58,12 +60,14 @@ static inline int thermal_notify_tz_disa
+>   	return 0;
+>   }
+>   
+> -static inline int thermal_notify_tz_trip_down(int tz_id, int id, int temp)
+> +static inline int thermal_notify_tz_trip_down(const struct thermal_zone_device *tz,
+> +					      const struct thermal_trip *trip)
+>   {
+>   	return 0;
+>   }
+>   
+> -static inline int thermal_notify_tz_trip_up(int tz_id, int id, int temp)
+> +static inline int thermal_notify_tz_trip_up(const struct thermal_zone_device *tz,
+> +					    const struct thermal_trip *trip)
+>   {
+>   	return 0;
+>   }
+> 
+> 
+> 
+
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
