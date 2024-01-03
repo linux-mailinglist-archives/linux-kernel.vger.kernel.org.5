@@ -1,128 +1,144 @@
-Return-Path: <linux-kernel+bounces-15849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AC4F823444
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:20:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89110823448
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:21:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25107285C37
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:20:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37F621F2534C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11E811C6A1;
-	Wed,  3 Jan 2024 18:20:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iWjQ3KA5"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC5CF1C6A1;
+	Wed,  3 Jan 2024 18:21:23 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A0C81C697;
-	Wed,  3 Jan 2024 18:20:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 315491C68A;
+	Wed,  3 Jan 2024 18:21:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-427e69f70afso5164471cf.0;
-        Wed, 03 Jan 2024 10:20:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704306002; x=1704910802; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OrPWR9HpDsfok0xoAtga3b/s4MSroYmZsQH3rRBi6PI=;
-        b=iWjQ3KA52ACJkBMhRzezkNny4OlO/owPx6ItmdBY6SldGLBDdBhamPsDc5kg8QNrAB
-         EU9L/ta5Lk7f0jnO0pUC4hKRjpW1vOfny5V/2Lsi2zdRqVmR+3G8IZ2trty7PW7xME+a
-         rj5RD1XHe1xOY3GgItViOP0Ixce5ucDdHUKfzwlbEtEmNaI6MXuDzpgINN09uhmLr6Hw
-         cy9o2Wm0eFM0LZomhNZlf7CnfHUBp7N/iog1oyBGB0qSpIVXtYIyoS+dapZdt5YhfmfD
-         VQTpckecQY4LULqTopGIZJ7CavoE80qz5htoJeRvLuI9R76J9kDx5gjiO5xOnbAHrLMq
-         P9XA==
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59584f41f1eso368908eaf.1;
+        Wed, 03 Jan 2024 10:21:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704306002; x=1704910802;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OrPWR9HpDsfok0xoAtga3b/s4MSroYmZsQH3rRBi6PI=;
-        b=tEfwdqtENv9Wd2K5W+HThwhJ760u+cWqpobjuZ6xmqlunL/p8enqmus+dVBpwI2NkD
-         Jq3Krg3+kORJbgjRkWtzErLqoYHhhecMdY/asRc8B6QWVpXxuV/49y5EuTcZmzoDkLZb
-         FwZoRwshwvDq5BUN0fPRMcisZjvMz2mIRP9pyeiRtYrD0aqq6WdjApuDX/Zc0OawslCf
-         VMxVsu8T/G0JVUkkTwZyVLCLY1iF8lyQq5DfPMTbdyzQ0g42ne2aaeLxo+V20jDuJcmd
-         EEE9dlyW0lISa82r19NxFGH1EhflEiUtYPiaqTbziWiCJ4GKzo1Q8A0tgEnKU0nV4sqq
-         qLsw==
-X-Gm-Message-State: AOJu0YzY3w3ihqNObuW9ejaTWN5wtRZvtRjkHwPDG9l3mRSmgklutFrK
-	mss2ADYlpAEvEh7G8/BoA8eWqTWgh2H0yg==
-X-Google-Smtp-Source: AGHT+IEznFViHNZVbxOOUJA44LzQJGRsagsfg2qaFqollE3lXewLiQHeCmTuv7TaYn0hcrP/qHy6Sw==
-X-Received: by 2002:a05:622a:34b:b0:428:3018:89b0 with SMTP id r11-20020a05622a034b00b00428301889b0mr1818061qtw.35.1704306001635;
-        Wed, 03 Jan 2024 10:20:01 -0800 (PST)
-Received: from dschatzberg-fedora-PC0Y6AEN ([2620:10d:c091:400::5:fcab])
-        by smtp.gmail.com with ESMTPSA id cg13-20020a05622a408d00b0042831b379c7sm1734711qtb.89.2024.01.03.10.20.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 10:20:01 -0800 (PST)
-Date: Wed, 3 Jan 2024 13:19:59 -0500
-From: Dan Schatzberg <schatzberg.dan@gmail.com>
-To: Yu Zhao <yuzhao@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	Yosry Ahmed <yosryahmed@google.com>, Michal Hocko <mhocko@suse.com>,
-	David Rientjes <rientjes@google.com>, Chris Li <chrisl@kernel.org>,
-	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	David Hildenbrand <david@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v6 2/2] mm: add swapiness= arg to memory.reclaim
-Message-ID: <ZZWlT5wmDaMceSlQ@dschatzberg-fedora-PC0Y6AEN>
-References: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
- <20240103164841.2800183-3-schatzberg.dan@gmail.com>
- <CAOUHufZ-hTwdiy7eYgJWo=CHyPbdxTX60hxjPmwa9Ox6FXMYQQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1704306081; x=1704910881;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fWmv7c5RiyJ3UNMTa+NDImBfcyC6YZrzWsoqFgF77JQ=;
+        b=GFus7TFDmt5LutSyhVg0cqAxgmhWtiE60jJFeu3GcT9kobC6J9e5ykvKzwecwGAWBo
+         yKKAw8/C8PhZkjfybFSWeivQI3hfXg52KB1I/YGje9SjT3fj5jgvGIupUz6QgQDkA5e0
+         VtBVrIiqCb1UtufvA0Jwvkln4DSI90tfqvHhdsiq2i2eH+P/gs3MhsEqtu2zv+81inG8
+         gWHKbzbFY2lEdRnvLTXkUNeQbkfhFlXxlPbw2aslS44vJSH+ah0ve9FOe1HwCYRmrd79
+         kct1LXdDD3gKydx0JdrygXOREBwQ/LMZsyHZoZEWiAp8mnXO8vIRmETcgY1SjepnK/zw
+         ocpg==
+X-Gm-Message-State: AOJu0Yx9NM/T3oO0cgmfE9qUd5kVHdx077cqyf8DH+41eZbrvgzEY4aH
+	WdvXdcGTnKtvYCPuclxAxvPh2EArsCMp181I2jpCIPuWCN0=
+X-Google-Smtp-Source: AGHT+IFPmF6vV20joRuGNLv/Tb8AloxcIBTmef57kqwklKnBQ6+KuR4krjZvbEXoO419ApiPfHoThd88Hm/uliAFlUM=
+X-Received: by 2002:a4a:e096:0:b0:595:6028:d8cb with SMTP id
+ w22-20020a4ae096000000b005956028d8cbmr7930946oos.0.1704306081399; Wed, 03 Jan
+ 2024 10:21:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOUHufZ-hTwdiy7eYgJWo=CHyPbdxTX60hxjPmwa9Ox6FXMYQQ@mail.gmail.com>
+References: <20240103041459.11113-1-ricardo.neri-calderon@linux.intel.com>
+ <20240103041459.11113-5-ricardo.neri-calderon@linux.intel.com>
+ <CAJZ5v0jSERoeMki9ZvWtTqiZidETeo1Xm_Qb0Oo2qRG0PMrSJQ@mail.gmail.com> <ZZV3CgnaWznmzFKF@linux.intel.com>
+In-Reply-To: <ZZV3CgnaWznmzFKF@linux.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 3 Jan 2024 19:21:10 +0100
+Message-ID: <CAJZ5v0i5CwLJ7Fb-eZH+azxwnhMQ2QxyBAD58mGL151YpWqZXA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] thermal: intel: hfi: Add a suspend notifier
+To: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Ricardo Neri <ricardo.neri-calderon@linux.intel.com>, 
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Chen Yu <yu.c.chen@intel.com>, 
+	Len Brown <len.brown@intel.com>, 
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Zhang Rui <rui.zhang@intel.com>, 
+	Zhao Liu <zhao1.liu@intel.com>, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 03, 2024 at 10:19:40AM -0700, Yu Zhao wrote:
-[...]
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index d91963e2d47f..394e0dd46b2e 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -92,6 +92,11 @@ struct scan_control {
-> >         unsigned long   anon_cost;
-> >         unsigned long   file_cost;
+On Wed, Jan 3, 2024 at 6:26=E2=80=AFPM Stanislaw Gruszka
+<stanislaw.gruszka@linux.intel.com> wrote:
+>
+> On Wed, Jan 03, 2024 at 02:34:26PM +0100, Rafael J. Wysocki wrote:
+> > > +static int hfi_pm_notify(struct notifier_block *nb,
+> > > +                        unsigned long mode, void *unused)
+> > > +{
+> > > +       struct hfi_cpu_info *info =3D &per_cpu(hfi_cpu_info, 0);
+> > > +       struct hfi_instance *hfi =3D info->hfi_instance;
+> > > +       int ret =3D 0;
+> > > +
+> > > +       /* HFI may not be in use. */
+> > > +       if (!hfi)
+> > > +               return ret;
+> > > +
+> > > +       mutex_lock(&hfi_instance_lock);
+> > > +       /*
+> > > +        * Only handle the HFI instance of the package of the boot CP=
+U. The
+> > > +        * instances of other packages are handled in the CPU hotplug=
+ callbacks.
+> > > +        */
+> > > +       switch (mode) {
+> > > +       case PM_HIBERNATION_PREPARE:
+> > > +       case PM_SUSPEND_PREPARE:
+> > > +       case PM_RESTORE_PREPARE:
+> > > +               ret =3D smp_call_function_single(0, hfi_do_disable, N=
+ULL, true);
+> > > +               break;
+> > > +
+> > > +       case PM_POST_RESTORE:
+> > > +       case PM_POST_HIBERNATION:
+> > > +       case PM_POST_SUSPEND:
+> > > +               ret =3D smp_call_function_single(0, hfi_do_enable, hf=
+i, true);
+> > > +               break;
 > >
-> > +#ifdef CONFIG_MEMCG
-> > +       /* Swappiness value for proactive reclaim. Always use sc_swappiness()! */
-> > +       int *proactive_swappiness;
-> > +#endif
-> 
-> Why is proactive_swappiness still a pointer? The whole point of the
-> previous conversation is that sc->proactive can tell whether
-> sc->swappiness is valid or not, and that's less awkward than using a
-> pointer.
+> > Because this handles the boot CPU only, one has to wonder if it should
+> > be a syscore op rather than a PM notifier.
+> >
+> > It does not sleep AFAICS, so it can run in that context, and it is
+> > guaranteed to run on the boot CPU then, so it is not necessary to
+> > force that.  Moreover, syscore ops are guaranteed to be
+> > non-concurrent, so locking is not needed.
+>
+> There are below warnings in smp_call_function_single() :
+>
+>         /*
+>          * Can deadlock when called with interrupts disabled.
+>          * We allow cpu's that are not yet online though, as no one else =
+can
+>          * send smp call function interrupt to this cpu and as such deadl=
+ocks
+>          * can't happen.
+>          */
+>         WARN_ON_ONCE(cpu_online(this_cpu) && irqs_disabled()
+>                      && !oops_in_progress);
+>
+>         /*
+>          * When @wait we can deadlock when we interrupt between llist_add=
+() and
+>          * arch_send_call_function_ipi*(); when !@wait we can deadlock du=
+e to
+>          * csd_lock() on because the interrupt context uses the same csd
+>          * storage.
+>          */
+>         WARN_ON_ONCE(!in_task());
+>
+> And this one in syscore_suspend():
+>
+>         WARN_ONCE(!irqs_disabled(),
+>                 "Interrupts enabled before system core suspend.\n");
+>
+> So seems they are not compatible.
 
-It's the same reason as before - zero initialization ensures that the
-pointer is NULL which tells us if it's valid or not. Proactive reclaim
-might not set swappiness and you need to distinguish swappiness of 0
-and not-set. See this discussion with Michal:
-
-https://lore.kernel.org/linux-mm/ZZUizpTWOt3gNeqR@tiehlicka/
-
-> Also why the #ifdef here? I don't see the point for a small stack
-> variable. Otherwise wouldn't we want to do this for sc->proactive as
-> well?
-
-This was Michal's request and it feels similar to your rationale for
-naming it proactive_swappiness - it's just restricting the interface
-down to the only use-cases. I'd be fine with doing the same in
-sc->proactive as a subsequent patch.
-
-See https://lore.kernel.org/linux-mm/ZZUhBoTNgL3AUK3f@tiehlicka/
+But smp_call_function_single() need not be used in syscore ops at all,
+because they always run on the boot CPU.
 
