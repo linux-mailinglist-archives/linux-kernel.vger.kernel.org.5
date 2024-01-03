@@ -1,126 +1,139 @@
-Return-Path: <linux-kernel+bounces-15761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AA89823162
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:40:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AAEE823168
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:42:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 470C21F24657
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:40:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 195BE285BA0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:42:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4161C1BDE3;
-	Wed,  3 Jan 2024 16:40:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 646631BDE1;
+	Wed,  3 Jan 2024 16:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V+cJ4oK0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCE81BDCD;
-	Wed,  3 Jan 2024 16:40:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 698962800BB42;
-	Wed,  3 Jan 2024 17:40:06 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 5C41E10B43F; Wed,  3 Jan 2024 17:40:06 +0100 (CET)
-Date: Wed, 3 Jan 2024 17:40:06 +0100
-From: Lukas Wunner <lukas@wunner.de>
-To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>, Krzysztof Wilczy??ski <kw@linux.com>,
-	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Alex Deucher <alexdeucher@gmail.com>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>
-Subject: Re: [PATCH v3 08/10] PCI/bwctrl: Add "controller" part into PCIe
- bwctrl
-Message-ID: <20240103164006.GA3463@wunner.de>
-References: <20230929115723.7864-1-ilpo.jarvinen@linux.intel.com>
- <20230929115723.7864-9-ilpo.jarvinen@linux.intel.com>
- <20231230184905.GA6104@wunner.de>
- <b56bb460-7876-272a-23ce-83d1dab212b2@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7DB1BDCE;
+	Wed,  3 Jan 2024 16:42:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCEC1C433CA;
+	Wed,  3 Jan 2024 16:42:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704300151;
+	bh=W3VpZjffXk3hT12TW9hTJXygFOk8lCYLKgul5isBSrI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=V+cJ4oK0Su0pORAHADbdE/gHNovOTnqzThinrLsqwYxS8umjkY0cUxB0hSQJ8C7ho
+	 pd7dh9zSyajdeBEFYlmtV+7sQbQrhHRikvZiXB2U7aS//l9jdL6+1GxoAu7/a/ivj5
+	 kYWXINkfs6heAqltnYmJyMS+7G7c4Ca1ngjVxvyq57lXVN2VC4bOHPxWkq+84mzlIV
+	 +9xDNjUWL3Ys0aN/gclesKI0hgTe3NxofpYk4aYfktj9V7O90UPIvitRjRv35CNBhN
+	 5ssWerzeJiH7ZbhAJQuWJFiLsRDo0JO9zcLlcU2a2RbFmimDucd7K/V5Advr9O7NeX
+	 w3+xLwmf8VhHQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 90C0A403EF; Wed,  3 Jan 2024 13:42:28 -0300 (-03)
+Date: Wed, 3 Jan 2024 13:42:28 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] perf x86 test: Update hybrid expectations
+Message-ID: <ZZWOdHXJJ_oecWwm@kernel.org>
+References: <20240102215732.1125997-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b56bb460-7876-272a-23ce-83d1dab212b2@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20240102215732.1125997-1-irogers@google.com>
+X-Url: http://acmel.wordpress.com
 
-On Mon, Jan 01, 2024 at 08:12:43PM +0200, Ilpo Järvinen wrote:
-> On Sat, 30 Dec 2023, Lukas Wunner wrote:
-> > On Fri, Sep 29, 2023 at 02:57:21PM +0300, Ilpo Järvinen wrote:
-> > > --- a/drivers/pci/pcie/bwctrl.c
-> > > +static u16 speed2lnkctl2(enum pci_bus_speed speed)
-> > > +{
-> > > +	static const u16 speed_conv[] = {
-> > > +		[PCIE_SPEED_2_5GT] = PCI_EXP_LNKCTL2_TLS_2_5GT,
-> > > +		[PCIE_SPEED_5_0GT] = PCI_EXP_LNKCTL2_TLS_5_0GT,
-> > > +		[PCIE_SPEED_8_0GT] = PCI_EXP_LNKCTL2_TLS_8_0GT,
-> > > +		[PCIE_SPEED_16_0GT] = PCI_EXP_LNKCTL2_TLS_16_0GT,
-> > > +		[PCIE_SPEED_32_0GT] = PCI_EXP_LNKCTL2_TLS_32_0GT,
-> > > +		[PCIE_SPEED_64_0GT] = PCI_EXP_LNKCTL2_TLS_64_0GT,
-> > > +	};
-> > 
-> > Looks like this could be a u8 array to save a little bit of memory.
-> > 
-> > Also, this seems to duplicate pcie_link_speed[] defined in probe.c.
+Em Tue, Jan 02, 2024 at 01:57:32PM -0800, Ian Rogers escreveu:
+> The legacy events cpu-cycles and instructions have sysfs event
+> equivalents on x86 (see /sys/devices/cpu_core/events). As sysfs/JSON
+> events are now higher in priority than legacy events this causes the
+> hybrid test expectations not to be met. To fix this switch to legacy
+> events that don't have sysfs versions, namely cpu-cycles becomes
+> cycles and instructions becomes branches.
 > 
-> It's not the same. pcie_link_speed[] is indexed by a different thing
+> Fixes: a24d9d9dc096 ("perf parse-events: Make legacy events lower priority than sysfs/JSON")
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-Ah, missed that.  Those various conversion functions are confusing.
+With it:
+
+root@number:/home/acme# perf test hybrid
+ 71: Intel PT                                                        :
+ 71.2: Intel PT hybrid CPU compatibility                             : Ok
+ 75: x86 hybrid                                                      : Ok
+root@number:/home/acme#
+
+Applied.
+
+Now to look at this on this hybrid system (14700K):
+
+101: perf all metricgroups test                                      : FAILED!
+
+Testing Mem
+event syntax error: '{cpu_core/UNC_ARB_DAT_OCCUPANCY.RD,cmask=1,metric-id=cpu_core!3UNC_ARB_DAT_OCCUPANCY.RD!0cmask!21!3/,UNC_ARB_DAT_OCCUPANCY.RD/metric-id=UNC_ARB_DAT_OCCUPANCY.RD/}:W,du..'
+                               \___ Bad event or PMU
+
+Unable to find PMU or event on a PMU of 'cpu_core'
+
+Initial error:
+event syntax error: '{cpu_core/UNC_ARB_DAT_OCCUPANCY.RD,cmask=1,metric-id=cpu_core!3UNC_ARB_DAT_OCCUPANCY.RD!0cmask!21!3/,UNC_ARB_DAT_OCCUPANCY.RD/metric-id=UNC_ARB_DAT_OCCUPANCY.RD/}:W,du..'
+                               \___ unknown term 'UNC_ARB_DAT_OCCUPANCY.RD' for pmu 'cpu_core'
+
+valid terms: event,pc,edge,offcore_rsp,ldlat,inv,umask,frontend,cmask,config,config1,config2,config3,name,period,percore,metric-id
+test child finished with -1
+---- end ----
+perf all metricgroups test: FAILED!
+root@number:/home/acme# grep -m1 "model name" /proc/cpuinfo 
+model name	: Intel(R) Core(TM) i7-14700K
+root@number:/home/acme# 
 
 
-> > > +	dev_speeds = READ_ONCE(bus->pcie_dev_speeds);
-> > 
-> > Hm, why is the compiler barrier needed?
-> 
-> It's probably an overkill but there could be a checker which finds this 
-> read is not protected by anything while the value could get updated 
-> concurrectly
-
-Why should it be updated?  It's a static value cached on enumeration
-and never changed AFAICS.
+root@number:/home/acme# ls -la /sys/devices/uncore_
+uncore_arb_0/              uncore_cbox_1/             uncore_cbox_2/             uncore_cbox_5/             uncore_cbox_8/             uncore_imc_0/              uncore_imc_free_running_1/
+uncore_arb_1/              uncore_cbox_10/            uncore_cbox_3/             uncore_cbox_6/             uncore_cbox_9/             uncore_imc_1/              
+uncore_cbox_0/             uncore_cbox_11/            uncore_cbox_4/             uncore_cbox_7/             uncore_clock/              uncore_imc_free_running_0/ 
+root@number:/home/acme# ls -la /sys/devices/uncore_
 
 
-> If the value selected cannot be set because of endpoint no longer being 
-> there, the other parts of the code will detect that.
+102: perf all metrics test                                           : FAILED!
 
-If the endpoint is hot-unplugged, the link is down, so retraining
-the link will fail.
+event syntax error: '{cpu_core/UNC_ARB_DAT_OCCUPANCY.RD,cmask=1,metric-id=cpu..'
+                               \___ Bad event or PMU
 
-If the device is replaced concurrently to retraining then you may
-try to retrain to a speed which is too fast or too slow for the new
-device.  Maybe it's necessary to cope with that?  Basically find the
-pci_dev on the bus with the device/function id and check if the pci_dev
-pointer still points to the same location.  Another idea would be to
-hook up bwctrl with pciehp so that pciehp tells bwctrl the device is
-gone and any speed changes should be aborted.  We've hooked up DPC
-with pciehp in a similar way.
+Unable to find PMU or event on a PMU of 'cpu_core'
+
+Initial error:
+event syntax error: '{cpu_core/UNC_ARB_DAT_OCCUPANCY.RD,cmask=1,metric-id=cpu..'
+                               \___ unknown term 'UNC_ARB_DAT_OCCUPANCY.RD' for pmu 'cpu_core'
+
+valid terms: event,pc,edge,offcore_rsp,ldlat,inv,umask,frontend,cmask,config,config1,config2,config3,name,period,percore,metric-id
 
 
-> So if I just add a comment to this line why there's the data race and keep 
-> it as is?
+Testing UNCORE_FREQ
+Metric 'UNCORE_FREQ' not printed in:
+event syntax error: '{tma_info_system_socket_clks/metric-id=tma_info_system_s..'
+                      \___ Bad event or PMU
 
-I'd just drop the READ_ONCE() here if there's not a good reason for it.
+Unable to find PMU or event on a PMU of 'tma_info_system_socket_clks'
 
-Thanks,
+Initial error:
+event syntax error: '{tma_info_system_socket_clks/metric-id=tma_info_system_s..'
+                      \___ Cannot find PMU `tma_info_system_socket_clks'. Missing kernel support?
+Testing tma_info_system_socket_clks
 
-Lukas
+- Arnaldo
 
