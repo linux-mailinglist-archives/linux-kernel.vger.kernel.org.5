@@ -1,145 +1,180 @@
-Return-Path: <linux-kernel+bounces-15535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97E3F822D77
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:48:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9590A822D81
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:49:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 225C8B221CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:48:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A07A1C234C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:49:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C173C1A59D;
-	Wed,  3 Jan 2024 12:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332781945C;
+	Wed,  3 Jan 2024 12:49:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eaZjJE3F"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M4eUVlXl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CFF119BCD;
-	Wed,  3 Jan 2024 12:46:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB802199A0;
+	Wed,  3 Jan 2024 12:49:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40d5d898162so49165475e9.3;
-        Wed, 03 Jan 2024 04:46:56 -0800 (PST)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50ea9db9e12so58356e87.0;
+        Wed, 03 Jan 2024 04:49:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704286015; x=1704890815; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pNLTRaIyuxFbq61p3RNSu84SuTxURa8ax70mY+8XCbA=;
-        b=eaZjJE3FrALOPof5TAkwL+cqUXuQQn25OvqNuMRR8GYomJE7V+3MC5Vxe6cNPke/48
-         GIjB9ylhT2YXqBWqj1u93QDrf1HFUV04WqG36jZAxB/VwylqUfN3q7BucysNaivWTb5C
-         vfaPywM/MRS+lNyrO2CSChSLU5TAIy6Bj2IJhtOFUON3MdC8PJTadS+yy136x4ZtToFt
-         yVXOubwJfR3kz7Ffv05Un2KAL3aTYTBtpgapXk6KGhAR1Tng9G0WwGxeye2u8VZ+corU
-         sGJn3PuCpgGg7g231+0+BlBEdrtBYS59eJuq49jEUqdCCgIijWuWfjUe4TT+gfrCpEsi
-         HygA==
+        d=gmail.com; s=20230601; t=1704286179; x=1704890979; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wlvdoIdh11FpuRMZ6FedfzqCuHP7jE4LAthy5mimGQ4=;
+        b=M4eUVlXlnNKPbawHLNel63bX+s5Co1T15fJ/5Z+gIQ94DNktS4t2uaypEeH25Vliwt
+         254Ku5dJvFvW0T8XEpvHicUNXXFUADvqJdE8Wszu4MrlHz4nsiuQYiFO/Pgwn4+4uLmR
+         NHYlCj7onUVHPLmvj2n6+eRoY1OVpfDqK5sHD1rfvl0fuNkGP+8n7W4szRSsiW73r1hR
+         KFNAjpy4Ef92gdCNlKinXmZVJFGXc67PKXGajSGLgdKdLVt8mInhxCV/0FJwom4BMF7B
+         j/NiA+VdjoG8AiTS6LKHKAx4qAbP1lhEVmbXhQRa5h/SeIjfO8n5gSgPyHbO8Aj2B0D9
+         mmBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704286015; x=1704890815;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pNLTRaIyuxFbq61p3RNSu84SuTxURa8ax70mY+8XCbA=;
-        b=lV1m05mLjh1iVcLXhOhCNTCwjDHXwSueqlACrTTwgoslNXiPRvu0ELdriyR7PhAq0g
-         mwkXfrKAyBwVz6H+QPsFFsRsa5ea2duXeC432T9OTu90gf5omesTLTT7dr1pTvRLagTN
-         NZCK9CvgSNzkMl4sR4T9IcA/WR5YSq4zJ9vapiOI7V2xmr8UPeFOS+gT1xxaStDkJEDj
-         FC0u9x+dwUtzE9LlL0nU3Hvd8UlKKBvSRSbOaOXV6rYaidIhzYw5Mkgrjhy8DitV8BwI
-         9AmFA+VkXzuYXBzmxA2BrWh+DKDdUZPpPPxjG6aEbLkrdgJdWA/IJXVGNuPrRyYKvh9E
-         f6iA==
-X-Gm-Message-State: AOJu0Yw8V32+zycZ6pEM3VaWmQGxfUlqMcuKlQEjbmEKt5SJ7KkkCJer
-	811UsOR9cD6x6o3HVcbBzls=
-X-Google-Smtp-Source: AGHT+IGh1e7o8Es+BEwB6mEpjbTB9s70LeHZYOx0AqeMMz94p/WWtsf/PtngFsIodfZoSirJa7y8IQ==
-X-Received: by 2002:a05:600c:5409:b0:40c:2b29:1bbe with SMTP id he9-20020a05600c540900b0040c2b291bbemr10967229wmb.54.1704286014598;
-        Wed, 03 Jan 2024 04:46:54 -0800 (PST)
-Received: from localhost.localdomain (host-87-10-250-100.retail.telecomitalia.it. [87.10.250.100])
-        by smtp.googlemail.com with ESMTPSA id fc16-20020a05600c525000b0040d5c58c41dsm2219676wmb.24.2024.01.03.04.46.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 04:46:54 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH v3 4/4] net: phy: at803x: make read_status more generic
-Date: Wed,  3 Jan 2024 13:46:35 +0100
-Message-ID: <20240103124637.3078-5-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240103124637.3078-1-ansuelsmth@gmail.com>
-References: <20240103124637.3078-1-ansuelsmth@gmail.com>
+        d=1e100.net; s=20230601; t=1704286179; x=1704890979;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wlvdoIdh11FpuRMZ6FedfzqCuHP7jE4LAthy5mimGQ4=;
+        b=fO9Z0xGa6xx7MInb/O3Ahqe9l+/Kfkorxd+AkLj2sZJvBolyIcDj+6iWkyw7jrid69
+         EgntWHc+VeU5v2zAcx1x47VTNBNzXO+RaFaKbdrgXTIHYd9owyetgV5cVmP60WVOlPyy
+         P9r7Ua9ba1h29+l7AmnGkyWwsmbMq2iSP6fJ+BiLVx9B7YD7plr/fvHcl9usx/XjLERV
+         cxiB/HvJYP8VHbQONZTSd6gphiYRbArtHQwupKdENNYvfkJm0s+ij6XNPiAGDj4Fxl9V
+         0uuPXaTT1aYrqTWnpIrNs1O0RpVfoFNTEQNEQW8pBBS+HJ6/h+mpcO+t1dhCkIXzFhNZ
+         AxsQ==
+X-Gm-Message-State: AOJu0YwGCtm/2jan1+dGwrJO+37u7jyEF9iSUWSsP6wNY312Ghzl3+Jf
+	b+fJPW6d5pw4nTNCvQrHhVxDrllRpuUKJSZzRoA=
+X-Google-Smtp-Source: AGHT+IF5nUu5SjTdeixsvM0AnrVzAg36rJLUQKIKz0wXFwrkqJgkNYNb/njuK9ibM12aGzMMq1XCAbpPloAxjBeWqfA=
+X-Received: by 2002:a05:6512:98a:b0:50e:3b0b:8cd1 with SMTP id
+ w10-20020a056512098a00b0050e3b0b8cd1mr6626174lft.95.1704286178705; Wed, 03
+ Jan 2024 04:49:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230327-tegra-pmic-reboot-v7-2-18699d5dcd76@skidata.com>
+ <20240102150350.3180741-1-mwalle@kernel.org> <CAJpcXm7W2vckakdFYiT4jssea-AzrZMsjHijfa+QpfzDVL+E3A@mail.gmail.com>
+ <5e13f5e2da9c4f8fc0d4da2ab4b40383@kernel.org>
+In-Reply-To: <5e13f5e2da9c4f8fc0d4da2ab4b40383@kernel.org>
+From: Benjamin Bara <bbara93@gmail.com>
+Date: Wed, 3 Jan 2024 13:49:27 +0100
+Message-ID: <CAJpcXm5gFMYnJ9bSA9nOXhKoibfedxjhRfu92dCmi6sVG3e=7Q@mail.gmail.com>
+Subject: Re: [PATCH v7 2/5] Re: i2c: core: run atomic i2c xfer when !preemptible
+To: Michael Walle <mwalle@kernel.org>
+Cc: benjamin.bara@skidata.com, dmitry.osipenko@collabora.com, 
+	jonathanh@nvidia.com, lee@kernel.org, linux-i2c@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, nm@ti.com, 
+	peterz@infradead.org, rafael.j.wysocki@intel.com, richard.leitner@linux.dev, 
+	stable@vger.kernel.org, treding@nvidia.com, wsa+renesas@sang-engineering.com, 
+	wsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Make read_status more generic in preparation on moving it to shared
-library as other PHY Family Driver will have the exact same
-implementation.
+Hi Michael,
 
-The only specific part was a check for AR8031/33 if 1000basex was used.
-The check is moved to a dedicated function specific for those PHYs.
+On Wed, 3 Jan 2024 at 10:20, Michael Walle <mwalle@kernel.org> wrote:
+> >> With preemption disabled, this boils down to
+> >>   return system_state > SYSTEM_RUNNING (&& !0)
+> >>
+> >> and will then generate a backtrace splash on each reboot on our
+> >> board:
+> >>
+> >> # reboot -f
+> >> [   12.687169] No atomic I2C transfer handler for 'i2c-0'
+> >> ...
+> >> [   12.806359] Call trace:
+> >> [   12.808793]  i2c_smbus_xfer+0x100/0x118
+> >> ...
+> >>
+> >> I'm not sure if this is now the expected behavior or not. There will
+> >> be
+> >> no backtraces, if I build a preemptible kernel, nor will there be
+> >> backtraces if I revert this patch.
+> >
+> >
+> > thanks for the report.
+> >
+> > In your case, the warning comes from shutting down a regulator during
+> > device_shutdown(), so nothing really problematic here.
+>
+> I tend to disagree. Yes it's not problematic. But from a users point of
+> view, you get a splash of *many* backtraces on every reboot. Btw, one
+> should really turn this into a WARN_ONCE(). But even in this case you
+> might scare users which will eventually lead to more bug reports.
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- drivers/net/phy/at803x.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+Sure, but the correct "fix" would be to implement an atomic handler if
+the i2c is used during this late stage. I just meant that the
+device_shutdown() is less problematic than the actual reboot handler.
+Your PMIC seems to not have a reboot handler (registered (yet)), and is
+therefore not "affected".
 
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index d6dfe906cb62..6f64a809e413 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -1020,13 +1020,9 @@ static int at803x_read_specific_status(struct phy_device *phydev,
- 
- static int at803x_read_status(struct phy_device *phydev)
- {
--	struct at803x_priv *priv = phydev->priv;
- 	struct at803x_ss_mask ss_mask = { 0 };
- 	int err, old_link = phydev->link;
- 
--	if (priv->is_1000basex)
--		return genphy_c37_read_status(phydev);
--
- 	/* Update the link, but return if there was an error */
- 	err = genphy_update_link(phydev);
- 	if (err)
-@@ -1620,6 +1616,17 @@ static int at8031_config_intr(struct phy_device *phydev)
- 	return at803x_config_intr(phydev);
- }
- 
-+/* AR8031 and AR8033 share the same read status logic */
-+static int at8031_read_status(struct phy_device *phydev)
-+{
-+	struct at803x_priv *priv = phydev->priv;
-+
-+	if (priv->is_1000basex)
-+		return genphy_c37_read_status(phydev);
-+
-+	return at803x_read_status(phydev);
-+}
-+
- /* AR8031 and AR8035 share the same cable test get status reg */
- static int at8031_cable_test_get_status(struct phy_device *phydev,
- 					bool *finished)
-@@ -2268,7 +2275,7 @@ static struct phy_driver at803x_driver[] = {
- 	.read_page		= at803x_read_page,
- 	.write_page		= at803x_write_page,
- 	.get_features		= at803x_get_features,
--	.read_status		= at803x_read_status,
-+	.read_status		= at8031_read_status,
- 	.config_intr		= at8031_config_intr,
- 	.handle_interrupt	= at803x_handle_interrupt,
- 	.get_tunable		= at803x_get_tunable,
--- 
-2.43.0
+> > However, later in
+> > the "restart sequence", IRQs are disabled before the restart handlers
+> > are called. If the reboot handlers would rely on irq-based
+> > ("non-atomic") i2c transfer, they might not work properly.
+>
+> I get this from a technical point of view and agree that the correct
+> fix is to add the atomic variant to the i2c driver, which begs the
+> question, if adding the atomic variant to the driver will be considered
+> as a Fixes patch.
 
+I can add a Fixes when I post it. Although the initial patch just makes
+the actual problem "noisier".
+
+> Do I get it correct, that in my case the interrupts are still enabled?
+> Otherwise I'd have gotten this warning even before your patch, correct?
+
+Yes, device_shutdown() is called during
+kernel_{shutdown,restart}_prepare(), before
+machine_{power_off,restart}() is called. The interrupts should therefore
+still be enabled in your case.
+
+> Excuse my ignorance, but when are the interrupts actually disabled
+> during shutdown?
+
+This is usually one of the first things done in machine_restart(),
+before the architecture-specific restart handlers are called (which
+might use i2c). Same for machine_power_off().
+
+> >> OTOH, the driver I'm using (drivers/i2c/busses/i2c-mt65xx.c) has no
+> >> *_atomic(). So the warning is correct. There is also [1], which seems
+> >> to
+> >> be the same issue I'm facing.
+> >>
+> >> -michael
+> >>
+> >> [1]
+> >> https://lore.kernel.org/linux-i2c/13271b9b-4132-46ef-abf8-2c311967bb46@mailbox.org/
+> >
+> >
+> > I tried to implement an atomic handler for the mt65xx, but I don't have
+> > the respective hardware available to test it. I decided to use a
+> > similar
+> > approach as done in drivers/i2c/busses/i2c-rk3x.c, which calls the IRQ
+> > handler in a while loop if an atomic xfer is requested. IMHO, this
+> > should work with IRQs enabled and disabled, but I am not sure if this
+> > is
+> > the best approach...
+>
+> Thanks for already looking into that. Do you want to submit it as an
+> actual patch? If so, you can add
+>
+> Tested-by: Michael Walle <mwalle@kernel.org>
+
+Yes, I can do that - thanks for the quick feedback.
+
+> But again, it would be nice if we somehow can get rid of this huge
+> splash
+> of backtraces on 6.7.x (I guess it's already too late 6.7).
+
+IMHO, converting the error to WARN_ONCE() makes sense to reduce the
+noise, but helps having more reliable reboot handling via i2c. Do you
+think this is a sufficient "short-term solution" to reduce the noise
+before the missing atomic handlers are actually implemented?
 
