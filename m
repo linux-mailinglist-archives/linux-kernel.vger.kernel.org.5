@@ -1,47 +1,48 @@
-Return-Path: <linux-kernel+bounces-16108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6559882390E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:16:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9B71823911
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:17:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE8561F2557B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:16:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 618FC2874B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:17:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD402200D6;
-	Wed,  3 Jan 2024 23:16:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB17B2032D;
+	Wed,  3 Jan 2024 23:16:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aZacJLpO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o0Wj0YSN"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C93F200C6
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 23:16:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3DDBC433C8;
-	Wed,  3 Jan 2024 23:16:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F78320321;
+	Wed,  3 Jan 2024 23:16:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B242C433CD;
+	Wed,  3 Jan 2024 23:16:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704323779;
-	bh=Gr90VWCG4SEvfPBl+lUpDKdA7y5+PFDPIALUlbQNMzs=;
+	s=k20201202; t=1704323781;
+	bh=yEGR043qt+dE+WGZhZAa/guimX9DAzWuYhf0RWwWwTE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aZacJLpOn2XOmpLX7LR9Y71UrV33x6V6CyvVS9O7iKXSYy0AZPqE3FL2frJhqw5Nw
-	 JYnTNuUx3cXtpICUiifZty0kBy2YIoBfiQKk6GIPsBqgDH6ckEAxB3DfQ/VevScRHK
-	 hVUXhCP6/TbwDGWh4ZNB4ie8UB/guE5Ywenf8uLO+wTFaQhOTPKpMQUn9uyN44GMjY
-	 dVOVRPnRxjHYXo7vo7fUhto8AfePxvkD83gH9m6rkGReU7GnfRUNOhmjfPXmrvAkvB
-	 UM8NQJ7xsJE2yk6DrkcUUaoMWlGr/Er5S0CCwJlJHodjlaT1t8W5v5pTomZb4BF+mR
-	 T+OOY48t4Tefw==
+	b=o0Wj0YSNTzVks0rALhjRa4xpZwN5ZmC1OCaIkkn+oakPQ9TkUBgkhbBOD/2Kp6IHD
+	 8hZSob74XUQ3eLSP0JFpFbzerMRDSMwcePQUIhXAlJpkpc7oQtFsYBuRcJ73XViXkl
+	 3zUgkOj9PEQKy1enSUgvd3mPiagVlpcSAnufbQOktG8RkbV029zyIvihcETvky01FM
+	 GMTZafbzu67TTgXSVGDhJuNLbSOXAnTnna35KymIbltqQsHItMGz25u+DV5FPYBtSh
+	 BoBn1xDjQ7ccMvDN1X5Z5OhN+I6Sja2UN/FwAMNJo6O6pnSzcmDgGERoGZGFlJqEXv
+	 zEp+MSdUeevJQ==
 From: Bjorn Helgaas <helgaas@kernel.org>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 Cc: Randy Dunlap <rdunlap@infradead.org>,
 	linux-kernel@vger.kernel.org,
 	Bjorn Helgaas <bhelgaas@google.com>,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 3/8] arm64: Fix typos
-Date: Wed,  3 Jan 2024 17:16:00 -0600
-Message-Id: <20240103231605.1801364-4-helgaas@kernel.org>
+	Conor Dooley <conor+dt@kernel.org>,
+	devicetree@vger.kernel.org
+Subject: [PATCH 4/8] arm64: dts: Fix typos
+Date: Wed,  3 Jan 2024 17:16:01 -0600
+Message-Id: <20240103231605.1801364-5-helgaas@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240103231605.1801364-1-helgaas@kernel.org>
 References: <20240103231605.1801364-1-helgaas@kernel.org>
@@ -55,290 +56,246 @@ Content-Transfer-Encoding: 8bit
 
 From: Bjorn Helgaas <bhelgaas@google.com>
 
-Fix typos, most reported by "codespell arch/arm64".  Only touches comments,
-no code changes.
+Fix typos, most reported by "codespell arch/arm64/boot/dts".  Only touches
+comments, no code changes.
 
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-arm-kernel@lists.infradead.org
+Cc: Conor Dooley <conor+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
 ---
- arch/arm64/Kconfig                  | 2 +-
- arch/arm64/include/asm/assembler.h  | 4 ++--
- arch/arm64/include/asm/cpufeature.h | 4 ++--
- arch/arm64/include/asm/pgtable.h    | 2 +-
- arch/arm64/include/asm/suspend.h    | 2 +-
- arch/arm64/include/asm/traps.h      | 4 ++--
- arch/arm64/kernel/acpi.c            | 2 +-
- arch/arm64/kernel/cpufeature.c      | 6 +++---
- arch/arm64/kernel/entry-common.c    | 2 +-
- arch/arm64/kernel/entry-ftrace.S    | 2 +-
- arch/arm64/kernel/entry.S           | 2 +-
- arch/arm64/kernel/ftrace.c          | 2 +-
- arch/arm64/kernel/machine_kexec.c   | 2 +-
- arch/arm64/kernel/probes/uprobes.c  | 2 +-
- arch/arm64/kernel/sdei.c            | 2 +-
- arch/arm64/kernel/smp.c             | 2 +-
- arch/arm64/kernel/traps.c           | 2 +-
- 17 files changed, 22 insertions(+), 22 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts | 2 +-
+ arch/arm64/boot/dts/apm/apm-shadowcat.dtsi                 | 2 +-
+ arch/arm64/boot/dts/apm/apm-storm.dtsi                     | 2 +-
+ arch/arm64/boot/dts/exynos/exynos7.dtsi                    | 2 +-
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi             | 2 +-
+ arch/arm64/boot/dts/freescale/fsl-ls1088a-ten64.dts        | 2 +-
+ arch/arm64/boot/dts/freescale/imx8x-colibri.dtsi           | 2 +-
+ arch/arm64/boot/dts/qcom/msm8916.dtsi                      | 4 ++--
+ arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi   | 2 +-
+ arch/arm64/boot/dts/qcom/sa8155p.dtsi                      | 2 +-
+ arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi                 | 4 ++--
+ arch/arm64/boot/dts/qcom/sdm670-google-sargo.dts           | 2 +-
+ arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi      | 2 +-
+ arch/arm64/boot/dts/renesas/draak.dtsi                     | 2 +-
+ arch/arm64/boot/dts/rockchip/rk3399-roc-pc-plus.dts        | 2 +-
+ arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi                 | 2 +-
+ 16 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 7b071a00425d..1954035737cf 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -2227,7 +2227,7 @@ config CMDLINE
- 	default ""
- 	help
- 	  Provide a set of default command-line options at build time by
--	  entering them here. As a minimum, you should specify the the
-+	  entering them here. As a minimum, you should specify the
- 	  root device (e.g. root=/dev/nfs).
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts
+index 723af64a9cee..bac2a1ecfb9e 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts
+@@ -16,7 +16,7 @@ &backlight {
+ 	 * PWM backlight circuit on this PinePhone revision was changed since
+ 	 * 1.0, and the lowest PWM duty cycle that doesn't lead to backlight
+ 	 * being off is around 20%. Duty cycle for the lowest brightness level
+-	 * also varries quite a bit between individual boards, so the lowest
++	 * also varies quite a bit between individual boards, so the lowest
+ 	 * value here was chosen as a safe default.
+ 	 */
+ 	brightness-levels = <
+diff --git a/arch/arm64/boot/dts/apm/apm-shadowcat.dtsi b/arch/arm64/boot/dts/apm/apm-shadowcat.dtsi
+index 65ebac3082e2..8891a6c17347 100644
+--- a/arch/arm64/boot/dts/apm/apm-shadowcat.dtsi
++++ b/arch/arm64/boot/dts/apm/apm-shadowcat.dtsi
+@@ -123,7 +123,7 @@ gic: interrupt-controller@78090000 {
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+ 		interrupt-controller;
+-		interrupts = <1 9 0xf04>;	/* GIC Maintenence IRQ */
++		interrupts = <1 9 0xf04>;	/* GIC Maintenance IRQ */
+ 		ranges = <0 0 0 0x79000000 0x0 0x800000>; /* MSI Range */
+ 		reg = <0x0 0x78090000 0x0 0x10000>,	/* GIC Dist */
+ 		      <0x0 0x780a0000 0x0 0x20000>,	/* GIC CPU */
+diff --git a/arch/arm64/boot/dts/apm/apm-storm.dtsi b/arch/arm64/boot/dts/apm/apm-storm.dtsi
+index 988928c60f15..ee1303a68d50 100644
+--- a/arch/arm64/boot/dts/apm/apm-storm.dtsi
++++ b/arch/arm64/boot/dts/apm/apm-storm.dtsi
+@@ -109,7 +109,7 @@ gic: interrupt-controller@78010000 {
+ 		      <0x0 0x78020000 0x0 0x1000>,	/* GIC CPU */
+ 		      <0x0 0x78040000 0x0 0x2000>,	/* GIC VCPU Control */
+ 		      <0x0 0x78060000 0x0 0x2000>;	/* GIC VCPU */
+-		interrupts = <1 9 0xf04>;	/* GIC Maintenence IRQ */
++		interrupts = <1 9 0xf04>;	/* GIC Maintenance IRQ */
+ 	};
  
- choice
-diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-index 376a980f2bad..0b2e67fa9a11 100644
---- a/arch/arm64/include/asm/assembler.h
-+++ b/arch/arm64/include/asm/assembler.h
-@@ -390,7 +390,7 @@ alternative_endif
-  * [start, end) with dcache line size explicitly provided.
-  *
-  * 	op:		operation passed to dc instruction
-- * 	domain:		domain used in dsb instruciton
-+ * 	domain:		domain used in dsb instruction
-  * 	start:          starting virtual address of the region
-  * 	end:            end virtual address of the region
-  *	linesz:		dcache line size
-@@ -431,7 +431,7 @@ alternative_endif
-  * [start, end)
-  *
-  * 	op:		operation passed to dc instruction
-- * 	domain:		domain used in dsb instruciton
-+ * 	domain:		domain used in dsb instruction
-  * 	start:          starting virtual address of the region
-  * 	end:            end virtual address of the region
-  * 	fixup:		optional label to branch to on user fault
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index f6d416fe49b0..a0f4010c1e85 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -198,7 +198,7 @@ extern struct arm64_ftr_reg arm64_ftr_reg_ctrel0;
-  *    registers (e.g, SCTLR, TCR etc.) or patching the kernel via
-  *    alternatives. The kernel patching is batched and performed at later
-  *    point. The actions are always initiated only after the capability
-- *    is finalised. This is usally denoted by "enabling" the capability.
-+ *    is finalised. This is usually denoted by "enabling" the capability.
-  *    The actions are initiated as follows :
-  *	a) Action is triggered on all online CPUs, after the capability is
-  *	finalised, invoked within the stop_machine() context from
-@@ -250,7 +250,7 @@ extern struct arm64_ftr_reg arm64_ftr_reg_ctrel0;
- #define ARM64_CPUCAP_SCOPE_LOCAL_CPU		((u16)BIT(0))
- #define ARM64_CPUCAP_SCOPE_SYSTEM		((u16)BIT(1))
+ 	timer {
+diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+index 6ed80ddf3369..6e83d288de53 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+@@ -645,7 +645,7 @@ tmuctrl_0: tmu@10060000 {
+ 		ufs: ufs@15570000 {
+ 			compatible = "samsung,exynos7-ufs";
+ 			reg = <0x15570000 0x100>,  /* 0: HCI standard */
+-				<0x15570100 0x100>,  /* 1: Vendor specificed */
++				<0x15570100 0x100>,  /* 1: Vendor specified */
+ 				<0x15571000 0x200>,  /* 2: UNIPRO */
+ 				<0x15572000 0x300>;  /* 3: UFS protector */
+ 			reg-names = "hci", "vs_hci", "unipro", "ufsp";
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+index eefe3577d94e..459e43785c83 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+@@ -150,7 +150,7 @@ gic: interrupt-controller@6000000 {
+ 		its: msi-controller@6020000 {
+ 			compatible = "arm,gic-v3-its";
+ 			msi-controller;
+-			reg = <0x0 0x06020000 0 0x20000>;/* GIC Translater */
++			reg = <0x0 0x06020000 0 0x20000>;/* GIC Translator */
+ 		};
+ 	};
+ 
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a-ten64.dts b/arch/arm64/boot/dts/freescale/fsl-ls1088a-ten64.dts
+index d4867d6cf47c..7436d041cca4 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a-ten64.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a-ten64.dts
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
  /*
-- * The capabilitiy is detected on the Boot CPU and is used by kernel
-+ * The capability is detected on the Boot CPU and is used by kernel
-  * during early boot. i.e, the capability should be "detected" and
-  * "enabled" as early as possibly on all booting CPUs.
-  */
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index b19a8aee684c..25bf7d15a115 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -288,7 +288,7 @@ bool pgattr_change_is_safe(u64 old, u64 new);
-  *   1      0      |   1           0          1
-  *   1      1      |   0           1          x
-  *
-- * When hardware DBM is not present, the sofware PTE_DIRTY bit is updated via
-+ * When hardware DBM is not present, the software PTE_DIRTY bit is updated via
-  * the page fault mechanism. Checking the dirty status of a pte becomes:
-  *
-  *   PTE_DIRTY || (PTE_WRITE && !PTE_RDONLY)
-diff --git a/arch/arm64/include/asm/suspend.h b/arch/arm64/include/asm/suspend.h
-index 0cde2f473971..e65f33edf9d6 100644
---- a/arch/arm64/include/asm/suspend.h
-+++ b/arch/arm64/include/asm/suspend.h
-@@ -23,7 +23,7 @@ struct cpu_suspend_ctx {
-  * __cpu_suspend_enter()'s caller, and populated by __cpu_suspend_enter().
-  * This data must survive until cpu_resume() is called.
-  *
-- * This struct desribes the size and the layout of the saved cpu state.
-+ * This struct describes the size and the layout of the saved cpu state.
-  * The layout of the callee_saved_regs is defined by the implementation
-  * of __cpu_suspend_enter(), and cpu_resume(). This struct must be passed
-  * in by the caller as __cpu_suspend_enter()'s stack-frame is gone once it
-diff --git a/arch/arm64/include/asm/traps.h b/arch/arm64/include/asm/traps.h
-index eefe766d6161..03084ed290ac 100644
---- a/arch/arm64/include/asm/traps.h
-+++ b/arch/arm64/include/asm/traps.h
-@@ -52,8 +52,8 @@ static inline int in_entry_text(unsigned long ptr)
-  * CPUs with the RAS extensions have an Implementation-Defined-Syndrome bit
-  * to indicate whether this ESR has a RAS encoding. CPUs without this feature
-  * have a ISS-Valid bit in the same position.
-- * If this bit is set, we know its not a RAS SError.
-- * If its clear, we need to know if the CPU supports RAS. Uncategorized RAS
-+ * If this bit is set, we know it's not a RAS SError.
-+ * If it's clear, we need to know if the CPU supports RAS. Uncategorized RAS
-  * errors share the same encoding as an all-zeros encoding from a CPU that
-  * doesn't support RAS.
-  */
-diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
-index dba8fcec7f33..7eca4273b415 100644
---- a/arch/arm64/kernel/acpi.c
-+++ b/arch/arm64/kernel/acpi.c
-@@ -128,7 +128,7 @@ static int __init acpi_fadt_sanity_check(void)
+- * Device Tree file for Travese Ten64 (LS1088) board
++ * Device Tree file for Traverse Ten64 (LS1088) board
+  * Based on fsl-ls1088a-rdb.dts
+  * Copyright 2017-2020 NXP
+  * Copyright 2019-2021 Traverse Technologies
+diff --git a/arch/arm64/boot/dts/freescale/imx8x-colibri.dtsi b/arch/arm64/boot/dts/freescale/imx8x-colibri.dtsi
+index 49d105eb4769..2b41fbdf136e 100644
+--- a/arch/arm64/boot/dts/freescale/imx8x-colibri.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8x-colibri.dtsi
+@@ -504,7 +504,7 @@ pinctrl_hog2: hog2grp {
  
  	/*
- 	 * FADT is required on arm64; retrieve it to check its presence
--	 * and carry out revision and ACPI HW reduced compliancy tests
-+	 * and carry out revision and ACPI HW reduced compliance tests
+ 	 * This pin is used in the SCFW as a UART. Using it from
+-	 * Linux would require rewritting the SCFW board file.
++	 * Linux would require rewriting the SCFW board file.
  	 */
- 	status = acpi_get_table(ACPI_SIG_FADT, 0, &table);
- 	if (ACPI_FAILURE(status)) {
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 646591c67e7a..3089526900a8 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -748,7 +748,7 @@ static int search_cmp_ftr_reg(const void *id, const void *regp)
-  * entry.
-  *
-  * returns - Upon success,  matching ftr_reg entry for id.
-- *         - NULL on failure. It is upto the caller to decide
-+ *         - NULL on failure. It is up to the caller to decide
-  *	     the impact of a failure.
-  */
- static struct arm64_ftr_reg *get_arm64_ftr_reg_nowarn(u32 sys_id)
-@@ -874,7 +874,7 @@ static void __init sort_ftr_regs(void)
+ 	pinctrl_hog_scfw: hogscfwgrp {
+ 		fsl,pins = <IMX8QXP_SCU_GPIO0_00_LSIO_GPIO2_IO03		0x20>;		/* SODIMM 144 */
+diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+index 4f799b536a92..34fa2843fdc7 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+@@ -666,12 +666,12 @@ in-ports {
  
- /*
-  * Initialise the CPU feature register from Boot CPU values.
-- * Also initiliases the strict_mask for the register.
-+ * Also initialises the strict_mask for the register.
-  * Any bits that are not covered by an arm64_ftr_bits entry are considered
-  * RES0 for the system-wide value, and must strictly match.
+ 				/*
+ 				 * Not described input ports:
+-				 * 0 - connected to Resource and Power Manger CPU ETM
++				 * 0 - connected to Resource and Power Manager CPU ETM
+ 				 * 1 - not-connected
+ 				 * 2 - connected to Modem CPU ETM
+ 				 * 3 - not-connected
+ 				 * 5 - not-connected
+-				 * 6 - connected trought funnel to Wireless CPU ETM
++				 * 6 - connected through funnel to Wireless CPU ETM
+ 				 * 7 - connected to STM component
+ 				 */
+ 
+diff --git a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi b/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
+index cbc84459a5ae..4e0e7dfe1b4a 100644
+--- a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
+@@ -857,7 +857,7 @@ &sdhc1 {
+ 	status = "okay";
+ 
+ 	/*
+-	 * This device is shipped with HS400 capabable eMMCs
++	 * This device is shipped with HS400 capable eMMCs
+ 	 * However various brands have been used in various product batches,
+ 	 * including a Samsung eMMC (BGND3R) which features a quirk with HS400.
+ 	 * Set the speed to HS200 as a safety measure.
+diff --git a/arch/arm64/boot/dts/qcom/sa8155p.dtsi b/arch/arm64/boot/dts/qcom/sa8155p.dtsi
+index ffb7ab695213..1bc86a8529e1 100644
+--- a/arch/arm64/boot/dts/qcom/sa8155p.dtsi
++++ b/arch/arm64/boot/dts/qcom/sa8155p.dtsi
+@@ -4,7 +4,7 @@
+  *
+  * SA8155P is an automotive variant of SM8150, with some minor changes.
+  * Most notably, the RPMhPD setup differs: MMCX and LCX/LMX rails are gone,
+- * though the cmd-db doesn't reflect that and access attemps result in a bite.
++ * though the cmd-db doesn't reflect that and access attempts result in a bite.
   */
-@@ -3108,7 +3108,7 @@ static void verify_local_cpu_caps(u16 scope_mask)
+ 
+ #include "sm8150.dtsi"
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi b/arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi
+index f9b96bd2477e..9dae5931dead 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi
+@@ -563,8 +563,8 @@ &sdc1_rclk {
+  *
+  * This has entries that are defined by Qcard even if they go to the main
+  * board. In cases where the pulls may be board dependent we defer those
+- * settings to the board device tree. Drive strengths tend to be assinged here
+- * but could conceivably be overwridden by board device trees.
++ * settings to the board device tree. Drive strengths tend to be assigned here
++ * but could conceivably be overridden by board device trees.
+  */
+ 
+ &pm8350c_gpios {
+diff --git a/arch/arm64/boot/dts/qcom/sdm670-google-sargo.dts b/arch/arm64/boot/dts/qcom/sdm670-google-sargo.dts
+index 32a7bd59e1ec..8f89352aeb73 100644
+--- a/arch/arm64/boot/dts/qcom/sdm670-google-sargo.dts
++++ b/arch/arm64/boot/dts/qcom/sdm670-google-sargo.dts
+@@ -168,7 +168,7 @@ vph_pwr: vph-pwr-regulator {
+ 	 * Supply map from xiaomi-lavender specifies this as the supply for
+ 	 * ldob1, ldob9, ldob10, ldoa2, and ldoa3, while downstream specifies
+ 	 * this as a power domain. Set this as a fixed regulator with the same
+-	 * voltage as lavender until display is needed to avoid unneccessarily
++	 * voltage as lavender until display is needed to avoid unnecessarily
+ 	 * using a deprecated binding (regulator-fixed-domain).
+ 	 */
+ 	vreg_s2b_1p05: vreg-s2b-regulator {
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi
+index b02a1dc5fecd..a4be5c6ebb47 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi
+@@ -305,7 +305,7 @@ vreg_l19a_2p7: ldo19 {
+ 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+ 
  			/*
- 			 * We have to issue cpu_enable() irrespective of
- 			 * whether the CPU has it or not, as it is enabeld
--			 * system wide. It is upto the call back to take
-+			 * system wide. It is up to the call back to take
- 			 * appropriate action on this CPU.
- 			 */
- 			if (caps->cpu_enable)
-diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 0fc94207e69a..80b5268578a8 100644
---- a/arch/arm64/kernel/entry-common.c
-+++ b/arch/arm64/kernel/entry-common.c
-@@ -660,7 +660,7 @@ static void noinstr el0_inv(struct pt_regs *regs, unsigned long esr)
- 
- static void noinstr el0_dbg(struct pt_regs *regs, unsigned long esr)
- {
--	/* Only watchpoints write FAR_EL1, otherwise its UNKNOWN */
-+	/* Only watchpoints write FAR_EL1, otherwise it's UNKNOWN */
- 	unsigned long far = read_sysreg(far_el1);
- 
- 	enter_from_user_mode(regs);
-diff --git a/arch/arm64/kernel/entry-ftrace.S b/arch/arm64/kernel/entry-ftrace.S
-index f0c16640ef21..e24e7d8f8b61 100644
---- a/arch/arm64/kernel/entry-ftrace.S
-+++ b/arch/arm64/kernel/entry-ftrace.S
-@@ -94,7 +94,7 @@ SYM_CODE_START(ftrace_caller)
- 	stp	x29, x30, [sp, #FREGS_SIZE]
- 	add	x29, sp, #FREGS_SIZE
- 
--	/* Prepare arguments for the the tracer func */
-+	/* Prepare arguments for the tracer func */
- 	sub	x0, x30, #AARCH64_INSN_SIZE		// ip (callsite's BL insn)
- 	mov	x1, x9					// parent_ip (callsite's LR)
- 	mov	x3, sp					// regs
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index a6030913cd58..00bdd1fa8151 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -547,7 +547,7 @@ SYM_CODE_START_LOCAL(__bad_stack)
- 	mrs	x0, tpidrro_el0
- 
+-			 * The driver *really* doesn't want this regualtor to exist,
++			 * The driver *really* doesn't want this regulator to exist,
+ 			 * saying that it could not get the current voltage (-ENOTRECOVERABLE)
+ 			 * even though it surely is used on these devices (as a voltage
+ 			 * source for camera autofocus)
+diff --git a/arch/arm64/boot/dts/renesas/draak.dtsi b/arch/arm64/boot/dts/renesas/draak.dtsi
+index ef3bb835d5c0..67c36f71f4cb 100644
+--- a/arch/arm64/boot/dts/renesas/draak.dtsi
++++ b/arch/arm64/boot/dts/renesas/draak.dtsi
+@@ -226,7 +226,7 @@ &audio_clk_b {
  	/*
--	 * Store the original GPRs to the new stack. The orginal SP (minus
-+	 * Store the original GPRs to the new stack. The original SP (minus
- 	 * PT_REGS_SIZE) was stashed in tpidr_el0 by kernel_ventry.
- 	 */
- 	sub	sp, sp, #PT_REGS_SIZE
-diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
-index a650f5e11fc5..6e00b39059ff 100644
---- a/arch/arm64/kernel/ftrace.c
-+++ b/arch/arm64/kernel/ftrace.c
-@@ -423,7 +423,7 @@ int ftrace_make_nop(struct module *mod, struct dyn_ftrace *rec,
- 		return ret;
- 
- 	/*
--	 * When using mcount, callsites in modules may have been initalized to
-+	 * When using mcount, callsites in modules may have been initialized to
- 	 * call an arbitrary module PLT (which redirects to the _mcount stub)
- 	 * rather than the ftrace PLT we'll use at runtime (which redirects to
- 	 * the ftrace trampoline). We can ignore the old PLT when initializing
-diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
-index 078910db77a4..36721a7e7855 100644
---- a/arch/arm64/kernel/machine_kexec.c
-+++ b/arch/arm64/kernel/machine_kexec.c
-@@ -296,7 +296,7 @@ void crash_post_resume(void)
-  * marked as Reserved as memory was allocated via memblock_reserve().
-  *
-  * In hibernation, the pages which are Reserved and yet "nosave" are excluded
-- * from the hibernation iamge. crash_is_nosave() does thich check for crash
-+ * from the hibernation image. crash_is_nosave() does this check for crash
-  * dump kernel and will reduce the total size of hibernation image.
-  */
- 
-diff --git a/arch/arm64/kernel/probes/uprobes.c b/arch/arm64/kernel/probes/uprobes.c
-index d49aef2657cd..5016f7f681c0 100644
---- a/arch/arm64/kernel/probes/uprobes.c
-+++ b/arch/arm64/kernel/probes/uprobes.c
-@@ -122,7 +122,7 @@ void arch_uprobe_abort_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
- 	struct uprobe_task *utask = current->utask;
- 
- 	/*
--	 * Task has received a fatal signal, so reset back to probbed
-+	 * Task has received a fatal signal, so reset back to probed
- 	 * address.
- 	 */
- 	instruction_pointer_set(regs, utask->vaddr);
-diff --git a/arch/arm64/kernel/sdei.c b/arch/arm64/kernel/sdei.c
-index 255d12f881c2..931f317a9ffa 100644
---- a/arch/arm64/kernel/sdei.c
-+++ b/arch/arm64/kernel/sdei.c
-@@ -206,7 +206,7 @@ unsigned long sdei_arch_get_entry_point(int conduit)
+ 	 * X11 is connected to VI4_FIELD/SCIF_CLK/AUDIO_CLKB,
+ 	 * and R-Car Sound uses AUDIO_CLKB.
+-	 * Note is that schematic indicates VI4_FIELD conection only
++	 * Note is that schematic indicates VI4_FIELD connection only
+ 	 * not AUDIO_CLKB at SoC page.
+ 	 * And this VI4_FIELD/SCIF_CLK/AUDIO_CLKB is connected to SW60.
+ 	 * SW60 should be 1-2.
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-plus.dts b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-plus.dts
+index 7ba1c28f70a9..ce55f82268b2 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-plus.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-plus.dts
+@@ -9,7 +9,7 @@
  /*
-  * do_sdei_event() returns one of:
-  *  SDEI_EV_HANDLED -  success, return to the interrupted context.
-- *  SDEI_EV_FAILED  -  failure, return this error code to firmare.
-+ *  SDEI_EV_FAILED  -  failure, return this error code to firmware.
-  *  virtual-address -  success, return to this address.
-  */
- unsigned long __kprobes do_sdei_event(struct pt_regs *regs,
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index defbab84e9e5..8b8e1320033b 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -351,7 +351,7 @@ void arch_cpuhp_cleanup_dead_cpu(unsigned int cpu)
+  * Notice:
+  * 1. rk3399-roc-pc-plus is powered by dc_12v directly.
+- * 2. rk3399-roc-pc-plus has only vcc_bus_typec0 in schematic, which is coresponding
++ * 2. rk3399-roc-pc-plus has only vcc_bus_typec0 in schematic, which is corresponding
+  *    to vcc_vbus_typec1 in rk3399-roc-pc.
+  *    For simplicity, reserve the node name of vcc_vbus_typec1.
+  * 3. vcc5v0_host is actually 2 regulators (host0, 1) controlled by the same gpio.
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
+index 5db52f237253..e99e69027125 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
+@@ -1415,7 +1415,7 @@ &usbss0 {
+ 	status = "disabled";
+ };
  
- 	/*
- 	 * Now that the dying CPU is beyond the point of no return w.r.t.
--	 * in-kernel synchronisation, try to get the firwmare to help us to
-+	 * in-kernel synchronisation, try to get the firmware to help us to
- 	 * verify that it has really left the kernel before we consider
- 	 * clobbering anything it might still be using.
- 	 */
-diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index 215e6d7f2df8..e76c71c54c8c 100644
---- a/arch/arm64/kernel/traps.c
-+++ b/arch/arm64/kernel/traps.c
-@@ -897,7 +897,7 @@ void __noreturn panic_bad_stack(struct pt_regs *regs, unsigned long esr, unsigne
- 	__show_regs(regs);
- 
- 	/*
--	 * We use nmi_panic to limit the potential for recusive overflows, and
-+	 * We use nmi_panic to limit the potential for recursive overflows, and
- 	 * to get a better stack trace.
- 	 */
- 	nmi_panic(NULL, "kernel stack overflow");
+-/* TODO: role swich using ID pin */
++/* TODO: role switch using ID pin */
+ &usb0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_usb0>, <&pinctrl_usb0_id>;
 -- 
 2.34.1
 
