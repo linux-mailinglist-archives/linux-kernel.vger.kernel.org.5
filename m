@@ -1,80 +1,90 @@
-Return-Path: <linux-kernel+bounces-15288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 608CA8229C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:51:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA4558229B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:47:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AE9CB22C96
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:51:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 740221F23DAA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:47:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BCAD182A7;
-	Wed,  3 Jan 2024 08:51:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2E71805E;
+	Wed,  3 Jan 2024 08:47:35 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mta.juntadeandalucia.es (mta6.juntadeandalucia.es [217.12.26.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F40B618049
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 08:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=juntadeandalucia.es
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=juntadeandalucia.es
-Received: from [10.240.225.252] (helo=mail.juntadeandalucia.es)
-	by ccodis04.juntadeandalucia.es with esmtp (Exim 4.94.2)
-	(envelope-from <luis.munoz.edu@juntadeandalucia.es>)
-	id 1rKwxj-0002Ar-MM
-	for linux-kernel@vger.kernel.org; Wed, 03 Jan 2024 09:50:55 +0100
-Received: from [213.194.128.62] (helo=[192.168.1.148])
-	by mail.juntadeandalucia.es with esmtpa (Exim 4.94.2)
-	(envelope-from <luis.munoz.edu@juntadeandalucia.es>)
-	id 1rKwxj-00072n-7V; Wed, 03 Jan 2024 09:50:55 +0100
-Message-ID: <ea2f0a37-9691-4595-bcb3-881e29d83ee0@juntadeandalucia.es>
-Date: Wed, 3 Jan 2024 09:50:54 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5AC18049;
+	Wed,  3 Jan 2024 08:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from localhost (unknown [124.16.138.129])
+	by APP-05 (Coremail) with SMTP id zQCowAAH6AwZH5Vl66EnAw--.36358S2;
+	Wed, 03 Jan 2024 16:47:21 +0800 (CST)
+From: Chen Ni <nichen@iscas.ac.cn>
+To: patrice.chotard@foss.st.com,
+	linus.walleij@linaro.org,
+	bartosz.golaszewski@linaro.org
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chen Ni <nichen@iscas.ac.cn>
+Subject: [PATCH] pinctrl: st: Return pinctrl_gpio_direction_output to transfer the error
+Date: Wed,  3 Jan 2024 08:50:58 +0000
+Message-Id: <20240103085058.3771653-1-nichen@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: I can't activate term(e) and kill(i) magic SysRq key
-To: Christian Kujau <lists@nerdbynature.de>
-Cc: linux-kernel@vger.kernel.org
-References: <002cc4da-e502-4c79-97bd-0a8b6cb2630c@juntadeandalucia.es>
- <464f7af8-d83d-d2e3-c635-772ed6a3cb54@nerdbynature.de>
-Content-Language: es-ES
-From: =?UTF-8?Q?Luis_Mu=C3=B1oz_Fuente?= <luis.munoz.edu@juntadeandalucia.es>
-In-Reply-To: <464f7af8-d83d-d2e3-c635-772ed6a3cb54@nerdbynature.de>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 182453 [Jan 03 2024]
-X-KLMS-AntiSpam-Version: 6.1.0.3
-X-KLMS-AntiSpam-Envelope-From: luis.munoz.edu@juntadeandalucia.es
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {rep_avail}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s, ApMailHostAddress: 213.194.128.62
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2024/01/03 07:02:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2024/01/03 05:32:00 #22946033
-X-KLMS-AntiVirus-Status: Clean, skipped
+X-CM-TRANSID:zQCowAAH6AwZH5Vl66EnAw--.36358S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtw4rtr1fuw1kZw4rJr45Awb_yoWfZrX_Ca
+	4fWFy7JryUC3WkWr1ayw13XFyIkanrXF10vFsYqr1akry5Cw4qv3s7urW5G3s7WrW7J345
+	GrWDXryrAw47AjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbcxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r43
+	MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+	0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
+	wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+	W8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+	cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjYLvtUUUUU==
+X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
 
+Return pinctrl_gpio_direction_output() in order to transfer the error
+if it fails.
 
-El 2/1/24 a las 21:45, Christian Kujau escribió:
-> Maybe. Some distributions choose to disable certain sysrq functions. See 
-> the page you cited, on the very top: what does "sysctl kernel.sysrq" say? 
-> If it's anything but "1", certain or all sysrq functions are disabled.
+Fixes: b679d6c06b2b ("treewide: rename pinctrl_gpio_direction_output_new()")
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+---
+ drivers/pinctrl/pinctrl-st.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Hello:
-I had gotten involved. I was looking at the option the kernel was
-compiled with by default:
-grep -i CONFIG_MAGIC_SYSRQ /boot/my_kernel
-instead of looking at what option I had chosen:
-cat /proc/sys/kernel/sysrq
-Thank you
+diff --git a/drivers/pinctrl/pinctrl-st.c b/drivers/pinctrl/pinctrl-st.c
+index 1485573b523c..5d9abd6547d0 100644
+--- a/drivers/pinctrl/pinctrl-st.c
++++ b/drivers/pinctrl/pinctrl-st.c
+@@ -723,9 +723,8 @@ static int st_gpio_direction_output(struct gpio_chip *chip,
+ 	struct st_gpio_bank *bank = gpiochip_get_data(chip);
+ 
+ 	__st_gpio_set(bank, offset, value);
+-	pinctrl_gpio_direction_output(chip, offset);
+ 
+-	return 0;
++	return pinctrl_gpio_direction_output(chip, offset);
+ }
+ 
+ static int st_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
+-- 
+2.25.1
 
 
