@@ -1,161 +1,123 @@
-Return-Path: <linux-kernel+bounces-15436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D1E1822BFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:20:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8089822C00
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:20:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF07BB228C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:20:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A4D41C233C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:20:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 544E018E21;
-	Wed,  3 Jan 2024 11:19:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC72818E24;
+	Wed,  3 Jan 2024 11:20:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iUJmz+cW"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="siv4dEvU";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="4skXX/n4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7BA18E0C;
-	Wed,  3 Jan 2024 11:19:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704280791; x=1735816791;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=BN4G4B17WwmtxZfwQRC+8qZ6+KYHHxYIaVabnY6Z5v8=;
-  b=iUJmz+cWf8c7u5PdHvduyBhBFPFAAm+/XQRH+fYHjodr8SQczYKYG+yI
-   zrk90iGdwroZlrYMSNdr3//gwjy6RuS2utsvsK6DmHOI7OkUYEoGDGOfa
-   rfUl5ZsSS2G0zSRePRGRiT6ZaFNLHIUEHLONaIiG2Mo5hz0GjeN3lL/QS
-   Dy4VKsTroa5y4CHXpOTfjUaa8NaNowBr+2QfemDVA6APjdeszpzZYE+lT
-   neRt/ILFJLFPO5fGnpdLadtPNG+9nGr2Oieq6ILcocbcP83idzvpsoSfH
-   MelfZX2fteDou96ojWhzAFg4OJjjCrS0bEq1mr9EgNH8z0dx8qJmDQQyE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="4342999"
-X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
-   d="scan'208";a="4342999"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 03:19:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="779965501"
-X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
-   d="scan'208";a="779965501"
-Received: from bergbenj-mobl1.ger.corp.intel.com ([10.251.211.32])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 03:19:45 -0800
-Date: Wed, 3 Jan 2024 13:19:43 +0200 (EET)
-From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    Jiri Slaby <jirislaby@kernel.org>, u.kleine-koenig@pengutronix.de, 
-    shawnguo@kernel.org, s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com, 
-    alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com, 
-    hugo@hugovil.com, m.brock@vanmierlo.com, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    linux-serial <linux-serial@vger.kernel.org>, LinoSanfilippo@gmx.de, 
-    Lukas Wunner <lukas@wunner.de>, p.rosenberger@kunbus.com, 
-    stable@vger.kernel.org
-Subject: Re: [PATCH v7 5/7] serial: core, imx: do not set RS485 enabled if
- it is not supported
-In-Reply-To: <20240103061818.564-6-l.sanfilippo@kunbus.com>
-Message-ID: <75c0cbd4-7cec-a415-bfba-376f035f76@linux.intel.com>
-References: <20240103061818.564-1-l.sanfilippo@kunbus.com> <20240103061818.564-6-l.sanfilippo@kunbus.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988F018E0C;
+	Wed,  3 Jan 2024 11:20:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id A52445C01B3;
+	Wed,  3 Jan 2024 06:20:11 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 03 Jan 2024 06:20:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1704280811; x=1704367211; bh=pURSsn42YA
+	SyjShYaXFji90kv1W3zA6MqwSIHytkY6k=; b=siv4dEvUTdBa5tvrhjfr+0AqUz
+	MC+yLr0d/hie2ElJdhXE9U9i8FdAlYhNaIEZmQeU+lNJct2lmqOdDgG+nRXE5BsM
+	C5FklLlR8QJTIAZDb3dj/PPrWr5DVY4x/HhO6TtjYHj+QUOk2vZm0sh2Vj6WXydu
+	n4q3vm4M3wha7rsHEyNFxcGjCH3xc1Isk7KRS6HIXHsFAcOxb2k8hTFwneI5+15Z
+	gobIeGOZT+UymSBgtLf9wiN1FcAu8RUU59qpQwF8O66etIKmvILPllLQaTBdd40r
+	YNcgJOYfxWSWgPIIs6sOnKJ435C+gG/P6CaoTcRVXnHxJOCLVonBVe8QOKlA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704280811; x=1704367211; bh=pURSsn42YASyjShYaXFji90kv1W3
+	zA6MqwSIHytkY6k=; b=4skXX/n4oIK9krhbABBIURU/f98yOhCL/oPYgI5oU5Z+
+	VkaXh/klpi0UAZRtaSn046r9uHggozA+xgWjGwjw8GyFFcnCJ4wFlvwTOfTy2Y9S
+	V/0QmRnrOXtt7YY682YRc/SkAfdtIpbnwMNv7zpU+966o8rzMfhHRB7qsNaod7VR
+	qMBTBB77FWBtf18fC1KSHS0ZDY9ylin/rdXIacfPPF57FrIZacSWv1LOkoSOCFwZ
+	fmIxT7vVeyni6WpHWrke4MvSnErl695+OZEsboiu7aJ7MV/RcWaarE7toqN0kOE1
+	hVJ9w+2aj2yhVB4HDNgCgc2+uIhDDb7p1RnCdIcJPw==
+X-ME-Sender: <xms:60KVZbdhEAWYmjrIFrdGSQ2sj_mVdqoTzTYah8F4j7_DlhX0ARREbQ>
+    <xme:60KVZRMhbu4YCMbfPMGTcIzliLDg4h_uMFSifraI9pZiSIkbkd03xGxJ6ymBmxt_I
+    rELdQD8QBMsF0dLQUk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeghedgvdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
+    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:60KVZUh_f2VP4sA3WEv3PIk-btw0PRX6d4s0yc_sZc3KVTUIn6ZbwQ>
+    <xmx:60KVZc9N587-YLpnmIzzjrAna-6-dL4UlvVVw3W2gNkTzvgPHq7U-A>
+    <xmx:60KVZXvfe2FcwdAq1MI7aZDwQ_SesO7RkKTy29yA3_mc3f8X_aoXUA>
+    <xmx:60KVZXEplb9W-61xCi7E_hgXj8mIat1e_CooVTvFlmTxo-tCObMx8Q>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 0C00CB6008F; Wed,  3 Jan 2024 06:20:10 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-84096764-1704280789=:1706"
+Message-Id: <c66dd905-3342-44ff-9aa7-ff2c7b9024c7@app.fastmail.com>
+In-Reply-To: <ZZU87SZcE/6i8lyo@boxer>
+References: <20240103102458.3687963-1-arnd@kernel.org>
+ <ZZU87SZcE/6i8lyo@boxer>
+Date: Wed, 03 Jan 2024 12:19:50 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Maciej Fijalkowski" <maciej.fijalkowski@intel.com>,
+ "Arnd Bergmann" <arnd@kernel.org>
+Cc: "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
+ "Anthony L Nguyen" <anthony.l.nguyen@intel.com>,
+ "Jakub Kicinski" <kuba@kernel.org>, "David S . Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Paolo Abeni" <pabeni@redhat.com>,
+ "Simon Horman" <horms@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
+ "Larysa Zaremba" <larysa.zaremba@intel.com>,
+ "Piotr Raczynski" <piotr.raczynski@intel.com>,
+ "Amritha Nambiar" <amritha.nambiar@intel.com>,
+ "Alexei Starovoitov" <ast@kernel.org>,
+ "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+ Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ice: fix building withouto XDP
+Content-Type: text/plain
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Wed, Jan 3, 2024, at 11:54, Maciej Fijalkowski wrote:
+> On Wed, Jan 03, 2024 at 11:24:45AM +0100, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> The newly added function fails to build when struct xsk_cb_desc is
+>> not defined:
+>> 
+>> drivers/net/ethernet/intel/ice/ice_base.c: In function 'ice_xsk_pool_fill_cb':
+>> drivers/net/ethernet/intel/ice/ice_base.c:525:16: error: variable 'desc' has initializer but incomplete type
+>> 
+>> Hide this part in the same #ifdef that controls the structure definition.
+>
+> Hey Arnd,
+>
+> this has been fixed by Vladimir:
+> https://lore.kernel.org/netdev/20231219110205.1289506-1-vladimir.oltean@nxp.com/
+>
+> in a way that we don't have to wrap driver code with ifdefs.
 
---8323329-84096764-1704280789=:1706
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Ok, sounds good.
 
-On Wed, 3 Jan 2024, Lino Sanfilippo wrote:
-
-> If the imx driver cannot support RS485 it nullifies the ports
-> rs485_supported structure. But it still calls uart_get_rs485_mode() which
-> may set the RS485_ENABLED flag nevertheless.
-> 
-> This may lead to an attempt to configure RS485 even if it is not supported
-> when the flag is evaluated in uart_configure_port() at port startup.
-> 
-> Avoid this by bailing out of uart_get_rs485_mode() if the RS485_ENABLED
-> flag is not supported by the caller.
-> 
-> With this fix a check for RTS availability is now obsolete in the imx
-> driver, since it can not evaluate to true any more. So remove this check.
-> 
-> Furthermore the explicit nullifcation of rs485_supported is not needed,
-> since the memory has already been set to zeros at allocation. So remove
-> this, too.
-> 
-> Fixes: 00d7a00e2a6f ("serial: imx: Fill in rs485_supported")
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: stable@vger.kernel.org
-> Suggested-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> ---
->  drivers/tty/serial/imx.c         | 7 -------
->  drivers/tty/serial/serial_core.c | 3 +++
->  2 files changed, 3 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-> index 9cffeb23112b..198ce7e7bc8b 100644
-> --- a/drivers/tty/serial/imx.c
-> +++ b/drivers/tty/serial/imx.c
-> @@ -2206,7 +2206,6 @@ static enum hrtimer_restart imx_trigger_stop_tx(struct hrtimer *t)
->  	return HRTIMER_NORESTART;
->  }
->  
-> -static const struct serial_rs485 imx_no_rs485 = {};	/* No RS485 if no RTS */
->  static const struct serial_rs485 imx_rs485_supported = {
->  	.flags = SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND | SER_RS485_RTS_AFTER_SEND |
->  		 SER_RS485_RX_DURING_TX,
-> @@ -2290,8 +2289,6 @@ static int imx_uart_probe(struct platform_device *pdev)
->  	/* RTS is required to control the RS485 transmitter */
->  	if (sport->have_rtscts || sport->have_rtsgpio)
->  		sport->port.rs485_supported = imx_rs485_supported;
-> -	else
-> -		sport->port.rs485_supported = imx_no_rs485;
->  	sport->port.flags = UPF_BOOT_AUTOCONF;
->  	timer_setup(&sport->timer, imx_uart_timeout, 0);
->  
-> @@ -2328,10 +2325,6 @@ static int imx_uart_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> -	if (sport->port.rs485.flags & SER_RS485_ENABLED &&
-> -	    (!sport->have_rtscts && !sport->have_rtsgpio))
-> -		dev_err(&pdev->dev, "no RTS control, disabling rs485\n");
-> -
->  	/*
->  	 * If using the i.MX UART RTS/CTS control then the RTS (CTS_B)
->  	 * signal cannot be set low during transmission in case the
-> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-> index 28bcbc686c67..93e4e1693601 100644
-> --- a/drivers/tty/serial/serial_core.c
-> +++ b/drivers/tty/serial/serial_core.c
-> @@ -3600,6 +3600,9 @@ int uart_get_rs485_mode(struct uart_port *port)
->  	u32 rs485_delay[2];
->  	int ret;
->  
-> +	if (!(port->rs485_supported.flags & SER_RS485_ENABLED))
-> +		return 0;
-> +
-
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-
--- 
- i.
-
---8323329-84096764-1704280789=:1706--
+    Arnd
 
