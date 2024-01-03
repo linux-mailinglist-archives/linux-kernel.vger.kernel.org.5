@@ -1,103 +1,103 @@
-Return-Path: <linux-kernel+bounces-15289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D0D08229C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:51:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F3FE8229C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 262121C230E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:51:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9ADE2851A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:51:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D730218624;
-	Wed,  3 Jan 2024 08:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD1F6182A9;
+	Wed,  3 Jan 2024 08:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QHTbpHjv"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="RmOlLDEO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com [209.85.222.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF2E9182B9;
-	Wed,  3 Jan 2024 08:51:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55676f1faa9so1780607a12.0;
-        Wed, 03 Jan 2024 00:51:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 427F718623
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 08:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-7cd42bc0f1dso972606241.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 00:51:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704271866; x=1704876666; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=XiqjQ4CtsdHzeZ/6fpkEoYxayaW7/f/QwsswQ02BtUY=;
-        b=QHTbpHjv+Cw0zzcEmh87ZdwKKKK4xZKOOPqunMP8nY07GPih+Pwyy+1vi9nRCk89Z4
-         ++mqwurighPZGOBt0Cdzvv+bkrLdFGPRlNSinov/LChUTJyz+w55cuJm/251VIpTq+DC
-         wbwKNdJjvaPIo0DdUsWt0hPp1HKqY/gikjcr93vHInEjIgI1kMgZW9CHxPtqoKBp/YDk
-         CzBsdsmr+HlbtVWfgLk9OoerTmsB81Sv1iDijBeXGZCGKziOn7lPTdNgx6BC9tABwj8F
-         RDsPJh+RSwKgzXr0ihU6jUkuOcEF4PdjuErMSJMuj4WFSLNIW9ZdEhrGaR9uQ3jDodJg
-         JlZg==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1704271888; x=1704876688; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8vgekKZ/OlG7JICiZDEFn9JZQAvlVZRayuPQgdK4A3Y=;
+        b=RmOlLDEOGcUN6ItkidKPz5rcHWhOwPSxPO6J2UcmKGHkGY9eVksKFn4NldD8O4opW7
+         OTDNm8A56G43f3E3RDa1H+CEuXOFgqE+RGQbyBezBnxAXO1NuvlbxmiOcwp8JWgs1aOc
+         LEqjlQvz+Uqwg9dDbHsa8OTRYI7GAr7f1kVEmKi+cApYX6Mf72qtVtGa2bCzLwpAowBs
+         QqU8b9rIQlnZyzw5AY+VowElwQUGPVTxyCurCoLXN5PMpFCTZhlqkMlnMkHAOPbSvQFr
+         WihHlP5js52lGyd69ky07xo9DqnmSH7ALAaQ9YhBA57U0v2UUCKFzhSQVF6l4Gk7Yacx
+         mp0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704271866; x=1704876666;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XiqjQ4CtsdHzeZ/6fpkEoYxayaW7/f/QwsswQ02BtUY=;
-        b=pOX3I2Kn0L0M3wdUvCUZ3/Wi4LreOot8BEypL7EuvFoJJ+4he2QM4tm7i/D/7YWLVX
-         rv9hG6WCiooO/D0tDzM8ZF59hLtWhSrJtBySXl9GiyUGM3QUmAQOkrmJLljzIDSPZu88
-         cLeBFnAPbywzlJACg7vMnzajyhMLka5Rbo68to1vlsR/hjrvObjOwytmMacQAgPlV5XD
-         OA4Ho8o7QMWQJlRbWgZhQuqcRT6fDjEUOBoY3y+LI9rrQKo5Yi0jy0ukz+TlwkeytXOW
-         fo5ygk5tdfGAZHEp1JW7XlOSB3+yhTY24WC51vaKWpDf2R24jnf/6Y3dulezhSD208Kl
-         Tvxw==
-X-Gm-Message-State: AOJu0YwafJRaA+x+6dYN4glP8ftzHWtjSAwP9etROcg01wH1jKuZCnXZ
-	9j4lZa9uwpCIULJJME7Q68s=
-X-Google-Smtp-Source: AGHT+IGNYJlgqX4aL4rwFT6qPkLkPCNzu0T6qFd3mLQ/9Gm/aUXTDoxlbkwKVyX8g/IDS0wJ8Nwjrg==
-X-Received: by 2002:aa7:d795:0:b0:552:3044:1df9 with SMTP id s21-20020aa7d795000000b0055230441df9mr10602167edq.67.1704271865117;
-        Wed, 03 Jan 2024 00:51:05 -0800 (PST)
-Received: from [127.0.0.1] ([89.205.132.224])
-        by smtp.gmail.com with ESMTPSA id o18-20020aa7dd52000000b00555a0fa2211sm7690447edw.31.2024.01.03.00.51.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 00:51:04 -0800 (PST)
-Date: Wed, 03 Jan 2024 09:51:06 +0100
-From: Eric Woudstra <ericwouds@gmail.com>
-To: Daniel Golle <daniel@makrotopia.org>
-CC: "Russell King (Oracle)" <linux@armlinux.org.uk>,
- Alexander Couzens <lynxis@fe80.eu>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Frank Wunderlich <frank-w@public-files.de>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_RFC_net-next=5D_net=3A_pcs=3A_pcs-mtk-lyn?= =?US-ASCII?Q?xi_fix_mtk=5Fpcs=5Flynxi=5Fget=5Fstate=28=29_for_2500base-x?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <ZZSX_oNUIQr6R9FU@pidgin.makrotopia.org>
-References: <20240102074408.1049203-1-ericwouds@gmail.com> <ZZP9GR15ufDbjGAJ@shell.armlinux.org.uk> <92190426-3614-4774-9E9F-18F121622788@gmail.com> <74223164-ab50-4d6d-a4f4-561b0a70d396@gmail.com> <ZZRrk85SCDmo76NJ@pidgin.makrotopia.org> <6666EB36-984E-4898-A41A-2D9713DE4DB0@gmail.com> <ZZSX_oNUIQr6R9FU@pidgin.makrotopia.org>
-Message-ID: <654EAEA9-052C-43C6-AA8E-16A30721A916@gmail.com>
+        d=1e100.net; s=20230601; t=1704271888; x=1704876688;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8vgekKZ/OlG7JICiZDEFn9JZQAvlVZRayuPQgdK4A3Y=;
+        b=hMmtSQNpywruB2B0khYpCuTxnDXsMfDe4vpOBy0P+klk9724hTyzbB2USKhVilLifY
+         nsvOeM//xStvLV6xWxQcBrfcGznXj8eQQDyOgbhDGjZXgl+7uMx/n+qZiGlLfy8WcfZa
+         umhNzioDYRkPaVUUDuKfDNbtNrWd++p11ylyVHIwfKMCxjVhXeLyQ5Yy8Hgse1ACfEiO
+         d84Wx5qpAAtT3r9oohjGQWXHd2f8KbwZqQpm7BXSGw6ehwMWE/VBWpq2ZDVegZeZSb9T
+         4qgbFULZqLZtaHqbQBZX6ItCv6yUItjEyPct1MmE7KPbA4yheNpEG+K+/QEqwfnFWyvV
+         BfcA==
+X-Gm-Message-State: AOJu0Yw93LfN9GkDtPLKvpB8s6RFko+SQBIccBsNUs7LrK2mM9LEVO0D
+	oqPTmjnPzI3FIocQ7VvgbdV2fHCDrEpEhwy0bcvqfTz43pSHtg==
+X-Google-Smtp-Source: AGHT+IGlCDun+5AZYjonVjIbZIWyoWJfpOTl00hEI6erZzD7dQFVLcGlY2MgsTLACmwfHfuGizoarZKojMhAgXVHtjI=
+X-Received: by 2002:a05:6102:4b15:b0:466:ecfa:88de with SMTP id
+ ia21-20020a0561024b1500b00466ecfa88demr9565508vsb.14.1704271888154; Wed, 03
+ Jan 2024 00:51:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20240102082829.30874-1-Wenhua.Lin@unisoc.com>
+In-Reply-To: <20240102082829.30874-1-Wenhua.Lin@unisoc.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 3 Jan 2024 09:51:17 +0100
+Message-ID: <CAMRc=Md-9vh7-r+SWm-TFPhonntindgj4cjeATUr2uZxEUxLxw@mail.gmail.com>
+Subject: Re: [PATCH V3] gpio: pmic-eic-sprd: Configure the bit corresponding
+ to the EIC through offset
+To: Wenhua Lin <Wenhua.Lin@unisoc.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Andy Shevchenko <andy@kernel.org>, 
+	Orson Zhai <orsonzhai@gmail.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
+	Chunyan Zhang <zhang.lyra@gmail.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, wenhua lin <wenhua.lin1994@gmail.com>, 
+	Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
->Surely, having phylink take care whether SGMII_SPEED_DUPLEX_AN should be
->set would be even nicer=2E
+On Tue, Jan 2, 2024 at 9:28=E2=80=AFAM Wenhua Lin <Wenhua.Lin@unisoc.com> w=
+rote:
 >
->I believe that source of confusion here is simply that
+> A bank PMIC EIC contains 16 EICs, and the operating registers
+> are BIT0-BIT15, such as BIT0 of the register operated by EIC0.
+> Using the one-dimensional array reg[CACHE_NR_REGS] for maintenance
+> will cause the configuration of other EICs to be affected when
+> operating a certain EIC. In order to solve this problem, configure
+> the bit corresponding to the EIC through offset.
 >
->in-band-status !=3D SGMII_SPEED_DUPLEX_AN
->
->We *do* have in-band-status even without having SGMII_SPEED_DUPLEX_AN set
->with 2500Base-X link mode (as in: link being up or down and link, duplex
->and speed is fixed anyway for 2500Base-X)=2E
+> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
+> ---
+> Change in V3:
+> -Change title.
+> -Change commit message.
+> -Delete the modification of the two-dimensional array maintenance pmic ei=
+c,
+>  and add the corresponding bits to configure the eic according to the off=
+set.
+> ---
 
+Applied, thanks!
 
-All clear, and even with autoneg disabled, one way or another, we now
-have a non-functional 2500base-x=2E Cannot manipulate anything in
-userland to get the connection functional=2E We need a fix in kernel=2E
+Bart
 
