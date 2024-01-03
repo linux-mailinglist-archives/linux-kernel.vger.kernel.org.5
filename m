@@ -1,106 +1,89 @@
-Return-Path: <linux-kernel+bounces-15846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B13682343D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:18:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ECF882343F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:19:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41C0C1C23BB1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:18:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B9D21F250DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:19:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 259821C6A7;
-	Wed,  3 Jan 2024 18:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55EBE1C69F;
+	Wed,  3 Jan 2024 18:19:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mNYekl/c"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="IF9rG6EF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF831CA81;
-	Wed,  3 Jan 2024 18:18:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=FmcnlJXDQ98odN/WIJ37kgFC20dlWMFiiPEysBR0RLo=; b=mNYekl/cRuUCgREXI6BMiAqoL/
-	WKPwXmHicaLj/SoyAyhEl4lwc1JY9ho99XeqYCADJfovFEgcmKtKxbzHtZ23d0x+GrjTXAp/nAXYg
-	6m55AvIuQOxvVhpkh70jRdbDVoJuollTmjQmR5eqGNyq6/mm5fwDk6fn4LwBqgrBstcXYATXDKTwf
-	P6+NOcN82q5Xp9FeAKjKuLv52WprkRqG/XUtFj8Pm35WDZ3lKo1SrK/w7C5LJRZCNiokxNKao0itW
-	ILPXteBeUi1q+KqxjWo30XinMlvhI0WgyRJGkhNj/qbivwdDJuv/kTYK34e+83w4UBYTiiG03sIGY
-	1lnCH5JQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rL5od-00DHx5-Kt; Wed, 03 Jan 2024 18:18:07 +0000
-Date: Wed, 3 Jan 2024 18:18:07 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
-	Hillf Danton <hdanton@sina.com>, kernel@quicinc.com,
-	quic_pkondeti@quicinc.com, keescook@chromium.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, oleg@redhat.com,
-	dhowells@redhat.com, jarkko@kernel.org, paul@paul-moore.com,
-	jmorris@namei.org, serge@hallyn.com, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] kernel: Introduce a write lock/unlock wrapper for
- tasklist_lock
-Message-ID: <ZZWk368hZpOc25X0@casper.infradead.org>
-References: <20231213101745.4526-1-quic_aiquny@quicinc.com>
- <ZXnaNSrtaWbS2ivU@casper.infradead.org>
- <87o7eu7ybq.fsf@email.froward.int.ebiederm.org>
- <ZY30k7OCtxrdR9oP@casper.infradead.org>
- <cd0f6613-9aa9-4698-bebe-0f61286d7552@quicinc.com>
- <ZZPT8hMiuT1pCBP7@casper.infradead.org>
- <99c44790-5f1b-4535-9858-c5e9c752159c@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F33A81C693
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:19:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 945D440E01FB;
+	Wed,  3 Jan 2024 18:19:10 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id tIVUWCeT5Roq; Wed,  3 Jan 2024 18:19:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704305948; bh=41ckwIQ1cOsTanraxssYiLysA3mszDJQngRh8ndGtWE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IF9rG6EF6vgcO37vd44iR8uhe74ZYsVsHCGg3gc/8Aj1AIhESxNfqRSi9gy3N3tMa
+	 xexNQSYLw/Y2Bn+swerZ0kdEAfN/LX4ebJvBBNioCAbzwVGISkh+SYZlOxFqJG1a3i
+	 O3q2b+AMbtW5NWDV3LoTjfJPk1vaANxU2aoSnPFwrg/S7V7HzGpGCZuzGF9xfCYIbs
+	 x597oHg9c3jOEA27pieOcCmkXy7YgaJplvJsXB/cLJ5LlpZEAwtNsBGthfGkPtdd1z
+	 PWNgm3LSoUjE9JTTdB9b8Mejb4j0iIQQv0F6bNALKei/3m77J2Zwcwf9DG0Wy44pB4
+	 VOQnSt+7na6TUICD3+vkPjtO6ST3GjlTHimadW/2qJYqmF1xYGR7lnftZD0lzXnR3l
+	 wPyPECi6Y4fepwJVleQ53Z5kTUxbBZUEsxJS2/yzp06ybbSGoZkCxARedfwDxZZf1Z
+	 vNdmLueV3kj2wCbP0nDMSJSK9OyaSoU0gdKk4fCy0ksvnHoQL+AZS7IFwh9NMViKFu
+	 +lf0dw7900bacnH4Oy7N9hVzCTBDjOAh7S56QyYjJmJ/hwd3vrvar7j/MUG9C4aqPS
+	 f0rvZ56Ck0r9fXV4rmbjftIj0gEGF5X9xHjKfvpeQo0tJcXy4FFJsPL/35GHAyNQsk
+	 NzaZh+It+5Nura1Tne5PTsoE=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6BA0D40E01F7;
+	Wed,  3 Jan 2024 18:18:59 +0000 (UTC)
+Date: Wed, 3 Jan 2024 19:18:52 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, patches@lists.linux.dev
+Subject: Re: [PATCH] x86/tools: objdump_reformat.awk: Skip bad instructions
+ from llvm-objdump
+Message-ID: <20240103181852.GDZZWlDJMVvqAZdpfV@fat_crate.local>
+References: <20231205-objdump_reformat-awk-handle-llvm-objdump-bad_expr-v1-1-b4a74f39396f@kernel.org>
+ <20240103181542.GA629234@dev-arch.thelio-3990X>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <99c44790-5f1b-4535-9858-c5e9c752159c@quicinc.com>
+In-Reply-To: <20240103181542.GA629234@dev-arch.thelio-3990X>
 
-On Wed, Jan 03, 2024 at 10:58:33AM +0800, Aiqun Yu (Maria) wrote:
-> On 1/2/2024 5:14 PM, Matthew Wilcox wrote:
-> > > > -void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock)
-> > > > +void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock, bool irq)
-> > > >    {
-> > > >    	int cnts;
-> > > > @@ -82,7 +83,11 @@ void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock)
-> > > Also a new state showed up after the current design:
-> > > 1. locked flag with _QW_WAITING, while irq enabled.
-> > > 2. And this state will be only in interrupt context.
-> > > 3. lock->wait_lock is hold by the write waiter.
-> > > So per my understanding, a different behavior also needed to be done in
-> > > queued_write_lock_slowpath:
-> > >    when (unlikely(in_interrupt())) , get the lock directly.
-> > 
-> > I don't think so.  Remember that write_lock_irq() can only be called in
-> > process context, and when interrupts are enabled.
-> In current kernel drivers, I can see same lock called with write_lock_irq
-> and write_lock_irqsave in different drivers.
-> 
-> And this is the scenario I am talking about:
-> 1. cpu0 have task run and called write_lock_irq.(Not in interrupt context)
-> 2. cpu0 hold the lock->wait_lock and re-enabled the interrupt.
+On Wed, Jan 03, 2024 at 11:15:42AM -0700, Nathan Chancellor wrote:
+> Ping? I am still seeing this issue.
 
-Oh, I missed that it was holding the wait_lock.  Yes, we also need to
-release the wait_lock before spinning with interrupts disabled.
+Does this need a Fixes tag and needs to go to Linus now or are you fine
+with 6.8-rc0?
 
-> I was thinking to support both write_lock_irq and write_lock_irqsave with
-> interrupt enabled together in queued_write_lock_slowpath.
-> 
-> That's why I am suggesting in write_lock_irqsave when (in_interrupt()),
-> instead spin for the lock->wait_lock, spin to get the lock->cnts directly.
+I.e., the answer probably depends on what kernels you're running the
+llvm tests...
 
-Mmm, but the interrupt could come in on a different CPU and that would
-lead to it stealing the wait_lock from the CPU which is merely waiting
-for the readers to go away.
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
