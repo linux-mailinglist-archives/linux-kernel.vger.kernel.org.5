@@ -1,112 +1,105 @@
-Return-Path: <linux-kernel+bounces-15763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66A2E823171
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:45:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71160823174
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:47:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78D7B1C23830
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:45:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54BEB1C23B49
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:47:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42A551BDE7;
-	Wed,  3 Jan 2024 16:45:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AEEA1BDF0;
+	Wed,  3 Jan 2024 16:47:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ODiwPOZ0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Xt105CKZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9117B1BDC3;
-	Wed,  3 Jan 2024 16:45:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D987DC433C8;
-	Wed,  3 Jan 2024 16:45:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704300341;
-	bh=M8pBSNIiUdoYN2rEiciHsGiO/2XHvrJs3DnNI6IvZDI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ODiwPOZ08n19KjW2aZVnjQInr3/wNnvBJAnE1xDPYagSDgM9Ntc5FQSFDbG9/0zUb
-	 qclbRs1sjQH7YSCgvdqabyx8UrBv3cCIFzFekBcWAubfAyUHF8RMTUIsccPh61UHzv
-	 5iDfnHL4bwnYteEAiW/hjq4APbyDlYBWueHJs38tQSfhLDbix5r8z8kRgMSnqQHMna
-	 ngO79mG/jOTga+ME3torw2g/dDGbbk5mZUm69cUjWpJhQtwB/XakDvUkCsTLMr10xH
-	 4jtEPi+tnfuRwin2v3ApzhMQDFQbFTBBok8cIObh2c30BtfKt1JhrpdEHWu6RiB3Tb
-	 5tspqKtLHJvaA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 89D9F403EF; Wed,  3 Jan 2024 13:45:38 -0300 (-03)
-Date: Wed, 3 Jan 2024 13:45:38 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] perf record: Reduce memory for recording lost samples
- event
-Message-ID: <ZZWPMsSm3JwAu7_R@kernel.org>
-References: <20231207021627.1322884-1-irogers@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE4431BDDE
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 16:47:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55679552710so11925a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 08:47:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704300423; x=1704905223; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2SAZtTgsMoR0htuI/uDVatrkyoqnPaglyETllJqt29U=;
+        b=Xt105CKZqOofuJoyoV+mLGM6J4bqDz4Oh+3y+7sTspzW0wDa2q3L9cCSHrTaWJI8XG
+         7Q/HLbw07sxRXHsx8YIHdNfZCI3ckPti2dH8FfJ1KQr5LSI7DisTbrI4cEbuzVYNcAah
+         xjQ2PKorNwNmUQDOudSqzImepVE15ic9GQi7yjs/zPlyHbHiQWhUs2JyFKjlQt3GWOMZ
+         1u+s5N/HqMWzNQ+QkG00RFUAmvhgVFX74qyukrd4PqIa5v5HifMN7GmqoKF9g+TXVXDq
+         lYOfv7FUlfECHtR6KnEQA78CWFM632it1Rv3LJDhM5xHgl8D2nA9yMhSDRbzeBqnd544
+         9YnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704300423; x=1704905223;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2SAZtTgsMoR0htuI/uDVatrkyoqnPaglyETllJqt29U=;
+        b=Z70hB0mLPoJ/VBlX19V+8tAq5GUj7D1VgUytckaYlnm3vPEi18+bhH280kiMB28RW+
+         zf1KzWloBGt2L7cpr2/Akelz6TVI1SBRa037LISHCQuGsGAVaz1F9twuXdvDKvd5QDFr
+         p9yIfD6frOKv5sOmr5PHU3mibzR3x6nMOUG2iNfXPj6ZanphvcMse6C7F0YRUxEm+H/k
+         00xAZ+hoYoqwa4nHE+48ZmOTjy+l0b2VjkTfz/WFUWBosPjPt6tPg9heHzGd1az3az92
+         dfB2sYPoJeMO3BXMLETN3oXZsGNAp7vchV05stDz9NCpSREZGnNIUCIrg5cTWNEsOijE
+         OQ/w==
+X-Gm-Message-State: AOJu0YyHflmhzl9umWcIis1tgTIGDeOrrGT6NZfXJHJ9HrlG4CyO7306
+	UMpfTsWULjuKBY7VuuAbMeGYEpthQDvpR5CZGM/DUMineZRb
+X-Google-Smtp-Source: AGHT+IE5Lvxi6Uh+t5HLAohyqXdOfMpoJrTnnSQ0HQWHt1cRrSiFm3RtP6RFEi87baJJe6kIRdg6wuypbuWlzNMV8YQ=
+X-Received: by 2002:a50:ab42:0:b0:553:773b:b7b2 with SMTP id
+ t2-20020a50ab42000000b00553773bb7b2mr132511edc.6.1704300422957; Wed, 03 Jan
+ 2024 08:47:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231207021627.1322884-1-irogers@google.com>
-X-Url: http://acmel.wordpress.com
+References: <ac6fb684-c00e-449c-92c3-99358a927ade@gmail.com> <504130f6-b56c-4dcc-882c-97942c59f5b7@gmail.com>
+In-Reply-To: <504130f6-b56c-4dcc-882c-97942c59f5b7@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Wed, 3 Jan 2024 17:46:49 +0100
+Message-ID: <CANn89iJCeW=DKazMxJx3fouJoPnQkNmdvPasXHPpxf3cHKZW7w@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 2/3] net: gro: parse ipv6 ext headers without
+ frag0 invalidation
+To: Richard Gobert <richardbgobert@gmail.com>
+Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, 
+	pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Em Wed, Dec 06, 2023 at 06:16:27PM -0800, Ian Rogers escreveu:
-> Reduce from PERF_SAMPLE_MAX_SIZE to "sizeof(*lost) +
-> session->machines.host.id_hdr_size".
-> 
-> Suggested-by: Namhyung Kim <namhyung@kernel.org>
+On Wed, Jan 3, 2024 at 3:44=E2=80=AFPM Richard Gobert <richardbgobert@gmail=
+.com> wrote:
+>
+> The existing code always pulls the IPv6 header and sets the transport
+> offset initially. Then optionally again pulls any extension headers in
+> ipv6_gso_pull_exthdrs and sets the transport offset again on return from
+> that call. skb->data is set at the start of the first extension header
+> before calling ipv6_gso_pull_exthdrs, and must disable the frag0
+> optimization because that function uses pskb_may_pull/pskb_pull instead o=
+f
+> skb_gro_ helpers. It sets the GRO offset to the TCP header with
+> skb_gro_pull and sets the transport header. Then returns skb->data to its
+> position before this block.
+>
+> This commit introduces a new helper function - ipv6_gro_pull_exthdrs -
+> which is used in ipv6_gro_receive to pull ipv6 ext headers instead of
+> ipv6_gso_pull_exthdrs. Thus, there is no modification of skb->data, all
+> operations use skb_gro_* helpers, and the frag0 fast path can be taken fo=
+r
+> IPv6 packets with ext headers.
+>
+> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
+> Reviewed-by: Willem de Bruijn <willemb@google.com>
+> Reviewed-by: David Ahern <dsahern@kernel.org>
 
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-Thanks, applied to perf-tools-next.
-
-- Arnaldo
-
-
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
-> Suggested in:
-> https://lore.kernel.org/lkml/CAM9d7cjpYHN_Q63sW70vTCisdW=-SzjsrryUUJjgtZ3+9jdxfA@mail.gmail.com/
-> ---
->  tools/perf/builtin-record.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index eb5a398ddb1d..206110fc2799 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -1954,7 +1954,8 @@ static void record__read_lost_samples(struct record *rec)
->  
->  				if (count.lost) {
->  					if (!lost) {
-> -						lost = zalloc(PERF_SAMPLE_MAX_SIZE);
-> +						lost = zalloc(sizeof(*lost) +
-> +							      session->machines.host.id_hdr_size);
->  						if (!lost) {
->  							pr_debug("Memory allocation failed\n");
->  							return;
-> @@ -1970,7 +1971,8 @@ static void record__read_lost_samples(struct record *rec)
->  		lost_count = perf_bpf_filter__lost_count(evsel);
->  		if (lost_count) {
->  			if (!lost) {
-> -				lost = zalloc(PERF_SAMPLE_MAX_SIZE);
-> +				lost = zalloc(sizeof(*lost) +
-> +					      session->machines.host.id_hdr_size);
->  				if (!lost) {
->  					pr_debug("Memory allocation failed\n");
->  					return;
-> -- 
-> 2.43.0.rc2.451.g8631bc7472-goog
-> 
-
--- 
-
-- Arnaldo
+Thanks !
 
