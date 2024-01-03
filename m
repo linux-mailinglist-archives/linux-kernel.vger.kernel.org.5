@@ -1,182 +1,108 @@
-Return-Path: <linux-kernel+bounces-15530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31F84822D6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:46:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70C30822D6D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:47:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32B101C232EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:46:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25A921F24379
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1030519452;
-	Wed,  3 Jan 2024 12:46:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5D919456;
+	Wed,  3 Jan 2024 12:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="37mFj8qz";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="M18QOB3l"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SkFGe3sb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1AF18EC7;
-	Wed,  3 Jan 2024 12:46:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 11E363200B01;
-	Wed,  3 Jan 2024 07:46:01 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 03 Jan 2024 07:46:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1704285961; x=1704372361; bh=/YviPdGLiP
-	zVy+UBu96lnyvudyBzhXETVuOdEEmoVnY=; b=37mFj8qzThYf0OHLiNiNt6+Kzr
-	fs/DrSxWzwL3K5Zm55mjG5r1SlI4Kztn+D+/fVWNzAutasVCBUFt4HzZDArPtZpd
-	0mG5VkTZbcjkQE2TPIZ9FBIquoyGUs0B5IidqiQcp0nGqXA9EB9mE4BHmenkXhYW
-	L/Po8v1oDWV78D1R+r+3Uy+KlbBILYUYn2V3z44y//MesGLes8DdzbYeFalHjGLN
-	3QivW+N5kU72Na9yCGpL4ce0vjxThyiJVZmJmpflqQWyXYlTNDU3jk527nGhhL2b
-	kybcJxlhQzd6eBi1iRoD0lv7XlT9C3Wdy5yeIppeP1awCnJYg/tulms/Gg+Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704285961; x=1704372361; bh=/YviPdGLiPzVy+UBu96lnyvudyBz
-	hXETVuOdEEmoVnY=; b=M18QOB3lpnuX7UIIPcUOnkESWrGWNpytFQtFOLTUo2xg
-	HyO/FJVU8jOrqsIRrddXqJYfmk+GwT9GiI6eJguV+z9gYljk+a8WLo43ZEH3NCGK
-	kXRAmjD/w4jLqqQNiJ/X0T8PpTOKNFhQ4BgfZOPwEjRJB+EoLManx8xe87gI4cFH
-	RYu/2eAok0flIb/9XrCAEDLtbNvKFIuPmWRsUypEZUh89jp6+oH8c8NwkXqsscbC
-	/QLj3SYi3y5mKMh9pfEEHD9BT9fMSd5vAHbmtTorj+XYObOfTCNIzIiH2M+abR2G
-	sozfLm3n4X7QEzU5f3MIxDHDcORsdT9J5/9yOVRcZQ==
-X-ME-Sender: <xms:CVeVZfGYMXBBwbIMGbb5vRoqJ8lWfmXo9MRAm0wDNA529q8Dd_ZoTA>
-    <xme:CVeVZcXAqJiANhx0xZbvWHPCcrPQEQNANrfdGNDOK11Hko4Np40ncrOrw0_kVdUDA
-    bJeZ8VlKXoyhrdaylY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeghedggeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
-    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:CVeVZRJqByB2XxDf71DssllxMxQiBDWsn1vpCIGKZmUhP4wqPlUOhA>
-    <xmx:CVeVZdHB7_XE_La-qJ0L-7eUQemP9mvO2zXkxt36QwUvQ2aoCVsHBQ>
-    <xmx:CVeVZVUQJ0bb_XCOl5c_84SfC1uJl7RRLkQZNBStE6h689DH06BaXA>
-    <xmx:CVeVZUEGCEBjlTkjGs_BECuaU81YWSXgTL0YzbZiYxHWNEaUDuq7Aw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 397AAB6008D; Wed,  3 Jan 2024 07:46:01 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED5F319440;
+	Wed,  3 Jan 2024 12:46:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40d89446895so2491235e9.0;
+        Wed, 03 Jan 2024 04:46:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704286009; x=1704890809; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jsq3OCLIVB4Vhvlqsi6n871YvrY5KZyh3nXn/CFzR1c=;
+        b=SkFGe3sbaQNGaYPP/INiccHUKTUTBoAlBMwWQSVixd9THIqcnz8fhwYK4EMrWT8Hdy
+         yTVjvW0m+H8s7BixZBlh7lJKTnxMJ/v84gvXKAM9u+qJEJMA5STZiZ1vxKGKjA4teNdC
+         pGK0X0AOXrsnBT0LGzxbQZYCX9HbGjMvuhKh0FlVaVZKr5MIVXVBuGE/vi0hntPYOp8I
+         oDMgC6iIy8nBycxRsbV4hGnqNIkoFr1KVuAFboOfolx7Z2Ladrb9yA0+t3NJtH9XFOEm
+         J4id7NbgOdgb8HdapZvMr6+BIpuZoGCOyKs/bTHzlJOeDIm8hzdQhyjI2JIl2nrkLe7M
+         Va+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704286009; x=1704890809;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Jsq3OCLIVB4Vhvlqsi6n871YvrY5KZyh3nXn/CFzR1c=;
+        b=WK8mxteK5zpdxwAnm1PLpP3rdQEfAgHuk/k/r8p+qyMf6dp0Sl1kZY3q3GF55mUMG0
+         IKrK345y0uw9kVAy+ejjzQJnrASro/ZAZ7vBGOa9e0cmlCQFoSVxrnfyBqJHphq4pFCA
+         mtufNBg6cM/KmO4iXa2zc/HidIgmAaqujqBjEpfulwXLiFbEZuBEDQG3HVZR6LgkrZ6V
+         +YkuYuOuZTgmb8I2Sk/dxdak6OPh/1USxvrTYhteL22wyZ4kRCFkrjVR7K2lplfF1lfp
+         MEXSNg4Zj6dnR11S+MaQmCyTnlr+kW13GK7IHJ3/c7uri7pXI/oWWCeX2s+Vq98UeYdU
+         7htA==
+X-Gm-Message-State: AOJu0YzGMipeD/M+LFYg2ZblKDtw8dBpretfzYP4WD8MTlgAtBH6WGDQ
+	32xVlW+X7A1Ob29TelMNFEs=
+X-Google-Smtp-Source: AGHT+IEjOUPsKWCDqXMR3N+V1LnLUGxnhVdA+EH+cINY06coME3ftiVYspKpjEtW5faJyzb0+noKWw==
+X-Received: by 2002:a05:600c:4683:b0:40d:709b:2b95 with SMTP id p3-20020a05600c468300b0040d709b2b95mr517021wmo.152.1704286008867;
+        Wed, 03 Jan 2024 04:46:48 -0800 (PST)
+Received: from localhost.localdomain (host-87-10-250-100.retail.telecomitalia.it. [87.10.250.100])
+        by smtp.googlemail.com with ESMTPSA id fc16-20020a05600c525000b0040d5c58c41dsm2219676wmb.24.2024.01.03.04.46.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 04:46:48 -0800 (PST)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Christian Marangi <ansuelsmth@gmail.com>
+Subject: [net-next PATCH v3 0/4] net: phy: at803x: even more generalization
+Date: Wed,  3 Jan 2024 13:46:31 +0100
+Message-ID: <20240103124637.3078-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <b310230b-f20b-489a-97ed-908df193a942@app.fastmail.com>
-In-Reply-To: <5b0a6150-8043-4de7-980f-54020a3e7981@gmail.com>
-References: <20240103102630.3770242-1-arnd@kernel.org>
- <5b0a6150-8043-4de7-980f-54020a3e7981@gmail.com>
-Date: Wed, 03 Jan 2024 13:45:40 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Heiner Kallweit" <hkallweit1@gmail.com>,
- "Arnd Bergmann" <arnd@kernel.org>, "David S . Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>
-Cc: Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
- "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
- "Lee Jones" <lee@kernel.org>
-Subject: Re: [PATCH] r8169: fix building with CONFIG_LEDS_CLASS=m
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 3, 2024, at 12:33, Heiner Kallweit wrote:
-> On 03.01.2024 11:26, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> When r8169 is built-in but the LED support is a loadable module, the
->> new code to drive the LED now causes a link failure:
->> 
->> ld: drivers/net/ethernet/realtek/r8169_leds.o: in function `rtl8168_init_leds':
->> r8169_leds.c:(.text+0x36c): undefined reference to `devm_led_classdev_register_ext'
->> 
->> Add a Kconfig dependency to prevent the broken configuration but still
->> allow having the network code built-in as long as CONFIG_LEDS_TRIGGER_NETDEV
->> is disabled, regardless of CONFIG_LEDS_CLASS.
->> 
-> The proposed change is more of a workaround IMO. A proper fix (in LED 
-> subsystem)
-> has been submitted, but it's not reviewed/applied yet. And I don't 
-> think building
-> r8169 should depend on support for an optional feature.
-> This fix would also allow to remove Kconfig dependencies similar to the 
-> one
-> proposed here from other drivers. Link to submitted fix:
->
-> https://lore.kernel.org/linux-leds/0f6f432b-c650-4bb8-a1b5-fe3372804d52@gmail.com/T/#u
+This is part 3 of at803x required patches to split the PHY driver
+in more specific PHY Family driver.
 
-I think that is a much worse workaround, as this just leads to
-a feature silently not working even when it is enabled (as loadable
-module), and hiding other dependency problems where drivers
-actually require the LED support to do something useful.
+While adding support for a new PHY Family qca807x it was notice lots
+of similarities with the qca808x cdt function. Hence this series
+is done to make things easier in the future when qca807x PHY will be
+submitted.
 
-IS_REACHABLE() is pretty much always a bad idea because of this.
+Changes v3:
+- Rebase on top of net-next
+Changes v2:
+- Address request from Russell in a previous series on cdt get
+  status improvement
 
-If you want the LED support in r8169_leds to be optional, I would
-suggest adding a separate Kconfig symbol for that, either user
-visible or hidden, and have the correct Kconfig dependencies
-for the new symbol, something like the change below (untested).
+Christian Marangi (4):
+  net: phy: at803x: generalize cdt fault length function
+  net: phy: at803x: refactor qca808x cable test get status function
+  net: phy: at803x: add support for cdt cross short test for qca808x
+  net: phy: at803x: make read_status more generic
 
-     Arnd
+ drivers/net/phy/at803x.c | 171 ++++++++++++++++++++++++++-------------
+ 1 file changed, 116 insertions(+), 55 deletions(-)
 
-8<---
-diff --git a/drivers/net/ethernet/realtek/Kconfig b/drivers/net/ethernet/realtek/Kconfig
-index fd3f18b328de..b54aae30b3c1 100644
---- a/drivers/net/ethernet/realtek/Kconfig
-+++ b/drivers/net/ethernet/realtek/Kconfig
-@@ -114,4 +114,9 @@ config R8169
-          To compile this driver as a module, choose M here: the module
-          will be called r8169.  This is recommended.
- 
-+config R8169_LEDS
-+       def_bool y
-+       depends on LEDS_TRIGGER_NETDEV && R8169
-+       depends on !(R8169=y && LEDS_CLASS=m)
-+
- endif # NET_VENDOR_REALTEK
-diff --git a/drivers/net/ethernet/realtek/Makefile b/drivers/net/ethernet/realtek/Makefile
-index adff9ebfbf2c..635491d8826e 100644
---- a/drivers/net/ethernet/realtek/Makefile
-+++ b/drivers/net/ethernet/realtek/Makefile
-@@ -6,8 +6,6 @@
- obj-$(CONFIG_8139CP) += 8139cp.o
- obj-$(CONFIG_8139TOO) += 8139too.o
- obj-$(CONFIG_ATP) += atp.o
--r8169-objs += r8169_main.o r8169_firmware.o r8169_phy_config.o
--ifdef CONFIG_LEDS_TRIGGER_NETDEV
--r8169-objs += r8169_leds.o
--endif
-+r8169-y += r8169_main.o r8169_firmware.o r8169_phy_config.o
-+r8169-$(CONFIG_R8169_LEDS) += r8169_leds.o
- obj-$(CONFIG_R8169) += r8169.o
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index 05ba5f743af2..f3321299b2fa 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -5356,11 +5356,10 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
-        if (rc)
-                return rc;
- 
--#if IS_REACHABLE(CONFIG_LEDS_CLASS) && IS_ENABLED(CONFIG_LEDS_TRIGGER_NETDEV)
--       if (tp->mac_version > RTL_GIGA_MAC_VER_06 &&
-+       if (IS_ENABLED(CONFIG_R8169_LEDS) &&
-+           tp->mac_version > RTL_GIGA_MAC_VER_06 &&
-            tp->mac_version < RTL_GIGA_MAC_VER_61)
-                rtl8168_init_leds(dev);
--#endif
- 
-        netdev_info(dev, "%s, %pM, XID %03x, IRQ %d\n",
-                    rtl_chip_infos[chipset].name, dev->dev_addr, xid, tp->irq);
+-- 
+2.43.0
+
 
