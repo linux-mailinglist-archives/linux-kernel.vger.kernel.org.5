@@ -1,54 +1,98 @@
-Return-Path: <linux-kernel+bounces-15721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F4B28230E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:58:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79E1E8230E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:01:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A36E51C23A72
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:58:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86EF71C238F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:00:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03341B28C;
-	Wed,  3 Jan 2024 15:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 823B81B288;
+	Wed,  3 Jan 2024 16:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hC9XfGE4"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fTvmohkT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4657B1B278;
-	Wed,  3 Jan 2024 15:58:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C07CC433C8;
-	Wed,  3 Jan 2024 15:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704297496;
-	bh=J2qaYb0QE6L9hh7qWv/hsZPbsaA0YA/s6WmiwcLhg+I=;
-	h=From:To:Cc:Subject:Date:From;
-	b=hC9XfGE4Jdh6LZPKOYde0goTfU05v7ml4qMHhPK1JsZlgVX9lFgWnQoBb54cmCcvO
-	 fWAxCFFoyPCut7bYJQENSoOD8xeMc853F/osl62eFQbMbZivRSmvIc6nzG3RfUD3jn
-	 DnRTp6T4xkFhk6t9kZzAkq8jWJxJWOVpqzvdVbO9cTPByRegaMiTFkbh4lKEW0rjDA
-	 wEk5R3QANRO/rMRysBdINuOFtNpol1wjYW/Mn9Y/IEQ3cGLHlDFKDe6IVH5PLDk6w+
-	 Iw0nWMBkApUXjyc1Z55IPa4iQVzC4jcRNBWJAC2c7g2Kmkgwjmml/9JF5D5Q/lK9wz
-	 KOrYhvlEATRIQ==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Paul Elder <paul.elder@ideasonboard.com>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Mehdi Djait <mehdi.djait@bootlin.com>,
-	linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] media: i2c: thp7312: select CONFIG_FW_LOADER
-Date: Wed,  3 Jan 2024 16:58:05 +0100
-Message-Id: <20240103155811.4092035-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BDF11B27B
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 16:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704297650;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=kntl/nAgkMTrS0b6uVdfD+vMpj63I1IJoYMsR9G9+XQ=;
+	b=fTvmohkT27M9sZw0hhTut1xP5PGfQE+wpIaIBeTzUiyqH3yGd2LgwviBMsRX6VtqxEmxOc
+	3h6fgGvs6alUyUd7WzBwNIT0VpQDc74knxTlCIyYBiYQT+Q1tfdY0zDuWN1ebNNmcty1nc
+	FTXTNgIAQPNdcRzP1YXFPpDuVohPme4=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-629-bcQ_eT6XNmSPz8nYL4ORrQ-1; Wed, 03 Jan 2024 11:00:48 -0500
+X-MC-Unique: bcQ_eT6XNmSPz8nYL4ORrQ-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-28cb44ab1cbso2250209a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 08:00:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704297647; x=1704902447;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kntl/nAgkMTrS0b6uVdfD+vMpj63I1IJoYMsR9G9+XQ=;
+        b=d8IzJmYuJ26CeXaIDM8VkCXudVSJ/Y8VjvFpzqAR73WTlGWc2C3loywixorxOA3E/u
+         EqiEUJW2NHFBP+p/Nsu7uZvQ5vW5BI4WcWRUGcs3kI1ih7KLjah+c+g86UGL+yQy/5sz
+         8VvXVbkJ8IawfNsFG6z4w9zFatIR70gIdBXbjVfLXMqIWqSoJiXTy3cv41PlDqqgo5Lf
+         P1M2DpZMKEgPtvyLC5ab1qw8EnROtiTRaZ4VgHI1wTeLwyYDDdYdAhToWWXYFjO5wKTI
+         1oKSUyNz6WgVaERJiDMNhPJV8CVKdljGYh7b0F2jq5bvaoctpJ92oKAIvCRhx5JE6mKv
+         x0aA==
+X-Gm-Message-State: AOJu0YwJ+6uTi1I1fcZswkLxdbo47woQmkIxuAmv3PtJwxSEIvE0qo1N
+	wYysTAZxTJnW8bR83GL/JQNaWePX9t5bLE671GhFdaT/411agFW4vRPwnVXTg8unRM2wWJ0/GfP
+	Tc8ao0KeXYzZT1wMmeSyiWp9LPD1B+aZq
+X-Received: by 2002:a17:90a:8904:b0:28a:cbce:71ab with SMTP id u4-20020a17090a890400b0028acbce71abmr6468977pjn.13.1704297647430;
+        Wed, 03 Jan 2024 08:00:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEt/3y+tufgltM/XFXS9WiJx4E8Mcef48BephLcAK7LUU4REFf4sxMOI/5885O5oAW116hzaw==
+X-Received: by 2002:a17:90a:8904:b0:28a:cbce:71ab with SMTP id u4-20020a17090a890400b0028acbce71abmr6468965pjn.13.1704297647085;
+        Wed, 03 Jan 2024 08:00:47 -0800 (PST)
+Received: from localhost.localdomain ([2804:431:c7ec:911:6911:ca60:846:eb46])
+        by smtp.gmail.com with ESMTPSA id qc8-20020a17090b288800b0028b1fce7c01sm1922253pjb.37.2024.01.03.08.00.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 08:00:46 -0800 (PST)
+From: Leonardo Bras <leobras@redhat.com>
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Kees Cook <keescook@chromium.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Guo Ren <guoren@kernel.org>,
+	Andy Chiu <andy.chiu@sifive.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Xiao Wang <xiao.w.wang@intel.com>,
+	Vincent Chen <vincent.chen@sifive.com>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Greg Ungerer <gerg@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kemeng Shi <shikemeng@huaweicloud.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	David Hildenbrand <david@redhat.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Qinglin Pan <panqinglin2020@iscas.ac.cn>,
+	Greentime Hu <greentime.hu@sifive.com>,
+	Baoquan He <bhe@redhat.com>,
+	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH v1 0/5] riscv: Introduce compat-mode helpers & improve arch_get_mmap_end()
+Date: Wed,  3 Jan 2024 13:00:18 -0300
+Message-ID: <20240103160024.70305-2-leobras@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,39 +101,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+I just saw the opportunity of optimizing the helper is_compat_task() by
+introducing a compile-time test, and it made possible to remove some
+#ifdef's without any loss of performance.
 
-The recently added driver uses the firmware loader mechanism but causes
-a link failure when that is in a loadable module while thp7312 itself
-is built-in:
+I also saw the possibility of removing the direct check of task flags from
+general code, and concentrated it in asm/compat.h by creating a few more
+helpers, which in the end helped optimize code.
 
-arm-linux-gnueabi-ld: drivers/media/i2c/thp7312.o: in function `thp7312_probe':
-thp7312.c:(.text+0x4164): undefined reference to `firmware_upload_register'
+arch_get_mmap_end() just got a simple improvement and some extra docs.
 
-Select the required Kconfig symbol. Note that the driver specifically
-needs the firmware upload interface that is controlled by CONFIG_FW_UPLOAD,
-but there is no link failure when that is disabled because the interfaces
-are stubbed out here.
+Changes since RFC:
+- Fused with other patchset:  Improve arch_get_mmap_end() macro
+- Renamed from "Introduce & Optimize compat-mode helpers"
 
-Fixes: 7a52ab415b43 ("media: i2c: Add driver for THine THP7312")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/media/i2c/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Leonardo Bras (5):
+  riscv: Improve arch_get_mmap_end() macro
+  riscv: Replace direct thread flag check with is_compat_task()
+  riscv: add compile-time test into is_compat_task()
+  riscv: Introduce is_compat_thread() into compat.h
+  riscv: Introduce set_compat_task() in asm/compat.h
 
-diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-index 78a87331686e..4c3435921f19 100644
---- a/drivers/media/i2c/Kconfig
-+++ b/drivers/media/i2c/Kconfig
-@@ -674,6 +674,7 @@ menu "Camera ISPs"
- config VIDEO_THP7312
- 	tristate "THine THP7312 support"
- 	depends on I2C
-+	select FW_LOADER
- 	select MEDIA_CONTROLLER
- 	select V4L2_CCI_I2C
- 	select V4L2_FWNODE
+ arch/riscv/include/asm/compat.h    | 19 +++++++++++++++++++
+ arch/riscv/include/asm/elf.h       | 11 ++---------
+ arch/riscv/include/asm/pgtable.h   |  8 +-------
+ arch/riscv/include/asm/processor.h | 16 +++++++++++-----
+ arch/riscv/kernel/ptrace.c         |  6 +++---
+ 5 files changed, 36 insertions(+), 24 deletions(-)
+
+
+base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
 -- 
-2.39.2
+2.43.0
 
 
