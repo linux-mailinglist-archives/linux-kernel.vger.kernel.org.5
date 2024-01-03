@@ -1,123 +1,190 @@
-Return-Path: <linux-kernel+bounces-15688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F34182304D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:16:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A8F8823035
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:07:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17C30285BF3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:16:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28B7C2852CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:07:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF8931A72A;
-	Wed,  3 Jan 2024 15:16:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65A351A730;
+	Wed,  3 Jan 2024 15:07:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gf9pQ/af"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LY8TF53j"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7031A71A
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 15:16:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E6C9C433C7;
-	Wed,  3 Jan 2024 15:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8A261A704;
+	Wed,  3 Jan 2024 15:07:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CB11C433C8;
+	Wed,  3 Jan 2024 15:07:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704295006;
-	bh=htNgBFBV/CKJcgQaocKh9f1UxgQQ82NiIUtI74MyQj4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Gf9pQ/af33jkPwdM/5tgbvWGyNx5or7NiLzSPLWPf/matHojty611C2q3ZtsjVOA5
-	 QGiLsSxw1vprazFYFKlVLl3DOAjlfoI5DTBnPD1gslBO0GG8otzapjEODkd38l1+wy
-	 JMkxhWV4XNqOa8gSM5l/Zw5UdwxMObagUzzhwH6jrhgTgxmBmW4Ohz/mrrZZ4ABLA1
-	 ubxUvmNSoIrplgsvtklkilJ3mIbnx7U86nDXpy7jd9RHjqaORsLdeZLG5tzCYb5hFM
-	 ow+nweFB/PNpNryc3J+5jWGjflt8MsLSfCcrJPrOSt8DI67hYqdd9YbL8QrjtZeNNg
-	 BATC0icqBPBCQ==
-Date: Wed, 3 Jan 2024 23:04:04 +0800
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: Re: [PATCH v4 04/12] riscv: Only send remote fences when some other
- CPU is online
-Message-ID: <ZZV3ZDa7eS+Ecc4i@xhacker>
-References: <20240102220134.3229156-1-samuel.holland@sifive.com>
- <20240102220134.3229156-5-samuel.holland@sifive.com>
- <ZZV19owFbjOzgG89@xhacker>
+	s=k20201202; t=1704294458;
+	bh=FCWeGqBB2LoWam8qeYDl6io0kV3y6U6ulHjprFNadU4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=LY8TF53jXlgvYfoUfXYHSI9V4LXC6wAVztuySm8Gxb7i58suU6vAm/h8ua4URP2cT
+	 /by7N5Nh0NOpimjVHMZru0eArpOwYgSVyWyo2a8UYjoXkv9Ra3IToB2y6/YxtSYWSF
+	 z2DeGg3H88S5XuwQImnNSdnXoGJ16Ohmb5bGvircawzncFDVHFpARL069/eigGH2bJ
+	 QBtBHohxOsMHrQW2X1JB5WV9o8/Fa7s9udZPAtnJpzzt9jS7SYxyLug5m4wLijU4NE
+	 I7mrM2wNmGlLCVu2FCBIaRN9DZrJE2hUDrqB8pGdSEAW6UIzqLswghBSCdIIA/wgU2
+	 044qpmw1I+azQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZZV19owFbjOzgG89@xhacker>
+Date: Wed, 03 Jan 2024 16:07:32 +0100
+From: Michael Walle <mwalle@kernel.org>
+To: Benjamin Bara <bbara93@gmail.com>
+Cc: benjamin.bara@skidata.com, dmitry.osipenko@collabora.com,
+ jonathanh@nvidia.com, lee@kernel.org, linux-i2c@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, nm@ti.com,
+ peterz@infradead.org, rafael.j.wysocki@intel.com, richard.leitner@linux.dev,
+ stable@vger.kernel.org, treding@nvidia.com,
+ wsa+renesas@sang-engineering.com, wsa@kernel.org
+Subject: Re: [PATCH v7 2/5] Re: i2c: core: run atomic i2c xfer when
+ !preemptible
+In-Reply-To: <CAJpcXm5gFMYnJ9bSA9nOXhKoibfedxjhRfu92dCmi6sVG3e=7Q@mail.gmail.com>
+References: <20230327-tegra-pmic-reboot-v7-2-18699d5dcd76@skidata.com>
+ <20240102150350.3180741-1-mwalle@kernel.org>
+ <CAJpcXm7W2vckakdFYiT4jssea-AzrZMsjHijfa+QpfzDVL+E3A@mail.gmail.com>
+ <5e13f5e2da9c4f8fc0d4da2ab4b40383@kernel.org>
+ <CAJpcXm5gFMYnJ9bSA9nOXhKoibfedxjhRfu92dCmi6sVG3e=7Q@mail.gmail.com>
+Message-ID: <6f321c457d1c66783480382929c94e0c@kernel.org>
+X-Sender: mwalle@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 03, 2024 at 10:58:01PM +0800, Jisheng Zhang wrote:
-> On Tue, Jan 02, 2024 at 02:00:41PM -0800, Samuel Holland wrote:
-> > If no other CPU is online, a local cache or TLB flush is sufficient.
-> > These checks can be constant-folded when SMP is disabled.
-> > 
-> > Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> > ---
-> > 
-> > Changes in v4:
-> >  - New patch for v4
-> > 
-> >  arch/riscv/mm/cacheflush.c | 4 +++-
-> >  arch/riscv/mm/tlbflush.c   | 4 +++-
-> >  2 files changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-> > index 47c485bc7df0..f7933ae88a55 100644
-> > --- a/arch/riscv/mm/cacheflush.c
-> > +++ b/arch/riscv/mm/cacheflush.c
-> > @@ -21,7 +21,9 @@ void flush_icache_all(void)
-> >  {
-> >  	local_flush_icache_all();
-> >  
-> > -	if (riscv_use_sbi_for_rfence())
-> > +	if (num_online_cpus() < 2)
-> 
-> with patch5, I think it's better to short cut for !SMP, I.E
-> if (!IS_ENABLED(CONFIG_SMP) || num_online_cpus()) < 2)
+Hi Benjamin,
 
-aha, plz ignore this comment, I see the num_online_cpus() is defined as 1U for
-UP.
+>> >> With preemption disabled, this boils down to
+>> >>   return system_state > SYSTEM_RUNNING (&& !0)
+>> >>
+>> >> and will then generate a backtrace splash on each reboot on our
+>> >> board:
+>> >>
+>> >> # reboot -f
+>> >> [   12.687169] No atomic I2C transfer handler for 'i2c-0'
+>> >> ...
+>> >> [   12.806359] Call trace:
+>> >> [   12.808793]  i2c_smbus_xfer+0x100/0x118
+>> >> ...
+>> >>
+>> >> I'm not sure if this is now the expected behavior or not. There will
+>> >> be
+>> >> no backtraces, if I build a preemptible kernel, nor will there be
+>> >> backtraces if I revert this patch.
+>> >
+>> >
+>> > thanks for the report.
+>> >
+>> > In your case, the warning comes from shutting down a regulator during
+>> > device_shutdown(), so nothing really problematic here.
+>> 
+>> I tend to disagree. Yes it's not problematic. But from a users point 
+>> of
+>> view, you get a splash of *many* backtraces on every reboot. Btw, one
+>> should really turn this into a WARN_ONCE(). But even in this case you
+>> might scare users which will eventually lead to more bug reports.
+> 
+> Sure, but the correct "fix" would be to implement an atomic handler if
+> the i2c is used during this late stage. I just meant that the
+> device_shutdown() is less problematic than the actual reboot handler.
+> Your PMIC seems to not have a reboot handler (registered (yet)), and is
+> therefore not "affected".
+> 
+>> > However, later in
+>> > the "restart sequence", IRQs are disabled before the restart handlers
+>> > are called. If the reboot handlers would rely on irq-based
+>> > ("non-atomic") i2c transfer, they might not work properly.
+>> 
+>> I get this from a technical point of view and agree that the correct
+>> fix is to add the atomic variant to the i2c driver, which begs the
+>> question, if adding the atomic variant to the driver will be 
+>> considered
+>> as a Fixes patch.
+> 
+> I can add a Fixes when I post it. Although the initial patch just makes
+> the actual problem "noisier".
 
+As far as I understand, there was no problem (for me at least),
+because the interrupts were still enabled at this time. But now,
+there is the problem with getting these backtraces and with that
+the user reports.
+
+Don't get me wrong, I'm all for the correct fix here. But at the
+same time I fear all the reports we'll be getting. And in the meantime
+there was already a new one.
+
+>> Do I get it correct, that in my case the interrupts are still enabled?
+>> Otherwise I'd have gotten this warning even before your patch, 
+>> correct?
 > 
-> so that the UP case can avoid a atomic read and check
+> Yes, device_shutdown() is called during
+> kernel_{shutdown,restart}_prepare(), before
+> machine_{power_off,restart}() is called. The interrupts should 
+> therefore
+> still be enabled in your case.
 > 
-> > +		return;
-> > +	else if (riscv_use_sbi_for_rfence())
-> >  		sbi_remote_fence_i(NULL);
-> >  	else
-> >  		on_each_cpu(ipi_remote_fence_i, NULL, 1);
-> > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> > index 2f18fe6fc4f3..37b3c93e3c30 100644
-> > --- a/arch/riscv/mm/tlbflush.c
-> > +++ b/arch/riscv/mm/tlbflush.c
-> > @@ -73,7 +73,9 @@ static void __ipi_flush_tlb_all(void *info)
-> >  
-> >  void flush_tlb_all(void)
-> >  {
-> > -	if (riscv_use_sbi_for_rfence())
-> > +	if (num_online_cpus() < 2)
+>> Excuse my ignorance, but when are the interrupts actually disabled
+>> during shutdown?
 > 
-> ditto
+> This is usually one of the first things done in machine_restart(),
+> before the architecture-specific restart handlers are called (which
+> might use i2c). Same for machine_power_off().
+
+Thanks for explaining.
+
+>> >> OTOH, the driver I'm using (drivers/i2c/busses/i2c-mt65xx.c) has no
+>> >> *_atomic(). So the warning is correct. There is also [1], which seems
+>> >> to
+>> >> be the same issue I'm facing.
+>> >>
+>> >> -michael
+>> >>
+>> >> [1]
+>> >> https://lore.kernel.org/linux-i2c/13271b9b-4132-46ef-abf8-2c311967bb46@mailbox.org/
+>> >
+>> >
+>> > I tried to implement an atomic handler for the mt65xx, but I don't have
+>> > the respective hardware available to test it. I decided to use a
+>> > similar
+>> > approach as done in drivers/i2c/busses/i2c-rk3x.c, which calls the IRQ
+>> > handler in a while loop if an atomic xfer is requested. IMHO, this
+>> > should work with IRQs enabled and disabled, but I am not sure if this
+>> > is
+>> > the best approach...
+>> 
+>> Thanks for already looking into that. Do you want to submit it as an
+>> actual patch? If so, you can add
+>> 
+>> Tested-by: Michael Walle <mwalle@kernel.org>
 > 
-> > +		local_flush_tlb_all();
-> > +	else if (riscv_use_sbi_for_rfence())
-> >  		sbi_remote_sfence_vma_asid(NULL, 0, FLUSH_TLB_MAX_SIZE, FLUSH_TLB_NO_ASID);
-> >  	else
-> >  		on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
-> > -- 
-> > 2.42.0
-> > 
-> > 
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> Yes, I can do that - thanks for the quick feedback.
+> 
+>> But again, it would be nice if we somehow can get rid of this huge
+>> splash
+>> of backtraces on 6.7.x (I guess it's already too late 6.7).
+> 
+> IMHO, converting the error to WARN_ONCE() makes sense to reduce the
+> noise, but helps having more reliable reboot handling via i2c. Do you
+> think this is a sufficient "short-term solution" to reduce the noise
+> before the missing atomic handlers are actually implemented?
+
+Turning that WARN into a WARN_ONCE is one thing. But it is still odd
+that don't I get a warning with preemption enabled. Is that because
+preemptible() will still return 1 until interrupts are actually 
+disabled?
+Can we achieve something similar with kernels without preemption 
+support?
+IOW, just warn iff there is an actual error, that is if i2c_xfer()
+is called with interrupt off?
+
+-michael
 
