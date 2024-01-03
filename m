@@ -1,301 +1,233 @@
-Return-Path: <linux-kernel+bounces-16025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B498823727
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:34:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0FDF8236F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:11:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9771F2819C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:34:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CF1CB240B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:11:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6115F1DA3B;
-	Wed,  3 Jan 2024 21:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD661D681;
+	Wed,  3 Jan 2024 21:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="Fs6Eda+r";
-	dkim=permerror (0-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="cqnsFZHe"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Yc1kbZO4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C9121DA2F;
-	Wed,  3 Jan 2024 21:34:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=gerhold.net
-ARC-Seal: i=1; a=rsa-sha256; t=1704316217; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=rExV4khYM1zRU7cjvMdaVI5m8LV9lavXrH9khRwoa9+hsct+KlUOy+7Mn3Lr1BATpU
-    78xlKqiwhJAVIy7NygyaNk5uufVnzQLxsnnnCuBBiFwrkkYSErK1sHRZcTpDIgZlx/b3
-    EZziYYyv4GWtWr0d7557XjlPlpT8bw/mcpgTWPfl+5gpMf0hz82rb8i7eW3EopFZlNdW
-    eDa/WDkoSRL2y0YNLitYEa5GX+xqFHGXUp1BbGjuY9gNOdhWkeUKj1z9q6iYdSb8CfwN
-    b7F9GlL1n+u071uUFkhgOfqYDEyD0hVcal9sSOV19H/WVVFkjxME5txjuNxNSsuIkxXh
-    r9cA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1704316217;
-    s=strato-dkim-0002; d=strato.com;
-    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
-    bh=U74J5n70oOkdpD2USO/TKMTXE9DOo0XAlgw3xl3xdRE=;
-    b=FeAgxTn5QHOvfY9YSAsU+NVItER0D1BULeZm57ZinxB+XiX/aURBLLr/qy2sjEyjcm
-    J+SVc42E/+BTTM/+wH+iVVI9pYR/WVFBMQ2X2ZYQIAaT0fEnXNOhsWquQAQQF5BDf6+I
-    3GOW3b+3/8nfws1/+sKtWf2gaOQcUXFFN55hs6tzszCMlJtbc7Tirf56i7s08yha6fyn
-    sbZPlstykr4txTMmmWUaHABzVs9sGCsn54hFmyXf7O6tqn3mVccaZInVw3M/DtWwcWG/
-    /bcApHTSyxV6o5iGRMDqm/ZhcYeIhPUOupGYbM1lQx9esh0p1P14z/C8cUXUz1Q6euSV
-    beUQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1704316217;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
-    bh=U74J5n70oOkdpD2USO/TKMTXE9DOo0XAlgw3xl3xdRE=;
-    b=Fs6Eda+rwZlBGXOzSSZuJAwHnJw9YH1SWt3JYgk7fNgwMgP1qzAcspmoIIH/XD3Bjc
-    lbxnC8h4r65lWCUOjjYwJRcFhJX1RPasONW2tpa/wBtTP1DAPBWTg8zULdWvOVMSwO25
-    6oW5idrSoPFamRxFc34dBa4K0goFoEmW4lj0Qj0nPGfr6scPz063264DSW0lLKoUIxAv
-    u/6tLpgMYVKzf6TEQFxODh0SNiUItGdLhd3L7S7R58IWmtsVoDCXjBzBp6XoOiiY/k0X
-    aa4l01U3WXY0gwtauC5crJ6uRV0sH5t2+zuG202mIqaPzv96BGzFzh69D6LxF30+C184
-    0cQg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1704316217;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
-    bh=U74J5n70oOkdpD2USO/TKMTXE9DOo0XAlgw3xl3xdRE=;
-    b=cqnsFZHe4irgeHQwZ9PI5Q5l3JQkuTFnatPMYKPDp6sYzZpoFuHndOg5lryn8OZwjP
-    MpcWoqkAXWwZI1jCOYBg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn9VOH8mz0="
-Received: from [192.168.244.3]
-    by smtp.strato.de (RZmta 49.10.0 SBL|AUTH)
-    with ESMTPSA id 58bb61003LAGNVs
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 3 Jan 2024 22:10:16 +0100 (CET)
-From: Stephan Gerhold <stephan@gerhold.net>
-Date: Wed, 03 Jan 2024 22:10:05 +0100
-Subject: [PATCH v2] PM: domains: Scale down parent performance states in
- reverse order
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E8241D555
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 21:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbe9c7932b3so1806415276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 13:10:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704316254; x=1704921054; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FBHxZQOqHKQWZQsNLhWIGO2APx/c3T+5AETXMz0BW6c=;
+        b=Yc1kbZO4ea7AXmAsMqvcpf/ajIwTCNSgspDi2aFKYOGB6LkqZ+QzV1vXDcFOlvQ680
+         x/yBbl9YapBZai778kLoNcHwXoC0gcpKokl7eHFfUndkY0Lm+gAbqd61iNpQ7iBH49fh
+         arYdHmBNQmfhj8Duu2yJeKho8NCmGwen+PT2lMaOhUA8rjZKhdK4MBgGn1U6JvB9Issb
+         exdmNFY0CtvKuD1ZUlQZ4w763RUltcos2qASJnrsmcxAmGt+LdMjvyzH2sAUKhhN6Mop
+         yeXASdaEAQ58Ql+9ltjS1sTDpmlY3E4dLeQ/eoF17YgbjUPFOEiQJNN7U00J3MiojwrQ
+         Jc0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704316254; x=1704921054;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FBHxZQOqHKQWZQsNLhWIGO2APx/c3T+5AETXMz0BW6c=;
+        b=IgHbWUJawC0uFO3UKXdGaB4IJd+kwY0tp9TCiDUKgm/h2DmIgP0LQy6zOpCONG3Huv
+         mJ5vK85UaDXeamJH1LQM+F1AyLZkajsapht9GjXTCCmyLZokChi+opzW7DiQOk1hVoMq
+         U3JJLVoUG9hejrQ/Kh3PZNPsSht8TrM9HFuEJEsG8jUMhH3d0cYr3jKfZYOvU9dA7OHP
+         an+8hDPN1yBxGpMeGGQhwvpkDDYB/Bn7BA3PZG1J/ueOyG4N0Poy/e6qI4r5jbRaEkA5
+         0tr9q41HecRtyQZGTa2Vy+oyQQ4bLx6+CWeJYA+VnoJXxDkEnaqoDmn0IMaMnI6ayMT0
+         DlNw==
+X-Gm-Message-State: AOJu0Yxk/Wfx/izrqYD/gLlimqNfVO+Wiow0d0LI2vsLnrr3v/oyVtqa
+	YwLGyM1Vg0HnFFSPI+H/+xEkgFueAcfFD06/Ww==
+X-Google-Smtp-Source: AGHT+IGa4g+9oBnUZU56Lne58hJptqYE1No2WgZAgnwNtYkKBHjg5J2c+84iFOCcgyBQbiUr6wcroX8sUfg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:9f03:0:b0:dbd:f0c7:8926 with SMTP id
+ n3-20020a259f03000000b00dbdf0c78926mr6852351ybq.7.1704316254236; Wed, 03 Jan
+ 2024 13:10:54 -0800 (PST)
+Date: Wed, 3 Jan 2024 13:10:52 -0800
+In-Reply-To: <b82bb32b-3348-4c18-b07e-34f523ae93b5@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240103-genpd-perf-order-v2-1-eeecfc55624b@gerhold.net>
-X-B4-Tracking: v=1; b=H4sIACzNlWUC/32NQQqDMBBFryKz7hQzopKueo/iIk0mGiiJTERaJ
- Hdv6gG6fA/++wdklsAZbs0BwnvIIcUKdGnALibOjMFVBmqpU9T2OHNcHa4sHpM4Fnz6rmtJW+q
- NhTpbhX14n8nHVHkJeUvyOR929bN/YrtChUOvR2sHbUbS95llSS93jbzBVEr5Avg2SC+yAAAA
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Viresh Kumar <viresh.kumar@linaro.org>, 
- Stephan Gerhold <stephan@gerhold.net>
-X-Mailer: b4 0.12.4
+Mime-Version: 1.0
+References: <20240102232136.38778-1-Ashish.Kalra@amd.com> <ZZSqkm5WNEUuuA_h@google.com>
+ <b82bb32b-3348-4c18-b07e-34f523ae93b5@amd.com>
+Message-ID: <ZZXNXNZkCW8e1G5i@google.com>
+Subject: Re: [PATCH] x86/sev: Add support for allowing zero SEV ASIDs.
+From: Sean Christopherson <seanjc@google.com>
+To: Ashish Kalra <ashish.kalra@amd.com>
+Cc: pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	thomas.lendacky@amd.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	joro@8bytes.org
+Content-Type: text/plain; charset="us-ascii"
 
-Power domains might have parent domains assigned that are automatically
-managed by the PM domain core. In particular, parent domains are
-automatically powered on/off and setting performance states on child
-domains is translated to parent domains (e.g. using an OPP table from
-the device tree).
+On Wed, Jan 03, 2024, Ashish Kalra wrote:
+> Hello Sean,
+> 
+> On 1/2/2024 6:30 PM, Sean Christopherson wrote:
+> > On Tue, Jan 02, 2024, Ashish Kalra wrote:
+> > > @@ -2172,8 +2176,10 @@ void sev_vm_destroy(struct kvm *kvm)
+> > >   void __init sev_set_cpu_caps(void)
+> > >   {
+> > > -	if (!sev_enabled)
+> > > +	if (!sev_guests_enabled) {
+> > Ugh, what a mess.  The module param will show sev_enabled=false, but the caps
+> > and CPUID will show SEV=true.
+> > 
+> > And this is doubly silly because "sev_enabled" is never actually checked, e.g.
+> > if misc cgroup support is disabled, KVM_SEV_INIT will try to reclaim ASIDs and
+> > eventually fail with -EBUSY, which is super confusing to users.
+> 
+> But this is what we expect that KVM_SEV_INIT will fail. In this case,
+> sev_asid_new() will not actually try to reclaim any ASIDs as sev_misc_cg_try_charge()
+> will fail before any ASID bitmap walking/reclamation and return an error which
+> will eventually return -EBUSY to the user.
 
-Currently parent performance states are always adjusted before the
-performance state of the child domain is changed.
+Please read what I wrote.  "if misc cgroup support is disabled", i.e. if
+CONFIG_CGROUP_MISC=n, then sev_misc_cg_try_charge() is a nop.
 
-However, typically a parent/child relationship between two power
-domains with performance states models the requirement to keep the
-parent domain at a performance state equal or higher to the child
-domain. When scaling down there is a brief moment where the parent
-domain will end up having a lower performance state than required by
-the child domain.
+> > The other weirdness is that KVM can cause sev_enabled=false && sev_es_enabled=true,
+> > but if *userspace* sets sev_enabled=false then sev_es_enabled is also forced off.
+> But that is already the behavior without this patch applied.
+> > 
+> > In other words, the least awful option seems to be to keep sev_enabled true :-(
+> > 
+> > >   		kvm_cpu_cap_clear(X86_FEATURE_SEV);
+> > > +		return;
+> > This is blatantly wrong, as it can result in KVM advertising SEV-ES if SEV is
+> > disabled by the user.
+> No, this ensures that we don't advertise any SEV capability if neither
+> SEV/SEV-ES or in future SNP is enabled.
 
-To avoid this, we need to differentiate between scaling up/down and
-adjust the order of operations:
+No, it does not.  There is an early return statement here that prevents KVM from
+invoking kvm_cpu_cap_clear() for X86_FEATURE_SEV_ES.  Do I think userspace will
+actually be tripped up by seeing SEV_ES without SEV?  No.  Is it unnecessarily
+confusing?  Yes.
 
- - When scaling up, parent domains should be adjusted before the child
-   domain. In case of an error, the rollback happens in reverse order.
+> > > +	}
+> > >   	if (!sev_es_enabled)
+> > >   		kvm_cpu_cap_clear(X86_FEATURE_SEV_ES);
+> > >   }
+> > > @@ -2229,9 +2235,11 @@ void __init sev_hardware_setup(void)
+> > >   		goto out;
+> > >   	}
+> > > -	sev_asid_count = max_sev_asid - min_sev_asid + 1;
+> > > -	WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV, sev_asid_count));
+> > > -	sev_supported = true;
+> > > +	if (min_sev_asid <= max_sev_asid) {
+> > > +		sev_asid_count = max_sev_asid - min_sev_asid + 1;
+> > > +		WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV, sev_asid_count));
+> > > +		sev_supported = true;
+> > > +	}
+> > >   	/* SEV-ES support requested? */
+> > >   	if (!sev_es_enabled)
+> > > @@ -2262,7 +2270,8 @@ void __init sev_hardware_setup(void)
+> > >   	if (boot_cpu_has(X86_FEATURE_SEV))
+> > >   		pr_info("SEV %s (ASIDs %u - %u)\n",
+> > >   			sev_supported ? "enabled" : "disabled",
+> > > -			min_sev_asid, max_sev_asid);
+> > > +			sev_supported ? min_sev_asid : 0,
+> > > +			sev_supported ? max_sev_asid : 0);
+> > I honestly think we should print the "garbage" values.  The whole point of
+> > printing the min/max SEV ASIDs was to help users understand why SEV is disabled,
+> > i.e. printing zeroes is counterproductive.
+> > 
+> > >   	if (boot_cpu_has(X86_FEATURE_SEV_ES))
+> > >   		pr_info("SEV-ES %s (ASIDs %u - %u)\n",
+> > >   			sev_es_supported ? "enabled" : "disabled",
+> > It's all a bit gross, but I think we want something like this (I'm definitely
+> > open to suggestions though):
+> > 
+> > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> > index d0c580607f00..bfac6d17462a 100644
+> > --- a/arch/x86/kvm/svm/sev.c
+> > +++ b/arch/x86/kvm/svm/sev.c
+> > @@ -143,8 +143,20 @@ static void sev_misc_cg_uncharge(struct kvm_sev_info *sev)
+> >   static int sev_asid_new(struct kvm_sev_info *sev)
+> >   {
+> > -       int asid, min_asid, max_asid, ret;
+> > +       /*
+> > +        * SEV-enabled guests must use asid from min_sev_asid to max_sev_asid.
+> > +        * SEV-ES-enabled guest can use from 1 to min_sev_asid - 1.  Note, the
+> > +        * min ASID can end up larger than the max if basic SEV support is
+> > +        * effectively disabled by disallowing use of ASIDs for SEV guests.
+> > +        */
+> > +       unsigned int min_asid = sev->es_active ? 1 : min_sev_asid;
+> > +       unsigned int max_asid = sev->es_active ? min_sev_asid - 1 : max_sev_asid;
+> > +       unsigned int asid;
+> >          bool retry = true;
+> > +       int ret;
+> > +
+> > +       if (min_asid > max_asid)
+> > +               return -ENOTTY;
+> 
+> This will still return -EBUSY to user.
 
- - When scaling down, parent domains should be adjusted after the child
-   domain, in reverse order, just as if we would rollback scaling up.
-   In case of an error, the rollback happens in normal order (just as
-   if we would normally scale up).
+Huh?  The above is obviously -ENOTTY, and I don't see anything in the call stack
+that will convert it to -EBUSY.
 
-Implement this by moving the existing functionality of
-_genpd_set_performance_state() to two separate functions that are
-called in the proper iteration order.
+> This check here or the failure return from sev_misc_cg_try_charge() are quite
+> similar in that sense.
+> 
+> My point is that the same is achieved quite cleanly with
+> sev_misc_cg_try_charge() too.
 
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
-Changes in v2:
-- Rebase to adjust for move of drivers/base/power/domain.c
-  to drivers/pmdomain/core.c
-- Regenerate CC list
-- No code changes
-- Link to v1: https://lore.kernel.org/r/20231205-genpd-perf-order-v1-1-6597cc69a729@gerhold.net
----
-Related discussion: https://lore.kernel.org/linux-pm/ZWXgFNKgm9QaFuzx@gerhold.net/
----
- drivers/pmdomain/core.c | 124 ++++++++++++++++++++++++++++++------------------
- 1 file changed, 77 insertions(+), 47 deletions(-)
+"Without additional effort" is not synonymous with "cleanly".  Relying on an
+accounting restriction that is completely orthogonal to basic functionality is
+not "clean".
 
-diff --git a/drivers/pmdomain/core.c b/drivers/pmdomain/core.c
-index a1f6cba3ae6c..fec9dc6ab828 100644
---- a/drivers/pmdomain/core.c
-+++ b/drivers/pmdomain/core.c
-@@ -311,72 +311,102 @@ static int genpd_xlate_performance_state(struct generic_pm_domain *genpd,
- }
- 
- static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
--					unsigned int state, int depth)
-+					unsigned int state, int depth);
-+
-+static void _genpd_rollback_parent_state(struct gpd_link *link, int depth)
- {
--	struct generic_pm_domain *parent;
--	struct gpd_link *link;
--	int parent_state, ret;
-+	struct generic_pm_domain *parent = link->parent;
-+	int parent_state;
- 
--	if (state == genpd->performance_state)
--		return 0;
-+	genpd_lock_nested(parent, depth + 1);
- 
--	/* Propagate to parents of genpd */
--	list_for_each_entry(link, &genpd->child_links, child_node) {
--		parent = link->parent;
-+	parent_state = link->prev_performance_state;
-+	link->performance_state = parent_state;
- 
--		/* Find parent's performance state */
--		ret = genpd_xlate_performance_state(genpd, parent, state);
--		if (unlikely(ret < 0))
--			goto err;
-+	parent_state = _genpd_reeval_performance_state(parent, parent_state);
-+	if (_genpd_set_performance_state(parent, parent_state, depth + 1)) {
-+		pr_err("%s: Failed to roll back to %d performance state\n",
-+		       parent->name, parent_state);
-+	}
- 
--		parent_state = ret;
-+	genpd_unlock(parent);
-+}
- 
--		genpd_lock_nested(parent, depth + 1);
-+static int _genpd_set_parent_state(struct generic_pm_domain *genpd,
-+				   struct gpd_link *link,
-+				   unsigned int state, int depth)
-+{
-+	struct generic_pm_domain *parent = link->parent;
-+	int parent_state, ret;
- 
--		link->prev_performance_state = link->performance_state;
--		link->performance_state = parent_state;
--		parent_state = _genpd_reeval_performance_state(parent,
--						parent_state);
--		ret = _genpd_set_performance_state(parent, parent_state, depth + 1);
--		if (ret)
--			link->performance_state = link->prev_performance_state;
-+	/* Find parent's performance state */
-+	ret = genpd_xlate_performance_state(genpd, parent, state);
-+	if (unlikely(ret < 0))
-+		return ret;
- 
--		genpd_unlock(parent);
-+	parent_state = ret;
- 
--		if (ret)
--			goto err;
--	}
-+	genpd_lock_nested(parent, depth + 1);
- 
--	if (genpd->set_performance_state) {
--		ret = genpd->set_performance_state(genpd, state);
--		if (ret)
--			goto err;
--	}
-+	link->prev_performance_state = link->performance_state;
-+	link->performance_state = parent_state;
- 
--	genpd->performance_state = state;
--	return 0;
-+	parent_state = _genpd_reeval_performance_state(parent, parent_state);
-+	ret = _genpd_set_performance_state(parent, parent_state, depth + 1);
-+	if (ret)
-+		link->performance_state = link->prev_performance_state;
- 
--err:
--	/* Encountered an error, lets rollback */
--	list_for_each_entry_continue_reverse(link, &genpd->child_links,
--					     child_node) {
--		parent = link->parent;
-+	genpd_unlock(parent);
- 
--		genpd_lock_nested(parent, depth + 1);
-+	return ret;
-+}
-+
-+static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
-+					unsigned int state, int depth)
-+{
-+	struct gpd_link *link = NULL;
-+	int ret;
-+
-+	if (state == genpd->performance_state)
-+		return 0;
- 
--		parent_state = link->prev_performance_state;
--		link->performance_state = parent_state;
-+	/* When scaling up, propagate to parents first in normal order */
-+	if (state > genpd->performance_state) {
-+		list_for_each_entry(link, &genpd->child_links, child_node) {
-+			ret = _genpd_set_parent_state(genpd, link, state, depth);
-+			if (ret)
-+				goto rollback_parents_up;
-+		}
-+	}
- 
--		parent_state = _genpd_reeval_performance_state(parent,
--						parent_state);
--		if (_genpd_set_performance_state(parent, parent_state, depth + 1)) {
--			pr_err("%s: Failed to roll back to %d performance state\n",
--			       parent->name, parent_state);
-+	if (genpd->set_performance_state) {
-+		ret = genpd->set_performance_state(genpd, state);
-+		if (ret) {
-+			if (link)
-+				goto rollback_parents_up;
-+			return ret;
- 		}
-+	}
- 
--		genpd_unlock(parent);
-+	/* When scaling down, propagate to parents last in reverse order */
-+	if (state < genpd->performance_state) {
-+		list_for_each_entry_reverse(link, &genpd->child_links, child_node) {
-+			ret = _genpd_set_parent_state(genpd, link, state, depth);
-+			if (ret)
-+				goto rollback_parents_down;
-+		}
- 	}
- 
-+	genpd->performance_state = state;
-+	return 0;
-+
-+rollback_parents_up:
-+	list_for_each_entry_continue_reverse(link, &genpd->child_links, child_node)
-+		_genpd_rollback_parent_state(link, depth);
-+	return ret;
-+rollback_parents_down:
-+	list_for_each_entry_continue(link, &genpd->child_links, child_node)
-+		_genpd_rollback_parent_state(link, depth);
- 	return ret;
- }
- 
+> >          WARN_ON(sev->misc_cg);
+> >          sev->misc_cg = get_current_misc_cg();
+> > @@ -157,12 +169,6 @@ static int sev_asid_new(struct kvm_sev_info *sev)
+> >          mutex_lock(&sev_bitmap_lock);
+> > -       /*
+> > -        * SEV-enabled guests must use asid from min_sev_asid to max_sev_asid.
+> > -        * SEV-ES-enabled guest can use from 1 to min_sev_asid - 1.
+> > -        */
+> > -       min_asid = sev->es_active ? 1 : min_sev_asid;
+> > -       max_asid = sev->es_active ? min_sev_asid - 1 : max_sev_asid;
+> >   again:
+> >          asid = find_next_zero_bit(sev_asid_bitmap, max_asid + 1, min_asid);
+> >          if (asid > max_asid) {
+> > @@ -2232,8 +2238,10 @@ void __init sev_hardware_setup(void)
+> >                  goto out;
+> >          }
+> > -       sev_asid_count = max_sev_asid - min_sev_asid + 1;
+> > -       WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV, sev_asid_count));
+> > +       if (min_sev_asid <= max_sev_asid) {
+> > +               sev_asid_count = max_sev_asid - min_sev_asid + 1;
+> > +               WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV, sev_asid_count));
+> > +       }
+> >          sev_supported = true;
+> >          /* SEV-ES support requested? */
+> > @@ -2264,8 +2272,9 @@ void __init sev_hardware_setup(void)
+> >   out:
+> >          if (boot_cpu_has(X86_FEATURE_SEV))
+> >                  pr_info("SEV %s (ASIDs %u - %u)\n",
+> > -                       sev_supported ? "enabled" : "disabled",
+> > -                       min_sev_asid, max_sev_asid);
+> > +                       sev_supported ? (min_sev_asid <= max_sev_asid ? "enabled" : "unusable") : "disabled",
+> > +                       sev_supported ? min_sev_asid : 0,
+> > +                       sev_supported ? max_sev_asid : 0);
+> 
+> We are not showing min and max ASIDs for SEV as {0,0} with this patch as
+> sev_supported is true ?
 
----
-base-commit: 0fef202ac2f8e6d9ad21aead648278f1226b9053
-change-id: 20231205-genpd-perf-order-bf33029c25ac
+Yes, and that is deliberate.  See this from above:
 
-Best regards,
--- 
-Stephan Gerhold <stephan@gerhold.net>
-
+ : I honestly think we should print the "garbage" values.  The whole point of  
+ : printing the min/max SEV ASIDs was to help users understand why SEV is disabled,
+ : i.e. printing zeroes is counterproductive.
 
