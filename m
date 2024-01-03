@@ -1,187 +1,195 @@
-Return-Path: <linux-kernel+bounces-15663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66AFF822FC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:45:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8642822FCC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:46:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08164B238C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:45:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 520D21F23EDF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:46:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5C51A71F;
-	Wed,  3 Jan 2024 14:44:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85CD1A703;
+	Wed,  3 Jan 2024 14:46:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HnlM7mNW"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="OKle+6Yq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96FDA1A708;
-	Wed,  3 Jan 2024 14:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40d858c56cbso35339575e9.2;
-        Wed, 03 Jan 2024 06:44:48 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B041A5B6;
+	Wed,  3 Jan 2024 14:46:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704293087; x=1704897887; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:to:from:subject
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DF5Tpjc7/qBP5rRrTOGZj1iy9dxk0+S2n9vSpuIQY2Y=;
-        b=HnlM7mNW/jjZpunoLkbYJrH10sHqvSYaTc+JkrTAN+ARBJOofxtGsCGC82Oxxvhx2H
-         o6ByQTutHY8wVBAu169CM0AqazWmsB//2HhUvEE/5hWPFOW4gnUxjaxa74aJk+gmsA2C
-         s/DEW9ZYubFP/xGtZCHpUjFT3x35/fAh7v0dgn+lKVe0i/gfGY8e1UjFXlxc5j1zm3Bf
-         JaMxkGCKItmanWsRSmi0pnkiM2s96UHXxyDY9fYoFE8qz1mgYC9mTFJWdWx4XKn4zcsY
-         mWF7jB7tnANvLbS9dTYzYVHr1Dt14I51JDQi3CHxNWad1dbUW0sKNDHE3ZUDRHFO/1Nj
-         Z+PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704293087; x=1704897887;
-        h=content-transfer-encoding:in-reply-to:references:to:from:subject
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DF5Tpjc7/qBP5rRrTOGZj1iy9dxk0+S2n9vSpuIQY2Y=;
-        b=RVLF3D6fx/0pV+zXTbsFjqt8qShRZ2daNojD/Qw3jYExRkoICB8h8k3h30hMFseB4F
-         1R9CZwIEcj3NU73n6gTRy4z8mC/IoLC9rbAqtXyCiOmGlVbvf7S09wjhJN9C4bR2se3y
-         4Z4YG8RhwJtPwafygIkZ1rvgRPq3F+59DWiK4ro0c2d0d1UACBUlVn5dJHWJyoRyEjNt
-         3lLJCuHunck4RwkRajQ+4SDASnU/StwWe3WqI2UVs9aC9sVpbIUIRkIH5Phr0tz9Op4b
-         A96uTCAi0BHoTciydmegvAOZ+JSDwQQtZTh2lGDPz/CkXWg4DQnAIzIuegriF3nFcIAM
-         m2RA==
-X-Gm-Message-State: AOJu0YwAmoWD5+sp/0A6ZWcTTKzCh8ZLCc2d4l7sZ4GC1/lq8fhGu5BD
-	u+LAZc4Jjf3PVdq/u5jnPYfGR5ZKtXG3Og==
-X-Google-Smtp-Source: AGHT+IE4LGuUM464Dkji7Qyx/GfCoHeET9LTq9UXKsXvwyBB5+is1ieVd6YsH88aX6cNY17P8posBg==
-X-Received: by 2002:a1c:7214:0:b0:40d:7be6:8e59 with SMTP id n20-20020a1c7214000000b0040d7be68e59mr4250351wmc.40.1704293086646;
-        Wed, 03 Jan 2024 06:44:46 -0800 (PST)
-Received: from debian ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id q15-20020a05600c46cf00b0040d87b9eec7sm2530443wmo.32.2024.01.03.06.44.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 06:44:46 -0800 (PST)
-Message-ID: <504130f6-b56c-4dcc-882c-97942c59f5b7@gmail.com>
-Date: Wed, 3 Jan 2024 15:44:21 +0100
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1704293184; x=1735829184;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=qMGObbzevwrsqS9R/lsiIBQqNq1KVLRx8f7pbsk2p24=;
+  b=OKle+6YqiH82tixAKYSUOhrOWx3fTevYshm2u5jh38kzzHfGlrdhiu+C
+   iAt1jFReDMNd1r2KtGyOHqXXevdcRMf7+PAzo4Jy7gTGUXWMFo8Y3EfYp
+   YTLW64I6m9M6HX7tWMT7PjKgk1H09FkI6yVbfaMypGlhD4iKlM4jJU3Ty
+   k=;
+X-IronPort-AV: E=Sophos;i="6.04,327,1695686400"; 
+   d="scan'208";a="263423795"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-3ef535ca.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 14:46:22 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
+	by email-inbound-relay-pdx-2a-m6i4x-3ef535ca.us-west-2.amazon.com (Postfix) with ESMTPS id E2E8660A99;
+	Wed,  3 Jan 2024 14:46:20 +0000 (UTC)
+Received: from EX19MTAEUB001.ant.amazon.com [10.0.43.254:30180]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.16.243:2525] with esmtp (Farcaster)
+ id f9054cef-49b7-484a-b648-0b1e618e9049; Wed, 3 Jan 2024 14:46:19 +0000 (UTC)
+X-Farcaster-Flow-ID: f9054cef-49b7-484a-b648-0b1e618e9049
+Received: from EX19D033EUB004.ant.amazon.com (10.252.61.103) by
+ EX19MTAEUB001.ant.amazon.com (10.252.51.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 3 Jan 2024 14:46:19 +0000
+Received: from EX19MTAUEC001.ant.amazon.com (10.252.135.222) by
+ EX19D033EUB004.ant.amazon.com (10.252.61.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 3 Jan 2024 14:46:19 +0000
+Received: from dev-dsk-jalliste-1c-e3349c3e.eu-west-1.amazon.com
+ (10.13.244.142) by mail-relay.amazon.com (10.252.135.200) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40 via Frontend Transport; Wed, 3 Jan 2024 14:46:17 +0000
+From: Jack Allister <jalliste@amazon.com>
+To:
+CC: Jack Allister <jalliste@amazon.com>, "Rafael J . Wysocki"
+	<rafael@kernel.org>, Paul Durrant <pdurrant@amazon.com>, Jue Wang
+	<juew@amazon.com>, Usama Arif <usama.arif@bytedance.com>, Jonathan Corbet
+	<corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
+	<hpa@zytor.com>, "Paul E. McKenney" <paulmck@kernel.org>, Randy Dunlap
+	<rdunlap@infradead.org>, Tejun Heo <tj@kernel.org>, Peter Zijlstra
+	<peterz@infradead.org>, Yan-Jie Wang <yanjiewtw@gmail.com>, Hans de Goede
+	<hdegoede@redhat.com>, <linux-doc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v5] x86: intel_epb: Add earlyparam option to keep bias at performance
+Date: Wed, 3 Jan 2024 14:46:04 +0000
+Message-ID: <20240103144607.46369-1-jalliste@amazon.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <83431857-7182-471a-9ff1-9dac37e5a02f@intel.com>
+References: <83431857-7182-471a-9ff1-9dac37e5a02f@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: [PATCH net-next v3 2/3] net: gro: parse ipv6 ext headers without
- frag0 invalidation
-From: Richard Gobert <richardbgobert@gmail.com>
-To: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <ac6fb684-c00e-449c-92c3-99358a927ade@gmail.com>
-In-Reply-To: <ac6fb684-c00e-449c-92c3-99358a927ade@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-The existing code always pulls the IPv6 header and sets the transport
-offset initially. Then optionally again pulls any extension headers in
-ipv6_gso_pull_exthdrs and sets the transport offset again on return from
-that call. skb->data is set at the start of the first extension header
-before calling ipv6_gso_pull_exthdrs, and must disable the frag0
-optimization because that function uses pskb_may_pull/pskb_pull instead of
-skb_gro_ helpers. It sets the GRO offset to the TCP header with
-skb_gro_pull and sets the transport header. Then returns skb->data to its
-position before this block.
+Buggy BIOSes may not set a sane boot-time Energy Performance Bias (EPB).
+A result of this may be overheating or excess power usage. The kernel
+overrides any boot-time EPB "performance" bias to "normal" to avoid this.
 
-This commit introduces a new helper function - ipv6_gro_pull_exthdrs -
-which is used in ipv6_gro_receive to pull ipv6 ext headers instead of
-ipv6_gso_pull_exthdrs. Thus, there is no modification of skb->data, all
-operations use skb_gro_* helpers, and the frag0 fast path can be taken for
-IPv6 packets with ext headers.
+When used in data centers it is preferable keep the EPB at "performance"
+when performing a live-update of the host kernel via a kexec to the new
+kernel. This is due to boot-time being critical when performing the kexec
+as running guest VMs will perceieve this as latency or downtime.
 
-Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
+On Intel Xeon Ice Lake platforms it has been observed that a combination of
+EPB being set to "normal" alongside HWP (Intel Hardware P-states) being
+enabled/configured during or close to the kexec causes an increases the
+live-update/kexec downtime by 7 times compared to when the EPB is set to
+"performance".
+
+Introduce a command-line parameter, "intel_epb=preserve", to skip the
+"performance" -> "normal" override/workaround. This maintains prior
+functionality when no parameter is set, but adds in the ability to stay at
+performance for a speedy kexec if a user wishes.
+
+Signed-off-by: Jack Allister <jalliste@amazon.com>
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+Cc: Paul Durrant <pdurrant@amazon.com>
+Cc: Jue Wang <juew@amazon.com>
+Cc: Usama Arif <usama.arif@bytedance.com>
 ---
- net/ipv6/ip6_offload.c | 51 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 41 insertions(+), 10 deletions(-)
+ .../admin-guide/kernel-parameters.txt         | 12 +++++++++++
+ arch/x86/kernel/cpu/intel_epb.c               | 21 +++++++++++++++++--
+ 2 files changed, 31 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv6/ip6_offload.c b/net/ipv6/ip6_offload.c
-index 0e0b5fed0995..cca64c7809be 100644
---- a/net/ipv6/ip6_offload.c
-+++ b/net/ipv6/ip6_offload.c
-@@ -37,6 +37,40 @@
- 		INDIRECT_CALL_L4(cb, f2, f1, head, skb);	\
- })
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 65731b060e3f..5602ee213115 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -2148,6 +2148,18 @@
+ 			0	disables intel_idle and fall back on acpi_idle.
+ 			1 to 9	specify maximum depth of C-state.
  
-+static int ipv6_gro_pull_exthdrs(struct sk_buff *skb, int off, int proto)
++	intel_epb=	[X86]
++			auto
++			  Same as not passing a parameter to intel_epb. This will
++			  ensure that the intel_epb module will restore the energy
++			  performance bias to "normal" at boot-time. This workaround
++			  is for buggy BIOSes which may not set this value and cause
++			  either overheating or excess power usage.
++			preserve
++			  At kernel boot-time if the EPB value is read as "performance"
++			  keep it at this value. This prevents the "performance" -> "normal"
++			  transition which is a workaround mentioned above.
++
+ 	intel_pstate=	[X86]
+ 			disable
+ 			  Do not enable intel_pstate as the default
+diff --git a/arch/x86/kernel/cpu/intel_epb.c b/arch/x86/kernel/cpu/intel_epb.c
+index e4c3ba91321c..419e699a43e6 100644
+--- a/arch/x86/kernel/cpu/intel_epb.c
++++ b/arch/x86/kernel/cpu/intel_epb.c
+@@ -50,7 +50,8 @@
+  * the OS will do that anyway.  That sometimes is problematic, as it may cause
+  * the system battery to drain too fast, for example, so it is better to adjust
+  * it on CPU bring-up and if the initial EPB value for a given CPU is 0, the
+- * kernel changes it to 6 ('normal').
++ * kernel changes it to 6 ('normal'). However, if it is desirable to retain the
++ * original initial EPB value, intel_epb=preserve can be set to enforce it.
+  */
+ 
+ static DEFINE_PER_CPU(u8, saved_epb);
+@@ -75,6 +76,8 @@ static u8 energ_perf_values[] = {
+ 	[EPB_INDEX_POWERSAVE] = ENERGY_PERF_BIAS_POWERSAVE,
+ };
+ 
++static bool intel_epb_no_override __read_mostly;
++
+ static int intel_epb_save(void)
+ {
+ 	u64 epb;
+@@ -106,7 +109,7 @@ static void intel_epb_restore(void)
+ 		 * ('normal').
+ 		 */
+ 		val = epb & EPB_MASK;
+-		if (val == ENERGY_PERF_BIAS_PERFORMANCE) {
++		if (!intel_epb_no_override && val == ENERGY_PERF_BIAS_PERFORMANCE) {
+ 			val = energ_perf_values[EPB_INDEX_NORMAL];
+ 			pr_warn_once("ENERGY_PERF_BIAS: Set to 'normal', was 'performance'\n");
+ 		}
+@@ -213,6 +216,20 @@ static const struct x86_cpu_id intel_epb_normal[] = {
+ 	{}
+ };
+ 
++static __init int parse_intel_epb(char *str)
 +{
-+	const struct net_offload *ops = NULL;
-+	struct ipv6_opt_hdr *opth;
++	if (!str)
++		return 0;
 +
-+	for (;;) {
-+		int len;
++	/* "intel_epb=preserve" prevents PERFORMANCE->NORMAL on restore. */
++	if (!strcmp(str, "preserve"))
++		intel_epb_no_override = true;
 +
-+		ops = rcu_dereference(inet6_offloads[proto]);
-+
-+		if (unlikely(!ops))
-+			break;
-+
-+		if (!(ops->flags & INET6_PROTO_GSO_EXTHDR))
-+			break;
-+
-+		opth = skb_gro_header(skb, off + sizeof(*opth), off);
-+		if (unlikely(!opth))
-+			break;
-+
-+		len = ipv6_optlen(opth);
-+
-+		opth = skb_gro_header(skb, off + len, off);
-+		if (unlikely(!opth))
-+			break;
-+		proto = opth->nexthdr;
-+
-+		off += len;
-+	}
-+
-+	skb_gro_pull(skb, off - skb_network_offset(skb));
-+	return proto;
++	return 0;
 +}
 +
- static int ipv6_gso_pull_exthdrs(struct sk_buff *skb, int proto)
- {
- 	const struct net_offload *ops = NULL;
-@@ -203,28 +237,25 @@ INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_receive(struct list_head *head,
- 		goto out;
- 
- 	skb_set_network_header(skb, off);
--	skb_gro_pull(skb, sizeof(*iph));
--	skb_set_transport_header(skb, skb_gro_offset(skb));
- 
--	flush += ntohs(iph->payload_len) != skb_gro_len(skb);
-+	flush += ntohs(iph->payload_len) != skb->len - hlen;
- 
- 	proto = iph->nexthdr;
- 	ops = rcu_dereference(inet6_offloads[proto]);
- 	if (!ops || !ops->callbacks.gro_receive) {
--		pskb_pull(skb, skb_gro_offset(skb));
--		skb_gro_frag0_invalidate(skb);
--		proto = ipv6_gso_pull_exthdrs(skb, proto);
--		skb_gro_pull(skb, -skb_transport_offset(skb));
--		skb_reset_transport_header(skb);
--		__skb_push(skb, skb_gro_offset(skb));
-+		proto = ipv6_gro_pull_exthdrs(skb, hlen, proto);
- 
- 		ops = rcu_dereference(inet6_offloads[proto]);
- 		if (!ops || !ops->callbacks.gro_receive)
- 			goto out;
- 
--		iph = ipv6_hdr(skb);
-+		iph = skb_gro_network_header(skb);
-+	} else {
-+		skb_gro_pull(skb, sizeof(*iph));
- 	}
- 
-+	skb_set_transport_header(skb, skb_gro_offset(skb));
++early_param("intel_epb", parse_intel_epb);
 +
- 	NAPI_GRO_CB(skb)->proto = proto;
- 
- 	flush--;
+ static __init int intel_epb_init(void)
+ {
+ 	const struct x86_cpu_id *id = x86_match_cpu(intel_epb_normal);
 -- 
-2.36.1
+2.40.1
 
 
