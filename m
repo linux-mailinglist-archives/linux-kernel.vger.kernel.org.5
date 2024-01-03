@@ -1,74 +1,91 @@
-Return-Path: <linux-kernel+bounces-15025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00BDC822651
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:07:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3A05822653
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:07:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8F721F2288A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:07:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6336D284A7E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:07:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6509E10EE;
-	Wed,  3 Jan 2024 01:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676D01C2E;
+	Wed,  3 Jan 2024 01:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Qf/Al1vR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE15808;
-	Wed,  3 Jan 2024 01:07:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VzrtB.y_1704244041;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VzrtB.y_1704244041)
-          by smtp.aliyun-inc.com;
-          Wed, 03 Jan 2024 09:07:22 +0800
-From: Yang Li <yang.lee@linux.alibaba.com>
-To: kent.overstreet@linux.dev,
-	bfoster@redhat.com
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH -next] bcachefs: Remove unneeded semicolon
-Date: Wed,  3 Jan 2024 09:07:20 +0800
-Message-Id: <20240103010720.39784-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76D8FEBD
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 01:07:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-2041e117abaso4851047fac.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 17:07:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704244052; x=1704848852; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MLUaZqAmH0PbXwN8L6W3NTkw4zv2k9fgIgmV6JpxLJE=;
+        b=Qf/Al1vRyoiO0JC/pdVrWSZ7R4I1/RS7DMx9B6bT+bMsuKD6yEcA0Tk0M+FEKC4Ary
+         yNHytYnVW12WmOdZnNSGJJl4lC7Jt4kSfJNA6Sqt2Ju9SDeRxyHwIQpQZL7X947VZT4O
+         D2uKcC6YPQsHXxZzMevmp+mBf2WNdVjfK+iMHY0ZuQ3Ky+hf4D/4uvunB35vFdKuBBsU
+         VaDWYCYbjRj4cjfE3EzMmqkwODP3XQhDwFmMBD4vKj35oY9/YQBohaUHMvm46qaEGA7t
+         +GDl61WXP41JrUc9rXexQuDzaSse6885DWzvTJdNRcQ2n3hudhRJNihmrbdwLplCvSxp
+         caBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704244052; x=1704848852;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MLUaZqAmH0PbXwN8L6W3NTkw4zv2k9fgIgmV6JpxLJE=;
+        b=A4QxwaYNRGhzClBftX5/bSb8DrQzxN27SxsMq0s74AokKXKi2m1gSlvsmH3aJcV0wh
+         euQxzd+H3KH7K/L5XTFVzQqyfjTsiQf5jcjABfPCEkK75ruOQSfROfBlLLhdMsAq+M1Y
+         VuxKNKnYM9DZYvtAVpoXXeBvlswD45Y9qNXI0zhm7fpIMPj3IOqFdll9XYlQpjycor7y
+         Jr1IxwBKBJzlFRKyfLbjQ9kD7P5iCnOHq6q8n2lfYzYbNQOLJNYDELrbGYS1EuZy3l57
+         ueh79kgHqJ7C/WbStxphrhIOFIXypIdtrR6b3Cd+uJc43i1yaSdoC/eaOfzGDWj0oEhk
+         Qjxw==
+X-Gm-Message-State: AOJu0YysF+oEtq1RLeCJLWm3vNzhb2dRvbp5klyVYFX/A7R/+UGkBL2k
+	gFKJ8gfI2sFNxglFMmRL/sjjL+xjbSJa1hhLiAYdJbI7J7S3sQ==
+X-Google-Smtp-Source: AGHT+IGcrNg+LJPOn7zrsml4hvDDeGlluQBsFuCyycHjTzf3I+3UxYPMnLvXx116vmDlSxEfArGrGfj28Pd5veWibNk=
+X-Received: by 2002:a05:6871:724:b0:204:1aee:7807 with SMTP id
+ f36-20020a056871072400b002041aee7807mr13980212oap.15.1704244052510; Tue, 02
+ Jan 2024 17:07:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240102-topic-gpu_cooling-v1-0-fda30c57e353@linaro.org> <20240102-topic-gpu_cooling-v1-8-fda30c57e353@linaro.org>
+In-Reply-To: <20240102-topic-gpu_cooling-v1-8-fda30c57e353@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 3 Jan 2024 03:07:21 +0200
+Message-ID: <CAA8EJpr0w3OqZPbgwiC=NbJdSOBHnWO87oqgjSa1eNfbG8ibAw@mail.gmail.com>
+Subject: Re: [PATCH 08/12] arm64: dts: qcom: sm8250: Hook up GPU cooling device
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-./fs/bcachefs/super.c:1093:59-60: Unneeded semicolon
-./fs/bcachefs/super.c:1097:59-60: Unneeded semicolon
+On Tue, 2 Jan 2024 at 15:37, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>
+> In order to allow for throttling the GPU, hook up the cooling device
+> to the respective thermal zones. Also, update the trip point label
+> to be more telling, while at it.
+>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sm8250.dtsi | 19 +++++++++++++++++--
+>  1 file changed, 17 insertions(+), 2 deletions(-)
 
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- fs/bcachefs/super.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-index 64ff7da49860..bc254d69b596 100644
---- a/fs/bcachefs/super.c
-+++ b/fs/bcachefs/super.c
-@@ -1090,11 +1090,11 @@ static int bch2_dev_in_fs(struct bch_sb_handle *fs,
- 		prt_newline(&buf);
- 
- 		prt_printf(&buf, "%pg ", fs->bdev);
--		bch2_prt_datetime(&buf, le64_to_cpu(fs->sb->write_time));;
-+		bch2_prt_datetime(&buf, le64_to_cpu(fs->sb->write_time));
- 		prt_newline(&buf);
- 
- 		prt_printf(&buf, "%pg ", sb->bdev);
--		bch2_prt_datetime(&buf, le64_to_cpu(sb->sb->write_time));;
-+		bch2_prt_datetime(&buf, le64_to_cpu(sb->sb->write_time));
- 		prt_newline(&buf);
- 
- 		prt_printf(&buf, "Not using older sb");
 -- 
-2.20.1.7.g153144c
-
+With best wishes
+Dmitry
 
