@@ -1,124 +1,105 @@
-Return-Path: <linux-kernel+bounces-15553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 853A5822E0D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9574D822E10
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:12:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D0752854C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:12:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 435D7285485
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:12:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8162F199A4;
-	Wed,  3 Jan 2024 13:11:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E23199D2;
+	Wed,  3 Jan 2024 13:12:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YjiXUhhX"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JaaMuVv9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B901F1945C;
-	Wed,  3 Jan 2024 13:11:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47A78C433C7;
-	Wed,  3 Jan 2024 13:11:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704287514;
-	bh=qIhmbs4q19ce2u3+/p/L4uydu2guvXDqASx18xBCCcw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YjiXUhhXpqumwXKQPMqpkdB4wPrRMy0bOzR1kahYVY1+qE5n7Z4haXZSfzT55IAI1
-	 ynnt4aDFeWwdn3Bmo5Bfg3xsBbD4VmuDjTgmQqqSG0Dix3Qw+sRw31WGG1TTPzsztY
-	 xEBVl2pFbuK9dXt2+f5UHWoEFd+owy0H5XKrkZJgan6ykecKAc0NlQ3PixVapEOMsh
-	 WZaVatHDS9M7AbWzldR9FtJbZ8YV4Nj0WtHrYRV+9O+mPx3NBqug+uWnuoXIFfBHdv
-	 wIXZQatu7fvlr03zk4kPyj4OlIeIKc3RW7eL39FEqzhdIH8rP99VcvF/HkLUMW9Uyc
-	 e/qinOLQAN2uw==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e766937ddso8433219e87.3;
-        Wed, 03 Jan 2024 05:11:54 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw7x6HLmhqYQWyCD4Ng8AH0hEZWtJfvJPFXxVvQYICwYEqdc8pj
-	k1ASIwzd6P/jUQdMzKHIwexv7bnN81u+UYHAWIU=
-X-Google-Smtp-Source: AGHT+IH2AecowZ+aHnkLeMgGIy725oLMF333U21alEK2Fc5uT7O22wyPK+unkG3ON5Ldu0WACaHrxvakM17+AqJ7PHk=
-X-Received: by 2002:ac2:5190:0:b0:50e:aa04:b2e9 with SMTP id
- u16-20020ac25190000000b0050eaa04b2e9mr24496lfi.39.1704287512452; Wed, 03 Jan
- 2024 05:11:52 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C52199BA
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704287524; x=1735823524;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=VlJTA9kn9qE7nS9SkLOmO5VdHSU4SFs95W2IcezjeJA=;
+  b=JaaMuVv9pXg6ggWfbhvI11wOVjJUnGDh+ZLacnBx4r50F43MwtMOtE8O
+   nMo+F7UUEaNzzCPBiu4LuvJ2+StON6OptxkILacgGQiWgOcFkRmMrkC7Z
+   I0fvXBEw3RlotfpHyFvmqn5d4sHTTaqhpgamJkC5A3M6SXNzWM9UKYAv3
+   iqbFbFFvGb9IOA/sjV2LMZYA6sJevEC8hT+Zl3NsyS80v3xO7ZaiPNBDa
+   0nZYAVyJ9tEw0ROTDv7kah2DuqNuwndeM/NhIj6PJDV6kkMC4Ucs+j2IO
+   CDxtt5Bu++CpDGxm4+UlzZTViYZe7giTPn/jwsRyyMWRVf0/rzEpy9Ph9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="3807463"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="3807463"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 05:12:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="729781338"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="729781338"
+Received: from lapeders-mobl1.ger.corp.intel.com (HELO [10.249.254.243]) ([10.249.254.243])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 05:12:00 -0800
+Message-ID: <1f5633526f6f2d39382fa638adc0e5c0b3cb61ab.camel@linux.intel.com>
+Subject: Re: [PATCH -next] drm/xe: Remove unneeded semicolon
+From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
+To: Yang Li <yang.lee@linux.alibaba.com>, daniel@ffwll.ch,
+ airlied@gmail.com,  mripard@kernel.org, tzimmermann@suse.de,
+ maarten.lankhorst@linux.intel.com
+Cc: lucas.demarchi@intel.com, intel-xe@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Date: Wed, 03 Jan 2024 14:11:57 +0100
+In-Reply-To: <20240103011515.56529-1-yang.lee@linux.alibaba.com>
+References: <20240103011515.56529-1-yang.lee@linux.alibaba.com>
+Organization: Intel Sweden AB, Registration Number: 556189-6027
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215122614.5481-1-tzimmermann@suse.de> <20231215122614.5481-3-tzimmermann@suse.de>
- <CAMj1kXHrn-PxpMGnR4VoHv7kHvQYyf8SS9i1irm9Gi_uBseciw@mail.gmail.com> <97f118fc-b38f-4bcc-83d3-4d3c13edf7a0@suse.de>
-In-Reply-To: <97f118fc-b38f-4bcc-83d3-4d3c13edf7a0@suse.de>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Wed, 3 Jan 2024 14:11:40 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXF-1TXYzheS-e_rGKnV+6FrkZe+e2sfCixyUzxSQE7X6w@mail.gmail.com>
-Message-ID: <CAMj1kXF-1TXYzheS-e_rGKnV+6FrkZe+e2sfCixyUzxSQE7X6w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] arch/x86: Add <asm/ima-efi.h> for arch_ima_efi_boot_mode
-To: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	bhelgaas@google.com, arnd@arndb.de, zohar@linux.ibm.com, 
-	dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org, 
-	serge@hallyn.com, javierm@redhat.com, linux-arch@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pci@vger.kernel.org, linux-integrity@vger.kernel.org, 
-	linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 2 Jan 2024 at 15:07, Thomas Zimmermann <tzimmermann@suse.de> wrote:
->
-> Hii Ard
->
-> Am 19.12.23 um 12:38 schrieb Ard Biesheuvel:
-> > Hi Thomas,
-> >
-> > On Fri, 15 Dec 2023 at 13:26, Thomas Zimmermann <tzimmermann@suse.de> wrote:
-> >>
-> >> The header file <asm/efi.h> contains the macro arch_ima_efi_boot_mode,
-> >> which expands to use struct boot_params from <asm/bootparams.h>. Many
-> >> drivers include <linux/efi.h>, but do not use boot parameters. Changes
-> >> to bootparam.h or its included headers can easily trigger large,
-> >> unnessary rebuilds of the kernel.
-> >>
-> >> Moving x86's arch_ima_efi_boot_mode to <asm/ima-efi.h> and including
-> >> <asm/setup.h> separates that dependency from the rest of the EFI
-> >> interfaces. The only user is in ima_efi.c. As the file already declares
-> >> a default value for arch_ima_efi_boot_mode, move this define into
-> >> asm-generic for all other architectures.
-> >>
-> >> With arch_ima_efi_boot_mode removed from efi.h, <asm/bootparam.h> can
-> >> later be removed from further x86 header files.
-> >>
-> >
-> > Apologies if I missed this in v1 but is the new asm-generic header
-> > really necessary? Could we instead turn arch_ima_efi_boot_mode into a
-> > function that is a static inline { return unset; } by default, but can
-> > be emitted out of line in one of the x86/platform/efi.c source files,
-> > where referring to boot_params is fine?
->
-> I cannot figure out how to do this without *something* in asm-generic or
-> adding if-CONFIG_X86 guards in ima-efi.c.
->
-> But I noticed that linux/efi.h already contains 2 or 3 ifdef branches
-> for x86. Would it be an option to move this code into asm/efi.h
-> (including a header file in asm-generic for the non-x86 variants) and
-> add the arch_ima_efi_boot_mode() helper there as well?  At least that
-> wouldn't be a header for only a single define.
->
+Hi, Yang,
 
-Could we just move the x86 implementation out of line?
+On Wed, 2024-01-03 at 09:15 +0800, Yang Li wrote:
+> ./drivers/gpu/drm/xe/xe_rtp.c:168:2-3: Unneeded semicolon
+>=20
 
-So something like this in arch/x86/include/asm/efi.h
+Could you please reformulate using imperative "Remove..." rather than
+citing a style alert?
 
-enum efi_secureboot_mode x86_ima_efi_boot_mode(void);
-#define arch_ima_efi_boot_mode x86_ima_efi_boot_mode()
+With that,
+Reviewed-by: Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com>
 
-and an implementation in one of the related .c files:
 
-enum efi_secureboot_mode x86_ima_efi_boot_mode(void)
-{
-    return boot_params.secure_boot;
-}
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+> =C2=A0drivers/gpu/drm/xe/xe_rtp.c | 2 +-
+> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/xe/xe_rtp.c
+> b/drivers/gpu/drm/xe/xe_rtp.c
+> index fb44cc7521d8..316ed2f6d1f0 100644
+> --- a/drivers/gpu/drm/xe/xe_rtp.c
+> +++ b/drivers/gpu/drm/xe/xe_rtp.c
+> @@ -165,7 +165,7 @@ static void rtp_get_context(struct
+> xe_rtp_process_ctx *ctx,
+> =C2=A0		*gt =3D (*hwe)->gt;
+> =C2=A0		*xe =3D gt_to_xe(*gt);
+> =C2=A0		break;
+> -	};
+> +	}
+> =C2=A0}
+> =C2=A0
+> =C2=A0/**
 
-?
 
