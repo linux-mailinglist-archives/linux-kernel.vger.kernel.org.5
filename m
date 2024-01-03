@@ -1,31 +1,64 @@
-Return-Path: <linux-kernel+bounces-15452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1B99822C32
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:34:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06183822C30
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:34:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B6BB2824CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:34:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6713E1F2401A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE6A18EB6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5556418E3C;
 	Wed,  3 Jan 2024 11:33:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hhv2qjci"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D2418E1A;
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A5A018E21;
 	Wed,  3 Jan 2024 11:33:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0BE85C15;
-	Wed,  3 Jan 2024 03:34:40 -0800 (PST)
-Received: from [10.57.45.90] (unknown [10.57.45.90])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6156E3F7A6;
-	Wed,  3 Jan 2024 03:33:52 -0800 (PST)
-Message-ID: <b2b6cccb-ede0-4f19-bfaf-efdc203de7f2@arm.com>
-Date: Wed, 3 Jan 2024 11:33:51 +0000
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40d5f402571so70056005e9.0;
+        Wed, 03 Jan 2024 03:33:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704281633; x=1704886433; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9ohc7n8TVBVA7/T0EriFba7tB6cwG/fNjcjj7C7uviM=;
+        b=Hhv2qjci59wP6za0qTnkjsrBlD78d2R32f7LeqFHLSi8MieV87Ao9y9BBBljqtqifc
+         PxOgll2lPsDoPXoeywAdC5b2w6qlPoqSG7V+QP00Evny8tlwl5XuMIoMm54DgCXx6AIW
+         Xn8o9P0gRFJkCcVqBMbIKIBGsttEDiz4dLOvyEvETQf8FtA6mAI+EoMCZmvDwjrSqRQv
+         vq/RYN2EIb95lspsvBai0JH6a6heD+br0pn/L4qxS6O9BmT+cpnR8joqLSoyEr30XD1j
+         PZOV7VqFNXnvcyqX6nIKWC0XAS4zjmD5Iy3OZCDPmQnKej3b7oqyQawrAxNp2dx4BMgc
+         1i8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704281633; x=1704886433;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9ohc7n8TVBVA7/T0EriFba7tB6cwG/fNjcjj7C7uviM=;
+        b=JN/LZnaGv2O6357V4GASfjL2NmmHQ+ekBIsw4hTq55XcVXQJC1r0w6rb+eY4PinFKt
+         +j3NowezgyH9dsn+b0QimYMvUgu2LuA22suN1RAzLdKvMbZzbaKkuj1TUp2iiMyEAOBu
+         V3zdE5uKVHmWeZNZolbrDNyB6R5IhifTk6TQrSnnvj81372EPNfxcZK0k3g+R44GSGWd
+         hvnLvOL/o+s5iIuTMqCZ1tAMA3BgLiTH4JbrdNgeeBe79WfBmuif+SFNQJHOUZiyZVfS
+         MMdbI8p+YAzz4FxJqYJJ6oFwcEmuF4OTWhxtZLMy1pGKTgbvYDn5vE7PvUlhboaBRaBB
+         FAdg==
+X-Gm-Message-State: AOJu0YzGYHvGZGXRKAEBpC0GAJ9bTnYvz5kpZ1knnuvmlGAZl15kGagI
+	RwWOSVJ6pAJoLCawOcQq3e06RV+2RIY=
+X-Google-Smtp-Source: AGHT+IE9+xOdktMpz/1QouXYzi2ALYWAZOU3I+meM9kVvuAwrYvUoULxCXRkAtT6H7AivGjgrD8gtA==
+X-Received: by 2002:a05:600c:138d:b0:40d:6473:c666 with SMTP id u13-20020a05600c138d00b0040d6473c666mr4683062wmf.147.1704281632992;
+        Wed, 03 Jan 2024 03:33:52 -0800 (PST)
+Received: from ?IPV6:2a01:c22:7399:5700:b8cf:27e9:e910:c205? (dynamic-2a01-0c22-7399-5700-b8cf-27e9-e910-c205.c22.pool.telefonica.de. [2a01:c22:7399:5700:b8cf:27e9:e910:c205])
+        by smtp.googlemail.com with ESMTPSA id k16-20020a05600c0b5000b0040d88f6bc94sm2028531wmr.34.2024.01.03.03.33.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jan 2024 03:33:52 -0800 (PST)
+Message-ID: <5b0a6150-8043-4de7-980f-54020a3e7981@gmail.com>
+Date: Wed, 3 Jan 2024 12:33:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -33,192 +66,102 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] coresight: Add coresight name support
-Content-Language: en-GB
-To: James Clark <james.clark@arm.com>, Mao Jinlong
- <quic_jinlmao@quicinc.com>, Mike Leach <mike.leach@linaro.org>
-Cc: coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- Tingwei Zhang <quic_tingweiz@quicinc.com>,
- Yuanfang Zhang <quic_yuanfang@quicinc.com>,
- Tao Zhang <quic_taozha@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20231228093321.5522-1-quic_jinlmao@quicinc.com>
- <12ce6e5d-6e4d-fb99-eb82-dece97423bfb@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <12ce6e5d-6e4d-fb99-eb82-dece97423bfb@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH] r8169: fix building with CONFIG_LEDS_CLASS=m
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+ Lee Jones <lee@kernel.org>
+References: <20240103102630.3770242-1-arnd@kernel.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Autocrypt: addr=hkallweit1@gmail.com; keydata=
+ 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
+In-Reply-To: <20240103102630.3770242-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 28/12/2023 11:26, James Clark wrote:
+On 03.01.2024 11:26, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
+> When r8169 is built-in but the LED support is a loadable module, the
+> new code to drive the LED now causes a link failure:
 > 
-> On 28/12/2023 09:33, Mao Jinlong wrote:
->> Add coresight name support for custom names which will be
->> easy to identify the device by the name.
->>
+> ld: drivers/net/ethernet/realtek/r8169_leds.o: in function `rtl8168_init_leds':
+> r8169_leds.c:(.text+0x36c): undefined reference to `devm_led_classdev_register_ext'
 > 
-> I suppose this is more of a V2 because the subject is the same as the
-> one sent earlier this year. But it looks like the discussion on the
-> previous one wasn't resolved.
+> Add a Kconfig dependency to prevent the broken configuration but still
+> allow having the network code built-in as long as CONFIG_LEDS_TRIGGER_NETDEV
+> is disabled, regardless of CONFIG_LEDS_CLASS.
 > 
-> With the main issues to solve being:
-> 
->   * It would be nice to use the existing root node name instead of adding
->     a new property. But at the same time DT nodes are supposed to have
->     generic names.
-> 
->   * This only works for DT and not ACPI
-> 
-> To me it seems like adding the new property is just a "cheat" to get
-> around not being allowed to have a specific name for the root node. But
-> if we admit that we need a name I don't see the benefit of not putting
-> the name where the node is already named.
-> 
-> Using the root node name at this point would also undo the hard coded
-> per-cpu naming of the CTI and ETM devices, so maybe it would be nice,
-> but it's just too late. That means that a new field is necessary.
+The proposed change is more of a workaround IMO. A proper fix (in LED subsystem)
+has been submitted, but it's not reviewed/applied yet. And I don't think building
+r8169 should depend on support for an optional feature.
+This fix would also allow to remove Kconfig dependencies similar to the one
+proposed here from other drivers. Link to submitted fix:
 
-The CTI and ETM can be handled as special cases, like they are
-already done and fall back to the nodename for the rest ?
-But, I thought the node names must be generic (e.g, cti) and doesn't
-really solve the naming requirements for naming CTIs. (e.g,
-<device>_tpda, etr_cti). Is there something I missed ?
+https://lore.kernel.org/linux-leds/0f6f432b-c650-4bb8-a1b5-fe3372804d52@gmail.com/T/#u
 
-> Although that field could be a boolean like "use-root-name-for-display"
-> or something like that. In the end it probably doesn't really make a
-> difference whether it's that or a name string. >
-> And maybe the answer to the ACPI question is just that if anyone needs
-> it, they can add it in the future. It doesn't seem like it would
-> conflict with anything we do here.
+> Fixes: 18764b883e15 ("r8169: add support for LED's on RTL8168/RTL8101")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/net/ethernet/realtek/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 > 
->> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->> ---
->>   .../hwtracing/coresight/coresight-cti-core.c  | 20 ++++++++------
->>   drivers/hwtracing/coresight/coresight-dummy.c | 10 ++++---
->>   .../hwtracing/coresight/coresight-platform.c  | 27 +++++++++++++++++++
->>   drivers/hwtracing/coresight/coresight-tpdm.c  | 10 ++++---
->>   include/linux/coresight.h                     |  1 +
->>   5 files changed, 53 insertions(+), 15 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
->> index 3999d0a2cb60..60a1e76064a9 100644
->> --- a/drivers/hwtracing/coresight/coresight-cti-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
->> @@ -902,14 +902,18 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
->>   	/* default to powered - could change on PM notifications */
->>   	drvdata->config.hw_powered = true;
->>   
->> -	/* set up device name - will depend if cpu bound or otherwise */
->> -	if (drvdata->ctidev.cpu >= 0)
->> -		cti_desc.name = devm_kasprintf(dev, GFP_KERNEL, "cti_cpu%d",
->> -					       drvdata->ctidev.cpu);
->> -	else
->> -		cti_desc.name = coresight_alloc_device_name(&cti_sys_devs, dev);
-> 
-> Can we put the new name stuff inside coresight_alloc_device_name()? Then
-> it happens by default for every device.
-
-+1
-
-> 
-> I know Suzuki said previously to do it per-device, but the new DT
-> property is just "coresight-name", so it's generic. Rather than being
-> specific like "cti-name". So I don't see the benefit of duplicating the
-> code at this point if we do decide to do it.
-
-My suggestion was to name the device based on the specific device rather
-than following a generic rule for all device. e.g., A TPDM connected to 
-modem, could be named as such based on the platform information. It
-could be any means, for e.g., tpdm nodes are always children nodes of
-the devices they are connected to ? or could have a phandle to point to 
-the device they are monitoring etc. And the name could be created from
-the "monitoring device name" + tpdm. Also, we do this for CPU bound CTI
-and ETMs already, where we name them based on the CPU.
-
-But then the "nodename" is something we explored and it looks like
-may not be an option.
-
-> 
->> -	if (!cti_desc.name)
->> -		return -ENOMEM;
->> +	cti_desc.name = coresight_get_device_name(dev);
->> +	if (!cti_desc.name) {
->> +		/* set up device name - will depend if cpu bound or otherwise */
->> +		if (drvdata->ctidev.cpu >= 0)
->> +			cti_desc.name = devm_kasprintf(dev, GFP_KERNEL, "cti_cpu%d",
->> +						       drvdata->ctidev.cpu);
->> +		else {
->> +			cti_desc.name = coresight_alloc_device_name(&cti_sys_devs, dev);
->> +			if (!cti_desc.name)
->> +				return -ENOMEM;
->> +		}
->> +	}
-
-For these special cases, i.e., CPU bound, we should handle them with 
-priority.
-
-if (drvdata->ctidev.cpu >= 0)
-	name = devm_kasprintf(... "cti_cpu%d", .. cpu);
-else
-         name = coresight_alloc_device_name(...);
-
-> 
->>   
->>   	/* setup CPU power management handling for CPU bound CTI devices. */
->>   	ret = cti_pm_setup(drvdata);
->> diff --git a/drivers/hwtracing/coresight/coresight-dummy.c b/drivers/hwtracing/coresight/coresight-dummy.c
->> index e4deafae7bc2..b19cd400df79 100644
->> --- a/drivers/hwtracing/coresight/coresight-dummy.c
->> +++ b/drivers/hwtracing/coresight/coresight-dummy.c
->> @@ -76,10 +76,12 @@ static int dummy_probe(struct platform_device *pdev)
->>   	struct coresight_desc desc = { 0 };
->>   
->>   	if (of_device_is_compatible(node, "arm,coresight-dummy-source")) {
->> -
->> -		desc.name = coresight_alloc_device_name(&source_devs, dev);
->> -		if (!desc.name)
->> -			return -ENOMEM;
->> +		desc.name = coresight_get_device_name(dev);
->> +		if (!desc.name) {
->> +			desc.name = coresight_alloc_device_name(&source_devs, dev);
->> +			if (!desc.name)
->> +				return -ENOMEM;
->> +		}
->>   
->>   		desc.type = CORESIGHT_DEV_TYPE_SOURCE;
->>   		desc.subtype.source_subtype =
->> diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
->> index 9d550f5697fa..284aa22a06b7 100644
->> --- a/drivers/hwtracing/coresight/coresight-platform.c
->> +++ b/drivers/hwtracing/coresight/coresight-platform.c
->> @@ -183,6 +183,18 @@ static int of_coresight_get_cpu(struct device *dev)
->>   	return cpu;
->>   }
->>   
->> +static const char *of_coresight_get_device_name(struct device *dev)
->> +{
->> +	const char *name = NULL;
->> +
->> +	if (!dev->of_node)
->> +		return NULL;
->> +
->> +	of_property_read_string(dev->of_node, "coresight-name", &name);
-> 
-> Do you need to update the binding docs with this new property?
-> 
-> Also a minor nit: Maybe "display-name" is better? "Coresight" is
-> implied, and the node is already named, although that node name isn't
-> used for display purposes, but this one is.
-
-On that front, the name is used as a "device" name and not simply 
-display. So, even "device-name" sounds more appropriate.
-
-Suzuki
-
-> 
-> Thanks
-> James
+> diff --git a/drivers/net/ethernet/realtek/Kconfig b/drivers/net/ethernet/realtek/Kconfig
+> index 93d9df55b361..fd3f18b328de 100644
+> --- a/drivers/net/ethernet/realtek/Kconfig
+> +++ b/drivers/net/ethernet/realtek/Kconfig
+> @@ -98,6 +98,7 @@ config 8139_OLD_RX_RESET
+>  config R8169
+>  	tristate "Realtek 8169/8168/8101/8125 ethernet support"
+>  	depends on PCI
+> +	depends on LEDS_CLASS || !LEDS_TRIGGER_NETDEV
+>  	select FW_LOADER
+>  	select CRC32
+>  	select PHYLIB
 
 
