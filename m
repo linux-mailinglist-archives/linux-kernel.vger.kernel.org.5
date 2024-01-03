@@ -1,60 +1,62 @@
-Return-Path: <linux-kernel+bounces-16098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 820128238EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:05:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9CEC8238F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:05:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25975B24631
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:05:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C11DB1C20D03
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C0441EB3C;
-	Wed,  3 Jan 2024 23:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02601200AD;
+	Wed,  3 Jan 2024 23:04:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GN8IGB0/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UM9pj0wD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59AB71F95A;
-	Wed,  3 Jan 2024 23:04:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B5A1EB4D;
+	Wed,  3 Jan 2024 23:04:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40d60c49ee7so60942835e9.0;
-        Wed, 03 Jan 2024 15:04:53 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40d8991f1acso30176745e9.1;
+        Wed, 03 Jan 2024 15:04:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704323091; x=1704927891; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EKP/S6XSZaDGcudVaS0h8PY9BVZmPCIH7/appJgF/zE=;
-        b=GN8IGB0//uItkWoSyjYTr838W2TQxNmKReg1+0q69V8sdVz5Vzksmy/wV16EJATn7R
-         tRpyxVTzwA+65mP7QBQPFpOElGNenbgCU529cOZHc9ADW5qsdVM9K2+JkqysThs6tB/c
-         McbR34DbCv8FkPgRU67bbk631aluf6vDpyrQstSRDkZBPWLGkG4UaG/PPsa7w3zA2rX7
-         H4DAc1KNe5Qwm3m4KT3OGcQ6TN8jy+NebWQf2NVF2koianMSc39jbdaeoWTd2rx/rxo7
-         GqRhnfEOrPptxGjcIQ6K+uYK/qxNsdUO3gpVJboy8wS8Nbb0kHqKcO57mZIRgC3M62/x
-         JPWw==
+        d=gmail.com; s=20230601; t=1704323094; x=1704927894; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h5mxLkh2hEgcMvbfMMh1KibA3U7+O5yTNHMAUzMLGy8=;
+        b=UM9pj0wDPp7q7hu6peH7kQvotbkNn5y6McrJLMb7zmHdcOwjINfXX1k28C6ADKVdXW
+         DtwlgFLU2WmAwlMzkmI0IRNchcSh9EhI/OPJWw9nZTeaDoH0vOw+AuK0EeuB0tnIrTrG
+         SJ/9Dw6fWWrB85nsBkvhvYvPrTM62yCGFcjuvAjvxjIP8ePO52k/ofyu6hnzS6JrzIxG
+         fAQ6b50Gtq4vjJOimEiVMVWdU1NEcY9qkaxKjwvohvN0NCu7OQ1zHmsmJnsGPK4BGqws
+         RNgS60BqNfZHQMa9yWDwrTkk9F3EJdaZm7BieCkifgfmvJOFX8UVHcUUa/b6se9gdgzT
+         SjoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704323091; x=1704927891;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EKP/S6XSZaDGcudVaS0h8PY9BVZmPCIH7/appJgF/zE=;
-        b=jl7/e7nYbZSpJCUlkb73awcm28Qwa0L6QvRXitJJywO7hOtUTQ49XHzXczOmosbLQn
-         Qrv5ksnK20oZMkBC3wyPBuft1zQjuHQ53197aALwDBPXAP3DcCQ2+KwbKhEgmYVYfZ+k
-         BAg8r6/8E/hyA63k+8dmrGP/6RWxyWcdrwKQeW4qlhOitnhZp/SmITa/MK353ZJQ1yqA
-         etrOgIVBcY9a/89kl+PQkbFL8qaJ+D7I6MRWKw5oUeWRqjzTWpg9Mju2joDgElMIZnk1
-         tarIUyecw4UZVJcSudyyBrRj54g81Qx5r8WEnzDc66wn8PKMHad2wTBaqqrFX0775lSK
-         NxpQ==
-X-Gm-Message-State: AOJu0YxSxvslQtfFQV3zLyoLvsqT78kBxG9sGROdVm75OrXr82S1icfA
-	UNOTWXKfjedH36iW2maBQXI=
-X-Google-Smtp-Source: AGHT+IG1+90FL/z53soE2V8+HrXb98ZdAJ4W4hmXkScdkrI8R6H31ryA90iwZMBeRr9IjlI2AKzZ5g==
-X-Received: by 2002:a05:600c:2116:b0:40d:5fd4:ce2c with SMTP id u22-20020a05600c211600b0040d5fd4ce2cmr5275517wml.53.1704323091218;
-        Wed, 03 Jan 2024 15:04:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704323094; x=1704927894;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h5mxLkh2hEgcMvbfMMh1KibA3U7+O5yTNHMAUzMLGy8=;
+        b=D5veB5JqOn1rcg9y/6jjqeEtjCPEfC9KWMeIWFhnH/u0JK6WZNU+savDUiaTvDNhFr
+         AVvhYfrATlfqW44QZPnpA70olfIpyDTA+BOgkje/ZjDdINlbov55C8wt7qsgdcgblFW5
+         Ij1WLiiPvPhjloJ4+cSStdpuqqcxXdZBaG2/Q2eGKk/zCFcfgtsAbFYPvotOMqnUQG1P
+         qFyvPJVHoEI7vx7I8UigpOxifgnOd04I4oWLo099+/5lsVIWjkGB4mDANaGvSC87cCWi
+         xEPaaF6GA5Xfbe8xCsQyF5wkwjbLcg75Cnawh9LKoH3LZcQuIVf6jW8deYri9L1gkuZU
+         NdyA==
+X-Gm-Message-State: AOJu0YyDL60bN3h+9zGs8mRP603xmVBSBDUE4/OlqUeiFHFCilzjDhkR
+	Dlv9ufWiq2YzNbmw0PpSbv8jeDOnJBY=
+X-Google-Smtp-Source: AGHT+IHAmeTu+jF5onvM2pCia1OCue8oStra9I1TEanLdWYL2iGwpd1/7HhsZiRORPG1HLG8160QZQ==
+X-Received: by 2002:a05:600c:474b:b0:40d:7247:2846 with SMTP id w11-20020a05600c474b00b0040d72472846mr5192909wmo.110.1704323093646;
+        Wed, 03 Jan 2024 15:04:53 -0800 (PST)
 Received: from localhost.localdomain (host-80-116-159-187.retail.telecomitalia.it. [80.116.159.187])
-        by smtp.googlemail.com with ESMTPSA id w13-20020a05600c474d00b0040c46719966sm3740969wmo.25.2024.01.03.15.04.48
+        by smtp.googlemail.com with ESMTPSA id w13-20020a05600c474d00b0040c46719966sm3740969wmo.25.2024.01.03.15.04.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 15:04:50 -0800 (PST)
+        Wed, 03 Jan 2024 15:04:53 -0800 (PST)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: Pavel Machek <pavel@ucw.cz>,
 	Lee Jones <lee@kernel.org>,
@@ -83,10 +85,12 @@ To: Pavel Machek <pavel@ucw.cz>,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	netdev@vger.kernel.org
-Subject: [net-next PATCH v7 0/5] net: phy: generic polarity + LED support for qca808x
-Date: Wed,  3 Jan 2024 15:12:33 +0100
-Message-ID: <20240103141251.23446-1-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v7 1/5] dt-bindings: net: phy: Make LED active-low property common
+Date: Wed,  3 Jan 2024 15:12:34 +0100
+Message-ID: <20240103141251.23446-2-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240103141251.23446-1-ansuelsmth@gmail.com>
+References: <20240103141251.23446-1-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,44 +99,124 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This small series add LEDs support for qca808x.
+Move LED active-low property to common.yaml. This property is currently
+defined multiple times by bcm LEDs. This property will now be supported
+in a generic way for PHY LEDs with the use of a generic function.
 
-QCA808x apply on PHY reset a strange polarity settings and require
-some tweak to apply a more common configuration found on devices.
-On adding support for it, it was pointed out that a similar
-feature is also being implemented for a marvell PHY where
-LED polarity is set per LED (and not global) and also have
-a special mode where the LED is tristated.
+With active-low bool property not defined, active-high is always
+assumed.
 
-The first 3 patch are to generalize this as we expect more PHY
-in the future to have a similar configuration.
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+Changes v5:
+- Make active-low generic
+Changes v4:
+- Drop support for global active-low
+- Rework to polarity option (for marvell10g series support)
+Changes v3:
+- Out of RFC
+Changes v2:
+- Add this patch
 
-The implementation is extensible to support additional special
-mode in the future with minimal changes and don't create regression
-on already implemented PHY drivers.
+ Documentation/devicetree/bindings/leds/common.yaml          | 6 ++++++
+ Documentation/devicetree/bindings/leds/leds-bcm63138.yaml   | 4 ----
+ Documentation/devicetree/bindings/leds/leds-bcm6328.yaml    | 4 ----
+ Documentation/devicetree/bindings/leds/leds-bcm6358.txt     | 2 --
+ .../devicetree/bindings/leds/leds-pwm-multicolor.yaml       | 4 ----
+ Documentation/devicetree/bindings/leds/leds-pwm.yaml        | 5 -----
+ 6 files changed, 6 insertions(+), 19 deletions(-)
 
-(changelog present in single patch)
-
-Christian Marangi (5):
-  dt-bindings: net: phy: Make LED active-low property common
-  dt-bindings: net: phy: Document LED inactive high impedance mode
-  net: phy: add support for PHY LEDs polarity modes
-  dt-bindings: net: Document QCA808x PHYs
-  net: phy: at803x: add LED support for qca808x
-
- .../devicetree/bindings/leds/common.yaml      |  12 +
- .../bindings/leds/leds-bcm63138.yaml          |   4 -
- .../bindings/leds/leds-bcm6328.yaml           |   4 -
- .../devicetree/bindings/leds/leds-bcm6358.txt |   2 -
- .../bindings/leds/leds-pwm-multicolor.yaml    |   4 -
- .../devicetree/bindings/leds/leds-pwm.yaml    |   5 -
- .../devicetree/bindings/net/qca,qca808x.yaml  |  54 +++
- drivers/net/phy/at803x.c                      | 326 ++++++++++++++++++
- drivers/net/phy/phy_device.c                  |  12 +
- include/linux/phy.h                           |  22 ++
- 10 files changed, 426 insertions(+), 19 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/qca,qca808x.yaml
-
+diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
+index c8d0ba5f2327..f5b40df6b421 100644
+--- a/Documentation/devicetree/bindings/leds/common.yaml
++++ b/Documentation/devicetree/bindings/leds/common.yaml
+@@ -200,6 +200,12 @@ properties:
+       #trigger-source-cells property in the source node.
+     $ref: /schemas/types.yaml#/definitions/phandle-array
+ 
++  active-low:
++    type: boolean
++    description:
++      Makes LED active low. To turn the LED ON, line needs to be
++      set to low voltage instead of high.
++
+   # Required properties for flash LED child nodes:
+   flash-max-microamp:
+     description:
+diff --git a/Documentation/devicetree/bindings/leds/leds-bcm63138.yaml b/Documentation/devicetree/bindings/leds/leds-bcm63138.yaml
+index 52252fb6bb32..bb20394fca5c 100644
+--- a/Documentation/devicetree/bindings/leds/leds-bcm63138.yaml
++++ b/Documentation/devicetree/bindings/leds/leds-bcm63138.yaml
+@@ -52,10 +52,6 @@ patternProperties:
+         maxItems: 1
+         description: LED pin number
+ 
+-      active-low:
+-        type: boolean
+-        description: Makes LED active low
+-
+     required:
+       - reg
+ 
+diff --git a/Documentation/devicetree/bindings/leds/leds-bcm6328.yaml b/Documentation/devicetree/bindings/leds/leds-bcm6328.yaml
+index 51cc0d82c12e..f3a3ef992929 100644
+--- a/Documentation/devicetree/bindings/leds/leds-bcm6328.yaml
++++ b/Documentation/devicetree/bindings/leds/leds-bcm6328.yaml
+@@ -78,10 +78,6 @@ patternProperties:
+           - maximum: 23
+         description: LED pin number (only LEDs 0 to 23 are valid).
+ 
+-      active-low:
+-        type: boolean
+-        description: Makes LED active low.
+-
+       brcm,hardware-controlled:
+         type: boolean
+         description: Makes this LED hardware controlled.
+diff --git a/Documentation/devicetree/bindings/leds/leds-bcm6358.txt b/Documentation/devicetree/bindings/leds/leds-bcm6358.txt
+index 6e51c6b91ee5..211ffc3c4a20 100644
+--- a/Documentation/devicetree/bindings/leds/leds-bcm6358.txt
++++ b/Documentation/devicetree/bindings/leds/leds-bcm6358.txt
+@@ -25,8 +25,6 @@ LED sub-node required properties:
+ 
+ LED sub-node optional properties:
+   - label : see Documentation/devicetree/bindings/leds/common.txt
+-  - active-low : Boolean, makes LED active low.
+-    Default : false
+   - default-state : see
+     Documentation/devicetree/bindings/leds/common.txt
+   - linux,default-trigger : see
+diff --git a/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml b/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
+index bd6ec04a8727..5edfbe347341 100644
+--- a/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
++++ b/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
+@@ -41,10 +41,6 @@ properties:
+ 
+           pwm-names: true
+ 
+-          active-low:
+-            description: For PWMs where the LED is wired to supply rather than ground.
+-            type: boolean
+-
+           color: true
+ 
+         required:
+diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.yaml b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+index 7de6da58be3c..113b7c218303 100644
+--- a/Documentation/devicetree/bindings/leds/leds-pwm.yaml
++++ b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+@@ -34,11 +34,6 @@ patternProperties:
+           Maximum brightness possible for the LED
+         $ref: /schemas/types.yaml#/definitions/uint32
+ 
+-      active-low:
+-        description:
+-          For PWMs where the LED is wired to supply rather than ground.
+-        type: boolean
+-
+     required:
+       - pwms
+       - max-brightness
 -- 
 2.43.0
 
