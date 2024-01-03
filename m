@@ -1,472 +1,141 @@
-Return-Path: <linux-kernel+bounces-16036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E84A482374C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:53:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E98E82374E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:54:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7AF51C24904
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:53:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B34C286864
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D39F1DA38;
-	Wed,  3 Jan 2024 21:53:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554631DA3A;
+	Wed,  3 Jan 2024 21:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mELwoRf8"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ze1yS6OV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E1B1DA24
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 21:53:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704318795;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=z/reOEVj60kt63+t17d945cr5tY0nN8d19PQUu/8Tvg=;
-	b=mELwoRf8mEgHvSwF8qcQCEOfHyG1eJEthLdpVtBJ02M+Tzz3RYnIX096Zj6FeGv7aB/DGY
-	Qk9/dYhFUjktGAbAisVnw6lvtW6OZ5zJ5sxhAnaK78hy1NajmrZsuEoPctytPAzX9ArTmt
-	o4PZD6scsaDtXsn0DtOYb+udWDl72B4=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH] bcachefs: factor out thread_with_file, thread_with_stdio
-Date: Wed,  3 Jan 2024 16:53:07 -0500
-Message-ID: <20240103215307.3328500-1-kent.overstreet@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEE061DA24
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 21:54:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5eef1c0fdadso66984297b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 13:54:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704318858; x=1704923658; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6n/47+Omzg5WW5UuXFIT8z2kd1nVf1+Oyec4DhB9CBk=;
+        b=ze1yS6OVsxYmBJDO2kfTot9d8dp4/iF6NtpejlQDx3ljvsg+xRIkOVIfVihVBn+4da
+         nqPgY8zKa89xLlRUEVSZE9a5003Rl4dC9G3aHjnqloIn43831eCsHtUdO0AJW/9yDSEo
+         YnyuBOcLF80JqM7V2Ri61QGKBKm4zY3/SZKdpPhUgqvmKYvuwLvTr2/h93Y5aToBOYgS
+         53A1ZZGHAgaGn+i7tsMiZ5OV1/0BgnThDcRUocUOx2JF8nlRgzOfcxA13AynsqlY8Gdp
+         BxR65sVG2bQaYtD/5UUp3OLPFcocO7S3ycpt/xmyYQIEuhZyax/TkPabVnNWAUyg9iN2
+         p0OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704318858; x=1704923658;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6n/47+Omzg5WW5UuXFIT8z2kd1nVf1+Oyec4DhB9CBk=;
+        b=M4XuCJeMpdSk9C1s802Rw6vr5hxcqP2lAmYtUUiNttMiMRPmVXfJllFqIjVjSjzK1V
+         N0hl9Ekak6hdKYS00U+t7h0mv0ohMG8hdr4DHbURg+5tNorM6VvqKuY+XhO5JEp5F6Qn
+         sdYIzu5T6+On7HcUtZRJYTCoQT0hcN7vRPJVxhtIhibDbB8LalJZMB5ArFcqvzhACvk2
+         DfW+cxtjHoyr625k433bABO4RiMQ5Ifyt6ExEzMm8CMQyiRY9PU0HPWkSMiH0h/MHQlK
+         g6GT0coEeJZxUzC/I/w7eU0JOXV67Et9M5QI0ZTwaGphnl8uThADgLtlz/g1ILinGEF+
+         J1Og==
+X-Gm-Message-State: AOJu0Yx3N3POiWQcpxOieBDUrEI9bbLFFzVN5Ib08Z+NLuMHb6aoY5lM
+	q725fGnrjiNmYvWi1u6KtfgvKCN9Mtjn4fM38Q==
+X-Google-Smtp-Source: AGHT+IEidGpXt5gaj/ABpGUG3ooyKuvz0WPbn+5pxN5I1gVInlRuzP1wBPKXhizuNht3BpgAbUleFKmCO+M=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:aa49:0:b0:5f2:bc90:f1ed with SMTP id
+ z9-20020a81aa49000000b005f2bc90f1edmr1581934ywk.4.1704318857883; Wed, 03 Jan
+ 2024 13:54:17 -0800 (PST)
+Date: Wed, 3 Jan 2024 13:54:16 -0800
+In-Reply-To: <864b9717-46d2-4c1d-a84c-0784caf952f3@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+References: <20240102232136.38778-1-Ashish.Kalra@amd.com> <ZZSqkm5WNEUuuA_h@google.com>
+ <b82bb32b-3348-4c18-b07e-34f523ae93b5@amd.com> <ZZXNXNZkCW8e1G5i@google.com> <864b9717-46d2-4c1d-a84c-0784caf952f3@amd.com>
+Message-ID: <ZZXXiFEEr7m2JitG@google.com>
+Subject: Re: [PATCH] x86/sev: Add support for allowing zero SEV ASIDs.
+From: Sean Christopherson <seanjc@google.com>
+To: Ashish Kalra <ashish.kalra@amd.com>
+Cc: pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	thomas.lendacky@amd.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	joro@8bytes.org
+Content-Type: text/plain; charset="us-ascii"
 
-Hi all,
+On Wed, Jan 03, 2024, Ashish Kalra wrote:
+> On 1/3/2024 3:10 PM, Sean Christopherson wrote:
+> > > > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> > > > index d0c580607f00..bfac6d17462a 100644
+> > > > --- a/arch/x86/kvm/svm/sev.c
+> > > > +++ b/arch/x86/kvm/svm/sev.c
+> > > > @@ -143,8 +143,20 @@ static void sev_misc_cg_uncharge(struct kvm_sev_info *sev)
+> > > >    static int sev_asid_new(struct kvm_sev_info *sev)
+> > > >    {
+> > > > -       int asid, min_asid, max_asid, ret;
+> > > > +       /*
+> > > > +        * SEV-enabled guests must use asid from min_sev_asid to max_sev_asid.
+> > > > +        * SEV-ES-enabled guest can use from 1 to min_sev_asid - 1.  Note, the
+> > > > +        * min ASID can end up larger than the max if basic SEV support is
+> > > > +        * effectively disabled by disallowing use of ASIDs for SEV guests.
+> > > > +        */
+> > > > +       unsigned int min_asid = sev->es_active ? 1 : min_sev_asid;
+> > > > +       unsigned int max_asid = sev->es_active ? min_sev_asid - 1 : max_sev_asid;
+> > > > +       unsigned int asid;
+> > > >           bool retry = true;
+> > > > +       int ret;
+> > > > +
+> > > > +       if (min_asid > max_asid)
+> > > > +               return -ENOTTY;
+> > > This will still return -EBUSY to user.
+> > Huh?  The above is obviously -ENOTTY, and I don't see anything in the call stack
+> > that will convert it to -EBUSY.
+> 
+> Actually, sev_asid_new() returning failure to sev_guest_init() will cause it
+> to return -EBUSY to user.
 
-this is some utility code I wrote in bcachefs that might be more widely
-useful - it's used in bcachefs for online fsck, and I was talking to
-Darrick about possibly using it for XFS as well so that we could
-potentially standardize our interfaces for online fsck.
+Argh, I see it now.  That too should be fixed, e.g.
 
-Plus, it's nifty.
-
-This isn't the full patch - I cut it down to just the parts that would
-be more broadly interesting. To see how this hooks up to the rest of the
-bcachefs code, go here:
-https://evilpiepirate.org/git/bcachefs.git/commit/?id=7aa38b1be9fc9d409e5c3fb8fcbc51d4a3e25097
-
---->8---
-
-New helpers for conecting a kthread to a file descriptor; this nicely
-ties the kthread lifetime to the file descriptor lifetime and gives us a
-communications channel for interacting with the kthread.
-
-The file descriptor will typically be returned by an ioctl.
-
-bare bones version, user provides read and write
-methods via file_operations.
-
-In bcachefs this is used for data jobs, where userspace will
-periodically call the read method to get the status of the data job and
-print a progress indicator.
-
-This provides an object the kthread can read or write to, connected to
-the read and write side channels of the file descriptor.
-
-This is used in bcachefs for online fsck: we redirect messages from fsck
-that would otherwise go to the kernel log buffer to the file descriptor,
-and we can prompt the user for whether to fix errors exactly like
-userspace fsck would.
-
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- fs/bcachefs/thread_with_file.c       | 296 +++++++++++++++++++++++++++
- fs/bcachefs/thread_with_file.h       |  41 ++++
- fs/bcachefs/thread_with_file_types.h |  16 ++
- 3 files changed, 353 insertions(+)
- create mode 100644 fs/bcachefs/thread_with_file.c
- create mode 100644 fs/bcachefs/thread_with_file.h
- create mode 100644 fs/bcachefs/thread_with_file_types.h
-
-diff --git a/fs/bcachefs/thread_with_file.c b/fs/bcachefs/thread_with_file.c
-new file mode 100644
-index 000000000000..b24baeabf998
---- /dev/null
-+++ b/fs/bcachefs/thread_with_file.c
-@@ -0,0 +1,296 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "bcachefs.h"
-+#include "printbuf.h"
-+#include "thread_with_file.h"
-+
-+#include <linux/anon_inodes.h>
-+#include <linux/file.h>
-+#include <linux/kthread.h>
-+#include <linux/pagemap.h>
-+#include <linux/poll.h>
-+
-+void bch2_thread_with_file_exit(struct thread_with_file *thr)
-+{
-+	if (thr->task) {
-+		kthread_stop(thr->task);
-+		put_task_struct(thr->task);
-+	}
-+}
-+
-+int bch2_run_thread_with_file(struct thread_with_file *thr,
-+			      const struct file_operations *fops,
-+			      int (*fn)(void *))
-+{
-+	struct file *file = NULL;
-+	int ret, fd = -1;
-+	unsigned fd_flags = O_CLOEXEC;
-+
-+	if (fops->read && fops->write)
-+		fd_flags |= O_RDWR;
-+	else if (fops->read)
-+		fd_flags |= O_RDONLY;
-+	else if (fops->write)
-+		fd_flags |= O_WRONLY;
-+
-+	char name[TASK_COMM_LEN];
-+	get_task_comm(name, current);
-+
-+	thr->ret = 0;
-+	thr->task = kthread_create(fn, thr, "%s", name);
-+	ret = PTR_ERR_OR_ZERO(thr->task);
-+	if (ret)
-+		return ret;
-+
-+	ret = get_unused_fd_flags(fd_flags);
-+	if (ret < 0)
-+		goto err;
-+	fd = ret;
-+
-+	file = anon_inode_getfile(name, fops, thr, fd_flags);
-+	ret = PTR_ERR_OR_ZERO(file);
-+	if (ret)
-+		goto err;
-+
-+	fd_install(fd, file);
-+	get_task_struct(thr->task);
-+	wake_up_process(thr->task);
-+	return fd;
-+err:
-+	if (fd >= 0)
-+		put_unused_fd(fd);
-+	if (thr->task)
-+		kthread_stop(thr->task);
-+	return ret;
-+}
-+
-+static inline bool thread_with_stdio_has_output(struct thread_with_stdio *thr)
-+{
-+	return thr->stdio.output_buf.pos ||
-+		thr->output2.nr ||
-+		thr->thr.done;
-+}
-+
-+static ssize_t thread_with_stdio_read(struct file *file, char __user *buf,
-+				      size_t len, loff_t *ppos)
-+{
-+	struct thread_with_stdio *thr =
-+		container_of(file->private_data, struct thread_with_stdio, thr);
-+	size_t copied = 0, b;
-+	int ret = 0;
-+
-+	if ((file->f_flags & O_NONBLOCK) &&
-+	    !thread_with_stdio_has_output(thr))
-+		return -EAGAIN;
-+
-+	ret = wait_event_interruptible(thr->stdio.output_wait,
-+		thread_with_stdio_has_output(thr));
-+	if (ret)
-+		return ret;
-+
-+	if (thr->thr.done)
-+		return 0;
-+
-+	while (len) {
-+		ret = darray_make_room(&thr->output2, thr->stdio.output_buf.pos);
-+		if (ret)
-+			break;
-+
-+		spin_lock_irq(&thr->stdio.output_lock);
-+		b = min_t(size_t, darray_room(thr->output2), thr->stdio.output_buf.pos);
-+
-+		memcpy(&darray_top(thr->output2), thr->stdio.output_buf.buf, b);
-+		memmove(thr->stdio.output_buf.buf,
-+			thr->stdio.output_buf.buf + b,
-+			thr->stdio.output_buf.pos - b);
-+
-+		thr->output2.nr += b;
-+		thr->stdio.output_buf.pos -= b;
-+		spin_unlock_irq(&thr->stdio.output_lock);
-+
-+		b = min(len, thr->output2.nr);
-+		if (!b)
-+			break;
-+
-+		b -= copy_to_user(buf, thr->output2.data, b);
-+		if (!b) {
-+			ret = -EFAULT;
-+			break;
-+		}
-+
-+		copied	+= b;
-+		buf	+= b;
-+		len	-= b;
-+
-+		memmove(thr->output2.data,
-+			thr->output2.data + b,
-+			thr->output2.nr - b);
-+		thr->output2.nr -= b;
-+	}
-+
-+	return copied ?: ret;
-+}
-+
-+static int thread_with_stdio_release(struct inode *inode, struct file *file)
-+{
-+	struct thread_with_stdio *thr =
-+		container_of(file->private_data, struct thread_with_stdio, thr);
-+
-+	bch2_thread_with_file_exit(&thr->thr);
-+	printbuf_exit(&thr->stdio.input_buf);
-+	printbuf_exit(&thr->stdio.output_buf);
-+	darray_exit(&thr->output2);
-+	thr->exit(thr);
-+	return 0;
-+}
-+
-+#define WRITE_BUFFER		4096
-+
-+static inline bool thread_with_stdio_has_input_space(struct thread_with_stdio *thr)
-+{
-+	return thr->stdio.input_buf.pos < WRITE_BUFFER || thr->thr.done;
-+}
-+
-+static ssize_t thread_with_stdio_write(struct file *file, const char __user *ubuf,
-+				       size_t len, loff_t *ppos)
-+{
-+	struct thread_with_stdio *thr =
-+		container_of(file->private_data, struct thread_with_stdio, thr);
-+	struct printbuf *buf = &thr->stdio.input_buf;
-+	size_t copied = 0;
-+	ssize_t ret = 0;
-+
-+	while (len) {
-+		if (thr->thr.done) {
-+			ret = -EPIPE;
-+			break;
-+		}
-+
-+		size_t b = len - fault_in_readable(ubuf, len);
-+		if (!b) {
-+			ret = -EFAULT;
-+			break;
-+		}
-+
-+		spin_lock(&thr->stdio.input_lock);
-+		if (buf->pos < WRITE_BUFFER)
-+			bch2_printbuf_make_room(buf, min(b, WRITE_BUFFER - buf->pos));
-+		b = min(len, printbuf_remaining_size(buf));
-+
-+		if (b && !copy_from_user_nofault(&buf->buf[buf->pos], ubuf, b)) {
-+			ubuf += b;
-+			len -= b;
-+			copied += b;
-+			buf->pos += b;
-+		}
-+		spin_unlock(&thr->stdio.input_lock);
-+
-+		if (b) {
-+			wake_up(&thr->stdio.input_wait);
-+		} else {
-+			if ((file->f_flags & O_NONBLOCK)) {
-+				ret = -EAGAIN;
-+				break;
-+			}
-+
-+			ret = wait_event_interruptible(thr->stdio.input_wait,
-+					thread_with_stdio_has_input_space(thr));
-+			if (ret)
-+				break;
-+		}
-+	}
-+
-+	return copied ?: ret;
-+}
-+
-+static __poll_t thread_with_stdio_poll(struct file *file, struct poll_table_struct *wait)
-+{
-+	struct thread_with_stdio *thr =
-+		container_of(file->private_data, struct thread_with_stdio, thr);
-+
-+	poll_wait(file, &thr->stdio.output_wait, wait);
-+	poll_wait(file, &thr->stdio.input_wait, wait);
-+
-+	__poll_t mask = 0;
-+
-+	if (thread_with_stdio_has_output(thr))
-+		mask |= EPOLLIN;
-+	if (thread_with_stdio_has_input_space(thr))
-+		mask |= EPOLLOUT;
-+	if (thr->thr.done)
-+		mask |= EPOLLHUP|EPOLLERR;
-+	return mask;
-+}
-+
-+static const struct file_operations thread_with_stdio_fops = {
-+	.release	= thread_with_stdio_release,
-+	.read		= thread_with_stdio_read,
-+	.write		= thread_with_stdio_write,
-+	.poll		= thread_with_stdio_poll,
-+	.llseek		= no_llseek,
-+};
-+
-+int bch2_run_thread_with_stdio(struct thread_with_stdio *thr,
-+			       void (*exit)(struct thread_with_stdio *),
-+			       int (*fn)(void *))
-+{
-+	thr->stdio.input_buf = PRINTBUF;
-+	thr->stdio.input_buf.atomic++;
-+	spin_lock_init(&thr->stdio.input_lock);
-+	init_waitqueue_head(&thr->stdio.input_wait);
-+
-+	thr->stdio.output_buf = PRINTBUF;
-+	thr->stdio.output_buf.atomic++;
-+	spin_lock_init(&thr->stdio.output_lock);
-+	init_waitqueue_head(&thr->stdio.output_wait);
-+
-+	darray_init(&thr->output2);
-+	thr->exit = exit;
-+
-+	return bch2_run_thread_with_file(&thr->thr, &thread_with_stdio_fops, fn);
-+}
-+
-+int bch2_stdio_redirect_read(struct stdio_redirect *stdio, char *buf, size_t len)
-+{
-+	wait_event(stdio->input_wait,
-+		   stdio->input_buf.pos || stdio->done);
-+
-+	if (stdio->done)
-+		return -1;
-+
-+	spin_lock(&stdio->input_lock);
-+	int ret = min(len, stdio->input_buf.pos);
-+	stdio->input_buf.pos -= ret;
-+	memcpy(buf, stdio->input_buf.buf, ret);
-+	memmove(stdio->input_buf.buf,
-+		stdio->input_buf.buf + ret,
-+		stdio->input_buf.pos);
-+	spin_unlock(&stdio->input_lock);
-+
-+	wake_up(&stdio->input_wait);
-+	return ret;
-+}
-+
-+int bch2_stdio_redirect_readline(struct stdio_redirect *stdio, char *buf, size_t len)
-+{
-+	wait_event(stdio->input_wait,
-+		   stdio->input_buf.pos || stdio->done);
-+
-+	if (stdio->done)
-+		return -1;
-+
-+	spin_lock(&stdio->input_lock);
-+	int ret = min(len, stdio->input_buf.pos);
-+	char *n = memchr(stdio->input_buf.buf, '\n', ret);
-+	if (n)
-+		ret = min(ret, n + 1 - stdio->input_buf.buf);
-+	stdio->input_buf.pos -= ret;
-+	memcpy(buf, stdio->input_buf.buf, ret);
-+	memmove(stdio->input_buf.buf,
-+		stdio->input_buf.buf + ret,
-+		stdio->input_buf.pos);
-+	spin_unlock(&stdio->input_lock);
-+
-+	wake_up(&stdio->input_wait);
-+	return ret;
-+}
-diff --git a/fs/bcachefs/thread_with_file.h b/fs/bcachefs/thread_with_file.h
-new file mode 100644
-index 000000000000..05879c5048c8
---- /dev/null
-+++ b/fs/bcachefs/thread_with_file.h
-@@ -0,0 +1,41 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _BCACHEFS_THREAD_WITH_FILE_H
-+#define _BCACHEFS_THREAD_WITH_FILE_H
-+
-+#include "thread_with_file_types.h"
-+
-+struct task_struct;
-+
-+struct thread_with_file {
-+	struct task_struct	*task;
-+	int			ret;
-+	bool			done;
-+};
-+
-+void bch2_thread_with_file_exit(struct thread_with_file *);
-+int bch2_run_thread_with_file(struct thread_with_file *,
-+			      const struct file_operations *,
-+			      int (*fn)(void *));
-+
-+struct thread_with_stdio {
-+	struct thread_with_file	thr;
-+	struct stdio_redirect	stdio;
-+	DARRAY(char)		output2;
-+	void			(*exit)(struct thread_with_stdio *);
-+};
-+
-+static inline void thread_with_stdio_done(struct thread_with_stdio *thr)
-+{
-+	thr->thr.done = true;
-+	thr->stdio.done = true;
-+	wake_up(&thr->stdio.input_wait);
-+	wake_up(&thr->stdio.output_wait);
-+}
-+
-+int bch2_run_thread_with_stdio(struct thread_with_stdio *,
-+			       void (*exit)(struct thread_with_stdio *),
-+			       int (*fn)(void *));
-+int bch2_stdio_redirect_read(struct stdio_redirect *, char *, size_t);
-+int bch2_stdio_redirect_readline(struct stdio_redirect *, char *, size_t);
-+
-+#endif /* _BCACHEFS_THREAD_WITH_FILE_H */
-diff --git a/fs/bcachefs/thread_with_file_types.h b/fs/bcachefs/thread_with_file_types.h
-new file mode 100644
-index 000000000000..90b5e645e98c
---- /dev/null
-+++ b/fs/bcachefs/thread_with_file_types.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _BCACHEFS_THREAD_WITH_FILE_TYPES_H
-+#define _BCACHEFS_THREAD_WITH_FILE_TYPES_H
-+
-+struct stdio_redirect {
-+	spinlock_t		output_lock;
-+	wait_queue_head_t	output_wait;
-+	struct printbuf		output_buf;
-+
-+	spinlock_t		input_lock;
-+	wait_queue_head_t	input_wait;
-+	struct printbuf		input_buf;
-+	bool			done;
-+};
-+
-+#endif /* _BCACHEFS_THREAD_WITH_FILE_TYPES_H */
--- 
-2.43.0
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index d0c580607f00..79eb11083ad5 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -246,21 +246,20 @@ static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
+ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ {
+        struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+-       int asid, ret;
++       int ret;
+ 
+        if (kvm->created_vcpus)
+                return -EINVAL;
+ 
+-       ret = -EBUSY;
+        if (unlikely(sev->active))
+-               return ret;
++               return -EINVAL;
+ 
+        sev->active = true;
+        sev->es_active = argp->id == KVM_SEV_ES_INIT;
+-       asid = sev_asid_new(sev);
+-       if (asid < 0)
++       ret = sev_asid_new(sev);
++       if (ret < 0)
+                goto e_no_asid;
+-       sev->asid = asid;
++       sev->asid = ret;
+ 
+        ret = sev_platform_init(&argp->error);
+        if (ret)
 
 
