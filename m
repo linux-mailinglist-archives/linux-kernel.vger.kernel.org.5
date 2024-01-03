@@ -1,97 +1,125 @@
-Return-Path: <linux-kernel+bounces-15515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2461822CFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:26:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED20D822CF9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:25:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FC6A285941
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:26:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 829A51F242AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:25:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A09819461;
-	Wed,  3 Jan 2024 12:25:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UDMfLmqr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A3818EDB;
+	Wed,  3 Jan 2024 12:25:45 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A486619458;
-	Wed,  3 Jan 2024 12:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704284749; x=1735820749;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7NZPFuLqIaZYxF8kzjwORU+cPOyFb8rBNMttLqHxoyI=;
-  b=UDMfLmqrSvJ7f4Xfhg+a6pdId2N+iIJ76n+VkfdQVd2LdvWHWTNLpXu1
-   Z+T08AoSiE7mwNTeznB4hWiJpfBCFn4aHGbPV0iWLX1iWwg2aF6vbegFu
-   VG2GP2BQRYCkc7IMp2N+7V9NO9bGAllSK7tRDxn5McW1wdcewW7N/pW+/
-   WIEZvyxkwTGvDuVuetvklHiAkBUx7dNLwehTFs18429srWHdL+XWLQeul
-   joSWkPZwcUxeowXu9jpLdziPJLeOwv3YNVlvUsrNMTOdMX5Z42jXR7t1K
-   HEj55mVknwVEg9em94cqojKy7POQrnPqakvSdKe3xpdsp8VUlSPxpceCR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="4085305"
-X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
-   d="scan'208";a="4085305"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 04:25:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="783498077"
-X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
-   d="scan'208";a="783498077"
-Received: from sharadav-mobl.amr.corp.intel.com (HELO box.shutemov.name) ([10.249.36.97])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 04:25:42 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-	id C10E610A567; Wed,  3 Jan 2024 15:25:39 +0300 (+03)
-Date: Wed, 3 Jan 2024 15:25:39 +0300
-From: kirill.shutemov@linux.intel.com
-To: Alexey Makhalov <alexey.makhalov@broadcom.com>
-Cc: linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
-	bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
-	mingo@redhat.com, tglx@linutronix.de, x86@kernel.org,
-	netdev@vger.kernel.org, richardcochran@gmail.com,
-	linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
-	zackr@vmware.com, linux-graphics-maintainer@vmware.com,
-	pv-drivers@vmware.com, namit@vmware.com, timothym@vmware.com,
-	akaher@vmware.com, jsipek@vmware.com,
-	dri-devel@lists.freedesktop.org, daniel@ffwll.ch, airlied@gmail.com,
-	tzimmermann@suse.de, mripard@kernel.org,
-	maarten.lankhorst@linux.intel.com, horms@kernel.org
-Subject: Re: [PATCH v4 6/6] x86/vmware: Add TDX hypercall support
-Message-ID: <20240103122539.agoq7647bzwcgjep@box.shutemov.name>
-References: <20231228192421.29894-1-alexey.makhalov@broadcom.com>
- <20231228192421.29894-7-alexey.makhalov@broadcom.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 391F618ECA
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 12:25:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E861DC433C7;
+	Wed,  3 Jan 2024 12:25:43 +0000 (UTC)
+Date: Wed, 3 Jan 2024 12:25:41 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Christoph von Recklinghausen <crecklin@redhat.com>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] don't record leak information on allocations done
+ between kmemleak_init and kmemleak_late_init
+Message-ID: <ZZVSRSsychidiQ8P@arm.com>
+References: <20240102153428.139984-1-crecklin@redhat.com>
+ <ZZRtGC9ZPVR5uCqu@arm.com>
+ <5d979584-a168-4594-af19-93af6bc0ae5a@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231228192421.29894-7-alexey.makhalov@broadcom.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5d979584-a168-4594-af19-93af6bc0ae5a@redhat.com>
 
-On Thu, Dec 28, 2023 at 11:24:21AM -0800, Alexey Makhalov wrote:
-> From: Alexey Makhalov <amakhalov@vmware.com>
-> 
-> VMware hypercalls use I/O port, VMCALL or VMMCALL instructions.
-> Add __tdx_hypercall path to support TDX guests.
-> 
-> No change in high bandwidth hypercalls, as only low bandwidth
-> ones are supported for TDX guests.
-> 
-> Co-developed-by: Tim Merrifield <timothym@vmware.com>
-> Signed-off-by: Tim Merrifield <timothym@vmware.com>
-> Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
-> Reviewed-by: Nadav Amit <namit@vmware.com>
+(as you noticed, don't post html as they usually get rejected from
+lists)
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+On Wed, Jan 03, 2024 at 06:20:16AM -0500, Christoph von Recklinghausen wrote:
+> On 1/2/24 15:07, Catalin Marinas wrote:
+> > On Tue, Jan 02, 2024 at 10:34:28AM -0500, Chris von Recklinghausen wrote:
+> > > If an object is allocated after kmemleak_init is called but before
+> > > kmemleak_late_init is called, calls to kmemleak_not_leak or
+> > > kmemleak_ignore on the object don't prevent a scan from reporting the
+> > > object as a leak.
+> > This may be true but what is the reason for this? Can you give some
+> > example of false positives you get?
+> 
+> In centos-stream-9 on s390x I get the following complaint:
+> 
+> WARN:(libsan.host.linux) Found kernel memory leak:
+> unreferenced object 0x1bff7fffb30000 (size 65536):
+> comm "swapper/0", pid 0, jiffies 4294937297 (age 76.530s)
+> hex dump (first 32 bytes):
+> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+> backtrace:
+> [<00000000eda98345>] __vmalloc_node_range+0x29a/0x360
+> [<00000000e3051c75>] __vmalloc_node+0x9e/0xd0
+> [<00000000a5dd11b7>] stack_alloc+0x38/0x50
+> [<0000000081096e42>] smp_reinit_ipl_cpu+0xf8/0x3f8
+> [<00000000ee13aae5>] arch_call_rest_init+0x22/0x100
+> [<00000000b37567c9>] start_kernel+0x44c/0x460
+> [<00000000548d9080>] startup_continue+0x30/0x50
+> 
+> 
+> In arch/s390/kernel/setup.c we have
+> 
+> unsigned long stack_alloc(void)
+> {
+> #ifdef CONFIG_VMAP_STACK
+>         return (unsigned long)__vmalloc_node(THREAD_SIZE, THREAD_SIZE,
+>                         THREADINFO_GFP, NUMA_NO_NODE,
+>                         __builtin_return_address(0));
+> #else
+>         return __get_free_pages(GFP_KERNEL, THREAD_SIZE_ORDER);
+> #endif
+> }
+
+I guess that's an older kernel as arch_call_rest_init() is no longer in
+mainline.
+
+Mainline stack_alloc() has a kmemleak_not_leak() call here with an
+explanation in the commit log (it should have been added as a comment in
+the code), 436fc4feeabb ("s390: add kmemleak annotation in
+stack_alloc()"):
+
+    kmemleak with enabled auto scanning reports that our stack allocation is
+    lost. This is because we're saving the pointer + STACK_INIT_OFFSET to
+    lowcore. When kmemleak now scans the objects, it thinks that this one is
+    lost because it can't find a corresponding pointer.
+
+Does this commit not fix it for you? It looks like it did the trick in
+mainline. Late kmemleak initialisation should not interfere unless you
+have a very old kernel and we had some bugs with tracking these (before
+we introduced the mem_pool[] array in kmemleak for early allocations).
+
+> void __init arch_call_rest_init(void)
+> {
+>         unsigned long stack;
+> 
+>         smp_reinit_ipl_cpu();
+>         stack = stack_alloc();
+>         if (!stack)
+>                 panic("Couldn't allocate kernel stack");
+>         current->stack = (void *) stack;
+> #ifdef CONFIG_VMAP_STACK
+>         current->stack_vm_area = (void *) stack;
+> #endif
+
+In mainline at least, stack_vm_area is a struct vm_struct, so it
+shouldn't be assigned the actual stack pointer (but maybe that's not the
+case in your version, I haven't checked the history).
 
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Catalin
 
