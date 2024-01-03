@@ -1,176 +1,119 @@
-Return-Path: <linux-kernel+bounces-15465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D4A6822C5D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:50:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2F09822C62
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:54:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 343381C22740
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:50:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50C001F232FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8890618EAF;
-	Wed,  3 Jan 2024 11:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F29D418E3E;
+	Wed,  3 Jan 2024 11:53:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lxh76lr9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NJsmI7fr";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lxh76lr9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NJsmI7fr"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OApK6385"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ADA518EA0;
-	Wed,  3 Jan 2024 11:50:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1A2631FD11;
-	Wed,  3 Jan 2024 11:50:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704282603;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4Zgez0zMWtIyb5Ng80nLKb/YRtWuLRDBmlGiyWt1MzQ=;
-	b=lxh76lr9a6cbz3B6qoyE8LPDLwWWQF1FeaeqZtfPa/v5e6hKcT1b41M7ERVBjkC/xW5t+r
-	4PtniK6PAw1bQ0db6TZzy63bS9Xy3ljX3Bv8tYmBzteLBuXl69jIDgXZrgOuDOwqbgy7g/
-	ZpeFoPPMW1U6qu9iyy8bt74Z3LIk5Ho=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704282603;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4Zgez0zMWtIyb5Ng80nLKb/YRtWuLRDBmlGiyWt1MzQ=;
-	b=NJsmI7frp5883kcBjR9Ni4dpvu/+KpdWksbvv1Sb9NSv14BCefu6tmpAky9P06OONciofG
-	3TywemivWGyh+vCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704282603;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4Zgez0zMWtIyb5Ng80nLKb/YRtWuLRDBmlGiyWt1MzQ=;
-	b=lxh76lr9a6cbz3B6qoyE8LPDLwWWQF1FeaeqZtfPa/v5e6hKcT1b41M7ERVBjkC/xW5t+r
-	4PtniK6PAw1bQ0db6TZzy63bS9Xy3ljX3Bv8tYmBzteLBuXl69jIDgXZrgOuDOwqbgy7g/
-	ZpeFoPPMW1U6qu9iyy8bt74Z3LIk5Ho=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704282603;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4Zgez0zMWtIyb5Ng80nLKb/YRtWuLRDBmlGiyWt1MzQ=;
-	b=NJsmI7frp5883kcBjR9Ni4dpvu/+KpdWksbvv1Sb9NSv14BCefu6tmpAky9P06OONciofG
-	3TywemivWGyh+vCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C665C13AA6;
-	Wed,  3 Jan 2024 11:50:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id /EQSL+pJlWU9GAAAD6G6ig
-	(envelope-from <pvorel@suse.cz>); Wed, 03 Jan 2024 11:50:02 +0000
-Date: Wed, 3 Jan 2024 12:49:57 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: ltp@lists.linux.it, Cyril Hrubis <chrubis@suse.cz>,
-	Li Wang <liwang@redhat.com>,
-	Andrea Cervesato <andrea.cervesato@suse.com>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Christophe Lyon <christophe.lyon@linaro.org>,
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>,
-	linux-riscv <linux-riscv@lists.infradead.org>,
-	Linux-sh list <linux-sh@vger.kernel.org>
-Subject: Re: [PATCH 00/36] Remove UCLINUX from LTP
-Message-ID: <20240103114957.GD1073466@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20240103015240.1065284-1-pvorel@suse.cz>
- <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69C1318E29;
+	Wed,  3 Jan 2024 11:53:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704282834; x=1735818834;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=n/vnjjrsEvZOXJJT326FKEYl+/HDigv3czkS2CfPJT0=;
+  b=OApK6385WL3gL4WQt6wEH5Y+qNfN1xgXacsFquXhM4nu0AVveDmZWm+X
+   2/uzDmNTstDgAhR2rgfIZYlD36n88Q+GQ+sPqim+fqvqEQrh5NweLI9lY
+   IRvpFWTRzZ0jj+/1ULpiTZBV2HePYJeM4F5sRFCpELZNbKsCz9nu+d70g
+   CcAmBLxIWt9MoBceOGtLYw0KOFH3zhc4VhstbCQH/yeq4didHt2ILgTdQ
+   pgf1BfmysEL9nDJoOa0euP6kEvw+MeOTqBdGq7SGIxfRZjdQCNogQ1uXm
+   /OLwJWq4byxTN3djeEWhh1zM/I/Y9xGXLChA3N9N1qT6N0C1ZCturMEkQ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="376486991"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="376486991"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 03:53:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="953210478"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="953210478"
+Received: from bergbenj-mobl1.ger.corp.intel.com ([10.251.211.32])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 03:53:51 -0800
+Date: Wed, 3 Jan 2024 13:53:48 +0200 (EET)
+From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+cc: jorge.lopez2@hp.com, Hans de Goede <hdegoede@redhat.com>, 
+    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+    Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH] platform/x86: hp-bioscfg: Remove useless else
+In-Reply-To: <20240103021746.5337-1-jiapeng.chong@linux.alibaba.com>
+Message-ID: <9f34109e-fc90-d2d1-5bd7-87aa51fdc39f@linux.intel.com>
+References: <20240103021746.5337-1-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
-X-Spam-Level: 
-X-Spam-Level: 
-X-Spamd-Result: default: False [0.55 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[pvorel@suse.cz];
-	 REPLYTO_EQ_FROM(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[15];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.15)[68.61%]
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Score: 0.55
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=US-ASCII
 
-Hi Geert,
+On Wed, 3 Jan 2024, Jiapeng Chong wrote:
 
-> Hi Petr,
+> The assignment of the else and if branches is the same, so the else
+> here is redundant, so we remove it.
+> 
+> ./drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:544:3-5: WARNING: possible condition with no effect (if == else).
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7817
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  .../platform/x86/hp/hp-bioscfg/passwdobj-attributes.c  | 10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
+> index f7efe217a4bb..18c60a847842 100644
+> --- a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
+> +++ b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
+> @@ -540,14 +540,8 @@ void hp_exit_password_attributes(void)
+>  		struct kobject *attr_name_kobj =
+>  			bioscfg_drv.password_data[instance_id].attr_name_kobj;
+>  
+> -		if (attr_name_kobj) {
+> -			if (!strcmp(attr_name_kobj->name, SETUP_PASSWD))
+> -				sysfs_remove_group(attr_name_kobj,
+> -						   &password_attr_group);
+> -			else
+> -				sysfs_remove_group(attr_name_kobj,
+> -						   &password_attr_group);
+> -		}
+> +		if (attr_name_kobj)
+> +			sysfs_remove_group(attr_name_kobj, &password_attr_group);
+>  	}
+>  	bioscfg_drv.password_instances_count = 0;
+>  	kfree(bioscfg_drv.password_data);
 
-> CC other uClinux arch lists
+When doing something based on a robot finding, please take a look at 
+the related code and _think_(!) instead of just hitting send button. If 
+you'd have done that, you'd have submitted a patch that cleans up the 
+other (create) cases too, not just the one which your robot flagged.
 
-> On Wed, Jan 3, 2024 at 2:52 AM Petr Vorel <pvorel@suse.cz> wrote:
-> > UCLINUX is broken in LTP and nobody really cares. Actually I dare to
-> > say UCLINUX is dead. Therefore I prepared patchset to remove UCLINUX
-> > from LTP. We have been actively removing UCLINUX from LTP during rewrite
-> > tests to new LTP API. This removes the rest from the old tests (which
-> > will be sooner or later rewritten to new API).
+I think this is the second time I've said this about the very same code 
+construct to somebody which, disappointingly, turns out to be you:
 
-> > Because the patchset is quite big, I did not want to send it to mailing
-> > lists (but I can do it if you want).
+https://lore.kernel.org/platform-driver-x86/2ec499b-c37e-0a9-c163-2a1591b56029@linux.intel.com/
 
-> > Can you please have look at my fork on gitlab, branch: remove-UCLINUX
-> > https://gitlab.com/pevik/ltp/-/commits/remove-UCLINUX?ref_type=heads
+Again I get an incomplete patch into my inbox because the previous review 
+did not lead into an updated v2 patch. Please do not submit this patch 
+again unless you addressed my review feedback.
 
-> > Build test:
-> > https://github.com/pevik/ltp/actions/runs/7392470215
-
-> Thanks for your series!
-
-Thank you for your feedback.  May I add your Acked-by: tag to the series when we
-agree to merge?
-
-> I see you only CCed linux-m68k, but AFAIK, uClinux is not restricted
-> to m68k/coldfire, but also available on arm32, riscv, sh, and xtensa.
-
-Good point, I'll reply to their lists as well.
-
-Kind regards,
-Petr
-
-> Gr{oetje,eeting}s,
-
->                         Geert
+-- 
+ i.
 
