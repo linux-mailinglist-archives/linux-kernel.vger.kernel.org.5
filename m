@@ -1,344 +1,379 @@
-Return-Path: <linux-kernel+bounces-15420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E1D8822BBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:00:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91C55822BBB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:00:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 585B5B23057
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:00:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 062481F22338
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C3018E13;
-	Wed,  3 Jan 2024 10:59:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="B7acPJNm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180D818E0E;
+	Wed,  3 Jan 2024 10:59:50 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BDC18E0D;
-	Wed,  3 Jan 2024 10:59:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CAD9540E01CB;
-	Wed,  3 Jan 2024 10:59:44 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id rhWWOBUcAl4K; Wed,  3 Jan 2024 10:59:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704279582; bh=kWj1r7YWgv/xuCZuac9oYHJ2Ii/q2D59EYfwOqw5nDg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B7acPJNm7mRSTv6Mii0NETfGyxXgzzVz4ntLc/qNPM07P18RKpz6+8/kceMx/oNpc
-	 oImibIN2Z8H04tAS6K/S6VnRw3Pi8SmvpPVLi+Y/HV5GC7ZAND9OmiLvKmZ9LlrRlS
-	 fGgqtsxGJktbeO4tB27WlO1v3Fii7Yh1SX9/K8VpwoG2ZZE2NrBkaTdxmR4Fe0M/Hi
-	 U7Q/drYXNLtQLSzGc3wMyw+7P8B82Gv3wjThFOqT3tbLTAoYtE+ljlByG+ihQXuD3O
-	 bjYbDfUV9qHcCTSpQM3WACJcS+qh4rtfrwQlG+bwLCxqOu+v9qlVqOLjaWJ5sy0hes
-	 Juz97AY3DmWr+YTj3rcrQXiWhrm22bRDbWmPzR7avSen1FwD5mcHLjUVIcuYkJjRhR
-	 NMy7dQ/PPtb4nJOCWZOu3GcbwWMeArZcNe9uGNcTR9T7MzBHCSqchOQtn3XGoHzpPd
-	 UDsSBU7zKBxRMJ5n5NxP1WeWVx1H1ytu6v38rLh1gU2KQZA4bQDIL8xkaRp1Jb1b+N
-	 DlQ6PQjeNk2Zss1VaXILMIXWHL8xZw0WCtQQ1mMEyczAh2LEgvSUGXvRcW6k0Rp6/k
-	 Y+e7bsTJXwrhWuO1czB40mvLSkpEQl+cLfZA0osFOuOEhwdYE4gaX6DHvF+5L28+iJ
-	 sUQ/JYUv9fplWGB6pHHsjaM4=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8C4C940E01C5;
-	Wed,  3 Jan 2024 10:59:34 +0000 (UTC)
-Date: Wed, 3 Jan 2024 11:59:33 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-	avadhut.naik@amd.com, tony.luck@intel.com, john.allen@amd.com,
-	william.roche@oracle.com, muralidhara.mk@amd.com
-Subject: Re: [PATCH v4 0/3] AMD Address Translation Library
-Message-ID: <20240103105933.GBZZU+FRPkBDkIwr4P@fat_crate.local>
-References: <20231218190406.27479-1-yazen.ghannam@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1418E18EA1;
+	Wed,  3 Jan 2024 10:59:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5958d3f2d8aso439257eaf.1;
+        Wed, 03 Jan 2024 02:59:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704279587; x=1704884387;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kqXRk5DIjzSB7AnsVyWSH2H3h90xOz+WExtNtBrGdC4=;
+        b=ktVACQUDOhRF4evD8dlf0SkK83wLJ2GUiyDUP8YXwrIwY/anhEp5ofEcoRtIK7jIlp
+         jIRMHJjrKI9Ww1AWGxckhO1zjj6Aow1+Y1tMrUTOviXGuc/NDP/ewkmlUNXnU38HaUao
+         JkHbJ/Ajv27mnNNG5ZAELe8JFP9HfVnDOoALBU8qZcqlY8IWRfOV2Zaf6CnlvtJtpWV6
+         SVdfZSa1kmf9ZnCvjs4eZ5Y3wL7rqTaxsDSEc7eQo+H6q0zL70QK4Yw0jAcJGD+PaYli
+         IfHskjoogx9pnPY73OGojP+APAVA4yWH4MxuwYYyv+nZ4QeicPjz17kr7xfzziok1GSe
+         lO6g==
+X-Gm-Message-State: AOJu0YzUuPm0QHnjyTOIjUBZ+pKc3iPw2LMUXeop3YUBjR2VdFpzHKX/
+	U0QJ7ByarX/IPd18LIk+R0gFETodMzhXuUCeQvk=
+X-Google-Smtp-Source: AGHT+IGJQQ0+ihemOXe2hNhzAelywrIvAehD+bERJWXgZLiaTURNFtmsZ9zmDvJmfwYeCjPTx9cs7l+QMVX+cwb3Ids=
+X-Received: by 2002:a4a:ea4b:0:b0:595:fcca:e203 with SMTP id
+ j11-20020a4aea4b000000b00595fccae203mr1634656ooe.0.1704279587016; Wed, 03 Jan
+ 2024 02:59:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231218190406.27479-1-yazen.ghannam@amd.com>
+References: <20231212072617.14756-1-lihuisong@huawei.com> <CAJZ5v0jwW0=8cNvC-Vu_o+pEHFpN9nrPD4LXCpmSTgQBTHODgg@mail.gmail.com>
+ <486f8563-42b7-a049-97a2-bc0b553926aa@huawei.com> <26ba9fa9-7871-27c3-0de5-62f61071dacd@huawei.com>
+In-Reply-To: <26ba9fa9-7871-27c3-0de5-62f61071dacd@huawei.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 3 Jan 2024 11:59:35 +0100
+Message-ID: <CAJZ5v0jSYajeYP1r+qKOmbwzn4PE5LL9E9LKsuYUygiXxmt2MA@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: CPPC: Resolve the large frequency discrepancy
+ from cpuinfo_cur_freq
+To: "lihuisong (C)" <lihuisong@huawei.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, beata.michalska@arm.com, sumitg@nvidia.com, 
+	ionela.voinescu@arm.com, zengheng4@huawei.com, yang@os.amperecomputing.com, 
+	will@kernel.org, sudeep.holla@arm.com, liuyonglong@huawei.com, 
+	zhanjie9@hisilicon.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 18, 2023 at 01:04:03PM -0600, Yazen Ghannam wrote:
-> Hi all,
-> 
-> This revision addresses comments from Boris for v3. The most substantial
-> change is the removal of the library "stub".
-> 
-> Thanks,
-> Yazen
-> 
-> Yazen Ghannam (3):
->   RAS: Introduce AMD Address Translation Library
->   EDAC/amd64: Use new AMD Address Translation Library
->   Documentation: RAS: Add index and address translation section
+On Mon, Dec 18, 2023 at 3:15=E2=80=AFAM lihuisong (C) <lihuisong@huawei.com=
+> wrote:
+>
+>
+> =E5=9C=A8 2023/12/15 10:41, lihuisong (C) =E5=86=99=E9=81=93:
+> > Hi Rafael,
+> >
+> > Thanks for your review.=F0=9F=98=81
+> >
+> > =E5=9C=A8 2023/12/15 3:31, Rafael J. Wysocki =E5=86=99=E9=81=93:
+> >> On Tue, Dec 12, 2023 at 8:26=E2=80=AFAM Huisong Li <lihuisong@huawei.c=
+om> wrote:
+> >>> Many developers found that the cpu current frequency is greater than
+> >>> the maximum frequency of the platform, please see [1], [2] and [3].
+> >>>
+> >>> In the scenarios with high memory access pressure, the patch [1] has
+> >>> proved the significant latency of cpc_read() which is used to obtain
+> >>> delivered and reference performance counter cause an absurd frequency=
+.
+> >>> The sampling interval for this counters is very critical and is
+> >>> expected
+> >>> to be equal. However, the different latency of cpc_read() has a direc=
+t
+> >>> impact on their sampling interval.
+> >>>
+> >>> This patch adds a interface, cpc_read_arch_counters_on_cpu, to read
+> >>> delivered and reference performance counter together. According to my
+> >>> test[4], the discrepancy of cpu current frequency in the scenarios wi=
+th
+> >>> high memory access pressure is lower than 0.2% by stress-ng
+> >>> application.
+> >>>
+> >>> [1]
+> >>> https://lore.kernel.org/all/20231025093847.3740104-4-zengheng4@huawei=
+.com/
+> >>> [2]
+> >>> https://lore.kernel.org/all/20230328193846.8757-1-yang@os.amperecompu=
+ting.com/
+> >>> [3]
+> >>> https://lore.kernel.org/all/20230418113459.12860-7-sumitg@nvidia.com/
+> >>>
+> >>> [4] My local test:
+> >>> The testing platform enable SMT and include 128 logical CPU in total,
+> >>> and CPU base frequency is 2.7GHz. Reading "cpuinfo_cur_freq" for each
+> >>> physical core on platform during the high memory access pressure from
+> >>> stress-ng, and the output is as follows:
+> >>>    0: 2699133     2: 2699942     4: 2698189     6: 2704347
+> >>>    8: 2704009    10: 2696277    12: 2702016    14: 2701388
+> >>>   16: 2700358    18: 2696741    20: 2700091    22: 2700122
+> >>>   24: 2701713    26: 2702025    28: 2699816    30: 2700121
+> >>>   32: 2700000    34: 2699788    36: 2698884    38: 2699109
+> >>>   40: 2704494    42: 2698350    44: 2699997    46: 2701023
+> >>>   48: 2703448    50: 2699501    52: 2700000    54: 2699999
+> >>>   56: 2702645    58: 2696923    60: 2697718    62: 2700547
+> >>>   64: 2700313    66: 2700000    68: 2699904    70: 2699259
+> >>>   72: 2699511    74: 2700644    76: 2702201    78: 2700000
+> >>>   80: 2700776    82: 2700364    84: 2702674    86: 2700255
+> >>>   88: 2699886    90: 2700359    92: 2699662    94: 2696188
+> >>>   96: 2705454    98: 2699260   100: 2701097   102: 2699630
+> >>> 104: 2700463   106: 2698408   108: 2697766   110: 2701181
+> >>> 112: 2699166   114: 2701804   116: 2701907   118: 2701973
+> >>> 120: 2699584   122: 2700474   124: 2700768   126: 2701963
+> >>>
+> >>> Signed-off-by: Huisong Li <lihuisong@huawei.com>
+> >> First off, please Cc ACPI-related patches to linux-acpi.
+> >
+> > got it.
+> >
+> > +linux-acpi@vger.kernel.org
+> >
+> >>
+> >>> ---
+> >>>   arch/arm64/kernel/topology.c | 43
+> >>> ++++++++++++++++++++++++++++++++++--
+> >>>   drivers/acpi/cppc_acpi.c     | 22 +++++++++++++++---
+> >>>   include/acpi/cppc_acpi.h     |  5 +++++
+> >>>   3 files changed, 65 insertions(+), 5 deletions(-)
+> >>>
+> >>> diff --git a/arch/arm64/kernel/topology.c
+> >>> b/arch/arm64/kernel/topology.c
+> >>> index 7d37e458e2f5..c3122154d738 100644
+> >>> --- a/arch/arm64/kernel/topology.c
+> >>> +++ b/arch/arm64/kernel/topology.c
+> >>> @@ -299,6 +299,11 @@ core_initcall(init_amu_fie);
+> >>>   #ifdef CONFIG_ACPI_CPPC_LIB
+> >>>   #include <acpi/cppc_acpi.h>
+> >>>
+> >>> +struct amu_counters {
+> >>> +       u64 corecnt;
+> >>> +       u64 constcnt;
+> >>> +};
+> >>> +
+> >>>   static void cpu_read_corecnt(void *val)
+> >>>   {
+> >>>          /*
+> >>> @@ -322,8 +327,27 @@ static void cpu_read_constcnt(void *val)
+> >>>                        0UL : read_constcnt();
+> >>>   }
+> >>>
+> >>> +static void cpu_read_amu_counters(void *data)
+> >>> +{
+> >>> +       struct amu_counters *cnt =3D (struct amu_counters *)data;
+> >>> +
+> >>> +       /*
+> >>> +        * The running time of the this_cpu_has_cap() might have a
+> >>> couple of
+> >>> +        * microseconds and is significantly increased to tens of
+> >>> microseconds.
+> >>> +        * But AMU core and constant counter need to be read togeter
+> >>> without any
+> >>> +        * time interval to reduce the calculation discrepancy using
+> >>> this counters.
+> >>> +        */
+> >>> +       if (this_cpu_has_cap(ARM64_WORKAROUND_2457168)) {
+> >>> +               cnt->corecnt =3D read_corecnt();
+> >> This statement is present in both branches, so can it be moved before
+> >> the if ()?
+> > Yes.
+> > Do you mean adding a blank line before if()?
+> Sorry, I misunderstood you.
+> The statement "cnt->corecnt =3D read_corecnt();" cannot be moved before
+> the if().
+> The AMU core and constant counter need to be read togeter without any
+> time interval as described in code comments.
+> The this_cpu_has_cap() is time-consuming.
+> That is why I don't use the cpu_read_constcnt() to read constant counter.
 
-Ok, a combo diff of my fixes ontop, below. Lemme queue it - further
-fixes can go ontop from now on.
+So define something like
 
-Thx.
+static inline void amu_read_counters(struct amu_counters *cnt, bool
+read_constcnt)
+{
+              cnt->corecnt =3D read_corecnt();
+              if (read_constcnt)
+                            cnt->constcnt =3D read_constcnt();
+              else
+                            cnt->constcnt =3D 0;
+}
 
----
-diff --git a/drivers/ras/amd/atl/access.c b/drivers/ras/amd/atl/access.c
-index 1de0460f5e03..f6dd87bb2c35 100644
---- a/drivers/ras/amd/atl/access.c
-+++ b/drivers/ras/amd/atl/access.c
-@@ -18,12 +18,12 @@ static DEFINE_MUTEX(df_indirect_mutex);
- /*
-  * Data Fabric Indirect Access uses FICAA/FICAD.
-  *
-- * Fabric Indirect Configuration Access Address (FICAA): Constructed based
-+ * Fabric Indirect Configuration Access Address (FICAA): constructed based
-  * on the device's Instance Id and the PCI function and register offset of
-  * the desired register.
-  *
-- * Fabric Indirect Configuration Access Data (FICAD): There are FICAD LO
-- * and FICAD HI registers but so far we only need the LO register.
-+ * Fabric Indirect Configuration Access Data (FICAD): there are FICAD
-+ * low and high registers but so far only the low register is needed.
-  *
-  * Use Instance Id 0xFF to indicate a broadcast read.
-  */
-diff --git a/drivers/ras/amd/atl/core.c b/drivers/ras/amd/atl/core.c
-index 9cc31c052427..6dc4e06305f7 100644
---- a/drivers/ras/amd/atl/core.c
-+++ b/drivers/ras/amd/atl/core.c
-@@ -31,7 +31,7 @@ static int addr_over_limit(struct addr_ctx *ctx)
- 
- 	/* Is calculated system address above DRAM limit address? */
- 	if (ctx->ret_addr > dram_limit_addr) {
--		atl_debug("Calculated address (0x%016llx) > DRAM limit (0x%016llx)",
-+		atl_debug(ctx, "Calculated address (0x%016llx) > DRAM limit (0x%016llx)",
- 			  ctx->ret_addr, dram_limit_addr);
- 		return -EINVAL;
- 	}
-@@ -179,7 +179,7 @@ static void check_for_legacy_df_access(void)
-  * are technically independent things.
-  *
-  * It's possible to match on the PCI IDs of the Data Fabric devices, but this will be
-- * an every expanding list. Instead match on the SMCA and Zen features to cover all
-+ * an ever expanding list. Instead, match on the SMCA and Zen features to cover all
-  * relevant systems.
-  */
- static const struct x86_cpu_id amd_atl_cpuids[] = {
-diff --git a/drivers/ras/amd/atl/dehash.c b/drivers/ras/amd/atl/dehash.c
-index 51721094dd06..6f414926e6fe 100644
---- a/drivers/ras/amd/atl/dehash.c
-+++ b/drivers/ras/amd/atl/dehash.c
-@@ -12,7 +12,14 @@
- 
- #include "internal.h"
- 
--static inline bool valid_map_bits(struct addr_ctx *ctx, u8 bit1, u8 bit2,
-+/*
-+ * Verify the interleave bits are correct in the different interleaving
-+ * settings.
-+ *
-+ * If @num_intlv_dies and/or @num_intlv_sockets are 1, it means the
-+ * respective interleaving is disabled.
-+ */
-+static inline bool map_bits_valid(struct addr_ctx *ctx, u8 bit1, u8 bit2,
- 				  u8 num_intlv_dies, u8 num_intlv_sockets)
- {
- 	if (!(ctx->map.intlv_bit_pos == bit1 || ctx->map.intlv_bit_pos == bit2)) {
-@@ -37,11 +44,7 @@ static int df2_dehash_addr(struct addr_ctx *ctx)
- {
- 	u8 hashed_bit, intlv_bit, intlv_bit_pos;
- 
--	/*
--	 * Assert that interleave bit is 8 or 9 and that die and socket
--	 * interleaving are disabled.
--	 */
--	if (!valid_map_bits(ctx, 8, 9, 1, 1))
-+	if (!map_bits_valid(ctx, 8, 9, 1, 1))
- 		return -EINVAL;
- 
- 	intlv_bit_pos = ctx->map.intlv_bit_pos;
-@@ -64,11 +67,7 @@ static int df3_dehash_addr(struct addr_ctx *ctx)
- 	bool hash_ctl_64k, hash_ctl_2M, hash_ctl_1G;
- 	u8 hashed_bit, intlv_bit, intlv_bit_pos;
- 
--	/*
--	 * Assert that interleave bit is 8 or 9 and that die and socket
--	 * interleaving are disabled.
--	 */
--	if (!valid_map_bits(ctx, 8, 9, 1, 1))
-+	if (!map_bits_valid(ctx, 8, 9, 1, 1))
- 		return -EINVAL;
- 
- 	hash_ctl_64k = FIELD_GET(DF3_HASH_CTL_64K, ctx->map.ctl);
-@@ -172,11 +171,7 @@ static int df4_dehash_addr(struct addr_ctx *ctx)
- 	bool hash_ctl_64k, hash_ctl_2M, hash_ctl_1G;
- 	u8 hashed_bit, intlv_bit;
- 
--	/*
--	 * Assert that interleave bit is 8, die interleaving is disabled,
--	 * and no more than 2 sockets are interleaved.
--	 */
--	if (!valid_map_bits(ctx, 8, 8, 1, 2))
-+	if (!map_bits_valid(ctx, 8, 8, 1, 2))
- 		return -EINVAL;
- 
- 	hash_ctl_64k = FIELD_GET(DF4_HASH_CTL_64K, ctx->map.ctl);
-@@ -252,11 +247,7 @@ static int df4p5_dehash_addr(struct addr_ctx *ctx)
- 	u8 hashed_bit, intlv_bit;
- 	u64 rehash_vector;
- 
--	/*
--	 * Assert that interleave bit is 8, die interleaving is disabled,
--	 * and no more than 2 sockets are interleaved.
--	 */
--	if (!valid_map_bits(ctx, 8, 8, 1, 2))
-+	if (!map_bits_valid(ctx, 8, 8, 1, 2))
- 		return -EINVAL;
- 
- 	hash_ctl_64k = FIELD_GET(DF4_HASH_CTL_64K, ctx->map.ctl);
-diff --git a/drivers/ras/amd/atl/denormalize.c b/drivers/ras/amd/atl/denormalize.c
-index fb182dd7cca6..01f1d0fb6799 100644
---- a/drivers/ras/amd/atl/denormalize.c
-+++ b/drivers/ras/amd/atl/denormalize.c
-@@ -339,7 +339,8 @@ static u16 get_logical_coh_st_fabric_id(struct addr_ctx *ctx)
- 	}
- 
- 	if (log_fabric_id == MAX_COH_ST_CHANNELS)
--		atl_debug("COH_ST remap entry not found for 0x%x", log_fabric_id);
-+		atl_debug(ctx, "COH_ST remap entry not found for 0x%x",
-+			  log_fabric_id);
- 
- 	/* Get the Node ID bits from the physical and apply to the logical. */
- 	return (phys_fabric_id & df_cfg.node_id_mask) | log_fabric_id;
-diff --git a/drivers/ras/amd/atl/internal.h b/drivers/ras/amd/atl/internal.h
-index a1996811aa34..f17c5f5c9950 100644
---- a/drivers/ras/amd/atl/internal.h
-+++ b/drivers/ras/amd/atl/internal.h
-@@ -279,10 +279,10 @@ static inline u64 remove_bits(u8 low_bit, u8 high_bit, u64 data)
- 	return temp1 | temp2;
- }
- 
--#define atl_debug(fmt, arg...) \
-+#define atl_debug(ctx, fmt, arg...) \
- 	pr_debug("socket_id=%u die_id=%u coh_st_inst_id=%u norm_addr=0x%016llx: " fmt,\
--		 ctx->inputs.socket_id, ctx->inputs.die_id,\
--		 ctx->inputs.coh_st_inst_id, ctx->inputs.norm_addr, ##arg)
-+		 (ctx)->inputs.socket_id, (ctx)->inputs.die_id,\
-+		 (ctx)->inputs.coh_st_inst_id, (ctx)->inputs.norm_addr, ##arg)
- 
- static inline void atl_debug_on_bad_df_rev(void)
- {
-@@ -291,7 +291,7 @@ static inline void atl_debug_on_bad_df_rev(void)
- 
- static inline void atl_debug_on_bad_intlv_mode(struct addr_ctx *ctx)
- {
--	atl_debug("Unrecognized interleave mode: %u", ctx->map.intlv_mode);
-+	atl_debug(ctx, "Unrecognized interleave mode: %u", ctx->map.intlv_mode);
- }
- 
- #endif /* __AMD_ATL_INTERNAL_H__ */
-diff --git a/drivers/ras/amd/atl/map.c b/drivers/ras/amd/atl/map.c
-index 8145b7bb2b40..64e8b1eda1ae 100644
---- a/drivers/ras/amd/atl/map.c
-+++ b/drivers/ras/amd/atl/map.c
-@@ -140,7 +140,7 @@ static int get_dram_offset(struct addr_ctx *ctx, u64 *norm_offset)
- 
- 	/* Should not be called for map 0. */
- 	if (!ctx->map.num) {
--		atl_debug("Trying to find DRAM offset for map 0");
-+		atl_debug(ctx, "Trying to find DRAM offset for map 0");
- 		return -EINVAL;
- 	}
- 
-@@ -388,7 +388,6 @@ static int find_normalized_offset(struct addr_ctx *ctx, u64 *norm_offset)
- 
- 	for (ctx->map.num = 1; ctx->map.num < df_cfg.num_coh_st_maps; ctx->map.num++) {
- 		ret = get_dram_offset(ctx, norm_offset);
--
- 		if (ret < 0)
- 			return ret;
- 
-@@ -398,13 +397,13 @@ static int find_normalized_offset(struct addr_ctx *ctx, u64 *norm_offset)
- 
- 		/* Enabled offsets should never be 0. */
- 		if (*norm_offset == 0) {
--			atl_debug("Enabled map %u offset is 0", ctx->map.num);
-+			atl_debug(ctx, "Enabled map %u offset is 0", ctx->map.num);
- 			return -EINVAL;
- 		}
- 
- 		/* Offsets should always increase from one map to the next. */
- 		if (*norm_offset <= last_offset) {
--			atl_debug("Map %u offset (0x%016llx) <= previous (0x%016llx)",
-+			atl_debug(ctx, "Map %u offset (0x%016llx) <= previous (0x%016llx)",
- 				  ctx->map.num, *norm_offset, last_offset);
- 			return -EINVAL;
- 		}
-@@ -650,18 +649,17 @@ static void dump_address_map(struct dram_addr_map *map)
- 
- int get_address_map(struct addr_ctx *ctx)
- {
--	int ret = 0;
-+	int ret;
- 
- 	ret = get_address_map_common(ctx);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	ret = get_global_map_data(ctx);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	dump_address_map(&ctx->map);
- 
--out:
- 	return ret;
- }
-diff --git a/drivers/ras/amd/atl/system.c b/drivers/ras/amd/atl/system.c
-index 37ad203bb93e..af61f2f1d6de 100644
---- a/drivers/ras/amd/atl/system.c
-+++ b/drivers/ras/amd/atl/system.c
-@@ -17,7 +17,7 @@ int determine_node_id(struct addr_ctx *ctx, u8 socket_id, u8 die_id)
- 	u16 socket_id_bits, die_id_bits;
- 
- 	if (socket_id > 0 && df_cfg.socket_id_mask == 0) {
--		atl_debug("Invalid socket inputs: socket_id=%u socket_id_mask=0x%x",
-+		atl_debug(ctx, "Invalid socket inputs: socket_id=%u socket_id_mask=0x%x",
- 			  socket_id, df_cfg.socket_id_mask);
- 		return -EINVAL;
- 	}
-@@ -28,7 +28,7 @@ int determine_node_id(struct addr_ctx *ctx, u8 socket_id, u8 die_id)
- 	socket_id_bits &=	df_cfg.socket_id_mask;
- 
- 	if (die_id > 0 && df_cfg.die_id_mask == 0) {
--		atl_debug("Invalid die inputs: die_id=%u die_id_mask=0x%x",
-+		atl_debug(ctx, "Invalid die inputs: die_id=%u die_id_mask=0x%x",
- 			  die_id, df_cfg.die_id_mask);
- 		return -EINVAL;
- 	}
-@@ -225,8 +225,6 @@ static void get_num_maps(void)
- 		df_cfg.num_coh_st_maps	= 2;
- 		break;
- 	case DF4:
--		df_cfg.num_coh_st_maps	= 4;
--		break;
- 	case DF4p5:
- 		df_cfg.num_coh_st_maps	= 4;
- 		break;
+> >>
+> >>> +               cnt->constcnt =3D 0;
+> >>> +       } else {
+> >>> +               cnt->corecnt =3D read_corecnt();
+> >>> +               cnt->constcnt =3D read_constcnt();
+> >>> +       }
 
--- 
-Regards/Gruss,
-    Boris.
+and use it like this:
 
-https://people.kernel.org/tglx/notes-about-netiquette
+amu_read_counters(cnt, !this_cpu_has_cap(ARM64_WORKAROUND_2457168);
+
+It should work as expected AFAICS.
+
+> >>> +}
+> >>> +
+> >>>   static inline
+> >>> -int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
+> >>> +int counters_read_on_cpu(int cpu, smp_call_func_t func, void *data)
+> >>>   {
+> >>>          /*
+> >>>           * Abort call on counterless CPU or when interrupts are
+> >>> @@ -335,7 +359,7 @@ int counters_read_on_cpu(int cpu,
+> >>> smp_call_func_t func, u64 *val)
+> >>>          if (WARN_ON_ONCE(irqs_disabled()))
+> >>>                  return -EPERM;
+> >>>
+> >>> -       smp_call_function_single(cpu, func, val, 1);
+> >>> +       smp_call_function_single(cpu, func, data, 1);
+> >>>
+> >>>          return 0;
+> >>>   }
+> >>> @@ -364,6 +388,21 @@ bool cpc_ffh_supported(void)
+> >>>          return true;
+> >>>   }
+> >>>
+> >>> +int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered, u64
+> >>> *reference)
+> >>> +{
+> >>> +       struct amu_counters cnts =3D {0};
+> >>> +       int ret;
+> >>> +
+> >>> +       ret =3D counters_read_on_cpu(cpu, cpu_read_amu_counters, &cnt=
+s);
+> >>> +       if (ret)
+> >>> +               return ret;
+> >>> +
+> >>> +       *delivered =3D cnts.corecnt;
+> >>> +       *reference =3D cnts.constcnt;
+> >>> +
+> >>> +       return 0;
+> >>> +}
+> >>> +
+> >>>   int cpc_read_ffh(int cpu, struct cpc_reg *reg, u64 *val)
+> >>>   {
+> >>>          int ret =3D -EOPNOTSUPP;
+> >>> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> >>> index 7ff269a78c20..f303fabd7cfe 100644
+> >>> --- a/drivers/acpi/cppc_acpi.c
+> >>> +++ b/drivers/acpi/cppc_acpi.c
+> >>> @@ -1299,6 +1299,11 @@ bool cppc_perf_ctrs_in_pcc(void)
+> >>>   }
+> >>>   EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc);
+> >>>
+> >>> +int __weak cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered,
+> >>> u64 *reference)
+> >>> +{
+> >>> +       return 0;
+> >>> +}
+> >>> +
+> >>>   /**
+> >>>    * cppc_get_perf_ctrs - Read a CPU's performance feedback counters.
+> >>>    * @cpunum: CPU from which to read counters.
+> >>> @@ -1313,7 +1318,8 @@ int cppc_get_perf_ctrs(int cpunum, struct
+> >>> cppc_perf_fb_ctrs *perf_fb_ctrs)
+> >>>                  *ref_perf_reg, *ctr_wrap_reg;
+> >>>          int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpunum);
+> >>>          struct cppc_pcc_data *pcc_ss_data =3D NULL;
+> >>> -       u64 delivered, reference, ref_perf, ctr_wrap_time;
+> >>> +       u64 delivered =3D 0, reference =3D 0;
+> >>> +       u64 ref_perf, ctr_wrap_time;
+> >>>          int ret =3D 0, regs_in_pcc =3D 0;
+> >>>
+> >>>          if (!cpc_desc) {
+> >>> @@ -1350,8 +1356,18 @@ int cppc_get_perf_ctrs(int cpunum, struct
+> >>> cppc_perf_fb_ctrs *perf_fb_ctrs)
+> >>>                  }
+> >>>          }
+> >>>
+> >>> -       cpc_read(cpunum, delivered_reg, &delivered);
+> >>> -       cpc_read(cpunum, reference_reg, &reference);
+> >>> +       if (cpc_ffh_supported()) {
+> >>> +               ret =3D cpc_read_arch_counters_on_cpu(cpunum,
+> >>> &delivered, &reference);
+> >>> +               if (ret) {
+> >>> +                       pr_debug("read arch counters failed,
+> >>> ret=3D%d.\n", ret);
+> >>> +                       ret =3D 0;
+> >>> +               }
+> >>> +       }
+> >> The above is surely not applicable to every platform using CPPC.  Also
+> >
+> > cpc_ffh_supported is aimed to control only the platform supported FFH
+> > to enter.
+> > cpc_read_arch_counters_on_cpu is also needed to implemented by each
+> > platform according to their require.
+
+Well, exactly.
+
+> > Here just implement this interface for arm64.
+
+So on x86 cpc_ffh_supported() returns true and
+cpc_read_arch_counters_on_cpu() will do nothing, so it will always
+fall back to using cpc_read().  That is not particularly
+straightforward IMV.
+
+> >
+> >> it looks like in the ARM64_WORKAROUND_2457168 enabled case it is just
+> >> pointless overhead, because "reference" is always going to be 0 here
+> >> then.
+> > Right, it is always going to be 0 here for the
+> > ARM64_WORKAROUND_2457168 enabled case .
+> > But ARM64_WORKAROUND_2457168 is a macro releated to ARM.
+> > It seems that it is not appropriate for this macro to appear this
+> > common place for all platform, right?
+> >
+> >>
+> >> Please clean that up.
+> >>
+> >>> +       if (!delivered || !reference) {
+> >>> +               cpc_read(cpunum, delivered_reg, &delivered);
+> >>> +               cpc_read(cpunum, reference_reg, &reference);
+> >>> +       }
+> >>> +
+> >>>          cpc_read(cpunum, ref_perf_reg, &ref_perf);
+> >>>
+> >>>          /*
+> >>> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+> >>> index 6126c977ece0..07d4fd82d499 100644
+> >>> --- a/include/acpi/cppc_acpi.h
+> >>> +++ b/include/acpi/cppc_acpi.h
+> >>> @@ -152,6 +152,7 @@ extern bool cpc_ffh_supported(void);
+> >>>   extern bool cpc_supported_by_cpu(void);
+> >>>   extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
+> >>>   extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
+> >>> +extern int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered,
+> >>> u64 *reference);
+> >>>   extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
+> >>>   extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls
+> >>> *perf_ctrls, bool enable);
+> >>>   extern int cppc_get_auto_sel_caps(int cpunum, struct
+> >>> cppc_perf_caps *perf_caps);
+> >>> @@ -209,6 +210,10 @@ static inline int cpc_write_ffh(int cpunum,
+> >>> struct cpc_reg *reg, u64 val)
+> >>>   {
+> >>>          return -ENOTSUPP;
+> >>>   }
+> >>> +static inline int cpc_read_arch_counters_on_cpu(int cpu, u64
+> >>> *delivered, u64 *reference)
+> >>> +{
+> >>> +       return -EOPNOTSUPP;
+> >>> +}
+> >>>   static inline int cppc_set_epp_perf(int cpu, struct
+> >>> cppc_perf_ctrls *perf_ctrls, bool enable)
+> >>>   {
+> >>>          return -ENOTSUPP;
+> >>> --
+> >> .
+> >
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
 
