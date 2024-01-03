@@ -1,187 +1,316 @@
-Return-Path: <linux-kernel+bounces-15789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14243823283
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 14F4D82330D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:15:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE4D51F24D92
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:08:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 943221F24E0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:15:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3D1D1C28C;
-	Wed,  3 Jan 2024 17:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011B71BDFB;
+	Wed,  3 Jan 2024 17:15:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BOLqHlGh"
+	dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b="QEQIfasv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8465A1BDDE;
-	Wed,  3 Jan 2024 17:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704301680; x=1735837680;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=70JQJlokyiaAyGaYrk9lvN1nK0nTFbNr3bb86hDu8YQ=;
-  b=BOLqHlGhS1r9yj7SW5HS4tzEi+6uKh9IEJprRp/TBvm/eH9NZV20qK2L
-   zzXre2/BmkEEW6XiuXex+vmhOahtzDcLeeA7JdVa7DxNOoQB3AhW9UZrC
-   +zDkrkmG6UWxZDKTjcgDiDEqRL1ebzuV2KfurTjLBMHL28vqM7jqJq+xF
-   X8kEieeI3qQTYskQv5EqDPpM217IQzOGTXscXXtrMfhunf+y1sP4+GpKS
-   QTi3uoOdvC9qusZCQGrsvucAUzJStcS4Wip1p+HuWyoqMGkX13gRCrtNy
-   J/D3SiwGwN6YudOHJF1AOXlXH4oAqIcFkUY0URt32YWIv+0bIN9XDpgkO
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="396765085"
-X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
-   d="scan'208";a="396765085"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 09:07:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="729835277"
-X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
-   d="scan'208";a="729835277"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Jan 2024 09:07:58 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 3 Jan 2024 09:07:58 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 3 Jan 2024 09:07:57 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 3 Jan 2024 09:07:57 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 3 Jan 2024 09:07:57 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TkYi87BKHKS9KEOTdHSQZnTUQOpdjW65krugxABV1s0ckRc/j8m7ITCwCAdVOcgOHPab4nGX9zAODm79ZzUjZYGLPPpDnqkjHWR/384CUObi5NTMs13VzRmMSFVmOajkYlmTLyYZL0EZkTBzxaQFxVWfZ1kTXwdwZXmY9Vm1VNa8R96D6enDT+0W5S6mPYaBTCYoeyXu7LYUr6nadCBdsqzMluunoy4xnVapoeeKmxsuR3mz4lW2eVrPzZKcDjFP6dmJj2HGbWMs7asgxw3tOZ3qdyPaWRm4xo7HC6Dgfxfovj0J6xtOBJXHMWvG5OrmKT/dxKooH3CKW7lqk6HLRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7J6nJQkqtmSngy0mjMZEvNq6UxNz4BjJSSTiU+OhQAQ=;
- b=jH83QGP1+1Sa7klwmVNAory+rOM3mBflxdAH2bYQn67U6BHOX7gI6GnDurNeszC1vvGbEoD8uPYYeQK6r6zqCYT+l1GPq3oM5L1QGN0ziQlWFqc/+Lz1l7bB9WI/lHBXqnjBqI1yJ58O4IfsbVoX/heGteyvDcDtTTY2ACv+p8PFs+RkOQDWf+NqGAVUx3WQlPWlAkFBY7JlHPs0rz5XExvQhD60VujBPglhHgJJiug14Egmgyv7edUY/Km9P1e4+BtEvi45MHykzxqQmRaVmxYnnu87qA6s0Xg7PUabIt7979ubLFWw0RW0rl6aiMxtFsFdmv48GcjZlgnH+VMEog==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com (2603:10b6:930:3a::8)
- by MN6PR11MB8220.namprd11.prod.outlook.com (2603:10b6:208:478::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Wed, 3 Jan
- 2024 17:07:53 +0000
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::8de8:c1ad:7062:6afc]) by CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::8de8:c1ad:7062:6afc%4]) with mapi id 15.20.7159.013; Wed, 3 Jan 2024
- 17:07:53 +0000
-Date: Wed, 3 Jan 2024 17:07:41 +0000
-From: "Cabiddu, Giovanni" <giovanni.cabiddu@intel.com>
-To: Arnd Bergmann <arnd@kernel.org>
-CC: Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller"
-	<davem@davemloft.net>, Damian Muszynski <damian.muszynski@intel.com>, "Arnd
- Bergmann" <arnd@arndb.de>, Tom Zanussi <tom.zanussi@linux.intel.com>, "Jie
- Wang" <jie.wang@intel.com>, <qat-linux@intel.com>,
-	<linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] crypto: qat - avoid memcpy() overflow warning
-Message-ID: <ZZWUXcHBwTJjiT/H@gcabiddu-mobl.ger.corp.intel.com>
-References: <20240103162608.987145-1-arnd@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240103162608.987145-1-arnd@kernel.org>
-Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 -
- Collinstown Industrial Park, Leixlip, County Kildare - Ireland
-X-ClientProxiedBy: DU2PR04CA0251.eurprd04.prod.outlook.com
- (2603:10a6:10:28e::16) To CY5PR11MB6366.namprd11.prod.outlook.com
- (2603:10b6:930:3a::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F541BDFE
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 17:15:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raspberrypi.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso5243228276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 09:15:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google; t=1704302103; x=1704906903; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v6UmRXAQluppzFow4ZjI3gs+x7tGXMy7iMXQ0B/VSQw=;
+        b=QEQIfasvUzTdvtIK/qqUBzTOk3kq/cqKe86n8dmZtRSy2CBlhE6USop4cqO0NSwYYM
+         hJmxFeGnoKge/QrXXNYLDm29dUggBCuuWVKpkl4Sr5OWxuERNsx3/wSFj+MkHSofIFQ4
+         BOvLLn38zZ8NJF8T/thIBEpF133x5XdHQLSsfIhneIVTJg+j8HCGyMIyV36nVSV2WV8n
+         Z5MJN29U+XjcItbueOqg9WNMnjPbWV8JFn5yPSMYhY48BXh3R8eBMMVFw5gDfXSl+cMM
+         wKK509aGf6aftREkkk8VstGW51s3Zh07MJpDvcQcL1lbHPXOMM+tn0IT8b+Yp7h7L34O
+         dMOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704302103; x=1704906903;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v6UmRXAQluppzFow4ZjI3gs+x7tGXMy7iMXQ0B/VSQw=;
+        b=Dy2HsZandPpqX6GeQ0jk1oOrA+xkkBbisZ7hde5oaO7kXFMVUgYFOrAVQH49/V5SCE
+         rJizCkdsQ75Y4YadRU7+J4w2Z/T+McN1jApTcethpzhXvyoNNz81JAmM/Ok3DxHHBobR
+         FpTgaK5+T2RIFx4Ie9CmwtZzVai0XJKO4ymFsGbi785+zhCJfJT4j7mLWzpJmox5d2zd
+         nByLunqx78zJaKF/+bS96vc+Rfj9JARuL/dJlf75WH+25rJBxdO6dptLX0ohSggbvpJI
+         6MyRZDTqZ7M24IekMpzdPUQvGrYlsauBHC31IThCiSDLHy0+Z0gKcatkjtCV0wjJIxdm
+         VnRA==
+X-Gm-Message-State: AOJu0Yxow438dtPq6z3sG2DC0Hfl/mVMhFvty1d0QEonZL3+lYpRqtB/
+	jXZR4vm7QETb2G0kXEYBkR5rUigCeTFtdky2pwh5HZlv/90Kiw==
+X-Google-Smtp-Source: AGHT+IGOT3uG+incdyB4GWwhyo7kHMRMx4wOGrZilibZrh47m9ihFDTgfUHGv4t2TgNqGVjLEj5P9KEnggAalTz/Hzo=
+X-Received: by 2002:a5b:bc2:0:b0:dbe:9d10:a9af with SMTP id
+ c2-20020a5b0bc2000000b00dbe9d10a9afmr994225ybr.33.1704302103097; Wed, 03 Jan
+ 2024 09:15:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6366:EE_|MN6PR11MB8220:EE_
-X-MS-Office365-Filtering-Correlation-Id: e50c40aa-6cc8-46fa-a79d-08dc0c7e8642
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K3cd4n6y7U/PTq/Qmh1e7vmB31oLZrEh3duviw2y1cn4rn6rQ0RrobMooFvu1vuuyuo+HJMyCohARglR5ixw4FxRAmfJGciTGYGIU7NxonV6vzVC0xh1q2SLuUOBHcWoeyZVh1fH2qvlhY+D4Q66YrCwyAILPWNWzClXl1PxHCYL4jZQ5XsWfvRvYSLbiuWyoGIuQmhQQU3mNVR4FUtb33ob5S6iOoYPqiaox+PR72B4jwp3sjRxjQ7rwWiKUYu8jdlyZU77//Us/c9tPZl41im99tZg8EOI8qZ2F//LJ8s67GVVyp8Kq8djyTnewIluoVlrNiQ/hSetlIXktMLbsTlKWnuY5U3BtFub5SpHxKwI3RhGBNZPuY1bRd/N3fRAxjyBiFuxZ+nVAB9GLaO24c17EYCKCBXgHWFZHQ52KzFYoTldM3fG3dD6r/d5kd6pqY1ShN2SO314/DmwIUuBmsELFdbBu+zoNZlteTndQRkvuDk/Q9x7ll5AE0FkkPQuaRLHBmTNwJztcKfv6GWNo1rufdZYHqLUnaGFdjxdMiLvxnsi2QEnWaDIFyv1eeMYxGPgO9zrfCd/TrUipvlXtGac6pSs1m2BFRRz76BKBGgHL+gekL72i7c4PccJtJQ0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6366.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(376002)(39860400002)(366004)(230273577357003)(230922051799003)(230173577357003)(186009)(64100799003)(1800799012)(451199024)(66476007)(6506007)(36916002)(6916009)(86362001)(66556008)(6512007)(6486002)(5660300002)(2906002)(82960400001)(38100700002)(41300700001)(66946007)(26005)(83380400001)(4326008)(6666004)(478600001)(54906003)(8676002)(316002)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gV91LtlBMC7701PJ5PZyP7h7qHA0STnxKzDD73jbAVJtO6Xr3rpliad/nu7e?=
- =?us-ascii?Q?nF0qJzbDBUU25zZpNg8JeEpN0SHXbQMWZWeUNEaWqbLMezWypQtTe8CGG6gU?=
- =?us-ascii?Q?2aDfGpGMsBnSdNIxA/029JhaNZTt+UaC1TpNK8lfdNdV3AYHRefA/0jDHIvx?=
- =?us-ascii?Q?srPxtSlD9oLyhu+rkIqH9xsADXv4ej96rlc/LUL17jl7Vhg8FG2l7R5myIgO?=
- =?us-ascii?Q?vT7YjkQfMUHddk0oYAQ6M1U6dQk/xfS9RqlmWwrI+clIlfcM3fFNwpFhY7J5?=
- =?us-ascii?Q?gUO2PaIktwp8h2W3sZJ+0gqn+heYhGlKUzGqv/EsCLUPk8I9U1k3676FDfy5?=
- =?us-ascii?Q?/uXw85TnLgSCF2j/NN0tDUYE+Iu68xRHKq+N2gXPUO25XXUQ69B7AKN6IRLp?=
- =?us-ascii?Q?ixQmOO4+A6zkuU+hSiDT4L4DpEuQpqkZJiAImsTfZLqXW7d1XEc5NwsbNBbK?=
- =?us-ascii?Q?sbNss8X/U7zbueOBAG/WwyvBXnL1G5QHzcOcnih1stH/6AnI3htn3z3CnxUK?=
- =?us-ascii?Q?LPoN9ZN3JA7MKZrEQydt6jhEVZEa+ph03aykmozcHgUfqqSXiwqSfxxc6Haf?=
- =?us-ascii?Q?Go2pwS3kAUOoZsFJVSzMJs8gT39lc7IjCeddFKy/0IM3CUFAVBNmLvgr6mDR?=
- =?us-ascii?Q?JyOfCtCg4hiSRcg3KUpkNcAafUJ05cB3aOfgAcJgTwEnDR7CEDOWCB47K+4O?=
- =?us-ascii?Q?o4p/4UAytJl611fUhQDt8l1FI5XErQaifnmCiji+pkXGXk82/vNcUsXWA9jI?=
- =?us-ascii?Q?9McUY52epGIxDs7ncsv5tzacc3gzg0KyY4YSCtDaS+pBTO/dXRLMqwdKzXPz?=
- =?us-ascii?Q?9vsMX3573lkO8vHNfMWgKBt8niBpvrgExic4sq4dHRfkidwY9Mex5X5P+6Uh?=
- =?us-ascii?Q?/w1i9I+Rr4Bykv9h/AJ3zJYnjgPpb+K3gzf5pDnOisLv8SmXDtGCAKjILAOX?=
- =?us-ascii?Q?FEvr8m9VPZFvFOOdVVWmKKC+7ZGnOFsPHyJOObwG1FAV7F2LjoVULor1cBy6?=
- =?us-ascii?Q?nQByoE8E94gZtYmnyzqLWuBXJo2rupiS9aYyVKqc4gYZ9Fg4XnIICEZoR+kw?=
- =?us-ascii?Q?eEX8KVntiUiZtJJGAtSMIXK45vk8PONA98GI3iWKh+3GBxhnnX2Izvi1UMl6?=
- =?us-ascii?Q?OoC9xhvdeQHn3oIbAxmQ+iWqtbssTHMVa0y2OSSIIf83z2v1jh1eQOjvpATX?=
- =?us-ascii?Q?Kxp3rGmz83KIMda0zPrVOH5on4UYupmjV+GtwLlSoZYuda2O8zTpQlErjfrI?=
- =?us-ascii?Q?7qtf2dcYzWuzji5ZPSopoBYsSYTQI+FUXgKBYCYP1kf3CrkeJAor2+01JeYm?=
- =?us-ascii?Q?nGD+ocwFpsrFHLS9/yTT408tlqELTc/yqeoyjOlF+yvYSifzz9h8FnzhE3uc?=
- =?us-ascii?Q?ZeryUSsKRxXjozzAjm/9rI/enBFQEGh4datxAvFkC0imzc01xs70Nfv9ryLk?=
- =?us-ascii?Q?yhcI99o1c7RFTr2ZOMfrgN2QgEzNbwvaOojNGI5rL8bFkNV3nzAGXt/EeKHn?=
- =?us-ascii?Q?UqsLsMzojxUOx/8kH8DrJxyTV+sK052Pk65rrnohMBZjaHM5WuJGedH852cO?=
- =?us-ascii?Q?EGMZ2nEVNT4iMOz4hYoWcyebnmz4CdrOxVUKTtiw0rOy45CrZMyc5e4sDPno?=
- =?us-ascii?Q?2w=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e50c40aa-6cc8-46fa-a79d-08dc0c7e8642
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6366.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2024 17:07:53.8890
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: voOJ6O/xfx3fbpWKT1CHio4WMMuXNMXWA4hQDKXbpqTMuIb46W4bBFWlAih7piNvthkncS8jfzU1EF1OfB9F4ZlTlEE77ifrmmS2z8lcJb0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR11MB8220
-X-OriginatorOrg: intel.com
+References: <20220728-rpi-analog-tv-properties-v9-0-24b168e5bcd5@cerno.tech>
+ <20220728-rpi-analog-tv-properties-v9-9-24b168e5bcd5@cerno.tech>
+ <CAPY8ntD4oz9A1H7Ek1YSLRicLprz1ev5YeAqP2Ah=DMPk84KRQ@mail.gmail.com>
+ <z5mywwtyboycdoqhayfuqjobr53jajgaft5ikfdkt77tnm7bhg@d4gjmlqpnnrt> <CAPY8ntB0V2yRWVnr6HYby0g2seDL5P03iO+7E_TLa3niPGSfPw@mail.gmail.com>
+In-Reply-To: <CAPY8ntB0V2yRWVnr6HYby0g2seDL5P03iO+7E_TLa3niPGSfPw@mail.gmail.com>
+From: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date: Wed, 3 Jan 2024 17:14:46 +0000
+Message-ID: <CAPY8ntCdsvLvFm1fezQamKibbcsQoOCNc2nBsvj6vhLH3s0udw@mail.gmail.com>
+Subject: Re: [PATCH v9 09/25] drm/modes: Move named modes parsing to a
+ separate function
+To: Maxime Ripard <maxime@cerno.tech>
+Cc: Karol Herbst <kherbst@redhat.com>, Samuel Holland <samuel@sholland.org>, 
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Chen-Yu Tsai <wens@csie.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Lyude Paul <lyude@redhat.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, David Airlie <airlied@linux.ie>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Dom Cobley <dom@raspberrypi.com>, 
+	Phil Elwell <phil@raspberrypi.com>, Mateusz Kwiatkowski <kfyatek+publicgit@gmail.com>, 
+	nouveau@lists.freedesktop.org, Hans de Goede <hdegoede@redhat.com>, 
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	=?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, linux-sunxi@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 03, 2024 at 05:26:02PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The use of array_size() leads gcc to assume the memcpy() can have a larger
-> limit than actually possible, which triggers a string fortification warning:
-> 
-> In file included from include/linux/string.h:296,
->                  from include/linux/bitmap.h:12,
->                  from include/linux/cpumask.h:12,
->                  from include/linux/sched.h:16,
->                  from include/linux/delay.h:23,
->                  from include/linux/iopoll.h:12,
->                  from drivers/crypto/intel/qat/qat_common/adf_gen4_hw_data.c:3:
-> In function 'fortify_memcpy_chk',
->     inlined from 'adf_gen4_init_thd2arb_map' at drivers/crypto/intel/qat/qat_common/adf_gen4_hw_data.c:401:3:
-> include/linux/fortify-string.h:579:4: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
->   579 |    __write_overflow_field(p_size_field, size);
->       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> include/linux/fortify-string.h:588:4: error: call to '__read_overflow2_field' declared with attribute warning: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Werror=attribute-warning]
->   588 |    __read_overflow2_field(q_size_field, size);
->       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Add an explicit range check to avoid this.
-> 
-> Fixes: 5da6a2d5353e ("crypto: qat - generate dynamically arbiter mappings")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+On Wed, 3 Jan 2024 at 14:02, Dave Stevenson
+<dave.stevenson@raspberrypi.com> wrote:
+>
+> Hi Maxime
+>
+> On Wed, 3 Jan 2024 at 13:33, Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > Hi Dave,
+> >
+> > Happy new year :)
+>
+> And to you.
+>
+> > On Tue, Jan 02, 2024 at 03:12:26PM +0000, Dave Stevenson wrote:
+> > > Hi Maxime
+> > >
+> > > On Mon, 14 Nov 2022 at 13:00, Maxime Ripard <maxime@cerno.tech> wrote=
+:
+> > > >
+> > > > The current construction of the named mode parsing doesn't allow to=
+ extend
+> > > > it easily. Let's move it to a separate function so we can add more
+> > > > parameters and modes.
+> > > >
+> > > > In order for the tests to still pass, some extra checks are needed,=
+ so
+> > > > it's not a 1:1 move.
+> > > >
+> > > > Reviewed-by: Noralf Tr=C3=B8nnes <noralf@tronnes.org>
+> > > > Tested-by: Mateusz Kwiatkowski <kfyatek+publicgit@gmail.com>
+> > > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > > >
+> > > > ---
+> > > > Changes in v7:
+> > > > - Add Noralf Reviewed-by
+> > > >
+> > > > Changes in v6:
+> > > > - Simplify the test for connection status extras
+> > > > - Simplify the code path to call drm_mode_parse_cmdline_named_mode
+> > > >
+> > > > Changes in v4:
+> > > > - Fold down all the named mode patches that were split into a singl=
+e
+> > > >   patch again to maintain bisectability
+> > > > ---
+> > > >  drivers/gpu/drm/drm_modes.c | 70 +++++++++++++++++++++++++++++++++=
+++++--------
+> > > >  1 file changed, 58 insertions(+), 12 deletions(-)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_mode=
+s.c
+> > > > index 71c050c3ee6b..37542612912b 100644
+> > > > --- a/drivers/gpu/drm/drm_modes.c
+> > > > +++ b/drivers/gpu/drm/drm_modes.c
+> > > > @@ -2229,6 +2229,51 @@ static const char * const drm_named_modes_wh=
+itelist[] =3D {
+> > > >         "PAL",
+> > > >  };
+> > > >
+> > > > +static int drm_mode_parse_cmdline_named_mode(const char *name,
+> > > > +                                            unsigned int name_end,
+> > > > +                                            struct drm_cmdline_mod=
+e *cmdline_mode)
+> > > > +{
+> > > > +       unsigned int i;
+> > > > +
+> > > > +       if (!name_end)
+> > > > +               return 0;
+> > > > +
+> > > > +       /* If the name starts with a digit, it's not a named mode *=
+/
+> > > > +       if (isdigit(name[0]))
+> > > > +               return 0;
+> > > > +
+> > > > +       /*
+> > > > +        * If there's an equal sign in the name, the command-line
+> > > > +        * contains only an option and no mode.
+> > > > +        */
+> > > > +       if (strnchr(name, name_end, '=3D'))
+> > > > +               return 0;
+> > > > +
+> > > > +       /* The connection status extras can be set without a mode. =
+*/
+> > > > +       if (name_end =3D=3D 1 &&
+> > > > +           (name[0] =3D=3D 'd' || name[0] =3D=3D 'D' || name[0] =
+=3D=3D 'e'))
+> > > > +               return 0;
+> > > > +
+> > > > +       /*
+> > > > +        * We're sure we're a named mode at this point, iterate ove=
+r the
+> > > > +        * list of modes we're aware of.
+> > > > +        */
+> > > > +       for (i =3D 0; i < ARRAY_SIZE(drm_named_modes_whitelist); i+=
++) {
+> > > > +               int ret;
+> > > > +
+> > > > +               ret =3D str_has_prefix(name, drm_named_modes_whitel=
+ist[i]);
+> > > > +               if (ret !=3D name_end)
+> > > > +                       continue;
+> > > > +
+> > > > +               strcpy(cmdline_mode->name, drm_named_modes_whitelis=
+t[i]);
+> > > > +               cmdline_mode->specified =3D true;
+> > > > +
+> > > > +               return 1;
+> > > > +       }
+> > > > +
+> > > > +       return -EINVAL;
+> > > > +}
+> > > > +
+> > > >  /**
+> > > >   * drm_mode_parse_command_line_for_connector - parse command line =
+modeline for connector
+> > > >   * @mode_option: optional per connector mode option
+> > > > @@ -2265,7 +2310,7 @@ bool drm_mode_parse_command_line_for_connecto=
+r(const char *mode_option,
+> > > >         const char *bpp_ptr =3D NULL, *refresh_ptr =3D NULL, *extra=
+_ptr =3D NULL;
+> > > >         const char *options_ptr =3D NULL;
+> > > >         char *bpp_end_ptr =3D NULL, *refresh_end_ptr =3D NULL;
+> > > > -       int i, len, ret;
+> > > > +       int len, ret;
+> > > >
+> > > >         memset(mode, 0, sizeof(*mode));
+> > > >         mode->panel_orientation =3D DRM_MODE_PANEL_ORIENTATION_UNKN=
+OWN;
+> > > > @@ -2306,18 +2351,19 @@ bool drm_mode_parse_command_line_for_connec=
+tor(const char *mode_option,
+> > > >                 parse_extras =3D true;
+> > > >         }
+> > > >
+> > > > -       /* First check for a named mode */
+> > > > -       for (i =3D 0; i < ARRAY_SIZE(drm_named_modes_whitelist); i+=
++) {
+> > > > -               ret =3D str_has_prefix(name, drm_named_modes_whitel=
+ist[i]);
+> > > > -               if (ret =3D=3D mode_end) {
+> > > > -                       if (refresh_ptr)
+> > > > -                               return false; /* named + refresh is=
+ invalid */
+> > > > +       if (!mode_end)
+> > > > +               return false;
+> > >
+> > > I'm chasing down a change in behaviour between 6.1 and 6.6, and this
+> > > patch seems to be at least part of the cause.
+> > >
+> > > Since [1] we've had the emulated framebuffer on Pi being 16bpp to sav=
+e
+> > > memory. All good.
+> > >
+> > > It used to be possible to use "video=3DHDMI-A-1:-32" on the kernel
+> > > command line to set it back to 32bpp.
+> > >
+> > > After this patch that is no longer possible. "mode_end =3D bpp_off", =
+and
+> > > "bpp_off =3D bpp_ptr - name", so with bpp_ptr =3D name we get mode_en=
+d
+> > > being 0. That fails this conditional.
+> > > drm_mode_parse_cmdline_named_mode already aborts early but with no
+> > > error if name_end / mode_end is 0, so this "if" clause seems
+> > > redundant, and is a change in behaviour.
+> > >
+> > > We do then get a second parsing failure due to the check if (bpp_ptr
+> > > || refresh_ptr) at [2].
+> > > Prior to this patch my video=3D line would get mode->specified set vi=
+a
+> > > "if (ret =3D=3D mode_end)" removed above, as ret =3D mode_end =3D 0. =
+We
+> > > therefore didn't evaluate the conditional that now fails.
+> > >
+> > > So I guess my question is whether my command line is valid or not, an=
+d
+> > > therefore is this a regression?
+> >
+> > It's a mess :)
+> >
+> > Documentation/fb/modedb.rst defines the video parameter syntax as:
+> >
+> > <xres>x<yres>[M][R][-<bpp>][@<refresh>][i][m][eDd]
+> >
+> > And thus mandates the x and y resolution. I guess that's what I use as =
+a
+> > base, and thus -bpp alone would be invalid.
+> >
+> > But then it contradicts itself some time later by documenting that
+> > video=3DHDMI-1:D is ok.
+> >
+> > I guess what you experienced was just an oversight: it was not
+> > documented anywhere that it was valid, so we didn't really tested it
+> > either. We should add a unit test for it and fix it.
+>
+> Does dropping this "if (!mode_end)" check, and at least the check for
+> bpp_ptr in the "No mode?" block below it, seem reasonable to you?
+>
+> I guess there is also the question of whether a refresh rate without a
+> mode is valid. That one seems less useful, and all uses of
+> refresh_specified appear to be after some form of checking xres and
+> yres.
+>
+> I can put a couple of patches together to deal with this if you're
+> happy with the principle.
+
+In looking at this in more detail and writing the unit test, it does
+become a bit of a mess.
+
+drm_connector_get_cmdline_mode calls
+drm_mode_parse_command_line_for_connector, passing in
+connector->cmdline_mode as the mode to fill.
+drm_mode_parse_command_line_for_connector fills in bits of the mode as
+it goes along, so a failure late in the function leaves bits from the
+parsing in connector->cmdline_mode.
+
+My video=3DHDMI-A-1:-32 does fail later on due to
+drm_mode_parse_cmdline_options, but as it had set bpp and
+bpp_specified directly in connector->cmdline_mode I got the behaviour
+I was desiring.
+
+It feels like this should be an all or nothing thing. Allocate a
+struct drm_cmdline_mode on the stack, and only copy it into
+connector->cmdline_mode if parsing succeeds. The downside is that you
+take out some command line entries that used to work (like mine).
+Thoughts?
+
+  Dave
 
