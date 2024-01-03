@@ -1,189 +1,162 @@
-Return-Path: <linux-kernel+bounces-15708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D15F8230A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:38:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABE3B8230AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:38:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F02E51F24886
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:38:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99A8B1C23794
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:38:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E1C31B27F;
-	Wed,  3 Jan 2024 15:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDC21BDC5;
+	Wed,  3 Jan 2024 15:37:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ex+k0lhA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C371B267;
-	Wed,  3 Jan 2024 15:37:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-595ffa2e6a2so164913eaf.0;
-        Wed, 03 Jan 2024 07:37:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704296266; x=1704901066;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=40j+IqysrfYQAUt1SJO3JpRmqTkW8BeHGoeDA+iZloI=;
-        b=OoMLNn83L1QCMLgwVxFhxrcH9l0Y3nKZ7K8xTz8Kj9CYYO78NoVsqngB4f7rGeouZ6
-         OGAdDK1nLxmHxJYmzFGH8dBMOR7DTvpha8xPV9p7fnMuaPPW2sIi2jZHNAD/fbP0wwdr
-         uneEZLMnvJnfyocfMUgEx3tuZfN4TuVgp99P2nME/0qGO0Wj7RCNfxTdvcpye1ClXKda
-         d3IwKVtMAW43hX6xrPHiB11hAkabITWwyrqHJuXHiyLkd4VrJcY8nIANOKpfcWDVcCwU
-         bB0i7Tpw9pcRjXk1AVMy7iOTlJb1bTUGFOnGSXWVyHEiVcqrb3gbBd9B3tvqEivChZAh
-         VuKg==
-X-Gm-Message-State: AOJu0YzOs+YGVoUqxhki/LDr8FVQ2uikLtVdgVkqa6OoeRETQUPkvGHB
-	jMJUslxVIoM7cgbPIHx0xo08Yxp9zHSEEDWTJZk=
-X-Google-Smtp-Source: AGHT+IEQNWRFK5ZWxSqawWVegeMCE+VE1LW3uWj3cWaGWt2FsA5ZWT7ccUJrKWdr45QdTslurAf486vxU50F76ICkVM=
-X-Received: by 2002:a4a:b38c:0:b0:595:6024:c4f8 with SMTP id
- p12-20020a4ab38c000000b005956024c4f8mr8288888ooo.1.1704296266137; Wed, 03 Jan
- 2024 07:37:46 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB5741B29E;
+	Wed,  3 Jan 2024 15:37:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704296271; x=1735832271;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=v3LfKKN9p0dVjzVKSF2rfOROCJLtzrWPy1Nor0Bhpb8=;
+  b=ex+k0lhAcaIzQiJBo+ydns3a9F0rfnD7WTXL8KSRpijWehmM/6lA9oWR
+   TjGIsjFWE4YbPwFbnRbHqoHllEPW6fbb2E9QkBu+uVc9tejXWvadigEDO
+   dNUOlMyAIem+C44JMrbUaCA1DK6jCKdXkD50OfZSWvVQKZTwyzhP6UL+j
+   vgZHWCvSSJA9gCQ2Qe9a9yZvpN/nTfkJtqFOydcdos3GuMMLG1ASfcf8x
+   wiGh6oVqWJmLYYO1hTjdAHvrVAzvGuIZEwyVDL/AZYHKM+kRFTnpcXlrG
+   EAm08S6YIHpfCjqRxl5es9+g7PKEs8Qp3hGFliL9FavGWbM4RmOsFiopr
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="387473495"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="387473495"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 07:37:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="783542879"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="783542879"
+Received: from posherof-mobl1.amr.corp.intel.com (HELO [10.209.84.213]) ([10.209.84.213])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 07:37:50 -0800
+Message-ID: <3ab3281e-0e10-4af5-a7ab-f46d3fd1889f@linux.intel.com>
+Date: Wed, 3 Jan 2024 07:37:50 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228075705.26652-1-TonyWWang-oc@zhaoxin.com> <20231228075705.26652-4-TonyWWang-oc@zhaoxin.com>
-In-Reply-To: <20231228075705.26652-4-TonyWWang-oc@zhaoxin.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 3 Jan 2024 16:37:35 +0100
-Message-ID: <CAJZ5v0hEd-NV5WoRPOZgZwxNS6M=TKcw7DpDUM9MWFYAaa+1Mw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ACPI: cpufreq: Add ITMT support when CPPC enabled for
- Zhaoxin CPUs
-To: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, 
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, tglx@linutronix.de, mingo@redhat.com, 
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	mcgrof@kernel.org, peterz@infradead.org, j.granados@samsung.com, 
-	ricardo.neri-calderon@linux.intel.com, viresh.kumar@linaro.org, 
-	linux-pm@vger.kernel.org, CobeChen@zhaoxin.com, TimGuo@zhaoxin.com, 
-	LeoLiu-oc@zhaoxin.com, LindaChai@zhaoxin.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2] PCI/ASPM: Update saved buffers with latest ASPM
+Content-Language: en-US
+To: Vidya Sagar <vidyas@nvidia.com>, bhelgaas@google.com,
+ rafael.j.wysocki@intel.com, kai.heng.feng@canonical.com
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ treding@nvidia.com, jonathanh@nvidia.com, kthota@nvidia.com,
+ mmaddireddy@nvidia.com, sagar.tv@gmail.com
+References: <20230125133830.20620-1-vidyas@nvidia.com>
+ <20240103103501.2428197-1-vidyas@nvidia.com>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240103103501.2428197-1-vidyas@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Dec 28, 2023 at 8:57=E2=80=AFAM Tony W Wang-oc <TonyWWang-oc@zhaoxi=
-n.com> wrote:
->
-> For Zhaoxin CPUs, the cores' highest frequencies may be different, which
-> means that cores may run at different max frequencies,
->
-> According to ACPI-spec6 chapter 8.4.7, the per-core highest frequency
-> value can be obtained via cppc.
->
-> The core with the higher frequency have better performance, which can be
-> called as preferred core. And better performance can be achieved by
-> making the scheduler to run tasks on these preferred cores.
->
-> The cpufreq driver can use the highest frequency value as the prioriy of
-> core to make the scheduler try to get better performace. More specificall=
-y,
-> in the acpi-cpufreq driver use cppc_get_highest_perf() to get highest
-> frequency value of each core, use sched_set_itmt_core_prio() to set
-> highest frequency value as core priority, and use sched_set_itmt_support(=
-)
-> provided by ITMT to tell the scheduler to favor on the preferred cores.
->
-> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+
+
+On 1/3/2024 2:35 AM, Vidya Sagar wrote:
+> Many PCIe device drivers save the configuration state of their respective
+> devices during probe and restore the same when their 'slot_reset' hook
+> is called through PCIe Error Recovery System.
+
+Recovery System -> Recovery Handler?
+
+
+> 
+> If the system has a change in ASPM policy after the driver's probe is
+> called and before error event occurred, 'slot_reset' hook restores the
+> PCIe configuration state to what it was at the time of probe but not with
+> what it was just before the occurrence of the error event.
+> This effectively leads to a mismatch in the ASPM configuration between
+> the device and its upstream parent device.
+> 
+> Update the saved configuration state of the device with the latest info
+> whenever there is a change w.r.t ASPM policy.
+> 
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
 > ---
->  drivers/cpufreq/acpi-cpufreq.c | 56 +++++++++++++++++++++++++++++++++-
->  1 file changed, 55 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufre=
-q.c
-> index 37f1cdf46d29..f4c1ff9e4bb0 100644
-> --- a/drivers/cpufreq/acpi-cpufreq.c
-> +++ b/drivers/cpufreq/acpi-cpufreq.c
-> @@ -663,8 +663,56 @@ static u64 get_max_boost_ratio(unsigned int cpu)
->
->         return div_u64(highest_perf << SCHED_CAPACITY_SHIFT, nominal_perf=
-);
+> V2:
+> * Rebased on top of the tree code
+> * Addressed Bjorn's review comments
+> 
+>  drivers/pci/pcie/aspm.c | 26 +++++++++++++++++++++++++-
+>  1 file changed, 25 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index 67b13f26ba7c..d247cabb5e4c 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -138,16 +138,36 @@ static int policy_to_clkpm_state(struct pcie_link_state *link)
+>  	return 0;
 >  }
-> +
-> +/* The work item is needed to avoid CPU hotplug locking issues */
-> +static void sched_itmt_work_fn(struct work_struct *work)
+>  
+> +static void pci_save_aspm_state(struct pci_dev *dev)
 > +{
-> +       sched_set_itmt_support();
-> +}
-> +
-> +static DECLARE_WORK(sched_itmt_work, sched_itmt_work_fn);
-> +
-> +static void set_itmt_prio(int cpu)
-> +{
-> +       static bool cppc_highest_perf_diff;
-> +       static struct cpumask core_prior_mask;
-> +       u64 highest_perf;
-> +       static u64 max_highest_perf =3D 0, min_highest_perf =3D U64_MAX;
-> +       int ret;
-> +
-> +       ret =3D cppc_get_highest_perf(cpu, &highest_perf);
-> +       if (ret)
-> +               return;
-> +
-> +       sched_set_itmt_core_prio(highest_perf, cpu);
-> +       cpumask_set_cpu(cpu, &core_prior_mask);
-> +
-> +       if (max_highest_perf <=3D min_highest_perf) {
-> +               if (highest_perf > max_highest_perf)
-> +                       max_highest_perf =3D highest_perf;
-> +
-> +               if (highest_perf < min_highest_perf)
-> +                       min_highest_perf =3D highest_perf;
-> +
-> +               if (max_highest_perf > min_highest_perf) {
-> +                       /*
-> +                        * This code can be run during CPU online under t=
-he
-> +                        * CPU hotplug locks, so sched_set_itmt_support()
-> +                        * cannot be called from here.  Queue up a work i=
-tem
-> +                        * to invoke it.
-> +                        */
-> +                       cppc_highest_perf_diff =3D true;
-> +               }
-> +       }
-> +
-> +       if (cppc_highest_perf_diff && cpumask_equal(&core_prior_mask, cpu=
-_online_mask)) {
-> +               pr_debug("queue a work to set itmt enabled\n");
-> +               schedule_work(&sched_itmt_work);
-> +       }
-> +}
->  #else
->  static inline u64 get_max_boost_ratio(unsigned int cpu) { return 0; }
-> +static void set_itmt_prio(int cpu) { }
->  #endif
->
->  static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
-> @@ -677,7 +725,7 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_polic=
-y *policy)
->         unsigned int valid_states =3D 0;
->         unsigned int result =3D 0;
->         u64 max_boost_ratio;
-> -       unsigned int i;
-> +       unsigned int i, j;
->  #ifdef CONFIG_SMP
->         static int blacklisted;
->  #endif
-> @@ -742,6 +790,12 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_poli=
-cy *policy)
->         }
->  #endif
->
-> +       if (c->x86_vendor =3D=3D X86_VENDOR_CENTAUR || c->x86_vendor =3D=
-=3D X86_VENDOR_ZHAOXIN) {
-> +               for_each_cpu(j, policy->cpus) {
-> +                       set_itmt_prio(j);
-> +               }
-> +       }
-> +
->         /* capability check */
->         if (perf->state_count <=3D 1) {
->                 pr_debug("No P-States\n");
-> --
+> +	int i = 0;
 
-Have you considered using the CPPC cpufreq driver on those platforms?
+I don't see a need for this variable. You can use index directly.
+
+> +	struct pci_cap_saved_state *save_state;
+> +	u16 *cap;
+> +
+> +	if (!pci_is_pcie(dev))
+> +		return;
+> +
+> +	save_state = pci_find_saved_cap(dev, PCI_CAP_ID_EXP);
+> +	if (!save_state)
+> +		return;
+> +
+> +	cap = (u16 *)&save_state->cap.data[0];
+> +	i++;
+> +	pcie_capability_read_word(dev, PCI_EXP_LNKCTL, &cap[i++]);
+> +}
+> +
+>  static void pcie_set_clkpm_nocheck(struct pcie_link_state *link, int enable)
+>  {
+>  	struct pci_dev *child;
+>  	struct pci_bus *linkbus = link->pdev->subordinate;
+>  	u32 val = enable ? PCI_EXP_LNKCTL_CLKREQ_EN : 0;
+>  
+> -	list_for_each_entry(child, &linkbus->devices, bus_list)
+> +	list_for_each_entry(child, &linkbus->devices, bus_list) {
+>  		pcie_capability_clear_and_set_word(child, PCI_EXP_LNKCTL,
+>  						   PCI_EXP_LNKCTL_CLKREQ_EN,
+>  						   val);
+> +		pci_save_aspm_state(child);
+> +	}
+>  	link->clkpm_enabled = !!enable;
+>  }
+>  
+> @@ -767,6 +787,10 @@ static void pcie_config_aspm_link(struct pcie_link_state *link, u32 state)
+>  		pcie_config_aspm_dev(parent, upstream);
+>  
+>  	link->aspm_enabled = state;
+> +
+> +	/* Update latest ASPM configuration in saved context */
+> +	pci_save_aspm_state(link->downstream);
+> +	pci_save_aspm_state(parent);
+>  }
+>  
+>  static void pcie_config_aspm_path(struct pcie_link_state *link)
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
