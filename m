@@ -1,112 +1,121 @@
-Return-Path: <linux-kernel+bounces-15111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4CE9822759
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:06:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C443D82275B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:08:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 400A81F224B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:06:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5153A283F9D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:08:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8E2539E;
-	Wed,  3 Jan 2024 03:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CB1F4A1C;
+	Wed,  3 Jan 2024 03:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J5qYQCGY"
+	dkim=pass (1024-bit key) header.d=buaa.edu.cn header.i=@buaa.edu.cn header.b="dA6ithPX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC6D317984;
-	Wed,  3 Jan 2024 03:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704251189; x=1735787189;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=54mZ8lt3FIE0at3u9CpLbmAD6Xka6IeZtdwSydhjovE=;
-  b=J5qYQCGYYES4vGA0R3GOld6RKKdl+JukQRDUX8uAEnuiNkxxCbItz9k1
-   agEdGzZRkqAKQNkNFm9Fih8lidhufh4q7qyM3BDEyZsdaGkg9Yw+0vvOD
-   XDAwMEGq7bXBMRUiwtSzoRLrjCBXjrr/avvnl93UDAyA6KTu+OFoQYz1u
-   9ijANgwqRdiY/mW+OXgC8Bsp2YE/sSfrGgExWZ3Fi3xtvR/d5zmbSf5bu
-   XpitDnLUc6a4FtAA/PDB3ZZ/w8fpBMp6Q/28lHnrveNZIw5hxSF8K3xi7
-   0m6FTeCkpXZnTKDCNkGHi62/QlvFEWDrYP/HYVRoSLYkvSH5AmY6M+sya
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="10578496"
-X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
-   d="scan'208";a="10578496"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 19:06:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="923403014"
-X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
-   d="scan'208";a="923403014"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.210.107]) ([10.254.210.107])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 19:06:22 -0800
-Message-ID: <7486492a-d6ca-425d-9fbe-87107dbbecea@linux.intel.com>
-Date: Wed, 3 Jan 2024 11:06:19 +0800
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F6F4A16;
+	Wed,  3 Jan 2024 03:08:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=buaa.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=buaa.edu.cn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=buaa.edu.cn; s=buaa; h=Received:From:To:Cc:Subject:Date:
+	Message-Id:MIME-Version:Content-Transfer-Encoding; bh=ZT4f7RGcP8
+	9s2PD4GqbxF1IDMNpMzEJiOuxSzUjnO2Q=; b=dA6ithPX3RoxBMBMXvTC20wydI
+	acNkrx/qyZOqznT3A5E/5xG6pQ9OtTxE/087wnw0zBM7NsYr1S582Q5A5MTKjfms
+	iLksuDZsAYB+6/FFkEopK0hUOKOqRklB6D76AzN3++yUVD9DsUJB5XK2mqnZUhoe
+	/m6biKRlPNjK7INqc=
+Received: from localhost.localdomain (unknown [10.130.147.18])
+	by coremail-app1 (Coremail) with SMTP id OCz+CgBnl1miz5RlIYGiAA--.46504S2;
+	Wed, 03 Jan 2024 11:08:18 +0800 (CST)
+From: Yuxuan Hu <20373622@buaa.edu.cn>
+To: marcel@holtmann.org,
+	johan.hedberg@gmail.com,
+	luiz.dentz@gmail.com
+Cc: linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	baijiaju1990@gmail.com,
+	sy2239101@buaa.edu.cn,
+	20373622@buaa.edu.cn,
+	buaazhr@buaa.edu.cn
+Subject: [PATCHv2] Bluetooth: rfcomm: Fix null-ptr-deref in rfcomm_check_security
+Date: Wed,  3 Jan 2024 11:07:47 +0800
+Message-Id: <20240103030747.3260374-1-20373622@buaa.edu.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, joro@8bytes.org, alex.williamson@redhat.com,
- kevin.tian@intel.com, robin.murphy@arm.com, cohuck@redhat.com,
- eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
- mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
- yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
- shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
- suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- zhenzhong.duan@intel.com, joao.m.martins@oracle.com, xin.zeng@intel.com,
- yan.y.zhao@intel.com, j.granados@samsung.com
-Subject: Re: [PATCH v10 10/10] iommu/vt-d: Add iotlb flush for nested domain
-To: Yi Liu <yi.l.liu@intel.com>, Jason Gunthorpe <jgg@nvidia.com>
-References: <20240102143834.146165-1-yi.l.liu@intel.com>
- <20240102143834.146165-11-yi.l.liu@intel.com>
- <20240102184422.GI50406@nvidia.com>
- <ae271e08-f390-4ce7-914c-63668a46bc4b@intel.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <ae271e08-f390-4ce7-914c-63668a46bc4b@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:OCz+CgBnl1miz5RlIYGiAA--.46504S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WFyDGF1xXr18Aw4UCw4rXwb_yoW8tFyfpF
+	ZFya4xGFn7ur15Arn7AF4kuFyrZr1v9r15Kw4ku3yY93s5Wwn7trWSyr1jvay5CFs0y343
+	ZF18Xw4DGrnru37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9j1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+	IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
+	z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2vYz4IE04k24V
+	AvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xf
+	McIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7
+	v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVCm
+	-wCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26F1DJr1UJwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
+	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvf
+	C2KfnxnUUI43ZEXa7VUbHa0DUUUUU==
+X-CM-SenderInfo: ysqtljawssquxxddhvlgxou0/
 
-On 2024/1/3 9:33, Yi Liu wrote:
-> On 2024/1/3 02:44, Jason Gunthorpe wrote:
->> On Tue, Jan 02, 2024 at 06:38:34AM -0800, Yi Liu wrote:
->>
->>> +static void intel_nested_flush_cache(struct dmar_domain *domain, u64 
->>> addr,
->>> +                     unsigned long npages, bool ih, u32 *error)
->>> +{
->>> +    struct iommu_domain_info *info;
->>> +    unsigned long i;
->>> +    unsigned mask;
->>> +    u32 fault;
->>> +
->>> +    xa_for_each(&domain->iommu_array, i, info)
->>> +        qi_flush_piotlb(info->iommu,
->>> +                domain_id_iommu(domain, info->iommu),
->>> +                IOMMU_NO_PASID, addr, npages, ih, NULL);
->>
->> This locking on the xarray is messed up throughout the driver. There
->> could be a concurrent detach at this point which will free info and
->> UAF this.
-> 
-> hmmm, xa_for_each() takes and releases rcu lock, and according to the
-> domain_detach_iommu(), info is freed after xa_erase(). For an existing
-> info stored in xarray, xa_erase() should return after rcu lock is released.
-> is it? Any idea? @Baolu
+During our fuzz testing of the connection and disconnection process at the
+RFCOMM layer,we discovered this bug.By comparing the packetsfrom a normal
+connection and disconnection process with the testcase that triggered a
+KASAN report, we analyzed the cause of this bug as follows:
 
-I once thought locking for xarray is self-contained. I need more thought
-on this before taking further action.
+1. In the packets captured during a normal connection, the host sends a
+`Read Encryption Key Size` type of `HCI_CMD` packet(Command Opcode: 0x1408)
+to the controller to inquire the length of encryption key.After receiving
+this packet, the controller immediately replies with a Command Complete
+packet (Event Code: 0x0e) to return the Encryption Key Size.
 
-Best regards,
-baolu
+2. In our fuzz test case, the timing of the controller's response to this
+packet was delayed to an unexpected point: after the RFCOMM and L2CAP
+layers had disconnected but before the HCI layer had disconnected.
+
+3. After receiving the Encryption Key Size Response at the time described
+in point 2, the host still called the rfcomm_check_security function.
+However, by this time `struct l2cap_conn *conn = l2cap_pi(sk)->chan->conn;`
+had already been released, and when the function executed
+`return hci_conn_security(conn->hcon, d->sec_level, auth_type, d->out);`,
+specifically when accessing `conn->hcon`, a null-ptr-deref error occurred.
+
+To fix this bug, check if `sk->sk_state` is BT_CLOSED before calling
+rfcomm_recv_frame in rfcomm_process_rx.
+
+Signed-off-by: Yuxuan Hu <20373622@buaa.edu.cn>
+---
+V1 -> V2: Removed the direct check for `conn` being null in rfcomm_check_security
+
+ net/bluetooth/rfcomm/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/bluetooth/rfcomm/core.c b/net/bluetooth/rfcomm/core.c
+index 053ef8f25fae..1d34d8497033 100644
+--- a/net/bluetooth/rfcomm/core.c
++++ b/net/bluetooth/rfcomm/core.c
+@@ -1941,7 +1941,7 @@ static struct rfcomm_session *rfcomm_process_rx(struct rfcomm_session *s)
+ 	/* Get data directly from socket receive queue without copying it. */
+ 	while ((skb = skb_dequeue(&sk->sk_receive_queue))) {
+ 		skb_orphan(skb);
+-		if (!skb_linearize(skb)) {
++		if (!skb_linearize(skb) && sk->sk_state != BT_CLOSED) {
+ 			s = rfcomm_recv_frame(s, skb);
+ 			if (!s)
+ 				break;
+-- 
+2.25.1
+
 
