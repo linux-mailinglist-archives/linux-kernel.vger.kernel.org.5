@@ -1,92 +1,120 @@
-Return-Path: <linux-kernel+bounces-15547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BACFC822DF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:02:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AE54822D93
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:54:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69BAE28260A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:02:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1533B1C20982
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E85801946B;
-	Wed,  3 Jan 2024 13:02:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B731519463;
+	Wed,  3 Jan 2024 12:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="EvJXkIjH"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cOnw9bNd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294C61944F
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:01:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id E5C041A3C63;
-	Wed,  3 Jan 2024 13:51:54 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-	t=1704286315; bh=wKn5TMlthQCZ3vs0qTpEXgCIHH7fKp9SdgkEDZ0ZHZc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=EvJXkIjHo6OQAa1ocgCSe/azb5fwTjmqztDGKgAZikY6aglX32yMZNKe35ufw5hWL
-	 p86sarBKbG+zkVlQoAjwg6iYJLw5G61op2fXj2it/MKk0+LahlcSNtEQ72VzgmabsH
-	 KkgkXuNoofUkg2jYlyLGnrSn/67JM221k1eEgIMibxlQ7YeBSq48rR03wgIo8rUmLa
-	 yctwIORqq5QZ1rzUTuqWMGwONlOZRFmnMOtp6E0S4On7zl/bHmeBL4Rm7vZkzB99BB
-	 npQaaM3Z1nni1vu1W9zCLLRHJd2sB6telxpL/mCn7RumviAndxz1CJ+USsDZqeqrBR
-	 EQpITYk0UGv3A==
-Date: Wed, 3 Jan 2024 13:51:53 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Richard Weinberger <richard@nod.at>, Anton Ivanov
- <anton.ivanov@cambridgegreys.com>, Johannes Berg
- <johannes@sipsolutions.net>
-Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, linux-um@lists.infradead.org
- (open list:USER-MODE LINUX (UML)), linux-kernel@vger.kernel.org (open
- list), Roberto Sassu <roberto.sassu@huaweicloud.com>, Petr Tesarik
- <petr.tesarik1@huawei-partners.com>
-Subject: Re: [PATCH 0/2] um: improve UML page fault handling
-Message-ID: <20240103135153.4696cb0f@meshulam.tesarici.cz>
-In-Reply-To: <20231215121431.680-1-petrtesarik@huaweicloud.com>
-References: <20231215121431.680-1-petrtesarik@huaweicloud.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6ADE1944B
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 12:54:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dbdacafe012so6760304276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 04:54:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704286478; x=1704891278; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pOGNoa+uoP67gG3C3OdO7eu3hZWCRo+rAfnDqGQ6OWk=;
+        b=cOnw9bNdlSS3KGMy113cvsKHQg220lVPEWJP/CZ7zG7S+/DxwKnQUPhjSflJmYpQaW
+         sPB3bi3+/OIPqpGVpyBpXZ0t+seoM1IALVU9tFE1ikGEhabSNlc8n8qxiV5nL4ThcCEk
+         5BN2jEM5EajpBRzTJIF6+Tex9JcFcZV7OHdKxF56cwGznan4RfKRwlds2/r034FvdHvY
+         n1zk2S9R4vrvHiNIIYPl1eSnngSUPg1PBoZXsQXHTzCEE4IhuBQqrK+Lf5ninxygGTgr
+         bQQDQFHfEzCXZcsd1b5mxViC5gCkavQ1VWjmSCP+Ggj44tRQkrQYjSNtoTEyZWp013P5
+         nYGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704286478; x=1704891278;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pOGNoa+uoP67gG3C3OdO7eu3hZWCRo+rAfnDqGQ6OWk=;
+        b=pVE+Tu5A7NAos5U9pXMW3+9mvzvkCrS/wi8T3+yoD7yiNhXqpw9UGbZrHe7p2xXVri
+         yzgDiSVuEjg5PqOdD5/XTd26BDQ6GKCJlllXtmOuvWaJbdqvmNpPBixlYH5rjDrZmagf
+         uBmcTju5AcUun2jYFFHuBQx0Vkl7P8193hy1V4KvfVfwFaY34qwkFqZV4w3VPR0idjbu
+         1WzV5JSfpKUY8Ssy2uBbHUuO8XQDLGEohCp8z9ZTnQZWZ4xme1QOZlEJAelz0nBLMKMY
+         cT6lh8hQe24tdNgfYIiRds61nkNUMnmBFY0Ekv9YqqBRgDvvaQ15mxOzeSzjr0Ir9Us7
+         bumA==
+X-Gm-Message-State: AOJu0YxggwxYnOeD/9LSURudWJNxR16p1mA0SDivRBildFuGkPV6aw4W
+	0hjt7szAvoXda0FM5xIxt71mqY3jD1PQzV5DcJm6Wa4ooQJdMw==
+X-Google-Smtp-Source: AGHT+IEixB+WBNhbDXVIfjA3/lNv5WlNF7f1gcgq06js9K5QExKPJiNz8iPEs2JGsGvCguUuLd4AYEFxFy6bIiDoz20=
+X-Received: by 2002:a25:d245:0:b0:dbc:f8ff:c7d7 with SMTP id
+ j66-20020a25d245000000b00dbcf8ffc7d7mr9690250ybg.37.1704286478608; Wed, 03
+ Jan 2024 04:54:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20231220-sa8295p-gpu-v2-0-4763246b72c0@quicinc.com> <20231220-sa8295p-gpu-v2-4-4763246b72c0@quicinc.com>
+In-Reply-To: <20231220-sa8295p-gpu-v2-4-4763246b72c0@quicinc.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Wed, 3 Jan 2024 13:54:02 +0100
+Message-ID: <CAPDyKFoD-+2q4sDZL3J-2a2kGUmBXpUc6vj8zxzaO72O_Ksj7g@mail.gmail.com>
+Subject: Re: [PATCH v2 4/8] soc: qcom: rpmhpd: Drop SA8540P gfx.lvl
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Taniya Das <quic_tdas@quicinc.com>, Johan Hovold <johan+linaro@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Happy New Year, everyone!
+On Fri, 22 Dec 2023 at 05:39, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
+>
+> On SA8295P and SA8540P gfx.lvl is not provdied by rpmh, but rather is
+> handled by an external regulator (max20411). Drop gfx.lvl from the list
+> of power-domains exposed on this platform.
+>
+> Fixes: f68f1cb3437d ("soc: qcom: rpmhpd: add sc8280xp & sa8540p rpmh power-domains")
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-I can fully understand that you all have had other priorities around
-the year end; it was no different with me. ;-)
+I guess it's easier if you funnel this through the soc tree - or you
+prefer if I take it through my pmdomain tree?
 
-However, may I kindly ask for some feedback on my proposed fixes?
+No matter what, feel free to add:
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Petr T
+Kind regards
+Uffe
 
-On Fri, 15 Dec 2023 13:14:29 +0100
-Petr Tesarik <petrtesarik@huaweicloud.com> wrote:
-
-> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> 
-> Improve UML handling of segmentation faults in kernel mode. Although
-> such page faults are generally caused by a kernel bug, it is annoying
-> if they cause an infinite loop, or panic the kernel. More importantly,
-> a robust implementation allows to write KUnit tests for various guard
-> pages, preventing potential kernel self-protection regressions.
-> 
-> Petr Tesarik (2):
->   um: do not panic on kernel mode faults
->   um: oops on accessing an non-present page in the vmalloc area
-> 
->  arch/um/kernel/trap.c | 19 ++++++++++++++-----
->  1 file changed, 14 insertions(+), 5 deletions(-)
-> 
-
+> ---
+>  drivers/pmdomain/qcom/rpmhpd.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/pmdomain/qcom/rpmhpd.c b/drivers/pmdomain/qcom/rpmhpd.c
+> index 3078896b1300..27a73ff72614 100644
+> --- a/drivers/pmdomain/qcom/rpmhpd.c
+> +++ b/drivers/pmdomain/qcom/rpmhpd.c
+> @@ -217,7 +217,6 @@ static struct rpmhpd *sa8540p_rpmhpds[] = {
+>         [SC8280XP_CX] = &cx,
+>         [SC8280XP_CX_AO] = &cx_ao,
+>         [SC8280XP_EBI] = &ebi,
+> -       [SC8280XP_GFX] = &gfx,
+>         [SC8280XP_LCX] = &lcx,
+>         [SC8280XP_LMX] = &lmx,
+>         [SC8280XP_MMCX] = &mmcx,
+>
+> --
+> 2.25.1
+>
 
