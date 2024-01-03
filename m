@@ -1,49 +1,46 @@
-Return-Path: <linux-kernel+bounces-15005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A913D82260B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:40:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AEA082260C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:41:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55EE12848F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:40:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1689284856
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D272515B0;
-	Wed,  3 Jan 2024 00:40:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7634A1C;
+	Wed,  3 Jan 2024 00:41:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VNhMo3kl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ikTCAs+K"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F2041363
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 00:40:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 392F5C433C8;
-	Wed,  3 Jan 2024 00:40:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C4B74A0D
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 00:41:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DBDEC433C8;
+	Wed,  3 Jan 2024 00:41:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704242418;
-	bh=5FrbYJemPMp2y99/3fOzl4jP9vxlpR35ILbhDN2tPiw=;
+	s=k20201202; t=1704242462;
+	bh=fvoToDeojnZ555ZZEDS8PGxrX6dQW8pggzLO2bAkyyw=;
 	h=From:To:Cc:Subject:Date:From;
-	b=VNhMo3klg7uHcdhFSiDQypyZZKVOgS5jaAkZmoK3l05W4YR86FJM+rg1DluGWwWdu
-	 DMmq672FVkmIgceq0gEo7XsqbOxqfDVE+WzHhbsF+7aROby46ya7Ma3sHosyYsw7ql
-	 dH2zAlYAs3DUcsqESVGacITiNU9OR0Wqklpja3dAhE5ts5+GVcVDFaWNAyRSVfqnmI
-	 mxKd4a0Nhjz8pkp+MRcaXRJcCxGbdF/eMp6IzgOx7pOj0xqW4lWFr1ba6SmCsgov3u
-	 d6Z0Hn1pf8e/ivOb+iCbLQYCzQ+97GxqlYOpI+uax2mJdI8EaRexMD1YSYqj7Jm8rB
-	 JAnzCwG13X6Sw==
+	b=ikTCAs+KV7J1zTFtaXPm8HqV3D71ZfQaI3nGukLqUuZXSKsJTniO/ZqU9JgMJgPaZ
+	 lFOD9hx1RMiIboKY0s0Aj8k3PSaScZtGmhkIN2bUgnjLFFpXOcGI4MXiZzgVs6qH8D
+	 QqV7Do7CmRJ4iVll63ATbaTVL3B1tjUDEUw3LqewJxfAOp+47+ZQfP9o2mTd4cbK5m
+	 ZeZZPFzzT14H+VEPkHYq5sCFM3a2qFiXYRSRJhrNf3qYKCSJvn3+Gw9bTal1NZxXYG
+	 hurjAlP0Jl7ZEV7LmtfxjluixaE3gyN+eJEhyxuu39PObdTsnKKiNAZ9i4G5nCRonW
+	 ohoth1wwEnEZg==
 From: Bjorn Helgaas <helgaas@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>
-Cc: x86@kernel.org,
-	"H . Peter Anvin" <hpa@zytor.com>,
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH] arch/x86: Fix typos
-Date: Tue,  2 Jan 2024 18:40:11 -0600
-Message-Id: <20240103004011.1758650-1-helgaas@kernel.org>
+Subject: [PATCH] arch/arm64: Fix typos
+Date: Tue,  2 Jan 2024 18:40:59 -0600
+Message-Id: <20240103004059.1758712-1-helgaas@kernel.org>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -55,946 +52,643 @@ Content-Transfer-Encoding: 8bit
 
 From: Bjorn Helgaas <bhelgaas@google.com>
 
-Fix typos, most reported by "codespell arch/x86".  Only touches comments,
+Fix typos, most reported by "codespell arch/arm64".  Only touches comments,
 no code changes.
 
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 ---
- arch/x86/boot/compressed/Makefile            | 2 +-
- arch/x86/boot/compressed/mem.c               | 2 +-
- arch/x86/coco/tdx/tdx.c                      | 2 +-
- arch/x86/crypto/aesni-intel_asm.S            | 2 +-
- arch/x86/crypto/aesni-intel_avx-x86_64.S     | 2 +-
- arch/x86/crypto/crc32c-pcl-intel-asm_64.S    | 2 +-
- arch/x86/crypto/sha512-avx-asm.S             | 2 +-
- arch/x86/crypto/sha512-ssse3-asm.S           | 2 +-
- arch/x86/events/amd/brs.c                    | 2 +-
- arch/x86/events/amd/core.c                   | 2 +-
- arch/x86/events/intel/core.c                 | 2 +-
- arch/x86/hyperv/hv_apic.c                    | 2 +-
- arch/x86/hyperv/irqdomain.c                  | 2 +-
- arch/x86/hyperv/ivm.c                        | 2 +-
- arch/x86/include/asm/amd_nb.h                | 2 +-
- arch/x86/include/asm/extable_fixup_types.h   | 2 +-
- arch/x86/include/asm/fpu/types.h             | 2 +-
- arch/x86/include/asm/iosf_mbi.h              | 2 +-
- arch/x86/include/asm/kvm_host.h              | 2 +-
- arch/x86/include/asm/nospec-branch.h         | 4 ++--
- arch/x86/include/asm/pgtable_64.h            | 2 +-
- arch/x86/include/asm/uv/uv_hub.h             | 2 +-
- arch/x86/include/asm/vdso/gettimeofday.h     | 2 +-
- arch/x86/include/asm/xen/interface_64.h      | 2 +-
- arch/x86/include/uapi/asm/amd_hsmp.h         | 2 +-
- arch/x86/kernel/alternative.c                | 2 +-
- arch/x86/kernel/amd_gart_64.c                | 2 +-
- arch/x86/kernel/apic/Makefile                | 2 +-
- arch/x86/kernel/apic/apic.c                  | 2 +-
- arch/x86/kernel/apic/vector.c                | 2 +-
- arch/x86/kernel/cpu/sgx/ioctl.c              | 2 +-
- arch/x86/kernel/fpu/core.c                   | 2 +-
- arch/x86/kernel/head_64.S                    | 4 ++--
- arch/x86/kernel/hpet.c                       | 4 ++--
- arch/x86/kernel/kvm.c                        | 2 +-
- arch/x86/kernel/kvmclock.c                   | 2 +-
- arch/x86/kernel/ldt.c                        | 6 +++---
- arch/x86/kernel/process.c                    | 2 +-
- arch/x86/kernel/sev-shared.c                 | 2 +-
- arch/x86/kvm/cpuid.c                         | 2 +-
- arch/x86/kvm/mmu/mmu.c                       | 4 ++--
- arch/x86/kvm/mmu/tdp_iter.c                  | 2 +-
- arch/x86/kvm/svm/svm.c                       | 2 +-
- arch/x86/kvm/vmx/nested.c                    | 2 +-
- arch/x86/kvm/vmx/vmx.c                       | 2 +-
- arch/x86/kvm/x86.c                           | 6 +++---
- arch/x86/lib/delay.c                         | 2 +-
- arch/x86/mm/init_64.c                        | 6 +++---
- arch/x86/mm/pat/memtype.c                    | 2 +-
- arch/x86/mm/pat/set_memory.c                 | 4 ++--
- arch/x86/mm/pti.c                            | 2 +-
- arch/x86/mm/tlb.c                            | 2 +-
- arch/x86/net/bpf_jit_comp.c                  | 2 +-
- arch/x86/net/bpf_jit_comp32.c                | 2 +-
- arch/x86/platform/intel-quark/imr_selftest.c | 2 +-
- arch/x86/platform/pvh/head.S                 | 2 +-
- arch/x86/platform/uv/uv_nmi.c                | 2 +-
- arch/x86/platform/uv/uv_time.c               | 2 +-
- arch/x86/realmode/init.c                     | 2 +-
- arch/x86/xen/mmu_pv.c                        | 2 +-
- 60 files changed, 71 insertions(+), 71 deletions(-)
+ arch/arm64/Kconfig                                         | 2 +-
+ arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts | 2 +-
+ arch/arm64/boot/dts/apm/apm-shadowcat.dtsi                 | 2 +-
+ arch/arm64/boot/dts/apm/apm-storm.dtsi                     | 2 +-
+ arch/arm64/boot/dts/exynos/exynos7.dtsi                    | 2 +-
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi             | 2 +-
+ arch/arm64/boot/dts/freescale/fsl-ls1088a-ten64.dts        | 2 +-
+ arch/arm64/boot/dts/freescale/imx8x-colibri.dtsi           | 2 +-
+ arch/arm64/boot/dts/qcom/msm8916.dtsi                      | 4 ++--
+ arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi   | 2 +-
+ arch/arm64/boot/dts/qcom/sa8155p.dtsi                      | 2 +-
+ arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi                 | 4 ++--
+ arch/arm64/boot/dts/qcom/sdm670-google-sargo.dts           | 2 +-
+ arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi      | 2 +-
+ arch/arm64/boot/dts/renesas/draak.dtsi                     | 2 +-
+ arch/arm64/boot/dts/rockchip/rk3399-roc-pc-plus.dts        | 2 +-
+ arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi                 | 2 +-
+ arch/arm64/include/asm/assembler.h                         | 4 ++--
+ arch/arm64/include/asm/cpufeature.h                        | 4 ++--
+ arch/arm64/include/asm/kvm_hyp.h                           | 2 +-
+ arch/arm64/include/asm/pgtable.h                           | 2 +-
+ arch/arm64/include/asm/suspend.h                           | 2 +-
+ arch/arm64/include/asm/traps.h                             | 4 ++--
+ arch/arm64/kernel/acpi.c                                   | 2 +-
+ arch/arm64/kernel/cpufeature.c                             | 6 +++---
+ arch/arm64/kernel/entry-common.c                           | 2 +-
+ arch/arm64/kernel/entry-ftrace.S                           | 2 +-
+ arch/arm64/kernel/entry.S                                  | 2 +-
+ arch/arm64/kernel/ftrace.c                                 | 2 +-
+ arch/arm64/kernel/machine_kexec.c                          | 2 +-
+ arch/arm64/kernel/probes/uprobes.c                         | 2 +-
+ arch/arm64/kernel/sdei.c                                   | 2 +-
+ arch/arm64/kernel/smp.c                                    | 2 +-
+ arch/arm64/kernel/traps.c                                  | 2 +-
+ arch/arm64/kvm/arch_timer.c                                | 2 +-
+ arch/arm64/kvm/fpsimd.c                                    | 2 +-
+ arch/arm64/kvm/hyp/nvhe/host.S                             | 2 +-
+ arch/arm64/kvm/hyp/nvhe/mm.c                               | 4 ++--
+ arch/arm64/kvm/inject_fault.c                              | 2 +-
+ arch/arm64/kvm/vgic/vgic-init.c                            | 2 +-
+ arch/arm64/kvm/vgic/vgic-its.c                             | 4 ++--
+ 41 files changed, 50 insertions(+), 50 deletions(-)
 
-diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-index 71fc531b95b4..f19c038409aa 100644
---- a/arch/x86/boot/compressed/Makefile
-+++ b/arch/x86/boot/compressed/Makefile
-@@ -53,7 +53,7 @@ KBUILD_CFLAGS += -D__DISABLE_EXPORTS
- KBUILD_CFLAGS += $(call cc-option,-Wa$(comma)-mrelax-relocations=no)
- KBUILD_CFLAGS += -include $(srctree)/include/linux/hidden.h
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 7b071a00425d..1954035737cf 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -2227,7 +2227,7 @@ config CMDLINE
+ 	default ""
+ 	help
+ 	  Provide a set of default command-line options at build time by
+-	  entering them here. As a minimum, you should specify the the
++	  entering them here. As a minimum, you should specify the
+ 	  root device (e.g. root=/dev/nfs).
  
--# sev.c indirectly inludes inat-table.h which is generated during
-+# sev.c indirectly includes inat-table.h which is generated during
- # compilation and stored in $(objtree). Add the directory to the includes so
- # that the compiler finds it even with out-of-tree builds (make O=/some/path).
- CFLAGS_sev.o += -I$(objtree)/arch/x86/lib/
-diff --git a/arch/x86/boot/compressed/mem.c b/arch/x86/boot/compressed/mem.c
-index b3c3a4be7471..dbba332e4a12 100644
---- a/arch/x86/boot/compressed/mem.c
-+++ b/arch/x86/boot/compressed/mem.c
-@@ -8,7 +8,7 @@
- 
- /*
-  * accept_memory() and process_unaccepted_memory() called from EFI stub which
-- * runs before decompresser and its early_tdx_detect().
-+ * runs before decompressor and its early_tdx_detect().
-  *
-  * Enumerate TDX directly from the early users.
-  */
-diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-index 1b5d17a9f70d..4f06e6721c0a 100644
---- a/arch/x86/coco/tdx/tdx.c
-+++ b/arch/x86/coco/tdx/tdx.c
-@@ -886,7 +886,7 @@ void __init tdx_early_init(void)
- 	 * there.
- 	 *
- 	 * Intel-TDX has a secure RDMSR hypercall, but that needs to be
--	 * implemented seperately in the low level startup ASM code.
-+	 * implemented separately in the low level startup ASM code.
- 	 * Until that is in place, disable parallel bringup for TDX.
+ choice
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts
+index 723af64a9cee..bac2a1ecfb9e 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts
+@@ -16,7 +16,7 @@ &backlight {
+ 	 * PWM backlight circuit on this PinePhone revision was changed since
+ 	 * 1.0, and the lowest PWM duty cycle that doesn't lead to backlight
+ 	 * being off is around 20%. Duty cycle for the lowest brightness level
+-	 * also varries quite a bit between individual boards, so the lowest
++	 * also varies quite a bit between individual boards, so the lowest
+ 	 * value here was chosen as a safe default.
  	 */
- 	x86_cpuinit.parallel_bringup = false;
-diff --git a/arch/x86/crypto/aesni-intel_asm.S b/arch/x86/crypto/aesni-intel_asm.S
-index 187f913cc239..411d8c83e88a 100644
---- a/arch/x86/crypto/aesni-intel_asm.S
-+++ b/arch/x86/crypto/aesni-intel_asm.S
-@@ -666,7 +666,7 @@ ALL_F:      .octa 0xffffffffffffffffffffffffffffffff
+ 	brightness-levels = <
+diff --git a/arch/arm64/boot/dts/apm/apm-shadowcat.dtsi b/arch/arm64/boot/dts/apm/apm-shadowcat.dtsi
+index 65ebac3082e2..8891a6c17347 100644
+--- a/arch/arm64/boot/dts/apm/apm-shadowcat.dtsi
++++ b/arch/arm64/boot/dts/apm/apm-shadowcat.dtsi
+@@ -123,7 +123,7 @@ gic: interrupt-controller@78090000 {
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+ 		interrupt-controller;
+-		interrupts = <1 9 0xf04>;	/* GIC Maintenence IRQ */
++		interrupts = <1 9 0xf04>;	/* GIC Maintenance IRQ */
+ 		ranges = <0 0 0 0x79000000 0x0 0x800000>; /* MSI Range */
+ 		reg = <0x0 0x78090000 0x0 0x10000>,	/* GIC Dist */
+ 		      <0x0 0x780a0000 0x0 0x20000>,	/* GIC CPU */
+diff --git a/arch/arm64/boot/dts/apm/apm-storm.dtsi b/arch/arm64/boot/dts/apm/apm-storm.dtsi
+index 988928c60f15..ee1303a68d50 100644
+--- a/arch/arm64/boot/dts/apm/apm-storm.dtsi
++++ b/arch/arm64/boot/dts/apm/apm-storm.dtsi
+@@ -109,7 +109,7 @@ gic: interrupt-controller@78010000 {
+ 		      <0x0 0x78020000 0x0 0x1000>,	/* GIC CPU */
+ 		      <0x0 0x78040000 0x0 0x2000>,	/* GIC VCPU Control */
+ 		      <0x0 0x78060000 0x0 0x2000>;	/* GIC VCPU */
+-		interrupts = <1 9 0xf04>;	/* GIC Maintenence IRQ */
++		interrupts = <1 9 0xf04>;	/* GIC Maintenance IRQ */
+ 	};
  
- .ifc \operation, dec
- 	movdqa	%xmm1, %xmm3
--	pxor	%xmm1, %xmm9		# Cyphertext XOR E(K, Yn)
-+	pxor	%xmm1, %xmm9		# Ciphertext XOR E(K, Yn)
+ 	timer {
+diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+index 6ed80ddf3369..6e83d288de53 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+@@ -645,7 +645,7 @@ tmuctrl_0: tmu@10060000 {
+ 		ufs: ufs@15570000 {
+ 			compatible = "samsung,exynos7-ufs";
+ 			reg = <0x15570000 0x100>,  /* 0: HCI standard */
+-				<0x15570100 0x100>,  /* 1: Vendor specificed */
++				<0x15570100 0x100>,  /* 1: Vendor specified */
+ 				<0x15571000 0x200>,  /* 2: UNIPRO */
+ 				<0x15572000 0x300>;  /* 3: UFS protector */
+ 			reg-names = "hci", "vs_hci", "unipro", "ufsp";
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+index eefe3577d94e..459e43785c83 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+@@ -150,7 +150,7 @@ gic: interrupt-controller@6000000 {
+ 		its: msi-controller@6020000 {
+ 			compatible = "arm,gic-v3-its";
+ 			msi-controller;
+-			reg = <0x0 0x06020000 0 0x20000>;/* GIC Translater */
++			reg = <0x0 0x06020000 0 0x20000>;/* GIC Translator */
+ 		};
+ 	};
  
- 	mov	\PLAIN_CYPH_LEN, %r10
- 	add	%r13, %r10
-diff --git a/arch/x86/crypto/aesni-intel_avx-x86_64.S b/arch/x86/crypto/aesni-intel_avx-x86_64.S
-index 74dd230973cf..8c9749ed0651 100644
---- a/arch/x86/crypto/aesni-intel_avx-x86_64.S
-+++ b/arch/x86/crypto/aesni-intel_avx-x86_64.S
-@@ -747,7 +747,7 @@ VARIABLE_OFFSET = 16*8
- 
- .if  \ENC_DEC ==  DEC
-         vmovdqa	%xmm1, %xmm3
--        pxor	%xmm1, %xmm9		# Cyphertext XOR E(K, Yn)
-+        pxor	%xmm1, %xmm9		# Ciphertext XOR E(K, Yn)
- 
-         mov	\PLAIN_CYPH_LEN, %r10
-         add	%r13, %r10
-diff --git a/arch/x86/crypto/crc32c-pcl-intel-asm_64.S b/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
-index 81ce0f4db555..bbcff1fb78cb 100644
---- a/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
-+++ b/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
-@@ -184,7 +184,7 @@ SYM_FUNC_START(crc_pcl)
- 	xor     crc1,crc1
- 	xor     crc2,crc2
- 
--	# Fall thruogh into top of crc array (crc_128)
-+	# Fall through into top of crc array (crc_128)
- 
- 	################################################################
- 	## 3) CRC Array:
-diff --git a/arch/x86/crypto/sha512-avx-asm.S b/arch/x86/crypto/sha512-avx-asm.S
-index d902b8ea0721..5bfce4b045fd 100644
---- a/arch/x86/crypto/sha512-avx-asm.S
-+++ b/arch/x86/crypto/sha512-avx-asm.S
-@@ -84,7 +84,7 @@ frame_size = frame_WK + WK_SIZE
- 
- # Useful QWORD "arrays" for simpler memory references
- # MSG, DIGEST, K_t, W_t are arrays
--# WK_2(t) points to 1 of 2 qwords at frame.WK depdending on t being odd/even
-+# WK_2(t) points to 1 of 2 qwords at frame.WK depending on t being odd/even
- 
- # Input message (arg1)
- #define MSG(i)    8*i(msg)
-diff --git a/arch/x86/crypto/sha512-ssse3-asm.S b/arch/x86/crypto/sha512-ssse3-asm.S
-index 65be30156816..30a2c4777f9d 100644
---- a/arch/x86/crypto/sha512-ssse3-asm.S
-+++ b/arch/x86/crypto/sha512-ssse3-asm.S
-@@ -82,7 +82,7 @@ frame_size = frame_WK + WK_SIZE
- 
- # Useful QWORD "arrays" for simpler memory references
- # MSG, DIGEST, K_t, W_t are arrays
--# WK_2(t) points to 1 of 2 qwords at frame.WK depdending on t being odd/even
-+# WK_2(t) points to 1 of 2 qwords at frame.WK depending on t being odd/even
- 
- # Input message (arg1)
- #define MSG(i)    8*i(msg)
-diff --git a/arch/x86/events/amd/brs.c b/arch/x86/events/amd/brs.c
-index ed308719236c..780acd3dff22 100644
---- a/arch/x86/events/amd/brs.c
-+++ b/arch/x86/events/amd/brs.c
-@@ -125,7 +125,7 @@ int amd_brs_hw_config(struct perf_event *event)
- 	 * Where X is the number of taken branches due to interrupt
- 	 * skid. Skid is large.
- 	 *
--	 * Where Y is the occurences of the event while BRS is
-+	 * Where Y is the occurrences of the event while BRS is
- 	 * capturing the lbr_nr entries.
- 	 *
- 	 * By using retired taken branches, we limit the impact on the
-diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
-index e24976593a29..25ad6fd98166 100644
---- a/arch/x86/events/amd/core.c
-+++ b/arch/x86/events/amd/core.c
-@@ -1184,7 +1184,7 @@ static void amd_put_event_constraints_f17h(struct cpu_hw_events *cpuc,
-  * period of each one and given that the BRS saturates, it would not be possible
-  * to guarantee correlated content for all events. Therefore, in situations
-  * where multiple events want to use BRS, the kernel enforces mutual exclusion.
-- * Exclusion is enforced by chosing only one counter for events using BRS.
-+ * Exclusion is enforced by choosing only one counter for events using BRS.
-  * The event scheduling logic will then automatically multiplex the
-  * events and ensure that at most one event is actively using BRS.
-  *
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index a08f794a0e79..fdfcd5112884 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -4027,7 +4027,7 @@ static int intel_pmu_hw_config(struct perf_event *event)
- 
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a-ten64.dts b/arch/arm64/boot/dts/freescale/fsl-ls1088a-ten64.dts
+index d4867d6cf47c..7436d041cca4 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a-ten64.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a-ten64.dts
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
  /*
-  * Currently, the only caller of this function is the atomic_switch_perf_msrs().
-- * The host perf conext helps to prepare the values of the real hardware for
-+ * The host perf context helps to prepare the values of the real hardware for
-  * a set of msrs that need to be switched atomically in a vmx transaction.
-  *
-  * For example, the pseudocode needed to add a new msr should look like:
-diff --git a/arch/x86/hyperv/hv_apic.c b/arch/x86/hyperv/hv_apic.c
-index 97bfe5f0531f..5fc45543e955 100644
---- a/arch/x86/hyperv/hv_apic.c
-+++ b/arch/x86/hyperv/hv_apic.c
-@@ -209,7 +209,7 @@ static bool __send_ipi_mask(const struct cpumask *mask, int vector,
+- * Device Tree file for Travese Ten64 (LS1088) board
++ * Device Tree file for Traverse Ten64 (LS1088) board
+  * Based on fsl-ls1088a-rdb.dts
+  * Copyright 2017-2020 NXP
+  * Copyright 2019-2021 Traverse Technologies
+diff --git a/arch/arm64/boot/dts/freescale/imx8x-colibri.dtsi b/arch/arm64/boot/dts/freescale/imx8x-colibri.dtsi
+index 49d105eb4769..2b41fbdf136e 100644
+--- a/arch/arm64/boot/dts/freescale/imx8x-colibri.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8x-colibri.dtsi
+@@ -504,7 +504,7 @@ pinctrl_hog2: hog2grp {
  
- 		/*
- 		 * This particular version of the IPI hypercall can
--		 * only target upto 64 CPUs.
-+		 * only target up to 64 CPUs.
- 		 */
- 		if (vcpu >= 64)
- 			goto do_ex_hypercall;
-diff --git a/arch/x86/hyperv/irqdomain.c b/arch/x86/hyperv/irqdomain.c
-index 42c70d28ef27..3215a4a07408 100644
---- a/arch/x86/hyperv/irqdomain.c
-+++ b/arch/x86/hyperv/irqdomain.c
-@@ -212,7 +212,7 @@ static void hv_irq_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
- 		 * This interrupt is already mapped. Let's unmap first.
- 		 *
- 		 * We don't use retarget interrupt hypercalls here because
--		 * Microsoft Hypervisor doens't allow root to change the vector
-+		 * Microsoft Hypervisor doesn't allow root to change the vector
- 		 * or specify VPs outside of the set that is initially used
- 		 * during mapping.
- 		 */
-diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
-index 02e55237d919..7dcbf153ad72 100644
---- a/arch/x86/hyperv/ivm.c
-+++ b/arch/x86/hyperv/ivm.c
-@@ -144,7 +144,7 @@ void __noreturn hv_ghcb_terminate(unsigned int set, unsigned int reason)
- 	/* Tell the hypervisor what went wrong. */
- 	val |= GHCB_SEV_TERM_REASON(set, reason);
+ 	/*
+ 	 * This pin is used in the SCFW as a UART. Using it from
+-	 * Linux would require rewritting the SCFW board file.
++	 * Linux would require rewriting the SCFW board file.
+ 	 */
+ 	pinctrl_hog_scfw: hogscfwgrp {
+ 		fsl,pins = <IMX8QXP_SCU_GPIO0_00_LSIO_GPIO2_IO03		0x20>;		/* SODIMM 144 */
+diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+index 4f799b536a92..34fa2843fdc7 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+@@ -666,12 +666,12 @@ in-ports {
  
--	/* Request Guest Termination from Hypvervisor */
-+	/* Request Guest Termination from Hypervisor */
- 	wr_ghcb_msr(val);
- 	VMGEXIT();
+ 				/*
+ 				 * Not described input ports:
+-				 * 0 - connected to Resource and Power Manger CPU ETM
++				 * 0 - connected to Resource and Power Manager CPU ETM
+ 				 * 1 - not-connected
+ 				 * 2 - connected to Modem CPU ETM
+ 				 * 3 - not-connected
+ 				 * 5 - not-connected
+-				 * 6 - connected trought funnel to Wireless CPU ETM
++				 * 6 - connected through funnel to Wireless CPU ETM
+ 				 * 7 - connected to STM component
+ 				 */
  
-diff --git a/arch/x86/include/asm/amd_nb.h b/arch/x86/include/asm/amd_nb.h
-index ed0eaf65c437..5c37944c8a5e 100644
---- a/arch/x86/include/asm/amd_nb.h
-+++ b/arch/x86/include/asm/amd_nb.h
-@@ -104,7 +104,7 @@ static inline bool amd_gart_present(void)
- 	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD)
- 		return false;
+diff --git a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi b/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
+index cbc84459a5ae..4e0e7dfe1b4a 100644
+--- a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
+@@ -857,7 +857,7 @@ &sdhc1 {
+ 	status = "okay";
  
--	/* GART present only on Fam15h, upto model 0fh */
-+	/* GART present only on Fam15h, up to model 0fh */
- 	if (boot_cpu_data.x86 == 0xf || boot_cpu_data.x86 == 0x10 ||
- 	    (boot_cpu_data.x86 == 0x15 && boot_cpu_data.x86_model < 0x10))
- 		return true;
-diff --git a/arch/x86/include/asm/extable_fixup_types.h b/arch/x86/include/asm/extable_fixup_types.h
-index 991e31cfde94..fe6312045042 100644
---- a/arch/x86/include/asm/extable_fixup_types.h
-+++ b/arch/x86/include/asm/extable_fixup_types.h
+ 	/*
+-	 * This device is shipped with HS400 capabable eMMCs
++	 * This device is shipped with HS400 capable eMMCs
+ 	 * However various brands have been used in various product batches,
+ 	 * including a Samsung eMMC (BGND3R) which features a quirk with HS400.
+ 	 * Set the speed to HS200 as a safety measure.
+diff --git a/arch/arm64/boot/dts/qcom/sa8155p.dtsi b/arch/arm64/boot/dts/qcom/sa8155p.dtsi
+index ffb7ab695213..1bc86a8529e1 100644
+--- a/arch/arm64/boot/dts/qcom/sa8155p.dtsi
++++ b/arch/arm64/boot/dts/qcom/sa8155p.dtsi
 @@ -4,7 +4,7 @@
+  *
+  * SA8155P is an automotive variant of SM8150, with some minor changes.
+  * Most notably, the RPMhPD setup differs: MMCX and LCX/LMX rails are gone,
+- * though the cmd-db doesn't reflect that and access attemps result in a bite.
++ * though the cmd-db doesn't reflect that and access attempts result in a bite.
+  */
+ 
+ #include "sm8150.dtsi"
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi b/arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi
+index f9b96bd2477e..9dae5931dead 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi
+@@ -563,8 +563,8 @@ &sdc1_rclk {
+  *
+  * This has entries that are defined by Qcard even if they go to the main
+  * board. In cases where the pulls may be board dependent we defer those
+- * settings to the board device tree. Drive strengths tend to be assinged here
+- * but could conceivably be overwridden by board device trees.
++ * settings to the board device tree. Drive strengths tend to be assigned here
++ * but could conceivably be overridden by board device trees.
+  */
+ 
+ &pm8350c_gpios {
+diff --git a/arch/arm64/boot/dts/qcom/sdm670-google-sargo.dts b/arch/arm64/boot/dts/qcom/sdm670-google-sargo.dts
+index 32a7bd59e1ec..8f89352aeb73 100644
+--- a/arch/arm64/boot/dts/qcom/sdm670-google-sargo.dts
++++ b/arch/arm64/boot/dts/qcom/sdm670-google-sargo.dts
+@@ -168,7 +168,7 @@ vph_pwr: vph-pwr-regulator {
+ 	 * Supply map from xiaomi-lavender specifies this as the supply for
+ 	 * ldob1, ldob9, ldob10, ldoa2, and ldoa3, while downstream specifies
+ 	 * this as a power domain. Set this as a fixed regulator with the same
+-	 * voltage as lavender until display is needed to avoid unneccessarily
++	 * voltage as lavender until display is needed to avoid unnecessarily
+ 	 * using a deprecated binding (regulator-fixed-domain).
+ 	 */
+ 	vreg_s2b_1p05: vreg-s2b-regulator {
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi
+index b02a1dc5fecd..a4be5c6ebb47 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi
+@@ -305,7 +305,7 @@ vreg_l19a_2p7: ldo19 {
+ 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+ 
+ 			/*
+-			 * The driver *really* doesn't want this regualtor to exist,
++			 * The driver *really* doesn't want this regulator to exist,
+ 			 * saying that it could not get the current voltage (-ENOTRECOVERABLE)
+ 			 * even though it surely is used on these devices (as a voltage
+ 			 * source for camera autofocus)
+diff --git a/arch/arm64/boot/dts/renesas/draak.dtsi b/arch/arm64/boot/dts/renesas/draak.dtsi
+index ef3bb835d5c0..67c36f71f4cb 100644
+--- a/arch/arm64/boot/dts/renesas/draak.dtsi
++++ b/arch/arm64/boot/dts/renesas/draak.dtsi
+@@ -226,7 +226,7 @@ &audio_clk_b {
+ 	/*
+ 	 * X11 is connected to VI4_FIELD/SCIF_CLK/AUDIO_CLKB,
+ 	 * and R-Car Sound uses AUDIO_CLKB.
+-	 * Note is that schematic indicates VI4_FIELD conection only
++	 * Note is that schematic indicates VI4_FIELD connection only
+ 	 * not AUDIO_CLKB at SoC page.
+ 	 * And this VI4_FIELD/SCIF_CLK/AUDIO_CLKB is connected to SW60.
+ 	 * SW60 should be 1-2.
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-plus.dts b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-plus.dts
+index 7ba1c28f70a9..ce55f82268b2 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-plus.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-plus.dts
+@@ -9,7 +9,7 @@
+ /*
+  * Notice:
+  * 1. rk3399-roc-pc-plus is powered by dc_12v directly.
+- * 2. rk3399-roc-pc-plus has only vcc_bus_typec0 in schematic, which is coresponding
++ * 2. rk3399-roc-pc-plus has only vcc_bus_typec0 in schematic, which is corresponding
+  *    to vcc_vbus_typec1 in rk3399-roc-pc.
+  *    For simplicity, reserve the node name of vcc_vbus_typec1.
+  * 3. vcc5v0_host is actually 2 regulators (host0, 1) controlled by the same gpio.
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
+index 5db52f237253..e99e69027125 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
+@@ -1415,7 +1415,7 @@ &usbss0 {
+ 	status = "disabled";
+ };
+ 
+-/* TODO: role swich using ID pin */
++/* TODO: role switch using ID pin */
+ &usb0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_usb0>, <&pinctrl_usb0_id>;
+diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+index 376a980f2bad..0b2e67fa9a11 100644
+--- a/arch/arm64/include/asm/assembler.h
++++ b/arch/arm64/include/asm/assembler.h
+@@ -390,7 +390,7 @@ alternative_endif
+  * [start, end) with dcache line size explicitly provided.
+  *
+  * 	op:		operation passed to dc instruction
+- * 	domain:		domain used in dsb instruciton
++ * 	domain:		domain used in dsb instruction
+  * 	start:          starting virtual address of the region
+  * 	end:            end virtual address of the region
+  *	linesz:		dcache line size
+@@ -431,7 +431,7 @@ alternative_endif
+  * [start, end)
+  *
+  * 	op:		operation passed to dc instruction
+- * 	domain:		domain used in dsb instruciton
++ * 	domain:		domain used in dsb instruction
+  * 	start:          starting virtual address of the region
+  * 	end:            end virtual address of the region
+  * 	fixup:		optional label to branch to on user fault
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index f6d416fe49b0..a0f4010c1e85 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -198,7 +198,7 @@ extern struct arm64_ftr_reg arm64_ftr_reg_ctrel0;
+  *    registers (e.g, SCTLR, TCR etc.) or patching the kernel via
+  *    alternatives. The kernel patching is batched and performed at later
+  *    point. The actions are always initiated only after the capability
+- *    is finalised. This is usally denoted by "enabling" the capability.
++ *    is finalised. This is usually denoted by "enabling" the capability.
+  *    The actions are initiated as follows :
+  *	a) Action is triggered on all online CPUs, after the capability is
+  *	finalised, invoked within the stop_machine() context from
+@@ -250,7 +250,7 @@ extern struct arm64_ftr_reg arm64_ftr_reg_ctrel0;
+ #define ARM64_CPUCAP_SCOPE_LOCAL_CPU		((u16)BIT(0))
+ #define ARM64_CPUCAP_SCOPE_SYSTEM		((u16)BIT(1))
+ /*
+- * The capabilitiy is detected on the Boot CPU and is used by kernel
++ * The capability is detected on the Boot CPU and is used by kernel
+  * during early boot. i.e, the capability should be "detected" and
+  * "enabled" as early as possibly on all booting CPUs.
+  */
+diff --git a/arch/arm64/include/asm/kvm_hyp.h b/arch/arm64/include/asm/kvm_hyp.h
+index 145ce73fc16c..3e2a1ac0c9bb 100644
+--- a/arch/arm64/include/asm/kvm_hyp.h
++++ b/arch/arm64/include/asm/kvm_hyp.h
+@@ -70,7 +70,7 @@ DECLARE_PER_CPU(struct kvm_nvhe_init_params, kvm_init_params);
+ /*
+  * Without an __arch_swab32(), we fall back to ___constant_swab32(), but the
+  * static inline can allow the compiler to out-of-line this. KVM always wants
+- * the macro version as its always inlined.
++ * the macro version as it's always inlined.
+  */
+ #define __kvm_swab32(x)	___constant_swab32(x)
+ 
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index b19a8aee684c..25bf7d15a115 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -288,7 +288,7 @@ bool pgattr_change_is_safe(u64 old, u64 new);
+  *   1      0      |   1           0          1
+  *   1      1      |   0           1          x
+  *
+- * When hardware DBM is not present, the sofware PTE_DIRTY bit is updated via
++ * When hardware DBM is not present, the software PTE_DIRTY bit is updated via
+  * the page fault mechanism. Checking the dirty status of a pte becomes:
+  *
+  *   PTE_DIRTY || (PTE_WRITE && !PTE_RDONLY)
+diff --git a/arch/arm64/include/asm/suspend.h b/arch/arm64/include/asm/suspend.h
+index 0cde2f473971..e65f33edf9d6 100644
+--- a/arch/arm64/include/asm/suspend.h
++++ b/arch/arm64/include/asm/suspend.h
+@@ -23,7 +23,7 @@ struct cpu_suspend_ctx {
+  * __cpu_suspend_enter()'s caller, and populated by __cpu_suspend_enter().
+  * This data must survive until cpu_resume() is called.
+  *
+- * This struct desribes the size and the layout of the saved cpu state.
++ * This struct describes the size and the layout of the saved cpu state.
+  * The layout of the callee_saved_regs is defined by the implementation
+  * of __cpu_suspend_enter(), and cpu_resume(). This struct must be passed
+  * in by the caller as __cpu_suspend_enter()'s stack-frame is gone once it
+diff --git a/arch/arm64/include/asm/traps.h b/arch/arm64/include/asm/traps.h
+index eefe766d6161..03084ed290ac 100644
+--- a/arch/arm64/include/asm/traps.h
++++ b/arch/arm64/include/asm/traps.h
+@@ -52,8 +52,8 @@ static inline int in_entry_text(unsigned long ptr)
+  * CPUs with the RAS extensions have an Implementation-Defined-Syndrome bit
+  * to indicate whether this ESR has a RAS encoding. CPUs without this feature
+  * have a ISS-Valid bit in the same position.
+- * If this bit is set, we know its not a RAS SError.
+- * If its clear, we need to know if the CPU supports RAS. Uncategorized RAS
++ * If this bit is set, we know it's not a RAS SError.
++ * If it's clear, we need to know if the CPU supports RAS. Uncategorized RAS
+  * errors share the same encoding as an all-zeros encoding from a CPU that
+  * doesn't support RAS.
+  */
+diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
+index dba8fcec7f33..7eca4273b415 100644
+--- a/arch/arm64/kernel/acpi.c
++++ b/arch/arm64/kernel/acpi.c
+@@ -128,7 +128,7 @@ static int __init acpi_fadt_sanity_check(void)
+ 
+ 	/*
+ 	 * FADT is required on arm64; retrieve it to check its presence
+-	 * and carry out revision and ACPI HW reduced compliancy tests
++	 * and carry out revision and ACPI HW reduced compliance tests
+ 	 */
+ 	status = acpi_get_table(ACPI_SIG_FADT, 0, &table);
+ 	if (ACPI_FAILURE(status)) {
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 646591c67e7a..3089526900a8 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -748,7 +748,7 @@ static int search_cmp_ftr_reg(const void *id, const void *regp)
+  * entry.
+  *
+  * returns - Upon success,  matching ftr_reg entry for id.
+- *         - NULL on failure. It is upto the caller to decide
++ *         - NULL on failure. It is up to the caller to decide
+  *	     the impact of a failure.
+  */
+ static struct arm64_ftr_reg *get_arm64_ftr_reg_nowarn(u32 sys_id)
+@@ -874,7 +874,7 @@ static void __init sort_ftr_regs(void)
  
  /*
-  * Our IMM is signed, as such it must live at the top end of the word. Also,
-- * since C99 hex constants are of ambigious type, force cast the mask to 'int'
-+ * since C99 hex constants are of ambiguous type, force cast the mask to 'int'
-  * so that FIELD_GET() will DTRT and sign extend the value when it extracts it.
+  * Initialise the CPU feature register from Boot CPU values.
+- * Also initiliases the strict_mask for the register.
++ * Also initialises the strict_mask for the register.
+  * Any bits that are not covered by an arm64_ftr_bits entry are considered
+  * RES0 for the system-wide value, and must strictly match.
   */
- #define EX_DATA_TYPE_MASK		((int)0x000000FF)
-diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
-index eb810074f1e7..f1fadc318a88 100644
---- a/arch/x86/include/asm/fpu/types.h
-+++ b/arch/x86/include/asm/fpu/types.h
-@@ -415,7 +415,7 @@ struct fpu_state_perm {
- 	 *
- 	 * This master permission field is only to be used when
- 	 * task.fpu.fpstate based checks fail to validate whether the task
--	 * is allowed to expand it's xfeatures set which requires to
-+	 * is allowed to expand its xfeatures set which requires to
- 	 * allocate a larger sized fpstate buffer.
- 	 *
- 	 * Do not access this field directly.  Use the provided helper
-diff --git a/arch/x86/include/asm/iosf_mbi.h b/arch/x86/include/asm/iosf_mbi.h
-index a1911fea8739..af7541c11821 100644
---- a/arch/x86/include/asm/iosf_mbi.h
-+++ b/arch/x86/include/asm/iosf_mbi.h
-@@ -111,7 +111,7 @@ int iosf_mbi_modify(u8 port, u8 opcode, u32 offset, u32 mdr, u32 mask);
-  * This function will block all kernel access to the PMIC I2C bus, so that the
-  * P-Unit can safely access the PMIC over the shared I2C bus.
-  *
-- * Note on these systems the i2c-bus driver will request a sempahore from the
-+ * Note on these systems the i2c-bus driver will request a semaphore from the
-  * P-Unit for exclusive access to the PMIC bus when i2c drivers are accessing
-  * it, but this does not appear to be sufficient, we still need to avoid making
-  * certain P-Unit requests during the access window to avoid problems.
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index d7036982332e..6711da000bb7 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1652,7 +1652,7 @@ struct kvm_x86_ops {
- 	/* Whether or not a virtual NMI is pending in hardware. */
- 	bool (*is_vnmi_pending)(struct kvm_vcpu *vcpu);
- 	/*
--	 * Attempt to pend a virtual NMI in harware.  Returns %true on success
-+	 * Attempt to pend a virtual NMI in hardware.  Returns %true on success
- 	 * to allow using static_call_ret0 as the fallback.
- 	 */
- 	bool (*set_vnmi_pending)(struct kvm_vcpu *vcpu);
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index f93e9b96927a..262e65539f83 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -49,7 +49,7 @@
-  * but there is still a cushion vs. the RSB depth. The algorithm does not
-  * claim to be perfect and it can be speculated around by the CPU, but it
-  * is considered that it obfuscates the problem enough to make exploitation
-- * extremly difficult.
-+ * extremely difficult.
-  */
- #define RET_DEPTH_SHIFT			5
- #define RSB_RET_STUFF_LOOPS		16
-@@ -208,7 +208,7 @@
- 
- /*
-  * Abuse ANNOTATE_RETPOLINE_SAFE on a NOP to indicate UNRET_END, should
-- * eventually turn into it's own annotation.
-+ * eventually turn into its own annotation.
-  */
- .macro VALIDATE_UNRET_END
- #if defined(CONFIG_NOINSTR_VALIDATION) && \
-diff --git a/arch/x86/include/asm/pgtable_64.h b/arch/x86/include/asm/pgtable_64.h
-index a629b1b9f65a..24af25b1551a 100644
---- a/arch/x86/include/asm/pgtable_64.h
-+++ b/arch/x86/include/asm/pgtable_64.h
-@@ -203,7 +203,7 @@ static inline void native_pgd_clear(pgd_t *pgd)
-  * F (2) in swp entry is used to record when a pagetable is
-  * writeprotected by userfaultfd WP support.
-  *
-- * E (3) in swp entry is used to rememeber PG_anon_exclusive.
-+ * E (3) in swp entry is used to remember PG_anon_exclusive.
-  *
-  * Bit 7 in swp entry should be 0 because pmd_present checks not only P,
-  * but also L and G.
-diff --git a/arch/x86/include/asm/uv/uv_hub.h b/arch/x86/include/asm/uv/uv_hub.h
-index 5fa76c2ced51..ea877fd83114 100644
---- a/arch/x86/include/asm/uv/uv_hub.h
-+++ b/arch/x86/include/asm/uv/uv_hub.h
-@@ -653,7 +653,7 @@ static inline int uv_blade_to_node(int blade)
- 	return uv_socket_to_node(blade);
- }
- 
--/* Blade number of current cpu. Numnbered 0 .. <#blades -1> */
-+/* Blade number of current cpu. Numbered 0 .. <#blades -1> */
- static inline int uv_numa_blade_id(void)
- {
- 	return uv_hub_info->numa_blade_id;
-diff --git a/arch/x86/include/asm/vdso/gettimeofday.h b/arch/x86/include/asm/vdso/gettimeofday.h
-index c81858d903dc..923053f366d7 100644
---- a/arch/x86/include/asm/vdso/gettimeofday.h
-+++ b/arch/x86/include/asm/vdso/gettimeofday.h
-@@ -321,7 +321,7 @@ static __always_inline
- u64 vdso_calc_delta(u64 cycles, u64 last, u64 mask, u32 mult)
- {
- 	/*
--	 * Due to the MSB/Sign-bit being used as invald marker (see
-+	 * Due to the MSB/Sign-bit being used as invalid marker (see
- 	 * arch_vdso_cycles_valid() above), the effective mask is S64_MAX.
- 	 */
- 	u64 delta = (cycles - last) & S64_MAX;
-diff --git a/arch/x86/include/asm/xen/interface_64.h b/arch/x86/include/asm/xen/interface_64.h
-index c599ec269a25..c10f279aae93 100644
---- a/arch/x86/include/asm/xen/interface_64.h
-+++ b/arch/x86/include/asm/xen/interface_64.h
-@@ -61,7 +61,7 @@
-  *   RING1 -> RING3 kernel mode.
-  *   RING2 -> RING3 kernel mode.
-  *   RING3 -> RING3 user mode.
-- * However RING0 indicates that the guest kernel should return to iteself
-+ * However RING0 indicates that the guest kernel should return to itself
-  * directly with
-  *      orb   $3,1*8(%rsp)
-  *      iretq
-diff --git a/arch/x86/include/uapi/asm/amd_hsmp.h b/arch/x86/include/uapi/asm/amd_hsmp.h
-index fce22686c834..e5d182c7373c 100644
---- a/arch/x86/include/uapi/asm/amd_hsmp.h
-+++ b/arch/x86/include/uapi/asm/amd_hsmp.h
-@@ -238,7 +238,7 @@ static const struct hsmp_msg_desc hsmp_msg_desc_table[] = {
- 	/*
- 	 * HSMP_GET_DIMM_THERMAL, num_args = 1, response_sz = 1
- 	 * input: args[0] = DIMM address[7:0]
--	 * output: args[0] = temperature in degree celcius[31:21] + update rate in ms[16:8] +
-+	 * output: args[0] = temperature in degree celsius[31:21] + update rate in ms[16:8] +
- 	 * DIMM address[7:0]
- 	 */
- 	{1, 1, HSMP_GET},
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 73be3931e4f0..0c7fc2b92302 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -1896,7 +1896,7 @@ static void *__text_poke(text_poke_f func, void *addr, const void *src, size_t l
-  * Note that the caller must ensure that if the modified code is part of a
-  * module, the module would not be removed during poking. This can be achieved
-  * by registering a module notifier, and ordering module removal and patching
-- * trough a mutex.
-+ * through a mutex.
-  */
- void *text_poke(void *addr, const void *opcode, size_t len)
- {
-diff --git a/arch/x86/kernel/amd_gart_64.c b/arch/x86/kernel/amd_gart_64.c
-index 56a917df410d..2ae98f754e59 100644
---- a/arch/x86/kernel/amd_gart_64.c
-+++ b/arch/x86/kernel/amd_gart_64.c
-@@ -776,7 +776,7 @@ int __init gart_iommu_init(void)
- 				iommu_size >> PAGE_SHIFT);
- 	/*
- 	 * Tricky. The GART table remaps the physical memory range,
--	 * so the CPU wont notice potential aliases and if the memory
-+	 * so the CPU won't notice potential aliases and if the memory
- 	 * is remapped to UC later on, we might surprise the PCI devices
- 	 * with a stray writeout of a cacheline. So play it sure and
- 	 * do an explicit, full-scale wbinvd() _after_ having marked all
-diff --git a/arch/x86/kernel/apic/Makefile b/arch/x86/kernel/apic/Makefile
-index 2ee867d796d9..3bf0487cf3b7 100644
---- a/arch/x86/kernel/apic/Makefile
-+++ b/arch/x86/kernel/apic/Makefile
-@@ -4,7 +4,7 @@
- #
- 
- # Leads to non-deterministic coverage that is not a function of syscall inputs.
--# In particualr, smp_apic_timer_interrupt() is called in random places.
-+# In particular, smp_apic_timer_interrupt() is called in random places.
- KCOV_INSTRUMENT		:= n
- 
- obj-$(CONFIG_X86_LOCAL_APIC)	+= apic.o apic_common.o apic_noop.o ipi.o vector.o init.o
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 41093cf20acd..4667bc4b00ab 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -782,7 +782,7 @@ bool __init apic_needs_pit(void)
- 
- 	/*
- 	 * If interrupt delivery mode is legacy PIC or virtual wire without
--	 * configuration, the local APIC timer wont be set up. Make sure
-+	 * configuration, the local APIC timer won't be set up. Make sure
- 	 * that the PIT is initialized.
- 	 */
- 	if (apic_intr_mode == APIC_PIC ||
-diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
-index 319448d87b99..dbd15a67e9df 100644
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -738,7 +738,7 @@ int __init arch_probe_nr_irqs(void)
- void lapic_assign_legacy_vector(unsigned int irq, bool replace)
- {
- 	/*
--	 * Use assign system here so it wont get accounted as allocated
-+	 * Use assign system here so it won't get accounted as allocated
- 	 * and moveable in the cpu hotplug check and it prevents managed
- 	 * irq reservation from touching it.
- 	 */
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index 5d390df21440..b65ab214bdf5 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -581,7 +581,7 @@ static int sgx_encl_init(struct sgx_encl *encl, struct sgx_sigstruct *sigstruct,
-  *
-  * Flush any outstanding enqueued EADD operations and perform EINIT.  The
-  * Launch Enclave Public Key Hash MSRs are rewritten as necessary to match
-- * the enclave's MRSIGNER, which is caculated from the provided sigstruct.
-+ * the enclave's MRSIGNER, which is calculated from the provided sigstruct.
-  *
-  * Return:
-  * - 0:		Success.
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index a21a4d0ecc34..520deb411a70 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -308,7 +308,7 @@ EXPORT_SYMBOL_GPL(fpu_update_guest_xfd);
-  * Must be invoked from KVM after a VMEXIT before enabling interrupts when
-  * XFD write emulation is disabled. This is required because the guest can
-  * freely modify XFD and the state at VMEXIT is not guaranteed to be the
-- * same as the state on VMENTER. So software state has to be udpated before
-+ * same as the state on VMENTER. So software state has to be updated before
-  * any operation which depends on it can take place.
-  *
-  * Note: It can be invoked unconditionally even when write emulation is
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 086a2c3aaaa0..9996c0cf2f63 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -205,9 +205,9 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	 * Switch to new page-table
- 	 *
- 	 * For the boot CPU this switches to early_top_pgt which still has the
--	 * indentity mappings present. The secondary CPUs will switch to the
-+	 * identity mappings present. The secondary CPUs will switch to the
- 	 * init_top_pgt here, away from the trampoline_pgd and unmap the
--	 * indentity mapped ranges.
-+	 * identity mapped ranges.
- 	 */
- 	movq	%rax, %cr3
- 
-diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
-index 41eecf180b7f..8ff2bf921519 100644
---- a/arch/x86/kernel/hpet.c
-+++ b/arch/x86/kernel/hpet.c
-@@ -707,7 +707,7 @@ static void __init hpet_select_clockevents(void)
- 
- 	hpet_base.nr_clockevents = 0;
- 
--	/* No point if MSI is disabled or CPU has an Always Runing APIC Timer */
-+	/* No point if MSI is disabled or CPU has an Always Running APIC Timer */
- 	if (hpet_msi_disable || boot_cpu_has(X86_FEATURE_ARAT))
- 		return;
- 
-@@ -965,7 +965,7 @@ static bool __init mwait_pc10_supported(void)
-  * and per CPU timer interrupts.
-  *
-  * The probability that this problem is going to be solved in the
-- * forseeable future is close to zero, so the kernel has to be cluttered
-+ * foreseeable future is close to zero, so the kernel has to be cluttered
-  * with heuristics to keep up with the ever growing amount of hardware and
-  * firmware trainwrecks. Hopefully some day hardware people will understand
-  * that the approach of "This can be fixed in software" is not sustainable.
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index 0ddb3bd0f1aa..8b57e020614c 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -942,7 +942,7 @@ static void __init kvm_init_platform(void)
- 		 * Reset the host's shared pages list related to kernel
- 		 * specific page encryption status settings before we load a
- 		 * new kernel by kexec. Reset the page encryption status
--		 * during early boot intead of just before kexec to avoid SMP
-+		 * during early boot instead of just before kexec to avoid SMP
- 		 * races during kvm_pv_guest_cpu_reboot().
- 		 * NOTE: We cannot reset the complete shared pages list
- 		 * here as we need to retain the UEFI/OVMF firmware
-diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-index fb8f52149be9..a95d0900e8c6 100644
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -42,7 +42,7 @@ static int __init parse_no_kvmclock_vsyscall(char *arg)
- }
- early_param("no-kvmclock-vsyscall", parse_no_kvmclock_vsyscall);
- 
--/* Aligned to page sizes to match whats mapped via vsyscalls to userspace */
-+/* Aligned to page sizes to match what's mapped via vsyscalls to userspace */
- #define HVC_BOOT_ARRAY_SIZE \
- 	(PAGE_SIZE / sizeof(struct pvclock_vsyscall_time_info))
- 
-diff --git a/arch/x86/kernel/ldt.c b/arch/x86/kernel/ldt.c
-index adc67f98819a..7a814b41402d 100644
---- a/arch/x86/kernel/ldt.c
-+++ b/arch/x86/kernel/ldt.c
-@@ -7,7 +7,7 @@
-  * This handles calls from both 32bit and 64bit mode.
-  *
-  * Lock order:
-- *	contex.ldt_usr_sem
-+ *	context.ldt_usr_sem
-  *	  mmap_lock
-  *	    context.lock
-  */
-@@ -49,7 +49,7 @@ void load_mm_ldt(struct mm_struct *mm)
- 	/*
- 	 * Any change to mm->context.ldt is followed by an IPI to all
- 	 * CPUs with the mm active.  The LDT will not be freed until
--	 * after the IPI is handled by all such CPUs.  This means that,
-+	 * after the IPI is handled by all such CPUs.  This means that
- 	 * if the ldt_struct changes before we return, the values we see
- 	 * will be safe, and the new values will be loaded before we run
- 	 * any user code.
-@@ -685,7 +685,7 @@ SYSCALL_DEFINE3(modify_ldt, int , func , void __user * , ptr ,
- 	}
- 	/*
- 	 * The SYSCALL_DEFINE() macros give us an 'unsigned long'
--	 * return type, but tht ABI for sys_modify_ldt() expects
-+	 * return type, but the ABI for sys_modify_ldt() expects
- 	 * 'int'.  This cast gives us an int-sized value in %rax
- 	 * for the return code.  The 'unsigned' is necessary so
- 	 * the compiler does not try to sign-extend the negative
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index b6f4e8399fca..ab49ade31b0d 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -477,7 +477,7 @@ void native_tss_update_io_bitmap(void)
- 	/*
- 	 * Make sure that the TSS limit is covering the IO bitmap. It might have
- 	 * been cut down by a VMEXIT to 0x67 which would cause a subsequent I/O
--	 * access from user space to trigger a #GP because tbe bitmap is outside
-+	 * access from user space to trigger a #GP because the bitmap is outside
- 	 * the TSS limit.
- 	 */
- 	refresh_tss_limit();
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index ccb0915e84e1..1d24ec679915 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -96,7 +96,7 @@ static void __noreturn sev_es_terminate(unsigned int set, unsigned int reason)
- 	/* Tell the hypervisor what went wrong. */
- 	val |= GHCB_SEV_TERM_REASON(set, reason);
- 
--	/* Request Guest Termination from Hypvervisor */
-+	/* Request Guest Termination from Hypervisor */
- 	sev_es_wr_ghcb_msr(val);
- 	VMGEXIT();
- 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index dda6fc4cfae8..42d3f47f4c07 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -105,7 +105,7 @@ static inline struct kvm_cpuid_entry2 *cpuid_entry2_find(
- 
- 		/*
- 		 * If the index isn't significant, use the first entry with a
--		 * matching function.  It's userspace's responsibilty to not
-+		 * matching function.  It's userspace's responsibility to not
- 		 * provide "duplicate" entries in all cases.
- 		 */
- 		if (!(e->flags & KVM_CPUID_FLAG_SIGNIFCANT_INDEX) || e->index == index)
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index c57e181bba21..0b1f991b9a31 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -987,7 +987,7 @@ static void pte_list_desc_remove_entry(struct kvm *kvm,
- 
- 	/*
- 	 * The head descriptor is empty.  If there are no tail descriptors,
--	 * nullify the rmap head to mark the list as emtpy, else point the rmap
-+	 * nullify the rmap head to mark the list as empty, else point the rmap
- 	 * head at the next descriptor, i.e. the new head.
- 	 */
- 	if (!head_desc->more)
-@@ -6544,7 +6544,7 @@ void kvm_mmu_try_split_huge_pages(struct kvm *kvm,
- 	kvm_tdp_mmu_try_split_huge_pages(kvm, memslot, start, end, target_level, false);
- 
- 	/*
--	 * A TLB flush is unnecessary at this point for the same resons as in
-+	 * A TLB flush is unnecessary at this point for the same reasons as in
- 	 * kvm_mmu_slot_try_split_huge_pages().
- 	 */
- }
-diff --git a/arch/x86/kvm/mmu/tdp_iter.c b/arch/x86/kvm/mmu/tdp_iter.c
-index bd30ebfb2f2c..04c247bfe318 100644
---- a/arch/x86/kvm/mmu/tdp_iter.c
-+++ b/arch/x86/kvm/mmu/tdp_iter.c
-@@ -146,7 +146,7 @@ static bool try_step_up(struct tdp_iter *iter)
-  * Step to the next SPTE in a pre-order traversal of the paging structure.
-  * To get to the next SPTE, the iterator either steps down towards the goal
-  * GFN, if at a present, non-last-level SPTE, or over to a SPTE mapping a
-- * highter GFN.
-+ * higher GFN.
-  *
-  * The basic algorithm is as follows:
-  * 1. If the current SPTE is a non-last-level SPTE, step down into the page
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 712146312358..7097954904cb 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -4741,7 +4741,7 @@ static int svm_check_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
- 	 * Emulation is possible for SEV guests if and only if a prefilled
- 	 * buffer containing the bytes of the intercepted instruction is
- 	 * available. SEV guest memory is encrypted with a guest specific key
--	 * and cannot be decrypted by KVM, i.e. KVM would read cyphertext and
-+	 * and cannot be decrypted by KVM, i.e. KVM would read ciphertext and
- 	 * decode garbage.
- 	 *
- 	 * If KVM is NOT trying to simply skip an instruction, inject #UD if
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index c5ec0ef51ff7..65826fe23f33 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -6561,7 +6561,7 @@ static int vmx_set_nested_state(struct kvm_vcpu *vcpu,
- 		 * code was changed such that flag signals vmcs12 should
- 		 * be copied into eVMCS in guest memory.
- 		 *
--		 * To preserve backwards compatability, allow user
-+		 * To preserve backwards compatibility, allow user
- 		 * to set this flag even when there is no VMXON region.
- 		 */
- 		if (kvm_state->flags & ~KVM_STATE_NESTED_EVMCS)
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index be20a60047b1..e0f86f11c345 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1809,7 +1809,7 @@ static void vmx_inject_exception(struct kvm_vcpu *vcpu)
- 		 * do generate error codes with bits 31:16 set, and so KVM's
- 		 * ABI lets userspace shove in arbitrary 32-bit values.  Drop
- 		 * the upper bits to avoid VM-Fail, losing information that
--		 * does't really exist is preferable to killing the VM.
-+		 * doesn't really exist is preferable to killing the VM.
- 		 */
- 		vmcs_write32(VM_ENTRY_EXCEPTION_ERROR_CODE, (u16)ex->error_code);
- 		intr_info |= INTR_INFO_DELIVER_CODE_MASK;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 2c924075f6f1..b43b37c414d6 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10165,7 +10165,7 @@ static void kvm_inject_exception(struct kvm_vcpu *vcpu)
-  *
-  * But, if a VM-Exit occurs during instruction execution, and KVM does NOT skip
-  * the instruction or inject an exception, then KVM can incorrecty inject a new
-- * asynchrounous event if the event became pending after the CPU fetched the
-+ * asynchronous event if the event became pending after the CPU fetched the
-  * instruction (in the guest).  E.g. if a page fault (#PF, #NPF, EPT violation)
-  * occurs and is resolved by KVM, a coincident NMI, SMI, IRQ, etc... can be
-  * injected on the restarted instruction instead of being deferred until the
-@@ -10186,7 +10186,7 @@ static int kvm_check_and_inject_events(struct kvm_vcpu *vcpu,
- 	int r;
- 
- 	/*
--	 * Process nested events first, as nested VM-Exit supercedes event
-+	 * Process nested events first, as nested VM-Exit supersedes event
- 	 * re-injection.  If there's an event queued for re-injection, it will
- 	 * be saved into the appropriate vmc{b,s}12 fields on nested VM-Exit.
- 	 */
-@@ -10884,7 +10884,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 		/*
- 		 * Assert that vCPU vs. VM APICv state is consistent.  An APICv
- 		 * update must kick and wait for all vCPUs before toggling the
--		 * per-VM state, and responsing vCPUs must wait for the update
-+		 * per-VM state, and responding vCPUs must wait for the update
- 		 * to complete before servicing KVM_REQ_APICV_UPDATE.
- 		 */
- 		WARN_ON_ONCE((kvm_vcpu_apicv_activated(vcpu) != kvm_vcpu_apicv_active(vcpu)) &&
-diff --git a/arch/x86/lib/delay.c b/arch/x86/lib/delay.c
-index 0e65d00e2339..23f81ca3f06b 100644
---- a/arch/x86/lib/delay.c
-+++ b/arch/x86/lib/delay.c
-@@ -128,7 +128,7 @@ static void delay_halt_mwaitx(u64 unused, u64 cycles)
- 
- 	delay = min_t(u64, MWAITX_MAX_WAIT_CYCLES, cycles);
- 	/*
--	 * Use cpu_tss_rw as a cacheline-aligned, seldomly accessed per-cpu
-+	 * Use cpu_tss_rw as a cacheline-aligned, seldom accessed per-cpu
- 	 * variable as the monitor target.
- 	 */
- 	 __monitorx(raw_cpu_ptr(&cpu_tss_rw), 0, 0);
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index a190aae8ceaf..a0dffaca6d2b 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -1013,7 +1013,7 @@ static void __meminit free_pte_table(pte_t *pte_start, pmd_t *pmd)
- 			return;
- 	}
- 
--	/* free a pte talbe */
-+	/* free a pte table */
- 	free_pagetable(pmd_page(*pmd), 0);
- 	spin_lock(&init_mm.page_table_lock);
- 	pmd_clear(pmd);
-@@ -1031,7 +1031,7 @@ static void __meminit free_pmd_table(pmd_t *pmd_start, pud_t *pud)
- 			return;
- 	}
- 
--	/* free a pmd talbe */
-+	/* free a pmd table */
- 	free_pagetable(pud_page(*pud), 0);
- 	spin_lock(&init_mm.page_table_lock);
- 	pud_clear(pud);
-@@ -1049,7 +1049,7 @@ static void __meminit free_pud_table(pud_t *pud_start, p4d_t *p4d)
- 			return;
- 	}
- 
--	/* free a pud talbe */
-+	/* free a pud table */
- 	free_pagetable(p4d_page(*p4d), 0);
- 	spin_lock(&init_mm.page_table_lock);
- 	p4d_clear(p4d);
-diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
-index de10800cd4dd..0904d7e8e126 100644
---- a/arch/x86/mm/pat/memtype.c
-+++ b/arch/x86/mm/pat/memtype.c
-@@ -14,7 +14,7 @@
-  * memory ranges: uncached, write-combining, write-through, write-protected,
-  * and the most commonly used and default attribute: write-back caching.
-  *
-- * PAT support supercedes and augments MTRR support in a compatible fashion: MTRR is
-+ * PAT support supersedes and augments MTRR support in a compatible fashion: MTRR is
-  * a hardware interface to enumerate a limited number of physical memory ranges
-  * and set their caching attributes explicitly, programmed into the CPU via MSRs.
-  * Even modern CPUs have MTRRs enabled - but these are typically not touched
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index bda9f129835e..e9b448d1b1b7 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -1621,7 +1621,7 @@ static int __change_page_attr(struct cpa_data *cpa, int primary)
- 
- 		/*
- 		 * We need to keep the pfn from the existing PTE,
--		 * after all we're only going to change it's attributes
-+		 * after all we're only going to change its attributes
- 		 * not the memory it points to
- 		 */
- 		new_pte = pfn_pte(pfn, new_prot);
-@@ -2447,7 +2447,7 @@ int __init kernel_unmap_pages_in_pgd(pgd_t *pgd, unsigned long address,
- 	/*
- 	 * The typical sequence for unmapping is to find a pte through
- 	 * lookup_address_in_pgd() (ideally, it should never return NULL because
--	 * the address is already mapped) and change it's protections. As pfn is
-+	 * the address is already mapped) and change its protections. As pfn is
- 	 * the *target* of a mapping, it's not useful while unmapping.
- 	 */
- 	struct cpa_data cpa = {
-diff --git a/arch/x86/mm/pti.c b/arch/x86/mm/pti.c
-index 5dd733944629..669ba1c345b3 100644
---- a/arch/x86/mm/pti.c
-+++ b/arch/x86/mm/pti.c
-@@ -6,7 +6,7 @@
-  *
-  *	https://github.com/IAIK/KAISER
-  *
-- * The original work was written by and and signed off by for the Linux
-+ * The original work was written by and signed off by for the Linux
-  * kernel by:
-  *
-  *   Signed-off-by: Richard Fellner <richard.fellner@student.tugraz.at>
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 453ea95b667d..5768d386efab 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -355,7 +355,7 @@ static void l1d_flush_evaluate(unsigned long prev_mm, unsigned long next_mm,
- 
- 	/*
- 	 * Validate that it is not running on an SMT sibling as this would
--	 * make the excercise pointless because the siblings share L1D. If
-+	 * make the exercise pointless because the siblings share L1D. If
- 	 * it runs on a SMT sibling, notify it with SIGBUS on return to
- 	 * user/guest
- 	 */
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 8c10d9abc239..75ae6e5777e4 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -2143,7 +2143,7 @@ static void save_args(const struct btf_func_model *m, u8 **prog,
- 		} else {
- 			/* Only copy the arguments on-stack to current
- 			 * 'stack_size' and ignore the regs, used to
--			 * prepare the arguments on-stack for orign call.
-+			 * prepare the arguments on-stack for origin call.
+@@ -3108,7 +3108,7 @@ static void verify_local_cpu_caps(u16 scope_mask)
+ 			/*
+ 			 * We have to issue cpu_enable() irrespective of
+ 			 * whether the CPU has it or not, as it is enabeld
+-			 * system wide. It is upto the call back to take
++			 * system wide. It is up to the call back to take
+ 			 * appropriate action on this CPU.
  			 */
- 			if (for_call_origin) {
- 				nr_regs += arg_regs;
-diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-index 429a89c5468b..b18ce19981ec 100644
---- a/arch/x86/net/bpf_jit_comp32.c
-+++ b/arch/x86/net/bpf_jit_comp32.c
-@@ -1194,7 +1194,7 @@ struct jit_context {
- #define PROLOGUE_SIZE 35
+ 			if (caps->cpu_enable)
+diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+index 0fc94207e69a..80b5268578a8 100644
+--- a/arch/arm64/kernel/entry-common.c
++++ b/arch/arm64/kernel/entry-common.c
+@@ -660,7 +660,7 @@ static void noinstr el0_inv(struct pt_regs *regs, unsigned long esr)
  
- /*
-- * Emit prologue code for BPF program and check it's size.
-+ * Emit prologue code for BPF program and check its size.
-  * bpf_tail_call helper will skip it while jumping into another program.
-  */
- static void emit_prologue(u8 **pprog, u32 stack_depth)
-diff --git a/arch/x86/platform/intel-quark/imr_selftest.c b/arch/x86/platform/intel-quark/imr_selftest.c
-index 761f3689f60a..84ba715f44d1 100644
---- a/arch/x86/platform/intel-quark/imr_selftest.c
-+++ b/arch/x86/platform/intel-quark/imr_selftest.c
-@@ -6,7 +6,7 @@
-  * Copyright(c) 2015 Bryan O'Donoghue <pure.logic@nexus-software.ie>
-  *
-  * IMR self test. The purpose of this module is to run a set of tests on the
-- * IMR API to validate it's sanity. We check for overlapping, reserved
-+ * IMR API to validate its sanity. We check for overlapping, reserved
-  * addresses and setup/teardown sanity.
-  *
-  */
-diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
-index c4365a05ab83..bc27be467b96 100644
---- a/arch/x86/platform/pvh/head.S
-+++ b/arch/x86/platform/pvh/head.S
-@@ -41,7 +41,7 @@
-  *             Bit 8 (TF) must be cleared. Other bits are all unspecified.
-  *
-  * All other processor registers and flag bits are unspecified. The OS is in
-- * charge of setting up it's own stack, GDT and IDT.
-+ * charge of setting up its own stack, GDT and IDT.
-  */
- 
- #define PVH_GDT_ENTRY_CS	1
-diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
-index e03207de2880..5c50e550ab63 100644
---- a/arch/x86/platform/uv/uv_nmi.c
-+++ b/arch/x86/platform/uv/uv_nmi.c
-@@ -741,7 +741,7 @@ static void uv_nmi_dump_state_cpu(int cpu, struct pt_regs *regs)
- 	this_cpu_write(uv_cpu_nmi.state, UV_NMI_STATE_DUMP_DONE);
- }
- 
--/* Trigger a slave CPU to dump it's state */
-+/* Trigger a slave CPU to dump its state */
- static void uv_nmi_trigger_dump(int cpu)
+ static void noinstr el0_dbg(struct pt_regs *regs, unsigned long esr)
  {
- 	int retry = uv_nmi_trigger_delay;
-diff --git a/arch/x86/platform/uv/uv_time.c b/arch/x86/platform/uv/uv_time.c
-index ff5afc8a5a41..3712afc3534d 100644
---- a/arch/x86/platform/uv/uv_time.c
-+++ b/arch/x86/platform/uv/uv_time.c
-@@ -270,7 +270,7 @@ static int uv_rtc_unset_timer(int cpu, int force)
-  * Read the RTC.
-  *
-  * Starting with HUB rev 2.0, the UV RTC register is replicated across all
-- * cachelines of it's own page.  This allows faster simultaneous reads
-+ * cachelines of its own page.  This allows faster simultaneous reads
-  * from a given socket.
-  */
- static u64 uv_read_rtc(struct clocksource *cs)
-diff --git a/arch/x86/realmode/init.c b/arch/x86/realmode/init.c
-index 788e5559549f..f9bc444a3064 100644
---- a/arch/x86/realmode/init.c
-+++ b/arch/x86/realmode/init.c
-@@ -61,7 +61,7 @@ void __init reserve_real_mode(void)
- 		set_real_mode_mem(mem);
+-	/* Only watchpoints write FAR_EL1, otherwise its UNKNOWN */
++	/* Only watchpoints write FAR_EL1, otherwise it's UNKNOWN */
+ 	unsigned long far = read_sysreg(far_el1);
+ 
+ 	enter_from_user_mode(regs);
+diff --git a/arch/arm64/kernel/entry-ftrace.S b/arch/arm64/kernel/entry-ftrace.S
+index f0c16640ef21..e24e7d8f8b61 100644
+--- a/arch/arm64/kernel/entry-ftrace.S
++++ b/arch/arm64/kernel/entry-ftrace.S
+@@ -94,7 +94,7 @@ SYM_CODE_START(ftrace_caller)
+ 	stp	x29, x30, [sp, #FREGS_SIZE]
+ 	add	x29, sp, #FREGS_SIZE
+ 
+-	/* Prepare arguments for the the tracer func */
++	/* Prepare arguments for the tracer func */
+ 	sub	x0, x30, #AARCH64_INSN_SIZE		// ip (callsite's BL insn)
+ 	mov	x1, x9					// parent_ip (callsite's LR)
+ 	mov	x3, sp					// regs
+diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+index a6030913cd58..00bdd1fa8151 100644
+--- a/arch/arm64/kernel/entry.S
++++ b/arch/arm64/kernel/entry.S
+@@ -547,7 +547,7 @@ SYM_CODE_START_LOCAL(__bad_stack)
+ 	mrs	x0, tpidrro_el0
  
  	/*
--	 * Unconditionally reserve the entire fisrt 1M, see comment in
-+	 * Unconditionally reserve the entire first 1M, see comment in
- 	 * setup_arch().
+-	 * Store the original GPRs to the new stack. The orginal SP (minus
++	 * Store the original GPRs to the new stack. The original SP (minus
+ 	 * PT_REGS_SIZE) was stashed in tpidr_el0 by kernel_ventry.
  	 */
- 	memblock_reserve(0, SZ_1M);
-diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
-index b6830554ff69..72af496a160c 100644
---- a/arch/x86/xen/mmu_pv.c
-+++ b/arch/x86/xen/mmu_pv.c
-@@ -34,7 +34,7 @@
-  * would need to validate the whole pagetable before going on.
-  * Naturally, this is quite slow.  The solution is to "pin" a
-  * pagetable, which enforces all the constraints on the pagetable even
-- * when it is not actively in use.  This menas that Xen can be assured
-+ * when it is not actively in use.  This means that Xen can be assured
-  * that it is still valid when you do load it into %cr3, and doesn't
-  * need to revalidate it.
+ 	sub	sp, sp, #PT_REGS_SIZE
+diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
+index a650f5e11fc5..6e00b39059ff 100644
+--- a/arch/arm64/kernel/ftrace.c
++++ b/arch/arm64/kernel/ftrace.c
+@@ -423,7 +423,7 @@ int ftrace_make_nop(struct module *mod, struct dyn_ftrace *rec,
+ 		return ret;
+ 
+ 	/*
+-	 * When using mcount, callsites in modules may have been initalized to
++	 * When using mcount, callsites in modules may have been initialized to
+ 	 * call an arbitrary module PLT (which redirects to the _mcount stub)
+ 	 * rather than the ftrace PLT we'll use at runtime (which redirects to
+ 	 * the ftrace trampoline). We can ignore the old PLT when initializing
+diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+index 078910db77a4..36721a7e7855 100644
+--- a/arch/arm64/kernel/machine_kexec.c
++++ b/arch/arm64/kernel/machine_kexec.c
+@@ -296,7 +296,7 @@ void crash_post_resume(void)
+  * marked as Reserved as memory was allocated via memblock_reserve().
   *
+  * In hibernation, the pages which are Reserved and yet "nosave" are excluded
+- * from the hibernation iamge. crash_is_nosave() does thich check for crash
++ * from the hibernation image. crash_is_nosave() does this check for crash
+  * dump kernel and will reduce the total size of hibernation image.
+  */
+ 
+diff --git a/arch/arm64/kernel/probes/uprobes.c b/arch/arm64/kernel/probes/uprobes.c
+index d49aef2657cd..5016f7f681c0 100644
+--- a/arch/arm64/kernel/probes/uprobes.c
++++ b/arch/arm64/kernel/probes/uprobes.c
+@@ -122,7 +122,7 @@ void arch_uprobe_abort_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ 	struct uprobe_task *utask = current->utask;
+ 
+ 	/*
+-	 * Task has received a fatal signal, so reset back to probbed
++	 * Task has received a fatal signal, so reset back to probed
+ 	 * address.
+ 	 */
+ 	instruction_pointer_set(regs, utask->vaddr);
+diff --git a/arch/arm64/kernel/sdei.c b/arch/arm64/kernel/sdei.c
+index 255d12f881c2..931f317a9ffa 100644
+--- a/arch/arm64/kernel/sdei.c
++++ b/arch/arm64/kernel/sdei.c
+@@ -206,7 +206,7 @@ unsigned long sdei_arch_get_entry_point(int conduit)
+ /*
+  * do_sdei_event() returns one of:
+  *  SDEI_EV_HANDLED -  success, return to the interrupted context.
+- *  SDEI_EV_FAILED  -  failure, return this error code to firmare.
++ *  SDEI_EV_FAILED  -  failure, return this error code to firmware.
+  *  virtual-address -  success, return to this address.
+  */
+ unsigned long __kprobes do_sdei_event(struct pt_regs *regs,
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index defbab84e9e5..8b8e1320033b 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -351,7 +351,7 @@ void arch_cpuhp_cleanup_dead_cpu(unsigned int cpu)
+ 
+ 	/*
+ 	 * Now that the dying CPU is beyond the point of no return w.r.t.
+-	 * in-kernel synchronisation, try to get the firwmare to help us to
++	 * in-kernel synchronisation, try to get the firmware to help us to
+ 	 * verify that it has really left the kernel before we consider
+ 	 * clobbering anything it might still be using.
+ 	 */
+diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+index 215e6d7f2df8..e76c71c54c8c 100644
+--- a/arch/arm64/kernel/traps.c
++++ b/arch/arm64/kernel/traps.c
+@@ -897,7 +897,7 @@ void __noreturn panic_bad_stack(struct pt_regs *regs, unsigned long esr, unsigne
+ 	__show_regs(regs);
+ 
+ 	/*
+-	 * We use nmi_panic to limit the potential for recusive overflows, and
++	 * We use nmi_panic to limit the potential for recursive overflows, and
+ 	 * to get a better stack trace.
+ 	 */
+ 	nmi_panic(NULL, "kernel stack overflow");
+diff --git a/arch/arm64/kvm/arch_timer.c b/arch/arm64/kvm/arch_timer.c
+index 13ba691b848f..ded8063b8813 100644
+--- a/arch/arm64/kvm/arch_timer.c
++++ b/arch/arm64/kvm/arch_timer.c
+@@ -746,7 +746,7 @@ static void kvm_timer_vcpu_load_nested_switch(struct kvm_vcpu *vcpu,
+ 		WARN_ON_ONCE(ret);
+ 
+ 		/*
+-		 * The virtual offset behaviour is "interresting", as it
++		 * The virtual offset behaviour is "interesting", as it
+ 		 * always applies when HCR_EL2.E2H==0, but only when
+ 		 * accessed from EL1 when HCR_EL2.E2H==1. So make sure we
+ 		 * track E2H when putting the HV timer in "direct" mode.
+diff --git a/arch/arm64/kvm/fpsimd.c b/arch/arm64/kvm/fpsimd.c
+index 8c1d0d4853df..571cf6eef1e1 100644
+--- a/arch/arm64/kvm/fpsimd.c
++++ b/arch/arm64/kvm/fpsimd.c
+@@ -117,7 +117,7 @@ void kvm_arch_vcpu_load_fp(struct kvm_vcpu *vcpu)
+ }
+ 
+ /*
+- * Called just before entering the guest once we are no longer preemptable
++ * Called just before entering the guest once we are no longer preemptible
+  * and interrupts are disabled. If we have managed to run anything using
+  * FP while we were preemptible (such as off the back of an interrupt),
+  * then neither the host nor the guest own the FP hardware (and it was the
+diff --git a/arch/arm64/kvm/hyp/nvhe/host.S b/arch/arm64/kvm/hyp/nvhe/host.S
+index 7693a6757cd7..135cfb294ee5 100644
+--- a/arch/arm64/kvm/hyp/nvhe/host.S
++++ b/arch/arm64/kvm/hyp/nvhe/host.S
+@@ -110,7 +110,7 @@ SYM_FUNC_END(__host_enter)
+  * 				  u64 elr, u64 par);
+  */
+ SYM_FUNC_START(__hyp_do_panic)
+-	/* Prepare and exit to the host's panic funciton. */
++	/* Prepare and exit to the host's panic function. */
+ 	mov	lr, #(PSR_F_BIT | PSR_I_BIT | PSR_A_BIT | PSR_D_BIT |\
+ 		      PSR_MODE_EL1h)
+ 	msr	spsr_el2, lr
+diff --git a/arch/arm64/kvm/hyp/nvhe/mm.c b/arch/arm64/kvm/hyp/nvhe/mm.c
+index 65a7a186d7b2..daf91a7989d7 100644
+--- a/arch/arm64/kvm/hyp/nvhe/mm.c
++++ b/arch/arm64/kvm/hyp/nvhe/mm.c
+@@ -155,7 +155,7 @@ int hyp_back_vmemmap(phys_addr_t back)
+ 		start = hyp_memory[i].base;
+ 		start = ALIGN_DOWN((u64)hyp_phys_to_page(start), PAGE_SIZE);
+ 		/*
+-		 * The begining of the hyp_vmemmap region for the current
++		 * The beginning of the hyp_vmemmap region for the current
+ 		 * memblock may already be backed by the page backing the end
+ 		 * the previous region, so avoid mapping it twice.
+ 		 */
+@@ -408,7 +408,7 @@ static void *admit_host_page(void *arg)
+ 	return pop_hyp_memcache(host_mc, hyp_phys_to_virt);
+ }
+ 
+-/* Refill our local memcache by poping pages from the one provided by the host. */
++/* Refill our local memcache by popping pages from the one provided by the host. */
+ int refill_memcache(struct kvm_hyp_memcache *mc, unsigned long min_pages,
+ 		    struct kvm_hyp_memcache *host_mc)
+ {
+diff --git a/arch/arm64/kvm/inject_fault.c b/arch/arm64/kvm/inject_fault.c
+index 0bd93a5f21ce..a640e839848e 100644
+--- a/arch/arm64/kvm/inject_fault.c
++++ b/arch/arm64/kvm/inject_fault.c
+@@ -134,7 +134,7 @@ static void inject_abt32(struct kvm_vcpu *vcpu, bool is_pabt, u32 addr)
+ 	if (vcpu_read_sys_reg(vcpu, TCR_EL1) & TTBCR_EAE) {
+ 		fsr = DFSR_LPAE | DFSR_FSC_EXTABT_LPAE;
+ 	} else {
+-		/* no need to shuffle FS[4] into DFSR[10] as its 0 */
++		/* no need to shuffle FS[4] into DFSR[10] as it's 0 */
+ 		fsr = DFSR_FSC_EXTABT_nLPAE;
+ 	}
+ 
+diff --git a/arch/arm64/kvm/vgic/vgic-init.c b/arch/arm64/kvm/vgic/vgic-init.c
+index c8c3cb812783..a0a9badaa91c 100644
+--- a/arch/arm64/kvm/vgic/vgic-init.c
++++ b/arch/arm64/kvm/vgic/vgic-init.c
+@@ -309,7 +309,7 @@ int vgic_init(struct kvm *kvm)
+ 		vgic_lpi_translation_cache_init(kvm);
+ 
+ 	/*
+-	 * If we have GICv4.1 enabled, unconditionnaly request enable the
++	 * If we have GICv4.1 enabled, unconditionally request enable the
+ 	 * v4 support so that we get HW-accelerated vSGIs. Otherwise, only
+ 	 * enable it if we present a virtual ITS to the guest.
+ 	 */
+diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
+index 2dad2d095160..39d8c15202e7 100644
+--- a/arch/arm64/kvm/vgic/vgic-its.c
++++ b/arch/arm64/kvm/vgic/vgic-its.c
+@@ -1337,8 +1337,8 @@ static int vgic_its_cmd_handle_inv(struct kvm *kvm, struct vgic_its *its,
+ }
+ 
+ /**
+- * vgic_its_invall - invalidate all LPIs targetting a given vcpu
+- * @vcpu: the vcpu for which the RD is targetted by an invalidation
++ * vgic_its_invall - invalidate all LPIs targeting a given vcpu
++ * @vcpu: the vcpu for which the RD is targeted by an invalidation
+  *
+  * Contrary to the INVALL command, this targets a RD instead of a
+  * collection, and we don't need to hold the its_lock, since no ITS is
 -- 
 2.34.1
 
