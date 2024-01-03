@@ -1,243 +1,104 @@
-Return-Path: <linux-kernel+bounces-15615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67C44822EE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:46:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F608822EE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:46:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCCA81F22132
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:46:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B792D285825
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E980C19BCA;
-	Wed,  3 Jan 2024 13:46:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79A9B1A58B;
+	Wed,  3 Jan 2024 13:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IAR3kDv4"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YjxHSvjG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A909119BBB
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:46:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704289567; x=1735825567;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wo4vXKNhQeRIYYDB4t1oeYbbO1FCym44pBdQ5gtEaKU=;
-  b=IAR3kDv4A8HUOgabeSbaCuidecnE/GbBjB2N2h17PCFuLEkxNeQWWFEj
-   qUUjsIR9+SkvGJsrPjV+iZ3nOwQSThiwkuvOvxmtwAOQ+61cDivnWapx0
-   cA+l/sdyaw7dTUNlxV3qNCgEYgol2v3wpV+28VmCGhIFB6mcd60avK5hT
-   JnnDCLqF4vyhcO5CmUyXrIAKI6kP/rvY/lglQvWsXjIL0UQrdf2ebOBMd
-   NtMo3kr4P/tvqDHRHICb3FeBYeQ29xu/FnW5Isv1vx2wafE0is52fq4eg
-   w4oxwYqYVVLwWqEpA9jlrkrl/nUjhsW1WlVIqY11sdcFl6aAupOzlYJSc
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="395885012"
-X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
-   d="scan'208";a="395885012"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 05:46:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="923542104"
-X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
-   d="scan'208";a="923542104"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Jan 2024 05:46:03 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rL1ZJ-000M8m-0u;
-	Wed, 03 Jan 2024 13:46:01 +0000
-Date: Wed, 3 Jan 2024 21:45:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kairui Song <ryncsn@gmail.com>, linux-mm@kvack.org
-Cc: oe-kbuild-all@lists.linux.dev,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Chris Li <chrisl@kernel.org>, "Huang, Ying" <ying.huang@intel.com>,
-	Hugh Dickins <hughd@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Michal Hocko <mhocko@suse.com>, Yosry Ahmed <yosryahmed@google.com>,
-	David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
-	Kairui Song <kasong@tencent.com>
-Subject: Re: [PATCH v2 9/9] mm/swap, shmem: use new swapin helper to skip
- readahead conditionally
-Message-ID: <202401032120.uWKybc56-lkp@intel.com>
-References: <20240102175338.62012-10-ryncsn@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F841A582
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4b756f2aebeso869735e0c.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 05:46:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704289599; x=1704894399; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=iXiRlPNEbOMVVR0getTtwBYLPyTAkQ6ZYT+RkbvnME4=;
+        b=YjxHSvjGY1WmGpBgHWL3O4uUe34GFdQ6d/PgeYtb0RmSVthtTVBlDl60iGqNJaxYXQ
+         RDrnmAlvQFgTvVmHFRYcd4aL6RYk55gKKMd07wukYKU64+ASE0aUbEXj9/Se7zPDlovQ
+         Rr/9jZMHjXyiaMUrtrcmMeGcUIWvB9oZYTt/d4gfvSVNuZh+FyLkTInRHCC1MHjfcTD1
+         BS9XAyLZPP72ISsRzz4PrGqGW2WmqrXMUnJ4h16vZ35H1qvtRXdt+Q855LoIWqXxuSVC
+         MJOcQOCJIZ15C/ab9vAV9peAHlYdBRHXtPJno/PlWKzeDtigs1Thso2rf32GqIfqcMNv
+         /qaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704289599; x=1704894399;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iXiRlPNEbOMVVR0getTtwBYLPyTAkQ6ZYT+RkbvnME4=;
+        b=T9CG8YJORQiYOXj2+9CM1YuEjbA+wY56LyyG2tKh0jRwMGcMu5pHKp/Iqox6I48ua3
+         kf3MeYN8maE4RBH2H8VdwyOwUoI4v/yqL37LHlzZGs/YaiJh9aaEPQ9vT2NH8GW9KLpd
+         icwDdQe1KrA+9msub5+k7Ad+76oKsJNUHfNpYbdbirml9oD6zg2EDuUPvdl73j6IY7CB
+         g56A36RK8QPhGVWIZHRwZ5FHjYcLKj5y3fhIzZoWTvGEJcTcpvqyH4ZvhJztXC6ZpAag
+         l3DLb43ylaaW+j1z1I/gmu4N2FH5zvkAi8MrNsWPEue6OTHvjl/BL0ZN36mQthyuqIBl
+         E9tQ==
+X-Gm-Message-State: AOJu0YyVvHlUK7MJNUUivK82JC4cMQyAO4KWSEQmJ6zZJyj7vZ1Tb+dm
+	GMtU4z51PUctTWThAb1UMU1nGi8HO20v5WLBJRQ5AT4MwHYY
+X-Google-Smtp-Source: AGHT+IEgfnCVZj94JzjLQStkiX9wHgHG/mXwwNgAsvE/FBRnThvT8RXXTntDQSJSN4Ws1kpDvtn6/ettoo/JiS+3/ZY=
+X-Received: by 2002:a05:6122:584:b0:4b6:dd06:f707 with SMTP id
+ i4-20020a056122058400b004b6dd06f707mr6623145vko.17.1704289599275; Wed, 03 Jan
+ 2024 05:46:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240102175338.62012-10-ryncsn@gmail.com>
+References: <20240103090241.164817-1-pierre.gondois@arm.com>
+ <CANpmjNPsBUJy6tkOdRSJyWrS9CMUOQhQyb7_hwmw68pjjiEDWQ@mail.gmail.com> <2f4a5ea1-daa2-4ede-bdc0-6692d7d52e8c@arm.com>
+In-Reply-To: <2f4a5ea1-daa2-4ede-bdc0-6692d7d52e8c@arm.com>
+From: Marco Elver <elver@google.com>
+Date: Wed, 3 Jan 2024 14:46:00 +0100
+Message-ID: <CANpmjNMqzYsSh-DSsdFz4D_Ad0sAgf9J1A6CBz4fEOXAS4ejjw@mail.gmail.com>
+Subject: Re: [PATCH] list: Add hlist_count_nodes()
+To: Pierre Gondois <pierre.gondois@arm.com>
+Cc: linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>, 
+	Lucas De Marchi <lucas.demarchi@intel.com>, Jani Nikula <jani.nikula@intel.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Kairui,
+On Wed, 3 Jan 2024 at 13:04, Pierre Gondois <pierre.gondois@arm.com> wrote:
+>
+> Hello Marco,
+>
+> On 1/3/24 12:25, Marco Elver wrote:
+> > On Wed, 3 Jan 2024 at 10:02, Pierre Gondois <pierre.gondois@arm.com> wrote:
+> >>
+> >> Add a function to count nodes in a hlist. hlist_count_nodes()
+> >> is similar to list_count_nodes().
+> >>
+> >> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+> >
+> > Is this patch part of another patch series? As-is, this will be dead
+> > code, and there's no guarantee someone will just go and delete it in
+> > future. Although this function looks useful, we also should avoid
+> > adding new dead code.
+>
+> The function is indeed not used in the project right now. I needed
+> it for a private module. If it helps integrating the function and
+> not make it dead code, maybe I could add usages at the following
+> places:
+> - drivers/gpu/drm/drm_hashtab.c::print_binder_node_nilocked()
+> - drivers/md/bcache/sysfs.c::bch_cache_max_chain()
 
-kernel test robot noticed the following build errors:
+If this function allows to simplify these other places, by all means
+go ahead. That would look a lot better than having an unused function.
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on next-20240103]
-[cannot apply to linus/master v6.7-rc8]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Kairui-Song/mm-swapfile-c-add-back-some-comment/20240103-015650
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20240102175338.62012-10-ryncsn%40gmail.com
-patch subject: [PATCH v2 9/9] mm/swap, shmem: use new swapin helper to skip readahead conditionally
-config: i386-randconfig-014-20240103 (https://download.01.org/0day-ci/archive/20240103/202401032120.uWKybc56-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240103/202401032120.uWKybc56-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401032120.uWKybc56-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   mm/shmem.c: In function 'shmem_swapin_folio':
->> mm/shmem.c:1864:8: error: assignment from incompatible pointer type [-Werror=incompatible-pointer-types]
-     folio = swapin_entry_mpol(swap, gfp, mpol, ilx, &cache_result);
-           ^
-   cc1: some warnings being treated as errors
-
-
-vim +1864 mm/shmem.c
-
-  1826	
-  1827	/*
-  1828	 * Swap in the folio pointed to by *foliop.
-  1829	 * Caller has to make sure that *foliop contains a valid swapped folio.
-  1830	 * Returns 0 and the folio in foliop if success. On failure, returns the
-  1831	 * error code and NULL in *foliop.
-  1832	 */
-  1833	static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
-  1834				     struct folio **foliop, enum sgp_type sgp,
-  1835				     gfp_t gfp, struct mm_struct *fault_mm,
-  1836				     vm_fault_t *fault_type)
-  1837	{
-  1838		struct address_space *mapping = inode->i_mapping;
-  1839		struct shmem_inode_info *info = SHMEM_I(inode);
-  1840		enum swap_cache_result cache_result;
-  1841		struct swap_info_struct *si;
-  1842		struct folio *folio = NULL;
-  1843		struct mempolicy *mpol;
-  1844		swp_entry_t swap;
-  1845		pgoff_t ilx;
-  1846		int error;
-  1847	
-  1848		VM_BUG_ON(!*foliop || !xa_is_value(*foliop));
-  1849		swap = radix_to_swp_entry(*foliop);
-  1850		*foliop = NULL;
-  1851	
-  1852		if (is_poisoned_swp_entry(swap))
-  1853			return -EIO;
-  1854	
-  1855		si = get_swap_device(swap);
-  1856		if (!si) {
-  1857			if (!shmem_confirm_swap(mapping, index, swap))
-  1858				return -EEXIST;
-  1859			else
-  1860				return -EINVAL;
-  1861		}
-  1862	
-  1863		mpol = shmem_get_pgoff_policy(info, index, 0, &ilx);
-> 1864		folio = swapin_entry_mpol(swap, gfp, mpol, ilx, &cache_result);
-  1865		mpol_cond_put(mpol);
-  1866	
-  1867		if (!folio) {
-  1868			error = -ENOMEM;
-  1869			goto failed;
-  1870		}
-  1871		if (cache_result != SWAP_CACHE_HIT) {
-  1872			if (fault_type) {
-  1873				*fault_type |= VM_FAULT_MAJOR;
-  1874				count_vm_event(PGMAJFAULT);
-  1875				count_memcg_event_mm(fault_mm, PGMAJFAULT);
-  1876			}
-  1877		}
-  1878	
-  1879		/* We have to do this with folio locked to prevent races */
-  1880		folio_lock(folio);
-  1881		if (cache_result != SWAP_CACHE_BYPASS) {
-  1882			/* With cache bypass, folio is new allocated, sync, and not in cache */
-  1883			if (!folio_test_swapcache(folio) || folio->swap.val != swap.val) {
-  1884				error = -EEXIST;
-  1885				goto unlock;
-  1886			}
-  1887			if (!folio_test_uptodate(folio)) {
-  1888				error = -EIO;
-  1889				goto failed;
-  1890			}
-  1891			folio_wait_writeback(folio);
-  1892		}
-  1893		if (!shmem_confirm_swap(mapping, index, swap)) {
-  1894			error = -EEXIST;
-  1895			goto unlock;
-  1896		}
-  1897	
-  1898		/*
-  1899		 * Some architectures may have to restore extra metadata to the
-  1900		 * folio after reading from swap.
-  1901		 */
-  1902		arch_swap_restore(swap, folio);
-  1903	
-  1904		/* With cache bypass, folio is new allocated and always respect gfp flags */
-  1905		if (cache_result != SWAP_CACHE_BYPASS && shmem_should_replace_folio(folio, gfp)) {
-  1906			error = shmem_replace_folio(&folio, gfp, info, index);
-  1907			if (error)
-  1908				goto failed;
-  1909		}
-  1910	
-  1911		/*
-  1912		 * The expected value checking below should be enough to ensure
-  1913		 * only one up-to-date swapin success. swap_free() is called after
-  1914		 * this, so the entry can't be reused. As long as the mapping still
-  1915		 * has the old entry value, it's never swapped in or modified.
-  1916		 */
-  1917		error = shmem_add_to_page_cache(folio, mapping, index,
-  1918						swp_to_radix_entry(swap), gfp);
-  1919		if (error)
-  1920			goto failed;
-  1921	
-  1922		shmem_recalc_inode(inode, 0, -1);
-  1923	
-  1924		if (sgp == SGP_WRITE)
-  1925			folio_mark_accessed(folio);
-  1926	
-  1927		if (cache_result != SWAP_CACHE_BYPASS)
-  1928			delete_from_swap_cache(folio);
-  1929		folio_mark_dirty(folio);
-  1930		swap_free(swap);
-  1931		put_swap_device(si);
-  1932	
-  1933		*foliop = folio;
-  1934		return 0;
-  1935	failed:
-  1936		if (!shmem_confirm_swap(mapping, index, swap))
-  1937			error = -EEXIST;
-  1938		if (error == -EIO)
-  1939			shmem_set_folio_swapin_error(inode, index, folio, swap);
-  1940	unlock:
-  1941		if (folio) {
-  1942			folio_unlock(folio);
-  1943			folio_put(folio);
-  1944		}
-  1945		put_swap_device(si);
-  1946	
-  1947		return error;
-  1948	}
-  1949	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+-- Marco
 
