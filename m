@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-15757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5276823154
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8518823153
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:33:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D098283F99
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:33:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24DE22828A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F0B1CA86;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BEDD1CA89;
 	Wed,  3 Jan 2024 16:33:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PU+IGV1A"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hBVV5zNH"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0191CA85
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 16:32:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8F61CA81
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 16:32:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704299578;
+	s=mimecast20190719; t=1704299576;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DNxCEyFjygCY2k/IIyJiEePHcERbzG2CmUQITkDIUjg=;
-	b=PU+IGV1A75Te7BOue3fGa2OYJzVfSwDipPgbMxLbG15Q00ipprHVKpNk/n8vKNzhyejgkl
-	Pf28c2zPk4toDYfh9E7AgPRsVTLJOkDWYDf020SUhd2MgujoGoeb4lCgavpJjlr4Gwtaq/
-	h1QJWrxkWuETPbIoJFywvqYVNKL81bo=
+	bh=Zrl9wQMm72/9gkP6lQrsUXatEy2G8nXg2opkxwrV5kI=;
+	b=hBVV5zNH5bcUvVUr78BN0rJ6sSpsIXkfNcbBRCLsNKhYL50kx6xLl77Z2FS17lPx80BLSp
+	k4hh6FrYR9NFcRXDNSpbL9v3IfrhE0HdOA5CKpnqMOmuj1SliVtddEhzipx0/A2fybV3UM
+	JRawnwTuE7a4u0RBuet29qmiYTYNkgo=
 Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
  [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-296-kibDYC4qOfKn_voFnZA2QA-1; Wed, 03 Jan 2024 11:32:49 -0500
-X-MC-Unique: kibDYC4qOfKn_voFnZA2QA-1
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1d3eaaaa5a1so4722205ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 08:32:49 -0800 (PST)
+ us-mta-192-tx-pRf50NYy0reYBYCI21g-1; Wed, 03 Jan 2024 11:32:55 -0500
+X-MC-Unique: tx-pRf50NYy0reYBYCI21g-1
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1d4bc42624eso23481355ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 08:32:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704299568; x=1704904368;
+        d=1e100.net; s=20230601; t=1704299574; x=1704904374;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DNxCEyFjygCY2k/IIyJiEePHcERbzG2CmUQITkDIUjg=;
-        b=T8kHsp6kg+9/vutkyFVIxuM6L4YmsmNIEOBvYwbkMKqu78h7bI3wDSrPj2Fjh+eZpR
-         ulw6I7xtJnCSjXExCDzSZ4Gyji21d+9N9TN7crMhvogWY5cqVMLRVpSR4k/iAp/c8IMG
-         jd6dp3fPR4kEVSneyAuZn0ABCXMJREO7QIMrQloz1hGt+zYwle8nWTS8TNNJJ2zjbgUP
-         dUVBOBVRxRCzHlLB6MJqWSRJQLMcG9utKKPoYNRMV+QCV57h/QSiBaMvhNG1rFZDevwF
-         5C9YVapMMb87QqS0G3P3RCsSSrBxi526pwK7jJ6bMVHObmbv25mVWY6BCRUV/3atVknh
-         IY0g==
-X-Gm-Message-State: AOJu0YyC7GdUhSPUJg4Mq9lafk/b4uhyHu780RQHRl5BPZk5jSLFDi1u
-	ry6nPfjMojzb/05xJTGxZECqfSlIUhZX9X7EhRpiZ8c60XQrThpXW47QwK2IujDEfm/gqfvr8LV
-	LY2b3YsWSap4khfDdH74rFIjiJWozl2pu
-X-Received: by 2002:a17:903:cb:b0:1d4:94f7:b349 with SMTP id x11-20020a17090300cb00b001d494f7b349mr1393333plc.54.1704299568593;
-        Wed, 03 Jan 2024 08:32:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGRh2QWtQD29WPJYeQ0K2F3ztPLRvH+XRo73kfZaTuSm2TpoOzI5zg6Q9eJt87gGsc7c2/5DA==
-X-Received: by 2002:a17:903:cb:b0:1d4:94f7:b349 with SMTP id x11-20020a17090300cb00b001d494f7b349mr1393323plc.54.1704299568269;
-        Wed, 03 Jan 2024 08:32:48 -0800 (PST)
+        bh=Zrl9wQMm72/9gkP6lQrsUXatEy2G8nXg2opkxwrV5kI=;
+        b=Uf800widcdWGM/e8KiMavEDaacqWQ3XPu971UpDSmGrx6Wf4sSellj+mVv9+iWZSYF
+         VeIFiBxQkydsobCv4OIqYxCt8HTmBGjFMpTqKwysmlZMlhTsU1tXACfCTeYyF4CoMQ0t
+         VXeLd5ixzU6VA6F02+dJpz7hVLI5sYjiWlENo0msmtciwuPQbqeDeCnBPh7WmotGYtZk
+         G29BjQM6jQyZMkDX4niN6LdrUZJrRhfDqjL7VyY7XHFTMv7t/sxcFN5GVLu5hCJMMbAa
+         EjvYV5d09p4T/wp+vE/Vo7V8VXLF3v1UoY7K4OnlhWrtzFyQIZg/gsy0MMrRrX4kvN/k
+         PrdA==
+X-Gm-Message-State: AOJu0Yw65FAXAxFTS0xqc/sF3MqHdfrakF2ZU5iF7ylzDHEdbViPkJvZ
+	xLCZsrddxsEKtxhlXc9w81218ZHKIzM6+qAq29ZlyGH10serR82uU+qp66q4/mtuAlE7cgrAK81
+	Nnz3MkoJ2ZBikk6E3UZA8MFeapVey/EPJPZohmiKg
+X-Received: by 2002:a17:902:b213:b0:1d4:3dfd:7e31 with SMTP id t19-20020a170902b21300b001d43dfd7e31mr20225789plr.139.1704299573989;
+        Wed, 03 Jan 2024 08:32:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFuxxr3jzBnWJLb5k5Ijiau2Uo52Uln5XHUYl8Xl2mWgyNYjwzpHX8ACzhU950ngT5irx/v3w==
+X-Received: by 2002:a17:902:b213:b0:1d4:3dfd:7e31 with SMTP id t19-20020a170902b21300b001d43dfd7e31mr20225778plr.139.1704299573733;
+        Wed, 03 Jan 2024 08:32:53 -0800 (PST)
 Received: from localhost.localdomain ([2804:431:c7ec:911:6911:ca60:846:eb46])
-        by smtp.gmail.com with ESMTPSA id e12-20020a170902b78c00b001cfca7b8ee7sm23930425pls.99.2024.01.03.08.32.43
+        by smtp.gmail.com with ESMTPSA id e12-20020a170902b78c00b001cfca7b8ee7sm23930425pls.99.2024.01.03.08.32.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 08:32:47 -0800 (PST)
+        Wed, 03 Jan 2024 08:32:53 -0800 (PST)
 From: Leonardo Bras <leobras@redhat.com>
 To: Will Deacon <will@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -79,9 +79,9 @@ To: Will Deacon <will@kernel.org>,
 	Andrzej Hajda <andrzej.hajda@intel.com>
 Cc: linux-kernel@vger.kernel.org,
 	linux-riscv@lists.infradead.org
-Subject: [PATCH v1 3/5] riscv/atomic.h : Deduplicate arch_atomic.*
-Date: Wed,  3 Jan 2024 13:32:01 -0300
-Message-ID: <20240103163203.72768-5-leobras@redhat.com>
+Subject: [PATCH v1 4/5] riscv/cmpxchg: Implement cmpxchg for variables of size 1 and 2
+Date: Wed,  3 Jan 2024 13:32:02 -0300
+Message-ID: <20240103163203.72768-6-leobras@redhat.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240103163203.72768-2-leobras@redhat.com>
 References: <20240103163203.72768-2-leobras@redhat.com>
@@ -93,255 +93,72 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some functions use mostly the same asm for 32-bit and 64-bit versions.
+cmpxchg for variables of size 1-byte and 2-bytes is not yet available for
+riscv, even though its present in other architectures such as arm64 and
+x86. This could lead to not being able to implement some locking mechanisms
+or requiring some rework to make it work properly.
 
-Make a macro that is generic enough and avoid code duplication.
-
-(This did not cause any change in generated asm)
+Implement 1-byte and 2-bytes cmpxchg in order to achieve parity with other
+architectures.
 
 Signed-off-by: Leonardo Bras <leobras@redhat.com>
-Reviewed-by: Guo Ren <guoren@kernel.org>
-Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
 Tested-by: Guo Ren <guoren@kernel.org>
 ---
- arch/riscv/include/asm/atomic.h | 164 +++++++++++++++-----------------
- 1 file changed, 76 insertions(+), 88 deletions(-)
+ arch/riscv/include/asm/cmpxchg.h | 34 ++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/arch/riscv/include/asm/atomic.h b/arch/riscv/include/asm/atomic.h
-index f5dfef6c2153f..80cca7ac16fd3 100644
---- a/arch/riscv/include/asm/atomic.h
-+++ b/arch/riscv/include/asm/atomic.h
-@@ -196,22 +196,28 @@ ATOMIC_OPS(xor, xor, i)
- #undef ATOMIC_FETCH_OP
- #undef ATOMIC_OP_RETURN
+diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
+index e3e0ac7ba061b..ac9d0eeb74e67 100644
+--- a/arch/riscv/include/asm/cmpxchg.h
++++ b/arch/riscv/include/asm/cmpxchg.h
+@@ -72,6 +72,35 @@
+  * indicated by comparing RETURN with OLD.
+  */
  
-+#define _arch_atomic_fetch_add_unless(_prev, _rc, counter, _a, _u, sfx)	\
++#define __arch_cmpxchg_masked(sc_sfx, prepend, append, r, p, o, n)	\
 +({									\
++	u32 *__ptr32b = (u32 *)((ulong)(p) & ~0x3);			\
++	ulong __s = ((ulong)(p) & (0x4 - sizeof(*p))) * BITS_PER_BYTE;	\
++	ulong __mask = GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)	\
++			<< __s;						\
++	ulong __newx = (ulong)(n) << __s;				\
++	ulong __oldx = (ulong)(o) << __s;				\
++	ulong __retx;							\
++	ulong __rc;							\
++									\
 +	__asm__ __volatile__ (						\
-+		"0:	lr." sfx "     %[p],  %[c]\n"			\
-+		"	beq	       %[p],  %[u], 1f\n"		\
-+		"	add            %[rc], %[p], %[a]\n"		\
-+		"	sc." sfx ".rl  %[rc], %[rc], %[c]\n"		\
-+		"	bnez           %[rc], 0b\n"			\
-+		"	fence          rw, rw\n"			\
++		prepend							\
++		"0:	lr.w %0, %2\n"					\
++		"	and  %1, %0, %z5\n"				\
++		"	bne  %1, %z3, 1f\n"				\
++		"	and  %1, %0, %z6\n"				\
++		"	or   %1, %1, %z4\n"				\
++		"	sc.w" sc_sfx " %1, %1, %2\n"			\
++		"	bnez %1, 0b\n"					\
++		append							\
 +		"1:\n"							\
-+		: [p]"=&r" (_prev), [rc]"=&r" (_rc), [c]"+A" (counter)	\
-+		: [a]"r" (_a), [u]"r" (_u)				\
++		: "=&r" (__retx), "=&r" (__rc), "+A" (*(__ptr32b))	\
++		: "rJ" ((long)__oldx), "rJ" (__newx),			\
++		  "rJ" (__mask), "rJ" (~__mask)				\
 +		: "memory");						\
++									\
++	r = (__typeof__(*(p)))((__retx & __mask) >> __s);		\
 +})
-+
- /* This is required to provide a full barrier on success. */
- static __always_inline int arch_atomic_fetch_add_unless(atomic_t *v, int a, int u)
- {
-        int prev, rc;
  
--	__asm__ __volatile__ (
--		"0:	lr.w     %[p],  %[c]\n"
--		"	beq      %[p],  %[u], 1f\n"
--		"	add      %[rc], %[p], %[a]\n"
--		"	sc.w.rl  %[rc], %[rc], %[c]\n"
--		"	bnez     %[rc], 0b\n"
--		"	fence    rw, rw\n"
--		"1:\n"
--		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
--		: [a]"r" (a), [u]"r" (u)
--		: "memory");
-+	_arch_atomic_fetch_add_unless(prev, rc, v->counter, a, u, "w");
-+
- 	return prev;
- }
- #define arch_atomic_fetch_add_unless arch_atomic_fetch_add_unless
-@@ -222,77 +228,86 @@ static __always_inline s64 arch_atomic64_fetch_add_unless(atomic64_t *v, s64 a,
-        s64 prev;
-        long rc;
- 
--	__asm__ __volatile__ (
--		"0:	lr.d     %[p],  %[c]\n"
--		"	beq      %[p],  %[u], 1f\n"
--		"	add      %[rc], %[p], %[a]\n"
--		"	sc.d.rl  %[rc], %[rc], %[c]\n"
--		"	bnez     %[rc], 0b\n"
--		"	fence    rw, rw\n"
--		"1:\n"
--		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
--		: [a]"r" (a), [u]"r" (u)
--		: "memory");
-+	_arch_atomic_fetch_add_unless(prev, rc, v->counter, a, u, "d");
-+
- 	return prev;
- }
- #define arch_atomic64_fetch_add_unless arch_atomic64_fetch_add_unless
- #endif
- 
-+#define _arch_atomic_inc_unless_negative(_prev, _rc, counter, sfx)	\
-+({									\
-+	__asm__ __volatile__ (						\
-+		"0:	lr." sfx "      %[p],  %[c]\n"			\
-+		"	bltz            %[p],  1f\n"			\
-+		"	addi            %[rc], %[p], 1\n"		\
-+		"	sc." sfx ".rl   %[rc], %[rc], %[c]\n"		\
-+		"	bnez            %[rc], 0b\n"			\
-+		"	fence           rw, rw\n"			\
-+		"1:\n"							\
-+		: [p]"=&r" (_prev), [rc]"=&r" (_rc), [c]"+A" (counter)	\
-+		:							\
-+		: "memory");						\
-+})
-+
- static __always_inline bool arch_atomic_inc_unless_negative(atomic_t *v)
- {
- 	int prev, rc;
- 
--	__asm__ __volatile__ (
--		"0:	lr.w      %[p],  %[c]\n"
--		"	bltz      %[p],  1f\n"
--		"	addi      %[rc], %[p], 1\n"
--		"	sc.w.rl   %[rc], %[rc], %[c]\n"
--		"	bnez      %[rc], 0b\n"
--		"	fence     rw, rw\n"
--		"1:\n"
--		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
--		:
--		: "memory");
-+	_arch_atomic_inc_unless_negative(prev, rc, v->counter, "w");
-+
- 	return !(prev < 0);
- }
- 
- #define arch_atomic_inc_unless_negative arch_atomic_inc_unless_negative
- 
-+#define _arch_atomic_dec_unless_positive(_prev, _rc, counter, sfx)	\
-+({									\
-+	__asm__ __volatile__ (						\
-+		"0:	lr." sfx "      %[p],  %[c]\n"			\
-+		"	bgtz            %[p],  1f\n"			\
-+		"	addi            %[rc], %[p], -1\n"		\
-+		"	sc." sfx ".rl   %[rc], %[rc], %[c]\n"		\
-+		"	bnez            %[rc], 0b\n"			\
-+		"	fence           rw, rw\n"			\
-+		"1:\n"							\
-+		: [p]"=&r" (_prev), [rc]"=&r" (_rc), [c]"+A" (counter)	\
-+		:							\
-+		: "memory");						\
-+})
-+
- static __always_inline bool arch_atomic_dec_unless_positive(atomic_t *v)
- {
- 	int prev, rc;
- 
--	__asm__ __volatile__ (
--		"0:	lr.w      %[p],  %[c]\n"
--		"	bgtz      %[p],  1f\n"
--		"	addi      %[rc], %[p], -1\n"
--		"	sc.w.rl   %[rc], %[rc], %[c]\n"
--		"	bnez      %[rc], 0b\n"
--		"	fence     rw, rw\n"
--		"1:\n"
--		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
--		:
--		: "memory");
-+	_arch_atomic_dec_unless_positive(prev, rc, v->counter, "w");
-+
- 	return !(prev > 0);
- }
- 
- #define arch_atomic_dec_unless_positive arch_atomic_dec_unless_positive
- 
-+#define _arch_atomic_dec_if_positive(_prev, _rc, counter, sfx)		\
-+({									\
-+	__asm__ __volatile__ (						\
-+		"0:	lr." sfx "     %[p],  %[c]\n"			\
-+		"	addi           %[rc], %[p], -1\n"		\
-+		"	bltz           %[rc], 1f\n"			\
-+		"	sc." sfx ".rl  %[rc], %[rc], %[c]\n"		\
-+		"	bnez           %[rc], 0b\n"			\
-+		"	fence          rw, rw\n"			\
-+		"1:\n"							\
-+		: [p]"=&r" (_prev), [rc]"=&r" (_rc), [c]"+A" (counter)	\
-+		:							\
-+		: "memory");						\
-+})
-+
- static __always_inline int arch_atomic_dec_if_positive(atomic_t *v)
- {
-        int prev, rc;
- 
--	__asm__ __volatile__ (
--		"0:	lr.w     %[p],  %[c]\n"
--		"	addi     %[rc], %[p], -1\n"
--		"	bltz     %[rc], 1f\n"
--		"	sc.w.rl  %[rc], %[rc], %[c]\n"
--		"	bnez     %[rc], 0b\n"
--		"	fence    rw, rw\n"
--		"1:\n"
--		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
--		:
--		: "memory");
-+	_arch_atomic_dec_if_positive(prev, rc, v->counter, "w");
-+
- 	return prev - 1;
- }
- 
-@@ -304,17 +319,8 @@ static __always_inline bool arch_atomic64_inc_unless_negative(atomic64_t *v)
- 	s64 prev;
- 	long rc;
- 
--	__asm__ __volatile__ (
--		"0:	lr.d      %[p],  %[c]\n"
--		"	bltz      %[p],  1f\n"
--		"	addi      %[rc], %[p], 1\n"
--		"	sc.d.rl   %[rc], %[rc], %[c]\n"
--		"	bnez      %[rc], 0b\n"
--		"	fence     rw, rw\n"
--		"1:\n"
--		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
--		:
--		: "memory");
-+	_arch_atomic_inc_unless_negative(prev, rc, v->counter, "d");
-+
- 	return !(prev < 0);
- }
- 
-@@ -325,17 +331,8 @@ static __always_inline bool arch_atomic64_dec_unless_positive(atomic64_t *v)
- 	s64 prev;
- 	long rc;
- 
--	__asm__ __volatile__ (
--		"0:	lr.d      %[p],  %[c]\n"
--		"	bgtz      %[p],  1f\n"
--		"	addi      %[rc], %[p], -1\n"
--		"	sc.d.rl   %[rc], %[rc], %[c]\n"
--		"	bnez      %[rc], 0b\n"
--		"	fence     rw, rw\n"
--		"1:\n"
--		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
--		:
--		: "memory");
-+	_arch_atomic_dec_unless_positive(prev, rc, v->counter, "d");
-+
- 	return !(prev > 0);
- }
- 
-@@ -346,17 +343,8 @@ static __always_inline s64 arch_atomic64_dec_if_positive(atomic64_t *v)
-        s64 prev;
-        long rc;
- 
--	__asm__ __volatile__ (
--		"0:	lr.d     %[p],  %[c]\n"
--		"	addi      %[rc], %[p], -1\n"
--		"	bltz     %[rc], 1f\n"
--		"	sc.d.rl  %[rc], %[rc], %[c]\n"
--		"	bnez     %[rc], 0b\n"
--		"	fence    rw, rw\n"
--		"1:\n"
--		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
--		:
--		: "memory");
-+	_arch_atomic_dec_if_positive(prev, rc, v->counter, "d");
-+
- 	return prev - 1;
- }
- 
+ #define __arch_cmpxchg(lr_sfx, sc_sfx, prepend, append, r, p, co, o, n)	\
+ ({									\
+@@ -98,6 +127,11 @@
+ 	__typeof__(*(__ptr)) __ret;					\
+ 									\
+ 	switch (sizeof(*__ptr)) {					\
++	case 1:								\
++	case 2:								\
++		__arch_cmpxchg_masked(sc_sfx, prepend, append,		\
++					__ret, __ptr, __old, __new);	\
++		break;							\
+ 	case 4:								\
+ 		__arch_cmpxchg(".w", ".w" sc_sfx, prepend, append,	\
+ 				__ret, __ptr, (long), __old, __new);	\
 -- 
 2.43.0
 
