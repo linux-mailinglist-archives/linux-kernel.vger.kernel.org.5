@@ -1,104 +1,131 @@
-Return-Path: <linux-kernel+bounces-15616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F608822EE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:46:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3B8C822EE3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:48:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B792D285825
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:46:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66B56B20F93
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:48:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79A9B1A58B;
-	Wed,  3 Jan 2024 13:46:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 518DB19BC3;
+	Wed,  3 Jan 2024 13:48:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YjxHSvjG"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R3I4jmmK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F841A582
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4b756f2aebeso869735e0c.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 05:46:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704289599; x=1704894399; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=iXiRlPNEbOMVVR0getTtwBYLPyTAkQ6ZYT+RkbvnME4=;
-        b=YjxHSvjGY1WmGpBgHWL3O4uUe34GFdQ6d/PgeYtb0RmSVthtTVBlDl60iGqNJaxYXQ
-         RDrnmAlvQFgTvVmHFRYcd4aL6RYk55gKKMd07wukYKU64+ASE0aUbEXj9/Se7zPDlovQ
-         Rr/9jZMHjXyiaMUrtrcmMeGcUIWvB9oZYTt/d4gfvSVNuZh+FyLkTInRHCC1MHjfcTD1
-         BS9XAyLZPP72ISsRzz4PrGqGW2WmqrXMUnJ4h16vZ35H1qvtRXdt+Q855LoIWqXxuSVC
-         MJOcQOCJIZ15C/ab9vAV9peAHlYdBRHXtPJno/PlWKzeDtigs1Thso2rf32GqIfqcMNv
-         /qaQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16FD419BB1
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704289681;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jRyqnGTHgGZertwD5poNQmcnCT/WACtU9bt3gylthro=;
+	b=R3I4jmmKSWHM8rKMkWJ9Q0a5TCw7vnmkJqTqOarlMg/hpd7g41d3WgzJDswv5Yweu2fymv
+	hiFJtiABtIWiN3jkNp+6kh3N3lPtP0csRKw4LYr56SgDfE1+9s2TMCXlyKXoNCJKE8A47G
+	o2K0B6z50dXcwVfFI/0L0FEQZw/ic8U=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-425-DlXgOt7AMDOv09IRu313mQ-1; Wed, 03 Jan 2024 08:48:00 -0500
+X-MC-Unique: DlXgOt7AMDOv09IRu313mQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33677bbd570so7779094f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 05:48:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704289599; x=1704894399;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iXiRlPNEbOMVVR0getTtwBYLPyTAkQ6ZYT+RkbvnME4=;
-        b=T9CG8YJORQiYOXj2+9CM1YuEjbA+wY56LyyG2tKh0jRwMGcMu5pHKp/Iqox6I48ua3
-         kf3MeYN8maE4RBH2H8VdwyOwUoI4v/yqL37LHlzZGs/YaiJh9aaEPQ9vT2NH8GW9KLpd
-         icwDdQe1KrA+9msub5+k7Ad+76oKsJNUHfNpYbdbirml9oD6zg2EDuUPvdl73j6IY7CB
-         g56A36RK8QPhGVWIZHRwZ5FHjYcLKj5y3fhIzZoWTvGEJcTcpvqyH4ZvhJztXC6ZpAag
-         l3DLb43ylaaW+j1z1I/gmu4N2FH5zvkAi8MrNsWPEue6OTHvjl/BL0ZN36mQthyuqIBl
-         E9tQ==
-X-Gm-Message-State: AOJu0YyVvHlUK7MJNUUivK82JC4cMQyAO4KWSEQmJ6zZJyj7vZ1Tb+dm
-	GMtU4z51PUctTWThAb1UMU1nGi8HO20v5WLBJRQ5AT4MwHYY
-X-Google-Smtp-Source: AGHT+IEgfnCVZj94JzjLQStkiX9wHgHG/mXwwNgAsvE/FBRnThvT8RXXTntDQSJSN4Ws1kpDvtn6/ettoo/JiS+3/ZY=
-X-Received: by 2002:a05:6122:584:b0:4b6:dd06:f707 with SMTP id
- i4-20020a056122058400b004b6dd06f707mr6623145vko.17.1704289599275; Wed, 03 Jan
- 2024 05:46:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704289679; x=1704894479;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jRyqnGTHgGZertwD5poNQmcnCT/WACtU9bt3gylthro=;
+        b=i1V2e+J0tI3INxYxu1n3KvicTCI8j40RRYGO7gkvDfd4U71XKKGffMu8JFxBV7YKDS
+         sDMnsTLHqEhF+qSQAB+7Oi8LxKV/wUJ6WBroj7jvq0slhis0aGBryhbRkEo19UZmc7b1
+         S0XtZpvTKdd2bxO3CGawJHO5d9GnKghO0C3O2K3sID1IN4P9oq1b+jBRG8ajoMexXnBo
+         65j8l6hkhnrchzLR2WVJMC7pGha2S2F7CGNgtYoWIFqNZzVgMsRXzIYuATWjeP0lDJs4
+         rdlPheYuE8lJMVW/TslnjyJx0ARpeTfWuMnA0riVnM+mXgOWa6wzrOo1xGbSg1oGonDj
+         G5aQ==
+X-Gm-Message-State: AOJu0YwoYYQ/cosqEgEU2Pgej8JijHweUGPLc/I7ry26NrsYTq8O5nzF
+	z4bPqK7ScPgbpOy475Syqe56Vxlx/CVzLFwuKosxmvlTpMBF51BX+lx3SxlhLkK3aURne5Nxep+
+	xsjeMIQ/PJZy+7hV35FDo3PQ/103FZ8b0
+X-Received: by 2002:a7b:cd15:0:b0:40d:6f89:a839 with SMTP id f21-20020a7bcd15000000b0040d6f89a839mr4935096wmj.30.1704289679248;
+        Wed, 03 Jan 2024 05:47:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGtwMkdlJKtUdnR/VRnqV/Ady8X2AgcJ8cYnPeEu7tB5w0tgHAN2G/csQRBTUv3jDBfBN96hw==
+X-Received: by 2002:a7b:cd15:0:b0:40d:6f89:a839 with SMTP id f21-20020a7bcd15000000b0040d6f89a839mr4935093wmj.30.1704289678919;
+        Wed, 03 Jan 2024 05:47:58 -0800 (PST)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id v10-20020a05600c470a00b0040d579817b0sm2386420wmo.15.2024.01.03.05.47.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 05:47:58 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
+Cc: John Stultz <jstultz@google.com>, Joel Fernandes <joelaf@google.com>,
+ Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, Peter
+ Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
+ Segall <bsegall@google.com>, Zimuzo Ezeozue <zezeozue@google.com>, Youssef
+ Esmat <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>, Daniel
+ Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>,
+ Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, "Paul
+ E. McKenney" <paulmck@kernel.org>, Metin Kaya <Metin.Kaya@arm.com>, Xuewen
+ Yan <xuewen.yan94@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>,
+ Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
+Subject: Re: [PATCH v7 09/23] sched: Fix runtime accounting w/ split exec &
+ sched contexts
+In-Reply-To: <20231220001856.3710363-10-jstultz@google.com>
+References: <20231220001856.3710363-1-jstultz@google.com>
+ <20231220001856.3710363-10-jstultz@google.com>
+Date: Wed, 03 Jan 2024 14:47:57 +0100
+Message-ID: <xhsmhedeyjzoy.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103090241.164817-1-pierre.gondois@arm.com>
- <CANpmjNPsBUJy6tkOdRSJyWrS9CMUOQhQyb7_hwmw68pjjiEDWQ@mail.gmail.com> <2f4a5ea1-daa2-4ede-bdc0-6692d7d52e8c@arm.com>
-In-Reply-To: <2f4a5ea1-daa2-4ede-bdc0-6692d7d52e8c@arm.com>
-From: Marco Elver <elver@google.com>
-Date: Wed, 3 Jan 2024 14:46:00 +0100
-Message-ID: <CANpmjNMqzYsSh-DSsdFz4D_Ad0sAgf9J1A6CBz4fEOXAS4ejjw@mail.gmail.com>
-Subject: Re: [PATCH] list: Add hlist_count_nodes()
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>, 
-	Lucas De Marchi <lucas.demarchi@intel.com>, Jani Nikula <jani.nikula@intel.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 
-On Wed, 3 Jan 2024 at 13:04, Pierre Gondois <pierre.gondois@arm.com> wrote:
->
-> Hello Marco,
->
-> On 1/3/24 12:25, Marco Elver wrote:
-> > On Wed, 3 Jan 2024 at 10:02, Pierre Gondois <pierre.gondois@arm.com> wrote:
-> >>
-> >> Add a function to count nodes in a hlist. hlist_count_nodes()
-> >> is similar to list_count_nodes().
-> >>
-> >> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
-> >
-> > Is this patch part of another patch series? As-is, this will be dead
-> > code, and there's no guarantee someone will just go and delete it in
-> > future. Although this function looks useful, we also should avoid
-> > adding new dead code.
->
-> The function is indeed not used in the project right now. I needed
-> it for a private module. If it helps integrating the function and
-> not make it dead code, maybe I could add usages at the following
-> places:
-> - drivers/gpu/drm/drm_hashtab.c::print_binder_node_nilocked()
-> - drivers/md/bcache/sysfs.c::bch_cache_max_chain()
+(I did a reply instead of a reply-all, sorry John you're getting this one twice!)
 
-If this function allows to simplify these other places, by all means
-go ahead. That would look a lot better than having an unused function.
+On 19/12/23 16:18, John Stultz wrote:
+> The idea here is we want to charge the scheduler-context task's
+> vruntime but charge the execution-context task's sum_exec_runtime.
+>
+> This way cputime accounting goes against the task actually running
+> but vruntime accounting goes against the selected task so we get
+> proper fairness.
 
-Thanks,
--- Marco
+This looks like the right approach, especially when it comes to exposing
+data to userspace as with e.g. top.
+
+I did however get curious as to what would be the impact of not updating
+the donor's sum_exec_runtime. A quick look through fair.c shows these
+function using it:
+  - numa_get_avg_runtime()
+  - task_numa_work()
+  - task_tick_numa()
+  - set_next_entity()
+  - hrtick_start_fair()
+
+The NUMA ones shouldn't matter too much, as they care about the actually
+running task, which is the one that gets its sum_exec_runtime increased.
+task_tick_numa() needs to be changed though, as it should be passed the
+currently running task, not the selected (donor) one, but shouldn't need
+any other change (famous last words).
+
+Generally I think all of the NUMA balancing stats stuff shouldn't care
+about the donor task, as the pages being accessed are part of the execution
+context.
+
+The hrtick one is tricky. AFAICT since we don't update the donor's
+sum_exec_runtime, in proxy scenarios we'll end up always programming the
+hrtimer to the entire extent of the donor's slice, which might not be
+correct. Considering the HRTICK SCHED_FEAT defaults to disabled, that could
+be left as a TODO.
+
 
