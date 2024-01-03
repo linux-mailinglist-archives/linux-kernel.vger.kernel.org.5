@@ -1,108 +1,154 @@
-Return-Path: <linux-kernel+bounces-15309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C0FA822A05
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:13:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76C3B8229A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:43:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DEFF28536B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:13:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7ECE1F23DCD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28CEF182C5;
-	Wed,  3 Jan 2024 09:13:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9AF6182AA;
+	Wed,  3 Jan 2024 08:43:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H7lIBFb2"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="efssd6kr";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1i5Jx7Xl";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KCLEnSxJ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="U9D7U0Ou"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C373E18AE4;
-	Wed,  3 Jan 2024 09:13:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704273218; x=1735809218;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=cTwg2O0ziBhg+OL/NfG87tprFRUxjdv/1jQ57i90GUg=;
-  b=H7lIBFb29p+Shbn5LxJwQYIVc3qoc/0JpNyGoSnAuy7/dx1E7amP2oWu
-   xFQV+cfx30Q2BREM2n5VfKL7+nPYGU7FRhtRaYR0l8V2714hb5gY0cHuc
-   J4rRxfcL63+a6J17tREBSjU0mtp8kjRtlBuc1/gHblNlF5ljjNu+Trlun
-   uptXjwZ2+khPmFykgbXnE3Gp8aFa9dOWJpQaF+AZ7nwGnjcEV05pKs18j
-   btPCtPyvUdVeVU8l2wsShJdzbZGI1PBzPGqo0tFn1SBejtUP+tdusiB/z
-   y9oELmnHbDtb2R47O8L60LPLOljEwkkddSTBk079mIjdK33i0yej+SZIA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="400794941"
-X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
-   d="scan'208";a="400794941"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 01:13:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="814207245"
-X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
-   d="scan'208";a="814207245"
-Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 01:13:35 -0800
-From: Yan Zhao <yan.y.zhao@intel.com>
-To: kvm@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A04A182A8
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 08:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9A91D21EE8;
+	Wed,  3 Jan 2024 08:43:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704271426; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zux5DXsqyH6BF4yrGNwF3g4Ah5PlzMOsxiJLSpjUelg=;
+	b=efssd6krmufO7s7BjYjX4kXIlfTggXLqaDwm2EEtHHIGJy9RBx/FZhjbSFQ4510jtq7W3C
+	+YrIKyBfdYdPOcWB8yJ9DwEAFCIB7fBUAdZNnCeusgA+ra424PrMqqYbRkza/4MJZnIKbC
+	T+BWIhfSgGbZpgE+EbtgLjE39562/Wo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704271426;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zux5DXsqyH6BF4yrGNwF3g4Ah5PlzMOsxiJLSpjUelg=;
+	b=1i5Jx7XlEQ6CgdWbMeSsPaJfLfpQ+y2pAfMAvNLaFotoBzvvWe0vo/uQ8s1mESthZuqGIv
+	td867vohbcdyxEBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704271424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zux5DXsqyH6BF4yrGNwF3g4Ah5PlzMOsxiJLSpjUelg=;
+	b=KCLEnSxJDdHL+1zfH5kPI2i9MFu6eHwSXdi7MnxUgy/pA7AEWfF8U35FjjyD4mBun2VWHd
+	M9jXU3xSbJmGg5ojWRjSKClkPYvAp+y/ZWWFK8A4irJqBL26WYtF6isRofmXUKNFBNVJmu
+	olQbBtGISb+mG+ncVHgbM8hpbGAtZEE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704271424;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zux5DXsqyH6BF4yrGNwF3g4Ah5PlzMOsxiJLSpjUelg=;
+	b=U9D7U0Oul2hs+oq90oM9rH0a2xmkJ3+1oT1FRlV+W3bqfDobEuXpuJABa9GSPZYtun3XN+
+	VwWLOxiL/SluEuDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E44B31340C;
+	Wed,  3 Jan 2024 08:43:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id uGD7ND8elWV2YgAAD6G6ig
+	(envelope-from <osalvador@suse.de>); Wed, 03 Jan 2024 08:43:43 +0000
+Date: Wed, 3 Jan 2024 09:44:30 +0100
+From: Oscar Salvador <osalvador@suse.de>
+To: andrey.konovalov@linux.dev
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Marco Elver <elver@google.com>,
+	Alexander Potapenko <glider@google.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+	Evgenii Stepanov <eugenis@google.com>, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: pbonzini@redhat.com,
-	seanjc@google.com,
-	shuah@kernel.org,
-	stevensd@chromium.org,
-	Yan Zhao <yan.y.zhao@intel.com>
-Subject: [RFC PATCH v2 1/3] KVM: allow mapping of compound tail pages for IO or PFNMAP mapping
-Date: Wed,  3 Jan 2024 16:44:24 +0800
-Message-Id: <20240103084424.20014-1-yan.y.zhao@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240103084327.19955-1-yan.y.zhao@intel.com>
-References: <20240103084327.19955-1-yan.y.zhao@intel.com>
+	Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: [PATCH v4 09/22] lib/stackdepot: rename next_pool_required to
+ new_pool_required
+Message-ID: <ZZUebp1YZKzIN0VN@localhost.localdomain>
+References: <cover.1700502145.git.andreyknvl@google.com>
+ <fd7cd6c6eb250c13ec5d2009d75bb4ddd1470db9.1700502145.git.andreyknvl@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fd7cd6c6eb250c13ec5d2009d75bb4ddd1470db9.1700502145.git.andreyknvl@google.com>
+X-Spam-Level: 
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=KCLEnSxJ;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=U9D7U0Ou
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.36 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-2.85)[99.38%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email,linux.dev:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,google.com,suse.cz,googlegroups.com,kvack.org,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -4.36
+X-Rspamd-Queue-Id: 9A91D21EE8
+X-Spam-Flag: NO
 
-Allow mapping of tail pages of compound pages for IO or PFNMAP mapping
-by trying and getting ref count of its head page.
+On Mon, Nov 20, 2023 at 06:47:07PM +0100, andrey.konovalov@linux.dev wrote:
+> From: Andrey Konovalov <andreyknvl@google.com>
+> 
+> Rename next_pool_required to new_pool_required.
+> 
+> This a purely code readability change: the following patch will change
+> stack depot to store the pointer to the new pool in a separate variable,
+> and "new" seems like a more logical name.
+> 
+> Reviewed-by: Alexander Potapenko <glider@google.com>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-For IO or PFNMAP mapping, sometimes it's backed by compound pages.
-KVM will just return error on mapping of tail pages of the compound pages,
-as ref count of the tail pages are always 0.
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
-So, rather than check and add ref count of a tail page, check and add ref
-count of its folio (head page) to allow mapping of the compound tail pages.
 
-This will not break the origial intention to disallow mapping of tail pages
-of non-compound higher order allocations as the folio of a non-compound
-tail page is the same as the page itself.
-
-On the other side, put_page() has already converted page to folio before
-putting page ref.
-
-Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
----
- virt/kvm/kvm_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index acd67fb40183..f53b58446ac7 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -2892,7 +2892,7 @@ static int kvm_try_get_pfn(kvm_pfn_t pfn)
- 	if (!page)
- 		return 1;
- 
--	return get_page_unless_zero(page);
-+	return folio_try_get(page_folio(page));
- }
- 
- static int hva_to_pfn_remapped(struct vm_area_struct *vma,
 -- 
-2.17.1
-
+Oscar Salvador
+SUSE Labs
 
