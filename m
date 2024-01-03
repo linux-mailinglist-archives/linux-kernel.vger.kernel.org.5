@@ -1,349 +1,181 @@
-Return-Path: <linux-kernel+bounces-15734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43E5A823105
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:09:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65513823107
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:09:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 553611C23AF4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:09:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9C5A1F253B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:09:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BF91B29E;
-	Wed,  3 Jan 2024 16:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C99C81B29A;
+	Wed,  3 Jan 2024 16:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SWVz1l5J"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RqquyMvz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01CDF1B272;
-	Wed,  3 Jan 2024 16:09:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C54CC433C7;
-	Wed,  3 Jan 2024 16:09:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704298154;
-	bh=lGmN0wrRuGDJdYZbuAeGfH/5xd4gu2xMwykDg7Rwxrk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SWVz1l5JvumJN02FTr6UwA84RzEmW8akZ2iLYZKED3D8c4u2jlTWUW9Bh5joRKJ5Q
-	 JCA488Vv0ijYjtNJYzJ4JkToeL9hf4WX/FCkryWnj0n1m+BmYkM8liIE6yjjOqXNyi
-	 y+aVE83X/Yqf1u6tReebJJIuXUHj7Ea080RLOJ/EyB17mgpRD0rCDuP/tXUagSPjPF
-	 U2iMEJrS4zDALJurbI8zS1lnhAcWV6+/3lmjA0v9+Wpsgi6r9V8NB/K3XVC+N+euHd
-	 NZ9cHTgmGpKx3izoa9DAFsvWGaV8LKBs4R6h1xM+BPxJ3lB+80Ea5z5v+ezHbiRsfJ
-	 nrxHieVfT+Ksw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 43DCA403EF; Wed,  3 Jan 2024 13:09:11 -0300 (-03)
-Date: Wed, 3 Jan 2024 13:09:11 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>,
-	Ming Wang <wangming01@loongson.cn>,
-	Ravi Bangoria <ravi.bangoria@amd.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v1] perf env: Avoid recursively taking env->bpf_progs.lock
-Message-ID: <ZZWGp9i-ZovCimfD@kernel.org>
-References: <20231207014655.1252484-1-irogers@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A9EA1BDE7
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 16:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-556ab8b85e3so1095423a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 08:09:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704298172; x=1704902972; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=s7S73HU7AVAEIGkgOia8M6tFoLAPa3XpM2/kOMvb20o=;
+        b=RqquyMvzuqt6T+sHl8EOIktwyrjAOYrrdTcdxPZEPTYmUK57lLhlUNof3lFIOo9Zqi
+         G5jo7peguHu344u8CbiyMLM/D3S1xrPwXAUT6jcO8/2lijKoG8yc+WrA0u7Jogb9Cz4E
+         stJRWZSp7QG39ovhcbjhrn5ZjGxtjOyn1e7SPEt/xPUGyQ+0FO3acyK9A8K7Kj6E5PO9
+         P7GOrEOibhncI8NwuscRenjDL8BeisRBGICDiySbsdx/gsOZXiC1Qe5L3dzPB0SSX19I
+         RMlaxLn/w78g2omLvQ3QjubZ4hd3G+5CCCQYk3GOa3nXQp9T64QY+lQPH5gtFJReP80L
+         7uuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704298172; x=1704902972;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s7S73HU7AVAEIGkgOia8M6tFoLAPa3XpM2/kOMvb20o=;
+        b=I/DetOKPPFYPi+02REL0YJskZbamoq4TOrH3R9gsxnYAtC3kTvR3fMmRLuY6HlaqKK
+         QxJASBXyj8cQz8zGj5GYJKStPfCzK7tCCNkSQnmoXIg63jrmYtHBBRDR/CW6Y2eoMi8v
+         U6Ev51qHMHxPs86I5p5SxQG7yRKw+PfYGWuGYbP5Fq6kmHF8bPoZc1pVqQ2+ERv1v/Ad
+         MAM8PcI2c4JvQb0SZ+E68WKPxL67TE65oQ3vfMI7WjPjYXjksU7Mih6kYO7S4blcoEUR
+         FNKG982CF2+RqgG5Yp0jW0JVZ34a5cI4F9Jq6tDI3Aj4r3teTGa++CVmgCrGLqndxc1p
+         ZELg==
+X-Gm-Message-State: AOJu0YyMmYTTNg6QLLikst+78KPbKGq33c27mHDrQy0GqMZWaiqzU9vJ
+	hFkBwpWIpbXJD/05bFciKyukS/ACaZm+NA==
+X-Google-Smtp-Source: AGHT+IHcMO6aQ/mEcGF1E7z26QmE6ElZvZeg2lxXH6Naq62uIb/uM1R9LQJnmvOzB4pXFZsd8ooKJg==
+X-Received: by 2002:a50:a6c6:0:b0:553:29b0:7ed7 with SMTP id f6-20020a50a6c6000000b0055329b07ed7mr1183527edc.28.1704298171891;
+        Wed, 03 Jan 2024 08:09:31 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id ez9-20020a056402450900b0055504002a5fsm11466589edb.72.2024.01.03.08.09.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jan 2024 08:09:31 -0800 (PST)
+Message-ID: <1628a536-1c0b-4c80-b84a-41c290052da2@linaro.org>
+Date: Wed, 3 Jan 2024 17:09:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231207014655.1252484-1-irogers@google.com>
-X-Url: http://acmel.wordpress.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXTERNAL] Re: [PATCH v4 1/4] ASoC: dt-bindings: move tas2563
+ from tas2562.yaml to tas2781.yaml
+To: "Ding, Shenghao" <shenghao-ding@ti.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>
+Cc: "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
+ "Lu, Kevin" <kevin-lu@ti.com>, "Xu, Baojun" <baojun.xu@ti.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz"
+ <perex@perex.cz>,
+ "pierre-louis.bossart@linux.intel.com"
+ <pierre-louis.bossart@linux.intel.com>,
+ "13916275206@139.com" <13916275206@139.com>,
+ "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+ "soyer@irl.hu" <soyer@irl.hu>, "tiwai@suse.de" <tiwai@suse.de>,
+ "Gupta, Peeyush" <peeyush@ti.com>, "Navada Kanyana, Mukund" <navada@ti.com>
+References: <20231228153024.1659-1-shenghao-ding@ti.com>
+ <9315a1ea-5ebe-47b7-a108-4a72b647bb4f@linaro.org>
+ <6ae4809eca654fa49929fc81720a0687@ti.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <6ae4809eca654fa49929fc81720a0687@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Em Wed, Dec 06, 2023 at 05:46:55PM -0800, Ian Rogers escreveu:
-> Add variants of perf_env__insert_bpf_prog_info, perf_env__insert_btf
-> and perf_env__find_btf prefixed with __ to indicate the
-> env->bpf_progs.lock is assumed held. Call these variants when the lock
-> is held to avoid recursively taking it and potentially having a thread
-> deadlock with itself.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
-> Previously this patch was part of a larger set:
-> https://lore.kernel.org/lkml/20231127220902.1315692-51-irogers@google.com/
-> ---
->  tools/perf/util/bpf-event.c |  8 +++---
->  tools/perf/util/bpf-event.h | 12 ++++-----
->  tools/perf/util/env.c       | 53 +++++++++++++++++++++++--------------
->  tools/perf/util/env.h       |  4 +++
->  tools/perf/util/header.c    |  8 +++---
->  5 files changed, 51 insertions(+), 34 deletions(-)
-> 
-> diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-> index 830711cae30d..3573e0b7ef3e 100644
-> --- a/tools/perf/util/bpf-event.c
-> +++ b/tools/perf/util/bpf-event.c
-> @@ -545,9 +545,9 @@ int evlist__add_bpf_sb_event(struct evlist *evlist, struct perf_env *env)
->  	return evlist__add_sb_event(evlist, &attr, bpf_event__sb_cb, env);
->  }
->  
-> -void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
-> -				    struct perf_env *env,
-> -				    FILE *fp)
-> +void __bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
-> +				      struct perf_env *env,
-> +				      FILE *fp)
->  {
->  	__u32 *prog_lens = (__u32 *)(uintptr_t)(info->jited_func_lens);
->  	__u64 *prog_addrs = (__u64 *)(uintptr_t)(info->jited_ksyms);
-> @@ -563,7 +563,7 @@ void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
->  	if (info->btf_id) {
->  		struct btf_node *node;
->  
-> -		node = perf_env__find_btf(env, info->btf_id);
-> +		node = __perf_env__find_btf(env, info->btf_id);
->  		if (node)
->  			btf = btf__new((__u8 *)(node->data),
->  				       node->data_size);
-> diff --git a/tools/perf/util/bpf-event.h b/tools/perf/util/bpf-event.h
-> index 1bcbd4fb6c66..e2f0420905f5 100644
-> --- a/tools/perf/util/bpf-event.h
-> +++ b/tools/perf/util/bpf-event.h
-> @@ -33,9 +33,9 @@ struct btf_node {
->  int machine__process_bpf(struct machine *machine, union perf_event *event,
->  			 struct perf_sample *sample);
->  int evlist__add_bpf_sb_event(struct evlist *evlist, struct perf_env *env);
-> -void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
-> -				    struct perf_env *env,
-> -				    FILE *fp);
-> +void __bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
-> +				      struct perf_env *env,
-> +				      FILE *fp);
->  #else
->  static inline int machine__process_bpf(struct machine *machine __maybe_unused,
->  				       union perf_event *event __maybe_unused,
-> @@ -50,9 +50,9 @@ static inline int evlist__add_bpf_sb_event(struct evlist *evlist __maybe_unused,
->  	return 0;
->  }
->  
-> -static inline void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info __maybe_unused,
-> -						  struct perf_env *env __maybe_unused,
-> -						  FILE *fp __maybe_unused)
-> +static inline void __bpf_event__print_bpf_prog_info(struct bpf_prog_info *info __maybe_unused,
-> +						    struct perf_env *env __maybe_unused,
-> +						    FILE *fp __maybe_unused)
->  {
->  
->  }
-> diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-> index c68b7a004f29..cfdacbf29456 100644
-> --- a/tools/perf/util/env.c
-> +++ b/tools/perf/util/env.c
-> @@ -22,15 +22,20 @@ struct perf_env perf_env;
->  #include "bpf-utils.h"
->  #include <bpf/libbpf.h>
->  
-> -void perf_env__insert_bpf_prog_info(struct perf_env *env,
-> -				    struct bpf_prog_info_node *info_node)
-> +void perf_env__insert_bpf_prog_info(struct perf_env *env, struct bpf_prog_info_node *info_node)
-> +{
-> +	down_write(&env->bpf_progs.lock);
-> +	__perf_env__insert_bpf_prog_info(env, info_node);
-> +	up_write(&env->bpf_progs.lock);
-> +}
+On 03/01/2024 16:10, Ding, Shenghao wrote:
+>>> -  reg:
+>>> -    description:
+>>> -      I2C address, in multiple tas2781s case, all the i2c address
+>>> -      aggregate as one Audio Device to support multiple audio slots.
+>>> -    maxItems: 8
+>>> -    minItems: 1
+>>> -    items:
+>>> -      minimum: 0x38
+>>> -      maximum: 0x3f
+>>> +    description: |
+>>> +      ti,tas2563: 6.1-W Boosted Class-D Audio Amplifier With Integrated
+>>> +      DSP and IV Sense, 16/20/24/32bit stereo I2S or multichannel TDM.
+>>> +
+>>> +      ti,tas2781: 24-V Class-D Amplifier with Real Time Integrated Speaker
+>>> +      Protection and Audio Processing, 16/20/24/32bit stereo I2S or
+>>> +      multichannel TDM.
+>>> +    oneOf:
+>>> +      - items:
+>>> +          - enum:
+>>> +              - ti,tas2563
+>>> +          - const: ti,tas2781
+>>> +      - enum:
+>>> +          - ti,tas2781
+>>> +
+>>> +  reg: true
+>>
+>> min/maxItems must stay here
+>>
+>> I already reminded this in v3.
+> How to express maxItems is 4 for tas2563 on the same i2c bus(only 4 different i2c addresses) 
+> and maxItems is 8 for tas2781 on the same i2c bus (8 different i2c addresses) here.
 
-Minor nit/modification:
+Here you have only the widest constraints. In allOf:if:then you
+customize them.
 
-diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-index cfdacbf294566c33..a459374d0a1a1dc8 100644
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -22,7 +22,8 @@ struct perf_env perf_env;
- #include "bpf-utils.h"
- #include <bpf/libbpf.h>
- 
--void perf_env__insert_bpf_prog_info(struct perf_env *env, struct bpf_prog_info_node *info_node)
-+void perf_env__insert_bpf_prog_info(struct perf_env *env,
-+				    struct bpf_prog_info_node *info_node)
- {
- 	down_write(&env->bpf_progs.lock);
- 	__perf_env__insert_bpf_prog_info(env, info_node);
+Best regards,
+Krzysztof
 
-Just to reduce patch size a bit, just like happened with
-perf_env__insert_btf() further down, where its body was changed  to call
-the __ variant but the non __ function got just the body modified.
-
-- Arnaldo
-
-> +void __perf_env__insert_bpf_prog_info(struct perf_env *env, struct bpf_prog_info_node *info_node)
->  {
->  	__u32 prog_id = info_node->info_linear->info.id;
->  	struct bpf_prog_info_node *node;
->  	struct rb_node *parent = NULL;
->  	struct rb_node **p;
->  
-> -	down_write(&env->bpf_progs.lock);
->  	p = &env->bpf_progs.infos.rb_node;
->  
->  	while (*p != NULL) {
-> @@ -42,15 +47,13 @@ void perf_env__insert_bpf_prog_info(struct perf_env *env,
->  			p = &(*p)->rb_right;
->  		} else {
->  			pr_debug("duplicated bpf prog info %u\n", prog_id);
-> -			goto out;
-> +			return;
->  		}
->  	}
->  
->  	rb_link_node(&info_node->rb_node, parent, p);
->  	rb_insert_color(&info_node->rb_node, &env->bpf_progs.infos);
->  	env->bpf_progs.infos_cnt++;
-> -out:
-> -	up_write(&env->bpf_progs.lock);
->  }
->  
->  struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
-> @@ -79,14 +82,22 @@ struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
->  }
->  
->  bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
-> +{
-> +	bool ret;
-> +
-> +	down_write(&env->bpf_progs.lock);
-> +	ret = __perf_env__insert_btf(env, btf_node);
-> +	up_write(&env->bpf_progs.lock);
-> +	return ret;
-> +}
-> +
-> +bool __perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
->  {
->  	struct rb_node *parent = NULL;
->  	__u32 btf_id = btf_node->id;
->  	struct btf_node *node;
->  	struct rb_node **p;
-> -	bool ret = true;
->  
-> -	down_write(&env->bpf_progs.lock);
->  	p = &env->bpf_progs.btfs.rb_node;
->  
->  	while (*p != NULL) {
-> @@ -98,25 +109,31 @@ bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
->  			p = &(*p)->rb_right;
->  		} else {
->  			pr_debug("duplicated btf %u\n", btf_id);
-> -			ret = false;
-> -			goto out;
-> +			return false;
->  		}
->  	}
->  
->  	rb_link_node(&btf_node->rb_node, parent, p);
->  	rb_insert_color(&btf_node->rb_node, &env->bpf_progs.btfs);
->  	env->bpf_progs.btfs_cnt++;
-> -out:
-> -	up_write(&env->bpf_progs.lock);
-> -	return ret;
-> +	return true;
->  }
->  
->  struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id)
-> +{
-> +	struct btf_node *res;
-> +
-> +	down_read(&env->bpf_progs.lock);
-> +	res = __perf_env__find_btf(env, btf_id);
-> +	up_read(&env->bpf_progs.lock);
-> +	return res;
-> +}
-> +
-> +struct btf_node *__perf_env__find_btf(struct perf_env *env, __u32 btf_id)
->  {
->  	struct btf_node *node = NULL;
->  	struct rb_node *n;
->  
-> -	down_read(&env->bpf_progs.lock);
->  	n = env->bpf_progs.btfs.rb_node;
->  
->  	while (n) {
-> @@ -126,13 +143,9 @@ struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id)
->  		else if (btf_id > node->id)
->  			n = n->rb_right;
->  		else
-> -			goto out;
-> +			return node;
->  	}
-> -	node = NULL;
-> -
-> -out:
-> -	up_read(&env->bpf_progs.lock);
-> -	return node;
-> +	return NULL;
->  }
->  
->  /* purge data in bpf_progs.infos tree */
-> diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
-> index bf7e3c4c211f..7c527e65c186 100644
-> --- a/tools/perf/util/env.h
-> +++ b/tools/perf/util/env.h
-> @@ -175,12 +175,16 @@ const char *perf_env__raw_arch(struct perf_env *env);
->  int perf_env__nr_cpus_avail(struct perf_env *env);
->  
->  void perf_env__init(struct perf_env *env);
-> +void __perf_env__insert_bpf_prog_info(struct perf_env *env,
-> +				      struct bpf_prog_info_node *info_node);
->  void perf_env__insert_bpf_prog_info(struct perf_env *env,
->  				    struct bpf_prog_info_node *info_node);
->  struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
->  							__u32 prog_id);
->  bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node);
-> +bool __perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node);
->  struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id);
-> +struct btf_node *__perf_env__find_btf(struct perf_env *env, __u32 btf_id);
->  
->  int perf_env__numa_node(struct perf_env *env, struct perf_cpu cpu);
->  char *perf_env__find_pmu_cap(struct perf_env *env, const char *pmu_name,
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index 08cc2febabde..02bf9d8b5f74 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -1849,8 +1849,8 @@ static void print_bpf_prog_info(struct feat_fd *ff, FILE *fp)
->  		node = rb_entry(next, struct bpf_prog_info_node, rb_node);
->  		next = rb_next(&node->rb_node);
->  
-> -		bpf_event__print_bpf_prog_info(&node->info_linear->info,
-> -					       env, fp);
-> +		__bpf_event__print_bpf_prog_info(&node->info_linear->info,
-> +						 env, fp);
->  	}
->  
->  	up_read(&env->bpf_progs.lock);
-> @@ -3188,7 +3188,7 @@ static int process_bpf_prog_info(struct feat_fd *ff, void *data __maybe_unused)
->  		/* after reading from file, translate offset to address */
->  		bpil_offs_to_addr(info_linear);
->  		info_node->info_linear = info_linear;
-> -		perf_env__insert_bpf_prog_info(env, info_node);
-> +		__perf_env__insert_bpf_prog_info(env, info_node);
->  	}
->  
->  	up_write(&env->bpf_progs.lock);
-> @@ -3235,7 +3235,7 @@ static int process_bpf_btf(struct feat_fd *ff, void *data __maybe_unused)
->  		if (__do_read(ff, node->data, data_size))
->  			goto out;
->  
-> -		perf_env__insert_btf(env, node);
-> +		__perf_env__insert_btf(env, node);
->  		node = NULL;
->  	}
->  
-> -- 
-> 2.43.0.rc2.451.g8631bc7472-goog
-> 
-
--- 
-
-- Arnaldo
 
