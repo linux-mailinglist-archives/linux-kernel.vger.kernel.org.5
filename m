@@ -1,118 +1,194 @@
-Return-Path: <linux-kernel+bounces-15767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0CC382317A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:48:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB6BD82317E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:49:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFE3D1C23ADC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:48:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FCED1F23786
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:49:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DDCE1C280;
-	Wed,  3 Jan 2024 16:47:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A9A1C288;
+	Wed,  3 Jan 2024 16:49:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bUK7oC2f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aJiaCM98"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B4F1BDDD;
-	Wed,  3 Jan 2024 16:47:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04CC2C433C8;
-	Wed,  3 Jan 2024 16:47:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704300476;
-	bh=g0nBuXXj57nubgtYR0YmrNxPgO3LEIFTUI56xOZHs5w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bUK7oC2fzZg5egB/2IYhH45yOvK2l4dYVSEol6A2mrfyfTJEEoQtvWQfUQRwCjmrW
-	 o6cwSgoqq9oV0Z1f8kKINMj1Wa/Ui35IztvltF5iHpvObTg3z+7UUThKSFZRb37jiv
-	 UCSlyQpp4JykD2zvJUm9kzzQWXOp7NR1/WMthSJu2hH9roqSe2cSDUyGh2QU/oxRef
-	 dqlLF6OdaOHXpjx3nweOQT9ZTKsZv9E0F1riq/O1qURpL3pI/xqPnod0QsALeFFkPg
-	 7vGi3CFIPVdPCT/6p1BEN1SZN0yG+BgPyg/9qRE+O9+8oTgKwR+VcdS2wdhMjOdrqU
-	 oZ8xtGx3+CsIw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id DDB3D403EF; Wed,  3 Jan 2024 13:47:52 -0300 (-03)
-Date: Wed, 3 Jan 2024 13:47:52 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	John Garry <john.g.garry@oracle.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Guillaume Endignoux <guillaumee@google.com>
-Subject: Re: [PATCH v1] perf stat: Fix hard coded ll miss units
-Message-ID: <ZZWPuIjp0xklrcGy@kernel.org>
-References: <20231211181242.1721059-1-irogers@google.com>
- <CAP-5=fVWZ7etZq7YBU1HGMnyJ6wsZ3zok9JuS7eWQsTKuqzrAA@mail.gmail.com>
- <cbc91c86-e6ea-4a97-8b61-5594d3cdbc81@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B850C1BDEA;
+	Wed,  3 Jan 2024 16:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6dbbc637df7so7010411a34.2;
+        Wed, 03 Jan 2024 08:49:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704300547; x=1704905347; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7YOxkBSsy8gVCBj2wU1um2RFxkUEv6eBM3fBzmTk6ZQ=;
+        b=aJiaCM98BnS3fYhsCP3DsODw3GPWi4RbCFzT0gmuuuKo72cWhg4JvGRymxn+Q3+dlj
+         kH/47gDzHjwK0Fw8IB44F0RC+4Qjy+pFd0UAqkDgYgMQHja9l8OD0FDO/g8KOdjWWZ82
+         ZV+eNEuQt1IKQwWel28JZzcuRXz+jEW4DpzWP++IhdO/oEBM3xsG7LoDG6IVdPHxC3VJ
+         id7GLk+n3wyHnytpdgIGrIF2N+WxcOFp0iwZtGSdNvM6czMln0WxaIVCIi4dlc1mMAyI
+         RVSYz8c770XcEqIqIesEk+TvR9mnzduf5APsxm91kXyStSASBIe7uavEF/YoBcE76YRZ
+         S7Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704300547; x=1704905347;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7YOxkBSsy8gVCBj2wU1um2RFxkUEv6eBM3fBzmTk6ZQ=;
+        b=JpW1C5ZRz8xCTS0Qz4k8qWaWM5qC65LarxcDKnqHi4nVAs/xLTZm6KtKd7s99nNu/2
+         0bIXZ8ZFcWskYpnwmK7atvunJCsOLTGeD1ajAsWsQU51DZxG+hWh6233LgkiyNrttAkW
+         DEPqvHJl6g2sAmFlUNW9RUCEPBdnl3vy/2HPgYSh43INq5KMdd3xVaLghdVRaq9CpGTL
+         5QKDbtOseOwf9II8o45YUoxq62fc/my2HOz92dan2qu9Ulu3HounSLkeDNVdEdWZSTco
+         jieEH17GG7OT1RQxzmbXKGxb/CMxh/ZstdaHFnuYrIJxuNeHAzR3vg/o3Uo6DqPJEl7+
+         xk9g==
+X-Gm-Message-State: AOJu0YwhJGi79cN9RlK0B0UBqltoUL5aBBvQEcPsNAsvNVp/jdz1qQXj
+	d+d16VLh7VgkUZbXCW8J0Ww=
+X-Google-Smtp-Source: AGHT+IFLNd6r4sLlBUDIfHH5k+tFiPZb3cLEvcFpPURN1hrp6Tu+pnN5zSuJjq33t8jB9TXNfanpxg==
+X-Received: by 2002:a9d:63d6:0:b0:6db:b08d:67b6 with SMTP id e22-20020a9d63d6000000b006dbb08d67b6mr12936091otl.53.1704300547484;
+        Wed, 03 Jan 2024 08:49:07 -0800 (PST)
+Received: from localhost ([2620:10d:c091:400::5:fcab])
+        by smtp.gmail.com with ESMTPSA id k15-20020ac8478f000000b004240481cee0sm14234406qtq.58.2024.01.03.08.49.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 08:49:07 -0800 (PST)
+From: Dan Schatzberg <schatzberg.dan@gmail.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	David Hildenbrand <david@redhat.com>,
+	Chris Li <chrisl@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Dan Schatzberg <schatzberg.dan@gmail.com>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	Yue Zhao <findns94@gmail.com>,
+	Hugh Dickins <hughd@google.com>
+Subject: [PATCH v6 0/2] Add swappiness argument to memory.reclaim
+Date: Wed,  3 Jan 2024 08:48:35 -0800
+Message-Id: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <cbc91c86-e6ea-4a97-8b61-5594d3cdbc81@linux.intel.com>
-X-Url: http://acmel.wordpress.com
 
-Em Tue, Jan 02, 2024 at 03:01:55PM -0500, Liang, Kan escreveu:
-> 
-> 
-> On 2024-01-02 2:34 p.m., Ian Rogers wrote:
-> > On Mon, Dec 11, 2023 at 10:13 AM Ian Rogers <irogers@google.com> wrote:
-> >>
-> >> Copy-paste error where LL cache misses are reported as l1i.
-> >>
-> >> Suggested-by: Guillaume Endignoux <guillaumee@google.com>
-> >> Fixes: 0a57b910807a ("perf stat: Use counts rather than saved_value")
-> >> Signed-off-by: Ian Rogers <irogers@google.com>
-> >
-> 
-> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Changes since V5:
+  * Made the scan_control behavior limited to proactive reclaim explicitly
+  * created sc_swappiness helper to reduce chance of mis-use
 
-Thanks, applied to perf-tools-next.
+Changes since V4:
+  * Fixed some initialization bugs by reverting back to a pointer for swappiness
+  * Added some more caveats to the behavior of swappiness in documentation
 
-- Arnaldo
+Changes since V3:
+  * Added #define for MIN_SWAPPINESS and MAX_SWAPPINESS
+  * Added explicit calls to mem_cgroup_swappiness
 
- 
-> Thanks,
-> Kan
-> 
-> > Ping. Trivial 1 character fix but no reviews :-(
-> > 
-> > Thanks,
-> > Ian
-> > 
-> >> ---
-> >>  tools/perf/util/stat-shadow.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-> >> index 1c5c3eeba4cf..e31426167852 100644
-> >> --- a/tools/perf/util/stat-shadow.c
-> >> +++ b/tools/perf/util/stat-shadow.c
-> >> @@ -264,7 +264,7 @@ static void print_ll_miss(struct perf_stat_config *config,
-> >>         static const double color_ratios[3] = {20.0, 10.0, 5.0};
-> >>
-> >>         print_ratio(config, evsel, aggr_idx, misses, out, STAT_LL_CACHE, color_ratios,
-> >> -                   "of all L1-icache accesses");
-> >> +                   "of all LL-cache accesses");
-> >>  }
-> >>
-> >>  static void print_dtlb_miss(struct perf_stat_config *config,
-> >> --
-> >> 2.43.0.472.g3155946c3a-goog
-> >>
-> > 
+Changes since V2:
+  * No functional change
+  * Used int consistently rather than a pointer
+
+Changes since V1:
+  * Added documentation
+
+This patch proposes augmenting the memory.reclaim interface with a
+swappiness=<val> argument that overrides the swappiness value for that instance
+of proactive reclaim.
+
+Userspace proactive reclaimers use the memory.reclaim interface to trigger
+reclaim. The memory.reclaim interface does not allow for any way to effect the
+balance of file vs anon during proactive reclaim. The only approach is to adjust
+the vm.swappiness setting. However, there are a few reasons we look to control
+the balance of file vs anon during proactive reclaim, separately from reactive
+reclaim:
+
+* Swapout should be limited to manage SSD write endurance. In near-OOM
+  situations we are fine with lots of swap-out to avoid OOMs. As these are
+  typically rare events, they have relatively little impact on write endurance.
+  However, proactive reclaim runs continuously and so its impact on SSD write
+  endurance is more significant. Therefore it is desireable to control swap-out
+  for proactive reclaim separately from reactive reclaim
+
+* Some userspace OOM killers like systemd-oomd[1] support OOM killing on swap
+  exhaustion. This makes sense if the swap exhaustion is triggered due to
+  reactive reclaim but less so if it is triggered due to proactive reclaim (e.g.
+  one could see OOMs when free memory is ample but anon is just particularly
+  cold). Therefore, it's desireable to have proactive reclaim reduce or stop
+  swap-out before the threshold at which OOM killing occurs.
+
+In the case of Meta's Senpai proactive reclaimer, we adjust vm.swappiness before
+writes to memory.reclaim[2]. This has been in production for nearly two years
+and has addressed our needs to control proactive vs reactive reclaim behavior
+but is still not ideal for a number of reasons:
+
+* vm.swappiness is a global setting, adjusting it can race/interfere with other
+  system administration that wishes to control vm.swappiness. In our case, we
+  need to disable Senpai before adjusting vm.swappiness.
+
+* vm.swappiness is stateful - so a crash or restart of Senpai can leave a
+  misconfigured setting. This requires some additional management to record the
+  "desired" setting and ensure Senpai always adjusts to it.
+
+With this patch, we avoid these downsides of adjusting vm.swappiness globally.
+
+Previously, this exact interface addition was proposed by Yosry[3]. In response,
+Roman proposed instead an interface to specify precise file/anon/slab reclaim
+amounts[4]. More recently Huan also proposed this as well[5] and others
+similarly questioned if this was the proper interface.
+
+Previous proposals sought to use this to allow proactive reclaimers to
+effectively perform a custom reclaim algorithm by issuing proactive reclaim with
+different settings to control file vs anon reclaim (e.g. to only reclaim anon
+from some applications). Responses argued that adjusting swappiness is a poor
+interface for custom reclaim.
+
+In contrast, I argue in favor of a swappiness setting not as a way to implement
+custom reclaim algorithms but rather to bias the balance of anon vs file due to
+differences of proactive vs reactive reclaim. In this context, swappiness is the
+existing interface for controlling this balance and this patch simply allows for
+it to be configured differently for proactive vs reactive reclaim.
+
+Specifying explicit amounts of anon vs file pages to reclaim feels inappropriate
+for this prupose. Proactive reclaimers are un-aware of the relative age of file
+vs anon for a cgroup which makes it difficult to manage proactive reclaim of
+different memory pools. A proactive reclaimer would need some amount of anon
+reclaim attempts separate from the amount of file reclaim attempts which seems
+brittle given that it's difficult to observe the impact.
+
+[1]https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.service.html
+[2]https://github.com/facebookincubator/oomd/blob/main/src/oomd/plugins/Senpai.cpp#L585-L598
+[3]https://lore.kernel.org/linux-mm/CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yKSNgD7aGdg@mail.gmail.com/
+[4]https://lore.kernel.org/linux-mm/YoPHtHXzpK51F%2F1Z@carbon/
+[5]https://lore.kernel.org/lkml/20231108065818.19932-1-link@vivo.com/
+
+Dan Schatzberg (2):
+  mm: add defines for min/max swappiness
+  mm: add swapiness= arg to memory.reclaim
+
+ Documentation/admin-guide/cgroup-v2.rst | 18 +++++---
+ include/linux/swap.h                    |  5 ++-
+ mm/memcontrol.c                         | 58 ++++++++++++++++++++-----
+ mm/vmscan.c                             | 39 ++++++++++++-----
+ 4 files changed, 90 insertions(+), 30 deletions(-)
 
 -- 
+2.39.3
 
-- Arnaldo
 
