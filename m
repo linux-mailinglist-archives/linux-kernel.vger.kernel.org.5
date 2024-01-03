@@ -1,65 +1,64 @@
-Return-Path: <linux-kernel+bounces-15376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A4C5822B1F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:13:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C876C822B25
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:15:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDF55284F34
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:13:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F085E1F24060
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:15:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57ECB18AE5;
-	Wed,  3 Jan 2024 10:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4EC1865B;
+	Wed,  3 Jan 2024 10:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JyLi6F3H"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="b/IH5pIU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B2A18650
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 10:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-556c3f0d6c5so614310a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 02:13:21 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ECD918658
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 10:15:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d3f29fea66so41504375ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 02:15:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704276800; x=1704881600; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=7KwWn0e9ClG8E74BnRqmVdMJPFL6AvuZnVPxKUs6kgU=;
-        b=JyLi6F3Hmg+NfkHRzQ7/bCpUu8aemjvT73ykD4nt9arRC5D5EIwMViF/AdBCvPhtbs
-         4lT+WhMuGWtcbk+Kkn8hG1cUwy2k+V74zkQEPj0XDmss98X3S0qku/Qf4LyT99/pCDca
-         kHp5iuvcdwwy9XRtkmV06VqZEGK4o2D0YD9bLSy43fn86Q4qLUllL7VY1mTdGVDGLEam
-         Wyg7NV8xgaStAzc3tpdlbAPeh5MD2jZd6FR0VASGxZ02A3JGATRv8Qf9bBZoakKCFwL4
-         gDlPi7Kd7wjuzxan5gRNG/0FiL9pOcXdQVjG4qo1vooSpVZXqM8tKgccnZ2cxTTapLM8
-         FmLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704276800; x=1704881600;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1704276918; x=1704881718; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7KwWn0e9ClG8E74BnRqmVdMJPFL6AvuZnVPxKUs6kgU=;
-        b=Q/kiJxBKhS03V2LoxTVYMc42kCneGsClYNRiRRh37kuI5CzF1AWuRBLYkcFPi7cNvB
-         otzTaiXLjD1zf6JCPwAdwHkknlAxjJG/VNqsODv3SymLVES+tdSsCBuVz0t20+NFNRj3
-         f9VPuCvHkKDb60Ea5rKsLrC8o0GQTeVv+Gu3CIZVHPd2UTXCHtAhPakf631SxMZGtu7A
-         LFFxbCG9KxhEBl0MjEUo/8Gn344Z6TLmaNWKSyzdWdRgqB4CvMSlCw+w+JyLitqIcaoa
-         CrN0hRQjWIN14Mymix39QA9ownsidD26j7dG/u2JASf8FUhqx2xuLSjBcXIxogiaQADL
-         HHnw==
-X-Gm-Message-State: AOJu0YwSTS3Ten9JYF/sfR/y+Ha4eCCqN4pl4cnJNWgYvVAWlS3mfdKV
-	YVVhwEh92VSgXIYZxV1foVyxS0l/lQTEnw==
-X-Google-Smtp-Source: AGHT+IGzmv9YHLnJ4GsiK/TwA36ND7jna6SbAZhK9D3M8vKgB4elHzxL6SklqhB3TGEYpIVHhbGIwg==
-X-Received: by 2002:a50:cd01:0:b0:555:5879:ac50 with SMTP id z1-20020a50cd01000000b005555879ac50mr4091072edi.117.1704276800382;
-        Wed, 03 Jan 2024 02:13:20 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id f11-20020a056402004b00b005557bbb81bfsm8431720edu.79.2024.01.03.02.13.19
+        bh=r9kSoFv/7+pD3aWATl3d1Zz/zNpbqJdAmBC+qKH73H4=;
+        b=b/IH5pIUzffcArbA4NKho9QxpN6XCff2kves6QqQSkA+28J9lX4QXxmeZxJpBndmnL
+         29JvwxXvfzLBgn7eKfRPs3i0ckbK9rpmRYsYjXY64GrWZjEuOyGA4fPfHs4Por0Ku8jU
+         XNhco8bevs5HIpq2Zz99k3Y407lIkgH8ZOzSMNf9rgEJXp6pZefCO+Zmw5OrrhxaALQ8
+         EVW7cy0zdZ2+WbpN84B4m0R2HS8mLSd1/khQy/9xmPDooHFwjK2zJzA16FbKEi46xC2a
+         L/fAMdVi4A82kd/IdsdGf7iCkt6nic0irxA8creFtCzfBaGXTlqrB9mKOyMImsBW38Gw
+         MmYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704276918; x=1704881718;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=r9kSoFv/7+pD3aWATl3d1Zz/zNpbqJdAmBC+qKH73H4=;
+        b=RUUVolXOoslHj6R2oYlPQ+aWJ/Vpe4NZY0klQM8AHRyKAia2jDWvIMr+BcEFW9fQwF
+         2d5PiXq9D7XMmftI0zEFQhTE71U1uXuTAoFJNsipMBB4fSJnRTDzgqa+fddzELp81lda
+         q1oV3qiWUWIExb86Jo9Kwnl4aok4zuCFCgsgjTnqdzPLyaJaqeQVgi9ilFTgr8DtfUWo
+         aR83UlWV7W6rysw+hOtiXUvuaTbilGDTPmgBUsx1mgjDtnQObd5ZfuYu/5HnlZC3HmUY
+         6i/yNO8bJeGqfEDH9NhPcJ5OXkdClU6VOiGknVFowsVUwe5aHOZyOibjuJFBWGzzqBY0
+         F0hQ==
+X-Gm-Message-State: AOJu0Yyz7NmA0rBJHE5II3txkiXI5Wn1aXFqgn04sWuZiula0sXzOyA3
+	m3oUwaGx6xh7hAPxC9VEqQNzAIb+kU7vNDM8IkOVJk4hdA4=
+X-Google-Smtp-Source: AGHT+IFb5s1kRhg4lbBcAXzAad/ZQWUpaLKwi6GbYgUI52nqs1wg58jl3FEdVQCfwyB+lzN5OaJ2qw==
+X-Received: by 2002:a17:903:11c3:b0:1d4:75c6:9560 with SMTP id q3-20020a17090311c300b001d475c69560mr6941145plh.59.1704276917712;
+        Wed, 03 Jan 2024 02:15:17 -0800 (PST)
+Received: from [10.3.158.72] ([61.213.176.6])
+        by smtp.gmail.com with ESMTPSA id bh10-20020a170902a98a00b001d4160c4f97sm21615997plb.188.2024.01.03.02.15.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 02:13:19 -0800 (PST)
-Message-ID: <b9943188-b3f9-472f-bc60-e8e6e043ddf4@linaro.org>
-Date: Wed, 3 Jan 2024 11:13:18 +0100
+        Wed, 03 Jan 2024 02:15:17 -0800 (PST)
+Message-ID: <42dd77c4-8842-4f96-958a-0d9407362b9d@bytedance.com>
+Date: Wed, 3 Jan 2024 18:15:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,107 +66,137 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: juno: align thermal zone names with bindings
-To: Rob Herring <robh+dt@kernel.org>
-Cc: Liviu Dudau <liviu.dudau@arm.com>, Sudeep Holla <sudeep.holla@arm.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231209171612.250868-1-krzysztof.kozlowski@linaro.org>
- <CAL_JsqKogbT_4DPd1n94xqeHaU_J8ve5K09WOyVsRX3jxxUW3w@mail.gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAL_JsqKogbT_4DPd1n94xqeHaU_J8ve5K09WOyVsRX3jxxUW3w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: Re: [PATCH v5 33/40] netfs, cachefiles: Pass upper bound length
+ to allow expansion
+To: David Howells <dhowells@redhat.com>,
+ Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc: Matthew Wilcox <willy@infradead.org>,
+ Marc Dionne <marc.dionne@auristor.com>, Paulo Alcantara <pc@manguebit.com>,
+ Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+ Dominique Martinet <asmadeus@codewreck.org>,
+ Eric Van Hensbergen <ericvh@kernel.org>, Ilya Dryomov <idryomov@gmail.com>,
+ Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+ linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+ linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+ Steve French <smfrench@gmail.com>
+References: <750e8251-ba30-4f53-a17b-73c79e3739ce@linux.alibaba.com>
+ <20231221132400.1601991-1-dhowells@redhat.com>
+ <20231221132400.1601991-34-dhowells@redhat.com>
+ <198744.1704215477@warthog.procyon.org.uk>
+From: Jia Zhu <zhujia.zj@bytedance.com>
+In-Reply-To: <198744.1704215477@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 02/01/2024 19:09, Rob Herring wrote:
-> On Sat, Dec 9, 2023 at 10:16 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
+
+
+在 2024/1/3 01:11, David Howells 写道:
+> Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+> 
+>>>    	down = start - round_down(start, PAGE_SIZE);
+>>>    	*_start = start - down;
+>>>    	*_len = round_up(down + len, PAGE_SIZE);
+>>> +	if (down < start || *_len > upper_len)
+>>> +		return -ENOBUFS;
 >>
->> Thermal bindings require thermal zone node names to match
->> certain patterns:
+>> Sorry for bothering. We just found some strange when testing
+>> today-next EROFS over fscache.
 >>
->>   juno.dtb: thermal-zones: 'big-cluster', 'gpu0', 'gpu1', 'little-cluster', 'pmic', 'soc'
->>     do not match any of the regexes: '^[a-zA-Z][a-zA-Z0-9\\-]{1,12}-thermal$', 'pinctrl-[0-9]+'
+>> I'm not sure the meaning of
+>>      if (down < start
+>>
+>> For example, if start is page-aligned, down == 0.
+>>
+>> so as long as start > 0 and page-aligned, it will return
+>> -ENOBUFS.  Does it an intended behavior?
 > 
-> You've just traded this warning for these:
+> Yeah, I think that's wrong.
 > 
->       6  thermal-zones: 'little-cluster-thermal' does not match any of
-> the regexes: '^[a-zA-Z][a-zA-Z0-9\\-]{1,12}-thermal$',
-
-Uh, now I wonder how did I see the warning going away.
-
-
-> 'pinctrl-[0-9]+'
->       4  thermal-zones: gpu1-thermal: 'trips' is a required property
->       4  thermal-zones: gpu0-thermal: 'trips' is a required property
->       4  thermal-zones: big-cluster-thermal: 'trips' is a required property
+> Does the attached help?
 > 
-> Last I checked this, it looked like the length of the child names was
-> limited because the thermal subsys uses the node names for its naming
-> which is limited to 20 chars (with null). Though the regex here allows
-> for 21 chars without nul. Looks like a double off by one error.
+> David
+> ---
 
-Yes, that's another issue.
+Tested-by: Jia Zhu <zhujia.zj@bytedance.com>
 
 > 
-> The thought I had at the time was to make the kernel drop '-thermal'
-> from its names. Might be an (Linux) ABI issue if userspace cares (I
-> think it shouldn't). Also, I'm not sure how the kernel handles the
-> names overflowing. Maybe it is fine and we can just extend the length
-> in the schema from 12 to 18 (plus the 1 starting char).
-
-The name is used in the "/sys/class/thermal/thermal_zone0/type" file, so
-actually some userspace could depend on it, but it would be affected
-anyway by my renaming of nodes.
-
-Best regards,
-Krzysztof
-
+> diff --git a/fs/cachefiles/io.c b/fs/cachefiles/io.c
+> index bffffedce4a9..7529b40bc95a 100644
+> --- a/fs/cachefiles/io.c
+> +++ b/fs/cachefiles/io.c
+> @@ -522,16 +522,22 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
+>   			       bool no_space_allocated_yet)
+>   {
+>   	struct cachefiles_cache *cache = object->volume->cache;
+> -	loff_t start = *_start, pos;
+> -	size_t len = *_len, down;
+> +	unsigned long long start = *_start, pos;
+> +	size_t len = *_len;
+>   	int ret;
+>   
+>   	/* Round to DIO size */
+> -	down = start - round_down(start, PAGE_SIZE);
+> -	*_start = start - down;
+> -	*_len = round_up(down + len, PAGE_SIZE);
+> -	if (down < start || *_len > upper_len)
+> +	start = round_down(*_start, PAGE_SIZE);
+> +	if (start != *_start) {
+> +		kleave(" = -ENOBUFS [down]");
+> +		return -ENOBUFS;
+> +	}
+> +	if (*_len > upper_len) {
+> +		kleave(" = -ENOBUFS [up]");
+>   		return -ENOBUFS;
+> +	}
+> +
+> +	*_len = round_up(len, PAGE_SIZE);
+>   
+>   	/* We need to work out whether there's sufficient disk space to perform
+>   	 * the write - but we can skip that check if we have space already
+> @@ -542,7 +548,7 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
+>   
+>   	pos = cachefiles_inject_read_error();
+>   	if (pos == 0)
+> -		pos = vfs_llseek(file, *_start, SEEK_DATA);
+> +		pos = vfs_llseek(file, start, SEEK_DATA);
+>   	if (pos < 0 && pos >= (loff_t)-MAX_ERRNO) {
+>   		if (pos == -ENXIO)
+>   			goto check_space; /* Unallocated tail */
+> @@ -550,7 +556,7 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
+>   					  cachefiles_trace_seek_error);
+>   		return pos;
+>   	}
+> -	if ((u64)pos >= (u64)*_start + *_len)
+> +	if (pos >= start + *_len)
+>   		goto check_space; /* Unallocated region */
+>   
+>   	/* We have a block that's at least partially filled - if we're low on
+> @@ -563,13 +569,13 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
+>   
+>   	pos = cachefiles_inject_read_error();
+>   	if (pos == 0)
+> -		pos = vfs_llseek(file, *_start, SEEK_HOLE);
+> +		pos = vfs_llseek(file, start, SEEK_HOLE);
+>   	if (pos < 0 && pos >= (loff_t)-MAX_ERRNO) {
+>   		trace_cachefiles_io_error(object, file_inode(file), pos,
+>   					  cachefiles_trace_seek_error);
+>   		return pos;
+>   	}
+> -	if ((u64)pos >= (u64)*_start + *_len)
+> +	if (pos >= start + *_len)
+>   		return 0; /* Fully allocated */
+>   
+>   	/* Partially allocated, but insufficient space: cull. */
+> @@ -577,7 +583,7 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
+>   	ret = cachefiles_inject_remove_error();
+>   	if (ret == 0)
+>   		ret = vfs_fallocate(file, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
+> -				    *_start, *_len);
+> +				    start, *_len);
+>   	if (ret < 0) {
+>   		trace_cachefiles_io_error(object, file_inode(file), ret,
+>   					  cachefiles_trace_fallocate_error);
+> 
 
