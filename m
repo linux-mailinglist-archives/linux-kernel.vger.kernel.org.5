@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-15997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75A518236CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:53:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C5C58236CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8719B1C2457D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:53:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF3252875DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0579E1D6A8;
-	Wed,  3 Jan 2024 20:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 492491DA38;
+	Wed,  3 Jan 2024 20:53:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X5EhMseM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tdp2Crew"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3470A1D69F
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 20:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 595951DA22
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 20:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d3fe03b6b7so23973185ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 12:53:13 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d437a2a4c7so18534505ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 12:53:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704315192; x=1704919992; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704315196; x=1704919996; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fdLU/U7TSYkmEg20IDPG1xvAMQzbpbdvIaAXCBEqQ4o=;
-        b=X5EhMseMg9mA7yUzkxL4xRSciB8MH1PJmMjK7AcnkvDD+Rnt4CNl1Qs1IuPi6t7Xs8
-         ishKituAjZjvunoZiKV17skgDAeQX+QFz4lhLL4hmg0FsbUM7NPXw1sf7buyEilNp6x+
-         uEkolCMlGejrd78N8wAcu6LLcH52cL3ufktBZmwzh12Iucgz3WTqzFtyEjOhG/1d+pzd
-         FB2piL7d1YasiICwGKPZZ9PhU83EFGICSX+4AnRTuo43zMeZQ/tpIoAv2U8hJAyQMvNt
-         zrypNzRBR+hCNqdfv9LNLkN0O6y7HYBgg8BaBuDyJ7mAL6Q7owOMscSPiKukbCDzagmY
-         bo2g==
+        bh=iYaz82mYYzCwX1xxNWNg9eztYs/P62dbK5BPPUgSW7A=;
+        b=Tdp2CrewIbAHRUk4n+pBaxA2OFdUjwdwTw1vpI+fcGI6ktQiHXE3HLoHfByhTt7B9J
+         Qff2O1niNjssRiv3LwLPFONX5rw0/8s6huYLgTzsWeutUJAKrUFFKTJFTX/sX6W3WSGw
+         Cg9e/4ZRjyQK+toqfvcBi4DmVJDc8hbV7woOVSXRgawHKT1dHmY44mCRMkWiYhWlPMue
+         MsoeFd2TeaqQKJ6puVGW1qJvev6YxuPWmxJSnMEZkDuTR6iZRNtvfIo7GOVLu7lro84X
+         LNdbGbdIYQ0Easb0ihtzpWVwlairqqsRErHxigR9bIihssL1cwQS0ilt24s9aYj/SGrH
+         vaWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704315192; x=1704919992;
+        d=1e100.net; s=20230601; t=1704315196; x=1704919996;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fdLU/U7TSYkmEg20IDPG1xvAMQzbpbdvIaAXCBEqQ4o=;
-        b=E5jKBcAmtYQdLQW7iZrqR+HjhOELVDm7kxgbfwslQG3YBnQ8QB9p9kINaKjDPunxNz
-         jhPDPWlmKWFqSuydQ15tX4brgZAGNM43ozsc5o64vAcI7Ur6ekAVU5F4xNNGIOQIpo4e
-         8OgKH8MJtiBlCuRgbMKroImPIlAN10jNCCWRVQ4cT8P+pE20B76taYxtdeTpal+c+5rv
-         sHpnv6Af9JbD6Z1ffboOAF0SggDAjEPheU7T+5sTQY2ziDb8uj60cjoc7FCD/p0FRfBl
-         woO5AbD41Mtk/WovD2oUzAQu+WzSVNhvYOzdTnJP3jAJFISXVQfMgmVDAhL0gFOeoseV
-         uOew==
-X-Gm-Message-State: AOJu0YzIWbrbrzeuM1hTq99akPUP0rJgvH6jqZ0hEFIb84S5hYS4lVOt
-	S1aCGUzmu/Ray47wE7Tl4F8=
-X-Google-Smtp-Source: AGHT+IFhXtslDqW3VNogcPWk2CedNHjbWf5n5N05FrZG2eZoZnnaT9sC1/euSV8v6JKmkXEkyWs6IA==
-X-Received: by 2002:a17:903:2449:b0:1d4:bd3f:4d2e with SMTP id l9-20020a170903244900b001d4bd3f4d2emr9338233pls.0.1704315192430;
-        Wed, 03 Jan 2024 12:53:12 -0800 (PST)
+        bh=iYaz82mYYzCwX1xxNWNg9eztYs/P62dbK5BPPUgSW7A=;
+        b=VAkxe9MQ4TwzDZoKSGHb2DWD4UrbtBu7i8nYIcbSBXgXgRkmat+hCObNsnJhj51+a4
+         iqw1aBehBkj0oTQLZHJ6lc+yEw7Nu28NXTszS6k+3nIzZcSleC3hOlyUZs1WUCJhL32k
+         uUkkPxgfdkPYuDSENsY4xhcPFC0UNViZ12pArl1JOb0WNXZEF/Wa3UsFVHuL14pWZv9d
+         3Tsuvoc/ZhGEcQ68gsUKumGJFKrxJ6wUMVwiuxsqX8llzzR6OPw5uqsksE6AtOzqvPYu
+         PbusnHCUQEYpdUJJGEpIzoPQuQfuoSu6VIGU1W+sxPuxnVXTo7MAb2Z8R+hC80M4A1qS
+         SOKA==
+X-Gm-Message-State: AOJu0YzjX/G4qJ8iswcYWvYIdBV9C8vPAYBsNe3veBwTgVZ++/0id2qk
+	8INqnTvQoSEqSA0wGlD2JMU=
+X-Google-Smtp-Source: AGHT+IExLOnTv0W1LVVOICKJH4TFBkPWrlo6VuUHn/Mjcq5NQLpSOdRfBiCw5gTx+xcMdTIz7xSEfQ==
+X-Received: by 2002:a17:903:18b:b0:1d3:9a7d:a39b with SMTP id z11-20020a170903018b00b001d39a7da39bmr21061978plg.5.1704315195665;
+        Wed, 03 Jan 2024 12:53:15 -0800 (PST)
 Received: from localhost.localdomain ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id i17-20020a17090332d100b001d47d37d361sm13900434plr.154.2024.01.03.12.53.10
+        by smtp.gmail.com with ESMTPSA id i17-20020a17090332d100b001d47d37d361sm13900434plr.154.2024.01.03.12.53.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 12:53:11 -0800 (PST)
+        Wed, 03 Jan 2024 12:53:15 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: akpm@linux-foundation.org
 Cc: irogers@google.com,
 	linux-kernel@vger.kernel.org,
 	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH v2 1/2] lib min_heap: Optimize number of calls to min_heapify()
-Date: Thu,  4 Jan 2024 04:52:58 +0800
-Message-Id: <20240103205259.2108410-2-visitorckw@gmail.com>
+Subject: [PATCH v2 2/2] lib min_heap: Optimize number of comparisons in min_heapify()
+Date: Thu,  4 Jan 2024 04:52:59 +0800
+Message-Id: <20240103205259.2108410-3-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240103205259.2108410-1-visitorckw@gmail.com>
 References: <20240103205259.2108410-1-visitorckw@gmail.com>
@@ -76,26 +76,82 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Improve the heap construction process by reducing unnecessary heapify
-operations. Specifically, adjust the starting condition from n / 2 to
-n / 2 - 1 in the loop that iterates over all non-leaf elements.
+Optimize the min_heapify() function, resulting in a significant
+reduction of approximately 50% in the number of comparisons for large
+random inputs, while maintaining identical results.
+
+The current implementation performs two comparisons per level to
+identify the minimum among three elements. In contrast, the proposed
+bottom-up variation uses only one comparison per level to assess two
+children until reaching the leaves. Then, it sifts up until the correct
+position is determined.
+
+Typically, the process of sifting down proceeds to the leaf level,
+resulting in O(1) secondary comparisons instead of log2(n). This
+optimization significantly reduces the number of costly indirect
+function calls and improves overall performance.
 
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- include/linux/min_heap.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/min_heap.h | 42 +++++++++++++++++++++-------------------
+ 1 file changed, 22 insertions(+), 20 deletions(-)
 
 diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
-index 44077837385f..18a581310eb3 100644
+index 18a581310eb3..d52daf45861b 100644
 --- a/include/linux/min_heap.h
 +++ b/include/linux/min_heap.h
-@@ -70,7 +70,7 @@ void min_heapify_all(struct min_heap *heap,
+@@ -35,31 +35,33 @@ static __always_inline
+ void min_heapify(struct min_heap *heap, int pos,
+ 		const struct min_heap_callbacks *func)
  {
- 	int i;
+-	void *left, *right, *parent, *smallest;
++	void *left, *right;
+ 	void *data = heap->data;
++	void *root = data + pos * func->elem_size;
++	int i = pos, j;
  
--	for (i = heap->nr / 2; i >= 0; i--)
-+	for (i = heap->nr / 2 - 1; i >= 0; i--)
- 		min_heapify(heap, i, func);
++	/* Find the sift-down path all the way to the leaves. */
+ 	for (;;) {
+-		if (pos * 2 + 1 >= heap->nr)
++		if (i * 2 + 2 >= heap->nr)
+ 			break;
++		left = data + (i * 2 + 1) * func->elem_size;
++		right = data + (i * 2 + 2) * func->elem_size;
++		i = func->less(left, right) ? i * 2 + 1 : i * 2 + 2;
++	}
+ 
+-		left = data + ((pos * 2 + 1) * func->elem_size);
+-		parent = data + (pos * func->elem_size);
+-		smallest = parent;
+-		if (func->less(left, smallest))
+-			smallest = left;
+-
+-		if (pos * 2 + 2 < heap->nr) {
+-			right = data + ((pos * 2 + 2) * func->elem_size);
+-			if (func->less(right, smallest))
+-				smallest = right;
+-		}
+-		if (smallest == parent)
+-			break;
+-		func->swp(smallest, parent);
+-		if (smallest == left)
+-			pos = (pos * 2) + 1;
+-		else
+-			pos = (pos * 2) + 2;
++	/* Special case for the last leaf with no sibling. */
++	if (i * 2 + 2 == heap->nr)
++		i = i * 2 + 1;
++
++	/* Backtrack to the correct location. */
++	while (i != pos && func->less(root, data + i * func->elem_size))
++		i = (i - 1) / 2;
++
++	/* Shift the element into its correct place. */
++	j = i;
++	while (i != pos) {
++		i = (i - 1) / 2;
++		func->swp(data + i * func->elem_size, data + j * func->elem_size);
+ 	}
  }
  
 -- 
