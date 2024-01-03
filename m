@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-15922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C166A8235B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:43:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBA128235BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:43:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C9411C243CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:43:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D5E71C242DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 049251CF8C;
-	Wed,  3 Jan 2024 19:42:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 614BB1D555;
+	Wed,  3 Jan 2024 19:43:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="FKMdVu4+"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="baeYSrCJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6329A1CF81
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 19:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 158411D54D
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 19:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FwJ15wlSzF4/vHT7hJ9id4ejMIjuRmQYp22jUIL0Oe4iPmfIT6iME/n3lx+btVb7Zr5Xr8NONRvzzEDnuQ3VEiCrDlcPsG9wjNHG+J0VdR1sXNAfi+MBzvfn3rfJx6NDQZ+1Tw/oUqJ0aC12tu1QHjgpe/TSszcT55NedV4gKnUtXa+UtinATsPuHsC/0QQdFFYJtiMbU5KuCGu2svMcmkCRuI6nlT00VmMAKWJXd3diBCz9U8wTX12rz68qUNZnR8I0yu1PmPTTXWA3JuB7RmEl4hb4csq3NouwyfqZWquHYtLvuyTSloy1f0IMQPA/4dllB3L7NTJEyKD5x8Vwjw==
+ b=br1i40Og6Tp5+0IahbgdBi8BpM7pnCxg1NWlaSiDHt0Y1vOXqw3Ojn2xzyIWQIe9HOtmmH0b7kLPw5nYE6mr6yzoxKSjy9wLEc7GpyBhwMuYZHhaG8KS5SYI2ILAqCFuiX2KMTdbxiEg1f0QDfd7IdLl1m4xJjFXere3qBCmf1go1/5Tl+lyJpG6bzfly19UKtmOlH38WxFmNPBZO9Cc9yVBK8SNzs+bh0GFiJqZP8+Q+Mvl/3bBMK3x1gfjBG5AdELKL3vOUm0M4sYFhFDCHAOLv8RvVcnWG7Ow+IOgePGI6WLGOb3tbHNiabPN3lCchJvbsYqyqEULyaXLQ1fL8Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=raBj4c3+FMDCNFIgj6XdPmbxXugjDrni4g1vnesG2j8=;
- b=KcgGI9o2pVbdqrAiSS2bx/LGE8xSDXyxrQKeyw1BlsKGuXPMMSUsCO9cDUCoKgNtxZ3rp0VZr6vXiSs1V/te2I7/KqpTVneeyA/VxxbHjjdtgKAfBYiVDKxj3khhrxKAesSFHJhgBoguQcNZcBW+qT7OKMTTh32kIR/PKud9spQa20V7QREAeGuHqr02Jdc7yRIMBZ3eoN9DrlvqpOK1YG7Ds9qfvw8vNfRnHA7MEC3TDHF7n3qaRrmt8qUpLqXMGlQO23rMoj4Tz9l8RHrTCzOiNNwYfwuA4BI+piqvwF/7DapNUWvC++YjDlKk0kQBh+zEOJYdgQ/6iL6JlTBg8Q==
+ bh=Wx9V1Na8a9AQ/uzhKpibm8d/6oDHJtw84wqEj27tbmU=;
+ b=QasZhsJTfDSwgp+4MfjSCijuxPqW/ObWllfM1Rtti33Efx6I0ASwAymZ4nHK6Rmn8bRKl3FWYpTt9T8MIQxWyn933jOEITpSjeH7l2f1+ZLlreC7cDWe8Bd2XlMaaDVflcWx5W4yyCNHw0KCkwpPCwC0x79kusM6/sAXIhryDcu0YA2ZzNYbOjxm0YlrWLoOPR0WjXm+jI6WmJKCi9rUz2fSSKr00moaxuKPw6wXbGXLCJhLmPk9CRfoBP3otKXRoc6CMwN+3ir/GvWzS15k6mabI4lrfpI2Jm8YBOiUfMHxq1XimOPBpboEVFzb8g+fqM5Wh8cdxiHmdq1C07Ugiw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=raBj4c3+FMDCNFIgj6XdPmbxXugjDrni4g1vnesG2j8=;
- b=FKMdVu4+AYNxE/g3ZnNxX57wsEob2mBKhK5M2hJHcQGSEwFRxKWAUTFpryEDTRZOvhaUF6OWB8IY/HR9EanQVWOUDYjM0bA+xQwl5uHuhbFUoMxST1/NS0GkhDoz4ObEqQTNBwpLK72n0j3ab0R7tZFVxDFNOZzwtT6d+sbNDqg=
+ bh=Wx9V1Na8a9AQ/uzhKpibm8d/6oDHJtw84wqEj27tbmU=;
+ b=baeYSrCJ7AMMECtOdzz2+HB6BLDJENrE5IHzQ3vYkrW7eTT7JSKV6taR2L+m4EMeTrn6gUe9o4IK8tvq44724FafMtWLb1HzzY7+daLSRoN+FZvnGFDO+z2lwlWjshHdgZcRpFDBgVofhxQ3axmn4+DnyfhbnMaCC7eirK0qOXs=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
  by DS7PR12MB5813.namprd12.prod.outlook.com (2603:10b6:8:75::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Wed, 3 Jan
- 2024 19:42:49 +0000
+ 2024 19:43:04 +0000
 Received: from MW3PR12MB4553.namprd12.prod.outlook.com
  ([fe80::1549:8c93:8585:ca1b]) by MW3PR12MB4553.namprd12.prod.outlook.com
  ([fe80::1549:8c93:8585:ca1b%5]) with mapi id 15.20.7135.026; Wed, 3 Jan 2024
- 19:42:48 +0000
-Message-ID: <b23341cb-0efb-416c-91e3-0538836af890@amd.com>
-Date: Wed, 3 Jan 2024 13:42:45 -0600
+ 19:43:03 +0000
+Message-ID: <286216a9-d586-42dc-9f1a-8909364bd7bd@amd.com>
+Date: Wed, 3 Jan 2024 13:43:01 -0600
 User-Agent: Mozilla Thunderbird
+From: "Moger, Babu" <babu.moger@amd.com>
+Subject: Re: [PATCH v8 08/24] x86/resctrl: Track the number of dirty RMID a
+ CLOSID has
 Reply-To: babu.moger@amd.com
-Subject: Re: [PATCH v8 00/24] x86/resctrl: monitored closid+rmid together,
- separate arch/fs locking
-Content-Language: en-US
 To: James Morse <james.morse@arm.com>, x86@kernel.org,
  linux-kernel@vger.kernel.org
 Cc: Fenghua Yu <fenghua.yu@intel.com>,
@@ -68,8 +68,9 @@ Cc: Fenghua Yu <fenghua.yu@intel.com>,
  Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
  dfustini@baylibre.com, amitsinght@marvell.com
 References: <20231215174343.13872-1-james.morse@arm.com>
-From: "Moger, Babu" <babu.moger@amd.com>
-In-Reply-To: <20231215174343.13872-1-james.morse@arm.com>
+ <20231215174343.13872-9-james.morse@arm.com>
+Content-Language: en-US
+In-Reply-To: <20231215174343.13872-9-james.morse@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: SN1PR12CA0078.namprd12.prod.outlook.com
@@ -83,183 +84,243 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|DS7PR12MB5813:EE_
-X-MS-Office365-Filtering-Correlation-Id: f1935caa-bd69-43a1-d5b8-08dc0c942a5b
+X-MS-Office365-Filtering-Correlation-Id: 6cdef16f-007d-42e0-c1e7-08dc0c94335f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	1WtjYe++PR+7eL9ziBnELSMPOMwSbF2Kl/NjcZpxRcfmeb7eQtFqbJWJolGEkmOF/9OJAeyNH9ou9oAVkENbEhujYgzlECu380rR/NIFdAzkCahJz9ArSNDLae1bTM5In4WzUtEIW4ygXaM1lRPEWJzH7SH64XKRGoiNrQxkUwLlTNyNujmXz7oWjOvFoMzAQbE9ZeOY8ZYU21cdMFQ05qxvv81eoENTC3uzbvBuRXKdhGRXAxwQ2sUlE+WLumZVuA907856Yt293ugx0p9oR9LUuXv9P5NBUFW0Lzqlx5uOgjK1Ju3ziMxFpcZYVzbdPdku0oEOtw3q1dR/RA0H2xYe0QBqHgbc4DV6ZJIaG5N9n981HdPdNV/3EXbq7X6N4TlMZCPNz3YXYJL/hZvbGiEJANtulWmHSlTB0rlWa27A18EXa57+ftn/nkNc7nfP8B/DTFcz18CmmokxYOGpGH+90r4QSZRC07Qx8lk29Uu1kk2AjV8b+vBADmNqWc87aaKpsBKmOyTE7o+KLqyZsPxzlT88ZfFhJzBCgw2CDwA0yxwGUnMmxac8dg/Tca0U3rl3/6YJ1rUCgfxDZoFyBltzSzCx3iYcT4+57ADRZ2+yqnZcdPXkkj++vkUPs33t
+	hp8ATpBKwJmzC8g66nvMmXKmFJH9SZu3Heigp2rbLQEMu48e+/5Gdd0dqX3/PBAuk2AMW+tRSMRHeaJGmTDyVLJGzPEosy+MeNZNDtpBzvCQp7NJjJS5Md0G2BW4b4ro5HxWotFQRYGe/BFKHfrubB9L9/TLrMDMGHB3W46B9N5yB7iRtouWiPqSuh/waUFhybzSIAfhYjV6nrF5E2D7WgJEex3gsXwYcwDzeftoXvRTl1qp4v+7G1yV4GRA70+M3c7tVJn0d1PYezkSsYsR3r94NdpkGkWvN2CaNHtwORoseEs0Q/PVd3wGuKD2z1gvuA12H25/wA/d7iEKUUVJWlh9gySTrLqZ94AsWKNHj7DEeKUJ9MYbu2SKxpoxaHbjjyXAqCViADX62Bb0p8wvcdlpnfGvnHUkDmyB3hlivH4PnMB4xzxS/Js8vLyRFCiuaMj1p3n9L9E9tTLb7Pvg8Av8Np/2JdkKtQ8VVf7ru3V/2uoo1Y3bOAfftN4I4xryjH7JDtdR+094Ss9Ezz0jedilDtXbDiD7tKr/MjOXNmyyqSgeNn/9VJk/EgKYyYiMrCjHWvVO+5XxcIypS/sLkot1eXLE3aj3phczPoIRdmvuEwDvt7ouWURTDNtMqDPhQIR639mvxhOgTAox0jQHN0jnWWj845kKJVzZgryD3E8=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(136003)(346002)(376002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(4326008)(66476007)(66946007)(66556008)(6486002)(8676002)(54906003)(478600001)(966005)(316002)(8936002)(83380400001)(66899024)(6506007)(53546011)(6512007)(6666004)(26005)(2616005)(7416002)(3450700001)(5660300002)(2906002)(41300700001)(36756003)(38100700002)(86362001)(31696002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(136003)(346002)(376002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(4326008)(66476007)(66946007)(66556008)(6486002)(8676002)(54906003)(478600001)(316002)(8936002)(83380400001)(6506007)(53546011)(6512007)(26005)(2616005)(7416002)(3450700001)(5660300002)(2906002)(41300700001)(36756003)(38100700002)(86362001)(31696002)(31686004)(14143004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dlZVN3NSdk9NMVRmTnRiZlVxanUvOGh6QUxCYVRNQzdydjNmTEhqQkdBdnJ4?=
- =?utf-8?B?NTgwR1lKWWQ4ek5VanB2QjBIMVVCZS8rbjh6czFwbVV1eks0d2QzLys1ZXdR?=
- =?utf-8?B?d0NNbE9aaU9SSkNxd1ZtTDJGSmtndmR4UWJPNDVUckEwUDdpSGNTQjRhbmtt?=
- =?utf-8?B?N0RCVlFUbzhUdktLd3k5dUV5aEhMeDhraWdZMEVRRFk1U0lYOG1Ec3NKdUhv?=
- =?utf-8?B?WFI3ZnM0QkE3SHVIZGJGT0ZwdC9nd2xuUUVmZXRBa3N6eE5pNlI2RXA4aDNV?=
- =?utf-8?B?U1NOWndvZGpGSlZtWU1MNjdQV0xFZXpWUkN5enQ5K3VBZHJSdXd5elZSYUNN?=
- =?utf-8?B?MVIyWVlOVVl3R1IwMVFMeUtrZDcrWHU3WXJ4WjN5czQ5ZVZ5VnF2ckd6c2xP?=
- =?utf-8?B?NmNpVE41L2l0WjhOMWo4dFZlc0Jid0lOaUp3Sm1DUHVISEVwNVBaY0lvWmJI?=
- =?utf-8?B?NVBKWGY1ak9neGUzc2NYSnlmUzdUdWtJYUFkME9iekoxc3B4VmJpWDNMd1dh?=
- =?utf-8?B?akt0QUlMdzMxdjVRaGJBUjJjcUwyVWhZWFB3MDRxc3dQRE1sM3VvL0poaDhK?=
- =?utf-8?B?RjdOK2NOMFlRc3Z0R3FDYnowZWJkSERuOS9qQmhXa2plZTgwY1NCU29XOVB6?=
- =?utf-8?B?blV0ME45OXA3WU5WWWc4THBGV0pUVjFuek51eVlUK1RlUHF6eCtqSnl6WHdx?=
- =?utf-8?B?WlFUa0oyWWUwa2h5czArR0ZGTHdMVDF6a0JicW5uQmp6VkNEa1liZTZ5VjFp?=
- =?utf-8?B?YnhqdjUycGMyWDE0Y1RJSmh2UTQxZXBKeEtDTTJXYmhZaG1YTTVLNExud0h6?=
- =?utf-8?B?U1ZRS3cxbnZONlk2V2ovL0FLcDh1aTR0YWYxaDNnL2FUOHdLT1hrL2lKU2Ur?=
- =?utf-8?B?OHlSM3pUczQ2YklRZEdIemxyRmdIMkRBblVxQVhjakdhSDhuWTdEcndzdysw?=
- =?utf-8?B?UzMzR2p1UlBEZmJiTmNKZ2psdlFDdXFMYVpqTTYxOXlIejE3U3BoaUdpQmdy?=
- =?utf-8?B?d3VjcWRCcThYcHhZdGJvbytEVzZSSzU1azRVdTBZeWJZc3B2TTJyU1R1MmhQ?=
- =?utf-8?B?eUY1dXJrY29oY2xIb0JwSjBLMlQvU1NQOGw4S29EOU80QmRPZ2ZoVGozTVVn?=
- =?utf-8?B?REF2dEs4MC9BQTkrYjhaVmJzbUxuR0RzSkZhZFF5Z2VzNCtLZ3dYM2xVbUho?=
- =?utf-8?B?RDNndGJIdjBMZnpCVERkMjlSQlN4QUxXOXpBMi83L29mQm9jc2tUczJYaFFZ?=
- =?utf-8?B?NWRHT2VsYzFrVTBlaDFJM29QbkNsTzNhbS85S2txZmw4bURxT3NYWmREekVF?=
- =?utf-8?B?cWpyNFlFd3VTOHJJTHpjMVZZcTNxTjlhNi84S1ZDK05RaWNPQWQrbDBsVytz?=
- =?utf-8?B?TkdySlJZeXNjVitMYTJBdEJTZzgvSUVseWFWQkh4MHl3MFJiZUV3c0dhN2hq?=
- =?utf-8?B?b2hhRlNRS1JsZzJENkhxUmd5ZVZlckhOdHp2YWVEeEJsK0QrNmFLcWVYSFlv?=
- =?utf-8?B?SFc3d0pyUVN6bUFJQjkrVjlGODlIa3Ixd0g0c1VWQk9wY0FHM1diZTVlVTZa?=
- =?utf-8?B?R3BYemwxZEpSZFR1b0JlRHNFOUlDNXRoOUx6a1Q4SXMwWmVIUFg5d3ZDK1hY?=
- =?utf-8?B?ekR4Zk05QmNMaTNMbXFPWmlOb3duMGdtc3p6YlpaSHJSUTZDM2xPcGFLV1A0?=
- =?utf-8?B?eWM4SnU2dDZhVlA3ekJaWUx6bmJWWGtOMkNlQ3BHdXY3eGxpblE4d1JycWhV?=
- =?utf-8?B?NzJqL2EzQ0xGdnErMTB1bXZOOXpTY3FmL0hxZm16STZjblcvTC92NmZhYktB?=
- =?utf-8?B?T2pjMnBqano5d08yUWFDa3M2SGJFeXE2Wm1lQUl6NHJkRzVScGUrcUFyOSth?=
- =?utf-8?B?MWpFNzVCWVh3bHVkSmJWVk5lQnJXWlJLYmplT254VmFmZHMvcmY1QWVmYkVM?=
- =?utf-8?B?ajVhNzgyMUJDMnQvbnJoREVTSVBiM2lkelMwSlVZK0hqdXNJMUM2Mm9pTVVo?=
- =?utf-8?B?WC9ZN1pqM2N6MDdqb1hSaC9XdVBLZjJkakF4NkZjdHRxaGQzOFRDN0I5VXQ4?=
- =?utf-8?B?MkMvVE5ObnFnRHRoaDBmRmp6bVlLNW01UDd0V2JYV1NKSnd0L3NjWUtzeUFn?=
- =?utf-8?Q?6Mbk=3D?=
+	=?utf-8?B?VnJhMElndlVsd2VWem5iUCtBNHY1UGw0bXQvcVFUVXNKQ3dIeithRllTZy81?=
+ =?utf-8?B?eTlwR3pZYUU5Si9Yc2NwK2pPWlUweFJiR29EM1NZUnY0SzdJODd4MTFYeklh?=
+ =?utf-8?B?cGtZOTg3RkdCVTlLN2hWVUNvcFBrUUY2eXBRUHB0aUZqaFRHdUN4VW4xWkUz?=
+ =?utf-8?B?NW9DczRTRFFuOFIzeWwxNEc2RTBUcTR2Wld4MDZzWUN5RmZWV2RJYXBQR2M2?=
+ =?utf-8?B?aWcydTJSUU9Wak1WaXdNa1lkL0c2SGRWWHJMcVV1WTZLcGpORVZtQm5GOVY4?=
+ =?utf-8?B?TzN6WjArekw5cyszenA1TEJ3bDVOUFhBOFNBdEVLRlZmeEZJTTJmME43YjVt?=
+ =?utf-8?B?NHNQa21OU0wzM1ZQV0t0cXloaVpQNk15Qm44dEhhd2trRUtZYnZmK3ZMZDI0?=
+ =?utf-8?B?QWhJRWdGNnBZVWlISjJTc1Y4MjJQQ0dPcVp2d1V5TUZBZ0lKdHZWd3dEUkRE?=
+ =?utf-8?B?Wk5EYzBLUUJ3bnVlcFFGdHV2cU0vZDNnQk8wejg3Q01TVUN5SEJvZklubGhw?=
+ =?utf-8?B?RmtxRkRYY3dyemppQitxcmdOODhuakViOXJUdnBRVG95ckJBc2pyUkRqaEo1?=
+ =?utf-8?B?N3YzMm5LSkpFaVllRnRXRy9uSFpOMkx2dEYzYlpVQlhwSWtCcFRESWphclpn?=
+ =?utf-8?B?cXhPVERkYWpqZWhhRyszZVhCaUhFNnhnelhuaW9tSWhtTXlnYWZTL3hEbzRT?=
+ =?utf-8?B?VEtab29SZ3VCS0lHdjB1Q1lab2libnB1aVg1Nm9xTUpiRjVmeDJiVzgwVmJH?=
+ =?utf-8?B?b2pDSUpKY3Eyb2xoUCtDOWtvQ1FibDM3VjVSMGw1RnY3UjhwNDRSYVo1ejFa?=
+ =?utf-8?B?SDZHRGZXOFFNak12aFhmb0FZNjhFU3RuTjNxZVA4ZTZNYnlzcU1UL01uU3hH?=
+ =?utf-8?B?OXQzTUU2ZWxWQ0ZNZk4vMGlaTDYyUEN2WSs1b3VUa2JZU242eEg5ZTRqR3h0?=
+ =?utf-8?B?KzBST0hKVVdob0sva0k2d205ZVZ1bjc3d1pTaURaTG85bThpREJzUFhkRmtH?=
+ =?utf-8?B?S04zd3B1bGJBVHBXTnFmMTlLeEJIcGVqTDQ4TnYxYkVJZFpYNFo3VlpnUklx?=
+ =?utf-8?B?Ny9JWnlHbmg2VjhUY1VVemtkRzdKcG1lQzNQdWplN1BUL09HWFJUQnJoNnpD?=
+ =?utf-8?B?d0l0b1RGeFAvZkZYbGZmOTdSNS85NWJacHlUSE9YSjU4YklMNzg0Wk1teFhL?=
+ =?utf-8?B?VitTZ1QwSFV3cFpucWI1dUkxQkZ1SlVRRkNUMjVuMmxPQnEyQTdMSlovQmxC?=
+ =?utf-8?B?cmdUNVBSNU1TQ2RvRk1lNmQ4b3N6a1hVUXczamJrRkovb3cvbXV4ZEZXZGF2?=
+ =?utf-8?B?NFZwZDgvOFFycVEvYkFFSUI4eFhuSzAyMWg3dFhSRTlwTk1PL2tjeDk2NkVj?=
+ =?utf-8?B?RzRRaUk2Rmd4eGJGanpQeEc3aVZjUElVQ1FuNUdmSTQyOS84cVNWOE8yZXVh?=
+ =?utf-8?B?endTOTVySFF3akw0M3dQa3pjandxOTg1QnpjRVZtT2VycDVpUmFHMHRZRi9R?=
+ =?utf-8?B?Ynd3aDNtMXk0TlRsQ3FONGN1RlNkNFNjay9OeW5qQXhzMUI2Vk1pTDRXSmhj?=
+ =?utf-8?B?NlI4MDlPS3FVYnlObmtGc05wN1AwSERsQ1BuVzU5cWR5V3JzY3g5M2xUR0ZB?=
+ =?utf-8?B?dENyREM0SjYrcnplQThESm4wN1A5UkxPdWhkVE0yRW9CbjNDVVJrT0JZRUFU?=
+ =?utf-8?B?TFd2OG50eU4vR1I1bmd0alFsQ3d1blZGYW11cnRIeUtJWTNWK3NTNUY5SEVx?=
+ =?utf-8?B?d2JMSVBtVXFaeFB2OCtaZkY5MTFhRThyL1VFNzJBYTVYM2JOMC93V3I5RXA2?=
+ =?utf-8?B?NmJQYUwvb0tGRGdUZHlnT3BHd0k3Z1hrd2M3SjRxUm5IYklQYUhsSnBSRXlk?=
+ =?utf-8?B?YmxrSFVkWUpFTFV6aHg5S0xlVTllcStCcmxUcTZCQXFPZ1YwczVxazlPTVdE?=
+ =?utf-8?B?d2IvMStIZm95VmFXa2IrbTN6cEs4YW5qWUdmajFXZWg5NnBDSWJyWDZ0UnRD?=
+ =?utf-8?B?RFczYnYwTFB3ZTk2czB2ZTJUNlJoQ2dUME91L25uM2kyTmNtUGlXeGZhRDZR?=
+ =?utf-8?B?ajhXMWVtWTc1VjVpUGkrUDhQbXNueGd3MGY4bS9Xc3JaUC85TE00T3ZOeG8y?=
+ =?utf-8?Q?MkqE=3D?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f1935caa-bd69-43a1-d5b8-08dc0c942a5b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6cdef16f-007d-42e0-c1e7-08dc0c94335f
 X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2024 19:42:48.7659
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2024 19:43:03.7549
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: B/t+PyG1mPT0+vsUTiRT/m/Yj50A6Fj0KAoERwu4FDQyypNV33jtuneriAL1q5jP
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5bWy/R4Dk7cyQstzXrouMJMaMEz1tdANmrILKfevpWNa5EL4hTuAKSK2yCehrUGi
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5813
 
-Hi James,
-Tested the series. Looks good.
-Thanks
-Babu
+
 
 On 12/15/23 11:43, James Morse wrote:
-> Some of the changes this version are:
->  * Fixed a bounds checking bug in cpumask_any_housekeeping(),
->  * Moved the kfree() of rmid_ptrs[] later,
+> MPAM's PMG bits extend its PARTID space, meaning the same PMG value can be
+> used for different control groups.
 > 
-> Changes are noted in each patch, I've not added 'no changes' notes
-> if these need double checking anyway. I'll try again next series.
+> This means once a CLOSID is allocated, all its monitoring ids may still be
+> dirty, and held in limbo.
 > 
-> ~
+> Keep track of the number of RMID held in limbo each CLOSID has. This will
+> allow a future helper to find the 'cleanest' CLOSID when allocating.
 > 
-> This series does two things, it changes resctrl to call resctrl_arch_rmid_read()
-> in a way that works for MPAM, and it separates the locking so that the arch code
-> and filesystem code don't have to share a mutex. I tried to split this as two
-> series, but these touch similar call sites, so it would create more work.
+> The array is only needed when CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID is
+> defined. This will never be the case on x86.
 > 
-> (What's MPAM? See the cover letter of the first series. [1])
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
+> Tested-by: Peter Newman <peternewman@google.com>
+> Tested-by: Babu Moger <babu.moger@amd.com>
+> Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
+> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+
+Reviewed-by: Babu Moger <babu.moger@amd.com>
+
+> ---
+> Changes since v4:
+>  * Moved closid_num_dirty_rmid[] update under entry->busy check
+>  * Take the mutex in dom_data_init() as the caller doesn't.
 > 
-> On x86 the RMID is an independent number. MPAMs equivalent is PMG, but this
-> isn't an independent number - it extends the PARTID (same as CLOSID) space
-> with bits that aren't used to select the configuration. The monitors can
-> then be told to match specific PMG values, allowing monitor-groups to be
-> created.
+> Changes since v5:
+>  * Added braces after an else.
+>  * Made closid_num_dirty_rmid an unsigned int.
+>  * Moved mutex_lock() in dom_data_init() to cover the whole function.
 > 
-> But, MPAM expects the monitors to always monitor by PARTID. The
-> Cache-storage-utilisation counters can only work this way.
-> (In the MPAM spec not setting the MATCH_PARTID bit is made CONSTRAINED
-> UNPREDICTABLE - which is Arm's term to mean portable software can't rely on
-> this)
+> Changes since v6:
+>  * Made closid_num_dirty_rmid[] and associated tmp variables u32.
 > 
-> It gets worse, as some SoCs may have very few PMG bits. I've seen the
-> datasheet for one that has a single bit of PMG space.
+> Changes since v7:
+>  * Clobber kfree()d variable with NULL.
+>  * Guard the use of closid_num_dirty_rmid with IS_ENABLED() so it can be
+>    optimised out on x86.
+> ---
+>  arch/x86/kernel/cpu/resctrl/monitor.c | 69 +++++++++++++++++++++++----
+>  1 file changed, 59 insertions(+), 10 deletions(-)
 > 
-> To be usable, MPAM's counters always need the PARTID and the PMG.
-> For resctrl, this means always making the CLOSID available when the RMID
-> is used.
-> 
-> To ensure RMID are always unique, this series combines the CLOSID and RMID
-> into an index, and manages RMID based on that. For x86, the index and RMID
-> would always be the same.
-> 
-> 
-> Currently the architecture specific code in the cpuhp callbacks takes the
-> rdtgroup_mutex. This means the filesystem code would have to export this
-> lock, resulting in an ill-defined interface between the two, and the possibility
-> of cross-architecture lock-ordering head aches.
-> 
-> The second part of this series adds a domain_list_lock to protect writes to the
-> domain list, and protects the domain list with RCU - or cpus_read_lock().
-> 
-> Use of RCU is to allow lockless readers of the domain list. To get MPAMs monitors
-> working, its very likely they'll need to be plumbed up to perf. An uncore PMU
-> driver would need to be a lockless reader of the domain list.
-> 
-> 
-> 
-> This series is based on v6.7-rc2, and can be retrieved from:
-> https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git mpam/monitors_and_locking/v8
-> 
-> Bugs welcome,
-> 
-> Thanks,
-> 
-> James
-> 
-> [1] https://lore.kernel.org/lkml/20210728170637.25610-1-james.morse@arm.com/
-> [v1] https://lore.kernel.org/all/20221021131204.5581-1-james.morse@arm.com/
-> [v2] https://lore.kernel.org/lkml/20230113175459.14825-1-james.morse@arm.com/
-> [v3] https://lore.kernel.org/r/20230320172620.18254-1-james.morse@arm.com/
-> [v4] https://lore.kernel.org/r/20230525180209.19497-1-james.morse@arm.com/
-> [v5] https://lore.kernel.org/lkml/20230728164254.27562-1-james.morse@arm.com/
-> [v6] https://lore.kernel.org/all/20230914172138.11977-1-james.morse@arm.com/
-> [v7] https://lore.kernel.org/r/20231025180345.28061-1-james.morse@arm.com/
-> 
-> James Morse (24):
->   tick/nohz: Move tick_nohz_full_mask declaration outside the #ifdef
->   x86/resctrl: kfree() rmid_ptrs from resctrl_exit()
->   x86/resctrl: Create helper for RMID allocation and mondata dir
->     creation
->   x86/resctrl: Move rmid allocation out of mkdir_rdt_prepare()
->   x86/resctrl: Track the closid with the rmid
->   x86/resctrl: Access per-rmid structures by index
->   x86/resctrl: Allow RMID allocation to be scoped by CLOSID
->   x86/resctrl: Track the number of dirty RMID a CLOSID has
->   x86/resctrl: Use __set_bit()/__clear_bit() instead of open coding
->   x86/resctrl: Allocate the cleanest CLOSID by searching
->     closid_num_dirty_rmid
->   x86/resctrl: Move CLOSID/RMID matching and setting to use helpers
->   x86/resctrl: Add cpumask_any_housekeeping() for limbo/overflow
->   x86/resctrl: Queue mon_event_read() instead of sending an IPI
->   x86/resctrl: Allow resctrl_arch_rmid_read() to sleep
->   x86/resctrl: Allow arch to allocate memory needed in
->     resctrl_arch_rmid_read()
->   x86/resctrl: Make resctrl_mounted checks explicit
->   x86/resctrl: Move alloc/mon static keys into helpers
->   x86/resctrl: Make rdt_enable_key the arch's decision to switch
->   x86/resctrl: Add helpers for system wide mon/alloc capable
->   x86/resctrl: Add CPU online callback for resctrl work
->   x86/resctrl: Allow overflow/limbo handlers to be scheduled on any-but
->     cpu
->   x86/resctrl: Add CPU offline callback for resctrl work
->   x86/resctrl: Move domain helper migration into resctrl_offline_cpu()
->   x86/resctrl: Separate arch and fs resctrl locks
-> 
->  arch/x86/include/asm/resctrl.h            |  90 +++++
->  arch/x86/kernel/cpu/resctrl/core.c        | 102 ++---
->  arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  48 ++-
->  arch/x86/kernel/cpu/resctrl/internal.h    |  67 +++-
->  arch/x86/kernel/cpu/resctrl/monitor.c     | 449 +++++++++++++++++-----
->  arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  15 +-
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 359 ++++++++++++-----
->  include/linux/resctrl.h                   |  48 ++-
->  include/linux/tick.h                      |   9 +-
->  9 files changed, 911 insertions(+), 276 deletions(-)
-> 
+> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+> index 1f371b108a74..6dfc68c800c8 100644
+> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+> @@ -50,6 +50,13 @@ struct rmid_entry {
+>   */
+>  static LIST_HEAD(rmid_free_lru);
+>  
+> +/**
+> + * @closid_num_dirty_rmid    The number of dirty RMID each CLOSID has.
+> + *     Only allocated when CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID is defined.
+> + *     Indexed by CLOSID. Protected by rdtgroup_mutex.
+> + */
+> +static u32 *closid_num_dirty_rmid;
+> +
+>  /*
+>   * @rmid_limbo_count - count of currently unused but (potentially)
+>   *     dirty RMIDs.
+> @@ -292,6 +299,17 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
+>  	return 0;
+>  }
+>  
+> +static void limbo_release_entry(struct rmid_entry *entry)
+> +{
+> +	lockdep_assert_held(&rdtgroup_mutex);
+> +
+> +	rmid_limbo_count--;
+> +	list_add_tail(&entry->list, &rmid_free_lru);
+> +
+> +	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID))
+> +		closid_num_dirty_rmid[entry->closid]--;
+> +}
+> +
+>  /*
+>   * Check the RMIDs that are marked as busy for this domain. If the
+>   * reported LLC occupancy is below the threshold clear the busy bit and
+> @@ -328,10 +346,8 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
+>  
+>  		if (force_free || !rmid_dirty) {
+>  			clear_bit(idx, d->rmid_busy_llc);
+> -			if (!--entry->busy) {
+> -				rmid_limbo_count--;
+> -				list_add_tail(&entry->list, &rmid_free_lru);
+> -			}
+> +			if (!--entry->busy)
+> +				limbo_release_entry(entry);
+>  		}
+>  		cur_idx = idx + 1;
+>  	}
+> @@ -398,6 +414,8 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
+>  	u64 val = 0;
+>  	u32 idx;
+>  
+> +	lockdep_assert_held(&rdtgroup_mutex);
+> +
+>  	idx = resctrl_arch_rmid_idx_encode(entry->closid, entry->rmid);
+>  
+>  	entry->busy = 0;
+> @@ -423,10 +441,13 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
+>  	}
+>  	put_cpu();
+>  
+> -	if (entry->busy)
+> +	if (entry->busy) {
+>  		rmid_limbo_count++;
+> -	else
+> +		if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID))
+> +			closid_num_dirty_rmid[entry->closid]++;
+> +	} else {
+>  		list_add_tail(&entry->list, &rmid_free_lru);
+> +	}
+>  }
+>  
+>  void free_rmid(u32 closid, u32 rmid)
+> @@ -792,13 +813,33 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
+>  static int dom_data_init(struct rdt_resource *r)
+>  {
+>  	u32 idx_limit = resctrl_arch_system_num_rmid_idx();
+> +	u32 num_closid = resctrl_arch_get_num_closid(r);
+>  	struct rmid_entry *entry = NULL;
+> +	int err = 0, i;
+>  	u32 idx;
+> -	int i;
+> +
+> +	mutex_lock(&rdtgroup_mutex);
+> +	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
+> +		u32 *tmp;
+> +
+> +		tmp = kcalloc(num_closid, sizeof(*tmp), GFP_KERNEL);
+> +		if (!tmp) {
+> +			err = -ENOMEM;
+> +			goto out_unlock;
+> +		}
+> +
+> +		closid_num_dirty_rmid = tmp;
+> +	}
+>  
+>  	rmid_ptrs = kcalloc(idx_limit, sizeof(struct rmid_entry), GFP_KERNEL);
+> -	if (!rmid_ptrs)
+> -		return -ENOMEM;
+> +	if (!rmid_ptrs) {
+> +		if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
+> +			kfree(closid_num_dirty_rmid);
+> +			closid_num_dirty_rmid = NULL;
+> +		}
+> +		err = -ENOMEM;
+> +		goto out_unlock;
+> +	}
+>  
+>  	for (i = 0; i < idx_limit; i++) {
+>  		entry = &rmid_ptrs[i];
+> @@ -818,13 +859,21 @@ static int dom_data_init(struct rdt_resource *r)
+>  	entry = __rmid_entry(idx);
+>  	list_del(&entry->list);
+>  
+> -	return 0;
+> +out_unlock:
+> +	mutex_unlock(&rdtgroup_mutex);
+> +
+> +	return err;
+>  }
+>  
+>  static void __exit dom_data_exit(struct rdt_resource *r)
+>  {
+>  	mutex_lock(&rdtgroup_mutex);
+>  
+> +	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
+> +		kfree(closid_num_dirty_rmid);
+> +		closid_num_dirty_rmid = NULL;
+> +	}
+> +
+>  	kfree(rmid_ptrs);
+>  	rmid_ptrs = NULL;
+>  
 
 -- 
 Thanks
