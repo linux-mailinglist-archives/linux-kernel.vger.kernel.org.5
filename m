@@ -1,119 +1,142 @@
-Return-Path: <linux-kernel+bounces-15713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E6768230C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:47:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DBAC8230C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:48:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5170F1C23753
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:47:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1652C285CC5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:48:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13C3F1BDCD;
-	Wed,  3 Jan 2024 15:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58A901BDFB;
+	Wed,  3 Jan 2024 15:47:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BGMgJIQW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I9A/EMsT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 008661B26F
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 15:47:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704296842;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T4zshVgbXU4KADwit5ys0TaPmzA2s1+8lP1tq0kT5oQ=;
-	b=BGMgJIQW67XbbSphRTd+MzDxQd79LorGW3BfG2KPsbsIetz8XNtPEcWeSBcpDbBRpk9VoK
-	EG8rV3LJ2iygbgTEl8DJ2GJ4V47UOLzNlqUiY59/iMZ+yGgxixiGnRZZ4K+VUEXjFkLHCs
-	hfLRZ64w/0qZptKPpHsdKb8c+fmjk/4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-586-Lmp8D3ZiP6Ojc5GmI18XTw-1; Wed, 03 Jan 2024 10:47:15 -0500
-X-MC-Unique: Lmp8D3ZiP6Ojc5GmI18XTw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A2F02884346;
-	Wed,  3 Jan 2024 15:47:13 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.68])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 6923E492BE6;
-	Wed,  3 Jan 2024 15:47:10 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20240103145935.384404-1-dhowells@redhat.com>
-References: <20240103145935.384404-1-dhowells@redhat.com>
-To: Christian Brauner <christian@brauner.io>,
-    Jeff Layton <jlayton@kernel.org>
-Cc: dhowells@redhat.com, Gao Xiang <hsiangkao@linux.alibaba.com>,
-    Dominique Martinet <asmadeus@codewreck.org>,
-    Steve French <smfrench@gmail.com>,
-    Matthew Wilcox <willy@infradead.org>,
-    Marc Dionne <marc.dionne@auristor.com>,
-    Paulo Alcantara <pc@manguebit.com>,
-    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-    Eric Van Hensbergen <ericvh@kernel.org>,
-    Ilya Dryomov <idryomov@gmail.com>, linux-cachefs@redhat.com,
-    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-    v9fs@lists.linux.dev, linux-erofs@lists.ozlabs.org,
-    linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-    netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/5] netfs: Rearrange netfs_io_subrequest to put request pointer first
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2320B1BDE3
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 15:47:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2cceb5f0918so46120751fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 07:47:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704296845; x=1704901645; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hhrsogcA78u+i7VN1yFSxBLITouejwykBZ4THZ1vf8s=;
+        b=I9A/EMsTKRwzLN+AkQrngzfmllaOi2wtFXuw8tcGBlTRLzqJsm35qHauSoHpTk4fh3
+         ZDfT1jigGem9DnIbkMOcAvCOggdZw0CoEaqNlJg9HhQgb4/ISywRFHvS8Bg7ALkKinim
+         eM+BBqTgosEteRSmjm7tQZ9ezxHJfc0cpm7lMxPLDP2wJZRFc915uRK726iypPoos+4K
+         jEJlgxyQ/1ptO5bh4VvDA1EbLf97LGVQgYWE/rAnkC60+pZ9JBl4NCvuN0vQL8i3dxVl
+         GqNYyrUz14vUXec3r4keePmNxLhTz8FQcYRyDpatKjz/htAtJf/ZgfzGIlG8arsmCMgh
+         E8Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704296845; x=1704901645;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hhrsogcA78u+i7VN1yFSxBLITouejwykBZ4THZ1vf8s=;
+        b=rCQ12JnofJKosiBJI2wy1vhuu5pY80CZ/ZAu9WLL1byqlzkCuItstwoPwlN77LJejx
+         HiMKrykZyiIk32SsyIiGjrAS16nWRi3W5iEXMmO411vqiNa9lqL6YNXSw70ZLH2yqvyW
+         7oab+YiwAsH6wN97um5YAEp4OuHe+C25RiMakO/9Y7WeD4ZfXDFFsoe7ayls1OZDw6y/
+         iUJaQhhheuwNECFiVo+MBdAbOwHLd8TUQnbtqpk1f5f/jVpzuxMJQLkL9oEeL7Bsw7y0
+         k+NWB2+MSeZAl0B+ySMMukD7MUQjEvO8m/C3vp9V0vHkeLa1U5+D5E15feaIv6mCnC0Z
+         8X5Q==
+X-Gm-Message-State: AOJu0YzyjOp0i/sWP7vJokJecTO8sfVv+qw6sZ1bay81i474uWxKGmQw
+	clRARwnmWbUebiquV3ns+77EMIg5uk4=
+X-Google-Smtp-Source: AGHT+IGDiz1q2l0RgIIbnA0a3DEiX6deZvkBeqr650S9Hmp7190zH254RFaKVwJ0jLkllJcG8sGeoQ==
+X-Received: by 2002:a2e:a585:0:b0:2cd:348:94a6 with SMTP id m5-20020a2ea585000000b002cd034894a6mr1551015ljp.92.1704296844737;
+        Wed, 03 Jan 2024 07:47:24 -0800 (PST)
+Received: from pc636 (host-90-233-200-64.mobileonline.telia.com. [90.233.200.64])
+        by smtp.gmail.com with ESMTPSA id s10-20020a2e81ca000000b002ccd39eeae4sm3518354ljg.100.2024.01.03.07.47.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 07:47:24 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Wed, 3 Jan 2024 16:47:22 +0100
+To: Hillf Danton <hdanton@sina.com>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v3 07/11] mm: vmalloc: Offload free_vmap_area_lock lock
+Message-ID: <ZZWBiiX69HQFkUlB@pc636>
+References: <20240102184633.748113-1-urezki@gmail.com>
+ <20240103110832.2711-1-hdanton@sina.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <396880.1704296824.1@warthog.procyon.org.uk>
-Date: Wed, 03 Jan 2024 15:47:04 +0000
-Message-ID: <396881.1704296824@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240103110832.2711-1-hdanton@sina.com>
 
-netfs: Rearrange netfs_io_subrequest to put request pointer first
+On Wed, Jan 03, 2024 at 07:08:32PM +0800, Hillf Danton wrote:
+> On Tue,  2 Jan 2024 19:46:29 +0100 Uladzislau Rezki <urezki@gmail.com>
+> > +static void
+> > +decay_va_pool_node(struct vmap_node *vn, bool full_decay)
+> > +{
+> > +	struct vmap_area *va, *nva;
+> > +	struct list_head decay_list;
+> > +	struct rb_root decay_root;
+> > +	unsigned long n_decay;
+> > +	int i;
+> > +
+> > +	decay_root = RB_ROOT;
+> > +	INIT_LIST_HEAD(&decay_list);
+> > +
+> > +	for (i = 0; i < MAX_VA_SIZE_PAGES; i++) {
+> > +		struct list_head tmp_list;
+> > +
+> > +		if (list_empty(&vn->pool[i].head))
+> > +			continue;
+> > +
+> > +		INIT_LIST_HEAD(&tmp_list);
+> > +
+> > +		/* Detach the pool, so no-one can access it. */
+> > +		spin_lock(&vn->pool_lock);
+> > +		list_replace_init(&vn->pool[i].head, &tmp_list);
+> > +		spin_unlock(&vn->pool_lock);
+> > +
+> > +		if (full_decay)
+> > +			WRITE_ONCE(vn->pool[i].len, 0);
+> > +
+> > +		/* Decay a pool by ~25% out of left objects. */
+> > +		n_decay = vn->pool[i].len >> 2;
+> > +
+> > +		list_for_each_entry_safe(va, nva, &tmp_list, list) {
+> > +			list_del_init(&va->list);
+> > +			merge_or_add_vmap_area(va, &decay_root, &decay_list);
+> > +
+> > +			if (!full_decay) {
+> > +				WRITE_ONCE(vn->pool[i].len, vn->pool[i].len - 1);
+> > +
+> > +				if (!--n_decay)
+> > +					break;
+> > +			}
+> > +		}
+> > +
+> > +		/* Attach the pool back if it has been partly decayed. */
+> > +		if (!full_decay && !list_empty(&tmp_list)) {
+> > +			spin_lock(&vn->pool_lock);
+> > +			list_replace_init(&tmp_list, &vn->pool[i].head);
+> > +			spin_unlock(&vn->pool_lock);
+> > +		}
+> 
+> Failure of working out why list_splice() was not used here in case of
+> non-empty vn->pool[i].head, after staring ten minutes.
+>
+The vn->pool[i].head is always empty here because we have detached it above
+and initialized. Concurrent decay and populate also is not possible because
+both is done by only one context.
 
-Rearrange the netfs_io_subrequest struct to put the netfs_io_request
-pointer (rreq) first.  This then allows netfs_io_subrequest to be put in a
-union with a pointer to a wrapper around netfs_io_request.  This will be
-useful in the future for cifs and maybe ceph.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Steve French <sfrench@samba.org>
-cc: Shyam Prasad N <nspmangalore@gmail.com>
-cc: Rohith Surabattula <rohiths.msft@gmail.com>
-cc: Jeff Layton <jlayton@kernel.org>
-cc: linux-cifs@vger.kernel.org
-cc: linux-cachefs@redhat.com
-cc: linux-fsdevel@vger.kernel.org
-cc: linux-mm@kvack.org
----
- include/linux/netfs.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-index 852956aa3c4b..d3bac60fcd6f 100644
---- a/include/linux/netfs.h
-+++ b/include/linux/netfs.h
-@@ -204,8 +204,8 @@ struct netfs_cache_resources {
-  * the pages it points to can be relied on to exist for the duration.
-  */
- struct netfs_io_subrequest {
--	struct work_struct	work;
- 	struct netfs_io_request *rreq;		/* Supervising I/O request */
-+	struct work_struct	work;
- 	struct list_head	rreq_link;	/* Link in rreq->subrequests */
- 	struct iov_iter		io_iter;	/* Iterator for this subrequest */
- 	loff_t			start;		/* Where to start the I/O */
-
+--
+Uladzislau Rezki
 
