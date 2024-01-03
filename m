@@ -1,51 +1,54 @@
-Return-Path: <linux-kernel+bounces-15720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 639278230E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:57:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F4B28230E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:58:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17CAE1F24B5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:57:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A36E51C23A72
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:58:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CAB51BDD1;
-	Wed,  3 Jan 2024 15:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03341B28C;
+	Wed,  3 Jan 2024 15:58:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S4lwkSa4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hC9XfGE4"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F6071BDC5
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 15:57:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55748C433C9;
-	Wed,  3 Jan 2024 15:57:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4657B1B278;
+	Wed,  3 Jan 2024 15:58:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C07CC433C8;
+	Wed,  3 Jan 2024 15:58:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704297435;
-	bh=3PfcWwd6revmKQ+P7oeW/epk2Jli0IGYdbJw4sDRDcI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=S4lwkSa4/5o6qLH3t+1W4bSQpDY1x1qz8rx9BQ5IzXaVc09MGPcJlf9qb8i8G9s9V
-	 mHoHD61mNxrvIjvBM2JDSCcbhVYAIV6LYx60NX8kPw6GFhHkrstb9l17NF9i3Jk4PV
-	 9Y8mkwjXJs89ZmniTW/Jxo3S31GOW5khJLCaL4LowShL7iEppnlgYgY/S004CfPyzd
-	 dizB9PXsCRq7cDrIPNm7lzF8SH7hwDtE0dhqCFswf/KKcCvXWcT15CSBJ6XUVShz35
-	 y8uCvTmeOBh8zBYQsqfi9ysAxNp6OViN+2JthKDzptByOg594agbMnEJ3+h0sIx+/f
-	 Y08U1Epw6A87w==
+	s=k20201202; t=1704297496;
+	bh=J2qaYb0QE6L9hh7qWv/hsZPbsaA0YA/s6WmiwcLhg+I=;
+	h=From:To:Cc:Subject:Date:From;
+	b=hC9XfGE4Jdh6LZPKOYde0goTfU05v7ml4qMHhPK1JsZlgVX9lFgWnQoBb54cmCcvO
+	 fWAxCFFoyPCut7bYJQENSoOD8xeMc853F/osl62eFQbMbZivRSmvIc6nzG3RfUD3jn
+	 DnRTp6T4xkFhk6t9kZzAkq8jWJxJWOVpqzvdVbO9cTPByRegaMiTFkbh4lKEW0rjDA
+	 wEk5R3QANRO/rMRysBdINuOFtNpol1wjYW/Mn9Y/IEQ3cGLHlDFKDe6IVH5PLDk6w+
+	 Iw0nWMBkApUXjyc1Z55IPa4iQVzC4jcRNBWJAC2c7g2Kmkgwjmml/9JF5D5Q/lK9wz
+	 KOrYhvlEATRIQ==
 From: Arnd Bergmann <arnd@kernel.org>
-To: Christoph Hellwig <hch@lst.de>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Keith Busch <kbusch@kernel.org>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Paul Elder <paul.elder@ideasonboard.com>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	linux-nvme@lists.infradead.org,
+	Hans de Goede <hdegoede@redhat.com>,
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Alain Volmat <alain.volmat@foss.st.com>,
+	Mehdi Djait <mehdi.djait@bootlin.com>,
+	linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] nvme: trace: avoid memcpy overflow warning
-Date: Wed,  3 Jan 2024 16:56:56 +0100
-Message-Id: <20240103155702.4045835-2-arnd@kernel.org>
+Subject: [PATCH] media: i2c: thp7312: select CONFIG_FW_LOADER
+Date: Wed,  3 Jan 2024 16:58:05 +0100
+Message-Id: <20240103155811.4092035-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240103155702.4045835-1-arnd@kernel.org>
-References: <20240103155702.4045835-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,38 +59,36 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-A previous patch introduced a struct_group() in nvme_common_command to help
-stringop fortification figure out the length of the fields, but one function
-is not currently using them:
+The recently added driver uses the firmware loader mechanism but causes
+a link failure when that is in a loadable module while thp7312 itself
+is built-in:
 
-In file included from drivers/nvme/target/core.c:7:
-In file included from include/linux/string.h:254:
-include/linux/fortify-string.h:592:4: error: call to '__read_overflow2_field' declared with 'warning' attribute: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Werror,-Wattribute-warning]
-                        __read_overflow2_field(q_size_field, size);
-                        ^
+arm-linux-gnueabi-ld: drivers/media/i2c/thp7312.o: in function `thp7312_probe':
+thp7312.c:(.text+0x4164): undefined reference to `firmware_upload_register'
 
-Change this one to use the correct field name to avoid the warning.
+Select the required Kconfig symbol. Note that the driver specifically
+needs the firmware upload interface that is controlled by CONFIG_FW_UPLOAD,
+but there is no link failure when that is disabled because the interfaces
+are stubbed out here.
 
-Fixes: 5c629dc9609dc ("nvme: use struct group for generic command dwords")
+Fixes: 7a52ab415b43 ("media: i2c: Add driver for THine THP7312")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/nvme/target/trace.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/media/i2c/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/target/trace.h b/drivers/nvme/target/trace.h
-index 155334ddc13f..dbb911fd502d 100644
---- a/drivers/nvme/target/trace.h
-+++ b/drivers/nvme/target/trace.h
-@@ -84,8 +84,7 @@ TRACE_EVENT(nvmet_req_init,
- 		__entry->flags = cmd->common.flags;
- 		__entry->nsid = le32_to_cpu(cmd->common.nsid);
- 		__entry->metadata = le64_to_cpu(cmd->common.metadata);
--		memcpy(__entry->cdw10, &cmd->common.cdw10,
--			sizeof(__entry->cdw10));
-+		memcpy(__entry->cdw10, &cmd->common.cdws, sizeof(__entry->cdw10));
- 	),
- 	TP_printk("nvmet%s: %sqid=%d, cmdid=%u, nsid=%u, flags=%#x, "
- 		  "meta=%#llx, cmd=(%s, %s)",
+diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+index 78a87331686e..4c3435921f19 100644
+--- a/drivers/media/i2c/Kconfig
++++ b/drivers/media/i2c/Kconfig
+@@ -674,6 +674,7 @@ menu "Camera ISPs"
+ config VIDEO_THP7312
+ 	tristate "THine THP7312 support"
+ 	depends on I2C
++	select FW_LOADER
+ 	select MEDIA_CONTROLLER
+ 	select V4L2_CCI_I2C
+ 	select V4L2_FWNODE
 -- 
 2.39.2
 
