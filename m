@@ -1,143 +1,191 @@
-Return-Path: <linux-kernel+bounces-15202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAD9582284A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 07:16:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E12DA822855
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 07:19:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AD8F285051
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 06:16:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BCD31F23B98
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 06:19:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A0B3179AA;
-	Wed,  3 Jan 2024 06:16:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0274C182A3;
+	Wed,  3 Jan 2024 06:19:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ohAFyRsF"
+	dkim=pass (1024-bit key) header.d=kunbus.com header.i=@kunbus.com header.b="1K6Ll2e7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2081.outbound.protection.outlook.com [40.107.13.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D723E17998
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 06:15:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DF02C433C9
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 06:15:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704262559;
-	bh=aISuBIPvlbjdRJQp1EvQGGxlNwVmVGu5wNaG6PYXKW4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ohAFyRsFAMsRuWhgpjtVVyEX0rxljYHqbBiqZp07oThiUPqhjJMngZ2EPNGQsFVDJ
-	 U4k5Wv3F80chaXU+07CONswhQm/ffQWI2/mHPkeVOhtAvoVnkPXKg7jxOyRfPD6Env
-	 B+bWflRvzf6zEATvNPYwa01GoRraw8jgm7rJ53eFwWCLzC2VwzNyhvkWSy8FRRJCTY
-	 MugXKtn7Lw62XaPfr4BhandButtX2UybxfZLba50Udh7firR0gLHMJ6o05Ju8bbxnp
-	 fF9NK0Mhf4o0LrTeHBad6+Zc286+qkS55fH5AXSzz0ZWs48FnAkiOYsGgd+lvjsRb4
-	 LRC8VDSKaOrRw==
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55676f1faa9so1657670a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 22:15:59 -0800 (PST)
-X-Gm-Message-State: AOJu0YyDtJkqzlbTSzT8SP23cw4/V+iOIz+prAPgZE/LEJi5kh5EStR0
-	zrdLLCX3pEajEyTopC7UZ3ixF16JGNdXz+ZccwM=
-X-Google-Smtp-Source: AGHT+IGH3h1v0Bkgu0W/NqOIVERH6UhOcT+omf7z0qMfRbc6D1WwAIhExCpIJxP6Dy0kf8SRjb6cp8iojBx0SEi9a8I=
-X-Received: by 2002:aa7:d304:0:b0:555:da15:23ab with SMTP id
- p4-20020aa7d304000000b00555da1523abmr4772991edq.62.1704262557607; Tue, 02 Jan
- 2024 22:15:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0469179B1;
+	Wed,  3 Jan 2024 06:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kunbus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kunbus.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GevC1aVkzDJxzyhNh4LsDxZwtAEgHv8GWIcYBOOSI1+LsF0vyGciJkxV4hV2UL6EIKkO0VeFk3LtPoB8ynz/pBJCfsl0wOX68/4CiELKGVJNlIHqUKH6ZBawHGHknIuar4ZXceqYVCM6HMSoAh70p2TksTaEvK8QulbLIrGcH0qJ2yNUYomRDV6Mjq+GvKJObQS1nrjXKRxwuC8cmeHZwy6Ie0RKARo9uXELdtBq7ZHT9wgziLroNuklR12P3RUnoOSpgvtQ6Ji5L6o1s2ZGDh2GVV0fDKrnvqQ+v0MhH9Tn/h4VbIP58XIb2aAhq4ejlfvBz/6s0ozqxHc4EdX1Bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WJ96peUnX/AfmbbyHNhv4J8A1BryIIvMGB2j/GpC8Ow=;
+ b=cqOftn6O10FeWWEb6r3sQ6apP73B+P0xrNtRW7ilTrxTH05Xs7nah8kBvgWO1W6jHmHjbtcAdcwXHtkoVh5TxwGkYBWeMVxXSBWX7fjsQDopIIrStAEufak19NPatzQbFwDHMZ4g1kBEmwnXTyZYCjQf6X1A6hiEPlwd6UMMQOoHph/npykaMzGunSpURCGiggwBOrGREFqcSTLLHDNYnFnQz/sNpzlZWZIIIqYl1FsRmxpsL4V2cyZrocbV3mas//NNBoUS8s0SB41sqPbxHYOvz2T9rsf5xunA1uR/T5PKemMCZ6g8g6pdhNwHt2mCdp+yADtzfJnZip3pokaPzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kunbus.com; dmarc=pass action=none header.from=kunbus.com;
+ dkim=pass header.d=kunbus.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kunbus.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WJ96peUnX/AfmbbyHNhv4J8A1BryIIvMGB2j/GpC8Ow=;
+ b=1K6Ll2e7YoLBKXc0QGoqpnrt+QXH+rI8hEj5KD6aMoY+6uVVs1lbcLZ1rHX7jGxYBPj+0+0+qEXXEz9KITAnyIbJrDum7qE/wNw9abPZXFUDfIJYMZfyee9GXURLhwyTT8Ii32TPGAwvysSedJjHdXGOe8HmdEKSt4oFsSXPb0Y=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kunbus.com;
+Received: from VI1P193MB0413.EURP193.PROD.OUTLOOK.COM (2603:10a6:803:4e::14)
+ by GV1P193MB2245.EURP193.PROD.OUTLOOK.COM (2603:10a6:150:2c::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Wed, 3 Jan
+ 2024 06:19:09 +0000
+Received: from VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+ ([fe80::67b0:68bf:2582:19cb]) by VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+ ([fe80::67b0:68bf:2582:19cb%6]) with mapi id 15.20.7159.013; Wed, 3 Jan 2024
+ 06:19:09 +0000
+From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+To: gregkh@linuxfoundation.org,
+	jirislaby@kernel.org,
+	ilpo.jarvinen@linux.intel.com
+Cc: u.kleine-koenig@pengutronix.de,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com,
+	cniedermaier@dh-electronics.com,
+	hugo@hugovil.com,
+	m.brock@vanmierlo.com,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	LinoSanfilippo@gmx.de,
+	lukas@wunner.de,
+	p.rosenberger@kunbus.com,
+	Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Subject: [PATCH v7 0/7] Fixes and improvements for RS485
+Date: Wed,  3 Jan 2024 07:18:11 +0100
+Message-ID: <20240103061818.564-1-l.sanfilippo@kunbus.com>
+X-Mailer: git-send-email 2.43.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-ClientProxiedBy: FR0P281CA0267.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:b5::13) To VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:803:4e::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231231082955.16516-1-guoren@kernel.org> <20231231082955.16516-4-guoren@kernel.org>
- <20240102-81391283df04c430d76c0eb0@orel>
-In-Reply-To: <20240102-81391283df04c430d76c0eb0@orel>
-From: Guo Ren <guoren@kernel.org>
-Date: Wed, 3 Jan 2024 14:15:45 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQ7Oo8UKdPRs0GAAUsh9mDCgGucS8g8kuPzByaWVOtigw@mail.gmail.com>
-Message-ID: <CAJF2gTQ7Oo8UKdPRs0GAAUsh9mDCgGucS8g8kuPzByaWVOtigw@mail.gmail.com>
-Subject: Re: [PATCH V2 3/3] riscv: xchg: Prefetch the destination word for sc.w
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, panqinglin2020@iscas.ac.cn, 
-	bjorn@rivosinc.com, conor.dooley@microchip.com, leobras@redhat.com, 
-	peterz@infradead.org, keescook@chromium.org, wuwei2016@iscas.ac.cn, 
-	xiaoguang.xing@sophgo.com, chao.wei@sophgo.com, unicorn_wang@outlook.com, 
-	uwu@icenowy.me, jszhang@kernel.org, wefu@redhat.com, atishp@atishpatra.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0413:EE_|GV1P193MB2245:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0bad0d11-fd5c-41dd-358f-08dc0c23e53c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Ub71Cm0x9qp1mPmiZ04lKhTmW9cc87OzyrGpLN/NMUTU8UBS/whM7xIJ2fyTQ2do9U1tMGiAHTMCrk3jI3z4TPgVSVxV0Vxt0ci7sKHBbpcffk1ji/vIP3gx2hZMhY2hbILJAyoBAgwiUwGZCs6Y3H4v91VdrV5rMrrO4cVn6wRlBCnJJx4T/1+LAF6u6hjo4i+GsN7r5dwUGxmDc2fCEf85R+b4Qi3sAQzXveDT42Ecmd9lreUyH71/HvgMWOiCNLoR32WUI5OA99+eOiY95WZRqYHfaJaqpFUWM5JfUeF56Jto1PBuCyL+s/XqRpjoISvBz1C1H+3ArEQXmqBJkbSG5HZc1xBfXMMDmHLvwERAMeQgzG/t3qGZmm1GdiN5H4b5Kk1qZLd6PYxy9ZfcMwJLP9OHBFrcJVfpP1Gmt3LAkPUJOzC4c+7yXHPeZ9DRMaDTvIXiXFhRT/Nnf+txGaBPXkEG9O1QDC2WEZebcQODWbIN2VJKbBTiIlKTqZZup3c8rCTWkt+/xWgwWoamkH1RMyztgA6FYM7zyy8/nruaVKCGqIeu6hPaK3WBSvCC
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P193MB0413.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(136003)(39830400003)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(66556008)(66946007)(66476007)(4326008)(478600001)(316002)(8936002)(8676002)(6486002)(83380400001)(6512007)(6506007)(6666004)(52116002)(1076003)(107886003)(2616005)(7416002)(5660300002)(41300700001)(2906002)(36756003)(38100700002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?UE1YNFUvMVdlYmxsTkJvWGdjRnZzVjJEUU9hc0VKdEFyaHNpeWZGblhRWCtq?=
+ =?utf-8?B?UW4wTlJCM1BnaDIyT2d0TmJKTVdzd0hyK3h5aTlEb3dBdkNPQzVNQ1NadkVu?=
+ =?utf-8?B?cXhNNUdtUGwvUlQwM1dDRFg0UHArYlVhODFDeDQwSTJVNURQdnI2aUZJNjBI?=
+ =?utf-8?B?TmZReUlWbFh4TUYyN2FGYUVIZVR0c1hLQXUxZk9HY1d6clNKdndka0dicEpj?=
+ =?utf-8?B?aU5ZUFRxck5nWkIwakdwdXREdzZ3Uy82SHFpeDhhVlMvYUxLblc4TFZ3R0l6?=
+ =?utf-8?B?MUdvb2Q2a3Z3YUphNE8zYXFDTzZ0YzZsNnVkampGbi84SjZFNjJFLzFDNXpr?=
+ =?utf-8?B?akJzTEE2NUlCaEJGRHlzeUF3ZVRxZlF3cEUxdGRBbmYwbDZtdHgydWthd2p1?=
+ =?utf-8?B?Tnl4MzdiVGVadG8vNzRaMk9kYytqMTZFNkRkRURMaHhaSFZPWmlmb1R6WmRE?=
+ =?utf-8?B?bkNZYk5QODg4VlhOWm43ZVNuQ0w4cTMxV0NkUXc0UDFqR0NFOTJ4SUhoZ2x3?=
+ =?utf-8?B?ZnI3NG5lTm1UTmVZWnF1WllqdFdyK1FsNW5DY2h4c3RobitzZGtiTVVZK0NO?=
+ =?utf-8?B?QVVQeVB5V2F4S1JqbGVGQlZkVHhnMjA2M2lrc3NWNGlucVlBWFJVSUh5ZUl5?=
+ =?utf-8?B?ay8wUWdJSm9IdE9lcmhBcHI1QnR4VTlTNFZvMEFtdjlmWXdIUVV0WlJQMHdK?=
+ =?utf-8?B?aHNRbmczWmJLOFVnNm1KRGFocC9Idm9ldWNCUEtOYlFKNzBMdzZNbHpmRC9Z?=
+ =?utf-8?B?cTZqNk5Sby9PTE1TSW1SOEVzT1ZkamxlZktwVmV2dGIrV3d0QU5RelNreUN6?=
+ =?utf-8?B?UVlqTnYyWFZEQWlGUmJBVlZkV250S0ZkeWFITE11bGppTXdpOUxSY2Nxcnpx?=
+ =?utf-8?B?bFd5S2pINHBxc0V0MzJIdmtFbzVFMVVDQ2pHcnJiK3p6RGQ5M3pqNmpka29r?=
+ =?utf-8?B?TzhJYS9FejdZK3BTTFRyOFhTSFdWeTF5SXVSYVBPbC9taEdudEtQY0FjNFY5?=
+ =?utf-8?B?cURtR1dZQmRac2dNU3c0SU43SEpXbzR3aXhqM2JQTlIwbUNuWXE3WEV6ZUZh?=
+ =?utf-8?B?TTJ4aytzNEdnanNwTTBqNkNXanNOUlNnOXA1dXVVSTJlSzlLanBpMS9iZVNU?=
+ =?utf-8?B?cGI1aVZrMGFTK0NCc211bGludVRsQUVQcnBXcU4xRzBtMTgwWWdORXRybDVL?=
+ =?utf-8?B?SmUwTCtUdzkvYllyMEdXb2puSjBJSFFDQU4zekNJKzJhWUlDT3RPZmJidkg2?=
+ =?utf-8?B?cm9ZTFVUMkpyMDVSaSswSHdsYytFSkM4dEx0SEpKaitxSWdCNFB5M2NyR2I3?=
+ =?utf-8?B?em9ubXlaYWRUSzZzVWZUUXQyWG5EcENqdy9lckpVekNBUE5kSVJJNlNYOXEy?=
+ =?utf-8?B?U1VUQ3JxK3F4UFh0NlhJRkhwUmtGWC9aT2U5bmkxaUhIdlpvSGNDZ0xwaGVm?=
+ =?utf-8?B?R096a29YbWZvdDd1VWxEUUVPenF1cTZvcjBaanBwZ04xcFQ0NTdmcEFzcllS?=
+ =?utf-8?B?eXMvREw2VE5jRTdWWmNUNGt2Q3BNWVJOVnF1dThScDhMYzZ0YzJ2Nm1LZjZ6?=
+ =?utf-8?B?c2w3ZERHckNBQllTQ0ZxQ1NGMURweWl1SWpoTWRGNVhncmQ0VmhBVkJOU2Nj?=
+ =?utf-8?B?d2ltTGwvU1JEalh0OXdzV0NGMVJQdDFQdFhCeitGVlRkM1NyWDhkZmc5WE00?=
+ =?utf-8?B?SU5VaW1pSkJwbk5sdlQ4OWpSa2UvQm93WHRvOWhhY0pVRml0WlpCdHFYWnU2?=
+ =?utf-8?B?UEtDT3JCanBYQWFteFNBN0NpQ3loRmpDeDJMcWNpbDcza2lheEhwYXgzUWx2?=
+ =?utf-8?B?M1Z3M3JiNDA5M1N4eXN3RHpSUFozZFNOZkxHV1czejdyUWZ5VU1PUkUwMFky?=
+ =?utf-8?B?bjRNT3crOFJqRzVIV3lYUGd5WDcyRXJvMUEzMHlsMllsN04wbkhxaGtWYVpO?=
+ =?utf-8?B?ekg2bDdzRkhGS3BFRDNza1BDNXFXOUJmdnVuU2dtL0RYdmNpSnV1YVVXT0dK?=
+ =?utf-8?B?Y2VEMkx1TE9nR09HOWhKQ0FiUWhSR2pOYi8zVklLUUJjQmZ3TFVxNGdxR1I4?=
+ =?utf-8?B?Y25LOG5tOHVXL3l4WWI1ZlhTTUxSd0NDSkZscjk4V2pETVFaUENPTFYvRFR4?=
+ =?utf-8?B?SkkzZmxaTGMxNjdiNmFzTXNwT3RnUUtpWXpPdnUxU2Fjd1F2Z0VERExpd0M5?=
+ =?utf-8?B?Y0JaOFVyUmdaNmJkTnhRaUZxWUFBcWlDQmdzR0drVXRCRnlrakxPVk5xVkI0?=
+ =?utf-8?B?eU9qRTNUMzNVbk9GSFpwNFpnQWp3PT0=?=
+X-OriginatorOrg: kunbus.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0bad0d11-fd5c-41dd-358f-08dc0c23e53c
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2024 06:19:09.1898
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: aaa4d814-e659-4b0a-9698-1c671f11520b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lqLa1tpFgPIUM3K1tCH7YaGky4sBEWN+86qFQTctdvI6MZZq888gWspeBZHB5xIxqmxw7PImSF5JJxZ+JlhSYQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1P193MB2245
 
-On Tue, Jan 2, 2024 at 7:19=E2=80=AFPM Andrew Jones <ajones@ventanamicro.co=
-m> wrote:
->
-> On Sun, Dec 31, 2023 at 03:29:53AM -0500, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > The cost of changing a cacheline from shared to exclusive state can be
-> > significant, especially when this is triggered by an exclusive store,
-> > since it may result in having to retry the transaction.
-> >
-> > This patch makes use of prefetch.w to prefetch cachelines for write
-> > prior to lr/sc loops when using the xchg_small atomic routine.
-> >
-> > This patch is inspired by commit: 0ea366f5e1b6 ("arm64: atomics:
-> > prefetch the destination word for write prior to stxr").
-> >
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > ---
-> >  arch/riscv/include/asm/cmpxchg.h | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/=
-cmpxchg.h
-> > index 26cea2395aae..d7b9d7951f08 100644
-> > --- a/arch/riscv/include/asm/cmpxchg.h
-> > +++ b/arch/riscv/include/asm/cmpxchg.h
-> > @@ -10,6 +10,7 @@
-> >
-> >  #include <asm/barrier.h>
-> >  #include <asm/fence.h>
-> > +#include <asm/processor.h>
-> >
-> >  #define __arch_xchg_masked(prepend, append, r, p, n)                 \
->
-> Are you sure this is based on v6.7-rc7? Because I don't see this macro.
-Oh, it is based on Leobras' patches. I would remove it in the next of versi=
-on.
-
->
-> >  ({                                                                   \
-> > @@ -23,6 +24,7 @@
-> >                                                                       \
-> >       __asm__ __volatile__ (                                          \
-> >              prepend                                                  \
-> > +            PREFETCHW_ASM(%5)                                        \
-> >              "0:      lr.w %0, %2\n"                                  \
-> >              "        and  %1, %0, %z4\n"                             \
-> >              "        or   %1, %1, %z3\n"                             \
-> > @@ -30,7 +32,7 @@
-> >              "        bnez %1, 0b\n"                                  \
-> >              append                                                   \
-> >              : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(__ptr32b))    =
-   \
-> > -            : "rJ" (__newx), "rJ" (~__mask)                          \
-> > +            : "rJ" (__newx), "rJ" (~__mask), "rJ" (__ptr32b)         \
->
-> I'm pretty sure we don't want to allow the J constraint for __ptr32b.
->
-> >              : "memory");                                             \
-> >                                                                       \
-> >       r =3D (__typeof__(*(p)))((__retx & __mask) >> __s);              =
- \
-> > --
-> > 2.40.1
-> >
->
-> Thanks,
-> drew
-
-
-
---=20
-Best Regards
- Guo Ren
+VGhlIGZvbGxvd2luZyBzZXJpZXMgaW5jbHVkZXMgc29tZSBmaXhlcyBhbmQgaW1wcm92ZW1lbnRz
+IGFyb3VuZCBSUzQ4NSBpbgp0aGUgc2VyaWFsIGNvcmUgYW5kIFVBUlQgZHJpdmVyczoKClBhdGNo
+IDE6IERvIG5vdCBob2xkIHRoZSBwb3J0IGxvY2sgd2hlbiBzZXR0aW5nIHJ4LWR1cmluZy10eCBH
+UElPClBhdGNoIDI6IHNldCBtaXNzaW5nIHN1cHBvcnRlZCBmbGFnIGZvciBSWCBkdXJpbmcgVFgg
+R1BJTwpQYXRjaCAzOiBmaXggc2FuaXRpemluZyBjaGVjayBmb3IgUlRTIHNldHRpbmdzClBhdGNo
+IDQ6IG1ha2Ugc3VyZSBSUzQ4NSBpcyBjYW5ub3QgYmUgZW5hYmxlZCB3aGVuIGl0IGlzIG5vdCBz
+dXBwb3J0ZWQKUGF0Y2ggNTogaW14OiBkbyBub3Qgc2V0IFJTNDg1IGVuYWJsZWQgaWYgaXQgaXMg
+bm90IHN1cHBvcnRlZApQYXRjaCA2OiBvbWFwOiBkbyBub3Qgb3ZlcnJpZGUgc2V0dGluZ3MgZm9y
+IHJzNDg1IHN1cHBvcnQKUGF0Y2ggNzogZXhhcjogc2V0IG1pc3NpbmcgUlM0ODUgc3VwcG9ydGVk
+IGZsYWcKCkNoYW5nZXMgaW4gdjc6Ci0gZml4IGVycm9ybmVvdXMgY29uZGl0aW9uIGluIHN0bTMy
+IGRyaXZlciBmb3Igc2V0dGluZyB0aGUKU0VSX1JTNDg1X1JYX0RVUklOR19UWCBmbGFnIChwb2lu
+dGVkIG91dCBieSBNYWFydGVuKQotIGZpeCBjb21waWxhdGlvbiBpc3N1ZSBzcG90dGVkIGJ5IGtl
+cm5lbCB0ZXN0IHJvYm90CgpDaGFuZ2VzIGluIHY2OgotIHJlc3RvcmUgUlM0ODUgR1BJTyBzZXR0
+aW5ncyBpZiBzZXR0aW5nIHJzNDg1IGNvbmZpZ3VyYXRpb24gZmFpbHMKKHBvaW50ZWQgb3V0IGJ5
+IElscG8pCi0gZHJvcCBjaGFuZ2UgZm9yIHVhcnRfZ2V0X3JzNDg1X2NvbmZpZygpIAotIHJlcGhy
+YXNlIGFuZCBjb3JyZWN0IGNvbW1pdCBtZXNzYWdlcyAocG9pbnRlZCBvdXQgYnkgSWxwbykKLSBy
+ZW1vdmUgdW5uZWNlc3Nhcnkgc3RydWN0dXJlIG51bGxpZmljYXRpb24gKHN1Z2dlc3RlZCBieSBJ
+bHBvKQotIG1vdmUgYWxsIFJTNDg1IHRhc2tzIGludG8gb25lIGZ1bmN0aW9uIChzdWdnZXN0ZWQg
+YnkgSWxwbykKCkNoYW5nZXMgaW4gdjU6CgotIGRvIG5vdCBjb21iaW5lIHRoZSBmdW5jdGlvbnMg
+dGhhdCBzZXQgdGhlIFJTNDg0IEdQSU9zIChhcyBIdWdvIG9yaWdpbmFsbHkKICBzdWdnZXN0ZWQp
+CgpDaGFuZ2VzIGluIHY0OgoKLSBhZGQgY29tbWVudCBmb3IgZnVuY3Rpb24gdWFydF9zZXRfcnM0
+ODVfZ3Bpb3MgYWZ0ZXIgaGludCBmcm9tIEh1Z28KLSBjb3JyZWN0IGNvbW1pdCBtZXNzYWdlIGFz
+IHBvaW50ZWQgb3V0IGJ5IEh1Z28KLSByZXBocmFzZSBjb21taXQgbWVzc2FnZXMKLSBhZGQgcGF0
+Y2ggNyBhZnRlciBkaXNjdXNzaW9uIHdpdGggSWxwbwoKQ2hhbmdlcyBpbiB2MwotIERyb3AgcGF0
+Y2ggIkdldCByaWQgb2YgdXNlbGVzcyB3cmFwcGVyIHBsMDExX2dldF9yczQ4NV9tb2RlKCkiIGFz
+CiAgcmVxdWVzdGVkIGJ5IEdyZWcKCkNoYW5nZXMgaW4gdjI6Ci0gYWRkIG1pc3NpbmcgJ0ZpeGVz
+JyB0YWdzIGFzIHJlcXVlc3RlZCBieSBHcmVnCi0gY29ycmVjdGVkIGEgdHlwbyBhcyBwb2ludGVk
+IG91dCBieSBIdWdvCi0gZml4IGlzc3VlIGluIGlteCBkcml2ZXIgaW4gdGhlIHNlcmlhbCBjb3Jl
+IGFzIHN1Z2dlc3RlZCBieSBVd2UKLSBwYXJ0bHkgcmVwaHJhc2Ugc29tZSBjb21taXQgbWVzc2Fn
+ZXMKLSBhZGQgcGF0Y2ggNwoKCkxpbm8gU2FuZmlsaXBwbyAoNyk6CiAgc2VyaWFsOiBEbyBub3Qg
+aG9sZCB0aGUgcG9ydCBsb2NrIHdoZW4gc2V0dGluZyByeC1kdXJpbmctdHggR1BJTwogIHNlcmlh
+bDogY29yZTogc2V0IG1pc3Npbmcgc3VwcG9ydGVkIGZsYWcgZm9yIFJYIGR1cmluZyBUWCBHUElP
+CiAgc2VyaWFsOiBjb3JlOiBmaXggc2FuaXRpemluZyBjaGVjayBmb3IgUlRTIHNldHRpbmdzCiAg
+c2VyaWFsOiBjb3JlOiBtYWtlIHN1cmUgUlM0ODUgY2Fubm90IGJlIGVuYWJsZWQgd2hlbiBpdCBp
+cyBub3QKICAgIHN1cHBvcnRlZAogIHNlcmlhbDogY29yZSwgaW14OiBkbyBub3Qgc2V0IFJTNDg1
+IGVuYWJsZWQgaWYgaXQgaXMgbm90IHN1cHBvcnRlZAogIHNlcmlhbDogb21hcDogZG8gbm90IG92
+ZXJyaWRlIHNldHRpbmdzIGZvciBSUzQ4NSBzdXBwb3J0CiAgc2VyaWFsOiA4MjUwX2V4YXI6IFNl
+dCBtaXNzaW5nIHJzNDg1X3N1cHBvcnRlZCBmbGFnCgogZHJpdmVycy90dHkvc2VyaWFsLzgyNTAv
+ODI1MF9leGFyLmMgfCAgNSArKy0KIGRyaXZlcnMvdHR5L3NlcmlhbC9pbXguYyAgICAgICAgICAg
+IHwgMTEgLS0tLS0tCiBkcml2ZXJzL3R0eS9zZXJpYWwvb21hcC1zZXJpYWwuYyAgICB8IDI3ICsr
+KysrKystLS0tLS0KIGRyaXZlcnMvdHR5L3NlcmlhbC9zZXJpYWxfY29yZS5jICAgIHwgNjEgKysr
+KysrKysrKysrKysrKysrKysrKystLS0tLS0KIGRyaXZlcnMvdHR5L3NlcmlhbC9zdG0zMi11c2Fy
+dC5jICAgIHwgIDggKy0tLQogNSBmaWxlcyBjaGFuZ2VkLCA2NyBpbnNlcnRpb25zKCspLCA0NSBk
+ZWxldGlvbnMoLSkKCgpiYXNlLWNvbW1pdDogNjEwYTliOGY0OWZiY2YxMTAwNzE2MzcwZDNiNWY2
+Zjg4NGEyODM1YQotLSAKMi40My4wCgo=
 
