@@ -1,143 +1,89 @@
-Return-Path: <linux-kernel+bounces-15399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB48A822B7E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC74D822B84
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:41:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51D811F2498F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:40:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A1251F21CC0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:41:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED3918C09;
-	Wed,  3 Jan 2024 10:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CdE6J6YD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBDD418E13;
+	Wed,  3 Jan 2024 10:41:21 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 105A918C17;
-	Wed,  3 Jan 2024 10:40:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A478C433C8;
-	Wed,  3 Jan 2024 10:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704278421;
-	bh=PzZyxGoJo4itwp7LCQZOTQ6nb/jmCq7cpRucX8CCrZ0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CdE6J6YDCZ6DF3b3SSWz8ZSlHKxG6XKLuVhbA4iu6Ouem1gd+qLvg7qiKHFckyuLC
-	 Hkuvbw+vkhBE349YCoj5Wf4EDNUg4KeCTDN2WAuGtJ6uj4GEh59CyiCC40ftqwPGrS
-	 mFud03uz5rFP+SY8uGcvQ0UKG5YDzhgVWcs43e26DMsEEDW5Kdzc/mKJdTOFtRCH73
-	 OgNoMilUpZmlJvbWlL5hcSMt25y+Z+XZKsf9Skyf59ED9jkt75oYMpajiZm7Dkk+fZ
-	 XB+09BVOsTRVfAgcKlzuHXcBNumKS0zw6JixXUs84iDpDN4K40GCIme7n5SuxH68GF
-	 XniKl+7bOeCjQ==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rKyfW-00010q-27;
-	Wed, 03 Jan 2024 11:40:15 +0100
-Date: Wed, 3 Jan 2024 11:40:14 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Manivannan Sadhasivam <mani@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Stanimir Varbanov <svarbanov@mm-sol.com>,
-	Andrew Murray <amurray@thegoodpenguin.co.uk>,
-	Vinod Koul <vkoul@kernel.org>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] PCI: qcom: Reshuffle reset logic in 2_7_0 .init
-Message-ID: <ZZU5jqJ14HscR1Ed@hovoldconsulting.com>
-References: <20231227-topic-8280_pcie-v1-0-095491baf9e4@linaro.org>
- <20231227-topic-8280_pcie-v1-1-095491baf9e4@linaro.org>
- <ZY7R581pgn3uO6kk@hovoldconsulting.com>
- <fa0fbadc-a7c3-4bea-bed7-0006db0616dc@linaro.org>
- <ZY7l828-mSGXVwrk@hovoldconsulting.com>
- <598ede70-bc01-4137-b68b-981c3d420735@linaro.org>
- <ZZPiwk1pbhLyfthB@hovoldconsulting.com>
- <07b20408-4b45-48c3-9356-730a7a827743@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF5518E00;
+	Wed,  3 Jan 2024 10:41:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T4mSP48zFz6K6Jp;
+	Wed,  3 Jan 2024 18:39:49 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id D418A140B2F;
+	Wed,  3 Jan 2024 18:41:15 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 3 Jan
+ 2024 10:41:15 +0000
+Date: Wed, 3 Jan 2024 10:41:13 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Dan Williams <dan.j.williams@intel.com>, Smita Koralahalli
+	<Smita.KoralahalliChannabasappa@amd.com>, Shiju Jose <shiju.jose@huawei.com>,
+	Yazen Ghannam <yazen.ghannam@amd.com>, "Davidlohr Bueso" <dave@stgolabs.net>,
+	Dave Jiang <dave.jiang@intel.com>, "Alison Schofield"
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, Ard
+ Biesheuvel <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>
+Subject: Re: [PATCH v4 7/7] cxl/memdev: Register for and process CPER events
+Message-ID: <20240103104113.000024c0@Huawei.com>
+In-Reply-To: <658235548ca6c_2edf029490@iweiny-mobl.notmuch>
+References: <20231215-cxl-cper-v4-0-01b6dab44fcd@intel.com>
+	<20231215-cxl-cper-v4-7-01b6dab44fcd@intel.com>
+	<20231219143732.0000181e@Huawei.com>
+	<658226c9a49f3_277bd294fb@iweiny-mobl.notmuch>
+	<65822909ebe4c_269bd294f5@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+	<658235548ca6c_2edf029490@iweiny-mobl.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <07b20408-4b45-48c3-9356-730a7a827743@linaro.org>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Tue, Jan 02, 2024 at 06:03:36PM +0100, Konrad Dybcio wrote:
-> On 2.01.2024 11:17, Johan Hovold wrote:
-> > On Sat, Dec 30, 2023 at 02:16:18AM +0100, Konrad Dybcio wrote:
-> >> On 29.12.2023 16:29, Johan Hovold wrote:
-> >>> On Fri, Dec 29, 2023 at 04:01:27PM +0100, Konrad Dybcio wrote:
-> >>>> On 29.12.2023 15:04, Johan Hovold wrote:
-> >>>>> On Wed, Dec 27, 2023 at 11:17:19PM +0100, Konrad Dybcio wrote:
-> >>>>>> At least on SC8280XP, if the PCIe reset is asserted, the corresponding
-> >>>>>> AUX_CLK will be stuck at 'off'.
-> >>>>>
-> >>>>> No, this path is exercised on every boot without the aux clock ever
-> >>>>> being stuck at off. So something is clearly missing in this description.
-> >>>
-> >>>> That's likely because the hardware has been initialized and not cleanly
-> >>>> shut down by your bootloader. When you reset it, or your bootloader
-> >>>> wasn't so kind, you need to start initialization from scratch.
-> >>>
-> >>> What does that even mean? I'm telling you that this reset is asserted on
-> >>> each boot, on all sc8280xp platforms I have access to, and never have I
-> >>> seen the aux clk stuck at off.
-> >>>
-> >>> So clearly your claim above is too broad and the commit message is
-> >>> incorrect or incomplete.
+On Tue, 19 Dec 2023 16:29:08 -0800
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-> > We're clearly talking past each other. When I'm saying reset is asserted
-> > on each boot, I'm referring to reset being asserted in
-> > qcom_pcie_init_2_7_0(), whereas you appear to be referring to whether
-> > the reset has been left asserted by the bootloader when the driver
-> > probes.
-> 
-> OK, "boot" meant "booting the device" to me, not the PCIe controller.
-
-Still not getting across to you apparently.
-
-Again, the code in question is exercised on every boot and not once have
-I seen a stuck clock due to reset being asserted *in*
-qcom_pcie_init_2_7_0().
-
-Now that's not what you were trying to describe as you were thinking of
-reset having been left asserted *before* the driver probes (or before
-qcom_pcie_init_2_7_0() is called).
-
-See? Do you understand now what I was trying to say and why my
-misinterpretation of your terse commit message lead me to claim that it
-was clearly false?
-
-> > I understand what you meant to say now, but I think you should rephrase:
+> Dan Williams wrote:
+> > Ira Weiny wrote:
+> > [..]  
+> > > > and drop the = NULL above.  
+> > > 
+> > > Done.  
 > > 
-> > 	At least on SC8280XP, if the PCIe reset is asserted, the
-> > 	corresponding AUX_CLK will be stuck at 'off'.
-> > 
-> > because as it stands, it sounds like the problem happens when the driver
-> > asserts reset.
+> > The NULL assignment was more about making it clear that
+> > __free(pci_dev_put) will take no action until the pdev is acquired.
+> > Otherwise, any future refactoring that introduces a 'return' before
+> > @pdev is acquired needs to be careful to assign @pdev to NULL. So, just
+> > include it in the declaration more as a __free() declaration style issue
+> > than a correctness issue.  
 > 
-> Does this sound good?
+> I think he meant the assignment to cxlds.  At least that is the NULL
+> assignment I took out.
 > 
-> "At least on SC8280XP, trying to enable the AUX_CLK associated with
-> a PCIe host fails if the corresponding PCIe reset is asserted."
+> Ira
 
-Yes, but you need to also say something about how this would happen, for
-example, your hypothetical bootloader leaving it asserted and your actual
-motivation for this change which is that it appears to be needed after
-suspend. 
-
-A commit message should be clear and self-contained and not force
-reviewers to have to try to interpret what it means and guess what the
-motivation for the change really is.
-
-Johan
+yup.  The other one is correct as Dan pointed out.
 
