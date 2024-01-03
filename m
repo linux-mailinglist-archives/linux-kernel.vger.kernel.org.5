@@ -1,284 +1,145 @@
-Return-Path: <linux-kernel+bounces-15878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 317758234DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:47:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EFBE8234EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:49:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94FF91F25313
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:47:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0AF8C1F25657
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:49:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F70E1CA8F;
-	Wed,  3 Jan 2024 18:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07ADF1CA8F;
+	Wed,  3 Jan 2024 18:49:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="c3Sq8IT1"
+	dkim=pass (2048-bit key) header.d=tkos.co.il header.i=@tkos.co.il header.b="ktbiLOTW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from mail.tkos.co.il (mail.tkos.co.il [84.110.109.230])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D7A41C6AB;
-	Wed,  3 Jan 2024 18:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 924E040E01F9;
-	Wed,  3 Jan 2024 18:47:13 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id ulIUv-Crr1qd; Wed,  3 Jan 2024 18:47:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704307630; bh=hz3DFDjsnEXnDSvp22dG+qc7i60h/ulZ5UFnu4SH3Ws=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=c3Sq8IT1MouyopynoZmgpQkMjLvLg4KCp59EaV77HGfwUZbnHSUrPQOwhfFeaiXwe
-	 jFDPAvc2P5MvNmWp1kHL3qebb6M3KwkURwCeZO6cLt9wCKY/4Oc4bZf7wtLcAthuza
-	 ksnjqOAG42s1tmbvy63lxG4A/AaSB2jXKLnv/Y7XFyBn+wPmOguZ0gBWHcUreD/5iE
-	 GmBWNSr5q2lOYk63vlCxchzL6TOWOOxdX/5+5Hin0J62DlQhRajlW9h0vEA2zl9hbU
-	 SchiaGVIZ91FMnQUpnbAMhfCd0WbCV7D3qx8aN9pqofyplu17OmJUpF+fFGqhUOMpU
-	 akAb9Z6KGID513KUVL2BXQhK1h8WK6RyhPc0qkzCGaa2nwudMeMNYZOPYiupdT0DWa
-	 Gaw+lYdYdSFlTRUvmeySni5zmoPCr8uaW/BaUGMmlVa9OfWVY5nqDgMiB/QdXCiiVE
-	 WTQDbhXq6Yh8UMMjcetRFT80AlWHQN+M99Tvgipcgkx22YW7Fafm7w6ppo5QA9vI+e
-	 5ETM2xE5p45Ssl+1oQGODO6iEhSLrL4CZR1bWHwzTd/iBKK4r46s+tPwtT5fNOwCbj
-	 KFfy/Z7XwDrzTeSTEorqk+pTKQvbcDm0oFgpXw142oeLM6rUUornDWdrNK9VcE+hf3
-	 x4PkdkGGElcPVK+LqsAZGM2U=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3A88340E01F7;
-	Wed,  3 Jan 2024 18:47:02 +0000 (UTC)
-Date: Wed, 3 Jan 2024 19:46:56 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: "Kaplan, David" <David.Kaplan@amd.com>, Ingo Molnar <mingo@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-tip-commits@vger.kernel.org" <linux-tip-commits@vger.kernel.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	"x86@kernel.org" <x86@kernel.org>,
-	David Howells <dhowells@redhat.com>
-Subject: Re: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't
- used at runtime
-Message-ID: <20240103184656.GEZZWroPmHLJuP6y5H@fat_crate.local>
-References: <20231018155433.z4auwckr5s27wnig@treble>
- <20231018175531.GEZTAcE2p92U1AuVp1@fat_crate.local>
- <20231018203747.GJZTBCG7mv5HL4w6CC@fat_crate.local>
- <20231019063527.iwgyioxi2gznnshp@treble>
- <20231019065928.mrvhtfaya22p2uzw@treble>
- <20231019141514.GCZTE58qPOvcJCiBp3@fat_crate.local>
- <SN6PR12MB2702AC3C27D25414FE4260F994D4A@SN6PR12MB2702.namprd12.prod.outlook.com>
- <20231019143951.GEZTE/t/wECKBxMSjl@fat_crate.local>
- <20231019152051.4u5xwhopbdisy6zl@treble>
- <20231024201913.GHZTgmwf6QMkX8BGbo@fat_crate.local>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F881CA89
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:49:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tkos.co.il
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tkos.co.il
+Received: from localhost (unknown [10.0.8.3])
+	by mail.tkos.co.il (Postfix) with ESMTP id 5FDCA440A92;
+	Wed,  3 Jan 2024 20:47:20 +0200 (IST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tkos.co.il;
+	s=default; t=1704307640;
+	bh=TGqtNSqQzaT3LW4imqj4e0okddD35ScBH/nof2tytVY=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+	b=ktbiLOTWNHgYgoCMfabqvXLREuUI2x8zEHaLTHh6OnWDmRkQDb2xY8v2A1AA2Wbz/
+	 3iJv8lAtSOR3TaD2Jzc18AvIWc3wQNy+u7nqvv7A8M7TqIq0FsezN9kSK3ujqfjguP
+	 8RwFrT7lxIn7d04/f0AJ+9gYfwr3NAYJC8hJc+EBchZcEqrqGK1S/1UClae6I4cWbx
+	 B01MUQsACIjNa4GLJ5Oq3cuMGagKdXhzceak8a3MmNQdlNDZtfRUX2RBpbv9sUS2v5
+	 SgCZ8ErxMTQGC/iFTd5oTCkNicjxAq00JzY+4/7rDXUJGvqTsToFTPsn7MPBdYPjCv
+	 eTNJ2TtesVe9Q==
+References: <20240103170002.1793197-1-enachman@marvell.com>
+User-agent: mu4e 1.10.8; emacs 29.1
+From: Baruch Siach <baruch@tkos.co.il>
+To: Elad Nachman <enachman@marvell.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, thunder.leizhen@huawei.com,
+ bhe@redhat.com, akpm@linux-foundation.org, yajun.deng@linux.dev,
+ chris.zjh@huawei.com, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: mm: Fix SOCs with DDR starting above zero
+Date: Wed, 03 Jan 2024 20:47:17 +0200
+In-reply-to: <20240103170002.1793197-1-enachman@marvell.com>
+Message-ID: <87r0iy45ho.fsf@tarshish>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231024201913.GHZTgmwf6QMkX8BGbo@fat_crate.local>
+Content-Type: text/plain
 
-On Tue, Oct 24, 2023 at 10:19:13PM +0200, Borislav Petkov wrote:
-> On Thu, Oct 19, 2023 at 08:20:51AM -0700, Josh Poimboeuf wrote:
-> > GCC doesn't read asm.  Even if it did that wouldn't fix things for
-> > callers of custom-ABI return-thunk-using functions.
-> > 
-> > The below seems to work.
-> 
-> Right, I guess we can do something like that. Linker is not happy here
-> about that symbol, tho:
-> 
-> ld: arch/x86/lib/retpoline.o:(.altinstr_replacement+0x95): undefined reference to `warn_thunk_thunk'
-> make[2]: *** [scripts/Makefile.vmlinux:37: vmlinux] Error 1
-> make[1]: *** [/mnt/kernel/kernel/5th/linux/Makefile:1165: vmlinux] Error 2
-> make: *** [Makefile:234: __sub-make] Error 2
+Hi Elad,
 
-Ok, back to playing with this. A fix below along with a beefed up
-warning message.
+On Wed, Jan 03 2024, Elad Nachman wrote:
+> From: Elad Nachman <enachman@marvell.com>
+>
+> Some SOCs, like the Marvell AC5/X/IM, have a combination
+> of DDR starting at 0x2_0000_0000 coupled with DMA controllers
+> limited to 31 and 32 bit of addressing.
+> This requires to properly arrange ZONE_DMA and ZONE_DMA32 for
+> these SOCs, so swiotlb and coherent DMA allocation would work
+> properly.
+> Change initialization so device tree dma zone bits are taken as
+> function of offset from DRAM start, and when calculating the
+> maximal zone physical RAM address for physical DDR starting above
+> 32-bit, combine the physical address start plus the zone mask
+> passed as parameter.
+> This creates the proper zone splitting for these SOCs:
+> 0..2GB for ZONE_DMA
+> 2GB..4GB for ZONE_DMA32
+> 4GB..8GB for ZONE_NORMAL
+>
+> Signed-off-by: Elad Nachman <enachman@marvell.com>
 
-If only I can remember now how we did trigger the warning in the first
-place in order to test it...
+For an alternative approach see
 
----
+  https://lore.kernel.org/all/cover.1703683642.git.baruch@tkos.co.il/
 
-diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
-index e59d3073e7cf..a4679e8f30ad 100644
---- a/arch/x86/entry/calling.h
-+++ b/arch/x86/entry/calling.h
-@@ -426,3 +426,36 @@ For 32-bit we have the following conventions - kernel is built with
- .endm
- 
- #endif /* CONFIG_SMP */
-+
-+/* rdi:	arg1 ... normal C conventions. rax is saved/restored. */
-+.macro THUNK name, func
-+SYM_FUNC_START(\name)
-+	pushq %rbp
-+	movq %rsp, %rbp
-+
-+	pushq %rdi
-+	pushq %rsi
-+	pushq %rdx
-+	pushq %rcx
-+	pushq %rax
-+	pushq %r8
-+	pushq %r9
-+	pushq %r10
-+	pushq %r11
-+
-+	call \func
-+
-+	popq %r11
-+	popq %r10
-+	popq %r9
-+	popq %r8
-+	popq %rax
-+	popq %rcx
-+	popq %rdx
-+	popq %rsi
-+	popq %rdi
-+	popq %rbp
-+	RET
-+SYM_FUNC_END(\name)
-+	_ASM_NOKPROBE(\name)
-+.endm
-diff --git a/arch/x86/entry/entry.S b/arch/x86/entry/entry.S
-index 8c8d38f0cb1d..582731f74dc8 100644
---- a/arch/x86/entry/entry.S
-+++ b/arch/x86/entry/entry.S
-@@ -7,6 +7,8 @@
- #include <linux/linkage.h>
- #include <asm/msr-index.h>
- 
-+#include "calling.h"
-+
- .pushsection .noinstr.text, "ax"
- 
- SYM_FUNC_START(entry_ibpb)
-@@ -20,3 +22,5 @@ SYM_FUNC_END(entry_ibpb)
- EXPORT_SYMBOL_GPL(entry_ibpb);
- 
- .popsection
-+
-+THUNK warn_thunk_thunk, __warn_thunk
-diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
-index 416b400f39db..119ebdc3d362 100644
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -9,39 +9,6 @@
- #include "calling.h"
- #include <asm/asm.h>
- 
--	/* rdi:	arg1 ... normal C conventions. rax is saved/restored. */
--	.macro THUNK name, func
--SYM_FUNC_START(\name)
--	pushq %rbp
--	movq %rsp, %rbp
--
--	pushq %rdi
--	pushq %rsi
--	pushq %rdx
--	pushq %rcx
--	pushq %rax
--	pushq %r8
--	pushq %r9
--	pushq %r10
--	pushq %r11
--
--	call \func
--
--	popq %r11
--	popq %r10
--	popq %r9
--	popq %r8
--	popq %rax
--	popq %rcx
--	popq %rdx
--	popq %rsi
--	popq %rdi
--	popq %rbp
--	RET
--SYM_FUNC_END(\name)
--	_ASM_NOKPROBE(\name)
--	.endm
--
- THUNK preempt_schedule_thunk, preempt_schedule
- THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
- EXPORT_SYMBOL(preempt_schedule_thunk)
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index 691ff1ef701b..64b175f03cdb 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -348,6 +348,8 @@ extern void entry_ibpb(void);
- 
- extern void (*x86_return_thunk)(void);
- 
-+extern void __warn_thunk(void);
-+
- #ifdef CONFIG_CALL_DEPTH_TRACKING
- extern void call_depth_return_thunk(void);
- 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index bb0ab8466b91..00a6d024ddf7 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2849,3 +2849,19 @@ ssize_t cpu_show_gds(struct device *dev, struct device_attribute *attr, char *bu
- 	return cpu_show_common(dev, attr, buf, X86_BUG_GDS);
- }
- #endif
-+
-+void __warn_thunk(void)
-+{
-+	pr_warn_once("\n");
-+	pr_warn_once("**********************************************************\n");
-+	pr_warn_once("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-+	pr_warn_once("**                                                      **\n");
-+	pr_warn_once("**   unpatched return thunk in use. This should not     **\n");
-+	pr_warn_once("**   on a production kernel. Please report this to      **\n");
-+	pr_warn_once("**   x86@kernel.org.                                    **\n");
-+	pr_warn_once("**                                                      **\n");
-+	pr_warn_once("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-+	pr_warn_once("**********************************************************\n");
-+
-+	dump_stack();
-+}
-diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index 7b2589877d06..dfcb7d64d05a 100644
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -369,19 +369,14 @@ SYM_FUNC_END(call_depth_return_thunk)
-  * 'JMP __x86_return_thunk' sites are changed to something else by
-  * apply_returns().
-  *
-- * This should be converted eventually to call a warning function which
-- * should scream loudly when the default return thunk is called after
-- * alternatives have been applied.
-- *
-- * That warning function cannot BUG() because the bug splat cannot be
-- * displayed in all possible configurations, leading to users not really
-- * knowing why the machine froze.
-+ * The RET is replaced with a WARN_ONCE() to ensure it is never used at
-+ * runtime.  Alternative instructions are applied after apply_returns().
-  */
- SYM_CODE_START(__x86_return_thunk)
- 	UNWIND_HINT_FUNC
- 	ANNOTATE_NOENDBR
--	ANNOTATE_UNRET_SAFE
--	ret
-+	ALTERNATIVE __stringify(ANNOTATE_UNRET_SAFE; ret), \
-+		   "jmp warn_thunk_thunk", X86_FEATURE_ALWAYS
- 	int3
- SYM_CODE_END(__x86_return_thunk)
- EXPORT_SYMBOL(__x86_return_thunk)
+baruch
+
+> ---
+>  arch/arm64/mm/init.c | 20 +++++++++++++++-----
+>  1 file changed, 15 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index 74c1db8ce271..8288c778916e 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -115,20 +115,21 @@ static void __init arch_reserve_crashkernel(void)
+>  
+>  /*
+>   * Return the maximum physical address for a zone accessible by the given bits
+> - * limit. If DRAM starts above 32-bit, expand the zone to the maximum
+> - * available memory, otherwise cap it at 32-bit.
+> + * limit. If DRAM starts above 32-bit, expand the zone to the available memory
+> + * start limited by the zone bits mask, otherwise cap it at 32-bit.
+>   */
+>  static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
+>  {
+>  	phys_addr_t zone_mask = DMA_BIT_MASK(zone_bits);
+>  	phys_addr_t phys_start = memblock_start_of_DRAM();
+> +	phys_addr_t phys_end = memblock_end_of_DRAM();
+>  
+>  	if (phys_start > U32_MAX)
+> -		zone_mask = PHYS_ADDR_MAX;
+> +		zone_mask = phys_start | zone_mask;
+>  	else if (phys_start > zone_mask)
+>  		zone_mask = U32_MAX;
+>  
+> -	return min(zone_mask, memblock_end_of_DRAM() - 1) + 1;
+> +	return min(zone_mask, phys_end - 1) + 1;
+>  }
+>  
+>  static void __init zone_sizes_init(void)
+> @@ -140,7 +141,16 @@ static void __init zone_sizes_init(void)
+>  
+>  #ifdef CONFIG_ZONE_DMA
+>  	acpi_zone_dma_bits = fls64(acpi_iort_dma_get_max_cpu_address());
+> -	dt_zone_dma_bits = fls64(of_dma_get_max_cpu_address(NULL));
+> +	/*
+> +	 * When calculating the dma zone bits from the device tree, subtract
+> +	 * the DRAM start address, in case it does not start from address
+> +	 * zero. This way. we pass only the zone size related bits to
+> +	 * max_zone_phys(), which will add them to the base of the DRAM.
+> +	 * This prevents miscalculations on arm64 SOCs which combines
+> +	 * DDR starting above 4GB with memory controllers limited to
+> +	 * 32-bits or less:
+> +	 */
+> +	dt_zone_dma_bits = fls64(of_dma_get_max_cpu_address(NULL) - memblock_start_of_DRAM());
+>  	zone_dma_bits = min3(32U, dt_zone_dma_bits, acpi_zone_dma_bits);
+>  	arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
+>  	max_zone_pfns[ZONE_DMA] = PFN_DOWN(arm64_dma_phys_limit);
+
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+                                                     ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
 
