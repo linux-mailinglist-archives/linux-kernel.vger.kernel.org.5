@@ -1,121 +1,168 @@
-Return-Path: <linux-kernel+bounces-15112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C443D82275B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:08:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 559EE82275F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:09:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5153A283F9D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:08:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBBBE1F22457
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:09:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CB1F4A1C;
-	Wed,  3 Jan 2024 03:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=buaa.edu.cn header.i=@buaa.edu.cn header.b="dA6ithPX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46067171B4;
+	Wed,  3 Jan 2024 03:08:46 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F6F4A16;
-	Wed,  3 Jan 2024 03:08:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=buaa.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=buaa.edu.cn
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=buaa.edu.cn; s=buaa; h=Received:From:To:Cc:Subject:Date:
-	Message-Id:MIME-Version:Content-Transfer-Encoding; bh=ZT4f7RGcP8
-	9s2PD4GqbxF1IDMNpMzEJiOuxSzUjnO2Q=; b=dA6ithPX3RoxBMBMXvTC20wydI
-	acNkrx/qyZOqznT3A5E/5xG6pQ9OtTxE/087wnw0zBM7NsYr1S582Q5A5MTKjfms
-	iLksuDZsAYB+6/FFkEopK0hUOKOqRklB6D76AzN3++yUVD9DsUJB5XK2mqnZUhoe
-	/m6biKRlPNjK7INqc=
-Received: from localhost.localdomain (unknown [10.130.147.18])
-	by coremail-app1 (Coremail) with SMTP id OCz+CgBnl1miz5RlIYGiAA--.46504S2;
-	Wed, 03 Jan 2024 11:08:18 +0800 (CST)
-From: Yuxuan Hu <20373622@buaa.edu.cn>
-To: marcel@holtmann.org,
-	johan.hedberg@gmail.com,
-	luiz.dentz@gmail.com
-Cc: linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	baijiaju1990@gmail.com,
-	sy2239101@buaa.edu.cn,
-	20373622@buaa.edu.cn,
-	buaazhr@buaa.edu.cn
-Subject: [PATCHv2] Bluetooth: rfcomm: Fix null-ptr-deref in rfcomm_check_security
-Date: Wed,  3 Jan 2024 11:07:47 +0800
-Message-Id: <20240103030747.3260374-1-20373622@buaa.edu.cn>
-X-Mailer: git-send-email 2.25.1
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F801168DC;
+	Wed,  3 Jan 2024 03:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T4ZRn3dTCz4f3jqG;
+	Wed,  3 Jan 2024 11:08:37 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 3EE8D1A017D;
+	Wed,  3 Jan 2024 11:08:39 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgDX2xG1z5Rlt+6CFQ--.782S3;
+	Wed, 03 Jan 2024 11:08:39 +0800 (CST)
+Subject: Re: [PATCH v3 1/2] md: Fix overflow in is_mddev_idle
+To: linan666@huaweicloud.com, song@kernel.org, axboe@kernel.dk
+Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-block@vger.kernel.org, yi.zhang@huawei.com, houtao1@huawei.com,
+ yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20231223033703.2949831-1-linan666@huaweicloud.com>
+ <20231223033703.2949831-2-linan666@huaweicloud.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <2a26a72f-3f47-69a1-1322-d0d360f23445@huaweicloud.com>
+Date: Wed, 3 Jan 2024 11:08:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <20231223033703.2949831-2-linan666@huaweicloud.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:OCz+CgBnl1miz5RlIYGiAA--.46504S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFyDGF1xXr18Aw4UCw4rXwb_yoW8tFyfpF
-	ZFya4xGFn7ur15Arn7AF4kuFyrZr1v9r15Kw4ku3yY93s5Wwn7trWSyr1jvay5CFs0y343
-	ZF18Xw4DGrnru37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9j1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-	IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
-	z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2vYz4IE04k24V
-	AvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xf
-	McIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7
-	v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVCm
-	-wCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26F1DJr1UJwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
-	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvf
-	C2KfnxnUUI43ZEXa7VUbHa0DUUUUU==
-X-CM-SenderInfo: ysqtljawssquxxddhvlgxou0/
+X-CM-TRANSID:cCh0CgDX2xG1z5Rlt+6CFQ--.782S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxur4fuFy7ZF4kCF4DXF48Crg_yoW5Cw48pF
+	WkJFyakrWUJr4Uua1UZ3yDCa4Fg34ft3ySkrW2k34fXF1fKas3KF48GFyYqF1DurW8uFW2
+	qa4UKFs0vay0qrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-During our fuzz testing of the connection and disconnection process at the
-RFCOMM layer,we discovered this bug.By comparing the packetsfrom a normal
-connection and disconnection process with the testcase that triggered a
-KASAN report, we analyzed the cause of this bug as follows:
+ÔÚ 2023/12/23 11:37, linan666@huaweicloud.com Ð´µÀ:
+> From: Li Nan <linan122@huawei.com>
+> 
+> UBSAN reports this problem:
+> 
+>    UBSAN: Undefined behaviour in drivers/md/md.c:8175:15
+>    signed integer overflow:
+>    -2147483291 - 2072033152 cannot be represented in type 'int'
+>    Call trace:
+>     dump_backtrace+0x0/0x310
+>     show_stack+0x28/0x38
+>     dump_stack+0xec/0x15c
+>     ubsan_epilogue+0x18/0x84
+>     handle_overflow+0x14c/0x19c
+>     __ubsan_handle_sub_overflow+0x34/0x44
+>     is_mddev_idle+0x338/0x3d8
+>     md_do_sync+0x1bb8/0x1cf8
+>     md_thread+0x220/0x288
+>     kthread+0x1d8/0x1e0
+>     ret_from_fork+0x10/0x18
+> 
+> 'curr_events' will overflow when stat accum or 'sync_io' is greater than
+> INT_MAX.
+> 
+> Fix it by changing sync_io, last_events and curr_events to 64bit.
 
-1. In the packets captured during a normal connection, the host sends a
-`Read Encryption Key Size` type of `HCI_CMD` packet(Command Opcode: 0x1408)
-to the controller to inquire the length of encryption key.After receiving
-this packet, the controller immediately replies with a Command Complete
-packet (Event Code: 0x0e) to return the Encryption Key Size.
-
-2. In our fuzz test case, the timing of the controller's response to this
-packet was delayed to an unexpected point: after the RFCOMM and L2CAP
-layers had disconnected but before the HCI layer had disconnected.
-
-3. After receiving the Encryption Key Size Response at the time described
-in point 2, the host still called the rfcomm_check_security function.
-However, by this time `struct l2cap_conn *conn = l2cap_pi(sk)->chan->conn;`
-had already been released, and when the function executed
-`return hci_conn_security(conn->hcon, d->sec_level, auth_type, d->out);`,
-specifically when accessing `conn->hcon`, a null-ptr-deref error occurred.
-
-To fix this bug, check if `sk->sk_state` is BT_CLOSED before calling
-rfcomm_recv_frame in rfcomm_process_rx.
-
-Signed-off-by: Yuxuan Hu <20373622@buaa.edu.cn>
----
-V1 -> V2: Removed the direct check for `conn` being null in rfcomm_check_security
-
- net/bluetooth/rfcomm/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/rfcomm/core.c b/net/bluetooth/rfcomm/core.c
-index 053ef8f25fae..1d34d8497033 100644
---- a/net/bluetooth/rfcomm/core.c
-+++ b/net/bluetooth/rfcomm/core.c
-@@ -1941,7 +1941,7 @@ static struct rfcomm_session *rfcomm_process_rx(struct rfcomm_session *s)
- 	/* Get data directly from socket receive queue without copying it. */
- 	while ((skb = skb_dequeue(&sk->sk_receive_queue))) {
- 		skb_orphan(skb);
--		if (!skb_linearize(skb)) {
-+		if (!skb_linearize(skb) && sk->sk_state != BT_CLOSED) {
- 			s = rfcomm_recv_frame(s, skb);
- 			if (!s)
- 				break;
--- 
-2.25.1
+LGTM
+Reviewed-by: Yu Kuai <yukuai3@huawei.com>
+> 
+> Signed-off-by: Li Nan <linan122@huawei.com>
+> ---
+>   drivers/md/md.h        | 4 ++--
+>   include/linux/blkdev.h | 2 +-
+>   drivers/md/md.c        | 7 ++++---
+>   3 files changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/md/md.h b/drivers/md/md.h
+> index ade83af123a2..1a4f976951c1 100644
+> --- a/drivers/md/md.h
+> +++ b/drivers/md/md.h
+> @@ -50,7 +50,7 @@ struct md_rdev {
+>   
+>   	sector_t sectors;		/* Device size (in 512bytes sectors) */
+>   	struct mddev *mddev;		/* RAID array if running */
+> -	int last_events;		/* IO event timestamp */
+> +	long long last_events;		/* IO event timestamp */
+>   
+>   	/*
+>   	 * If meta_bdev is non-NULL, it means that a separate device is
+> @@ -584,7 +584,7 @@ extern void mddev_unlock(struct mddev *mddev);
+>   
+>   static inline void md_sync_acct(struct block_device *bdev, unsigned long nr_sectors)
+>   {
+> -	atomic_add(nr_sectors, &bdev->bd_disk->sync_io);
+> +	atomic64_add(nr_sectors, &bdev->bd_disk->sync_io);
+>   }
+>   
+>   static inline void md_sync_acct_bio(struct bio *bio, unsigned long nr_sectors)
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index 3f8a21cd9233..d28b98adf457 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -170,7 +170,7 @@ struct gendisk {
+>   	struct list_head slave_bdevs;
+>   #endif
+>   	struct timer_rand_state *random;
+> -	atomic_t sync_io;		/* RAID */
+> +	atomic64_t sync_io;		/* RAID */
+>   	struct disk_events *ev;
+>   
+>   #ifdef CONFIG_BLK_DEV_ZONED
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index c94373d64f2c..a6829ea5b560 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -8496,14 +8496,15 @@ static int is_mddev_idle(struct mddev *mddev, int init)
+>   {
+>   	struct md_rdev *rdev;
+>   	int idle;
+> -	int curr_events;
+> +	long long curr_events;
+>   
+>   	idle = 1;
+>   	rcu_read_lock();
+>   	rdev_for_each_rcu(rdev, mddev) {
+>   		struct gendisk *disk = rdev->bdev->bd_disk;
+> -		curr_events = (int)part_stat_read_accum(disk->part0, sectors) -
+> -			      atomic_read(&disk->sync_io);
+> +		curr_events =
+> +			(long long)part_stat_read_accum(disk->part0, sectors) -
+> +			atomic64_read(&disk->sync_io);
+>   		/* sync IO will cause sync_io to increase before the disk_stats
+>   		 * as sync_io is counted when a request starts, and
+>   		 * disk_stats is counted when it completes.
+> 
 
 
