@@ -1,189 +1,177 @@
-Return-Path: <linux-kernel+bounces-15807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50BDF823368
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:36:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 089F782336C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:37:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5A7E1C20CC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:36:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A601CB22EC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEB3C1C29D;
-	Wed,  3 Jan 2024 17:35:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A519A1C6AB;
+	Wed,  3 Jan 2024 17:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MF0ZAbPD"
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="Eq6XdzTh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BFE81C28F;
-	Wed,  3 Jan 2024 17:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50e72e3d435so8183798e87.2;
-        Wed, 03 Jan 2024 09:35:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704303323; x=1704908123; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HgaItFa446aFMiSnamEBaM7GyUBdJS5VRch8OwZfXSk=;
-        b=MF0ZAbPD/X0xvTZ7hzJ3D2PnHB1SBQF0pRRIFmFhnv331llhfvMlZJUSp+k5T+xEbV
-         ue8X3HfoMnMq3iKUGiTSZ/Ddi1EUKN7CL83536X6P3alk4/RrqjQUuM4hf3GZCAGNulT
-         v5VVO8FnI/v/4gsJJbIIdJq08RwiK5fdnrqcUbrPInucfs32dBxtwHjFaAPcXs5udpxj
-         KypPZzBt+a74t8bjyBernX3c3i0+aU0Qv3RisytYSg9smuoYAn0kqJhykpqJhViMzXWY
-         NhZBvw7ix8vwi5LzRS+NQdzgyzAT5S7Of0hiUmc3PYeeSq3Kswy6woN4Gzx1wImDKAPf
-         6S6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704303323; x=1704908123;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HgaItFa446aFMiSnamEBaM7GyUBdJS5VRch8OwZfXSk=;
-        b=VcAmHU5zS68VKVFNSSh/+sLOePkZM4ajAZfGAj4FESXqV9ZskqQnAdaOon/mbD6WDh
-         XvYYwDe/VMfXdFBlxnfjuafPRFbtDvGKdzJ4mv2IzSxRRQIgGS1oqnxL6Dqtzt29H/wk
-         odsUw9Wag0v1y+49lT/M2xbVYFDyyAOuVj2tq4OqWpCvbGwx5v0gPEvFEojX8tKLWBzi
-         7nLWnqzMQ3fSsrYQxktwvUD+q3L0O6f+Ogv7EHJtWdihYKPSo/Bv/u8XRIMPvgXogr8O
-         x1ijAe6TNjcrOZUmocHWj0RYbGT+dtzETWtV3kwOhOC2f8kd3Qu3w7GiIKI0o0hB2UyK
-         kssg==
-X-Gm-Message-State: AOJu0YythNlC43Ft48eK2Y8bSCDnRWnaLi/Z4KXlmPpqAQFVGfu6eE3p
-	Likgus5ltdKMdpZBXN1ZKVE=
-X-Google-Smtp-Source: AGHT+IG5Hn9TGj/uHC7PG4pedjddlBvONui+OZ7Qe7a52QJj1d/0obPGawzNCzIPKR9toMBnDGKT8A==
-X-Received: by 2002:a19:f812:0:b0:50e:6c1d:5dec with SMTP id a18-20020a19f812000000b0050e6c1d5decmr4325314lff.23.1704303323303;
-        Wed, 03 Jan 2024 09:35:23 -0800 (PST)
-Received: from pc636 (host-90-233-200-64.mobileonline.telia.com. [90.233.200.64])
-        by smtp.gmail.com with ESMTPSA id w18-20020a05651203d200b0050e6c30236esm3526090lfp.12.2024.01.03.09.35.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 09:35:22 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Wed, 3 Jan 2024 18:35:20 +0100
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v3 4/7] rcu: Improve handling of synchronize_rcu() users
-Message-ID: <ZZWa2LENLXCMUBhW@pc636>
-References: <20231128080033.288050-5-urezki@gmail.com>
- <579f86e0-e03e-4ab3-9a85-a62064bcf2a1@paulmck-laptop>
- <ZYQY8bB3zpywfBxO@pc636>
- <650554ca-17f6-4119-ab4e-42239c958c73@paulmck-laptop>
- <ZYVWjc65LzD8qkdw@pc636>
- <e20058f9-a525-4d65-b22b-7dd9cfec9737@paulmck-laptop>
- <ZZQHCrGNwjooI4kU@pc636>
- <cd45b0b5-f86b-43fb-a5f3-47d340cd4f9f@paulmck-laptop>
- <ZZVeEGTKVp7CUqtK@pc636>
- <45a15103-0302-4e7d-b522-e17e8b8ac927@paulmck-laptop>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D43131C69D;
+	Wed,  3 Jan 2024 17:35:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mx0b-0016f401.pphosted.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4032THEs005675;
+	Wed, 3 Jan 2024 09:35:49 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=QtaJSWsE
+	JTNUz9p29xBwXZsSB1Org89UHEZ7k9tdeeE=; b=Eq6XdzThntSfmd1r1DZoPXTw
+	Mmhk3ExJSXI61uEy2dTmvQvQbpf1Kgmy9QGWKdC6Ei0IUgnqutRNFuP2F75T4B9/
+	b7zwl0kf0/GtqFFrzw9WHjzrTSLgrH2dMReVMUCNK1hHXDfY7ux+7E4xA96I03em
+	Oen+GNfG1XoJMq1p78A8A3n7DeAdsfeW2UUAt2Nn1Ud4sCeCT28EhRdG71vEM2iJ
+	u4YUazKBpOL/oFRj6rFqo+QV3NKLUVKz8MqVb0GwrWatSFSO509a20dQvgAwRCuL
+	fOlr5K4fiYgcdRMIiH6KDjXnnzBKUYqOfyu9OnndLDKxMSVHjdIKD+RzWjwXZg==
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3vcxu5unhk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Wed, 03 Jan 2024 09:35:47 -0800 (PST)
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 3 Jan
+ 2024 09:35:46 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Wed, 3 Jan 2024 09:35:46 -0800
+Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
+	by maili.marvell.com (Postfix) with ESMTP id 94E045B6931;
+	Wed,  3 Jan 2024 09:35:44 -0800 (PST)
+From: Elad Nachman <enachman@marvell.com>
+To: <huziji@marvell.com>, <ulf.hansson@linaro.org>, <adrian.hunter@intel.com>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <enachman@marvell.com>
+Subject: [PATCH] mmc: xenon: Add ac5 support via bounce buffer
+Date: Wed, 3 Jan 2024 19:35:41 +0200
+Message-ID: <20240103173541.1835166-1-enachman@marvell.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <45a15103-0302-4e7d-b522-e17e8b8ac927@paulmck-laptop>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: LvIhS-xD5PP_syi32eiOwJvqelREBfVU
+X-Proofpoint-GUID: LvIhS-xD5PP_syi32eiOwJvqelREBfVU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
 
-On Wed, Jan 03, 2024 at 06:47:30AM -0800, Paul E. McKenney wrote:
-> On Wed, Jan 03, 2024 at 02:16:00PM +0100, Uladzislau Rezki wrote:
-> > On Tue, Jan 02, 2024 at 11:25:13AM -0800, Paul E. McKenney wrote:
-> > > On Tue, Jan 02, 2024 at 01:52:26PM +0100, Uladzislau Rezki wrote:
-> > > > Hello, Paul!
-> > > > 
-> > > > Sorry for late answer, it is because of holidays :)
-> > > > 
-> > > > > > > > The problem is that, we are limited in number of "wait-heads" which we
-> > > > > > > > add as a marker node for this/current grace period. If there are more clients
-> > > > > > > > and there is no a wait-head available it means that a system, the deferred
-> > > > > > > > kworker, is slow in processing callbacks, thus all wait-nodes are in use.
-> > > > > > > > 
-> > > > > > > > That is why we need an extra grace period. Basically to repeat our try one
-> > > > > > > > more time, i.e. it might be that a current grace period is not able to handle
-> > > > > > > > users due to the fact that a system is doing really slow, but this is rather
-> > > > > > > > a corner case and is not a problem.
-> > > > > > > 
-> > > > > > > But in that case, the real issue is not the need for an extra grace
-> > > > > > > period, but rather the need for the wakeup processing to happen, correct?
-> > > > > > > Or am I missing something subtle here?
-> > > > > > > 
-> > > > > > Basically, yes. If we had a spare dummy-node we could process the users
-> > > > > > by the current GP(no need in extra). Why we may not have it - it is because
-> > > > > > like you pointed:
-> > > > > > 
-> > > > > > - wake-up issue, i.e. wake-up time + when we are on_cpu;
-> > > > > > - slow list process. For example priority. The kworker is not
-> > > > > >   given enough CPU time to do the progress, thus "dummy-nodes"
-> > > > > >   are not released in time for reuse.
-> > > > > > 
-> > > > > > Therefore, en extra GP is requested if there is a high flow of
-> > > > > > synchronize_rcu() users and kworker is not able to do a progress
-> > > > > > in time.
-> > > > > > 
-> > > > > > For example 60K+ parallel synchronize_rcu() users will trigger it.
-> > > > > 
-> > > > > OK, but what bad thing would happen if that was moved to precede the
-> > > > > rcu_seq_start(&rcu_state.gp_seq)?  That way, the requested grace period
-> > > > > would be the same as the one that is just now starting.
-> > > > > 
-> > > > > Something like this?
-> > > > > 
-> > > > > 	start_new_poll = rcu_sr_normal_gp_init();
-> > > > > 
-> > > > > 	/* Record GP times before starting GP, hence rcu_seq_start(). */
-> > > > > 	rcu_seq_start(&rcu_state.gp_seq);
-> > > > > 	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> > > > >
-> > > > I had a concern about the case when rcu_sr_normal_gp_init() handles what
-> > > > we currently have, in terms of requests. Right after that there is/are
-> > > > extra sync requests which invoke the start_poll_synchronize_rcu() but
-> > > > since a GP has been requested before it will not request an extra one. So
-> > > > "last" incoming users might not be processed.
-> > > > 
-> > > > That is why i have placed the rcu_sr_normal_gp_init() after a gp_seq is
-> > > > updated.
-> > > > 
-> > > > I can miss something, so please comment. Apart of that we can move it
-> > > > as you proposed.
-> > > 
-> > > Couldn't that possibility be handled by a check in rcu_gp_cleanup()?
-> > > 
-> > It is controlled by the caller anyway, i.e. if a new GP is needed.
-> > 
-> > I am not 100% sure it is as straightforward as it could look like to
-> > handle it in the rcu_sr_normal_gp_cleaup() function. At least i see
-> > that we need to access to the first element of llist and find out if
-> > it is a wait-dummy-head or not. If not we know there are extra incoming
-> > calls.
-> > 
-> > So that way requires extra calling of start_poll_synchronize_rcu().
-> 
-> If this is invoked early enough in rcu_gp_cleanup(), all that needs to
-> happen is to set the need_gp flag.  Plus you can count the number of
-> requests, and snapshot that number at rcu_gp_init() time and check to
-> see if it changed at rcu_gp_cleanup() time.  Later on, this could be
-> used to reduce the number of wakeups, correct?
-> 
-You mean instead of waking-up a gp-kthread just continue processing of
-new users if they are exist? If so, i think, we can implement it as separate
-patches.
+From: Elad Nachman <enachman@marvell.com>
 
-> > I can add a comment about your concern and we can find the best approach
-> > later, if it is OK with you!
-> 
-> I agree that this should be added via a later patch, though I have not
-> yet given up on the possibility that this patch might be simple enough
-> to be later in this same series.
-> 
-Maybe there is a small misunderstanding. Please note, the rcu_sr_normal_gp_init() 
-function does not request any new gp, i.e. our approach does not do any extra GP
-requests. It happens only if there are no any dummy-wait-head available as we
-discussed it earlier.
+AC5/X/IM SOCs has a variant of the Xenon eMMC controller,
+in which only 31-bit of addressing pass from the controller
+on the AXI bus.
+Since we cannot guarantee that only buffers from the first 2GB
+of memory will reach the driver, the driver is configured for
+SDMA mode, without 64-bit mode, overriding the DMA mask to 34-bit
+to support the DDR memory mapping, which starts at offset 8GB.
 
---
-Uladzislau Rezki
+Signed-off-by: Elad Nachman <enachman@marvell.com>
+---
+ drivers/mmc/host/sdhci-xenon.c | 33 ++++++++++++++++++++++++++++++++-
+ drivers/mmc/host/sdhci-xenon.h |  3 ++-
+ 2 files changed, 34 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci-xenon.c b/drivers/mmc/host/sdhci-xenon.c
+index 25ba7aecc3be..4d6df1815da1 100644
+--- a/drivers/mmc/host/sdhci-xenon.c
++++ b/drivers/mmc/host/sdhci-xenon.c
+@@ -18,6 +18,8 @@
+ #include <linux/of.h>
+ #include <linux/pm.h>
+ #include <linux/pm_runtime.h>
++#include <linux/mm.h>
++#include <linux/dma-mapping.h>
+ 
+ #include "sdhci-pltfm.h"
+ #include "sdhci-xenon.h"
+@@ -422,6 +424,7 @@ static int xenon_probe_params(struct platform_device *pdev)
+ 	struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
+ 	u32 sdhc_id, nr_sdhc;
+ 	u32 tuning_count;
++	struct sysinfo si;
+ 
+ 	/* Disable HS200 on Armada AP806 */
+ 	if (priv->hw_version == XENON_AP806)
+@@ -450,6 +453,23 @@ static int xenon_probe_params(struct platform_device *pdev)
+ 	}
+ 	priv->tuning_count = tuning_count;
+ 
++	/*
++	 * AC5/X/IM HW has only 31-bits passed in the crossbar switch.
++	 * If we have more than 2GB of memory, this means we might pass
++	 * memory pointers which are above 2GB and which cannot be properly
++	 * represented. In this case, disable ADMA, 64-bit DMA and allow only SDMA.
++	 * This effectively will enable bounce buffer quirk in the
++	 * generic SDHCI driver, which will make sure DMA is only done
++	 * from supported memory regions:
++	 */
++	if (priv->hw_version == XENON_AC5) {
++		si_meminfo(&si);
++		if (si.totalram * si.mem_unit > SZ_2G) {
++			host->quirks |= SDHCI_QUIRK_BROKEN_ADMA;
++			host->quirks2 |= SDHCI_QUIRK2_BROKEN_64_BIT_DMA;
++		}
++	}
++
+ 	return xenon_phy_parse_params(dev, host);
+ }
+ 
+@@ -562,7 +582,17 @@ static int xenon_probe(struct platform_device *pdev)
+ 		goto remove_sdhc;
+ 
+ 	pm_runtime_put_autosuspend(&pdev->dev);
+-
++	/*
++	 * If we previously detected AC5 with over 2GB of memory,
++	 * then we disable ADMA and 64-bit DMA.
++	 * This means generic SDHCI driver has set the DMA mask to
++	 * 32-bit. Since DDR starts at 0x2_0000_0000, we must use
++	 * 34-bit DMA mask to access this DDR memory:
++	 */
++	if (priv->hw_version == XENON_AC5) {
++		if (host->quirks2 & SDHCI_QUIRK2_BROKEN_64_BIT_DMA)
++			dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(34));
++	}
+ 	return 0;
+ 
+ remove_sdhc:
+@@ -680,6 +710,7 @@ static const struct of_device_id sdhci_xenon_dt_ids[] = {
+ 	{ .compatible = "marvell,armada-ap807-sdhci", .data = (void *)XENON_AP807},
+ 	{ .compatible = "marvell,armada-cp110-sdhci", .data =  (void *)XENON_CP110},
+ 	{ .compatible = "marvell,armada-3700-sdhci", .data =  (void *)XENON_A3700},
++	{ .compatible = "marvell,ac5-sdhci",	     .data =  (void *)XENON_AC5},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, sdhci_xenon_dt_ids);
+diff --git a/drivers/mmc/host/sdhci-xenon.h b/drivers/mmc/host/sdhci-xenon.h
+index 3e9c6c908a79..0460d97aad26 100644
+--- a/drivers/mmc/host/sdhci-xenon.h
++++ b/drivers/mmc/host/sdhci-xenon.h
+@@ -57,7 +57,8 @@ enum xenon_variant {
+ 	XENON_A3700,
+ 	XENON_AP806,
+ 	XENON_AP807,
+-	XENON_CP110
++	XENON_CP110,
++	XENON_AC5
+ };
+ 
+ struct xenon_priv {
+-- 
+2.25.1
+
 
