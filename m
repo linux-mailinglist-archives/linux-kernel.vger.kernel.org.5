@@ -1,178 +1,256 @@
-Return-Path: <linux-kernel+bounces-16049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDED2823776
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:08:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8369D82377D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:09:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4346D1F25EEA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:08:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1BAF1F25EEB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:09:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209221DDF2;
-	Wed,  3 Jan 2024 22:08:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F6691DA43;
+	Wed,  3 Jan 2024 22:09:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fRWmK/9m"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="NRDjHM81"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 708F61DDE0
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 22:08:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2025C433C8;
-	Wed,  3 Jan 2024 22:08:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704319689;
-	bh=8toS+vH5TPTvCpB0j1ZUDmGyx02iYIyKXGyqPxOzIdk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=fRWmK/9mUBIYIM0IH9NCzZfQMkMmJvMqw1pwXmF+pTpFqoTy8xlBHbeo243/wirw/
-	 ZS45VOM0GS6+Y8Kl1WE2y/3RlAavx07VupffACtS1yT93ARhjOeVRcVskhj5bdO+Qm
-	 pEqTgE+PQddxqfkPPCcl5IQWCkf/GMCTsU6YmHGd0HfKPZcIA1wYf/hK+sNdemnnev
-	 yMN39gkq4sUuT+v1qYXS3HUsPCGdgiaKZKrbiGC+BQ2vzf6sa6SwDA4Y6+OZ/jG1JN
-	 UbtR3DLtQFnU+uZRGgL/cJhccSDBE8AFwez59eK63ygM4Z3a2WNW5629bmmALX5CvR
-	 2dg5a7qrcvWPQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9157DCE08F4; Wed,  3 Jan 2024 14:08:08 -0800 (PST)
-Date: Wed, 3 Jan 2024 14:08:08 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Jiri Wiesner <jwiesner@suse.de>
-Cc: linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>, Feng Tang <feng.tang@intel.com>
-Subject: Re: [PATCH] clocksource: Skip watchdog check for large watchdog
- intervals
-Message-ID: <5b8fd9ba-1622-4ec7-b3cc-2db3a78122f1@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240103112113.GA6108@incl>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184FD1DDE6
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 22:09:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-35d374bebe3so5269165ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 14:09:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1704319762; x=1704924562; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=te2PH2Kdt4cQrnvMOmJ454BBecoYeY1JOfYpAxEXWxY=;
+        b=NRDjHM81w/sZiM8JrKwggU2qq7U5V4q/crH6ON1yBYTp2vZZhLcgkLmmUv9mGCkTqQ
+         NOAUtvVjPVSJmK3wmDU5BnUXP9dHxDKOlvhhwrLcVk2gmrTFm1HyUj9H/hGEzoOdvyXd
+         zZ7QvoiOd617OtYbSpl8eMXtzaJnS7Xa5Gkaw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704319762; x=1704924562;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=te2PH2Kdt4cQrnvMOmJ454BBecoYeY1JOfYpAxEXWxY=;
+        b=njsZTc+Z+HFyz2a4ZzOo5AyKsHuhdujEYdFybzI9Y76GrL62aP21UHVABnyCR9xICi
+         yeSF8L6YY+gRLyKjroPWc6YGHkzB/yqIjig10F0lW2WJBl2P3OxthzvBWrPnC3JulVVW
+         5912mmheEdE+Jl7Ug8f9U0gqjic2QQvdcUC0UZwIWYig2nddGTFOvQIqn7xz9PVxVmje
+         Ur0njgGviLa3nt30DYG7RYTZih2DHowxq96EPb+rOLc6mgLkr/FBgVjLdzXRIDLO66PT
+         mN93QVYH+siF9EMUw8s3x3uYAq00IRzrhXjZImjPnmCvFlh+mwAuFPFvx3GOkQa+cKTY
+         u4Dw==
+X-Gm-Message-State: AOJu0Yx+Jdjwl7cAmdD1wfT8wY5gUztKTjPstFT+tr0DzMeMS9XmQ3wK
+	bFIuODTgD+6FA0Rs575wby0neCAJ58EDrQ==
+X-Google-Smtp-Source: AGHT+IFaaY5Skh+o7ny4ui5W9ZhTFlM4FEgUH0yIGmZMDbedaycTOwiYk25gWja3CQeLGAKe5kxYVg==
+X-Received: by 2002:a05:6602:2190:b0:7ba:a0f9:7660 with SMTP id b16-20020a056602219000b007baa0f97660mr30672565iob.1.1704319762050;
+        Wed, 03 Jan 2024 14:09:22 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id bq11-20020a056638468b00b0046dd22fd24csm1096998jab.87.2024.01.03.14.09.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jan 2024 14:09:21 -0800 (PST)
+Message-ID: <4fb169fd-393c-441e-b0f7-32a3777c1d11@linuxfoundation.org>
+Date: Wed, 3 Jan 2024 15:09:20 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240103112113.GA6108@incl>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND v4 1/3] kselftests: lib.mk: Add TEST_GEN_MODS_DIR
+ variable
+Content-Language: en-US
+To: Joe Lawrence <joe.lawrence@redhat.com>,
+ Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Jiri Kosina <jikos@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
+ Petr Mladek <pmladek@suse.com>, linux-kselftest@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-s390@vger.kernel.org, live-patching@vger.kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20231220-send-lp-kselftests-v4-0-3458ec1b1a38@suse.com>
+ <20231220-send-lp-kselftests-v4-1-3458ec1b1a38@suse.com>
+ <ZZSOtsbzpy2mvmUC@redhat.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <ZZSOtsbzpy2mvmUC@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 03, 2024 at 12:21:13PM +0100, Jiri Wiesner wrote:
-> There have been reports of the watchdog marking clocksources unstable on
-> machines with 8 NUMA nodes:
-> > clocksource: timekeeping watchdog on CPU373: Marking clocksource 'tsc' as unstable because the skew is too large:
-> > clocksource:   'hpet' wd_nsec: 14523447520 wd_now: 5a749706 wd_last: 45adf1e0 mask: ffffffff
-> > clocksource:   'tsc' cs_nsec: 14524115132 cs_now: 515ce2c5a96caa cs_last: 515cd9a9d83918 mask: ffffffffffffffff
-> > clocksource:   'tsc' is current clocksource.
-> > tsc: Marking TSC unstable due to clocksource watchdog
-> > TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
-> > sched_clock: Marking unstable (1950347883333462, 79649632569)<-(1950428279338308, -745776594)
-> > clocksource: Checking clocksource tsc synchronization from CPU 400 to CPUs 0,46,52,54,138,208,392,397.
-> > clocksource: Switched to clocksource hpet
+On 1/2/24 15:31, Joe Lawrence wrote:
+> On Wed, Dec 20, 2023 at 01:53:12PM -0300, Marcos Paulo de Souza wrote:
+>> Add TEST_GEN_MODS_DIR variable for kselftests. It can point to
+>> a directory containing kernel modules that will be used by
+>> selftest scripts.
+>>
+>> The modules are built as external modules for the running kernel.
+>> As a result they are always binary compatible and the same tests
+>> can be used for older or newer kernels.
+>>
+>> The build requires "kernel-devel" package to be installed.
+>> For example, in the upstream sources, the rpm devel package
+>> is produced by "make rpm-pkg"
+>>
+>> The modules can be built independently by
+>>
+>>    make -C tools/testing/selftests/livepatch/
+>>
+>> or they will be automatically built before running the tests via
+>>
+>>    make -C tools/testing/selftests/livepatch/ run_tests
+>>
+>> Note that they are _not_ built when running the standalone
+>> tests by calling, for example, ./test-state.sh.
+>>
+>> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+>> ---
+>>   Documentation/dev-tools/kselftest.rst |  4 ++++
+>>   tools/testing/selftests/lib.mk        | 20 +++++++++++++++-----
+>>   2 files changed, 19 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/Documentation/dev-tools/kselftest.rst b/Documentation/dev-tools/kselftest.rst
+>> index ab376b316c36..7f3582a67318 100644
+>> --- a/Documentation/dev-tools/kselftest.rst
+>> +++ b/Documentation/dev-tools/kselftest.rst
+>> @@ -245,6 +245,10 @@ Contributing new tests (details)
+>>      TEST_PROGS, TEST_GEN_PROGS mean it is the executable tested by
+>>      default.
+>>   
+>> +   TEST_GEN_MODS_DIR should be used by tests that require modules to be built
+>> +   before the test starts. The variable will contain the name of the directory
+>> +   containing the modules.
+>> +
+>>      TEST_CUSTOM_PROGS should be used by tests that require custom build
+>>      rules and prevent common build rule use.
+>>   
+>> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+>> index 118e0964bda9..6c7c5a0112cf 100644
+>> --- a/tools/testing/selftests/lib.mk
+>> +++ b/tools/testing/selftests/lib.mk
+>> @@ -70,12 +70,15 @@ KHDR_INCLUDES := -isystem $(KHDR_DIR)
+>>   # TEST_PROGS are for test shell scripts.
+>>   # TEST_CUSTOM_PROGS and TEST_PROGS will be run by common run_tests
+>>   # and install targets. Common clean doesn't touch them.
+>> +# TEST_GEN_MODS_DIR is used to specify a directory with modules to be built
+>> +# before the test executes. These modules are cleaned on the clean target as well.
+>>   TEST_GEN_PROGS := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS))
+>>   TEST_GEN_PROGS_EXTENDED := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS_EXTENDED))
+>>   TEST_GEN_FILES := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_FILES))
+>> +TEST_GEN_MODS_DIR := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_MODS_DIR))
+>>   
+>>   all: kernel_header_files $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) \
+>> -     $(TEST_GEN_FILES)
+>> +     $(TEST_GEN_FILES) $(if $(TEST_GEN_MODS_DIR),gen_mods_dir)
+>>   
+>>   kernel_header_files:
+>>   	@ls $(KHDR_DIR)/linux/*.h >/dev/null 2>/dev/null;                      \
+>> @@ -105,8 +108,8 @@ endef
+>>   
+>>   run_tests: all
+>>   ifdef building_out_of_srctree
+>> -	@if [ "X$(TEST_PROGS)$(TEST_PROGS_EXTENDED)$(TEST_FILES)" != "X" ]; then \
+>> -		rsync -aq --copy-unsafe-links $(TEST_PROGS) $(TEST_PROGS_EXTENDED) $(TEST_FILES) $(OUTPUT); \
+>> +	@if [ "X$(TEST_PROGS)$(TEST_PROGS_EXTENDED)$(TEST_FILES)$(TEST_GEN_MODS_DIR)" != "X" ]; then \
+>> +		rsync -aq --copy-unsafe-links $(TEST_PROGS) $(TEST_PROGS_EXTENDED) $(TEST_FILES) $(TEST_GEN_MODS_DIR) $(OUTPUT); \
+>>   	fi
+>>   	@if [ "X$(TEST_PROGS)" != "X" ]; then \
+>>   		$(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) \
+>> @@ -118,6 +121,12 @@ else
+>>   	@$(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) $(TEST_PROGS))
+>>   endif
+>>   
+>> +gen_mods_dir:
+>> +	$(Q)$(MAKE) -C $(TEST_GEN_MODS_DIR)
+>> +
+>> +clean_mods_dir:
+>> +	$(Q)$(MAKE) -C $(TEST_GEN_MODS_DIR) clean
+>> +
+>>   define INSTALL_SINGLE_RULE
+>>   	$(if $(INSTALL_LIST),@mkdir -p $(INSTALL_PATH))
+>>   	$(if $(INSTALL_LIST),rsync -a --copy-unsafe-links $(INSTALL_LIST) $(INSTALL_PATH)/)
+>> @@ -131,6 +140,7 @@ define INSTALL_RULE
+>>   	$(eval INSTALL_LIST = $(TEST_CUSTOM_PROGS)) $(INSTALL_SINGLE_RULE)
+>>   	$(eval INSTALL_LIST = $(TEST_GEN_PROGS_EXTENDED)) $(INSTALL_SINGLE_RULE)
+>>   	$(eval INSTALL_LIST = $(TEST_GEN_FILES)) $(INSTALL_SINGLE_RULE)
+>> +	$(eval INSTALL_LIST = $(TEST_GEN_MODS_DIR)) $(INSTALL_SINGLE_RULE)
 > 
-> The measured clocksource skew - the absolute difference between cs_nsec
-> and wd_nsec - was 668 microseconds:
-> > cs_nsec - wd_nsec = 14524115132 - 14523447520 = 667612
+> Hi Marcos,
 > 
-> The kernel (based on 5.14.21) used 200 microseconds for the
-> uncertainty_margin of both the clocksource and watchdog, resulting in a
-> threshold of 400 microseconds.  The discrepancy is that the measured
-> clocksource skew was evaluated against a threshold suited for watchdog
-> intervals of roughly WATCHDOG_INTERVAL, i.e. HZ >> 1, which is 0.5 second.
-> Both the cs_nsec and the wd_nsec value indicate that the actual watchdog
-> interval was circa 14.5 seconds. Since the watchdog is executed in softirq
-> context the expiration of the watchdog timer can get severely delayed on
-> account of a ksoftirqd thread not getting to run in a timely manner.
-> Surely, a system with such belated softirq execution is not working well
-> and the scheduling issue should be looked into but the clocksource
-> watchdog should be able to deal with it accordingly.
+> Sorry for the late reply on this, but I'm reviewing this version by
+> trying to retrofit it into our selftest packaging (pre-build the test
+> module .ko's and stash those into an rpm rather than building on the
+> test host).
 > 
-> The solution in this patch skips the current watchdog check if the
-> watchdog interval exceeds 1.5 * WATCHDOG_INTERVAL. Considering the maximum
-> watchdog interval of 1.5 * WATCHDOG_INTERVAL, the current default
-> uncertainty margin (of the TSC and HPET) corresponds to a limit on
-> clocksource skew of 333 ppm (microseconds of skew per second). To keep the
-> limit imposed by NTP (500 microseconds of skew per second) for all
-> possible watchdog intervals, the margins would have to be scaled so that
-> the threshold value is proportional to the length of the actual watchdog
-> interval.
+> Since $TEST_GEN_MODS_DIR is treated as a directory, I found that the
+> selftest install target copies a bunch of intermediate object and kbuild
+> files:
 > 
-> Fixes: 2e27e793e280 ("clocksource: Reduce clocksource-skew threshold")
-> Suggested-by: Feng Tang <feng.tang@intel.com>
-> Signed-off-by: Jiri Wiesner <jwiesner@suse.de>
+>    $ mkdir /tmp/test-install
+>    $ make KDIR=$(pwd) INSTALL_PATH=/tmp/test-install TARGETS=livepatch \
+>         -C tools/testing/selftests/ install
+> 
+>    [ ... builds livepatch selftests ... ]
+> 
+> the rsync in question:
+> 
+>    rsync -a --copy-unsafe-links /home/jolawren/src/kernel/tools/testing/selftests/livepatch/test_modules /tmp/test-install/livepatch/
+>    ...
+> 
+> and then looking at the destination:
+> 
+>    $ tree -a /tmp/test-install/
+>    /tmp/test-install/
+>    ├── kselftest
+>    │   ├── module.sh
+>    │   ├── prefix.pl
+>    │   └── runner.sh
+>    ├── kselftest-list.txt
+>    ├── livepatch
+>    │   ├── config
+>    │   ├── functions.sh
+>    │   ├── settings
+>    │   ├── test-callbacks.sh
+>    │   ├── test-ftrace.sh
+>    │   ├── test_klp-call_getpid
+>    │   ├── test-livepatch.sh
+>    │   ├── test_modules
+>    │   │   ├── Makefile
+>    │   │   ├── modules.order
+>    │   │   ├── .modules.order.cmd
+>    │   │   ├── Module.symvers
+>    │   │   ├── .Module.symvers.cmd
+>    │   │   ├── test_klp_atomic_replace.c
+>    │   │   ├── test_klp_atomic_replace.ko
+>    │   │   ├── .test_klp_atomic_replace.ko.cmd
+>    │   │   ├── test_klp_atomic_replace.mod
+>    │   │   ├── test_klp_atomic_replace.mod.c
+>    │   │   ├── .test_klp_atomic_replace.mod.cmd
+>    │   │   ├── test_klp_atomic_replace.mod.o
+>    │   │   ├── .test_klp_atomic_replace.mod.o.cmd
+>    │   │   ├── test_klp_atomic_replace.o
+>    │   │   ├── .test_klp_atomic_replace.o.cmd
+>    ...
+> 
+> On the other hand, variables like $TEST_GEN_FILES specify individual
+> files, so only final binaries like test_klp-call_getpid (and not
+> test_klp-call_getpid.c) are copied to $INSTALL_PATH.
 
-I believe that there were concerns about a similar approach in the case
-where the jiffies counter is the clocksource, but in the meantime:
 
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Thank you Joe for finding this problem.
 
-> ---
->  kernel/time/clocksource.c | 28 ++++++++++++++++++++++++++--
->  1 file changed, 26 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> index c108ed8a9804..ac5cb0ff278b 100644
-> --- a/kernel/time/clocksource.c
-> +++ b/kernel/time/clocksource.c
-> @@ -98,7 +98,9 @@ static u64 suspend_start;
->  /*
->   * Interval: 0.5sec.
->   */
-> -#define WATCHDOG_INTERVAL (HZ >> 1)
-> +#define WATCHDOG_INTERVAL	(HZ >> 1)
-> +#define WATCHDOG_INTR_MAX_NS	((WATCHDOG_INTERVAL + (WATCHDOG_INTERVAL >> 1))\
-> +				 * NSEC_PER_SEC / HZ)
->  
->  /*
->   * Threshold: 0.0312s, when doubled: 0.0625s.
-> @@ -134,6 +136,7 @@ static DECLARE_WORK(watchdog_work, clocksource_watchdog_work);
->  static DEFINE_SPINLOCK(watchdog_lock);
->  static int watchdog_running;
->  static atomic_t watchdog_reset_pending;
-> +static int64_t watchdog_max_intr;
->  
->  static inline void clocksource_watchdog_lock(unsigned long *flags)
->  {
-> @@ -400,7 +403,7 @@ static void clocksource_watchdog(struct timer_list *unused)
->  {
->  	u64 csnow, wdnow, cslast, wdlast, delta;
->  	int next_cpu, reset_pending;
-> -	int64_t wd_nsec, cs_nsec;
-> +	int64_t wd_nsec, cs_nsec, interval;
->  	struct clocksource *cs;
->  	enum wd_read_status read_ret;
->  	unsigned long extra_wait = 0;
-> @@ -470,6 +473,27 @@ static void clocksource_watchdog(struct timer_list *unused)
->  		if (atomic_read(&watchdog_reset_pending))
->  			continue;
->  
-> +		/*
-> +		 * The processing of timer softirqs can get delayed (usually
-> +		 * on account of ksoftirqd not getting to run in a timely
-> +		 * manner), which causes the watchdog interval to stretch.
-> +		 * Some clocksources, e.g. acpi_pm, cannot tolerate
-> +		 * watchdog intervals longer than a few seconds.
-> +		 * Skew detection may fail for longer watchdog intervals
-> +		 * on account of fixed margins being used.
-> +		 */
-> +		interval = max(cs_nsec, wd_nsec);
-> +		if (unlikely(interval > WATCHDOG_INTR_MAX_NS)) {
-> +			if (system_state > SYSTEM_SCHEDULING &&
-> +			    interval > 2 * watchdog_max_intr) {
-> +				watchdog_max_intr = interval;
-> +				pr_warn("Skipping watchdog check: cs_nsec: %lld wd_nsec: %lld\n",
-> +					cs_nsec, wd_nsec);
-> +			}
-> +			watchdog_timer.expires = jiffies;
-> +			continue;
-> +		}
-> +
->  		/* Check the deviation from the watchdog clocksource. */
->  		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
->  		if (abs(cs_nsec - wd_nsec) > md) {
-> -- 
-> 2.35.3
-> 
-> 
-> -- 
-> Jiri Wiesner
-> SUSE Labs
+Copying source files and object files doesn't sound right. This isn't
+how the ksleftest installs work. Let's fix this.
+
+thanks,
+--Shuah
+
 
