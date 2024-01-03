@@ -1,71 +1,73 @@
-Return-Path: <linux-kernel+bounces-15089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DA3B822723
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:48:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84F1282271C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:46:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90529284A8C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:48:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 189AC1C22CBA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:46:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68BED179B0;
-	Wed,  3 Jan 2024 02:47:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=endrift.com header.i=@endrift.com header.b="PHborYsU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 623494A27;
+	Wed,  3 Jan 2024 02:46:01 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from endrift.com (endrift.com [173.255.198.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from cstnet.cn (smtp87.cstnet.cn [159.226.251.87])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020F517988;
-	Wed,  3 Jan 2024 02:47:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=endrift.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endrift.com
-Received: from [192.168.0.22] (71-212-26-68.tukw.qwest.net [71.212.26.68])
-	by endrift.com (Postfix) with ESMTPSA id C06F0A0F7;
-	Tue,  2 Jan 2024 18:42:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=endrift.com; s=2020;
-	t=1704249756; bh=zAL8GnuuzNwuWcn0s32NpfVCCNajJ/DkFytPpE1ALFU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=PHborYsUEhuehfWwQlgNkaMGtHmlMGHkl6T5PPEe8y2F3aX0vKYsal3lkq9yAC7nn
-	 whK3XEsbIX7B2YnJGfn7d9aDgPNq9IArxFRJteEsqIYm6JLL4qc4e6+QagXIPX54dg
-	 93wmJzOZ2Ry/clxu8ebgK9ri6IWktCrzNID5KiWFfJbvUKvB2hHTt/39mb0vEj/ddl
-	 oa6KlH+bcFgSHnD3BjSApt7C5V+eIB/qKRXMjsu365PxXuFHnJ80zPEMGXNvWhEloy
-	 kHlPfQnLgYflbbpiCJjFTqJH7EMF23PSboP8pN+C2OgEbCEf+z8r1ch/2COwv9tJcw
-	 GrrFKalS8MWxg==
-Message-ID: <566656e5-36fc-4841-9317-d6c2e87e2a48@endrift.com>
-Date: Tue, 2 Jan 2024 18:42:34 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0390D469F;
+	Wed,  3 Jan 2024 02:45:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iie.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iie.ac.cn
+Received: from mengjingzi$iie.ac.cn ( [121.195.114.118] ) by
+ ajax-webmail-APP-17 (Coremail) ; Wed, 3 Jan 2024 10:45:35 +0800 (GMT+08:00)
+Date: Wed, 3 Jan 2024 10:45:35 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: =?UTF-8?B?5a2f5pWs5ae/?= <mengjingzi@iie.ac.cn>
+To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, brauner@kernel.org
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Subject: capability checks in sk_setsockopt() and __sock_cmsg_send()
+ inconsistent with the documentation
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.15 build 20230921(8ad33efc)
+ Copyright (c) 2002-2024 www.mailtech.cn cnic.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Signed-off-by missing for commit in the hid tree
-Content-Language: en-US
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Jiri Kosina <jikos@kernel.org>,
- Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20240103083208.03071ea8@canb.auug.org.au>
-From: Vicki Pfau <vi@endrift.com>
-In-Reply-To: <20240103083208.03071ea8@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Message-ID: <5f96b80d.c739.18ccd3646b8.Coremail.mengjingzi@iie.ac.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:qgCowADHKupPypRlsBMDAA--.32349W
+X-CM-SenderInfo: pphqwyxlqj6xo6llvhldfou0/1tbiDAcFE2WUwEQhAgABsK
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-Sorry about that, I must have forgotten to add it. Can I sign off on it now?
-
-Signed-off-by: Vicki Pfau <vi@endrift.com>
-
-On 1/2/24 13:32, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Commit
-> 
->   917972636e82 ("HID: hid-steam: Disable watchdog instead of using a heartbeat")
-> 
-> is missing a Signed-off-by from its author.
-> 
+SGkhIAoKV2UndmUgaWRlbnRpZmllZCByZWR1bmRhbnQgY2FwYWJpbGl0eSBjaGVja3Mgd2l0aGlu
+IHRoZSBza19zZXRzb2Nrb3B0KCkgYW5kIF9fc29ja19jbXNnX3NlbmQoKSBmdW5jdGlvbnMsIHNw
+ZWNpZmljYWxseSByZWxhdGVkIHRvIHRoZSBvcHRpb25zIFNPX01BUksgYW5kIFNPX1BSSU9SSVRZ
+LgoKQ3VycmVudGx5LCBib3RoIENBUF9ORVRfQURNSU4gYW5kIENBUF9ORVRfUkFXIGFyZSB1c2Vk
+IGZvciB0aGVzZSBjaGVja3MsIGFuZCB3ZSBwcm9wb3NlIHNpbXBsaWZ5aW5nIHRoaXMgYnkgZXhj
+bHVzaXZlbHkgdXNpbmcgQ0FQX05FVF9BRE1JTi4gT3VyIHJhdGlvbmFsZSBpcyBiYXNlZCBvbiB0
+aGUgZGVmaW5pdGlvbnMgcHJvdmlkZWQgaW4gdGhlIGNhcGFiaWxpdHkgbWFudWFsIHBhZ2UoaHR0
+cHM6Ly93d3cubWFuNy5vcmcvbGludXgvbWFuLXBhZ2VzL21hbjcvY2FwYWJpbGl0aWVzLjcuaHRt
+bCksIHdoaWNoIHNwZWNpZmllcyB0aGF0IG9ubHkgQ0FQX05FVF9BRE1JTiBpcyByZXF1aXJlZCBm
+b3IgdXNpbmcgc2V0c29ja29wdCgyKSB0byBzZXQgU09fUFJJT1JJVFksIFNPX0RFQlVHLCBhbmQg
+U09fTUFSSy4gQWRkaXRpb25hbGx5LCB3ZSd2ZSBvYnNlcnZlZCB0aGF0IFNPX0RFQlVHIGlzIGFs
+cmVhZHkgcHJvdGVjdGVkIHNvbGVseSBieSBDQVBfTkVUX0FETUlOLgoKU2ltcGxpZnlpbmcgdGhl
+IGNhcGFiaWxpdHkgY2hlY2tzIGluIHRoZXNlIGZ1bmN0aW9ucyB0byBvbmx5IHVzZSBDQVBfTkVU
+X0FETUlOIHdvdWxkIG5vdCBvbmx5IGFsaWduIHdpdGggdGhlIGNhcGFiaWxpdHkgbWFudWFsIHBh
+Z2UgYnV0IGFsc28gY29udHJpYnV0ZSB0byBhIG1vcmUgc3RyYWlnaHRmb3J3YXJkIGFuZCBjb25z
+aXN0ZW50IGNvZGViYXNlLgoKVGhpcyBpc3N1ZSBleGlzdHMgaW4gc2V2ZXJhbCBrZXJuZWwgdmVy
+c2lvbnMgYW5kIHdlIGhhdmUgY2hlY2tlZCBpdCBvbiB0aGUgbGF0ZXN0IHN0YWJsZSByZWxlYXNl
+KExpbnV4IDYuNi45KS4KCllvdXIgaW5zaWdodHMgYW5kIGZlZWRiYWNrIG9uIHRoaXMgcHJvcG9z
+ZWQgYWRqdXN0bWVudCB3b3VsZCBiZSBncmVhdGx5IGFwcHJlY2lhdGVkLiBUaGFuayB5b3UgZm9y
+IHlvdXIgdGltZSBhbmQgY29uc2lkZXJhdGlvbi4KCkJlc3QgcmVnYXJkcywKSmluZ3ppCg==
 
