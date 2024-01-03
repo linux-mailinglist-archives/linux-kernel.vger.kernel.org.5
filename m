@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-15618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64907822EE5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:49:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F8A1822EED
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:50:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 015781F24644
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:49:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81CF01C231CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:50:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA66219BBD;
-	Wed,  3 Jan 2024 13:48:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD661A27E;
+	Wed,  3 Jan 2024 13:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hGfQlCEF"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Vd1kB+fw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD36A19BBB
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6336719BCF
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5542a7f1f3cso11567975a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 05:48:52 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e7dff3e9fso7657742e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 05:50:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704289731; x=1704894531; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704289806; x=1704894606; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wZlabaUQUlOY0vf0IVgsKw8W6yS6oa3YtCa4XuUWbBY=;
-        b=hGfQlCEFewIXxBa3RdEDjYz73nHJzUROqOjO6SMjCgh6COOfFcPK2Y8oxizdNNdhj/
-         AdHPyKWBCsFLWjkWAc7VWGUj3ABvhrFYqSOC7gc3sqm/wbUO7irSPk6ypg6HnQrIXlVS
-         9t0oy1W/3Z6tXxlenBp+164eagq/q0MsfuoaUkzNjfHAObKK9LY/kazEhs4OtrbIekMw
-         9cHv2ZCEROMX05EFdhf1h9xcE1Riux+8D4vP/dd8p1RJTNNw7M4PVMBiBfotf0IqWwBo
-         J5SXxM19d79nnkLYYQItR9FBtovTTXcGTwfjJ7XA5cqEAt0EySM3Tg4KhIfTKJDCcRrF
-         f04w==
+        bh=f1dvuFHKe4j17EX4txcAT9Lw2KXFp4kBJ6tMYnn9PJw=;
+        b=Vd1kB+fwqMnU3QXvnkHQmAtVz/PSr+7wtqZzL/Dv/Ne7RNPqVhQzCbe3hZWdKMur5B
+         CkuK0dR03IJ9NcdO1SNPGZ89tu6gIWAiCIR99glpAY1VUyKfPNheqcEDrh5G63YG0/yE
+         1L9QZwnaTWu3lyVg+9sbJ2RG+XT8Z0/GdBEriayY4gx8TWK1a7s1MnovjDSBuBidYWmp
+         xI7kyQ9SHQEWBqCsy/aBQRXERzDalaHfo9P7c0uFQFbXcLmHvVV5wBf+RhdkKXiyAStC
+         EmBqguRzUszOVbWUUXnq7VePiG1MP0LrA21l+V5eY4yDbupjYdHN1MrxQHG0lhAo+O8+
+         ObvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704289731; x=1704894531;
+        d=1e100.net; s=20230601; t=1704289806; x=1704894606;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wZlabaUQUlOY0vf0IVgsKw8W6yS6oa3YtCa4XuUWbBY=;
-        b=LDTdSp6C9VtGyvSgUpVdVgB08W0YxqO7S2O+T5+rhY+9yvvzU1bQ1V5NyWuk94aY3R
-         CHaW8U6hx3EFn1O9qyFk8dJT7tzxVE6rF0G29rzsC2yjprX/SUH27GgmObJ2KNbblbMm
-         uLRdNp9k/2TihzSnKliQRvnXo8MTjJ+gouv+jTj+1MWQdk25VL4QJOYmf6IQy/DL45fB
-         ix4ppMXDwnE1mTfiTZWK7o2jrUAMgaiPjiuxfXxAQXbQa2Y+F63v3ezwJhTAPzehFQZQ
-         +yrWSXF7nBXdeemvvor/0fNwjP7BWi63aQ2+RTpx2jT1t+aJcm7fD6LPF1f98fc+o182
-         ZwgA==
-X-Gm-Message-State: AOJu0Yyry7WO9Zd2pnQTsuNHNBCh5BmD1QvjLEs6AR7itkqVOv6UCzcW
-	6LEJlV90/qjT/KNcV5TVjzm8yjoqPkqZ6w==
-X-Google-Smtp-Source: AGHT+IGpaZpW0NsomaMniXpOOhtWOoHRgoScr2zh8TAEq5mmvUgs6uStV6dev0AessaL+YG51Ws6aA==
-X-Received: by 2002:a50:8a87:0:b0:554:4f7e:2170 with SMTP id j7-20020a508a87000000b005544f7e2170mr9850460edj.7.1704289731213;
-        Wed, 03 Jan 2024 05:48:51 -0800 (PST)
+        bh=f1dvuFHKe4j17EX4txcAT9Lw2KXFp4kBJ6tMYnn9PJw=;
+        b=OHrS5vZtx6Nuvd7c1EEEl6c1ru4lrS4gDZjl2vj/9IhOi3o4h2g5bRLh6QAHnpNUtJ
+         UcPXt787RwftblGdM9i15Dqyd3e1pVJ3aHgzfZF2PcetdFOm2azaZqKIDFgZ/NHnSxDn
+         QY/f3RU3tuNF7FWo95WwUlCOf5sPZu/N8ji3wHP4JyGplbpJdH1AtCZROwxYliKDdsAq
+         RiHyqOs2LydAY7l3I9yvK3Zz+4FnkXnFIPavv5VlOLPZlvrG0hCv/UNz0wUadShLZ/ls
+         s8x35jAqH8twiCS6Jvj2xs+ctl5L9gJyySuBU5Vq04bpqk8Z7L3u5Pe4ZUXF61w0i2pq
+         8Wyw==
+X-Gm-Message-State: AOJu0YxGXLDaWnmruHEuuDk9rdRCMHWkqJELbTOGRc1yaLuSiwDChbBh
+	B4uRCBWnBYSx05OZtvVnKBVOWf+oq22VDg==
+X-Google-Smtp-Source: AGHT+IHKBy24cMcTBsmEGGMRYVASYXcuE3vV3BgZ0qtR4tJ+F1QDU88ZKxXyy7feuxWWsXnn+F85uw==
+X-Received: by 2002:a05:6512:3451:b0:50b:ea8e:b42c with SMTP id j17-20020a056512345100b0050bea8eb42cmr7027914lfr.97.1704289806350;
+        Wed, 03 Jan 2024 05:50:06 -0800 (PST)
 Received: from [192.168.199.125] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
-        by smtp.gmail.com with ESMTPSA id r9-20020aa7cb89000000b005550844cd1dsm11312288edt.30.2024.01.03.05.48.49
+        by smtp.gmail.com with ESMTPSA id r9-20020aa7cb89000000b005550844cd1dsm11312288edt.30.2024.01.03.05.50.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 05:48:50 -0800 (PST)
-Message-ID: <f5edb2ec-0eea-4faf-a05b-a5d984c8d160@linaro.org>
-Date: Wed, 3 Jan 2024 14:48:48 +0100
+        Wed, 03 Jan 2024 05:50:06 -0800 (PST)
+Message-ID: <a888e261-e990-445c-ab98-f63859c19dd2@linaro.org>
+Date: Wed, 3 Jan 2024 14:50:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,14 +66,19 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] arm64: dts: qcom: sm8550: Increase supported MSI
- interrupts.
+Subject: Re: [PATCH v2 14/16] arm64: dts: qcom: sc8280xp: Fix UFS PHY clocks
 Content-Language: en-US
-To: Qiang Yu <quic_qianyu@quicinc.com>, andersson@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, quic_cang@quicinc.com, quic_mrana@quicinc.com
-References: <1703648096-46067-1-git-send-email-quic_qianyu@quicinc.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: andersson@kernel.org, vkoul@kernel.org, sboyd@kernel.org,
+ mturquette@baylibre.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, quic_cang@quicinc.com
+References: <20231218120712.16438-1-manivannan.sadhasivam@linaro.org>
+ <20231218120712.16438-15-manivannan.sadhasivam@linaro.org>
+ <e905c463-6f89-4939-981a-7a360ed31669@linaro.org>
+ <20231220083014.GB3544@thinkpad>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -110,18 +115,43 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <1703648096-46067-1-git-send-email-quic_qianyu@quicinc.com>
+In-Reply-To: <20231220083014.GB3544@thinkpad>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 27.12.2023 04:34, Qiang Yu wrote:
-> On sm8550, synopsys MSI controller supports 256 MSI interrupts. Hence,
-> enable all GIC interrupts required by MSI controller for PCIe0 and PCIe1.
+On 20.12.2023 09:30, Manivannan Sadhasivam wrote:
+> On Wed, Dec 20, 2023 at 01:35:27AM +0100, Konrad Dybcio wrote:
+>> On 18.12.2023 13:07, Manivannan Sadhasivam wrote:
+>>> QMP PHY used in SC8280XP requires 3 clocks:
+>>>
+>>> * ref - 19.2MHz reference clock from RPMh
+>>> * ref_aux - Auxiliary reference clock from GCC
+>>> * qref - QREF clock from GCC
+>>>
+>>> Fixes: 152d1faf1e2f ("arm64: dts: qcom: add SC8280XP platform")
+>>> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>>> ---
+>>>  arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 18 ++++++++++++------
+>>>  1 file changed, 12 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+>>> index cad59af7ccef..37344abbe8bf 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+>>> @@ -2256,9 +2256,12 @@ ufs_mem_phy: phy@1d87000 {
+>>>  			compatible = "qcom,sc8280xp-qmp-ufs-phy";
+>>>  			reg = <0 0x01d87000 0 0x1000>;
+>>>  
+>>> -			clocks = <&gcc GCC_UFS_CARD_CLKREF_CLK>,
+>>> -				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>;
+>>> -			clock-names = "ref", "ref_aux";
+>>> +			clocks = <&rpmhcc RPMH_CXO_CLK>,
+>>> +				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
+>>> +				 <&gcc GCC_UFS_CARD_CLKREF_CLK>;
+>> GCC_UFS_REF_CLKREF_CLK
 > 
-> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
-> ---
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> I'm not sure about this CLK. So I kept it as it is until I verify it.
+I am quite sure everything *UFS_CARD_* refers to the other UFS host..
 
 Konrad
 
