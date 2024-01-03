@@ -1,109 +1,107 @@
-Return-Path: <linux-kernel+bounces-15393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60B3B822B64
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:28:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD7F5822B6B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:32:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2C971F2412E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:28:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B398285638
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:32:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C7418C1B;
-	Wed,  3 Jan 2024 10:28:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0163F18C1B;
+	Wed,  3 Jan 2024 10:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="jIELgv8R"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C0D18C01;
-	Wed,  3 Jan 2024 10:28:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-594cabe74f8so342938eaf.0;
-        Wed, 03 Jan 2024 02:28:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704277712; x=1704882512;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O71FlOOiGk/7AmpyQ57yDmpDlt8Ip4jkuT5waQGee/E=;
-        b=HEcomYPki1NYzWwzTIIX60PuKgJSgEC62nMJEEWif52l6M9LRhsPB42OsghBhY6qgD
-         mZetX1e7n7zV+sTmObo3KIOW1eILHJx/c/LAMQ3tZAWZvyzek3dMxSyqhm+syAWDJlqq
-         Uj3AkWUdnv/gbNwtGBCRWL6NeWYGfQcaZBaI+0rMLEQrCJdOnjQTdxqo4BfZbeOeNzmV
-         XMZ+I3MarQA60be1u4f4hGGWJAhHG0ZUBd9xcsrh/6Y9ZGOx+bZm+6nDcQDczfb+3eXX
-         oENYT8yHaAXUZ6NwbQg2ubTcipIdt28qd+Ykg4o5mL/UJIE8x0/vT6s0famVPdMnURuf
-         Rrag==
-X-Gm-Message-State: AOJu0YxLQJGhRNqQCMCYLI0l+k4y3oHPWQR0+bb1bWmzKm8SEjXUO6IT
-	8ivDxFzHdG22QsQvbBltzRuw44Il3/BPABZDHQ8=
-X-Google-Smtp-Source: AGHT+IHDHVKD4l2m03lvzGargJCfCc+oBOr/CtCjvbAuwmyIHLrwhTBUjyn0GdqiZNPKDkqkraHM2sMA1muQHmOBBks=
-X-Received: by 2002:a4a:e096:0:b0:595:6028:d8cb with SMTP id
- w22-20020a4ae096000000b005956028d8cbmr6936937oos.0.1704277712127; Wed, 03 Jan
- 2024 02:28:32 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A2E18C08;
+	Wed,  3 Jan 2024 10:31:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from localhost.ispras.ru (unknown [10.10.165.5])
+	by mail.ispras.ru (Postfix) with ESMTPSA id DDEE840F1DDD;
+	Wed,  3 Jan 2024 10:31:47 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru DDEE840F1DDD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1704277908;
+	bh=ATVmhgg0EGQ8+kx8YSDYDd5FGVTMUjphxtGXvmXrX8Q=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jIELgv8RSLOsnL8WW8pVFFNDcK2dIsSYuafpZ9Yjd90IVFMkiKYNv15sm8XIGKsaV
+	 BdPGfreSc7IxQXuXkr1lo7ViCZ/hOMtJym1onr+MiVXBVb0vZT1vBIbOEIwea1QCFh
+	 rl+ibCedpRc6EQpwW0ik+lHWQKqFDg2Oz04/rnHU=
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
+	David Sterba <dsterba@suse.com>,
+	Chris Mason <clm@fb.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexey Khoroshilov <khoroshilov@ispras.ru>,
+	lvc-project@linuxtesting.org,
+	syzbot+be14ed7728594dc8bd42@syzkaller.appspotmail.com,
+	syzbot+c563a3c79927971f950f@syzkaller.appspotmail.com
+Subject: [PATCH] btrfs: ref-verify: free ref cache before clearing mount opt
+Date: Wed,  3 Jan 2024 13:31:27 +0300
+Message-ID: <20240103103128.30095-1-pchelkin@ispras.ru>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CGME20231227084252epcas2p3b063f7852f81f82cd0a31afd7f404db4@epcas2p3.samsung.com>
- <2023122701-mortify-deed-4e66@gregkh> <5754861.DvuYhMxLoT@kreacher>
- <6019796.lOV4Wx5bFT@kreacher> <CAJZ5v0j6vspzj00ZH66eHtcDP8_fUcaR+KNoaTA8qG1r0hkrVQ@mail.gmail.com>
- <ZZTk9dRlueSuZuAy@perf>
-In-Reply-To: <ZZTk9dRlueSuZuAy@perf>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 3 Jan 2024 11:28:21 +0100
-Message-ID: <CAJZ5v0j=7ePbEhW0+9WBGqgGhafGazyM-APr-ZRsweWDAQ76Vw@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] PM: sleep: Fix possible device suspend-resume deadlocks
-To: Youngmin Nam <youngmin.nam@samsung.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
-	Greg KH <gregkh@linuxfoundation.org>, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, d7271.choe@samsung.com, 
-	janghyuck.kim@samsung.com, hyesoo.yu@samsung.com, hs.gil@samsung.com, 
-	yulgon.kim@samsung.com, Alan Stern <stern@rowland.harvard.edu>, 
-	Ulf Hansson <ulf.hansson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 3, 2024 at 5:39=E2=80=AFAM Youngmin Nam <youngmin.nam@samsung.c=
-om> wrote:
->
-> On Tue, Jan 02, 2024 at 02:18:43PM +0100, Rafael J. Wysocki wrote:
-> > On Wed, Dec 27, 2023 at 9:41=E2=80=AFPM Rafael J. Wysocki <rjw@rjwysock=
-i.net> wrote:
-> > >
-> > > Hi Everyone,
-> > >
-> > > As reported here
-> > >
-> > > https://lore.kernel.org/linux-pm/ZYvjiqX6EsL15moe@perf/
-> > >
-> > > the device suspend-resume code running during system-wide PM transiti=
-ons
-> > > deadlock on low memory, because it attempts to acquire a mutex that's
-> > > already held by it in those cases.
-> > >
-> > > This series addresses the issue by changing the resume code behavior
-> > > to directly run the device PM functions synchronously if they cannot
-> > > be scheduled for asynchronous executions (patch [3/3]).
-> > >
-> > > For this purpose, the async code is rearranged (patch [1/3]) and a
-> > > new variant of async_schedule_dev() is introduced (patch [2/3]).
-> >
-> > Given the lack of negative feedback, I've queued up this series for 6.8=
--rc1.
-> >
-> > Please let me know if there are any issues with that.
-> >
-> > Thanks!
-> >
-> Hi Rafael
->
-> We haven't seen any regression issue under our stress test.
->
-> So, feel free to add
->
-> Tested-by: Youngmin Nam <youngmin.nam@samsung.com>
+As clearing REF_VERIFY mount option indicates there were some errors in a
+ref-verify process, a ref cache is not relevant anymore and should be
+freed.
 
-Thank you!
+btrfs_free_ref_cache() requires REF_VERIFY option being set so call
+it just before clearing the mount option.
+
+Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+
+Fixes: fd708b81d972 ("Btrfs: add a extent ref verify tool")
+Reported-by: syzbot+be14ed7728594dc8bd42@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/lkml/000000000000e5a65c05ee832054@google.com/
+Reported-by: syzbot+c563a3c79927971f950f@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/lkml/0000000000007fe09705fdc6086c@google.com/
+Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+---
+ fs/btrfs/ref-verify.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
+index 6486f0d7e993..8c4fc98ca9ce 100644
+--- a/fs/btrfs/ref-verify.c
++++ b/fs/btrfs/ref-verify.c
+@@ -889,8 +889,10 @@ int btrfs_ref_tree_mod(struct btrfs_fs_info *fs_info,
+ out_unlock:
+ 	spin_unlock(&fs_info->ref_verify_lock);
+ out:
+-	if (ret)
++	if (ret) {
++		btrfs_free_ref_cache(fs_info);
+ 		btrfs_clear_opt(fs_info->mount_opt, REF_VERIFY);
++	}
+ 	return ret;
+ }
+ 
+@@ -1021,8 +1023,8 @@ int btrfs_build_ref_tree(struct btrfs_fs_info *fs_info)
+ 		}
+ 	}
+ 	if (ret) {
+-		btrfs_clear_opt(fs_info->mount_opt, REF_VERIFY);
+ 		btrfs_free_ref_cache(fs_info);
++		btrfs_clear_opt(fs_info->mount_opt, REF_VERIFY);
+ 	}
+ 	btrfs_free_path(path);
+ 	return ret;
+-- 
+2.43.0
+
 
