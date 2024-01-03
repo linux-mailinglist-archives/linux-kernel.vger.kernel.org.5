@@ -1,228 +1,171 @@
-Return-Path: <linux-kernel+bounces-15189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E8F182281D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 06:49:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 899D8822824
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 06:58:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C27661F23AE3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 05:49:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32F8E284F94
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 05:58:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E84C1799E;
-	Wed,  3 Jan 2024 05:49:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90F918035;
+	Wed,  3 Jan 2024 05:58:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S6pasgrL"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="N+25HVh+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3711171CC;
-	Wed,  3 Jan 2024 05:49:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704260943; x=1735796943;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=vSVxbwN6/wmar2Lbtj1KTSwlY+xHAKgJbZ0423wPmJs=;
-  b=S6pasgrLrzYn/FDv7u7wWpoeflbdAArhcTl5hvmSUN8VnKgigOybVICz
-   94/RkaGIszbP0ePkzV7vbUI3GBxoUvJcfpoLmjfVhnH58yTM4rZ8PKAnq
-   Gz+XMpmMQHA62cNCi4+W8+hWhvo/v4up7VLnOeBSVNTsdw1UUAB1i5XZ8
-   MGSSZdYWIOJg0siY0hhXA4AzxnAmqFjZ8DGbh59cCa21kVal+7+PdcgIV
-   YkSgKbLPNWqCRMBOdc3nR1oPVgte6D4tcFfcchRXp09ou6DXfl/XQvwly
-   7fV5RVbXaaOX2OAnGZdm7vqo4aCbfTzQzaeqtsd01qO2CCUqvdAKEozNB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="15604294"
-X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
-   d="scan'208";a="15604294"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 21:49:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="903330999"
-X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
-   d="scan'208";a="903330999"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 21:48:54 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Gregory Price <gregory.price@memverge.com>
-Cc: Gregory Price <gourry.memverge@gmail.com>,  <linux-mm@kvack.org>,
-  <linux-doc@vger.kernel.org>,  <linux-fsdevel@vger.kernel.org>,
-  <linux-kernel@vger.kernel.org>,  <linux-api@vger.kernel.org>,
-  <x86@kernel.org>,  <akpm@linux-foundation.org>,  <arnd@arndb.de>,
-  <tglx@linutronix.de>,  <luto@kernel.org>,  <mingo@redhat.com>,
-  <bp@alien8.de>,  <dave.hansen@linux.intel.com>,  <hpa@zytor.com>,
-  <mhocko@kernel.org>,  <tj@kernel.org>,  <corbet@lwn.net>,
-  <rakie.kim@sk.com>,  <hyeongtak.ji@sk.com>,  <honggyu.kim@sk.com>,
-  <vtavarespetr@micron.com>,  <peterz@infradead.org>,
-  <jgroves@micron.com>,  <ravis.opensrc@micron.com>,
-  <sthanneeru@micron.com>,  <emirakhur@micron.com>,  <Hasan.Maruf@amd.com>,
-  <seungjun.ha@samsung.com>,  Srinivasulu Thanneeru
- <sthanneeru.opensrc@micron.com>
-Subject: Re: [PATCH v5 02/11] mm/mempolicy: introduce
- MPOL_WEIGHTED_INTERLEAVE for weighted interleaving
-In-Reply-To: <ZZRybDPSoLme8Ldh@memverge.com> (Gregory Price's message of "Tue,
-	2 Jan 2024 15:30:36 -0500")
-References: <20231223181101.1954-1-gregory.price@memverge.com>
-	<20231223181101.1954-3-gregory.price@memverge.com>
-	<8734vof3kq.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZYp6ZRLZQVtTHest@memverge.com>
-	<878r58dt31.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZZRybDPSoLme8Ldh@memverge.com>
-Date: Wed, 03 Jan 2024 13:46:56 +0800
-Message-ID: <87mstnc6jz.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 779A118028
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 05:58:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20240103055809epoutp045c44ee08335cfc6f5fc093fe706f5eac~mwMt_MsFz0170601706epoutp04G
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 05:58:09 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20240103055809epoutp045c44ee08335cfc6f5fc093fe706f5eac~mwMt_MsFz0170601706epoutp04G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1704261489;
+	bh=Pf2dZcRj3DhWgVRNDm7EChH8TNgNl1cEinXghVV1m/0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=N+25HVh+4ML3wkudkDl6FBs2QAVINFb0EWrDUTHUIEi6+0pctB5eASaZ9brs0+sMX
+	 bEslyMbpCxQgfNRl8+2Wluh6Ef04tYw1efx/svHveXLsX39xUx04iTL9J2azFz9x49
+	 LCGW6hGTsNxDi8Ol1AJYjwrhwn1VaV+7eWIExtVk=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+	epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+	20240103055808epcas5p15ffe7e7ea10f818af80b259ada734a29~mwMtYYyNb1619516195epcas5p1G;
+	Wed,  3 Jan 2024 05:58:08 +0000 (GMT)
+Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.183]) by
+	epsnrtp2.localdomain (Postfix) with ESMTP id 4T4fCM2ZRrz4x9QB; Wed,  3 Jan
+	2024 05:58:07 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+	epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	6D.20.19369.E67F4956; Wed,  3 Jan 2024 14:58:06 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240103055746epcas5p148c2b06032e09956ddcfc72894abc82a~mwMY6WIXB3067430674epcas5p1x;
+	Wed,  3 Jan 2024 05:57:46 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240103055746epsmtrp296aaac7ef0f47548fc855c3e5f4fd4ee~mwMY5mVys1420114201epsmtrp2e;
+	Wed,  3 Jan 2024 05:57:46 +0000 (GMT)
+X-AuditID: b6c32a50-c99ff70000004ba9-90-6594f76e952d
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	A9.EE.08817.A57F4956; Wed,  3 Jan 2024 14:57:46 +0900 (KST)
+Received: from localhost.localdomain (unknown [109.105.118.124]) by
+	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240103055745epsmtip1f241b366c1140cb8ec56c16fb7bdc7fa~mwMXbCpzL2375623756epsmtip1E;
+	Wed,  3 Jan 2024 05:57:44 +0000 (GMT)
+From: Xiaobing Li <xiaobing.li@samsung.com>
+To: axboe@kernel.dk
+Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
+	io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
+	joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
+	ruyi.zhang@samsung.com, xiaobing.li@samsung.com
+Subject: Re: Re: [PATCH v6] io_uring: Statistics of the true utilization of
+ sq threads.
+Date: Wed,  3 Jan 2024 13:49:37 +0800
+Message-ID: <20240103054940.2121301-1-xiaobing.li@samsung.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <7967c7a9-3d17-44de-a170-2b5354460126@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMJsWRmVeSWpSXmKPExsWy7bCmlm7e9ympBgcnalrMWbWN0WL13X42
+	i3et51gsjv5/y2bxq/suo8XWL19ZLS7vmsNm8Wwvp8WXw9/ZLc5O+MBqMXXLDiaLjpbLjA48
+	Hjtn3WX3uHy21KNvyypGj8+b5AJYorJtMlITU1KLFFLzkvNTMvPSbZW8g+Od403NDAx1DS0t
+	zJUU8hJzU22VXHwCdN0yc4AOU1IoS8wpBQoFJBYXK+nb2RTll5akKmTkF5fYKqUWpOQUmBTo
+	FSfmFpfmpevlpZZYGRoYGJkCFSZkZyyf/oO5oFOg4tPmtAbG5zxdjBwcEgImEjs+ZHUxcnEI
+	CexhlNjdO48JwvnEKHHh6GlGCOcbo0Tr5vtADidYx/+vJ5ghEnsZJd50vWKHcL4yStye9ZkJ
+	pIpNQFvi+rouVhBbREBYYn9HKwtIEbPAX0aJCS9/M4MkhAUiJTq/nWcCOYRFQFXixocIkDCv
+	gJ3Et+ZFbBDb5CUW71gOVs4pYCtx5OMudogaQYmTM5+wgNjMQDXNW2eDXSQhMJVD4tCiG6wQ
+	zS4Svy/0s0DYwhKvjm9hh7ClJD6/2wu1oFjiSM93VojmBkaJ6bevQhVZS/y7socF5DhmAU2J
+	9bv0IcKyElNPrWOCWMwn0fv7CRNEnFdixzwYW1Vi9aWHUHulJV43/IaKe0hMapsMDdMJjBK/
+	dk9lm8CoMAvJQ7OQPDQLYfUCRuZVjFKpBcW56anJpgWGunmp5fBoTs7P3cQITq1aATsYV2/4
+	q3eIkYmD8RCjBAezkgjv+nWTU4V4UxIrq1KL8uOLSnNSiw8xmgJDfCKzlGhyPjC555XEG5pY
+	GpiYmZmZWBqbGSqJ875unZsiJJCeWJKanZpakFoE08fEwSnVwBQ1v/dP/MrZr9XMXD6eWLiI
+	MU/f/GnAo6vmnHFXdi//riB3cDnXHu2ST5NPF3RciRHbul7xjWjz77eybJPX1TrofpdRX+C/
+	4KbwEa2P8pYbFooaGx3l2r0mcvmd9Rb2q99dOCX/qzQy6HIQt2fpjqdlzd/Cco3OXLopzPNb
+	+uZ6vpKq/t92ua2yniUzg7a1xd3mNOhYsf5Bg8T7JcLVnxfZiqZuq2gS7bt4pqLzffHZqH/P
+	tLa3Psg0nJ+bf+SIYssNNYb6mJ5Y5jnnsndGJR7Y/Zpf/rM9D3tT056NQiFnMo55zpe3L6xa
+	Hl6VvyGzI0EwqG//aj6Wt1G6nNoTZ014WrBG/0zBosXmvRU/lZRYijMSDbWYi4oTATgei0A2
+	BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrDLMWRmVeSWpSXmKPExsWy7bCSnG7U9ympBtffKFjMWbWN0WL13X42
+	i3et51gsjv5/y2bxq/suo8XWL19ZLS7vmsNm8Wwvp8WXw9/ZLc5O+MBqMXXLDiaLjpbLjA48
+	Hjtn3WX3uHy21KNvyypGj8+b5AJYorhsUlJzMstSi/TtErgylk//wVzQKVDxaXNaA+Nzni5G
+	Tg4JAROJ/19PMHcxcnEICexmlJhwfCljFyMHUEJa4s+fcogaYYmV/56zQ9R8ZpToazrJBJJg
+	E9CWuL6uixXEFgEq2t/RygJiMwt0Mkm8/qwHYgsLhEscbL4FNpNFQFXixocIkDCvgJ3Et+ZF
+	bBDz5SUW71jODGJzCthKHPm4ix3EFhKwkbiyexsbRL2gxMmZT1hAxjALqEusnycEsUleonnr
+	bOYJjIKzkFTNQqiahaRqASPzKkbJ1ILi3PTcYsMCo7zUcr3ixNzi0rx0veT83E2M4AjR0trB
+	uGfVB71DjEwcjIcYJTiYlUR416+bnCrEm5JYWZValB9fVJqTWnyIUZqDRUmc99vr3hQhgfTE
+	ktTs1NSC1CKYLBMHp1QDk/2XQ1t7d0ys4e54drc6WMB8ha1LzNzzdxIrMvZW9V1bt/eUwEqz
+	N5u23JoaINDy8MF/AynJw0JMun/Pxxf1GO9KPPS9nuHOdn7ZxJuVZ6ds2CHf02l84KBr986A
+	PdMbZibpzX/37CdrbEbfl/2R/rvEFhezBHTdfct5/XHZBqMTPM0pS5sLcmJ5v/5N0w3ZcK2r
+	eYM8Y1yF1LHWwx+unG/12MzetEP7U7d2TBvHlPftdZ38pjwuuc9vrTu/adn6uPh3KivffJn9
+	/nPT+6QDcdIZU9rUcut91SJ0u9L557hdfq110KGZ5+rXhrXHi2+Iy/PtZeGPTDi9RefbHKmZ
+	6m+2+qR09BYXCWWuKlStVGIpzkg01GIuKk4EAA5fCGD/AgAA
+X-CMS-MailID: 20240103055746epcas5p148c2b06032e09956ddcfc72894abc82a
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240103055746epcas5p148c2b06032e09956ddcfc72894abc82a
+References: <7967c7a9-3d17-44de-a170-2b5354460126@gmail.com>
+	<CGME20240103055746epcas5p148c2b06032e09956ddcfc72894abc82a@epcas5p1.samsung.com>
 
-Gregory Price <gregory.price@memverge.com> writes:
+On 12/30/23 9:27 AM, Pavel Begunkov wrote:
+> Why it uses jiffies instead of some task run time?
+> Consequently, why it's fine to account irq time and other
+> preemption? (hint, it's not)
+> 
+> Why it can't be done with userspace and/or bpf? Why
+> can't it be estimated by checking and tracking
+> IORING_SQ_NEED_WAKEUP in userspace?
+> 
+> What's the use case in particular? Considering that
+> one of the previous revisions was uapi-less, something
+> is really fishy here. Again, it's a procfs file nobody
+> but a few would want to parse to use the feature.
+> 
+> Why it just keeps aggregating stats for the whole
+> life time of the ring? If the workload changes,
+> that would either totally screw the stats or would make
+> it too inert to be useful. That's especially relevant
+> for long running (days) processes. There should be a
+> way to reset it so it starts counting anew.
 
-> On Tue, Jan 02, 2024 at 04:42:42PM +0800, Huang, Ying wrote:
->> Gregory Price <gregory.price@memverge.com> writes:
->> 
->> > On Wed, Dec 27, 2023 at 04:32:37PM +0800, Huang, Ying wrote:
->> >> Gregory Price <gourry.memverge@gmail.com> writes:
->> >> 
->> >> > +static unsigned int weighted_interleave_nid(struct mempolicy *pol, pgoff_t ilx)
->> >> > +{
->> >> > +	nodemask_t nodemask = pol->nodes;
->> >> > +	unsigned int target, weight_total = 0;
->> >> > +	int nid;
->> >> > +	unsigned char weights[MAX_NUMNODES];
->> >> 
->> >> MAX_NUMNODSE could be as large as 1024.  1KB stack space may be too
->> >> large?
->> >> 
->> >
->> > I've been struggling with a good solution to this.  We need a local copy
->> > of weights to prevent weights from changing out from under us during
->> > allocation (which may take quite some time), but it seemed unwise to
->> > to allocate 1KB heap in this particular path.
->> >
->> > Is my concern unfounded?  If so, I can go ahead and add the allocation
->> > code.
->> 
->> Please take a look at NODEMASK_ALLOC().
->>
->
-> This is not my question. NODEMASK_ALLOC calls kmalloc/kfree. 
->
-> Some of the allocations on the stack can be replaced with a scratch
-> allocation, that's no big deal.
->
-> I'm specifically concerned about:
-> 	weighted_interleave_nid
-> 	alloc_pages_bulk_array_weighted_interleave
->
-> I'm unsure whether kmalloc/kfree is safe (and non-offensive) in those
-> contexts. If kmalloc/kfree is safe fine, this problem is trivial.
->
-> If not, there is no good solution to this without pre-allocating a
-> scratch area per-task.
+Hi, Jens and Pavel,
+I carefully read the questions you raised.
+First of all, as to why I use jiffies to statistics time, it
+is because I have done some performance tests and found that
+using jiffies has a relatively smaller loss of performance 
+than using task run time. Of course, using task run time is 
+indeed more accurate.  But in fact, our requirements for 
+accuracy are not particularly high, so after comprehensive 
+consideration, we finally chose to use jiffies.
+Of course, if you think that a little more performance loss 
+here has no impact, I can use task run time instead, but in 
+this case, does the way of calculating sqpoll thread timeout
+also need to be changed, because it is also calculated through
+jiffies.
+Then there’s how to use this metric.
+We are studying some optimization methods for io-uring, including
+performance and CPU utilization, but we found that there is
+currently no tool that can observe the CPU ratio of sqthread's 
+actual processing IO part, so we want to merge this method  that
+can observe this value so that we can more easily observe the 
+optimization effects.
 
-You need to audit whether it's safe for all callers.  I guess that you
-need to allocate pages after calling, so you can use the same GFP flags
-here.
-
->> >> I don't think barrier() is needed to wait for memory operations for
->> >> stack.  It's usually used for cross-processor memory order.
->> >>
->> >
->> > This is present in the old interleave code.  To the best of my
->> > understanding, the concern is for mempolicy->nodemask rebinding that can
->> > occur when cgroups.cpusets.mems_allowed changes.
->> >
->> > so we can't iterate over (mempolicy->nodemask), we have to take a local
->> > copy.
->> >
->> > My *best* understanding of the barrier here is to prevent the compiler
->> > from reordering operations such that it attempts to optimize out the
->> > local copy (or do lazy-fetch).
->> >
->> > It is present in the original interleave code, so I pulled it forward to
->> > this, but I have not tested whether this is a bit paranoid or not.
->> >
->> > from `interleave_nid`:
->> >
->> >  /*
->> >   * The barrier will stabilize the nodemask in a register or on
->> >   * the stack so that it will stop changing under the code.
->> >   *
->> >   * Between first_node() and next_node(), pol->nodes could be changed
->> >   * by other threads. So we put pol->nodes in a local stack.
->> >   */
->> >  barrier();
->> 
->> Got it.  This is kind of READ_ONCE() for nodemask.  To avoid to add
->> comments all over the place.  Can we implement a wrapper for it?  For
->> example, memcpy_once().  __read_once_size() in
->> tools/include/linux/compiler.h can be used as reference.
->> 
->> Because node_weights[] may be changed simultaneously too.  We may need
->> to consider similar issue for it too.  But RCU seems more appropriate
->> for node_weights[].
->> 
->
-> Weights are collected individually onto the stack because we have to sum
-> them up before we actually apply the weights.
->
-> A stale weight is not offensive.  RCU is not needed and doesn't help.
-
-When you copy weights from iw_table[] to stack, it's possible for
-compiler to cache its contents in register, or merge, split the memory
-operations.  At the same time, iw_table[] may be changed simultaneously
-via sysfs interface.  So, we need a mechanism to guarantee that we read
-the latest contents consistently.
-
-> The reason the barrier is needed is not weights, it's the nodemask.
-
-Yes.  So I said that we need similar stuff for weights.
-
-> So you basically just want to replace barrier() with this and drop the
-> copy/pasted comments:
->
-> static void read_once_policy_nodemask(struct mempolicy *pol, nodemask_t *mask)
-> {
->         /*
->          * The barrier will stabilize the nodemask in a register or on
->          * the stack so that it will stop changing under the code.
->          *
->          * Between first_node() and next_node(), pol->nodes could be changed
->          * by other threads. So we put pol->nodes in a local stack.
->          */
->         barrier();
->         __builtin_memcpy(mask, &pol->nodes, sizeof(nodemask_t));
->         barrier();
-> }
->
-> - nodemask_t nodemask = pol->nodemask
-> - barrier()
-> + nodemask_t nodemask;
-> + read_once_policy_nodemask(pol, &nodemask)
->
-> Is that right?
-
-Yes.  Something like that.  Or even more general (need to be optimized?),
-
-static inline static void memcpy_once(void *dst, void *src, size_t n)
-{
-        barrier();
-        memcpy(dst, src, n);
-        barrier();
-}
-
-        memcpy_once(&nodemask, &pol->nodemask, sizeof(nodemask));
-
-The comments can be based on that of READ_ONCE().
-
+Best regards,
 --
-Best Regards,
-Huang, Ying
+Xiaobing Li
 
