@@ -1,274 +1,431 @@
-Return-Path: <linux-kernel+bounces-15908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F04B482358D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:28:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 992DA823594
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:29:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A7631F24F87
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:28:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08DFF1F25484
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:29:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 712C71CF89;
-	Wed,  3 Jan 2024 19:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A11051CABD;
+	Wed,  3 Jan 2024 19:29:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="EYAcQcz6"
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="dbqcswd7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 082AA1CA9F;
-	Wed,  3 Jan 2024 19:27:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1704310051; x=1704914851; i=w_armin@gmx.de;
-	bh=mIHX7j8fEUd+Bx6DEm5FMjslE50yqHiQ75c9lG7NPSc=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=EYAcQcz68YHbGTvNWR0jkLo0zxNjzOR1Dojd1mo7u9HsuAUbZY+ychRQzSKdnvF8
-	 L1eCy//+OCMiduw54zwJXodrMMe9JSmjLy1DMgwv/IcSldCJXlhGWHa3rFjw9IUEL
-	 KyeZdVYf4g9fwsyo7CQei+BYtWw2/8lBwA4pMXdAqboPIL3E4t6QrM3zGelr1e1SI
-	 2stQ17cNUT21N2/hk/mPAgol8Ish4f5ru9dkbF/QhH9dykwPDk0u7GLp//egbfPt7
-	 HXgBovDlNUQuxzZRVu59uTuwQnC1CLAbfu6rXBm3uICrf7Umovp0/wbh/GfgEg7wc
-	 GIp4nx+ThnjvgFkSAw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1M3DO3-1rLwFT45PB-003eUr; Wed, 03 Jan 2024 20:27:31 +0100
-From: Armin Wolf <W_Armin@gmx.de>
-To: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com
-Cc: platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] platform/x86: wmi: Fix notify callback locking
-Date: Wed,  3 Jan 2024 20:27:07 +0100
-Message-Id: <20240103192707.115512-5-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240103192707.115512-1-W_Armin@gmx.de>
-References: <20240103192707.115512-1-W_Armin@gmx.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3DFA1CAA6
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 19:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40d6b4e2945so56518255e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 11:29:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1704310181; x=1704914981; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=giZ22Qf0/f6l8Z72ZGWkin42yS5GZcWVDFt+pSIcwjI=;
+        b=dbqcswd7csASkiEjHWEdP7ZEX2g6oOiMn1REBMPvSY5B8fXr+vdp7zorevRz7EOsMa
+         De1K1lhXiiANVwwKXzf0JEFnYaUdNMVnKQl6CX3QNYKrHfBFCtQSinUiEBzi0XPkWS0H
+         qA1JIF75S+LMmBfgxOIGG2CgWSWHBCqHgwZyRGWVpcYaE/8XImHTbNCcUa3tAb7uLlsh
+         Qeg/omMr91dleQwFE9iPPUC34D1jHzVRb/UL97Yb5RvTODMzX5ZULnbRxwT5mMks7Gjr
+         t64QJ17++h0FNVq1deKioT9WNx2wdwBwMSsaNNl3SqN16IEnIl28chHHvMmGAf6pMpbi
+         aHlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704310181; x=1704914981;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=giZ22Qf0/f6l8Z72ZGWkin42yS5GZcWVDFt+pSIcwjI=;
+        b=l0eBusJLLIuo9oJLfGe5btBDGDl7vDMC8q2uO2uUp9TJCZNE42b6R5txW8hprRGxUj
+         Xy5wHDkPSrYd4XFoU+gY14HZprjtVZgrOlRhPnetI2lJLNlpuLRkYQazMKsFUxX5j8Ez
+         yUkeCfmS2Wf/d595AjyCWxT0jVAVMYqla707LhWF1B15bARPr9C1TPuGBUknycGC1VVb
+         qX6K1Ox6Q+Ka9/JkkPWGqPxQpeVkzvs+SgtGBYzEAy4jOJUR/7GgE3WKsTY4+EFcTmBt
+         /tWRuf06idH4qSc/TqX5qEdI55A3p6O5Izrwta/48q82NnCopgSh5I75UrihFgW7GbVP
+         Y4qA==
+X-Gm-Message-State: AOJu0YxW6payfcInvCQBbQzfQKTlDdGw1YrPYz+nyidgrp+n5cu0+OYw
+	LzMnJEotGGIXRKrcMfesE17WVvHzWiHWWQ==
+X-Google-Smtp-Source: AGHT+IFjlvYd8muliACgtI+gvIpYId1++x2x9KCGdpTmPU1nvr1enadVOZRxgsfkEBTfe2xHzouFYQ==
+X-Received: by 2002:a05:600c:1c92:b0:40d:5b1c:26fb with SMTP id k18-20020a05600c1c9200b0040d5b1c26fbmr4597765wms.32.1704310180743;
+        Wed, 03 Jan 2024 11:29:40 -0800 (PST)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id g17-20020a05600c4ed100b0040d887fda00sm3233167wmq.26.2024.01.03.11.29.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 11:29:40 -0800 (PST)
+Date: Wed, 3 Jan 2024 20:29:39 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: guoren@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	panqinglin2020@iscas.ac.cn, bjorn@rivosinc.com, conor.dooley@microchip.com, 
+	peterz@infradead.org, keescook@chromium.org, wuwei2016@iscas.ac.cn, 
+	xiaoguang.xing@sophgo.com, chao.wei@sophgo.com, unicorn_wang@outlook.com, uwu@icenowy.me, 
+	jszhang@kernel.org, wefu@redhat.com, atishp@atishpatra.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: Re: [PATCH V2 1/3] riscv: Add Zicbop instruction definitions &
+ cpufeature
+Message-ID: <20240103-0c96ceea88523b7b946e4ba8@orel>
+References: <20231231082955.16516-1-guoren@kernel.org>
+ <20231231082955.16516-2-guoren@kernel.org>
+ <ZZWs0C19tz763FnH@LeoBras>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Ezw9sfKGvnBuc/nJwB1N5aPeICUYOeqsx2POT4RLIZN1+qslB+o
- EoZMjnTrOknTA5R66AUypebL1gB0RlYq8ErFAu5C5G+wDC32hVWrP5131mSwgWciHfQQ2SZ
- 5odyMguMYQrYqRj1ZjhnSYL6vu6Yl7Nk0WftTZQOWj0vlqC1DOFqFK9yz8JdkTJuX9v4e97
- 5r/TmF8RKDnK76i0xitMQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YsK1EHBHo34=;1OmhmvCDOjzZ/OQ/bkuQMBsWwip
- 1Q6mcoSJLP9URaISfHpYiWL0m1/PdXhLnRDYS93CTmtkWO/dO5oSen7dLLBS3nL4/8Hy2kkBr
- 2us0QNh/Ie8TWyF/PZg8zPteFVJ9F1o8mC0VB2YZVvAnpgU5LEDAwgLok4C3aUZkbmceiLdYj
- xbDVSODKpC0RVUCy811WKMobHHIMek6EpCtqOFKUZYLqG0fJ3ivG0oUw1+kLTWl72tR8gMfWw
- P5042PuE72ONWdOz8OQ+z+acpR/UUCLgfazzLFTsByd3H6zMG1vgs0Ak7NWZezFpocB0XYwwY
- 2Stt54ellOJ45DnbOb6aTJI+36tHUkXxgd/Zsy7hiCJfu/COWpQOe8CKYre0l4pSnEiepU75U
- Z+CILvqu3jo6tPBMO3NHK8bwPr/7eq1pSQgdOKUMbJjaAZvXa/klTG2ht6XyoJ9f34UMM8t1p
- qmL5KRlDBmLLOQ99EvNJ3HxS5e5yL84VgiDQh8hSll+C3lnvBJaIrbqPlQmkB4g5sMVYC8NoI
- 7VflSP2gEAGtQMxtqNIyaPRrg9/z+djYOpL276lxcffKWCQ3H5MmHbI2ZOOAKBMXP4zK/m6De
- ANF0z70XSmgA1HAynm6KFnN5rz00VtYrZK+DanFTi9IPoKXwFDXgfuYAEcDXYjHfTRm1N5TTk
- 5D10Ai8/Y2mJA/LzUZt8RVxMAYxp6ygjnWHW7Q5TNrTw3Bo3ES48r6b/h5oRyoL5A/QiUDz6t
- NAx+BPt0AP7GjuncxPFIGRXjSMnwVQgO0VAnG3DYHInErqBB3o8cRotDxyz9IQ+Fc/JpK1lAY
- GNEWYzO3f0XIYKEWnXvAAprej5ZYEkWaorMPO5Mt/vSlR0AzjDgIw03vBuJFDKYVHmwD5tZw/
- Zz0hNwP0oQNR4KZ1ioJMC7l6RL3+xT5PFqZZ2HjHABeqXulwkOoWuQdVHvWq7YZMj9hycBkv5
- FUp8H+dtmqzNhWFlkNT9A5rr2ls=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZWs0C19tz763FnH@LeoBras>
 
-When an legacy WMI event handler is removed, an WMI event could
-have called the handler just before it was removed, meaning the
-handler could still be running after wmi_remove_notify_handler()
-returns.
-Something similar could also happens when using the WMI bus, as
-the WMI core might still call the notify() callback from an WMI
-driver even if its remove() callback was just called.
+On Wed, Jan 03, 2024 at 03:52:00PM -0300, Leonardo Bras wrote:
+> On Sun, Dec 31, 2023 at 03:29:51AM -0500, guoren@kernel.org wrote:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> > 
+> > Cache-block prefetch instructions are HINTs to the hardware to
+> > indicate that software intends to perform a particular type of
+> > memory access in the near future. This patch adds prefetch.i,
+> > prefetch.r and prefetch.w instruction definitions by
+> > RISCV_ISA_EXT_ZICBOP cpufeature.
+> 
+> Hi Guo Ren,
+> 
+> Here it would be nice to point a documentation for ZICBOP extension:
+> https://wiki.riscv.org/display/HOME/Recently+Ratified+Extensions
+> 
+> or having a nice link for:
+> https://drive.google.com/file/d/1jfzhNAk7viz4t2FLDZ5z4roA0LBggkfZ/view
+> 
+> > 
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Signed-off-by: Guo Ren <guoren@kernel.org>
+> > ---
+> >  arch/riscv/Kconfig                | 15 ++++++++
+> >  arch/riscv/include/asm/hwcap.h    |  1 +
+> >  arch/riscv/include/asm/insn-def.h | 60 +++++++++++++++++++++++++++++++
+> >  arch/riscv/kernel/cpufeature.c    |  1 +
+> >  4 files changed, 77 insertions(+)
+> > 
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index 24c1799e2ec4..fcbd417d65ea 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -579,6 +579,21 @@ config RISCV_ISA_ZICBOZ
+> >  
+> >  	   If you don't know what to do here, say Y.
+> >  
+> > +config RISCV_ISA_ZICBOP
+> > +	bool "Zicbop extension support for cache block prefetch"
+> > +	depends on MMU
+> > +	depends on RISCV_ALTERNATIVE
+> > +	default y
+> > +	help
+> > +	  Adds support to dynamically detect the presence of the ZICBOP
+> > +	  extension (Cache Block Prefetch Operations) and enable its
+> > +	  usage.
+> > +
+> > +	  The Zicbop extension can be used to prefetch cache block for
+> > +	  read/write fetch.
+> > +
+> > +	  If you don't know what to do here, say Y.
+> > +
+> 
+> According to doc:
+> "The Zicbop extension defines a set of cache-block prefetch instructions: 
+> PREFETCH.R, PREFETCH.W, and PREFETCH.I"
+> 
+> So above text seems ok
+> 
+> 
+> >  config TOOLCHAIN_HAS_ZIHINTPAUSE
+> >  	bool
+> >  	default y
+> > diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+> > index 06d30526ef3b..77d3b6ee25ab 100644
+> > --- a/arch/riscv/include/asm/hwcap.h
+> > +++ b/arch/riscv/include/asm/hwcap.h
+> > @@ -57,6 +57,7 @@
+> >  #define RISCV_ISA_EXT_ZIHPM		42
+> >  #define RISCV_ISA_EXT_SMSTATEEN		43
+> >  #define RISCV_ISA_EXT_ZICOND		44
+> > +#define RISCV_ISA_EXT_ZICBOP		45
+> 
+> Is this number just in kernel code, or does it mean something in the RISC-V 
+> documentation?
 
-Fix this by introducing a rw semaphore which ensures that the
-event state of a WMI device does not change while the WMI core
-is handling an event for it.
+kernel
 
-Tested on a Dell Inspiron 3505 and a Acer Aspire E1-731.
+> 
+> >  
+> >  #define RISCV_ISA_EXT_MAX		64
+> >  
+> > diff --git a/arch/riscv/include/asm/insn-def.h b/arch/riscv/include/asm/insn-def.h
+> > index e27179b26086..bbda350a63bf 100644
+> > --- a/arch/riscv/include/asm/insn-def.h
+> > +++ b/arch/riscv/include/asm/insn-def.h
+> > @@ -18,6 +18,13 @@
+> >  #define INSN_I_RD_SHIFT			 7
+> >  #define INSN_I_OPCODE_SHIFT		 0
+> >  
+> > +#define INSN_S_SIMM7_SHIFT		25
+> > +#define INSN_S_RS2_SHIFT		20
+> > +#define INSN_S_RS1_SHIFT		15
+> > +#define INSN_S_FUNC3_SHIFT		12
+> > +#define INSN_S_SIMM5_SHIFT		 7
+> > +#define INSN_S_OPCODE_SHIFT		 0
+> > +
+> 
+> The shifts seem correct for S-Type, but I would name the IMM defines in a 
+> way we could understand where they fit in IMM:
+> 
+> 
+> INSN_S_SIMM5_SHIFT -> INSN_S_SIMM_0_4_SHIFT
+> INSN_S_SIMM7_SHIFT -> INSN_S_SIMM_5_11_SHIFT
+> 
+> What do you think?
 
-Fixes: 1686f5444546 ("platform/x86: wmi: Incorporate acpi_install_notify_h=
-andler")
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/platform/x86/wmi.c | 71 +++++++++++++++++++++++++-------------
- 1 file changed, 47 insertions(+), 24 deletions(-)
+I'm in favor of this suggestion, but then wonder if we don't need another
+patch before this which renames INSN_I_SIMM12_SHIFT to
+INSN_I_SIMM_0_11_SHIFT in order to keep things consistent.
 
-diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index 6a886635689a..1aa097d34690 100644
-=2D-- a/drivers/platform/x86/wmi.c
-+++ b/drivers/platform/x86/wmi.c
-@@ -25,6 +25,7 @@
- #include <linux/list.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/rwsem.h>
- #include <linux/slab.h>
- #include <linux/sysfs.h>
- #include <linux/types.h>
-@@ -56,7 +57,6 @@ static_assert(__alignof__(struct guid_block) =3D=3D 1);
+> 
+> 
+> >  #ifdef __ASSEMBLY__
+> >  
+> >  #ifdef CONFIG_AS_HAS_INSN
+> > @@ -30,6 +37,10 @@
+> >  	.insn	i \opcode, \func3, \rd, \rs1, \simm12
+> >  	.endm
+> >  
+> > +	.macro insn_s, opcode, func3, rs2, simm12, rs1
+> > +	.insn	s \opcode, \func3, \rs2, \simm12(\rs1)
+> > +	.endm
+> > +
+> >  #else
+> >  
+> >  #include <asm/gpr-num.h>
+> > @@ -51,10 +62,20 @@
+> >  		 (\simm12 << INSN_I_SIMM12_SHIFT))
+> >  	.endm
+> >  
+> > +	.macro insn_s, opcode, func3, rs2, simm12, rs1
+> > +	.4byte	((\opcode << INSN_S_OPCODE_SHIFT) |		\
+> > +		 (\func3 << INSN_S_FUNC3_SHIFT) |		\
+> > +		 (.L__gpr_num_\rs2 << INSN_S_RS2_SHIFT) |	\
+> > +		 (.L__gpr_num_\rs1 << INSN_S_RS1_SHIFT) |	\
+> > +		 ((\simm12 & 0x1f) << INSN_S_SIMM5_SHIFT) |	\
+> > +		 (((\simm12 >> 5) & 0x7f) << INSN_S_SIMM7_SHIFT))
+> > +	.endm
+> > +
+> >  #endif
+> >  
+> >  #define __INSN_R(...)	insn_r __VA_ARGS__
+> >  #define __INSN_I(...)	insn_i __VA_ARGS__
+> > +#define __INSN_S(...)	insn_s __VA_ARGS__
+> 
+> As a curiosity: It's quite odd to have prefetch.{i,r,w} to be an S-Type 
+> instruction, given this type was supposed to be for store instructions.
+> 
+> On prefetch.{i,r,w}:
+> 31	   24   	 19    14    11	  	6
+> imm[11:5] | PREFETCH_OP | rs1 | ORI | imm[4:0] | OP_IMM
+> 
+> For S-Type, we have:
+> 31	   24     19    14       11	    6
+> imm[11:5] | rs1  | rs2 | funct3 | imm[4:0] | opcode
+> 
+> For I-Type, we have:
+> 31	    19    14       11	6
+> immm[11:0] | rs1 | funct3 | rd | opcode
+> 
+> I understand that there should be reasons for choosing S-type, but it 
+> would make much more sense (as per instruction type, and as per parameters)
+> to go with I-Type. 
+> 
+> (I understand this was done in HW, and in kernel code we have better choice 
+> to encode it as S-Type, but I kind of find the S-Type choice odd)
 
- enum {	/* wmi_block flags */
- 	WMI_READ_TAKES_NO_ARGS,
--	WMI_PROBED,
- };
+My speculation is that since cache block sizes will never be less than 32
+bytes, it made more sense to use the S-type encoding space with imm[4:0]
+hard coded to zero, allowing the I-Type encoding space to be reserved for
+instructions which need arbitrary 12-bit immediates.
 
- struct wmi_block {
-@@ -64,8 +64,10 @@ struct wmi_block {
- 	struct list_head list;
- 	struct guid_block gblock;
- 	struct acpi_device *acpi_device;
-+	struct rw_semaphore notify_lock;	/* Protects notify callback add/remove =
-*/
- 	wmi_notify_handler handler;
- 	void *handler_data;
-+	bool driver_ready;
- 	unsigned long flags;
- };
+> 
+> >  
+> >  #else /* ! __ASSEMBLY__ */
+> >  
+> > @@ -66,6 +87,9 @@
+> >  #define __INSN_I(opcode, func3, rd, rs1, simm12)	\
+> >  	".insn	i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n"
+> >  
+> > +#define __INSN_S(opcode, func3, rs2, simm12, rs1)	\
+> > +	".insn	s " opcode ", " func3 ", " rs2 ", " simm12 "(" rs1 ")\n"
+> > +
+> >  #else
+> >  
+> >  #include <linux/stringify.h>
+> > @@ -92,12 +116,26 @@
+> >  "		 (\\simm12 << " __stringify(INSN_I_SIMM12_SHIFT) "))\n"	\
+> >  "	.endm\n"
+> >  
+> > +#define DEFINE_INSN_S							\
+> > +	__DEFINE_ASM_GPR_NUMS						\
+> > +"	.macro insn_s, opcode, func3, rs2, simm12, rs1\n"		\
+> > +"	.4byte	((\\opcode << " __stringify(INSN_S_OPCODE_SHIFT) ") |"	\
+> > +"		 (\\func3 << " __stringify(INSN_S_FUNC3_SHIFT) ") |"	\
+> > +"		 (.L__gpr_num_\\rs2 << " __stringify(INSN_S_RS2_SHIFT) ") |" \
+> > +"		 (.L__gpr_num_\\rs1 << " __stringify(INSN_S_RS1_SHIFT) ") |" \
+> > +"		 ((\\simm12 & 0x1f) << " __stringify(INSN_S_SIMM5_SHIFT) ") |" \
+> > +"		 (((\\simm12 >> 5) & 0x7f) << " __stringify(INSN_S_SIMM7_SHIFT) "))\n" \
+> > +"	.endm\n"
+> > +
+> >  #define UNDEFINE_INSN_R							\
+> >  "	.purgem insn_r\n"
+> >  
+> >  #define UNDEFINE_INSN_I							\
+> >  "	.purgem insn_i\n"
+> >  
+> > +#define UNDEFINE_INSN_S							\
+> > +"	.purgem insn_s\n"
+> > +
+> >  #define __INSN_R(opcode, func3, func7, rd, rs1, rs2)			\
+> >  	DEFINE_INSN_R							\
+> >  	"insn_r " opcode ", " func3 ", " func7 ", " rd ", " rs1 ", " rs2 "\n" \
+> > @@ -108,6 +146,11 @@
+> >  	"insn_i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n" \
+> >  	UNDEFINE_INSN_I
+> >  
+> > +#define __INSN_S(opcode, func3, rs2, simm12, rs1)			\
+> > +	DEFINE_INSN_S							\
+> > +	"insn_s " opcode ", " func3 ", " rs2 ", " simm12 ", " rs1 "\n"	\
+> > +	UNDEFINE_INSN_S
+> > +
+> >  #endif
+> >  
+> >  #endif /* ! __ASSEMBLY__ */
+> > @@ -120,6 +163,10 @@
+> >  	__INSN_I(RV_##opcode, RV_##func3, RV_##rd,		\
+> >  		 RV_##rs1, RV_##simm12)
+> >  
+> > +#define INSN_S(opcode, func3, rs2, simm12, rs1)			\
+> > +	__INSN_S(RV_##opcode, RV_##func3, RV_##rs2,		\
+> > +		 RV_##simm12, RV_##rs1)
+> > +
+> 
+> The defines above seem correct, but TBH I am not very used to review
+> .macro code.
+> 
+> >  #define RV_OPCODE(v)		__ASM_STR(v)
+> >  #define RV_FUNC3(v)		__ASM_STR(v)
+> >  #define RV_FUNC7(v)		__ASM_STR(v)
+> > @@ -133,6 +180,7 @@
+> >  #define RV___RS2(v)		__RV_REG(v)
+> >  
+> >  #define RV_OPCODE_MISC_MEM	RV_OPCODE(15)
+> > +#define RV_OPCODE_OP_IMM	RV_OPCODE(19)
+> 
+> Correct.
+> 
+> 
+> >  #define RV_OPCODE_SYSTEM	RV_OPCODE(115)
+> >  
+> >  #define HFENCE_VVMA(vaddr, asid)				\
+> > @@ -196,4 +244,16 @@
+> >  	INSN_I(OPCODE_MISC_MEM, FUNC3(2), __RD(0),		\
+> >  	       RS1(base), SIMM12(4))
+> >  
+> > +#define CBO_PREFETCH_I(base, offset)				\
+> > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(0),		\
+> > +	       SIMM12(offset), RS1(base))
+> > +
+> > +#define CBO_PREFETCH_R(base, offset)				\
+> > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(1),		\
+> > +	       SIMM12(offset), RS1(base))
+> > +
+> > +#define CBO_PREFETCH_W(base, offset)				\
+> > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3),		\
+> > +	       SIMM12(offset), RS1(base))
+> > +
+> 
+> For OP_IMM & FUNC3(6) we have ORI, right?
+> For ORI, rd will be at bytes 11:7, which in PREFETCH.{i,r,w} is
+> offset[4:0].
+> 
+> IIUC, when the cpu does not support ZICBOP, this should be fine as long as 
+> rd = 0, since changes to r0 are disregarded.
+> 
+> In this case, we need to guarantee offset[4:0] = 0, or else we migth write 
+> on an unrelated register. This can be noticed in ZICBOP documentation pages 
+> 21, 22, 23, as offset[4:0] is always [0 0 0 0 0]. 
+> (Google docs in first comment)
+> 
+> What we need here is something like:
+> + enum {
+> + 	PREFETCH_I,
+> + 	PREFETCH_R,
+> + 	PREFETCH_W,
+> + }	 
 
-@@ -602,6 +604,8 @@ acpi_status wmi_install_notify_handler(const char *gui=
-d,
- 		return AE_ERROR;
+Can't use enum. This header may be included in assembly.
 
- 	wblock =3D container_of(wdev, struct wmi_block, dev);
-+
-+	down_write(&wblock->notify_lock);
- 	if (wblock->handler) {
- 		status =3D AE_ALREADY_ACQUIRED;
- 	} else {
-@@ -613,6 +617,7 @@ acpi_status wmi_install_notify_handler(const char *gui=
-d,
+> +
+> + #define CBO_PREFETCH(type, base, offset)                      \
+> +     INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(type),              \
+> +            SIMM12(offset & ~0x1f), RS1(base))
 
- 		status =3D AE_OK;
- 	}
-+	up_write(&wblock->notify_lock);
+Yes. I suggested we mask offset as well, but ideally we'd detect a caller
+using an offset with nonzero lower 5 bits at compile time.
 
- 	wmi_device_put(wdev);
+Thanks,
+drew
 
-@@ -639,6 +644,8 @@ acpi_status wmi_remove_notify_handler(const char *guid=
-)
- 		return AE_ERROR;
-
- 	wblock =3D container_of(wdev, struct wmi_block, dev);
-+
-+	down_write(&wblock->notify_lock);
- 	if (!wblock->handler) {
- 		status =3D AE_NULL_ENTRY;
- 	} else {
-@@ -650,6 +657,7 @@ acpi_status wmi_remove_notify_handler(const char *guid=
-)
-
- 		status =3D AE_OK;
- 	}
-+	up_write(&wblock->notify_lock);
-
- 	wmi_device_put(wdev);
-
-@@ -895,7 +903,9 @@ static int wmi_dev_probe(struct device *dev)
- 		}
- 	}
-
--	set_bit(WMI_PROBED, &wblock->flags);
-+	down_write(&wblock->notify_lock);
-+	wblock->driver_ready =3D true;
-+	up_write(&wblock->notify_lock);
-
- 	return 0;
- }
-@@ -905,7 +915,9 @@ static void wmi_dev_remove(struct device *dev)
- 	struct wmi_block *wblock =3D dev_to_wblock(dev);
- 	struct wmi_driver *wdriver =3D drv_to_wdrv(dev->driver);
-
--	clear_bit(WMI_PROBED, &wblock->flags);
-+	down_write(&wblock->notify_lock);
-+	wblock->driver_ready =3D false;
-+	up_write(&wblock->notify_lock);
-
- 	if (wdriver->remove)
- 		wdriver->remove(dev_to_wdev(dev));
-@@ -1018,6 +1030,8 @@ static int wmi_create_device(struct device *wmi_bus_=
-dev,
- 		wblock->dev.setable =3D true;
-
-  out_init:
-+	init_rwsem(&wblock->notify_lock);
-+	wblock->driver_ready =3D false;
- 	wblock->dev.dev.bus =3D &wmi_bus_type;
- 	wblock->dev.dev.parent =3D wmi_bus_dev;
-
-@@ -1190,6 +1204,26 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physic=
-al_address address,
- 	}
- }
-
-+static void wmi_notify_driver(struct wmi_block *wblock)
-+{
-+	struct wmi_driver *driver =3D drv_to_wdrv(wblock->dev.dev.driver);
-+	struct acpi_buffer data =3D { ACPI_ALLOCATE_BUFFER, NULL };
-+	acpi_status status;
-+
-+	if (!driver->no_notify_data) {
-+		status =3D get_event_data(wblock, &data);
-+		if (ACPI_FAILURE(status)) {
-+			dev_warn(&wblock->dev.dev, "Failed to get event data\n");
-+			return;
-+		}
-+	}
-+
-+	if (driver->notify)
-+		driver->notify(&wblock->dev, data.pointer);
-+
-+	kfree(data.pointer);
-+}
-+
- static int wmi_notify_device(struct device *dev, void *data)
- {
- 	struct wmi_block *wblock =3D dev_to_wblock(dev);
-@@ -1198,28 +1232,17 @@ static int wmi_notify_device(struct device *dev, v=
-oid *data)
- 	if (!(wblock->gblock.flags & ACPI_WMI_EVENT && wblock->gblock.notify_id =
-=3D=3D *event))
- 		return 0;
-
--	/* If a driver is bound, then notify the driver. */
--	if (test_bit(WMI_PROBED, &wblock->flags) && wblock->dev.dev.driver) {
--		struct wmi_driver *driver =3D drv_to_wdrv(wblock->dev.dev.driver);
--		struct acpi_buffer evdata =3D { ACPI_ALLOCATE_BUFFER, NULL };
--		acpi_status status;
--
--		if (!driver->no_notify_data) {
--			status =3D get_event_data(wblock, &evdata);
--			if (ACPI_FAILURE(status)) {
--				dev_warn(&wblock->dev.dev, "failed to get event data\n");
--				return -EIO;
--			}
--		}
--
--		if (driver->notify)
--			driver->notify(&wblock->dev, evdata.pointer);
--
--		kfree(evdata.pointer);
--	} else if (wblock->handler) {
--		/* Legacy handler */
--		wblock->handler(*event, wblock->handler_data);
-+	down_read(&wblock->notify_lock);
-+	/* The WMI driver notify handler conflicts with the legacy WMI handler.
-+	 * Because of this the WMI driver notify handler takes precedence.
-+	 */
-+	if (wblock->dev.dev.driver && wblock->driver_ready) {
-+		wmi_notify_driver(wblock);
-+	} else {
-+		if (wblock->handler)
-+			wblock->handler(*event, wblock->handler_data);
- 	}
-+	up_read(&wblock->notify_lock);
-
- 	acpi_bus_generate_netlink_event(wblock->acpi_device->pnp.device_class,
- 					dev_name(&wblock->dev.dev), *event, 0);
-=2D-
-2.39.2
-
+> 
+> + #define CBO_PREFETCH_I(base, offset)				\
+> +     CBO_PREFETCH(PREFETCH_I, base, offset)
+> +
+> + #define CBO_PREFETCH_R(base, offset)				\
+> +     CBO_PREFETCH(PREFETCH_R, base, offset)
+> +
+> + #define CBO_PREFETCH_W(base, offset)				\
+> +     CBO_PREFETCH(PREFETCH_W, base, offset)
+> +
+> 
+> Maybe replacing 0x1f by some MASK macro, so it looks nicer.
+> (not sure how it's acceptable in asm, though).
+> 
+> The above would guarantee that we would never have CBO_PREFETCH_*() to mess 
+> up any other register due to a unnoticed (base & 0x1f) != 0
+> 
+> Does that make sense?
+> 
+> >  #endif /* __ASM_INSN_DEF_H */
+> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+> > index b3785ffc1570..bdb02b066041 100644
+> > --- a/arch/riscv/kernel/cpufeature.c
+> > +++ b/arch/riscv/kernel/cpufeature.c
+> > @@ -168,6 +168,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+> >  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
+> >  	__RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
+> >  	__RISCV_ISA_EXT_DATA(zicboz, RISCV_ISA_EXT_ZICBOZ),
+> > +	__RISCV_ISA_EXT_DATA(zicbop, RISCV_ISA_EXT_ZICBOP),
+> >  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
+> >  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
+> >  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
+> > -- 
+> > 2.40.1
+> > 
+> 
+> Apart from above suggestions, seems a nice change :)
+> 
+> I suggest splitting this patch into 2, though:
+> - Introducing S-Type instructions (plz point docs for reference) 
+> - Introduce ZICBOP extension.
+> 
+> Thanks!
+> Leo
+> 
+> 
 
