@@ -1,66 +1,65 @@
-Return-Path: <linux-kernel+bounces-15065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35F348226E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:19:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9C018226E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:19:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3809D284622
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:19:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54C0C1F22F7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C58168DC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA6C01799B;
 	Wed,  3 Jan 2024 02:18:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Qw6pxWv2"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BXb7avzo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AEFF139E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12AD2468C
 	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 02:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40d8e7a50c1so8363475e9.2
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-336c8ab0b20so6777137f8f.1
         for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 18:18:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704248320; x=1704853120; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704248321; x=1704853121; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=g1tGMZkZ9pe+vGPxtPhPtPgSrfYlIn/2+AsR9dEH15s=;
-        b=Qw6pxWv2FIMjvXQOBcp0Ee18IW9H4Ld61oZZfyKT/pVs3YM9SVIkqdWJIM1LkAmZ1+
-         q3QyK//YHlOH9zq7YXMo4krFW/038bMPcL6hmz8ZDSmEXxjQYi1ljmi2ShNVpdJ7ma5y
-         OH6kJIXz4YZZhvdnFcC2nqiwBBA1eEIm4E6QLJUDtHTeVn52naE2LIgCoViMmCXZ9WRC
-         7FGiUS7aWBNnDrPViKEQ/ptPxlWsZ7xAwbgclQ0Ikni9Ddei9fEiMv85dH/2zeUj8xpv
-         qbJqOY0Ic7IVm+pgTW9kr3H5XEkk+fwt5rnKY9e1JAAj4lTwMd9jKqcRFcFY4NuewrY1
-         8Dmg==
+        bh=NMtQXbKl7iE2JQo0KabWtcLPthObXGqXrak3j9MLehE=;
+        b=BXb7avzon6zspbTcTtJmRtMYrDBVeruQgAU+XvbThaAXDvhk62+88o2JQQci2ZJzXW
+         C9PPASg1AlxSmQp4x/wYLtk2entc7gUTPA/iPLV7CGl3xq7m6CAl/XKvR6hZqZMkXPyP
+         WqlI2rAKoozzFhW5uWiRKFFjVBCKnU4RJPryPyEWZrGptv7oKjo4B8smTsdriaRAH0w3
+         3OaBnSymsY5yjMByIBjP661LIfLV33mvJ2puUPqmZ+heAZHsTm7uVWm4h7y4XpKsAK0V
+         a/OW0thh5OJ2EITWKBZlCKCmnnlNc6dQ7PlE7O5kBpXrtUyK35LyDQbHYDt6KF6DfIev
+         B0lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704248320; x=1704853120;
+        d=1e100.net; s=20230601; t=1704248321; x=1704853121;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=g1tGMZkZ9pe+vGPxtPhPtPgSrfYlIn/2+AsR9dEH15s=;
-        b=c9NdGA5kxnVF5fpMY+30WTPQdxlQHzngqF3v9ivYYVrijRBkLPyCk/j3zk6Cxya1uQ
-         ZMaXrDHuhRYP1LTSskLn4b17JYEalVcipKpsMis4wMEHWFGBd3WiNe64Bg7F4ALXBAGF
-         YdagBWu5XqVzMO1K8w0Cndu55QUlP3jqyS9YlKfRw9lrjJZWkWsHlGOC0yCy6gW38bl9
-         MfoLiYu4lJel/LqaIskBJmp9yRD2DBYaN0EPVwn/ZO9DHRxefLgS1n4zUSA6YoFTwMWr
-         AMaDz/36RfKftgW6bswI+3K2DZVXIjbsO2fDu7iR4KiUPwJVAhhYGZuk11+UiofLxfka
-         WCUg==
-X-Gm-Message-State: AOJu0YwvtEdO+7IsNGATlR1Ng7C+uA7gmK3a6yBmz0X3i3ipIPQiTehh
-	6T9RzZEpcKlqXgAsv4AKvxRAXCSlJLoZnA==
-X-Google-Smtp-Source: AGHT+IEOBfSh7Nkil0X5S+jvopPYUGRPWLrkhuW2QtzLguE7ibfYlu7Ao+rMlv33KKVyyUUtj8LzIQ==
-X-Received: by 2002:a05:600c:2051:b0:40d:8162:de7d with SMTP id p17-20020a05600c205100b0040d8162de7dmr2964422wmg.77.1704248320463;
-        Tue, 02 Jan 2024 18:18:40 -0800 (PST)
+        bh=NMtQXbKl7iE2JQo0KabWtcLPthObXGqXrak3j9MLehE=;
+        b=eXNWr7ENvlpPL2aqGMcY8uD8rTER4u2cY8DJD4BtUF3UXu2+FYqTT/YpIGxztnz64y
+         Xv8ZmHrj1PB9rkMjB2TqHXI24T7Hj9I1lJo32ykWkOGXLfAMk8oHAdeXhZiEm3NoAqZV
+         tZS+/oj9QrfVclxrCMOyHRZuegstexp01OTn0WYvi3ZXuYFUPL1nVM7pdq3O5Yezc62K
+         BiplLIjnHGVsbg+eXJbsFEmEailgc76EzyykYwJcixdDdyVc18PpviQRvsDO867KXfgK
+         Bvqs06cl90dK/rARV2EkL1971zyvjUfEJ5I4SjtYha8wenPwsg/MH3+tgNxVNVuxtEbR
+         28qA==
+X-Gm-Message-State: AOJu0YxpQb32dS1vXbm6h0Zy+V+KEkSNoDKvuWJWY+WCxqnXn+9hF7QE
+	MWUWpYIoHK52ibBS8C3NMMwIzOA1BXnMaA==
+X-Google-Smtp-Source: AGHT+IGXO2qQw+aKbrnoPDpz8h/r/oesY5bRjklU/Qeal90gWQW+4QVyL6IggQTG0JbmNTndhm/tUw==
+X-Received: by 2002:a05:600c:3548:b0:40d:5a47:ebe4 with SMTP id i8-20020a05600c354800b0040d5a47ebe4mr6497439wmq.120.1704248321388;
+        Tue, 02 Jan 2024 18:18:41 -0800 (PST)
 Received: from [127.0.1.1] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id m4-20020a05600c4f4400b0040d3276ba19sm734374wmq.25.2024.01.02.18.18.39
+        by smtp.gmail.com with ESMTPSA id m4-20020a05600c4f4400b0040d3276ba19sm734374wmq.25.2024.01.02.18.18.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 18:18:40 -0800 (PST)
+        Tue, 02 Jan 2024 18:18:41 -0800 (PST)
 From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Date: Wed, 03 Jan 2024 02:18:39 +0000
-Subject: [PATCH 1/3] media: dt-bindings: media: camss: Add
- qcom,sc8280xp-camss binding
+Date: Wed, 03 Jan 2024 02:18:40 +0000
+Subject: [PATCH 2/3] arm64: dts: qcom: sc8280xp: camss: Add CCI definitions
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,7 +68,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240103-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v1-1-abacaa63a961@linaro.org>
+Message-Id: <20240103-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v1-2-abacaa63a961@linaro.org>
 References: <20240103-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v1-0-abacaa63a961@linaro.org>
 In-Reply-To: <20240103-linux-next-24-01-02-sc8280xp-camss-core-dtsi-v1-0-abacaa63a961@linaro.org>
 To: Robert Foss <rfoss@kernel.org>, Todor Tomov <todor.too@gmail.com>, 
@@ -81,537 +80,361 @@ To: Robert Foss <rfoss@kernel.org>, Todor Tomov <todor.too@gmail.com>,
  Conor Dooley <conor+dt@kernel.org>
 Cc: linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 X-Mailer: b4 0.13-dev-4e032
 
-Add bindings for qcom,sc8280xp-camss in order to support the camera
-subsystem for sc8280xp as found in the Lenovo x13s Laptop.
+sc8280xp has four Camera Control Interface (CCI) blocks which pinout to
+two I2C master controllers for each CCI.
+
+The CCI I2C pins are not muxed so we define them in the dtsi.
 
 Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../bindings/media/qcom,sc8280xp-camss.yaml        | 512 +++++++++++++++++++++
- 1 file changed, 512 insertions(+)
+ arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 324 +++++++++++++++++++++++++++++++++
+ 1 file changed, 324 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml b/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
-new file mode 100644
-index 000000000000..c0bc31709873
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
-@@ -0,0 +1,512 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/media/qcom,sc8280xp-camss.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+index febf28356ff8..4f6acd4a3f00 100644
+--- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+@@ -3451,6 +3451,170 @@ usb_1_role_switch: endpoint {
+ 			};
+ 		};
+ 
++		cci0: cci@ac4a000 {
++			compatible = "qcom,sm8250-cci", "qcom,msm8996-cci";
++			#address-cells = <1>;
++			#size-cells = <0>;
 +
-+title: Qualcomm SC8280XP Camera Subsystem (CAMSS)
++			reg = <0 0x0ac4a000 0 0x1000>;
++			interrupts = <GIC_SPI 460 IRQ_TYPE_EDGE_RISING>;
++			power-domains = <&camcc TITAN_TOP_GDSC>;
 +
-+maintainers:
-+  - Bryan O'Donoghue <bryan.odonoghue@linaro.org>
++			clocks = <&camcc CAMCC_CAMNOC_AXI_CLK>,
++				 <&camcc CAMCC_SLOW_AHB_CLK_SRC>,
++				 <&camcc CAMCC_CPAS_AHB_CLK>,
++				 <&camcc CAMCC_CCI_0_CLK>,
++				 <&camcc CAMCC_CCI_0_CLK_SRC>;
++			clock-names = "camnoc_axi",
++				      "slow_ahb_src",
++				      "cpas_ahb",
++				      "cci",
++				      "cci_src";
 +
-+description: |
-+  The CAMSS IP is a CSI decoder and ISP present on Qualcomm platforms.
++			pinctrl-0 = <&cci0_default>;
++			pinctrl-1 = <&cci0_sleep>;
++			pinctrl-names = "default", "sleep";
 +
-+properties:
-+  compatible:
-+    const: qcom,sc8280xp-camss
++			status = "disabled";
 +
-+  clocks:
-+    maxItems: 40
++			cci0_i2c0: i2c-bus@0 {
++				reg = <0>;
++				clock-frequency = <1000000>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++			};
 +
-+  clock-names:
-+    items:
-+      - const: camnoc_axi
-+      - const: cpas_ahb
-+      - const: csiphy0
-+      - const: csiphy0_timer
-+      - const: csiphy1
-+      - const: csiphy1_timer
-+      - const: csiphy2
-+      - const: csiphy2_timer
-+      - const: csiphy3
-+      - const: csiphy3_timer
-+      - const: vfe0_axi
-+      - const: vfe0
-+      - const: vfe0_cphy_rx
-+      - const: vfe0_csid
-+      - const: vfe1_axi
-+      - const: vfe1
-+      - const: vfe1_cphy_rx
-+      - const: vfe1_csid
-+      - const: vfe2_axi
-+      - const: vfe2
-+      - const: vfe2_cphy_rx
-+      - const: vfe2_csid
-+      - const: vfe3_axi
-+      - const: vfe3
-+      - const: vfe3_cphy_rx
-+      - const: vfe3_csid
-+      - const: vfe_lite0
-+      - const: vfe_lite0_cphy_rx
-+      - const: vfe_lite0_csid
-+      - const: vfe_lite1
-+      - const: vfe_lite1_cphy_rx
-+      - const: vfe_lite1_csid
-+      - const: vfe_lite2
-+      - const: vfe_lite2_cphy_rx
-+      - const: vfe_lite2_csid
-+      - const: vfe_lite3
-+      - const: vfe_lite3_cphy_rx
-+      - const: vfe_lite3_csid
-+      - const: gcc_axi_hf
-+      - const: gcc_axi_sf
++			cci0_i2c1: i2c-bus@1 {
++				reg = <1>;
++				clock-frequency = <1000000>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++			};
++		};
 +
-+  interrupts:
-+    maxItems: 20
++		cci1: cci@ac4b000 {
++			compatible = "qcom,sm8250-cci", "qcom,msm8996-cci";
++			#address-cells = <1>;
++			#size-cells = <0>;
 +
-+  interrupt-names:
-+    items:
-+      - const: csid1_lite
-+      - const: vfe_lite1
-+      - const: csiphy3
-+      - const: csid0
-+      - const: vfe0
-+      - const: csid1
-+      - const: vfe1
-+      - const: csid0_lite
-+      - const: vfe_lite0
-+      - const: csiphy0
-+      - const: csiphy1
-+      - const: csiphy2
-+      - const: csid2
-+      - const: vfe2
-+      - const: csid3_lite
-+      - const: csid2_lite
-+      - const: vfe_lite3
-+      - const: vfe_lite2
-+      - const: csid3
-+      - const: vfe3
++			reg = <0 0x0ac4b000 0 0x1000>;
++			interrupts = <GIC_SPI 271 IRQ_TYPE_EDGE_RISING>;
++			power-domains = <&camcc TITAN_TOP_GDSC>;
 +
-+  iommus:
-+    maxItems: 16
++			clocks = <&camcc CAMCC_CAMNOC_AXI_CLK>,
++				 <&camcc CAMCC_SLOW_AHB_CLK_SRC>,
++				 <&camcc CAMCC_CPAS_AHB_CLK>,
++				 <&camcc CAMCC_CCI_1_CLK>,
++				 <&camcc CAMCC_CCI_1_CLK_SRC>;
++			clock-names = "camnoc_axi",
++				      "slow_ahb_src",
++				      "cpas_ahb",
++				      "cci",
++				      "cci_src";
 +
-+  interconnects:
-+    maxItems: 4
++			pinctrl-0 = <&cci1_default>;
++			pinctrl-1 = <&cci1_sleep>;
++			pinctrl-names = "default", "sleep";
 +
-+  interconnect-names:
-+    items:
-+      - const: cam_ahb
-+      - const: cam_hf_mnoc
-+      - const: cam_sf_mnoc
-+      - const: cam_sf_icp_mnoc
++			status = "disabled";
 +
-+  power-domains:
-+    items:
-+      - description: IFE0 GDSC - Image Front End, Global Distributed Switch Controller.
-+      - description: IFE1 GDSC - Image Front End, Global Distributed Switch Controller.
-+      - description: IFE2 GDSC - Image Front End, Global Distributed Switch Controller.
-+      - description: IFE3 GDSC - Image Front End, Global Distributed Switch Controller.
-+      - description: Titan Top GDSC - Titan ISP Block, Global Distributed Switch Controller.
++			cci1_i2c0: i2c-bus@0 {
++				reg = <0>;
++				clock-frequency = <1000000>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++			};
 +
-+  power-domain-names:
-+    items:
-+      - const: ife0
-+      - const: ife1
-+      - const: ife2
-+      - const: ife3
-+      - const: top
++			cci1_i2c1: i2c-bus@1 {
++				reg = <1>;
++				clock-frequency = <1000000>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++			};
++		};
 +
-+  ports:
-+    $ref: /schemas/graph.yaml#/properties/ports
++		cci2: cci@ac4c000 {
++			compatible = "qcom,sm8250-cci", "qcom,msm8996-cci";
++			#address-cells = <1>;
++			#size-cells = <0>;
 +
-+    description:
-+      CSI input ports.
++			reg = <0 0x0ac4c000 0 0x1000>;
++			interrupts = <GIC_SPI 651 IRQ_TYPE_EDGE_RISING>;
++			power-domains = <&camcc TITAN_TOP_GDSC>;
 +
-+    properties:
-+      port@0:
-+        $ref: /schemas/graph.yaml#/$defs/port-base
-+        unevaluatedProperties: false
-+        description:
-+          Input port for receiving CSI data from CSIPHY0.
++			clocks = <&camcc CAMCC_CAMNOC_AXI_CLK>,
++				 <&camcc CAMCC_SLOW_AHB_CLK_SRC>,
++				 <&camcc CAMCC_CPAS_AHB_CLK>,
++				 <&camcc CAMCC_CCI_2_CLK>,
++				 <&camcc CAMCC_CCI_2_CLK_SRC>;
++			clock-names = "camnoc_axi",
++				      "slow_ahb_src",
++				      "cpas_ahb",
++				      "cci",
++				      "cci_src";
 +
-+        properties:
-+          endpoint:
-+            $ref: video-interfaces.yaml#
-+            unevaluatedProperties: false
++			pinctrl-0 = <&cci2_default>;
++			pinctrl-1 = <&cci2_sleep>;
++			pinctrl-names = "default", "sleep";
 +
-+            properties:
-+              clock-lanes:
-+                maxItems: 1
++			status = "disabled";
 +
-+              data-lanes:
-+                minItems: 1
-+                maxItems: 4
++			cci2_i2c0: i2c-bus@0 {
++				reg = <0>;
++				clock-frequency = <1000000>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++			};
 +
-+            required:
-+              - clock-lanes
-+              - data-lanes
++			cci2_i2c1: i2c-bus@1 {
++				reg = <1>;
++				clock-frequency = <1000000>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++			};
++		};
 +
-+      port@1:
-+        $ref: /schemas/graph.yaml#/$defs/port-base
-+        unevaluatedProperties: false
-+        description:
-+          Input port for receiving CSI data from CSIPHY1.
++		cci3: cci@ac4d000 {
++			compatible = "qcom,sm8250-cci", "qcom,msm8996-cci";
++			#address-cells = <1>;
++			#size-cells = <0>;
 +
-+        properties:
-+          endpoint:
-+            $ref: video-interfaces.yaml#
-+            unevaluatedProperties: false
++			reg = <0 0x0ac4d000 0 0x1000>;
++			interrupts = <GIC_SPI 650 IRQ_TYPE_EDGE_RISING>;
++			power-domains = <&camcc TITAN_TOP_GDSC>;
 +
-+            properties:
-+              clock-lanes:
-+                maxItems: 1
++			clocks = <&camcc CAMCC_CAMNOC_AXI_CLK>,
++				 <&camcc CAMCC_SLOW_AHB_CLK_SRC>,
++				 <&camcc CAMCC_CPAS_AHB_CLK>,
++				 <&camcc CAMCC_CCI_3_CLK>,
++				 <&camcc CAMCC_CCI_3_CLK_SRC>;
++			clock-names = "camnoc_axi",
++				      "slow_ahb_src",
++				      "cpas_ahb",
++				      "cci",
++				      "cci_src";
 +
-+              data-lanes:
-+                minItems: 1
-+                maxItems: 4
++			pinctrl-0 = <&cci3_default>;
++			pinctrl-1 = <&cci3_sleep>;
++			pinctrl-names = "default", "sleep";
 +
-+            required:
-+              - clock-lanes
-+              - data-lanes
++			status = "disabled";
 +
-+      port@2:
-+        $ref: /schemas/graph.yaml#/$defs/port-base
-+        unevaluatedProperties: false
-+        description:
-+          Input port for receiving CSI data from CSIPHY2.
++			cci3_i2c0: i2c-bus@0 {
++				reg = <0>;
++				clock-frequency = <1000000>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++			};
 +
-+        properties:
-+          endpoint:
-+            $ref: video-interfaces.yaml#
-+            unevaluatedProperties: false
++			cci3_i2c1: i2c-bus@1 {
++				reg = <1>;
++				clock-frequency = <1000000>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++			};
++		};
 +
-+            properties:
-+              clock-lanes:
-+                maxItems: 1
+ 		camcc: clock-controller@ad00000 {
+ 			compatible = "qcom,sc8280xp-camcc";
+ 			reg = <0 0x0ad00000 0 0x20000>;
+@@ -4076,6 +4240,166 @@ tlmm: pinctrl@f100000 {
+ 			#interrupt-cells = <2>;
+ 			gpio-ranges = <&tlmm 0 0 230>;
+ 			wakeup-parent = <&pdc>;
 +
-+              data-lanes:
-+                minItems: 1
-+                maxItems: 4
++			cci0_default: cci0-default-state {
++				cci0_i2c0_default: cci0-i2c0-default-pins {
++					/* cci_i2c_sda0, cci_i2c_scl0 */
++					pins = "gpio113", "gpio114";
++					function = "cci_i2c";
 +
-+            required:
-+              - clock-lanes
-+              - data-lanes
++					bias-pull-up;
++					drive-strength = <2>; /* 2 mA */
++				};
 +
-+      port@3:
-+        $ref: /schemas/graph.yaml#/$defs/port-base
-+        unevaluatedProperties: false
-+        description:
-+          Input port for receiving CSI data from CSIPHY3.
++				cci0_i2c1_default: cci0-i2c1-default-pins {
++					/* cci_i2c_sda1, cci_i2c_scl1 */
++					pins = "gpio115", "gpio116";
++					function = "cci_i2c";
 +
-+        properties:
-+          endpoint:
-+            $ref: video-interfaces.yaml#
-+            unevaluatedProperties: false
++					bias-pull-up;
++					drive-strength = <2>; /* 2 mA */
++				};
++			};
 +
-+            properties:
-+              clock-lanes:
-+                maxItems: 1
++			cci0_sleep: cci0-sleep-state {
++				cci0_i2c0_sleep: cci0-i2c0-sleep-pins {
++					/* cci_i2c_sda0, cci_i2c_scl0 */
++					pins = "gpio113", "gpio114";
++					function = "cci_i2c";
 +
-+              data-lanes:
-+                minItems: 1
-+                maxItems: 4
++					drive-strength = <2>; /* 2 mA */
++					bias-pull-down;
++				};
 +
-+            required:
-+              - clock-lanes
-+              - data-lanes
++				cci0_i2c1_sleep: cci0-i2c1-sleep-pins {
++					/* cci_i2c_sda1, cci_i2c_scl1 */
++					pins = "gpio115", "gpio116";
++					function = "cci_i2c";
 +
-+  reg:
-+    maxItems: 20
++					drive-strength = <2>; /* 2 mA */
++					bias-pull-down;
++				};
++			};
 +
-+  reg-names:
-+    items:
-+      - const: csiphy2
-+      - const: csiphy3
-+      - const: csiphy0
-+      - const: csiphy1
-+      - const: vfe0
-+      - const: csid0
-+      - const: vfe1
-+      - const: csid1
-+      - const: vfe2
-+      - const: csid2
-+      - const: vfe_lite0
-+      - const: csid0_lite
-+      - const: vfe_lite1
-+      - const: csid1_lite
-+      - const: vfe_lite2
-+      - const: csid2_lite
-+      - const: vfe_lite3
-+      - const: csid3_lite
-+      - const: vfe3
-+      - const: csid3
++			cci1_default: cci1-default-state {
++				cci1_i2c0_default: cci1-i2c0-default-pins {
++					/* cci_i2c_sda2, cci_i2c_scl2 */
++					pins = "gpio10","gpio11";
++					function = "cci_i2c";
 +
-+  vdda-phy-supply:
-+    description:
-+      Phandle to a regulator supply to PHY core block.
++					bias-pull-up;
++					drive-strength = <2>; /* 2 mA */
++				};
 +
-+  vdda-pll-supply:
-+    description:
-+      Phandle to 1.8V regulator supply to PHY refclk pll block.
++				cci1_i2c1_default: cci1-i2c1-default-pins {
++					/* cci_i2c_sda3, cci_i2c_scl3 */
++					pins = "gpio123","gpio124";
++					function = "cci_i2c";
 +
-+required:
-+  - clock-names
-+  - clocks
-+  - compatible
-+  - interconnects
-+  - interconnect-names
-+  - interrupts
-+  - interrupt-names
-+  - iommus
-+  - power-domains
-+  - power-domain-names
-+  - reg
-+  - reg-names
-+  - vdda-phy-supply
-+  - vdda-pll-supply
++					bias-pull-up;
++					drive-strength = <2>; /* 2 mA */
++				};
++			};
 +
-+additionalProperties: false
++			cci1_sleep: cci1-sleep-state {
++				cci1_i2c0_sleep: cci1-i2c0-sleep-pins {
++					/* cci_i2c_sda2, cci_i2c_scl2 */
++					pins = "gpio10","gpio11";
++					function = "cci_i2c";
 +
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/qcom,gcc-sc8280xp.h>
-+    #include <dt-bindings/clock/qcom,sc8280xp-camcc.h>
-+    #include <dt-bindings/interconnect/qcom,sc8280xp.h>
-+    #include <dt-bindings/power/qcom-rpmpd.h>
++					bias-pull-down;
++					drive-strength = <2>; /* 2 mA */
++				};
 +
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
++				cci1_i2c1_sleep: cci1-i2c1-sleep-pins {
++					/* cci_i2c_sda3, cci_i2c_scl3 */
++					pins = "gpio123","gpio124";
++					function = "cci_i2c";
 +
-+        camss: camss@ac5a000 {
-+            compatible = "qcom,sc8280xp-camss";
++					bias-pull-down;
++					drive-strength = <2>; /* 2 mA */
++				};
++			};
 +
-+            reg = <0 0x0ac5a000 0 0x2000>,
-+                  <0 0x0ac5c000 0 0x2000>,
-+                  <0 0x0ac65000 0 0x2000>,
-+                  <0 0x0ac67000 0 0x2000>,
-+                  <0 0x0acaf000 0 0x4000>,
-+                  <0 0x0acb3000 0 0x1000>,
-+                  <0 0x0acb6000 0 0x4000>,
-+                  <0 0x0acba000 0 0x1000>,
-+                  <0 0x0acbd000 0 0x4000>,
-+                  <0 0x0acc1000 0 0x1000>,
-+                  <0 0x0acc4000 0 0x4000>,
-+                  <0 0x0acc8000 0 0x1000>,
-+                  <0 0x0accb000 0 0x4000>,
-+                  <0 0x0accf000 0 0x1000>,
-+                  <0 0x0acd2000 0 0x4000>,
-+                  <0 0x0acd6000 0 0x1000>,
-+                  <0 0x0acd9000 0 0x4000>,
-+                  <0 0x0acdd000 0 0x1000>,
-+                  <0 0x0ace0000 0 0x4000>,
-+                  <0 0x0ace4000 0 0x1000>;
++			cci2_default: cci2-default-state {
++				cci2_i2c0_default: cci2-i2c0-default-pins {
++					/* cci_i2c_sda4, cci_i2c_scl4 */
++					pins = "gpio117","gpio118";
++					function = "cci_i2c";
 +
-+            reg-names = "csiphy2",
-+                        "csiphy3",
-+                        "csiphy0",
-+                        "csiphy1",
-+                        "vfe0",
-+                        "csid0",
-+                        "vfe1",
-+                        "csid1",
-+                        "vfe2",
-+                        "csid2",
-+                        "vfe_lite0",
-+                        "csid0_lite",
-+                        "vfe_lite1",
-+                        "csid1_lite",
-+                        "vfe_lite2",
-+                        "csid2_lite",
-+                        "vfe_lite3",
-+                        "csid3_lite",
-+                        "vfe3",
-+                        "csid3";
++					bias-pull-up;
++					drive-strength = <2>; /* 2 mA */
++				};
 +
-+            vdda-phy-supply = <&vreg_l6d>;
-+            vdda-pll-supply = <&vreg_l4d>;
++				cci2_i2c1_default: cci2-i2c1-default-pins {
++					/* cci_i2c_sda5, cci_i2c_scl5 */
++					pins = "gpio12","gpio13";
++					function = "cci_i2c";
 +
-+            interrupts = <GIC_SPI 359 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 360 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 448 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 464 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 465 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 466 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 467 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 468 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 469 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 477 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 478 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 479 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 640 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 641 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 758 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 759 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 760 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 761 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 762 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 764 IRQ_TYPE_LEVEL_HIGH>;
++					bias-pull-up;
++					drive-strength = <2>; /* 2 mA */
++				};
++			};
 +
-+            interrupt-names = "csid1_lite",
-+                              "vfe_lite1",
-+                              "csiphy3",
-+                              "csid0",
-+                              "vfe0",
-+                              "csid1",
-+                              "vfe1",
-+                              "csid0_lite",
-+                              "vfe_lite0",
-+                              "csiphy0",
-+                              "csiphy1",
-+                              "csiphy2",
-+                              "csid2",
-+                              "vfe2",
-+                              "csid3_lite",
-+                              "csid2_lite",
-+                              "vfe_lite3",
-+                              "vfe_lite2",
-+                              "csid3",
-+                              "vfe3";
++			cci2_sleep: cci2-sleep-state {
++				cci2_i2c0_sleep: cci2-i2c0-sleep-pins {
++					/* cci_i2c_sda4, cci_i2c_scl4 */
++					pins = "gpio117","gpio118";
++					function = "cci_i2c";
 +
-+            power-domains = <&camcc IFE_0_GDSC>,
-+                            <&camcc IFE_1_GDSC>,
-+                            <&camcc IFE_2_GDSC>,
-+                            <&camcc IFE_3_GDSC>,
-+                            <&camcc TITAN_TOP_GDSC>;
++					bias-pull-down;
++					drive-strength = <2>; /* 2 mA */
++				};
 +
-+            power-domain-names = "ife0",
-+                                 "ife1",
-+                                 "ife2",
-+                                 "ife3",
-+                                 "top";
++				cci2_i2c1_sleep: cci2-i2c1-sleep-pins {
++					/* cci_i2c_sda5, cci_i2c_scl5 */
++					pins = "gpio12","gpio13";
++					function = "cci_i2c";
 +
-+            clocks = <&camcc CAMCC_CAMNOC_AXI_CLK>,
-+                     <&camcc CAMCC_CPAS_AHB_CLK>,
-+                     <&camcc CAMCC_CSIPHY0_CLK>,
-+                     <&camcc CAMCC_CSI0PHYTIMER_CLK>,
-+                     <&camcc CAMCC_CSIPHY1_CLK>,
-+                     <&camcc CAMCC_CSI1PHYTIMER_CLK>,
-+                     <&camcc CAMCC_CSIPHY2_CLK>,
-+                     <&camcc CAMCC_CSI2PHYTIMER_CLK>,
-+                     <&camcc CAMCC_CSIPHY3_CLK>,
-+                     <&camcc CAMCC_CSI3PHYTIMER_CLK>,
-+                     <&camcc CAMCC_IFE_0_AXI_CLK>,
-+                     <&camcc CAMCC_IFE_0_CLK>,
-+                     <&camcc CAMCC_IFE_0_CPHY_RX_CLK>,
-+                     <&camcc CAMCC_IFE_0_CSID_CLK>,
-+                     <&camcc CAMCC_IFE_1_AXI_CLK>,
-+                     <&camcc CAMCC_IFE_1_CLK>,
-+                     <&camcc CAMCC_IFE_1_CPHY_RX_CLK>,
-+                     <&camcc CAMCC_IFE_1_CSID_CLK>,
-+                     <&camcc CAMCC_IFE_2_AXI_CLK>,
-+                     <&camcc CAMCC_IFE_2_CLK>,
-+                     <&camcc CAMCC_IFE_2_CPHY_RX_CLK>,
-+                     <&camcc CAMCC_IFE_2_CSID_CLK>,
-+                     <&camcc CAMCC_IFE_3_AXI_CLK>,
-+                     <&camcc CAMCC_IFE_3_CLK>,
-+                     <&camcc CAMCC_IFE_3_CPHY_RX_CLK>,
-+                     <&camcc CAMCC_IFE_3_CSID_CLK>,
-+                     <&camcc CAMCC_IFE_LITE_0_CLK>,
-+                     <&camcc CAMCC_IFE_LITE_0_CPHY_RX_CLK>,
-+                     <&camcc CAMCC_IFE_LITE_0_CSID_CLK>,
-+                     <&camcc CAMCC_IFE_LITE_1_CLK>,
-+                     <&camcc CAMCC_IFE_LITE_1_CPHY_RX_CLK>,
-+                     <&camcc CAMCC_IFE_LITE_1_CSID_CLK>,
-+                     <&camcc CAMCC_IFE_LITE_2_CLK>,
-+                     <&camcc CAMCC_IFE_LITE_2_CPHY_RX_CLK>,
-+                     <&camcc CAMCC_IFE_LITE_2_CSID_CLK>,
-+                     <&camcc CAMCC_IFE_LITE_3_CLK>,
-+                     <&camcc CAMCC_IFE_LITE_3_CPHY_RX_CLK>,
-+                     <&camcc CAMCC_IFE_LITE_3_CSID_CLK>,
-+                     <&gcc GCC_CAMERA_HF_AXI_CLK>,
-+                     <&gcc GCC_CAMERA_SF_AXI_CLK>;
++					bias-pull-down;
++					drive-strength = <2>; /* 2 mA */
++				};
++			};
 +
-+            clock-names = "camnoc_axi",
-+                          "cpas_ahb",
-+                          "csiphy0",
-+                          "csiphy0_timer",
-+                          "csiphy1",
-+                          "csiphy1_timer",
-+                          "csiphy2",
-+                          "csiphy2_timer",
-+                          "csiphy3",
-+                          "csiphy3_timer",
-+                          "vfe0_axi",
-+                          "vfe0",
-+                          "vfe0_cphy_rx",
-+                          "vfe0_csid",
-+                          "vfe1_axi",
-+                          "vfe1",
-+                          "vfe1_cphy_rx",
-+                          "vfe1_csid",
-+                          "vfe2_axi",
-+                          "vfe2",
-+                          "vfe2_cphy_rx",
-+                          "vfe2_csid",
-+                          "vfe3_axi",
-+                          "vfe3",
-+                          "vfe3_cphy_rx",
-+                          "vfe3_csid",
-+                          "vfe_lite0",
-+                          "vfe_lite0_cphy_rx",
-+                          "vfe_lite0_csid",
-+                          "vfe_lite1",
-+                          "vfe_lite1_cphy_rx",
-+                          "vfe_lite1_csid",
-+                          "vfe_lite2",
-+                          "vfe_lite2_cphy_rx",
-+                          "vfe_lite2_csid",
-+                          "vfe_lite3",
-+                          "vfe_lite3_cphy_rx",
-+                          "vfe_lite3_csid",
-+                          "gcc_axi_hf",
-+                          "gcc_axi_sf";
++			cci3_default: cci3-default-state {
++				cci3_i2c0_default: cci3-i2c0-default-pins {
++					/* cci_i2c_sda6, cci_i2c_scl6 */
++					pins = "gpio145","gpio146";
++					function = "cci_i2c";
 +
++					bias-pull-up;
++					drive-strength = <2>; /* 2 mA */
++				};
 +
-+            iommus = <&apps_smmu 0x2000 0x4e0>,
-+                     <&apps_smmu 0x2020 0x4e0>,
-+                     <&apps_smmu 0x2040 0x4e0>,
-+                     <&apps_smmu 0x2060 0x4e0>,
-+                     <&apps_smmu 0x2080 0x4e0>,
-+                     <&apps_smmu 0x20e0 0x4e0>,
-+                     <&apps_smmu 0x20c0 0x4e0>,
-+                     <&apps_smmu 0x20a0 0x4e0>,
-+                     <&apps_smmu 0x2400 0x4e0>,
-+                     <&apps_smmu 0x2420 0x4e0>,
-+                     <&apps_smmu 0x2440 0x4e0>,
-+                     <&apps_smmu 0x2460 0x4e0>,
-+                     <&apps_smmu 0x2480 0x4e0>,
-+                     <&apps_smmu 0x24e0 0x4e0>,
-+                     <&apps_smmu 0x24c0 0x4e0>,
-+                     <&apps_smmu 0x24a0 0x4e0>;
++				cci3_i2c1_default: cci3-i2c1-default-pins {
++					/* cci_i2c_sda7, cci_i2c_scl7 */
++					pins = "gpio164","gpio165";
++					function = "cci_i2c";
 +
-+            interconnects = <&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_CAMERA_CFG 0>,
-+                            <&mmss_noc MASTER_CAMNOC_HF 0 &mc_virt SLAVE_EBI1 0>,
-+                            <&mmss_noc MASTER_CAMNOC_SF 0 &mc_virt SLAVE_EBI1 0>,
-+                            <&mmss_noc MASTER_CAMNOC_ICP 0 &mc_virt SLAVE_EBI1 0>;
-+            interconnect-names = "cam_ahb",
-+                                 "cam_hf_mnoc",
-+                                 "cam_sf_mnoc",
-+                                 "cam_sf_icp_mnoc";
++					bias-pull-up;
++					drive-strength = <2>; /* 2 mA */
++				};
++			};
 +
-+            ports {
-+                #address-cells = <1>;
-+                #size-cells = <0>;
++			cci3_sleep: cci3-sleep-state {
++				cci3_i2c0_sleep: cci3-i2c0-sleep-pins {
++					/* cci_i2c_sda6, cci_i2c_scl6 */
++					pins = "gpio145","gpio146";
++					function = "cci_i2c";
 +
-+                port@0 {
-+                    reg = <0>;
-+                    #address-cells = <1>;
-+                    #size-cells = <0>;
++					bias-pull-down;
++					drive-strength = <2>; /* 2 mA */
++				};
 +
-+                    csiphy_ep0: endpoint@0 {
-+                        reg = <0>;
-+                        clock-lanes = <7>;
-+                        data-lanes = <0 1>;
-+                        remote-endpoint = <&sensor_ep>;
-+                    };
-+                };
-+            };
-+        };
-+    };
++				cci3_i2c1_sleep: cci3-i2c1-sleep-pins {
++					/* cci_i2c_sda7, cci_i2c_scl7 */
++					pins = "gpio164","gpio165";
++					function = "cci_i2c";
++
++					bias-pull-down;
++					drive-strength = <2>; /* 2 mA */
++				};
++			};
+ 		};
+ 
+ 		apps_smmu: iommu@15000000 {
 
 -- 
 2.42.0
