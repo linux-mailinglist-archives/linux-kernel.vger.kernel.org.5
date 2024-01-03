@@ -1,272 +1,150 @@
-Return-Path: <linux-kernel+bounces-15303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0892E8229ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:07:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 859388229EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:08:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4062A285321
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:07:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABC4C1C2312E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:08:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015FF182BF;
-	Wed,  3 Jan 2024 09:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C028182BB;
+	Wed,  3 Jan 2024 09:08:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HT1eUY/B";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HCPWQEpi";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IYde8UxT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5Qv37F+2"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kdM5o09q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B3E4182AA;
-	Wed,  3 Jan 2024 09:06:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1527621C64;
-	Wed,  3 Jan 2024 09:06:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704272815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jVYGaD1iXkZpEhUzeeoLKbgqHl8xg5shjR780mg9i9Q=;
-	b=HT1eUY/BbKV1q0boKUF66Wia0mQHD9gV9IdwrxYOl4uJhbOB1dRhds1MxYEDIgQgv44cZe
-	/Nf4R7FCAxLMZ99brjdeke36nbEPUffY6145dCib9YrQ46ZhWkAqnPZPbPGRViyrEIhEL9
-	1XIiZH9PFgg5fwRngP9qqSWeBOj3skg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704272815;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jVYGaD1iXkZpEhUzeeoLKbgqHl8xg5shjR780mg9i9Q=;
-	b=HCPWQEpi0K3R9bxlpuZMXUZ/1hWTuOuW6DsNPngaSPq80rcNN13QSRPP3xL8In5pR8VBL+
-	ekAQbkgp1hKzd/Ag==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704272814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jVYGaD1iXkZpEhUzeeoLKbgqHl8xg5shjR780mg9i9Q=;
-	b=IYde8UxTPRfveYbVw6Z8y+TUYm7L8yL4m6zES1kWQ1bEbZt4VpuZKyrci5NLkmKQlsuJlM
-	/UpvPK6uasjhWenoyp+2upPQ+5hwG86ISIclZpZcADz3VZgr+YnS6xB+rntHtg2l/dTSJy
-	sZAO01TuC1ejty3A18Z6K8VrG7PsU2E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704272814;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jVYGaD1iXkZpEhUzeeoLKbgqHl8xg5shjR780mg9i9Q=;
-	b=5Qv37F+2N8zAKzUJitU4gWQ01DHpiUg7Pnuln4QuLSM15B5wHebBWV2i/Kjxn+yzI1bEwV
-	CuYNNtXlwUwzYgCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0055A1340C;
-	Wed,  3 Jan 2024 09:06:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id fJ8uAK4jlWVCaQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 03 Jan 2024 09:06:54 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 60CF5A07EF; Wed,  3 Jan 2024 10:06:53 +0100 (CET)
-Date: Wed, 3 Jan 2024 10:06:53 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH] ext4: fix uninitialized ratelimit_state->lock access in
- __ext4_fill_super()
-Message-ID: <20240103090653.jlpamka2et73mzlp@quack3>
-References: <20240102133730.1098120-1-libaokun1@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAACD182A7;
+	Wed,  3 Jan 2024 09:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 403984bN067220;
+	Wed, 3 Jan 2024 03:08:04 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1704272884;
+	bh=w0QBRm3/8yaQBn/wB8ETNAL7dddIFLvJPYTPCbzX2bQ=;
+	h=From:Date:Subject:To:CC;
+	b=kdM5o09qBgnNMCe3+mhQjRxj6D19cob29fxrjnsFIhL5X3W/fglA5EXyYHZkuFDTc
+	 zRzYJl+1+Z8zxxZnqrVopVWN+qmU8xNqmgSoR6gvPwZXPQER7/BVbFmlsXI+o6MlEd
+	 Ppu7H9qbL5P6efoN6B3pE+xzOgspWHbpO6/sd3+o=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 403984Fl025848
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 3 Jan 2024 03:08:04 -0600
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 3
+ Jan 2024 03:08:04 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 3 Jan 2024 03:08:04 -0600
+Received: from localhost ([10.249.131.210])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 403982n8120137;
+	Wed, 3 Jan 2024 03:08:03 -0600
+From: Jai Luthra <j-luthra@ti.com>
+Date: Wed, 3 Jan 2024 14:37:55 +0530
+Subject: [PATCH] dmaengine: ti: k3-udma: Report short packet errors
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240102133730.1098120-1-libaokun1@huawei.com>
-X-Spam-Level: 
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=IYde8UxT;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5Qv37F+2
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email,suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:106:10:150:64:167:received]
-X-Spam-Score: -4.01
-X-Rspamd-Queue-Id: 1527621C64
-X-Spam-Flag: NO
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240103-tr_resp_err-v1-1-2fdf6d48ab92@ti.com>
+X-B4-Tracking: v=1; b=H4sIAOojlWUC/x3MQQqAIBBG4avIrBPM2tRVIiL1r2ZjMkYE0t2Tl
+ t/ivUIZwsg0qkKCmzOfsaJtFPljjTs0h2qyxvamNZ2+ZBHktEBED1sPOBd86BzVIgk2fv7bNL/
+ vB/2CV39dAAAA
+To: Peter Ujfalusi <peter.ujfalusi@gmail.com>, Vinod Koul <vkoul@kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+CC: Peter Ujfalusi <peter.ujfalusi@ti.com>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+        "Jai
+ Luthra" <j-luthra@ti.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1921; i=j-luthra@ti.com;
+ h=from:subject:message-id; bh=2AVnLjehw7HkRBinGMaBfSJvm7yeh/nzWX7+v+Aisr8=;
+ b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBllSPwBGsElHUyHxcgvVJEbnyNiqHk7MdD9z/EF
+ 9Ug8Kxrhx6JAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZZUj8AAKCRBD3pH5JJpx
+ RU8/D/sGhHwULpAycpqNnPdathnLCeOH59HTXwTDrRIZ9d1O00nSjXMC1uDG65ktOm6M3YuYrMu
+ g8q/EHwGwTWGEyGvHBg3n2x7VICbLvCsQ3FAofJlfOJRHFSFMg4v3EVniNSZX48Z9HUIy1nJv6P
+ v/jzoG1BPdlYv2cIZ785lA7f+lf34kgOckqi0p+JBiFfAP9Gtpzt3neBIWMCd7SkHy2Z4Ps6mw1
+ 9+QdScOvM4lRcDxRdcpv3K1wKE+lYHEebpNHk3Wqn5PJmbjZ6W+yj210dPptVsOC9rrRxhtDDSP
+ /qza89eESNu2aEB+DC7/6dzNJRhvPAOKPY7MRUxD+FXSf9B7GMEUIzDmL7Ro6OkeHIqD657Pnr1
+ Y8COPQJjEf67o/rTfhhhtzJ4bz8e06Lk4qNt9PRu+SuXA6mxGOpvUpLIE+uc6i+UMb0LFPCtv4T
+ yZEqBnrM+T/jpRvH8j/LTxv5yW2+eW3zW0JLyoo1CK2xVrEJ9BOlrtFHpy5cDnpMn/OUXaWAYG1
+ CcGBCguk4gR7MDHf2YUXM7Qa7710KA0ZdZ/v4Uzivvlo9mcI/qeOUe7MLYQ/VfRL8hDeROfRSEO
+ JiPR0iIQ3Zt6mc09WeaO8ccatd17DEH05xyozpyEe5fIa9O1ji+FAbiQhKjFUBPdxou+gcspddm
+ B2udgsD7/ap5l0w==
+X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
+ fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Tue 02-01-24 21:37:30, Baokun Li wrote:
-> In the following concurrency we will access the uninitialized rs->lock:
-> 
-> ext4_fill_super
->   ext4_register_sysfs
->    // sysfs registered msg_ratelimit_interval_ms
->                              // Other processes modify rs->interval to
->                              // non-zero via msg_ratelimit_interval_ms
->   ext4_orphan_cleanup
->     ext4_msg(sb, KERN_INFO, "Errors on filesystem, "
->       __ext4_msg
->         ___ratelimit(&(EXT4_SB(sb)->s_msg_ratelimit_state)
->           if (!rs->interval)  // do nothing if interval is 0
->             return 1;
->           raw_spin_trylock_irqsave(&rs->lock, flags)
->             raw_spin_trylock(lock)
->               _raw_spin_trylock
->                 __raw_spin_trylock
->                   spin_acquire(&lock->dep_map, 0, 1, _RET_IP_)
->                     lock_acquire
->                       __lock_acquire
->                         register_lock_class
->                           assign_lock_key
->                             dump_stack();
->   ratelimit_state_init(&sbi->s_msg_ratelimit_state, 5 * HZ, 10);
->     raw_spin_lock_init(&rs->lock);
->     // init rs->lock here
-> 
-> and get the following dump_stack:
-> 
-> =========================================================
-> INFO: trying to register non-static key.
-> The code is fine but needs lockdep annotation, or maybe
-> you didn't initialize this object before use?
-> turning off the locking correctness validator.
-> CPU: 12 PID: 753 Comm: mount Tainted: G E 6.7.0-rc6-next-20231222 #504
-> [...]
-> Call Trace:
->  dump_stack_lvl+0xc5/0x170
->  dump_stack+0x18/0x30
->  register_lock_class+0x740/0x7c0
->  __lock_acquire+0x69/0x13a0
->  lock_acquire+0x120/0x450
->  _raw_spin_trylock+0x98/0xd0
->  ___ratelimit+0xf6/0x220
->  __ext4_msg+0x7f/0x160 [ext4]
->  ext4_orphan_cleanup+0x665/0x740 [ext4]
->  __ext4_fill_super+0x21ea/0x2b10 [ext4]
->  ext4_fill_super+0x14d/0x360 [ext4]
-> [...]
-> =========================================================
-> 
-> Normally interval is 0 until s_msg_ratelimit_state is initialized, so
-> ___ratelimit() does nothing. But registering sysfs precedes initializing
-> rs->lock, so it is possible to change rs->interval to a non-zero value
-> via the msg_ratelimit_interval_ms interface of sysfs while rs->lock is
-> uninitialized, and then a call to ext4_msg triggers the problem by
-> accessing an uninitialized rs->lock. Therefore register sysfs after all
-> initializations are complete to avoid such problems.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Propagate the TR response status to the device using BCDMA
+split-channels. For example CSI-RX driver should be able to check if a
+frame was not transferred completely (short packet) and needs to be
+discarded.
 
-Looks good to me. Feel free to add:
+Fixes: 25dcb5dd7b7c ("dmaengine: ti: New driver for K3 UDMA")
+Signed-off-by: Jai Luthra <j-luthra@ti.com>
+---
+ drivers/dma/ti/k3-udma.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+index 30fd2f386f36..037f1408e798 100644
+--- a/drivers/dma/ti/k3-udma.c
++++ b/drivers/dma/ti/k3-udma.c
+@@ -3968,6 +3968,7 @@ static void udma_desc_pre_callback(struct virt_dma_chan *vc,
+ {
+ 	struct udma_chan *uc = to_udma_chan(&vc->chan);
+ 	struct udma_desc *d;
++	u8 status;
+ 
+ 	if (!vd)
+ 		return;
+@@ -3977,12 +3978,12 @@ static void udma_desc_pre_callback(struct virt_dma_chan *vc,
+ 	if (d->metadata_size)
+ 		udma_fetch_epib(uc, d);
+ 
+-	/* Provide residue information for the client */
+ 	if (result) {
+ 		void *desc_vaddr = udma_curr_cppi5_desc_vaddr(d, d->desc_idx);
+ 
+ 		if (cppi5_desc_get_type(desc_vaddr) ==
+ 		    CPPI5_INFO0_DESC_TYPE_VAL_HOST) {
++			/* Provide residue information for the client */
+ 			result->residue = d->residue -
+ 					  cppi5_hdesc_get_pktlen(desc_vaddr);
+ 			if (result->residue)
+@@ -3991,7 +3992,12 @@ static void udma_desc_pre_callback(struct virt_dma_chan *vc,
+ 				result->result = DMA_TRANS_NOERROR;
+ 		} else {
+ 			result->residue = 0;
+-			result->result = DMA_TRANS_NOERROR;
++			/* Propagate TR Response errors to the client */
++			status = d->hwdesc[0].tr_resp_base->status;
++			if (status)
++				result->result = DMA_TRANS_ABORTED;
++			else
++				result->result = DMA_TRANS_NOERROR;
+ 		}
+ 	}
+ }
 
-								Honza
+---
+base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
+change-id: 20240103-tr_resp_err-9f4eebbdcd3b
 
-> ---
->  fs/ext4/super.c | 22 ++++++++++------------
->  1 file changed, 10 insertions(+), 12 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 0980845c8b8f..1db23b0e8a4f 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -5564,19 +5564,15 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->  	if (err)
->  		goto failed_mount6;
->  
-> -	err = ext4_register_sysfs(sb);
-> -	if (err)
-> -		goto failed_mount7;
-> -
->  	err = ext4_init_orphan_info(sb);
->  	if (err)
-> -		goto failed_mount8;
-> +		goto failed_mount7;
->  #ifdef CONFIG_QUOTA
->  	/* Enable quota usage during mount. */
->  	if (ext4_has_feature_quota(sb) && !sb_rdonly(sb)) {
->  		err = ext4_enable_quotas(sb);
->  		if (err)
-> -			goto failed_mount9;
-> +			goto failed_mount8;
->  	}
->  #endif  /* CONFIG_QUOTA */
->  
-> @@ -5602,7 +5598,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->  		ext4_msg(sb, KERN_INFO, "recovery complete");
->  		err = ext4_mark_recovery_complete(sb, es);
->  		if (err)
-> -			goto failed_mount10;
-> +			goto failed_mount9;
->  	}
->  
->  	if (test_opt(sb, DISCARD) && !bdev_max_discard_sectors(sb->s_bdev))
-> @@ -5619,15 +5615,17 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->  	atomic_set(&sbi->s_warning_count, 0);
->  	atomic_set(&sbi->s_msg_count, 0);
->  
-> +	/* Register sysfs after all initializations are complete. */
-> +	err = ext4_register_sysfs(sb);
-> +	if (err)
-> +		goto failed_mount9;
-> +
->  	return 0;
->  
-> -failed_mount10:
-> +failed_mount9:
->  	ext4_quotas_off(sb, EXT4_MAXQUOTAS);
-> -failed_mount9: __maybe_unused
-> +failed_mount8: __maybe_unused
->  	ext4_release_orphan_info(sb);
-> -failed_mount8:
-> -	ext4_unregister_sysfs(sb);
-> -	kobject_put(&sbi->s_kobj);
->  failed_mount7:
->  	ext4_unregister_li_request(sb);
->  failed_mount6:
-> -- 
-> 2.31.1
-> 
+Best regards,
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jai Luthra <j-luthra@ti.com>
+
 
