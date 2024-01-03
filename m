@@ -1,70 +1,85 @@
-Return-Path: <linux-kernel+bounces-16000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E2B98236D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:55:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 914D48236D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:55:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDBFE287689
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:55:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C2141C24562
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D5FA1D554;
-	Wed,  3 Jan 2024 20:55:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 204661D692;
+	Wed,  3 Jan 2024 20:55:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r4X7C9t8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j5Hh2//e"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E001D545;
-	Wed,  3 Jan 2024 20:55:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FB4FC433C7;
-	Wed,  3 Jan 2024 20:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657E31D54E;
+	Wed,  3 Jan 2024 20:55:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4342C433C7;
+	Wed,  3 Jan 2024 20:55:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704315309;
-	bh=3q+VwmOix6aQg6CQ0wgCt1OP44XfMfdBlSVNaMA1U3k=;
+	s=k20201202; t=1704315332;
+	bh=AeTKh3wRabFnQ1yuK+vyl+Mc6+9kDxEh7vO32+RO5Dw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r4X7C9t85BwGuaYvwuaQPhWFFthcoV7xZGi+Dlkl8CsBytn2DLNGjOtaGE2hcrHRi
-	 hJ9gNpiSLPYmHo+3zrtb1+9xWD1nQGObr11KxXHWi7I2ktNsgpERYXiTnfOk4KbHgv
-	 Uaj+WM4EvHellN3pglhCqyRrq/Da4HdATZn3euwUoIdHC/H8aavTGWW95ApB7rMzeF
-	 xk8usk/S94bHwmcr8jaZwWJmzrhTThpGwQmudRggVPvKm8tUXjgPFf5DcnoggNvVJe
-	 n3CP/14znA+hYRORHt42ZAAd42CZ7p/cYYP90HCIOC89oad7xZbUpw+cU2b+GPC6K+
-	 3uldmw+GUS2TQ==
-Date: Wed, 3 Jan 2024 13:55:06 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Borislav Petkov <bp@alien8.de>
-Cc: tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, patches@lists.linux.dev
-Subject: Re: [PATCH] x86/tools: objdump_reformat.awk: Skip bad instructions
- from llvm-objdump
-Message-ID: <20240103205506.GA152662@dev-arch.thelio-3990X>
-References: <20231205-objdump_reformat-awk-handle-llvm-objdump-bad_expr-v1-1-b4a74f39396f@kernel.org>
- <20240103181542.GA629234@dev-arch.thelio-3990X>
- <20240103181852.GDZZWlDJMVvqAZdpfV@fat_crate.local>
+	b=j5Hh2//e7rRibhQAqELfRdXJ8t5GJI43thG2563X9Z65lUWLC/4445nICOSZmhcsp
+	 AjYUL/xmOm1BrAfesT3Q1yKO96Y97obfWM6o72WpyyVAOol0/oKLOPiNY1mxukdB8Y
+	 eDiTiJVbhpIuIzQnhj/8ui3yXl/eTDrNOyqI+gM9/i/9YVrQhlfVj3Oq5fy/Ch6UK+
+	 w48pUxJXvaFFnB+jfAOxSWQ5m0WFhx5AS0Gx0+8uAsdEr1yChBmcuu1XtSPHTAve7I
+	 8KpSMJAGBXhEImItfgF2rDIWlwyBz3csh5TMDAyGrdF6U9zr3B8rnNEVB1h8ifeY25
+	 tNK4CS3wVZeZA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 49369403EF; Wed,  3 Jan 2024 17:55:30 -0300 (-03)
+Date: Wed, 3 Jan 2024 17:55:30 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Song Liu <song@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Ming Wang <wangming01@loongson.cn>,
+	Ravi Bangoria <ravi.bangoria@amd.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v1] perf env: Avoid recursively taking env->bpf_progs.lock
+Message-ID: <ZZXJwsYlGxYoQOeP@kernel.org>
+References: <20231207014655.1252484-1-irogers@google.com>
+ <CAP-5=fWdAouBb7us44HOdd+ZfBj5fLFTuLCokbG8w3jVuQgTxw@mail.gmail.com>
+ <ZZWK43OPvGcd-BAR@kernel.org>
+ <CAPhsuW6EZ-FoZFbCuxs7gAa0OaQGw0zMLDaeEsNoU31vjXijnQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240103181852.GDZZWlDJMVvqAZdpfV@fat_crate.local>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW6EZ-FoZFbCuxs7gAa0OaQGw0zMLDaeEsNoU31vjXijnQ@mail.gmail.com>
+X-Url: http://acmel.wordpress.com
 
-On Wed, Jan 03, 2024 at 07:18:52PM +0100, Borislav Petkov wrote:
-> On Wed, Jan 03, 2024 at 11:15:42AM -0700, Nathan Chancellor wrote:
-> > Ping? I am still seeing this issue.
-> 
-> Does this need a Fixes tag and needs to go to Linus now or are you fine
-> with 6.8-rc0?
+Em Wed, Jan 03, 2024 at 09:40:26AM -0800, Song Liu escreveu:
+> On Wed, Jan 3, 2024 at 8:27 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > Applied, with that minor patch reduction hunk and this:
 
-This is only needed due to the recent changes from Sam and myself in
-x86/build, so no need to rush it to Linus. I just wanted to make sure it
-was not lost before the chaos of the merge window.
+> > Fixes: f8dfeae009effc0b ("perf bpf: Show more BPF program info in print_bpf_prog_info()")
 
-Cheers,
-Nathan
+> > Song, can I have your Acked-by?
+
+> LGTM. Thanks for the fix!
+
+> Acked-by: Song Liu <song@kernel.org>
+
+Thanks! Added to the cset.
+
+- Arnaldo
 
