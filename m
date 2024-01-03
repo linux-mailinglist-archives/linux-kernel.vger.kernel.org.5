@@ -1,137 +1,76 @@
-Return-Path: <linux-kernel+bounces-15519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE936822D29
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:36:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB7BA822D2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:37:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3479A1F2420D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:36:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CA031F23C1B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26DA019442;
-	Wed,  3 Jan 2024 12:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dbb8Q4bR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AEFE19447;
+	Wed,  3 Jan 2024 12:37:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F41F618ED9
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 12:36:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-556cd81163fso545950a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 04:36:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704285372; x=1704890172; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+s0dp5DatYp/J08ZyMTNZZ+6BOa/8d/K9WWRhoOwgwk=;
-        b=dbb8Q4bREAgqg2O/0WZg7vzaHoBjokOt3xYNGXitczDVqUXi6S8z7o2fvXsm9K3QB3
-         J3UPLElRLbtpUGB0tSgxfkfEeIwB8CTjPEs008hKX++YiBgZ6pskPNtjVhLtmHbvje0K
-         T5PjIgrEn8glssCm+99fGoy/ey/U0abnPxN+BXrLAz2lz0MC85fQ27LcKyP3nmnEPYg/
-         8HHI/BnAl2jkViRCQxyxSXImmlDdvJgWVDzrUx9nbz02gx5Yh8nr+NYUGcQqCuTAR3rc
-         pmbJdOoPmcCQ0mE78jRQh+c7IXIIsUnYmd0uKR9XwKC6P6S4Sm8/jBEf4/T/rwM3bUdD
-         8tLQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78CB218ED9
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 12:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7baec2c5f30so816652839f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 04:37:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704285372; x=1704890172;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+s0dp5DatYp/J08ZyMTNZZ+6BOa/8d/K9WWRhoOwgwk=;
-        b=YP1yzO2HO4EYVozh0UBf9wP+n/msNmeXXSvRBb9FAsiBp3MvQoIMC4uwwmlQRvQh7Q
-         Nrp8q3AtlEcRUY7wRaS6WGrNB15wD72e0stz9Gl/miBPZEeSSN/nNFPLswaaN+p2Oat3
-         t5H/hMttHT+sM2V4nyXqS3iwttmQcehdN7FR7UE8rL/MwB3xSMcz3x/pURpCZXK96O7x
-         i+AO1EdfORuqj5/+3gm/KS5Mq6JYM/eD9MH0+BMuF187Bey+qAvMvncZwnFwUy+7ljyN
-         Q7rAy2FPFNow2Klv6dD+Cc6ejxOroaj2krXuH8e2C1T1Ey5qLmToJUHqfRdq55cywWga
-         kM/w==
-X-Gm-Message-State: AOJu0YzrjYdTHiufEo2fZbmrwktirXaKRD980bUHr1xBCPShKy9GO74B
-	l0AobxsjdiW1IGWy1P5xFOwHjKmwdnwy0Q==
-X-Google-Smtp-Source: AGHT+IHTlIV+MUjfHZN7D2+8CQ5/YdFs4/QpJ1lfvSWj3f2hRKi89REdhRo6RrqHGFuZMpezboV/nA==
-X-Received: by 2002:a50:9e67:0:b0:555:1b4f:6908 with SMTP id z94-20020a509e67000000b005551b4f6908mr4543723ede.49.1704285372272;
-        Wed, 03 Jan 2024 04:36:12 -0800 (PST)
-Received: from [10.167.154.1] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
-        by smtp.gmail.com with ESMTPSA id r14-20020a056402018e00b00556d13abcc7sm675362edv.85.2024.01.03.04.36.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 04:36:11 -0800 (PST)
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Wed, 03 Jan 2024 13:36:08 +0100
-Subject: [PATCH v2] power: supply: qcom_battmgr: Ignore notifications
- before initialization
+        d=1e100.net; s=20230601; t=1704285424; x=1704890224;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RvsRMG8n26LNAFfnpUjLeRIf+262RyaNRGP5TZa8W8E=;
+        b=rQt2+bUIQywfvGFqbzSptwfRmAMYs1qcyzuVJEwagjrj4qA1N33PCt/mWbKs2a+F4O
+         oof0iYfbfAttZKvrJ+sCnxzGF3Vu/0bgi3svYn28KhNiDxaI7HVw26vtOu5Hd3J8rbFA
+         RmFG12kUh/lRsZ+MBp6sQAST+YDz/JsWvn8K67c6hUxLxpPsTABMO4k8f6ETc64HFLfk
+         ljexUU56qUsaduOp4uT1QxmRACcAfLO3p2WFLOvSVeWwupIPj/b5y69XmT8nVJKkyM7U
+         VOOX8GRwiuM1mN+rpd5WZLVBe0D170Kl6IE+EOXrwqOmaPRAoI/nGaWxyE3671pRNUjM
+         ue/w==
+X-Gm-Message-State: AOJu0YwsAajKUPTGaK0seEQuM91LyiNUptvsRLEXkvB0UOD08nJHTOCs
+	0nf7Z0CMoI0w5XEfUoUcR2Uh/q2LVLtEn2fBg/lqgc0a7zCH
+X-Google-Smtp-Source: AGHT+IHcjTrHRyt6bBrFesxqrvpW/k+UMfDVp5njmbV/k8zn8Xd2Ism31mYfBRfgv9mpyiRvbhL2B5+uwWS+RgS/AukP9wTv0gQO
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240103-topic-battmgr2-v2-1-c07b9206a2a5@linaro.org>
-X-B4-Tracking: v=1; b=H4sIALdUlWUC/x2N0QqDMAwAf0XyvEBbdYP9ythDGqMGXJW0joH47
- 5Y93sFxB2QxlQzP5gCTr2ZdU4Vwa4BnSpOgDpUhuNA571os66aMkUr5TBbQ9+wfI/F9aHuoUaQ
- sGI0SzzVL+7JUuZmM+vtfXu/zvACz+6zvdQAAAA==
-To: Bjorn Andersson <andersson@kernel.org>, 
- Sebastian Reichel <sre@kernel.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
- Sebastian Reichel <sebastian.reichel@collabora.com>, 
- linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Xilin Wu <wuxilin123@gmail.com>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1704285371; l=1885;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=ODWm1IaDFE2NpVyeLRbMWGZv/BmufuK6hOWy1KUm/rA=;
- b=6xTIV3xZVCCi3rJJfDz1pUorgA2CokGIroSqeYNyeHh36OAyoaP1TPok7oC34p0G980+P05Ey
- DSaKETbABwpD4sLWwsxOB9fhDShB/2S3wqVQpTCqW5tFWQHCiYKni7R
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Received: by 2002:a05:6602:6423:b0:7ba:8e6e:25a1 with SMTP id
+ gn35-20020a056602642300b007ba8e6e25a1mr857389iob.4.1704285424707; Wed, 03 Jan
+ 2024 04:37:04 -0800 (PST)
+Date: Wed, 03 Jan 2024 04:37:04 -0800
+In-Reply-To: <tencent_5292EF864E49B52EDC6EF0CC99A7E4C6C306@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000055ee82060e09df0d@google.com>
+Subject: Re: [syzbot] [reiserfs?] general protection fault in reiserfs_xattr_set
+From: syzbot <syzbot+74dce9511a59ad67a492@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Commit b43f7ddc2b7a ("power: supply: qcom_battmgr: Register the power
-supplies after PDR is up") moved the devm_power_supply_register() calls
-so that the power supply devices are not registered before we go through
-the entire initialization sequence (power up the ADSP remote processor,
-wait for it to come online, coordinate with userspace..).
+Hello,
 
-Some firmware versions (e.g. on SM8550) seem to leave battmgr at least
-partly initialized when exiting the bootloader and loading Linux. Check
-if the power supply devices are registered before consuming the battmgr
-notifications.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Fixes: b43f7ddc2b7a ("power: supply: qcom_battmgr: Register the power supplies after PDR is up")
-Reported-by: Xilin Wu <wuxilin123@gmail.com>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
-Changes in v2:
-- Fix the commit title
-- Link to v1: https://lore.kernel.org/linux-arm-msm/d9cf7d9d-60d9-4637-97bf-c9840452899e@linaro.org/T/#t
----
- drivers/power/supply/qcom_battmgr.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Reported-and-tested-by: syzbot+74dce9511a59ad67a492@syzkaller.appspotmail.com
 
-diff --git a/drivers/power/supply/qcom_battmgr.c b/drivers/power/supply/qcom_battmgr.c
-index a12e2a66d516..7d85292eb839 100644
---- a/drivers/power/supply/qcom_battmgr.c
-+++ b/drivers/power/supply/qcom_battmgr.c
-@@ -1271,6 +1271,10 @@ static void qcom_battmgr_callback(const void *data, size_t len, void *priv)
- 	struct qcom_battmgr *battmgr = priv;
- 	unsigned int opcode = le32_to_cpu(hdr->opcode);
- 
-+	/* Ignore the pings that come before Linux cleanly initializes the battmgr stack */
-+	if (!battmgr->bat_psy)
-+		return;
-+
- 	if (opcode == BATTMGR_NOTIFICATION)
- 		qcom_battmgr_notification(battmgr, data, len);
- 	else if (battmgr->variant == QCOM_BATTMGR_SC8280XP)
+Tested on:
 
----
-base-commit: 0fef202ac2f8e6d9ad21aead648278f1226b9053
-change-id: 20240103-topic-battmgr2-15c17fac6d35
+commit:         453f5db0 Merge tag 'trace-v6.7-rc7' of git://git.kerne..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=110b4145e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c7bcb8f62f1e2c3e
+dashboard link: https://syzkaller.appspot.com/bug?extid=74dce9511a59ad67a492
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=17f34145e80000
 
-Best regards,
--- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
-
+Note: testing is done by a robot and is best-effort only.
 
