@@ -1,277 +1,331 @@
-Return-Path: <linux-kernel+bounces-15256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84D2B822934
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B96EA822942
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:03:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C4171C22EBC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:01:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7ABA01C23077
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:03:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF8AA1805F;
-	Wed,  3 Jan 2024 08:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16CFB182AF;
+	Wed,  3 Jan 2024 08:03:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GnAfYUUb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F26B7182A4;
-	Wed,  3 Jan 2024 08:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.173])
-	by gateway (Coremail) with SMTP id _____8CxquotFJVlJXgBAA--.4973S3;
-	Wed, 03 Jan 2024 16:00:45 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bxyr0pFJVl7XAYAA--.44424S3;
-	Wed, 03 Jan 2024 16:00:43 +0800 (CST)
-Subject: Re: [PATCH 4/5] LoongArch: Add paravirt interface for guest kernel
-To: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
- Huacai Chen <chenhuacai@kernel.org>, Tianrui Zhao <zhaotianrui@loongson.cn>
-Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
- virtualization@lists.linux.dev, kvm@vger.kernel.org
-References: <20240103071615.3422264-1-maobibo@loongson.cn>
- <20240103071615.3422264-5-maobibo@loongson.cn>
- <66c15a1b-fb28-4653-982f-37494a01cd4f@suse.com>
-From: maobibo <maobibo@loongson.cn>
-Message-ID: <4240d67f-1e5d-f865-c16e-32b64aea8099@loongson.cn>
-Date: Wed, 3 Jan 2024 16:00:41 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA784182A1;
+	Wed,  3 Jan 2024 08:03:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704269027; x=1735805027;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=l5+EuJwYQuWGCdbDvh2EC5LTG8OCKVkqFz6/bxydejg=;
+  b=GnAfYUUbdC408XCXKaNQTv5VFgSBHky5aHOsUjqJD2B5YGqeB9KvG4QZ
+   gaIKhPJ6Ru4BwQ+xNSWoYyzW1DJUdIIESiNkn2DA+W5efLZlVC8RGBl73
+   OdOHbH2gF/tBUL+TGiJOoHYgy158vmHyPhMlIeYOtST/98EhmUCl2C12p
+   IDaL6ZpaOAwuQoFZgL6tYlVjHvWVqNX8EsGxTx6LDLHw+G4Q+llz5IyrN
+   Zhb1Mr8I1RlhvOCAn2+PrQ/TJxf92t3F2Ml/mvrS6Dd9mOQKcCT/4YVwb
+   oQ+wMIEXjr5id9so7+yNRvauYsFAdG57Qq8+kqKQzGtaXWDUCyiBgrDDP
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="387431571"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="387431571"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 00:03:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="756149623"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="756149623"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.51.162])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 00:03:42 -0800
+Message-ID: <d1fac554-4a51-409e-bc52-100a6bb4f5dd@intel.com>
+Date: Wed, 3 Jan 2024 10:03:38 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <66c15a1b-fb28-4653-982f-37494a01cd4f@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mmc: rpmb: do not force a retune before RPMB switch
+To: "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+Cc: Avri Altman <Avri.Altman@wdc.com>,
+ "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+ "christian.loehle@arm.com" <christian.loehle@arm.com>,
+ "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
+ "axboe@kernel.dk" <axboe@kernel.dk>, "beanhuo@micron.com"
+ <beanhuo@micron.com>, "yibin.ding@unisoc.com" <yibin.ding@unisoc.com>,
+ "victor.shih@genesyslogic.com.tw" <victor.shih@genesyslogic.com.tw>,
+ "asuk4.q@gmail.com" <asuk4.q@gmail.com>,
+ "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+ "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
+ "yebin10@huawei.com" <yebin10@huawei.com>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231204150111.3320071-1-jorge@foundries.io>
+ <f83933d3-6426-425c-903e-abbd2691e84a@intel.com>
+ <DM6PR04MB6575A30D162378E82B4D7DDEFC84A@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <ZXBGTxS7sUSILtLs@trax> <ZXbBhjZIn5sj6EYO@trax> <ZZPoRPxdWXuT+cEo@trax>
+ <b88eca08-7f20-4287-802c-ae1c8e3cd5cf@intel.com> <ZZSH1ykwP45fZaLh@trax>
 Content-Language: en-US
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <ZZSH1ykwP45fZaLh@trax>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Bxyr0pFJVl7XAYAA--.44424S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3Gw1xAr1DAF13tFy3Ar4UJrc_yoW3Xw1Dpa
-	4kAF4kGay8Crn3ArsrKrW5ury5Jrn7Gw12qF12vFy0yrsFvr1jqr1vgryq9FyUJa1kJ3W0
-	qFyrWrsIv3W5J3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUU9Sb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
-	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
-	AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C2
-	67AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI
-	8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWU
-	CwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
-	1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBI
-	daVFxhVjvjDU0xZFpf9x07j1WlkUUUUU=
 
-
-
-On 2024/1/3 下午3:40, Jürgen Groß wrote:
-> On 03.01.24 08:16, Bibo Mao wrote:
->> The patch add paravirt interface for guest kernel, it checks whether
->> system runs on VM mode. If it is, it will detect hypervisor type. And
->> returns true it is KVM hypervisor, else return false. Currently only
->> KVM hypervisor is supported, so there is only hypervisor detection
->> for KVM type.
+On 3/01/24 00:01, Jorge Ramirez-Ortiz, Foundries wrote:
+> On 02/01/24 21:01:52, Adrian Hunter wrote:
+>> On 2/01/24 12:41, Jorge Ramirez-Ortiz, Foundries wrote:
+>>> On 11/12/23 09:00:06, Jorge Ramirez-Ortiz, Foundries wrote:
+>>>> On 06/12/23 11:00:47, Jorge Ramirez-Ortiz, Foundries wrote:
+>>>>> On 06/12/23 07:02:43, Avri Altman wrote:
+>>>>>>>
+>>>>>>> On 4/12/23 17:01, Jorge Ramirez-Ortiz wrote:
+>>>>>>>> Requesting a retune before switching to the RPMB partition has been
+>>>>>>>> observed to cause CRC errors on the RPMB reads (-EILSEQ).
+>>>>>>>
+>>>>>>> There are still 2 concerns:
+>>>>>>> 1) We don't really know the root cause.  Have you determined if here are
+>>>>>>> CRC errors in the main partition also?
+>>>>>
+>>>>> right, and I don't disagree with that.
+>>>>>
+>>>>> As a test I created a 4GB file from /dev/random which I then copied
+>>>>> several times (dd if= ....)
+>>>>>
+>>>>> root@uz3cg-dwg-sec:/sys/kernel/debug/mmc0# cat err_stats
+>>>>> # Command Timeout Occurred:      0
+>>>>> # Command CRC Errors Occurred:   0
+>>>>> # Data Timeout Occurred:         0
+>>>>> # Data CRC Errors Occurred:      0
+>>>>> # Auto-Cmd Error Occurred:       0
+>>>>> # ADMA Error Occurred:   0
+>>>>> # Tuning Error Occurred:         0
+>>>>> # CMDQ RED Errors:       0
+>>>>> # CMDQ GCE Errors:       0
+>>>>> # CMDQ ICCE Errors:      0
+>>>>> # Request Timedout:      0
+>>>>> # CMDQ Request Timedout:         0
+>>>>> # ICE Config Errors:     0
+>>>>> # Controller Timedout errors:    0
+>>>>> # Unexpected IRQ errors:         0
+>>>>>
+>>>>> However as soon as I access RPMB and fails (it takes just a few tries) I see:
+>>>>>
+>>>>> I/TC: RPMB: Using generated key
+>>>>> [   86.902118] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
+>>>>> E/TC:? 0
+>>>>> E/TC:? 0 TA panicked with code 0xffff0000
+>>>>> E/LD:  Status of TA 22250a54-0bf1-48fe-8002-7b20f1c9c9b1
+>>>>> E/LD:   arch: aarch64
+>>>>> E/LD:  region  0: va 0xc0004000 pa 0x7e200000 size 0x002000 flags rw-s (ldelf)
+>>>>> E/LD:  region  1: va 0xc0006000 pa 0x7e202000 size 0x008000 flags r-xs (ldelf)
+>>>>> E/LD:  region  2: va 0xc000e000 pa 0x7e20a000 size 0x001000 flags rw-s (ldelf)
+>>>>> E/LD:  region  3: va 0xc000f000 pa 0x7e20b000 size 0x004000 flags rw-s (ldelf)
+>>>>> E/LD:  region  4: va 0xc0013000 pa 0x7e20f000 size 0x001000 flags r--s
+>>>>> E/LD:  region  5: va 0xc0014000 pa 0x7e22c000 size 0x005000 flags rw-s (stack)
+>>>>> E/LD:  region  6: va 0xc0019000 pa 0x818ea9ba8 size 0x002000 flags rw-- (param)
+>>>>> E/LD:  region  7: va 0xc001b000 pa 0x818e97ba8 size 0x001000 flags rw-- (param)
+>>>>> E/LD:  region  8: va 0xc004f000 pa 0x00001000 size 0x014000 flags r-xs [0]
+>>>>> E/LD:  region  9: va 0xc0063000 pa 0x00015000 size 0x008000 flags rw-s [0]
+>>>>> E/LD:   [0] 22250a54-0bf1-48fe-8002-7b20f1c9c9b1 @ 0xc004f000
+>>>>> E/LD:  Call stack:
+>>>>> E/LD:   0xc0051a14
+>>>>> E/LD:   0xc004f31c
+>>>>> E/LD:   0xc0052d40
+>>>>> E/LD:   0xc004f624
+>>>>>
+>>>>> root@uz3cg-dwg-sec:/var/rootdirs/home/fio# cat /sys/kernel/debug/mmc0/err_stats
+>>>>> # Command Timeout Occurred:      0
+>>>>> # Command CRC Errors Occurred:   0
+>>>>> # Data Timeout Occurred:         0
+>>>>> # Data CRC Errors Occurred:      1
+>>>>> # Auto-Cmd Error Occurred:       0
+>>>>> # ADMA Error Occurred:   0
+>>>>> # Tuning Error Occurred:         0
+>>>>> # CMDQ RED Errors:       0
+>>>>> # CMDQ GCE Errors:       0
+>>>>> # CMDQ ICCE Errors:      0
+>>>>> # Request Timedout:      0
+>>>>> # CMDQ Request Timedout:         0
+>>>>> # ICE Config Errors:     0
+>>>>> # Controller Timedout errors:    0
+>>>>> # Unexpected IRQ errors:         0
+>>>>>
+>>>>>>> 2) Forcing this on everyone
+>>>>>>>
+>>>>>>> The original idea was that because re-tuning cannot be done in RPMB, the
+>>>>>>> need to re-rune in RPMB could be avoided by always re-tuning before
+>>>>>>> switching to RPMB and then switching straight back. IIRC re-tuning should
+>>>>>>> guarantee at least 4MB more I/O without issue.
+>>>>>> Performance is hardly an issue in the context of RPMB access -
+>>>>>> For most cases it’s a single frame.
+>>>>>
+>>>>> Yes, the security use case typically stores hashes, variables
+>>>>> (bootcount, upgrade_available, versions, that sort of thing) and
+>>>>> certificates in RPMB.
+>>>>>
+>>>>> Since you mentioned, I am seeing that tuning before switching to RPMB
+>>>>> has an impact on performance. As a practical test, just reading a 6 byte
+>>>>> variable incurs in 50ms penalty in kernel space due to the need to
+>>>>> retune 5 times. Not great since the request is coming from a Trusted
+>>>>> Application via OP-TEE through the supplicant meaning this TEE thread
+>>>>> (they are statically allocated CFG_NUM_THREADS) will be reserved for
+>>>>> quite a bit of time.
+>>>>>
+>>>>> Roughly:
+>>>>> TA --> OP-TEE (core) --> TEE-supplicant --> Kernel (>50ms) --> OP-TEE --> TA
+>>>>
+>>>> To add more detail to the timing above, when using RPMB, OP-TEE stores
+>>>> the secure filesystem on RPMB as well, so accessing one of the variables
+>>>> stored in the filesystem consists on a number (~5) of individual RPMB
+>>>> requests (each one forcing a retune, each retune taking around 10ms).
+>>>
+>>> Adrian, please could you comment on the above.
+>>>
+>>> The current code is a performance drag for systems that implement their
+>>> secure filesystems on RPMB (i.e: OP-TEE) causing each read operation (of
+>>> variables consisting of a few bytes stored in such a filesystem) to
+>>> perform 5 consecutive retune requests.
+>>>
+>>> I am just thinking whether the original use case that forces a call to
+>>> retune prior to processing the RPMB request remains valid.
+>>
+>> I am not sure what you are asking.
+>>
+>> For some transfer modes, re-tuning is expected to deal with sampling
+>> point drift over time, mainly due to temperature changes.  It is done
+>> either periodically (tuning timer) or after a CRC error.
+>>
+>> There is no reason to assume RPMB is immune from that.
+>>
+>> Certainly re-tuning before switching to RPMB is not optimal for
+>> performance, and we can leave that out, but a CRC error before
+>> or during RPMB operations will *still* result in re-tuning
+>> after switching back from RPMB.
+>>
+>> In your case, re-tuning makes things worse, which is a bit of a
+>> mystery.  Running the new re-tuning test would tell us whether
+>> it makes things worse in general, or only for RPMB.
+>>
+>>>
+>>> Independently of the fact that not doing so fixes the problem I was
+>>> working on - and with the information I have - I dont think RPMB is
+>>> generally used to store larger files (maybe you have more information
+>>> about the average use case? are you aware of systems using RPMB to store
+>>> binaries or images?)
+>>>
+>>> I still I have to execute the test you shared some weeks ago. Bit of a
+>>> pain to NFS boot this system...will try to do it this week.
+>>
+>> Other options are to boot with an initrd only, or after boot switch
+>> to a RAM-based file system.
+>>
+>> I was waiting for this, since it is good to try to get closer to a
+>> root cause, but as you point out, the change is good for performance
+>> also, so I will Ack it.
 > 
-> I guess you are talking of pv_guest_init() here? Or do you mean
-> kvm_para_available()?
-yes, it is pv_guest_init. It will be better if all hypervisor detection
-is called in function pv_guest_init. Currently there is only kvm 
-hypervisor, kvm_para_available is hard-coded in pv_guest_init here.
+> great, thanks!
+> I was finally able to nfs mount this project (was a bit of a pain since
+> the board is using ostree).
+> 
+> The test failed. See below
+> 
+> root@uz3cg-dwg-sec:/# uname -a
+> Linux uz3cg-dwg-sec 5.15.64-lmp-standard #1 SMP Thu Sep 1 02:40:19 UTC 2022 aarch64 GNU/Linux
+> 
+> root@uz3cg-dwg-sec:/# cat /proc/cmdline
+> earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/nfs nfsroot=192.168.1.9:/srv/nfs/rootfs rootwait rw nfsrootdebug ip=dhcp rootfstype=ext4 ostree=ostree/boot.1.1/lmp/5c73dc21eb70c12363747b90c04302115715fa46063a9099841cf23cc70c09a6/0
+> 
+> root@uz3cg-dwg-sec:/sys/bus/mmc/drivers# cd mmcblk/
+> 
+> root@uz3cg-dwg-sec:/sys/bus/mmc/drivers/mmcblk# ls
+> bind       mmc0:0001  uevent     unbind
+> 
+> root@uz3cg-dwg-sec:/sys/bus/mmc/drivers/mmcblk# echo 'mmc0:0001' > unbind
+> 
+> root@uz3cg-dwg-sec:/sys/bus/mmc/drivers# echo 'mmc0:0001' > mmc_test/bind
+> [  284.253261] mmc_test mmc0:0001: Card claimed for testing.
+> 
+> root@uz3cg-dwg-sec:/sys/bus/mmc/drivers# cd ..
+> root@uz3cg-dwg-sec:/sys/bus/mmc# ls
+> devices            drivers            drivers_autoprobe  drivers_probe      uevent
+> 
+> root@uz3cg-dwg-sec:/sys/bus/mmc# cd /
+> 
+> root@uz3cg-dwg-sec:/# cat /sys/kernel/debug/mmc0/mmc0\:0001/test
+> test      testlist
+> 
+> root@uz3cg-dwg-sec:/# cat /sys/kernel/debug/mmc0/mmc0\:0001/testlist | grep tuning
+> 52:     Re-tuning reliability
+> 
+> root@uz3cg-dwg-sec:/# echo 52 > /sys/kernel/debug/mmc0/mmc0\:0001/test
+> [  352.283447] mmc0: Starting tests of card mmc0:0001...
+> [  352.288597] mmc0: Test case 52. Re-tuning reliability...
+> [  354.265441] mmc0: Result: ERROR (-84)
+> [  354.269142] mmc0: Tests completed.
+> 
+> root@uz3cg-dwg-sec:/#
 
-I can split file paravirt.c into paravirt.c and kvm.c, paravirt.c is 
-used for hypervisor detection, and move code relative with pv_ipi into kvm.c
+Thanks for doing that!  That seems to explain the mystery.
 
-Regards
-Bibo Mao
+You could hack the test to get an idea of how many successful
+iterations there are before getting an error.
+
+For SDHCI, one difference between tuning and re-tuning is the
+setting of bit-7 "Sampling Clock Select" of "Host Control 2 Register".
+It is initially 0 and then set to 1 after the successful tuning.
+Essentially, leaving it set to 1 is meant to speed up the re-tuning.
+You could try setting it to zero instead, and see if that helps.
+e.g.
+
+diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+index c79f73459915..714d8cc39709 100644
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -2732,6 +2732,7 @@ void sdhci_start_tuning(struct sdhci_host *host)
+ 	ctrl |= SDHCI_CTRL_EXEC_TUNING;
+ 	if (host->quirks2 & SDHCI_QUIRK2_TUNING_WORK_AROUND)
+ 		ctrl |= SDHCI_CTRL_TUNED_CLK;
++	ctrl &= ~SDHCI_CTRL_TUNED_CLK;
+ 	sdhci_writew(host, ctrl, SDHCI_HOST_CONTROL2);
+ 
+ 	/*
+
+
+> 
+> 
+> 
 > 
 >>
->> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
->> ---
->>   arch/loongarch/Kconfig                        |  8 ++++
->>   arch/loongarch/include/asm/kvm_para.h         |  7 ++++
->>   arch/loongarch/include/asm/paravirt.h         | 27 ++++++++++++
->>   .../include/asm/paravirt_api_clock.h          |  1 +
->>   arch/loongarch/kernel/Makefile                |  1 +
->>   arch/loongarch/kernel/paravirt.c              | 41 +++++++++++++++++++
->>   arch/loongarch/kernel/setup.c                 |  2 +
->>   7 files changed, 87 insertions(+)
->>   create mode 100644 arch/loongarch/include/asm/paravirt.h
->>   create mode 100644 arch/loongarch/include/asm/paravirt_api_clock.h
->>   create mode 100644 arch/loongarch/kernel/paravirt.c
 >>
->> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
->> index ee123820a476..940e5960d297 100644
->> --- a/arch/loongarch/Kconfig
->> +++ b/arch/loongarch/Kconfig
->> @@ -564,6 +564,14 @@ config CPU_HAS_PREFETCH
->>       bool
->>       default y
->> +config PARAVIRT
->> +    bool "Enable paravirtualization code"
->> +    help
->> +          This changes the kernel so it can modify itself when it is run
->> +      under a hypervisor, potentially improving performance 
->> significantly
->> +      over full virtualization.  However, when run without a hypervisor
->> +      the kernel is theoretically slower and slightly larger.
->> +
->>   config ARCH_SUPPORTS_KEXEC
->>       def_bool y
->> diff --git a/arch/loongarch/include/asm/kvm_para.h 
->> b/arch/loongarch/include/asm/kvm_para.h
->> index 9425d3b7e486..41200e922a82 100644
->> --- a/arch/loongarch/include/asm/kvm_para.h
->> +++ b/arch/loongarch/include/asm/kvm_para.h
->> @@ -2,6 +2,13 @@
->>   #ifndef _ASM_LOONGARCH_KVM_PARA_H
->>   #define _ASM_LOONGARCH_KVM_PARA_H
->> +/*
->> + * Hypcall code field
->> + */
->> +#define HYPERVISOR_KVM            1
->> +#define HYPERVISOR_VENDOR_SHIFT        8
->> +#define HYPERCALL_CODE(vendor, code)    ((vendor << 
->> HYPERVISOR_VENDOR_SHIFT) + code)
->> +
->>   /*
->>    * LoongArch hypcall return code
->>    */
->> diff --git a/arch/loongarch/include/asm/paravirt.h 
->> b/arch/loongarch/include/asm/paravirt.h
->> new file mode 100644
->> index 000000000000..b64813592ba0
->> --- /dev/null
->> +++ b/arch/loongarch/include/asm/paravirt.h
->> @@ -0,0 +1,27 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#ifndef _ASM_LOONGARCH_PARAVIRT_H
->> +#define _ASM_LOONGARCH_PARAVIRT_H
->> +
->> +#ifdef CONFIG_PARAVIRT
->> +#include <linux/static_call_types.h>
->> +struct static_key;
->> +extern struct static_key paravirt_steal_enabled;
->> +extern struct static_key paravirt_steal_rq_enabled;
->> +
->> +u64 dummy_steal_clock(int cpu);
->> +DECLARE_STATIC_CALL(pv_steal_clock, dummy_steal_clock);
->> +
->> +static inline u64 paravirt_steal_clock(int cpu)
->> +{
->> +    return static_call(pv_steal_clock)(cpu);
->> +}
->> +
->> +int pv_guest_init(void);
->> +#else
->> +static inline int pv_guest_init(void)
->> +{
->> +    return 0;
->> +}
->> +
->> +#endif // CONFIG_PARAVIRT
->> +#endif
->> diff --git a/arch/loongarch/include/asm/paravirt_api_clock.h 
->> b/arch/loongarch/include/asm/paravirt_api_clock.h
->> new file mode 100644
->> index 000000000000..65ac7cee0dad
->> --- /dev/null
->> +++ b/arch/loongarch/include/asm/paravirt_api_clock.h
->> @@ -0,0 +1 @@
->> +#include <asm/paravirt.h>
->> diff --git a/arch/loongarch/kernel/Makefile 
->> b/arch/loongarch/kernel/Makefile
->> index 3c808c680370..662e6e9de12d 100644
->> --- a/arch/loongarch/kernel/Makefile
->> +++ b/arch/loongarch/kernel/Makefile
->> @@ -48,6 +48,7 @@ obj-$(CONFIG_MODULES)        += module.o 
->> module-sections.o
->>   obj-$(CONFIG_STACKTRACE)    += stacktrace.o
->>   obj-$(CONFIG_PROC_FS)        += proc.o
->> +obj-$(CONFIG_PARAVIRT)        += paravirt.o
->>   obj-$(CONFIG_SMP)        += smp.o
->> diff --git a/arch/loongarch/kernel/paravirt.c 
->> b/arch/loongarch/kernel/paravirt.c
->> new file mode 100644
->> index 000000000000..21d01d05791a
->> --- /dev/null
->> +++ b/arch/loongarch/kernel/paravirt.c
->> @@ -0,0 +1,41 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +#include <linux/export.h>
->> +#include <linux/types.h>
->> +#include <linux/jump_label.h>
->> +#include <linux/kvm_para.h>
->> +#include <asm/paravirt.h>
->> +#include <linux/static_call.h>
->> +
->> +struct static_key paravirt_steal_enabled;
->> +struct static_key paravirt_steal_rq_enabled;
->> +
->> +static u64 native_steal_clock(int cpu)
->> +{
->> +    return 0;
->> +}
->> +
->> +DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
-> 
-> This is the 4th arch with the same definition of native_steal_clock() and
-> pv_steal_clock. I think we should add a common file kernel/paravirt.c and
-> move the related functions from the archs into the new file.
-> 
-> If you don't want to do that I can prepare a series.
-> 
->> +
->> +static bool kvm_para_available(void)
->> +{
->> +    static int hypervisor_type;
->> +    int config;
->> +
->> +    if (!hypervisor_type) {
->> +        config = read_cpucfg(CPUCFG_KVM_SIG);
->> +        if (!memcmp(&config, KVM_SIGNATURE, 4))
->> +            hypervisor_type = HYPERVISOR_KVM;
->> +    }
->> +
->> +    return hypervisor_type == HYPERVISOR_KVM;
->> +}
->> +
->> +int __init pv_guest_init(void)
->> +{
->> +    if (!cpu_has_hypervisor)
->> +        return 0;
->> +    if (!kvm_para_available())
->> +        return 0;
->> +
->> +    return 1;
->> +}
->> diff --git a/arch/loongarch/kernel/setup.c 
->> b/arch/loongarch/kernel/setup.c
->> index d183a745fb85..fa680bdd0bd1 100644
->> --- a/arch/loongarch/kernel/setup.c
->> +++ b/arch/loongarch/kernel/setup.c
->> @@ -43,6 +43,7 @@
->>   #include <asm/efi.h>
->>   #include <asm/loongson.h>
->>   #include <asm/numa.h>
->> +#include <asm/paravirt.h>
->>   #include <asm/pgalloc.h>
->>   #include <asm/sections.h>
->>   #include <asm/setup.h>
->> @@ -376,6 +377,7 @@ void __init platform_init(void)
->>       pr_info("The BIOS Version: %s\n", b_info.bios_version);
->>       efi_runtime_init();
->> +    pv_guest_init();
-> 
-> Any reason pv_guest_init() needs to return a value at all, seeing that 
-> you don't
-> use the returned value?
-> 
-> 
-> Juergen
+>>>
+>>> TIA
+>>>
+>>>>
+>>>> BTW, I also tried delaying the timing between those consecutive retunes
+>>>> (up to 1 second), but the issue still persisted.
+>>>>
+>>>>>
+>>>>> Adrian, I couldn't find the original performance justification for
+>>>>> enabling this feature globally. At which point do you think it becomes
+>>>>> beneficial to retune before accessing RPMB?
+>>>>
+>>>> How should we proceed with this patch then? can it be merged as I
+>>>> proposed? should I rewrite it differently? not sure what is next
+>>>>
+>>>> TIA
+>>>> Jorge
+>>
 
 
