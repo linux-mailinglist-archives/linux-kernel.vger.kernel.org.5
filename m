@@ -1,162 +1,209 @@
-Return-Path: <linux-kernel+bounces-15700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 636B082308E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:28:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 990A9823092
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:31:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 749431C23794
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:28:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14A4BB22C26
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:31:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97BCA1B279;
-	Wed,  3 Jan 2024 15:28:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174AF1B268;
+	Wed,  3 Jan 2024 15:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BBz2ctHS"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OLq4pNgl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ACFF1A730;
-	Wed,  3 Jan 2024 15:28:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 403DlAVu001467;
-	Wed, 3 Jan 2024 15:27:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Nu8lunzViOUpOfegZsY+Z05a/poHdYSCSroiiueke/4=; b=BB
-	z2ctHSJD5dquHTYRfOF1AtFzzDiAGhOtvEXPnoGkGSSys0dg3J2a1lkPCqOVLCQ2
-	cpXHWWf9EJEcP7zO7SNQGvCXsFgWJF1xSYmjfV0xhUogTTxrM9VyeyZeC2LSJdwd
-	ZPR/8gnpoDdbEFb03FMC602ms+bbciRyAMd71Tk3NhNEHTvjFIZhoovyx48GL8Ho
-	mnMSZsJ2ieM+nP54aTQMzoCzkkjoq89m9b2gdA0oM9phOslVmEScO0sn3fREyUGo
-	kcYlpiqA4pVUne7jfLzmCm7WaOg6TXhgWe6muJDeaItueS9pNeFlWn9GCTbzhsnP
-	SXlf9BvoRZnzQGxyNDgA==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vd8dpr8pe-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Jan 2024 15:27:46 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 403FRiTq029569
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 3 Jan 2024 15:27:44 GMT
-Received: from [10.216.8.10] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 3 Jan
- 2024 07:27:33 -0800
-Message-ID: <520e377d-e990-c185-4a20-07806873e506@quicinc.com>
-Date: Wed, 3 Jan 2024 20:57:13 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7EDC1A731
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 15:31:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704295879;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xi/cLbBuD7PQL0fsq9282B7IArYlzlUVvqfZqTLR3Tc=;
+	b=OLq4pNglE3jSSowNIwvH4OzE0Xl/ycieyU6CKzq91ooiv1/GCImMmvmmGXg2uoZLLetHBA
+	aLEdSIMajbrxrabR9Ldcqi3REKRNVISasZaR92OEc60N3X04dcH9OQzqkjCOb8XvX1i1XP
+	iZnb3JBedWXNd0NdXyVc7rDAt1zLCWk=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-320-gAIxZLBxMoy_RiQWDFCLqA-1; Wed, 03 Jan 2024 10:31:18 -0500
+X-MC-Unique: gAIxZLBxMoy_RiQWDFCLqA-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1d410cccfc2so39943375ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 07:31:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704295877; x=1704900677;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xi/cLbBuD7PQL0fsq9282B7IArYlzlUVvqfZqTLR3Tc=;
+        b=Y63ZGHKCbx3PIEmmAI2vTw6e20LhHRK0v+0Vb1Tdw8lzgGMeHF7huVTFVDutDGNXir
+         d0yFHGvZjFsZ3X+SBHR8KEFw6BrbVkQRfwL8lDQRXLCGh3q4AibF33Aqbo+d7xlT4lti
+         2U/NjZrkerkyKWlkr/VmXUDbpuV4aDd9e+WicJLyJHIm29ESoUUfl3go7iZyNNn3jVrw
+         Cr/kVzplJpY2M/i4jexngmAgJ/dIsuro9pUoQn24yRjahVhnpmbjUANVZq3K01O8JUze
+         FznqXsTKHsZj8q5zjwkB3iF2a5I2XVzQ1tcUcikTH33YERtsuhtfwBSUhlCqpCy1Ta0m
+         H18w==
+X-Gm-Message-State: AOJu0Yx+YMKrPvOFAd1xrokPLJetOdnFLoyN1ZnSUzmAuXXmWR7K/KXL
+	eTUICWQotpjSxQsLeuDxZYjSxzBSpQJYxzFNa1OFiIDg7WrLJCvQ9TlfmujPUkixrS3rkCaF9TG
+	zbyUcyIhs8EboYSWQbmT7LXnKGQ/LfOvl
+X-Received: by 2002:a17:902:c40e:b0:1d4:59c1:cabc with SMTP id k14-20020a170902c40e00b001d459c1cabcmr7800664plk.75.1704295877204;
+        Wed, 03 Jan 2024 07:31:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFD7GdHUUbPzO0iEzmnqE5viAUZQUvfg0jqQVgtyzl0QBvUi5XEXgBeW4KujyYniYeMi94Jkg==
+X-Received: by 2002:a17:902:c40e:b0:1d4:59c1:cabc with SMTP id k14-20020a170902c40e00b001d459c1cabcmr7800651plk.75.1704295876882;
+        Wed, 03 Jan 2024 07:31:16 -0800 (PST)
+Received: from localhost.localdomain ([2804:431:c7ec:911:6911:ca60:846:eb46])
+        by smtp.gmail.com with ESMTPSA id kg15-20020a170903060f00b001d3edef115dsm24093873plb.20.2024.01.03.07.31.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 07:31:16 -0800 (PST)
+From: Leonardo Bras <leobras@redhat.com>
+To: Jisheng Zhang <jszhang@kernel.org>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	leobras.c@gmail.com,
+	Palmer Dabbelt <palmer@rivosinc.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Will Deacon <will@kernel.org>,
+	peterz@infradead.org,
+	boqun.feng@gmail.com,
+	Mark Rutland <mark.rutland@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	aou@eecs.berkeley.edu,
+	parri.andrea@gmail.com,
+	andrzej.hajda@intel.com,
+	guoren@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: Re: [RFC PATCH v5 5/5] riscv/cmpxchg: Implement xchg for variables of size 1 and 2
+Date: Wed,  3 Jan 2024 12:31:04 -0300
+Message-ID: <ZZV9uGm3VApkLHMF@LeoBras>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <ZZU/YNPMigiD/k1g@xhacker>
+References: <mhng-92f37526-d36c-48c0-8fbd-7676df1b6086@palmer-ri-x1c9> <2a4f1f47e945772b9fbb53a51e148636e0ae6e48.camel@redhat.com> <ZW_GzKUoqO4fD4Je@LeoBras> <ZZU/YNPMigiD/k1g@xhacker>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: RESEND: Re: [Patch v6 03/12] docs: qcom: Add qualcomm minidump
- guide
-Content-Language: en-US
-To: Ruipeng Qi <ruipengqi7@gmail.com>
-CC: <agross@kernel.org>, <alim.akhtar@samsung.com>, <andersson@kernel.org>,
-        <bmasney@redhat.com>, <conor+dt@kernel.org>, <corbet@lwn.net>,
-        <gpiccoli@igalia.com>, <keescook@chromium.org>, <kernel@quicinc.com>,
-        <kgene@kernel.org>, <konrad.dybcio@linaro.org>,
-        <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>, <mathieu.poirier@linaro.org>,
-        <matthias.bgg@gmail.com>, <nm@ti.com>, <robh+dt@kernel.org>,
-        <tony.luck@intel.com>, <vigneshr@ti.com>, <qiruipeng@lixiang.com>
-References: <1700864395-1479-4-git-send-email-quic_mojha@quicinc.com>
- <20231225135542.1789-1-ruipengqi7@gmail.com>
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20231225135542.1789-1-ruipengqi7@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Eq10y8K3OI3Kx2Zzds3mwvzzBPYT1-u_
-X-Proofpoint-ORIG-GUID: Eq10y8K3OI3Kx2Zzds3mwvzzBPYT1-u_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 phishscore=0 impostorscore=0 spamscore=0
- lowpriorityscore=0 mlxscore=0 malwarescore=0 mlxlogscore=826 adultscore=0
- clxscore=1011 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401030127
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-
-
-On 12/25/2023 7:25 PM, Ruipeng Qi wrote:
-> <+How a kernel client driver can register region with minidump
-> <+------------------------------------------------------------
-> <+
-> <+Client driver can use ``qcom_minidump_region_register`` API's to register
-> <+and ``qcom_minidump_region_unregister`` to unregister their region from
-> <+minidump driver.
-> <+
-> <+Client needs to fill their region by filling ``qcom_minidump_region``
-> <+structure object which consists of the region name, region's virtual
-> <+and physical address and its size.
+On Wed, Jan 03, 2024 at 07:05:04PM +0800, Jisheng Zhang wrote:
+> On Tue, Dec 05, 2023 at 09:56:44PM -0300, leobras.c@gmail.com wrote:
+> > From: Leonardo Bras <leobras@redhat.com>
+> > 
+> > On Wed, Aug 30, 2023 at 06:59:46PM -0300, Leonardo Brás wrote:
+> > > On Thu, 2023-08-10 at 09:23 -0700, Palmer Dabbelt wrote:
+> > > > On Thu, 10 Aug 2023 09:04:04 PDT (-0700), leobras@redhat.com wrote:
+> > > > > On Thu, 2023-08-10 at 08:51 +0200, Arnd Bergmann wrote:
+> > > > > > On Thu, Aug 10, 2023, at 06:03, Leonardo Bras wrote:
+> > > > > > > xchg for variables of size 1-byte and 2-bytes is not yet available for
+> > > > > > > riscv, even though its present in other architectures such as arm64 and
+> > > > > > > x86. This could lead to not being able to implement some locking mechanisms
+> > > > > > > or requiring some rework to make it work properly.
+> > > > > > > 
+> > > > > > > Implement 1-byte and 2-bytes xchg in order to achieve parity with other
+> > > > > > > architectures.
+> > > > > > > 
+> > > > > > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > > > > > 
+> > > > > 
+> > > > > Hello Arnd Bergmann, thanks for reviewing!
+> > > > > 
+> > > > > > Parity with other architectures by itself is not a reason to do this,
+> > > > > > in particular the other architectures you listed have the instructions
+> > > > > > in hardware while riscv does not.
+> > > > > 
+> > > > > Sure, I understand RISC-V don't have native support for xchg on variables of
+> > > > > size < 4B. My argument is that it's nice to have even an emulated version for
+> > > > > this in case any future mechanism wants to use it.
+> > > > > 
+> > > > > Not having it may mean we won't be able to enable given mechanism in RISC-V. 
+> > > > 
+> > > > IIUC the ask is to have a user within the kernel for these functions.  
+> > > > That's the general thing to do, and last time this came up there was no 
+> > > > in-kernel use of it -- the qspinlock stuff would, but we haven't enabled 
+> > > > it yet because we're worried about the performance/fairness stuff that 
+> > > > other ports have seen and nobody's got concrete benchmarks yet (though 
+> > > > there's another patch set out that I haven't had time to look through, 
+> > > > so that may have changed).
+> > > > 
+> > > > So if something uses these I'm happy to go look closer.
+> > > 
+> > > IIUC patches 4 & 5 will be used by qspinlock, which may not be done yet, so we
+> > > don't have an use for them for the time being.
+> > > 
+> > > Otherwise, any comments on patches 1, 2 & 3?
+> > 
+> > ping
 > 
-> Hi, Mukesh, wish you a good holiday :)
-
-Hope you had the same..:-)
-
+> Hi,
 > 
-> I have the following idea, please help me to assess whether this can be
-> implemented or not. As we all know, most of the kernel objects are
-> allocated by the slab sub-system.I wonder if we can dump all memory
-> keeped by the slab sub-system? If so,  we got most of the kernel objects
-> which will be helpful to fix problems when we run with system issues.
+> I believe the "RFC" makes some reviewers think the series isn't ready
+> for review, so could you please send a new one w/o RFC?
 > 
-> How can we do this? From the description above, I think we should
-> register one region for each slab,  for each slab will have some pages,
-> and the memory between each slab is non-continuous. As we all
-> know, there are millions of slabs in the system, so if we dump slabs
-> in this way, it will introduce a heavy overhead.
-> 
-> I am not very familiar with qualcomm minidump, maybe my thought
-> is wrong. Looking forward to your reply!
+> thanks
 
-In the current state and in simple terms, Qualcomm Minidump can not do
-this, Minidump is more of a consumer driver so, what ever gets
-registered with it, it can dump. Qualcomm Minidump serves bigger purpose
-to dump content in any kind of crash whether it is kernel or non-kernel
-like NOC errors/XPUs etc and both kernel/non-kernel entity can register 
-to it, so we gets dump in any kind of system crash.
+Sure, will do.
 
-One more thing, kernel part of minidump, we are calling it APSS Minidump
-has limitation of no of entries so it will be difficult to dump 
-non-continuous regions after a certain number of registration ~200. However,
-we do have a solution in downstream kernel for it like to create a big 
-CMA buffer and register this buffer with Minidump so that whatever gets 
-dumped in that buffer gets captured during crash and fill up this buffer 
-and create elf during panic. I think, similar thing you are also doing 
-with your OS-minidump.
-
-I have just glanced into your implementation of OS-minidump, it
-more of relying on basic concept of RAM content preserved
-across boot and later reading it through procfs but this basic
-stuff is common to pstore(ram) as well and pstore has file system 
-support why don't you make your driver as one of pstore record and that 
-way Qualcomm minidump also gets benefited where entire OS-minidump 
-record gets registered with Qualcomm minidump and we get this on panic 
-and you get this via pstorefs.
-
--Mukesh
+Thanks!
+Leo
 
 > 
-> Best Regards
-> Ruipeng
+> > 
+> > > 
+> > > > 
+> > > > > > Emulating the small xchg() through cmpxchg() is particularly tricky
+> > > > > > since it's easy to run into a case where this does not guarantee
+> > > > > > forward progress.
+> > > > > > 
+> > > > > 
+> > > > > Didn't get this part:
+> > > > > By "emulating small xchg() through cmpxchg()", did you mean like emulating an
+> > > > > xchg (usually 1 instruction) with lr & sc (same used in cmpxchg) ?
+> > > > > 
+> > > > > If so, yeah, it's a fair point: in some extreme case we could have multiple
+> > > > > threads accessing given cacheline and have sc always failing. On the other hand,
+> > > > > there are 2 arguments on that:
+> > > > > 
+> > > > > 1 - Other architectures, (such as powerpc, arm and arm64 without LSE atomics)
+> > > > > also seem to rely in this mechanism for every xchg size. Another archs like csky
+> > > > > and loongarch use asm that look like mine to handle size < 4B xchg. 
+> > > > >     
+> > > > > 
+> > > > > >  This is also something that almost no architecture
+> > > > > > specific code relies on (generic qspinlock being a notable exception).
+> > > > > > 
+> > > > > 
+> > > > > 2 - As you mentioned, there should be very little code that will actually make
+> > > > > use of xchg for vars < 4B, so it should be safe to assume its fine to not
+> > > > > guarantee forward progress for those rare usages (like some of above mentioned
+> > > > > archs).
+> > > > > 
+> > > > > > I would recommend just dropping this patch from the series, at least
+> > > > > > until there is a need for it.
+> > > > > 
+> > > > > While I agree this is a valid point, I believe its more interesting to have it
+> > > > > implemented if any future mechanism wants to make use of this. 
+> > > > > 
+> > > > > 
+> > > > > Thanks!
+> > > > > Leo
+> > > > 
+> > > 
+> > 
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
+
 
