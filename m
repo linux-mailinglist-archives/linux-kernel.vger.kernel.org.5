@@ -1,262 +1,179 @@
-Return-Path: <linux-kernel+bounces-15749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ECF5823146
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:28:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE80482314A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:29:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 293291F22653
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:28:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96AE9283684
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:29:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563CD1BDD8;
-	Wed,  3 Jan 2024 16:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C73F21BDD1;
+	Wed,  3 Jan 2024 16:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EIz1C13P"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="d48aEIxX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6E191BDC5;
-	Wed,  3 Jan 2024 16:28:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3E1BC433C8;
-	Wed,  3 Jan 2024 16:28:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704299315;
-	bh=RXlP2qnf/bEUQgIJC4pti3NtKsmNjSF8fVgxjGvsXkE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EIz1C13PwqwaX1FBqzHPf6Xv5qy+XCfFGOO4n55WRalJxmv5YdX7Djzz0jJIHtO9e
-	 bPdUjLX9FfNSwsVgcc7ve1QtPIyBIkSKH+NXubVN5Hw6jlVOOM07NvgMUy4OngpWUd
-	 1LsjT5b4ttc9Ktv6gPjEveSNQJfNLe9fX3XZurK250Mge+e2J/Uv83MclCUKLqVC6c
-	 OaAkQU2mBhzqA1MEQ/CRMVn/UYQYpdrT9q+PMx6UTdi4nWKlERH1KwxRrWoR4W2DeT
-	 EsaBFyBFrEG4MfO1FwnqJb2XqmR7GiWLMlShhSXwIGfHFtpEAfx3H3iYZ/FmEXfBzI
-	 QKmP9aLBKxiUQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 98618403EF; Wed,  3 Jan 2024 13:28:32 -0300 (-03)
-Date: Wed, 3 Jan 2024 13:28:32 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: "Liang, Kan" <kan.liang@linux.intel.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Kan Liang <kan.liang@intel.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: perf test hybrid failing on 14700K
-Message-ID: <ZZWLMKr6W8MpOPKT@kernel.org>
-References: <ZYbm5L7tw7bdpDpE@kernel.org>
- <4d86f3b6-eaee-4673-bdf5-3b97c1c1ad17@linux.intel.com>
- <CAP-5=fUfJ-VBGS1D2+WM_eBu4uPGvxJ2KyD4WXzgKRCfGKHTQQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD01B1BDC5
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 16:29:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a27874c861aso456573866b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 08:29:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704299373; x=1704904173; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=az19ubiIuB1XQs18jJiJ3GzVSuYQgFZqp/BptEnEKEs=;
+        b=d48aEIxXM7X5PRh/Db19JwfZFU1a8XfISZQ4f9MrpX638cw2WOn0GNKj7hIlw4L5TZ
+         MmxOxfpQjCFCn/u38O+Q0R+5WhHc8136V/PWvalgs8GIzJaFzksmL/ttpUIiEz73Nyxn
+         rRuOZXfMWbWmDfI3DgIb0gEgOnUBgiOGWAr14AzSF2796QoFXk8n2fNa3sFQ0cjv6xRP
+         1qah3QNzbfkBxMUJzCZgkg0D9MSMW52AaY7Lx7jJGralMhiykPBnfIrsxcvU4rO/LKwI
+         69fuwejvU0uohH4VuG0RcgmbNqFWtw9a/n3Bh7vN7xKnu5G76CJPzbEYp3c8opDfffAn
+         Z43g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704299373; x=1704904173;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=az19ubiIuB1XQs18jJiJ3GzVSuYQgFZqp/BptEnEKEs=;
+        b=MQ5HfhuHx2/C+kb1iVw4Y8sOlHfr8hUa4mh4MvDjlcME01WatxaK9cny4VhQfaMC2l
+         DjoyWhHhHzXC7SwWqWUelg5l2c9CJAXZnhIzBbBJ7YEPdEkzz2NjkXcaA/H/sQq9yafw
+         gHGzuZvhXGfpv9rXE0WfGc1siRoQrxqhlgfbn/E0KaFIkER3LMGQKsZVZtLQiGSiPhJt
+         NjMwFLCT3QrcNY/sNU6h7nMwrceOrMDyczjEgk6vbNBbUPpoI+hjnpCc9T+l208r8/hD
+         99WOmm67tyV4fEe9SVekZEPn3zamgJTDvqIsEM0+AdJiNsyZcFNhzSzh2/ZPftoncJo8
+         D6ww==
+X-Gm-Message-State: AOJu0YzEsHYklWd+m0btMxgkvO3qELrXMSXGcy9zFT7gIPZdHR8z00Ht
+	EMgeQVuqBwrtbrkIOmRyGhZGgjvFwkj/1A==
+X-Google-Smtp-Source: AGHT+IGsgei5JGl4HpNN+todsAFo0mJSAkJaefQ6l/kSjvHAkWXL8v0+zTZ105CZUJEhPV8PynnaGg==
+X-Received: by 2002:a17:907:36c3:b0:a27:f7a1:2ad2 with SMTP id bj3-20020a17090736c300b00a27f7a12ad2mr2936599ejc.69.1704299372972;
+        Wed, 03 Jan 2024 08:29:32 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id vl8-20020a17090730c800b00a27eddc3dcbsm3322242ejb.198.2024.01.03.08.29.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jan 2024 08:29:32 -0800 (PST)
+Message-ID: <103a9eb8-c955-4a56-b9dd-9b1eea94e285@linaro.org>
+Date: Wed, 3 Jan 2024 17:29:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: thermal: correct thermal zone node name
+ limit
+Content-Language: en-US
+To: Rob Herring <robh+dt@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>,
+ Lukasz Luba <lukasz.luba@arm.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Liviu Dudau <liviu.dudau@arm.com>,
+ Sudeep Holla <sudeep.holla@arm.com>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Amit Kucheria <amit.kucheria@linaro.org>, linux-pm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org
+References: <20240103142051.111717-1-krzysztof.kozlowski@linaro.org>
+ <CAL_JsqKAKNHz4wPuJPX7ULhVUz=KFRtNn=coWhs3d6LWk+jtGQ@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAL_JsqKAKNHz4wPuJPX7ULhVUz=KFRtNn=coWhs3d6LWk+jtGQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fUfJ-VBGS1D2+WM_eBu4uPGvxJ2KyD4WXzgKRCfGKHTQQ@mail.gmail.com>
-X-Url: http://acmel.wordpress.com
 
-Em Tue, Jan 02, 2024 at 02:41:07PM -0800, Ian Rogers escreveu:
-> On Tue, Jan 2, 2024 at 7:43 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
-> >
-> >
-> >
-> > On 2023-12-23 8:55 a.m., Arnaldo Carvalho de Melo wrote:
-> > > Hi Kan,
-> > >
-> > > I noticed the following problem, are you able to reproduce it?
-> > >
-> > > Happy solstice!
-> >
-> > Happy new year!
-> >
-> > >
-> > > - Arnaldo
-> > >
-> > > root@number:/home/acme/Downloads# grep "model name" -m1 /proc/cpuinfo
-> > > model name    : Intel(R) Core(TM) i7-14700K
-> > > root@number:/home/acme/Downloads# uname -a
-> > > Linux number 6.6.4-200.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec  3 18:13:11 UTC 2023 x86_64 GNU/Linux
-> > > root@number:/home/acme/Downloads# perf -vv
-> > > perf version 6.7.rc6.g63daba4e2861
-> > >                  dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
-> > >     dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
-> > >          syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
-> > >                 libbfd: [ OFF ]  # HAVE_LIBBFD_SUPPORT
-> > >             debuginfod: [ on  ]  # HAVE_DEBUGINFOD_SUPPORT
-> > >                 libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
-> > >                libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-> > > numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-> > >                libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
-> > >              libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
-> > >               libslang: [ on  ]  # HAVE_SLANG_SUPPORT
-> > >              libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
-> > >              libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
-> > >     libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
-> > >                   zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
-> > >                   lzma: [ on  ]  # HAVE_LZMA_SUPPORT
-> > >              get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
-> > >                    bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
-> > >                    aio: [ on  ]  # HAVE_AIO_SUPPORT
-> > >                   zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
-> > >                libpfm4: [ on  ]  # HAVE_LIBPFM
-> > >          libtraceevent: [ on  ]  # HAVE_LIBTRACEEVENT
-> > >          bpf_skeletons: [ on  ]  # HAVE_BPF_SKEL
-> > > root@number:/home/acme/Downloads# perf test 75
-> > >  75: x86 hybrid                                                      : FAILED!
-> >
-> > The failure should be a regression caused by the a24d9d9dc096 ("perf
-> > parse-events: Make legacy events lower priority than sysfs/JSON")
-> >
-> > @@ -1004,10 +1012,19 @@ static int config_term_pmu(struct
-> > perf_event_attr *attr,
-> >                                                            err_str, /*help=*/NULL);
-> >                         return -EINVAL;
-> >                 }
-> > -               attr->type = PERF_TYPE_HARDWARE;
-> > -               attr->config = term->val.num;
-> > -               if (perf_pmus__supports_extended_type())
-> > -                       attr->config |= (__u64)pmu->type << PERF_PMU_TYPE_SHIFT;
-> > +               /*
-> > +                * If the PMU has a sysfs or json event prefer it over
-> > +                * legacy. ARM requires this.
-> > +                */
-> > +               if (perf_pmu__have_event(pmu, term->config))
-> > For Intel hybrid, the perf_pmu__have_event() should be always true for
-> > all hw events and hw cache events. So the patch will mistakenly update
-> > the type to TYPE_USER. However, On Intel platforms, the type of the hw
-> > events should be TYPE_HARDWARE.
-> >
-> > Seems ARM needs to find another way to distinguish the case.
-> >
-> > Ian, any suggestions?
+On 03/01/2024 16:12, Rob Herring wrote:
+> On Wed, Jan 3, 2024 at 7:20 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> Linux kernel uses thermal zone node name during registering thermal
+>> zones and has a hard-coded limit of 20 characters, including terminating
+>> NUL byte.  The bindings expect node names to finish with '-thermal'
+>> which is eight bytes long, thus we have only 11 characters for the reset
+>> of the node name, not 12.
+>>
+>> Reported-by: Rob Herring <robh@kernel.org>
+>> Closes: https://lore.kernel.org/all/CAL_JsqKogbT_4DPd1n94xqeHaU_J8ve5K09WOyVsRX3jxxUW3w@mail.gmail.com/
+>> Fixes: 1202a442a31f ("dt-bindings: thermal: Add yaml bindings for thermal zones")
+>> Cc: <stable@vger.kernel.org>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> ---
+>>  Documentation/devicetree/bindings/thermal/thermal-zones.yaml | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+>> index 4a8dabc48170..bbc883fd4044 100644
+>> --- a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+>> +++ b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+>> @@ -49,7 +49,7 @@ properties:
+>>        to take when the temperature crosses those thresholds.
+>>
+>>  patternProperties:
+>> -  "^[a-zA-Z][a-zA-Z0-9\\-]{1,12}-thermal$":
+>> +  "^[a-zA-Z][a-zA-Z0-9\\-]{1,11}-thermal$":
 > 
-> Hi Kan/Mark,
+> Now off by 1 instead of 2. It should be 1 starting char, 1-10 chars,
+> and 8 chars for "-thermal".
+
+Why off by 2? prefix can be up to 11 bytes, plus 8 bytes for "-thermal"
+and 1 byte for NUL. This gives 11+8+1=20, exactly the size used in Linux
+kernel.
+
 > 
-> Firstly, the perf_pmu__have_event is a test of whether
-> /sys/devices/<pmu>/events or the equivalent json events have the
-> specified event string like "inst_retired.any" - ie it isn't a test of
-> whether the event is supported by the kernel. Mark was quite insistent
-> that the behavior be changed so that if a legacy event is specified
-> with a PMU, the PMU's sysfs/json event is the priority which is a big
-> behavior change on x86.
-> 
-> To get the test passing again I've sent out a test update:
-> https://lore.kernel.org/lkml/20240102215732.1125997-1-irogers@google.com/
-> This switches the legacy events in the test to ones which don't have
-> sysfs or json equivalents. The test is somewhat brittle as an x86 PMU
-> change could decide to add /sys/devices/cpu/events/cycles alongside
-> /sys/devices/cpu/events/cpu-cycles. Ideally we'd be testing all events
-> on core PMUs, for legacy events they may have a sysfs/json override
-> and the test expectation should expect this and assert that the type
-> isn't PERF_TYPE_HARDWARE, etc. For now what I sent out is sufficient
-> to get the "x86 hybrid" test passing. I should probably have done the
-> whole Reported-by.. thing, sorry for missing that.
+> Can you also add a comment that this length is due to the kernel.
 
-I can fix that once we're fine with that fix.
+Sure
 
-- Arnaldo
- 
-> Thanks,
-> Ian
-> 
-> >
-> > +                       term->type_term = PARSE_EVENTS__TERM_TYPE_USER;
-> > +                       term->no_value = true;
-> > +               } else {
-> > +                       attr->type = PERF_TYPE_HARDWARE;
-> > +                       attr->config = term->val.num;
-> > +                       if (perf_pmus__supports_extended_type())
-> > +                               attr->config |= (__u64)pmu->type << PERF_PMU_TYPE_SHIFT;
-> > +               }
-> >                 return 0;
-> >         }
-> >         if (term->type_term == PARSE_EVENTS__TERM_TYPE_USER ||
-> >
-> >
-> > Thanks,
-> > Kan
-> > > root@number:/home/acme/Downloads# perf test -v 75
-> > >  75: x86 hybrid                                                      :
-> > > --- start ---
-> > > test child forked, pid 4111587
-> > > Using CPUID GenuineIntel-6-B7-1
-> > > running test 0 'cpu_core/cpu-cycles/'
-> > > FAILED arch/x86/tests/hybrid.c:30 wrong type
-> > > Event test failure: test 0 'cpu_core/cpu-cycles/'running test 1 '{cpu_core/cpu-cycles/,cpu_core/instructions/}'
-> > > FAILED arch/x86/tests/hybrid.c:42 wrong type
-> > > Event test failure: test 1 '{cpu_core/cpu-cycles/,cpu_core/instructions/}'running test 2 '{cpu-clock,cpu_core/cpu-cycles/}'
-> > > FAILED arch/x86/tests/hybrid.c:65 wrong type
-> > > Event test failure: test 2 '{cpu-clock,cpu_core/cpu-cycles/}'running test 3 '{cpu_core/cpu-cycles/,cpu-clock}'
-> > > FAILED arch/x86/tests/hybrid.c:78 wrong type
-> > > Event test failure: test 3 '{cpu_core/cpu-cycles/,cpu-clock}'running test 4 '{cpu_core/cpu-cycles/k,cpu_core/instructions/u}'
-> > > FAILED arch/x86/tests/hybrid.c:95 wrong type
-> > > Event test failure: test 4 '{cpu_core/cpu-cycles/k,cpu_core/instructions/u}'running test 5 'r1a'
-> > > running test 6 'cpu_core/r1a/'
-> > > running test 7 'cpu_core/config=10,config1,config2=3,period=1000/u'
-> > > WARNING: event 'N/A' not valid (bits 0-1 of config2 '3' not supported by kernel)!
-> > > running test 8 'cpu_core/LLC-loads/'
-> > > test child finished with -1
-> > > ---- end ----
-> > > x86 hybrid: FAILED!
-> > > root@number:/home/acme/Downloads#
-> > >
-> > > root@number:/home/acme/Downloads# perf trace -e perf_event_open perf test -F -v 75
-> > >  75: x86 hybrid                                                      :
-> > > --- start ---
-> > > Using CPUID GenuineIntel-6-B7-1
-> > > running test 0 'cpu_core/cpu-cycles/'
-> > > FAILED arch/x86/tests/hybrid.c:30 wrong type
-> > > Event test failure: test 0 'cpu_core/cpu-cycles/'running test 1 '{cpu_core/cpu-cycles/,cpu_core/instructions/}'
-> > > FAILED arch/x86/tests/hybrid.c:42 wrong type
-> > > Event test failure: test 1 '{cpu_core/cpu-cycles/,cpu_core/instructions/}'running test 2 '{cpu-clock,cpu_core/cpu-cycles/}'
-> > > FAILED arch/x86/tests/hybrid.c:65 wrong type
-> > > Event test failure: test 2 '{cpu-clock,cpu_core/cpu-cycles/}'running test 3 '{cpu_core/cpu-cycles/,cpu-clock}'
-> > > FAILED arch/x86/tests/hybrid.c:78 wrong type
-> > > Event test failure: test 3 '{cpu_core/cpu-cycles/,cpu-clock}'running test 4 '{cpu_core/cpu-cycles/k,cpu_core/instructions/u}'
-> > > FAILED arch/x86/tests/hybrid.c:95 wrong type
-> > > Event test failure: test 4 '{cpu_core/cpu-cycles/k,cpu_core/instructions/u}'running test 5 'r1a'
-> > > running test 6 'cpu_core/r1a/'
-> > > running test 7 'cpu_core/config=10,config1,config2=3,period=1000/u'
-> > > WARNING: event 'N/A' not valid (bits 0-1 of config2 '3' not supported by kernel)!
-> > > running test 8 'cpu_core/LLC-loads/'
-> > > ---- end ----
-> > > x86 hybrid: FAILED!
-> > >      0.000 ( 0.008 ms): :4115165/4115165 perf_event_open(attr_uptr: { type: 0 (PERF_TYPE_HARDWARE), config: 0xa00000000, disabled: 1, { bp_len, config2 }: 0x900000000, branch_sample_type: USER|COUNTERS, sample_regs_user: 0x3ecaddffffffff, sample_stack_user: 4115165, clockid: 925535355, sample_regs_intr: 0x8140c90000a8f7, sample_max_stack: 8, sig_data: 120259084288 }, cpu: -1, group_fd: -1, flags: FD_CLOEXEC) = 3
-> > >      0.010 ( 0.002 ms): :4115165/4115165 perf_event_open(attr_uptr: { type: 0 (PERF_TYPE_HARDWARE), config: 0x400000000, disabled: 1, { bp_len, config2 }: 0x900000000, branch_sample_type: USER|COUNTERS, sample_regs_user: 0x3ecaddffffffff, sample_stack_user: 4115165, clockid: 925538919, sample_regs_intr: 0x8140c90000a8f7, sample_max_stack: 8, sig_data: 120259084288 }, cpu: -1, group_fd: -1, flags: FD_CLOEXEC) = 4
-> > > root@number:/home/acme/Downloads# strace -e perf_event_open perf test -F -v 75
-> > >  75: x86 hybrid                                                      :
-> > > --- start ---
-> > > Using CPUID GenuineIntel-6-B7-1
-> > > running test 0 'cpu_core/cpu-cycles/'
-> > > FAILED arch/x86/tests/hybrid.c:30 wrong type
-> > > Event test failure: test 0 'cpu_core/cpu-cycles/'running test 1 '{cpu_core/cpu-cycles/,cpu_core/instructions/}'
-> > > FAILED arch/x86/tests/hybrid.c:42 wrong type
-> > > Event test failure: test 1 '{cpu_core/cpu-cycles/,cpu_core/instructions/}'running test 2 '{cpu-clock,cpu_core/cpu-cycles/}'
-> > > FAILED arch/x86/tests/hybrid.c:65 wrong type
-> > > Event test failure: test 2 '{cpu-clock,cpu_core/cpu-cycles/}'running test 3 '{cpu_core/cpu-cycles/,cpu-clock}'
-> > > FAILED arch/x86/tests/hybrid.c:78 wrong type
-> > > Event test failure: test 3 '{cpu_core/cpu-cycles/,cpu-clock}'running test 4 '{cpu_core/cpu-cycles/k,cpu_core/instructions/u}'
-> > > FAILED arch/x86/tests/hybrid.c:95 wrong type
-> > > Event test failure: test 4 '{cpu_core/cpu-cycles/k,cpu_core/instructions/u}'running test 5 'r1a'
-> > > running test 6 'cpu_core/r1a/'
-> > > running test 7 'cpu_core/config=10,config1,config2=3,period=1000/u'
-> > > WARNING: event 'N/A' not valid (bits 0-1 of config2 '3' not supported by kernel)!
-> > > running test 8 'cpu_core/LLC-loads/'
-> > > perf_event_open({type=PERF_TYPE_HARDWARE, size=0 /* PERF_ATTR_SIZE_??? */, config=0xa<<32|PERF_COUNT_HW_CPU_CYCLES, sample_period=0, sample_type=0, read_format=0, disabled=1, precise_ip=0 /* arbitrary skid */, ...}, 0, -1, -1, PERF_FLAG_FD_CLOEXEC) = 3
-> > > perf_event_open({type=PERF_TYPE_HARDWARE, size=0 /* PERF_ATTR_SIZE_??? */, config=0x4<<32|PERF_COUNT_HW_CPU_CYCLES, sample_period=0, sample_type=0, read_format=0, disabled=1, precise_ip=0 /* arbitrary skid */, ...}, 0, -1, -1, PERF_FLAG_FD_CLOEXEC) = 4
-> > > ---- end ----
-> > > x86 hybrid: FAILED!
-> > > +++ exited with 0 +++
-> > > root@number:/home/acme/Downloads#
-> > >
+Best regards,
+Krzysztof
 
--- 
-
-- Arnaldo
 
