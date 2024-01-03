@@ -1,196 +1,148 @@
-Return-Path: <linux-kernel+bounces-15759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89A2A823159
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:35:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A40082315E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:37:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D022281A6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:35:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E53DE2857E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:37:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1311BDD5;
-	Wed,  3 Jan 2024 16:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F117C1BDDE;
+	Wed,  3 Jan 2024 16:37:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K+jnOUfC"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Lh43Nmsh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E34F91BDD1
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 16:34:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704299694;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tH023szvNYa//ZF6grt40ifEfduA6uuUO2rklppqYOI=;
-	b=K+jnOUfCcxPw8IhZH2EPFbFYQZ3ctmH6JQP4N9v2CViqJHZxlxyy809JyKfuuksDRtOx2H
-	4j3pOUm/O9aRHujvnOWOHuJYdtQlAN9z3WMJ8/46ct82cxxE16/lBMnyLFI/4Ssl5jIsoI
-	u/XQs5N6Rl1c8yH/P0PvyFuSPZmDq5c=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-527-Lw_bKOl-PLa6bjw-SaEG1A-1; Wed, 03 Jan 2024 11:34:53 -0500
-X-MC-Unique: Lw_bKOl-PLa6bjw-SaEG1A-1
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6d9b2360ed7so9716883b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 08:34:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704299692; x=1704904492;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tH023szvNYa//ZF6grt40ifEfduA6uuUO2rklppqYOI=;
-        b=b0xZk0B4Ysm7SxkuXGWjGOcSDwOyHM69XtRb6hBih71+TAiEVpe0m9aRafRMEP8qKf
-         oXLFb4UikvprMKM4l0fKx1d3vfHUlJB7ktV3gXqNxAmE28usKLPJgItdch5Oi44Zb/Cg
-         cJq1+v+jNt2FKRBkKeKIwcDrOV5ZkwjsbsAtG+sGQ9LNmTe9KhTFr9k2I19YKThEvtFE
-         gosgVPTUiBWVe5kL2bEOR25wyCmQSZN56lwIjZSgobpaK3/3xHVVmbhlRLg+PO3PuJA/
-         dRvvaGcSxUe6n/LD2EF7v7A6z97XXGqZeyBzerXKqURbkRYUJV/cAtOmU0N6ZoM82SfK
-         azFQ==
-X-Gm-Message-State: AOJu0Yz8rLvKau74N5XR9j6dtjJU7rHi9uzjvuEr52wWLQnszrnxPTH9
-	xe0yMqJmVYtKVBHQBHUaQ4kFLbPZ59pCpVXhnN+2WanMZfHHKe7SU0c69r4f4+L5FIms89Tb4Qe
-	AsAEaq3QIlGi2iGHbp0F1BZTMdE2MUAFA
-X-Received: by 2002:aa7:8dd7:0:b0:6d9:8ab2:c853 with SMTP id j23-20020aa78dd7000000b006d98ab2c853mr19059087pfr.12.1704299692605;
-        Wed, 03 Jan 2024 08:34:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFQx6xOcahl7NUiU4wN9Ryq88SdYIolFo1LKNQ3pa9MfnsSS6ZO05u7ru3z4/+N2V4KO+Kelw==
-X-Received: by 2002:aa7:8dd7:0:b0:6d9:8ab2:c853 with SMTP id j23-20020aa78dd7000000b006d98ab2c853mr19059071pfr.12.1704299692311;
-        Wed, 03 Jan 2024 08:34:52 -0800 (PST)
-Received: from localhost.localdomain ([2804:431:c7ec:911:6911:ca60:846:eb46])
-        by smtp.gmail.com with ESMTPSA id fb27-20020a056a002d9b00b006d9bdc0f765sm16187447pfb.53.2024.01.03.08.34.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 08:34:51 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: Leonardo Bras <leobras@redhat.com>
-Cc: Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Guo Ren <guoren@kernel.org>,
-	Andrea Parri <parri.andrea@gmail.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v1 0/5] Rework & improve riscv cmpxchg.h and atomic.h
-Date: Wed,  3 Jan 2024 13:34:43 -0300
-Message-ID: <ZZWMox3D2GHX0Tzr@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240103163203.72768-2-leobras@redhat.com>
-References: <20240103163203.72768-2-leobras@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 733061945A;
+	Wed,  3 Jan 2024 16:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704299858; x=1735835858;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=9qrYc+ad8EX58N8ZQfzbPjiZeAEq8/ncxUV7ZVDDAXs=;
+  b=Lh43Nmsh53X6ox5yBVl3v8E5RrIsQXF0abG7B2zDRcB6zFPL/sOvdcd2
+   rt/dJzXHHEdZ5B9qUeSeAGik4/GwSpcwuIOyqXEhEIZay9LuMNCNGRum/
+   a3K7E/5Nn+e8mgvcW1Dg5rGlSu9XBbWY3FiGcjj6fPOO2bNFYi3rfqrlO
+   Yn9uBFTQiT5SZF8yRUL6G3Iozg1QMQzt2gJ0CaesFlPgW2c+lT6GAfEp7
+   UI72nlI32WXQWOKAQI55UZ3pq/11Q4bVvADwS4pVJHnFrP2lTXR/q90xi
+   wPvKRSzHr6LK0XnoG135jYREvy42SUItoh6lA4vT85akslY+IzwnXmZdm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="4114514"
+X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
+   d="scan'208";a="4114514"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 08:37:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="850483047"
+X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
+   d="scan'208";a="850483047"
+Received: from lmjeniso-mobl1.amr.corp.intel.com (HELO [10.212.155.116]) ([10.212.155.116])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 08:37:36 -0800
+Message-ID: <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
+Date: Wed, 3 Jan 2024 08:37:35 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 09/12] x86/sgx: Restructure top-level EPC reclaim
+ function
+Content-Language: en-US
+To: Haitao Huang <haitao.huang@linux.intel.com>,
+ "Mehta, Sohil" <sohil.mehta@intel.com>, "jarkko@kernel.org"
+ <jarkko@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+ "hpa@zytor.com" <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>,
+ "tj@kernel.org" <tj@kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>,
+ "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "bp@alien8.de" <bp@alien8.de>, "Huang, Kai" <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>,
+ "anakrish@microsoft.com" <anakrish@microsoft.com>,
+ "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+ "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+ <20231030182013.40086-10-haitao.huang@linux.intel.com>
+ <c8fc40dc56b853fbff14ba22db197c80a6d31820.camel@intel.com>
+ <op.2e0yod2lwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <431c5d7f5aee7d11ec2e8aa2e526fde438fa53b4.camel@intel.com>
+ <op.2ftmyampwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <3c27bca678c1b041920a14a7da0d958c9861ebca.camel@intel.com>
+ <op.2f0eo8r1wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
+ <op.2f523elowjvjmi@hhuan26-mobl.amr.corp.intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <op.2f523elowjvjmi@hhuan26-mobl.amr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 03, 2024 at 01:31:58PM -0300, Leonardo Bras wrote:
-> While studying riscv's cmpxchg.h file, I got really interested in
-> understanding how RISCV asm implemented the different versions of
-> {cmp,}xchg.
-> 
-> When I understood the pattern, it made sense for me to remove the
-> duplications and create macros to make it easier to understand what exactly
-> changes between the versions: Instruction sufixes & barriers.
-> 
-> Also, did the same kind of work on atomic.c.
-> 
-> After that, I noted both cmpxchg and xchg only accept variables of 
-> size 4 and 8, compared to x86 and arm64 which do 1,2,4,8.
-> 
-> Now that deduplication is done, it is quite direct to implement them
-> for variable sizes 1 and 2, so I did it. Then Guo Ren already presented
-> me some possible users :)
-> 
-> I did compare the generated asm on a test.c that contained usage for every
-> changed function, and could not detect any change on patches 1 + 2 + 3 
-> compared with upstream.
-> 
-> Pathes 4 & 5 were compiled-tested, merged with guoren/qspinlock_v11 and
-> booted just fine with qemu -machine virt -append "qspinlock". 
-> 
-> (tree: https://gitlab.com/LeoBras/linux/-/commits/guo_qspinlock_v11)
-> 
-> Latest tests happened based on this tree:
-> https://github.com/guoren83/linux/tree/qspinlock_v12
-> 
-> Thanks!
-> Leo
-> 
-> Changes since squashed cmpxchg RFCv5:
-> - Resend as v1
+On 12/18/23 13:24, Haitao Huang wrote:> @Dave and @Michal, Your
+thoughts? Or could you confirm we should not
+> do reclaim per cgroup at all?
+What's the benefit of doing reclaim per cgroup?  Is that worth the extra
+complexity?
 
-Oh, forgot to mention:
-I added some of Reviewed-by that were missing.
-Thanks Guo Ren!
+The key question here is whether we want the SGX VM to be complex and
+more like the real VM or simple when a cgroup hits its limit.  Right?
 
-
-> https://lore.kernel.org/all/20230810040349.92279-2-leobras@redhat.com/
-> 
-> Changes since squashed cmpxchg RFCv4:
-> - Added (__typeof__(*(p))) before returning from {cmp,}xchg, as done
->   in current upstream, (possibly) fixing the bug from kernel test robot
-> https://lore.kernel.org/all/20230809021311.1390578-2-leobras@redhat.com/
-> 
-> Changes since squashed cmpxchg RFCv3:
-> - Fixed bug on cmpxchg macro for var size 1 & 2: now working
-> - Macros for var size 1 & 2's lr.w and sc.w now are guaranteed to receive
->   input of a 32-bit aligned address
-> - Renamed internal macros from _mask to _masked for patches 4 & 5
-> - __rc variable on macros for var size 1 & 2 changed from register to ulong 
-> https://lore.kernel.org/all/20230804084900.1135660-2-leobras@redhat.com/
-> 
-> Changes since squashed cmpxchg RFCv2:
-> - Removed rc parameter from the new macro: it can be internal to the macro
-> - 2 new patches: cmpxchg size 1 and 2, xchg size 1 and 2
-> https://lore.kernel.org/all/20230803051401.710236-2-leobras@redhat.com/
-> 
-> Changes since squashed cmpxchg RFCv1:
-> - Unified with atomic.c patchset
-> - Rebased on top of torvalds/master (thanks Andrea Parri!)
-> - Removed helper macros that were not being used elsewhere in the kernel.
-> https://lore.kernel.org/all/20230419062505.257231-1-leobras@redhat.com/
-> https://lore.kernel.org/all/20230406082018.70367-1-leobras@redhat.com/
-> 
-> Changes since (cmpxchg) RFCv3:
-> - Squashed the 6 original patches in 2: one for cmpxchg and one for xchg
-> https://lore.kernel.org/all/20230404163741.2762165-1-leobras@redhat.com/
-> 
-> Changes since (cmpxchg) RFCv2:
-> - Fixed  macros that depend on having a local variable with a magic name
-> - Previous cast to (long) is now only applied on 4-bytes cmpxchg
-> https://lore.kernel.org/all/20230321074249.2221674-1-leobras@redhat.com/
-> 
-> Changes since (cmpxchg) RFCv1:
-> - Fixed patch 4/6 suffix from 'w.aqrl' to '.w.aqrl', to avoid build error
-> https://lore.kernel.org/all/20230318080059.1109286-1-leobras@redhat.com/
-> 
-> Leonardo Bras (5):
->   riscv/cmpxchg: Deduplicate xchg() asm functions
->   riscv/cmpxchg: Deduplicate cmpxchg() asm and macros
->   riscv/atomic.h : Deduplicate arch_atomic.*
->   riscv/cmpxchg: Implement cmpxchg for variables of size 1 and 2
->   riscv/cmpxchg: Implement xchg for variables of size 1 and 2
-> 
->  arch/riscv/include/asm/atomic.h  | 164 ++++++-------
->  arch/riscv/include/asm/cmpxchg.h | 404 ++++++++++---------------------
->  2 files changed, 200 insertions(+), 368 deletions(-)
-> 
-> 
-> base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
-> -- 
-> 2.43.0
-> 
-
+If stopping at patch 5 and having less code is even remotely an option,
+why not do _that_?
 
